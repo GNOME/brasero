@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-19 20:55+0100\n"
-"PO-Revision-Date: 2009-02-19 20:55+0100\n"
+"POT-Creation-Date: 2009-02-22 20:37+0100\n"
+"PO-Revision-Date: 2009-02-22 20:37+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -57,14 +57,17 @@ msgstr "Brasero-bibliotek för optiskt media"
 msgid "Display options for Brasero-media library"
 msgstr "Visa flaggor för Brasero-mediabibliotek"
 
-#: ../libbrasero-media/brasero-units.c:86
-#: ../src/brasero-utils.c:231
+#. Translators: %lli is a duration expressed in minutes
+#. * hence the "min" as unit.
+#: ../libbrasero-media/brasero-units.c:89
 #, c-format
 msgid "%lli min"
 msgstr "%lli min"
 
-#: ../libbrasero-media/brasero-units.c:88
-#: ../src/brasero-utils.c:233
+#. Translators: the first %lli is the number of minutes
+#. * and the second one is the number of seconds.
+#. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:94
 #, c-format
 msgid "%lli:%02lli min"
 msgstr "%lli:%02lli min"
@@ -507,7 +510,7 @@ msgstr "\"%s\": %s"
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
 #: ../src/brasero-src-image.c:229
-#: ../src/brasero-src-image.c:677
+#: ../src/brasero-src-image.c:678
 msgid "Click here to select an _image"
 msgstr "Klicka här för att välja en a_vbildning"
 
@@ -526,18 +529,17 @@ msgstr "Välj avbildningsfil"
 #: ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:473
 #: ../src/brasero-file-chooser.c:210
-#: ../src/brasero-project.c:1474
+#: ../src/brasero-project.c:1488
 msgid "All files"
 msgstr "Alla filer"
 
-#. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-src-image.c:578
-#: ../src/brasero-file-chooser.c:234
-#: ../src/brasero-project.c:1496
+#. Translators: this a disc image here
+#: ../src/brasero-src-image.c:579
+msgctxt "disc"
 msgid "Image files only"
-msgstr "Endast bildfiler"
+msgstr "Endast avbildningsfiler"
 
-#: ../src/brasero-src-image.c:596
+#: ../src/brasero-src-image.c:597
 #: ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Avbildningstyp:"
@@ -639,12 +641,13 @@ msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Vill du bränna bortom skivans rapporterade kapacitet?"
 
 #: ../src/brasero-burn-options.c:338
+#: ../src/brasero-data-disc.c:602
 msgid ""
-"The size of the project is too large for the disc.\n"
-"You may want to use this option if you are using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
+"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Storleken för projektet är för stort för skivan.\n"
+"Projektet är för stort för skivan och du måste ta bort filer från projektet för att de ska få plats.\n"
 "Du kan använda detta alternativ om du använder en 90 eller 100 minuter lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver överbränningsalternativet.\n"
 "OBSERVERA: Det här alternativet kan orsaka felaktigheter."
 
@@ -1016,7 +1019,7 @@ msgstr "Redigera spårinformationen (start, slut, upphovsman, ...)"
 
 #: ../src/brasero-audio-disc.c:305
 #: ../src/brasero-data-disc.c:122
-#: ../src/brasero-project.c:204
+#: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
 msgstr "Ta bort de markerade filerna från projektet"
 
@@ -1233,14 +1236,14 @@ msgstr "Välj skiva att kopiera"
 #: ../src/brasero-metadata.c:1506
 #: ../src/brasero-metadata.c:1515
 #: ../src/brasero-metadata.c:1528
-#: ../src/plugins/transcode/burn-normalize.c:97
-#: ../src/plugins/transcode/burn-normalize.c:357
-#: ../src/plugins/transcode/burn-normalize.c:370
+#: ../src/plugins/transcode/burn-normalize.c:99
 #: ../src/plugins/transcode/burn-normalize.c:382
-#: ../src/plugins/transcode/burn-normalize.c:394
+#: ../src/plugins/transcode/burn-normalize.c:395
 #: ../src/plugins/transcode/burn-normalize.c:407
-#: ../src/plugins/transcode/burn-normalize.c:572
-#: ../src/plugins/transcode/burn-normalize.c:580
+#: ../src/plugins/transcode/burn-normalize.c:420
+#: ../src/plugins/transcode/burn-normalize.c:433
+#: ../src/plugins/transcode/burn-normalize.c:598
+#: ../src/plugins/transcode/burn-normalize.c:606
 #: ../src/plugins/transcode/burn-transcode.c:281
 #: ../src/plugins/transcode/burn-transcode.c:293
 #: ../src/plugins/transcode/burn-transcode.c:383
@@ -1315,7 +1318,7 @@ msgstr "Fel vid tolkning av spellistan \"%s\"."
 
 #: ../src/brasero-playlist.c:810
 #: ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:1802
+#: ../src/brasero-project.c:1819
 #: ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "Ett okänt fel inträffade"
@@ -1379,21 +1382,25 @@ msgstr "Alternativ för insticksmodulen %s"
 msgid "Estimated drive speed:"
 msgstr "Beräknad enhetshastighet:"
 
-#: ../src/brasero-progress.c:186
+#. Translators: first %02i is hours, the second one is minutes and the
+#. * third one is seconds.
+#: ../src/brasero-progress.c:188
 #, c-format
 msgid "Total time: %02i:%02i:%02i"
 msgstr "Total tid: %02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:197
+#: ../src/brasero-progress.c:199
 msgid "Average drive speed:"
 msgstr "Genomsnittlig enhetshastighet:"
 
-#: ../src/brasero-progress.c:421
+#. Translators: first %02i is hours, the second one is minutes
+#. * and the third one is seconds.
+#: ../src/brasero-progress.c:425
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr "Beräknad återstående tid: %02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:463
+#: ../src/brasero-progress.c:467
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB av %i MiB"
@@ -1503,7 +1510,7 @@ msgid "Composer:"
 msgstr "Kompositör:"
 
 #: ../src/brasero-song-properties.c:220
-#: ../src/brasero-drive-properties.c:576
+#: ../src/brasero-drive-properties.c:581
 #: ../src/brasero-tool-dialog.c:256
 #: ../src/brasero-multi-song-props.c:303
 msgid "Options"
@@ -1929,7 +1936,7 @@ msgid "Location for Image File"
 msgstr "Plats för avbildningsfil"
 
 #: ../src/brasero-burn-dialog.c:698
-#: ../src/brasero-drive-properties.c:589
+#: ../src/brasero-drive-properties.c:594
 msgid "Location for Temporary Files"
 msgstr "Plats för temporära filer"
 
@@ -2184,16 +2191,6 @@ msgstr "Ny mapp"
 msgid "New folder %i"
 msgstr "Ny mapp %i"
 
-#: ../src/brasero-data-disc.c:602
-msgid ""
-"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
-"NOTE: This option might cause failure."
-msgstr ""
-"Projektet är för stort för skivan och du måste ta bort filer från projektet för att de ska få plats.\n"
-"Du kan använda detta alternativ om du använder en 90 eller 100 minuter lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver överbränningsalternativet.\n"
-"OBSERVERA: Det här alternativet kan orsaka felaktigheter."
-
 #: ../src/brasero-data-disc.c:617
 msgid "Click here not to use overburning"
 msgstr "Klicka här för att inte använda överbränning"
@@ -2233,8 +2230,8 @@ msgid "_Add to Project"
 msgstr "_Lägg till i projekt"
 
 #: ../src/brasero-data-disc.c:767
-#: ../src/brasero-project.c:208
-#: ../src/brasero-project.c:459
+#: ../src/brasero-project.c:210
+#: ../src/brasero-project.c:461
 msgid "_Burn..."
 msgstr "_Bränn..."
 
@@ -2505,88 +2502,100 @@ msgstr ""
 "Filsystemet på denna volym saknar stöd för stora filer (storlek över 2 GiB).\n"
 "Detta kan bli ett problem vid skrivning av dvd-skivor eller stora avbildningar."
 
-#: ../src/brasero-drive-properties.c:430
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:431
 #, c-format
 msgid "%.1f x (DVD)"
 msgstr "%.1f x (DVD)"
 
-#: ../src/brasero-drive-properties.c:433
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:435
 #, c-format
 msgid "%.1f x (CD)"
 msgstr "%.1f x (CD)"
 
-#: ../src/brasero-drive-properties.c:436
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:439
 #, c-format
 msgid "%.1f x (BD)"
 msgstr "%.1f x (BD)"
 
-#: ../src/brasero-drive-properties.c:439
+#. Translators %s.1f is the speed used to burn for every medium
+#. * type
+#: ../src/brasero-drive-properties.c:444
 #, c-format
 msgid "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 msgstr "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 
-#: ../src/brasero-drive-properties.c:467
+#: ../src/brasero-drive-properties.c:472
 #, c-format
 msgid "Properties of %s"
 msgstr "Egenskaper för %s"
 
-#: ../src/brasero-drive-properties.c:483
+#: ../src/brasero-drive-properties.c:488
 msgid "Impossible to retrieve speeds"
 msgstr "Omöjligt att hämta in hastigheter"
 
-#: ../src/brasero-drive-properties.c:492
+#: ../src/brasero-drive-properties.c:497
 msgid "Max speed"
 msgstr "Maximal hastighet"
 
-#: ../src/brasero-drive-properties.c:555
+#: ../src/brasero-drive-properties.c:560
 msgid "Burning speed"
 msgstr "Brännhastighet"
 
-#: ../src/brasero-drive-properties.c:568
+#: ../src/brasero-drive-properties.c:573
 msgid "_Simulate before burning"
 msgstr "_Simulera före bränning"
 
-#: ../src/brasero-drive-properties.c:569
+#: ../src/brasero-drive-properties.c:574
 msgid "Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"
 msgstr "Brasero kommer att simulera bränningen och, om den lyckas, fortsätta med den faktiska bränningen efter 10 sekunder"
 
-#: ../src/brasero-drive-properties.c:570
+#: ../src/brasero-drive-properties.c:575
 msgid "Use burn_proof (decrease the risk of failures)"
 msgstr "Använd burn_proof (minskar risken för problem)"
 
-#: ../src/brasero-drive-properties.c:571
+#: ../src/brasero-drive-properties.c:576
 msgid "_Eject after burning"
 msgstr "Mata _ut efter bränning"
 
-#: ../src/brasero-drive-properties.c:572
+#: ../src/brasero-drive-properties.c:577
 msgid "Burn the image directly _without saving it to disc"
 msgstr "Bränn avbildningen direkt _utan att spara den till disk"
 
-#: ../src/brasero-drive-properties.c:573
+#: ../src/brasero-drive-properties.c:578
 msgid "Leave the disc _open to add other files later"
 msgstr "Lämna skivan _öppen för att lägga till fler filer senare"
 
-#: ../src/brasero-drive-properties.c:574
+#: ../src/brasero-drive-properties.c:579
 msgid "Allow to add more data to the disc later"
 msgstr "Tillåt att lägga till mer data på skivan senare"
 
-#: ../src/brasero-drive-properties.c:595
+#: ../src/brasero-drive-properties.c:600
 msgid "_Temporary directory free space:"
 msgstr "Ledigt utrymme i _temporär katalog:"
 
-#: ../src/brasero-drive-properties.c:604
+#: ../src/brasero-drive-properties.c:609
 msgid "Temporary files"
 msgstr "Temporära filer"
 
 #: ../src/brasero-file-chooser.c:217
-#: ../src/brasero-project.c:1479
+#: ../src/brasero-project.c:1493
 msgid "Audio files only"
 msgstr "Endast ljudfiler"
 
 #: ../src/brasero-file-chooser.c:225
-#: ../src/brasero-project.c:1488
+#: ../src/brasero-project.c:1502
 msgid "Movies only"
 msgstr "Endast filmer"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-file-chooser.c:235
+#: ../src/brasero-project.c:1510
+msgctxt "picture"
+msgid "Image files only"
+msgstr "Endast bildfiler"
 
 #. pack everything
 #: ../src/brasero-image-option-dialog.c:91
@@ -2699,200 +2708,203 @@ msgstr ""
 "<span weight=\"bold\">Läser in information</span>\n"
 "om <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Save current project"
 msgstr "Spara aktuellt projekt"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "Save _As..."
 msgstr "Spara s_om..."
 
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Save current project to a different location"
 msgstr "Spara aktuellt projekt till en annan plats"
 
-#: ../src/brasero-project.c:201
+#: ../src/brasero-project.c:203
 msgid "_Add Files"
 msgstr "_Lägg till filer"
 
-#: ../src/brasero-project.c:202
+#: ../src/brasero-project.c:204
 msgid "Add files to the project"
 msgstr "Lägg till filer till projektet"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "_Remove Files"
 msgstr "_Ta bort filer"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:206
-#: ../src/brasero-project.c:1559
+#: ../src/brasero-project.c:208
+#: ../src/brasero-project.c:1573
 msgid "E_mpty Project"
 msgstr "Töm p_rojektet"
 
-#: ../src/brasero-project.c:207
+#: ../src/brasero-project.c:209
 msgid "Remove all files from the project"
 msgstr "Ta bort alla filer från projektet"
 
-#: ../src/brasero-project.c:209
+#: ../src/brasero-project.c:211
 msgid "Burn the disc"
 msgstr "Bränn skivan"
 
 #. Name widget
-#: ../src/brasero-project.c:439
+#: ../src/brasero-project.c:441
 msgid "_Name:"
 msgstr "_Namn:"
 
-#: ../src/brasero-project.c:471
+#: ../src/brasero-project.c:473
 msgid "Start to burn the contents of the selection"
 msgstr "Påbörja bränningen av innehållet"
 
 #. Translators: first %s is the size of the project and the
 #. * second %s is the remaining free space on the disc that is
 #. * used for multisession
-#: ../src/brasero-project.c:613
+#: ../src/brasero-project.c:629
 #, c-format
 msgid "Project estimated size: %s/%s"
 msgstr "Projektets beräknade storlek: %s/%s"
 
-#: ../src/brasero-project.c:619
-#: ../src/brasero-project.c:749
+#: ../src/brasero-project.c:635
+#: ../src/brasero-project.c:763
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Projektets beräknade storlek: %s"
 
-#: ../src/brasero-project.c:790
+#: ../src/brasero-project.c:804
 msgid "Please wait until the estimation of the project size is completed."
 msgstr "Vänta under tiden beräkningen av projektets storlek färdigställs."
 
-#: ../src/brasero-project.c:795
+#: ../src/brasero-project.c:809
 msgid "All files from the project need to be analysed to complete this operation."
 msgstr "Alla filer från projektet behöver analyseras för att färdigställa denna åtgärd."
 
-#: ../src/brasero-project.c:797
+#: ../src/brasero-project.c:811
 msgid "Project Size Estimation"
 msgstr "Beräkning av projektstorlek"
 
-#: ../src/brasero-project.c:890
+#: ../src/brasero-project.c:904
 msgid "Please add songs to the project."
 msgstr "Lägg till låtar till projektet."
 
-#: ../src/brasero-project.c:891
-#: ../src/brasero-project.c:900
+#: ../src/brasero-project.c:905
+#: ../src/brasero-project.c:914
 #: ../src/main.c:255
 msgid "The project is empty"
 msgstr "Projektet är tomt"
 
-#: ../src/brasero-project.c:899
+#: ../src/brasero-project.c:913
 #: ../src/main.c:254
 msgid "Please add files to the project."
 msgstr "Lägg till filer till projektet."
 
-#: ../src/brasero-project.c:1140
+#: ../src/brasero-project.c:1154
 msgid "Do you really want to create a new project and discard the changes to current one?"
 msgstr "Vill du verkligen skapa ett nytt projekt och förkasta ändringarna i det aktuella?"
 
-#: ../src/brasero-project.c:1145
+#: ../src/brasero-project.c:1159
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "Om du väljer att skapa ett nytt projekt kommer alla ändringar att gå förlorade."
 
-#: ../src/brasero-project.c:1147
+#: ../src/brasero-project.c:1161
 msgid "_Discard Changes"
 msgstr "_Förkasta ändringar"
 
-#: ../src/brasero-project.c:1155
+#: ../src/brasero-project.c:1169
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Vill du verkligen skapa ett nytt projekt och förkasta det aktuella?"
 
-#: ../src/brasero-project.c:1160
+#: ../src/brasero-project.c:1174
 msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Om du väljer att skapa ett nytt projekt kommer alla filer som lagts till att förkastas. Observera att filerna inte kommer att tas bort fysiskt, de tas bara bort från listan här."
 
-#: ../src/brasero-project.c:1165
+#: ../src/brasero-project.c:1179
 msgid "_Discard Project"
 msgstr "_Förkasta projekt"
 
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1451
 msgid "Select Files"
 msgstr "Välj filer"
 
-#: ../src/brasero-project.c:1548
+#: ../src/brasero-project.c:1562
 msgid "Do you really want to empty the current project?"
 msgstr "Vill du verkligen tömma det aktuella projektet?"
 
-#: ../src/brasero-project.c:1553
+#: ../src/brasero-project.c:1567
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Tömning av ett projekt kommer att ta bort alla filer som lagts till. Allt arbete kommer att gå förlorat. Observera att filerna inte kommer att tas bort fysiskt, de tas bara bort från listan här."
 
-#: ../src/brasero-project.c:1609
+#: ../src/brasero-project.c:1623
 msgid "_Save"
 msgstr "_Spara"
 
-#: ../src/brasero-project.c:1620
+#: ../src/brasero-project.c:1634
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: ../src/brasero-project.c:1625
+#: ../src/brasero-project.c:1639
 #: ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "_Ta bort"
 
-#: ../src/brasero-project.c:1685
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1700
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero - %s (dataskiva)"
 
-#: ../src/brasero-project.c:1687
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1703
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero - %s (ljudskiva)"
 
-#: ../src/brasero-project.c:1689
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1706
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (videoskiva)"
 
-#: ../src/brasero-project.c:1801
+#: ../src/brasero-project.c:1818
 msgid "Your project has not been saved."
 msgstr "Ditt projekt har inte sparats."
 
-#: ../src/brasero-project.c:1815
+#: ../src/brasero-project.c:1832
 msgid "Save the changes of current project before closing?"
 msgstr "Spara ändringar i aktuellt projekt innan stängning?"
 
-#: ../src/brasero-project.c:1820
+#: ../src/brasero-project.c:1837
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Om du inte sparar kommer ändringarna att gå förlorade."
 
-#: ../src/brasero-project.c:1824
-#: ../src/brasero-project.c:1830
+#: ../src/brasero-project.c:1841
+#: ../src/brasero-project.c:1847
 msgid "Cl_ose Without Saving"
 msgstr "St_äng utan att spara"
 
-#: ../src/brasero-project.c:2449
+#: ../src/brasero-project.c:2466
 msgid "Save Current Project"
 msgstr "Spara aktuellt projekt"
 
-#: ../src/brasero-project.c:2467
+#: ../src/brasero-project.c:2484
 msgid "Save project as Brasero audio project"
 msgstr "Spara projektet som ett Brasero-ljudprojekt"
 
-#: ../src/brasero-project.c:2468
+#: ../src/brasero-project.c:2485
 msgid "Save project as a plain text list"
 msgstr "Spara projekt som en vanlig textlista"
 
-#: ../src/brasero-project.c:2472
+#: ../src/brasero-project.c:2489
 msgid "Save project as a PLS playlist"
 msgstr "Spara projekt som en PLS-spellista"
 
-#: ../src/brasero-project.c:2473
+#: ../src/brasero-project.c:2490
 msgid "Save project as an M3U playlist"
 msgstr "Spara projekt som en M3U-spellista"
 
-#: ../src/brasero-project.c:2474
+#: ../src/brasero-project.c:2491
 msgid "Save project as a XSPF playlist"
 msgstr "Spara projekt som en XSPF-spellista"
 
-#: ../src/brasero-project.c:2475
+#: ../src/brasero-project.c:2492
 msgid "Save project as an IRIVER playlist"
 msgstr "Spara projekt som en IRIVER-spellista"
 
@@ -3431,7 +3443,7 @@ msgstr "Ett internt fel inträffade (%s)"
 
 #: ../src/burn-mkisofs-base.c:154
 #: ../src/burn-mkisofs-base.c:586
-#: ../src/plugins/growisofs/burn-growisofs.c:514
+#: ../src/plugins/growisofs/burn-growisofs.c:520
 #: ../src/plugins/libburnia/burn-libisofs.c:669
 #: ../src/plugins/checksum/burn-checksum-image.c:274
 #, c-format
@@ -3586,7 +3598,7 @@ msgstr "Analyserar spår %02i"
 
 #. Translators: %s is a filename
 #: ../src/plugins/cdrdao/burn-cdrdao.c:199
-#: ../src/plugins/growisofs/burn-growisofs.c:494
+#: ../src/plugins/growisofs/burn-growisofs.c:500
 #, c-format
 msgid "\"%s\" could not be found"
 msgstr "\"%s\" kunde inte hittas"
@@ -3795,15 +3807,15 @@ msgstr "Kopierar video-dvd"
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr "Dvdcss tillåter att css-krypterade video-dvd-skivor kan läsas"
 
-#: ../src/plugins/growisofs/burn-dvd-rw-format.c:176
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:177
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "Dvd+rw-format raderar och formaterar dvd+/-r(w)"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:732
+#: ../src/plugins/growisofs/burn-growisofs.c:738
 msgid "Growisofs burns DVDs"
 msgstr "Growisofs bränner dvd-skivor"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:962
+#: ../src/plugins/growisofs/burn-growisofs.c:916
 msgid "Allow DAO use"
 msgstr "Tillåt användning av DAO"
 
@@ -3911,15 +3923,15 @@ msgstr "Filhämtare"
 msgid "Allows to burn files not stored locally"
 msgstr "Tillåter bränning av filer som inte lagras lokalt"
 
-#: ../src/plugins/transcode/burn-normalize.c:473
+#: ../src/plugins/transcode/burn-normalize.c:499
 msgid "Normalizing tracks"
 msgstr "Normaliserar spår"
 
-#: ../src/plugins/transcode/burn-normalize.c:564
+#: ../src/plugins/transcode/burn-normalize.c:590
 msgid "Normalize"
 msgstr "Normalisera"
 
-#: ../src/plugins/transcode/burn-normalize.c:565
+#: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr "Normalisering tillåter att man ställer in konsekventa ljudnivåer mellan spår"
 
@@ -4281,8 +4293,8 @@ msgid "Broken symbolic link"
 msgstr "Trasig symbolisk länk"
 
 #: ../src/brasero-file-filtered.c:189
-#: ../src/brasero-io.c:1080
-#: ../src/brasero-io.c:1959
+#: ../src/brasero-io.c:1085
+#: ../src/brasero-io.c:1964
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Rekursiv symbolisk länk"
@@ -4336,12 +4348,12 @@ msgstr "Filtreringsalternativ"
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" kan inte läsas"
 
-#: ../src/brasero-io.c:1313
+#: ../src/brasero-io.c:1318
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Filen verkar inte vara en spellista"
 
-#: ../src/brasero-io.c:2422
+#: ../src/brasero-io.c:2427
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "En katalog kunde inte skapas (%s)"
@@ -4548,6 +4560,8 @@ msgstr "Omslagsredigerare"
 #: ../src/brasero-multi-song-props.c:244
 #: ../src/brasero-multi-song-props.c:265
 #: ../src/brasero-multi-song-props.c:286
+#: ../src/brasero-rename.c:87
+#: ../src/brasero-rename.c:279
 msgid "<Keep current values>"
 msgstr "<Behåll aktuella värden>"
 
@@ -4563,11 +4577,6 @@ msgstr "Låttitlar"
 #: ../src/brasero-multi-song-props.c:225
 msgid "Additional song information"
 msgstr "Ytterligare låtinformation"
-
-#: ../src/brasero-rename.c:87
-#: ../src/brasero-rename.c:279
-msgid "<keep current values>"
-msgstr "<behåll aktuella värden>"
 
 #: ../src/brasero-rename.c:280
 msgid "Insert text"
@@ -4689,6 +4698,19 @@ msgstr "Kopiera cd- och dvd-skivor"
 msgid "Disc Copier"
 msgstr "Skivkopierare"
 
+#~ msgid ""
+#~ "The size of the project is too large for the disc.\n"
+#~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
+#~ "which cannot be properly recognised and therefore need overburn option.\n"
+#~ "NOTE: This option might cause failure."
+#~ msgstr ""
+#~ "Storleken för projektet är för stort för skivan.\n"
+#~ "Du kan använda detta alternativ om du använder en 90 eller 100 minuter "
+#~ "lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver "
+#~ "överbränningsalternativet.\n"
+#~ "OBSERVERA: Det här alternativet kan orsaka felaktigheter."
+#~ msgid "<keep current values>"
+#~ msgstr "<behåll aktuella värden>"
 #~ msgid "1 item"
 #~ msgstr "1 objekt"
 #~ msgid "Substitute"
