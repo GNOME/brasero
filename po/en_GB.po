@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-20 23:05+0000\n"
+"POT-Creation-Date: 2009-02-23 21:03+0000\n"
 "PO-Revision-Date: 2009-02-20 23:04+0000\n"
 "Last-Translator: David Lodge <dave@cirt.net>\n"
 "Language-Team: en_GB <en@li.org>\n"
@@ -53,12 +53,17 @@ msgstr "Brasero optical media library"
 msgid "Display options for Brasero-media library"
 msgstr "Display options for Brasero media library"
 
-#: ../libbrasero-media/brasero-units.c:86 ../src/brasero-utils.c:231
+#. Translators: %lli is a duration expressed in minutes
+#. * hence the "min" as unit.
+#: ../libbrasero-media/brasero-units.c:89
 #, c-format
 msgid "%lli min"
 msgstr "%lli min"
 
-#: ../libbrasero-media/brasero-units.c:88 ../src/brasero-utils.c:233
+#. Translators: the first %lli is the number of minutes
+#. * and the second one is the number of seconds.
+#. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:94
 #, c-format
 msgid "%lli:%02lli min"
 msgstr "%lli:%02lli min"
@@ -501,7 +506,7 @@ msgstr "\"%s\": %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
-#: ../src/brasero-src-image.c:229 ../src/brasero-src-image.c:677
+#: ../src/brasero-src-image.c:229 ../src/brasero-src-image.c:678
 msgid "Click here to select an _image"
 msgstr "Click here to select an _image"
 
@@ -516,17 +521,17 @@ msgstr "Select Image File"
 #: ../src/brasero-src-image.c:573 ../src/brasero-search-entry.c:610
 #: ../src/brasero-search-entry.c:650 ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:473 ../src/brasero-file-chooser.c:210
-#: ../src/brasero-project.c:1474
+#: ../src/brasero-project.c:1488
 msgid "All files"
 msgstr "All files"
 
-#. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-src-image.c:578 ../src/brasero-file-chooser.c:234
-#: ../src/brasero-project.c:1496
+#. Translators: this a disc image here
+#: ../src/brasero-src-image.c:579
+msgctxt "disc"
 msgid "Image files only"
 msgstr "Image files only"
 
-#: ../src/brasero-src-image.c:596 ../src/brasero-image-properties.c:200
+#: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Image type:"
 
@@ -630,15 +635,17 @@ msgstr "It is not possible to write with the current set of plugins."
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Would you like to burn beyond the disc's reported capacity?"
 
-#: ../src/brasero-burn-options.c:338
+#: ../src/brasero-burn-options.c:338 ../src/brasero-data-disc.c:602
 msgid ""
-"The size of the project is too large for the disc.\n"
-"You may want to use this option if you are using 90 or 100 min CD-R(W) which "
+"The size of the project is too large for the disc and you must remove files "
+"from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"The project is too large for the disc.\n"
-"You may want to use this option if you are using a 90 or 100 min CD-R(W) "
+"The project is too large for the disc and you must remove files from the "
+"project otherwise.\n"
+"You may want to use this option if you're using a 90 or 100 min CD-R(W) "
 "which cannot be properly recognised and therefore needs the overburn "
 "option.\n"
 "Note: This option might cause failure."
@@ -1079,7 +1086,7 @@ msgid "Edit the track information (start, end, author, ...)"
 msgstr "Edit the track information (start, end, author, etc.)"
 
 #: ../src/brasero-audio-disc.c:305 ../src/brasero-data-disc.c:122
-#: ../src/brasero-project.c:204
+#: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
 msgstr "Remove the selected files from the project"
 
@@ -1282,14 +1289,14 @@ msgstr "Select disc to copy"
 #: ../src/brasero-metadata.c:743 ../src/brasero-metadata.c:756
 #: ../src/brasero-metadata.c:769 ../src/brasero-metadata.c:1491
 #: ../src/brasero-metadata.c:1506 ../src/brasero-metadata.c:1515
-#: ../src/brasero-metadata.c:1528 ../src/plugins/transcode/burn-normalize.c:97
-#: ../src/plugins/transcode/burn-normalize.c:357
-#: ../src/plugins/transcode/burn-normalize.c:370
+#: ../src/brasero-metadata.c:1528 ../src/plugins/transcode/burn-normalize.c:99
 #: ../src/plugins/transcode/burn-normalize.c:382
-#: ../src/plugins/transcode/burn-normalize.c:394
+#: ../src/plugins/transcode/burn-normalize.c:395
 #: ../src/plugins/transcode/burn-normalize.c:407
-#: ../src/plugins/transcode/burn-normalize.c:572
-#: ../src/plugins/transcode/burn-normalize.c:580
+#: ../src/plugins/transcode/burn-normalize.c:420
+#: ../src/plugins/transcode/burn-normalize.c:433
+#: ../src/plugins/transcode/burn-normalize.c:598
+#: ../src/plugins/transcode/burn-normalize.c:606
 #: ../src/plugins/transcode/burn-transcode.c:281
 #: ../src/plugins/transcode/burn-transcode.c:293
 #: ../src/plugins/transcode/burn-transcode.c:383
@@ -1363,7 +1370,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "Error parsing playlist \"%s\"."
 
 #: ../src/brasero-playlist.c:810 ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:1802 ../src/brasero-sum-dialog.c:142
+#: ../src/brasero-project.c:1819 ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "An unknown error occurred"
 
@@ -1425,21 +1432,25 @@ msgstr "Options for plugin %s"
 msgid "Estimated drive speed:"
 msgstr "Estimated drive speed:"
 
-#: ../src/brasero-progress.c:186
+#. Translators: first %02i is hours, the second one is minutes and the
+#. * third one is seconds.
+#: ../src/brasero-progress.c:188
 #, c-format
 msgid "Total time: %02i:%02i:%02i"
 msgstr "Total time: %02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:197
+#: ../src/brasero-progress.c:199
 msgid "Average drive speed:"
 msgstr "Average drive speed:"
 
-#: ../src/brasero-progress.c:421
+#. Translators: first %02i is hours, the second one is minutes
+#. * and the third one is seconds.
+#: ../src/brasero-progress.c:425
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr "Estimated remaining time: %02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:463
+#: ../src/brasero-progress.c:467
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MB of %i MB"
@@ -1544,7 +1555,7 @@ msgstr "Artist:"
 msgid "Composer:"
 msgstr "Composer:"
 
-#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:576
+#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:581
 #: ../src/brasero-tool-dialog.c:256 ../src/brasero-multi-song-props.c:303
 msgid "Options"
 msgstr "Options"
@@ -1960,7 +1971,7 @@ msgstr "_Change Location"
 msgid "Location for Image File"
 msgstr "Location for Image File"
 
-#: ../src/brasero-burn-dialog.c:698 ../src/brasero-drive-properties.c:589
+#: ../src/brasero-burn-dialog.c:698 ../src/brasero-drive-properties.c:594
 msgid "Location for Temporary Files"
 msgstr "Location for Temporary Files"
 
@@ -2212,21 +2223,6 @@ msgstr "New folder"
 msgid "New folder %i"
 msgstr "New folder %i"
 
-#: ../src/brasero-data-disc.c:602
-msgid ""
-"The size of the project is too large for the disc and you must remove files "
-"from the project otherwise.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
-"cannot be properly recognised and therefore need overburn option.\n"
-"NOTE: This option might cause failure."
-msgstr ""
-"The project is too large for the disc and you must remove files from the "
-"project otherwise.\n"
-"You may want to use this option if you're using a 90 or 100 min CD-R(W) "
-"which cannot be properly recognised and therefore needs the overburn "
-"option.\n"
-"Note: This option might cause failure."
-
 #: ../src/brasero-data-disc.c:617
 msgid "Click here not to use overburning"
 msgstr "Click here not to use overburning"
@@ -2268,8 +2264,8 @@ msgstr ""
 msgid "_Add to Project"
 msgstr "_Add to Project"
 
-#: ../src/brasero-data-disc.c:767 ../src/brasero-project.c:208
-#: ../src/brasero-project.c:459
+#: ../src/brasero-data-disc.c:767 ../src/brasero-project.c:210
+#: ../src/brasero-project.c:461
 msgid "_Burn..."
 msgstr "_Burn..."
 
@@ -2557,48 +2553,53 @@ msgstr ""
 "The filesystem on this volume does not support large files (over 2 GiB).\n"
 "This can be a problem when writing DVDs or large images."
 
-#: ../src/brasero-drive-properties.c:430
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:431
 #, c-format
 msgid "%.1f x (DVD)"
 msgstr "%.1f × (DVD)"
 
-#: ../src/brasero-drive-properties.c:433
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:435
 #, c-format
 msgid "%.1f x (CD)"
 msgstr "%.1f × (CD)"
 
-#: ../src/brasero-drive-properties.c:436
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:439
 #, c-format
 msgid "%.1f x (BD)"
 msgstr "%.1f × (BD)"
 
-#: ../src/brasero-drive-properties.c:439
+#. Translators %s.1f is the speed used to burn for every medium
+#. * type
+#: ../src/brasero-drive-properties.c:444
 #, c-format
 msgid "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 msgstr "%.1f × (BD) %.1f × (DVD) %.1f × (CD)"
 
-#: ../src/brasero-drive-properties.c:467
+#: ../src/brasero-drive-properties.c:472
 #, c-format
 msgid "Properties of %s"
 msgstr "Properties of %s"
 
-#: ../src/brasero-drive-properties.c:483
+#: ../src/brasero-drive-properties.c:488
 msgid "Impossible to retrieve speeds"
 msgstr "Impossible to retrieve speeds"
 
-#: ../src/brasero-drive-properties.c:492
+#: ../src/brasero-drive-properties.c:497
 msgid "Max speed"
 msgstr "Maximum speed"
 
-#: ../src/brasero-drive-properties.c:555
+#: ../src/brasero-drive-properties.c:560
 msgid "Burning speed"
 msgstr "Burning speed"
 
-#: ../src/brasero-drive-properties.c:568
+#: ../src/brasero-drive-properties.c:573
 msgid "_Simulate before burning"
 msgstr "_Simulate before burning"
 
-#: ../src/brasero-drive-properties.c:569
+#: ../src/brasero-drive-properties.c:574
 msgid ""
 "Brasero will simulate the burning and if it is successful, go on with actual "
 "burning after 10 seconds"
@@ -2606,41 +2607,47 @@ msgstr ""
 "Brasero will simulate the burning and, if it is successful, go on with "
 "actual burning after 10 seconds"
 
-#: ../src/brasero-drive-properties.c:570
+#: ../src/brasero-drive-properties.c:575
 msgid "Use burn_proof (decrease the risk of failures)"
 msgstr "Use burn_proof (decrease the risk of failures)"
 
-#: ../src/brasero-drive-properties.c:571
+#: ../src/brasero-drive-properties.c:576
 msgid "_Eject after burning"
 msgstr "_Eject after burning"
 
-#: ../src/brasero-drive-properties.c:572
+#: ../src/brasero-drive-properties.c:577
 msgid "Burn the image directly _without saving it to disc"
 msgstr "Burn the image directly _without saving it to disc"
 
-#: ../src/brasero-drive-properties.c:573
+#: ../src/brasero-drive-properties.c:578
 msgid "Leave the disc _open to add other files later"
 msgstr "Leave the disc _open to add other files later"
 
-#: ../src/brasero-drive-properties.c:574
+#: ../src/brasero-drive-properties.c:579
 msgid "Allow to add more data to the disc later"
 msgstr "Allow to add more data to the disc later"
 
-#: ../src/brasero-drive-properties.c:595
+#: ../src/brasero-drive-properties.c:600
 msgid "_Temporary directory free space:"
 msgstr "_Temporary directory free space:"
 
-#: ../src/brasero-drive-properties.c:604
+#: ../src/brasero-drive-properties.c:609
 msgid "Temporary files"
 msgstr "Temporary files"
 
-#: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1479
+#: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1493
 msgid "Audio files only"
 msgstr "Audio files only"
 
-#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1488
+#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1502
 msgid "Movies only"
 msgstr "Movies only"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1510
+msgctxt "picture"
+msgid "Image files only"
+msgstr "Image files only"
 
 #. pack everything
 #: ../src/brasero-image-option-dialog.c:91
@@ -2757,92 +2764,92 @@ msgstr ""
 "<span weight=\"bold\">Loading information</span>\n"
 "about <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Save current project"
 msgstr "Save current project"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "Save _As..."
 msgstr "Save _As..."
 
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Save current project to a different location"
 msgstr "Save current project to a different location"
 
-#: ../src/brasero-project.c:201
+#: ../src/brasero-project.c:203
 msgid "_Add Files"
 msgstr "_Add Files"
 
-#: ../src/brasero-project.c:202
+#: ../src/brasero-project.c:204
 msgid "Add files to the project"
 msgstr "Add files to the project"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "_Remove Files"
 msgstr "_Remove Files"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:206 ../src/brasero-project.c:1559
+#: ../src/brasero-project.c:208 ../src/brasero-project.c:1573
 msgid "E_mpty Project"
 msgstr "E_mpty Project"
 
-#: ../src/brasero-project.c:207
+#: ../src/brasero-project.c:209
 msgid "Remove all files from the project"
 msgstr "Remove all files from the project"
 
-#: ../src/brasero-project.c:209
+#: ../src/brasero-project.c:211
 msgid "Burn the disc"
 msgstr "Burn the disc"
 
 #. Name widget
-#: ../src/brasero-project.c:439
+#: ../src/brasero-project.c:441
 msgid "_Name:"
 msgstr "_Name:"
 
-#: ../src/brasero-project.c:471
+#: ../src/brasero-project.c:473
 msgid "Start to burn the contents of the selection"
 msgstr "Start to burn the contents of the selection"
 
 #. Translators: first %s is the size of the project and the
 #. * second %s is the remaining free space on the disc that is
 #. * used for multisession
-#: ../src/brasero-project.c:613
+#: ../src/brasero-project.c:629
 #, c-format
 msgid "Project estimated size: %s/%s"
 msgstr "Estimated project size: %s/%s"
 
-#: ../src/brasero-project.c:619 ../src/brasero-project.c:749
+#: ../src/brasero-project.c:635 ../src/brasero-project.c:763
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Estimated project size: %s"
 
-#: ../src/brasero-project.c:790
+#: ../src/brasero-project.c:804
 msgid "Please wait until the estimation of the project size is completed."
 msgstr "Please wait until the project size estimation is completed."
 
-#: ../src/brasero-project.c:795
+#: ../src/brasero-project.c:809
 msgid ""
 "All files from the project need to be analysed to complete this operation."
 msgstr ""
 "All files from the project need to be analysed to complete this operation."
 
-#: ../src/brasero-project.c:797
+#: ../src/brasero-project.c:811
 msgid "Project Size Estimation"
 msgstr "Project Size Estimation"
 
-#: ../src/brasero-project.c:890
+#: ../src/brasero-project.c:904
 msgid "Please add songs to the project."
 msgstr "Please add songs to the project."
 
-#: ../src/brasero-project.c:891 ../src/brasero-project.c:900 ../src/main.c:255
+#: ../src/brasero-project.c:905 ../src/brasero-project.c:914 ../src/main.c:255
 msgid "The project is empty"
 msgstr "The project is empty"
 
-#: ../src/brasero-project.c:899 ../src/main.c:254
+#: ../src/brasero-project.c:913 ../src/main.c:254
 msgid "Please add files to the project."
 msgstr "Please add files to the project."
 
-#: ../src/brasero-project.c:1140
+#: ../src/brasero-project.c:1154
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
@@ -2850,20 +2857,20 @@ msgstr ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
 
-#: ../src/brasero-project.c:1145
+#: ../src/brasero-project.c:1159
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "If you choose to create a new project, all changes made will be lost."
 
-#: ../src/brasero-project.c:1147
+#: ../src/brasero-project.c:1161
 msgid "_Discard Changes"
 msgstr "_Discard Changes"
 
-#: ../src/brasero-project.c:1155
+#: ../src/brasero-project.c:1169
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr ""
 "Do you really want to create a new project and discard the current one?"
 
-#: ../src/brasero-project.c:1160
+#: ../src/brasero-project.c:1174
 msgid ""
 "If you choose to create a new project, all files already added will be "
 "discarded. Note that files will not be deleted from their own location, just "
@@ -2873,19 +2880,19 @@ msgstr ""
 "discarded. Note that files will not be deleted from their own location, just "
 "no longer listed here."
 
-#: ../src/brasero-project.c:1165
+#: ../src/brasero-project.c:1179
 msgid "_Discard Project"
 msgstr "_Discard Project"
 
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1451
 msgid "Select Files"
 msgstr "Select Files"
 
-#: ../src/brasero-project.c:1548
+#: ../src/brasero-project.c:1562
 msgid "Do you really want to empty the current project?"
 msgstr "Do you really want to empty the current project?"
 
-#: ../src/brasero-project.c:1553
+#: ../src/brasero-project.c:1567
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -2895,74 +2902,77 @@ msgstr ""
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
 
-#: ../src/brasero-project.c:1609
+#: ../src/brasero-project.c:1623
 msgid "_Save"
 msgstr "_Save"
 
-#: ../src/brasero-project.c:1620
+#: ../src/brasero-project.c:1634
 msgid "_Add"
 msgstr "_Add"
 
-#: ../src/brasero-project.c:1625 ../src/brasero-split-dialog.c:1246
+#: ../src/brasero-project.c:1639 ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "_Remove"
 
-#: ../src/brasero-project.c:1685
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1700
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero — %s (Data Disc)"
 
-#: ../src/brasero-project.c:1687
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1703
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero — %s (Audio Disc)"
 
-#: ../src/brasero-project.c:1689
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1706
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero — %s (Video Disc)"
 
-#: ../src/brasero-project.c:1801
+#: ../src/brasero-project.c:1818
 msgid "Your project has not been saved."
 msgstr "Your project has not been saved."
 
-#: ../src/brasero-project.c:1815
+#: ../src/brasero-project.c:1832
 msgid "Save the changes of current project before closing?"
 msgstr "Save the changes of current project before closing?"
 
-#: ../src/brasero-project.c:1820
+#: ../src/brasero-project.c:1837
 msgid "If you don't save, changes will be permanently lost."
 msgstr "If you don't save, changes will be permanently lost."
 
-#: ../src/brasero-project.c:1824 ../src/brasero-project.c:1830
+#: ../src/brasero-project.c:1841 ../src/brasero-project.c:1847
 msgid "Cl_ose Without Saving"
 msgstr "Cl_ose Without Saving"
 
-#: ../src/brasero-project.c:2449
+#: ../src/brasero-project.c:2466
 msgid "Save Current Project"
 msgstr "Save Current Project"
 
-#: ../src/brasero-project.c:2467
+#: ../src/brasero-project.c:2484
 msgid "Save project as Brasero audio project"
 msgstr "Save project as a Brasero audio project"
 
-#: ../src/brasero-project.c:2468
+#: ../src/brasero-project.c:2485
 msgid "Save project as a plain text list"
 msgstr "Save project as a plain text list"
 
-#: ../src/brasero-project.c:2472
+#: ../src/brasero-project.c:2489
 msgid "Save project as a PLS playlist"
 msgstr "Save project as a PLS playlist"
 
-#: ../src/brasero-project.c:2473
+#: ../src/brasero-project.c:2490
 msgid "Save project as an M3U playlist"
 msgstr "Save project as an M3U playlist"
 
-#: ../src/brasero-project.c:2474
+#: ../src/brasero-project.c:2491
 msgid "Save project as a XSPF playlist"
 msgstr "Save project as an XSPF playlist"
 
-#: ../src/brasero-project.c:2475
+#: ../src/brasero-project.c:2492
 msgid "Save project as an IRIVER playlist"
 msgstr "Save project as an iriver playlist"
 
@@ -3858,7 +3868,7 @@ msgstr "Copying Video DVD"
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr "dvdcss allows CSS-encrypted video DVDs to be read"
 
-#: ../src/plugins/growisofs/burn-dvd-rw-format.c:176
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:177
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "dvd+rw-format erases and formats DVD+/-R(W)"
 
@@ -3976,15 +3986,15 @@ msgstr "File Downloader"
 msgid "Allows to burn files not stored locally"
 msgstr "Allows files not stored locally to be burnt"
 
-#: ../src/plugins/transcode/burn-normalize.c:473
+#: ../src/plugins/transcode/burn-normalize.c:499
 msgid "Normalizing tracks"
 msgstr "Normalising tracks"
 
-#: ../src/plugins/transcode/burn-normalize.c:564
+#: ../src/plugins/transcode/burn-normalize.c:590
 msgid "Normalize"
 msgstr "Normalise"
 
-#: ../src/plugins/transcode/burn-normalize.c:565
+#: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr "Normalise allows you to set consistent sound levels between tracks"
 
@@ -4343,8 +4353,8 @@ msgstr "Unreadable file"
 msgid "Broken symbolic link"
 msgstr "Broken symbolic link"
 
-#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1080
-#: ../src/brasero-io.c:1959
+#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1085
+#: ../src/brasero-io.c:1964
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Recursive symbolic link"
@@ -4400,12 +4410,12 @@ msgstr "Filtering options"
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" cannot be read"
 
-#: ../src/brasero-io.c:1313
+#: ../src/brasero-io.c:1318
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "The file does not appear to be a playlist"
 
-#: ../src/brasero-io.c:2422
+#: ../src/brasero-io.c:2427
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "A directory could not be created (%s)"
@@ -4607,6 +4617,7 @@ msgstr "Cover Editor"
 #: ../src/brasero-multi-song-props.c:135 ../src/brasero-multi-song-props.c:156
 #: ../src/brasero-multi-song-props.c:169 ../src/brasero-multi-song-props.c:244
 #: ../src/brasero-multi-song-props.c:265 ../src/brasero-multi-song-props.c:286
+#: ../src/brasero-rename.c:87 ../src/brasero-rename.c:279
 msgid "<Keep current values>"
 msgstr "<Keep current values>"
 
@@ -4621,10 +4632,6 @@ msgstr "Song titles"
 #: ../src/brasero-multi-song-props.c:225
 msgid "Additional song information"
 msgstr "Additional song information"
-
-#: ../src/brasero-rename.c:87 ../src/brasero-rename.c:279
-msgid "<keep current values>"
-msgstr "<keep current values>"
 
 #: ../src/brasero-rename.c:280
 msgid "Insert text"
@@ -4748,6 +4755,21 @@ msgstr "Copy CDs and DVDs"
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Disc Copier"
 msgstr "Disc Copier"
+
+#~ msgid ""
+#~ "The size of the project is too large for the disc.\n"
+#~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
+#~ "which cannot be properly recognised and therefore need overburn option.\n"
+#~ "NOTE: This option might cause failure."
+#~ msgstr ""
+#~ "The project is too large for the disc.\n"
+#~ "You may want to use this option if you are using a 90 or 100 min CD-R(W) "
+#~ "which cannot be properly recognised and therefore needs the overburn "
+#~ "option.\n"
+#~ "Note: This option might cause failure."
+
+#~ msgid "<keep current values>"
+#~ msgstr "<keep current values>"
 
 #~ msgid "Disc Burning Application"
 #~ msgstr "Disc Burning Application"
