@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2009-02-19 18:33+0000\n"
-"PO-Revision-Date: 2009-02-19 21:33+0200\n"
+"POT-Creation-Date: 2009-02-22 18:48+0000\n"
+"PO-Revision-Date: 2009-02-24 12:54+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -57,14 +57,17 @@ msgstr "Bibliotecă mediu optic Brasero"
 msgid "Display options for Brasero-media library"
 msgstr "Afișează opțiuni pentru biblioteca media Brasero"
 
-#: ../libbrasero-media/brasero-units.c:86
-#: ../src/brasero-utils.c:231
+#. Translators: %lli is a duration expressed in minutes
+#. * hence the "min" as unit.
+#: ../libbrasero-media/brasero-units.c:89
 #, c-format
 msgid "%lli min"
 msgstr "%lli min"
 
-#: ../libbrasero-media/brasero-units.c:88
-#: ../src/brasero-utils.c:233
+#. Translators: the first %lli is the number of minutes
+#. * and the second one is the number of seconds.
+#. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:94
 #, c-format
 msgid "%lli:%02lli min"
 msgstr "%lli:%02lli min"
@@ -506,7 +509,7 @@ msgstr "„%s”: %s"
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
 #: ../src/brasero-src-image.c:229
-#: ../src/brasero-src-image.c:677
+#: ../src/brasero-src-image.c:678
 msgid "Click here to select an _image"
 msgstr "Clic aici pentru a alege o _imagine"
 
@@ -525,18 +528,18 @@ msgstr "Alegere fișier imagine"
 #: ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:473
 #: ../src/brasero-file-chooser.c:210
-#: ../src/brasero-project.c:1474
+#: ../src/brasero-project.c:1488
 msgid "All files"
 msgstr "Toate fișierele"
 
-#. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-src-image.c:578
-#: ../src/brasero-file-chooser.c:234
-#: ../src/brasero-project.c:1496
+#. Translators: this a disc image here
+#: ../src/brasero-src-image.c:579
+#| msgid "Image files only"
+msgctxt "disc"
 msgid "Image files only"
-msgstr "Doar fișiere de tip imagine"
+msgstr "Doar fișiere imagine disc"
 
-#: ../src/brasero-src-image.c:596
+#: ../src/brasero-src-image.c:597
 #: ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Tip imagine:"
@@ -638,12 +641,13 @@ msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Doriți să scrieți peste capacitatea raportată a discului?"
 
 #: ../src/brasero-burn-options.c:338
+#: ../src/brasero-data-disc.c:602
 msgid ""
-"The size of the project is too large for the disc.\n"
-"You may want to use this option if you are using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
+"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Dimensiunea proiectului este prea mare față de capacitatea discului.\n"
+"Dimensiunea proiectului este prea mare față de capacitatea discului și altfel ar trebui să ștergeți niște fișiere.\n"
 "Puteți folosi această opțiune în cazul în care utilizați discuri CD-R(W) de 90 sau 100 de minute ce nu pot fi recunoscute ca atare și în consecință necesită opțiunea de suprascriere.\n"
 "NOTĂ: Această opțiune s-ar putea să conducă la eșecul scrierii pe disc."
 
@@ -1038,7 +1042,7 @@ msgstr "Editați informațiile pistelor (început, sfârșit, autor, ...)"
 
 #: ../src/brasero-audio-disc.c:305
 #: ../src/brasero-data-disc.c:122
-#: ../src/brasero-project.c:204
+#: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
 msgstr "Elimină fișierele selectate din proiect"
 
@@ -1255,14 +1259,14 @@ msgstr "Alegeți disc pentru copiere"
 #: ../src/brasero-metadata.c:1506
 #: ../src/brasero-metadata.c:1515
 #: ../src/brasero-metadata.c:1528
-#: ../src/plugins/transcode/burn-normalize.c:97
-#: ../src/plugins/transcode/burn-normalize.c:357
-#: ../src/plugins/transcode/burn-normalize.c:370
+#: ../src/plugins/transcode/burn-normalize.c:99
 #: ../src/plugins/transcode/burn-normalize.c:382
-#: ../src/plugins/transcode/burn-normalize.c:394
+#: ../src/plugins/transcode/burn-normalize.c:395
 #: ../src/plugins/transcode/burn-normalize.c:407
-#: ../src/plugins/transcode/burn-normalize.c:572
-#: ../src/plugins/transcode/burn-normalize.c:580
+#: ../src/plugins/transcode/burn-normalize.c:420
+#: ../src/plugins/transcode/burn-normalize.c:433
+#: ../src/plugins/transcode/burn-normalize.c:598
+#: ../src/plugins/transcode/burn-normalize.c:606
 #: ../src/plugins/transcode/burn-transcode.c:281
 #: ../src/plugins/transcode/burn-transcode.c:293
 #: ../src/plugins/transcode/burn-transcode.c:383
@@ -1337,7 +1341,7 @@ msgstr "Eroare la analizarea listei „%s”."
 
 #: ../src/brasero-playlist.c:810
 #: ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:1802
+#: ../src/brasero-project.c:1819
 #: ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "S-a produs o eroare necunoscută"
@@ -1402,21 +1406,25 @@ msgstr "Opțiuni pentru modulul %s"
 msgid "Estimated drive speed:"
 msgstr "Viteza estimată a unității:"
 
-#: ../src/brasero-progress.c:186
+#. Translators: first %02i is hours, the second one is minutes and the
+#. * third one is seconds.
+#: ../src/brasero-progress.c:188
 #, c-format
 msgid "Total time: %02i:%02i:%02i"
 msgstr "Timp total: %02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:197
+#: ../src/brasero-progress.c:199
 msgid "Average drive speed:"
 msgstr "Viteză medie unităte:"
 
-#: ../src/brasero-progress.c:421
+#. Translators: first %02i is hours, the second one is minutes
+#. * and the third one is seconds.
+#: ../src/brasero-progress.c:425
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr "Timp rămas estimat: %02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:463
+#: ../src/brasero-progress.c:467
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB din %i MiB"
@@ -1526,7 +1534,7 @@ msgid "Composer:"
 msgstr "Compozitor:"
 
 #: ../src/brasero-song-properties.c:220
-#: ../src/brasero-drive-properties.c:576
+#: ../src/brasero-drive-properties.c:581
 #: ../src/brasero-tool-dialog.c:256
 #: ../src/brasero-multi-song-props.c:303
 msgid "Options"
@@ -1952,7 +1960,7 @@ msgid "Location for Image File"
 msgstr "Locația pentru fișierul imagine"
 
 #: ../src/brasero-burn-dialog.c:698
-#: ../src/brasero-drive-properties.c:589
+#: ../src/brasero-drive-properties.c:594
 msgid "Location for Temporary Files"
 msgstr "Locația pentru fișierele temporare"
 
@@ -2207,16 +2215,6 @@ msgstr "Dosar nou"
 msgid "New folder %i"
 msgstr "Dosar nou %i"
 
-#: ../src/brasero-data-disc.c:602
-msgid ""
-"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
-"NOTE: This option might cause failure."
-msgstr ""
-"Dimensiunea proiectului este prea mare față de capacitatea discului și altfel ar trebui să ștergeți niște fișiere.\n"
-"Puteți folosi această opțiune în cazul în care utilizați discuri CD-R(W) de 90 sau 100 de minute ce nu pot fi recunoscute ca atare și în consecință necesită opțiunea de suprascriere.\n"
-"NOTĂ: Această opțiune s-ar putea să conducă la eșecul scrierii pe disc."
-
 #: ../src/brasero-data-disc.c:617
 msgid "Click here not to use overburning"
 msgstr "Clic aici pentru a nu folosi suprascrierea"
@@ -2256,8 +2254,8 @@ msgid "_Add to Project"
 msgstr "_Adaugă la proiect"
 
 #: ../src/brasero-data-disc.c:767
-#: ../src/brasero-project.c:208
-#: ../src/brasero-project.c:459
+#: ../src/brasero-project.c:210
+#: ../src/brasero-project.c:461
 msgid "_Burn..."
 msgstr "S_crie..."
 
@@ -2528,88 +2526,101 @@ msgstr ""
 "Sistemul de fișiere de pe acest volum nu suportă fișiere mari (peste 2 GO).\n"
 "Aceasta poate fi o problemă atunci când se scriu DVD-uri sau imagini mari."
 
-#: ../src/brasero-drive-properties.c:430
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:431
 #, c-format
 msgid "%.1f x (DVD)"
 msgstr "%.1f x (DVD)"
 
-#: ../src/brasero-drive-properties.c:433
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:435
 #, c-format
 msgid "%.1f x (CD)"
 msgstr "%.1f x (CD)"
 
-#: ../src/brasero-drive-properties.c:436
+#. Translators %s.1f is the speed used to burn
+#: ../src/brasero-drive-properties.c:439
 #, c-format
 msgid "%.1f x (BD)"
 msgstr "%.1f x (BD)"
 
-#: ../src/brasero-drive-properties.c:439
+#. Translators %s.1f is the speed used to burn for every medium
+#. * type
+#: ../src/brasero-drive-properties.c:444
 #, c-format
 msgid "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 msgstr "%.1f x (BD)  %.1f x (DVD) %.1f x (CD)"
 
-#: ../src/brasero-drive-properties.c:467
+#: ../src/brasero-drive-properties.c:472
 #, c-format
 msgid "Properties of %s"
 msgstr "Proprietăți ale %s"
 
-#: ../src/brasero-drive-properties.c:483
+#: ../src/brasero-drive-properties.c:488
 msgid "Impossible to retrieve speeds"
 msgstr "Nu se pot determina vitezele de scriere"
 
-#: ../src/brasero-drive-properties.c:492
+#: ../src/brasero-drive-properties.c:497
 msgid "Max speed"
 msgstr "Viteza maximă"
 
-#: ../src/brasero-drive-properties.c:555
+#: ../src/brasero-drive-properties.c:560
 msgid "Burning speed"
 msgstr "Viteză de scriere"
 
-#: ../src/brasero-drive-properties.c:568
+#: ../src/brasero-drive-properties.c:573
 msgid "_Simulate before burning"
 msgstr "_Simulează înainte de a scrie"
 
-#: ../src/brasero-drive-properties.c:569
+#: ../src/brasero-drive-properties.c:574
 msgid "Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"
 msgstr "Brasero va simula scrierea și, dacă totul merge bine, după 10 secunde va continua cu scrierea efectivă."
 
-#: ../src/brasero-drive-properties.c:570
+#: ../src/brasero-drive-properties.c:575
 msgid "Use burn_proof (decrease the risk of failures)"
 msgstr "Utilizează „burn_proof” (scade riscul unui eșec)"
 
-#: ../src/brasero-drive-properties.c:571
+#: ../src/brasero-drive-properties.c:576
 msgid "_Eject after burning"
 msgstr "_Ejectează discul după scriere"
 
-#: ../src/brasero-drive-properties.c:572
+#: ../src/brasero-drive-properties.c:577
 msgid "Burn the image directly _without saving it to disc"
 msgstr "_Scrie direct imaginea, fără a o salva pe disc"
 
-#: ../src/brasero-drive-properties.c:573
+#: ../src/brasero-drive-properties.c:578
 msgid "Leave the disc _open to add other files later"
 msgstr "Lasă discul _deschis, pentru a putea adăuga mai târziu și alte fișiere"
 
-#: ../src/brasero-drive-properties.c:574
+#: ../src/brasero-drive-properties.c:579
 msgid "Allow to add more data to the disc later"
 msgstr "Permite adăugarea mai multor date pe disc mai târziu"
 
-#: ../src/brasero-drive-properties.c:595
+#: ../src/brasero-drive-properties.c:600
 msgid "_Temporary directory free space:"
 msgstr "Spațiu liber în directorul _temporar:"
 
-#: ../src/brasero-drive-properties.c:604
+#: ../src/brasero-drive-properties.c:609
 msgid "Temporary files"
 msgstr "Fișiere temporare"
 
 #: ../src/brasero-file-chooser.c:217
-#: ../src/brasero-project.c:1479
+#: ../src/brasero-project.c:1493
 msgid "Audio files only"
 msgstr "Doar fișiere audio"
 
 #: ../src/brasero-file-chooser.c:225
-#: ../src/brasero-project.c:1488
+#: ../src/brasero-project.c:1502
 msgid "Movies only"
 msgstr "Doar fișiere video"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-file-chooser.c:235
+#: ../src/brasero-project.c:1510
+#| msgid "Image files only"
+msgctxt "picture"
+msgid "Image files only"
+msgstr "Doar fișiere grafice"
 
 #. pack everything
 #: ../src/brasero-image-option-dialog.c:91
@@ -2722,200 +2733,203 @@ msgstr ""
 "<span weight=\"bold\">Se încarcă informațiile</span>\n"
 "despre <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Save current project"
 msgstr "Salvare proiect curent"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "Save _As..."
 msgstr "Salvează c_a..."
 
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Save current project to a different location"
 msgstr "Salvează proiectul curent într-o locație diferită"
 
-#: ../src/brasero-project.c:201
+#: ../src/brasero-project.c:203
 msgid "_Add Files"
 msgstr "_Adaugă fișiere"
 
-#: ../src/brasero-project.c:202
+#: ../src/brasero-project.c:204
 msgid "Add files to the project"
 msgstr "Adaugă fișiere la proiect"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "_Remove Files"
 msgstr "_Elimină fișiere"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:206
-#: ../src/brasero-project.c:1559
+#: ../src/brasero-project.c:208
+#: ../src/brasero-project.c:1573
 msgid "E_mpty Project"
 msgstr "_Golește proiectul"
 
-#: ../src/brasero-project.c:207
+#: ../src/brasero-project.c:209
 msgid "Remove all files from the project"
 msgstr "Elimină toate fișierele din proiect"
 
-#: ../src/brasero-project.c:209
+#: ../src/brasero-project.c:211
 msgid "Burn the disc"
 msgstr "Scrie discul"
 
 #. Name widget
-#: ../src/brasero-project.c:439
+#: ../src/brasero-project.c:441
 msgid "_Name:"
 msgstr "_Nume:"
 
-#: ../src/brasero-project.c:471
+#: ../src/brasero-project.c:473
 msgid "Start to burn the contents of the selection"
 msgstr "Pornește scrierea conținutului selecției"
 
 #. Translators: first %s is the size of the project and the
 #. * second %s is the remaining free space on the disc that is
 #. * used for multisession
-#: ../src/brasero-project.c:613
+#: ../src/brasero-project.c:629
 #, c-format
 msgid "Project estimated size: %s/%s"
 msgstr "Mărime estimată proiect: %s/%s"
 
-#: ../src/brasero-project.c:619
-#: ../src/brasero-project.c:749
+#: ../src/brasero-project.c:635
+#: ../src/brasero-project.c:763
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Mărime estimată proiect: %s"
 
-#: ../src/brasero-project.c:790
+#: ../src/brasero-project.c:804
 msgid "Please wait until the estimation of the project size is completed."
 msgstr "Așteptați ca estimarea mărimii proiectului să fie finalizată."
 
-#: ../src/brasero-project.c:795
+#: ../src/brasero-project.c:809
 msgid "All files from the project need to be analysed to complete this operation."
 msgstr "Pentru a finaliza această operație este necesară analizarea tuturor fișierelor din proiect."
 
-#: ../src/brasero-project.c:797
+#: ../src/brasero-project.c:811
 msgid "Project Size Estimation"
 msgstr "Estimare mărime proiect"
 
-#: ../src/brasero-project.c:890
+#: ../src/brasero-project.c:904
 msgid "Please add songs to the project."
 msgstr "Adăugați piese la proiect."
 
-#: ../src/brasero-project.c:891
-#: ../src/brasero-project.c:900
+#: ../src/brasero-project.c:905
+#: ../src/brasero-project.c:914
 #: ../src/main.c:255
 msgid "The project is empty"
 msgstr "Proiectul este gol"
 
-#: ../src/brasero-project.c:899
+#: ../src/brasero-project.c:913
 #: ../src/main.c:254
 msgid "Please add files to the project."
 msgstr "Adăugați fișiere la proiect."
 
-#: ../src/brasero-project.c:1140
+#: ../src/brasero-project.c:1154
 msgid "Do you really want to create a new project and discard the changes to current one?"
 msgstr "Creați un nou proiect anulați modificările din sesiunea curentă?"
 
-#: ../src/brasero-project.c:1145
+#: ../src/brasero-project.c:1159
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "Dacă alegeți să creați un nou proiect, toate modificările vor fi pierdute."
 
-#: ../src/brasero-project.c:1147
+#: ../src/brasero-project.c:1161
 msgid "_Discard Changes"
 msgstr "_Anulează schimbările"
 
-#: ../src/brasero-project.c:1155
+#: ../src/brasero-project.c:1169
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Doriți să creați un nou proiect și să anulați proiectul curent?"
 
-#: ../src/brasero-project.c:1160
+#: ../src/brasero-project.c:1174
 msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Dacă alegeți să creați un nou proiect, toate fișierele deja adăugate vor fi eliminate. Aceste fișiere nu vor fi șterse de pe disc, vor fi doar eliminate din listă."
 
-#: ../src/brasero-project.c:1165
+#: ../src/brasero-project.c:1179
 msgid "_Discard Project"
 msgstr "_Anulează proiectul"
 
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1451
 msgid "Select Files"
 msgstr "Selectare fișiere"
 
-#: ../src/brasero-project.c:1548
+#: ../src/brasero-project.c:1562
 msgid "Do you really want to empty the current project?"
 msgstr "Sigur doriți să goliți proiectul curent?"
 
-#: ../src/brasero-project.c:1553
+#: ../src/brasero-project.c:1567
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Golirea unui proiect va elimina toate fișierele deja adăugate. Fișierele nu vor fi șterse de pe disc, vor fi doar eliminate din listă."
 
-#: ../src/brasero-project.c:1609
+#: ../src/brasero-project.c:1623
 msgid "_Save"
 msgstr "_Salvează"
 
-#: ../src/brasero-project.c:1620
+#: ../src/brasero-project.c:1634
 msgid "_Add"
 msgstr "_Adaugă"
 
-#: ../src/brasero-project.c:1625
+#: ../src/brasero-project.c:1639
 #: ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "_Elimină"
 
-#: ../src/brasero-project.c:1685
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1700
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero - %s (Disc cu date)"
 
-#: ../src/brasero-project.c:1687
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1703
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero - %s ( Disc audio)"
 
-#: ../src/brasero-project.c:1689
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:1706
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (Disc video)"
 
-#: ../src/brasero-project.c:1801
+#: ../src/brasero-project.c:1818
 msgid "Your project has not been saved."
 msgstr "Proiectul nu v-a fost salvat."
 
-#: ../src/brasero-project.c:1815
+#: ../src/brasero-project.c:1832
 msgid "Save the changes of current project before closing?"
 msgstr "Salvați schimbările proiectului curent înainte de a-l închide?"
 
-#: ../src/brasero-project.c:1820
+#: ../src/brasero-project.c:1837
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Dacă nu le salvați, modificările vor fi pierdute definitiv."
 
-#: ../src/brasero-project.c:1824
-#: ../src/brasero-project.c:1830
+#: ../src/brasero-project.c:1841
+#: ../src/brasero-project.c:1847
 msgid "Cl_ose Without Saving"
 msgstr "Închide _fără a salva"
 
-#: ../src/brasero-project.c:2449
+#: ../src/brasero-project.c:2466
 msgid "Save Current Project"
 msgstr "Salvează proiectul curent"
 
-#: ../src/brasero-project.c:2467
+#: ../src/brasero-project.c:2484
 msgid "Save project as Brasero audio project"
 msgstr "Salvează proiectul ca proiect audio Brasero"
 
-#: ../src/brasero-project.c:2468
+#: ../src/brasero-project.c:2485
 msgid "Save project as a plain text list"
 msgstr "Salvează proiectul ca listă text simplă"
 
-#: ../src/brasero-project.c:2472
+#: ../src/brasero-project.c:2489
 msgid "Save project as a PLS playlist"
 msgstr "Salvează proiectul ca listă de redare PLS"
 
-#: ../src/brasero-project.c:2473
+#: ../src/brasero-project.c:2490
 msgid "Save project as an M3U playlist"
 msgstr "Salvează proiectul ca listă de redare M3U"
 
-#: ../src/brasero-project.c:2474
+#: ../src/brasero-project.c:2491
 msgid "Save project as a XSPF playlist"
 msgstr "Salvează proiectul ca listă de redare XSPF"
 
-#: ../src/brasero-project.c:2475
+#: ../src/brasero-project.c:2492
 msgid "Save project as an IRIVER playlist"
 msgstr "Salvează proiectul ca listă de redare IRIVER"
 
@@ -2976,9 +2990,6 @@ msgstr "_Copiere disc..."
 
 #: ../src/brasero-project-manager.c:115
 #: ../src/brasero-project-type-chooser.c:88
-#| msgid ""
-#| "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on "
-#| "another CD/DVD"
 msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"
 msgstr "Creați o copie identică a unui CD audio sau un CD/DVD de date pe hard-disk sau pe un alt CD/DVD"
 
@@ -3462,7 +3473,7 @@ msgstr "S-a produs o eroare internă (%s)"
 
 #: ../src/burn-mkisofs-base.c:154
 #: ../src/burn-mkisofs-base.c:586
-#: ../src/plugins/growisofs/burn-growisofs.c:514
+#: ../src/plugins/growisofs/burn-growisofs.c:520
 #: ../src/plugins/libburnia/burn-libisofs.c:669
 #: ../src/plugins/checksum/burn-checksum-image.c:274
 #, c-format
@@ -3617,7 +3628,7 @@ msgstr "Se analizează pista %02i"
 
 #. Translators: %s is a filename
 #: ../src/plugins/cdrdao/burn-cdrdao.c:199
-#: ../src/plugins/growisofs/burn-growisofs.c:494
+#: ../src/plugins/growisofs/burn-growisofs.c:500
 #, c-format
 msgid "\"%s\" could not be found"
 msgstr "„%s” nu poate fi găsit."
@@ -3826,15 +3837,15 @@ msgstr "Se copiază DVD-ul Video"
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr "Dvdcss permite citirea DVD-urile video criptate css"
 
-#: ../src/plugins/growisofs/burn-dvd-rw-format.c:176
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:177
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "Dvd+rw-format golește și formatează DVD+/-R(W)"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:732
+#: ../src/plugins/growisofs/burn-growisofs.c:738
 msgid "Growisofs burns DVDs"
 msgstr "Growisofs scrie DVD-uri"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:962
+#: ../src/plugins/growisofs/burn-growisofs.c:916
 msgid "Allow DAO use"
 msgstr "Permite utilizarea DAO"
 
@@ -3942,15 +3953,15 @@ msgstr "Descărcare fișier"
 msgid "Allows to burn files not stored locally"
 msgstr "Permite scriere de fișiere nestocate local"
 
-#: ../src/plugins/transcode/burn-normalize.c:473
+#: ../src/plugins/transcode/burn-normalize.c:499
 msgid "Normalizing tracks"
 msgstr "Se normalizează pistele"
 
-#: ../src/plugins/transcode/burn-normalize.c:564
+#: ../src/plugins/transcode/burn-normalize.c:590
 msgid "Normalize"
 msgstr "Normalizare"
 
-#: ../src/plugins/transcode/burn-normalize.c:565
+#: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr "Normalizarea definește o dinamică constantă pentru volumul pieselor unui CD"
 
@@ -4314,8 +4325,8 @@ msgid "Broken symbolic link"
 msgstr "Legătură simbolică invalidă"
 
 #: ../src/brasero-file-filtered.c:189
-#: ../src/brasero-io.c:1080
-#: ../src/brasero-io.c:1959
+#: ../src/brasero-io.c:1085
+#: ../src/brasero-io.c:1964
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Legătură simbolică recursivă"
@@ -4369,12 +4380,12 @@ msgstr "Opțiuni de filtrare"
 msgid "\"%s\" cannot be read"
 msgstr "„%s” nu poate fi citit"
 
-#: ../src/brasero-io.c:1313
+#: ../src/brasero-io.c:1318
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Fișierul nu pare să fie o listă de redare"
 
-#: ../src/brasero-io.c:2422
+#: ../src/brasero-io.c:2427
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "Un director nu a putut fi creat (%s)"
@@ -4581,6 +4592,8 @@ msgstr "Editor de coperte"
 #: ../src/brasero-multi-song-props.c:244
 #: ../src/brasero-multi-song-props.c:265
 #: ../src/brasero-multi-song-props.c:286
+#: ../src/brasero-rename.c:87
+#: ../src/brasero-rename.c:279
 msgid "<Keep current values>"
 msgstr "<Păstrează valorile curente>"
 
@@ -4596,11 +4609,6 @@ msgstr "Titluri piese"
 #: ../src/brasero-multi-song-props.c:225
 msgid "Additional song information"
 msgstr "Detalii suplimentare piesă"
-
-#: ../src/brasero-rename.c:87
-#: ../src/brasero-rename.c:279
-msgid "<keep current values>"
-msgstr "<păstrează valorile curente>"
 
 #: ../src/brasero-rename.c:280
 msgid "Insert text"
@@ -4722,6 +4730,19 @@ msgstr "Copiere CD-uri și DVD-uri"
 msgid "Disc Copier"
 msgstr "Copiator disc"
 
+#~ msgid ""
+#~ "The size of the project is too large for the disc.\n"
+#~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
+#~ "which cannot be properly recognised and therefore need overburn option.\n"
+#~ "NOTE: This option might cause failure."
+#~ msgstr ""
+#~ "Dimensiunea proiectului este prea mare față de capacitatea discului.\n"
+#~ "Puteți folosi această opțiune în cazul în care utilizați discuri CD-R(W) "
+#~ "de 90 sau 100 de minute ce nu pot fi recunoscute ca atare și în "
+#~ "consecință necesită opțiunea de suprascriere.\n"
+#~ "NOTĂ: Această opțiune s-ar putea să conducă la eșecul scrierii pe disc."
+#~ msgid "<keep current values>"
+#~ msgstr "<păstrează valorile curente>"
 #~ msgid "1 item"
 #~ msgstr "un element"
 #~ msgid "Cdrdao toc file"
