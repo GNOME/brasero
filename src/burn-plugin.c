@@ -101,6 +101,8 @@ struct _BraseroPluginPrivate
 	GSList *blank_flags;
 
 	BraseroPluginProcessFlag process_flags;
+
+	guint compulsory:1;
 };
 
 static const gchar *default_icon = "gtk-cdrom";
@@ -124,6 +126,25 @@ enum
 
 static GTypeModuleClass* parent_class = NULL;
 static guint plugin_signals [LAST_SIGNAL] = { 0 };
+
+void
+brasero_plugin_set_compulsory (BraseroPlugin *self,
+			       gboolean compulsory)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv->compulsory = compulsory;
+}
+
+gboolean
+brasero_plugin_get_compulsory (BraseroPlugin *self)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	return priv->compulsory;
+}
 
 void
 brasero_plugin_set_active (BraseroPlugin *self, gboolean active)
@@ -1160,6 +1181,7 @@ brasero_plugin_init (BraseroPlugin *object)
 
 	priv = BRASERO_PLUGIN_PRIVATE (object);
 	priv->type = G_TYPE_NONE;
+	priv->compulsory = TRUE;
 }
 
 static void

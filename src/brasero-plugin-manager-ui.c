@@ -360,10 +360,8 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 	for (; plugins; plugins = plugins->next) {
 		plugin = plugins->data;
 
-		if (brasero_plugin_can_burn (plugin) == BRASERO_BURN_OK
-		||  brasero_plugin_can_convert (plugin) == BRASERO_BURN_OK
-		||  brasero_plugin_can_image (plugin) == BRASERO_BURN_OK
-		||  brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
+		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE
+		||  brasero_plugin_get_compulsory (plugin))
 			continue;
 
 		gtk_list_store_append (model, &iter);

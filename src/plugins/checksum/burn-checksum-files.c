@@ -1360,7 +1360,8 @@ brasero_checksum_files_stop (BraseroJob *job,
 
 static void
 brasero_checksum_files_init (BraseroChecksumFiles *obj)
-{	BraseroChecksumFilesPrivate *priv;
+{
+	BraseroChecksumFilesPrivate *priv;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (obj);
 
@@ -1485,6 +1486,8 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
 					       _("SHA256"), BRASERO_CHECKSUM_SHA256_FILE);
 
 	brasero_plugin_add_conf_option (plugin, checksum_type);
+
+	brasero_plugin_set_compulsory (plugin, FALSE);
 
 	return BRASERO_BURN_OK;
 }

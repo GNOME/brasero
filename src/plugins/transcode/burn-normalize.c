@@ -623,5 +623,7 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* We should run first */
 	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
 
+	brasero_plugin_set_compulsory (plugin, FALSE);
+
 	return BRASERO_BURN_OK;
 }

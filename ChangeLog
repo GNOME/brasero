@@ -1,5 +1,30 @@
 2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Add a new function for plugin to specify whether they are necessary
+	It is then used to determine which plugins can be enabled/disabled by
+	the user in the UI.
+	Now burn:// plugin is compulsory and therefore cannot be disabled.
+
+	* src/brasero-plugin-manager-ui.c
+	(plugin_manager_ui_populate_lists):
+	* src/burn-plugin-manager.c
+	(brasero_plugin_manager_set_plugins_state):
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c (brasero_plugin_set_compulsory),
+	(brasero_plugin_get_compulsory), (brasero_plugin_init):
+	* src/burn-plugin.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_init),
+	(brasero_checksum_files_export_caps):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_export_caps):
+
+2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Work harder to get UTF-8 filenames
 
 	* src/brasero-data-tree-model.c

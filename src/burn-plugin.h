@@ -83,6 +83,10 @@ brasero_plugin_define (BraseroPlugin *plugin,
 		       const gchar *author,
 		       guint priority);
 void
+brasero_plugin_set_compulsory (BraseroPlugin *self,
+			       gboolean compulsory);
+
+void
 brasero_plugin_register_group (BraseroPlugin *plugin,
 			       const gchar *name);
 

@@ -76,6 +76,9 @@ brasero_plugin_get_gconf_priority_key (BraseroPlugin *plugin);
 const gchar *
 brasero_plugin_get_error (BraseroPlugin *plugin);
 
+gboolean
+brasero_plugin_get_compulsory (BraseroPlugin *plugin);
+
 guint
 brasero_plugin_get_priority (BraseroPlugin *plugin);
 

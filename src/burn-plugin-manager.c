@@ -166,14 +166,6 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 			BraseroPlugin *plugin;
 
 			plugin = iter->data;
-
-			if (brasero_plugin_can_burn (plugin) == BRASERO_BURN_OK
-			||  brasero_plugin_can_convert (plugin) == BRASERO_BURN_OK
-			||  brasero_plugin_can_image (plugin) == BRASERO_BURN_OK) {
-				brasero_plugin_set_active (plugin, TRUE);
-				continue;
-			}
-
 			brasero_plugin_set_active (plugin, TRUE);
 		}
 
@@ -186,9 +178,7 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 
 		plugin = iter->data;
 
-		if (brasero_plugin_can_burn (plugin) == BRASERO_BURN_OK
-		||  brasero_plugin_can_convert (plugin) == BRASERO_BURN_OK
-		||  brasero_plugin_can_image (plugin) == BRASERO_BURN_OK) {
+		if (brasero_plugin_get_compulsory (plugin)) {
 			brasero_plugin_set_active (plugin, TRUE);
 			BRASERO_BURN_LOG ("Setting plugin %s %s",
 					  brasero_plugin_get_name (plugin),
