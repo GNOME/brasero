@@ -489,6 +489,9 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 					       NULL,
 					       NULL,
 					       NULL);
+		if (!filename)
+			filename = brasero_utils_validate_utf8 (BRASERO_FILE_NODE_NAME (node));
+
 		if (filename)
 			g_value_set_string (value, filename);
 		else	/* Glib section on g_convert advise to use a string like
