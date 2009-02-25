@@ -1568,8 +1568,9 @@ brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
 				      GError *error)
 {
 	gchar *primary;
-	gchar *name;
+	gchar *name = NULL;
 
+	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	primary = g_strdup_printf (_("\"%s\" could not be opened."), name);
 	brasero_app_alert (brasero_app_get_default (),
 			   primary,
