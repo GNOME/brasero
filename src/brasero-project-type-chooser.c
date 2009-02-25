@@ -280,18 +280,9 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		gchar *uri;
 		GtkWidget *link;
-		GtkWidget *hbox;
 		GtkWidget *image;
 
 		uri = g_filename_to_uri (filename, NULL, NULL);
-
-		hbox = gtk_hbox_new (FALSE, 6);
-		gtk_widget_show (hbox);
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box),
-				    hbox,
-				    FALSE,
-				    TRUE,
-				    0);
 
 		image = gtk_image_new_from_icon_name ("brasero", GTK_ICON_SIZE_BUTTON);
 		gtk_size_group_add_widget (image_group, image);
@@ -307,7 +298,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 		gtk_widget_show (link);
 		gtk_widget_set_tooltip_text (link, _("Load the last project that was not burnt and not saved"));
-		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), link, FALSE, TRUE, 0);
 
 		g_free (uri);
 
@@ -323,20 +314,11 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		GtkWidget *image;
 		const gchar *uri;
 		GtkWidget *child;
-		GtkWidget *hbox;
 		GtkWidget *link;
 		GList *children;
 		gchar *tooltip;
 
 		info = iter->data;
-
-		hbox = gtk_hbox_new (FALSE, 6);
-		gtk_widget_show (hbox);
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box),
-				    hbox,
-				    FALSE,
-				    TRUE,
-				    0);
 
 		tooltip = gtk_recent_info_get_uri_display (info);
 
@@ -363,7 +345,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		gtk_widget_show (link);
 
 		gtk_widget_set_tooltip_text (link, tooltip);
-		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), link, FALSE, TRUE, 0);
 
 		g_free (tooltip);
 
@@ -375,8 +357,14 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 			continue;
 
 		child = gtk_bin_get_child (GTK_BIN (link));
-		if (!GTK_IS_BIN (child))
+		if (!GTK_IS_ALIGNMENT (child))
 			continue;
+
+		gtk_alignment_set (GTK_ALIGNMENT (child),
+				   0.0,
+				   0.5,
+				   1.0,
+				   1.0);
 
 		child = gtk_bin_get_child (GTK_BIN (child));
 		if (!GTK_IS_BOX (child))
@@ -389,6 +377,17 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 			widget = child_iter->data;
 			if (GTK_IS_LABEL (widget)) {
 				gtk_label_set_use_underline (GTK_LABEL (widget), FALSE);
+				gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.5);
+
+				/* Make sure that the name is not too long */
+				gtk_box_set_child_packing (GTK_BOX (child),
+							   widget,
+							   TRUE,
+							   TRUE,
+							   0,
+							   GTK_PACK_START);
+				gtk_label_set_ellipsize (GTK_LABEL (widget),
+							 PANGO_ELLIPSIZE_END);
 				break;
 			}
 		}
@@ -458,6 +457,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (obj), vbox);
 
+	/* Project box */
 	project_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (project_box);
 	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, TRUE, 0);
@@ -469,7 +469,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, TRUE, 0);
 
 	/* get the number of rows */
 	nb_items = sizeof (items) / sizeof (ItemDescription);
@@ -506,7 +506,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	/* The recent files part */
 	recent_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (recent_box);
-	gtk_box_pack_start (GTK_BOX (vbox), recent_box, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), recent_box, TRUE, TRUE, 0);
 
 	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Recent projects:"));
 	label = gtk_label_new (string);
@@ -515,7 +515,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, TRUE, 0);
 
 	vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (vbox);

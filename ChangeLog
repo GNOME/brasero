@@ -1,5 +1,15 @@
 2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix #572460 – Brasero does not trim long recent projects names
+	Make sure that the names of recent open files are ellipsized if they are
+	too long so they won't set an arbitrary size
+
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_build_recent),
+	(brasero_project_type_chooser_init):
+
+2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Removed unused code
 
 	* src/brasero-utils.c:
