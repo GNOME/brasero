@@ -2144,6 +2144,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 			     BraseroScsiErrCode *code)
 {
 	int size;
+	BraseroBurnResult res;
 	BraseroScsiResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiDiscInfoStd *info = NULL;
@@ -2177,10 +2178,10 @@ brasero_medium_get_contents (BraseroMedium *self,
 	priv->first_open_track = -1;
 
 	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
-		brasero_medium_set_blank (self,
-					  handle,
-					  BRASERO_FIRST_TRACK_IN_LAST_SESSION (info),
-					  code);
+		res = brasero_medium_set_blank (self,
+						handle,
+						BRASERO_FIRST_TRACK_IN_LAST_SESSION (info),
+						code);
 	}
 	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		if (!BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
@@ -2190,27 +2191,27 @@ brasero_medium_get_contents (BraseroMedium *self,
 			priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
 			BRASERO_MEDIA_LOG ("First track in last open session %d", priv->first_open_track);
 
-			result = brasero_medium_get_sessions_info (self, handle, code);
+			res = brasero_medium_get_sessions_info (self, handle, code);
 		}
 		else {
 			/* if that type of media is in incomplete state that
 			 * means it has just been formatted. And therefore it's
 			 * blank. */
-			brasero_medium_set_blank (self,
-						  handle,
-						  BRASERO_FIRST_TRACK_IN_LAST_SESSION (info),
-						  code);
+			res = brasero_medium_set_blank (self,
+							handle,
+							BRASERO_FIRST_TRACK_IN_LAST_SESSION (info),
+							code);
 		}
 	}
 	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
 		priv->info |= BRASERO_MEDIUM_CLOSED;
 		BRASERO_MEDIA_LOG ("Closed media");
 
-		result = brasero_medium_get_sessions_info (self, handle, code);
+		res = brasero_medium_get_sessions_info (self, handle, code);
 	}
 
 	g_free (info);
-	return result;
+	return res;
 }
 
 /**
