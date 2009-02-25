@@ -71,13 +71,6 @@ brasero_utils_make_button (const gchar *text,
 			   const gchar *theme,
 			   GtkIconSize size);
 
-gboolean
-brasero_utils_str_equal_64 (gconstpointer v1,
-			    gconstpointer v2);
-
-guint
-brasero_utils_str_hash_64 (gconstpointer v);
-
 void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list);

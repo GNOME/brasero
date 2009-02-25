@@ -284,35 +284,6 @@ brasero_utils_make_button (const gchar *text,
 	return button;
 }
 
-/* Copied from glib-2.8.3 (glib.c) but slightly
- * modified to use only the first 64 bytes */
-gboolean
-brasero_utils_str_equal_64 (gconstpointer v1,
-			    gconstpointer v2)
-{
-  const gchar *string1 = v1;
-  const gchar *string2 = v2;
-  
-  return strncmp (string1, string2, 64) == 0;
-}
-
-/* Copied from glib-2.8.3 (glib.c) but slightly
- * modified to use only the first 64 bytes */
-guint
-brasero_utils_str_hash_64 (gconstpointer v)
-{
-  /* 31 bit hash function */
-  const signed char *p = v;
-  guint32 h = *p;
-  int i;
-
-  if (h)
-    for (p += 1, i = 0; *p != '\0' && i < 64; p++, i++)
-      h = (h << 5) - h + *p;
-
-  return h;
-}
-
 void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list)
