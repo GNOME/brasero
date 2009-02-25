@@ -1,5 +1,11 @@
 2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix a bug where the caps for DVD DL was sometimes used with single ones
+
+	* src/burn-caps.c (brasero_caps_is_compatible_type):
+
+2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Add a new function for plugin to specify whether they are necessary
 	It is then used to determine which plugins can be enabled/disabled by
 	the user in the UI.

@@ -252,7 +252,8 @@ brasero_caps_is_compatible_type (const BraseroCaps *caps,
 		if (type->subtype.media == BRASERO_MEDIUM_NONE)
 			return FALSE;
 
-		if ((caps->type.subtype.media & type->subtype.media) != type->subtype.media)
+		/* Reminder: we now create every possible types */
+		if (caps->type.subtype.media != type->subtype.media)
 			return FALSE;
 		break;
 	
