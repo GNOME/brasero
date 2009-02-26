@@ -524,6 +524,7 @@ brasero_dvdcss_start (BraseroJob *job,
 	BraseroDvdcss *self;
 	BraseroJobAction action;
 	BraseroDvdcssPrivate *priv;
+	GError *thread_error = NULL;
 
 	self = BRASERO_DVDCSS (job);
 	priv = BRASERO_DVDCSS_PRIVATE (self);
@@ -554,11 +555,16 @@ brasero_dvdcss_start (BraseroJob *job,
 	priv->thread = g_thread_create (brasero_dvdcss_write_image_thread,
 					self,
 					TRUE,
-					error);
+					&thread_error);
 	g_mutex_unlock (priv->mutex);
 
-	if (!priv->thread)
+	/* Reminder: this is not necessarily an error as the thread may have finished */
+	//if (!priv->thread)
+	//	return BRASERO_BURN_ERR;
+	if (thread_error) {
+		g_propagate_error (error, thread_error);
 		return BRASERO_BURN_ERR;
+	}
 
 	return BRASERO_BURN_OK;
 }

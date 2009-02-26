@@ -1,5 +1,23 @@
 2009-02-26  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix rare race condition happening with fast CPU as in bug 
+	#568495 – Can't burn more than 29mb DVD comment #15
+
+	* src/burn-job.c (brasero_job_finished_session):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_start):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_start):
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_start):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_volume):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_start_thread):
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_start_thread):
+
+2009-02-26  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Attempt at fixing #573158 – Brasero reports 0 byte free for blank dvd discs
 	Add a fallback function for DVD-R and generally all blank media
 

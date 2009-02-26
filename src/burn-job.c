@@ -1022,7 +1022,7 @@ brasero_job_finished_session (BraseroJob *self)
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "finished successfully session");
+	BRASERO_JOB_LOG (self, "Finished successfully session");
 
 	if (brasero_job_is_last_active (self))
 		return brasero_task_ctx_finished (priv->ctx);

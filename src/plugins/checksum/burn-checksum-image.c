@@ -594,6 +594,7 @@ brasero_checksum_image_start (BraseroJob *job,
 			      GError **error)
 {
 	BraseroChecksumImagePrivate *priv;
+	GError *thread_error = NULL;
 	BraseroJobAction action;
 
 	brasero_job_get_action (job, &action);
@@ -615,11 +616,16 @@ brasero_checksum_image_start (BraseroJob *job,
 	priv->thread = g_thread_create (brasero_checksum_image_thread,
 					BRASERO_CHECKSUM_IMAGE (job),
 					TRUE,
-					error);
+					&thread_error);
 	g_mutex_unlock (priv->mutex);
 
-	if (!priv->thread)
+	/* Reminder: this is not necessarily an error as the thread may have finished */
+	//if (!priv->thread)
+	//	return BRASERO_BURN_ERR;
+	if (thread_error) {
+		g_propagate_error (error, thread_error);
 		return BRASERO_BURN_ERR;
+	}
 
 	return BRASERO_BURN_OK;
 }
