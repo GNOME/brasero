@@ -1,3 +1,13 @@
+2009-02-26  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Attempt at fixing #573158 – Brasero reports 0 byte free for blank dvd discs
+	Add a fallback function for DVD-R and generally all blank media
+
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_track_set_leadout_DVDR_blank),
+	(brasero_medium_set_write_mode_page),
+	(brasero_medium_track_set_leadout):
+
 2009-02-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Some confusion in the returned values fixed (harmless): cleanup

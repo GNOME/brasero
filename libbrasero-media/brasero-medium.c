@@ -1677,6 +1677,59 @@ brasero_medium_track_get_info (BraseroMedium *self,
 }
 
 static BraseroBurnResult
+brasero_medium_track_set_leadout_DVDR_blank (BraseroMedium *self,
+					     BraseroDeviceHandle *handle,
+					     BraseroMediumTrack *leadout,
+					     BraseroScsiErrCode *code)
+{
+	BraseroScsiFormatCapacitiesHdr *hdr = NULL;
+	BraseroScsiMaxCapacityDesc *current;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	BRASERO_MEDIA_LOG ("Using fallback method for blank CDR to retrieve NWA and leadout information");
+
+	/* NWA is easy for blank DVD-Rs, it's 0. So far, so good... */
+	priv->next_wr_add = 0;
+
+	result = brasero_mmc2_read_format_capacities (handle,
+						      &hdr,
+						      &size,
+						      code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (hdr);
+
+		BRASERO_MEDIA_LOG ("READ FORMAT CAPACITIES failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	/* See if the media is already formatted which means for -R media that 
+	 * they are blank. */
+	current = hdr->max_caps;
+	if (current->type & BRASERO_SCSI_DESC_FORMATTED) {
+		BRASERO_MEDIA_LOG ("Unformatted medium");
+		g_free (hdr);
+		return BRASERO_BURN_ERR;
+	}
+		
+	BRASERO_MEDIA_LOG ("Unformatted medium");
+
+	/* of course it starts at 0 since it's empty */
+	leadout->start = 0;
+	leadout->blocks_num = BRASERO_GET_32 (current->blocks_num);
+
+	BRASERO_MEDIA_LOG ("Leadout (through READ FORMAT CAPACITIES): start = %llu size = %llu",
+			  leadout->start,
+			  leadout->blocks_num);
+
+	g_free (hdr);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 					    BraseroDeviceHandle *handle,
 					    BraseroMediumTrack *leadout,
@@ -1717,29 +1770,21 @@ brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 }
 
 static BraseroBurnResult
-brasero_medium_track_set_leadout (BraseroMedium *self,
-				  BraseroDeviceHandle *handle,
-				  BraseroMediumTrack *leadout,
-				  BraseroScsiErrCode *code)
+brasero_medium_set_write_mode_page (BraseroMedium *self,
+				    BraseroDeviceHandle *handle,
+				    BraseroScsiErrCode *code)
 {
 	BraseroScsiModeData *data = NULL;
-	BraseroScsiTrackInfo track_info;
 	BraseroScsiWritePage *wrt_page;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
-	gint track_num;
 	int size;
 
-	BRASERO_MEDIA_LOG ("Retrieving NWA and leadout information");
+	BRASERO_MEDIA_LOG ("Setting write mode page");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
-		BRASERO_MEDIA_LOG ("Overwritable medium  => skipping");
-		return BRASERO_BURN_OK;
-	}
-
-	/* NOTE this works for CDR, DVDR+-, BDR-SRM */
+	/* NOTE: this works for CDR, DVDR+-, BDR-SRM */
 	/* make sure the current write mode is TAO. Otherwise the drive will
 	 * return the first sector of the pregap instead of the first user
 	 * accessible sector. */
@@ -1784,32 +1829,56 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		if (result != BRASERO_SCSI_OK) {
 			BRASERO_MEDIA_LOG ("MODE SELECT failed");
 
-			/* This only for CD-R */
-			if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
-				return brasero_medium_track_set_leadout_CDR_blank (self,
-										   handle,
-										   leadout,
-										   code);
-
 			/* This isn't necessarily a problem! we better try */
-			//	return BRASERO_BURN_ERR;
+			return BRASERO_BURN_ERR;
 		}
 	}
 	else {
 		BRASERO_MEDIA_LOG ("MODE SENSE failed");
+		/* This isn't necessarily a problem! we better try the rest */
+		return BRASERO_BURN_ERR;
+	}
 
-		/* This only for CD-R */
-		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_track_set_leadout (BraseroMedium *self,
+				  BraseroDeviceHandle *handle,
+				  BraseroMediumTrack *leadout,
+				  BraseroScsiErrCode *code)
+{
+	BraseroScsiTrackInfo track_info;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	gint track_num;
+	int size;
+
+	BRASERO_MEDIA_LOG ("Retrieving NWA and leadout information");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
+		BRASERO_MEDIA_LOG ("Overwritable medium  => skipping");
+		return BRASERO_BURN_OK;
+	}
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR)) {
+		/* This is necessary to make sure nwa won't be the start of the
+		 * pregap if the current write mode is SAO with blank CDR.
+		 * Carry on even if it fails.
+		 * This can work with CD-R/W and DVD-R/W. + media don't use the
+		 * write mode page anyway. */
+		result = brasero_medium_set_write_mode_page (self, handle, code);
+		if (result == BRASERO_BURN_ERR
+		&&  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
 			return brasero_medium_track_set_leadout_CDR_blank (self,
 									   handle,
 									   leadout,
 									   code);
-
-		/* This isn't necessarily a problem! we better try the rest */
-		//	return BRASERO_BURN_ERR;
 	}
 
-	/* at this point we know the type of the disc that's why we set the 
+	/* At this point we know the type of the disc that's why we set the 
 	 * size according to this type. That may help to avoid outrange address
 	 * errors. */
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DUAL_L|BRASERO_MEDIUM_WRITABLE))
@@ -1837,14 +1906,20 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 					       &size,
 					       code);
 	if (result != BRASERO_SCSI_OK) {
+		BRASERO_MEDIA_LOG ("READ TRACK INFO failed");
+
 		/* This only for CD-R */
 		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
 			return brasero_medium_track_set_leadout_CDR_blank (self,
 									   handle,
 									   leadout,
 									   code);
-
-		BRASERO_MEDIA_LOG ("READ TRACK INFO failed");
+		else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BLANK))
+			return brasero_medium_track_set_leadout_DVDR_blank (self,
+									    handle,
+									    leadout,
+									    code);
+			 
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1862,6 +1937,13 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		leadout->blocks_num = BRASERO_GET_32 (track_info.track_size);
 		BRASERO_MEDIA_LOG ("Using track size %d", leadout->blocks_num);
 	}
+
+	if (!leadout->blocks_num
+	&&   BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BLANK))
+		return brasero_medium_track_set_leadout_DVDR_blank (self,
+								    handle,
+								    leadout,
+								    code);
 
 	BRASERO_MEDIA_LOG ("Leadout: start = %llu size = %llu",
 			  leadout->start,
