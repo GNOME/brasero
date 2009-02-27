@@ -732,6 +732,16 @@ brasero_src_image_finalize (GObject *object)
 		priv->io = NULL;
 	}
 
+	if (priv->track) {
+		brasero_track_unref (priv->track);
+		priv->track = NULL;
+	}
+
+	if (priv->folder) {
+		g_free (priv->folder);
+		priv->folder = NULL;
+	}
+
 	G_OBJECT_CLASS (brasero_src_image_parent_class)->finalize (object);
 }
 
