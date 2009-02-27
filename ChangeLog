@@ -1,5 +1,16 @@
 2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix infinite loop on FreeBSD where dirname () implementation is different
+	Patch by Joe Marcus Clarke
+	Mentionned in #567822 – Can't blank DVD on FreeBSD
+
+	* src/brasero-data-project.c (brasero_data_project_uri_to_nodes),
+	(brasero_data_project_uri_has_parent),
+	(brasero_data_project_uri_is_graft_needed),
+	(brasero_data_project_add_excluded_uri):
+
+2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Make sure we use block device (and not raw device) on Open Solaris in 
 	some places.
 	Patch by Lin Ma

@@ -547,7 +547,7 @@ brasero_data_project_uri_to_nodes (BraseroDataProject *self,
 		if (graft)
 			break;
 
-		dirname (parent);
+		parent = dirname (parent);
 	}
 
 	if (!graft) {
@@ -723,7 +723,7 @@ brasero_data_project_uri_has_parent (BraseroDataProject *self,
 			return TRUE;
 		}
 
-		dirname (parent);
+		parent = dirname (parent);
 	}
 
 	g_free (parent);
@@ -797,7 +797,7 @@ brasero_data_project_uri_is_graft_needed (BraseroDataProject *self,
 	 * node is missing. */
 	graft_parent = g_hash_table_lookup (priv->grafts, parent);
 	while (parent && !graft_parent) {
-		dirname (parent);
+		parent = dirname (parent);
 		graft_parent = g_hash_table_lookup (priv->grafts, parent);
 	}
 	g_free (parent);
@@ -2723,7 +2723,7 @@ brasero_data_project_add_excluded_uri (BraseroDataProject *self,
 			break;
 
 		graft = NULL;
-		dirname (parent_uri);
+		parent_uri = dirname (parent_uri);
 	}
 	g_free (parent_uri);
 
