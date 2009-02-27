@@ -1,5 +1,11 @@
 2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix a problem where source medium wasn't set properly in selection
+
+	* src/brasero-src-selection.c (brasero_src_selection_set_property):
+
+2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Fix infinite loop on FreeBSD where dirname () implementation is different
 	Patch by Joe Marcus Clarke
 	Mentionned in #567822 – Can't blank DVD on FreeBSD

@@ -154,7 +154,15 @@ brasero_src_selection_set_property (GObject *object,
 			brasero_track_unref (priv->track);
 
 		medium = brasero_burn_session_get_src_medium (session);
-		brasero_src_selection_medium_changed (BRASERO_MEDIUM_SELECTION (object), medium);
+		if (!medium) {
+			/* No medium set use set session medium source as the
+			 * one currently active in the selection widget */
+			medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (object));
+			brasero_src_selection_medium_changed (BRASERO_MEDIUM_SELECTION (object), medium);
+		}
+		else	/* Use the one set in the session */
+			brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (object), medium);
+
 		break;
 	}
 
