@@ -52,12 +52,6 @@
 #include "burn-hal-watch.h"
 #include "brasero-medium-monitor.h"
 
-#if defined(HAVE_STRUCT_USCSI_CMD)
-#define BLOCK_DEVICE	"block.solaris.raw_device"
-#else
-#define BLOCK_DEVICE	"block.device"
-#endif
-
 typedef struct _BraseroMediumMonitorPrivate BraseroMediumMonitorPrivate;
 struct _BraseroMediumMonitorPrivate
 {

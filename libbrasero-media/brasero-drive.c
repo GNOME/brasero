@@ -371,11 +371,7 @@ brasero_drive_can_use_exclusively (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-#if defined(HAVE_STRUCT_USCSI_CMD)
-	device = brasero_drive_get_block_device (drive);
-#else
 	device = brasero_drive_get_device (drive);
-#endif
 
 	handle = brasero_device_handle_open (device, TRUE, NULL);
 	if (!handle)

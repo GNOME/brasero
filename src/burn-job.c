@@ -401,7 +401,7 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 	else
 		brasero_medium_get_capacity (medium, NULL, &media_blocks);
 
-	/* this is not really an error, we'll probably ask the 
+	/* This is not really an error, we'll probably ask the 
 	 * user to load a new disc */
 	if (output_blocks > media_blocks) {
 		BRASERO_BURN_LOG ("Insufficient space on disc %lli/%lli",

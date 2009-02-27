@@ -1,5 +1,14 @@
 2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Make sure we use block device (and not raw device) on Open Solaris in 
+	some places.
+
+	* libbrasero-media/brasero-drive.c
+	(brasero_drive_can_use_exclusively):
+	* libbrasero-media/brasero-medium-monitor.c:
+
+2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	O_EXCEL is not supported by Open Solaris: remove it
 	Fix #573060 – exclusively open with O_EXCL isn't supported by Solaris
 	Patch by Lin Ma
