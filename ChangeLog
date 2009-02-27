@@ -1,3 +1,20 @@
+2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Use GIO to get image sizes
+	Allows to display size of an image stored in burn://
+
+	* src/burn-image-format.c
+	(brasero_image_format_get_cue_file_complement),
+	(brasero_image_format_get_toc_file_complement),
+	(brasero_image_format_get_DATAFILE_info),
+	(brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* src/burn-image-format.h:
+	* src/burn-track.c (brasero_track_get_image_size):
+
 2009-02-26  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix rare race condition happening with fast CPU as in bug 

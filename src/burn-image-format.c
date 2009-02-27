@@ -97,7 +97,7 @@ brasero_image_format_get_cue_file_complement (const gchar *path)
 	if (!file) {
 		if (g_str_has_suffix (path, ".cue"))
 			return g_strdup_printf ("%.*sbin",
-						strlen (path) - 3,
+						(int) strlen (path) - 3,
 						path);
 
 		return g_strdup_printf ("%s.bin", path);
@@ -147,7 +147,7 @@ brasero_image_format_get_toc_file_complement (const gchar *path)
 	if (!file) {
 		if (g_str_has_suffix (path, ".cue"))
 			return g_strdup_printf ("%.*sbin",
-						strlen (path) - 3,
+						(int) strlen (path) - 3,
 						path);
 
 		return g_strdup_printf ("%s.bin", path);
@@ -257,13 +257,13 @@ brasero_image_format_get_MSF_address (const gchar *ptr,
 
 static gboolean
 brasero_image_format_get_DATAFILE_info (const gchar *ptr,
-					const gchar *parent,
-					gint64 *size,
+					GFile *parent,
+					gint64 *size_file,
 					GError **error)
 {
-	struct stat buffer;
-	gchar *path;
-	int res;
+	gchar *path = NULL;
+	GFileInfo *info;
+	GFile *file;
 
 	/* get the path. NOTE: no need to check if it's relative since that's
 	 * just to skip it. */
@@ -278,57 +278,63 @@ brasero_image_format_get_DATAFILE_info (const gchar *ptr,
 	|| (ptr [0] == '/' && ptr [1] == '/'))
 		goto stat_end;
 
-	if (!brasero_image_format_get_MSF_address (ptr, size))
+	if (!brasero_image_format_get_MSF_address (ptr, size_file)) {
+		g_free (path);
 		return FALSE;
+	}
 
+	g_free (path);
 	return TRUE;
 
 stat_end:
 
 	/* check if the path is relative, if so then add the root path */
-	if (path && !g_path_is_absolute (path)) {
-		gchar *tmp;
+	if (path && !g_path_is_absolute (path))
+		file = g_file_resolve_relative_path (parent, path);
+	else if (path) {
+		gchar *img_uri;
+		gchar *scheme;
 
-		tmp = path;
-		path = g_build_path (G_DIR_SEPARATOR_S,
-				     parent,
-				     path,
-				     NULL);
-		g_free (tmp);
+		scheme = g_file_get_uri_scheme (parent);
+		img_uri = g_strconcat (scheme, "://", path, NULL);
+		g_free (scheme);
+
+		file = g_file_new_for_commandline_arg (img_uri);
+		g_free (img_uri);
 	}
 
-	/* if size is skipped then g_lstat () the file */
-	res = g_lstat (path, &buffer);
 	g_free (path);
 
-	if (res == -1) {
-                int errsv = errno;
-
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size could not be retrieved (%s)"),
-			     g_strerror (errsv));
+	/* NOTE: follow symlink if any */
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  error);
+	g_object_unref (file);
+	if (!info)
 		return FALSE;
-	}
 
-	if (size)
-		*size = BRASERO_BYTES_TO_SECTORS (buffer.st_size, 2352);
+	if (size_file)
+		*size_file = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2352);
+
+	g_object_unref (info);
 
 	return TRUE;
 }
 
 static gboolean
-brasero_image_format_get_FILE_info (const gchar *ptr,
-				    const gchar *parent,
-				    gint64 *size,
+brasero_image_format_get_FILE_info (gchar *uri,
+				    GFile *parent,
+				    gint64 *size_img,
 				    GError **error)
 {
-	struct stat buffer;
+	gchar *path = NULL;
 	gint64 start = 0;
-	gchar *path;
+	const gchar *ptr;
+	GFileInfo *info;
+	GFile *file;
 	gchar *tmp;
-	int res;
 
 	/* get the path and skip it */
 	ptr = brasero_image_format_read_path (ptr, &path);
@@ -362,169 +368,141 @@ brasero_image_format_get_FILE_info (const gchar *ptr,
 		goto stat_end;
 
 	/* get the size */
-	if (!brasero_image_format_get_MSF_address (ptr, size)) {
+	if (!brasero_image_format_get_MSF_address (ptr, size_img)) {
 		g_free (path);
 		return FALSE;
 	}
 
+	g_free (path);
 	return TRUE;
 
 stat_end:
 
 	/* check if the path is relative, if so then add the root path */
-	if (path && !g_path_is_absolute (path)) {
-		gchar *tmp;
+	if (path && !g_path_is_absolute (path))
+		file = g_file_resolve_relative_path (parent, path);
+	else if (path) {
+		gchar *img_uri;
+		gchar *scheme;
 
-		tmp = path;
-		path = g_build_path (G_DIR_SEPARATOR_S,
-				     parent,
-				     path,
-				     NULL);
-		g_free (tmp);
+		scheme = g_file_get_uri_scheme (parent);
+		img_uri = g_strconcat (scheme, "://", path, NULL);
+		g_free (scheme);
+
+		file = g_file_new_for_commandline_arg (img_uri);
+		g_free (img_uri);
 	}
 
-	/* if size is skipped then g_stat () the file */
-	/* NOTE: follow symlink if any */
-	res = g_stat (path, &buffer);
 	g_free (path);
 
-	if (res == -1) {
-                int errsv = errno;
-
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size could not be retrieved (%s)"),
-			     g_strerror (errsv));
+	/* NOTE: follow symlink if any */
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  error);
+	g_object_unref (file);
+	if (!info)
 		return FALSE;
-	}
 
-	if (size)
-		*size = BRASERO_BYTES_TO_SECTORS (buffer.st_size, 2352) - start;
+	if (size_img)
+		*size_img = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2352) - start;
+
+	g_object_unref (info);
 
 	return TRUE;
 }
 
 gboolean
-brasero_image_format_get_cdrdao_size (gchar *path,
+brasero_image_format_get_cdrdao_size (gchar *uri,
 				      gint64 *sectors,
-				      gint64 *size,
+				      gint64 *size_img,
 				      GError **error)
 {
-	FILE *file;
-	gchar *parent;
+	GFile *file;
+	gchar *line;
+	GFile *parent;
 	gint64 cue_size = 0;
-	gchar buffer [MAXPATHLEN * 2];
+	GFileInputStream *input;
+	GDataInputStream *stream;
 
-	/* NOTE: the problem here is that cdrdao files can have references to 
-	 * multiple files. Which is great but not for us ... */
-	file = fopen (path, "r");
-	if (!file) {
-                int errsv = errno;
+	file = g_file_new_for_uri (uri);
+	input = g_file_read (file, NULL, error);
 
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size could not be retrieved (%s)"),
-			     g_strerror (errsv));
+	if (!input) {
+		g_object_unref (file);
 		return FALSE;
 	}
 
-	parent = g_path_get_dirname (path);
-	while (fgets (buffer, sizeof (buffer), file)) {
+	stream = g_data_input_stream_new (G_INPUT_STREAM (input));
+	g_object_unref (input);
+
+	parent = g_file_get_parent (file);
+	while ((line = g_data_input_stream_read_line (stream, NULL, NULL, error))) {
 		gchar *ptr;
 
-		ptr = strstr (buffer, "DATAFILE");
-		if (ptr) {
-			gint64 size;
+		if ((ptr = strstr (line, "DATAFILE"))) {
+			gint64 size_file;
 
 			ptr += 8;
-			if (!brasero_image_format_get_DATAFILE_info (ptr, parent, &size, error))
-				continue;
-
-			cue_size += size;
-			continue;
+			if (brasero_image_format_get_DATAFILE_info (ptr, parent, &size_file, error))
+				cue_size += size_file;
 		}
-
-		ptr = strstr (buffer, "FILE");
-		if (ptr) {
-			gint64 size;
+		else if ((ptr = strstr (line, "FILE"))) {
+			gint64 size_file;
 
 			ptr += 4;
 			/* first number is the position, the second the size,
 			 * number after '#' is the offset (in bytes). */
-			if (!brasero_image_format_get_FILE_info (ptr, parent, &size, error))
-				continue;
-
-			cue_size += size;
-			continue;
+			if (brasero_image_format_get_FILE_info (ptr, parent, &size_file, error))
+				cue_size += size_file;
 		}
-
-		ptr = strstr (buffer, "AUDIOFILE");
-		if (ptr) {
-			gint64 size;
+		else if ((ptr = strstr (line, "AUDIOFILE"))) {
+			gint64 size_file;
 
 			ptr += 4;
 			/* first number is the position, the second the size,
 			 * number after '#' is the offset (in bytes). */
-			if (!brasero_image_format_get_FILE_info (ptr, parent, &size, error))
-				continue;
-
-			cue_size += size;
-			continue;
+			if (brasero_image_format_get_FILE_info (ptr, parent, &size_file, error))
+				cue_size += size_file;
 		}
-
-		ptr = strstr (buffer, "SILENCE");
-		if (ptr) {
-			gint64 size;
+		else if ((ptr = strstr (line, "SILENCE"))) {
+			gint64 size_silence;
 
 			ptr += 7;
-			if (!isspace (*ptr))
-				continue;
-
-			if (!brasero_image_format_get_MSF_address (ptr, &size))
-				continue;
-
-			cue_size += size;
+			if (isspace (*ptr)
+			&&  brasero_image_format_get_MSF_address (ptr, &size_silence))
+				cue_size += size_silence;
 		}
-
-		ptr = strstr (buffer, "PREGAP");
-		if (ptr) {
-			gint64 size;
+		else if ((ptr = strstr (line, "PREGAP"))) {
+			gint64 size_pregap;
 
 			ptr += 6;
-			if (!isspace (*ptr))
-				continue;
-
-			if (!brasero_image_format_get_MSF_address (ptr, &size))
-				continue;
-
-			cue_size += size;
+			if (isspace (*ptr)
+			&&  brasero_image_format_get_MSF_address (ptr, &size_pregap))
+				cue_size += size_pregap;
 		}
-
-		ptr = strstr (buffer, "ZERO");
-		if (ptr) {
-			gint64 size;
+		else if ((ptr = strstr (line, "ZERO"))) {
+			gint64 size_zero;
 
 			ptr += 4;
-			if (!isspace (*ptr))
-				continue;
-
-			if (!brasero_image_format_get_MSF_address (ptr, &size))
-				continue;
-
-			cue_size += size;
+			if (isspace (*ptr)
+			&&  brasero_image_format_get_MSF_address (ptr, &size_zero))
+				cue_size += size_zero;
 		}
-	}
-	g_free (parent);
 
-	fclose (file);
+		g_free (line);
+	}
+	g_object_unref (parent);
+
+	g_object_unref (stream);
+	g_object_unref (file);
 
 	if (sectors)
 		*sectors = cue_size;
 
-	if (size)
-		*size = cue_size * 2352;
+	if (size_img)
+		*size_img = cue_size * 2352;
 
 	return TRUE;
 }
@@ -536,119 +514,118 @@ brasero_image_format_get_cdrdao_size (gchar *path,
  */
 
 gboolean
-brasero_image_format_get_cue_size (gchar *path,
+brasero_image_format_get_cue_size (gchar *uri,
 				   gint64 *blocks,
-				   gint64 *size,
+				   gint64 *size_img,
 				   GError **error)
 {
-	FILE *file;
+	GFile *file;
+	gchar *line;
 	gint64 cue_size = 0;
-	gchar buffer [MAXPATHLEN * 2];
+	GFileInputStream *input;
+	GDataInputStream *stream;
 
-	/* NOTE: the problem here is that cdrdao files can have references to 
-	 * multiple files. Which is great but not for us ... */
-	file = fopen (path, "r");
-	if (!file) {
-                int errsv = errno;
+	file = g_file_new_for_uri (uri);
+	input = g_file_read (file, NULL, error);
 
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size could not be retrieved (%s)"),
-			     g_strerror (errsv));
+	if (!input) {
+		g_object_unref (file);
 		return FALSE;
 	}
 
-	while (fgets (buffer, sizeof (buffer), file)) {
+	stream = g_data_input_stream_new (G_INPUT_STREAM (input));
+	g_object_unref (input);
+
+	while ((line = g_data_input_stream_read_line (stream, NULL, NULL, error))) {
 		const gchar *ptr;
 
-		ptr = strstr (buffer, "FILE");
-		if (ptr) {
-			int res;
+		if ((ptr = strstr (line, "FILE"))) {
+			GFileInfo *info;
+			GFile *file_img;
 			gchar *file_path;
-			struct stat buffer;
 
 			ptr += 4;
 
 			/* get the path */
 			ptr = brasero_image_format_read_path (ptr, &file_path);
-			if (!ptr)
+			if (!ptr) {
+				g_object_unref (stream);
+				g_object_unref (file);
+				g_free (line);
 				return FALSE;
+			}
 
 			/* check if the path is relative, if so then add the root path */
 			if (file_path && !g_path_is_absolute (file_path)) {
-				gchar *directory;
-				gchar *tmp;
+				GFile *parent;
 
-				directory = g_path_get_dirname (path);
-
-				tmp = file_path;
-				file_path = g_build_path (G_DIR_SEPARATOR_S,
-							  directory,
-							  file_path,
-							  NULL);
-				g_free (tmp);
+				parent = g_file_get_parent (file);
+				file_img = g_file_resolve_relative_path (parent, file_path);
+				g_object_unref (parent);
 			}
+			else if (file_path) {
+				gchar *img_uri;
+				gchar *scheme;
 
-			/* NOTE: follow symlink if any */
-			res = g_stat (file_path, &buffer);
-			if (res == -1) {
-                                int errsv = errno;
+				scheme = g_file_get_uri_scheme (file);
+				img_uri = g_strconcat (scheme, "://", file_path, NULL);
+				g_free (scheme);
 
-				g_set_error (error,
-					     BRASERO_BURN_ERR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("The size could not be retrieved (%s)"),
-					     g_strerror (errsv));
-				g_free (file_path);
-				fclose (file);
-				return FALSE;
+				file_img = g_file_new_for_commandline_arg (img_uri);
+				g_free (img_uri);
 			}
 
 			g_free (file_path);
-			cue_size += buffer.st_size;
-			continue;
+
+			/* NOTE: follow symlink if any */
+			info = g_file_query_info (file_img,
+						  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+						  G_FILE_QUERY_INFO_NONE,
+						  NULL,
+						  error);
+			g_object_unref (file_img);
+
+			if (!info) {
+				g_free (line);
+				g_object_unref (file);
+				g_object_unref (stream);
+				return FALSE;
+			}
+
+			cue_size += g_file_info_get_size (info);
+			g_object_unref (info);
 		}
-
-		ptr = strstr (buffer, "PREGAP");
-		if (ptr) {
-			gint64 size;
-
+		else if ((ptr = strstr (line, "PREGAP"))) {
 			ptr += 6;
-			if (!isspace (*ptr))
-				continue;
+			if (isspace (*ptr)) {
+				gint64 size_pregap;
 
-			ptr ++;
-			ptr = brasero_image_format_get_MSF_address (ptr, &size);
-			if (!ptr)
-				continue;
-
-			cue_size += size * 2352;
-			continue;
+				ptr ++;
+				ptr = brasero_image_format_get_MSF_address (ptr, &size_pregap);
+				if (ptr)
+					cue_size += size_pregap * 2352;
+			}
 		}
-
-		ptr = strstr (buffer, "POSTGAP");
-		if (ptr) {
-			gint64 size;
-
+		else if ((ptr = strstr (line, "POSTGAP"))) {
 			ptr += 7;
-			if (!isspace (*ptr))
-				continue;
+			if (isspace (*ptr)) {
+				gint64 size_postgap;
 
-			ptr ++;
-			ptr = brasero_image_format_get_MSF_address (ptr, &size);
-			if (!ptr)
-				continue;
-
-			cue_size += size * 2352;
-			continue;
+				ptr ++;
+				ptr = brasero_image_format_get_MSF_address (ptr, &size_postgap);
+				if (ptr)
+					cue_size += size_postgap * 2352;
+			}
 		}
+
+		g_free (line);
 	}
 
-	fclose (file);
+	g_object_unref (stream);
+	g_object_unref (file);
 
-	if (size)
-		*size = cue_size;
+	if (size_img)
+		*size_img = cue_size;
 	if (blocks)
 		*blocks = BRASERO_BYTES_TO_SECTORS (cue_size, 2352);
 
@@ -729,92 +706,69 @@ brasero_image_format_identify_cuesheet (const gchar *path)
 }
 
 gboolean
-brasero_image_format_get_iso_size (gchar *path,
+brasero_image_format_get_iso_size (gchar *uri,
 				   gint64 *blocks,
-				   gint64 *size,
+				   gint64 *size_img,
 				   GError **error)
 {
-	struct stat buffer;
-	int res;
+	GFileInfo *info;
+	GFile *file;
 
-	if (!path)
+	if (!uri)
 		return FALSE;
 
-	/* a simple stat () will do. That means of course that the image must be
-	 * local. Now if local-track is enabled, it will always run first and we
-	 * don't need that size before it starts. During the GET_SIZE phase of 
-	 * the task it runs for, it can set the output size of the task by using
-	 * gnome-vfs to retrieve it. That means this particular task will know
-	 * the image size once it gets downloaded. local-task will also be able
-	 * to report how much it downloads and therefore the task will be able
-	 * to report its progress. Afterwards, no problem to get the image size
-	 * since it'll be local and stat() will work.
-	 * if local-track is not enabled we can't use non-local images anyway so
-	 * there is no need to have a function set_size */
 	/* NOTE: follow symlink if any */
-	res = g_stat (path, &buffer);
-	if (res == -1) {
-                int errsv = errno;
-
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size could not be retrieved (%s)"),
-			     g_strerror (errsv));
-
+	file = g_file_new_for_uri (uri);
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  error);
+	g_object_unref (file);
+	if (!info)
 		return FALSE;
-	}
 
-	if (size)
-		*size = buffer.st_size;
+	if (size_img)
+		*size_img = g_file_info_get_size (info);
 
 	if (blocks)
-		*blocks = (buffer.st_size / 2048) +
-			  ((buffer.st_size % 2048) ? 1:0);
+		*blocks = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2048);
 
+	g_object_unref (info);
 	return TRUE;
 }
 
 gboolean
-brasero_image_format_get_clone_size (gchar *path,
+brasero_image_format_get_clone_size (gchar *uri,
 				     gint64 *blocks,
-				     gint64 *size,
+				     gint64 *size_img,
 				     GError **error)
 {
-	struct stat buffer;
-	int res;
+	GFileInfo *info;
+	GFile *file;
 
-	/* a simple stat () will do. That means of course that the image must be
-	 * local. Now if local-track is enabled, it will always run first and we
-	 * don't need that size before it starts. During the GET_SIZE phase of 
-	 * the task it runs for, it can set the output size of the task by using
-	 * gnome-vfs to retrieve it. That means this particular task will know
-	 * the image size once it gets downloaded. local-task will also be able
-	 * to report how much it downloads and therefore the task will be able
-	 * to report its progress. Afterwards, no problem to get the image size
-	 * since it'll be local and stat() will work.
-	 * if local-track is not enabled we can't use non-local images anyway so
-	 * there is no need to have a function set_size */
-	/* NOTE: follow symlink if any */
-	res = g_stat (path, &buffer);
-	if (res == -1) {
-                int errsv = errno;
-
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size could not be retrieved (%s)"),
-			     g_strerror (errsv));
-
+	if (!uri)
 		return FALSE;
-	}
 
-	if (size)
-		*size = buffer.st_size;
+	/* NOTE: follow symlink if any */
+	file = g_file_new_for_uri (uri);
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  error);
+	g_object_unref (file);
+
+	if (!info)
+		return FALSE;
+
+	if (size_img)
+		*size_img = g_file_info_get_size (info);
 
 	if (blocks)
-		*blocks = (buffer.st_size / 2448) +
-			  ((buffer.st_size % 2448) ? 1:0);
+		*blocks = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2448);
+
+	g_object_unref (info);
 
 	return TRUE;
 }

@@ -59,24 +59,24 @@ brasero_image_format_get_complement (BraseroImageFormat format,
 				     const gchar *path);
 
 gboolean
-brasero_image_format_get_cdrdao_size (gchar *path,
+brasero_image_format_get_cdrdao_size (gchar *uri,
 				      gint64 *sectors,
-				      gint64 *size,
+				      gint64 *size_img,
 				      GError **error);
 gboolean
-brasero_image_format_get_cue_size (gchar *path,
-				   gint64 *size,
+brasero_image_format_get_cue_size (gchar *uri,
 				   gint64 *blocks,
+				   gint64 *size_img,
 				   GError **error);
 gboolean
-brasero_image_format_get_iso_size (gchar *path,
+brasero_image_format_get_iso_size (gchar *uri,
 				   gint64 *blocks,
-				   gint64 *size,
+				   gint64 *size_img,
 				   GError **error);
 gboolean
-brasero_image_format_get_clone_size (gchar *path,
+brasero_image_format_get_clone_size (gchar *uri,
 				     gint64 *blocks,
-				     gint64 *size,
+				     gint64 *size_img,
 				     GError **error);
 
 G_END_DECLS

@@ -1024,67 +1024,67 @@ brasero_track_get_image_size (BraseroTrack *track,
 
 	/* Convenience function */
 	if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
-		gchar *path;
+		gchar *uri;
 
 		if (!image->image)
 			return BRASERO_BURN_ERR;
 
-		path = brasero_track_get_localpath (image->image);
+		uri = brasero_track_get_uri (image->image);
 
-		if (!brasero_image_format_get_iso_size (path, blocks, size, error)) {
-			g_free (path);
+		if (!brasero_image_format_get_iso_size (uri, blocks, size, error)) {
+			g_free (uri);
 			return BRASERO_BURN_ERR;
 		}
-		g_free (path);
+		g_free (uri);
 
 		if (block_size)
 			*block_size = 2048;
 	}
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
-		gchar *path;
+		gchar *uri;
 
-		path = brasero_track_get_image_source (track, FALSE);
+		uri = brasero_track_get_image_source (track, TRUE);
 
-		if (!path)
+		if (!uri)
 			return BRASERO_BURN_ERR;
 
-		if (!brasero_image_format_get_clone_size (path, blocks, size, error)) {
-			g_free (path);
+		if (!brasero_image_format_get_clone_size (uri, blocks, size, error)) {
+			g_free (uri);
 			return BRASERO_BURN_ERR;
 		}
-		g_free (path);
+		g_free (uri);
 
 		if (block_size)
 			*block_size = 2448;
 	}
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO) {
-		gchar *path;
+		gchar *uri;
 
 		if (!image->toc)
 			return BRASERO_BURN_ERR;
 
-		path = brasero_track_get_localpath (image->toc);
-		if (!brasero_image_format_get_cdrdao_size (path, blocks, size, error)) {
-			g_free (path);
+		uri = brasero_track_get_uri (image->toc);
+		if (!brasero_image_format_get_cdrdao_size (uri, blocks, size, error)) {
+			g_free (uri);
 			return BRASERO_BURN_ERR;
 		}
-		g_free (path);
+		g_free (uri);
 
 		if (block_size)
 			*block_size = 2352;
 	}
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
-		gchar *path;
+		gchar *uri;
 
 		if (!image->toc)
 			return BRASERO_BURN_ERR;
 
-		path = brasero_track_get_localpath (image->toc);
-		if (!brasero_image_format_get_cue_size (path, blocks, size, error)) {
-			g_free (path);
+		uri = brasero_track_get_uri (image->toc);
+		if (!brasero_image_format_get_cue_size (uri, blocks, size, error)) {
+			g_free (uri);
 			return BRASERO_BURN_ERR;
 		}
-		g_free (path);
+		g_free (uri);
 
 		if (block_size)
 			*block_size = 2352;
