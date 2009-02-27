@@ -66,7 +66,7 @@ typedef struct _BraseroScsiCmd BraseroScsiCmd;
 #define BRASERO_SCSI_CMD_OPCODE_OFF			0
 #define BRASERO_SCSI_CMD_SET_OPCODE(command)		(command->cmd [BRASERO_SCSI_CMD_OPCODE_OFF] = command->info->opcode)
 
-#define OPEN_FLAGS			O_RDWR /*|O_EXCL */|O_NONBLOCK
+#define OPEN_FLAGS			O_RDONLY | O_NONBLOCK
 
 gchar *
 dump_bytes(guchar *buf, gint len)
@@ -205,8 +205,8 @@ brasero_device_handle_open (const gchar *path,
 	BraseroDeviceHandle *handle;
 	gchar *rawdisk = NULL;
 
-	if (exclusive)
-		flags |= O_EXCL;
+/* 	if (exclusive) */
+/* 		flags |= O_EXCL; */
 
 	fd = open (path, flags);
 	if (fd < 0) {

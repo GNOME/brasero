@@ -1,5 +1,13 @@
 2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	O_EXCEL is not supported by Open Solaris: remove it
+	Fix #573060 – exclusively open with O_EXCL isn't supported by Solaris
+	Patch by Lin Ma
+
+	* libbrasero-media/scsi-uscsi.c (brasero_device_handle_open):
+
+2009-02-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Fix memleaks
 
 	* src/brasero-src-image.c (brasero_src_image_finalize):
