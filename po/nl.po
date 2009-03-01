@@ -1225,25 +1225,11 @@ msgstr "Gelieve slechts een enkel nummer te selecteren."
 msgid "Impossible to split more than one song at a time"
 msgstr "Het is niet mogelijk meer dan een nummer tegelijkertijd te splitsen."
 
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# Dit is waar Wouter is gebleven.
-
 #. Translators: "%s" is the name of a file here
 #: ../src/brasero-audio-disc.c:3840
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" was removed from the file system."
-msgstr "Het bestand \"%s\" was verwijderd van het bestandssysteem:"
+msgstr "‘%s’ is verwijderd van het bestandssysteem."
 
 #. Translators: This is when brasero detects that a file
 #. * in the audio project was removed from its original
@@ -1254,68 +1240,60 @@ msgstr "Het bestand \"%s\" was verwijderd van het bestandssysteem:"
 #. * previous string:
 #. * ""\"%s\" was removed from the file system."
 #: ../src/brasero-audio-disc.c:3851
-#, fuzzy
 msgid "It will be removed from the project"
-msgstr "het zal verwijderd worden van het project."
+msgstr "Het bestand zal uit het project verwijderd worden."
 
 #. Translators: the following string
 #. * means there was an error while
 #. * blanking.
 #: ../src/brasero-blank-dialog.c:214
-#, fuzzy
 msgid "Error while blanking."
-msgstr "Fout bij het branden:"
+msgstr "Fout tijdens het leegmaken."
 
 #: ../src/brasero-blank-dialog.c:216 ../src/brasero-blank-dialog.c:258
 msgid "Blank _Again"
-msgstr "_Opnieuw wissen"
+msgstr "_Opnieuw leegmaken"
 
 #: ../src/brasero-blank-dialog.c:233
 msgid "Unknown error."
-msgstr "Onbekende fout"
+msgstr "Onbekende fout."
 
 #: ../src/brasero-blank-dialog.c:253
-#, fuzzy
 msgid "The disc was successfully blanked."
-msgstr "De schijf is succesvol gewist:"
+msgstr "De schijf is succesvol leeggemaakt."
 
 #: ../src/brasero-blank-dialog.c:256
-#, fuzzy
 msgid "The disc is ready for use."
-msgstr "de schijf is klaar om te gebruiken."
+msgstr "De schijf is gereed voor gebruik."
 
 #. Translators: This is a verb, an action
 #: ../src/brasero-blank-dialog.c:356
 msgid "_Blank"
-msgstr "_Wissen"
+msgstr "_Leegmaken"
 
 #: ../src/brasero-blank-dialog.c:388
-#, fuzzy
 msgid "_Fast blanking"
-msgstr "_snel wissen"
+msgstr "_Snel leegmaken"
 
 #: ../src/brasero-blank-dialog.c:389
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
-msgstr "Activeer snel wissen in plaats van langer grondig wissen"
+msgstr "Snel leegmaken (in tegenstelling to grondig leegmaken)"
 
 #: ../src/brasero-blank-dialog.c:412
-#, fuzzy
 msgid "Disc Blanking"
-msgstr "Schijf wissen"
+msgstr "Schijf leegmaken"
 
 #: ../src/brasero-disc-copy-dialog.c:85
-#, fuzzy
 msgid "CD/DVD Copy Options"
-msgstr "Cd/dvd kopieer-opties"
+msgstr "Cd/dvd-kopieeropties"
 
 #: ../src/brasero-disc-copy-dialog.c:87
 msgid "_Copy"
 msgstr "_Kopiëren"
 
 #: ../src/brasero-disc-copy-dialog.c:96
-#, fuzzy
 msgid "Select disc to copy"
-msgstr "<b>Selecteer het bronstation om te kopiëren</b>"
+msgstr "Selecteer schijf om te kopiëren"
 
 #. Translators: %s is the name of the GstElement that
 #. * could not be created
@@ -1373,50 +1351,46 @@ msgstr "<b>Selecteer het bronstation om te kopiëren</b>"
 #: ../src/plugins/transcode/burn-vob.c:1192
 #: ../src/plugins/transcode/burn-vob.c:1200
 #: ../src/plugins/transcode/burn-vob.c:1208
-#, fuzzy, c-format
+#, c-format
 msgid "%s element could not be created"
-msgstr "er kon geen symbolische koppeling worden gemaakt (%s)"
+msgstr "Element ‘%s’ kon niet aangemaakt worden."
 
 #. Translators: the %s is the mime type used to filter files
 #: ../src/brasero-mime-filter.c:233
 #, c-format
 msgid "%s only"
-msgstr "alleen %s"
+msgstr "Alleen %s"
 
 #: ../src/brasero-playlist.c:304
 msgid "Playlists"
-msgstr "Afspeellijsten"
+msgstr "Speellijsten"
 
 #: ../src/brasero-playlist.c:315
-#, fuzzy
 msgid "Number of Songs"
-msgstr "Aantal liedjes"
+msgstr "Aantal nummers"
 
 #: ../src/brasero-playlist.c:335
 msgid "Genre"
 msgstr "Genre"
 
 #: ../src/brasero-playlist.c:641
-#, fuzzy
 msgid "Select Playlist"
-msgstr "Selecteer een afspeellijst"
+msgstr "Speellijst selecteren"
 
 #: ../src/brasero-playlist.c:807
-#, fuzzy, c-format
+#, c-format
 msgid "Error parsing playlist \"%s\"."
-msgstr "Fout bij het ontleden van afspeellijst ‘%s’:"
+msgstr "Fout bij het verwerken van speellijst ‘%s’."
 
 #: ../src/brasero-playlist.c:810 ../src/brasero-data-disc.c:208
 #: ../src/brasero-project.c:1819 ../src/brasero-sum-dialog.c:142
-#, fuzzy
 msgid "An unknown error occured"
-msgstr "er heeft zich een onbekende fout voorgedaan."
+msgstr "Er is een onbekend fout opgetreden."
 
 #: ../src/brasero-playlist.c:914 ../src/brasero-data-tree-model.c:434
 #: ../src/brasero-data-tree-model.c:591
-#, fuzzy
 msgid "Empty"
-msgstr "leeg"
+msgstr "Leeg"
 
 #. Translators: %d is the number of songs
 #: ../src/brasero-playlist.c:916
@@ -1432,12 +1406,12 @@ msgstr "Plug-in"
 
 #: ../src/brasero-plugin-manager-ui.c:63
 msgid "Enabled"
-msgstr "Geactiveerd"
+msgstr "Ingeschakeld"
 
 #: ../src/brasero-plugin-manager-ui.c:143
 #, c-format
 msgid "Copyright %s"
-msgstr "Auteursrecht ligt bij %s"
+msgstr "Copyright %s"
 
 #: ../src/brasero-plugin-manager-ui.c:586
 #: ../src/brasero-plugin-manager-ui.c:956
@@ -1451,21 +1425,21 @@ msgstr "C_onfigureren"
 
 #: ../src/brasero-plugin-manager-ui.c:604
 msgid "A_ctivate"
-msgstr "A_ctiveren"
+msgstr "In_schakelen"
 
 #: ../src/brasero-plugin-manager-ui.c:616
 msgid "Ac_tivate All"
-msgstr "Alles ac_tiveren"
+msgstr "_Alles inschakelen"
 
 #: ../src/brasero-plugin-manager-ui.c:621
 msgid "_Deactivate All"
-msgstr "Alles _deactiveren"
+msgstr "Alles _uitschakelen"
 
 #. Use the translated name for the plugin.
 #: ../src/brasero-plugin-option.c:394
 #, c-format
 msgid "Options for plugin %s"
-msgstr ""
+msgstr "Opties voor plugin ‘%s’"
 
 #: ../src/brasero-progress.c:138
 msgid "Estimated drive speed:"
@@ -1476,19 +1450,18 @@ msgstr "Geschatte stationssnelheid:"
 #: ../src/brasero-progress.c:188
 #, c-format
 msgid "Total time: %02i:%02i:%02i"
-msgstr ""
+msgstr "Totale tijd: %02i:%02i:%02i"
 
 #: ../src/brasero-progress.c:199
-#, fuzzy
 msgid "Average drive speed:"
-msgstr "Geschatte stationssnelheid:"
+msgstr "Gemiddelde stationssnelheid:"
 
 #. Translators: first %02i is hours, the second one is minutes
 #. * and the third one is seconds.
 #: ../src/brasero-progress.c:425
-#, fuzzy, c-format
+#, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
-msgstr "Geschatte resterende tijd:"
+msgstr "Geschatte resterende tijd: %02i:%02i:%02i"
 
 #: ../src/brasero-progress.c:467
 #, c-format
@@ -1496,66 +1469,58 @@ msgid "%i MiB of %i MiB"
 msgstr "%i MiB van %i MiB"
 
 #: ../src/brasero-search-entry.c:188
-#, fuzzy
 msgid "Search:"
-msgstr "<b>Zoeken:\t</b>"
+msgstr "Zoeken:"
 
 #: ../src/brasero-search-entry.c:272
-#, fuzzy
 msgid "In _text documents"
-msgstr "_tekstdocumenten"
+msgstr "In _tekstdocumenten"
 
 #: ../src/brasero-search-entry.c:287
-#, fuzzy
 msgid "In _pictures"
-msgstr "_afbeeldingen"
+msgstr "In _afbeeldingen"
 
 #: ../src/brasero-search-entry.c:302
-#, fuzzy
 msgid "In _music"
-msgstr "_muziek"
+msgstr "In _muziek"
 
 #: ../src/brasero-search-entry.c:317
-#, fuzzy
 msgid "In _videos"
-msgstr "_video"
+msgstr "In _video's"
 
 #: ../src/brasero-search-entry.c:334
 msgid "Type your keywords or choose 'All files' from the menu"
-msgstr "Typ uw trefwoorden of kies \"Alle bestanden\" uit het menu"
+msgstr "Typ trefwoorden of kies ‘Alle bestanden’ uit het menu"
 
 #: ../src/brasero-search-entry.c:337
 msgid "Select if you want to search among image files only"
-msgstr "Selecteer als u enkel in afbeeldingsbestanden wilt zoeken"
+msgstr "Alleen naar afbeeldingsbestanden zoeken"
 
 #: ../src/brasero-search-entry.c:339
 msgid "Select if you want to search among video files only"
-msgstr "Selecteer als u enkel in videobestanden wilt zoeken"
+msgstr "Alleen naar videobestanden zoeken"
 
 #: ../src/brasero-search-entry.c:341
 msgid "Select if you want to search among audio files only"
-msgstr "Selecteer als u enkel in audiobestanden wilt zoeken"
+msgstr "Alleen naar audiobestanden zoeken"
 
 #: ../src/brasero-search-entry.c:343
 msgid "Select if you want to search among your text documents only"
-msgstr "Selecteer als u enkel in uw tekstdocumenten wilt zoeken"
+msgstr "Alleen naar tekstdocumenten zoeken"
 
 #: ../src/brasero-search-entry.c:345
 msgid "Click to start the search"
-msgstr "Klik om het zoeken te starten"
+msgstr "Klik om te starten met zoeken"
 
 #: ../src/brasero-search-beagle.c:324
-#, fuzzy
 msgid "Previous Results"
 msgstr "Vorige resultaten"
 
 #: ../src/brasero-search-beagle.c:337 ../src/brasero-search-beagle.c:798
-#, fuzzy
 msgid "No results"
-msgstr "Volgende resultaten"
+msgstr "geen resultaten"
 
 #: ../src/brasero-search-beagle.c:345
-#, fuzzy
 msgid "Next Results"
 msgstr "Volgende resultaten"
 
@@ -1570,21 +1535,34 @@ msgstr "Beschrijving"
 
 #: ../src/brasero-search-beagle.c:484
 msgid "Number of results displayed"
-msgstr "Aantal resultaten getoond"
+msgstr "Aantal getoonde resulten"
 
 #: ../src/brasero-search-beagle.c:790
-#, fuzzy, c-format
+#, c-format
 msgid "Results %i - %i (out of %i)"
-msgstr "<b>Resultaten %i  - %i (van %i)</b>"
+msgstr "Resultaten %i–%i (van %i)"
 
 #: ../src/brasero-search-beagle.c:1030
-#, fuzzy
 msgid "Error querying Beagle."
-msgstr "Fou ttijdens het bevragen van Beagle:"
+msgstr "Fout bij het bevragen van Beagle."
 
 #: ../src/brasero-song-properties.c:171
 msgid "Title:"
 msgstr "Titel:"
+
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# Dit is waar Wouter is gebleven.
 
 #: ../src/brasero-song-properties.c:181 ../src/brasero-song-properties.c:193
 #: ../src/brasero-song-properties.c:205 ../src/brasero-multi-song-props.c:206
