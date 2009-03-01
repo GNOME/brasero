@@ -36,7 +36,7 @@ msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-02-27 23:52+0100\n"
-"PO-Revision-Date: 2009-02-28 00:27+0100\n"
+"PO-Revision-Date: 2009-03-01 15:23+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
@@ -945,161 +945,120 @@ msgid ""
 msgstr ""
 "Of Brasero verborgen bestanden dient te filteren. Indien ingeschakeld worden deze gefilterd."
 
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# Dit is waar Wouter is gebleven.
-
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
-msgstr "Moet Brasero dit melden als bestanden gefilterd worden?"
+msgstr "Geeft aan of Brasero dient te melden dat bestanden gefilterd worden."
 
 #: ../data/brasero.schemas.in.h:23
 msgid ""
 "Should brasero notify when files are filtered. Set to true, brasero will "
 "display the notification."
 msgstr ""
-"Moet Brasero dit melden als bestanden gefilterd worden? Indien ingesteld op "
-"‘Waar’, zal Brasero een bericht weergeven."
+"Geeft aan of Brasero dient te melden dat bestanden gefilterd worden. Indien ingeschakeld, zal een bericht weergegeven worden."
 
 #: ../data/brasero.schemas.in.h:24
-#, fuzzy
 msgid ""
 "Should brasero replace symlinks by their target files in the project. Set to "
 "true, brasero will replace symlinks."
 msgstr ""
-"Moet Brasero gebroken symbolische koppelingen verbergen? Indien ingesteld op "
-"‘Waar’, zal Brasero symbolische koppelingen verbergen"
+"Geeft aan of Braseo het doel van symbolische verwijzingen moet gebruiken in plaats van de verwijzing zelf. Indien ingeschakeld zal Braseo symbolische verwijzing vervangen."
 
 #: ../data/brasero.schemas.in.h:25
-#, fuzzy
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Het paneel om te tonen bij audioprojecten. Het moet een van de volgende "
-"zijn: Kiezer/Zoeken/Afspeellijst/LeegBeeld."
+"Het te tonen paneel voor audioprojecten. Mogelijk waardes: ‘Chooser’, ‘Search’ of ‘Playlist’."
 
 #: ../data/brasero.schemas.in.h:26
-#, fuzzy
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
 msgstr ""
-"Het paneel om te tonen bij gegevensprojecten. Het moet één van de volgende "
-"zijn: Kiezer/Zoeken/LeegBeeld."
+"Het te tonen paneel voor dataprojecten. Mogelijk waardes: ‘Chooser’ of ‘Search’."
 
 #: ../data/brasero.schemas.in.h:27
-#, fuzzy
 msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Het paneel om te tonen bij audioprojecten. Het moet een van de volgende "
-"zijn: Kiezer/Zoeken/Afspeellijst/LeegBeeld."
+"Het te tonen paneel voor videoprojecten. Mogelijk waardes: ‘Chooser’, ‘Search’ of ‘Playlist’."
 
 #: ../data/brasero.schemas.in.h:28
 msgid ""
 "This key sets where the project pane should be (0 = on the right, 1 = on the "
 "left, 2 = at the top, 3 = at the bottom)"
 msgstr ""
-"Deze waarde bepaalt waar het projectvenster verschijnt (0 = rechts, 1 = "
-"links, 2 = bovenaan, 3 = ondreaan)"
+"Deze waarde bepaalt waar het projectpaneel getoond wordt. ‘0’ voor rechts, ‘1’ voor links, ‘2' voor bovenaan, ‘3’ voor onderaan."
 
 #: ../data/brasero.schemas.in.h:29
-#, fuzzy
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
-msgstr "Wordt gebruikt in combinatie met de -immed-vlag bij cdrecord."
+msgstr "Gebruikt in combinatie met de ‘-immed’-vlag voor cdrecord."
 
 #: ../data/brasero.schemas.in.h:30
-#, fuzzy
 msgid "Whether to display a side pane. Set to true to use it."
 msgstr ""
-"Of bestandsvoorbeelden getoond moeten worden. Stel in op ‘Waar’ om het te "
-"gebruiken."
+"Geeft aan of het zijpaneel getoond moet worden."
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
-"Of bestandsvoorbeelden getoond moeten worden. Stel in op ‘Waar’ om het te "
-"gebruiken."
+"Geeft aan of bestandsvoorbeelden getoond moeten worden."
 
 #: ../data/brasero.schemas.in.h:32
 msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr ""
+msgstr "Geeft aan de ‘--driver generic-mmc-raw’-vlag voor cdrdao gebruikt moet worden."
 
 #: ../data/brasero.schemas.in.h:33
-#, fuzzy
 msgid ""
 "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, "
 "brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Of de -immed-vlag gebruikt moet worden bij cdrecord. Gebruik met voorzorg "
-"(instellen op ‘Waar’), aangezien het slechts een oplossing is voor bepaalde "
-"stations/configuraties."
+"Geeft aan of de ‘--driver generic-mmc-raw’-vlag voor cdrdao gebruikt moet worden. Dit kan nodig zijn om problemen bepaalde stations te omzeilen."
 
 #: ../data/brasero.schemas.in.h:34
-#, fuzzy
 msgid ""
 "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) "
 "as it's only a workaround for some drives/setups."
 msgstr ""
-"Of de -immed-vlag gebruikt moet worden bij cdrecord. Gebruik met voorzorg "
-"(instellen op ‘Waar’), aangezien het slechts een oplossing is voor bepaalde "
-"stations/configuraties."
+"Geeft aan of de ‘-immed’-vlag voor cdrecord gebruikt moet worden. Schakel dit alleen in speciale gevallen in want het is slechts bedoeld om problemen met bepaalde stations te omzeilen."
 
 #: ../data/brasero.schemas.in.h:35
 msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr ""
+msgstr "Geeft aan of de ‘use-the-force-luke=dao’-vlag voor growisofs gebruikt moet worden."
 
 #: ../data/brasero.schemas.in.h:36
-#, fuzzy
 msgid ""
 "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Of de -immed-vlag gebruikt moet worden bij cdrecord. Gebruik met voorzorg "
-"(instellen op ‘Waar’), aangezien het slechts een oplossing is voor bepaalde "
-"stations/configuraties."
+msgstr "Geeft aan of de ‘use-the-force-luke=dao’-vlag voor growisofs gebruikt moet worden. Indien uitgeschakeld zal deze niet gebruikt worden; dit kan problemen met bepaalde stations omzeilen."
 
 #: ../data/brasero.schemas.in.h:37
-#, fuzzy
 msgid "White list of additional plugins to use"
-msgstr "White list van te gebruiken bijkomende plug-ins"
+msgstr "Lijst van te gebruiken aanvullende plug-ins"
 
 #: ../data/brasero.schemas.in.h:38
-#, fuzzy
 msgid "Width for image preview"
-msgstr "Breedte voor afbeelingsvoorbeeld"
+msgstr "Breedte van afbeelingsvoorbeeld"
 
 #: ../data/brasero.schemas.in.h:39
 msgid "Width for video preview"
-msgstr "Breedte voor videovoorbeeld"
+msgstr "Breedte van videovoorbeeld"
 
 #: ../data/brasero.xml.in.h:1
 msgid "Brasero project file"
-msgstr "Brasero projectbestand"
+msgstr "Brasero-projectbestand"
 
 #: ../src/brasero-dest-selection.c:97 ../src/burn.c:923
-#, fuzzy
 msgid "Ongoing burning process"
-msgstr "bezig met branden"
+msgstr "Brandproces is bezig"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
 #: ../src/brasero-dest-selection.c:414
-#, fuzzy, c-format
+#, c-format
 msgid "%s: \"%s\""
-msgstr "%s / %s"
+msgstr "%s: ‘%s’"
 
 #. Translators: this string is only used when the user
 #. * wants to copy a disc using the same destination and
@@ -1108,22 +1067,22 @@ msgstr "%s / %s"
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
 #: ../src/brasero-dest-selection.c:439
-#, fuzzy, c-format
+#, c-format
 msgid "New disc in the burner holding source disc"
-msgstr "De schijf in het station bevat gegevens:"
+msgstr "Nieuwe schijf in hetzelfde station als de bronschijf"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../src/brasero-dest-selection.c:463
 #, c-format
 msgid "%s: no free space"
-msgstr ""
+msgstr "%s: geen vrije ruimte"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
 #: ../src/brasero-dest-selection.c:490
-#, fuzzy, c-format
+#, c-format
 msgid "%s: %s of free space"
-msgstr "%s (%s vrij)"
+msgstr "%s: %s vrije ruimte"
 
 #: ../src/brasero-audio-disc.c:300 ../src/brasero-tray.c:80
 #: ../src/brasero-data-disc.c:117 ../src/brasero-video-disc.c:92
@@ -1132,25 +1091,25 @@ msgstr "Menu"
 
 #: ../src/brasero-audio-disc.c:301 ../src/brasero-data-disc.c:118
 msgid "Open the selected files"
-msgstr "De geselecteerde bestanden openen"
+msgstr "Geselecteerde bestanden openen"
 
 #: ../src/brasero-audio-disc.c:303 ../src/brasero-video-disc.c:95
 msgid "_Edit Information..."
-msgstr "Informatie b_ewerken..."
+msgstr "Informatie b_ewerken…"
 
 #: ../src/brasero-audio-disc.c:303
 msgid "Edit the track information (start, end, author, ...)"
-msgstr "Wijzig de trackinformatie (begin, einde, auteur,...)"
+msgstr "Trackinformatie (begin, einde, auteur, …) wijzigen"
 
 #: ../src/brasero-audio-disc.c:305 ../src/brasero-data-disc.c:122
 #: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
-msgstr "De geselecteerde bestanden verwijderen van het project"
+msgstr "Geselecteerde bestanden uit het project verwijderen"
 
 #: ../src/brasero-audio-disc.c:307 ../src/brasero-data-disc.c:124
 #: ../src/brasero-video-disc.c:99
 msgid "Add the files stored in the clipboard"
-msgstr "Bestanden toevoegen die in het klembord zijn opgeslagen"
+msgstr "Bestanden van het klembord toevoegen"
 
 #: ../src/brasero-audio-disc.c:309
 msgid "I_nsert a Pause"
@@ -1166,7 +1125,7 @@ msgstr "Track _splitsen…"
 
 #: ../src/brasero-audio-disc.c:311
 msgid "Split the selected track"
-msgstr "Splits de geselecteerde track"
+msgstr "Geselecteerde track splitsen"
 
 #: ../src/brasero-audio-disc.c:525 ../src/brasero-audio-disc.c:1016
 msgid "Pause"
@@ -1174,12 +1133,11 @@ msgstr "Pauze"
 
 #: ../src/brasero-audio-disc.c:531
 msgid "Split"
-msgstr "Splits"
+msgstr "Splitsen"
 
 #: ../src/brasero-audio-disc.c:646
-#, fuzzy
 msgid "Track"
-msgstr "Track splitsen"
+msgstr "Track"
 
 #: ../src/brasero-audio-disc.c:685 ../src/brasero-video-disc.c:1171
 msgid "Title"
@@ -1195,71 +1153,61 @@ msgid "Length"
 msgstr "Lengte"
 
 #: ../src/brasero-audio-disc.c:922 ../src/burn-basics.c:76
-#, fuzzy
 msgid "Analysing audio files"
-msgstr "Audio-informatie wordt geanalyseerd"
+msgstr "Audiobestanden analyseren"
 
 #: ../src/brasero-audio-disc.c:1152
-#, fuzzy
 msgid "The track will be padded at its end."
-msgstr "De track zal aan het einde verlengd worden:"
+msgstr "De track zal aan het einde verlengd worden."
 
 #: ../src/brasero-audio-disc.c:1153
-#, fuzzy
 msgid "The track is shorter than 6 seconds"
-msgstr "de track is korter dan 6 seconden."
+msgstr "De track is korter dan 6 seconden"
 
 #: ../src/brasero-audio-disc.c:1356 ../src/brasero-metadata.c:671
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
-msgstr "\"%s\" kan niet verwerkt worden door gstreamer:"
+msgstr "‘%s’ kan niet door Gstreamer verwerkt worden."
 
 #: ../src/brasero-audio-disc.c:1359
-#, fuzzy
 msgid "Make sure the appropriate codec is installed"
-msgstr "Controleer of de gepaste codec geïnstalleerd is."
+msgstr "Controleer of een geschikte codec geïnstalleerd is"
 
 #: ../src/brasero-audio-disc.c:1375
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to add \"%s\" which is a video file?"
-msgstr "Wilt u deze toch splitsen?"
+msgstr "Wilt u het videobestand ‘%s’ toevoegen?"
 
 #: ../src/brasero-audio-disc.c:1384
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
-msgstr ""
+msgstr "Dit bestand is een videobestand. Hiervan kan enkel het audiogedeelte naar de schijf geschreven worden."
 
 #: ../src/brasero-audio-disc.c:1387
-#, fuzzy
 msgid "_Discard File"
-msgstr "Schijfbestand"
+msgstr "Bestand _negeren"
 
 #: ../src/brasero-audio-disc.c:1390 ../src/brasero-data-disc.c:994
 #: ../src/brasero-data-disc.c:1038
-#, fuzzy
 msgid "_Add File"
-msgstr "Bestanden _toevoegen"
+msgstr "Bestand _toevoegen"
 
 #: ../src/brasero-audio-disc.c:1510
-#, fuzzy
 msgid "Do you want to search for audio files inside the directory?"
-msgstr "Wilt u erin naar audioschijven zoeken?"
+msgstr "Wilt u naar audiobestanden zoeken binnen deze map?"
 
 #: ../src/brasero-audio-disc.c:1515
-#, fuzzy
 msgid "Directories cannot be added to an audio disc."
-msgstr "Mappen kunnen niet toegevoegd worden aan een audioschijf:"
+msgstr "Er kunnen geen mappen aan audioschijven toegevoegd worden."
 
 #: ../src/brasero-audio-disc.c:1519
-#, fuzzy
 msgid "Search _Directory"
-msgstr "Map zoeken"
+msgstr "_Map doorzoeken"
 
 #: ../src/brasero-audio-disc.c:1574 ../src/brasero-video-disc.c:272
-#, fuzzy, c-format
 msgid "\"%s\" could not be opened."
-msgstr "de dvd kon niet geopend worden"
+msgstr "‘%s’ kon niet geopend worden."
 
 #: ../src/brasero-audio-disc.c:1724 ../src/brasero-audio-disc.c:1736
 #: ../src/brasero-audio-disc.c:1761 ../src/brasero-playlist.c:953
@@ -1267,16 +1215,29 @@ msgstr "de dvd kon niet geopend worden"
 #: ../src/brasero-data-tree-model.c:519 ../src/brasero-data-tree-model.c:580
 #: ../src/brasero-data-tree-model.c:585 ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
-msgstr "(bezig met laden...)"
+msgstr "(laden…)"
 
 #: ../src/brasero-audio-disc.c:2902
 msgid "Select one song only please."
-msgstr "Selecteer slechts één nummer"
+msgstr "Gelieve slechts een enkel nummer te selecteren."
 
 #: ../src/brasero-audio-disc.c:2903
-#, fuzzy
 msgid "Impossible to split more than one song at a time"
-msgstr "onmogelijk om meer dan één nummer per keer te splitsen"
+msgstr "Het is niet mogelijk meer dan een nummer tegelijkertijd te splitsen."
+
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# #############################################################################
+# Dit is waar Wouter is gebleven.
 
 #. Translators: "%s" is the name of a file here
 #: ../src/brasero-audio-disc.c:3840
