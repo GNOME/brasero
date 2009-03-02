@@ -1,3 +1,77 @@
+02-3-2009 Brasero 2.25.92
+
+Bug Fix Release
+
+Changes and bugs fixed:
+Fixed Leaks
+Fix #571806 – Marging two messages
+Fix #572622 – Merge strings
+Fix #572621 – Missing translator comments
+Fix #572279 – Selecting image files also shows "picture" files
+Fix #573054 – Probably broken code
+Fix #572460 – Brasero does not trim long recent projects names
+Fix #568495 – Can't burn more than 29mb DVD
+Fix #573060 – exclusively open with O_EXCL isn't supported by Solaris
+Fix #567822 – Can't blank DVD on FreeBSD
+Fix #573158 – Brasero reports 0 byte free for blank dvd discs
+Use GIO to get image sizes Allows to display size of an image stored in burn://
+Work harder to get UTF-8 filenames.
+burn:// plugin is compulsory and therefore cannot be disabled.
+Fix a bug where the caps for DVD DL was sometimes used with single ones.
+Return all results which led to a blocking exploration of directories.
+Avoid a race condition with dbus.
+Some fixes for BD-RE.
+Allow formatting/long blanking of BD-RE.
+Improvements on DVD+/- R.
+Fix for multisession DVDs when the new session is beyond the 4 Gio boundary.
+Fix Desktop file.
+Code Cleanup.
+Fixed strings.
+
+Translations:
+
+* pl.po: Updated Polish translation by Tomasz Dominikowski <tdominikowski {at} aviary.pl>
+* nl.po: Updated Dutch translation by Wouter Bolsterlee.
+* Malayalam translation updated by Pratheesh Prakash
+* hu.po: Translation updated by Gabor Kelemen <kelemeng {at} gnome.hu>
+* fr.po: Updated French translation by Claude Paroz <claude {at} 2xlibre.net>
+* th.po: Updated Thai translation by Theppitak Karoonboonyanan <thep {at} linux.thai.net>
+* it.po: Updated Italian translation by Milo Casagrande
+* Updated Greek translation by Marios Zindilis
+* Updated Korean translation
+* Updated Danish translation
+* zh_HK.po: Updated Traditional Chinese translation(Hong Kong) by Chao-Hsiung Liao <j_h_liau {at} yahoo.com.tw>
+* zh_TW.po: Updated Traditional Chinese translation(Taiwan) by Chao-Hsiung Liao <j_h_liau {at} yahoo.com.tw>
+* Updated Romanian translations by Adi Roiban
+* Updated Spanish translation
+* en_GB.po: Updated British English translation by Philip Withnall <philip {at} tecnocode.co.uk>
+* Updated Catalan translation by Gil Forcada
+* Updated Finnish translation
+* sv.po: Updated Swedish translation
+* Update zh_CN.po
+* bg.po: Updated Bulgarian translation by Ivaylo Valkov <ivaylo {at} e-valkov.org>
+* de.po: Updated German Translation
+* et.po: Translation updated by Mattias Põldaru
+* eu.po: Updated Basque translation by Inaki Larranaga Murgoitio <dooteo {at} euskalgnu.org>
+
+Documentation:
+
+* en_GB/en_GB.po: Added British English translation by Philip Withnall <philip {at} tecnocode.co.uk>
+* Updated Greek translation by Marios Zindilis
+* sv/sv.po: Updated Swedish translation.
+
+
+Homepage: http://www.gnome.org/projects/brasero
+
+Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
+
+Mailing List for User and Developer discussion: brasero-list@gnome.org
+
+Svn Repository: http://svn.gnome.org/viewcvs/brasero/
+
+Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
+
+
 17-2-2009 Brasero 2.25.91.1
 
 Build fixes
