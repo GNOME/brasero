@@ -20,6 +20,9 @@
 # recordable        - beschrijfbare (niet opneembare!)
 # track             - track
 #
+# Oh, en overal waar de naam ‘Brasero’ naar mijn mening staat waar die niet
+# hoort heb ik die gewoon niet in de vertaling opgenomen… ;) — Wouter
+#
 #
 # #############################################################################
 # #############################################################################
@@ -35,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-27 23:52+0100\n"
+"POT-Creation-Date: 2009-03-04 21:55+0100\n"
 "PO-Revision-Date: 2009-03-01 15:23+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -433,7 +436,8 @@ msgstr "Map voor cd/dvd-schrijven"
 
 #: ../src/plugins/local-track/burn-uri.c:714
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
-msgstr "Bestanden schrijven uit de speciale map voor cd/dvd schrijven in Nautilus"
+msgstr ""
+"Bestanden schrijven uit de speciale map voor cd/dvd schrijven in Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 #: ../data/brasero-open-image.desktop.in.in.h:1
@@ -505,15 +509,16 @@ msgstr "De gegevensintegriteit van deze schijf controleren"
 msgid ""
 "Do you really want to keep the current extension for the disc image name?"
 msgstr ""
-"Weet u zeker dat u de huidige bestandsextensie voor het beeldbestand "
-"wilt gebruiken?"
+"Weet u zeker dat u de huidige bestandsextensie voor het beeldbestand wilt "
+"gebruiken?"
 
 #: ../src/brasero-medium-properties.c:333
 msgid ""
 "If you choose to keep it, programs may not be able to recognize the file "
 "type properly."
 msgstr ""
-"Als u deze naam gebruikt, is het mogelijk dat andere toepassingen het bestandstype niet correct kunnen detecteren."
+"Als u deze naam gebruikt, is het mogelijk dat andere toepassingen het "
+"bestandstype niet correct kunnen detecteren."
 
 #: ../src/brasero-medium-properties.c:336
 msgid "_Keep Current Extension"
@@ -593,7 +598,8 @@ msgstr "Audioschijf (%s)"
 msgid ""
 "Please insert a recordable CD or DVD if you don't want to write to an image "
 "file."
-msgstr "Voer een beschrijfbare cd of dvd als u geen schijf-image wilt schrijven."
+msgstr ""
+"Voer een beschrijfbare cd of dvd als u geen schijf-image wilt schrijven."
 
 #: ../src/brasero-burn-options.c:259
 msgid "Please choose another CD or DVD or insert a new one."
@@ -617,7 +623,8 @@ msgstr "Er is geen beschrijfbare schijf ingevoerd."
 msgid ""
 "No track information (artist, compositor, ...) will be written to the disc."
 msgstr ""
-"Er zal geen track-informatie (artiest, titel, etc.) naar de schijf geschreven worden."
+"Er zal geen track-informatie (artiest, titel, etc.) naar de schijf "
+"geschreven worden."
 
 #: ../src/brasero-burn-options.c:274
 msgid "This is not supported by the current active burning backend."
@@ -661,7 +668,8 @@ msgstr "Het is niet mogelijk te schrijven met de huidige plug-ins."
 
 #: ../src/brasero-burn-options.c:337 ../src/brasero-data-disc.c:601
 msgid "Would you like to burn beyond the disc reported capacity?"
-msgstr "Wilt u verder dan de door de schrijf gerapporteerde capaciteit schrijven?"
+msgstr ""
+"Wilt u verder dan de door de schrijf gerapporteerde capaciteit schrijven?"
 
 #: ../src/brasero-burn-options.c:338 ../src/brasero-data-disc.c:602
 msgid ""
@@ -671,8 +679,11 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Het project is te groot voor de schijf. U dient mogelijk bestanden te verwijderen.\n"
-"U kunt deze optie gebruiken als u een cd-r(w) van 90 of 100 minuten gebruikt die niet correct gedetecteerd kon worden, en om die reden de overburn-optie nodig heeft.\n"
+"Het project is te groot voor de schijf. U dient mogelijk bestanden te "
+"verwijderen.\n"
+"U kunt deze optie gebruiken als u een cd-r(w) van 90 of 100 minuten gebruikt "
+"die niet correct gedetecteerd kon worden, en om die reden de overburn-optie "
+"nodig heeft.\n"
 "Let op: dit kan tot fouten leiden."
 
 #: ../src/brasero-burn-options.c:345 ../src/brasero-data-disc.c:611
@@ -686,14 +697,17 @@ msgstr "Verder schrijven dan de door de schijf gerapporteerde capaciteit"
 #: ../src/brasero-burn-options.c:357
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
-msgstr "Het station dat de bronschijf bevat, zal ook gebruikt worden voor het schrijven."
+msgstr ""
+"Het station dat de bronschijf bevat, zal ook gebruikt worden voor het "
+"schrijven."
 
 #: ../src/brasero-burn-options.c:358
 msgid ""
 "A new recordable disc will be required once the one currently loaded has "
 "been copied."
 msgstr ""
-"Er zal een nieuwe beschrijfbare schijf nodig zijn nadat de huidige schijf gekopieerd is."
+"Er zal een nieuwe beschrijfbare schijf nodig zijn nadat de huidige schijf "
+"gekopieerd is."
 
 #. Create a default Burn button
 #: ../src/brasero-burn-options.c:392
@@ -861,7 +875,8 @@ msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
 msgstr ""
-"Bevat de naam van de voorkeurs-engine voor het branden van cd's. Deze zal indien mogelijk gebruikt worden."
+"Bevat de naam van de voorkeurs-engine voor het branden van cd's. Deze zal "
+"indien mogelijk gebruikt worden."
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -921,7 +936,9 @@ msgstr "Het voor videoprojecten te tonen paneel"
 
 #: ../data/brasero.schemas.in.h:17
 msgid "Replace symlinks files by their targets"
-msgstr "Het doel van symbolische verwijzingen gebruiken in plaats van de verwijzing zelf."
+msgstr ""
+"Het doel van symbolische verwijzingen gebruiken in plaats van de verwijzing "
+"zelf."
 
 #: ../data/brasero.schemas.in.h:18
 msgid "Should brasero filter broken symlinks files"
@@ -932,7 +949,8 @@ msgid ""
 "Should brasero filter broken symlinks. Set to true, brasero will filter "
 "broken symlinks."
 msgstr ""
-"Of Brasero kapotte symbolische verwijzingen dient te filteren. Indien ingeschakeld worden deze gefilterd."
+"Of Brasero kapotte symbolische verwijzingen dient te filteren. Indien "
+"ingeschakeld worden deze gefilterd."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
@@ -943,7 +961,8 @@ msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr ""
-"Of Brasero verborgen bestanden dient te filteren. Indien ingeschakeld worden deze gefilterd."
+"Of Brasero verborgen bestanden dient te filteren. Indien ingeschakeld worden "
+"deze gefilterd."
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
@@ -954,42 +973,49 @@ msgid ""
 "Should brasero notify when files are filtered. Set to true, brasero will "
 "display the notification."
 msgstr ""
-"Geeft aan of Brasero dient te melden dat bestanden gefilterd worden. Indien ingeschakeld, zal een bericht weergegeven worden."
+"Geeft aan of Brasero dient te melden dat bestanden gefilterd worden. Indien "
+"ingeschakeld, zal een bericht weergegeven worden."
 
 #: ../data/brasero.schemas.in.h:24
 msgid ""
 "Should brasero replace symlinks by their target files in the project. Set to "
 "true, brasero will replace symlinks."
 msgstr ""
-"Geeft aan of Braseo het doel van symbolische verwijzingen moet gebruiken in plaats van de verwijzing zelf. Indien ingeschakeld zal Braseo symbolische verwijzing vervangen."
+"Geeft aan of Braseo het doel van symbolische verwijzingen moet gebruiken in "
+"plaats van de verwijzing zelf. Indien ingeschakeld zal Braseo symbolische "
+"verwijzing vervangen."
 
 #: ../data/brasero.schemas.in.h:25
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Het te tonen paneel voor audioprojecten. Mogelijk waardes: ‘Chooser’, ‘Search’ of ‘Playlist’."
+"Het te tonen paneel voor audioprojecten. Mogelijk waardes: ‘Chooser’, "
+"‘Search’ of ‘Playlist’."
 
 #: ../data/brasero.schemas.in.h:26
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
 msgstr ""
-"Het te tonen paneel voor dataprojecten. Mogelijk waardes: ‘Chooser’ of ‘Search’."
+"Het te tonen paneel voor dataprojecten. Mogelijk waardes: ‘Chooser’ of "
+"‘Search’."
 
 #: ../data/brasero.schemas.in.h:27
 msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Het te tonen paneel voor videoprojecten. Mogelijk waardes: ‘Chooser’, ‘Search’ of ‘Playlist’."
+"Het te tonen paneel voor videoprojecten. Mogelijk waardes: ‘Chooser’, "
+"‘Search’ of ‘Playlist’."
 
 #: ../data/brasero.schemas.in.h:28
 msgid ""
 "This key sets where the project pane should be (0 = on the right, 1 = on the "
 "left, 2 = at the top, 3 = at the bottom)"
 msgstr ""
-"Deze waarde bepaalt waar het projectpaneel getoond wordt. ‘0’ voor rechts, ‘1’ voor links, ‘2' voor bovenaan, ‘3’ voor onderaan."
+"Deze waarde bepaalt waar het projectpaneel getoond wordt. ‘0’ voor rechts, "
+"‘1’ voor links, ‘2' voor bovenaan, ‘3’ voor onderaan."
 
 #: ../data/brasero.schemas.in.h:29
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
@@ -997,41 +1023,49 @@ msgstr "Gebruikt in combinatie met de ‘-immed’-vlag voor cdrecord."
 
 #: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
-msgstr ""
-"Geeft aan of het zijpaneel getoond moet worden."
+msgstr "Geeft aan of het zijpaneel getoond moet worden."
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
-msgstr ""
-"Geeft aan of bestandsvoorbeelden getoond moeten worden."
+msgstr "Geeft aan of bestandsvoorbeelden getoond moeten worden."
 
 #: ../data/brasero.schemas.in.h:32
 msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "Geeft aan de ‘--driver generic-mmc-raw’-vlag voor cdrdao gebruikt moet worden."
+msgstr ""
+"Geeft aan de ‘--driver generic-mmc-raw’-vlag voor cdrdao gebruikt moet "
+"worden."
 
 #: ../data/brasero.schemas.in.h:33
 msgid ""
 "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, "
 "brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Geeft aan of de ‘--driver generic-mmc-raw’-vlag voor cdrdao gebruikt moet worden. Dit kan nodig zijn om problemen bepaalde stations te omzeilen."
+"Geeft aan of de ‘--driver generic-mmc-raw’-vlag voor cdrdao gebruikt moet "
+"worden. Dit kan nodig zijn om problemen bepaalde stations te omzeilen."
 
 #: ../data/brasero.schemas.in.h:34
 msgid ""
 "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) "
 "as it's only a workaround for some drives/setups."
 msgstr ""
-"Geeft aan of de ‘-immed’-vlag voor cdrecord gebruikt moet worden. Schakel dit alleen in speciale gevallen in want het is slechts bedoeld om problemen met bepaalde stations te omzeilen."
+"Geeft aan of de ‘-immed’-vlag voor cdrecord gebruikt moet worden. Schakel "
+"dit alleen in speciale gevallen in want het is slechts bedoeld om problemen "
+"met bepaalde stations te omzeilen."
 
 #: ../data/brasero.schemas.in.h:35
 msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr "Geeft aan of de ‘use-the-force-luke=dao’-vlag voor growisofs gebruikt moet worden."
+msgstr ""
+"Geeft aan of de ‘use-the-force-luke=dao’-vlag voor growisofs gebruikt moet "
+"worden."
 
 #: ../data/brasero.schemas.in.h:36
 msgid ""
 "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr "Geeft aan of de ‘use-the-force-luke=dao’-vlag voor growisofs gebruikt moet worden. Indien uitgeschakeld zal deze niet gebruikt worden; dit kan problemen met bepaalde stations omzeilen."
+msgstr ""
+"Geeft aan of de ‘use-the-force-luke=dao’-vlag voor growisofs gebruikt moet "
+"worden. Indien uitgeschakeld zal deze niet gebruikt worden; dit kan "
+"problemen met bepaalde stations omzeilen."
 
 #: ../data/brasero.schemas.in.h:37
 msgid "White list of additional plugins to use"
@@ -1182,7 +1216,9 @@ msgstr "Wilt u het videobestand ‘%s’ toevoegen?"
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
-msgstr "Dit bestand is een videobestand. Hiervan kan enkel het audiogedeelte naar de schijf geschreven worden."
+msgstr ""
+"Dit bestand is een videobestand. Hiervan kan enkel het audiogedeelte naar de "
+"schijf geschreven worden."
 
 #: ../src/brasero-audio-disc.c:1387
 msgid "_Discard File"
@@ -1206,6 +1242,7 @@ msgid "Search _Directory"
 msgstr "_Map doorzoeken"
 
 #: ../src/brasero-audio-disc.c:1574 ../src/brasero-video-disc.c:272
+#, c-format
 msgid "\"%s\" could not be opened."
 msgstr "‘%s’ kon niet geopend worden."
 
@@ -1550,6 +1587,294 @@ msgstr "Fout bij het bevragen van Beagle."
 msgid "Title:"
 msgstr "Titel:"
 
+#: ../src/brasero-song-properties.c:181 ../src/brasero-song-properties.c:193
+#: ../src/brasero-song-properties.c:205 ../src/brasero-multi-song-props.c:206
+#: ../src/brasero-multi-song-props.c:247 ../src/brasero-multi-song-props.c:268
+msgid ""
+"This information will be written to the disc using CD-TEXT technology. It "
+"can be read and displayed by some audio CD players."
+msgstr ""
+"Deze informatie zal op de schijf worden geschreven met behulp van CD-TEXT-"
+"technologie, die door sommige cd-spelers uitgelezen worden."
+
+#: ../src/brasero-song-properties.c:183 ../src/brasero-multi-song-props.c:237
+msgid "Artist:"
+msgstr "Artiest:"
+
+#: ../src/brasero-song-properties.c:195 ../src/brasero-multi-song-props.c:258
+msgid "Composer:"
+msgstr "Componist:"
+
+#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:581
+#: ../src/brasero-tool-dialog.c:256 ../src/brasero-multi-song-props.c:303
+msgid "Options"
+msgstr "Opties"
+
+#: ../src/brasero-song-properties.c:229
+msgid "Song start:"
+msgstr "Begin nummer:"
+
+#: ../src/brasero-song-properties.c:235
+msgid "Song end:"
+msgstr "Einde nummer:"
+
+#: ../src/brasero-song-properties.c:241 ../src/brasero-multi-song-props.c:312
+msgid "Pause length:"
+msgstr "Duur pauze:"
+
+#: ../src/brasero-song-properties.c:250 ../src/brasero-multi-song-props.c:323
+msgid "Gives the length of the pause that should follow the track"
+msgstr "Geeft de duur van de pauze die na de track moet komen"
+
+#: ../src/brasero-song-properties.c:252
+msgid "Track length:"
+msgstr "Tracklengte:"
+
+#: ../src/brasero-song-properties.c:281 ../src/brasero-multi-song-props.c:340
+msgid "Song Information"
+msgstr "Nummerinformatie"
+
+#: ../src/brasero-song-properties.c:366
+#, c-format
+msgid "Song information for track %02i"
+msgstr "Nummerinformatie voor track %02i"
+
+#: ../src/brasero-tray.c:81
+msgid "Cancel ongoing burning"
+msgstr "Brandproces annuleren"
+
+#: ../src/brasero-tray.c:86
+msgid "Show _Dialog"
+msgstr "_Dialoogvenster tonen"
+
+#: ../src/brasero-tray.c:86
+msgid "Show dialog"
+msgstr "Dialoogvenster tonen"
+
+#: ../src/brasero-tray.c:255
+#, c-format
+msgid "%s, %02i%% done, %s remaining"
+msgstr "%s, %02i%% voltooid, %s resterend"
+
+#: ../src/brasero-tray.c:262
+#, c-format
+msgid "%s, %02i%% done"
+msgstr "%s, %02i%% voltooid"
+
+#: ../src/brasero-burn-dialog.c:161 ../src/burn-basics.c:70
+msgid "Creating image"
+msgstr "Image wordt aangemaakt"
+
+#: ../src/brasero-burn-dialog.c:162
+msgid "Brasero - Creating Image"
+msgstr "Image aanmaken"
+
+#: ../src/brasero-burn-dialog.c:167 ../src/brasero-burn-dialog.c:181
+#: ../src/brasero-burn-dialog.c:981
+msgid "Brasero - Burning DVD (Simulation)"
+msgstr "Dvd branden (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:168
+msgid "Simulation of video DVD burning"
+msgstr "Simulatie van branden van video-dvd"
+
+#: ../src/brasero-burn-dialog.c:171 ../src/brasero-burn-dialog.c:185
+msgid "Brasero - Burning DVD"
+msgstr "Dvd branden"
+
+#: ../src/brasero-burn-dialog.c:172
+msgid "Burning video DVD"
+msgstr "Video-dvd branden"
+
+#: ../src/brasero-burn-dialog.c:182
+msgid "Simulation of data DVD burning"
+msgstr "Simulatie van branden van data-dvd"
+
+#: ../src/brasero-burn-dialog.c:186
+msgid "Burning data DVD"
+msgstr "Data-dvd branden"
+
+#: ../src/brasero-burn-dialog.c:195
+msgid "Burning DVD (Simulation)"
+msgstr "Dvd branden (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:196
+msgid "Simulation of image to DVD burning"
+msgstr "Simulatie van branden van image op dvd"
+
+#: ../src/brasero-burn-dialog.c:199
+msgid "Burning DVD"
+msgstr "Dvd branden"
+
+#: ../src/brasero-burn-dialog.c:200
+msgid "Burning image to DVD"
+msgstr "Image op dvd branden"
+
+#: ../src/brasero-burn-dialog.c:209 ../src/brasero-burn-dialog.c:975
+msgid "Brasero - Copying DVD (Simulation)"
+msgstr "Dvd kopiëren (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:210
+msgid "Simulation of data DVD copying"
+msgstr "Simulatie van kopiëren van dvd"
+
+#: ../src/brasero-burn-dialog.c:213
+msgid "Brasero - Copying DVD"
+msgstr "Dvd kopiëren"
+
+#: ../src/brasero-burn-dialog.c:214
+msgid "Copying data DVD"
+msgstr "Data-dvd kopiëren"
+
+#: ../src/brasero-burn-dialog.c:225 ../src/brasero-burn-dialog.c:239
+#: ../src/brasero-burn-dialog.c:253 ../src/brasero-burn-dialog.c:281
+#: ../src/brasero-burn-dialog.c:310
+msgid "Brasero - Burning CD (Simulation)"
+msgstr "Cd branden (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:226
+msgid "Simulation of (S)VCD burning"
+msgstr "Simulatie van branden van (s)vcd"
+
+#: ../src/brasero-burn-dialog.c:229 ../src/brasero-burn-dialog.c:243
+#: ../src/brasero-burn-dialog.c:257 ../src/brasero-burn-dialog.c:285
+#: ../src/brasero-burn-dialog.c:314
+msgid "Brasero - Burning CD"
+msgstr "Cd branden"
+
+#: ../src/brasero-burn-dialog.c:230
+msgid "Burning (S)VCD"
+msgstr "(S)vcd branden"
+
+#: ../src/brasero-burn-dialog.c:240 ../src/brasero-burn-dialog.c:311
+msgid "Simulation of audio CD burning"
+msgstr "Simulatie van branden van audio-cd"
+
+#: ../src/brasero-burn-dialog.c:244 ../src/brasero-burn-dialog.c:315
+msgid "Burning audio CD"
+msgstr "Audio-cd branden"
+
+#: ../src/brasero-burn-dialog.c:254
+msgid "Simulation of data CD burning"
+msgstr "Simulatie van branden van data-cd"
+
+#: ../src/brasero-burn-dialog.c:258
+msgid "Burning data CD"
+msgstr "Data-cd branden"
+
+#: ../src/brasero-burn-dialog.c:267 ../src/brasero-burn-dialog.c:989
+msgid "Brasero - Copying CD (Simulation)"
+msgstr "Cd kopiëren (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:268
+msgid "Simulation of CD copying"
+msgstr "Simulatie van kopiëren van cd"
+
+#: ../src/brasero-burn-dialog.c:271
+msgid "Brasero - Copying CD"
+msgstr "Cd kopiëren"
+
+#: ../src/brasero-burn-dialog.c:272
+msgid "Copying CD"
+msgstr "Cd kopiëren"
+
+#: ../src/brasero-burn-dialog.c:282
+msgid "Simulation of image to CD burning"
+msgstr "Simulatie van branden van image op cd"
+
+#: ../src/brasero-burn-dialog.c:286
+msgid "Burning image to CD"
+msgstr "Image op cd branden"
+
+#: ../src/brasero-burn-dialog.c:296
+msgid "Brasero - Burning disc (Simulation)"
+msgstr "Schijf branden (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:297
+msgid "Simulation of video disc burning"
+msgstr "Simulatie van branden van video-schijf"
+
+#: ../src/brasero-burn-dialog.c:300
+msgid "Brasero - Burning disc"
+msgstr "Schijf branden"
+
+#: ../src/brasero-burn-dialog.c:301
+msgid "Burning video disc"
+msgstr "Video-cd branden"
+
+#: ../src/brasero-burn-dialog.c:324 ../src/brasero-burn-dialog.c:351
+#: ../src/brasero-burn-dialog.c:1008
+msgid "Brasero - Burning Disc (Simulation)"
+msgstr "Schijf branden (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:325
+msgid "Simulation of data disc burning"
+msgstr "Simulatie van branden van data-schijf"
+
+#: ../src/brasero-burn-dialog.c:328 ../src/brasero-burn-dialog.c:355
+msgid "Brasero - Burning Disc"
+msgstr "Schijf branden"
+
+#: ../src/brasero-burn-dialog.c:329
+msgid "Burning data disc"
+msgstr "Data-schijf branden"
+
+#: ../src/brasero-burn-dialog.c:338 ../src/brasero-burn-dialog.c:1002
+msgid "Brasero - Copying Disc (Simulation)"
+msgstr "Schijf kopiëren (simulatie)"
+
+#: ../src/brasero-burn-dialog.c:339
+msgid "Simulation of disc copying"
+msgstr "Simulatie van kopiëren van schijf"
+
+#: ../src/brasero-burn-dialog.c:342
+msgid "Brasero - Copying Disc"
+msgstr "Schijf kopiëren"
+
+#: ../src/brasero-burn-dialog.c:343 ../src/burn-basics.c:74
+msgid "Copying disc"
+msgstr "Schijf kopiëren"
+
+#: ../src/brasero-burn-dialog.c:352
+msgid "Simulation of image to disc burning"
+msgstr "Simulatie van branden van image op schijf"
+
+#: ../src/brasero-burn-dialog.c:356
+msgid "Burning image to disc"
+msgstr "Image op schijf branden"
+
+#: ../src/brasero-burn-dialog.c:388
+msgid "Please replace the disc with a rewritable disc holding data."
+msgstr "Vervang de schijf door een herschrijfbare schijf met gegevens."
+
+#: ../src/brasero-burn-dialog.c:390
+msgid "Please replace the disc with a disc holding data."
+msgstr "Vervang de schijf door een schijf met gegevens."
+
+#: ../src/brasero-burn-dialog.c:394
+msgid "Please insert a rewritable disc holding data."
+msgstr "Voer een herschrijfbare schijf met gegevens in."
+
+#: ../src/brasero-burn-dialog.c:411
+#, c-format
+msgid ""
+"Please replace the disc with a recordable CD with at least %i MiB of free "
+"space."
+msgstr "Vervang de schijf door een opneembare cd met minstens %i MiB vrij."
+
+#: ../src/brasero-burn-dialog.c:414
+msgid "Please replace the disc with a recordable CD."
+msgstr "Vervang de schijf door een opneembare cd."
+
+#: ../src/brasero-burn-dialog.c:418
+#, c-format
+msgid "Please insert a recordable CD with at least %i MiB of free space."
+msgstr "Voer een opneembare cd in met minstens %i MiB vrij."
+
+#: ../src/brasero-burn-dialog.c:421
+msgid "Please insert a recordable CD."
+msgstr "Voer een opneembare cd in."
+
 # #############################################################################
 # #############################################################################
 # #############################################################################
@@ -1563,343 +1888,6 @@ msgstr "Titel:"
 # #############################################################################
 # #############################################################################
 # Dit is waar Wouter is gebleven.
-
-#: ../src/brasero-song-properties.c:181 ../src/brasero-song-properties.c:193
-#: ../src/brasero-song-properties.c:205 ../src/brasero-multi-song-props.c:206
-#: ../src/brasero-multi-song-props.c:247 ../src/brasero-multi-song-props.c:268
-msgid ""
-"This information will be written to the disc using CD-TEXT technology. It "
-"can be read and displayed by some audio CD players."
-msgstr ""
-"Deze informatie zal op de schijf worden geschreven met behulp van cd-text-"
-"technologie. Ze kan door sommige audiocd-spelers uitgelezen worden."
-
-#: ../src/brasero-song-properties.c:183 ../src/brasero-multi-song-props.c:237
-msgid "Artist:"
-msgstr "Artiest:"
-
-#: ../src/brasero-song-properties.c:195 ../src/brasero-multi-song-props.c:258
-#, fuzzy
-msgid "Composer:"
-msgstr "Componist:\t"
-
-#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:581
-#: ../src/brasero-tool-dialog.c:256 ../src/brasero-multi-song-props.c:303
-#, fuzzy
-msgid "Options"
-msgstr "<b>Opties</b>"
-
-#: ../src/brasero-song-properties.c:229
-#, fuzzy
-msgid "Song start:"
-msgstr "Begin nummer:\t"
-
-#: ../src/brasero-song-properties.c:235
-#, fuzzy
-msgid "Song end:"
-msgstr "Einde nummer:\t"
-
-#: ../src/brasero-song-properties.c:241 ../src/brasero-multi-song-props.c:312
-#, fuzzy
-msgid "Pause length:"
-msgstr "Duur pauze:\t"
-
-#: ../src/brasero-song-properties.c:250 ../src/brasero-multi-song-props.c:323
-msgid "Gives the length of the pause that should follow the track"
-msgstr "Geeft de duur van de pauze die na de track moet komen"
-
-#: ../src/brasero-song-properties.c:252
-#, fuzzy
-msgid "Track length:"
-msgstr "Tracklengte:\t"
-
-#: ../src/brasero-song-properties.c:281 ../src/brasero-multi-song-props.c:340
-#, fuzzy
-msgid "Song Information"
-msgstr "Nummerinformatie"
-
-#: ../src/brasero-song-properties.c:366
-#, fuzzy, c-format
-msgid "Song information for track %02i"
-msgstr "<b><big>Nummerinformatie voor track %02i</big></b>"
-
-#: ../src/brasero-tray.c:81
-msgid "Cancel ongoing burning"
-msgstr "Brandproces annuleren"
-
-#: ../src/brasero-tray.c:86
-#, fuzzy
-msgid "Show _Dialog"
-msgstr "Dialoogvenster tonen"
-
-#: ../src/brasero-tray.c:86
-msgid "Show dialog"
-msgstr "Dialoogvenster tonen"
-
-#: ../src/brasero-tray.c:255
-#, c-format
-msgid "%s, %02i%% done, %s remaining"
-msgstr "%s, %02i%% voltooid, %s te gaan"
-
-#: ../src/brasero-tray.c:262
-#, c-format
-msgid "%s, %02i%% done"
-msgstr "%s, %02i%% voltooid"
-
-#: ../src/brasero-burn-dialog.c:161 ../src/burn-basics.c:70
-msgid "Creating image"
-msgstr "Beeldbestand wordt aangemaakt"
-
-#: ../src/brasero-burn-dialog.c:162
-#, fuzzy
-msgid "Brasero - Creating Image"
-msgstr "Brasero - Beeldbestand aanmaken"
-
-#: ../src/brasero-burn-dialog.c:167 ../src/brasero-burn-dialog.c:181
-#: ../src/brasero-burn-dialog.c:981
-#, fuzzy
-msgid "Brasero - Burning DVD (Simulation)"
-msgstr "Brasero -  Dvd branden (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:168
-#, fuzzy
-msgid "Simulation of video DVD burning"
-msgstr "<big><b>Simulatie van het branden van het dvd-beeldbestand</b></big>"
-
-#: ../src/brasero-burn-dialog.c:171 ../src/brasero-burn-dialog.c:185
-msgid "Brasero - Burning DVD"
-msgstr "Brasero - Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:172
-#, fuzzy
-msgid "Burning video DVD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:182
-#, fuzzy
-msgid "Simulation of data DVD burning"
-msgstr "<big><b>Simulatie van het branden van datadvd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:186
-#, fuzzy
-msgid "Burning data DVD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:195
-#, fuzzy
-msgid "Burning DVD (Simulation)"
-msgstr "Dvd branden (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:196
-#, fuzzy
-msgid "Simulation of image to DVD burning"
-msgstr "<big><b>Simulatie van het branden van het dvd-beeldbestand</b></big>"
-
-#: ../src/brasero-burn-dialog.c:199
-msgid "Burning DVD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:200
-#, fuzzy
-msgid "Burning image to DVD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:209 ../src/brasero-burn-dialog.c:975
-#, fuzzy
-msgid "Brasero - Copying DVD (Simulation)"
-msgstr "Brasero - Dvd kopiëren (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:210
-#, fuzzy
-msgid "Simulation of data DVD copying"
-msgstr "<big><b>Simulatie van het kopiëren van de datadvd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:213
-msgid "Brasero - Copying DVD"
-msgstr "Brasero - Dvd kopiëren"
-
-#: ../src/brasero-burn-dialog.c:214
-#, fuzzy
-msgid "Copying data DVD"
-msgstr "Dvd wordt gekopieerd"
-
-#: ../src/brasero-burn-dialog.c:225 ../src/brasero-burn-dialog.c:239
-#: ../src/brasero-burn-dialog.c:253 ../src/brasero-burn-dialog.c:281
-#: ../src/brasero-burn-dialog.c:310
-#, fuzzy
-msgid "Brasero - Burning CD (Simulation)"
-msgstr "Brasero - Cd branden (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:226
-#, fuzzy
-msgid "Simulation of (S)VCD burning"
-msgstr "_Simuleer het branden"
-
-#: ../src/brasero-burn-dialog.c:229 ../src/brasero-burn-dialog.c:243
-#: ../src/brasero-burn-dialog.c:257 ../src/brasero-burn-dialog.c:285
-#: ../src/brasero-burn-dialog.c:314
-msgid "Brasero - Burning CD"
-msgstr "Brasero - Cd branden"
-
-#: ../src/brasero-burn-dialog.c:230
-#, fuzzy
-msgid "Burning (S)VCD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:240 ../src/brasero-burn-dialog.c:311
-#, fuzzy
-msgid "Simulation of audio CD burning"
-msgstr "<big><b>Simulatie van het branden van de audiocd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:244 ../src/brasero-burn-dialog.c:315
-#, fuzzy
-msgid "Burning audio CD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:254
-#, fuzzy
-msgid "Simulation of data CD burning"
-msgstr "<big><b>Simulatie van het branden van de datacd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:258
-#, fuzzy
-msgid "Burning data CD"
-msgstr "Dvd branden"
-
-#: ../src/brasero-burn-dialog.c:267 ../src/brasero-burn-dialog.c:989
-#, fuzzy
-msgid "Brasero - Copying CD (Simulation)"
-msgstr "Brasero - Cd kopiëren (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:268
-#, fuzzy
-msgid "Simulation of CD copying"
-msgstr "<big><b>Simulatie van het kopiëren van de cd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:271
-msgid "Brasero - Copying CD"
-msgstr "Brasero - Cd kopiëren"
-
-#: ../src/brasero-burn-dialog.c:272
-msgid "Copying CD"
-msgstr "Cd wordt gekopieerd"
-
-#: ../src/brasero-burn-dialog.c:282
-#, fuzzy
-msgid "Simulation of image to CD burning"
-msgstr "<big><b>Simulatie van het branden van het cd-beeldbestand</b></big>"
-
-#: ../src/brasero-burn-dialog.c:286
-#, fuzzy
-msgid "Burning image to CD"
-msgstr "Beeldbestand branden"
-
-#: ../src/brasero-burn-dialog.c:296
-#, fuzzy
-msgid "Brasero - Burning disc (Simulation)"
-msgstr "Brasero  - Schijf branden (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:297
-#, fuzzy
-msgid "Simulation of video disc burning"
-msgstr "<big><b>Simulatie van het branden van het beeldbestand</b></big>"
-
-#: ../src/brasero-burn-dialog.c:300
-msgid "Brasero - Burning disc"
-msgstr "Brasero - Schijf branden"
-
-#: ../src/brasero-burn-dialog.c:301
-#, fuzzy
-msgid "Burning video disc"
-msgstr "De schijf branden"
-
-#: ../src/brasero-burn-dialog.c:324 ../src/brasero-burn-dialog.c:351
-#: ../src/brasero-burn-dialog.c:1008
-#, fuzzy
-msgid "Brasero - Burning Disc (Simulation)"
-msgstr "Brasero  - Schijf branden (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:325
-#, fuzzy
-msgid "Simulation of data disc burning"
-msgstr "<big><b>Simulatie van het branden van de datacd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:328 ../src/brasero-burn-dialog.c:355
-#, fuzzy
-msgid "Brasero - Burning Disc"
-msgstr "Brasero - Schijf branden"
-
-#: ../src/brasero-burn-dialog.c:329
-#, fuzzy
-msgid "Burning data disc"
-msgstr "De schijf branden"
-
-#: ../src/brasero-burn-dialog.c:338 ../src/brasero-burn-dialog.c:1002
-#, fuzzy
-msgid "Brasero - Copying Disc (Simulation)"
-msgstr "Brasero - schijf kopiëren (simulatie)"
-
-#: ../src/brasero-burn-dialog.c:339
-#, fuzzy
-msgid "Simulation of disc copying"
-msgstr "<big><b>Simulatie van het kopiëren van de cd</b></big>"
-
-#: ../src/brasero-burn-dialog.c:342
-#, fuzzy
-msgid "Brasero - Copying Disc"
-msgstr "Brasero - Schijf kopiëren"
-
-#: ../src/brasero-burn-dialog.c:343 ../src/burn-basics.c:74
-msgid "Copying disc"
-msgstr "Schijf wordt gekopieerd"
-
-#: ../src/brasero-burn-dialog.c:352
-#, fuzzy
-msgid "Simulation of image to disc burning"
-msgstr "<big><b>Simulatie van het branden van het beeldbestand</b></big>"
-
-#: ../src/brasero-burn-dialog.c:356
-#, fuzzy
-msgid "Burning image to disc"
-msgstr "Een bestaand cd/dvd-iso-bestand op schijf branden"
-
-#: ../src/brasero-burn-dialog.c:388
-#, fuzzy
-msgid "Please replace the disc with a rewritable disc holding data."
-msgstr "vervang de schijf door een herschrijfbare schijf die gegevens bevat."
-
-#: ../src/brasero-burn-dialog.c:390
-#, fuzzy
-msgid "Please replace the disc with a disc holding data."
-msgstr "vervang de schijf door een schijf die gegevens bevat."
-
-#: ../src/brasero-burn-dialog.c:394
-#, fuzzy
-msgid "Please insert a rewritable disc holding data."
-msgstr "voer een herschrijfbare schijf in die gegevens bevat."
-
-#: ../src/brasero-burn-dialog.c:411
-#, fuzzy, c-format
-msgid ""
-"Please replace the disc with a recordable CD with at least %i MiB of free "
-"space."
-msgstr "vervang de schijf door een opneembare cd met minstens %i MiB vrij."
-
-#: ../src/brasero-burn-dialog.c:414
-#, fuzzy
-msgid "Please replace the disc with a recordable CD."
-msgstr "vervang de schijf door een opneembare cd."
-
-#: ../src/brasero-burn-dialog.c:418
-#, fuzzy, c-format
-msgid "Please insert a recordable CD with at least %i MiB of free space."
-msgstr "voer een opneembare cd in met minstens %i MiB vrij."
-
-#: ../src/brasero-burn-dialog.c:421
-#, fuzzy
-msgid "Please insert a recordable CD."
-msgstr "voer een opneembare cd in."
-
 #: ../src/brasero-burn-dialog.c:427
 #, fuzzy, c-format
 msgid ""
@@ -2031,12 +2019,12 @@ msgstr ""
 #: ../src/brasero-burn-dialog.c:666 ../src/brasero-drive-properties.c:244
 #: ../src/brasero-drive-properties.c:279 ../src/brasero-drive-properties.c:328
 msgid "_Keep Current Location"
-msgstr ""
+msgstr "_Huidige locatie behouden"
 
 #: ../src/brasero-burn-dialog.c:668 ../src/brasero-drive-properties.c:245
 #: ../src/brasero-drive-properties.c:280 ../src/brasero-drive-properties.c:329
 msgid "_Change Location"
-msgstr ""
+msgstr "Locatie _wijzigen"
 
 #: ../src/brasero-burn-dialog.c:690 ../src/brasero-image-properties.c:232
 #, fuzzy
@@ -2278,12 +2266,12 @@ msgstr "Beeldbestand succesvol aangemaakt"
 
 #: ../src/brasero-burn-dialog.c:1842
 msgid "Make _Another Copy"
-msgstr ""
+msgstr "_Nog een kopie maken"
 
 #. since we succeed offer the possibility to create cover if that's an audio disc
 #: ../src/brasero-burn-dialog.c:1869
 msgid "_Create Cover"
-msgstr ""
+msgstr "_Hoesje maken"
 
 #: ../src/brasero-burn-dialog.c:2077 ../src/brasero-tool-dialog.c:348
 msgid "Do you really want to quit?"
@@ -2342,7 +2330,7 @@ msgstr "Alle bestanden van het project verwijderen"
 
 #: ../src/brasero-data-disc.c:666
 msgid "The contents of the project changed since it was saved."
-msgstr ""
+msgstr "De projectinhoud is gewijzigd na de laatste keer opslaan."
 
 #: ../src/brasero-data-disc.c:668 ../src/brasero-data-disc.c:675
 #, fuzzy
@@ -2350,18 +2338,17 @@ msgid "Discard the current modified project"
 msgstr "Het huidige project opslaan"
 
 #: ../src/brasero-data-disc.c:674
-#, fuzzy
 msgid "_Discard"
-msgstr "_Schijf"
+msgstr "_Niet opslaan"
 
 #: ../src/brasero-data-disc.c:680
 msgid "Continue with the current modified project"
-msgstr ""
+msgstr "Doorgaan met het huidige gewijzigde project"
 
 #: ../src/brasero-data-disc.c:754
 #, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr ""
+msgstr "Wilt u ‘%s’ op schijf branden, of deze aan een dataproject toevoegen?"
 
 #: ../src/brasero-data-disc.c:763
 msgid ""
@@ -2944,9 +2931,9 @@ msgid "Project estimated size: %s/%s"
 msgstr ""
 
 #: ../src/brasero-project.c:635 ../src/brasero-project.c:763
-#, fuzzy, c-format
+#, c-format
 msgid "Project estimated size: %s"
-msgstr "Grootte van het project"
+msgstr "Geschatte projectgrootte: %s"
 
 #: ../src/brasero-project.c:804
 msgid "Please wait until the estimation of the project size is completed."
@@ -2958,9 +2945,8 @@ msgid ""
 msgstr ""
 
 #: ../src/brasero-project.c:811
-#, fuzzy
 msgid "Project Size Estimation"
-msgstr "Grootte van het project"
+msgstr "Geschatte projectgrootte"
 
 #: ../src/brasero-project.c:904
 #, fuzzy
@@ -3122,11 +3108,11 @@ msgstr "Selecteer een afspeellijst"
 
 #: ../src/brasero-project-manager.c:102
 msgid "_Cover Editor"
-msgstr ""
+msgstr "_Hoesjes-editor"
 
 #: ../src/brasero-project-manager.c:103
 msgid "Design and print covers for CDs"
-msgstr ""
+msgstr "Cd-hoesjes ontwerpen en afdrukken"
 
 #: ../src/brasero-project-manager.c:104
 msgid "_New Project"
