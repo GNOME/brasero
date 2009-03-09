@@ -17,7 +17,7 @@
 # eject             - uitwerpen
 # ISO Image         - ISO-image   
 # mount point       - koppellocatie
-# recordable        - beschrijfbare (niet opneembare!)
+# recordable        - beschrijfbare / opneembare
 # track             - track
 #
 # Oh, en overal waar de naam ‘Brasero’ naar mijn mening staat waar die niet
@@ -38,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-04 21:55+0100\n"
+"POT-Creation-Date: 2009-03-09 22:43+0100\n"
 "PO-Revision-Date: 2009-03-01 15:23+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -509,7 +509,7 @@ msgstr "De gegevensintegriteit van deze schijf controleren"
 msgid ""
 "Do you really want to keep the current extension for the disc image name?"
 msgstr ""
-"Weet u zeker dat u de huidige bestandsextensie voor het beeldbestand wilt "
+"Weet u zeker dat u de huidige bestandsextensie voor het schijf-image wilt "
 "gebruiken?"
 
 #: ../src/brasero-medium-properties.c:333
@@ -1875,146 +1875,134 @@ msgstr "Voer een opneembare cd in met minstens %i MiB vrij."
 msgid "Please insert a recordable CD."
 msgstr "Voer een opneembare cd in."
 
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# #############################################################################
-# Dit is waar Wouter is gebleven.
 #: ../src/brasero-burn-dialog.c:427
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Please replace the disc with a recordable DVD with at least %i MiB of free "
 "space."
-msgstr "vervang de schijf door een opneembare dvd met minstens %i MiB vrij."
+msgstr "Vervang de schijf door een beschrijfbare dvd met minstens %i MiB vrij."
 
 #: ../src/brasero-burn-dialog.c:430
-#, fuzzy
 msgid "Please replace the disc with a recordable DVD."
-msgstr "vervang de schijf door een opneembare dvd."
+msgstr "Vervang de schijf door een beschrijfbare dvd."
 
 #: ../src/brasero-burn-dialog.c:434
-#, fuzzy, c-format
+#, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
-msgstr "voer een opneembare dvd in met minstens %i MiB vrij."
+msgstr "Voer een beschrijfbare dvd in met minstens %i MiB vrij."
 
 #: ../src/brasero-burn-dialog.c:437
-#, fuzzy
 msgid "Please insert a recordable DVD."
-msgstr "voer een opneembare dvd in."
+msgstr "voer een beschrijfbare dvd in."
 
 #: ../src/brasero-burn-dialog.c:442
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Please replace the disc with a recordable CD or DVD with at least %i MiB of "
 "free space."
 msgstr ""
-"vervang de schijf door een opneembare cd of dvd met minstens %i MiB vrij."
+"Vervang de schijf door een beschrijfbare dvd of cd met minstens %i MiB vrij."
 
 #: ../src/brasero-burn-dialog.c:445
-#, fuzzy
 msgid "Please replace the disc with a recordable CD or DVD."
-msgstr "vervang de schijf door een opneembare cd of dvd."
+msgstr "Vervang de schijf door een beschrijfbare dvd of dvd."
 
 #: ../src/brasero-burn-dialog.c:449
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Please insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr "voer een opneembare cd of dvd in met minstens %i MiB vrij."
+msgstr "Voer een beschrijfbare dvd of cd in met minstens %i MiB vrij."
 
 #: ../src/brasero-burn-dialog.c:498
 msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a recordable disc is inserted."
 msgstr ""
+"Een schijfimage is aangemaakt op de harde schijf. Het schrijven begint zodra "
+"een beschrijfbare schijf wordt ingevoerd."
 
 #: ../src/brasero-burn-dialog.c:503
 msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr ""
+"Een data-integriteitstest zal uitgevoerd worden zodra een een schijf wordt "
+"ingevoerd."
 
 #: ../src/brasero-burn-dialog.c:504
-#, fuzzy
 msgid "Please re-insert the disc in the CD/DVD burner."
-msgstr "Voer de te controleren schijf opnieuw in in het station \"%s\"."
+msgstr "Voer de schijf opnieuw in in de cd/dvd-brander."
 
 #. Translators: %s is the name of a drive
 #: ../src/brasero-burn-dialog.c:508
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is busy."
-msgstr "<i>%s</i> is bezig"
+msgstr "‘%s’ is bezig."
 
 #: ../src/brasero-burn-dialog.c:509 ../src/brasero-tool-dialog.c:79
 #: ../src/burn.c:1295 ../src/burn.c:1329 ../src/burn.c:1511 ../src/burn.c:1522
-#, fuzzy
 msgid "Make sure another application is not using it"
-msgstr "controleer of geen andere applicatie deze gebruikt."
+msgstr "Controleer dat een andere toepassing deze niet gebruikt."
 
 #: ../src/brasero-burn-dialog.c:512
-#, fuzzy, c-format
+#, c-format
 msgid "There is no disc in \"%s\"."
-msgstr "Er is geen schijf in \"%s\":"
+msgstr "Er is geen schijf aanwezig in ‘%s’:"
 
 #: ../src/brasero-burn-dialog.c:516
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not supported."
-msgstr "De schijf in \"%s\" wordt niet ondersteund:"
+msgstr "De schijf in ‘%s’ wordt niet ondersteund."
 
 #: ../src/brasero-burn-dialog.c:520
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not rewritable."
-msgstr "De schijf in \"%s\" is niet herschrijfbaar:"
+msgstr "De schijf in ‘%s’ is niet herschrijfbaar."
 
 #: ../src/brasero-burn-dialog.c:524
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr "De schijf in \"%s\" is leeg:"
+msgstr "De schijf in ‘%s’ is leeg."
 
 #: ../src/brasero-burn-dialog.c:528
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr "De schijf in \"%s\" is niet beschrijfbaar:"
+msgstr "De schijf in ‘%s’ is niet beschrijfbaar."
 
 #: ../src/brasero-burn-dialog.c:532
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough space available on the disc in \"%s\"."
-msgstr "Niet genoeg ruimte beschikbaar op de schijf"
+msgstr "Er is niet genoeg ruimte beschikbaar op de schijf in ‘%s’."
 
 #: ../src/brasero-burn-dialog.c:540
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr "De schijf in \"%s\" dient herladen te worden:"
+msgstr "De schijf in ‘%s’ dient opnieuw geladen te worden."
 
 #: ../src/brasero-burn-dialog.c:541
-#, fuzzy
 msgid "Please eject the disc and reload it."
-msgstr "werp de schijf uit en herlaad deze."
+msgstr "Open de lade en voer de schijf opnieuw in."
 
 #: ../src/brasero-burn-dialog.c:642 ../src/brasero-sum-dialog.c:300
 msgid ""
 "A file could not be created at the location specified for temporary files"
 msgstr ""
+"Kon geen bestand aanmaken in de opgegeven locatie voor tijdelijke bestanden"
 
 #: ../src/brasero-burn-dialog.c:643
-#, fuzzy
 msgid "The image could not be created at the specified location"
-msgstr "genisoimage kon niet gevonden worden in het pad"
+msgstr "Het image kon niet aangemaakt worden op de opgegeven locatie"
 
 #: ../src/brasero-burn-dialog.c:644
 msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
 msgstr ""
+"Wilt u een andere locatie opgeven voor deze sessie of het nogmaals met de "
+"huidige locatie proberen?"
 
 #: ../src/brasero-burn-dialog.c:659
 msgid "You may want to free some space on the disc and retry"
 msgstr ""
+"Wellicht dient u schijfruimte vrij te maken alvorens opnieuw te proberen."
 
 #: ../src/brasero-burn-dialog.c:666 ../src/brasero-drive-properties.c:244
 #: ../src/brasero-drive-properties.c:279 ../src/brasero-drive-properties.c:328
@@ -2027,140 +2015,120 @@ msgid "_Change Location"
 msgstr "Locatie _wijzigen"
 
 #: ../src/brasero-burn-dialog.c:690 ../src/brasero-image-properties.c:232
-#, fuzzy
 msgid "Location for Image File"
-msgstr "Controlesom voor beeldbestanden wordt aangemaakt"
+msgstr "Locatie voor schijf-image"
 
 #: ../src/brasero-burn-dialog.c:698 ../src/brasero-drive-properties.c:594
-#, fuzzy
 msgid "Location for Temporary Files"
-msgstr "Map voor tijdelijke bestanden"
+msgstr "Locatie voor tijdelijke bestanden"
 
 #: ../src/brasero-burn-dialog.c:794
-#, fuzzy
 msgid "_Replace Disc"
-msgstr "Schijf vervangen"
+msgstr "Schijf _vervangen"
 
 #: ../src/brasero-burn-dialog.c:836
-#, fuzzy
 msgid "Do you really want to erase the current disc?"
-msgstr "Wilt u werkelijk het huidige project leegmaken?"
+msgstr "Weet u zeker dat u de huidige schijf wilt leegmaken?"
 
 #: ../src/brasero-burn-dialog.c:837
-#, fuzzy
 msgid "The disc in the drive holds data."
-msgstr "De schijf in het station bevat gegevens:"
+msgstr "De schijf in de speler bevat momenteel gegevens."
 
 #: ../src/brasero-burn-dialog.c:838
-#, fuzzy
 msgid "_Erase Disc"
-msgstr "Schijf wissen"
+msgstr "Schijf _leegmaken"
 
 #: ../src/brasero-burn-dialog.c:850
-#, fuzzy
 msgid "Already burnt files will be invisible (though still readable)."
 msgstr ""
-"reeds gebrande bestanden zullen onzichtbaar (maar nog steeds leesbaar) "
-"worden.\n"
-"Wilt u toch nog verdergaan?"
+"Reeds geschreven bestanden zullen onzichtbaar (maar nog wel leesbaar) worden."
 
 #: ../src/brasero-burn-dialog.c:851 ../src/brasero-burn-dialog.c:871
 #: ../src/brasero-burn-dialog.c:891
-#, fuzzy
 msgid "Do you want to continue anyway?"
-msgstr "Wilt u het vervangen?"
+msgstr "Wilt u toch doorgaan?"
 
 #: ../src/brasero-burn-dialog.c:854
-#, fuzzy
 msgid "Appending new files to a multisession disc is not advised."
 msgstr ""
-"Nieuwe bestanden toevoegen aan een multisessie-schijf wordt niet aangeraden:"
+"Het wordt afgeraden nieuwe bestanden toe te voegen aan een multisessie-"
+"schijf."
 
 #: ../src/brasero-burn-dialog.c:856 ../src/brasero-burn-dialog.c:876
 #: ../src/brasero-burn-dialog.c:896 ../src/brasero-burn-dialog.c:934
 #: ../src/brasero-data-disc.c:679 ../src/brasero-tool-dialog.c:356
-#, fuzzy
 msgid "_Continue"
-msgstr "Verdergaan"
+msgstr "_Doorgaan"
 
 #: ../src/brasero-burn-dialog.c:870
-#, fuzzy
 msgid ""
 "You might not be able to listen to them with stereos and CD-TEXT won't be "
 "written."
 msgstr ""
-"u kunt ze mogelijk niet meer beluisteren op muziekinstallaties en cd-text "
-"zal niet weggeschreven worden.\n"
-"Wilt u toch nog verdergaan?"
+"Mogelijk kunt u deze schijf niet beluisteren met muziekinstallaties en cd-"
+"text zal ook niet geschreven worden."
 
 #: ../src/brasero-burn-dialog.c:874
-#, fuzzy
 msgid "Appending audio tracks to a CD is not advised."
-msgstr "Audiosporen toevoegen aan een cd wordt niet aangeraden:"
+msgstr "Het wordt afgeranden audio-tracks aan een cd toe te voegen."
 
 #: ../src/brasero-burn-dialog.c:890
-#, fuzzy
 msgid "You might not be able to listen to it with stereos."
-msgstr ""
-"u kunt ze mogelijk niet meer beluisten op muziekinstallaties.\n"
-"Wilt u toch nog verdergaan?"
+msgstr "Mogelijk kunt u deze schijf niet beluisteren met muziekinstallaties."
 
 #: ../src/brasero-burn-dialog.c:894
-#, fuzzy
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr ""
-"Audiotracks opnemen op een herschrijfbare schijf wordt niet aangeraden:"
+"Het wordt afgeraden audio-tracks op een herschrijfbare schijf te schrijven."
 
 #: ../src/brasero-burn-dialog.c:925
-#, fuzzy
 msgid "Do you want to continue with full Windows compatibility disabled?"
-msgstr "Wilt u verdergaan met Windows-compatibiliteit uitgeschakeld?"
+msgstr "Wilt u doorgaan met volledige Windows-compatibiliteit uitgeschakeld?"
 
 #: ../src/brasero-burn-dialog.c:928 ../src/brasero-disc-option-dialog.c:331
-#, fuzzy
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr ""
-"Sommige bestanden hebben geen geschikte naam voor een Windows-compatibele cd:"
+"Sommige bestanden hebben geen geschikte naam voor een Windows-compatibele cd."
 
 #: ../src/brasero-burn-dialog.c:971
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
-msgstr "Brasero - Beeldbestand aanmaken (%i%% voltooid)"
+msgstr "Schijf-image aanmaken (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:977
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Copying DVD (%i%% Done)"
-msgstr "Brasero - Dvd kopiëren (%i%% voltooid)"
+msgstr "Dvd kopiëren (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:983
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Burning DVD (%i%% Done)"
-msgstr "Brasero - Dvd branden (%i%% voltooid)"
+msgstr "Dvd branden (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:991
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Copying CD (%i%% Done)"
-msgstr "Brasero - Cd kopiëren (%i%% voltooid)"
+msgstr "Cd kopiëren (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:995
 msgid "Brasero - Burning CD (simulation)"
-msgstr "Brasero - Cd branden (simulatie)"
+msgstr "Cd branden (simulatie)"
 
 #: ../src/brasero-burn-dialog.c:997
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Burning CD (%i%% Done)"
-msgstr "Brasero - Cd  branden (%i%% voltooid)"
+msgstr "Cd branden (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:1004
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Copying Disc (%i%% Done)"
-msgstr "Brasero - Schijf kopiëren (%i%% voltooid)"
+msgstr "Schijf kopiëren (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:1010
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero - Burning Disc (%i%% Done)"
-msgstr "Brasero - Schijf branden (%i%% voltooid)"
+msgstr "Schijf branden (%i%% voltooid)"
 
 #: ../src/brasero-burn-dialog.c:1184
 msgid "The simulation was successful."
@@ -2168,65 +2136,56 @@ msgstr "De simulatie was succesvol."
 
 #: ../src/brasero-burn-dialog.c:1187
 msgid "Real disc burning will take place in 10 seconds."
-msgstr "Het echte branden begint over 10 seconden."
+msgstr "Het echte schrijven begint over 10 seconden."
 
 #: ../src/brasero-burn-dialog.c:1189
-#, fuzzy
 msgid "Burn _Now"
-msgstr "Nu branden"
+msgstr "_Nu branden"
 
 #: ../src/brasero-burn-dialog.c:1506
-#, fuzzy
 msgid "Save Current Session"
 msgstr "Huidige sessie opslaan"
 
 #: ../src/brasero-burn-dialog.c:1562
-#, fuzzy
 msgid "Session Log"
-msgstr "Sessielog"
+msgstr "Sessielogboek"
 
 #: ../src/brasero-burn-dialog.c:1592 ../src/brasero-burn-dialog.c:1616
 #: ../src/brasero-burn-dialog.c:1627
-#, fuzzy
 msgid "The session log cannot be displayed."
-msgstr "Het sessielog kan niet getoond worden:"
+msgstr "Het sessielogboek kan niet getoond worden."
 
 #: ../src/brasero-burn-dialog.c:1593
-#, fuzzy
 msgid "The log file could not be found"
-msgstr "het logbestand kon niet gevonden worden."
+msgstr "Het logbestand kan niet gevonden worden."
 
 #: ../src/brasero-burn-dialog.c:1608
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
 msgstr ""
-"Dit is een uittreksel uit het sessielog (de laatste 10 MiB):\n"
+"Dit is een uittreksel uit het sessielogboek (de laatste 10 MiB):\n"
 "\n"
 
 #: ../src/brasero-burn-dialog.c:1696
-#, fuzzy
 msgid "An unknown error occured."
-msgstr "er heeft zich een onbekende fout voorgedaan."
+msgstr "Er heeft zich een onbekende fout voorgedaan."
 
 #: ../src/brasero-burn-dialog.c:1706
-#, fuzzy
 msgid "Error while burning."
-msgstr "Fout bij het branden:"
+msgstr "Fout tijdens schrijven."
 
 #: ../src/brasero-burn-dialog.c:1713
-#, fuzzy
 msgid "_Save Log"
-msgstr "Log opslaan"
+msgstr "Logboek op_slaan"
 
 #: ../src/brasero-burn-dialog.c:1720
-#, fuzzy
 msgid "_View Log"
-msgstr "Log bekijken"
+msgstr "Logboek be_kijken"
 
 #: ../src/brasero-burn-dialog.c:1800
 msgid "Audio CD successfully burnt"
-msgstr "Audiocd succesvol gebrand"
+msgstr "Audio-cd succesvol geschreven"
 
 #: ../src/brasero-burn-dialog.c:1805
 msgid "DVD successfully copied"
@@ -2238,31 +2197,31 @@ msgstr "Cd succesvol gekopieerd"
 
 #: ../src/brasero-burn-dialog.c:1811
 msgid "Image of DVD successfully created"
-msgstr "Beeldbestand van dvd succesvol aangemaakt"
+msgstr "Dvd-image succesvol aangemaakt"
 
 #: ../src/brasero-burn-dialog.c:1813
 msgid "Image of CD successfully created"
-msgstr "Beeldbestand van cd succesvol aangemaakt"
+msgstr "Cd-image succesvol aangemaakt"
 
 #: ../src/brasero-burn-dialog.c:1819
 msgid "Image successfully burnt to DVD"
-msgstr "Beeldbestand succesvol gebrand op dvd"
+msgstr "Image succesvol op dvd geschreven"
 
 #: ../src/brasero-burn-dialog.c:1821
 msgid "Image successfully burnt to CD"
-msgstr "Beeldbestand succesvol gebrand op cd"
+msgstr "Schijfimage succesvol op cd geschreven"
 
 #: ../src/brasero-burn-dialog.c:1827
 msgid "Data DVD successfully burnt"
-msgstr "Datadvd succesvol gebrand"
+msgstr "Data-dvd succesvol geschreven"
 
 #: ../src/brasero-burn-dialog.c:1829
 msgid "Data CD successfully burnt"
-msgstr "Datacd succesvol gebrand"
+msgstr "Data-cd succesvol geschreven"
 
 #: ../src/brasero-burn-dialog.c:1832
 msgid "Image successfully created"
-msgstr "Beeldbestand succesvol aangemaakt"
+msgstr "Schijf-image succesvol aangemaakt"
 
 #: ../src/brasero-burn-dialog.c:1842
 msgid "Make _Another Copy"
@@ -2275,38 +2234,35 @@ msgstr "_Hoesje maken"
 
 #: ../src/brasero-burn-dialog.c:2077 ../src/brasero-tool-dialog.c:348
 msgid "Do you really want to quit?"
-msgstr "Wilt u werkelijk afsluiten?"
+msgstr "Weet u zeker dat u wilt afsluiten?"
 
 #: ../src/brasero-burn-dialog.c:2081 ../src/brasero-tool-dialog.c:351
 msgid "Interrupting the process may make disc unusable."
 msgstr "Het proces onderbreken kan de schijf onbruikbaar maken."
 
 #: ../src/brasero-burn-dialog.c:2091
-#, fuzzy
 msgid "_Cancel Burning"
-msgstr "Brandproces annuleren"
+msgstr "Brandproces _annuleren"
 
 #: ../src/brasero-data-disc.c:120
 msgid "R_ename..."
-msgstr "H_ernoemen"
+msgstr "_Hernoemen…"
 
 #: ../src/brasero-data-disc.c:120
 msgid "Rename the selected file"
 msgstr "Het geselecteerde bestand hernoemen"
 
 #: ../src/brasero-data-disc.c:126 ../src/brasero-data-disc.c:1784
-#, fuzzy
 msgid "New _Folder"
-msgstr "Nieuwe map"
+msgstr "Nieuwe _map"
 
 #: ../src/brasero-data-disc.c:126
 msgid "Create a new empty folder"
-msgstr "Maak een nieuwe map aan"
+msgstr "Een nieuwe map aanmaken"
 
 #: ../src/brasero-data-disc.c:207
-#, fuzzy
 msgid "The session could not be imported."
-msgstr "De sessie kon niet worden geïmporteerd:"
+msgstr "De sessie kon niet worden geïmporteerd."
 
 #: ../src/brasero-data-disc.c:318
 #, c-format
@@ -2319,10 +2275,14 @@ msgid "New folder %i"
 msgstr "Nieuwe map %i"
 
 #: ../src/brasero-data-disc.c:617
-#, fuzzy
 msgid "Click here not to use overburning"
-msgstr "Klik hier om de inhoud te importeren"
+msgstr "Klik hier om geen overburning te gebruiken."
 
+# #############################################################################
+# #############################################################################
+# Dit is waar Wouter is gebleven.
+# #############################################################################
+# #############################################################################
 #: ../src/brasero-data-disc.c:627
 #, fuzzy
 msgid "Please delete some files from the project."
@@ -2610,7 +2570,7 @@ msgstr ""
 #: ../src/brasero-disc-option-dialog.c:683
 #, fuzzy
 msgid "VCD type:"
-msgstr "Type beeldbestand:"
+msgstr "Type :"
 
 #: ../src/brasero-disc-option-dialog.c:696
 #, fuzzy
@@ -2722,7 +2682,7 @@ msgstr "W_erp de schijf uit na het branden"
 
 #: ../src/brasero-drive-properties.c:577
 msgid "Burn the image directly _without saving it to disc"
-msgstr "Brand het beeldbestand _rechtstreeks zonder het op schijf op te slaan"
+msgstr "Brand het schijf-image _rechtstreeks zonder het op schijf op te slaan"
 
 #: ../src/brasero-drive-properties.c:578
 msgid "Leave the disc _open to add other files later"
@@ -2766,7 +2726,7 @@ msgstr "<b>Selecteer een station om naar te schrijven</b>"
 #: ../src/brasero-image-option-dialog.c:122
 #, fuzzy
 msgid "Image Burning Setup"
-msgstr "Instellingen beeldbestand branden"
+msgstr "Instellingen schijf-image branden"
 
 #: ../src/brasero-image-type-chooser.c:87
 msgid "Let brasero choose (safest)"
@@ -3256,7 +3216,7 @@ msgstr "Brasero - Nieuw audioschijf-project"
 #: ../src/brasero-project-manager.c:599
 #, fuzzy
 msgid "Brasero - New Image File"
-msgstr "Brasero - Nieuw beeldbestand"
+msgstr "Brasero - Nieuw schijf-image"
 
 #: ../src/brasero-project-manager.c:616
 #, fuzzy
@@ -3335,7 +3295,7 @@ msgstr "Een 1:1 kopie maken van een cd/dvd"
 #: ../src/brasero-project-type-chooser.c:91
 #, fuzzy
 msgid "Burn _image"
-msgstr "Beeldbestand branden"
+msgstr "schijf-image branden"
 
 #: ../src/brasero-project-type-chooser.c:290
 #, fuzzy
@@ -3588,7 +3548,7 @@ msgstr "er kan slechts één track per keer gecontroleerd worden"
 #: ../src/burn.c:2331
 #, fuzzy, c-format
 msgid "No format for the temporary image could be found"
-msgstr "onmogelijk om een formaat te vinden voor het tijdelijk beeldbestand"
+msgstr "onmogelijk om een formaat te vinden voor het tijdelijk schijf-image"
 
 #. Translators: Error message saying no graft point
 #. * is specified. A graft point is the path (on the
@@ -3637,7 +3597,7 @@ msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
 msgstr ""
-"de geselecteerde locatie heeft niet genoeg vrije ruimte om het beeldbestand "
+"de geselecteerde locatie heeft niet genoeg vrije ruimte om het schijf-image "
 "op te slaan (%ld MiB nodig)"
 
 #: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:347
@@ -3753,7 +3713,7 @@ msgstr ""
 #: ../src/main.c:109
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr ""
-"URI van een beeldbestand dat moet gebrand worden (automatische detectie)"
+"URI van een schijf-image dat moet gebrand worden (automatische detectie)"
 
 #: ../src/main.c:110
 msgid "PATH TO PLAYLIST"
@@ -4000,7 +3960,7 @@ msgstr "mkisofs gebruiken om beeldbestanden aan te maken"
 #: ../src/plugins/cdrtools/burn-readcd.c:411
 #, fuzzy
 msgid "Use readcd to create disc images"
-msgstr "gebruik readcd om een beeldbestand te maken"
+msgstr "gebruik readcd om een schijf-image te maken"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:122
 #, fuzzy, c-format
@@ -4727,7 +4687,7 @@ msgstr "er kon geen symbolische koppeling worden gemaakt (%s)"
 #: ../src/plugins/checksum/burn-checksum-image.c:346
 #: ../src/plugins/checksum/burn-checksum-image.c:419
 msgid "Creating image checksum"
-msgstr "Controlesom van het beeldbestand maken"
+msgstr "Controlesom van het schijf-image maken"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -4735,7 +4695,7 @@ msgstr "Controlesom van het beeldbestand maken"
 #: ../src/plugins/checksum/burn-checksum-image.c:789
 #, fuzzy
 msgid "Image Checksum"
-msgstr "Controlesom van het beeldbestand maken"
+msgstr "Controlesom van het schijf-image maken"
 
 #: ../src/plugins/checksum/burn-checksum-image.c:790
 #, fuzzy
@@ -4748,7 +4708,7 @@ msgstr ""
 #: ../src/brasero-jacket-background.c:162
 #, fuzzy
 msgid "Images"
-msgstr "Beeldbestand branden"
+msgstr "schijf-image branden"
 
 #: ../src/brasero-jacket-background.c:186
 msgid "_Color"
@@ -4771,25 +4731,25 @@ msgstr ""
 #: ../src/brasero-jacket-background.c:234
 #, fuzzy
 msgid "_Image"
-msgstr "Beeldbestand branden"
+msgstr "schijf-image branden"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../src/brasero-jacket-background.c:259
 #, fuzzy
 msgid "Image path:"
-msgstr "Type beeldbestand:"
+msgstr "Type schijf-image:"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../src/brasero-jacket-background.c:271
 #, fuzzy
 msgid "Choose an image"
-msgstr "Beeldbestand openen"
+msgstr "schijf-image openen"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../src/brasero-jacket-background.c:282
 #, fuzzy
 msgid "Image style:"
-msgstr "Type beeldbestand:"
+msgstr "Type schijf-image:"
 
 #: ../src/brasero-jacket-background.c:296
 #, fuzzy
@@ -5023,1085 +4983,3 @@ msgstr "Dvd wordt gekopieerd"
 #, fuzzy
 msgid "Disc Copier"
 msgstr "Schijfbestand"
-
-#~ msgid "Disc Burning Application"
-#~ msgstr "Cd/dvd brandprogramma"
-
-#~ msgid ""
-#~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-#~ msgstr ""
-#~ "Wordt enkel gebruikt in combinatie met de -immed-vlag bij cdrecord. Zie "
-#~ "immed_flag."
-
-#~ msgid "Should brasero ask to be set as the default app to burn"
-#~ msgstr ""
-#~ "Moet Brasero vragen om ingesteld te zijn als de standaardtoepassing om te "
-#~ "branden?"
-
-#~ msgid ""
-#~ "Should brasero ask to be set as the default app to burn audio or data. "
-#~ "Set to true, brasero won't ask."
-#~ msgstr ""
-#~ "Moet Brasero vragen om ingesteld te zijn als de standaardtoepassing om "
-#~ "audio of data te branden? Indien ingesteld op ‘Waar’, zal Brasero dit "
-#~ "niet vragen."
-
-#~ msgid "Cdrdao toc file"
-#~ msgstr "Cdrdao toc-bestand"
-
-#~ msgid "Choose which drive holds the disc to write to"
-#~ msgstr "Kies het station die de schijf bevat waarnaar u wilt schrijven"
-
-#~ msgid "Number of copies "
-#~ msgstr "Aantal kopieën "
-
-#~ msgid "<i><b>Pause</b></i>"
-#~ msgstr "<i><b>Pauze</b></i>"
-
-#~ msgid "Track length"
-#~ msgstr "Tracklengte:\t"
-
-#~ msgid "Unhandled song"
-#~ msgstr "Niet-verwerkt nummer"
-
-#~ msgid "Directory search"
-#~ msgstr "Map doorzoeken"
-
-#~ msgid "Error"
-#~ msgstr "Fout"
-
-#~ msgid "File deletion noticed"
-#~ msgstr "Bestandsverwijdering opgemerkt"
-
-#~ msgid "Error Blanking:"
-#~ msgstr "Fout bij het wissen:"
-
-#~ msgid "Blanking finished"
-#~ msgstr "Wissen voltooid"
-
-#~ msgid "Unexpected error"
-#~ msgstr "Onverwachte fout"
-
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"larger\">The following files were removed "
-#~ "automatically from the project.</span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"larger\">De volgende bestanden werden "
-#~ "automatisch verwijderd van het project.</span>"
-
-#~ msgid "_Notify when files are filtered"
-#~ msgstr "_Verwittigen wanneer bestanden verborgen worden"
-
-#~ msgid "unreadable file"
-#~ msgstr "onleesbaar bestand"
-
-#~ msgid "_Disc Info"
-#~ msgstr "_Schijfinformatie"
-
-#~ msgid "Display information on blank discs currently inserted"
-#~ msgstr "Informatie tonen over lege schijven die momenteel ingevoerd zijn"
-
-#~ msgid "this format is not supported by gstreamer"
-#~ msgstr "dit formaat wordt niet ondersteund door GStreamer"
-
-#~ msgid "Show"
-#~ msgstr "Tonen"
-
-#~ msgid "Playlist loading error"
-#~ msgstr "Fout bij het laden van de afspeellijst"
-
-#~ msgid "Loading ..."
-#~ msgstr "Laden..."
-
-#~ msgid ""
-#~ "<b>%s</b>\n"
-#~ "%s\n"
-#~ "<i>%s</i>"
-#~ msgstr ""
-#~ "<b>%s</b>\n"
-#~ "%s\n"
-#~ "<i>%s</i>"
-
-#~ msgid "Plugins"
-#~ msgstr "Plug-ins"
-
-#~ msgid "Find all available videos"
-#~ msgstr "Zoek alle beschikbare video's"
-
-#~ msgid "Find all available documents"
-#~ msgstr "Zoek alle beschikbare documenten"
-
-#~ msgid "Find all available spreadsheets"
-#~ msgstr "Zoek alle beschikbare rekenbladen"
-
-#~ msgid "Find all available presentations"
-#~ msgstr "Zoek alle beschikbare presentaties"
-
-#~ msgid "Find all available Pdf / Postscripts"
-#~ msgstr "Zoek alle beschikbare PDF- en Postscriptbestanden"
-
-#~ msgid "<b>only in\t</b>"
-#~ msgstr "<b>enkel in\t</b>"
-
-#~ msgid "<b>No results</b>"
-#~ msgstr "<b>Geen resultaten</b>"
-
-#~ msgid "<big><b>Options</b></big>"
-#~ msgstr "<big><b>Opties</b></big>"
-
-#~ msgid "Cancel"
-#~ msgstr "Annuleren"
-
-#~ msgid "Close if successful"
-#~ msgstr "Afsluiten indien succesvol"
-
-#~ msgid "Display file chooser"
-#~ msgstr "Bestandskiezer tonen"
-
-#~ msgid "waiting"
-#~ msgstr "wachten"
-
-#~ msgid "%d:%02i hour"
-#~ msgid_plural "%i:%02i hours"
-#~ msgstr[0] "%d:%02i uur"
-#~ msgstr[1] "%i:%02i uren"
-
-#~ msgid "KiB"
-#~ msgstr "KiB"
-
-#~ msgid "MiB"
-#~ msgstr "MiB"
-
-#~ msgid "GiB"
-#~ msgstr "GiB"
-
-#~ msgid "This file can't be opened:"
-#~ msgstr "Dit bestand kon niet geopend worden:"
-
-#~ msgid "File error"
-#~ msgstr "Bestandsfout"
-
-#~ msgid "there is no application defined for this file."
-#~ msgstr "Er is geen toepassing ingesteld voor dit bestand."
-
-#~ msgid "File can't be opened:"
-#~ msgstr "Bestand kan niet worden geopend:"
-
-#~ msgid "application %s can't be started."
-#~ msgstr "toepassing %s kan niet worden gestart."
-
-#~ msgid "<big><b>Burning data DVD</b></big>"
-#~ msgstr "<big><b>Datadvd wordt gebrand</b></big>"
-
-#~ msgid "<big><b>Burning image to DVD</b></big>"
-#~ msgstr "<big><b>Beeldbestand op dvd branden</b></big>"
-
-#~ msgid "<big><b>Copying data DVD</b></big>"
-#~ msgstr "<big><b>Davadvd kopiëren</b></big>"
-
-#~ msgid "<big><b>Burning audio CD</b></big>"
-#~ msgstr "<big><b>Audiocd branden</b></big>"
-
-#~ msgid "<big><b>Burning data CD</b></big>"
-#~ msgstr "<big><b>Branden datacd</b></big>"
-
-#~ msgid "<big><b>Copying CD</b></big>"
-#~ msgstr "<big><b>Cd kopiëren</b></big>"
-
-#~ msgid "<big><b>Burning image to CD</b></big>"
-#~ msgstr "<big><b>Beeldbestand wordt op dvd gebrand</b></big>"
-
-#~ msgid "<big><b>Burning data disc</b></big>"
-#~ msgstr "<big><b>Branden datacd</b></big>"
-
-#~ msgid "<big><b>Copying disc</b></big>"
-#~ msgstr "<big><b>Cd kopiëren</b></big>"
-
-#~ msgid "<big><b>Burning image to disc</b></big>"
-#~ msgstr "<big><b>Beeldbestand branden op schijf</b></big>"
-
-#~ msgid "A data integrity test is about to begin:"
-#~ msgstr "Een data-integriteitstest gaat zo meteen beginnen:"
-
-#~ msgid ""
-#~ "A recording was successfully completed.\n"
-#~ "The next recording is about to begin:"
-#~ msgstr ""
-#~ "Een opname is succesvol beëindigd.\n"
-#~ "De volgende opname gaat zo meteen beginnen:"
-
-#~ msgid "The disc in \"%s\" is busy:"
-#~ msgstr "De schijf in \"%s\" is bezet:"
-
-#~ msgid "The disc in \"%s\" is a DVD:"
-#~ msgstr "De schijf in \"%s\" is een dvd:"
-
-#~ msgid "The disc in \"%s\" is a CD:"
-#~ msgstr "De schijf in \"%s\" is een cd:"
-
-#~ msgid "The disc in \"%s\" is not big enough:"
-#~ msgstr "De schijf in \"%s\" is niet groot genoeg:"
-
-#~ msgid "Waiting for disc insertion"
-#~ msgstr "Wachten op invoeren schijf"
-
-#~ msgid "Waiting for disc replacement"
-#~ msgstr "Wachten op vervangen schijf"
-
-#~ msgid "Possible loss of data"
-#~ msgstr "Mogelijk gegevensverlies"
-
-#~ msgid ""
-#~ "Do you want to erase the current disc?\n"
-#~ "Or replace the current disc with a new disc?"
-#~ msgstr ""
-#~ "Wilt u de huidige schijf wissen?\n"
-#~ "Of wilt u de huidige schijf vervangen door een nieuwe schijf?"
-
-#~ msgid "Multisession disc"
-#~ msgstr "Multisessie-schijf"
-
-#~ msgid "Rewritable disc"
-#~ msgstr "Herschrijfbare schijf"
-
-#~ msgid "Successful simulation"
-#~ msgstr "Simulatie succesvol"
-
-#~ msgid "_Close the application if the burn process is successful"
-#~ msgstr "De applicatie afsluiten als het brandproces geslaagd is"
-
-#~ msgid "Session log error"
-#~ msgstr "Fout in het sessielog"
-
-#~ msgid "An unknown error occured. Check your disc"
-#~ msgstr "Er deed zich een onbekende fout voor. Kijk de schijf na"
-
-#~ msgid "Burning error"
-#~ msgstr "Brandfout"
-
-#~ msgid "\"%s\" is now ready for use"
-#~ msgstr "\"%s\" is nu klaar voor gebruik"
-
-#~ msgid "DVD is now ready for use"
-#~ msgstr "Dvd is nu klaar voor gebruik"
-
-#~ msgid "CD is now ready for use"
-#~ msgstr "Cd is nu klaar voor gebruik"
-
-#~ msgid "Confirm"
-#~ msgstr "Bevestigen"
-
-#~ msgid "Removed Files"
-#~ msgstr "Verwijderde bestanden"
-
-#~ msgid "Display the files filtered from the project"
-#~ msgstr "Toon de bestanden die verborgen zijn in het project"
-
-#~ msgid "Import session"
-#~ msgstr "Sessie importeren"
-
-#~ msgid "Filtered Files"
-#~ msgstr "Verborgen bestanden"
-
-#~ msgid "Already existing file"
-#~ msgstr "Bestand bestaat reeds"
-
-#~ msgid "(empty)"
-#~ msgstr "(leeg)"
-
-#~ msgid "1 item"
-#~ msgstr "1 item"
-
-#~ msgid "Some files were filtered:"
-#~ msgstr "enkele bestanden werden verborgen:"
-
-#~ msgid "The file \"%s\" is unreadable:"
-#~ msgstr "Het bestand \"%s\" is onleesbaar:"
-
-#~ msgid "The directory \"%s\" is unreadable:"
-#~ msgstr "De map \"%s\" is onleesbaar:"
-
-#~ msgid "Some files couldn't be restored."
-#~ msgstr "Enkele bestanden konden niet terug geplaatst worden."
-
-#~ msgid "File restoration failure"
-#~ msgstr "Fout bij het terugplaatsen van bestanden"
-
-#~ msgid "Import session error"
-#~ msgstr "Fout bij het importeren van de sessie"
-
-#~ msgid "loading project"
-#~ msgstr "Project wordt geladen"
-
-#~ msgid "there isn't any available session on the disc"
-#~ msgstr "er is geen sessie beschikbaar op de schijf"
-
-#~ msgid "unknown volume type"
-#~ msgstr "Onbekend volumetype"
-
-#~ msgid "A multisession disc is inserted:"
-#~ msgstr "Een multisessieschijf is ingevoerd:"
-
-#~ msgid "Project couldn't be loaded:"
-#~ msgstr "Project kon niet geladen worden:"
-
-#~ msgid "Project loading failure"
-#~ msgstr "Fout bij het laden van project"
-
-#~ msgid "<b>Label of the disc</b>"
-#~ msgstr "<b>Schijflabel</b>"
-
-#~ msgid "<b>Title</b>"
-#~ msgstr "<b>Titel</b>"
-
-#~ msgid "Leave the disc _open to add a data session later"
-#~ msgstr "De schijf _open laten om later een sessie toe te kunnen voegen"
-
-#~ msgid "Allow create what is called an enhanced CD or CD+"
-#~ msgstr "Toelaten om een zogenaamde enhanced cd of cd+ aan te maken"
-
-#~ msgid "<i>no disc</i>"
-#~ msgstr "<i>geen schijf</i>"
-
-#~ msgid "<i>unknown type</i>"
-#~ msgstr "<i>onbekend type</i>"
-
-#~ msgid "<i>busy disc</i>"
-#~ msgstr "<i>station is bezig</i>"
-
-#~ msgid "audio tracks"
-#~ msgstr "audiotracks"
-
-#~ msgid "data tracks"
-#~ msgstr "datatracks"
-
-#~ msgid "%s of data"
-#~ msgstr "%s data"
-
-#~ msgid "<i>the medium is not writable</i>"
-#~ msgstr "<i>het medium is niet beschrijfbaar</i>"
-
-#~ msgid "%s free"
-#~ msgstr "%s vrij"
-
-#~ msgid "the medium can be recorded (automatic blanking required)"
-#~ msgstr "het medium kan beschreven worden (automatisch wissen is vereist)"
-
-#~ msgid "the medium can be recorded"
-#~ msgstr "het medium kan beschreven worden"
-
-#~ msgid "data can be written or appended to the medium"
-#~ msgstr "data kan op het medium geschreven of toegevoegd worden "
-
-#~ msgid ""
-#~ "The <b>image</b> will be saved to\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Het <b>beeldbestand</b> zal opgeslagen worden in\n"
-#~ "%s"
-
-#~ msgid "<b>Type:</b>"
-#~ msgstr "<b>Type:</b>"
-
-#~ msgid "<b>Size:</b>"
-#~ msgstr "<b>Grootte:</b>"
-
-#~ msgid "<b>Status:</b>"
-#~ msgstr "<b>Status:</b>"
-
-#~ msgid "This image can't be burnt:"
-#~ msgstr "Dit beeldbestand kan niet gebrand worden:"
-
-#~ msgid "No image"
-#~ msgstr "Geen beeldbestand"
-
-#~ msgid "Path:"
-#~ msgstr "Pad:"
-
-#~ msgid "<b>Image</b>"
-#~ msgstr "<b>Beeldbestand</b>"
-
-#~ msgid "Disc image file properties"
-#~ msgstr "Eigenschappen van het beeldbestand"
-
-#~ msgid "(u)mount command could not be found in the path"
-#~ msgstr "het (u)mount-commando kon niet gevonden worden in het pad."
-
-#~ msgid "<span weight=\"bold\">Name:</span>\t %s"
-#~ msgstr "<span weight=\"bold\">Naam:</span>\t %s"
-
-#~ msgid "<span weight=\"bold\">%s</span>\n"
-#~ msgstr "<span weight=\"bold\">%s</span>\n"
-
-#~ msgid "Burn..."
-#~ msgstr "Branden..."
-
-#~ msgid "you must delete some files."
-#~ msgstr "U moet enkele bestanden wissen"
-
-#~ msgid "The size of the project is too large for the disc:"
-#~ msgstr "Het project past niet op de schijf:"
-
-#~ msgid ""
-#~ "Would you like to activate overburn (otherwise you must delete files) ?\n"
-#~ "NOTE: This option might cause failure."
-#~ msgstr ""
-#~ "Wilt u de overburn-optie activeren (anders moet u bestanden wissen)? "
-#~ "Opgelet: deze optie kan het branden doen mislukken."
-
-#~ msgid "Please wait:"
-#~ msgstr "Even geduld:"
-
-#~ msgid "Please wait"
-#~ msgstr "Even geduld"
-
-#~ msgid "some tasks are not completed yet."
-#~ msgstr "Sommige taken zijn nog niet afgewerkt."
-
-#~ msgid "Waiting for ongoing tasks"
-#~ msgstr "Wachten op af te werken taken"
-
-#~ msgid "No song in the project:"
-#~ msgstr "Geen nummer in het project:"
-
-#~ msgid "Empty project"
-#~ msgstr "Leeg project"
-
-#~ msgid "don't _show this dialog again"
-#~ msgstr "Toon dit ven_ster niet meer opnieuw"
-
-#~ msgid "Brasero is not the default application to burn audio CDs:"
-#~ msgstr "Brasero is niet de standaardtoepassing om audio cd's te branden:"
-
-#~ msgid ""
-#~ "Would you like to make brasero the default application to burn audio CDs?"
-#~ msgstr ""
-#~ "Wilt u Brasero instellen als standaardtoepassing om audio cd's te branden?"
-
-#~ msgid "Brasero is not the default application to burn data discs:"
-#~ msgstr "Brasero is niet de standaardtoepassing om data cd's te branden:"
-
-#~ msgid ""
-#~ "Would you like to make brasero the default application to burn data discs?"
-#~ msgstr ""
-#~ "Wilt u Brasero instellen als standaardtoepassing om data cd's te branden?"
-
-#~ msgid "Remove"
-#~ msgstr "Verwijderen"
-
-#~ msgid "Project loading error"
-#~ msgstr "Fout bij het inladen van het project"
-
-#~ msgid "Modified project"
-#~ msgstr "Gewijzigd project"
-
-#~ msgid "Create a new data project"
-#~ msgstr "Een nieuw dataproject aanmaken"
-
-#~ msgid "Brasero - Copy a disc"
-#~ msgstr "Brasero - Schijf kopiëren"
-
-#~ msgid "Display file browser"
-#~ msgstr "Bestandsbeheer tonen"
-
-#~ msgid "Display playlists"
-#~ msgstr "Afspeellijsten tonen"
-
-# letterlijk: 'gebrand te worden'?
-#~ msgid "Show the available media to be burnt"
-#~ msgstr "De beschikbare media tonen om te branden"
-
-#~ msgid "<i>%s</i> not properly supported"
-#~ msgstr "<i>%s</i> wordt niet correct ondersteund"
-
-#~ msgid "The disc in <i>%s</i> is not supported"
-#~ msgstr "De schijf in <i>%s</i> wordt niet ondersteund"
-
-#~ msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
-#~ msgstr "<b>Te groot</b> (%s / %s in <i>%s</i>)"
-
-#~ msgid "<b>Oversized</b> (%s / %s)"
-#~ msgstr "<b>Te groot</b> (%s / %s)"
-
-#~ msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
-#~ msgstr "<b>Leeg</b> (%s / %s in <i>%s</i>)"
-
-#~ msgid "<b>Empty</b> (%s / %s)"
-#~ msgstr "<b>Leeg</b> (%s / %s)"
-
-#~ msgid "%s (%s) inserted in %s"
-#~ msgstr "%s (%s) ingevoerd in %s"
-
-#~ msgid "%s (DVD-R Dual Layer)"
-#~ msgstr "%s (dubbellaag dvd-r)"
-
-#~ msgid "%s (DVD-R)"
-#~ msgstr "%s (dvd-r)"
-
-#~ msgid "%s (CD-R)"
-#~ msgstr "%s (cd-r)"
-
-#~ msgid "<big>Audi_o project</big>"
-#~ msgstr "<big>Audi_oproject</big>"
-
-#~ msgid "<big>D_ata project</big>"
-#~ msgstr "<big>D_ataproject</big>"
-
-#~ msgid "<big>Burn _image</big>"
-#~ msgstr "<big>_Beeldbestand branden</big>"
-
-#~ msgid "<span size='x-large'><b>Create a new project:</b></span>"
-#~ msgstr "<span size='x-large'><b>Nieuw project maken:</b></span>"
-
-#~ msgid ""
-#~ "<span foreground='grey50'><b><i>Choose from the following options</i></"
-#~ "b></span>"
-#~ msgstr ""
-#~ "<span foreground='grey50'><b><i>Kies uit de volgende opties</i></b></span>"
-
-#~ msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
-#~ msgstr "<span size='x-large'><b>Kies een recent geopend project:</b></span>"
-
-#~ msgid "File integrity check error"
-#~ msgstr "Fout bij integriteitscontrole bestand"
-
-#~ msgid "unknown error"
-#~ msgstr "onbekende fout"
-
-#~ msgid "File integrity check success"
-#~ msgstr "De integriteitscontrole van het bestand is geslaagd"
-
-#~ msgid "a temporary file couldn't be created"
-#~ msgstr "er kon geen tijdelijk bestand aangemaakt worden"
-
-#~ msgid "Media busy"
-#~ msgstr "Media bezet"
-
-#~ msgid "the inserted media is busy."
-#~ msgstr "Het ingevoerde station is bezig."
-
-#~ msgid "Media error"
-#~ msgstr "Mediumfout"
-
-#~ msgid "<b>Options:</b>"
-#~ msgstr "<b>Opties:</b>"
-
-#~ msgid "Choose the drive that holds the media"
-#~ msgstr "Kies het station dat de schijf bevat"
-
-#~ msgid "<b>Select a recorder:</b>"
-#~ msgstr "<b>Selecteer een schrijfstation:</b>"
-
-#~ msgid "no drive specified as source"
-#~ msgstr "geen station gespecificeerd als bron"
-
-#~ msgid "the drive has no burning capabilities"
-#~ msgstr "het station is niet in staat om te branden"
-
-#~ msgid "the disc could not be mounted (max attemps reached)"
-#~ msgstr ""
-#~ "de schijf kon niet aangekoppeld worden (maximum aantal pogingen bereikt)"
-
-#~ msgid "the drive seems to be busy"
-#~ msgstr "het station is bezet"
-
-#~ msgid ""
-#~ "it's not possible to merge to this media because it hasn't got enough "
-#~ "space"
-#~ msgstr ""
-#~ "het is niet mogelijk om met dit medium samen te voegen omdat er niet "
-#~ "genoeg vrije ruimte op is"
-
-#~ msgid "there is no drive to burn to"
-#~ msgstr "er is geen schijf om naar te branden"
-
-#~ msgid "this operation is not supported"
-#~ msgstr "deze operatie wordt niet ondersteund"
-
-#~ msgid "internal error in plugin system"
-#~ msgstr "interne fout in het plug-insysteem"
-
-#~ msgid "a temporary file can't be created: %s"
-#~ msgstr "er kan geen tijdelijk bestand aangemaakt worden: %s"
-
-#~ msgid "One file is not a directory or a regular file"
-#~ msgstr "Er is een bestand gevonden dat geen map of normaal bestand is"
-
-#~ msgid "the file can't be read"
-#~ msgstr "het bestand kan niet gelezen worden"
-
-#~ msgid "%s can't be removed and is not a directory (%s)"
-#~ msgstr "%s kan niet verwijderd worden en is geen map (%s)"
-
-#~ msgid "%s can't be created (%s)"
-#~ msgstr "%s kan niet aangemaakt worden (%s)"
-
-#~ msgid "directory \"%s\" can't be created (%s)"
-#~ msgstr "de map \"%s\" kan niet aangemaakt worden (%s)"
-
-#~ msgid "invalid directory record"
-#~ msgstr "ongeldig directory-record"
-
-#~ msgid "file name is too long"
-#~ msgstr "bestandsnaam is te lang"
-
-#~ msgid "plugin %s did not want to work. Try to deactivate it"
-#~ msgstr "plug-in %s bleek niet te werken. Probeer om deze te deactiveren."
-
-#~ msgid "Insufficient space on media (%lli available for %lli)"
-#~ msgstr ""
-#~ "Onvoldoende ruimte beschikbaar op de schijf (%lli beschikbaar voor %lli)"
-
-#~ msgid "the size of the volume can't be checked (%s)"
-#~ msgstr "De grootte van het volume kan niet gecontroleerd worden (%s)"
-
-#~ msgid "the pipe couldn't be created (%s)"
-#~ msgstr "er kon geen pipe aangemaakt worden (%s)"
-
-#~ msgid ""
-#~ "plugin %s did not work properly.\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "Plug-in %s werkte niet correct.\n"
-#~ "Probeer om deze te deactiveren"
-
-#~ msgid ""
-#~ "plugin %s didn't work properly (it does not support operation).\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "plug-in %s werkte niet correct (het ondersteunt de operatie niet).\n"
-#~ "Probeer deze te deactiveren"
-
-#~ msgid "couldn't set non blocking mode"
-#~ msgstr "niet-blokkerende modus kon niet worden ingesteld"
-
-#~ msgid "couldn't get pipe flags"
-#~ msgstr "pipe-flags konden niet worden ingesteld"
-
-#~ msgid "file"
-#~ msgstr "bestand"
-
-#~ msgid "null graft point"
-#~ msgstr "null graft point"
-
-#~ msgid "no path"
-#~ msgstr "geen pad"
-
-#~ msgid "no output specified"
-#~ msgstr "geen output gespecificeerd"
-
-#~ msgid "there isn't a valid volume descriptor"
-#~ msgstr "er is geen geldige volumedescriptor"
-
-#~ msgid "Open a data project with the contents of nautilus-cd-burner"
-#~ msgstr "Open een dataproject met de inhoud van nautilus-cd-burner"
-
-#~ msgid "Sorry, no documentation for Brasero."
-#~ msgstr "Sorry, geen documentatie van Brasero beschikbaar"
-
-#~ msgid "Brasero projects"
-#~ msgstr "Brasero projecten"
-
-#~ msgid "Incompatible options"
-#~ msgstr "Incompatibele opties"
-
-#~ msgid "CD/DVD burning"
-#~ msgstr "cd/dvd branden"
-
-#~ msgid "the cue file (%s) seems to be invalid"
-#~ msgstr "het cue-bestand (%s) is ongeldig"
-
-#~ msgid "cdrdao could not be found in the path"
-#~ msgstr "cdrdao kon niet gevonden worden in het pad"
-
-#~ msgid "the old image couldn't be read"
-#~ msgstr "het oude beeldbestand kon niet gelezen worden"
-
-#~ msgid "the image can't be created"
-#~ msgstr "het beeldbestand kan niet aangemaakt worden"
-
-#~ msgid "writing to file descriptor failed"
-#~ msgstr "Schrijven naar de bestandsdescriptor is mislukt"
-
-#~ msgid "Internal error: bad file descriptor"
-#~ msgstr "interne fout: foute bestandsdescriptor"
-
-#~ msgid "The file is too large for a CD"
-#~ msgstr "Het bestand is te groot voor een cd"
-
-#~ msgid ""
-#~ "failed to get the start point of the track. Make sure the media allow to "
-#~ "add files (it is not closed)"
-#~ msgstr ""
-#~ "Kon het startpunt van de track niet vinden. Kijk na of er nog bestanden "
-#~ "kunnen worden toegevoegd aan de schijf (of de schijf niet afgesloten is)"
-
-#~ msgid "the drive is not ready"
-#~ msgstr "het station is niet klaar"
-
-#~ msgid "you don't seem to have the required permissions to access the drive"
-#~ msgstr "u hebt geen toegangsrechten om het station te benaderen"
-
-#~ msgid "raw images cannot be created with DVDs"
-#~ msgstr "ruwe beeldbestanden kunnen niet gemaakt worden van DVD's"
-
-#~ msgid "There doesn't seem to be a disc in the drive"
-#~ msgstr "Er is geen schijf in het station"
-
-#~ msgid "input buffer error"
-#~ msgstr "fout in de invoerbuffer"
-
-#~ msgid "The CD has already been recorded"
-#~ msgstr "De cd is reeds beschreven"
-
-#~ msgid "The CD cannot be blanked"
-#~ msgstr "De cd kan niet gewist worden"
-
-#~ msgid "The files selected did not fit on the CD"
-#~ msgstr "De gelesecteerde bestanden pasten niet op de cd"
-
-#~ msgid "a write error occured which was likely due to overburning the disc"
-#~ msgstr ""
-#~ "Er heeft zich een schrijffout voorgedaan die waarschijnlijk te wijten is "
-#~ "aan het overburnen van de schijf"
-
-#~ msgid ""
-#~ "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-#~ msgstr ""
-#~ "Alle audiobestanden moeten 16-bit digitale audio in stereo met 44100Hz "
-#~ "samples zijn"
-
-#~ msgid "The image does not seem to be a proper iso9660 file system"
-#~ msgstr "Het beeldbestand is geen geldig iso9660 bestandssysteem."
-
-#~ msgid ""
-#~ "The drive seems to be busy (maybe check you have proper permissions to "
-#~ "use it)"
-#~ msgstr ""
-#~ "Het station is bezet (kijk na of u de gepaste toegangsrechten hebt om het "
-#~ "te gebruiken)"
-
-#~ msgid "The drive seems to be busy (maybe you should reload the media)"
-#~ msgstr ""
-#~ "Het station lijkt bezet te zijn (misschien moet u het medium opnieuw "
-#~ "laden)"
-
-#~ msgid "the image file cannot be found"
-#~ msgstr "het beeldbestand kan niet gevonden worden"
-
-#~ msgid "internal error"
-#~ msgstr "interne fout"
-
-#~ msgid "the cd information could not be written"
-#~ msgstr "de cd-informatie kon niet weggeschreven worden"
-
-#~ msgid "the audio tracks are too short or not a multiple of 2352"
-#~ msgstr "de audiostracks zijn te kort of geen veelvoud van 2352"
-
-#~ msgid "the inf file can't be written : %s"
-#~ msgstr "het inf-bestand kan niet weggeschreven worden: %s"
-
-#~ msgid "imager doesn't seem to be ready"
-#~ msgstr "het programma dat het beeldbestand maakt, lijkt niet klaar te zijn"
-
-#~ msgid "the size of the session cannot be retrieved"
-#~ msgstr "de grootte van de sessie kon niet bepaald worden"
-
-#~ msgid "wodim could not be found in the path"
-#~ msgstr "wodim kon niet gevonden worden in het pad"
-
-#~ msgid "cdrecord could not be found in the path"
-#~ msgstr "cdrecord kon niet gevonden worden in het pad"
-
-#~ msgid "readcd could not be found in the path"
-#~ msgstr "readcd kon niet gevonden worden in het pad"
-
-#~ msgid "the file %s couldn't be read (%s)"
-#~ msgstr "het bestand %s kon niet gelezen worden (%s)"
-
-#~ msgid "the file %s couldn't be seeked (%s)"
-#~ msgstr "het bestand %s kan niet gelezen worden (%s)"
-
-#~ msgid "data could not be read from the pipe (%i: %s)"
-#~ msgstr "De gegevens konden niet uit de pipe gelezen worden (%i: %s)"
-
-#~ msgid "the data couldn't be written to the pipe (%i: %s)"
-#~ msgstr "De gegevens konden niet naar de pipe geschreven worden (%i: %s)"
-
-#~ msgid "the image is not local"
-#~ msgstr "Het beeldbestand staat niet lokaal"
-
-#~ msgid "Creating local image checksum"
-#~ msgstr "Lokale controlesom wordt aangemaakt"
-
-#~ msgid "the data couldn't be written to the file (%i: %s)"
-#~ msgstr "De gegevens konden niet naar het bestand geschreven worden (%i: %s)"
-
-#~ msgid "Unhandled error, aborting"
-#~ msgstr "Onverwerkte fout, afbreken"
-
-#~ msgid "dvd+rw-format could not be found in the path"
-#~ msgstr "dvd+rw-format kon niet gevonden worden in het pad"
-
-#~ msgid "The disc is already burnt"
-#~ msgstr "De schijf is reeds gebrand"
-
-#~ msgid "The recorder could not be accessed"
-#~ msgstr "De brander kon niet aangesproken worden"
-
-#~ msgid "the file /proc/self/fd/0 is missing"
-#~ msgstr "het bestand /proc/self/fd/0 ontbreekt"
-
-#~ msgid "the image is not stored locally"
-#~ msgstr "het beeldbestand is niet lokaal opgeslagen"
-
-#~ msgid "growisofs could not be found in the path"
-#~ msgstr "growisofs kon niet gevonden worden in het pad"
-
-#~ msgid "unable to set the source"
-#~ msgstr "Kon de bron niet instellen"
-
-#~ msgid "unable to add the track to the session"
-#~ msgstr "kon de track niet toevoegen aan de sessie"
-
-#~ msgid "no profile available for the medium"
-#~ msgstr "geen profiel beschikbaar voor het medium"
-
-#~ msgid "/dev/null can't be opened"
-#~ msgstr "/dev/null kan niet geopend worden"
-
-#~ msgid "libburn can't burn: %s"
-#~ msgstr "libburn kan niet branden: %s"
-
-#~ msgid "(%s) libburn tried to say something"
-#~ msgstr "(%s) libburn probeerde iets te zeggen"
-
-#~ msgid "a parent for the path (%s) could not be found in the tree"
-#~ msgstr "er kon geen bovenliggende map gevonden worden voor het pad (%s)"
-
-#~ msgid "non local file %s"
-#~ msgstr "Geen lokaal bestand %s"
-
-#~ msgid "unsupported type of file (at %s)"
-#~ msgstr "Onbekend bestandstype (%s)"
-
-#~ msgid "no disc could be found"
-#~ msgstr "geen schijf gevonden"
-
-#~ msgid "source can't be created"
-#~ msgstr "bron kan niet aangemaakt worden"
-
-#~ msgid "sink can't be created"
-#~ msgstr "sink kan niet gemaakt worden"
-
-#~ msgid "audioconvert can't be created"
-#~ msgstr "audioconvert kan niet gemaakt worden"
-
-#~ msgid "audioresample can't be created"
-#~ msgstr "audioresample kan niet gemaakt worden"
-
-#~ msgid "filter can't be created"
-#~ msgstr "er kan geen filter worden aangemaakt"
-
-#~ msgid "decode can't be created"
-#~ msgstr "decode kan niet gemaakt worden"
-
-#~ msgid "error opening file for padding : %s"
-#~ msgstr "Fout bij het openen van bestand om te verlengen: %s"
-
-#~ msgid "the device is not ready"
-#~ msgstr "het station is niet klaar"
-
-#~ msgid " Preview "
-#~ msgstr " Voorbeeldweergave "
-
-#~ msgid "size error"
-#~ msgstr "Probleem met de grootte"
-
-#~ msgid "no silence"
-#~ msgstr "geen stilte"
-
-#~ msgid "automatic split"
-#~ msgstr "automatisch splitsen"
-
-#~ msgid "Choose which drive holds the disc to read from"
-#~ msgstr "Kies het station die de schijf bevat die u wilt lezen"
-
-#~ msgid "size can't be retrieved (%s)"
-#~ msgstr "grootte kan niet bepaald worden (%s)"
-
-#~ msgid "size can't be retrieved for %s: %s"
-#~ msgstr "grootte kan niet bepaald worden voor %s: %s"
-
-#~ msgid "Enable use of cdrdao"
-#~ msgstr "Gebruik van cdrdao inschakelen"
-
-#, fuzzy
-#~ msgid "Should brasero generate activate the \"generate checksum\" button"
-#~ msgstr "Moet Brasero de ‘genereer controlesom’-knop activeren?"
-
-#, fuzzy
-#~ msgid ""
-#~ "Should brasero generate activate the \"generate checksum\" button by "
-#~ "default. Set to true, brasero will check the option by default."
-#~ msgstr ""
-#~ "Moet Brasero standaard de ‘genereer controlesom’-knop activeren? Indien "
-#~ "ingesteld op ‘true’ zal brasero de optie standaard controleren."
-
-#~ msgid "Whether to use cdrdao for burning or not. Set to true to use it."
-#~ msgstr ""
-#~ "Of cdrdao gebruikt moet worden om te branden of niet. Stel dit in op "
-#~ "‘true’ om het te gebruiken."
-
-#~ msgid "Whether to use libburn to burn CDs. Set to true to use it."
-#~ msgstr ""
-#~ "Of libburn gebruikt moet worden om cd's te branden. Stel dit in op ‘true’ "
-#~ "om het te gebruiken."
-
-#~ msgid "Whether to use libburn to read CDs. Set to true to use it."
-#~ msgstr ""
-#~ "Of libburn gebruikt moet worden om cd's te lezen. Stel dit in op ‘true’ "
-#~ "om het te gebruiken."
-
-#~ msgid "Whether to use libisofs to generate images. Set to true to use it."
-#~ msgstr ""
-#~ "Of libisofs gebruikt moet worden om iso-bestanden te genereren. Stel dit "
-#~ "in op ‘true’ om het te gebruiken."
-
-#~ msgid "Add a pause"
-#~ msgstr "Een pauze toevoegen"
-
-#~ msgid "Unneeded operation"
-#~ msgstr "Overbodige actie"
-
-#~ msgid "<b>Multisession</b>"
-#~ msgstr "<b>Multisessie</b>"
-
-#~ msgid "Check data integrity"
-#~ msgstr "Gegevensintegriteit controleren"
-
-# '*' lijkt hier overbodig, omdat er slechts spake is van één bestand om te branden. '.iso-bestand' klinkt dan logischer dan '*.iso-bestanden' ('*.iso-bestand' zoals de Engelse tekst letterlijk luidt is zelfs een contradictie)
-#~ msgid "*.iso (joliet) image"
-#~ msgstr ".iso (Joliet)-bestand"
-
-#~ msgid "None"
-#~ msgstr "Geen"
-
-#~ msgid "Show the project only"
-#~ msgstr "Enkel het project tonen"
-
-#~ msgid "<big><b>File Browser</b></big>"
-#~ msgstr "<big><b>Bestandsbeheer</b></big>"
-
-#~ msgid "<big><b>Search Files</b></big>"
-#~ msgstr "<big><b>Bestanden zoeken</b></big>"
-
-#~ msgid "<big><b>Playlists</b></big>"
-#~ msgstr "<big><b>Afspeellijsten</b></big>"
-
-#~ msgid "(mounted drive) <i>%s</i>"
-#~ msgstr "(aangekoppelde schijf) <i>%s</i>"
-
-#~ msgid "Disc data corrupted"
-#~ msgstr "Schijfgegevens beschadigd"
-
-#, fuzzy
-#~ msgid "The file integrity check showed errors:"
-#~ msgstr "De integriteitscontrole van het bestand toonde fouten:"
-
-#~ msgid "Data integrity check"
-#~ msgstr "Integriteitscontrole gegevens"
-
-#~ msgid "The file integrity check succeeded:"
-#~ msgstr "De integriteitscontrole van het bestand is geslaagd:"
-
-#~ msgid "The data integrity check could not be performed:"
-#~ msgstr "De integriteitscontrole van de gegevens kon niet uitgevoerd worden:"
-
-#~ msgid "unknown error."
-#~ msgstr "onbekende fout."
-
-#~ msgid "The file integrity check failed:"
-#~ msgstr "De integriteitscontrole van het bestand is mislukt:"
-
-#~ msgid "some files may be corrupted on the disc."
-#~ msgstr "bepaalde bestanden op de schijf zijn mogelijk beschadigd."
-
-#~ msgid "Please insert it in \"%s\"."
-#~ msgstr "Voer het in in ‘%s’."
-
-#, fuzzy
-#~ msgid "The source media needs to be inserted:"
-#~ msgstr "Het bronmedium dient ingevoerd te worden:"
-
-#~ msgid "Please insert it again in \"%s\"."
-#~ msgstr "Voer het opnieuw in in ‘%s’."
-
-#, fuzzy
-#~ msgid "The source media needs to be reloaded:"
-#~ msgstr "Het bronmedium dient herladen te worden:"
-
-#, fuzzy
-#~ msgid "The burnt media needs to be reloaded to perform integrity check:"
-#~ msgstr ""
-#~ "Het gebrande medium dient herladen te worden om de integriteitscontrole "
-#~ "uit te voeren:"
-
-#~ msgid "<b><big>Performing integrity check</big></b>"
-#~ msgstr "<b><big>Integriteitscontrole wordt uitgevoerd</big></b>"
-
-#~ msgid "Check integrity"
-#~ msgstr "Integriteit controleren"
-
-#~ msgid "imager can't create iso9660 images"
-#~ msgstr "iso9660 beeldbestanden kunnen niet gemaakt worden"
-
-#~ msgid "a temporary directory couldn't be created : %s"
-#~ msgstr "de tijdelijke map %s kon niet worden aangemaakt"
-
-#~ msgid "a temporary file couldn't be created: %s"
-#~ msgstr "het tijdelijk bestand %s kon niet aangemaakt worden"
-
-#~ msgid "The label for the image is too long."
-#~ msgstr "Het label voor het beeldbestand is te lang"
-
-#~ msgid "%s already exist"
-#~ msgstr "%s bestaat reeds"
-
-#~ msgid "a temporary directory could not be created"
-#~ msgstr "er kon geen tijdelijke map worden aangemaakt"
-
-#~ msgid "E_xit"
-#~ msgstr "A_fsluiten"
-
-#~ msgid "<big><b>Audio project</b></big>"
-#~ msgstr "<big><b>Audioproject</b></big>"
-
-#~ msgid "<i>No track</i>"
-#~ msgstr "<i>Geen track</i>"
-
-#~ msgid "<big><b>Data project</b></big>"
-#~ msgstr "<big><b>Dataproject</b></big>"
-
-#~ msgid "<i>Contents of your data project</i>"
-#~ msgstr "<i>Inhoud van uw dataproject:</i>"
-
-#~ msgid "<i>%d track</i>"
-#~ msgid_plural "<i>%d tracks</i>"
-#~ msgstr[0] "<i>%d track</i>"
-#~ msgstr[1] "<i>%d tracks</i>"
-
-#~ msgid "<i>There is no disc in the drive.</i>"
-#~ msgstr "<i>Er is geen schijf in het station.</i>"
-
-#~ msgid "<i>Unknown type of disc.</i>"
-#~ msgstr "<i>Onbekend type schijf.</i>"
-
-#~ msgid "<i>The disc is busy.</i>"
-#~ msgstr "<i>Het station is bezig.</i>"
-
-#~ msgid "DVD"
-#~ msgstr "dvd"
-
-#~ msgid "CD"
-#~ msgstr "cd"
