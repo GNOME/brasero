@@ -39,7 +39,7 @@ msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-09 22:43+0100\n"
-"PO-Revision-Date: 2009-03-01 15:23+0100\n"
+"PO-Revision-Date: 2009-03-09 23:07+0100\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
@@ -2278,24 +2278,17 @@ msgstr "Nieuwe map %i"
 msgid "Click here not to use overburning"
 msgstr "Klik hier om geen overburning te gebruiken."
 
-# #############################################################################
-# #############################################################################
-# Dit is waar Wouter is gebleven.
-# #############################################################################
-# #############################################################################
 #: ../src/brasero-data-disc.c:627
-#, fuzzy
 msgid "Please delete some files from the project."
-msgstr "Alle bestanden van het project verwijderen"
+msgstr "Verwijder enkele bestanden van het project."
 
 #: ../src/brasero-data-disc.c:666
 msgid "The contents of the project changed since it was saved."
-msgstr "De projectinhoud is gewijzigd na de laatste keer opslaan."
+msgstr "De projectinhoud is gewijzigd sinds de laatste keer opslaan."
 
 #: ../src/brasero-data-disc.c:668 ../src/brasero-data-disc.c:675
-#, fuzzy
 msgid "Discard the current modified project"
-msgstr "Het huidige project opslaan"
+msgstr "Wijzigen aan het huidige project verwerpen"
 
 #: ../src/brasero-data-disc.c:674
 msgid "_Discard"
@@ -2315,63 +2308,59 @@ msgid ""
 "This file is the image of a disc and can therefore be burnt to disc without "
 "having to add it to a data project first."
 msgstr ""
+"Het bestand is een schijfimage en kan direct op schijf geschreven worden, zonder het aan een dataproject toe te voegen."
 
 #: ../src/brasero-data-disc.c:765
-#, fuzzy
 msgid "_Add to Project"
-msgstr "Nieuw _audioproject"
+msgstr "_Toevogen aan project"
 
 #: ../src/brasero-data-disc.c:767 ../src/brasero-project.c:210
 #: ../src/brasero-project.c:461
 msgid "_Burn..."
-msgstr "_Branden..."
+msgstr "_Schrijven…"
 
 #: ../src/brasero-data-disc.c:850 ../src/brasero-data-disc.c:881
 #: ../src/brasero-data-disc.c:912
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be added to the selection."
-msgstr "data kan toegevoegd worden aan het medium"
+msgstr "‘%s’ kan niet aan de selectie toegevoegd worden."
 
 #: ../src/brasero-data-disc.c:874
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is a recursive symlink."
-msgstr "recursieve koppeling"
+msgstr "‘%s’ is een recursieve symbolische verwijzing."
 
 #: ../src/brasero-data-disc.c:884
-#, fuzzy
 msgid "It is a recursive symlink"
-msgstr "recursieve koppeling"
+msgstr "Het is een recursieve symbolische verwijzing."
 
 #: ../src/brasero-data-disc.c:905
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be found."
-msgstr "\"%s\" kan niet vrijgegeven worden"
+msgstr "‘%s’ kan niet gevonden worden."
 
 #: ../src/brasero-data-disc.c:915
 msgid "It does not exist at the specified location"
-msgstr ""
+msgstr "Het bestand kon niet gevonden worden op de opgegeven locatie."
 
 #: ../src/brasero-data-disc.c:938
-#, fuzzy, c-format
+#, c-format
 msgid "Do you really want to replace \"%s\"?"
-msgstr "Wilt u het vervangen?"
+msgstr "Weet u zeker dat u ‘%s’ wilt vervangen?"
 
 #: ../src/brasero-data-disc.c:946
-#, fuzzy
 msgid "It already exists in the directory."
-msgstr "\"%s\" bestaat reeds in de map:"
+msgstr "Het bestand bestaat al in deze map."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * Replace means we're replacing it with a new one with the same name
 #: ../src/brasero-data-disc.c:950
-#, fuzzy
 msgid "_Keep Project File"
-msgstr "Grootte van het project"
+msgstr "Projectbestand _houden"
 
 #: ../src/brasero-data-disc.c:951
-#, fuzzy
 msgid "_Replace Project File"
-msgstr "_Recente projecten"
+msgstr "Project _overschrijven"
 
 #: ../src/brasero-data-disc.c:981
 #, c-format
@@ -2379,6 +2368,7 @@ msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of ISO9660 standard to support it?"
 msgstr ""
+"Weet u zeke dat u ‘%s’ aan de selectie wilt toevoegen en dat u de derde versie van de ISO9660-standaard wilt gebruiken om dit te ondersteunen?"
 
 #: ../src/brasero-data-disc.c:989
 msgid ""
@@ -2391,11 +2381,13 @@ msgid ""
 "However MacOS X cannot read images created with version 3 of ISO9660 "
 "standard."
 msgstr ""
+"Het bestand is groter dan 2 GiB. Bestanden groter dan 2 GiB worden niet door de ISO9660-standaard ondersteund in de eerste en tweede versies (de meest gebruikte versies).\n"
+"Het wordt aangeraden de derde versie van de ISO9660-standaard te gebruiken. Deze wordt ondersteund door de meeste besturingssystemen, waaronder Linux en alle Windows-versies.\n"
+"MacOS X kan echter niet omgaan met versie 3 van de ISO9660-standaard."
 
 #: ../src/brasero-data-disc.c:1025
-#, fuzzy, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
-msgstr "Wilt u werkelijk het huidige project leegmaken?"
+msgstr "Weet u zeker dat u ‘%s’ aan de selectie wilt toevoegen?"
 
 #: ../src/brasero-data-disc.c:1033
 msgid ""
@@ -2404,212 +2396,195 @@ msgid ""
 "disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
+"De items in deze map zullen 7 oudermappen hebben.\n"
+"Brasero kan een dergelijk schijf-image maken en schrijven, maar de schijf kan mogelijk niet door alle besturingssystemen gelezen worden.\n"
+"Onder Linux wordt een dergelijke mappenhiërarchie wel ondersteund."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
 #: ../src/brasero-data-disc.c:1131
-#, fuzzy, c-format
+#, c-format
 msgid "Import %s"
-msgstr "Importeren"
+msgstr "%s importeren"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
 #: ../src/brasero-data-disc.c:1138
-#, fuzzy, c-format
+#, c-format
 msgid "I_mport %s"
-msgstr "Importeren"
+msgstr "%s i_mporteren"
 
 #. Translators: This is a verb. It's a toolbar button.
 #: ../src/brasero-data-disc.c:1168
-#, fuzzy
 msgid "I_mport"
-msgstr "Importeren"
+msgstr "I_mporteren"
 
 #. Translators: %s is the name of the volume to import
 #: ../src/brasero-data-disc.c:1224
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to import the session from '%s'?"
-msgstr "Wilt u werkelijk het huidige project leegmaken?"
+msgstr "Weet u zeker dat u de sessie van ‘%s’ wilt importeren?"
 
 #: ../src/brasero-data-disc.c:1227
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
 msgstr ""
+"Op deze manier zullen bestanden uit voorgaande sessies bruikbaar blijven na het schrijven."
 
 #: ../src/brasero-data-disc.c:1238
-#, fuzzy
 msgid "I_mport Session"
-msgstr "Sessie importeren"
+msgstr "Sessie i_mporteren"
 
 #: ../src/brasero-data-disc.c:1239
 msgid "Click here to import its contents"
 msgstr "Klik hier om de inhoud te importeren"
 
 #: ../src/brasero-data-disc.c:1669
-#, fuzzy
 msgid "Please wait while the project is loading."
-msgstr "gelieve bestanden toe te voegen aan het project."
+msgstr "Wacht tijdens het laden van het project."
 
 #: ../src/brasero-data-disc.c:1679
-#, fuzzy
 msgid "_Cancel Loading"
-msgstr "laden"
+msgstr "Laden _annuleren"
 
 #: ../src/brasero-data-disc.c:1680
-#, fuzzy
 msgid "Cancel loading current project"
-msgstr "Het huidige project opslaan"
+msgstr "Laden van het huidige project annuleren"
 
 #: ../src/brasero-data-disc.c:1713
-#, fuzzy
 msgid "Analysing files"
-msgstr "Analyseren van ‘%s’"
+msgstr "Bestanden analyseren"
 
 #: ../src/brasero-data-disc.c:1940
 msgid "File Renaming"
-msgstr ""
+msgstr "Bestanden hernoemen"
 
 #: ../src/brasero-data-disc.c:1944
-#, fuzzy
 msgid "_Rename"
-msgstr "_Verwijderen"
+msgstr "_Hernoemen"
 
 #: ../src/brasero-data-disc.c:1952
 msgid "Renaming mode"
-msgstr ""
+msgstr "Hernoem-mode"
 
 #: ../src/brasero-data-disc.c:2467 ../src/brasero-video-disc.c:1189
 msgid "Size"
 msgstr "Grootte"
 
 #: ../src/brasero-data-disc.c:2497
-#, fuzzy
 msgid "Space"
-msgstr "Opslaan"
+msgstr "Ruimte"
 
 #: ../src/brasero-disc-option-dialog.c:328
-#, fuzzy
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr ""
-"Sommige bestanden hebben geen geschikte naam voor een Windows-compatibele cd:"
+"Moeten bestanden hernoemd worden voor Windows-compatibiliteit?"
 
 #: ../src/brasero-disc-option-dialog.c:332
-#, fuzzy
 msgid "Those names should be changed and truncated to 64 characters."
-msgstr "hun namen zullen aangepast en ingekort worden tot 64 tekens."
+msgstr "De namen zullen worden na 64 tekens woren afgekapt."
 
 #: ../src/brasero-disc-option-dialog.c:337
-#, fuzzy
 msgid "_Disable Full Windows Compatibility"
-msgstr "Windows-compatibiliteit"
+msgstr "Volledige Windows-compatibiliteit _uitschakelen"
 
 #: ../src/brasero-disc-option-dialog.c:340
-#, fuzzy
 msgid "_Rename for Full Windows Compatibility"
-msgstr "Windows-compatibiliteit"
+msgstr "_Hernoemen voor volledige Windows-compatibiliteit"
 
 #: ../src/brasero-disc-option-dialog.c:363
 msgid "Increase compatibility with _Windows systems"
-msgstr "Compatibiliteit met Windowssystemen verbeteren"
+msgstr "Compatibiliteit met Windows-systemen _verbeteren"
 
 #: ../src/brasero-disc-option-dialog.c:365
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
 msgstr ""
-"Compatibiliteit met Windowssystemen verhogen door toe te laten om lange "
-"bestandsnamen weer te geven (maximum 64 karakters)"
+"Compatibiliteit met Windows-systemen verbeteren door lange bestandsnamen (maximaal 64 tekens) toe te staan."
 
 #: ../src/brasero-disc-option-dialog.c:419
-#, fuzzy
 msgid "Disc name"
-msgstr "Schijfbestand"
+msgstr "Schijfnaam"
 
 #: ../src/brasero-disc-option-dialog.c:430
-#, fuzzy
 msgid "Disc options"
-msgstr "<b>Schijfopties</b>"
+msgstr "Schijfopties"
 
 #: ../src/brasero-disc-option-dialog.c:585
 msgid "Video format:"
-msgstr ""
+msgstr "Videoformaat:"
 
 #: ../src/brasero-disc-option-dialog.c:597
 msgid "_NTSC"
-msgstr ""
+msgstr "_NTSC"
 
 #: ../src/brasero-disc-option-dialog.c:598
 msgid "Format used mostly on the North American Continent"
-msgstr ""
+msgstr "Hoofdzakelijk in Noord-Amerika gebruikt formaat"
 
 #: ../src/brasero-disc-option-dialog.c:612
 msgid "_PAL/SECAM"
-msgstr ""
+msgstr "_PAL/SECAM"
 
 #: ../src/brasero-disc-option-dialog.c:613
 msgid "Format used mostly in Europe"
-msgstr ""
+msgstr "Hoofdzakelijk in Europa gebruikt formaat"
 
 #: ../src/brasero-disc-option-dialog.c:627
 msgid "Native _format"
-msgstr ""
+msgstr "Eigen _formaat"
 
 #: ../src/brasero-disc-option-dialog.c:641
 msgid "Aspect ratio:"
-msgstr ""
+msgstr "Beeldverhouding:"
 
 #: ../src/brasero-disc-option-dialog.c:653
 msgid "_4:3"
-msgstr ""
+msgstr "_4:3"
 
 #: ../src/brasero-disc-option-dialog.c:668
 msgid "_16:9"
-msgstr ""
+msgstr "_16:9"
 
 #. Video options for (S)VCD
 #: ../src/brasero-disc-option-dialog.c:683
-#, fuzzy
 msgid "VCD type:"
-msgstr "Type :"
+msgstr "VCD-type:"
 
 #: ../src/brasero-disc-option-dialog.c:696
-#, fuzzy
 msgid "Create a SVCD"
-msgstr "Vid_eodvd maken"
+msgstr "Een SVCD aanmakenb"
 
 #: ../src/brasero-disc-option-dialog.c:711
-#, fuzzy
 msgid "Create a VCD"
-msgstr "Vid_eodvd maken"
+msgstr "Een VCS aanmaken"
 
 #: ../src/brasero-disc-option-dialog.c:726
 msgid "Video Options"
-msgstr ""
+msgstr "Video-opties"
 
 #: ../src/brasero-disc-option-dialog.c:903
-#, fuzzy
 msgid "Disc Burning Setup"
-msgstr "Instellingen voor het branden"
+msgstr "Instellingen voor branden"
 
 #: ../src/brasero-drive-properties.c:143 ../src/brasero-drive-properties.c:155
-#, fuzzy
 msgid "Unknown"
-msgstr "onbekend"
+msgstr "Onbekend"
 
 #: ../src/brasero-drive-properties.c:236 ../src/brasero-drive-properties.c:272
 #: ../src/brasero-drive-properties.c:321
-#, fuzzy
 msgid "Do you really want to choose this location?"
-msgstr "Wilt u werkelijk afsluiten?"
+msgstr "Weet u zeker dat u deze locatie wilt gebruiken?"
 
 #: ../src/brasero-drive-properties.c:274 ../src/burn-job.c:470
 #: ../src/burn-session.c:734 ../src/burn-session.c:792
 #: ../src/plugins/cdrkit/burn-genisoimage.c:190
 #: ../src/plugins/cdrtools/burn-mkisofs.c:191
 #: ../src/plugins/libburnia/burn-libisofs.c:223
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have the required permission to write at this location"
-msgstr "U hebt niet de benodigde toegangsrechten om dit station te gebruiken"
+msgstr "U heeft niet de juiste toegangsrechten om op deze locatie te schrijven."
 
 #: ../src/brasero-drive-properties.c:324
 msgid ""
@@ -2617,31 +2592,32 @@ msgid ""
 "GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
+"Het bestandssysteem op dit volumen ondersteunt geen grote bestanden (meer dan 2 GiB).\nDit kan een probleem zijn voor het schrijven van DVD's of grote schijf-images."
 
 #. Translators %s.1f is the speed used to burn
 #: ../src/brasero-drive-properties.c:431
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (DVD)"
-msgstr "%d x (dvd)"
+msgstr "%.1f x (DVD)"
 
 #. Translators %s.1f is the speed used to burn
 #: ../src/brasero-drive-properties.c:435
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (CD)"
-msgstr "%d x (cd)"
+msgstr "%.1f x (CD)"
 
 #. Translators %s.1f is the speed used to burn
 #: ../src/brasero-drive-properties.c:439
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (BD)"
-msgstr "%d x (cd)"
+msgstr "%.1f x (BD)"
 
 #. Translators %s.1f is the speed used to burn for every medium
 #. * type
 #: ../src/brasero-drive-properties.c:444
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
-msgstr "%d x (DVD) %d x (CD)"
+msgstr "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 
 #: ../src/brasero-drive-properties.c:472
 #, c-format
@@ -2657,20 +2633,19 @@ msgid "Max speed"
 msgstr "Maximumsnelheid"
 
 #: ../src/brasero-drive-properties.c:560
-#, fuzzy
 msgid "Burning speed"
-msgstr "<b>Brandsnelheid</b>"
+msgstr "Schrijfsnelheid"
 
 #: ../src/brasero-drive-properties.c:573
-#, fuzzy
 msgid "_Simulate before burning"
-msgstr "_Simuleer het branden"
+msgstr "_Simuleren voor branden"
 
 #: ../src/brasero-drive-properties.c:574
 msgid ""
 "Brasero will simulate the burning and if it is successful, go on with actual "
 "burning after 10 seconds"
 msgstr ""
+"Brasero zal eerst het schrijven simuleren en als dat succesvol blijkt na 10 seconden met het echte schrijven beginnen."
 
 #: ../src/brasero-drive-properties.c:575
 msgid "Use burn_proof (decrease the risk of failures)"
@@ -2678,109 +2653,104 @@ msgstr "Gebruik burn_proof (verkleint het risico op mislukking)"
 
 #: ../src/brasero-drive-properties.c:576
 msgid "_Eject after burning"
-msgstr "W_erp de schijf uit na het branden"
+msgstr "Schijf na schrijven uitwerpen"
 
 #: ../src/brasero-drive-properties.c:577
 msgid "Burn the image directly _without saving it to disc"
-msgstr "Brand het schijf-image _rechtstreeks zonder het op schijf op te slaan"
+msgstr "Schijf-image _rechtstreeks schrijven zonder het op schijf op te slaan"
 
 #: ../src/brasero-drive-properties.c:578
 msgid "Leave the disc _open to add other files later"
-msgstr "De schijf _open laten om later andere bestanden toe te voegen"
+msgstr "Schijf ge_opend laten om later andere bestanden toe te voegen"
 
 #: ../src/brasero-drive-properties.c:579
 msgid "Allow to add more data to the disc later"
-msgstr "Toelaten om later meer gegevens toe te voegen aan de schijf"
+msgstr "Het mogelijk maken om later meer gegevens toe te voegen aan de schijf"
 
 #: ../src/brasero-drive-properties.c:600
 msgid "_Temporary directory free space:"
 msgstr "Beschikbare ruimte in de _tijdelijke map:"
 
 #: ../src/brasero-drive-properties.c:609
-#, fuzzy
 msgid "Temporary files"
-msgstr "<b>Tijdelijke bestanden</b>"
+msgstr "Tijdelijke bestanden"
 
 #: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1493
 msgid "Audio files only"
-msgstr "Enkel audiobestanden"
+msgstr "Alleen audiobestanden"
 
 # Letterlijk vertaald 'films', maar naar analogie met 'audio files' en 'image files' is 'videobestanden' beter
 #: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1502
 msgid "Movies only"
-msgstr "Enkel videobestanden"
+msgstr "Alleen videobestanden"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1510
-#, fuzzy
 msgctxt "picture"
 msgid "Image files only"
-msgstr "Enkel afbeeldingsbestanden"
+msgstr "Alleen afbeeldingen"
 
 #. pack everything
 #: ../src/brasero-image-option-dialog.c:91
-#, fuzzy
 msgid "Select an image to write"
-msgstr "<b>Selecteer een station om naar te schrijven</b>"
+msgstr "Selecteer een station om naar te schrijven"
 
 #: ../src/brasero-image-option-dialog.c:122
-#, fuzzy
 msgid "Image Burning Setup"
-msgstr "Instellingen schijf-image branden"
+msgstr "Instellingen voor image-schrijven"
 
 #: ../src/brasero-image-type-chooser.c:87
 msgid "Let brasero choose (safest)"
-msgstr "Laat Brasero kiezen (veiligste)"
+msgstr "Brasero laten kiezen (veiligste)"
 
 #: ../src/brasero-image-type-chooser.c:94
 msgid "*.iso image"
-msgstr ".iso-bestand"
+msgstr "*.iso-bestand"
 
 #: ../src/brasero-image-type-chooser.c:102
 msgid "*.raw image"
-msgstr ".raw-bestand"
+msgstr "*.raw-bestand"
 
 #: ../src/brasero-image-type-chooser.c:110
 msgid "*.cue image"
-msgstr ".cue-bestand"
+msgstr "*.cue-bestand"
 
 #: ../src/brasero-image-type-chooser.c:118
 msgid "*.toc image (cdrdao)"
-msgstr ".toc-bestand (cdrdao)"
+msgstr "*.toc-bestand (cdrdao)"
 
 #: ../src/brasero-layout.c:102
 msgid "P_review"
-msgstr "Voo_rbeeldweergave"
+msgstr "_Voorbeeldweergave"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-layout.c:104
 msgid "Display video, audio and image preview"
-msgstr "Voorbeeld tonen van video, audio en afbeeldingen"
+msgstr "Voorbeeld van video, audio en afbeeldingen tonen"
 
 #: ../src/brasero-layout.c:108
-#, fuzzy
 msgid "_Show Side Panel"
-msgstr "_Toon het zijpaneel"
+msgstr "_Zijpaneel tonen"
 
 #: ../src/brasero-layout.c:109
 msgid "Show a side pane along the project"
-msgstr "Toon een zijpaneel naast het project"
+msgstr "Zijpaneel naast het project tonen"
 
 #: ../src/brasero-layout.c:123
 msgid "_Horizontal Layout"
-msgstr ""
+msgstr "_Horizontale layout"
 
 #: ../src/brasero-layout.c:124
 msgid "Set an horizontal layout"
-msgstr ""
+msgstr "Een horizontale layout instellen"
 
 #: ../src/brasero-layout.c:126
 msgid "_Vertical Layout"
-msgstr ""
+msgstr "_Verticale layout"
 
 #: ../src/brasero-layout.c:127
 msgid "Set a vertical layout"
-msgstr ""
+msgstr "Een verticale layout instellen"
 
 #: ../src/brasero-layout.c:1479
 msgid "Click to close the side pane"
@@ -2806,7 +2776,7 @@ msgstr "Starten en stoppen met spelen"
 
 #: ../src/brasero-player.c:804
 msgid "Name:"
-msgstr ""
+msgstr "Naam:"
 
 #: ../src/brasero-player.c:811
 #, c-format
@@ -2832,12 +2802,12 @@ msgid ""
 "<span weight=\"bold\">Loading information</span>\n"
 "about <span size=\"smaller\"><i>%s</i></span>"
 msgstr ""
-"<span weight=\"bold\">Inladen informatie</span>\n"
+"<span weight=\"bold\">Informatie laden</span>\n"
 "over <span size=\"smaller\"><i>%s</i></span>"
 
 #: ../src/brasero-project.c:200
 msgid "Save current project"
-msgstr "Het huidige project opslaan"
+msgstr "Huidige project opslaan"
 
 #: ../src/brasero-project.c:201
 msgid "Save _As..."
@@ -2853,7 +2823,7 @@ msgstr "Bestanden _toevoegen"
 
 #: ../src/brasero-project.c:204
 msgid "Add files to the project"
-msgstr "Bestanden toevoegen aan het project"
+msgstr "Bestanden aan het project toevoegen"
 
 #: ../src/brasero-project.c:205
 msgid "_Remove Files"
@@ -2862,10 +2832,9 @@ msgstr "Bestanden _verwijderen"
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:208 ../src/brasero-project.c:1573
 msgid "E_mpty Project"
-msgstr "_Project wissen"
+msgstr "Project _leegmaken"
 
 #: ../src/brasero-project.c:209
-#, fuzzy
 msgid "Remove all files from the project"
 msgstr "Alle bestanden van het project verwijderen"
 
@@ -2876,8 +2845,13 @@ msgstr "De schijf branden"
 #. Name widget
 #: ../src/brasero-project.c:441
 msgid "_Name:"
-msgstr ""
+msgstr "_Naam:"
 
+# #############################################################################
+# #############################################################################
+# Dit is waar Wouter is gebleven.
+# #############################################################################
+# #############################################################################
 #: ../src/brasero-project.c:473
 msgid "Start to burn the contents of the selection"
 msgstr "Beginnen met branden van de inhoud van de selectie"
