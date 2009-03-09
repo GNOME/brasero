@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Brasero HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-06 00:25+0200\n"
-"PO-Revision-Date: 2009-03-03 21:11-0000\n"
+"POT-Creation-Date: 2009-03-09 22:34+0200\n"
+"PO-Revision-Date: 2009-03-09 22:33+0200\n"
 "Last-Translator: Mantas Kriaučiūnas <mantas@akl.lt>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,6 @@ msgid "The file is empty."
 msgstr "Failas yra tuščias."
 
 #: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:617
-#, fuzzy
 msgid "It does not seem to be a valid Brasero project."
 msgstr "Nepanašu, jog tai tinkamas Brasero projektas."
 
@@ -46,9 +45,10 @@ msgid "Drive"
 msgstr "Įrenginys"
 
 #: ../libbrasero-media/brasero-media.c:52
-#, fuzzy
 msgid "Display debug statements on stdout for Brasero media library"
-msgstr "Standartinėje išvestyje rodyti derinimo informaciją"
+msgstr ""
+"Standartinėje išvestyje rodyti Brasero laikmenų bibliotekos derinimo "
+"informaciją"
 
 #: ../libbrasero-media/brasero-media.c:467
 msgid "Brasero optical media library"
@@ -219,9 +219,9 @@ msgid "%s in %s"
 msgstr "%s įrenginyje %s"
 
 #: ../libbrasero-media/brasero-volume.c:193
-#, fuzzy, c-format
+#, c-format
 msgid "The disc mount point could not be retrieved"
-msgstr "nepavyko gauti disko prijungimo taško."
+msgstr "Nepavyko gauti disko prijungimo taško."
 
 #. NOTE for translators: the first %s is the disc type.
 #: ../libbrasero-media/brasero-volume.c:406
@@ -355,7 +355,6 @@ msgid "Specify file containing saved configuration"
 msgstr "Nurodyti failą su įrašytais nustatymais"
 
 #: ../src/eggsmclient.c:227
-#, fuzzy
 msgid "FILE"
 msgstr "FAILAS"
 
@@ -404,7 +403,6 @@ msgstr "Kopijuojami failai į kompiuterį"
 #. * displaying.
 #: ../src/plugins/local-track/burn-uri.c:713
 #: ../nautilus/nautilus-burn-bar.c:136
-#, fuzzy
 msgid "CD/DVD Creator Folder"
 msgstr "CD/DVD kūrimo aplankas"
 
@@ -533,7 +531,6 @@ msgstr "Visi failai"
 
 #. Translators: this a disc image here
 #: ../src/brasero-src-image.c:579
-#, fuzzy
 msgctxt "disc"
 msgid "Image files only"
 msgstr "Tik paveikslėlių failai"
@@ -599,7 +596,7 @@ msgstr ""
 
 #: ../src/brasero-burn-options.c:274
 msgid "This is not supported by the current active burning backend."
-msgstr ""
+msgstr "Ši funkcija nepalaikoma pasirinktos rašymo posistemės."
 
 #: ../src/brasero-burn-options.c:284 ../src/brasero-burn-dialog.c:396
 msgid "Please insert a disc holding data."
@@ -618,9 +615,8 @@ msgid "There is no selected image."
 msgstr "Nėra pasirinkto atvaizdžio."
 
 #: ../src/brasero-burn-options.c:309
-#, fuzzy
 msgid "It doesn't appear to be a valid image or a valid cue file."
-msgstr "panašu, jog tai nėra tinkamas atvaizdis ar tinkamas cue failas."
+msgstr "Panašu, jog tai nėra tinkamas atvaizdis ar tinkamas cue failas."
 
 #: ../src/brasero-burn-options.c:320
 msgid "Please insert a disc that is not copy protected."
@@ -643,7 +639,6 @@ msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Ar norite rašyti viršijant nurodytą disko talpą?"
 
 #: ../src/brasero-burn-options.c:338 ../src/brasero-data-disc.c:602
-#, fuzzy
 msgid ""
 "The size of the project is too large for the disc and you must remove files "
 "from the project otherwise.\n"
@@ -651,13 +646,12 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Šis projektas per didelis šiam diskui, todėl turite ištrinti keletą failų.\n"
-"Galbūt Jūs norėsite pasinaudoti šia parinktimi, jei naudojate 90 ar 100 min "
-"CD-R(W), kuris nėra pilnai atpažįstamas ir reikalauja overburn parinkties.\n"
+"Šis projektas per didelis šiam diskui, todėl turite pašalinti keletą failų.\n"
+"Galbūt norėsite pasinaudoti šia parinktimi, jei naudojate 90 ar 100 min CD-R"
+"(W), kuris nėra teisingai atpažįstamas ir reikalauja overburn parinkties.\n"
 "PASTABA: įjungus šią parinktį galimas nesėkmingas įrašymas."
 
 #: ../src/brasero-burn-options.c:345 ../src/brasero-data-disc.c:611
-#, fuzzy
 msgid "_Overburn"
 msgstr "Naudoti „_overburn“"
 
@@ -668,7 +662,7 @@ msgstr "Rašyti viršijant nurodytą disko talpą"
 #: ../src/brasero-burn-options.c:357
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
-msgstr ""
+msgstr "Įrenginys, kuriame yra šaltinio diskas, bus naudojamas ir rašymui."
 
 #: ../src/brasero-burn-options.c:358
 msgid ""
@@ -900,7 +894,7 @@ msgstr "Video projektams rodomas polangis"
 
 #: ../data/brasero.schemas.in.h:17
 msgid "Replace symlinks files by their targets"
-msgstr ""
+msgstr "Pakeisti simbolines nuorodas jų paskirties failais"
 
 #: ../data/brasero.schemas.in.h:18
 msgid "Should brasero filter broken symlinks files"
@@ -939,40 +933,36 @@ msgstr ""
 "Brasero pranešimus rodys."
 
 #: ../data/brasero.schemas.in.h:24
-#, fuzzy
 msgid ""
 "Should brasero replace symlinks by their target files in the project. Set to "
 "true, brasero will replace symlinks."
 msgstr ""
-"Ar Brasero turėtų atfiltruoti sugadintas simbolines nuorodas. Jei reikšmė "
-"teigiama, Brasero simbolines nuorodas atfiltruos."
+"Ar Brasero turėtų pakeisti simbolines nuorodas projekte paskirties failais. "
+"Jei reikšmė teigiama, brasero pakeis simbolines nuorodas paskirties failais."
 
 #: ../data/brasero.schemas.in.h:25
-#, fuzzy
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Garso projektams rodomas polangis. Jis turėtų būti vienas iš šių: Chooser/"
-"Search/Playlist/EmptyView."
+"Garso projektams rodomas polangis. Jis turėtų būti vienas iš šių: „Chooser“, "
+"„Search“ arba „Playlist“."
 
 #: ../data/brasero.schemas.in.h:26
-#, fuzzy
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
 msgstr ""
-"Duomenų projektams rodomas polangis. Jis turėtų būti vienas iš šių: Chooser/"
-"Search/EmptyView."
+"Duomenų projektams rodomas polangis. Jis turėtų būti vienas iš šių: "
+"„Chooser“ arba „Search“."
 
 #: ../data/brasero.schemas.in.h:27
-#, fuzzy
 msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Garso projektams rodomas polangis. Jis turėtų būti vienas iš šių: Chooser/"
-"Search/Playlist/EmptyView."
+"Video projektams rodomas polangis. Jis turėtų būti vienas iš šių:„Chooser“, "
+"„Search“ arba „Playlist“."
 
 #: ../data/brasero.schemas.in.h:28
 msgid ""
@@ -983,9 +973,8 @@ msgstr ""
 "kairėje, 2 = viršuje, 3 = apačioje)"
 
 #: ../data/brasero.schemas.in.h:29
-#, fuzzy
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
-msgstr "Naudojama kartu su -immed parametru kartu su cdrecord"
+msgstr "Naudojama kartu su cdrecord -immed parametru"
 
 #: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
@@ -1000,35 +989,35 @@ msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr "Ar naudoti „--driver generic-mmc-raw“ parametrą su cdrdao"
 
 #: ../data/brasero.schemas.in.h:33
-#, fuzzy
 msgid ""
 "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, "
 "brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Ar naudoti -immed parametrą su cdrecord. Naudoti atsargiai (teigiama "
-"reikšmė), nes tai tik priemonė kai kurių įrenginių / sąrankų veikimui."
+"Ar naudoti „--driver generic-mmc-raw“ parametrą su cdrdao. Jei nustatyta, "
+"brasero naudos parametrą. Jis gali padėti spręsti kai kurių įrenginių "
+"trikius."
 
 #: ../data/brasero.schemas.in.h:34
-#, fuzzy
 msgid ""
 "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) "
 "as it's only a workaround for some drives/setups."
 msgstr ""
 "Ar naudoti -immed parametrą su cdrecord. Naudoti atsargiai (teigiama "
-"reikšmė), nes tai tik priemonė kai kurių įrenginių / sąrankų veikimui."
+"reikšmė), nes tai tik bandymas apeiti kai kurių įrenginių / sąrankų "
+"problemas."
 
 #: ../data/brasero.schemas.in.h:35
 msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr " Ar naudoti „-use-the-force-luke=dao“ parametrą su growisofs"
 
 #: ../data/brasero.schemas.in.h:36
-#, fuzzy
 msgid ""
 "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Ar naudoti -immed parametrą su cdrecord. Naudoti atsargiai (teigiama "
-"reikšmė), nes tai tik priemonė kai kurių įrenginių / sąrankų veikimui."
+"Ar naudoti „-use-the-force-luke=dao“ parametrą su growisofs. Jei išjungta, "
+"brasero nenaudos parametro. Tai gali padėti apeiti kai kurių įrenginių "
+"problemas."
 
 #: ../data/brasero.schemas.in.h:37
 msgid "White list of additional plugins to use"
@@ -1064,9 +1053,9 @@ msgstr "%s: „%s“"
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
 #: ../src/brasero-dest-selection.c:439
-#, fuzzy, c-format
+#, c-format
 msgid "New disc in the burner holding source disc"
-msgstr "Įrenginyje esančiame diske yra duomenų."
+msgstr "Naujas diskas įrenginyje, kuriame įdėtas šaltinio diskas"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../src/brasero-dest-selection.c:463
@@ -1154,9 +1143,8 @@ msgid "Analysing audio files"
 msgstr "Analizuojami garso failai"
 
 #: ../src/brasero-audio-disc.c:1152
-#, fuzzy
 msgid "The track will be padded at its end."
-msgstr "Takelio pabaigoje bus pridėta pauzė:"
+msgstr "Takelio pabaigoje bus pridėta pauzė."
 
 #: ../src/brasero-audio-disc.c:1153
 msgid "The track is shorter than 6 seconds"
@@ -2231,9 +2219,9 @@ msgid "New folder %i"
 msgstr "Naujas aplankas %i"
 
 #: ../src/brasero-data-disc.c:617
-#, fuzzy
 msgid "Click here not to use overburning"
-msgstr "Spustelėkite jei nenorite naudoti overburning"
+msgstr ""
+"Spustelėkite, jei nenorite naudoti perteklinio rašymo (angl. overburning)"
 
 #: ../src/brasero-data-disc.c:627
 msgid "Please delete some files from the project."
@@ -2252,9 +2240,8 @@ msgid "_Discard"
 msgstr "_Atsisakyti"
 
 #: ../src/brasero-data-disc.c:680
-#, fuzzy
 msgid "Continue with the current modified project"
-msgstr "Tęsti naudoti dabartinį pakeistą projektą"
+msgstr "Tęsti su dabartiniu pakeistu projektu"
 
 #: ../src/brasero-data-disc.c:754
 #, c-format
@@ -2280,9 +2267,9 @@ msgstr "_Rašyti..."
 
 #: ../src/brasero-data-disc.c:850 ../src/brasero-data-disc.c:881
 #: ../src/brasero-data-disc.c:912
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be added to the selection."
-msgstr "\"%s\" negalima įtraukti į pasirinkimą."
+msgstr "„%s“ negalima įtraukti į pasirinkimą."
 
 #: ../src/brasero-data-disc.c:874
 #, c-format
@@ -2290,9 +2277,8 @@ msgid "\"%s\" is a recursive symlink."
 msgstr "„%s“ yra rekursyvi simbolinė nuoroda."
 
 #: ../src/brasero-data-disc.c:884
-#, fuzzy
 msgid "It is a recursive symlink"
-msgstr "tai rekursinė simbolinė nuoroda."
+msgstr "Tai rekursyvi simbolinė nuoroda."
 
 #: ../src/brasero-data-disc.c:905
 #, c-format
@@ -2332,7 +2318,6 @@ msgstr ""
 "standartą, kad jis būtų palaikomas?"
 
 #: ../src/brasero-data-disc.c:989
-#, fuzzy
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by ISO9660 standard in its first and second versions (the most "
@@ -2346,7 +2331,7 @@ msgstr ""
 "Failo dydis viršija 2 GiB. ISO9660 standarto pirmoji ir antroji versijos "
 "(labiausiai paplitusios) tokių didelių failų nepalaiko.\n"
 "ISO9660 3 lygmens standartą palaiko dauguma operacinių sistemų, pvz., GNU/"
-"Linux ir visos Windows © versijos, todėl įrašytą laikmeną šios sistemos gali "
+"Linux ir visos Windows© versijos, todėl įrašytą laikmeną šios sistemos gali "
 "perskaityti.\n"
 "Išimtis yra MacOS X, kuri negali skaityti atvaizdžių, sukurtų naudojant "
 "ISO9660 3 lygmens standartą."
@@ -2357,18 +2342,17 @@ msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "Ar tikrai norite pridėti „%s“ į pasirinkimą?"
 
 #: ../src/brasero-data-disc.c:1033
-#, fuzzy
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
 "disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
-"Šio aplanko antrinis aplankas turės 6 pirminius aplankus. Tai neatitinka "
-"ISO9660 standarto, leidžiančio, kad jų būtų daugiausiai 6.\n"
-"Brasero gali sukurti ir įrašyti tokios failų hierarchijos atvaizdį, tačiau "
-"gali būti, kad ši laikmena bus perskaitoma ne visose operacinėse sistemose.\n"
-"PASTABA: žinoma, kad tokia failų hierarchija veikia GNU/Linux sistemose."
+"Šio aplanko antrinis aplankas (angl. child) turės 7 pirminius aplankus "
+"(angl. parent directories).Brasero gali sukurti atvaizdį su tokia "
+"hierarchija ir jį įrašyti, tačiau diskas gali būti neperskaitomas kai "
+"kuriose operacinėse sistemose.\n"
+"PASTABA: tokia failų hierarchija veiks GNU/Linux sistemose."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -2455,12 +2439,11 @@ msgstr "Šiuos pavadinimus reikia pakeisti, sutrumpinti iki 64 simbolių. "
 
 #: ../src/brasero-disc-option-dialog.c:337
 msgid "_Disable Full Windows Compatibility"
-msgstr "_Išjunkti pilną suderinamumą su Windows"
+msgstr "_Išjungti pilną suderinamumą su Windows"
 
 #: ../src/brasero-disc-option-dialog.c:340
-#, fuzzy
 msgid "_Rename for Full Windows Compatibility"
-msgstr "_Pervadinkite, norint pilno suderinamumo su Windows"
+msgstr "_Pervadinti, kad būtų pilnai suderinama su Windows"
 
 #: ../src/brasero-disc-option-dialog.c:363
 msgid "Increase compatibility with _Windows systems"
@@ -2540,9 +2523,8 @@ msgid "Disc Burning Setup"
 msgstr "Disko įrašymo sąranka"
 
 #: ../src/brasero-drive-properties.c:143 ../src/brasero-drive-properties.c:155
-#, fuzzy
 msgid "Unknown"
-msgstr "nežinoma"
+msgstr "Nežinoma"
 
 #: ../src/brasero-drive-properties.c:236 ../src/brasero-drive-properties.c:272
 #: ../src/brasero-drive-properties.c:321
@@ -2559,7 +2541,6 @@ msgid "You do not have the required permission to write at this location"
 msgstr "Neturite reikiamų teisių rašyti į šią vietą"
 
 #: ../src/brasero-drive-properties.c:324
-#, fuzzy
 msgid ""
 "The filesystem on this volume does not support large files (size over 2 "
 "GiB).\n"
@@ -2661,7 +2642,6 @@ msgstr "Tik vaizdo failai"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1510
-#, fuzzy
 msgctxt "picture"
 msgid "Image files only"
 msgstr "Tik paveikslėlių failai"
@@ -2848,6 +2828,8 @@ msgstr "Palaukite, kol bus apskaičiuotas projekto dydis."
 msgid ""
 "All files from the project need to be analysed to complete this operation."
 msgstr ""
+"Kad ši operacija būtų užbaigta, turi būti išanalizuoti visi šio projekto "
+"failai."
 
 #: ../src/brasero-project.c:811
 msgid "Project Size Estimation"
@@ -3054,12 +3036,12 @@ msgstr "Kopijuoti _diską..."
 
 #: ../src/brasero-project-manager.c:115
 #: ../src/brasero-project-type-chooser.c:88
-#, fuzzy
 msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
 "another CD/DVD"
 msgstr ""
-"Nukopijuoti garso, video ar duomenų CD/DVD į kompiuterio diską ar kitą CD/DVD"
+"Sukurti 1:1 audio arba duomenų CD/DVD kopiją kietajame diske arba kitame CD/"
+"DVD"
 
 #: ../src/brasero-project-manager.c:116
 msgid "_Burn Image..."
@@ -3346,9 +3328,8 @@ msgid "Writing CD-TEXT information"
 msgstr "Įrašoma CD-TEXT informacija"
 
 #: ../src/burn-basics.c:81
-#, fuzzy
 msgid "Finalising"
-msgstr "Fiksuojama"
+msgstr "Užbaigiama"
 
 #: ../src/burn-basics.c:82
 msgid "Writing leadout"
@@ -3382,9 +3363,9 @@ msgid "No burner specified"
 msgstr "Nenurodytas įrašymo įrenginys"
 
 #: ../src/burn.c:543
-#, fuzzy, c-format
+#, c-format
 msgid "No source drive specified"
-msgstr "nenurodytas įrenginys"
+msgstr "Nenurodytas šaltinio įrenginys"
 
 #: ../src/burn.c:583
 msgid "Ongoing copying process"
@@ -3414,7 +3395,7 @@ msgid "Ongoing checksuming operation"
 msgstr "Vyksta kontrolinės sumos skaičiavimas"
 
 #: ../src/burn.c:1635 ../src/burn.c:1978
-#, fuzzy, c-format
+#, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "Sulieti duomenų šiame diske negalima"
 
@@ -3438,9 +3419,9 @@ msgid "Only one track at a time can be checked"
 msgstr "Vienu metu galima tikrinti tik vieną takelį"
 
 #: ../src/burn.c:2331
-#, fuzzy, c-format
+#, c-format
 msgid "No format for the temporary image could be found"
-msgstr "nepavyko rasti laikinojo atvaizdžio formato"
+msgstr "Nepavyko rasti laikinojo atvaizdžio formato"
 
 #. Translators: Error message saying no graft point
 #. * is specified. A graft point is the path (on the
@@ -3472,18 +3453,18 @@ msgid "\"%s\" did not behave properly"
 msgstr "„%s“ neveikia tinkamai"
 
 #: ../src/burn-job.c:413
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough space available on the disc (%lli available for %lli)"
-msgstr "Diske nepakanka vietos (%lli available for %lli)"
+msgstr "Diske nepakanka vietos (yra %lli, reikia %lli)"
 
 #: ../src/burn-job.c:500
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr ""
 "Failų sistemoje, kurioje turėtų būti saugomas laikinas atvaizdis, negali "
-"būti failų, viršijančių 2 GiB."
+"būti failų, viršijančių 2 GiB"
 
 #: ../src/burn-job.c:515 ../src/burn-job.c:537
 #, c-format
@@ -3495,9 +3476,9 @@ msgstr ""
 "(reikia %ld MiB)"
 
 #: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:347
-#, fuzzy, c-format
+#, c-format
 msgid "The size of the volume could not be retrieved"
-msgstr "nepavyko gauti laikmenos dydžio"
+msgstr "Nepavyko gauti laikmenos dydžio"
 
 #: ../src/burn-job.c:604 ../src/burn-session.c:539 ../src/burn-session.c:555
 #, c-format
@@ -3534,17 +3515,17 @@ msgstr "Nėra VIDEO_TS aplanko arba jis netinkamas"
 
 #: ../src/burn-process.c:105 ../src/burn-process.c:111
 #: ../src/burn-process.c:128
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" could not be found in the path"
-msgstr "\"%s\" nerasta kelyje"
+msgstr "„%s“ nerasta kelyje"
 
 #: ../src/burn-process.c:122
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" is a symlink pointing to another program. Use the target program "
 "instead"
 msgstr ""
-"%s yra simbolinė nuoroda į kitą programą. Naudokite paskirties programą."
+"„%s“ yra simbolinė nuoroda į kitą programą. Naudokite paskirties programą"
 
 #. Translators: %s is the name of the brasero element
 #: ../src/burn-process.c:212
@@ -3585,28 +3566,24 @@ msgid "PATH TO DEVICE"
 msgstr "KELIAS IKI ĮRENGINIO"
 
 #: ../src/main.c:101
-#, fuzzy
 msgid "Cover to use"
 msgstr "Viršelis"
 
 #: ../src/main.c:102
-#, fuzzy
 msgid "PATH TO COVER"
-msgstr "GALINIS VIRŠELIS"
+msgstr "VIRŠELIO KELIAS"
 
 #: ../src/main.c:105
-#, fuzzy
 msgid "Open a video project adding the URIs given on the command line"
-msgstr "Atverti garso projektą pridedant URI nurodytus komandų eilutėje"
+msgstr "Atverti video projektą pridedant URI, nurodytus komandų eilutėje"
 
 #: ../src/main.c:109
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr "Įrašytino atvaizdžio failo URI (automatiškai aptinkama)"
 
 #: ../src/main.c:110
-#, fuzzy
 msgid "PATH TO PLAYLIST"
-msgstr "GROJARAŠTIS"
+msgstr "GROJARAŠČIO KELIAS"
 
 #: ../src/main.c:113
 msgid "Force brasero to display the project selection page"
@@ -3617,7 +3594,6 @@ msgid "Open the blank disc dialog"
 msgstr "Atverti tuščio disko dialogą"
 
 #: ../src/main.c:121
-#, fuzzy
 msgid "Open the check disc dialog"
 msgstr "Atverti tuščio disko dialogą"
 
@@ -3630,6 +3606,8 @@ msgid ""
 "Burn the specified project and REMOVE it.\n"
 "This option is mainly useful for integration use with other applications."
 msgstr ""
+"Įrašyti nurodytą projektą ir jį PAŠALINTI.\n"
+"Šis pasirinkimas naudingas integruojant su kitomis programomis."
 
 #: ../src/main.c:130
 msgid "PATH"
@@ -3642,7 +3620,7 @@ msgstr "KELIAS"
 #. * parent as if brasero was a dialog for the parent application
 #: ../src/main.c:138
 msgid "The XID of the parent window"
-msgstr ""
+msgstr "Pirminio (angl. parent) lango XID"
 
 #: ../src/main.c:141
 msgid "Display debug statements on stdout"
@@ -3688,7 +3666,7 @@ msgstr "„%s“ nepavyko rasti"
 #: ../src/plugins/cdrdao/burn-cdrdao.c:237
 #, c-format
 msgid "Your version of cdrdao does not seem to be supported by libbrasero"
-msgstr "Panašu, jog libbrasero nepalaiko Jūsų cdrdao versijos"
+msgstr "Panašu, jog libbrasero nepalaiko cdrdao versijos"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:243
 #: ../src/plugins/cdrkit/burn-readom.c:98
@@ -3706,9 +3684,8 @@ msgid "Use cdrdao to copy and burn CDs"
 msgstr "Naudoti cdrdao CD diskų kopijavimui ir įrašymui"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:672
-#, fuzzy
 msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
-msgstr "įjungti parametrą -immed (žr. cdrecord žinyną)"
+msgstr "Įjungti parametrą „--driver generic-mmc-raw“ (žr. cdrdao žinyną)"
 
 #: ../src/plugins/cdrdao/burn-toc2cue.c:259
 msgid "Converting toc file"
@@ -3791,9 +3768,9 @@ msgstr "Įrašomas cue aprašas"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:345
 #: ../src/plugins/cdrtools/burn-cdrecord.c:329
-#, fuzzy, c-format
+#, c-format
 msgid "The disc needs to be reloaded before being recorded"
-msgstr "Prieš įrašymą reikia perkrauti laikmeną"
+msgstr "Prieš įrašymą reikia iš naujo įdėti laikmeną"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:1166
 msgid "Use wodim to burn CDs and DVDs"
@@ -3804,7 +3781,6 @@ msgid "Enable \"-immed\" flag (see wodim manual)"
 msgstr "Įjungti parametrą „-immed“ (žr. wodim žinyną)"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:1324
-#, fuzzy
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "Mažiausias galimas įrenginio buferio užpildymo dydis (%) (žr. wodim žinyną):"
@@ -3818,10 +3794,10 @@ msgid "Enable \"-immed\" flag (see cdrecord manual)"
 msgstr "Įjungti parametrą „-immed“ (žr. cdrecord žinyną)"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1309
-#, fuzzy, c-format
+#, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
 msgstr ""
-"mažiausias galimas įrenginio buferio užpildymo dydis (%) (žr. cdrecord "
+"Mažiausias galimas įrenginio buferio užpildymo dydis (%%) (žr. cdrecord "
 "žinyną):"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:130
@@ -3909,9 +3885,9 @@ msgstr "Leisti DAO"
 
 #: ../src/plugins/libburnia/burn-libburn.c:230
 #: ../src/plugins/libburnia/burn-libburn.c:238
-#, fuzzy, c-format
+#, c-format
 msgid "Libburn track could not be created"
-msgstr "Nepavyko sukurti laikmenos."
+msgstr "Nepavyko sukurti libburn takelio"
 
 #. Translators: first %s is the filename, second %s is the error
 #. * generated from errno
@@ -3928,9 +3904,9 @@ msgid "Libburn burns CD(RW), DVD+/-(RW)"
 msgstr "libburn įrašo CD(RW), DVD+/-(RW)"
 
 #: ../src/plugins/libburnia/burn-libburn-common.c:148
-#, fuzzy, c-format
+#, c-format
 msgid "Libburn library could not be initialized"
-msgstr "Nepavyko inicijuoti libburn bibliotekos"
+msgstr "Nepavyko inicializuoti libburn bibliotekos"
 
 #: ../src/plugins/libburnia/burn-libburn-common.c:163
 #, c-format
@@ -3944,25 +3920,25 @@ msgstr "Rašomas takelis %02i"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:312
 #: ../src/plugins/libburnia/burn-libisofs.c:851
-#, fuzzy, c-format
+#, c-format
 msgid "Libisofs could not be initialized."
-msgstr "Nepavyko inicijuoti libisofs."
+msgstr "Nepavyko inicializuoti libisofs."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:461
-#, fuzzy, c-format
+#, c-format
 msgid "Read options could not be created"
-msgstr "Nepavyko sukurti skaitymo parinkčių."
+msgstr "Nepavyko sukurti skaitymo parinkčių"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:537
-#, fuzzy, c-format
+#, c-format
 msgid "Volume could not be created"
-msgstr "Nepavyko sukurti laikmenos."
+msgstr "Nepavyko sukurti skirsnio."
 
 #. Translators: %s is the path
 #: ../src/plugins/libburnia/burn-libisofs.c:646
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
-msgstr ""
+msgstr "Nepavyko rasti pirminio (angl. parent) aplanko keliui „%s“"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:711
 #: ../src/plugins/libburnia/burn-libisofs.c:777
@@ -3978,9 +3954,9 @@ msgstr "Libisofs išmetė klaidą pridedant turinį į aplanką „%s“ (%x)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:748
 #: ../src/plugins/libburnia/burn-libisofs.c:764
-#, fuzzy, c-format
+#, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
-msgstr "Libisofs išmetė klaidą pridedant failus adresu \"%s\""
+msgstr "Libisofs pranešė apie klaidą pridedant failus adresu „%s“"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:1024
 msgid "Libisofs creates disc images from files"
@@ -4033,16 +4009,16 @@ msgstr "Normalizavimas įgalina nustatyti vienodą takelių garsumą"
 #. * too technical and should be removed?
 #: ../src/plugins/transcode/burn-transcode.c:305
 #: ../src/plugins/transcode/burn-transcode.c:1451
-#, fuzzy, c-format
+#, c-format
 msgid "Impossible to link plugin pads"
-msgstr "Nepavyko gauti greičių sąrašo"
+msgstr "Nepavyko susieti įskiepių"
 
 #. Translators: %s is the string error from errno
 #: ../src/plugins/transcode/burn-transcode.c:926
 #: ../src/plugins/transcode/burn-transcode.c:1119
-#, fuzzy, c-format
+#, c-format
 msgid "Error while padding file (%s)"
-msgstr "klaida užpildant (%s)"
+msgstr "Klaida užpildant failo pabaigą (angl. padding) (%s)"
 
 #: ../src/plugins/transcode/burn-transcode.c:1195
 #, c-format
@@ -4084,19 +4060,16 @@ msgid "_Split"
 msgstr "_Skaidyti"
 
 #: ../src/brasero-split-dialog.c:594
-#, fuzzy
 msgid "The track wasn't split."
-msgstr "Takelis nebuvo neišskaidytas."
+msgstr "Takelis nebuvo išskaidytas."
 
 #: ../src/brasero-split-dialog.c:595
-#, fuzzy
 msgid "No silence could be detected"
-msgstr "nepavyko gauti tylos."
+msgstr "Nepavyko detektuoti tylos."
 
 #: ../src/brasero-split-dialog.c:618
-#, fuzzy
 msgid "An error occured while detecting silences."
-msgstr "Klaida gaunant tylą:"
+msgstr "Klaida detektuojant tylą."
 
 #: ../src/brasero-split-dialog.c:697
 msgid "This will remove all previous results."
@@ -4111,7 +4084,6 @@ msgid "_Don't split"
 msgstr "_Neskaidyti"
 
 #: ../src/brasero-split-dialog.c:956
-#, fuzzy
 msgid "Do you really want to empty the slices preview?"
 msgstr "Ar tikrai norite išvalyti skilčių peržiūrą?"
 
@@ -4152,9 +4124,8 @@ msgid "_Slice"
 msgstr "_Skaidyti"
 
 #: ../src/brasero-split-dialog.c:1092
-#, fuzzy
 msgid "Add a splitting point"
-msgstr "Spustelėję galite pridėti skaidymo tašką"
+msgstr "Pridėti skaidymo tašką"
 
 #. Translators: this goes with the next (= "seconds")
 #: ../src/brasero-split-dialog.c:1109
@@ -4209,7 +4180,6 @@ msgid "_List of slices that are to be created:"
 msgstr "_Sukurtinų gabalėlių sąrašas:"
 
 #: ../src/brasero-split-dialog.c:1289
-#, fuzzy
 msgid "Slices Preview"
 msgstr "Skilčių peržiūra"
 
@@ -4387,9 +4357,9 @@ msgstr "Sugadinta simbolinė nuoroda"
 
 #: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1085
 #: ../src/brasero-io.c:1964
-#, fuzzy, c-format
+#, c-format
 msgid "Recursive symbolic link"
-msgstr "rekursyvi simbolinė nuoroda"
+msgstr "Rekursyvi simbolinė nuoroda"
 
 #: ../src/brasero-file-filtered.c:333
 msgid "Filter Options"
@@ -4613,9 +4583,8 @@ msgstr "PRIEKINIS VIRŠELIS"
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
 #: ../src/brasero-jacket-view.c:1100
-#, fuzzy
 msgid "The image could not be loaded."
-msgstr "Nepavyko įkelti paveikslėlio:"
+msgstr "Nepavyko įkelti paveikslėlio."
 
 #: ../src/brasero-jacket-edit.c:571
 msgid "Bac_kground Properties"
@@ -4745,7 +4714,6 @@ msgid "Directories cannot be added to video discs."
 msgstr "Įdėti aplankų į video diskus negalima."
 
 #: ../src/brasero-video-disc.c:249
-#, fuzzy
 msgid "_Search Directory"
 msgstr "_Ieškoti aplanke"
 
@@ -4764,9 +4732,8 @@ msgid "Creating file layout"
 msgstr "Kuriamas failų išdėstymas"
 
 #: ../src/plugins/dvdauthor/burn-dvdauthor.c:360
-#, fuzzy
 msgid "Use dvdauthor to create Video DVDs"
-msgstr "kovertuokite į vaizdo DVD įrašytinus failus naudodami dvdauthor"
+msgstr "Naudoti dvdauthor video DVD įrašymui"
 
 #: ../src/plugins/transcode/burn-vob.c:1108
 msgid "Converting video file to MPEG2"
@@ -4779,39 +4746,16 @@ msgstr ""
 "Vob leidžia perkoduoti bet kokį video failą į video DVD tinkamą formatą"
 
 #: ../src/plugins/vcdimager/burn-vcdimager.c:474
-#, fuzzy
 msgid "Use vcdimager to create SVCDs"
-msgstr "konvertuokite į SVCD rašytinus failus naudodami vcdimager"
+msgstr "Naudoti vcdimager SVCD įrašymui"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:1
 msgid "Copy CDs and DVDs"
 msgstr "Kopijuoti CD ar DVD diskus"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
-#, fuzzy
 msgid "Disc Copier"
-msgstr "Disko kopijuoklis"
-
-#, fuzzy
-#~| msgid ""
-#~| "The size of the project is too large for the disc and you must remove "
-#~| "files otherwise.\n"
-#~| "NOTE: This option might cause failure."
-#~ msgid ""
-#~ "The size of the project is too large for the disc.\n"
-#~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
-#~ "which cannot be properly recognised and therefore need overburn option.\n"
-#~ "NOTE: This option might cause failure."
-#~ msgstr ""
-#~ "Šis projektas per didelis šiam diskui.\n"
-#~ "PASTABA: įjungus šią parinktį galimas nesėkmingas įrašymas. todėl turite "
-#~ "ištrinti keletą failų.\n"
-#~ "PASTABA: įjungus šią parinktį galimas nesėkmingas įrašymas."
-
-#, fuzzy
-#~| msgid "size can't be retrieved (%s)"
-#~ msgid "The size could not be retrieved (%s)"
-#~ msgstr "dydžio gauti nepavyko (%s)"
+msgstr "Diskų kopijuoklis"
 
 #~ msgid "<keep current values>"
 #~ msgstr "<palikti dabartines reikšmes>"
