@@ -90,8 +90,9 @@ static GtkToggleActionEntry toggle_entries[] = {
 static const char *description = {
 	"<ui>"
 	"<popup action='ContextMenu'>"
-		"<menuitem action='Cancel'/>"
 		"<menuitem action='Show'/>"
+		"<separator/>"
+		"<menuitem action='Cancel'/>"
 	"</popup>"
 	"</ui>"
 };
