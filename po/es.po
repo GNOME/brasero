@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-02-27 19:33+0000\n"
-"PO-Revision-Date: 2009-03-09 23:23+0100\n"
+"POT-Creation-Date: 2009-03-10 23:55+0000\n"
+"PO-Revision-Date: 2009-03-11 08:10+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgstr "No hay ningún disco disponible"
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../libbrasero-media/brasero-drive.c:507
+#: ../libbrasero-media/brasero-drive.c:503
 #: ../libbrasero-media/brasero-medium.c:275
 #: ../libbrasero-media/brasero-volume.c:379
 msgid "Image File"
@@ -419,19 +419,16 @@ msgstr ""
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+#| msgid "CD/DVD Creator Folder"
+msgid "CD/DVD Creator"
+msgstr "Creador de CD/DVD"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
 #: ../data/brasero-open-image.desktop.in.in.h:1
 #: ../data/brasero-open-playlist.desktop.in.in.h:1
 #: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Cree CD y DVD"
-
-#: ../nautilus/brasero-nautilus.desktop.in.in.h:2 ../src/brasero-app.c:554
-#: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burner"
-msgstr "Grabador de discos"
 
 #: ../nautilus/nautilus-burn-bar.c:143
 msgid "Drag or copy files below to write them to disc"
@@ -764,6 +761,13 @@ msgstr "Mostrar ayuda"
 #: ../src/brasero-app.c:132
 msgid "About"
 msgstr "Acerca de"
+
+#: ../src/brasero-app.c:554 ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Disc Burner"
+msgstr "Grabador de discos"
 
 #: ../src/brasero-app.c:999
 msgid ""
@@ -1626,12 +1630,12 @@ msgstr "Mostrar _diálogo"
 msgid "Show dialog"
 msgstr "Mostrar diálogo"
 
-#: ../src/brasero-tray.c:255
+#: ../src/brasero-tray.c:256
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
 msgstr "%s, %02i%% terminado, quedan %s"
 
-#: ../src/brasero-tray.c:262
+#: ../src/brasero-tray.c:263
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s, %02i%% terminado"
