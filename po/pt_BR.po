@@ -1,21 +1,22 @@
 # Brazilian Portuguese translation of Brasero
-# Copyright (C) 2007 Brasero's COPYRIGHT HOLDER
+# Copyright (C) 2007-2009 Brasero's COPYRIGHT HOLDER
 # This file is distributed under the same license as the Brasero package.
 # Vladimir Melo <vmelo@gnome.org>, 2007, 2009.
 # Og Maciel <ogmaciel@gnome.org>, 2007.
-# Raphael Higino <in memorian>, 2007.
+# Raphael Higino <In Memorian>, 2007.
 # Djavan Fagundes <dnoway@gmail.com>, 2008.
 # Lucas Hermann Negri <kkndrox@gmail.com>, 2008.
 # Carlos Eduardo Moreira dos Santos <cems@cemshost.com.br>, 2008.
 # César Veiga <tombs@linuxmail.org>, 2008, 2009.
+# Fabrício Godoy <skarllot@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-08 10:17-0400\n"
-"PO-Revision-Date: 2009-03-08 10:40+0100\n"
-"Last-Translator: Vladimir Melo <vmelo@gnome.org>\n"
+"POT-Creation-Date: 2009-03-11 09:21-0400\n"
+"PO-Revision-Date: 2009-03-10 23:52-0300\n"
+"Last-Translator: Fabrício Godoy <skarllot@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -319,7 +320,7 @@ msgstr "Modo de faixa inválido"
 #: ../src/eggdesktopfile.c:165
 #, c-format
 msgid "File is not a valid .desktop file"
-msgstr "O Arquivo não é um arquivo .desktop válido"
+msgstr "O arquivo não é um arquivo .desktop válido"
 
 #: ../src/eggdesktopfile.c:188
 #, c-format
@@ -420,19 +421,15 @@ msgstr ""
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+msgid "CD/DVD Creator"
+msgstr "Criador de CD e DVD"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
 #: ../data/brasero-open-image.desktop.in.in.h:1
 #: ../data/brasero-open-playlist.desktop.in.in.h:1
 #: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Criar CDs e DVDs"
-
-#: ../nautilus/brasero-nautilus.desktop.in.in.h:2 ../src/brasero-app.c:554
-#: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burner"
-msgstr "Gravador de Discos"
 
 #: ../nautilus/nautilus-burn-bar.c:143
 msgid "Drag or copy files below to write them to disc"
@@ -767,6 +764,13 @@ msgstr "Exibir ajuda"
 msgid "About"
 msgstr "Sobre"
 
+#: ../src/brasero-app.c:554 ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Disc Burner"
+msgstr "Gravador de Discos"
+
 #: ../src/brasero-app.c:999
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
@@ -822,11 +826,12 @@ msgid "translator-credits"
 msgstr ""
 "Vladimir Melo <vmelo@gnome.org>\n"
 "Og Maciel <ogmaciel@gnome.org>\n"
-"Raphael Higino <in memorian>\n"
+"Raphael Higino <In Memorian>\n"
 "Djavan Fagundes <dnoway@gmail.com>\n"
 "Lucas Hermann Negri <kkndrox@gmail.com>\n"
 "Carlos Eduardo Moreira dos Santos <cems@cemshost.com.br>\n"
-"César Veiga <tombs@linuxmail.org>"
+"César Veiga <tombs@linuxmail.org>\n"
+"Fabrício Godoy <skarllot@gmail.com>"
 
 #: ../src/brasero-app.c:1170 ../src/brasero-app.c:1176
 msgid "_Recent Projects"
@@ -1186,7 +1191,7 @@ msgstr "A faixa tem menos de 6 segundos"
 #: ../src/brasero-audio-disc.c:1356 ../src/brasero-metadata.c:671
 #, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
-msgstr "\"%s\" não pode ser manipulado pelo gstreamer."
+msgstr "\"%s\" não pode ser manipulado pelo Gstreamer."
 
 #: ../src/brasero-audio-disc.c:1359
 msgid "Make sure the appropriate codec is installed"
@@ -1636,12 +1641,12 @@ msgstr "Mostrar _diálogo"
 msgid "Show dialog"
 msgstr "Mostrar diálogo"
 
-#: ../src/brasero-tray.c:255
+#: ../src/brasero-tray.c:256
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
 msgstr "%s, %02i%% completo, %s restando"
 
-#: ../src/brasero-tray.c:262
+#: ../src/brasero-tray.c:263
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s, %02i%% completo"
@@ -2377,9 +2382,9 @@ msgstr ""
 "segunda versões (as mais comuns) não oferece suporte a esse tamanho de "
 "arquivo.\n"
 "A maioria dos sistemas operacionais, inclusive o Linux e todas as versões do "
-"Windows ©, oferece suporte ao padrão ISO9660 nível três.\n"
+"Windows ©, oferece suporte ao padrão ISO9660 versão três.\n"
 "Uma exceção conhecida é o MacOS X que não pode ler imagens criadas com o "
-"padrão ISO9660 nível 3."
+"padrão ISO9660 versão 3."
 
 #: ../src/brasero-data-disc.c:1025
 #, c-format
@@ -2707,19 +2712,19 @@ msgstr "Deixar o brasero escolher (mais seguro)"
 
 #: ../src/brasero-image-type-chooser.c:94
 msgid "*.iso image"
-msgstr "imagem *.iso"
+msgstr "Imagem *.iso"
 
 #: ../src/brasero-image-type-chooser.c:102
 msgid "*.raw image"
-msgstr "imagem *.raw"
+msgstr "Imagem *.raw"
 
 #: ../src/brasero-image-type-chooser.c:110
 msgid "*.cue image"
-msgstr "imagem *.cue"
+msgstr "Imagem *.cue"
 
 #: ../src/brasero-image-type-chooser.c:118
 msgid "*.toc image (cdrdao)"
-msgstr "imagem *.toc (cdrdao)"
+msgstr "Imagem *.toc (cdrdao)"
 
 #: ../src/brasero-layout.c:102
 msgid "P_review"
@@ -3601,7 +3606,7 @@ msgstr "Abrir a lista de reprodução especificada como um projeto de áudio"
 # Aparece em "brasero --help"
 #: ../src/main.c:84
 msgid "PLAYLIST"
-msgstr "LISTA DE REPRODUÇÃO"
+msgstr "LISTA_REPRODUÇÃO"
 
 #: ../src/main.c:89
 msgid "Open an audio project adding the URIs given on the command line"
@@ -3620,7 +3625,7 @@ msgstr "Copia um disco"
 
 #: ../src/main.c:98
 msgid "PATH TO DEVICE"
-msgstr "CAMINHO PARA O DISPOSITIVO"
+msgstr "CAMINHO_DISPOSITIVO"
 
 #: ../src/main.c:101
 msgid "Cover to use"
@@ -3628,7 +3633,7 @@ msgstr "Capa a ser usada"
 
 #: ../src/main.c:102
 msgid "PATH TO COVER"
-msgstr "CAMINHHO DA CAPA"
+msgstr "CAMINHO_CAPA"
 
 # Encurtei a tradução para caber, parece ser uma mensagem na linha de comando
 #: ../src/main.c:105
@@ -3643,7 +3648,7 @@ msgstr "URI de um arquivo de imagem a ser gravado (detecção automática)"
 # Aparece em "brasero --help"
 #: ../src/main.c:110
 msgid "PATH TO PLAYLIST"
-msgstr "CAMINHO DA LISTA DE REPRODUÇÃO"
+msgstr "CAMINHO_LISTA_REPRODUÇÃO"
 
 #: ../src/main.c:113
 msgid "Force brasero to display the project selection page"
@@ -4685,7 +4690,7 @@ msgstr "Editor de capa"
 #: ../src/brasero-multi-song-props.c:265 ../src/brasero-multi-song-props.c:286
 #: ../src/brasero-rename.c:87 ../src/brasero-rename.c:279
 msgid "<Keep current values>"
-msgstr "<manter valores atuais>"
+msgstr "<Manter valores atuais>"
 
 #: ../src/brasero-multi-song-props.c:122 ../src/brasero-multi-song-props.c:139
 msgid "Remove silences"
@@ -4821,879 +4826,3 @@ msgstr "Copiar CDs e DVDs"
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Disc Copier"
 msgstr "Copiador de Discos"
-
-#~ msgid ""
-#~ "The size of the project is too large for the disc.\n"
-#~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
-#~ "which cannot be properly recognised and therefore need overburn option.\n"
-#~ "NOTE: This option might cause failure."
-#~ msgstr ""
-#~ "O tamanho do projeto é grande demais para o disco.\n"
-#~ "Você pode optar por esta opção se você estiver usando um CD-R(W) de 90 ou "
-#~ "100 min que pode não ser corretamente reconhecido e, portanto, necessitar "
-#~ "da opção overburn.\n"
-#~ "NOTA: Esta opção poderá causar falhas."
-
-#~ msgid "Cdrdao toc file"
-#~ msgstr "Arquivo toc do cdrdao"
-
-#~ msgid "The disc could not be mounted (max attemps reached)"
-#~ msgstr ""
-#~ "Não foi possível montar o disco (número máximo de tentativas alcançado)"
-
-#~ msgid "The size could not be retrieved (%s)"
-#~ msgstr "O tamanho não pôde ser recuperado (%s)"
-
-#~ msgid "1 item"
-#~ msgstr "1 item"
-
-#~ msgid "<keep current values>"
-#~ msgstr "<manter valores atuais>"
-
-#~ msgid "Substitute"
-#~ msgstr "Substituir"
-
-#~ msgid "writing to file descriptor failed"
-#~ msgstr "falha na gravação do descritor de arquivos"
-
-#~ msgid ""
-#~ "failed to get the start point of the track. Make sure the media allow to "
-#~ "add files (it is not closed)"
-#~ msgstr ""
-#~ "falha ao buscar o ponto inicial da faixa. Certifique-se de que a mídia "
-#~ "permite adicionar arquivos (se não estiver fechada)"
-
-#~ msgid "input buffer error"
-#~ msgstr "erro de entrada de buffer"
-
-#~ msgid "The files selected did not fit on the CD"
-#~ msgstr "Os arquivos selecionados não cabem no CD"
-
-#~ msgid ""
-#~ "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-#~ msgstr ""
-#~ "Todos arquivos de áudio devem ter áudio digital, estéreo, de 16 bits, com "
-#~ "amostragem de 44100Hz"
-
-#~ msgid ""
-#~ "The drive seems to be busy (maybe check you have proper permissions to "
-#~ "use it)"
-#~ msgstr ""
-#~ "A unidade parece estar ocupada (verifique se você possui as permissões "
-#~ "necessárias para usá-la)"
-
-#~ msgid "the audio tracks are too short or not a multiple of 2352"
-#~ msgstr "as faixas de áudio são curtas demais ou não são um múltiplo de 2352"
-
-#~ msgid "imager doesn't seem to be ready"
-#~ msgstr "O imager não parece estar pronto"
-
-#~ msgid "the file /proc/self/fd/0 is missing"
-#~ msgstr "o arquivo /proc/self/fd/0 está faltando"
-
-#~ msgid "unable to add the track to the session"
-#~ msgstr "não foi possível adicionar a faixa à sessão"
-
-#~ msgid "Automatic Split"
-#~ msgstr "Divisão automática"
-
-#~ msgid "no medium"
-#~ msgstr "sem mídia"
-
-#~ msgid "no supported medium"
-#~ msgstr "não há suporte à mídia"
-
-#~ msgid "0"
-#~ msgstr "0"
-
-#~ msgid "Do you want to continue or discard the old project layout?"
-#~ msgstr "Você deseja continuar ou descartar o layout do projeto antigo?"
-
-#~ msgid "Press if you want to cancel current project loading"
-#~ msgstr "Pressione se você deseja cancelar o carregamento do projeto atual"
-
-#~ msgid "Image Extension"
-#~ msgstr "Extensão da imagem"
-
-#~ msgid "_Don't change extension"
-#~ msgstr "_Não alterar a extensão"
-
-#~ msgid "Configure some options for the recording"
-#~ msgstr "Configurar algumas opções para a gravação"
-
-#~ msgid "Number of copies "
-#~ msgstr "Número de cópias "
-
-#~ msgid "Eject media"
-#~ msgstr "Ejetar a mídia"
-
-#~ msgid "Contents"
-#~ msgstr "Sumário"
-
-#~ msgid "_Disc Info"
-#~ msgstr "Informações do _disco"
-
-#~ msgid "Display information on blank discs currently inserted"
-#~ msgstr "Mostrar informações em discos vazios inseridos atualmente"
-
-#~ msgid "Brasero projects"
-#~ msgstr "Projetos do brasero"
-
-#~ msgid "Brasero Disc Burning"
-#~ msgstr "Gravador de Discos Brasero"
-
-#~ msgid ""
-#~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-#~ msgstr ""
-#~ "Apenas usado em conjunção com o parâmetro -immed com cdrecord. Veja "
-#~ "immed_flag."
-
-#~ msgid "Should brasero ask to be set as the default app to burn"
-#~ msgstr ""
-#~ "Brasero deve pedir ou não para ser definido como aplicativo padrão de "
-#~ "gravação"
-
-#~ msgid ""
-#~ "Should brasero ask to be set as the default app to burn audio or data. "
-#~ "Set to true, brasero won't ask."
-#~ msgstr ""
-#~ "Brasero deve pedir ou não para ser definido como aplicativo padrão de "
-#~ "gravação de áudio e dados. Se o valor for definido como verdadeiro, o "
-#~ "Brasero não perguntará."
-
-#~ msgid "Track Length"
-#~ msgstr "Duração da faixa"
-
-#~ msgid "Unhandled Song"
-#~ msgstr "Música não manipulada"
-
-#~ msgid "Video File"
-#~ msgstr "Arquivo de vídeo"
-
-#~ msgid "_Ignore video"
-#~ msgstr "_Ignorar vídeo"
-
-#~ msgid "_Add video"
-#~ msgstr "_Adicionar vídeo"
-
-#~ msgid "Directory Search"
-#~ msgstr "Pesquisar diretório"
-
-#~ msgid "File \"%s\" can't be opened."
-#~ msgstr "Não foi possível abrir o arquivo \"%s\"."
-
-#~ msgid "Unreadable File"
-#~ msgstr "Arquivo ilegível"
-
-#~ msgid "loading"
-#~ msgstr "carregando"
-
-#~ msgid "Error"
-#~ msgstr "Erro"
-
-#~ msgid "File Deletion"
-#~ msgstr "Remoção de arquivo"
-
-#~ msgid "Error Blanking:"
-#~ msgstr "Erro ao apagar:"
-
-#~ msgid "Blanking Finished"
-#~ msgstr "Limpeza finalizada"
-
-#~ msgid "Unexpected error"
-#~ msgstr "Erro inesperado"
-
-#~ msgid "this format is not supported by gstreamer"
-#~ msgstr "esse formato não tem suporte no gstreamer"
-
-#~ msgid "Show"
-#~ msgstr "Mostrar"
-
-#~ msgid "Playlist Loading Error"
-#~ msgstr "Erro ao carregar lista de reprodução"
-
-#~ msgid "Loading ..."
-#~ msgstr "Carregando ..."
-
-#~ msgid "Plugins"
-#~ msgstr "Plug-ins"
-
-#~ msgid "Total time:"
-#~ msgstr "Tempo total:"
-
-#~ msgid "%i MiB"
-#~ msgstr "%i MiB"
-
-#~ msgid "%i KiB"
-#~ msgstr "%i KiB"
-
-#~ msgid "%i bytes"
-#~ msgstr "%i bytes"
-
-#~ msgid "only in\t"
-#~ msgstr "somente em\t"
-
-#~ msgid "Search Error"
-#~ msgstr "Erro na pesquisa"
-
-#~ msgid "Cancel"
-#~ msgstr "Cancelar"
-
-#~ msgid "waiting"
-#~ msgstr "aguardando"
-
-#~ msgid "KiB"
-#~ msgstr "KB"
-
-#~ msgid "MiB"
-#~ msgstr "MB"
-
-#~ msgid "GiB"
-#~ msgstr "GB"
-
-#~ msgid "This file can't be opened:"
-#~ msgstr "Não foi possível abrir este arquivo:"
-
-#~ msgid "File Error"
-#~ msgstr "Erro do arquivo"
-
-#~ msgid ""
-#~ "A recording was successfully completed.\n"
-#~ "The next recording will begin as soon as a recordable medium is inserted."
-#~ msgstr ""
-#~ "Uma gravação foi bem sucedida.\n"
-#~ "A próxima gravação será iniciada assim que uma mídia gravável for "
-#~ "inserida."
-
-#~ msgid "The disc in \"%s\" is a DVD."
-#~ msgstr "O disco em \"%s\" é um DVD."
-
-#~ msgid "The disc in \"%s\" is a CD."
-#~ msgstr "O disco em \"%s\" é um CD."
-
-#~ msgid "The disc in \"%s\" is not big enough."
-#~ msgstr "O disco em \"%s\" não é grande o suficiente."
-
-#~ msgid "Possible Data Loss"
-#~ msgstr "Possível perda de dados"
-
-#~ msgid "Multisession Disc"
-#~ msgstr "Disco multissessão"
-
-#~ msgid "Continue"
-#~ msgstr "Continuar"
-
-#~ msgid "Successful Simulation"
-#~ msgstr "Simulação bem-sucedida"
-
-#~ msgid "Session Log Error"
-#~ msgstr "Erro no registro da sessão"
-
-#~ msgid "An unknown error occured. Check your disc"
-#~ msgstr "Um erro desconhecido ocorreu. Verifique seu disco"
-
-#~ msgid "Burning Error"
-#~ msgstr "Erro de gravação"
-
-#~ msgid "Confirm"
-#~ msgstr "Confirmar"
-
-#~ msgid "Session Import Error"
-#~ msgstr "Erro no registro da sessão"
-
-#~ msgid "unknown error"
-#~ msgstr "erro desconhecido"
-
-#~ msgid "_Cancel"
-#~ msgstr "_Cancelar"
-
-#~ msgid "Recursive Symlink"
-#~ msgstr "Link simbólico recursivo"
-
-#~ msgid "File Not Found"
-#~ msgstr "Arquivo não localizado"
-
-#~ msgid "Already Existing File"
-#~ msgstr "Arquivo já existente"
-
-#~ msgid "_Don't replace"
-#~ msgstr "_Não substituir"
-
-#~ msgid "File Over 2 GiB"
-#~ msgstr "Arquivo maior que 2 GiB"
-
-#~ msgid "_Don't add"
-#~ msgstr "_Não adicionar"
-
-#~ msgid "Deep Directory"
-#~ msgstr "Diretório profundo"
-
-#~ msgid "_Import Session"
-#~ msgstr "_Importar a sessão"
-
-#~ msgid "_Don't rename"
-#~ msgstr "_Não renomear"
-
-#~ msgid ""
-#~ "Some files don't have a suitable name for a Windows-compatible CD. Those "
-#~ "names will be changed and truncated to 64 characters."
-#~ msgstr ""
-#~ "Alguns arquivos não têm nomes apropriados para um CD compatível com "
-#~ "Windows. Seus nomes serão alterados e truncados para 64 caracteres."
-
-#~ msgid "Leave the disc _open to add a data session later"
-#~ msgstr ""
-#~ "Deixar o disco _aberto para adicionar uma sessão de dados mais tarde"
-
-#~ msgid "Allow create what is called an enhanced CD or CD+"
-#~ msgstr "Permite criar o que é chamado de CD extra ou CD+"
-
-#~ msgid "Native aspect _ratio"
-#~ msgstr "Taxa de aspecto _nativa"
-
-#~ msgid "Add _AC3 audio stream"
-#~ msgstr "Adicionar fluxo de áudio _AC3"
-
-#~ msgid "Add _MP2 audio stream"
-#~ msgstr "Adicionar fluxo de áudio _MP2"
-
-#~ msgid "Audio Options"
-#~ msgstr "Opções de áudio"
-
-#~ msgid "<b>Burning speed</b>"
-#~ msgstr "<b>Velocidade de gravação</b>"
-
-#~ msgid "Image File Properties"
-#~ msgstr "Propriedades do arquivo de imagem"
-
-#~ msgid "Please wait:"
-#~ msgstr "Por favor aguarde:"
-
-#~ msgid "Please Wait"
-#~ msgstr "Por favor, aguarde"
-
-#~ msgid "some tasks are not completed yet."
-#~ msgstr "algumas tarefas ainda não foram concluídas."
-
-#~ msgid "Ongoing Tasks"
-#~ msgstr "Tarefas em andamento"
-
-#~ msgid "Empty Project"
-#~ msgstr "Projeto vazio"
-
-#~ msgid "New Project"
-#~ msgstr "Novo projeto"
-
-#~ msgid "Add"
-#~ msgstr "Adicionar"
-
-#~ msgid "Remove"
-#~ msgstr "Remover"
-
-#~ msgid "Project Loading Error"
-#~ msgstr "Erro no carregamento do projeto"
-
-#~ msgid "Modified Project"
-#~ msgstr "Projeto modificado"
-
-#~ msgid " by %s"
-#~ msgstr " por %s"
-
-#  Dica de ferramenta
-#~ msgid "Create a new audio project"
-#~ msgstr "Cria um novo projeto de áudio"
-
-#  Dica de ferramenta
-#~ msgid "Create a new data project"
-#~ msgstr "Cria um novo projeto de dados"
-
-#  Dica de ferramenta
-#~ msgid "Create a new video project"
-#~ msgstr "Cria um novo projeto de vídeo"
-
-#~ msgid "Display File Browser"
-#~ msgstr "Exibir navegador de arquivos"
-
-#~ msgid "Display Playlists"
-#~ msgstr "Exibir listas de reprodução"
-
-#~ msgid "<big>Audi_o project</big>"
-#~ msgstr "<big>Projet_o de áudio</big>"
-
-#~ msgid "<big>D_ata project</big>"
-#~ msgstr "<big>Projeto de d_ados</big>"
-
-#~ msgid "<big>_Video project</big>"
-#~ msgstr "<big>Projeto de _vídeo</big>"
-
-#~ msgid "<big>Disc _copy</big>"
-#~ msgstr "<big>Copiar _disco</big>"
-
-#~ msgid "<big>Burn _image</big>"
-#~ msgstr "<big>Gravar _imagem</big>"
-
-#~ msgid "File Integrity Check Error"
-#~ msgstr "Erro na verificação de integridade do arquivo"
-
-#~ msgid "File Integrity Check Success"
-#~ msgstr "Integridade de arquivos verificada com sucesso"
-
-#~ msgid "a temporary file couldn't be created"
-#~ msgstr "não foi possível criar um arquivo temporário"
-
-#~ msgid "Media Busy"
-#~ msgstr "Mídia ocupada"
-
-#~ msgid "the inserted media is busy."
-#~ msgstr "a mídia inserida está ocupada."
-
-#~ msgid "Media Error"
-#~ msgstr "Erro na mídia"
-
-#~ msgid "the inserted media is not supported."
-#~ msgstr "não há suporte à mídia inserida."
-
-#~ msgid "Choose a media"
-#~ msgstr "Escolha uma mídia"
-
-#~ msgid "the disc could not be reloaded (max attemps reached)"
-#~ msgstr ""
-#~ "não foi possível carregar o disco (número máximo de tentativas alcançado)"
-
-#~ msgid "no drive specified as source"
-#~ msgstr "nenhuma unidade especificada como origem"
-
-#~ msgid "the drive has no burning capabilities"
-#~ msgstr "a unidade não tem capacidade de gravar"
-
-#~ msgid "the drive seems to be busy"
-#~ msgstr "a unidade parece estar ocupada"
-
-#~ msgid ""
-#~ "it's not possible to merge to this media because it hasn't got enough "
-#~ "space"
-#~ msgstr ""
-#~ "não é possível mesclar a esta mídia porque ela não possui espaço "
-#~ "suficiente"
-
-#~ msgid "there is no drive to burn to"
-#~ msgstr "não há unidade na qual gravar"
-
-#~ msgid "this operation is not supported"
-#~ msgstr "não há suporte a esta operação"
-
-#~ msgid "internal error in plugin system"
-#~ msgstr "erro interno no sistema de plug-in"
-
-#~ msgid "it does not appear to be a primary volume descriptor"
-#~ msgstr "isso não parece ser um descritor de volume primário"
-
-#~ msgid "invalid directory record"
-#~ msgstr "registro de diretório inválido"
-
-#~ msgid "file name is too long"
-#~ msgstr "o nome do arquivo é muito longo"
-
-#~ msgid "plugin %s did not want to work. Try to deactivate it"
-#~ msgstr "o plug-in %s não quis funcionar. Tente desativá-lo"
-
-#~ msgid "Insufficient space on media (%lli available for %lli)"
-#~ msgstr "Espaço insuficiente na mídia (%lli disponíveis para %lli)"
-
-#~ msgid ""
-#~ "the selected location does not have enough free space to store the disc "
-#~ "image (%ld MiB needed)"
-#~ msgstr ""
-#~ "o local selecionado não tem espaço livre o suficiente para armazenar "
-#~ "outra imagem de disco (%ld MB necessários)"
-
-#~ msgid "the size of the volume can't be checked (Unknown error)"
-#~ msgstr "não foi possível verificar o tamanho do volume (Erro desconhecido)"
-
-#~ msgid "no path"
-#~ msgstr "nenhum caminho"
-
-#~ msgid "the pipe couldn't be created (%s)"
-#~ msgstr "não foi possível criar o \"pipe\" (%s)"
-
-#~ msgid ""
-#~ "plugin %s did not work properly.\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "o plug-in %s não funcionou corretamente.\n"
-#~ "Tente desativá-lo"
-
-#~ msgid ""
-#~ "plugin %s didn't work properly (it does not support operation).\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "o plug-in %s não funcionou corretamente (não há suporte à operação).\n"
-#~ "Tente desativá-lo"
-
-#~ msgid "couldn't set non blocking mode"
-#~ msgstr "não foi possível definir modo \"non blocking\""
-
-#~ msgid "couldn't get pipe flags"
-#~ msgstr "não foi possível obter parâmetros do \"pipe\""
-
-#~ msgid "file"
-#~ msgstr "arquivo"
-
-#~ msgid "null graft point"
-#~ msgstr "ponto de inserção nulo"
-
-#~ msgid "wrong path"
-#~ msgstr "caminho incorreto"
-
-#~ msgid "impossible to retrieve information"
-#~ msgstr "impossível recuperar informação"
-
-#~ msgid "no output specified"
-#~ msgstr "nenhuma saída especificada"
-
-#~ msgid "a temporary directory could not be created (%s)"
-#~ msgstr "não foi possível criar um diretório temporário (%s)"
-
-#~ msgid "a temporary file can't be created: %s"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#~ msgid "there isn't a valid volume descriptor"
-#~ msgstr "não existe um descritor de volume válido"
-
-#~ msgid "Open a data project with the contents of nautilus-cd-burner"
-#~ msgstr "Abre um projeto de dados com o conteúdo do nautilus-cd-burner"
-
-#~ msgid "Incompatible Options"
-#~ msgstr "Opções incompatíveis"
-
-#~ msgid "CD/DVD burning"
-#~ msgstr "Gravador de CD/DVD"
-
-#~ msgid "the cue file (%s) seems to be invalid"
-#~ msgstr "o arquivo cue (%s) parece ser inválido"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "cdrdao could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "toc2cue could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#, fuzzy
-#~ msgid "the old image couldn't be read"
-#~ msgstr "Não foi possível criar uma imagem"
-
-#, fuzzy
-#~ msgid "the image can't be created"
-#~ msgstr "Não foi possível criar uma imagem"
-
-#, fuzzy
-#~ msgid "Internal error: bad file descriptor"
-#~ msgstr "não existe um descritor de volume válido"
-
-#, fuzzy
-#~ msgid "The file is too large for a CD"
-#~ msgstr "O arquivo não está armazenado localmente"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "genisoimage could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#, fuzzy
-#~ msgid "the drive is not ready"
-#~ msgstr "A unidade está vazia"
-
-#, fuzzy
-#~ msgid "you don't seem to have the required permissions to access the drive"
-#~ msgstr "Você não tem as permissões necessárias para usar esta unidade"
-
-#, fuzzy
-#~ msgid "raw images cannot be created with DVDs"
-#~ msgstr "Não foi possível criar uma imagem"
-
-#, fuzzy
-#~ msgid "There doesn't seem to be a disc in the drive"
-#~ msgstr "Parece não haver arquivo corrompido no disco"
-
-#, fuzzy
-#~ msgid "The CD has already been recorded"
-#~ msgstr "A mídia precisa ser recarregada antes de ser gravada"
-
-#, fuzzy
-#~ msgid "The CD cannot be blanked"
-#~ msgstr "Não foi possível bloquear a unidade (%s)"
-
-#, fuzzy
-#~ msgid "a write error occured which was likely due to overburning the disc"
-#~ msgstr "Ocorreu um erro ao gravar o disco"
-
-#, fuzzy
-#~ msgid "The image does not seem to be a proper iso9660 file system"
-#~ msgstr "O arquivo não parece ser um uma lista de reprodução"
-
-#, fuzzy
-#~ msgid "The drive seems to be busy (maybe you should reload the media)"
-#~ msgstr "Parece não haver arquivo corrompido no disco"
-
-#, fuzzy
-#~ msgid "the image file cannot be found"
-#~ msgstr "Não foi possível localizar o arquivo de registro"
-
-#, fuzzy
-#~ msgid "internal error"
-#~ msgstr "Ocorreu um erro interno"
-
-#, fuzzy
-#~ msgid "the cd information could not be written"
-#~ msgstr "Não foi possível criar opções de leitura"
-
-#, fuzzy
-#~ msgid "the disc could not be closed"
-#~ msgstr "Não foi possível carregar a imagem."
-
-#, fuzzy
-#~ msgid "the inf file can't be written : %s"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "the size of the session cannot be retrieved"
-#~ msgstr "Não foi possível recuperar o tamanho do volume"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "mkisofs could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "readcd could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#, fuzzy
-#~ msgid "the data couldn't be written to the pipe (%i: %s)"
-#~ msgstr "Não foi possível gravar os dados (%s)"
-
-#, fuzzy
-#~ msgid "the data couldn't be written to the file (%i: %s)"
-#~ msgstr "Não foi possível gravar os dados (%s)"
-
-#, fuzzy
-#~ msgid "Unhandled error, aborting"
-#~ msgstr "Música não manipulada"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "dvd+rw-format could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#, fuzzy
-#~ msgid "The disc is already burnt"
-#~ msgstr "O disco está pronto para uso."
-
-#, fuzzy
-#~ msgid "The recorder could not be accessed"
-#~ msgstr "Não foi possível abrir o projeto."
-
-#, fuzzy
-#~ msgid "the image is not stored locally"
-#~ msgstr "O arquivo não está armazenado localmente"
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "growisofs could not be found in the path"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#, fuzzy
-#~ msgid "unable to set the source"
-#~ msgstr "Clique para iniciar a pesquisa"
-
-#, fuzzy
-#~ msgid "no profile available for the medium"
-#~ msgstr "Não há espaço disponível no disco"
-
-#, fuzzy
-#~ msgid "/dev/null can't be opened"
-#~ msgstr "Não foi possível abrir o arquivo \"%s\"."
-
-#, fuzzy
-#~ msgid "libburn can't burn: %s"
-#~ msgstr "Suíte de gravação libburnia"
-
-#, fuzzy
-#~ msgid "the drive couldn't be initialized"
-#~ msgstr "Não foi possível iniciar a libisofs."
-
-#  Não é continuação de frase alguma
-#, fuzzy
-#~ msgid "a parent for the path (%s) could not be found in the tree"
-#~ msgstr "\"%s\" não foi localizado no caminho"
-
-#, fuzzy
-#~ msgid "non local file %s"
-#~ msgstr "Todos os arquivos"
-
-#, fuzzy
-#~ msgid "libisofs reported an error while adding directory %s (%x)"
-#~ msgstr ""
-#~ "A libisofs relatou um erro ao adicionar conteúdo para o diretório \"%s"
-#~ "\" (%x)"
-
-#, fuzzy
-#~ msgid "no disc could be found"
-#~ msgstr "\"%s\" não foi possível localizar"
-
-#, fuzzy
-#~ msgid "source can't be created"
-#~ msgstr "Não foi possível criar volume"
-
-#, fuzzy
-#~ msgid "decode can't be created"
-#~ msgstr "Não foi possível criar volume"
-
-#, fuzzy
-#~ msgid "audioconvert can't be created"
-#~ msgstr "Não foi possível criar opções de leitura"
-
-#, fuzzy
-#~ msgid "audioresample can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "rganalysis can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "sink can't be created"
-#~ msgstr "\"%s\" não pôde ser lido"
-
-#, fuzzy
-#~ msgid "GST plugin \"rgvolume\" could not be found"
-#~ msgstr "Não foi possível localizar o arquivo de registro"
-
-#, fuzzy
-#~ msgid "GST plugin \"rganalysis\" could not be found"
-#~ msgstr "Não foi possível localizar o arquivo de registro"
-
-#, fuzzy
-#~ msgid "filter can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "error opening file for padding : %s"
-#~ msgstr "Erro no preenchimento do arquivo (%s)"
-
-#, fuzzy
-#~ msgid "the device is not ready"
-#~ msgstr "Mídia não suportada"
-
-#, fuzzy
-#~ msgid " Preview "
-#~ msgstr "Visualizar"
-
-#, fuzzy
-#~ msgid "Size Error"
-#~ msgstr "Erro do arquivo"
-
-#, fuzzy
-#~ msgid "No Silence"
-#~ msgstr "Nenhum arquivo"
-
-#, fuzzy
-#~ msgid "size can't be retrieved for %s: %s"
-#~ msgstr "O tamanho não pôde ser recuperado (%s)"
-
-#, fuzzy
-#~ msgid "unreadable file"
-#~ msgstr "Arquivo ilegível"
-
-#, fuzzy
-#~ msgid "recursive symlink"
-#~ msgstr "Link simbólico recursivo"
-
-#, fuzzy
-#~ msgid "%s: %s of data"
-#~ msgstr "%s: %s de espaço livre"
-
-#, fuzzy
-#~ msgid "the file %s couldn't be read (%s)"
-#~ msgstr "não foi possível criar o \"pipe\" (%s)"
-
-#, fuzzy
-#~ msgid "data could not be read from the pipe (%i: %s)"
-#~ msgstr "Não foi possível a leitura dos dados (%s)"
-
-#, fuzzy
-#~ msgid "the image is not local"
-#~ msgstr "O arquivo não está armazenado localmente"
-
-#, fuzzy
-#~ msgid "by "
-#~ msgstr "por"
-
-#, fuzzy
-#~ msgid "Unhandled file"
-#~ msgstr "Arquivo ilegível"
-
-#, fuzzy
-#~ msgid "queue element can't be created"
-#~ msgstr "Não foi possível criar o elemento %s"
-
-#, fuzzy
-#~ msgid "ffenc_mp2 can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "queue1 element can't be created"
-#~ msgstr "Não foi possível criar o elemento %s"
-
-#, fuzzy
-#~ msgid "ffenc_ac3 can't be created"
-#~ msgstr "Não foi possível criar uma imagem"
-
-#, fuzzy
-#~ msgid "tee element can't be created"
-#~ msgstr "Não foi possível criar o elemento %s"
-
-#, fuzzy
-#~ msgid "framerate can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "scale can't be created"
-#~ msgstr "Não foi possível criar volume"
-
-#, fuzzy
-#~ msgid "ffmpegcolorspace can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "mpeg2enc can't be created"
-#~ msgstr "Não foi possível criar uma imagem"
-
-#, fuzzy
-#~ msgid "mplex can't be created"
-#~ msgstr "não foi possível criar um arquivo temporário: %s"
-
-#, fuzzy
-#~ msgid "Brasero Disc Copier"
-#~ msgstr "Brasero - Copiar CD"
-
-#, fuzzy
-#~ msgid "medium busy"
-#~ msgstr "Mídia ocupada"
-
-#, fuzzy
-#~ msgid "Size:"
-#~ msgstr "Tamanho"
-
-#, fuzzy
-#~ msgid "Choose the disc to write to"
-#~ msgstr "Selecione um disco para gravar em"
-
-#, fuzzy
-#~ msgid "Rewritable Disc"
-#~ msgstr "Disco Blu-ray regravável"
