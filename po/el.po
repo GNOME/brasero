@@ -7,17 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-26 23:54+0000\n"
-"PO-Revision-Date: 2009-02-26 23:08+0200\n"
-"Last-Translator: Μάριος Ζηντίλης <m.zindilis@dmajor.org>\n"
-"Language-Team: Greek <team@lists.gnome.gr>\n"
+"POT-Creation-Date: 2009-03-14 18:24+0200\n"
+"PO-Revision-Date: 2009-03-14 18:25+0200\n"
+"Last-Translator: \n"
+"Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/brasero-project-parse.c:103 ../src/brasero-project-manager.c:914
-#: ../src/main.c:214 ../src/main.c:240
+#: ../src/brasero-project-parse.c:103
+#: ../src/brasero-project-manager.c:914
+#: ../src/main.c:214
+#: ../src/main.c:240
 msgid "Error while loading the project."
 msgstr "Σφάλμα κατά τη φόρτωση της εργασίας."
 
@@ -29,7 +31,8 @@ msgstr "Δεν ήταν δυνατό το άνοιγμα της εργασίας
 msgid "The file is empty."
 msgstr "Το αρχείο είναι κενό."
 
-#: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:617
+#: ../src/brasero-project-parse.c:546
+#: ../src/brasero-project-parse.c:617
 msgid "It does not seem to be a valid Brasero project."
 msgstr "Δεν φαίνεται να είναι έγκυρη εργασία του brasero."
 
@@ -44,8 +47,7 @@ msgstr "Οδηγός"
 
 #: ../libbrasero-media/brasero-media.c:52
 msgid "Display debug statements on stdout for Brasero media library"
-msgstr ""
-"Προβολή των αναφορών σφαλμάτων στο stdout για τη βιβλιοθήκη μέσων του Brasero"
+msgstr "Προβολή των αναφορών σφαλμάτων στο stdout για τη βιβλιοθήκη μέσων του Brasero"
 
 #: ../libbrasero-media/brasero-media.c:467
 msgid "Brasero optical media library"
@@ -100,7 +102,7 @@ msgstr "Δεν υπάρχει διαθέσιμος δίσκος"
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../libbrasero-media/brasero-drive.c:507
+#: ../libbrasero-media/brasero-drive.c:503
 #: ../libbrasero-media/brasero-medium.c:275
 #: ../libbrasero-media/brasero-volume.c:379
 msgid "Image File"
@@ -162,7 +164,7 @@ msgstr "DVD+RW διπλής στρώσης"
 
 #: ../libbrasero-media/brasero-medium.c:77
 msgid "DVD-R dual layer"
-msgstr "DVD-R  διπλής στρώσης"
+msgstr "DVD-R διπλής στρώσης"
 
 #: ../libbrasero-media/brasero-medium.c:78
 msgid "DVD-RAM"
@@ -260,8 +262,12 @@ msgstr "Δεν ταιριάζει ο τύπος"
 msgid "Bad argument"
 msgstr "Λάθος όρισμα"
 
-#: ../libbrasero-media/scsi-error.c:47 ../src/brasero-tool-dialog.c:78
-#: ../src/burn.c:1294 ../src/burn.c:1328 ../src/burn.c:1510 ../src/burn.c:1521
+#: ../libbrasero-media/scsi-error.c:47
+#: ../src/brasero-tool-dialog.c:78
+#: ../src/burn.c:1294
+#: ../src/burn.c:1328
+#: ../src/burn.c:1510
+#: ../src/burn.c:1521
 #: ../src/plugins/cdrdao/burn-cdrdao.c:231
 #: ../src/plugins/cdrkit/burn-readom.c:92
 #: ../src/plugins/cdrkit/burn-wodim.c:120
@@ -336,9 +342,7 @@ msgstr "Μη αναγνωρίσιμη επιλογή εκκίνησης: %d"
 #: ../src/eggdesktopfile.c:1373
 #, c-format
 msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr ""
-"Δε μπορούν να περαστούν τα URI των εγγράφων σε μία 'Type=Link' εγγραφή "
-"επιφάνειας εργασίας"
+msgstr "Δε μπορούν να περαστούν τα URI των εγγράφων σε μία 'Type=Link' εγγραφή επιφάνειας εργασίας"
 
 #: ../src/eggdesktopfile.c:1392
 #, c-format
@@ -407,24 +411,18 @@ msgstr "Κατάλογος Δημιουργού CD/DVD"
 
 #: ../src/plugins/local-track/burn-uri.c:714
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
-msgstr ""
-"Επιτρέπει την εγγραφή αρχείων που προστέθηκαν στον \"Κατάλογο Δημιουργού CD/"
-"DVD\" στον Ναυτίλο"
+msgstr "Επιτρέπει την εγγραφή αρχείων που προστέθηκαν στον \"Κατάλογο Δημιουργού CD/DVD\" στον Ναυτίλο"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+msgid "CD/DVD Creator"
+msgstr "Δημιουργία CD/DVD"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
 #: ../data/brasero-open-image.desktop.in.in.h:1
 #: ../data/brasero-open-playlist.desktop.in.in.h:1
 #: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Δημιουργία CD και DVD"
-
-#: ../nautilus/brasero-nautilus.desktop.in.in.h:2 ../src/brasero-app.c:554
-#: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burner"
-msgstr "Εγγραφή δίσκων"
 
 #: ../nautilus/nautilus-burn-bar.c:143
 msgid "Drag or copy files below to write them to disc"
@@ -462,7 +460,7 @@ msgstr "Δημιουργήστε ένα αντίγραφο του CD/DVD"
 
 #: ../nautilus/nautilus-burn-extension.c:440
 msgid "_Blank Disc..."
-msgstr "Ά_δειασμα δίσκου"
+msgstr "Ά_δειασμα δίσκου..."
 
 #: ../nautilus/nautilus-burn-extension.c:441
 msgid "Blank this CD or DVD disc"
@@ -474,22 +472,15 @@ msgstr "Έλε_γχος ακεραιότητας..."
 
 #: ../nautilus/nautilus-burn-extension.c:453
 msgid "Check the data integrity on this CD or DVD disc"
-msgstr "Έλεγχος ακεραιότητας δεδομένων στο δίσκο"
+msgstr "Έλεγχος ακεραιότητας δεδομένων σε αυτόν το δίσκο CD ή DVD"
 
 #: ../src/brasero-medium-properties.c:329
-msgid ""
-"Do you really want to keep the current extension for the disc image name?"
-msgstr ""
-"Θέλετε πραγματικά να διατηρήσετε την τρέχουσα επέκταση για το όνομα της "
-"εικόνας του δίσκου;"
+msgid "Do you really want to keep the current extension for the disc image name?"
+msgstr "Θέλετε πραγματικά να διατηρήσετε την τρέχουσα επέκταση για το όνομα της εικόνας του δίσκου;"
 
 #: ../src/brasero-medium-properties.c:333
-msgid ""
-"If you choose to keep it, programs may not be able to recognize the file "
-"type properly."
-msgstr ""
-"Αν επιλέξετε να τη διατηρήσετε τα προγράμματα ίσως δεν αναγνωρίζουν κανονικά "
-"τον τύπο αρχείου."
+msgid "If you choose to keep it, programs may not be able to recognize the file type properly."
+msgstr "Αν επιλέξετε να τη διατηρήσετε τα προγράμματα ίσως δεν αναγνωρίζουν κανονικά τον τύπο αρχείου."
 
 #: ../src/brasero-medium-properties.c:336
 msgid "_Keep Current Extension"
@@ -512,11 +503,13 @@ msgstr "\"%s\": %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
-#: ../src/brasero-src-image.c:229 ../src/brasero-src-image.c:678
+#: ../src/brasero-src-image.c:229
+#: ../src/brasero-src-image.c:678
 msgid "Click here to select an _image"
 msgstr "Πατήστε εδώ για να επιλέξετε μια ει_κόνα"
 
-#: ../src/brasero-src-image.c:244 ../src/brasero-burn-options.c:308
+#: ../src/brasero-src-image.c:244
+#: ../src/brasero-burn-options.c:308
 msgid "Please select another image."
 msgstr "Παρακαλώ επιλέξτε μια άλλη εικόνα."
 
@@ -524,9 +517,12 @@ msgstr "Παρακαλώ επιλέξτε μια άλλη εικόνα."
 msgid "Select Image File"
 msgstr "Επιλογή αρχείου εικόνας"
 
-#: ../src/brasero-src-image.c:573 ../src/brasero-search-entry.c:610
-#: ../src/brasero-search-entry.c:650 ../src/brasero-search-entry.c:689
-#: ../src/brasero-search-beagle.c:473 ../src/brasero-file-chooser.c:210
+#: ../src/brasero-src-image.c:573
+#: ../src/brasero-search-entry.c:610
+#: ../src/brasero-search-entry.c:650
+#: ../src/brasero-search-entry.c:689
+#: ../src/brasero-search-beagle.c:473
+#: ../src/brasero-file-chooser.c:210
 #: ../src/brasero-project.c:1488
 msgid "All files"
 msgstr "Όλα τα αρχεία"
@@ -537,7 +533,8 @@ msgctxt "disc"
 msgid "Image files only"
 msgstr "Αρχεία εικόνων μόνο"
 
-#: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:200
+#: ../src/brasero-src-image.c:597
+#: ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Τύπος εικόνας:"
 
@@ -566,26 +563,20 @@ msgid "Audio disc (%s)"
 msgstr "Δίσκος ήχου (%s)"
 
 #: ../src/brasero-burn-options.c:226
-msgid ""
-"Please insert a recordable CD or DVD if you don't want to write to an image "
-"file."
-msgstr ""
-"Παρακαλώ εισάγετε ένα εγγράψιμο CD ή DVD αν δε θέλετε να γράψετε σε αρχείο "
-"εικόνας."
+msgid "Please insert a recordable CD or DVD if you don't want to write to an image file."
+msgstr "Παρακαλώ εισάγετε ένα εγγράψιμο CD ή DVD αν δε θέλετε να γράψετε σε αρχείο εικόνας."
 
 #: ../src/brasero-burn-options.c:259
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Παρακαλώ επιλέξτε ένα άλλο CD ή DVD ή εισάγξτε ένα καινούριο."
 
-#: ../src/brasero-burn-options.c:260 ../src/brasero-data-disc.c:628
-msgid ""
-"The size of the project is too large for the disc even with the overburn "
-"option."
-msgstr ""
-"Το μέγεθος της εργασίας είναι πολύ μεγάλο για τον δίσκο ακόμα και με την "
-"επιλογή overburn."
+#: ../src/brasero-burn-options.c:260
+#: ../src/brasero-data-disc.c:628
+msgid "The size of the project is too large for the disc even with the overburn option."
+msgstr "Το μέγεθος της εργασίας είναι πολύ μεγάλο για τον δίσκο ακόμα και με την επιλογή overburn."
 
-#: ../src/brasero-burn-options.c:266 ../src/brasero-burn-dialog.c:452
+#: ../src/brasero-burn-options.c:266
+#: ../src/brasero-burn-dialog.c:452
 msgid "Please insert a recordable CD or DVD."
 msgstr "Παρακαλώ εισάγετε ένα εγγράψιμο CD ή DVD."
 
@@ -594,16 +585,15 @@ msgid "There is no recordable disc inserted."
 msgstr "Δεν έχει εισαχθεί εγγράψιμος δίσκος."
 
 #: ../src/brasero-burn-options.c:273
-msgid ""
-"No track information (artist, compositor, ...) will be written to the disc."
-msgstr ""
-"Δε θα εγγραφούν στο δίσκο πληροφορίες κομματιού (καλλιτέχνης, συνθέτης...)."
+msgid "No track information (artist, compositor, ...) will be written to the disc."
+msgstr "Δε θα εγγραφούν στο δίσκο πληροφορίες κομματιού (καλλιτέχνης, συνθέτης, ...)."
 
 #: ../src/brasero-burn-options.c:274
 msgid "This is not supported by the current active burning backend."
-msgstr "Αυτό δεν υποστηρίζεται από το  τρέχον ενεργό backend εγγραφής."
+msgstr "Αυτό δεν υποστηρίζεται από το τρέχον ενεργό backend εγγραφής."
 
-#: ../src/brasero-burn-options.c:284 ../src/brasero-burn-dialog.c:396
+#: ../src/brasero-burn-options.c:284
+#: ../src/brasero-burn-dialog.c:396
 msgid "Please insert a disc holding data."
 msgstr "Παρακαλώ, εισάγετε έναν δίσκο που διατηρεί δεδομένα."
 
@@ -639,46 +629,39 @@ msgstr "Παρακαλώ αντικαταστήστε τον δίσκο με έ�
 msgid "It is not possible to write with the current set of plugins."
 msgstr "Δεν είναι δυνατή η εγγραφή με το τρέχον σετ από πρόσθετα."
 
-#: ../src/brasero-burn-options.c:337 ../src/brasero-data-disc.c:601
+#: ../src/brasero-burn-options.c:337
+#: ../src/brasero-data-disc.c:601
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Θέλετε να εγγράψετε πέρα από την αναφερόμενη χωρητικότητα του δίσκου;"
 
-#: ../src/brasero-burn-options.c:338 ../src/brasero-data-disc.c:602
+#: ../src/brasero-burn-options.c:338
+#: ../src/brasero-data-disc.c:602
 msgid ""
-"The size of the project is too large for the disc and you must remove files "
-"from the project otherwise.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
-"cannot be properly recognised and therefore need overburn option.\n"
+"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Το μέγεθος της εργασίας είναι πολύ μεγάλο για τον δίσκο και πρέπει να "
-"αφαιρέσετε αρχεία. Ίσως χρειαστεί να χρησιμοποιήσετε αυτή την επιλογή αν "
-"χρησιμοποιείτε δίσκους CD-R(W) των 90 ή 100 λεπτών οι οποίοι δεν "
-"αναγνωρίζονται σωστά και χρειάζονται την επιλογή overburn.\n"
+"Το μέγεθος της εργασίας είναι πολύ μεγάλο για τον δίσκο και πρέπει να αφαιρέσετε αρχεία.\n"
+"Ίσως χρειαστεί να χρησιμοποιήσετε αυτή την επιλογή αν χρησιμοποιείτε δίσκους CD-R(W) των 90 ή 100 λεπτών οι οποίοι δεν αναγνωρίζονται σωστά και χρειάζονται την επιλογή overburn.\n"
 "ΣΗΜΕΙΩΣΗ: Αυτή η επιλογή ίσως προκαλέσει αποτυχία εγγραφής."
 
-#: ../src/brasero-burn-options.c:345 ../src/brasero-data-disc.c:611
+#: ../src/brasero-burn-options.c:345
+#: ../src/brasero-data-disc.c:611
 msgid "_Overburn"
 msgstr "Χρήση _overburn"
 
-#: ../src/brasero-burn-options.c:346 ../src/brasero-data-disc.c:612
+#: ../src/brasero-burn-options.c:346
+#: ../src/brasero-data-disc.c:612
 msgid "Burn beyond the disc reported capacity"
 msgstr "Εγγραφή πέρα από την αναφερόμενη χωρητικότητα του δίσκου"
 
 #: ../src/brasero-burn-options.c:357
-msgid ""
-"The drive that holds the source disc will also be the one used to record."
-msgstr ""
-"Ο οδηγός που περιέχει το δίσκο πηγής θα είναι και αυτός που θα "
-"χρησιμοποιηθεί για την εγγραφή."
+msgid "The drive that holds the source disc will also be the one used to record."
+msgstr "Ο οδηγός που περιέχει το δίσκο πηγής θα είναι και αυτός που θα χρησιμοποιηθεί για την εγγραφή."
 
 #: ../src/brasero-burn-options.c:358
-msgid ""
-"A new recordable disc will be required once the one currently loaded has "
-"been copied."
-msgstr ""
-"Θα απαιτηθεί ένα νέο εγγράψιμο μέσο όταν εκείνο που είναι ήδη φορτωμένο έχει "
-"αντιγραφεί."
+msgid "A new recordable disc will be required once the one currently loaded has been copied."
+msgstr "Θα απαιτηθεί ένα νέο εγγράψιμο μέσο όταν εκείνο που είναι ήδη φορτωμένο έχει αντιγραφεί."
 
 #. Create a default Burn button
 #: ../src/brasero-burn-options.c:392
@@ -757,39 +740,25 @@ msgstr "Προβολή βοήθειας"
 msgid "About"
 msgstr "Περί"
 
+#: ../src/brasero-app.c:554
+#: ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Disc Burner"
+msgstr "Εγγραφή δίσκων"
+
 #: ../src/brasero-app.c:999
-msgid ""
-"Brasero is free software; you can redistribute it and/or modify it under the "
-"terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
-msgstr ""
-"Ο brasero είναι ελεύθερο λογισμικό, μπορείτε να το αναδιανείμετε ή/και να το "
-"τροποποιήσετε υπό τους όρους της GNU General Public License όπως "
-"δημοσιεύτηκε από το Free Software Foundation, είτε την έκδοση 2 της άδειας, "
-"ή (σύμφωνα με την άποψή σας) κάθε νεότερη έκδοση."
+msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Το Brasero είναι ελεύθερο λογισμικό. Επιτρέπεται η αναδιανομή ή/και τροποποίησή του υπό τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU (GNU General Public License), όπως αυτή έχει δημοσιευτεί από το Ίδρυμα Ελεύθερου Λογισμικού (Free Software Foundation) – είτε της έκδοσης 2 της Άδειας, είτε (κατ' επιλογήν) οποιασδήποτε μεταγενέστερης έκδοσης."
 
 #: ../src/brasero-app.c:1004
-msgid ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
-msgstr ""
-"Ο brasero διανέμεται με την ελπίδα ότι θα είναι χρήσιμος, αλλά ΧΩΡΙΣ ΚΑΜΙΑ "
-"ΕΓΓΥΗΣΗ, χωρίς ακόμη την έμμεση εγγύηση ΛΕΙΤΟΥΡΓΙΚΟΤΗΤΑΣ ή ΚΑΤΑΛΛΗΛΟΤΗΤΑΣ "
-"ΓΙΑ ΕΝΑ ΣΥΓΚΕΚΡΙΜΕΝΟ ΣΚΟΠΟ. Δείτε την GNU General Public License για "
-"περισσότερες λεπτομέρειες."
+msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr "Το Brasero διανέμεται με την ελπίδα ότι θα αποδειχθεί χρήσιμο, παρόλα αυτά ΧΩΡΙΣ ΚΑΜΙΑ ΕΓΓΥΗΣΗ – χωρίς ούτε και την σιωπηρή εγγύηση ΕΜΠΟΡΕΥΣΙΜΟΤΗΤΑΣ ή ΚΑΤΑΛΛΗΛΟΤΗΤΑΣ ΓΙΑ ΣΥΓΚΕΚΡΙΜΕΝΗ ΧΡΗΣΗ. Για περισσότερες λεπτομέρειες ανατρέξτε στη Γενική Άδεια Δημόσιας Χρήσης GNU (GNU General Public License)."
 
 #: ../src/brasero-app.c:1009
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301, USA"
-msgstr ""
-"Θα έπρεπε να λάβετε ένα αντίγραφο της GNU General Public License μαζί με τον "
-"brasero, αν όχι, στείλτε επιστολή στο Free Software Foundation, Inc., 51 "
-"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr "Θα πρέπει να έχετε λάβει ένα αντίγραφο της Γενικής Άδειας Δημόσιας Χρήσης GNU (GNU General Public License) μαζί με το Brasero. Εάν όχι, επικοινωνήστε γραπτώς με το Ίδρυμα Ελεύθερου Λογισμικού (Free Software Foundation), Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA"
 
 #: ../src/brasero-app.c:1021
 msgid "A simple to use CD/DVD burning application for GNOME"
@@ -818,7 +787,8 @@ msgstr ""
 "\n"
 "Για περισσότερα δείτε http://www.gnome.gr/"
 
-#: ../src/brasero-app.c:1170 ../src/brasero-app.c:1176
+#: ../src/brasero-app.c:1170
+#: ../src/brasero-app.c:1176
 msgid "_Recent Projects"
 msgstr "Π_ρόσφατες εργασίες"
 
@@ -826,7 +796,8 @@ msgstr "Π_ρόσφατες εργασίες"
 msgid "Display the projects recently opened"
 msgstr "Προβολή των εργασιών που ανοίξατε πρόσφατα"
 
-#: ../src/brasero-app.c:1453 ../data/brasero.desktop.in.in.h:1
+#: ../src/brasero-app.c:1453
+#: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero Disc Burner"
 msgstr "Εφαρμογή εγγραφής δίσκων Brasero"
 
@@ -835,21 +806,12 @@ msgid "Create and copy CDs and DVDs"
 msgstr "Εγγραφή και αντιγραφή CD και DVD"
 
 #: ../data/brasero.schemas.in.h:1
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"Περιέχει τη λίστα με τα επιπλέον πρόσθετα που θα χρησιμοποιήσει το brasero "
-"για να εγγράψει δίσκους. Αν είναι καθορισμένη σε NULL, το brasero θα τα "
-"φορτώσει όλα."
+msgid "Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all."
+msgstr "Περιέχει τη λίστα με τα επιπλέον πρόσθετα που θα χρησιμοποιήσει το brasero για να εγγράψει δίσκους. Αν είναι καθορισμένη σε NULL, το brasero θα τα φορτώσει όλα."
 
 #: ../data/brasero.schemas.in.h:2
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"Περιέχει το όνομα της αγαπημένης σουίτας της συσκευής εγγραφής δίσκων. Αν "
-"είναι δυνατόν, θα χρησιμοποιηθεί."
+msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
+msgstr "Περιέχει το όνομα της αγαπημένης σουίτας της συσκευής εγγραφής δίσκων. Αν είναι δυνατόν, θα χρησιμοποιηθεί."
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -916,131 +878,76 @@ msgid "Should brasero filter broken symlinks files"
 msgstr "Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών"
 
 #: ../data/brasero.schemas.in.h:19
-msgid ""
-"Should brasero filter broken symlinks. Set to true, brasero will filter "
-"broken symlinks."
-msgstr ""
-"Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών. Αν "
-"καθοριστεί ως αληθής, ο brasero θα φιλτράρει τους κατεστραμμένους "
-"συμβολικούς δεσμούς."
+msgid "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
+msgstr "Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών. Αν καθοριστεί ως αληθής, ο brasero θα φιλτράρει τους κατεστραμμένους συμβολικούς δεσμούς."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
 msgstr "Αν θα φιλτράρει ο brasero κρυφά αρχεία"
 
 #: ../data/brasero.schemas.in.h:21
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr ""
-"Αν θα φιλτράρει ο brasero κρυφά αρχεία. Αν καθοριστεί ως αληθής, ο brasero "
-"θα φιλτράρει κρυφά αρχεία."
+msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
+msgstr "Αν θα φιλτράρει ο brasero κρυφά αρχεία. Αν καθοριστεί ως αληθής, ο brasero θα φιλτράρει κρυφά αρχεία."
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
 msgstr "Αν θα προειδοποιεί ο brasero όταν τα αρχεία είναι φιλτραρισμένα"
 
 #: ../data/brasero.schemas.in.h:23
-msgid ""
-"Should brasero notify when files are filtered. Set to true, brasero will "
-"display the notification."
-msgstr ""
-"Αν θα προειδοποιεί ο brasero όταν τα αρχεία είναι φιλτραρισμένα. Αν "
-"καθοριστεί ως αληθής, ο brasero θα εμφανίζει την προειδοποίηση."
+msgid "Should brasero notify when files are filtered. Set to true, brasero will display the notification."
+msgstr "Αν θα προειδοποιεί ο brasero όταν τα αρχεία είναι φιλτραρισμένα. Αν καθοριστεί ως αληθής, ο brasero θα εμφανίζει την προειδοποίηση."
 
 #: ../data/brasero.schemas.in.h:24
-msgid ""
-"Should brasero replace symlinks by their target files in the project. Set to "
-"true, brasero will replace symlinks."
-msgstr ""
-"Αν θα αντικαθιστά ο brasero τους συμβολικούς σύνδεσμους με τα στοχευμένα "
-"αρχεία τους στην εργασία. Αν καθοριστεί ως αληθής, ο brasero αντικαθιστά "
-"τους συμβολικούς σύνδεσμους."
+msgid "Should brasero replace symlinks by their target files in the project. Set to true, brasero will replace symlinks."
+msgstr "Αν θα αντικαθιστά ο brasero τους συμβολικούς σύνδεσμους με τα στοχευμένα αρχεία τους στην εργασία. Αν καθοριστεί ως αληθής, ο brasero αντικαθιστά τους συμβολικούς σύνδεσμους."
 
 #: ../data/brasero.schemas.in.h:25
-msgid ""
-"The pane to display with audio projects. It should be one of the following: "
-"\"Chooser\", \"Search\" or \"Playlist\"."
-msgstr ""
-"Το πλαίσιο για προβολή με εργασίες ήχου. Πρέπει να είναι ένα από τα "
-"ακόλουθα: \"Επιλογέας\", \"Αναζήτηση\" ή \"Λίστα αναπαραγωγής\"."
+msgid "The pane to display with audio projects. It should be one of the following: \"Chooser\", \"Search\" or \"Playlist\"."
+msgstr "Το πλαίσιο για προβολή με εργασίες ήχου. Πρέπει να είναι ένα από τα ακόλουθα: \"Επιλογέας\", \"Αναζήτηση\" ή \"Λίστα αναπαραγωγής\"."
 
 #: ../data/brasero.schemas.in.h:26
-msgid ""
-"The pane to display with data projects. It should be one of the following: "
-"\"Chooser\" or \"Search\"."
-msgstr ""
-"Το πλαίσιο για προβολή με εργασίες δεδομένων. Πρέπει να είναι ένα από τα "
-"ακόλουθα: \"Επιλογέας\" ή \"Αναζήτηση\"."
+msgid "The pane to display with data projects. It should be one of the following: \"Chooser\" or \"Search\"."
+msgstr "Το πλαίσιο για προβολή με εργασίες δεδομένων. Πρέπει να είναι ένα από τα ακόλουθα: \"Επιλογέας\" ή \"Αναζήτηση\"."
 
 #: ../data/brasero.schemas.in.h:27
-msgid ""
-"The pane to display with video projects. It should be one of the following: "
-"\"Chooser\", \"Search\" or \"Playlist\"."
-msgstr ""
-"Το πλαίσιο για προβολή με εργασίες βίντεο. Πρέπει να είναι ένα από τα "
-"ακόλουθα: \"Επιλογέας\", \"Αναζήτηση\" ή \"Λίστα αναπαραγωγής\"."
+msgid "The pane to display with video projects. It should be one of the following: \"Chooser\", \"Search\" or \"Playlist\"."
+msgstr "Το πλαίσιο για προβολή με εργασίες βίντεο. Πρέπει να είναι ένα από τα ακόλουθα: \"Επιλογέας\", \"Αναζήτηση\" ή \"Λίστα αναπαραγωγής\"."
 
 #: ../data/brasero.schemas.in.h:28
-msgid ""
-"This key sets where the project pane should be (0 = on the right, 1 = on the "
-"left, 2 = at the top, 3 = at the bottom)"
-msgstr ""
-"Το κλειδί καθορίζει πού θα πρέπει να είναι το πλαίσιο της εργασίας (0 = στα "
-"δεξιά, 1 = στα αριστερά, 2 = στην κορυφή, 3 = στο τέλος)"
+msgid "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
+msgstr "Το κλειδί καθορίζει πού θα πρέπει να είναι το πλαίσιο της εργασίας (0 = στα δεξιά, 1 = στα αριστερά, 2 = στην κορυφή, 3 = στο τέλος)"
 
 #: ../data/brasero.schemas.in.h:29
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
-msgstr "Χρησιμοποιείται σε συνδυασμό με τη σημαία -immed με το cdrecord"
+msgstr "Χρησιμοποιείται σε συνδυασμό με τη σημαία \"-immed\" με το cdrecord"
 
 #: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
-msgstr ""
-"Αν θα εμφανίζεται ένα πλευρικό πλαίδιο. Καθορίστε το ως αληθές για να το "
-"χρησιμοποιήσετε."
+msgstr "Αν θα εμφανίζεται ένα πλευρικό πλαίδιο. Καθορίστε το ως αληθές για να το χρησιμοποιήσετε."
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
-msgstr ""
-"Αν θα εμφανίζεται η προεπισκόπηση αρχείων. Καθορίστε το ως αληθές για να το "
-"χρησιμοποιήσετε."
+msgstr "Αν θα εμφανίζεται η προεπισκόπηση αρχείων. Καθορίστε το ως αληθές για να το χρησιμοποιήσετε."
 
 #: ../data/brasero.schemas.in.h:32
 msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr ""
-"Αν θα χρησιμοποιείται η επιλογή \"--driver generic-mmc-raw\" με το cdrdao"
+msgstr "Αν θα χρησιμοποιείται η επιλογή \"--driver generic-mmc-raw\" με το cdrdao"
 
 #: ../data/brasero.schemas.in.h:33
-msgid ""
-"Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, "
-"brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Αν θα χρησιμοποιείται η σημαία \"--driver generic-mmc-raw\" με το cdrdao. Αν "
-"οριστεί ως αληθές το brasero θα το χρησιμοποιεί. Μπορεί να λύσει μερικά "
-"προβλήματα μερικών οδηγών/εγκαταστάσεων."
+msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr "Αν θα χρησιμοποιείται η σημαία \"--driver generic-mmc-raw\" με το cdrdao. Αν οριστεί ως αληθές το brasero θα το χρησιμοποιεί. Μπορεί να λύσει μερικά προβλήματα μερικών οδηγών/εγκαταστάσεων."
 
 #: ../data/brasero.schemas.in.h:34
-msgid ""
-"Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) "
-"as it's only a workaround for some drives/setups."
-msgstr ""
-"Αν θα χρησιμοποιείται η σημαία \"--immed\" με το cdrecord. Χρησιμοποιήστε το "
-"με προσοχή (καθορίστε το ως αληθές) επειδή είναι μια παράκαμψη για μερικούς "
-"οδηγούς/ρυθμίσεις."
+msgid "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
+msgstr "Αν θα χρησιμοποιείται η σημαία \"--immed\" με το cdrecord. Χρησιμοποιήστε το με προσοχή (καθορίστε το ως αληθές) επειδή είναι μια παράκαμψη για μερικούς οδηγούς/ρυθμίσεις."
 
 #: ../data/brasero.schemas.in.h:35
 msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr ""
-"Αν θα χρησιμοποιείται η επιλογή \"-use-the-force-luke=dao\" με το growisofs"
+msgstr "Αν θα χρησιμοποιείται η επιλογή \"-use-the-force-luke=dao\" με το growisofs"
 
 #: ../data/brasero.schemas.in.h:36
-msgid ""
-"Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-"false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Αν θα χρησιμοποιείται η επιλογή \"-use-the-force-luke=dao\" με το growisofs. "
-"Αν δεν οριστεί ως αληθές ο brasero δε θα το χρησιμοποιήσει. Μπορεί να λύσει "
-"μερικά προβλήματα για μερικούς οδηγούς ή εγκαταστάσεις."
+msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr "Αν θα χρησιμοποιείται η επιλογή \"-use-the-force-luke=dao\" με το growisofs. Αν δεν οριστεί ως αληθές ο brasero δε θα το χρησιμοποιήσει. Μπορεί να λύσει μερικά προβλήματα για μερικούς οδηγούς ή εγκαταστάσεις."
 
 #: ../data/brasero.schemas.in.h:37
 msgid "White list of additional plugins to use"
@@ -1058,7 +965,8 @@ msgstr "Πλάτος για προεπισκόπηση βίντεο"
 msgid "Brasero project file"
 msgstr "Αρχείο εργασίας του brasero"
 
-#: ../src/brasero-dest-selection.c:97 ../src/burn.c:923
+#: ../src/brasero-dest-selection.c:97
+#: ../src/burn.c:923
 msgid "Ongoing burning process"
 msgstr "Τρέχουσα διεργασία εγγραφής"
 
@@ -1078,7 +986,7 @@ msgstr "%s: \"%s\""
 #: ../src/brasero-dest-selection.c:439
 #, c-format
 msgid "New disc in the burner holding source disc"
-msgstr "Ο νέος δίσκος στον οδηγό που έχει τον πηγαίο δίσκο."
+msgstr "Ο νέος δίσκος στον οδηγό που έχει τον πηγαίο δίσκο"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../src/brasero-dest-selection.c:463
@@ -1093,30 +1001,35 @@ msgstr "%s: καθόλου ελεύθερος χώρος"
 msgid "%s: %s of free space"
 msgstr "%s %s ελεύθερος χώρος"
 
-#: ../src/brasero-audio-disc.c:300 ../src/brasero-tray.c:80
-#: ../src/brasero-data-disc.c:117 ../src/brasero-video-disc.c:92
+#: ../src/brasero-audio-disc.c:300
+#: ../src/brasero-tray.c:80
+#: ../src/brasero-data-disc.c:117
+#: ../src/brasero-video-disc.c:92
 msgid "Menu"
 msgstr "Μενού"
 
-#: ../src/brasero-audio-disc.c:301 ../src/brasero-data-disc.c:118
+#: ../src/brasero-audio-disc.c:301
+#: ../src/brasero-data-disc.c:118
 msgid "Open the selected files"
 msgstr "Άνοιγμα των επιλεγμένων αρχείων"
 
-#: ../src/brasero-audio-disc.c:303 ../src/brasero-video-disc.c:95
+#: ../src/brasero-audio-disc.c:303
+#: ../src/brasero-video-disc.c:95
 msgid "_Edit Information..."
 msgstr "Ε_πεξεργασία πληροφοριών..."
 
 #: ../src/brasero-audio-disc.c:303
 msgid "Edit the track information (start, end, author, ...)"
-msgstr ""
-"Επεξεργασία των πληροφοριών των κομματιών (αρχή, τέλος, συγγραφέα, ...)"
+msgstr "Επεξεργασία των πληροφοριών των κομματιών (αρχή, τέλος, συγγραφέα, ...)"
 
-#: ../src/brasero-audio-disc.c:305 ../src/brasero-data-disc.c:122
+#: ../src/brasero-audio-disc.c:305
+#: ../src/brasero-data-disc.c:122
 #: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
 msgstr "Αφαίρεση των επιλεγμένων αρχείων από την εργασία"
 
-#: ../src/brasero-audio-disc.c:307 ../src/brasero-data-disc.c:124
+#: ../src/brasero-audio-disc.c:307
+#: ../src/brasero-data-disc.c:124
 #: ../src/brasero-video-disc.c:99
 msgid "Add the files stored in the clipboard"
 msgstr "Προσθήκη των αποθηκευμένων αρχείων στο πρόχειρο"
@@ -1127,7 +1040,7 @@ msgstr "Ει_σαγωγή παύσης"
 
 #: ../src/brasero-audio-disc.c:309
 msgid "Add a 2 second pause after the track"
-msgstr "Προσθήκη παύσης 2 δευτερολέπτων  ύστερα από το κομμάτι"
+msgstr "Προσθήκη παύσης 2 δευτερολέπτων ύστερα από το κομμάτι"
 
 #: ../src/brasero-audio-disc.c:311
 msgid "_Split Track..."
@@ -1137,7 +1050,8 @@ msgstr "_Διαχωρισμός κομματιού..."
 msgid "Split the selected track"
 msgstr "Διαχωρισμός του επιλεγμένου κομματιού"
 
-#: ../src/brasero-audio-disc.c:525 ../src/brasero-audio-disc.c:1016
+#: ../src/brasero-audio-disc.c:525
+#: ../src/brasero-audio-disc.c:1016
 msgid "Pause"
 msgstr "Παύση"
 
@@ -1149,7 +1063,8 @@ msgstr "Διαχωρισμός"
 msgid "Track"
 msgstr "Κομμάτι"
 
-#: ../src/brasero-audio-disc.c:685 ../src/brasero-video-disc.c:1171
+#: ../src/brasero-audio-disc.c:685
+#: ../src/brasero-video-disc.c:1171
 msgid "Title"
 msgstr "Τίτλος"
 
@@ -1157,12 +1072,14 @@ msgstr "Τίτλος"
 msgid "Artist"
 msgstr "Καλλιτέχνης"
 
-#: ../src/brasero-audio-disc.c:721 ../src/brasero-playlist.c:325
+#: ../src/brasero-audio-disc.c:721
+#: ../src/brasero-playlist.c:325
 #: ../src/brasero-split-dialog.c:1216
 msgid "Length"
 msgstr "Διάρκεια"
 
-#: ../src/brasero-audio-disc.c:922 ../src/burn-basics.c:76
+#: ../src/brasero-audio-disc.c:922
+#: ../src/burn-basics.c:76
 msgid "Analysing audio files"
 msgstr "Ανάλυση αρχείων ήχου"
 
@@ -1172,16 +1089,17 @@ msgstr "Θα συμπληρωθεί το τέλος του κομματιού."
 
 #: ../src/brasero-audio-disc.c:1153
 msgid "The track is shorter than 6 seconds"
-msgstr "Το κομμάτι διαρκεί λιγότερο από 6 δευτερόλεπτα."
+msgstr "Το κομμάτι διαρκεί λιγότερο από 6 δευτερόλεπτα"
 
-#: ../src/brasero-audio-disc.c:1356 ../src/brasero-metadata.c:671
+#: ../src/brasero-audio-disc.c:1356
+#: ../src/brasero-metadata.c:671
 #, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
-msgstr "Το \"%s\"  δεν μπορεί να διαχειριστεί με το Gstreamer."
+msgstr "Το \"%s\" δεν μπορεί να διαχειριστεί με το Gstreamer."
 
 #: ../src/brasero-audio-disc.c:1359
 msgid "Make sure the appropriate codec is installed"
-msgstr "Βεβαιωθείτε ότι έχετε εγκατεστημένη την κατάλληλη κωδικοποίηση ήχου."
+msgstr "Βεβαιωθείτε ότι έχετε εγκατεστημένη την κατάλληλη κωδικοποίηση ήχου"
 
 #: ../src/brasero-audio-disc.c:1375
 #, c-format
@@ -1189,18 +1107,15 @@ msgid "Do you want to add \"%s\" which is a video file?"
 msgstr "Θέλετε να προσθέσετε το \"%s\" που είναι ένα αρχείο βίντεο;"
 
 #: ../src/brasero-audio-disc.c:1384
-msgid ""
-"This file is a video and therefore only the audio part can be written to the "
-"disc."
-msgstr ""
-"Το αρχείο είναι βίντεο και επομένως μόνο το κομμάτι ήχου μπορεί να γραφτεί "
-"στον δίσκο."
+msgid "This file is a video and therefore only the audio part can be written to the disc."
+msgstr "Το αρχείο είναι βίντεο και επομένως μόνο το κομμάτι ήχου μπορεί να γραφτεί στον δίσκο."
 
 #: ../src/brasero-audio-disc.c:1387
 msgid "_Discard File"
 msgstr "Α_πόρριψη αρχείου"
 
-#: ../src/brasero-audio-disc.c:1390 ../src/brasero-data-disc.c:994
+#: ../src/brasero-audio-disc.c:1390
+#: ../src/brasero-data-disc.c:994
 #: ../src/brasero-data-disc.c:1038
 msgid "_Add File"
 msgstr "_Προσθήκη αρχείου"
@@ -1215,18 +1130,24 @@ msgstr "Δεν είναι δυνατή η προσθήκη καταλόγων σ
 
 #: ../src/brasero-audio-disc.c:1519
 msgid "Search _Directory"
-msgstr "Αναζητήστε στον κατάλογο"
+msgstr "Αναζητήστε στον _κατάλογο"
 
-#: ../src/brasero-audio-disc.c:1574 ../src/brasero-video-disc.c:272
+#: ../src/brasero-audio-disc.c:1574
+#: ../src/brasero-video-disc.c:272
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "Δεν ήταν δυνατό το άνοιγμα του \"%s\"."
 
-#: ../src/brasero-audio-disc.c:1724 ../src/brasero-audio-disc.c:1736
-#: ../src/brasero-audio-disc.c:1761 ../src/brasero-playlist.c:953
-#: ../src/brasero-data-tree-model.c:432 ../src/brasero-data-tree-model.c:508
-#: ../src/brasero-data-tree-model.c:519 ../src/brasero-data-tree-model.c:580
-#: ../src/brasero-data-tree-model.c:585 ../src/brasero-video-tree-model.c:194
+#: ../src/brasero-audio-disc.c:1724
+#: ../src/brasero-audio-disc.c:1736
+#: ../src/brasero-audio-disc.c:1761
+#: ../src/brasero-playlist.c:953
+#: ../src/brasero-data-tree-model.c:432
+#: ../src/brasero-data-tree-model.c:508
+#: ../src/brasero-data-tree-model.c:519
+#: ../src/brasero-data-tree-model.c:580
+#: ../src/brasero-data-tree-model.c:585
+#: ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
 msgstr "(φόρτωση ...)"
 
@@ -1263,7 +1184,8 @@ msgstr "Θα διαγραφεί από την εργασία"
 msgid "Error while blanking."
 msgstr "Σφάλμα κατά την διαγραφή."
 
-#: ../src/brasero-blank-dialog.c:216 ../src/brasero-blank-dialog.c:258
+#: ../src/brasero-blank-dialog.c:216
+#: ../src/brasero-blank-dialog.c:258
 msgid "Blank _Again"
 msgstr "Επα_νάληψη διαγραφής δίσκου"
 
@@ -1277,7 +1199,7 @@ msgstr "Ο δίσκος διαγράφηκε με επιτυχία."
 
 #: ../src/brasero-blank-dialog.c:256
 msgid "The disc is ready for use."
-msgstr "ο δίσκος είναι έτοιμος για χρήση."
+msgstr "Ο δίσκος είναι έτοιμος για χρήση."
 
 #. Translators: This is a verb, an action
 #: ../src/brasero-blank-dialog.c:356
@@ -1290,9 +1212,7 @@ msgstr "_Γρήγορη διαγραφή"
 
 #: ../src/brasero-blank-dialog.c:389
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
-msgstr ""
-"Ενεργοποίηση γρήγορης διαγραφής δίσκου αντί για λεπτομερέστερη διαγραφή "
-"μεγαλύτερης διάρκειας"
+msgstr "Ενεργοποίηση γρήγορης διαγραφής δίσκου αντί για λεπτομερέστερη διαγραφή μεγαλύτερης διάρκειας"
 
 #: ../src/brasero-blank-dialog.c:412
 msgid "Disc Blanking"
@@ -1314,10 +1234,14 @@ msgstr "Επιλογή δίσκου για αντιγραφή"
 #. * could not be created
 #. Translators: %s is the name of the GstElement that
 #. * element could not be created
-#: ../src/brasero-metadata.c:743 ../src/brasero-metadata.c:756
-#: ../src/brasero-metadata.c:769 ../src/brasero-metadata.c:1491
-#: ../src/brasero-metadata.c:1506 ../src/brasero-metadata.c:1515
-#: ../src/brasero-metadata.c:1528 ../src/plugins/transcode/burn-normalize.c:99
+#: ../src/brasero-metadata.c:743
+#: ../src/brasero-metadata.c:756
+#: ../src/brasero-metadata.c:769
+#: ../src/brasero-metadata.c:1491
+#: ../src/brasero-metadata.c:1506
+#: ../src/brasero-metadata.c:1515
+#: ../src/brasero-metadata.c:1528
+#: ../src/plugins/transcode/burn-normalize.c:99
 #: ../src/plugins/transcode/burn-normalize.c:382
 #: ../src/plugins/transcode/burn-normalize.c:395
 #: ../src/plugins/transcode/burn-normalize.c:407
@@ -1397,12 +1321,15 @@ msgstr "Επιλογή λίστας αναπαραγωγής"
 msgid "Error parsing playlist \"%s\"."
 msgstr "Σφάλμα κατά την φόρτωση της λίστας αναπαραγωγής \"%s\"."
 
-#: ../src/brasero-playlist.c:810 ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:1819 ../src/brasero-sum-dialog.c:142
+#: ../src/brasero-playlist.c:810
+#: ../src/brasero-data-disc.c:208
+#: ../src/brasero-project.c:1819
+#: ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "Συνέβη ένα άγνωστο σφάλμα"
 
-#: ../src/brasero-playlist.c:914 ../src/brasero-data-tree-model.c:434
+#: ../src/brasero-playlist.c:914
+#: ../src/brasero-data-tree-model.c:434
 #: ../src/brasero-data-tree-model.c:591
 msgid "Empty"
 msgstr "Κενό"
@@ -1426,7 +1353,7 @@ msgstr "Ενεργοποιημένη"
 #: ../src/brasero-plugin-manager-ui.c:143
 #, c-format
 msgid "Copyright %s"
-msgstr "Πνευματικά δικαιώματα  %s"
+msgstr "Πνευματικά δικαιώματα %s"
 
 #: ../src/brasero-plugin-manager-ui.c:586
 #: ../src/brasero-plugin-manager-ui.c:956
@@ -1485,7 +1412,7 @@ msgstr "%i MiB από %i MiB"
 
 #: ../src/brasero-search-entry.c:188
 msgid "Search:"
-msgstr "Αναζήτηση:\t"
+msgstr "Αναζήτηση:"
 
 #: ../src/brasero-search-entry.c:272
 msgid "In _text documents"
@@ -1505,8 +1432,7 @@ msgstr "Σε _βίντεο"
 
 #: ../src/brasero-search-entry.c:334
 msgid "Type your keywords or choose 'All files' from the menu"
-msgstr ""
-"Πληκτρολογήστε τι λέξεις κλειδιά ή επιλέξτε \"Όλα τα αρχεία\" από το μενού"
+msgstr "Πληκτρολογήστε τι λέξεις κλειδιά ή επιλέξτε 'Όλα τα αρχεία' από το μενού"
 
 #: ../src/brasero-search-entry.c:337
 msgid "Select if you want to search among image files only"
@@ -1532,7 +1458,8 @@ msgstr "Κάντε κλικ για να ξεκινήσετε την αναζήτ
 msgid "Previous Results"
 msgstr "Προηγούμενα αποτελέσματα"
 
-#: ../src/brasero-search-beagle.c:337 ../src/brasero-search-beagle.c:798
+#: ../src/brasero-search-beagle.c:337
+#: ../src/brasero-search-beagle.c:798
 msgid "No results"
 msgstr "Δεν υπάρχουν αποτελέσματα"
 
@@ -1540,12 +1467,14 @@ msgstr "Δεν υπάρχουν αποτελέσματα"
 msgid "Next Results"
 msgstr "Επόμενα αποτελέσματα"
 
-#: ../src/brasero-search-beagle.c:406 ../src/brasero-data-disc.c:2453
+#: ../src/brasero-search-beagle.c:406
+#: ../src/brasero-data-disc.c:2453
 #: ../src/brasero-file-filtered.c:528
 msgid "Files"
 msgstr "Αρχεία"
 
-#: ../src/brasero-search-beagle.c:425 ../src/brasero-data-disc.c:2481
+#: ../src/brasero-search-beagle.c:425
+#: ../src/brasero-data-disc.c:2481
 msgid "Description"
 msgstr "Περιγραφή"
 
@@ -1566,51 +1495,56 @@ msgstr "Σφάλμα κατά την υποβολή ερώτησης στο beag
 msgid "Title:"
 msgstr "Τίτλος:"
 
-#: ../src/brasero-song-properties.c:181 ../src/brasero-song-properties.c:193
-#: ../src/brasero-song-properties.c:205 ../src/brasero-multi-song-props.c:206
-#: ../src/brasero-multi-song-props.c:247 ../src/brasero-multi-song-props.c:268
-msgid ""
-"This information will be written to the disc using CD-TEXT technology. It "
-"can be read and displayed by some audio CD players."
-msgstr ""
-"Οι πληροφορίες θα εγγραφούν στο δίσκο χρησιμοποιώντας την τεχνολογία CD-"
-"TEXT. Μπορούν να αναγνωστούν και να εμφανιστούν σε μερικούς αναπαραγωγείς cd."
+#: ../src/brasero-song-properties.c:181
+#: ../src/brasero-song-properties.c:193
+#: ../src/brasero-song-properties.c:205
+#: ../src/brasero-multi-song-props.c:206
+#: ../src/brasero-multi-song-props.c:247
+#: ../src/brasero-multi-song-props.c:268
+msgid "This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."
+msgstr "Οι πληροφορίες θα εγγραφούν στο δίσκο χρησιμοποιώντας την τεχνολογία CD-TEXT. Μπορούν να αναγνωστούν και να εμφανιστούν σε μερικούς αναπαραγωγείς cd."
 
-#: ../src/brasero-song-properties.c:183 ../src/brasero-multi-song-props.c:237
+#: ../src/brasero-song-properties.c:183
+#: ../src/brasero-multi-song-props.c:237
 msgid "Artist:"
 msgstr "Καλλιτέχνης:"
 
-#: ../src/brasero-song-properties.c:195 ../src/brasero-multi-song-props.c:258
+#: ../src/brasero-song-properties.c:195
+#: ../src/brasero-multi-song-props.c:258
 msgid "Composer:"
-msgstr "Συνθέτης:\t"
+msgstr "Συνθέτης:"
 
-#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:581
-#: ../src/brasero-tool-dialog.c:256 ../src/brasero-multi-song-props.c:303
+#: ../src/brasero-song-properties.c:220
+#: ../src/brasero-drive-properties.c:581
+#: ../src/brasero-tool-dialog.c:256
+#: ../src/brasero-multi-song-props.c:303
 msgid "Options"
 msgstr "Επιλογές"
 
 #: ../src/brasero-song-properties.c:229
 msgid "Song start:"
-msgstr "Αρχή τραγουδιού:\t"
+msgstr "Αρχή τραγουδιού:"
 
 #: ../src/brasero-song-properties.c:235
 msgid "Song end:"
-msgstr "Τέλος τραγουδιού:\t"
+msgstr "Τέλος τραγουδιού:"
 
-#: ../src/brasero-song-properties.c:241 ../src/brasero-multi-song-props.c:312
+#: ../src/brasero-song-properties.c:241
+#: ../src/brasero-multi-song-props.c:312
 msgid "Pause length:"
-msgstr "Διάρκεια παύσης:\t"
+msgstr "Διάρκεια παύσης:"
 
-#: ../src/brasero-song-properties.c:250 ../src/brasero-multi-song-props.c:323
+#: ../src/brasero-song-properties.c:250
+#: ../src/brasero-multi-song-props.c:323
 msgid "Gives the length of the pause that should follow the track"
-msgstr ""
-"Δίνει τη διάρκεια της παύσης που θα πρέπει να ακολουθεί μετά το κομμάτι"
+msgstr "Δίνει τη διάρκεια της παύσης που θα πρέπει να ακολουθεί μετά το κομμάτι"
 
 #: ../src/brasero-song-properties.c:252
 msgid "Track length:"
-msgstr "Διάρκεια κομματιού:\t"
+msgstr "Διάρκεια κομματιού:"
 
-#: ../src/brasero-song-properties.c:281 ../src/brasero-multi-song-props.c:340
+#: ../src/brasero-song-properties.c:281
+#: ../src/brasero-multi-song-props.c:340
 msgid "Song Information"
 msgstr "Πληροφορίες τραγουδιού"
 
@@ -1631,17 +1565,18 @@ msgstr "Εμφάνιση _διαλόγου"
 msgid "Show dialog"
 msgstr "Εμφάνιση διαλόγου"
 
-#: ../src/brasero-tray.c:255
+#: ../src/brasero-tray.c:256
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
-msgstr "%s,εγγράφηκαν %02i%% , απομένει %s"
+msgstr "%s, εγγράφηκαν %02i%%, απομένει %s"
 
-#: ../src/brasero-tray.c:262
+#: ../src/brasero-tray.c:263
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s, εγγράφηκαν %02i%%"
 
-#: ../src/brasero-burn-dialog.c:161 ../src/burn-basics.c:70
+#: ../src/brasero-burn-dialog.c:161
+#: ../src/burn-basics.c:70
 msgid "Creating image"
 msgstr "Δημιουργία εικόνας"
 
@@ -1649,7 +1584,8 @@ msgstr "Δημιουργία εικόνας"
 msgid "Brasero - Creating Image"
 msgstr "Brasero - Δημιουργία εικόνας"
 
-#: ../src/brasero-burn-dialog.c:167 ../src/brasero-burn-dialog.c:181
+#: ../src/brasero-burn-dialog.c:167
+#: ../src/brasero-burn-dialog.c:181
 #: ../src/brasero-burn-dialog.c:981
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "Brasero - Εγγραφή DVD (προσομοίωση)"
@@ -1658,7 +1594,8 @@ msgstr "Brasero - Εγγραφή DVD (προσομοίωση)"
 msgid "Simulation of video DVD burning"
 msgstr "Προσομοίωση εγγραφής βίντεο DVD"
 
-#: ../src/brasero-burn-dialog.c:171 ../src/brasero-burn-dialog.c:185
+#: ../src/brasero-burn-dialog.c:171
+#: ../src/brasero-burn-dialog.c:185
 msgid "Brasero - Burning DVD"
 msgstr "Brasero - Εγγραφή DVD"
 
@@ -1690,9 +1627,10 @@ msgstr "Εγγραφή DVD"
 msgid "Burning image to DVD"
 msgstr "Εγγραφή εικόνας σε DVD"
 
-#: ../src/brasero-burn-dialog.c:209 ../src/brasero-burn-dialog.c:975
+#: ../src/brasero-burn-dialog.c:209
+#: ../src/brasero-burn-dialog.c:975
 msgid "Brasero - Copying DVD (Simulation)"
-msgstr "Brasero -Αντιγραφή DVD (προσομοίωση)"
+msgstr "Brasero - Αντιγραφή DVD (προσομοίωση)"
 
 #: ../src/brasero-burn-dialog.c:210
 msgid "Simulation of data DVD copying"
@@ -1706,8 +1644,10 @@ msgstr "Brasero - Αντιγραφή DVD"
 msgid "Copying data DVD"
 msgstr "Αντιγραφή DVD δεδομένων"
 
-#: ../src/brasero-burn-dialog.c:225 ../src/brasero-burn-dialog.c:239
-#: ../src/brasero-burn-dialog.c:253 ../src/brasero-burn-dialog.c:281
+#: ../src/brasero-burn-dialog.c:225
+#: ../src/brasero-burn-dialog.c:239
+#: ../src/brasero-burn-dialog.c:253
+#: ../src/brasero-burn-dialog.c:281
 #: ../src/brasero-burn-dialog.c:310
 msgid "Brasero - Burning CD (Simulation)"
 msgstr "Brasero - Εγγραφή CD (προσομοίωση)"
@@ -1716,8 +1656,10 @@ msgstr "Brasero - Εγγραφή CD (προσομοίωση)"
 msgid "Simulation of (S)VCD burning"
 msgstr "Προσομοίωση εγγραφής (S)VCD"
 
-#: ../src/brasero-burn-dialog.c:229 ../src/brasero-burn-dialog.c:243
-#: ../src/brasero-burn-dialog.c:257 ../src/brasero-burn-dialog.c:285
+#: ../src/brasero-burn-dialog.c:229
+#: ../src/brasero-burn-dialog.c:243
+#: ../src/brasero-burn-dialog.c:257
+#: ../src/brasero-burn-dialog.c:285
 #: ../src/brasero-burn-dialog.c:314
 msgid "Brasero - Burning CD"
 msgstr "Brasero - Εγγραφή CD"
@@ -1726,11 +1668,13 @@ msgstr "Brasero - Εγγραφή CD"
 msgid "Burning (S)VCD"
 msgstr "Εγγραφή (S)VCD"
 
-#: ../src/brasero-burn-dialog.c:240 ../src/brasero-burn-dialog.c:311
+#: ../src/brasero-burn-dialog.c:240
+#: ../src/brasero-burn-dialog.c:311
 msgid "Simulation of audio CD burning"
 msgstr "Προσομοίωση εγγραφής CD ήχου"
 
-#: ../src/brasero-burn-dialog.c:244 ../src/brasero-burn-dialog.c:315
+#: ../src/brasero-burn-dialog.c:244
+#: ../src/brasero-burn-dialog.c:315
 msgid "Burning audio CD"
 msgstr "Εγγραφή CD ήχου"
 
@@ -1742,7 +1686,8 @@ msgstr "Προσομοίωση εγγραφής CD δεδομένων"
 msgid "Burning data CD"
 msgstr "Εγγραφή CD δεδομένων"
 
-#: ../src/brasero-burn-dialog.c:267 ../src/brasero-burn-dialog.c:989
+#: ../src/brasero-burn-dialog.c:267
+#: ../src/brasero-burn-dialog.c:989
 msgid "Brasero - Copying CD (Simulation)"
 msgstr "Brasero - Αντιγραφή CD (προσομοίωση)"
 
@@ -1782,7 +1727,8 @@ msgstr "Brasero - Εγγραφή δίσκου"
 msgid "Burning video disc"
 msgstr "Εγγραφή δίσκου βίντεο"
 
-#: ../src/brasero-burn-dialog.c:324 ../src/brasero-burn-dialog.c:351
+#: ../src/brasero-burn-dialog.c:324
+#: ../src/brasero-burn-dialog.c:351
 #: ../src/brasero-burn-dialog.c:1008
 msgid "Brasero - Burning Disc (Simulation)"
 msgstr "Brasero - Εγγραφή δίσκου (προσομοίωση)"
@@ -1791,7 +1737,8 @@ msgstr "Brasero - Εγγραφή δίσκου (προσομοίωση)"
 msgid "Simulation of data disc burning"
 msgstr "Προσομοίωση εγγραφής δίσκου δεδομένων"
 
-#: ../src/brasero-burn-dialog.c:328 ../src/brasero-burn-dialog.c:355
+#: ../src/brasero-burn-dialog.c:328
+#: ../src/brasero-burn-dialog.c:355
 msgid "Brasero - Burning Disc"
 msgstr "Brasero - Εγγραφή δίσκου"
 
@@ -1799,7 +1746,8 @@ msgstr "Brasero - Εγγραφή δίσκου"
 msgid "Burning data disc"
 msgstr "Εγγραφή δίσκου δεδομένων"
 
-#: ../src/brasero-burn-dialog.c:338 ../src/brasero-burn-dialog.c:1002
+#: ../src/brasero-burn-dialog.c:338
+#: ../src/brasero-burn-dialog.c:1002
 msgid "Brasero - Copying Disc (Simulation)"
 msgstr "Brasero - Αντιγραφή δίσκου (προσομοίωση)"
 
@@ -1811,7 +1759,8 @@ msgstr "Προσομοίωση αντιγραφής δίσκου"
 msgid "Brasero - Copying Disc"
 msgstr "Brasero - Αντιγραφή δίσκου"
 
-#: ../src/brasero-burn-dialog.c:343 ../src/burn-basics.c:74
+#: ../src/brasero-burn-dialog.c:343
+#: ../src/burn-basics.c:74
 msgid "Copying disc"
 msgstr "Αντιγραφή δίσκου"
 
@@ -1825,14 +1774,11 @@ msgstr "Εγγραφή εικόνας σε δίσκο"
 
 #: ../src/brasero-burn-dialog.c:388
 msgid "Please replace the disc with a rewritable disc holding data."
-msgstr ""
-"Παρακαλώ, αντικαταστήστε τον δίσκο με έναν επανεγγράψιμο δίσκο που περιέχει "
-"δεδομένα."
+msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με έναν επανεγγράψιμο δίσκο που περιέχει δεδομένα."
 
 #: ../src/brasero-burn-dialog.c:390
 msgid "Please replace the disc with a disc holding data."
-msgstr ""
-"Παρακαλώ, αντικαταστήστε τον δίσκο με έναν δίσκο που περιέχει δεδομένα."
+msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με έναν δίσκο που περιέχει δεδομένα."
 
 #: ../src/brasero-burn-dialog.c:394
 msgid "Please insert a rewritable disc holding data."
@@ -1840,12 +1786,8 @@ msgstr "Παρακαλώ, εισάγετε έναν επανεγγράψιμο �
 
 #: ../src/brasero-burn-dialog.c:411
 #, c-format
-msgid ""
-"Please replace the disc with a recordable CD with at least %i MiB of free "
-"space."
-msgstr ""
-"Παρακαλώ, αντικαταστήστε τον δίσκο με ένα εγγράψιμο CD με τουλάχιστον %i MiB "
-"ελεύθερο χώρο."
+msgid "Please replace the disc with a recordable CD with at least %i MiB of free space."
+msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με ένα εγγράψιμο CD με τουλάχιστον %i MiB ελεύθερο χώρο."
 
 #: ../src/brasero-burn-dialog.c:414
 msgid "Please replace the disc with a recordable CD."
@@ -1854,8 +1796,7 @@ msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με έ
 #: ../src/brasero-burn-dialog.c:418
 #, c-format
 msgid "Please insert a recordable CD with at least %i MiB of free space."
-msgstr ""
-"Παρακαλώ, εισάγετε ένα εγγράψιμο CD με τουλάχιστον %i MiB ελεύθερο χώρο."
+msgstr "Παρακαλώ, εισάγετε ένα εγγράψιμο CD με τουλάχιστον %i MiB ελεύθερο χώρο."
 
 #: ../src/brasero-burn-dialog.c:421
 msgid "Please insert a recordable CD."
@@ -1863,12 +1804,8 @@ msgstr "Παρακαλώ, εισάγετε ένα εγγράψιμο CD."
 
 #: ../src/brasero-burn-dialog.c:427
 #, c-format
-msgid ""
-"Please replace the disc with a recordable DVD with at least %i MiB of free "
-"space."
-msgstr ""
-"Παρακαλώ, αντικαταστήστε τον δίσκο με ένα εγγράψιμο DVD με τουλάχιστον %i "
-"MiB ελεύθερο χώρο."
+msgid "Please replace the disc with a recordable DVD with at least %i MiB of free space."
+msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με ένα εγγράψιμο DVD με τουλάχιστον %i MiB ελεύθερο χώρο."
 
 #: ../src/brasero-burn-dialog.c:430
 msgid "Please replace the disc with a recordable DVD."
@@ -1877,8 +1814,7 @@ msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με έ
 #: ../src/brasero-burn-dialog.c:434
 #, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
-msgstr ""
-"Παρακαλώ, εισάγετε ένα εγγράψιμο DVD με τουλάχιστον %i MiB ελεύθερο χώρο."
+msgstr "Παρακαλώ, εισάγετε ένα εγγράψιμο DVD με τουλάχιστον %i MiB ελεύθερο χώρο."
 
 #: ../src/brasero-burn-dialog.c:437
 msgid "Please insert a recordable DVD."
@@ -1886,12 +1822,8 @@ msgstr "Παρακαλώ, εισάγετε ένα εγγράψιμο DVD."
 
 #: ../src/brasero-burn-dialog.c:442
 #, c-format
-msgid ""
-"Please replace the disc with a recordable CD or DVD with at least %i MiB of "
-"free space."
-msgstr ""
-"Παρακαλώ, αντικαταστήστε τον δίσκο με ένα εγγράψιμο CD ή DVD με τουλάχιστον %"
-"i MiB ελεύθερο χώρο."
+msgid "Please replace the disc with a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με ένα εγγράψιμο CD ή DVD με τουλάχιστον %i MiB ελεύθερο χώρο."
 
 #: ../src/brasero-burn-dialog.c:445
 msgid "Please replace the disc with a recordable CD or DVD."
@@ -1899,11 +1831,8 @@ msgstr "Παρακαλώ, αντικαταστήστε τον δίσκο με έ
 
 #: ../src/brasero-burn-dialog.c:449
 #, c-format
-msgid ""
-"Please insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr ""
-"Παρακαλώ, εισάγετε ένα εγγράψιμο CD ή DVD με τουλάχιστον %i MiB ελεύθερο "
-"χώρο."
+msgid "Please insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Παρακαλώ, εισάγετε ένα εγγράψιμο CD ή DVD με τουλάχιστον %i MiB ελεύθερο χώρο."
 
 #: ../src/brasero-burn-dialog.c:498
 msgid ""
@@ -1915,8 +1844,7 @@ msgstr ""
 
 #: ../src/brasero-burn-dialog.c:503
 msgid "A data integrity test will begin as soon as the disc is inserted."
-msgstr ""
-"Μία δοκιμή ακεραιότητας δεδομένων θα αρχίσει με την εισαγωγή του δίσκου."
+msgstr "Μία δοκιμή ακεραιότητας δεδομένων θα αρχίσει με την εισαγωγή του δίσκου."
 
 #: ../src/brasero-burn-dialog.c:504
 msgid "Please re-insert the disc in the CD/DVD burner."
@@ -1928,8 +1856,12 @@ msgstr "Παρακαλώ, επαναεισάγετε τον δίσκο στον 
 msgid "\"%s\" is busy."
 msgstr "Ο οδηγός \"%s\" είναι απασχολημένος."
 
-#: ../src/brasero-burn-dialog.c:509 ../src/brasero-tool-dialog.c:79
-#: ../src/burn.c:1295 ../src/burn.c:1329 ../src/burn.c:1511 ../src/burn.c:1522
+#: ../src/brasero-burn-dialog.c:509
+#: ../src/brasero-tool-dialog.c:79
+#: ../src/burn.c:1295
+#: ../src/burn.c:1329
+#: ../src/burn.c:1511
+#: ../src/burn.c:1522
 msgid "Make sure another application is not using it"
 msgstr "Βεβαιωθείτε ότι δεν το χρησιμοποιεί κάποια άλλη εφαρμογή"
 
@@ -1972,44 +1904,44 @@ msgstr "Ο δίσκος στο \"%s\" πρέπει να φορτωθεί ξαν�
 msgid "Please eject the disc and reload it."
 msgstr "Παρακαλώ, εξάγετε τον δίσκο και φορτώστε τον ξανά."
 
-#: ../src/brasero-burn-dialog.c:642 ../src/brasero-sum-dialog.c:300
-msgid ""
-"A file could not be created at the location specified for temporary files"
-msgstr ""
-"Αδύνατη η δημιουργία αρχείου στην τοποθεσία που ορίστηκε για προσωρινά αρχεία"
+#: ../src/brasero-burn-dialog.c:642
+#: ../src/brasero-sum-dialog.c:300
+msgid "A file could not be created at the location specified for temporary files"
+msgstr "Αδύνατη η δημιουργία αρχείου στην τοποθεσία που ορίστηκε για προσωρινά αρχεία"
 
 #: ../src/brasero-burn-dialog.c:643
 msgid "The image could not be created at the specified location"
 msgstr "Η εικόνα δε μπόρεσε να δημιουργηθεί στην καθορισμένη τοποθεσία"
 
 #: ../src/brasero-burn-dialog.c:644
-msgid ""
-"Do you want to specify another location for this session or retry with the "
-"current location?"
-msgstr ""
-"Θέλετε να ορίσετε άλλη τοποθεσία για  αυτή τη συνεδρία ή να ξαναπροσπαθήσετε "
-"με την τρέχουσα τοποθεσία;"
+msgid "Do you want to specify another location for this session or retry with the current location?"
+msgstr "Θέλετε να ορίσετε άλλη τοποθεσία για αυτή τη συνεδρία ή να ξαναπροσπαθήσετε με την τρέχουσα τοποθεσία;"
 
 #: ../src/brasero-burn-dialog.c:659
 msgid "You may want to free some space on the disc and retry"
-msgstr ""
-"Ίσως πρέπει να ελευθερώσετε λίγο χώρο στο δίσκο και να ξαναπροσπαθήσετε"
+msgstr "Ίσως πρέπει να ελευθερώσετε λίγο χώρο στο δίσκο και να ξαναπροσπαθήσετε"
 
-#: ../src/brasero-burn-dialog.c:666 ../src/brasero-drive-properties.c:244
-#: ../src/brasero-drive-properties.c:279 ../src/brasero-drive-properties.c:328
+#: ../src/brasero-burn-dialog.c:666
+#: ../src/brasero-drive-properties.c:244
+#: ../src/brasero-drive-properties.c:279
+#: ../src/brasero-drive-properties.c:328
 msgid "_Keep Current Location"
 msgstr "_Διατήρηση τρέχουσας τοποθεσίας"
 
-#: ../src/brasero-burn-dialog.c:668 ../src/brasero-drive-properties.c:245
-#: ../src/brasero-drive-properties.c:280 ../src/brasero-drive-properties.c:329
+#: ../src/brasero-burn-dialog.c:668
+#: ../src/brasero-drive-properties.c:245
+#: ../src/brasero-drive-properties.c:280
+#: ../src/brasero-drive-properties.c:329
 msgid "_Change Location"
 msgstr "Α_λλαγή τοποθεσίας"
 
-#: ../src/brasero-burn-dialog.c:690 ../src/brasero-image-properties.c:232
+#: ../src/brasero-burn-dialog.c:690
+#: ../src/brasero-image-properties.c:232
 msgid "Location for Image File"
 msgstr "Τοποθεσία για το αρχείο εικόνας"
 
-#: ../src/brasero-burn-dialog.c:698 ../src/brasero-drive-properties.c:594
+#: ../src/brasero-burn-dialog.c:698
+#: ../src/brasero-drive-properties.c:594
 msgid "Location for Temporary Files"
 msgstr "Τοποθεσία για προσωρινά αρχεία"
 
@@ -2033,7 +1965,8 @@ msgstr "_Διαγραφή δίσκου"
 msgid "Already burnt files will be invisible (though still readable)."
 msgstr "Ήδη εγγεγραμμένα αρχεία θα είναι αόρατα (αν και ακόμη αναγνώσιμα)."
 
-#: ../src/brasero-burn-dialog.c:851 ../src/brasero-burn-dialog.c:871
+#: ../src/brasero-burn-dialog.c:851
+#: ../src/brasero-burn-dialog.c:871
 #: ../src/brasero-burn-dialog.c:891
 msgid "Do you want to continue anyway?"
 msgstr "Θέλετε να συνεχίσετε ούτως ή άλλως;"
@@ -2042,18 +1975,18 @@ msgstr "Θέλετε να συνεχίσετε ούτως ή άλλως;"
 msgid "Appending new files to a multisession disc is not advised."
 msgstr "Δεν ενδείκνυται η προσθήκη νέων αρχείων σε έναν πολυσυνεδριακό δίσκο."
 
-#: ../src/brasero-burn-dialog.c:856 ../src/brasero-burn-dialog.c:876
-#: ../src/brasero-burn-dialog.c:896 ../src/brasero-burn-dialog.c:934
-#: ../src/brasero-data-disc.c:679 ../src/brasero-tool-dialog.c:356
+#: ../src/brasero-burn-dialog.c:856
+#: ../src/brasero-burn-dialog.c:876
+#: ../src/brasero-burn-dialog.c:896
+#: ../src/brasero-burn-dialog.c:934
+#: ../src/brasero-data-disc.c:679
+#: ../src/brasero-tool-dialog.c:356
 msgid "_Continue"
 msgstr "_Συνέχεια"
 
 #: ../src/brasero-burn-dialog.c:870
-msgid ""
-"You might not be able to listen to them with stereos and CD-TEXT won't be "
-"written."
-msgstr ""
-"Ίσως να μη μπορείτε να τα ακούσετε με στέρεο και το CD-TEXT δεν θα εγγραφεί."
+msgid "You might not be able to listen to them with stereos and CD-TEXT won't be written."
+msgstr "Ίσως να μη μπορείτε να τα ακούσετε με στέρεο και το CD-TEXT δεν θα εγγραφεί."
 
 #: ../src/brasero-burn-dialog.c:874
 msgid "Appending audio tracks to a CD is not advised."
@@ -2071,9 +2004,9 @@ msgstr "Η εγγραφή κομματιών ήχου σε επανεγγράψ�
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Θέλετε να συνεχίσετε με απενεργοποιημένη τη συμβατότητα με τα Windows;"
 
-#: ../src/brasero-burn-dialog.c:928 ../src/brasero-disc-option-dialog.c:331
-msgid ""
-"Some files don't have a suitable name for a fully Windows-compatible CD."
+#: ../src/brasero-burn-dialog.c:928
+#: ../src/brasero-disc-option-dialog.c:331
+msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Μερικά αρχεία δεν έχουν κατάλληλο όνομα για CD συμβατό με Windows."
 
 #: ../src/brasero-burn-dialog.c:971
@@ -2135,7 +2068,8 @@ msgstr "Αποθήκευση τρέχουσας συνεδρίας"
 msgid "Session Log"
 msgstr "Καταγραφή συνεδρίας"
 
-#: ../src/brasero-burn-dialog.c:1592 ../src/brasero-burn-dialog.c:1616
+#: ../src/brasero-burn-dialog.c:1592
+#: ../src/brasero-burn-dialog.c:1616
 #: ../src/brasero-burn-dialog.c:1627
 msgid "The session log cannot be displayed."
 msgstr "Δεν είναι δυνατή η εμφάνιση της καταγραφής της συνεδρίας."
@@ -2217,11 +2151,13 @@ msgstr "Δημιουργία ε_νός ακόμα αντίγραφου"
 msgid "_Create Cover"
 msgstr "Δημιουρ_γία εξωφύλλου"
 
-#: ../src/brasero-burn-dialog.c:2077 ../src/brasero-tool-dialog.c:348
+#: ../src/brasero-burn-dialog.c:2077
+#: ../src/brasero-tool-dialog.c:348
 msgid "Do you really want to quit?"
 msgstr "Θέλετε πραγματικά να τερματίσετε την εφαρμογή;"
 
-#: ../src/brasero-burn-dialog.c:2081 ../src/brasero-tool-dialog.c:351
+#: ../src/brasero-burn-dialog.c:2081
+#: ../src/brasero-tool-dialog.c:351
 msgid "Interrupting the process may make disc unusable."
 msgstr "Η διακοπή της διεργασία ίσως κάνει το δίσκο μη χρησιμοποιήσιμο."
 
@@ -2237,7 +2173,8 @@ msgstr "Με_τονομασία..."
 msgid "Rename the selected file"
 msgstr "Μετονομασία του επιλεγμένου αρχείου"
 
-#: ../src/brasero-data-disc.c:126 ../src/brasero-data-disc.c:1784
+#: ../src/brasero-data-disc.c:126
+#: ../src/brasero-data-disc.c:1784
 msgid "New _Folder"
 msgstr "Νέος _φάκελος"
 
@@ -2261,9 +2198,7 @@ msgstr "Νέος φάκελος %i"
 
 #: ../src/brasero-data-disc.c:617
 msgid "Click here not to use overburning"
-msgstr ""
-"Κάντε κλικ εδώ για να μην εγγραφεί τίποτα πέρα από την ονομαστική "
-"χωρητικότητα του δίσκου"
+msgstr "Κάντε κλικ εδώ για να μην εγγραφεί τίποτα πέρα από την ονομαστική χωρητικότητα του δίσκου"
 
 #: ../src/brasero-data-disc.c:627
 msgid "Please delete some files from the project."
@@ -2273,7 +2208,8 @@ msgstr "Παρακαλώ, αφαιρέστε μερικά αρχεία από τ
 msgid "The contents of the project changed since it was saved."
 msgstr "Τα περιεχόμενα της εργασίας έχουν αλλάξει μετά την αποθήκευσή της."
 
-#: ../src/brasero-data-disc.c:668 ../src/brasero-data-disc.c:675
+#: ../src/brasero-data-disc.c:668
+#: ../src/brasero-data-disc.c:675
 msgid "Discard the current modified project"
 msgstr "Απόρριψη της τρέχουσας τροποποιημένης εργασίας"
 
@@ -2288,28 +2224,24 @@ msgstr "Συνέχεια με το τρέχον τροποποιημένο έρ�
 #: ../src/brasero-data-disc.c:754
 #, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr ""
-"Θέλετε να εγγράψετε το \"%s\" σε δίσκο ή να το προσθέσετε στην εργασία "
-"δεδομένων;"
+msgstr "Θέλετε να εγγράψετε το \"%s\" σε δίσκο ή να το προσθέσετε στην εργασία δεδομένων;"
 
 #: ../src/brasero-data-disc.c:763
-msgid ""
-"This file is the image of a disc and can therefore be burnt to disc without "
-"having to add it to a data project first."
-msgstr ""
-"Αυτό το αρχείο είναι εικόνα ενός δίσκου οπότε μπορείτε να το γράψετε σε "
-"δίσκο χωρίς να χρειαστεί να το προσθέσετε πρώτα σε μια εργασία."
+msgid "This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."
+msgstr "Αυτό το αρχείο είναι εικόνα ενός δίσκου οπότε μπορείτε να το γράψετε σε δίσκο χωρίς να χρειαστεί να το προσθέσετε πρώτα σε μια εργασία."
 
 #: ../src/brasero-data-disc.c:765
 msgid "_Add to Project"
 msgstr "_Προσθήκη στην εργασία"
 
-#: ../src/brasero-data-disc.c:767 ../src/brasero-project.c:210
+#: ../src/brasero-data-disc.c:767
+#: ../src/brasero-project.c:210
 #: ../src/brasero-project.c:461
 msgid "_Burn..."
 msgstr "Ε_γγραφή..."
 
-#: ../src/brasero-data-disc.c:850 ../src/brasero-data-disc.c:881
+#: ../src/brasero-data-disc.c:850
+#: ../src/brasero-data-disc.c:881
 #: ../src/brasero-data-disc.c:912
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
@@ -2336,7 +2268,7 @@ msgstr "Δεν υπάρχει στην συγκεκριμένη τοποθεσί
 #: ../src/brasero-data-disc.c:938
 #, c-format
 msgid "Do you really want to replace \"%s\"?"
-msgstr "θέλετε πραγματικά να αντικαταστήσετε το \"%s\";"
+msgstr "Θέλετε πραγματικά να αντικαταστήσετε το \"%s\";"
 
 #: ../src/brasero-data-disc.c:946
 msgid "It already exists in the directory."
@@ -2354,31 +2286,18 @@ msgstr "Αντικα_τάσταση αρχείου εργασίας"
 
 #: ../src/brasero-data-disc.c:981
 #, c-format
-msgid ""
-"Do you really want to add \"%s\" to the selection and use the third version "
-"of ISO9660 standard to support it?"
-msgstr ""
-"Θέλετε πραγματικά να προσθέσετε το \"%s\" στην επιλογή και να "
-"χρησιμοποιήσετε την τρίτη έκδοση του στάνταρ ISO9660 για να το υποστηρίξετε;"
+msgid "Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"
+msgstr "Θέλετε πραγματικά να προσθέσετε το \"%s\" στην επιλογή και να χρησιμοποιήσετε την τρίτη έκδοση του στάνταρ ISO9660 για να το υποστηρίξετε;"
 
 #: ../src/brasero-data-disc.c:989
 msgid ""
-"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
-"supported by ISO9660 standard in its first and second versions (the most "
-"widespread ones).\n"
-"It is recommended to use the third version of ISO9660 standard which is "
-"supported by most of the operating systems including Linux and all versions "
-"of Windows ©.\n"
-"However MacOS X cannot read images created with version 3 of ISO9660 "
-"standard."
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by ISO9660 standard in its first and second versions (the most widespread ones).\n"
+"It is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©.\n"
+"However MacOS X cannot read images created with version 3 of ISO9660 standard."
 msgstr ""
-"Το μέγεθος του αρχείου είναι μεγαλύτερο από 2 GiB. Δεν υποστηρίζεται από το "
-"στάνταρ ISO9660 στην πρώτη και δεύτερη έκδοση (οι πιο διαδεδομένες).\n"
-"Συνίσταται η χρησιμοποίηση της τρίτης έκδοσης του ISO9660 που υποστηρίζεται "
-"από τα περισσότερα λειτουργικά συστήματα συμπεριλαμβανομένων του linux και "
-"όλων των εκδόσεων των windows ©.\n"
-"Μια γνωστή εξαίρεση είναι το MacOS X που δεν μπορεί να αναγνώσει εικόνες που "
-"δημιουργήθηκαν με την τρίτη έκδοση του ISO9660."
+"Το μέγεθος του αρχείου είναι μεγαλύτερο από 2 GiB. Δεν υποστηρίζεται από το στάνταρ ISO9660 στην πρώτη και δεύτερη έκδοση (οι πιο διαδεδομένες).\n"
+"Συνίσταται η χρησιμοποίηση της τρίτης έκδοσης του ISO9660 που υποστηρίζεται από τα περισσότερα λειτουργικά συστήματα συμπεριλαμβανομένων του linux και όλων των εκδόσεων των windows ©.\n"
+"Μια γνωστή εξαίρεση είναι το MacOS X που δεν μπορεί να αναγνώσει εικόνες που δημιουργήθηκαν με την τρίτη έκδοση του ISO9660."
 
 #: ../src/brasero-data-disc.c:1025
 #, c-format
@@ -2388,15 +2307,12 @@ msgstr "Θέλετε πραγματικά να προσθέσετε το \"%s\" 
 #: ../src/brasero-data-disc.c:1033
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
-"Brasero can create an image of such a file hierarchy and burn it; but the "
-"disc may not be readable on all operating systems.\n"
+"Brasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
 "Οι θυγατρικοί αυτού του κατάλογου θα έχουν 7 γονικούς καταλόγους.\n"
-"Ο brasero μπορεί να δημιουργήσει μια εικόνα της ιεραρχίας αρχείων και να την "
-"εγγράψει σε δίσκο, αλλά τα πολυμέσα ίσως δεν θα είναι αναγνώσιμα σε όλα τα "
-"λειτουργικά συστήματα.\n"
-"Σημείωση: τέτοια ιεραρχία αρχείων ως γνωστόν δουλεύει στο linux."
+"Ο brasero μπορεί να δημιουργήσει μια εικόνα της ιεραρχίας αρχείων και να την εγγράψει σε δίσκο, αλλά τα πολυμέσα ίσως δεν θα είναι αναγνώσιμα σε όλα τα λειτουργικά συστήματα.\n"
+"ΣΗΜΕΙΩΣΗ: τέτοια ιεραρχία αρχείων ως γνωστόν δουλεύει στο linux."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -2421,14 +2337,11 @@ msgstr "Ει_σαγωγή"
 #: ../src/brasero-data-disc.c:1224
 #, c-format
 msgid "Do you want to import the session from '%s'?"
-msgstr "Θέλετε να εισάγετε τη συνεδρία από το %s;"
+msgstr "Θέλετε να εισάγετε τη συνεδρία από το '%s';"
 
 #: ../src/brasero-data-disc.c:1227
-msgid ""
-"That way, old files from previous sessions will be usable after burning."
-msgstr ""
-"Μ' αυτό τον τρόπο, παλιά  αρχεία από προηγούμενες συνεδρίε θα είναι "
-"χρησιμοποιήσιμα μετά την εγγραφή."
+msgid "That way, old files from previous sessions will be usable after burning."
+msgstr "Μ' αυτό τον τρόπο, παλιά αρχεία από προηγούμενες συνεδρίες θα είναι χρησιμοποιήσιμα μετά την εγγραφή."
 
 #: ../src/brasero-data-disc.c:1238
 msgid "I_mport Session"
@@ -2466,7 +2379,8 @@ msgstr "_Μετονομασία"
 msgid "Renaming mode"
 msgstr "Κατάσταση μετονομασίας"
 
-#: ../src/brasero-data-disc.c:2467 ../src/brasero-video-disc.c:1189
+#: ../src/brasero-data-disc.c:2467
+#: ../src/brasero-video-disc.c:1189
 msgid "Size"
 msgstr "Μέγεθος"
 
@@ -2480,12 +2394,11 @@ msgstr "Να μετονομαστούν τα αρχεία για να είναι
 
 #: ../src/brasero-disc-option-dialog.c:332
 msgid "Those names should be changed and truncated to 64 characters."
-msgstr ""
-"Εκείνα τα ονόματα θα πρέπει να αλλαχτούν και να κοπούν στους 64 χαρακτήρες."
+msgstr "Εκείνα τα ονόματα θα πρέπει να αλλαχτούν και να κοπούν στους 64 χαρακτήρες."
 
 #: ../src/brasero-disc-option-dialog.c:337
 msgid "_Disable Full Windows Compatibility"
-msgstr "Απενεργοποίη_ση της πλήρους συμβατότητας με τα Windows;"
+msgstr "Απενεργοποίη_ση της πλήρους συμβατότητας με τα Windows"
 
 #: ../src/brasero-disc-option-dialog.c:340
 msgid "_Rename for Full Windows Compatibility"
@@ -2496,12 +2409,8 @@ msgid "Increase compatibility with _Windows systems"
 msgstr "Αύξηση συμβατότητας με συστήματα _windows"
 
 #: ../src/brasero-disc-option-dialog.c:365
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-"Βελτίωση συμβατότητας με συστήματα windows για να επιτρέπουν την προβολή "
-"μεγάλων ονομάτων αρχείων (μέγιστο οι 64 χαρακτήρες)"
+msgid "Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"
+msgstr "Βελτίωση συμβατότητας με συστήματα windows για να επιτρέπουν την προβολή μεγάλων ονομάτων αρχείων (μέγιστο οι 64 χαρακτήρες)"
 
 #: ../src/brasero-disc-option-dialog.c:419
 msgid "Disc name"
@@ -2533,7 +2442,7 @@ msgstr "Μορφοποίηση που χρησιμοποιείται κυρίω�
 
 #: ../src/brasero-disc-option-dialog.c:627
 msgid "Native _format"
-msgstr "Εγγενής μορφοποίηση"
+msgstr "Εγγενής _μορφοποίηση"
 
 #: ../src/brasero-disc-option-dialog.c:641
 msgid "Aspect ratio:"
@@ -2541,11 +2450,11 @@ msgstr "Λόγος αναλογιών:"
 
 #: ../src/brasero-disc-option-dialog.c:653
 msgid "_4:3"
-msgstr "_Αναλογία 4:3"
+msgstr "Αναλογία _4:3"
 
 #: ../src/brasero-disc-option-dialog.c:668
 msgid "_16:9"
-msgstr "Ανα_λογία 16:9"
+msgstr "_16:9"
 
 #. Video options for (S)VCD
 #: ../src/brasero-disc-option-dialog.c:683
@@ -2568,33 +2477,34 @@ msgstr "Επιλογές βίντεο"
 msgid "Disc Burning Setup"
 msgstr "Ρυθμίσεις εγγραφής δίσκου"
 
-#: ../src/brasero-drive-properties.c:143 ../src/brasero-drive-properties.c:155
+#: ../src/brasero-drive-properties.c:143
+#: ../src/brasero-drive-properties.c:155
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: ../src/brasero-drive-properties.c:236 ../src/brasero-drive-properties.c:272
+#: ../src/brasero-drive-properties.c:236
+#: ../src/brasero-drive-properties.c:272
 #: ../src/brasero-drive-properties.c:321
 msgid "Do you really want to choose this location?"
 msgstr "Θέλετε πραγματικά να διαλέξετε αυτή την τοποθεσία;"
 
-#: ../src/brasero-drive-properties.c:274 ../src/burn-job.c:470
-#: ../src/burn-session.c:734 ../src/burn-session.c:792
+#: ../src/brasero-drive-properties.c:274
+#: ../src/burn-job.c:470
+#: ../src/burn-session.c:734
+#: ../src/burn-session.c:792
 #: ../src/plugins/cdrkit/burn-genisoimage.c:190
 #: ../src/plugins/cdrtools/burn-mkisofs.c:191
 #: ../src/plugins/libburnia/burn-libisofs.c:223
 #, c-format
 msgid "You do not have the required permission to write at this location"
-msgstr ""
-"Δεν έχετε τα απαιτούμενα δικαιώματα για να γράψετε σ' αυτή την τοποθεσία"
+msgstr "Δεν έχετε τα απαιτούμενα δικαιώματα για να γράψετε σ' αυτή την τοποθεσία"
 
 #: ../src/brasero-drive-properties.c:324
 msgid ""
-"The filesystem on this volume does not support large files (size over 2 "
-"GiB).\n"
+"The filesystem on this volume does not support large files (size over 2 GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
-"Το σύστημα αρχείων σε αυτόν τον τόμο δεν υποστηρίζει μεγάλα αρχεία "
-"(μεγαλύτερο μέγεθος από 2 GiB).\n"
+"Το σύστημα αρχείων σε αυτόν τον τόμο δεν υποστηρίζει μεγάλα αρχεία (μεγαλύτερο μέγεθος από 2 GiB).\n"
 "Αυτό μπορεί να είναι πρόβλημα κατά την εγγραφή DVD ή μεγάλων εικόνων."
 
 #. Translators %s.1f is the speed used to burn
@@ -2613,7 +2523,7 @@ msgstr "%.1f x (CD)"
 #: ../src/brasero-drive-properties.c:439
 #, c-format
 msgid "%.1f x (BD)"
-msgstr "%.1f x (ΒD)"
+msgstr "%.1f x (BD)"
 
 #. Translators %s.1f is the speed used to burn for every medium
 #. * type
@@ -2644,16 +2554,12 @@ msgid "_Simulate before burning"
 msgstr "_Προσομοίωση πριν την εγγραφή"
 
 #: ../src/brasero-drive-properties.c:574
-msgid ""
-"Brasero will simulate the burning and if it is successful, go on with actual "
-"burning after 10 seconds"
-msgstr ""
-"Το Brasero θα προσομοιώσει την εγγραφή και αν αυτή είναι επιτυχής, θα γίνει "
-"η πραγματική εγγραφή μετά από 10 δευτερόλεπτα"
+msgid "Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"
+msgstr "Το Brasero θα προσομοιώσει την εγγραφή και αν αυτή είναι επιτυχής, θα γίνει η πραγματική εγγραφή μετά από 10 δευτερόλεπτα"
 
 #: ../src/brasero-drive-properties.c:575
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr "Χρήση αποδεικτικού_εγγραφής (μείωση του κινδύνου αποτυχιας)"
+msgstr "Χρήση burn_proof (μείωση του κινδύνου αποτυχίας)"
 
 #: ../src/brasero-drive-properties.c:576
 msgid "_Eject after burning"
@@ -2679,16 +2585,19 @@ msgstr "Ελεύθερος χώρος _προσωρινού καταλόγου:"
 msgid "Temporary files"
 msgstr "Προσωρινά αρχεία"
 
-#: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1493
+#: ../src/brasero-file-chooser.c:217
+#: ../src/brasero-project.c:1493
 msgid "Audio files only"
 msgstr "Αρχεία ήχου μόνο"
 
-#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1502
+#: ../src/brasero-file-chooser.c:225
+#: ../src/brasero-project.c:1502
 msgid "Movies only"
 msgstr "Ταινίες μόνο"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1510
+#: ../src/brasero-file-chooser.c:235
+#: ../src/brasero-project.c:1510
 msgctxt "picture"
 msgid "Image files only"
 msgstr "Αρχεία εικόνων μόνο"
@@ -2708,19 +2617,19 @@ msgstr "Αφήστε τον brasero να επιλέξει (ασφαλέστερ�
 
 #: ../src/brasero-image-type-chooser.c:94
 msgid "*.iso image"
-msgstr "εικόνα τύπου *.iso"
+msgstr "Εικόνα τύπου *.iso"
 
 #: ../src/brasero-image-type-chooser.c:102
 msgid "*.raw image"
-msgstr "εικόνα τύπου *.raw"
+msgstr "Εικόνα τύπου *.raw"
 
 #: ../src/brasero-image-type-chooser.c:110
 msgid "*.cue image"
-msgstr "εικόνα τύπου *.cue"
+msgstr "Εικόνα τύπου *.cue"
 
 #: ../src/brasero-image-type-chooser.c:118
 msgid "*.toc image (cdrdao)"
-msgstr "εικόνα τύπου *.toc (cdrdao)"
+msgstr "Εικόνα τύπου *.toc (cdrdao)"
 
 #: ../src/brasero-layout.c:102
 msgid "P_review"
@@ -2783,12 +2692,8 @@ msgstr "Όνομα:"
 
 #: ../src/brasero-player.c:811
 #, c-format
-msgid ""
-"<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
-"pixels</span></i>"
-msgstr ""
-"<span weight=\"bold\">Μέγεθος:</span>\t<i><span size=\"smaller\"> %i x %i "
-"pixels</span></i>"
+msgid "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"
+msgstr "<span weight=\"bold\">Μέγεθος:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"
 
 #: ../src/brasero-player.c:834
 #, c-format
@@ -2833,7 +2738,8 @@ msgid "_Remove Files"
 msgstr "Α_φαίρεση αρχείων"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:208 ../src/brasero-project.c:1573
+#: ../src/brasero-project.c:208
+#: ../src/brasero-project.c:1573
 msgid "E_mpty Project"
 msgstr "Άδεια_σμα εργασίας"
 
@@ -2862,7 +2768,8 @@ msgstr "Έναρξη εγγραφής των περιεχομένων της ε�
 msgid "Project estimated size: %s/%s"
 msgstr "Εκτιμώμενο μέγεθος εργασίας: %s/%s"
 
-#: ../src/brasero-project.c:635 ../src/brasero-project.c:763
+#: ../src/brasero-project.c:635
+#: ../src/brasero-project.c:763
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Εκτιμώμενο μέγεθος εργασίας: %s"
@@ -2872,11 +2779,8 @@ msgid "Please wait until the estimation of the project size is completed."
 msgstr "Παρακαλώ, περιμένετε ενόσω υπολογίζεται το μέγεθος της εργασίας."
 
 #: ../src/brasero-project.c:809
-msgid ""
-"All files from the project need to be analysed to complete this operation."
-msgstr ""
-"Όλα τα αρχεία από την εργασία χρειάζεται να αναλυθούν για να ολοκληρωθεί η "
-"λειτουργία."
+msgid "All files from the project need to be analysed to complete this operation."
+msgstr "Όλα τα αρχεία από την εργασία χρειάζεται να αναλυθούν για να ολοκληρωθεί η λειτουργία."
 
 #: ../src/brasero-project.c:811
 msgid "Project Size Estimation"
@@ -2886,27 +2790,24 @@ msgstr "Εκτιμόμενο μέγεθος εργασίας"
 msgid "Please add songs to the project."
 msgstr "Παρακαλώ προσθέστε τραγούδια στην εργασία."
 
-#: ../src/brasero-project.c:905 ../src/brasero-project.c:914 ../src/main.c:255
+#: ../src/brasero-project.c:905
+#: ../src/brasero-project.c:914
+#: ../src/main.c:255
 msgid "The project is empty"
 msgstr "Η εργασία είναι κενή"
 
-#: ../src/brasero-project.c:913 ../src/main.c:254
+#: ../src/brasero-project.c:913
+#: ../src/main.c:254
 msgid "Please add files to the project."
 msgstr "Παρακαλώ προσθέστε αρχεία στην εργασία."
 
 #: ../src/brasero-project.c:1154
-msgid ""
-"Do you really want to create a new project and discard the changes to "
-"current one?"
-msgstr ""
-"Θέλετε πραγματικά να δημιουργήσετε νέα εργασία και να απορρίψετε τις αλλαγές "
-"στην τρέχουσα;"
+msgid "Do you really want to create a new project and discard the changes to current one?"
+msgstr "Θέλετε πραγματικά να δημιουργήσετε νέα εργασία και να απορρίψετε τις αλλαγές στην τρέχουσα;"
 
 #: ../src/brasero-project.c:1159
 msgid "If you choose to create a new project, all changes made will be lost."
-msgstr ""
-"Αν επιλέξετε να δημιουργήσετε νέα εργασία. όλες οι αλλαγές που έχετε κάνει "
-"θα χαθούν."
+msgstr "Αν επιλέξετε να δημιουργήσετε νέα εργασία, όλες οι αλλαγές που έχετε κάνει θα χαθούν."
 
 #: ../src/brasero-project.c:1161
 msgid "_Discard Changes"
@@ -2914,19 +2815,11 @@ msgstr "Α_πόρριψη αλλαγών"
 
 #: ../src/brasero-project.c:1169
 msgid "Do you really want to create a new project and discard the current one?"
-msgstr ""
-"Θέλετε πραγματικά να δημιουργήσετε νέα εργασία και να απορρίψετε την "
-"τρέχουσα;"
+msgstr "Θέλετε πραγματικά να δημιουργήσετε νέα εργασία και να απορρίψετε την τρέχουσα;"
 
 #: ../src/brasero-project.c:1174
-msgid ""
-"If you choose to create a new project, all files already added will be "
-"discarded. Note that files will not be deleted from their own location, just "
-"no longer listed here."
-msgstr ""
-"Αν επιλέξετε να δημιουργήσετε νέα εργασία. όλα τα αρχεία που έχετε ήδη "
-"προσθέσει θα απορριφθούν. Σημειώστε ότι τα αρχεία δεν θα διαγραφούν από την "
-"τοποθεσία τους, απλώς δεν θα βρίσκονται στη τρέχουσα λίστα."
+msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "Αν επιλέξετε να δημιουργήσετε νέα εργασία, όλα τα αρχεία που έχετε ήδη προσθέσει θα απορριφθούν. Σημειώστε ότι τα αρχεία δεν θα διαγραφούν από την τοποθεσία τους, απλώς δεν θα βρίσκονται στη τρέχουσα λίστα."
 
 #: ../src/brasero-project.c:1179
 msgid "_Discard Project"
@@ -2941,14 +2834,8 @@ msgid "Do you really want to empty the current project?"
 msgstr "Θέλετε πραγματικά να αδειάσετε την τρέχουσα εργασία;"
 
 #: ../src/brasero-project.c:1567
-msgid ""
-"Emptying a project will remove all files already added. All the work will be "
-"lost. Note that files will not be deleted from their own location, just no "
-"longer listed here."
-msgstr ""
-"Το άδειασμα της εργασίας θα αφαιρέσει όλα τα αρχεία που έχουν προστεθεί ήδη. "
-"Όλη η εργασία θα χαθεί. Σημειώστε ότι τα αρχεία δεν θα διαγραφούν από την "
-"τοποθεσία τους , απλά δεν θα βρίσκονται στην τρέχουσα λίστα της εργασίας."
+msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "Το άδειασμα της εργασίας θα αφαιρέσει όλα τα αρχεία που έχουν προστεθεί ήδη. Όλη η εργασία θα χαθεί. Σημειώστε ότι τα αρχεία δεν θα διαγραφούν από την τοποθεσία τους , απλά δεν θα βρίσκονται στην τρέχουσα λίστα της εργασίας."
 
 #: ../src/brasero-project.c:1623
 msgid "_Save"
@@ -2958,7 +2845,8 @@ msgstr "Απο_θήκευση"
 msgid "_Add"
 msgstr "_Προσθήκη"
 
-#: ../src/brasero-project.c:1639 ../src/brasero-split-dialog.c:1246
+#: ../src/brasero-project.c:1639
+#: ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "Α_φαίρεση"
 
@@ -2992,7 +2880,8 @@ msgstr "Να αποθηκευτούν οι αλλαγές της τρέχουσ�
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Αν δεν αποθηκεύσετε, οι αλλαγές θα χαθούν μόνιμα."
 
-#: ../src/brasero-project.c:1841 ../src/brasero-project.c:1847
+#: ../src/brasero-project.c:1841
+#: ../src/brasero-project.c:1847
 msgid "Cl_ose Without Saving"
 msgstr "Τε_ρματισμός χωρίς αποθήκευση"
 
@@ -3054,11 +2943,8 @@ msgstr "Νέα εργασία ή_χου"
 
 #: ../src/brasero-project-manager.c:109
 #: ../src/brasero-project-type-chooser.c:73
-msgid ""
-"Create a traditional audio CD that will be playable on computers and stereos"
-msgstr ""
-"Δημιουργία παραδοσιακού CD ήχου που μπορεί να αναπαράγεται σε υπολογιστές "
-"και στερεοφωνικά"
+msgid "Create a traditional audio CD that will be playable on computers and stereos"
+msgstr "Δημιουργία παραδοσιακού CD ήχου που μπορεί να αναπαράγεται σε υπολογιστές και στερεοφωνικά"
 
 #: ../src/brasero-project-manager.c:110
 msgid "New _Data Project"
@@ -3066,12 +2952,8 @@ msgstr "Νέα εργασία _δεδομένων"
 
 #: ../src/brasero-project-manager.c:111
 #: ../src/brasero-project-type-chooser.c:78
-msgid ""
-"Create a CD/DVD containing any type of data that can only be read on a "
-"computer"
-msgstr ""
-"Δημιουργήστε ένα CD/DVD που να περιέχει όλους τους τύπους δεδομένων που "
-"μπορούν να αναγνωστούν μόνο στον υπολογιστή"
+msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
+msgstr "Δημιουργήστε ένα CD/DVD που να περιέχει όλους τους τύπους δεδομένων που μπορούν να αναγνωστούν μόνο στον υπολογιστή"
 
 #: ../src/brasero-project-manager.c:112
 msgid "New _Video Project"
@@ -3088,12 +2970,8 @@ msgstr "Αντιγραφή _δίσκου..."
 
 #: ../src/brasero-project-manager.c:115
 #: ../src/brasero-project-type-chooser.c:88
-msgid ""
-"Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
-"another CD/DVD"
-msgstr ""
-"Δημιουργήστε ένα ακριβές αντίγραφο ενός CD ήχου ή CD/DVD δεδομένων στο "
-"σκληρό σας δίσκο ή σ' ένα άλλο CD/DVD"
+msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"
+msgstr "Δημιουργήστε ένα ακριβές αντίγραφο ενός CD ήχου ή CD/DVD δεδομένων στο σκληρό σας δίσκο ή σ' ένα άλλο CD/DVD"
 
 #: ../src/brasero-project-manager.c:116
 msgid "_Burn Image..."
@@ -3148,7 +3026,8 @@ msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "Κανένα αρχείο δεν υποστηρίζεται (%i επιλεγμένο αρχείο)"
 msgstr[1] "Κανένα αρχείο δεν υποστηρίζεται (%i επιλεγμένα αρχεία)"
 
-#: ../src/brasero-project-manager.c:297 ../src/brasero-project-manager.c:456
+#: ../src/brasero-project-manager.c:297
+#: ../src/brasero-project-manager.c:456
 msgid "No file selected"
 msgstr "Κανένα αρχείο δεν επιλέχτηκε"
 
@@ -3175,7 +3054,7 @@ msgstr "Brasero - Αντιγραφή δίσκου"
 #: ../src/brasero-project-manager.c:912
 #, c-format
 msgid "The project \"%s\" does not exist"
-msgstr "Η εργασία '%s' δεν υπάρχει"
+msgstr "Η εργασία \"%s\" δεν υπάρχει"
 
 #: ../src/brasero-project-manager.c:938
 msgid "Open Project"
@@ -3231,7 +3110,7 @@ msgstr "Αντι_γραφή δίσκων"
 
 #: ../src/brasero-project-type-chooser.c:87
 msgid "Create 1:1 copy of a CD/DVD"
-msgstr "Δημιουργήστε ένα αντίγραφο του CD/DVD"
+msgstr "Δημιουργήστε αντίγραφο ενός CD/DVD"
 
 #: ../src/brasero-project-type-chooser.c:91
 msgid "Burn _image"
@@ -3257,11 +3136,13 @@ msgstr "Δημιουργία νέας εργασίας:"
 msgid "Recent projects:"
 msgstr "Πρόσφατες εργασίες:"
 
-#: ../src/brasero-sum-dialog.c:110 ../src/brasero-sum-dialog.c:188
+#: ../src/brasero-sum-dialog.c:110
+#: ../src/brasero-sum-dialog.c:188
 msgid "Check _Again"
 msgstr "Επα_νάληψη ελέγχου"
 
-#: ../src/brasero-sum-dialog.c:141 ../src/brasero-sum-dialog.c:469
+#: ../src/brasero-sum-dialog.c:141
+#: ../src/brasero-sum-dialog.c:469
 msgid "The file integrity check could not be performed."
 msgstr "Δεν είναι δυνατή η πραγματοποίηση του ελέγχου ακεραιότητας αρχείου."
 
@@ -3271,7 +3152,7 @@ msgstr "Η ακεραιότητα του αρχείου ελέγχθηκε με 
 
 #: ../src/brasero-sum-dialog.c:155
 msgid "There seems to be no corrupted file on the disc"
-msgstr "δεν φαίνεται να υπάρχει κανένα κατεστραμμένο αρχείο στο δίσκο"
+msgstr "Δεν φαίνεται να υπάρχει κανένα κατεστραμμένο αρχείο στο δίσκο"
 
 #: ../src/brasero-sum-dialog.c:183
 msgid "The following files appear to be corrupted:"
@@ -3288,7 +3169,7 @@ msgstr "Εγκατάσταση αρχείου τύπου md5"
 #: ../src/brasero-sum-dialog.c:357
 #, c-format
 msgid "\"%s\" is not a valid URI"
-msgstr "Το \"%s\" δεν είναι έγκυρη τοποθεσία"
+msgstr "Το \"%s\" δεν είναι έγκυρη τοποθεσία (URI)"
 
 #: ../src/brasero-sum-dialog.c:470
 msgid "No md5 file was given."
@@ -3300,13 +3181,11 @@ msgstr "Χρησιμοποιήστε ένα αρχείο τύπου _md5 για 
 
 #: ../src/brasero-sum-dialog.c:640
 msgid "Use an external .md5 file that stores the checksum of a disc"
-msgstr ""
-"Χρησιμοποιήστε ένα εξωτερικό αρχείο τύπου .md5 που αποθηκεύει τον έλεγχο "
-"αθροίσματος του δίσκου"
+msgstr "Χρησιμοποιήστε ένα εξωτερικό αρχείο τύπου .md5 που αποθηκεύει τον έλεγχο αθροίσματος του δίσκου"
 
 #: ../src/brasero-sum-dialog.c:653
 msgid "Open a md5 file"
-msgstr "Άνοιγμα ενός αρχείου τύπου md5 "
+msgstr "Άνοιγμα ενός αρχείου τύπου md5"
 
 #: ../src/brasero-sum-dialog.c:668
 msgid "_Check"
@@ -3316,7 +3195,8 @@ msgstr "Έ_λεγχος"
 msgid "Disc Checking"
 msgstr "Έλεγχος δίσκου"
 
-#: ../src/brasero-tool-dialog.c:67 ../src/brasero-tool-dialog.c:81
+#: ../src/brasero-tool-dialog.c:67
+#: ../src/brasero-tool-dialog.c:81
 #: ../src/brasero-tool-dialog.c:91
 msgid "The operation cannot be performed."
 msgstr "Δεν είναι δυνατή η πραγματοποίηση της λειτουργίας."
@@ -3399,14 +3279,18 @@ msgstr "Εγγραφή CD/DVD"
 #: ../src/burn.c:287
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
-msgstr "Δεν είναι δυνατή η εξαγωγή του μέσου στο %s"
+msgstr "Δεν είναι δυνατή η εξαγωγή του μέσου στο \"%s\""
 
-#: ../src/burn.c:329 ../src/burn.c:375
+#: ../src/burn.c:329
+#: ../src/burn.c:375
 #, c-format
 msgid "\"%s\" cannot be unlocked"
-msgstr "Δεν είναι δυνατό το ξεκλείδωμα του \"%s\"Θ"
+msgstr "Δεν είναι δυνατό το ξεκλείδωμα του \"%s\""
 
-#: ../src/burn.c:506 ../src/burn.c:631 ../src/burn.c:780 ../src/burn.c:1929
+#: ../src/burn.c:506
+#: ../src/burn.c:631
+#: ../src/burn.c:780
+#: ../src/burn.c:1929
 #, c-format
 msgid "No burner specified"
 msgstr "Δεν καθορίστηκε οδηγός εγγραφής"
@@ -3420,7 +3304,10 @@ msgstr "Δεν καθορίστηκε πηγαίος οδηγός"
 msgid "Ongoing copying process"
 msgstr "Τρέχουσα διαδικασία αντιγραφής"
 
-#: ../src/burn.c:587 ../src/burn.c:682 ../src/burn.c:927 ../src/burn.c:1036
+#: ../src/burn.c:587
+#: ../src/burn.c:682
+#: ../src/burn.c:927
+#: ../src/burn.c:1036
 #, c-format
 msgid "The drive cannot be locked (%s)"
 msgstr "Δεν είναι δυνατό το κλείδωμα του οδηγού (%s)"
@@ -3443,12 +3330,14 @@ msgstr "Ο οδηγός δε μπορεί να γράψει το δίσκο ή �
 msgid "Ongoing checksuming operation"
 msgstr "Τρέχουσα διαδικασία ελέγχου αθροίσματος"
 
-#: ../src/burn.c:1635 ../src/burn.c:1978
+#: ../src/burn.c:1635
+#: ../src/burn.c:1978
 #, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "Η συγχώνευση δεδομένων είναι αδύνατη με αυτό το δίσκο"
 
-#: ../src/burn.c:1636 ../src/plugins/cdrkit/burn-genisoimage.c:197
+#: ../src/burn.c:1636
+#: ../src/plugins/cdrkit/burn-genisoimage.c:197
 #: ../src/plugins/cdrkit/burn-wodim.c:99
 #: ../src/plugins/cdrtools/burn-cdrecord.c:99
 #: ../src/plugins/cdrtools/burn-mkisofs.c:198
@@ -3462,7 +3351,8 @@ msgstr "Δεν υπάρχει αρκετός διαθέσιμος χώρος σ�
 msgid "There is no track to be burnt"
 msgstr "Δεν υπάρχει κανένα κομμάτι για εγγραφή"
 
-#: ../src/burn.c:2262 ../src/burn-caps.c:1473
+#: ../src/burn.c:2262
+#: ../src/burn-caps.c:1473
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Μόνο ένα κομμάτι κάθε φορά μπορεί να ελεγχθεί"
@@ -3476,9 +3366,14 @@ msgstr "Αδύνατη η εύρεση μορφής για την προσωρι
 #. * is specified. A graft point is the path (on the
 #. * disc) where a file from any source will be added
 #. * ("grafted")
-#: ../src/burn.c:2589 ../src/burn-caps.c:131 ../src/burn-caps.c:1375
-#: ../src/burn-job.c:1226 ../src/burn-job.c:1235
-#: ../src/burn-mkisofs-base.c:303 ../src/main.c:211 ../src/main.c:237
+#: ../src/burn.c:2589
+#: ../src/burn-caps.c:131
+#: ../src/burn-caps.c:1375
+#: ../src/burn-job.c:1226
+#: ../src/burn-job.c:1235
+#: ../src/burn-mkisofs-base.c:303
+#: ../src/main.c:211
+#: ../src/main.c:237
 #: ../src/plugins/cdrkit/burn-genisoimage.c:360
 #: ../src/plugins/cdrkit/burn-readom.c:111
 #: ../src/plugins/cdrkit/burn-readom.c:321
@@ -3495,11 +3390,14 @@ msgid "An internal error occured"
 msgstr "Συνέβη ένα εσωτερικό σφάλμα"
 
 #. Translators: %s is the plugin name
-#: ../src/burn-job.c:315 ../src/burn-job.c:804 ../src/burn-job.c:817
-#: ../src/burn-job.c:1036 ../src/burn-job.c:1126
+#: ../src/burn-job.c:315
+#: ../src/burn-job.c:804
+#: ../src/burn-job.c:817
+#: ../src/burn-job.c:1036
+#: ../src/burn-job.c:1126
 #, c-format
 msgid "\"%s\" did not behave properly"
-msgstr "Το %s δε λειτούργησε σωστά"
+msgstr "Το \"%s\" δε λειτούργησε σωστά"
 
 #: ../src/burn-job.c:413
 #, c-format
@@ -3508,40 +3406,39 @@ msgstr "Ανεπαρκής διαθέσιμος χώρος στο δίσκο (%l
 
 #: ../src/burn-job.c:500
 #, c-format
-msgid ""
-"The filesystem you chose to store the temporary image on cannot hold files "
-"with a size over 2 GiB"
-msgstr ""
-"Το επιλεγόμενο σύστημα αρχείων για την αποθήκευση της προσωρινής εικόνας δεν "
-"μπορεί να αποθηκεύσει αρχεία με μέγεθος μεγαλύτερο από 2 GiB"
+msgid "The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB"
+msgstr "Το επιλεγόμενο σύστημα αρχείων για την αποθήκευση της προσωρινής εικόνας δεν μπορεί να αποθηκεύσει αρχεία με μέγεθος μεγαλύτερο από 2 GiB"
 
-#: ../src/burn-job.c:515 ../src/burn-job.c:537
+#: ../src/burn-job.c:515
+#: ../src/burn-job.c:537
 #, c-format
-msgid ""
-"The location you chose to store the temporary image on does not have enough "
-"free space for the disc image (%ld MiB needed)"
-msgstr ""
-"Η επιλεγμένη τοποθεσία δεν έχει αρκετό ελεύθερο χώρο για να αποθηκεύσετε την "
-"εικόνα δίσκου (χρειάζονται %ld MiB)"
+msgid "The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"
+msgstr "Η επιλεγμένη τοποθεσία δεν έχει αρκετό ελεύθερο χώρο για να αποθηκεύσετε την εικόνα δίσκου (χρειάζονται %ld MiB)"
 
-#: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:347
+#: ../src/burn-job.c:550
+#: ../src/plugins/dvdcss/burn-dvdcss.c:347
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Δεν ήταν δυνατή η ανάκτηση του μεγέθους του τόμου"
 
-#: ../src/burn-job.c:604 ../src/burn-session.c:539 ../src/burn-session.c:555
+#: ../src/burn-job.c:604
+#: ../src/burn-session.c:539
+#: ../src/burn-session.c:555
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "Δεν ορίστηκε διαδρομή για την έξοδο της εικόνας"
 
-#: ../src/burn-job.c:630 ../src/burn-job.c:645
+#: ../src/burn-job.c:630
+#: ../src/burn-job.c:645
 #, c-format
 msgid "\"%s\" already exists"
 msgstr "Το \"%s\" υπάρχει ήδη"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../src/burn-job.c:775 ../src/main.c:209 ../src/main.c:235
+#: ../src/burn-job.c:775
+#: ../src/main.c:209
+#: ../src/main.c:235
 #: ../src/plugins/cdrtools/burn-cdrecord.c:636
 #: ../src/plugins/libburnia/burn-libburn.c:691
 #: ../src/plugins/transcode/burn-transcode.c:663
@@ -3549,7 +3446,8 @@ msgstr "Το \"%s\" υπάρχει ήδη"
 msgid "An internal error occured (%s)"
 msgstr "Συνέβη ένα εσωτερικό σφάλμα (%s)"
 
-#: ../src/burn-mkisofs-base.c:154 ../src/burn-mkisofs-base.c:586
+#: ../src/burn-mkisofs-base.c:154
+#: ../src/burn-mkisofs-base.c:586
 #: ../src/plugins/growisofs/burn-growisofs.c:520
 #: ../src/plugins/libburnia/burn-libisofs.c:669
 #: ../src/plugins/checksum/burn-checksum-image.c:274
@@ -3562,7 +3460,8 @@ msgstr "Το αρχείο δεν είναι αποθηκευμένο τοπικ�
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "Λείπει ή μη έγκυρος VIDEO_TS κατάλογος"
 
-#: ../src/burn-process.c:105 ../src/burn-process.c:111
+#: ../src/burn-process.c:105
+#: ../src/burn-process.c:111
 #: ../src/burn-process.c:128
 #, c-format
 msgid "\"%s\" could not be found in the path"
@@ -3570,12 +3469,8 @@ msgstr "Δεν ήταν δυνατή η εύρεση του \"%s\" στη δια
 
 #: ../src/burn-process.c:122
 #, c-format
-msgid ""
-"\"%s\" is a symlink pointing to another program. Use the target program "
-"instead"
-msgstr ""
-"Το \"%s\" είναι ένας συμβολικός δεσμός σε κάποιο άλλο πρόγραμμα. "
-"Χρησιμοποιήστε το πρόγραμμα προορισμό αντί γι' αυτό"
+msgid "\"%s\" is a symlink pointing to another program. Use the target program instead"
+msgstr "Το \"%s\" είναι ένας συμβολικός δεσμός σε κάποιο άλλο πρόγραμμα. Χρησιμοποιήστε το πρόγραμμα προορισμό αντί γι' αυτό"
 
 #. Translators: %s is the name of the brasero element
 #: ../src/burn-process.c:212
@@ -3589,7 +3484,7 @@ msgstr "Άνοιγμα καθορισμένης εργασίας"
 
 #: ../src/main.c:78
 msgid "PROJECT"
-msgstr "Εργασία"
+msgstr "ΕΡΓΑΣΙΑ"
 
 #: ../src/main.c:83
 msgid "Open the specified playlist as an audio project"
@@ -3597,18 +3492,15 @@ msgstr "Άνοιγμα καθορισμένης λίστας αναπαραγω�
 
 #: ../src/main.c:84
 msgid "PLAYLIST"
-msgstr "Λίστα αναπαραγωγής"
+msgstr "ΛΙΣΤΑ ΑΝΑΠΑΡΑΓΩΓΗΣ"
 
 #: ../src/main.c:89
 msgid "Open an audio project adding the URIs given on the command line"
-msgstr ""
-"Άνοιγμα εργασίας ήχου προσθέτοντας τις URI που δόθηκαν στη γραμμή εντολών"
+msgstr "Άνοιγμα εργασίας ήχου προσθέτοντας τις URI που δόθηκαν στη γραμμή εντολών"
 
 #: ../src/main.c:93
 msgid "Open a data project adding the URIs given on the command line"
-msgstr ""
-"Άνοιγμα εργασίας δεδομένων προσθέτοντας τις URI που δόθηκαν στη γραμμή "
-"εντολών"
+msgstr "Άνοιγμα εργασίας δεδομένων προσθέτοντας τις URI που δόθηκαν στη γραμμή εντολών"
 
 #: ../src/main.c:97
 msgid "Copy a disc"
@@ -3628,13 +3520,11 @@ msgstr "ΔΙΑΔΡΟΜΗ ΠΡΟΣ ΕΞΩΦΥΛΛΟ"
 
 #: ../src/main.c:105
 msgid "Open a video project adding the URIs given on the command line"
-msgstr ""
-"Άνοιγμα εργασίας βίντεο προσθέτοντας τις τοποθεσίες που δόθηκαν στη γραμμή "
-"εντολών"
+msgstr "Άνοιγμα εργασίας βίντεο προσθέτοντας τις τοποθεσίες που δόθηκαν στη γραμμή εντολών"
 
 #: ../src/main.c:109
 msgid "Uri of an image file to be burnt (autodetected)"
-msgstr "H Uri ενός αρχείου εικόνας για εγγραφή (αυτόματα ανιχνεύσιμο)"
+msgstr "Το Uri ενός αρχείου εικόνας για εγγραφή (αυτόματα ανιχνεύσιμο)"
 
 #: ../src/main.c:110
 msgid "PATH TO PLAYLIST"
@@ -3675,7 +3565,7 @@ msgstr "ΔΙΑΔΡΟΜΗ"
 #. * parent as if brasero was a dialog for the parent application
 #: ../src/main.c:138
 msgid "The XID of the parent window"
-msgstr "Το XID του γονικού παραθύρου."
+msgstr "Το XID του γονικού παραθύρου"
 
 #: ../src/main.c:141
 msgid "Display debug statements on stdout"
@@ -3696,8 +3586,7 @@ msgstr "[URI] [URI] ..."
 #: ../src/main.c:518
 #, c-format
 msgid "Please type %s --help to see all available options\n"
-msgstr ""
-"Παρακαλώ πληκτρολογήστε %s --help για να δείτε όλες τις διαθέσιμες επιλογές\n"
+msgstr "Παρακαλώ πληκτρολογήστε %s --help για να δείτε όλες τις διαθέσιμες επιλογές\n"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:90
 msgid "Copying audio track"
@@ -3722,9 +3611,7 @@ msgstr "Δεν είναι δυνατή η εύρεση του \"%s\""
 #: ../src/plugins/cdrdao/burn-cdrdao.c:237
 #, c-format
 msgid "Your version of cdrdao does not seem to be supported by libbrasero"
-msgstr ""
-"Η έκδοση του cdrdao που έχετε εγκατεστημένη δεν φαίνεται να υποστηρίζεται "
-"από το libbrasero"
+msgstr "Η έκδοση του cdrdao που έχετε εγκατεστημένη δεν φαίνεται να υποστηρίζεται από το libbrasero"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:243
 #: ../src/plugins/cdrkit/burn-readom.c:98
@@ -3735,8 +3622,7 @@ msgstr ""
 #: ../src/plugins/cdrtools/burn-readcd.c:104
 #, c-format
 msgid "You do not have the required permissions to use this drive"
-msgstr ""
-"Δεν έχετε τα απαιτούμενα δικαιώματα για να χρησιμοποιήσετε αυτόν τον οδηγό"
+msgstr "Δεν έχετε τα απαιτούμενα δικαιώματα για να χρησιμοποιήσετε αυτόν τον οδηγό"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:606
 msgid "Use cdrdao to copy and burn CDs"
@@ -3744,9 +3630,7 @@ msgstr "Χρήση του cdrdao στην αντιγραφή και στην ε�
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:672
 msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
-msgstr ""
-"Ενεργοποίηση σημαίας \"--driver generic-mmc-raw\" (δείτε το εγχειρίδιο του "
-"cdrdao)"
+msgstr "Ενεργοποίηση σημαίας \"--driver generic-mmc-raw\" (δείτε το εγχειρίδιο του cdrdao)"
 
 #: ../src/plugins/cdrdao/burn-toc2cue.c:259
 msgid "Converting toc file"
@@ -3813,11 +3697,8 @@ msgstr "Ένα σφάλμα συνέβηκε κατά την εγγραφή το
 #: ../src/plugins/cdrkit/burn-wodim.c:113
 #: ../src/plugins/cdrtools/burn-cdrecord.c:113
 #, c-format
-msgid ""
-"The system is too slow to write the disc at this speed. Try a lower speed"
-msgstr ""
-"Το σύστημα είναι πολύ αργό για να εγγράψει το CD σε αυτήν την ταχύτητα. "
-"Χρησιμοποιήστε χαμηλότερη ταχύτητα"
+msgid "The system is too slow to write the disc at this speed. Try a lower speed"
+msgstr "Το σύστημα είναι πολύ αργό για να εγγράψει το CD σε αυτήν την ταχύτητα. Χρησιμοποιήστε χαμηλότερη ταχύτητα"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:305
 #: ../src/plugins/cdrtools/burn-cdrecord.c:297
@@ -3845,9 +3726,7 @@ msgstr "Ενεργοποίηση σημαίας \"-immed\" (δείτε το εγ
 
 #: ../src/plugins/cdrkit/burn-wodim.c:1324
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
-msgstr ""
-"Ελάχιστη αναλογία συμπλήρωσης ενδιάμεσης μνήμης του οδηγού (σε %) (δείτε το "
-"εγχειρίδιο του wodim):"
+msgstr "Ελάχιστη αναλογία συμπλήρωσης ενδιάμεσης μνήμης του οδηγού (σε %) (δείτε το εγχειρίδιο του wodim):"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1083
 msgid "Use cdrecord to burn CDs and DVDs"
@@ -3860,9 +3739,7 @@ msgstr "Eνεργοποίηση σημαίας \"-immed\" (δείτε το εγ�
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1309
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
-msgstr ""
-"Eλάχιστη αναλογία συμπλήρωσης ενδιάμεσης μνήμης του οδηγού (σe %%) (δείτε το "
-"εγχειρίδιο του cdrecord):"
+msgstr "Eλάχιστη αναλογία συμπλήρωσης ενδιάμεσης μνήμης του οδηγού (σe %%) (δείτε το εγχειρίδιο του cdrecord):"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:130
 msgid "This version of mkisofs is not supported"
@@ -3879,8 +3756,7 @@ msgstr "Χρήση του readcd για δημιουργία εικόνων"
 #: ../src/plugins/dvdcss/burn-dvdcss.c:122
 #, c-format
 msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
-msgstr ""
-"Κρυπτογραφημένο DVD: παρακαλώ, εγκαταστήστε την έκδοση 1.2.x του libdvdcss"
+msgstr "Κρυπτογραφημένο DVD: παρακαλώ, εγκαταστήστε την έκδοση 1.2.x του libdvdcss"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:129
 #, c-format
@@ -3934,12 +3810,11 @@ msgstr "Αντιγραφή DVD βίντεο"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:667
 msgid "Dvdcss allows to read css encrypted video DVDs"
-msgstr ""
-"Το dvdcss σας επιτρέπει να κάνετε ανάγνωση css κρυπτογραφημένων DVD βίντεο"
+msgstr "Το dvdcss σας επιτρέπει να κάνετε ανάγνωση css κρυπτογραφημένων DVD βίντεο"
 
 #: ../src/plugins/growisofs/burn-dvd-rw-format.c:177
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
-msgstr "Το dvd+rw-format διαγράφει και μορφοποιεί DVD+/-RW"
+msgstr "Το dvd+rw-format διαγράφει και μορφοποιεί DVD+/-R(W)"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:738
 msgid "Growisofs burns DVDs"
@@ -4010,24 +3885,18 @@ msgstr "Δεν ήταν δυνατό να βρεθεί το γονέας στη 
 #: ../src/plugins/libburnia/burn-libisofs.c:777
 #, c-format
 msgid "Libisofs reported an error while creating directory \"%s\""
-msgstr ""
-"Το libisofs ανέφερε ένα σφάλμα κατά την δημιουργία του καταλόγου \"%s\""
+msgstr "Το libisofs ανέφερε ένα σφάλμα κατά την δημιουργία του καταλόγου \"%s\""
 
 #: ../src/plugins/libburnia/burn-libisofs.c:726
 #, c-format
-msgid ""
-"Libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr ""
-"Το libisofs ανέφερε ένα σφάλμα κατά την προσθήκη περιεχομένων στον κατάλογο %"
-"s (%x)"
+msgid "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgstr "Το libisofs ανέφερε ένα σφάλμα κατά την προσθήκη περιεχομένων στον κατάλογο \"%s\" (%x)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:748
 #: ../src/plugins/libburnia/burn-libisofs.c:764
 #, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
-msgstr ""
-"Το libisofs ανέφερε ένα σφάλμα κατά την προσθήκη αρχείου από τη διαδρομή\" %s"
-"\""
+msgstr "Το libisofs ανέφερε ένα σφάλμα κατά την προσθήκη αρχείου από τη διαδρομή \"%s\""
 
 #: ../src/plugins/libburnia/burn-libisofs.c:1024
 msgid "Libisofs creates disc images from files"
@@ -4069,9 +3938,7 @@ msgstr "Ομαλοποίηση"
 
 #: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize allows to set consistent sound levels between tracks"
-msgstr ""
-"Η κανονικοποίηση επιτρέπει την σωστή στοίχιση επιπέδων ήχων ανάμεσα στα "
-"κομμάτια"
+msgstr "Η κανονικοποίηση επιτρέπει την σωστή στοίχιση επιπέδων ήχων ανάμεσα στα κομμάτια"
 
 #. Translators: This message is sent
 #. * when brasero could not link together
@@ -4110,9 +3977,7 @@ msgstr "Κωδικοποίηση του \"%s\""
 
 #: ../src/plugins/transcode/burn-transcode.c:1608
 msgid "Transcode converts song files into a format proper to burn them on CDs"
-msgstr ""
-"Η κωδικοποίηση μετατρέπει τα αρχεία τραγουδιών σε κατάλληλη μορφή για "
-"εγγραφή τους σε  CD"
+msgstr "Η κωδικοποίηση μετατρέπει τα αρχεία τραγουδιών σε κατάλληλη μορφή για εγγραφή τους σε CD"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -4123,14 +3988,11 @@ msgid "Do you really want to split the track?"
 msgstr "Θέλετε πραγματικά να διαχωρίσετε το κομμάτι;"
 
 #: ../src/brasero-split-dialog.c:160
-msgid ""
-"If you split the track, the size of the new track will be shorter than 6 "
-"seconds and will be padded."
-msgstr ""
-"Εάν διαχωρίσετε το κομμάτι, το μέγεθος του νέου κομματιού θα είναι μικρότερο "
-"από 6 δευτερόλεπτα και θα συμπληρωθεί."
+msgid "If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."
+msgstr "Εάν διαχωρίσετε το κομμάτι, το μέγεθος του νέου κομματιού θα είναι μικρότερο από 6 δευτερόλεπτα και θα συμπληρωθεί."
 
-#: ../src/brasero-split-dialog.c:166 ../src/brasero-split-dialog.c:739
+#: ../src/brasero-split-dialog.c:166
+#: ../src/brasero-split-dialog.c:739
 msgid "_Split"
 msgstr "Δια_χωρισμός"
 
@@ -4162,7 +4024,8 @@ msgstr "Όχι _διαχωρισμός"
 msgid "Do you really want to empty the slices preview?"
 msgstr "Θέλετε πραγματικά να αδειάσετε την προεπισκόπηση τμημάτων;"
 
-#: ../src/brasero-split-dialog.c:958 ../src/brasero-split-dialog.c:1260
+#: ../src/brasero-split-dialog.c:958
+#: ../src/brasero-split-dialog.c:1260
 msgid "Re_move All"
 msgstr "Αφαί_ρεση όλων"
 
@@ -4265,7 +4128,8 @@ msgstr "Ώρες"
 #. Translators: separating hours and minutes
 #. Translators: separating minutes and seconds
 #. Translators: separating seconds and frames
-#: ../src/brasero-time-button.c:291 ../src/brasero-time-button.c:301
+#: ../src/brasero-time-button.c:291
+#: ../src/brasero-time-button.c:301
 #: ../src/brasero-time-button.c:311
 msgid ":"
 msgstr ":"
@@ -4301,14 +4165,6 @@ msgstr "Σουίτα εγγραφής δίσκων cdrdao"
 #: ../src/plugins/cdrtools/burn-cdrtools.h:33
 msgid "Cdrtools burning suite"
 msgstr "Σουίτα εγγραφής δίσκων cdrtools"
-
-#: ../src/burn-image-format.c:310 ../src/burn-image-format.c:397
-#: ../src/burn-image-format.c:428 ../src/burn-image-format.c:557
-#: ../src/burn-image-format.c:601 ../src/burn-image-format.c:762
-#: ../src/burn-image-format.c:806
-#, c-format
-msgid "The size could not be retrieved (%s)"
-msgstr "Δεν είναι δυνατή η ανάκτηση του μεγέθους (%s)"
 
 #: ../src/brasero-data-tree-model.c:517
 msgid "Disc file"
@@ -4352,20 +4208,15 @@ msgstr "Για να προσθέσετε αρχεία στην εργασία μ
 
 #: ../src/brasero-disc.c:653
 msgid "click the \"Add\" button to show a selection dialog"
-msgstr ""
-"κάντε κλικ στο κουμπί \"Προσθήκη\" για να εμφανίσετε το πλαίσιο επιλογής"
+msgstr "κάντε κλικ στο κουμπί \"Προσθήκη\" για να εμφανίσετε το πλαίσιο επιλογής"
 
 #: ../src/brasero-disc.c:654
 msgid "select files in the selection pane and click the \"Add\" button"
-msgstr ""
-"επιλέξτε αρχεία στο πλαίσιο επιλογής και κάντε κλικ στο κουμπί \"Προσθήκη\""
+msgstr "επιλέξτε αρχεία στο πλαίσιο επιλογής και κάντε κλικ στο κουμπί \"Προσθήκη\""
 
 #: ../src/brasero-disc.c:655
-msgid ""
-"drag files in this area from the selection pane or from the file manager"
-msgstr ""
-"να αρπάξετε αρχεία σε αυτήν την περιοχή από το πλαίσιο επιλογής ή από το "
-"διαχειριστή αρχείων"
+msgid "drag files in this area from the selection pane or from the file manager"
+msgstr "να αρπάξετε αρχεία σε αυτήν την περιοχή από το πλαίσιο επιλογής ή από το διαχειριστή αρχείων"
 
 #: ../src/brasero-disc.c:656
 msgid "double click on files in the selection pane"
@@ -4373,9 +4224,7 @@ msgstr "να κάνετε διπλό κλικ σε αρχεία του πλαι�
 
 #: ../src/brasero-disc.c:657
 msgid "copy files (from file manager for example) and paste in this area"
-msgstr ""
-"να αντιγράψετε αρχεία (από το διαχειριστή αρχείων για παράδειγμα) και να τα "
-"επικολλήσετε σε αυτήν την περιοχή"
+msgstr "να αντιγράψετε αρχεία (από το διαχειριστή αρχείων για παράδειγμα) και να τα επικολλήσετε σε αυτήν την περιοχή"
 
 #: ../src/brasero-disc.c:660
 msgid "To remove files from this project you can:"
@@ -4383,9 +4232,7 @@ msgstr "Για να αφαιρέσετε αρχεία από αυτήν την �
 
 #: ../src/brasero-disc.c:661
 msgid "click on the \"Remove\" button to remove selected items in this area"
-msgstr ""
-"να κάνετε κλικ στο κουμπί  \"Αφαίρεση\" και να αφαιρέσετε τα επιλεγμένα "
-"αντικείμενα σε αυτήν την περιοχή"
+msgstr "να κάνετε κλικ στο κουμπί \"Αφαίρεση\" και να αφαιρέσετε τα επιλεγμένα αντικείμενα σε αυτήν την περιοχή"
 
 #: ../src/brasero-disc.c:662
 msgid "drag and release items out from this area"
@@ -4393,15 +4240,11 @@ msgstr "να αρπάξετε και να ελευθερώσετε αντικε�
 
 #: ../src/brasero-disc.c:663
 msgid "select items in this area, and choose \"Remove\" from context menu"
-msgstr ""
-"να επιλέξετε αντικείμενα σε αυτήν την περιοχή και να πιέσετε \"Αφαίρεση\" "
-"από το μενού περιεχομένων"
+msgstr "να επιλέξετε αντικείμενα σε αυτήν την περιοχή και να πιέσετε \"Αφαίρεση\" από το μενού περιεχομένων"
 
 #: ../src/brasero-disc.c:664
 msgid "select items in this area, and press \"Delete\" key"
-msgstr ""
-"να επιλέξετε αντικείμενα σε αυτήν την περιοχή και να πιέσετε το πλήκτρο "
-"\"Διαγραφή\""
+msgstr "να επιλέξετε αντικείμενα σε αυτήν την περιοχή και να πιέσετε το πλήκτρο \"Διαγραφή\""
 
 #: ../src/brasero-eject-dialog.c:136
 msgid "_Eject"
@@ -4411,7 +4254,8 @@ msgstr "Ε_ξαγωγή"
 msgid "Eject Disc"
 msgstr "Εξαγωγή δίσκου"
 
-#: ../src/brasero-file-filtered.c:90 ../src/brasero-file-filtered.c:96
+#: ../src/brasero-file-filtered.c:90
+#: ../src/brasero-file-filtered.c:96
 msgid "No file filtered"
 msgstr "Κανένα αρχείο δεν επιλέχτηκε"
 
@@ -4441,7 +4285,8 @@ msgstr "Μη αναγνώσιμο αρχείο"
 msgid "Broken symbolic link"
 msgstr "Κατεστραμμένος συμβολικός δεσμός"
 
-#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1085
+#: ../src/brasero-file-filtered.c:189
+#: ../src/brasero-io.c:1085
 #: ../src/brasero-io.c:1964
 #, c-format
 msgid "Recursive symbolic link"
@@ -4452,11 +4297,8 @@ msgid "Filter Options"
 msgstr "Επιλογές φιλτραρίσματος"
 
 #: ../src/brasero-file-filtered.c:488
-msgid ""
-"Select the files you want to restore and click on the \"Restore\" button"
-msgstr ""
-"Επιλέξτε τα αρχεία που θέλετε να επαναφέρετε και κάντε κλικ στο κουμπί "
-"\"Επαναφορά\""
+msgid "Select the files you want to restore and click on the \"Restore\" button"
+msgstr "Επιλέξτε τα αρχεία που θέλετε να επαναφέρετε και κάντε κλικ στο κουμπί \"Επαναφορά\""
 
 #: ../src/brasero-file-filtered.c:537
 msgid "Type"
@@ -4526,13 +4368,13 @@ msgstr "Δε βρέθηκε αρχείο ελέγχου αθροίσματος �
 
 #: ../src/plugins/checksum/burn-checksum-files.c:864
 msgid "Checking file integrity"
-msgstr "Έλε_γχος ακεραιότητας αρχείου"
+msgstr "Έλεγχος ακεραιότητας αρχείου"
 
 #: ../src/plugins/checksum/burn-checksum-files.c:958
 #: ../src/plugins/checksum/burn-checksum-files.c:983
 #, c-format
 msgid "File \"%s\" could not be opened"
-msgstr "Δεν είναι δυνατό το άνοιγμα του αρχείου \"%s\"."
+msgstr "Δεν είναι δυνατό το άνοιγμα του αρχείου \"%s\""
 
 #: ../src/plugins/checksum/burn-checksum-files.c:1056
 #: ../src/plugins/checksum/burn-checksum-files.c:1174
@@ -4591,9 +4433,7 @@ msgstr "Έλεγχος αθροίσματος εικόνας"
 
 #: ../src/plugins/checksum/burn-checksum-image.c:790
 msgid "Allows to check data integrity on disc after it is burnt"
-msgstr ""
-"Σας επιτρέπει να ελέγχετε την ακεραιότητα αρχείου στο δίσκο μετά την εγγραφή "
-"του"
+msgstr "Σας επιτρέπει να ελέγχετε την ακεραιότητα αρχείου στο δίσκο μετά την εγγραφή του"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../src/brasero-jacket-background.c:162
@@ -4677,7 +4517,7 @@ msgstr "Η εικόνα δεν ήταν δυνατό να φορτωθεί."
 
 #: ../src/brasero-jacket-edit.c:571
 msgid "Bac_kground Properties"
-msgstr "Ιδιότητες παρασκηνίου"
+msgstr "Ιδιότητες παρασ_κηνίου"
 
 #: ../src/brasero-jacket-edit.c:668
 msgid "_Text Color"
@@ -4703,16 +4543,23 @@ msgstr "από"
 msgid "Cover Editor"
 msgstr "Επεξεργαστής εξωφύλλου"
 
-#: ../src/brasero-multi-song-props.c:85 ../src/brasero-multi-song-props.c:93
-#: ../src/brasero-multi-song-props.c:101 ../src/brasero-multi-song-props.c:119
-#: ../src/brasero-multi-song-props.c:135 ../src/brasero-multi-song-props.c:156
-#: ../src/brasero-multi-song-props.c:169 ../src/brasero-multi-song-props.c:244
-#: ../src/brasero-multi-song-props.c:265 ../src/brasero-multi-song-props.c:286
-#: ../src/brasero-rename.c:87 ../src/brasero-rename.c:279
+#: ../src/brasero-multi-song-props.c:85
+#: ../src/brasero-multi-song-props.c:93
+#: ../src/brasero-multi-song-props.c:101
+#: ../src/brasero-multi-song-props.c:119
+#: ../src/brasero-multi-song-props.c:135
+#: ../src/brasero-multi-song-props.c:156
+#: ../src/brasero-multi-song-props.c:169
+#: ../src/brasero-multi-song-props.c:244
+#: ../src/brasero-multi-song-props.c:265
+#: ../src/brasero-multi-song-props.c:286
+#: ../src/brasero-rename.c:87
+#: ../src/brasero-rename.c:279
 msgid "<Keep current values>"
 msgstr "<Διατήρηση τρέχουσων τιμών>"
 
-#: ../src/brasero-multi-song-props.c:122 ../src/brasero-multi-song-props.c:139
+#: ../src/brasero-multi-song-props.c:122
+#: ../src/brasero-multi-song-props.c:139
 msgid "Remove silences"
 msgstr "Αφαίρεση σιωπών"
 
@@ -4804,7 +4651,7 @@ msgstr "Δεν είναι δυνατή η προσθήκη καταλόγων σ
 
 #: ../src/brasero-video-disc.c:249
 msgid "_Search Directory"
-msgstr "Αναζήτηση στον κατάλογο"
+msgstr "_Αναζήτηση στον κατάλογο"
 
 #: ../src/brasero-video-disc.c:290
 #, c-format
@@ -4829,11 +4676,8 @@ msgid "Converting video file to MPEG2"
 msgstr "Μετατροπή αρχείου βίντεο σε MPEG2"
 
 #: ../src/plugins/transcode/burn-vob.c:1216
-msgid ""
-"Vob allows to transcode any video file to a format suitable for video DVDs"
-msgstr ""
-"Το Vob επιτρέπει την κωδικοποίηση οποιουδήποτε αρχείου βίντεο σε μορφοποίηση "
-"κατάλληλη για DVD βίντεο"
+msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
+msgstr "Το Vob επιτρέπει την κωδικοποίηση οποιουδήποτε αρχείου βίντεο σε μορφοποίηση κατάλληλη για DVD βίντεο"
 
 #: ../src/plugins/vcdimager/burn-vcdimager.c:474
 msgid "Use vcdimager to create SVCDs"
@@ -4847,50 +4691,39 @@ msgstr "Αντιγραφή CD και DVD"
 msgid "Disc Copier"
 msgstr "Αντιγραφή δίσκων"
 
+#~ msgid "The size could not be retrieved (%s)"
+#~ msgstr "Δεν είναι δυνατή η ανάκτηση του μεγέθους (%s)"
 #~ msgid "no medium"
 #~ msgstr "δεν υπάρχει μέσο"
-
 #~ msgid "no supported medium"
 #~ msgstr "μη υποστηριζόμενο μέσο"
-
 #~ msgid "medium busy"
 #~ msgstr "απασχολημένο μέσο"
-
 #~ msgid "0"
 #~ msgstr "0"
-
 #~ msgid "Size:"
 #~ msgstr "Μέγεθος:"
-
 #~ msgid "Eject media"
 #~ msgstr "Εξαγωγή πολυμέσων"
-
 #~ msgid "Contents"
 #~ msgstr "Περιεχόμενα"
-
 #~ msgid "_Disc Info"
 #~ msgstr "Πληροφορίες _δίσκου"
-
 #~ msgid "Display information on blank discs currently inserted"
 #~ msgstr "Προβολή πληροφοριών κενών δίσκων που μόλις εισάχθηκαν"
-
 #~ msgid "Brasero projects"
 #~ msgstr "Εργασίες του brasero"
-
 #~ msgid "Brasero Disc Burning"
 #~ msgstr "Brasero-εφαρμογή εγγραφής δίσκων"
-
 #~ msgid ""
 #~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
 #~ msgstr ""
 #~ "Χρησιμοποιείται μόνο σε συνδυασμό με cdrecord με σημαία -immed. Δείτε την "
 #~ "immed_flag"
-
 #~ msgid "Should brasero ask to be set as the default app to burn"
 #~ msgstr ""
 #~ "Αν θα γίνεται ερώτηση για καθορισμό του brasero σαν την προεπιλεγμένη "
 #~ "εφαρμογή εγγραφής δίσκων"
-
 #~ msgid ""
 #~ "Should brasero ask to be set as the default app to burn audio or data. "
 #~ "Set to true, brasero won't ask."
@@ -4898,311 +4731,214 @@ msgstr "Αντιγραφή δίσκων"
 #~ "Αν θα γίνεται ερώτηση για καθορισμό του brasero σαν την προεπιλεγμένη "
 #~ "εφαρμογή εγγραφής ήχου ή δεδομένων. Αν καθοριστεί ως αληθής, ο brasero "
 #~ "δεν θα το απαιτεί."
-
 #~ msgid "Cdrdao toc file"
 #~ msgstr "Αρχείο περιεχομένων cdrdao"
-
 #~ msgid "Image Extension"
 #~ msgstr "Επέκταση εικόνας"
-
 #~ msgid "_Don't change extension"
 #~ msgstr "Να _μη γίνει αλλαγή επέκτασης"
-
 #~ msgid "Configure some options for the recording"
 #~ msgstr "Ρυθμίστε μερικές επιλογές για την εγγραφή"
-
 #~ msgid "Choose the disc to write to"
 #~ msgstr "Επιλέξτε το δίσκο για εγγραφή"
-
 #~ msgid "Number of copies "
 #~ msgstr "Αριθμός αντιγράφων"
-
 #~ msgid "Track Length"
 #~ msgstr "Διάρκεια κομματιού"
-
 #~ msgid "Unhandled Song"
 #~ msgstr "Μη διαχειριζόμενο τραγούδι"
-
 #~ msgid "Video File"
 #~ msgstr "Αρχείο βίντεο"
-
 #~ msgid "_Ignore video"
 #~ msgstr "Α_γνόηση βίντεο"
-
 #~ msgid "_Add video"
 #~ msgstr "_Πρόσθεση βίντεο"
-
 #~ msgid "Directory Search"
 #~ msgstr "Αναζήτηση καταλόγου"
-
 #~ msgid "Unreadable File"
 #~ msgstr "Μη αναγνώσιμο αρχείο"
-
 #~ msgid "loading"
 #~ msgstr "φορτώνεται"
-
 #~ msgid "Error"
 #~ msgstr "Σφάλμα"
-
 #~ msgid "File Deletion"
 #~ msgstr "Διαγραφή αρχείου"
-
 #~ msgid "Error Blanking:"
 #~ msgstr "Σφάλμα διαγραφής δίσκου:"
-
 #~ msgid "Blanking Finished"
 #~ msgstr "Η διαγραφή ολοκληρώθηκε"
-
 #~ msgid "Unexpected error"
 #~ msgstr "Μη αναμενόμενο σφάλμα"
-
 #~ msgid "this format is not supported by gstreamer"
 #~ msgstr "αυτή η μορφή δεν υποστηρίζεται από το gstreamer"
-
 #~ msgid "Show"
 #~ msgstr "Προβολή"
-
 #~ msgid "Playlist Loading Error"
 #~ msgstr "Σφάλμα φόρτωσης λίστας αναπαραγωγής"
-
 #~ msgid "Loading ..."
 #~ msgstr "Γίνεται φόρτωση..."
-
 #~ msgid "Plugins"
 #~ msgstr "Πρόσθετες λειτουργίες"
-
 #~ msgid "Total time:"
 #~ msgstr "Συνολικός χρόνος:"
-
 #~ msgid "%i MiB"
 #~ msgstr "%i MiB"
-
 #~ msgid "%i KiB"
 #~ msgstr "%i KiB"
-
 #~ msgid "%i bytes"
 #~ msgstr "%i bytes"
-
 #~ msgid "only in\t"
 #~ msgstr "μόνο σε\t"
-
 #~ msgid "Search Error"
 #~ msgstr "Σφάλμα αναζήτησης"
-
 #~ msgid "Cancel"
 #~ msgstr "Ακύρωση"
-
 #~ msgid "waiting"
 #~ msgstr "σε αναμονή"
-
 #~ msgid "KiB"
 #~ msgstr "kb"
-
 #~ msgid "MiB"
 #~ msgstr "mb"
-
 #~ msgid "GiB"
 #~ msgstr "gb"
-
 #~ msgid "This file can't be opened:"
 #~ msgstr "Δεν είναι δυνατό το άνοιγμα του αρχείου:"
-
 #~ msgid "File Error"
 #~ msgstr "Σφάλμα αρχείου"
-
 #~ msgid ""
 #~ "A recording was successfully completed.\n"
 #~ "The next recording will begin as soon as a recordable medium is inserted."
 #~ msgstr ""
 #~ "Μια εγγραφή ολοκληρώθηκε με επιτυχία.\n"
 #~ "Η επόμενη εγγραφή θα αρχίσει με την εισαγωγή ενός εγγράψιμου μέσου."
-
 #~ msgid "The disc in \"%s\" is a DVD."
 #~ msgstr "Ο δίσκος στο \"%s\" είναι DVD."
-
 #~ msgid "The disc in \"%s\" is a CD."
 #~ msgstr "Ο δίσκος στο \"%s\" είναι CD."
-
 #~ msgid "The disc in \"%s\" is not big enough."
 #~ msgstr "Ο δίσκος στο \"%s\" δεν είναι αρκετά μεγάλος."
-
 #~ msgid "Possible Data Loss"
 #~ msgstr "Πιθανή απώλεια δεδομένων"
-
 #~ msgid "Multisession Disc"
 #~ msgstr "Πολυσυνεδριακός δίσκος"
-
 #~ msgid "Continue"
 #~ msgstr "Συνέχεια"
-
 #~ msgid "Successful Simulation"
 #~ msgstr "Επιτυχής προσομοίωση"
-
 #~ msgid "Session Log Error"
 #~ msgstr "Σφάλμα κατά την καταγραφή συνεδρίας"
-
 #~ msgid "An unknown error occured. Check your disc"
 #~ msgstr "Ένα άγνωστο σφάλμα συνέβηκε. Ελέγξτε το δίσκο σας"
-
 #~ msgid "Burning Error"
 #~ msgstr "Σφάλμα εγγραφής"
-
 #~ msgid "Confirm"
 #~ msgstr "Επικύρωση"
-
 #~ msgid "Import session"
 #~ msgstr "Εισαγωγή συνεδρίας"
-
 #~ msgid "Session Import Error"
 #~ msgstr "Σφάλμα κατά την εισαγωγή συνεδρίας"
-
 #~ msgid "unknown error"
 #~ msgstr "Άγνωστο σφάλμα"
-
 #~ msgid "Do you want to continue or discard the old project layout?"
 #~ msgstr ""
 #~ "Θέλετε να συνεχίσετε ή να απορρίψετε την διάταξη της παλιάς εργασίας;"
-
 #~ msgid "Recursive Symlink"
 #~ msgstr "Αναδρομικός συμβολικός δεσμός"
-
 #~ msgid "File Not Found"
 #~ msgstr "Το αρχείο δεν βρέθηκε"
-
 #~ msgid "Already Existing File"
 #~ msgstr "Αρχείο που υπάρχει ήδη"
-
 #~ msgid "_Don't replace"
 #~ msgstr "_Μη αντικατάσταση"
-
 #~ msgid "File Over 2 GiB"
 #~ msgstr "Αρχείο πάνω από 2 GiB"
-
 #~ msgid "_Don't add"
 #~ msgstr "_Μη προσθήκη"
-
 #~ msgid "Deep Directory"
 #~ msgstr "Βαθύς κατάλογος"
-
 #~ msgid "A multisession disc is inserted:"
 #~ msgstr "Εισήχθηκε ένας πολυσυνεδριακός δίσκος:"
-
 #~ msgid "_Import Session"
 #~ msgstr "Ει_σαγωγή συνεδρίας"
-
 #~ msgid "Press if you want to cancel current project loading"
 #~ msgstr "Πιέστε αν θέλετε να ακυρώσετε την φόρτωση της τρέχουσας εργασίας"
-
 #~ msgid "_Don't rename"
 #~ msgstr "Ό_χι μετονομασία"
-
 #~ msgid ""
 #~ "Some files don't have a suitable name for a Windows-compatible CD. Those "
 #~ "names will be changed and truncated to 64 characters."
 #~ msgstr ""
 #~ "Μερικά αρχεία δεν έχουν κατάλληλο όνομα για CD συμβατό με Windows. Αυτά "
 #~ "τα ονόματα θα αλλαχθούν και θα αποκοπούν σε 64 χαρακτήρες."
-
 #~ msgid "Label of the disc"
 #~ msgstr "Ετικέτα του δίσκου"
-
 #~ msgid "Leave the disc _open to add a data session later"
 #~ msgstr ""
 #~ "Να μείνει ο δίσκος α_νοικτός για προσθήκη περισσότερων δεδομένων αργότερα"
-
 #~ msgid "Allow create what is called an enhanced CD or CD+"
 #~ msgstr ""
 #~ "Να επιτρέπεται η δημιουργία αυτού που ονομάζεται σαν εμπλουτισμένο CD ή CD"
 #~ "+"
-
 #~ msgid "Native aspect _ratio"
 #~ msgstr "Εγγενής λόγος α_ναλογιών"
-
 #~ msgid "Add _AC3 audio stream"
 #~ msgstr "Προσθήκη ροής ήχου_AC3 "
-
 #~ msgid "Add _MP2 audio stream"
 #~ msgstr "Προσθήκη ροής ήχου _MP2"
-
 #~ msgid "Audio Options"
 #~ msgstr "Επιλογές ήχου"
-
 #~ msgid "%s of data"
 #~ msgstr "%s από τα δεδομένα"
-
 #~ msgid "the medium is not writable"
 #~ msgstr "το μέσο δεν είναι εγγράψιμο"
-
 #~ msgid "%s free"
 #~ msgstr "%s ελεύθερο"
-
 #~ msgid "the medium can be recorded (automatic blanking required)"
 #~ msgstr "το μέσο μπορεί να εγγραφεί (απαιτείται αυτόματη διαγραφή)"
-
 #~ msgid "the medium can be recorded"
 #~ msgstr "το μέσο μπορεί να εγγραφεί"
-
 #~ msgid "data can be written or appended to the medium"
 #~ msgstr "τα δεδομένα μπορούν να εγγραφούν ή να προστεθούν στο μέσο"
-
 #~ msgid "data can be appended to the medium"
 #~ msgstr "τα δεδομένα μπορούν να προστεθούν στο μέσο"
-
 #~ msgid ""
 #~ "The image will be saved to\n"
 #~ "%s"
 #~ msgstr ""
 #~ "Η εικόνα θα αποθηκευτεί στο\n"
 #~ "%s"
-
 #~ msgid "Status:"
 #~ msgstr "Κατάσταση:"
-
 #~ msgid "<b>Burning speed</b>"
 #~ msgstr "]<b>Ταχύτητα εγγραφής</b>"
-
 #~ msgid "This image can't be burnt:"
 #~ msgstr "Δεν είναι δυνατή η εγγραφή της εικόνας:"
-
 #~ msgid "Invalid Image"
 #~ msgstr "Μη έγκυρη εικόνα"
-
 #~ msgid "No Image"
 #~ msgstr "Χωρίς εικόνα"
-
 #~ msgid "Path:"
 #~ msgstr "διαδρομή:"
-
 #~ msgid "Open an image"
 #~ msgstr "Άνοιγμα εικόνας"
-
 #~ msgid "Image"
 #~ msgstr "Εικόνα"
-
 #~ msgid "Image File Properties"
 #~ msgstr "Ιδιότητες αρχείου εικόνας"
-
 #~ msgid "Would you like to activate overburn?"
 #~ msgstr "Θα θέλατε να ενεργοποιήσετε το overburn;"
-
 #~ msgid "_Don't use overburn"
 #~ msgstr "_Μη χρησιμοποίηση overburn"
-
 #~ msgid "Please wait:"
 #~ msgstr "Παρακαλώ περιμένετε:"
-
 #~ msgid "Please Wait"
 #~ msgstr "Παρακαλώ περιμένετε"
-
 #~ msgid "some tasks are not completed yet."
 #~ msgstr "μερικές εργασίας δεν έχουν ολοκληρωθεί ακόμη."
-
 #~ msgid "Ongoing Tasks"
 #~ msgstr "Εργασίες σε εξέλιξη"
-
 #~ msgid "Empty Project"
 #~ msgstr "Άδειασμα εργασίας"
-
 #~ msgid ""
 #~ "This is a first time running dialog that won't be shown again. If you "
 #~ "change your mind, you can change your choice later in the Removable "
@@ -5212,205 +4948,145 @@ msgstr "Αντιγραφή δίσκων"
 #~ "Αν αλλάξετε γνώμη, μπορείτε να αλλάξετε την επιλογή σας αργότερα στα "
 #~ "Αφαιρούμενοι Οδηγοί και Ιδιότητες Μέσων είτε επιλέξατε είτε όχι το "
 #~ "brasero."
-
 #~ msgid "_Keep using \"%s\""
 #~ msgstr "_Διατήρηση χρησιμοποίησης \"%s\""
-
 #~ msgid "_Use Brasero next time"
 #~ msgstr "_Χρησιμοποίηση του Brasero την επόμενη φορά"
-
 #~ msgid "Would you like to use Brasero in the future to burn audio discs?"
 #~ msgstr ""
 #~ "Θα θέλατε να χρησιμοποιετε το Βrasero στο μέλλον για την εγγραφή δίσκων "
 #~ "ήχου;"
-
 #~ msgid "New Project"
 #~ msgstr "Νέα εργασία"
-
 #~ msgid "Add"
 #~ msgstr "Προσθήκη"
-
 #~ msgid "Remove"
 #~ msgstr "Αφαίρεση"
-
 #~ msgid "Project Loading Error"
 #~ msgstr "Σφάλμα φόρτωσης εργασίας"
-
 #~ msgid "Modified Project"
 #~ msgstr "Τροποποιημένη εργασία"
-
 #~ msgid " by %s"
 #~ msgstr " από %s"
-
 #~ msgid "Create a new audio project"
 #~ msgstr "Δημιουργία νέας εργασίας ήχου"
-
 #~ msgid "Create a new data project"
 #~ msgstr "Δημιουργία νέας εργασίας δεδομένων"
-
 #~ msgid "Create a new video project"
 #~ msgstr "Δημιουργία νέας εργασίας βίντεο"
-
 #~ msgid "Display File Browser"
 #~ msgstr "Προβολή περιηγητή αρχείων"
-
 #~ msgid "Display Playlists"
 #~ msgstr "Προβολή λιστών αναπαραγωγής"
-
 #~ msgid "Show the available media to be burnt"
 #~ msgstr "Εμφάνιση του διαθέσιμου πολυμέσου για εγγραφή"
-
 #~ msgid "<i>%s</i> is busy"
 #~ msgstr "Το <i>%s</i> είναι απασχολημένο"
-
 #~ msgid "<i>%s</i> not properly supported"
 #~ msgstr "Το <i>%s</i> δεν υποστηρίζεται κατάλληλα"
-
 #~ msgid "The disc in <i>%s</i> is not supported"
 #~ msgstr "Ο δίσκος στο <i>%s</i> δεν υποστηρίζεται"
-
 #~ msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
 #~ msgstr "<b>Υπερμεγέθης</b> (%s / %s in <i>%s</i>)"
-
 #~ msgid "<b>Oversized</b> (%s / %s)"
 #~ msgstr "<b>Υπερμεγέθης</b> (%s / %s)"
-
 #~ msgid "<b>Empty</b> (%s free for <i>%s</i>)"
 #~ msgstr "<b>Κενό</b> (%s ελεύθερα για <i>%s</i>)"
-
 #~ msgid "<b>Empty</b> (%s free)"
 #~ msgstr "<b>Κενό</b> (%s ελεύθερα)"
-
 #~ msgid "%s / %s (for <i>%s</i>)"
 #~ msgstr "%s / %s (για <i>%s</i>)"
-
 #~ msgid "%s (DVD-R Dual Layer)"
 #~ msgstr "%s (DVD-R διπλής στρώσης)"
-
 #~ msgid "%s (DVD-R)"
 #~ msgstr "%s (DVD-R)"
-
 #~ msgid "%s (CD-R)"
 #~ msgstr "%s (CD-R)"
-
 #~ msgid "<big>Audi_o project</big>"
 #~ msgstr "<big>Εργασία ή_χου</big>"
-
 #~ msgid "<big>D_ata project</big>"
 #~ msgstr "<big>Εργασία δε_δομένων</big>"
-
 #~ msgid "<big>_Video project</big>"
 #~ msgstr "<big>Εργασία _βίντεο</big>"
-
 #~ msgid "<big>Disc _copy</big>"
 #~ msgstr "<big>Α_ντιγραφή δίσκου</big>"
-
 #~ msgid "<big>Burn _image</big>"
 #~ msgstr "<big>Εγγραφή ει_κόνας</big>"
-
 #~ msgid "Choose from the following options"
 #~ msgstr "Επιλέξτε από τις επόμενες επιλογές"
-
 #~ msgid "Choose a recently opened project:"
 #~ msgstr "Επιλέξτε μια πρόσφατα ανοιγμένη εργασία:"
-
 #~ msgid "File Integrity Check Error"
 #~ msgstr "Σφάλμα κατά τον έλεγχο ακεραιότητας αρχείου"
-
 #~ msgid "File Integrity Check Success"
 #~ msgstr "Επιτυχία ελέγχου ακεραιότητας αρχείου"
-
 #~ msgid "a temporary file couldn't be created"
 #~ msgstr "Δεν ήταν δυνατή η δημιουργία προσωρινού αρχείου"
-
 #~ msgid "Media Busy"
 #~ msgstr "Απασχολημένο μέσο"
-
 #~ msgid "the inserted media is busy."
 #~ msgstr "το μέσο που εισήχθηκε είναι απασχολημένο."
-
 #~ msgid "Media Error"
 #~ msgstr "Σφάλμα μέσου"
-
 #~ msgid "the inserted media is not supported."
 #~ msgstr "το μέσο που εισήχθηκε δεν υποστηρίζεται."
-
 #~ msgid "Choose a media"
 #~ msgstr "Επιλέξτε μέσο"
-
 #~ msgid "the disc could not be reloaded (max attemps reached)"
 #~ msgstr ""
 #~ "Δεν ήταν δυνατή η επαναφόρτωση του δίσκου (έχετε υπερβεί τον μέγιστο "
 #~ "αριθμό προσπαθειών)"
-
 #~ msgid "no drive specified as source"
 #~ msgstr "δεν υπάρχει καθορισμένος οδηγός σε πηγαίο κώδικα"
-
 #~ msgid "the drive has no burning capabilities"
 #~ msgstr "ο οδηγός δεν έχει δυνατότητες εγγραφής"
-
 #~ msgid "the disc could not be mounted (max attemps reached)"
 #~ msgstr ""
 #~ "Δεν ήταν δυνατή η προσάρτηση του δίσκου (έχετε υπερβεί τις μέγιστες "
 #~ "προσπάθειες)"
-
 #~ msgid "the drive seems to be busy"
 #~ msgstr "ο οδηγός φαίνεται να είναι απασχολημένος"
-
 #~ msgid ""
 #~ "it's not possible to merge to this media because it hasn't got enough "
 #~ "space"
 #~ msgstr ""
 #~ "δεν είναι δυνατή η συγχώνευση σε αυτό το μέσο επειδή δεν υπάρχει αρκετός "
 #~ "ελεύθερος  χώρος"
-
 #~ msgid "there is no drive to burn to"
 #~ msgstr "δεν υπάρχει κανένα οδηγός για εγγραφή"
-
 #~ msgid "this operation is not supported"
 #~ msgstr "η λειτουργία δεν υποστηρίζεται"
-
 #~ msgid "internal error in plugin system"
 #~ msgstr "εσωτερικό σφάλμα στο σύστημα πρόσθετης λειτουργίας"
-
 #~ msgid "it does not appear to be a primary volume descriptor"
 #~ msgstr "δεν φαίνεται να είναι περιγραφή πρωτεύουσας έντασης ήχου"
-
 #~ msgid "invalid directory record"
 #~ msgstr "μη έγκυρη εγγραφή καταλόγου"
-
 #~ msgid "file name is too long"
 #~ msgstr "το όνομα του αρχείου είναι πολύ μεγάλο"
-
 #~ msgid "plugin %s did not want to work. Try to deactivate it"
 #~ msgstr ""
 #~ "η πρόσθετη λειτουργία %s δεν φαίνεται να δουλεύει. Προσπαθήστε να την "
 #~ "απενεργοποιήσετε"
-
 #~ msgid "Insufficient space on media (%lli available for %lli)"
 #~ msgstr "Μη απαραίτητος χώρος στο μέσο (%lli διαθέσιμα για %lli)"
-
 #~ msgid ""
 #~ "the selected location does not have enough free space to store the disc "
 #~ "image (%ld MiB needed)"
 #~ msgstr ""
 #~ "η επιλεγμένη τοποθεσία δεν έχει αρκετό ελεύθερο χώρο για να αποθηκεύσετε "
 #~ "την εικόνα δίσκου (χρειάζονται %ld MiB)"
-
 #~ msgid "the size of the volume can't be checked (Unknown error)"
 #~ msgstr ""
 #~ "Δεν ήταν δυνατός ο έλεγχος του μεγέθους της έντασης ήχου (Άγνωστο σφάλμα)"
-
 #~ msgid "the pipe couldn't be created (%s)"
 #~ msgstr "Δεν ήταν δυνατή η δημιουργία του pipe (%s)"
-
 #~ msgid ""
 #~ "plugin %s did not work properly.\n"
 #~ "Try to deactivate it"
 #~ msgstr ""
 #~ "η πρόσθετη λειτουργία %s δεν λειτούργησε κανονικά.\n"
 #~ "Προσπαθήστε να την απενεργοποιήσετε"
-
 #~ msgid ""
 #~ "plugin %s didn't work properly (it does not support operation).\n"
 #~ "Try to deactivate it"
@@ -5418,362 +5094,250 @@ msgstr "Αντιγραφή δίσκων"
 #~ "η πρόσθετη λειτουργία %s δεν λειτούργησε κανονικά (δεν υποστηρίζει τη "
 #~ "λειτουργία).\n"
 #~ "Προσπαθήστε να την απενεργοποιήσετε"
-
 #~ msgid "couldn't set non blocking mode"
 #~ msgstr "Δεν ήταν δυνατός ο καθορισμός κατάστασης μη φραγής"
-
 #~ msgid "couldn't get pipe flags"
 #~ msgstr "Δεν ήταν δυνατή η ανάκτηση σημαιών pipe "
-
 #~ msgid "file"
 #~ msgstr "αρχείο"
-
 #~ msgid "null graft point"
 #~ msgstr "κανένα σημείο εργασίας"
-
 #~ msgid "wrong path"
 #~ msgstr "Λάθος διαδρομή"
-
 #~ msgid "impossible to retrieve information"
 #~ msgstr "Αδύνατη η ανάκτηση της πληροφορίας"
-
 #~ msgid "no path"
 #~ msgstr "κανένα μονοπάτι"
-
 #~ msgid "no output specified"
 #~ msgstr "μη καθορισμένη έξοδος"
-
 #~ msgid "a temporary directory could not be created (%s)"
 #~ msgstr "Δεν ήταν δυνατή η δημιουργία προσωρινού καταλόγου (%s)"
-
 #~ msgid "a temporary file can't be created: %s"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία προσωρινού αρχείου: %s"
-
 #~ msgid "there isn't a valid volume descriptor"
 #~ msgstr "δεν υπάρχει έγκυρη περιγραφή έντασης ήχου"
-
 #~ msgid "Open a data project with the contents of nautilus-cd-burner"
 #~ msgstr "Άνοιγμα εργασίας δεδομένων με τα περιεχόμενα του nautilus-cd-burner"
-
 #~ msgid "Incompatible Options"
 #~ msgstr "Ασύμβατες επιλογές"
-
 #~ msgid "CD/DVD burning"
 #~ msgstr "Εγγραφή CD/DVD"
-
 #~ msgid "the cue file (%s) seems to be invalid"
 #~ msgstr "Το αρχείο τύπου cue (%s) φαίνεται να είναι μη έγκυρο"
-
 #~ msgid "cdrdao could not be found in the path"
 #~ msgstr "Το cdrdao δεν μπορούσε να βρεθεί στο μονοπάτι"
-
 #~ msgid "toc2cue could not be found in the path"
 #~ msgstr "Το toc2cue δεν μπορούσε να βρεθεί στο μονοπάτι"
-
 #~ msgid "the old image couldn't be read"
 #~ msgstr "η παλιά εικόνα δεν ήταν δυνατό να αναγνωστεί"
-
 #~ msgid "the image can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία της εικόνας"
-
 #~ msgid "writing to file descriptor failed"
 #~ msgstr "αποτυχία κατά την εγγραφή στην περιγραφή αρχείου"
-
 #~ msgid "Internal error: bad file descriptor"
 #~ msgstr "Εσωτερικό σφάλμα: κακή περιγραφή αρχείου"
-
 #~ msgid "The file is too large for a CD"
 #~ msgstr "Το αρχείο είναι πολύ μεγάλο για να εγγραφεί σε CD"
-
 #~ msgid ""
 #~ "failed to get the start point of the track. Make sure the media allow to "
 #~ "add files (it is not closed)"
 #~ msgstr ""
 #~ "αποτυχία κατά την ανάκτηση σημείου έναρξης του κομματιού. Βεβαιωθείτε ότι "
 #~ "το πολυμέσο επιτρέπει την προσθήκη αρχείων (δεν έχει κλείσει)"
-
 #~ msgid "genisoimage could not be found in the path"
 #~ msgstr "δεν ήταν δυνατό να βρεθεί το genisoimage στο μονοπάτι"
-
 #~ msgid "the drive is not ready"
 #~ msgstr "ο οδηγός δεν είναι έτοιμος"
-
 #~ msgid "you don't seem to have the required permissions to access the drive"
 #~ msgstr ""
 #~ "δεν φαίνεται να έχετε τις απαιτούμενες άδειας για να έχετε πρόσβαση στον "
 #~ "οδηγό"
-
 #~ msgid "raw images cannot be created with DVDs"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία εικόνων τύπου raw με DVD"
-
 #~ msgid "There doesn't seem to be a disc in the drive"
 #~ msgstr "Δεν φαίνεται να υπάρχει δίσκος στον οδηγό"
-
 #~ msgid "input buffer error"
 #~ msgstr "σφάλμα εισαγωγής ενδιάμεσης μνήμης"
-
 #~ msgid "The CD has already been recorded"
 #~ msgstr "Το CD έχει ήδη εγγραφεί"
-
 #~ msgid "The CD cannot be blanked"
 #~ msgstr "Δεν είναι δυνατή η διαγραφή του CD"
-
 #~ msgid "The files selected did not fit on the CD"
 #~ msgstr "Τα επιλεγμένα αρχεία δεν ταιριάζουν στο CD"
-
 #~ msgid "a write error occured which was likely due to overburning the disc"
 #~ msgstr ""
 #~ "συνέβηκε σφάλμα εγγραφής που πιθανώς να οφείλεται στην επιλογή overburn "
 #~ "του δίσκου"
-
 #~ msgid ""
 #~ "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 #~ msgstr ""
 #~ "Όλα τα αρχεία ήχου πρέπει να είναι στέρεο, με ψηφιακό ήχο 16-bit με "
 #~ "παραδείγματα 44100Hz"
-
 #~ msgid "The image does not seem to be a proper iso9660 file system"
 #~ msgstr "Η εικόνα δεν φαίνεται να έχει κατάλληλο σύστημα αρχείων iso9660"
-
 #~ msgid ""
 #~ "The drive seems to be busy (maybe check you have proper permissions to "
 #~ "use it)"
 #~ msgstr ""
 #~ "Ο οδηγός φαίνεται να είναι απασχολημένος (ίσως να ελέγξετε αν έχετε τις "
 #~ "κατάλληλες άδειες για να το χρησιμοποιήσετε)"
-
 #~ msgid "The drive seems to be busy (maybe you should reload the media)"
 #~ msgstr ""
 #~ "Ο οδηγός φαίνεται να είναι απασχολημένος (ίσως θα έπρεπε να φορτώσετε "
 #~ "ξανά το μέσο)"
-
 #~ msgid "the image file cannot be found"
 #~ msgstr "Δεν ήταν δυνατό να βρεθεί το αρχείο εικόνας"
-
 #~ msgid "internal error"
 #~ msgstr "εσωτερικό σφάλμα"
-
 #~ msgid "the cd information could not be written"
 #~ msgstr "Δεν ήταν δυνατό να εγγραφούν οι πληροφορίες του cd"
-
 #~ msgid "the disc could not be closed"
 #~ msgstr "Δεν ήταν δυνατό να κλείσει το cd"
-
 #~ msgid "the audio tracks are too short or not a multiple of 2352"
 #~ msgstr "τα κομμάτια ήχου είναι πολύ μικρά ή δεν είναι πολλαπλάσια του 2352"
-
 #~ msgid "the inf file can't be written : %s"
 #~ msgstr "Το αρχείο με τις πληροφορίες δεν μπορεί να εγγραφεί: %s"
-
 #~ msgid "imager doesn't seem to be ready"
 #~ msgstr "η εφαρμογή εικόνων δεν φαίνεται να είναι έτοιμη"
-
 #~ msgid "the size of the session cannot be retrieved"
 #~ msgstr "Δεν είναι δυνατή η ανάκτηση του μεγέθους της συνεδρίας"
-
 #~ msgid "mkisofs could not be found in the path"
 #~ msgstr "Δεν ήταν δυνατή η εύρεση του mkisofs στο μονοπάτι"
-
 #~ msgid "readcd could not be found in the path"
 #~ msgstr "Δεν ήταν δυνατή η εύρεση του readcd στο μονοπάτι"
-
 #~ msgid "the data couldn't be written to the pipe (%i: %s)"
 #~ msgstr "Δεν ήταν δυνατή η εγγραφή δεδομένων στο pipe (%i: %s)"
-
 #~ msgid "the data couldn't be written to the file (%i: %s)"
 #~ msgstr "Δεν ήταν δυνατή η εγγραφή δεδομένων στο αρχείο (%i: %s)"
-
 #~ msgid "Unhandled error, aborting"
 #~ msgstr "Μη διαχειριζόμενο σφάλμα, γίνεται εγκατάλειψη"
-
 #~ msgid "dvd+rw-format could not be found in the path"
 #~ msgstr "Δεν ήταν δυνατή η εύρεση του dvd+rw-format στο μονοπάτι"
-
 #~ msgid "The disc is already burnt"
 #~ msgstr "Ο δίσκος έχει ήδη εγγραφεί"
-
 #~ msgid "The recorder could not be accessed"
 #~ msgstr "Δεν ήταν δυνατή η πρόσβαση στην εγγραφή"
-
 #~ msgid "the file /proc/self/fd/0 is missing"
 #~ msgstr "το αρχείο /proc/self/fd/0 λείπει"
-
 #~ msgid "the image is not stored locally"
 #~ msgstr "η εικόνα δεν είναι αποθηκευμένη τοπικά"
-
 #~ msgid "growisofs could not be found in the path"
 #~ msgstr "Δεν ήταν δυνατή η εύρεση του growisofs στο μονοπάτι"
-
 #~ msgid "unable to set the source"
 #~ msgstr "αδύνατος ο καθορισμός του πηγαίου κώδικα"
-
 #~ msgid "unable to add the track to the session"
 #~ msgstr "αδύνατη η προσθήκη του κομματιού στη συνεδρία"
-
 #~ msgid "no profile available for the medium"
 #~ msgstr "δεν υπάρχει διαθέσιμο προφίλ για το μέσο"
-
 #~ msgid "/dev/null can't be opened"
 #~ msgstr "Δεν είναι δυνατό το άνοιγμα του /dev/null"
-
 #~ msgid "libburn can't burn: %s"
 #~ msgstr "Το libburn δεν μπορεί να εγγράψει το: %s"
-
 #~ msgid "the drive couldn't be initialized"
 #~ msgstr "Δεν ήταν δυνατή η αρχικοποίηση του οδηγού"
-
 #~ msgid "a parent for the path (%s) could not be found in the tree"
 #~ msgstr ""
 #~ "Δεν ήταν δυνατή ή εύρεση στο δένδρο ενός γονικού καταλόγου για το "
 #~ "μονοπάτι (%s)"
-
 #~ msgid "non local file %s"
 #~ msgstr "μη τοπικό αρχείο %s"
-
 #~ msgid "libisofs reported an error while adding directory %s (%x)"
 #~ msgstr ""
 #~ "Το libisofs ανέφερε ένα σφάλμα κατά την προσθήκη του καταλόγου %s (%x)"
-
 #~ msgid "no disc could be found"
 #~ msgstr "δεν βρέθηκε κανένας δίσκος"
-
 #~ msgid "source can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία πηγαίου κώδικα"
-
 #~ msgid "decode can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία αποκωδικοποίησης"
-
 #~ msgid "audioconvert can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία μετατροπής ήχου"
-
 #~ msgid "audioresample can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία επανάληψης παραδείγματος ήχου"
-
 #~ msgid "rganalysis can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία rganalysis"
-
 #~ msgid "sink can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία εξόδου ήχου"
-
 #~ msgid "GST plugin \"rgvolume\" could not be found"
 #~ msgstr "Δεν ήταν δυνατό να βρεθεί το πρόσθετο GST \"rgvolume\" "
-
 #~ msgid "GST plugin \"rganalysis\" could not be found"
 #~ msgstr "Δεν ήταν δυνατό να βρεθεί το πρόσθετο GST \"rganalysis\" "
-
 #~ msgid "filter can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία φίλτρου"
-
 #~ msgid "error opening file for padding : %s"
 #~ msgstr "σφάλμα κατά το άνοιγμα αρχείου για συμπλήρωση: %s"
-
 #~ msgid "the device is not ready"
 #~ msgstr "η συσκευή δεν είναι έτοιμη"
-
 #~ msgid " Preview "
 #~ msgstr "Προεπισκόπηση"
-
 #~ msgid "Size Error"
 #~ msgstr "Σφάλμα μεγέθους"
-
 #~ msgid "No Silence"
 #~ msgstr "Όχι σιωπή"
-
 #~ msgid "Automatic Split"
 #~ msgstr "Αυτόματος διαχωρισμός"
-
 #~ msgid "Choose the disc to read from"
 #~ msgstr "Επιλέξτε το δίσκο για ανάγνωση"
-
 #~ msgid "size can't be retrieved for %s: %s"
 #~ msgstr "Δεν είναι δυνατή η ανάκτηση του μεγέθους για το %s: %s"
-
 #~ msgid "there isn't any available session on the disc"
 #~ msgstr "δεν υπάρχει καμιά διαθέσιμη συνεδρία στο δίσκο"
-
 #~ msgid "unknown volume type"
 #~ msgstr "άγνωστο τύπος έντασης ήχου"
-
 #~ msgid "1 item"
 #~ msgstr "1 αντικείμενο"
-
 #~ msgid "Hide the _filtered file list (no file)"
 #~ msgstr "Απόκρυψη της λίστας _φιλτραρισμένων αρχείων (κανένα αρχείο)"
-
 #~ msgid "Show the _filtered file list (no file)"
 #~ msgstr "Εμφάνιση της λίστας _φιλτραρισμένων αρχείων (κανένα αρχείο)"
-
 #~ msgid "unreadable file"
 #~ msgstr "μη αναγνώσιμο αρχείο"
-
 #~ msgid "recursive symlink"
 #~ msgstr "αναδρομικός συμβολικός δεσμός"
-
 #~ msgid "<b>Data %s</b>: \"%s\""
 #~ msgstr "<b>Δεδομένα %s</b>: \"%s\""
-
 #~ msgid "<b>Blank %s</b> in %s"
 #~ msgstr "<b>Κενό %s</b> στο %s"
-
 #~ msgid "<b>Audio and data %s</b> in %s"
 #~ msgstr "<b>Ήχος και δεδομένα %s</b> στο %s"
-
 #~ msgid "<b>Audio %s</b> in %s"
 #~ msgstr "<b>Ήχος %s</b> στο %s"
-
 #~ msgid "<b>Data %s</b> in %s"
 #~ msgstr "<b>Δεδομένα %s</b> στο %s"
-
 #~ msgid "<b>%s</b> in %s"
 #~ msgstr "<b>%s</b> στο %s"
-
 #~ msgid "the file %s couldn't be read (%s)"
 #~ msgstr "το αρχείο %s δεν ήταν δυνατό να αναγνωστεί (%s)"
-
 #~ msgid "data could not be read from the pipe (%i: %s)"
 #~ msgstr "Δεν ήταν δυνατή η ανάγνωση των δεδομένων από το pipe (%i: %s)"
-
 #~ msgid "the image is not local"
 #~ msgstr "η εικόνα δεν είναι τοπική"
-
 #~ msgid "by "
 #~ msgstr "από "
-
 #~ msgid "Substitute"
 #~ msgstr "Αντικατάσταση"
-
 #~ msgid "Unhandled file"
 #~ msgstr "Μη διαχειριζόμενο αρχείο"
-
 #~ msgid "queue element can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία στοιχείου ουράς"
-
 #~ msgid "ffenc_mp2 can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία ffenc_mp2"
-
 #~ msgid "queue1 element can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία στοιχείου ουράς1"
-
 #~ msgid "ffenc_ac3 can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία ffenc_ac3"
-
 #~ msgid "tee element can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία στοιχείου "
-
 #~ msgid "framerate can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία ρυθμού καρέ"
-
 #~ msgid "scale can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία κλίμακας"
-
 #~ msgid "ffmpegcolorspace can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία ffmpegcolorspace"
-
 #~ msgid "mpeg2enc can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία mpeg2enc"
-
 #~ msgid "mplex can't be created"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία mplex"
-
 #~ msgid "Brasero Disc Copy"
 #~ msgstr "Αντιγραφή δίσκων Brasero"
+
