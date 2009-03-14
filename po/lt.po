@@ -2,14 +2,15 @@
 # Copyright (C) 2006-2008 Free Software Foundation, Inc.
 # This file is distributed under the same license as the Brasero package.
 # Žygimantas Beručka <zygis@gnome.org>, 2006-2008.
-# Mantas Kriaučiūnas <mantas@akl.lt>, 2007.
+# Mantas Kriaučiūnas <mantas@akl.lt>, 2007-2009.
+# Eglė Kriaučiūnienė <egle@akl.lt>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Brasero HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-11 01:16+0200\n"
-"PO-Revision-Date: 2009-03-11 01:16+0200\n"
+"POT-Creation-Date: 2009-03-14 22:29+0200\n"
+"PO-Revision-Date: 2009-03-14 01:16+0200\n"
 "Last-Translator: Mantas Kriaučiūnas <mantas@akl.lt>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -411,19 +412,15 @@ msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
 msgstr "Leidžia rašyti failus, įdėtus į Nautilus „CD/DVD rašymo aplanką“"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+msgid "CD/DVD Creator"
+msgstr "CD/DVD kūrimas"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
 #: ../data/brasero-open-image.desktop.in.in.h:1
 #: ../data/brasero-open-playlist.desktop.in.in.h:1
 #: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Kurti CD ir DVD diskus"
-
-#: ../nautilus/brasero-nautilus.desktop.in.in.h:2 ../src/brasero-app.c:554
-#: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burner"
-msgstr "Diskų rašymo programa"
 
 #: ../nautilus/nautilus-burn-bar.c:143
 msgid "Drag or copy files below to write them to disc"
@@ -533,7 +530,7 @@ msgstr "Visi failai"
 #: ../src/brasero-src-image.c:579
 msgctxt "disc"
 msgid "Image files only"
-msgstr "Tik paveikslėlių failai"
+msgstr "Tik atvaizdžių failai"
 
 #: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:200
 msgid "Image type:"
@@ -748,6 +745,13 @@ msgstr "Rodyti pagalbą"
 msgid "About"
 msgstr "Apie"
 
+#: ../src/brasero-app.c:554 ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Disc Burner"
+msgstr "Diskų rašymo programa"
+
 #: ../src/brasero-app.c:999
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
@@ -802,7 +806,8 @@ msgstr "Brasero svetainė"
 msgid "translator-credits"
 msgstr ""
 "Žygimantas Beručka <zygis@gnome.org>\n"
-"Mantas Kriaučiūnas <mantas@akl.lt>"
+"Mantas Kriaučiūnas <mantas@akl.lt>\n"
+"Eglė Kriaučiūnienė <egle@akl.lt>"
 
 #: ../src/brasero-app.c:1170 ../src/brasero-app.c:1176
 msgid "_Recent Projects"
@@ -1373,7 +1378,7 @@ msgstr "Klaida apdorojant grojaraštį  „%s“."
 #: ../src/brasero-playlist.c:810 ../src/brasero-data-disc.c:208
 #: ../src/brasero-project.c:1819 ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
-msgstr "iškilo nežinoma klaida"
+msgstr "Įvyko nežinoma klaida"
 
 #: ../src/brasero-playlist.c:914 ../src/brasero-data-tree-model.c:434
 #: ../src/brasero-data-tree-model.c:591
@@ -1603,12 +1608,12 @@ msgstr "Rodyti _dialogą"
 msgid "Show dialog"
 msgstr "Rodyti dialogą"
 
-#: ../src/brasero-tray.c:255
+#: ../src/brasero-tray.c:256
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
 msgstr "%s, %02i%% atlikta, liko %s"
 
-#: ../src/brasero-tray.c:262
+#: ../src/brasero-tray.c:263
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s, %02i%% atlikta"
@@ -2113,7 +2118,7 @@ msgstr ""
 
 #: ../src/brasero-burn-dialog.c:1696
 msgid "An unknown error occured."
-msgstr "Kilo nežinoma klaida."
+msgstr "Įvyko nežinoma klaida."
 
 #: ../src/brasero-burn-dialog.c:1706
 msgid "Error while burning."
@@ -2443,7 +2448,7 @@ msgstr "_Išjungti pilną suderinamumą su Windows"
 
 #: ../src/brasero-disc-option-dialog.c:340
 msgid "_Rename for Full Windows Compatibility"
-msgstr "_Pervadinti, kad būtų pilnai suderinama su Windows"
+msgstr "_Pervadinti, kad būtų pilnai suderinama su Windows OS"
 
 #: ../src/brasero-disc-option-dialog.c:363
 msgid "Increase compatibility with _Windows systems"
@@ -3040,8 +3045,7 @@ msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
 "another CD/DVD"
 msgstr ""
-"Sukurti 1:1 audio arba duomenų CD/DVD kopiją kietajame diske arba kitame CD/"
-"DVD"
+"Nukopijuoti garso, video ar duomenų CD/DVD į kompiuterio diską ar kitą CD/DVD"
 
 #: ../src/brasero-project-manager.c:116
 msgid "_Burn Image..."
