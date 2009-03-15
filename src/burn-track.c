@@ -504,7 +504,7 @@ brasero_track_set_audio_info (BraseroTrack *track,
 	audio = (BraseroTrackAudio *) track;
 
 	if (audio->info)
-		brasero_song_info_free (info);
+		brasero_song_info_free (audio->info);
 
 	audio->info = info;
 	return BRASERO_BURN_OK;
