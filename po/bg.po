@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-21 22:46+0200\n"
-"PO-Revision-Date: 2009-02-21 18:46+0200\n"
+"POT-Creation-Date: 2009-03-16 12:39+0200\n"
+"PO-Revision-Date: 2009-03-16 12:37+0200\n"
 "Last-Translator: Ivaylo Valkov <ivaylo@e-valkov.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -101,7 +101,7 @@ msgstr "Няма наличен диск"
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../libbrasero-media/brasero-drive.c:507
+#: ../libbrasero-media/brasero-drive.c:503
 #: ../libbrasero-media/brasero-medium.c:275
 #: ../libbrasero-media/brasero-volume.c:379
 msgid "Image File"
@@ -399,31 +399,27 @@ msgstr "Копиране на файловете локално"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../src/plugins/local-track/burn-uri.c:705
+#: ../src/plugins/local-track/burn-uri.c:713
 #: ../nautilus/nautilus-burn-bar.c:136
 msgid "CD/DVD Creator Folder"
 msgstr "Папка за създаване на CD/DVD"
 
-#: ../src/plugins/local-track/burn-uri.c:706
+#: ../src/plugins/local-track/burn-uri.c:714
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
 msgstr ""
 "Позволява да се записват файлове добавени в „Папка за създаване на CD/DVD“ в "
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+msgid "CD/DVD Creator"
+msgstr "Създаване на CD/DVD"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
 #: ../data/brasero-open-image.desktop.in.in.h:1
 #: ../data/brasero-open-playlist.desktop.in.in.h:1
 #: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Създаване на CD и DVD дискове"
-
-#: ../nautilus/brasero-nautilus.desktop.in.in.h:2 ../src/brasero-app.c:554
-#: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burner"
-msgstr "Запис на диск"
 
 #: ../nautilus/nautilus-burn-bar.c:143
 msgid "Drag or copy files below to write them to disc"
@@ -529,9 +525,8 @@ msgid "All files"
 msgstr "Всички файлове"
 
 #. Translators: this a disc image here
-#. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-src-image.c:579 ../src/brasero-file-chooser.c:235
-#: ../src/brasero-project.c:1510
+#: ../src/brasero-src-image.c:579
+msgctxt "disc"
 msgid "Image files only"
 msgstr "Само файлове с образи"
 
@@ -757,6 +752,13 @@ msgstr "Показване на помощ"
 #: ../src/brasero-app.c:132
 msgid "About"
 msgstr "Относно"
+
+#: ../src/brasero-app.c:554 ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Disc Burner"
+msgstr "Запис на диск"
 
 #: ../src/brasero-app.c:999
 msgid ""
@@ -1206,29 +1208,29 @@ msgstr "Към аудио диск не могат да се добавят па
 msgid "Search _Directory"
 msgstr "Търсене в _папка"
 
-#: ../src/brasero-audio-disc.c:1573 ../src/brasero-video-disc.c:272
+#: ../src/brasero-audio-disc.c:1574 ../src/brasero-video-disc.c:272
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "Файлът „%s\" не може да бъде отворен."
 
-#: ../src/brasero-audio-disc.c:1723 ../src/brasero-audio-disc.c:1735
-#: ../src/brasero-audio-disc.c:1760 ../src/brasero-playlist.c:953
-#: ../src/brasero-data-tree-model.c:432 ../src/brasero-data-tree-model.c:505
-#: ../src/brasero-data-tree-model.c:516 ../src/brasero-data-tree-model.c:577
-#: ../src/brasero-data-tree-model.c:582 ../src/brasero-video-tree-model.c:194
+#: ../src/brasero-audio-disc.c:1724 ../src/brasero-audio-disc.c:1736
+#: ../src/brasero-audio-disc.c:1761 ../src/brasero-playlist.c:953
+#: ../src/brasero-data-tree-model.c:432 ../src/brasero-data-tree-model.c:508
+#: ../src/brasero-data-tree-model.c:519 ../src/brasero-data-tree-model.c:580
+#: ../src/brasero-data-tree-model.c:585 ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
 msgstr "(зареждане…)"
 
-#: ../src/brasero-audio-disc.c:2901
+#: ../src/brasero-audio-disc.c:2902
 msgid "Select one song only please."
 msgstr "Изберете само една песен"
 
-#: ../src/brasero-audio-disc.c:2902
+#: ../src/brasero-audio-disc.c:2903
 msgid "Impossible to split more than one song at a time"
 msgstr "Разделянето може да се извършва само песен по песен"
 
 #. Translators: "%s" is the name of a file here
-#: ../src/brasero-audio-disc.c:3839
+#: ../src/brasero-audio-disc.c:3840
 #, c-format
 msgid "\"%s\" was removed from the file system."
 msgstr "Файлът „%s“ е премахнат от файловата система."
@@ -1241,7 +1243,7 @@ msgstr "Файлът „%s“ е премахнат от файловата си
 #. * refers to the file and this string is coupled with
 #. * previous string:
 #. * ""\"%s\" was removed from the file system."
-#: ../src/brasero-audio-disc.c:3850
+#: ../src/brasero-audio-disc.c:3851
 msgid "It will be removed from the project"
 msgstr "Ще бъде премахнат от проекта"
 
@@ -1304,14 +1306,14 @@ msgstr "Избор на диск за копиране"
 #: ../src/brasero-metadata.c:743 ../src/brasero-metadata.c:756
 #: ../src/brasero-metadata.c:769 ../src/brasero-metadata.c:1491
 #: ../src/brasero-metadata.c:1506 ../src/brasero-metadata.c:1515
-#: ../src/brasero-metadata.c:1528 ../src/plugins/transcode/burn-normalize.c:97
-#: ../src/plugins/transcode/burn-normalize.c:357
-#: ../src/plugins/transcode/burn-normalize.c:370
+#: ../src/brasero-metadata.c:1528 ../src/plugins/transcode/burn-normalize.c:99
 #: ../src/plugins/transcode/burn-normalize.c:382
-#: ../src/plugins/transcode/burn-normalize.c:394
+#: ../src/plugins/transcode/burn-normalize.c:395
 #: ../src/plugins/transcode/burn-normalize.c:407
-#: ../src/plugins/transcode/burn-normalize.c:572
-#: ../src/plugins/transcode/burn-normalize.c:580
+#: ../src/plugins/transcode/burn-normalize.c:420
+#: ../src/plugins/transcode/burn-normalize.c:433
+#: ../src/plugins/transcode/burn-normalize.c:598
+#: ../src/plugins/transcode/burn-normalize.c:606
 #: ../src/plugins/transcode/burn-transcode.c:281
 #: ../src/plugins/transcode/burn-transcode.c:293
 #: ../src/plugins/transcode/burn-transcode.c:383
@@ -1390,7 +1392,7 @@ msgid "An unknown error occured"
 msgstr "Възникна неизвестна грешка."
 
 #: ../src/brasero-playlist.c:914 ../src/brasero-data-tree-model.c:434
-#: ../src/brasero-data-tree-model.c:588
+#: ../src/brasero-data-tree-model.c:591
 msgid "Empty"
 msgstr "Празно"
 
@@ -1415,25 +1417,25 @@ msgstr "Включване"
 msgid "Copyright %s"
 msgstr "Авторски права %s"
 
-#: ../src/brasero-plugin-manager-ui.c:588
-#: ../src/brasero-plugin-manager-ui.c:958
+#: ../src/brasero-plugin-manager-ui.c:586
+#: ../src/brasero-plugin-manager-ui.c:956
 msgid "_About"
 msgstr "_Относно"
 
-#: ../src/brasero-plugin-manager-ui.c:596
-#: ../src/brasero-plugin-manager-ui.c:964
+#: ../src/brasero-plugin-manager-ui.c:594
+#: ../src/brasero-plugin-manager-ui.c:962
 msgid "C_onfigure"
 msgstr "_Настройки"
 
-#: ../src/brasero-plugin-manager-ui.c:606
+#: ../src/brasero-plugin-manager-ui.c:604
 msgid "A_ctivate"
 msgstr "_Включване"
 
-#: ../src/brasero-plugin-manager-ui.c:618
+#: ../src/brasero-plugin-manager-ui.c:616
 msgid "Ac_tivate All"
 msgstr "Вкл_ючване на всички"
 
-#: ../src/brasero-plugin-manager-ui.c:623
+#: ../src/brasero-plugin-manager-ui.c:621
 msgid "_Deactivate All"
 msgstr "_Изключване на всички"
 
@@ -1617,12 +1619,12 @@ msgstr "Показване на _прозорец"
 msgid "Show dialog"
 msgstr "Показване на прозорец"
 
-#: ../src/brasero-tray.c:255
+#: ../src/brasero-tray.c:256
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
 msgstr "%s, завършени са %02i%%, остават %s"
 
-#: ../src/brasero-tray.c:262
+#: ../src/brasero-tray.c:263
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s, завършени са  %02i%%"
@@ -2659,6 +2661,12 @@ msgstr "Само аудио файлове"
 msgid "Movies only"
 msgstr "Само филми"
 
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1510
+msgctxt "picture"
+msgid "Image files only"
+msgstr "Само файлове с изображения"
+
 #. pack everything
 #: ../src/brasero-image-option-dialog.c:91
 msgid "Select an image to write"
@@ -3205,17 +3213,17 @@ msgstr "Създаване на точно копие на CD/DVD диск"
 msgid "Burn _image"
 msgstr "Запис на _образ"
 
-#: ../src/brasero-project-type-chooser.c:299
+#: ../src/brasero-project-type-chooser.c:290
 msgid "Last _Unsaved Project"
 msgstr "Последният _незапазен проект"
 
-#: ../src/brasero-project-type-chooser.c:309
+#: ../src/brasero-project-type-chooser.c:300
 msgid "Load the last project that was not burnt and not saved"
 msgstr ""
 "Зареждане на последния проект, който не е бил записан на диск и не е бил "
 "запазен"
 
-#: ../src/brasero-project-type-chooser.c:404
+#: ../src/brasero-project-type-chooser.c:403
 msgid "No recently used project"
 msgstr "Няма наскоро зареждан проект"
 
@@ -3432,7 +3440,7 @@ msgstr "Няма достатъчно място на диска"
 msgid "There is no track to be burnt"
 msgstr "Не съществува писта за записване"
 
-#: ../src/burn.c:2262 ../src/burn-caps.c:1472
+#: ../src/burn.c:2262 ../src/burn-caps.c:1473
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Проверката може да се извърши само писта по писта"
@@ -3446,7 +3454,7 @@ msgstr "Не е намерен формат за временния образ"
 #. * is specified. A graft point is the path (on the
 #. * disc) where a file from any source will be added
 #. * ("grafted")
-#: ../src/burn.c:2589 ../src/burn-caps.c:131 ../src/burn-caps.c:1374
+#: ../src/burn.c:2589 ../src/burn-caps.c:131 ../src/burn-caps.c:1375
 #: ../src/burn-job.c:1226 ../src/burn-job.c:1235
 #: ../src/burn-mkisofs-base.c:303 ../src/main.c:211 ../src/main.c:237
 #: ../src/plugins/cdrkit/burn-genisoimage.c:360
@@ -3897,7 +3905,7 @@ msgstr "Грешка при разчитане на видео DVD диска (%
 msgid "Copying Video DVD"
 msgstr "Копиране на видео DVD диск"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:661
+#: ../src/plugins/dvdcss/burn-dvdcss.c:667
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr ""
 "Приставката „Dvdcss“ позволява четене на шифрирани чрез css видео DVD дискове"
@@ -3950,7 +3958,7 @@ msgid "Writing track %02i"
 msgstr "Записване на писта %02i"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:312
-#: ../src/plugins/libburnia/burn-libisofs.c:850
+#: ../src/plugins/libburnia/burn-libisofs.c:851
 #, c-format
 msgid "Libisofs could not be initialized."
 msgstr "Библиотеката „Libisofs“ не може да бъде инициализирана."
@@ -3994,7 +4002,7 @@ msgstr ""
 "Библиотеката „Libisofs“ докладва за грешка при добавяне на файл в папката „%"
 "s“"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:1017
+#: ../src/plugins/libburnia/burn-libisofs.c:1024
 msgid "Libisofs creates disc images from files"
 msgstr "Приставката „Libsiofs“ създава дискови образи от файлове"
 
@@ -4016,23 +4024,23 @@ msgstr "Копиране на файла с контролната сума"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../src/plugins/local-track/burn-local-image.c:1100
+#: ../src/plugins/local-track/burn-local-image.c:1107
 msgid "File Downloader"
 msgstr "Изтегляне на файлове"
 
-#: ../src/plugins/local-track/burn-local-image.c:1101
+#: ../src/plugins/local-track/burn-local-image.c:1108
 msgid "Allows to burn files not stored locally"
 msgstr "Позволява запис на файлове, които не са запазени локално."
 
-#: ../src/plugins/transcode/burn-normalize.c:473
+#: ../src/plugins/transcode/burn-normalize.c:499
 msgid "Normalizing tracks"
 msgstr "Нормализиране на песни"
 
-#: ../src/plugins/transcode/burn-normalize.c:564
+#: ../src/plugins/transcode/burn-normalize.c:590
 msgid "Normalize"
 msgstr "Нормализиране"
 
-#: ../src/plugins/transcode/burn-normalize.c:565
+#: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr ""
 "Приставката позволява задаване на еднакви нива на звука за всички песни"
@@ -4266,19 +4274,11 @@ msgstr "Подсистема за записване Cdrdao"
 msgid "Cdrtools burning suite"
 msgstr "Подсистема за записване Cdrtools"
 
-#: ../src/burn-image-format.c:310 ../src/burn-image-format.c:397
-#: ../src/burn-image-format.c:428 ../src/burn-image-format.c:557
-#: ../src/burn-image-format.c:601 ../src/burn-image-format.c:762
-#: ../src/burn-image-format.c:806
-#, c-format
-msgid "The size could not be retrieved (%s)"
-msgstr "Размерът не може да бъде получен (%s)"
-
-#: ../src/brasero-data-tree-model.c:514
+#: ../src/brasero-data-tree-model.c:517
 msgid "Disc file"
 msgstr "Файл с диск"
 
-#: ../src/brasero-data-tree-model.c:592
+#: ../src/brasero-data-tree-model.c:595
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
@@ -4401,8 +4401,8 @@ msgstr "Файлът не може да бъде прочетен"
 msgid "Broken symbolic link"
 msgstr "Повредена символна връзка"
 
-#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1080
-#: ../src/brasero-io.c:1959
+#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1085
+#: ../src/brasero-io.c:1964
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Рекурсивна символна връзка"
@@ -4459,12 +4459,12 @@ msgstr "Настройки на филтъра"
 msgid "\"%s\" cannot be read"
 msgstr "Файлът „%s“ не може да бъде прочетен"
 
-#: ../src/brasero-io.c:1313
+#: ../src/brasero-io.c:1318
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Изглежда файлът не е списък за изпълнение"
 
-#: ../src/brasero-io.c:2422
+#: ../src/brasero-io.c:2427
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "Папката „%s“ не може да бъде създадена"
@@ -4504,31 +4504,31 @@ msgstr "Някои файлове на диска може да са с нето
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../src/plugins/checksum/burn-checksum-files.c:1437
+#: ../src/plugins/checksum/burn-checksum-files.c:1444
 msgid "File Checksum"
 msgstr "Контролна сума за файлове"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1438
+#: ../src/plugins/checksum/burn-checksum-files.c:1445
 msgid "Allows to check file integrities on a disc"
 msgstr "Позволява да се провери валидността на записаните файлове"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1478
-#: ../src/plugins/checksum/burn-checksum-image.c:808
+#: ../src/plugins/checksum/burn-checksum-files.c:1485
+#: ../src/plugins/checksum/burn-checksum-image.c:814
 msgid "Hashing algorithm to be used:"
 msgstr "Вид на алгоритъма за хеширане:"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1481
-#: ../src/plugins/checksum/burn-checksum-image.c:811
+#: ../src/plugins/checksum/burn-checksum-files.c:1488
+#: ../src/plugins/checksum/burn-checksum-image.c:817
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1483
-#: ../src/plugins/checksum/burn-checksum-image.c:813
+#: ../src/plugins/checksum/burn-checksum-files.c:1490
+#: ../src/plugins/checksum/burn-checksum-image.c:819
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1485
-#: ../src/plugins/checksum/burn-checksum-image.c:815
+#: ../src/plugins/checksum/burn-checksum-files.c:1492
+#: ../src/plugins/checksum/burn-checksum-image.c:821
 msgid "SHA256"
 msgstr "SHA256"
 
@@ -4545,11 +4545,11 @@ msgstr "Създаване на контролна сума на образа"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../src/plugins/checksum/burn-checksum-image.c:783
+#: ../src/plugins/checksum/burn-checksum-image.c:789
 msgid "Image Checksum"
 msgstr "Контролна сума за изображения"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:784
+#: ../src/plugins/checksum/burn-checksum-image.c:790
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr "Позволява да се провери валидността на записания диск"
 
