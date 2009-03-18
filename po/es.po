@@ -8,14 +8,15 @@
 # Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
+# Miguel Angel Ruiz Manzano <mruiz@openminds.cl>, 2009
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-03-10 23:55+0000\n"
-"PO-Revision-Date: 2009-03-11 08:10+0100\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"POT-Creation-Date: 2009-03-11 07:12+0000\n"
+"PO-Revision-Date: 2009-03-15 23:14-0400\n"
+"Last-Translator: Miguel Angel Ruiz Manzano <mruiz@openminds.cl>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -419,7 +420,6 @@ msgstr ""
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#| msgid "CD/DVD Creator Folder"
 msgid "CD/DVD Creator"
 msgstr "Creador de CD/DVD"
 
@@ -921,54 +921,54 @@ msgstr "Reemplazar enlaces simbólicos a archivos por sus destinos"
 
 #: ../data/brasero.schemas.in.h:18
 msgid "Should brasero filter broken symlinks files"
-msgstr "Indica si brasero debe filtrar los enlaces a archivos rotos"
+msgstr "Indica si Brasero debe filtrar los enlaces a archivos rotos"
 
 #: ../data/brasero.schemas.in.h:19
 msgid ""
 "Should brasero filter broken symlinks. Set to true, brasero will filter "
 "broken symlinks."
 msgstr ""
-"Indica si brasero debe filtrar los enlaces a archivos rotos. Si se establece "
-"a true, brasero filtrará los enlaces simbólicos rotos."
+"Indica si Brasero debe filtrar los enlaces a archivos rotos. Si se activa, "
+"Brasero filtrará los enlaces simbólicos rotos."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
-msgstr "Indica si brasero filtrará los archivos ocultos"
+msgstr "Indica si Brasero filtrará los archivos ocultos"
 
 #: ../data/brasero.schemas.in.h:21
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr ""
-"Indica si brasero filtrará los archivos ocultos. Si se establece a true, "
-"brasero filtrará los archivos ocultos."
+"Indica si brasero filtrará los archivos ocultos. Si se activa, "
+"Brasero filtrará los archivos ocultos."
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
-msgstr "Indica si brasero debe notificar cuando se filtran los archivos"
+msgstr "Indica si Brasero debe notificar cuando se filtran los archivos"
 
 #: ../data/brasero.schemas.in.h:23
 msgid ""
 "Should brasero notify when files are filtered. Set to true, brasero will "
 "display the notification."
 msgstr ""
-"Indica si Brasero debe notificar cuando se filtren archivos. Se se establece "
-"a «true», brasero mostrará la notificación."
+"Indica si Brasero debe notificar cuando se filtren archivos. Si se activa, "
+"Brasero mostrará la notificación."
 
 #: ../data/brasero.schemas.in.h:24
 msgid ""
-"Should brasero replace symlinks by their target files in the project. Set to "
+"Should Brasero replace symlinks by their target files in the project. Set to "
 "true, brasero will replace symlinks."
 msgstr ""
-"Indica si brasero debe reemplazar los enlaces simbólicos por sus archivos de "
-"destino. Si está a «true» Brasero reemplazará los enlaces simbólicos."
+"Indica si Brasero debe reemplazar los enlaces simbólicos por sus archivos de "
+"destino. Si se activa, Brasero reemplazará los enlaces simbólicos."
 
 #: ../data/brasero.schemas.in.h:25
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"El panel que mostrar con proyectos de sonido. Debería ser uno de los "
+"El panel que muestra proyectos de sonido. Debería ser uno de los "
 "siguientes: «Chooser», «Search» o «Playlist»."
 
 #: ../data/brasero.schemas.in.h:26
@@ -976,7 +976,7 @@ msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
 msgstr ""
-"El panel que mostrar con proyectos de datos. Debería ser uno de los "
+"El panel que muestra proyectos de datos. Debería ser uno de los "
 "siguientes: «Chooser» o «Search»."
 
 #: ../data/brasero.schemas.in.h:27
@@ -984,7 +984,7 @@ msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"El panel que mostrar con proyectos de vídeo. Debería ser uno de los "
+"El panel que muestra proyectos de vídeo. Debería ser uno de los "
 "siguientes: «Chooser», «Search» o «Playlist»."
 
 #: ../data/brasero.schemas.in.h:28
@@ -1002,12 +1002,12 @@ msgstr "Usado junto a la opción «-immed» con cdrecord"
 #: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
 msgstr ""
-"Si se mostrará el panel lateral. Establezca esta opción a «true» para usarlo."
+"Si se mostrará el panel lateral. Active esta opción para usarlo."
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
-"Si se mostrará la vista previa de archivos. Establezca esta opción a true "
+"Si se mostrará la vista previa de archivos. Active esta opción "
 "para usarlo."
 
 #: ../data/brasero.schemas.in.h:32
@@ -1019,8 +1019,8 @@ msgid ""
 "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, "
 "brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Si se usará la bandera «--driver generic-mmc-raw» con cdrdao. Estableciéndolo "
-"a «true» Brasero lo usará; puede ser una solución provisional para algunas "
+"Si se usará la bandera «--driver generic-mmc-raw» con cdrdao. Active esta "
+"opción para que Brasero lo use; puede ser una solución provisional para algunas "
 "unidades y/o configuraciones."
 
 #: ../data/brasero.schemas.in.h:34
@@ -1029,7 +1029,7 @@ msgid ""
 "as it's only a workaround for some drives/setups."
 msgstr ""
 "Si se usará la bandera «-immed» con cdrecord. Úselo con precaución "
-"(estableciéndolo a «true») ya que es sólo un arreglo para algunas unidades/"
+"(activándolo) ya que es sólo un arreglo para algunas unidades/"
 "configuraciones."
 
 #: ../data/brasero.schemas.in.h:35
@@ -1043,7 +1043,7 @@ msgid ""
 "false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
 "Si se usará la bandera «-use-the-force-luke=dao» con growisofs. "
-"Estableciéndolo a «true» Brasero lo usará; puede ser una solución provisional "
+"Desactivándolo Brasero no lo usará; puede ser una solución provisional "
 "para algunas unidades y/o configuraciones."
 
 #: ../data/brasero.schemas.in.h:37
@@ -1180,7 +1180,7 @@ msgstr "La pista es más corta de 6 segundos."
 #: ../src/brasero-audio-disc.c:1356 ../src/brasero-metadata.c:671
 #, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
-msgstr "gstreamer no pudo manejar «%s»."
+msgstr "Gstreamer no pudo manejar «%s»."
 
 #: ../src/brasero-audio-disc.c:1359
 msgid "Make sure the appropriate codec is installed"
@@ -1840,7 +1840,7 @@ msgid ""
 "Please replace the disc with a recordable CD with at least %i MiB of free "
 "space."
 msgstr ""
-"Reemplace el disco por un CD grabable con al menos %i MiB de espacio libres."
+"Reemplace el disco por un CD grabable con al menos %i MiB de espacio libre."
 
 #: ../src/brasero-burn-dialog.c:414
 msgid "Please replace the disc with a recordable CD."
@@ -1849,7 +1849,7 @@ msgstr "Reemplace el disco por un CD grabable."
 #: ../src/brasero-burn-dialog.c:418
 #, c-format
 msgid "Please insert a recordable CD with at least %i MiB of free space."
-msgstr "Introduzca un CD grabable con al menos %i MiB de espacio libres."
+msgstr "Introduzca un CD grabable con al menos %i MiB de espacio libre."
 
 #: ../src/brasero-burn-dialog.c:421
 msgid "Please insert a recordable CD."
@@ -1861,7 +1861,7 @@ msgid ""
 "Please replace the disc with a recordable DVD with at least %i MiB of free "
 "space."
 msgstr ""
-"Reemplace el disco por un DVD grabable con al menos %i MiB de espacio libres."
+"Reemplace el disco por un DVD grabable con al menos %i MiB de espacio libre."
 
 #: ../src/brasero-burn-dialog.c:430
 msgid "Please replace the disc with a recordable DVD."
@@ -1870,7 +1870,7 @@ msgstr "Reemplace el disco por un DVD grabable."
 #: ../src/brasero-burn-dialog.c:434
 #, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
-msgstr "Introduzca un DVD grabable con al menos %i MiB de espacio libres."
+msgstr "Introduzca un DVD grabable con al menos %i MiB de espacio libre."
 
 #: ../src/brasero-burn-dialog.c:437
 msgid "Please insert a recordable DVD."
@@ -1883,7 +1883,7 @@ msgid ""
 "free space."
 msgstr ""
 "Reemplace el disco por un CD o DVD grabable con al menos %i MiB de espacio "
-"libres."
+"libre."
 
 #: ../src/brasero-burn-dialog.c:445
 msgid "Please replace the disc with a recordable CD or DVD."
@@ -1893,7 +1893,7 @@ msgstr "Reemplace el disco por un CD o DVD grabable."
 #, c-format
 msgid ""
 "Please insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr "Introduzca un CD o DVD grabable con al menos %i MiB de espacio libres."
+msgstr "Introduzca un CD o DVD grabable con al menos %i MiB de espacio libre."
 
 #: ../src/brasero-burn-dialog.c:498
 msgid ""
@@ -5890,5 +5890,3 @@ msgstr "Copiador de discos"
 #~ msgid "Open project"
 #~ msgstr "Abrir proyecto"
 
-#~ msgid "A data integrity test is about to begin:"
-#~ msgstr "Se va a iniciar una comprobación de integridad de los datos:"
