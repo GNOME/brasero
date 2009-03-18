@@ -8,14 +8,14 @@
 # Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
-# Miguel Angel Ruiz Manzano <mruiz@openminds.cl>, 2009
+# Miguel Angel Ruiz Manzano <mruiz@openminds.cl>, 2009, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-03-11 07:12+0000\n"
-"PO-Revision-Date: 2009-03-15 23:14-0400\n"
+"POT-Creation-Date: 2009-03-18 09:54+0000\n"
+"PO-Revision-Date: 2009-03-18 10:55+0100\n"
 "Last-Translator: Miguel Angel Ruiz Manzano <mruiz@openminds.cl>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -940,8 +940,8 @@ msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr ""
-"Indica si brasero filtrará los archivos ocultos. Si se activa, "
-"Brasero filtrará los archivos ocultos."
+"Indica si brasero filtrará los archivos ocultos. Si se activa, Brasero "
+"filtrará los archivos ocultos."
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
@@ -956,36 +956,40 @@ msgstr ""
 "Brasero mostrará la notificación."
 
 #: ../data/brasero.schemas.in.h:24
+#| msgid ""
+#| "Should Brasero replace symlinks by their target files in the project. Set "
+#| "to true, brasero will replace symlinks."
 msgid ""
-"Should Brasero replace symlinks by their target files in the project. Set to "
+"Should brasero replace symlinks by their target files in the project. Set to "
 "true, brasero will replace symlinks."
 msgstr ""
 "Indica si Brasero debe reemplazar los enlaces simbólicos por sus archivos de "
-"destino. Si se activa, Brasero reemplazará los enlaces simbólicos."
+"destino en el proyecto. Si se activa, Brasero reemplazará los enlaces "
+"simbólicos."
 
 #: ../data/brasero.schemas.in.h:25
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"El panel que muestra proyectos de sonido. Debería ser uno de los "
-"siguientes: «Chooser», «Search» o «Playlist»."
+"El panel que muestra proyectos de sonido. Debería ser uno de los siguientes: "
+"«Chooser», «Search» o «Playlist»."
 
 #: ../data/brasero.schemas.in.h:26
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
 msgstr ""
-"El panel que muestra proyectos de datos. Debería ser uno de los "
-"siguientes: «Chooser» o «Search»."
+"El panel que muestra proyectos de datos. Debería ser uno de los siguientes: "
+"«Chooser» o «Search»."
 
 #: ../data/brasero.schemas.in.h:27
 msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"El panel que muestra proyectos de vídeo. Debería ser uno de los "
-"siguientes: «Chooser», «Search» o «Playlist»."
+"El panel que muestra proyectos de vídeo. Debería ser uno de los siguientes: "
+"«Chooser», «Search» o «Playlist»."
 
 #: ../data/brasero.schemas.in.h:28
 msgid ""
@@ -1001,14 +1005,12 @@ msgstr "Usado junto a la opción «-immed» con cdrecord"
 
 #: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
-msgstr ""
-"Si se mostrará el panel lateral. Active esta opción para usarlo."
+msgstr "Si se mostrará el panel lateral. Active esta opción para usarlo."
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
-"Si se mostrará la vista previa de archivos. Active esta opción "
-"para usarlo."
+"Si se mostrará la vista previa de archivos. Active esta opción para usarlo."
 
 #: ../data/brasero.schemas.in.h:32
 msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
@@ -1020,8 +1022,8 @@ msgid ""
 "brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
 "Si se usará la bandera «--driver generic-mmc-raw» con cdrdao. Active esta "
-"opción para que Brasero lo use; puede ser una solución provisional para algunas "
-"unidades y/o configuraciones."
+"opción para que Brasero lo use; puede ser una solución provisional para "
+"algunas unidades y/o configuraciones."
 
 #: ../data/brasero.schemas.in.h:34
 msgid ""
@@ -1043,8 +1045,8 @@ msgid ""
 "false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
 "Si se usará la bandera «-use-the-force-luke=dao» con growisofs. "
-"Desactivándolo Brasero no lo usará; puede ser una solución provisional "
-"para algunas unidades y/o configuraciones."
+"Desactivándolo Brasero no lo usará; puede ser una solución provisional para "
+"algunas unidades y/o configuraciones."
 
 #: ../data/brasero.schemas.in.h:37
 msgid "White list of additional plugins to use"
@@ -5889,4 +5891,3 @@ msgstr "Copiador de discos"
 
 #~ msgid "Open project"
 #~ msgstr "Abrir proyecto"
-
