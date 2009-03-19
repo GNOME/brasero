@@ -41,7 +41,7 @@
 #include "brasero-volume.h"
 #include "burn-debug.h"
 #include "brasero-utils.h"
-#include "burn.h"
+#include "brasero-burn.h"
 
 G_DEFINE_TYPE (BraseroEjectDialog, brasero_eject_dialog, BRASERO_TYPE_TOOL_DIALOG);
 

@@ -36,10 +36,11 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-project-type-chooser.h"
+#include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-session.h"
 
+#include "brasero-project-type-chooser.h"
 
 G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_EVENT_BOX);
 

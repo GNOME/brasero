@@ -622,6 +622,7 @@ brasero_file_monitor_single_file (BraseroFileMonitor *self,
 	BraseroInotifyFileData *data;
 	gchar *parent;
 	GSList *list;
+	GFile *file;
 	guint32 wd;
 
 	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
@@ -641,7 +642,9 @@ brasero_file_monitor_single_file (BraseroFileMonitor *self,
 	/* Since we monitor the parent, put that into a special table */
 	data = g_new0 (BraseroInotifyFileData, 1);
 	data->callback_data = callback_data;
-	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, data->name);
+	file = g_file_new_for_uri (uri);
+	data->name = g_file_get_basename (file);
+	g_object_unref (file);
 
 	/* inotify always return the same wd for the same file */
 	list = g_hash_table_lookup (priv->files, GINT_TO_POINTER (wd));

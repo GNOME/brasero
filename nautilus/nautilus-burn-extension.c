@@ -128,7 +128,6 @@ launch_process (GPtrArray *argv, GtkWindow *parent)
 static void
 launch_brasero_on_window (GtkWindow *window)
 {
-        int i;
         GPtrArray        *argv = NULL;
 
         argv = g_ptr_array_new ();
@@ -153,7 +152,6 @@ write_iso_activate_cb (NautilusMenuItem *item,
         GPtrArray        *argv = NULL;
         char             *uri;
         char             *image_path;
-        int               i;
 
         file_info = g_object_get_data (G_OBJECT (item), "file_info");
 
@@ -180,7 +178,6 @@ static void
 copy_disc_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
-        int               i;
         GPtrArray        *argv = NULL;
         char             *device_path;
 
@@ -203,7 +200,6 @@ static void
 blank_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
-        int               i;
         GPtrArray        *argv = NULL;
         char             *device_path;
 
@@ -226,7 +222,6 @@ static void
 check_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
-        int               i;
         GPtrArray        *argv = NULL;
         char             *device_path;
 

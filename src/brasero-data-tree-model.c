@@ -31,6 +31,8 @@
 
 #include "burn-basics.h"
 
+#include "brasero-misc.h"
+
 #include "brasero-data-tree-model.h"
 #include "brasero-data-project.h"
 #include "brasero-data-vfs.h"

@@ -45,11 +45,13 @@
 
 #include "brasero-project-manager.h"
 #include "brasero-multi-dnd.h"
-#include "brasero-session.h"
 #include "brasero-utils.h"
 #include "brasero-app.h"
+
 #include "burn-debug.h"
-#include "burn.h"
+
+#include "brasero-burn-lib.h"
+#include "brasero-session.h"
 
 #include "eggsmclient.h"
 
@@ -534,7 +536,7 @@ main (int argc, char **argv)
 			      NULL);
 
 	brasero_burn_set_debug (debug);
-	brasero_burn_library_init ();
+	brasero_burn_library_start ();
 
 	brasero_enable_multi_DND ();
 	brasero_utils_init ();
@@ -546,7 +548,7 @@ main (int argc, char **argv)
 	brasero_app_parse_options (current_app);
 	current_app = NULL;
 
-	brasero_burn_library_shutdown ();
+	brasero_burn_library_stop ();
 
 	gconf_client_remove_dir (client, BRASERO_CONF_DIR, NULL);
 	g_object_unref (client);

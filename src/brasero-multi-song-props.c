@@ -31,9 +31,10 @@
 
 #include <gst/gst.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-multi-song-props.h"
 #include "brasero-rename.h"
-#include "brasero-utils.h"
 
 typedef struct _BraseroMultiSongPropsPrivate BraseroMultiSongPropsPrivate;
 struct _BraseroMultiSongPropsPrivate

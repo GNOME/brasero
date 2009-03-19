@@ -33,7 +33,10 @@
 #include "brasero-player.h"
 #include "brasero-utils.h"
 #include "brasero-metadata.h"
-#include "burn-track.h"
+
+#include "brasero-misc.h"
+
+#include "brasero-track.h"
 
 enum {
 	START_COL,

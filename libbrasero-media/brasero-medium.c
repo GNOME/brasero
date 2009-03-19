@@ -42,7 +42,7 @@
 #include <glib/gi18n-lib.h>
 #include <gdk/gdk.h>
 
-#include "burn-basics.h"
+#include "brasero-enums.h"
 
 #include "brasero-media-private.h"
 

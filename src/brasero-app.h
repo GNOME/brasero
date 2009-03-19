@@ -23,8 +23,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include "burn-session.h"
-
+#include "brasero-session.h"
 
 G_BEGIN_DECLS
 

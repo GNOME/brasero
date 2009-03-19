@@ -36,7 +36,7 @@
 
 #include "brasero-marshal.h"
 #include "brasero-disc.h"
-#include "burn-session.h"
+#include "brasero-session.h"
  
 static void brasero_disc_base_init (gpointer g_class);
 

@@ -38,8 +38,10 @@
 
 #include "brasero-song-properties.h"
 #include "brasero-time-button.h"
-#include "brasero-utils.h"
-#include "burn-track.h"
+
+#include "brasero-misc.h"
+
+#include "brasero-track.h"
 
 G_DEFINE_TYPE (BraseroSongProps, brasero_song_props, GTK_TYPE_DIALOG);
 

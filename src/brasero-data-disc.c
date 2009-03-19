@@ -33,6 +33,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-misc.h"
+
 #include "eggtreemultidnd.h"
 #include "baobab-cell-renderer-progress.h"
 
@@ -55,8 +57,10 @@
 
 #include "burn-debug.h"
 #include "burn-basics.h"
-#include "burn-track.h"
-#include "burn-session.h"
+
+#include "brasero-track.h"
+#include "brasero-session.h"
+
 #include "brasero-volume.h"
 
 

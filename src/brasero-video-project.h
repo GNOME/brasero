@@ -27,14 +27,15 @@
 #include <glib-object.h>
 #include <gdk/gdk.h>
 
+#include "brasero-track.h"
+
+#include "brasero-disc.h"
+
 #ifdef BUILD_INOTIFY
 
 #include "brasero-file-monitor.h"
 
 #endif
-
-#include "burn-track.h"
-#include "brasero-disc.h"
 
 G_BEGIN_DECLS
 

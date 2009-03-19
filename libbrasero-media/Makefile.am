@@ -1,7 +1,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)							\
-	-I$(top_srcdir)/src/					\
+	-I$(top_srcdir)/libbrasero-burn/				\
 	-I$(top_builddir)						\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           			\
@@ -23,7 +23,7 @@ libbrasero-marshal.h: libbrasero-marshal.list
 libbrasero-marshal.c: libbrasero-marshal.h
 	( $(GLIB_GENMARSHAL) --prefix=brasero_marshal $(srcdir)/libbrasero-marshal.list --body --header > libbrasero-marshal.c )
 
-lib_LTLIBRARIES = \
+lib_LTLIBRARIES = 				\
 	libbrasero-media.la
 
 libbraseromediaincludedir = $(pkgincludedir)/

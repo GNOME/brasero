@@ -52,24 +52,28 @@
 #include <totem-pl-parser.h>
 #endif
 
+#include "brasero-misc.h"
+#include "brasero-jacket-edit.h"
+
 #include "burn-debug.h"
-#include "burn-session.h"
+#include "brasero-tags.h"
+#include "brasero-session.h"
 
 #ifdef BUILD_PREVIEW
 #include "brasero-player.h"
 #endif
 
+#include "brasero-session-cfg.h"
+#include "brasero-cover.h"
+
+#include "brasero-project-type-chooser.h"
 #include "brasero-app.h"
 #include "brasero-project.h"
-#include "brasero-session-cfg.h"
-#include "brasero-jacket-edit.h"
-#include "brasero-project-type-chooser.h"
 #include "brasero-disc.h"
 #include "brasero-data-disc.h"
 #include "brasero-audio-disc.h"
 #include "brasero-video-disc.h"
 #include "brasero-disc-option-dialog.h"
-#include "brasero-utils.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
 #include "brasero-disc-message.h"
@@ -876,26 +880,6 @@ brasero_project_check_status (BraseroProject *project,
 	return brasero_disc_get_status (disc, NULL, NULL);
 }
 
-/******************************** cover ****************************************/
-void
-brasero_project_set_cover_specifics (BraseroProject *self,
-				     BraseroJacketEdit *cover)
-{
-	BraseroBurnSession *session;
-
-	if (!BRASERO_IS_AUDIO_DISC (self->priv->current))
-		return;
-
-	session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
-	brasero_disc_set_session_param (BRASERO_DISC (self->priv->current), session);
-	brasero_disc_set_session_contents (BRASERO_DISC (self->priv->current), session);
-	brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (cover),
-					      gtk_entry_get_text (GTK_ENTRY (self->priv->name_display)),
-					      self->priv->cover,
-					      brasero_burn_session_get_tracks (session));
-	g_object_unref (session);
-}
-
 /******************************** burning **************************************/
 static void
 brasero_project_no_song_dialog (BraseroProject *project)
@@ -913,6 +897,27 @@ brasero_project_no_file_dialog (BraseroProject *project)
 			   _("Please add files to the project."),
 			   _("The project is empty"),
 			   GTK_MESSAGE_WARNING);
+}
+
+static void
+brasero_project_setup_session (BraseroProject *project,
+			       BraseroBurnSession *session)
+{
+	const gchar *label;
+
+	label = gtk_entry_get_text (GTK_ENTRY (project->priv->name_display));
+	brasero_burn_session_set_label (session, label);
+
+	if (project->priv->cover) {
+		GValue *value;
+
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_STRING);
+		g_value_set_string (value, project->priv->cover);
+		brasero_burn_session_tag_add (session,
+					      BRASERO_COVER_URI,
+					      value);
+	}
 }
 
 void
@@ -949,20 +954,6 @@ brasero_project_burn (BraseroProject *project)
 
 	/* setup, show, and run options dialog */
 	dialog = brasero_disc_option_dialog_new ();
-
-	if (!brasero_app_is_running (brasero_app_get_default ())) {
-		const gchar *label;
-
-		/* Set the label for the session in the burn option dialog but
-		 * only if we were started to burn a project (like through
-		 * nautilus). */
-		label = gtk_entry_get_text (GTK_ENTRY (project->priv->name_display));
-
-		session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-		brasero_burn_session_set_label (session, label);
-		g_object_unref (session);
-	}
-
 	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
 					     project->priv->current);
 
@@ -977,25 +968,7 @@ brasero_project_burn (BraseroProject *project)
 	session = brasero_disc_option_dialog_get_session (BRASERO_DISC_OPTION_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	if (brasero_app_is_running (brasero_app_get_default ())) {
-		const gchar *label;
-
-		/* Set the label for the session but only if we weren't started
-		 * to burn a project (like through nautilus). */
-		label = gtk_entry_get_text (GTK_ENTRY (project->priv->name_display));
-		brasero_burn_session_set_label (session, label);
-	}
-
-	if (project->priv->cover) {
-		GValue *value;
-
-		value = g_new0 (GValue, 1);
-		g_value_init (value, G_TYPE_STRING);
-		g_value_set_string (value, project->priv->cover);
-		brasero_burn_session_tag_add (session,
-					      BRASERO_COVER_URI,
-					      value);
-	}
+	brasero_project_setup_session (project, session);
 
 	/* now setup the burn dialog */
 	success = brasero_app_burn (brasero_app_get_default (), session);
@@ -1006,6 +979,29 @@ brasero_project_burn (BraseroProject *project)
 end:
 
 	project->priv->is_burning = 0;
+}
+
+/******************************** cover ****************************************/
+void
+brasero_project_create_audio_cover (BraseroProject *project,
+				    BraseroJacketEdit *cover)
+{
+	BraseroBurnSession *session;
+	GtkWidget *window;
+
+	if (!BRASERO_IS_AUDIO_DISC (project->priv->current))
+		return;
+
+	session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
+	brasero_disc_set_session_param (BRASERO_DISC (project->priv->current), session);
+	brasero_disc_set_session_contents (BRASERO_DISC (project->priv->current), session);
+	brasero_project_setup_session (project, session);
+
+	window = brasero_session_edit_cover (session, gtk_widget_get_toplevel (GTK_WIDGET (project)));
+	g_object_unref (session);
+
+	gtk_dialog_run (GTK_DIALOG (window));
+	gtk_widget_destroy (window);
 }
 
 /********************************     ******************************************/

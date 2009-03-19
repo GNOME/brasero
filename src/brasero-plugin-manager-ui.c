@@ -35,8 +35,10 @@ fy
 
 #include <gconf/gconf-client.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-plugin-manager-ui.h"
-#include "brasero-utils.h"
+
 #include "burn-plugin.h"
 #include "burn-caps.h"
 #include "burn-plugin-private.h"

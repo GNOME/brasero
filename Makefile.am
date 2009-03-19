@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in.
-SUBDIRS = libbrasero-media src po data docs
-
-SUBDIRS += help
+SUBDIRS = libbrasero-utils libbrasero-media libbrasero-burn src po data docs help
 
 if BUILD_NAUTILUS
 SUBDIRS += nautilus

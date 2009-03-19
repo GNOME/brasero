@@ -29,7 +29,7 @@
 
 #include <glib.h>
 
-#include "burn-track.h"
+#include "brasero-track.h"
 
 G_BEGIN_DECLS
 

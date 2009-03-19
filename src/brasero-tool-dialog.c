@@ -33,12 +33,15 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-utils.h"
 #include "brasero-progress.h"
 #include "brasero-medium-selection.h"
 #include "brasero-tool-dialog.h"
-#include "burn-session.h"
-#include "burn.h"
+
+#include "brasero-misc.h"
+
+#include "brasero-session.h"
+#include "brasero-burn.h"
+
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 

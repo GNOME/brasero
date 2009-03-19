@@ -42,14 +42,18 @@
 
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
+#include "brasero-xfer.h"
+
+#include "brasero-misc.h"
+
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 #include "brasero-volume.h"
-#include "brasero-xfer.h"
+
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "burn.h"
-#include "brasero-utils.h"
+
+#include "brasero-burn.h"
 
 G_DEFINE_TYPE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
 

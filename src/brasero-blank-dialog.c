@@ -33,11 +33,15 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-misc.h"
+
 #include "burn-basics.h"
-#include "burn-session.h"
-#include "burn.h"
+#include "burn-caps.h"
+
+#include "brasero-session.h"
+#include "brasero-burn.h"
+
 #include "burn-plugin-manager.h"
-#include "brasero-utils.h"
 #include "brasero-tool-dialog.h"
 #include "brasero-blank-dialog.h"
 

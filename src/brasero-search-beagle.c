@@ -44,6 +44,8 @@
 
 #include <beagle/beagle.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-search-entry.h"

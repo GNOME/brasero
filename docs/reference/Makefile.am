@@ -42,8 +42,8 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=$(top_srcdir)/libbrasero-media/*.h
-CFILE_GLOB=$(top_srcdir)/libbrasero-media/*.c
+HFILE_GLOB=$(top_srcdir)/libbrasero-media/*.h #$(top_srcdir)/libbrasero-burn/*.h
+CFILE_GLOB=$(top_srcdir)/libbrasero-media/*.c #$(top_srcdir)/libbrasero-burn/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
@@ -83,7 +83,48 @@ IGNORE_HFILES=	scsi-base.h		\
 		burn-susp.h		\
 		burn-hal-watch.h	\
 		libbrasero-marshal.h	\
-		brasero-gio-operation.h
+		brasero-gio-operation.h	\
+		brasero-burn-dialog.h	\
+		brasero-disc-message.h	\
+		brasero-image-properties.h	\
+		brasero-jacket-view.h	\
+		brasero-src-image.h	\
+		burn-caps.h		\
+		burn-plugin.h		\
+		burn-task-item.h	\
+		brasero-burn.h		\
+		brasero-disc-option-dialog.h	\
+		brasero-image-type-chooser.h	\
+		brasero-medium-properties.h	\
+		brasero-src-selection.h		\
+		burn-dbus.h			\
+		burn-plugin-manager.h		\
+		brasero-burn-lib.h		\
+		brasero-drive-properties.h	\
+		brasero-jacket-background.h	\
+		brasero-notify.h		\
+		brasero-tags.h			\
+		burn-debug.h			\
+		burn-plugin-private.h		\
+		brasero-burn-options.h		\
+		brasero-jacket-buffer.h		\
+		brasero-progress.h		\
+		brasero-track.h			\
+		burn-image-format.h		\
+		burn-process.h			\
+		brasero-dest-selection.h	\
+		brasero-jacket-edit.h		\
+		brasero-session-cfg.h		\
+		brasero-tray.h			\
+		burn-job.h			\
+		burn-task-ctx.h			\
+		brasero-disc-copy-dialog.h	\
+		brasero-image-option-dialog.h	\
+		brasero-jacket-font.h		\
+		brasero-session.h		\
+		burn-basics.h			\
+		burn-mkisofs-base.h		\
+		burn-task.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -112,7 +153,8 @@ INCLUDES=								\
 	$(BRASERO_DBUS_CFLAGS)						\
 	$(BRASERO_HAL_CFLAGS)
 
-GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media.la
+GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media.la 
+#$(top_builddir)/libbrasero-burn/libbrasero-burn.la
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

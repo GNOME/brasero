@@ -215,14 +215,13 @@ brasero_project_manager_new_cover_cb (GtkAction *action,
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
 
+	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO) {
+		brasero_project_create_audio_cover (BRASERO_PROJECT (manager->priv->project), edit);
+		return;
+	}
+
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-	dialog = NULL;
-
 	dialog = brasero_jacket_edit_dialog_new (toplevel, &edit);
-
-	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
-		brasero_project_set_cover_specifics (BRASERO_PROJECT (manager->priv->project), edit);
-
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 }

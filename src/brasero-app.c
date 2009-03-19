@@ -32,22 +32,31 @@
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-app.h"
-#include "brasero-utils.h"
-#include "brasero-jacket-edit.h"
 #include "brasero-blank-dialog.h"
 #include "brasero-sum-dialog.h"
 #include "brasero-eject-dialog.h"
-#include "brasero-session.h"
 #include "brasero-project-manager.h"
+#include "brasero-xsession.h"
 #include "brasero-pref.h"
+
+#include "brasero-drive.h"
+
+#include "burn-caps.h"
+#include "burn-debug.h"
+
+#include "brasero-tags.h"
+#include "brasero-burn.h"
+#include "brasero-session.h"
+#include "brasero-burn-lib.h"
+
 #include "brasero-image-option-dialog.h"
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-burn-dialog.h"
-#include "burn-debug.h"
-#include "brasero-drive.h"
-#include "burn-caps.h"
-#include "burn.h"
+#include "brasero-jacket-edit.h"
+
 #include "burn-plugin-manager.h"
 
 typedef struct _BraseroAppPrivate BraseroAppPrivate;

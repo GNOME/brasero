@@ -32,10 +32,11 @@
 
 #include <gconf/gconf-client.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-filter-option.h"
 #include "brasero-data-project.h"
 #include "brasero-data-vfs.h"
-#include "brasero-utils.h"
 
 typedef struct _BraseroFilterOptionPrivate BraseroFilterOptionPrivate;
 struct _BraseroFilterOptionPrivate

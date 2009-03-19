@@ -34,7 +34,7 @@
 
 #include "brasero-project-parse.h"
 #include "burn-basics.h"
-#include "burn-session.h"
+#include "brasero-session.h"
 
 G_BEGIN_DECLS
 

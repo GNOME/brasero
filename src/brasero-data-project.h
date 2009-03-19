@@ -33,7 +33,7 @@
 #include <gtk/gtk.h>
 
 #include "brasero-file-node.h"
-#include "burn-session.h"
+#include "brasero-session.h"
 
 #ifdef BUILD_INOTIFY
 #include "brasero-file-monitor.h"

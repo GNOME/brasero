@@ -1,3 +1,330 @@
+2009-03-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	First patch to split the backend and the application
+	Note: the library is still not functional outside of brasero because of
+	remaining undefined symbols. This problem will be addressed by following
+	patches.
+	Note2: the licence has been updated for the library to match the one in
+	libbrasero-media
+
+	* Makefile.am:
+	* configure.in:
+	* docs/reference/Makefile.am:
+	* libbrasero-burn.pc.in:
+	* libbrasero-burn/Makefile.am:
+	* libbrasero-burn/brasero-burn-dialog.c
+	(brasero_burn_dialog_loss_warnings_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_dummy_success_cb), (brasero_burn_dialog_init),
+	(brasero_burn_dialog_notify_error),
+	(brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success),
+	(brasero_burn_dialog_cancel_dialog):
+	* libbrasero-burn/brasero-burn-dialog.h:
+	* libbrasero-burn/brasero-burn-lib.h.in:
+	* libbrasero-burn/brasero-burn-options.c
+	(brasero_burn_options_add_burn_button),
+	(brasero_burn_options_init):
+	* libbrasero-burn/brasero-burn-options.h:
+	* libbrasero-burn/brasero-burn.c:
+	* libbrasero-burn/brasero-burn.h:
+	* libbrasero-burn/brasero-burn.h.in:
+	* libbrasero-burn/brasero-cover.c
+	(brasero_jacket_edit_set_audio_tracks_back),
+	(brasero_jacket_edit_set_audio_tracks_front),
+	(brasero_session_edit_cover):
+	* libbrasero-burn/brasero-cover.h:
+	* libbrasero-burn/brasero-dest-selection.c:
+	* libbrasero-burn/brasero-dest-selection.h:
+	* libbrasero-burn/brasero-disc-copy-dialog.c:
+	* libbrasero-burn/brasero-disc-copy-dialog.h:
+	* libbrasero-burn/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_add_data_options),
+	(brasero_disc_option_dialog_get_session):
+	* libbrasero-burn/brasero-disc-option-dialog.h:
+	* libbrasero-burn/brasero-drive-properties.c:
+	* libbrasero-burn/brasero-drive-properties.h:
+	* libbrasero-burn/brasero-enums.h:
+	* libbrasero-burn/brasero-error.h:
+	* libbrasero-burn/brasero-image-option-dialog.c:
+	* libbrasero-burn/brasero-image-option-dialog.h:
+	* libbrasero-burn/brasero-image-properties.c:
+	* libbrasero-burn/brasero-image-properties.h:
+	* libbrasero-burn/brasero-image-type-chooser.c:
+	* libbrasero-burn/brasero-image-type-chooser.h:
+	* libbrasero-burn/brasero-medium-properties.c:
+	* libbrasero-burn/brasero-medium-properties.h:
+	* libbrasero-burn/brasero-progress.c:
+	* libbrasero-burn/brasero-progress.h:
+	* libbrasero-burn/brasero-session-cfg.c:
+	* libbrasero-burn/brasero-session-cfg.h:
+	* libbrasero-burn/brasero-session.c:
+	* libbrasero-burn/brasero-session.h:
+	* libbrasero-burn/brasero-src-image.c:
+	* libbrasero-burn/brasero-src-image.h:
+	* libbrasero-burn/brasero-src-selection.c:
+	* libbrasero-burn/brasero-src-selection.h:
+	* libbrasero-burn/brasero-tags.h:
+	* libbrasero-burn/brasero-track.c:
+	* libbrasero-burn/brasero-track.h:
+	* libbrasero-burn/brasero-tray.c:
+	* libbrasero-burn/brasero-tray.h:
+	* libbrasero-burn/burn-basics.c (brasero_burn_library_start),
+	(brasero_burn_library_stop):
+	* libbrasero-burn/burn-basics.h:
+	* libbrasero-burn/burn-caps.c:
+	* libbrasero-burn/burn-caps.h:
+	* libbrasero-burn/burn-dbus.c:
+	* libbrasero-burn/burn-dbus.h:
+	* libbrasero-burn/burn-debug.c:
+	* libbrasero-burn/burn-debug.h:
+	* libbrasero-burn/burn-image-format.c:
+	* libbrasero-burn/burn-image-format.h:
+	* libbrasero-burn/burn-job.c:
+	* libbrasero-burn/burn-job.h:
+	* libbrasero-burn/burn-mkisofs-base.c:
+	* libbrasero-burn/burn-mkisofs-base.h:
+	* libbrasero-burn/burn-plugin-manager.c:
+	* libbrasero-burn/burn-plugin-manager.h:
+	* libbrasero-burn/burn-plugin-private.h:
+	* libbrasero-burn/burn-plugin.c:
+	* libbrasero-burn/burn-plugin.h:
+	* libbrasero-burn/burn-process.c:
+	* libbrasero-burn/burn-process.h:
+	* libbrasero-burn/burn-task-ctx.c:
+	* libbrasero-burn/burn-task-ctx.h:
+	* libbrasero-burn/burn-task-item.c:
+	* libbrasero-burn/burn-task-item.h:
+	* libbrasero-burn/burn-task.c:
+	* libbrasero-burn/burn-task.h:
+	* libbrasero-burn/plugins/cdrdao/Makefile.am:
+	* libbrasero-burn/plugins/cdrdao/burn-cdrdao.c:
+	* libbrasero-burn/plugins/cdrkit/Makefile.am:
+	* libbrasero-burn/plugins/cdrtools/Makefile.am:
+	* libbrasero-burn/plugins/checksum/Makefile.am:
+	* libbrasero-burn/plugins/dvdauthor/Makefile.am:
+	* libbrasero-burn/plugins/dvdcss/Makefile.am:
+	* libbrasero-burn/plugins/growisofs/Makefile.am:
+	* libbrasero-burn/plugins/libburnia/Makefile.am:
+	* libbrasero-burn/plugins/local-track/Makefile.am:
+	* libbrasero-burn/plugins/transcode/Makefile.am:
+	* libbrasero-burn/plugins/transcode/burn-vob.c:
+	* libbrasero-burn/plugins/vcdimager/Makefile.am:
+	* libbrasero-burn/plugins/vcdimager/burn-vcdimager.c:
+	* libbrasero-media/Makefile.am:
+	* libbrasero-media/brasero-media.h.in:
+	* libbrasero-media/brasero-medium.c:
+	* libbrasero-utils/Makefile.am:
+	* libbrasero-utils/brasero-disc-message.c:
+	* libbrasero-utils/brasero-disc-message.h:
+	* libbrasero-utils/brasero-jacket-background.c:
+	* libbrasero-utils/brasero-jacket-background.h:
+	* libbrasero-utils/brasero-jacket-buffer.c:
+	* libbrasero-utils/brasero-jacket-buffer.h:
+	* libbrasero-utils/brasero-jacket-edit.c
+	(brasero_jacket_edit_freeze), (brasero_jacket_edit_thaw),
+	(brasero_jacket_edit_get_front), (brasero_jacket_edit_get_back):
+	* libbrasero-utils/brasero-jacket-edit.h:
+	* libbrasero-utils/brasero-jacket-font.c:
+	* libbrasero-utils/brasero-jacket-font.h:
+	* libbrasero-utils/brasero-jacket-view.c:
+	* libbrasero-utils/brasero-jacket-view.h:
+	* libbrasero-utils/brasero-misc.c:
+	* libbrasero-utils/brasero-misc.h:
+	* libbrasero-utils/brasero-notify.c:
+	* libbrasero-utils/brasero-notify.h:
+	* libbrasero-utils/brasero-tool-color-picker.c:
+	* libbrasero-utils/brasero-tool-color-picker.h:
+	* nautilus/nautilus-burn-extension.c (launch_brasero_on_window),
+	(write_iso_activate_cb), (copy_disc_activate_cb),
+	(blank_disc_activate_cb), (check_disc_activate_cb):
+	* src/Makefile.am:
+	* src/brasero-app.c:
+	* src/brasero-app.h:
+	* src/brasero-blank-dialog.c:
+	* src/brasero-burn-dialog.c:
+	* src/brasero-burn-dialog.h:
+	* src/brasero-burn-options.c:
+	* src/brasero-burn-options.h:
+	* src/brasero-data-disc.c:
+	* src/brasero-data-project.h:
+	* src/brasero-data-tree-model.c:
+	* src/brasero-dest-selection.c:
+	* src/brasero-dest-selection.h:
+	* src/brasero-disc-copy-dialog.c:
+	* src/brasero-disc-copy-dialog.h:
+	* src/brasero-disc-message.c:
+	* src/brasero-disc-message.h:
+	* src/brasero-disc-option-dialog.c:
+	* src/brasero-disc-option-dialog.h:
+	* src/brasero-disc.c:
+	* src/brasero-disc.h:
+	* src/brasero-drive-properties.c:
+	* src/brasero-drive-properties.h:
+	* src/brasero-eject-dialog.c:
+	* src/brasero-file-monitor.c (brasero_file_monitor_single_file):
+	* src/brasero-filter-option.c:
+	* src/brasero-image-option-dialog.c:
+	* src/brasero-image-option-dialog.h:
+	* src/brasero-image-properties.c:
+	* src/brasero-image-properties.h:
+	* src/brasero-image-type-chooser.c:
+	* src/brasero-image-type-chooser.h:
+	* src/brasero-jacket-background.c:
+	* src/brasero-jacket-background.h:
+	* src/brasero-jacket-buffer.c:
+	* src/brasero-jacket-buffer.h:
+	* src/brasero-jacket-edit.c:
+	* src/brasero-jacket-edit.h:
+	* src/brasero-jacket-font.c:
+	* src/brasero-jacket-font.h:
+	* src/brasero-jacket-view.c:
+	* src/brasero-jacket-view.h:
+	* src/brasero-medium-properties.c:
+	* src/brasero-medium-properties.h:
+	* src/brasero-multi-song-props.c:
+	* src/brasero-notify.c:
+	* src/brasero-notify.h:
+	* src/brasero-plugin-manager-ui.c:
+	* src/brasero-progress.c:
+	* src/brasero-progress.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_new_cover_cb):
+	* src/brasero-project-parse.h:
+	* src/brasero-project-type-chooser.c:
+	* src/brasero-project.c (brasero_project_setup_session),
+	(brasero_project_burn), (brasero_project_create_audio_cover):
+	* src/brasero-project.h:
+	* src/brasero-search-beagle.c:
+	* src/brasero-session-cfg.c:
+	* src/brasero-session-cfg.h:
+	* src/brasero-session.c:
+	* src/brasero-session.h:
+	* src/brasero-song-properties.c:
+	* src/brasero-split-dialog.c:
+	* src/brasero-src-image.c:
+	* src/brasero-src-image.h:
+	* src/brasero-src-selection.c:
+	* src/brasero-src-selection.h:
+	* src/brasero-sum-dialog.c:
+	* src/brasero-tool-color-picker.c:
+	* src/brasero-tool-color-picker.h:
+	* src/brasero-tool-dialog.c:
+	* src/brasero-tool-dialog.h:
+	* src/brasero-tray.c:
+	* src/brasero-tray.h:
+	* src/brasero-utils.c (brasero_error_quark), (brasero_utils_init),
+	(brasero_utils_launch_app):
+	* src/brasero-utils.h:
+	* src/brasero-video-project.h:
+	* src/burn-basics.c:
+	* src/burn-basics.h:
+	* src/burn-caps.c:
+	* src/burn-caps.h:
+	* src/burn-dbus.c:
+	* src/burn-dbus.h:
+	* src/burn-debug.c:
+	* src/burn-debug.h:
+	* src/burn-image-format.c:
+	* src/burn-image-format.h:
+	* src/burn-job.c:
+	* src/burn-job.h:
+	* src/burn-mkisofs-base.c:
+	* src/burn-mkisofs-base.h:
+	* src/burn-plugin-manager.c:
+	* src/burn-plugin-manager.h:
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c:
+	* src/burn-plugin.h:
+	* src/burn-process.c:
+	* src/burn-process.h:
+	* src/burn-session.c:
+	* src/burn-session.h:
+	* src/burn-task-ctx.c:
+	* src/burn-task-ctx.h:
+	* src/burn-task-item.c:
+	* src/burn-task-item.h:
+	* src/burn-task.c:
+	* src/burn-task.h:
+	* src/burn-track.c:
+	* src/burn-track.h:
+	* src/burn.c:
+	* src/burn.h:
+	* src/eggdesktopfile.c:
+	* src/eggdesktopfile.h:
+	* src/eggsmclient-private.h:
+	* src/eggsmclient-xsmp.c:
+	* src/eggsmclient.c:
+	* src/eggsmclient.h:
+	* src/main.c (main):
+	* src/plugins/Makefile.am:
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrdao/burn-cdrdao-common.h:
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	* src/plugins/cdrdao/burn-cdrdao.h:
+	* src/plugins/cdrdao/burn-toc2cue.c:
+	* src/plugins/cdrdao/burn-toc2cue.h:
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrkit/burn-cdrkit.h:
+	* src/plugins/cdrkit/burn-genisoimage.c:
+	* src/plugins/cdrkit/burn-genisoimage.h:
+	* src/plugins/cdrkit/burn-readom.c:
+	* src/plugins/cdrkit/burn-readom.h:
+	* src/plugins/cdrkit/burn-wodim.c:
+	* src/plugins/cdrkit/burn-wodim.h:
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	* src/plugins/cdrtools/burn-cdrecord.h:
+	* src/plugins/cdrtools/burn-cdrtools.h:
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	* src/plugins/cdrtools/burn-mkisofs.h:
+	* src/plugins/cdrtools/burn-readcd.c:
+	* src/plugins/cdrtools/burn-readcd.h:
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/checksum/burn-checksum-files.c:
+	* src/plugins/checksum/burn-checksum-files.h:
+	* src/plugins/checksum/burn-checksum-image.c:
+	* src/plugins/checksum/burn-checksum-image.h:
+	* src/plugins/checksum/burn-volume-read.c:
+	* src/plugins/checksum/burn-volume-read.h:
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/dvdauthor/burn-dvdauthor.c:
+	* src/plugins/dvdauthor/burn-dvdauthor.h:
+	* src/plugins/dvdcss/Makefile.am:
+	* src/plugins/dvdcss/burn-dvdcss-private.h:
+	* src/plugins/dvdcss/burn-dvdcss.c:
+	* src/plugins/dvdcss/burn-dvdcss.h:
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/growisofs/burn-dvd-rw-format.c:
+	* src/plugins/growisofs/burn-dvd-rw-format.h:
+	* src/plugins/growisofs/burn-growisofs-common.h:
+	* src/plugins/growisofs/burn-growisofs.c:
+	* src/plugins/growisofs/burn-growisofs.h:
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/libburnia/burn-libburn-common.c:
+	* src/plugins/libburnia/burn-libburn-common.h:
+	* src/plugins/libburnia/burn-libburn.c:
+	* src/plugins/libburnia/burn-libburn.h:
+	* src/plugins/libburnia/burn-libburnia.h:
+	* src/plugins/libburnia/burn-libisofs.c:
+	* src/plugins/libburnia/burn-libisofs.h:
+	* src/plugins/libburnia/burn-libread-disc.h:
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/local-track/burn-local-image.c:
+	* src/plugins/local-track/burn-local-image.h:
+	* src/plugins/local-track/burn-uri.c:
+	* src/plugins/local-track/burn-uri.h:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/transcode/burn-normalize.c:
+	* src/plugins/transcode/burn-normalize.h:
+	* src/plugins/transcode/burn-transcode.c:
+	* src/plugins/transcode/burn-transcode.h:
+	* src/plugins/transcode/burn-vob.c:
+	* src/plugins/transcode/burn-vob.h:
+	* src/plugins/vcdimager/Makefile.am:
+	* src/plugins/vcdimager/burn-vcdimager.c:
+	* src/plugins/vcdimager/burn-vcdimager.h:
+
 2009-03-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix one last stupid crasher.
