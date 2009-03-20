@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
 "POT-Creation-Date: 2009-03-16 19:34+0000\n"
-"PO-Revision-Date: 2009-03-17 11:14+0100\n"
+"PO-Revision-Date: 2009-03-20 09:38+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -417,7 +417,7 @@ msgstr "Mapa CD/DVD zapisovalca"
 
 #: ../src/plugins/local-track/burn-uri.c:714
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
-msgstr ""
+msgstr "Omogoča zapisovanje datotek dodanih v \"CD/DVD mapo\" v Nautilusu"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 msgid "CD/DVD Creator"
@@ -592,11 +592,11 @@ msgstr "Vstavljenega ni nobenega zapisljivega medija."
 
 #: ../src/brasero-burn-options.c:273
 msgid "No track information (artist, compositor, ...) will be written to the disc."
-msgstr ""
+msgstr "Podrobnosti sledi (avtor, izvajalec, ...) ne bodo zapisane na disk."
 
 #: ../src/brasero-burn-options.c:274
 msgid "This is not supported by the current active burning backend."
-msgstr ""
+msgstr "Možnost ni podprta pri trenutno dejavnem hrbtnem programu za zapisovanje."
 
 #: ../src/brasero-burn-options.c:284
 #: ../src/brasero-burn-dialog.c:396
@@ -812,7 +812,7 @@ msgstr "Vsebuje seznam dodatnih vstavkov, ki bodo uporabljeni za zapisovanje dis
 
 #: ../data/brasero.schemas.in.h:2
 msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
-msgstr ""
+msgstr "Vsebuje ime nameščenega orodja za zapisovanje, ki bo po vsej verjetnosti uporabljeno."
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -916,7 +916,7 @@ msgstr "Pladenj, ki naj se prikaže pri video projektih. Izbirate lahko med: \"i
 
 #: ../data/brasero.schemas.in.h:28
 msgid "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
-msgstr ""
+msgstr "Možnost določa lego projektnega pladnja (vrednost 0 = na desni, 1 = na levi, 2 = zgoraj, 3 = spodaj)"
 
 #: ../data/brasero.schemas.in.h:29
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
@@ -932,7 +932,7 @@ msgstr "Izbrana možnost omogoča prikaz predogleda datotek."
 
 #: ../data/brasero.schemas.in.h:32
 msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr ""
+msgstr "Ali naj bo uporabljena zastavica \"--driver generic-mmc-raw\" s cdrdao"
 
 #: ../data/brasero.schemas.in.h:33
 msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups."
@@ -944,7 +944,7 @@ msgstr "Izbrana možnost omogoča, da bo uporabljena zastavica \"--immed\" z uka
 
 #: ../data/brasero.schemas.in.h:35
 msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr ""
+msgstr "Ali naj bo uporabljena zastavica \"-use-the-force-luke=dao\" z growisofs"
 
 #: ../data/brasero.schemas.in.h:36
 msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -985,9 +985,9 @@ msgstr "%s: \"%s\""
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
 #: ../src/brasero-dest-selection.c:439
-#, fuzzy, c-format
+#, c-format
 msgid "New disc in the burner holding source disc"
-msgstr "Nov disk v zapisovalniku vsebuje izvorni disk"
+msgstr "Nov disk v zapisovalnik, ki vsebuje izvorni disk"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../src/brasero-dest-selection.c:463
@@ -1109,7 +1109,7 @@ msgstr "Ali želite dodati \"%s\", ki je slikovni posnetek?"
 
 #: ../src/brasero-audio-disc.c:1384
 msgid "This file is a video and therefore only the audio part can be written to the disc."
-msgstr ""
+msgstr "Datoteka je video datoteka, zato bo le zvočni del zapisan na disk."
 
 #: ../src/brasero-audio-disc.c:1387
 msgid "_Discard File"
@@ -1213,7 +1213,7 @@ msgstr "_Hitro praznjenje"
 
 #: ../src/brasero-blank-dialog.c:389
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
-msgstr ""
+msgstr "Omogoči hitro brisanje namesto dolgega natančnega brisanja"
 
 #: ../src/brasero-blank-dialog.c:412
 msgid "Disc Blanking"
@@ -1842,10 +1842,12 @@ msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a recordable disc is inserted."
 msgstr ""
+"Odtis diska je bil ustvarjen na trdem disku.\n"
+"Zapisovanje se bo začelo takoj, ko bo v pogon vstavljen zapisljiv disk."
 
 #: ../src/brasero-burn-dialog.c:503
 msgid "A data integrity test will begin as soon as the disc is inserted."
-msgstr ""
+msgstr "Preverjanje celovitosti podatkov se bo začelo takoj, ko bo v pogon vstavljen disk."
 
 #: ../src/brasero-burn-dialog.c:504
 msgid "Please re-insert the disc in the CD/DVD burner."
@@ -1908,7 +1910,7 @@ msgstr "Prosim, izvrzite disk in ga ponovno naložite."
 #: ../src/brasero-burn-dialog.c:642
 #: ../src/brasero-sum-dialog.c:300
 msgid "A file could not be created at the location specified for temporary files"
-msgstr ""
+msgstr "Datoteke ni mogoče ustvariti na mestu, ki je določeno za začasne datoteke"
 
 #: ../src/brasero-burn-dialog.c:643
 msgid "The image could not be created at the specified location"
@@ -1916,7 +1918,7 @@ msgstr "Odtisa ni mogoče ustvariti na določenem mestu."
 
 #: ../src/brasero-burn-dialog.c:644
 msgid "Do you want to specify another location for this session or retry with the current location?"
-msgstr ""
+msgstr "Ali želite določiti drugo mesto za to sejo, ali želite znova poskusiti s trenutnim?"
 
 #: ../src/brasero-burn-dialog.c:659
 msgid "You may want to free some space on the disc and retry"
@@ -1986,11 +1988,8 @@ msgid "_Continue"
 msgstr "_Nadaljuj"
 
 #: ../src/brasero-burn-dialog.c:870
-#, fuzzy
 msgid "You might not be able to listen to them with stereos and CD-TEXT won't be written."
-msgstr ""
-"možno je, da je ne boste mogli poslušati v stereo predvajalnikih.\n"
-"Ali želite vseeno nadaljevati?"
+msgstr "Morda jih ne bo mogoče poslušati v predvajalnikih in CD bsedilo ne bo izpisano"
 
 #: ../src/brasero-burn-dialog.c:874
 msgid "Appending audio tracks to a CD is not advised."
@@ -2214,9 +2213,8 @@ msgstr "Vsebina prokekta je bila spremenjena po zadnjem shranjevanju."
 
 #: ../src/brasero-data-disc.c:668
 #: ../src/brasero-data-disc.c:675
-#, fuzzy
 msgid "Discard the current modified project"
-msgstr "Predogled tiskanja trenutnega projekta"
+msgstr "Prezri trenutno spremenjen projekt"
 
 #: ../src/brasero-data-disc.c:674
 msgid "_Discard"
@@ -2229,11 +2227,11 @@ msgstr "Nadaljuj z delom na trenutno dejavnem projektu"
 #: ../src/brasero-data-disc.c:754
 #, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr ""
+msgstr "Ali želite zapisati \"%s\" na disk, ali pa želite predmet dodati v projekt?"
 
 #: ../src/brasero-data-disc.c:763
 msgid "This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."
-msgstr ""
+msgstr "Datoteka je odtis diska in jo je zato mogoče zapisati na nov disk, brez predhodnega dodajanja k projektu."
 
 #: ../src/brasero-data-disc.c:765
 msgid "_Add to Project"
@@ -2292,7 +2290,7 @@ msgstr "_Zamenjaj datoteko projekta"
 #: ../src/brasero-data-disc.c:981
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"
-msgstr ""
+msgstr "Ali zares želite dodati \"%s\" v izbor in uporabiti tretjo različico standarda ISO9660 za podporo?"
 
 #: ../src/brasero-data-disc.c:989
 msgid ""
@@ -2300,6 +2298,9 @@ msgid ""
 "It is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©.\n"
 "However MacOS X cannot read images created with version 3 of ISO9660 standard."
 msgstr ""
+"Velikost datoteke je nad 2 GiB. Datoteke večje od te vrednosti niso podprte s standardom ISO9660 različice 1 in 2 (najpogosteje uporabljene).\n"
+"Priporočljivo je uporabljati različico 3 standarda ISO9660, ki je podprt na večini operacijskih sistemih vključno z Linux sistemi in z vsemi različicami sistemov Windows ©.\n"
+"Operacijski sistem MacOS X ne podpira tega standarda."
 
 #: ../src/brasero-data-disc.c:1025
 #, c-format
@@ -2312,6 +2313,9 @@ msgid ""
 "Brasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
+"Podrejena mapa ima 7 nadrejenih map.\n"
+"Program Brasero lahko zapiše vsebino s tako drevesno zgradbo, vendar diska ne bo mogoče brati na vseh operacijskih sistemih.\n"
+"OPOMBA:Zapis s tako globoko drevesno strukturo deluje na Linux sistemih."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -2340,7 +2344,7 @@ msgstr "Ali se zares želite uvoziti sejo iz '%s'?"
 
 #: ../src/brasero-data-disc.c:1227
 msgid "That way, old files from previous sessions will be usable after burning."
-msgstr ""
+msgstr "Na ta način bo starejše datoteke prejšnih sej še vedno mogoče uporabiti po zapisovanju."
 
 #: ../src/brasero-data-disc.c:1238
 msgid "I_mport Session"
@@ -2494,15 +2498,17 @@ msgstr "Ali res želite izbrati to mesto?"
 #: ../src/plugins/cdrkit/burn-genisoimage.c:190
 #: ../src/plugins/cdrtools/burn-mkisofs.c:191
 #: ../src/plugins/libburnia/burn-libisofs.c:223
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have the required permission to write at this location"
-msgstr "Zgleda, da nimate zahtevanih dovoljenj za uporabo pogona"
+msgstr "Videti je, da nimate ustreznih dovoljenj za pisanje na to mesto."
 
 #: ../src/brasero-drive-properties.c:324
 msgid ""
 "The filesystem on this volume does not support large files (size over 2 GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
+"Datotečni sistem ne podpira datotek večjih od  2 GiB.\n"
+"Problem lahko nastane pri pisanju DVDjev in velikih odtisov."
 
 #. Translators %s.1f is the speed used to burn
 #: ../src/brasero-drive-properties.c:431
@@ -2555,18 +2561,16 @@ msgid "Brasero will simulate the burning and if it is successful, go on with act
 msgstr "Program Brasero simulira zapisovanje in v primeru, da je to uspešno, začne zares zapisovati po desetih sekundah."
 
 #: ../src/brasero-drive-properties.c:575
-#, fuzzy
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr "Uporabi burnproof (zmanjšanje tveganja neuspeha)"
+msgstr "Uporabi preverjanje zapisovanja (zmanjšunje tveganje napak)"
 
 #: ../src/brasero-drive-properties.c:576
 msgid "_Eject after burning"
 msgstr "_Izvrzi po končanem zapisovanju"
 
 #: ../src/brasero-drive-properties.c:577
-#, fuzzy
 msgid "Burn the image directly _without saving it to disc"
-msgstr "Zapiši sliko neposredno, brez shranjevanja na disk"
+msgstr "Zapiši odtis neposredno, brez predhodnega _shranjevanja na disk"
 
 #: ../src/brasero-drive-properties.c:578
 msgid "Leave the disc _open to add other files later"
@@ -2774,9 +2778,8 @@ msgid "Project estimated size: %s"
 msgstr "Ocenjena velikost projekta: %s"
 
 #: ../src/brasero-project.c:804
-#, fuzzy
 msgid "Please wait until the estimation of the project size is completed."
-msgstr "Prosim, počakajte, dokler projekt ni naložen."
+msgstr "Prosim, počakajte, dokler preverjanje velikosti projekta ni končano."
 
 #: ../src/brasero-project.c:809
 msgid "All files from the project need to be analysed to complete this operation."
@@ -2877,9 +2880,8 @@ msgid "Save the changes of current project before closing?"
 msgstr "Ali želite shraniti spremembe projekta pred zapiranjem?"
 
 #: ../src/brasero-project.c:1837
-#, fuzzy
 msgid "If you don't save, changes will be permanently lost."
-msgstr "Če ne shranite, bodo vse vaše spremembe trajno izgubljene."
+msgstr "V primeru, da sprememb ne shranite, bodo te trajno izgubljene."
 
 #: ../src/brasero-project.c:1841
 #: ../src/brasero-project.c:1847
@@ -2891,9 +2893,8 @@ msgid "Save Current Project"
 msgstr "Shrani trenutni projekt"
 
 #: ../src/brasero-project.c:2484
-#, fuzzy
 msgid "Save project as Brasero audio project"
-msgstr "Brasero - nov projekt za avdio zgoščenko"
+msgstr "Shrani kot Brasero zvočni projekt"
 
 #: ../src/brasero-project.c:2485
 msgid "Save project as a plain text list"
@@ -2963,9 +2964,8 @@ msgstr "Nov _video projekt"
 
 #: ../src/brasero-project-manager.c:113
 #: ../src/brasero-project-type-chooser.c:83
-#, fuzzy
 msgid "Create a video DVD or a SVCD that are readable on TV readers"
-msgstr "Ustvari video DVD, ki se ga lahko prevaja v vseh bralnikih DVD"
+msgstr "Ustvari video DVD ali SVCD, ki ge je mogoče predvajati na TV sprejemnikih"
 
 #: ../src/brasero-project-manager.c:114
 msgid "Copy _Disc..."
@@ -2973,9 +2973,8 @@ msgstr "_Kopiraj disk ..."
 
 #: ../src/brasero-project-manager.c:115
 #: ../src/brasero-project-type-chooser.c:88
-#, fuzzy
 msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"
-msgstr "Ustvarite 1:1 kopijo zvočnega CD-ja ali podatkovnega CD-ja/DVD-ja na trdem disku ali na drugem CD-ju/DVD-ju"
+msgstr "Ustvarite 1:1 kopijo zvočnega ali podatkovnega CDja na trdem disku ali na drugem CDju"
 
 #: ../src/brasero-project-manager.c:116
 msgid "_Burn Image..."
@@ -3157,9 +3156,8 @@ msgstr "_Znova preveri"
 
 #: ../src/brasero-sum-dialog.c:141
 #: ../src/brasero-sum-dialog.c:469
-#, fuzzy
 msgid "The file integrity check could not be performed."
-msgstr "Ni mogoče izvesti preverjanja celovitosti datotek:"
+msgstr "Ni mogoče izvesti preverjanja celovitosti datotek."
 
 #: ../src/brasero-sum-dialog.c:154
 msgid "The file integrity was performed successfully."
@@ -3195,9 +3193,8 @@ msgid "Use a _md5 file to check the disc"
 msgstr "Uporabi datoteko _md5 za pregled diska"
 
 #: ../src/brasero-sum-dialog.c:640
-#, fuzzy
 msgid "Use an external .md5 file that stores the checksum of a disc"
-msgstr "Uporabi datoteko md5 za pregled zgoščenke"
+msgstr "Uporabi zunanjo .md5 datoteko, ki ima shranjenje nadzorne vsote odtisov"
 
 #: ../src/brasero-sum-dialog.c:653
 msgid "Open a md5 file"
@@ -3421,21 +3418,21 @@ msgid "Not enough space available on the disc (%lli available for %lli)"
 msgstr "Na disku ni dovolj prostora (%lli prosto za %lli)"
 
 #: ../src/burn-job.c:500
-#, fuzzy, c-format
+#, c-format
 msgid "The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB"
-msgstr "izbrano mesto nima dovolj nezasedenega prostora, da bi tja shranili sliko zgoščenke (potrebno %ld MiB)"
+msgstr "Na datotečnem sistemu za shranjevanje začasnih odtisov ni mogoče shraniti datoteke večje od 2 GiB."
 
 #: ../src/burn-job.c:515
 #: ../src/burn-job.c:537
-#, fuzzy, c-format
+#, c-format
 msgid "The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"
-msgstr "izbrano mesto nima dovolj nezasedenega prostora, da bi tja shranili sliko zgoščenke (potrebno %ld MiB)"
+msgstr "Na mestu za shranjevanje začasnih odtisov ni dovolj prostora za celoten odtis (zahtevani prostor je %ld MiB)"
 
 #: ../src/burn-job.c:550
 #: ../src/plugins/dvdcss/burn-dvdcss.c:347
-#, fuzzy, c-format
+#, c-format
 msgid "The size of the volume could not be retrieved"
-msgstr "ni mogoče dobiti priklopne točke pogona CD/DVD."
+msgstr "Velikosti vsebine ni mogoče pridobiti"
 
 #: ../src/burn-job.c:604
 #: ../src/burn-session.c:539
@@ -3535,9 +3532,8 @@ msgid "PATH TO COVER"
 msgstr "POT DO OVITKA"
 
 #: ../src/main.c:105
-#, fuzzy
 msgid "Open a video project adding the URIs given on the command line"
-msgstr "Odpri avdio projekt z dodanimi URI-ji, ki so podani v ukazni vrstici"
+msgstr "Odpri video projekt z dodajanjem naslovov URI preko ukazne vrstice"
 
 #: ../src/main.c:109
 msgid "Uri of an image file to be burnt (autodetected)"
@@ -3560,9 +3556,8 @@ msgid "Open the check disc dialog"
 msgstr "Odpri pogovorno okno preverjanja vsebine diska"
 
 #: ../src/main.c:125
-#, fuzzy
 msgid "Burn the contents of burn:// URI"
-msgstr "Začne zapisovanje vsebine izbire"
+msgstr "Zapiši vsebino naslova burn:// URI"
 
 #: ../src/main.c:129
 msgid ""
@@ -3755,18 +3750,17 @@ msgid "Enable \"-immed\" flag (see cdrecord manual)"
 msgstr "Omogoči \"-immed\" zastavico (več v cdrdao priročniku)"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1309
-#, fuzzy, c-format
+#, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
-msgstr "Omogoči zastavico immed v cdrecord"
+msgstr "Najmanjša velikost predpomnilnika pogona za polnjenje (v %%)(več v cdrdao priročniku):"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:130
 msgid "This version of mkisofs is not supported"
 msgstr "Različica mkisofs ni podprta"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:526
-#, fuzzy
 msgid "Use mkisofs to create image from a file selection"
-msgstr "Uporabi libisofs za generiranje slik"
+msgstr "Uporabi mkisofs za ustvarjanje odtisa iz izbora datotek"
 
 #: ../src/plugins/cdrtools/burn-readcd.c:411
 msgid "Use readcd to create disc images"
