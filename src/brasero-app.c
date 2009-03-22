@@ -126,14 +126,14 @@ static GtkActionEntry entries[] = {
 	{"Eject", "media-eject", N_("E_ject"), NULL,
 	 N_("Eject a disc"), G_CALLBACK (on_eject_cb)},
 
-	{"Erase", "media-optical-blank", N_("_Erase..."), NULL,
-	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
+	{"Blank", "media-optical-blank", N_("_Blank..."), NULL,
+	 N_("Blank a disc"), G_CALLBACK (on_erase_cb)},
 
 	{"Check", NULL, N_("_Check Integrity..."), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
 
-	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
-	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
+	{"Quit", GTK_STOCK_QUIT, NULL, NULL,
+	 N_("Quit Brasero"), G_CALLBACK (on_exit_cb)},
 
 	{"Contents", GTK_STOCK_HELP, N_("_Contents"), "F1", N_("Display help"),
 	 G_CALLBACK (on_help_cb)}, 
@@ -149,7 +149,7 @@ static const gchar *description = {
 	    "<menu action='ProjectMenu'>"
 		"<placeholder name='ProjectPlaceholder'/>"
 		"<separator/>"
-		"<menuitem action='Exit'/>"
+		"<menuitem action='Quit'/>"
 	    "</menu>"
 	    "<menu action='EditMenu'>"
 		"<placeholder name='EditPlaceholder'/>"
@@ -162,7 +162,7 @@ static const gchar *description = {
 	    "<menu action='ToolMenu'>"
 		"<placeholder name='DiscPlaceholder'/>"
 		"<menuitem action='Eject'/>"
-		"<menuitem action='Erase'/>"
+		"<menuitem action='Blank'/>"
 		"<menuitem action='Check'/>"
 	    "</menu>"
 	    "<menu action='HelpMenu'>"

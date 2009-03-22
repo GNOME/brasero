@@ -280,7 +280,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	}
 	else if (valid == BRASERO_SESSION_NO_CD_TEXT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("No track information (artist, compositor, ...) will be written to the disc."),
+					    _("No track information (artist, title, ...) will be written to the disc."),
 					    _("This is not supported by the current active burning backend."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
