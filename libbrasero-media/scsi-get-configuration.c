@@ -171,8 +171,10 @@ brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 					int *size,
 					BraseroScsiErrCode *error)
 {
+	BraseroScsiGetConfigHdr *hdr = NULL;
 	BraseroGetConfigCDB *cdb;
 	BraseroScsiResult res;
+	int hdr_size = 0;
 
 	g_return_val_if_fail (data != NULL, BRASERO_SCSI_FAILURE);
 	g_return_val_if_fail (size != NULL, BRASERO_SCSI_FAILURE);
@@ -181,19 +183,20 @@ brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 	BRASERO_SET_16 (cdb->feature_num, type);
 	cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ONLY_FEATURE;
 
-	res = brasero_get_configuration (cdb, data, size, error);
+	res = brasero_get_configuration (cdb, &hdr, &hdr_size, error);
 	brasero_scsi_command_free (cdb);
 
 	/* make sure the desc is the one we want */
-	if ((*data) && BRASERO_GET_16 ((*data)->desc->code) != type) {
-		BRASERO_MEDIA_LOG ("Wrong type returned %d", (*data)->desc->code);
+	if (hdr && BRASERO_GET_16 (hdr->desc->code) != type) {
+		BRASERO_MEDIA_LOG ("Wrong type returned %d", hdr->desc->code);
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_TYPE_MISMATCH);
 
-		g_free (*data);
-		*size = 0;
+		g_free (hdr);
 		return BRASERO_SCSI_FAILURE;
 	}
 
+	*data = hdr;
+	*size = hdr_size;
 	return res;
 }
 
@@ -223,3 +226,4 @@ brasero_mmc2_get_profile (BraseroDeviceHandle *handle,
 	*profile = BRASERO_GET_16 (hdr.current_profile);
 	return BRASERO_SCSI_OK;
 }
+

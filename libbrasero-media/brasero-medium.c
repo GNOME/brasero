@@ -1167,8 +1167,6 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 						      &size,
 						      code);
 	if (result != BRASERO_SCSI_OK) {
-		g_free (hdr);
-
 		BRASERO_MEDIA_LOG ("READ FORMAT CAPACITIES failed");
 		return BRASERO_BURN_ERR;
 	}
@@ -1296,8 +1294,6 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 							    code);
 
 	if (result != BRASERO_SCSI_OK) {
-		g_free (wrt_perf);
-
 		BRASERO_MEDIA_LOG ("GET PERFORMANCE failed");
 		return BRASERO_BURN_ERR;
 	}
@@ -1365,8 +1361,6 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 						   &size,
 						   code);
 	if (result != BRASERO_SCSI_OK) {
-		g_free (data);
-
 		BRASERO_MEDIA_LOG ("MODE SENSE failed");
 		return BRASERO_BURN_ERR;
 	}
@@ -1700,8 +1694,6 @@ brasero_medium_track_set_leadout_DVDR_blank (BraseroMedium *self,
 						      &size,
 						      code);
 	if (result != BRASERO_SCSI_OK) {
-		g_free (hdr);
-
 		BRASERO_MEDIA_LOG ("READ FORMAT CAPACITIES failed");
 		return BRASERO_BURN_ERR;
 	}
@@ -2022,8 +2014,6 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 						  &size,
 						  code);
 	if (result != BRASERO_SCSI_OK) {
-		g_free (toc);
-
 		BRASERO_MEDIA_LOG ("READ TOC failed");
 		return BRASERO_BURN_ERR;
 	}
@@ -2240,8 +2230,6 @@ brasero_medium_get_contents (BraseroMedium *self,
 							 &size,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
-		g_free (info);
-	
 		BRASERO_MEDIA_LOG ("READ DISC INFORMATION failed");
 		return BRASERO_BURN_ERR;
 	}
@@ -2554,8 +2542,6 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 							 &size,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
-		g_free (hdr);
-
 		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}

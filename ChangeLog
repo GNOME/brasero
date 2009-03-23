@@ -1,3 +1,18 @@
+2009-03-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Fix #576439 – nautilus crash because of probable double g_free in brasero_medium_get_css_feature
+
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_get_capacity_DVD_RW),
+	(brasero_medium_get_speed_mmc3),
+	(brasero_medium_get_page_2A_write_speed_desc),
+	(brasero_medium_track_set_leadout_DVDR_blank),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents),
+	(brasero_medium_get_css_feature):
+	* libbrasero-media/scsi-get-configuration.c
+	(brasero_mmc2_get_configuration_feature):
+	* libbrasero-media/scsi-get-performance.c:
+
 2009-03-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix one last stupid crasher.

@@ -197,9 +197,9 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		 * than the one they returned on the first time. So redo whole
 		 * operation again but this time with the new size we got */
 		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i\n"
-				  "Re-issuing the command with received size",
-				  request_size,
-				  buffer_size);
+				   "Re-issuing the command with received size",
+				   request_size,
+				   buffer_size);
 
 		tmp_hdr = &buffer->hdr;
 		request_size = buffer_size;
@@ -243,3 +243,4 @@ brasero_mmc3_get_performance_wrt_spd_desc (BraseroDeviceHandle *handle,
 	brasero_scsi_command_free (cdb);
 	return res;
 }
+
