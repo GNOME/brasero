@@ -1268,7 +1268,7 @@ brasero_io_add_playlist_entry_parsed_cb (TotemPlParser *parser,
 }
 
 static void
-brasero_io_start_end_playlist_cb (TotemPlParser *parser,
+brasero_io_start_playlist_cb (TotemPlParser *parser,
 				  const gchar *uri,
 				  GHashTable *metadata,
 				  BraseroIOPlaylist *data)
@@ -1294,11 +1294,7 @@ brasero_io_parse_playlist_get_uris (const gchar *uri,
 	parser = totem_pl_parser_new ();
 	g_signal_connect (parser,
 			  "playlist-started",
-			  G_CALLBACK (brasero_io_start_end_playlist_cb),
-			  playlist);
-	g_signal_connect (parser,
-			  "playlist-ended",
-			  G_CALLBACK (brasero_io_start_end_playlist_cb),
+			  G_CALLBACK (brasero_io_start_playlist_cb),
 			  playlist);
 	g_signal_connect (parser,
 			  "entry-parsed",
