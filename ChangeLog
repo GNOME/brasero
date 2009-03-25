@@ -1,3 +1,11 @@
+2009-03-25  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/brasero-io.c (brasero_io_start_playlist_cb),
+	(brasero_io_parse_playlist_get_uris):
+
+	Remove unneeded signal connection and rename callback.
+	Fixes crash on Rhythmbox playlist import see bgo #575904.
+
 2009-03-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #576439 – nautilus crash because of probable double g_free in brasero_medium_get_css_feature
