@@ -1,3 +1,10 @@
+2009-03-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #576564 – brasero crashed with SIGSEGV in brasero_image_format_get_cdrdao_size()
+	Fix crash when retrieving cue size for cdrdao files (wrong pointer used)
+
+	* src/burn-image-format.c (brasero_image_format_get_FILE_info):
+
 2009-03-25  Luis Medinas  <lmedinas@gnome.org>
 
 	* src/brasero-io.c (brasero_io_start_playlist_cb),
