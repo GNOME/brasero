@@ -1,5 +1,19 @@
 2009-03-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix #576564 – brasero crashed with SIGSEGV in brasero_image_format_get_cdrdao_size()
+        Fix crash when retrieving cue size for cdrdao files (wrong pointer used)
+	Fix some build problems due to wrong headers
+
+	* libbrasero-burn/brasero-progress.c:
+	* libbrasero-burn/brasero-tray.c:
+	* libbrasero-burn/burn-image-format.c
+	(brasero_image_format_get_FILE_info):
+	* src/brasero-utils.c (brasero_error_quark), (brasero_utils_init),
+	(brasero_utils_launch_app):
+	* src/brasero-utils.h:
+
+2009-03-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Second patch to carry on splitting backend and app
 	Status:
 	No more undefined symbol in library (so basically should be usable now

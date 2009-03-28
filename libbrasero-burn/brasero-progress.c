@@ -40,7 +40,6 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-utils.h"
 #include "brasero-progress.h"
 #include "burn-basics.h"
 #include "brasero-medium.h"

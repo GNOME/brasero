@@ -38,7 +38,6 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
-#include "brasero-utils.h"
 #include "brasero-tray.h"
 
 static void brasero_tray_icon_class_init (BraseroTrayIconClass *klass);

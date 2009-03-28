@@ -329,14 +329,13 @@ stat_end:
 }
 
 static gboolean
-brasero_image_format_get_FILE_info (gchar *uri,
+brasero_image_format_get_FILE_info (const gchar *ptr,
 				    GFile *parent,
 				    gint64 *size_img,
 				    GError **error)
 {
 	gchar *path = NULL;
 	gint64 start = 0;
-	const gchar *ptr;
 	GFileInfo *info;
 	GFile *file;
 	gchar *tmp;
