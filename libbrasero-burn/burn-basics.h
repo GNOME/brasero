@@ -60,6 +60,12 @@ G_BEGIN_DECLS
 const gchar *
 brasero_burn_action_to_string (BraseroBurnAction action);
 
+gchar *
+brasero_string_get_localpath (const gchar *uri);
+
+gchar *
+brasero_string_get_uri (const gchar *uri);
+
 G_END_DECLS
 
 #endif /* _BURN_BASICS_H */

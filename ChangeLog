@@ -1,3 +1,255 @@
+2009-03-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Second patch to carry on splitting backend and app
+	Status:
+	No more undefined symbol in library (so basically should be usable now
+	Quick tests showed there are no outstanding bugs introduced
+
+	Now library API needs to be refined
+
+	* libbrasero-burn/Makefile.am:
+	* libbrasero-burn/brasero-burn-dialog.c
+	(brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success),
+	(brasero_burn_dialog_add_track_to_recent):
+	* libbrasero-burn/brasero-burn-options.c
+	(brasero_burn_options_init), (brasero_burn_options_build_contents),
+	(brasero_burn_options_set_property),
+	(brasero_burn_options_get_property),
+	(brasero_burn_options_class_init), (brasero_burn_options_new):
+	* libbrasero-burn/brasero-burn-options.h:
+	* libbrasero-burn/brasero-burn.c (brasero_burn_lock_dest_media),
+	(brasero_burn_status), (brasero_burn_ask_for_joliet),
+	(brasero_burn_run_tasks), (brasero_burn_check_real),
+	(brasero_burn_record_session), (brasero_burn_check),
+	(brasero_burn_same_src_dest_image):
+	* libbrasero-burn/brasero-cover.c
+	(brasero_jacket_edit_set_audio_tracks_back),
+	(brasero_session_edit_cover):
+	* libbrasero-burn/brasero-dest-selection.c
+	(brasero_dest_selection_set_property),
+	(brasero_dest_selection_get_property),
+	(brasero_dest_selection_format_medium_string):
+	* libbrasero-burn/brasero-disc-copy-dialog.c
+	(brasero_disc_copy_dialog_set_session),
+	(brasero_disc_copy_dialog_init):
+	* libbrasero-burn/brasero-disc-copy-dialog.h:
+	* libbrasero-burn/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_set_tracks_image_fs),
+	(brasero_disc_option_dialog_update_joliet),
+	(brasero_disc_option_dialog_set_joliet),
+	(brasero_disc_option_dialog_valid_media_cb),
+	(brasero_disc_option_dialog_set_session),
+	(brasero_disc_option_dialog_init),
+	(brasero_disc_option_dialog_finalize):
+	* libbrasero-burn/brasero-disc-option-dialog.h:
+	* libbrasero-burn/brasero-enums.h:
+	* libbrasero-burn/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_set_session),
+	(brasero_image_option_dialog_init):
+	* libbrasero-burn/brasero-image-option-dialog.h:
+	* libbrasero-burn/brasero-session-cfg.c
+	(brasero_session_cfg_get_gconf_key),
+	(brasero_session_cfg_check_size),
+	(brasero_session_cfg_set_tracks_audio_format),
+	(brasero_session_cfg_update):
+	* libbrasero-burn/brasero-session.c
+	(brasero_burn_session_track_changed),
+	(brasero_burn_session_start_track_monitoring),
+	(brasero_burn_session_stop_tracks_monitoring),
+	(brasero_burn_session_free_tracks),
+	(brasero_burn_session_add_track),
+	(brasero_burn_session_get_input_type),
+	(brasero_burn_session_push_tracks),
+	(brasero_burn_session_pop_tracks),
+	(brasero_burn_session_get_src_medium),
+	(brasero_burn_session_get_src_drive),
+	(brasero_burn_session_same_src_dest_drive),
+	(brasero_burn_session_track_list_free),
+	(brasero_burn_session_finalize):
+	* libbrasero-burn/brasero-session.h:
+	* libbrasero-burn/brasero-src-image.c (brasero_src_image_save),
+	(brasero_src_image_update), (brasero_src_image_set_track),
+	(brasero_src_image_check_parent_directory_cb),
+	(brasero_src_image_get_info_cb), (brasero_src_image_get_format),
+	(brasero_src_image_changed), (brasero_src_image_clicked),
+	(brasero_src_image_set_parent_directory), (brasero_src_image_init),
+	(brasero_src_image_finalize), (_get_session_image_track),
+	(brasero_src_image_set_property):
+	* libbrasero-burn/brasero-src-image.h:
+	* libbrasero-burn/brasero-src-selection.c
+	(brasero_src_selection_medium_changed),
+	(brasero_src_selection_finalize), (_get_session_disc_track),
+	(brasero_src_selection_set_property):
+	* libbrasero-burn/brasero-track.c (brasero_track_type_equal),
+	(brasero_track_type_match), (brasero_track_get_track_type),
+	(brasero_track_get_size), (brasero_track_set_checksum),
+	(brasero_track_get_checksum), (brasero_track_get_checksum_type),
+	(brasero_track_tag_add), (brasero_track_tag_lookup),
+	(brasero_track_changed), (brasero_track_init),
+	(brasero_track_finalize), (brasero_track_class_init):
+	* libbrasero-burn/brasero-track.h:
+	* libbrasero-burn/burn-basics.c (brasero_string_get_localpath),
+	(brasero_string_get_uri), (brasero_burn_library_start):
+	* libbrasero-burn/burn-basics.h:
+	* libbrasero-burn/burn-caps.c (brasero_caps_is_compatible_type),
+	(brasero_burn_caps_new_checksuming_task),
+	(brasero_burn_caps_get_default_output_format),
+	(brasero_caps_get_flags_for_disc), (brasero_burn_caps_sort),
+	(brasero_caps_audio_new), (brasero_plugin_can_image),
+	(brasero_plugin_can_convert):
+	* libbrasero-burn/burn-debug.c
+	(brasero_debug_audio_format_to_string),
+	(brasero_burn_debug_track_type_message):
+	* libbrasero-burn/burn-image-format.c
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* libbrasero-burn/burn-image-format.h:
+	* libbrasero-burn/burn-job.c (brasero_job_check_output_disc_space),
+	(brasero_job_set_output_file),
+	(brasero_job_get_last_session_address),
+	(brasero_job_get_next_writable_address),
+	(brasero_job_get_session_output_size):
+	* libbrasero-burn/burn-job.h:
+	* libbrasero-burn/burn-plugin.h:
+	* libbrasero-burn/burn-process.c (brasero_process_finished):
+	* libbrasero-burn/burn-task-ctx.c (brasero_task_ctx_reset),
+	(brasero_task_ctx_add_track), (brasero_task_ctx_set_next_track),
+	(brasero_task_ctx_finished),
+	(brasero_task_ctx_get_session_output_size),
+	(brasero_task_ctx_get_progress), (brasero_task_ctx_finalize):
+	* libbrasero-burn/burn-task-ctx.h:
+	* libbrasero-burn/burn-task.c
+	(brasero_task_set_track_output_size_default):
+	* libbrasero-burn/libbrasero-marshal.list:
+	* libbrasero-burn/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_read_stderr_record),
+	(brasero_cdrdao_set_argv_record), (brasero_cdrdao_set_argv_image),
+	(brasero_cdrdao_set_argv):
+	* libbrasero-burn/plugins/cdrdao/burn-toc2cue.c
+	(brasero_toc2cue_read_stderr), (brasero_toc2cue_set_argv):
+	* libbrasero-burn/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image):
+	* libbrasero-burn/plugins/cdrkit/burn-readom.c
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size),
+	(brasero_readom_set_argv):
+	* libbrasero-burn/plugins/cdrkit/burn-wodim.c
+	(brasero_wodim_stdout_read), (brasero_wodim_write_inf),
+	(brasero_wodim_write_infs), (brasero_wodim_set_argv_record):
+	* libbrasero-burn/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_stdout_read), (brasero_cdrecord_write_inf),
+	(brasero_cdrecord_write_infs), (brasero_cdrecord_set_argv_record):
+	* libbrasero-burn/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image):
+	* libbrasero-burn/plugins/cdrtools/burn-readcd.c
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size),
+	(brasero_readcd_set_argv):
+	* libbrasero-burn/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_file_process_former_line),
+	(brasero_checksum_files_merge_with_former_session),
+	(brasero_checksum_files_create_checksum),
+	(brasero_checksum_files_check_files), (brasero_checksum_files_end),
+	(brasero_checksum_files_activate):
+	* libbrasero-burn/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_checksum_file_input),
+	(brasero_checksum_image_create_checksum),
+	(brasero_checksum_image_image_and_checksum):
+	* libbrasero-burn/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_add_track),
+	(brasero_dvd_author_generate_xml_file):
+	* libbrasero-burn/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_thread_finished),
+	(brasero_dvdcss_write_image_thread), (brasero_dvdcss_start):
+	* libbrasero-burn/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_set_mkisofs_argv),
+	(brasero_growisofs_set_argv_record):
+	* libbrasero-burn/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_setup_session_fd),
+	(brasero_libburn_setup_session_file),
+	(brasero_libburn_start_record):
+	* libbrasero-burn/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_thread_finished),
+	(brasero_libisofs_import_last_session),
+	(brasero_libisofs_create_volume_thread):
+	* libbrasero-burn/plugins/local-track/burn-local-image.c
+	(brasero_local_track_read_checksum),
+	(brasero_local_track_download_checksum),
+	(brasero_local_track_update_track), (brasero_local_track_start):
+	* libbrasero-burn/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_explore_directory), (brasero_burn_uri_thread),
+	(brasero_burn_uri_start):
+	* libbrasero-burn/plugins/transcode/burn-normalize.c
+	(brasero_normalize_set_next_track):
+	* libbrasero-burn/plugins/transcode/burn-transcode.c
+	(brasero_transcode_set_boundaries),
+	(brasero_transcode_create_pipeline),
+	(brasero_transcode_set_track_size),
+	(brasero_transcode_create_sibling_size),
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_search_for_sibling), (brasero_transcode_start),
+	(brasero_transcode_push_track), (brasero_transcode_pad),
+	(foreach_tag), (brasero_transcode_active_state):
+	* libbrasero-burn/plugins/transcode/burn-vob.c
+	(brasero_vob_finished), (brasero_vob_build_pipeline):
+	* libbrasero-burn/plugins/vcdimager/burn-vcdimager.c
+	(brasero_vcd_imager_generate_xml_file):
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_get_last_data_track_address),
+	(brasero_medium_get_last_data_track_space),
+	(brasero_medium_get_track_space),
+	(brasero_medium_get_track_address):
+	* libbrasero-media/brasero-medium.h:
+	* src/brasero-app.c (brasero_app_burn_options),
+	(brasero_app_burn_image), (brasero_app_copy_disc):
+	* src/brasero-app.h:
+	* src/brasero-audio-disc.c (brasero_audio_disc_iface_disc_init),
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_add_uri_real), (brasero_audio_disc_remove),
+	(brasero_audio_disc_get_track),
+	(brasero_audio_disc_set_session_contents),
+	(brasero_audio_disc_add_track), (brasero_audio_disc_load_track),
+	(brasero_audio_disc_add_slices),
+	(brasero_audio_disc_edit_single_song_properties),
+	(brasero_audio_disc_inotify_remove_all),
+	(brasero_audio_disc_inotify_remove):
+	* src/brasero-data-disc.c (brasero_data_disc_set_session_contents),
+	(brasero_data_disc_iface_disc_init):
+	* src/brasero-data-project.c:
+	* src/brasero-data-session.c
+	(brasero_data_session_load_directory_contents_real):
+	* src/brasero-disc.c:
+	* src/brasero-disc.h:
+	* src/brasero-project-parse.c (brasero_track_clear_song),
+	(_read_audio_track):
+	* src/brasero-project-parse.h:
+	* src/brasero-project.c (brasero_project_burn),
+	(brasero_project_create_audio_cover), (_save_audio_track_xml),
+	(brasero_project_save_audio_project_plain_text),
+	(brasero_project_save_audio_project_playlist):
+	* src/brasero-song-properties.c (brasero_song_props_update_length),
+	(brasero_song_props_gap_changed_cb):
+	* src/brasero-split-dialog.c (brasero_split_dialog_set_boundaries),
+	(brasero_split_dialog_cut), (brasero_split_dialog_remove_range),
+	(brasero_split_dialog_cut_clicked_cb):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_get_disc_checksum),
+	(brasero_sum_dialog_check_disc_sum):
+	* src/brasero-utils.c (brasero_error_quark), (brasero_utils_init),
+	(brasero_utils_launch_app):
+	* src/brasero-utils.h:
+	* src/brasero-video-disc.c
+	(brasero_video_disc_set_session_contents),
+	(brasero_video_disc_get_track),
+	(brasero_video_disc_iface_disc_init):
+	* src/brasero-video-project.c (brasero_video_file_free),
+	(brasero_video_project_set_file_information),
+	(brasero_video_project_add_uri),
+	(brasero_video_project_get_contents),
+	(brasero_video_project_finalize):
+	* src/brasero-video-project.h:
+
 2009-03-25  Luis Medinas  <lmedinas@gnome.org>
 
 	* src/brasero-io.c (brasero_io_start_playlist_cb),

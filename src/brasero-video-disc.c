@@ -43,6 +43,7 @@
 #include "brasero-multi-song-props.h"
 #include "brasero-song-properties.h"
 #include "brasero-session-cfg.h"
+#include "brasero-track-stream.h"
 
 typedef struct _BraseroVideoDiscPrivate BraseroVideoDiscPrivate;
 struct _BraseroVideoDiscPrivate
@@ -1320,31 +1321,6 @@ brasero_video_disc_get_status (BraseroDisc *self,
 }
 
 BraseroDiscResult
-brasero_video_disc_set_session_param (BraseroDisc *self,
-				      BraseroBurnSession *session)
-{
-	BraseroVideoDiscPrivate *priv;
-	BraseroTrackType type;
-	GtkTreeModel *model;
-	GValue *value;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-
-	type.type = BRASERO_TRACK_TYPE_AUDIO;
-	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_UNDEFINED;
-	brasero_burn_session_set_input_type (session, &type);
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-	value = g_new0 (GValue, 1);
-	g_value_init (value, G_TYPE_INT64);
-	g_value_set_int64 (value, brasero_video_project_get_size (BRASERO_VIDEO_PROJECT (model)));
-	brasero_burn_session_tag_add (session,
-				      BRASERO_AUDIO_TRACK_SIZE_TAG,
-				      value);
-	return BRASERO_BURN_OK;
-}
-
-BraseroDiscResult
 brasero_video_disc_set_session_contents (BraseroDisc *self,
 					 BraseroBurnSession *session)
 {
@@ -1367,10 +1343,11 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroBurnSession refs it. */
-		brasero_track_unref (track);
+		g_object_unref (track);
 
 	}
 	g_slist_free (tracks);
+
 	return BRASERO_DISC_OK;
 }
 
@@ -1396,15 +1373,15 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 		track = iter->data;
 
 		song = g_new0 (BraseroDiscSong, 1);
-		song->uri = brasero_track_get_audio_source (track, TRUE);
-		song->start = brasero_track_get_audio_start (track);
-		song->end = brasero_track_get_audio_end (track);
-		song->info = brasero_song_info_copy (brasero_track_get_audio_info (track));
+		song->uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
+		song->start = brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track));
+		song->end = brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track));
+		song->info = brasero_stream_info_copy (brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track)));
 
 		disc_track->contents.tracks = g_slist_append (disc_track->contents.tracks, song);
 	}
 
-	g_slist_foreach (tracks, (GFunc) brasero_track_unref, NULL);
+	g_slist_foreach (tracks, (GFunc) g_object_unref, NULL);
 	g_slist_free (tracks);
 
 	return BRASERO_DISC_OK;
@@ -1453,7 +1430,6 @@ brasero_video_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->reset = brasero_video_disc_reset;
 
 	iface->get_status = brasero_video_disc_get_status;
-	iface->set_session_param = brasero_video_disc_set_session_param;
 	iface->set_session_contents = brasero_video_disc_set_session_contents;
 
 	iface->get_track = brasero_video_disc_get_track;

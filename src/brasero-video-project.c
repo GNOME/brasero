@@ -299,7 +299,7 @@ brasero_video_file_free (BraseroVideoFile *file)
 		g_object_unref (file->snapshot);
 
 	if (file->info)
-		brasero_song_info_free (file->info);
+		brasero_stream_info_free (file->info);
 
 	g_free (file);
 }
@@ -523,7 +523,7 @@ brasero_video_project_set_file_information (BraseroVideoProject *self,
 
 	/* Get the song info */
 	if (!file->info)
-		file->info = g_new0 (BraseroSongInfo, 1);
+		file->info = g_new0 (BraseroStreamInfo, 1);
 
 	if (!file->title_set) {
 		if (file->info->title)
@@ -741,7 +741,7 @@ brasero_video_project_result_cb (GObject *obj,
 BraseroVideoFile *
 brasero_video_project_add_uri (BraseroVideoProject *self,
 			       const gchar *uri,
-			       BraseroSongInfo *info,
+			       BraseroStreamInfo *info,
 			       BraseroVideoFile *sibling,
 			       gint64 start,
 			       gint64 end)
@@ -760,7 +760,7 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 	file->uri = g_strdup (uri);
 
 	if (info) {
-		file->info = brasero_song_info_copy (info);
+		file->info = brasero_stream_info_copy (info);
 
 		if (info->isrc)
 			file->isrc_set = TRUE;
@@ -772,7 +772,7 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 			file->composer_set = TRUE;
 	}
 	else
-		file->info = g_new0 (BraseroSongInfo, 1);
+		file->info = g_new0 (BraseroStreamInfo, 1);
 
 	if (start > -1)
 		file->start = start;
@@ -982,11 +982,11 @@ brasero_video_project_get_contents (BraseroVideoProject *self,
 		return NULL;
 
 	for (file = priv->first; file; file = file->next) {
-		BraseroSongInfo *info = NULL;
-		BraseroTrack *track;
+		BraseroStreamInfo *info = NULL;
+		BraseroTrackStream *track;
 
 		if (file->info) {
-			info = brasero_song_info_copy (file->info);
+			info = brasero_stream_info_copy (file->info);
 
 			if (values_set) {
 				if (!file->title_set) {
@@ -1008,25 +1008,25 @@ brasero_video_project_get_contents (BraseroVideoProject *self,
 		else
 			info = NULL;
 
-		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-		brasero_track_set_audio_source (track,
-						file->uri,
-						BRASERO_AUDIO_FORMAT_UNDEFINED|
-						BRASERO_VIDEO_FORMAT_UNDEFINED);
+		track = brasero_track_stream_new ();
+		brasero_track_stream_set_source (track, file->uri);
+		brasero_track_stream_set_format (track,
+						 BRASERO_AUDIO_FORMAT_UNDEFINED|
+						 BRASERO_VIDEO_FORMAT_UNDEFINED);
 
 		if (!values_set || file->len_set)
-			brasero_track_set_audio_boundaries (track,
-							    file->start,
-							    file->end,
-							    -1);
+			brasero_track_stream_set_boundaries (track,
+							     file->start,
+							     file->end,
+							     -1);
 		else
-			brasero_track_set_audio_boundaries (track,
-							    file->start,
-							    0,
-							    -1);
+			brasero_track_stream_set_boundaries (track,
+							     file->start,
+							     0,
+							     -1);
 
-		brasero_track_set_audio_info (track, info);
-		tracks = g_slist_prepend (tracks, track);
+		brasero_track_stream_set_info (track, info);
+		tracks = g_slist_prepend (tracks, BRASERO_TRACK (track));
 	}
 
 	tracks = g_slist_reverse (tracks);
@@ -1053,7 +1053,7 @@ brasero_video_project_finalize (GObject *object)
 	for (iter = priv->first; iter; iter = next) {
 		next = iter->next;
 		g_free (iter->uri);
-		brasero_song_info_free (iter->info);
+		brasero_stream_info_free (iter->info);
 		g_free (iter);
 	}
 

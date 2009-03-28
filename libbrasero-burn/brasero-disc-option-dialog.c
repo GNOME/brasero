@@ -55,13 +55,10 @@
 #include "brasero-session-cfg.h"
 #include "brasero-burn-options.h"
 
-#include "brasero-disc.h"
-
 G_DEFINE_TYPE (BraseroDiscOptionDialog, brasero_disc_option_dialog, BRASERO_TYPE_BURN_OPTIONS);
 
 struct _BraseroDiscOptionDialogPrivate {
 	BraseroBurnCaps *caps;
-	BraseroDisc *disc;
 
 	GtkWidget *joliet_toggle;
 
@@ -126,6 +123,25 @@ brasero_disc_option_audio_MP2 (BraseroDiscOptionDialog *dialog)
  * are generated. They are used to check that flags or fs are valid.
  */
 
+static void
+brasero_disc_option_dialog_set_tracks_image_fs (BraseroBurnSession *session,
+						BraseroImageFS fs_type)
+{
+	GSList *tracks;
+	GSList *iter;
+
+	tracks = brasero_burn_session_get_tracks (session);
+	for (iter = tracks; iter; iter = iter->next) {
+		BraseroTrack *track;
+
+		track = iter->data;
+		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DATA)
+			continue;
+
+		brasero_track_data_add_fs (BRASERO_TRACK_DATA (track), fs_type);
+	}
+}
+
 static gboolean
 brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 {
@@ -160,8 +176,7 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 			return FALSE;
 		}
 
-		source.subtype.fs_type |= BRASERO_IMAGE_FS_JOLIET;
-		brasero_burn_session_set_input_type (session, &source);
+		brasero_disc_option_dialog_set_tracks_image_fs (session, source.subtype.fs_type);
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), priv->joliet_saved);
 		g_object_unref (session);
@@ -176,7 +191,7 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 	priv->joliet_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle));
 	if (priv->joliet_saved) {
 		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_JOLIET;
-		brasero_burn_session_set_input_type (session, &source);
+		brasero_disc_option_dialog_set_tracks_image_fs (session, source.subtype.fs_type);
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), FALSE);
 	}
@@ -292,8 +307,8 @@ brasero_disc_option_dialog_set_joliet (BraseroDiscOptionDialog *dialog)
 		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_JOLIET;
 	else
 		source.subtype.fs_type |= BRASERO_IMAGE_FS_JOLIET;
-	brasero_burn_session_set_input_type (session, &source);
 
+	brasero_disc_option_dialog_set_tracks_image_fs (session, source.subtype.fs_type);
 	g_object_unref (session);
 }
 
@@ -724,67 +739,6 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 					    BRASERO_VIDEO_ASPECT_4_3);
 }
 
-void
-brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
-				     BraseroDisc *disc)
-{
-	BraseroDiscOptionDialogPrivate *priv;
-	BraseroBurnSession *session;
-	BraseroTrackType type;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
-	if (priv->disc)
-		g_object_unref (priv->disc);
-
-	priv->disc = disc;
-	g_object_ref (disc);
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	brasero_disc_set_session_param (disc, session);
-
-	brasero_burn_session_get_input_type (session, &type);
-	if (type.type == BRASERO_TRACK_TYPE_DATA) {
-		brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
-						     BRASERO_MEDIA_TYPE_WRITABLE|
-						     BRASERO_MEDIA_TYPE_FILE);
-		brasero_disc_option_dialog_add_data_options (dialog);
-	}
-	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-		if (type.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)) {
-			brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
-							     BRASERO_MEDIA_TYPE_WRITABLE|
-							     BRASERO_MEDIA_TYPE_FILE);
-			brasero_disc_option_dialog_add_video_options (dialog);
-		}
-		else {
-			/* No other specific options for audio */
-			brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
-							     BRASERO_MEDIA_TYPE_WRITABLE);
-		}
-	}
-
-	/* see if we should lock the drive only with MERGE */
-	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE)
-		brasero_burn_options_lock_selection (BRASERO_BURN_OPTIONS (dialog));
-
-	g_object_unref (session);
-}
-
-BraseroBurnSession *
-brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *self)
-{
-	BraseroBurnSession *session;
-	BraseroDiscOptionDialogPrivate *priv;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (self);
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (self));
-	brasero_disc_set_session_contents (priv->disc, session);
-
-	return session;
-}
-
 static void
 brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 					   BraseroDiscOptionDialog *self)
@@ -804,21 +758,63 @@ brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 }
 
 static void
-brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
+brasero_disc_option_dialog_set_session (GObject *dialog,
+					GParamSpec *pspec,
+					gpointer NULL_data)
 {
 	BraseroDiscOptionDialogPrivate *priv;
 	BraseroBurnSession *session;
+	BraseroTrackType type;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
+	brasero_burn_session_get_input_type (session, &type);
+
+	if (type.type == BRASERO_TRACK_TYPE_DATA) {
+		brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
+						     BRASERO_MEDIA_TYPE_WRITABLE|
+						     BRASERO_MEDIA_TYPE_FILE);
+		brasero_disc_option_dialog_add_data_options (BRASERO_DISC_OPTION_DIALOG (dialog));
+	}
+	else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
+		if (type.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)) {
+			brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
+							     BRASERO_MEDIA_TYPE_WRITABLE|
+							     BRASERO_MEDIA_TYPE_FILE);
+			brasero_disc_option_dialog_add_video_options (BRASERO_DISC_OPTION_DIALOG (dialog));
+		}
+		else {
+			/* No other specific options for audio */
+			brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
+							     BRASERO_MEDIA_TYPE_WRITABLE);
+		}
+	}
+
+	/* see if we should lock the drive only with MERGE */
+	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE)
+		brasero_burn_options_lock_selection (BRASERO_BURN_OPTIONS (dialog));
+
+	priv->valid_sig = g_signal_connect (session,
+					    "is-valid",
+					    G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
+					    dialog);
+	g_object_unref (session);
+}
+
+static void
+brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
+{
+	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (obj);
 
 	priv->caps = brasero_burn_caps_get_default ();
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (obj));
-	priv->valid_sig = g_signal_connect (session,
-					    "is-valid",
-					    G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
-					    obj);
-	g_object_unref (session);
+	gtk_window_set_title (GTK_WINDOW (obj), _("Disc Burning Setup"));
+	g_signal_connect (obj,
+			  "notify::session",
+			  G_CALLBACK (brasero_disc_option_dialog_set_session),
+			  NULL);
 }
 
 static void
@@ -843,11 +839,6 @@ brasero_disc_option_dialog_finalize (GObject *object)
 		priv->caps = NULL;
 	}
 
-	if (priv->disc) {
-		g_object_unref (priv->disc);
-		priv->disc = NULL;
-	}
-
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -862,14 +853,3 @@ brasero_disc_option_dialog_class_init (BraseroDiscOptionDialogClass *klass)
 	object_class->finalize = brasero_disc_option_dialog_finalize;
 }
 
-GtkWidget *
-brasero_disc_option_dialog_new ()
-{
-	BraseroDiscOptionDialog *obj;
-
-	obj = BRASERO_DISC_OPTION_DIALOG (g_object_new (BRASERO_TYPE_DISC_OPTION_DIALOG,
-							"title", _("Disc Burning Setup"),
-							NULL));
-
-	return GTK_WIDGET (obj);
-}

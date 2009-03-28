@@ -54,6 +54,8 @@
 #include "brasero-drive.h"
 #include "brasero-medium-monitor.h"
 
+#include "brasero-track-disc.h"
+
 G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 #define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
 
@@ -88,12 +90,8 @@ struct _BraseroBurnSessionPrivate {
 	BraseroSessionSetting settings [1];
 	GSList *pile_settings;
 
-	BraseroTrackType input;
-
 	GHashTable *tags;
 
-	guint src_added_sig;
-	guint src_removed_sig;
 	guint dest_added_sig;
 	guint dest_removed_sig;
 
@@ -161,9 +159,8 @@ brasero_session_settings_free (BraseroSessionSetting *settings)
 }
 
 static void
-brasero_burn_session_src_media_added (BraseroDrive *drive,
-				      BraseroMedium *medium,
-				      BraseroBurnSession *self)
+brasero_burn_session_track_changed (BraseroDrive *drive,
+				    BraseroBurnSession *self)
 {
 	g_signal_emit (self,
 		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
@@ -171,66 +168,37 @@ brasero_burn_session_src_media_added (BraseroDrive *drive,
 }
 
 static void
-brasero_burn_session_src_media_removed (BraseroDrive *drive,
-					BraseroMedium *medium,
-					BraseroBurnSession *self)
+brasero_burn_session_start_track_monitoring (BraseroBurnSession *self,
+					     BraseroTrack *track)
 {
-	g_signal_emit (self,
-		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-		       0);
+	BraseroBurnSessionPrivate *priv;
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	g_signal_connect (track,
+			  "changed",
+			  G_CALLBACK (brasero_burn_session_track_changed),
+			  self);
 }
 
 static void
-brasero_burn_session_start_src_drive_monitoring (BraseroBurnSession *self)
+brasero_burn_session_stop_tracks_monitoring (BraseroBurnSession *self)
 {
-	BraseroDrive *drive;
 	BraseroBurnSessionPrivate *priv;
-
-	if (brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_DISC)
-		return;
-
-	drive = brasero_burn_session_get_src_drive (self);
-	if (!drive)
-		return;
+	GSList *iter;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	priv->src_added_sig = g_signal_connect (drive,
-						"medium-added",
-						G_CALLBACK (brasero_burn_session_src_media_added),
-						self);
-	priv->src_removed_sig = g_signal_connect (drive,
-						  "medium-removed",
-						  G_CALLBACK (brasero_burn_session_src_media_removed),
-						  self);
+
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroTrack *track;
+
+		track = iter->data;
+		g_signal_handlers_disconnect_by_func (track,
+						      brasero_burn_session_track_changed,
+						      self);
+	}
 }
 
 static void
-brasero_burn_session_stop_src_drive_monitoring (BraseroBurnSession *self)
-{
-	BraseroDrive *drive;
-	BraseroBurnSessionPrivate *priv;
-
-	if (brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_DISC)
-		return;
-
-	drive = brasero_burn_session_get_src_drive (self);
-	if (!drive)
-		return;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (priv->src_added_sig) {
-		g_signal_handler_disconnect (drive, priv->src_added_sig);
-		priv->src_added_sig = 0;
-	}
-
-	if (priv->src_removed_sig) {
-		g_signal_handler_disconnect (drive, priv->src_removed_sig);
-		priv->src_removed_sig = 0;
-	}
-}
-
-void
 brasero_burn_session_free_tracks (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
@@ -239,30 +207,15 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	brasero_burn_session_stop_src_drive_monitoring (self);
+	brasero_burn_session_stop_tracks_monitoring (self);
 
-	g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
+	g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
 	g_slist_free (priv->tracks);
 	priv->tracks = NULL;
 
 	g_signal_emit (self,
 		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
 		       0);
-}
-
-void
-brasero_burn_session_clear_current_track (BraseroBurnSession *self)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	brasero_burn_session_stop_src_drive_monitoring (self);
-	g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
-	g_slist_free (priv->tracks);
-	priv->tracks = NULL;
 }
 
 BraseroBurnResult
@@ -275,16 +228,20 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	brasero_track_ref (new_track);
+	if (!new_track) {
+		if (!priv->tracks)
+			return BRASERO_BURN_OK;
+
+		brasero_burn_session_free_tracks (self);
+		return BRASERO_BURN_OK;
+	}
+
+	g_object_ref (new_track);
 	if (!priv->tracks) {
-		BraseroTrackType new_type;
-
-		brasero_track_get_type (new_track, &new_type);
-
 		/* we only need to emit the signal here since if there are
 		 * multiple tracks they must be exactly of the same time */
 		priv->tracks = g_slist_prepend (NULL, new_track);
-		brasero_burn_session_start_src_drive_monitoring (self);
+		brasero_burn_session_start_track_monitoring (self, new_track);
 
 		/* if (!brasero_track_type_equal (priv->input, &new_type)) */
 		g_signal_emit (self,
@@ -294,25 +251,27 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 		return BRASERO_BURN_OK;
 	}
 
-	brasero_burn_session_stop_src_drive_monitoring (self);
-
 	/* if there is already a track, then we replace it on condition that it
 	 * has the same type and it's not AUDIO (only one allowed to have many)
 	 */
-	if (brasero_track_get_type (new_track, NULL) != BRASERO_TRACK_TYPE_AUDIO
-	||  brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_AUDIO) {
-		g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
+	if (brasero_track_get_track_type (new_track, NULL) != BRASERO_TRACK_TYPE_STREAM
+	||  brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_STREAM) {
+		brasero_burn_session_stop_tracks_monitoring (self);
+
+		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->tracks);
 
 		priv->tracks = g_slist_prepend (NULL, new_track);
-		brasero_burn_session_start_src_drive_monitoring (self);
+		brasero_burn_session_start_track_monitoring (self, new_track);
 
 		g_signal_emit (self,
 			       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
 			       0);
 	}
-	else
+	else {
+		brasero_burn_session_start_track_monitoring (self, new_track);
 		priv->tracks = g_slist_append (priv->tracks, new_track);
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -329,30 +288,6 @@ brasero_burn_session_get_tracks (BraseroBurnSession *self)
 	return priv->tracks;
 }
 
-void
-brasero_burn_session_set_input_type (BraseroBurnSession *self,
-				     BraseroTrackType *type)
-{
-	BraseroBurnSessionPrivate *priv;
-	BraseroTrackType input = { 0, };
-
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
-	g_return_if_fail (type != NULL);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	brasero_burn_session_get_input_type (self, &input);
-	memcpy (&priv->input, type, sizeof (BraseroTrackType));
-
-	if (brasero_track_type_equal (&input, type))
-		return;
-
-	if (!priv->tracks)
-		g_signal_emit (self,
-			       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-			       0);
-}
-
 BraseroTrackDataType
 brasero_burn_session_get_input_type (BraseroBurnSession *self,
 				     BraseroTrackType *type)
@@ -364,17 +299,13 @@ brasero_burn_session_get_input_type (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (!priv->tracks) {
-		if (type)
-			memcpy (type, &priv->input, sizeof (BraseroTrackType));
-
-		return priv->input.type;
-	}
+	if (!priv->tracks)
+		return BRASERO_TRACK_TYPE_NONE;
 
 	/* there can be many tracks (in case of audio) but they must be
 	 * all of the same kind for the moment */
 	track = priv->tracks->data;
-	return brasero_track_get_type (track, type);
+	return brasero_track_get_track_type (track, type);
 }
 
 /**
@@ -1147,10 +1078,9 @@ brasero_burn_session_push_tracks (BraseroBurnSession *self)
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	brasero_burn_session_stop_src_drive_monitoring (self);
+	brasero_burn_session_stop_tracks_monitoring (self);
 
-	priv->pile_tracks = g_slist_prepend (priv->pile_tracks,
-					     priv->tracks);
+	priv->pile_tracks = g_slist_prepend (priv->pile_tracks, priv->tracks);
 	priv->tracks = NULL;
 
 	g_signal_emit (self,
@@ -1169,9 +1099,9 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	if (priv->tracks) {
-		brasero_burn_session_stop_src_drive_monitoring (self);
+		brasero_burn_session_stop_tracks_monitoring (self);
 
-		g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
+		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->tracks);
 		priv->tracks = NULL;
 
@@ -1190,7 +1120,12 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 	priv->pile_tracks = g_slist_remove (priv->pile_tracks, sources);
 	priv->tracks = sources;
 
-	brasero_burn_session_start_src_drive_monitoring (self);
+	for (; sources; sources = sources->next) {
+		BraseroTrack *track;
+
+		track = sources->data;
+		brasero_burn_session_start_track_monitoring (self, track);
+	}
 
 	g_signal_emit (self,
 		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
@@ -1234,6 +1169,7 @@ BraseroMedium *
 brasero_burn_session_get_src_medium (BraseroBurnSession *self)
 {
 	BraseroTrack *track;
+	BraseroDrive *drive;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
@@ -1251,10 +1187,11 @@ brasero_burn_session_get_src_medium (BraseroBurnSession *self)
 		return NULL;
 
 	track = priv->tracks->data;
-	if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+	if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
 		return NULL;
 
-	return brasero_track_get_medium_source (track);
+	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+	return brasero_drive_get_medium (drive);
 }
 
 BraseroDrive *
@@ -1278,10 +1215,10 @@ brasero_burn_session_get_src_drive (BraseroBurnSession *self)
 		return NULL;
 
 	track = priv->tracks->data;
-	if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+	if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
 		return NULL;
 
-	return brasero_track_get_drive_source (track);
+	return brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 }
 
 gboolean
@@ -1307,10 +1244,10 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 		return FALSE;
 
 	track = priv->tracks->data;
-	if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+	if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
 		return FALSE;
 
-	drive = brasero_track_get_drive_source (track);
+	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 	if (!drive)
 		return FALSE;
 
@@ -1479,7 +1416,7 @@ brasero_burn_session_stop (BraseroBurnSession *self)
 static void
 brasero_burn_session_track_list_free (GSList *list)
 {
-	g_slist_foreach (list, (GFunc) brasero_track_unref, NULL);
+	g_slist_foreach (list, (GFunc) g_object_unref, NULL);
 	g_slist_free (list);
 }
 
@@ -1572,7 +1509,7 @@ brasero_burn_session_finalize (GObject *object)
 		priv->dest_removed_sig = 0;	
 	}
 
-	brasero_burn_session_stop_src_drive_monitoring (BRASERO_BURN_SESSION (object));
+	brasero_burn_session_stop_tracks_monitoring (BRASERO_BURN_SESSION (object));
 
 	if (priv->pile_tracks) {
 		g_slist_foreach (priv->pile_tracks,
@@ -1585,7 +1522,7 @@ brasero_burn_session_finalize (GObject *object)
 
 	if (priv->tracks) {
 		g_slist_foreach (priv->tracks,
-				 (GFunc) brasero_track_unref,
+				 (GFunc) g_object_unref,
 				 NULL);
 		g_slist_free (priv->tracks);
 		priv->tracks = NULL;

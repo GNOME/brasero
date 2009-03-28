@@ -58,9 +58,6 @@ typedef struct {
 
 GType brasero_disc_copy_dialog_get_type ();
 
-GtkWidget *
-brasero_disc_copy_dialog_new ();
-
 gboolean
 brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
 				    BraseroDrive *drive);

@@ -41,6 +41,7 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-vcdimager.h"
+#include "brasero-track-stream.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroVcdImager, brasero_vcd_imager, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -255,7 +256,7 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 		if (success < 0)
 			goto error;
 
-		video = brasero_track_get_audio_source (track, FALSE);
+		video = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), FALSE);
 		success = xmlTextWriterWriteAttribute (xml,
 						       (xmlChar *) "src",
 						       (xmlChar *) video);

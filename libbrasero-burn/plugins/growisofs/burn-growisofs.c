@@ -49,6 +49,8 @@
 #include "brasero-drive.h"
 #include "burn-growisofs.h"
 #include "burn-growisofs-common.h"
+#include "brasero-track-data.h"
+#include "brasero-track-image.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -331,7 +333,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 		return result;
 	}
 
-	result = brasero_track_get_data_paths (track,
+	result = brasero_track_data_get_paths (BRASERO_TRACK_DATA (track),
 					       (input.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					       grafts_path,
 					       excluded_path,
@@ -409,7 +411,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroBurnFlag flags;
-	gint64 sectors = 0;
+	guint64 sectors = 0;
 	gchar *device;
 	guint speed;
 
@@ -512,7 +514,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			BraseroTrack *track;
 
 			brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
-			localpath = brasero_track_get_image_source (track, FALSE);
+			localpath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!localpath) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,

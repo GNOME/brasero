@@ -47,9 +47,15 @@
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-checksum-files.h"
+
+#include "brasero-tags.h"
+#include "brasero-track-data.h"
+#include "brasero-track-disc.h"
+
 #include "burn-volume.h"
 #include "brasero-drive.h"
 #include "brasero-volume.h"
+
 #include "burn-volume-read.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumFiles, brasero_checksum_files, BRASERO_TYPE_JOB, BraseroJob);
@@ -322,7 +328,7 @@ brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
 	/* get the path string */
 	path = g_strdup (line + i);
 
-	for (grafts = brasero_track_get_data_grafts_source (track); grafts; grafts = grafts->next) {
+	for (grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track)); grafts; grafts = grafts->next) {
 		BraseroGraftPt *graft;
 		guint len;
 
@@ -380,7 +386,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	BraseroTrack *track;
 	gchar buffer [2048];
 	BraseroVolSrc *vol;
-	gint64 start_block;
+	guint64 start_block;
 	gchar *device;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
@@ -498,7 +504,7 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 					GError **error)
 {
 	GSList *iter;
-	gint64 file_nb;
+	guint64 file_nb;
 	BraseroTrack *track;
 	GConfClient *client;
 	GHashTable *excludedH;
@@ -575,7 +581,7 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 
 	/* we fill a hash table with all the files that are excluded globally */
 	excludedH = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	iter = brasero_track_get_data_excluded_source (track, FALSE);
+	iter = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (track), FALSE);
 	for (; iter; iter = iter->next) {
 		gchar *uri;
 		gchar *path;
@@ -596,13 +602,13 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 
 	file_nb = -1;
 	priv->file_num = 0;
-	brasero_track_get_data_file_num (track, &file_nb);
+	brasero_track_data_get_file_num (BRASERO_TRACK_DATA (track), &file_nb);
 	if (file_nb > 0)
 		brasero_job_start_progress (BRASERO_JOB (self), TRUE);
 	else
 		file_nb = -1;
 
-	iter = brasero_track_get_data_grafts_source (track);
+	iter = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track));
 	for (; iter; iter = iter->next) {
 		BraseroGraftPt *graft;
 		gchar *graft_path;
@@ -794,10 +800,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	guint file_num;
 	gint checksum_len;
 	BraseroVolSrc *vol;
-	gint64 start_block;
+	guint64 start_block;
 	BraseroTrack *track;
 	const gchar *device;
 	BraseroVolFile *file;
+	BraseroDrive *drive;
 	BraseroMedium *medium;
 	BraseroVolFileHandle *handle;
 	GChecksumType gchecksum_type;
@@ -810,7 +817,9 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 
 	/* get medium */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	medium = brasero_track_get_medium_source (track);
+	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+	medium = brasero_drive_get_medium (drive);
+
 	/* open volume */
 	if (!brasero_medium_get_last_data_track_address (medium, NULL, &start_block))
 		return BRASERO_BURN_ERR;
@@ -1068,8 +1077,8 @@ typedef struct _BraseroChecksumFilesThreadCtx BraseroChecksumFilesThreadCtx;
 static gboolean
 brasero_checksum_files_end (gpointer data)
 {
-	BraseroTrack *track;
 	BraseroTrackType input;
+	BraseroTrackData *track;
 	BraseroChecksumFiles *self;
 	BraseroJobAction action;
 	BraseroChecksumFilesPrivate *priv;
@@ -1109,12 +1118,13 @@ brasero_checksum_files_end (gpointer data)
 		BraseroGraftPt *graft;
 		BraseroTrackType type;
 		GSList *new_grafts = NULL;
+		BraseroTrack *current = NULL;
 
 		/* for DATA track we add the file to the track */
-		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		brasero_track_get_type (track, &type);
-		grafts = brasero_track_get_data_grafts_source (track);
+		brasero_job_get_current_track (BRASERO_JOB (self), &current);
+		brasero_track_get_track_type (current, &type);
 
+		grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (current));
 		for (; grafts; grafts = grafts->next) {
 			graft = grafts->data;
 			graft = brasero_graft_point_copy (graft);
@@ -1142,20 +1152,20 @@ brasero_checksum_files_end (gpointer data)
 				 graft->uri);
 
 		new_grafts = g_slist_prepend (new_grafts, graft);
-		excluded = brasero_track_get_data_excluded_source (track, TRUE);
+		excluded = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), TRUE);
 
-		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
-		brasero_track_add_data_fs (track, type.subtype.fs_type);
-		brasero_track_set_data_source (track, new_grafts, excluded);
-		brasero_track_set_checksum (track,
+		track = brasero_track_data_new ();
+		brasero_track_data_add_fs (track, type.subtype.fs_type);
+		brasero_track_data_set_source (track, new_grafts, excluded);
+		brasero_track_set_checksum (BRASERO_TRACK (track),
 					    priv->checksum_type,
 					    graft->uri);
 
-		brasero_job_add_track (BRASERO_JOB (self), track);
+		brasero_job_add_track (BRASERO_JOB (self), BRASERO_TRACK (track));
 
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroTaskCtx refs it. */
-		brasero_track_unref (track);
+		g_object_unref (track);
 		
 		brasero_job_finished_track (BRASERO_JOB (self));
 		return FALSE;
@@ -1298,7 +1308,7 @@ brasero_checksum_files_activate (BraseroJob *job,
 	 * exists (possible when doing several copies) or when a simulation 
 	 * already took place before. */
 	brasero_job_get_current_track (job, &track);
-	grafts = brasero_track_get_data_grafts_source (track);
+	grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track));
 	for (; grafts; grafts = grafts->next) {
 		BraseroGraftPt *graft;
 

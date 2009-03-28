@@ -42,6 +42,10 @@
 #include "burn-plugin.h"
 #include "burn-uri.h"
 
+#include "brasero-track.h"
+#include "brasero-track-data.h"
+#include "brasero-track-image.h"
+
 BRASERO_PLUGIN_BOILERPLATE (BraseroBurnURI, brasero_burn_uri, BRASERO_TYPE_JOB, BraseroJob);
 
 struct _BraseroBurnURIPrivate {
@@ -133,7 +137,7 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 	}
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &current);
-	current_grafts = brasero_track_get_data_grafts_source (current);
+	current_grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (current));
 
 	while ((info = g_file_enumerator_next_file (enumerator, cancel, error))) {
 		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
@@ -297,10 +301,10 @@ brasero_burn_uri_thread (gpointer data)
 	BraseroTrackType type = { 0, };
 	BraseroTrack *current = NULL;
 	BraseroBurnURIPrivate *priv;
+	BraseroTrackData *track;
 	GSList *excluded = NULL;
 	GSList *grafts = NULL;
-	BraseroTrack *track;
-	gint64 num = 0;
+	guint64 num = 0;
 	GSList *src;
 
 	priv = BRASERO_BURN_URI_PRIVATE (self);
@@ -310,16 +314,17 @@ brasero_burn_uri_thread (gpointer data)
 					TRUE);
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &current);
-	brasero_track_get_type (current, &type);
+	brasero_track_get_track_type (current, &type);
 
 	/* This is for IMAGE tracks */
 	if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		gchar *uri;
 		gchar *path_toc;
 		gchar *path_image;
+		BraseroTrackImage *image;
 
 		path_image = NULL;
-		uri = brasero_track_get_image_source (current, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		if (!brasero_burn_uri_retrieve_path (self, uri, &path_image)) {
 			g_free (uri);
 			goto end;
@@ -327,7 +332,7 @@ brasero_burn_uri_thread (gpointer data)
 		g_free (uri);
 
 		path_toc = NULL;
-		uri = brasero_track_get_image_source (current, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		if (!brasero_burn_uri_retrieve_path (self, uri, &path_toc)) {
 			g_free (path_image);
 			g_free (uri);
@@ -335,12 +340,12 @@ brasero_burn_uri_thread (gpointer data)
 		}
 		g_free (uri);
 
-		track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-		brasero_track_set_image_source (track,
+		image = brasero_track_image_new ();
+		brasero_track_image_set_source (image,
 						path_image,
 						path_toc,
 						type.subtype.img_format);
-		priv->track = track;
+		priv->track = BRASERO_TRACK (image);
 
 		g_free (path_toc);
 		g_free (path_image);
@@ -348,7 +353,7 @@ brasero_burn_uri_thread (gpointer data)
 	}
 
 	/* This is for DATA tracks */
-	for (src = brasero_track_get_data_grafts_source (current); src; src = src->next) {
+	for (src = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (current)); src; src = src->next) {
 		GFile *file;
 		GFileInfo *info;
 		BraseroGraftPt *graft;
@@ -458,7 +463,7 @@ brasero_burn_uri_thread (gpointer data)
 	grafts = g_slist_reverse (grafts);
 
 	/* remove all excluded starting by burn:// from the list */
-	for (src = brasero_track_get_data_excluded_source (current, FALSE); src; src = src->next) {
+	for (src = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), FALSE); src; src = src->next) {
 		gchar *uri;
 
 		uri = src->data;
@@ -473,16 +478,16 @@ brasero_burn_uri_thread (gpointer data)
 	}
 	excluded = g_slist_reverse (excluded);
 
-	track = brasero_track_new (brasero_track_get_type (current, &type));
-	brasero_track_add_data_fs (track, type.subtype.fs_type);
+	track = brasero_track_data_new ();
+	brasero_track_data_add_fs (track, type.subtype.fs_type);
 
-	brasero_track_get_data_file_num (current, &num);
-	brasero_track_set_data_file_num (track, num);
+	brasero_track_data_get_file_num (BRASERO_TRACK_DATA (current), &num);
+	brasero_track_data_set_file_num (track, num);
 
-	brasero_track_set_data_source (track,
+	brasero_track_data_set_source (track,
 				       grafts,
 				       excluded);
-	priv->track = track;
+	priv->track = BRASERO_TRACK (track);
 
 end:
 
@@ -587,7 +592,7 @@ brasero_burn_uri_start (BraseroJob *job,
 	switch (input.type) {
 	case BRASERO_TRACK_TYPE_DATA:
 		/* we put all the non local graft point uris in the hash */
-		grafts = brasero_track_get_data_grafts_source (track);
+		grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track));
 		for (; grafts; grafts = grafts->next) {
 			BraseroGraftPt *graft;
 
@@ -601,14 +606,14 @@ brasero_burn_uri_start (BraseroJob *job,
 
 	case BRASERO_TRACK_TYPE_IMAGE:
 		/* NOTE: don't delete URI as they will be inserted in hash */
-		uri = brasero_track_get_image_source (track, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		result = brasero_burn_uri_start_if_found (self, uri, error);
 		g_free (uri);
 
 		if (result != BRASERO_BURN_NOT_RUNNING)
 			break;
 
-		uri = brasero_track_get_toc_source (track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		result = brasero_burn_uri_start_if_found (self, uri, error);
 		g_free (uri);
 

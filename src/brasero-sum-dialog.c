@@ -53,6 +53,8 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 
+#include "brasero-tags.h"
+#include "brasero-track-disc.h"
 #include "brasero-burn.h"
 
 G_DEFINE_TYPE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
@@ -437,18 +439,18 @@ brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
 				      gchar *checksum,
 				      GError **error)
 {
-	BraseroTrack *track = NULL;
+	BraseroTrackDisc *track = NULL;
 	BraseroBurnResult result;
 	BraseroBurn *burn;
 
-	track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-	brasero_track_set_drive_source (track, drive);
-	brasero_track_set_checksum (track, BRASERO_CHECKSUM_MD5, checksum);
-	brasero_burn_session_add_track (self->priv->session, track);
+	track = brasero_track_disc_new ();
+	brasero_track_disc_set_drive (track, drive);
+	brasero_track_set_checksum (BRASERO_TRACK (track), BRASERO_CHECKSUM_MD5, checksum);
+	brasero_burn_session_add_track (self->priv->session, BRASERO_TRACK (track));
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	burn = brasero_tool_dialog_get_burn (BRASERO_TOOL_DIALOG (self));
 	result = brasero_burn_check (burn, self->priv->session, error);
@@ -519,24 +521,24 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 				   BraseroDrive *drive)
 {
 	BraseroBurnResult result;
+	BraseroTrackDisc *track;
 	GError *error = NULL;
 	GValue *value = NULL;
-	BraseroTrack *track;
 	BraseroBurn *burn;
 	gboolean retval;
 
 	/* make track */
-	track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-	brasero_track_set_drive_source (track, drive);
-	brasero_track_set_checksum (track, BRASERO_CHECKSUM_DETECT, NULL);
-	brasero_burn_session_add_track (self->priv->session, track);
+	track = brasero_track_disc_new ();
+	brasero_track_disc_set_drive (track, drive);
+	brasero_track_set_checksum (BRASERO_TRACK (track), BRASERO_CHECKSUM_DETECT, NULL);
+	brasero_burn_session_add_track (self->priv->session, BRASERO_TRACK (track));
 
 	/* no eject at the end (it should be default) */
 	brasero_burn_session_remove_flag (self->priv->session, BRASERO_BURN_FLAG_EJECT);
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	burn = brasero_tool_dialog_get_burn (BRASERO_TOOL_DIALOG (self));
 	result = brasero_burn_check (burn, self->priv->session, &error);
@@ -562,7 +564,7 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 
 	g_error_free (error);
 
-	brasero_track_tag_lookup (track,
+	brasero_track_tag_lookup (BRASERO_TRACK (track),
 				  BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG,
 				  &value);
 

@@ -42,6 +42,7 @@
 #include "brasero-utils.h"
 #include "brasero-io.h"
 
+#include "brasero-track-data.h"
 
 typedef struct _BraseroDataProjectPrivate BraseroDataProjectPrivate;
 struct _BraseroDataProjectPrivate

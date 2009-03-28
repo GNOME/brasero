@@ -54,7 +54,6 @@
 
 #include "brasero-dest-selection.h"
 #include "brasero-session-cfg.h"
-#include "brasero-utils.h"
 
 typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate
@@ -286,14 +285,10 @@ brasero_dest_selection_set_property (GObject *object,
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
 	switch (property_id) {
-	case PROP_SESSION:
-		if (priv->session)
-			g_object_unref (priv->session);
-
-		session = g_value_get_object (value);
-
+	case PROP_SESSION: /* Readable and only writable at creation time */
 		/* NOTE: no need to unref a potential previous session since
 		 * it's only set at construct time */
+		session = g_value_get_object (value);
 		priv->session = session;
 		g_object_ref (session);
 
@@ -339,6 +334,7 @@ brasero_dest_selection_get_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_SESSION:
+		g_object_ref (priv->session);
 		g_value_set_object (value, priv->session);
 		break;
 
@@ -484,7 +480,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	}
 
 	/* format the size */
-	if (input.type == BRASERO_TRACK_TYPE_AUDIO
+	if (input.type == BRASERO_TRACK_TYPE_STREAM
 	|| (input.type == BRASERO_TRACK_TYPE_DISC
 	&& (input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO)))
 		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes),

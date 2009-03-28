@@ -144,7 +144,7 @@ BraseroBurnResult
 brasero_job_get_data_label (BraseroJob *job, gchar **label);
 
 BraseroBurnResult
-brasero_job_get_session_output_size (BraseroJob *job, gint64 *blocks, gint64 *size);
+brasero_job_get_session_output_size (BraseroJob *job, guint64 *blocks, guint64 *size);
 
 /**
  * Used to get information of the destination media
@@ -163,10 +163,10 @@ BraseroBurnResult
 brasero_job_get_media (BraseroJob *job, BraseroMedia *media);
 
 BraseroBurnResult
-brasero_job_get_last_session_address (BraseroJob *job, gint64 *address);
+brasero_job_get_last_session_address (BraseroJob *job, guint64 *address);
 
 BraseroBurnResult
-brasero_job_get_next_writable_address (BraseroJob *job, gint64 *address);
+brasero_job_get_next_writable_address (BraseroJob *job, guint64 *address);
 
 BraseroBurnResult
 brasero_job_get_rate (BraseroJob *job, guint64 *rate);

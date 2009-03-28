@@ -47,7 +47,6 @@
 #include "brasero-session.h"
 #include "burn-caps.h"
 #include "brasero-medium.h"
-#include "brasero-utils.h"
 #include "brasero-drive.h"
 #include "brasero-session-cfg.h"
 #include "brasero-disc-copy-dialog.h"
@@ -66,19 +65,8 @@ typedef struct BraseroDiscCopyDialogPrivate BraseroDiscCopyDialogPrivate;
 
 static GObjectClass *parent_class = NULL;
 
-gboolean
-brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
-				    BraseroDrive *drive)
-{
-	BraseroDiscCopyDialogPrivate *priv;
-
-	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
-	return brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->source),
-						    brasero_drive_get_medium (drive));
-}
-
 static void
-brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
+brasero_disc_copy_dialog_set_session (BraseroDiscCopyDialog *obj)
 {
 	gchar *title_str;
 	BraseroBurnSession *session;
@@ -86,7 +74,6 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (obj);
 
-	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD Copy Options"));
 	brasero_burn_options_add_burn_button (BRASERO_BURN_OPTIONS (obj),
 					      _("_Copy"),
 					      "media-optical-burn");
@@ -118,6 +105,16 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 }
 
 static void
+brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
+{
+	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD Copy Options"));
+	g_signal_connect (obj,
+			  "notify::session",
+			  G_CALLBACK (brasero_disc_copy_dialog_set_session),
+			  NULL);
+}
+
+static void
 brasero_disc_copy_dialog_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -134,13 +131,3 @@ brasero_disc_copy_dialog_class_init (BraseroDiscCopyDialogClass * klass)
 	object_class->finalize = brasero_disc_copy_dialog_finalize;
 }
 
-GtkWidget *
-brasero_disc_copy_dialog_new ()
-{
-	BraseroDiscCopyDialog *obj;
-
-	obj = BRASERO_DISC_COPY_DIALOG (g_object_new (BRASERO_TYPE_DISC_COPY_DIALOG,
-						      NULL));
-
-	return GTK_WIDGET (obj);
-}

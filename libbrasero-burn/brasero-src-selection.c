@@ -38,10 +38,11 @@
 
 #include "brasero-src-selection.h"
 #include "brasero-medium-selection.h"
-#include "brasero-utils.h"
 
 #include "brasero-track.h"
 #include "brasero-session.h"
+#include "brasero-track-disc.h"
+
 #include "brasero-drive.h"
 #include "brasero-volume.h"
 
@@ -49,7 +50,7 @@ typedef struct _BraseroSrcSelectionPrivate BraseroSrcSelectionPrivate;
 struct _BraseroSrcSelectionPrivate
 {
 	BraseroBurnSession *session;
-	BraseroTrack *track;
+	BraseroTrackDisc *track;
 };
 
 #define BRASERO_SRC_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SRC_SELECTION, BraseroSrcSelectionPrivate))
@@ -70,26 +71,11 @@ brasero_src_selection_medium_changed (BraseroMediumSelection *selection,
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
-	if (!priv->session)
+	if (!priv->session || !priv->track)
 		goto chain;
 
 	drive = brasero_medium_get_drive (medium);
-
-	/* NOTE: don't check for drive == NULL to set the session input type */
-	if (priv->track
-	&&  drive == brasero_burn_session_get_src_drive (priv->session))
-		goto chain;
-
-	if (priv->track)
-		brasero_track_unref (priv->track);
-
-	priv->track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-	if (!drive || brasero_drive_is_fake (drive))
-		brasero_track_set_drive_source (priv->track, NULL);
-	else
-		brasero_track_set_drive_source (priv->track, drive);
-
-	brasero_burn_session_add_track (priv->session, priv->track);
+	brasero_track_disc_set_drive (priv->track, drive);
 
 chain:
 
@@ -130,11 +116,31 @@ brasero_src_selection_finalize (GObject *object)
 	}
 
 	if (priv->track) {
-		brasero_track_unref (priv->track);
+		g_object_unref (priv->track);
 		priv->track = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_src_selection_parent_class)->finalize (object);
+}
+
+static BraseroTrack *
+_get_session_disc_track (BraseroBurnSession *session)
+{
+	BraseroTrack *track;
+	GSList *tracks;
+	guint num;
+
+	tracks = brasero_burn_session_get_tracks (session);
+	num = g_slist_length (tracks);
+
+	if (num != 1)
+		return NULL;
+
+	track = tracks->data;
+	if (BRASERO_IS_TRACK_DISC (track))
+		return track;
+
+	return NULL;
 }
 
 static void
@@ -152,6 +158,8 @@ brasero_src_selection_set_property (GObject *object,
 	case PROP_SESSION:
 	{
 		BraseroMedium *medium;
+		BraseroDrive *drive;
+		BraseroTrack *track;
 
 		session = g_value_get_object (value);
 
@@ -159,16 +167,28 @@ brasero_src_selection_set_property (GObject *object,
 		g_object_ref (session);
 
 		if (priv->track)
-			brasero_track_unref (priv->track);
+			g_object_unref (priv->track);
 
-		medium = brasero_burn_session_get_src_medium (session);
+		/* See if there was a track set; if so then use it */
+		track = _get_session_disc_track (session);
+		if (track) {
+			priv->track = BRASERO_TRACK_DISC (track);
+			g_object_ref (track);
+		}
+		else {
+			priv->track = brasero_track_disc_new ();
+			brasero_burn_session_add_track (priv->session, BRASERO_TRACK (priv->track));
+		}
+
+		drive = brasero_track_disc_get_drive (priv->track);
+		medium = brasero_drive_get_medium (drive);
 		if (!medium) {
 			/* No medium set use set session medium source as the
 			 * one currently active in the selection widget */
 			medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (object));
 			brasero_src_selection_medium_changed (BRASERO_MEDIUM_SELECTION (object), medium);
 		}
-		else	/* Use the one set in the session */
+		else
 			brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (object), medium);
 
 		break;

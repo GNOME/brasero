@@ -207,7 +207,7 @@ brasero_debug_data_fs_to_string (gchar *buffer,
 
 static void
 brasero_debug_audio_format_to_string (gchar *buffer,
-				      BraseroAudioFormat format)
+				      BraseroStreamFormat format)
 {
 	if (format & BRASERO_AUDIO_FORMAT_RAW)
 		strcat (buffer, "RAW ");
@@ -267,7 +267,7 @@ brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 		strcpy (buffer, "Disc ");
 		brasero_media_to_string (subtype, buffer);
 		break;
-	case BRASERO_TRACK_TYPE_AUDIO:
+	case BRASERO_TRACK_TYPE_STREAM:
 		strcpy (buffer, "Audio ");
 		brasero_debug_audio_format_to_string (buffer, subtype);
 

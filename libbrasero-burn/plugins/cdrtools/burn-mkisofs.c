@@ -47,6 +47,7 @@
 #include "burn-plugin.h"
 #include "burn-cdrtools.h"
 #include "burn-mkisofs.h"
+#include "brasero-track-data.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroMkisofs, brasero_mkisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -241,7 +242,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	if (result != BRASERO_BURN_OK)
 		BRASERO_JOB_NOT_READY (mkisofs);
 
-	brasero_track_get_type (track, &type);
+	brasero_track_get_track_type (track, &type);
 	if (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
@@ -298,7 +299,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		return result;
 	}
 
-	result = brasero_track_get_data_paths (track,
+	result = brasero_track_data_get_paths (BRASERO_TRACK_DATA (track),
 					       (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					       grafts_path,
 					       excluded_path,
@@ -347,7 +348,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 
 	brasero_job_get_flags (BRASERO_JOB (mkisofs), &flags);
 	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
-		gint64 last_session = 0, next_wr_add = 0;
+		guint64 last_session = 0, next_wr_add = 0;
 		gchar *startpoint = NULL;
 
 		brasero_job_get_last_session_address (BRASERO_JOB (mkisofs), &last_session);

@@ -36,6 +36,8 @@
 
 #include "brasero-medium.h"
 #include "brasero-track.h"
+#include "brasero-track-stream.h"
+#include "brasero-track-data.h"
 #include "brasero-enums.h"
 
 G_BEGIN_DECLS
@@ -128,7 +130,7 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 
 GSList *
 brasero_caps_audio_new (BraseroPluginIOFlag flags,
-			BraseroAudioFormat format);
+			BraseroStreamFormat format);
 
 GSList *
 brasero_caps_data_new (BraseroImageFS fs_type);

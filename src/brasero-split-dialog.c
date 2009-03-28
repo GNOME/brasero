@@ -37,6 +37,7 @@
 #include "brasero-misc.h"
 
 #include "brasero-track.h"
+#include "brasero-track-stream.h"
 
 enum {
 	START_COL,
@@ -105,7 +106,7 @@ brasero_split_dialog_set_boundaries (BraseroSplitDialog *self,
 	if (BRASERO_DURATION_TO_BYTES (end) % 2352)
 		end += BRASERO_BYTES_TO_DURATION (2352 - (BRASERO_DURATION_TO_BYTES (end) % 2352));
 
-	if (end - start < BRASERO_MIN_AUDIO_TRACK_LENGTH)
+	if (end - start < BRASERO_MIN_STREAM_LENGTH)
 		return;
 
 	priv->start = start;
@@ -214,12 +215,12 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 
 		/* check that pos > 300 sectors ( == 4 sec ) */
 		if (warn
-		&&  pos - priv->start < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		&&  pos - priv->start < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 
 		if (warn
-		&&  end - (pos + 1) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		&&  end - (pos + 1) < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 
@@ -276,12 +277,12 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 
 		/* check the size of the new tracks */
 		if (warn
-		&& (pos - start) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		&& (pos - start) < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 
 		if (warn
-		&& (end - (pos + 1)) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		&& (end - (pos + 1)) < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 
@@ -323,7 +324,7 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 
 		/* check the size of the new slice */
 		if (warn
-		&& (slice.end - slice.start) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		&& (slice.end - slice.start) < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 	}
@@ -403,17 +404,17 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 		 * - 0 => start 
 		 * - end => song end
 		 * also make sure that the track is longer than 4 sec */
-		if (start - priv->start < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		if (start - priv->start < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self)) {
 			/* that's not necessarily a good solution */
-			start = BRASERO_MIN_AUDIO_TRACK_LENGTH;
+			start = BRASERO_MIN_STREAM_LENGTH;
 			if (start > end)
 				end = start;
 		}
 
-		if ((length - end) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		if ((length - end) < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
-			end = length - BRASERO_MIN_AUDIO_TRACK_LENGTH;
+			end = length - BRASERO_MIN_STREAM_LENGTH;
 
 		length_str = brasero_units_get_time_string (start - priv->start, TRUE, FALSE);
 		start_str = brasero_units_get_time_string (priv->start, TRUE, FALSE);
@@ -481,9 +482,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			if (end < track_end) {
 				/* reduce the size but make sure the remaining 
 				 * track is > 4 sec */
-				if ((track_end - end) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+				if ((track_end - end) < BRASERO_MIN_STREAM_LENGTH
 				&& !brasero_split_dialog_size_error (self))
-					end = track_end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
+					end = track_end - BRASERO_MIN_STREAM_LENGTH;
 
 				start_str = brasero_units_get_time_string (end, TRUE, FALSE);
 				length_str = brasero_units_get_time_string (track_end - end, TRUE, FALSE);
@@ -505,9 +506,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 
 			/* reduce the size but make sure the remaining track is
 			 * > 4 sec else change it */
-			if ((start - track_start) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+			if ((start - track_start) < BRASERO_MIN_STREAM_LENGTH
 			&& !brasero_split_dialog_size_error (self))
-				start = track_start + BRASERO_MIN_AUDIO_TRACK_LENGTH;
+				start = track_start + BRASERO_MIN_STREAM_LENGTH;
 
 			start_str = brasero_units_get_time_string (start, TRUE, FALSE);
 			length_str = brasero_units_get_time_string (start - track_start, TRUE, FALSE);
@@ -531,9 +532,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 
 			/* create a new track with the remaining time.
 			 * make sure the remaining track is > 4 sec */
-			if ((track_end - end) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+			if ((track_end - end) < BRASERO_MIN_STREAM_LENGTH
 			&& !brasero_split_dialog_size_error (self))
-				end = track_end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
+				end = track_end - BRASERO_MIN_STREAM_LENGTH;
 
 			gtk_list_store_append (priv->model, &child);
 
@@ -568,9 +569,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			}
 
 			/* resize (make sure about the 4s) */
-			if ((track_end - end) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+			if ((track_end - end) < BRASERO_MIN_STREAM_LENGTH
 			&& !brasero_split_dialog_size_error (self))
-				end = track_end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
+				end = track_end - BRASERO_MIN_STREAM_LENGTH;
 
 			start_str = brasero_units_get_time_string (end, TRUE, FALSE);
 			length_str = brasero_units_get_time_string (track_end - end, TRUE, FALSE);
@@ -750,7 +751,7 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 		sec = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->spin_sec));
 
 		sec *= 1000000000;
-		if (sec < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		if (sec < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return;
 
@@ -774,7 +775,7 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 		length = priv->end - priv->start;
 		step = length / parts;
 
-		if (step < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		if (step < BRASERO_MIN_STREAM_LENGTH
 		&& !brasero_split_dialog_size_error (self))
 			return;
 

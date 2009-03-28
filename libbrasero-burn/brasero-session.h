@@ -81,15 +81,9 @@ BraseroBurnSession *brasero_burn_session_new ();
 BraseroBurnResult
 brasero_burn_session_add_track (BraseroBurnSession *session,
 				BraseroTrack *track);
-void
-brasero_burn_session_clear_current_track (BraseroBurnSession *session);
 
 GSList *
 brasero_burn_session_get_tracks (BraseroBurnSession *session);
-
-void
-brasero_burn_session_set_input_type (BraseroBurnSession *session,
-				     BraseroTrackType *type);
 
 BraseroTrackDataType
 brasero_burn_session_get_input_type (BraseroBurnSession *session,

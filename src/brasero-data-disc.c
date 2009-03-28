@@ -59,6 +59,7 @@
 #include "burn-basics.h"
 
 #include "brasero-track.h"
+#include "brasero-track-data.h"
 #include "brasero-session.h"
 
 #include "brasero-volume.h"
@@ -1502,13 +1503,15 @@ brasero_data_disc_get_track (BraseroDisc *disc,
 }
 
 static BraseroDiscResult
-brasero_data_disc_set_session_param (BraseroDisc *self,
-				     BraseroBurnSession *session)
+brasero_data_disc_set_session_contents (BraseroDisc *self,
+					BraseroBurnSession *session)
 {
 	GValue *value;
 	BraseroFileNode *root;
-	BraseroTrackType type;
+	GSList *grafts = NULL;
 	BraseroImageFS fs_type;
+	BraseroTrackData *track;
+	GSList *unreadable = NULL;
 	BraseroFileTreeStats *stats;
 	BraseroDataDiscPrivate *priv;
 
@@ -1567,57 +1570,30 @@ brasero_data_disc_set_session_param (BraseroDisc *self,
 		brasero_burn_session_set_burner (session, drive);
 	}
 
-	type.type = BRASERO_TRACK_TYPE_DATA;
-	type.subtype.fs_type = fs_type;
-	brasero_burn_session_set_input_type (session, &type);
-
-	return BRASERO_DISC_OK;
-}
-
-static BraseroDiscResult
-brasero_data_disc_set_session_contents (BraseroDisc *self,
-					BraseroBurnSession *session)
-{
-	BraseroTrack *track;
-	BraseroFileNode *root;
-	BraseroTrackType type;
-	GSList *grafts = NULL;
-	gboolean joliet_compat;
-	GSList *unreadable = NULL;
-	BraseroFileTreeStats *stats;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
-
 	/* there should be only one data track */
-	brasero_burn_session_get_input_type (session, &type);
-	track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
+	track = brasero_track_data_new ();
+	brasero_track_data_add_fs (track, fs_type);
 
 	/* Set the number of files in the tree */
-	root = brasero_data_project_get_root (priv->project);
-	stats = BRASERO_FILE_NODE_STATS (root);
 	if (stats)
-		brasero_track_set_data_file_num (track, stats->children);
-
-	joliet_compat = (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET);
-	brasero_track_add_data_fs (track, type.subtype.fs_type);
+		brasero_track_data_set_file_num (track, stats->children);
 
 	/* append a slash for mkisofs */
 	brasero_data_project_get_contents (priv->project,
 					   &grafts,
 					   &unreadable,
-					   joliet_compat,
+					   (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					   TRUE); 
 
 	if (!grafts)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
-	brasero_track_set_data_source (track, grafts, unreadable);
-	brasero_burn_session_add_track (session, track);
+	brasero_track_data_set_source (track, grafts, unreadable);
+	brasero_burn_session_add_track (session, BRASERO_TRACK (track));
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	return BRASERO_DISC_OK;
 }
@@ -2589,7 +2565,6 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->clear = brasero_data_disc_clear;
 	iface->reset = brasero_data_disc_reset;
 	iface->get_track = brasero_data_disc_get_track;
-	iface->set_session_param = brasero_data_disc_set_session_param;
 	iface->set_session_contents = brasero_data_disc_set_session_contents;
 	iface->load_track = brasero_data_disc_load_track;
 	iface->get_status = brasero_data_disc_get_status;

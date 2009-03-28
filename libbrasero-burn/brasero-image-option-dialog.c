@@ -45,7 +45,6 @@
 #include "burn-basics.h"
 #include "brasero-drive.h"
 
-#include "brasero-utils.h"
 #include "brasero-image-option-dialog.h"
 #include "brasero-src-image.h"
 #include "brasero-burn-options.h"
@@ -61,19 +60,8 @@ typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
 
 static GtkDialogClass *parent_class = NULL;
 
-void
-brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
-					   const gchar *uri)
-{
-	BraseroImageOptionDialogPrivate *priv;
-
-	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
-
-	brasero_src_image_set_uri (BRASERO_SRC_IMAGE (priv->file), uri);
-}
-
 static void
-brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
+brasero_image_option_dialog_set_session (BraseroImageOptionDialog *obj)
 {
 	gchar *string;
 	BraseroBurnSession *session;
@@ -101,6 +89,16 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 }
 
 static void
+brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
+{
+	gtk_window_set_title (GTK_WINDOW (obj), _("Image Burning Setup"));
+	g_signal_connect (obj,
+			  "notify::session",
+			  G_CALLBACK (brasero_image_option_dialog_set_session),
+			  NULL);
+}
+
+static void
 brasero_image_option_dialog_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -117,14 +115,3 @@ brasero_image_option_dialog_class_init (BraseroImageOptionDialogClass *klass)
 	object_class->finalize = brasero_image_option_dialog_finalize;
 }
 
-GtkWidget *
-brasero_image_option_dialog_new ()
-{
-	BraseroImageOptionDialog *obj;
-	
-	obj = BRASERO_IMAGE_OPTION_DIALOG (g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
-							"title", _("Image Burning Setup"),
-							NULL));
-	
-	return GTK_WIDGET (obj);
-}

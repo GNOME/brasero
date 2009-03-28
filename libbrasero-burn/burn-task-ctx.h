@@ -186,8 +186,8 @@ brasero_task_ctx_get_remaining_time (BraseroTaskCtx *ctx,
 				     long *remaining);
 BraseroBurnResult
 brasero_task_ctx_get_session_output_size (BraseroTaskCtx *ctx,
-					  gint64 *blocks,
-					  gint64 *size);
+					  guint64 *blocks,
+					  guint64 *size);
 BraseroBurnResult
 brasero_task_ctx_get_written (BraseroTaskCtx *ctx,
 			      gint64 *written);

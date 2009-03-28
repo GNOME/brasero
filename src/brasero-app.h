@@ -23,7 +23,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include "brasero-session.h"
+#include "brasero-session-cfg.h"
 
 G_BEGIN_DECLS
 
@@ -86,6 +86,10 @@ brasero_app_alert (BraseroApp *app,
 gboolean
 brasero_app_burn (BraseroApp *app,
 		  BraseroBurnSession *session);
+
+gboolean
+brasero_app_burn_options (BraseroApp *app,
+			  BraseroSessionCfg *session);
 
 void
 brasero_app_burn_image (BraseroApp *app,

@@ -36,7 +36,6 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-disc.h"
 #include "brasero-burn-options.h"
 
 G_BEGIN_DECLS
@@ -60,14 +59,6 @@ struct _BraseroDiscOptionDialogClass {
 };
 
 GType brasero_disc_option_dialog_get_type ();
-GtkWidget *brasero_disc_option_dialog_new ();
-
-void
-brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
-				     BraseroDisc *disc);
-
-BraseroBurnSession *
-brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *dialog);
 
 G_END_DECLS
 

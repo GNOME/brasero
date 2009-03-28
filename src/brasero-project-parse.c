@@ -45,6 +45,9 @@
 #include "brasero-project-parse.h"
 #include "brasero-app.h"
 
+#include "brasero-track-stream.h"
+#include "brasero-track-data.h"
+
 static void
 brasero_track_clear_song (gpointer data)
 {
@@ -53,7 +56,7 @@ brasero_track_clear_song (gpointer data)
 	song = data;
 
 	if (song->info)
-		brasero_song_info_free (song->info);
+		brasero_stream_info_free (song->info);
 
 	g_free (song->uri);
 	g_free (song);
@@ -306,7 +309,7 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
 			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
+				song->info = g_new0 (BraseroStreamInfo, 1);
 
 			if (song->info->title)
 				g_free (song->info->title);
@@ -324,7 +327,7 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
 			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
+				song->info = g_new0 (BraseroStreamInfo, 1);
 
 			if (song->info->artist)
 				g_free (song->info->artist);
@@ -342,7 +345,7 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
 			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
+				song->info = g_new0 (BraseroStreamInfo, 1);
 
 			if (song->info->composer)
 				g_free (song->info->composer);
@@ -360,7 +363,7 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
 			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
+				song->info = g_new0 (BraseroStreamInfo, 1);
 
 			song->info->isrc = (gint) g_ascii_strtod (isrc, NULL);
 			g_free (isrc);

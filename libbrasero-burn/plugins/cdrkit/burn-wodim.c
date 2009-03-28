@@ -52,6 +52,9 @@
 #include "burn-cdrkit.h"
 #include "burn-wodim.h"
 
+#include "brasero-track-image.h"
+#include "brasero-track-stream.h"
+
 BRASERO_PLUGIN_BOILERPLATE (BraseroWodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
 
 struct _BraseroWodimPrivate {
@@ -284,7 +287,7 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 
 		priv->current_track_written = mb_written * 1048576;
 		if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) == BRASERO_BURN_OK) {
-			gint64 bytes = 0;
+			guint64 bytes = 0;
 
 			/* we must ask the imager what is the total size */
 			brasero_job_get_session_output_size (BRASERO_JOB (wodim),
@@ -321,7 +324,7 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 		brasero_job_get_input_type (BRASERO_JOB (wodim), &type);
 		brasero_job_set_current_action (BRASERO_JOB (process),
 						BRASERO_BURN_ACTION_RECORDING_CD_TEXT,
-						(type.type == BRASERO_TRACK_TYPE_AUDIO) ? NULL:_("Writing cue sheet"),
+						(type.type == BRASERO_TRACK_TYPE_STREAM) ? NULL:_("Writing cue sheet"),
 						FALSE);
 	}
 	else if (g_str_has_prefix (line, "Re-load disk and hit <CR>")
@@ -378,12 +381,12 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	gint fd;
 	gint size;
 	gchar *path;
-	gint64 length;
+	guint64 length;
 	gchar *string;
 	gint b_written;
 	gint64 sectors;
 	gchar buffer [128];
-	BraseroSongInfo *info;
+	BraseroStreamInfo *info;
 	BraseroWodimPrivate *priv;
         int errsv;
 
@@ -395,7 +398,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) != BRASERO_BURN_OK) {
 		gchar *dot, *separator;
 
-		path = brasero_track_get_audio_source (track, FALSE);
+		path = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), FALSE);
 
 		dot = strrchr (path, '.');
 		separator = strrchr (path, G_DIR_SEPARATOR);
@@ -438,7 +441,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	 * It might be good in the end to write and pack CD-TEXT pack data 
 	 * ourselves so we can set a different charset from English like 
 	 * Chinese for example. */
-	info = brasero_track_get_audio_info (track);
+	info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track));
 
 	strcpy (buffer, "# created by brasero\n");
 	size = strlen (buffer);
@@ -571,7 +574,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 		goto error;
 
 	length = 0;
-	brasero_track_get_audio_length (track, &length);
+	brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
 	sectors = BRASERO_DURATION_TO_SECTORS (length);
 
 	BRASERO_JOB_LOG (wodim, "got track length %lli %lli", length, sectors);
@@ -678,7 +681,7 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
-		gint64 length;
+		guint64 sectors;
 		BraseroTrack *track;
 
 		track = iter->data;
@@ -695,10 +698,10 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 			return result;
 
 		index ++;
-		length = 0;
+		sectors = 0;
 
-		brasero_track_get_audio_length (track, &length);
-		start += BRASERO_DURATION_TO_SECTORS (length);
+		brasero_track_get_size (track, &sectors, NULL);
+		start += sectors;
 	}
 
 	g_free (album);
@@ -754,7 +757,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
 		int buffer_size;
-		gint64 sectors;
+		guint64 sectors;
 		
 		/* we need to know what is the type of the track (audio / data) */
 		result = brasero_job_get_input_type (BRASERO_JOB (wodim), &type);
@@ -800,7 +803,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			else
 				BRASERO_JOB_NOT_SUPPORTED (wodim);
 		}
-		else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
+		else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
 			/* NOTE: when we don't want wodim to use stdin then we
 			 * give the audio file on the command line. Otherwise we
 			 * use the .inf */
@@ -818,7 +821,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		else
 			BRASERO_JOB_NOT_SUPPORTED (wodim);
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
+	else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
 		BraseroBurnResult result;
 		GSList *tracks;
 
@@ -843,7 +846,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			gchar *path;
 
 			track = tracks->data;
-			path = brasero_track_get_audio_source (track, FALSE);
+			path = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), FALSE);
 			g_ptr_array_add (argv, path);
 		}
 	}
@@ -857,7 +860,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 			gchar *image_path;
 
-			image_path = brasero_track_get_image_source (track, FALSE);
+			image_path = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!image_path)
 				BRASERO_JOB_NOT_READY (wodim);
 
@@ -869,7 +872,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 			gchar *isopath;
 
-			isopath = brasero_track_get_image_source (track, FALSE);
+			isopath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!isopath)
 				BRASERO_JOB_NOT_READY (wodim);
 
@@ -881,7 +884,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
 			gchar *rawpath;
 
-			rawpath = brasero_track_get_image_source (track, FALSE);
+			rawpath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!rawpath)
 				BRASERO_JOB_NOT_READY (wodim);
 
@@ -893,7 +896,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			gchar *cue_str;
 			gchar *cuepath;
 
-			cuepath = brasero_track_get_toc_source (track, FALSE);
+			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!cuepath)
 				BRASERO_JOB_NOT_READY (wodim);
 

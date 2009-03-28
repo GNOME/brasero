@@ -45,6 +45,8 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-dvdauthor.h"
+#include "brasero-track-data.h"
+#include "brasero-track-stream.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdAuthor, brasero_dvd_author, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -62,15 +64,15 @@ static BraseroBurnResult
 brasero_dvd_author_add_track (BraseroJob *job)
 {
 	gchar *path;
-	BraseroTrack *track;
 	GSList *grafts = NULL;
 	BraseroGraftPt *graft;
+	BraseroTrackData *track;
 	BraseroDvdAuthorPrivate *priv;
 
 	priv = BRASERO_DVD_AUTHOR_PRIVATE (job);
 
 	/* create the track */
-	track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
+	track = brasero_track_data_new ();
 
 	/* audio */
 	graft = g_new (BraseroGraftPt, 1);
@@ -100,15 +102,15 @@ brasero_dvd_author_add_track (BraseroJob *job)
 
 	BRASERO_JOB_LOG (job, "Adding graft point for %s", graft->uri);
 
-	brasero_track_add_data_fs (track,
+	brasero_track_data_add_fs (track,
 				   BRASERO_IMAGE_FS_ISO|
 				   BRASERO_IMAGE_FS_UDF|
 				   BRASERO_IMAGE_FS_VIDEO);
-	brasero_track_set_data_source (track,
+	brasero_track_data_set_source (track,
 				       grafts,
 				       NULL);
-	brasero_job_add_track (job, track);
-	brasero_track_unref (track);
+	brasero_job_add_track (job, BRASERO_TRACK (track));
+	g_object_unref (track);
 
 	return BRASERO_BURN_OK;
 }
@@ -211,7 +213,7 @@ brasero_dvd_author_generate_xml_file (BraseroProcess *process,
 		if (success < 0)
 			goto error;
 
-		video = brasero_track_get_audio_source (track, FALSE);
+		video = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), FALSE);
 		success = xmlTextWriterWriteAttribute (xml,
 						       (xmlChar *) "file",
 						       (xmlChar *) video);

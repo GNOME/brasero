@@ -2,7 +2,6 @@ SUBDIRS = plugins
 
 INCLUDES = \
 	-I$(top_srcdir)							\
-	-I$(top_srcdir)/src/						\
 	-I$(top_builddir)						\
 	-I$(top_srcdir)/libbrasero-utils/				\
 	-I$(top_builddir)/libbrasero-utils/				\
@@ -126,7 +125,15 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-enums.h                 \
 	brasero-tags.h                 \
 	brasero-cover.c                 \
-	brasero-cover.h
+	brasero-cover.h                 \
+	brasero-track-disc.c                 \
+	brasero-track-disc.h                 \
+	brasero-track-stream.c                 \
+	brasero-track-stream.h                 \
+	brasero-track-image.c                 \
+	brasero-track-image.h                 \
+	brasero-track-data.c                 \
+	brasero-track-data.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

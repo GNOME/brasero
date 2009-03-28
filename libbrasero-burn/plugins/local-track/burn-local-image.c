@@ -50,6 +50,7 @@
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-local-image.h"
+#include "brasero-track-image.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLocalTrack, brasero_local_track, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -414,7 +415,7 @@ brasero_local_track_read_checksum (BraseroLocalTrack *self)
 
 	/* get the name of the file that was downloaded */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	source = brasero_track_get_image_source (track, TRUE);
+	source = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
 	name = g_path_get_basename (source);
 	g_free (source);
 
@@ -487,7 +488,7 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 	 * directory to check our download integrity.
 	 * Try all types of checksum. */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	uri = brasero_track_get_image_source (track, TRUE);
+	uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
 	dest = g_file_new_for_path (priv->checksum_path);
 
 	/* Try with three difference sources */
@@ -585,14 +586,14 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 {
 	BraseroTrack *track;
 	BraseroTrackType input;
+	BraseroTrack *current = NULL;
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
 	/* now we update all the track with the local uris in retval */
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	track = brasero_track_copy (track);
-	brasero_track_get_type (track, &input);
+	brasero_job_get_current_track (BRASERO_JOB (self), &current);
+	brasero_track_get_track_type (current, &input);
 
 	/* make a copy of the tracks instead of modifying them */
 	switch (input.type) {
@@ -600,8 +601,15 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		GSList *next;
 		GSList *grafts;
 		GSList *unreadable;
+		guint64 file_num = 0;
 
-		grafts = brasero_track_get_data_grafts_source (track);
+		track = BRASERO_TRACK (brasero_track_data_new ());
+		brasero_track_data_add_fs (BRASERO_TRACK_DATA (track), input.subtype.fs_type);
+
+		brasero_track_data_get_file_num (BRASERO_TRACK_DATA (current), &file_num);
+		brasero_track_data_set_file_num (BRASERO_TRACK_DATA (track), file_num);
+
+		grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (current));
 		for (; grafts; grafts = grafts->next) {
 			BraseroGraftPt *graft;
 			gchar *uri;
@@ -619,7 +627,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		/* Translate the globally excluded.
 		 * NOTE: if we can't find a parent for an excluded URI that
 		 * means it shouldn't be included. */
-		unreadable = brasero_track_get_data_excluded_source (track, FALSE);
+		unreadable = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), FALSE);
 		for (; unreadable; unreadable = next) {
 			gchar *new_uri;
 
@@ -635,15 +643,22 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 	}
 	break;
 
-	case BRASERO_TRACK_TYPE_AUDIO: {
+	case BRASERO_TRACK_TYPE_STREAM: {
 		gchar *uri;
 		gchar *newuri;
 
-		uri = brasero_track_get_audio_source (track, TRUE);
+		uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (current), TRUE);
 		newuri = brasero_local_track_translate_uri (self, uri);
-		brasero_track_set_audio_source (track,
-						newuri,
-						input.subtype.audio_format);
+
+		track = BRASERO_TRACK (brasero_track_stream_new ());
+		brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), newuri);
+		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track), input.subtype.audio_format);
+		brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
+						     brasero_track_stream_get_start (BRASERO_TRACK_STREAM (current)),
+						     brasero_track_stream_get_end (BRASERO_TRACK_STREAM (current)),
+						     brasero_track_stream_get_gap (BRASERO_TRACK_STREAM (current)));
+		brasero_track_stream_set_info (BRASERO_TRACK_STREAM (track),
+					       brasero_stream_info_copy (brasero_track_stream_get_info (BRASERO_TRACK_STREAM (current))));
 		g_free (uri);
 	}
 	break;
@@ -653,15 +668,17 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		gchar *newtoc;
 		gchar *newimage;
 
-		uri = brasero_track_get_image_source (track, TRUE);
+		/* FIXME: save the size */
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		newimage = brasero_local_track_translate_uri (self, uri);
 		g_free (uri);
 
-		uri = brasero_track_get_toc_source (track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		newtoc = brasero_local_track_translate_uri (self, uri);
 		g_free (uri);
 
-		brasero_track_set_image_source (track,
+		track = BRASERO_TRACK (brasero_track_image_new ());
+		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
 						newimage,
 						newtoc,
 						input.subtype.img_format);
@@ -681,7 +698,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroTaskCtx refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	return BRASERO_BURN_OK;
 }
@@ -932,7 +949,7 @@ brasero_local_track_start (BraseroJob *job,
 	switch (input.type) {
 	case BRASERO_TRACK_TYPE_DATA:
 		/* we put all the non local graft point uris in the hash */
-		grafts = brasero_track_get_data_grafts_source (track);
+		grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track));
 		for (; grafts; grafts = grafts->next) {
 			BraseroGraftPt *graft;
 
@@ -944,16 +961,16 @@ brasero_local_track_start (BraseroJob *job,
 
 		break;
 
-	case BRASERO_TRACK_TYPE_AUDIO:
+	case BRASERO_TRACK_TYPE_STREAM:
 		/* NOTE: don't delete URI as they will be inserted in hash */
-		uri = brasero_track_get_audio_source (track, TRUE);
+		uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 		result = brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
 		break;
 
 	case BRASERO_TRACK_TYPE_IMAGE:
 		/* NOTE: don't delete URI as they will be inserted in hash */
-		uri = brasero_track_get_image_source (track, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		result = brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
 
@@ -962,7 +979,7 @@ brasero_local_track_start (BraseroJob *job,
 
 		priv->download_checksum = TRUE;
 
-		uri = brasero_track_get_toc_source (track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		result = brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
 

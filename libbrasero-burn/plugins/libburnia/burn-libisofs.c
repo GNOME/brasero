@@ -49,6 +49,8 @@
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-libburn-common.h"
+#include "brasero-track-data.h"
+#include "brasero-track-image.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibisofs, brasero_libisofs, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -91,27 +93,24 @@ brasero_libisofs_thread_finished (gpointer data)
 	}
 
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) != BRASERO_BURN_OK) {
-		BraseroTrack *track = NULL;
-		BraseroTrackType type;
+		BraseroTrackImage *track = NULL;
 		gchar *output = NULL;
 
 		/* Let's make a track */
-		brasero_job_get_output_type (BRASERO_JOB (self), &type);
-		track = brasero_track_new (type.type);
-
+		track = brasero_track_image_new ();
 		brasero_job_get_image_output (BRASERO_JOB (self),
 					      &output,
 					      NULL);
-		brasero_track_set_image_source (track,
+		brasero_track_image_set_source (track,
 						output,
 						NULL,
 						BRASERO_IMAGE_FORMAT_BIN);
 
-		brasero_job_add_track (BRASERO_JOB (self), track);
+		brasero_job_add_track (BRASERO_JOB (self), BRASERO_TRACK (track));
 
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroBurnSession refs it. */
-		brasero_track_unref (track);
+		g_object_unref (track);
 	}
 
 	brasero_job_finished_track (BRASERO_JOB (self));
@@ -434,8 +433,8 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	IsoReadOpts *opts;
 	BraseroMedia media;
 	IsoDataSource *src;
-	gint64 start_block;
-	gint64 session_block;
+	guint64 start_block;
+	guint64 session_block;
 	BraseroLibisofsPrivate *priv;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
@@ -567,7 +566,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			goto end;
 	}
 	else if (flags & BRASERO_BURN_FLAG_APPEND) {
-		gint64 start_block;
+		guint64 start_block;
 
 		brasero_job_get_next_writable_address (BRASERO_JOB (self), &start_block);
 		iso_write_opts_set_ms_block (opts, start_block);
@@ -578,12 +577,12 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 	/* copy the list as we're going to reorder it */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	grafts = brasero_track_get_data_grafts_source (track);
+	grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track));
 	grafts = g_slist_copy (grafts);
 	grafts = g_slist_sort (grafts, brasero_libisofs_sort_graft_points);
 
 	/* add global exclusions */
-	for (excluded = brasero_track_get_data_excluded_source (track, FALSE);
+	for (excluded = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (track), FALSE);
 	     excluded; excluded = excluded->next) {
 		gchar *uri, *local;
 
@@ -794,7 +793,7 @@ end:
 		gint64 size;
 		BraseroTrackType type;
 
-		brasero_track_get_type (track, &type);
+		brasero_track_get_track_type (track, &type);
 
 		if ((type.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
 		&&  (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3))

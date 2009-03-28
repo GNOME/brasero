@@ -53,7 +53,7 @@
 #include "burn-job.h"
 #include "burn-task-ctx.h"
 #include "burn-task-item.h"
-#include "brasero-marshal.h"
+#include "libbrasero-marshal.h"
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 
@@ -378,7 +378,7 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 				     GError **error)
 {
 	BraseroBurnSession *session;
-	gint64 output_blocks = 0;
+	guint64 output_blocks = 0;
 	gint64 media_blocks = 0;
 	BraseroJobPrivate *priv;
 	BraseroBurnFlag flags;
@@ -567,7 +567,7 @@ brasero_job_set_output_file (BraseroJob *self,
 	BraseroBurnResult result;
 	BraseroJobPrivate *priv;
 	BraseroBurnFlag flags;
-	gint64 output_size = 0;
+	guint64 output_size = 0;
 	gchar *image = NULL;
 	gchar *toc = NULL;
 
@@ -669,7 +669,7 @@ brasero_job_set_output_file (BraseroJob *self,
 				 image,
 				 toc ? toc : "none");
 	}
-	else if (priv->type.type == BRASERO_TRACK_TYPE_AUDIO) {
+	else if (priv->type.type == BRASERO_TRACK_TYPE_STREAM) {
 		/* NOTE: this one can only a temporary file */
 		result = brasero_burn_session_get_tmp_file (session,
 							    ".cdr",
@@ -1566,7 +1566,7 @@ brasero_job_get_medium (BraseroJob *job, BraseroMedium **medium)
 }
 
 BraseroBurnResult
-brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
+brasero_job_get_last_session_address (BraseroJob *self, guint64 *address)
 {
 	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;
@@ -1588,7 +1588,7 @@ brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
 }
 
 BraseroBurnResult
-brasero_job_get_next_writable_address (BraseroJob *self, gint64 *address)
+brasero_job_get_next_writable_address (BraseroJob *self, guint64 *address)
 {
 	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;
@@ -1789,8 +1789,8 @@ brasero_job_get_data_label (BraseroJob *self, gchar **label)
 
 BraseroBurnResult
 brasero_job_get_session_output_size (BraseroJob *self,
-				     gint64 *blocks,
-				     gint64 *size)
+				     guint64 *blocks,
+				     guint64 *size)
 {
 	BraseroJobPrivate *priv;
 

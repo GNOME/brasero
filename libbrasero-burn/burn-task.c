@@ -397,37 +397,25 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 	BRASERO_BURN_LOG ("Trying to set a default output size");
 
 	brasero_task_ctx_get_current_track (BRASERO_TASK_CTX (self), &track);
-	brasero_track_get_type (track, &input);
+	brasero_track_get_track_type (track, &input);
 	BRASERO_BURN_LOG_TYPE (&input, "Track type");
 
-	if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
+	if (input.type == BRASERO_TRACK_TYPE_IMAGE
+	||  input.type == BRASERO_TRACK_TYPE_STREAM) {
 		BraseroBurnResult result;
-		gint64 sectors = 0;
-		gint64 size = 0;
+		guint64 sectors = 0;
+		guint64 size = 0;
 
-		result = brasero_track_get_image_size (track,
-						       NULL,
-						       &sectors,
-						       &size,
-						       error);
+		result = brasero_track_get_size (track,
+						 &sectors,
+						 &size);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		BRASERO_BURN_LOG ("Got a default image track length %lli", sectors);
+		BRASERO_BURN_LOG ("Got a default image or stream track length %lli", sectors);
 		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
 								    sectors,
 								    size);
-	}
-	else if (input.type == BRASERO_TRACK_TYPE_AUDIO) {
-		gint64 length;
-
-		length = 0;
-		brasero_track_get_audio_length (track, &length);
-		BRASERO_BURN_LOG ("Got a default audio track length %lli", length);
-
-		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
-								    BRASERO_DURATION_TO_SECTORS (length),
-								    BRASERO_DURATION_TO_BYTES (length));
 	}
 
 	return BRASERO_BURN_OK;

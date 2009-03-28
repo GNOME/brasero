@@ -50,7 +50,7 @@ struct _BraseroVobPrivate
 	GstElement *audio;
 	GstElement *video;
 
-	BraseroAudioFormat format;
+	BraseroStreamFormat format;
 
 	guint svcd:1;
 	guint is_video_dvd:1;
@@ -90,10 +90,10 @@ brasero_vob_stop (BraseroJob *job,
 static void
 brasero_vob_finished (BraseroVob *vob)
 {
+	BraseroTrackStream *track;
 	BraseroVobPrivate *priv;
 	BraseroTrackType type;
 	gchar *output = NULL;
-	BraseroTrack *track;
 
 	priv = BRASERO_VOB_PRIVATE (vob);
 
@@ -101,13 +101,12 @@ brasero_vob_finished (BraseroVob *vob)
 	brasero_job_get_output_type (BRASERO_JOB (vob), &type);
 	brasero_job_get_audio_output (BRASERO_JOB (vob), &output);
 
-	track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-	brasero_track_set_audio_source (track,
-					output,
-					type.subtype.audio_format);
+	track = brasero_track_stream_new ();
+	brasero_track_stream_set_source (track, output);
+	brasero_track_stream_set_format (track, type.subtype.audio_format);
 
-	brasero_job_add_track (BRASERO_JOB (vob), track);
-	brasero_track_unref (track);
+	brasero_job_add_track (BRASERO_JOB (vob), BRASERO_TRACK (track));
+	g_object_unref (track);
 	g_free (output);
 
 	brasero_job_finished_track (BRASERO_JOB (vob));
@@ -957,7 +956,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 
 	/* source */
 	brasero_job_get_current_track (BRASERO_JOB (vob), &track);
-	uri = brasero_track_get_audio_source (track, TRUE);
+	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
 	if (source == NULL) {
 		g_set_error (error,

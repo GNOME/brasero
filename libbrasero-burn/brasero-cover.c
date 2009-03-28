@@ -46,6 +46,7 @@
 #include "brasero-tags.h"
 #include "brasero-track.h"
 #include "brasero-session.h"
+#include "brasero-track-stream.h"
 
 #include "brasero-cover.h"
 
@@ -99,17 +100,17 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 		gchar *num;
 		gchar *time;
 		BraseroTrack *track;
-		BraseroSongInfo *info;
+		BraseroStreamInfo *info;
 
 		track = iter->data;
-		if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_AUDIO)
+		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_STREAM)
 			continue;
 
 		num = g_strdup_printf ("%i - ", g_slist_index (tracks, track) + 1);
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, num, "Subtitle", &start);
 		g_free (num);
 
-		info = brasero_track_get_audio_info (track);
+		info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track));
 
 		if (info) {
 			if (info->title) {
@@ -121,8 +122,8 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 
 			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\t\t", "Subtitle", &start);
 
-			time = brasero_units_get_time_string (brasero_track_get_audio_end (track) -
-							      brasero_track_get_audio_start (track),
+			time = brasero_units_get_time_string (brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)) -
+							      brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
 							      TRUE,
 							      FALSE);
 			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
@@ -222,7 +223,7 @@ brasero_session_edit_cover (BraseroBurnSession *session,
 	edit = brasero_jacket_edit_dialog_new (GTK_WIDGET (toplevel), &contents);
 
 	/* Don't go any further if it's not video */
-	if (brasero_burn_session_get_input_type (session, NULL) != BRASERO_TRACK_TYPE_AUDIO)
+	if (brasero_burn_session_get_input_type (session, NULL) != BRASERO_TRACK_TYPE_STREAM)
 		return edit;
 
 	title = brasero_burn_session_get_label (session);

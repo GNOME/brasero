@@ -220,22 +220,6 @@ brasero_disc_get_track (BraseroDisc *disc,
 }
 
 BraseroDiscResult
-brasero_disc_set_session_param (BraseroDisc *disc,
-				BraseroBurnSession *session)
-{
-	BraseroDiscIface *iface;
-
-	g_return_val_if_fail (BRASERO_IS_DISC (disc), BRASERO_DISC_ERROR_UNKNOWN);
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_DISC_ERROR_UNKNOWN);
-	
-	iface = BRASERO_DISC_GET_IFACE (disc);
-	if (iface->set_session_param)
-		return (* iface->set_session_param) (disc, session);
-
-	return BRASERO_DISC_ERROR_UNKNOWN;
-}
-
-BraseroDiscResult
 brasero_disc_set_session_contents (BraseroDisc *disc,
 				   BraseroBurnSession *session)
 {

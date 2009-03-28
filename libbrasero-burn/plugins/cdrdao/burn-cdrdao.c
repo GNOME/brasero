@@ -47,6 +47,8 @@
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"
+#include "brasero-track-disc.h"
+#include "brasero-track-image.h"
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 
@@ -178,7 +180,7 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		if (!track)
 			return FALSE;
 
-		cuepath = brasero_track_get_toc_source (track, FALSE);
+		cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 
 		if (!cuepath)
 			return FALSE;
@@ -336,7 +338,7 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 		g_ptr_array_add (argv, g_strdup ("--source-device"));
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
-		drive = brasero_track_get_drive_source (track);
+		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 
 #ifdef HAVE_CAM_LIB_H
 	/* FreeBSD like that better */
@@ -355,13 +357,13 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
 			gchar *parent;
 
-			cuepath = brasero_track_get_toc_source (track, FALSE);
+			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			parent = g_path_get_dirname (cuepath);
 			brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao), parent);
 			g_free (parent);
 		}
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO)
-			cuepath = brasero_track_get_toc_source (track, FALSE);
+			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 		else
 			BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 
@@ -431,7 +433,7 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 	g_ptr_array_add (argv, g_strdup ("--device"));
 
 	brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
-	drive = brasero_track_get_drive_source (track);
+	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 
 #ifdef HAVE_CAM_LIB_H
 	/* FreeBSD like that better */
@@ -520,11 +522,11 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
-		input = brasero_track_get_type (track, NULL);
+		input = brasero_track_get_track_type (track, NULL);
 		if (input == BRASERO_TRACK_TYPE_DISC) {
-			gint64 sectors = 0;
+			guint64 sectors = 0;
 
-			brasero_track_get_disc_data_size (track, &sectors, NULL);
+			brasero_track_get_size (track, &sectors, NULL);
 
 			/* cdrdao won't get a track size under 300 sectors */
 			if (sectors < 300)

@@ -50,11 +50,14 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
+#include "brasero-progress.h"
+#include "brasero-cover.h"
 
 #include "brasero-tags.h"
 #include "brasero-session.h"
+#include "brasero-track-image.h"
+
 #include "brasero-medium.h"
-#include "brasero-progress.h"
 #include "brasero-drive.h"
 
 #include "brasero-misc.h"
@@ -168,7 +171,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		title = g_strdup (_("Brasero - Creating Image"));
 	}
 	else if (media & BRASERO_MEDIUM_DVD) {
-		if (BRASERO_TRACK_TYPE_HAS_VIDEO (input)) {
+		if (BRASERO_STREAM_TRACK_HAS_VIDEO (input)) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY) {
 				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video DVD burning"));
@@ -226,7 +229,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
-		if (BRASERO_TRACK_TYPE_HAS_VIDEO (input)) {
+		if (BRASERO_STREAM_TRACK_HAS_VIDEO (input)) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of (S)VCD burning"));
@@ -240,7 +243,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      "drive-removable-media",
 						      GTK_ICON_SIZE_DIALOG);
 		}
-		else if (input->type == BRASERO_TRACK_TYPE_AUDIO) {
+		else if (input->type == BRASERO_TRACK_TYPE_STREAM) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of audio CD burning"));
@@ -297,7 +300,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 	}
-	else if (BRASERO_TRACK_TYPE_HAS_VIDEO (input)) {
+	else if (BRASERO_STREAM_TRACK_HAS_VIDEO (input)) {
 		if (flags & BRASERO_BURN_FLAG_DUMMY) {
 			title = g_strdup (_("Brasero - Burning disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video disc burning"));
@@ -311,7 +314,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      "drive-removable-media",
 					      GTK_ICON_SIZE_DIALOG);
 	}
-	else if (input->type == BRASERO_TRACK_TYPE_AUDIO) {
+	else if (input->type == BRASERO_TRACK_TYPE_STREAM) {
 		if (flags & BRASERO_BURN_FLAG_DUMMY) {
 			title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of audio CD burning"));
@@ -1750,7 +1753,7 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 	if (answer == GTK_RESPONSE_CLOSE) {
 		GtkWidget *window;
 
-		window = brasero_session_edit_cover (dialog->priv->session);
+		window = brasero_session_edit_cover (dialog->priv->session, GTK_WIDGET (dialog));
 		gtk_dialog_run (GTK_DIALOG (window));
 		gtk_widget_destroy (window);
 		return FALSE;
@@ -1776,7 +1779,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		media = dialog->priv->input.subtype.media;
 
 	switch (dialog->priv->input.type) {
-	case BRASERO_TRACK_TYPE_AUDIO:
+	case BRASERO_TRACK_TYPE_STREAM:
 		primary = g_strdup (_("Audio CD successfully burnt"));
 		break;
 	case BRASERO_TRACK_TYPE_DISC:
@@ -1842,7 +1845,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 						    media,
 						    dialog->priv->total_size);
 
-	if (dialog->priv->input.type == BRASERO_TRACK_TYPE_AUDIO
+	if (dialog->priv->input.type == BRASERO_TRACK_TYPE_STREAM
 	|| (dialog->priv->input.type == BRASERO_TRACK_TYPE_DISC
 	&& (dialog->priv->input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO))) {
 		/* since we succeed offer the possibility to create cover if that's an audio disc */
@@ -1879,7 +1882,7 @@ brasero_burn_dialog_add_track_to_recent (BraseroTrack *track)
 				      groups,
 				      FALSE };
 
-	brasero_track_get_type (track, &type);
+	brasero_track_get_track_type (track, &type);
 	if (type.type != BRASERO_TRACK_TYPE_IMAGE
 	||  type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE)
 		return;
@@ -1888,22 +1891,22 @@ brasero_burn_dialog_add_track_to_recent (BraseroTrack *track)
 	switch (type.subtype.img_format) {
 	case BRASERO_IMAGE_FORMAT_BIN:
 		recent_data.mime_type = mimes [0];
-		uri = brasero_track_get_image_source (track, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CUE:
 		recent_data.mime_type = mimes [1];
-		uri = brasero_track_get_toc_source (track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CLONE:
 		recent_data.mime_type = mimes [2];
-		uri = brasero_track_get_toc_source (track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
 		recent_data.mime_type = mimes [3];
-		uri = brasero_track_get_toc_source (track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
 		break;
 
 	default:

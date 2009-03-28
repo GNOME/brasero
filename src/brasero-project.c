@@ -64,6 +64,7 @@
 #endif
 
 #include "brasero-session-cfg.h"
+#include "brasero-burn-options.h"
 #include "brasero-cover.h"
 
 #include "brasero-project-type-chooser.h"
@@ -73,7 +74,6 @@
 #include "brasero-data-disc.h"
 #include "brasero-audio-disc.h"
 #include "brasero-video-disc.h"
-#include "brasero-disc-option-dialog.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
 #include "brasero-disc-message.h"
@@ -923,7 +923,7 @@ brasero_project_setup_session (BraseroProject *project,
 void
 brasero_project_burn (BraseroProject *project)
 {
-	BraseroBurnSession *session;
+	BraseroSessionCfg *session;
 	BraseroDiscResult result;
 	GtkWidget *dialog;
 	gboolean success;
@@ -952,26 +952,26 @@ brasero_project_burn (BraseroProject *project)
 	/* This is to stop the preview widget from playing */
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 
-	/* setup, show, and run options dialog */
-	dialog = brasero_disc_option_dialog_new ();
-	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
-					     project->priv->current);
+  	/* setup, show, and run options dialog */
+ 	session = brasero_session_cfg_new ();
+ 	brasero_disc_set_session_contents (project->priv->current, BRASERO_BURN_SESSION (session));
+ 	dialog = brasero_burn_options_new (session);
 
 	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (result != GTK_RESPONSE_OK) {
+		g_object_unref (session);
 		gtk_widget_destroy (dialog);
 		goto end;
 	}
 
-	session = brasero_disc_option_dialog_get_session (BRASERO_DISC_OPTION_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	brasero_project_setup_session (project, session);
+	brasero_project_setup_session (project, BRASERO_BURN_SESSION (session));
 
 	/* now setup the burn dialog */
-	success = brasero_app_burn (brasero_app_get_default (), session);
+	success = brasero_app_burn (brasero_app_get_default (), BRASERO_BURN_SESSION (session));
 
     	project->priv->burnt = success;
 	g_object_unref (session);
@@ -993,7 +993,6 @@ brasero_project_create_audio_cover (BraseroProject *project,
 		return;
 
 	session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
-	brasero_disc_set_session_param (BRASERO_DISC (project->priv->current), session);
 	brasero_disc_set_session_contents (BRASERO_DISC (project->priv->current), session);
 	brasero_project_setup_session (project, session);
 
@@ -1868,7 +1867,7 @@ _save_audio_track_xml (xmlTextWriter *project,
 
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
-		BraseroSongInfo *info;
+		BraseroStreamInfo *info;
 		xmlChar *escaped;
 		gchar *start;
 		gchar *isrc;
@@ -2206,7 +2205,7 @@ brasero_project_save_audio_project_plain_text (BraseroProject *proj,
 
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
-		BraseroSongInfo *info;
+		BraseroStreamInfo *info;
 		gchar *time;
 
 		song = iter->data;
@@ -2318,7 +2317,7 @@ brasero_project_save_audio_project_playlist (BraseroProject *proj,
 	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
-		BraseroSongInfo *info;
+		BraseroStreamInfo *info;
 
 		song = iter->data;
 		info = song->info;

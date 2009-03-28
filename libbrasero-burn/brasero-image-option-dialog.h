@@ -61,11 +61,6 @@ struct _BraseroImageOptionDialogClass {
 };
 
 GType brasero_image_option_dialog_get_type ();
-GtkWidget *brasero_image_option_dialog_new ();
-
-void
-brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
-					   const gchar *uri);
 
 G_END_DECLS
 

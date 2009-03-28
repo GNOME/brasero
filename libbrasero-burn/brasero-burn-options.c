@@ -46,6 +46,9 @@
 
 #include "brasero-session.h"
 #include "brasero-burn-options.h"
+#include "brasero-disc-copy-dialog.h"
+#include "brasero-image-option-dialog.h"
+#include "brasero-disc-option-dialog.h"
 #include "brasero-session-cfg.h"
 #include "brasero-dest-selection.h"
 #include "brasero-medium-properties.h"
@@ -74,6 +77,11 @@ struct _BraseroBurnOptionsPrivate
 };
 
 #define BRASERO_BURN_OPTIONS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_OPTIONS, BraseroBurnOptionsPrivate))
+
+enum {
+	PROP_0,
+	PROP_SESSION
+};
 
 G_DEFINE_TYPE (BraseroBurnOptions, brasero_burn_options, GTK_TYPE_DIALOG);
 
@@ -377,6 +385,16 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 static void
 brasero_burn_options_init (BraseroBurnOptions *object)
 {
+	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
+}
+
+/**
+ * To build anything we need to have the session set first
+ */
+
+static void
+brasero_burn_options_build_contents (BraseroBurnOptions *object)
+{
 	BraseroBurnOptionsPrivate *priv;
 	GtkWidget *selection;
 	GtkWidget *alignment;
@@ -386,10 +404,7 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 
 	priv->size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
-
-	/* Create the session */
-	priv->session = brasero_session_cfg_new ();
+	/* Sets default flags for the session */
 	brasero_burn_session_add_flag (BRASERO_BURN_SESSION (priv->session),
 				       BRASERO_BURN_FLAG_NOGRACE|
 				       BRASERO_BURN_FLAG_CHECK_SIZE);
@@ -498,6 +513,57 @@ brasero_burn_options_finalize (GObject *object)
 }
 
 static void
+brasero_burn_options_set_property (GObject *object,
+				   guint prop_id,
+				   const GValue *value,
+				   GParamSpec *pspec)
+{
+	BraseroBurnOptionsPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_BURN_OPTIONS (object));
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_SESSION: /* Readable and only writable at creation time */
+		priv->session = BRASERO_SESSION_CFG (g_value_get_object (value));
+		g_object_ref (priv->session);
+		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
+
+		g_object_notify (object, "session");
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_burn_options_get_property (GObject *object,
+				   guint prop_id,
+				   GValue *value,
+				   GParamSpec *pspec)
+{
+	BraseroBurnOptionsPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_BURN_OPTIONS (object));
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_SESSION:
+		g_value_set_object (value, priv->session);
+		g_object_ref (priv->session);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
 brasero_burn_options_class_init (BraseroBurnOptionsClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
@@ -505,6 +571,45 @@ brasero_burn_options_class_init (BraseroBurnOptionsClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroBurnOptionsPrivate));
 
 	object_class->finalize = brasero_burn_options_finalize;
+	object_class->set_property = brasero_burn_options_set_property;
+	object_class->get_property = brasero_burn_options_get_property;
+
+	g_object_class_install_property (object_class,
+					 PROP_SESSION,
+					 g_param_spec_object ("session",
+							      "The session",
+							      "The session to work with",
+							      BRASERO_TYPE_BURN_SESSION,
+							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
 }
 
+GtkWidget *
+brasero_burn_options_new (BraseroSessionCfg *session)
+{
+	BraseroTrackType type = { 0, };
+	GtkWidget *options;
 
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (session), &type);
+	switch (type.type) {
+		case BRASERO_TRACK_TYPE_DATA:
+		case BRASERO_TRACK_TYPE_STREAM:
+			options = g_object_new (BRASERO_TYPE_DISC_OPTION_DIALOG,
+						"session", session,
+						NULL);
+			break;
+		case BRASERO_TRACK_TYPE_DISC:
+			options = g_object_new (BRASERO_TYPE_DISC_COPY_DIALOG,
+						"session", session,
+						NULL);
+			break;
+		case BRASERO_TRACK_TYPE_IMAGE:
+			options = g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
+						"session", session,
+						NULL);
+			break;
+		default:
+			options = NULL;
+	}
+
+	return options;
+}

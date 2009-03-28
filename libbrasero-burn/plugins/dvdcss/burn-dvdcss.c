@@ -48,6 +48,8 @@
 #include "burn-dvdcss-private.h"
 #include "burn-volume.h"
 #include "brasero-medium.h"
+#include "brasero-track-image.h"
+#include "brasero-track-disc.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -145,10 +147,9 @@ static gboolean
 brasero_dvdcss_thread_finished (gpointer data)
 {
 	gchar *image = NULL;
-	BraseroTrackType type;
-	BraseroTrack *track = NULL;
 	BraseroDvdcss *self = data;
 	BraseroDvdcssPrivate *priv;
+	BraseroTrackImage *track = NULL;
 
 	priv = BRASERO_DVDCSS_PRIVATE (self);
 	priv->thread_id = 0;
@@ -162,22 +163,20 @@ brasero_dvdcss_thread_finished (gpointer data)
 		return FALSE;
 	}
 
-	brasero_job_get_output_type (BRASERO_JOB (self), &type);
-	track = brasero_track_new (type.type);
-
+	track = brasero_track_image_new ();
 	brasero_job_get_image_output (BRASERO_JOB (self),
 				      &image,
 				      NULL);
-	brasero_track_set_image_source (track,
+	brasero_track_image_set_source (track,
 					image,
 					NULL,
 					BRASERO_IMAGE_FORMAT_BIN);
 
-	brasero_job_add_track (BRASERO_JOB (self), track);
+	brasero_job_add_track (BRASERO_JOB (self), BRASERO_TRACK (track));
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroTaskCtx refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	brasero_job_finished_track (BRASERO_JOB (self));
 
@@ -326,7 +325,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 
 	/* get the contents of the DVD */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	drive = brasero_track_get_drive_source (track);
+	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 
 	vol = brasero_volume_source_open_file (brasero_drive_get_device (drive), &priv->error);
 	files = brasero_volume_get_files (vol,
@@ -339,7 +338,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	if (!files)
 		goto end;
 
-	medium = brasero_track_get_medium_source (track);
+	medium = brasero_drive_get_medium (drive);
 	brasero_medium_get_data_size (medium, NULL, &volume_size);
 	if (volume_size == -1) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
@@ -531,11 +530,11 @@ brasero_dvdcss_start (BraseroJob *job,
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
-		gint64 blocks = 0;
+		guint64 blocks = 0;
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (job, &track);
-		brasero_track_get_disc_data_size (track, &blocks, NULL);
+		brasero_track_get_size (track, &blocks, NULL);
 		brasero_job_set_output_size_for_current_track (job,
 							       blocks,
 							       blocks * DVDCSS_BLOCK_SIZE);

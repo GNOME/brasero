@@ -86,9 +86,6 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 			       BraseroDiscTrack *track);
 
 static BraseroDiscResult
-brasero_audio_disc_set_session_param (BraseroDisc *disc,
-				      BraseroBurnSession *session);
-static BraseroDiscResult
 brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 					 BraseroBurnSession *session);
 
@@ -437,7 +434,6 @@ brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->clear = brasero_audio_disc_clear;
 	iface->reset = brasero_audio_disc_reset;
 	iface->get_track = brasero_audio_disc_get_track;
-	iface->set_session_param = brasero_audio_disc_set_session_param;
 	iface->set_session_contents = brasero_audio_disc_set_session_contents;
 	iface->load_track = brasero_audio_disc_load_track;
 	iface->get_status = brasero_audio_disc_get_status;
@@ -1230,7 +1226,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 
 	/* make sure there is a length and it's not over the real one */
 	if (start >= 0 && end > 0)
-		current_length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
+		current_length = BRASERO_STREAM_LENGTH (start, end);
 	else
 		current_length = 0;
 
@@ -1254,7 +1250,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	/* Just in case */
 	if (start > end) {
 		/* problem */
-		start = end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
+		start = end - BRASERO_MIN_STREAM_LENGTH;
 		if (start < 0)
 			start = 0;
 
@@ -1272,14 +1268,14 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 				    -1);
 
 		/* gap counts as length */
-		if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_AUDIO_TRACK_LENGTH)
+		if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_STREAM_LENGTH)
 			brasero_audio_disc_short_track_dialog (disc);
 	}
-	else if (end - start < BRASERO_MIN_AUDIO_TRACK_LENGTH) {
+	else if (end - start < BRASERO_MIN_STREAM_LENGTH) {
 		brasero_audio_disc_short_track_dialog (disc);
 	}
 
-	length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
+	length = BRASERO_STREAM_LENGTH (start, end);
 	if (length != current_length) {
 		/* update global size */
 		if (current_length > 0)
@@ -1687,7 +1683,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 				 gint64 gap_sectors,
 				 gint64 start,
 				 gint64 end,
-				 BraseroSongInfo *info,
+				 BraseroStreamInfo *info,
 				 GtkTreePath **path_return)
 {
 	GtkTreeRowReference *ref;
@@ -1744,7 +1740,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 		gint64 length;
 
 		/* update global size */
-		length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
+		length = BRASERO_STREAM_LENGTH (start, end);
 		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (length);
 		brasero_audio_disc_size_changed (disc);
 
@@ -1856,7 +1852,7 @@ brasero_audio_disc_remove (BraseroAudioDisc *disc,
 	sectors = 0;
 	if (uri) {
 		if (end - start > 0)
-			sectors = BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+			sectors = BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (start, end));
 	}
 	else if (length) /* gap */
 		sectors = BRASERO_DURATION_TO_SECTORS (length);
@@ -1997,7 +1993,7 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 				song->gap += BRASERO_DURATION_TO_SECTORS (length);
 		}
 		else {
-			BraseroSongInfo *info;
+			BraseroStreamInfo *info;
 
 			song = g_new0 (BraseroDiscSong, 1);
 			song->uri = uri;
@@ -2007,7 +2003,7 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 				song->end = end > 0 ? end:0;
 			}
 
-			info = g_new0 (BraseroSongInfo, 1);
+			info = g_new0 (BraseroStreamInfo, 1);
 			if (title_set)
 				info->title = title;
 			else
@@ -2037,43 +2033,20 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 }
 
 static BraseroDiscResult
-brasero_audio_disc_set_session_param (BraseroDisc *disc,
-				      BraseroBurnSession *session)
-{
-	BraseroTrackType type;
-	GValue *value = NULL;
-
-	value = g_new0 (GValue, 1);
-	g_value_init (value, G_TYPE_INT64);
-	g_value_set_int64 (value, BRASERO_AUDIO_DISC (disc)->priv->sectors);
-	brasero_burn_session_tag_add (session,
-				      BRASERO_AUDIO_TRACK_SIZE_TAG,
-				      value);
-
-	type.type = BRASERO_TRACK_TYPE_AUDIO;
-	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED|
-				    BRASERO_METADATA_INFO;
-	brasero_burn_session_set_input_type (session, &type);
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroDiscResult
 brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 					 BraseroBurnSession *session)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	BraseroTrack *track;
 	BraseroAudioDisc *audio;
-	BraseroTrackType track_type = { 0, };
+	BraseroTrackStream *track;
 
 	audio = BRASERO_AUDIO_DISC (disc);
+
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
-	brasero_burn_session_get_input_type (session, &track_type);
 	track = NULL;
 	do {
 		gchar *uri;
@@ -2084,7 +2057,7 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		gint64 end;
 		gint64 start;
 		gint64 length;
-		BraseroSongInfo *info;
+		BraseroStreamInfo *info;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
@@ -2099,32 +2072,33 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 
 		if (!uri) {
 			/* This is a gap so sectors refers to its size */
-			brasero_track_set_audio_boundaries (track,
-							    -1,
-							    -1,
-							    length);
+			brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
+							     -1,
+							     -1,
+							     length);
 			continue;
 		}
 
-		info = g_new0 (BraseroSongInfo, 1);
+		info = g_new0 (BraseroStreamInfo, 1);
 
 		info->title = title;
 		info->artist = artist;
 		info->composer = composer;
 		info->isrc = isrc;
 
-		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-		brasero_track_set_audio_source (track,
-						uri,
-						track_type.subtype.audio_format);
+		track = brasero_track_stream_new ();
+		brasero_track_stream_set_source (track, uri);
+		brasero_track_stream_set_format (track,
+						 BRASERO_AUDIO_FORMAT_UNDEFINED|
+						 BRASERO_METADATA_INFO);
 
-		brasero_track_set_audio_boundaries (track, start, end, -1);
-		brasero_track_set_audio_info (track, info);
-		brasero_burn_session_add_track (session, track);
+		brasero_track_stream_set_boundaries (track, start, end, -1);
+		brasero_track_stream_set_info (track, info);
+		brasero_burn_session_add_track (session, BRASERO_TRACK (track));
 
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroBurnSession refs it. */
-		brasero_track_unref (track);
+		g_object_unref (track);
 		g_free (uri);
 	} while (gtk_tree_model_iter_next (model, &iter));
 
@@ -2149,7 +2123,7 @@ brasero_audio_disc_add_track (BraseroAudioDisc *disc,
 			    SONG_COL, TRUE,
 			    -1);
 
-	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (song->start, song->end));
+	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (song->start, song->end));
 
 	if (song->info) {
 		if (song->info->title)
@@ -2196,7 +2170,7 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
-		BraseroSongInfo *info;
+		BraseroStreamInfo *info;
 
 		song = iter->data;
 		info = song->info;
@@ -2823,9 +2797,9 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 			    START_COL, &start,
 			    END_COL, &end,
 			    -1);
-	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (start, end));
 
-	string = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
+	string = brasero_units_get_time_string (BRASERO_STREAM_LENGTH (slice->start, slice->end), TRUE, FALSE); 
 	gtk_list_store_set (GTK_LIST_STORE (model), parent,
 			    LENGTH_SET_COL, TRUE,
 			    START_COL, slice->start,
@@ -2833,7 +2807,7 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 			    SIZE_COL, string,
 			    -1);
 	g_free (string);
-	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end));
+	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (slice->start, slice->end));
 
 	for (iter = slices->next; iter; iter = iter->next) {
 		slice = iter->data;
@@ -2841,7 +2815,7 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 		gtk_list_store_insert_after (GTK_LIST_STORE (model), &row, parent);
 		gtk_tree_model_iter_next (model, parent);
 
-		string = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
+		string = brasero_units_get_time_string (BRASERO_STREAM_LENGTH (slice->start, slice->end), TRUE, FALSE); 
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    URI_COL, uri,
 				    NAME_COL, name,
@@ -2862,7 +2836,7 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 				    -1);
 		g_free (string);
 
-		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end));
+		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (slice->start, slice->end));
 	}
 
 	g_free (icon_string);
@@ -3273,7 +3247,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 		return;
 	}
 
-	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (start, end));
 	brasero_song_props_get_properties (BRASERO_SONG_PROPS (props),
 					   &artist,
 					   &title,
@@ -3283,7 +3257,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 					   &end,
 					   &gap);
 
-	length_str = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end), TRUE, FALSE);
+	length_str = brasero_units_get_time_string (BRASERO_STREAM_LENGTH (start, end), TRUE, FALSE);
 
 	gtk_tree_model_get_iter (model, &iter, treepath);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -3323,13 +3297,13 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 				    ISRC_SET_COL, TRUE,
 				    -1);
 
-	if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_AUDIO_TRACK_LENGTH)
+	if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_STREAM_LENGTH)
 		brasero_audio_disc_short_track_dialog (disc);
 
 	if (gap)
 		brasero_audio_disc_add_gap (disc, &iter, gap);
 
-	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (start, end));
 	brasero_audio_disc_size_changed (disc);
 
 	g_free (title);
@@ -3885,7 +3859,7 @@ brasero_audio_disc_inotify_remove_all (BraseroAudioDisc *disc,
 
 		if (row_uri && !strncmp (row_uri, dir->uri, len)) {
 			if (end - start > 0)
-				disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+				disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (start, end));
 
 			if (!gtk_list_store_remove (GTK_LIST_STORE (model), &iter)) {
 				g_free (row_uri);
@@ -3969,7 +3943,7 @@ brasero_audio_disc_inotify_remove (BraseroAudioDisc *disc,
 				    -1);
 
 		if (end - start > 0)
-			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_STREAM_LENGTH (start, end));
 
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 	}

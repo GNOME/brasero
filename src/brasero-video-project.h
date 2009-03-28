@@ -56,7 +56,7 @@ struct _BraseroVideoFile {
 
 	gchar *uri;
 
-	BraseroSongInfo *info;
+	BraseroStreamInfo *info;
 
 	guint64 start;
 	guint64 end;
@@ -154,7 +154,7 @@ brasero_video_project_remove_file (BraseroVideoProject *project,
 BraseroVideoFile *
 brasero_video_project_add_uri (BraseroVideoProject *project,
 			       const gchar *uri,
-			       BraseroSongInfo *info,
+			       BraseroStreamInfo *info,
 			       BraseroVideoFile *sibling,
 			       gint64 start,
 			       gint64 end);

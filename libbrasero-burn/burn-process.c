@@ -52,6 +52,9 @@
 #include "burn-process.h"
 #include "burn-job.h"
 
+#include "brasero-track-stream.h"
+#include "brasero-track-image.h"
+
 G_DEFINE_TYPE (BraseroProcess, brasero_process, BRASERO_TYPE_JOB);
 
 enum {
@@ -251,12 +254,12 @@ brasero_process_finished (BraseroProcess *self)
 		gchar *toc = NULL;
 		gchar *image = NULL;
 
-		track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
+		track = BRASERO_TRACK (brasero_track_image_new ());
 		brasero_job_get_image_output (BRASERO_JOB (self),
 					      &image,
 					      &toc);
 
-		brasero_track_set_image_source (track,
+		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
 						image,
 						toc,
 						type.subtype.img_format);
@@ -264,15 +267,13 @@ brasero_process_finished (BraseroProcess *self)
 		g_free (image);
 		g_free (toc);
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
+	else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
 		gchar *uri = NULL;
 
-		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-		brasero_job_get_audio_output (BRASERO_JOB (self),
-					      &uri);
-		brasero_track_set_audio_source (track,
-						uri,
-						type.subtype.audio_format);
+		track = BRASERO_TRACK (brasero_track_stream_new ());
+		brasero_job_get_audio_output (BRASERO_JOB (self), &uri);
+		brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uri);
+		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track), type.subtype.audio_format);
 
 		g_free (uri);
 	}
@@ -282,7 +283,7 @@ brasero_process_finished (BraseroProcess *self)
 
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroTaskCtx refs it. */
-		brasero_track_unref (track);
+		g_object_unref (track);
 	}
 
 	klass->post (BRASERO_JOB (self));

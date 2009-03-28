@@ -48,6 +48,7 @@
 #include "burn-plugin-manager.h"
 #include "burn-image-format.h"
 
+#include "brasero-track-image.h"
 #include "brasero-session-cfg.h"
 
 typedef struct _BraseroSessionCfgPrivate BraseroSessionCfgPrivate;
@@ -158,7 +159,7 @@ brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
 				       property);
 		break;
 
-	case BRASERO_TRACK_TYPE_AUDIO:
+	case BRASERO_TRACK_TYPE_STREAM:
 		key = g_strdup_printf ("%s/%s/audio_%s/%s",
 				       BRASERO_DRIVE_PROPERTIES_KEY,
 				       display_name,
@@ -538,26 +539,15 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 		session_size = g_value_get_int64 (value);
 	}
 	else for (; iter; iter = iter->next) {
-		BraseroTrackDataType type;
 		BraseroTrack *track;
-		gint64 sectors;
 
 		track = iter->data;
-		sectors = 0;
+		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DATA) {
+			guint64 sectors = 0;
 
-		type = brasero_track_get_type (track, NULL);
-		if (type == BRASERO_TRACK_TYPE_DISC)
-			brasero_track_get_disc_data_size (track, &sectors, NULL);
-		else if (type == BRASERO_TRACK_TYPE_IMAGE)
-			brasero_track_get_image_size (track, NULL, &sectors, NULL, NULL);
-		else if (type == BRASERO_TRACK_TYPE_AUDIO) {
-			gint64 len = 0;
-
-			brasero_track_get_audio_length (track, &len);
-			sectors = BRASERO_DURATION_TO_SECTORS (len);
+			brasero_track_get_size (track, &sectors, NULL);
+			session_size += sectors;
 		}
-
-		session_size += sectors;
 	}
 
 	BRASERO_BURN_LOG ("Session size %lli/Disc size %lli",
@@ -600,6 +590,25 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 
 	priv->is_valid = BRASERO_SESSION_VALID;
 	return BRASERO_SESSION_VALID;
+}
+
+static void
+brasero_session_cfg_set_tracks_audio_format (BraseroBurnSession *session,
+					     BraseroStreamFormat format)
+{
+	GSList *tracks;
+	GSList *iter;
+
+	tracks = brasero_burn_session_get_tracks (session);
+	for (iter = tracks; iter; iter = iter->next) {
+		BraseroTrack *track;
+
+		track = iter->data;
+		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_STREAM)
+			continue;
+
+		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track), format);
+	}
 }
 
 static void
@@ -650,7 +659,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			BraseroTrack *track;
 
 			track = tracks->data;
-			uri = brasero_track_get_image_source (track, TRUE);
+			uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
 			if (uri) {
 				priv->is_valid = BRASERO_SESSION_UNKNOWN_IMAGE;
 				g_free (uri);
@@ -692,7 +701,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			priv->CD_TEXT_modified = FALSE;
 
 			priv->configuring = TRUE;
-			brasero_burn_session_set_input_type (BRASERO_BURN_SESSION (self), &source);
+			brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
+								     source.subtype.audio_format);
 			priv->configuring = FALSE;
 		}
 		else {
@@ -710,7 +720,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 								 BRASERO_BURN_SESSION (self),
 								 FALSE);
 		if (result != BRASERO_BURN_OK
-		&&  source.type == BRASERO_TRACK_TYPE_AUDIO
+		&&  source.type == BRASERO_TRACK_TYPE_STREAM
 		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {
 			/* Another special case in case some burning backends 
 			 * don't support CD-TEXT for audio (libburn). If no
@@ -726,7 +736,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 				priv->CD_TEXT_modified = TRUE;
 
 				priv->configuring = TRUE;
-				brasero_burn_session_set_input_type (BRASERO_BURN_SESSION (self), &source);
+				brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
+									     source.subtype.audio_format);
 				priv->configuring = FALSE;
 			}
 		}

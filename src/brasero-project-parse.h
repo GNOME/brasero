@@ -30,6 +30,7 @@
 #include <glib.h>
 
 #include "brasero-track.h"
+#include "brasero-track-stream.h"
 
 G_BEGIN_DECLS
 
@@ -48,7 +49,7 @@ struct _BraseroDiscSong {
 	gint64 start;
 	gint64 end;
 
-	BraseroSongInfo *info;
+	BraseroStreamInfo *info;
 };
 typedef struct _BraseroDiscSong BraseroDiscSong;
 
@@ -70,6 +71,7 @@ typedef struct {
 
 void
 brasero_track_clear (BraseroDiscTrack *track);
+
 void
 brasero_track_free (BraseroDiscTrack *track);
 

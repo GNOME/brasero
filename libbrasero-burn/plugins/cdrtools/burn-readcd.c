@@ -42,6 +42,9 @@
 #include "burn-process.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
+#include "brasero-tags.h"
+#include "brasero-track-disc.h"
+
 #include "burn-volume.h"
 #include "brasero-drive.h"
 
@@ -119,7 +122,7 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 				      GPtrArray *argv,
 				      GError **error)
 {
-	gint64 nb_blocks;
+	guint64 nb_blocks;
 	BraseroTrack *track;
 	GValue *value = NULL;
 	BraseroTrackType output;
@@ -153,23 +156,25 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 							end));
 	}
 	/* 0 means all disc, -1 problem */
-	else if (brasero_track_get_drive_track (track) > 0) {
-		gint64 start;
+	else if (brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track)) > 0) {
+		guint64 start;
+		BraseroDrive *drive;
 		BraseroMedium *medium;
 
-		medium = brasero_track_get_medium_source (track);
+		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+		medium = brasero_drive_get_medium (drive);
 		brasero_medium_get_track_space (medium,
-						brasero_track_get_drive_track (track),
+						brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
 						NULL,
 						&nb_blocks);
 		brasero_medium_get_track_address (medium,
-						  brasero_track_get_drive_track (track),
+						  brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
 						  NULL,
 						  &start);
 
 		BRASERO_JOB_LOG (readcd,
 				 "reading %i from sector %lli to %lli",
-				 brasero_track_get_drive_track (track),
+				 brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
 				 start,
 				 start + nb_blocks);
 		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%lli-%lli",
@@ -178,10 +183,12 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 	}
 	/* if it's BIN output just read the last track */
 	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
-		gint64 start;
+		guint64 start;
+		BraseroDrive *drive;
 		BraseroMedium *medium;
 
-		medium = brasero_track_get_medium_source (track);
+		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+		medium = brasero_drive_get_medium (drive);
 		brasero_medium_get_last_data_track_space (medium,
 							  NULL,
 							  &nb_blocks);
@@ -197,7 +204,7 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 							start + nb_blocks));
 	}
 	else {
-		brasero_track_get_disc_data_size (track, &nb_blocks, NULL);
+		brasero_track_get_size (track, &nb_blocks, NULL);
 		g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
 	}
 
@@ -208,7 +215,7 @@ static BraseroBurnResult
 brasero_readcd_get_size (BraseroReadcd *self,
 			 GError **error)
 {
-	gint64 blocks;
+	guint64 blocks;
 	GValue *value = NULL;
 	BraseroTrackType output;
 	BraseroTrack *track = NULL;
@@ -234,25 +241,29 @@ brasero_readcd_get_size (BraseroReadcd *self,
 		end = g_value_get_uint64 (value);
 		blocks = end - start;
 	}
-	else if (brasero_track_get_drive_track (track) > 0) {
+	else if (brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)) > 0) {
+		BraseroDrive *drive;
 		BraseroMedium *medium;
 
-		medium = brasero_track_get_medium_source (track);
+		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+		medium = brasero_drive_get_medium (drive);
 		brasero_medium_get_track_space (medium,
-						brasero_track_get_drive_track (track),
+						brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
 						NULL,
 						&blocks);
 	}
 	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+		BraseroDrive *drive;
 		BraseroMedium *medium;
 
-		medium = brasero_track_get_medium_source (track);
+		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+		medium = brasero_drive_get_medium (drive);
 		brasero_medium_get_last_data_track_space (medium,
 							  NULL,
 							  &blocks);
 	}
 	else
-		brasero_track_get_disc_data_size (track, &blocks, NULL);
+		brasero_track_get_size (track, &blocks, NULL);
 
 	if (output.type != BRASERO_TRACK_TYPE_IMAGE)
 		return BRASERO_BURN_ERR;
@@ -301,7 +312,7 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	g_ptr_array_add (argv, g_strdup ("readcd"));
 
 	brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
-	drive = brasero_track_get_drive_source (track);
+	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 
 #ifdef HAVE_CAM_LIB_H
 	/* FreeBSD like that better */

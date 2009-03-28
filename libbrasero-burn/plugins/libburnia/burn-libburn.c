@@ -50,6 +50,8 @@
 #include "burn-libburn-common.h"
 #include "burn-libburnia.h"
 #include "burn-libburn.h"
+#include "brasero-track-image.h"
+#include "brasero-track-stream.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -295,7 +297,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			          GError **error)
 {
 	int fd;
-	gint64 size = 0;
+	guint64 size = 0;
 	BraseroTrackType type;
 	BraseroLibburnPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
@@ -330,7 +332,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			break;
 		}
 
-		case BRASERO_TRACK_TYPE_AUDIO:
+		case BRASERO_TRACK_TYPE_STREAM:
 		{
 			GSList *tracks;
 
@@ -339,7 +341,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 				BraseroTrack *track;
 
 				track = tracks->data;
-				brasero_track_get_audio_length (track, &size);
+				brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &size);
 				size = BRASERO_DURATION_TO_BYTES (size);
 
 				/* we dup the descriptor so the same 
@@ -382,13 +384,13 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 		BraseroTrackType type;
 
 		track = tracks->data;
-		brasero_track_get_type (track, &type);
-		if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
+		brasero_track_get_track_type (track, &type);
+		if (type.type == BRASERO_TRACK_TYPE_STREAM) {
 			gchar *audiopath;
-			gint64 size;
+			guint64 size;
 
-			audiopath = brasero_track_get_audio_source (track, FALSE);
-			brasero_track_get_audio_length (track, &size);
+			audiopath = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), FALSE);
+			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &size);
 			size = BRASERO_DURATION_TO_BYTES (size);
 
 			result = brasero_libburn_add_file_track (session,
@@ -402,16 +404,16 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 		}
 		else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 			gchar *imagepath;
-			gint64 size;
+			guint64 size;
 			gint mode;
 
 			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 				mode = BURN_MODE1;
-				imagepath = brasero_track_get_image_source (track, FALSE);
+				imagepath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			}
 			else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 				mode = BURN_MODE1;
-				imagepath = brasero_track_get_image_source (track, FALSE);
+				imagepath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			}
 			else
 				BRASERO_JOB_NOT_SUPPORTED (self);
@@ -419,11 +421,9 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 			if (!imagepath)
 				return BRASERO_BURN_ERR;
 
-			result = brasero_track_get_image_size (track,
-							       NULL,
-							       NULL,
-							       &size,
-							       error);
+			result = brasero_track_get_size (track,
+							 NULL,
+							 &size);
 			if (result != BRASERO_BURN_OK)
 				return BRASERO_BURN_ERR;
 
@@ -478,7 +478,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 			      GError **error)
 {
 	guint64 rate;
-	gint64 blocks = 0;
+	guint64 blocks = 0;
 	BraseroMedia media;
 	BraseroBurnFlag flags;
 	BraseroBurnResult result;
@@ -522,7 +522,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 		 * handles all by himself where to start writing. */
 		if (BRASERO_MEDIUM_RANDOM_WRITABLE (media)
 		&& (flags & BRASERO_BURN_FLAG_MERGE)) {
-			gint64 address = 0;
+			guint64 address = 0;
 
 			brasero_job_get_next_writable_address (BRASERO_JOB (self), &address);
 

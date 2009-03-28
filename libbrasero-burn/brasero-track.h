@@ -32,6 +32,7 @@
 #define _BURN_TRACK_H
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include <brasero-drive.h>
 #include <brasero-medium.h>
@@ -44,51 +45,82 @@ G_BEGIN_DECLS
 /* NOTE: the order has a meaning here and is used for sorting */
 typedef enum {
 	BRASERO_TRACK_TYPE_NONE				= 0,
-	BRASERO_TRACK_TYPE_AUDIO,
+	BRASERO_TRACK_TYPE_STREAM,
 	BRASERO_TRACK_TYPE_DATA,
 	BRASERO_TRACK_TYPE_IMAGE,
 	BRASERO_TRACK_TYPE_DISC,
 } BraseroTrackDataType;
 
-typedef enum {
-	BRASERO_IMAGE_FS_NONE			= 0,
-	BRASERO_IMAGE_FS_ISO			= 1,
-	BRASERO_IMAGE_FS_UDF			= 1 << 1,
-	BRASERO_IMAGE_FS_JOLIET			= 1 << 2,
-	BRASERO_IMAGE_FS_VIDEO			= 1 << 3,
+struct _BraseroTrackType {
+	BraseroTrackDataType type;
+	union {
+		BraseroImageFormat img_format;		/* used with IMAGE type */
+		BraseroMedia media;			/* used with DISC types */
+		BraseroImageFS fs_type;
+		BraseroStreamFormat audio_format;
+	} subtype;
+};
+typedef struct _BraseroTrackType BraseroTrackType;
 
-	/* The following one conflict with UDF and JOLIET */
-	BRASERO_IMAGE_FS_SYMLINK		= 1 << 4,
+BraseroBurnResult
+brasero_track_type_is_supported (BraseroTrackType *type);
 
-	BRASERO_IMAGE_ISO_FS_LEVEL_3		= 1 << 5,
-	BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY	= 1 << 6,
-	BRASERO_IMAGE_FS_ANY			= BRASERO_IMAGE_FS_ISO|
-						  BRASERO_IMAGE_FS_UDF|
-						  BRASERO_IMAGE_FS_JOLIET|
-						  BRASERO_IMAGE_FS_SYMLINK|
-						  BRASERO_IMAGE_ISO_FS_LEVEL_3|
-						  BRASERO_IMAGE_FS_VIDEO|
-						  BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY
-} BraseroImageFS;
+gboolean
+brasero_track_type_equal (const BraseroTrackType *type_A,
+			  const BraseroTrackType *type_B);
 
-typedef enum {
-	BRASERO_AUDIO_FORMAT_NONE		= 0,
-	BRASERO_AUDIO_FORMAT_UNDEFINED		= 1,
-	BRASERO_AUDIO_FORMAT_4_CHANNEL		= 1 << 1,
-	BRASERO_AUDIO_FORMAT_RAW		= 1 << 2,
-	BRASERO_AUDIO_FORMAT_AC3		= 1 << 3,
-	BRASERO_AUDIO_FORMAT_MP2		= 1 << 4,
-	BRASERO_AUDIO_FORMAT_44100		= 1 << 5,
-	BRASERO_AUDIO_FORMAT_48000		= 1 << 6,
-	BRASERO_VIDEO_FORMAT_UNDEFINED		= 1 << 7,
-	BRASERO_VIDEO_FORMAT_VCD		= 1 << 8,
-	BRASERO_VIDEO_FORMAT_VIDEO_DVD		= 1 << 9,
+#define BRASERO_TYPE_TRACK             (brasero_track_get_type ())
+#define BRASERO_TRACK(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_TRACK, BraseroTrack))
+#define BRASERO_TRACK_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_TRACK, BraseroTrackClass))
+#define BRASERO_IS_TRACK(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_TRACK))
+#define BRASERO_IS_TRACK_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_TRACK))
+#define BRASERO_TRACK_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_TRACK, BraseroTrackClass))
 
-	BRASERO_METADATA_INFO			= 1 << 10
-} BraseroAudioFormat;
+typedef struct _BraseroTrackClass BraseroTrackClass;
+typedef struct _BraseroTrack BraseroTrack;
 
-#define BRASERO_AUDIO_CAPS_AUDIO(caps_FORMAT)	((caps_FORMAT) & 0x007F)
-#define BRASERO_AUDIO_CAPS_VIDEO(caps_FORMAT)	((caps_FORMAT) & 0x0380)
+struct _BraseroTrackClass
+{
+	GObjectClass parent_class;
+
+	/* Virtual functions */
+	BraseroBurnResult	(* get_size)		(BraseroTrack *track,
+							 guint64 *blocks,
+							 guint *block_size);
+
+	BraseroTrackDataType	(* get_type)		(BraseroTrack *track,
+							 BraseroTrackType *type);
+
+	/* Signals */
+	void			(* changed)		(BraseroTrack *track);
+};
+
+struct _BraseroTrack
+{
+	GObject parent_instance;
+};
+
+GType brasero_track_get_type (void) G_GNUC_CONST;
+
+/**
+ *
+ */
+
+void
+brasero_track_changed (BraseroTrack *track);
+
+BraseroBurnResult
+brasero_track_get_size (BraseroTrack *track,
+			guint64 *blocks,
+			guint64 *size);
+
+BraseroTrackDataType
+brasero_track_get_track_type (BraseroTrack *track,
+			     BraseroTrackType *type);
+
+/** 
+ * Checksums
+ */
 
 typedef enum {
 	BRASERO_CHECKSUM_NONE			= 0,
@@ -101,204 +133,6 @@ typedef enum {
 	BRASERO_CHECKSUM_SHA256_FILE		= 1 << 6,
 } BraseroChecksumType;
 
-#define	BRASERO_MIN_AUDIO_TRACK_LENGTH		((gint64) 6 * 1000000000)
-#define BRASERO_AUDIO_TRACK_LENGTH(start, end)					\
-	((end) - (start) > BRASERO_MIN_AUDIO_TRACK_LENGTH) ?			\
-	((end) - (start)) : BRASERO_MIN_AUDIO_TRACK_LENGTH
-
-
-typedef enum {
-	BRASERO_IMAGE_FORMAT_NONE		= 0,
-	BRASERO_IMAGE_FORMAT_BIN		= 1,
-	BRASERO_IMAGE_FORMAT_CUE		= 1 << 1,
-	BRASERO_IMAGE_FORMAT_CLONE		= 1 << 2,
-	BRASERO_IMAGE_FORMAT_CDRDAO		= 1 << 3,
-	BRASERO_IMAGE_FORMAT_ANY		= BRASERO_IMAGE_FORMAT_BIN|
-						  BRASERO_IMAGE_FORMAT_CUE|
-						  BRASERO_IMAGE_FORMAT_CDRDAO|
-						  BRASERO_IMAGE_FORMAT_CLONE,
-} BraseroImageFormat;
-
-/**
- *
- */
-
-struct _BraseroGraftPt {
-	gchar *uri;
-	gchar *path;
-};
-typedef struct _BraseroGraftPt BraseroGraftPt;
-
-void
-brasero_graft_point_free (BraseroGraftPt *graft);
-
-BraseroGraftPt *
-brasero_graft_point_copy (BraseroGraftPt *graft);
-
-/**
- *
- */
-
-struct _BraseroSongInfo {
-	gchar *title;
-	gchar *artist;
-	gchar *composer;
-	gint isrc;
-};
-
-typedef struct _BraseroSongInfo BraseroSongInfo;
-
-void
-brasero_song_info_free (BraseroSongInfo *info);
-
-BraseroSongInfo *
-brasero_song_info_copy (BraseroSongInfo *info);
-
-/**
- *
- */
-
-typedef struct _BraseroTrack BraseroTrack;
-
-struct _BraseroTrackType {
-	BraseroTrackDataType type;
-	union {
-		BraseroImageFormat img_format;		/* used with IMAGE type */
-		BraseroMedia media;			/* used with DISC types */
-		BraseroImageFS fs_type;
-		BraseroAudioFormat audio_format;
-		BraseroChecksumType checksum;
-	} subtype;
-};
-typedef struct _BraseroTrackType BraseroTrackType;
-
-BraseroBurnResult
-brasero_track_type_is_supported (BraseroTrackType *type);
-
-
-#define BRASERO_TRACK_TYPE_HAS_VIDEO(type_MACRO)				\
-	(((type_MACRO)->type == BRASERO_TRACK_TYPE_AUDIO) &&			\
-	 ((type_MACRO)->subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|	\
-						BRASERO_VIDEO_FORMAT_VCD|	\
-						BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
-
-gboolean
-brasero_track_type_equal (const BraseroTrackType *type_A,
-			  const BraseroTrackType *type_B);
-
-/**
- *
- */
-
-BraseroTrack *
-brasero_track_new (BraseroTrackDataType type);
-
-void
-brasero_track_ref (BraseroTrack *track);
-
-void
-brasero_track_unref (BraseroTrack *track);
-
-BraseroTrackDataType
-brasero_track_get_type (BraseroTrack *track,
-			BraseroTrackType *type);
-
-BraseroTrack *
-brasero_track_copy (BraseroTrack *track);
-
-/**
- * Functions to set the track contents
- */
-
-BraseroBurnResult
-brasero_track_set_audio_source (BraseroTrack *track,
-				const gchar *uri,
-				BraseroAudioFormat format);
-
-BraseroBurnResult
-brasero_track_set_audio_info (BraseroTrack *track,
-			      BraseroSongInfo *info);
-
-BraseroBurnResult
-brasero_track_set_audio_boundaries (BraseroTrack *track,
-				    gint64 start,
-				    gint64 end,
-				    gint64 gap);
-
-BraseroBurnResult
-brasero_track_set_data_source (BraseroTrack *track,
-			       GSList *grafts,
-			       GSList *unreadable);
-BraseroBurnResult
-brasero_track_add_data_fs (BraseroTrack *track,
-			   BraseroImageFS fstype);
-BraseroBurnResult
-brasero_track_unset_data_fs (BraseroTrack *track,
-			     BraseroImageFS fstype);
-BraseroBurnResult
-brasero_track_set_data_file_num (BraseroTrack *track,
-				 gint64 number);
-
-BraseroBurnResult
-brasero_track_set_drive_source (BraseroTrack *track,
-				BraseroDrive *drive);
-BraseroBurnResult
-brasero_track_set_drive_track (BraseroTrack *track,
-			       guint num);
-
-BraseroBurnResult
-brasero_track_set_image_source (BraseroTrack *track,
-				const gchar *image,
-				const gchar *toc,
-				BraseroImageFormat format);
-
-/**
- * Function to get the track contents
- */
-
-gchar *
-brasero_track_get_audio_source (BraseroTrack *track, gboolean uri);
-gint64
-brasero_track_get_audio_gap (BraseroTrack *track);
-gint64
-brasero_track_get_audio_start (BraseroTrack *track);
-gint64
-brasero_track_get_audio_end (BraseroTrack *track);
-
-BraseroSongInfo *
-brasero_track_get_audio_info (BraseroTrack *track);
-
-BraseroMedium *
-brasero_track_get_medium_source (BraseroTrack *track);
-BraseroDrive *
-brasero_track_get_drive_source (BraseroTrack *track);
-gint
-brasero_track_get_drive_track (BraseroTrack *track);
-
-GSList *
-brasero_track_get_data_grafts_source (BraseroTrack *track);
-GSList *
-brasero_track_get_data_excluded_source (BraseroTrack *track,
-					gboolean copy);
-
-BraseroBurnResult
-brasero_track_get_data_paths (BraseroTrack *track,
-			      gboolean use_joliet,
-			      const gchar *grafts_path,
-			      const gchar *excluded_path,
-			      const gchar *emptydir,
-			      const gchar *videodir,
-			      GError **error);
-
-gchar *
-brasero_track_get_image_source (BraseroTrack *track, gboolean uri);
-gchar *
-brasero_track_get_toc_source (BraseroTrack *track, gboolean uri);
-
-/** 
- * Allow to set and get some information about a track
- */
-
 BraseroBurnResult
 brasero_track_set_checksum (BraseroTrack *track,
 			    BraseroChecksumType type,
@@ -309,37 +143,6 @@ brasero_track_get_checksum (BraseroTrack *track);
 
 BraseroChecksumType
 brasero_track_get_checksum_type (BraseroTrack *track);
-
-/**
- * These functions are all about sizes
- */
-BraseroBurnResult
-brasero_track_get_disc_capacity (BraseroTrack *track,
-				 gint64 *blocks,
-				 gint64 *size);
-BraseroBurnResult
-brasero_track_get_disc_data_size (BraseroTrack *track,
-				  gint64 *blocks,
-				  gint64 *size);
-BraseroBurnResult
-brasero_track_get_disc_free_space (BraseroTrack *track,
-				   gint64 *blocks,
-				   gint64 *size);
-
-BraseroBurnResult
-brasero_track_get_image_size (BraseroTrack *track,
-			      gint64 *block_size,
-			      gint64 *blocks,
-			      gint64 *size,
-			      GError **error);
-
-BraseroBurnResult
-brasero_track_get_audio_length (BraseroTrack *track,
-				gint64 *length);
-
-BraseroBurnResult
-brasero_track_get_data_file_num (BraseroTrack *track,
-				 gint64 *num_files);
 
 /**
  *
@@ -354,19 +157,6 @@ BraseroBurnResult
 brasero_track_tag_lookup (BraseroTrack *track,
 			  const gchar *tag,
 			  GValue **value);
-
-/*
- * Commonly used Tags
- */
-
-#define BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG		"track::medium::address::start"
-#define BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG		"track::medium::address::end"
-
-/**
- * Array of filenames (on medium) which have a wrong checksum value (G_TYPE_STRV)
- */
-
-#define BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG		"track::medium::error::checksum::list"
 
 G_END_DECLS
 

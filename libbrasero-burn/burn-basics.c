@@ -89,6 +89,55 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 	return _(strings [action]);
 }
 
+/**
+ * Two utility functions
+ */
+
+gchar *
+brasero_string_get_localpath (const gchar *uri)
+{
+	gchar *localpath;
+	gchar *realuri;
+	GFile *file;
+
+	if (!uri)
+		return NULL;
+
+	if (uri [0] == '/')
+		return g_strdup (uri);
+
+	if (strncmp (uri, "file://", 7))
+		return NULL;
+
+	file = g_file_new_for_commandline_arg (uri);
+	realuri = g_file_get_uri (file);
+	g_object_unref (file);
+
+	localpath = g_filename_from_uri (realuri, NULL, NULL);
+	g_free (realuri);
+
+	return localpath;
+}
+
+gchar *
+brasero_string_get_uri (const gchar *uri)
+{
+	gchar *uri_return;
+	GFile *file;
+
+	if (!uri)
+		return NULL;
+
+	if (uri [0] != '/')
+		return g_strdup (uri);
+
+	file = g_file_new_for_commandline_arg (uri);
+	uri_return = g_file_get_uri (file);
+	g_object_unref (file);
+
+	return uri_return;
+}
+
 gboolean
 brasero_burn_library_start (void)
 {
@@ -96,6 +145,9 @@ brasero_burn_library_start (void)
 			  BRASERO_MAJOR_VERSION,
 			  BRASERO_MINOR_VERSION,
 			  BRASERO_SUB);
+
+	/* initialize the media library */
+	brasero_media_library_start ();
 
 	/* initialize all device list */
 	if (!medium_manager)

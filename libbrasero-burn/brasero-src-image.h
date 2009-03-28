@@ -60,10 +60,6 @@ GType brasero_src_image_get_type (void) G_GNUC_CONST;
 GtkWidget *
 brasero_src_image_new (BraseroBurnSession *session);
 
-void
-brasero_src_image_set_uri (BraseroSrcImage *self,
-			   const gchar *uri);
-
 G_END_DECLS
 
 #endif /* _BRASERO_SRC_IMAGE_H_ */

@@ -89,8 +89,6 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*get_track)		(BraseroDisc *disc,
 							 BraseroDiscTrack *track);
 
-	BraseroDiscResult	(*set_session_param)	(BraseroDisc *disc,
-							 BraseroBurnSession *session);
 	BraseroDiscResult	(*set_session_contents)	(BraseroDisc *disc,
 							 BraseroBurnSession *session);
 
@@ -149,9 +147,6 @@ BraseroDiscResult
 brasero_disc_load_track (BraseroDisc *disc,
 			 BraseroDiscTrack *track);
 
-BraseroDiscResult
-brasero_disc_set_session_param (BraseroDisc *disc,
-				BraseroBurnSession *session);
 BraseroDiscResult
 brasero_disc_set_session_contents (BraseroDisc *disc,
 				   BraseroBurnSession *session);

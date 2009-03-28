@@ -269,7 +269,7 @@ brasero_caps_is_compatible_type (const BraseroCaps *caps,
 			return FALSE;
 		break;
 
-	case BRASERO_TRACK_TYPE_AUDIO:
+	case BRASERO_TRACK_TYPE_STREAM:
 		/* There is one small special case here with video. */
 		if ((caps->type.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
 							BRASERO_VIDEO_FORMAT_VCD|
@@ -1504,7 +1504,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 
 	list = NULL;
 	last_caps = NULL;
-	brasero_track_get_type (track, &track_type);
+	brasero_track_get_track_type (track, &track_type);
 	for (iter = links; iter; iter = iter->next) {
 		BraseroCapsLink *link;
 		GSList *plugins;
@@ -2153,7 +2153,7 @@ brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
 	output.type = BRASERO_TRACK_TYPE_IMAGE;
 	output.subtype.img_format = BRASERO_IMAGE_FORMAT_NONE;
 
-	if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
+	if (source.type == BRASERO_TRACK_TYPE_STREAM) {
 		/* If that's AUDIO only without VIDEO then return */
 		if (!(source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
 			return BRASERO_IMAGE_FORMAT_NONE;
@@ -2435,7 +2435,7 @@ brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
 		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 
 	if ((supported_flags & BRASERO_BURN_FLAG_DAO)
-	&&   input->type == BRASERO_TRACK_TYPE_AUDIO
+	&&   input->type == BRASERO_TRACK_TYPE_STREAM
 	&&  (input->subtype.img_format & BRASERO_METADATA_INFO)) {
 		/* In this case, DAO is compulsory if we want to write CD-TEXT */
 		compulsory_flags |= BRASERO_BURN_FLAG_DAO;
@@ -2824,7 +2824,7 @@ brasero_burn_caps_sort (gconstpointer a, gconstpointer b)
 		/* This way BIN subtype is always sorted at the end */
 		return caps_a->type.subtype.img_format - caps_b->type.subtype.img_format;
 
-	case BRASERO_TRACK_TYPE_AUDIO:
+	case BRASERO_TRACK_TYPE_STREAM:
 		if (caps_a->type.subtype.audio_format != caps_b->type.subtype.audio_format) {
 			result = (caps_a->type.subtype.audio_format & caps_b->type.subtype.audio_format);
 			if (result == caps_a->type.subtype.audio_format)
@@ -3148,7 +3148,7 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 
 GSList *
 brasero_caps_audio_new (BraseroPluginIOFlag flags,
-			BraseroAudioFormat format)
+			BraseroStreamFormat format)
 {
 	GSList *iter;
 	GSList *retval = NULL;
@@ -3156,7 +3156,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 	GSList *encompassing = NULL;
 	gboolean have_the_one = FALSE;
 
-	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_AUDIO,
+	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_STREAM,
 					 format,
 					 flags,
 					 "New caps required");
@@ -3165,14 +3165,14 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
-		BraseroAudioFormat common;
+		BraseroStreamFormat common;
 		BraseroPluginIOFlag common_io;
-		BraseroAudioFormat common_audio;
-		BraseroAudioFormat common_video;
+		BraseroStreamFormat common_audio;
+		BraseroStreamFormat common_video;
 
 		caps = iter->data;
 
-		if (caps->type.type != BRASERO_TRACK_TYPE_AUDIO)
+		if (caps->type.type != BRASERO_TRACK_TYPE_STREAM)
 			continue;
 
 		common_io = (flags & caps->flags);
@@ -3189,19 +3189,19 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		/* Search caps strictly encompassed or encompassing our format
 		 * NOTE: make sure that if there is a VIDEO stream in one of
 		 * them, the other does have a VIDEO stream too. */
-		common_audio = BRASERO_AUDIO_CAPS_AUDIO (caps->type.subtype.audio_format) & 
-			       BRASERO_AUDIO_CAPS_AUDIO (format);
+		common_audio = BRASERO_STREAM_FORMAT_AUDIO (caps->type.subtype.audio_format) & 
+			       BRASERO_STREAM_FORMAT_AUDIO (format);
 		if (common_audio == BRASERO_AUDIO_FORMAT_NONE
-		&& (BRASERO_AUDIO_CAPS_AUDIO (caps->type.subtype.audio_format)
-		||  BRASERO_AUDIO_CAPS_AUDIO (format)))
+		&& (BRASERO_STREAM_FORMAT_AUDIO (caps->type.subtype.audio_format)
+		||  BRASERO_STREAM_FORMAT_AUDIO (format)))
 			continue;
 
-		common_video = BRASERO_AUDIO_CAPS_VIDEO (caps->type.subtype.audio_format) & 
-			       BRASERO_AUDIO_CAPS_VIDEO (format);
+		common_video = BRASERO_STREAM_FORMAT_VIDEO (caps->type.subtype.audio_format) & 
+			       BRASERO_STREAM_FORMAT_VIDEO (format);
 
 		if (common_video == BRASERO_AUDIO_FORMAT_NONE
-		&& (BRASERO_AUDIO_CAPS_VIDEO (caps->type.subtype.audio_format)
-		||  BRASERO_AUDIO_CAPS_VIDEO (format)))
+		&& (BRASERO_STREAM_FORMAT_VIDEO (caps->type.subtype.audio_format)
+		||  BRASERO_STREAM_FORMAT_VIDEO (format)))
 			continue;
 
 		/* Likewise... that must be common */
@@ -3229,7 +3229,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		caps = g_new0 (BraseroCaps, 1);
 		caps->flags = flags;
 		caps->type.subtype.audio_format = format;
-		caps->type.type = BRASERO_TRACK_TYPE_AUDIO;
+		caps->type.type = BRASERO_TRACK_TYPE_STREAM;
 
 		if (encompassing) {
 			for (iter = encompassing; iter; iter = iter->next) {
@@ -3649,7 +3649,7 @@ brasero_plugin_can_image (BraseroPlugin *plugin)
 
 		caps = iter->data;
 		if (caps->type.type != BRASERO_TRACK_TYPE_IMAGE
-		&&  caps->type.type != BRASERO_TRACK_TYPE_AUDIO
+		&&  caps->type.type != BRASERO_TRACK_TYPE_STREAM
 		&&  caps->type.type != BRASERO_TRACK_TYPE_DATA)
 			continue;
 
@@ -3691,7 +3691,7 @@ brasero_plugin_can_convert (BraseroPlugin *plugin)
 
 		caps = iter->data;
 		if (caps->type.type != BRASERO_TRACK_TYPE_IMAGE
-		&&  caps->type.type != BRASERO_TRACK_TYPE_AUDIO)
+		&&  caps->type.type != BRASERO_TRACK_TYPE_STREAM)
 			continue;
 
 		destination = caps->type.type;

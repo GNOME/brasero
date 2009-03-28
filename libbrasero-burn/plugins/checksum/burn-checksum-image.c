@@ -50,6 +50,8 @@
 #include "burn-checksum-image.h"
 #include "burn-volume.h"
 #include "brasero-drive.h"
+#include "brasero-track-disc.h"
+#include "brasero-track-image.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumImage, brasero_checksum_image, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -58,8 +60,8 @@ struct _BraseroChecksumImagePrivate {
 	BraseroChecksumType checksum_type;
 
 	/* That's for progress reporting */
-	gint64 total;
-	gint64 bytes;
+	guint64 total;
+	guint64 bytes;
 
 	/* this is for the thread and the end of it */
 	GThread *thread;
@@ -266,7 +268,7 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 
 	/* get all information */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	path = brasero_track_get_image_source (track, FALSE);
+	path = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 	if (!path) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -351,10 +353,12 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 	/* see if another plugin is sending us data to checksum */
 	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
 		BraseroMedium *medium;
+		BraseroDrive *drive;
 
 		/* we're only able to checksum ISO format at the moment so that
 		 * means we can only handle last session */
-		medium = brasero_track_get_medium_source (track);
+		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+		medium = brasero_drive_get_medium (drive);
 		brasero_medium_get_last_data_track_space (medium,
 							  &priv->total,
 							  NULL);
@@ -362,11 +366,9 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 		return brasero_checksum_image_checksum_fd_input (self, checksum_type, error);
 	}
 	else {
-		result = brasero_track_get_image_size (track,
-						       NULL,
-						       NULL,
-						       &priv->total,
-						       error);
+		result = brasero_track_get_size (track,
+						 NULL,
+						 &priv->total);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
@@ -424,11 +426,9 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		result = brasero_track_get_image_size (track,
-						       NULL,
-						       NULL,
-						       &priv->total,
-						       error);
+		result = brasero_track_get_size (track,
+						 NULL,
+						 &priv->total);
 		if (result != BRASERO_BURN_OK)
 			return result;
 

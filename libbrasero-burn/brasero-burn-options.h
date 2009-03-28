@@ -36,6 +36,7 @@
 #include <gtk/gtk.h>
 
 #include "brasero-medium-monitor.h"
+#include "brasero-session-cfg.h"
 
 G_BEGIN_DECLS
 
@@ -60,6 +61,9 @@ struct _BraseroBurnOptions
 };
 
 GType brasero_burn_options_get_type (void) G_GNUC_CONST;
+
+GtkWidget *
+brasero_burn_options_new (BraseroSessionCfg *session);
 
 BraseroBurnSession *
 brasero_burn_options_get_session (BraseroBurnOptions *self);

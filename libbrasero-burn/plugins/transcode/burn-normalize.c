@@ -89,7 +89,7 @@ brasero_normalize_set_next_track (BraseroJob *job,
 	}
 
 	/* create a new one */
-	uri = brasero_track_get_audio_source (track, TRUE);
+	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
 	if (source == NULL) {
 		g_free (uri);

@@ -44,6 +44,7 @@
 #include "burn-process.h"
 #include "burn-cdrdao-common.h"
 #include "burn-toc2cue.h"
+#include "brasero-track-image.h"
  
 BRASERO_PLUGIN_BOILERPLATE (BraseroToc2Cue, brasero_toc2cue, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -71,11 +72,12 @@ static BraseroBurnResult
 brasero_toc2cue_read_stderr (BraseroProcess *process,
 			     const gchar *line)
 {
+	BraseroTrack *current = NULL;
 	BraseroToc2CuePrivate *priv;
+	BraseroTrackImage *track;
 	BraseroToc2Cue *self;
 	GError *error = NULL;
 	gchar *tmp_img_path;
-	BraseroTrack *track;
 	GIOChannel *source;
 	guint tmp_path_len;
 	GIOStatus status;
@@ -119,8 +121,8 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	}
 
 	/* get the path of the image that should remain unchanged */
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	tmp_img_path = brasero_track_get_image_source (track, FALSE);
+	brasero_job_get_current_track (BRASERO_JOB (self), &current);
+	tmp_img_path = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), FALSE);
 	tmp_path_len = strlen (tmp_img_path);
 
 	status = g_io_channel_read_line (source, &buffer, NULL, NULL, &error);
@@ -197,8 +199,8 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 		return BRASERO_BURN_OK;
 	} /* symlink () could also be used */
 
-	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-	brasero_track_set_image_source (track,
+	track = brasero_track_image_new ();
+	brasero_track_image_set_source (track,
 					img_path,
 					toc_path,
 					BRASERO_IMAGE_FORMAT_CUE);
@@ -207,11 +209,11 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	g_free (img_path);
 	g_free (toc_path);
 
-	brasero_job_add_track (BRASERO_JOB (process), track);
+	brasero_job_add_track (BRASERO_JOB (process), BRASERO_TRACK (track));
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroTaskCtx refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	brasero_job_finished_track (BRASERO_JOB (process));
 	return BRASERO_BURN_OK;
@@ -245,7 +247,7 @@ brasero_toc2cue_set_argv (BraseroProcess *process,
 		return result;
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	tocpath = brasero_track_get_toc_source (track, FALSE);
+	tocpath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 
 	priv->output = g_strdup (output);
 	g_remove (priv->output);

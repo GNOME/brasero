@@ -45,18 +45,24 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "brasero-marshal.h"
+#include "brasero-burn.h"
+
+#include "libbrasero-marshal.h"
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "brasero-track.h"
-#include "brasero-session.h"
-#include "brasero-burn.h"
+#include "burn-dbus.h"
 #include "burn-task-ctx.h"
 #include "burn-task.h"
 #include "burn-caps.h"
+
 #include "brasero-volume.h"
 #include "brasero-drive.h"
-#include "burn-dbus.h"
+
+#include "brasero-tags.h"
+#include "brasero-track.h"
+#include "brasero-session.h"
+#include "brasero-track-image.h"
+#include "brasero-track-disc.h"
 
 G_DEFINE_TYPE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
 
@@ -870,7 +876,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
 		/* A few special warnings for the discs with data/audio on them
 		 * that don't need prior blanking or can't be blanked */
-		if (input.type == BRASERO_TRACK_TYPE_AUDIO) {
+		if (input.type == BRASERO_TRACK_TYPE_STREAM) {
 			/* We'd rather blank and rewrite a disc rather than
 			 * append audio to appendable disc. That's because audio
 			 * tracks have little chance to be readable by common CD
@@ -905,7 +911,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		/* NOTE: no need to error out here since the only thing
 		 * we are interested in is if it is AUDIO or not or if
 		 * the disc we are copying has audio tracks only or not */
-		if (input.type == BRASERO_TRACK_TYPE_AUDIO
+		if (input.type == BRASERO_TRACK_TYPE_STREAM
 		&& !(input.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
 						   BRASERO_VIDEO_FORMAT_VCD|
 						   BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
@@ -1208,6 +1214,7 @@ brasero_burn_status (BraseroBurn *burn,
 		     gint64 *rate)
 {
 	BraseroBurnPrivate *priv;
+	BraseroBurnResult result;
 
 	g_return_val_if_fail (BRASERO_BURN (burn), BRASERO_BURN_ERR);
 	
@@ -1216,10 +1223,17 @@ brasero_burn_status (BraseroBurn *burn,
 	if (!priv->task)
 		return BRASERO_BURN_NOT_READY;
 
-	if (isosize)
-		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
-							  NULL,
-							  isosize);
+	if (isosize) {
+		guint64 size_local = 0;
+
+		result = brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
+								   NULL,
+								   &size_local);
+		if (result != BRASERO_BURN_OK)
+			*isosize = -1;
+		else
+			*isosize = size_local;
+	}
 
 	if (!brasero_task_is_running (priv->task))
 		return BRASERO_BURN_NOT_READY;
@@ -1227,8 +1241,16 @@ brasero_burn_status (BraseroBurn *burn,
 	if (rate)
 		brasero_task_ctx_get_rate (BRASERO_TASK_CTX (priv->task), rate);
 
-	if (written)
-		brasero_task_ctx_get_written (BRASERO_TASK_CTX (priv->task), written);
+	if (written) {
+		gint64 written_local = 0;
+
+		result = brasero_task_ctx_get_written (BRASERO_TASK_CTX (priv->task), &written_local);
+
+		if (result != BRASERO_BURN_OK)
+			*written = -1;
+		else
+			*written = written_local;
+	}
 
 	if (!media)
 		return BRASERO_BURN_OK;
@@ -1271,7 +1293,7 @@ brasero_burn_ask_for_joliet (BraseroBurn *burn)
 		BraseroTrack *track;
 
 		track = iter->data;
-		brasero_track_unset_data_fs (track, BRASERO_IMAGE_FS_JOLIET);
+		brasero_track_data_rm_fs (BRASERO_TRACK_DATA (track), BRASERO_IMAGE_FS_JOLIET);
 	}
 
 	return BRASERO_BURN_OK;
@@ -1756,7 +1778,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 		/* try to get the output size */
 		if (BRASERO_MEDIUM_RANDOM_WRITABLE (brasero_burn_session_get_dest_media (priv->session))) {
-			gint64 len = 0;
+			guint64 len = 0;
 			BraseroDrive *drive;
 			BraseroMedium *medium;
 
@@ -1829,7 +1851,7 @@ brasero_burn_check_real (BraseroBurn *self,
 	BRASERO_BURN_LOG ("Starting to check track integrity");
 
 	checksum_type = brasero_track_get_checksum_type (track);
-	brasero_track_get_type (track, &type);
+	brasero_track_get_track_type (track, &type);
 
 	/* if the input is a DISC and there isn't any checksum specified that 
 	 * means the checksum file is on the disc. */
@@ -2135,36 +2157,36 @@ brasero_burn_record_session (BraseroBurn *burn,
 		/* the idea is to push a new track on the stack with
 		 * the current disc burnt and the checksum generated
 		 * during the session recording */
-		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-		brasero_track_set_checksum (track, type, checksum);
+		track = BRASERO_TRACK (brasero_track_disc_new ());
+		brasero_track_set_checksum (BRASERO_TRACK (track), type, checksum);
 	}
 	else if (type == BRASERO_CHECKSUM_MD5_FILE) {
-		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-		brasero_track_set_checksum (track,
+		track = BRASERO_TRACK (brasero_track_disc_new ());
+		brasero_track_set_checksum (BRASERO_TRACK (track),
 					    type,
 					    BRASERO_MD5_FILE);
 	}
 	else if (type == BRASERO_CHECKSUM_SHA1_FILE) {
-		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-		brasero_track_set_checksum (track,
+		track = BRASERO_TRACK (brasero_track_disc_new ());
+		brasero_track_set_checksum (BRASERO_TRACK (track),
 					    type,
 					    BRASERO_SHA1_FILE);
 	}
 	else if (type == BRASERO_CHECKSUM_SHA256_FILE) {
-		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-		brasero_track_set_checksum (track,
+		track = BRASERO_TRACK (brasero_track_disc_new ());
+		brasero_track_set_checksum (BRASERO_TRACK (track),
 					    type,
 					    BRASERO_SHA256_FILE);
 	}
 
 	brasero_burn_session_push_tracks (priv->session);
 
-	brasero_track_set_drive_source (track, brasero_burn_session_get_burner (priv->session));
+	brasero_track_disc_set_drive (BRASERO_TRACK_DISC (track), brasero_burn_session_get_burner (priv->session));
 	brasero_burn_session_add_track (priv->session, track);
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 	/* this may be necessary for the drive to settle down and possibly be
 	 * mounted by gnome-volume-manager (just temporarily) */
@@ -2199,7 +2221,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 			track_num = brasero_medium_get_track_num (medium);
 
 			BRASERO_BURN_LOG ("Last written track num == %i", track_num);
-			brasero_track_set_drive_track (track, track_num);
+			brasero_track_disc_set_track_num (BRASERO_TRACK_DISC (track), track_num);
 		}
 		else {
 			GValue *value;
@@ -2267,7 +2289,7 @@ brasero_burn_check (BraseroBurn *self,
 	}
 
 	track = tracks->data;
-	brasero_track_get_type (track, &type);
+	brasero_track_get_track_type (track, &type);
 
 	/* if the input is a DISC, ask/check there is one and lock it (as dest) */
 	if (type.type == BRASERO_TRACK_TYPE_DISC) {
@@ -2303,7 +2325,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 {
 	gchar *toc = NULL;
 	gchar *image = NULL;
-	BraseroTrack *track;
+	BraseroTrackImage *track;
 	BraseroTrackType output;
 	GError *ret_error = NULL;
 	BraseroBurnResult result;
@@ -2412,13 +2434,13 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
-	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-	brasero_track_set_image_source (track, image, toc, format);
-	brasero_burn_session_add_track (priv->session, track);
+	track = brasero_track_image_new ();
+	brasero_track_image_set_source (track, image, toc, format);
+	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track));
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
-	brasero_track_unref (track);
+	g_object_unref (track);
 
 end:
 	g_free (image);

@@ -49,11 +49,12 @@
 
 #include "brasero-tags.h"
 #include "brasero-burn.h"
+#include "brasero-track-disc.h"
+#include "brasero-track-image.h"
 #include "brasero-session.h"
 #include "brasero-burn-lib.h"
 
-#include "brasero-image-option-dialog.h"
-#include "brasero-disc-copy-dialog.h"
+#include "brasero-burn-options.h"
 #include "brasero-burn-dialog.h"
 #include "brasero-jacket-edit.h"
 
@@ -695,31 +696,41 @@ brasero_app_burn (BraseroApp *app,
 	return success;
 }
 
+gboolean
+brasero_app_burn_options (BraseroApp *app,
+			  BraseroSessionCfg *session)
+{
+	GtkWidget *dialog;
+	GtkResponseType result;
+
+	dialog = brasero_burn_options_new (session);
+	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	/* The destruction of the dialog will bring the main window forward */
+	gtk_widget_destroy (dialog);
+	return (result == GTK_RESPONSE_OK);
+}
+
 void
 brasero_app_burn_image (BraseroApp *app,
 			const gchar *uri)
 {
-	BraseroBurnSession *session;
-	GtkResponseType result;
-	GtkWidget *dialog;
+	BraseroSessionCfg *session;
+	BraseroTrackImage *track;
 
 	/* setup, show, and run options dialog */
-	dialog = brasero_image_option_dialog_new ();
-	brasero_image_option_dialog_set_image_uri (BRASERO_IMAGE_OPTION_DIALOG (dialog), uri);
+	session = brasero_session_cfg_new ();
 
-	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
+	/* FIXME: that's where we'd need a special kind of track that would
+	 * identify the image type */
+	track = brasero_track_image_new ();
+	brasero_track_image_set_source (track, uri, NULL, BRASERO_IMAGE_FORMAT_BIN);
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (track));
 
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (dialog);
-		return;
-	}
+	if (brasero_app_burn_options (app, session))
+		brasero_app_burn (app, BRASERO_BURN_SESSION (session));
 
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	/* The destruction of the dialog will bring the main window forward */
-	gtk_widget_destroy (dialog);
-
-	brasero_app_burn (app, session);
 	g_object_unref (session);
 }
 
@@ -728,12 +739,12 @@ brasero_app_copy_disc (BraseroApp *app,
 		       const gchar *device,
 		       const gchar *cover)
 {
-	BraseroBurnSession *session;
-	GtkResponseType result;
-	GtkWidget *dialog;
+	BraseroSessionCfg *session;
+	BraseroTrackDisc *track;
 
-	dialog = brasero_disc_copy_dialog_new ();
-	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
+	session = brasero_session_cfg_new ();
+	track = brasero_track_disc_new ();
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (track));
 
 	/* if a device is specified then get the corresponding medium */
 	if (device) {
@@ -744,20 +755,9 @@ brasero_app_copy_disc (BraseroApp *app,
 		drive = brasero_medium_monitor_get_drive (monitor, device);
 		g_object_unref (monitor);
 
-		brasero_disc_copy_dialog_set_drive (BRASERO_DISC_COPY_DIALOG (dialog), drive);
+		brasero_track_disc_set_drive (BRASERO_TRACK_DISC (track), drive);
 		g_object_unref (drive);
 	}
-
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (dialog);
-		return;
-	}
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-
-	/* The destruction of the dialog will bring the main window forward */
-	gtk_widget_destroy (dialog);
 
 	/* Set a cover if any. */
 	if (cover) {
@@ -766,12 +766,14 @@ brasero_app_copy_disc (BraseroApp *app,
 		value = g_new0 (GValue, 1);
 		g_value_init (value, G_TYPE_STRING);
 		g_value_set_string (value, cover);
-		brasero_burn_session_tag_add (session,
+		brasero_burn_session_tag_add (BRASERO_BURN_SESSION (session),
 					      BRASERO_COVER_URI,
 					      value);
 	}
 
-	brasero_app_burn (app, session);
+	if (brasero_app_burn_options (app, session))
+		brasero_app_burn (app, BRASERO_BURN_SESSION (session));
+
 	g_object_unref (session);
 }
 
