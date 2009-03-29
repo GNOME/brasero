@@ -61,34 +61,9 @@ brasero_utils_register_string (const gchar *string);
 void
 brasero_utils_unregister_string (const gchar *string);
 
-GtkWidget *
-brasero_utils_pack_properties (const gchar *title, ...);
-GtkWidget *
-brasero_utils_pack_properties_list (const gchar *title, GSList *list);
-GtkWidget *
-brasero_utils_make_button (const gchar *text,
-			   const gchar *stock,
-			   const gchar *theme,
-			   GtkIconSize size);
-
 void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list);
-
-gchar*
-brasero_utils_validate_utf8 (const gchar *name);
-
-GtkWidget *
-brasero_utils_create_message_dialog (GtkWidget *parent,
-				     const gchar *primary_message,
-				     const gchar *secondary_message,
-				     GtkMessageType type);
-
-void
-brasero_utils_message_dialog (GtkWidget *parent,
-			      const gchar *primary_message,
-			      const gchar *secondary_message,
-			      GtkMessageType type);
 
 G_END_DECLS
 

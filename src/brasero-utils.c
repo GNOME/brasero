@@ -38,16 +38,24 @@
 
 #include <gtk/gtk.h>
 
-#include <gst/gst.h>
-
-#include "brasero-app.h"
 #include "brasero-utils.h"
-#include "brasero-data-tree-model.h"
+#include "brasero-app.h"
 
 #define BRASERO_ERROR brasero_error_quark()
 
 static GHashTable *stringsH = NULL;
 G_LOCK_DEFINE_STATIC (stringsH);
+
+GQuark
+brasero_error_quark (void)
+{
+	static GQuark quark = 0;
+
+	if (!quark)
+		quark = g_quark_from_static_string ("BraSero_error");
+
+	return quark;
+}
 
 static gboolean
 brasero_utils_clear_strings_cb (gchar *string,
@@ -72,27 +80,9 @@ brasero_utils_free (void)
 	}
 }
 
-GQuark
-brasero_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (!quark)
-		quark = g_quark_from_static_string ("BraSero_error");
-
-	return quark;
-}
-
 void
 brasero_utils_init (void)
 {
-	/* This function does two things:
-	 * - register brasero icons
-	 * - load all the gid of the user
-	 */
-	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
-					   BRASERO_DATADIR "/icons");
-
 	g_atexit (brasero_utils_free);
 }
 
@@ -182,108 +172,6 @@ brasero_utils_unregister_string (const gchar *string)
 	G_UNLOCK (stringsH);
 }
 
-GtkWidget *
-brasero_utils_pack_properties_list (const gchar *title, GSList *list)
-{
-	GtkWidget *hbox, *vbox_main, *vbox_prop;
-	GtkWidget *label;
-	GSList *iter;
-
-	vbox_main = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox_main);
-
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
-	gtk_box_pack_end (GTK_BOX (vbox_main),
-			  hbox,
-			  TRUE,
-			  TRUE,
-			  6);
-
-	label = gtk_label_new ("\t");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
-
-	vbox_prop = gtk_vbox_new (FALSE, 6);
-	gtk_widget_show (vbox_prop);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    vbox_prop,
-			    TRUE,
-			    TRUE,
-			    0);
-
-	for (iter = list; iter; iter = iter->next) {
-		gtk_box_pack_start (GTK_BOX (vbox_prop),
-				    iter->data,
-				    TRUE,
-				    TRUE,
-				    0);
-	}
-
-	if (title) {
-		GtkWidget *frame;
-
-		frame = gtk_frame_new (title);
-		gtk_widget_show (frame);
-		gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
-
-		label = gtk_frame_get_label_widget (GTK_FRAME (frame));
-		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-
-		gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-		gtk_container_add (GTK_CONTAINER (frame), vbox_main);
-		return frame;
-	}
-	else
-		gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 6);
-
-	return vbox_main;
-}
-
-GtkWidget *
-brasero_utils_pack_properties (const gchar *title, ...)
-{
-	va_list vlist;
-	GtkWidget *child;
-	GtkWidget *result;
-	GSList *list = NULL;
-
-	va_start (vlist, title);
-	while ((child = va_arg (vlist, GtkWidget *)))
-		list = g_slist_prepend (list, child);
-	va_end (vlist);
-
-	result = brasero_utils_pack_properties_list (title, list);
-	g_slist_free (list);
-
-	return result;
-}
-
-GtkWidget *
-brasero_utils_make_button (const gchar *text,
-			   const gchar *stock,
-			   const gchar *theme, 
-			   GtkIconSize size)
-{
-	GtkWidget *image = NULL;
-	GtkWidget *button;
-
-	if (theme)
-		image = gtk_image_new_from_icon_name (theme, size);
-
-	if (!image && stock)
-		image = gtk_image_new_from_stock (stock, size);
-
-	button = gtk_button_new ();
-
-	if (image)
-		gtk_button_set_image (GTK_BUTTON (button), image);
-
-	gtk_button_set_label (GTK_BUTTON (button), text);
-	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
-	return button;
-}
-
 void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list)
@@ -310,73 +198,4 @@ brasero_utils_launch_app (GtkWidget *widget,
 			continue;
 		}
 	}
-}
-
-gchar*
-brasero_utils_validate_utf8 (const gchar *name)
-{
-	gchar *retval, *ptr;
-	const gchar *invalid;
-
-	if (!name)
-		return NULL;
-
-	if (g_utf8_validate (name, -1, &invalid))
-		return NULL;
-
-	retval = g_strdup (name);
-	ptr = retval + (invalid - name);
-	*ptr = '_';
-	ptr++;
-
-	while (!g_utf8_validate (ptr, -1, &invalid)) {
-		ptr = (gchar*) invalid;
-		*ptr = '?';
-		ptr ++;
-	}
-
-	return retval;
-}
-
-GtkWidget *
-brasero_utils_create_message_dialog (GtkWidget *parent,
-				     const gchar *primary_message,
-				     const gchar *secondary_message,
-				     GtkMessageType type)
-{
-	GtkWidget *message;
-
-	message = gtk_message_dialog_new (GTK_WINDOW (parent),
-					  GTK_DIALOG_MODAL |
-					  GTK_DIALOG_DESTROY_WITH_PARENT,
-					  type,
-					  GTK_BUTTONS_CLOSE,
-					  "%s",
-					  primary_message);
-
-	gtk_window_set_title (GTK_WINDOW (message), "");
-
-	if (secondary_message)
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  "%s.",
-							  secondary_message);
-
-	return message;
-}
-
-void
-brasero_utils_message_dialog (GtkWidget *parent,
-			      const gchar *primary_message,
-			      const gchar *secondary_message,
-			      GtkMessageType type)
-{
-	GtkWidget *message;
-
-	message = brasero_utils_create_message_dialog (parent,
-						       primary_message,
-						       secondary_message,
-						       type);
-
-	gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
 }
