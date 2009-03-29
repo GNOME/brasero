@@ -38,7 +38,9 @@
 G_BEGIN_DECLS
 
 BraseroImageFormat
-brasero_image_format_identify_cuesheet (const gchar *path);
+brasero_image_format_identify_cuesheet (const gchar *path,
+					GCancellable *cancel,
+					GError **error);
 
 gchar *
 brasero_image_format_get_default_path (BraseroImageFormat format);
@@ -55,21 +57,25 @@ gboolean
 brasero_image_format_get_cdrdao_size (gchar *uri,
 				      guint64 *sectors,
 				      guint64 *size_img,
+				      GCancellable *cancel,				      
 				      GError **error);
 gboolean
 brasero_image_format_get_cue_size (gchar *uri,
 				   guint64 *blocks,
 				   guint64 *size_img,
+				   GCancellable *cancel,
 				   GError **error);
 gboolean
 brasero_image_format_get_iso_size (gchar *uri,
 				   guint64 *blocks,
 				   guint64 *size_img,
+				   GCancellable *cancel,
 				   GError **error);
 gboolean
 brasero_image_format_get_clone_size (gchar *uri,
 				     guint64 *blocks,
 				     guint64 *size_img,
+				     GCancellable *cancel,
 				     GError **error);
 
 G_END_DECLS

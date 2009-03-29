@@ -421,6 +421,7 @@ gboolean
 brasero_image_format_get_cdrdao_size (gchar *uri,
 				      guint64 *sectors,
 				      guint64 *size_img,
+				      GCancellable *cancel,
 				      GError **error)
 {
 	GFile *file;
@@ -431,7 +432,7 @@ brasero_image_format_get_cdrdao_size (gchar *uri,
 	GDataInputStream *stream;
 
 	file = g_file_new_for_uri (uri);
-	input = g_file_read (file, NULL, error);
+	input = g_file_read (file, cancel, error);
 
 	if (!input) {
 		g_object_unref (file);
@@ -442,7 +443,7 @@ brasero_image_format_get_cdrdao_size (gchar *uri,
 	g_object_unref (input);
 
 	parent = g_file_get_parent (file);
-	while ((line = g_data_input_stream_read_line (stream, NULL, NULL, error))) {
+	while ((line = g_data_input_stream_read_line (stream, NULL, cancel, error))) {
 		gchar *ptr;
 
 		if ((ptr = strstr (line, "DATAFILE"))) {
@@ -521,6 +522,7 @@ gboolean
 brasero_image_format_get_cue_size (gchar *uri,
 				   guint64 *blocks,
 				   guint64 *size_img,
+				   GCancellable *cancel,
 				   GError **error)
 {
 	GFile *file;
@@ -530,7 +532,7 @@ brasero_image_format_get_cue_size (gchar *uri,
 	GDataInputStream *stream;
 
 	file = g_file_new_for_uri (uri);
-	input = g_file_read (file, NULL, error);
+	input = g_file_read (file, cancel, error);
 
 	if (!input) {
 		g_object_unref (file);
@@ -540,7 +542,7 @@ brasero_image_format_get_cue_size (gchar *uri,
 	stream = g_data_input_stream_new (G_INPUT_STREAM (input));
 	g_object_unref (input);
 
-	while ((line = g_data_input_stream_read_line (stream, NULL, NULL, error))) {
+	while ((line = g_data_input_stream_read_line (stream, NULL, cancel, error))) {
 		const gchar *ptr;
 
 		if ((ptr = strstr (line, "FILE"))) {
@@ -637,70 +639,83 @@ brasero_image_format_get_cue_size (gchar *uri,
 }
 
 BraseroImageFormat
-brasero_image_format_identify_cuesheet (const gchar *path)
+brasero_image_format_identify_cuesheet (const gchar *uri,
+					GCancellable *cancel,
+					GError **error)
 {
-	FILE *file;
+	GFile *file;
+	gchar *line;
+	GFileInputStream *input;
+	GDataInputStream *stream;
 	BraseroImageFormat format;
-	gchar buffer [MAXPATHLEN * 2];
 
-	if (!path)
-		return BRASERO_IMAGE_FORMAT_NONE;
+	file = g_file_new_for_uri (uri);
+	input = g_file_read (file, cancel, error);
+	if (!input) {
+		g_object_unref (file);
+		return FALSE;
+	}
 
-	/* NOTE: the problem here is that cdrdao files can have references to 
-	 * multiple files. Which is great but not for us ... */
-	file = fopen (path, "r");
-	if (!file)
-		return BRASERO_IMAGE_FORMAT_NONE;
+	stream = g_data_input_stream_new (G_INPUT_STREAM (input));
+	g_object_unref (input);
 
 	format = BRASERO_IMAGE_FORMAT_NONE;
-	while (fgets (buffer, sizeof (buffer), file)) {
+	while ((line = g_data_input_stream_read_line (stream, NULL, cancel, error))) {
 		/* Keywords for cdrdao cuesheets */
-		if (strstr (buffer, "CD_ROM_XA")
-		||  strstr (buffer, "CD_ROM")
-		||  strstr (buffer, "CD_DA")
-		||  strstr (buffer, "CD_TEXT")) {
+		if (strstr (line, "CD_ROM_XA")
+		||  strstr (line, "CD_ROM")
+		||  strstr (line, "CD_DA")
+		||  strstr (line, "CD_TEXT")) {
 			format = BRASERO_IMAGE_FORMAT_CDRDAO;
+			g_free (line);
 			break;
 		}
-		else if (strstr (buffer, "TRACK")) {
+		else if (strstr (line, "TRACK")) {
 			/* NOTE: there is also "AUDIO" but it's common to both */
 
 			/* CDRDAO */
-			if (strstr (buffer, "MODE1")
-			||  strstr (buffer, "MODE1_RAW")
-			||  strstr (buffer, "MODE2_FORM1")
-			||  strstr (buffer, "MODE2_FORM2")
-			||  strstr (buffer, "MODE_2_RAW")
-			||  strstr (buffer, "MODE2_FORM_MIX")
-			||  strstr (buffer, "MODE2")) {
+			if (strstr (line, "MODE1")
+			||  strstr (line, "MODE1_RAW")
+			||  strstr (line, "MODE2_FORM1")
+			||  strstr (line, "MODE2_FORM2")
+			||  strstr (line, "MODE_2_RAW")
+			||  strstr (line, "MODE2_FORM_MIX")
+			||  strstr (line, "MODE2")) {
 				format = BRASERO_IMAGE_FORMAT_CDRDAO;
+				g_free (line);
 				break;
 			}
 
 			/* .CUE file */
-			else if (strstr (buffer, "CDG")
-			     ||  strstr (buffer, "MODE1/2048")
-			     ||  strstr (buffer, "MODE1/2352")
-			     ||  strstr (buffer, "MODE2/2336")
-			     ||  strstr (buffer, "MODE2/2352")
-			     ||  strstr (buffer, "CDI/2336")
-			     ||  strstr (buffer, "CDI/2352")) {
+			else if (strstr (line, "CDG")
+			     ||  strstr (line, "MODE1/2048")
+			     ||  strstr (line, "MODE1/2352")
+			     ||  strstr (line, "MODE2/2336")
+			     ||  strstr (line, "MODE2/2352")
+			     ||  strstr (line, "CDI/2336")
+			     ||  strstr (line, "CDI/2352")) {
 				format = BRASERO_IMAGE_FORMAT_CUE;
+				g_free (line);
 				break;
 			}
 		}
-		else if (strstr (buffer, "FILE")) {
-			if (strstr (buffer, "MOTOROLA")
-			||  strstr (buffer, "BINARY")
-			||  strstr (buffer, "AIFF")
-			||  strstr (buffer, "WAVE")
-			||  strstr (buffer, "MP3")) {
+		else if (strstr (line, "FILE")) {
+			if (strstr (line, "MOTOROLA")
+			||  strstr (line, "BINARY")
+			||  strstr (line, "AIFF")
+			||  strstr (line, "WAVE")
+			||  strstr (line, "MP3")) {
 				format = BRASERO_IMAGE_FORMAT_CUE;
+				g_free (line);
 				break;
 			}
 		}
+		g_free (line);
+		line = NULL;
 	}
-	fclose (file);
+
+	g_object_unref (stream);
+	g_object_unref (file);
 
 	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_IMAGE,
 					 format,
@@ -713,6 +728,7 @@ gboolean
 brasero_image_format_get_iso_size (gchar *uri,
 				   guint64 *blocks,
 				   guint64 *size_img,
+				   GCancellable *cancel,
 				   GError **error)
 {
 	GFileInfo *info;
@@ -726,7 +742,7 @@ brasero_image_format_get_iso_size (gchar *uri,
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
 				  G_FILE_QUERY_INFO_NONE,
-				  NULL,
+				  cancel,
 				  error);
 	g_object_unref (file);
 	if (!info)
@@ -746,6 +762,7 @@ gboolean
 brasero_image_format_get_clone_size (gchar *uri,
 				     guint64 *blocks,
 				     guint64 *size_img,
+				     GCancellable *cancel,
 				     GError **error)
 {
 	GFileInfo *info;
@@ -759,7 +776,7 @@ brasero_image_format_get_clone_size (gchar *uri,
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
 				  G_FILE_QUERY_INFO_NONE,
-				  NULL,
+				  cancel,
 				  error);
 	g_object_unref (file);
 

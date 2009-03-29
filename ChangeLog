@@ -1,3 +1,91 @@
+2009-03-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Add forgotten files from previous commit
+	Add a new type of track based on BraseroTrackImage that autoconfigures
+	things
+
+	* libbrasero-burn/Makefile.am:
+	* libbrasero-burn/brasero-src-image.c (brasero_src_image_save),
+	(brasero_src_image_error), (brasero_src_image_update),
+	(brasero_image_src_track_changed_cb), (brasero_src_image_changed),
+	(brasero_src_image_set_formats),
+	(brasero_src_image_get_current_uri), (brasero_src_image_clicked),
+	(brasero_src_image_init), (_get_session_image_track),
+	(brasero_src_image_set_property):
+	* libbrasero-burn/brasero-track-data.c (brasero_graft_point_free),
+	(brasero_graft_point_copy), (brasero_track_data_set_source),
+	(brasero_track_data_add_fs), (brasero_track_data_rm_fs),
+	(brasero_track_data_set_data_blocks),
+	(brasero_track_data_set_file_num), (brasero_track_data_get_grafts),
+	(brasero_track_data_get_excluded), (brasero_track_data_get_paths),
+	(brasero_track_data_get_file_num), (brasero_track_data_get_size),
+	(brasero_track_data_get_track_type), (brasero_track_data_init),
+	(brasero_track_data_finalize), (brasero_track_data_class_init),
+	(brasero_track_data_new):
+	* libbrasero-burn/brasero-track-data.h:
+	* libbrasero-burn/brasero-track-disc.c
+	(brasero_track_disc_set_track_num),
+	(brasero_track_disc_get_track_num),
+	(brasero_track_disc_remove_drive),
+	(brasero_track_disc_medium_changed),
+	(brasero_track_disc_set_drive), (brasero_track_disc_get_drive),
+	(brasero_track_disc_get_size), (brasero_track_disc_get_track_type),
+	(brasero_track_disc_init), (brasero_track_disc_finalize),
+	(brasero_track_disc_class_init), (brasero_track_disc_new):
+	* libbrasero-burn/brasero-track-disc.h:
+	* libbrasero-burn/brasero-track-image-cfg.c
+	(brasero_track_image_cfg_set_uri),
+	(brasero_track_image_cfg_get_info_cb),
+	(brasero_track_image_cfg_get_info_thread),
+	(brasero_track_image_info_free),
+	(brasero_track_image_cfg_get_info),
+	(brasero_track_image_cfg_set_source),
+	(brasero_track_image_cfg_get_forced_format),
+	(brasero_track_image_cfg_force_format),
+	(brasero_track_image_cfg_get_status),
+	(brasero_track_image_cfg_init), (brasero_track_image_cfg_finalize),
+	(brasero_track_image_cfg_class_init),
+	(brasero_track_image_cfg_new):
+	* libbrasero-burn/brasero-track-image-cfg.h:
+	* libbrasero-burn/brasero-track-image.c
+	(brasero_track_image_set_source),
+	(brasero_track_image_set_block_num),
+	(brasero_track_image_get_source),
+	(brasero_track_image_get_toc_source),
+	(brasero_track_image_get_track_type),
+	(brasero_track_image_get_size), (brasero_track_image_init),
+	(brasero_track_image_finalize), (brasero_track_image_class_init),
+	(brasero_track_image_new):
+	* libbrasero-burn/brasero-track-image.h:
+	* libbrasero-burn/brasero-track-stream.c
+	(brasero_stream_info_free), (brasero_stream_info_copy),
+	(brasero_track_stream_set_source),
+	(brasero_track_stream_set_format), (brasero_track_stream_set_info),
+	(brasero_track_stream_set_boundaries),
+	(brasero_track_stream_get_source), (brasero_track_stream_get_gap),
+	(brasero_track_stream_get_start), (brasero_track_stream_get_end),
+	(brasero_track_stream_get_info), (brasero_track_stream_get_length),
+	(brasero_track_stream_get_size),
+	(brasero_track_stream_get_track_type), (brasero_track_stream_init),
+	(brasero_track_stream_finalize), (brasero_track_stream_class_init),
+	(brasero_track_stream_new):
+	* libbrasero-burn/brasero-track-stream.h:
+	* libbrasero-burn/burn-image-format.c
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_identify_cuesheet),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* libbrasero-burn/burn-image-format.h:
+	* libbrasero-burn/plugins/local-track/burn-local-image.c
+	(brasero_local_track_update_track):
+	* libbrasero-burn/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_thread):
+	* src/brasero-app.c (brasero_app_burn_image):
+	* src/brasero-utils.c (brasero_error_quark), (brasero_utils_init),
+	(brasero_utils_launch_app):
+	* src/brasero-utils.h:
+
 2009-03-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #576564 – brasero crashed with SIGSEGV in brasero_image_format_get_cdrdao_size()

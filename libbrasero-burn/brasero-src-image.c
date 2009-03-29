@@ -52,6 +52,7 @@
 #include "brasero-image-type-chooser.h"
 #include "brasero-session-cfg.h"
 #include "brasero-track-image.h"
+#include "brasero-track-image-cfg.h"
 #include "brasero-src-image.h"
 #include "burn-image-format.h"
 
@@ -59,7 +60,7 @@ typedef struct _BraseroSrcImagePrivate BraseroSrcImagePrivate;
 struct _BraseroSrcImagePrivate
 {
 	BraseroBurnSession *session;
-	BraseroTrackImage *track;
+	BraseroTrackImageCfg *track;
 
 	BraseroBurnCaps *caps;
 
@@ -115,22 +116,22 @@ brasero_src_image_save (BraseroSrcImage *self)
 	switch (type.subtype.img_format) {
 	case BRASERO_IMAGE_FORMAT_BIN:
 		recent_data.mime_type = (gchar *) mimes [0];
-		uri = brasero_track_image_get_source (priv->track, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CUE:
 		recent_data.mime_type = (gchar *) mimes [1];
-		uri = brasero_track_image_get_toc_source (priv->track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CLONE:
 		recent_data.mime_type = (gchar *) mimes [2];
-		uri = brasero_track_image_get_toc_source (priv->track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
 		recent_data.mime_type = (gchar *) mimes [3];
-		uri = brasero_track_image_get_toc_source (priv->track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
 		break;
 
 	default:
@@ -149,25 +150,45 @@ brasero_src_image_save (BraseroSrcImage *self)
 }
 
 static void
-brasero_src_image_update (BraseroSrcImage *dialog)
+brasero_src_image_error (BraseroSrcImage *self,
+			 GError *error)
+{
+	BraseroSrcImagePrivate *priv;
+	GtkWidget *toplevel;
+
+	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
+	if (priv->file)
+		toplevel = priv->file;
+	else
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+
+	if (!GTK_IS_WINDOW (toplevel))
+		return;
+
+	brasero_utils_message_dialog (toplevel,
+				      _("Please select another image."),
+				      error->message,
+				      GTK_MESSAGE_ERROR);
+}
+
+static void
+brasero_src_image_update (BraseroSrcImage *self)
 {
 	gchar *uri;
 	gchar *path;
 	GFile *file;
 	gchar *string;
 	guint64 size = 0;
-	gchar *size_string;
+	GError *error = NULL;
+	BraseroBurnResult result;
+	gchar *size_string = NULL;
 	BraseroSrcImagePrivate *priv;
 	BraseroTrackType type = { 0, };
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
+	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
 
 	if (!priv->track)
 		return;
-
-	/* Deal with size */
-	brasero_track_get_size (BRASERO_TRACK (priv->track), NULL, &size);
-	size_string = g_format_size_for_display (size);
 
 	/* Retrieve a path or an uri */
 	path = NULL;
@@ -175,19 +196,22 @@ brasero_src_image_update (BraseroSrcImage *dialog)
 	switch (type.subtype.img_format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
 	case BRASERO_IMAGE_FORMAT_BIN:
-		uri = brasero_track_image_get_source (priv->track, TRUE);
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
 		break;
 
+	case BRASERO_IMAGE_FORMAT_CLONE:
 	case BRASERO_IMAGE_FORMAT_CUE:
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
-	case BRASERO_IMAGE_FORMAT_CLONE:
-		uri = brasero_track_image_get_source (priv->track, TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
 		break;
 
 	default:
-		path = NULL;
+		uri = NULL;
 		break;
 	}
+
+	if (!uri)
+		return;
 
 	file = g_file_new_for_uri (uri);
 	g_free (uri);
@@ -201,17 +225,39 @@ brasero_src_image_update (BraseroSrcImage *dialog)
 		path = g_file_get_uri (file);
 
 	g_object_unref (file);
-
-	if (!path) {
-		g_free (size_string);
+	if (!path)
 		return;
+
+	/* See if information retrieval went fine and/or is ready */
+	result = brasero_track_image_cfg_get_status (priv->track, &error);
+	if (result == BRASERO_BURN_NOT_READY) {
+		/* Translators: %s is a path */
+		string = g_strdup_printf (_("\"%s\": loading"), path);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
+		goto end;
 	}
+	else if (result != BRASERO_BURN_OK) {
+		/* Translators: %s is a path and image refers to a disc image */
+		string = g_strdup_printf (_("\"%s\": unknown image type"), path);
+		gtk_widget_set_tooltip_text (GTK_WIDGET (self), error->message);
+		brasero_src_image_error (self, error);
+		g_error_free (error);
+		goto end;
+	}
+
+	gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
+
+	/* Deal with size */
+	brasero_track_get_size (BRASERO_TRACK (priv->track), NULL, &size);
+	size_string = g_format_size_for_display (size);
 
 	/* NOTE to translators, the first %s is the path of the image
 	 * file and the second its size. */
 	string = g_strdup_printf (_("\"%s\": %s"), path, size_string);
 	g_free (size_string);
 	g_free (path);
+
+end:
 
 	if (string) {
 		/* This is hackish and meant to avoid ellipsization to make the
@@ -227,35 +273,10 @@ brasero_src_image_update (BraseroSrcImage *dialog)
 }
 
 static void
-brasero_src_image_set_track (BraseroSrcImage *dialog,
-			     BraseroImageFormat format,
-			     const gchar *image,
-			     const gchar *toc)
+brasero_image_src_track_changed_cb (BraseroTrack *track,
+				    BraseroSrcImage *dialog)
 {
-	BraseroSrcImagePrivate *priv;
-
-	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
-
-	/* set image type before adding so that signal has the right type */
-	brasero_track_image_set_source (priv->track,
-					image,
-					toc,
-					format);
-
-	if (!toc && !image && format == BRASERO_IMAGE_FORMAT_NONE)
-		return;
-
 	brasero_src_image_update (dialog);
-}
-
-static void
-brasero_src_image_error (BraseroSrcImage *self,
-			 GError *error)
-{
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
-				      _("Please select another image."),
-				      error->message,
-				      GTK_MESSAGE_ERROR);
 }
 
 static void
@@ -289,179 +310,20 @@ brasero_src_image_check_parent_directory_cb (GObject *object,
 }
 
 static void
-brasero_src_image_get_info_cb (GObject *object,
-			       GAsyncResult *result,
-			       gpointer data)
-{
-	BraseroSrcImage *dialog = BRASERO_SRC_IMAGE (data);
-	BraseroSrcImagePrivate *priv;
-	GError *error = NULL;
-	const gchar *mime;
-	GFileInfo *info;
-	gchar *uri;
-
-	info = g_file_query_info_finish (G_FILE (object), result, &error);
-	uri = g_file_get_uri (G_FILE (object));
-
-	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
-	if (error) {
-		brasero_src_image_set_track (dialog,
-					     BRASERO_IMAGE_FORMAT_NONE,
-					     NULL,
-					     NULL);
-
-		/* we need to say that image can't be loaded */
-		brasero_src_image_error (dialog, error);
-		g_error_free (error);
-		return;
-	}
-
-	mime = g_file_info_get_content_type (info);
-	if (mime
-	&& (!strcmp (mime, "application/x-toc")
-	||  !strcmp (mime, "application/x-cdrdao-toc")
-	||  !strcmp (mime, "application/x-cue"))) {
-		BraseroImageFormat format;
-		gchar *path;
-
-		path = g_filename_from_uri (uri, NULL, NULL);
-		format = brasero_image_format_identify_cuesheet (path);
-		g_free (path);
-
-		if (format != BRASERO_IMAGE_FORMAT_NONE)
-			brasero_src_image_set_track (dialog,
-						     format,
-						     NULL,
-						     uri);
-		else if (g_str_has_suffix (path, ".toc"))
-			brasero_src_image_set_track (dialog,
-						     BRASERO_IMAGE_FORMAT_CLONE,
-						     NULL,
-						     uri);
-		else
-			brasero_src_image_set_track (dialog,
-						     BRASERO_IMAGE_FORMAT_NONE,
-						     NULL,
-						     uri);
-	}
-	else if (mime && !strcmp (mime, "application/octet-stream")) {
-		/* that could be an image, so here is the deal:
-		 * if we can find the type through the extension, fine.
-		 * if not default to CLONE */
-		if (g_str_has_suffix (uri, ".bin"))
-			brasero_src_image_set_track (dialog,
-						     BRASERO_IMAGE_FORMAT_CDRDAO,
-						     uri,
-						     NULL);
-		else if (g_str_has_suffix (uri, ".raw"))
-			brasero_src_image_set_track (dialog,
-						     BRASERO_IMAGE_FORMAT_CLONE,
-						     uri,
-						     NULL);
-		else
-			brasero_src_image_set_track (dialog,
-						     BRASERO_IMAGE_FORMAT_BIN,
-						     uri,
-						     NULL);
-	}
-	else if (mime && !strcmp (mime, "application/x-cd-image"))
-		brasero_src_image_set_track (dialog,
-					     BRASERO_IMAGE_FORMAT_BIN,
-					     uri,
-					     NULL);
-	else
-		brasero_src_image_set_track (dialog,
-					     BRASERO_IMAGE_FORMAT_NONE,
-					     uri,
-					     NULL);
-
-	g_object_unref (info);
-}
-
-static void
-brasero_src_image_get_format (BraseroSrcImage *dialog,
-			      const gchar *uri)
-{
-	BraseroSrcImagePrivate *priv;
-	GFile *file;
-
-	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
-
-	if (!uri) {
-		brasero_src_image_set_track (dialog,
-					     BRASERO_IMAGE_FORMAT_NONE,
-					     NULL,
-					     NULL);
-		return;
-	}
-
-	if (priv->format) {
-		BraseroImageFormat format;
-
-		/* NOTE: this is only used when a GtkFileChooser has been
-		 * spawned */
-		brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), &format);
-		switch (format) {
-		/* Respect the user's choice regarding format */
-		case BRASERO_IMAGE_FORMAT_BIN:
-			brasero_src_image_set_track (dialog,
-						     format,
-						     uri,
-						     NULL);
-			return;
-		case BRASERO_IMAGE_FORMAT_CUE:
-			brasero_src_image_set_track (dialog,
-						     format,
-						     NULL,
-						     uri);
-			return;
-		case BRASERO_IMAGE_FORMAT_CDRDAO:
-			brasero_src_image_set_track (dialog,
-						     format,
-						     NULL,
-						     uri);
-			return;
-		case BRASERO_IMAGE_FORMAT_CLONE:
-			brasero_src_image_set_track (dialog,
-						     format,
-						     NULL,
-						     uri);
-			return;
-
-		/* handle those cases afterwards */
-		default:
-			break;
-		}
-	}
-
-	file = g_file_new_for_uri (uri);
-	g_file_query_info_async (file,
-				 G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-				 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-				 G_FILE_QUERY_INFO_NONE,
-				 0,
-				 priv->cancel,
-				 brasero_src_image_get_info_cb,
-				 dialog);
-	g_object_unref (file);
-}
-
-static void
 brasero_src_image_changed (BraseroSrcImage *dialog)
 {
 	gchar *uri;
 	GFile *file;
 	GFile *parent;
+	BraseroImageFormat format;
 	BraseroSrcImagePrivate *priv;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
 
-	/* Cancel any pending operation */
-	g_cancellable_cancel (priv->cancel);
-	g_cancellable_reset (priv->cancel);
-
+	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), &format);
 	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->file));
-	brasero_src_image_get_format (dialog, uri);
+	brasero_track_image_cfg_force_format (priv->track, format);
+	brasero_track_image_cfg_set_source (priv->track, uri);
 
 	/* Make sure it's still a valid folder */
 	file = g_file_new_for_uri (uri);
@@ -476,6 +338,7 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 				 brasero_src_image_check_parent_directory_cb,
 				 dialog);
 	g_object_unref (parent);
+	g_free (uri);
 }
 
 static void
@@ -516,8 +379,38 @@ brasero_src_image_set_formats (BraseroSrcImage *dialog)
 			formats |= format;
 	}
 
-	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
-					        formats);
+	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), formats);
+
+	format = brasero_track_image_cfg_get_forced_format (priv->track);
+	brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), format);
+}
+
+static gchar *
+brasero_src_image_get_current_uri (BraseroSrcImage *self)
+{
+	BraseroSrcImagePrivate *priv;
+	BraseroTrackType type = { 0, };
+	gchar *uri = NULL;
+
+	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
+
+	brasero_track_get_track_type (BRASERO_TRACK (priv->track), &type);
+	switch (type.subtype.img_format) {
+	case BRASERO_IMAGE_FORMAT_NONE:
+	case BRASERO_IMAGE_FORMAT_BIN:
+		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
+		break;
+	case BRASERO_IMAGE_FORMAT_CLONE:
+	case BRASERO_IMAGE_FORMAT_CUE:
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
+		break;
+
+	default:
+		break;
+	}
+
+	return uri;
 }
 
 static void
@@ -529,6 +422,7 @@ brasero_src_image_clicked (GtkButton *button)
 	GtkWidget *toplevel;
 	GtkWidget *label;
 	GtkWidget *box;
+	gchar *uri;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (button);
 
@@ -542,7 +436,16 @@ brasero_src_image_clicked (GtkButton *button)
 
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
 
-	if (priv->folder) {
+	/* See if we have a URI already chosen, if so use it */
+	uri = brasero_src_image_get_current_uri (BRASERO_SRC_IMAGE (button));
+	if (uri) {
+		if (!gtk_file_chooser_select_uri (GTK_FILE_CHOOSER (priv->file), uri))
+			if (!gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), priv->folder))
+				gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
+
+		g_free (uri);
+	}
+	else if (priv->folder) {
 		if (!gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), priv->folder))
 			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
 	}
@@ -658,7 +561,7 @@ brasero_src_image_init (BraseroSrcImage *object)
 	if (uri && uri [0] != '\0') {
 		GFile *file;
 
-		/* Make sure it's still a valid folder */
+		/* Make sure it's still a valid parent folder */
 		file = g_file_new_for_commandline_arg (uri);
 		g_file_query_info_async (file,
 					 G_FILE_ATTRIBUTE_STANDARD_TYPE,
@@ -749,6 +652,9 @@ _get_session_image_track (BraseroBurnSession *session)
 	if (BRASERO_IS_TRACK_IMAGE (track))
 		return track;
 
+	if (BRASERO_IS_TRACK_IMAGE_CFG (track))
+		return track;
+
 	return NULL;
 }
 
@@ -766,8 +672,6 @@ brasero_src_image_set_property (GObject *object,
 	switch (property_id) {
 	case PROP_SESSION: {
 		BraseroTrack *track;
-		gchar *image;
-		gchar *toc;
 
 		if (priv->session)
 			g_object_unref (priv->session);
@@ -781,30 +685,72 @@ brasero_src_image_set_property (GObject *object,
 
 		track = _get_session_image_track (session);
 		if (track) {
-			g_object_ref (track);
-			priv->track = BRASERO_TRACK_IMAGE (track);
+			if (!BRASERO_IS_TRACK_IMAGE_CFG (track)) {
+				BraseroTrackType type = { 0, };
+				guint64 blocks = 0;
+				gchar *image = NULL;
+				gchar *toc = NULL;
+
+				toc = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
+				image = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
+				brasero_track_get_track_type (BRASERO_TRACK (track), &type);
+				brasero_track_get_size (BRASERO_TRACK (track),
+							&blocks,
+							NULL);
+
+				priv->track = brasero_track_image_cfg_new ();
+				if (blocks && type.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE) {
+					/* copy all the information */
+					brasero_track_image_set_source (BRASERO_TRACK_IMAGE (priv->track),
+									image,
+									toc,
+									type.subtype.img_format);
+
+					brasero_track_image_set_block_num (BRASERO_TRACK_IMAGE (priv->track), blocks);
+				}
+				else {
+					brasero_track_image_cfg_force_format (priv->track, type.subtype.img_format);
+
+					switch (type.subtype.img_format) {
+					case BRASERO_IMAGE_FORMAT_NONE:
+					case BRASERO_IMAGE_FORMAT_BIN:
+						brasero_track_image_cfg_set_source (priv->track, image);
+						break;
+					case BRASERO_IMAGE_FORMAT_CLONE:
+					case BRASERO_IMAGE_FORMAT_CUE:
+					case BRASERO_IMAGE_FORMAT_CDRDAO:
+						brasero_track_image_cfg_set_source (priv->track, toc);
+						break;
+
+					default:
+						break;
+					}
+				}
+
+				brasero_burn_session_add_track (priv->session, BRASERO_TRACK (priv->track));
+				g_free (image);
+				g_free (toc);
+			}
+			else {
+				g_object_ref (track);
+				priv->track = BRASERO_TRACK_IMAGE_CFG (track);
+			}
 		}
 		else {
 			/* Add our own track */
-			priv->track = brasero_track_image_new ();
+			priv->track = brasero_track_image_cfg_new ();
 			brasero_burn_session_add_track (priv->session, BRASERO_TRACK (priv->track));
 		}
 
-		/* Make sure everything fits (NOTE: no need to set format yet,
-		 * since at that point no GtkFileChooser was opened.) */
-		toc = brasero_track_image_get_toc_source (priv->track, TRUE);
-		image = brasero_track_image_get_source (priv->track, TRUE);
-		if (toc || image) {
-			BraseroTrackType type = { 0, };
+		g_signal_connect (priv->track,
+				  "changed",
+				  G_CALLBACK (brasero_image_src_track_changed_cb),
+				  object);
 
-			brasero_track_get_track_type (BRASERO_TRACK (priv->track), &type);
-			if (type.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE)
-				brasero_src_image_update (BRASERO_SRC_IMAGE (object));
-			else
-				brasero_src_image_get_format (BRASERO_SRC_IMAGE (object), toc? toc:image);
-
-			g_free (image);
-			g_free (toc);
+		if (brasero_track_image_cfg_get_status (priv->track, NULL) != BRASERO_BURN_NOT_READY) {
+			/* Make sure everything fits (NOTE: no need to set format yet,
+			 * since at that point no GtkFileChooser was opened.) */
+			brasero_src_image_update (BRASERO_SRC_IMAGE (object));
 		}
 
 		break;

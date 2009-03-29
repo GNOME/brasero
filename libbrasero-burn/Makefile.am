@@ -133,7 +133,9 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-track-image.c                 \
 	brasero-track-image.h                 \
 	brasero-track-data.c                 \
-	brasero-track-data.h
+	brasero-track-data.h                 \
+	brasero-track-image-cfg.c                 \
+	brasero-track-image-cfg.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

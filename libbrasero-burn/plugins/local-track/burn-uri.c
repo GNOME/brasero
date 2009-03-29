@@ -321,6 +321,7 @@ brasero_burn_uri_thread (gpointer data)
 		gchar *uri;
 		gchar *path_toc;
 		gchar *path_image;
+		guint64 blocks = 0;
 		BraseroTrackImage *image;
 
 		path_image = NULL;
@@ -332,7 +333,7 @@ brasero_burn_uri_thread (gpointer data)
 		g_free (uri);
 
 		path_toc = NULL;
-		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), TRUE);
+		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		if (!brasero_burn_uri_retrieve_path (self, uri, &path_toc)) {
 			g_free (path_image);
 			g_free (uri);
@@ -340,11 +341,15 @@ brasero_burn_uri_thread (gpointer data)
 		}
 		g_free (uri);
 
+		brasero_track_get_size (BRASERO_TRACK (current), &blocks, NULL);
+
 		image = brasero_track_image_new ();
 		brasero_track_image_set_source (image,
 						path_image,
 						path_toc,
 						type.subtype.img_format);
+		brasero_track_image_set_block_num (image, blocks);
+
 		priv->track = BRASERO_TRACK (image);
 
 		g_free (path_toc);

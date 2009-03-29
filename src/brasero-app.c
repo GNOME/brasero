@@ -51,6 +51,7 @@
 #include "brasero-burn.h"
 #include "brasero-track-disc.h"
 #include "brasero-track-image.h"
+#include "brasero-track-image-cfg.h"
 #include "brasero-session.h"
 #include "brasero-burn-lib.h"
 
@@ -717,15 +718,15 @@ brasero_app_burn_image (BraseroApp *app,
 			const gchar *uri)
 {
 	BraseroSessionCfg *session;
-	BraseroTrackImage *track;
+	BraseroTrackImageCfg *track;
 
 	/* setup, show, and run options dialog */
 	session = brasero_session_cfg_new ();
 
-	/* FIXME: that's where we'd need a special kind of track that would
-	 * identify the image type */
-	track = brasero_track_image_new ();
-	brasero_track_image_set_source (track, uri, NULL, BRASERO_IMAGE_FORMAT_BIN);
+	track = brasero_track_image_cfg_new ();
+	if (uri)
+		brasero_track_image_cfg_set_source (track, uri);
+
 	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (track));
 
 	if (brasero_app_burn_options (app, session))

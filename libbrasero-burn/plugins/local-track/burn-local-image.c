@@ -667,8 +667,8 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		gchar *uri;
 		gchar *newtoc;
 		gchar *newimage;
+		guint64 blocks = 0;
 
-		/* FIXME: save the size */
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		newimage = brasero_local_track_translate_uri (self, uri);
 		g_free (uri);
@@ -677,11 +677,14 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		newtoc = brasero_local_track_translate_uri (self, uri);
 		g_free (uri);
 
+		brasero_track_get_size (current, &blocks, NULL);
+
 		track = BRASERO_TRACK (brasero_track_image_new ());
 		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
 						newimage,
 						newtoc,
 						input.subtype.img_format);
+		brasero_track_image_set_block_num (BRASERO_TRACK_IMAGE (track), blocks);
 	}
 	break;
 
