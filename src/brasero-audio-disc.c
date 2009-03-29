@@ -3432,7 +3432,7 @@ brasero_audio_disc_clipboard_targets_cb (GtkClipboard *clipboard,
 	gchar *target;
 
 	iter = atoms;
-	while (n_atoms) {
+	while (n_atoms > 0) {
 		target = gdk_atom_name (*iter);
 
 		if (!strcmp (target, "x-special/gnome-copied-files")
