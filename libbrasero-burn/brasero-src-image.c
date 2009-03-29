@@ -747,11 +747,9 @@ brasero_src_image_set_property (GObject *object,
 				  G_CALLBACK (brasero_image_src_track_changed_cb),
 				  object);
 
-		if (brasero_track_image_cfg_get_status (priv->track, NULL) != BRASERO_BURN_NOT_READY) {
-			/* Make sure everything fits (NOTE: no need to set format yet,
-			 * since at that point no GtkFileChooser was opened.) */
-			brasero_src_image_update (BRASERO_SRC_IMAGE (object));
-		}
+		/* Make sure everything fits (NOTE: no need to set format yet,
+		 * since at that point no GtkFileChooser was opened.) */
+		brasero_src_image_update (BRASERO_SRC_IMAGE (object));
 
 		break;
 	}
