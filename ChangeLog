@@ -1,3 +1,11 @@
+2009-03-29  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_clipboard_targets_cb):
+
+	Fix bgo #576928 – Brasero crashes when pasting empty clipboard.
+	Patch from Tom Parker <palfrey@tevp.net>
+
 2009-03-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #576564 – brasero crashed with SIGSEGV in brasero_image_format_get_cdrdao_size()
