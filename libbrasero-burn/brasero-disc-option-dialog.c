@@ -54,6 +54,7 @@
 #include "brasero-dest-selection.h"
 #include "brasero-session-cfg.h"
 #include "brasero-burn-options.h"
+#include "brasero-burn-options-private.h"
 
 G_DEFINE_TYPE (BraseroDiscOptionDialog, brasero_disc_option_dialog, BRASERO_TYPE_BURN_OPTIONS);
 

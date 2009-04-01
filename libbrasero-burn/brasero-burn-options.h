@@ -70,24 +70,8 @@ BraseroBurnSession *
 brasero_burn_options_get_session (BraseroBurnOptions *self);
 
 void
-brasero_burn_options_add_source (BraseroBurnOptions *self,
-				 const gchar *title,
-				 ...);
-
-void
 brasero_burn_options_add_options (BraseroBurnOptions *self,
 				  GtkWidget *options);
-
-GtkWidget *
-brasero_burn_options_add_burn_button (BraseroBurnOptions *self,
-				      const gchar *text,
-				      const gchar *icon);
-void
-brasero_burn_options_lock_selection (BraseroBurnOptions *self);
-
-void
-brasero_burn_options_set_type_shown (BraseroBurnOptions *self,
-				     BraseroMediaType type);
 
 G_END_DECLS
 

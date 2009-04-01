@@ -48,6 +48,7 @@
 #include "brasero-image-option-dialog.h"
 #include "brasero-src-image.h"
 #include "brasero-burn-options.h"
+#include "brasero-burn-options-private.h"
 
 G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, BRASERO_TYPE_BURN_OPTIONS);
 

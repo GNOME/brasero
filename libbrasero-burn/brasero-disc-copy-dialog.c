@@ -52,6 +52,7 @@
 #include "brasero-dest-selection.h"
 #include "brasero-src-selection.h"
 #include "brasero-burn-options.h"
+#include "brasero-burn-options-private.h"
 
 G_DEFINE_TYPE (BraseroDiscCopyDialog, brasero_disc_copy_dialog, BRASERO_TYPE_BURN_OPTIONS);
 
