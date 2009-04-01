@@ -47,6 +47,7 @@
 #include "burn-plugin-manager.h"
 #include "burn-image-format.h"
 
+#include "brasero-tags.h"
 #include "brasero-track-image.h"
 #include "brasero-session-cfg.h"
 

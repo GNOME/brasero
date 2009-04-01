@@ -58,6 +58,7 @@
 #include "burn-debug.h"
 #include "burn-basics.h"
 
+#include "brasero-tags.h"
 #include "brasero-track.h"
 #include "brasero-track-data.h"
 #include "brasero-session.h"
