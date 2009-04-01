@@ -45,6 +45,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-track-image-cfg.h				\
 	brasero-session.h                 			\
 	brasero-burn.h						\
+	brasero-session-cfg.h					\
 	brasero-burn-options.h        			        \
 	brasero-burn-dialog.h
 
