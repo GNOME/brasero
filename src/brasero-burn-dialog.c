@@ -1788,6 +1788,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	BraseroDrive *drive;
 	gchar *primary = NULL;
 	GtkWidget *make_another = NULL;
+	GtkWidget *create_cover = NULL;
 
 	drive = brasero_burn_session_get_burner (dialog->priv->session);
 	if (dialog->priv->input.type != BRASERO_TRACK_TYPE_DISC)
@@ -1866,13 +1867,16 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	|| (dialog->priv->input.type == BRASERO_TRACK_TYPE_DISC
 	&& (dialog->priv->input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO))) {
 		/* since we succeed offer the possibility to create cover if that's an audio disc */
-		gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Create Cover"), GTK_RESPONSE_CLOSE);
+		create_cover = gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Create Cover"), GTK_RESPONSE_CLOSE);
 	}
 
 	res = brasero_burn_dialog_success_run (dialog);
 
 	if (make_another)
 		gtk_widget_destroy (make_another);
+
+	if (create_cover)
+		gtk_widget_destroy (create_cover);
 
 	return res;
 }
