@@ -1367,7 +1367,9 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	page_2A = (BraseroScsiStatusPage *) &data->page;
 
-	if (size < 18) {
+	/* Reminder: size = sizeof (BraseroScsiStatusPage) + sizeof (BraseroScsiModeHdr) */
+	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, copy_mngt_rev) +
+		    sizeof (BraseroScsiModeHdr))) {
 		g_free (data);
 		BRASERO_MEDIA_LOG ("wrong page size");
 		return BRASERO_BURN_ERR;
@@ -1376,8 +1378,11 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
 	priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
 
-	/* Check if we can use the speed descriptors; if not use maximum */
-	if (size < 20) {
+	/* Check if we can use the speed descriptors. There must be at least one
+	 * available; if not use maximum speed member. */
+	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, wr_spd_desc) +
+		    sizeof (BraseroScsiModeHdr) +
+		    sizeof (BraseroScsiWrtSpdDesc))) {
 		BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A [old]) %i", priv->max_wrt);
 
 		/* also add fake speed descriptors */

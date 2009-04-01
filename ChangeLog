@@ -1,3 +1,10 @@
+2009-04-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Fix for #573929 – nautilus crashed with SIGSEGV in start_thread()
+
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_get_page_2A_write_speed_desc):
+
 2009-03-29  Luis Medinas  <lmedinas@gnome.org>
 
 	* src/brasero-audio-disc.c
@@ -6,7 +13,7 @@
 	Fix bgo #576928 – Brasero crashes when pasting empty clipboard.
 	Patch from Tom Parker <palfrey@tevp.net>
 
-2009-03-26  Philippe Rouquier  <ykw@localhost.localdomain>
+2009-03-26  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #576564 – brasero crashed with SIGSEGV in brasero_image_format_get_cdrdao_size()
 	Fix crash when retrieving cue size for cdrdao files (wrong pointer used)
