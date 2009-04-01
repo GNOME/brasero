@@ -33,8 +33,8 @@
 
 #include <glib-object.h>
 
-#include "brasero-enums.h"
-#include "brasero-track.h"
+#include <brasero-enums.h>
+#include <brasero-track.h>
 
 G_BEGIN_DECLS
 

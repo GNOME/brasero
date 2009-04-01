@@ -35,6 +35,8 @@
 
 #include <gtk/gtk.h>
 
+#include <brasero-medium-monitor.h>
+
 #include <brasero-session-cfg.h>
 
 G_BEGIN_DECLS

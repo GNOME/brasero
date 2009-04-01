@@ -1,5 +1,20 @@
 2009-04-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Added a new function that allows to copy track tags
+	Use it in burn-uri and local-track plugins
+	More headers fixing
+
+	* libbrasero-burn/brasero-burn-options.h:
+	* libbrasero-burn/brasero-track-stream.h:
+	* libbrasero-burn/brasero-track.c (brasero_track_tag_copy):
+	* libbrasero-burn/brasero-track.h:
+	* libbrasero-burn/plugins/local-track/burn-local-image.c
+	(brasero_local_track_update_track):
+	* libbrasero-burn/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_thread):
+
+2009-04-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Fixes for headers of exported *.h files
 
 	* libbrasero-burn/brasero-burn-options.h:

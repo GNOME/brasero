@@ -302,6 +302,40 @@ brasero_track_tag_lookup (BraseroTrack *track,
 }
 
 void
+brasero_track_tag_copy (BraseroTrack *dest,
+			BraseroTrack *src)
+{
+	BraseroTrackPrivate *priv;
+	GHashTableIter iter;
+	gpointer new_value;
+	gpointer new_key;
+	gpointer value;
+	gpointer key;
+
+	g_return_if_fail (BRASERO_IS_TRACK (dest));
+	g_return_if_fail (BRASERO_IS_TRACK (src));
+
+	priv = BRASERO_TRACK_PRIVATE (src);
+
+	if (!priv->tags)
+		return;
+
+	g_hash_table_iter_init (&iter, priv->tags);
+
+	priv = BRASERO_TRACK_PRIVATE (dest);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		new_value = g_new0 (GValue, 1);
+
+		g_value_init (new_value, g_value_get_gtype (value));
+		g_value_copy (new_value, value);
+
+		new_key = g_strdup (key);
+
+		g_hash_table_insert (priv->tags, new_key, new_value);
+	}
+}
+
+void
 brasero_track_changed (BraseroTrack *track)
 {
 	g_signal_emit (track,

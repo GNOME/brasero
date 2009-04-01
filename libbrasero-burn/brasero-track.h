@@ -158,6 +158,10 @@ brasero_track_tag_lookup (BraseroTrack *track,
 			  const gchar *tag,
 			  GValue **value);
 
+void
+brasero_track_tag_copy (BraseroTrack *dest,
+			BraseroTrack *src);
+
 G_END_DECLS
 
 #endif /* _BURN_TRACK_H */
