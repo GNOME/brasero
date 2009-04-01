@@ -206,7 +206,7 @@ brasero_burn_caps_get_default ()
 	return default_caps;
 }
 
-/* that function receives all errors returned by the object and 'learns' from 
+/* That function receives all errors returned by the object and 'learns' from 
  * these errors what are the safest defaults for a particular system. It should 
  * also offer fallbacks if an error occurs through a signal */
 static BraseroBurnResult
@@ -291,12 +291,11 @@ brasero_caps_is_compatible_type (const BraseroCaps *caps,
 }
 
 static BraseroCaps *
-brasero_caps_find_start_caps (BraseroTrackType *output)
+brasero_caps_find_start_caps (BraseroBurnCaps *self,
+			      BraseroTrackType *output)
 {
 	GSList *iter;
-	BraseroBurnCaps *self;
 
-	self = brasero_burn_caps_get_default ();
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
 
@@ -313,7 +312,7 @@ brasero_caps_find_start_caps (BraseroTrackType *output)
 	return NULL;
 }
 
-BraseroBurnResult
+static BraseroBurnResult
 brasero_burn_caps_get_blanking_flags_real (BraseroBurnCaps *caps,
 					   BraseroMedia media,
 					   BraseroBurnFlag session_flags,
@@ -396,12 +395,13 @@ brasero_burn_caps_get_blanking_flags_real (BraseroBurnCaps *caps,
 }
 
 BraseroBurnResult
-brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
-				      BraseroBurnSession *session,
+brasero_burn_session_get_blank_flags (BraseroBurnSession *session,
 				      BraseroBurnFlag *supported,
 				      BraseroBurnFlag *compulsory)
 {
 	BraseroMedia media;
+	BraseroBurnCaps *self;
+	BraseroBurnResult result;
 	BraseroBurnFlag session_flags;
 
 	media = brasero_burn_session_get_dest_media (session);
@@ -417,11 +417,16 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 	}
 
 	session_flags = brasero_burn_session_get_flags (session);
-	return brasero_burn_caps_get_blanking_flags_real (caps,
-							  media,
-							  session_flags,
-							  supported,
-							  compulsory);
+
+	self = brasero_burn_caps_get_default ();
+	result = brasero_burn_caps_get_blanking_flags_real (self,
+							    media,
+							    session_flags,
+							    supported,
+							    compulsory);
+	g_object_unref (self);
+
+	return result;
 }
 
 BraseroTask *
@@ -520,7 +525,7 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 	BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 }
 
-BraseroBurnResult
+static BraseroBurnResult
 brasero_burn_caps_can_blank_real (BraseroBurnCaps *self,
 				  BraseroMedia media,
 				  BraseroBurnFlag flags)
@@ -581,22 +586,29 @@ brasero_burn_caps_can_blank_real (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_can_blank (BraseroBurnCaps *self,
-			     BraseroBurnSession *session)
+brasero_burn_session_can_blank (BraseroBurnSession *session)
 {
 	BraseroMedia media;
 	BraseroBurnFlag flags;
+	BraseroBurnCaps *self;
+	BraseroBurnResult result;
+
+	self = brasero_burn_caps_get_default ();
 
 	media = brasero_burn_session_get_dest_media (session);
 	BRASERO_BURN_LOG_DISC_TYPE (media, "Testing blanking caps for");
 
 	if (media == BRASERO_MEDIUM_NONE) {
 		BRASERO_BURN_LOG ("no media => no blanking possible");
+		g_object_unref (self);
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
 	flags = brasero_burn_session_get_flags (session);
-	return brasero_burn_caps_can_blank_real (self, media, flags);
+	result = brasero_burn_caps_can_blank_real (self, media, flags);
+	g_object_unref (self);
+
+	return result;
 }
 
 /**
@@ -1231,7 +1243,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 				    "Creating recording/imaging task");
 
 	/* search the start caps and try to get a list of links */
-	last_caps = brasero_caps_find_start_caps (&output);
+	last_caps = brasero_caps_find_start_caps (self, &output);
 	if (!last_caps)
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
@@ -1272,7 +1284,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		 * is because we first have to blank the disc. If so add a blank 
 		 * task to the others as a first step */
 		if (!(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-		||    brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
+		||    brasero_burn_session_can_blank (session) != BRASERO_BURN_OK)
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
 		/* retry with the same disc type but blank this time */
@@ -1285,7 +1297,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 		output.subtype.media = media;
 
-		last_caps = brasero_caps_find_start_caps (&output);
+		last_caps = brasero_caps_find_start_caps (self, &output);
 		if (!last_caps)
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
@@ -1722,7 +1734,8 @@ brasero_caps_find_link (BraseroCaps *caps,
 }
 
 static gboolean
-brasero_caps_try_output (BraseroBurnFlag session_flags,
+brasero_caps_try_output (BraseroBurnCaps *self,
+			 BraseroBurnFlag session_flags,
 			 gboolean use_flags,
 			 BraseroTrackType *output,
 			 BraseroTrackType *input,
@@ -1732,7 +1745,7 @@ brasero_caps_try_output (BraseroBurnFlag session_flags,
 	BraseroMedia media;
 
 	/* here we search the start caps */
-	caps = brasero_caps_find_start_caps (output);
+	caps = brasero_caps_find_start_caps (self, output);
 	if (!caps) {
 		BRASERO_BURN_LOG ("No caps available");
 		return FALSE;
@@ -1767,7 +1780,8 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	if (use_flags)
 		session_flags = brasero_burn_session_get_flags (session);
 
-	result = brasero_caps_try_output (session_flags,
+	result = brasero_caps_try_output (self,
+					  session_flags,
 					  use_flags,
 					  output,
 					  input,
@@ -1795,7 +1809,7 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	 * is because we first have to blank the disc. If so add a blank 
 	 * task to the others as a first step */
 	if ((use_flags && !(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
-	||   brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
+	||   brasero_burn_session_can_blank (session) != BRASERO_BURN_OK)
 		return FALSE;
 
 	BRASERO_BURN_LOG ("Trying with initial blanking");
@@ -1810,7 +1824,7 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	media |= BRASERO_MEDIUM_BLANK;
 	output->subtype.media = media;
 
-	last_caps = brasero_caps_find_start_caps (output);
+	last_caps = brasero_caps_find_start_caps (self, output);
 	if (!last_caps)
 		return FALSE;
 
@@ -1823,17 +1837,20 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
-				      BraseroBurnSession *session,
+brasero_burn_session_input_supported (BraseroBurnSession *session,
 				      BraseroTrackType *input,
 				      gboolean use_flags)
 {
 	gboolean result;
+	BraseroBurnCaps *self;
 	BraseroTrackType output;
 	BraseroPluginIOFlag io_flags;
 
-	if (use_flags && !brasero_burn_caps_flags_check_for_drive (session))
+	self = brasero_burn_caps_get_default ();
+	if (use_flags && !brasero_burn_caps_flags_check_for_drive (session)) {
+		g_object_unref (self);
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
+	}
 
 	if (!brasero_burn_session_is_dest_file (session)) {
 		output.type = BRASERO_TRACK_TYPE_DISC;
@@ -1865,6 +1882,8 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 							input,
 							io_flags,
 							use_flags);
+	g_object_unref (self);
+
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (input, "Input not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -1874,13 +1893,15 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
-				       BraseroBurnSession *session,
+brasero_burn_session_output_supported (BraseroBurnSession *session,
 				       BraseroTrackType *output)
 {
 	gboolean result;
+	BraseroBurnCaps *self;
 	BraseroTrackType input;
 	BraseroPluginIOFlag io_flags;
+
+	self = brasero_burn_caps_get_default ();
 
 	/* Here, we can't check if the drive supports the flags since the output
 	 * is hypothetical. There is no real medium. So forget the following :
@@ -1907,6 +1928,9 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 							&input,
 							io_flags,
 							TRUE);
+
+	g_object_unref (self);
+
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (output, "Output not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -2003,21 +2027,30 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
-					BraseroBurnSession *session,
-					gboolean use_flags)
+brasero_burn_session_can_burn (BraseroBurnSession *session,
+			       gboolean use_flags)
 {
 	gboolean result;
+	BraseroBurnCaps *self;
 	BraseroTrackType input;
 	BraseroTrackType output;
 	BraseroPluginIOFlag io_flags;
 
-	/* Special case */
-	if (brasero_burn_session_same_src_dest_drive (session))
-		return brasero_burn_caps_is_session_supported_same_src_dest (self, session, use_flags);
+	self = brasero_burn_caps_get_default ();
 
-	if (use_flags && !brasero_burn_caps_flags_check_for_drive (session))
+	/* Special case */
+	if (brasero_burn_session_same_src_dest_drive (session)) {
+		BraseroBurnResult result;
+
+		result = brasero_burn_caps_is_session_supported_same_src_dest (self, session, use_flags);
+		g_object_unref (self);
+		return result;
+	}
+
+	if (use_flags && !brasero_burn_caps_flags_check_for_drive (session)) {
+		g_object_unref (self);
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
+	}
 
 	/* Here flags don't matter as we don't record anything.
 	 * Even the IOFlags since that can be checked later with
@@ -2054,6 +2087,9 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 							&input,
 							io_flags,
 							use_flags);
+
+	g_object_unref (self);
+
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (&output, "Output not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -2063,17 +2099,19 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 }
 
 BraseroMedia
-brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
-					   BraseroBurnSession *session)
+brasero_burn_session_get_required_media_type (BraseroBurnSession *session)
 {
 	BraseroMedia required_media = BRASERO_MEDIUM_NONE;
 	BraseroBurnFlag session_flags;
 	BraseroPluginIOFlag io_flags;
 	BraseroTrackType input;
+	BraseroBurnCaps *self;
 	GSList *iter;
 
 	if (brasero_burn_session_is_dest_file (session))
 		return BRASERO_MEDIUM_FILE;
+
+	self = brasero_burn_caps_get_default ();
 
 	/* we try to determine here what type of medium is allowed to be burnt
 	 * to whether a CD or a DVD. Appendable, blank are not properties being
@@ -2129,47 +2167,60 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 			  BRASERO_MEDIUM_CD|
 			  BRASERO_MEDIUM_DVD;
 
+	g_object_unref (self);
 	return required_media;
 }
 
 BraseroImageFormat
-brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
-					     BraseroBurnSession *session)
+brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 {
+	BraseroBurnCaps *self;
 	BraseroTrackType source;
 	BraseroTrackType output;
 	BraseroBurnResult result;
 
-	if (!brasero_burn_session_is_dest_file (session))
+	self = brasero_burn_caps_get_default ();
+
+	if (!brasero_burn_session_is_dest_file (session)) {
+		g_object_unref (self);
 		return BRASERO_IMAGE_FORMAT_NONE;
+	}
 
 	brasero_burn_session_get_input_type (session, &source);
-	if (source.type == BRASERO_TRACK_TYPE_NONE)
+	if (source.type == BRASERO_TRACK_TYPE_NONE) {
+		g_object_unref (self);
 		return BRASERO_IMAGE_FORMAT_NONE;
+	}
 
-	if (source.type == BRASERO_TRACK_TYPE_IMAGE)
+	if (source.type == BRASERO_TRACK_TYPE_IMAGE) {
+		g_object_unref (self);
 		return source.subtype.img_format;
+	}
 
 	output.type = BRASERO_TRACK_TYPE_IMAGE;
 	output.subtype.img_format = BRASERO_IMAGE_FORMAT_NONE;
 
 	if (source.type == BRASERO_TRACK_TYPE_STREAM) {
 		/* If that's AUDIO only without VIDEO then return */
-		if (!(source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
+		if (!(source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
+			g_object_unref (self);
 			return BRASERO_IMAGE_FORMAT_NONE;
+		}
 
 		/* Otherwise try all possible image types */
 		output.subtype.img_format = BRASERO_IMAGE_FORMAT_CDRDAO;
 		for (; output.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
 		       output.subtype.img_format >>= 1) {
 		
-			result = brasero_burn_caps_is_output_supported (self,
-									session,
+			result = brasero_burn_session_output_supported (session,
 									&output);
-			if (result == BRASERO_BURN_OK)
+			if (result == BRASERO_BURN_OK) {
+				g_object_unref (self);
 				return output.subtype.img_format;
+			}
 		}
 
+		g_object_unref (self);
 		return BRASERO_IMAGE_FORMAT_NONE;
 	}
 
@@ -2177,9 +2228,11 @@ brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
 	|| (source.type == BRASERO_TRACK_TYPE_DISC
 	&& (source.subtype.media & BRASERO_MEDIUM_DVD))) {
 		output.subtype.img_format = BRASERO_IMAGE_FORMAT_BIN;
-		result = brasero_burn_caps_is_output_supported (self,
-								session,
+		result = brasero_burn_session_output_supported (session,
 								&output);
+
+		g_object_unref (self);
+
 		if (result != BRASERO_BURN_OK)
 			return BRASERO_IMAGE_FORMAT_NONE;
 
@@ -2191,13 +2244,15 @@ brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
 	for (; output.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
 	       output.subtype.img_format >>= 1) {
 	
-		result = brasero_burn_caps_is_output_supported (self,
-								session,
+		result = brasero_burn_session_output_supported (session,
 								&output);
-		if (result == BRASERO_BURN_OK)
+		if (result == BRASERO_BURN_OK) {
+			g_object_unref (self);
 			return output.subtype.img_format;
+		}
 	}
 
+	g_object_unref (self);
 	return BRASERO_IMAGE_FORMAT_NONE;
 }
 
@@ -2383,7 +2438,8 @@ brasero_burn_caps_flags_update_for_drive (BraseroBurnFlag flags,
 }
 
 static BraseroBurnResult
-brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
+brasero_caps_get_flags_for_disc (BraseroBurnCaps *self,
+				 BraseroBurnFlag session_flags,
 				 BraseroMedia media,
 				 BraseroTrackType *input,
 				 BraseroBurnFlag *supported,
@@ -2399,7 +2455,7 @@ brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
 	output.type = BRASERO_TRACK_TYPE_DISC;
 	output.subtype.media = media;
 
-	caps = brasero_caps_find_start_caps (&output);
+	caps = brasero_caps_find_start_caps (self, &output);
 	if (!caps) {
 		BRASERO_BURN_LOG_DISC_TYPE (media, "FLAGS: no caps could be found for");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -2465,7 +2521,8 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 	BraseroBurnResult result;
 
 	/* See if medium is supported out of the box */
-	result = brasero_caps_get_flags_for_disc (session_flags,
+	result = brasero_caps_get_flags_for_disc (self,
+						  session_flags,
 						  media,
 						  input,
 						  supported_flags,
@@ -2520,7 +2577,8 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 			   BRASERO_MEDIUM_HAS_DATA|
 			   BRASERO_MEDIUM_HAS_AUDIO);
 		media |= BRASERO_MEDIUM_BLANK;
-		result = brasero_caps_get_flags_for_disc (session_flags,
+		result = brasero_caps_get_flags_for_disc (self,
+							  session_flags,
 							  media,
 							  input,
 							  supported_flags,
@@ -2663,12 +2721,12 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_get_flags (BraseroBurnCaps *self,
-			     BraseroBurnSession *session,
-			     BraseroBurnFlag *supported,
-			     BraseroBurnFlag *compulsory)
+brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
+				     BraseroBurnFlag *supported,
+				     BraseroBurnFlag *compulsory)
 {
 	BraseroMedia media;
+	BraseroBurnCaps *self;
 	BraseroTrackType input;
 	BraseroBurnResult result;
 
@@ -2679,7 +2737,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 					  BRASERO_BURN_FLAG_CHECK_SIZE|
 					  BRASERO_BURN_FLAG_NOGRACE;
 
-	g_return_val_if_fail (BRASERO_IS_BURNCAPS (self), BRASERO_BURN_ERR);
+	self = brasero_burn_caps_get_default ();
 
 	brasero_burn_session_get_input_type (session, &input);
 	BRASERO_BURN_LOG_WITH_TYPE (&input,
@@ -2698,6 +2756,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 
 		BRASERO_BURN_LOG_FLAGS (supported_flags, "FLAGS: supported");
 		BRASERO_BURN_LOG_FLAGS (compulsory_flags, "FLAGS: compulsory");
+
+		g_object_unref (self);
 		return BRASERO_BURN_OK;
 	}
 
@@ -2726,6 +2786,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		else
 			BRASERO_BURN_LOG ("No available flags for copy");
 
+		g_object_unref (self);
 		return result;
 	}
 
@@ -2739,12 +2800,15 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 	 * - APPEND and BLANK are incompatible */
 	if (!brasero_burn_caps_flags_check_for_drive (session)) {
 		BRASERO_BURN_LOG ("Session flags not supported by drive");
+		g_object_unref (self);
 		return BRASERO_BURN_ERR;
 	}
 
 	if ((session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-	&&  (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
+	&&  (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+		g_object_unref (self);
 		return BRASERO_BURN_NOT_SUPPORTED;
+	}
 	
 	/* Let's get flags for recording */
 	media = brasero_burn_session_get_dest_media (session);
@@ -2754,6 +2818,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 							 &input,
 							 &supported_flags,
 							 &compulsory_flags);
+
+	g_object_unref (self);
 
 	if (result != BRASERO_BURN_OK)
 		return result;
@@ -2879,7 +2945,7 @@ brasero_caps_link_list_duplicate (BraseroCaps *dest, BraseroCaps *src)
 }
 
 static BraseroCaps *
-brasero_caps_copy (BraseroCaps *caps)
+brasero_caps_duplicate (BraseroCaps *caps)
 {
 	BraseroCaps *retval;
 
@@ -2909,12 +2975,11 @@ brasero_caps_replicate_modifiers (BraseroCaps *dest, BraseroCaps *src)
 }
 
 static void
-brasero_caps_replicate_links (BraseroCaps *dest, BraseroCaps *src)
+brasero_caps_replicate_links (BraseroBurnCaps *self,
+			      BraseroCaps *dest,
+			      BraseroCaps *src)
 {
-	BraseroBurnCaps *self;
 	GSList *iter;
-
-	self = brasero_burn_caps_get_default ();
 
 	brasero_caps_link_list_duplicate (dest, src);
 
@@ -2942,12 +3007,11 @@ brasero_caps_replicate_links (BraseroCaps *dest, BraseroCaps *src)
 }
 
 static void
-brasero_caps_replicate_tests (BraseroCaps *dest, BraseroCaps *src)
+brasero_caps_replicate_tests (BraseroBurnCaps *self,
+			      BraseroCaps *dest,
+			      BraseroCaps *src)
 {
-	BraseroBurnCaps *self;
 	GSList *iter;
-
-	self = brasero_burn_caps_get_default ();
 
 	for (iter = self->priv->tests; iter; iter = iter->next) {
 		BraseroCapsTest *test;
@@ -2969,27 +3033,33 @@ brasero_caps_replicate_tests (BraseroCaps *dest, BraseroCaps *src)
 	}
 }
 
+static void
+brasero_caps_copy_deep (BraseroBurnCaps *self,
+			BraseroCaps *dest,
+			BraseroCaps *src)
+{
+	brasero_caps_replicate_links (self, dest, src);
+	brasero_caps_replicate_tests (self, dest, src);
+	brasero_caps_replicate_modifiers (dest,src);
+}
+
 static BraseroCaps *
-brasero_caps_copy_deep (BraseroCaps *caps)
+brasero_caps_duplicate_deep (BraseroBurnCaps *self,
+			     BraseroCaps *caps)
 {
 	BraseroCaps *retval;
-	BraseroBurnCaps *self;
 
-	self = brasero_burn_caps_get_default ();
-
-	retval = brasero_caps_copy (caps);
-	brasero_caps_replicate_links (retval, caps);
-	brasero_caps_replicate_tests (retval, caps);
+	retval = brasero_caps_duplicate (caps);
+	brasero_caps_copy_deep (self, retval, caps);
 	return retval;
 }
 
 static GSList *
-brasero_caps_list_check_io (GSList *list, BraseroPluginIOFlag flags)
+brasero_caps_list_check_io (BraseroBurnCaps *self,
+			    GSList *list,
+			    BraseroPluginIOFlag flags)
 {
 	GSList *iter;
-	BraseroBurnCaps *self;
-
-	self = brasero_burn_caps_get_default ();
 
 	/* in this function we create the caps with the missing IO. All in the
 	 * list have something in common with flags. */
@@ -3011,7 +3081,7 @@ brasero_caps_list_check_io (GSList *list, BraseroPluginIOFlag flags)
 			self->priv->caps_list = g_slist_sort (self->priv->caps_list,
 							      brasero_burn_caps_sort);
 
-			new_caps = brasero_caps_copy_deep (caps);
+			new_caps = brasero_caps_duplicate_deep (self, caps);
 			new_caps->flags = common;
 
 			self->priv->caps_list = g_slist_insert_sorted (self->priv->caps_list,
@@ -3054,7 +3124,7 @@ brasero_caps_list_check_io (GSList *list, BraseroPluginIOFlag flags)
 				 * create a new caps for this type with the
 				 * substraction of flags if the other part isn't
 				 * in the list */
-				new_caps = brasero_caps_copy (caps);
+				new_caps = brasero_caps_duplicate (caps);
 				new_caps->flags = flags & (~common);
 				self->priv->caps_list = g_slist_insert_sorted (self->priv->caps_list,
 									       new_caps,
@@ -3111,7 +3181,7 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 			self->priv->caps_list = g_slist_sort (self->priv->caps_list,
 							      brasero_burn_caps_sort);
 
-			caps = brasero_caps_copy_deep (caps);
+			caps = brasero_caps_duplicate_deep (self, caps);
 			caps->type.subtype.img_format = common;
 
 			self->priv->caps_list = g_slist_insert_sorted (self->priv->caps_list,
@@ -3125,7 +3195,7 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 
 	/* Now we make sure that all these new or already 
 	 * existing caps have the proper IO Flags */
-	retval = brasero_caps_list_check_io (retval, flags);
+	retval = brasero_caps_list_check_io (self, retval, flags);
 
 	if (remaining_format != BRASERO_IMAGE_FORMAT_NONE) {
 		BraseroCaps *caps;
@@ -3143,6 +3213,7 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 		BRASERO_BURN_LOG_TYPE (&caps->type, "Created new caps");
 	}
 
+	g_object_unref (self);
 	return retval;
 }
 
@@ -3221,7 +3292,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 
 	/* Now we make sure that all these new or already 
 	 * existing caps have the proper IO Flags */
-	retval = brasero_caps_list_check_io (retval, flags);
+	retval = brasero_caps_list_check_io (self, retval, flags);
 
 	if (!have_the_one) {
 		BraseroCaps *caps;
@@ -3236,9 +3307,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 				BraseroCaps *iter_caps;
 
 				iter_caps = iter->data;
-				brasero_caps_replicate_links (caps, iter_caps);
-				brasero_caps_replicate_tests (caps, iter_caps);
-				brasero_caps_replicate_modifiers (caps, iter_caps);
+				brasero_caps_copy_deep (self, caps, iter_caps);
 			}
 		}
 
@@ -3251,6 +3320,9 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 	}
 
 	g_slist_free (encompassing);
+
+	g_object_unref (self);
+
 	return retval;
 }
 
@@ -3267,6 +3339,7 @@ brasero_caps_data_new (BraseroImageFS fs_type)
 					 fs_type,
 					 BRASERO_PLUGIN_IO_NONE,
 					 "New caps required");
+
 	self = brasero_burn_caps_get_default ();
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
@@ -3312,9 +3385,7 @@ brasero_caps_data_new (BraseroImageFS fs_type)
 				BraseroCaps *iter_caps;
 
 				iter_caps = iter->data;
-				brasero_caps_replicate_links (caps, iter_caps);
-				brasero_caps_replicate_tests (caps, iter_caps);
-				brasero_caps_replicate_modifiers (caps, iter_caps);
+				brasero_caps_copy_deep (self, caps, iter_caps);
 			}
 		}
 
@@ -3325,20 +3396,21 @@ brasero_caps_data_new (BraseroImageFS fs_type)
 	}
 
 	g_slist_free (encompassing);
+
+	g_object_unref (self);
+
 	return retval;
 }
 
 static GSList *
-brasero_caps_disc_lookup_or_create (GSList *retval,
+brasero_caps_disc_lookup_or_create (BraseroBurnCaps *self,
+				    GSList *retval,
 				    BraseroMedia media)
 {
 	GSList *iter;
 	BraseroCaps *caps;
 
-	if (!default_caps)
-		brasero_burn_caps_get_default ();
-
-	for (iter = default_caps->priv->caps_list; iter; iter = iter->next) {
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		caps = iter->data;
 
 		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
@@ -3361,26 +3433,31 @@ brasero_caps_disc_lookup_or_create (GSList *retval,
 				    caps->flags,
 				    "Created");
 
-	default_caps->priv->caps_list = g_slist_prepend (default_caps->priv->caps_list, caps);
+	self->priv->caps_list = g_slist_prepend (self->priv->caps_list, caps);
+
 	return g_slist_prepend (retval, caps);
 }
 
 GSList *
 brasero_caps_disc_new (BraseroMedia type)
 {
+	BraseroBurnCaps *self;
 	GSList *retval = NULL;
 	GSList *list;
 	GSList *iter;
+
+	self = brasero_burn_caps_get_default ();
 
 	list = brasero_media_get_all_list (type);
 	for (iter = list; iter; iter = iter->next) {
 		BraseroMedia medium;
 
 		medium = GPOINTER_TO_INT (iter->data);
-		retval = brasero_caps_disc_lookup_or_create (retval, medium);
+		retval = brasero_caps_disc_lookup_or_create (self, retval, medium);
 	}
 	g_slist_free (list);
 
+	g_object_unref (self);
 	return retval;
 }
 
@@ -3500,6 +3577,7 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 
 	/* Find the the BraseroCapsTest for this type; if none create it */
 	self = brasero_burn_caps_get_default ();
+
 	for (iter = self->priv->tests; iter; iter = iter->next) {
 		BraseroCapsTest *tmp;
 
@@ -3578,6 +3656,7 @@ brasero_plugin_register_group (BraseroPlugin *plugin,
 	retval = GPOINTER_TO_INT (g_hash_table_lookup (self->priv->groups, name));
 	if (retval) {
 		brasero_plugin_set_group (plugin, retval);
+		g_object_unref (self);
 		return;
 	}
 
@@ -3592,6 +3671,8 @@ brasero_plugin_register_group (BraseroPlugin *plugin,
 		self->priv->group_id = g_hash_table_size (self->priv->groups) + 1;
 
 	brasero_plugin_set_group (plugin, g_hash_table_size (self->priv->groups) + 1);
+
+	g_object_unref (self);
 }
 
 /** 
@@ -3626,12 +3707,15 @@ brasero_plugin_can_burn (BraseroPlugin *plugin)
 				BraseroPlugin *tmp;
 
 				tmp = plugins->data;
-				if (tmp == plugin)
+				if (tmp == plugin) {
+					g_object_unref (self);
 					return BRASERO_BURN_OK;
+				}
 			}
 		}
 	}
 
+	g_object_unref (self);
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
 
@@ -3668,12 +3752,15 @@ brasero_plugin_can_image (BraseroPlugin *plugin)
 				BraseroPlugin *tmp;
 
 				tmp = plugins->data;
-				if (tmp == plugin)
+				if (tmp == plugin) {
+					g_object_unref (self);
 					return BRASERO_BURN_OK;
+				}
 			}
 		}
 	}
 
+	g_object_unref (self);
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
 
@@ -3684,6 +3771,7 @@ brasero_plugin_can_convert (BraseroPlugin *plugin)
 	BraseroBurnCaps *self;
 
 	self = brasero_burn_caps_get_default ();
+
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroTrackDataType destination;
 		BraseroCaps *caps;
@@ -3709,11 +3797,15 @@ brasero_plugin_can_convert (BraseroPlugin *plugin)
 				BraseroPlugin *tmp;
 
 				tmp = plugins->data;
-				if (tmp == plugin)
+				if (tmp == plugin) {
+					g_object_unref (self);
 					return BRASERO_BURN_OK;
+				}
 			}
 		}
 	}
+
+	g_object_unref (self);
 
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
@@ -3751,8 +3843,10 @@ brasero_media_capabilities (BraseroMedia media)
 		caps = NULL;
 	}
 
-	if (!caps)
+	if (!caps) {
+		g_object_unref (self);
 		return BRASERO_MEDIUM_NONE;
+	}
 
 	/* check the links */
 	for (links = caps->links; links; links = links->next) {
@@ -3792,11 +3886,12 @@ brasero_media_capabilities (BraseroMedia media)
 		retval |= BRASERO_MEDIUM_WRITABLE;
 	}
 
+	g_object_unref (self);
 	return retval;
 }
 
 /**
- * This function is declared in burn-basics.h
+ * This function is declared in brasero-burn-lib.h
  * It can be used to determine whether or not brasero can do any checksuming.
  */
 
@@ -3808,8 +3903,10 @@ brasero_burn_library_can_checksum (void)
 
 	self = brasero_burn_caps_get_default ();
 
-	if (self->priv->tests == NULL)
+	if (self->priv->tests == NULL) {
+		g_object_unref (self);
 		return FALSE;
+	}
 
 	for (iter = self->priv->tests; iter; iter = iter->next) {
 		BraseroCapsTest *tmp;
@@ -3820,11 +3917,14 @@ brasero_burn_library_can_checksum (void)
 			BraseroCapsLink *link;
 
 			link = links->data;
-			if (brasero_caps_link_active (link))
+			if (brasero_caps_link_active (link)) {
+				g_object_unref (self);
 				return TRUE;
+			}
 		}
 	}
 
+	g_object_unref (self);
 	return FALSE;
 }
 
@@ -3849,6 +3949,8 @@ brasero_caps_list_dump (void)
 					    "Created %i links pointing to",
 					    g_slist_length (caps->links));
 	}
+
+	g_object_unref (self);
 }
 
 
@@ -3871,10 +3973,13 @@ brasero_track_type_is_supported (BraseroTrackType *type)
 		caps = iter->data;
 
 		if (brasero_caps_is_compatible_type (caps, type)
-		&&  brasero_burn_caps_is_input (self, caps))
+		&&  brasero_burn_caps_is_input (self, caps)) {
+			g_object_unref (self);
 			return BRASERO_BURN_OK;
+		}
 	}
 
+	g_object_unref (self);
 	return BRASERO_BURN_ERR;
 }
 

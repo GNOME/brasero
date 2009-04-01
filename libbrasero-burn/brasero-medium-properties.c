@@ -46,7 +46,6 @@
 #include "brasero-session-cfg.h"
 
 #include "burn-basics.h"
-#include "burn-caps.h"
 #include "brasero-track.h"
 #include "brasero-medium.h"
 #include "brasero-session.h"
@@ -56,7 +55,6 @@ typedef struct _BraseroMediumPropertiesPrivate BraseroMediumPropertiesPrivate;
 struct _BraseroMediumPropertiesPrivate
 {
 	BraseroBurnSession *session;
-	BraseroBurnCaps *caps;
 
 	GtkWidget *medium_prop;
 
@@ -108,10 +106,9 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 					    rate);
 
 	flags = brasero_burn_session_get_flags (priv->session);
-	brasero_burn_caps_get_flags (priv->caps,
-				     priv->session,
-				     &supported,
-				     &compulsory);
+	brasero_burn_session_get_burn_flags (priv->session,
+					     &supported,
+					     &compulsory);
 
 	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->medium_prop),
 					    flags,
@@ -242,8 +239,7 @@ brasero_medium_properties_get_possible_output_formats (BraseroMediumProperties *
 		BraseroBurnResult result;
 
 		output.subtype.img_format = format;
-		result = brasero_burn_caps_is_output_supported (priv->caps,
-								priv->session,
+		result = brasero_burn_session_output_supported (priv->session,
 								&output);
 		if (result == BRASERO_BURN_OK) {
 			(*formats) |= format;
@@ -272,7 +268,7 @@ brasero_medium_properties_image_format_changed_cb (BraseroImageProperties *dialo
 	format = brasero_image_properties_get_format (dialog);
 
 	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE)
-		format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
+		format = brasero_burn_session_get_default_output_format (priv->session);
 
 	if (priv->default_path && !brasero_image_properties_is_path_edited (dialog)) {
 		/* not changed: get a new default path */
@@ -419,7 +415,7 @@ brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 
 	/* see if we are to choose the format ourselves */
 	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
-		format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
+		format = brasero_burn_session_get_default_output_format (priv->session);
 		priv->default_format = TRUE;
 	}
 	else
@@ -501,18 +497,18 @@ brasero_medium_properties_update_image_output (BraseroMediumProperties *self,
 		 * default and remove the current one */
 		if (!is_valid) {
 			priv->default_format = TRUE;
-			valid_format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
+			valid_format = brasero_burn_session_get_default_output_format (priv->session);
 		}
 		else if (priv->default_format) {
 			/* since input, or caps changed, check if there isn't a
 			 * better format available. */
-			valid_format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
+			valid_format = brasero_burn_session_get_default_output_format (priv->session);
 		}
 	}
 	else {
 		/* This is always invalid; find one */
 		priv->default_format = TRUE;
-		valid_format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
+		valid_format = brasero_burn_session_get_default_output_format (priv->session);
 	}
 
 	/* see if we have a workable format */
@@ -588,8 +584,6 @@ brasero_medium_properties_init (BraseroMediumProperties *object)
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
 
-	priv->caps = brasero_burn_caps_get_default ();
-
 	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Configure recording options"));
 
 	priv->default_ext = TRUE;
@@ -603,11 +597,6 @@ brasero_medium_properties_finalize (GObject *object)
 	BraseroMediumPropertiesPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
-	}
 
 	if (priv->valid_sig) {
 		g_signal_handler_disconnect (priv->session,

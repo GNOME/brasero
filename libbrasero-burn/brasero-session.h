@@ -114,11 +114,6 @@ brasero_burn_session_tag_remove (BraseroBurnSession *session,
 BraseroDrive *
 brasero_burn_session_get_burner (BraseroBurnSession *session);
 
-
-/**
- * When outputting to an image file burner needs to be set to a drive with FILE type
- */
-
 void
 brasero_burn_session_set_burner (BraseroBurnSession *session,
 				 BraseroDrive *burner);
@@ -201,6 +196,46 @@ void
 brasero_burn_session_push_tracks (BraseroBurnSession *session);
 void
 brasero_burn_session_pop_tracks (BraseroBurnSession *session);
+
+/**
+ * Test the supported or compulsory flags for a given session
+ */
+
+BraseroBurnResult
+brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
+				     BraseroBurnFlag *supported,
+				     BraseroBurnFlag *compulsory);
+
+BraseroBurnResult
+brasero_burn_session_get_blank_flags (BraseroBurnSession *session,
+				      BraseroBurnFlag *supported,
+				      BraseroBurnFlag *compulsory);
+
+/**
+ * Used to test the possibilities offered for a given session
+ */
+
+BraseroBurnResult
+brasero_burn_session_can_blank (BraseroBurnSession *session);
+
+BraseroBurnResult
+brasero_burn_session_can_burn (BraseroBurnSession *session,
+			       gboolean use_flags);
+
+BraseroBurnResult
+brasero_burn_session_input_supported (BraseroBurnSession *session,
+				      BraseroTrackType *input,
+				      gboolean use_flags);
+
+BraseroBurnResult
+brasero_burn_session_output_supported (BraseroBurnSession *session,
+				       BraseroTrackType *output);
+
+BraseroMedia
+brasero_burn_session_get_required_media_type (BraseroBurnSession *session);
+
+BraseroImageFormat
+brasero_burn_session_get_default_output_format (BraseroBurnSession *session);
 
 /**
  * Some convenience functions

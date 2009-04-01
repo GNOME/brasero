@@ -45,7 +45,6 @@
 
 #include "burn-basics.h"
 #include "brasero-session.h"
-#include "burn-caps.h"
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 #include "brasero-session-cfg.h"

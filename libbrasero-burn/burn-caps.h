@@ -39,7 +39,6 @@
 #include "brasero-session.h"
 #include "burn-plugin.h"
 #include "burn-task.h"
-#include "burn-caps.h"
 
 G_BEGIN_DECLS
 
@@ -82,52 +81,5 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
 					BraseroBurnSession *session,
 					GError **error);
 
-/**
- * Test the supported or compulsory flags for a given session
- */
-
-BraseroBurnResult
-brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
-			     BraseroBurnSession *session,
-			     BraseroBurnFlag *supported,
-			     BraseroBurnFlag *compulsory);
-
-BraseroBurnResult
-brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
-				      BraseroBurnSession *session,
-				      BraseroBurnFlag *supported,
-				      BraseroBurnFlag *compulsory);
-
-/**
- * Used to test the possibilities offered for a given session
- */
-
-BraseroBurnResult
-brasero_burn_caps_can_blank (BraseroBurnCaps *caps,
-			     BraseroBurnSession *session);
-
-BraseroBurnResult
-brasero_burn_caps_is_input_supported (BraseroBurnCaps *caps,
-				      BraseroBurnSession *session,
-				      BraseroTrackType *input,
-				      gboolean use_flags);
-
-BraseroBurnResult
-brasero_burn_caps_is_output_supported (BraseroBurnCaps *caps,
-				       BraseroBurnSession *session,
-				       BraseroTrackType *output);
-
-BraseroBurnResult
-brasero_burn_caps_is_session_supported (BraseroBurnCaps *caps,
-					BraseroBurnSession *session,
-					gboolean use_flags);
-
-BraseroMedia
-brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
-					   BraseroBurnSession *session);
-
-BraseroImageFormat
-brasero_burn_caps_get_default_output_format (BraseroBurnCaps *caps,
-					     BraseroBurnSession *session);
 
 #endif /* BURN_CAPS_H */

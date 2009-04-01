@@ -36,7 +36,17 @@ libbraseroburninclude_HEADERS =					\
 	brasero-tags.h						\
 	brasero-enums.h						\
 	brasero-error.h						\
-	brasero-burn-lib.h
+	brasero-burn-lib.h					\
+	brasero-track.h						\
+	brasero-track-data.h                 			\
+	brasero-track-disc.h                 			\
+	brasero-track-stream.h                 			\
+	brasero-track-image.h					\
+	brasero-track-image-cfg.h				\
+	brasero-session.h                 			\
+	brasero-burn.h						\
+	brasero-burn-options.h        			        \
+	brasero-burn-dialog.h
 
 libbrasero_burn_la_LIBADD =					\
 	../libbrasero-media/libbrasero-media.la			\

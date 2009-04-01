@@ -39,7 +39,6 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
-#include "burn-caps.h"
 #include "brasero-image-type-chooser.h"
 
 #define BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_TYPE_CHOOSER, BraseroImageTypeChooserPrivate))
@@ -61,7 +60,6 @@ static guint brasero_image_type_chooser_signals [LAST_SIGNAL] = { 0 };
 struct _BraseroImageTypeChooserPrivate {
 	GtkWidget *combo;
 
-	BraseroBurnCaps *caps;
 	BraseroImageFormat format;
 
 	guint updating:1;
@@ -242,8 +240,6 @@ brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 
 	gtk_widget_show (priv->combo);
 	gtk_box_pack_end (GTK_BOX (obj), priv->combo, TRUE, TRUE, 0);
-
-	priv->caps = brasero_burn_caps_get_default ();
 }
 
 static void
@@ -252,11 +248,6 @@ brasero_image_type_chooser_finalize (GObject *object)
 	BraseroImageTypeChooserPrivate *priv;
 
 	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (object);
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
-	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

@@ -1,3 +1,78 @@
+2009-04-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Clean burn-cap.h/c:
+	move some function to brasero-session.h as they should be public
+	Also fix some forgotten unreffing (harmless as this object is supposed
+	to live all the time the app/librasery is to be used)
+
+	* libbrasero-burn/Makefile.am:
+	* libbrasero-burn/brasero-burn-options.c:
+	* libbrasero-burn/brasero-burn.c
+	(brasero_burn_is_loaded_dest_media_supported),
+	(brasero_burn_reload_dest_media),
+	(brasero_burn_check_session_consistency),
+	(brasero_burn_same_src_dest_image),
+	(brasero_burn_same_src_dest_reload_medium), (brasero_burn_record):
+	* libbrasero-burn/brasero-dest-selection.c
+	(brasero_dest_selection_init), (brasero_dest_selection_finalize),
+	(brasero_dest_selection_format_medium_string):
+	* libbrasero-burn/brasero-disc-copy-dialog.c:
+	* libbrasero-burn/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_update_joliet),
+	(brasero_disc_option_dialog_init),
+	(brasero_disc_option_dialog_finalize):
+	* libbrasero-burn/brasero-image-type-chooser.c
+	(brasero_image_type_chooser_init),
+	(brasero_image_type_chooser_finalize):
+	* libbrasero-burn/brasero-medium-properties.c
+	(brasero_medium_properties_drive_properties),
+	(brasero_medium_properties_get_possible_output_formats),
+	(brasero_medium_properties_image_format_changed_cb),
+	(brasero_medium_properties_image_properties),
+	(brasero_medium_properties_update_image_output),
+	(brasero_medium_properties_init),
+	(brasero_medium_properties_finalize):
+	* libbrasero-burn/brasero-session-cfg.c
+	(brasero_session_cfg_add_drive_properties_flags),
+	(brasero_session_cfg_update), (brasero_session_cfg_add_flags),
+	(brasero_session_cfg_remove_flags), (brasero_session_cfg_init),
+	(brasero_session_cfg_finalize):
+	* libbrasero-burn/brasero-session.h:
+	* libbrasero-burn/brasero-src-image.c
+	(brasero_src_image_set_formats), (brasero_src_image_init),
+	(brasero_src_image_finalize):
+	* libbrasero-burn/burn-caps.c (brasero_caps_find_start_caps),
+	(brasero_burn_session_get_blank_flags),
+	(brasero_burn_session_can_blank), (brasero_burn_caps_new_task),
+	(brasero_caps_try_output), (brasero_caps_try_output_with_blanking),
+	(brasero_burn_session_input_supported),
+	(brasero_burn_session_output_supported),
+	(brasero_burn_session_can_burn),
+	(brasero_burn_session_get_required_media_type),
+	(brasero_burn_session_get_default_output_format),
+	(brasero_caps_get_flags_for_disc),
+	(brasero_burn_caps_get_flags_for_medium),
+	(brasero_burn_session_get_burn_flags), (brasero_caps_duplicate),
+	(brasero_caps_replicate_links), (brasero_caps_replicate_tests),
+	(brasero_caps_copy_deep), (brasero_caps_duplicate_deep),
+	(brasero_caps_list_check_io), (brasero_caps_image_new),
+	(brasero_caps_audio_new), (brasero_caps_data_new),
+	(brasero_caps_disc_lookup_or_create), (brasero_caps_disc_new),
+	(brasero_plugin_check_caps), (brasero_plugin_register_group),
+	(brasero_plugin_can_burn), (brasero_plugin_can_image),
+	(brasero_plugin_can_convert), (brasero_media_capabilities),
+	(brasero_burn_library_can_checksum), (brasero_caps_list_dump),
+	(brasero_track_type_is_supported):
+	* libbrasero-burn/burn-caps.h:
+	* src/brasero-app.c:
+	* src/brasero-blank-dialog.c
+	(brasero_blank_dialog_device_opts_setup),
+	(brasero_blank_dialog_finalize), (brasero_blank_dialog_init):
+	* src/brasero-data-session.c:
+	* src/brasero-plugin-manager-ui.c
+	(plugin_manager_ui_populate_lists):
+	* src/brasero-project-manager.c:
+
 2009-03-29  Luis Medinas  <lmedinas@gnome.org>
 
         * src/brasero-audio-disc.c

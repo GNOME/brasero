@@ -36,7 +36,6 @@
 #include "brasero-misc.h"
 
 #include "burn-basics.h"
-#include "burn-caps.h"
 
 #include "brasero-session.h"
 #include "brasero-burn.h"
@@ -49,7 +48,6 @@ G_DEFINE_TYPE (BraseroBlankDialog, brasero_blank_dialog, BRASERO_TYPE_TOOL_DIALO
 
 struct BraseroBlankDialogPrivate {
 	BraseroBurnSession *session;
-	BraseroBurnCaps *caps;
 
 	GtkWidget *fast;
 
@@ -119,8 +117,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
 
 	/* set the options */
-	brasero_burn_caps_get_blanking_flags (priv->caps,
-					      priv->session,
+	brasero_burn_session_get_blank_flags (priv->session,
 					      &supported,
 					      &compulsory);
 
@@ -133,7 +130,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 
 	/* This must be done afterwards, once the session flags were updated */
 	brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (self),
-				       (brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK));
+				       (brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK));
 }
 
 static void
@@ -311,11 +308,6 @@ brasero_blank_dialog_finalize (GObject *object)
 		priv->caps_sig = 0;
 	}
 
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
-	}
-
 	if (priv->output_sig) {
 		g_signal_handler_disconnect (priv->session, priv->output_sig);
 		priv->output_sig = 0;
@@ -382,7 +374,6 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					     G_CALLBACK (brasero_blank_dialog_output_changed),
 					     obj);
 
-	priv->caps = brasero_burn_caps_get_default ();
 	manager = brasero_plugin_manager_get_default ();
 	priv->caps_sig = g_signal_connect (manager,
 					   "caps-changed",

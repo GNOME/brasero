@@ -722,8 +722,7 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 	output.type = BRASERO_TRACK_TYPE_DISC;
 	output.subtype.media = media;
 
-	result = brasero_burn_caps_is_output_supported (priv->caps,
-							priv->session,
+	result = brasero_burn_session_output_supported (priv->session,
 							&output);
 
 	flags = brasero_burn_session_get_flags (priv->session);
@@ -747,15 +746,14 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 	}
 
 	/* let's see what our media is missing and what's not supported */
-	required_media = brasero_burn_caps_get_required_media_type (priv->caps,
-								    priv->session);
+	required_media = brasero_burn_session_get_required_media_type (priv->session);
 	missing = required_media & (~media);
 	unsupported = media & (~required_media);
 
 	if (missing & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_APPENDABLE)) {
 		/* there is a special case if the disc is rewritable */
 		if ((media & BRASERO_MEDIUM_REWRITABLE)
-		&&   brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK) {
+		&&   brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK) {
 			*must_blank = TRUE;
 			return BRASERO_BURN_ERROR_NONE;
 		}
@@ -965,7 +963,7 @@ brasero_burn_reload_dest_media (BraseroBurn *burn,
 again:
 
 	/* eject and ask the user to reload a disc */
-	required_media = brasero_burn_caps_get_required_media_type (priv->caps, priv->session);
+	required_media = brasero_burn_session_get_required_media_type (priv->session);
 	required_media &= (BRASERO_MEDIUM_WRITABLE|
 			   BRASERO_MEDIUM_CD|
 			   BRASERO_MEDIUM_DVD);
@@ -1962,10 +1960,9 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	flags = brasero_burn_session_get_flags (priv->session);
 	brasero_burn_session_remove_flag (priv->session, flags);
 
-	result = brasero_burn_caps_get_flags (priv->caps,
-					      priv->session,
-					      &supported,
-					      &compulsory);
+	result = brasero_burn_session_get_burn_flags (priv->session,
+						      &supported,
+						      &compulsory);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -1981,10 +1978,9 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		 * media type that doesn't need it. */
 		if (supported & flag) {
 			brasero_burn_session_add_flag (priv->session, flag);
-			brasero_burn_caps_get_flags (priv->caps,
-						     priv->session,
-						     &supported,
-						     &compulsory);
+			brasero_burn_session_get_burn_flags (priv->session,
+							     &supported,
+							     &compulsory);
 		}
 		else {
 			BRASERO_BURN_LOG_FLAGS (flag, "Flag set but not supported:");
@@ -2342,8 +2338,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	format = BRASERO_IMAGE_FORMAT_CDRDAO;
 	for (; format != BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
 		output.subtype.img_format = format;
-		result = brasero_burn_caps_is_output_supported (priv->caps,
-								priv->session,
+		result = brasero_burn_session_output_supported (priv->session,
 								&output);
 		if (result == BRASERO_BURN_OK)
 			break;
@@ -2472,8 +2467,7 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 	 * we need to be lenient. */
 
 	/* Eject and ask the user to reload a disc */
-	required_media = brasero_burn_caps_get_required_media_type (priv->caps,
-								    priv->session);
+	required_media = brasero_burn_session_get_required_media_type (priv->session);
 	required_media &= (BRASERO_MEDIUM_WRITABLE|
 			   BRASERO_MEDIUM_CD|
 			   BRASERO_MEDIUM_DVD|
@@ -2567,8 +2561,7 @@ brasero_burn_record (BraseroBurn *burn,
 		while (result == BRASERO_BURN_NEED_RELOAD) {
 			BraseroMedia required_media;
 
-			required_media = brasero_burn_caps_get_required_media_type (priv->caps,
-										    priv->session);
+			required_media = brasero_burn_session_get_required_media_type (priv->session);
 			if (required_media == BRASERO_MEDIUM_NONE)
 				required_media = BRASERO_MEDIUM_WRITABLE;
 

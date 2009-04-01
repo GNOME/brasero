@@ -43,7 +43,6 @@
 #include <gconf/gconf-client.h>
 
 #include "burn-basics.h"
-#include "burn-caps.h"
 #include "brasero-track.h"
 #include "brasero-medium.h"
 #include "brasero-session.h"
@@ -59,7 +58,6 @@ typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate
 {
 	BraseroBurnSession *session;
-	BraseroBurnCaps *caps;
 
 	BraseroDrive *locked_drive;
 
@@ -172,8 +170,6 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
-	priv->caps = brasero_burn_caps_get_default ();
-
 	/* Only show media on which we can write and which are in a burner.
 	 * There is one exception though, when we're copying media and when the
 	 * burning device is the same as the dest device. */
@@ -187,11 +183,6 @@ brasero_dest_selection_finalize (GObject *object)
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
-	}
 
 	if (priv->valid_sig) {
 		g_signal_handler_disconnect (priv->session,
@@ -451,7 +442,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 
 	if ((media & BRASERO_MEDIUM_BLANK)
 	|| ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-	&&  brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK)) {
+	&&  brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK)) {
 		brasero_medium_get_capacity (medium,
 					     &size_bytes,
 					     NULL);
@@ -462,7 +453,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 					       NULL);
 	}
 	else if (media & BRASERO_MEDIUM_CLOSED) {
-		if (!brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK) {
+		if (!brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK) {
 			/* NOTE for translators, the first %s is the medium name */
 			label = g_strdup_printf (_("%s: no free space"), medium_name);
 			g_free (medium_name);

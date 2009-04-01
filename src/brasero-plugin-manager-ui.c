@@ -40,7 +40,6 @@ fy
 #include "brasero-plugin-manager-ui.h"
 
 #include "burn-plugin.h"
-#include "burn-caps.h"
 #include "burn-plugin-private.h"
 #include "burn-plugin-manager.h"
 #include "brasero-plugin-option.h"
@@ -347,15 +346,12 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 {
 	BraseroPluginManagerUIPrivate *priv;
 	BraseroPlugin *plugin;
-	BraseroBurnCaps *caps;
 	const GSList *plugins;
 	GtkListStore *model;
 	GtkTreeIter iter;
 
 	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
 	plugins = priv->plugins;
-
-	caps = brasero_burn_caps_get_default ();
 
 	model = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
 
@@ -373,7 +369,6 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 				    PLUGIN_COLUMN, plugin,
 				    -1);
 	}
-	g_object_unref (caps);
 
 	plugin = NULL;
 	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))

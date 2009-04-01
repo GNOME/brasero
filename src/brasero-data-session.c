@@ -29,9 +29,6 @@
 
 #include "brasero-media-private.h"
 
-#include "burn-basics.h"
-#include "burn-caps.h"
-
 #include "scsi-device.h"
 
 #include "brasero-drive.h"

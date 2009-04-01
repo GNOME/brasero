@@ -44,7 +44,6 @@
 
 #include "brasero-drive.h"
 
-#include "burn-caps.h"
 #include "burn-debug.h"
 
 #include "brasero-tags.h"

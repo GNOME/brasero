@@ -43,7 +43,6 @@
 #include <gconf/gconf-client.h>
 
 #include "burn-basics.h"
-#include "burn-caps.h"
 
 #include "brasero-drive.h"
 
@@ -61,8 +60,6 @@ struct _BraseroSrcImagePrivate
 {
 	BraseroBurnSession *session;
 	BraseroTrackImageCfg *track;
-
-	BraseroBurnCaps *caps;
 
 	gchar *folder;
 	GCancellable *cancel;
@@ -371,8 +368,7 @@ brasero_src_image_set_formats (BraseroSrcImage *dialog)
 		BraseroBurnResult result;
 
 		input.subtype.img_format = format;
-		result = brasero_burn_caps_is_input_supported (priv->caps,
-							       priv->session,
+		result = brasero_burn_session_input_supported (priv->session,
 							       &input,
 							       FALSE);
 		if (result == BRASERO_BURN_OK)
@@ -574,8 +570,6 @@ brasero_src_image_init (BraseroSrcImage *object)
 	}
 	g_free (uri);
 		 
-	priv->caps = brasero_burn_caps_get_default ();
-
 	string = g_strdup_printf ("<i>%s</i>", _("Click here to select an _image"));
 	label = gtk_label_new_with_mnemonic (string);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -609,11 +603,6 @@ brasero_src_image_finalize (GObject *object)
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
-	}
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
 	}
 
 	if (priv->cancel) {

@@ -45,7 +45,6 @@
 #include "brasero-uri-container.h"
 #include "brasero-project-type-chooser.h"
 #include "brasero-io.h"
-#include "burn-caps.h"
 #include "brasero-medium-monitor.h"
 
 #ifdef BUILD_SEARCH

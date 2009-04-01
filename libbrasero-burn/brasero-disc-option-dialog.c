@@ -48,7 +48,7 @@
 #include "burn-basics.h"
 #include "brasero-tags.h"
 #include "brasero-session.h"
-#include "burn-caps.h"
+#include "brasero-track-data.h"
 #include "burn-plugin-manager.h"
 #include "brasero-disc-option-dialog.h"
 #include "brasero-dest-selection.h"
@@ -58,8 +58,6 @@
 G_DEFINE_TYPE (BraseroDiscOptionDialog, brasero_disc_option_dialog, BRASERO_TYPE_BURN_OPTIONS);
 
 struct _BraseroDiscOptionDialogPrivate {
-	BraseroBurnCaps *caps;
-
 	GtkWidget *joliet_toggle;
 
 	GtkWidget *video_options;
@@ -159,8 +157,7 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 	brasero_burn_session_get_input_type (session, &source);
 
 	source.subtype.fs_type |= BRASERO_IMAGE_FS_JOLIET;
-	result = brasero_burn_caps_is_input_supported (priv->caps,
-						       session,
+	result = brasero_burn_session_input_supported (session,
 						       &source,
 						       FALSE);
 	if (result == BRASERO_BURN_OK) {
@@ -809,7 +806,6 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (obj);
 
-	priv->caps = brasero_burn_caps_get_default ();
 	gtk_window_set_title (GTK_WINDOW (obj), _("Disc Burning Setup"));
 	g_signal_connect (obj,
 			  "notify::session",
@@ -832,11 +828,6 @@ brasero_disc_option_dialog_finalize (GObject *object)
 		g_object_unref (session);
 
 		priv->valid_sig = 0;
-	}
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

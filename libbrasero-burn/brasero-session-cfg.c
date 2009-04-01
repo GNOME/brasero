@@ -44,7 +44,6 @@
 #include "burn-debug.h"
 #include "burn-plugin-manager.h"
 #include "brasero-session.h"
-#include "burn-caps.h"
 #include "burn-plugin-manager.h"
 #include "burn-image-format.h"
 
@@ -54,8 +53,6 @@
 typedef struct _BraseroSessionCfgPrivate BraseroSessionCfgPrivate;
 struct _BraseroSessionCfgPrivate
 {
-	BraseroBurnCaps *caps;
-
 	BraseroBurnFlag supported;
 	BraseroBurnFlag compulsory;
 
@@ -262,10 +259,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 	priv->supported = BRASERO_BURN_FLAG_NONE;
 	priv->compulsory = BRASERO_BURN_FLAG_NONE;
-	result = brasero_burn_caps_get_flags (priv->caps,
-					      BRASERO_BURN_SESSION (self),
-					      &priv->supported,
-					      &priv->compulsory);
+	result = brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+						      &priv->supported,
+						      &priv->compulsory);
 	if (result != BRASERO_BURN_OK) {
 		brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self), flags);
 		return;
@@ -293,10 +289,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 			priv->supported = BRASERO_BURN_FLAG_NONE;
 			priv->compulsory = BRASERO_BURN_FLAG_NONE;
-			brasero_burn_caps_get_flags (priv->caps,
-						     BRASERO_BURN_SESSION (self),
-						     &priv->supported,
-						     &priv->compulsory);
+			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
 		}
 
 		if (priv->supported & flag) {
@@ -304,10 +299,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 			priv->supported = BRASERO_BURN_FLAG_NONE;
 			priv->compulsory = BRASERO_BURN_FLAG_NONE;
-			brasero_burn_caps_get_flags (priv->caps,
-						     BRASERO_BURN_SESSION (self),
-						     &priv->supported,
-						     &priv->compulsory);
+			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
 		}
 	}
 
@@ -322,10 +316,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 			priv->supported = BRASERO_BURN_FLAG_NONE;
 			priv->compulsory = BRASERO_BURN_FLAG_NONE;
-			brasero_burn_caps_get_flags (priv->caps,
-						     BRASERO_BURN_SESSION (self),
-						     &priv->supported,
-						     &priv->compulsory);
+			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
 		}
 	}
 
@@ -340,10 +333,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 		priv->supported = BRASERO_BURN_FLAG_NONE;
 		priv->compulsory = BRASERO_BURN_FLAG_NONE;
-		brasero_burn_caps_get_flags (priv->caps,
-					     BRASERO_BURN_SESSION (self),
-					     &priv->supported,
-					     &priv->compulsory);
+		brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+						     &priv->supported,
+						     &priv->compulsory);
 	}
 
 	/* When copying with same drive don't set write mode, it'll be set later */
@@ -354,10 +346,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 			priv->supported = BRASERO_BURN_FLAG_NONE;
 			priv->compulsory = BRASERO_BURN_FLAG_NONE;
-			brasero_burn_caps_get_flags (priv->caps,
-						     BRASERO_BURN_SESSION (self),
-						     &priv->supported,
-						     &priv->compulsory);
+			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
 
 			/* NOTE: after setting DAO, some flags may become
 			 * compulsory like BLANK_BEFORE for CDRW with data */
@@ -693,8 +684,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		/* Try to redo what we undid (after all a new plugin could have
 		 * been activated in the mean time ...) and see what happens */
 		source.subtype.audio_format |= BRASERO_METADATA_INFO;
-		result = brasero_burn_caps_is_input_supported (priv->caps,
-							       BRASERO_BURN_SESSION (self),
+		result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
 							       &source,
 							       FALSE);
 		if (result == BRASERO_BURN_OK) {
@@ -708,17 +698,15 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		else {
 			/* No, nothing's changed */
 			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
-			result = brasero_burn_caps_is_input_supported (priv->caps,
-								       BRASERO_BURN_SESSION (self),
+			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
 								       &source,
 								       FALSE);
 		}
 	}
 	else {
 		/* Don't use flags as they'll be adapted later. */
-		result = brasero_burn_caps_is_session_supported (priv->caps,
-								 BRASERO_BURN_SESSION (self),
-								 FALSE);
+		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
+							FALSE);
 		if (result != BRASERO_BURN_OK
 		&&  source.type == BRASERO_TRACK_TYPE_STREAM
 		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {
@@ -727,8 +715,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			 * other backend is available remove CD-TEXT option but
 			 * tell user... */
 			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
-			result = brasero_burn_caps_is_input_supported (priv->caps,
-								       BRASERO_BURN_SESSION (self),
+			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
 								       &source,
 								       FALSE);
 			BRASERO_BURN_LOG ("Tested support without Metadata information (result %d)", result);
@@ -870,10 +857,9 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 	brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), flags);
 	priv->supported = BRASERO_BURN_FLAG_NONE;
 	priv->compulsory = BRASERO_BURN_FLAG_NONE;
-	brasero_burn_caps_get_flags (priv->caps,
-				     BRASERO_BURN_SESSION (self),
-				     &priv->supported,
-				     &priv->compulsory);
+	brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+					     &priv->supported,
+					     &priv->compulsory);
 
 	/* Always save flags */
 	brasero_session_cfg_save_drive_properties (self);
@@ -894,10 +880,9 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
 	priv->supported = BRASERO_BURN_FLAG_NONE;
 	priv->compulsory = BRASERO_BURN_FLAG_NONE;
-	brasero_burn_caps_get_flags (priv->caps,
-				     BRASERO_BURN_SESSION (self),
-				     &priv->supported,
-				     &priv->compulsory);
+	brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+					     &priv->supported,
+					     &priv->compulsory);
 
 	/* Always save flags */
 	brasero_session_cfg_save_drive_properties (self);
@@ -935,8 +920,6 @@ brasero_session_cfg_init (BraseroSessionCfg *object)
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (object);
 
-	priv->caps = brasero_burn_caps_get_default ();
-
 	manager = brasero_plugin_manager_get_default ();
 	priv->caps_sig = g_signal_connect (manager,
 					   "caps-changed",
@@ -957,11 +940,6 @@ brasero_session_cfg_finalize (GObject *object)
 		manager = brasero_plugin_manager_get_default ();
 		g_signal_handler_disconnect (manager, priv->caps_sig);
 		priv->caps_sig = 0;
-	}
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_session_cfg_parent_class)->finalize (object);

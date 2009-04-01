@@ -39,7 +39,6 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
-#include "burn-caps.h"
 
 #include "brasero-medium.h"
 #include "brasero-medium-selection-priv.h"
