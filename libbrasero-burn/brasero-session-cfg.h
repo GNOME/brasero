@@ -33,7 +33,7 @@
 
 #include <glib-object.h>
 
-#include "brasero-session.h"
+#include <brasero-session.h>
 
 G_BEGIN_DECLS
 
@@ -107,14 +107,6 @@ brasero_session_cfg_is_compulsory (BraseroSessionCfg *cfg,
 void
 brasero_session_cfg_disable (BraseroSessionCfg *self);
 
-
-/**
- * This tag (for sessions) is used to set an estimated size, used to determine
- * in the burn option dialog if the selected medium is big enough.
- */
-
-#define BRASERO_DATA_TRACK_SIZE_TAG	"track::data::estimated_size"
-#define BRASERO_AUDIO_TRACK_SIZE_TAG	"track::audio::estimated_size"
 
 G_END_DECLS
 

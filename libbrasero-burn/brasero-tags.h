@@ -53,6 +53,14 @@ G_BEGIN_DECLS
  */
 
 /**
+ * This tag (for sessions) is used to set an estimated size, used to determine
+ * in the burn option dialog if the selected medium is big enough.
+ */
+
+#define BRASERO_DATA_TRACK_SIZE_TAG	"track::data::estimated_size"
+#define BRASERO_AUDIO_TRACK_SIZE_TAG	"track::audio::estimated_size"
+
+/**
  * Gives the uri (gchar *) of the cover
  */
 #define BRASERO_COVER_URI			"session::art::cover"
