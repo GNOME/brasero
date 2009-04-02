@@ -52,21 +52,6 @@ G_BEGIN_DECLS
 						BRASERO_VIDEO_FORMAT_VCD|	\
 						BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
 
-struct _BraseroStreamInfo {
-	gchar *title;
-	gchar *artist;
-	gchar *composer;
-	gint isrc;
-};
-
-typedef struct _BraseroStreamInfo BraseroStreamInfo;
-
-void
-brasero_stream_info_free (BraseroStreamInfo *info);
-
-BraseroStreamInfo *
-brasero_stream_info_copy (BraseroStreamInfo *info);
-
 
 #define BRASERO_TYPE_TRACK_STREAM             (brasero_track_stream_get_type ())
 #define BRASERO_TRACK_STREAM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStream))
@@ -102,10 +87,6 @@ brasero_track_stream_set_format (BraseroTrackStream *track,
 				 BraseroStreamFormat format);
 
 BraseroBurnResult
-brasero_track_stream_set_info (BraseroTrackStream *track,
-			       BraseroStreamInfo *info);
-
-BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
 				     gint64 start,
 				     gint64 end,
@@ -118,9 +99,6 @@ brasero_track_stream_get_source (BraseroTrackStream *track,
 BraseroBurnResult
 brasero_track_stream_get_length (BraseroTrackStream *track,
 				 guint64 *length);
-
-BraseroStreamInfo *
-brasero_track_stream_get_info (BraseroTrackStream *track);
 
 guint64
 brasero_track_stream_get_start (BraseroTrackStream *track);

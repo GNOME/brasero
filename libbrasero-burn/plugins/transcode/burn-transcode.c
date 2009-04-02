@@ -42,6 +42,7 @@
 
 #include "burn-basics.h"
 #include "brasero-medium.h"
+#include "brasero-tags.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-transcode.h"
@@ -607,7 +608,6 @@ brasero_transcode_create_sibling_size (BraseroTranscode *transcode,
 				        BraseroTrack *src,
 				        GError **error)
 {
-	BraseroStreamInfo *src_info, *dest_info;
 	BraseroTrack *dest;
 	guint64 duration;
 
@@ -622,16 +622,8 @@ brasero_transcode_create_sibling_size (BraseroTranscode *transcode,
 						       BRASERO_DURATION_TO_BYTES (duration));
 
 	/* copy the info we are missing */
-	src_info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (src));
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &dest);
-	dest_info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (dest));
-
-	if (!dest_info->artist)
-		dest_info->artist = g_strdup (src_info->artist);
-	if (!dest_info->composer)
-		dest_info->composer = g_strdup (src_info->composer);
-	if (!dest_info->title)
-		dest_info->title = g_strdup (src_info->title);
+	brasero_track_tag_copy_missing (dest, src);
 
 	return BRASERO_BURN_OK;
 }
@@ -642,7 +634,6 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 					GError **error)
 {
 	BraseroTrackStream *dest;
-	BraseroStreamInfo *info;
 	BraseroTrack *track;
 	guint64 length = 0;
 	gchar *path_dest;
@@ -679,10 +670,7 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 
 	/* copy all infos but from the current track */
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
-	info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track));
-	info = brasero_stream_info_copy (info);
-	brasero_track_stream_set_info (dest, info);
-
+	brasero_track_tag_copy_missing (BRASERO_TRACK (dest), track);
 	brasero_job_add_track (BRASERO_JOB (transcode), BRASERO_TRACK (dest));
 
 	/* It's good practice to unref the track afterwards as we don't need it
@@ -938,7 +926,6 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	guint64 length = 0;
 	gchar *output = NULL;
 	BraseroTrackType type;
-	BraseroStreamInfo *info;
 	BraseroTrack *src = NULL;
 	BraseroTrackStream *track;
 
@@ -946,9 +933,6 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &src);
 
 	brasero_track_stream_get_length (BRASERO_TRACK_STREAM (src), &length);
-
-	info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (src));
-	info = brasero_stream_info_copy (info);
 
 	brasero_job_get_output_type (BRASERO_JOB (transcode), &type);
 
@@ -958,7 +942,7 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 					 BRASERO_AUDIO_FORMAT_RAW|
 					 BRASERO_AUDIO_FORMAT_44100);
 	brasero_track_stream_set_boundaries (track, 0, length, 0);
-	brasero_track_stream_set_info (track, info);
+	brasero_track_tag_copy_missing (BRASERO_TRACK (track), src);
 
 	brasero_job_add_track (BRASERO_JOB (transcode), BRASERO_TRACK (track));
 
@@ -1250,28 +1234,54 @@ foreach_tag (const GstTagList *list,
 {
 	BraseroTrack *track;
 	BraseroJobAction action;
-	BraseroStreamInfo *info;
 
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
-	info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track));
 
 	BRASERO_JOB_LOG (transcode, "Retrieving tags");
 
-	if (info && !strcmp (tag, GST_TAG_TITLE)) {
-		if (!info->title)
-			gst_tag_list_get_string (list, tag, &(info->title));
+	if (!strcmp (tag, GST_TAG_TITLE)) {
+		if (!brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_TITLE_TAG)) {
+			gchar *title = NULL;
+
+			gst_tag_list_get_string (list, tag, &title);
+			brasero_track_tag_add_string (track,
+						      BRASERO_TRACK_STREAM_TITLE_TAG,
+						      title);
+			g_free (title);
+		}
 	}
-	else if (info && !strcmp (tag, GST_TAG_ARTIST)) {
-		if (!info->artist)
-			gst_tag_list_get_string (list, tag, &(info->artist));
+	else if (!strcmp (tag, GST_TAG_ARTIST)) {
+		if (!brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG)) {
+			gchar *artist = NULL;
+
+			gst_tag_list_get_string (list, tag, &artist);
+			brasero_track_tag_add_string (track,
+						      BRASERO_TRACK_STREAM_ARTIST_TAG,
+						      artist);
+			g_free (artist);
+		}
 	}
-	else if (info && !strcmp (tag, GST_TAG_ISRC)) {
-		gst_tag_list_get_int (list, tag, &(info->isrc));
+	else if (!strcmp (tag, GST_TAG_ISRC)) {
+		if (!brasero_track_tag_lookup_int (track, BRASERO_TRACK_STREAM_ISRC_TAG)) {
+			gint isrc = 0;
+
+			gst_tag_list_get_int (list, tag, &isrc);
+			brasero_track_tag_add_int (track,
+						   BRASERO_TRACK_STREAM_ARTIST_TAG,
+						   isrc);
+		}
 	}
-	else if (info && !strcmp (tag, GST_TAG_PERFORMER)) {
-		if (!info->artist)
-			gst_tag_list_get_string (list, tag, &(info->artist));
+	else if (!strcmp (tag, GST_TAG_PERFORMER)) {
+		if (!brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG)) {
+			gchar *artist = NULL;
+
+			gst_tag_list_get_string (list, tag, &artist);
+			brasero_track_tag_add_string (track,
+						      BRASERO_TRACK_STREAM_ARTIST_TAG,
+						      artist);
+			g_free (artist);
+		}
 	}
 	else if (action == BRASERO_JOB_ACTION_SIZE
 	     &&  !strcmp (tag, GST_TAG_DURATION)) {

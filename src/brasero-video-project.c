@@ -24,6 +24,8 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "brasero-tags.h"
+
 #include "brasero-video-project.h"
 #include "brasero-file-monitor.h"
 #include "brasero-io.h"
@@ -982,31 +984,7 @@ brasero_video_project_get_contents (BraseroVideoProject *self,
 		return NULL;
 
 	for (file = priv->first; file; file = file->next) {
-		BraseroStreamInfo *info = NULL;
 		BraseroTrackStream *track;
-
-		if (file->info) {
-			info = brasero_stream_info_copy (file->info);
-
-			if (values_set) {
-				if (!file->title_set) {
-					g_free (info->title);
-					info->title = NULL;
-				}
-				if (!file->artist_set) {
-					g_free (info->artist);
-					info->artist = NULL;
-				}
-				if (!file->composer_set) {
-					g_free (info->composer);
-					info->composer = NULL;
-				}
-				if (!file->isrc_set)
-					info->isrc = 0;
-			}
-		}
-		else
-			info = NULL;
 
 		track = brasero_track_stream_new ();
 		brasero_track_stream_set_source (track, file->uri);
@@ -1025,7 +1003,27 @@ brasero_video_project_get_contents (BraseroVideoProject *self,
 							     0,
 							     -1);
 
-		brasero_track_stream_set_info (track, info);
+		if (file->info && values_set) {
+			if (!file->title_set)
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+							      BRASERO_TRACK_STREAM_TITLE_TAG,
+							      file->info->title);
+
+			if (!file->artist_set)
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+							      BRASERO_TRACK_STREAM_ARTIST_TAG,
+							      file->info->artist);
+
+			if (!file->composer_set)
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+							      BRASERO_TRACK_STREAM_COMPOSER_TAG,
+							      file->info->composer);
+			if (!file->isrc_set)
+				brasero_track_tag_add_int (BRASERO_TRACK (track),
+							   BRASERO_TRACK_STREAM_ISRC_TAG,
+							   file->info->isrc);
+		}
+
 		tracks = g_slist_prepend (tracks, BRASERO_TRACK (track));
 	}
 

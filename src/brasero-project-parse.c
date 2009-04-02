@@ -48,6 +48,36 @@
 #include "brasero-track-stream.h"
 #include "brasero-track-data.h"
 
+void
+brasero_stream_info_free (BraseroStreamInfo *info)
+{
+	if (!info)
+		return;
+
+	g_free (info->title);
+	g_free (info->artist);
+	g_free (info->composer);
+	g_free (info);
+}
+
+BraseroStreamInfo *
+brasero_stream_info_copy (BraseroStreamInfo *info)
+{
+	BraseroStreamInfo *copy;
+
+	if (!info)
+		return NULL;
+
+	copy = g_new0 (BraseroStreamInfo, 1);
+
+	copy->title = g_strdup (info->title);
+	copy->artist = g_strdup (info->artist);
+	copy->composer = g_strdup (info->composer);
+	copy->isrc = info->isrc;
+
+	return copy;
+}
+
 static void
 brasero_track_clear_song (gpointer data)
 {

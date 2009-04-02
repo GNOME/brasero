@@ -1,3 +1,40 @@
+2009-04-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Move BraseroStreamInfo from library to application
+	Now add additional information like title, composer, ... through tags
+	which are more easily copied and extensible
+
+	* libbrasero-burn/brasero-cover.c
+	(brasero_jacket_edit_set_audio_tracks_back):
+	* libbrasero-burn/brasero-tags.h:
+	* libbrasero-burn/brasero-track-stream.c
+	(brasero_track_stream_finalize):
+	* libbrasero-burn/brasero-track-stream.h:
+	* libbrasero-burn/brasero-track.c (brasero_track_tag_add_int),
+	(brasero_track_tag_add_string), (brasero_track_tag_lookup_int),
+	(brasero_track_tag_lookup_string),
+	(brasero_track_tag_copy_missing):
+	* libbrasero-burn/brasero-track.h:
+	* libbrasero-burn/plugins/cdrkit/burn-wodim.c
+	(brasero_wodim_write_inf):
+	* libbrasero-burn/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_write_inf):
+	* libbrasero-burn/plugins/local-track/burn-local-image.c
+	(brasero_local_track_update_track):
+	* libbrasero-burn/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_thread):
+	* libbrasero-burn/plugins/transcode/burn-transcode.c
+	(brasero_transcode_create_sibling_size),
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_push_track), (foreach_tag):
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_session_contents):
+	* src/brasero-project-parse.c (brasero_stream_info_free),
+	(brasero_stream_info_copy):
+	* src/brasero-project-parse.h:
+	* src/brasero-video-disc.c (brasero_video_disc_get_track):
+	* src/brasero-video-project.c (brasero_video_project_get_contents):
+
 2009-04-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #573859 – Several 'Make Cover' buttons in Disc Copy dialog

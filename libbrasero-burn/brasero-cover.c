@@ -99,8 +99,8 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 	for (iter = tracks; iter; iter = iter->next) {
 		gchar *num;
 		gchar *time;
+		const gchar *info;
 		BraseroTrack *track;
-		BraseroStreamInfo *info;
 
 		track = iter->data;
 		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_STREAM)
@@ -110,47 +110,50 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, num, "Subtitle", &start);
 		g_free (num);
 
-		info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track));
-
+		info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+							BRASERO_TRACK_STREAM_TITLE_TAG);
 		if (info) {
-			if (info->title) {
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->title, "Subtitle", &start);
-			}
-			else {
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("Unknown song"), "Subtitle", &start);
-			}
-
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\t\t", "Subtitle", &start);
-
-			time = brasero_units_get_time_string (brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)) -
-							      brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
-							      TRUE,
-							      FALSE);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
-			g_free (time);
-
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
-
-			if (info->artist) {
-				/* Reminder: if this string happens to be used
-				 * somewhere else in brasero we'll need a
-				 * context with C_() macro */
-				/* Translators: "by" is followed by the name of an artist.
-				 * This text is the one written on the cover of a disc.
-				 * Before it there is the name of the song.
-				 * I had to break it because it is in a GtkTextBuffer
-				 * and every word has a different tag. */
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by"), "Artist", &start);
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->artist, "Artist", &start);
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
-			}
-
-			if (info->composer)
-				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->composer, "Subtitle", &start);
-
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n", "Subtitle", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info, "Subtitle", &start);
 		}
+		else {
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("Unknown song"), "Subtitle", &start);
+		}
+
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\t\t", "Subtitle", &start);
+
+		time = brasero_units_get_time_string (brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)) -
+						      brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
+						      TRUE,
+						      FALSE);
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
+		g_free (time);
+
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
+
+		info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+							BRASERO_TRACK_STREAM_ARTIST_TAG);
+		if (info) {
+			/* Reminder: if this string happens to be used
+			 * somewhere else in brasero we'll need a
+			 * context with C_() macro */
+			/* Translators: "by" is followed by the name of an artist.
+			 * This text is the one written on the cover of a disc.
+			 * Before it there is the name of the song.
+			 * I had to break it because it is in a GtkTextBuffer
+			 * and every word has a different tag. */
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by"), "Artist", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info, "Artist", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
+		}
+
+		info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+							BRASERO_TRACK_STREAM_COMPOSER_TAG);
+
+		if (info)
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info, "Subtitle", &start);
+
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n", "Subtitle", &start);
 	}
 
 	/* side */

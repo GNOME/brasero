@@ -32,6 +32,8 @@
 
 #include "eggtreemultidnd.h"
 
+#include "brasero-tags.h"
+
 #include "burn-debug.h"
 #include "brasero-app.h"
 #include "brasero-disc.h"
@@ -1376,7 +1378,16 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 		song->uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 		song->start = brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track));
 		song->end = brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track));
-		song->info = brasero_stream_info_copy (brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track)));
+
+		song->info = g_new0 (BraseroStreamInfo, 1);
+		song->info->artist = g_strdup (brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+										BRASERO_TRACK_STREAM_ARTIST_TAG));
+		song->info->title = g_strdup (brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+									       BRASERO_TRACK_STREAM_TITLE_TAG));
+		song->info->composer = g_strdup (brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+										  BRASERO_TRACK_STREAM_COMPOSER_TAG));
+		song->info->isrc = brasero_track_tag_lookup_int (BRASERO_TRACK (track),
+								 BRASERO_TRACK_STREAM_ISRC_TAG);
 
 		disc_track->contents.tracks = g_slist_append (disc_track->contents.tracks, song);
 	}

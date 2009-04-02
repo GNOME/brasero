@@ -49,43 +49,11 @@ struct _BraseroTrackStreamPrivate
 	guint64 gap;
 	guint64 start;
 	guint64 end;
-
-	BraseroStreamInfo *info;
 };
 
 #define BRASERO_TRACK_STREAM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStreamPrivate))
 
 G_DEFINE_TYPE (BraseroTrackStream, brasero_track_stream, G_TYPE_OBJECT);
-
-void
-brasero_stream_info_free (BraseroStreamInfo *info)
-{
-	if (!info)
-		return;
-
-	g_free (info->title);
-	g_free (info->artist);
-	g_free (info->composer);
-	g_free (info);
-}
-
-BraseroStreamInfo *
-brasero_stream_info_copy (BraseroStreamInfo *info)
-{
-	BraseroStreamInfo *copy;
-
-	if (!info)
-		return NULL;
-
-	copy = g_new0 (BraseroStreamInfo, 1);
-
-	copy->title = g_strdup (info->title);
-	copy->artist = g_strdup (info->artist);
-	copy->composer = g_strdup (info->composer);
-	copy->isrc = info->isrc;
-
-	return copy;
-}
 
 BraseroBurnResult
 brasero_track_stream_set_source (BraseroTrackStream *track,
@@ -120,25 +88,6 @@ brasero_track_stream_set_format (BraseroTrackStream *track,
 		BRASERO_BURN_LOG ("Setting a NONE audio format with a valid uri");
 
 	priv->format = format;
-	brasero_track_changed (BRASERO_TRACK (track));
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_track_stream_set_info (BraseroTrackStream *track,
-			       BraseroStreamInfo *info)
-{
-	BraseroTrackStreamPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
-
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
-
-	if (priv->info)
-		brasero_stream_info_free (priv->info);
-
-	priv->info = info;
 	brasero_track_changed (BRASERO_TRACK (track));
 
 	return BRASERO_BURN_OK;
@@ -218,18 +167,6 @@ brasero_track_stream_get_end (BraseroTrackStream *track)
 	return priv->end;
 }
 
-/* FIXME: This is bad */
-BraseroStreamInfo *
-brasero_track_stream_get_info (BraseroTrackStream *track)
-{
-	BraseroTrackStreamPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
-
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
-	return priv->info;
-}
-
 BraseroBurnResult
 brasero_track_stream_get_length (BraseroTrackStream *track,
 				 guint64 *length)
@@ -300,11 +237,6 @@ brasero_track_stream_finalize (GObject *object)
 	if (priv->uri) {
 		g_free (priv->uri);
 		priv->uri = NULL;
-	}
-
-	if (priv->info) {
-		brasero_stream_info_free (priv->info);
-		priv->info = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_track_stream_parent_class)->finalize (object);

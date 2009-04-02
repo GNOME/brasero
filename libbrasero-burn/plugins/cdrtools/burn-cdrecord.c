@@ -52,6 +52,7 @@
 #include "burn-cdrtools.h"
 #include "burn-cdrecord.h"
 
+#include "brasero-tags.h"
 #include "brasero-track-image.h"
 #include "brasero-track-stream.h"
 
@@ -363,16 +364,17 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 			    GError **error)
 {
 	gint fd;
+	int isrc;
+        int errsv;
 	gint size;
 	gchar *path;
 	guint64 length;
 	gchar *string;
 	gint b_written;
 	gint64 sectors;
+	const gchar *info;
 	gchar buffer [128];
-	BraseroStreamInfo *info;
 	BraseroCDRecordPrivate *priv;
-        int errsv;
 
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
@@ -428,8 +430,6 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	 * It might be good in the end to write and pack CD-TEXT pack data 
 	 * ourselves so we can set a different charset from English like 
 	 * Chinese for example. */
-	info = brasero_track_stream_get_info (BRASERO_TRACK_STREAM (track));
-
 	strcpy (buffer, "# created by brasero\n");
 	size = strlen (buffer);
 	b_written = write (fd, buffer, size);
@@ -442,8 +442,10 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	if (info->isrc > 0)
-		string = g_strdup_printf ("ISRC=\t%i\n", info->isrc);
+	/* ISRC */
+	isrc = brasero_track_tag_lookup_int (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG);
+	if (isrc > 0)
+		string = g_strdup_printf ("ISRC=\t%i\n", isrc);
 	else
 		string = g_strdup ("ISRC=\t\n");
 	size = strlen (string);
@@ -480,10 +482,13 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	if (info->artist) {
+	/* ARTIST */
+	info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+						BRASERO_TRACK_STREAM_ARTIST_TAG);
+	if (info) {
 		gchar *encoded;
 
-		encoded = g_convert_with_fallback (info->artist,
+		encoded = g_convert_with_fallback (info,
 						   -1,
 						   "ISO-8859-1",
 						   "UTF-8",
@@ -502,10 +507,13 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	if (info->composer) {
+	/* COMPOSER */
+	info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+						BRASERO_TRACK_STREAM_COMPOSER_TAG);
+	if (info) {
 		gchar *encoded;
 
-		encoded = g_convert_with_fallback (info->composer,
+		encoded = g_convert_with_fallback (info,
 						   -1,
 						   "ISO-8859-1",
 						   "UTF-8",
@@ -524,10 +532,13 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	if (info->title) {
+	/* TITLE */
+	info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
+						BRASERO_TRACK_STREAM_TITLE_TAG);
+	if (info) {
 		gchar *encoded;
 
-		encoded = g_convert_with_fallback (info->title,
+		encoded = g_convert_with_fallback (info,
 						   -1,
 						   "ISO-8859-1",
 						   "UTF-8",

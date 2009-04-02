@@ -344,7 +344,7 @@ brasero_burn_uri_thread (gpointer data)
 		brasero_track_get_size (current, &blocks, NULL);
 
 		image = brasero_track_image_new ();
-		brasero_track_tag_copy (BRASERO_TRACK (image), current);
+		brasero_track_tag_copy_missing (BRASERO_TRACK (image), current);
 		brasero_track_image_set_source (image,
 						path_image,
 						path_toc,
@@ -485,7 +485,7 @@ brasero_burn_uri_thread (gpointer data)
 	excluded = g_slist_reverse (excluded);
 
 	track = brasero_track_data_new ();
-	brasero_track_tag_copy (BRASERO_TRACK (track), current);
+	brasero_track_tag_copy_missing (BRASERO_TRACK (track), current);
 	
 	brasero_track_data_add_fs (track, type.subtype.fs_type);
 

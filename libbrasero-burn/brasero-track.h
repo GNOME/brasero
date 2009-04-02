@@ -159,8 +159,30 @@ brasero_track_tag_lookup (BraseroTrack *track,
 			  GValue **value);
 
 void
-brasero_track_tag_copy (BraseroTrack *dest,
-			BraseroTrack *src);
+brasero_track_tag_copy_missing (BraseroTrack *dest,
+				BraseroTrack *src);
+
+/**
+ * Convenience functions for tags
+ */
+
+BraseroBurnResult
+brasero_track_tag_add_string (BraseroTrack *track,
+			      const gchar *tag,
+			      const gchar *string);
+
+const gchar *
+brasero_track_tag_lookup_string (BraseroTrack *track,
+				 const gchar *tag);
+
+BraseroBurnResult
+brasero_track_tag_add_int (BraseroTrack *track,
+			   const gchar *tag,
+			   int value);
+
+int
+brasero_track_tag_lookup_int (BraseroTrack *track,
+			      const gchar *tag);
 
 G_END_DECLS
 

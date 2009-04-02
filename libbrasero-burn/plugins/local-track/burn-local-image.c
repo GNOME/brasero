@@ -604,7 +604,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		guint64 file_num = 0;
 
 		track = BRASERO_TRACK (brasero_track_data_new ());
-		brasero_track_tag_copy (BRASERO_TRACK (track), current);
+		brasero_track_tag_copy_missing (BRASERO_TRACK (track), current);
 		brasero_track_data_add_fs (BRASERO_TRACK_DATA (track), input.subtype.fs_type);
 
 		brasero_track_data_get_file_num (BRASERO_TRACK_DATA (current), &file_num);
@@ -652,15 +652,13 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		newuri = brasero_local_track_translate_uri (self, uri);
 
 		track = BRASERO_TRACK (brasero_track_stream_new ());
-		brasero_track_tag_copy (BRASERO_TRACK (track), current);
+		brasero_track_tag_copy_missing (BRASERO_TRACK (track), current);
 		brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), newuri);
 		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track), input.subtype.audio_format);
 		brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
 						     brasero_track_stream_get_start (BRASERO_TRACK_STREAM (current)),
 						     brasero_track_stream_get_end (BRASERO_TRACK_STREAM (current)),
 						     brasero_track_stream_get_gap (BRASERO_TRACK_STREAM (current)));
-		brasero_track_stream_set_info (BRASERO_TRACK_STREAM (track),
-					       brasero_stream_info_copy (brasero_track_stream_get_info (BRASERO_TRACK_STREAM (current))));
 		g_free (uri);
 	}
 	break;
@@ -682,7 +680,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		brasero_track_get_size (current, &blocks, NULL);
 
 		track = BRASERO_TRACK (brasero_track_image_new ());
-		brasero_track_tag_copy (BRASERO_TRACK (track), current);
+		brasero_track_tag_copy_missing (BRASERO_TRACK (track), current);
 		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
 						newimage,
 						newtoc,

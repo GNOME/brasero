@@ -49,6 +49,20 @@ G_BEGIN_DECLS
 #define BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG		"track::medium::error::checksum::list"
 
 /**
+ * Strings
+ */
+
+#define BRASERO_TRACK_STREAM_TITLE_TAG			"track::stream::info::title"
+#define BRASERO_TRACK_STREAM_COMPOSER_TAG		"track::stream::info::composer"
+#define BRASERO_TRACK_STREAM_ARTIST_TAG			"track::stream::info::artist"
+
+/**
+ * Int
+ */
+
+#define BRASERO_TRACK_STREAM_ISRC_TAG			"track::stream::info::isrc"
+
+/**
  * Some defined and usable tags for a session
  */
 

@@ -43,6 +43,21 @@ typedef enum {
 	BRASERO_PROJECT_TYPE_VIDEO
 } BraseroProjectType;
 
+struct _BraseroStreamInfo {
+	gchar *title;
+	gchar *artist;
+	gchar *composer;
+	gint isrc;
+};
+
+typedef struct _BraseroStreamInfo BraseroStreamInfo;
+
+void
+brasero_stream_info_free (BraseroStreamInfo *info);
+
+BraseroStreamInfo *
+brasero_stream_info_copy (BraseroStreamInfo *info);
+
 struct _BraseroDiscSong {
 	gchar *uri;
 	gint64 gap;

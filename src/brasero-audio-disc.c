@@ -53,6 +53,8 @@
 #include "brasero-session-cfg.h"
 #include "eggtreemultidnd.h"
 
+#include "brasero-tags.h"
+
 #ifdef BUILD_INOTIFY
 
 #include "sys/inotify.h"
@@ -2057,7 +2059,6 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		gint64 end;
 		gint64 start;
 		gint64 length;
-		BraseroStreamInfo *info;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
@@ -2079,13 +2080,6 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 			continue;
 		}
 
-		info = g_new0 (BraseroStreamInfo, 1);
-
-		info->title = title;
-		info->artist = artist;
-		info->composer = composer;
-		info->isrc = isrc;
-
 		track = brasero_track_stream_new ();
 		brasero_track_stream_set_source (track, uri);
 		brasero_track_stream_set_format (track,
@@ -2093,7 +2087,24 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 						 BRASERO_METADATA_INFO);
 
 		brasero_track_stream_set_boundaries (track, start, end, -1);
-		brasero_track_stream_set_info (track, info);
+
+		if (title)
+			brasero_track_tag_add_string (BRASERO_TRACK (track),
+						      BRASERO_TRACK_STREAM_TITLE_TAG,
+						      title);
+		if (artist)
+			brasero_track_tag_add_string (BRASERO_TRACK (track),
+						      BRASERO_TRACK_STREAM_ARTIST_TAG,
+						      artist);
+		if (composer)
+			brasero_track_tag_add_string (BRASERO_TRACK (track),
+						      BRASERO_TRACK_STREAM_COMPOSER_TAG,
+						      composer);
+		if (isrc)
+			brasero_track_tag_add_int (BRASERO_TRACK (track),
+						   BRASERO_TRACK_STREAM_ISRC_TAG,
+						   isrc);
+
 		brasero_burn_session_add_track (session, BRASERO_TRACK (track));
 
 		/* It's good practice to unref the track afterwards as we don't

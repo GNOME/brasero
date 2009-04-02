@@ -277,6 +277,34 @@ brasero_track_tag_add (BraseroTrack *track,
 }
 
 BraseroBurnResult
+brasero_track_tag_add_int (BraseroTrack *track,
+			   const gchar *tag,
+			   int value_int)
+{
+	GValue *value;
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, value_int);
+
+	return brasero_track_tag_add (track, tag, value);
+}
+
+BraseroBurnResult
+brasero_track_tag_add_string (BraseroTrack *track,
+			      const gchar *tag,
+			      const gchar *string)
+{
+	GValue *value;
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_STRING);
+	g_value_set_string (value, string);
+
+	return brasero_track_tag_add (track, tag, value);
+}
+
+BraseroBurnResult
 brasero_track_tag_lookup (BraseroTrack *track,
 			  const gchar *tag,
 			  GValue **value)
@@ -301,9 +329,49 @@ brasero_track_tag_lookup (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
+int
+brasero_track_tag_lookup_int (BraseroTrack *track,
+			      const gchar *tag)
+{
+	GValue *value = NULL;
+	BraseroBurnResult res;
+
+	res = brasero_track_tag_lookup (track, tag, &value);
+	if (res != BRASERO_BURN_OK)
+		return 0;
+
+	if (!value)
+		return 0;
+
+	if (!G_VALUE_HOLDS_INT (value))
+		return 0;
+
+	return g_value_get_int (value);
+}
+
+const gchar *
+brasero_track_tag_lookup_string (BraseroTrack *track,
+				 const gchar *tag)
+{
+	GValue *value = NULL;
+	BraseroBurnResult res;
+
+	res = brasero_track_tag_lookup (track, tag, &value);
+	if (res != BRASERO_BURN_OK)
+		return NULL;
+
+	if (!value)
+		return NULL;
+
+	if (!G_VALUE_HOLDS_STRING (value))
+		return NULL;
+
+	return g_value_get_string (value);
+}
+
 void
-brasero_track_tag_copy (BraseroTrack *dest,
-			BraseroTrack *src)
+brasero_track_tag_copy_missing (BraseroTrack *dest,
+				BraseroTrack *src)
 {
 	BraseroTrackPrivate *priv;
 	GHashTableIter iter;
@@ -324,6 +392,9 @@ brasero_track_tag_copy (BraseroTrack *dest,
 
 	priv = BRASERO_TRACK_PRIVATE (dest);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		if (g_hash_table_lookup (priv->tags, key))
+			continue;
+
 		new_value = g_new0 (GValue, 1);
 
 		g_value_init (new_value, g_value_get_gtype (value));
