@@ -2090,12 +2090,13 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 }
 
 gboolean
-brasero_burn_dialog_cancel (BraseroBurnDialog *dialog)
+brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
+			    gboolean force_cancellation)
 {
 	if (!dialog->priv->burn)
 		return TRUE;
 
-	if (brasero_burn_cancel (dialog->priv->burn, TRUE) == BRASERO_BURN_DANGEROUS) {
+	if (brasero_burn_cancel (dialog->priv->burn, (force_cancellation == TRUE)) == BRASERO_BURN_DANGEROUS) {
 		if (!brasero_burn_dialog_cancel_dialog (GTK_WIDGET (dialog)))
 			return FALSE;
 
@@ -2122,14 +2123,14 @@ brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroBurnDialog *dialog)
 {
 	/* a burning is ongoing cancel it */
-	brasero_burn_dialog_cancel (dialog);
+	brasero_burn_dialog_cancel (dialog, FALSE);
 }
 
 static void
 brasero_burn_dialog_tray_cancel_cb (BraseroTrayIcon *tray,
 				    BraseroBurnDialog *dialog)
 {
-	brasero_burn_dialog_cancel (dialog);
+	brasero_burn_dialog_cancel (dialog, FALSE);
 }
 
 static void

@@ -416,7 +416,7 @@ brasero_app_save_contents (BraseroApp *app,
 
 	if (priv->burn_dialog) {
 		if (cancellable)
-			return (brasero_burn_dialog_cancel (BRASERO_BURN_DIALOG (priv->burn_dialog)) == FALSE);
+			return (brasero_burn_dialog_cancel (BRASERO_BURN_DIALOG (priv->burn_dialog), FALSE) == FALSE);
 
 		gtk_widget_destroy (priv->burn_dialog);
 		return FALSE;

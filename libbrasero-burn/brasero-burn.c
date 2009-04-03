@@ -163,11 +163,7 @@ brasero_burn_powermanagement (BraseroBurn *self,
 BraseroBurn *
 brasero_burn_new ()
 {
-	BraseroBurn *obj;
-	
-	obj = BRASERO_BURN (g_object_new (BRASERO_TYPE_BURN, NULL));
-
-	return obj;
+	return g_object_new (BRASERO_TYPE_BURN, NULL);
 }
 
 static void

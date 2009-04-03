@@ -1,3 +1,26 @@
+2009-04-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	After giving it some thougths revert a change:
+	X session handling should and will not be handled by library but by apps
+	so move back the egg files back to brasero source directory
+	Added a gboolean value to cancel unconditionally an ongoing burn process
+
+	* libbrasero-burn/brasero-burn-dialog.c
+	(brasero_burn_dialog_cancel),
+	(brasero_burn_dialog_cancel_clicked_cb),
+	(brasero_burn_dialog_tray_cancel_cb):
+	* libbrasero-burn/brasero-burn-dialog.h:
+	* libbrasero-burn/brasero-burn.c (brasero_burn_new):
+	* libbrasero-utils/Makefile.am:
+	* libbrasero-utils/eggdesktopfile.c:
+	* libbrasero-utils/eggdesktopfile.h:
+	* libbrasero-utils/eggsmclient-private.h:
+	* libbrasero-utils/eggsmclient-xsmp.c:
+	* libbrasero-utils/eggsmclient.c:
+	* libbrasero-utils/eggsmclient.h:
+	* src/Makefile.am:
+	* src/brasero-app.c (brasero_app_save_contents):
+
 2009-04-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Move BraseroStreamInfo from library to application

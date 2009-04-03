@@ -9,16 +9,16 @@ INCLUDES = \
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\
-	$(BRASERO_GTK_CFLAGS)						\
-	$(BRASERO_SM_CFLAGS)
+	$(BRASERO_GTK_CFLAGS)
+
 
 lib_LTLIBRARIES = \
 	libbrasero-utils.la
 
 libbrasero_utils_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
-	$(BRASERO_GTK_LIBS)					\
-	$(BRASERO_SM_LIBS)
+	$(BRASERO_GTK_LIBS)
+
 
 libbrasero_utils_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
@@ -44,13 +44,7 @@ libbrasero_utils_la_SOURCES =		\
 	brasero-jacket-view.c        \
 	brasero-jacket-view.h        \
 	brasero-tool-color-picker.c        \
-	brasero-tool-color-picker.h        \
-	eggdesktopfile.c        \
-	eggdesktopfile.h        \
-	eggsmclient.c        \
-	eggsmclient.h        \
-	eggsmclient-private.h        \
-	eggsmclient-xsmp.c
+	brasero-tool-color-picker.h
 
 # EXTRA_DIST =			\
 #	libbrasero-utils.symbols

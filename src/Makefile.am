@@ -22,7 +22,8 @@ INCLUDES = \
 	$(BRASERO_DBUS_CFLAGS)						\
 	$(BRASERO_LIBXML_CFLAGS)					\
 	$(BRASERO_BEAGLE_CFLAGS)					\
-	$(BRASERO_PL_PARSER_CFLAGS)
+	$(BRASERO_PL_PARSER_CFLAGS)					\
+	$(BRASERO_SM_CFLAGS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = brasero-marshal.h brasero-marshal.c
@@ -139,7 +140,13 @@ brasero_SOURCES = \
 	brasero-project-parse.c           \
 	brasero-project-parse.h           \
 	brasero-xsession.c           \
-	brasero-xsession.h
+	brasero-xsession.h		\
+	eggdesktopfile.c        \
+	eggdesktopfile.h        \
+	eggsmclient.c        \
+	eggsmclient.h        \
+	eggsmclient-private.h        \
+	eggsmclient-xsmp.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
@@ -159,7 +166,8 @@ brasero_LDADD =						\
 	$(BRASERO_DBUS_LIBS)		\
 	$(BRASERO_LIBXML_LIBS)		\
 	$(BRASERO_BEAGLE_LIBS)		\
-	$(BRASERO_PL_PARSER_LIBS)
+	$(BRASERO_PL_PARSER_LIBS)	\
+	$(BRASERO_SM_LIBS)
 
 EXTRA_DIST =			\
 	brasero-marshal.list
