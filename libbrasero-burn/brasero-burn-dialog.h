@@ -45,11 +45,9 @@ G_BEGIN_DECLS
 #define BRASERO_IS_BURN_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_BURN_DIALOG))
 #define BRASERO_IS_BURN_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURN_DIALOG))
 #define BRASERO_BURN_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogClass))
-typedef struct BraseroBurnDialogPrivate BraseroBurnDialogPrivate;
 
 typedef struct {
 	GtkDialog parent;
-	BraseroBurnDialogPrivate *priv;
 } BraseroBurnDialog;
 
 typedef struct {

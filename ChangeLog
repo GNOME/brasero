@@ -1,5 +1,35 @@
 2009-04-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Update BraseroBurnDialog and remove the private member in public declaration
+
+	* libbrasero-burn/brasero-burn-dialog.c
+	(brasero_burn_dialog_class_init),
+	(brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_image_error),
+	(brasero_burn_dialog_loss_warnings_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_progress_changed_real),
+	(brasero_burn_dialog_progress_changed_cb),
+	(brasero_burn_dialog_action_changed_real),
+	(brasero_burn_dialog_action_changed_cb),
+	(brasero_burn_dialog_dummy_success_cb), (brasero_burn_dialog_init),
+	(brasero_burn_dialog_destroy), (brasero_burn_dialog_finalize),
+	(brasero_burn_dialog_activity_start),
+	(brasero_burn_dialog_activity_stop),
+	(brasero_burn_dialog_setup_session),
+	(brasero_burn_dialog_save_log), (brasero_burn_dialog_show_log),
+	(brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success),
+	(brasero_burn_dialog_end_session),
+	(brasero_burn_dialog_record_session), (brasero_burn_dialog_run),
+	(brasero_burn_dialog_cancel), (brasero_burn_dialog_delete),
+	(brasero_burn_dialog_tray_show_dialog_cb):
+	* libbrasero-burn/brasero-burn-dialog.h:
+
+2009-04-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	After giving it some thougths revert a change:
 	X session handling should and will not be handled by library but by apps
 	so move back the egg files back to brasero source directory
