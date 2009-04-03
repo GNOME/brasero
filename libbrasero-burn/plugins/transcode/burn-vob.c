@@ -616,7 +616,7 @@ brasero_vob_build_audio_bins (BraseroVob *vob,
 		/* Get output format */
 		value = NULL;
 		brasero_job_tag_lookup (BRASERO_JOB (vob),
-					BRASERO_DVD_AUDIO_STREAMS,
+					BRASERO_DVD_STREAM_FORMAT,
 					&value);
 
 		if (value)

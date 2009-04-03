@@ -93,7 +93,7 @@ brasero_disc_option_audio_AC3 (BraseroDiscOptionDialog *dialog)
 	g_value_init (value, G_TYPE_INT);
 	g_value_set_int (value, BRASERO_AUDIO_FORMAT_AC3);
 	brasero_burn_session_tag_add (session,
-				      BRASERO_DVD_AUDIO_STREAMS,
+				      BRASERO_DVD_STREAM_FORMAT,
 				      value);
 
 	g_object_unref (session);
@@ -111,7 +111,7 @@ brasero_disc_option_audio_MP2 (BraseroDiscOptionDialog *dialog)
 	g_value_init (value, G_TYPE_INT);
 	g_value_set_int (value, BRASERO_AUDIO_FORMAT_MP2);
 	brasero_burn_session_tag_add (session,
-				      BRASERO_DVD_AUDIO_STREAMS,
+				      BRASERO_DVD_STREAM_FORMAT,
 				      value);
 
 	g_object_unref (session);

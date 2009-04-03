@@ -63,16 +63,16 @@ G_BEGIN_DECLS
 #define BRASERO_TRACK_STREAM_ISRC_TAG			"track::stream::info::isrc"
 
 /**
- * Some defined and usable tags for a session
- */
-
-/**
  * This tag (for sessions) is used to set an estimated size, used to determine
  * in the burn option dialog if the selected medium is big enough.
  */
 
-#define BRASERO_DATA_TRACK_SIZE_TAG	"track::data::estimated_size"
-#define BRASERO_AUDIO_TRACK_SIZE_TAG	"track::audio::estimated_size"
+#define BRASERO_DATA_TRACK_SIZE_TAG			"track::data::estimated_size"
+#define BRASERO_STREAM_TRACK_SIZE_TAG			"track::stream::estimated_size"
+
+/**
+ * Some defined and usable tags for a session
+ */
 
 /**
  * Gives the uri (gchar *) of the cover
@@ -82,7 +82,7 @@ G_BEGIN_DECLS
 /**
  * Define the audio streams for a DVD
  */
-#define BRASERO_DVD_AUDIO_STREAMS		"session::DVD::audio::format"
+#define BRASERO_DVD_STREAM_FORMAT		"session::DVD::stream::format"
 
 /**
  * Define the format: whether VCD or SVCD
@@ -114,8 +114,6 @@ enum {
 	BRASERO_VIDEO_ASPECT_16_9
 };
 #define BRASERO_VIDEO_OUTPUT_ASPECT		"session::video::aspect"
-
-
 
 G_END_DECLS
 

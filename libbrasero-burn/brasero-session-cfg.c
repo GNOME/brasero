@@ -526,7 +526,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 		session_size = g_value_get_int64 (value);
 	}
 	else if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
-						  BRASERO_AUDIO_TRACK_SIZE_TAG,
+						  BRASERO_STREAM_TRACK_SIZE_TAG,
 						  &value) == BRASERO_BURN_OK) {
 		session_size = g_value_get_int64 (value);
 	}
