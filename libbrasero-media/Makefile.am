@@ -1,7 +1,6 @@
 
 INCLUDES = \
 	-I$(top_srcdir)							\
-	-I$(top_srcdir)/libbrasero-burn/				\
 	-I$(top_builddir)						\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           			\

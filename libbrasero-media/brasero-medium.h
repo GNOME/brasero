@@ -111,25 +111,34 @@ brasero_medium_get_track_num (BraseroMedium *medium);
 
 gboolean
 brasero_medium_get_last_data_track_space (BraseroMedium *medium,
-					  guint64 *size,
-					  guint64 *blocks);
+					  guint64 *bytes,
+					  guint64 *sectors);
 
 gboolean
 brasero_medium_get_last_data_track_address (BraseroMedium *medium,
-					    guint64 *byte,
-					    guint64 *sector);
+					    guint64 *bytes,
+					    guint64 *sectors);
 
 gboolean
 brasero_medium_get_track_space (BraseroMedium *medium,
 				guint num,
-				guint64 *size,
-				guint64 *blocks);
+				guint64 *bytes,
+				guint64 *sectors);
 
 gboolean
 brasero_medium_get_track_address (BraseroMedium *medium,
 				  guint num,
-				  guint64 *byte,
-				  guint64 *sector);
+				  guint64 *bytes,
+				  guint64 *sectors);
+
+gboolean
+brasero_medium_can_use_dummy_for_sao (BraseroMedium *medium);
+
+gboolean
+brasero_medium_can_use_dummy_for_tao (BraseroMedium *medium);
+
+gboolean
+brasero_medium_can_use_burnfree (BraseroMedium *medium);
 
 G_END_DECLS
 

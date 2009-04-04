@@ -92,18 +92,6 @@ static GObjectClass *parent_class = NULL;
 static BraseroBurnCaps *default_caps = NULL;
 
 /**
- * These two functions are not public API and defined in burn-medium.c
- */
-
-gboolean
-brasero_medium_support_flags (BraseroMedium *medium,
-			      BraseroBurnFlag flags);
-
-BraseroBurnFlag
-brasero_medium_supported_flags (BraseroMedium *self,
-				BraseroBurnFlag flags);
-
-/**
  * This macro is used to determine whether or not blanking could change anything
  * for the medium so that we can write to it.
  */
@@ -1176,6 +1164,42 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 	g_slist_free (modifiers);
 
 	return retval;
+}
+
+/**
+ * This one is not supposed to be public API. It's declared in burn-caps.c
+ */
+
+gboolean
+brasero_medium_support_flags (BraseroMedium *medium,
+			      BraseroBurnFlag flags)
+{
+	BraseroMedia media;
+
+	media = brasero_medium_get_status (medium);
+	if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		/* This is always FALSE */
+		if (media & BRASERO_MEDIUM_PLUS)
+			return FALSE;
+
+		if (media & BRASERO_MEDIUM_DVD) {
+			if (!brasero_medium_can_use_dummy_for_sao (medium))
+				return FALSE;
+		}
+		else if (flags & BRASERO_BURN_FLAG_DAO) {
+			if (!brasero_medium_can_use_dummy_for_sao (medium))
+				return FALSE;
+		}
+		else if (!brasero_medium_can_use_dummy_for_tao (medium))
+			return FALSE;
+	}
+
+	if (flags & BRASERO_BURN_FLAG_BURNPROOF) {
+		if (!brasero_medium_can_use_burnfree (medium))
+			return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -2417,6 +2441,37 @@ brasero_caps_get_flags (BraseroCaps *caps,
 	}
 
 	return retval;
+}
+
+static BraseroBurnFlag
+brasero_medium_supported_flags (BraseroMedium *medium,
+				BraseroBurnFlag flags)
+{
+	BraseroMedia media;
+
+	media = brasero_medium_get_status (medium);
+
+	/* This is always FALSE */
+	if (media & BRASERO_MEDIUM_PLUS)
+		flags &= ~BRASERO_BURN_FLAG_DUMMY;
+
+	/* Simulation is only possible according to write modes. This mode is
+	 * mostly used by cdrecord/wodim for CLONE images. */
+	else if (media & BRASERO_MEDIUM_DVD) {
+		if (!brasero_medium_can_use_dummy_for_sao (medium))
+			flags &= ~BRASERO_BURN_FLAG_DUMMY;
+	}
+	else if (flags & BRASERO_BURN_FLAG_DAO) {
+		if (!brasero_medium_can_use_dummy_for_sao (medium))
+			flags &= ~BRASERO_BURN_FLAG_DUMMY;
+	}
+	else if (!brasero_medium_can_use_dummy_for_tao (medium))
+		flags &= ~BRASERO_BURN_FLAG_DUMMY;
+
+	if (!brasero_medium_can_use_burnfree (medium))
+		flags &= ~BRASERO_BURN_FLAG_BURNPROOF;
+
+	return flags;
 }
 
 static BraseroBurnFlag
