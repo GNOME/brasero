@@ -38,7 +38,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "burn-basics.h"
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"

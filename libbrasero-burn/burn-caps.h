@@ -35,10 +35,8 @@
 #include <glib-object.h>
 
 #include "burn-basics.h"
-#include "brasero-medium.h"
-#include "brasero-session.h"
+#include "brasero-track.h"
 #include "burn-plugin.h"
-#include "burn-task.h"
 
 G_BEGIN_DECLS
 
@@ -49,7 +47,36 @@ G_BEGIN_DECLS
 #define BRASERO_IS_BURNCAPS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURNCAPS))
 #define BRASERO_BURNCAPS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURNCAPS, BraseroBurnCapsClass))
 
+struct _BraseroCaps {
+	GSList *links;
+	GSList *modifiers;
+	BraseroTrackType type;
+	BraseroPluginIOFlag flags;
+};
+typedef struct _BraseroCaps BraseroCaps;
+
+struct _BraseroCapsLink {
+	GSList *plugins;
+	BraseroCaps *caps;
+};
+typedef struct _BraseroCapsLink BraseroCapsLink;
+
+struct _BraseroCapsTest {
+	GSList *links;
+	BraseroChecksumType type;
+};
+typedef struct _BraseroCapsTest BraseroCapsTest;
+
 typedef struct BraseroBurnCapsPrivate BraseroBurnCapsPrivate;
+struct BraseroBurnCapsPrivate {
+	GSList *caps_list;
+	GSList *tests;
+
+	GHashTable *groups;
+
+	gchar *group_str;
+	guint group_id;
+};
 
 typedef struct {
 	GObject parent;
@@ -64,22 +91,19 @@ GType brasero_burn_caps_get_type();
 
 BraseroBurnCaps *brasero_burn_caps_get_default ();
 
-/**
- * Returns a GSList * of BraseroTask * for a given session
- */
+gboolean
+brasero_caps_link_active (BraseroCapsLink *link);
 
-GSList *
-brasero_burn_caps_new_task (BraseroBurnCaps *caps,
-			    BraseroBurnSession *session,
-			    GError **error);
-BraseroTask *
-brasero_burn_caps_new_blanking_task (BraseroBurnCaps *caps,
-				     BraseroBurnSession *session,
-				     GError **error);
-BraseroTask *
-brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
-					BraseroBurnSession *session,
-					GError **error);
+gboolean
+brasero_burn_caps_is_input (BraseroBurnCaps *self,
+			    BraseroCaps *input);
 
+BraseroCaps *
+brasero_burn_caps_find_start_caps (BraseroBurnCaps *self,
+				   BraseroTrackType *output);
+
+gboolean
+brasero_caps_is_compatible_type (const BraseroCaps *caps,
+				 const BraseroTrackType *type);
 
 #endif /* BURN_CAPS_H */

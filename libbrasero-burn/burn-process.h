@@ -34,7 +34,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "burn-basics.h"
 #include "burn-job.h"
 
 G_BEGIN_DECLS

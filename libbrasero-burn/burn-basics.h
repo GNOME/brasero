@@ -33,6 +33,7 @@
 
 #include <glib.h>
 
+#include "brasero-drive.h"
 #include "brasero-units.h"
 #include "brasero-enums.h"
 
@@ -65,6 +66,10 @@ brasero_string_get_localpath (const gchar *uri);
 
 gchar *
 brasero_string_get_uri (const gchar *uri);
+
+gboolean
+brasero_check_flags_for_drive (BraseroDrive *drive,
+			       BraseroBurnFlag flags);
 
 G_END_DECLS
 

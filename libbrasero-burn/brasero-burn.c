@@ -53,7 +53,7 @@
 #include "burn-dbus.h"
 #include "burn-task-ctx.h"
 #include "burn-task.h"
-#include "burn-caps.h"
+#include "brasero-caps-burn.h"
 
 #include "brasero-volume.h"
 #include "brasero-drive.h"

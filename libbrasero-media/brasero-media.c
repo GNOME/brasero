@@ -38,6 +38,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "brasero-media.h"
+#include "brasero-media-private.h"
 
 static gboolean debug = 0;
 

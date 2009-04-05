@@ -147,7 +147,11 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-track-data.h                 \
 	brasero-track-image-cfg.c                 \
 	brasero-track-image-cfg.h                 \
-	brasero-burn-options-private.h
+	brasero-burn-options-private.h                 \
+	brasero-caps-plugin.c                 \
+	brasero-caps-burn.c                 \
+	brasero-caps-session.c                 \
+	brasero-caps-burn.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

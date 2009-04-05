@@ -43,6 +43,7 @@
 
 #include "brasero-track.h"
 #include "burn-debug.h"
+#include "burn-caps.h"
 #include "brasero-medium.h"
 #include "burn-image-format.h"
 #include "brasero-drive.h"
@@ -412,6 +413,34 @@ brasero_track_changed (BraseroTrack *track)
 	g_signal_emit (track,
 		       track_signals [CHANGED],
 		       0);
+}
+
+/**
+ * This is to determine whether of not a track type is supported
+ */
+
+BraseroBurnResult
+brasero_track_type_is_supported (BraseroTrackType *type)
+{
+	GSList *iter;
+	BraseroBurnCaps *self;
+
+	self = brasero_burn_caps_get_default ();
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *caps;
+
+		caps = iter->data;
+
+		if (brasero_caps_is_compatible_type (caps, type)
+		&&  brasero_burn_caps_is_input (self, caps)) {
+			g_object_unref (self);
+			return BRASERO_BURN_OK;
+		}
+	}
+
+	g_object_unref (self);
+	return BRASERO_BURN_ERR;
 }
 
 /**

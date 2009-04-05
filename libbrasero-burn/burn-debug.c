@@ -312,3 +312,4 @@ brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 
 	g_free (format_real);
 }
+

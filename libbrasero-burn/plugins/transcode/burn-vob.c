@@ -35,7 +35,6 @@
 #include <gst/gst.h>
 
 #include "brasero-tags.h"
-#include "burn-basics.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-vob.h"

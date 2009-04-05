@@ -34,7 +34,6 @@
 
 #include <gst/gst.h>
 
-#include "burn-basics.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-normalize.h"

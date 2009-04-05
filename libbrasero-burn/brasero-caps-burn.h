@@ -28,60 +28,33 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef _BRASERO_BURN_LIB_
-#define _BRASERO_BURN_LIB_
+#ifndef _BRASERO_CAPS_BURN_H_
+#define _BRASERO_CAPS_BURN_H_
 
 #include <glib.h>
 
-#include <brasero-error.h>
+#include "burn-caps.h"
+#include "brasero-session.h"
+#include "burn-task.h"
 
 G_BEGIN_DECLS
 
 /**
- * Some needed information about the library
- */
-
-#define LIBBRASERO_BURN_VERSION_MAJOR						\
-	@BRASERO_MAJOR_VERSION@
-#define LIBBRASERO_BURN_VERSION_MINOR						\
-	@BRASERO_MINOR_VERSION@
-#define LIBBRASERO_BURN_VERSION_MICRO						\
-	@BRASERO_SUB@
-#define LIBBRASERO_BURN_AGE							\
-	@LT_CURRENT@@LT_REVISION@@LT_AGE@
-
-
-/**
- * Function to start and stop the library
- */
-
-gboolean
-brasero_burn_library_start (void);
-
-void
-brasero_burn_library_stop (void);
-
-/**
- * GOptionGroup for apps
- */
-
-GOptionGroup *
-brasero_burn_library_get_option_group (void);
-
-/**
- * Allows to get some information about capabilities
+ * Returns a GSList * of BraseroTask * for a given session
  */
 
 GSList *
-brasero_burn_library_get_plugins_list (void);
+brasero_burn_caps_new_task (BraseroBurnCaps *caps,
+			    BraseroBurnSession *session,
+			    GError **error);
+BraseroTask *
+brasero_burn_caps_new_blanking_task (BraseroBurnCaps *caps,
+				     BraseroBurnSession *session,
+				     GError **error);
+BraseroTask *
+brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
+					BraseroBurnSession *session,
+					GError **error);
 
-gboolean
-brasero_burn_library_can_checksum (void);
 
-BraseroMedia
-brasero_burn_library_get_media_capabilities (BraseroMedia media);
-
-G_END_DECLS
-
-#endif /* _BRASERO_BURN_LIB_ */
-
+#endif /* _BRASERO_CAPS_BURN_H_ */

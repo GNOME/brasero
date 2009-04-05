@@ -44,9 +44,6 @@ G_BEGIN_DECLS
 GSList *
 brasero_media_get_all_list (BraseroMedia type);
 
-BraseroMedia
-brasero_media_capabilities (BraseroMedia media);
-
 
 /**
  * For internal debugging purposes
