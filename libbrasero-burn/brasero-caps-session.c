@@ -39,7 +39,8 @@
 
 #include "burn-caps.h"
 #include "burn-debug.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-information.h"
 
 #define BRASERO_BURN_CAPS_SHOULD_BLANK(media_MACRO, flags_MACRO)		\
 	((media_MACRO & BRASERO_MEDIUM_UNFORMATTED) ||				\

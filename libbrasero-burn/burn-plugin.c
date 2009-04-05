@@ -44,8 +44,9 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "burn-plugin.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-information.h"
+#include "brasero-plugin-registration.h"
 #include "burn-caps.h"
 #include "brasero-media.h"
 
@@ -223,6 +224,7 @@ brasero_plugin_cleanup_definition (BraseroPlugin *self)
 /**
  * Plugin configure options
  */
+
 static void
 brasero_plugin_conf_option_choice_pair_free (BraseroPluginChoicePair *pair)
 {

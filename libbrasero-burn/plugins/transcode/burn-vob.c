@@ -36,7 +36,7 @@
 
 #include "brasero-tags.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-vob.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroVob, brasero_vob, BRASERO_TYPE_JOB, BraseroJob);

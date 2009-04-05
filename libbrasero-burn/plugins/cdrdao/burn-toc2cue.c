@@ -38,7 +38,7 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-cdrdao-common.h"

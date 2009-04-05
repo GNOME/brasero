@@ -44,7 +44,7 @@
 #include <gconf/gconf-client.h>
 
 #include "scsi-device.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-job.h"
 #include "burn-checksum-files.h"
 

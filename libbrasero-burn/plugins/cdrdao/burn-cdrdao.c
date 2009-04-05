@@ -44,7 +44,7 @@
 #include "burn-cdrdao-common.h"
 #include "burn-cdrdao.h"
 #include "brasero-error.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-job.h"
 #include "burn-process.h"
 #include "brasero-track-disc.h"

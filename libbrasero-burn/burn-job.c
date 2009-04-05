@@ -48,7 +48,7 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-session.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin-information.h"
 #include "burn-mkisofs-base.h"
 #include "burn-job.h"
 #include "burn-task-ctx.h"

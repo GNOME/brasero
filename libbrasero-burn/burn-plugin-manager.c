@@ -44,8 +44,8 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-track.h"
-#include "burn-plugin.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-information.h"
 #include "burn-plugin-manager.h"
 
 static BraseroPluginManager *default_manager = NULL;

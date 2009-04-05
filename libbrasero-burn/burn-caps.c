@@ -47,8 +47,8 @@
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 #include "brasero-session.h"
-#include "burn-plugin.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-information.h"
 #include "burn-task.h"
 #include "burn-caps.h"
 

@@ -28,26 +28,16 @@
  * 	Boston, MA  02110-1301, USA.
  */
  
-#ifndef _BURN_PLUGIN_PRIVATE_H
-#define _BURN_PLUGIN_PRIVATE_H
+#ifndef _BURN_PLUGIN_REGISTRATION_H
+#define _BURN_PLUGIN_REGISTRATION_H
 
 #include <glib.h>
 #include <glib-object.h>
 
-#include "burn-basics.h"
 #include "brasero-session.h"
-#include "burn-plugin.h"
+#include "brasero-plugin.h"
 
 G_BEGIN_DECLS
-
-struct _BraseroPluginChoicePair {
-	gchar *string;
-	guint value;
-};
-typedef struct _BraseroPluginChoicePair BraseroPluginChoicePair;
-
-BraseroPlugin *
-brasero_plugin_new (const gchar *path);
 
 void
 brasero_plugin_set_active (BraseroPlugin *plugin, gboolean active);
@@ -164,11 +154,17 @@ brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option);
 gint
 brasero_plugin_conf_option_int_get_max (BraseroPluginConfOption *option);
 
+
+struct _BraseroPluginChoicePair {
+	gchar *string;
+	guint value;
+};
+typedef struct _BraseroPluginChoicePair BraseroPluginChoicePair;
+
 GSList *
 brasero_plugin_conf_option_choice_get (BraseroPluginConfOption *option);
 
 G_END_DECLS
 
-#endif /* _BURN_PLUGIN_PRIVATE_H */
-
+#endif
  

@@ -28,17 +28,18 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef _BURN_PLUGIN_H_
-#define _BURN_PLUGIN_H_
+#ifndef _BURN_PLUGIN_H_REGISTRATION_
+#define _BURN_PLUGIN_H_REGISTRATION_
 
 #include <glib.h>
-#include <glib-object.h>
 
 #include "brasero-medium.h"
+
+#include "brasero-enums.h"
 #include "brasero-track.h"
 #include "brasero-track-stream.h"
 #include "brasero-track-data.h"
-#include "brasero-enums.h"
+#include "brasero-plugin.h"
 
 G_BEGIN_DECLS
 
@@ -57,30 +58,6 @@ G_BEGIN_DECLS
 
 #define BRASERO_PLUGIN_BLANK_FLAG_MASK	(BRASERO_BURN_FLAG_NOGRACE|		\
 					 BRASERO_BURN_FLAG_FAST_BLANK)
-
-#define BRASERO_TYPE_PLUGIN             (brasero_plugin_get_type ())
-#define BRASERO_PLUGIN(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_PLUGIN, BraseroPlugin))
-#define BRASERO_PLUGIN_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_PLUGIN, BraseroPluginClass))
-#define BRASERO_IS_PLUGIN(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_PLUGIN))
-#define BRASERO_IS_PLUGIN_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_PLUGIN))
-#define BRASERO_PLUGIN_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_PLUGIN, BraseroPluginClass))
-
-typedef struct _BraseroPluginClass BraseroPluginClass;
-typedef struct _BraseroPlugin BraseroPlugin;
-
-struct _BraseroPluginClass {
-	GTypeModuleClass parent_class;
-
-	/* Signals */
-	void	(* loaded)	(BraseroPlugin *plugin);
-	void	(* activated)	(BraseroPlugin *plugin);
-};
-
-struct _BraseroPlugin {
-	GTypeModule parent_instance;
-};
-
-GType brasero_plugin_get_type (void) G_GNUC_CONST;
 
 /**
  * These are the functions a plugin must implement
@@ -107,22 +84,6 @@ typedef enum {
 	BRASERO_PLUGIN_IO_ACCEPT_PIPE		= 1,
 	BRASERO_PLUGIN_IO_ACCEPT_FILE		= 1 << 1,
 } BraseroPluginIOFlag;
-
-typedef enum {
-	BRASERO_PLUGIN_RUN_NEVER		= 0,
-
-	/* pre-process initial track */
-	BRASERO_PLUGIN_RUN_PREPROCESSING	= 1,
-
-	/* run before final image/disc is created */
-	BRASERO_PLUGIN_RUN_BEFORE_TARGET	= 1 << 1,
-
-	/* run after final image/disc is created: post-processing */
-	BRASERO_PLUGIN_RUN_AFTER_TARGET		= 1 << 2,
-} BraseroPluginProcessFlag;
-
-GType
-brasero_plugin_get_gtype (BraseroPlugin *plugin);
 
 GSList *
 brasero_caps_image_new (BraseroPluginIOFlag flags,
@@ -183,16 +144,6 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 /**
  * Plugin configure options
  */
-
-typedef struct _BraseroPluginConfOption BraseroPluginConfOption;
-
-typedef enum {
-	BRASERO_PLUGIN_OPTION_NONE	= 0,
-	BRASERO_PLUGIN_OPTION_BOOL,
-	BRASERO_PLUGIN_OPTION_INT,
-	BRASERO_PLUGIN_OPTION_STRING,
-	BRASERO_PLUGIN_OPTION_CHOICE
-} BraseroPluginConfOptionType;
 
 BraseroPluginConfOption *
 brasero_plugin_conf_option_new (const gchar *key,
@@ -597,4 +548,4 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 
 G_END_DECLS
 
-#endif /* _BURN_PLUGIN_H_ */
+#endif

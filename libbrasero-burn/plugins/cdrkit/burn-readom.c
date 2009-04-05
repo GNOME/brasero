@@ -36,12 +36,11 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "burn-basics.h"
 #include "burn-cdrkit.h"
 #include "burn-readom.h"
 #include "burn-process.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "brasero-tags.h"
 #include "brasero-track-disc.h"
 

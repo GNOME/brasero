@@ -37,9 +37,9 @@
 
 #include <gmodule.h>
 
-#include "burn-basics.h"
+#include "brasero-units.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-uri.h"
 
 #include "brasero-track.h"

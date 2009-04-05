@@ -43,10 +43,10 @@
 
 #include <libburn/libburn.h>
 
-#include "burn-basics.h"
+#include "brasero-units.h"
 #include "burn-job.h"
 #include "burn-debug.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-libburn-common.h"
 #include "burn-libburnia.h"
 #include "burn-libburn.h"

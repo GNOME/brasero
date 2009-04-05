@@ -1,5 +1,48 @@
 2009-04-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Split and renamed burn-plugin.h header (as we may want to export it)
+
+	* libbrasero-burn/Makefile.am:
+	* libbrasero-burn/brasero-caps-burn.c:
+	* libbrasero-burn/brasero-caps-session.c:
+	* libbrasero-burn/brasero-plugin-information.h:
+	* libbrasero-burn/brasero-plugin.h:
+	* libbrasero-burn/burn-basics.c:
+	* libbrasero-burn/burn-caps.c:
+	* libbrasero-burn/burn-caps.h:
+	* libbrasero-burn/burn-debug.h:
+	* libbrasero-burn/burn-job.c:
+	* libbrasero-burn/burn-plugin-manager.c:
+	* libbrasero-burn/burn-plugin-private.h:
+	* libbrasero-burn/burn-plugin.c:
+	* libbrasero-burn/burn-plugin.h:
+	* libbrasero-burn/plugins/cdrdao/burn-cdrdao.c:
+	* libbrasero-burn/plugins/cdrdao/burn-toc2cue.c:
+	* libbrasero-burn/plugins/cdrkit/burn-genisoimage.c:
+	* libbrasero-burn/plugins/cdrkit/burn-readom.c:
+	* libbrasero-burn/plugins/cdrkit/burn-wodim.c:
+	* libbrasero-burn/plugins/cdrtools/burn-cdrecord.c:
+	* libbrasero-burn/plugins/cdrtools/burn-mkisofs.c:
+	* libbrasero-burn/plugins/cdrtools/burn-readcd.c:
+	* libbrasero-burn/plugins/checksum/burn-checksum-files.c:
+	* libbrasero-burn/plugins/checksum/burn-checksum-image.c:
+	* libbrasero-burn/plugins/dvdauthor/burn-dvdauthor.c:
+	* libbrasero-burn/plugins/dvdcss/burn-dvdcss.c:
+	* libbrasero-burn/plugins/growisofs/burn-dvd-rw-format.c:
+	* libbrasero-burn/plugins/growisofs/burn-growisofs.c:
+	* libbrasero-burn/plugins/libburnia/burn-libburn.c:
+	* libbrasero-burn/plugins/libburnia/burn-libisofs.c:
+	* libbrasero-burn/plugins/local-track/burn-local-image.c:
+	* libbrasero-burn/plugins/local-track/burn-uri.c:
+	* libbrasero-burn/plugins/transcode/burn-normalize.c:
+	* libbrasero-burn/plugins/transcode/burn-transcode.c:
+	* libbrasero-burn/plugins/transcode/burn-vob.c:
+	* libbrasero-burn/plugins/vcdimager/burn-vcdimager.c:
+	* src/brasero-plugin-manager-ui.c:
+	* src/brasero-plugin-option.c:
+
+2009-04-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Split burn-caps.c file in three smaller parts
 
 	* libbrasero-burn/Makefile.am:

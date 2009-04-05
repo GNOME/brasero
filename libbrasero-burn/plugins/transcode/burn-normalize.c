@@ -35,7 +35,7 @@
 #include <gst/gst.h>
 
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-normalize.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroNormalize, brasero_normalize, BRASERO_TYPE_JOB, BraseroJob);

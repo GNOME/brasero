@@ -40,10 +40,9 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include "burn-basics.h"
 #include "burn-job.h"
 #include "burn-process.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-cdrkit.h"
 #include "burn-genisoimage.h"
 #include "brasero-track-data.h"

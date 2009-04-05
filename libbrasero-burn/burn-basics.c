@@ -41,7 +41,7 @@
 #include "burn-debug.h"
 #include "burn-caps.h"
 #include "burn-plugin-manager.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin-information.h"
 
 #include "brasero-drive.h"
 #include "brasero-medium-monitor.h"

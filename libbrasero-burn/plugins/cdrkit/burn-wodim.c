@@ -45,10 +45,11 @@
 
 #include <gconf/gconf-client.h>
 
-#include "burn-basics.h"
+#include "brasero-units.h"
+
 #include "burn-job.h"
 #include "burn-process.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-cdrkit.h"
 #include "burn-wodim.h"
 

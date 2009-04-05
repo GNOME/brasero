@@ -40,10 +40,11 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "burn-basics.h"
+#include "brasero-units.h"
+
 #include "burn-debug.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-dvdcss.h"
 #include "burn-dvdcss-private.h"
 #include "burn-volume.h"

@@ -77,9 +77,7 @@ libbrasero_burn_la_SOURCES = 		\
 	burn-image-format.h                 \
 	burn-job.h                 \
 	burn-mkisofs-base.h                 \
-	burn-plugin.h                 \
 	burn-plugin-manager.h                 \
-	burn-plugin-private.h                 \
 	burn-process.h                 \
 	brasero-session.h                 \
 	burn-task.h                 \
@@ -151,7 +149,10 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-caps-plugin.c                 \
 	brasero-caps-burn.c                 \
 	brasero-caps-session.c                 \
-	brasero-caps-burn.h
+	brasero-caps-burn.h                 \
+	brasero-plugin.h                 \
+	brasero-plugin-information.h                 \
+	brasero-plugin-registration.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

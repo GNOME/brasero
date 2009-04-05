@@ -44,7 +44,7 @@
 #include "brasero-medium.h"
 #include "brasero-tags.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-transcode.h"
 #include "burn-normalize.h"
 

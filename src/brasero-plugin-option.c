@@ -33,8 +33,8 @@
 
 #include <gconf/gconf-client.h>
 
-#include "burn-plugin.h"
-#include "burn-plugin-private.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-information.h"
 #include "brasero-plugin-option.h"
 
 enum {

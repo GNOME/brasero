@@ -36,7 +36,8 @@
 
 #include "burn-basics.h"
 #include "brasero-track.h"
-#include "burn-plugin.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-registration.h"
 
 G_BEGIN_DECLS
 

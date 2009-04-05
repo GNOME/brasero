@@ -43,11 +43,11 @@
 #include <libisofs/libisofs.h>
 #include <libburn/libburn.h>
 
-#include "burn-basics.h"
 #include "burn-libburnia.h"
 #include "burn-libisofs.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-units.h"
+#include "brasero-plugin-registration.h"
 #include "burn-libburn-common.h"
 #include "brasero-track-data.h"
 #include "brasero-track-image.h"

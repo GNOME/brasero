@@ -46,9 +46,8 @@
 
 #include <gmodule.h>
 
-#include "burn-basics.h"
 #include "burn-job.h"
-#include "burn-plugin.h"
+#include "brasero-plugin-registration.h"
 #include "burn-local-image.h"
 #include "brasero-track-image.h"
 
