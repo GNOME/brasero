@@ -134,7 +134,7 @@ brasero_disc_option_dialog_set_tracks_image_fs (BraseroBurnSession *session,
 		BraseroTrack *track;
 
 		track = iter->data;
-		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DATA)
+		if (!BRASERO_IS_TRACK_DATA (track))
 			continue;
 
 		brasero_track_data_add_fs (BRASERO_TRACK_DATA (track), fs_type);
@@ -144,9 +144,10 @@ brasero_disc_option_dialog_set_tracks_image_fs (BraseroBurnSession *session,
 static gboolean
 brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 {
-	BraseroTrackType source;
+	BraseroImageFS fs_type;
 	BraseroBurnResult result;
 	BraseroBurnSession *session;
+	BraseroTrackType *source = NULL;
 	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
@@ -155,12 +156,20 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 
 	/* what we want to check Joliet support */
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	brasero_burn_session_get_input_type (session, &source);
 
-	source.subtype.fs_type |= BRASERO_IMAGE_FS_JOLIET;
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, source);
+	fs_type = brasero_track_type_get_data_fs (source);
+
+	brasero_track_type_set_data_fs (source,
+					fs_type|
+					BRASERO_IMAGE_FS_JOLIET);
+
 	result = brasero_burn_session_input_supported (session,
-						       &source,
+						       source,
 						       FALSE);
+	brasero_track_type_free (source);
+
 	if (result == BRASERO_BURN_OK) {
 		if (GTK_WIDGET_IS_SENSITIVE (priv->joliet_toggle)) {
 			g_object_unref (session);
@@ -174,7 +183,7 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 			return FALSE;
 		}
 
-		brasero_disc_option_dialog_set_tracks_image_fs (session, source.subtype.fs_type);
+		brasero_disc_option_dialog_set_tracks_image_fs (session, fs_type);
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), priv->joliet_saved);
 		g_object_unref (session);
@@ -188,9 +197,8 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 
 	priv->joliet_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle));
 	if (priv->joliet_saved) {
-		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_JOLIET;
-		brasero_disc_option_dialog_set_tracks_image_fs (session, source.subtype.fs_type);
-
+		fs_type &= (~BRASERO_IMAGE_FS_JOLIET);
+		brasero_disc_option_dialog_set_tracks_image_fs (session, fs_type);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), FALSE);
 	}
 
@@ -288,8 +296,9 @@ static void
 brasero_disc_option_dialog_set_joliet (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
+	BraseroTrackType *source = NULL;
 	BraseroBurnSession *session;
-	BraseroTrackType source;
+	BraseroImageFS fs_type;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
@@ -300,13 +309,15 @@ brasero_disc_option_dialog_set_joliet (BraseroDiscOptionDialog *dialog)
 
 	/* NOTE: we don't check for the sensitive property since when
 	 * something is compulsory the button is active but insensitive */
-	brasero_burn_session_get_input_type (session, &source);
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, source);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle)))
-		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_JOLIET;
+		fs_type = (~BRASERO_IMAGE_FS_JOLIET) & brasero_track_type_get_data_fs (source);
 	else
-		source.subtype.fs_type |= BRASERO_IMAGE_FS_JOLIET;
+		fs_type = BRASERO_IMAGE_FS_JOLIET|brasero_track_type_get_data_fs (source);
+	brasero_track_type_free (source);
 
-	brasero_disc_option_dialog_set_tracks_image_fs (session, source.subtype.fs_type);
+	brasero_disc_option_dialog_set_tracks_image_fs (session, fs_type);
 	g_object_unref (session);
 }
 
@@ -369,8 +380,8 @@ static gboolean
 brasero_disc_option_dialog_joliet_widget (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
+	BraseroTrackType *type = NULL;
 	BraseroBurnSession *session;
-	BraseroTrackType type;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
@@ -382,11 +393,14 @@ brasero_disc_option_dialog_joliet_widget (BraseroDiscOptionDialog *dialog)
 	 * to have the joliet extension, it's because it does have some
 	 * incompatible filenames inside */
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	brasero_burn_session_get_input_type (session, &type);
-	if (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) {
+
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, type);
+	if (brasero_track_type_get_data_fs (type) & BRASERO_IMAGE_FS_JOLIET) {
 		priv->joliet_warning = 1;
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), TRUE);
 	}
+	brasero_track_type_free (type);
 
 	brasero_disc_option_dialog_update_joliet (dialog);
 
@@ -761,22 +775,24 @@ brasero_disc_option_dialog_set_session (GObject *dialog,
 					gpointer NULL_data)
 {
 	BraseroDiscOptionDialogPrivate *priv;
+	BraseroTrackType *type = NULL;
 	BraseroBurnSession *session;
-	BraseroTrackType type;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	brasero_burn_session_get_input_type (session, &type);
 
-	if (type.type == BRASERO_TRACK_TYPE_DATA) {
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, type);
+
+	if (brasero_track_type_get_has_data (type)) {
 		brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
 						     BRASERO_MEDIA_TYPE_WRITABLE|
 						     BRASERO_MEDIA_TYPE_FILE);
 		brasero_disc_option_dialog_add_data_options (BRASERO_DISC_OPTION_DIALOG (dialog));
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
-		if (type.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)) {
+	else if (brasero_track_type_get_has_stream (type)) {
+		if (brasero_track_type_get_stream_format (type) & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)) {
 			brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
 							     BRASERO_MEDIA_TYPE_WRITABLE|
 							     BRASERO_MEDIA_TYPE_FILE);
@@ -788,6 +804,7 @@ brasero_disc_option_dialog_set_session (GObject *dialog,
 							     BRASERO_MEDIA_TYPE_WRITABLE);
 		}
 	}
+	brasero_track_type_free (type);
 
 	/* see if we should lock the drive only with MERGE */
 	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE)

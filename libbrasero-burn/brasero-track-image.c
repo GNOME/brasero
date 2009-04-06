@@ -164,6 +164,17 @@ brasero_track_image_get_toc_source (BraseroTrackImage *track,
 		return brasero_string_get_localpath (priv->toc);
 }
 
+BraseroImageFormat
+brasero_track_image_get_format (BraseroTrackImage *track)
+{
+	BraseroTrackImagePrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), BRASERO_IMAGE_FORMAT_NONE);
+
+	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	return priv->format;
+}
+
 static BraseroTrackDataType
 brasero_track_image_get_track_type (BraseroTrack *track,
 				    BraseroTrackType *type)
@@ -175,8 +186,8 @@ brasero_track_image_get_track_type (BraseroTrack *track,
 	if (!type)
 		return BRASERO_TRACK_TYPE_IMAGE;
 
-	type->type = BRASERO_TRACK_TYPE_IMAGE;
-	type->subtype.img_format = priv->format;
+	brasero_track_type_set_has_image (type);
+	brasero_track_type_set_image_format (type, priv->format);
 
 	return BRASERO_TRACK_TYPE_IMAGE;
 }

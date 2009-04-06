@@ -74,6 +74,18 @@ brasero_track_stream_set_source (BraseroTrackStream *track,
 	return BRASERO_BURN_OK;
 }
 
+BraseroStreamFormat
+brasero_track_stream_get_format (BraseroTrackStream *track)
+{
+	BraseroTrackStreamPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_AUDIO_FORMAT_NONE);
+
+	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+
+	return priv->format;
+}
+
 BraseroBurnResult
 brasero_track_stream_set_format (BraseroTrackStream *track,
 				 BraseroStreamFormat format)
@@ -218,8 +230,8 @@ brasero_track_stream_get_track_type (BraseroTrack *track,
 	if (!type)
 		return BRASERO_TRACK_TYPE_STREAM;
 
-	type->type = BRASERO_TRACK_TYPE_STREAM;
-	type->subtype.audio_format = priv->format;
+	brasero_track_type_set_has_stream (type);
+	brasero_track_type_set_stream_format (type, priv->format);
 
 	return BRASERO_TRACK_TYPE_STREAM;
 }

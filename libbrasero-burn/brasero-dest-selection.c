@@ -390,7 +390,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	BraseroMedia media;
 	gint64 size_bytes = 0;
 	BraseroBurnFlag flags;
-	BraseroTrackType input = { 0, };
+	BraseroTrackType *input = NULL;
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
@@ -419,12 +419,15 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 		return NULL;
 	}
 
-	brasero_burn_session_get_input_type (priv->session, &input);
-	if (input.type == BRASERO_TRACK_TYPE_DISC) {
+	input = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, input);
+	if (brasero_track_type_get_has_medium (input)) {
 		BraseroMedium *src_medium;
 
 		src_medium = brasero_burn_session_get_src_medium (priv->session);
 		if (src_medium == medium) {
+			brasero_track_type_free (input);
+
 			/* Translators: this string is only used when the user
 			 * wants to copy a disc using the same destination and
 			 * source drive. It tells him that brasero will use as
@@ -454,6 +457,8 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	}
 	else if (media & BRASERO_MEDIUM_CLOSED) {
 		if (!brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK) {
+			brasero_track_type_free (input);
+
 			/* NOTE for translators, the first %s is the medium name */
 			label = g_strdup_printf (_("%s: no free space"), medium_name);
 			g_free (medium_name);
@@ -471,14 +476,16 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	}
 
 	/* format the size */
-	if (input.type == BRASERO_TRACK_TYPE_STREAM
-	|| (input.type == BRASERO_TRACK_TYPE_DISC
-	&& (input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO)))
+	if (brasero_track_type_get_has_stream (input)
+	|| (brasero_track_type_get_has_medium (input)
+	&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)))
 		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes),
 							     TRUE,
 							     TRUE);
 	else
 		size_string = g_format_size_for_display (size_bytes);
+
+	brasero_track_type_free (input);
 
 	/* NOTE for translators: the first %s is the medium name, the second %s
 	 * is its available free space. "Free" here is the free space available. */

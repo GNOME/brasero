@@ -81,6 +81,9 @@ gchar *
 brasero_track_image_get_toc_source (BraseroTrackImage *track,
 				    gboolean uri);
 
+BraseroImageFormat
+brasero_track_image_get_format (BraseroTrackImage *track);
+
 G_END_DECLS
 
 #endif /* _BURN_TRACK_IMAGE_H_ */

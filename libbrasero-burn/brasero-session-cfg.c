@@ -363,8 +363,8 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 static void
 brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 {
-	BraseroTrackType source = { 0, };
 	BraseroSessionCfgPrivate *priv;
+	BraseroTrackDataType source;
 	BraseroBurnFlag flags;
 	BraseroMedium *medium;
 	BraseroDrive *drive;
@@ -377,7 +377,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	/* The next two must work as they were checked earlier */
-	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
+	source = brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), NULL);
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 
 	medium = brasero_drive_get_medium (drive);
@@ -440,9 +440,9 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 		flags = BRASERO_BURN_FLAG_EJECT|
 			BRASERO_BURN_FLAG_BURNPROOF;
 
-		if (source.type == BRASERO_TRACK_TYPE_DATA
-		||  source.type == BRASERO_TRACK_TYPE_DISC
-		||  source.type == BRASERO_TRACK_TYPE_IMAGE)
+		if (source == BRASERO_TRACK_TYPE_DATA
+		||  source == BRASERO_TRACK_TYPE_DISC
+		||  source == BRASERO_TRACK_TYPE_IMAGE)
 			flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 	}
 	else {
@@ -534,7 +534,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 		BraseroTrack *track;
 
 		track = iter->data;
-		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DATA) {
+		if (!BRASERO_IS_TRACK_DATA (track)) {
 			guint64 sectors = 0;
 
 			brasero_track_get_size (track, &sectors, NULL);
@@ -596,7 +596,7 @@ brasero_session_cfg_set_tracks_audio_format (BraseroBurnSession *session,
 		BraseroTrack *track;
 
 		track = iter->data;
-		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_STREAM)
+		if (!BRASERO_IS_TRACK_STREAM (track))
 			continue;
 
 		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track), format);
@@ -608,8 +608,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			    gboolean update,
 			    gboolean check)
 {
+	BraseroTrackType *source = NULL;
 	BraseroSessionCfgPrivate *priv;
-	BraseroTrackType source = { 0, };
 	BraseroBurnResult result;
 	BraseroDrive *burner;
 
@@ -619,8 +619,12 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		return;
 
 	/* Make sure there is a source */
-	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
-	if (source.type == BRASERO_TRACK_TYPE_NONE) {
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), source);
+
+	if (brasero_track_type_is_empty (source)) {
+		brasero_track_type_free (source);
+
 		priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -628,8 +632,10 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		return;
 	}
 
-	if (source.type == BRASERO_TRACK_TYPE_DISC
-	&&  source.subtype.media == BRASERO_MEDIUM_NONE) {
+	if (brasero_track_type_get_has_medium (source)
+	&&  brasero_track_type_get_medium_type (source) == BRASERO_MEDIUM_NONE) {
+		brasero_track_type_free (source);
+
 		priv->is_valid = BRASERO_SESSION_NO_INPUT_MEDIUM;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -637,10 +643,12 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		return;
 	}
 
-	if (source.type == BRASERO_TRACK_TYPE_IMAGE
-	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+	if (brasero_track_type_get_has_image (source)
+	&&  brasero_track_type_get_image_format (source) == BRASERO_IMAGE_FORMAT_NONE) {
 		gchar *uri;
 		GSList *tracks;
+
+		brasero_track_type_free (source);
 
 		tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (self));
 
@@ -673,6 +681,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	/* make sure there is an output set */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {
+		brasero_track_type_free (source);
+
 		priv->is_valid = BRASERO_SESSION_NO_OUTPUT;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -684,23 +694,27 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	if (priv->CD_TEXT_modified) {
 		/* Try to redo what we undid (after all a new plugin could have
 		 * been activated in the mean time ...) and see what happens */
-		source.subtype.audio_format |= BRASERO_METADATA_INFO;
+		brasero_track_type_set_image_format (source,
+						     BRASERO_METADATA_INFO|
+						     brasero_track_type_get_image_format (source));
 		result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-							       &source,
+							       source,
 							       FALSE);
 		if (result == BRASERO_BURN_OK) {
 			priv->CD_TEXT_modified = FALSE;
 
 			priv->configuring = TRUE;
 			brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
-								     source.subtype.audio_format);
+								     brasero_track_type_get_stream_format (source));
 			priv->configuring = FALSE;
 		}
 		else {
 			/* No, nothing's changed */
-			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
+			brasero_track_type_set_stream_format (source,
+							      (~BRASERO_METADATA_INFO) &
+							      brasero_track_type_get_stream_format (source));
 			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-								       &source,
+								       source,
 								       FALSE);
 		}
 	}
@@ -709,15 +723,18 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
 							FALSE);
 		if (result != BRASERO_BURN_OK
-		&&  source.type == BRASERO_TRACK_TYPE_STREAM
-		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {
+		&&  brasero_track_type_get_has_stream (source)
+		&& (brasero_track_type_get_stream_format (source) & BRASERO_METADATA_INFO)) {
 			/* Another special case in case some burning backends 
 			 * don't support CD-TEXT for audio (libburn). If no
 			 * other backend is available remove CD-TEXT option but
 			 * tell user... */
-			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
+			brasero_track_type_set_stream_format (source,
+							      (~BRASERO_METADATA_INFO) &
+							      brasero_track_type_get_stream_format (source));
+
 			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-								       &source,
+								       source,
 								       FALSE);
 			BRASERO_BURN_LOG ("Tested support without Metadata information (result %d)", result);
 			if (result == BRASERO_BURN_OK) {
@@ -725,16 +742,16 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 
 				priv->configuring = TRUE;
 				brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
-									     source.subtype.audio_format);
+									     brasero_track_type_get_has_stream (source));
 				priv->configuring = FALSE;
 			}
 		}
 	}
 
 	if (result != BRASERO_BURN_OK) {
-		if (source.type == BRASERO_TRACK_TYPE_DISC
-		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
-		&&  brasero_track_type_is_supported (&source) != BRASERO_BURN_OK) {
+		if (brasero_track_type_get_has_medium (source)
+		&& (brasero_track_type_get_medium_type (source) & BRASERO_MEDIUM_PROTECTED)
+		&&  brasero_track_type_supported (source) != BRASERO_BURN_OK) {
 			/* This is a special case to display a helpful message */
 			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
 			g_signal_emit (self,
@@ -748,8 +765,11 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 				       0);
 		}
 
+		brasero_track_type_free (source);
 		return;
 	}
+
+	brasero_track_type_free (source);
 
 	/* Configure flags */
 	priv->configuring = TRUE;

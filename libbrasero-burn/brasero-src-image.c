@@ -89,8 +89,8 @@ static void
 brasero_src_image_save (BraseroSrcImage *self)
 {
 	gchar *uri = NULL;
-	BraseroTrackType type;
 	GtkRecentManager *recent;
+	BraseroImageFormat format;
 	gchar *groups [] = { "brasero",
 			      NULL };
 	GtkRecentData recent_data = { NULL,
@@ -104,13 +104,12 @@ brasero_src_image_save (BraseroSrcImage *self)
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
 
-	brasero_track_get_track_type (BRASERO_TRACK (priv->track), &type);
-	if (type.type == BRASERO_TRACK_TYPE_NONE
-	||  type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE)
+	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (priv->track));
+	if (format == BRASERO_IMAGE_FORMAT_NONE)
 		return;
 
 	/* Add it to recent file manager */
-	switch (type.subtype.img_format) {
+	switch (format) {
 	case BRASERO_IMAGE_FORMAT_BIN:
 		recent_data.mime_type = (gchar *) mimes [0];
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
@@ -178,9 +177,9 @@ brasero_src_image_update (BraseroSrcImage *self)
 	guint64 size = 0;
 	GError *error = NULL;
 	BraseroBurnResult result;
+	BraseroImageFormat format;
 	gchar *size_string = NULL;
 	BraseroSrcImagePrivate *priv;
-	BraseroTrackType type = { 0, };
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
 
@@ -189,8 +188,8 @@ brasero_src_image_update (BraseroSrcImage *self)
 
 	/* Retrieve a path or an uri */
 	path = NULL;
-	brasero_track_get_track_type (BRASERO_TRACK (priv->track), &type);
-	switch (type.subtype.img_format) {
+	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (priv->track));
+	switch (format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
 	case BRASERO_IMAGE_FORMAT_BIN:
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
@@ -341,13 +340,10 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 static void
 brasero_src_image_set_formats (BraseroSrcImage *dialog)
 {
+	BraseroTrackType *input = NULL;
 	BraseroSrcImagePrivate *priv;
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
-	BraseroTrackType output;
-	BraseroTrackType input;
-	BraseroMedium *medium;
-	BraseroDrive *drive;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
 
@@ -355,25 +351,23 @@ brasero_src_image_set_formats (BraseroSrcImage *dialog)
 		return;
 
 	/* get the available image types */
-	output.type = BRASERO_TRACK_TYPE_DISC;
-	drive = brasero_burn_session_get_burner (priv->session);
-	medium = brasero_drive_get_medium (drive);
-	output.subtype.media = brasero_medium_get_status (medium);
-
-	input.type = BRASERO_TRACK_TYPE_IMAGE;
+	input = brasero_track_type_new ();
+	brasero_track_type_set_has_image (input);
 	formats = BRASERO_IMAGE_FORMAT_NONE;
 	format = BRASERO_IMAGE_FORMAT_CDRDAO;
 
 	for (; format != BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
 		BraseroBurnResult result;
 
-		input.subtype.img_format = format;
+		brasero_track_type_set_image_format (input, format);
 		result = brasero_burn_session_input_supported (priv->session,
-							       &input,
+							       input,
 							       FALSE);
 		if (result == BRASERO_BURN_OK)
 			formats |= format;
 	}
+
+	brasero_track_type_free (input);
 
 	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), formats);
 
@@ -385,13 +379,13 @@ static gchar *
 brasero_src_image_get_current_uri (BraseroSrcImage *self)
 {
 	BraseroSrcImagePrivate *priv;
-	BraseroTrackType type = { 0, };
+	BraseroImageFormat format;
 	gchar *uri = NULL;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
 
-	brasero_track_get_track_type (BRASERO_TRACK (priv->track), &type);
-	switch (type.subtype.img_format) {
+	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (priv->track));
+	switch (format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
 	case BRASERO_IMAGE_FORMAT_BIN:
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (priv->track), TRUE);
@@ -675,32 +669,32 @@ brasero_src_image_set_property (GObject *object,
 		track = _get_session_image_track (session);
 		if (track) {
 			if (!BRASERO_IS_TRACK_IMAGE_CFG (track)) {
-				BraseroTrackType type = { 0, };
+				BraseroImageFormat format;
 				guint64 blocks = 0;
 				gchar *image = NULL;
 				gchar *toc = NULL;
 
 				toc = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
 				image = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
-				brasero_track_get_track_type (BRASERO_TRACK (track), &type);
+				format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
 				brasero_track_get_size (BRASERO_TRACK (track),
 							&blocks,
 							NULL);
 
 				priv->track = brasero_track_image_cfg_new ();
-				if (blocks && type.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE) {
+				if (blocks && format != BRASERO_IMAGE_FORMAT_NONE) {
 					/* copy all the information */
 					brasero_track_image_set_source (BRASERO_TRACK_IMAGE (priv->track),
 									image,
 									toc,
-									type.subtype.img_format);
+									format);
 
 					brasero_track_image_set_block_num (BRASERO_TRACK_IMAGE (priv->track), blocks);
 				}
 				else {
-					brasero_track_image_cfg_force_format (priv->track, type.subtype.img_format);
+					brasero_track_image_cfg_force_format (priv->track, format);
 
-					switch (type.subtype.img_format) {
+					switch (format) {
 					case BRASERO_IMAGE_FORMAT_NONE:
 					case BRASERO_IMAGE_FORMAT_BIN:
 						brasero_track_image_cfg_set_source (priv->track, image);

@@ -303,15 +303,17 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 						FALSE);
 	}
 	else if (strstr (line, "Sending CUE sheet")) {
-		BraseroTrackType type;
+		BraseroTrackType *type = NULL;
 
 		/* See if we are in an audio case which would mean we're writing
 		 * CD-TEXT */
-		brasero_job_get_input_type (BRASERO_JOB (cdrecord), &type);
+		type = brasero_track_type_new ();
+		brasero_job_get_input_type (BRASERO_JOB (cdrecord), type);
 		brasero_job_set_current_action (BRASERO_JOB (process),
 						BRASERO_BURN_ACTION_RECORDING_CD_TEXT,
-						(type.type == BRASERO_TRACK_TYPE_STREAM) ? NULL:_("Writing cue sheet"),
+						brasero_track_type_get_has_stream (type) ? NULL:_("Writing cue sheet"),
 						FALSE);
+		brasero_track_type_free (type);
 	}
 	else if (g_str_has_prefix (line, "Re-load disk and hit <CR>")
 	     ||  g_str_has_prefix (line, "send SIGUSR1 to continue")) {
@@ -712,8 +714,8 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 {
 	guint speed;
 	BraseroBurnFlag flags;
-	BraseroTrackType type;
 	BraseroCDRecordPrivate *priv;
+	BraseroTrackType *type = NULL;
 
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
@@ -748,15 +750,19 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 	if (flags & BRASERO_BURN_FLAG_DAO)
 		g_ptr_array_add (argv, g_strdup ("-dao"));
 
-	brasero_job_get_input_type (BRASERO_JOB (cdrecord), &type);
+	type = brasero_track_type_new ();
+	brasero_job_get_input_type (BRASERO_JOB (cdrecord), type);
+
 	if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
 		int buffer_size;
 		guint64 sectors;
 		
 		/* we need to know what is the type of the track (audio / data) */
-		result = brasero_job_get_input_type (BRASERO_JOB (cdrecord), &type);
+		result = brasero_job_get_input_type (BRASERO_JOB (cdrecord), type);
 		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (type);
+
 			BRASERO_JOB_LOG (cdrecord, "Imager doesn't seem to be ready")
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -770,6 +776,8 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 							      &sectors,
 							      NULL);
 		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (type);
+
 			BRASERO_JOB_LOG (cdrecord, "The size of the session cannot be retrieved")
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -787,17 +795,22 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			buffer_size = 4;
 
 		g_ptr_array_add (argv, g_strdup_printf ("fs=%im", buffer_size));
-		if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
-			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+		if (brasero_track_type_get_has_image (type)) {
+			BraseroImageFormat format;
+
+			format = brasero_track_type_get_image_format (type);
+			if (format == BRASERO_IMAGE_FORMAT_BIN) {
 				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
 				g_ptr_array_add (argv, g_strdup ("-data"));
 				g_ptr_array_add (argv, g_strdup ("-nopad"));
 				g_ptr_array_add (argv, g_strdup ("-"));
 			}
-			else
-				BRASERO_JOB_NOT_SUPPORTED (cdrecord);;
+			else {
+				brasero_track_type_free (type);
+				BRASERO_JOB_NOT_SUPPORTED (cdrecord);
+			}
 		}
-		else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
+		else if (brasero_track_type_get_has_stream (type)) {
 			g_ptr_array_add (argv, g_strdup ("-swab"));
 			g_ptr_array_add (argv, g_strdup ("-audio"));
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
@@ -806,13 +819,17 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			result = brasero_cdrecord_write_infs (cdrecord,
 							      argv,
 							      error);
-			if (result != BRASERO_BURN_OK)
+			if (result != BRASERO_BURN_OK) {
+				brasero_track_type_free (type);
 				return result;
+			}
 		}
-		else
+		else {
+			brasero_track_type_free (type);
 			BRASERO_JOB_NOT_SUPPORTED (cdrecord);
+		}
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
+	else if (brasero_track_type_get_has_stream (type)) {
 		BraseroBurnResult result;
 		GSList *tracks;
 
@@ -827,8 +844,10 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		result = brasero_cdrecord_write_infs (cdrecord,
 						      NULL,
 						      error);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (type);
 			return result;
+		}
 
 		tracks = NULL;
 		brasero_job_get_tracks (BRASERO_JOB (cdrecord), &tracks);
@@ -841,55 +860,67 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			g_ptr_array_add (argv, path);
 		}
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+	else if (brasero_track_type_get_has_image (type)) {
 		BraseroTrack *track = NULL;
+		BraseroImageFormat format;
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrecord), &track);
-		if (!track)
+		if (!track) {
+			brasero_track_type_free (type);
 			BRASERO_JOB_NOT_READY (cdrecord);
+		}
 
-		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+		format = brasero_track_type_get_image_format (type);
+		if (format == BRASERO_IMAGE_FORMAT_NONE) {
 			gchar *image_path;
 
 			image_path = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
-			if (!image_path)
+			if (!image_path) {
+				brasero_track_type_free (type);
 				BRASERO_JOB_NOT_READY (cdrecord);
+			}
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
 			g_ptr_array_add (argv, g_strdup ("-nopad"));
 			g_ptr_array_add (argv, image_path);
 		}
-		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+		else if (format == BRASERO_IMAGE_FORMAT_BIN) {
 			gchar *isopath;
 
 			isopath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
-			if (!isopath)
+			if (!isopath) {
+				brasero_track_type_free (type);
 				BRASERO_JOB_NOT_READY (cdrecord);
+			}
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
 			g_ptr_array_add (argv, g_strdup ("-nopad"));
 			g_ptr_array_add (argv, isopath);
 		}
-		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+		else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
 			gchar *rawpath;
 
 			rawpath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
-			if (!rawpath)
+			if (!rawpath) {
+				brasero_track_type_free (type);
 				BRASERO_JOB_NOT_READY (cdrecord);
+			}
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-clone"));
 			g_ptr_array_add (argv, rawpath);
 		}
-		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
+		else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 			gchar *cue_str;
 			gchar *cuepath;
 
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
-			if (!cuepath)
+			if (!cuepath) {
+				brasero_track_type_free (type);
 				BRASERO_JOB_NOT_READY (cdrecord);
+			}
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 
@@ -897,11 +928,17 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			g_ptr_array_add (argv, cue_str);
 			g_free (cuepath);
 		}
-		else
+		else {
+			brasero_track_type_free (type);
 			BRASERO_JOB_NOT_SUPPORTED (cdrecord);
+		}
 	}
-	else
+	else {
+		brasero_track_type_free (type);
 		BRASERO_JOB_NOT_SUPPORTED (cdrecord);
+	}
+
+	brasero_track_type_free (type);
 
 	brasero_job_set_current_action (BRASERO_JOB (cdrecord),
 					BRASERO_BURN_ACTION_START_RECORDING,

@@ -114,15 +114,15 @@ brasero_burn_caps_sort (gconstpointer a, gconstpointer b)
 		return caps_a->type.subtype.img_format - caps_b->type.subtype.img_format;
 
 	case BRASERO_TRACK_TYPE_STREAM:
-		if (caps_a->type.subtype.audio_format != caps_b->type.subtype.audio_format) {
-			result = (caps_a->type.subtype.audio_format & caps_b->type.subtype.audio_format);
-			if (result == caps_a->type.subtype.audio_format)
+		if (caps_a->type.subtype.stream_format != caps_b->type.subtype.stream_format) {
+			result = (caps_a->type.subtype.stream_format & caps_b->type.subtype.stream_format);
+			if (result == caps_a->type.subtype.stream_format)
 				return -1;
-			else if (result == caps_b->type.subtype.audio_format)
+			else if (result == caps_b->type.subtype.stream_format)
 				return 1;
 
-			return  (gint32) caps_a->type.subtype.audio_format -
-				(gint32) caps_b->type.subtype.audio_format;
+			return  (gint32) caps_a->type.subtype.stream_format -
+				(gint32) caps_b->type.subtype.stream_format;
 		}
 		break;
 
@@ -473,7 +473,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		if (common_io == BRASERO_PLUGIN_IO_NONE)
 			continue;
 
-		if (caps->type.subtype.audio_format == format) {
+		if (caps->type.subtype.stream_format == format) {
 			/* that's the perfect fit */
 			have_the_one = TRUE;
 			retval = g_slist_prepend (retval, caps);
@@ -483,29 +483,29 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		/* Search caps strictly encompassed or encompassing our format
 		 * NOTE: make sure that if there is a VIDEO stream in one of
 		 * them, the other does have a VIDEO stream too. */
-		common_audio = BRASERO_STREAM_FORMAT_AUDIO (caps->type.subtype.audio_format) & 
+		common_audio = BRASERO_STREAM_FORMAT_AUDIO (caps->type.subtype.stream_format) & 
 			       BRASERO_STREAM_FORMAT_AUDIO (format);
 		if (common_audio == BRASERO_AUDIO_FORMAT_NONE
-		&& (BRASERO_STREAM_FORMAT_AUDIO (caps->type.subtype.audio_format)
+		&& (BRASERO_STREAM_FORMAT_AUDIO (caps->type.subtype.stream_format)
 		||  BRASERO_STREAM_FORMAT_AUDIO (format)))
 			continue;
 
-		common_video = BRASERO_STREAM_FORMAT_VIDEO (caps->type.subtype.audio_format) & 
+		common_video = BRASERO_STREAM_FORMAT_VIDEO (caps->type.subtype.stream_format) & 
 			       BRASERO_STREAM_FORMAT_VIDEO (format);
 
 		if (common_video == BRASERO_AUDIO_FORMAT_NONE
-		&& (BRASERO_STREAM_FORMAT_VIDEO (caps->type.subtype.audio_format)
+		&& (BRASERO_STREAM_FORMAT_VIDEO (caps->type.subtype.stream_format)
 		||  BRASERO_STREAM_FORMAT_VIDEO (format)))
 			continue;
 
 		/* Likewise... that must be common */
-		if ((caps->type.subtype.audio_format & BRASERO_METADATA_INFO) != (format & BRASERO_METADATA_INFO))
+		if ((caps->type.subtype.stream_format & BRASERO_METADATA_INFO) != (format & BRASERO_METADATA_INFO))
 			continue;
 
 		common = common_audio|common_video|(format & BRASERO_METADATA_INFO);
 
 		/* encompassed caps just add it to retval */
-		if (caps->type.subtype.audio_format == common)
+		if (caps->type.subtype.stream_format == common)
 			retval = g_slist_prepend (retval, caps);
 
 		/* encompassing caps keep it if we need to create perfect fit */
@@ -522,7 +522,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 
 		caps = g_new0 (BraseroCaps, 1);
 		caps->flags = flags;
-		caps->type.subtype.audio_format = format;
+		caps->type.subtype.stream_format = format;
 		caps->type.type = BRASERO_TRACK_TYPE_STREAM;
 
 		if (encompassing) {

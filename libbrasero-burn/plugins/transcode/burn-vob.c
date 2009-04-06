@@ -89,23 +89,25 @@ brasero_vob_stop (BraseroJob *job,
 static void
 brasero_vob_finished (BraseroVob *vob)
 {
+	BraseroTrackType *type = NULL;
 	BraseroTrackStream *track;
 	BraseroVobPrivate *priv;
-	BraseroTrackType type;
 	gchar *output = NULL;
 
 	priv = BRASERO_VOB_PRIVATE (vob);
 
-	memset (&type, 0, sizeof (BraseroTrackType));
-	brasero_job_get_output_type (BRASERO_JOB (vob), &type);
+	type = brasero_track_type_new ();
+	brasero_job_get_output_type (BRASERO_JOB (vob), type);
 	brasero_job_get_audio_output (BRASERO_JOB (vob), &output);
 
 	track = brasero_track_stream_new ();
 	brasero_track_stream_set_source (track, output);
-	brasero_track_stream_set_format (track, type.subtype.audio_format);
+	brasero_track_stream_set_format (track, brasero_track_type_get_stream_format (type));
 
 	brasero_job_add_track (BRASERO_JOB (vob), BRASERO_TRACK (track));
 	g_object_unref (track);
+
+	brasero_track_type_free (type);
 	g_free (output);
 
 	brasero_job_finished_track (BRASERO_JOB (vob));
@@ -1069,7 +1071,7 @@ brasero_vob_start (BraseroJob *job,
 {
 	BraseroVobPrivate *priv;
 	BraseroJobAction action;
-	BraseroTrackType output;
+	BraseroTrackType *output = NULL;
 
 	brasero_job_get_action (job, &action);
 	if (action != BRASERO_JOB_ACTION_IMAGE)
@@ -1078,9 +1080,10 @@ brasero_vob_start (BraseroJob *job,
 	priv = BRASERO_VOB_PRIVATE (job);
 
 	/* get destination medium type */
-	memset (&output, 0, sizeof (BraseroTrackType));
-	brasero_job_get_output_type (job, &output);
-	if (output.subtype.audio_format & BRASERO_VIDEO_FORMAT_VCD) {
+	output = brasero_track_type_new ();
+	brasero_job_get_output_type (job, output);
+
+	if (brasero_track_type_get_stream_format (output) & BRASERO_VIDEO_FORMAT_VCD) {
 		GValue *value = NULL;
 
 		priv->is_video_dvd = FALSE;
@@ -1097,6 +1100,8 @@ brasero_vob_start (BraseroJob *job,
 			 "Got output type (is DVD %i, is SVCD %i)",
 			 priv->is_video_dvd,
 			 priv->svcd);
+
+	brasero_track_type_free (output);
 
 	if (!brasero_vob_build_pipeline (BRASERO_VOB (job), error))
 		return BRASERO_BURN_ERR;

@@ -39,35 +39,9 @@
 
 #include <brasero-enums.h>
 #include <brasero-error.h>
+#include <brasero-track-type.h>
 
 G_BEGIN_DECLS
-
-/* NOTE: the order has a meaning here and is used for sorting */
-typedef enum {
-	BRASERO_TRACK_TYPE_NONE				= 0,
-	BRASERO_TRACK_TYPE_STREAM,
-	BRASERO_TRACK_TYPE_DATA,
-	BRASERO_TRACK_TYPE_IMAGE,
-	BRASERO_TRACK_TYPE_DISC,
-} BraseroTrackDataType;
-
-struct _BraseroTrackType {
-	BraseroTrackDataType type;
-	union {
-		BraseroImageFormat img_format;		/* used with IMAGE type */
-		BraseroMedia media;			/* used with DISC types */
-		BraseroImageFS fs_type;
-		BraseroStreamFormat audio_format;
-	} subtype;
-};
-typedef struct _BraseroTrackType BraseroTrackType;
-
-BraseroBurnResult
-brasero_track_type_is_supported (BraseroTrackType *type);
-
-gboolean
-brasero_track_type_equal (const BraseroTrackType *type_A,
-			  const BraseroTrackType *type_B);
 
 #define BRASERO_TYPE_TRACK             (brasero_track_get_type ())
 #define BRASERO_TRACK(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_TRACK, BraseroTrack))
@@ -116,7 +90,7 @@ brasero_track_get_size (BraseroTrack *track,
 
 BraseroTrackDataType
 brasero_track_get_track_type (BraseroTrack *track,
-			     BraseroTrackType *type);
+			      BraseroTrackType *type);
 
 /** 
  * Checksums

@@ -246,7 +246,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	gchar *grafts_path = NULL;
 	BraseroJobAction action;
 	BraseroBurnResult result;
-	BraseroTrackType input;
+	BraseroImageFS fs_type;
 	gchar *emptydir = NULL;
 	gchar *videodir = NULL;
 
@@ -262,13 +262,12 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	g_ptr_array_add (argv, g_strdup ("-r"));
 
 	brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
-	brasero_job_get_input_type (BRASERO_JOB (growisofs), &input);
-
-	if (input.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET)
+	fs_type = brasero_track_data_get_fs (BRASERO_TRACK_DATA (track));
+	if (fs_type & BRASERO_IMAGE_FS_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
-	if ((input.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
-	&&  (input.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)) {
+	if ((fs_type & BRASERO_IMAGE_FS_ISO)
+	&&  (fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)) {
 		/* That's the safest option. A few OS don't support that though,
 		 * like MacOSX and freebsd.*/
 		g_ptr_array_add (argv, g_strdup ("-iso-level"));
@@ -282,10 +281,10 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 			g_ptr_array_add (argv, g_strdup ("-allow-limited-size"));
 	}
 
-	if (input.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
+	if (fs_type & BRASERO_IMAGE_FS_UDF)
 		g_ptr_array_add (argv, g_strdup ("-udf"));
 
-	if (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO) {
+	if (fs_type & BRASERO_IMAGE_FS_VIDEO) {
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
 
 		result = brasero_job_get_tmp_dir (BRASERO_JOB (growisofs),
@@ -302,7 +301,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 
 	g_ptr_array_add (argv, g_strdup ("-graft-points"));
 
-	if (input.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
+	if (fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
 		g_ptr_array_add (argv, g_strdup ("-D"));	// This is dangerous the manual says but apparently it works well
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (growisofs),
@@ -335,7 +334,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	}
 
 	result = brasero_track_data_get_paths (BRASERO_TRACK_DATA (track),
-					       (input.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
+					       (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					       grafts_path,
 					       excluded_path,
 					       emptydir,
@@ -483,14 +482,14 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			return result;
 	}
 	else {
-		BraseroTrackType input;
+		BraseroTrack *current = NULL;
 
 		/* apparently we are not merging but growisofs will refuse to 
 		 * write a piped image if there is one already on the disc;
 		 * except with this option */
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tty"));
 
-		brasero_job_get_input_type (BRASERO_JOB (growisofs), &input);
+		brasero_job_get_current_track (BRASERO_JOB (growisofs), &current);
 		if (brasero_job_get_fd_in (BRASERO_JOB (growisofs), NULL) == BRASERO_BURN_OK) {
 			/* set the buffer. NOTE: apparently this needs to be a power of 2 */
 			/* FIXME: is it right to mess with it ? 
@@ -510,12 +509,10 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			g_ptr_array_add (argv, g_strdup_printf ("%s=/proc/self/fd/0", device));
 			g_free (device);
 		}
-		else if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
+		else if (BRASERO_IS_TRACK_IMAGE (current)) {
 			gchar *localpath;
-			BraseroTrack *track;
 
-			brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
-			localpath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
+			localpath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), FALSE);
 			if (!localpath) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
@@ -532,7 +529,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			g_free (device);
 			g_free (localpath);
 		}
-		else if (input.type == BRASERO_TRACK_TYPE_DATA) {
+		else if (BRASERO_IS_TRACK_DATA (current)) {
 			g_ptr_array_add (argv, g_strdup ("-Z"));
 			g_ptr_array_add (argv, device);
 
@@ -620,11 +617,11 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 
 	brasero_job_get_action (BRASERO_JOB (process), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
-		BraseroTrackType input;
+		BraseroTrack *track = NULL;
 
 		/* only do it if that's DATA as input */
-		brasero_job_get_input_type (BRASERO_JOB (process), &input);
-		if (input.type != BRASERO_TRACK_TYPE_DATA)
+		brasero_job_get_current_track (BRASERO_JOB (process), &track);
+		if (!BRASERO_IS_TRACK_DATA (track))
 			return BRASERO_BURN_NOT_SUPPORTED;
 
 		result = brasero_growisofs_set_argv_record (BRASERO_GROWISOFS (process),

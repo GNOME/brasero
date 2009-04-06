@@ -65,11 +65,13 @@ G_BEGIN_DECLS
 						       format,			\
 						       ##__VA_ARGS__);
 
-#define BRASERO_BURN_LOG_TYPE(type_MACRO, format, ...)				\
-		BRASERO_BURN_LOG_WITH_TYPE (type_MACRO,				\
-					    BRASERO_PLUGIN_IO_NONE,		\
-					    format,				\
-					    ##__VA_ARGS__);
+#define BRASERO_BURN_LOG_TYPE(type_MACRO, format, ...)						\
+		brasero_burn_debug_track_type_struct_message (type_MACRO,			\
+							      BRASERO_PLUGIN_IO_NONE,		\
+							      G_STRLOC,				\
+							      format,				\
+							      ##__VA_ARGS__);
+
 #define BRASERO_BURN_LOG_WITH_TYPE(type_MACRO, flags_MACRO, format, ...)	\
 		BRASERO_BURN_LOG_WITH_FULL_TYPE ((type_MACRO)->type,		\
 						 (type_MACRO)->subtype.media,	\
@@ -90,6 +92,12 @@ brasero_burn_set_debug (gboolean debug_value);
 void
 brasero_burn_debug_setup_module (GModule *handle);
 
+void
+brasero_burn_debug_track_type_struct_message (BraseroTrackType *type,
+					      BraseroPluginIOFlag flags,
+					      const gchar *location,
+					      const gchar *format,
+					      ...);
 void
 brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 				       guint subtype,

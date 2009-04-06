@@ -224,8 +224,8 @@ brasero_medium_properties_get_possible_output_formats (BraseroMediumProperties *
 						       BraseroImageFormat *formats)
 {
 	guint num = 0;
-	BraseroTrackType output;
 	BraseroImageFormat format;
+	BraseroTrackType *output = NULL;
 	BraseroMediumPropertiesPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
@@ -233,19 +233,22 @@ brasero_medium_properties_get_possible_output_formats (BraseroMediumProperties *
 	/* see how many output format are available */
 	format = BRASERO_IMAGE_FORMAT_CDRDAO;
 	(*formats) = BRASERO_IMAGE_FORMAT_NONE;
-	output.type = BRASERO_TRACK_TYPE_IMAGE;
+
+	output = brasero_track_type_new ();
+	brasero_track_type_set_has_image (output);
 
 	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
 		BraseroBurnResult result;
 
-		output.subtype.img_format = format;
-		result = brasero_burn_session_output_supported (priv->session,
-								&output);
+		brasero_track_type_set_image_format (output, format);
+		result = brasero_burn_session_output_supported (priv->session, output);
 		if (result == BRASERO_BURN_OK) {
 			(*formats) |= format;
 			num ++;
 		}
 	}
+
+	brasero_track_type_free (output);
 
 	return num;
 }

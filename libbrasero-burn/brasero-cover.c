@@ -103,7 +103,7 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 		BraseroTrack *track;
 
 		track = iter->data;
-		if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_STREAM)
+		if (!BRASERO_IS_TRACK_STREAM (track))
 			continue;
 
 		num = g_strdup_printf ("%i - ", g_slist_index (tracks, track) + 1);

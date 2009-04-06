@@ -585,30 +585,32 @@ brasero_burn_options_class_init (BraseroBurnOptionsClass *klass)
 GtkWidget *
 brasero_burn_options_new (BraseroSessionCfg *session)
 {
-	BraseroTrackType type = { 0, };
+	BraseroTrackType *type;
 	GtkWidget *options;
 
-	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (session), &type);
-	switch (type.type) {
-		case BRASERO_TRACK_TYPE_DATA:
-		case BRASERO_TRACK_TYPE_STREAM:
-			options = g_object_new (BRASERO_TYPE_DISC_OPTION_DIALOG,
-						"session", session,
-						NULL);
-			break;
-		case BRASERO_TRACK_TYPE_DISC:
-			options = g_object_new (BRASERO_TYPE_DISC_COPY_DIALOG,
-						"session", session,
-						NULL);
-			break;
-		case BRASERO_TRACK_TYPE_IMAGE:
-			options = g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
-						"session", session,
-						NULL);
-			break;
-		default:
-			options = NULL;
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (session), type);
+
+	if (brasero_track_type_get_has_data (type)
+	||  brasero_track_type_get_has_stream (type)) {
+		options = g_object_new (BRASERO_TYPE_DISC_OPTION_DIALOG,
+					"session", session,
+					NULL);
 	}
+	else if (brasero_track_type_get_has_medium (type)) {
+		options = g_object_new (BRASERO_TYPE_DISC_COPY_DIALOG,
+					"session", session,
+					NULL);
+	}
+	else if (brasero_track_type_get_has_image (type)) {
+		options = g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
+					"session", session,
+					NULL);
+	}
+	else
+		options = NULL;
+
+	brasero_track_type_free (type);
 
 	return options;
 }

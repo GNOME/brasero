@@ -202,9 +202,9 @@ brasero_process_ask_argv (BraseroJob *job,
 static BraseroBurnResult
 brasero_process_finished (BraseroProcess *self)
 {
-	BraseroTrackType type;
 	BraseroBurnResult result;
 	BraseroTrack *track = NULL;
+	BraseroTrackType *type = NULL;
 	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
 	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
 	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (self);
@@ -244,13 +244,16 @@ brasero_process_finished (BraseroProcess *self)
 		return BRASERO_BURN_OK;
 	}
 
-	result = brasero_job_get_output_type (BRASERO_JOB (self), &type);
-	if (result != BRASERO_BURN_OK || type.type == BRASERO_TRACK_TYPE_DISC) {
+	type = brasero_track_type_new ();
+	result = brasero_job_get_output_type (BRASERO_JOB (self), type);
+
+	if (result != BRASERO_BURN_OK || brasero_track_type_get_has_medium (type)) {
+		brasero_track_type_free (type);
 		klass->post (BRASERO_JOB (self));
 		return BRASERO_BURN_OK;
 	}
 
-	if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+	if (brasero_track_type_get_has_image (type)) {
 		gchar *toc = NULL;
 		gchar *image = NULL;
 
@@ -262,21 +265,23 @@ brasero_process_finished (BraseroProcess *self)
 		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
 						image,
 						toc,
-						type.subtype.img_format);
+						brasero_track_type_get_image_format (type));
 
 		g_free (image);
 		g_free (toc);
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_STREAM) {
+	else if (brasero_track_type_get_has_stream (type)) {
 		gchar *uri = NULL;
 
 		track = BRASERO_TRACK (brasero_track_stream_new ());
 		brasero_job_get_audio_output (BRASERO_JOB (self), &uri);
 		brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uri);
-		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track), type.subtype.audio_format);
+		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track),
+						 brasero_track_type_get_stream_format (type));
 
 		g_free (uri);
 	}
+	brasero_track_type_free (type);
 
 	if (track) {
 		brasero_job_add_track (BRASERO_JOB (self), track);

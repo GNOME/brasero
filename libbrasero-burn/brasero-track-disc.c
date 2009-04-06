@@ -153,6 +153,22 @@ brasero_track_disc_get_drive (BraseroTrackDisc *track)
 	return priv->drive;
 }
 
+BraseroMedia
+brasero_track_disc_get_medium_type (BraseroTrackDisc *track)
+{
+	BraseroTrackDiscPrivate *priv;
+	BraseroMedium *medium;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DISC (track), BRASERO_MEDIUM_NONE);
+
+	priv = BRASERO_TRACK_DISC_PRIVATE (track);
+	medium = brasero_drive_get_medium (priv->drive);
+	if (!medium)
+		return BRASERO_MEDIUM_NONE;
+
+	return brasero_medium_get_status (medium);
+}
+
 static BraseroBurnResult
 brasero_track_disc_get_size (BraseroTrack *track,
 			     guint64 *blocks,
@@ -190,8 +206,9 @@ brasero_track_disc_get_track_type (BraseroTrack *track,
 
 	medium = brasero_drive_get_medium (priv->drive);
 
-	type->type = BRASERO_TRACK_TYPE_DISC;
-	type->subtype.media = brasero_medium_get_status (medium);
+	brasero_track_type_set_has_medium (type);
+	brasero_track_type_set_medium_type (type, brasero_medium_get_status (medium));
+
 	return BRASERO_TRACK_TYPE_DISC;
 }
 

@@ -78,6 +78,9 @@ brasero_track_disc_set_track_num (BraseroTrackDisc *track,
 guint
 brasero_track_disc_get_track_num (BraseroTrackDisc *track);
 
+BraseroMedia
+brasero_track_disc_get_medium_type (BraseroTrackDisc *track);
+
 G_END_DECLS
 
 #endif /* _BRASERO_TRACK_DISC_H_ */

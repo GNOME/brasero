@@ -150,6 +150,17 @@ brasero_track_data_rm_fs (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
+BraseroImageFS
+brasero_track_data_get_fs (BraseroTrackData *track)
+{
+	BraseroTrackDataPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_IMAGE_FS_NONE);
+
+	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	return priv->fs_type;
+}
+
 BraseroBurnResult
 brasero_track_data_set_data_blocks (BraseroTrackData *track,
 				    guint64 blocks)
@@ -285,8 +296,8 @@ brasero_track_data_get_track_type (BraseroTrack *track,
 	if (!type)
 		return BRASERO_TRACK_TYPE_DATA;
 
-	type->type = BRASERO_TRACK_TYPE_DATA;
-	type->subtype.fs_type = priv->fs_type;
+	brasero_track_type_set_has_data (type);
+	brasero_track_type_set_data_fs (type, priv->fs_type);
 
 	return BRASERO_TRACK_TYPE_DATA;
 }

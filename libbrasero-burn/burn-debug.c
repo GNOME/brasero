@@ -244,6 +244,72 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 }
 
 void
+brasero_burn_debug_track_type_struct_message (BraseroTrackType *type,
+					      BraseroPluginIOFlag flags,
+					      const gchar *location,
+					      const gchar *format,
+					      ...)
+{
+	gchar buffer [256];
+	gchar *format_real;
+	va_list arg_list;
+
+	if (!debug)
+		return;
+
+	if (brasero_track_type_get_has_data (type)) {
+		strcpy (buffer, "Data ");
+		brasero_debug_data_fs_to_string (buffer, brasero_track_type_get_data_fs (type));
+	}
+	else if (brasero_track_type_get_has_medium (type)) {
+		strcpy (buffer, "Disc ");
+		brasero_media_to_string (brasero_track_type_get_medium_type (type), buffer);
+	}
+	else if (brasero_track_type_get_has_stream (type)) {
+		strcpy (buffer, "Audio ");
+		brasero_debug_audio_format_to_string (buffer, brasero_track_type_get_stream_format (type));
+
+		if (flags != BRASERO_PLUGIN_IO_NONE) {
+			strcat (buffer, "format accepts ");
+
+			if (flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
+				strcat (buffer, "files ");
+			if (flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE)
+				strcat (buffer, "pipe ");
+		}
+	}
+	else if (brasero_track_type_get_has_image (type)) {
+		strcpy (buffer, "Image ");
+		brasero_debug_image_format_to_string (buffer, brasero_track_type_get_image_format (type));
+
+		if (flags != BRASERO_PLUGIN_IO_NONE) {
+			strcat (buffer, "format accepts ");
+
+			if (flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
+				strcat (buffer, "files ");
+			if (flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE)
+				strcat (buffer, "pipe ");
+		}
+	}
+	else
+		strcpy (buffer, "Undefined");
+
+	format_real = g_strdup_printf ("At %s: %s %s",
+				       location,
+				       format,
+				       buffer);
+
+	va_start (arg_list, format);
+	g_logv (BRASERO_BURN_LOG_DOMAIN,
+		G_LOG_LEVEL_DEBUG,
+		format_real,
+		arg_list);
+	va_end (arg_list);
+
+	g_free (format_real);
+}
+
+void
 brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 				       guint subtype,
 				       BraseroPluginIOFlag flags,

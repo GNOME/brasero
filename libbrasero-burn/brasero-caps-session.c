@@ -975,7 +975,7 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 
 	if (source.type == BRASERO_TRACK_TYPE_STREAM) {
 		/* If that's AUDIO only without VIDEO then return */
-		if (!(source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
+		if (!(source.subtype.stream_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
 			g_object_unref (self);
 			return BRASERO_IMAGE_FORMAT_NONE;
 		}

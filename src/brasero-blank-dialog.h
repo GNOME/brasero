@@ -52,6 +52,7 @@ typedef struct {
 } BraseroBlankDialogClass;
 
 GType brasero_blank_dialog_get_type ();
+
 GtkWidget *brasero_blank_dialog_new ();
 
 G_END_DECLS

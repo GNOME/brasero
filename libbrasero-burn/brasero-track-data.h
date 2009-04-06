@@ -116,6 +116,9 @@ BraseroBurnResult
 brasero_track_data_get_file_num (BraseroTrackData *track,
 				 guint64 *num_files);
 
+BraseroImageFS
+brasero_track_data_get_fs (BraseroTrackData *track);
+
 G_END_DECLS
 
 #endif /* _BRASERO_TRACK_DATA_H_ */

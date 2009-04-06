@@ -310,22 +310,22 @@ brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 				      BraseroImageFormat format)
 {
 	BraseroTrackImageCfgPrivate *priv;
-	BraseroTrackType type = { 0, };
+	BraseroImageFormat current_format;
 	gchar *uri = NULL;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
 
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
 
-	brasero_track_get_track_type (BRASERO_TRACK (track), &type);
+	current_format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
 	if (format != BRASERO_TRACK_TYPE_NONE) {
-		if (type.subtype.img_format == format)
+		if (current_format == format)
 			return BRASERO_BURN_OK;
 	}
 
 	priv->format = format;
 
-	switch (type.subtype.img_format) {
+	switch (current_format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
 	case BRASERO_IMAGE_FORMAT_BIN:
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
@@ -358,7 +358,6 @@ brasero_track_image_cfg_get_status (BraseroTrackImageCfg *track,
 				    GError **error)
 {
 	BraseroTrackImageCfgPrivate *priv;
-	BraseroTrackType type = { 0, };
 
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
 
@@ -373,8 +372,7 @@ brasero_track_image_cfg_get_status (BraseroTrackImageCfg *track,
 	}
 
 	/* See if we managed to set a format (all went well then) */
-	brasero_track_get_track_type (BRASERO_TRACK (track), &type);
-	if (type.subtype.img_format == BRASERO_TRACK_TYPE_NONE) {
+	if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE) {
 		if (error)
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,

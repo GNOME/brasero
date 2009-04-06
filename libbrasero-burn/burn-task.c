@@ -43,6 +43,8 @@
 #include "burn-task-item.h"
 #include "burn-task-ctx.h"
 
+#include "brasero-track-image.h"
+#include "brasero-track-stream.h"
 
 static void brasero_task_class_init (BraseroTaskClass *klass);
 static void brasero_task_init (BraseroTask *sp);
@@ -391,17 +393,15 @@ static BraseroBurnResult
 brasero_task_set_track_output_size_default (BraseroTask *self,
 					    GError **error)
 {
-	BraseroTrackType input = { 0 };
 	BraseroTrack *track = NULL;
 
 	BRASERO_BURN_LOG ("Trying to set a default output size");
 
 	brasero_task_ctx_get_current_track (BRASERO_TASK_CTX (self), &track);
-	brasero_track_get_track_type (track, &input);
-	BRASERO_BURN_LOG_TYPE (&input, "Track type");
+//	BRASERO_BURN_LOG_TYPE (&input, "Track type");
 
-	if (input.type == BRASERO_TRACK_TYPE_IMAGE
-	||  input.type == BRASERO_TRACK_TYPE_STREAM) {
+	if (BRASERO_IS_TRACK_IMAGE (track)
+	||  BRASERO_IS_TRACK_STREAM (track)) {
 		BraseroBurnResult result;
 		guint64 sectors = 0;
 		guint64 size = 0;

@@ -48,9 +48,9 @@ G_BEGIN_DECLS
 
 #define BRASERO_STREAM_TRACK_HAS_VIDEO(type_MACRO)				\
 	(((type_MACRO)->type == BRASERO_TRACK_TYPE_STREAM) &&			\
-	 ((type_MACRO)->subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|	\
-						BRASERO_VIDEO_FORMAT_VCD|	\
-						BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
+	 ((type_MACRO)->subtype.stream_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|	\
+						 BRASERO_VIDEO_FORMAT_VCD|	\
+						 BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
 
 
 #define BRASERO_TYPE_TRACK_STREAM             (brasero_track_stream_get_type ())
@@ -108,6 +108,9 @@ brasero_track_stream_get_end (BraseroTrackStream *track);
 
 guint64
 brasero_track_stream_get_gap (BraseroTrackStream *track);
+
+BraseroStreamFormat
+brasero_track_stream_get_format (BraseroTrackStream *track);
 
 G_END_DECLS
 

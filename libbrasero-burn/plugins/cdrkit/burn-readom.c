@@ -63,15 +63,17 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 	if ((pos = strstr (line, "addr:"))) {
 		gint sector;
 		gint64 written;
-		BraseroTrackType output;
+		BraseroTrackType *output = NULL;
 
 		pos += strlen ("addr:");
 		sector = strtoll (pos, NULL, 10);
 
-		brasero_job_get_output_type (BRASERO_JOB (readom), &output);
-		if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN)
+		output = brasero_track_type_new ();
+		brasero_job_get_output_type (BRASERO_JOB (readom), output);
+
+		if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN)
 			written = (gint64) ((gint64) sector * 2048ULL);
-		else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE)
+		else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_CLONE)
 			written = (gint64) ((gint64) sector * 2448ULL);
 		else
 			written = (gint64) ((gint64) sector * 2048ULL);
@@ -80,6 +82,8 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 
 		if (sector > 10)
 			brasero_job_start_progress (BRASERO_JOB (readom), FALSE);
+
+		brasero_track_type_free (output);
 	}
 	else if ((pos = strstr (line, "Capacity:"))) {
 		brasero_job_set_current_action (BRASERO_JOB (readom),
@@ -124,10 +128,12 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 	guint64 nb_blocks;
 	BraseroTrack *track;
 	GValue *value = NULL;
-	BraseroTrackType output;
+	BraseroTrackType *output = NULL;
 
 	brasero_job_get_current_track (BRASERO_JOB (readom), &track);
-	brasero_job_get_output_type (BRASERO_JOB (readom), &output);
+
+	output = brasero_track_type_new ();
+	brasero_job_get_output_type (BRASERO_JOB (readom), output);
 
 	brasero_track_tag_lookup (track,
 				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
@@ -181,7 +187,7 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 							start + nb_blocks));
 	}
 	/* if it's BIN output just read the last track */
-	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+	else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN) {
 		guint64 start;
 		BraseroDrive *drive;
 		BraseroMedium *medium;
@@ -207,6 +213,8 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 		g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
 	}
 
+	brasero_track_type_free (output);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -216,11 +224,18 @@ brasero_readom_get_size (BraseroReadom *self,
 {
 	guint64 blocks;
 	GValue *value = NULL;
-	BraseroTrackType output;
 	BraseroTrack *track = NULL;
+	BraseroTrackType *output = NULL;
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	brasero_job_get_output_type (BRASERO_JOB (self), &output);
+
+	output = brasero_track_type_new ();
+	brasero_job_get_output_type (BRASERO_JOB (self), output);
+
+	if (!brasero_track_type_get_has_image (output)) {
+		brasero_track_type_free (output);
+		return BRASERO_BURN_ERR;
+	}
 
 	brasero_track_tag_lookup (track,
 				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
@@ -251,7 +266,7 @@ brasero_readom_get_size (BraseroReadom *self,
 						NULL,
 						&blocks);
 	}
-	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+	else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN) {
 		BraseroDrive *drive;
 		BraseroMedium *medium;
 
@@ -264,21 +279,22 @@ brasero_readom_get_size (BraseroReadom *self,
 	else
 		brasero_track_get_size (track, &blocks, NULL);
 
-	if (output.type != BRASERO_TRACK_TYPE_IMAGE)
-		return BRASERO_BURN_ERR;
-	
-	if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+	if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN) {
 		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
 							       blocks,
 							       blocks * 2048ULL);
 	}
-	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+	else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_CLONE) {
 		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
 							       blocks,
 							       blocks * 2448ULL);
 	}
-	else
+	else {
+		brasero_track_type_free (output);
 		return BRASERO_BURN_NOT_SUPPORTED;
+	}
+
+	brasero_track_type_free (output);
 
 	/* no need to go any further */
 	return BRASERO_BURN_NOT_RUNNING;
@@ -290,8 +306,9 @@ brasero_readom_set_argv (BraseroProcess *process,
 			 GError **error)
 {
 	BraseroBurnResult result = FALSE;
+	BraseroTrackType *output = NULL;
+	BraseroImageFormat format;
 	BraseroJobAction action;
-	BraseroTrackType output;
 	BraseroReadom *readom;
 	BraseroMedium *medium;
 	BraseroDrive *drive;
@@ -321,10 +338,14 @@ brasero_readom_set_argv (BraseroProcess *process,
 
 	medium = brasero_drive_get_medium (drive);
 	media = brasero_medium_get_status (medium);
-	brasero_job_get_output_type (BRASERO_JOB (readom), &output);
+
+	output = brasero_track_type_new ();
+	brasero_job_get_output_type (BRASERO_JOB (readom), output);
+	format = brasero_track_type_get_image_format (output);
+	brasero_track_type_free (output);
 
 	if ((media & BRASERO_MEDIUM_DVD)
-	&&  output.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN) {
+	&&   format != BRASERO_IMAGE_FORMAT_BIN) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -332,12 +353,12 @@ brasero_readom_set_argv (BraseroProcess *process,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+	if (format == BRASERO_IMAGE_FORMAT_CLONE) {
 		/* NOTE: with this option the sector size is 2448 
 		 * because it is raw96 (2352+96) otherwise it is 2048  */
 		g_ptr_array_add (argv, g_strdup ("-clone"));
 	}
-	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+	else if (format == BRASERO_IMAGE_FORMAT_BIN) {
 		g_ptr_array_add (argv, g_strdup ("-noerror"));
 
 		/* don't do it for clone since we need the entire disc */
@@ -351,8 +372,8 @@ brasero_readom_set_argv (BraseroProcess *process,
 	if (brasero_job_get_fd_out (BRASERO_JOB (readom), NULL) != BRASERO_BURN_OK) {
 		gchar *image;
 
-		if (output.subtype.img_format != BRASERO_IMAGE_FORMAT_CLONE
-		&&  output.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN)
+		if (format != BRASERO_IMAGE_FORMAT_CLONE
+		&&  format != BRASERO_IMAGE_FORMAT_BIN)
 			BRASERO_JOB_NOT_SUPPORTED (readom);
 
 		result = brasero_job_get_image_output (BRASERO_JOB (readom),
@@ -365,7 +386,7 @@ brasero_readom_set_argv (BraseroProcess *process,
 		g_ptr_array_add (argv, outfile_arg);
 		g_free (image);
 	}
-	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+	else if (format == BRASERO_IMAGE_FORMAT_BIN) {
 		outfile_arg = g_strdup ("-f=-");
 		g_ptr_array_add (argv, outfile_arg);
 	}

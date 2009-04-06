@@ -32,28 +32,16 @@
 #  include <config.h>
 #endif
 
-#include <errno.h>
 #include <string.h>
 
 #include <glib.h>
-#include <glib/gstdio.h>
-#include <glib/gi18n-lib.h>
-
-#include <gio/gio.h>
 
 #include "brasero-track.h"
-#include "burn-debug.h"
-#include "burn-caps.h"
-#include "brasero-medium.h"
-#include "burn-image-format.h"
-#include "brasero-drive.h"
-#include "burn-mkisofs-base.h"
+
 
 typedef struct _BraseroTrackPrivate BraseroTrackPrivate;
 struct _BraseroTrackPrivate
 {
-	BraseroTrackType type;
-
 	GHashTable *tags;
 
 	gchar *checksum;
@@ -73,76 +61,6 @@ enum
 static guint track_signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroTrack, brasero_track, G_TYPE_OBJECT);
-
-gboolean
-brasero_track_type_equal (const BraseroTrackType *type_A,
-			  const BraseroTrackType *type_B)
-{
-	if (type_A->type != type_B->type)
-		return FALSE;
-
-	switch (type_A->type) {
-	case BRASERO_TRACK_TYPE_DATA:
-		if (type_A->subtype.fs_type != type_B->subtype.fs_type)
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_DISC:
-		if (type_B->subtype.media != type_A->subtype.media)
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_IMAGE:
-		if (type_A->subtype.img_format != type_B->subtype.img_format)
-			return FALSE;
-		break;
-
-	case BRASERO_TRACK_TYPE_STREAM:
-		if (type_A->subtype.audio_format != type_B->subtype.audio_format)
-			return FALSE;
-		break;
-
-	default:
-		break;
-	}
-
-	return TRUE;
-}
-
-gboolean
-brasero_track_type_match (const BraseroTrackType *type_A,
-			  const BraseroTrackType *type_B)
-{
-	if (type_A->type != type_B->type)
-		return FALSE;
-
-	switch (type_A->type) {
-	case BRASERO_TRACK_TYPE_DATA:
-		if (!(type_A->subtype.fs_type & type_B->subtype.fs_type))
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_DISC:
-		if (!(type_A->subtype.media & type_B->subtype.media))
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_IMAGE:
-		if (!(type_A->subtype.img_format & type_B->subtype.img_format))
-			return FALSE;
-		break;
-
-	case BRASERO_TRACK_TYPE_STREAM:
-		if (!(type_A->subtype.img_format & type_B->subtype.img_format))
-			return FALSE;
-		break;
-
-	default:
-		break;
-	}
-
-	return TRUE;
-}
 
 BraseroTrackDataType
 brasero_track_get_track_type (BraseroTrack *track,
@@ -415,33 +333,6 @@ brasero_track_changed (BraseroTrack *track)
 		       0);
 }
 
-/**
- * This is to determine whether of not a track type is supported
- */
-
-BraseroBurnResult
-brasero_track_type_is_supported (BraseroTrackType *type)
-{
-	GSList *iter;
-	BraseroBurnCaps *self;
-
-	self = brasero_burn_caps_get_default ();
-
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *caps;
-
-		caps = iter->data;
-
-		if (brasero_caps_is_compatible_type (caps, type)
-		&&  brasero_burn_caps_is_input (self, caps)) {
-			g_object_unref (self);
-			return BRASERO_BURN_OK;
-		}
-	}
-
-	g_object_unref (self);
-	return BRASERO_BURN_ERR;
-}
 
 /**
  * GObject part

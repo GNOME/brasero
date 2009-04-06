@@ -57,6 +57,7 @@ struct _BraseroSumDialogClass {
 };
 
 GType brasero_sum_dialog_get_type ();
+
 GtkWidget *brasero_sum_dialog_new ();
 
 G_END_DECLS

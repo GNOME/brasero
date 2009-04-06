@@ -535,9 +535,10 @@ brasero_checksum_image_destroy (gpointer data)
 static gpointer
 brasero_checksum_image_thread (gpointer data)
 {
-	BraseroChecksumImage *self;
 	GError *error = NULL;
 	BraseroJobAction action;
+	BraseroTrack *track = NULL;
+	BraseroChecksumImage *self;
 	BraseroChecksumImagePrivate *priv;
 	BraseroChecksumImageThreadCtx *ctx;
 	BraseroBurnResult result = BRASERO_BURN_NOT_SUPPORTED;
@@ -547,11 +548,9 @@ brasero_checksum_image_thread (gpointer data)
 
 	/* check DISC types and add checksums for DATA and IMAGE-bin types */
 	brasero_job_get_action (BRASERO_JOB (self), &action);
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 
 	if (action == BRASERO_JOB_ACTION_CHECKSUM) {
-		BraseroTrack *track;
-
-		brasero_job_get_current_track (BRASERO_JOB (self), &track);
 		priv->checksum_type = brasero_track_get_checksum_type (track);
 		if (priv->checksum_type & (BRASERO_CHECKSUM_MD5|BRASERO_CHECKSUM_SHA1|BRASERO_CHECKSUM_SHA256))
 			result = brasero_checksum_image_create_checksum (self, &error);
@@ -559,10 +558,7 @@ brasero_checksum_image_thread (gpointer data)
 			result = BRASERO_BURN_ERR;
 	}
 	else if (action == BRASERO_JOB_ACTION_IMAGE) {
-		BraseroTrackType type;
-
-		brasero_job_get_input_type (BRASERO_JOB (self), &type);
-		if (type.type == BRASERO_TRACK_TYPE_IMAGE)
+		if (BRASERO_IS_TRACK_IMAGE (track))
 			result = brasero_checksum_image_image_and_checksum (self, &error);
 		else
 			result = BRASERO_BURN_ERR;

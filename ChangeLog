@@ -1,3 +1,144 @@
+2009-04-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Hide the definition of BraseroTrackType structure which will allow to
+	expand/modify it in the future
+
+	* libbrasero-burn/Makefile.am:
+	* libbrasero-burn/brasero-burn-dialog.c
+	(brasero_burn_dialog_add_track_to_recent):
+	* libbrasero-burn/brasero-burn-options.c
+	(brasero_burn_options_new):
+	* libbrasero-burn/brasero-burn.c
+	(brasero_burn_is_loaded_dest_media_supported),
+	(brasero_burn_lock_dest_media), (brasero_burn_status),
+	(brasero_burn_check_real),
+	(brasero_burn_check_session_consistency), (brasero_burn_check),
+	(brasero_burn_same_src_dest_image):
+	* libbrasero-burn/brasero-caps-plugin.c (brasero_burn_caps_sort),
+	(brasero_caps_audio_new):
+	* libbrasero-burn/brasero-caps-session.c
+	(brasero_burn_session_get_default_output_format):
+	* libbrasero-burn/brasero-cover.c
+	(brasero_jacket_edit_set_audio_tracks_back):
+	* libbrasero-burn/brasero-dest-selection.c
+	(brasero_dest_selection_format_medium_string):
+	* libbrasero-burn/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_set_tracks_image_fs),
+	(brasero_disc_option_dialog_update_joliet),
+	(brasero_disc_option_dialog_set_joliet),
+	(brasero_disc_option_dialog_joliet_widget),
+	(brasero_disc_option_dialog_set_session):
+	* libbrasero-burn/brasero-medium-properties.c
+	(brasero_medium_properties_get_possible_output_formats):
+	* libbrasero-burn/brasero-session-cfg.c
+	(brasero_session_cfg_set_drive_properties),
+	(brasero_session_cfg_check_size),
+	(brasero_session_cfg_set_tracks_audio_format),
+	(brasero_session_cfg_update):
+	* libbrasero-burn/brasero-session.c
+	(brasero_burn_session_add_track),
+	(brasero_burn_session_get_src_medium),
+	(brasero_burn_session_get_src_drive),
+	(brasero_burn_session_same_src_dest_drive),
+	(brasero_burn_session_start):
+	* libbrasero-burn/brasero-src-image.c (brasero_src_image_save),
+	(brasero_src_image_update), (brasero_src_image_set_formats),
+	(brasero_src_image_get_current_uri),
+	(brasero_src_image_set_property):
+	* libbrasero-burn/brasero-track-data.c (brasero_track_data_get_fs),
+	(brasero_track_data_get_track_type):
+	* libbrasero-burn/brasero-track-data.h:
+	* libbrasero-burn/brasero-track-disc.c
+	(brasero_track_disc_get_medium_type),
+	(brasero_track_disc_get_track_type):
+	* libbrasero-burn/brasero-track-disc.h:
+	* libbrasero-burn/brasero-track-image-cfg.c
+	(brasero_track_image_cfg_force_format),
+	(brasero_track_image_cfg_get_status):
+	* libbrasero-burn/brasero-track-image.c
+	(brasero_track_image_get_format),
+	(brasero_track_image_get_track_type):
+	* libbrasero-burn/brasero-track-image.h:
+	* libbrasero-burn/brasero-track-stream.c
+	(brasero_track_stream_get_format),
+	(brasero_track_stream_get_track_type):
+	* libbrasero-burn/brasero-track-stream.h:
+	* libbrasero-burn/brasero-track-type.c (brasero_track_type_new),
+	(brasero_track_type_free), (brasero_track_type_get_image_format),
+	(brasero_track_type_get_data_fs),
+	(brasero_track_type_get_stream_format),
+	(brasero_track_type_get_medium_type),
+	(brasero_track_type_set_image_format),
+	(brasero_track_type_set_data_fs),
+	(brasero_track_type_set_stream_format),
+	(brasero_track_type_set_medium_type),
+	(brasero_track_type_is_empty), (brasero_track_type_get_has_data),
+	(brasero_track_type_get_has_image),
+	(brasero_track_type_get_has_stream),
+	(brasero_track_type_get_has_medium),
+	(brasero_track_type_set_has_data),
+	(brasero_track_type_set_has_image),
+	(brasero_track_type_set_has_stream),
+	(brasero_track_type_set_has_medium), (brasero_track_type_equal),
+	(brasero_track_type_match), (brasero_track_type_supported):
+	* libbrasero-burn/brasero-track-type.h:
+	* libbrasero-burn/brasero-track.c:
+	* libbrasero-burn/brasero-track.h:
+	* libbrasero-burn/burn-caps.c (brasero_caps_is_compatible_type):
+	* libbrasero-burn/burn-caps.h:
+	* libbrasero-burn/burn-debug.c
+	(brasero_burn_debug_track_type_struct_message):
+	* libbrasero-burn/burn-debug.h:
+	* libbrasero-burn/burn-job.c:
+	* libbrasero-burn/burn-process.c (brasero_process_finished):
+	* libbrasero-burn/burn-task-ctx.c (brasero_task_ctx_add_track):
+	* libbrasero-burn/burn-task.c
+	(brasero_task_set_track_output_size_default):
+	* libbrasero-burn/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_set_argv_record), (brasero_cdrdao_set_argv_image),
+	(brasero_cdrdao_set_argv):
+	* libbrasero-burn/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image):
+	* libbrasero-burn/plugins/cdrkit/burn-readom.c
+	(brasero_readom_read_stderr),
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size),
+	(brasero_readom_set_argv):
+	* libbrasero-burn/plugins/cdrkit/burn-wodim.c
+	(brasero_wodim_stdout_read), (brasero_wodim_set_argv_record):
+	* libbrasero-burn/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_stdout_read), (brasero_cdrecord_set_argv_record):
+	* libbrasero-burn/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image):
+	* libbrasero-burn/plugins/cdrtools/burn-readcd.c
+	(brasero_readcd_read_stderr),
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size),
+	(brasero_readcd_set_argv):
+	* libbrasero-burn/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_end), (brasero_checksum_files_thread),
+	(brasero_checksum_files_activate):
+	* libbrasero-burn/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_thread):
+	* libbrasero-burn/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_set_mkisofs_argv),
+	(brasero_growisofs_set_argv_record), (brasero_growisofs_set_argv):
+	* libbrasero-burn/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_setup_session_fd),
+	(brasero_libburn_setup_session_file):
+	* libbrasero-burn/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_volume_thread):
+	* libbrasero-burn/plugins/local-track/burn-local-image.c
+	(brasero_local_track_update_track), (brasero_local_track_start):
+	* libbrasero-burn/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_thread), (brasero_burn_uri_start):
+	* libbrasero-burn/plugins/transcode/burn-transcode.c
+	(brasero_transcode_push_track):
+	* libbrasero-burn/plugins/transcode/burn-vob.c
+	(brasero_vob_finished), (brasero_vob_start):
+	* src/brasero-blank-dialog.h:
+	* src/brasero-data-session.c:
+	* src/brasero-sum-dialog.c:
+	* src/brasero-sum-dialog.h:
+
 2009-04-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Split and renamed burn-plugin.h header (as we may want to export it)

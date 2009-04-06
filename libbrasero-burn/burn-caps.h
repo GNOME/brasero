@@ -35,7 +35,8 @@
 #include <glib-object.h>
 
 #include "burn-basics.h"
-#include "brasero-track.h"
+#include "brasero-track-type.h"
+#include "brasero-track-type-private.h"
 #include "brasero-plugin.h"
 #include "brasero-plugin-registration.h"
 

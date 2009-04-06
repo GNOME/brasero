@@ -1077,10 +1077,9 @@ typedef struct _BraseroChecksumFilesThreadCtx BraseroChecksumFilesThreadCtx;
 static gboolean
 brasero_checksum_files_end (gpointer data)
 {
-	BraseroTrackType input;
-	BraseroTrackData *track;
-	BraseroChecksumFiles *self;
 	BraseroJobAction action;
+	BraseroChecksumFiles *self;
+	BraseroTrack *current = NULL;
 	BraseroChecksumFilesPrivate *priv;
 	BraseroChecksumFilesThreadCtx *ctx;
 
@@ -1109,21 +1108,17 @@ brasero_checksum_files_end (gpointer data)
 	}
 
 	/* we were asked to create a checksum. Its type depends on the input */
-	brasero_job_get_input_type (BRASERO_JOB (self), &input);
+	brasero_job_get_current_track (BRASERO_JOB (self), &current);
 
 	/* let's create a new DATA track with the md5 file created */
-	if (input.type == BRASERO_TRACK_TYPE_DATA) {
+	if (BRASERO_IS_TRACK_DATA (current)) {
 		GSList *grafts;
 		GSList *excluded;
 		BraseroGraftPt *graft;
-		BraseroTrackType type;
 		GSList *new_grafts = NULL;
-		BraseroTrack *current = NULL;
+		BraseroTrackData *track = NULL;
 
 		/* for DATA track we add the file to the track */
-		brasero_job_get_current_track (BRASERO_JOB (self), &current);
-		brasero_track_get_track_type (current, &type);
-
 		grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (current));
 		for (; grafts; grafts = grafts->next) {
 			graft = grafts->data;
@@ -1155,7 +1150,7 @@ brasero_checksum_files_end (gpointer data)
 		excluded = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), TRUE);
 
 		track = brasero_track_data_new ();
-		brasero_track_data_add_fs (track, type.subtype.fs_type);
+		brasero_track_data_add_fs (track, brasero_track_data_get_fs (BRASERO_TRACK_DATA (current)));
 		brasero_track_data_set_source (track, new_grafts, excluded);
 		brasero_track_set_checksum (BRASERO_TRACK (track),
 					    priv->checksum_type,
@@ -1204,9 +1199,10 @@ brasero_checksum_files_destroy (gpointer data)
 static gpointer
 brasero_checksum_files_thread (gpointer data)
 {
-	BraseroChecksumFiles *self;
 	GError *error = NULL;
 	BraseroJobAction action;
+	BraseroChecksumFiles *self;
+	BraseroTrack *current = NULL;
 	BraseroChecksumFilesPrivate *priv;
 	BraseroChecksumFilesThreadCtx *ctx;
 	BraseroBurnResult result = BRASERO_BURN_NOT_SUPPORTED;
@@ -1216,21 +1212,16 @@ brasero_checksum_files_thread (gpointer data)
 
 	/* check DISC types and add checksums for DATA and IMAGE-bin types */
 	brasero_job_get_action (BRASERO_JOB (self), &action);
+	brasero_job_get_current_track (BRASERO_JOB (self), &current);
 	if (action == BRASERO_JOB_ACTION_CHECKSUM) {
-		BraseroTrack *track;
-
-		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		priv->checksum_type = brasero_track_get_checksum_type (track);
+		priv->checksum_type = brasero_track_get_checksum_type (current);
 		if (priv->checksum_type & (BRASERO_CHECKSUM_MD5_FILE|BRASERO_CHECKSUM_SHA1_FILE|BRASERO_CHECKSUM_SHA256_FILE|BRASERO_CHECKSUM_DETECT))
 			result = brasero_checksum_files_check_files (self, &error);
 		else
 			result = BRASERO_BURN_ERR;
 	}
 	else if (action == BRASERO_JOB_ACTION_IMAGE) {
-		BraseroTrackType type;
-
-		brasero_job_get_input_type (BRASERO_JOB (self), &type);
-		if (type.type == BRASERO_TRACK_TYPE_DATA)
+		if (BRASERO_IS_TRACK_DATA (current))
 			result = brasero_checksum_files_create_checksum (self, &error);
 		else
 			result = BRASERO_BURN_ERR;
@@ -1297,12 +1288,18 @@ brasero_checksum_files_activate (BraseroJob *job,
 				 GError **error)
 {
 	GSList *grafts;
-	BraseroTrackType output;
 	BraseroTrack *track = NULL;
+	BraseroTrackType *output = NULL;
 
-	brasero_job_get_output_type (job, &output);
-	if (output.type != BRASERO_TRACK_TYPE_DATA)
+	output = brasero_track_type_new ();
+	brasero_job_get_output_type (job, output);
+
+	if (!brasero_track_type_get_has_data (output)) {
+		brasero_track_type_free (output);
 		return BRASERO_BURN_OK;
+	}
+
+	brasero_track_type_free (output);
 
 	/* see that a file with graft "/BRASERO_CHECKSUM_FILE" doesn't already
 	 * exists (possible when doing several copies) or when a simulation 

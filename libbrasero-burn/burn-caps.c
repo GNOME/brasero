@@ -51,6 +51,7 @@
 #include "brasero-plugin-information.h"
 #include "burn-task.h"
 #include "burn-caps.h"
+#include "brasero-track-type-private.h"
 
 #define BRASERO_ENGINE_GROUP_KEY	"/apps/brasero/config/engine-group"
 
@@ -165,15 +166,15 @@ brasero_caps_is_compatible_type (const BraseroCaps *caps,
 
 	case BRASERO_TRACK_TYPE_STREAM:
 		/* There is one small special case here with video. */
-		if ((caps->type.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
-							BRASERO_VIDEO_FORMAT_VCD|
-							BRASERO_VIDEO_FORMAT_VIDEO_DVD))
-		&& !(type->subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
+		if ((caps->type.subtype.stream_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
+							 BRASERO_VIDEO_FORMAT_VCD|
+							 BRASERO_VIDEO_FORMAT_VIDEO_DVD))
+		&& !(type->subtype.stream_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
 						   BRASERO_VIDEO_FORMAT_VCD|
 						   BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
 			return FALSE;
 
-		if ((caps->type.subtype.audio_format & type->subtype.audio_format) != type->subtype.audio_format)
+		if ((caps->type.subtype.stream_format & type->subtype.stream_format) != type->subtype.stream_format)
 			return FALSE;
 		break;
 

@@ -45,6 +45,9 @@
 
 #include <gio/gio.h>
 
+#include "brasero-drive.h"
+#include "brasero-medium.h"
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-session.h"
@@ -54,8 +57,8 @@
 #include "burn-task-ctx.h"
 #include "burn-task-item.h"
 #include "libbrasero-marshal.h"
-#include "brasero-drive.h"
-#include "brasero-medium.h"
+
+#include "brasero-track-type-private.h"
 
 typedef struct _BraseroJobOutput {
 	gchar *image;

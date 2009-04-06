@@ -42,9 +42,10 @@
 
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
-#include "brasero-xfer.h"
+
 
 #include "brasero-misc.h"
+#include "brasero-xfer.h"
 
 #include "brasero-drive.h"
 #include "brasero-medium.h"

@@ -37,6 +37,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-enums.h						\
 	brasero-error.h						\
 	brasero-burn-lib.h					\
+	brasero-track-type.h					\
 	brasero-track.h						\
 	brasero-track-data.h                 			\
 	brasero-track-disc.h                 			\
@@ -152,7 +153,10 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-caps-burn.h                 \
 	brasero-plugin.h                 \
 	brasero-plugin-information.h                 \
-	brasero-plugin-registration.h
+	brasero-plugin-registration.h                 \
+	brasero-track-type.c                 \
+	brasero-track-type.h                 \
+	brasero-track-type-private.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

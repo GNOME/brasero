@@ -225,11 +225,11 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 {
 	gchar *label = NULL;
 	BraseroTrack *track;
-	BraseroTrackType type;
 	BraseroBurnFlag flags;
 	gchar *videodir = NULL;
 	gchar *emptydir = NULL;
 	BraseroJobAction action;
+	BraseroImageFS image_fs;
 	BraseroBurnResult result;
 	gchar *grafts_path = NULL;
 	gchar *excluded_path = NULL;
@@ -241,20 +241,20 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	if (result != BRASERO_BURN_OK)
 		BRASERO_JOB_NOT_READY (mkisofs);
 
-	brasero_track_get_track_type (track, &type);
-	if (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET)
+	image_fs = brasero_track_data_get_fs (BRASERO_TRACK_DATA (track));
+	if (image_fs & BRASERO_IMAGE_FS_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
-	if ((type.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
-	&&  (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)) {
+	if ((image_fs & BRASERO_IMAGE_FS_ISO)
+	&&  (image_fs & BRASERO_IMAGE_ISO_FS_LEVEL_3)) {
 		g_ptr_array_add (argv, g_strdup ("-iso-level"));
 		g_ptr_array_add (argv, g_strdup ("3"));
 	}
 
-	if (type.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
+	if (image_fs & BRASERO_IMAGE_FS_UDF)
 		g_ptr_array_add (argv, g_strdup ("-udf"));
 
-	if (type.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO) {
+	if (image_fs & BRASERO_IMAGE_FS_VIDEO) {
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
 
 		result = brasero_job_get_tmp_dir (BRASERO_JOB (mkisofs),
@@ -266,7 +266,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 
 	g_ptr_array_add (argv, g_strdup ("-graft-points"));
 
-	if (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
+	if (image_fs & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
 		g_ptr_array_add (argv, g_strdup ("-D"));	// This is dangerous the manual says but apparently it works well
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (mkisofs),
@@ -299,7 +299,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	}
 
 	result = brasero_track_data_get_paths (BRASERO_TRACK_DATA (track),
-					       (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
+					       (image_fs & BRASERO_IMAGE_FS_JOLIET) != 0,
 					       grafts_path,
 					       excluded_path,
 					       emptydir,

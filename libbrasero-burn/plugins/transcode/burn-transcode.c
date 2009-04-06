@@ -925,7 +925,6 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 {
 	guint64 length = 0;
 	gchar *output = NULL;
-	BraseroTrackType type;
 	BraseroTrack *src = NULL;
 	BraseroTrackStream *track;
 
@@ -933,8 +932,6 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &src);
 
 	brasero_track_stream_get_length (BRASERO_TRACK_STREAM (src), &length);
-
-	brasero_job_get_output_type (BRASERO_JOB (transcode), &type);
 
 	track = brasero_track_stream_new ();
 	brasero_track_stream_set_source (track, output);

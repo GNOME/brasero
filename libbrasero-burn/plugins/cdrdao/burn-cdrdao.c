@@ -310,18 +310,20 @@ static BraseroBurnResult
 brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 				GPtrArray *argv)
 {
-	BraseroTrackType type;
+	BraseroTrackType *type = NULL;
 	BraseroCdrdaoPrivate *priv;
 
 	priv = BRASERO_CDRDAO_PRIVATE (cdrdao); 
 
 	g_ptr_array_add (argv, g_strdup ("cdrdao"));
 
-	brasero_job_get_input_type (BRASERO_JOB (cdrdao), &type);
-        if (type.type == BRASERO_TRACK_TYPE_DISC) {
+	type = brasero_track_type_new ();
+	brasero_job_get_input_type (BRASERO_JOB (cdrdao), type);
+
+        if (brasero_track_type_get_has_medium (type)) {
 		BraseroDrive *drive;
-		BraseroBurnFlag flags;
 		BraseroTrack *track;
+		BraseroBurnFlag flags;
 
 		g_ptr_array_add (argv, g_strdup ("copy"));
 		brasero_cdrdao_set_argv_device (cdrdao, argv);
@@ -348,13 +350,13 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 #endif
 
 	}
-	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+	else if (brasero_track_type_get_has_image (type)) {
 		gchar *cuepath;
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 
-		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
+		if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CUE) {
 			gchar *parent;
 
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
@@ -362,13 +364,17 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 			brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao), parent);
 			g_free (parent);
 		}
-		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO)
+		else if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CDRDAO)
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
-		else
+		else {
+			brasero_track_type_free (type);
 			BRASERO_JOB_NOT_SUPPORTED (cdrdao);
+		}
 
-		if (!cuepath)
+		if (!cuepath) {
+			brasero_track_type_free (type);
 			BRASERO_JOB_NOT_READY (cdrdao);
+		}
 
 		g_ptr_array_add (argv, g_strdup ("write"));
 
@@ -378,9 +384,12 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 		g_ptr_array_add (argv, cuepath);
 	}
-	else
+	else {
+		brasero_track_type_free (type);
 		BRASERO_JOB_NOT_SUPPORTED (cdrdao);
+	}
 
+	brasero_track_type_free (type);
 	brasero_job_set_use_average_rate (BRASERO_JOB (cdrdao), TRUE);
 	brasero_job_set_current_action (BRASERO_JOB (cdrdao),
 					BRASERO_BURN_ACTION_START_RECORDING,
@@ -422,10 +431,10 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 			       GError **error)
 {
 	gchar *image = NULL, *toc = NULL;
+	BraseroTrackType *output = NULL;
 	BraseroBurnResult result;
-	BraseroDrive *drive;
 	BraseroJobAction action;
-	BraseroTrackType output;
+	BraseroDrive *drive;
 	BraseroTrack *track;
 
 	g_ptr_array_add (argv, g_strdup ("cdrdao"));
@@ -447,28 +456,38 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 	/* This is done so that if a cue file is required we first generate
 	 * a temporary toc file that will be later converted to a cue file.
 	 * The datafile is written where it should be from the start. */
-	brasero_job_get_output_type (BRASERO_JOB (cdrdao), &output);
-	if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+	output = brasero_track_type_new ();
+	brasero_job_get_output_type (BRASERO_JOB (cdrdao), output);
+
+	if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_CDRDAO) {
 		result = brasero_job_get_image_output (BRASERO_JOB (cdrdao),
 						       &image,
 						       &toc);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (output);
 			return result;
+		}
 	}
 	else {
 		result = brasero_job_get_image_output (BRASERO_JOB (cdrdao),
 						       &image,
 						       NULL);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (output);
 			return result;
+		}
 	
 		result = brasero_job_get_tmp_file (BRASERO_JOB (cdrdao),
 						   NULL,
 						   &toc,
 						   error);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (output);
 			return result;
+		}
 	}
+
+	brasero_track_type_free (output);
 
 	/* it's safe to remove them: session/task make sure they don't exist 
 	 * when there is the proper flag whether it be tmp or real output. */ 
@@ -518,12 +537,10 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 	else if (action == BRASERO_JOB_ACTION_IMAGE)
 		return brasero_cdrdao_set_argv_image (cdrdao, argv, error);
 	else if (action == BRASERO_JOB_ACTION_SIZE) {
-		BraseroTrackDataType input;
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
-		input = brasero_track_get_track_type (track, NULL);
-		if (input == BRASERO_TRACK_TYPE_DISC) {
+		if (BRASERO_IS_TRACK_DISC (track)) {
 			guint64 sectors = 0;
 
 			brasero_track_get_size (track, &sectors, NULL);

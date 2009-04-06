@@ -254,7 +254,7 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 	/* if there is already a track, then we replace it on condition that it
 	 * has the same type and it's not AUDIO (only one allowed to have many)
 	 */
-	if (brasero_track_get_track_type (new_track, NULL) != BRASERO_TRACK_TYPE_STREAM
+	if (!BRASERO_IS_TRACK_STREAM (new_track)
 	||  brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_STREAM) {
 		brasero_burn_session_stop_tracks_monitoring (self);
 
@@ -1187,7 +1187,7 @@ brasero_burn_session_get_src_medium (BraseroBurnSession *self)
 		return NULL;
 
 	track = priv->tracks->data;
-	if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+	if (!BRASERO_TRACK_DISC (track))
 		return NULL;
 
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
@@ -1215,7 +1215,7 @@ brasero_burn_session_get_src_drive (BraseroBurnSession *self)
 		return NULL;
 
 	track = priv->tracks->data;
-	if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+	if (!BRASERO_TRACK_DISC (track))
 		return NULL;
 
 	return brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
@@ -1244,7 +1244,7 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 		return FALSE;
 
 	track = priv->tracks->data;
-	if (brasero_track_get_track_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+	if (!BRASERO_TRACK_DISC (track))
 		return FALSE;
 
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
@@ -1338,7 +1338,7 @@ brasero_burn_session_get_log_path (BraseroBurnSession *self)
 gboolean
 brasero_burn_session_start (BraseroBurnSession *self)
 {
-	BraseroTrackType type;
+	BraseroTrackType *type = NULL;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
@@ -1371,11 +1371,11 @@ brasero_burn_session_start (BraseroBurnSession *self)
 		return FALSE;
 	}
 
-
 	BRASERO_BURN_LOG ("Session starting:");
 
-	brasero_burn_session_get_input_type (self, &type);
-	BRASERO_BURN_LOG_TYPE (&type, "Input\t=");
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (self, type);
+	BRASERO_BURN_LOG_TYPE (type, "Input\t=");
 
 	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t=");
 
@@ -1387,10 +1387,12 @@ brasero_burn_session_start (BraseroBurnSession *self)
 		BRASERO_BURN_LOG ("speed\t= %i", priv->settings->rate);
 	}
 	else {
-		type.type = BRASERO_TRACK_TYPE_IMAGE;
-		type.subtype.img_format = brasero_burn_session_get_output_format (self);
-		BRASERO_BURN_LOG_TYPE (&type, "output format\t=");
+		brasero_track_type_set_has_image (type);
+		brasero_track_type_set_image_format (type, brasero_burn_session_get_output_format (self));
+		BRASERO_BURN_LOG_TYPE (type, "output format\t=");
 	}
+
+	brasero_track_type_free (type);
 
 	return TRUE;
 }

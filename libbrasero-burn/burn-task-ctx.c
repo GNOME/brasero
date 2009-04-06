@@ -275,8 +275,8 @@ brasero_task_ctx_add_track (BraseroTaskCtx *self,
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Adding track (type = %i) %s",
-			  brasero_track_get_track_type (track, NULL),
+	BRASERO_BURN_LOG ("Adding track %s",
+//			  brasero_track_get_track_type (track, NULL),
 			  priv->tracks? "already some tracks":"");
 
 	/* Ref the track and store it for later. */

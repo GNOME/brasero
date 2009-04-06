@@ -35,6 +35,8 @@
 #include "brasero-medium.h"
 #include "brasero-medium-monitor.h"
 
+#include "brasero-burn-lib.h"
+
 #include "brasero-data-session.h"
 #include "brasero-data-project.h"
 #include "brasero-file-node.h"

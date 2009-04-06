@@ -298,8 +298,8 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 {
 	int fd;
 	guint64 size = 0;
-	BraseroTrackType type;
 	BraseroLibburnPrivate *priv;
+	BraseroTrackType *type = NULL;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	priv = BRASERO_LIBBURN_PRIVATE (self);
@@ -307,60 +307,58 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 	brasero_job_get_fd_in (BRASERO_JOB (self), &fd);
 
 	/* need to find out what type of track the imager will output */
-	brasero_job_get_input_type (BRASERO_JOB (self), &type);
-	switch (type.type) {
-		case BRASERO_TRACK_TYPE_IMAGE:
-		{
-			gint mode;
+	type = brasero_track_type_new ();
+	brasero_job_get_input_type (BRASERO_JOB (self), type);
 
-			/* FIXME: implement other IMAGE types */
-			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN)
-				mode = BURN_MODE1;
-			else
-				mode = BURN_MODE1|BURN_MODE_RAW|BURN_SUBCODE_R96;
+	if (brasero_track_type_get_has_image (type)) {
+		gint mode;
 
-			brasero_job_get_session_output_size (BRASERO_JOB (self),
-							     NULL,
-							     &size);
+		/* FIXME: implement other IMAGE types */
+		if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_BIN)
+			mode = BURN_MODE1;
+		else
+			mode = BURN_MODE1|BURN_MODE_RAW|BURN_SUBCODE_R96;
 
-			result = brasero_libburn_add_fd_track (session,
-							       fd,
-							       mode,
-							       size,
-							       priv->pvd,
-							       error);
-			break;
-		}
+		brasero_track_type_free (type);
 
-		case BRASERO_TRACK_TYPE_STREAM:
-		{
-			GSList *tracks;
+		brasero_job_get_session_output_size (BRASERO_JOB (self),
+						     NULL,
+						     &size);
 
-			brasero_job_get_tracks (BRASERO_JOB (self), &tracks);
-			for (; tracks; tracks = tracks->next) {
-				BraseroTrack *track;
-
-				track = tracks->data;
-				brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &size);
-				size = BRASERO_DURATION_TO_BYTES (size);
-
-				/* we dup the descriptor so the same 
-				 * will be shared by all tracks */
-				result = brasero_libburn_add_fd_track (session,
-								       dup (fd),
-								       BURN_AUDIO,
-								       size,
-								       NULL,
-								       error);
-				if (result != BRASERO_BURN_OK)
-					return result;
-			}
-			break;
-		}
-
-		default:
-			BRASERO_JOB_NOT_SUPPORTED (self);
+		result = brasero_libburn_add_fd_track (session,
+						       fd,
+						       mode,
+						       size,
+						       priv->pvd,
+						       error);
 	}
+	else if (brasero_track_type_get_has_stream (type)) {
+		GSList *tracks;
+
+		brasero_track_type_free (type);
+
+		brasero_job_get_tracks (BRASERO_JOB (self), &tracks);
+		for (; tracks; tracks = tracks->next) {
+			BraseroTrack *track;
+
+			track = tracks->data;
+			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &size);
+			size = BRASERO_DURATION_TO_BYTES (size);
+
+			/* we dup the descriptor so the same 
+			 * will be shared by all tracks */
+			result = brasero_libburn_add_fd_track (session,
+							       dup (fd),
+							       BURN_AUDIO,
+							       size,
+							       NULL,
+							       error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+		}
+	}
+	else
+		BRASERO_JOB_NOT_SUPPORTED (self);
 
 	return result;
 }
@@ -381,11 +379,9 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 	brasero_job_get_tracks (BRASERO_JOB (self), &tracks);
 	for (; tracks; tracks = tracks->next) {
 		BraseroTrack *track;
-		BraseroTrackType type;
 
 		track = tracks->data;
-		brasero_track_get_track_type (track, &type);
-		if (type.type == BRASERO_TRACK_TYPE_STREAM) {
+		if (BRASERO_IS_TRACK_STREAM (track)) {
 			gchar *audiopath;
 			guint64 size;
 
@@ -402,16 +398,18 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 			if (result != BRASERO_BURN_OK)
 				break;
 		}
-		else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+		else if (BRASERO_IS_TRACK_IMAGE (track)) {
+			BraseroImageFormat format;
 			gchar *imagepath;
 			guint64 size;
 			gint mode;
 
-			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+			format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
+			if (format == BRASERO_IMAGE_FORMAT_BIN) {
 				mode = BURN_MODE1;
 				imagepath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			}
-			else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+			else if (format == BRASERO_IMAGE_FORMAT_NONE) {
 				mode = BURN_MODE1;
 				imagepath = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			}

@@ -791,19 +791,19 @@ end:
 
 	if (!priv->error && !priv->cancel) {
 		gint64 size;
-		BraseroTrackType type;
+		BraseroImageFS image_fs;
 
-		brasero_track_get_track_type (track, &type);
+		image_fs = brasero_track_data_get_fs (BRASERO_TRACK_DATA (track));
 
-		if ((type.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
-		&&  (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3))
+		if ((image_fs & BRASERO_IMAGE_FS_ISO)
+		&&  (image_fs & BRASERO_IMAGE_ISO_FS_LEVEL_3))
 			iso_write_opts_set_iso_level (opts, 3);
 		else
 			iso_write_opts_set_iso_level (opts, 2);
 
 		iso_write_opts_set_rockridge (opts, 1);
-		iso_write_opts_set_joliet (opts, (type.subtype.img_format & BRASERO_IMAGE_FS_JOLIET) != 0);
-		iso_write_opts_set_allow_deep_paths (opts, (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY) != 0);
+		iso_write_opts_set_joliet (opts, (image_fs & BRASERO_IMAGE_FS_JOLIET) != 0);
+		iso_write_opts_set_allow_deep_paths (opts, (image_fs & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY) != 0);
 
 		if (iso_image_create_burn_source (image, opts, &priv->libburn_src) >= 0) {
 			size = priv->libburn_src->get_size (priv->libburn_src);

@@ -52,6 +52,7 @@
 #include "burn-debug.h"
 #include "brasero-progress.h"
 #include "brasero-cover.h"
+#include "brasero-track-type-private.h"
 
 #include "brasero-tags.h"
 #include "brasero-session.h"
@@ -1931,8 +1932,8 @@ static void
 brasero_burn_dialog_add_track_to_recent (BraseroTrack *track)
 {
 	gchar *uri = NULL;
-	BraseroTrackType type;
 	GtkRecentManager *recent;
+	BraseroImageFormat format;
 	gchar *groups [] = { "brasero", NULL };
 	gchar *mimes [] = { "application/x-cd-image",
 			    "application/x-cue",
@@ -1940,21 +1941,21 @@ brasero_burn_dialog_add_track_to_recent (BraseroTrack *track)
 			    "application/x-cdrdao-toc" };
 	GtkRecentData recent_data = { NULL,
 				      NULL,
-
 				      NULL,
-
 				      "brasero",
 				      "brasero -p %u",
 				      groups,
 				      FALSE };
 
-	brasero_track_get_track_type (track, &type);
-	if (type.type != BRASERO_TRACK_TYPE_IMAGE
-	||  type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE)
+	if (!BRASERO_IS_TRACK_IMAGE (track))
+		return;
+
+	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
+	if (format == BRASERO_IMAGE_FORMAT_NONE)
 		return;
 
 	/* Add it to recent file manager */
-	switch (type.subtype.img_format) {
+	switch (format) {
 	case BRASERO_IMAGE_FORMAT_BIN:
 		recent_data.mime_type = mimes [0];
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
