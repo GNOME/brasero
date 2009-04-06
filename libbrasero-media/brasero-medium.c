@@ -1193,7 +1193,7 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 			       BraseroDeviceHandle *handle,
 			       BraseroScsiErrCode *code)
 {
-	int size;
+	int size = 0;
 	int num_desc, i;
 	gint max_rd, max_wrt;
 	BraseroScsiResult result;
@@ -1216,10 +1216,13 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 		return FALSE;
 	}
 
-	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) /
-		    sizeof (BraseroScsiWrtSpdDesc);
+	/* choose the smallest value for size */
+	size = MIN (size, BRASERO_GET_32 (wrt_perf->hdr.len) + sizeof (wrt_perf->hdr.len));
 
-	if (num_desc <=  0)
+	/* calculate the number of descriptors */
+	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) / sizeof (BraseroScsiWrtSpdDesc);
+
+	if (num_desc <= 0)
 		goto end; 
 
 	priv->rd_speeds = g_new0 (gint, num_desc + 1);
@@ -1229,9 +1232,9 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	max_wrt = 0;
 
 	desc = (BraseroScsiWrtSpdDesc*) &wrt_perf->data;
-	for (i = 0; i < num_desc; i ++, desc ++) {
-		priv->rd_speeds [i] = BRASERO_GET_32 (desc->rd_speed);
-		priv->wr_speeds [i] = BRASERO_GET_32 (desc->wr_speed);
+	for (i = 0; i < num_desc; i ++) {
+		priv->rd_speeds [i] = BRASERO_GET_32 (desc [i].rd_speed);
+		priv->wr_speeds [i] = BRASERO_GET_32 (desc [i].wr_speed);
 
 		max_rd = MAX (max_rd, priv->rd_speeds [i]);
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
@@ -1286,7 +1289,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	page_2A = (BraseroScsiStatusPage *) &data->page;
 
 	/* Reminder: size = sizeof (BraseroScsiStatusPage) + sizeof (BraseroScsiModeHdr) */
-	size = MIN (sizeof (data->hdr.len) + BRASERO_GET_16 (data->hdr.len), size);
+	size = MIN (size, sizeof (data->hdr.len) + BRASERO_GET_16 (data->hdr.len));
 
 	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, copy_mngt_rev) +
 		    sizeof (BraseroScsiModeHdr))) {
