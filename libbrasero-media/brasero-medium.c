@@ -1275,9 +1275,9 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 			       BraseroDeviceHandle *handle,
 			       BraseroScsiErrCode *code)
 {
-	signed int size = 0;
+	int size = 0;
+	int num_desc, i;
 	gint max_rd, max_wrt;
-	signed int num_desc, i;
 	BraseroScsiResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiWrtSpdDesc *desc;
@@ -1304,14 +1304,6 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	size = MIN (size, BRASERO_GET_32 (wrt_perf->hdr.len) + sizeof (wrt_perf->hdr.len));
 	BRASERO_MEDIA_LOG ("Updated header size = %d", size);
 
-	/* Calculate the number of descriptors */
-	num_desc = (signed int) size - (signed int) sizeof (BraseroScsiGetPerfHdr);
-	num_desc /= sizeof (BraseroScsiWrtSpdDesc);
-	BRASERO_MEDIA_LOG ("Got %d descriptor(s)", num_desc);
-
-	if (num_desc <= 0)
-		goto end; 
-
 	/* NOTE: I don't know why but on some architecture/with some compilers
 	 * when size < sizeof (BraseroScsiGetPerfHdr) the whole operation below
 	 * is treated as signed which leads to have an outstanding number of 
@@ -1320,6 +1312,13 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 		BRASERO_MEDIA_LOG ("No descriptors");
 		goto end;
 	}
+
+	/* Calculate the number of descriptors */
+	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) / sizeof (BraseroScsiWrtSpdDesc);
+	BRASERO_MEDIA_LOG ("Got %d descriptor(s)", num_desc);
+
+	if (num_desc <= 0)
+		goto end; 
 
 	priv->rd_speeds = g_new0 (guint, num_desc + 1);
 	priv->wr_speeds = g_new0 (guint, num_desc + 1);
@@ -1433,9 +1432,10 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 		desc_num = max_num;
 
 	priv->wr_speeds = g_new0 (gint, desc_num + 1);
+
 	desc = page_2A->wr_spd_desc;
-	for (i = 0; i < desc_num; i ++, desc ++) {
-		priv->wr_speeds [i] = BRASERO_GET_16 (desc->speed);
+	for (i = 0; i < desc_num; i ++) {
+		priv->wr_speeds [i] = BRASERO_GET_16 (desc [i].speed);
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
 	}
 
