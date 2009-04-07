@@ -99,11 +99,11 @@ struct _BraseroMediumPrivate
 
 	gchar *id;
 
-	gint max_rd;
-	gint max_wrt;
+	guint max_rd;
+	guint max_wrt;
 
-	gint *rd_speeds;
-	gint *wr_speeds;
+	guint *rd_speeds;
+	guint *wr_speeds;
 
 	gint64 block_num;
 	gint64 block_size;
@@ -659,7 +659,7 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
  * Return value: a #gint64.
  *
  **/
-gint64
+guint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
@@ -681,11 +681,11 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
  * Return value: a #gint64 *.
  *
  **/
-gint64 *
+guint64 *
 brasero_medium_get_write_speeds (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
-	gint64 *speeds;
+	guint64 *speeds;
 	guint max = 0;
 	guint i;
 
@@ -699,7 +699,7 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 
 	while (priv->wr_speeds [max] != 0) max ++;
 
-	speeds = g_new0 (gint64, max + 1);
+	speeds = g_new0 (guint64, max + 1);
 
 	/* NOTE: about the following, it's not KiB here but KB */
 	for (i = 0; i < max; i ++)
@@ -1298,25 +1298,36 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
+	BRASERO_MEDIA_LOG ("Successfully retrieved a header: size %d, address %p", size, wrt_perf);
+
 	/* choose the smallest value for size */
 	size = MIN (size, BRASERO_GET_32 (wrt_perf->hdr.len) + sizeof (wrt_perf->hdr.len));
+	BRASERO_MEDIA_LOG ("Updated header size = %d", size);
 
 	/* calculate the number of descriptors */
 	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) / sizeof (BraseroScsiWrtSpdDesc);
+	BRASERO_MEDIA_LOG ("Got %d descriptor(s)", num_desc);
 
 	if (num_desc <= 0)
 		goto end; 
 
-	priv->rd_speeds = g_new0 (gint, num_desc + 1);
-	priv->wr_speeds = g_new0 (gint, num_desc + 1);
+	priv->rd_speeds = g_new0 (guint, num_desc + 1);
+	priv->wr_speeds = g_new0 (guint, num_desc + 1);
 
 	max_rd = 0;
 	max_wrt = 0;
 
 	desc = (BraseroScsiWrtSpdDesc*) &wrt_perf->data;
+
 	for (i = 0; i < num_desc; i ++) {
+		BRASERO_MEDIA_LOG ("Descriptor n° %d, address = %p", i, (desc + i));
+
 		priv->rd_speeds [i] = BRASERO_GET_32 (desc [i].rd_speed);
 		priv->wr_speeds [i] = BRASERO_GET_32 (desc [i].wr_speed);
+
+		BRASERO_MEDIA_LOG ("RD = %u / WRT = %u",
+				   priv->rd_speeds [i],
+				   priv->wr_speeds [i]);
 
 		max_rd = MAX (max_rd, priv->rd_speeds [i]);
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
