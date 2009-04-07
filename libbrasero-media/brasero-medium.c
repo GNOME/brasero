@@ -1275,9 +1275,9 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 			       BraseroDeviceHandle *handle,
 			       BraseroScsiErrCode *code)
 {
-	int size = 0;
-	int num_desc, i;
+	signed int size = 0;
 	gint max_rd, max_wrt;
+	signed int num_desc, i;
 	BraseroScsiResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiWrtSpdDesc *desc;
@@ -1300,16 +1300,26 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Successfully retrieved a header: size %d, address %p", size, wrt_perf);
 
-	/* choose the smallest value for size */
+	/* Choose the smallest value for size */
 	size = MIN (size, BRASERO_GET_32 (wrt_perf->hdr.len) + sizeof (wrt_perf->hdr.len));
 	BRASERO_MEDIA_LOG ("Updated header size = %d", size);
 
-	/* calculate the number of descriptors */
-	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) / sizeof (BraseroScsiWrtSpdDesc);
+	/* Calculate the number of descriptors */
+	num_desc = (signed int) size - (signed int) sizeof (BraseroScsiGetPerfHdr);
+	num_desc /= sizeof (BraseroScsiWrtSpdDesc);
 	BRASERO_MEDIA_LOG ("Got %d descriptor(s)", num_desc);
 
 	if (num_desc <= 0)
 		goto end; 
+
+	/* NOTE: I don't know why but on some architecture/with some compilers
+	 * when size < sizeof (BraseroScsiGetPerfHdr) the whole operation below
+	 * is treated as signed which leads to have an outstanding number of 
+	 * descriptors instead of a negative one. So be anal when checking. */
+	if (size <= (sizeof (BraseroScsiGetPerfHdr) + sizeof (BraseroScsiWrtSpdDesc))) {
+		BRASERO_MEDIA_LOG ("No descriptors");
+		goto end;
+	}
 
 	priv->rd_speeds = g_new0 (guint, num_desc + 1);
 	priv->wr_speeds = g_new0 (guint, num_desc + 1);
@@ -1384,8 +1394,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	/* Reminder: size = sizeof (BraseroScsiStatusPage) + sizeof (BraseroScsiModeHdr) */
  	size = MIN (size, sizeof (data->hdr.len) + BRASERO_GET_16 (data->hdr.len));
 
-	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, copy_mngt_rev) +
-		    sizeof (BraseroScsiModeHdr))) {
+	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, copy_mngt_rev) + sizeof (BraseroScsiModeHdr))) {
 		g_free (data);
 		BRASERO_MEDIA_LOG ("wrong page size");
 		return BRASERO_BURN_ERR;
