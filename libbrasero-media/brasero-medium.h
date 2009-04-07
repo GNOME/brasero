@@ -64,25 +64,25 @@ GType brasero_medium_get_type (void) G_GNUC_CONST;
 BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium);
 
-gint64
+guint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium);
 
-gint64 *
+guint64 *
 brasero_medium_get_write_speeds (BraseroMedium *medium);
 
 void
 brasero_medium_get_free_space (BraseroMedium *medium,
-			       gint64 *size,
+			       gint64 *bytes,
 			       gint64 *blocks);
 
 void
 brasero_medium_get_capacity (BraseroMedium *medium,
-			     gint64 *size,
+			     gint64 *bytes,
 			     gint64 *blocks);
 
 void
 brasero_medium_get_data_size (BraseroMedium *medium,
-			      gint64 *size,
+			      gint64 *bytes,
 			      gint64 *blocks);
 
 gint64

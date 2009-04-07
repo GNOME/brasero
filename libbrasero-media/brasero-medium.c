@@ -93,11 +93,11 @@ struct _BraseroMediumPrivate
 
 	gchar *id;
 
-	gint max_rd;
-	gint max_wrt;
+	guint max_rd;
+	guint max_wrt;
 
-	gint *rd_speeds;
-	gint *wr_speeds;
+	guint *rd_speeds;
+	guint *wr_speeds;
 
 	gint64 block_num;
 	gint64 block_size;
@@ -575,10 +575,10 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
  * Gets the maximum speed that can be used to write to @medium.
  * Note: the speed are in B/sec.
  *
- * Return value: a #gint64.
+ * Return value: a #guint64.
  *
  **/
-gint64
+guint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
@@ -597,14 +597,14 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
  * Gets an array holding all possible speeds to write to @medium.
  * Note: the speed are in B/sec.
  *
- * Return value: a #gint64 *.
+ * Return value: a #guint64 *.
  *
  **/
-gint64 *
+guint64 *
 brasero_medium_get_write_speeds (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
-	gint64 *speeds;
+	guint64 *speeds;
 	guint max = 0;
 	guint i;
 
@@ -618,7 +618,7 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 
 	while (priv->wr_speeds [max] != 0) max ++;
 
-	speeds = g_new0 (gint64, max + 1);
+	speeds = g_new0 (guint64, max + 1);
 
 	/* NOTE: about the following, it's not KiB here but KB */
 	for (i = 0; i < max; i ++)
@@ -654,7 +654,7 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 /**
  * brasero_medium_get_data_size:
  * @medium: #BraseroMedium
- * @size: a #gint64 * or NULL
+ * @bytes: a #gint64 * or NULL
  * @blocks: a #gint64 * or NULL
  *
  * Stores in either @size (in bytes) or @blocks (the number of blocks) the size
@@ -663,7 +663,7 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
  **/
 void
 brasero_medium_get_data_size (BraseroMedium *medium,
-			      gint64 *size,
+			      gint64 *bytes,
 			      gint64 *blocks)
 {
 	GSList *iter;
@@ -677,8 +677,8 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 
 	if (!priv->tracks) {
 		/* that's probably because it wasn't possible to retrieve info */
-		if (size)
-			*size = 0;
+		if (bytes)
+			*bytes = 0;
 
 		if (blocks)
 			*blocks = 0;
@@ -696,8 +696,8 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 		track = iter->data;
 	}
 
-	if (size)
-		*size = track ? (track->start + track->blocks_num) * priv->block_size: 0;
+	if (bytes)
+		*bytes = track ? (track->start + track->blocks_num) * priv->block_size: 0;
 
 	if (blocks)
 		*blocks = track ? track->start + track->blocks_num: 0;
@@ -706,7 +706,7 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 /**
  * brasero_medium_get_free_space:
  * @medium: #BraseroMedium
- * @size: a #gint64 * or NULL
+ * @bytes: a #gint64 * or NULL
  * @blocks: a #gint64 * or NULL
  *
  * Stores in either @size (in bytes) or @blocks (the number of blocks) the space
@@ -715,7 +715,7 @@ brasero_medium_get_data_size (BraseroMedium *medium,
  **/
 void
 brasero_medium_get_free_space (BraseroMedium *medium,
-			       gint64 *size,
+			       gint64 *bytes,
 			       gint64 *blocks)
 {
 	GSList *iter;
@@ -732,15 +732,15 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 		 * maybe it also happens with unformatted DVD+RW */
 
 		if (priv->info & BRASERO_MEDIUM_CLOSED) {
-			if (size)
-				*size = 0;
+			if (bytes)
+				*bytes = 0;
 
 			if (blocks)
 				*blocks = 0;
 		}
 		else {
-			if (size)
-				*size = priv->block_num * priv->block_size;
+			if (bytes)
+				*bytes = priv->block_num * priv->block_size;
 
 			if (blocks)
 				*blocks = priv->block_num;
@@ -759,16 +759,16 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 		}
 	}
 
-	if (size) {
+	if (bytes) {
 		if (!track) {
 			/* No leadout was found so the disc is probably closed:
 			 * no free space left. */
-			*size = 0;
+			*bytes = 0;
 		}
 		else if (track->blocks_num <= 0)
-			*size = (priv->block_num - track->start) * priv->block_size;
+			*bytes = (priv->block_num - track->start) * priv->block_size;
 		else
-			*size = track->blocks_num * priv->block_size;
+			*bytes = track->blocks_num * priv->block_size;
 	}
 
 	if (blocks) {
@@ -787,7 +787,7 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 /**
  * brasero_medium_get_capacity:
  * @medium: #BraseroMedium
- * @size: a #gint64 * or NULL
+ * @bytes: a #gint64 * or NULL
  * @blocks: a #gint64 * or NULL
  *
  * Stores in either @size (in bytes) or @blocks (the number of blocks) the total
@@ -798,7 +798,7 @@ brasero_medium_get_free_space (BraseroMedium *medium,
  **/
 void
 brasero_medium_get_capacity (BraseroMedium *medium,
-			     gint64 *size,
+			     gint64 *bytes,
 			     gint64 *blocks)
 {
 	BraseroMediumPrivate *priv;
@@ -809,16 +809,16 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	if (priv->info & BRASERO_MEDIUM_REWRITABLE) {
-		if (size)
-			*size = priv->block_num * priv->block_size;
+		if (bytes)
+			*bytes = priv->block_num * priv->block_size;
 
 		if (blocks)
 			*blocks = priv->block_num;
 	}
 	else  if (priv->info & BRASERO_MEDIUM_CLOSED)
-		brasero_medium_get_data_size (medium, size, blocks);
+		brasero_medium_get_data_size (medium, bytes, blocks);
 	else
-		brasero_medium_get_free_space (medium, size, blocks);
+		brasero_medium_get_free_space (medium, bytes, blocks);
 }
 
 /**
@@ -1216,25 +1216,45 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 		return FALSE;
 	}
 
-	/* choose the smallest value for size */
-	size = MIN (size, BRASERO_GET_32 (wrt_perf->hdr.len) + sizeof (wrt_perf->hdr.len));
+	BRASERO_MEDIA_LOG ("Successfully retrieved a header: size %d, address %p", size, wrt_perf);
 
-	/* calculate the number of descriptors */
+	/* Choose the smallest value for size */
+	size = MIN (size, BRASERO_GET_32 (wrt_perf->hdr.len) + sizeof (wrt_perf->hdr.len));
+	BRASERO_MEDIA_LOG ("Updated header size = %d", size);
+
+	/* NOTE: I don't know why but on some architecture/with some compilers
+	 * when size < sizeof (BraseroScsiGetPerfHdr) the whole operation below
+	 * is treated as signed which leads to have an outstanding number of 
+	 * descriptors instead of a negative one. So be anal when checking. */
+	if (size <= (sizeof (BraseroScsiGetPerfHdr) + sizeof (BraseroScsiWrtSpdDesc))) {
+		BRASERO_MEDIA_LOG ("No descriptors");
+		goto end;
+	}
+
+	/* Calculate the number of descriptors */
 	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) / sizeof (BraseroScsiWrtSpdDesc);
+	BRASERO_MEDIA_LOG ("Got %d descriptor(s)", num_desc);
 
 	if (num_desc <= 0)
 		goto end; 
 
-	priv->rd_speeds = g_new0 (gint, num_desc + 1);
-	priv->wr_speeds = g_new0 (gint, num_desc + 1);
+	priv->rd_speeds = g_new0 (guint, num_desc + 1);
+	priv->wr_speeds = g_new0 (guint, num_desc + 1);
 
 	max_rd = 0;
 	max_wrt = 0;
 
 	desc = (BraseroScsiWrtSpdDesc*) &wrt_perf->data;
+
 	for (i = 0; i < num_desc; i ++) {
+		BRASERO_MEDIA_LOG ("Descriptor n° %d, address = %p", i, (desc + i));
+
 		priv->rd_speeds [i] = BRASERO_GET_32 (desc [i].rd_speed);
 		priv->wr_speeds [i] = BRASERO_GET_32 (desc [i].wr_speed);
+
+		BRASERO_MEDIA_LOG ("RD = %u / WRT = %u",
+				   priv->rd_speeds [i],
+				   priv->wr_speeds [i]);
 
 		max_rd = MAX (max_rd, priv->rd_speeds [i]);
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
@@ -1289,10 +1309,9 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	page_2A = (BraseroScsiStatusPage *) &data->page;
 
 	/* Reminder: size = sizeof (BraseroScsiStatusPage) + sizeof (BraseroScsiModeHdr) */
-	size = MIN (size, sizeof (data->hdr.len) + BRASERO_GET_16 (data->hdr.len));
+ 	size = MIN (size, sizeof (data->hdr.len) + BRASERO_GET_16 (data->hdr.len));
 
-	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, copy_mngt_rev) +
-		    sizeof (BraseroScsiModeHdr))) {
+	if (size < (G_STRUCT_OFFSET (BraseroScsiStatusPage, copy_mngt_rev) + sizeof (BraseroScsiModeHdr))) {
 		g_free (data);
 		BRASERO_MEDIA_LOG ("wrong page size");
 		return FALSE;
@@ -1309,9 +1328,9 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 		BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A [old]) %i", priv->max_wrt);
 
 		/* also add fake speed descriptors */
-		priv->wr_speeds = g_new0 (gint, 2);
+		priv->wr_speeds = g_new0 (guint, 2);
 		priv->wr_speeds [0] = BRASERO_GET_16 (page_2A->wr_max_speed);
-		priv->rd_speeds = g_new0 (gint, 2);
+		priv->rd_speeds = g_new0 (guint, 2);
 		priv->rd_speeds [0] = BRASERO_GET_16 (page_2A->rd_max_speed);
 
 		g_free (data);
@@ -1330,10 +1349,11 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	if (desc_num > max_num)
 		desc_num = max_num;
 
-	priv->wr_speeds = g_new0 (gint, desc_num + 1);
+	priv->wr_speeds = g_new0 (guint, desc_num + 1);
+
 	desc = page_2A->wr_spd_desc;
-	for (i = 0; i < desc_num; i ++, desc ++) {
-		priv->wr_speeds [i] = BRASERO_GET_16 (desc->speed);
+	for (i = 0; i < desc_num; i ++) {
+		priv->wr_speeds [i] = BRASERO_GET_16 (desc [i].speed);
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
 	}
 
