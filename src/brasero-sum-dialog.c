@@ -370,7 +370,6 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 						      &tmppath,
 						      error);
 		if (result != BRASERO_BURN_CANCEL) {
-			g_object_unref (file_src);
 			g_free (scheme);
 			return result;
 		}
