@@ -1226,7 +1226,7 @@ brasero_menu_item_selected_cb (GtkMenuItem *proxy,
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	action = gtk_widget_get_action (GTK_WIDGET (proxy));
+	action = gtk_activatable_get_related_action (GTK_ACTIVATABLE (proxy));
 	g_return_if_fail (action != NULL);
 
 	g_object_get (G_OBJECT (action), "tooltip", &message, NULL);

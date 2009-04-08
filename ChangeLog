@@ -1,3 +1,14 @@
+2009-04-08  Thomas H.P. Andersen  <phomes@gmail.com>
+
+	* configure.in:
+	* src/brasero-app.c
+	(brasero_menu_item_selected_cb):
+	* libbrasero-burn/brasero-tray.c
+	(brasero_tray_icon_set_tooltip):
+
+	Replaces newly deprecated symbols in gtk. Bumps required gtk to 2.16. 
+	Fixes bug #578304.
+
 2009-04-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Ported fix from stable for #573929 #Comment 9

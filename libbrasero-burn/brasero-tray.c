@@ -269,7 +269,7 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 	else
 		text = g_strdup (action_string);
 
-	gtk_status_icon_set_tooltip (GTK_STATUS_ICON (tray), text);
+	gtk_status_icon_set_tooltip_text (GTK_STATUS_ICON (tray), text);
 	g_free (text);
 }
 
