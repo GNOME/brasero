@@ -60,6 +60,9 @@ typedef enum {
 	LAST_SIGNAL
 } BraseroDriveSelectionSignalType;
 
+/* GtkBuildable */
+static GtkBuildableIface *parent_buildable_iface;
+
 static guint brasero_drive_selection_signals [LAST_SIGNAL] = { 0 };
 
 enum {
@@ -74,10 +77,15 @@ enum {
 	ICON_COL,
 	NUM_COL
 };
-  
-G_DEFINE_TYPE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_COMBO_BOX);
-  
-  
+
+static void
+brasero_drive_selection_buildable_init (GtkBuildableIface *iface)
+{
+  parent_buildable_iface = g_type_interface_peek_parent (iface);
+}  
+
+G_DEFINE_TYPE_WITH_CODE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_COMBO_BOX, G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_drive_selection_buildable_init));
+
 static void
 brasero_drive_selection_set_current_drive (BraseroDriveSelection *self,
 					   GtkTreeIter *iter)
