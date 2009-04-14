@@ -1,3 +1,72 @@
+14-4-2009 Brasero 2.26.1
+
+Changes and bugs fixed:
+
+Fix bgo #576439 – nautilus crash because of probable double g_free in
+brasero_medium_get_css_feature (Philippe Rouquier)
+
+Fix bgo #575904 - Remove unneeded signal connection and rename callback. Fixes
+crash on Rhythmbox playlist import. (Luis Medinas)
+
+Fix bgo #576564 – brasero crashed with SIGSEGV in brasero_image_format_get_cdrdao_size()
+Fix crash when retrieving cue size for cdrdao files (wrong pointer used) (Philippe Rouquier)
+
+Fix bgo #576928 – Brasero crashes when pasting empty clipboard.
+Patch from Tom Parker <palfrey {at} tevp.net> (Luis Medinas)
+
+Fix bgo #573929 – nautilus crashed with SIGSEGV in start_thread() (Philippe
+Rouquier)
+
+Fix bgo 573859 – Several 'Make Cover' buttons in Disc Copy dialog
+Patch by Alexey Putilov (Philippe Rouquier)
+
+Fix bgo 573929 – Comment #9 Fix crash (Philippe Rouquier)
+
+Fix a potential crash in the checksum dialog on error (Philippe Rouquier)
+
+Fix the .desktop-file-as-state-file case; egg_desktop_file_get_source() returns a URI, not a filename.
+From libegg by Danw. (Luis Medinas)
+
+Fix bgo #578677 - Registered property name in BraseroDriveSelectionClass is
+translated on runtime. (Luis Medinas)
+
+
+Translations:
+
+* bg.po: Updated Bulgarian translation by Alexander Shopov <ash {at} contact.bg>
+* kn.po: Updated Kannada translations by Shankar Prasad <svenkate@redhat.com>
+* nb.po: Updated Norwegian bokmål translation by Kjartan Maraas  <kmaraas {at} gnome.org>
+* en_GB/en_GB.po: Updated British English translation by Philip Withnall  <philip {at} tecnocode.co.uk>
+* tr.po: Updated Turkish translation by Gurkan Gur and Deniz Kocak.
+* eu.po: Updated Basque translation by Inaki Larranaga Murgoitio  <dooteo {at} euskalgnu.org>
+* ar.po: Updated Arabic translation by Osama Khalid.
+* es.po: Updated Spanish translation by Jorge Gonzalez <jorgegonz@svn.gnome.org> and Miguel Angel Ruiz Manzano
+* sl.po: Updated Slovenian translation
+* as.po: Updated Assamese translations by Amitakhya Phukan <amitakhya@svn.gnome.org>
+* ru.po: Updated Russian translation by Yuri Myasoedov. 
+* pa.po: Updating Punjabi Translation (pa) 
+* da.po: Updated Danish translation by Mads B. Lundby 
+* or.po: Updated Oriya Translation by Manoj Kumar Giri <mgiri@redhat.com>
+* et.po: Translation updated by Mattias Põldaru 
+* fr.po: Fixed typo by Aurélien Couderc.
+* el.po: Updated Greek translation (Marios Zindilis)
+* sr.po: Updated Serbian translation (by Miloš Popović)
+* hu.po: Translation updated by Gabor Kelemen  <kelemeng {at} gnome.hu>
+* uk.po: Add Ukrainian translation by Maxim Dziumanenko <dziumanenko@gmail.com> 
+* zh_CN.po: Updated Simplified Chinese translations by Ray Wang <wanglei1123 at gmail dot com>
+
+Homepage: http://www.gnome.org/projects/brasero
+
+Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
+
+Mailing List for User and Developer discussion: brasero-list@gnome.org
+
+Svn Repository: http://svn.gnome.org/viewcvs/brasero/
+
+Thanks to all the people who contributed to this release through patches,
+translation, advices, artwork, bug reports.
+
+
 16-3-2009 Brasero 2.26.0
 
 Changes and bugs fixed:
