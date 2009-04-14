@@ -1,3 +1,11 @@
+2009-04-14  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/eggsmclient-xsmp.c (save_state):
+
+	Fix the	.desktop-file-as-state-file case; 
+	egg_desktop_file_get_source() returns a URI, not a filename.
+	From libegg by Danw.
+
 2009-04-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a potential crash in the checksum dialog on error
