@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-15 22:03+0100\n"
-"PO-Revision-Date: 2009-03-15 22:04+0100\n"
+"POT-Creation-Date: 2009-04-18 09:25+0200\n"
+"PO-Revision-Date: 2009-04-18 09:25+0200\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -40,10 +40,6 @@ msgstr "Sembla que no és un projecte del Brasero vàlid."
 #: ../libbrasero-media/brasero-drive-selection.c:432
 msgid "Unnamed CD/DVD Drive"
 msgstr "Unitat de CD/DVD sense nom"
-
-#: ../libbrasero-media/brasero-drive-selection.c:626
-msgid "Drive"
-msgstr "Unitat"
 
 #: ../libbrasero-media/brasero-media.c:52
 msgid "Display debug statements on stdout for Brasero media library"
@@ -228,7 +224,7 @@ msgstr "No s'ha pogut obtenir el punt de muntatge del disc"
 #: ../libbrasero-media/brasero-volume.c:406
 #, c-format
 msgid "Blank %s"
-msgstr "Esborra %s"
+msgstr "%s en blanc"
 
 #. NOTE for translators: the first %s is the disc type.
 #: ../libbrasero-media/brasero-volume.c:410
@@ -2164,64 +2160,64 @@ msgstr "_Desa el registre"
 msgid "_View Log"
 msgstr "_Visualitza el registre"
 
-#: ../src/brasero-burn-dialog.c:1800
+#: ../src/brasero-burn-dialog.c:1801
 msgid "Audio CD successfully burnt"
 msgstr "El CD d'àudio s'ha enregistrat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1805
+#: ../src/brasero-burn-dialog.c:1806
 msgid "DVD successfully copied"
 msgstr "El DVD s'ha copiat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1807
+#: ../src/brasero-burn-dialog.c:1808
 msgid "CD successfully copied"
 msgstr "El CD s'ha copiat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1811
+#: ../src/brasero-burn-dialog.c:1812
 msgid "Image of DVD successfully created"
 msgstr "La imatge del DVD s'ha creat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1813
+#: ../src/brasero-burn-dialog.c:1814
 msgid "Image of CD successfully created"
 msgstr "La imatge del CD s'ha creat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1819
+#: ../src/brasero-burn-dialog.c:1820
 msgid "Image successfully burnt to DVD"
 msgstr "La imatge s'ha enregistrat amb èxit al DVD"
 
-#: ../src/brasero-burn-dialog.c:1821
+#: ../src/brasero-burn-dialog.c:1822
 msgid "Image successfully burnt to CD"
 msgstr "La imatge s'ha enregistrat amb èxit al CD"
 
-#: ../src/brasero-burn-dialog.c:1827
+#: ../src/brasero-burn-dialog.c:1828
 msgid "Data DVD successfully burnt"
 msgstr "El DVD de dades s'ha enregistrat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1829
+#: ../src/brasero-burn-dialog.c:1830
 msgid "Data CD successfully burnt"
 msgstr "El CD de dades s'ha enregistrat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1832
+#: ../src/brasero-burn-dialog.c:1833
 msgid "Image successfully created"
 msgstr "La imatge s'ha creat amb èxit"
 
-#: ../src/brasero-burn-dialog.c:1842
+#: ../src/brasero-burn-dialog.c:1843
 msgid "Make _Another Copy"
-msgstr "Realitza una _altra còpia"
+msgstr "Fes una _altra còpia"
 
 #. since we succeed offer the possibility to create cover if that's an audio disc
-#: ../src/brasero-burn-dialog.c:1869
+#: ../src/brasero-burn-dialog.c:1870
 msgid "_Create Cover"
 msgstr "_Crea una coberta"
 
-#: ../src/brasero-burn-dialog.c:2077 ../src/brasero-tool-dialog.c:348
+#: ../src/brasero-burn-dialog.c:2081 ../src/brasero-tool-dialog.c:348
 msgid "Do you really want to quit?"
 msgstr "Segur que voleu sortir?"
 
-#: ../src/brasero-burn-dialog.c:2081 ../src/brasero-tool-dialog.c:351
+#: ../src/brasero-burn-dialog.c:2085 ../src/brasero-tool-dialog.c:351
 msgid "Interrupting the process may make disc unusable."
 msgstr "Si interrompeu el procés pot ser que el disc esdevingui inservible."
 
-#: ../src/brasero-burn-dialog.c:2091
+#: ../src/brasero-burn-dialog.c:2095
 msgid "_Cancel Burning"
 msgstr "_Cancel·la l'enregistrament"
 
@@ -2933,10 +2929,9 @@ msgid ""
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
 msgstr ""
-"En buidar un projecte se n'hi suprimiran tots els fitxers afegits "
-"anteriorment, per la qual cosa es perdrà tota la feina. Tingueu en compte "
-"que els fitxers no seran suprimits de la seva ubicació, simplement no es "
-"llistaran aquí."
+"En buidar un projecte se'n suprimiran tots els fitxers afegits anteriorment, "
+"per la qual cosa es perdrà tota la feina. Tingueu en compte que els fitxers "
+"no seran suprimits de la seva ubicació, simplement no es llistaran aquí."
 
 #: ../src/brasero-project.c:1623
 msgid "_Save"
@@ -3250,7 +3245,7 @@ msgstr "Projectes recents:"
 msgid "Check _Again"
 msgstr "Comprov_a de nou"
 
-#: ../src/brasero-sum-dialog.c:141 ../src/brasero-sum-dialog.c:469
+#: ../src/brasero-sum-dialog.c:141 ../src/brasero-sum-dialog.c:468
 msgid "The file integrity check could not be performed."
 msgstr "No s'ha pogut realitzar la comprovació d'integritat del fitxer."
 
@@ -3279,28 +3274,28 @@ msgstr "S'està descarregant el fitxer MD5"
 msgid "\"%s\" is not a valid URI"
 msgstr "«%s» no és un URI vàlid"
 
-#: ../src/brasero-sum-dialog.c:470
+#: ../src/brasero-sum-dialog.c:469
 msgid "No md5 file was given."
 msgstr "No s'ha especificat cap fitxer md5."
 
-#: ../src/brasero-sum-dialog.c:639
+#: ../src/brasero-sum-dialog.c:638
 msgid "Use a _md5 file to check the disc"
 msgstr "Utilitza un fitxer _md5 per a comprovar el disc"
 
-#: ../src/brasero-sum-dialog.c:640
+#: ../src/brasero-sum-dialog.c:639
 msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr ""
 "Utilitza un fitxer .md5 extern que conté la suma de verificació del disc"
 
-#: ../src/brasero-sum-dialog.c:653
+#: ../src/brasero-sum-dialog.c:652
 msgid "Open a md5 file"
 msgstr "Obre un fitxer md5"
 
-#: ../src/brasero-sum-dialog.c:668
+#: ../src/brasero-sum-dialog.c:667
 msgid "_Check"
 msgstr "_Comprova"
 
-#: ../src/brasero-sum-dialog.c:692
+#: ../src/brasero-sum-dialog.c:691
 msgid "Disc Checking"
 msgstr "Comprovació del disc"
 
@@ -4405,7 +4400,7 @@ msgid "Broken symbolic link"
 msgstr "Enllaç simbòlic trencat"
 
 #: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1085
-#: ../src/brasero-io.c:1964
+#: ../src/brasero-io.c:1960
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Enllaç simbòlic recursiu"
@@ -4461,12 +4456,12 @@ msgstr "Opcions de filtrat"
 msgid "\"%s\" cannot be read"
 msgstr "no es pot llegir «%s»"
 
-#: ../src/brasero-io.c:1318
+#: ../src/brasero-io.c:1314
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Sembla que el fitxer no és una llista de reproducció"
 
-#: ../src/brasero-io.c:2427
+#: ../src/brasero-io.c:2423
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "No s'ha pogut crear un directori (%s)"
@@ -4808,6 +4803,9 @@ msgstr "Copia CD i DVD"
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Disc Copier"
 msgstr "Copia un disc"
+
+#~ msgid "Drive"
+#~ msgstr "Unitat"
 
 #~ msgid "The size could not be retrieved (%s)"
 #~ msgstr "No s'ha pogut obtenir la mida (%s)"
