@@ -813,7 +813,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		g_ptr_array_add (argv, g_strdup_printf ("fs=%im", buffer_size));
 		if (brasero_track_type_get_has_image (type)) {
 			if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_BIN) {
-				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
+				g_ptr_array_add (argv, g_strdup_printf ("tsize=%"G_GINT64_FORMAT"s", sectors));
 
 				g_ptr_array_add (argv, g_strdup ("-data"));
 				g_ptr_array_add (argv, g_strdup ("-nopad"));
@@ -1026,7 +1026,7 @@ brasero_wodim_set_argv_blank (BraseroWodim *wodim, GPtrArray *argv)
 			if (!sectors)
 				brasero_medium_get_capacity (medium, NULL, &sectors);
 
-			g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
+			g_ptr_array_add (argv, g_strdup_printf ("tsize=%"G_GINT64_FORMAT"s", sectors));
 		}
 		else	/* we set 512s because wodim complains otherwise */
 			g_ptr_array_add (argv, g_strdup_printf ("tsize=512s"));

@@ -411,13 +411,13 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 	/* This is not really an error, we'll probably ask the 
 	 * user to load a new disc */
 	if (output_blocks > media_blocks) {
-		BRASERO_BURN_LOG ("Insufficient space on disc %lli/%lli",
+		BRASERO_BURN_LOG ("Insufficient space on disc %"G_GINT64_FORMAT"/%"G_GINT64_FORMAT,
 				  media_blocks,
 				  output_blocks);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_MEDIUM_SPACE,
-			     _("Not enough space available on the disc (%lli available for %lli)"),
+			     _("Not enough space available on the disc (%"G_GINT64_FORMAT" available for %"G_GINT64_FORMAT")"),
 			     media_blocks,
 			     output_blocks);
 		return BRASERO_BURN_NEED_RELOAD;

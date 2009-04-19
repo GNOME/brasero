@@ -800,7 +800,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 
 			format = brasero_track_type_get_image_format (type);
 			if (format == BRASERO_IMAGE_FORMAT_BIN) {
-				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
+				g_ptr_array_add (argv, g_strdup_printf ("tsize=%"G_GINT64_FORMAT"s", sectors));
 				g_ptr_array_add (argv, g_strdup ("-data"));
 				g_ptr_array_add (argv, g_strdup ("-nopad"));
 				g_ptr_array_add (argv, g_strdup ("-"));
