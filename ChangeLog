@@ -1,3 +1,18 @@
+2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Fix some warnings with 64 bits arch
+
+	* libbrasero-burn/burn-job.c (brasero_job_check_output_disc_space):
+	* libbrasero-media/brasero-units.c (brasero_units_get_time_string):
+	* plugins/cdrkit/burn-readom.c
+	(brasero_readom_argv_set_iso_boundary):
+	* plugins/cdrkit/burn-wodim.c (brasero_wodim_set_argv_record),
+	(brasero_wodim_set_argv_blank):
+	* plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_set_argv_record):
+	* plugins/cdrtools/burn-readcd.c
+	(brasero_readcd_argv_set_iso_boundary):
+
 2009-04-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added some more decent flags for nautilus extension

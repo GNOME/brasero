@@ -155,10 +155,10 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 		end = g_value_get_uint64 (value);
 
 		BRASERO_JOB_LOG (readcd,
-				 "reading from sector %lli to %lli",
+				 "reading from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
 				 start,
 				 end);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%lli-%lli",
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
 							start,
 							end));
 	}
@@ -180,11 +180,11 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 						  &start);
 
 		BRASERO_JOB_LOG (readcd,
-				 "reading %i from sector %lli to %lli",
+				 "reading %i from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
 				 brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
 				 start,
 				 start + nb_blocks);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%lli-%lli",
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
 							start,
 							start + nb_blocks));
 	}
@@ -203,16 +203,16 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 							    NULL,
 							    &start);
 		BRASERO_JOB_LOG (readcd,
-				 "reading last track from sector %lli to %lli",
+				 "reading last track from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
 				 start,
 				 start + nb_blocks);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%lli-%lli",
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
 							start,
 							start + nb_blocks));
 	}
 	else {
 		brasero_track_get_size (track, &nb_blocks, NULL);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%"G_GINT64_FORMAT, nb_blocks));
 	}
 
 	brasero_track_type_free (output);
