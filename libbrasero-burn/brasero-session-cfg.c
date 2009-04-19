@@ -93,6 +93,7 @@ static gchar *
 brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
 				   const gchar *property)
 {
+	BraseroTrackType *type;
 	BraseroMedium *medium;
 	BraseroDrive *drive;
 	gchar *display_name;
@@ -126,49 +127,40 @@ brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
 		return NULL;
 	}
 
-	switch (brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), NULL)) {
-	case BRASERO_TRACK_TYPE_NONE:
-		key = g_strdup_printf ("%s/%s/none_%s/%s",
-				       BRASERO_DRIVE_PROPERTIES_KEY,
-				       display_name,
-				       disc_type,
-				       property);
-		break;
-	case BRASERO_TRACK_TYPE_DISC:
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), type);
+	if (brasero_track_type_get_has_medium (type))
 		key = g_strdup_printf ("%s/%s/disc_%s/%s",
 				       BRASERO_DRIVE_PROPERTIES_KEY,
 				       display_name,
 				       disc_type,
 				       property);
-		break;
-
-	case BRASERO_TRACK_TYPE_DATA:
+	else if (brasero_track_type_get_has_data (type))
 		key = g_strdup_printf ("%s/%s/data_%s/%s",
 				       BRASERO_DRIVE_PROPERTIES_KEY,
 				       display_name,
 				       disc_type,
 				       property);
-		break;
-
-	case BRASERO_TRACK_TYPE_IMAGE:
+	else if (brasero_track_type_get_has_image (type))
 		key = g_strdup_printf ("%s/%s/image_%s/%s",
 				       BRASERO_DRIVE_PROPERTIES_KEY,
 				       display_name,
 				       disc_type,
 				       property);
-		break;
-
-	case BRASERO_TRACK_TYPE_STREAM:
+	else if (brasero_track_type_get_has_stream (type))
 		key = g_strdup_printf ("%s/%s/audio_%s/%s",
 				       BRASERO_DRIVE_PROPERTIES_KEY,
 				       display_name,
 				       disc_type,
 				       property);
-		break;
-	default:
-		break;
-	}
+	else
+		key = g_strdup_printf ("%s/%s/none_%s/%s",
+				       BRASERO_DRIVE_PROPERTIES_KEY,
+				       display_name,
+				       disc_type,
+				       property);
 
+	brasero_track_type_free (type);
 	g_free (display_name);
 	g_free (disc_type);
 	return key;
@@ -365,7 +357,7 @@ static void
 brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 {
 	BraseroSessionCfgPrivate *priv;
-	BraseroTrackDataType source;
+	BraseroTrackType *source;
 	BraseroBurnFlag flags;
 	BraseroMedium *medium;
 	BraseroDrive *drive;
@@ -378,7 +370,8 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	/* The next two must work as they were checked earlier */
-	source = brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), NULL);
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), source);
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 
 	medium = brasero_drive_get_medium (drive);
@@ -441,9 +434,9 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 		flags = BRASERO_BURN_FLAG_EJECT|
 			BRASERO_BURN_FLAG_BURNPROOF;
 
-		if (source == BRASERO_TRACK_TYPE_DATA
-		||  source == BRASERO_TRACK_TYPE_DISC
-		||  source == BRASERO_TRACK_TYPE_IMAGE)
+		if (brasero_track_type_get_has_data (source)
+		||  brasero_track_type_get_has_medium (source)
+		||  brasero_track_type_get_has_image (source))
 			flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 	}
 	else {

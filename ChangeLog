@@ -1,5 +1,23 @@
 2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Change one function return value
+
+	* libbrasero-burn/brasero-burn-options.c
+	(brasero_burn_options_update_valid):
+	* libbrasero-burn/brasero-burn.c (brasero_burn_record):
+	* libbrasero-burn/brasero-cover.c (brasero_session_edit_cover):
+	* libbrasero-burn/brasero-session-cfg.c
+	(brasero_session_cfg_get_gconf_key),
+	(brasero_session_cfg_set_drive_properties):
+	* libbrasero-burn/brasero-session.c
+	(brasero_burn_session_add_track),
+	(brasero_burn_session_get_input_type):
+	* libbrasero-burn/brasero-session.h:
+	* libbrasero-burn/brasero-track-type.c (brasero_track_type_free):
+	* libbrasero-burn/burn-job.c (brasero_job_get_input_type):
+
+2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Move all API that deals with size to goffset
 
 	* libbrasero-burn/brasero-session-cfg.c

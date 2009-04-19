@@ -48,6 +48,9 @@ brasero_track_type_new (void)
 void
 brasero_track_type_free (BraseroTrackType *type)
 {
+	if (!type)
+		return;
+
 	g_free (type);
 }
 

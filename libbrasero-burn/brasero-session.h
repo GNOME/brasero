@@ -95,7 +95,7 @@ brasero_burn_session_get_size (BraseroBurnSession *session,
 			       goffset *blocks,
 			       goffset *bytes);
 
-BraseroTrackDataType
+BraseroBurnResult
 brasero_burn_session_get_input_type (BraseroBurnSession *session,
 				     BraseroTrackType *type);
 
