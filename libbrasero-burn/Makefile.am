@@ -34,6 +34,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-tags.h						\
 	brasero-enums.h						\
 	brasero-error.h						\
+	brasero-status.h					\
 	brasero-burn-lib.h					\
 	brasero-track-type.h					\
 	brasero-track.h						\
@@ -43,8 +44,8 @@ libbraseroburninclude_HEADERS =					\
 	brasero-track-image.h					\
 	brasero-track-image-cfg.h				\
 	brasero-session.h                 			\
-	brasero-burn.h						\
 	brasero-session-cfg.h					\
+	brasero-burn.h						\
 	brasero-burn-options.h        			        \
 	brasero-burn-dialog.h					\
 	brasero-tool-dialog.h					\
