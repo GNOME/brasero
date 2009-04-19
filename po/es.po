@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-04-19 12:07+0000\n"
-"PO-Revision-Date: 2009-04-19 14:18+0200\n"
+"POT-Creation-Date: 2009-04-19 13:32+0000\n"
+"PO-Revision-Date: 2009-04-19 16:18+0200\n"
 "Last-Translator: Miguel Angel Ruiz Manzano <mruiz@openminds.cl>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,6 @@ msgid "The format of the disc image could not be identified"
 msgstr "No se pudo identificar el formato del disco imagen"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:387
-#| msgid "Please set it manually in the previous dialog"
 msgid "Please set it manually"
 msgstr "Establézcalo manualmente"
 
@@ -731,7 +730,6 @@ msgstr "El actual «backend» activo no lo soporta."
 
 #: ../libbrasero-burn/brasero-burn-options.c:350
 #: ../nautilus/nautilus-burn-extension.c:207
-#| msgid "Please add files to the project."
 msgid "Please add files."
 msgstr "Añada archivos."
 
@@ -746,12 +744,10 @@ msgid "The project is empty"
 msgstr "El proyecto está vacío"
 
 #: ../libbrasero-burn/brasero-burn-options.c:356
-#| msgid "Please add songs to the project."
 msgid "Please add songs."
 msgstr "Añada canciones."
 
 #: ../libbrasero-burn/brasero-burn-options.c:362
-#| msgid "Please Wait"
 msgid "Please add videos."
 msgstr "Añada vídeos."
 
@@ -1447,10 +1443,9 @@ msgid "\"%s\" did not behave properly"
 msgstr "«%s» no se comportó de forma correcta"
 
 #: ../libbrasero-burn/burn-job.c:420
-#, c-format
-msgid "Not enough space available on the disc (%lli available for %lli)"
-msgstr ""
-"No hay suficiente espacio disponible en el disco (%lli disponible para %lli)"
+#| msgid "Not enough space available on the disc"
+msgid "Not enough space available on the disc (%"
+msgstr "No hay suficiente espacio disponible en el disco (%"
 
 #: ../libbrasero-burn/burn-job.c:507
 #, c-format
@@ -1680,18 +1675,13 @@ msgstr "Mostrar las opciones para la biblioteca multimedia de Brasero"
 
 #. Translators: %lli is a duration expressed in minutes
 #. * hence the "min" as unit.
-#: ../libbrasero-media/brasero-units.c:89
-#, c-format
-msgid "%lli min"
-msgstr "%lli min"
-
 #. Translators: the first %lli is the number of minutes
 #. * and the second one is the number of seconds.
 #. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:89
 #: ../libbrasero-media/brasero-units.c:94
-#, c-format
-msgid "%lli:%02lli min"
-msgstr "%lli:%02lli min"
+msgid "%"
+msgstr "%"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-media/brasero-medium-selection.c:140
@@ -4874,6 +4864,17 @@ msgstr "Copie CD y DVD"
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Disc Copier"
 msgstr "Copiador de discos"
+
+#~ msgid "Not enough space available on the disc (%lli available for %lli)"
+#~ msgstr ""
+#~ "No hay suficiente espacio disponible en el disco (%lli disponible para %"
+#~ "lli)"
+
+#~ msgid "%lli min"
+#~ msgstr "%lli min"
+
+#~ msgid "%lli:%02lli min"
+#~ msgstr "%lli:%02lli min"
 
 #~ msgid "Drive"
 #~ msgstr "Unidad"
