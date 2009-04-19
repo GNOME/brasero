@@ -51,6 +51,8 @@
 #include "brasero-session-cfg.h"
 #include "brasero-dest-selection.h"
 #include "brasero-medium-properties.h"
+#include "brasero-status-dialog.h"
+#include "brasero-track-stream.h"
 
 #include "brasero-notify.h"
 #include "brasero-misc.h"
@@ -71,6 +73,9 @@ struct _BraseroBurnOptionsPrivate
 	GtkWidget *message_output;
 	GtkWidget *options;
 	GtkWidget *button;
+
+	guint not_ready_id;
+	GtkWidget *status_dialog;
 
 	guint is_valid:1;
 };
@@ -137,7 +142,7 @@ brasero_burn_options_add_options (BraseroBurnOptions *self,
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
-	gtk_container_add (GTK_CONTAINER (priv->options), options);
+	gtk_box_pack_start (GTK_BOX (priv->options), options, FALSE, TRUE, 0);
 	gtk_widget_show (priv->options);
 }
 
@@ -246,16 +251,37 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 				    BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
 }
 
+static gboolean
+brasero_burn_options_not_ready_dialog_cb (gpointer data)
+{
+	BraseroBurnOptionsPrivate *priv;
+	GtkWidget *status_dialog;
+	BraseroBurnResult result;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+	priv->not_ready_id = 0;
+
+	status_dialog = brasero_status_dialog_new ();
+	result = brasero_status_dialog_wait_for_session (BRASERO_STATUS_DIALOG (status_dialog),
+							 GTK_WIDGET (data),
+							 BRASERO_BURN_SESSION (priv->session));
+	gtk_widget_destroy (status_dialog);
+
+	if (result != BRASERO_BURN_OK)
+		gtk_dialog_response (GTK_DIALOG (data), GTK_RESPONSE_CANCEL);
+
+	return FALSE;
+}
+
 static void
-brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
-				     BraseroBurnOptions *self)
+brasero_burn_options_update_valid (BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
 	BraseroSessionError valid;
 
-	valid = brasero_session_cfg_get_error (session);
-
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+
+	valid = brasero_session_cfg_get_error (priv->session);
 	priv->is_valid = BRASERO_SESSION_IS_VALID (valid);
 
 	gtk_widget_set_sensitive (priv->button, priv->is_valid);
@@ -270,6 +296,26 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
+
+	if (valid == BRASERO_SESSION_NOT_READY) {
+		if (!priv->not_ready_id && !priv->status_dialog) {
+			gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+			priv->not_ready_id = g_timeout_add_seconds (1,
+								    brasero_burn_options_not_ready_dialog_cb,
+								    self);
+		}
+	}
+	else {
+		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+		if (priv->status_dialog)
+			gtk_dialog_response (GTK_DIALOG (priv->status_dialog),
+					     GTK_RESPONSE_CANCEL);
+
+		if (priv->not_ready_id) {
+			g_source_remove (priv->not_ready_id);
+			priv->not_ready_id = 0;
+		}
+	}
 
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
@@ -291,6 +337,34 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 					    _("This is not supported by the current active burning backend."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (valid == BRASERO_SESSION_EMPTY) {
+		BraseroTrackType *type;
+		BraseroBurnResult result;
+		
+		type = brasero_track_type_new ();
+		result = brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (priv->session), type);
+
+		if (brasero_track_type_get_has_data (type))
+			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+						    _("Please add files."),
+						    _("The project is empty"),
+						    -1,
+						    BRASERO_NOTIFY_CONTEXT_SIZE);
+		else if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type)))
+			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+						    _("Please add songs."),
+						    _("The project is empty"),
+						    -1,
+						    BRASERO_NOTIFY_CONTEXT_SIZE);
+		else
+			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+						     _("Please add videos."),
+						    _("The project is empty"),
+						    -1,
+						    BRASERO_NOTIFY_CONTEXT_SIZE);
+		brasero_track_type_free (type);
+		return;		      
 	}
 	else if (valid == BRASERO_SESSION_NO_INPUT_MEDIUM) {
 		GtkWidget *message;
@@ -368,7 +442,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 				  G_CALLBACK (brasero_burn_options_message_response_cb),
 				  self);
 	}
-	else if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (session))) {
+	else if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (priv->session))) {
 		/* The medium is valid but it's a special case */
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("The drive that holds the source disc will also be the one used to record."),
@@ -379,6 +453,13 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 
 	brasero_burn_options_update_no_medium_warning (self);
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);
+}
+
+static void
+brasero_burn_options_valid_cb (BraseroSessionCfg *session,
+			       BraseroBurnOptions *self)
+{
+	brasero_burn_options_update_valid (self);
 }
 
 static void
@@ -472,17 +553,23 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 			    0);
 
 	/* Create a lower box for options */
-	priv->options = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
+	alignment = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
+	gtk_widget_show (alignment);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    priv->options,
+			    alignment,
 			    FALSE,
 			    TRUE,
 			    0);
 
+	priv->options = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (alignment), priv->options);
+
 	priv->valid_sig = g_signal_connect (priv->session,
 					    "is-valid",
-					    G_CALLBACK (brasero_burn_options_valid_media_cb),
+					    G_CALLBACK (brasero_burn_options_valid_cb),
 					    object);
+
+	brasero_burn_options_update_valid (object);
 }
 
 static void
@@ -491,6 +578,11 @@ brasero_burn_options_finalize (GObject *object)
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+
+	if (priv->not_ready_id) {
+		g_source_remove (priv->not_ready_id);
+		priv->not_ready_id = 0;
+	}
 
 	if (priv->valid_sig) {
 		g_signal_handler_disconnect (priv->session,
@@ -528,9 +620,9 @@ brasero_burn_options_set_property (GObject *object,
 	case PROP_SESSION: /* Readable and only writable at creation time */
 		priv->session = BRASERO_SESSION_CFG (g_value_get_object (value));
 		g_object_ref (priv->session);
-		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
-
 		g_object_notify (object, "session");
+
+		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

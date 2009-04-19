@@ -781,7 +781,7 @@ void
 brasero_app_blank (BraseroApp *app,
 		   const gchar *device)
 {
-	GtkWidget *dialog;
+	BraseroBlankDialog *dialog;
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
@@ -802,9 +802,9 @@ brasero_app_blank (BraseroApp *app,
 		g_object_unref (drive);
 	}
 
-	priv->tool_dialog = dialog;
+	priv->tool_dialog = GTK_WIDGET (dialog);
 	if (!priv->mainwin) {
-		gtk_widget_realize (dialog);
+		gtk_widget_realize (GTK_WIDGET (dialog));
 
 		if (priv->parent) {
 			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -823,7 +823,7 @@ brasero_app_blank (BraseroApp *app,
 	}
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 	priv->tool_dialog = NULL;
 }
 
@@ -862,13 +862,13 @@ void
 brasero_app_check (BraseroApp *app,
 		   const gchar *device)
 {
-	GtkWidget *dialog;
+	BraseroSumDialog *dialog;
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
 
 	dialog = brasero_sum_dialog_new ();
-	priv->tool_dialog = dialog;
+	priv->tool_dialog = GTK_WIDGET (dialog);
 
 	if (device) {
 		BraseroDrive *drive;
@@ -886,7 +886,7 @@ brasero_app_check (BraseroApp *app,
 	}
 
 	if (!priv->mainwin) {
-		gtk_widget_realize (dialog);
+		gtk_widget_realize (GTK_WIDGET (dialog));
 
 		if (priv->parent) {
 			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -905,7 +905,7 @@ brasero_app_check (BraseroApp *app,
 	}
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 	priv->tool_dialog = NULL;
 }
 

@@ -78,6 +78,7 @@ enum {
 	NUM_COL
 };
 
+  
 static void
 brasero_drive_selection_buildable_init (GtkBuildableIface *iface)
 {

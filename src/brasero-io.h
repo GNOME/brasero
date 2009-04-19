@@ -183,13 +183,6 @@ brasero_io_parse_playlist (BraseroIO *self,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer callback_data);
-void
-brasero_io_xfer (BraseroIO *self,
-		 const gchar *uri,
-		 const gchar *dest_path,
-		 const BraseroIOJobBase *base,
-		 BraseroIOFlags options,
-		 gpointer callback_data);
 
 guint64
 brasero_io_job_progress_get_read (BraseroIOJobProgress *progress);

@@ -302,6 +302,26 @@ brasero_track_data_get_track_type (BraseroTrack *track,
 	return BRASERO_TRACK_TYPE_DATA;
 }
 
+static BraseroBurnResult
+brasero_track_data_get_status (BraseroTrack *track,
+			       BraseroStatus *status)
+{
+	BraseroTrackDataPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+
+	if (!priv->grafts) {
+		if (status)
+			brasero_status_set_error (status,
+						  g_error_new (BRASERO_BURN_ERROR,
+							       BRASERO_BURN_ERROR_EMPTY,
+							       _("The project is empty")));
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
 static void
 brasero_track_data_init (BraseroTrackData *object)
 { }
@@ -309,7 +329,6 @@ brasero_track_data_init (BraseroTrackData *object)
 static void
 brasero_track_data_finalize (GObject *object)
 {
-
 	G_OBJECT_CLASS (brasero_track_data_parent_class)->finalize (object);
 }
 
@@ -324,6 +343,7 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
 	object_class->finalize = brasero_track_data_finalize;
 
 	track_class->get_type = brasero_track_data_get_track_type;
+	track_class->get_status = brasero_track_data_get_status;
 	track_class->get_size = brasero_track_data_get_size;
 }
 

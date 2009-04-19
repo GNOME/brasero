@@ -68,10 +68,6 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 				    const gchar *uri);
 
 BraseroBurnResult
-brasero_track_image_cfg_get_status (BraseroTrackImageCfg *track,
-				    GError **error);
-
-BraseroBurnResult
 brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 				      BraseroImageFormat format);
 

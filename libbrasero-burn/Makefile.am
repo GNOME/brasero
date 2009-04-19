@@ -1,5 +1,3 @@
-SUBDIRS = plugins
-
 INCLUDES = \
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
@@ -48,7 +46,10 @@ libbraseroburninclude_HEADERS =					\
 	brasero-burn.h						\
 	brasero-session-cfg.h					\
 	brasero-burn-options.h        			        \
-	brasero-burn-dialog.h
+	brasero-burn-dialog.h					\
+	brasero-tool-dialog.h					\
+	brasero-sum-dialog.h					\
+	brasero-blank-dialog.h
 
 libbrasero_burn_la_LIBADD =					\
 	../libbrasero-media/libbrasero-media.la			\
@@ -63,14 +64,23 @@ libbrasero_burn_la_LIBADD =					\
 libbrasero_burn_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined						\
+	-export-dynamic						\
 	$(AM_LDFLAGS)
 #	-export-symbols ./libbrasero-burn.symbols
 
 libbrasero_burn_la_SOURCES = 		\
 	libbrasero-marshal.c		\
 	libbrasero-marshal.h		\
+	brasero-tool-dialog.c         \
+	brasero-tool-dialog.h         \
+	brasero-sum-dialog.c         \
+	brasero-sum-dialog.h         \
+	brasero-blank-dialog.c         \
+	brasero-blank-dialog.h         \
 	brasero-burn.c			\
 	brasero-burn.h			\
+	brasero-xfer.c			\
+	brasero-xfer.h			\
 	burn-basics.h                 \
 	burn-caps.h                 \
 	burn-dbus.h                 \
@@ -156,7 +166,11 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-plugin-registration.h                 \
 	brasero-track-type.c                 \
 	brasero-track-type.h                 \
-	brasero-track-type-private.h
+	brasero-track-type-private.h                 \
+	brasero-status.c                 \
+	brasero-status.h                 \
+	brasero-status-dialog.c                 \
+	brasero-status-dialog.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

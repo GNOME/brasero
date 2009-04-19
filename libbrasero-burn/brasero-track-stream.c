@@ -34,6 +34,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gi18n-lib.h>
 
 #include "burn-debug.h"
 #include "burn-basics.h"
@@ -219,6 +220,26 @@ brasero_track_stream_get_size (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
+static BraseroBurnResult
+brasero_track_stream_get_status (BraseroTrack *track,
+				 BraseroStatus *status)
+{
+	BraseroTrackStreamPrivate *priv;
+
+	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	if (!priv->uri) {
+		if (status)
+			brasero_status_set_error (status,
+						  g_error_new (BRASERO_BURN_ERROR,
+							       BRASERO_BURN_ERROR_EMPTY,
+							       _("The project is empty")));
+
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
 static BraseroTrackDataType
 brasero_track_stream_get_track_type (BraseroTrack *track,
 				     BraseroTrackType *type)
@@ -265,6 +286,7 @@ brasero_track_stream_class_init (BraseroTrackStreamClass *klass)
 	object_class->finalize = brasero_track_stream_finalize;
 
 	track_class->get_size = brasero_track_stream_get_size;
+	track_class->get_status = brasero_track_stream_get_status;
 	track_class->get_type = brasero_track_stream_get_track_type;
 }
 

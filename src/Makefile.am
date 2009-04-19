@@ -51,8 +51,6 @@ brasero_SOURCES = \
 	brasero-playlist.h         \
 	brasero-player.c         \
 	brasero-player.h         \
-	brasero-blank-dialog.c         \
-	brasero-blank-dialog.h         \
 	brasero-eject-dialog.c		\
 	brasero-eject-dialog.h		\
 	brasero-metadata.c         \
@@ -77,10 +75,6 @@ brasero_SOURCES = \
 	brasero-layout.h         \
 	brasero-file-chooser.c         \
 	brasero-file-chooser.h         \
-	brasero-sum-dialog.c         \
-	brasero-sum-dialog.h         \
-	brasero-tool-dialog.c         \
-	brasero-tool-dialog.h         \
 	brasero-async-task-manager.c         \
 	brasero-async-task-manager.h         \
 	eggtreemultidnd.c         \
@@ -89,8 +83,6 @@ brasero_SOURCES = \
 	brasero-multi-dnd.h         \
 	brasero-layout-object.c         \
 	brasero-layout-object.h         \
-	brasero-xfer.c         \
-	brasero-xfer.h         \
 	brasero-plugin-manager-ui.c         \
 	brasero-plugin-manager-ui.h         \
 	brasero-pref.h         \

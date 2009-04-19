@@ -106,6 +106,30 @@ brasero_track_get_size (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
+BraseroBurnResult
+brasero_track_get_status (BraseroTrack *track,
+			  BraseroStatus *status)
+{
+	BraseroTrackClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_TRACK_TYPE_NONE);
+
+	klass = BRASERO_TRACK_GET_CLASS (track);
+
+	/* If this is not implement we consider that it means it is not needed
+	 * and that the track doesn't perform on the side (threaded?) checks or
+	 * information retrieval and that it's therefore always OK:
+	 * - for example BraseroTrackDisc. */
+	if (!klass->get_status) {
+		if (status)
+			brasero_status_set_completed (status);
+
+		return BRASERO_BURN_OK;
+	}
+
+	return klass->get_status (track, status);
+}
+
 /**
  *
  */

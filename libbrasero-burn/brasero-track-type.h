@@ -33,6 +33,8 @@
 
 #include <glib.h>
 
+#include <brasero-enums.h>
+
 G_BEGIN_DECLS
 
 /* NOTE: the order has a meaning here and is used for sorting */
@@ -97,9 +99,6 @@ brasero_track_type_set_data_fs (BraseroTrackType *type,
 gboolean
 brasero_track_type_equal (const BraseroTrackType *type_A,
 			  const BraseroTrackType *type_B);
-
-BraseroBurnResult
-brasero_track_type_supported (BraseroTrackType *type);
 
 G_END_DECLS
 

@@ -288,6 +288,108 @@ brasero_burn_session_get_tracks (BraseroBurnSession *self)
 	return priv->tracks;
 }
 
+BraseroBurnResult
+brasero_burn_session_get_status (BraseroBurnSession *session,
+				 BraseroStatus *status)
+{
+	BraseroBurnSessionPrivate *priv;
+	BraseroStatus *track_status;
+	gdouble num_tracks = 0.0;
+	gdouble done = -1.0;
+	guint not_ready = 0;
+	GSList *iter;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_TRACK_TYPE_NONE);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	if (!priv->tracks)
+		return BRASERO_BURN_ERR;
+
+	track_status = brasero_status_new ();
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroTrack *track;
+		BraseroBurnResult result;
+
+		track = iter->data;
+		result = brasero_track_get_status (track, track_status);
+		num_tracks ++;
+
+		if (result == BRASERO_BURN_NOT_READY)
+			not_ready ++;
+		else if (result != BRASERO_BURN_OK) {
+			brasero_status_free (track_status);
+			return brasero_track_get_status (track, status);
+		}
+
+		if (brasero_status_get_progress (track_status) != -1.0)
+			done += brasero_status_get_progress (track_status);
+	}
+	brasero_status_free (track_status);
+
+	if (not_ready > 0) {
+		if (status) {
+			if (done != -1.0)
+				brasero_status_set_not_ready (status,
+							      (gdouble) ((gdouble) (done) / (gdouble) (num_tracks)),
+							      NULL);
+			else
+				brasero_status_set_not_ready (status, -1.0, NULL);
+		}
+		return BRASERO_BURN_NOT_READY;
+	}
+
+	if (status)
+		brasero_status_set_completed (status);
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_session_get_size (BraseroBurnSession *session,
+			       gsize *blocks,
+			       gsize *bytes)
+{
+	BraseroBurnSessionPrivate *priv;
+	gsize session_blocks = 0;
+	gsize session_bytes = 0;
+	GSList *iter;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_TRACK_TYPE_NONE);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	if (!priv->tracks)
+		return BRASERO_BURN_ERR;
+
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroBurnResult res;
+		BraseroTrack *track;
+		gsize track_blocks;
+		gsize track_bytes;
+
+		track = iter->data;
+		track_blocks = 0;
+		track_bytes = 0;
+
+		res = brasero_track_get_size (track, &track_blocks, &track_bytes);
+
+		/* That way we get the size even if the track has not completed
+		 * what's it's doing which allows to show progress */
+		if (res != BRASERO_BURN_OK && res != BRASERO_BURN_NOT_READY)
+			continue;
+
+		session_blocks += track_blocks;
+		session_bytes += track_bytes;
+	}
+
+	if (blocks)
+		*blocks = session_blocks;
+	if (bytes)
+		*bytes = session_bytes;
+
+	return BRASERO_BURN_OK;
+}
+
+/* FIXME: change this return type */
 BraseroTrackDataType
 brasero_burn_session_get_input_type (BraseroBurnSession *self,
 				     BraseroTrackType *type)
@@ -1215,7 +1317,7 @@ brasero_burn_session_get_src_drive (BraseroBurnSession *self)
 		return NULL;
 
 	track = priv->tracks->data;
-	if (!BRASERO_TRACK_DISC (track))
+	if (!BRASERO_IS_TRACK_DISC (track))
 		return NULL;
 
 	return brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
@@ -1244,7 +1346,7 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 		return FALSE;
 
 	track = priv->tracks->data;
-	if (!BRASERO_TRACK_DISC (track))
+	if (!BRASERO_IS_TRACK_DISC (track))
 		return FALSE;
 
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));

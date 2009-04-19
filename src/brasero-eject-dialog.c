@@ -36,6 +36,7 @@
 
 #include "brasero-eject-dialog.h"
 #include "brasero-tool-dialog.h"
+#include "brasero-tool-dialog-private.h"
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 #include "brasero-volume.h"
@@ -46,8 +47,8 @@
 G_DEFINE_TYPE (BraseroEjectDialog, brasero_eject_dialog, BRASERO_TYPE_TOOL_DIALOG);
 
 static void
-brasero_eject_dialog_drive_changed (BraseroToolDialog *dialog,
-				    BraseroMedium *medium)
+brasero_eject_dialog_medium_changed (BraseroToolDialog *dialog,
+				     BraseroMedium *medium)
 {
 	if (medium)
 		brasero_tool_dialog_set_valid (dialog, BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));
@@ -124,7 +125,7 @@ brasero_eject_dialog_class_init (BraseroEjectDialogClass *klass)
 	tool_dialog_class->activate = brasero_eject_dialog_activate;
 	tool_dialog_class->cancel = brasero_eject_dialog_cancel;
 
-	tool_dialog_class->drive_changed = brasero_eject_dialog_drive_changed;
+	tool_dialog_class->medium_changed = brasero_eject_dialog_medium_changed;
 }
 
 static void

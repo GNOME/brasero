@@ -2294,7 +2294,7 @@ brasero_burn_check (BraseroBurn *self,
 	track = tracks->data;
 
 	/* if the input is a DISC, ask/check there is one and lock it (as dest) */
-	if (BRASERO_TRACK_IMAGE (track)) {
+	if (BRASERO_IS_TRACK_IMAGE (track)) {
 		/* make sure there is a disc. If not, ask one and lock it */
 		result = brasero_burn_lock_checksum_media (self, error);
 		if (result != BRASERO_BURN_OK)
@@ -2541,6 +2541,10 @@ brasero_burn_record (BraseroBurn *burn,
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_PRIVATE (burn);
+
+	/* make sure we're ready */
+	if (brasero_burn_session_get_status (session, NULL) != BRASERO_BURN_OK)
+		return BRASERO_BURN_ERR;
 
 	g_object_ref (session);
 	priv->session = session;

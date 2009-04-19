@@ -97,7 +97,7 @@ brasero_drive_probing (BraseroDrive *drive);
  *
  * Returns the #BraseroDrive object whose path is @path.
  *
- * Return value: a #BraseroDrive or NULL
+ * Return value: a #BraseroDrive or NULL. It should be unreffed when no longer in use.
  **/
 BraseroDrive *
 brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,

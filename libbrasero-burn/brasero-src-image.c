@@ -176,6 +176,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 	gchar *string;
 	guint64 size = 0;
 	GError *error = NULL;
+	BraseroStatus *status;
 	BraseroBurnResult result;
 	BraseroImageFormat format;
 	gchar *size_string = NULL;
@@ -225,7 +226,10 @@ brasero_src_image_update (BraseroSrcImage *self)
 		return;
 
 	/* See if information retrieval went fine and/or is ready */
-	result = brasero_track_image_cfg_get_status (priv->track, &error);
+	status = brasero_status_new ();
+	result = brasero_track_get_status (BRASERO_TRACK (priv->track), status);
+	brasero_status_free (status);
+
 	if (result == BRASERO_BURN_NOT_READY) {
 		/* Translators: %s is a path */
 		string = g_strdup_printf (_("\"%s\": loading"), path);

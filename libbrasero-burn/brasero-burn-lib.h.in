@@ -33,7 +33,9 @@
 
 #include <glib.h>
 
+#include <brasero-enums.h>
 #include <brasero-error.h>
+#include <brasero-track-type.h>
 
 G_BEGIN_DECLS
 
@@ -77,6 +79,9 @@ brasero_burn_library_get_plugins_list (void);
 
 gboolean
 brasero_burn_library_can_checksum (void);
+
+BraseroBurnResult
+brasero_burn_library_input_supported (BraseroTrackType *type);
 
 BraseroMedia
 brasero_burn_library_get_media_capabilities (BraseroMedia media);

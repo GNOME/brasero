@@ -46,12 +46,10 @@ G_BEGIN_DECLS
 	((end_MACRO) - (start_MACRO) > BRASERO_MIN_STREAM_LENGTH) ?			\
 	((end_MACRO) - (start_MACRO)) : BRASERO_MIN_STREAM_LENGTH
 
-#define BRASERO_STREAM_TRACK_HAS_VIDEO(type_MACRO)				\
-	(((type_MACRO)->type == BRASERO_TRACK_TYPE_STREAM) &&			\
-	 ((type_MACRO)->subtype.stream_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|	\
-						 BRASERO_VIDEO_FORMAT_VCD|	\
-						 BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
-
+#define BRASERO_STREAM_FORMAT_HAS_VIDEO(type_MACRO)				\
+	 ((type_MACRO) & (BRASERO_VIDEO_FORMAT_UNDEFINED|			\
+	 		  BRASERO_VIDEO_FORMAT_VCD|				\
+	 		  BRASERO_VIDEO_FORMAT_VIDEO_DVD))
 
 #define BRASERO_TYPE_TRACK_STREAM             (brasero_track_stream_get_type ())
 #define BRASERO_TRACK_STREAM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStream))

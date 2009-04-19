@@ -50,6 +50,7 @@
 #include "brasero-tags.h"
 #include "brasero-track-image.h"
 #include "brasero-session-cfg.h"
+#include "brasero-burn-lib.h"
 
 typedef struct _BraseroSessionCfgPrivate BraseroSessionCfgPrivate;
 struct _BraseroSessionCfgPrivate
@@ -611,12 +612,47 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	BraseroTrackType *source = NULL;
 	BraseroSessionCfgPrivate *priv;
 	BraseroBurnResult result;
+	BraseroStatus *status;
 	BraseroDrive *burner;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	if (priv->configuring)
 		return;
+
+	/* Make sure the session is ready */
+	status = brasero_status_new ();
+	result = brasero_burn_session_get_status (BRASERO_BURN_SESSION (self), status);
+	if (result == BRASERO_BURN_NOT_READY) {
+		brasero_status_free (status);
+
+		priv->is_valid = BRASERO_SESSION_NOT_READY;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0);
+		return;
+
+	}
+	else if (result == BRASERO_BURN_ERR) {
+		GError *error;
+
+		error = brasero_status_get_error (status);
+		if (error) {
+			if (error->code == BRASERO_BURN_ERROR_EMPTY) {
+				brasero_status_free (status);
+				g_error_free (error);
+
+				priv->is_valid = BRASERO_SESSION_EMPTY;
+				g_signal_emit (self,
+					       session_cfg_signals [IS_VALID_SIGNAL],
+					       0);
+				return;
+			}
+
+			g_error_free (error);
+		}
+	}
+	brasero_status_free (status);
 
 	/* Make sure there is a source */
 	source = brasero_track_type_new ();
@@ -751,7 +787,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	if (result != BRASERO_BURN_OK) {
 		if (brasero_track_type_get_has_medium (source)
 		&& (brasero_track_type_get_medium_type (source) & BRASERO_MEDIUM_PROTECTED)
-		&&  brasero_track_type_supported (source) != BRASERO_BURN_OK) {
+		&&  brasero_burn_library_input_supported (source) != BRASERO_BURN_OK) {
 			/* This is a special case to display a helpful message */
 			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
 			g_signal_emit (self,

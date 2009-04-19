@@ -36,9 +36,8 @@
 
 #include "brasero-medium.h"
 #include "brasero-drive.h"
-
-#include "burn-caps.h"
-
+#include "brasero-track-type.h"
+#include "brasero-track-type-private.h"
 
 BraseroTrackType *
 brasero_track_type_new (void)
@@ -292,32 +291,3 @@ brasero_track_type_match (const BraseroTrackType *type_A,
 	return TRUE;
 }
 
-/**
- * This is to determine whether or not a track type is supported
- */
-
-BraseroBurnResult
-brasero_track_type_supported (BraseroTrackType *type)
-{
-	GSList *iter;
-	BraseroBurnCaps *self;
-
-	g_return_val_if_fail (type != NULL, BRASERO_BURN_ERR);
-
-	self = brasero_burn_caps_get_default ();
-
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *caps;
-
-		caps = iter->data;
-
-		if (brasero_caps_is_compatible_type (caps, type)
-		&&  brasero_burn_caps_is_input (self, caps)) {
-			g_object_unref (self);
-			return BRASERO_BURN_OK;
-		}
-	}
-
-	g_object_unref (self);
-	return BRASERO_BURN_ERR;
-}

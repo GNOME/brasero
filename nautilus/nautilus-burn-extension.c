@@ -1,9 +1,9 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*-
- *
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/*
  * Copyright (C) 2003 Novell, Inc.
  * Copyright (C) 2003-2004 Red Hat, Inc.
  * Copyright (C) 2005 William Jon McCann <mccann@jhu.edu>
- * Copyright (C) 2008 Philippe Rouquier <bonfire-app@wanadoo.fr> (modified to work with brasero)
+ * Copyright (C) 2008-2009 Philippe Rouquier <bonfire-app@wanadoo.fr> (modified to work with brasero)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -36,7 +36,27 @@
 #include "brasero-medium-monitor.h"
 #include "brasero-drive.h"
 #include "brasero-medium.h"
+
+#include "brasero-burn-lib.h"
+#include "brasero-track.h"
+#include "brasero-track-data.h"
+#include "brasero-track-image-cfg.h"
+#include "brasero-track-disc.h"
+#include "brasero-session.h"
+#include "brasero-session-cfg.h"
+
+#include "brasero-tool-dialog.h"
+#include "brasero-blank-dialog.h"
+#include "brasero-sum-dialog.h"
+
+#include "brasero-burn-options.h"
+#include "brasero-burn-dialog.h"
+
 #include "nautilus-burn-bar.h"
+
+#include "brasero-project-name.h"
+
+#include "brasero-misc.h"
 
 #define BURN_URI "burn:///"
 
@@ -78,166 +98,273 @@ static GObjectClass *parent_class;
 //#define DEBUG_PRINT(format_MACRO,...)           g_print (format_MACRO, ##__VA_ARGS__);
 #define DEBUG_PRINT(format_MACRO,...)             
 
+
 static void
-launch_process (GPtrArray *argv, GtkWindow *parent)
+launch_brasero_on_window_session (BraseroSessionCfg	*session,
+				  GtkWidget		*options,
+				  GtkWindow		*window)
 {
-        GtkWidget *dialog;
-        GError *error;
-        gchar **args;
+	GtkWidget		*dialog;
+	GtkResponseType		 result;
 
-        if (parent && GTK_WIDGET (parent)->window) {
-                guint xid;
+	/* run option dialog */
+	dialog = brasero_burn_options_new (session);
+	if (window) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), window);
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	}
 
-		xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
-                if (xid > 0) {
-                        g_ptr_array_add (argv, g_strdup ("-x"));
-                        g_ptr_array_add (argv, g_strdup_printf ("%d", xid));
-                }
-        }
+	if (options)
+		brasero_burn_options_add_options (BRASERO_BURN_OPTIONS (dialog), options);
 
-        error = NULL;
-        g_ptr_array_add (argv, NULL);
-        args = (gchar **) g_ptr_array_free (argv, FALSE);
-        if (!g_spawn_async (NULL,
-                            args, NULL,
-                            0,
-                            NULL, NULL,
-                            NULL,
-                            &error)) {
+	gtk_widget_show (GTK_WIDGET (dialog));
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
 
-                dialog = gtk_message_dialog_new (parent,
-                                                 GTK_DIALOG_MODAL,
-                                                 GTK_MESSAGE_WARNING,
-                                                 GTK_BUTTONS_OK,
-                                                 _("Unable to launch the cd burner application"));
+	if (result != GTK_RESPONSE_OK)
+		return;
 
-                gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                          "%s",
-                                                          error->message);
+	/* now run burn dialog */
+	dialog = brasero_burn_dialog_new ();
+	if (window) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), window);
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	}
 
-                gtk_dialog_run (GTK_DIALOG (dialog));
-                gtk_widget_destroy (dialog);
+	brasero_session_cfg_disable (session);
 
+	gtk_widget_show (dialog);
+	gtk_window_present (GTK_WINDOW (dialog));
+	brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
+				 BRASERO_BURN_SESSION (session));
 
-                g_error_free (error);
-        }
-
-        g_strfreev (args);
+	gtk_widget_destroy (dialog);
 }
 
 static void
-launch_brasero_on_window (GtkWindow *window)
+launch_brasero_on_window_track (BraseroTrack	*track,
+				GtkWidget	*options,
+				GtkWindow	*window)
 {
-        GPtrArray        *argv = NULL;
+	BraseroSessionCfg *session;
 
-        argv = g_ptr_array_new ();
-        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
-        g_ptr_array_add (argv, g_strdup ("-n"));
+	/* create a session and add track */
+	session = brasero_session_cfg_new ();
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+					BRASERO_TRACK (track));
 
-        launch_process (argv, window);
+	launch_brasero_on_window_session (session, options, window);
+	g_object_unref (session);
+}
+
+static gboolean
+nautilus_disc_burn_is_empty (GtkWindow *toplevel)
+{
+	GFileEnumerator *enumerator;
+	GFileInfo *info = NULL;
+	GError *error = NULL;
+	GFile *file;
+
+	file = g_file_new_for_uri (BURN_URI);
+	enumerator = g_file_enumerate_children (file,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
+						G_FILE_QUERY_INFO_NONE,
+						NULL,
+						&error);
+	if (!enumerator) {
+		gchar *string;
+
+		DEBUG_PRINT ("Could not open burn uri %s: %s\n",
+                             uri,
+                             error->message);
+
+		if (!toplevel) {
+			g_error_free (error);
+			return TRUE;
+		}
+
+		string = g_strdup_printf ("%s.", _("An internal error occured"));
+		brasero_utils_message_dialog (GTK_WIDGET (toplevel),
+					      string,
+					      error ? error->message:NULL,
+					      GTK_MESSAGE_ERROR);
+		g_free (string);
+
+		g_object_unref (file);
+		g_error_free (error);
+		return TRUE;
+	}
+
+	info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+	g_object_unref (enumerator);
+	g_object_unref (file);
+
+	if (!info) {
+		if (!toplevel)
+			return TRUE;
+
+		brasero_utils_message_dialog (GTK_WIDGET (toplevel),
+					      _("Please add files."),
+					      _("The project is empty"),
+					      GTK_MESSAGE_ERROR);
+		return TRUE;
+	}
+
+	g_object_unref (info);
+	return FALSE;
+}
+
+static void
+write_activate (GtkWindow *toplevel)
+{
+	BraseroTrackData	*track;
+	BraseroGraftPt		*graft;
+	GtkWidget 		*name_options;
+	GtkWidget		*options;
+	gchar			*string;
+
+	if (nautilus_disc_burn_is_empty (toplevel))
+		return;
+
+	track = brasero_track_data_new ();
+
+	graft = g_new0 (BraseroGraftPt, 1);
+	graft->uri = g_strdup (BURN_URI);
+	brasero_track_data_set_source (track,
+				       g_slist_prepend (NULL, graft),
+				       NULL);
+
+	/* This should make a decent disc */
+	brasero_track_data_add_fs (track,
+				   BRASERO_IMAGE_FS_ISO|
+				   BRASERO_IMAGE_ISO_FS_LEVEL_3|
+				   BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY);
+
+	/* add name widget here to set the label of the volume */
+	name_options = brasero_project_name_new ();
+	brasero_project_name_set_type (BRASERO_PROJECT_NAME (name_options),
+				       BRASERO_PROJECT_TYPE_DATA);
+
+	string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
+	options = brasero_utils_pack_properties (string,
+						 name_options,
+						 NULL);
+	g_free (string);
+	gtk_widget_show_all (options);
+
+	/* NOTE: set the disc we're handling */
+	launch_brasero_on_window_track (BRASERO_TRACK (track),
+					options,
+					toplevel);
+
+	/* cleanup */
+	g_object_unref (track);
 }
 
 static void
 write_activate_cb (NautilusMenuItem *item,
                    gpointer          user_data)
 {
-        launch_brasero_on_window (GTK_WINDOW (user_data));
+	write_activate (GTK_WINDOW (user_data));
 }
 
 static void
 write_iso_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
-        NautilusFileInfo *file_info;
-        GPtrArray        *argv = NULL;
-        char             *uri;
-        char             *image_path;
+	BraseroTrackImageCfg	*track;
+        NautilusFileInfo	*file_info;
+        char			*uri;
 
         file_info = g_object_get_data (G_OBJECT (item), "file_info");
-
         uri = nautilus_file_info_get_uri (file_info);
-        image_path = g_filename_from_uri (uri, NULL, NULL);
 
-        if (image_path == NULL) {
-                g_warning ("Can not get local path for URI %s", uri);
-                g_free (uri);
-                return;
-        }
+	track = brasero_track_image_cfg_new ();
+	brasero_track_image_cfg_set_source (track, uri);
 
-        g_free (uri);
-
-        argv = g_ptr_array_new ();
-        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
-        g_ptr_array_add (argv, g_strdup ("-i"));
-        g_ptr_array_add (argv, image_path);
-
-        launch_process (argv, GTK_WINDOW (user_data));
+	launch_brasero_on_window_track (BRASERO_TRACK (track), NULL, GTK_WINDOW (user_data));
+	g_object_unref (track);
 }
 
 static void
 copy_disc_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
-        GPtrArray        *argv = NULL;
-        char             *device_path;
+        char            	*device_path;
+	BraseroMediumMonitor	*monitor;
+	BraseroTrackDisc	*track;
+	BraseroDrive		*drive;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
+	monitor = brasero_medium_monitor_get_default ();
+	drive = brasero_medium_monitor_get_drive (monitor, device_path);
+	g_object_unref (monitor);
 
-        if (!device_path) {
-                g_warning ("Drive device path not specified");
-                return;
-        }
+	track = brasero_track_disc_new ();
+	brasero_track_disc_set_drive (track, drive);
+	g_object_unref (drive);
 
-        argv = g_ptr_array_new ();
-        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
-        g_ptr_array_add (argv, g_strdup ("-c"));
-        g_ptr_array_add (argv, g_strdup (device_path));
+	launch_brasero_on_window_track (BRASERO_TRACK (track), NULL, GTK_WINDOW (user_data));
+	g_object_unref (track);
+}
 
-        launch_process (argv, GTK_WINDOW (user_data));
+static void
+tool_dialog_run (BraseroToolDialog	*dialog,
+		 GtkWindow		*toplevel,
+		 NautilusMenuItem	*item)
+{
+	char			*device_path;
+	BraseroDrive		*drive;
+	BraseroMediumMonitor	*monitor;
+
+	if (toplevel) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), toplevel);
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	}
+
+	device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
+	if (!device_path) {
+		g_warning ("Drive device path not specified");
+		return;
+	}
+
+	monitor = brasero_medium_monitor_get_default ();
+	drive = brasero_medium_monitor_get_drive (monitor, device_path);
+	g_object_unref (monitor);
+
+	if (drive) {
+		brasero_tool_dialog_set_medium (BRASERO_TOOL_DIALOG (dialog),
+						brasero_drive_get_medium (drive));
+		g_object_unref (drive);
+	}
+
+	gtk_widget_show (GTK_WIDGET (dialog));
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
 blank_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
-        GPtrArray        *argv = NULL;
-        char             *device_path;
+	BraseroBlankDialog *dialog;
 
-        device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
-
-        if (!device_path) {
-                g_warning ("Drive device path not specified");
-                return;
-        }
-
-        argv = g_ptr_array_new ();
-        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
-        g_ptr_array_add (argv, g_strdup ("-b"));
-        g_ptr_array_add (argv, g_strdup (device_path));
-
-        launch_process (argv, GTK_WINDOW (user_data));
+	dialog = brasero_blank_dialog_new ();
+	tool_dialog_run (BRASERO_TOOL_DIALOG (dialog),
+			 GTK_WINDOW (user_data),
+			 item);
 }
 
 static void
 check_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
-        GPtrArray        *argv = NULL;
-        char             *device_path;
+	BraseroSumDialog *dialog;
 
-        device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
-
-        if (!device_path) {
-                g_warning ("Drive device path not specified");
-                return;
-        }
-
-        argv = g_ptr_array_new ();
-        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
-        g_ptr_array_add (argv, g_strdup ("-k"));
-        g_ptr_array_add (argv, g_strdup (device_path));
-
-        launch_process (argv, GTK_WINDOW (user_data));
+	dialog = brasero_sum_dialog_new ();
+	tool_dialog_run (BRASERO_TOOL_DIALOG (dialog),
+			 GTK_WINDOW (user_data),
+			 item);
 }
 
 static gboolean
@@ -414,45 +541,69 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
             && volume != NULL
             && drive_is_cd_device (drive)
             && ! volume_is_blank (volume)) {
-                char *device_path;
+                char			*device_path;
+		BraseroMediumMonitor	*monitor;
+		BraseroDrive		*bdrive;
+		BraseroMedium		*medium;
+		BraseroMedia		 media;
+		BraseroTrackType	*type;
 
                 device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		monitor = brasero_medium_monitor_get_default ();
+		bdrive = brasero_medium_monitor_get_drive (monitor, device_path);
+		g_object_unref (monitor);
 
-                /* user may want to copy it ... */
-                item = nautilus_menu_item_new ("NautilusDiscBurn::copy_disc",
-                                               _("_Copy Disc..."),
-                                               _("Create a copy of this CD or DVD disc"),
-                                               "media-optical-copy");
-                g_object_set_data (G_OBJECT (item), "file_info", file_info);
-                g_object_set_data (G_OBJECT (item), "window", window);
-                g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
-                g_signal_connect (item, "activate",
-                                  G_CALLBACK (copy_disc_activate_cb), window);
-                items = g_list_append (items, item);
+		medium = brasero_drive_get_medium (bdrive);
+		media = brasero_medium_get_status (medium);
+		g_object_unref (bdrive);
 
-                /* ... or if it's a rewritable medium to blank it ... */
-                item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
-                                               _("_Blank Disc..."),
-                                               _("Blank this CD or DVD disc"),
-                                               "media-optical-blank");
-                g_object_set_data (G_OBJECT (item), "file_info", file_info);
-                g_object_set_data (G_OBJECT (item), "window", window);
-                g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
-                g_signal_connect (item, "activate",
-                                  G_CALLBACK (blank_disc_activate_cb), window);
-                items = g_list_append (items, item);
+		type = brasero_track_type_new ();
+		brasero_track_type_set_has_medium (type);
+		brasero_track_type_set_medium_type (type, media);
+		if (brasero_burn_library_input_supported (type) == BRASERO_BURN_OK) {
+			/* user may want to copy it ... */
+			item = nautilus_menu_item_new ("NautilusDiscBurn::copy_disc",
+						       _("_Copy Disc..."),
+						       _("Create a copy of this CD or DVD disc"),
+						       "media-optical-copy");
+			g_object_set_data (G_OBJECT (item), "file_info", file_info);
+			g_object_set_data (G_OBJECT (item), "window", window);
+			g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+			g_signal_connect (item, "activate", G_CALLBACK (copy_disc_activate_cb), window);
+			items = g_list_append (items, item);
+		}
+		brasero_track_type_free (type);
 
-                /* ... or verify medium. */
-                item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
-                                               _("_Check Disc..."),
-                                               _("Check the data integrity on this CD or DVD disc"),
-                                               NULL);
-                g_object_set_data (G_OBJECT (item), "file_info", file_info);
-                g_object_set_data (G_OBJECT (item), "window", window);
-                g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
-                g_signal_connect (item, "activate",
-                                  G_CALLBACK (check_disc_activate_cb), window);
-                items = g_list_append (items, item);
+		if (brasero_burn_library_get_media_capabilities (media) & BRASERO_MEDIUM_REWRITABLE) {
+			/* ... or if it's a rewritable medium to blank it ... */
+			item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
+						       _("_Blank Disc..."),
+						       _("Blank this CD or DVD disc"),
+						       "media-optical-blank");
+			g_object_set_data (G_OBJECT (item), "file_info", file_info);
+			g_object_set_data (G_OBJECT (item), "window", window);
+			g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+			g_signal_connect (item, "activate",
+					  G_CALLBACK (blank_disc_activate_cb), window);
+			items = g_list_append (items, item);
+		}
+
+		/* - library should be able to checksum
+		 * - disc must have a data session */
+		if (brasero_burn_library_can_checksum ()
+		&& (media & BRASERO_MEDIUM_HAS_DATA)) {
+			/* ... or verify medium. */
+			item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
+						       _("_Check Disc..."),
+						       _("Check the data integrity on this CD or DVD disc"),
+						       NULL);
+			g_object_set_data (G_OBJECT (item), "file_info", file_info);
+			g_object_set_data (G_OBJECT (item), "window", window);
+			g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+			g_signal_connect (item, "activate",
+					  G_CALLBACK (check_disc_activate_cb), window);
+			items = g_list_append (items, item);
+		}
 
                 g_free (device_path);
         }
@@ -525,58 +676,10 @@ nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
 }
 
 static void
-bar_activated_cb (NautilusDiscBurnBar *bar,
-                  gpointer         data)
+bar_activated_cb (NautilusDiscBurnBar	*bar,
+                  gpointer		 user_data)
 {
-        launch_brasero_on_window (GTK_WINDOW (data));
-}
-
-static gboolean
-dir_is_empty (const char *uri)
-{
-        GFile           *file;
-        GFileEnumerator *enumerator;
-        GError          *error;
-        gboolean         found_file;
-
-        file = g_file_new_for_uri (uri);
-
-        error = NULL;
-        enumerator = g_file_enumerate_children (file,
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME ","
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                                                G_FILE_ATTRIBUTE_ACCESS_CAN_READ,
-                                                0,
-                                                NULL,
-                                                &error);
-        if (enumerator == NULL) {
-                DEBUG_PRINT ("Could not open burn uri %s: %s\n",
-                             uri,
-                             error->message);
-                g_error_free (error);
-                return TRUE;
-        }
-
-        found_file = FALSE;
-
-        while (TRUE) {
-                GFileInfo *info;
-
-                info = g_file_enumerator_next_file (enumerator, NULL, NULL);
-                if (info == NULL) {
-                        break;
-                }
-
-                g_object_unref (info);
-
-                found_file = TRUE;
-                break;
-        }
-
-        g_object_unref (enumerator);
-        g_object_unref (file);
-
-        return !found_file;
+	write_activate (GTK_WINDOW (user_data));
 }
 
 static void
@@ -648,7 +751,7 @@ update_empty_idle (NautilusDiscBurn *burn)
 
         burn->priv->empty_update_id = 0;
 
-        is_empty = dir_is_empty (BURN_URI);
+        is_empty = nautilus_disc_burn_is_empty (NULL);
 
         DEBUG_PRINT ("Dir is %s\n", is_empty ? "empty" : "not empty");
 
@@ -709,7 +812,7 @@ start_monitor (NautilusDiscBurn *burn)
                                                              NULL,
                                                              &error);
         if (burn->priv->burn_monitor == NULL) {
-                g_warning ("Unable to add monitor: %s", error->message);
+                DEBUG_PRINT ("Unable to add monitor: %s", error->message);
                 g_error_free (error);
                 goto out;
         }
@@ -720,7 +823,7 @@ start_monitor (NautilusDiscBurn *burn)
                           G_CALLBACK (burn_monitor_cb),
                           burn);
 
-        burn->priv->empty = dir_is_empty (BURN_URI);
+        burn->priv->empty = nautilus_disc_burn_is_empty (NULL);
 
         DEBUG_PRINT ("Init burn extension, empty: %d\n", burn->priv->empty);
 
@@ -838,9 +941,10 @@ nautilus_disc_burn_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule *module)
 {
-        DEBUG_PRINT ("Initializing nautilus disc recorder\n");
+        DEBUG_PRINT ("Initializing nautilus-disc-recorder\n");
 
         brasero_media_library_start ();
+        brasero_burn_library_start ();
         DEBUG_PRINT ("Libbrasero-media started\n");
 
         nautilus_disc_burn_register_type (module);
@@ -853,6 +957,7 @@ nautilus_module_shutdown (void)
 
         /* Don't do that in case another module would need the library */
         //brasero_media_library_stop ();
+        //brasero_burn_library_stop ();
 }
 
 void

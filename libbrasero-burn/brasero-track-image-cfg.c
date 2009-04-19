@@ -353,36 +353,44 @@ brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 	return BRASERO_BURN_OK;
 }
 
-BraseroBurnResult
-brasero_track_image_cfg_get_status (BraseroTrackImageCfg *track,
-				    GError **error)
+static BraseroBurnResult
+brasero_track_image_cfg_get_status (BraseroTrack *track,
+				    BraseroStatus *status)
 {
 	BraseroTrackImageCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
 
-	if (priv->cancel)
+	if (priv->cancel) {
+		if (status)
+			brasero_status_set_not_ready (status, -1.0, _("Retrieving image format and size"));
+
 		return BRASERO_BURN_NOT_READY;
+	}
 
 	if (priv->error) {
-		if (error)
-			*error = g_error_copy (priv->error);
+		if (status)
+			brasero_status_set_error (status, g_error_copy (priv->error));
 
 		return BRASERO_BURN_ERR;
 	}
 
 	/* See if we managed to set a format (all went well then) */
 	if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE) {
-		if (error)
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     "%s.\n%s",
-				     /* Translators: This is a disc image */
-				     _("The format of the disc image could not be identified"),
-				     _("Please set it manually in the previous dialog"));
+		if (status)
+			brasero_status_set_error (status,
+						  g_error_new (BRASERO_BURN_ERROR,
+							       BRASERO_BURN_ERROR_GENERAL,
+							       "%s.\n%s",
+							       /* Translators: This is a disc image */
+							       _("The format of the disc image could not be identified"),
+							       _("Please set it manually")));
+
 		return BRASERO_BURN_ERR;
 	}
+
+	if (status)
+		brasero_status_set_completed (status);
 
 	return BRASERO_BURN_OK;
 }
@@ -416,10 +424,13 @@ static void
 brasero_track_image_cfg_class_init (BraseroTrackImageCfgClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroTrackImageCfgPrivate));
 
 	object_class->finalize = brasero_track_image_cfg_finalize;
+
+	track_class->get_status = brasero_track_image_cfg_get_status;
 }
 
 BraseroTrackImageCfg *

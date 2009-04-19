@@ -39,6 +39,8 @@
 
 #include <brasero-enums.h>
 #include <brasero-error.h>
+#include <brasero-status.h>
+
 #include <brasero-track-type.h>
 
 G_BEGIN_DECLS
@@ -58,6 +60,9 @@ struct _BraseroTrackClass
 	GObjectClass parent_class;
 
 	/* Virtual functions */
+	BraseroBurnResult	(* get_status)		(BraseroTrack *track,
+							 BraseroStatus *status);
+
 	BraseroBurnResult	(* get_size)		(BraseroTrack *track,
 							 guint64 *blocks,
 							 guint *block_size);
@@ -83,6 +88,8 @@ GType brasero_track_get_type (void) G_GNUC_CONST;
 void
 brasero_track_changed (BraseroTrack *track);
 
+
+
 BraseroBurnResult
 brasero_track_get_size (BraseroTrack *track,
 			guint64 *blocks,
@@ -91,6 +98,11 @@ brasero_track_get_size (BraseroTrack *track,
 BraseroTrackDataType
 brasero_track_get_track_type (BraseroTrack *track,
 			      BraseroTrackType *type);
+
+BraseroBurnResult
+brasero_track_get_status (BraseroTrack *track,
+			  BraseroStatus *status);
+
 
 /** 
  * Checksums

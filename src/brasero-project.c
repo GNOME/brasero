@@ -798,12 +798,10 @@ brasero_project_check_status (BraseroProject *project,
 
 	/* we are not ready to create tracks presumably because
 	 * data or audio has not finished to explore a directory
-	 * or get the metadata of a song or a film
-	 */
+	 * or get the metadata of a song or a film  */
 
 	/* This dialog can run as a standalone window when run from nautilus
-	 * to burn burn:// URI contents.
-	 */
+	 * to burn burn:// URI contents. */
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     _("Please wait until the estimation of the project size is completed."),
 				     GTK_BUTTONS_CANCEL,

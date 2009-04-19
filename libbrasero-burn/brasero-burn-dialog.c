@@ -180,7 +180,8 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		title = g_strdup (_("Brasero - Creating Image"));
 	}
 	else if (media & BRASERO_MEDIUM_DVD) {
-		if (BRASERO_STREAM_TRACK_HAS_VIDEO (input)) {
+		if (input->type == BRASERO_TRACK_TYPE_STREAM
+		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY) {
 				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video DVD burning"));
@@ -238,7 +239,8 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
-		if (BRASERO_STREAM_TRACK_HAS_VIDEO (input)) {
+		if (input->type == BRASERO_TRACK_TYPE_STREAM
+		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of (S)VCD burning"));
@@ -309,7 +311,8 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 	}
-	else if (BRASERO_STREAM_TRACK_HAS_VIDEO (input)) {
+	else if (input->type == BRASERO_TRACK_TYPE_STREAM
+	     &&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
 		if (flags & BRASERO_BURN_FLAG_DUMMY) {
 			title = g_strdup (_("Brasero - Burning disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video disc burning"));
@@ -496,7 +499,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	gchar *drive_name;
 	GtkWindow *window;
 	GtkWidget *message;
-	BraseroMedium *medium;
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 	gchar *main_message = NULL, *secondary_message = NULL;
@@ -609,21 +611,9 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	gtk_widget_destroy (message);
 
 	/* see if we should update the infos */
-	medium = brasero_burn_session_get_src_medium (priv->session);
-	if (priv->input.type == BRASERO_TRACK_TYPE_DISC) {
-		BraseroDrive *src;
-
-		/* see if the drive is the source */
-		src = brasero_burn_session_get_src_drive (priv->session);
-		if (drive == src)
-			brasero_burn_dialog_update_info (dialog,
-							 &priv->input, 
-							 brasero_medium_get_status (medium));
-	}
-	else
-		brasero_burn_dialog_update_info (dialog,
-						 &priv->input, 
-						 brasero_medium_get_status (medium));
+	brasero_burn_dialog_update_info (dialog,
+					 &priv->input, 
+					 brasero_burn_session_get_dest_media (priv->session));
 
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
@@ -1397,13 +1387,17 @@ static void
 brasero_burn_dialog_activity_start (BraseroBurnDialog *dialog)
 {
 	GdkCursor *cursor;
+	GdkWindow *window;
 	BraseroBurnDialogPrivate *priv;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	cursor = gdk_cursor_new (GDK_WATCH);
-	gdk_window_set_cursor (GTK_WIDGET (dialog)->window, NULL);
-	gdk_cursor_unref (cursor);
+	window = gtk_widget_get_window (GTK_WIDGET (dialog));
+	if (window) {
+		cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (window, NULL);
+		gdk_cursor_unref (cursor);
+	}
 
 	gtk_button_set_use_stock (GTK_BUTTON (priv->cancel), TRUE);
 	gtk_button_set_label (GTK_BUTTON (priv->cancel), GTK_STOCK_CANCEL);
@@ -2082,6 +2076,44 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
 	return BRASERO_BURN_OK;
 }
 
+static gboolean
+brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
+{
+	BraseroBurnDialogPrivate *priv;
+	BraseroBurnResult result;
+	BraseroStatus *status;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	status = brasero_status_new ();
+	result = brasero_burn_session_get_status (priv->session, status);
+	while (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY) {
+		gdouble progress;
+		gchar *action;
+
+		action = brasero_status_get_current_action (status);
+		brasero_burn_dialog_action_changed_real (dialog,
+							 BRASERO_BURN_ACTION_GETTING_SIZE,
+							 action);
+		g_free (action);
+
+		progress = brasero_status_get_progress (status);
+		brasero_burn_dialog_progress_changed_real (dialog,
+							   0,
+							   0,
+							   0,
+							   progress,
+							   progress,
+							   -1.0,
+							   brasero_burn_session_get_dest_media (priv->session));
+
+		result = brasero_burn_session_get_status (priv->session, status);
+	}
+	brasero_status_free (status);
+
+	return (result == BRASERO_BURN_OK);
+}
+
 gboolean
 brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 			 BraseroBurnSession *session)
@@ -2094,6 +2126,10 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 
 	g_object_ref (session);
 	priv->session = session;
+
+	/* wait for ready state */
+	if (!brasero_burn_dialog_wait_for_ready_state (dialog))
+		return FALSE;
 
 	/* disable autoconfiguration */
 	if (BRASERO_IS_SESSION_CFG (priv->session))

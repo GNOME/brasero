@@ -37,6 +37,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <gconf/gconf-client.h>
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-caps.h"
@@ -199,10 +201,19 @@ brasero_caps_list_dump (void)
 gboolean
 brasero_burn_library_start (void)
 {
+	GConfClient *client;
+
 	BRASERO_BURN_LOG ("Initializing Brasero-%i.%i.%i",
 			  BRASERO_MAJOR_VERSION,
 			  BRASERO_MINOR_VERSION,
 			  BRASERO_SUB);
+
+	/* preload some gconf keys */
+	client = gconf_client_get_default ();
+	gconf_client_add_dir (client,
+			      "/apps/brasero",
+			      GCONF_CLIENT_PRELOAD_NONE,
+			      NULL);
 
 	/* initialize the media library */
 	brasero_media_library_start ();
@@ -276,6 +287,32 @@ brasero_burn_library_can_checksum (void)
 
 	g_object_unref (self);
 	return FALSE;
+}
+
+BraseroBurnResult
+brasero_burn_library_input_supported (BraseroTrackType *type)
+{
+	GSList *iter;
+	BraseroBurnCaps *self;
+
+	g_return_val_if_fail (type != NULL, BRASERO_BURN_ERR);
+
+	self = brasero_burn_caps_get_default ();
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *caps;
+
+		caps = iter->data;
+
+		if (brasero_caps_is_compatible_type (caps, type)
+		&&  brasero_burn_caps_is_input (self, caps)) {
+			g_object_unref (self);
+			return BRASERO_BURN_OK;
+		}
+	}
+
+	g_object_unref (self);
+	return BRASERO_BURN_ERR;
 }
 
 /**

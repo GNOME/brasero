@@ -470,7 +470,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	GtkTreeModel *model;
 	gchar *display_name;
 	GtkTreeIter iter;
-	gint64 *rates;
+	guint64 *rates;
 	gchar *header;
 	gchar *text;
 	guint i;

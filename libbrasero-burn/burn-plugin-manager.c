@@ -375,7 +375,8 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 		handle = g_module_open (path, 0);
 		if (!handle) {
 			g_free (path);
-			BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed");
+			BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed (%s)",
+					  g_module_error ());
 			continue;
 		}
 
@@ -452,7 +453,8 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 		handle = g_module_open (path, 0);
 		if (!handle) {
 			g_free (path);
-			BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed");
+			BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed (%s)",
+					  g_module_error ());
 			continue;
 		}
 

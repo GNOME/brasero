@@ -37,6 +37,7 @@
 #include <brasero-drive.h>
 
 #include <brasero-error.h>
+#include <brasero-status.h>
 #include <brasero-track.h>
 
 
@@ -84,6 +85,15 @@ brasero_burn_session_add_track (BraseroBurnSession *session,
 
 GSList *
 brasero_burn_session_get_tracks (BraseroBurnSession *session);
+
+BraseroBurnResult
+brasero_burn_session_get_status (BraseroBurnSession *session,
+				 BraseroStatus *status);
+
+BraseroBurnResult
+brasero_burn_session_get_size (BraseroBurnSession *session,
+			       gsize *blocks,
+			       gsize *bytes);
 
 BraseroTrackDataType
 brasero_burn_session_get_input_type (BraseroBurnSession *session,

@@ -244,7 +244,6 @@ brasero_handle_burn_uri (BraseroApp *app,
 				   GTK_MESSAGE_ERROR);
 
 		g_free (string);
-		g_object_unref (file);
 
 		g_slist_foreach (list, (GFunc) g_free, NULL);
 		g_slist_free (list);
