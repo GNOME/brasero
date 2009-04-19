@@ -1210,9 +1210,9 @@ brasero_burn_get_action_string (BraseroBurn *burn,
 BraseroBurnResult
 brasero_burn_status (BraseroBurn *burn,
 		     BraseroMedia *media,
-		     gint64 *isosize,
-		     gint64 *written,
-		     gint64 *rate)
+		     goffset *isosize,
+		     goffset *written,
+		     guint64 *rate)
 {
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
@@ -1225,7 +1225,7 @@ brasero_burn_status (BraseroBurn *burn,
 		return BRASERO_BURN_NOT_READY;
 
 	if (isosize) {
-		guint64 size_local = 0;
+		goffset size_local = 0;
 
 		result = brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
 								   NULL,
@@ -1782,7 +1782,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 		/* try to get the output size */
 		if (BRASERO_MEDIUM_RANDOM_WRITABLE (brasero_burn_session_get_dest_media (priv->session))) {
-			guint64 len = 0;
+			goffset len = 0;
 			BraseroDrive *drive;
 			BraseroMedium *medium;
 

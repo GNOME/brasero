@@ -381,8 +381,8 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 				     GError **error)
 {
 	BraseroBurnSession *session;
-	guint64 output_blocks = 0;
-	gint64 media_blocks = 0;
+	goffset output_blocks = 0;
+	goffset media_blocks = 0;
 	BraseroJobPrivate *priv;
 	BraseroBurnFlag flags;
 	BraseroMedium *medium;
@@ -570,7 +570,7 @@ brasero_job_set_output_file (BraseroJob *self,
 	BraseroBurnResult result;
 	BraseroJobPrivate *priv;
 	BraseroBurnFlag flags;
-	guint64 output_size = 0;
+	goffset output_size = 0;
 	gchar *image = NULL;
 	gchar *toc = NULL;
 
@@ -1792,15 +1792,15 @@ brasero_job_get_data_label (BraseroJob *self, gchar **label)
 
 BraseroBurnResult
 brasero_job_get_session_output_size (BraseroJob *self,
-				     guint64 *blocks,
-				     guint64 *size)
+				     goffset *blocks,
+				     goffset *bytes)
 {
 	BraseroJobPrivate *priv;
 
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	return brasero_task_ctx_get_session_output_size (priv->ctx, blocks, size);
+	return brasero_task_ctx_get_session_output_size (priv->ctx, blocks, bytes);
 }
 
 /**

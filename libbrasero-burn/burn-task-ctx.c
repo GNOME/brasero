@@ -57,22 +57,22 @@ struct _BraseroTaskCtxPrivate
 
 	/* used to poll for progress (every 0.5 sec) */
 	gdouble progress;
-	gint64 track_bytes;
-	gint64 session_bytes;
+	goffset track_bytes;
+	goffset session_bytes;
 
-	gint64 size;
-	gint64 blocks;
+	goffset size;
+	goffset blocks;
 
 	/* keep track of time */
 	GTimer *timer;
-	gint64 first_written;
+	goffset first_written;
 	gdouble first_progress;
 
 	/* used for immediate rate */
 	gdouble current_elapsed;
 	gdouble last_elapsed;
 
-	gint64 last_written;
+	goffset last_written;
 	gdouble last_progress;
 
 	/* used for remaining time */
@@ -80,7 +80,7 @@ struct _BraseroTaskCtxPrivate
 	gdouble total_time;
 
 	/* used for rates that certain jobs are able to report */
-	gint64 rate;
+	guint64 rate;
 
 	/* the current action */
 	BraseroBurnAction current_action;
@@ -702,7 +702,7 @@ brasero_task_ctx_set_use_average (BraseroTaskCtx *self,
 
 BraseroBurnResult
 brasero_task_ctx_get_rate (BraseroTaskCtx *self,
-			   gint64 *rate)
+			   guint64 *rate)
 {
 	BraseroTaskCtxPrivate *priv;
 
@@ -782,21 +782,21 @@ brasero_task_ctx_get_remaining_time (BraseroTaskCtx *self,
 
 BraseroBurnResult
 brasero_task_ctx_get_session_output_size (BraseroTaskCtx *self,
-					  guint64 *blocks,
-					  guint64 *size)
+					  goffset *blocks,
+					  goffset *bytes)
 {
 	BraseroTaskCtxPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
-	g_return_val_if_fail (blocks != NULL || size != NULL, BRASERO_BURN_ERR);
+	g_return_val_if_fail (blocks != NULL || bytes != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	if (priv->size <= 0 && priv->blocks <= 0)
 		return BRASERO_BURN_NOT_READY;
 
-	if (size)
-		*size = priv->size;
+	if (bytes)
+		*bytes = priv->size;
 
 	if (blocks)
 		*blocks = priv->blocks;
@@ -852,7 +852,7 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 	BraseroTaskCtxPrivate *priv;
 	gdouble track_num = 0;
 	gdouble track_nb = 0;
-	guint64 total = 0;
+	goffset total = 0;
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 

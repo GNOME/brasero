@@ -1,5 +1,23 @@
 2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Another fix for argument types
+
+	* libbrasero-burn/brasero-burn-dialog.c
+	(brasero_burn_dialog_progress_changed_cb):
+	* libbrasero-burn/brasero-burn.c (brasero_burn_status),
+	(brasero_burn_run_tasks):
+	* libbrasero-burn/brasero-burn.h:
+	* libbrasero-burn/burn-job.c (brasero_job_check_output_disc_space),
+	(brasero_job_set_output_file),
+	(brasero_job_get_session_output_size):
+	* libbrasero-burn/burn-job.h:
+	* libbrasero-burn/burn-task-ctx.c (brasero_task_ctx_get_rate),
+	(brasero_task_ctx_get_session_output_size),
+	(brasero_task_ctx_get_progress):
+	* libbrasero-burn/burn-task-ctx.h:
+
+2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Move some helper functions out of public header
 
 	* libbrasero-burn/Makefile.am:

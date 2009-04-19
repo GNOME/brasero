@@ -59,9 +59,9 @@ struct _BraseroTaskCtxClass
 {
 	GObjectClass parent_class;
 
-	void	(* finished)	(BraseroTaskCtx *ctx,
-				 BraseroBurnResult retval,
-				 GError *error);
+	void			(* finished)		(BraseroTaskCtx *ctx,
+							 BraseroBurnResult retval,
+							 GError *error);
 
 	/* signals */
 	void			(*progress_changed)	(BraseroTaskCtx *task,
@@ -86,7 +86,8 @@ brasero_task_ctx_set_fake (BraseroTaskCtx *ctx,
 			   gboolean fake);
 
 void
-brasero_task_ctx_set_dangerous (BraseroTaskCtx *ctx, gboolean value);
+brasero_task_ctx_set_dangerous (BraseroTaskCtx *ctx,
+				gboolean value);
 
 guint
 brasero_task_ctx_get_dangerous (BraseroTaskCtx *ctx);
@@ -171,8 +172,8 @@ brasero_task_ctx_set_use_average (BraseroTaskCtx *ctx,
 				  gboolean use_average);
 BraseroBurnResult
 brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *ctx,
-						    gint64 sectors,
-						    gint64 size);
+						    goffset sectors,
+						    goffset bytes);
 
 /**
  * task progress for library
@@ -180,17 +181,17 @@ brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *ctx,
 
 BraseroBurnResult
 brasero_task_ctx_get_rate (BraseroTaskCtx *ctx,
-			   gint64 *rate);
+			   guint64 *rate);
 BraseroBurnResult
 brasero_task_ctx_get_remaining_time (BraseroTaskCtx *ctx,
 				     long *remaining);
 BraseroBurnResult
 brasero_task_ctx_get_session_output_size (BraseroTaskCtx *ctx,
-					  guint64 *blocks,
-					  guint64 *size);
+					  goffset *blocks,
+					  goffset *bytes);
 BraseroBurnResult
 brasero_task_ctx_get_written (BraseroTaskCtx *ctx,
-			      gint64 *written);
+			      goffset *written);
 BraseroBurnResult
 brasero_task_ctx_get_current_action_string (BraseroTaskCtx *ctx,
 					    BraseroBurnAction action,

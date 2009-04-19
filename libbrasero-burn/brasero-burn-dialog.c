@@ -1101,9 +1101,9 @@ brasero_burn_dialog_progress_changed_cb (BraseroBurn *burn,
 {
 	BraseroMedia media = BRASERO_MEDIUM_NONE;
 	BraseroBurnDialogPrivate *priv;
-	gint64 isosize = -1;
-	gint64 written = -1;
-	gint64 rate = -1;
+	goffset isosize = -1;
+	goffset written = -1;
+	guint64 rate = -1;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
