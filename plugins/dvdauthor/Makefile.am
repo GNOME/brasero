@@ -1,0 +1,23 @@
+
+INCLUDES = \
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/libbrasero-media/					\
+	-I$(top_builddir)/libbrasero-media/		\
+	-I$(top_srcdir)/libbrasero-burn				\
+	-I$(top_builddir)/libbrasero-burn/				\
+	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
+	-DBRASERO_PREFIX=\"$(prefix)\"           		\
+	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
+	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
+	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
+	$(DISABLE_DEPRECATED)				\
+	$(BRASERO_GLIB_CFLAGS)				\
+	$(BRASERO_LIBXML_CFLAGS)
+
+dvdauthordir = $(libdir)/brasero/plugins
+dvdauthor_LTLIBRARIES = libbrasero-dvdauthor.la
+
+libbrasero_dvdauthor_la_SOURCES = burn-dvdauthor.c burn-dvdauthor.h
+libbrasero_dvdauthor_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_dvdauthor_la_LDFLAGS = -module -avoid-version
+
