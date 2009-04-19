@@ -536,7 +536,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 
 		track = iter->data;
 		if (!BRASERO_IS_TRACK_DATA (track)) {
-			guint64 sectors = 0;
+			goffset sectors = 0;
 
 			brasero_track_get_size (track, &sectors, NULL);
 			session_size += sectors;

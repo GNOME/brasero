@@ -430,7 +430,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		gchar *uri;
 		gchar *newtoc;
 		gchar *newimage;
-		guint64 blocks = 0;
+		goffset blocks = 0;
 
 		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (current), TRUE);
 		newimage = brasero_local_track_translate_uri (self, uri);

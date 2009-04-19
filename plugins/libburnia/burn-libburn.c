@@ -401,7 +401,7 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 		else if (BRASERO_IS_TRACK_IMAGE (track)) {
 			BraseroImageFormat format;
 			gchar *imagepath;
-			guint64 size;
+			goffset bytes;
 			gint mode;
 
 			format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
@@ -421,14 +421,14 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 
 			result = brasero_track_get_size (track,
 							 NULL,
-							 &size);
+							 &bytes);
 			if (result != BRASERO_BURN_OK)
 				return BRASERO_BURN_ERR;
 
 			result = brasero_libburn_add_file_track (session,
 								 imagepath,
 								 mode,
-								 size,
+								 bytes,
 								 priv->pvd,
 								 error);
 			g_free (imagepath);
@@ -520,7 +520,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 		 * handles all by himself where to start writing. */
 		if (BRASERO_MEDIUM_RANDOM_WRITABLE (media)
 		&& (flags & BRASERO_BURN_FLAG_MERGE)) {
-			guint64 address = 0;
+			goffset address = 0;
 
 			brasero_job_get_next_writable_address (BRASERO_JOB (self), &address);
 

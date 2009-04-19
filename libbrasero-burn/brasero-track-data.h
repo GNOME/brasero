@@ -90,7 +90,7 @@ brasero_track_data_rm_fs (BraseroTrackData *track,
 
 BraseroBurnResult
 brasero_track_data_set_data_blocks (BraseroTrackData *track,
-				    guint64 blocks);
+				    goffset blocks);
 
 BraseroBurnResult
 brasero_track_data_set_file_num (BraseroTrackData *track,

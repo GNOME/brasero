@@ -64,8 +64,8 @@ struct _BraseroTrackClass
 							 BraseroStatus *status);
 
 	BraseroBurnResult	(* get_size)		(BraseroTrack *track,
-							 guint64 *blocks,
-							 guint *block_size);
+							 goffset *blocks,
+							 goffset *block_size);
 
 	BraseroTrackDataType	(* get_type)		(BraseroTrack *track,
 							 BraseroTrackType *type);
@@ -92,8 +92,8 @@ brasero_track_changed (BraseroTrack *track);
 
 BraseroBurnResult
 brasero_track_get_size (BraseroTrack *track,
-			guint64 *blocks,
-			guint64 *size);
+			goffset *blocks,
+			goffset *bytes);
 
 BraseroTrackDataType
 brasero_track_get_track_type (BraseroTrack *track,

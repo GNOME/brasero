@@ -71,7 +71,7 @@ brasero_track_image_set_source (BraseroTrackImage *track,
 
 void
 brasero_track_image_set_block_num (BraseroTrackImage *track,
-				   guint64 blocks);
+				   goffset blocks);
 
 gchar *
 brasero_track_image_get_source (BraseroTrackImage *track,

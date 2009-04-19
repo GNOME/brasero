@@ -274,7 +274,7 @@ brasero_data_session_load_directory_contents_real (BraseroDataSession *self,
 						   GError **error)
 {
 	BraseroDataSessionPrivate *priv;
-	guint64 session_block;
+	goffset session_block;
 	const gchar *device;
 	gint reference = -1;
 

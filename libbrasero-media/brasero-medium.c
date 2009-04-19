@@ -99,11 +99,11 @@ struct _BraseroMediumPrivate
 	guint *rd_speeds;
 	guint *wr_speeds;
 
-	gint64 block_num;
-	gint64 block_size;
+	goffset block_num;
+	goffset block_size;
 
 	guint first_open_track;
-	guint64 next_wr_add;
+	goffset next_wr_add;
 
 	BraseroMedia info;
 	BraseroDrive *drive;
@@ -145,8 +145,8 @@ typedef struct _BraseroMediumTrack BraseroMediumTrack;
 struct _BraseroMediumTrack {
 	guint session;
 	BraseroMediumTrackType type;
-	guint64 start;
-	guint64 blocks_num;
+	goffset start;
+	goffset blocks_num;
 };
 
 enum
@@ -290,8 +290,8 @@ brasero_medium_get_status (BraseroMedium *medium)
 /**
  * brasero_medium_get_last_data_track_address:
  * @medium: #BraseroMedium
- * @byte: a #guint64 * or NULL
- * @sector: a #guint64 * or NULL
+ * @byte: a #goffset * or NULL
+ * @sector: a #goffset * or NULL
  *
  * Stores in either @byte (in bytes) or in @sector (in blocks) the address where
  * the last session starts. This is useful when creating a multisession image or
@@ -300,8 +300,8 @@ brasero_medium_get_status (BraseroMedium *medium)
  **/
 gboolean
 brasero_medium_get_last_data_track_address (BraseroMedium *medium,
-					    guint64 *bytes,
-					    guint64 *sectors)
+					    goffset *bytes,
+					    goffset *sectors)
 {
 	GSList *iter;
 	BraseroMediumPrivate *priv;
@@ -335,8 +335,8 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 /**
  * brasero_medium_get_last_data_track_space:
  * @medium: #BraseroMedium
- * @size: a #guint64 * or NULL
- * @blocks: a #guint64 * or NULL
+ * @size: a #goffset * or NULL
+ * @blocks: a #goffset * or NULL
  *
  * Stores in either @size (in bytes) or in @blocks (in blocks) the space used by
  * the last track on the medium.
@@ -344,8 +344,8 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium,
  **/
 gboolean
 brasero_medium_get_last_data_track_space (BraseroMedium *medium,
-					  guint64 *bytes,
-					  guint64 *sectors)
+					  goffset *bytes,
+					  goffset *sectors)
 {
 	GSList *iter;
 	BraseroMediumPrivate *priv;
@@ -443,8 +443,8 @@ brasero_medium_get_track (BraseroMedium *medium,
  * brasero_medium_get_track_space:
  * @medium: a #BraseroMedium
  * @num: a #guint
- * @size: a #guint64 * or NULL
- * @blocks: a #guint64 * or NULL
+ * @size: a #goffset * or NULL
+ * @blocks: a #goffset * or NULL
  *
  * Stores in either @size (in bytes) or in @blocks (in blocks) the space used
  * by session @num on the disc.
@@ -456,8 +456,8 @@ brasero_medium_get_track (BraseroMedium *medium,
 gboolean
 brasero_medium_get_track_space (BraseroMedium *medium,
 				guint num,
-				guint64 *bytes,
-				guint64 *sectors)
+				goffset *bytes,
+				goffset *sectors)
 {
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track;
@@ -488,8 +488,8 @@ brasero_medium_get_track_space (BraseroMedium *medium,
  * brasero_medium_get_track_address:
  * @medium: a #BraseroMedium
  * @num: a #guint
- * @byte: a #guint64 * or NULL
- * @sector: a #guint64 * or NULL
+ * @byte: a #goffset * or NULL
+ * @sector: a #goffset * or NULL
  *
  * Stores in either @byte (in bytes) or in @sector (in blocks) the address at
  * which the session identified by @num starts.
@@ -501,8 +501,8 @@ brasero_medium_get_track_space (BraseroMedium *medium,
 gboolean
 brasero_medium_get_track_address (BraseroMedium *medium,
 				  guint num,
-				  guint64 *bytes,
-				  guint64 *sectors)
+				  goffset *bytes,
+				  goffset *sectors)
 {
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track;

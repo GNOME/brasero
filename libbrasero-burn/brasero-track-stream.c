@@ -108,9 +108,9 @@ brasero_track_stream_set_format (BraseroTrackStream *track,
 
 BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
-				     gint64 start,
-				     gint64 end,
-				     gint64 gap)
+				     guint64 start,
+				     guint64 end,
+				     guint64 gap)
 {
 	BraseroTrackStreamPrivate *priv;
 
@@ -200,8 +200,8 @@ brasero_track_stream_get_length (BraseroTrackStream *track,
 
 static BraseroBurnResult
 brasero_track_stream_get_size (BraseroTrack *track,
-			       guint64 *blocks,
-			       guint *block_size)
+			       goffset *blocks,
+			       goffset *block_size)
 {
 	BraseroTrackStreamPrivate *priv;
 

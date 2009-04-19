@@ -79,13 +79,13 @@ brasero_track_get_track_type (BraseroTrack *track,
 
 BraseroBurnResult
 brasero_track_get_size (BraseroTrack *track,
-			guint64 *blocks,
-			guint64 *size)
+			goffset *blocks,
+			goffset *bytes)
 {
 	BraseroBurnResult res;
 	BraseroTrackClass *klass;
-	guint64 blocks_local = 0;
-	guint block_size_local = 0;
+	goffset blocks_local = 0;
+	goffset block_size_local = 0;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_TRACK_TYPE_NONE);
 
@@ -100,8 +100,8 @@ brasero_track_get_size (BraseroTrack *track,
 	if (blocks)
 		*blocks = blocks_local;
 
-	if (size)
-		*size = blocks_local * block_size_local;
+	if (bytes)
+		*bytes = blocks_local * block_size_local;
 
 	return BRASERO_BURN_OK;
 }

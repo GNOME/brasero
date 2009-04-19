@@ -386,7 +386,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	BraseroTrack *track;
 	gchar buffer [2048];
 	BraseroVolSrc *vol;
-	guint64 start_block;
+	goffset start_block;
 	gchar *device;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
@@ -800,7 +800,7 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	guint file_num;
 	gint checksum_len;
 	BraseroVolSrc *vol;
-	guint64 start_block;
+	goffset start_block;
 	BraseroTrack *track;
 	const gchar *device;
 	BraseroVolFile *file;

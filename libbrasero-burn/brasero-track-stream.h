@@ -86,9 +86,9 @@ brasero_track_stream_set_format (BraseroTrackStream *track,
 
 BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
-				     gint64 start,
-				     gint64 end,
-				     gint64 gap);
+				     guint64 start,
+				     guint64 end,
+				     guint64 gap);
 
 gchar *
 brasero_track_stream_get_source (BraseroTrackStream *track,

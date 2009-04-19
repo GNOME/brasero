@@ -346,8 +346,8 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 
 BraseroBurnResult
 brasero_burn_session_get_size (BraseroBurnSession *session,
-			       gsize *blocks,
-			       gsize *bytes)
+			       goffset *blocks,
+			       goffset *bytes)
 {
 	BraseroBurnSessionPrivate *priv;
 	gsize session_blocks = 0;
@@ -363,8 +363,8 @@ brasero_burn_session_get_size (BraseroBurnSession *session,
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroBurnResult res;
 		BraseroTrack *track;
-		gsize track_blocks;
-		gsize track_bytes;
+		goffset track_blocks;
+		goffset track_bytes;
 
 		track = iter->data;
 		track_blocks = 0;

@@ -162,10 +162,10 @@ BraseroBurnResult
 brasero_job_get_media (BraseroJob *job, BraseroMedia *media);
 
 BraseroBurnResult
-brasero_job_get_last_session_address (BraseroJob *job, guint64 *address);
+brasero_job_get_last_session_address (BraseroJob *job, goffset *address);
 
 BraseroBurnResult
-brasero_job_get_next_writable_address (BraseroJob *job, guint64 *address);
+brasero_job_get_next_writable_address (BraseroJob *job, goffset *address);
 
 BraseroBurnResult
 brasero_job_get_rate (BraseroJob *job, guint64 *rate);

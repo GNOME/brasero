@@ -1,5 +1,73 @@
 2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Move all API that deals with size to goffset
+
+	* libbrasero-burn/brasero-session-cfg.c
+	(brasero_session_cfg_check_size):
+	* libbrasero-burn/brasero-session.c
+	(brasero_burn_session_get_size):
+	* libbrasero-burn/brasero-session.h:
+	* libbrasero-burn/brasero-src-image.c (brasero_src_image_update),
+	(brasero_src_image_set_property):
+	* libbrasero-burn/brasero-status-dialog.c
+	(brasero_status_dialog_update):
+	* libbrasero-burn/brasero-track-data.c
+	(brasero_track_data_set_data_blocks),
+	(brasero_track_data_get_size):
+	* libbrasero-burn/brasero-track-data.h:
+	* libbrasero-burn/brasero-track-disc.c
+	(brasero_track_disc_get_size):
+	* libbrasero-burn/brasero-track-image.c
+	(brasero_track_image_set_block_num),
+	(brasero_track_image_get_size):
+	* libbrasero-burn/brasero-track-image.h:
+	* libbrasero-burn/brasero-track-stream.c
+	(brasero_track_stream_set_boundaries),
+	(brasero_track_stream_get_size):
+	* libbrasero-burn/brasero-track-stream.h:
+	* libbrasero-burn/brasero-track.c (brasero_track_get_size):
+	* libbrasero-burn/brasero-track.h:
+	* libbrasero-burn/burn-job.c
+	(brasero_job_get_last_session_address),
+	(brasero_job_get_next_writable_address):
+	* libbrasero-burn/burn-job.h:
+	* libbrasero-burn/burn-task.c
+	(brasero_task_set_track_output_size_default):
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_get_last_data_track_address),
+	(brasero_medium_get_last_data_track_space),
+	(brasero_medium_get_track_space),
+	(brasero_medium_get_track_address):
+	* libbrasero-media/brasero-medium.h:
+	* plugins/cdrdao/burn-cdrdao.c (brasero_cdrdao_set_argv):
+	* plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image):
+	* plugins/cdrkit/burn-readom.c
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size):
+	* plugins/cdrkit/burn-wodim.c (brasero_wodim_write_infs):
+	* plugins/cdrtools/burn-cdrecord.c (brasero_cdrecord_write_infs):
+	* plugins/cdrtools/burn-mkisofs.c (brasero_mkisofs_set_argv_image):
+	* plugins/cdrtools/burn-readcd.c
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size):
+	* plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session),
+	(brasero_checksum_files_check_files):
+	* plugins/checksum/burn-checksum-image.c:
+	* plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_start):
+	* plugins/libburnia/burn-libburn.c
+	(brasero_libburn_setup_session_file),
+	(brasero_libburn_start_record):
+	* plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_import_last_session),
+	(brasero_libisofs_create_volume_thread):
+	* plugins/local-track/burn-local-image.c
+	(brasero_local_track_update_track):
+	* plugins/local-track/burn-uri.c (brasero_burn_uri_thread):
+	* src/brasero-data-session.c
+	(brasero_data_session_load_directory_contents_real):
+
+2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Cleaned up some headers
 
 	* libbrasero-burn/brasero-blank-dialog.h:

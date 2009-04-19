@@ -346,7 +346,7 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 
 	brasero_job_get_flags (BRASERO_JOB (genisoimage), &flags);
 	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
-		guint64 last_session = 0, next_wr_add = 0;
+		goffset last_session = 0, next_wr_add = 0;
 		gchar *startpoint = NULL;
 
 		brasero_job_get_last_session_address (BRASERO_JOB (genisoimage), &last_session);

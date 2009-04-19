@@ -347,7 +347,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 
 	brasero_job_get_flags (BRASERO_JOB (mkisofs), &flags);
 	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
-		guint64 last_session = 0, next_wr_add = 0;
+		goffset last_session = 0, next_wr_add = 0;
 		gchar *startpoint = NULL;
 
 		brasero_job_get_last_session_address (BRASERO_JOB (mkisofs), &last_session);

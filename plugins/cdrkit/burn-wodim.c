@@ -695,7 +695,7 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
-		guint64 sectors;
+		goffset sectors;
 		BraseroTrack *track;
 
 		track = iter->data;

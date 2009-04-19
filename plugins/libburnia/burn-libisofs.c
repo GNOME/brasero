@@ -433,8 +433,8 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	IsoReadOpts *opts;
 	BraseroMedia media;
 	IsoDataSource *src;
-	guint64 start_block;
-	guint64 session_block;
+	goffset start_block;
+	goffset session_block;
 	BraseroLibisofsPrivate *priv;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
@@ -566,7 +566,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			goto end;
 	}
 	else if (flags & BRASERO_BURN_FLAG_APPEND) {
-		guint64 start_block;
+		goffset start_block;
 
 		brasero_job_get_next_writable_address (BRASERO_JOB (self), &start_block);
 		iso_write_opts_set_ms_block (opts, start_block);

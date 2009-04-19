@@ -541,7 +541,7 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 		if (BRASERO_IS_TRACK_DISC (track)) {
-			guint64 sectors = 0;
+			goffset sectors = 0;
 
 			brasero_track_get_size (track, &sectors, NULL);
 
