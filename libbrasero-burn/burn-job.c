@@ -1404,7 +1404,7 @@ brasero_job_get_flags (BraseroJob *self, BraseroBurnFlag *flags)
 BraseroBurnResult
 brasero_job_get_input_type (BraseroJob *self, BraseroTrackType *type)
 {
-	BraseroBurnResult result;
+	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroJobPrivate *priv;
 
 	BRASERO_JOB_DEBUG (self);

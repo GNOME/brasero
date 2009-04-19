@@ -223,6 +223,7 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 				BraseroTrack *new_track)
 {
 	BraseroBurnSessionPrivate *priv;
+	BraseroTrackType *type;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
@@ -252,10 +253,11 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 	}
 
 	/* if there is already a track, then we replace it on condition that it
-	 * has the same type and it's not AUDIO (only one allowed to have many)
-	 */
+	 * has the same type and it's not AUDIO (only one allowed to have many) */
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (self, type);
 	if (!BRASERO_IS_TRACK_STREAM (new_track)
-	||  brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_STREAM) {
+	||  brasero_track_type_get_has_stream (type)) {
 		brasero_burn_session_stop_tracks_monitoring (self);
 
 		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
@@ -273,6 +275,7 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 		priv->tracks = g_slist_append (priv->tracks, new_track);
 	}
 
+	brasero_track_type_free (type);
 	return BRASERO_BURN_OK;
 }
 
@@ -389,25 +392,26 @@ brasero_burn_session_get_size (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
-/* FIXME: change this return type */
-BraseroTrackDataType
+BraseroBurnResult
 brasero_burn_session_get_input_type (BraseroBurnSession *self,
 				     BraseroTrackType *type)
 {
 	BraseroTrack *track;
 	BraseroBurnSessionPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_TRACK_TYPE_NONE);
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	if (!priv->tracks)
-		return BRASERO_TRACK_TYPE_NONE;
+		return BRASERO_BURN_OK;
 
 	/* there can be many tracks (in case of audio) but they must be
 	 * all of the same kind for the moment */
 	track = priv->tracks->data;
-	return brasero_track_get_track_type (track, type);
+	brasero_track_get_track_type (track, type);
+
+	return BRASERO_BURN_OK;
 }
 
 /**

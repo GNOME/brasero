@@ -340,10 +340,9 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	}
 	else if (valid == BRASERO_SESSION_EMPTY) {
 		BraseroTrackType *type;
-		BraseroBurnResult result;
 		
 		type = brasero_track_type_new ();
-		result = brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (priv->session), type);
+		brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (priv->session), type);
 
 		if (brasero_track_type_get_has_data (type))
 			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),

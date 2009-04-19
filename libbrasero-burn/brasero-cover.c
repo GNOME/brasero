@@ -218,6 +218,7 @@ brasero_session_edit_cover (BraseroBurnSession *session,
 			    GtkWidget *toplevel)
 {
 	BraseroJacketEdit *contents;
+	BraseroTrackType *type;
 	GValue *cover_value;
 	const gchar *title;
 	GtkWidget *edit;
@@ -226,8 +227,14 @@ brasero_session_edit_cover (BraseroBurnSession *session,
 	edit = brasero_jacket_edit_dialog_new (GTK_WIDGET (toplevel), &contents);
 
 	/* Don't go any further if it's not video */
-	if (brasero_burn_session_get_input_type (session, NULL) != BRASERO_TRACK_TYPE_STREAM)
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, type);
+	if (!brasero_track_type_get_has_stream (type)) {
+		brasero_track_type_free (type);
 		return edit;
+	}
+
+	brasero_track_type_free (type);
 
 	title = brasero_burn_session_get_label (session);
 	tracks = brasero_burn_session_get_tracks (session);

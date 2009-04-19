@@ -2534,6 +2534,7 @@ brasero_burn_record (BraseroBurn *burn,
 		     BraseroBurnSession *session,
 		     GError **error)
 {
+	BraseroTrackType *type = NULL;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
 
@@ -2592,7 +2593,9 @@ brasero_burn_record (BraseroBurn *burn,
 			goto end;
 	}
 
-	if (brasero_burn_session_get_input_type (session, NULL) == BRASERO_TRACK_TYPE_DISC) {
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, type);
+	if (brasero_track_type_get_has_medium (type)) {
 		result = brasero_burn_lock_src_media (burn, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;
@@ -2602,6 +2605,8 @@ brasero_burn_record (BraseroBurn *burn,
 	result = brasero_burn_record_session (burn, TRUE, error);
 
 end:
+
+	brasero_track_type_free (type);
 
 	if (result == BRASERO_BURN_OK)
 		result = brasero_burn_unlock_medias (burn, error);
