@@ -36,9 +36,10 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-burn.h"
+#include <brasero-burn.h>
 
 G_BEGIN_DECLS
+
 #define BRASERO_TYPE_BURN_DIALOG         (brasero_burn_dialog_get_type ())
 #define BRASERO_BURN_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialog))
 #define BRASERO_BURN_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogClass))

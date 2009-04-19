@@ -36,13 +36,12 @@
 
 #include <gtk/gtk.h>
 
-#include "burn-basics.h"
+#include <brasero-medium.h>
+#include <brasero-medium-monitor.h>
 
-#include "brasero-session.h"
-#include "brasero-burn.h"
+#include <brasero-session.h>
+#include <brasero-burn.h>
 
-#include "brasero-medium.h"
-#include "brasero-medium-monitor.h"
 
 G_BEGIN_DECLS
 

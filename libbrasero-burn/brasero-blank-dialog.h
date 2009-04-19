@@ -36,7 +36,7 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-tool-dialog.h"
+#include <brasero-tool-dialog.h>
 
 G_BEGIN_DECLS
 
