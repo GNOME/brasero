@@ -248,42 +248,6 @@ BraseroImageFormat
 brasero_burn_session_get_default_output_format (BraseroBurnSession *session);
 
 /**
- * Some convenience functions
- * FIXME: maybe they should be put into a brasero burn session helper file?
- */
-
-BraseroMedia
-brasero_burn_session_get_dest_media (BraseroBurnSession *session);
-
-BraseroDrive *
-brasero_burn_session_get_src_drive (BraseroBurnSession *session);
-
-BraseroMedium *
-brasero_burn_session_get_src_medium (BraseroBurnSession *session);
-
-gboolean
-brasero_burn_session_is_dest_file (BraseroBurnSession *session);
-
-gboolean
-brasero_burn_session_same_src_dest_drive (BraseroBurnSession *session);
-
-#define BRASERO_BURN_SESSION_EJECT(session)					\
-(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_EJECT)
-
-#define BRASERO_BURN_SESSION_CHECK_SIZE(session)				\
-(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_CHECK_SIZE)
-
-#define BRASERO_BURN_SESSION_NO_TMP_FILE(session)				\
-(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_NO_TMP_FILES)
-
-#define BRASERO_BURN_SESSION_OVERBURN(session)					\
-(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_OVERBURN)
-
-#define BRASERO_BURN_SESSION_APPEND(session)					\
-(brasero_burn_session_get_flags ((session)) & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
-
-
-/**
  * This is to log a session
  */
 

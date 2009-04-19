@@ -42,6 +42,7 @@
 #include "burn-debug.h"
 #include "brasero-plugin-information.h"
 #include "burn-task.h"
+#include "brasero-session-helper.h"
 
 /**
  * This macro is used to determine whether or not blanking could change anything

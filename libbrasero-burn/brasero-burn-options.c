@@ -44,6 +44,7 @@
 #include "brasero-medium-selection-priv.h"
 
 #include "brasero-session.h"
+#include "brasero-session-helper.h"
 #include "brasero-burn-options.h"
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-image-option-dialog.h"

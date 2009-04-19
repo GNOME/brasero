@@ -51,6 +51,7 @@
 #include "brasero-track-image.h"
 #include "brasero-session-cfg.h"
 #include "brasero-burn-lib.h"
+#include "brasero-session-helper.h"
 
 typedef struct _BraseroSessionCfgPrivate BraseroSessionCfgPrivate;
 struct _BraseroSessionCfgPrivate

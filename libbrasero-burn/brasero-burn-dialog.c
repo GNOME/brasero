@@ -47,6 +47,7 @@
 #include "brasero-tray.h"
 #include "brasero-burn-dialog.h"
 #include "brasero-session-cfg.h"
+#include "brasero-session-helper.h"
 
 #include "burn-basics.h"
 #include "burn-debug.h"

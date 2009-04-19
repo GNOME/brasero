@@ -53,6 +53,7 @@
 #include "brasero-disc-option-dialog.h"
 #include "brasero-dest-selection.h"
 #include "brasero-session-cfg.h"
+#include "brasero-session-helper.h"
 #include "brasero-burn-options.h"
 #include "brasero-burn-options-private.h"
 

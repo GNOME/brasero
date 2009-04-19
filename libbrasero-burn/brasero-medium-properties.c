@@ -44,6 +44,7 @@
 #include "brasero-drive-properties.h"
 #include "brasero-image-properties.h"
 #include "brasero-session-cfg.h"
+#include "brasero-session-helper.h"
 
 #include "burn-basics.h"
 #include "brasero-track.h"

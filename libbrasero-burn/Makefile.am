@@ -171,7 +171,8 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-status.c                 \
 	brasero-status.h                 \
 	brasero-status-dialog.c                 \
-	brasero-status-dialog.h
+	brasero-status-dialog.h                 \
+	brasero-session-helper.h
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

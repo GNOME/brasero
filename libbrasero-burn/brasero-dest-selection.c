@@ -53,6 +53,7 @@
 
 #include "brasero-dest-selection.h"
 #include "brasero-session-cfg.h"
+#include "brasero-session-helper.h"
 
 typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate

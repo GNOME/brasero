@@ -63,6 +63,7 @@
 #include "brasero-session.h"
 #include "brasero-track-image.h"
 #include "brasero-track-disc.h"
+#include "brasero-session-helper.h"
 
 G_DEFINE_TYPE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
 
