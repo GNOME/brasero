@@ -60,8 +60,8 @@ struct _BraseroChecksumImagePrivate {
 	BraseroChecksumType checksum_type;
 
 	/* That's for progress reporting */
-	guint64 total;
-	guint64 bytes;
+	goffset total;
+	goffset bytes;
 
 	/* this is for the thread and the end of it */
 	GThread *thread;

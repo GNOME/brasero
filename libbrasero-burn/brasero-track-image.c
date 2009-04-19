@@ -87,7 +87,7 @@ brasero_track_image_set_source (BraseroTrackImage *track,
 
 void
 brasero_track_image_set_block_num (BraseroTrackImage *track,
-				   guint64 blocks)
+				   goffset blocks)
 {
 	BraseroTrackImagePrivate *priv;
 
@@ -194,8 +194,8 @@ brasero_track_image_get_track_type (BraseroTrack *track,
 
 static BraseroBurnResult
 brasero_track_image_get_size (BraseroTrack *track,
-			      guint64 *blocks,
-			      guint *block_size)
+			      goffset *blocks,
+			      goffset *block_size)
 {
 	BraseroTrackImagePrivate *priv;
 

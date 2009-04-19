@@ -174,7 +174,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 	gchar *path;
 	GFile *file;
 	gchar *string;
-	guint64 size = 0;
+	goffset bytes = 0;
 	GError *error = NULL;
 	BraseroStatus *status;
 	BraseroBurnResult result;
@@ -248,8 +248,8 @@ brasero_src_image_update (BraseroSrcImage *self)
 	gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
 
 	/* Deal with size */
-	brasero_track_get_size (BRASERO_TRACK (priv->track), NULL, &size);
-	size_string = g_format_size_for_display (size);
+	brasero_track_get_size (BRASERO_TRACK (priv->track), NULL, &bytes);
+	size_string = g_format_size_for_display (bytes);
 
 	/* NOTE to translators, the first %s is the path of the image
 	 * file and the second its size. */
@@ -674,7 +674,7 @@ brasero_src_image_set_property (GObject *object,
 		if (track) {
 			if (!BRASERO_IS_TRACK_IMAGE_CFG (track)) {
 				BraseroImageFormat format;
-				guint64 blocks = 0;
+				goffset blocks = 0;
 				gchar *image = NULL;
 				gchar *toc = NULL;
 

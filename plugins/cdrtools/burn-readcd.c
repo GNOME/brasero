@@ -127,7 +127,7 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 				      GPtrArray *argv,
 				      GError **error)
 {
-	guint64 nb_blocks;
+	goffset nb_blocks;
 	BraseroTrack *track;
 	GValue *value = NULL;
 	BraseroTrackType *output = NULL;
@@ -164,7 +164,7 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 	}
 	/* 0 means all disc, -1 problem */
 	else if (brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track)) > 0) {
-		guint64 start;
+		goffset start;
 		BraseroDrive *drive;
 		BraseroMedium *medium;
 
@@ -190,7 +190,7 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 	}
 	/* if it's BIN output just read the last track */
 	else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN) {
-		guint64 start;
+		goffset start;
 		BraseroDrive *drive;
 		BraseroMedium *medium;
 
@@ -224,7 +224,7 @@ static BraseroBurnResult
 brasero_readcd_get_size (BraseroReadcd *self,
 			 GError **error)
 {
-	guint64 blocks;
+	goffset blocks;
 	GValue *value = NULL;
 	BraseroImageFormat format;
 	BraseroTrack *track = NULL;

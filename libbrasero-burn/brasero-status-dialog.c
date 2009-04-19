@@ -63,7 +63,7 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 {
 	gchar *string;
 	gchar *size_str;
-	gsize session_bytes;
+	goffset session_bytes;
 	gchar *current_action;
 	BraseroBurnResult res;
 	BraseroTrackType *type;

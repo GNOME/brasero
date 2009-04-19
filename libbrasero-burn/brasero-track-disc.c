@@ -171,12 +171,12 @@ brasero_track_disc_get_medium_type (BraseroTrackDisc *track)
 
 static BraseroBurnResult
 brasero_track_disc_get_size (BraseroTrack *track,
-			     guint64 *blocks,
-			     guint *block_size)
+			     goffset *blocks,
+			     goffset *block_size)
 {
 	BraseroMedium *medium;
-	gint64 medium_size = 0;
-	gint64 medium_blocks = 0;
+	goffset medium_size = 0;
+	goffset medium_blocks = 0;
 	BraseroTrackDiscPrivate *priv;
 
 	priv = BRASERO_TRACK_DISC_PRIVATE (track);

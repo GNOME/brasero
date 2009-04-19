@@ -665,10 +665,10 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	BraseroBurnResult result;
 	gchar *tmpdir = NULL;
 	GSList *tracks;
+	goffset start;
 	GSList *iter;
 	gchar *album;
 	gint index;
-	gint start;
 
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
@@ -678,7 +678,7 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
-		guint64 sectors;
+		goffset sectors;
 		BraseroTrack *track;
 
 		track = iter->data;

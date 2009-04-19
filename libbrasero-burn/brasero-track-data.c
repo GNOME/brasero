@@ -163,7 +163,7 @@ brasero_track_data_get_fs (BraseroTrackData *track)
 
 BraseroBurnResult
 brasero_track_data_set_data_blocks (BraseroTrackData *track,
-				    guint64 blocks)
+				    goffset blocks)
 {
 	BraseroTrackDataPrivate *priv;
 
@@ -269,8 +269,8 @@ brasero_track_data_get_file_num (BraseroTrackData *track,
 
 static BraseroBurnResult
 brasero_track_data_get_size (BraseroTrack *track,
-			     guint64 *blocks,
-			     guint *block_size)
+			     goffset *blocks,
+			     goffset *block_size)
 {
 	BraseroTrackDataPrivate *priv;
 

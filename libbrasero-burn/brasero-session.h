@@ -92,8 +92,8 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 
 BraseroBurnResult
 brasero_burn_session_get_size (BraseroBurnSession *session,
-			       gsize *blocks,
-			       gsize *bytes);
+			       goffset *blocks,
+			       goffset *bytes);
 
 BraseroTrackDataType
 brasero_burn_session_get_input_type (BraseroBurnSession *session,
@@ -308,10 +308,6 @@ brasero_burn_session_log (BraseroBurnSession *session,
 			  const gchar *format,
 			  ...);
 
-
-/**
- * These should be converted to tags
- */
 
 const gchar *
 brasero_burn_session_get_label (BraseroBurnSession *session);

@@ -319,7 +319,7 @@ brasero_burn_uri_thread (gpointer data)
 		gchar *uri;
 		gchar *path_toc;
 		gchar *path_image;
-		guint64 blocks = 0;
+		goffset blocks = 0;
 		BraseroTrackImage *image;
 
 		path_image = NULL;

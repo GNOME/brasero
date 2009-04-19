@@ -403,19 +403,19 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 	if (BRASERO_IS_TRACK_IMAGE (track)
 	||  BRASERO_IS_TRACK_STREAM (track)) {
 		BraseroBurnResult result;
-		guint64 sectors = 0;
-		guint64 size = 0;
+		goffset sectors = 0;
+		goffset bytes = 0;
 
 		result = brasero_track_get_size (track,
 						 &sectors,
-						 &size);
+						 &bytes);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
 		BRASERO_BURN_LOG ("Got a default image or stream track length %lli", sectors);
 		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
 								    sectors,
-								    size);
+								    bytes);
 	}
 
 	return BRASERO_BURN_OK;

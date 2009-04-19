@@ -72,18 +72,18 @@ brasero_medium_get_write_speeds (BraseroMedium *medium);
 
 void
 brasero_medium_get_free_space (BraseroMedium *medium,
-			       gint64 *bytes,
-			       gint64 *blocks);
+			       goffset *bytes,
+			       goffset *blocks);
 
 void
 brasero_medium_get_capacity (BraseroMedium *medium,
-			     gint64 *bytes,
-			     gint64 *blocks);
+			     goffset *bytes,
+			     goffset *blocks);
 
 void
 brasero_medium_get_data_size (BraseroMedium *medium,
-			      gint64 *bytes,
-			      gint64 *blocks);
+			      goffset *bytes,
+			      goffset *blocks);
 
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium);
@@ -111,25 +111,25 @@ brasero_medium_get_track_num (BraseroMedium *medium);
 
 gboolean
 brasero_medium_get_last_data_track_space (BraseroMedium *medium,
-					  guint64 *bytes,
-					  guint64 *sectors);
+					  goffset *bytes,
+					  goffset *sectors);
 
 gboolean
 brasero_medium_get_last_data_track_address (BraseroMedium *medium,
-					    guint64 *bytes,
-					    guint64 *sectors);
+					    goffset *bytes,
+					    goffset *sectors);
 
 gboolean
 brasero_medium_get_track_space (BraseroMedium *medium,
 				guint num,
-				guint64 *bytes,
-				guint64 *sectors);
+				goffset *bytes,
+				goffset *sectors);
 
 gboolean
 brasero_medium_get_track_address (BraseroMedium *medium,
 				  guint num,
-				  guint64 *bytes,
-				  guint64 *sectors);
+				  goffset *bytes,
+				  goffset *sectors);
 
 gboolean
 brasero_medium_can_use_dummy_for_sao (BraseroMedium *medium);

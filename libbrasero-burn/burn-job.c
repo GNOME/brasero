@@ -1569,7 +1569,7 @@ brasero_job_get_medium (BraseroJob *job, BraseroMedium **medium)
 }
 
 BraseroBurnResult
-brasero_job_get_last_session_address (BraseroJob *self, guint64 *address)
+brasero_job_get_last_session_address (BraseroJob *self, goffset *address)
 {
 	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;
@@ -1591,7 +1591,7 @@ brasero_job_get_last_session_address (BraseroJob *self, guint64 *address)
 }
 
 BraseroBurnResult
-brasero_job_get_next_writable_address (BraseroJob *self, guint64 *address)
+brasero_job_get_next_writable_address (BraseroJob *self, goffset *address)
 {
 	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;

@@ -531,7 +531,7 @@ brasero_dvdcss_start (BraseroJob *job,
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
-		guint64 blocks = 0;
+		goffset blocks = 0;
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (job, &track);
