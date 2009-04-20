@@ -1,3 +1,17 @@
+2009-04-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Add virtual methods to retrieve all information about a data track
+
+	* libbrasero-burn/brasero-track-data.c (brasero_track_data_get_fs),
+	(brasero_track_data_get_fs_real), (brasero_track_data_get_grafts),
+	(brasero_track_data_get_grafts_real),
+	(brasero_track_data_get_excluded),
+	(brasero_track_data_get_excluded_real),
+	(brasero_track_data_get_paths), (brasero_track_data_get_file_num),
+	(brasero_track_data_get_file_num_real),
+	(brasero_track_data_class_init):
+	* libbrasero-burn/brasero-track-data.h:
+
 2009-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another fix for argument types

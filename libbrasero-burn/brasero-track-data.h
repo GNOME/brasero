@@ -63,6 +63,12 @@ typedef struct _BraseroTrackData BraseroTrackData;
 struct _BraseroTrackDataClass
 {
 	BraseroTrackClass parent_class;
+
+	/* virtual functions */
+	BraseroImageFS	(*get_fs)		(BraseroTrackData *track);
+	GSList*		(*get_grafts)		(BraseroTrackData *track);
+	GSList*		(*get_excluded)		(BraseroTrackData *track);
+	guint64		(*get_file_num)		(BraseroTrackData *track);
 };
 
 struct _BraseroTrackData

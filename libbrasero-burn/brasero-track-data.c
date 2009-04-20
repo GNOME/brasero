@@ -150,17 +150,6 @@ brasero_track_data_rm_fs (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
-BraseroImageFS
-brasero_track_data_get_fs (BraseroTrackData *track)
-{
-	BraseroTrackDataPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_IMAGE_FS_NONE);
-
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
-	return priv->fs_type;
-}
-
 BraseroBurnResult
 brasero_track_data_set_data_blocks (BraseroTrackData *track,
 				    goffset blocks)
@@ -189,15 +178,43 @@ brasero_track_data_set_file_num (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
-GSList *
-brasero_track_data_get_grafts (BraseroTrackData *track)
+BraseroImageFS
+brasero_track_data_get_fs (BraseroTrackData *track)
+{
+	BraseroTrackDataClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_IMAGE_FS_NONE);
+
+	klass = BRASERO_TRACK_DATA_CLASS (track);
+	return klass->get_fs (track);
+}
+
+BraseroImageFS
+brasero_track_data_get_fs_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
 
+	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	return priv->fs_type;
+}
+
+GSList *
+brasero_track_data_get_grafts (BraseroTrackData *track)
+{
+	BraseroTrackDataClass *klass;
+
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	klass = BRASERO_TRACK_DATA_CLASS (track);
+	return klass->get_grafts (track);
+}
 
+static GSList *
+brasero_track_data_get_grafts_real (BraseroTrackData *track)
+{
+	BraseroTrackDataPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_PRIVATE (track);
 	return priv->grafts;
 }
 
@@ -205,18 +222,19 @@ GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
 				 gboolean copy)
 {
-	BraseroTrackDataPrivate *priv;
+	BraseroTrackDataClass *klass;
 	GSList *retval = NULL;
+	GSList *excluded;
 	GSList *iter;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
-
+	klass = BRASERO_TRACK_DATA_CLASS (track);
+	excluded = klass->get_excluded (track);
 	if (!copy)
-		return priv->excluded;
+		return excluded;
 
-	for (iter = priv->excluded; iter; iter = iter->next) {
+	for (iter = excluded; iter; iter = iter->next) {
 		gchar *uri;
 
 		uri = iter->data;
@@ -224,6 +242,15 @@ brasero_track_data_get_excluded (BraseroTrackData *track,
 	}
 
 	return retval;
+}
+
+static GSList *
+brasero_track_data_get_excluded_real (BraseroTrackData *track)
+{
+	BraseroTrackDataPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	return priv->excluded;
 }
 
 BraseroBurnResult
@@ -235,14 +262,17 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 			      const gchar *videodir,
 			      GError **error)
 {
+	GSList *grafts;
+	GSList *excluded;
 	BraseroBurnResult result;
-	BraseroTrackDataPrivate *priv;
+	BraseroTrackDataClass *klass;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
-	result = brasero_mkisofs_base_write_to_files (priv->grafts,
-						      priv->excluded,
+	grafts = klass->get_grafts (track);
+	excluded = klass->get_excluded (track);
+	result = brasero_mkisofs_base_write_to_files (grafts,
+						      excluded,
 						      use_joliet,
 						      emptydir,
 						      videodir,
@@ -254,17 +284,26 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 
 BraseroBurnResult
 brasero_track_data_get_file_num (BraseroTrackData *track,
-				 guint64 *num_files)
+				 guint64 *file_num)
+{
+	BraseroTrackDataClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), 0);
+
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
+	if (file_num)
+		*file_num = klass->get_file_num (track);
+
+	return BRASERO_BURN_OK;
+}
+
+static guint64
+brasero_track_data_get_file_num_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
-
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
-
-	*num_files = priv->file_num;
-
-	return BRASERO_BURN_OK;
+	return priv->file_num;
 }
 
 static BraseroBurnResult
@@ -335,8 +374,9 @@ brasero_track_data_finalize (GObject *object)
 static void
 brasero_track_data_class_init (BraseroTrackDataClass *klass)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	BraseroTrackClass* track_class = BRASERO_TRACK_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
+	BraseroTrackDataClass *track_data_class = BRASERO_TRACK_DATA_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroTrackDataPrivate));
 
@@ -345,6 +385,11 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
 	track_class->get_type = brasero_track_data_get_track_type;
 	track_class->get_status = brasero_track_data_get_status;
 	track_class->get_size = brasero_track_data_get_size;
+
+	track_data_class->get_fs = brasero_track_data_get_fs_real;
+	track_data_class->get_grafts = brasero_track_data_get_grafts_real;
+	track_data_class->get_excluded = brasero_track_data_get_excluded_real;
+	track_data_class->get_file_num = brasero_track_data_get_file_num_real;
 }
 
 BraseroTrackData *
