@@ -32,6 +32,8 @@
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
 
+#include <unique/unique.h>
+
 #include "brasero-misc.h"
 
 #include "brasero-app.h"
@@ -1443,11 +1445,26 @@ void
 brasero_app_run_mainwin (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
+	UniqueApp *uapp;
 
 	priv = BRASERO_APP_PRIVATE (app);
 
 	priv->mainwin_running = 1;
 	gtk_widget_show (GTK_WIDGET (priv->mainwin));
+
+	uapp = unique_app_new ("org.gnome.Brasero", NULL);
+
+	if (unique_app_is_running (uapp))
+	{
+		UniqueResponse response;
+
+		response = unique_app_send_message (uapp, UNIQUE_ACTIVATE, NULL);
+    		g_object_unref (uapp);
+		uapp = NULL;
+       
+		return response == UNIQUE_RESPONSE_OK;
+	}
+
 	gtk_main ();
 }
 
