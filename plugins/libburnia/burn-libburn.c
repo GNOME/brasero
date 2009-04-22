@@ -297,7 +297,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			          GError **error)
 {
 	int fd;
-	guint64 size = 0;
+	goffset bytes = 0;
 	BraseroLibburnPrivate *priv;
 	BraseroTrackType *type = NULL;
 	BraseroBurnResult result = BRASERO_BURN_OK;
@@ -323,17 +323,18 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 
 		brasero_job_get_session_output_size (BRASERO_JOB (self),
 						     NULL,
-						     &size);
+						     &bytes);
 
 		result = brasero_libburn_add_fd_track (session,
 						       fd,
 						       mode,
-						       size,
+						       bytes,
 						       priv->pvd,
 						       error);
 	}
 	else if (brasero_track_type_get_has_stream (type)) {
 		GSList *tracks;
+		guint64 length = 0;
 
 		brasero_track_type_free (type);
 
@@ -342,15 +343,15 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			BraseroTrack *track;
 
 			track = tracks->data;
-			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &size);
-			size = BRASERO_DURATION_TO_BYTES (size);
+			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
+			bytes = BRASERO_DURATION_TO_BYTES (length);
 
 			/* we dup the descriptor so the same 
 			 * will be shared by all tracks */
 			result = brasero_libburn_add_fd_track (session,
 							       dup (fd),
 							       BURN_AUDIO,
-							       size,
+							       bytes,
 							       NULL,
 							       error);
 			if (result != BRASERO_BURN_OK)
@@ -476,7 +477,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 			      GError **error)
 {
 	guint64 rate;
-	guint64 blocks = 0;
+	goffset blocks = 0;
 	BraseroMedia media;
 	BraseroBurnFlag flags;
 	BraseroBurnResult result;

@@ -37,12 +37,15 @@
 
 #include <gconf/gconf-client.h>
 
+#include "brasero-misc.h"
+
+#include "burn-debug.h"
+
 #include "brasero-player.h"
 #include "brasero-player-bacon.h"
 #include "brasero-utils.h"
 #include "brasero-metadata.h"
 #include "brasero-io.h"
-#include "burn-debug.h"
 
 G_DEFINE_TYPE (BraseroPlayer, brasero_player, GTK_TYPE_ALIGNMENT);
 

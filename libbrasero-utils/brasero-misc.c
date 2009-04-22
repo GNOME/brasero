@@ -44,6 +44,60 @@
 
 #include "brasero-misc.h"
 
+
+/**
+ * Error reporting
+ */
+
+GQuark
+brasero_utils_error_quark (void)
+{
+	static GQuark quark = 0;
+
+	if (!quark)
+		quark = g_quark_from_static_string ("Brasero_utils_error");
+
+	return quark;
+}
+
+/**
+ * Debug
+ */
+
+static gboolean use_debug = FALSE;
+
+void
+brasero_utils_set_use_debug (gboolean active)
+{
+	use_debug = active;
+}
+
+void
+brasero_utils_debug_message (const gchar *domain,
+			     const gchar *location,
+			     const gchar *format,
+			     ...)
+{
+	va_list arg_list;
+	gchar *format_real;
+
+	if (!use_debug)
+		return;
+
+	format_real = g_strdup_printf ("At %s: %s",
+				       location,
+				       format);
+
+	va_start (arg_list, format);
+	g_logv (domain,
+		G_LOG_LEVEL_DEBUG,
+		format_real,
+		arg_list);
+	va_end (arg_list);
+
+	g_free (format_real);
+}
+
 GtkWidget *
 brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 {

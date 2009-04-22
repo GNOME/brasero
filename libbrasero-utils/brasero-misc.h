@@ -34,10 +34,46 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#ifndef _MISC_H
-#define _MISC_H
+#ifndef _BRASERO_MISC_H
+#define _BRASERO_MISC_H
 
 G_BEGIN_DECLS
+
+GQuark brasero_utils_error_quark (void);
+
+#define BRASERO_UTILS_ERROR				brasero_utils_error_quark()
+
+typedef enum {
+	BRASERO_UTILS_ERROR_NONE,
+	BRASERO_UTILS_ERROR_GENERAL,
+	BRASERO_UTILS_ERROR_SYMLINK_LOOP
+} BraseroUtilsErrors;
+
+#define BRASERO_UTILS_LOG_DOMAIN			"BraseroUtils"
+
+void
+brasero_utils_set_use_debug (gboolean active);
+
+void
+brasero_utils_debug_message (const gchar *domain,
+			     const gchar *location,
+			     const gchar *format,
+			     ...);
+
+#define BRASERO_UTILS_LOG(format, ...)						\
+	brasero_utils_debug_message (BRASERO_UTILS_LOG_DOMAIN,			\
+				     G_STRLOC,					\
+				     format,					\
+				     ##__VA_ARGS__);
+
+
+#define BRASERO_GET_BASENAME_FOR_DISPLAY(uri, name)				\
+{										\
+    	gchar *escaped_basename;						\
+	escaped_basename = g_path_get_basename (uri);				\
+    	name = g_uri_unescape_string (escaped_basename, NULL);			\
+	g_free (escaped_basename);						\
+}
 
 GtkWidget *
 brasero_utils_pack_properties (const gchar *title, ...);

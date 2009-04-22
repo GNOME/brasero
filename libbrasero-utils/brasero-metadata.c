@@ -1,24 +1,28 @@
-/***************************************************************************
- *            metadata.c
- *
- *  jeu jui 28 12:49:41 2005
- *  Copyright  2005  Philippe Rouquier
- *  brasero-app@wanadoo.fr
- ***************************************************************************/
-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- *  Brasero is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * Libbrasero-misc
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
  *
- *  Brasero is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * Libbrasero-misc is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to:
+ * The Libbrasero-misc authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-misc. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
+ * 
+ * Libbrasero-misc is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -43,8 +47,7 @@
 #include <gst/tag/tag.h>
 
 #include "brasero-metadata.h"
-#include "brasero-utils.h"
-#include "burn-debug.h"
+#include "brasero-misc.h"
 
 #define BRASERO_METADATA_INITIAL_STATE		GST_STATE_PAUSED
 
@@ -252,8 +255,8 @@ brasero_metadata_stop_pipeline (GstElement *pipeline)
 						&state,
 						&pending,
 						GST_MSECOND);
-		BRASERO_BURN_LOG ("Get state (current = %i pending = %i) returned %i",
-				  state, pending, change);
+		BRASERO_UTILS_LOG ("Get state (current = %i pending = %i) returned %i",
+				   state, pending, change);
 	}
 
 	if (change == GST_STATE_CHANGE_FAILURE)
@@ -324,9 +327,9 @@ brasero_metadata_stop (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Retrieval ended for %s %p",
-  			  priv->info ? priv->info->uri:"Unknown",
-			  self);
+	BRASERO_UTILS_LOG ("Retrieval ended for %s %p",
+  			   priv->info ? priv->info->uri:"Unknown",
+			   self);
 
 	g_mutex_lock (priv->mutex);
 
@@ -383,9 +386,9 @@ brasero_metadata_cancel (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Metadata retrieval cancelled for %s %p",
-			  priv->info ? priv->info->uri:"Unknown",
-			  self);
+	BRASERO_UTILS_LOG ("Metadata retrieval cancelled for %s %p",
+			   priv->info ? priv->info->uri:"Unknown",
+			   self);
 	
 	brasero_metadata_stop (self);
 	if (priv->error) {
@@ -402,7 +405,7 @@ brasero_metadata_completed (BraseroMetadata *self)
 	priv = BRASERO_METADATA_PRIVATE (self);
 
 	if (priv->error) {
-		BRASERO_BURN_LOG ("Operation completed with an error %s", priv->error->message);
+		BRASERO_UTILS_LOG ("Operation completed with an error %s", priv->error->message);
 	}
 
 	/* we send a message only if we haven't got a loop (= async mode) */
@@ -446,7 +449,7 @@ brasero_metadata_thumbnail (BraseroMetadata *self)
 				       GST_SEEK_FLAG_FLUSH,
 				       position);
 
-	BRASERO_BURN_LOG ("Seeking forward %i for %s", res, priv->info->uri);
+	BRASERO_UTILS_LOG ("Seeking forward %i for %s", res, priv->info->uri);
 	if (!res)
 		return brasero_metadata_completed (self);
 
@@ -621,7 +624,7 @@ brasero_metadata_success (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Metadata retrieval completed for %s", priv->info->uri);
+	BRASERO_UTILS_LOG ("Metadata retrieval completed for %s", priv->info->uri);
 
 	/* check if that's a seekable one */
 	brasero_metadata_is_seekable (self);
@@ -666,8 +669,8 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 			gchar *name;
 
 			BRASERO_GET_BASENAME_FOR_DISPLAY (priv->info->uri, name);
-			priv->error = g_error_new (BRASERO_ERROR,
-						   BRASERO_ERROR_GENERAL,
+			priv->error = g_error_new (BRASERO_UTILS_ERROR,
+						   BRASERO_UTILS_ERROR_GENERAL,
 						   _("\"%s\" could not be handled by Gstreamer."),
 						   name);
 			g_free (name);
@@ -676,7 +679,7 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 		return brasero_metadata_completed (self);
 	}
 
-	BRASERO_BURN_LOG ("found duration %lli for %s", duration, priv->info->uri);
+	BRASERO_UTILS_LOG ("found duration %lli for %s", duration, priv->info->uri);
 
 	priv->info->len = duration;
 	return brasero_metadata_success (self);
@@ -701,7 +704,7 @@ brasero_metadata_mp3_bus_messages (GstBus *bus,
 	case GST_MESSAGE_ERROR:
 		/* save the error message */
 		gst_message_parse_error (msg, &error, &debug_string);
-		BRASERO_BURN_LOG ("Gstreamer error - mp3 - (%s)", debug_string);
+		BRASERO_UTILS_LOG ("Gstreamer error - mp3 - (%s)", debug_string);
 		g_free (debug_string);
 		if (!priv->error && error)
 			priv->error = error;
@@ -710,7 +713,7 @@ brasero_metadata_mp3_bus_messages (GstBus *bus,
 		return FALSE;
 
 	case GST_MESSAGE_EOS:
-		BRASERO_BURN_LOG ("End of stream reached - mp3 - for %s", priv->info->uri);
+		BRASERO_UTILS_LOG ("End of stream reached - mp3 - for %s", priv->info->uri);
 		brasero_metadata_get_duration (self, priv->pipeline_mp3, FALSE);
 		return FALSE;
 
@@ -738,8 +741,8 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 					    priv->info->uri,
 					    NULL);
 	if (!source) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"Source\"");
 
@@ -751,8 +754,8 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 
 	parse = gst_element_factory_make ("mp3parse", NULL);
 	if (!parse) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"mp3parse\"");
 
@@ -764,8 +767,8 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 
 	sink = gst_element_factory_make ("fakesink", NULL);
 	if (!sink) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"Fakesink\"");
 
@@ -800,7 +803,7 @@ brasero_metadata_success_main (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Metadata retrieval successfully completed for %s", priv->info->uri);
+	BRASERO_UTILS_LOG ("Metadata retrieval successfully completed for %s", priv->info->uri);
 
 	/* find the type of the file */
 	brasero_metadata_get_mime_type (self);
@@ -811,7 +814,7 @@ brasero_metadata_success_main (BraseroMetadata *self)
 	/* get the size */
 	if (brasero_metadata_is_mp3 (self)) {
 		if (!brasero_metadata_create_mp3_pipeline (self)) {
-			BRASERO_BURN_LOG ("Impossible to run mp3 specific pipeline");
+			BRASERO_UTILS_LOG ("Impossible to run mp3 specific pipeline");
 			return brasero_metadata_completed (self);
 		}
 
@@ -993,7 +996,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Starting to download missing plugins");
+	BRASERO_UTILS_LOG ("Starting to download missing plugins");
 
 	details = g_ptr_array_new ();
 	for (iter = priv->missing_plugins; iter; iter = iter->next) {
@@ -1052,7 +1055,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 	gst_install_plugins_context_free (context);
 	g_ptr_array_free (details, FALSE);
 
-	BRASERO_BURN_LOG ("Download status %i", status);
+	BRASERO_UTILS_LOG ("Download status %i", status);
 
 	if (status != GST_INSTALL_PLUGINS_STARTED_OK) {
 		brasero_metadata_install_plugins_free_data (downloads);
@@ -1087,7 +1090,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 			priv->info->snapshot = g_value_get_object (value);
 			g_object_ref (priv->info->snapshot);
 
-			BRASERO_BURN_LOG ("Received pixbuf snapshot sink (%p) for %s", priv->info->snapshot, priv->info->uri);
+			BRASERO_UTILS_LOG ("Received pixbuf snapshot sink (%p) for %s", priv->info->snapshot, priv->info->uri);
 
 			/* Now we can stop */
 			return brasero_metadata_completed (self);
@@ -1117,7 +1120,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 				 * then consider that silence started from 0 */
 				gst_element_query_position (priv->pipeline, &format, &pos);
 				if (pos == -1) {
-					BRASERO_BURN_LOG ("impossible to retrieve position");
+					BRASERO_UTILS_LOG ("impossible to retrieve position");
 					return TRUE;
 				}
 
@@ -1135,10 +1138,10 @@ brasero_metadata_bus_messages (GstBus *bus,
 				else
 					priv->silence->end = pos;
 
-				BRASERO_BURN_LOG ("silence detected at %lli", pos);
+				BRASERO_UTILS_LOG ("silence detected at %lli", pos);
 			}
 			else if (priv->silence) {
-				BRASERO_BURN_LOG ("silence finished");
+				BRASERO_UTILS_LOG ("silence finished");
 
 				priv->info->silences = g_slist_append (priv->info->silences,
 								       priv->silence);
@@ -1151,7 +1154,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 	case GST_MESSAGE_ERROR:
 		/* save the error message */
 		gst_message_parse_error (msg, &error, &debug_string);
-		BRASERO_BURN_LOG ("Gstreamer error (%s)", debug_string);
+		BRASERO_UTILS_LOG ("Gstreamer error (%s)", debug_string);
 		g_free (debug_string);
 		if (!priv->error && error)
 			priv->error = error;
@@ -1167,7 +1170,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 		break;
 
 	case GST_MESSAGE_EOS:
-		BRASERO_BURN_LOG ("End of stream reached for %s", priv->info->uri);
+		BRASERO_UTILS_LOG ("End of stream reached for %s", priv->info->uri);
 		return brasero_metadata_success_main (self);
 
 	case GST_MESSAGE_TAG:
@@ -1269,7 +1272,7 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 	gst_object_unref (audio_pad);
 
 	gst_bin_add (GST_BIN (priv->pipeline), priv->audio);
-	BRASERO_BURN_LOG ("Adding audio pipeline for %s", priv->info->uri);
+	BRASERO_UTILS_LOG ("Adding audio pipeline for %s", priv->info->uri);
 
 	return TRUE;
 }
@@ -1290,7 +1293,7 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 		gst_object_unref (priv->video);
 		priv->video = NULL;
 
-		BRASERO_BURN_LOG ("gdkpixbufsink is not installed");
+		BRASERO_UTILS_LOG ("gdkpixbufsink is not installed");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (priv->video), priv->snapshot);
@@ -1306,7 +1309,7 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 		gst_object_unref (priv->video);
 		priv->video = NULL;
 
-		BRASERO_BURN_LOG ("ffmpegcolorspace is not installed");
+		BRASERO_UTILS_LOG ("ffmpegcolorspace is not installed");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (priv->video), colorspace);
@@ -1325,7 +1328,7 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 	gst_object_unref (video_pad);
 
 	gst_bin_add (GST_BIN (priv->pipeline), priv->video);
-	BRASERO_BURN_LOG ("Adding pixbuf snapshot sink for %s", priv->info->uri);
+	BRASERO_UTILS_LOG ("Adding pixbuf snapshot sink for %s", priv->info->uri);
 
 	return TRUE;
 }
@@ -1359,7 +1362,7 @@ brasero_metadata_link_dummy_pad (BraseroMetadata *self,
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Linking to a fake sink");
+	BRASERO_UTILS_LOG ("Linking to a fake sink");
 
 	/* It doesn't hurt to link to a fakesink and can avoid some deadlocks.
 	 * I don't know why but some demuxers in particular will lock (probably
@@ -1404,7 +1407,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 
 	res = GST_PAD_LINK_REFUSED;
 
-	BRASERO_BURN_LOG ("New pad for %s", priv->info->uri);
+	BRASERO_UTILS_LOG ("New pad for %s", priv->info->uri);
 
 	/* make sure that this is audio / video */
 	caps = gst_pad_get_caps (pad);
@@ -1424,7 +1427,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 		sink = gst_element_get_static_pad (priv->audio, "sink");
 		if (sink && !GST_PAD_IS_LINKED (sink)) {
 			res = gst_pad_link (pad, sink);
-			BRASERO_BURN_LOG ("Audio stream link %i for %s", res, priv->info->uri);
+			BRASERO_UTILS_LOG ("Audio stream link %i for %s", res, priv->info->uri);
 			gst_object_unref (sink);
 
 			priv->audio_linked = (res == GST_PAD_LINK_OK);
@@ -1433,7 +1436,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	}
 
 	if (g_strrstr (name, "video/x-raw-") && !priv->video_linked) {
-		BRASERO_BURN_LOG ("RAW video stream found");
+		BRASERO_UTILS_LOG ("RAW video stream found");
 
 		if (!priv->video && (priv->flags & BRASERO_METADATA_FLAG_THUMBNAIL)) {
 			/* we shouldn't error out if we can't create a video
@@ -1441,7 +1444,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 			/* FIXME: we should nevertheless tell the user what
 			 * plugin he is missing. */
 			if (!brasero_metadata_create_video_pipeline (self)) {
-				BRASERO_BURN_LOG ("Impossible to create video pipeline");
+				BRASERO_UTILS_LOG ("Impossible to create video pipeline");
 
 				gst_caps_unref (caps);
 
@@ -1464,7 +1467,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 
 			gst_element_set_state (priv->video, BRASERO_METADATA_INITIAL_STATE);
 
-			BRASERO_BURN_LOG ("Video stream link %i for %s", res, priv->info->uri);
+			BRASERO_UTILS_LOG ("Video stream link %i for %s", res, priv->info->uri);
 		}
 		else if (!brasero_metadata_link_dummy_pad (self, pad))
 			brasero_metadata_error_on_pad_linking (self);
@@ -1486,8 +1489,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 
 	priv->decode = gst_element_factory_make ("decodebin", NULL);
 	if (priv->decode == NULL) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"Decodebin\"");
 		return FALSE;
@@ -1501,8 +1504,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 	/* the two following objects don't always run */
 	priv->convert = gst_element_factory_make ("audioconvert", NULL);
 	if (!priv->convert) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"Audioconvert\"");
 		return FALSE;
@@ -1510,8 +1513,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 
 	priv->level = gst_element_factory_make ("level", NULL);
 	if (!priv->level) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"Level\"");
 		return FALSE;
@@ -1523,8 +1526,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 
 	priv->sink = gst_element_factory_make ("fakesink", NULL);
 	if (priv->sink == NULL) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
 					   "\"Fakesink\"");
 		return FALSE;
@@ -1542,7 +1545,7 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("New retrieval for %s %p", uri, self);
+	BRASERO_UTILS_LOG ("New retrieval for %s %p", uri, self);
 
 	if (priv->error) {
 		g_error_free (priv->error);
@@ -1593,8 +1596,8 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 						  uri,
 						  NULL);
 	if (!priv->source) {
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
+		priv->error = g_error_new (BRASERO_UTILS_ERROR,
+					   BRASERO_UTILS_ERROR_GENERAL,
 					   "Can't create file source");
 		return FALSE;
 	}
@@ -1690,7 +1693,7 @@ static void
 brasero_metadata_wait_cancelled (GCancellable *cancel,
 				 GCond *condition)
 {
-	BRASERO_BURN_LOG ("Thread waiting for retrieval end cancelled");
+	BRASERO_UTILS_LOG ("Thread waiting for retrieval end cancelled");
 	g_cond_broadcast (condition);
 }
 
@@ -1704,7 +1707,7 @@ brasero_metadata_wait (BraseroMetadata *self,
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Metadata lock and wait %p", self);
+	BRASERO_UTILS_LOG ("Metadata lock and wait %p", self);
 
 	g_mutex_lock (priv->mutex);
 

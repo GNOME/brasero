@@ -411,7 +411,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroBurnFlag flags;
-	guint64 sectors = 0;
+	goffset sectors = 0;
 	gchar *device;
 	guint speed;
 

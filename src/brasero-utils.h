@@ -40,10 +40,6 @@ G_BEGIN_DECLS
 
 #define BRASERO_ERROR brasero_error_quark()
 
-typedef char *(*BraseroFormatTime) (double time,
-				    gboolean with_unit,
-				    gboolean round);
-
 typedef enum {
 	BRASERO_ERROR_NONE,
 	BRASERO_ERROR_GENERAL,

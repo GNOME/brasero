@@ -34,6 +34,7 @@
 
 #include "brasero-tags.h"
 
+#include "brasero-misc.h"
 #include "burn-debug.h"
 #include "brasero-app.h"
 #include "brasero-disc.h"

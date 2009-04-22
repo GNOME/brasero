@@ -277,7 +277,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 
 		priv->current_track_written = mb_written * 1048576;
 		if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) == BRASERO_BURN_OK) {
-			guint64 bytes = 0;
+			goffset bytes = 0;
 
 			/* we must ask the imager what is the total size */
 			brasero_job_get_session_output_size (BRASERO_JOB (cdrecord),
@@ -756,7 +756,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 	if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
 		int buffer_size;
-		guint64 sectors;
+		goffset sectors;
 		
 		/* we need to know what is the type of the track (audio / data) */
 		result = brasero_job_get_input_type (BRASERO_JOB (cdrecord), type);

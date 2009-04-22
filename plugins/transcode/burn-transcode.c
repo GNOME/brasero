@@ -1316,8 +1316,13 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 				 uri);
 
 		if (priv->mp3_size_pipeline) {
+			gchar *escaped_basename;
+
 			/* Run the pipeline till the end */
-			BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+			escaped_basename = g_path_get_basename (uri);
+			name = g_uri_unescape_string (escaped_basename, NULL);
+			g_free (escaped_basename);
+
 			string = g_strdup_printf (_("Analysing \"%s\""), name);
 			g_free (name);
 		
@@ -1349,7 +1354,12 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 		return FALSE;
 	}
 	else {
-		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+		gchar *escaped_basename;
+
+		escaped_basename = g_path_get_basename (uri);
+		name = g_uri_unescape_string (escaped_basename, NULL);
+		g_free (escaped_basename);
+
 		string = g_strdup_printf (_("Transcoding \"%s\""), name);
 		g_free (name);
 

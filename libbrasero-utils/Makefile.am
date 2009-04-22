@@ -9,6 +9,10 @@ INCLUDES = \
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\
+	$(BRASERO_GIO_CFLAGS)						\
+	$(BRASERO_PL_PARSER_CFLAGS)					\
+	$(BRASERO_GSTREAMER_CFLAGS)					\
+	$(BRASERO_GSTREAMER_BASE_CFLAGS)				\
 	$(BRASERO_GTK_CFLAGS)
 
 
@@ -17,6 +21,10 @@ lib_LTLIBRARIES = \
 
 libbrasero_utils_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
+	$(BRASERO_GIO_LIBS)		\
+	$(BRASERO_GSTREAMER_LIBS)	\
+	$(BRASERO_GSTREAMER_BASE_LIBS)	\
+	$(BRASERO_PL_PARSER_LIBS)	\
 	$(BRASERO_GTK_LIBS)
 
 
@@ -44,7 +52,13 @@ libbrasero_utils_la_SOURCES =		\
 	brasero-jacket-view.c        \
 	brasero-jacket-view.h        \
 	brasero-tool-color-picker.c        \
-	brasero-tool-color-picker.h
+	brasero-tool-color-picker.h        \
+	brasero-async-task-manager.c        \
+	brasero-async-task-manager.h        \
+	brasero-io.c        \
+	brasero-io.h        \
+	brasero-metadata.c        \
+	brasero-metadata.h
 
 # EXTRA_DIST =			\
 #	libbrasero-utils.symbols

@@ -1,20 +1,28 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * brasero
- * Copyright (C) Philippe Rouquier 2005-2008 <bonfire-app@wanadoo.fr>
+ * Libbrasero-misc
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ *
+ * Libbrasero-misc is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The Libbrasero-misc authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-misc. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
  * 
- *  Brasero is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- * 
- * brasero is distributed in the hope that it will be useful,
+ * Libbrasero-misc is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with brasero.  If not, write to:
+ * along with this program; if not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -40,12 +48,7 @@
 #include <totem-pl-parser.h>
 #endif
 
-#include "burn-basics.h"
-#include "burn-debug.h"
-#include "burn-volume.h"
-
-#include "brasero-app.h"
-#include "brasero-utils.h"
+#include "brasero-misc.h"
 #include "brasero-io.h"
 #include "brasero-metadata.h"
 #include "brasero-async-task-manager.h"
@@ -83,23 +86,6 @@ struct _BraseroIOPrivate
 #define MAX_CONCURENT_META 	2
 #define MAX_BUFFERED_META	20
 
-struct _BraseroIOResultCallbackData {
-	gpointer callback_data;
-	gint ref;
-};
-typedef struct _BraseroIOResultCallbackData BraseroIOResultCallbackData;
-
-struct _BraseroIOJob {
-	gchar *uri;
-	BraseroIOFlags options;
-
-	const BraseroIOJobBase *base;
-	BraseroIOResultCallbackData *callback_data;
-};
-typedef struct _BraseroIOJob BraseroIOJob;
-
-#define BRASERO_IO_JOB(data)	((BraseroIOJob *) (data))
-
 struct _BraseroIOJobResult {
 	const BraseroIOJobBase *base;
 	BraseroIOResultCallbackData *callback_data;
@@ -133,7 +119,6 @@ struct _BraseroIOJobProgress {
 };
 
 G_DEFINE_TYPE (BraseroIO, brasero_io, BRASERO_TYPE_ASYNC_TASK_MANAGER);
-
 
 /**
  * That's the structure to pass the progress on
@@ -369,7 +354,7 @@ brasero_io_queue_result (BraseroIO *self,
 	g_mutex_unlock (priv->lock);
 }
 
-static void
+void
 brasero_io_return_result (BraseroIO *self,
 			  const BraseroIOJobBase *base,
 			  const gchar *uri,
@@ -400,7 +385,7 @@ brasero_io_return_result (BraseroIO *self,
  * Used to push a job
  */
 
-static void
+void
 brasero_io_set_job (BraseroIOJob *job,
 		    const BraseroIOJobBase *base,
 		    const gchar *uri,
@@ -416,7 +401,7 @@ brasero_io_set_job (BraseroIOJob *job,
 		g_atomic_int_inc (&job->callback_data->ref);
 }
 
-static void
+void
 brasero_io_push_job (BraseroIO *self,
 		     BraseroIOJob *job,
 		     const BraseroAsyncTaskType *type)
@@ -442,7 +427,7 @@ brasero_io_push_job (BraseroIO *self,
  * Job destruction
  */
 
-static void
+void
 brasero_io_job_free (BraseroIO *self,
 		     gboolean cancelled,
 		     BraseroIOJob *job)
@@ -524,7 +509,6 @@ brasero_io_mount_enclosing_volume_cb (GObject *source,
 {
 	BraseroIOMount *mount = callback_data;
 
-	BRASERO_BURN_LOG ("Volume mounting operation result");
 	mount->result = g_file_mount_enclosing_volume_finish (G_FILE (source),
 							      result,
 							      &mount->error);
@@ -541,7 +525,8 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 	GMountOperation *operation;
 	BraseroIOMount mount = { NULL, };
 
-	operation = gtk_mount_operation_new (GTK_WINDOW (brasero_app_get_default ()));
+	/* FIXME: need a way to get a window for the operation */
+//	operation = gtk_mount_operation_new (GTK_WINDOW (brasero_app_get_default ()));
 	g_file_mount_enclosing_volume (file,
 				       G_MOUNT_MOUNT_NONE,
 				       operation,
@@ -576,9 +561,9 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 	else if (mount.error)
 		g_error_free (mount.error);
 
-	BRASERO_BURN_LOG ("Parent volume is %s",
-			  (mounted != NULL && !g_cancellable_is_cancelled (cancel))?
-			  "mounted":"not mounted");
+	BRASERO_UTILS_LOG ("Parent volume is %s",
+			   (mounted != NULL && !g_cancellable_is_cancelled (cancel))?
+			   "mounted":"not mounted");
 
 	return (mounted != NULL && !g_cancellable_is_cancelled (cancel));
 }
@@ -801,7 +786,7 @@ brasero_io_find_metadata (BraseroIO *self,
 
 	priv = BRASERO_IO_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Retrieving available metadata %s", uri);
+	BRASERO_UTILS_LOG ("Retrieving available metadata %s", uri);
 
 	/* First see if a metadata is running with the same uri and the same
 	 * flags as us. In this case, acquire the lock and wait for the lock
@@ -829,7 +814,7 @@ brasero_io_find_metadata (BraseroIO *self,
 			 * do what they need to do then lock the metadata lock
 			 * Let the thread that got the lock first move it back
 			 * to waiting queue */
-			BRASERO_BURN_LOG ("Already ongoing search for %s", uri);
+			BRASERO_UTILS_LOG ("Already ongoing search for %s", uri);
 			brasero_metadata_increase_listener_number (metadata);
 			return metadata;
 		}
@@ -911,7 +896,7 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 	}
 
 	/* Make sure it is stopped */
-	BRASERO_BURN_LOG ("Stopping metadata information retrieval (%p)", metadata);
+	BRASERO_UTILS_LOG ("Stopping metadata information retrieval (%p)", metadata);
 	brasero_metadata_cancel (metadata);
 
 	priv->metadata_running = g_slist_remove (priv->metadata_running, metadata);
@@ -949,7 +934,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	||  !strcmp (mime, "application/octet-stream")))
 		return FALSE;
 
-	BRASERO_BURN_LOG ("Retrieving metadata info");
+	BRASERO_UTILS_LOG ("Retrieving metadata info");
 	g_mutex_lock (priv->lock_metadata);
 
 	/* Seek in the buffer if we have already explored these metadata. Check 
@@ -985,7 +970,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		g_queue_remove (priv->meta_buffer, cached);
 		brasero_io_metadata_cached_free (cached);
 
-		BRASERO_BURN_LOG ("Updating cache information for %s", uri);
+		BRASERO_UTILS_LOG ("Updating cache information for %s", uri);
 	}
 
 	/* Find a metadata */
@@ -1048,7 +1033,7 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 		if (local_error && local_error->code == G_IO_ERROR_NOT_MOUNTED) {
 			gboolean res;
 
-			BRASERO_BURN_LOG ("Starting to mount parent volume");
+			BRASERO_UTILS_LOG ("Starting to mount parent volume");
 			g_error_free (local_error);
 			local_error = NULL;
 
@@ -1080,8 +1065,8 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 		parent = g_file_get_parent (file);
 		if (!brasero_io_check_symlink_target (parent, info)) {
 			g_set_error (error,
-				     BRASERO_ERROR,
-				     BRASERO_ERROR_SYMLINK_LOOP,
+				     BRASERO_UTILS_ERROR,
+				     BRASERO_UTILS_ERROR_SYMLINK_LOOP,
 				     _("Recursive symbolic link"));
 
 			g_object_unref (info);
@@ -1309,8 +1294,8 @@ brasero_io_parse_playlist_get_uris (const gchar *uri,
 
 	if (!result) {
 		g_set_error (error,
-			     BRASERO_ERROR,
-			     BRASERO_ERROR_GENERAL,
+			     BRASERO_UTILS_ERROR,
+			     BRASERO_UTILS_ERROR_GENERAL,
 			     _("The file does not appear to be a playlist"));
 
 		return FALSE;
@@ -1955,8 +1940,8 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		/* special case for symlinks */
 		if (g_file_info_get_is_symlink (info)) {
 			if (!brasero_io_check_symlink_target (file, info)) {
-				error = g_error_new (BRASERO_ERROR,
-						     BRASERO_ERROR_SYMLINK_LOOP,
+				error = g_error_new (BRASERO_UTILS_ERROR,
+						     BRASERO_UTILS_ERROR_SYMLINK_LOOP,
 						     _("Recursive symbolic link"));
 
 				/* since we checked for the existence of the file
@@ -2081,129 +2066,6 @@ brasero_io_load_directory (BraseroIO *self,
 	brasero_io_push_job (self, BRASERO_IO_JOB (data), &contents_type);
 }
 
-/**
- * to evaluate the contents of a medium or image async
- */
-struct _BraseroIOImageContentsData {
-	BraseroIOJob job;
-	gchar *dev_image;
-
-	gint64 session_block;
-	gint64 block;
-};
-typedef struct _BraseroIOImageContentsData BraseroIOImageContentsData;
-
-static void
-brasero_io_image_directory_contents_destroy (BraseroAsyncTaskManager *manager,
-					     gboolean cancelled,
-					     gpointer callback_data)
-{
-	BraseroIOImageContentsData *data = callback_data;
-
-	g_free (data->dev_image);
-	brasero_io_job_free (BRASERO_IO (manager), cancelled, BRASERO_IO_JOB (data));
-}
-
-static BraseroAsyncTaskResult
-brasero_io_image_directory_contents_thread (BraseroAsyncTaskManager *manager,
-					    GCancellable *cancel,
-					    gpointer callback_data)
-{
-	BraseroIOImageContentsData *data = callback_data;
-	BraseroDeviceHandle *handle;
-	GList *children, *iter;
-	GError *error = NULL;
-	BraseroVolSrc *vol;
-
-	handle = brasero_device_handle_open (data->job.uri, FALSE, NULL);
-	vol = brasero_volume_source_open_device_handle (handle, &error);
-	if (!vol) {
-		brasero_device_handle_close (handle);
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
-					  data->job.uri,
-					  NULL,
-					  error,
-					  data->job.callback_data);
-		return BRASERO_ASYNC_TASK_FINISHED;
-	}
-
-	children = brasero_volume_load_directory_contents (vol,
-							   data->session_block,
-							   data->block,
-							   &error);
-	brasero_volume_source_close (vol);
-	brasero_device_handle_close (handle);
-
-	for (iter = children; iter; iter = iter->next) {
-		BraseroVolFile *file;
-		GFileInfo *info;
-
-		file = iter->data;
-
-		info = g_file_info_new ();
-		g_file_info_set_file_type (info, file->isdir? G_FILE_TYPE_DIRECTORY:G_FILE_TYPE_REGULAR);
-		g_file_info_set_name (info, BRASERO_VOLUME_FILE_NAME (file));
-
-		if (file->isdir)
-			g_file_info_set_attribute_int64 (info,
-							 BRASERO_IO_DIR_CONTENTS_ADDR,
-							 file->specific.dir.address);
-		else
-			g_file_info_set_size (info, BRASERO_VOLUME_FILE_SIZE (file));
-
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
-					  data->job.uri,
-					  info,
-					  NULL,
-					  data->job.callback_data);
-	}
-
-	g_list_foreach (children, (GFunc) brasero_volume_file_free, NULL);
-	g_list_free (children);
-
-	return BRASERO_ASYNC_TASK_FINISHED;
-}
-
-static const BraseroAsyncTaskType image_contents_type = {
-	brasero_io_image_directory_contents_thread,
-	brasero_io_image_directory_contents_destroy
-};
-
-void
-brasero_io_load_image_directory (BraseroIO *self,
-				 const gchar *dev_image,
-				 gint64 session_block,
-				 gint64 block,
-				 const BraseroIOJobBase *base,
-				 BraseroIOFlags options,
-				 gpointer user_data)
-{
-	BraseroIOImageContentsData *data;
-	BraseroIOResultCallbackData *callback_data = NULL;
-
-	if (user_data) {
-		callback_data = g_new0 (BraseroIOResultCallbackData, 1);
-		callback_data->callback_data = user_data;
-	}
-
-	data = g_new0 (BraseroIOImageContentsData, 1);
-	data->block = block;
-	data->session_block = session_block;
-
-	brasero_io_set_job (BRASERO_IO_JOB (data),
-			    base,
-			    dev_image,
-			    options,
-			    callback_data);
-
-	brasero_io_push_job (self,
-			     BRASERO_IO_JOB (data),
-			     &image_contents_type);
-
-}
-					 
 static void
 brasero_io_cancel_result (BraseroIO *self,
 			  BraseroIOJobResult *result)
@@ -2480,7 +2342,7 @@ brasero_io_finalize (GObject *object)
 
 			mount = iter->data;
 
-			BRASERO_BURN_LOG ("Unmountin volume");
+			BRASERO_UTILS_LOG ("Unmountin volume");
 			g_mount_unmount (mount,
 					 G_MOUNT_UNMOUNT_NONE,
 					 NULL,

@@ -35,6 +35,7 @@
 #include <gmodule.h>
 
 #include "brasero-medium.h"
+
 #include "brasero-track.h"
 #include "brasero-plugin-registration.h"
 
@@ -42,9 +43,9 @@ G_BEGIN_DECLS
 
 #define BRASERO_BURN_LOG_DOMAIN					"BraseroBurn"
 
-#define BRASERO_BURN_LOG(format, ...)				\
-		brasero_burn_debug_message (G_STRLOC,		\
-					    format,		\
+#define BRASERO_BURN_LOG(format, ...)						\
+		brasero_burn_debug_message (G_STRLOC,				\
+					    format,				\
 					    ##__VA_ARGS__);
 
 #define BRASERO_BURN_LOGV(format, args_list)			\

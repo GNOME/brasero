@@ -42,7 +42,6 @@
 
 #include "brasero-units.h"
 
-#include "burn-debug.h"
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
 #include "burn-dvdcss.h"
@@ -90,11 +89,6 @@ brasero_dvdcss_library_init (GError **error)
 		goto error_version;
 
 	dvdcss_interface_2 = address;
-	BRASERO_BURN_LOG ("libdvdcss version %d.%d.%d\n",
-			  (guchar) dvdcss_interface_2 [0],
-			  (guchar) dvdcss_interface_2 [1],
-			  (guchar) dvdcss_interface_2 [2]);
-
 	if (!g_module_symbol (module, "dvdcss_open", &address))
 		goto error_loading;
 	dvdcss_open = address;

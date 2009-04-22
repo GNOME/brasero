@@ -1,3 +1,111 @@
+2009-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Moved some files to libbrasero-utils so they can be used by
+	libbrasero-burn as well
+
+	* libbrasero-utils/brasero-async-task-manager.c
+	(brasero_async_task_manager_get_type),
+	(brasero_async_task_manager_class_init),
+	(brasero_async_task_manager_init),
+	(brasero_async_task_manager_finalize),
+	(brasero_async_task_manager_insert_task),
+	(brasero_async_task_manager_thread),
+	(brasero_async_task_manager_queue),
+	(brasero_async_task_manager_foreach_active),
+	(brasero_async_task_manager_foreach_active_remove),
+	(brasero_async_task_manager_foreach_unprocessed_remove),
+	(brasero_async_task_manager_find_urgent_task):
+	* libbrasero-utils/brasero-async-task-manager.h:
+	* libbrasero-utils/brasero-io.c
+	(brasero_io_job_progress_report_cb),
+	(brasero_io_job_progress_report_start),
+	(brasero_io_job_progress_report_stop),
+	(brasero_io_job_progress_get_current),
+	(brasero_io_job_progress_get_file_processed),
+	(brasero_io_job_progress_get_read),
+	(brasero_io_job_progress_get_total),
+	(brasero_io_job_progress_get_phase),
+	(brasero_io_unref_result_callback_data),
+	(brasero_io_job_result_free), (brasero_io_return_result_idle),
+	(brasero_io_queue_result), (brasero_io_return_result),
+	(brasero_io_set_job), (brasero_io_push_job), (brasero_io_job_free),
+	(brasero_io_job_destroy), (brasero_io_mount_enclosing_volume_cb),
+	(brasero_io_mount_enclosing_volume),
+	(brasero_io_check_for_parent_symlink),
+	(brasero_io_get_uri_from_path), (brasero_io_check_symlink_target),
+	(brasero_io_metadata_lookup_buffer),
+	(brasero_io_metadata_cached_free),
+	(brasero_io_set_metadata_attributes), (brasero_io_find_metadata),
+	(brasero_io_wait_for_metadata), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread), (brasero_io_new_file_info_job),
+	(brasero_io_get_file_info), (brasero_io_playlist_clear),
+	(brasero_io_add_playlist_entry_parsed_cb),
+	(brasero_io_start_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread), (brasero_io_parse_playlist),
+	(brasero_io_get_file_count_destroy),
+	(brasero_io_get_file_count_process_playlist),
+	(brasero_io_get_file_count_process_file),
+	(brasero_io_get_file_count_process_directory),
+	(brasero_io_get_file_count_start),
+	(brasero_io_get_file_count_progress_cb),
+	(brasero_io_get_file_count_thread), (brasero_io_get_file_count),
+	(brasero_io_load_directory_destroy),
+	(brasero_io_load_directory_playlist),
+	(brasero_io_load_directory_thread), (brasero_io_load_directory),
+	(brasero_io_cancel_result), (brasero_io_cancel_tasks_by_base_cb),
+	(brasero_io_cancel_by_base), (brasero_io_cancel_tasks_by_data_cb),
+	(brasero_io_cancel_by_data), (brasero_io_compare_unprocessed_task),
+	(brasero_io_find_urgent), (brasero_io_register), (brasero_io_init),
+	(brasero_io_free_async_queue), (brasero_io_finalize),
+	(brasero_io_class_init), (brasero_io_last_reference_cb),
+	(brasero_io_get_default):
+	* libbrasero-utils/brasero-io.h:
+	* libbrasero-utils/brasero-metadata.c
+	(brasero_metadata_info_clear), (brasero_metadata_info_free),
+	(brasero_metadata_info_copy), (brasero_metadata_stop_pipeline),
+	(brasero_metadata_destroy_pipeline), (brasero_metadata_stop),
+	(brasero_metadata_cancel), (brasero_metadata_completed),
+	(brasero_metadata_thumbnail), (brasero_metadata_is_seekable),
+	(brasero_metadata_get_mime_type), (brasero_metadata_is_mp3),
+	(foreach_tag), (brasero_metadata_process_pending_tag_messages),
+	(brasero_metadata_success), (brasero_metadata_get_duration),
+	(brasero_metadata_mp3_bus_messages),
+	(brasero_metadata_create_mp3_pipeline),
+	(brasero_metadata_success_main),
+	(brasero_metadata_install_plugins_add_downloaded),
+	(brasero_metadata_install_plugins_free_data),
+	(brasero_metadata_install_plugins_success),
+	(brasero_metadata_install_plugins_abort),
+	(brasero_metadata_install_plugins_completed),
+	(brasero_metadata_install_plugins_result),
+	(brasero_metadata_is_downloading),
+	(brasero_metadata_install_missing_plugins),
+	(brasero_metadata_bus_messages),
+	(brasero_metadata_create_audio_pipeline),
+	(brasero_metadata_create_video_pipeline),
+	(brasero_metadata_error_on_pad_linking),
+	(brasero_metadata_link_dummy_pad),
+	(brasero_metadata_new_decoded_pad_cb),
+	(brasero_metadata_create_pipeline), (brasero_metadata_set_new_uri),
+	(brasero_metadata_set_uri), (brasero_metadata_get_info_async),
+	(brasero_metadata_wait_cancelled), (brasero_metadata_wait),
+	(brasero_metadata_increase_listener_number),
+	(brasero_metadata_decrease_listener_number),
+	(brasero_metadata_get_uri), (brasero_metadata_get_flags),
+	(brasero_metadata_get_result), (brasero_metadata_init),
+	(brasero_metadata_finalize), (brasero_metadata_get_property),
+	(brasero_metadata_set_property), (brasero_metadata_class_init),
+	(brasero_metadata_new):
+	* libbrasero-utils/brasero-metadata.h:
+	* src/brasero-async-task-manager.c:
+	* src/brasero-async-task-manager.h:
+	* src/brasero-io.c:
+	* src/brasero-io.h:
+	* src/brasero-metadata.c:
+	* src/brasero-metadata.h:
+
 2009-04-20  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Add virtual methods to retrieve all information about a data track

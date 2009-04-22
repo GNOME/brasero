@@ -39,14 +39,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_GET_BASENAME_FOR_DISPLAY(uri, name)				\
-{										\
-    	gchar *escaped_basename;						\
-	escaped_basename = g_path_get_basename (uri);				\
-    	name = g_uri_unescape_string (escaped_basename, NULL);			\
-	g_free (escaped_basename);						\
-}
-
 #define BRASERO_PLUGIN_DIRECTORY		BRASERO_LIBDIR "/brasero/plugins"
 #define BRASERO_PLUGIN_KEY			"/apps/brasero/config/plugins"
 

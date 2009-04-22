@@ -53,8 +53,6 @@ brasero_SOURCES = \
 	brasero-player.h         \
 	brasero-eject-dialog.c		\
 	brasero-eject-dialog.h		\
-	brasero-metadata.c         \
-	brasero-metadata.h         \
 	brasero-disc.c         \
 	brasero-disc.h         \
 	brasero-audio-disc.c         \
@@ -75,8 +73,6 @@ brasero_SOURCES = \
 	brasero-layout.h         \
 	brasero-file-chooser.c         \
 	brasero-file-chooser.h         \
-	brasero-async-task-manager.c         \
-	brasero-async-task-manager.h         \
 	eggtreemultidnd.c         \
 	eggtreemultidnd.h         \
 	brasero-multi-dnd.c         \
@@ -113,8 +109,6 @@ brasero_SOURCES = \
 	brasero-filter-option.c         \
 	baobab-cell-renderer-progress.c         \
 	baobab-cell-renderer-progress.h         \
-	brasero-io.h         \
-	brasero-io.c         \
 	brasero-multi-song-props.h         \
 	brasero-multi-song-props.c         \
 	brasero-rename.h         \

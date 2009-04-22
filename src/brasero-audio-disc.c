@@ -39,6 +39,7 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-misc.h"
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-app.h"
