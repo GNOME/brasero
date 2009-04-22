@@ -172,7 +172,25 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-status.h                 \
 	brasero-status-dialog.c                 \
 	brasero-status-dialog.h                 \
-	brasero-session-helper.h
+	brasero-session-helper.h                 \
+	brasero-data-project.c                 \
+	brasero-data-project.h                 \
+	brasero-data-session.c                 \
+	brasero-data-session.h                 \
+	brasero-data-vfs.c                 \
+	brasero-data-vfs.h                 \
+	brasero-file-node.c                 \
+	brasero-file-node.h                 \
+	brasero-data-tree-model.c                 \
+	brasero-data-tree-model.h                 \
+	brasero-track-data-cfg.c                 \
+	brasero-track-data-cfg.h                 \
+	eggtreemultidnd.c                 \
+	eggtreemultidnd.h
+
+if BUILD_INOTIFY
+libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
+endif
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

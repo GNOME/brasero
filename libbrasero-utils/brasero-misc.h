@@ -75,6 +75,11 @@ brasero_utils_debug_message (const gchar *domain,
 	g_free (escaped_basename);						\
 }
 
+gchar *
+brasero_utils_register_string (const gchar *string);
+void
+brasero_utils_unregister_string (const gchar *string);
+
 GtkWidget *
 brasero_utils_pack_properties (const gchar *title, ...);
 GtkWidget *

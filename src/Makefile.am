@@ -91,16 +91,6 @@ brasero_SOURCES = \
 	brasero-time-button.c         \
 	brasero-preview.h         \
 	brasero-preview.c         \
-	brasero-data-project.c         \
-	brasero-data-project.h         \
-	brasero-data-session.c         \
-	brasero-data-session.h         \
-	brasero-data-tree-model.c         \
-	brasero-data-tree-model.h         \
-	brasero-data-vfs.c         \
-	brasero-data-vfs.h         \
-	brasero-file-node.c         \
-	brasero-file-node.h         \
 	brasero-data-disc.h         \
 	brasero-data-disc.c         \
 	brasero-file-filtered.h         \
@@ -133,10 +123,6 @@ brasero_SOURCES = \
 	eggsmclient.h        \
 	eggsmclient-private.h        \
 	eggsmclient-xsmp.c
-
-if BUILD_INOTIFY
-brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
-endif
 
 brasero_LDADD =						\
 	../libbrasero-media/libbrasero-media.la		\

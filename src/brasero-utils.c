@@ -43,9 +43,6 @@
 
 #define BRASERO_ERROR brasero_error_quark()
 
-static GHashTable *stringsH = NULL;
-G_LOCK_DEFINE_STATIC (stringsH);
-
 GQuark
 brasero_error_quark (void)
 {
@@ -55,121 +52,6 @@ brasero_error_quark (void)
 		quark = g_quark_from_static_string ("BraSero_error");
 
 	return quark;
-}
-
-static gboolean
-brasero_utils_clear_strings_cb (gchar *string,
-				guint ref,
-				gpointer NULL_data)
-{
-	g_free (string);
-	return TRUE;
-}
-
-static void
-brasero_utils_free (void)
-{
-	if (stringsH) {
-		G_LOCK (stringsH);
-		g_hash_table_foreach_remove (stringsH,
-					     (GHRFunc) brasero_utils_clear_strings_cb,
-					     NULL);
-		g_hash_table_destroy (stringsH);
-		stringsH = NULL;
-		G_UNLOCK (stringsH);
-	}
-}
-
-void
-brasero_utils_init (void)
-{
-	g_atexit (brasero_utils_free);
-}
-
-/**
- * Allows multiple uses of the same string
- */
-
-gchar *
-brasero_utils_register_string (const gchar *string)
-{
-	gboolean success;
-	gpointer key, reftmp;
-	guint ref;
-
-	if (!string) {
-		g_warning ("Null string to be registered");
-		return NULL;
-	}
-
-	G_LOCK (stringsH);
-
-	if (!stringsH) {
-		stringsH = g_hash_table_new (g_str_hash, g_str_equal);
-		success = FALSE;
-	}
-	else
-		success = g_hash_table_lookup_extended (stringsH,
-							string,
-							&key,
-							&reftmp);
-
-	if (!success) {
-		key = g_strdup (string);
-		g_hash_table_insert (stringsH,
-				     key,
-				     GINT_TO_POINTER (1));
-		G_UNLOCK (stringsH);
-		return key;
-	}
-
-	ref = GPOINTER_TO_INT(reftmp) + 1;
-	g_hash_table_insert (stringsH,
-			     key,
-			     GINT_TO_POINTER (ref));
-
-	G_UNLOCK (stringsH);
-	return key;
-}
-
-void
-brasero_utils_unregister_string (const gchar *string)
-{
-	gboolean success;
-	gpointer key, reftmp;
-	guint ref;
-
-	if (!string) {
-		g_warning ("Null string to be unregistered");
-		return;
-	}
-
-	G_LOCK (stringsH);
-
-	if (!stringsH) {
-		G_UNLOCK (stringsH);
-		return;
-	}
-
-	success = g_hash_table_lookup_extended (stringsH,
-						string,
-						&key,
-						&reftmp);
-	if (!success) {
-		G_UNLOCK (stringsH);
-		return;
-	}
-
-	ref = GPOINTER_TO_INT(reftmp) - 1;
-
-	if (ref > 0)
-		g_hash_table_insert (stringsH, key, GINT_TO_POINTER (ref));
-	else if (ref <= 0) {
-		g_hash_table_remove (stringsH, string);
-		g_free (key);
-	}
-
-	G_UNLOCK (stringsH);
 }
 
 void

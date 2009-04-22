@@ -43,7 +43,7 @@
 #include "brasero-file-node.h"
 #include "brasero-io.h"
 
-#include "brasero-marshal.h"
+#include "libbrasero-marshal.h"
 
 typedef struct _BraseroDataSessionPrivate BraseroDataSessionPrivate;
 struct _BraseroDataSessionPrivate

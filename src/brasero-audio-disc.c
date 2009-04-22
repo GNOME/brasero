@@ -52,7 +52,6 @@
 #include "brasero-io.h"
 #include "brasero-split-dialog.h"
 #include "brasero-session-cfg.h"
-#include "eggtreemultidnd.h"
 
 #include "brasero-tags.h"
 

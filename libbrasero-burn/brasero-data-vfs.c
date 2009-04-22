@@ -31,13 +31,13 @@
 
 #include <gconf/gconf-client.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-data-vfs.h"
 #include "brasero-data-project.h"
 #include "brasero-file-node.h"
 #include "brasero-io.h"
-#include "brasero-utils.h"
-#include "brasero-marshal.h"
-#include "brasero-utils.h"
+#include "libbrasero-marshal.h"
 
 #include "burn-debug.h"
 
@@ -201,7 +201,7 @@ brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 					       0,
 					       uri);
 		}
-		else if (error->domain == BRASERO_ERROR && error->code == BRASERO_ERROR_SYMLINK_LOOP) {
+		else if (error->domain == BRASERO_UTILS_ERROR && error->code == BRASERO_UTILS_ERROR_SYMLINK_LOOP) {
 			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self),
 							  uri);
 
@@ -237,8 +237,8 @@ brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 		if (g_hash_table_lookup (priv->loading, uri)) {
 			GError *error;
 
-			error = g_error_new (BRASERO_ERROR,
-					     BRASERO_ERROR_GENERAL,
+			error = g_error_new (BRASERO_UTILS_ERROR,
+					     BRASERO_UTILS_ERROR_GENERAL,
 					     _("\"%s\" cannot be read"),
 					     g_file_info_get_name (info));
 			g_signal_emit (self,

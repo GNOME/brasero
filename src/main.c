@@ -538,7 +538,6 @@ main (int argc, char **argv)
 	brasero_burn_library_start ();
 
 	brasero_enable_multi_DND ();
-	brasero_utils_init ();
 
 	current_app = brasero_app_new ();
 	if (current_app == NULL)

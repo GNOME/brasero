@@ -31,11 +31,13 @@ fy
 
 #include <gio/gio.h>
 
+#include "brasero-misc.h"
+
 #include "burn-basics.h"
 
 #include "brasero-file-node.h"
-#include "brasero-utils.h"
 #include "brasero-io.h"
+
 
 BraseroFileNode *
 brasero_file_node_root_new (void)

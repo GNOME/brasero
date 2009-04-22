@@ -36,10 +36,12 @@
 
 #include <gconf/gconf-client.h>
 
-#include "brasero-data-project.h"
-#include "brasero-marshal.h"
+#include "brasero-units.h"
 
-#include "brasero-utils.h"
+#include "brasero-data-project.h"
+#include "libbrasero-marshal.h"
+
+#include "brasero-misc.h"
 #include "brasero-io.h"
 
 #include "brasero-track-data.h"

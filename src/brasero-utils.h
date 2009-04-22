@@ -48,14 +48,7 @@ typedef enum {
 
 #define BRASERO_DEFAULT_ICON		"text-x-preview"
 
-void brasero_utils_init (void);
-
 GQuark brasero_error_quark (void);
-
-gchar *
-brasero_utils_register_string (const gchar *string);
-void
-brasero_utils_unregister_string (const gchar *string);
 
 void
 brasero_utils_launch_app (GtkWidget *widget,
