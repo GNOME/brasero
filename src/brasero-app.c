@@ -1441,7 +1441,7 @@ brasero_app_create_mainwin (BraseroApp *app)
 	brasero_app_load_window_state (app);
 }
 
-void
+gboolean
 brasero_app_run_mainwin (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
@@ -1461,11 +1461,15 @@ brasero_app_run_mainwin (BraseroApp *app)
 		response = unique_app_send_message (uapp, UNIQUE_ACTIVATE, NULL);
     		g_object_unref (uapp);
 		uapp = NULL;
-       
-		return response == UNIQUE_RESPONSE_OK;
+
+		/* FIXME: we should tell the user why it did not work. Or is it
+		 * handled by libunique? */
+		return (response == UNIQUE_RESPONSE_OK);
 	}
 
 	gtk_main ();
+
+	return TRUE;
 }
 
 static void

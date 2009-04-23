@@ -55,6 +55,8 @@
 
 #include "brasero-tags.h"
 
+#include "eggtreemultidnd.h"
+
 #ifdef BUILD_INOTIFY
 
 #include "sys/inotify.h"
