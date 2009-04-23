@@ -39,6 +39,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-track-type.h					\
 	brasero-track.h						\
 	brasero-track-data.h                 			\
+	brasero-track-data-cfg.h				\
 	brasero-track-disc.h                 			\
 	brasero-track-stream.h                 			\
 	brasero-track-image.h					\
