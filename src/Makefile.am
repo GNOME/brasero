@@ -126,9 +126,9 @@ brasero_SOURCES = \
 	eggsmclient-xsmp.c
 
 brasero_LDADD =						\
-	../libbrasero-media/libbrasero-media.la		\
-	../libbrasero-burn/libbrasero-burn.la		\
-	../libbrasero-utils/libbrasero-utils.la		\
+	$(top_builddir)/libbrasero-media/libbrasero-media.la	\
+	$(top_builddir)/libbrasero-burn/libbrasero-burn.la	\
+	$(top_builddir)/libbrasero-utils/libbrasero-utils.la	\
 	$(BRASERO_GLIB_LIBS)		\
 	$(BRASERO_GIO_LIBS)		\
 	$(BRASERO_GCONF_LIBS)		\
@@ -137,7 +137,7 @@ brasero_LDADD =						\
 	$(BRASERO_GTK_LIBS)		\
 	$(BRASERO_GMODULE_LIBS)		\
 	$(BRASERO_DBUS_LIBS)		\
-	$(BRASERO_LIBUNIQUE_CFLAGS)     \
+	$(BRASERO_LIBUNIQUE_LIBS)	\
 	$(BRASERO_LIBXML_LIBS)		\
 	$(BRASERO_BEAGLE_LIBS)		\
 	$(BRASERO_PL_PARSER_LIBS)	\
