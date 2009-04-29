@@ -1,26 +1,31 @@
-/***************************************************************************
- *            brasero-file-node.h
- *
- *  Sat Dec  1 14:50:56 2007
- *  Copyright  2007  Philippe Rouquier
- *  <bonfire-app@wanadoo.fr>
- ****************************************************************************/
-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * Libbrasero-media is free software; you can redistribute it and/or modify
-fy
+ * Libbrasero-burn
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ *
+ * Libbrasero-burn is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+ *
+ * The Libbrasero-burn authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-burn. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
  * 
- * Brasero is distributed in the hope that it will be useful,
+ * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ * along with this program; if not, write to:
+ * 	The Free Software Foundation, Inc.,
+ * 	51 Franklin Street, Fifth Floor
+ * 	Boston, MA  02110-1301, USA.
  */
  
 #ifndef _BRASERO_FILE_NODE_H
@@ -143,8 +148,7 @@ struct _BraseroFileNode {
 	guint is_tmp_parent:1;
 
 	/* this should be set by BraseroDataDisc */
-	guint is_expanded:1;
-	guint is_selected:1;
+	guint is_selected:1; /* Used to determne if the name is editable */
 
 	/* Used by the model */
 	/* This is a workaround for a warning in gailtreeview.c line 2946 where
@@ -152,6 +156,8 @@ struct _BraseroFileNode {
 	 * declares to have children and is not expanded leads to the path being
 	 * upped and therefore wrong. */
 	guint is_inserting:1;
+
+	guint is_expanded:1; /* Used to choose the icon for folders */
 
 	/* this is a ref count a max of 255 should be enough */
 	guint is_visible:7;
@@ -286,10 +292,6 @@ brasero_file_node_save_imported (BraseroFileNode *node,
 				 BraseroFileTreeStats *stats,
 				 BraseroFileNode *parent,
 				 GCompareFunc sort_func);
-
-gchar *
-brasero_file_node_get_uri_name (const gchar *uri);
-
 
 gint
 brasero_file_node_sort_name_cb (gconstpointer obj_a, gconstpointer obj_b);

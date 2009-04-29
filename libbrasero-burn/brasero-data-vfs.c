@@ -1,20 +1,28 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * brasero
- * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
+ * Libbrasero-burn
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ *
+ * Libbrasero-burn is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The Libbrasero-burn authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-burn. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
  * 
- *  Brasero is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- * 
- * brasero is distributed in the hope that it will be useful,
+ * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with brasero.  If not, write to:
+ * along with this program; if not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -37,6 +45,8 @@
 #include "brasero-data-project.h"
 #include "brasero-file-node.h"
 #include "brasero-io.h"
+#include "brasero-filtered-uri.h"
+
 #include "libbrasero-marshal.h"
 
 #include "burn-debug.h"
@@ -51,9 +61,7 @@ struct _BraseroDataVFSPrivate
 	GHashTable *loading;
 	GHashTable *directories;
 
-	/* This keeps a record of all URIs that have been restored by
-	 * the user despite the filtering rules. */
-	GHashTable *filtered;
+	BraseroFilteredUri *filtered;
 
 	BraseroIO *io;
 	BraseroIOJobBase *load_uri;
@@ -70,7 +78,6 @@ enum {
 	UNREADABLE_SIGNAL,
 	RECURSIVE_SIGNAL,
 	IMAGE_SIGNAL,
-	FILTERED_SIGNAL,
 	ACTIVITY_SIGNAL,
 	UNKNOWN_SIGNAL,
 	LAST_SIGNAL
@@ -78,82 +85,17 @@ enum {
 
 static gulong brasero_data_vfs_signals [LAST_SIGNAL] = { 0 };
 
-typedef enum {
-	BRASERO_DATA_VFS_NONE		= 0,
-	BRASERO_DATA_VFS_RESTORED,
-	BRASERO_DATA_VFS_FILTERED
-} BraseroDataVFSFilterStatus;
 
 G_DEFINE_TYPE (BraseroDataVFS, brasero_data_vfs, BRASERO_TYPE_DATA_SESSION);
 
-static void
-brasero_data_vfs_restored_list_cb (gpointer key,
-				   gpointer data,
-				   gpointer callback_data)
-{
-	GSList **list = callback_data;
-
-	if (GPOINTER_TO_INT (data) == BRASERO_DATA_VFS_RESTORED)
-		*list = g_slist_prepend (*list, g_strdup (key));
-}
-
-gboolean
-brasero_data_vfs_get_restored (BraseroDataVFS *self,
-			       GSList **restored)
+BraseroFilteredUri *
+brasero_data_vfs_get_filtered_model (BraseroDataVFS *vfs)
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = BRASERO_DATA_VFS_PRIVATE (vfs);
 
-	*restored = NULL;
-	g_hash_table_foreach (priv->filtered,
-			      brasero_data_vfs_restored_list_cb,
-			      restored);
-	return TRUE;
-}
-
-void
-brasero_data_vfs_add_restored (BraseroDataVFS *self,
-			       const gchar *restored)
-{
-	BraseroDataVFSPrivate *priv;
-	guint value;
-
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
-
-	value = GPOINTER_TO_INT (g_hash_table_lookup (priv->filtered, restored));
-	if (value) {
-		if (GPOINTER_TO_INT (value) != BRASERO_DATA_VFS_RESTORED)
-			g_hash_table_insert (priv->filtered,
-					     (gchar *) restored,
-					     GINT_TO_POINTER (BRASERO_DATA_VFS_RESTORED));
-	}
-	else
-		g_hash_table_insert (priv->filtered,
-				     (gchar *) brasero_utils_register_string (restored),
-				     GINT_TO_POINTER (BRASERO_DATA_VFS_RESTORED));
-}
-
-void
-brasero_data_vfs_remove_restored (BraseroDataVFS *self,
-				  const gchar *restored)
-{
-	BraseroDataVFSPrivate *priv;
-	guint value;
-
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
-
-	value = GPOINTER_TO_INT (g_hash_table_lookup (priv->filtered, restored));
-	if (value) {
-		if (GPOINTER_TO_INT (value) != BRASERO_DATA_VFS_FILTERED)
-			g_hash_table_insert (priv->filtered,
-					     (gchar *) restored,
-					     GINT_TO_POINTER (BRASERO_DATA_VFS_FILTERED));
-	}
-	else
-		g_hash_table_insert (priv->filtered,
-				     (gchar *) brasero_utils_register_string (restored),
-				     GINT_TO_POINTER (BRASERO_DATA_VFS_FILTERED));
+	return priv->filtered;
 }
 
 gboolean
@@ -437,60 +379,25 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 	/* See if it's a broken symlink */
 	if (g_file_info_get_is_symlink (info)
 	&& !g_file_info_get_symlink_target (info)) {
-		BraseroDataVFSFilterStatus status;
-
-		/* See if this file is already in filtered */
-		status = GPOINTER_TO_INT (g_hash_table_lookup (priv->filtered, uri));
-		if (status == BRASERO_DATA_VFS_NONE) {
-			uri = brasero_utils_register_string (uri);
-			g_hash_table_insert (priv->filtered,
-					     (gchar *) uri,
-					     GINT_TO_POINTER (BRASERO_DATA_VFS_FILTERED));
-		}
-
-		/* See if we are supposed to keep them */
-		if (status != BRASERO_DATA_VFS_RESTORED && priv->filter_broken_sym) {
-			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self),
-							  uri);
-
-			if (status == BRASERO_DATA_VFS_NONE) {
-				/* Advertise only once this filtered URI */
-				g_signal_emit (self,
-					       brasero_data_vfs_signals [FILTERED_SIGNAL],
-					       0,
-					       BRASERO_FILTER_BROKEN_SYM,
-					       uri);
-			}
-
+		/* See if this file is already in restored or if we should filter */
+		if (priv->filter_broken_sym
+		&& !brasero_filtered_uri_lookup_restored (priv->filtered, uri)) {
+			brasero_filtered_uri_filter (priv->filtered,
+						     uri,
+						     BRASERO_FILTER_BROKEN_SYM);
+			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self), uri);
 			return;
 		}
 	}
-
 	/* A new hidden file ? */
 	else if (name [0] == '.') {
-		BraseroDataVFSFilterStatus status;
-
-		/* See if this file is already in restored */
-		status = GPOINTER_TO_INT (g_hash_table_lookup (priv->filtered, uri));
-		if (status == BRASERO_DATA_VFS_NONE) {
-			uri = brasero_utils_register_string (uri);
-			g_hash_table_insert (priv->filtered,
-					     (gchar *) uri,
-					     GINT_TO_POINTER (BRASERO_DATA_VFS_FILTERED));
-		}
-
-		/* See if we are supposed to keep them */
-		if (status != BRASERO_DATA_VFS_RESTORED && priv->filter_hidden) {
+		/* See if this file is already in restored or if we should filter */
+		if (priv->filter_hidden
+		&& !brasero_filtered_uri_lookup_restored (priv->filtered, uri)) {
+			brasero_filtered_uri_filter (priv->filtered,
+						     uri,
+						     BRASERO_FILTER_HIDDEN);
 			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self), uri);
-			if (status == BRASERO_DATA_VFS_NONE) {
-				/* Advertise only once this filtered URI */
-				g_signal_emit (self,
-					       brasero_data_vfs_signals [FILTERED_SIGNAL],
-					       0,
-					       BRASERO_FILTER_HIDDEN,
-					       uri);
-			}
-
 			return;
 		}
 	}
@@ -1062,15 +969,6 @@ brasero_data_vfs_empty_loading_cb (gpointer key,
 	return TRUE;
 }
 
-static gboolean
-brasero_data_vfs_empty_filtered_cb (gpointer key,
-				    gpointer data,
-				    gpointer callback_data)
-{
-	brasero_utils_unregister_string (key);
-	return TRUE;
-}
-
 static void
 brasero_data_vfs_clear (BraseroDataVFS *self)
 {
@@ -1097,32 +995,8 @@ brasero_data_vfs_clear (BraseroDataVFS *self)
 	g_hash_table_foreach_remove (priv->directories,
 				     brasero_data_vfs_empty_loading_cb,
 				     self);
-	g_hash_table_foreach_remove (priv->filtered,
-				     brasero_data_vfs_empty_filtered_cb,
-				     self);
-}
 
-static gboolean
-brasero_data_vfs_remove_filtered_uris (gpointer key,
-				       gpointer value,
-				       gpointer callback_data)
-{
-	guint len;
-	gchar *key_uri = key;
-	gchar *uri = callback_data;
-
-	/* always keep restored */
-	if (GPOINTER_TO_INT (value) == BRASERO_DATA_VFS_RESTORED)
-		return FALSE;
-
-	len = strlen (uri);
-	if (!strncmp (uri, key, len)
-	&&   key_uri [len] == G_DIR_SEPARATOR) {
-		brasero_utils_unregister_string (key);
-		return TRUE;
-	}
-
-	return FALSE;
+	brasero_filtered_uri_clear (priv->filtered);
 }
 
 static void
@@ -1136,14 +1010,7 @@ brasero_data_vfs_uri_removed (BraseroDataProject *project,
 	/* That happens when a graft is removed from the tree, that is when this
 	 * graft uri doesn't appear anywhere and when it hasn't got any more 
 	 * parent uri grafted. */
-	g_hash_table_foreach_remove (priv->filtered,
-				     brasero_data_vfs_remove_filtered_uris,
-				     (gpointer) uri);
-	g_signal_emit (project,
-		       brasero_data_vfs_signals [FILTERED_SIGNAL],
-		       0,
-		       BRASERO_FILTER_NONE,
-		       uri);
+	brasero_filtered_uri_remove_with_children (priv->filtered, uri);
 }
 
 static void
@@ -1219,6 +1086,8 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 
 	priv = BRASERO_DATA_VFS_PRIVATE (object);
 
+	priv->filtered = brasero_filtered_uri_new ();
+
 	/* load the fitering rules */
 	client = gconf_client_get_default ();
 	priv->replace_sym = gconf_client_get_bool (client,
@@ -1254,7 +1123,6 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 	/* create the hash tables */
 	priv->loading = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->directories = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->filtered = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* get the vfs object */
 	priv->io = brasero_io_get_default ();
@@ -1280,7 +1148,7 @@ brasero_data_vfs_finalize (GObject *object)
 	}
 
 	if (priv->filtered) {
-		g_hash_table_destroy (priv->filtered);
+		g_object_unref (priv->filtered);
 		priv->filtered = NULL;
 	}
 
@@ -1331,18 +1199,6 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
 			  brasero_marshal_INT__STRING,
 			  G_TYPE_INT,
 			  1,
-			  G_TYPE_STRING);
-
-	brasero_data_vfs_signals [FILTERED_SIGNAL] = 
-	    g_signal_new ("filtered_uri",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_FIRST,
-			  0,
-			  NULL, NULL,
-			  brasero_marshal_VOID__INT_STRING,
-			  G_TYPE_NONE,
-			  2,
-			  G_TYPE_INT,
 			  G_TYPE_STRING);
 
 	brasero_data_vfs_signals [UNREADABLE_SIGNAL] = 

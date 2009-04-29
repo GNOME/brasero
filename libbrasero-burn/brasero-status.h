@@ -39,6 +39,13 @@ G_BEGIN_DECLS
 
 typedef struct _BraseroStatus BraseroStatus;
 
+typedef enum {
+	BRASERO_STATUS_OK			= 0,
+	BRASERO_STATUS_ERROR,
+	BRASERO_STATUS_QUESTION,
+	BRASERO_STATUS_INFORMATION
+} BraseroStatusType;
+
 BraseroStatus *
 brasero_status_new (void);
 

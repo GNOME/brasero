@@ -81,9 +81,9 @@ brasero_graft_point_copy (BraseroGraftPt *graft)
 }
 
 BraseroBurnResult
-brasero_track_data_set_source (BraseroTrackData *track,
-			       GSList *grafts,
-			       GSList *unreadable)
+brasero_track_data_set_source_real (BraseroTrackData *track,
+				    GSList *grafts,
+				    GSList *unreadable)
 {
 	BraseroTrackDataPrivate *priv;
 
@@ -106,6 +106,19 @@ brasero_track_data_set_source (BraseroTrackData *track,
 	brasero_track_changed (BRASERO_TRACK (track));
 
 	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_data_set_source (BraseroTrackData *track,
+			       GSList *grafts,
+			       GSList *unreadable)
+{
+	BraseroTrackDataClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_ERR);
+
+	klass = BRASERO_TRACK_DATA_CLASS (track);
+	return klass->set_source (track, grafts, unreadable);
 }
 
 BraseroBurnResult
@@ -385,6 +398,8 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
 	track_class->get_type = brasero_track_data_get_track_type;
 	track_class->get_status = brasero_track_data_get_status;
 	track_class->get_size = brasero_track_data_get_size;
+
+	track_data_class->set_source = brasero_track_data_set_source_real;
 
 	track_data_class->get_fs = brasero_track_data_get_fs_real;
 	track_data_class->get_grafts = brasero_track_data_get_grafts_real;
