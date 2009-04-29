@@ -183,7 +183,7 @@ brasero_track_data_cfg_iter_nth_child (GtkTreeModel *model,
 		node = parent->user_data;
 	}
 	else
-		node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
+		node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 
 	iter->user_data = brasero_file_node_nth_child (node, n);
 	if (!iter->user_data)
@@ -205,7 +205,7 @@ brasero_track_data_cfg_iter_n_children (GtkTreeModel *model,
 
 	if (iter == NULL) {
 		/* special case */
-		node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
+		node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 		return brasero_file_node_get_n_children (node);
 	}
 
@@ -278,7 +278,7 @@ brasero_track_data_cfg_iter_children (GtkTreeModel *model,
 		BraseroFileNode *root;
 
 		/* This is for the top directory */
-		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
+		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 		if (!root || !BRASERO_FILE_NODE_CHILDREN (root))
 			return FALSE;
 
@@ -368,7 +368,7 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 		 */
 		if (node->is_exploring) {
 			/* the directory is being explored increase priority */
-			brasero_data_vfs_require_directory_contents (BRASERO_DATA_VFS (model), node);
+			brasero_data_vfs_require_directory_contents (BRASERO_DATA_VFS (priv->tree), node);
 		}
 
 		/* Otherwise, that's simply a BOGUS row and its parent was
@@ -388,7 +388,7 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 	if (node->is_imported) {
 		if (node->is_fake && !node->is_file) {
 			/* we don't load all nodes when importing a session do it now */
-			brasero_data_session_load_directory_contents (BRASERO_DATA_SESSION (model), node, NULL);
+			brasero_data_session_load_directory_contents (BRASERO_DATA_SESSION (priv->tree), node, NULL);
 		}
 
 		return;
@@ -402,13 +402,13 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 	 * that is reached. */
 	if (node->is_loading) {
 		/* in this case have vfs to increase priority for this node */
-		brasero_data_vfs_require_node_load (BRASERO_DATA_VFS (model), node);
+		brasero_data_vfs_require_node_load (BRASERO_DATA_VFS (priv->tree), node);
 	}
 	else if (!BRASERO_FILE_NODE_MIME (node)) {
 		/* that means that file wasn't completly loaded. To save
 		 * some time we delayed the detection of the mime type
 		 * since that takes a lot of time. */
-		brasero_data_vfs_load_mime (BRASERO_DATA_VFS (model), node);
+		brasero_data_vfs_load_mime (BRASERO_DATA_VFS (priv->tree), node);
 	}
 
 	/* add the node to the visible list that is used to update the disc 
@@ -663,14 +663,14 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 
 	case BRASERO_DATA_TREE_MODEL_PERCENT:
 		g_value_init (value, G_TYPE_INT);
-		if (!node->is_imported && !brasero_data_vfs_is_active (BRASERO_DATA_VFS (self))) {
+		if (!node->is_imported && !brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))) {
 			gint64 size;
 			guint node_size;
 
-			size = brasero_data_project_get_size (BRASERO_DATA_PROJECT (self));
+			size = brasero_data_project_get_size (BRASERO_DATA_PROJECT (priv->tree));
 
 			if (!node->is_file)
-				node_size = brasero_data_project_get_folder_size (BRASERO_DATA_PROJECT (self), node);
+				node_size = brasero_data_project_get_folder_size (BRASERO_DATA_PROJECT (priv->tree), node);
 			else
 				node_size = BRASERO_FILE_NODE_SECTORS (node);
 			if (size)
@@ -752,7 +752,7 @@ brasero_track_data_cfg_get_path (GtkTreeModel *model,
 
 BraseroFileNode *
 brasero_track_data_cfg_path_to_node (BraseroTrackDataCfg *self,
-				      GtkTreePath *path)
+				     GtkTreePath *path)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
@@ -765,7 +765,7 @@ brasero_track_data_cfg_path_to_node (BraseroTrackDataCfg *self,
 	indices = gtk_tree_path_get_indices (path);
 	depth = gtk_tree_path_get_depth (path);
 
-	node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (self));
+	node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 	for (i = 0; i < depth; i ++) {
 		BraseroFileNode *parent;
 
@@ -779,8 +779,8 @@ brasero_track_data_cfg_path_to_node (BraseroTrackDataCfg *self,
 
 static gboolean
 brasero_track_data_cfg_get_iter (GtkTreeModel *model,
-				  GtkTreeIter *iter,
-				  GtkTreePath *path)
+				 GtkTreeIter *iter,
+				 GtkTreePath *path)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *root;
@@ -794,7 +794,7 @@ brasero_track_data_cfg_get_iter (GtkTreeModel *model,
 	indices = gtk_tree_path_get_indices (path);
 	depth = gtk_tree_path_get_depth (path);
 
-	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 	/* NOTE: if we're in reset, then root won't exist anymore */
 	if (!root)
 		return FALSE;
@@ -937,19 +937,19 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 	BraseroFileNode *node;
 	BraseroFileNode *parent;
 	GtkTreePath *dest_parent;
-	BraseroTrackDataCfg *self;
+	BraseroTrackDataCfgPrivate *priv;
 
-	self = BRASERO_TRACK_DATA_CFG (drag_dest);
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (drag_dest);
 
 	/* NOTE: dest_path is the path to insert before; so we may not have a 
 	 * valid path if it's in an empty directory */
 
 	dest_parent = gtk_tree_path_copy (dest_path);
 	gtk_tree_path_up (dest_parent);
-	parent = brasero_track_data_cfg_path_to_node (self, dest_parent);
+	parent = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (drag_dest), dest_parent);
 	if (!parent) {
 		gtk_tree_path_up (dest_parent);
-		parent = brasero_track_data_cfg_path_to_node (self, dest_parent);
+		parent = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (drag_dest), dest_parent);
 	}
 	else if (parent->is_file)
 		parent = parent->parent;
@@ -981,7 +981,7 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 			node = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (drag_dest), treepath);
 			gtk_tree_path_free (treepath);
 
-			brasero_data_project_move_node (BRASERO_DATA_PROJECT (self), node, parent);
+			brasero_data_project_move_node (BRASERO_DATA_PROJECT (priv->tree), node, parent);
 		}
 	}
 	else if (selection_data->target == gdk_atom_intern ("text/uri-list", TRUE)) {
@@ -1000,7 +1000,7 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 			BraseroFileNode *node;
 
 			/* Add the URIs to the project */
-			node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (self),
+			node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree),
 								      uris [i],
 								      parent);
 			if (node)
@@ -1138,22 +1138,22 @@ brasero_track_data_cfg_set_sort_column_id (GtkTreeSortable *sortable,
 
 	switch (column) {
 	case BRASERO_DATA_TREE_MODEL_NAME:
-		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (sortable),
+		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (priv->tree),
 							type,
 							brasero_file_node_sort_name_cb);
 		break;
 	case BRASERO_DATA_TREE_MODEL_SIZE:
-		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (sortable),
+		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (priv->tree),
 							type,
 							brasero_file_node_sort_size_cb);
 		break;
 	case BRASERO_DATA_TREE_MODEL_MIME_DESC:
-		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (sortable),
+		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (priv->tree),
 							type,
 							brasero_file_node_sort_mime_cb);
 		break;
 	default:
-		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (sortable),
+		brasero_data_project_set_sort_function (BRASERO_DATA_PROJECT (priv->tree),
 							type,
 							brasero_file_node_sort_default_cb);
 		break;
@@ -1492,8 +1492,8 @@ brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 	if (priv->loading)
 		return FALSE;
 
-	parent_node = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (priv->tree), parent);
-	return (brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree), uri, parent_node) != NULL);
+	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
+	return (brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (BRASERO_DATA_PROJECT (priv->tree)), uri, parent_node) != NULL);
 }
 
 GtkTreePath *
@@ -1511,7 +1511,7 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 	if (priv->loading)
 		return NULL;
 
-	parent_node = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (priv->tree), parent);
+	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
 	node = brasero_data_project_add_empty_directory (BRASERO_DATA_PROJECT (priv->tree), name, parent_node);
 	if (!node)
 		return NULL;
@@ -1531,7 +1531,7 @@ brasero_track_data_cfg_remove (BraseroTrackDataCfg *track,
 	if (priv->loading)
 		return FALSE;
 
-	node = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (priv->tree), treepath);
+	node = brasero_track_data_cfg_path_to_node (track, treepath);
 	brasero_data_project_remove_node (BRASERO_DATA_PROJECT (priv->tree), node);
 	return TRUE;
 }
@@ -1546,7 +1546,7 @@ brasero_track_data_cfg_rename (BraseroTrackDataCfg *track,
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	node = brasero_track_data_cfg_path_to_node (BRASERO_TRACK_DATA_CFG (priv->tree), treepath);
+	node = brasero_track_data_cfg_path_to_node (track, treepath);
 	return brasero_data_project_rename_node (BRASERO_DATA_PROJECT (priv->tree),
 						 node,
 						 newname);
@@ -1635,7 +1635,7 @@ brasero_track_data_cfg_load_medium (BraseroTrackDataCfg *track,
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	return brasero_data_session_add_last (BRASERO_DATA_SESSION (track),
+	return brasero_data_session_add_last (BRASERO_DATA_SESSION (priv->tree),
 					      medium,
 					      error);
 }
@@ -1647,7 +1647,7 @@ brasero_track_data_cfg_unload_current_medium (BraseroTrackDataCfg *track)
 
 	g_return_if_fail (BRASERO_TRACK_DATA_CFG (track));
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	brasero_data_session_remove_last (BRASERO_DATA_SESSION (track));
+	brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->tree));
 }
 
 BraseroMedium *
@@ -1657,7 +1657,7 @@ brasero_track_data_cfg_get_current_medium (BraseroTrackDataCfg *track)
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), NULL);
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	return brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (track));
+	return brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree));
 }
 
 GSList *
@@ -1667,7 +1667,7 @@ brasero_track_data_cfg_get_available_media (BraseroTrackDataCfg *track)
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), NULL);
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	return brasero_data_session_get_available_media (BRASERO_DATA_SESSION (track));
+	return brasero_data_session_get_available_media (BRASERO_DATA_SESSION (priv->tree));
 }
 
 static BraseroBurnResult
@@ -2066,8 +2066,8 @@ brasero_track_data_cfg_activity_changed (BraseroDataVFS *vfs,
 					 gboolean active,
 					 BraseroTrackDataCfg *self)
 {
-	GtkTreeIter iter;
 	GSList *nodes;
+	GtkTreeIter iter;
 	BraseroTrackDataCfgPrivate *priv;
 
 	if (brasero_data_vfs_is_active (vfs))
@@ -2075,6 +2075,7 @@ brasero_track_data_cfg_activity_changed (BraseroDataVFS *vfs,
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
 
+	/* This is used when we finished exploring so we can update BRASERO_DATA_TREE_MODEL_PERCENT */
 	iter.stamp = priv->stamp;
 	iter.user_data2 = GINT_TO_POINTER (BRASERO_ROW_REGULAR);
 
@@ -2198,7 +2199,7 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 			  G_CALLBACK (brasero_track_data_cfg_project_loaded),
 			  object);
 	g_signal_connect (priv->tree,
-			  "vfs_activity",
+			  "vfs-activity",
 			  G_CALLBACK (brasero_track_data_cfg_activity_changed),
 			  object);
 	g_signal_connect (priv->tree,
@@ -2291,8 +2292,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 	    g_signal_new ("vfs_activity",
 			  G_TYPE_FROM_CLASS (klass),
 			  G_SIGNAL_RUN_FIRST|G_SIGNAL_NO_RECURSE,
-			  G_STRUCT_OFFSET (BraseroDataVFSClass,
-					   activity_changed),
+			  0,
 			  NULL, NULL,
 			  g_cclosure_marshal_VOID__BOOLEAN,
 			  G_TYPE_NONE,

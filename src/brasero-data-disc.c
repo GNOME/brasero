@@ -1961,6 +1961,8 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				result = FALSE;
 			}
 		}
+		else
+			result = FALSE;
 	}
 
 	/* we call the default handler for the treeview before everything else
@@ -2114,7 +2116,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-	GtkTreeModel *model;
 	GtkWidget *mainbox;
 	GtkWidget *scroll;
 
@@ -2133,7 +2134,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
 
 	priv->project = brasero_track_data_cfg_new ();
-	model = GTK_TREE_MODEL (priv->project);
 
 	g_signal_connect (priv->project,
 			  "2G-file",
@@ -2154,12 +2154,13 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  object);
 
 	g_signal_connect (priv->project,
-			  "oversize",
+			  "session-oversized",
 			  G_CALLBACK (brasero_data_disc_project_oversized_cb),
 			  object);
 
+	/* Use the BraseroTrack "changed" signal */
 	g_signal_connect (priv->project,
-			  "size-changed",
+			  "changed",
 			  G_CALLBACK (brasero_data_disc_size_changed_cb),
 			  object);
 	g_signal_connect (priv->project,
@@ -2206,11 +2207,8 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  G_CALLBACK (brasero_data_disc_session_loaded_cb),
 			  object);
 
-	model = GTK_TREE_MODEL (priv->project);
-
 	/* Tree */
-	priv->tree = gtk_tree_view_new_with_model (model);
-	g_object_unref (G_OBJECT (model));
+	priv->tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (priv->project));
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (priv->tree), TRUE);
 
 	/* This must be before connecting to button press event */

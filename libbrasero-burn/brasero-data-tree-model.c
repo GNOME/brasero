@@ -131,7 +131,7 @@ brasero_data_tree_model_node_changed (BraseroDataProject *project,
 		goto end;
 
 	g_signal_emit (project,
-		       brasero_data_tree_model_signals [ROW_ADDED],
+		       brasero_data_tree_model_signals [ROW_CHANGED],
 		       0,
 		       node);
 
@@ -152,7 +152,7 @@ brasero_data_tree_model_node_reordered (BraseroDataProject *project,
 		goto end;
 
 	g_signal_emit (project,
-		       brasero_data_tree_model_signals [ROW_ADDED],
+		       brasero_data_tree_model_signals [ROWS_REORDERED],
 		       0,
 		       parent,
 		       new_order);

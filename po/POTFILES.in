@@ -1,6 +1,11 @@
 # List of source files containing translatable strings.
 [encoding: UTF-8]
 
+libbrasero-burn/brasero-data-vfs.c
+libbrasero-burn/brasero-filtered-uri.c
+libbrasero-burn/brasero-track-data-cfg.c
+libbrasero-utils/brasero-io.c
+libbrasero-utils/brasero-metadata.c
 libbrasero-burn/brasero-caps-burn.c
 libbrasero-burn/brasero-track-image-cfg.c
 libbrasero-burn/brasero-burn-dialog.c
@@ -56,7 +61,6 @@ data/brasero.schemas.in
 data/brasero.xml.in
 src/brasero-audio-disc.c
 libbrasero-burn/brasero-blank-dialog.c
-src/brasero-metadata.c
 src/brasero-mime-filter.c
 src/brasero-playlist.c
 src/brasero-plugin-manager-ui.c
@@ -105,14 +109,10 @@ plugins/growisofs/burn-growisofs-common.h
 plugins/cdrdao/burn-cdrdao-common.h
 plugins/cdrtools/burn-cdrtools.h
 libbrasero-burn/burn-image-format.c
-src/brasero-data-session.c
-src/brasero-data-tree-model.c
 src/brasero-disc.c
 src/brasero-eject-dialog.c
 src/brasero-file-filtered.c
 src/brasero-filter-option.c
-src/brasero-io.c
-src/brasero-data-vfs.c
 plugins/checksum/burn-checksum-files.c
 plugins/checksum/burn-checksum-image.c
 src/brasero-multi-song-props.c

@@ -98,7 +98,7 @@ brasero_file_filtered_update (BraseroFileFiltered *self)
 	markup = brasero_file_filtered_get_label_text (self);
 
 	widget = gtk_expander_get_label_widget (GTK_EXPANDER (self));
-	gtk_label_set_markup_with_mnemonic (GTK_LABEL (widget), markup);
+ 	gtk_label_set_markup_with_mnemonic (GTK_LABEL (widget), markup);
 	g_free (markup);
 }
 
@@ -412,15 +412,15 @@ brasero_file_filtered_class_init (BraseroFileFilteredClass *klass)
 GtkWidget*
 brasero_file_filtered_new (BraseroTrackDataCfg *track)
 {
-	gchar *markup;
 	GtkWidget *object;
 
 	object = g_object_new (BRASERO_TYPE_FILE_FILTERED,
 			       "track", track,
+			       "label", "",
 			       "use-markup", TRUE,
 			       "use-underline", TRUE,
 			       NULL);
-	g_free (markup);
 
+	brasero_file_filtered_update (BRASERO_FILE_FILTERED (object));
 	return object;
 }
