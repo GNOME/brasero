@@ -117,7 +117,7 @@ brasero_track_data_set_source (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_ERR);
 
-	klass = BRASERO_TRACK_DATA_CLASS (track);
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
 	return klass->set_source (track, grafts, unreadable);
 }
 
@@ -198,7 +198,7 @@ brasero_track_data_get_fs (BraseroTrackData *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_IMAGE_FS_NONE);
 
-	klass = BRASERO_TRACK_DATA_CLASS (track);
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
 	return klass->get_fs (track);
 }
 
@@ -218,7 +218,7 @@ brasero_track_data_get_grafts (BraseroTrackData *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
 
-	klass = BRASERO_TRACK_DATA_CLASS (track);
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
 	return klass->get_grafts (track);
 }
 
@@ -242,7 +242,7 @@ brasero_track_data_get_excluded (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
 
-	klass = BRASERO_TRACK_DATA_CLASS (track);
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
 	excluded = klass->get_excluded (track);
 	if (!copy)
 		return excluded;
@@ -282,8 +282,10 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
 	grafts = klass->get_grafts (track);
 	excluded = klass->get_excluded (track);
+
 	result = brasero_mkisofs_base_write_to_files (grafts,
 						      excluded,
 						      use_joliet,

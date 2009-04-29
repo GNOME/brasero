@@ -33,13 +33,6 @@
 #endif
 
 #include <glib.h>
-#include <glib/gi18n-lib.h>
-
-#include <gtk/gtk.h>
-
-#include "burn-basics.h"
-
-#include "brasero-misc.h"
 
 #include "libbrasero-marshal.h"
 #include "brasero-data-tree-model.h"
