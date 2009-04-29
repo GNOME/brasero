@@ -697,6 +697,31 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 
 		return;
 
+	case BRASERO_DATA_TREE_MODEL_URI: {
+		gchar *uri;
+
+		g_value_init (value, G_TYPE_STRING);
+		uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), node);
+		g_value_set_string (value, uri);
+		g_free (uri);
+		return;
+	}
+
+	case BRASERO_DATA_TREE_MODEL_IS_FILE:
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, node->is_file);
+		return;
+
+	case BRASERO_DATA_TREE_MODEL_IS_LOADING:
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, node->is_loading);
+		return;
+
+	case BRASERO_DATA_TREE_MODEL_IS_IMPORTED:
+		g_value_init (value, G_TYPE_BOOLEAN);
+		g_value_set_boolean (value, node->is_imported);
+		return;
+
 	default:
 		return;
 	}
@@ -841,6 +866,9 @@ brasero_track_data_cfg_get_column_type (GtkTreeModel *model,
 	case BRASERO_DATA_TREE_MODEL_NAME:
 		return G_TYPE_STRING;
 
+	case BRASERO_DATA_TREE_MODEL_URI:
+		return G_TYPE_STRING;
+
 	case BRASERO_DATA_TREE_MODEL_MIME_DESC:
 		return G_TYPE_STRING;
 
@@ -863,6 +891,15 @@ brasero_track_data_cfg_get_column_type (GtkTreeModel *model,
 		return G_TYPE_STRING;
 
 	case BRASERO_DATA_TREE_MODEL_EDITABLE:
+		return G_TYPE_BOOLEAN;
+
+	case BRASERO_DATA_TREE_MODEL_IS_FILE:
+		return G_TYPE_BOOLEAN;
+
+	case BRASERO_DATA_TREE_MODEL_IS_LOADING:
+		return G_TYPE_BOOLEAN;
+
+	case BRASERO_DATA_TREE_MODEL_IS_IMPORTED:
 		return G_TYPE_BOOLEAN;
 
 	default:
