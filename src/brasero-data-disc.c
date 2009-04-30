@@ -316,28 +316,13 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 	GtkTreeViewColumn *column;
 	GtkTreePath *treepath;
 	GtkTreePath *parent;
-	gchar *name;
-	gint nb;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 	if (priv->reject_files)
 		return;
 
 	parent = brasero_data_disc_get_parent (disc);
-	name = g_strdup_printf (_("New folder"));
-	nb = 1;
-
-newname:
-
-	/* just to make sure that tree is not hidden behind info */
-	treepath = brasero_track_data_cfg_add_empty_directory (BRASERO_TRACK_DATA_CFG (priv->project), name, parent);
-	if (!treepath) {
-		g_free (name);
-		name = g_strdup_printf (_("New folder %i"), nb);
-		nb++;
-		goto newname;
-	}
-
+	treepath = brasero_track_data_cfg_add_empty_directory (BRASERO_TRACK_DATA_CFG (priv->project), NULL, parent);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 
 	/* grab focus must be called before next function to avoid
@@ -351,7 +336,6 @@ newname:
 				  column,
 				  TRUE);
 	gtk_tree_path_free (treepath);
-	g_free (name);
 }
 
 struct _BraseroClipData {
@@ -1418,6 +1402,8 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 	res = brasero_track_data_set_source (BRASERO_TRACK_DATA (priv->project),
 					     track->contents.data.grafts,
 					     track->contents.data.excluded);
+
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 	if (res == BRASERO_BURN_OK) {
 		brasero_status_free (status);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
@@ -1987,7 +1973,7 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 			if (!is_imported)
 				priv->selected = gtk_tree_row_reference_new (GTK_TREE_MODEL (priv->project), treepath);
 		}
-		else if ((event->state & GDK_SHIFT_MASK) == 0)
+		else if (treepath && (event->state & GDK_SHIFT_MASK) == 0)
 			priv->selected = gtk_tree_row_reference_new (GTK_TREE_MODEL (priv->project), treepath);
 		else
 			priv->selected = NULL;

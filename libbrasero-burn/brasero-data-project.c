@@ -2387,7 +2387,11 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 				      &callback_data);
 	}
 
-	if (grafts)
+	if (!grafts) {
+		g_slist_foreach (callback_data.grafts, (GFunc) brasero_graft_point_free, NULL);
+		g_slist_free (callback_data.grafts);
+	}
+	else
 		*grafts = callback_data.grafts;
 
 	if (!unreadable) {

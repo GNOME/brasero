@@ -349,7 +349,7 @@ brasero_track_data_cfg_iter_next (GtkTreeModel *model,
 
 static void
 brasero_track_data_cfg_node_shown (GtkTreeModel *model,
-				    GtkTreeIter *iter)
+				   GtkTreeIter *iter)
 {
 	BraseroFileNode *node;
 	BraseroTrackDataCfgPrivate *priv;
@@ -377,8 +377,18 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 		return;
 	}
 
-	if (node->parent && !node->parent->is_root)
-		node->parent->is_expanded = TRUE;
+	if (node->parent && !node->parent->is_root) {
+		if (!node->parent->is_expanded) {
+			GtkTreePath *treepath;
+
+			node->parent->is_expanded = TRUE;
+			treepath = gtk_tree_model_get_path (model, iter);
+			gtk_tree_model_row_changed (model,
+						    treepath,
+						    iter);
+			gtk_tree_path_free (treepath);
+		}
+	}
 
 	if (!node)
 		return;
@@ -432,8 +442,18 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 		return;
 	}
 
-	if (node->parent && !node->parent->is_root)
-		node->parent->is_expanded = FALSE;
+	if (node->parent && !node->parent->is_root) {
+		if (node->parent->is_expanded) {
+			GtkTreePath *treepath;
+
+			node->parent->is_expanded = FALSE;
+			treepath = gtk_tree_model_get_path (model, iter);
+			gtk_tree_model_row_changed (model,
+						    treepath,
+						    iter);
+			gtk_tree_path_free (treepath);
+		}
+	}
 
 	if (!node)
 		return;
@@ -512,6 +532,26 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 			g_value_set_string (value, NULL);
 			return;
 
+		case BRASERO_DATA_TREE_MODEL_IS_FILE:
+			g_value_init (value, G_TYPE_BOOLEAN);
+			g_value_set_boolean (value, FALSE);
+			return;
+
+		case BRASERO_DATA_TREE_MODEL_IS_LOADING:
+			g_value_init (value, G_TYPE_BOOLEAN);
+			g_value_set_boolean (value, FALSE);
+			return;
+
+		case BRASERO_DATA_TREE_MODEL_IS_IMPORTED:
+			g_value_init (value, G_TYPE_BOOLEAN);
+			g_value_set_boolean (value, FALSE);
+			return;
+
+		case BRASERO_DATA_TREE_MODEL_URI:
+			g_value_init (value, G_TYPE_STRING);
+			g_value_set_string (value, NULL);
+			return;
+
 		default:
 			return;
 		}
@@ -522,7 +562,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	switch (column) {
 	case BRASERO_DATA_TREE_MODEL_EDITABLE:
 		g_value_init (value, G_TYPE_BOOLEAN);
-		g_value_set_boolean (value, (node->is_imported == FALSE) && node->is_selected);
+		g_value_set_boolean (value, (node->is_imported == FALSE)/* && node->is_selected*/);
 		return;
 
 	case BRASERO_DATA_TREE_MODEL_NAME: {
@@ -1540,16 +1580,37 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *parent_node;
+	gchar *default_name = NULL;
 	BraseroFileNode *node;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 	if (priv->loading)
 		return NULL;
 
 	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
-	node = brasero_data_project_add_empty_directory (BRASERO_DATA_PROJECT (priv->tree), name, parent_node);
+	if (parent_node->is_file)
+		parent_node = parent_node->parent;
+
+	if (!name) {
+		guint nb = 1;
+
+		default_name = g_strdup_printf (_("New folder"));
+		while (brasero_file_node_check_name_existence (parent_node, default_name)) {
+			g_free (default_name);
+			default_name = g_strdup_printf (_("New folder %i"), nb);
+			nb++;
+		}
+
+	}
+
+	node = brasero_data_project_add_empty_directory (BRASERO_DATA_PROJECT (priv->tree),
+							 name? name:default_name,
+							 parent_node);
+	if (default_name)
+		g_free (default_name);
+
 	if (!node)
 		return NULL;
 
@@ -1593,14 +1654,32 @@ gboolean
 brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
+	BraseroFileNode *root;
+	GtkTreePath *treepath;
+	guint num;
+	guint i;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 	if (priv->loading)
 		return FALSE;
 
-	priv->loading = 0;
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+	num = brasero_file_node_get_n_children (root);
+
 	brasero_data_project_reset (BRASERO_DATA_PROJECT (priv->tree));
+
+	treepath = gtk_tree_path_new_first ();
+	for (i = 0; i < num; i++)
+		gtk_tree_model_row_deleted (GTK_TREE_MODEL (track), treepath);
+	gtk_tree_path_free (treepath);
+
+	g_slist_free (priv->shown);
+	priv->shown = NULL;
+
+	priv->G2_files = FALSE;
+	priv->deep_directory = FALSE;
+
 	return TRUE;
 }
 
@@ -1721,6 +1800,7 @@ brasero_track_data_cfg_set_source (BraseroTrackData *track,
 	priv->loading = brasero_data_project_load_contents (BRASERO_DATA_PROJECT (priv->tree),
 							    grafts,
 							    excluded);
+
 	if (!priv->loading)
 		return BRASERO_BURN_OK;
 
@@ -1774,6 +1854,7 @@ brasero_track_data_cfg_get_grafts (BraseroTrackData *track)
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
 	/* append a slash for mkisofs */
+	fs_type = brasero_track_data_cfg_get_fs (track);
 	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
 					   &grafts,
 					   NULL,
@@ -1792,6 +1873,7 @@ brasero_track_data_cfg_get_excluded (BraseroTrackData *track)
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
 	/* append a slash for mkisofs */
+	fs_type = brasero_track_data_cfg_get_fs (track);
 	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
 					   NULL,
 					   &unreadable,
@@ -1843,7 +1925,7 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 	if (priv->loading) {
 		brasero_status_set_not_ready (status,
 					      (gdouble) (priv->loading - priv->loading_remaining) / (gdouble) priv->loading,
-					      g_strdup (_("Analysing files")));
+					      _("Analysing files"));
 		return BRASERO_BURN_NOT_READY;
 	}
 
@@ -1853,7 +1935,7 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 		if (status)
 			brasero_status_set_not_ready (status,
 						      -1.0,
-						      g_strdup (_("Analysing files")));
+						      _("Analysing files"));
 
 		return BRASERO_BURN_NOT_READY;
 	}
@@ -2193,7 +2275,6 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 	} while (!priv->stamp);
 
 	priv->theme = gtk_icon_theme_get_default ();
-
 	priv->tree = brasero_data_tree_model_new ();
 
 	g_signal_connect (priv->tree,
