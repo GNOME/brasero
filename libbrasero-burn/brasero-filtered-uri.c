@@ -47,7 +47,7 @@ G_DEFINE_TYPE (BraseroFilteredUri, brasero_filtered_uri, GTK_TYPE_LIST_STORE);
 typedef struct _BraseroFilteredUriPrivate BraseroFilteredUriPrivate;
 struct _BraseroFilteredUriPrivate
 {
-	/* This keeps a record of all URIs that have been filtered/restored by
+	/* This keeps a record of all URIs that have been restored by
 	 * the user despite the filtering rules. */
 	GHashTable *restored;
 };
@@ -100,7 +100,7 @@ brasero_filtered_uri_dont_filter (BraseroFilteredUri *filtered,
 			     (gchar *) uri,
 			     GINT_TO_POINTER (1));
 }
-
+				       
 void
 brasero_filtered_uri_filter (BraseroFilteredUri *filtered,
 			     const gchar *uri,
