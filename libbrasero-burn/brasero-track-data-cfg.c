@@ -1590,7 +1590,7 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 		return NULL;
 
 	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
-	if (parent_node->is_file)
+	if (parent_node && parent_node->is_file)
 		parent_node = parent_node->parent;
 
 	if (!name) {
