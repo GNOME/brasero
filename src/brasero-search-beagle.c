@@ -35,7 +35,6 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <glib/gutils.h>
 #include <glib-object.h>
 
 #include <gio/gio.h>
