@@ -990,7 +990,7 @@ brasero_track_data_cfg_drag_data_get (GtkTreeDragSource *drag_source,
 					gdk_atom_intern_static_string (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST),
 					8,
 					(void *) g_list_prepend (NULL, reference),
-					sizeof (GList *));
+					sizeof (GList));
 	}
 	else
 		return FALSE;
