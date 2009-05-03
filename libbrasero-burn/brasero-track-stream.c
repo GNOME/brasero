@@ -54,7 +54,7 @@ struct _BraseroTrackStreamPrivate
 
 #define BRASERO_TRACK_STREAM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStreamPrivate))
 
-G_DEFINE_TYPE (BraseroTrackStream, brasero_track_stream, G_TYPE_OBJECT);
+G_DEFINE_TYPE (BraseroTrackStream, brasero_track_stream, BRASERO_TYPE_TRACK);
 
 BraseroBurnResult
 brasero_track_stream_set_source (BraseroTrackStream *track,

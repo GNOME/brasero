@@ -50,12 +50,12 @@ typedef struct _BraseroTrackStream BraseroTrackStream;
 
 struct _BraseroTrackStreamClass
 {
-	GObjectClass parent_class;
+	BraseroTrackClass parent_class;
 };
 
 struct _BraseroTrackStream
 {
-	GObject parent_instance;
+	BraseroTrack parent_instance;
 };
 
 GType brasero_track_stream_get_type (void) G_GNUC_CONST;
