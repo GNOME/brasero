@@ -33,9 +33,35 @@
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
+
 #include <brasero-track-data.h>
 
 G_BEGIN_DECLS
+
+/**
+ * GtkTreeModel Part
+ */
+
+/* This DND target when moving nodes inside ourselves */
+#define BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST	"GTK_TREE_MODEL_ROW"
+
+typedef enum {
+	BRASERO_DATA_TREE_MODEL_NAME		= 0,
+	BRASERO_DATA_TREE_MODEL_URI,
+	BRASERO_DATA_TREE_MODEL_MIME_DESC,
+	BRASERO_DATA_TREE_MODEL_MIME_ICON,
+	BRASERO_DATA_TREE_MODEL_SIZE,
+	BRASERO_DATA_TREE_MODEL_SHOW_PERCENT,
+	BRASERO_DATA_TREE_MODEL_PERCENT,
+	BRASERO_DATA_TREE_MODEL_STYLE,
+	BRASERO_DATA_TREE_MODEL_COLOR,
+	BRASERO_DATA_TREE_MODEL_EDITABLE,
+	BRASERO_DATA_TREE_MODEL_IS_FILE,
+	BRASERO_DATA_TREE_MODEL_IS_LOADING,
+	BRASERO_DATA_TREE_MODEL_IS_IMPORTED,
+	BRASERO_DATA_TREE_MODEL_COL_NUM
+} BraseroTrackDataCfgColumn;
+
 
 #define BRASERO_TYPE_TRACK_DATA_CFG             (brasero_track_data_cfg_get_type ())
 #define BRASERO_TRACK_DATA_CFG(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_TRACK_DATA_CFG, BraseroTrackDataCfg))
@@ -62,19 +88,16 @@ GType brasero_track_data_cfg_get_type (void) G_GNUC_CONST;
 BraseroTrackDataCfg *
 brasero_track_data_cfg_new (void);
 
-GtkTreeModel *
-brasero_track_data_cfg_get_tree_model (BraseroTrackDataCfg *track);
-
 gboolean
 brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 			    const gchar *uri,
 			    GtkTreePath *parent);
-gboolean
+GtkTreePath *
 brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 					    const gchar *name,
 					    GtkTreePath *parent);
 
-void
+gboolean
 brasero_track_data_cfg_remove (BraseroTrackDataCfg *track,
 			       GtkTreePath *treepath);
 gboolean
@@ -82,17 +105,8 @@ brasero_track_data_cfg_rename (BraseroTrackDataCfg *track,
 			       const gchar *newname,
 			       GtkTreePath *treepath);
 
-void
+gboolean
 brasero_track_data_cfg_reset (BraseroTrackDataCfg *track);
-
-void
-brasero_track_data_cfg_exclude_uri (BraseroTrackDataCfg *track,
-				    const gchar *uri);
-void
-brasero_track_data_cfg_restore_uri (BraseroTrackDataCfg *track,
-				    const gchar *uri);
-GSList *
-brasero_track_data_cfg_get_restored_uri (BraseroTrackDataCfg *track);
 
 gboolean
 brasero_track_data_cfg_load_medium (BraseroTrackDataCfg *track,
@@ -106,6 +120,33 @@ brasero_track_data_cfg_get_current_medium (BraseroTrackDataCfg *track);
 
 GSList *
 brasero_track_data_cfg_get_available_media (BraseroTrackDataCfg *track);
+
+/**
+ * For filtered URIs tree model
+ */
+
+void
+brasero_track_data_cfg_dont_filter_uri (BraseroTrackDataCfg *track,
+					const gchar *uri);
+
+GSList *
+brasero_track_data_cfg_get_restored_list (BraseroTrackDataCfg *track);
+
+enum  {
+	BRASERO_FILTERED_STOCK_ID_COL,
+	BRASERO_FILTERED_URI_COL,
+	BRASERO_FILTERED_STATUS_COL,
+	BRASERO_FILTERED_FATAL_ERROR_COL,
+	BRASERO_FILTERED_NB_COL,
+};
+
+
+void
+brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
+				GtkTreePath *treepath);
+
+GtkTreeModel *
+brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track);
 
 G_END_DECLS
 

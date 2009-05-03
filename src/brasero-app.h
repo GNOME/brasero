@@ -65,7 +65,7 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window);
 void
 brasero_app_create_mainwin (BraseroApp *app);
 
-void
+gboolean
 brasero_app_run_mainwin (BraseroApp *app);
 
 gboolean

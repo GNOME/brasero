@@ -39,7 +39,7 @@
 
 #include "brasero-burn-lib.h"
 #include "brasero-track.h"
-#include "brasero-track-data.h"
+#include "brasero-track-data-cfg.h"
 #include "brasero-track-image-cfg.h"
 #include "brasero-track-disc.h"
 #include "brasero-session.h"
@@ -217,8 +217,7 @@ nautilus_disc_burn_is_empty (GtkWindow *toplevel)
 static void
 write_activate (GtkWindow *toplevel)
 {
-	BraseroTrackData	*track;
-	BraseroGraftPt		*graft;
+	BraseroTrackDataCfg	*track;
 	GtkWidget 		*name_options;
 	GtkWidget		*options;
 	gchar			*string;
@@ -226,19 +225,8 @@ write_activate (GtkWindow *toplevel)
 	if (nautilus_disc_burn_is_empty (toplevel))
 		return;
 
-	track = brasero_track_data_new ();
-
-	graft = g_new0 (BraseroGraftPt, 1);
-	graft->uri = g_strdup (BURN_URI);
-	brasero_track_data_set_source (track,
-				       g_slist_prepend (NULL, graft),
-				       NULL);
-
-	/* This should make a decent disc */
-	brasero_track_data_add_fs (track,
-				   BRASERO_IMAGE_FS_ISO|
-				   BRASERO_IMAGE_ISO_FS_LEVEL_3|
-				   BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY);
+	track = brasero_track_data_cfg_new ();
+	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
 	/* add name widget here to set the label of the volume */
 	name_options = brasero_project_name_new ();

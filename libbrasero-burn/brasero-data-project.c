@@ -1,20 +1,28 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * brasero
- * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
+ * Libbrasero-burn
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ *
+ * Libbrasero-burn is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The Libbrasero-burn authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-burn. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
  * 
- *  Brasero is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- * 
- * brasero is distributed in the hope that it will be useful,
+ * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with brasero.  If not, write to:
+ * along with this program; if not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -84,6 +92,7 @@ struct _BraseroDataProjectPrivate
 #ifdef BUILD_INOTIFY
 
 #include "brasero-file-monitor.h"
+
 G_DEFINE_TYPE (BraseroDataProject, brasero_data_project, BRASERO_TYPE_FILE_MONITOR);
 
 #else
@@ -1594,7 +1603,7 @@ brasero_data_project_restore_uri (BraseroDataProject *self,
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
-	name = brasero_file_node_get_uri_name (uri);
+	name = brasero_utils_get_uri_name (uri);
 
 	parent_uri = g_path_get_dirname (uri);
 	nodes = brasero_data_project_uri_to_nodes (self, parent_uri);
@@ -2006,7 +2015,7 @@ brasero_data_project_add_loading_node (BraseroDataProject *self,
 		parent = priv->root;
 
 	/* NOTE: find the name of the node through the URI */
-	name = brasero_file_node_get_uri_name (uri);
+	name = brasero_utils_get_uri_name (uri);
 
 	/* make sure that name doesn't exist */
 	node = brasero_file_node_check_name_existence (parent, name);
@@ -2378,7 +2387,11 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 				      &callback_data);
 	}
 
-	if (grafts)
+	if (!grafts) {
+		g_slist_foreach (callback_data.grafts, (GFunc) brasero_graft_point_free, NULL);
+		g_slist_free (callback_data.grafts);
+	}
+	else
 		*grafts = callback_data.grafts;
 
 	if (!unreadable) {
@@ -2975,8 +2988,8 @@ brasero_data_project_sum_graft_size_cb (gpointer key,
 	*sum_value += BRASERO_FILE_NODE_SECTORS (node);
 }
 
-guint
-brasero_data_project_get_size (BraseroDataProject *self)
+goffset
+brasero_data_project_get_sectors (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 	guint retval = 0;
@@ -2991,7 +3004,7 @@ brasero_data_project_get_size (BraseroDataProject *self)
 }
 
 struct _BraseroFileSize {
-	guint sum;
+	goffset sum;
 	BraseroFileNode *node;
 };
 typedef struct _BraseroFileSize BraseroFileSize;
@@ -3017,9 +3030,9 @@ brasero_data_project_folder_size_cb (const gchar *uri,
 	}
 }
 
-guint
-brasero_data_project_get_folder_size (BraseroDataProject *self,
-				      BraseroFileNode *node)
+goffset
+brasero_data_project_get_folder_sectors (BraseroDataProject *self,
+					 BraseroFileNode *node)
 {
 	BraseroDataProjectPrivate *priv;
 	BraseroFileSize size;

@@ -1,20 +1,28 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * brasero
- * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
+ * Libbrasero-burn
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ *
+ * Libbrasero-burn is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The Libbrasero-burn authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-burn. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
  * 
- *  Brasero is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- * 
- * brasero is distributed in the hope that it will be useful,
+ * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with brasero.  If not, write to:
+ * along with this program; if not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -29,28 +37,6 @@
 #include "brasero-file-node.h"
 
 G_BEGIN_DECLS
-
-/* This DND target when moving nodes inside ourselves */
-#define BRASERO_DND_TARGET_SELF_FILE_NODES	"GTK_TREE_MODEL_ROW"
-
-struct _BraseroDNDDataContext {
-	GtkTreeModel *model;
-	GList *references;
-};
-typedef struct _BraseroDNDDataContext BraseroDNDDataContext;
-
-typedef enum {
-	BRASERO_DATA_TREE_MODEL_NAME		= 0,
-	BRASERO_DATA_TREE_MODEL_MIME_DESC,
-	BRASERO_DATA_TREE_MODEL_MIME_ICON,
-	BRASERO_DATA_TREE_MODEL_SIZE,
-	BRASERO_DATA_TREE_MODEL_SHOW_PERCENT,
-	BRASERO_DATA_TREE_MODEL_PERCENT,
-	BRASERO_DATA_TREE_MODEL_STYLE,
-	BRASERO_DATA_TREE_MODEL_COLOR,
-	BRASERO_DATA_TREE_MODEL_EDITABLE,
-	BRASERO_DATA_TREE_MODEL_COL_NUM
-} BraseroDataProjectColumn;
 
 #define BRASERO_TYPE_DATA_TREE_MODEL             (brasero_data_tree_model_get_type ())
 #define BRASERO_DATA_TREE_MODEL(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_DATA_TREE_MODEL, BraseroDataTreeModel))
@@ -70,19 +56,25 @@ struct _BraseroDataTreeModelClass
 struct _BraseroDataTreeModel
 {
 	BraseroDataVFS parent_instance;
+
+	/* Signals */
+	void		(*row_added)		(BraseroDataTreeModel *model,
+						 BraseroFileNode *node);
+	void		(*row_changed)		(BraseroDataTreeModel *model,
+						 BraseroFileNode *node);
+	void		(*row_removed)		(BraseroDataTreeModel *model,
+						 BraseroFileNode *former_parent,
+						 guint former_position,
+						 BraseroFileNode *node);
+	void		(*rows_reordered)	(BraseroDataTreeModel *model,
+						 BraseroFileNode *parent,
+						 guint *new_order);
 };
 
 GType brasero_data_tree_model_get_type (void) G_GNUC_CONST;
 
 BraseroDataTreeModel *
 brasero_data_tree_model_new (void);
-
-BraseroFileNode *
-brasero_data_tree_model_path_to_node (BraseroDataTreeModel *self,
-				      GtkTreePath *path);
-GtkTreePath *
-brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
-				      BraseroFileNode *node);
 
 G_END_DECLS
 

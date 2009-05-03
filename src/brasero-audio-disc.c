@@ -55,6 +55,8 @@
 
 #include "brasero-tags.h"
 
+#include "eggtreemultidnd.h"
+
 #ifdef BUILD_INOTIFY
 
 #include "sys/inotify.h"
@@ -1152,36 +1154,6 @@ brasero_audio_disc_short_track_dialog (BraseroAudioDisc *disc)
 			   GTK_MESSAGE_WARNING);
 }
 
-static gchar *
-brasero_audio_disc_validate_utf8_name (const gchar *name)
-{
-	gchar *retval, *ptr;
-	const gchar *invalid;
-
-	if (!name)
-		return NULL;
-
-	if (g_utf8_validate (name, -1, &invalid))
-		return g_markup_escape_text (name, -1);
-
-	retval = g_strdup (name);
-	ptr = retval + (invalid - name);
-	*ptr = '_';
-	ptr++;
-
-	while (!g_utf8_validate (ptr, -1, &invalid)) {
-		ptr = (gchar*) invalid;
-		*ptr = '?';
-		ptr ++;
-	}
-
-	ptr = retval;
-	retval = g_markup_escape_text (retval, -1);
-	g_free (ptr);
-
-	return retval;
-}
-
 static gboolean
 brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 					  GtkTreeModel *model,
@@ -1307,7 +1279,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	if (!title_set && g_file_info_get_attribute_string (info, BRASERO_IO_TITLE)) {
 		gchar *name;
 
-		name = brasero_audio_disc_validate_utf8_name (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
+		name = brasero_utils_validate_utf8 (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, name,
 				    -1);
@@ -1437,7 +1409,7 @@ brasero_audio_disc_result (GObject *obj,
 	name = g_uri_unescape_string (escaped_name, NULL);
 	g_free (escaped_name);
 
-	markup = brasero_audio_disc_validate_utf8_name (name);
+	markup = brasero_utils_validate_utf8 (name);
 	g_free (name);
 
 	/* Set a default name here */

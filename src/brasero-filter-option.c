@@ -35,7 +35,6 @@
 #include "brasero-misc.h"
 
 #include "brasero-filter-option.h"
-#include "brasero-data-project.h"
 #include "brasero-data-vfs.h"
 
 typedef struct _BraseroFilterOptionPrivate BraseroFilterOptionPrivate;

@@ -24,9 +24,9 @@
 #define _BRASERO_FILE_FILTERED_H_
 
 #include <glib-object.h>
-
 #include <gtk/gtk.h>
-#include "brasero-data-vfs.h"
+
+#include "brasero-track-data-cfg.h"
 
 G_BEGIN_DECLS
 
@@ -43,10 +43,6 @@ typedef struct _BraseroFileFiltered BraseroFileFiltered;
 struct _BraseroFileFilteredClass
 {
 	GtkExpanderClass parent_class;
-
-	/* Signals */
-	void	(*filtered) (BraseroFileFiltered *self, const gchar *uri);
-	void	(*restored) (BraseroFileFiltered *self, const gchar *uri);
 };
 
 struct _BraseroFileFiltered
@@ -57,23 +53,11 @@ struct _BraseroFileFiltered
 GType brasero_file_filtered_get_type (void) G_GNUC_CONST;
 
 GtkWidget*
-brasero_file_filtered_new (void);
+brasero_file_filtered_new (BraseroTrackDataCfg *track);
 
 void
 brasero_file_filtered_set_right_button_group (BraseroFileFiltered *self,
 					      GtkSizeGroup *group);
-
-void
-brasero_file_filtered_add (BraseroFileFiltered *filter,
-			   const gchar *uri,
-			   BraseroFilterStatus status);
-
-void
-brasero_file_filtered_remove (BraseroFileFiltered *filter,
-			      const gchar *uri);
-
-void
-brasero_file_filtered_clear (BraseroFileFiltered *self);
 
 G_END_DECLS
 

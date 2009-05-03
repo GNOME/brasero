@@ -38,19 +38,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_STREAM_FORMAT_AUDIO(stream_FORMAT)	((stream_FORMAT) & 0x007F)
-#define BRASERO_STREAM_FORMAT_VIDEO(stream_FORMAT)	((stream_FORMAT) & 0x0380)
-
-#define	BRASERO_MIN_STREAM_LENGTH			((gint64) 6 * 1000000000LL)
-#define BRASERO_STREAM_LENGTH(start_MACRO, end_MACRO)					\
-	((end_MACRO) - (start_MACRO) > BRASERO_MIN_STREAM_LENGTH) ?			\
-	((end_MACRO) - (start_MACRO)) : BRASERO_MIN_STREAM_LENGTH
-
-#define BRASERO_STREAM_FORMAT_HAS_VIDEO(type_MACRO)				\
-	 ((type_MACRO) & (BRASERO_VIDEO_FORMAT_UNDEFINED|			\
-	 		  BRASERO_VIDEO_FORMAT_VCD|				\
-	 		  BRASERO_VIDEO_FORMAT_VIDEO_DVD))
-
 #define BRASERO_TYPE_TRACK_STREAM             (brasero_track_stream_get_type ())
 #define BRASERO_TRACK_STREAM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStream))
 #define BRASERO_TRACK_STREAM_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStreamClass))
@@ -63,12 +50,12 @@ typedef struct _BraseroTrackStream BraseroTrackStream;
 
 struct _BraseroTrackStreamClass
 {
-	GObjectClass parent_class;
+	BraseroTrackClass parent_class;
 };
 
 struct _BraseroTrackStream
 {
-	GObject parent_instance;
+	BraseroTrack parent_instance;
 };
 
 GType brasero_track_stream_get_type (void) G_GNUC_CONST;

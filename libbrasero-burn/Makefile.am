@@ -39,6 +39,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-track-type.h					\
 	brasero-track.h						\
 	brasero-track-data.h                 			\
+	brasero-track-data-cfg.h				\
 	brasero-track-disc.h                 			\
 	brasero-track-stream.h                 			\
 	brasero-track-image.h					\
@@ -185,8 +186,8 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-data-tree-model.h                 \
 	brasero-track-data-cfg.c                 \
 	brasero-track-data-cfg.h                 \
-	eggtreemultidnd.c                 \
-	eggtreemultidnd.h
+	brasero-filtered-uri.c                 \
+	brasero-filtered-uri.h
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

@@ -1,20 +1,28 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * brasero
- * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
+ * Libbrasero-burn
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ *
+ * Libbrasero-burn is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * The Libbrasero-burn authors hereby grant permission for non-GPL compatible
+ * GStreamer plugins to be used and distributed together with GStreamer
+ * and Libbrasero-burn. This permission is above and beyond the permissions granted
+ * by the GPL license by which Libbrasero-burn is covered. If you modify this code
+ * you may extend this exception to your version of the code, but you are not
+ * obligated to do so. If you do not wish to do so, delete this exception
+ * statement from your version.
  * 
- *  Brasero is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- * 
- * brasero is distributed in the hope that it will be useful,
+ * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with brasero.  If not, write to:
+ * along with this program; if not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -24,8 +32,10 @@
 #define _BRASERO_DATA_VFS_H_
 
 #include <glib-object.h>
+#include <gtk/gtk.h>
 
 #include "brasero-data-session.h"
+#include "brasero-filtered-uri.h"
 
 G_BEGIN_DECLS
 
@@ -33,15 +43,6 @@ G_BEGIN_DECLS
 #define BRASERO_FILTER_BROKEN_SYM_KEY		"/apps/brasero/filter/broken_sym"
 #define BRASERO_REPLACE_SYMLINK_KEY		"/apps/brasero/filter/replace_sym"
 
-typedef enum {
-	/* Following means it has been removed */
-	BRASERO_FILTER_NONE			= 0,
-	BRASERO_FILTER_HIDDEN			= 1,
-	BRASERO_FILTER_UNREADABLE,
-	BRASERO_FILTER_BROKEN_SYM,
-	BRASERO_FILTER_RECURSIVE_SYM,
-	BRASERO_FILTER_UNKNOWN
-} BraseroFilterStatus;
 
 #define BRASERO_TYPE_DATA_VFS             (brasero_data_vfs_get_type ())
 #define BRASERO_DATA_VFS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_DATA_VFS, BraseroDataVFS))
@@ -75,16 +76,6 @@ gboolean
 brasero_data_vfs_is_loading_uri (BraseroDataVFS *vfs);
 
 gboolean
-brasero_data_vfs_get_restored (BraseroDataVFS *vfs,
-			       GSList **restored);
-void
-brasero_data_vfs_add_restored (BraseroDataVFS *vfs,
-			       const gchar *restored);
-void
-brasero_data_vfs_remove_restored (BraseroDataVFS *vfs,
-				  const gchar *restored);
-
-gboolean
 brasero_data_vfs_load_mime (BraseroDataVFS *vfs,
 			    BraseroFileNode *node);
 
@@ -95,6 +86,9 @@ brasero_data_vfs_require_node_load (BraseroDataVFS *vfs,
 gboolean
 brasero_data_vfs_require_directory_contents (BraseroDataVFS *vfs,
 					     BraseroFileNode *node);
+
+BraseroFilteredUri *
+brasero_data_vfs_get_filtered_model (BraseroDataVFS *vfs);
 
 G_END_DECLS
 
