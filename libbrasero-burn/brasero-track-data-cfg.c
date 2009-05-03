@@ -1572,9 +1572,13 @@ brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 	if (priv->loading)
 		return FALSE;
 
-	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
-	if (parent_node && (parent_node->is_file || parent_node->is_loading))
-		parent_node = parent_node->parent;
+	if (parent) {
+		parent_node = brasero_track_data_cfg_path_to_node (track, parent);
+		if (parent_node && (parent_node->is_file || parent_node->is_loading))
+			parent_node = parent_node->parent;
+	}
+	else
+		parent_node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 
 	return (brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (BRASERO_DATA_PROJECT (priv->tree)), uri, parent_node) != NULL);
 }
@@ -1595,9 +1599,13 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 	if (priv->loading)
 		return NULL;
 
-	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
-	if (parent_node && (parent_node->is_file || parent_node->is_loading))
-		parent_node = parent_node->parent;
+	if (parent) {
+		parent_node = brasero_track_data_cfg_path_to_node (track, parent);
+		if (parent_node && (parent_node->is_file || parent_node->is_loading))
+			parent_node = parent_node->parent;
+	}
+	else
+		parent_node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 
 	if (!name) {
 		guint nb = 1;
@@ -1947,7 +1955,6 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 	}
 
 	if (priv->load_errors) {
-
 		g_slist_foreach (priv->load_errors, (GFunc) g_free, NULL);
 		g_slist_free (priv->load_errors);
 		priv->load_errors = NULL;
@@ -2220,6 +2227,8 @@ emit_signal:
 		       brasero_track_data_cfg_signals [ACTIVITY],
 		       0,
 		       active);
+
+	brasero_track_changed (BRASERO_TRACK (self));
 }
 
 static void

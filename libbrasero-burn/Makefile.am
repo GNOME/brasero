@@ -187,7 +187,7 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-track-data-cfg.c                 \
 	brasero-track-data-cfg.h                 \
 	brasero-filtered-uri.c                 \
-	brasero-filtered-uri.h
+	brasero-filtered-uri.h                 
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

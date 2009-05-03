@@ -1,5 +1,19 @@
 2009-05-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fix a problem with nautilus extension being greyed out
+
+	* libbrasero-burn/brasero-burn-options.c
+	(brasero_burn_options_not_ready_dialog_cb):
+	* libbrasero-burn/brasero-track-data-cfg.c
+	(brasero_track_data_cfg_add),
+	(brasero_track_data_cfg_add_empty_directory),
+	(brasero_track_data_cfg_get_status),
+	(brasero_track_data_cfg_activity_changed):
+	* nautilus/nautilus-burn-extension.c
+	(launch_brasero_on_window_session):
+
+2009-05-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Created a new object BraseroTrackDataCfg and ported nautilus extension to it
 	so that it can behaves as it used to be
 

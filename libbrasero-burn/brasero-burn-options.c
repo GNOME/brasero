@@ -271,6 +271,8 @@ brasero_burn_options_not_ready_dialog_cb (gpointer data)
 	if (result != BRASERO_BURN_OK)
 		gtk_dialog_response (GTK_DIALOG (data), GTK_RESPONSE_CANCEL);
 
+	gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+
 	return FALSE;
 }
 
