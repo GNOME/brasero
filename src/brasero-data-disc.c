@@ -549,6 +549,9 @@ brasero_data_disc_project_oversized_cb (BraseroTrackDataCfg *project,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
+	if (!priv->message)
+		return;
+
 	if (overburn) {
 		if (priv->overburning)
 			return;
@@ -1412,9 +1415,8 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 		return BRASERO_DISC_OK;
 	}
 
-	if (res == BRASERO_BURN_NOT_READY)
+	if (res != BRASERO_BURN_NOT_READY)
 		return BRASERO_DISC_ERROR_UNKNOWN;
-
 
 	status = brasero_status_new ();
 	brasero_track_get_status (BRASERO_TRACK (priv->project), status);

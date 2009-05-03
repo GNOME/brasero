@@ -223,7 +223,6 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 				BraseroTrack *new_track)
 {
 	BraseroBurnSessionPrivate *priv;
-	BraseroTrackType *type;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
@@ -254,10 +253,7 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	/* if there is already a track, then we replace it on condition that it
 	 * has the same type and it's not AUDIO (only one allowed to have many) */
-	type = brasero_track_type_new ();
-	brasero_burn_session_get_input_type (self, type);
-	if (!BRASERO_IS_TRACK_STREAM (new_track)
-	||  brasero_track_type_get_has_stream (type)) {
+	if (!BRASERO_IS_TRACK_STREAM (new_track)) {
 		brasero_burn_session_stop_tracks_monitoring (self);
 
 		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
@@ -275,7 +271,6 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 		priv->tracks = g_slist_append (priv->tracks, new_track);
 	}
 
-	brasero_track_type_free (type);
 	return BRASERO_BURN_OK;
 }
 
