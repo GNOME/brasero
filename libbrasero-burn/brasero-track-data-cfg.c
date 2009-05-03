@@ -123,6 +123,26 @@ static gulong brasero_track_data_cfg_signals [LAST_SIGNAL] = { 0 };
  * GtkTreeModel part
  */
 
+static GtkTreePath *
+brasero_track_data_cfg_node_to_path (BraseroTrackDataCfg *self,
+				      BraseroFileNode *node)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	GtkTreePath *path;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+
+	path = gtk_tree_path_new ();
+	for (; node->parent && !node->is_root; node = node->parent) {
+		guint nth;
+
+		nth = brasero_file_node_get_pos_as_child (node);
+		gtk_tree_path_prepend_index (path, nth);
+	}
+
+	return path;
+}
+
 static gboolean
 brasero_track_data_cfg_iter_parent (GtkTreeModel *model,
 				     GtkTreeIter *iter,
@@ -429,7 +449,7 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 
 static void
 brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
-				     GtkTreeIter *iter)
+				    GtkTreeIter *iter)
 {
 	BraseroFileNode *node;
 	BraseroTrackDataCfgPrivate *priv;
@@ -442,15 +462,17 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 		return;
 	}
 
-	if (node->parent && !node->parent->is_root) {
+	if (node && node->parent && !node->parent->is_root) {
 		if (node->parent->is_expanded) {
 			GtkTreePath *treepath;
+			GtkTreeIter parent_iter;
 
 			node->parent->is_expanded = FALSE;
-			treepath = gtk_tree_model_get_path (model, iter);
+			treepath = brasero_track_data_cfg_node_to_path (BRASERO_TRACK_DATA_CFG (model), node->parent);
+			gtk_tree_model_get_iter (model, &parent_iter, treepath);
 			gtk_tree_model_row_changed (model,
 						    treepath,
-						    iter);
+						    &parent_iter);
 			gtk_tree_path_free (treepath);
 		}
 	}
@@ -768,26 +790,6 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	}
 
 	return;
-}
-
-GtkTreePath *
-brasero_track_data_cfg_node_to_path (BraseroTrackDataCfg *self,
-				      BraseroFileNode *node)
-{
-	BraseroTrackDataCfgPrivate *priv;
-	GtkTreePath *path;
-
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
-
-	path = gtk_tree_path_new ();
-	for (; node->parent && !node->is_root; node = node->parent) {
-		guint nth;
-
-		nth = brasero_file_node_get_pos_as_child (node);
-		gtk_tree_path_prepend_index (path, nth);
-	}
-
-	return path;
 }
 
 static GtkTreePath *
@@ -1571,7 +1573,7 @@ brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 		return FALSE;
 
 	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
-	if (parent_node && parent_node->is_file)
+	if (parent_node && (parent_node->is_file || parent_node->is_loading))
 		parent_node = parent_node->parent;
 
 	return (brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (BRASERO_DATA_PROJECT (priv->tree)), uri, parent_node) != NULL);
@@ -1594,7 +1596,7 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 		return NULL;
 
 	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
-	if (parent_node && parent_node->is_file)
+	if (parent_node && (parent_node->is_file || parent_node->is_loading))
 		parent_node = parent_node->parent;
 
 	if (!name) {

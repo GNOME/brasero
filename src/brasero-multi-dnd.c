@@ -158,7 +158,7 @@ brasero_data_track_cfg_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_sou
 					gdk_atom_intern_static_string (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST),
 					8,
 					(void *) path_list,
-					sizeof (path_list));
+					sizeof (GList));
 	}
 	else
 		return FALSE;
