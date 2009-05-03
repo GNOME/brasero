@@ -216,11 +216,11 @@ brasero_data_session_check_size (BraseroDataSession *self)
 	BraseroDataSessionPrivate *priv;
 	gint64 max_sectors = 0;
 	gint64 medium_sect = 0;
-	gint64 sectors = 0;
+	goffset sectors = 0;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
 
-	sectors = brasero_data_project_get_size (BRASERO_DATA_PROJECT (self));
+	sectors = brasero_data_project_get_sectors (BRASERO_DATA_PROJECT (self));
 	brasero_medium_get_free_space (priv->loaded,
 				       NULL,
 				       &medium_sect);

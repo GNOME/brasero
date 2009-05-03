@@ -704,17 +704,18 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	case BRASERO_DATA_TREE_MODEL_PERCENT:
 		g_value_init (value, G_TYPE_INT);
 		if (!node->is_imported && !brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))) {
-			gint64 size;
-			guint node_size;
+			gint64 sectors;
+			goffset node_sectors;
 
-			size = brasero_data_project_get_size (BRASERO_DATA_PROJECT (priv->tree));
+			sectors = brasero_data_project_get_sectors (BRASERO_DATA_PROJECT (priv->tree));
 
 			if (!node->is_file)
-				node_size = brasero_data_project_get_folder_size (BRASERO_DATA_PROJECT (priv->tree), node);
+				node_sectors = brasero_data_project_get_folder_sectors (BRASERO_DATA_PROJECT (priv->tree), node);
 			else
-				node_size = BRASERO_FILE_NODE_SECTORS (node);
-			if (size)
-				g_value_set_int (value, MAX (0, MIN (node_size * 100 / size, 100)));
+				node_sectors = BRASERO_FILE_NODE_SECTORS (node);
+
+			if (sectors)
+				g_value_set_int (value, MAX (0, MIN (node_sectors * 100 / sectors, 100)));
 			else
 				g_value_set_int (value, 0);
 		}
@@ -1570,6 +1571,9 @@ brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 		return FALSE;
 
 	parent_node = brasero_track_data_cfg_path_to_node (track, parent);
+	if (parent_node && parent_node->is_file)
+		parent_node = parent_node->parent;
+
 	return (brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (BRASERO_DATA_PROJECT (priv->tree)), uri, parent_node) != NULL);
 }
 
@@ -1960,13 +1964,13 @@ brasero_track_data_cfg_get_size (BraseroTrack *track,
 				 goffset *block_size)
 {
 	BraseroTrackDataCfgPrivate *priv;
-	goffset bytes = 0;
+	goffset sectors = 0;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
-	bytes = brasero_data_project_get_size (BRASERO_DATA_PROJECT (priv->tree));
+	sectors = brasero_data_project_get_sectors (BRASERO_DATA_PROJECT (priv->tree));
 	if (blocks)
-		*blocks = BRASERO_BYTES_TO_SECTORS (bytes, 2048);
+		*blocks = sectors;
 
 	if (block_size)
 		*block_size = 2048;

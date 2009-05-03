@@ -2988,8 +2988,8 @@ brasero_data_project_sum_graft_size_cb (gpointer key,
 	*sum_value += BRASERO_FILE_NODE_SECTORS (node);
 }
 
-guint
-brasero_data_project_get_size (BraseroDataProject *self)
+goffset
+brasero_data_project_get_sectors (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 	guint retval = 0;
@@ -3004,7 +3004,7 @@ brasero_data_project_get_size (BraseroDataProject *self)
 }
 
 struct _BraseroFileSize {
-	guint sum;
+	goffset sum;
 	BraseroFileNode *node;
 };
 typedef struct _BraseroFileSize BraseroFileSize;
@@ -3030,9 +3030,9 @@ brasero_data_project_folder_size_cb (const gchar *uri,
 	}
 }
 
-guint
-brasero_data_project_get_folder_size (BraseroDataProject *self,
-				      BraseroFileNode *node)
+goffset
+brasero_data_project_get_folder_sectors (BraseroDataProject *self,
+					 BraseroFileNode *node)
 {
 	BraseroDataProjectPrivate *priv;
 	BraseroFileSize size;

@@ -120,12 +120,12 @@ GType brasero_data_project_get_type (void) G_GNUC_CONST;
 void
 brasero_data_project_reset (BraseroDataProject *project);
 
-guint
-brasero_data_project_get_size (BraseroDataProject *project);
+goffset
+brasero_data_project_get_sectors (BraseroDataProject *project);
 
-guint
-brasero_data_project_get_folder_size (BraseroDataProject *project,
-				      BraseroFileNode *node);
+goffset
+brasero_data_project_get_folder_sectors (BraseroDataProject *project,
+					 BraseroFileNode *node);
 
 gboolean
 brasero_data_project_get_contents (BraseroDataProject *project,

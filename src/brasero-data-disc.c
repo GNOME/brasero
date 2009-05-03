@@ -924,7 +924,7 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 static gboolean
 brasero_data_disc_size_changed (gpointer user_data)
 {
-	gint64 bytes;
+	goffset sectors;
 	BraseroDataDisc *self;
 	BraseroDataDiscPrivate *priv;
 
@@ -932,9 +932,9 @@ brasero_data_disc_size_changed (gpointer user_data)
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	brasero_track_get_size (BRASERO_TRACK (priv->project),
-				NULL,
-				&bytes);
-	brasero_disc_size_changed (BRASERO_DISC (self), bytes);
+				&sectors,
+				NULL);
+	brasero_disc_size_changed (BRASERO_DISC (self), sectors);
 
 	priv->size_changed_id = 0;
 	return FALSE;
@@ -1482,7 +1482,7 @@ brasero_data_disc_get_status (BraseroDisc *disc,
 
 	brasero_status_free (status);
 
-	if (gtk_tree_model_iter_n_children (GTK_TREE_MODEL (priv->project), NULL))
+	if (!gtk_tree_model_iter_n_children (GTK_TREE_MODEL (priv->project), NULL))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
 	return BRASERO_DISC_OK;
