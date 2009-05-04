@@ -190,7 +190,8 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-filtered-uri.c                 \
 	brasero-filtered-uri.h                 \
 	brasero-track-stream-cfg.c                 \
-	brasero-track-stream-cfg.h
+	brasero-track-stream-cfg.h                 \
+	brasero-tool-dialog-private.h
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
