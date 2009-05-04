@@ -1,3 +1,18 @@
+2009-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Added a new track type fot stream type
+	and slightly modify the image one by adding virtual functions
+
+	* libbrasero-burn/brasero-track-stream-cfg.c
+	(brasero_video_project_result_cb),
+	(brasero_track_stream_cfg_get_info),
+	(brasero_track_stream_cfg_set_source),
+	(brasero_track_stream_cfg_get_status),
+	(brasero_track_stream_cfg_init),
+	(brasero_track_stream_cfg_finalize),
+	(brasero_track_stream_cfg_class_init):
+	* libbrasero-burn/brasero-track-stream-cfg.h:
+
 2009-05-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a problem with nautilus extension being greyed out

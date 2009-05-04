@@ -42,6 +42,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-track-data-cfg.h				\
 	brasero-track-disc.h                 			\
 	brasero-track-stream.h                 			\
+	brasero-track-stream-cfg.h             			\
 	brasero-track-image.h					\
 	brasero-track-image-cfg.h				\
 	brasero-session.h                 			\
@@ -187,7 +188,9 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-track-data-cfg.c                 \
 	brasero-track-data-cfg.h                 \
 	brasero-filtered-uri.c                 \
-	brasero-filtered-uri.h                 
+	brasero-filtered-uri.h                 \
+	brasero-track-stream-cfg.c                 \
+	brasero-track-stream-cfg.h
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
