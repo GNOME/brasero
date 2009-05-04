@@ -51,6 +51,14 @@ typedef struct _BraseroTrackImage BraseroTrackImage;
 struct _BraseroTrackImageClass
 {
 	BraseroTrackClass parent_class;
+
+	BraseroBurnResult	(*set_source)		(BraseroTrackImage *track,
+							 const gchar *image,
+							 const gchar *toc,
+							 BraseroImageFormat format);
+
+	BraseroBurnResult       (*set_block_num)	(BraseroTrackImage *track,
+							 goffset blocks);
 };
 
 struct _BraseroTrackImage
@@ -69,7 +77,7 @@ brasero_track_image_set_source (BraseroTrackImage *track,
 				const gchar *toc,
 				BraseroImageFormat format);
 
-void
+BraseroBurnResult
 brasero_track_image_set_block_num (BraseroTrackImage *track,
 				   goffset blocks);
 

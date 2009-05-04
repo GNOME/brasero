@@ -74,18 +74,18 @@ brasero_track_image_cfg_set_uri (BraseroTrackImageCfg *track,
 	switch (format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
 	case BRASERO_IMAGE_FORMAT_BIN:
-		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
-						uri,
-						NULL,
-						format);
+		BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_source (BRASERO_TRACK_IMAGE (track),
+											      uri,
+											      NULL,
+											      format);
 		break;
 	case BRASERO_IMAGE_FORMAT_CLONE:
 	case BRASERO_IMAGE_FORMAT_CUE:
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		brasero_track_image_set_source (BRASERO_TRACK_IMAGE (track),
-						NULL,
-						uri,
-						format);
+		BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_source (BRASERO_TRACK_IMAGE (track),
+											      NULL,
+											      uri,
+											      format);
 		break;
 
 	default:
@@ -124,7 +124,8 @@ brasero_track_image_cfg_get_info_cb (GObject *object,
 						 info->uri,
 						 info->format);
 
-	brasero_track_image_set_block_num (BRASERO_TRACK_IMAGE (object), info->blocks);
+	BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (object), info->blocks);
+	brasero_track_changed (BRASERO_TRACK (object));
 }
 
 static void
@@ -288,8 +289,9 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 
 	/* Update the image info container values. If it was invalid then */
 	/* NOTE: this resets the size as well */
-	brasero_track_image_set_block_num (BRASERO_TRACK_IMAGE (track), 0);
+	BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (track), 0);
 	brasero_track_image_cfg_set_uri (track, uri, priv->format);
+	brasero_track_changed (BRASERO_TRACK (track));
 
 	return BRASERO_BURN_OK;
 }

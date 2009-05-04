@@ -51,6 +51,18 @@ typedef struct _BraseroTrackStream BraseroTrackStream;
 struct _BraseroTrackStreamClass
 {
 	BraseroTrackClass parent_class;
+
+	/* Virtual functions */
+	BraseroBurnResult       (*set_source)		(BraseroTrackStream *track,
+							 const gchar *uri);
+
+	BraseroBurnResult       (*set_format)		(BraseroTrackStream *track,
+							 BraseroStreamFormat format);
+
+	BraseroBurnResult       (*set_boundaries)       (BraseroTrackStream *track,
+							 guint64 start,
+							 guint64 end,
+							 guint64 gap);
 };
 
 struct _BraseroTrackStream
