@@ -542,7 +542,7 @@ brasero_burn_uri_start_thread (BraseroBurnURI *self,
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_burn_uri_thread,
 					self,
-					TRUE,
+					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
 

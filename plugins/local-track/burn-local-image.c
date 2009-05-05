@@ -586,7 +586,7 @@ brasero_local_track_start_thread (BraseroLocalTrack *self,
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_local_track_thread,
 					self,
-					TRUE,
+					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
 

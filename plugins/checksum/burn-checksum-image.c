@@ -611,7 +611,7 @@ brasero_checksum_image_start (BraseroJob *job,
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_checksum_image_thread,
 					BRASERO_CHECKSUM_IMAGE (job),
-					TRUE,
+					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
 

@@ -2875,6 +2875,9 @@ brasero_medium_probed (gpointer data)
 
 	priv = BRASERO_MEDIUM_PRIVATE (data);
 
+	g_thread_join (priv->probe);
+	priv->probe = NULL;
+
 	/* This signal must be emitted in the main thread */
 	GDK_THREADS_ENTER ();
 	g_signal_emit (data,
@@ -2947,7 +2950,6 @@ brasero_medium_probe_thread (gpointer self)
 		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 
 	priv->probe_id = g_idle_add (brasero_medium_probed, self);
-	priv->probe = NULL;
 	return NULL;
 }
 

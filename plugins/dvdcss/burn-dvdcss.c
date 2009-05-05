@@ -548,7 +548,7 @@ brasero_dvdcss_start (BraseroJob *job,
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_dvdcss_write_image_thread,
 					self,
-					TRUE,
+					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
 

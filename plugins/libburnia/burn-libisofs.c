@@ -317,7 +317,7 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_libisofs_thread_started,
 					self,
-					TRUE,
+					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
 
@@ -855,7 +855,7 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_libisofs_create_volume_thread,
 					self,
-					TRUE,
+					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
 

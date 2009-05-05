@@ -1,3 +1,20 @@
+2009-05-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Don't set some threads joinable if we won't try to join them
+
+	* libbrasero-media/brasero-medium.c (brasero_medium_probed),
+	(brasero_medium_probe_thread):
+	* plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_start):
+	* plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_start):
+	* plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_start):
+	* plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_image), (brasero_libisofs_create_volume):
+	* plugins/local-track/burn-local-image.c
+	(brasero_local_track_start_thread):
+	* plugins/local-track/burn-uri.c (brasero_burn_uri_start_thread):
+
 2009-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added a new track type fot stream type
