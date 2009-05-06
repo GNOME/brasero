@@ -52,12 +52,6 @@ static const GOptionEntry options [] = {
 	  NULL }
 };
 
-void
-brasero_burn_set_debug (gboolean debug_value)
-{
-	debug = debug_value;
-}
-
 /**
  * brasero_burn_library_get_option_group:
  *
