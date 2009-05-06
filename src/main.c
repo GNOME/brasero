@@ -68,7 +68,6 @@ gint disc_blank;
 gint disc_check;
 gint open_ncb;
 gint parent_window;
-gint debug;
 
 #define BRASERO_CONF_DIR "/apps/brasero"
 
@@ -136,10 +135,6 @@ static const GOptionEntry options [] = {
 	 * xid. In other word, the window with the given xid will become brasero
 	 * parent as if brasero was a dialog for the parent application */
 	  N_("The XID of the parent window"), NULL },
-
-	{ "debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
-	  N_("Display debug statements on stdout"),
-	  NULL },
 
 	{ G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &files,
 	  NULL, NULL }, /* collects file arguments */
