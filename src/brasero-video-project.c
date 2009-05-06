@@ -37,7 +37,6 @@ struct _BraseroVideoProjectPrivate
 	guint ref_count;
 	GHashTable *references;
 
-	BraseroIO *io;
 	BraseroIOJobBase *load_uri;
 	BraseroIOJobBase *load_dir;
 
@@ -379,13 +378,14 @@ brasero_video_project_reset (BraseroVideoProject *self)
 	priv = BRASERO_VIDEO_PROJECT_PRIVATE (self);
 
 	/* cancel all VFS operations */
-	if (priv->io) {
-		brasero_io_cancel_by_base (priv->io, priv->load_uri);
-		brasero_io_cancel_by_base (priv->io, priv->load_dir);
-
+	if (priv->load_uri) {
+		brasero_io_cancel_by_base (priv->load_uri);
 		g_free (priv->load_uri);
 		priv->load_uri = NULL;
+	}
 
+	if (priv->load_dir) {
+		brasero_io_cancel_by_base (priv->load_dir);
 		g_free (priv->load_dir);
 		priv->load_dir = NULL;
 	}
@@ -632,9 +632,6 @@ brasero_video_project_add_directory_contents (BraseroVideoProject *self,
 
 	priv = BRASERO_VIDEO_PROJECT_PRIVATE (self);
 
-	if (!priv->io)
-		priv->io = brasero_io_get_default ();
-
 	if (!priv->load_dir)
 		priv->load_dir = brasero_io_register (G_OBJECT (self),
 						      brasero_video_project_add_directory_contents_result,
@@ -649,8 +646,7 @@ brasero_video_project_add_directory_contents (BraseroVideoProject *self,
 
 	ref = brasero_video_project_reference_new (self, sibling);
 
-	brasero_io_load_directory (priv->io,
-				   uri,
+	brasero_io_load_directory (uri,
 				   priv->load_dir,
 				   BRASERO_IO_INFO_MIME|
 				   BRASERO_IO_INFO_PERM|
@@ -818,9 +814,6 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 		klass->node_added (self, file);
 
 	/* get info async for the file */
-	if (!priv->io)
-		priv->io = brasero_io_get_default ();
-
 	if (!priv->load_uri)
 		priv->load_uri = brasero_io_register (G_OBJECT (self),
 						      brasero_video_project_result_cb,
@@ -831,8 +824,7 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 	priv->loading ++;
 
 	ref = brasero_video_project_reference_new (self, file);
-	brasero_io_get_file_info (priv->io,
-				  uri,
+	brasero_io_get_file_info (uri,
 				  priv->load_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
@@ -1103,15 +1095,14 @@ brasero_video_project_file_modified (BraseroFileMonitor *monitor,
 
 	/* priv->load_uri has already been initialized otherwise the tree would
 	 * be empty. But who knows... */
-	if (!priv->io || !priv->load_uri)
+	if (!priv->load_uri)
 		return;
 
 	file = callback_data;
 	file->is_reloading = TRUE;
 
 	ref = brasero_video_project_reference_new (BRASERO_VIDEO_PROJECT (monitor), file);
-	brasero_io_get_file_info (priv->io,
-				  file->uri,
+	brasero_io_get_file_info (file->uri,
 				  priv->load_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|

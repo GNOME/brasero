@@ -79,7 +79,6 @@ struct BraseroPlaylistPrivate {
 	GtkWidget *button_remove;
 	guint activity_counter;
 
-	BraseroIO *io;
 	BraseroIOJobBase *parse_type;
 
 	gint searched:1;
@@ -251,8 +250,6 @@ brasero_playlist_init (BraseroPlaylist *obj)
 
 	obj->priv = g_new0 (BraseroPlaylistPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PLAYLIST_SPACING);
-
-	obj->priv->io = brasero_io_get_default ();
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -436,15 +433,10 @@ brasero_playlist_destroy (GtkObject *object)
 	/* NOTE: we must do it here since cancel could call brasero_playlist_end
 	 * itself calling decrease_activity_counter. In finalize the latter will
 	 * raise problems since the GdkWindow has been destroyed */
-	if (playlist->priv->io) {
-		brasero_io_cancel_by_base (playlist->priv->io,
-					   playlist->priv->parse_type);
-
+	if (playlist->priv->parse_type) {
+		brasero_io_cancel_by_base (playlist->priv->parse_type);
 		g_free (playlist->priv->parse_type);
 		playlist->priv->parse_type = NULL;
-
-		g_object_unref (playlist->priv->io);
-		playlist->priv->io = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -976,11 +968,10 @@ brasero_playlist_add_uri_playlist (BraseroPlaylist *playlist,
 	if (!playlist->priv->parse_type)
 		playlist->priv->parse_type = brasero_io_register (G_OBJECT (playlist),
 								  brasero_playlist_parse_result,
-								  brasero_playlist_parse_end,
+								  brasero_playlist_parse_end, 
 								  NULL);
 
-	brasero_io_parse_playlist (playlist->priv->io,
-				   uri,
+	brasero_io_parse_playlist (uri,
 				   playlist->priv->parse_type,
 				   BRASERO_IO_INFO_PERM|
 				   BRASERO_IO_INFO_MIME|

@@ -39,6 +39,8 @@
 
 #include <gconf/gconf-client.h>
 
+#include "brasero-io.h"
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-caps.h"
@@ -251,6 +253,9 @@ brasero_burn_library_stop (void)
 		g_object_unref (medium_manager);
 		medium_manager = NULL;
 	}
+
+	/* Cleanup the io thing */
+	brasero_io_shutdown ();
 
 	/* close HAL connection */
 //	brasero_hal_watch_destroy ();

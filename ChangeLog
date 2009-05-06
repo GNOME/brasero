@@ -1,5 +1,63 @@
 2009-05-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Some cleanup regarding BraseroIO. Now brasero_io_* () functions can be
+	called without the BraseroIO object as an argument since we always passed
+	a default object anyway.
+
+	* libbrasero-burn/brasero-data-session.c
+	(brasero_io_image_directory_contents_destroy),
+	(brasero_io_image_directory_contents_thread),
+	(brasero_io_load_image_directory),
+	(brasero_data_session_load_directory_contents_real),
+	(brasero_data_session_stop_io):
+	* libbrasero-burn/brasero-data-vfs.c
+	(brasero_data_vfs_load_directory), (brasero_data_vfs_load_node),
+	(brasero_data_vfs_require_higher_priority),
+	(brasero_data_vfs_require_directory_contents),
+	(brasero_data_vfs_require_node_load), (brasero_data_vfs_load_mime),
+	(brasero_data_vfs_clear), (brasero_data_vfs_init),
+	(brasero_data_vfs_finalize):
+	* libbrasero-burn/brasero-track-stream-cfg.c
+	(brasero_track_stream_cfg_get_info):
+	* libbrasero-burn/burn-basics.c (brasero_burn_library_stop):
+	* libbrasero-utils/brasero-io.c (brasero_io_get_default),
+	(brasero_io_return_result), (brasero_io_push_job),
+	(brasero_io_job_free), (brasero_io_job_destroy),
+	(brasero_io_get_file_info_thread), (brasero_io_new_file_info_job),
+	(brasero_io_get_file_info), (brasero_io_parse_playlist_thread),
+	(brasero_io_parse_playlist), (brasero_io_get_file_count_destroy),
+	(brasero_io_get_file_count_thread), (brasero_io_get_file_count),
+	(brasero_io_load_directory_destroy),
+	(brasero_io_load_directory_playlist),
+	(brasero_io_load_directory_thread), (brasero_io_load_directory),
+	(brasero_io_cancel_by_base), (brasero_io_cancel_by_data),
+	(brasero_io_find_urgent), (brasero_io_free_async_queue),
+	(brasero_io_shutdown):
+	* libbrasero-utils/brasero-io.h:
+	* src/brasero-audio-disc.c (brasero_audio_disc_reset_real),
+	(brasero_audio_disc_finalize),
+	(brasero_audio_disc_visit_dir_async),
+	(brasero_audio_disc_add_playlist),
+	(brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_inotify_move),
+	(brasero_audio_disc_inotify_attributes_changed),
+	(brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-player.c (brasero_player_retrieve_metadata),
+	(brasero_player_set_uri), (brasero_player_destroy):
+	* src/brasero-playlist.c (brasero_playlist_init),
+	(brasero_playlist_destroy), (brasero_playlist_add_uri_playlist):
+	* src/brasero-project-manager.c
+	(brasero_project_manager_selected_uris_preview),
+	(brasero_project_manager_selected_uris_changed),
+	(brasero_project_manager_sidepane_changed),
+	(brasero_project_manager_finalize):
+	* src/brasero-video-project.c (brasero_video_project_reset),
+	(brasero_video_project_add_directory_contents),
+	(brasero_video_project_add_uri),
+	(brasero_video_project_file_modified):
+
+2009-05-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Remove unneeded function
 
 	* libbrasero-burn/burn-debug.c:

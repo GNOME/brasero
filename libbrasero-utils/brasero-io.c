@@ -53,6 +53,28 @@
 #include "brasero-metadata.h"
 #include "brasero-async-task-manager.h"
 
+#define BRASERO_TYPE_IO             (brasero_io_get_type ())
+#define BRASERO_IO(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_IO, BraseroIO))
+#define BRASERO_IO_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_IO, BraseroIOClass))
+#define BRASERO_IS_IO(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_IO))
+#define BRASERO_IS_IO_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_IO))
+#define BRASERO_IO_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_IO, BraseroIOClass))
+
+typedef struct _BraseroIOClass BraseroIOClass;
+typedef struct _BraseroIO BraseroIO;
+
+struct _BraseroIOClass
+{
+	BraseroAsyncTaskManagerClass parent_class;
+};
+
+struct _BraseroIO
+{
+	BraseroAsyncTaskManager parent_instance;
+};
+
+GType brasero_io_get_type (void) G_GNUC_CONST;
+
 typedef struct _BraseroIOPrivate BraseroIOPrivate;
 struct _BraseroIOPrivate
 {
@@ -119,6 +141,20 @@ struct _BraseroIOJobProgress {
 };
 
 G_DEFINE_TYPE (BraseroIO, brasero_io, BRASERO_TYPE_ASYNC_TASK_MANAGER);
+
+static BraseroIO *singleton = NULL;
+
+static BraseroIO *
+brasero_io_get_default ()
+{
+	if (singleton) {
+		g_object_ref (singleton);
+		return singleton;
+	}
+
+	singleton = g_object_new (BRASERO_TYPE_IO, NULL);
+	return singleton;
+}
 
 /**
  * That's the structure to pass the progress on
@@ -355,13 +391,13 @@ brasero_io_queue_result (BraseroIO *self,
 }
 
 void
-brasero_io_return_result (BraseroIO *self,
-			  const BraseroIOJobBase *base,
+brasero_io_return_result (const BraseroIOJobBase *base,
 			  const gchar *uri,
 			  GFileInfo *info,
 			  GError *error,
 			  BraseroIOResultCallbackData *callback_data)
 {
+	BraseroIO *self = brasero_io_get_default ();
 	BraseroIOJobResult *result;
 
 	/* even if it is cancelled we let the result go through to be able to 
@@ -379,6 +415,7 @@ brasero_io_return_result (BraseroIO *self,
 	}
 
 	brasero_io_queue_result (self, result);
+	g_object_unref (self);
 }
 
 /**
@@ -402,10 +439,11 @@ brasero_io_set_job (BraseroIOJob *job,
 }
 
 void
-brasero_io_push_job (BraseroIO *self,
-		     BraseroIOJob *job,
+brasero_io_push_job (BraseroIOJob *job,
 		     const BraseroAsyncTaskType *type)
 {
+	BraseroIO *self = brasero_io_get_default ();
+
 	if (job->options & BRASERO_IO_INFO_URGENT)
 		brasero_async_task_manager_queue (BRASERO_ASYNC_TASK_MANAGER (self),
 						  BRASERO_ASYNC_URGENT,
@@ -421,6 +459,7 @@ brasero_io_push_job (BraseroIO *self,
 						  BRASERO_ASYNC_NORMAL,
 						  type,
 						  job);
+	g_object_unref (self);
 }
 
 /**
@@ -428,8 +467,7 @@ brasero_io_push_job (BraseroIO *self,
  */
 
 void
-brasero_io_job_free (BraseroIO *self,
-		     gboolean cancelled,
+brasero_io_job_free (gboolean cancelled,
 		     BraseroIOJob *job)
 {
 	/* NOTE: the callback_data member is never destroyed here since it would
@@ -459,13 +497,16 @@ brasero_io_job_free (BraseroIO *self,
 
 				g_free (job->callback_data);
 			}
-			else
-				brasero_io_return_result (self,
-							  job->base,
+			else {
+				BraseroIO *self = brasero_io_get_default ();
+
+				brasero_io_return_result (job->base,
 							  NULL,
 							  NULL,
 							  NULL,
 							  job->callback_data);
+				g_object_unref (self);
+			}
 		}
 	}
 
@@ -488,7 +529,7 @@ brasero_io_job_destroy (BraseroAsyncTaskManager *manager,
 	/* NOTE: usually threads are cancelled from the main thread/loop and
 	 * block until the active task is removed which means that if we called
 	 * the destroy () then the destruction would be done in the main loop */
-	brasero_io_job_free (BRASERO_IO (manager), cancelled, job);
+	brasero_io_job_free (cancelled, job);
 }
 
 /**
@@ -1170,8 +1211,7 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 	file_uri = g_file_get_uri (file);
 	g_object_unref (file);
 
-	brasero_io_return_result (BRASERO_IO (manager),
-				  job->base,
+	brasero_io_return_result (job->base,
 				  file_uri,
 				  info,
 				  error,
@@ -1187,8 +1227,7 @@ static const BraseroAsyncTaskType info_type = {
 };
 
 static void
-brasero_io_new_file_info_job (BraseroIO *self,
-			      const gchar *uri,
+brasero_io_new_file_info_job (const gchar *uri,
 			      const BraseroIOJobBase *base,
 			      BraseroIOFlags options,
 			      BraseroIOResultCallbackData *callback_data)
@@ -1202,24 +1241,25 @@ brasero_io_new_file_info_job (BraseroIO *self,
 			    options,
 			    callback_data);
 
-	brasero_io_push_job (self, job, &info_type);
+	brasero_io_push_job (job, &info_type);
 }
 
 void
-brasero_io_get_file_info (BraseroIO *self,
-			  const gchar *uri,
+brasero_io_get_file_info (const gchar *uri,
 			  const BraseroIOJobBase *base,
 			  BraseroIOFlags options,
 			  gpointer user_data)
 {
 	BraseroIOResultCallbackData *callback_data = NULL;
+	BraseroIO *self = brasero_io_get_default ();
 
 	if (user_data) {
 		callback_data = g_new0 (BraseroIOResultCallbackData, 1);
 		callback_data->callback_data = user_data;
 	}
 
-	brasero_io_new_file_info_job (self, uri, base, options, callback_data);
+	brasero_io_new_file_info_job (uri, base, options, callback_data);
+	g_object_unref (self);
 }
 
 /**
@@ -1318,8 +1358,7 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 
 	result = brasero_io_parse_playlist_get_uris (job->uri, &data, &error);
 	if (!result) {
-		brasero_io_return_result (BRASERO_IO (manager),
-					  job->base,
+		brasero_io_return_result (job->base,
 					  job->uri,
 					  NULL,
 					  error,
@@ -1343,8 +1382,7 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 						  BRASERO_IO_PLAYLIST_TITLE,
 						  data.title);
 
-	brasero_io_return_result (BRASERO_IO (manager),
-				  job->base,
+	brasero_io_return_result (job->base,
 				  job->uri,
 				  info,
 				  NULL,
@@ -1373,8 +1411,7 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 		if (!child_info)
 			continue;
 
-		brasero_io_return_result (BRASERO_IO (manager),
-					  job->base,
+		brasero_io_return_result (job->base,
 					  child,
 					  child_info,
 					  NULL,
@@ -1391,13 +1428,13 @@ static const BraseroAsyncTaskType playlist_type = {
 };
 
 void
-brasero_io_parse_playlist (BraseroIO *self,
-			   const gchar *uri,
+brasero_io_parse_playlist (const gchar *uri,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer user_data)
 {
 	BraseroIOJob *job;
+	BraseroIO *self = brasero_io_get_default ();
 	BraseroIOResultCallbackData *callback_data = NULL;
 
 	if (user_data) {
@@ -1412,7 +1449,8 @@ brasero_io_parse_playlist (BraseroIO *self,
 			    options,
 			    callback_data);
 
-	brasero_io_push_job (self, job, &playlist_type);
+	brasero_io_push_job (job, &playlist_type);
+	g_object_unref (self);
 }
 
 #endif
@@ -1450,7 +1488,7 @@ brasero_io_get_file_count_destroy (BraseroAsyncTaskManager *manager,
 
 	brasero_io_job_progress_report_stop (BRASERO_IO (manager), callback_data);
 
-	brasero_io_job_free (BRASERO_IO (manager), cancelled, callback_data);
+	brasero_io_job_free (cancelled, callback_data);
 }
 
 #ifdef BUILD_PLAYLIST
@@ -1704,8 +1742,7 @@ brasero_io_get_file_count_thread (BraseroAsyncTaskManager *manager,
 		g_file_info_set_attribute_uint64 (info, BRASERO_IO_COUNT_SIZE, data->total_b);
 		g_file_info_set_attribute_uint32 (info, BRASERO_IO_COUNT_NUM, data->files_num);
 
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
+		brasero_io_return_result (data->job.base,
 					  NULL,
 					  info,
 					  NULL,
@@ -1736,13 +1773,13 @@ static const BraseroAsyncTaskType count_type = {
 };
 
 void
-brasero_io_get_file_count (BraseroIO *self,
-			   GSList *uris,
+brasero_io_get_file_count (GSList *uris,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer user_data)
 {
 	BraseroIOCountData *data;
+	BraseroIO *self = brasero_io_get_default ();
 	BraseroIOResultCallbackData *callback_data = NULL;
 
 	if (user_data) {
@@ -1761,7 +1798,8 @@ brasero_io_get_file_count (BraseroIO *self,
 			    options,
 			    callback_data);
 
-	brasero_io_push_job (self, BRASERO_IO_JOB (data), &count_type);
+	brasero_io_push_job (BRASERO_IO_JOB (data), &count_type);
+	g_object_unref (self);
 }
 
 /**
@@ -1784,7 +1822,7 @@ brasero_io_load_directory_destroy (BraseroAsyncTaskManager *manager,
 	g_slist_foreach (data->children, (GFunc) g_object_unref, NULL);
 	g_slist_free (data->children);
 
-	brasero_io_job_free (BRASERO_IO (manager), cancelled, BRASERO_IO_JOB (data));
+	brasero_io_job_free (cancelled, BRASERO_IO_JOB (data));
 }
 
 #ifdef BUILD_PLAYLIST
@@ -1832,8 +1870,7 @@ brasero_io_load_directory_playlist (BraseroIO *self,
 
 		if (result) {
 			brasero_io_set_metadata_attributes (info, &metadata);
-			brasero_io_return_result (self,
-						  data->job.base,
+			brasero_io_return_result (data->job.base,
 						  child_uri,
 						  info,
 						  NULL,
@@ -1898,8 +1935,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		gchar *directory_uri;
 
 		directory_uri = g_file_get_uri (file);
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
+		brasero_io_return_result (data->job.base,
 					  directory_uri,
 					  NULL,
 					  error,
@@ -1946,8 +1982,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 
 				/* since we checked for the existence of the file
 				 * an error means a looping symbolic link */
-				brasero_io_return_result (BRASERO_IO (manager),
-							  data->job.base,
+				brasero_io_return_result (data->job.base,
 							  child_uri,
 							  NULL,
 							  error,
@@ -1961,8 +1996,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		}
 
 		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-			brasero_io_return_result (BRASERO_IO (manager),
-						  data->job.base,
+			brasero_io_return_result (data->job.base,
 						  child_uri,
 						  info,
 						  NULL,
@@ -2016,8 +2050,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 			brasero_metadata_info_clear (&metadata);
 		}
 
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
+		brasero_io_return_result (data->job.base,
 					  child_uri,
 					  info,
 					  NULL,
@@ -2042,13 +2075,13 @@ static const BraseroAsyncTaskType contents_type = {
 };
 
 void
-brasero_io_load_directory (BraseroIO *self,
-			   const gchar *uri,
+brasero_io_load_directory (const gchar *uri,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer user_data)
 {
 	BraseroIOContentsData *data;
+	BraseroIO *self = brasero_io_get_default ();
 	BraseroIOResultCallbackData *callback_data = NULL;
 
 	if (user_data) {
@@ -2063,7 +2096,8 @@ brasero_io_load_directory (BraseroIO *self,
 			    options,
 			    callback_data);
 
-	brasero_io_push_job (self, BRASERO_IO_JOB (data), &contents_type);
+	brasero_io_push_job (BRASERO_IO_JOB (data), &contents_type);
+	g_object_unref (self);
 }
 
 static void
@@ -2102,12 +2136,12 @@ brasero_io_cancel_tasks_by_base_cb (BraseroAsyncTaskManager *manager,
 }
 
 void
-brasero_io_cancel_by_base (BraseroIO *self,
-			   BraseroIOJobBase *base)
+brasero_io_cancel_by_base (BraseroIOJobBase *base)
 {
 	GSList *iter;
 	GSList *next;
 	BraseroIOPrivate *priv;
+	BraseroIO *self = brasero_io_get_default ();
 
 	priv = BRASERO_IO_PRIVATE (self);
 
@@ -2131,6 +2165,8 @@ brasero_io_cancel_by_base (BraseroIO *self,
 
 		brasero_io_cancel_result (self, result);
 	}
+
+	g_object_unref (self);
 }
 
 static gboolean
@@ -2147,12 +2183,12 @@ brasero_io_cancel_tasks_by_data_cb (BraseroAsyncTaskManager *manager,
 }
 
 void
-brasero_io_cancel_by_data (BraseroIO *self,
-			   gpointer callback_data)
+brasero_io_cancel_by_data (gpointer callback_data)
 {
 	GSList *iter;
 	GSList *next;
 	BraseroIOPrivate *priv;
+	BraseroIO *self = brasero_io_get_default ();
 
 	priv = BRASERO_IO_PRIVATE (self);
 
@@ -2176,6 +2212,8 @@ brasero_io_cancel_by_data (BraseroIO *self,
 
 		brasero_io_cancel_result (self, result);
 	}
+
+	g_object_unref (self);
 }
 
 struct _BraseroIOJobCompareData {
@@ -2203,12 +2241,12 @@ brasero_io_compare_unprocessed_task (BraseroAsyncTaskManager *manager,
 }
 
 void
-brasero_io_find_urgent (BraseroIO *self,
-			const BraseroIOJobBase *base,
+brasero_io_find_urgent (const BraseroIOJobBase *base,
 			BraseroIOCompareCallback callback,
 			gpointer user_data)
 {
 	BraseroIOJobCompareData callback_data;
+	BraseroIO *self = brasero_io_get_default ();
 
 	callback_data.func = callback;
 	callback_data.base = base;
@@ -2217,6 +2255,7 @@ brasero_io_find_urgent (BraseroIO *self,
 	brasero_async_task_manager_find_urgent_task (BRASERO_ASYNC_TASK_MANAGER (self),
 						     brasero_io_compare_unprocessed_task,
 						     &callback_data);
+	g_object_unref (self);
 						     
 }
 
@@ -2264,7 +2303,7 @@ brasero_io_free_async_queue (BraseroAsyncTaskManager *manager,
 {
 	BraseroIOJob *job = callback_data;
 
-	brasero_io_job_free (BRASERO_IO (manager), TRUE, job);
+	brasero_io_job_free (TRUE, job);
 	return TRUE;
 }
 
@@ -2365,32 +2404,11 @@ brasero_io_class_init (BraseroIOClass *klass)
 	object_class->finalize = brasero_io_finalize;
 }
 
-static BraseroIO *singleton = NULL;
-
-static void
-brasero_io_last_reference_cb (gpointer null_data,
-			      GObject *object,
-			      gboolean is_last_ref)
-{
-	if (is_last_ref) {
-		singleton = NULL;
-		g_object_remove_toggle_ref (object,
-					    brasero_io_last_reference_cb,
-					    null_data);
-	}
-}
-
-BraseroIO *
-brasero_io_get_default ()
+void
+brasero_io_shutdown (void)
 {
 	if (singleton) {
-		g_object_ref (singleton);
-		return singleton;
+		singleton = NULL;
+		g_object_unref (singleton);
 	}
-
-	singleton = g_object_new (BRASERO_TYPE_IO, NULL);
-	g_object_add_toggle_ref (G_OBJECT (singleton),
-				 brasero_io_last_reference_cb,
-				 NULL);
-	return singleton;
 }

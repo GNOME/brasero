@@ -63,7 +63,6 @@ struct _BraseroDataVFSPrivate
 
 	BraseroFilteredUri *filtered;
 
-	BraseroIO *io;
 	BraseroIOJobBase *load_uri;
 	BraseroIOJobBase *load_contents;
 
@@ -476,8 +475,7 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 							   NULL);
 
 	/* no need to require mime types here as these rows won't be visible */
-	brasero_io_load_directory (priv->io,
-				   uri,
+	brasero_io_load_directory (uri,
 				   priv->load_contents,
 				   BRASERO_IO_INFO_PERM|
 				  (priv->replace_sym ? BRASERO_IO_INFO_FOLLOW_SYMLINK:BRASERO_IO_INFO_NONE),
@@ -709,8 +707,7 @@ brasero_data_vfs_load_node (BraseroDataVFS *self,
 						      brasero_data_vfs_loading_node_end,
 						      NULL);
 
-	brasero_io_get_file_info (priv->io,
-				  uri,
+	brasero_io_get_file_info (uri,
 				  priv->load_uri,
 				  flags|
 				  (priv->replace_sym ? BRASERO_IO_INFO_FOLLOW_SYMLINK:BRASERO_IO_INFO_NONE),
@@ -789,7 +786,6 @@ brasero_data_vfs_increase_priority_cb (gpointer data, gpointer user_data)
 static gboolean
 brasero_data_vfs_require_higher_priority (BraseroDataVFS *self,
 					  BraseroFileNode *node,
-					  BraseroIO *io,
 					  BraseroIOJobBase *type)
 {
 	gchar *registered;
@@ -799,8 +795,7 @@ brasero_data_vfs_require_higher_priority (BraseroDataVFS *self,
 	registered = brasero_utils_register_string (uri);
 	g_free (uri);
 
-	brasero_io_find_urgent (io,
-				type,
+	brasero_io_find_urgent (type,
 				brasero_data_vfs_increase_priority_cb,
 				registered);
 
@@ -817,7 +812,6 @@ brasero_data_vfs_require_directory_contents (BraseroDataVFS *self,
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 	return brasero_data_vfs_require_higher_priority (self,
 							 node,
-							 priv->io,
 							 priv->load_contents);
 }
 
@@ -830,7 +824,6 @@ brasero_data_vfs_require_node_load (BraseroDataVFS *self,
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 	return brasero_data_vfs_require_higher_priority (self,
 							 node,
-							 priv->io,
 							 priv->load_uri);
 }
 
@@ -871,8 +864,7 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 			ref_node = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
 			if (ref_node == node) {
 				/* Ask for a higher priority */
-				brasero_io_find_urgent (priv->io,
-							priv->load_uri,
+				brasero_io_find_urgent (priv->load_uri,
 							brasero_data_vfs_increase_priority_cb,
 							registered);
 				brasero_utils_unregister_string (registered);
@@ -886,8 +878,7 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 		g_hash_table_insert (priv->loading, registered, nodes);
 
 		/* Yet, ask for a higher priority */
-		brasero_io_find_urgent (priv->io,
-					priv->load_uri,
+		brasero_io_find_urgent (priv->load_uri,
 					brasero_data_vfs_increase_priority_cb,
 					registered);
 		brasero_utils_unregister_string (registered);
@@ -977,13 +968,14 @@ brasero_data_vfs_clear (BraseroDataVFS *self)
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
 	/* Stop all VFS operations */
-	if (priv->io) {
-		brasero_io_cancel_by_base (priv->io, priv->load_uri);
-		brasero_io_cancel_by_base (priv->io, priv->load_contents);
-
+	if (priv->load_uri) {
+		brasero_io_cancel_by_base (priv->load_uri);
 		g_free (priv->load_uri);
 		priv->load_uri = NULL;
+	}
 
+	if (priv->load_contents) {
+		brasero_io_cancel_by_base (priv->load_contents);
 		g_free (priv->load_contents);
 		priv->load_contents = NULL;
 	}
@@ -1123,9 +1115,6 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 	/* create the hash tables */
 	priv->loading = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->directories = g_hash_table_new (g_str_hash, g_str_equal);
-
-	/* get the vfs object */
-	priv->io = brasero_io_get_default ();
 }
 
 static void
@@ -1150,11 +1139,6 @@ brasero_data_vfs_finalize (GObject *object)
 	if (priv->filtered) {
 		g_object_unref (priv->filtered);
 		priv->filtered = NULL;
-	}
-
-	if (priv->io) {
-		g_object_unref (priv->io);
-		priv->io = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_data_vfs_parent_class)->finalize (object);

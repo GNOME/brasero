@@ -156,7 +156,6 @@ static const char *description = {
 };
 
 struct BraseroProjectManagerPrivate {
-	BraseroIO *io;
 	BraseroProjectType type;
 	BraseroIOJobBase *size_preview;
 
@@ -319,7 +318,7 @@ brasero_project_manager_size_preview (GObject *object,
 					       invalid_num,
 					       files_num);
 }
-
+/*
 static void
 brasero_project_manager_size_preview_progress (GObject *object,
 					       BraseroIOJobProgress *progress,
@@ -336,7 +335,7 @@ brasero_project_manager_size_preview_progress (GObject *object,
 					       0,
 					       files_num);
 }
-
+*/
 static gboolean
 brasero_project_manager_selected_uris_preview (gpointer data)
 {
@@ -345,14 +344,11 @@ brasero_project_manager_selected_uris_preview (gpointer data)
 	GSList *list = NULL;
 	gchar **iter;
 
-	if (!manager->priv->io)
-		manager->priv->io = brasero_io_get_default ();
-
 	if (!manager->priv->size_preview)
 		manager->priv->size_preview = brasero_io_register (G_OBJECT (manager),
 								   brasero_project_manager_size_preview,
 								   NULL,
-								   brasero_project_manager_size_preview_progress);
+								   NULL);
     
 	for (iter = manager->priv->selected; iter && *iter; iter ++)
 		list = g_slist_prepend (list, *iter);
@@ -364,8 +360,7 @@ brasero_project_manager_selected_uris_preview (gpointer data)
 	else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
 		flags |= BRASERO_IO_INFO_RECURSIVE;
 
-	brasero_io_get_file_count (manager->priv->io,
-				   list,
+	brasero_io_get_file_count (list,
 				   manager->priv->size_preview,
 				   flags,
 				   NULL);
@@ -424,9 +419,8 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 	/* if we are in the middle of an unfinished size seek then
 	 * cancel it and re-initialize */
-	if (manager->priv->io)
-		brasero_io_cancel_by_base (manager->priv->io,
-					   manager->priv->size_preview);
+	if (manager->priv->size_preview)
+		brasero_io_cancel_by_base (manager->priv->size_preview);
 
 	if (manager->priv->selected) {
 		g_strfreev (manager->priv->selected);
@@ -469,9 +463,8 @@ brasero_project_manager_sidepane_changed (BraseroLayout *layout,
  		GtkWidget *status;
  
 		/* If sidepane is disabled, remove any text about selection */
-		if (manager->priv->io)
-			brasero_io_cancel_by_base (manager->priv->io,
-						   manager->priv->size_preview);
+		if (manager->priv->size_preview)
+			brasero_io_cancel_by_base (manager->priv->size_preview);
 
  		status = brasero_app_get_statusbar1 (brasero_app_get_default ());
 
@@ -1166,14 +1159,10 @@ brasero_project_manager_finalize (GObject *object)
 
 	cobj = BRASERO_PROJECT_MANAGER (object);
 
-	if (cobj->priv->io) {
-		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->size_preview);
-
+	if (cobj->priv->size_preview) {
+		brasero_io_cancel_by_base (cobj->priv->size_preview);
 		g_free (cobj->priv->size_preview);
 		cobj->priv->size_preview = NULL;
-
-		g_object_unref (cobj->priv->io);
-		cobj->priv->io = NULL;
 	}
 
 	if (cobj->priv->preview_id) {

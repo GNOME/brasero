@@ -78,7 +78,6 @@ struct BraseroPlayerPrivate {
 
 	BraseroPlayerBaconState state;
 
-	BraseroIO *io;
 	BraseroIOJobBase *meta_task;
 
 	gchar *uri;
@@ -953,17 +952,13 @@ brasero_player_metadata_completed (GObject *obj,
 static void
 brasero_player_retrieve_metadata (BraseroPlayer *player)
 {
-	if (!player->priv->io)
-		player->priv->io = brasero_io_get_default ();
-
 	if (!player->priv->meta_task)
 		player->priv->meta_task = brasero_io_register (G_OBJECT (player),
 							       brasero_player_metadata_completed,
 							       NULL,
 							       NULL);
 
-	brasero_io_get_file_info (player->priv->io,
-				  player->priv->uri,
+	brasero_io_get_file_info (player->priv->uri,
 				  player->priv->meta_task,
 				  BRASERO_IO_INFO_METADATA|
 				  BRASERO_IO_INFO_MIME,
@@ -1037,9 +1032,8 @@ brasero_player_set_uri (BraseroPlayer *player,
 	player->priv->start = 0;
 	player->priv->end = 0;
 
-	if (player->priv->io)
-		brasero_io_cancel_by_base (player->priv->io,
-					   player->priv->meta_task);
+	if (player->priv->meta_task)
+		brasero_io_cancel_by_base (player->priv->meta_task);
 
 	/* That stops the pipeline from playing */
 	brasero_player_bacon_set_uri (BRASERO_PLAYER_BACON (player->priv->bacon), NULL);
@@ -1288,15 +1282,9 @@ brasero_player_destroy (GtkObject *obj)
 	}
 
 	if (player->priv->meta_task){
-		brasero_io_cancel_by_base (player->priv->io,
-					   player->priv->meta_task);
+		brasero_io_cancel_by_base (player->priv->meta_task);
 		g_free (player->priv->meta_task);
 		player->priv->meta_task = 0;
-	}
-
-	if (player->priv->io) {
-		g_object_unref (player->priv->io);
-		player->priv->io = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)

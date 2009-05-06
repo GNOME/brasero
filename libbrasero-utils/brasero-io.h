@@ -37,28 +37,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_IO             (brasero_io_get_type ())
-#define BRASERO_IO(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_IO, BraseroIO))
-#define BRASERO_IO_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_IO, BraseroIOClass))
-#define BRASERO_IS_IO(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_IO))
-#define BRASERO_IS_IO_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_IO))
-#define BRASERO_IO_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_IO, BraseroIOClass))
-
-typedef struct _BraseroIOClass BraseroIOClass;
-typedef struct _BraseroIO BraseroIO;
-
-struct _BraseroIOClass
-{
-	BraseroAsyncTaskManagerClass parent_class;
-};
-
-struct _BraseroIO
-{
-	BraseroAsyncTaskManager parent_instance;
-};
-
-GType brasero_io_get_type (void) G_GNUC_CONST;
-
 typedef enum {
 	BRASERO_IO_INFO_NONE			= 0,
 	BRASERO_IO_INFO_MIME			= 1,
@@ -154,32 +132,29 @@ typedef struct _BraseroIOJob BraseroIOJob;
 #define BRASERO_IO_JOB(data)	((BraseroIOJob *) (data))
 
 void
-brasero_io_job_free (BraseroIO *self,
-		     gboolean cancelled,
+brasero_io_job_free (gboolean cancelled,
 		     BraseroIOJob *job);
 
 void
-brasero_io_set_job (BraseroIOJob *job,
+brasero_io_set_job (BraseroIOJob *self,
 		    const BraseroIOJobBase *base,
 		    const gchar *uri,
 		    BraseroIOFlags options,
 		    BraseroIOResultCallbackData *callback_data);
 
 void
-brasero_io_push_job (BraseroIO *self,
-		     BraseroIOJob *job,
+brasero_io_push_job (BraseroIOJob *job,
 		     const BraseroAsyncTaskType *type);
 
 void
-brasero_io_return_result (BraseroIO *self,
-			  const BraseroIOJobBase *base,
+brasero_io_return_result (const BraseroIOJobBase *base,
 			  const gchar *uri,
 			  GFileInfo *info,
 			  GError *error,
 			  BraseroIOResultCallbackData *callback_data);
 
-BraseroIO *
-brasero_io_get_default (void);
+void
+brasero_io_shutdown (void);
 
 BraseroIOJobBase *
 brasero_io_register (GObject *object,
@@ -188,22 +163,18 @@ brasero_io_register (GObject *object,
 		     BraseroIOProgressCallback progress);
 
 void
-brasero_io_cancel_by_data (BraseroIO *self,
-			   gpointer callback_data);
+brasero_io_cancel_by_data (gpointer callback_data);
 
 void
-brasero_io_cancel_by_base (BraseroIO *self,
-			   BraseroIOJobBase *base);
+brasero_io_cancel_by_base (BraseroIOJobBase *base);
 
 void
-brasero_io_find_urgent (BraseroIO *self,
-			const BraseroIOJobBase *base,
+brasero_io_find_urgent (const BraseroIOJobBase *base,
 			BraseroIOCompareCallback callback,
 			gpointer callback_data);			
 
 void
-brasero_io_load_image_directory (BraseroIO *self,
-				 const gchar *dev_image,
+brasero_io_load_image_directory (const gchar *dev_image,
 				 gint64 session_block,
 				 gint64 block,
 				 const BraseroIOJobBase *base,
@@ -211,26 +182,22 @@ brasero_io_load_image_directory (BraseroIO *self,
 				 gpointer user_data);
 
 void
-brasero_io_load_directory (BraseroIO *self,
-			   const gchar *uri,
+brasero_io_load_directory (const gchar *uri,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer callback_data);
 void
-brasero_io_get_file_info (BraseroIO *self,
-			  const gchar *uri,
+brasero_io_get_file_info (const gchar *uri,
 			  const BraseroIOJobBase *base,
 			  BraseroIOFlags options,
 			  gpointer callback_data);
 void
-brasero_io_get_file_count (BraseroIO *self,
-			   GSList *uris,
+brasero_io_get_file_count (GSList *uris,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer callback_data);
 void
-brasero_io_parse_playlist (BraseroIO *self,
-			   const gchar *uri,
+brasero_io_parse_playlist (const gchar *uri,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
 			   gpointer callback_data);

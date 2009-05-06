@@ -56,7 +56,6 @@
 typedef struct _BraseroDataSessionPrivate BraseroDataSessionPrivate;
 struct _BraseroDataSessionPrivate
 {
-	BraseroIO *io;
 	BraseroIOJobBase *load_dir;
 
 	/* Multisession drives that are inserted */
@@ -107,7 +106,7 @@ brasero_io_image_directory_contents_destroy (BraseroAsyncTaskManager *manager,
 	BraseroIOImageContentsData *data = callback_data;
 
 	g_free (data->dev_image);
-	brasero_io_job_free (BRASERO_IO (manager), cancelled, BRASERO_IO_JOB (data));
+	brasero_io_job_free (cancelled, BRASERO_IO_JOB (data));
 }
 
 static BraseroAsyncTaskResult
@@ -125,8 +124,7 @@ brasero_io_image_directory_contents_thread (BraseroAsyncTaskManager *manager,
 	vol = brasero_volume_source_open_device_handle (handle, &error);
 	if (!vol) {
 		brasero_device_handle_close (handle);
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
+		brasero_io_return_result (data->job.base,
 					  data->job.uri,
 					  NULL,
 					  error,
@@ -158,8 +156,7 @@ brasero_io_image_directory_contents_thread (BraseroAsyncTaskManager *manager,
 		else
 			g_file_info_set_size (info, BRASERO_VOLUME_FILE_SIZE (file));
 
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
+		brasero_io_return_result (data->job.base,
 					  data->job.uri,
 					  info,
 					  NULL,
@@ -178,8 +175,7 @@ static const BraseroAsyncTaskType image_contents_type = {
 };
 
 void
-brasero_io_load_image_directory (BraseroIO *self,
-				 const gchar *dev_image,
+brasero_io_load_image_directory (const gchar *dev_image,
 				 gint64 session_block,
 				 gint64 block,
 				 const BraseroIOJobBase *base,
@@ -204,8 +200,7 @@ brasero_io_load_image_directory (BraseroIO *self,
 			    options,
 			    callback_data);
 
-	brasero_io_push_job (self,
-			     BRASERO_IO_JOB (data),
+	brasero_io_push_job (BRASERO_IO_JOB (data),
 			     &image_contents_type);
 
 }
@@ -418,8 +413,6 @@ brasero_data_session_load_directory_contents_real (BraseroDataSession *self,
 	brasero_medium_get_last_data_track_address (priv->loaded,
 						    NULL,
 						    &session_block);
-	if (!priv->io)
-		priv->io = brasero_io_get_default ();
 
 	if (!priv->load_dir)
 		priv->load_dir = brasero_io_register (G_OBJECT (self),
@@ -433,8 +426,7 @@ brasero_data_session_load_directory_contents_real (BraseroDataSession *self,
 		node->is_exploring = TRUE;
 	}
 
-	brasero_io_load_image_directory (priv->io,
-					 device,
+	brasero_io_load_image_directory (device,
 					 session_block,
 					 BRASERO_FILE_NODE_IMPORTED_ADDRESS (node),
 					 priv->load_dir,
@@ -626,9 +618,8 @@ brasero_data_session_stop_io (BraseroDataSession *self)
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
 
-	if (priv->io) {
-		brasero_io_cancel_by_base (priv->io, priv->load_dir);
-
+	if (priv->load_dir) {
+		brasero_io_cancel_by_base (priv->load_dir);
 		g_free (priv->load_dir);
 		priv->load_dir = NULL;
 	}

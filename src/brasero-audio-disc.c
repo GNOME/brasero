@@ -233,7 +233,6 @@ brasero_audio_disc_cancel_monitoring (BraseroAudioDisc *disc,
 #endif
 
 struct _BraseroAudioDiscPrivate {
-	BraseroIO *io;
 	BraseroIOJobBase *attr_changed;
 	BraseroIOJobBase *add_dir;
 	BraseroIOJobBase *add_uri;
@@ -802,12 +801,10 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 static void
 brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 {
-	if (disc->priv->io) {
-		brasero_io_cancel_by_base (disc->priv->io, disc->priv->attr_changed);
-		brasero_io_cancel_by_base (disc->priv->io, disc->priv->add_dir);
-		brasero_io_cancel_by_base (disc->priv->io, disc->priv->add_uri);
-		brasero_io_cancel_by_base (disc->priv->io, disc->priv->add_playlist);
-	}
+	brasero_io_cancel_by_base (disc->priv->attr_changed);
+	brasero_io_cancel_by_base (disc->priv->add_dir);
+	brasero_io_cancel_by_base (disc->priv->add_uri);
+	brasero_io_cancel_by_base (disc->priv->add_playlist);
 
 #ifdef BUILD_INOTIFY
 
@@ -831,8 +828,8 @@ brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 		disc->priv->monitored = NULL;
 	}
 
-	if (disc->priv->reload_uri && disc->priv->io)
-		brasero_io_cancel_by_base (disc->priv->io, disc->priv->reload_uri);
+	if (disc->priv->reload_uri && disc->priv->reload_uri)
+		brasero_io_cancel_by_base (disc->priv->reload_uri);
 
 #endif
 
@@ -867,23 +864,18 @@ brasero_audio_disc_finalize (GObject *object)
 
 #endif
 	
-	if (cobj->priv->io) {
-		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->attr_changed);
-		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->add_dir);
-		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->add_uri);
-		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->add_playlist);
-		g_free (cobj->priv->attr_changed);
-		g_free (cobj->priv->add_dir);
-		g_free (cobj->priv->add_uri);
-		g_free (cobj->priv->add_playlist);
-		cobj->priv->attr_changed = NULL;
-		cobj->priv->add_dir = NULL;
-		cobj->priv->add_uri = NULL;
-		cobj->priv->add_playlist = NULL;
-
-		g_object_unref (cobj->priv->io);
-		cobj->priv->io = NULL;
-	}
+	brasero_io_cancel_by_base (cobj->priv->attr_changed);
+	brasero_io_cancel_by_base (cobj->priv->add_dir);
+	brasero_io_cancel_by_base (cobj->priv->add_uri);
+	brasero_io_cancel_by_base (cobj->priv->add_playlist);
+	g_free (cobj->priv->attr_changed);
+	g_free (cobj->priv->add_dir);
+	g_free (cobj->priv->add_uri);
+	g_free (cobj->priv->add_playlist);
+	cobj->priv->attr_changed = NULL;
+	cobj->priv->add_dir = NULL;
+	cobj->priv->add_uri = NULL;
+	cobj->priv->add_playlist = NULL;
 
 	if (cobj->priv->manager) {
 		g_object_unref (cobj->priv->manager);
@@ -1444,9 +1436,6 @@ static BraseroDiscResult
 brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 				    const gchar *uri)
 {
-	if (!disc->priv->io)
-		disc->priv->io = brasero_io_get_default ();
-
 	if (!disc->priv->add_dir)
 		disc->priv->add_dir = brasero_io_register (G_OBJECT (disc),
 							   brasero_audio_disc_result,
@@ -1456,8 +1445,7 @@ brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 	brasero_audio_disc_increase_activity_counter (disc);
 
 	/* we have to pass a dummy value here otherwise finished is never called */
-	brasero_io_load_directory (disc->priv->io,
-				   uri,
+	brasero_io_load_directory (uri,
 				   disc->priv->add_dir,
 				   BRASERO_IO_INFO_MIME|
 				   BRASERO_IO_INFO_PERM|
@@ -1505,9 +1493,6 @@ static BraseroDiscResult
 brasero_audio_disc_add_playlist (BraseroAudioDisc *disc,
 				 const gchar *uri)
 {
-	if (!disc->priv->io)
-		disc->priv->io = brasero_io_get_default ();
-
 	if (!disc->priv->add_playlist)
 		disc->priv->add_playlist = brasero_io_register (G_OBJECT (disc),
 								brasero_audio_disc_result,
@@ -1515,8 +1500,7 @@ brasero_audio_disc_add_playlist (BraseroAudioDisc *disc,
 								NULL);
 
 	brasero_audio_disc_increase_activity_counter (disc);
-	brasero_io_parse_playlist (disc->priv->io,
-				   uri,
+	brasero_io_parse_playlist (uri,
 				   disc->priv->add_playlist,
 				   BRASERO_IO_INFO_PERM|
 				   BRASERO_IO_INFO_MIME|
@@ -1743,9 +1727,6 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 		gtk_tree_path_free (treepath);
 
 	/* get info async for the file */
-	if (!disc->priv->io)
-		disc->priv->io = brasero_io_get_default ();
-
 	if (!disc->priv->add_uri)
 		disc->priv->add_uri = brasero_io_register (G_OBJECT (disc),
 							   brasero_audio_disc_new_row_cb,
@@ -1754,8 +1735,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	/* FIXME: if cancelled ref won't be destroyed ? 
 	 * no, since the callback is always called even if there is an error */
 	brasero_audio_disc_increase_activity_counter (disc);
-	brasero_io_get_file_info (disc->priv->io,
-				  uri,
+	brasero_io_get_file_info (uri,
 				  disc->priv->add_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
@@ -4038,17 +4018,13 @@ brasero_audio_disc_inotify_move (BraseroAudioDisc *disc,
 
 			/* we are only interested if the destination is in our tree
 			 * then that means the file was modified */
-			if (!disc->priv->io)
-				disc->priv->io = brasero_io_get_default ();
-
 			if (!disc->priv->reload_uri)
 				disc->priv->reload_uri = brasero_io_register (G_OBJECT (disc),
 									      brasero_audio_disc_inotify_modify_result,
 									      NULL,
 									      NULL);
 
-			brasero_io_get_file_info (disc->priv->io,
-						  uri,
+			brasero_io_get_file_info (uri,
 						  disc->priv->reload_uri,
 						  BRASERO_IO_INFO_PERM|
 						  BRASERO_IO_INFO_MIME|
@@ -4093,9 +4069,6 @@ static gboolean
 brasero_audio_disc_inotify_attributes_changed (BraseroAudioDisc *disc,
 					       const gchar *uri)
 {
-	if (!disc->priv->io)
-		disc->priv->io = brasero_io_get_default ();
-
 	if (!disc->priv->attr_changed)
 		disc->priv->attr_changed = brasero_io_register (G_OBJECT (disc),
 								brasero_audio_disc_inotify_attributes_changed_cb,
@@ -4103,8 +4076,7 @@ brasero_audio_disc_inotify_attributes_changed (BraseroAudioDisc *disc,
 								NULL);
 
 	brasero_audio_disc_increase_activity_counter (disc);
-	brasero_io_get_file_info (disc->priv->io,
-				  uri,
+	brasero_io_get_file_info (uri,
 				  disc->priv->attr_changed,
 				  BRASERO_IO_INFO_PERM,
 				  NULL);
@@ -4243,17 +4215,13 @@ brasero_audio_disc_inotify_monitor_cb (GIOChannel *channel,
 		}
 		else if (event.mask & IN_MODIFY
 		     &&  brasero_audio_disc_inotify_is_in_selection (disc, monitored)) {
-			if (!disc->priv->io)
-				disc->priv->io = brasero_io_get_default ();
-
 			if (!disc->priv->reload_uri)
 				disc->priv->reload_uri = brasero_io_register (G_OBJECT (disc),
 									      brasero_audio_disc_inotify_modify_result,
 									      NULL,
 									      NULL);
 
-			brasero_io_get_file_info (disc->priv->io,
-						  monitored,
+			brasero_io_get_file_info (monitored,
 						  disc->priv->reload_uri,
 						  BRASERO_IO_INFO_PERM|
 						  BRASERO_IO_INFO_MIME|

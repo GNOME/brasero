@@ -43,7 +43,6 @@
 typedef struct _BraseroTrackStreamCfgPrivate BraseroTrackStreamCfgPrivate;
 struct _BraseroTrackStreamCfgPrivate
 {
-	BraseroIO *io;
 	BraseroIOJobBase *load_uri;
 
 	GError *error;
@@ -147,9 +146,6 @@ brasero_track_stream_cfg_get_info (BraseroTrackStreamCfg *track)
 	}
 
 	/* get info async for the file */
-	if (!priv->io)
-		priv->io = brasero_io_get_default ();
-
 	if (!priv->load_uri)
 		priv->load_uri = brasero_io_register (G_OBJECT (track),
 						      brasero_video_project_result_cb,
@@ -158,8 +154,7 @@ brasero_track_stream_cfg_get_info (BraseroTrackStreamCfg *track)
 
 	priv->loading = TRUE;
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
-	brasero_io_get_file_info (priv->io,
-				  uri,
+	brasero_io_get_file_info (uri,
 				  priv->load_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
