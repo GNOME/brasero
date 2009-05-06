@@ -37,7 +37,6 @@
 
 #include <gconf/gconf-client.h>
 
-#include "burn-debug.h"
 #include "brasero-layout.h"
 #include "brasero-preview.h"
 #include "brasero-project.h"
@@ -498,7 +497,6 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 		/* Now tell the project which source it gets URIs from */
 		source = brasero_layout_item_get_object (layout->priv->active_item);
 		if (!BRASERO_IS_URI_CONTAINER (source)) {
-			BRASERO_BURN_LOG ("Item is not an URI container");
 			brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 						    NULL);
 		}
@@ -791,7 +789,6 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 	brasero_layout_object_set_context (source, layout->priv->ctx_type);
 
 	if (!BRASERO_IS_URI_CONTAINER (source)) {
-		BRASERO_BURN_LOG ("Item is not an URI container");
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
 	}
 	else if (!is_visible) {

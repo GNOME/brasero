@@ -41,7 +41,6 @@
 
 #include "brasero-misc.h"
 #include "burn-basics.h"
-#include "burn-debug.h"
 #include "brasero-app.h"
 #include "brasero-disc.h"
 #include "brasero-audio-disc.h"
@@ -515,7 +514,6 @@ brasero_audio_disc_add_ui (BraseroDisc *disc,
 						      -1,
 						      &error);
 	if (!merge_id) {
-		BRASERO_BURN_LOG ("Adding ui elements failed: %s", error->message);
 		g_error_free (error);
 		return 0;
 	}

@@ -55,7 +55,6 @@
 #include "brasero-misc.h"
 #include "brasero-jacket-edit.h"
 
-#include "burn-debug.h"
 #include "brasero-tags.h"
 #include "brasero-session.h"
 
@@ -63,6 +62,7 @@
 #include "brasero-player.h"
 #endif
 
+#include "brasero-track-data.h"
 #include "brasero-session-cfg.h"
 #include "brasero-burn-options.h"
 #include "brasero-cover.h"

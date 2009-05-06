@@ -46,8 +46,6 @@
 
 #include "brasero-drive.h"
 
-#include "burn-debug.h"
-
 #include "brasero-tags.h"
 #include "brasero-burn.h"
 #include "brasero-track-disc.h"

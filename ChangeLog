@@ -1,5 +1,21 @@
 2009-05-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Remove burn-debug.h header and some debug statements when they were not
+	needed in brasero
+
+	* libbrasero-burn/brasero-sum-dialog.c:
+	* src/brasero-app.c:
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_ui):
+	* src/brasero-data-disc.c (brasero_data_disc_add_ui):
+	* src/brasero-eject-dialog.c (brasero_eject_dialog_activate):
+	* src/brasero-layout.c (brasero_layout_set_side_pane_visible),
+	(brasero_layout_combo_changed_cb):
+	* src/brasero-player.c (brasero_player_range_value_changed):
+	* src/brasero-project.c:
+	* src/brasero-video-disc.c (brasero_video_disc_add_ui):
+
+2009-05-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Implemented brasero_burn_library_get_option_group () and use it in brasero
 
 	* libbrasero-burn/burn-debug.c

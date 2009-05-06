@@ -50,7 +50,6 @@
 #include "brasero-app.h"
 #include "brasero-project-manager.h"
 
-#include "burn-debug.h"
 #include "burn-basics.h"
 
 #include "brasero-tags.h"
@@ -1552,7 +1551,6 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 							      -1,
 							      &error);
 		if (!merge_id) {
-			BRASERO_BURN_LOG ("Adding ui elements failed: %s", error->message);
 			g_error_free (error);
 			return 0;
 		}

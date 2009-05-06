@@ -40,7 +40,6 @@
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 #include "brasero-volume.h"
-#include "burn-debug.h"
 #include "brasero-utils.h"
 #include "brasero-burn.h"
 
@@ -73,8 +72,6 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 	 * command. The problem is brasero may need to be privileged then as
 	 * cdrecord/cdrdao seem to be. */
 	drive = brasero_medium_get_drive (medium);
-	BRASERO_BURN_LOG ("Asynchronous ejection of %s", brasero_drive_get_device (drive));
-
 	brasero_drive_unlock (drive);
 
 	/*if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))
@@ -83,10 +80,8 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 		return TRUE;
 	}*/
 
-	if (!brasero_drive_eject (drive, TRUE, &error)) {
-		BRASERO_BURN_LOG ("Error ejecting medium: %s", error?error->message:"Unknown error");
+	if (!brasero_drive_eject (drive, TRUE, &error))
 		return TRUE;
-	}
 
 	/* we'd need also to check what are the results of our operations namely
 	 * if we succeded to eject. To do that, the problem is the same as above

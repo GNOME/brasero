@@ -39,8 +39,6 @@
 
 #include "brasero-misc.h"
 
-#include "burn-debug.h"
-
 #include "brasero-player.h"
 #include "brasero-player-bacon.h"
 #include "brasero-utils.h"
@@ -285,8 +283,7 @@ brasero_player_range_value_changed (GtkRange *range,
 
 		/* user changed the value tell the player/pipeline */
 		pos = gtk_range_get_value (GTK_RANGE (player->priv->progress));
-		if(!brasero_player_bacon_set_pos (BRASERO_PLAYER_BACON (player->priv->bacon), (gint64) pos + player->priv->start))
-			BRASERO_BURN_LOG ("position in stream cannot be set");
+		brasero_player_bacon_set_pos (BRASERO_PLAYER_BACON (player->priv->bacon), (gint64) pos + player->priv->start);
 	}
 
 	brasero_player_update_position (player);

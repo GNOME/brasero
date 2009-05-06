@@ -57,7 +57,6 @@
 #include "brasero-volume.h"
 
 #include "burn-basics.h"
-#include "burn-debug.h"
 
 #include "brasero-tags.h"
 #include "brasero-track-disc.h"
