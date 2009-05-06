@@ -35,6 +35,7 @@
 #include <string.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
 #include "brasero-media-private.h"
@@ -45,10 +46,39 @@
 
 static gboolean debug = FALSE;
 
+static const GOptionEntry options [] = {
+	{ "brasero-burn-debug", 0, 0, G_OPTION_ARG_NONE, &debug,
+	  N_("Display debug statements on stdout for Brasero burn library"),
+	  NULL }
+};
+
 void
 brasero_burn_set_debug (gboolean debug_value)
 {
 	debug = debug_value;
+}
+
+/**
+ * brasero_burn_library_get_option_group:
+ *
+ * Returns a GOptionGroup for the commandline arguments recognized by libbrasero-burn.
+ * You should add this to your GOptionContext if your are using g_option_context_parse ()
+ * to parse your commandline arguments.
+ *
+ * Return value: a #GOptionGroup *
+ **/
+GOptionGroup *
+brasero_burn_library_get_option_group (void)
+{
+	GOptionGroup *group;
+
+	group = g_option_group_new ("brasero-burn",
+				    N_("Brasero media burning library"),
+				    N_("Display options for Brasero-burn library"),
+				    NULL,
+				    NULL);
+	g_option_group_add_entries (group, options);
+	return group;
 }
 
 void
