@@ -742,7 +742,10 @@ brasero_video_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	gchar **array;
 	gchar **item;
 
-	array = g_strsplit_set (text, "\n\r", 0);
+	if (!text)
+		return;
+
+	array = g_uri_list_extract_uris (text);
 	item = array;
 	while (*item) {
 		if (**item != '\0') {
@@ -764,6 +767,7 @@ brasero_video_disc_clipboard_text_cb (GtkClipboard *clipboard,
 
 		item++;
 	}
+	g_strfreev (array);
 }
 
 static void

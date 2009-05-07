@@ -1,5 +1,16 @@
 2009-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fixed bgo #578977 – use g_uri_list_extract_uris
+	Change the way we retrieve the array of Uris and also fixed a memleak
+	in brasero-audio-disc.c and brasero-video-disc.c (in the same functions).
+	Thanks to Christian Perch.
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_clipboard_text_cb):
+	* src/brasero-data-disc.c (brasero_data_disc_clipboard_text_cb):
+	* src/brasero-video-disc.c (brasero_video_disc_clipboard_text_cb):
+
+2009-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Fix 578959 – brasero crashed with SIGSEGV in g_closure_invoke()
 	Check nb_atoms is > 0.
 

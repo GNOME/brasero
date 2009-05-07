@@ -353,12 +353,15 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	gchar **array;
 	gchar **item;
 
+	if (!text)
+		goto end;
+
 	priv = BRASERO_DATA_DISC_PRIVATE (data->disc);
 
 	if (data->reference)
 		parent = gtk_tree_row_reference_get_path (data->reference);
 
-	array = g_strsplit_set (text, "\n\r", 0);
+	array = g_uri_list_extract_uris (text);
 	item = array;
 	while (*item) {
 		if (**item != '\0') {
@@ -381,6 +384,9 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 		item++;
 	}
 	g_strfreev (array);
+
+
+end:
 
 	if (data->reference)
 		gtk_tree_row_reference_free (data->reference);
