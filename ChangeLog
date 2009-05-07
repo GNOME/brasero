@@ -1,9 +1,23 @@
 2009-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	Fixed bgo #578970 – should allow all text targets, not just UTF8_STRING
+	Change the way we check whether the clipboard has some text data.
+	Thanks to Christian Persch
+
+	* libbrasero-burn/brasero-file-monitor.c
+	(brasero_file_monitor_inotify_monitor_cb):
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_clipboard_targets_cb):
+	* src/brasero-data-disc.c (brasero_data_disc_clipboard_targets_cb):
+	* src/brasero-video-disc.c
+	(brasero_video_disc_clipboard_targets_cb):
+
+2009-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Fixed bgo #578977 – use g_uri_list_extract_uris
 	Change the way we retrieve the array of Uris and also fixed a memleak
 	in brasero-audio-disc.c and brasero-video-disc.c (in the same functions).
-	Thanks to Christian Perch.
+	Thanks to Christian Persch.
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_clipboard_text_cb):
 	* src/brasero-data-disc.c (brasero_data_disc_clipboard_text_cb):

@@ -3393,27 +3393,10 @@ brasero_audio_disc_clipboard_targets_cb (GtkClipboard *clipboard,
 					 gint n_atoms,
 					 BraseroAudioDisc *disc)
 {
-	GdkAtom *iter;
-
-	iter = atoms;
-	while (n_atoms > 0) {
-		gchar *target;
-
-		target = gdk_atom_name (*iter);
-
-		if (!strcmp (target, "x-special/gnome-copied-files")
-		||  !strcmp (target, "UTF8_STRING")) {
-			gtk_clipboard_request_text (clipboard,
-						    (GtkClipboardTextReceivedFunc) brasero_audio_disc_clipboard_text_cb,
-						    disc);
-			g_free (target);
-			return;
-		}
-
-		g_free (target);
-		iter++;
-		n_atoms--;
-	}
+	if (gtk_targets_include_text (atoms, n_atoms))
+		gtk_clipboard_request_text (clipboard,
+					    (GtkClipboardTextReceivedFunc) brasero_audio_disc_clipboard_text_cb,
+					    disc);
 }
 
 static void
