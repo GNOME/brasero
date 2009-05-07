@@ -396,12 +396,13 @@ brasero_data_disc_clipboard_targets_cb (GtkClipboard *clipboard,
 {
 	BraseroDataDiscPrivate *priv;
 	GdkAtom *iter;
-	gchar *target;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (data->disc);
 
 	iter = atoms;
-	while (n_atoms) {
+	while (n_atoms > 0) {
+		gchar *target;
+
 		target = gdk_atom_name (*iter);
 
 		if (!strcmp (target, "x-special/gnome-copied-files")
