@@ -110,7 +110,7 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	/* run option dialog */
 	dialog = brasero_burn_options_new (session);
 	if (window)
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), window);
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
 
 	if (options)
 		brasero_burn_options_add_options (BRASERO_BURN_OPTIONS (dialog), options);
@@ -124,10 +124,8 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 
 	/* now run burn dialog */
 	dialog = brasero_burn_dialog_new ();
-	if (window) {
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), window);
-		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	}
+	if (window)
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
 
 	brasero_session_cfg_disable (session);
 
