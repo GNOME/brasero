@@ -54,6 +54,10 @@ void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list);
 
+gboolean
+brasero_utils_selection_may_have_uri (GdkAtom *atoms,
+				      gint n_atoms);
+
 G_END_DECLS
 
 #endif				/* _UTILS_H */
