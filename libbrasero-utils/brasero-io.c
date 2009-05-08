@@ -153,6 +153,7 @@ brasero_io_get_default ()
 	}
 
 	singleton = g_object_new (BRASERO_TYPE_IO, NULL);
+	g_object_ref (singleton);
 	return singleton;
 }
 
