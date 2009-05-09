@@ -1318,8 +1318,8 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 
 	/* buttons */
 	priv->cancel = gtk_dialog_add_button (GTK_DIALOG (obj),
-						   GTK_STOCK_CANCEL,
-						   GTK_RESPONSE_CANCEL);
+					      GTK_STOCK_CANCEL,
+					      GTK_RESPONSE_CANCEL);
 }
 
 static void

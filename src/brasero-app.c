@@ -935,16 +935,12 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
 
 	if (!priv->mainwin_running) {
 		if (priv->parent) {
-			gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
-			gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
 			gtk_widget_realize (GTK_WIDGET (window));
-			gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 			gdk_window_set_transient_for (GTK_WIDGET (window)->window, priv->parent);
 		}
 		else {
 			gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), FALSE);
 			gtk_window_set_skip_pager_hint (GTK_WINDOW (window), FALSE);
-			gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NORMAL);
 			gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 		}
 	}
@@ -957,7 +953,6 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
 
 		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), FALSE);
 		gtk_window_set_skip_pager_hint (GTK_WINDOW (window), FALSE);
-		gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NORMAL);
 		gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	}
 
