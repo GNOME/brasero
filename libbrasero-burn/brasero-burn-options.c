@@ -468,6 +468,7 @@ static void
 brasero_burn_options_init (BraseroBurnOptions *object)
 {
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (object), FALSE);
 }
 
 /**
