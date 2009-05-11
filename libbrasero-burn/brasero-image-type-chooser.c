@@ -67,10 +67,11 @@ struct _BraseroImageTypeChooserPrivate {
 
 static GtkHBoxClass *parent_class = NULL;
 
-void
+guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 				        BraseroImageFormat formats)
 {
+	guint format_num;
 	GtkTreeIter iter;
 	GtkTreeModel *store;
 	BraseroImageTypeChooserPrivate *priv;
@@ -79,6 +80,8 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 
 	priv->updating = TRUE;
 
+	format_num = 0;
+
 	/* clean */
 	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 	gtk_list_store_clear (GTK_LIST_STORE (store));
@@ -86,38 +89,42 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	/* now we get the targets available and display them */
 	gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-			    FORMAT_TEXT, _("Let brasero choose (safest)"),
+			    FORMAT_TEXT, _("Autodetect"),
 			    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_NONE,
 			    -1);
 
 	if (formats & BRASERO_IMAGE_FORMAT_BIN) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("*.iso image"),
+				    FORMAT_TEXT, _("ISO9660 images"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_BIN,
 				    -1);
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CLONE) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("*.raw image"),
+				    FORMAT_TEXT, _("Readcd/Readom images"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CLONE,
 				    -1);
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CUE) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("*.cue image"),
+				    FORMAT_TEXT, _("Cue images"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
 				    -1);
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CDRDAO) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("*.toc image (cdrdao)"),
+				    FORMAT_TEXT, _("Cdrdao images"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CDRDAO,
 				    -1);
 	}

@@ -180,6 +180,7 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 				      BraseroImageFormat format)
 {
 	BraseroImagePropertiesPrivate *priv;
+	guint num;
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
@@ -222,12 +223,15 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 				  self);
 	}
 
-	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
-					        formats);
+	num = brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
+						      formats);
 	brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 					       format);
 
-	gtk_widget_show (priv->format);
+	if (num > 1)
+		gtk_widget_show (priv->format);
+	else
+		gtk_widget_hide (priv->format);
 }
 
 static void
