@@ -119,14 +119,8 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-burn-options.h                 \
 	brasero-dest-selection.c                 \
 	brasero-dest-selection.h                 \
-	brasero-disc-copy-dialog.c                 \
-	brasero-disc-copy-dialog.h                 \
-	brasero-disc-option-dialog.c                 \
-	brasero-disc-option-dialog.h                 \
 	brasero-drive-properties.c                 \
 	brasero-drive-properties.h                 \
-	brasero-image-option-dialog.c                 \
-	brasero-image-option-dialog.h                 \
 	brasero-image-properties.c                 \
 	brasero-image-properties.h                 \
 	brasero-image-type-chooser.c                 \
@@ -159,7 +153,6 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-track-data.h                 \
 	brasero-track-image-cfg.c                 \
 	brasero-track-image-cfg.h                 \
-	brasero-burn-options-private.h                 \
 	brasero-caps-plugin.c                 \
 	brasero-caps-burn.c                 \
 	brasero-caps-session.c                 \
@@ -191,7 +184,11 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-filtered-uri.h                 \
 	brasero-track-stream-cfg.c                 \
 	brasero-track-stream-cfg.h                 \
-	brasero-tool-dialog-private.h
+	brasero-tool-dialog-private.h                 \
+	brasero-data-options.c                 \
+	brasero-data-options.h                 \
+	brasero-video-options.h                 \
+	brasero-video-options.c
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

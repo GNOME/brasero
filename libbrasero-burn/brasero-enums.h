@@ -69,8 +69,6 @@ typedef enum {
 	BRASERO_BURN_FLAG_NO_TMP_FILES		= 1 << 8,
 	BRASERO_BURN_FLAG_DUMMY			= 1 << 9,
 
-	/* FIXME! this flag is more or less linked to OVERBURN one can't we do 
-	 * a single one */
 	BRASERO_BURN_FLAG_OVERBURN		= 1 << 10,
 
 	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE	= 1 << 11,

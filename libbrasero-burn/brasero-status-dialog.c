@@ -38,9 +38,13 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-units.h"
 
 #include "brasero-enums.h"
+#include "brasero-track-data-cfg.h"
+#include "brasero-track-image-cfg.h"
 #include "brasero-session.h"
 #include "brasero-status-dialog.h"
 
@@ -50,9 +54,16 @@ struct _BraseroStatusDialogPrivate
 	BraseroBurnSession *session;
 	GtkWidget *progress;
 	GtkWidget *action;
+
+	guint id;
 };
 
 #define BRASERO_STATUS_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_STATUS_DIALOG, BraseroStatusDialogPrivate))
+
+enum {
+	PROP_0,
+	PROP_SESSION
+};
 
 G_DEFINE_TYPE (BraseroStatusDialog, brasero_status_dialog, GTK_TYPE_MESSAGE_DIALOG);
 
@@ -132,66 +143,39 @@ brasero_status_dialog_wait_for_ready_state (BraseroStatusDialog *dialog)
 	if (result != BRASERO_BURN_NOT_READY) {
 		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 		brasero_status_free (status);
+		priv->id = 0;
 		return FALSE;
 	}
 
 	brasero_status_dialog_update (dialog, status);
 	brasero_status_free (status);
-
 	return TRUE;
 }
 
-BraseroBurnResult
-brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog,
-					GtkWidget *toplevel,
-					BraseroBurnSession *session)
+static void
+brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 {
-	int id;
-	int answer;
 	BraseroStatus *status;
 	BraseroBurnResult result;
 	BraseroStatusDialogPrivate *priv;
 
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+
 	/* Make sure we really need to run this dialog */
 	status = brasero_status_new ();
-	result = brasero_burn_session_get_status (session, status);
-
+	result = brasero_burn_session_get_status (priv->session, status);
 	if (result != BRASERO_BURN_NOT_READY) {
 		brasero_status_free (status);
-		return result;
+		return;
 	}
 
-	if (toplevel) {
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
-		gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	}
-
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
-	priv->session = g_object_ref (session);
-
-	/* we are not ready to use the track presumably because
-	 * data or audio has not finished to explore a directory
-	 * or get the metadata of a song or a film  */
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	brasero_status_dialog_update (dialog, status);
 	brasero_status_free (status);
-
-	id = g_timeout_add (100,
-			    (GSourceFunc) brasero_status_dialog_wait_for_ready_state,
-		            dialog);
-
-	answer = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	g_source_remove (id);
-
-	priv->session = NULL;
-	g_object_unref (session);
-
-	if (answer == GTK_RESPONSE_OK)
-		return BRASERO_BURN_OK;
-
-	return brasero_burn_session_get_status (session, NULL);
+	priv->id = g_timeout_add (200,
+				  (GSourceFunc) brasero_status_dialog_wait_for_ready_state,
+				  dialog);
 }
 
 static void
@@ -237,8 +221,70 @@ brasero_status_dialog_init (BraseroStatusDialog *object)
 }
 
 static void
+brasero_status_dialog_set_property (GObject *object,
+				    guint prop_id,
+				    const GValue *value,
+				    GParamSpec *pspec)
+{
+	BraseroStatusDialogPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_STATUS_DIALOG (object));
+
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_SESSION: /* Readable and only writable at creation time */
+		priv->session = BRASERO_BURN_SESSION (g_value_get_object (value));
+		g_object_ref (priv->session);
+		brasero_status_dialog_wait_for_session (BRASERO_STATUS_DIALOG (object));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_status_dialog_get_property (GObject *object,
+				    guint prop_id,
+				    GValue *value,
+				    GParamSpec *pspec)
+{
+	BraseroStatusDialogPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_STATUS_DIALOG (object));
+
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_SESSION:
+		g_value_set_object (value, priv->session);
+		g_object_ref (priv->session);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
 brasero_status_dialog_finalize (GObject *object)
 {
+	BraseroStatusDialogPrivate *priv;
+
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	if (priv->id) {
+		g_source_remove (priv->id);
+		priv->id = 0;
+	}
+
 	G_OBJECT_CLASS (brasero_status_dialog_parent_class)->finalize (object);
 }
 
@@ -250,12 +296,26 @@ brasero_status_dialog_class_init (BraseroStatusDialogClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroStatusDialogPrivate));
 
 	object_class->finalize = brasero_status_dialog_finalize;
+	object_class->set_property = brasero_status_dialog_set_property;
+	object_class->get_property = brasero_status_dialog_get_property;
+
+	g_object_class_install_property (object_class,
+					 PROP_SESSION,
+					 g_param_spec_object ("session",
+							      "The session",
+							      "The session to work with",
+							      BRASERO_TYPE_BURN_SESSION,
+							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
 }
 
 GtkWidget *
-brasero_status_dialog_new (void)
+brasero_status_dialog_new (BraseroBurnSession *session,
+			   GtkWidget *parent)
 {
 	return g_object_new (BRASERO_TYPE_STATUS_DIALOG,
+			     "session", session,
+			     "transient-for", parent,
+			     "modal", TRUE,
 			     "title",  _("Project Size Estimation"),
 			     "message-type", GTK_MESSAGE_OTHER,
 			     "text", _("Please wait until the estimation of the project size is completed."),

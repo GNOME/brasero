@@ -62,12 +62,8 @@ struct _BraseroStatusDialog
 GType brasero_status_dialog_get_type (void) G_GNUC_CONST;
 
 GtkWidget *
-brasero_status_dialog_new (void);
-
-BraseroBurnResult
-brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog,
-					GtkWidget *toplevel,
-					BraseroBurnSession *session);
+brasero_status_dialog_new (BraseroBurnSession *session,
+			   GtkWidget *parent);
 
 G_END_DECLS
 

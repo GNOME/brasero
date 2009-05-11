@@ -28,26 +28,42 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef _BRASERO_BURN_OPTIONS_PRIVATE_H_
-#define _BRASERO_BURN_OPTIONS_PRIVATE_H_
+#ifndef _BRASERO_DATA_OPTIONS_H_
+#define _BRASERO_DATA_OPTIONS_H_
 
-#include "brasero-burn-options.h"
+#include <glib-object.h>
 
+#include <gtk/gtk.h>
 
-void
-brasero_burn_options_add_source (BraseroBurnOptions *self,
-				 const gchar *title,
-				 ...);
+#include "brasero-session.h"
+
+G_BEGIN_DECLS
+
+#define BRASERO_TYPE_DATA_OPTIONS             (brasero_data_options_get_type ())
+#define BRASERO_DATA_OPTIONS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_DATA_OPTIONS, BraseroDataOptions))
+#define BRASERO_DATA_OPTIONS_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_DATA_OPTIONS, BraseroDataOptionsClass))
+#define BRASERO_IS_DATA_OPTIONS(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_DATA_OPTIONS))
+#define BRASERO_IS_DATA_OPTIONS_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_DATA_OPTIONS))
+#define BRASERO_DATA_OPTIONS_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_DATA_OPTIONS, BraseroDataOptionsClass))
+
+typedef struct _BraseroDataOptionsClass BraseroDataOptionsClass;
+typedef struct _BraseroDataOptions BraseroDataOptions;
+
+struct _BraseroDataOptionsClass
+{
+	GtkAlignmentClass parent_class;
+};
+
+struct _BraseroDataOptions
+{
+	GtkAlignment parent_instance;
+};
+
+GType brasero_data_options_get_type (void) G_GNUC_CONST;
 
 GtkWidget *
-brasero_burn_options_add_burn_button (BraseroBurnOptions *self,
-				      const gchar *text,
-				      const gchar *icon);
-void
-brasero_burn_options_lock_selection (BraseroBurnOptions *self);
+brasero_data_options_new (BraseroBurnSession *session);
 
-void
-brasero_burn_options_set_type_shown (BraseroBurnOptions *self,
-				     BraseroMediaType type);
+G_END_DECLS
 
-#endif
+#endif /* _BRASERO_DATA_OPTIONS_H_ */

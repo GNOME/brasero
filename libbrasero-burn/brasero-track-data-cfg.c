@@ -1476,6 +1476,11 @@ brasero_track_data_cfg_finalize (GObject *object)
 		priv->shown = NULL;
 	}
 
+	if (priv->tree) {
+		g_object_unref (priv->tree);
+		priv->tree = NULL;
+	}
+
 	G_OBJECT_CLASS (brasero_track_data_cfg_parent_class)->finalize (object);
 }
 
@@ -1993,19 +1998,39 @@ brasero_track_data_cfg_image_uri_cb (BraseroDataVFS *vfs,
 				     BraseroTrackDataCfg *self)
 {
 	BraseroTrackDataCfgPrivate *priv;
-	BraseroBurnResult result;
+	GValue instance_and_params [2];
+	GValue return_value;
+	GValue *params;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
-
 	if (priv->loading)
 		return BRASERO_BURN_OK;
 
-	g_signal_emit (self,
-		       brasero_track_data_cfg_signals [UNKNOWN],
-		       0,
-		       uri,
-		       &result);
-	return result;
+	/* object which signalled */
+	instance_and_params->g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (self));
+	g_value_set_instance (instance_and_params, self);
+
+	/* arguments of signal (name) */
+	params = instance_and_params + 1;
+	params->g_type = 0;
+	g_value_init (params, G_TYPE_STRING);
+	g_value_set_string (params, uri);
+
+	/* default to CANCEL */
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (instance_and_params,
+			brasero_track_data_cfg_signals [IMAGE],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (params);
+
+	return g_value_get_int (&return_value);
 }
 
 static void
