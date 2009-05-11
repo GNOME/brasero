@@ -115,6 +115,41 @@ brasero_data_vfs_is_loading_uri (BraseroDataVFS *self)
 	return (g_hash_table_size (priv->loading) != 0);
 }
 
+static BraseroBurnResult
+brasero_data_vfs_emit_image_signal (BraseroDataVFS *self,
+				    const gchar *uri)
+{
+	GValue instance_and_params [2];
+	GValue return_value;
+	GValue *params;
+
+	/* object which signalled */
+	instance_and_params->g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (self));
+	g_value_set_instance (instance_and_params, self);
+
+	/* arguments of signal (name) */
+	params = instance_and_params + 1;
+	params->g_type = 0;
+	g_value_init (params, G_TYPE_STRING);
+	g_value_set_string (params, uri);
+
+	/* default to CANCEL */
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (instance_and_params,
+			brasero_data_vfs_signals [IMAGE_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (params);
+
+	return g_value_get_int (&return_value);
+}
+
 static gboolean
 brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 				   const gchar *uri,
@@ -401,6 +436,7 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 		}
 	}
 
+
 	/* add node for all parents */
 	nodes = g_hash_table_lookup (priv->directories, parent_uri);
 	for (iter = nodes; iter; iter = iter->next) {
@@ -411,6 +447,15 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 		parent = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
 		if (!parent)
 			continue;
+
+		if (parent->is_root) {
+			/* This may be true in some rare situations (when the root of a
+			 * volume has been added like burn:/// */
+			brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (self),
+							       uri,
+							       parent);
+			 continue;
+		}
 
 		if (g_file_info_get_is_symlink (info)) {
 			if (brasero_data_vfs_directory_check_symlink_loop (self, parent, uri, info)) {
@@ -519,41 +564,6 @@ brasero_data_vfs_loading_node_end (GObject *object,
 			       brasero_data_vfs_signals [ACTIVITY_SIGNAL],
 			       0,
 			       g_hash_table_size (priv->directories));
-}
-
-static BraseroBurnResult
-brasero_data_vfs_emit_image_signal (BraseroDataVFS *self,
-				    const gchar *uri)
-{
-	GValue instance_and_params [2];
-	GValue return_value;
-	GValue *params;
-
-	/* object which signalled */
-	instance_and_params->g_type = 0;
-	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (self));
-	g_value_set_instance (instance_and_params, self);
-
-	/* arguments of signal (name) */
-	params = instance_and_params + 1;
-	params->g_type = 0;
-	g_value_init (params, G_TYPE_STRING);
-	g_value_set_string (params, uri);
-
-	/* default to FALSE */
-	return_value.g_type = 0;
-	g_value_init (&return_value, G_TYPE_INT);
-	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
-
-	g_signal_emitv (instance_and_params,
-			brasero_data_vfs_signals [IMAGE_SIGNAL],
-			0,
-			&return_value);
-
-	g_value_unset (instance_and_params);
-	g_value_unset (params);
-
-	return g_value_get_int (&return_value);
 }
 
 static void
