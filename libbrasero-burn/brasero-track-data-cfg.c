@@ -397,8 +397,13 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 		return;
 	}
 
+	if (!node)
+		return;
+
+	node->is_visible ++;
+
 	if (node->parent && !node->parent->is_root) {
-		if (!node->parent->is_expanded) {
+		if (!node->parent->is_expanded && node->parent->is_visible > 0) {
 			GtkTreePath *treepath;
 
 			node->parent->is_expanded = TRUE;
@@ -409,11 +414,6 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 			gtk_tree_path_free (treepath);
 		}
 	}
-
-	if (!node)
-		return;
-
-	node->is_visible ++;
 
 	if (node->is_imported) {
 		if (node->is_fake && !node->is_file) {
@@ -462,8 +462,12 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 		return;
 	}
 
-	if (node && node->parent && !node->parent->is_root) {
-		if (node->parent->is_expanded) {
+	if (!node)
+		return;
+
+	node->is_visible --;
+	if (node->parent && !node->parent->is_root) {
+		if (node->parent->is_expanded && node->is_visible == 0) {
 			GtkTreePath *treepath;
 			GtkTreeIter parent_iter;
 
@@ -477,10 +481,6 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 		}
 	}
 
-	if (!node)
-		return;
-
-	node->is_visible --;
 
 	if (node->is_imported)
 		return;
@@ -2370,11 +2370,11 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 			  object);
 	g_signal_connect (priv->tree,
 			  "unreadable-uri",
-			  G_CALLBACK (brasero_track_data_cfg_unknown_uri_cb),
+			  G_CALLBACK (brasero_track_data_cfg_unreadable_uri_cb),
 			  object);
 	g_signal_connect (priv->tree,
 			  "unknown-uri",
-			  G_CALLBACK (brasero_track_data_cfg_unreadable_uri_cb),
+			  G_CALLBACK (brasero_track_data_cfg_unknown_uri_cb),
 			  object);
 	g_signal_connect (priv->tree,
 			  "recursive-sym",
@@ -2467,7 +2467,6 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  G_TYPE_INT,
 			  1,
 			  G_TYPE_STRING);
-
 
 	brasero_track_data_cfg_signals [UNREADABLE] = 
 	    g_signal_new ("unreadable_uri",
