@@ -403,7 +403,7 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 	node->is_visible ++;
 
 	if (node->parent && !node->parent->is_root) {
-		if (!node->parent->is_expanded && node->parent->is_visible > 0) {
+		if (!node->parent->is_expanded && node->is_visible > 0) {
 			GtkTreePath *treepath;
 
 			node->parent->is_expanded = TRUE;
@@ -480,7 +480,6 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 			gtk_tree_path_free (treepath);
 		}
 	}
-
 
 	if (node->is_imported)
 		return;

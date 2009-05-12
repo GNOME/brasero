@@ -609,6 +609,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 	stats = BRASERO_FILE_NODE_STATS (root);
 
 	if (stats && !stats->children
+	&&  brasero_file_node_get_n_children (root) <= 1
 	&& (!strcmp (g_file_info_get_content_type (info), "application/x-toc")
 	||  !strcmp (g_file_info_get_content_type (info), "application/x-cdrdao-toc")
 	||  !strcmp (g_file_info_get_content_type (info), "application/x-cue")
