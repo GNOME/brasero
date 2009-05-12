@@ -62,7 +62,8 @@ libbrasero_burn_la_LIBADD =					\
 	$(BRASERO_GIO_LIBS)					\
 	$(BRASERO_GCONF_LIBS)					\
 	$(BRASERO_GTK_LIBS)					\
-	$(BRASERO_DBUS_LIBS)
+	$(BRASERO_DBUS_LIBS)					\
+	-lm
 
 libbrasero_burn_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\

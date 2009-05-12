@@ -19,7 +19,7 @@ wodimdir = $(libdir)/brasero/plugins
 wodim_LTLIBRARIES = libbrasero-wodim.la
 libbrasero_wodim_la_SOURCES = burn-wodim.c burn-wodim.h \
 	burn-cdrkit.h 
-libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_wodim_la_LDFLAGS = -module -avoid-version
 
 #genisoimage
@@ -35,5 +35,5 @@ readomdir = $(libdir)/brasero/plugins
 readom_LTLIBRARIES = libbrasero-readom.la
 libbrasero_readom_la_SOURCES = burn-readom.c burn-readom.h \
 	burn-cdrkit.h 
-libbrasero_readom_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_readom_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_readom_la_LDFLAGS = -module -avoid-version

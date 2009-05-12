@@ -18,5 +18,5 @@ plugin_LTLIBRARIES = libbrasero-dvdcss.la
 
 libbrasero_dvdcss_la_SOURCES = burn-dvdcss.c burn-dvdcss.h \
 	burn-dvdcss-private.h 
-libbrasero_dvdcss_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GMODULE_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_dvdcss_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GMODULE_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_dvdcss_la_LDFLAGS = -module -avoid-version
