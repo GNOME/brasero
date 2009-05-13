@@ -140,7 +140,7 @@ brasero_utils_validate_utf8 (const gchar *name)
 		return NULL;
 
 	if (g_utf8_validate (name, -1, &invalid))
-		return NULL;
+		return g_strdup (name);
 
 	retval = g_strdup (name);
 	ptr = retval + (invalid - name);
