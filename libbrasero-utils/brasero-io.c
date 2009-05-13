@@ -2409,7 +2409,7 @@ void
 brasero_io_shutdown (void)
 {
 	if (singleton) {
-		singleton = NULL;
 		g_object_unref (singleton);
+		singleton = NULL;
 	}
 }
