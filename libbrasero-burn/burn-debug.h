@@ -87,8 +87,6 @@ G_BEGIN_DECLS
 						       G_STRLOC,				\
 						       format,					\
 						       ##__VA_ARGS__);
-void
-brasero_burn_set_debug (gboolean debug_value);
 
 void
 brasero_burn_debug_setup_module (GModule *handle);

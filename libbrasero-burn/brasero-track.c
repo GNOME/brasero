@@ -334,13 +334,19 @@ brasero_track_tag_copy_missing (BraseroTrack *dest,
 	g_hash_table_iter_init (&iter, priv->tags);
 
 	priv = BRASERO_TRACK_PRIVATE (dest);
+	if (!priv->tags)
+		priv->tags = g_hash_table_new_full (g_str_hash,
+						    g_str_equal,
+						    g_free,
+						    brasero_track_tag_value_free);
+
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
 		if (g_hash_table_lookup (priv->tags, key))
 			continue;
 
 		new_value = g_new0 (GValue, 1);
 
-		g_value_init (new_value, g_value_get_gtype (value));
+		g_value_init (new_value, G_VALUE_TYPE (value));
 		g_value_copy (new_value, value);
 
 		new_key = g_strdup (key);

@@ -368,7 +368,7 @@ brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
 	ctx = brasero_hal_watch_get_ctx (watch);
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-	BRASERO_MEDIA_LOG ("Drive removed");
+	BRASERO_MEDIA_LOG ("HAL signal device removed");
 
 	for (iter = priv->drives; iter; iter = next) {
 		const gchar *device_udi;
@@ -384,6 +384,7 @@ brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
 		if (!strcmp (device_udi, udi)) {
 			BraseroMedium *medium;
 
+			BRASERO_MEDIA_LOG ("Drive removed");
 			medium = brasero_drive_get_medium (drive);
 			if (medium)
 				g_signal_emit (self,
