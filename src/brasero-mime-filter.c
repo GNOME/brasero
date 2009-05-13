@@ -221,16 +221,12 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 	item = g_hash_table_lookup (filter->priv->table, mime);
 	if (item == NULL) {
 		GIcon *icon;
-		gchar *display;
 		GtkTreeIter row;
 		GtkTreeModel *model;
 		const gchar *description;
 		const gchar *icon_string = BRASERO_DEFAULT_ICON;
 
 		description = g_content_type_get_description (mime);
-
-		/* Translators: the %s is the mime type used to filter files */
-		display = g_strdup_printf (_("%s only"), description);
 
 		icon = g_content_type_get_icon (mime);
 		if (G_IS_THEMED_ICON (icon)) {
@@ -268,13 +264,12 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 
 		g_object_ref (item);
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
-				    BRASERO_MIME_FILTER_DISPLAY_COL, display,
+				    BRASERO_MIME_FILTER_DISPLAY_COL, description,
 				    BRASERO_MIME_FILTER_ICON_COL, icon_string,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
 		g_object_ref_sink (GTK_OBJECT (item));
 //		g_object_unref (icon);
-		g_free (display);
 
 		/* we check that the first entry at least is visible */
 		if (gtk_combo_box_get_active (GTK_COMBO_BOX (filter->combo)) == -1

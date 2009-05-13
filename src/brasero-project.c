@@ -1483,7 +1483,7 @@ brasero_project_add_uris_cb (GtkAction *action,
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
 
 	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("Audio files only"));
+	gtk_file_filter_set_name (filter, _("Audio files"));
 	gtk_file_filter_add_mime_type (filter, "audio/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
@@ -1492,7 +1492,7 @@ brasero_project_add_uris_cb (GtkAction *action,
 		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
 
 	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("Movies only"));
+	gtk_file_filter_set_name (filter, _("Movies"));
 	gtk_file_filter_add_mime_type (filter, "video/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
 	gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
@@ -1500,7 +1500,7 @@ brasero_project_add_uris_cb (GtkAction *action,
 
 	filter = gtk_file_filter_new ();
 	/* Translators: this is an image, a picture, not a "Disc Image" */
-	gtk_file_filter_set_name (filter, C_("picture", "Image files only"));
+	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
 
