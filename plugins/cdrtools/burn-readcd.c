@@ -118,6 +118,12 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_GENERAL,
 						_("An internal error occured")));
 	}
+	else if (strstr (line, "No space left on device")) {
+		brasero_job_error (BRASERO_JOB (readcd),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_DISK_SPACE,
+						_("The location you chose to store the image on does not have enough free space for the disc image")));
+	}
 
 	return BRASERO_BURN_OK;
 }
