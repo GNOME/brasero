@@ -114,7 +114,7 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (readom),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_DISK_SPACE,
-						_("The location you chose to store the image on does not have enough free space for the disc image")));
+						_("There is no space left on the device")));
 	}
 
 	return BRASERO_BURN_OK;
