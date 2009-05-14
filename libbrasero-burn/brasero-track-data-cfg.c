@@ -2282,7 +2282,7 @@ brasero_track_data_cfg_session_available_cb (BraseroDataSession *session,
 					     BraseroTrackDataCfg *self)
 {
 	g_signal_emit (self,
-		       brasero_track_data_cfg_signals [OVERSIZE],
+		       brasero_track_data_cfg_signals [AVAILABLE],
 		       0,
 		       medium,
 		       available);
@@ -2295,7 +2295,7 @@ brasero_track_data_cfg_session_loaded_cb (BraseroDataSession *session,
 					  BraseroTrackDataCfg *self)
 {
 	g_signal_emit (self,
-		       brasero_track_data_cfg_signals [OVERSIZE],
+		       brasero_track_data_cfg_signals [LOADED],
 		       0,
 		       medium,
 		       loaded);
