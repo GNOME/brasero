@@ -62,6 +62,8 @@ struct _BraseroDataProjectPrivate
 	GCompareFunc sort_func;
 	GtkSortType sort_type;
 
+	GSList *spanned;
+
 	/**
 	 * In this table we record all changes (key = URI, data = list
 	 * of nodes) that is:
@@ -2404,6 +2406,268 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 	return TRUE;
 }
 
+typedef struct _MakeTrackDataSpan MakeTrackDataSpan;
+struct _MakeTrackDataSpan {
+	GSList *grafts;
+	GSList *joliet_grafts;
+
+	guint64 files_num;
+	BraseroImageFS fs_type;
+};
+
+static void
+brasero_data_project_span_set_fs_type (MakeTrackDataSpan *data,
+				       BraseroFileNode *node)
+{
+	if (node->is_symlink) {
+		data->fs_type |= BRASERO_IMAGE_FS_SYMLINK;
+
+		/* UDF won't be possible anymore with symlinks */
+		if (data->fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)
+			data->fs_type &= ~(BRASERO_IMAGE_FS_UDF|
+					   BRASERO_IMAGE_FS_JOLIET);
+	}
+
+	if (node->is_2GiB) {
+		data->fs_type |= BRASERO_IMAGE_ISO_FS_LEVEL_3;
+		if (!(data->fs_type & BRASERO_IMAGE_FS_SYMLINK))
+			data->fs_type |= BRASERO_IMAGE_FS_UDF;
+	}
+
+	if (node->is_deep)
+		data->fs_type |= BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY;
+}
+
+static void
+brasero_data_project_span_explore_folder_children (MakeTrackDataSpan *data,
+						   BraseroFileNode *node)
+{
+	for (node = BRASERO_FILE_NODE_CHILDREN (node); node; node = node->next) {
+		if (node->is_grafted)
+			data->grafts = g_slist_prepend (data->grafts, node);
+
+		if (node->is_file) {
+			brasero_data_project_span_set_fs_type (data, node);
+			data->files_num ++;
+		}
+		else
+			brasero_data_project_span_explore_folder_children (data, node);
+	}
+}
+
+static void
+brasero_data_project_span_generate (BraseroDataProject *self,
+				    MakeTrackDataSpan *data,
+				    gboolean append_slash,
+				    BraseroTrackData *track)
+{
+	GSList *iter;
+	gpointer uri_data;
+	GHashTableIter hiter;
+	GSList *grafts = NULL;
+	GSList *excluded = NULL;
+	BraseroDataProjectPrivate *priv;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	for (iter = data->grafts; iter; iter = iter->next) {
+		BraseroFileNode *node;
+		BraseroGraftPt *graft;
+
+		node = iter->data;
+
+		graft = g_new0 (BraseroGraftPt, 1);
+
+		/* REMINDER for the developper who's forgetful:
+		 * The real joliet compliant path names will be generated later
+		 * either by the backends (like libisofs) or by the library (see
+		 * burn-mkisofs-base.c). So no need to care about that. */
+		graft->path = brasero_data_project_node_to_path (self, node);
+		if (!node->is_file && append_slash) {
+			gchar *tmp;
+
+			/* we need to know if that's a directory or not since if
+			 * it is then mkisofs (but not genisoimage) requires the
+			 * disc path to end with '/'; if there isn't '/' at the 
+			 * end then only the directory contents are added. */
+			tmp = graft->path;
+			graft->path = g_strconcat (graft->path, "/", NULL);
+			g_free (tmp);
+		}
+
+		grafts = g_slist_prepend (grafts, graft);
+	}
+
+	/* NOTE about excluded file list:
+	 * don't try to check for every empty BraseroUriNode whether its URI is
+	 * a child of one of the grafted node that would take too much time for
+	 * almost no win; better add all of them (which includes the above graft
+	 * list as well. */
+	g_hash_table_iter_init (&hiter, priv->grafts);
+	while (g_hash_table_iter_next (&hiter, &uri_data, NULL)) {
+		if (uri_data != NEW_FOLDER)
+			excluded = g_slist_prepend (excluded, g_strdup (uri_data));
+	}
+
+	if (data->fs_type & BRASERO_IMAGE_FS_JOLIET) {
+		/* Add the joliet grafts */
+		for (iter = data->joliet_grafts; iter; iter = iter->next) {
+			BraseroFileNode *node;
+			BraseroGraftPt *graft;
+
+			node = iter->data;
+
+			graft = g_new0 (BraseroGraftPt, 1);
+
+			/* REMINDER for the developper who's forgetful:
+			 * The real joliet compliant path names will be generated later
+			 * either by the backends (like libisofs) or by the library (see
+			 * burn-mkisofs-base.c). So no need to care about that. */
+			graft->path = brasero_data_project_node_to_path (self, node);
+			if (!node->is_file && append_slash) {
+				gchar *tmp;
+
+				/* we need to know if that's a directory or not since if
+				 * it is then mkisofs (but not genisoimage) requires the
+				 * disc path to end with '/'; if there isn't '/' at the 
+				 * end then only the directory contents are added. */
+				tmp = graft->path;
+				graft->path = g_strconcat (graft->path, "/", NULL);
+				g_free (tmp);
+			}
+
+			grafts = g_slist_prepend (grafts, graft);
+
+			if (graft->uri)
+				excluded = g_slist_prepend (excluded, graft->uri);
+		}
+	}
+
+	brasero_track_data_set_source (track, grafts, excluded);
+}
+
+gboolean
+brasero_data_project_span (BraseroDataProject *self,
+			   goffset max_sectors,
+			   gboolean append_slash,
+			   gboolean joliet,
+			   BraseroTrackData *track)
+{
+	MakeTrackDataSpan callback_data;
+	BraseroDataProjectPrivate *priv;
+	BraseroFileNode *children;
+	goffset total_sectors = 0;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	if (!g_hash_table_size (priv->grafts))
+		return FALSE;
+
+	callback_data.files_num = 0;
+	callback_data.grafts = NULL;
+	callback_data.joliet_grafts = NULL;
+	callback_data.fs_type = BRASERO_IMAGE_FS_ISO;
+	if (joliet)
+		callback_data.fs_type |= BRASERO_IMAGE_FS_JOLIET;
+
+	children = BRASERO_FILE_NODE_CHILDREN (priv->root);
+	while (children) {
+		goffset child_sectors;
+
+		if (g_slist_find (priv->spanned, children)) {
+			children = children->next;
+			continue;
+		}
+
+		if (children->is_file)
+			child_sectors = BRASERO_FILE_NODE_SECTORS (children);
+		else
+			child_sectors = brasero_data_project_get_folder_sectors (self, children);
+
+		/* if the top directory is too large, continue */
+		if (child_sectors + total_sectors > max_sectors) {
+			children = children->next;
+			continue;
+		}
+
+		total_sectors += child_sectors;
+
+		/* Take care of joliet non compliant nodes */
+		if (callback_data.fs_type & BRASERO_IMAGE_FS_JOLIET) {
+			GHashTableIter iter;
+			gpointer value_data;
+			gpointer key_data;
+
+			/* Problem is we don't know whether there are symlinks */
+			g_hash_table_iter_init (&iter, priv->joliet);
+			while (g_hash_table_iter_next (&iter, &key_data, &value_data)) {
+				GSList *nodes;
+				BraseroJolietKey *key;
+
+				/* Is the node a graft a child of a graft */
+				key = key_data;
+				if (key->parent == children || brasero_file_node_is_ancestor (children, key->parent)) {
+					/* Add all the children to the list of
+					 * grafts provided they are not already
+					 * grafted. */
+					for (nodes = value_data; nodes; nodes = nodes->next) {
+						BraseroFileNode *node;
+
+						/* skip grafted nodes (they are
+						 * already or will be processed)
+						 */
+						node = nodes->data;
+						if (node->is_grafted)
+							continue;
+						
+						callback_data.joliet_grafts = g_slist_prepend (callback_data.joliet_grafts, node);
+					}
+
+					break;
+				}
+			}
+		}
+
+		callback_data.grafts = g_slist_prepend (callback_data.grafts, children);
+		if (children->is_file) {
+			brasero_data_project_span_set_fs_type (&callback_data, children);
+			callback_data.files_num ++;
+		}
+		else
+			brasero_data_project_span_explore_folder_children (&callback_data, children);
+
+		priv->spanned = g_slist_prepend (priv->spanned, children);
+		children = children->next;
+	}
+
+	if (!callback_data.grafts)
+		return FALSE;
+
+	brasero_data_project_span_generate (self,
+					    &callback_data,
+					    append_slash,
+					    track);
+
+	brasero_track_data_set_data_blocks (track, total_sectors);
+	brasero_track_data_add_fs (track, callback_data.fs_type);
+	brasero_track_data_set_file_num (track, callback_data.files_num);
+
+	g_slist_free (callback_data.grafts);
+	g_slist_free (callback_data.joliet_grafts);
+
+	return TRUE;
+}
+
+void
+brasero_data_project_span_cancel (BraseroDataProject *self)
+{
+	BraseroDataProjectPrivate *priv;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	g_slist_free (priv->spanned);
+	priv->spanned = NULL;
+}
+
 gboolean
 brasero_data_project_has_symlinks (BraseroDataProject *self)
 {
@@ -3122,7 +3386,12 @@ brasero_data_project_clear (BraseroDataProject *self)
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-	
+
+	if (priv->spanned) {
+		g_slist_free (priv->spanned);
+		priv->spanned = NULL;
+	}
+
 	/* clear the tables.
 	 * NOTE: reference hash doesn't need to be cleared. */
 	g_hash_table_foreach_remove (priv->grafts,

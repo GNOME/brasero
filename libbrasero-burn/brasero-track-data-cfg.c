@@ -2301,6 +2301,36 @@ brasero_track_data_cfg_session_loaded_cb (BraseroDataSession *session,
 		       loaded);
 }
 
+static BraseroTrack *
+brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
+			     goffset sectors)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	BraseroTrackData *new_track;
+	gboolean res;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	if (priv->loading
+	||  brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))
+	||  brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree)) != NULL)
+		return NULL;
+
+	new_track = brasero_track_data_new ();
+	res = brasero_data_project_span (BRASERO_DATA_PROJECT (priv->tree),
+					 sectors,
+					 TRUE,
+					 TRUE, /* FIXME */
+					 new_track);
+
+	if (!res) {
+		g_object_unref (new_track);
+		return NULL;
+	}
+
+	brasero_track_tag_copy_missing (BRASERO_TRACK (new_track), BRASERO_TRACK (track));
+	return BRASERO_TRACK (new_track);
+}
+
 static void
 brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 {

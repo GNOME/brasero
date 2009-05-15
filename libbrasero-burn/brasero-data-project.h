@@ -43,6 +43,8 @@
 #include "brasero-file-node.h"
 #include "brasero-session.h"
 
+#include "brasero-track-data.h"
+
 #ifdef BUILD_INOTIFY
 #include "brasero-file-monitor.h"
 #endif
@@ -228,6 +230,15 @@ void
 brasero_data_project_set_sort_function (BraseroDataProject *project,
 					GtkSortType sort_type,
 					GCompareFunc sort_func);
+
+gboolean
+brasero_data_project_span (BraseroDataProject *project,
+			   goffset max_sectors,
+			   gboolean append_slash,
+			   gboolean joliet,
+			   BraseroTrackData *track);
+void
+brasero_data_project_span_cancel (BraseroDataProject *project);
 
 G_END_DECLS
 
