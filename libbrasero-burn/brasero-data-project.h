@@ -237,8 +237,14 @@ brasero_data_project_span (BraseroDataProject *project,
 			   gboolean append_slash,
 			   gboolean joliet,
 			   BraseroTrackData *track);
+BraseroBurnResult
+brasero_data_project_span_again (BraseroDataProject *project);
+
+BraseroBurnResult
+brasero_data_project_span_possible (BraseroDataProject *project,
+				    goffset max_sectors);
 void
-brasero_data_project_span_cancel (BraseroDataProject *project);
+brasero_data_project_span_stop (BraseroDataProject *project);
 
 G_END_DECLS
 

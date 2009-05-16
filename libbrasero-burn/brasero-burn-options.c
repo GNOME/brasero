@@ -43,6 +43,7 @@
 #include "brasero-medium.h"
 #include "brasero-medium-selection-priv.h"
 
+#include "burn-debug.h"
 #include "brasero-session.h"
 #include "brasero-session-helper.h"
 #include "brasero-burn-options.h"
@@ -215,6 +216,21 @@ brasero_burn_options_message_response_cb (BraseroDiscMessage *message,
 	}
 }
 
+static void
+brasero_burn_options_message_response_span_cb (BraseroDiscMessage *message,
+					       GtkResponseType response,
+					       BraseroBurnOptions *self)
+{
+	if (response == GTK_RESPONSE_OK) {
+		BraseroBurnOptionsPrivate *priv;
+
+		priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+		brasero_session_span_start (BRASERO_SESSION_SPAN (priv->session));
+		if (brasero_session_span_next (BRASERO_SESSION_SPAN (priv->session)) == BRASERO_BURN_ERR)
+			BRASERO_BURN_LOG ("Spanning failed\n");
+	}
+}
+
 #define BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING	1000
 
 static void
@@ -321,11 +337,33 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	}
 
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
-		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please choose another CD or DVD or insert a new one."),
-					    _("The size of the project is too large for the disc even with the overburn option."),
-					    -1,
-					    BRASERO_NOTIFY_CONTEXT_SIZE);
+		/* Here there is an alternative: we may be able to span the data
+		 * across multiple media. So try that. */
+		if (brasero_session_span_possible (BRASERO_SESSION_SPAN (priv->session)) == BRASERO_BURN_RETRY) {
+			GtkWidget *message;
+
+			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+							      _("Would you like to burn the selection of files across several media?"),
+							      _("The size of the project is too large for the disc even with the overburn option."),
+							      -1,
+							      BRASERO_NOTIFY_CONTEXT_SIZE);
+			brasero_notify_button_add (BRASERO_NOTIFY (priv->message_output),
+						   BRASERO_DISC_MESSAGE (message),
+						   _("_Span File Selection"),
+						   _("Burn the selection of files across several media"),
+						   GTK_RESPONSE_OK);
+
+			g_signal_connect (message,
+					  "response",
+					  G_CALLBACK (brasero_burn_options_message_response_span_cb),
+					  self);
+		}
+		else
+			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+						    _("Please choose another CD or DVD or insert a new one."),
+						    _("The size of the project is too large for the disc even with the overburn option."),
+						    -1,
+						    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
@@ -366,6 +404,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 		brasero_track_type_free (type);
+		gtk_window_resize (GTK_WINDOW (self), 10, 10);
 		return;		      
 	}
 	else if (valid == BRASERO_SESSION_NO_INPUT_MEDIUM) {

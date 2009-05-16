@@ -397,6 +397,85 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
 }
 
+static void
+brasero_burn_dialog_wait_for_insertion_cb (BraseroDrive *drive,
+					   BraseroMedium *medium,
+					   GtkDialog *message)
+{
+	/* we might have a dialog waiting for the 
+	 * insertion of a disc if so close it */
+	gtk_dialog_response (GTK_DIALOG (message), GTK_RESPONSE_OK);
+}
+
+static gint
+brasero_burn_dialog_wait_for_insertion (BraseroBurnDialog *dialog,
+					BraseroDrive *drive,
+					const gchar *main_message,
+					const gchar *secondary_message)
+{
+	gint result;
+	gint added_id;
+	GtkWindow *window;
+	GtkWidget *message;
+	gboolean hide = FALSE;
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	window = GTK_WINDOW (dialog);
+
+	if (!GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_show (GTK_WIDGET (dialog));
+		hide = TRUE;
+	}
+
+	g_timer_stop (priv->total_time);
+
+	if (secondary_message) {
+		message = gtk_message_dialog_new (window,
+						  GTK_DIALOG_DESTROY_WITH_PARENT|
+						  GTK_DIALOG_MODAL,
+						  GTK_MESSAGE_WARNING,
+						  GTK_BUTTONS_CANCEL,
+						  "%s", main_message);
+
+		if (secondary_message)
+			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+								  "%s", secondary_message);
+	}
+	else {
+		gchar *string;
+
+		message = gtk_message_dialog_new_with_markup (window,
+							      GTK_DIALOG_DESTROY_WITH_PARENT|
+							      GTK_DIALOG_MODAL,
+							      GTK_MESSAGE_WARNING,
+							      GTK_BUTTONS_CANCEL,
+							      NULL);
+
+		string = g_strdup_printf ("<b><big>%s</big></b>", main_message);
+		gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (message), string);
+		g_free (string);
+	}
+
+	/* connect to signals to be warned when media is inserted */
+	added_id = g_signal_connect_after (drive,
+					   "medium-added",
+					   G_CALLBACK (brasero_burn_dialog_wait_for_insertion_cb),
+					   message);
+
+	result = gtk_dialog_run (GTK_DIALOG (message));
+
+	g_signal_handler_disconnect (drive, added_id);
+	gtk_widget_destroy (message);
+
+	if (hide)
+		gtk_widget_hide (GTK_WIDGET (dialog));
+
+	g_timer_start (priv->total_time);
+
+	return result;
+}
+
 static gchar *
 brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 					   BraseroMedia type,
@@ -478,16 +557,6 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 	return message;
 }
 
-static void
-brasero_burn_dialog_wait_for_insertion (BraseroDrive *drive,
-					BraseroMedium *medium,
-					GtkDialog *message)
-{
-	/* we might have a dialog waiting for the 
-	 * insertion of a disc if so close it */
-	gtk_dialog_response (GTK_DIALOG (message), GTK_RESPONSE_OK);
-}
-
 static BraseroBurnResult
 brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 				    BraseroDrive *drive,
@@ -496,22 +565,11 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 				    BraseroBurnDialog *dialog)
 {
 	gint result;
-	gint added_id;
 	gchar *drive_name;
-	GtkWindow *window;
-	GtkWidget *message;
-	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 	gchar *main_message = NULL, *secondary_message = NULL;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
-
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
-		gtk_widget_show (GTK_WIDGET (dialog));
-		hide = TRUE;
-	}
-
-	g_timer_stop (priv->total_time);
 
 	if (drive)
 		drive_name = brasero_drive_get_display_name (drive);
@@ -567,59 +625,14 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 	g_free (drive_name);
 
-	window = GTK_WINDOW (dialog);
-
-	if (secondary_message) {
-		message = gtk_message_dialog_new (window,
-						  GTK_DIALOG_DESTROY_WITH_PARENT|
-						  GTK_DIALOG_MODAL,
-						  GTK_MESSAGE_WARNING,
-						  GTK_BUTTONS_CANCEL,
-						  "%s", main_message);
-
-		if (secondary_message) {
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  "%s", secondary_message);
-			g_free (secondary_message);
-		}
-	}
-	else {
-		gchar *string;
-
-		message = gtk_message_dialog_new_with_markup (window,
-							      GTK_DIALOG_DESTROY_WITH_PARENT|
-							      GTK_DIALOG_MODAL,
-							      GTK_MESSAGE_WARNING,
-							      GTK_BUTTONS_CANCEL,
-							      NULL);
-
-		string = g_strdup_printf ("<b><big>%s</big></b>", main_message);
-		gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (message), string);
-		g_free (string);
-	}
-
+	result = brasero_burn_dialog_wait_for_insertion (dialog, drive, main_message, secondary_message);
 	g_free (main_message);
+	g_free (secondary_message);
 
-	/* connect to signals to be warned when media is inserted */
-	added_id = g_signal_connect_after (drive,
-					   "medium-added",
-					   G_CALLBACK (brasero_burn_dialog_wait_for_insertion),
-					   message);
-
-	result = gtk_dialog_run (GTK_DIALOG (message));
-
-	g_signal_handler_disconnect (drive, added_id);
-	gtk_widget_destroy (message);
-
-	/* see if we should update the infos */
+	/* update the infos */
 	brasero_burn_dialog_update_info (dialog,
 					 &priv->input, 
 					 brasero_burn_session_get_dest_media (priv->session));
-
-	if (hide)
-		gtk_widget_hide (GTK_WIDGET (dialog));
-
-	g_timer_start (priv->total_time);
 
 	if (result != GTK_RESPONSE_OK)
 		return BRASERO_BURN_CANCEL;
@@ -2042,6 +2055,76 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 }
 
 static BraseroBurnResult
+brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
+					    GError **error)
+{
+	BraseroDrive *burner;
+	BraseroTrackType *type;
+	BraseroBurnResult result;
+	BraseroBurnDialogPrivate *priv;
+	gchar *secondary_message = NULL;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	burner = brasero_burn_session_get_burner (priv->session);
+
+	type = brasero_track_type_new ();
+	if (brasero_track_type_get_has_data (type))
+		secondary_message = g_strdup (_("There are some files left to burn."));
+	else if (brasero_track_type_get_has_stream (type)) {
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type)))
+			secondary_message = g_strdup (_("There are some more videos left to burn."));
+		else
+			secondary_message = g_strdup (_("There are some more songs left to burn."));
+	}
+	brasero_track_type_free (type);
+
+	do {
+		gint res;
+
+		result = brasero_burn_record (priv->burn,
+					      priv->session,
+					      error);
+		if (result != BRASERO_BURN_OK) {
+			g_free (secondary_message);
+			return result;
+		}
+
+		/* See if we have more data to burn and ask for a new medium */
+		result = brasero_session_span_again (BRASERO_SESSION_SPAN (priv->session));
+		if (result == BRASERO_BURN_OK) {
+			g_free (secondary_message);
+			return BRASERO_BURN_OK;
+		}
+
+		res = brasero_burn_dialog_wait_for_insertion (dialog,
+							      burner,
+							      _("Please insert a recordable CD or DVD."),
+							      secondary_message);
+		if (res != GTK_RESPONSE_OK) {
+			g_free (secondary_message);
+			return BRASERO_BURN_CANCEL;
+		}
+
+		result = brasero_session_span_next (BRASERO_SESSION_SPAN (priv->session));
+		while (result == BRASERO_BURN_ERR) {
+			res = brasero_burn_dialog_wait_for_insertion (dialog,
+								      burner,
+								      _("Please insert a recordable CD or DVD."),
+								      _("Not enough space available on the disc"));
+			if (res != GTK_RESPONSE_OK) {
+				g_free (secondary_message);
+				return BRASERO_BURN_CANCEL;
+			}
+			result = brasero_session_span_next (BRASERO_SESSION_SPAN (priv->session));
+		}
+
+	} while (result == BRASERO_BURN_RETRY);
+
+	brasero_session_span_stop (BRASERO_SESSION_SPAN (priv->session));
+	return result;
+}
+
+static BraseroBurnResult
 brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
 				    BraseroMedia media)
 {
@@ -2060,14 +2143,16 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	result = brasero_burn_record (priv->burn,
-				      priv->session,
-				      &error);
+	if (BRASERO_IS_SESSION_SPAN (priv->session))
+		result = brasero_burn_dialog_record_spanned_session (dialog, &error);
+	else
+		result = brasero_burn_record (priv->burn,
+					      priv->session,
+					      &error);
 
 	retry = brasero_burn_dialog_end_session (dialog,
 						 result,
 						 error);
-
 	if (result == BRASERO_BURN_RETRY)
 		return result;
 

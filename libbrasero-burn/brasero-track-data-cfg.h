@@ -156,6 +156,15 @@ BraseroBurnResult
 brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
 			     goffset sectors,
 			     BraseroTrackData *new_track);
+BraseroBurnResult
+brasero_track_data_cfg_span_again (BraseroTrackDataCfg *track);
+
+BraseroBurnResult
+brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
+				      goffset sectors);
+
+void
+brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track);
 
 G_END_DECLS
 

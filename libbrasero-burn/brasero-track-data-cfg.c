@@ -2327,6 +2327,40 @@ brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
 	return BRASERO_BURN_RETRY;
 }
 
+BraseroBurnResult
+brasero_track_data_cfg_span_again (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	return brasero_data_project_span_again (BRASERO_DATA_PROJECT (priv->tree));
+}
+
+BraseroBurnResult
+brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
+				      goffset sectors)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	if (priv->loading
+	||  brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))
+	||  brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree)) != NULL)
+		return BRASERO_BURN_NOT_READY;
+
+	return brasero_data_project_span_possible (BRASERO_DATA_PROJECT (priv->tree),
+						   sectors);
+}
+
+void
+brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	brasero_data_project_span_stop (BRASERO_DATA_PROJECT (priv->tree));
+}
+
 static void
 brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 {

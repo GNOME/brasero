@@ -261,15 +261,17 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 		priv->tracks = g_slist_prepend (NULL, new_track);
 		brasero_burn_session_start_track_monitoring (self, new_track);
-
-		g_signal_emit (self,
-			       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-			       0);
 	}
 	else {
 		brasero_burn_session_start_track_monitoring (self, new_track);
 		priv->tracks = g_slist_append (priv->tracks, new_track);
 	}
+
+	/* Always emit the signal even when adding another BraseroTrackStream
+	 * since the size has probably changed. */
+	g_signal_emit (self,
+		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
+		       0);
 
 	return BRASERO_BURN_OK;
 }

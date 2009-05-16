@@ -52,6 +52,7 @@
 #include "brasero-misc.h"
 #include "brasero-io.h"
 
+#include "burn-debug.h"
 #include "brasero-track-data.h"
 
 typedef struct _BraseroDataProjectPrivate BraseroDataProjectPrivate;
@@ -2494,7 +2495,7 @@ brasero_data_project_span_generate (BraseroDataProject *self,
 			graft->path = g_strconcat (graft->path, "/", NULL);
 			g_free (tmp);
 		}
-
+		graft->uri = brasero_data_project_node_to_uri (self, node);
 		grafts = g_slist_prepend (grafts, graft);
 	}
 
@@ -2642,8 +2643,10 @@ brasero_data_project_span (BraseroDataProject *self,
 	}
 
 	/* This means it's finished */
-	if (!callback_data.grafts)
+	if (!callback_data.grafts) {
+		BRASERO_BURN_LOG ("No graft found for spanning");
 		return BRASERO_BURN_OK;
+	}
 
 	brasero_data_project_span_generate (self,
 					    &callback_data,
@@ -2654,14 +2657,82 @@ brasero_data_project_span (BraseroDataProject *self,
 	brasero_track_data_add_fs (track, callback_data.fs_type);
 	brasero_track_data_set_file_num (track, callback_data.files_num);
 
+	BRASERO_BURN_LOG ("Set object (size %" G_GOFFSET_FORMAT ")", total_sectors);
+
 	g_slist_free (callback_data.grafts);
 	g_slist_free (callback_data.joliet_grafts);
 
 	return BRASERO_BURN_RETRY;
 }
 
+BraseroBurnResult
+brasero_data_project_span_possible (BraseroDataProject *self,
+				    goffset max_sectors)
+{
+	BraseroDataProjectPrivate *priv;
+	gboolean has_data_left = FALSE;
+	BraseroFileNode *children;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	/* When empty this is an error */
+	if (!g_hash_table_size (priv->grafts))
+		return BRASERO_BURN_ERR;
+
+	children = BRASERO_FILE_NODE_CHILDREN (priv->root);
+	while (children) {
+		goffset child_sectors;
+
+		if (g_slist_find (priv->spanned, children)) {
+			children = children->next;
+			continue;
+		}
+
+		if (children->is_file)
+			child_sectors = BRASERO_FILE_NODE_SECTORS (children);
+		else
+			child_sectors = brasero_data_project_get_folder_sectors (self, children);
+
+		/* Find at least one file or directory that can be spanned */
+		if (child_sectors < max_sectors)
+			return BRASERO_BURN_RETRY;
+
+		/* if the top directory is too large, continue */
+		children = children->next;
+		has_data_left = TRUE;
+	}
+
+	if (has_data_left)
+		return BRASERO_BURN_ERR;
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_data_project_span_again (BraseroDataProject *self)
+{
+	BraseroDataProjectPrivate *priv;
+	BraseroFileNode *children;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	/* When empty this is an error */
+	if (!g_hash_table_size (priv->grafts))
+		return BRASERO_BURN_ERR;
+
+	children = BRASERO_FILE_NODE_CHILDREN (priv->root);
+	while (children) {
+		if (!g_slist_find (priv->spanned, children))
+			return BRASERO_BURN_RETRY;
+
+		children = children->next;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
 void
-brasero_data_project_span_cancel (BraseroDataProject *self)
+brasero_data_project_span_stop (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 
