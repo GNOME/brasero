@@ -504,8 +504,10 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
 	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
 		brasero_medium_get_free_space (medium, NULL, &disc_size);
-	else
+	else if (brasero_burn_session_can_blank (BRASERO_BURN_SESSION (self)) == BRASERO_BURN_OK)
 		brasero_medium_get_capacity (medium, NULL, &disc_size);
+	else
+		brasero_medium_get_free_space (medium, NULL, &disc_size);
 
 	if (disc_size < 0)
 		disc_size = 0;
