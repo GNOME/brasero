@@ -46,6 +46,7 @@ libbraseroburninclude_HEADERS =					\
 	brasero-track-image.h					\
 	brasero-track-image-cfg.h				\
 	brasero-session.h                 			\
+	brasero-session-span.h					\
 	brasero-session-cfg.h					\
 	brasero-burn.h						\
 	brasero-burn-options.h        			        \
@@ -189,7 +190,9 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-data-options.c                 \
 	brasero-data-options.h                 \
 	brasero-video-options.h                 \
-	brasero-video-options.c
+	brasero-video-options.c                 \
+	brasero-session-span.h                 \
+	brasero-session-span.c
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

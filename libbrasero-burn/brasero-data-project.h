@@ -231,7 +231,7 @@ brasero_data_project_set_sort_function (BraseroDataProject *project,
 					GtkSortType sort_type,
 					GCompareFunc sort_func);
 
-gboolean
+BraseroBurnResult
 brasero_data_project_span (BraseroDataProject *project,
 			   goffset max_sectors,
 			   gboolean append_slash,

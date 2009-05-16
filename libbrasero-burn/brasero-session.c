@@ -1199,6 +1199,10 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
+	/* Don't go further if there is no list of tracks on the pile */
+	if (!priv->pile_tracks)
+		return;
+
 	if (priv->tracks) {
 		brasero_burn_session_stop_tracks_monitoring (self);
 
@@ -1213,9 +1217,6 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 			return;
 		}
 	}
-
-	if (!priv->pile_tracks)
-		return;
 
 	sources = priv->pile_tracks->data;
 	priv->pile_tracks = g_slist_remove (priv->pile_tracks, sources);

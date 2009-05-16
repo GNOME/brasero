@@ -81,7 +81,7 @@ enum
 
 static guint session_cfg_signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_BURN_SESSION);
+G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN);
 
 #define BRASERO_DEST_SAVED_FLAGS		(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
 #define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"

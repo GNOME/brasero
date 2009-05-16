@@ -148,6 +148,15 @@ brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
 GtkTreeModel *
 brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track);
 
+/**
+ * Track Spanning
+ */
+
+BraseroBurnResult
+brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
+			     goffset sectors,
+			     BraseroTrackData *new_track);
+
 G_END_DECLS
 
 #endif /* _BRASERO_TRACK_DATA_CFG_H_ */

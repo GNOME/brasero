@@ -2546,7 +2546,7 @@ brasero_data_project_span_generate (BraseroDataProject *self,
 	brasero_track_data_set_source (track, grafts, excluded);
 }
 
-gboolean
+BraseroBurnResult
 brasero_data_project_span (BraseroDataProject *self,
 			   goffset max_sectors,
 			   gboolean append_slash,
@@ -2560,8 +2560,9 @@ brasero_data_project_span (BraseroDataProject *self,
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
+	/* When empty this is an error */
 	if (!g_hash_table_size (priv->grafts))
-		return FALSE;
+		return BRASERO_BURN_ERR;
 
 	callback_data.files_num = 0;
 	callback_data.grafts = NULL;
@@ -2640,8 +2641,9 @@ brasero_data_project_span (BraseroDataProject *self,
 		children = children->next;
 	}
 
+	/* This means it's finished */
 	if (!callback_data.grafts)
-		return FALSE;
+		return BRASERO_BURN_OK;
 
 	brasero_data_project_span_generate (self,
 					    &callback_data,
@@ -2655,7 +2657,7 @@ brasero_data_project_span (BraseroDataProject *self,
 	g_slist_free (callback_data.grafts);
 	g_slist_free (callback_data.joliet_grafts);
 
-	return TRUE;
+	return BRASERO_BURN_RETRY;
 }
 
 void

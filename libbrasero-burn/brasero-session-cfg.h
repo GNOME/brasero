@@ -34,6 +34,7 @@
 #include <glib-object.h>
 
 #include <brasero-session.h>
+#include <brasero-session-span.h>
 
 G_BEGIN_DECLS
 
@@ -49,12 +50,12 @@ typedef struct _BraseroSessionCfg BraseroSessionCfg;
 
 struct _BraseroSessionCfgClass
 {
-	BraseroBurnSessionClass parent_class;
+	BraseroSessionSpanClass parent_class;
 };
 
 struct _BraseroSessionCfg
 {
-	BraseroBurnSession parent_instance;
+	BraseroSessionSpan parent_instance;
 };
 
 GType brasero_session_cfg_get_type (void) G_GNUC_CONST;
