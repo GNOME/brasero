@@ -480,7 +480,6 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	gint64 session_size;
 	gint64 max_sectors;
 	gint64 disc_size;
-	GSList *iter;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
@@ -512,7 +511,6 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 		disc_size = 0;
 
 	/* get input track size */
-	iter = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (self));
 	session_size = 0;
 
 	if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
@@ -525,17 +523,10 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 						  &value) == BRASERO_BURN_OK) {
 		session_size = g_value_get_int64 (value);
 	}
-	else for (; iter; iter = iter->next) {
-		BraseroTrack *track;
-
-		track = iter->data;
-		if (!BRASERO_IS_TRACK_DATA (track)) {
-			goffset sectors = 0;
-
-			brasero_track_get_size (track, &sectors, NULL);
-			session_size += sectors;
-		}
-	}
+	else
+		brasero_burn_session_get_size (BRASERO_BURN_SESSION (self),
+					       &session_size,
+					       NULL);
 
 	BRASERO_BURN_LOG ("Session size %lli/Disc size %lli",
 			  session_size,
