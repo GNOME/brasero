@@ -238,6 +238,7 @@ brasero_session_span_next (BraseroSessionSpan *session)
 				return result;
 			}
 
+			pushed = TRUE;
 			brasero_burn_session_push_tracks (BRASERO_BURN_SESSION (session));
 			brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (new_track));
 			break;
