@@ -65,10 +65,11 @@ struct _BraseroImageTypeChooserPrivate {
 
 static GtkHBoxClass *parent_class = NULL;
 
-void
+guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 				        BraseroImageFormat formats)
 {
+	guint format_num;
 	GtkTreeIter iter;
 	GtkTreeModel *store;
 	BraseroImageTypeChooserPrivate *priv;
@@ -76,6 +77,8 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
 
 	priv->updating = TRUE;
+
+	format_num = 0;
 
 	/* clean */
 	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
@@ -89,6 +92,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 			    -1);
 
 	if (formats & BRASERO_IMAGE_FORMAT_BIN) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 				    FORMAT_TEXT, _("*.iso image"),
@@ -97,6 +101,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CLONE) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 				    FORMAT_TEXT, _("*.raw image"),
@@ -105,6 +110,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CUE) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 				    FORMAT_TEXT, _("*.cue image"),
@@ -113,6 +119,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CDRDAO) {
+		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 				    FORMAT_TEXT, _("*.toc image (cdrdao)"),
@@ -127,6 +134,8 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		brasero_image_type_chooser_set_format (self, priv->format);
 	else
 		brasero_image_type_chooser_set_format (self, BRASERO_IMAGE_FORMAT_NONE);
+
+	return format_num;
 }
 
 void

@@ -544,12 +544,12 @@ brasero_file_monitor_inotify_monitor_cb (GIOChannel *channel,
 								      &event);
 			}
 			else
-				g_warning ("Unknown (or already deleted) monitored directory = > ignored \n");
+				g_warning ("Unknown (or already deleted) monitored directory = > ignored");
 		}
 		else {
 			GSList *list;
 
-			/* This is an even happening on the top directory there*/
+			/* This is an event happening on the top directory there*/
 			list = callback_data;
 			brasero_file_monitor_inotify_file_event (self,
 								 list,

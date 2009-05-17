@@ -128,6 +128,13 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_DRIVE_BUSY,
 						_("The drive is busy")));
 	}
+	else if (strstr (line, "Probably trying to use ultra high speed+ medium on improper writer")) {
+		/* Set a deferred error as this message tends to indicate a failure */
+		brasero_process_deferred_error (process,
+						g_error_new (BRASERO_BURN_ERROR,
+							     BRASERO_BURN_ERROR_MEDIUM_INVALID,
+							     _("The disc is not supported")));
+	}
 
 	/* REMINDER: these should not be necessary as we checked that already */
 	/**
@@ -338,9 +345,17 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 	else if (g_str_has_prefix (line, "Last chance to quit, ")) {
 		brasero_job_set_dangerous (BRASERO_JOB (process), TRUE);
 	}
-	else if (g_str_has_prefix (line, "Blanking PMA, TOC, pregap")
+/*	else if (g_str_has_prefix (line, "Blanking PMA, TOC, pregap")
 	     ||  strstr (line, "Blanking entire disk")) {
 
+	}
+*/
+	else if (strstr (line, "Disk sub type: Ultra High speed+")) {
+		/* Set a deferred error as this message tends to indicate a failure */
+		brasero_process_deferred_error (process,
+						g_error_new (BRASERO_BURN_ERROR,
+							     BRASERO_BURN_ERROR_MEDIUM_INVALID,
+							     _("The disc is not supported")));
 	}
 	/* This should not happen */
 	/* else if (strstr (line, "Use tsize= option in SAO mode to specify track size")) */

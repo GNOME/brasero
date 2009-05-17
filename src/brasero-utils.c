@@ -380,3 +380,32 @@ brasero_utils_message_dialog (GtkWidget *parent,
 	gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
 }
+
+gboolean
+brasero_clipboard_selection_may_have_uri (GdkAtom *atoms,
+					  gint n_atoms)
+{
+	GdkAtom *iter;
+
+	/* Check for a text target */
+	if (gtk_targets_include_text (atoms, n_atoms))
+		return TRUE;
+
+	/* Check for special targets like nautilus' and its file copied */
+	iter = atoms;
+	while (n_atoms > 0) {
+		gchar *target;
+
+		target = gdk_atom_name (*iter);
+		if (!strcmp (target, "x-special/gnome-copied-files")) {
+			g_free (target);
+			return TRUE;
+		}
+		g_free (target);
+
+		iter++;
+		n_atoms--;
+	}
+
+	return FALSE;
+}

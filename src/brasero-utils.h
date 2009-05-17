@@ -90,6 +90,10 @@ brasero_utils_message_dialog (GtkWidget *parent,
 			      const gchar *secondary_message,
 			      GtkMessageType type);
 
+gboolean
+brasero_clipboard_selection_may_have_uri (GdkAtom *atoms,
+					  gint n_atoms);
+
 G_END_DECLS
 
 #endif				/* _UTILS_H */

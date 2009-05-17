@@ -58,7 +58,7 @@
 #include "burn-track.h"
 #include "burn-session.h"
 #include "brasero-volume.h"
-
+#include "brasero-utils.h"
 
 typedef struct _BraseroDataDiscPrivate BraseroDataDiscPrivate;
 struct _BraseroDataDiscPrivate
@@ -367,12 +367,15 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	gchar **array;
 	gchar **item;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (data->disc);
-
+ 	if (!text)
+ 		goto end;
+ 
+  	priv = BRASERO_DATA_DISC_PRIVATE (data->disc);
+  
 	if (data->reference)
 		parent = brasero_data_project_reference_get (priv->project, data->reference);
-
-	array = g_strsplit_set (text, "\n\r", 0);
+  
+	array = g_uri_list_extract_uris (text);
 	item = array;
 	while (*item) {
 		if (**item != '\0') {
@@ -396,6 +399,7 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	}
 	g_strfreev (array);
 
+end:
 	if (data->reference)
 		brasero_data_project_reference_free (priv->project, data->reference);
 
@@ -409,28 +413,14 @@ brasero_data_disc_clipboard_targets_cb (GtkClipboard *clipboard,
 					BraseroClipData *data)
 {
 	BraseroDataDiscPrivate *priv;
-	GdkAtom *iter;
-	gchar *target;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (data->disc);
-
-	iter = atoms;
-	while (n_atoms) {
-		target = gdk_atom_name (*iter);
-
-		if (!strcmp (target, "x-special/gnome-copied-files")
-		||  !strcmp (target, "UTF8_STRING")) {
-			gtk_clipboard_request_text (clipboard,
-						    (GtkClipboardTextReceivedFunc)
-						    brasero_data_disc_clipboard_text_cb,
-						    data);
-			g_free (target);
-			return;
-		}
-
-		g_free (target);
-		iter++;
-		n_atoms--;
+	if (brasero_clipboard_selection_may_have_uri (atoms, n_atoms)) {
+		gtk_clipboard_request_text (clipboard,
+					    (GtkClipboardTextReceivedFunc)
+					    brasero_data_disc_clipboard_text_cb,
+					    data);
+		return;
 	}
 
 	if (data->reference)

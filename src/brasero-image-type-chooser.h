@@ -56,7 +56,7 @@ struct _BraseroImageTypeChooserClass {
 GType brasero_image_type_chooser_get_type ();
 GtkWidget *brasero_image_type_chooser_new ();
 
-void
+guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 				        BraseroImageFormat formats);
 void
