@@ -1829,17 +1829,12 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 	return (answer == GTK_RESPONSE_OK);
 }
 
-static gboolean
-brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
+static gchar *
+brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 {
-	gint64 rate;
-	gboolean res;
-	BraseroMedia media;
-	BraseroDrive *drive;
-	gchar *primary = NULL;
-	GtkWidget *make_another = NULL;
-	GtkWidget *create_cover = NULL;
 	BraseroBurnDialogPrivate *priv;
+	BraseroDrive *drive;
+	BraseroMedia media;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
@@ -1851,42 +1846,58 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 
 	switch (priv->input.type) {
 	case BRASERO_TRACK_TYPE_STREAM:
-		primary = g_strdup (_("Audio CD successfully burnt"));
-		break;
+		return g_strdup (_("Audio CD successfully burnt"));
+
 	case BRASERO_TRACK_TYPE_DISC:
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
-				primary = g_strdup (_("DVD successfully copied"));
+				return g_strdup (_("DVD successfully copied"));
 			else
-				primary = g_strdup (_("CD successfully copied"));
+				return g_strdup (_("CD successfully copied"));
 		}
 		else {
 			if (media & BRASERO_MEDIUM_DVD)
-				primary = g_strdup (_("Image of DVD successfully created"));
+				return g_strdup (_("Image of DVD successfully created"));
 			else
-				primary = g_strdup (_("Image of CD successfully created"));
+				return g_strdup (_("Image of CD successfully created"));
 		}
 		break;
 	case BRASERO_TRACK_TYPE_IMAGE:
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
-				primary = g_strdup (_("Image successfully burnt to DVD"));
+				return g_strdup (_("Image successfully burnt to DVD"));
 			else
-				primary = g_strdup (_("Image successfully burnt to CD"));
+				return g_strdup (_("Image successfully burnt to CD"));
 		}
 		break;
 	default:
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
-				primary = g_strdup (_("Data DVD successfully burnt"));
+				return g_strdup (_("Data DVD successfully burnt"));
 			else
-				primary = g_strdup (_("Data CD successfully burnt"));
+				return g_strdup (_("Data CD successfully burnt"));
 		}
-		else
-			primary = g_strdup (_("Image successfully created"));
-		break;
+
+		return g_strdup (_("Image successfully created"));
 	}
 
+	return NULL;
+}
+
+static gboolean
+brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
+{
+	gint64 rate;
+	gboolean res;
+	BraseroMedia media;
+	gchar *primary = NULL;
+	GtkWidget *make_another = NULL;
+	GtkWidget *create_cover = NULL;
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	primary = brasero_burn_dialog_get_success_message (dialog);
 	brasero_burn_dialog_activity_stop (dialog, primary);
 	g_free (primary);
 
@@ -1910,6 +1921,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		rate /= num;
 	}
 
+	media = brasero_burn_session_get_dest_media (priv->session);
 	brasero_burn_progress_display_session_info (BRASERO_BURN_PROGRESS (priv->progress),
 						    g_timer_elapsed (priv->total_time, NULL),
 						    rate,
@@ -2060,6 +2072,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 {
 	BraseroDrive *burner;
 	BraseroTrackType *type;
+	gchar *success_message;
 	BraseroBurnResult result;
 	BraseroBurnDialogPrivate *priv;
 	gchar *secondary_message = NULL;
@@ -2068,14 +2081,28 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 	burner = brasero_burn_session_get_burner (priv->session);
 
 	type = brasero_track_type_new ();
-	if (brasero_track_type_get_has_data (type))
-		secondary_message = g_strdup (_("There are some files left to burn."));
+	brasero_burn_session_get_input_type (priv->session, type);
+	success_message = brasero_burn_dialog_get_success_message (dialog);
+	if (brasero_track_type_get_has_data (type)) {
+		secondary_message = g_strdup_printf ("%s.\n%s.",
+						     success_message,
+						     _("There are some files left to burn"));
+		g_free (success_message);
+	}
 	else if (brasero_track_type_get_has_stream (type)) {
 		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type)))
-			secondary_message = g_strdup (_("There are some more videos left to burn."));
+			secondary_message = g_strdup_printf ("%s.\n%s.",
+							     success_message,
+							     _("There are some more videos left to burn"));
 		else
-			secondary_message = g_strdup (_("There are some more songs left to burn."));
+			secondary_message = g_strdup_printf ("%s.\n%s.",
+							     success_message,
+							     _("There are some more songs left to burn"));
+		g_free (success_message);
 	}
+	else
+		secondary_message = success_message;
+
 	brasero_track_type_free (type);
 
 	do {
