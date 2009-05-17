@@ -185,7 +185,7 @@ brasero_project_type_chooser_recent_clicked_cb (GtkButton *button,
 {
 	const gchar *uri;
 
-	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
+	uri = g_object_get_data (G_OBJECT (button), "BraseroButtonURI");
 	g_signal_emit (self,
 		       brasero_project_type_chooser_signals [RECENT_CLICKED_SIGNAL],
 		       0,
@@ -199,7 +199,7 @@ brasero_project_type_chooser_last_unsaved_clicked_cb (GtkButton *button,
 	const gchar *uri;
 	gchar *path;
 
-	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
+	uri = g_object_get_data (G_OBJECT (button), "BraseroButtonURI");
 	path = g_filename_from_uri (uri, NULL, NULL);
 
 	g_signal_emit (self,
@@ -288,7 +288,12 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		image = gtk_image_new_from_icon_name ("brasero", GTK_ICON_SIZE_BUTTON);
 		gtk_size_group_add_widget (image_group, image);
 
-		link = gtk_link_button_new_with_label (uri, _("Last _Unsaved Project"));
+		link = gtk_button_new_with_label (_("Last _Unsaved Project"));
+		g_object_set_data_full (G_OBJECT (link),
+					"BraseroButtonURI", uri,
+					g_free);
+
+		gtk_button_set_relief (GTK_BUTTON (link), GTK_RELIEF_NONE);
 		gtk_button_set_alignment (GTK_BUTTON (link), 0.0, 0.5);
 		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
 		gtk_button_set_image (GTK_BUTTON (link), image);
@@ -300,8 +305,6 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		gtk_widget_show (link);
 		gtk_widget_set_tooltip_text (link, _("Load the last project that was not burnt and not saved"));
 		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), link, FALSE, TRUE, 0);
-
-		g_free (uri);
 
 		gtk_size_group_add_widget (group, link);
 	}
@@ -335,7 +338,12 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		uri = gtk_recent_info_get_uri (info);
 
 		/* Don't use mnemonics with filenames */
-		link = gtk_link_button_new_with_label (uri, name);
+		link = gtk_button_new_with_label (name);
+		g_object_set_data_full (G_OBJECT (link),
+					"BraseroButtonURI", g_strdup (uri),
+					g_free);
+
+		gtk_button_set_relief (GTK_BUTTON (link), GTK_RELIEF_NONE);
 		gtk_button_set_image (GTK_BUTTON (link), image);
 		gtk_button_set_alignment (GTK_BUTTON (link), 0.0, 0.5);
 		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
