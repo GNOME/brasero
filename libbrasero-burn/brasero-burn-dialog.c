@@ -2134,6 +2134,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 
 		result = brasero_session_span_next (BRASERO_SESSION_SPAN (priv->session));
 		while (result == BRASERO_BURN_ERR) {
+			brasero_drive_eject (burner, FALSE, NULL);
 			res = brasero_burn_dialog_wait_for_insertion (dialog,
 								      burner,
 								      _("Please insert a recordable CD or DVD."),
