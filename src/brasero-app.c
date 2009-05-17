@@ -1434,6 +1434,24 @@ brasero_app_create_mainwin (BraseroApp *app)
 	brasero_app_load_window_state (app);
 }
 
+static UniqueResponse
+brasero_app_unique_message (UniqueApp *uapp,
+			    gint command,
+			    UniqueMessageData *message_data,
+			    guint time,
+			    BraseroApp *app)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	if (command == UNIQUE_ACTIVATE) {
+		if (priv->mainwin_running)
+			gtk_window_present (GTK_WINDOW (priv->mainwin));
+	}
+
+	return UNIQUE_RESPONSE_OK;
+}
+
 gboolean
 brasero_app_run_mainwin (BraseroApp *app)
 {
@@ -1446,6 +1464,10 @@ brasero_app_run_mainwin (BraseroApp *app)
 	gtk_widget_show (GTK_WIDGET (priv->mainwin));
 
 	uapp = unique_app_new ("org.gnome.Brasero", NULL);
+	g_signal_connect (uapp,
+			  "message-received",
+			  G_CALLBACK (brasero_app_unique_message),
+			  app);
 
 	if (unique_app_is_running (uapp))
 	{
