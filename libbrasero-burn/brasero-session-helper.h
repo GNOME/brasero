@@ -74,6 +74,24 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *session);
 #define BRASERO_BURN_SESSION_APPEND(session)					\
 (brasero_burn_session_get_flags ((session)) & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
 
+BraseroBurnResult
+brasero_burn_session_get_tmp_image (BraseroBurnSession *session,
+				    BraseroImageFormat format,
+				    gchar **image,
+				    gchar **toc,
+				    GError **error);
+
+BraseroBurnResult
+brasero_burn_session_get_tmp_file (BraseroBurnSession *session,
+				   const gchar *suffix,
+				   gchar **path,
+				   GError **error);
+
+BraseroBurnResult
+brasero_burn_session_get_tmp_dir (BraseroBurnSession *session,
+				  gchar **path,
+				  GError **error);
+
 G_END_DECLS
 
 #endif

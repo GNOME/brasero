@@ -174,24 +174,6 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *session,
 const gchar *
 brasero_burn_session_get_tmpdir (BraseroBurnSession *session);
 
-BraseroBurnResult
-brasero_burn_session_get_tmp_image (BraseroBurnSession *session,
-				    BraseroImageFormat format,
-				    gchar **image,
-				    gchar **toc,
-				    GError **error);
-
-BraseroBurnResult
-brasero_burn_session_get_tmp_file (BraseroBurnSession *session,
-				   const gchar *suffix,
-				   gchar **path,
-				   GError **error);
-
-BraseroBurnResult
-brasero_burn_session_get_tmp_dir (BraseroBurnSession *session,
-				  gchar **path,
-				  GError **error);
-
 /**
  * Allow to save a whole session settings/source and restore it later.
  * (mostly used internally)
