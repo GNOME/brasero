@@ -339,7 +339,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 			brasero_notify_button_add (BRASERO_NOTIFY (priv->message_output),
 						   BRASERO_DISC_MESSAGE (message),
-						   _("_Span File Selection"),
+						   _("_Burn Several Discs"),
 						   _("Burn the selection of files across several media"),
 						   GTK_RESPONSE_OK);
 
