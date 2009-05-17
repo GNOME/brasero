@@ -206,7 +206,7 @@ brasero_handle_burn_uri (BraseroApp *app,
 			string = g_strdup (_("An internal error occured"));
 
 		brasero_app_alert (app,
-				   _("Error while loading the project."),
+				   _("Error while loading the project"),
 				   string,
 				   GTK_MESSAGE_ERROR);
 
@@ -232,7 +232,7 @@ brasero_handle_burn_uri (BraseroApp *app,
 			string = g_strdup (_("An internal error occured"));
 
 		brasero_app_alert (app,
-				   _("Error while loading the project."),
+				   _("Error while loading the project"),
 				   string,
 				   GTK_MESSAGE_ERROR);
 
@@ -487,7 +487,6 @@ main (int argc, char **argv)
 {
 	GConfClient *client;
 	GOptionContext *context;
-
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);

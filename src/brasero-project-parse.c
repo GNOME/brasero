@@ -133,7 +133,7 @@ static void
 brasero_project_invalid_project_dialog (const char *reason)
 {
 	brasero_app_alert (brasero_app_get_default (),
-			   _("Error while loading the project."),
+			   _("Error while loading the project"),
 			   reason,
 			   GTK_MESSAGE_ERROR);
 }
@@ -489,7 +489,7 @@ brasero_project_open_project_xml (const gchar *uri,
 	gboolean retval;
 	gchar *path;
 
-    	path = g_filename_from_uri (uri, NULL, NULL);
+	path = g_filename_from_uri (uri, NULL, NULL);
     	if (!path)
 		return FALSE;
 
