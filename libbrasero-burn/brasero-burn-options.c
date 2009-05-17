@@ -240,19 +240,9 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
-	if (!priv->is_valid) {
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
-					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
-		return;
-	}
-
-	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))) {
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
-					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
-		return;
-	}
-
-	if (brasero_medium_selection_get_media_num (BRASERO_MEDIUM_SELECTION (priv->selection)) != 1) {
+	if (!priv->is_valid
+	||  !brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))
+	||   brasero_medium_selection_get_media_num (BRASERO_MEDIUM_SELECTION (priv->selection)) != 1) {
 		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
 					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
 		return;
