@@ -117,7 +117,6 @@ brasero_notify_message_remove (BraseroNotify *self,
 		widget = iter->data;
 		if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
 			brasero_disc_message_destroy (BRASERO_DISC_MESSAGE (widget));
-			break;
 		}
 	}
 	g_list_free (children);
