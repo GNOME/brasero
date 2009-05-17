@@ -2592,6 +2592,9 @@ brasero_data_project_span (BraseroDataProject *self,
 			continue;
 		}
 
+		/* FIXME: we need a better algorithm here that would add first
+		 * the biggest top folders/files and that would try to fill as
+		 * much as possible the disc. */
 		total_sectors += child_sectors;
 
 		/* Take care of joliet non compliant nodes */
