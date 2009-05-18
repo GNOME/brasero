@@ -175,6 +175,21 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 		}
 	}
 	else if (GTK_IS_CONTAINER (widget)) {
+		if (GTK_IS_PANED (widget)) {
+			GtkWidget *left;
+
+			/* This is to allow the left part to be shrunk as much 
+			 * as the user want. */
+			left = gtk_paned_get_child1 (GTK_PANED (widget));
+
+			g_object_ref (left);
+			gtk_container_remove (GTK_CONTAINER (widget), left);
+			gtk_paned_pack1 (GTK_PANED (widget),
+					 left,
+					 TRUE,
+					 TRUE);
+			g_object_unref (left);
+		}
 		gtk_container_foreach (GTK_CONTAINER (widget),
 				       brasero_file_chooser_customize,
 				       NULL);
