@@ -68,6 +68,12 @@ struct _BraseroTrackDataClass
 	BraseroBurnResult	(*set_source)		(BraseroTrackData *track,
 							 GSList *grafts,
 							 GSList *unreadable);
+	BraseroBurnResult       (*add_fs)		(BraseroTrackData *track,
+							 BraseroImageFS fstype);
+
+	BraseroBurnResult       (*rm_fs)		(BraseroTrackData *track,
+							 BraseroImageFS fstype);
+
 	BraseroImageFS		(*get_fs)		(BraseroTrackData *track);
 	GSList*			(*get_grafts)		(BraseroTrackData *track);
 	GSList*			(*get_excluded)		(BraseroTrackData *track);

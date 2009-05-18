@@ -55,10 +55,6 @@ brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list);
 
 gboolean
-brasero_utils_selection_may_have_uri (GdkAtom *atoms,
-				      gint n_atoms);
-
-gboolean
 brasero_clipboard_selection_may_have_uri (GdkAtom *atoms,
 					  gint n_atoms);
 

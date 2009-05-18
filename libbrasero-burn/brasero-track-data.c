@@ -121,23 +121,50 @@ brasero_track_data_set_source (BraseroTrackData *track,
 	return klass->set_source (track, grafts, unreadable);
 }
 
+static BraseroBurnResult
+brasero_track_data_add_fs_real (BraseroTrackData *track,
+				BraseroImageFS fstype)
+{
+	BraseroTrackDataPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv->fs_type |= fstype;
+	return BRASERO_BURN_OK;
+}
+
 BraseroBurnResult
 brasero_track_data_add_fs (BraseroTrackData *track,
 			   BraseroImageFS fstype)
 {
-	BraseroTrackDataPrivate *priv;
+	BraseroTrackDataClass *klass;
+	BraseroImageFS fs_before;
+	BraseroBurnResult result;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
+	fs_before = brasero_track_data_get_fs (track);
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
+	if (!klass->add_fs)
+		return BRASERO_BURN_NOT_SUPPORTED;
+
+	result = klass->add_fs (track, fstype);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	if (fs_before != brasero_track_data_get_fs (track))
+		brasero_track_changed (BRASERO_TRACK (track));
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_track_data_rm_fs_real (BraseroTrackData *track,
+			       BraseroImageFS fstype)
+{
+	BraseroTrackDataPrivate *priv;
+
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
-
-	fstype |= priv->fs_type;
-	if (fstype == priv->fs_type)
-		return BRASERO_BURN_OK;
-
-	priv->fs_type = fstype;
-	brasero_track_changed (BRASERO_TRACK (track));
-
+	priv->fs_type &= ~(fstype);
 	return BRASERO_BURN_OK;
 }
 
@@ -145,20 +172,25 @@ BraseroBurnResult
 brasero_track_data_rm_fs (BraseroTrackData *track,
 			  BraseroImageFS fstype)
 {
-	BraseroTrackDataPrivate *priv;
-	BraseroImageFS new_fstype;
+	BraseroTrackDataClass *klass;
+	BraseroImageFS fs_before;
+	BraseroBurnResult result;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
 
-	new_fstype = priv->fs_type;
-	new_fstype &= ~fstype;
-	if (new_fstype == priv->fs_type)
-		return BRASERO_BURN_OK;
+	fs_before = brasero_track_data_get_fs (track);
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
+	if (!klass->rm_fs);
+		return BRASERO_BURN_NOT_SUPPORTED;
 
-	priv->fs_type = new_fstype;
-	brasero_track_changed (BRASERO_TRACK (track));
+	result = klass->rm_fs (track, fstype);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	if (fs_before != brasero_track_data_get_fs (track))
+		brasero_track_changed (BRASERO_TRACK (track));
 
 	return BRASERO_BURN_OK;
 }
@@ -402,6 +434,8 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
 	track_class->get_size = brasero_track_data_get_size;
 
 	track_data_class->set_source = brasero_track_data_set_source_real;
+	track_data_class->add_fs = brasero_track_data_add_fs_real;
+	track_data_class->rm_fs = brasero_track_data_rm_fs_real;
 
 	track_data_class->get_fs = brasero_track_data_get_fs_real;
 	track_data_class->get_grafts = brasero_track_data_get_grafts_real;
