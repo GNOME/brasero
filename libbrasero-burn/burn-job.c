@@ -626,36 +626,6 @@ brasero_job_set_output_file (BraseroJob *self,
 				priv->output->toc = toc;
 				return BRASERO_BURN_OK;
 			}
-
-			/* There must be an image at least */
-			if ((flags & BRASERO_BURN_FLAG_DONT_OVERWRITE)
-			&&   g_file_test (image, G_FILE_TEST_EXISTS)) {
-				BRASERO_BURN_LOG ("Problem with image existence");
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("\"%s\" already exists"),
-					     image);
-				g_free (toc);
-				g_free (image);
-				return BRASERO_BURN_ERR;
-			}
-
-			if (priv->type.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN) {
-				/* There must a toc file in this case */
-				if ((flags & BRASERO_BURN_FLAG_DONT_OVERWRITE)
-				&&   g_file_test (toc, G_FILE_TEST_EXISTS)) {
-					BRASERO_BURN_LOG ("Problem with toc existence");
-					g_set_error (error,
-						     BRASERO_BURN_ERROR,
-						     BRASERO_BURN_ERROR_GENERAL,
-						     _("\"%s\" already exists"),
-						     toc);
-					g_free (toc);
-					g_free (image);
-					return BRASERO_BURN_ERR;
-				}
-			}
 		}
 		else {
 			/* NOTE: no need to check for the existence here */

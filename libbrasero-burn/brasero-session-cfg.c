@@ -264,7 +264,6 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 	/* These are always supported and better be set. */
 	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self),
-					BRASERO_BURN_FLAG_DONT_OVERWRITE|
 					BRASERO_BURN_FLAG_CHECK_SIZE|
 					BRASERO_BURN_FLAG_NOGRACE);
 

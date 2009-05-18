@@ -1482,8 +1482,7 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 	BraseroBurnFlag session_flags;
 	/* FIXME: what's the meaning of NOGRACE when outputting ? */
 	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
-	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_DONT_OVERWRITE|
-					  BRASERO_BURN_FLAG_CHECK_SIZE|
+	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_CHECK_SIZE|
 					  BRASERO_BURN_FLAG_NOGRACE;
 
 	self = brasero_burn_caps_get_default ();
