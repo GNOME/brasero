@@ -1396,7 +1396,6 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 	if (res == BRASERO_BURN_OK) {
-		brasero_status_free (status);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->filter), TRUE);
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
