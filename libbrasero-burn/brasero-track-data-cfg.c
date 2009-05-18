@@ -52,8 +52,8 @@
 typedef struct _BraseroTrackDataCfgPrivate BraseroTrackDataCfgPrivate;
 struct _BraseroTrackDataCfgPrivate
 {
-	BraseroImageFS *forced_fs;
-	BraseroImageFS *banned_fs;
+	BraseroImageFS forced_fs;
+	BraseroImageFS banned_fs;
 
 	BraseroDataTreeModel *tree;
 	guint stamp;
@@ -1835,8 +1835,8 @@ brasero_track_data_cfg_add_fs (BraseroTrackData *track,
 	BraseroTrackDataCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	priv->forced |= fstype;
-	priv->banned &= ~(fstype);
+	priv->forced_fs |= fstype;
+	priv->banned_fs &= ~(fstype);
 	return BRASERO_BURN_OK;
 }
 
@@ -1847,8 +1847,8 @@ brasero_track_data_cfg_rm_fs (BraseroTrackData *track,
 	BraseroTrackDataCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	priv->banned |= fstype;
-	priv->forced &= ~(fstype);
+	priv->banned_fs |= fstype;
+	priv->forced_fs &= ~(fstype);
 	return BRASERO_BURN_OK;
 }
 
@@ -1866,7 +1866,7 @@ brasero_track_data_cfg_get_fs (BraseroTrackData *track)
 	stats = BRASERO_FILE_NODE_STATS (root);
 
 	fs_type = BRASERO_IMAGE_FS_ISO;
-	fs_type |= priv->forced;
+	fs_type |= priv->forced_fs;
 
 	if (brasero_data_project_has_symlinks (BRASERO_DATA_PROJECT (priv->tree)))
 		fs_type |= BRASERO_IMAGE_FS_SYMLINK;
@@ -1888,7 +1888,7 @@ brasero_track_data_cfg_get_fs (BraseroTrackData *track)
 	if (stats->num_deep != 0)
 		fs_type |= BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY;
 
-	fs_type &= ~(priv->banned);
+	fs_type &= ~(priv->banned_fs);
 	return fs_type;
 }
 
@@ -2495,8 +2495,8 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 	track_class->get_status = brasero_track_data_cfg_get_status;
 
 	parent_class->set_source = brasero_track_data_cfg_set_source;
-	parent_class->set_source = brasero_track_data_cfg_add_fs;
-	parent_class->set_source = brasero_track_data_cfg_rm_fs;
+	parent_class->add_fs = brasero_track_data_cfg_add_fs;
+	parent_class->rm_fs = brasero_track_data_cfg_rm_fs;
 
 	parent_class->get_fs = brasero_track_data_cfg_get_fs;
 	parent_class->get_grafts = brasero_track_data_cfg_get_grafts;

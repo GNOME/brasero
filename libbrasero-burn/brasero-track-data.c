@@ -178,8 +178,6 @@ brasero_track_data_rm_fs (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
-
 	fs_before = brasero_track_data_get_fs (track);
 	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
 	if (!klass->rm_fs);
