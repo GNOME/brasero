@@ -3230,6 +3230,7 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 	for (iter = grafts; iter; iter = iter->next) {
 		BraseroGraftPt *graft;
 		GFile *file;
+		gchar *path;
 		gchar *uri;
 
 		graft = iter->data;
@@ -3242,13 +3243,27 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 		else
 			uri = NULL;
 
+		if (graft->path) {
+			/* This might happen if we are loading brasero projects */
+			if (g_str_has_suffix (graft->path, G_DIR_SEPARATOR_S)) {
+				int len;
+
+				len = strlen (graft->path);
+				path = g_strndup (graft->path, len - 1);
+			}
+			else
+				path = g_strdup (graft->path);
+		}
+		else
+			path = NULL;
+
 		folders = brasero_data_project_add_path (self,
-							 graft->path,
+							 path,
 							 uri,
 							 folders);
 
-		if (uri)
-			g_free (uri);
+		g_free (path);
+		g_free (uri);
 	}
 
 	for (iter = excluded; iter; iter = iter->next) {
