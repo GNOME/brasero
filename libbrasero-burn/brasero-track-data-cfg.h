@@ -148,6 +148,10 @@ brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
 GtkTreeModel *
 brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track);
 
+BraseroBurnResult
+brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
+				 const gchar *path);
+
 /**
  * Track Spanning
  */
@@ -165,6 +169,14 @@ brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
 
 void
 brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track);
+
+/**
+ * Icon
+ */
+
+BraseroBurnResult
+brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
+				 const gchar *path);
 
 G_END_DECLS
 

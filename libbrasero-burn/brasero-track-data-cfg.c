@@ -32,8 +32,11 @@
 #  include <config.h>
 #endif
 
+#include <fcntl.h>
+
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #include <gtk/gtk.h>
 
@@ -46,6 +49,7 @@
 #include "brasero-filtered-uri.h"
 
 #include "brasero-misc.h"
+#include "burn-basics.h"
 #include "brasero-data-project.h"
 #include "brasero-data-tree-model.h"
 
@@ -54,6 +58,9 @@ struct _BraseroTrackDataCfgPrivate
 {
 	BraseroImageFS forced_fs;
 	BraseroImageFS banned_fs;
+
+	gchar *icon_path;
+	gchar *autorun_path;
 
 	BraseroDataTreeModel *tree;
 	guint stamp;
@@ -1473,6 +1480,18 @@ brasero_track_data_cfg_finalize (GObject *object)
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (object);
 
+	if (priv->icon_path) {
+		g_remove (priv->icon_path);
+		g_free (priv->icon_path);
+		priv->icon_path = NULL;
+	}
+
+	if (priv->autorun_path) {
+		g_remove (priv->autorun_path);
+		g_free (priv->autorun_path);
+		priv->autorun_path = NULL;
+	}
+
 	if (priv->shown) {
 		g_slist_free (priv->shown);
 		priv->shown = NULL;
@@ -1697,6 +1716,18 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 
 	g_slist_free (priv->shown);
 	priv->shown = NULL;
+
+	if (priv->icon_path) {
+		g_remove (priv->icon_path);
+		g_free (priv->icon_path);
+		priv->icon_path = NULL;
+	}
+
+	if (priv->autorun_path) {
+		g_remove (priv->autorun_path);
+		g_free (priv->autorun_path);
+		priv->autorun_path = NULL;
+	}
 
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
@@ -2389,6 +2420,127 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 	brasero_data_project_span_stop (BRASERO_DATA_PROJECT (priv->tree));
+}
+
+/**
+ * This is to handle icons
+ */
+
+BraseroBurnResult
+brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
+				 const gchar *path)
+{
+	gboolean result;
+	GdkPixbuf *pixbuf;
+	GError *error = NULL;
+	BraseroFileNode *root;
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	/* Load and convert (48x48) the image into a pixbuf */
+	pixbuf = gdk_pixbuf_new_from_file_at_scale (path,
+						    48,
+						    48,
+						    FALSE,
+						    &error);
+	if (!pixbuf)
+		return BRASERO_BURN_ERR;
+
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+
+	/* See if we already have an icon set. If we do, reuse the tmp file */
+	if (!priv->icon_path) {
+		BraseroFileNode *node;
+		gchar *buffer = NULL;
+		gchar *path = NULL;
+		gsize buffer_size;
+		int icon_fd;
+		gchar *uri;
+
+		icon_fd = g_file_open_tmp (BRASERO_BURN_TMP_FILE_NAME,
+					   &path,
+					   NULL);
+		if (icon_fd == -1) {
+			g_object_unref (pixbuf);
+			return BRASERO_BURN_ERR;
+		}
+
+		/* Add it as a graft to the project */
+		uri = g_filename_to_uri (path, NULL, NULL);
+		node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree), uri, root);
+		brasero_data_project_rename_node (BRASERO_DATA_PROJECT (priv->tree), node, "Autorun.ico");
+		g_free (uri);
+
+		/* That's just to be able to remove it later */
+		priv->icon_path = path;
+
+		/* Write it as an "ico" file (or a png?) */
+		result = gdk_pixbuf_save_to_buffer (pixbuf,
+						    &buffer,
+						    &buffer_size,
+						    "ico",
+						    NULL,
+						    NULL);
+		if (!result) {
+			close (icon_fd);
+			g_object_unref (pixbuf);
+			return BRASERO_BURN_ERR;
+		}
+
+		if (write (icon_fd, buffer, buffer_size) == -1) {
+			g_object_unref (pixbuf);
+			g_free (buffer);
+			close (icon_fd);
+			return BRASERO_BURN_ERR;
+		}
+
+		g_free (buffer);
+		close (icon_fd);
+	}
+	else {
+		/* Write it as an "ico" file (or a png?) */
+		result = gdk_pixbuf_save (pixbuf,
+					  priv->icon_path,
+					  "ico",
+					  &error,
+					  NULL);
+	}
+
+	g_object_unref (pixbuf);
+
+	/* Get a temporary file if we don't have one yet */
+	if (!priv->autorun_path) {
+		const char *line = "[autorun]\nicon=Autorun.ico";
+		BraseroFileNode *node;
+		gchar *path = NULL;
+		gchar *uri;
+		int fd;
+
+		fd = g_file_open_tmp (BRASERO_BURN_TMP_FILE_NAME,
+				      &path,
+				      NULL);
+		if (fd == -1)
+			return BRASERO_BURN_ERR;
+
+		/* Write the autorun.inf if we don't have one yet */
+		if (write (fd, line, sizeof (line)) == -1) {
+			close (fd);
+			return BRASERO_BURN_ERR;
+		}
+		close (fd);
+
+		/* Add it as a graft to the project */
+		uri = g_filename_to_uri (path, NULL, NULL);
+		node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree), uri, root);
+		brasero_data_project_rename_node (BRASERO_DATA_PROJECT (priv->tree), node, "Autorun.inf");
+		g_free (uri);
+
+		/* That's just to be able to remove it later */
+		priv->autorun_path = path;
+	}
+
+	return BRASERO_BURN_OK;
 }
 
 static void
