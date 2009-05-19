@@ -2118,10 +2118,8 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 
 		/* See if we have more data to burn and ask for a new medium */
 		result = brasero_session_span_again (BRASERO_SESSION_SPAN (priv->session));
-		if (result == BRASERO_BURN_OK) {
-			g_free (secondary_message);
-			return BRASERO_BURN_OK;
-		}
+		if (result == BRASERO_BURN_OK)
+			break;
 
 		res = brasero_burn_dialog_wait_for_insertion (dialog,
 							      burner,
@@ -2148,6 +2146,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 
 	} while (result == BRASERO_BURN_RETRY);
 
+	g_free (secondary_message);
 	brasero_session_span_stop (BRASERO_SESSION_SPAN (priv->session));
 	return result;
 }
