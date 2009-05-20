@@ -1283,7 +1283,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	}
 	else if (!artist_set)
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
-				    ARTIST_COL, ("Unknown"),
+				    ARTIST_COL, _("Unknown"),
 				    -1);
 
 	if (!composer_set && g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER)) {
