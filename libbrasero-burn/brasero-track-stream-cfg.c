@@ -86,6 +86,7 @@ brasero_video_project_result_cb (GObject *obj,
 		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERR,
+					   /* Translators: %s is the name of the file */
 					   _("\"%s\" is not suitable for audio or video media"),
 					   name);
 		g_free (name);
