@@ -196,6 +196,32 @@ brasero_file_node_insert (BraseroFileNode *head,
 		return node;
 	}
 
+	/* Set hidden nodes (whether virtual or not) always last */
+	if (head->is_hidden) {
+		node->next = head;
+		if (newpos)
+			*newpos = 0;
+
+		return node;
+	}
+
+	if (node->is_hidden) {
+		iter = head;
+		n = 1;
+		while (iter->next)  {
+			iter = iter->next;
+			n ++;
+		}
+
+		iter->next = node;
+
+		if (newpos)
+			*newpos = n;
+
+		return head;
+	}
+
+	/* regular node, regular head node */
 	if (sort_func (head, node) > 0) {
 		/* head is after node */
 		node->next = head;
@@ -242,6 +268,9 @@ brasero_file_node_need_resort (BraseroFileNode *node,
 	guint oldpos;
 	guint size;
 
+	if (node->is_hidden)
+		return NULL;
+
 	parent = node->parent;
 	head = BRASERO_FILE_NODE_CHILDREN (parent);
 
@@ -272,6 +301,7 @@ brasero_file_node_need_resort (BraseroFileNode *node,
 		parent->union2.children = head;
 
 		/* create an array to reflect the changes */
+		/* NOTE: hidden nodes are not taken into account. */
 		size = brasero_file_node_get_n_children (parent);
 		array = g_new0 (gint, size);
 
@@ -284,7 +314,8 @@ brasero_file_node_need_resort (BraseroFileNode *node,
 				array [i] = i;
 		}
 	}
-	else if (node->next && sort_func (node, node->next) > 0) {
+	/* Hidden nodes stay at the end, hence the !node->next->is_hidden */
+	else if (node->next && !node->next->is_hidden && sort_func (node, node->next) > 0) {
 		gint i;
 
 		/* move on the right */
@@ -302,7 +333,8 @@ brasero_file_node_need_resort (BraseroFileNode *node,
 		/* we started from oldpos so newpos needs updating */
 		newpos += oldpos;
 
-		/* create an array to reflect the changes */
+		/* create an array to reflect the changes. */
+		/* NOTE: hidden nodes are not taken into account. */
 		size = brasero_file_node_get_n_children (parent);
 		array = g_new0 (gint, size);
 
@@ -331,9 +363,11 @@ brasero_file_node_sort_children (BraseroFileNode *parent,
 	guint oldpos = 1;
 	guint newpos;
 
-	new_order = BRASERO_FILE_NODE_CHILDREN (parent);
-
 	/* check for some special cases */
+	if (parent->is_hidden)
+		return NULL;
+
+	new_order = BRASERO_FILE_NODE_CHILDREN (parent);
 	if (!new_order)
 		return NULL;
 
@@ -483,8 +517,11 @@ brasero_file_node_get_n_children (const BraseroFileNode *node)
 	if (!node)
 		return 0;
 
-	for (children = BRASERO_FILE_NODE_CHILDREN (node); children; children = children->next)
+	for (children = BRASERO_FILE_NODE_CHILDREN (node); children; children = children->next) {
+		if (children->is_hidden)
+			continue;
 		num ++;
+	}
 
 	return num;
 }
@@ -523,6 +560,24 @@ brasero_file_node_is_ancestor (BraseroFileNode *parent,
 }
 
 BraseroFileNode *
+brasero_file_node_check_name_existence_case (BraseroFileNode *parent,
+					     const gchar *name)
+{
+	BraseroFileNode *iter;
+
+	if (name && name [0] == '\0')
+		return NULL;
+
+	iter = BRASERO_FILE_NODE_CHILDREN (parent);
+	for (; iter; iter = iter->next) {
+		if (!strcasecmp (name, BRASERO_FILE_NODE_NAME (iter)))
+			return iter;
+	}
+
+	return NULL;
+}
+
+BraseroFileNode *
 brasero_file_node_check_name_existence (BraseroFileNode *parent,
 				        const gchar *name)
 {
@@ -538,6 +593,35 @@ brasero_file_node_check_name_existence (BraseroFileNode *parent,
 	}
 
 	return NULL;
+}
+
+BraseroFileNode *
+brasero_file_node_get_from_path (BraseroFileNode *root,
+				 const gchar *path)
+{
+	gchar **array;
+	gchar **iter;
+
+	if (!path)
+		return NULL;
+
+	/* If we don't do that array[0] == '\0' */
+	if (g_str_has_prefix (path, G_DIR_SEPARATOR_S))
+		array = g_strsplit (path + 1, G_DIR_SEPARATOR_S, 0);
+	else
+		array = g_strsplit (path, G_DIR_SEPARATOR_S, 0);
+
+	if (!array)
+		return NULL;
+
+	for (iter = array; iter && *iter; iter++) {
+		root = brasero_file_node_check_name_existence (root, *iter);
+		if (!root)
+			break;
+	}
+	g_strfreev (array);
+
+	return root;
 }
 
 BraseroFileNode *
@@ -683,6 +767,10 @@ brasero_file_node_add (BraseroFileNode *parent,
 							    sort_func,
 							    NULL);
 	node->parent = parent;
+
+	if (BRASERO_FILE_NODE_VIRTUAL (node))
+		return;
+
 	if (!node->is_imported) {
 		/* NOTE: parent will be changed afterwards !!! */
 		if (!node->is_grafted) {
@@ -695,7 +783,8 @@ brasero_file_node_add (BraseroFileNode *parent,
 		}
 	}
 
-	/* even imported should be included */
+	/* Even imported should be included. The only type of nodes that are not
+	 * heeded are the virtual nodes. */
 	stats = brasero_file_node_get_tree_stats (node->parent, &depth);
 	if (node->is_file) {
 		if (depth < 6)
@@ -727,7 +816,8 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 		stats->children ++;
 	}
 
-	if (!node->is_symlink && (g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK)) {
+	if (!node->is_symlink
+	&& (g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK)) {
 		/* only count files */
 		stats->num_sym ++;
 	}
@@ -810,9 +900,7 @@ brasero_file_node_get_uri_name (const gchar *uri)
 }
 
 BraseroFileNode *
-brasero_file_node_new_loading (const gchar *name,
-			       BraseroFileNode *parent,
-			       GCompareFunc sort_func)
+brasero_file_node_new_loading (const gchar *name)
 {
 	BraseroFileNode *node;
 
@@ -820,35 +908,39 @@ brasero_file_node_new_loading (const gchar *name,
 	node->union1.name = g_strdup (name);
 	node->is_loading = TRUE;
 
-	brasero_file_node_add (parent, node, sort_func);
-
 	return node;
 }
 
 BraseroFileNode *
-brasero_file_node_new_from_info (GFileInfo *info,
-				 BraseroFileNode *parent,
-				 GCompareFunc sort_func)
+brasero_file_node_new_virtual (const gchar *name)
 {
 	BraseroFileNode *node;
-	BraseroFileTreeStats *stats;
 
+	/* virtual nodes are nodes that "don't exist". They appear as temporary
+	 * parents (and therefore replacable) and hidden (not displayed in the
+	 * GtkTreeModel). They are used as 'placeholders' to trigger
+	 * name-collision signal. */
 	node = g_new0 (BraseroFileNode, 1);
-	node->union1.name = g_strdup (g_file_info_get_name (info));
-
-	stats = brasero_file_node_get_tree_stats (parent, NULL);
-	brasero_file_node_set_from_info (node, stats, info);
-
-	/* This must be done after above function */
-	brasero_file_node_add (parent, node, sort_func);
+	node->union1.name = g_strdup (name);
+	node->is_fake = TRUE;
+	node->is_hidden = TRUE;
 
 	return node;
 }
 
 BraseroFileNode *
-brasero_file_node_new_imported_session_file (GFileInfo *info,
-					     BraseroFileNode *parent,
-					     GCompareFunc sort_func)
+brasero_file_node_new (const gchar *name)
+{
+	BraseroFileNode *node;
+
+	node = g_new0 (BraseroFileNode, 1);
+	node->union1.name = g_strdup (name);
+
+	return node;
+}
+
+BraseroFileNode *
+brasero_file_node_new_imported_session_file (GFileInfo *info)
 {
 	BraseroFileNode *node;
 
@@ -865,15 +957,11 @@ brasero_file_node_new_imported_session_file (GFileInfo *info,
 	else
 		node->union3.sectors = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2048);
 
-	/* Add it (we must add a graft) */
-	brasero_file_node_add (parent, node, sort_func);
 	return node;
 }
 
 BraseroFileNode *
-brasero_file_node_new_empty_folder (const gchar *name,
-				    BraseroFileNode *parent,
-				    GCompareFunc sort_func)
+brasero_file_node_new_empty_folder (const gchar *name)
 {
 	BraseroFileNode *node;
 
@@ -882,8 +970,6 @@ brasero_file_node_new_empty_folder (const gchar *name,
 	node->union1.name = g_strdup (name);
 	node->is_fake = TRUE;
 
-	/* Add it (we must add a graft) */
-	brasero_file_node_add (parent, node, sort_func);
 	return node;
 }
 
@@ -899,7 +985,9 @@ brasero_file_node_unlink (BraseroFileNode *node)
 	iter = BRASERO_FILE_NODE_CHILDREN (node->parent);
 
 	/* handle the size change for previous parent */
-	if (!node->is_grafted && !node->is_imported) {
+	if (!node->is_grafted
+	&&  !node->is_imported
+	&&  !BRASERO_FILE_NODE_VIRTUAL (node)) {
 		BraseroFileNode *parent;
 
 		/* handle the size change if it wasn't grafted */
@@ -1028,7 +1116,7 @@ brasero_file_node_destroy_with_children (BraseroFileNode *node,
 	}
 
 	/* update all statistics on tree if any */
-	if (stats) {
+	if (!BRASERO_FILE_NODE_VIRTUAL (node) && stats) {
 		/* check if that's a 2 GiB file */
 		if (node->is_2GiB)
 			stats->num_2GiB --;

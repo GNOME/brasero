@@ -89,6 +89,11 @@ BraseroTrackDataCfg *
 brasero_track_data_cfg_new (void);
 
 gboolean
+brasero_track_data_cfg_get_contents (BraseroTrackData *track,
+				     GSList **grafts,
+				     GSList **excluded);
+
+gboolean
 brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 			    const gchar *uri,
 			    GtkTreePath *parent);
@@ -148,9 +153,6 @@ brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
 GtkTreeModel *
 brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track);
 
-BraseroBurnResult
-brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
-				 const gchar *path);
 
 /**
  * Track Spanning
@@ -173,10 +175,16 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track);
 /**
  * Icon
  */
+gchar *
+brasero_track_data_cfg_get_scaled_icon_path (BraseroTrackDataCfg *track);
 
-BraseroBurnResult
+const gchar *
+brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track);
+
+gboolean
 brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
-				 const gchar *path);
+				 const gchar *path,
+				 GError **error);
 
 G_END_DECLS
 

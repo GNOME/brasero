@@ -168,6 +168,13 @@ static GtkTargetEntry ntables_source [] = {
 static guint nb_targets_source = sizeof (ntables_source) / sizeof (ntables_source[0]);
 
 enum {
+	ICON_CHANGED, 
+	LAST_SIGNAL
+};
+
+static gulong brasero_data_disc_signals [LAST_SIGNAL] = { 0 };
+
+enum {
 	PROP_NONE,
 	PROP_REJECT_FILE,
 };
@@ -322,6 +329,8 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 
 	parent = brasero_data_disc_get_parent (disc);
 	treepath = brasero_track_data_cfg_add_empty_directory (BRASERO_TRACK_DATA_CFG (priv->project), NULL, parent);
+	gtk_tree_path_free (parent);
+
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 
 	/* grab focus must be called before next function to avoid
@@ -497,8 +506,10 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 
 	if (name && !strcmp (name, text)) {
 		gtk_tree_path_free (path);
+		g_free (name);
 		return;
 	}
+	g_free (name);
 
 	/* NOTE: BraseroDataProject is where we handle name collisions,
 	 * UTF-8 validity, ...
@@ -1137,6 +1148,15 @@ brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 }
 
 static void
+brasero_data_disc_icon_changed_cb (BraseroTrackDataCfg *session,
+				   BraseroDataDisc *self)
+{
+	g_signal_emit (self,
+		       brasero_data_disc_signals [ICON_CHANGED],
+		       0);
+}
+
+static void
 brasero_data_disc_session_loaded_cb (BraseroTrackDataCfg *session,
 				     BraseroMedium *medium,
 				     gboolean loaded,
@@ -1321,18 +1341,23 @@ static BraseroDiscResult
 brasero_data_disc_get_track (BraseroDisc *disc,
 			     BraseroDiscTrack *track)
 {
+	gboolean res;
 	GSList *grafts = NULL;
+	GSList *excluded = NULL;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
-	grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (priv->project));
-	if (!grafts)
+	res = brasero_track_data_cfg_get_contents (BRASERO_TRACK_DATA (priv->project),
+						   &grafts,
+						   &excluded);
+	if (!res)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
+	track->contents.data.icon = g_strdup (brasero_track_data_cfg_get_icon_path (priv->project));
 	track->type = BRASERO_PROJECT_TYPE_DATA;
 	track->contents.data.grafts = grafts;
-	track->contents.data.excluded = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (priv->project), TRUE);
+	track->contents.data.excluded = excluded;
 
 	/* get restored */
 	track->contents.data.restored = brasero_track_data_cfg_get_restored_list (BRASERO_TRACK_DATA_CFG (priv->project));
@@ -1387,7 +1412,7 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 		gchar *uri;
 
 		uri = iter->data;
-		brasero_track_data_cfg_dont_filter_uri (BRASERO_TRACK_DATA_CFG (priv->project), uri);
+		brasero_track_data_cfg_dont_filter_uri (priv->project, uri);
 	}
 
 	res = brasero_track_data_set_source (BRASERO_TRACK_DATA (priv->project),
@@ -1435,6 +1460,11 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 
 	brasero_status_free (status);
+
+	/* The icon */
+	if (track->contents.data.icon)
+		brasero_track_data_cfg_set_icon (priv->project, track->contents.data.icon, NULL);
+
 	return BRASERO_DISC_OK;
 }
 
@@ -2067,13 +2097,33 @@ brasero_data_disc_contents_removed_cb (GtkTreeModel *model,
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
-
 	brasero_disc_contents_changed (BRASERO_DISC (self), gtk_tree_model_iter_n_children (GTK_TREE_MODEL (priv->project), NULL));
 }
 
 /**
- * Object creation/destruction
+ * Misc functions
  */
+
+gboolean
+brasero_data_disc_set_icon_path (BraseroDataDisc *self,
+				 const gchar *path,
+				 GError **error)
+{
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	return brasero_track_data_cfg_set_icon (priv->project, path, error);
+}
+
+gchar *
+brasero_data_disc_get_scaled_icon_path (BraseroDataDisc *disc)
+{
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	return brasero_track_data_cfg_get_scaled_icon_path (priv->project);
+}
+
 void
 brasero_data_disc_set_right_button_group (BraseroDataDisc *self,
 					  GtkSizeGroup *size_group)
@@ -2084,6 +2134,9 @@ brasero_data_disc_set_right_button_group (BraseroDataDisc *self,
 	brasero_file_filtered_set_right_button_group (BRASERO_FILE_FILTERED (priv->filter), size_group);
 }
 
+/**
+ * Object creation/destruction
+ */
 static void
 brasero_data_disc_init (BraseroDataDisc *object)
 {
@@ -2180,6 +2233,11 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	g_signal_connect (priv->project,
 			  "session-loaded",
 			  G_CALLBACK (brasero_data_disc_session_loaded_cb),
+			  object);
+
+	g_signal_connect (priv->project,
+			  "icon-changed",
+			  G_CALLBACK (brasero_data_disc_icon_changed_cb),
 			  object);
 
 	/* Tree */
@@ -2418,6 +2476,17 @@ brasero_data_disc_class_init (BraseroDataDiscClass *klass)
 	object_class->finalize = brasero_data_disc_finalize;
 	object_class->set_property = brasero_data_disc_set_property;
 	object_class->get_property = brasero_data_disc_get_property;
+
+	brasero_data_disc_signals [ICON_CHANGED] = 
+	    g_signal_new ("icon_changed",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__VOID,
+			  G_TYPE_NONE,
+			  0,
+			  G_TYPE_NONE);
 
 	g_object_class_install_property (object_class,
 					 PROP_REJECT_FILE,

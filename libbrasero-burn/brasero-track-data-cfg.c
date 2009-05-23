@@ -59,8 +59,9 @@ struct _BraseroTrackDataCfgPrivate
 	BraseroImageFS forced_fs;
 	BraseroImageFS banned_fs;
 
-	gchar *icon_path;
-	gchar *autorun_path;
+	BraseroFileNode *autorun;
+	BraseroFileNode *icon;
+	gchar *image_path;
 
 	BraseroDataTreeModel *tree;
 	guint stamp;
@@ -119,6 +120,7 @@ enum {
 	RECURSIVE,
 	UNKNOWN,
 	G2_FILE,
+	ICON_CHANGED,
 	NAME_COLLISION,
 	DEEP_DIRECTORY,
 	SOURCE_LOADED, 
@@ -133,9 +135,34 @@ static gulong brasero_track_data_cfg_signals [LAST_SIGNAL] = { 0 };
  * GtkTreeModel part
  */
 
+static guint
+brasero_track_data_cfg_get_pos_as_child (BraseroFileNode *node)
+{
+	BraseroFileNode *parent;
+	BraseroFileNode *peers;
+	guint pos = 0;
+
+	if (!node)
+		return 0;
+
+	parent = node->parent;
+	for (peers = BRASERO_FILE_NODE_CHILDREN (parent); peers; peers = peers->next) {
+		if (peers == node)
+			break;
+
+		/* Don't increment when is_hidden */
+		if (peers->is_hidden)
+			continue;
+
+		pos ++;
+	}
+
+	return pos;
+}
+
 static GtkTreePath *
 brasero_track_data_cfg_node_to_path (BraseroTrackDataCfg *self,
-				      BraseroFileNode *node)
+				     BraseroFileNode *node)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	GtkTreePath *path;
@@ -146,7 +173,7 @@ brasero_track_data_cfg_node_to_path (BraseroTrackDataCfg *self,
 	for (; node->parent && !node->is_root; node = node->parent) {
 		guint nth;
 
-		nth = brasero_file_node_get_pos_as_child (node);
+		nth = brasero_track_data_cfg_get_pos_as_child (node);
 		gtk_tree_path_prepend_index (path, nth);
 	}
 
@@ -155,8 +182,8 @@ brasero_track_data_cfg_node_to_path (BraseroTrackDataCfg *self,
 
 static gboolean
 brasero_track_data_cfg_iter_parent (GtkTreeModel *model,
-				     GtkTreeIter *iter,
-				     GtkTreeIter *child)
+				    GtkTreeIter *iter,
+				    GtkTreeIter *child)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
@@ -188,11 +215,36 @@ brasero_track_data_cfg_iter_parent (GtkTreeModel *model,
 	return TRUE;
 }
 
+static BraseroFileNode *
+brasero_track_data_cfg_nth_child (BraseroFileNode *parent,
+				  guint nth)
+{
+	BraseroFileNode *peers;
+	guint pos;
+
+	if (!parent)
+		return NULL;
+
+	peers = BRASERO_FILE_NODE_CHILDREN (parent);
+	while (peers && peers->is_hidden)
+		peers = peers->next;
+		
+	for (pos = 0; pos < nth && peers; pos ++) {
+		/* Don't include hidden */
+		if (peers->is_hidden)
+			pos --;
+
+		peers = peers->next;
+	}
+
+	return peers;
+}
+
 static gboolean
 brasero_track_data_cfg_iter_nth_child (GtkTreeModel *model,
-					GtkTreeIter *iter,
-					GtkTreeIter *parent,
-					gint n)
+				       GtkTreeIter *iter,
+				       GtkTreeIter *parent,
+				       gint n)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
@@ -215,13 +267,32 @@ brasero_track_data_cfg_iter_nth_child (GtkTreeModel *model,
 	else
 		node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 
-	iter->user_data = brasero_file_node_nth_child (node, n);
+	iter->user_data = brasero_track_data_cfg_nth_child (node, n);
 	if (!iter->user_data)
 		return FALSE;
 
 	iter->stamp = priv->stamp;
 	iter->user_data2 = GINT_TO_POINTER (BRASERO_ROW_REGULAR);
 	return TRUE;
+}
+
+static guint
+brasero_track_data_cfg_get_n_children (const BraseroFileNode *node)
+{
+	BraseroFileNode *children;
+	guint num = 0;
+
+	if (!node)
+		return 0;
+
+	for (children = BRASERO_FILE_NODE_CHILDREN (node); children; children = children->next) {
+		if (children->is_hidden)
+			continue;
+
+		num ++;
+	}
+
+	return num;
 }
 
 static gint
@@ -236,7 +307,7 @@ brasero_track_data_cfg_iter_n_children (GtkTreeModel *model,
 	if (iter == NULL) {
 		/* special case */
 		node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
-		return brasero_file_node_get_n_children (node);
+		return brasero_track_data_cfg_get_n_children (node);
 	}
 
 	/* make sure that iter comes from us */
@@ -251,10 +322,10 @@ brasero_track_data_cfg_iter_n_children (GtkTreeModel *model,
 		return 0;
 
 	/* return at least one for the bogus row labelled "empty". */
-	if (!BRASERO_FILE_NODE_CHILDREN (node))
+	if (!brasero_track_data_cfg_get_n_children (node))
 		return 1;
 
-	return brasero_file_node_get_n_children (node);
+	return brasero_track_data_cfg_get_n_children (node);
 }
 
 static gboolean
@@ -309,7 +380,7 @@ brasero_track_data_cfg_iter_children (GtkTreeModel *model,
 
 		/* This is for the top directory */
 		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
-		if (!root || !BRASERO_FILE_NODE_CHILDREN (root))
+		if (!root || !brasero_track_data_cfg_get_n_children (root))
 			return FALSE;
 
 		iter->stamp = priv->stamp;
@@ -334,7 +405,7 @@ brasero_track_data_cfg_iter_children (GtkTreeModel *model,
 	}
 
 	iter->stamp = priv->stamp;
-	if (!BRASERO_FILE_NODE_CHILDREN (node)) {
+	if (!brasero_track_data_cfg_get_n_children (node)) {
 		/* This is a directory but it hasn't got any child; yet
 		 * we show a row written empty for that. Set bogus in
 		 * user_data and put parent in user_data. */
@@ -371,7 +442,7 @@ brasero_track_data_cfg_iter_next (GtkTreeModel *model,
 
 	node = iter->user_data;
 	iter->user_data = node->next;
-	if (!node->next)
+	if (!node->next || node->next->is_hidden)
 		return FALSE;
 
 	return TRUE;
@@ -702,7 +773,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 				return;
 			}
 
-			nb_items = brasero_file_node_get_n_children (node);
+			nb_items = brasero_track_data_cfg_get_n_children (node);
 			if (!nb_items)
 				g_value_set_string (value, _("Empty"));
 			else {
@@ -803,7 +874,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 
 static GtkTreePath *
 brasero_track_data_cfg_get_path (GtkTreeModel *model,
-				  GtkTreeIter *iter)
+				 GtkTreeIter *iter)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
@@ -847,7 +918,7 @@ brasero_track_data_cfg_path_to_node (BraseroTrackDataCfg *self,
 		BraseroFileNode *parent;
 
 		parent = node;
-		node = brasero_file_node_nth_child (parent, indices [i]);
+		node = brasero_track_data_cfg_nth_child (parent, indices [i]);
 		if (!node)
 			return NULL;
 	}
@@ -876,7 +947,7 @@ brasero_track_data_cfg_get_iter (GtkTreeModel *model,
 	if (!root)
 		return FALSE;
 		
-	node = brasero_file_node_nth_child (root, indices [0]);
+	node = brasero_track_data_cfg_nth_child (root, indices [0]);
 	if (!node)
 		return FALSE;
 
@@ -884,13 +955,13 @@ brasero_track_data_cfg_get_iter (GtkTreeModel *model,
 		BraseroFileNode *parent;
 
 		parent = node;
-		node = brasero_file_node_nth_child (parent, indices [i]);
+		node = brasero_track_data_cfg_nth_child (parent, indices [i]);
 		if (!node) {
 			/* There is one case where this can happen and
 			 * is allowed: that's when the parent is an
 			 * empty directory. Then index must be 0. */
 			if (!parent->is_file
-			&&  !BRASERO_FILE_NODE_CHILDREN (parent)
+			&&  !brasero_track_data_cfg_get_n_children (parent)
 			&&   indices [i] == 0) {
 				iter->stamp = priv->stamp;
 				iter->user_data = parent;
@@ -1198,8 +1269,8 @@ brasero_track_data_cfg_row_drop_possible (GtkTreeDragDest *drag_dest,
 
 static gboolean
 brasero_track_data_cfg_get_sort_column_id (GtkTreeSortable *sortable,
-					    gint *column,
-					    GtkSortType *type)
+					   gint *column,
+					   GtkSortType *type)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
@@ -1216,8 +1287,8 @@ brasero_track_data_cfg_get_sort_column_id (GtkTreeSortable *sortable,
 
 static void
 brasero_track_data_cfg_set_sort_column_id (GtkTreeSortable *sortable,
-					    gint column,
-					    GtkSortType type)
+					   gint column,
+					   GtkSortType type)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
@@ -1258,6 +1329,54 @@ brasero_track_data_cfg_has_default_sort_func (GtkTreeSortable *sortable)
 	return TRUE;
 }
 
+
+static BraseroFileNode *
+brasero_track_data_cfg_autorun_inf_parse (BraseroTrackDataCfg *track,
+					  const gchar *uri)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	BraseroFileNode *root;
+	BraseroFileNode *node;
+	GKeyFile *key_file;
+	gchar *icon_path;
+	gchar *path;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	path = g_filename_from_uri (uri, NULL, NULL);
+	key_file = g_key_file_new ();
+
+	if (!g_key_file_load_from_file (key_file, path, G_KEY_FILE_KEEP_COMMENTS|G_KEY_FILE_KEEP_TRANSLATIONS, NULL)) {
+		g_key_file_free (key_file);
+		g_free (path);
+		return NULL;
+	}
+	g_free (path);
+
+	/* NOTE: icon_path is the ON DISC path of the icon */
+	icon_path = g_key_file_get_value (key_file, "autorun", "icon", NULL);
+	g_key_file_free (key_file);
+
+	if (icon_path && icon_path [0] == '\0') {
+		g_free (icon_path);
+		return NULL;
+	}
+
+	/* Get the node (hope it already exists) */
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+	node = brasero_file_node_get_from_path (root, icon_path);
+	if (node) {
+		g_free (icon_path);
+		return node;
+	}
+
+	/* Add a virtual node to get warned when/if the icon is added to the tree */
+	node = brasero_data_project_watch_path (BRASERO_DATA_PROJECT (priv->tree), icon_path);
+	g_free (icon_path);
+
+	return node;
+}
+
 static void
 brasero_track_data_cfg_node_added (BraseroDataProject *project,
 				   BraseroFileNode *node,
@@ -1269,6 +1388,32 @@ brasero_track_data_cfg_node_added (BraseroDataProject *project,
 	GtkTreeIter iter;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+
+	if (priv->icon == node) {
+		/* Our icon node has showed up, signal that */
+		g_signal_emit (self,
+			       brasero_track_data_cfg_signals [ICON_CHANGED],
+			       0);
+	}
+
+	/* Check if the parent is root */
+	if (node->parent->is_root) {
+		if (!strcasecmp (BRASERO_FILE_NODE_NAME (node), "autorun.inf")) {
+			gchar *uri;
+
+			/* This has been added by the user or by a project so
+			 * we do display it; also we signal the change in icon.
+			 * NOTE: if we had our own autorun.inf it was wiped out
+			 * in the callback for "name-collision". */
+			uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), node);
+			priv->icon = brasero_track_data_cfg_autorun_inf_parse (self, uri);
+			g_free (uri);
+
+			g_signal_emit (self,
+				       brasero_track_data_cfg_signals [ICON_CHANGED],
+				       0);
+		}
+	}
 
 	iter.stamp = priv->stamp;
 	iter.user_data = node;
@@ -1309,7 +1454,7 @@ brasero_track_data_cfg_node_added (BraseroDataProject *project,
 		/* Check if the parent of this node is empty if so remove the BOGUS row.
 		 * Do it afterwards to prevent the parent row to be collapsed if it was
 		 * previously expanded. */
-		if (parent && brasero_file_node_get_n_children (parent) == 1) {
+		if (parent && brasero_track_data_cfg_get_n_children (parent) == 1) {
 			gtk_tree_path_append_index (path, 1);
 			gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), path);
 		}
@@ -1346,7 +1491,30 @@ brasero_track_data_cfg_node_removed (BraseroDataProject *project,
 	GtkTreePath *path;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
-
+	/* NOTE: there is no special case of autorun.inf here when we created
+	 * it as a temprary file since it's hidden and BraseroDataTreeModel
+	 * won't emit a signal for removed file in this case.
+	 * On the other hand we check for a node at root of the CD called
+	 * "autorun.inf" just in case an autorun added by the user would be
+	 * removed. Do it also for the icon node. */
+	if (former_parent->is_root) {
+		if (!strcasecmp (BRASERO_FILE_NODE_NAME (node), "autorun.inf")) {
+			priv->icon = NULL;
+			g_signal_emit (self,
+				       brasero_track_data_cfg_signals [ICON_CHANGED],
+				       0);
+		}
+		else if (priv->icon == node
+		     || (priv->icon && !priv->autorun && brasero_file_node_is_ancestor (node, priv->icon))) {
+			/* This icon had been added by the user. Do nothing but
+			 * register that the icon is no more on the disc */
+			priv->icon = NULL;
+			g_signal_emit (self,
+				       brasero_track_data_cfg_signals [ICON_CHANGED],
+				       0);
+		}
+	}
+	
 	/* remove it from the shown list and all its children as well */
 	priv->shown = g_slist_remove (priv->shown, node);
 	for (iter = priv->shown; iter; iter = next) {
@@ -1362,7 +1530,7 @@ brasero_track_data_cfg_node_removed (BraseroDataProject *project,
 	 * add a bogus row. If it hasn't got children then it only remains our
 	 * node in the list.
 	 * NOTE: parent has to be a directory. */
-	if (!former_parent->is_root && !BRASERO_FILE_NODE_CHILDREN (former_parent)) {
+	if (!former_parent->is_root && !brasero_track_data_cfg_get_n_children (former_parent)) {
 		GtkTreeIter iter;
 
 		iter.stamp = priv->stamp;
@@ -1428,7 +1596,7 @@ brasero_track_data_cfg_node_changed (BraseroDataProject *project,
 								      NULL);
 
 		/* add the row */
-		if (!BRASERO_FILE_NODE_CHILDREN (node))  {
+		if (!brasero_track_data_cfg_get_n_children (node))  {
 			iter.user_data2 = GINT_TO_POINTER (BRASERO_ROW_BOGUS);
 			gtk_tree_path_append_index (path, 0);
 
@@ -1474,23 +1642,49 @@ brasero_track_data_cfg_node_reordered (BraseroDataProject *project,
 }
 
 static void
+brasero_track_data_clean_autorun (BraseroTrackDataCfg *track)
+{
+	gchar *uri;
+	gchar *path;
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	if (priv->image_path) {
+		g_free (priv->image_path);
+		priv->image_path = NULL;
+	}
+
+	if (priv->autorun) {
+		/* ONLY remove icon if it's our own */
+		if (priv->icon) {
+			uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), priv->icon);
+			path = g_filename_from_uri (uri, NULL, NULL);
+			g_free (uri);
+			g_remove (path);
+			g_free (path);
+			priv->icon = NULL;
+		}
+
+		uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), priv->autorun);
+		path = g_filename_from_uri (uri, NULL, NULL);
+		g_free (uri);
+		g_remove (path);
+		g_free (path);
+		priv->autorun = NULL;
+	}
+	else
+		priv->icon = NULL;
+}
+
+static void
 brasero_track_data_cfg_finalize (GObject *object)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (object);
 
-	if (priv->icon_path) {
-		g_remove (priv->icon_path);
-		g_free (priv->icon_path);
-		priv->icon_path = NULL;
-	}
-
-	if (priv->autorun_path) {
-		g_remove (priv->autorun_path);
-		g_free (priv->autorun_path);
-		priv->autorun_path = NULL;
-	}
+	brasero_track_data_clean_autorun (BRASERO_TRACK_DATA_CFG (object));
 
 	if (priv->shown) {
 		g_slist_free (priv->shown);
@@ -1614,8 +1808,8 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 					    const gchar *name,
 					    GtkTreePath *parent)
 {
+	BraseroFileNode *parent_node = NULL;
 	BraseroTrackDataCfgPrivate *priv;
-	BraseroFileNode *parent_node;
 	gchar *default_name = NULL;
 	BraseroFileNode *node;
 
@@ -1630,7 +1824,8 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 		if (parent_node && (parent_node->is_file || parent_node->is_loading))
 			parent_node = parent_node->parent;
 	}
-	else
+
+	if (!parent_node)
 		parent_node = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 
 	if (!name) {
@@ -1704,8 +1899,11 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 	if (priv->loading)
 		return FALSE;
 
+	/* Do it now */
+	brasero_track_data_clean_autorun (track);
+
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
-	num = brasero_file_node_get_n_children (root);
+	num = brasero_track_data_cfg_get_n_children (root);
 
 	brasero_data_project_reset (BRASERO_DATA_PROJECT (priv->tree));
 
@@ -1716,18 +1914,6 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 
 	g_slist_free (priv->shown);
 	priv->shown = NULL;
-
-	if (priv->icon_path) {
-		g_remove (priv->icon_path);
-		g_free (priv->icon_path);
-		priv->icon_path = NULL;
-	}
-
-	if (priv->autorun_path) {
-		g_remove (priv->autorun_path);
-		g_free (priv->autorun_path);
-		priv->autorun_path = NULL;
-	}
 
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
@@ -1923,6 +2109,26 @@ brasero_track_data_cfg_get_fs (BraseroTrackData *track)
 	return fs_type;
 }
 
+gboolean
+brasero_track_data_cfg_get_contents (BraseroTrackData *track,
+				     GSList **grafts,
+				     GSList **excluded)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), FALSE);
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	/* append a slash for mkisofs */
+	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
+					   grafts,
+					   excluded,
+					   FALSE,	/* no hidden node */
+					   FALSE,	/* no grafts for joliet incompatible nodes */
+					   FALSE);	/* no final slash for names */
+	return TRUE;
+}
+
 static GSList *
 brasero_track_data_cfg_get_grafts (BraseroTrackData *track)
 {
@@ -1937,6 +2143,7 @@ brasero_track_data_cfg_get_grafts (BraseroTrackData *track)
 	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
 					   &grafts,
 					   NULL,
+					   TRUE, /* include hidden nodes */
 					   (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					   TRUE);
 	return grafts;
@@ -1956,6 +2163,7 @@ brasero_track_data_cfg_get_excluded (BraseroTrackData *track)
 	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
 					   NULL,
 					   &unreadable,
+					   TRUE, /* include hidden nodes */
 					   (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					   TRUE);
 	return unreadable;
@@ -2170,14 +2378,141 @@ brasero_track_data_cfg_unknown_uri_cb (BraseroDataVFS *vfs,
 }
 
 static gboolean
+brasero_track_data_cfg_autorun_inf_update (BraseroTrackDataCfg *self)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	gchar *icon_path = NULL;
+	gsize data_size = 0;
+	GKeyFile *key_file;
+	gchar *data = NULL;
+	gchar *path = NULL;
+	gchar *uri;
+	int fd;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+
+	uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), priv->autorun);
+	path = g_filename_from_uri (uri, NULL, NULL);
+	g_free (uri);
+
+	fd = open (path, O_WRONLY|O_TRUNC);
+	g_free (path);
+
+	if (fd == -1)
+		return FALSE;
+
+	icon_path = brasero_data_project_node_to_path (BRASERO_DATA_PROJECT (priv->tree), priv->icon);
+
+	/* Write the autorun.inf if we don't have one yet */
+	key_file = g_key_file_new ();
+	g_key_file_set_value (key_file, "autorun", "icon", icon_path);
+	g_free (icon_path);
+
+	data = g_key_file_to_data (key_file, &data_size, NULL);
+	g_key_file_free (key_file);
+
+	if (write (fd, data, data_size) == -1) {
+		g_free (data);
+		close (fd);
+		return FALSE;
+	}
+
+	g_free (data);
+	close (fd);
+	return TRUE;
+}
+
+static gchar *
+brasero_track_data_cfg_find_icon_name (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	BraseroFileNode *root;
+	gchar *name = NULL;
+	int i = 0;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+	do {
+		g_free (name);
+		name = g_strdup_printf ("Autorun%i.ico", i);
+	} while (brasero_file_node_check_name_existence (root, name));
+
+	return name;
+}
+
+static void
+brasero_track_data_cfg_virtual_sibling_cb (BraseroDataProject *project,
+					   BraseroFileNode *node,
+					   BraseroFileNode *sibling,
+					   BraseroTrackDataCfg *self)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	if (sibling == priv->icon) {
+		/* This is a warning that the icon has been added. Update our 
+		 * icon node and wait for it to appear in the callback for the
+		 * 'node-added' signal. Then we'll be able to fire the "icon-
+		 * changed" signal. */
+		priv->icon = node;
+	}
+}
+
+static gboolean
 brasero_track_data_cfg_name_collision_cb (BraseroDataProject *project,
-					  const gchar *name,
+					  BraseroFileNode *node,
 					  BraseroTrackDataCfg *self)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	gboolean result;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+
+	/* some names are interesting for us */
+	if (node == priv->autorun) {
+		BraseroFileNode *icon;
+
+		/* An autorun.inf has been added by the user. Whether or not we
+		 * are loading a project, if there is an autorun.inf file, then
+		 * wipe it, parse the new and signal */
+
+		/* Save icon node as we'll need it afterwards to remove it */
+		icon = priv->icon;
+
+		/* Do it now as this is the hidden temporarily created
+		 * graft point whose deletion won't be signalled by 
+		 * BraseroDataTreeModel */
+		brasero_track_data_clean_autorun (self);
+		brasero_data_project_remove_node (BRASERO_DATA_PROJECT (priv->tree), icon);
+
+		g_signal_emit (self,
+			       brasero_track_data_cfg_signals [ICON_CHANGED],
+			       0);
+
+		return FALSE;
+	}
+	else if (node == priv->icon) {
+		gchar *uri;
+		gchar *name = NULL;
+		BraseroFileNode *root;
+
+		/* we need to recreate another one with a different name */
+		uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), node);
+		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+		name = brasero_track_data_cfg_find_icon_name (self);
+
+		priv->icon = brasero_data_project_add_hidden_node (BRASERO_DATA_PROJECT (priv->tree),
+								   uri,
+								   name,
+								   root);
+		g_free (name);
+		g_free (uri);
+
+		/* Update our autorun.inf */
+		brasero_track_data_cfg_autorun_inf_update (self);
+		return FALSE;
+	}
 
 	if (priv->loading) {
 		/* don't do anything accept replacement */
@@ -2187,7 +2522,7 @@ brasero_track_data_cfg_name_collision_cb (BraseroDataProject *project,
 	g_signal_emit (self,
 		       brasero_track_data_cfg_signals [NAME_COLLISION],
 		       0,
-		       name,
+		       BRASERO_FILE_NODE_NAME (node),
 		       &result);
 	return result;
 }
@@ -2423,124 +2758,179 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 }
 
 /**
- * This is to handle icons
+ * This is to handle the icon for the image
  */
 
-BraseroBurnResult
+gchar *
+brasero_track_data_cfg_get_scaled_icon_path (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	gchar *path;
+	gchar *uri;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	if (!priv->icon || BRASERO_FILE_NODE_VIRTUAL (priv->icon))
+		return NULL;
+
+	uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), priv->icon);
+	path = g_filename_from_uri (uri, NULL, NULL);
+	g_free (uri);
+
+	return path;
+}
+
+const gchar *
+brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	return priv->image_path;
+}
+
+gboolean
 brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
-				 const gchar *path)
+				 const gchar *icon_path,
+				 GError **error)
 {
 	gboolean result;
 	GdkPixbuf *pixbuf;
-	GError *error = NULL;
 	BraseroFileNode *root;
 	BraseroTrackDataCfgPrivate *priv;
 
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), FALSE);
+
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
+	/* Check whether we don't have an added (by the user) autorun.inf as it
+	 * won't be possible to edit it. */
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+
+	if (!priv->autorun) {
+		if (brasero_file_node_check_name_existence_case (root, "autorun.inf")) {
+			/* There is a native autorun.inf file. That's why we can't edit
+			 * it; even if we were to create a temporary file with just the
+			 * icon changed then we could not save it as a project later.
+			 * If I change my mind, I should remember that it the path is
+			 * the value ON DISC. */
+			return FALSE;
+		}
+	}
+
 	/* Load and convert (48x48) the image into a pixbuf */
-	pixbuf = gdk_pixbuf_new_from_file_at_scale (path,
+	pixbuf = gdk_pixbuf_new_from_file_at_scale (icon_path,
 						    48,
 						    48,
 						    FALSE,
-						    &error);
+						    error);
 	if (!pixbuf)
-		return BRASERO_BURN_ERR;
-
-	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
+		return FALSE;
 
 	/* See if we already have an icon set. If we do, reuse the tmp file */
-	if (!priv->icon_path) {
-		BraseroFileNode *node;
+	if (!priv->icon) {
 		gchar *buffer = NULL;
 		gchar *path = NULL;
+		gchar *name = NULL;
 		gsize buffer_size;
 		int icon_fd;
 		gchar *uri;
 
 		icon_fd = g_file_open_tmp (BRASERO_BURN_TMP_FILE_NAME,
 					   &path,
-					   NULL);
+					   error);
 		if (icon_fd == -1) {
 			g_object_unref (pixbuf);
-			return BRASERO_BURN_ERR;
+			return FALSE;
 		}
 
 		/* Add it as a graft to the project */
 		uri = g_filename_to_uri (path, NULL, NULL);
-		node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree), uri, root);
-		brasero_data_project_rename_node (BRASERO_DATA_PROJECT (priv->tree), node, "Autorun.ico");
-		g_free (uri);
+		g_free (path);
 
-		/* That's just to be able to remove it later */
-		priv->icon_path = path;
+ 		name = brasero_track_data_cfg_find_icon_name (track);
+		priv->icon = brasero_data_project_add_hidden_node (BRASERO_DATA_PROJECT (priv->tree),
+								   uri,
+								   name,
+								   root);
+		g_free (name);
+		g_free (uri);
 
 		/* Write it as an "ico" file (or a png?) */
 		result = gdk_pixbuf_save_to_buffer (pixbuf,
 						    &buffer,
 						    &buffer_size,
 						    "ico",
-						    NULL,
+						    error,
 						    NULL);
 		if (!result) {
 			close (icon_fd);
 			g_object_unref (pixbuf);
-			return BRASERO_BURN_ERR;
+			return FALSE;
 		}
 
 		if (write (icon_fd, buffer, buffer_size) == -1) {
 			g_object_unref (pixbuf);
 			g_free (buffer);
 			close (icon_fd);
-			return BRASERO_BURN_ERR;
+			return FALSE;
 		}
 
 		g_free (buffer);
 		close (icon_fd);
 	}
 	else {
+		gchar *path;
+
+		path = brasero_track_data_cfg_get_scaled_icon_path (track);
+
 		/* Write it as an "ico" file (or a png?) */
 		result = gdk_pixbuf_save (pixbuf,
-					  priv->icon_path,
+					  path,
 					  "ico",
-					  &error,
+					  error,
 					  NULL);
+		g_free (path);
+
+		if (!result) {
+			g_object_unref (pixbuf);
+			return FALSE;
+		}
 	}
 
 	g_object_unref (pixbuf);
 
-	/* Get a temporary file if we don't have one yet */
-	if (!priv->autorun_path) {
-		const char *line = "[autorun]\nicon=Autorun.ico";
-		BraseroFileNode *node;
+	if (!priv->autorun) {
 		gchar *path = NULL;
 		gchar *uri;
 		int fd;
 
+		/* Get a temporary file if we don't have one yet */
 		fd = g_file_open_tmp (BRASERO_BURN_TMP_FILE_NAME,
 				      &path,
-				      NULL);
-		if (fd == -1)
-			return BRASERO_BURN_ERR;
-
-		/* Write the autorun.inf if we don't have one yet */
-		if (write (fd, line, sizeof (line)) == -1) {
-			close (fd);
-			return BRASERO_BURN_ERR;
-		}
+				      error);
 		close (fd);
 
 		/* Add it as a graft to the project */
 		uri = g_filename_to_uri (path, NULL, NULL);
-		node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree), uri, root);
-		brasero_data_project_rename_node (BRASERO_DATA_PROJECT (priv->tree), node, "Autorun.inf");
+		priv->autorun = brasero_data_project_add_hidden_node (BRASERO_DATA_PROJECT (priv->tree),
+								      uri,
+								      "autorun.inf",
+								      root);
 		g_free (uri);
 
-		/* That's just to be able to remove it later */
-		priv->autorun_path = path;
+		/* write the autorun.inf */
+		brasero_track_data_cfg_autorun_inf_update (track);
 	}
 
-	return BRASERO_BURN_OK;
+	priv->image_path = g_strdup (icon_path);
+	g_signal_emit (track,
+		       brasero_track_data_cfg_signals [ICON_CHANGED],
+		       0);
+	return TRUE;
 }
 
 static void
@@ -2624,6 +3014,10 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 	g_signal_connect (priv->tree,
 			  "image-uri",
 			  G_CALLBACK (brasero_track_data_cfg_image_uri_cb),
+			  object);
+	g_signal_connect (priv->tree,
+			  "virtual-sibling",
+			  G_CALLBACK (brasero_track_data_cfg_virtual_sibling_cb),
 			  object);
 	g_signal_connect (priv->tree,
 			  "name-collision",
@@ -2795,6 +3189,17 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_POINTER);
+
+	brasero_track_data_cfg_signals [ICON_CHANGED] = 
+	    g_signal_new ("icon_changed",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__VOID,
+			  G_TYPE_NONE,
+			  0,
+			  G_TYPE_NONE);
 }
 
 BraseroTrackDataCfg *

@@ -133,6 +133,7 @@ gboolean
 brasero_data_project_get_contents (BraseroDataProject *project,
 				   GSList **grafts,
 				   GSList **unreadable,
+				   gboolean hidden_nodes,
 				   gboolean joliet_compat,
 				   gboolean append_slash);
 
@@ -152,6 +153,12 @@ guint
 brasero_data_project_load_contents (BraseroDataProject *project,
 				    GSList *grafts,
 				    GSList *excluded);
+
+BraseroFileNode *
+brasero_data_project_add_hidden_node (BraseroDataProject *project,
+				      const gchar *uri,
+				      const gchar *name,
+				      BraseroFileNode *parent);
 
 BraseroFileNode *
 brasero_data_project_add_loading_node (BraseroDataProject *project,
@@ -225,11 +232,18 @@ brasero_data_project_get_root (BraseroDataProject *project);
 gchar *
 brasero_data_project_node_to_uri (BraseroDataProject *project,
 				  BraseroFileNode *node);
+gchar *
+brasero_data_project_node_to_path (BraseroDataProject *self,
+				   BraseroFileNode *node);
 
 void
 brasero_data_project_set_sort_function (BraseroDataProject *project,
 					GtkSortType sort_type,
 					GCompareFunc sort_func);
+
+BraseroFileNode *
+brasero_data_project_watch_path (BraseroDataProject *project,
+				 const gchar *path);
 
 BraseroBurnResult
 brasero_data_project_span (BraseroDataProject *project,

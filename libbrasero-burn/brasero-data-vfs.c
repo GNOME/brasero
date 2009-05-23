@@ -436,7 +436,6 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 		}
 	}
 
-
 	/* add node for all parents */
 	nodes = g_hash_table_lookup (priv->directories, parent_uri);
 	for (iter = nodes; iter; iter = iter->next) {

@@ -66,6 +66,9 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 				    const gchar *uri)
 {
 	/* see if we really need to tell the treeview we changed */
+	if (node->is_hidden)
+		goto end;
+
 	if (node->parent
 	&& !node->parent->is_root
 	&& !node->parent->is_visible)
@@ -91,6 +94,9 @@ brasero_data_tree_model_node_removed (BraseroDataProject *project,
 				      BraseroFileNode *node)
 {
 	/* see if we really need to tell the treeview we changed */
+	if (node->is_hidden)
+		goto end;
+
 	if (!node->is_visible
 	&&   former_parent
 	&&  !former_parent->is_root
@@ -118,6 +124,9 @@ brasero_data_tree_model_node_changed (BraseroDataProject *project,
 				      BraseroFileNode *node)
 {
 	/* see if we really need to tell the treeview we changed */
+	if (node->is_hidden)
+		goto end;
+
 	if (node->parent
 	&& !node->parent->is_root
 	&& !node->parent->is_visible)

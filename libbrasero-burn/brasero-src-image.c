@@ -162,7 +162,8 @@ brasero_src_image_error (BraseroSrcImage *self,
 		return;
 
 	brasero_utils_message_dialog (toplevel,
-				      _("Please select another image."),
+				      /* Translators: this is a disc image, not a picture */
+				      C_("disc", "Please select another image."),
 				      error->message,
 				      GTK_MESSAGE_ERROR);
 }

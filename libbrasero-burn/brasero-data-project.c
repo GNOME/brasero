@@ -111,6 +111,7 @@ enum {
 	DEEP_DIRECTORY_SIGNAL,
 	G2_FILE_SIGNAL,
 	PROJECT_LOADED_SIGNAL,
+	VIRTUAL_SIBLING_SIGNAL,
 	LAST_SIGNAL
 };
 
@@ -125,6 +126,90 @@ static const gchar NEW_FOLDER [] = "NewFolder";
 typedef gboolean	(*BraseroDataNodeAddedFunc)	(BraseroDataProject *project,
 							 BraseroFileNode *node,
 							 const gchar *uri);
+
+static void
+brasero_data_project_virtual_sibling (BraseroDataProject *self,
+				      BraseroFileNode *node,
+				      BraseroFileNode *sibling)
+{
+	BraseroDataProjectPrivate *priv;
+	BraseroFileTreeStats *stats;
+	BraseroFileNode *children;
+	BraseroFileNode *iter;
+
+	if (sibling == node)
+		return;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	g_signal_emit (self,
+		       brasero_data_project_signals [VIRTUAL_SIBLING_SIGNAL],
+		       0,
+		       node,
+		       sibling);
+
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	if (node) {
+		/* we remove the virtual node, BUT, we keep its
+		 * virtual children that will be appended to the
+		 * node being moved in replacement. */
+		/* NOTE: children MUST all be virtual */
+		children = BRASERO_FILE_NODE_CHILDREN (sibling);
+		for (iter = children; iter; iter = iter->next)
+			brasero_file_node_add (node, iter, NULL);
+
+		sibling->union2.children = NULL;
+	}
+	else {
+		/* Remove the virtual node. This should never happens */
+		g_warning ("Virtual nodes could not be transfered");
+	}
+
+	/* Just destroy the node as it has no other 
+	 * existence nor goal in existence but to create
+	 * a collision. */
+	brasero_file_node_destroy (sibling, stats);
+}
+
+static gboolean
+brasero_data_project_node_signal (BraseroDataProject *self,
+				  guint signal,
+				  BraseroFileNode *node)
+{
+	GValue instance_and_params [2];
+	GValue return_value;
+	GValue *params;
+
+	/* object which signalled */
+	instance_and_params->g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (self));
+	g_value_set_instance (instance_and_params, self);
+
+	/* arguments of signal (name) */
+	params = instance_and_params + 1;
+	params->g_type = 0;
+	g_value_init (params, G_TYPE_POINTER);
+	g_value_set_pointer (params, node);
+
+	/* default to FALSE */
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_BOOLEAN);
+	g_value_set_boolean (&return_value, FALSE);
+
+	g_signal_emitv (instance_and_params,
+			brasero_data_project_signals [signal],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (params);
+
+	/* In this case always remove the sibling */
+	if (signal == NAME_COLLISION_SIGNAL && BRASERO_FILE_NODE_VIRTUAL (node))
+		return FALSE;
+
+	return g_value_get_boolean (&return_value);
+}
 
 static gboolean
 brasero_data_project_file_signal (BraseroDataProject *self,
@@ -1300,6 +1385,53 @@ brasero_data_project_is_deep (BraseroDataProject *self,
 	return TRUE;
 }
 
+static void
+brasero_data_project_remove_sibling (BraseroDataProject *self,
+				     BraseroFileNode *sibling,
+				     BraseroFileNode *replacement)
+{
+	BraseroDataProjectPrivate *priv;
+
+	if (sibling != replacement)
+		return;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	if (BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+		BraseroFileTreeStats *stats;
+		BraseroFileNode *children;
+		BraseroFileNode *iter;
+
+		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+		if (replacement) {
+			/* we remove the virtual node, BUT, we keep its
+			 * virtual children that will be appended to the
+			 * node being moved in replacement. */
+			/* NOTE: children MUST all be virtual */
+			children = BRASERO_FILE_NODE_CHILDREN (sibling);
+			for (iter = children; iter; iter = iter->next)
+				brasero_file_node_add (replacement, iter, NULL);
+
+			sibling->union2.children = NULL;
+		}
+		else {
+			/* Remove the virtual node. This should never happens */
+			g_warning ("Virtual nodes could not be transfered");
+		}
+
+		/* Just destroy the node as it has no other 
+		 * existence nor goal in existence but to create
+		 * a collision. */
+		brasero_file_node_destroy (sibling, stats);
+	}
+	else {
+		/* The node existed and the user wants the existing to 
+		 * be replaced, so we delete that node (since the new
+		 * one would have the old one's children otherwise). */
+		 brasero_data_project_remove_real (self, sibling);
+	 }
+}
+
 gboolean
 brasero_data_project_move_node (BraseroDataProject *self,
 				BraseroFileNode *node,
@@ -1336,9 +1468,14 @@ brasero_data_project_move_node (BraseroDataProject *self,
 	/* One case could make us fail: if there is the same name in
 	 * the directory: in that case return FALSE; check now. */
 	target_sibling = brasero_file_node_check_name_existence (parent, BRASERO_FILE_NODE_NAME (node));
-	if (target_sibling
-	&&  brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
-		return FALSE;
+	if (target_sibling) {
+		if (BRASERO_FILE_NODE_VIRTUAL (target_sibling)) {
+			brasero_data_project_virtual_sibling (self, node, target_sibling);
+			target_sibling = NULL;
+		}
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, target_sibling))
+			return FALSE;
+	}
 
 	/* If node was in the joliet incompatible table, remove it */
 	brasero_data_project_joliet_remove_node (self, node);
@@ -1383,12 +1520,10 @@ brasero_data_project_move_node (BraseroDataProject *self,
 	if (former_parent && klass->node_removed)
 		klass->node_removed (self, former_parent, former_position, node);
 
-	if (target_sibling) {
-		/* The node existed and the user wants the existing to 
-		 * be replaced, so we delete that node (since the new
-		 * one would have the old one's children otherwise). */
-		brasero_data_project_remove_real (self, target_sibling);
-	}
+	if (target_sibling)
+		brasero_data_project_remove_sibling (self,
+						     target_sibling,
+						     node);
 
 	brasero_file_node_move_to (node, parent, priv->sort_func);
 
@@ -1436,6 +1571,7 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 				  BraseroFileNode *node,
 				  const gchar *name)
 {
+	BraseroFileNode *imported_sibling;
 	BraseroDataProjectPrivate *priv;
 	BraseroFileNode *sibling;
 
@@ -1445,11 +1581,16 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 	 * simply not possible to rename. */
 	sibling = brasero_file_node_check_name_existence (node->parent, name);
 	if (sibling) {
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, name))
+		if (BRASERO_FILE_NODE_VIRTUAL (sibling))
+			brasero_data_project_virtual_sibling (self, node, sibling);
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling))
 			return FALSE;
-
-		if (sibling != node)
+		else if (sibling != node) {
+			/* The node existed and the user wants the existing to 
+			 * be replaced, so we delete that node (since the new
+			 * one would have the old one's children otherwise). */
 			brasero_data_project_remove_real (self, sibling);
+		}
 	}
 
 	/* If node was in the joliet incompatible table, remove it */
@@ -1457,7 +1598,7 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 
 	/* see if this node didn't replace an imported one. If so the old 
 	 * imported node must re-appear in the tree. */
-	sibling = brasero_file_node_check_imported_sibling (node);
+	imported_sibling = brasero_file_node_check_imported_sibling (node);
 
 	if (!node->is_grafted) {
 		gchar *uri;
@@ -1495,14 +1636,14 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 
 	brasero_data_project_node_changed (self, node);
 
-	if (sibling) {
+	if (imported_sibling) {
 		BraseroDataProjectClass *klass;
 
 		klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 
-		brasero_file_node_add (sibling->parent, sibling, priv->sort_func);
+		brasero_file_node_add (sibling->parent, imported_sibling, priv->sort_func);
 		if (klass->node_added)
-			brasero_data_project_add_node_and_children (self, sibling, klass->node_added);
+			brasero_data_project_add_node_and_children (self, imported_sibling, klass->node_added);
 	}
 
 	return TRUE;
@@ -1624,7 +1765,8 @@ brasero_data_project_restore_uri (BraseroDataProject *self,
 		if (brasero_file_node_check_name_existence (parent, name))
 			continue;
 
-		node = brasero_file_node_new_loading (name, parent, priv->sort_func);
+		node = brasero_file_node_new_loading (name);
+		brasero_file_node_add (parent, node, priv->sort_func);
 		brasero_data_project_add_node_real (self, node, graft, uri);
 	}
 	g_slist_free (nodes);
@@ -1660,6 +1802,7 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 						BraseroFileNode *parent)
 {
 	BraseroFileNode *node;
+	BraseroFileNode *sibling;
 	BraseroDataProjectClass *klass;
 	BraseroDataProjectPrivate *priv;
 
@@ -1671,54 +1814,62 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 	if (!parent)
 		parent = priv->root;
 
-	node = brasero_file_node_check_name_existence (parent, g_file_info_get_name (info));
-	if (node) {
+	sibling = brasero_file_node_check_name_existence (parent, g_file_info_get_name (info));
+	if (sibling) {
 		/* The node exists but it may be that we've loaded the project
 		 * before. Then the necessary directories to hold the grafted
 		 * files will have been created as fake directories. We need to
 		 * replace those whenever we run into one but not lose their 
 		 * children. */
-		if (node->is_fake && node->is_tmp_parent) {
+		if (BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+			node = brasero_file_node_new_imported_session_file (info);
+			brasero_data_project_virtual_sibling (self, node, sibling);
+		}
+		else if (sibling->is_fake && sibling->is_tmp_parent) {
 			BraseroGraft *graft;
 			BraseroURINode *uri_node;
 
-			graft = BRASERO_FILE_NODE_GRAFT (node);
+			graft = BRASERO_FILE_NODE_GRAFT (sibling);
 			uri_node = graft->node;
 
 			/* NOTE after this function graft is invalid */
-			brasero_file_node_ungraft (node);
+			brasero_file_node_ungraft (sibling);
 
 			/* see if uri_node is still needed */
 			if (!uri_node->nodes
 			&&  !brasero_data_project_uri_has_parent (self, uri_node->uri))
 				brasero_data_project_uri_remove_graft (self, uri_node->uri);
 
-			if (node->is_file)
-				node->is_fake = FALSE;
+			if (sibling->is_file)
+				sibling->is_fake = FALSE;
 			else
-				node->union3.imported_address = g_file_info_get_attribute_int64 (info, BRASERO_IO_DIR_CONTENTS_ADDR);
+				sibling->union3.imported_address = g_file_info_get_attribute_int64 (info, BRASERO_IO_DIR_CONTENTS_ADDR);
 
-			node->is_imported = TRUE;
-			node->is_tmp_parent = FALSE;
+			sibling->is_imported = TRUE;
+			sibling->is_tmp_parent = FALSE;
 
 			/* Something has changed, tell the tree */
 			klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 			if (klass->node_changed)
-				klass->node_changed (self, node);
+				klass->node_changed (self, sibling);
 
-			return node;
+			return sibling;
 		}
-
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling))
 			return NULL;
-
-		/* The node existed and the user wants the existing to 
-		 * be replaced, so we delete that node (since the new
-		 * one would have the old one's children otherwise). */
-		brasero_data_project_remove_real (self, node);
+		else {
+			/* The node existed and the user wants the existing to 
+			 * be replaced, so we delete that node (since the new
+			 * one would have the old one's children otherwise). */
+			brasero_data_project_remove_real (self, sibling);
+			node = brasero_file_node_new_imported_session_file (info);
+		}
 	}
+	else
+		node = brasero_file_node_new_imported_session_file (info);
 
-	node = brasero_file_node_new_imported_session_file (info, parent, priv->sort_func);
+	/* Add it (we must add a graft) */
+	brasero_file_node_add (parent, node, priv->sort_func);
 
 	/* In this case, there can be no graft, and furthermore the
 	 * lengths of the names are not our problem. Just signal that
@@ -1737,6 +1888,7 @@ brasero_data_project_add_empty_directory (BraseroDataProject *self,
 {
 	BraseroFileNode *node;
 	BraseroURINode *graft;
+	BraseroFileNode *sibling;
 	BraseroDataProjectPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
@@ -1751,18 +1903,26 @@ brasero_data_project_add_empty_directory (BraseroDataProject *self,
 	if (!brasero_data_project_is_deep (self, parent, name, FALSE))
 		return NULL;
 
-	node = brasero_file_node_check_name_existence (parent, name);
-	if (node) {
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
+	sibling = brasero_file_node_check_name_existence (parent, name);
+	if (sibling) {
+		if (BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+			node = brasero_file_node_new_empty_folder (name);
+			brasero_data_project_virtual_sibling (self, node, sibling);
+		}
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling))
 			return NULL;
-
-		/* The node existed and the user wants the existing to 
-		 * be replaced, so we delete that node (since the new
-		 * one would have the old one's children otherwise). */
-		brasero_data_project_remove_real (self, node);
+		else {
+			/* The node existed and the user wants the existing to 
+			 * be replaced, so we delete that node (since the new
+			 * one would have the old one's children otherwise). */
+			brasero_data_project_remove_real (self, sibling);
+			node = brasero_file_node_new_empty_folder (name);
+		}
 	}
+	else
+		node = brasero_file_node_new_empty_folder (name);
 
-	node = brasero_file_node_new_empty_folder (name, parent, priv->sort_func);
+	brasero_file_node_add (parent, node, priv->sort_func);
 
 	/* Add it (we must add a graft) */
 	graft = g_hash_table_lookup (priv->grafts, NEW_FOLDER);
@@ -1998,18 +2158,18 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 			       0);
 }
 
-BraseroFileNode *
-brasero_data_project_add_loading_node (BraseroDataProject *self,
-				       const gchar *uri,
-				       BraseroFileNode *parent)
+static BraseroFileNode *
+brasero_data_project_add_loading_node_real (BraseroDataProject *self,
+					    const gchar *uri,
+					    const gchar *name_arg,
+					    gboolean is_hidden,
+					    BraseroFileNode *parent)
 {
 	gchar *name;
 	BraseroFileNode *node;
 	BraseroURINode *graft;
+	BraseroFileNode *sibling;
 	BraseroDataProjectPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
-	g_return_val_if_fail (uri != NULL, NULL);
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
@@ -2017,31 +2177,66 @@ brasero_data_project_add_loading_node (BraseroDataProject *self,
 	if (!parent)
 		parent = priv->root;
 
-	/* NOTE: find the name of the node through the URI */
-	name = brasero_utils_get_uri_name (uri);
+	if (!name_arg) {
+		/* NOTE: find the name of the node through the URI */
+		name = brasero_utils_get_uri_name (uri);
+	}
+	else
+		name = g_strdup (name_arg);
 
 	/* make sure that name doesn't exist */
-	node = brasero_file_node_check_name_existence (parent, name);
-	if (node) {
-		if (brasero_data_project_file_signal (self,
-						      NAME_COLLISION_SIGNAL,
-						      BRASERO_FILE_NODE_NAME (node))) {
+	sibling = brasero_file_node_check_name_existence (parent, name);
+	if (sibling) {
+		if (BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+			node = brasero_file_node_new_loading (name);
+			brasero_data_project_virtual_sibling (self, node, sibling);
+		}
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling)) {
 			g_free (name);
 			return NULL;
 		}
-
-		/* The node existed and the user wants the existing to 
-		 * be replaced, so we delete that node (since the new
-		 * one would have the old one's children otherwise). */
-		brasero_data_project_remove_real (self, node);
-		graft = g_hash_table_lookup (priv->grafts, uri);
+		else {
+			/* The node existed and the user wants the existing to 
+			 * be replaced, so we delete that node (since the new
+			 * one would have the old one's children otherwise). */
+			brasero_data_project_remove_real (self, sibling);
+			node = brasero_file_node_new_loading (name);
+			graft = g_hash_table_lookup (priv->grafts, uri);
+		}
 	}
+	else
+		node = brasero_file_node_new_loading (name);
 
-	node = brasero_file_node_new_loading (name, parent, priv->sort_func);
+	brasero_file_node_add (parent, node, priv->sort_func);
+
+	node->is_hidden = is_hidden;
 	brasero_data_project_add_node_real (self, node, graft, uri);
 	g_free (name);
 
 	return node;
+}
+
+BraseroFileNode *
+brasero_data_project_add_loading_node (BraseroDataProject *self,
+				       const gchar *uri,
+				       BraseroFileNode *parent)
+{
+	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	return brasero_data_project_add_loading_node_real (self, uri, NULL, FALSE, parent);
+}
+
+BraseroFileNode *
+brasero_data_project_add_hidden_node (BraseroDataProject *self,
+				      const gchar *uri,
+				      const gchar *name,
+				      BraseroFileNode *parent)
+{
+	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	return brasero_data_project_add_loading_node_real (self, uri, name, TRUE, parent);
 }
 
 /**
@@ -2086,6 +2281,7 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	const gchar *name;
 	BraseroFileNode *node;
 	BraseroURINode *graft;
+	BraseroFileNode *sibling;
 	BraseroDataProjectPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
@@ -2124,20 +2320,9 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	if (!parent)
 		parent = priv->root;
 
-	/* make sure that name doesn't exist */
 	name = g_file_info_get_name (info);
-	node = brasero_file_node_check_name_existence (parent, name);
-	if (node) {
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
-			return NULL;
 
-		/* The node existed and the user wants the existing to 
-		 * be replaced, so we delete that node (since the new
-		 * one would have the old one's children otherwise). */
-		brasero_data_project_remove_real (self, node);
-		graft = g_hash_table_lookup (priv->grafts, uri);
-	}
-
+	/* Run a few checks */
 	type = g_file_info_get_file_type (info);
 	if (type != G_FILE_TYPE_DIRECTORY) {
 		guint64 size;
@@ -2157,9 +2342,40 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 			return NULL;
 	} 
 
-	node = brasero_file_node_new_from_info (info,
-						parent,
-						priv->sort_func);
+	/* make sure that name doesn't exist */
+	sibling = brasero_file_node_check_name_existence (parent, name);
+	if (sibling) {
+		BraseroFileTreeStats *stats;
+
+		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+
+		if (BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+			node = brasero_file_node_new (g_file_info_get_name (info));
+			brasero_file_node_set_from_info (node, stats, info);
+			brasero_data_project_virtual_sibling (self, node, sibling);
+		}
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling))
+			return NULL;
+		else {
+			/* The node existed and the user wants the existing to 
+			 * be replaced, so we delete that node (since the new
+			 * one would have the old one's children otherwise). */
+			node = brasero_file_node_new (g_file_info_get_name (info));
+			brasero_file_node_set_from_info (node, stats, info);
+
+			brasero_data_project_remove_real (self, sibling);
+			graft = g_hash_table_lookup (priv->grafts, uri);
+		}
+	}
+	else {
+		BraseroFileTreeStats *stats;
+
+		node = brasero_file_node_new (g_file_info_get_name (info));
+		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+		brasero_file_node_set_from_info (node, stats, info);
+	}
+
+	brasero_file_node_add (parent, node, priv->sort_func);
 
 	if (g_file_info_get_is_symlink (info)
 	&&  g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
@@ -2213,6 +2429,7 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
  */
 struct _MakeTrackData {
 	gboolean append_slash;
+	gboolean hidden_nodes;
 
 	GSList *grafts;
 	GSList *excluded;
@@ -2221,7 +2438,7 @@ struct _MakeTrackData {
 };
 typedef struct _MakeTrackData MakeTrackData;
 
-static gchar *
+gchar *
 brasero_data_project_node_to_path (BraseroDataProject *self,
 				   BraseroFileNode *node)
 {
@@ -2274,18 +2491,7 @@ _foreach_grafts_make_list_cb (const gchar *uri,
 			      MakeTrackData *data)
 {
 	GSList *iter;
-
-	/* Each URI in this table must be excluded. Then each node in 
-	 * this list will be grafted. That way only those that we are
-	 * interested in will be in the tree. */
-
-	/* Add to the unreadable. This could be further improved by 
-	 * checking if there is a parent in the hash for this URI. If 
-	 * not that's no use adding this URI to unreadable. */
-	/* NOTE: if that the created directories URI, then there is no 
-	 * need to add it to excluded */
-	if (uri != NEW_FOLDER)
-		data->excluded = g_slist_prepend (data->excluded, g_strdup (uri));
+	gboolean add_to_excluded = FALSE;
 
 	/* add each node */
 	for (iter = uri_node->nodes; iter; iter = iter->next) {
@@ -2293,7 +2499,10 @@ _foreach_grafts_make_list_cb (const gchar *uri,
 		BraseroGraftPt *graft;
 
 		node = iter->data;
+		if (!data->hidden_nodes && node->is_hidden)
+			continue;
 
+		add_to_excluded = TRUE;
 		graft = g_new0 (BraseroGraftPt, 1);
 
 		/* if URI is a created directory set URI to NULL */
@@ -2315,6 +2524,18 @@ _foreach_grafts_make_list_cb (const gchar *uri,
 
 		data->grafts = g_slist_prepend (data->grafts, graft);
 	}
+
+	/* Each URI in this table must be excluded. Then each node in 
+	 * this list will be grafted. That way only those that we are
+	 * interested in will be in the tree. */
+
+	/* Add to the unreadable. This could be further improved by 
+	 * checking if there is a parent in the hash for this URI. If 
+	 * not that's no use adding this URI to unreadable. */
+	/* NOTE: if that the created directories URI, then there is no 
+	 * need to add it to excluded */
+	if (uri != NEW_FOLDER && add_to_excluded)
+		data->excluded = g_slist_prepend (data->excluded, g_strdup (uri));
 }
 
 static void
@@ -2362,6 +2583,7 @@ gboolean
 brasero_data_project_get_contents (BraseroDataProject *self,
 				   GSList **grafts,
 				   GSList **unreadable,
+				   gboolean hidden_nodes,
 				   gboolean joliet_compat,
 				   gboolean append_slash)
 {
@@ -2376,11 +2598,17 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 	callback_data.project = self;
 	callback_data.grafts = NULL;
 	callback_data.excluded = NULL;
+	callback_data.hidden_nodes = hidden_nodes;
 	callback_data.append_slash = append_slash;
 
 	g_hash_table_foreach (priv->grafts,
 			      (GHFunc) _foreach_grafts_make_list_cb,
 			      &callback_data);
+
+	/* This is possible even if the GHashTable is empty since there could be
+	 * only excluded URI inside or hidden nodes like autorun.inf. */
+	if (!grafts)
+		return FALSE;
 
 	if (joliet_compat) {
 		/* Make sure that all nodes with incompatible joliet names are
@@ -2870,15 +3098,17 @@ brasero_data_project_create_path (BraseroDataProject *self,
 	end = g_utf8_strchr (path, -1, G_DIR_SEPARATOR);
 
 	while (end && end [1] != '\0') {
+		BraseroFileNode *node;
 		gchar *name;
 		gint len;
 
 		/* create the path */
 		len = end - path;
 		name = g_strndup (path, len);
-		parent = brasero_file_node_new_loading (name,
-							parent,
-							priv->sort_func);
+
+		node = brasero_file_node_new_loading (name);
+		brasero_file_node_add (parent, node, priv->sort_func);
+		parent = node;
 		g_free (name);
 
 		/* check joliet compatibility; do it after node was created. */
@@ -3031,9 +3261,11 @@ brasero_data_project_add_path (BraseroDataProject *self,
 		 * - we don't check for sibling
 		 * - we set right from the start the right name */
 		if (uri != NEW_FOLDER)
-			node = brasero_file_node_new_loading (path, parent, priv->sort_func);
+			node = brasero_file_node_new_loading (path);
 		else
-			node = brasero_file_node_new_empty_folder (path, parent, priv->sort_func);
+			node = brasero_file_node_new_empty_folder (path);
+
+		brasero_file_node_add (parent, node, priv->sort_func);
 
 		/* the following function checks for joliet, graft it */
 		brasero_data_project_add_node_real (self,
@@ -3422,6 +3654,47 @@ brasero_data_project_get_root (BraseroDataProject *self)
 	return priv->root;
 }
 
+/**
+ * This is to watch a still empty path and get a warning through the collision
+ * name signal when the node is created. If a node is already created for this
+ * path, then returns NULL.
+ */
+
+BraseroFileNode *
+brasero_data_project_watch_path (BraseroDataProject *project,
+				 const gchar *path)
+{
+	BraseroDataProjectPrivate *priv;
+	BraseroFileNode *parent;
+	gchar **array;
+	gchar **iter;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (project);
+	parent = brasero_data_project_skip_existing (project, priv->root, &path);
+
+	if (!path || path [0] == '\0')
+		return NULL;
+
+	/* Now add the virtual node */
+	if (g_str_has_prefix (path, G_DIR_SEPARATOR_S))
+		array = g_strsplit (path + 1, G_DIR_SEPARATOR_S, 0);
+	else
+		array = g_strsplit (path, G_DIR_SEPARATOR_S, 0);
+
+	for (iter = array; iter && *iter && parent; iter ++) {
+		BraseroFileNode *node;
+
+		node = brasero_file_node_new_virtual (*iter);
+		brasero_file_node_add (parent, node, NULL);
+		parent = node;
+	}
+
+	g_strfreev (array);
+
+	/* This function shouldn't fail anyway */
+	return parent;
+}
+
 static gboolean
 brasero_data_project_clear_grafts_cb (gchar *key,
 				      BraseroURINode *graft,
@@ -3580,14 +3853,17 @@ brasero_data_project_file_added (BraseroFileMonitor *monitor,
 	g_free (escaped_name);
 	g_free (parent_uri);
 
-	if (sibling) {
-		/* There is no way we can add the node to tree; so exclude it */
-		brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (monitor), uri);
-	}
-	else
+	if (!sibling || BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+		/* If there is a virtual node, get rid of it */
 		brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (monitor),
 						       uri,
 						       parent);
+	}
+	else {
+		/* There is no way we can add the node to tree; so exclude it */
+		brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (monitor), uri);
+	}
+
 	g_free (uri);
 }
 
@@ -3731,7 +4007,7 @@ brasero_data_project_file_renamed (BraseroFileMonitor *monitor,
 	 * simply not possible to rename. So if node is grafted it keeps its
 	 * name if not, it's grafted with the old name. */
 	sibling = brasero_file_node_check_name_existence (node->parent, new_name);
-	if (sibling) {
+	if (sibling && !BRASERO_FILE_NODE_VIRTUAL (sibling)) {
 		if (!node->is_grafted) {
 			brasero_data_project_file_graft (BRASERO_DATA_PROJECT (monitor), node, new_name);
 			return;
@@ -3746,6 +4022,11 @@ brasero_data_project_file_renamed (BraseroFileMonitor *monitor,
 		 * could have been moved. 
 		 * We don't want to rename files that were renamed. */
 		brasero_data_project_file_update_name (BRASERO_DATA_PROJECT (monitor), node, new_name);
+	}
+
+	if (sibling && BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+		/* Signal collision and remove virtual node but ignore result */
+		brasero_data_project_virtual_sibling (BRASERO_DATA_PROJECT (monitor), node, sibling);
 	}
 
 	if (node->is_grafted) {
@@ -3829,9 +4110,14 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		 * that's simply not possible to rename. So if node is grafted
 		 * it keeps its name; if not, it's grafted with the old name. */
 		sibling = brasero_file_node_check_name_existence (parent, name_dest);
-		if (sibling) {
+		if (sibling && !BRASERO_FILE_NODE_VIRTUAL (sibling)) {
 			brasero_data_project_file_graft (BRASERO_DATA_PROJECT (monitor), node, name_dest);
 			return;
+		}
+
+		if (sibling && BRASERO_FILE_NODE_VIRTUAL (sibling)) {
+			/* Signal collision and remove virtual node but ignore result */
+			brasero_data_project_virtual_sibling (BRASERO_DATA_PROJECT (monitor), node, sibling);
 		}
 
 		/* If node was in the joliet incompatible table, remove it */
@@ -3976,10 +4262,10 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
 			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
 			  0,
 			  NULL, NULL,
-			  brasero_marshal_BOOLEAN__STRING,
+			  brasero_marshal_BOOLEAN__POINTER,
 			  G_TYPE_BOOLEAN,
 			  1,
-			  G_TYPE_STRING);
+			  G_TYPE_POINTER);
 	brasero_data_project_signals [SIZE_CHANGED_SIGNAL] = 
 	    g_signal_new ("size_changed",
 			  G_TYPE_FROM_CLASS (klass),
@@ -4020,6 +4306,18 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_INT);
+
+	brasero_data_project_signals [VIRTUAL_SIBLING_SIGNAL] = 
+	    g_signal_new ("virtual-sibling",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  brasero_marshal_VOID__POINTER_POINTER,
+			  G_TYPE_NONE,
+			  2,
+			  G_TYPE_POINTER,
+			  G_TYPE_POINTER);
 
 #ifdef BUILD_INOTIFY
 

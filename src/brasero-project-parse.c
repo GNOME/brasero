@@ -113,6 +113,9 @@ brasero_track_clear (BraseroDiscTrack *track)
 		g_slist_free (track->contents.tracks);
 	}
 	else if (track->type == BRASERO_PROJECT_TYPE_DATA) {
+		g_free (track->contents.data.icon);
+		track->contents.data.icon = NULL;
+
 		g_slist_foreach (track->contents.data.grafts, (GFunc) brasero_graft_point_free, NULL);
 		g_slist_free (track->contents.data.grafts);
 		g_slist_foreach (track->contents.data.restored, (GFunc) g_free, NULL);
@@ -211,6 +214,20 @@ _read_data_track (xmlDocPtr project,
 		if (!xmlStrcmp (item->name, (const xmlChar *) "graft")) {
 			if (!_read_graft_point (project, item->xmlChildrenNode, track))
 				goto error;
+		}
+		else if (!xmlStrcmp (item->name, (const xmlChar *) "icon")) {
+			xmlChar *icon_path;
+
+			icon_path = xmlNodeListGetString (project,
+							  item->xmlChildrenNode,
+							  1);
+			if (!icon_path)
+				goto error;
+
+			if (track->contents.data.icon)
+				g_free (track->contents.data.icon);
+
+			track->contents.data.icon = (gchar *) icon_path;
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "restored")) {
 			xmlChar *restored;

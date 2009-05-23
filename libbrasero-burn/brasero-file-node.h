@@ -147,8 +147,8 @@ struct _BraseroFileNode {
 	 * parent with the same name*/
 	guint is_tmp_parent:1;
 
-	/* this should be set by BraseroDataDisc */
-	guint is_selected:1; /* Used to determne if the name is editable */
+	/* Used to determine if is should be shown */
+	guint is_hidden:1;
 
 	/* Used by the model */
 	/* This is a workaround for a warning in gailtreeview.c line 2946 where
@@ -187,6 +187,9 @@ struct _BraseroFileNode {
 #define BRASERO_FILE_NODE_STATS(MACRO_root)					\
 	((MACRO_root)->is_root?(MACRO_root)->union3.stats:NULL)
 
+#define BRASERO_FILE_NODE_VIRTUAL(MACRO_node)					\
+	((MACRO_node)->is_hidden && (MACRO_node)->is_fake)
+
 #define BRASERO_FILE_NODE_IMPORTED_ADDRESS(MACRO_node)				\
 	((MACRO_node) && (MACRO_node)->is_imported && (MACRO_node)->is_fake?(MACRO_node)->union3.imported_address:-1)
 
@@ -223,8 +226,14 @@ gboolean
 brasero_file_node_is_ancestor (BraseroFileNode *parent,
 			       BraseroFileNode *node);
 BraseroFileNode *
+brasero_file_node_get_from_path (BraseroFileNode *root,
+				 const gchar *path);
+BraseroFileNode *
 brasero_file_node_check_name_existence (BraseroFileNode *parent,
 				        const gchar *name);
+BraseroFileNode *
+brasero_file_node_check_name_existence_case (BraseroFileNode *parent,
+					     const gchar *name);
 BraseroFileNode *
 brasero_file_node_check_imported_sibling (BraseroFileNode *node);
 
@@ -238,21 +247,19 @@ brasero_file_node_add (BraseroFileNode *parent,
 		       GCompareFunc sort_func);
 
 BraseroFileNode *
-brasero_file_node_new_loading (const gchar *name,
-			       BraseroFileNode *parent,
-			       GCompareFunc sort_func);
+brasero_file_node_new (const gchar *name);
+
 BraseroFileNode *
-brasero_file_node_new_from_info (GFileInfo *info,
-				 BraseroFileNode *parent,
-				 GCompareFunc sort_func);
+brasero_file_node_new_virtual (const gchar *name);
+
 BraseroFileNode *
-brasero_file_node_new_empty_folder (const gchar *name,
-				    BraseroFileNode *parent,
-				    GCompareFunc sort_func);
+brasero_file_node_new_loading (const gchar *name);
+
 BraseroFileNode *
-brasero_file_node_new_imported_session_file (GFileInfo *info,
-					     BraseroFileNode *parent,
-					     GCompareFunc sort_func);
+brasero_file_node_new_empty_folder (const gchar *name);
+
+BraseroFileNode *
+brasero_file_node_new_imported_session_file (GFileInfo *info);
 
 /**
  * If there are any change in the order it cannot be handled in these functions

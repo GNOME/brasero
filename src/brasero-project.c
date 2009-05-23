@@ -154,6 +154,8 @@ typedef enum {
 
 struct BraseroProjectPrivate {
 	GtkWidget *name_display;
+	GtkWidget *button_img;
+	GtkWidget *icon_img;
 	GtkWidget *discs;
 	GtkWidget *audio;
 	GtkWidget *data;
@@ -417,10 +419,121 @@ brasero_project_name_changed_cb (BraseroProjectName *name,
 }
 
 static void
+brasero_project_data_icon_error (BraseroProject *project,
+				 GError *error)
+{
+	if (error) {
+		brasero_app_alert (brasero_app_get_default (),
+				   /* Translators: this is a picture not
+				    * a disc image */
+				   C_("picture", "Please select another image."),
+				   error->message,
+				   GTK_MESSAGE_ERROR);
+	}
+	else {
+		brasero_app_alert (brasero_app_get_default (),
+				   /* Translators: this is a picture not
+				    * a disc image */
+				   C_("picture", "Please select another image."),
+				   _("Unknown error"),
+				   GTK_MESSAGE_ERROR);
+	}
+}
+
+static void
+brasero_project_icon_changed_cb (BraseroDisc *disc,
+				 BraseroProject *project)
+{
+	GError *error = NULL;
+	GdkPixbuf *pixbuf;
+	gchar *icon; 
+
+	icon = brasero_data_disc_get_scaled_icon_path (BRASERO_DATA_DISC (project->priv->current));
+	if (!icon) {
+		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
+					      "media-optical",
+					      GTK_ICON_SIZE_LARGE_TOOLBAR);
+		return;
+	}
+
+	/* Load and convert (48x48) the image into a pixbuf */
+	pixbuf = gdk_pixbuf_new_from_file_at_scale (icon,
+						    48,
+						    48,
+						    FALSE,
+						    &error);
+	g_free (icon);
+
+	if (!pixbuf) {
+		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
+					      "media-optical",
+					      GTK_ICON_SIZE_LARGE_TOOLBAR);
+		brasero_project_data_icon_error (project, error);
+		g_error_free (error);
+		return;
+	}
+
+	gtk_image_set_from_pixbuf (GTK_IMAGE (project->priv->icon_img), pixbuf);
+	g_object_unref (pixbuf);
+}
+
+static void
+brasero_project_icon_button_clicked (GtkWidget *button,
+				     BraseroProject *project)
+{
+	GtkFileFilter *filter;
+	GError *error = NULL;
+	GtkWidget *chooser;
+	gchar *path;
+	gint res;
+
+	if (!BRASERO_IS_DATA_DISC (project->priv->current))
+		return;
+
+	chooser = gtk_file_chooser_dialog_new (_("Medium Icon"),
+					       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (project))),
+					       GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					       GTK_STOCK_OK, GTK_RESPONSE_OK,
+					       NULL);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("All files"));
+	gtk_file_filter_add_pattern (filter, "*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
+
+	filter = gtk_file_filter_new ();
+	/* Translators: this is an image, a picture, not a "Disc Image" */
+	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
+	gtk_file_filter_add_mime_type (filter, "image/*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
+
+	gtk_widget_show (chooser);
+	res = gtk_dialog_run (GTK_DIALOG (chooser));
+	if (res != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
+	path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+	gtk_widget_destroy (chooser);
+
+	if (!brasero_data_disc_set_icon_path (BRASERO_DATA_DISC (project->priv->current), path, &error)) {
+		if (error) {
+			brasero_project_data_icon_error (project, error);
+			g_error_free (error);
+		}
+	}
+	g_free (path);
+}
+
+static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
+	GtkWidget *button;
+	GtkWidget *image;
 	GtkWidget *label;
 	GtkWidget *box;
 
@@ -440,6 +553,25 @@ brasero_project_init (BraseroProject *obj)
 	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
 	gtk_widget_show (box);
 	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, 0);
+
+	/* Icon button */
+	image = gtk_image_new_from_icon_name ("media-optical", GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (image);
+	obj->priv->icon_img = image;
+
+	button = gtk_button_new ();
+	gtk_widget_show (button);
+	gtk_button_set_image (GTK_BUTTON (button), image);
+	obj->priv->button_img = button;
+
+	gtk_widget_set_tooltip_text (button, _("Select an icon for the disc that will appear in file managers"));
+
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_project_icon_button_clicked),
+			  obj);
+
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, TRUE, 0);
 
 	/* Name widget */
 	label = gtk_label_new_with_mnemonic (_("_Name:"));
@@ -516,6 +648,10 @@ brasero_project_init (BraseroProject *obj)
 	g_signal_connect (G_OBJECT (obj->priv->data),
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
+			  obj);
+	g_signal_connect (obj->priv->data,
+			  "icon-changed",
+			  G_CALLBACK (brasero_project_icon_changed_cb),
 			  obj);
 
 	obj->priv->video = brasero_video_disc_new ();
@@ -1015,6 +1151,10 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		project->priv->project_status = NULL;
 	}
 
+	gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
+				      "media-optical",
+				      GTK_ICON_SIZE_LARGE_TOOLBAR);
+
 	if (project->priv->current)
 		brasero_disc_reset (project->priv->current);
 
@@ -1046,6 +1186,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 					  project->priv->merge_id);
 
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
+		gtk_widget_hide (project->priv->button_img);
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1055,6 +1196,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		brasero_project_update_project_size (project, 0);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
+		gtk_widget_show (project->priv->button_img);
 		project->priv->current = BRASERO_DISC (project->priv->data);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1064,6 +1206,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		brasero_project_update_project_size (project, 0);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
+		gtk_widget_hide (project->priv->button_img);
 		project->priv->current = BRASERO_DISC (project->priv->video);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1979,6 +2122,13 @@ _save_data_track_xml (xmlTextWriter *project,
 	GSList *grafts;
 	BraseroGraftPt *graft;
 
+	if (track->contents.data.icon) {
+		/* Write the icon if any */
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "icon", (xmlChar *) track->contents.data.icon);
+		if (success < 0)
+			return FALSE;
+	}
+
 	for (grafts = track->contents.data.grafts; grafts; grafts = grafts->next) {
 		graft = grafts->data;
 
@@ -2384,6 +2534,7 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 
 	bzero (&track, sizeof (track));
+
 	result = brasero_disc_get_track (project->priv->current, &track);
 	if (result == BRASERO_DISC_ERROR_EMPTY_SELECTION) {
 		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
@@ -2636,6 +2787,8 @@ brasero_project_save_session (BraseroProject *project,
 
     	bzero (&track, sizeof (track));
 	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK) {
+		/* NOTE: is this right? because brasero could not shut itself
+		 * down if an error occurs. */
 		if (!brasero_project_save_project_xml (project,
 						       uri,
 						       &track,

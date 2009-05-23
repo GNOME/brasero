@@ -78,6 +78,7 @@ typedef struct {
 			GSList *grafts;
 			GSList *excluded;
 			GSList *restored;
+			gchar *icon;
 		} data;
 
 		GSList *tracks; /* BraseroDiscSong */

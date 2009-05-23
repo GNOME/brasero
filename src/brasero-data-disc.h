@@ -56,6 +56,13 @@ GType brasero_data_disc_get_type (void) G_GNUC_CONST;
 GtkWidget *
 brasero_data_disc_new (void);
 
+gboolean
+brasero_data_disc_set_icon_path (BraseroDataDisc *disc,
+				 const gchar *path,
+				 GError **error);
+gchar *
+brasero_data_disc_get_scaled_icon_path (BraseroDataDisc *disc);
+
 void
 brasero_data_disc_set_right_button_group (BraseroDataDisc *disc,
 					  GtkSizeGroup *size_group);
