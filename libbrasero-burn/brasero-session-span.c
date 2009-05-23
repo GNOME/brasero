@@ -91,8 +91,10 @@ brasero_session_span_again (BraseroSessionSpan *session)
 	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), BRASERO_BURN_ERR);
 
 	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+
+	/* This is not an error */
 	if (!priv->track_list)
-		return BRASERO_BURN_ERR;
+		return BRASERO_BURN_OK;
 
 	if (priv->last_track) {
 		tracks = g_slist_find (priv->track_list, priv->last_track);
