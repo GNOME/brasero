@@ -2491,7 +2491,7 @@ _foreach_grafts_make_list_cb (const gchar *uri,
 			      MakeTrackData *data)
 {
 	GSList *iter;
-	gboolean add_to_excluded = FALSE;
+	gboolean add_to_excluded = (uri_node->nodes == NULL);
 
 	/* add each node */
 	for (iter = uri_node->nodes; iter; iter = iter->next) {
@@ -2607,8 +2607,11 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 
 	/* This is possible even if the GHashTable is empty since there could be
 	 * only excluded URI inside or hidden nodes like autorun.inf. */
-	if (!grafts)
+	if (!callback_data.grafts) {
+		g_slist_foreach (callback_data.excluded, (GFunc) g_free, NULL);
+		g_slist_free (callback_data.excluded);
 		return FALSE;
+	}
 
 	if (joliet_compat) {
 		/* Make sure that all nodes with incompatible joliet names are
