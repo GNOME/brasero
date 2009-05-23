@@ -36,6 +36,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-track-stream-cfg.h"
 #include "brasero-io.h"
 #include "brasero-tags.h"
@@ -75,11 +77,18 @@ brasero_video_project_result_cb (GObject *obj,
 		return;
 	}
 
+	/* FIXME: we don't know whether it's audio or video that is required */
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_REGULAR
-	|| !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)) {
+	|| (!g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)
+	&&  !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO))) {
+		gchar *name;
+
+		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERR,
-					   _(" "));
+					   _("\"%s\" is not suitable for audio or video media"),
+					   name);
+		g_free (name);
 
 		brasero_track_changed (BRASERO_TRACK (obj));
 		return;
