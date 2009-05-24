@@ -65,7 +65,8 @@ G_DEFINE_TYPE (BraseroDataOptions, brasero_data_options, GTK_TYPE_ALIGNMENT);
 
 static void
 brasero_data_options_set_tracks_image_fs (BraseroBurnSession *session,
-					  BraseroImageFS fs_type)
+					  BraseroImageFS fs_type_add,
+					  BraseroImageFS fs_type_rm)
 {
 	GSList *tracks;
 	GSList *iter;
@@ -78,64 +79,12 @@ brasero_data_options_set_tracks_image_fs (BraseroBurnSession *session,
 		if (!BRASERO_IS_TRACK_DATA (track))
 			continue;
 
-		brasero_track_data_add_fs (BRASERO_TRACK_DATA (track), fs_type);
+		if (fs_type_add != BRASERO_IMAGE_FS_NONE)
+			brasero_track_data_add_fs (BRASERO_TRACK_DATA (track), fs_type_add);
+
+		if (fs_type_rm != BRASERO_IMAGE_FS_NONE)
+			brasero_track_data_rm_fs (BRASERO_TRACK_DATA (track), fs_type_rm);
 	}
-}
-
-static gboolean
-brasero_data_options_update_joliet (BraseroDataOptions *dialog)
-{
-	BraseroImageFS fs_type;
-	BraseroBurnResult result;
-	BraseroTrackType *source = NULL;
-	BraseroDataOptionsPrivate *priv;
-
-	priv = BRASERO_DATA_OPTIONS_PRIVATE (dialog);
-	if (!priv->joliet_toggle)
-		return FALSE;
-
-	/* what we want to check Joliet support */
-	source = brasero_track_type_new ();
-	brasero_burn_session_get_input_type (priv->session, source);
-	fs_type = brasero_track_type_get_data_fs (source);
-
-	brasero_track_type_set_data_fs (source,
-					fs_type|
-					BRASERO_IMAGE_FS_JOLIET);
-
-	result = brasero_burn_session_input_supported (priv->session,
-						       source,
-						       FALSE);
-	brasero_track_type_free (source);
-
-	if (result == BRASERO_BURN_OK) {
-		if (GTK_WIDGET_IS_SENSITIVE (priv->joliet_toggle))
-			return FALSE;
-
-		gtk_widget_set_sensitive (priv->joliet_toggle, TRUE);
-
-		if (!priv->joliet_saved)
-			return FALSE;
-
-		brasero_data_options_set_tracks_image_fs (priv->session, fs_type);
-
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), priv->joliet_saved);
-		return TRUE;
-	}
-
-	if (!GTK_WIDGET_IS_SENSITIVE (priv->joliet_toggle))
-		return FALSE;
-
-	priv->joliet_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle));
-	if (priv->joliet_saved) {
-		fs_type &= (~BRASERO_IMAGE_FS_JOLIET);
-		brasero_data_options_set_tracks_image_fs (priv->session, fs_type);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), FALSE);
-	}
-
-	gtk_widget_set_sensitive (priv->joliet_toggle, FALSE);
-
-	return TRUE;
 }
 
 static void
@@ -143,7 +92,6 @@ brasero_data_options_set_joliet (BraseroDataOptions *dialog)
 {
 	BraseroDataOptionsPrivate *priv;
 	BraseroTrackType *source = NULL;
-	BraseroImageFS fs_type;
 
 	priv = BRASERO_DATA_OPTIONS_PRIVATE (dialog);
 
@@ -154,39 +102,41 @@ brasero_data_options_set_joliet (BraseroDataOptions *dialog)
 	 * something is compulsory the button is active but insensitive */
 	source = brasero_track_type_new ();
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle)))
-		fs_type = (~BRASERO_IMAGE_FS_JOLIET) & brasero_track_type_get_data_fs (source);
+		brasero_data_options_set_tracks_image_fs (priv->session,
+							  BRASERO_IMAGE_FS_NONE,
+							  BRASERO_IMAGE_FS_JOLIET);
 	else
-		fs_type = BRASERO_IMAGE_FS_JOLIET|brasero_track_type_get_data_fs (source);
-	brasero_track_type_free (source);
+		brasero_data_options_set_tracks_image_fs (priv->session,
+							  BRASERO_IMAGE_FS_JOLIET,
+							  BRASERO_IMAGE_FS_NONE);
 
-	brasero_data_options_set_tracks_image_fs (priv->session, fs_type);
+	brasero_track_type_free (source);
 }
 
 static void
 brasero_data_options_joliet_toggled_cb (GtkToggleButton *toggle,
-					      BraseroDataOptions *dialog)
+					BraseroDataOptions *options)
 {
 	BraseroDataOptionsPrivate *priv;
 	GtkResponseType answer;
 	GtkWidget *message;
 	gchar *secondary;
-	gboolean hide;
 
-	priv = BRASERO_DATA_OPTIONS_PRIVATE (dialog);
+	priv = BRASERO_DATA_OPTIONS_PRIVATE (options);
 
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
-		gtk_widget_show (GTK_WIDGET (dialog));
-		hide = TRUE;
-	}
+	/* If the toggle button was active it means that either the user got the
+	 * warning dialog or that it was on because no file required any change
+	 * in their names so no need for the warning; especially when we turn it
+	 * off. */
+	if (!gtk_toggle_button_get_active (toggle))
+		priv->joliet_warning = TRUE;
 
 	if (priv->joliet_warning) {
-		brasero_data_options_set_joliet (dialog);
+		brasero_data_options_set_joliet (options);
 		return;
 	}
 
-	priv->joliet_warning = TRUE;
-
-	message = gtk_message_dialog_new (GTK_WINDOW (dialog),
+	message = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (options))),
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_INFO,
@@ -212,9 +162,109 @@ brasero_data_options_joliet_toggled_cb (GtkToggleButton *toggle,
 	if (answer != GTK_RESPONSE_YES)
 		gtk_toggle_button_set_active (toggle, FALSE);
 	else
-		brasero_data_options_set_joliet (dialog);
+		brasero_data_options_set_joliet (options);
 
-	priv->joliet_warning = FALSE;
+	priv->joliet_warning = TRUE;
+}
+
+#if 0
+
+static gboolean
+brasero_data_options_update_joliet (BraseroDataOptions *dialog)
+{
+	BraseroImageFS fs_type;
+	BraseroBurnResult result;
+	BraseroTrackType *source = NULL;
+	BraseroDataOptionsPrivate *priv;
+
+	priv = BRASERO_DATA_OPTIONS_PRIVATE (dialog);
+	if (!priv->joliet_toggle)
+		return FALSE;
+
+	/* what we want to check Joliet support */
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, source);
+	fs_type = brasero_track_type_get_data_fs (source);
+
+	/* see if it's supported */
+	brasero_track_type_set_data_fs (source,
+					fs_type|
+					BRASERO_IMAGE_FS_JOLIET);
+
+	result = brasero_burn_session_input_supported (priv->session,
+						       source,
+						       FALSE);
+
+	if (result != BRASERO_BURN_OK) {
+		/* Not supported */
+		priv->joliet_saved = (fs_type & BRASERO_IMAGE_FS_JOLIET);
+		brasero_data_options_set_tracks_image_fs (priv->session,
+							  BRASERO_IMAGE_FS_NONE,
+							  BRASERO_IMAGE_FS_JOLIET);
+
+		gtk_widget_set_sensitive (priv->joliet_toggle, FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), FALSE);
+	}
+	else if (!GTK_WIDGET_IS_SENSITIVE (priv->joliet_toggle)) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), priv->joliet_saved);
+
+		if (priv->joliet_saved || (fs_type & BRASERO_IMAGE_FS_JOLIET))
+			brasero_data_options_set_tracks_image_fs (priv->session,
+								  BRASERO_IMAGE_FS_JOLIET,
+								  BRASERO_IMAGE_FS_NONE);
+
+		gtk_widget_set_sensitive (priv->joliet_toggle, TRUE);
+	}
+}
+
+#endif
+
+static void
+brasero_data_options_update_joliet_start (BraseroDataOptions *dialog)
+{
+	BraseroImageFS fs_type;
+	BraseroBurnResult result;
+	BraseroTrackType *source = NULL;
+	BraseroDataOptionsPrivate *priv;
+
+	priv = BRASERO_DATA_OPTIONS_PRIVATE (dialog);
+	if (!priv->joliet_toggle)
+		return;
+
+	/* what we want to check Joliet support */
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, source);
+	fs_type = brasero_track_type_get_data_fs (source);
+
+	brasero_track_type_set_data_fs (source,
+					fs_type|
+					BRASERO_IMAGE_FS_JOLIET);
+	result = brasero_burn_session_input_supported (priv->session,
+						       source,
+						       FALSE);
+
+	g_signal_handlers_block_by_func (priv->joliet_toggle,
+					 brasero_data_options_joliet_toggled_cb,
+					 dialog);
+
+	if (result != BRASERO_BURN_OK) {
+		/* Not supported */
+		brasero_data_options_set_tracks_image_fs (priv->session,
+							  BRASERO_IMAGE_FS_NONE,
+							  BRASERO_IMAGE_FS_JOLIET);
+
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), FALSE);
+		gtk_widget_set_sensitive (priv->joliet_toggle, FALSE);
+	}
+	else {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle),
+					      (fs_type & BRASERO_IMAGE_FS_JOLIET));
+		gtk_widget_set_sensitive (priv->joliet_toggle, TRUE);
+	}
+
+	g_signal_handlers_unblock_by_func (priv->joliet_toggle,
+					   brasero_data_options_joliet_toggled_cb,
+					   dialog);
 }
 
 static void
@@ -234,7 +284,7 @@ brasero_data_options_set_property (GObject *object,
 	case PROP_SESSION: /* Readable and only writable at creation time */
 		priv->session = BRASERO_BURN_SESSION (g_value_get_object (value));
 		g_object_ref (priv->session);
-		brasero_data_options_update_joliet (BRASERO_DATA_OPTIONS(object));
+		brasero_data_options_update_joliet_start (BRASERO_DATA_OPTIONS (object));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
