@@ -46,7 +46,7 @@ libbrasero_media_la_LIBADD =					\
 
 libbrasero_media_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
-	-no-undefined						\
+	-no-undefined
 	$(AM_LDFLAGS)
 #	-export-symbols ./libbrasero-media.symbols
 
