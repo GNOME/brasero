@@ -54,6 +54,10 @@ struct _BraseroDataOptionsPrivate
 	guint joliet_saved:1;
 };
 
+/* FIXME: we need to react to a valid signal so that if joliet is on and the
+ * session is invalid we can try to see if deactivating it can make things
+ * workable again. */
+
 #define BRASERO_DATA_OPTIONS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_OPTIONS, BraseroDataOptionsPrivate))
 
 enum {

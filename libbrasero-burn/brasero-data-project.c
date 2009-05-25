@@ -2644,6 +2644,7 @@ struct _MakeTrackDataSpan {
 	GSList *joliet_grafts;
 
 	guint64 files_num;
+	guint64 dir_num;
 	BraseroImageFS fs_type;
 };
 
@@ -2682,8 +2683,10 @@ brasero_data_project_span_explore_folder_children (MakeTrackDataSpan *data,
 			brasero_data_project_span_set_fs_type (data, node);
 			data->files_num ++;
 		}
-		else
+		else {
 			brasero_data_project_span_explore_folder_children (data, node);
+			data->dir_num ++;
+		}
 	}
 }
 
@@ -2778,6 +2781,44 @@ brasero_data_project_span_generate (BraseroDataProject *self,
 	brasero_track_data_set_source (track, grafts, excluded);
 }
 
+goffset
+brasero_data_project_improve_image_size_accuracy (goffset sectors,
+						  guint64 dir_num,
+						  BraseroImageFS fs_type)
+{
+	/* sector number should be increased in the following way to get
+	 * a more accurate number:
+	 * - the first (empty most of the time) 16 sectors
+	 * - primary volume descriptor block
+	 * - terminator volume descriptor block
+	 * - one sector for root (and one more if there is joliet)
+	 * - 4 sectors for the path table (at least!!)
+	 * - for every directory add a block (for all entry records)
+	 *   and another one if there is joliet on
+	 */
+	sectors += 23;
+	sectors += dir_num * 1;
+	
+	if (fs_type & BRASERO_IMAGE_FS_JOLIET) {
+		/* For joliet :
+		 * - 1 sector for the volume descriptor
+		 * - 1 sector for the root descriptor
+		 * - 4 sectors for the path table (at least!!)
+		 */
+		sectors += 6;
+
+		/* For joliet 2 sectors per directory (at least!!) */
+		sectors += dir_num * 2;
+	}
+
+	/* Finally there is a 150 pad block at the end (only with mkisofs !!).
+	 * That was probably done to avoid getting an image whose size would be
+	 * less than 1 sec??? */
+	sectors += 150;
+
+	return sectors;
+}
+
 BraseroBurnResult
 brasero_data_project_span (BraseroDataProject *self,
 			   goffset max_sectors,
@@ -2796,6 +2837,7 @@ brasero_data_project_span (BraseroDataProject *self,
 	if (!g_hash_table_size (priv->grafts))
 		return BRASERO_BURN_ERR;
 
+	callback_data.dir_num = 0;
 	callback_data.files_num = 0;
 	callback_data.grafts = NULL;
 	callback_data.joliet_grafts = NULL;
@@ -2869,8 +2911,10 @@ brasero_data_project_span (BraseroDataProject *self,
 			brasero_data_project_span_set_fs_type (&callback_data, children);
 			callback_data.files_num ++;
 		}
-		else
+		else {
 			brasero_data_project_span_explore_folder_children (&callback_data, children);
+			callback_data.dir_num ++;
+		}
 
 		priv->spanned = g_slist_prepend (priv->spanned, children);
 		children = children->next;
@@ -2886,6 +2930,10 @@ brasero_data_project_span (BraseroDataProject *self,
 					    &callback_data,
 					    append_slash,
 					    track);
+
+	total_sectors = brasero_data_project_improve_image_size_accuracy (total_sectors,
+									  callback_data.dir_num,
+									  callback_data.fs_type);
 
 	brasero_track_data_set_data_blocks (track, total_sectors);
 	brasero_track_data_add_fs (track, callback_data.fs_type);

@@ -126,6 +126,10 @@ goffset
 brasero_data_project_get_sectors (BraseroDataProject *project);
 
 goffset
+brasero_data_project_improve_image_size_accuracy (goffset blocks,
+						  guint64 dir_num,
+						  BraseroImageFS fs_type);
+goffset
 brasero_data_project_get_folder_sectors (BraseroDataProject *project,
 					 BraseroFileNode *node);
 

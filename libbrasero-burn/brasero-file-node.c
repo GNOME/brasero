@@ -771,7 +771,14 @@ brasero_file_node_add (BraseroFileNode *parent,
 	if (BRASERO_FILE_NODE_VIRTUAL (node))
 		return;
 
+	stats = brasero_file_node_get_tree_stats (node->parent, &depth);
 	if (!node->is_imported) {
+		/* book keeping */
+		if (!node->is_file)
+			stats->num_dir ++;
+		else
+			stats->children ++;
+
 		/* NOTE: parent will be changed afterwards !!! */
 		if (!node->is_grafted) {
 			/* propagate the size change*/
@@ -785,7 +792,6 @@ brasero_file_node_add (BraseroFileNode *parent,
 
 	/* Even imported should be included. The only type of nodes that are not
 	 * heeded are the virtual nodes. */
-	stats = brasero_file_node_get_tree_stats (node->parent, &depth);
 	if (node->is_file) {
 		if (depth < 6)
 			return;
@@ -807,13 +813,19 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 	 * creation of a graft). If someone wants to set a new name,
 	 * then rename_node is the function. */
 
-	/* update the stats since a file could have been added to the tree but
-	 * at this point we didn't know what it was (a file or a directory).
-	 * Only do this if it wasn't a file before. */
-	if (!node->is_file
-	&& (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY)) {
-		/* only count files */
-		stats->children ++;
+	if (node->parent) {
+		/* update the stats since a file could have been added to the tree but
+		 * at this point we didn't know what it was (a file or a directory).
+		 * Only do this if it wasn't a file before.
+		 * Do this only if it's in the tree. */
+		if (!node->is_file && (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY)) {
+			stats->children ++;
+			stats->num_dir --;
+		}
+		else if (node->is_file && (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)) {
+			stats->children --;
+			stats->num_dir ++;
+		}
 	}
 
 	if (!node->is_symlink
@@ -1129,9 +1141,13 @@ brasero_file_node_destroy_with_children (BraseroFileNode *node,
 		if (node->is_symlink)
 			stats->num_sym --;
 
-		/* update file number statistics */
-		if (!node->is_imported && node->is_file)
-			stats->children --;
+		/* update file/directory number statistics */
+		if (!node->is_imported) {
+			if (node->is_file)
+				stats->children --;
+			else
+				stats->num_dir --;
+		}
 	}
 
 	/* destruction */

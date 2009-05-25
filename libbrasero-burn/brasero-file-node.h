@@ -72,6 +72,7 @@ typedef struct _BraseroImport BraseroImport;
 
 struct _BraseroFileTreeStats {
 	guint children;
+	guint num_dir;
 	guint num_deep;
 	guint num_2GiB;
 	guint num_sym;
