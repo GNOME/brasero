@@ -238,6 +238,9 @@ brasero_src_image_update (BraseroSrcImage *self)
 		goto end;
 	}
 	else if (result != BRASERO_BURN_OK) {
+		if (!error)
+			goto end;
+
 		/* Translators: %s is a path and image refers to a disc image */
 		string = g_strdup_printf (_("\"%s\": unknown image type"), path);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), error->message);
