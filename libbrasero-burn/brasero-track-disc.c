@@ -181,13 +181,16 @@ brasero_track_disc_get_size (BraseroTrack *track,
 
 	priv = BRASERO_TRACK_DISC_PRIVATE (track);
 	medium = brasero_drive_get_medium (priv->drive);
+	if (!medium)
+		return BRASERO_BURN_NOT_READY;
+
 	brasero_medium_get_data_size (medium, &medium_size, &medium_blocks);
 
 	if (blocks)
 		*blocks = medium_blocks;
 
 	if (block_size)
-		*block_size = medium_size / medium_blocks;
+		*block_size = medium_blocks? (medium_size / medium_blocks):0;
 
 	return BRASERO_BURN_OK;
 }
