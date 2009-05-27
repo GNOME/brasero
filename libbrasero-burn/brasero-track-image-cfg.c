@@ -98,18 +98,26 @@ brasero_track_image_cfg_get_info_cb (GObject *object,
 				     GAsyncResult *result,
 				     gpointer user_data)
 {
+	gboolean was_cancelled;
 	BraseroTrackImageInfo *info;
 	BraseroTrackImageCfgPrivate *priv;
 
-	info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (object);
 
+	was_cancelled = g_cancellable_is_cancelled (priv->cancel);
 	if (priv->cancel) {
 		g_object_unref (priv->cancel);
 		priv->cancel = NULL;
 	}
 
-	if (info->format == BRASERO_IMAGE_FORMAT_NONE || info->blocks == 0) {
+	if (was_cancelled) {
+		brasero_track_changed (BRASERO_TRACK (object));
+		return;
+	}
+
+	info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	if (info->format == BRASERO_IMAGE_FORMAT_NONE
+	||  info->blocks == 0) {
 		GError *error = NULL;
 
 		g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), &error);
@@ -324,6 +332,8 @@ brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 		if (current_format == format)
 			return BRASERO_BURN_OK;
 	}
+	else if (format == priv->format)
+		return BRASERO_BURN_OK;
 
 	priv->format = format;
 

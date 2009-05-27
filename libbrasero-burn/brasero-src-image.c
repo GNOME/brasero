@@ -229,8 +229,6 @@ brasero_src_image_update (BraseroSrcImage *self)
 	/* See if information retrieval went fine and/or is ready */
 	status = brasero_status_new ();
 	result = brasero_track_get_status (BRASERO_TRACK (priv->track), status);
-	brasero_status_free (status);
-
 	if (result == BRASERO_BURN_NOT_READY) {
 		/* Translators: %s is a path */
 		string = g_strdup_printf (_("\"%s\": loading"), path);
@@ -238,11 +236,13 @@ brasero_src_image_update (BraseroSrcImage *self)
 		goto end;
 	}
 	else if (result != BRASERO_BURN_OK) {
+		/* Translators: %s is a path and image refers to a disc image */
+		string = g_strdup_printf (_("\"%s\": unknown image type"), path);
+
+		error = brasero_status_get_error (status);
 		if (!error)
 			goto end;
 
-		/* Translators: %s is a path and image refers to a disc image */
-		string = g_strdup_printf (_("\"%s\": unknown image type"), path);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), error->message);
 		brasero_src_image_error (self, error);
 		g_error_free (error);
@@ -263,6 +263,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 
 end:
 
+	brasero_status_free (status);
 	if (string) {
 		/* This is hackish and meant to avoid ellipsization to make the
 		 * label to small. */
