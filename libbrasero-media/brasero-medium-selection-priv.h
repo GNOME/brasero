@@ -35,7 +35,8 @@
 
 G_BEGIN_DECLS
 
-typedef gboolean (*BraseroMediumSelectionFunc) (BraseroMedium *medium, gpointer callback_data);
+typedef gboolean	(*BraseroMediumSelectionFunc)	(BraseroMedium *medium,
+							 gpointer callback_data);
 
 guint
 brasero_medium_selection_get_media_num (BraseroMediumSelection *selection);
@@ -44,6 +45,11 @@ void
 brasero_medium_selection_foreach (BraseroMediumSelection *selection,
 				  BraseroMediumSelectionFunc function,
 				  gpointer callback_data);
+
+void
+brasero_medium_selection_update_used_space (BraseroMediumSelection *selection,
+					    BraseroMedium *medium,
+					    guint used_space);
 
 void
 brasero_medium_selection_update_media_string (BraseroMediumSelection *selection);

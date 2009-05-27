@@ -74,6 +74,9 @@ enum {
 	MEDIUM_COL,
 	NAME_COL,
 	ICON_COL,
+	USED_COL,
+	VISIBLE_PROGRESS_COL,
+	VISIBLE_TEXT_COL,
 	NUM_COL
 };
 
@@ -174,6 +177,75 @@ brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
 	g_free (size_string);
 
 	return label;
+}
+
+void
+brasero_medium_selection_update_used_space (BraseroMediumSelection *selector,
+					    BraseroMedium *medium_arg,
+					    guint used_space)
+{
+	BraseroMediumSelectionPrivate *priv;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
+	do {
+		BraseroMedium *medium;
+
+		medium = NULL;
+		gtk_tree_model_get (model, &iter,
+				    MEDIUM_COL, &medium,
+				    -1);
+		if (medium == medium_arg) {
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    USED_COL, used_space,
+					    VISIBLE_PROGRESS_COL, (gboolean) (used_space > 0),
+					    VISIBLE_TEXT_COL, (gboolean) (used_space <= 0),
+					    -1);
+			break;
+		}
+
+	} while (gtk_tree_model_iter_next (model, &iter));
+}
+
+static void
+brasero_medium_selection_set_show_used_space (BraseroMediumSelection *selector)
+{
+	GtkCellRenderer *renderer;
+	BraseroMediumSelectionPrivate *priv;
+
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
+
+	gtk_cell_layout_clear (GTK_CELL_LAYOUT (selector));
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (renderer, "follow-state", TRUE, NULL);
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (selector), renderer, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (selector), renderer,
+					"gicon", ICON_COL,
+					NULL);
+
+	renderer = gtk_cell_renderer_progress_new ();
+	g_object_set (renderer, "xpad", 8, NULL);
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (selector), renderer, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (selector), renderer,
+					"text", NAME_COL,
+					"value", USED_COL,
+					"visible", VISIBLE_PROGRESS_COL,
+					NULL);
+
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set (renderer, "xpad", 8, NULL);
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (selector), renderer, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (selector), renderer,
+					"markup", NAME_COL,
+					"visible", VISIBLE_TEXT_COL,
+					NULL);
 }
 
 void
@@ -370,6 +442,8 @@ brasero_medium_selection_update_no_disc_entry (BraseroMediumSelection *self,
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, _("Searching for available discs"),
 				    ICON_COL, icon,
+				    VISIBLE_TEXT_COL, TRUE,
+				    VISIBLE_PROGRESS_COL, FALSE,
 				    -1);
 	}
 	else {
@@ -377,6 +451,8 @@ brasero_medium_selection_update_no_disc_entry (BraseroMediumSelection *self,
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, _("No available disc"),
 				    ICON_COL, icon,
+				    VISIBLE_TEXT_COL, TRUE,
+				    VISIBLE_PROGRESS_COL, FALSE,
 				    -1);
 	}
 
@@ -477,14 +553,18 @@ brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
 
 			medium = item->data;
 
-			medium_name = brasero_medium_selection_get_medium_string (selector, medium);
-			medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
-
 			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 					    MEDIUM_COL, medium,
+					    -1);
+
+			medium_name = brasero_medium_selection_get_medium_string (selector, medium);
+			medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 					    NAME_COL, medium_name,
 					    ICON_COL, medium_icon,
+					    VISIBLE_TEXT_COL, TRUE,
+					    VISIBLE_PROGRESS_COL, FALSE,
 					    -1);
 			g_free (medium_name);
 			g_object_unref (medium_icon);
@@ -615,13 +695,18 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 			g_object_unref (tmp);
 	}
 
-	medium_name = brasero_medium_selection_get_medium_string (self, medium);
-	medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    MEDIUM_COL, medium,
+			    -1);
+
+	medium_name = brasero_medium_selection_get_medium_string (self, medium);
+	medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    NAME_COL, medium_name,
 			    ICON_COL, medium_icon,
+			    VISIBLE_TEXT_COL, TRUE,
+			    VISIBLE_PROGRESS_COL, FALSE,
 			    -1);
 	g_free (medium_name);
 	g_object_unref (medium_icon);
@@ -679,7 +764,6 @@ static void
 brasero_medium_selection_init (BraseroMediumSelection *object)
 {
 	GtkListStore *model;
-	GtkCellRenderer *renderer;
 	BraseroMediumMonitor *monitor;
 	BraseroMediumSelectionPrivate *priv;
 
@@ -701,24 +785,15 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 	model = gtk_list_store_new (NUM_COL,
 				    G_TYPE_OBJECT,
 				    G_TYPE_STRING,
-				    G_TYPE_ICON);
+				    G_TYPE_ICON,
+				    G_TYPE_UINT,
+				    G_TYPE_BOOLEAN,
+				    G_TYPE_BOOLEAN);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (object), GTK_TREE_MODEL (model));
 	g_object_unref (model);
 
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	g_object_set (renderer, "follow-state", TRUE, NULL);
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, FALSE);
-	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
-					"gicon", ICON_COL,
-					NULL);
-
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set (renderer, "xpad", 8, NULL);
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, TRUE);
-	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
-					"markup", NAME_COL,
-					NULL);
+	brasero_medium_selection_set_show_used_space (object);
 }
 
 static void

@@ -46,9 +46,10 @@
 #include "brasero-track.h"
 #include "brasero-medium.h"
 #include "brasero-session.h"
-#include "burn-plugin-manager.h"
 #include "brasero-drive.h"
 #include "brasero-volume.h"
+#include "brasero-burn-lib.h"
+#include "burn-plugin-manager.h"
 #include "brasero-medium-selection-priv.h"
 
 #include "brasero-dest-selection.h"
@@ -73,7 +74,6 @@ enum {
 };
 
 G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_MEDIUM_SELECTION);
-
 
 void
 brasero_dest_selection_lock (BraseroDestSelection *self,
@@ -385,12 +385,15 @@ static gchar *
 brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 					     BraseroMedium *medium)
 {
+	guint used;
 	gchar *label;
+	goffset blocks = 0;
 	gchar *medium_name;
 	gchar *size_string;
 	BraseroMedia media;
-	gint64 size_bytes = 0;
 	BraseroBurnFlag flags;
+	goffset size_bytes = 0;
+	goffset data_blocks = 0;
 	BraseroTrackType *input = NULL;
 	BraseroDestSelectionPrivate *priv;
 
@@ -412,6 +415,10 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 					 path);
 		g_free (medium_name);
 		g_free (path);
+
+		brasero_medium_selection_update_used_space (BRASERO_MEDIUM_SELECTION (selection),
+							    medium,
+							    0);
 		return label;
 	}
 
@@ -437,43 +444,57 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 			 * holding the source disc */
 			label = g_strdup_printf (_("New disc in the burner holding source disc"));
 			g_free (medium_name);
+
+			brasero_medium_selection_update_used_space (BRASERO_MEDIUM_SELECTION (selection),
+								    medium,
+								    0);
 			return label;
 		}
 	}
 
 	media = brasero_medium_get_status (medium);
 	flags = brasero_burn_session_get_flags (priv->session);
+	brasero_burn_session_get_size (priv->session,
+				       &data_blocks,
+				       NULL);
 
-	if ((media & BRASERO_MEDIUM_BLANK)
-	|| ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-	&&  brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK)) {
-		brasero_medium_get_capacity (medium,
-					     &size_bytes,
-					     NULL);
-	}
-	else if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
+	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
 		brasero_medium_get_free_space (medium,
 					       &size_bytes,
-					       NULL);
-	}
-	else if (media & BRASERO_MEDIUM_CLOSED) {
-		if (!brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK) {
-			brasero_track_type_free (input);
-
-			/* NOTE for translators, the first %s is the medium name */
-			label = g_strdup_printf (_("%s: no free space"), medium_name);
-			g_free (medium_name);
-			return label;
-		}
-
-		brasero_medium_get_capacity (medium,
-					     &size_bytes,
-					     NULL);
+					       &blocks);
 	}
 	else {
-		brasero_medium_get_capacity (medium,
-					     &size_bytes,
-					     NULL);
+		brasero_medium_get_free_space (medium, NULL, &blocks);
+
+		/* if data would not fit, try to see if once blanked it would
+		 * work. This also covers the case where the media is closed as
+		 * its free space would be 0. This is the best way to do it
+		 * instead of checking for a CLOSED medium as it allows the 
+		 * overwrite media to be appended or merged if need be. */
+		if ((!blocks || blocks > data_blocks)
+		&& (brasero_burn_library_get_media_capabilities (media) & BRASERO_MEDIUM_REWRITABLE))
+			brasero_medium_get_capacity (medium,
+						     &size_bytes,
+						     &blocks);
+	}
+
+	if (blocks) {
+		used = data_blocks * 100 / blocks;
+		used = MIN (100, used);
+	}
+	else
+		used = 0;
+
+	brasero_medium_selection_update_used_space (BRASERO_MEDIUM_SELECTION (selection),
+						    medium,
+						    used);
+	if (!blocks) {
+		brasero_track_type_free (input);
+
+		/* NOTE for translators, the first %s is the medium name */
+		label = g_strdup_printf (_("%s: no free space"), medium_name);
+		g_free (medium_name);
+		return label;
 	}
 
 	/* format the size */
