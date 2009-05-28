@@ -204,11 +204,37 @@ brasero_dest_selection_finalize (GObject *object)
 	G_OBJECT_CLASS (brasero_dest_selection_parent_class)->finalize (object);
 }
 
+static goffset
+_get_medium_free_space (BraseroMedium *medium)
+{
+	BraseroMedia media;
+	goffset blocks = 0;
+
+	media = brasero_medium_get_status (medium);
+	media = brasero_burn_library_get_media_capabilities (media);
+
+	/* NOTE: we always try to blank a medium when we can */
+	if (media & BRASERO_MEDIUM_REWRITABLE)
+		brasero_medium_get_free_space (medium,
+					       NULL,
+					       &blocks);
+	else {
+		brasero_medium_get_free_space (medium,
+					       NULL,
+					       &blocks);
+	}
+
+	return blocks;
+}
+
 static gboolean
 brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 				       gpointer callback_data)
 {
 	BraseroBurnSession *session;
+	goffset session_blocks;
+	goffset burner_blocks;
+	goffset medium_blocks;
 	BraseroDrive *burner;
 
 	session = callback_data;
@@ -223,12 +249,16 @@ brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 	if (brasero_drive_get_medium (burner) == medium)
 		return TRUE;
 
-	/* The rule is:
-	 * - take the biggest
-	 * - blank media are our favourite
-	 * - try to avoid a medium that is already our source for copying */
 
+	/* The rule is:
+	 * - blank media are our favourite since it avoids hiding/blanking data
+	 * - take the medium that is closest to the size we need to burn
+	 * - try to avoid a medium that is already our source for copying */
 	/* NOTE: we could check if medium is bigger */
+	if ((brasero_burn_session_get_dest_media (session) & BRASERO_MEDIUM_BLANK)
+	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_BLANK))
+		goto choose_closest_size;
+
 	if (brasero_burn_session_get_dest_media (session) & BRASERO_MEDIUM_BLANK)
 		return TRUE;
 
@@ -236,10 +266,37 @@ brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
 		return TRUE;
 	}
-	if (brasero_burn_session_same_src_dest_drive (session)) {
+
+	/* In case it is the same source/same destination, choose it this new
+	 * medium except if the medium is a file. */
+	if (brasero_burn_session_same_src_dest_drive (session)
+	&& (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) == 0) {
 		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
 		return TRUE;
 	}
+
+	/* Any possible medium is better than file even if it means copying to
+	 * the same drive with a new medium later. */
+	if (brasero_drive_is_fake (burner)
+	&& (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) == 0) {
+		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
+		return TRUE;
+	}
+
+
+choose_closest_size:
+
+	brasero_burn_session_get_size (session, &session_blocks, NULL);
+	medium_blocks = _get_medium_free_space (medium);
+
+	if (medium_blocks - session_blocks <= 0)
+		return TRUE;
+
+	burner_blocks = _get_medium_free_space (brasero_drive_get_medium (burner));
+	if (burner_blocks - session_blocks <= 0)
+		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
+	else if (burner_blocks - session_blocks > medium_blocks - session_blocks)
+		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
 
 	return TRUE;
 }

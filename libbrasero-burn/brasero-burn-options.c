@@ -143,8 +143,6 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 
 	gtk_container_add (GTK_CONTAINER (priv->source_placeholder), priv->source);
 	gtk_widget_show (priv->source_placeholder);
-
-	brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (priv->selection));
 }
 
 void
@@ -982,6 +980,10 @@ brasero_burn_options_set_property (GObject *object,
 
 		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
 		brasero_burn_options_setup (BRASERO_BURN_OPTIONS (object));
+
+		/* Only try to set a better drive if there isn't one already set */
+		if (!brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session)))
+			brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (priv->selection));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
