@@ -9,29 +9,136 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-07 06:09+0530\n"
+"POT-Creation-Date: 2009-05-27 06:51+0530\n"
 "PO-Revision-Date: 2009-05-07 16:42+0530\n"
 "Last-Translator: Dr.T.vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\\n"
-"\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\\n\n"
 "\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:82
-#, c-format
-msgid " "
-msgstr ". "
+#: ../libbrasero-burn/brasero-data-options.c:148
+msgid "Should files be renamed to be fully Windows-compatible?"
+msgstr "கோப்புக்கள் விண்டோஸ் உடன் முற்றிலும் இயைந்து செயல்படும்படி மறு பெயரிட வேண்டுமா?"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:197
+#: ../libbrasero-burn/brasero-data-options.c:151
+#: ../libbrasero-burn/brasero-burn-dialog.c:959
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
+msgstr "முழு விண்டோஸ் ஒத்திசைவு குறுந்தட்டுக்கு சில கோப்புகளுக்கு இயைந்த பெயரில்லை."
+
+#: ../libbrasero-burn/brasero-data-options.c:152
+msgid "Those names should be changed and truncated to 64 characters."
+msgstr "பெயர்கள் மாற்றப்பட்டு 64  குறியீடுகளுக்குளாக குறுக்கப்பட வேண்டும்."
+
+#: ../libbrasero-burn/brasero-data-options.c:157
+msgid "_Disable Full Windows Compatibility"
+msgstr "(_D) முழுவதும் விண்டோஸ் ஏற்புடைமையை செயல் நீக்கு"
+
+#: ../libbrasero-burn/brasero-data-options.c:160
+msgid "_Rename for Full Windows Compatibility"
+msgstr "(_R) முழுவதும் விண்டோஸ் ஏற்புடைமைக்கு மறுபெயரிடு "
+
+#. general options
+#: ../libbrasero-burn/brasero-data-options.c:333
+msgid "Increase compatibility with _Windows systems"
+msgstr " விண்டோஸ் அமைப்பு ஏற்புடைமையை அதிகமாக்கு"
+
+#: ../libbrasero-burn/brasero-data-options.c:335
+msgid ""
+"Improve compatibility with Windows systems by allowing to display long "
+"filenames (maximum 64 characters)"
+msgstr ""
+"நீள்மான பெயர்களை காட்ட (அதிகபட்சம் 64 குறியீடுகளுக்கள்) அனுமதித்து  விண்டோஸ் அமைப்பு "
+"ஏற்புடைமையை அதிகமாக்கு"
+
+#: ../libbrasero-burn/brasero-data-options.c:342
+msgid "Disc options"
+msgstr "வட்டு தேர்வுகள்"
+
+#: ../libbrasero-burn/brasero-video-options.c:363
+msgid "Video format:"
+msgstr "வீடியோ ஒழுங்கு:"
+
+#: ../libbrasero-burn/brasero-video-options.c:375
+msgid "_NTSC"
+msgstr "_NTSC"
+
+#: ../libbrasero-burn/brasero-video-options.c:376
+msgid "Format used mostly on the North American Continent"
+msgstr "வட அமேரிக்க கண்டத்தில் அனேகமாக  பயன்படும் ஒழுங்கு"
+
+#: ../libbrasero-burn/brasero-video-options.c:390
+msgid "_PAL/SECAM"
+msgstr "_PAL/SECAM"
+
+#: ../libbrasero-burn/brasero-video-options.c:391
+msgid "Format used mostly in Europe"
+msgstr "ஐரோப்பா கண்டத்தில் அனேகமாக  பயன்படும் ஒழுங்கு"
+
+#: ../libbrasero-burn/brasero-video-options.c:405
+msgid "Native _format"
+msgstr "(_f) இயல்பான ஒழுங்கு"
+
+#: ../libbrasero-burn/brasero-video-options.c:419
+msgid "Aspect ratio:"
+msgstr "காட்சி பாங்கு விகிதம்:"
+
+#: ../libbrasero-burn/brasero-video-options.c:431
+msgid "_4:3"
+msgstr "_4:3"
+
+#: ../libbrasero-burn/brasero-video-options.c:446
+msgid "_16:9"
+msgstr "_16:9"
+
+#. Video options for (S)VCD
+#: ../libbrasero-burn/brasero-video-options.c:461
+msgid "VCD type:"
+msgstr "VCD வகை:"
+
+#: ../libbrasero-burn/brasero-video-options.c:474
+msgid "Create a SVCD"
+msgstr "ஒரு எஸ்விசிடி உருவாக்குக "
+
+#: ../libbrasero-burn/brasero-video-options.c:489
+msgid "Create a VCD"
+msgstr "ஒரு விசிடி உருவாக்குக "
+
+#: ../libbrasero-burn/brasero-video-options.c:504
+msgid "Video Options"
+msgstr "வீடியோ தேர்வுகள்"
+
+#: ../libbrasero-burn/burn-debug.c:51
+#, fuzzy
+msgid "Display debug statements on stdout for Brasero burn library"
+msgstr "ப்ராஸரோ ஊடக நூலகத்துக்கான செந்தர வெளிப்பாட்டில் உள்ள வழு நீக்க அறிக்கைகளை காட்டு"
+
+#: ../libbrasero-burn/burn-debug.c:70
+#, fuzzy
+msgid "Brasero media burning library"
+msgstr "ப்ராஸரோ ஒளி ஊடக நூலகம்"
+
+#: ../libbrasero-burn/burn-debug.c:71
+#, fuzzy
+msgid "Display options for Brasero-burn library"
+msgstr "ப்ராஸரோ ஊடக நூலகத்துக்கு  காட்சி தேர்வுகள்"
+
+#. Translators: %s is the name of the file
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:90
+#, fuzzy, c-format
+msgid "\"%s\" is not suitable for audio or video media"
+msgstr "\"%s\" விடியோ திட்டங்களுக்கு ஏற்ற வகையை கொண்டு இருக்கவில்லை"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:207
 #: ../src/brasero-video-project.c:955
 msgid "Analysing video files"
 msgstr "விடியோ கோப்புகளை ஆராய்கிறது"
 
-#: ../libbrasero-burn/brasero-data-vfs.c:183
+#: ../libbrasero-burn/brasero-data-vfs.c:218
 #, c-format
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" ஐ படிக்க முடியவில்லை"
@@ -49,65 +156,65 @@ msgid "Broken symbolic link"
 msgstr "உடைந்த குறி இணைப்பு"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1111 ../libbrasero-utils/brasero-io.c:1981
+#: ../libbrasero-utils/brasero-io.c:1112 ../libbrasero-utils/brasero-io.c:1982
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "சுருள் குறி இணைப்பு"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:519
-#: ../libbrasero-burn/brasero-track-data-cfg.c:615
-#: ../libbrasero-burn/brasero-track-data-cfg.c:626
-#: ../libbrasero-burn/brasero-track-data-cfg.c:687
-#: ../libbrasero-burn/brasero-track-data-cfg.c:692
+#: ../libbrasero-burn/brasero-track-data-cfg.c:599
+#: ../libbrasero-burn/brasero-track-data-cfg.c:695
+#: ../libbrasero-burn/brasero-track-data-cfg.c:706
+#: ../libbrasero-burn/brasero-track-data-cfg.c:767
+#: ../libbrasero-burn/brasero-track-data-cfg.c:772
 #: ../src/brasero-audio-disc.c:1676 ../src/brasero-audio-disc.c:1688
 #: ../src/brasero-audio-disc.c:1713 ../src/brasero-playlist.c:947
 #: ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
 msgstr "(ஏற்றுகிறது...)"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:521
-#: ../libbrasero-burn/brasero-track-data-cfg.c:698
+#: ../libbrasero-burn/brasero-track-data-cfg.c:601
+#: ../libbrasero-burn/brasero-track-data-cfg.c:778
 #: ../src/brasero-playlist.c:908
 msgid "Empty"
 msgstr "வெற்று"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:624
+#: ../libbrasero-burn/brasero-track-data-cfg.c:704
 msgid "Disc file"
 msgstr "வட்டு கோப்பு"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:702
+#: ../libbrasero-burn/brasero-track-data-cfg.c:782
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d உருப்படி"
 msgstr[1] "%d உருப்படிகள்"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1613
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1834
 #, c-format
 msgid "New folder"
 msgstr "புதிய அடைவு"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1616
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1837
 #, c-format
 msgid "New folder %i"
 msgstr "புதிய அடைவு %i"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1942
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1952
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2215
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2225
 msgid "Analysing files"
 msgstr "கோப்புகளை ஆய்கிறது"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2049
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2356
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "\"%s\" என்பது ஒரு சுருள் சிம்லிங்க்"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2075
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2382
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "\"%s\" ஐ கண்டு பிடிக்க முடியவில்லை"
 
-#: ../libbrasero-utils/brasero-io.c:1339
+#: ../libbrasero-utils/brasero-io.c:1340
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "கோப்பு இயக்கு பட்டியல் போல இல்லை"
@@ -171,17 +278,17 @@ msgstr "%s பண்புக்கூறு அடக்கத்தை ஐ உ
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-caps-burn.c:64
 #: ../libbrasero-burn/brasero-caps-burn.c:679
-#: ../libbrasero-burn/brasero-burn.c:2626 ../libbrasero-burn/burn-job.c:1233
-#: ../libbrasero-burn/burn-job.c:1242
+#: ../libbrasero-burn/brasero-burn.c:2626 ../libbrasero-burn/burn-job.c:1222
+#: ../libbrasero-burn/burn-job.c:1231
 #: ../libbrasero-burn/burn-mkisofs-base.c:307
-#: ../nautilus/nautilus-burn-extension.c:184 ../src/main.c:206
+#: ../nautilus/nautilus-burn-extension.c:182 ../src/main.c:206
 #: ../src/main.c:232 ../plugins/cdrkit/burn-genisoimage.c:360
-#: ../plugins/cdrkit/burn-readom.c:117 ../plugins/cdrkit/burn-readom.c:352
-#: ../plugins/cdrkit/burn-wodim.c:671 ../plugins/cdrkit/burn-wodim.c:786
-#: ../plugins/cdrkit/burn-wodim.c:801 ../plugins/cdrtools/burn-cdrecord.c:770
-#: ../plugins/cdrtools/burn-cdrecord.c:785
+#: ../plugins/cdrkit/burn-readom.c:117 ../plugins/cdrkit/burn-readom.c:359
+#: ../plugins/cdrkit/burn-wodim.c:685 ../plugins/cdrkit/burn-wodim.c:800
+#: ../plugins/cdrkit/burn-wodim.c:815 ../plugins/cdrtools/burn-cdrecord.c:785
+#: ../plugins/cdrtools/burn-cdrecord.c:800
 #: ../plugins/cdrtools/burn-mkisofs.c:361
-#: ../plugins/cdrtools/burn-readcd.c:119 ../plugins/cdrtools/burn-readcd.c:364
+#: ../plugins/cdrtools/burn-readcd.c:119 ../plugins/cdrtools/burn-readcd.c:371
 #, c-format
 msgid "An internal error occured"
 msgstr "ஒரு உள்ளமை பிழை நேர்ந்தது"
@@ -216,7 +323,7 @@ msgstr "ப்ராஸரோ - பிம்பத்தை உருவாக�
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:187
 #: ../libbrasero-burn/brasero-burn-dialog.c:201
-#: ../libbrasero-burn/brasero-burn-dialog.c:1000
+#: ../libbrasero-burn/brasero-burn-dialog.c:1013
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "ப்ராஸரோ -  DVD எழுதுகிறது (பாவனை)"
 
@@ -258,7 +365,7 @@ msgid "Burning image to DVD"
 msgstr "DVD க்கு பிம்பம் எழுதுதல்"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:229
-#: ../libbrasero-burn/brasero-burn-dialog.c:994
+#: ../libbrasero-burn/brasero-burn-dialog.c:1007
 msgid "Brasero - Copying DVD (Simulation)"
 msgstr "ப்ராஸரோ - DVD நகலெடுத்தல் (பாவனை)"
 
@@ -317,7 +424,7 @@ msgid "Burning data CD"
 msgstr "தரவு CD எழுதுதல் "
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:288
-#: ../libbrasero-burn/brasero-burn-dialog.c:1008
+#: ../libbrasero-burn/brasero-burn-dialog.c:1021
 msgid "Brasero - Copying CD (Simulation)"
 msgstr "ப்ராஸரோ - சிடி நகலெடுத்தல் (பாவனை)"
 
@@ -359,7 +466,7 @@ msgstr "விடியோ வட்டு எழுதுதல் "
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:346
 #: ../libbrasero-burn/brasero-burn-dialog.c:373
-#: ../libbrasero-burn/brasero-burn-dialog.c:1027
+#: ../libbrasero-burn/brasero-burn-dialog.c:1040
 msgid "Brasero - Burning Disc (Simulation)"
 msgstr "ப்ராஸரோ - வட்டு எழுதுதல் (பாவனை)"
 
@@ -377,7 +484,7 @@ msgid "Burning data disc"
 msgstr "தரவு வட்டு எழுதுதல் "
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:360
-#: ../libbrasero-burn/brasero-burn-dialog.c:1021
+#: ../libbrasero-burn/brasero-burn-dialog.c:1034
 msgid "Brasero - Copying Disc (Simulation)"
 msgstr "ப்ராஸரோ - வட்டு நகலெடுத்தல் (பாவனை)"
 
@@ -402,64 +509,66 @@ msgstr "பிம்பத்தை வட்டுக்கு பாவனை�
 msgid "Burning image to disc"
 msgstr "பிம்பத்தை வட்டுக்கு எழுதுதல்"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:410
+#: ../libbrasero-burn/brasero-burn-dialog.c:489
 msgid "Please replace the disc with a rewritable disc holding data."
 msgstr "தயவு செய்து தரவு உள்ள மீண்டும் எழுதக்கூடிய வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:412
+#: ../libbrasero-burn/brasero-burn-dialog.c:491
 msgid "Please replace the disc with a disc holding data."
 msgstr "தயவு செய்து தரவு உள்ள வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:416
+#: ../libbrasero-burn/brasero-burn-dialog.c:495
 msgid "Please insert a rewritable disc holding data."
 msgstr "தயவு செய்து தரவு உள்ள மீண்டும் எழுதக்கூடிய வட்டை உள்ளிடுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:418
-#: ../libbrasero-burn/brasero-burn-options.c:377
+#: ../libbrasero-burn/brasero-burn-dialog.c:497
+#: ../libbrasero-burn/brasero-burn-options.c:406
 msgid "Please insert a disc holding data."
 msgstr "தயவு செய்து தரவை கொண்ட வட்டை செருகு"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:433
+#: ../libbrasero-burn/brasero-burn-dialog.c:512
 #, c-format
 msgid ""
 "Please replace the disc with a recordable CD with at least %i MiB of free "
 "space."
-msgstr "தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய குறு வட்டால் வட்டை மாற்றுக"
+msgstr ""
+"தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய குறு வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:436
+#: ../libbrasero-burn/brasero-burn-dialog.c:515
 msgid "Please replace the disc with a recordable CD."
 msgstr "தயவு செய்து எழுதக்கூடிய எ வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:440
+#: ../libbrasero-burn/brasero-burn-dialog.c:519
 #, c-format
 msgid "Please insert a recordable CD with at least %i MiB of free space."
 msgstr "தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய குறு வட்டை உள்ளிடுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:443
+#: ../libbrasero-burn/brasero-burn-dialog.c:522
 msgid "Please insert a recordable CD."
 msgstr "தயவு செய்து எழுதக்கூடிய குறு வட்டை உள்ளிடுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:449
+#: ../libbrasero-burn/brasero-burn-dialog.c:528
 #, c-format
 msgid ""
 "Please replace the disc with a recordable DVD with at least %i MiB of free "
 "space."
-msgstr "தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய DVD வட்டால் வட்டை மாற்றுக"
+msgstr ""
+"தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய DVD வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:452
+#: ../libbrasero-burn/brasero-burn-dialog.c:531
 msgid "Please replace the disc with a recordable DVD."
 msgstr "தயவு செய்து எழுதக்கூடிய DVD வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:456
+#: ../libbrasero-burn/brasero-burn-dialog.c:535
 #, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
 msgstr "தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய DVD வட்டை உள்ளிடுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:459
+#: ../libbrasero-burn/brasero-burn-dialog.c:538
 msgid "Please insert a recordable DVD."
 msgstr "தயவு செய்து  எழுதக்கூடிய DVD வட்டை உள்ளிடுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:464
+#: ../libbrasero-burn/brasero-burn-dialog.c:543
 #, c-format
 msgid ""
 "Please replace the disc with a recordable CD or DVD with at least %i MiB of "
@@ -468,21 +577,25 @@ msgstr ""
 "தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய CD அல்லது DVD வட்டால் வட்டை "
 "மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:467
+#: ../libbrasero-burn/brasero-burn-dialog.c:546
 msgid "Please replace the disc with a recordable CD or DVD."
 msgstr "தயவு செய்து  எழுதக்கூடிய CD அல்லது DVD வட்டால் வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:471
+#: ../libbrasero-burn/brasero-burn-dialog.c:550
 #, c-format
-msgid "Please insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr "தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய CD அல்லது DVD வட்டை உள்ளிடுக"
+msgid ""
+"Please insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr ""
+"தயவு செய்து குறைந்தது %i MiB வெற்று இடமுள்ள எழுதக்கூடிய CD அல்லது DVD வட்டை உள்ளிடுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:474
-#: ../libbrasero-burn/brasero-burn-options.c:332
+#: ../libbrasero-burn/brasero-burn-dialog.c:553
+#: ../libbrasero-burn/brasero-burn-dialog.c:2126
+#: ../libbrasero-burn/brasero-burn-dialog.c:2138
+#: ../libbrasero-burn/brasero-burn-options.c:360
 msgid "Please insert a recordable CD or DVD."
 msgstr "தயவு செய்து எழுதக்கூடிய சிடி அல்லது டிவிடி ஐ செருகவும் "
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:522
+#: ../libbrasero-burn/brasero-burn-dialog.c:580
 msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a recordable disc is inserted."
@@ -490,21 +603,21 @@ msgstr ""
 "உங்கள் வன் வட்டில் வட்டின் பிம்பம் ஒன்று உருவாக்கப்பட்டுள்ளது.\n"
 " எழுதக்கூடிய வட்டை உள்ளிட்டதும் எழுதுதல் துவங்கும்."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:527
+#: ../libbrasero-burn/brasero-burn-dialog.c:585
 msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr "வட்டை உள்ளிட்டதும் தரவு சீர்மை சோதனை துவங்கும்."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:528
+#: ../libbrasero-burn/brasero-burn-dialog.c:586
 msgid "Please re-insert the disc in the CD/DVD burner."
 msgstr "தயவு செய்து CD/DVD எழுதியில் வட்டை மீண்டும் உள்ளிடவும்."
 
 #. Translators: %s is the name of a drive
-#: ../libbrasero-burn/brasero-burn-dialog.c:532
+#: ../libbrasero-burn/brasero-burn-dialog.c:590
 #, c-format
 msgid "\"%s\" is busy."
 msgstr "\"%s\" வேலையாக உள்ளது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:533
+#: ../libbrasero-burn/brasero-burn-dialog.c:591
 #: ../libbrasero-burn/brasero-burn.c:1324
 #: ../libbrasero-burn/brasero-burn.c:1358
 #: ../libbrasero-burn/brasero-burn.c:1540
@@ -513,55 +626,56 @@ msgstr "\"%s\" வேலையாக உள்ளது"
 msgid "Make sure another application is not using it"
 msgstr "வேறு பயன்பாடு எதுவும் அதை பயன்படுத்தவில்லை என உறுதி செய்து கொள்க"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:536
+#: ../libbrasero-burn/brasero-burn-dialog.c:594
 #, c-format
 msgid "There is no disc in \"%s\"."
 msgstr "\"%s\" இல் வட்டு ஏதும் இல்லை"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:540
+#: ../libbrasero-burn/brasero-burn-dialog.c:598
 #, c-format
 msgid "The disc in \"%s\" is not supported."
 msgstr "\"%s\" இல் உள்ள வட்டுக்கு ஆதரவு இல்லை"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:544
+#: ../libbrasero-burn/brasero-burn-dialog.c:602
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
 msgstr "\"%s\" இல் உள்ள வட்டு மீண்டும் எழுதக்கூடியது இல்லை"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:548
+#: ../libbrasero-burn/brasero-burn-dialog.c:606
 #, c-format
 msgid "The disc in \"%s\" is empty."
 msgstr "\"%s\" இல் உள்ள வட்டு காலியாக உள்ளது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:552
+#: ../libbrasero-burn/brasero-burn-dialog.c:610
 #, c-format
 msgid "The disc in \"%s\" is not writable."
 msgstr "\"%s\" இல் உள்ள வட்டு எழுதக்கூடியது இல்லை"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:556
+#: ../libbrasero-burn/brasero-burn-dialog.c:614
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
 msgstr "\"%s\" இல் உள்ள வட்டில் எழுத போதிய இடம் இல்லை"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:564
+#: ../libbrasero-burn/brasero-burn-dialog.c:622
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
 msgstr "\"%s\" இல் உள்ள வட்டை மீள் ஏற்றம் செய்ய வேண்டும்"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:565
+#: ../libbrasero-burn/brasero-burn-dialog.c:623
 msgid "Please eject the disc and reload it."
 msgstr "தயவு செய்து வட்டை வெளியேற்றி மீண்டும் ஏற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:657
+#: ../libbrasero-burn/brasero-burn-dialog.c:670
 #: ../libbrasero-burn/brasero-sum-dialog.c:325
-msgid "A file could not be created at the location specified for temporary files"
+msgid ""
+"A file could not be created at the location specified for temporary files"
 msgstr "தற்காலிக கோப்புகளுக்கு குறிப்பிட்ட இடத்தில் ஒரு கோப்பை உருவாக்க முடியவில்லை."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:658
+#: ../libbrasero-burn/brasero-burn-dialog.c:671
 msgid "The image could not be created at the specified location"
 msgstr "குறிப்பிட்ட இடத்தில் ஒரு பிம்பத்தை உருவாக்க முடியவில்லை."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:659
+#: ../libbrasero-burn/brasero-burn-dialog.c:672
 msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
@@ -569,169 +683,165 @@ msgstr ""
 "இந்த அமர்வுக்கு வேறு இடம் குறிப்பிடுகிறீர்களா அல்லது நடப்பு இடத்தில் மீண்டும் முயற்சி செய்ய "
 "வேண்டுமா?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:674
+#: ../libbrasero-burn/brasero-burn-dialog.c:687
 msgid "You may want to free some space on the disc and retry"
 msgstr "வட்டில் கொஞ்சம் காலி இடைவெளி உருவாக்கிக்கொண்டு மீண்டும் முயற்சி செய்யலாம்"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:681
+#: ../libbrasero-burn/brasero-burn-dialog.c:694
 #: ../libbrasero-burn/brasero-drive-properties.c:254
 #: ../libbrasero-burn/brasero-drive-properties.c:289
 #: ../libbrasero-burn/brasero-drive-properties.c:338
 msgid "_Keep Current Location"
 msgstr "(_K) நடப்பு இடத்தை வைத்துக்கொள்க"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:683
+#: ../libbrasero-burn/brasero-burn-dialog.c:696
 #: ../libbrasero-burn/brasero-drive-properties.c:255
 #: ../libbrasero-burn/brasero-drive-properties.c:290
 #: ../libbrasero-burn/brasero-drive-properties.c:339
 msgid "_Change Location"
 msgstr "(_C) இடத்தை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:705
-#: ../libbrasero-burn/brasero-image-properties.c:240
+#: ../libbrasero-burn/brasero-burn-dialog.c:718
+#: ../libbrasero-burn/brasero-image-properties.c:244
 msgid "Location for Image File"
 msgstr "பிம்பம் கோப்புக்கு இடம் "
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:713
+#: ../libbrasero-burn/brasero-burn-dialog.c:726
 #: ../libbrasero-burn/brasero-drive-properties.c:604
 msgid "Location for Temporary Files"
 msgstr "தற்காலிக கோப்புகளுக்கு இடம் "
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:813
+#: ../libbrasero-burn/brasero-burn-dialog.c:826
 msgid "_Replace Disc"
 msgstr "(_R) வட்டை மாற்றுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:851
+#: ../libbrasero-burn/brasero-burn-dialog.c:864
 msgid "Do you really want to erase the current disc?"
 msgstr "நீங்கள் உறுதியாக நடப்பு வட்டை அழிக்க விரும்புகிறீர்களா?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:852
+#: ../libbrasero-burn/brasero-burn-dialog.c:865
 msgid "The disc in the drive holds data."
 msgstr "இயக்கியில் உள்ள வட்டில் தரவு உள்ளது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:853
+#: ../libbrasero-burn/brasero-burn-dialog.c:866
 msgid "_Erase Disc"
 msgstr "(_E) வட்டை அழிக்கவும்"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:865
+#: ../libbrasero-burn/brasero-burn-dialog.c:878
 msgid "Already burnt files will be invisible (though still readable)."
 msgstr "ஏற்கெனவே எழுதிய கோப்புகள் தென்படா (இன்னும் படிக்க முடியுமானாலும்)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:866
-#: ../libbrasero-burn/brasero-burn-dialog.c:886
-#: ../libbrasero-burn/brasero-burn-dialog.c:906
+#: ../libbrasero-burn/brasero-burn-dialog.c:879
+#: ../libbrasero-burn/brasero-burn-dialog.c:899
+#: ../libbrasero-burn/brasero-burn-dialog.c:919
 msgid "Do you want to continue anyway?"
 msgstr "எப்படியும் தொடர வேண்டுமா?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:869
+#: ../libbrasero-burn/brasero-burn-dialog.c:882
 msgid "Appending new files to a multisession disc is not advised."
 msgstr "புதிய கோப்புகளை பல் அமர்வு வட்டுக்கு சேர்ப்பது உசிதமல்ல"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:871
-#: ../libbrasero-burn/brasero-burn-dialog.c:891
-#: ../libbrasero-burn/brasero-burn-dialog.c:911
-#: ../libbrasero-burn/brasero-burn-dialog.c:952 ../src/brasero-data-disc.c:649
+#: ../libbrasero-burn/brasero-burn-dialog.c:884
+#: ../libbrasero-burn/brasero-burn-dialog.c:904
+#: ../libbrasero-burn/brasero-burn-dialog.c:924
+#: ../libbrasero-burn/brasero-burn-dialog.c:965 ../src/brasero-data-disc.c:649
 #: ../libbrasero-burn/brasero-tool-dialog.c:397
 msgid "_Continue"
 msgstr "_தொடர்"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:885
+#: ../libbrasero-burn/brasero-burn-dialog.c:898
 msgid ""
 "You might not be able to listen to them with stereos and CD-TEXT won't be "
 "written."
-msgstr "அவற்றை நீங்கள் ஸ்டீரியோவாக கேட்க இயலாமல் போகலாம். மற்றும் சிடி உரை எழுதப்பட மாட்டாது. "
+msgstr ""
+"அவற்றை நீங்கள் ஸ்டீரியோவாக கேட்க இயலாமல் போகலாம். மற்றும் சிடி உரை எழுதப்பட மாட்டாது. "
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:889
+#: ../libbrasero-burn/brasero-burn-dialog.c:902
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "சிடி க்கு ஒலி தடங்களை சேர்த்தல் உசிதமல்ல"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:905
+#: ../libbrasero-burn/brasero-burn-dialog.c:918
 msgid "You might not be able to listen to it with stereos."
 msgstr "அவற்றை நீங்கள் ஸ்டீரியோவாக கேட்க இயலாமல் போகலாம்."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:909
+#: ../libbrasero-burn/brasero-burn-dialog.c:922
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr "ஒலி தடங்களை மீண்டும் எழுதக்கூடிய வட்டுகளில் பதிப்பது உசிதமல்ல."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:943
+#: ../libbrasero-burn/brasero-burn-dialog.c:956
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "முழு விண்டோஸ் ஒத்திசைவு நீக்கத்துடன் தொடர விரும்புகிறீர்களா?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:946
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:357
-msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
-msgstr "முழு விண்டோஸ் ஒத்திசைவு குறுந்தட்டுக்கு சில கோப்புகளுக்கு இயைந்த பெயரில்லை."
-
-#: ../libbrasero-burn/brasero-burn-dialog.c:990
+#: ../libbrasero-burn/brasero-burn-dialog.c:1003
 #, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
 msgstr "ப்ராஸரோ - பிம்பம் உருவாக்கம் (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:996
+#: ../libbrasero-burn/brasero-burn-dialog.c:1009
 #, c-format
 msgid "Brasero - Copying DVD (%i%% Done)"
 msgstr "ப்ராஸரோ - டிவிடி நகலெடுப்பு (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1002
+#: ../libbrasero-burn/brasero-burn-dialog.c:1015
 #, c-format
 msgid "Brasero - Burning DVD (%i%% Done)"
 msgstr "ப்ராஸரோ - டிவிடி எழுதுதல் (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1010
+#: ../libbrasero-burn/brasero-burn-dialog.c:1023
 #, c-format
 msgid "Brasero - Copying CD (%i%% Done)"
 msgstr "ப்ராஸரோ - சிடி நகலெடுப்பு (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1014
+#: ../libbrasero-burn/brasero-burn-dialog.c:1027
 msgid "Brasero - Burning CD (simulation)"
 msgstr "ப்ராஸரோ- சிடி எழுதுதல் (பாவனை)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1016
+#: ../libbrasero-burn/brasero-burn-dialog.c:1029
 #, c-format
 msgid "Brasero - Burning CD (%i%% Done)"
 msgstr "ப்ராஸரோ - சிடி எழுதுதல் (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1023
+#: ../libbrasero-burn/brasero-burn-dialog.c:1036
 #, c-format
 msgid "Brasero - Copying Disc (%i%% Done)"
 msgstr "ப்ராஸரோ - வட்டு நகலெடுப்பு (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1029
+#: ../libbrasero-burn/brasero-burn-dialog.c:1042
 #, c-format
 msgid "Brasero - Burning Disc (%i%% Done)"
 msgstr "ப்ராஸரோ - வட்டு எழுதுதல் (%i%% முடிந்தது)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1218
+#: ../libbrasero-burn/brasero-burn-dialog.c:1231
 msgid "The simulation was successful."
 msgstr "பாவனை எழுதுதல் வெற்றிகரமாக முடிந்தது."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1221
+#: ../libbrasero-burn/brasero-burn-dialog.c:1234
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "உண்மையில் வட்டு எழுதுதல் 10 வினாடிகளில் நடக்கும்."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1224
+#: ../libbrasero-burn/brasero-burn-dialog.c:1237
 msgid "Burn _Now"
 msgstr "(_N)  இப்போது எழுதுக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1555
+#: ../libbrasero-burn/brasero-burn-dialog.c:1568
 msgid "Save Current Session"
 msgstr "நடப்பு அமர்வை சேமி "
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1614
+#: ../libbrasero-burn/brasero-burn-dialog.c:1627
 msgid "Session Log"
 msgstr "அமர்வு பதிவு"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1644
-#: ../libbrasero-burn/brasero-burn-dialog.c:1668
-#: ../libbrasero-burn/brasero-burn-dialog.c:1679
+#: ../libbrasero-burn/brasero-burn-dialog.c:1657
+#: ../libbrasero-burn/brasero-burn-dialog.c:1681
+#: ../libbrasero-burn/brasero-burn-dialog.c:1692
 msgid "The session log cannot be displayed."
 msgstr "அமர்வு பதிவை காட்ட முடியாது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1645
+#: ../libbrasero-burn/brasero-burn-dialog.c:1658
 msgid "The log file could not be found"
 msgstr "பதிவு கோப்பை காணவில்லை"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1660
+#: ../libbrasero-burn/brasero-burn-dialog.c:1673
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
@@ -739,89 +849,111 @@ msgstr ""
 "அமர்வு பதிவில் இருந்து இது ஒரு சுருக்கம் (கடைசி 10 MiB):\n"
 "\n"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1748
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761
 msgid "An unknown error occured."
 msgstr "தெரியாத பிழை ஏற்பட்டது."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1758
+#: ../libbrasero-burn/brasero-burn-dialog.c:1771
 msgid "Error while burning."
 msgstr "எழுதுகையில் பிழை."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1766
+#: ../libbrasero-burn/brasero-burn-dialog.c:1779
 msgid "_Save Log"
 msgstr "(_S) அமர்வு பதிவை சேமி"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1773
+#: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "_View Log"
 msgstr "(_V)  பதிவை காண்க"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1841
+#: ../libbrasero-burn/brasero-burn-dialog.c:1849
 msgid "Audio CD successfully burnt"
 msgstr "ஒலி சிடி வெற்றிகரமாக எழுதப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1846
+#: ../libbrasero-burn/brasero-burn-dialog.c:1854
 msgid "DVD successfully copied"
 msgstr "DVD வெற்றிகரமாக நகலெடுக்கப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1848
+#: ../libbrasero-burn/brasero-burn-dialog.c:1856
 msgid "CD successfully copied"
 msgstr "சிடி வெற்றிகர்மாக நகலெடுக்கப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1852
+#: ../libbrasero-burn/brasero-burn-dialog.c:1860
 msgid "Image of DVD successfully created"
 msgstr "DVD பிம்பம் வெற்றிகரமாக உருவாக்கப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1854
+#: ../libbrasero-burn/brasero-burn-dialog.c:1862
 msgid "Image of CD successfully created"
 msgstr "சிடி பிம்பம் வெற்றிகரமாக உருவாக்கப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1860
+#: ../libbrasero-burn/brasero-burn-dialog.c:1868
 msgid "Image successfully burnt to DVD"
 msgstr " பிம்பம் வெற்றிகரமாக DVD க்கு எழுதப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1862
+#: ../libbrasero-burn/brasero-burn-dialog.c:1870
 msgid "Image successfully burnt to CD"
 msgstr " பிம்பம் வெற்றிகரமாக சிடி க்கு எழுதப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1868
+#: ../libbrasero-burn/brasero-burn-dialog.c:1876
 msgid "Data DVD successfully burnt"
 msgstr " வெற்றிகரமாக தரவு DVD எழுதப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1870
+#: ../libbrasero-burn/brasero-burn-dialog.c:1878
 msgid "Data CD successfully burnt"
 msgstr "தரவு சிடி  வெற்றிகரமாக எழுதப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1873
+#: ../libbrasero-burn/brasero-burn-dialog.c:1881
 msgid "Image successfully created"
 msgstr " பிம்பம் வெற்றிகரமாக உருவாக்கப்பட்டது"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1883
+#: ../libbrasero-burn/brasero-burn-dialog.c:1907
 msgid "Make _Another Copy"
 msgstr "(_A) இன்னொரு நகலெடு"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1911
+#: ../libbrasero-burn/brasero-burn-dialog.c:1936
 msgid "_Create Cover"
 msgstr "(_C) உறை உருவாக்குக"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2174
+#: ../libbrasero-burn/brasero-burn-dialog.c:2089
+msgid "There are some files left to burn"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2096
+msgid "There are some more videos left to burn"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2100
+msgid "There are some more songs left to burn"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2139
+#: ../libbrasero-burn/brasero-burn.c:1665 ../libbrasero-burn/burn-job.c:438
+#: ../plugins/cdrkit/burn-genisoimage.c:197 ../plugins/cdrkit/burn-wodim.c:104
+#: ../plugins/cdrtools/burn-cdrecord.c:104
+#: ../plugins/cdrtools/burn-mkisofs.c:198
+#: ../plugins/growisofs/burn-growisofs.c:190
+#, c-format
+msgid "Not enough space available on the disc"
+msgstr "வட்டில் போதிய இடைவெளி இல்லை"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2286
 #: ../libbrasero-burn/brasero-tool-dialog.c:389
 msgid "Do you really want to quit?"
 msgstr "நிச்சயம் நீங்கள் வெளியேற வேண்டுமா?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2178
+#: ../libbrasero-burn/brasero-burn-dialog.c:2290
 #: ../libbrasero-burn/brasero-tool-dialog.c:392
 msgid "Interrupting the process may make disc unusable."
 msgstr "செயலை இடைமறிப்பது வட்டை பயன்படுத்த முடியாதது ஆக்கிவிடும்"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2181
+#: ../libbrasero-burn/brasero-burn-dialog.c:2293
 msgid "C_ontinue Burning"
 msgstr "(_o) எழுதுவதை தொடரவும்."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2188
+#: ../libbrasero-burn/brasero-burn-dialog.c:2300
 msgid "_Cancel Burning"
 msgstr "(_C) எழுதுதலை ரத்து செய்"
 
-#: ../libbrasero-burn/brasero-burn-options.c:249
+#: ../libbrasero-burn/brasero-burn-options.c:254
 msgid ""
 "Please insert a recordable CD or DVD if you don't want to write to an image "
 "file."
@@ -829,95 +961,114 @@ msgstr ""
 "பிம்ப கோப்பு எழுத விரும்பாவிட்டால் தயவு செய்து எழுதக்கூடிய சிடி அல்லது டிவிடி ஐ "
 "செருகவும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:325
-msgid "Please choose another CD or DVD or insert a new one."
-msgstr "தயவு செய்து சிடி அல்லது டிவிடி ஐ செருகவும் அல்லது புதியதை இடவும்."
+#: ../libbrasero-burn/brasero-burn-options.c:336
+#, fuzzy
+msgid "Would you like to burn the selection of files across several media?"
+msgstr "நீங்க வட்டின் கொள்ளளவுக்கும் அதிகமாக எழுத விரும்புகிறீர்களா?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:326
+#: ../libbrasero-burn/brasero-burn-options.c:337
+#: ../libbrasero-burn/brasero-burn-options.c:354
 #: ../src/brasero-data-disc.c:586
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option."
 msgstr "மேலெழுதும் தேர்வை உடையதாயினும் திட்டத்தின் அளவு வட்டுக்கு மிகப்பெரியது."
 
-#: ../libbrasero-burn/brasero-burn-options.c:333
+#: ../libbrasero-burn/brasero-burn-options.c:342
+#, fuzzy
+msgid "_Burn Several Discs"
+msgstr "வட்டுக்கு எழுதுதல்"
+
+#: ../libbrasero-burn/brasero-burn-options.c:343
+msgid "Burn the selection of files across several media"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-options.c:353
+msgid "Please choose another CD or DVD or insert a new one."
+msgstr "தயவு செய்து சிடி அல்லது டிவிடி ஐ செருகவும் அல்லது புதியதை இடவும்."
+
+#: ../libbrasero-burn/brasero-burn-options.c:361
 msgid "There is no recordable disc inserted."
 msgstr "எழுதக்கூடிய வட்டு ஏதும் செருகவில்லை"
 
-#: ../libbrasero-burn/brasero-burn-options.c:339
+#: ../libbrasero-burn/brasero-burn-options.c:367
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "கலைஞர், தலைப்பு முதலிய தட விவரங்கள் வட்டுக்கு எழுதப்படமாட்டாது."
 
-#: ../libbrasero-burn/brasero-burn-options.c:340
+#: ../libbrasero-burn/brasero-burn-options.c:368
 msgid "This is not supported by the current active burning backend."
 msgstr "இது நடப்பு எழுதும் பின்புல கருவி எதாலும் ஆதரிக்கப்படவில்லை."
 
-#: ../libbrasero-burn/brasero-burn-options.c:352
-#: ../nautilus/nautilus-burn-extension.c:205
+#: ../libbrasero-burn/brasero-burn-options.c:380
+#: ../nautilus/nautilus-burn-extension.c:203
 msgid "Please add files."
 msgstr "தயவு செய்து கோப்புக்களை சேர்க்கவும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:353
-#: ../libbrasero-burn/brasero-burn-options.c:359
-#: ../libbrasero-burn/brasero-burn-options.c:365
-#: ../nautilus/nautilus-burn-extension.c:206 ../src/brasero-project.c:887
-#: ../src/brasero-project.c:896 ../libbrasero-burn/brasero-track-data.c:372
+#: ../libbrasero-burn/brasero-burn-options.c:381
+#: ../libbrasero-burn/brasero-burn-options.c:387
+#: ../libbrasero-burn/brasero-burn-options.c:393
+#: ../nautilus/nautilus-burn-extension.c:204 ../src/brasero-project.c:1023
+#: ../src/brasero-project.c:1032 ../libbrasero-burn/brasero-track-data.c:402
 #: ../libbrasero-burn/brasero-track-stream.c:288 ../src/main.c:249
 #, c-format
 msgid "The project is empty"
 msgstr "திட்டம் வெற்று ஆக இருக்கிறது"
 
-#: ../libbrasero-burn/brasero-burn-options.c:358
+#: ../libbrasero-burn/brasero-burn-options.c:386
 msgid "Please add songs."
 msgstr "தயவு செய்து பாடல்களை சேர்க்கவும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:364
+#: ../libbrasero-burn/brasero-burn-options.c:392
 msgid "Please add videos."
 msgstr "தயவு செய்து விடியோ படங்களை சேர்க்கவும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:378
+#: ../libbrasero-burn/brasero-burn-options.c:407
 msgid "There is no inserted disc to copy."
 msgstr " நகல் எடுக்க உள்ளிட்ட வட்டு ஏதும் இல்லை"
 
-#: ../libbrasero-burn/brasero-burn-options.c:389
+#: ../libbrasero-burn/brasero-burn-options.c:418
 msgid "Please select an image."
 msgstr "ஓரு பிம்பத்தை தெரிவு செய்யவும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:390
+#: ../libbrasero-burn/brasero-burn-options.c:419
 msgid "There is no selected image."
 msgstr "தேர்ந்தெடுக்கப்பட்ட பிம்பம் ஏதும் இல்லை."
 
-#: ../libbrasero-burn/brasero-burn-options.c:401
-#: ../libbrasero-burn/brasero-src-image.c:165
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:431
+#: ../libbrasero-burn/brasero-src-image.c:166
+#, fuzzy
+msgctxt "disc"
 msgid "Please select another image."
 msgstr "தயவு செய்து வேறு பிம்பத்தை தேர்வு செய்யவும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:402
+#: ../libbrasero-burn/brasero-burn-options.c:432
 msgid "It doesn't appear to be a valid image or a valid cue file."
 msgstr "இது செல்லுபடியாகும் பிம்பம் அல்லது க்யூ கோப்பு ஆக தெரியவில்லை"
 
-#: ../libbrasero-burn/brasero-burn-options.c:413
+#: ../libbrasero-burn/brasero-burn-options.c:443
 msgid "Please insert a disc that is not copy protected."
 msgstr "தயவு செய்து நகலெடுக்க தடை செய்யப்படாத வட்டு ஒன்றை செருகு."
 
-#: ../libbrasero-burn/brasero-burn-options.c:414
+#: ../libbrasero-burn/brasero-burn-options.c:444
 msgid "Such a disc cannot be copied without the proper plugins."
 msgstr "அத்தகைய வட்டை சரியான சொருகிகள் இல்லாமல் நகலெடுக்க இயலாது."
 
-#: ../libbrasero-burn/brasero-burn-options.c:421
+#: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "தயவு செய்து ஆதரவுள்ள சிடி அல்லது டிவிடி ஆல் வட்டை மீள் இடுக "
 
-#: ../libbrasero-burn/brasero-burn-options.c:422
+#: ../libbrasero-burn/brasero-burn-options.c:452
 msgid "It is not possible to write with the current set of plugins."
 msgstr "நடப்பு தொகுதி சொருகிகளுடன் எழுத இயலாது."
 
-#: ../libbrasero-burn/brasero-burn-options.c:430
+#: ../libbrasero-burn/brasero-burn-options.c:460
 #: ../src/brasero-data-disc.c:559
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "நீங்க வட்டின் கொள்ளளவுக்கும் அதிகமாக எழுத விரும்புகிறீர்களா?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:431
+#: ../libbrasero-burn/brasero-burn-options.c:461
 #: ../src/brasero-data-disc.c:560
 msgid ""
 "The size of the project is too large for the disc and you must remove files "
@@ -931,33 +1082,92 @@ msgstr ""
 "இருந்தால் அதற்கு அளவுக்கு அதிகம் எழுதும் தேர்வு அவசியமானதாக இருப்பதால் இந்த தேர்வை நீங்கள் "
 "பயன்படுத்த விரும்பலாம். குறிப்பு: இந்த தேர்வு தோல்வி அடையலாம்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:438
+#: ../libbrasero-burn/brasero-burn-options.c:468
 #: ../src/brasero-data-disc.c:569
 msgid "_Overburn"
 msgstr "(_O) மேலெழுதல்"
 
-#: ../libbrasero-burn/brasero-burn-options.c:439
+#: ../libbrasero-burn/brasero-burn-options.c:469
 #: ../src/brasero-data-disc.c:570
 msgid "Burn beyond the disc reported capacity"
 msgstr "வட்டின் அறிவிக்கப்பட்ட அளவுக்கு மேல் எழுதுதல்"
 
-#: ../libbrasero-burn/brasero-burn-options.c:450
-msgid "The drive that holds the source disc will also be the one used to record."
+#: ../libbrasero-burn/brasero-burn-options.c:480
+msgid ""
+"The drive that holds the source disc will also be the one used to record."
 msgstr "மூல வட்டை உடைய அதே இயக்கிதான் எழுதவும் பயன்படும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:451
+#: ../libbrasero-burn/brasero-burn-options.c:481
 msgid ""
 "A new recordable disc will be required once the one currently loaded has "
 "been copied."
-msgstr "நடப்பில் ஏற்றப்பட்ட வட்டு பிரதி எடுத்தபின் புதிய  எழுதப்படக்கூடிய வட்டு தேவைப்படும்."
+msgstr ""
+"நடப்பில் ஏற்றப்பட்ட வட்டு பிரதி எடுத்தபின் புதிய  எழுதப்படக்கூடிய வட்டு தேவைப்படும்."
 
-#: ../libbrasero-burn/brasero-burn-options.c:500
+#: ../libbrasero-burn/brasero-burn-options.c:531
+#: ../libbrasero-burn/brasero-burn-options.c:698
+#: ../libbrasero-burn/brasero-burn-options.c:717
+#: ../libbrasero-burn/brasero-burn-options.c:830
+#: ../libbrasero-burn/brasero-burn-options.c:856
 msgid "_Burn"
 msgstr "(_B) எழுதுதல்"
 
-#: ../libbrasero-burn/brasero-burn-options.c:543
+#: ../libbrasero-burn/brasero-burn-options.c:574
 msgid "Select a disc to write to"
 msgstr "எழுத ஒரு வட்டை தேர்வு செய்க"
+
+#: ../libbrasero-burn/brasero-burn-options.c:696
+#: ../libbrasero-burn/brasero-burn-options.c:715
+#: ../libbrasero-burn/brasero-burn-options.c:828
+msgid "Disc Burning Setup"
+msgstr "வட்டு எழுதும் அமைப்பு"
+
+#: ../libbrasero-burn/brasero-burn-options.c:747
+#: ../src/brasero-data-disc.c:706
+#, c-format
+msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+msgstr " \"%s\"ஐ வட்டுக்கு எழுத வேண்டுமா அல்லது தரவு திட்டத்துக்கு சேர்க்க வேண்டுமா?"
+
+#: ../libbrasero-burn/brasero-burn-options.c:760
+#: ../src/brasero-data-disc.c:715
+msgid ""
+"This file is the image of a disc and can therefore be burnt to disc without "
+"having to add it to a data project first."
+msgstr ""
+"இந்த கோப்பு வட்டின் பிம்பம் ஆதலால் தரவு திட்டத்தில் சேர்க்காமல் நேரடியாக வட்டுக்கு "
+"எழுதிவிடலாம்."
+
+#: ../libbrasero-burn/brasero-burn-options.c:762
+#: ../src/brasero-data-disc.c:717
+msgid "_Add to Project"
+msgstr "(_A) திட்டத்துக்கு சேர்"
+
+#: ../libbrasero-burn/brasero-burn-options.c:764
+#: ../src/brasero-data-disc.c:719 ../src/brasero-project.c:216
+#: ../src/brasero-project.c:597
+msgid "_Burn..."
+msgstr "(_B) எழுதுதல்..."
+
+#: ../libbrasero-burn/brasero-burn-options.c:854
+msgid "Image Burning Setup"
+msgstr "பிம்பம் எழுதும் அமைப்பு"
+
+#. pack everything
+#: ../libbrasero-burn/brasero-burn-options.c:865
+msgid "Select an image to write"
+msgstr "எழுத ஒரு பிம்பத்தை தெர்வு செய்க"
+
+#: ../libbrasero-burn/brasero-burn-options.c:885
+msgid "CD/DVD Copy Options"
+msgstr "சிடி/DVD படியெடுப்பு தேர்வுகள்"
+
+#: ../libbrasero-burn/brasero-burn-options.c:887
+msgid "_Copy"
+msgstr "(_C) நகலெடு"
+
+#: ../libbrasero-burn/brasero-burn-options.c:894
+msgid "Select disc to copy"
+msgstr " நகல் எடுக்க வட்டை தேர்வு செய்க"
 
 #: ../libbrasero-burn/brasero-burn.c:159
 msgid "Burning CD/DVD"
@@ -1042,15 +1252,6 @@ msgstr "இயக்கி வேலையில் உள்ளது"
 msgid "Merging data is impossible with this disc"
 msgstr "இந்த வட்டுடன் தரவை ஒன்றாக்குவது இயலாது"
 
-#: ../libbrasero-burn/brasero-burn.c:1665
-#: ../plugins/cdrkit/burn-genisoimage.c:197 ../plugins/cdrkit/burn-wodim.c:104
-#: ../plugins/cdrtools/burn-cdrecord.c:104
-#: ../plugins/cdrtools/burn-mkisofs.c:198
-#: ../plugins/growisofs/burn-growisofs.c:190
-#, c-format
-msgid "Not enough space available on the disc"
-msgstr "வட்டில் போதிய இடைவெளி இல்லை"
-
 #: ../libbrasero-burn/brasero-burn.c:1946
 #, c-format
 msgid "There is no track to be burnt"
@@ -1108,109 +1309,9 @@ msgstr "%s:காலி இடைவெளி இல்லை"
 msgid "%s: %s of free space"
 msgstr "%s:  காலி இடைவெளியில் %s"
 
-#: ../libbrasero-burn/brasero-disc-copy-dialog.c:78
-msgid "_Copy"
-msgstr "(_C) நகலெடு"
-
-#: ../libbrasero-burn/brasero-disc-copy-dialog.c:87
-msgid "Select disc to copy"
-msgstr " நகல் எடுக்க வட்டை தேர்வு செய்க"
-
-#: ../libbrasero-burn/brasero-disc-copy-dialog.c:110
-msgid "CD/DVD Copy Options"
-msgstr "சிடி/DVD படியெடுப்பு தேர்வுகள்"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:354
-msgid "Should files be renamed to be fully Windows-compatible?"
-msgstr "கோப்புக்கள் விண்டோஸ் உடன் முற்றிலும் இயைந்து செயல்படும்படி மறு பெயரிட வேண்டுமா?"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:358
-msgid "Those names should be changed and truncated to 64 characters."
-msgstr "பெயர்கள் மாற்றப்பட்டு 64  குறியீடுகளுக்குளாக குறுக்கப்பட வேண்டும்."
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:363
-msgid "_Disable Full Windows Compatibility"
-msgstr "(_D) முழுவதும் விண்டோஸ் ஏற்புடைமையை செயல் நீக்கு"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:366
-msgid "_Rename for Full Windows Compatibility"
-msgstr "(_R) முழுவதும் விண்டோஸ் ஏற்புடைமைக்கு மறுபெயரிடு "
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:389
-msgid "Increase compatibility with _Windows systems"
-msgstr " விண்டோஸ் அமைப்பு ஏற்புடைமையை அதிகமாக்கு"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:391
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-"நீள்மான பெயர்களை காட்ட (அதிகபட்சம் 64 குறியீடுகளுக்கள்) அனுமதித்து  விண்டோஸ் அமைப்பு "
-"ஏற்புடைமையை அதிகமாக்கு"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:433
-msgid "Disc options"
-msgstr "வட்டு தேர்வுகள்"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:588
-msgid "Video format:"
-msgstr "வீடியோ ஒழுங்கு:"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:600
-msgid "_NTSC"
-msgstr "_NTSC"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:601
-msgid "Format used mostly on the North American Continent"
-msgstr "வட அமேரிக்க கண்டத்தில் அனேகமாக  பயன்படும் ஒழுங்கு"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:615
-msgid "_PAL/SECAM"
-msgstr "_PAL/SECAM"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:616
-msgid "Format used mostly in Europe"
-msgstr "ஐரோப்பா கண்டத்தில் அனேகமாக  பயன்படும் ஒழுங்கு"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:630
-msgid "Native _format"
-msgstr "(_f) இயல்பான ஒழுங்கு"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:644
-msgid "Aspect ratio:"
-msgstr "காட்சி பாங்கு விகிதம்:"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:656
-msgid "_4:3"
-msgstr "_4:3"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:671
-msgid "_16:9"
-msgstr "_16:9"
-
-#. Video options for (S)VCD
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:686
-msgid "VCD type:"
-msgstr "VCD வகை:"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:699
-msgid "Create a SVCD"
-msgstr "ஒரு எஸ்விசிடி உருவாக்குக "
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:714
-msgid "Create a VCD"
-msgstr "ஒரு விசிடி உருவாக்குக "
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:729
-msgid "Video Options"
-msgstr "வீடியோ தேர்வுகள்"
-
-#: ../libbrasero-burn/brasero-disc-option-dialog.c:828
-msgid "Disc Burning Setup"
-msgstr "வட்டு எழுதும் அமைப்பு"
-
 #: ../libbrasero-burn/brasero-drive-properties.c:153
 #: ../libbrasero-burn/brasero-drive-properties.c:165
+#: ../src/brasero-audio-disc.c:1286
 msgid "Unknown"
 msgstr "தெரியாத"
 
@@ -1221,8 +1322,8 @@ msgid "Do you really want to choose this location?"
 msgstr "நீங்கள் நிச்சயம் இந்த இடத்தை தேர்ந்தெடுக்க விரும்புகிறீர்களா?"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:284
-#: ../libbrasero-burn/brasero-session.c:773
-#: ../libbrasero-burn/brasero-session.c:831 ../libbrasero-burn/burn-job.c:477
+#: ../libbrasero-burn/brasero-session.c:775
+#: ../libbrasero-burn/brasero-session.c:833 ../libbrasero-burn/burn-job.c:496
 #: ../plugins/cdrkit/burn-genisoimage.c:190
 #: ../plugins/cdrtools/burn-mkisofs.c:191
 #: ../plugins/libburnia/burn-libisofs.c:222
@@ -1329,42 +1430,37 @@ msgstr "காலி இடைவெளிக்கு தற்காலிக 
 msgid "Temporary files"
 msgstr "தற்காலிக கோப்புகள்"
 
-#. pack everything
-#: ../libbrasero-burn/brasero-image-option-dialog.c:84
-msgid "Select an image to write"
-msgstr "எழுத ஒரு பிம்பத்தை தெர்வு செய்க"
-
-#: ../libbrasero-burn/brasero-image-option-dialog.c:95
-msgid "Image Burning Setup"
-msgstr "பிம்பம் எழுதும் அமைப்பு"
-
-#: ../libbrasero-burn/brasero-image-properties.c:208
-#: ../libbrasero-burn/brasero-src-image.c:477
+#: ../libbrasero-burn/brasero-image-properties.c:209
+#: ../libbrasero-burn/brasero-src-image.c:478
 msgid "Image type:"
 msgstr "பிம்ப வகை:"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:89
-msgid "Let brasero choose (safest)"
-msgstr "ப்ராஸாரோவே தேர்ந்தெடுக்கட்டும் (மிக பாதுகாப்பானது)"
+#: ../libbrasero-burn/brasero-image-type-chooser.c:92
+msgid "Autodetect"
+msgstr ""
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:96
-msgid "*.iso image"
-msgstr "*.iso பிம்பம்"
+#: ../libbrasero-burn/brasero-image-type-chooser.c:100
+#, fuzzy
+msgid "ISO9660 images"
+msgstr "பிம்பங்கள்"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:104
-msgid "*.raw image"
-msgstr "*.raw பிம்பம்"
+#: ../libbrasero-burn/brasero-image-type-chooser.c:109
+msgid "Readcd/Readom images"
+msgstr ""
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:112
-msgid "*.cue image"
+#: ../libbrasero-burn/brasero-image-type-chooser.c:118
+#, fuzzy
+msgid "Cue images"
 msgstr "*.cue பிம்பம்"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:120
-msgid "*.toc image (cdrdao)"
-msgstr "*.toc பிம்பம் (cdrdao)"
+#: ../libbrasero-burn/brasero-image-type-chooser.c:127
+#, fuzzy
+msgid "Cdrdao images"
+msgstr "பிம்பத்தை உருவாக்குகிறது"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:341
-msgid "Do you really want to keep the current extension for the disc image name?"
+msgid ""
+"Do you really want to keep the current extension for the disc image name?"
 msgstr "நீங்கள் நிச்சயம் இந்த வட்டு பிம்பத்தின் பெயர் நீட்சியை வைத்துக்கொள்ள விரும்புகிறீர்களா?"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:345
@@ -1412,54 +1508,56 @@ msgstr "கணித்த மீதி நேரம்: %02i:%02i:%02i"
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB  %i MiB இல்"
 
-#: ../libbrasero-burn/brasero-session.c:578
-#: ../libbrasero-burn/brasero-session.c:594 ../libbrasero-burn/burn-job.c:611
+#: ../libbrasero-burn/brasero-session.c:580
+#: ../libbrasero-burn/brasero-session.c:596 ../libbrasero-burn/burn-job.c:630
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "பிம்ப வெளிப்பாட்டுக்கு பாதை குறிப்பிடவில்லை"
 
 #. Translators: %s is a path
-#: ../libbrasero-burn/brasero-src-image.c:235
+#: ../libbrasero-burn/brasero-src-image.c:236
 #, c-format
 msgid "\"%s\": loading"
 msgstr "\"%s\": ஏற்றப்படுகிறது."
 
 #. Translators: %s is a path and image refers to a disc image
-#: ../libbrasero-burn/brasero-src-image.c:241
+#: ../libbrasero-burn/brasero-src-image.c:242
 #, c-format
 msgid "\"%s\": unknown image type"
 msgstr "\"%s\": தெரியாத பிம்ப வகை "
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
-#: ../libbrasero-burn/brasero-src-image.c:256
+#: ../libbrasero-burn/brasero-src-image.c:257
 #, c-format
 msgid "\"%s\": %s"
 msgstr "\"%s\": %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
-#: ../libbrasero-burn/brasero-src-image.c:265
-#: ../libbrasero-burn/brasero-src-image.c:571
+#: ../libbrasero-burn/brasero-src-image.c:266
+#: ../libbrasero-burn/brasero-src-image.c:572
 msgid "Click here to select an _image"
 msgstr "(_i) ஒரு பிம்பத்தை தேர்வு செய்ய இங்கு சொடுக்கவும்."
 
-#: ../libbrasero-burn/brasero-src-image.c:424
+#: ../libbrasero-burn/brasero-src-image.c:425
 msgid "Select Image File"
 msgstr "பிம்ப கோப்பு தேர்வு செய்க"
 
-#: ../libbrasero-burn/brasero-src-image.c:453
+#: ../libbrasero-burn/brasero-src-image.c:454
 #: ../src/brasero-search-entry.c:610 ../src/brasero-search-entry.c:650
 #: ../src/brasero-search-entry.c:689 ../src/brasero-search-beagle.c:475
-#: ../src/brasero-file-chooser.c:210 ../src/brasero-project.c:1481
+#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:501
+#: ../src/brasero-project.c:1624
 msgid "All files"
 msgstr "எல்லா கோப்புகளும்"
 
 #. Translators: this a disc image here
-#: ../libbrasero-burn/brasero-src-image.c:459
+#: ../libbrasero-burn/brasero-src-image.c:460
+#, fuzzy
 msgctxt "disc"
-msgid "Image files only"
-msgstr "பிம்ப கோப்புகள் மட்டும்"
+msgid "Image files"
+msgstr "பிம்ப கோப்பு"
 
 #: ../libbrasero-burn/brasero-tray.c:83 ../src/brasero-audio-disc.c:299
 #: ../src/brasero-data-disc.c:115 ../src/brasero-video-disc.c:95
@@ -1545,18 +1643,22 @@ msgid "Success"
 msgstr "வெற்றி"
 
 #. Translators: %s is the plugin name
-#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:811
-#: ../libbrasero-burn/burn-job.c:824 ../libbrasero-burn/burn-job.c:1043
-#: ../libbrasero-burn/burn-job.c:1133
+#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:800
+#: ../libbrasero-burn/burn-job.c:813 ../libbrasero-burn/burn-job.c:1032
+#: ../libbrasero-burn/burn-job.c:1122
 #, c-format
 msgid "\"%s\" did not behave properly"
 msgstr "\"%s\" இன் நடத்தை சரியில்லை"
 
-#: ../libbrasero-burn/burn-job.c:420
-msgid "Not enough space available on the disc (%"
-msgstr "வட்டு  (% இல் போதுமான இடைவெளி இல்லை"
+#. Translators: the first %s is the size of the free space on the medium
+#. * and the second %s is the size of the space required by the data to be
+#. * burnt.
+#: ../libbrasero-burn/burn-job.c:428
+#, fuzzy, c-format
+msgid "(%s available for %s)"
+msgstr "வட்டு ஏதும் இருப்பில் இல்லை"
 
-#: ../libbrasero-burn/burn-job.c:507
+#: ../libbrasero-burn/burn-job.c:526
 #, c-format
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
@@ -1565,7 +1667,7 @@ msgstr ""
 "தற்காலிக பிம்பத்தை சேமிக்க நீங்கள் தேர்ந்தெடுத்த கோப்பு அமைப்பு  2 GiB க்கு மேல் உள்ள கோப்பை "
 "கையாள முடியாது"
 
-#: ../libbrasero-burn/burn-job.c:522 ../libbrasero-burn/burn-job.c:544
+#: ../libbrasero-burn/burn-job.c:541 ../libbrasero-burn/burn-job.c:563
 #, c-format
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
@@ -1574,20 +1676,15 @@ msgstr ""
 "தற்காலிக பிம்பத்தை சேமிக்க நீங்கள் தேர்ந்தெடுத்த கோப்பு அமைப்பில் தேவையான இடம் இல்லை. (%ld "
 "MiB தேவை)"
 
-#: ../libbrasero-burn/burn-job.c:557 ../plugins/dvdcss/burn-dvdcss.c:341
+#: ../libbrasero-burn/burn-job.c:576 ../plugins/dvdcss/burn-dvdcss.c:341
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "தொகுதியின் அளவை காண முடியவில்லை"
 
-#: ../libbrasero-burn/burn-job.c:637 ../libbrasero-burn/burn-job.c:652
-#, c-format
-msgid "\"%s\" already exists"
-msgstr "\"%s\" ஏற்கெனெவே உள்ளது"
-
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:782 ../src/main.c:204 ../src/main.c:230
-#: ../plugins/cdrtools/burn-cdrecord.c:653
+#: ../libbrasero-burn/burn-job.c:771 ../src/main.c:204 ../src/main.c:230
+#: ../plugins/cdrtools/burn-cdrecord.c:668
 #: ../plugins/libburnia/burn-libburn.c:690
 #: ../plugins/transcode/burn-transcode.c:654
 #, c-format
@@ -1619,7 +1716,8 @@ msgstr "பாதையில் \"%s\" ஐ காணவில்லை"
 msgid ""
 "\"%s\" is a symlink pointing to another program. Use the target program "
 "instead"
-msgstr "\"%s\" என்பது இன்னொரு நிரலை சுட்டிக்காட்டும் ஒரு சிம்லிங்க். இலக்கு நிரலை பயன்படுத்தவும்."
+msgstr ""
+"\"%s\" என்பது இன்னொரு நிரலை சுட்டிக்காட்டும் ஒரு சிம்லிங்க். இலக்கு நிரலை பயன்படுத்தவும்."
 
 #. Translators: %s is the name of the brasero element
 #: ../libbrasero-burn/burn-process.c:219
@@ -1744,20 +1842,21 @@ msgstr "ஒரு நிறத்தை தேர்ந்தெடு"
 msgid "Directory could not be created (%s)"
 msgstr "அடைவு \"%s\" உருவாக்கப்பட முடியவில்லை"
 
-#: ../src/brasero-project-parse.c:136 ../src/brasero-project-manager.c:905
+#: ../src/brasero-project-parse.c:139 ../src/brasero-project-manager.c:905
 #: ../src/main.c:209 ../src/main.c:235
-msgid "Error while loading the project."
+#, fuzzy
+msgid "Error while loading the project"
 msgstr "திட்டத்தை ஏற்றுவதில் பிழை."
 
-#: ../src/brasero-project-parse.c:502
+#: ../src/brasero-project-parse.c:519
 msgid "The project could not be opened."
 msgstr "திட்டத்தை திறக்க முடியவில்லை"
 
-#: ../src/brasero-project-parse.c:511
+#: ../src/brasero-project-parse.c:528
 msgid "The file is empty."
 msgstr "கோப்பு வெற்றாக உள்ளது."
 
-#: ../src/brasero-project-parse.c:579 ../src/brasero-project-parse.c:650
+#: ../src/brasero-project-parse.c:596 ../src/brasero-project-parse.c:667
 msgid "It does not seem to be a valid Brasero project."
 msgstr "செல்லுபடியாகும் ப்ராஸரோ திட்டம் போல தெரியவில்லை ."
 
@@ -1962,7 +2061,7 @@ msgstr "கேட்பொலி %s "
 msgid "Data %s"
 msgstr "தரவு %s"
 
-#: ../libbrasero-media/scsi-error.c:43
+#: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project.c:438
 msgid "Unknown error"
 msgstr "தெரியாத பிழை"
 
@@ -2097,7 +2196,8 @@ msgstr "குறுவட்டு/DVD உருவாக்கி அடைவ
 
 #: ../plugins/local-track/burn-uri.c:730
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
-msgstr "நாடுலஸ் இல்\"CD/DVD உருவாக்குபவர் அடைவு\" இல் சேர்த்த கோப்புகளை எழுத உதவுகிறது."
+msgstr ""
+"நாடுலஸ் இல்\"CD/DVD உருவாக்குபவர் அடைவு\" இல் சேர்த்த கோப்புகளை எழுத உதவுகிறது."
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 msgid "CD/DVD Creator"
@@ -2119,44 +2219,44 @@ msgid "Write to Disc"
 msgstr "வட்டுக்கு எழுது"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:629
+#: ../nautilus/nautilus-burn-extension.c:627
 msgid "Write contents to a CD or DVD disc"
 msgstr "உள்ளடக்கத்தை  CD அல்லது DVD வட்டில் எழுது"
 
-#: ../nautilus/nautilus-burn-extension.c:234
+#: ../nautilus/nautilus-burn-extension.c:232
 msgid "Disc name"
 msgstr "வட்டு பெயர்"
 
-#: ../nautilus/nautilus-burn-extension.c:483
-#: ../nautilus/nautilus-burn-extension.c:628
+#: ../nautilus/nautilus-burn-extension.c:481
+#: ../nautilus/nautilus-burn-extension.c:626
 msgid "_Write to Disc..."
 msgstr "(_W)வட்டுக்கு  எழுது...."
 
-#: ../nautilus/nautilus-burn-extension.c:484
+#: ../nautilus/nautilus-burn-extension.c:482
 msgid "Write disc image to a CD or DVD disc"
 msgstr "வட்டின் பிம்பத்தை CD அல்லது DVD யில் எழுது"
 
-#: ../nautilus/nautilus-burn-extension.c:552
+#: ../nautilus/nautilus-burn-extension.c:550
 msgid "_Copy Disc..."
 msgstr "வட்டை நகலெடுக்கவும் (_C)..."
 
-#: ../nautilus/nautilus-burn-extension.c:553
+#: ../nautilus/nautilus-burn-extension.c:551
 msgid "Create a copy of this CD or DVD disc"
 msgstr "இந்த குறுவட்டு அல்லது DVD யின் நகலை உருவாக்கவும்"
 
-#: ../nautilus/nautilus-burn-extension.c:566
+#: ../nautilus/nautilus-burn-extension.c:564
 msgid "_Blank Disc..."
 msgstr "(_B) வெற்று  வட்டு...."
 
-#: ../nautilus/nautilus-burn-extension.c:567
+#: ../nautilus/nautilus-burn-extension.c:565
 msgid "Blank this CD or DVD disc"
 msgstr "இந்த சிடி வட்டை அல்லது டிவிடி வட்டை வெற்றாக்கு"
 
-#: ../nautilus/nautilus-burn-extension.c:583
+#: ../nautilus/nautilus-burn-extension.c:581
 msgid "_Check Disc..."
 msgstr "(_C) வட்டை சோதி..."
 
-#: ../nautilus/nautilus-burn-extension.c:584
+#: ../nautilus/nautilus-burn-extension.c:582
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "இந்த சிடி அல்லது டிவிடி (DVD) இல் உள்ள தரவின் உண்மையை சோதி."
 
@@ -2259,7 +2359,7 @@ msgstr "பற்றி"
 msgid "Disc Burner"
 msgstr "வட்டு எழுதி"
 
-#: ../src/brasero-app.c:1010
+#: ../src/brasero-app.c:1005
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -2270,7 +2370,7 @@ msgstr ""
 "பொது அனுமதிக்கான இந்த 2ம் பதிப்பு அல்லது அடுத்த பதிப்புகள் விதிகளின் படி நீங்கள் "
 "(விருப்பப்படி) மாற்றலாம். அல்லது மீண்டும் பறிமாறலாம்"
 
-#: ../src/brasero-app.c:1015
+#: ../src/brasero-app.c:1010
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -2281,7 +2381,7 @@ msgstr ""
 "குறிப்பிட்ட செயலுக்கான தகுதி உள்பட எந்த உத்திரவாதமும் அளிக்கப்படவில்லை. மேற் கொண்டு "
 "விவரங்களுக்கு ஜிஎன்யு பொது அனுமதிக்கான விதிகளை பார்க்கவும்"
 
-#: ../src/brasero-app.c:1020
+#: ../src/brasero-app.c:1015
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -2292,11 +2392,11 @@ msgstr ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, "
 "USA "
 
-#: ../src/brasero-app.c:1032
+#: ../src/brasero-app.c:1027
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "க்னோமுக்கு பயன்படுத்த எளிய சிடி/ டிவிடி எழுதும் நிரல் "
 
-#: ../src/brasero-app.c:1049
+#: ../src/brasero-app.c:1044
 msgid "Brasero Homepage"
 msgstr "ப்ராஸரோ முதல் பக்கம்"
 
@@ -2308,19 +2408,19 @@ msgstr "ப்ராஸரோ முதல் பக்கம்"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1061
+#: ../src/brasero-app.c:1056
 msgid "translator-credits"
 msgstr "மொழிபெயர்ப்பாளர்-நன்றி அறிதல் தி. வாசுதேவன், agnihot3@gmail.com"
 
-#: ../src/brasero-app.c:1181 ../src/brasero-app.c:1187
+#: ../src/brasero-app.c:1176 ../src/brasero-app.c:1182
 msgid "_Recent Projects"
 msgstr "(_R) சமீபத்திய திட்டங்கள் "
 
-#: ../src/brasero-app.c:1182
+#: ../src/brasero-app.c:1177
 msgid "Display the projects recently opened"
 msgstr "சமீபத்தில் திறந்த திட்டங்களை காட்டுக"
 
-#: ../src/brasero-app.c:1483 ../data/brasero.desktop.in.in.h:1
+#: ../src/brasero-app.c:1500 ../data/brasero.desktop.in.in.h:1
 msgid "Brasero Disc Burner"
 msgstr "ப்ராஸரோ வட்டு எழுதி"
 
@@ -2552,7 +2652,7 @@ msgid "Edit the track information (start, end, author, ...)"
 msgstr "தட தகவலை திருத்து (ஆரம்பி, முடி, ஆசிரியர்,...)"
 
 #: ../src/brasero-audio-disc.c:304 ../src/brasero-data-disc.c:120
-#: ../src/brasero-project.c:210
+#: ../src/brasero-project.c:212
 msgid "Remove the selected files from the project"
 msgstr "தேர்ந்தெடுக்கப்பட்ட கோப்புகளை திட்டத்தில் இருந்து நீக்கு "
 
@@ -2589,7 +2689,7 @@ msgstr "பிரி"
 msgid "Track"
 msgstr "தடம்"
 
-#: ../src/brasero-audio-disc.c:682 ../src/brasero-video-disc.c:1173
+#: ../src/brasero-audio-disc.c:682 ../src/brasero-video-disc.c:1161
 msgid "Title"
 msgstr "தலைப்பு"
 
@@ -2660,7 +2760,7 @@ msgid "Impossible to split more than one song at a time"
 msgstr "ஒரு நேரத்தில் ஒரு பாடலுக்கு மேல் பிரிப்பது இயலவே இயலாது"
 
 #. Translators: "%s" is the name of a file here
-#: ../src/brasero-audio-disc.c:3775
+#: ../src/brasero-audio-disc.c:3763
 #, c-format
 msgid "\"%s\" was removed from the file system."
 msgstr "கோப்பு அமைப்பில் இருந்து \"%s\" நீக்கப்பட்டது"
@@ -2673,7 +2773,7 @@ msgstr "கோப்பு அமைப்பில் இருந்து \"%
 #. * refers to the file and this string is coupled with
 #. * previous string:
 #. * ""\"%s\" was removed from the file system."
-#: ../src/brasero-audio-disc.c:3786
+#: ../src/brasero-audio-disc.c:3774
 msgid "It will be removed from the project"
 msgstr "அது திட்டத்தில்  இருந்து நீக்கப்படும்"
 
@@ -2712,17 +2812,12 @@ msgstr "(_F) வேகமான வெற்றாக்கம்"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:389
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
-msgstr "இன்னும் தாமதமாகும் ஆனால் முழுமையான வெற்றாக்கம் தவிர்த்து வேகமான வெற்றாக்கத்தை செயல்படுத்து "
+msgstr ""
+"இன்னும் தாமதமாகும் ஆனால் முழுமையான வெற்றாக்கம் தவிர்த்து வேகமான வெற்றாக்கத்தை செயல்படுத்து "
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:412
 msgid "Disc Blanking"
 msgstr "வட்டு வெற்றாக்கம்"
-
-#. Translators: the %s is the mime type used to filter files
-#: ../src/brasero-mime-filter.c:233
-#, c-format
-msgid "%s only"
-msgstr "%s மட்டும்"
 
 #: ../src/brasero-playlist.c:303
 msgid "Playlists"
@@ -2745,8 +2840,8 @@ msgstr "பாடல் பட்டியல் தேர்வு செய்
 msgid "Error parsing playlist \"%s\"."
 msgstr "பாடல் பட்டியல் \"%s\" ஐ அலகிடுவதில் பிழை."
 
-#: ../src/brasero-playlist.c:804 ../src/brasero-data-disc.c:206
-#: ../src/brasero-project.c:1812 ../libbrasero-burn/brasero-sum-dialog.c:161
+#: ../src/brasero-playlist.c:804 ../src/brasero-data-disc.c:213
+#: ../src/brasero-project.c:1955 ../libbrasero-burn/brasero-sum-dialog.c:161
 msgid "An unknown error occured"
 msgstr "தெரியாத பிழை நிகழ்ந்தது"
 
@@ -2855,12 +2950,12 @@ msgstr "விடைகள் இல்லை"
 msgid "Next Results"
 msgstr "அடுத்த விடைகள்"
 
-#: ../src/brasero-search-beagle.c:408 ../src/brasero-data-disc.c:2259
+#: ../src/brasero-search-beagle.c:408 ../src/brasero-data-disc.c:2305
 #: ../src/brasero-file-filtered.c:258
 msgid "Files"
 msgstr "கோப்புகள்"
 
-#: ../src/brasero-search-beagle.c:427 ../src/brasero-data-disc.c:2287
+#: ../src/brasero-search-beagle.c:427 ../src/brasero-data-disc.c:2333
 msgid "Description"
 msgstr "விவரணம்"
 
@@ -2936,7 +3031,7 @@ msgstr "(_e) மறுபெயரிடு"
 msgid "Rename the selected file"
 msgstr "தேர்ந்தெடுக்கப்பட்ட கோப்புக்கு மறுபெயரிடு "
 
-#: ../src/brasero-data-disc.c:124 ../src/brasero-data-disc.c:1560
+#: ../src/brasero-data-disc.c:124 ../src/brasero-data-disc.c:1578
 msgid "New _Folder"
 msgstr "(_F) புதிய அடைவு"
 
@@ -2944,7 +3039,7 @@ msgstr "(_F) புதிய அடைவு"
 msgid "Create a new empty folder"
 msgstr "புதிய வெற்று அடைவை உருவாக்குக"
 
-#: ../src/brasero-data-disc.c:205
+#: ../src/brasero-data-disc.c:212
 msgid "The session could not be imported."
 msgstr "அமர்வை இறக்குமதி செய்ய முடியவில்லை."
 
@@ -2971,28 +3066,6 @@ msgstr "_D கைவிடு"
 #: ../src/brasero-data-disc.c:650
 msgid "Continue with the current modified project"
 msgstr "நடப்பு மாற்றிய திட்டத்தை தொடர்க"
-
-#: ../src/brasero-data-disc.c:706
-#, c-format
-msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr " \"%s\"ஐ வட்டுக்கு எழுத வேண்டுமா அல்லது தரவு திட்டத்துக்கு சேர்க்க வேண்டுமா?"
-
-#: ../src/brasero-data-disc.c:715
-msgid ""
-"This file is the image of a disc and can therefore be burnt to disc without "
-"having to add it to a data project first."
-msgstr ""
-"இந்த கோப்பு வட்டின் பிம்பம் ஆதலால் தரவு திட்டத்தில் சேர்க்காமல் நேரடியாக வட்டுக்கு "
-"எழுதிவிடலாம்."
-
-#: ../src/brasero-data-disc.c:717
-msgid "_Add to Project"
-msgstr "(_A) திட்டத்துக்கு சேர்"
-
-#: ../src/brasero-data-disc.c:719 ../src/brasero-project.c:214
-#: ../src/brasero-project.c:465
-msgid "_Burn..."
-msgstr "(_B) எழுதுதல்..."
 
 #: ../src/brasero-data-disc.c:770 ../src/brasero-data-disc.c:791
 #: ../src/brasero-data-disc.c:812
@@ -3096,7 +3169,8 @@ msgid "Do you want to import the session from '%s'?"
 msgstr "அமர்வு '%s' இலிருந்து இறக்குமதி செய்ய விருப்பமா?"
 
 #: ../src/brasero-data-disc.c:1104
-msgid "That way, old files from previous sessions will be usable after burning."
+msgid ""
+"That way, old files from previous sessions will be usable after burning."
 msgstr "அப்படிச்செய்தால் எழுதியபின் பழைய எழுதுதல்களின் கோப்புகளை பயன்படுத்த முடியும்."
 
 #: ../src/brasero-data-disc.c:1115
@@ -3107,51 +3181,55 @@ msgstr "(_m) அமர்வை இறக்குமதி செய்க"
 msgid "Click here to import its contents"
 msgstr "அதன் உள்ளடக்கத்தை இறக்குமதி செய்ய இங்கே சொடுக்கவும்"
 
-#: ../src/brasero-data-disc.c:1424
+#: ../src/brasero-data-disc.c:1437
 msgid "Please wait while the project is loading."
 msgstr "திட்டம் ஏற்றப்படுகையில்  தயவு செய்து காத்திருக்கவும்."
 
-#: ../src/brasero-data-disc.c:1435
+#: ../src/brasero-data-disc.c:1448
 msgid "_Cancel Loading"
 msgstr "(_C) ஏற்றத்தை ரத்து செய்"
 
-#: ../src/brasero-data-disc.c:1436
+#: ../src/brasero-data-disc.c:1449
 msgid "Cancel loading current project"
 msgstr "நடப்பு திட்ட ஏற்றத்தை ரத்து செய்"
 
-#: ../src/brasero-data-disc.c:1729
+#: ../src/brasero-data-disc.c:1747
 msgid "File Renaming"
 msgstr "கோப்பு மறு பெயரிடல்"
 
-#: ../src/brasero-data-disc.c:1733
+#: ../src/brasero-data-disc.c:1751
 msgid "_Rename"
 msgstr "மறுபெயரிடு (_R)"
 
-#: ../src/brasero-data-disc.c:1741
+#: ../src/brasero-data-disc.c:1759
 msgid "Renaming mode"
 msgstr "மறு பெயரிடும் பாங்கு"
 
-#: ../src/brasero-data-disc.c:2273 ../src/brasero-video-disc.c:1191
+#: ../src/brasero-data-disc.c:2319 ../src/brasero-video-disc.c:1179
 msgid "Size"
 msgstr "அளவு"
 
-#: ../src/brasero-data-disc.c:2303
+#: ../src/brasero-data-disc.c:2349
 msgid "Space"
 msgstr "இடம்"
 
-#: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1486
-msgid "Audio files only"
+#: ../src/brasero-file-chooser.c:232 ../src/brasero-project.c:1629
+#, fuzzy
+msgid "Audio files"
 msgstr "ஒலி கோப்புகள் மட்டும்"
 
-#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1495
-msgid "Movies only"
+#: ../src/brasero-file-chooser.c:240 ../src/brasero-project.c:1638
+#, fuzzy
+msgid "Movies"
 msgstr "நகர் படங்கள் மட்டில்"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1503
+#: ../src/brasero-file-chooser.c:250 ../src/brasero-project.c:507
+#: ../src/brasero-project.c:1646
+#, fuzzy
 msgctxt "picture"
-msgid "Image files only"
-msgstr "பிம்ப கோப்புகள் மட்டும்"
+msgid "Image files"
+msgstr "பிம்ப கோப்பு"
 
 #: ../src/brasero-layout.c:101
 msgid "P_review"
@@ -3239,87 +3317,104 @@ msgstr ""
 "<span weight=\"bold\">தகவலை ஏற்றுகிறது</span>\n"
 " <span size=\"smaller\"><i>%s</i></span> பற்றி"
 
-#: ../src/brasero-project.c:204
+#: ../src/brasero-project.c:206
 msgid "Save current project"
 msgstr "நடப்பு திட்டத்தை சேமி"
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:207
 msgid "Save _As..."
 msgstr " என்று சேமித்து வைக்கவும் (_A)..."
 
-#: ../src/brasero-project.c:206
+#: ../src/brasero-project.c:208
 msgid "Save current project to a different location"
 msgstr "நடப்பு திட்டத்தை வேறு இடத்தில் சேமி"
 
-#: ../src/brasero-project.c:207
+#: ../src/brasero-project.c:209
 msgid "_Add Files"
 msgstr "(_A) கோப்புகள் சேர் "
 
-#: ../src/brasero-project.c:208
+#: ../src/brasero-project.c:210
 msgid "Add files to the project"
 msgstr "திட்டத்துக்கு கோப்புகளை சேர்"
 
-#: ../src/brasero-project.c:209
+#: ../src/brasero-project.c:211
 msgid "_Remove Files"
 msgstr "(_R) கோப்புகள் நீக்கு "
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:212 ../src/brasero-project.c:1566
+#: ../src/brasero-project.c:214 ../src/brasero-project.c:1709
 msgid "E_mpty Project"
 msgstr "(_m) திட்டத்தை காலி செய்க"
 
-#: ../src/brasero-project.c:213
+#: ../src/brasero-project.c:215
 msgid "Remove all files from the project"
 msgstr "திட்டத்தில் இருந்து அனைத்து கோப்புகளையும் நீக்கு "
 
-#: ../src/brasero-project.c:215
+#: ../src/brasero-project.c:217
 msgid "Burn the disc"
 msgstr "வட்டுக்கு எழுதுதல்"
 
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project.c:429 ../src/brasero-project.c:437
+#, fuzzy
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "தயவு செய்து வேறு பிம்பத்தை தேர்வு செய்யவும்."
+
+#: ../src/brasero-project.c:493
+msgid "Medium Icon"
+msgstr ""
+
+#: ../src/brasero-project.c:567
+msgid "Select an icon for the disc that will appear in file managers"
+msgstr ""
+
 #. Name widget
-#: ../src/brasero-project.c:445
+#: ../src/brasero-project.c:577
 msgid "_Name:"
 msgstr "(_N) பெயர்:"
 
-#: ../src/brasero-project.c:477
+#: ../src/brasero-project.c:609
 msgid "Start to burn the contents of the selection"
 msgstr "தேர்வின் உள்ளடகத்தை எழுத துவங்கு"
 
 #. Translators: first %s is the size of the project and the
 #. * second %s is the remaining free space on the disc that is
 #. * used for multisession
-#: ../src/brasero-project.c:633
+#: ../src/brasero-project.c:769
 #, c-format
 msgid "Project estimated size: %s/%s"
 msgstr "கணக்கிட்ட திட்ட அளவு: %s/%s"
 
-#: ../src/brasero-project.c:639 ../src/brasero-project.c:767
-#: ../libbrasero-burn/brasero-status-dialog.c:113
+#: ../src/brasero-project.c:775 ../src/brasero-project.c:903
+#: ../libbrasero-burn/brasero-status-dialog.c:124
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "கணக்கிட்ட திட்ட அளவு: %s"
 
-#: ../src/brasero-project.c:806 ../libbrasero-burn/brasero-status-dialog.c:261
+#: ../src/brasero-project.c:942 ../libbrasero-burn/brasero-status-dialog.c:321
 msgid "Please wait until the estimation of the project size is completed."
 msgstr "தயவு செய்து திட்டத்தைன் அளவு கணக்கீடு முடியும் வரை காத்திருக்கவும்."
 
-#: ../src/brasero-project.c:811 ../libbrasero-burn/brasero-status-dialog.c:262
-msgid "All files from the project need to be analysed to complete this operation."
+#: ../src/brasero-project.c:947 ../libbrasero-burn/brasero-status-dialog.c:322
+msgid ""
+"All files from the project need to be analysed to complete this operation."
 msgstr "இத்திட்டத்தை பூர்த்தி செய்ய திட்டத்தின் அனைத்து கோப்புகளையும் ஆராய வேண்டும்."
 
-#: ../src/brasero-project.c:813 ../libbrasero-burn/brasero-status-dialog.c:259
+#: ../src/brasero-project.c:949 ../libbrasero-burn/brasero-status-dialog.c:319
 msgid "Project Size Estimation"
 msgstr "திட்டத்தின் அளவு கணக்கீடு"
 
-#: ../src/brasero-project.c:886
+#: ../src/brasero-project.c:1022
 msgid "Please add songs to the project."
 msgstr "தயவு செய்து திட்டத்துக்கு பாடல்களை சேர்க்கவும்."
 
-#: ../src/brasero-project.c:895 ../src/main.c:248
+#: ../src/brasero-project.c:1031 ../src/main.c:248
 msgid "Please add files to the project."
 msgstr "தயவு செய்து திட்டத்துக்கு கோப்புகளை சேர்க்கவும்."
 
-#: ../src/brasero-project.c:1147
+#: ../src/brasero-project.c:1290
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
@@ -3327,19 +3422,20 @@ msgstr ""
 "நீங்கள் நிச்சயமாக நடப்பு திட்டத்தில் மாற்றங்களை விலக்கிவிட்டு புதிய திட்டம் உருவாக்க "
 "விரும்புகிறீர்களா?"
 
-#: ../src/brasero-project.c:1152
+#: ../src/brasero-project.c:1295
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "நீங்கள் புதிய திட்டம் உருவாக்க தேர்ந்தெடுத்தால் எல்லா மாற்றங்களும் இழக்கப்படும்"
 
-#: ../src/brasero-project.c:1154
+#: ../src/brasero-project.c:1297
 msgid "_Discard Changes"
 msgstr "மாற்றங்களை விலக்கவும் (_D)"
 
-#: ../src/brasero-project.c:1162
+#: ../src/brasero-project.c:1305
 msgid "Do you really want to create a new project and discard the current one?"
-msgstr "நீங்கள் நிச்சயமாக நடப்பு திட்டத்தை விலக்கிவிட்டு புதிய திட்டம் உருவாக்க விரும்புகிறீர்களா?"
+msgstr ""
+"நீங்கள் நிச்சயமாக நடப்பு திட்டத்தை விலக்கிவிட்டு புதிய திட்டம் உருவாக்க விரும்புகிறீர்களா?"
 
-#: ../src/brasero-project.c:1167
+#: ../src/brasero-project.c:1310
 msgid ""
 "If you choose to create a new project, all files already added will be "
 "discarded. Note that files will not be deleted from their own location, just "
@@ -3349,19 +3445,19 @@ msgstr ""
 "விலக்கப்படும். அவை தம் இடத்திலிருந்து நீக்கப்படா ஆனால் இப்பட்டியலில் இருந்து நீக்கப்படும் "
 "என்பதை உணர்க."
 
-#: ../src/brasero-project.c:1172
+#: ../src/brasero-project.c:1315
 msgid "_Discard Project"
 msgstr "(_D) திட்டத்தை விலக்குக"
 
-#: ../src/brasero-project.c:1444
+#: ../src/brasero-project.c:1587
 msgid "Select Files"
 msgstr "கோப்புகளை தேர்வு செய்க"
 
-#: ../src/brasero-project.c:1555
+#: ../src/brasero-project.c:1698
 msgid "Do you really want to empty the current project?"
 msgstr "நடப்பு திட்டத்தை நீங்கள்  நிச்சயம் காலி செய்ய விரும்புகிறீர்களா?"
 
-#: ../src/brasero-project.c:1560
+#: ../src/brasero-project.c:1703
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -3371,77 +3467,77 @@ msgstr ""
 "இழக்கப்படும். அவை தம் இடத்திலிருந்து நீக்கப்படா ஆனால் இப்பட்டியலில் இருந்து நீக்கப்படும் என்பதை "
 "உணர்க."
 
-#: ../src/brasero-project.c:1616
+#: ../src/brasero-project.c:1759
 msgid "_Save"
 msgstr "(_S) சேமி"
 
-#: ../src/brasero-project.c:1627
+#: ../src/brasero-project.c:1770
 msgid "_Add"
 msgstr "(_A) சேர்"
 
-#: ../src/brasero-project.c:1632 ../src/brasero-split-dialog.c:1250
+#: ../src/brasero-project.c:1775 ../src/brasero-split-dialog.c:1250
 msgid "_Remove"
 msgstr "நீக்கவும் (_R)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:1693
+#: ../src/brasero-project.c:1836
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "ப்ராஸாரோ- %s (தரவு வட்டு)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:1696
+#: ../src/brasero-project.c:1839
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "ப்ராஸாரோ- %s (ஒலி வட்டு)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:1699
+#: ../src/brasero-project.c:1842
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "ப்ராஸாரோ- %s (வீடியோ வட்டு)"
 
-#: ../src/brasero-project.c:1811
+#: ../src/brasero-project.c:1954
 msgid "Your project has not been saved."
 msgstr "உங்கள் திட்டம் சேமிக்கப்பட்டது."
 
-#: ../src/brasero-project.c:1825
+#: ../src/brasero-project.c:1968
 msgid "Save the changes of current project before closing?"
 msgstr "மூடுமுன் நடப்பு திட்டத்தின் மாற்றங்களை சேமிக்கவா?"
 
-#: ../src/brasero-project.c:1830
+#: ../src/brasero-project.c:1973
 msgid "If you don't save, changes will be permanently lost."
 msgstr "சேமிக்காவிட்டால் மாற்றங்கள் நிரந்தரமாக இழக்கப்படும்"
 
-#: ../src/brasero-project.c:1834 ../src/brasero-project.c:1840
+#: ../src/brasero-project.c:1977 ../src/brasero-project.c:1983
 msgid "Cl_ose Without Saving"
 msgstr "(_o) சேமிக்காமல் மூடு"
 
-#: ../src/brasero-project.c:2459
+#: ../src/brasero-project.c:2610
 msgid "Save Current Project"
 msgstr "நடப்பு திட்டத்தை சேமி "
 
-#: ../src/brasero-project.c:2477
+#: ../src/brasero-project.c:2628
 msgid "Save project as Brasero audio project"
 msgstr "நடப்பு திட்டத்தை ப்ராஸாரோ ஒலி திட்டமாக சேமி "
 
-#: ../src/brasero-project.c:2478
+#: ../src/brasero-project.c:2629
 msgid "Save project as a plain text list"
 msgstr "நடப்பு திட்டத்தை வெறும் உரை பட்டியலாக சேமி "
 
-#: ../src/brasero-project.c:2482
+#: ../src/brasero-project.c:2633
 msgid "Save project as a PLS playlist"
 msgstr "நடப்பு திட்டத்தை பிஎல்எஸ் இயக்க பட்டியலாக சேமி "
 
-#: ../src/brasero-project.c:2483
+#: ../src/brasero-project.c:2634
 msgid "Save project as an M3U playlist"
 msgstr "நடப்பு திட்டத்தை எம்3யூ இயக்க பட்டியலாக சேமி "
 
-#: ../src/brasero-project.c:2484
+#: ../src/brasero-project.c:2635
 msgid "Save project as a XSPF playlist"
 msgstr "நடப்பு திட்டத்தை எக்ஸ்எஸ்பிஎஃப் இயக்க பட்டியலாக சேமி "
 
-#: ../src/brasero-project.c:2485
+#: ../src/brasero-project.c:2636
 msgid "Save project as an IRIVER playlist"
 msgstr "நடப்பு திட்டத்தை IRIVER இயக்க பட்டியலாக சேமி "
 
@@ -3475,7 +3571,8 @@ msgstr "புதிய ஒலி திட்டம்"
 
 #: ../src/brasero-project-manager.c:108
 #: ../src/brasero-project-type-chooser.c:74
-msgid "Create a traditional audio CD that will be playable on computers and stereos"
+msgid ""
+"Create a traditional audio CD that will be playable on computers and stereos"
 msgstr "கணினிகளிலும் ஸ்டீரியோக்களிலும் இயக்ககூடிய பாரம்பரிய ஒலி சிடி ஐ உருவாக்குக "
 
 #: ../src/brasero-project-manager.c:109
@@ -3487,7 +3584,8 @@ msgstr "(_D) புதிய தரவு திட்டம்"
 msgid ""
 "Create a CD/DVD containing any type of data that can only be read on a "
 "computer"
-msgstr "கணினியில் மட்டும் படிக்கக்கூடிய எந்த வகை தரவும் கொண்ட சிடி /டிவிடி ஐ உருவாக்குக "
+msgstr ""
+"கணினியில் மட்டும் படிக்கக்கூடிய எந்த வகை தரவும் கொண்ட சிடி /டிவிடி ஐ உருவாக்குக "
 
 #: ../src/brasero-project-manager.c:111
 msgid "New _Video Project"
@@ -3496,7 +3594,8 @@ msgstr "(_V) புதிய வீடியோ திட்டம் "
 #: ../src/brasero-project-manager.c:112
 #: ../src/brasero-project-type-chooser.c:84
 msgid "Create a video DVD or a SVCD that are readable on TV readers"
-msgstr "டிவி படிப்பாளரால் படிக்கக்கூடிய புதிய விடியோ டிவிடி அல்லது எஸ்விசிடி ஐ உருவாக்குக "
+msgstr ""
+"டிவி படிப்பாளரால் படிக்கக்கூடிய புதிய விடியோ டிவிடி அல்லது எஸ்விசிடி ஐ உருவாக்குக "
 
 #: ../src/brasero-project-manager.c:113
 msgid "Copy _Disc..."
@@ -3657,19 +3756,19 @@ msgstr "(_i) பிம்பத்தை எழுதுதல்"
 msgid "Last _Unsaved Project"
 msgstr "(_U) சேமிக்காத கடைசி திட்டம்"
 
-#: ../src/brasero-project-type-chooser.c:301
+#: ../src/brasero-project-type-chooser.c:306
 msgid "Load the last project that was not burnt and not saved"
 msgstr "எழுதாத மற்றும் சேமிக்காத கடைசி திட்டத்தை ஏற்றுக"
 
-#: ../src/brasero-project-type-chooser.c:404
+#: ../src/brasero-project-type-chooser.c:412
 msgid "No recently used project"
 msgstr "கடைசியாக பயன்பட்ட திட்டம் இல்லை"
 
-#: ../src/brasero-project-type-chooser.c:466
+#: ../src/brasero-project-type-chooser.c:474
 msgid "Create a new project:"
 msgstr "ஒரு புதிய திட்டத்தை உருவாக்குக:"
 
-#: ../src/brasero-project-type-chooser.c:512
+#: ../src/brasero-project-type-chooser.c:520
 msgid "Recent projects:"
 msgstr "சமீபத்திய திட்டங்கள்:"
 
@@ -3739,6 +3838,9 @@ msgid "The operation cannot be performed."
 msgstr "செயல் செய்யப்பட முடியாது."
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:78
+#: ../plugins/cdrkit/burn-wodim.c:141 ../plugins/cdrkit/burn-wodim.c:380
+#: ../plugins/cdrtools/burn-cdrecord.c:141
+#: ../plugins/cdrtools/burn-cdrecord.c:365
 #: ../plugins/growisofs/burn-dvd-rw-format.c:66
 #: ../plugins/libburnia/burn-libburn.c:588
 #, c-format
@@ -3854,11 +3956,11 @@ msgstr "ஒத்திசையாத கட்டளை வரி தேர்
 msgid "Only one option can be given at a time"
 msgstr "ஒரு நேரத்தில் ஒரு தேர்வைத்தான் தர முடியும்."
 
-#: ../src/main.c:501
+#: ../src/main.c:500
 msgid "[URI] [URI] ..."
 msgstr "[யூஆர்ஐ] [யூஆர்ஐ]..."
 
-#: ../src/main.c:513
+#: ../src/main.c:512
 #, c-format
 msgid "Please type %s --help to see all available options\n"
 msgstr "தயவு செய்து %s --help என்று உள்ளிடுங்கள் அனைத்து தேர்வுகளையும் காண \n"
@@ -3902,7 +4004,8 @@ msgstr "நகல் எடுத்தல் மற்றும் சிடி
 
 #: ../plugins/cdrdao/burn-cdrdao.c:691
 msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
-msgstr " \"--driver generic-mmc-raw\" குறியை செயல்படுத்துக ( சிடிஆர்டிஏஓ  கையேட்டை பார்க்க)"
+msgstr ""
+" \"--driver generic-mmc-raw\" குறியை செயல்படுத்துக ( சிடிஆர்டிஏஓ  கையேட்டை பார்க்க)"
 
 #: ../plugins/cdrdao/burn-toc2cue.c:260
 msgid "Converting toc file"
@@ -3954,7 +4057,16 @@ msgstr "சாதனத்தில்  இடைவெளி மீதம் �
 msgid "Use genisoimage to create images from a file selection"
 msgstr "ஒரு கோப்பு தேர்விலிருந்து ஜெனிஐசோஇமேஜ் ஆல் பிம்பங்களை உருவாக்குக"
 
-#: ../plugins/cdrkit/burn-readom.c:432
+#: ../plugins/cdrkit/burn-readom.c:124 ../plugins/cdrtools/burn-readcd.c:126
+#, fuzzy, c-format
+msgid ""
+"The location you chose to store the image on does not have enough free space "
+"for the disc image"
+msgstr ""
+"தற்காலிக பிம்பத்தை சேமிக்க நீங்கள் தேர்ந்தெடுத்த கோப்பு அமைப்பில் தேவையான இடம் இல்லை. (%ld "
+"MiB தேவை)"
+
+#: ../plugins/cdrkit/burn-readom.c:439
 msgid "Use readom to create disc images"
 msgstr "ரீடோம் ஐ பயன்படுத்தி வட்டு பிம்பங்களை உருவாக்குக"
 
@@ -3967,46 +4079,48 @@ msgstr "வட்டுக்கு எழுதுகையில்; ஒரு
 
 #: ../plugins/cdrkit/burn-wodim.c:118 ../plugins/cdrtools/burn-cdrecord.c:118
 #, c-format
-msgid "The system is too slow to write the disc at this speed. Try a lower speed"
+msgid ""
+"The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr "இந்த கணினியில் வட்டெழுத மிகவும் தாமதமாகிறது. குறைந்த வேகத்தில் எழுதப்பாருங்கள்."
 
-#: ../plugins/cdrkit/burn-wodim.c:310 ../plugins/cdrtools/burn-cdrecord.c:302
+#: ../plugins/cdrkit/burn-wodim.c:316 ../plugins/cdrtools/burn-cdrecord.c:309
 msgid "Formatting disc"
 msgstr "வட்டை ஒழுங்கு செய்கிறது"
 
-#: ../plugins/cdrkit/burn-wodim.c:330 ../plugins/cdrtools/burn-cdrecord.c:314
+#: ../plugins/cdrkit/burn-wodim.c:336 ../plugins/cdrtools/burn-cdrecord.c:321
 msgid "Writing cue sheet"
 msgstr "க்யூ சீட்டை எழுதுகிறது"
 
-#: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:336
+#: ../plugins/cdrkit/burn-wodim.c:358 ../plugins/cdrtools/burn-cdrecord.c:343
 #, c-format
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "வட்டை எழுதும் முன் மறு ஏற்றம் செய்யவேண்டும்."
 
-#: ../plugins/cdrkit/burn-wodim.c:1213
+#: ../plugins/cdrkit/burn-wodim.c:1227
 msgid "Use wodim to burn CDs and DVDs"
 msgstr "சிடி மற்றும் டிவிடி களை எழுத வோடிம் ஐ பயன்படுத்துக"
 
-#: ../plugins/cdrkit/burn-wodim.c:1368
+#: ../plugins/cdrkit/burn-wodim.c:1382
 msgid "Enable \"-immed\" flag (see wodim manual)"
 msgstr " \"-immed\" குறியை செயல்படுத்து (வோடிம் கையேட்டை பாருங்கள்)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1371
+#: ../plugins/cdrkit/burn-wodim.c:1385
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "குறைந்தபட்ச இயக்கி இடையக நிரப்புதல் விகிதம் (% இல்) (வோடிம் கையேட்டை பாருங்கள்)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1135
+#: ../plugins/cdrtools/burn-cdrecord.c:1150
 msgid "Use cdrecord to burn CDs and DVDs"
 msgstr "சிடி மற்றும் டிவிடி களை எழுத சிடிரெகார்ட் ஐ பயன்படுத்துக"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1358
+#: ../plugins/cdrtools/burn-cdrecord.c:1373
 msgid "Enable \"-immed\" flag (see cdrecord manual)"
 msgstr " \"-immed\" குறியை செயல்படுத்து (சிடிரெகார்ட்  கையேட்டை பாருங்கள்)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1361
+#: ../plugins/cdrtools/burn-cdrecord.c:1376
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
-msgstr "குறைந்த பட்ச இயக்கி இடையக நிரப்புதல் விகிதம் (%% இல்) (சிடிரெகார்ட்  கையேட்டை பாருங்கள்)"
+msgstr ""
+"குறைந்த பட்ச இயக்கி இடையக நிரப்புதல் விகிதம் (%% இல்) (சிடிரெகார்ட்  கையேட்டை பாருங்கள்)"
 
 #: ../plugins/cdrtools/burn-mkisofs.c:130
 msgid "This version of mkisofs is not supported"
@@ -4016,14 +4130,15 @@ msgstr "இந்த பதிப்பு எம்கேஐசோஎபெஸ�
 msgid "Use mkisofs to create image from a file selection"
 msgstr "ஒரு கோப்பு தேர்விலிருந்து பிம்பம் உருவாக்க எம்கேஐசோஃஎப்எஸ் ஐ பயன்படுத்துக"
 
-#: ../plugins/cdrtools/burn-readcd.c:444
+#: ../plugins/cdrtools/burn-readcd.c:451
 msgid "Use readcd to create disc images"
 msgstr "வட்டு பிம்பங்களை ரீட்சிடி பயன்படுத்தி உருவாக்குக"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:119
 #, c-format
 msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
-msgstr "குறிமுறையாக்கப்பட்ட DVD: தயை செய்து லிப்டிவிடிசிஎஸ்எஸ் பதிப்பு 1.2.x ஐ நிறுவவும்."
+msgstr ""
+"குறிமுறையாக்கப்பட்ட DVD: தயை செய்து லிப்டிவிடிசிஎஸ்எஸ் பதிப்பு 1.2.x ஐ நிறுவவும்."
 
 #: ../plugins/dvdcss/burn-dvdcss.c:126
 #, c-format
@@ -4154,8 +4269,10 @@ msgstr "அடைவு \"%s\" ஐ உருவாக்கும்போது
 
 #: ../plugins/libburnia/burn-libisofs.c:725
 #, c-format
-msgid "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr "அடைவு \"%s\" இல் உள்ளடக்கங்கள் சேர்க்கும்போது பிழையை லிப்ஐசோஃஎப்எஸ் அறிவித்தது  (%x)"
+msgid ""
+"Libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgstr ""
+"அடைவு \"%s\" இல் உள்ளடக்கங்கள் சேர்க்கும்போது பிழையை லிப்ஐசோஃஎப்எஸ் அறிவித்தது  (%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:747
 #: ../plugins/libburnia/burn-libisofs.c:763
@@ -4236,7 +4353,8 @@ msgstr "(%s) ஐ வேறு குறியாக்குகிறது"
 
 #: ../plugins/transcode/burn-transcode.c:1626
 msgid "Transcode converts song files into a format proper to burn them on CDs"
-msgstr "வேறு குறியாக்கம் பாடல் கோப்புகளை சிடியில் எழுதக்கூடிய வேறு ஒழுங்கில் மாற்றுகிறது"
+msgstr ""
+"வேறு குறியாக்கம் பாடல் கோப்புகளை சிடியில் எழுதக்கூடிய வேறு ஒழுங்கில் மாற்றுகிறது"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -4446,7 +4564,8 @@ msgid "select files in the selection pane and click the \"Add\" button"
 msgstr "தேர்வு பலகத்தில் கோப்புகளை தேர்வு செய்து \"சேர்\" பொத்தான் ஐ சொடுக்கலாம்."
 
 #: ../src/brasero-disc.c:639
-msgid "drag files in this area from the selection pane or from the file manager"
+msgid ""
+"drag files in this area from the selection pane or from the file manager"
 msgstr ""
 "இந்த இடத்துக்கு தேர்வு பலகத்திலிருந்து அல்லது கோப்பு மேலாளரில் இருந்து கோப்புகளை "
 "இழுத்துவிடலாம்."
@@ -4512,7 +4631,8 @@ msgid "Filter Options"
 msgstr "வடிகட்டி தேர்வுகள்"
 
 #: ../src/brasero-file-filtered.c:221
-msgid "Select the files you want to restore and click on the \"Restore\" button"
+msgid ""
+"Select the files you want to restore and click on the \"Restore\" button"
 msgstr "மீட்டெடுக்க வேண்டிய கோப்புகளை தேர்ந்தெடுத்து \"மீட்டெடு\" பொத்தானை சொடுக்குக"
 
 #: ../src/brasero-file-filtered.c:267
@@ -4761,7 +4881,8 @@ msgid "Converting video file to MPEG2"
 msgstr "விடியோ கோப்பு ஐ எம்பெக்2 ஆக மாற்றுகிறது"
 
 #: ../plugins/transcode/burn-vob.c:1220
-msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
+msgid ""
+"Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr "வோப் எந்த விடியோ கோப்பையும் விடியோ டிவிடிக்கு பொருத்தமான ஒழுங்காக மாற்றுகிறது"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:475
@@ -4776,3 +4897,34 @@ msgstr "சிடி மற்றும் டிவிடி களை நக�
 msgid "Disc Copier"
 msgstr "வட்டு நகலி"
 
+#~ msgid " "
+#~ msgstr ". "
+
+#~ msgid "Let brasero choose (safest)"
+#~ msgstr "ப்ராஸாரோவே தேர்ந்தெடுக்கட்டும் (மிக பாதுகாப்பானது)"
+
+#~ msgid "*.iso image"
+#~ msgstr "*.iso பிம்பம்"
+
+#~ msgid "*.raw image"
+#~ msgstr "*.raw பிம்பம்"
+
+#~ msgid "*.toc image (cdrdao)"
+#~ msgstr "*.toc பிம்பம் (cdrdao)"
+
+#~ msgctxt "disc"
+#~ msgid "Image files only"
+#~ msgstr "பிம்ப கோப்புகள் மட்டும்"
+
+#~ msgid "Not enough space available on the disc (%"
+#~ msgstr "வட்டு  (% இல் போதுமான இடைவெளி இல்லை"
+
+#~ msgid "\"%s\" already exists"
+#~ msgstr "\"%s\" ஏற்கெனெவே உள்ளது"
+
+#~ msgid "%s only"
+#~ msgstr "%s மட்டும்"
+
+#~ msgctxt "picture"
+#~ msgid "Image files only"
+#~ msgstr "பிம்ப கோப்புகள் மட்டும்"
