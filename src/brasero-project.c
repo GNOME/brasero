@@ -67,6 +67,9 @@
 #include "brasero-burn-options.h"
 #include "brasero-cover.h"
 
+#include "brasero-session-cfg.h"
+#include "brasero-dest-selection.h"
+
 #include "brasero-project-type-chooser.h"
 #include "brasero-app.h"
 #include "brasero-project.h"
@@ -153,9 +156,13 @@ typedef enum {
 } BraseroProjectSave;
 
 struct BraseroProjectPrivate {
+	BraseroBurnSession *session;
+
+	GtkWidget *selection;
 	GtkWidget *name_display;
 	GtkWidget *button_img;
 	GtkWidget *icon_img;
+	GtkWidget *icon_label;
 	GtkWidget *discs;
 	GtkWidget *audio;
 	GtkWidget *data;
@@ -532,8 +539,11 @@ brasero_project_init (BraseroProject *obj)
 {
 	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
+	GtkWidget *selector;
 	GtkWidget *button;
+	GtkWidget *table;
 	GtkWidget *image;
+	GtkWidget *frame;
 	GtkWidget *label;
 	GtkWidget *box;
 
@@ -549,52 +559,22 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (obj->priv->message);
 
 	/* bottom */
+	obj->priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
+
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
 	gtk_widget_show (box);
 	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, 0);
 
-	/* Icon button */
-	image = gtk_image_new_from_icon_name ("media-optical", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_widget_show (image);
-	obj->priv->icon_img = image;
-
-	button = gtk_button_new ();
-	gtk_widget_show (button);
-	gtk_button_set_image (GTK_BUTTON (button), image);
-	obj->priv->button_img = button;
-
-	gtk_widget_set_tooltip_text (button, _("Select an icon for the disc that will appear in file managers"));
-
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_project_icon_button_clicked),
-			  obj);
-
-	gtk_box_pack_start (GTK_BOX (box), button, FALSE, TRUE, 0);
-
-	/* Name widget */
-	label = gtk_label_new_with_mnemonic (_("_Name:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_misc_set_padding (GTK_MISC (label), 6, 0);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (box), label, FALSE, TRUE, 0);
-
-	obj->priv->name_display = brasero_project_name_new ();
-	gtk_widget_show (obj->priv->name_display);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->name_display, TRUE, TRUE, 0);
-	obj->priv->empty = 1;
-
-	g_signal_connect (obj->priv->name_display,
-			  "name-changed",
-			  G_CALLBACK (brasero_project_name_changed_cb),
-			  obj);
-
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), obj->priv->name_display);
+	/* Media selection widget */
+	selector = brasero_dest_selection_new (obj->priv->session);
+	gtk_widget_show (selector);
+	gtk_box_pack_start (GTK_BOX (box), selector, TRUE, TRUE, 0);
+	obj->priv->selection = selector;
 
 	/* burn button set insensitive since there are no files in the selection */
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
-	obj->priv->burn = brasero_utils_make_button (_("_Burn..."),
+	obj->priv->burn = brasero_utils_make_button (_("_Burn"),
 						     NULL,
 						     "media-optical-burn",
 						     GTK_ICON_SIZE_BUTTON);
@@ -613,6 +593,89 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
 	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, TRUE, 0);
+
+	/* Options expander */
+	frame = gtk_expander_new_with_mnemonic ("_Burn Options");
+	gtk_widget_show (frame);
+	gtk_box_pack_end (GTK_BOX (obj), frame, FALSE, TRUE, 0);
+
+	/* Options expander */
+	frame = gtk_expander_new_with_mnemonic ("_Information");
+	gtk_widget_show (frame);
+	gtk_box_pack_end (GTK_BOX (obj), frame, FALSE, TRUE, 0);
+
+	table = gtk_table_new (2, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_widget_show (table);
+	gtk_container_add (GTK_CONTAINER (frame), table);
+
+	/* icon */
+	label = gtk_label_new_with_mnemonic (_("_Icon:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_widget_show (label);
+	obj->priv->icon_label = label;
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_EXPAND,
+			  0, 0);
+
+	image = gtk_image_new_from_icon_name ("media-optical", GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (image);
+	obj->priv->icon_img = image;
+
+	button = gtk_button_new ();
+	gtk_widget_show (button);
+	gtk_button_set_image (GTK_BUTTON (button), image);
+	obj->priv->button_img = button;
+
+	gtk_widget_set_tooltip_text (button, _("Select an icon for the disc that will appear in file managers"));
+
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_project_icon_button_clicked),
+			  obj);
+
+	alignment = gtk_alignment_new (0.0, 0.5, 0.0, 0.0);
+	gtk_widget_show (alignment);
+	gtk_container_add (GTK_CONTAINER (alignment), button);
+
+	gtk_table_attach (GTK_TABLE (table), alignment,
+			  1, 2,
+			  1, 2,
+			  GTK_FILL|GTK_EXPAND,
+			  GTK_EXPAND,
+			  0, 0);
+
+	/* Name widget */
+	label = gtk_label_new_with_mnemonic (_("_Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0, 1,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_EXPAND,
+			  0, 0);
+
+	obj->priv->name_display = brasero_project_name_new ();
+	gtk_widget_show (obj->priv->name_display);
+	gtk_table_attach (GTK_TABLE (table), obj->priv->name_display,
+			  1, 2,
+			  0, 1,
+			  GTK_EXPAND|GTK_FILL,
+			  GTK_EXPAND,
+			  0, 0);
+	obj->priv->empty = 1;
+
+	g_signal_connect (obj->priv->name_display,
+			  "name-changed",
+			  G_CALLBACK (brasero_project_name_changed_cb),
+			  obj);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), obj->priv->name_display);
 
 	/* The three panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
@@ -1187,6 +1250,8 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		gtk_widget_hide (project->priv->button_img);
+		gtk_widget_hide (project->priv->icon_label);
+
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1194,9 +1259,15 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_update_project_size (project, 0);
+
+		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
+							  BRASERO_MEDIA_TYPE_WRITABLE);
+		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		gtk_widget_show (project->priv->button_img);
+		gtk_widget_show (project->priv->icon_label);
+
 		project->priv->current = BRASERO_DISC (project->priv->data);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1204,9 +1275,16 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_update_project_size (project, 0);
+
+		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
+							  BRASERO_MEDIA_TYPE_WRITABLE|
+							  BRASERO_MEDIA_TYPE_FILE);
+		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		gtk_widget_hide (project->priv->button_img);
+		gtk_widget_hide (project->priv->icon_label);
+
 		project->priv->current = BRASERO_DISC (project->priv->video);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1214,7 +1292,15 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 2);
 		brasero_project_update_project_size (project, 0);
+
+		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
+							  BRASERO_MEDIA_TYPE_WRITABLE|
+							  BRASERO_MEDIA_TYPE_FILE);
+		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 	}
+
+	if (project->priv->current)
+		brasero_disc_set_session_contents (project->priv->current, BRASERO_BURN_SESSION (project->priv->session));
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 
