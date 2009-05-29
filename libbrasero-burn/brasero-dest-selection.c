@@ -451,6 +451,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	BraseroBurnFlag flags;
 	goffset size_bytes = 0;
 	goffset data_blocks = 0;
+	goffset session_bytes = 0;
 	BraseroTrackType *input = NULL;
 	BraseroDestSelectionPrivate *priv;
 
@@ -513,7 +514,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	flags = brasero_burn_session_get_flags (priv->session);
 	brasero_burn_session_get_size (priv->session,
 				       &data_blocks,
-				       NULL);
+				       &session_bytes);
 
 	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
 		brasero_medium_get_free_space (medium,
@@ -537,6 +538,9 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 
 	if (blocks) {
 		used = data_blocks * 100 / blocks;
+		if (data_blocks && !used)
+			used = 1;
+
 		used = MIN (100, used);
 	}
 	else
@@ -545,11 +549,12 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	brasero_medium_selection_update_used_space (BRASERO_MEDIUM_SELECTION (selection),
 						    medium,
 						    used);
-	if (!blocks) {
+	blocks -= data_blocks;
+	if (blocks <= 0) {
 		brasero_track_type_free (input);
 
 		/* NOTE for translators, the first %s is the medium name */
-		label = g_strdup_printf (_("%s: no free space"), medium_name);
+		label = g_strdup_printf (_("%s: not enough free space"), medium_name);
 		g_free (medium_name);
 		return label;
 	}
@@ -558,11 +563,11 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	if (brasero_track_type_get_has_stream (input)
 	|| (brasero_track_type_get_has_medium (input)
 	&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)))
-		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes),
+		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes - session_bytes),
 							     TRUE,
 							     TRUE);
 	else
-		size_string = g_format_size_for_display (size_bytes);
+		size_string = g_format_size_for_display (size_bytes - session_bytes);
 
 	brasero_track_type_free (input);
 

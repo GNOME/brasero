@@ -231,7 +231,7 @@ brasero_medium_selection_set_show_used_space (BraseroMediumSelection *selector)
 					NULL);
 
 	renderer = gtk_cell_renderer_progress_new ();
-	g_object_set (renderer, "xpad", 8, NULL);
+	g_object_set (renderer, "xpad", 8, "text-xalign", 0.0, NULL);
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (selector), renderer, TRUE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (selector), renderer,
 					"text", NAME_COL,
