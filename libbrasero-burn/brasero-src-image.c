@@ -572,7 +572,8 @@ brasero_src_image_init (BraseroSrcImage *object)
 		g_object_unref (file);
 	}
 	g_free (uri);
-		 
+
+	/* Translators: this is a disc image */
 	string = g_strdup_printf ("<i>%s</i>", _("Click here to select an _image"));
 	label = gtk_label_new_with_mnemonic (string);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

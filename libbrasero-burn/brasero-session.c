@@ -420,9 +420,11 @@ brasero_burn_session_dest_media_added (BraseroDrive *drive,
 				       BraseroMedium *medium,
 				       BraseroBurnSession *self)
 {
+	/* No medium before */
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
-		       0);
+		       0,
+		       NULL);
 }
 
 static void
@@ -432,7 +434,8 @@ brasero_burn_session_dest_media_removed (BraseroDrive *drive,
 {
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
-		       0);
+		       0,
+		       medium);
 }
 
 void
@@ -440,6 +443,7 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 				 BraseroDrive *drive)
 {
 	BraseroBurnSessionPrivate *priv;
+	BraseroMedium *former;
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
@@ -448,6 +452,11 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 	if (drive == priv->settings->burner)
 		return;
 
+	former = brasero_drive_get_medium (priv->settings->burner);
+	if (former)
+		former = g_object_ref (former);
+
+	/* If there was no drive before no need for a changing signal */
 	if (priv->settings->burner) {
 		if (priv->dest_added_sig) {
 			g_signal_handler_disconnect (priv->settings->burner,
@@ -480,7 +489,10 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
-		       0);
+		       0,
+		       former);
+	if (former)
+		g_object_unref (former);
 }
 
 BraseroDrive *
@@ -628,6 +640,35 @@ brasero_burn_session_get_output_format (BraseroBurnSession *self)
  * the type of image it can be a toc (cue) or the path of the image (all others)
  */
 
+static void
+brasero_burn_session_set_image_output_real (BraseroBurnSession *self,
+					    BraseroImageFormat format,
+					    const gchar *image,
+					    const gchar *toc)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	if (priv->settings->image)
+		g_free (priv->settings->image);
+
+	if (image)
+		priv->settings->image = g_strdup (image);
+	else
+		priv->settings->image = NULL;
+
+	if (priv->settings->toc)
+		g_free (priv->settings->toc);
+
+	if (toc)
+		priv->settings->toc = g_strdup (toc);
+	else
+		priv->settings->toc = NULL;
+
+	priv->settings->format = format;
+}
+
 BraseroBurnResult
 brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 					    BraseroImageFormat format,
@@ -648,6 +689,8 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 			BraseroDrive *drive;
 			GSList *list;
 
+			/* NOTE: changing/changed signals are handled in
+			 * set_burner (). */
 			monitor = brasero_medium_monitor_get_default ();
 			list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
 			drive = brasero_medium_get_drive (list->data);
@@ -659,28 +702,12 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 		return BRASERO_BURN_OK;
 	}
 
-	if (priv->settings->image)
-		g_free (priv->settings->image);
-
-	if (image)
-		priv->settings->image = g_strdup (image);
-	else
-		priv->settings->image = NULL;
-
-	if (priv->settings->toc)
-		g_free (priv->settings->toc);
-
-	if (toc)
-		priv->settings->toc = g_strdup (toc);
-	else
-		priv->settings->toc = NULL;
-
-	priv->settings->format = format;
-
 	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
 		BraseroMediumMonitor *monitor;
 		BraseroDrive *drive;
 		GSList *list;
+
+		brasero_burn_session_set_image_output_real (self, format, image, toc);
 
 		monitor = brasero_medium_monitor_get_default ();
 		list = brasero_medium_monitor_get_media (monitor,BRASERO_MEDIA_TYPE_FILE);
@@ -689,10 +716,13 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 		g_object_unref (monitor);
 		g_slist_free (list);
 	}
-	else
+	else {
+		brasero_burn_session_set_image_output_real (self, format, image, toc);
 		g_signal_emit (self,
 			       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
-			       0);
+			       0,
+			       brasero_drive_get_medium (priv->settings->burner));
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -710,6 +740,10 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	if (priv->settings->tmpdir && path
+	&& !strcmp (priv->settings->tmpdir, path))
+		return BRASERO_BURN_OK;
 
 	if (priv->settings->tmpdir)
 		g_free (priv->settings->tmpdir);
@@ -1128,10 +1162,14 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 {
 	BraseroSessionSetting *settings;
 	BraseroBurnSessionPrivate *priv;
+	BraseroMedium *former;
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	if (!priv->pile_settings)
+		return;
 
 	if (priv->dest_added_sig) {
 		g_signal_handler_disconnect (priv->settings->burner,
@@ -1145,10 +1183,11 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 		priv->dest_removed_sig = 0;	
 	}
 
-	brasero_session_settings_clean (priv->settings);
+	former = brasero_drive_get_medium (priv->settings->burner);
+	if (former)
+		former = g_object_ref (former);
 
-	if (!priv->pile_settings)
-		return;
+	brasero_session_settings_clean (priv->settings);
 
 	settings = priv->pile_settings->data;
 	priv->pile_settings = g_slist_remove (priv->pile_settings, settings);
@@ -1169,7 +1208,10 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
-		       0);
+		       0,
+		       former);
+	if (former)
+		g_object_unref (former);
 }
 
 void
@@ -1691,9 +1733,10 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, output_changed),
 			  NULL,
 			  NULL,
-			  g_cclosure_marshal_VOID__VOID,
+			  g_cclosure_marshal_VOID__OBJECT,
 			  G_TYPE_NONE,
-			  0);
+			  1,
+			  BRASERO_TYPE_MEDIUM);
 
 	brasero_burn_session_signals [INPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("input_changed",

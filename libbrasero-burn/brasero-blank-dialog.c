@@ -147,6 +147,7 @@ brasero_blank_dialog_caps_changed (BraseroPluginManager *manager,
 
 static void
 brasero_blank_dialog_output_changed (BraseroBurnSession *session,
+				     BraseroMedium *former,
 				     BraseroBlankDialog *dialog)
 {
 	brasero_blank_dialog_device_opts_setup (dialog);

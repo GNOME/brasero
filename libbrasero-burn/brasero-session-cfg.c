@@ -92,23 +92,20 @@ G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN
 
 static gchar *
 brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
+				   BraseroMedium *medium,
 				   const gchar *property)
 {
 	BraseroTrackType *type;
-	BraseroMedium *medium;
 	BraseroDrive *drive;
 	gchar *display_name;
 	gchar *key = NULL;
 	gchar *disc_type;
 
-	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-	if (!drive)
-		return NULL;
-
-	medium = brasero_drive_get_medium (drive);
 	if (brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE)
 		return NULL;
-	
+
+	drive = brasero_medium_get_drive (medium);
+
 	/* make sure display_name doesn't contain any forbidden characters */
 	if (!brasero_drive_is_fake (drive)) {
 		gchar *tmp;
@@ -191,30 +188,18 @@ brasero_session_cfg_disable (BraseroSessionCfg *self)
 }
 
 static void
-brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
+brasero_session_cfg_save_drive_flags (BraseroSessionCfg *self,
+				      BraseroMedium *medium)
 {
 	BraseroSessionCfgPrivate *priv;
 	BraseroBurnFlag flags;
 	GConfClient *client;
-	const gchar *path;
-	guint64 rate;
 	gchar *key;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	client = gconf_client_get_default ();
-
-	rate = brasero_burn_session_get_rate (BRASERO_BURN_SESSION (self));
-	key = brasero_session_cfg_get_gconf_key (self, "speed");
-	if (!key) {
-		g_object_unref (client);
-		return;
-	}
-
-	gconf_client_set_int (client, key, rate / 1000, NULL);
-	g_free (key);
-
-	key = brasero_session_cfg_get_gconf_key (self, "flags");
+	key = brasero_session_cfg_get_gconf_key (self, medium, "flags");
 	if (!key) {
 		g_object_unref (client);
 		return;
@@ -224,6 +209,33 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
 	flags &= ~BRASERO_DEST_SAVED_FLAGS;
 	flags |= (brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self)) & BRASERO_DEST_SAVED_FLAGS);
 	gconf_client_set_int (client, key, flags, NULL);
+	g_free (key);
+}
+
+static void
+brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self,
+					   BraseroMedium *medium)
+{
+	BraseroSessionCfgPrivate *priv;
+	GConfClient *client;
+	const gchar *path;
+	guint64 rate;
+	gchar *key;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
+	brasero_session_cfg_save_drive_flags (self, medium);
+
+	client = gconf_client_get_default ();
+
+	rate = brasero_burn_session_get_rate (BRASERO_BURN_SESSION (self));
+	key = brasero_session_cfg_get_gconf_key (self, medium, "speed");
+	if (!key) {
+		g_object_unref (client);
+		return;
+	}
+
+	gconf_client_set_int (client, key, rate / 1000, NULL);
 	g_free (key);
 
 	/* temporary directory */
@@ -241,12 +253,22 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 {
 	BraseroMedia media;
 	BraseroBurnFlag flag;
+	BraseroDrive *drive;
+	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
-	media = brasero_burn_session_get_dest_media (BRASERO_BURN_SESSION (self));
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
+	if (!drive)
+		return;
+
+	medium = brasero_drive_get_medium (drive);
+	if (!medium)
+		return;
+
+	media = brasero_medium_get_status (medium);
 
 	/* add flags then wipe out flags from session to check them one by one */
 	flags |= brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
@@ -350,7 +372,7 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 	}
 
 	/* Always save flags */
-	brasero_session_cfg_save_drive_properties (self);
+	brasero_session_cfg_save_drive_flags (self, medium);
 }
 
 static void
@@ -381,7 +403,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 	/* Update/set the rate */
 	client = gconf_client_get_default ();
 
-	key = brasero_session_cfg_get_gconf_key (self, "speed");
+	key = brasero_session_cfg_get_gconf_key (self, medium, "speed");
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
@@ -405,7 +427,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 
 	/* Do the same with the flags.
 	 * NOTE: we only save/load PROPERTIES_FLAGS */
-	key = brasero_session_cfg_get_gconf_key (self, "flags");
+	key = brasero_session_cfg_get_gconf_key (self, medium, "flags");
 	if (!key) {
 		g_object_unref (client);
 		return;
@@ -846,13 +868,17 @@ brasero_session_cfg_input_changed (BraseroBurnSession *session)
 }
 
 static void
-brasero_session_cfg_output_changed (BraseroBurnSession *session)
+brasero_session_cfg_output_changed (BraseroBurnSession *session,
+				    BraseroMedium *former)
 {
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 	if (priv->disabled)
 		return;
+
+	brasero_session_cfg_save_drive_properties (BRASERO_SESSION_CFG (session),
+						   former);
 
 	/* In this case need to :
 	 * - load flags 
@@ -888,6 +914,7 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 			       BraseroBurnFlag flags)
 {
 	BraseroSessionCfgPrivate *priv;
+	BraseroDrive *drive;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
@@ -905,7 +932,9 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 					     &priv->compulsory);
 
 	/* Always save flags */
-	brasero_session_cfg_save_drive_properties (self);
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
+	if (drive && brasero_drive_get_medium (drive))
+		brasero_session_cfg_save_drive_flags (self, brasero_drive_get_medium (drive));
 
 	brasero_session_cfg_update (self,
 				    FALSE,
@@ -917,6 +946,7 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 				  BraseroBurnFlag flags)
 {
 	BraseroSessionCfgPrivate *priv;
+	BraseroDrive *drive;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
@@ -928,7 +958,9 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 					     &priv->compulsory);
 
 	/* Always save flags */
-	brasero_session_cfg_save_drive_properties (self);
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
+	if (drive && brasero_drive_get_medium (drive))
+		brasero_session_cfg_save_drive_flags (self, brasero_drive_get_medium (drive));
 
 	brasero_session_cfg_update (self,
 				    FALSE,
@@ -974,8 +1006,14 @@ static void
 brasero_session_cfg_finalize (GObject *object)
 {
 	BraseroSessionCfgPrivate *priv;
+	BraseroDrive *drive;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (object);
+
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (object));
+	if (drive && brasero_drive_get_medium (drive))
+		brasero_session_cfg_save_drive_properties (BRASERO_SESSION_CFG (object),
+							   brasero_drive_get_medium (drive));
 
 	if (priv->caps_sig) {
 		BraseroPluginManager *manager;

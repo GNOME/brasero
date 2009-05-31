@@ -60,6 +60,7 @@ struct _BraseroMediumPropertiesPrivate
 	GtkWidget *medium_prop;
 
 	glong valid_sig;
+	glong output_sig;
 
 	guint default_format:1;
 	guint default_path:1;
@@ -79,68 +80,48 @@ static void
 brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 {
 	BraseroMediumPropertiesPrivate *priv;
-	BraseroBurnFlag compulsory = 0;
-	BraseroBurnFlag supported = 0;
-	BraseroBurnFlag flags = 0;
+	GtkWidget *medium_prop;
 	BraseroDrive *drive;
 	GtkWidget *toplevel;
-	const gchar *path;
-	gint result;
-	gint64 rate;
+	gchar *display_name;
+	GtkWidget *dialog;
+	GtkWidget *box;
+	gchar *header;
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
 
 	/* Build dialog */
-	priv->medium_prop = brasero_drive_properties_new ();
+	medium_prop = brasero_drive_properties_new (BRASERO_SESSION_CFG (priv->session));
+	gtk_widget_show (medium_prop);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	gtk_window_set_transient_for (GTK_WINDOW (priv->medium_prop), GTK_WINDOW (toplevel));
-	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->medium_prop), TRUE);
-	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
 
-	/* get information */
 	drive = brasero_burn_session_get_burner (priv->session);
-	rate = brasero_burn_session_get_rate (priv->session);
+	display_name = brasero_drive_get_display_name (drive);
+	header = g_strdup_printf (_("Properties of %s"), display_name);
+	g_free (display_name);
 
-	brasero_drive_properties_set_drive (BRASERO_DRIVE_PROPERTIES (priv->medium_prop),
-					    drive,
-					    rate);
+	dialog = gtk_dialog_new_with_buttons (header,
+					      GTK_WINDOW (toplevel),
+					      GTK_DIALOG_MODAL|
+					      GTK_DIALOG_NO_SEPARATOR|
+					      GTK_DIALOG_DESTROY_WITH_PARENT,
+					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+					      NULL);
+	g_free (header);
 
-	flags = brasero_burn_session_get_flags (priv->session);
-	brasero_burn_session_get_burn_flags (priv->session,
-					     &supported,
-					     &compulsory);
-
-	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->medium_prop),
-					    flags,
-					    supported,
-					    compulsory);
-
-	path = brasero_burn_session_get_tmpdir (priv->session);
-	brasero_drive_properties_set_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->medium_prop),
-					     path);
+	box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	gtk_box_pack_start (GTK_BOX (box), medium_prop, TRUE, TRUE, 0);
 
 	/* launch the dialog */
-	gtk_widget_show_all (priv->medium_prop);
-	result = gtk_dialog_run (GTK_DIALOG (priv->medium_prop));
-	if (result != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy (priv->medium_prop);
-		priv->medium_prop = NULL;
-		return;
-	}
-
-	rate = brasero_drive_properties_get_rate (BRASERO_DRIVE_PROPERTIES (priv->medium_prop));
-	brasero_burn_session_set_rate (priv->session, rate);
-
-	brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
-	flags = brasero_drive_properties_get_flags (BRASERO_DRIVE_PROPERTIES (priv->medium_prop));
-	brasero_session_cfg_add_flags (BRASERO_SESSION_CFG (priv->session), flags);
-
-	path = brasero_drive_properties_get_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->medium_prop));
-	brasero_burn_session_set_tmpdir (priv->session, path);
-
-	gtk_widget_destroy (priv->medium_prop);
+	priv->medium_prop = dialog;
+	gtk_widget_show (dialog);
+	gtk_dialog_run (GTK_DIALOG (dialog));
 	priv->medium_prop = NULL;
+	gtk_widget_destroy (dialog);
+
+	/* FIXME: save */
+	//brasero_session_cfg_save_drive_properties (BRASERO_SESSION_CFG (priv->session));
 }
 
 static gchar *
@@ -551,8 +532,8 @@ brasero_medium_properties_update_image_output (BraseroMediumProperties *self,
 
 	/* we always need to do this */
 	brasero_medium_properties_set_output_path (self,
-						valid_format,
-						path);
+						   valid_format,
+						   path);
 
 	g_free (path);
 
@@ -565,6 +546,23 @@ brasero_medium_properties_update_image_output (BraseroMediumProperties *self,
 		brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->medium_prop),
 						      num > 1 ? formats:BRASERO_IMAGE_FORMAT_NONE,
 						      BRASERO_IMAGE_FORMAT_ANY);
+	}
+}
+
+static void
+brasero_medium_properties_output_changed (BraseroBurnSession *session,
+					  BraseroMedium *former,
+					  BraseroMediumProperties *self)
+{
+	BraseroMediumPropertiesPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
+
+	/* close properties dialog */
+	if (priv->medium_prop) {
+		gtk_dialog_response (GTK_DIALOG (priv->medium_prop),
+				     GTK_RESPONSE_CANCEL);
+		priv->medium_prop = NULL;
 	}
 }
 
@@ -607,7 +605,11 @@ brasero_medium_properties_finalize (GObject *object)
 					     priv->valid_sig);
 		priv->valid_sig = 0;
 	}
-
+	if (priv->output_sig) {
+		g_signal_handler_disconnect (priv->session,
+					     priv->output_sig);
+		priv->output_sig = 0;
+	}
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
@@ -643,6 +645,10 @@ brasero_medium_properties_set_property (GObject *object,
 						    "is-valid",
 						    G_CALLBACK (brasero_medium_properties_valid_session),
 						    object);
+		priv->output_sig = g_signal_connect (session,
+						     "output-changed",
+						     G_CALLBACK (brasero_medium_properties_output_changed),
+						     object);
 		break;
 
 	default:
