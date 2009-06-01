@@ -140,6 +140,11 @@ if HAVE_SG_IO_HDR_T
 libbrasero_media_la_SOURCES += scsi-sg.c
 endif
 
+# NetBSD's scsi(4)
+if HAVE_SCSIIO_H
+libbrasero_media_la_SOURCES += scsi-netbsd.c
+endif
+
 # Solaris's USCSI interface
 if HAVE_USCSI_H
 libbrasero_media_la_SOURCES += scsi-uscsi.c
