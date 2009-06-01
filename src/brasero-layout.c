@@ -81,6 +81,8 @@ struct BraseroLayoutPrivate {
 	GtkWidget *project;
 
 	GtkWidget *combo;
+	GtkWidget *top_box;
+
 	BraseroLayoutType ctx_type;
 	BraseroLayoutItem *active_item;
 
@@ -750,6 +752,9 @@ brasero_layout_add_source (BraseroLayout *layout,
 			    ITEM_COL, item,
 			    VISIBLE_COL, TRUE,
 			    -1);
+
+	if (gtk_tree_model_iter_n_children (model, NULL) > 1)
+		gtk_widget_show (layout->priv->top_box);
 }
 
 /**************************** empty view callback ******************************/
@@ -1424,9 +1429,9 @@ brasero_layout_init (BraseroLayout *obj)
 							      NULL,
 							      NULL);
 
-	/* close button and  combo */
+	/* close button and combo. Don't show it now. */
 	box = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (box);
+	obj->priv->top_box = box;
 	gtk_box_pack_start (GTK_BOX (obj->priv->main_box),
 			    box,
 			    FALSE,
