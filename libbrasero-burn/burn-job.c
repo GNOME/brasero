@@ -411,7 +411,6 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 	/* This is not really an error, we'll probably ask the 
 	 * user to load a new disc */
 	if (output_blocks > media_blocks) {
-		gchar *available_str;
 		gchar *media_blocks_str;
 		gchar *output_blocks_str;
 
@@ -420,25 +419,20 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 				  output_blocks);
 
 		media_blocks_str = g_strdup_printf ("%"G_GINT64_FORMAT, media_blocks);
-		output_blocks_str = g_strdup_printf ("%" G_GINT64_FORMAT, output_blocks);
-
-		/* Translators: the first %s is the size of the free space on the medium
-		 * and the second %s is the size of the space required by the data to be
-		 * burnt. */
-		available_str = g_strdup_printf (_("(%s available for %s)"),
-						 media_blocks_str,
-						 output_blocks_str);
-		g_free (media_blocks_str);
-		g_free (output_blocks_str);
+		output_blocks_str = g_strdup_printf ("%"G_GINT64_FORMAT, output_blocks);
 
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_MEDIUM_SPACE,
-			     "%s %s.",
-			     _("Not enough space available on the disc"),
-			     available_str);
+			     /* Translators: the first %s is the size of the free space on the medium
+			      * and the second %s is the size of the space required by the data to be
+			      * burnt. */
+			     _("Not enough space available on the disc (%s available for %s)"),
+			     media_blocks_str,
+			     output_blocks_str);
 
-		g_free (available_str);
+		g_free (media_blocks_str);
+		g_free (output_blocks_str);
 		return BRASERO_BURN_NEED_RELOAD;
 	}
 
