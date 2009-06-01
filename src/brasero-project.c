@@ -162,7 +162,6 @@ struct BraseroProjectPrivate {
 	GtkWidget *name_display;
 	GtkWidget *button_img;
 	GtkWidget *icon_img;
-	GtkWidget *icon_label;
 	GtkWidget *discs;
 	GtkWidget *audio;
 	GtkWidget *data;
@@ -535,16 +534,33 @@ brasero_project_icon_button_clicked (GtkWidget *button,
 }
 
 static void
+brasero_project_icon_button_size_allocate (GtkWidget *widget,
+					   GtkAllocation *allocation,
+					   gpointer NULL_data)
+{
+	allocation->width = MAX (allocation->width, allocation->height);
+	allocation->height = MAX (allocation->width, allocation->height);
+}
+
+static void
+brasero_project_icon_button_size_request (GtkWidget *widget,
+					  GtkRequisition *requisition,
+					  gpointer NULL_data)
+{
+	requisition->width = MAX (requisition->width, requisition->height);
+	requisition->height = MAX (requisition->width, requisition->height);
+}
+
+static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
 	GtkWidget *selector;
 	GtkWidget *button;
+	GtkWidget *label;
 	GtkWidget *table;
 	GtkWidget *image;
-	GtkWidget *frame;
-	GtkWidget *label;
 	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
@@ -562,18 +578,55 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
 
 	box = gtk_hbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 0);
 	gtk_widget_show (box);
 	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, 0);
 
+	table = gtk_table_new (4, 2, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_widget_show (table);
+	gtk_box_pack_end (GTK_BOX (obj), table, FALSE, TRUE, 0);
+
 	/* Media selection widget */
+	label = gtk_label_new_with_mnemonic (_("_Disc:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  1, 2,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_EXPAND,
+			  0, 0);
+
 	selector = brasero_dest_selection_new (obj->priv->session);
 	gtk_widget_show (selector);
-	gtk_box_pack_start (GTK_BOX (box), selector, TRUE, TRUE, 0);
 	obj->priv->selection = selector;
 
-	/* burn button set insensitive since there are no files in the selection */
+	gtk_table_attach (GTK_TABLE (table), selector,
+			  2, 3,
+			  0, 1,
+			  GTK_FILL|GTK_EXPAND,
+			  GTK_FILL|GTK_EXPAND,
+			  0, 0);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), selector);
+
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
+
+	/* Properties/options buttons */
+	button = brasero_medium_properties_new (obj->priv->session);
+	gtk_size_group_add_widget (GTK_SIZE_GROUP (size_group), button);
+	gtk_widget_show (button);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	gtk_table_attach (GTK_TABLE (table), button,
+			  3, 4,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_EXPAND,
+			  0, 0);
+
+	/* burn button set insensitive since there are no files in the selection */
 	obj->priv->burn = brasero_utils_make_button (_("_Burn"),
 						     NULL,
 						     "media-optical-burn",
@@ -592,26 +645,16 @@ brasero_project_init (BraseroProject *obj)
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
-	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, TRUE, 0);
-
-	/* Options expander */
-	frame = gtk_expander_new_with_mnemonic ("_Burn Options");
-	gtk_widget_show (frame);
-	gtk_box_pack_end (GTK_BOX (obj), frame, FALSE, TRUE, 0);
-
-	/* Options expander */
-	frame = gtk_expander_new_with_mnemonic ("_Information");
-	gtk_widget_show (frame);
-	gtk_box_pack_end (GTK_BOX (obj), frame, FALSE, TRUE, 0);
-
-	table = gtk_table_new (2, 2, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 4);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
-	gtk_widget_show (table);
-	gtk_container_add (GTK_CONTAINER (frame), table);
+//	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (table), alignment,
+			  3, 4,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_EXPAND,
+			  0, 0);
 
 	/* icon */
-	label = gtk_label_new_with_mnemonic (_("_Icon:"));
+/*	label = gtk_label_new_with_mnemonic (_("_Icon:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	obj->priv->icon_label = label;
@@ -621,12 +664,20 @@ brasero_project_init (BraseroProject *obj)
 			  GTK_FILL,
 			  GTK_EXPAND,
 			  0, 0);
-
+*/
 	image = gtk_image_new_from_icon_name ("media-optical", GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_widget_show (image);
 	obj->priv->icon_img = image;
 
 	button = gtk_button_new ();
+	g_signal_connect (button,
+			  "size-request",
+			  G_CALLBACK (brasero_project_icon_button_size_request),
+			  NULL);
+	g_signal_connect (button,
+			  "size-allocate",
+			  G_CALLBACK (brasero_project_icon_button_size_allocate),
+			  NULL);
 	gtk_widget_show (button);
 	gtk_button_set_image (GTK_BUTTON (button), image);
 	obj->priv->button_img = button;
@@ -638,15 +689,15 @@ brasero_project_init (BraseroProject *obj)
 			  G_CALLBACK (brasero_project_icon_button_clicked),
 			  obj);
 
-	alignment = gtk_alignment_new (0.0, 0.5, 0.0, 0.0);
+	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (alignment), button);
 
 	gtk_table_attach (GTK_TABLE (table), alignment,
-			  1, 2,
-			  1, 2,
+			  0, 1,
+			  0, 2,
+			  GTK_FILL,
 			  GTK_FILL|GTK_EXPAND,
-			  GTK_EXPAND,
 			  0, 0);
 
 	/* Name widget */
@@ -654,8 +705,8 @@ brasero_project_init (BraseroProject *obj)
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  0, 1,
+			  1, 2,
+			  1, 2,
 			  GTK_FILL,
 			  GTK_EXPAND,
 			  0, 0);
@@ -663,8 +714,8 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->name_display = brasero_project_name_new ();
 	gtk_widget_show (obj->priv->name_display);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->name_display,
+			  2, 3,
 			  1, 2,
-			  0, 1,
 			  GTK_EXPAND|GTK_FILL,
 			  GTK_EXPAND,
 			  0, 0);
@@ -774,7 +825,7 @@ brasero_project_new ()
 {
 	BraseroProject *obj;
 	
-	obj = BRASERO_PROJECT(g_object_new(BRASERO_TYPE_PROJECT, NULL));
+	obj = BRASERO_PROJECT (g_object_new (BRASERO_TYPE_PROJECT, NULL));
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (obj->priv->discs), 0);
 
 	return GTK_WIDGET (obj);
@@ -1250,7 +1301,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		gtk_widget_hide (project->priv->button_img);
-		gtk_widget_hide (project->priv->icon_label);
 
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
@@ -1266,7 +1316,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		gtk_widget_show (project->priv->button_img);
-		gtk_widget_show (project->priv->icon_label);
 
 		project->priv->current = BRASERO_DISC (project->priv->data);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
@@ -1283,7 +1332,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		gtk_widget_hide (project->priv->button_img);
-		gtk_widget_hide (project->priv->icon_label);
 
 		project->priv->current = BRASERO_DISC (project->priv->video);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
