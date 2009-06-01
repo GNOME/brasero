@@ -208,7 +208,8 @@ dnl ****************Nautilus**********************************
 NAUTILUS_REQUIRED=2.22.2
 
 AC_ARG_ENABLE(nautilus,
-			[  --enable-nautilus		Build Nautilus extension [[default = yes]]],,
+			[  --enable-nautilus		Build Nautilus extension [[default = yes]]],
+			[enable_nautilus=$enableval],
 			[enable_nautilus="yes"])
 
 if test x"$enable_nautilus" = "xyes"; then
@@ -235,7 +236,8 @@ LIBBURN_REQUIRED=0.4.0
 LIBISOFS_REQUIRED=0.6.4
 
 AC_ARG_ENABLE(libburnia,
-			[  --enable-libburnia		Build libburnia plugins [[default = yes]]],,
+			[  --enable-libburnia		Build libburnia plugins [[default = yes]]],
+			[enable_libburnia=$enableval],
 			[enable_libburnia="yes"])
 
 if test x"$enable_libburnia" = "xyes"; then
@@ -256,7 +258,8 @@ AM_CONDITIONAL(BUILD_LIBBURNIA, test x"$build_libburnia" = "xyes")
 
 dnl **************** check for cdrtools **********************
 AC_ARG_ENABLE(cdrtools,
-			[  --enable-cdrtools		Build cdrtools plugins [[default = yes]]],,
+			[  --enable-cdrtools		Build cdrtools plugins [[default = yes]]],
+			[build_cdrtools=$enableval],
 			[build_cdrtools="yes"])
 
 if test x"$build_cdrtools" = "xyes"; then
@@ -268,7 +271,8 @@ AM_CONDITIONAL(BUILD_CDRTOOLS, test x"$build_cdrtools" = "xyes")
 
 dnl **************** check for cdrkit ************************
 AC_ARG_ENABLE(cdrkit,
-			[  --enable-cdrkit		Build cdrkit plugins [[default = yes]]],,
+			[  --enable-cdrkit		Build cdrkit plugins [[default = yes]]],
+			[build_cdrkit=$enableval],
 			[build_cdrkit="yes"])
 
 if test x"$build_cdrkit" = "xyes"; then
@@ -303,7 +307,8 @@ dnl ****************check for search (optional)**************
 BEAGLE_REQUIRED=0.3.0
 
 AC_ARG_ENABLE(search,
-			[  --enable-search		build search pane (if beagle is available) [[default = yes]]],,
+			[  --enable-search		build search pane (if beagle is available) [[default = yes]]],
+			[enable_search=$enableval],
 			[enable_search="yes"])
 
 if test x"$enable_search" = "xyes"; then
@@ -325,7 +330,8 @@ dnl ****************check for playlist (optional)**************
 TOTEM_REQUIRED=2.22.0
 
 AC_ARG_ENABLE(playlist,
-			[  --enable-playlist		build playlist pane (if totem is available)[[default = yes]]],,
+			[  --enable-playlist		build playlist pane (if totem is available)[[default = yes]]],
+			[enable_playlist=$enableval],
 			[enable_playlist="yes"])
 
 if test x"$enable_playlist" = "xyes"; then
@@ -346,7 +352,8 @@ AM_CONDITIONAL(BUILD_PLAYLIST, test x"$build_totem" = "xyes")
 dnl ****************check for preview (optional)**************
 GSTREAMER_MODULE_REQUIRED=0.10.0
 AC_ARG_ENABLE(preview,
-			[  --enable-preview		build preview pane [[default = yes]]],,
+			[  --enable-preview		build preview pane [[default = yes]]],
+			[enable_preview=$enableval],
 			[enable_preview="yes"])
 
 if test x"$enable_preview" = "xyes"; then
@@ -366,7 +373,8 @@ AM_CONDITIONAL(BUILD_PREVIEW, test x"$build_preview" = "xyes")
 
 dnl ****************check for inotify (optional)**************
 AC_ARG_ENABLE(inotify,
-			[  --enable-inotify		use inotify [[default = yes]]],,
+			[  --enable-inotify		use inotify [[default = yes]]],
+			[enable_inotify=$enableval],
 			[enable_inotify="yes"])
 
 if test x"$enable_inotify" = "xyes"; then
@@ -376,7 +384,8 @@ AM_CONDITIONAL(BUILD_INOTIFY, test x"$enable_inotify" = "xyes")
 
 dnl ****** Update mime, desktop and icon caches *******
 AC_ARG_ENABLE(caches,
-			[  --enable-caches	Run update-* to update mime, desktop and icon caches when installing [[default = yes]]],,
+			[  --enable-caches	Run update-* to update mime, desktop and icon caches when installing [[default = yes]]],
+			[enable_caches=$enableval],
 			[enable_caches="yes"])
 
 AM_CONDITIONAL(UPDATE_CACHES, test x"$enable_caches" = "xyes")
