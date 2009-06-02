@@ -211,12 +211,6 @@ write_activate (GtkWindow *toplevel)
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
-	session = brasero_session_cfg_new ();
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
-					BRASERO_TRACK (track));
-	g_object_unref (track);
-
-	/* Add option widget */
 	box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
@@ -234,14 +228,15 @@ write_activate (GtkWindow *toplevel)
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* create the options box */
-	options = brasero_data_options_new (BRASERO_BURN_SESSION (session));
+	options = brasero_data_options_new (BRASERO_BURN_SESSION (priv->session));
 	gtk_widget_show (options);
+	brasero_burn_options_add_options (self, options);
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* NOTE: set the disc we're handling */
-	launch_brasero_on_window_session (session, options, toplevel);
-	g_object_unref (session);
-
+	launch_brasero_on_window_track (BRASERO_TRACK (track),
+					box,
+					toplevel);
 	/* cleanup */
 	g_object_unref (session);
 }
