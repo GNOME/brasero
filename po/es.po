@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-06-01 18:03+0000\n"
-"PO-Revision-Date: 2009-06-01 20:39+0200\n"
+"POT-Creation-Date: 2009-06-01 18:40+0000\n"
+"PO-Revision-Date: 2009-06-02 07:39+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -286,8 +286,8 @@ msgstr "No se pudo crear el elemento %s"
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-caps-burn.c:64
 #: ../libbrasero-burn/brasero-caps-burn.c:679
-#: ../libbrasero-burn/brasero-burn.c:2626 ../libbrasero-burn/burn-job.c:1222
-#: ../libbrasero-burn/burn-job.c:1231
+#: ../libbrasero-burn/brasero-burn.c:2626 ../libbrasero-burn/burn-job.c:1216
+#: ../libbrasero-burn/burn-job.c:1225
 #: ../libbrasero-burn/burn-mkisofs-base.c:307
 #: ../nautilus/nautilus-burn-extension.c:182 ../src/main.c:206
 #: ../src/main.c:232 ../plugins/cdrkit/burn-genisoimage.c:360
@@ -939,7 +939,7 @@ msgid "There are some more songs left to burn"
 msgstr "Aún quedan algunas canciones más que grabar"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2139
-#: ../libbrasero-burn/brasero-burn.c:1665 ../libbrasero-burn/burn-job.c:438
+#: ../libbrasero-burn/brasero-burn.c:1665
 #: ../plugins/cdrkit/burn-genisoimage.c:197 ../plugins/cdrkit/burn-wodim.c:104
 #: ../plugins/cdrtools/burn-cdrecord.c:104
 #: ../plugins/cdrtools/burn-mkisofs.c:198
@@ -1318,7 +1318,6 @@ msgstr "El disco nuevo en el grabador que contiene el disco de origen"
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-burn/brasero-dest-selection.c:557
 #, c-format
-#| msgid "%s: no free space"
 msgid "%s: not enough free space"
 msgstr "%s: no queda suficiente espacio libre"
 
@@ -1333,7 +1332,6 @@ msgstr "%s: %s de espacio libre"
 #. * will store its temporary files; the second one is the size available
 #: ../libbrasero-burn/brasero-drive-properties.c:210
 #, c-format
-#| msgid "%s free"
 msgid "%s: %s free"
 msgstr "%s: %s libres"
 
@@ -1345,7 +1343,7 @@ msgstr "¿Está seguro de que quiere elegir esta lugar?"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:292
 #: ../libbrasero-burn/brasero-session.c:809
-#: ../libbrasero-burn/brasero-session.c:867 ../libbrasero-burn/burn-job.c:496
+#: ../libbrasero-burn/brasero-session.c:867 ../libbrasero-burn/burn-job.c:490
 #: ../plugins/cdrkit/burn-genisoimage.c:190
 #: ../plugins/cdrtools/burn-mkisofs.c:191
 #: ../plugins/libburnia/burn-libisofs.c:222
@@ -1440,7 +1438,6 @@ msgid "Options"
 msgstr "Opciones"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:791
-#| msgid "Location for Temporary Files"
 msgid "Location for _Temporary Files"
 msgstr "Ubicación para los archivos _temporales"
 
@@ -1536,7 +1533,7 @@ msgid "%i MiB of %i MiB"
 msgstr "%i MiB de %i MiB"
 
 #: ../libbrasero-burn/brasero-session.c:592
-#: ../libbrasero-burn/brasero-session.c:608 ../libbrasero-burn/burn-job.c:630
+#: ../libbrasero-burn/brasero-session.c:608 ../libbrasero-burn/burn-job.c:624
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "No se especificó ninguna ruta para la salida de la imagen"
@@ -1670,9 +1667,9 @@ msgid "Success"
 msgstr "Correcto"
 
 #. Translators: %s is the plugin name
-#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:800
-#: ../libbrasero-burn/burn-job.c:813 ../libbrasero-burn/burn-job.c:1032
-#: ../libbrasero-burn/burn-job.c:1122
+#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:794
+#: ../libbrasero-burn/burn-job.c:807 ../libbrasero-burn/burn-job.c:1026
+#: ../libbrasero-burn/burn-job.c:1116
 #, c-format
 msgid "\"%s\" did not behave properly"
 msgstr "«%s» no se comportó de forma correcta"
@@ -1680,12 +1677,14 @@ msgstr "«%s» no se comportó de forma correcta"
 #. Translators: the first %s is the size of the free space on the medium
 #. * and the second %s is the size of the space required by the data to be
 #. * burnt.
-#: ../libbrasero-burn/burn-job.c:428
+#: ../libbrasero-burn/burn-job.c:430
 #, c-format
-msgid "(%s available for %s)"
-msgstr "(%s disponible para %s)"
+#| msgid "Not enough space available on the disc (%lli available for %lli)"
+msgid "Not enough space available on the disc (%s available for %s)"
+msgstr ""
+"No hay suficiente espacio disponible en el disco (%s disponible para %s)"
 
-#: ../libbrasero-burn/burn-job.c:526
+#: ../libbrasero-burn/burn-job.c:520
 #, c-format
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
@@ -1694,7 +1693,7 @@ msgstr ""
 "El sistema de archivos que ha elegido para almacenar la imagen temporal no "
 "puede mantener archivos de tamaño superior a 2 GiB"
 
-#: ../libbrasero-burn/burn-job.c:541 ../libbrasero-burn/burn-job.c:563
+#: ../libbrasero-burn/burn-job.c:535 ../libbrasero-burn/burn-job.c:557
 #, c-format
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
@@ -1703,14 +1702,14 @@ msgstr ""
 "La ubicación seleccionada no tiene suficiente espacio libre para almacenar "
 "la imagen del disco (se necesitan %ld MiB)"
 
-#: ../libbrasero-burn/burn-job.c:576 ../plugins/dvdcss/burn-dvdcss.c:341
+#: ../libbrasero-burn/burn-job.c:570 ../plugins/dvdcss/burn-dvdcss.c:341
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "No se puede obtener el tamaño del volumen"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:771 ../src/main.c:204 ../src/main.c:230
+#: ../libbrasero-burn/burn-job.c:765 ../src/main.c:204 ../src/main.c:230
 #: ../plugins/cdrtools/burn-cdrecord.c:668
 #: ../plugins/libburnia/burn-libburn.c:690
 #: ../plugins/transcode/burn-transcode.c:654
@@ -4971,6 +4970,9 @@ msgstr "Copie CD y DVD"
 msgid "Disc Copier"
 msgstr "Copiador de discos"
 
+#~ msgid "(%s available for %s)"
+#~ msgstr "(%s disponible para %s)"
+
 #~ msgid "_Temporary directory free space:"
 #~ msgstr "Espacio libre del directorio _temporal:"
 
@@ -5008,11 +5010,6 @@ msgstr "Copiador de discos"
 
 #~ msgid "Display debug statements on stdout"
 #~ msgstr "Mostrar estadísticas de depuración en la salida estándar"
-
-#~ msgid "Not enough space available on the disc (%lli available for %lli)"
-#~ msgstr ""
-#~ "No hay suficiente espacio disponible en el disco (%lli disponible para %"
-#~ "lli)"
 
 #~ msgid "%lli min"
 #~ msgstr "%lli min"
