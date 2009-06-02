@@ -136,6 +136,8 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		brasero_image_type_chooser_set_format (self, priv->format);
 	else
 		brasero_image_type_chooser_set_format (self, BRASERO_IMAGE_FORMAT_NONE);
+
+	return format_num;
 }
 
 void
