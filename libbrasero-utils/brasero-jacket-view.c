@@ -286,6 +286,7 @@ static void
 brasero_jacket_view_render (BraseroJacketView *self,
 			    cairo_t *ctx,
 			    PangoLayout *layout,
+			    GdkPixbuf *scaled,
 			    gdouble resolution_x,
 			    gdouble resolution_y,
 			    guint x,
@@ -325,14 +326,17 @@ brasero_jacket_view_render (BraseroJacketView *self,
 		cairo_paint (ctx);
 	}
 
-	if (priv->scaled) {
+	if (scaled) {
+		/* The problem is the resolution here. The one for the screen
+		 * may not be the one for the printer. So do not use our private
+		 * scaled image. */
 		if (priv->image_style == BRASERO_JACKET_IMAGE_CENTER)
 			gdk_cairo_set_source_pixbuf (ctx,
-						     priv->scaled,
-						     x + (width - gdk_pixbuf_get_width (priv->scaled))/ 2.0,
-						     y + (height - gdk_pixbuf_get_height (priv->scaled)) / 2.0);
+						     scaled,
+						     x + (width - gdk_pixbuf_get_width (scaled))/ 2.0,
+						     y + (height - gdk_pixbuf_get_height (scaled)) / 2.0);
 		else
-			gdk_cairo_set_source_pixbuf (ctx, priv->scaled, x, y);
+			gdk_cairo_set_source_pixbuf (ctx, scaled, x, y);
 
 		if (priv->image_style == BRASERO_JACKET_IMAGE_TILE) {
 			cairo_pattern_t *pattern;
@@ -467,6 +471,31 @@ brasero_jacket_view_render_body (BraseroJacketView *self,
 	}
 }
 
+static GdkPixbuf *
+brasero_jacket_view_scale_image (BraseroJacketView *self,
+				 gdouble resolution_x,
+				 gdouble resolution_y)
+{
+	BraseroJacketViewPrivate *priv;
+	guint width, height;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+
+	if (priv->side == BRASERO_JACKET_BACK) {
+		height = resolution_y * COVER_HEIGHT_BACK_INCH;
+		width = resolution_x * COVER_WIDTH_BACK_INCH;
+	}
+	else {
+		height = resolution_y * COVER_HEIGHT_FRONT_INCH;
+		width = resolution_x * COVER_WIDTH_FRONT_INCH;
+	}
+
+	return gdk_pixbuf_scale_simple (priv->image,
+					width,
+					height,
+					GDK_INTERP_HYPER);
+}
+
 guint
 brasero_jacket_view_print (BraseroJacketView *self,
 			   GtkPrintContext *context,
@@ -474,6 +503,7 @@ brasero_jacket_view_print (BraseroJacketView *self,
 			   guint y)
 {
 	cairo_t *ctx;
+	GdkPixbuf *scaled;
 	GdkRectangle rect;
 	PangoLayout *layout;
 	gdouble resolution_x;
@@ -499,10 +529,19 @@ brasero_jacket_view_print (BraseroJacketView *self,
 		rect.height = resolution_y * COVER_HEIGHT_FRONT_INCH;
 	}
 
+	/* Make sure we scale the image with the correct resolution */
+	if (priv->image_style == BRASERO_JACKET_IMAGE_STRETCH)
+		scaled = brasero_jacket_view_scale_image (self,
+							  resolution_x,
+							  resolution_y);
+	else
+		scaled = g_object_ref (priv->scaled);
+
 	layout = gtk_print_context_create_pango_layout (context);
 	brasero_jacket_view_render (self,
 				    ctx,
 				    layout,
+				    scaled,
 				    resolution_x,
 				    resolution_y,
 				    x,
@@ -520,6 +559,7 @@ brasero_jacket_view_print (BraseroJacketView *self,
 					 FALSE);
 
 	g_object_unref (layout);
+	g_object_unref (scaled);
 
 	return rect.height;
 }
@@ -532,6 +572,7 @@ brasero_jacket_view_snapshot (BraseroJacketView *self)
 	PangoLayout *layout;
 	GtkWidget *toplevel;
 	gdouble resolution;
+	GdkPixbuf *scaled;
 	GdkRectangle area;
 	cairo_t *ctx;
 	guint height;
@@ -561,12 +602,21 @@ brasero_jacket_view_snapshot (BraseroJacketView *self)
 					      height);
 	ctx = cairo_create (surface);
 
+	/* make sure the image is scaled with the correct resolution */
+	if (priv->image_style == BRASERO_JACKET_IMAGE_STRETCH)
+		scaled = brasero_jacket_view_scale_image (self,
+							  resolution,
+							  resolution);
+	else
+		scaled = g_object_ref (priv->scaled);
+
 	area = GTK_WIDGET (self)->allocation;
 	area.x = 0;
 	area.y = 0;
 	brasero_jacket_view_render (self,
 				    ctx,
 				    layout,
+				    scaled,
 				    resolution,
 				    resolution,
 				    0,
@@ -966,8 +1016,6 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 		priv->scaled = priv->image;		
 	}
 	else if (priv->image_style == BRASERO_JACKET_IMAGE_STRETCH) {
-		guint width;
-		guint height;
 		guint resolution;
 		GtkWidget *toplevel;
 
@@ -976,20 +1024,7 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 			return;
 
 		resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
-
-		if (priv->side == BRASERO_JACKET_BACK) {
-			height = resolution * COVER_HEIGHT_BACK_INCH;
-			width = resolution * COVER_WIDTH_BACK_INCH;
-		}
-		else {
-			height = resolution * COVER_HEIGHT_FRONT_INCH;
-			width = resolution * COVER_WIDTH_FRONT_INCH;
-		}
-
-		priv->scaled = gdk_pixbuf_scale_simple (priv->image,
-							width,
-							height,
-							GDK_INTERP_HYPER);
+		priv->scaled = brasero_jacket_view_scale_image (self, resolution, resolution);
 	}
 
 	brasero_jacket_view_update_edit_image (self);
@@ -1253,6 +1288,7 @@ brasero_jacket_view_expose (GtkWidget *widget,
 		brasero_jacket_view_render (BRASERO_JACKET_VIEW (widget),
 					    ctx,
 					    layout,
+					    priv->scaled,
 					    resolution,
 					    resolution,
 					    x,
@@ -1292,6 +1328,7 @@ brasero_jacket_view_expose (GtkWidget *widget,
 		brasero_jacket_view_render (BRASERO_JACKET_VIEW (widget),
 					    ctx,
 					    layout,
+					    priv->scaled,
 					    resolution,
 					    resolution,
 					    x,
