@@ -106,6 +106,7 @@ G_DEFINE_TYPE (BraseroDataProject, brasero_data_project, G_TYPE_OBJECT);
 
 
 enum {
+	JOLIET_RENAME_SIGNAL,
 	NAME_COLLISION_SIGNAL,
 	SIZE_CHANGED_SIGNAL,
 	DEEP_DIRECTORY_SIGNAL,
@@ -432,6 +433,11 @@ brasero_data_project_joliet_add_node (BraseroDataProject *self,
 	g_hash_table_insert (priv->joliet,
 			     &key,
 			     list);
+
+	/* Signal that we'll have a collision */
+	g_signal_emit (self,
+		       brasero_data_project_signals [JOLIET_RENAME_SIGNAL],
+		       0);
 }
 
 static gboolean
@@ -4322,6 +4328,16 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
 
 	object_class->finalize = brasero_data_project_finalize;
 
+	brasero_data_project_signals [JOLIET_RENAME_SIGNAL] = 
+	    g_signal_new ("joliet-rename",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__VOID,
+			  G_TYPE_NONE,
+			  0,
+			  G_TYPE_NONE);
 	brasero_data_project_signals [NAME_COLLISION_SIGNAL] = 
 	    g_signal_new ("name_collision",
 			  G_TYPE_FROM_CLASS (klass),

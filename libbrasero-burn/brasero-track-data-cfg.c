@@ -77,6 +77,8 @@ struct _BraseroTrackDataCfgPrivate
 	gint sort_column;
 	GtkSortType sort_type;
 
+	guint joliet_rename:1;
+
 	guint deep_directory:1;
 	guint G2_files:1;
 };
@@ -124,7 +126,8 @@ enum {
 	NAME_COLLISION,
 	DEEP_DIRECTORY,
 	SOURCE_LOADED, 
-	SOURCE_LOADING, 
+	SOURCE_LOADING,
+	JOLIET_RENAME_SIGNAL,
 	LAST_SIGNAL
 };
 
@@ -1917,7 +1920,7 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
-
+	priv->joliet_rename = FALSE;
 	return TRUE;
 }
 
@@ -2453,6 +2456,25 @@ brasero_track_data_cfg_find_icon_name (BraseroTrackDataCfg *track)
 	} while (brasero_file_node_check_name_existence (root, name));
 
 	return name;
+}
+
+static void
+brasero_track_data_cfg_joliet_rename_cb (BraseroDataProject *project,
+					 BraseroTrackDataCfg *self)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+
+	/* Signal this once */
+	if (priv->joliet_rename)
+		return;
+
+	g_signal_emit (self,
+		       brasero_track_data_cfg_signals [JOLIET_RENAME_SIGNAL],
+		       0);
+
+	priv->joliet_rename = 1;
 }
 
 static void
@@ -3037,6 +3059,10 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 			  "name-collision",
 			  G_CALLBACK (brasero_track_data_cfg_name_collision_cb),
 			  object);
+	g_signal_connect (priv->tree,
+			  "joliet-rename",
+			  G_CALLBACK (brasero_track_data_cfg_joliet_rename_cb),
+			  object);
 }
 
 static void
@@ -3172,6 +3198,16 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  G_TYPE_BOOLEAN,
 			  1,
 			  G_TYPE_STRING);
+	brasero_track_data_cfg_signals [JOLIET_RENAME_SIGNAL] = 
+	    g_signal_new ("joliet_rename",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__VOID,
+			  G_TYPE_NONE,
+			  0,
+			  G_TYPE_NONE);
 	brasero_track_data_cfg_signals [DEEP_DIRECTORY] = 
 	    g_signal_new ("deep_directory",
 			  G_TYPE_FROM_CLASS (klass),

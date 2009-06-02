@@ -806,7 +806,6 @@ static void
 brasero_burn_options_setup_data (BraseroBurnOptions *self)
 {
 	GSList *tracks;
-	GtkWidget *options;
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
@@ -830,11 +829,6 @@ brasero_burn_options_setup_data (BraseroBurnOptions *self)
 	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (self),
 					     BRASERO_MEDIA_TYPE_WRITABLE|
 					     BRASERO_MEDIA_TYPE_FILE);
-
-	/* create the options box */
-	options = brasero_data_options_new (BRASERO_BURN_SESSION (priv->session));
-	gtk_widget_show (options);
-	brasero_burn_options_add_options (self, options);
 }
 
 static void

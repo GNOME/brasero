@@ -523,7 +523,7 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
  */
 
 static void
-brasero_data_disc_use_overburn_response_cb (GtkButton *button,
+brasero_data_disc_use_overburn_response_cb (BraseroDiscMessage *message,
 					    GtkResponseType response,
 					    BraseroDataDisc *self)
 {
@@ -816,6 +816,61 @@ brasero_data_disc_unknown_uri_cb (BraseroTrackDataCfg *vfs,
 			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
+}
+
+static void
+brasero_data_disc_use_joliet_response_cb (BraseroDiscMessage *message,
+					  GtkResponseType response,
+					  BraseroDataDisc *self)
+{
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	if (response == GTK_RESPONSE_YES)
+		brasero_track_data_add_fs (BRASERO_TRACK_DATA (priv->project),
+					   BRASERO_IMAGE_FS_JOLIET);
+	else
+		brasero_track_data_rm_fs (BRASERO_TRACK_DATA (priv->project),
+					  BRASERO_IMAGE_FS_JOLIET);
+}
+
+static void
+brasero_data_disc_joliet_rename_cb (BraseroTrackDataCfg *project,
+				    BraseroDataDisc *self)
+{
+	BraseroDataDiscPrivate *priv;
+	GtkWidget *message;
+	gchar *secondary;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	secondary = g_strdup_printf ("%s\n%s",
+				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),
+				     _("Those names should be changed and truncated to 64 characters."));
+	message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+					      _("Should files be renamed to be fully Windows-compatible?"),
+					      secondary,
+					      -1,
+					      BRASERO_NOTIFY_CONTEXT_SIZE);
+	g_free (secondary);
+
+	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
+					GTK_STOCK_DIALOG_WARNING);
+
+	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+				   BRASERO_DISC_MESSAGE (message),
+				   _("_Rename for Full Windows Compatibility"),
+				   NULL,
+				   GTK_RESPONSE_YES);
+	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+				   BRASERO_DISC_MESSAGE (message),
+				   _("_Disable Full Windows Compatibility"),
+				   NULL,
+				   GTK_RESPONSE_CANCEL);
+
+	g_signal_connect (BRASERO_DISC_MESSAGE (message),
+			  "response",
+			  G_CALLBACK (brasero_data_disc_use_joliet_response_cb),
+			  self);
 }
 
 static gboolean
@@ -2193,6 +2248,10 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	g_signal_connect (priv->project,
 			  "name-collision",
 			  G_CALLBACK (brasero_data_disc_name_collision_cb),
+			  object);
+	g_signal_connect (priv->project,
+			  "joliet-rename",
+			  G_CALLBACK (brasero_data_disc_joliet_rename_cb),
 			  object);
 	g_signal_connect (priv->project,
 			  "row-inserted",

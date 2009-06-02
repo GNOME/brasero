@@ -216,6 +216,7 @@ write_activate (GtkWindow *toplevel)
 	BraseroTrackDataCfg	*track;
 	GtkWidget 		*name_options;
 	GtkWidget		*options;
+	GtkWidget	        *box;
 	gchar			*string;
 
 	if (nautilus_disc_burn_is_empty (toplevel))
@@ -223,6 +224,9 @@ write_activate (GtkWindow *toplevel)
 
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
+
+	box = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (box);
 
 	/* add name widget here to set the label of the volume */
 	name_options = brasero_project_name_new ();
@@ -235,10 +239,17 @@ write_activate (GtkWindow *toplevel)
 						 NULL);
 	g_free (string);
 	gtk_widget_show_all (options);
+	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
+
+	/* create the options box */
+	options = brasero_data_options_new (BRASERO_BURN_SESSION (priv->session));
+	gtk_widget_show (options);
+	brasero_burn_options_add_options (self, options);
+	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* NOTE: set the disc we're handling */
 	launch_brasero_on_window_track (BRASERO_TRACK (track),
-					options,
+					box,
 					toplevel);
 
 	/* cleanup */
