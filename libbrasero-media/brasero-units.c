@@ -43,6 +43,8 @@ brasero_units_get_time_string (guint64 time,
 			       gboolean round)
 {
 	gint64 second, minute, hour;
+	gchar *second_str, *minute_str, *hour_str;
+	gchar *time_str;
 
 	time /= 1000000000;
 	hour = time / 3600;
@@ -58,54 +60,66 @@ brasero_units_get_time_string (guint64 time,
 	else
 		second = time % 60;
 
-	if (hour) {
-		if (with_unit) {
-			if (hour && minute && second)
-				/* FIXME: mark these strings for translation? */
-				return g_strdup_printf ("%"G_GINT64_FORMAT" h %02"G_GINT64_FORMAT" min %02"G_GINT64_FORMAT,
-							 hour,
-							 minute,
-							 second);
-			else if (hour && minute)
-				return g_strdup_printf ("%" G_GINT64_FORMAT " h %02"G_GINT64_FORMAT,
-							 hour,
-							 minute);
-			else
-				return g_strdup_printf ("%"G_GINT64_FORMAT " h", hour);
-		}
-		else if (hour && minute && second)
-			return g_strdup_printf ("%"G_GINT64_FORMAT":%02"G_GINT64_FORMAT":%02"G_GINT64_FORMAT,
-						 hour,
-						 minute,
-						 second);
-		else if (hour && minute)
-			return g_strdup_printf ("%"G_GINT64_FORMAT":%02"G_GINT64_FORMAT, hour, minute);
-	}
+	minute_str = g_strdup_printf ("%02"G_GINT64_FORMAT, minute);
+	second_str = g_strdup_printf ("%02"G_GINT64_FORMAT, second);
 
-	if (with_unit) {
-		if (!second)
-			/* Translators: %lli is a duration expressed in minutes
-			 * hence the "min" as unit. */
-			return g_strdup_printf (_("%"G_GINT64_FORMAT" min"), minute);
+	if (hour) {
+		hour_str = g_strdup_printf ("%"G_GINT64_FORMAT, hour);
+		if (with_unit) {
+			if (second)
+				/* Translators: this is hour minute second like '2 h 14 min 25' */
+				time_str = g_strdup_printf (_("%s h %s min %s"),
+							    hour_str,
+							    minute_str,
+							    second_str);
+			else if (minute)
+				/* Translators: this is hour minute like '2 h 14' */
+				time_str = g_strdup_printf (_("%s h %s"),
+							    hour_str,
+							    minute_str);
+			else
+				/* Translators: this is hour like '2 h' */
+				time_str = g_strdup_printf (_("%s h"), hour_str);
+		}
+		else if (second)
+			/* Translators: this is 'hour:minute:second' like '2:14:25' */
+			time_str = g_strdup_printf (_("%s:%s:%s"),
+						    hour_str,
+						    minute_str,
+						    second_str);
 		else
-			/* Translators: the first %lli is the number of minutes
+			/* Translators: this is 'hour:minute' or 'minute:second' */
+			time_str = g_strdup_printf (_("%s:%s"), hour_str, minute_str);
+
+		g_free (hour_str);
+	}
+	else if (with_unit) {
+		if (!second)
+			/* Translators: %s is a duration expressed in minutes */
+			time_str = g_strdup_printf (_("%s min"), minute_str);
+		else
+			/* Translators: the first %s is the number of minutes
 			 * and the second one is the number of seconds.
 			 * The whole string expresses a duration */
-			return g_strdup_printf (_("%"G_GINT64_FORMAT":%02"G_GINT64_FORMAT" min"), minute, second);
+			time_str = g_strdup_printf (_("%s:%s min"), minute_str, second_str);
 	}
 	else
-		return g_strdup_printf ("%"G_GINT64_FORMAT":%02"G_GINT64_FORMAT, minute, second);
+		time_str = g_strdup_printf (_("%s:%s"), minute_str, second_str);
+
+	g_free (minute_str);
+	g_free (second_str);
+	return time_str;
 }
 
 
 gchar *
-brasero_units_get_time_string_from_size (gint64 size,
+brasero_units_get_time_string_from_size (gint64 bytes,
 					 gboolean with_unit,
 					 gboolean round)
 {
 	guint64 time = 0;
 
-	time = BRASERO_BYTES_TO_DURATION (size);
+	time = BRASERO_BYTES_TO_DURATION (bytes);
 	return brasero_units_get_time_string (time, with_unit, round);
 }
 
