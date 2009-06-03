@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-06-01 18:40+0000\n"
-"PO-Revision-Date: 2009-06-02 07:39+0200\n"
+"POT-Creation-Date: 2009-06-02 19:04+0000\n"
+"PO-Revision-Date: 2009-06-03 06:34+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,13 +26,14 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../libbrasero-burn/brasero-data-options.c:148
+#: ../src/brasero-data-disc.c:850
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr ""
 "¿Se deberían renombrar los archivos para ser completamente compatibles con "
 "Windows?"
 
 #: ../libbrasero-burn/brasero-data-options.c:151
-#: ../libbrasero-burn/brasero-burn-dialog.c:959
+#: ../libbrasero-burn/brasero-burn-dialog.c:959 ../src/brasero-data-disc.c:847
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr ""
@@ -40,14 +41,17 @@ msgstr ""
 "Windows."
 
 #: ../libbrasero-burn/brasero-data-options.c:152
+#: ../src/brasero-data-disc.c:848
 msgid "Those names should be changed and truncated to 64 characters."
 msgstr "Esos nombres deberían cambiarse y truncarse a 64 caracteres."
 
 #: ../libbrasero-burn/brasero-data-options.c:157
+#: ../src/brasero-data-disc.c:866
 msgid "_Disable Full Windows Compatibility"
 msgstr "_Desactivar la compatibilidad completa con Windows"
 
 #: ../libbrasero-burn/brasero-data-options.c:160
+#: ../src/brasero-data-disc.c:861
 msgid "_Rename for Full Windows Compatibility"
 msgstr "_Renombrar para una compatibilidad completa con Windows"
 
@@ -169,55 +173,55 @@ msgstr "Enlace simbólico roto"
 msgid "Recursive symbolic link"
 msgstr "Enlace simbólico recursivo"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:599
-#: ../libbrasero-burn/brasero-track-data-cfg.c:695
-#: ../libbrasero-burn/brasero-track-data-cfg.c:706
-#: ../libbrasero-burn/brasero-track-data-cfg.c:767
-#: ../libbrasero-burn/brasero-track-data-cfg.c:772
+#: ../libbrasero-burn/brasero-track-data-cfg.c:602
+#: ../libbrasero-burn/brasero-track-data-cfg.c:698
+#: ../libbrasero-burn/brasero-track-data-cfg.c:709
+#: ../libbrasero-burn/brasero-track-data-cfg.c:770
+#: ../libbrasero-burn/brasero-track-data-cfg.c:775
 #: ../src/brasero-audio-disc.c:1676 ../src/brasero-audio-disc.c:1688
 #: ../src/brasero-audio-disc.c:1713 ../src/brasero-playlist.c:947
 #: ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
 msgstr "(cargando…)"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:601
-#: ../libbrasero-burn/brasero-track-data-cfg.c:778
+#: ../libbrasero-burn/brasero-track-data-cfg.c:604
+#: ../libbrasero-burn/brasero-track-data-cfg.c:781
 #: ../src/brasero-playlist.c:908
 msgid "Empty"
 msgstr "Vacío"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:704
+#: ../libbrasero-burn/brasero-track-data-cfg.c:707
 msgid "Disc file"
 msgstr "Archivo de disco"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:782
+#: ../libbrasero-burn/brasero-track-data-cfg.c:785
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d elemento"
 msgstr[1] "%d elementos"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1834
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1837
 #, c-format
 msgid "New folder"
 msgstr "Carpeta nueva"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1837
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1840
 #, c-format
 msgid "New folder %i"
 msgstr "Carpeta nueva %i"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2215
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2225
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2218
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2228
 msgid "Analysing files"
 msgstr "Analizando archivos"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2356
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2359
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "«%s» es un enlace simbólico recursivo."
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2382
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2385
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "no se puede encontrar «%s»."
@@ -1126,8 +1130,8 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-options.c:529
 #: ../libbrasero-burn/brasero-burn-options.c:696
 #: ../libbrasero-burn/brasero-burn-options.c:715
-#: ../libbrasero-burn/brasero-burn-options.c:828
-#: ../libbrasero-burn/brasero-burn-options.c:854
+#: ../libbrasero-burn/brasero-burn-options.c:827
+#: ../libbrasero-burn/brasero-burn-options.c:848
 msgid "_Burn"
 msgstr "Gra_bar"
 
@@ -1137,7 +1141,7 @@ msgstr "Seleccione un disco en el que grabar"
 
 #: ../libbrasero-burn/brasero-burn-options.c:694
 #: ../libbrasero-burn/brasero-burn-options.c:713
-#: ../libbrasero-burn/brasero-burn-options.c:826
+#: ../libbrasero-burn/brasero-burn-options.c:825
 msgid "Disc Burning Setup"
 msgstr "Opciones de grabación"
 
@@ -1167,24 +1171,24 @@ msgstr "_Añadir al proyecto"
 msgid "_Burn..."
 msgstr "_Grabar…"
 
-#: ../libbrasero-burn/brasero-burn-options.c:852
+#: ../libbrasero-burn/brasero-burn-options.c:846
 msgid "Image Burning Setup"
 msgstr "Opciones de grabación de imagen"
 
 #. pack everything
-#: ../libbrasero-burn/brasero-burn-options.c:863
+#: ../libbrasero-burn/brasero-burn-options.c:857
 msgid "Select an image to write"
 msgstr "Seleccione una imagen para grabar"
 
-#: ../libbrasero-burn/brasero-burn-options.c:883
+#: ../libbrasero-burn/brasero-burn-options.c:877
 msgid "CD/DVD Copy Options"
 msgstr "Opciones de copia de CD/DVD"
 
-#: ../libbrasero-burn/brasero-burn-options.c:885
+#: ../libbrasero-burn/brasero-burn-options.c:879
 msgid "_Copy"
 msgstr "C_opiar"
 
-#: ../libbrasero-burn/brasero-burn-options.c:892
+#: ../libbrasero-burn/brasero-burn-options.c:886
 msgid "Select disc to copy"
 msgstr "Seleccione el disco para copiar"
 
@@ -1679,7 +1683,6 @@ msgstr "«%s» no se comportó de forma correcta"
 #. * burnt.
 #: ../libbrasero-burn/burn-job.c:430
 #, c-format
-#| msgid "Not enough space available on the disc (%lli available for %lli)"
 msgid "Not enough space available on the disc (%s available for %s)"
 msgstr ""
 "No hay suficiente espacio disponible en el disco (%s disponible para %s)"
@@ -1838,25 +1841,25 @@ msgstr "Color del _texto"
 msgid "Cover Editor"
 msgstr "Editor de carátulas"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:749
+#: ../libbrasero-utils/brasero-jacket-view.c:799
 msgid "Set Bac_kground Properties"
 msgstr "Establecer las propiedades del _fondo"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:790
+#: ../libbrasero-utils/brasero-jacket-view.c:840
 msgid "SIDES"
 msgstr "Laterales"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:806
+#: ../libbrasero-utils/brasero-jacket-view.c:856
 msgid "BACK COVER"
 msgstr "Carátula trasera"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:823
+#: ../libbrasero-utils/brasero-jacket-view.c:873
 msgid "FRONT COVER"
 msgstr "Carátula frontal"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1109
+#: ../libbrasero-utils/brasero-jacket-view.c:1144
 msgid "The image could not be loaded."
 msgstr "No se pudo cargar la imagen."
 
@@ -1905,15 +1908,57 @@ msgstr "Biblioteca óptica multimedia de Brasero"
 msgid "Display options for Brasero-media library"
 msgstr "Mostrar las opciones para la biblioteca multimedia de Brasero"
 
-#. Translators: %lli is a duration expressed in minutes
-#. * hence the "min" as unit.
-#. Translators: the first %lli is the number of minutes
+#. Translators: this is hour minute second like '2 h 14 min 25'
+#: ../libbrasero-media/brasero-units.c:71
+#, c-format
+#| msgid "%s in %s"
+msgid "%s h %s min %s"
+msgstr "%s h %s min %s"
+
+#. Translators: this is hour minute like '2 h 14'
+#: ../libbrasero-media/brasero-units.c:77
+#, c-format
+#| msgid "%s / %s"
+msgid "%s h %s"
+msgstr "%s h %s"
+
+#. Translators: this is hour like '2 h'
+#: ../libbrasero-media/brasero-units.c:82
+#, c-format
+#| msgid "%s: %s"
+msgid "%s h"
+msgstr "%s h"
+
+#. Translators: this is 'hour:minute:second' like '2:14:25'
+#: ../libbrasero-media/brasero-units.c:86
+#, c-format
+#| msgid "%s: %s"
+msgid "%s:%s:%s"
+msgstr "%s:%s:%s"
+
+#. Translators: this is 'hour:minute' or 'minute:second'
+#: ../libbrasero-media/brasero-units.c:92
+#: ../libbrasero-media/brasero-units.c:107
+#, c-format
+#| msgid "%s: %s"
+msgid "%s:%s"
+msgstr "%s:%s"
+
+#. Translators: %s is a duration expressed in minutes
+#: ../libbrasero-media/brasero-units.c:99
+#, c-format
+#| msgid "%s in %s"
+msgid "%s min"
+msgstr "%s min"
+
+#. Translators: the first %s is the number of minutes
 #. * and the second one is the number of seconds.
 #. * The whole string expresses a duration
-#: ../libbrasero-media/brasero-units.c:89
-#: ../libbrasero-media/brasero-units.c:94
-msgid "%"
-msgstr "%"
+#: ../libbrasero-media/brasero-units.c:104
+#, c-format
+#| msgid "%s: %s"
+msgid "%s:%s min"
+msgstr "%s:%s min"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-media/brasero-medium-selection.c:143
@@ -2249,44 +2294,44 @@ msgid "Write to Disc"
 msgstr "Grabar al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:627
+#: ../nautilus/nautilus-burn-extension.c:638
 msgid "Write contents to a CD or DVD disc"
 msgstr "Graba el contenido en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:232
+#: ../nautilus/nautilus-burn-extension.c:236
 msgid "Disc name"
 msgstr "Nombre del disco"
 
-#: ../nautilus/nautilus-burn-extension.c:481
-#: ../nautilus/nautilus-burn-extension.c:626
+#: ../nautilus/nautilus-burn-extension.c:492
+#: ../nautilus/nautilus-burn-extension.c:637
 msgid "_Write to Disc..."
 msgstr "_Grabar al disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:482
+#: ../nautilus/nautilus-burn-extension.c:493
 msgid "Write disc image to a CD or DVD disc"
 msgstr "Graba la imagen de disco en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:550
+#: ../nautilus/nautilus-burn-extension.c:561
 msgid "_Copy Disc..."
 msgstr "_Copiar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:551
+#: ../nautilus/nautilus-burn-extension.c:562
 msgid "Create a copy of this CD or DVD disc"
 msgstr "Crea una copia de este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:564
+#: ../nautilus/nautilus-burn-extension.c:575
 msgid "_Blank Disc..."
 msgstr "_Borrar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:565
+#: ../nautilus/nautilus-burn-extension.c:576
 msgid "Blank this CD or DVD disc"
 msgstr "Borrar este disco CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:581
+#: ../nautilus/nautilus-burn-extension.c:592
 msgid "_Check Disc..."
 msgstr "_Comprobar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:582
+#: ../nautilus/nautilus-burn-extension.c:593
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "Verifica la integridad de datos del disco CD o DVD"
 
@@ -2777,8 +2822,8 @@ msgstr ""
 msgid "_Discard File"
 msgstr "_Descartar archivo"
 
-#: ../src/brasero-audio-disc.c:1350 ../src/brasero-data-disc.c:880
-#: ../src/brasero-data-disc.c:914
+#: ../src/brasero-audio-disc.c:1350 ../src/brasero-data-disc.c:935
+#: ../src/brasero-data-disc.c:969
 msgid "_Add File"
 msgstr "_Añadir archivo"
 
@@ -2997,12 +3042,12 @@ msgstr "No hay resultados"
 msgid "Next Results"
 msgstr "Siguientes resultados"
 
-#: ../src/brasero-search-beagle.c:408 ../src/brasero-data-disc.c:2305
+#: ../src/brasero-search-beagle.c:408 ../src/brasero-data-disc.c:2364
 #: ../src/brasero-file-filtered.c:258
 msgid "Files"
 msgstr "Archivos"
 
-#: ../src/brasero-search-beagle.c:427 ../src/brasero-data-disc.c:2333
+#: ../src/brasero-search-beagle.c:427 ../src/brasero-data-disc.c:2392
 msgid "Description"
 msgstr "Descripción"
 
@@ -3078,7 +3123,7 @@ msgstr "R_enombrar…"
 msgid "Rename the selected file"
 msgstr "Renombrar el archivo seleccionado"
 
-#: ../src/brasero-data-disc.c:124 ../src/brasero-data-disc.c:1578
+#: ../src/brasero-data-disc.c:124 ../src/brasero-data-disc.c:1633
 msgid "New _Folder"
 msgstr "_Carpeta nueva"
 
@@ -3128,26 +3173,26 @@ msgstr "Es un enlace simbólico recursivo"
 msgid "It does not exist at the specified location"
 msgstr "No existe en la ubicación especificada"
 
-#: ../src/brasero-data-disc.c:833
+#: ../src/brasero-data-disc.c:888
 #, c-format
 msgid "Do you really want to replace \"%s\"?"
 msgstr "¿Realmente quiere reemplazar «%s»?"
 
-#: ../src/brasero-data-disc.c:841
+#: ../src/brasero-data-disc.c:896
 msgid "It already exists in the directory."
 msgstr "Ya existe en el directorio."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * Replace means we're replacing it with a new one with the same name
-#: ../src/brasero-data-disc.c:845
+#: ../src/brasero-data-disc.c:900
 msgid "_Keep Project File"
 msgstr "_Mantener el archivo de proyecto"
 
-#: ../src/brasero-data-disc.c:846
+#: ../src/brasero-data-disc.c:901
 msgid "_Replace Project File"
 msgstr "_Reemplazar el archivo de proyecto"
 
-#: ../src/brasero-data-disc.c:867
+#: ../src/brasero-data-disc.c:922
 #, c-format
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
@@ -3156,7 +3201,7 @@ msgstr ""
 "¿Realmente quiere añadir «%s» a la selección y usar la versión 3 del estándar "
 "ISO9660 para soportarlo?"
 
-#: ../src/brasero-data-disc.c:875
+#: ../src/brasero-data-disc.c:930
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by ISO9660 standard in its first and second versions (the most "
@@ -3175,12 +3220,12 @@ msgstr ""
 "Una excepción es MacOS X que no puede leer imágenes creadas con la versión 3 "
 "del estándar ISO9660."
 
-#: ../src/brasero-data-disc.c:901
+#: ../src/brasero-data-disc.c:956
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "¿Está seguro de que quiere añadir «%s» a la selección?"
 
-#: ../src/brasero-data-disc.c:909
+#: ../src/brasero-data-disc.c:964
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -3194,73 +3239,73 @@ msgstr ""
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
-#: ../src/brasero-data-disc.c:1008
+#: ../src/brasero-data-disc.c:1063
 #, c-format
 msgid "Import %s"
 msgstr "Importar %s"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
-#: ../src/brasero-data-disc.c:1015
+#: ../src/brasero-data-disc.c:1070
 #, c-format
 msgid "I_mport %s"
 msgstr "I_mportar %s"
 
 #. Translators: This is a verb. It's a toolbar button.
-#: ../src/brasero-data-disc.c:1045
+#: ../src/brasero-data-disc.c:1100
 msgid "I_mport"
 msgstr "I_mportar"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1101
+#: ../src/brasero-data-disc.c:1156
 #, c-format
 msgid "Do you want to import the session from '%s'?"
 msgstr "¿Quiere importar la sesión de «%s»?"
 
-#: ../src/brasero-data-disc.c:1104
+#: ../src/brasero-data-disc.c:1159
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
 msgstr ""
 "De esta forma los archivos antiguos de las sesiones anteriores se podrán "
 "usar después de la grabación."
 
-#: ../src/brasero-data-disc.c:1115
+#: ../src/brasero-data-disc.c:1170
 msgid "I_mport Session"
 msgstr "I_mportar sesión"
 
-#: ../src/brasero-data-disc.c:1116
+#: ../src/brasero-data-disc.c:1171
 msgid "Click here to import its contents"
 msgstr "Pulse aquí para importar su contenido"
 
-#: ../src/brasero-data-disc.c:1437
+#: ../src/brasero-data-disc.c:1492
 msgid "Please wait while the project is loading."
 msgstr "Espere mientras se carga el proyecto."
 
-#: ../src/brasero-data-disc.c:1448
+#: ../src/brasero-data-disc.c:1503
 msgid "_Cancel Loading"
 msgstr "_Cancelar la carga"
 
-#: ../src/brasero-data-disc.c:1449
+#: ../src/brasero-data-disc.c:1504
 msgid "Cancel loading current project"
 msgstr "Cancelar la carga actual de proyecto"
 
-#: ../src/brasero-data-disc.c:1747
+#: ../src/brasero-data-disc.c:1802
 msgid "File Renaming"
 msgstr "Renombramiento de archivos"
 
-#: ../src/brasero-data-disc.c:1751
+#: ../src/brasero-data-disc.c:1806
 msgid "_Rename"
 msgstr "_Renombrar"
 
-#: ../src/brasero-data-disc.c:1759
+#: ../src/brasero-data-disc.c:1814
 msgid "Renaming mode"
 msgstr "Modo de renombramiento"
 
-#: ../src/brasero-data-disc.c:2319 ../src/brasero-video-disc.c:1179
+#: ../src/brasero-data-disc.c:2378 ../src/brasero-video-disc.c:1179
 msgid "Size"
 msgstr "Tamaño"
 
-#: ../src/brasero-data-disc.c:2349
+#: ../src/brasero-data-disc.c:2408
 msgid "Space"
 msgstr "Espacio"
 
@@ -4969,6 +5014,9 @@ msgstr "Copie CD y DVD"
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Disc Copier"
 msgstr "Copiador de discos"
+
+#~ msgid "%"
+#~ msgstr "%"
 
 #~ msgid "(%s available for %s)"
 #~ msgstr "(%s disponible para %s)"
