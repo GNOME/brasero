@@ -43,8 +43,6 @@
 #include "brasero-units.h"
 
 #include "brasero-enums.h"
-#include "brasero-track-data-cfg.h"
-#include "brasero-track-image-cfg.h"
 #include "brasero-session.h"
 #include "brasero-status-dialog.h"
 

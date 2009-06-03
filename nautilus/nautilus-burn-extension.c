@@ -39,6 +39,7 @@
 
 #include "brasero-burn-lib.h"
 #include "brasero-track.h"
+#include "brasero-data-options.h"
 #include "brasero-track-data-cfg.h"
 #include "brasero-track-image-cfg.h"
 #include "brasero-track-disc.h"
@@ -137,22 +138,6 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	gtk_widget_destroy (dialog);
 }
 
-static void
-launch_brasero_on_window_track (BraseroTrack	*track,
-				GtkWidget	*options,
-				GtkWindow	*window)
-{
-	BraseroSessionCfg *session;
-
-	/* create a session and add track */
-	session = brasero_session_cfg_new ();
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
-					BRASERO_TRACK (track));
-
-	launch_brasero_on_window_session (session, options, window);
-	g_object_unref (session);
-}
-
 static gboolean
 nautilus_disc_burn_is_empty (GtkWindow *toplevel)
 {
@@ -214,6 +199,7 @@ static void
 write_activate (GtkWindow *toplevel)
 {
 	BraseroTrackDataCfg	*track;
+	BraseroSessionCfg	*session;
 	GtkWidget 		*name_options;
 	GtkWidget		*options;
 	GtkWidget	        *box;
@@ -225,6 +211,12 @@ write_activate (GtkWindow *toplevel)
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
+	session = brasero_session_cfg_new ();
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+					BRASERO_TRACK (track));
+	g_object_unref (track);
+
+	/* Add option widget */
 	box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
@@ -242,18 +234,16 @@ write_activate (GtkWindow *toplevel)
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* create the options box */
-	options = brasero_data_options_new (BRASERO_BURN_SESSION (priv->session));
+	options = brasero_data_options_new (BRASERO_BURN_SESSION (session));
 	gtk_widget_show (options);
-	brasero_burn_options_add_options (self, options);
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* NOTE: set the disc we're handling */
-	launch_brasero_on_window_track (BRASERO_TRACK (track),
-					box,
-					toplevel);
+	launch_brasero_on_window_session (session, options, toplevel);
+	g_object_unref (session);
 
 	/* cleanup */
-	g_object_unref (track);
+	g_object_unref (session);
 }
 
 static void
@@ -261,6 +251,22 @@ write_activate_cb (NautilusMenuItem *item,
                    gpointer          user_data)
 {
 	write_activate (GTK_WINDOW (user_data));
+}
+
+static void
+launch_brasero_on_window_track (BraseroTrack	*track,
+				GtkWidget	*options,
+				GtkWindow	*window)
+{
+	BraseroSessionCfg *session;
+
+	/* create a session and add track */
+	session = brasero_session_cfg_new ();
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+					BRASERO_TRACK (track));
+
+	launch_brasero_on_window_session (session, options, window);
+	g_object_unref (session);
 }
 
 static void
