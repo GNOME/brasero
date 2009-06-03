@@ -523,79 +523,6 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
  */
 
 static void
-brasero_data_disc_use_overburn_response_cb (BraseroDiscMessage *message,
-					    GtkResponseType response,
-					    BraseroDataDisc *self)
-{
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
-
-	if (response != GTK_RESPONSE_OK)
-		return;
-
-	priv->overburning = 1;
-}
-
-static void
-brasero_data_disc_project_oversized_cb (BraseroTrackDataCfg *project,
-					gboolean oversized,
-					gboolean overburn,
-					BraseroDataDisc *self)
-{
-	GtkWidget *message;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
-
-	if (!priv->message)
-		return;
-
-	if (overburn) {
-		if (priv->overburning)
-			return;
-
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
-						      _("Would you like to burn beyond the disc reported capacity?"),
-						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
-							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
-							"\nNOTE: This option might cause failure."),
-						      -1,
-						      BRASERO_NOTIFY_CONTEXT_SIZE);
-
-		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_WARNING);
-		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-					   BRASERO_DISC_MESSAGE (message),
-					   _("_Overburn"),
-					   _("Burn beyond the disc reported capacity"),
-					   GTK_RESPONSE_OK);
-		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-					   BRASERO_DISC_MESSAGE (message),
-					   GTK_STOCK_CANCEL,
-					   _("Click here not to use overburning"),
-					   GTK_RESPONSE_CANCEL);
-		
-		g_signal_connect (BRASERO_DISC_MESSAGE (message),
-				  "response",
-				  G_CALLBACK (brasero_data_disc_use_overburn_response_cb),
-				  self);
-	}
-	else if (oversized) {
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
-						      _("Please delete some files from the project."),
-						      _("The size of the project is too large for the disc even with the overburn option."),
-						      -1,
-						      BRASERO_NOTIFY_CONTEXT_SIZE);
-
-		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_WARNING);
-		brasero_disc_message_add_close_button (BRASERO_DISC_MESSAGE (message));
-	}
-	else
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message),
-					       BRASERO_NOTIFY_CONTEXT_SIZE);
-}
-
-static void
 brasero_data_disc_project_loading_cb (BraseroTrackDataCfg *project,
 				      gdouble progress,
 				      BraseroDataDisc *self)
@@ -2233,11 +2160,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	g_signal_connect (priv->project,
 			  "source-loaded",
 			  G_CALLBACK (brasero_data_disc_project_loaded_cb),
-			  object);
-
-	g_signal_connect (priv->project,
-			  "session-oversized",
-			  G_CALLBACK (brasero_data_disc_project_oversized_cb),
 			  object);
 
 	/* Use the BraseroTrack "changed" signal */

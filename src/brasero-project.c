@@ -67,6 +67,8 @@
 #include "brasero-burn-options.h"
 #include "brasero-cover.h"
 
+#include "brasero-medium-selection-priv.h"
+#include "brasero-session-helper.h"
 #include "brasero-session-cfg.h"
 #include "brasero-dest-selection.h"
 
@@ -156,7 +158,7 @@ typedef enum {
 } BraseroProjectSave;
 
 struct BraseroProjectPrivate {
-	BraseroBurnSession *session;
+	BraseroSessionCfg *session;
 
 	GtkWidget *selection;
 	GtkWidget *name_display;
@@ -552,6 +554,126 @@ brasero_project_icon_button_size_request (GtkWidget *widget,
 }
 
 static void
+brasero_project_message_response_span_cb (BraseroDiscMessage *message,
+					  GtkResponseType response,
+					  BraseroProject *project)
+{
+	if (response == GTK_RESPONSE_OK)
+		brasero_session_span_start (BRASERO_SESSION_SPAN (project->priv->session));
+}
+
+static void
+brasero_project_message_response_overburn_cb (BraseroDiscMessage *message,
+					      GtkResponseType response,
+					      BraseroProject *project)
+{
+	if (response == GTK_RESPONSE_OK)
+		brasero_session_cfg_add_flags (project->priv->session, BRASERO_BURN_FLAG_OVERBURN);
+}
+
+static void
+brasero_project_is_valid (BraseroSessionCfg *session,
+			  BraseroProject *project)
+{
+	BraseroSessionError valid;
+
+	valid = brasero_session_cfg_get_error (project->priv->session);
+
+	/* Update burn button state */
+	gtk_widget_set_sensitive (project->priv->burn, BRASERO_SESSION_IS_VALID (valid));
+
+	/* FIXME: update option button state as well */
+
+	/* Clean any message */
+	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message),
+				       BRASERO_NOTIFY_CONTEXT_SIZE);
+
+	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
+		/* Here there is an alternative: we may be able to span the data
+		 * across multiple media. So try that. */
+		if (brasero_session_span_possible (BRASERO_SESSION_SPAN (project->priv->session)) == BRASERO_BURN_RETRY) {
+			GtkWidget *message;
+
+			message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+							      _("Would you like to burn the selection of files across several media?"),
+							      _("The size of the project is too large for the disc even with the overburn option."),
+							      -1,
+							      BRASERO_NOTIFY_CONTEXT_SIZE);
+			brasero_notify_button_add (BRASERO_NOTIFY (project->priv->message),
+						   BRASERO_DISC_MESSAGE (message),
+						   _("_Burn Several Discs"),
+						   _("Burn the selection of files across several media"),
+						   GTK_RESPONSE_OK);
+
+			g_signal_connect (message,
+					  "response",
+					  G_CALLBACK (brasero_project_message_response_span_cb),
+					  project);
+		}
+		else
+			brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+						    _("Please choose another CD or DVD or insert a new one."),
+						    _("The size of the project is too large for the disc even with the overburn option."),
+						    -1,
+						    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
+		GtkWidget *message;
+
+		message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+						      _("Would you like to burn beyond the disc reported capacity?"),
+						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
+							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
+							"\nNOTE: This option might cause failure."),
+						      -1,
+						      BRASERO_NOTIFY_CONTEXT_SIZE);
+		brasero_notify_button_add (BRASERO_NOTIFY (project->priv->message),
+					   BRASERO_DISC_MESSAGE (message),
+					   _("_Overburn"),
+					   _("Burn beyond the disc reported capacity"),
+					   GTK_RESPONSE_OK);
+
+		g_signal_connect (message,
+				  "response",
+				  G_CALLBACK (brasero_project_message_response_overburn_cb),
+				  project);
+	}
+	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
+		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+					    _("Please insert a recordable CD or DVD."),
+					    _("There is no recordable disc inserted."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (valid == BRASERO_SESSION_NO_CD_TEXT) {
+		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+					    _("No track information (artist, title, ...) will be written to the disc."),
+					    _("This is not supported by the current active burning backend."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
+		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+					    _("Please replace the disc with a supported CD or DVD."),
+					    _("It is not possible to write with the current set of plugins."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session))
+	     &&  brasero_medium_selection_get_media_num (BRASERO_MEDIUM_SELECTION (project->priv->selection)) == 1) {
+		/* The user may have forgotten to insert a disc so remind him of that if
+		 * there aren't any other possibility in the selection */
+		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+					    _("Please insert a recordable CD or DVD if you don't want to write to an image file."),
+					    NULL,
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+
+
+}
+
+static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkSizeGroup *size_group;
@@ -574,9 +696,13 @@ brasero_project_init (BraseroProject *obj)
 	gtk_box_pack_start (GTK_BOX (obj), obj->priv->message, FALSE, TRUE, 0);
 	gtk_widget_show (obj->priv->message);
 
-	/* bottom */
-	obj->priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
+	obj->priv->session = brasero_session_cfg_new ();
+	g_signal_connect (obj->priv->session,
+			  "is-valid",
+			  G_CALLBACK (brasero_project_is_valid),
+			  obj);
 
+	/* bottom */
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 0);
 	gtk_widget_show (box);
@@ -599,7 +725,7 @@ brasero_project_init (BraseroProject *obj)
 			  GTK_EXPAND,
 			  0, 0);
 
-	selector = brasero_dest_selection_new (obj->priv->session);
+	selector = brasero_dest_selection_new (BRASERO_BURN_SESSION (obj->priv->session));
 	gtk_widget_show (selector);
 	obj->priv->selection = selector;
 
@@ -832,6 +958,7 @@ brasero_project_new ()
 }
 
 /********************************** size ***************************************/
+
 gchar *
 brasero_project_get_sectors_string (gint64 sectors,
 				    gboolean time_format)

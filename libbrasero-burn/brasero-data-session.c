@@ -66,11 +66,6 @@ struct _BraseroDataSessionPrivate
 
 	/* Nodes from the loaded session in the tree */
 	GSList *nodes;
-
-	glong size_changed_sig;
-
-	guint is_oversized:1;
-	guint is_overburn:1;
 };
 
 #define BRASERO_DATA_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_SESSION, BraseroDataSessionPrivate))
@@ -78,7 +73,6 @@ struct _BraseroDataSessionPrivate
 G_DEFINE_TYPE (BraseroDataSession, brasero_data_session, BRASERO_TYPE_DATA_PROJECT);
 
 enum {
-	OVERSIZE_SIGNAL,
 	AVAILABLE_SIGNAL,
 	LOADED_SIGNAL,
 	LAST_SIGNAL
@@ -205,77 +199,6 @@ brasero_io_load_image_directory (const gchar *dev_image,
 
 }
 
-static void
-brasero_data_session_check_size (BraseroDataSession *self)
-{
-	BraseroDataSessionPrivate *priv;
-	gint64 max_sectors = 0;
-	gint64 medium_sect = 0;
-	goffset sectors = 0;
-
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
-
-	sectors = brasero_data_project_get_sectors (BRASERO_DATA_PROJECT (self));
-	brasero_medium_get_free_space (priv->loaded,
-				       NULL,
-				       &medium_sect);
-
-	/* NOTE: This is not good since with a DVD 3% of 4.3G may be too much
-	 * with 3% we are slightly over the limit of the most overburnable discs
-	 * but at least users can try to overburn as much as they can. */
-
-	/* The idea would be to test write the disc with cdrecord from /dev/null
-	 * until there is an error and see how much we were able to write. So,
-	 * when we propose overburning to the user, we could ask if he wants
-	 * us to determine how much data can be written to a particular disc
-	 * provided he has chosen a real disc. */
-	max_sectors = medium_sect * 103 / 100;
-
-	if (medium_sect < sectors) {
-		/* send it once */
-		if (!priv->is_oversized || priv->is_overburn) {
-			gboolean overburn;
-
-			/* see if overburn is possible */
-			overburn = (sectors < max_sectors);
-			if (!priv->is_overburn && overburn)
-				g_signal_emit (self,
-					       brasero_data_session_signals [OVERSIZE_SIGNAL],
-					       0,
-					       TRUE,
-					       overburn);
-			else if (!overburn)
-				g_signal_emit (self,
-					       brasero_data_session_signals [OVERSIZE_SIGNAL],
-					       0,
-					       TRUE,
-					       overburn);
-
-			priv->is_overburn = overburn;
-		}
-
-		priv->is_oversized = TRUE;
-	}
-	else {
-		if (priv->is_oversized || priv->is_overburn)
-			g_signal_emit (self,
-				       brasero_data_session_signals [OVERSIZE_SIGNAL],
-				       0,
-				       FALSE,
-				       FALSE);
-
-		priv->is_oversized = FALSE;
-		priv->is_overburn = FALSE;
-	}
-}
-
-static void
-brasero_data_session_size_changed (BraseroDataProject *project,
-				   gpointer NULL_data)
-{
-	brasero_data_session_check_size (BRASERO_DATA_SESSION (project));
-}
-
 void
 brasero_data_session_remove_last (BraseroDataSession *self)
 {
@@ -308,14 +231,6 @@ brasero_data_session_remove_last (BraseroDataSession *self)
 		g_object_unref (priv->loaded);
 		priv->loaded = NULL;
 	}
-
-	if (priv->size_changed_sig) {
-		g_signal_handler_disconnect (self, priv->size_changed_sig);
-		priv->size_changed_sig = 0;
-	}
-
-	priv->is_oversized = FALSE;
-	priv->is_overburn = FALSE;
 }
 
 static void
@@ -457,11 +372,6 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
 	priv->loaded = medium;
 	g_object_ref (medium);
-
-	priv->size_changed_sig = g_signal_connect (self,
-						   "size-changed",
-						   G_CALLBACK (brasero_data_session_size_changed),
-						   NULL);
 
 	return brasero_data_session_load_directory_contents_real (self, NULL, error);
 }
@@ -703,16 +613,5 @@ brasero_data_session_class_init (BraseroDataSessionClass *klass)
 			  G_TYPE_NONE,
 			  2,
 			  G_TYPE_OBJECT,
-			  G_TYPE_BOOLEAN);
-	brasero_data_session_signals [OVERSIZE_SIGNAL] = 
-	    g_signal_new ("oversize",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  0,
-			  NULL, NULL,
-			  brasero_marshal_VOID__BOOLEAN_BOOLEAN,
-			  G_TYPE_NONE,
-			  2,
-			  G_TYPE_BOOLEAN,
 			  G_TYPE_BOOLEAN);
 }

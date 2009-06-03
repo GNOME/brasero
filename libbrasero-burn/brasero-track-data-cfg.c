@@ -115,7 +115,6 @@ typedef enum {
 enum {
 	AVAILABLE,
 	LOADED,
-	OVERSIZE,
 	ACTIVITY,
 	IMAGE,
 	UNREADABLE,
@@ -2688,19 +2687,6 @@ emit_signal:
 }
 
 static void
-brasero_track_data_cfg_oversized_cb (BraseroDataProject *project,
-				     gboolean is_oversized,
-				     gboolean overburn_possible,
-				     BraseroTrackDataCfg *self)
-{
-	g_signal_emit (self,
-		       brasero_track_data_cfg_signals [OVERSIZE],
-		       0,
-		       is_oversized,
-		       overburn_possible);
-}
-
-static void
 brasero_track_data_cfg_size_changed_cb (BraseroDataProject *project,
 					BraseroTrackDataCfg *self)
 {
@@ -3002,10 +2988,6 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 			  object);
 
 	g_signal_connect (priv->tree,
-			  "oversize",
-			  G_CALLBACK (brasero_track_data_cfg_oversized_cb),
-			  object);
-	g_signal_connect (priv->tree,
 			  "size-changed",
 			  G_CALLBACK (brasero_track_data_cfg_size_changed_cb),
 			  object);
@@ -3110,17 +3092,6 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  G_TYPE_NONE,
 			  2,
 			  G_TYPE_OBJECT,
-			  G_TYPE_BOOLEAN);
-	brasero_track_data_cfg_signals [OVERSIZE] = 
-	    g_signal_new ("session_oversized",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  0,
-			  NULL, NULL,
-			  brasero_marshal_VOID__BOOLEAN_BOOLEAN,
-			  G_TYPE_NONE,
-			  2,
-			  G_TYPE_BOOLEAN,
 			  G_TYPE_BOOLEAN);
 
 	brasero_track_data_cfg_signals [ACTIVITY] = 
