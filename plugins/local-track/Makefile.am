@@ -29,3 +29,5 @@ burn_uri_LTLIBRARIES = libbrasero-burn-uri.la
 libbrasero_burn_uri_la_SOURCES = burn-uri.c burn-uri.h
 libbrasero_burn_uri_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GIO_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_burn_uri_la_LDFLAGS = -module -avoid-version
+
+-include $(top_srcdir)/git.mk

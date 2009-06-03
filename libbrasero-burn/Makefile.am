@@ -205,3 +205,5 @@ EXTRA_DIST =			\
 CLEANFILES =			\
 	$(RECMARSHALFILES)
 
+
+-include $(top_srcdir)/git.mk

@@ -34,3 +34,5 @@ CLEANFILES += authors.xml
 
 dist-hook: app-dist-hook
 
+
+-include $(top_srcdir)/git.mk

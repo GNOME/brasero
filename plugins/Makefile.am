@@ -11,3 +11,5 @@ endif
 if BUILD_CDRTOOLS
 SUBDIRS += cdrtools
 endif
+
+-include $(top_srcdir)/git.mk

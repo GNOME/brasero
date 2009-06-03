@@ -53,3 +53,5 @@ dist-hook:
 	else \
 		echo A git clone is required to generate a ChangeLog >&2; \
 	fi
+
+-include $(top_srcdir)/git.mk

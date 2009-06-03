@@ -34,3 +34,5 @@ vob_LTLIBRARIES = libbrasero-vob.la
 libbrasero_vob_la_SOURCES = burn-vob.c burn-vob.h
 libbrasero_vob_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_vob_la_LDFLAGS = -module -avoid-version
+
+-include $(top_srcdir)/git.mk

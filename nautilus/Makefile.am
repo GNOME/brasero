@@ -54,3 +54,5 @@ libnautilus_brasero_extension_la_LIBADD =	\
 	../libbrasero-burn/libbrasero-burn.la
 	
 libnautilus_brasero_extension_la_LDFLAGS = $(module_flags)
+
+-include $(top_srcdir)/git.mk

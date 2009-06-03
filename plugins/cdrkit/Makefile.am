@@ -37,3 +37,5 @@ libbrasero_readom_la_SOURCES = burn-readom.c burn-readom.h \
 	burn-cdrkit.h 
 libbrasero_readom_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_readom_la_LDFLAGS = -module -avoid-version
+
+-include $(top_srcdir)/git.mk

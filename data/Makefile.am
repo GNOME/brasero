@@ -81,3 +81,5 @@ if UPDATE_CACHES
 else
 	@true
 endif
+
+-include $(top_srcdir)/git.mk

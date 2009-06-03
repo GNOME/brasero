@@ -32,3 +32,5 @@ libbrasero_checksum_file_la_SOURCES = burn-checksum-files.c	\
 
 libbrasero_checksum_file_la_LDFLAGS = -module -avoid-version
 libbrasero_checksum_file_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) $(BRASERO_GTK_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+
+-include $(top_srcdir)/git.mk

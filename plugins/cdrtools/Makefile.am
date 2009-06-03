@@ -37,3 +37,5 @@ libbrasero_readcd_la_SOURCES = burn-readcd.c burn-readcd.h \
 	burn-cdrtools.h 
 libbrasero_readcd_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_readcd_la_LDFLAGS = -module -avoid-version
+
+-include $(top_srcdir)/git.mk

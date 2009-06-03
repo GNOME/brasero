@@ -66,3 +66,5 @@ libbrasero_utils_la_SOURCES =		\
 CLEANFILES =			\
 	$(RECMARSHALFILES)
 	
+
+-include $(top_srcdir)/git.mk

@@ -21,3 +21,5 @@ libbrasero_dvdauthor_la_SOURCES = burn-dvdauthor.c burn-dvdauthor.h
 libbrasero_dvdauthor_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_dvdauthor_la_LDFLAGS = -module -avoid-version
 
+
+-include $(top_srcdir)/git.mk

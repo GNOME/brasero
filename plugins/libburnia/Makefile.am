@@ -34,3 +34,5 @@ libbrasero_libisofs_la_SOURCES = burn-libisofs.c burn-libisofs.h	\
 	burn-libburnia.h 
 libbrasero_libisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_libisofs_la_LDFLAGS = -module -avoid-version
+
+-include $(top_srcdir)/git.mk
