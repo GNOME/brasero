@@ -771,7 +771,6 @@ brasero_project_init (BraseroProject *obj)
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
-//	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, TRUE, 0);
 	gtk_table_attach (GTK_TABLE (table), alignment,
 			  3, 4,
 			  1, 2,
@@ -780,17 +779,6 @@ brasero_project_init (BraseroProject *obj)
 			  0, 0);
 
 	/* icon */
-/*	label = gtk_label_new_with_mnemonic (_("_Icon:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	obj->priv->icon_label = label;
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  1, 2,
-			  GTK_FILL,
-			  GTK_EXPAND,
-			  0, 0);
-*/
 	image = gtk_image_new_from_icon_name ("media-optical", GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_widget_show (image);
 	obj->priv->icon_img = image;
@@ -843,7 +831,7 @@ brasero_project_init (BraseroProject *obj)
 			  2, 3,
 			  1, 2,
 			  GTK_EXPAND|GTK_FILL,
-			  GTK_EXPAND,
+			  GTK_EXPAND|GTK_FILL,
 			  0, 0);
 	obj->priv->empty = 1;
 
@@ -1298,10 +1286,7 @@ brasero_project_setup_session (BraseroProject *project,
 void
 brasero_project_burn (BraseroProject *project)
 {
-	BraseroSessionCfg *session;
 	BraseroDiscResult result;
-	GtkWidget *dialog;
-	gboolean success;
 
 	result = brasero_project_check_status (project, project->priv->current);
 	if (result == BRASERO_DISC_CANCELLED)
@@ -1327,31 +1312,9 @@ brasero_project_burn (BraseroProject *project)
 	/* This is to stop the preview widget from playing */
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 
-  	/* setup, show, and run options dialog */
- 	session = brasero_session_cfg_new ();
- 	brasero_disc_set_session_contents (project->priv->current, BRASERO_BURN_SESSION (session));
- 	dialog = brasero_burn_options_new (session);
-
-	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
-
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result != GTK_RESPONSE_OK) {
-		g_object_unref (session);
-		gtk_widget_destroy (dialog);
-		goto end;
-	}
-
-	gtk_widget_destroy (dialog);
-
-	brasero_project_setup_session (project, BRASERO_BURN_SESSION (session));
-
 	/* now setup the burn dialog */
-	success = brasero_app_burn (brasero_app_get_default (), BRASERO_BURN_SESSION (session));
-
-    	project->priv->burnt = success;
-	g_object_unref (session);
-
-end:
+	if (brasero_app_burn (brasero_app_get_default (), BRASERO_BURN_SESSION (project->priv->session)))
+		project->priv->burnt = TRUE;
 
 	project->priv->is_burning = 0;
 }
