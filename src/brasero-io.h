@@ -123,6 +123,9 @@ struct _BraseroIOJobBase {
 	BraseroIOResultCallback callback;
 	BraseroIODestroyCallback destroy;
 	BraseroIOProgressCallback progress;
+
+	/* Whether we are returning something for this base */
+	guint in_use:1;
 };
 typedef struct _BraseroIOJobBase BraseroIOJobBase;
 

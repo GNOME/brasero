@@ -295,6 +295,8 @@ brasero_io_job_result_free (BraseroIOJobResult *result)
  * Used to return the results
  */
 
+#define NUMBER_OF_RESULTS	25
+
 static gboolean
 brasero_io_return_result_idle (gpointer callback_data)
 {
@@ -303,6 +305,8 @@ brasero_io_return_result_idle (gpointer callback_data)
 	BraseroIOJobResult *result;
 	BraseroIOPrivate *priv;
 	guint results_id;
+	GSList *iter;
+	GSList *next;
 	int i;
 
 	priv = BRASERO_IO_PRIVATE (self);
@@ -317,15 +321,29 @@ brasero_io_return_result_idle (gpointer callback_data)
 
 	/* Return several results at a time that can be a huge speed gain.
 	 * What should be the value that provides speed and responsiveness? */
-	for (i = 0; priv->results && i < 25; i ++) {
-		result = priv->results->data;
+	for (i = 0, iter = priv->results; iter && i < NUMBER_OF_RESULTS; iter = next) {
+		BraseroIOJobBase *base;
+
+		result = iter->data;
+		next = iter->next;
+
+		/* Make sure another result is not returned for this base. This 
+		 * is to avoid BraseroDataDisc showing multiple dialogs for 
+		 * various problems; like one dialog for joliet, one for deep,
+		 * and one for name collision. */
+		if (result->base->in_use)
+			continue;
+
 		priv->results = g_slist_remove (priv->results, result);
+
+		base = (BraseroIOJobBase *) result->base;
+		base->in_use = TRUE;
 
 		g_mutex_unlock (priv->lock);
 
 		data = result->callback_data;
 		if (result->uri || result->info || result->error)
-			result->base->callback (result->base->object,
+			result->base->callback (base->object,
 						result->error,
 						result->uri,
 						result->info,
@@ -333,15 +351,19 @@ brasero_io_return_result_idle (gpointer callback_data)
 
 		/* Else this is just to call destroy () for callback data */
 		brasero_io_unref_result_callback_data (data,
-						       result->base->object,
-						       result->base->destroy,
+						       base->object,
+						       base->destroy,
 						       FALSE);
+
 		brasero_io_job_result_free (result);
 
 		g_mutex_lock (priv->lock);
+
+		i ++;
+		base->in_use = FALSE;
 	}
 
-	if (!priv->results_id && priv->results) {
+	if (!priv->results_id && iter && i >= NUMBER_OF_RESULTS) {
 		/* There are still results and no idle call is scheduled so we
 		 * have to restart ourselves to make sure we empty the queue */
 		priv->results_id = results_id;
