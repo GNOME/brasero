@@ -52,6 +52,7 @@
 
 #include "burn-basics.h"
 
+#include "brasero-session-cfg.h"
 #include "brasero-tags.h"
 #include "brasero-track.h"
 #include "brasero-track-data.h"
@@ -2152,6 +2153,14 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  "deep-directory",
 			  G_CALLBACK (brasero_data_disc_deep_directory_cb),
 			  object);
+	g_signal_connect (priv->project,
+			  "name-collision",
+			  G_CALLBACK (brasero_data_disc_name_collision_cb),
+			  object);
+	g_signal_connect (priv->project,
+			  "joliet-rename",
+			  G_CALLBACK (brasero_data_disc_joliet_rename_cb),
+			  object);
 
 	g_signal_connect (priv->project,
 			  "source-loading",
@@ -2162,19 +2171,12 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  G_CALLBACK (brasero_data_disc_project_loaded_cb),
 			  object);
 
-	/* Use the BraseroTrack "changed" signal */
+	/* Use the BraseroTrack "changed" signal for size changes */
 	g_signal_connect (priv->project,
 			  "changed",
 			  G_CALLBACK (brasero_data_disc_size_changed_cb),
 			  object);
-	g_signal_connect (priv->project,
-			  "name-collision",
-			  G_CALLBACK (brasero_data_disc_name_collision_cb),
-			  object);
-	g_signal_connect (priv->project,
-			  "joliet-rename",
-			  G_CALLBACK (brasero_data_disc_joliet_rename_cb),
-			  object);
+
 	g_signal_connect (priv->project,
 			  "row-inserted",
 			  G_CALLBACK (brasero_data_disc_contents_added_cb),
@@ -2209,7 +2211,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  "session-available",
 			  G_CALLBACK (brasero_data_disc_session_available_cb),
 			  object);
-
 	g_signal_connect (priv->project,
 			  "session-loaded",
 			  G_CALLBACK (brasero_data_disc_session_loaded_cb),

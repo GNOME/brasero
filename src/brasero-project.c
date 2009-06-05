@@ -666,11 +666,9 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 					    _("Please insert a recordable CD or DVD if you don't want to write to an image file."),
 					    NULL,
-					    -1,
+					    10000,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
-
-
 }
 
 static void

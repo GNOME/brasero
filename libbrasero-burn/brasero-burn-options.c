@@ -181,17 +181,6 @@ brasero_burn_options_add_burn_button (BraseroBurnOptions *self,
 }
 
 static void
-brasero_burn_options_lock_selection (BraseroBurnOptions *self)
-{
-	BraseroBurnOptionsPrivate *priv;
-
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-	brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->selection),
-					     brasero_drive_get_medium (brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session))));
-	brasero_dest_selection_lock (BRASERO_DEST_SELECTION (priv->selection), TRUE);
-}
-
-static void
 brasero_burn_options_set_type_shown (BraseroBurnOptions *self,
 				     BraseroMediaType type)
 {
@@ -935,10 +924,6 @@ brasero_burn_options_setup (BraseroBurnOptions *self)
 			brasero_burn_options_setup_audio (self);
 	}
 	brasero_track_type_free (type);
-
-	/* see if we should lock the drive only with MERGE */
-	if (brasero_burn_session_get_flags (BRASERO_BURN_SESSION (priv->session)) & BRASERO_BURN_FLAG_MERGE)
-		brasero_burn_options_lock_selection (self);
 }
 
 static void

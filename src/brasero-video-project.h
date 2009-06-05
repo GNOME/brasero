@@ -128,6 +128,7 @@ GType brasero_video_project_get_type (void) G_GNUC_CONST;
 void
 brasero_video_file_free (BraseroVideoFile *file);
 
+/* This should go away as it is returned by BraseroBurnSession */
 guint64
 brasero_video_project_get_size (BraseroVideoProject *project);
 

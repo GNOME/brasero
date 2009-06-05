@@ -49,6 +49,7 @@
 
 #include "brasero-tags.h"
 #include "brasero-track-image.h"
+#include "brasero-track-data-cfg.h"
 #include "brasero-session-cfg.h"
 #include "brasero-burn-lib.h"
 #include "brasero-session-helper.h"
@@ -117,7 +118,7 @@ brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
 	else
 		display_name = g_strdup ("File");
 
-	display_name = display_name ? display_name : "";
+	display_name = display_name ? display_name : g_strdup ("");
 
 	disc_type = gconf_escape_key (brasero_medium_get_type_string (medium), -1);
 	if (!disc_type) {
@@ -248,7 +249,7 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self,
 }
 
 static void
-brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
+brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 						BraseroBurnFlag flags)
 {
 	BraseroMedia media;
@@ -270,8 +271,6 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 
 	media = brasero_medium_get_status (medium);
 
-	/* add flags then wipe out flags from session to check them one by one */
-	flags |= brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
 	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
 
 	priv->supported = BRASERO_BURN_FLAG_NONE;
@@ -376,6 +375,24 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 }
 
 static void
+brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
+						BraseroBurnFlag flags)
+{
+	/* add flags then wipe out flags from session to check them one by one */
+	flags |= brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
+	brasero_session_cfg_set_drive_properties_flags (self, flags);
+}
+
+static void
+brasero_session_cfg_rm_drive_properties_flags (BraseroSessionCfg *self,
+					       BraseroBurnFlag flags)
+{
+	/* add flags then wipe out flags from session to check them one by one */
+	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self)) & (~flags);
+	brasero_session_cfg_set_drive_properties_flags (self, flags);
+}
+
+static void
 brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 {
 	BraseroSessionCfgPrivate *priv;
@@ -392,10 +409,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	/* The next two must work as they were checked earlier */
-	source = brasero_track_type_new ();
-	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), source);
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-
 	medium = brasero_drive_get_medium (drive);
 	if (!medium || brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE)
 		return;
@@ -438,6 +452,8 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 
 	g_object_unref (client);
 
+	source = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), source);
 	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))) {
 		/* Special case */
 		if (value) {
@@ -466,6 +482,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 		flags = gconf_value_get_int (value) & BRASERO_DEST_SAVED_FLAGS;
 		gconf_value_free (value);
 	}
+	brasero_track_type_free (source);
 
 	brasero_session_cfg_add_drive_properties_flags (self, flags);
 }
@@ -847,7 +864,79 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 }
 
 static void
-brasero_session_cfg_input_changed (BraseroBurnSession *session)
+brasero_session_cfg_session_loaded (BraseroTrackDataCfg *track,
+				    BraseroMedium *medium,
+				    gboolean is_loaded,
+				    BraseroSessionCfg *session)
+{
+	if (is_loaded) {
+		/* Set the correct medium and add the flag */
+		brasero_burn_session_set_burner (BRASERO_BURN_SESSION (session),
+						 brasero_medium_get_drive (medium));
+
+		brasero_session_cfg_add_drive_properties_flags (session, BRASERO_BURN_FLAG_MERGE);
+	}
+	else
+		brasero_session_cfg_rm_drive_properties_flags (session, BRASERO_BURN_FLAG_MERGE);
+}
+
+static void
+brasero_session_cfg_track_added (BraseroBurnSession *session,
+				 BraseroTrack *track)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	if (priv->disabled)
+		return;
+
+	g_signal_connect (track,
+			  "session-loaded",
+			  G_CALLBACK (brasero_session_cfg_session_loaded),
+			  session);
+
+	/* when that happens it's mostly because a medium source changed, or
+	 * a new image was set. 
+	 * - reload saved flags
+	 * - check if all flags are thereafter supported
+	 * - check available formats for path
+	 * - set one path
+	 */
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
+				    TRUE,
+				    FALSE);
+}
+
+static void
+brasero_session_cfg_track_removed (BraseroBurnSession *session,
+				   BraseroTrack *track)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	if (priv->disabled)
+		return;
+
+	/* Just in case */
+	g_signal_handlers_disconnect_by_func (track,
+					      brasero_session_cfg_session_loaded,
+					      session);
+
+	/* when that happens it's mostly because a medium source changed, or
+	 * a new image was set. 
+	 * - reload saved flags
+	 * - check if all flags are thereafter supported
+	 * - check available formats for path
+	 * - set one path
+	 */
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
+				    TRUE,
+				    FALSE);
+}
+
+static void
+brasero_session_cfg_track_changed (BraseroBurnSession *session,
+				   BraseroTrack *track)
 {
 	BraseroSessionCfgPrivate *priv;
 
@@ -917,7 +1006,6 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 	BraseroDrive *drive;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
-
 	if ((priv->supported & flags) != flags)
 		return;
 
@@ -1007,6 +1095,7 @@ brasero_session_cfg_finalize (GObject *object)
 {
 	BraseroSessionCfgPrivate *priv;
 	BraseroDrive *drive;
+	GSList *tracks;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (object);
 
@@ -1014,6 +1103,16 @@ brasero_session_cfg_finalize (GObject *object)
 	if (drive && brasero_drive_get_medium (drive))
 		brasero_session_cfg_save_drive_properties (BRASERO_SESSION_CFG (object),
 							   brasero_drive_get_medium (drive));
+
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (object));
+	for (; tracks; tracks = tracks->next) {
+		BraseroTrack *track;
+
+		track = tracks->data;
+		g_signal_handlers_disconnect_by_func (track,
+						      brasero_session_cfg_session_loaded,
+						      object);
+	}
 
 	if (priv->caps_sig) {
 		BraseroPluginManager *manager;
@@ -1036,7 +1135,9 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 
 	object_class->finalize = brasero_session_cfg_finalize;
 
-	session_class->input_changed = brasero_session_cfg_input_changed;
+	session_class->track_added = brasero_session_cfg_track_added;
+	session_class->track_removed = brasero_session_cfg_track_removed;
+	session_class->track_changed = brasero_session_cfg_track_changed;
 	session_class->output_changed = brasero_session_cfg_output_changed;
 
 	session_cfg_signals[IS_VALID_SIGNAL] =

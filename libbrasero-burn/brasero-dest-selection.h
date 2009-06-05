@@ -66,10 +66,6 @@ GtkWidget *
 brasero_dest_selection_new (BraseroBurnSession *selection);
 
 void
-brasero_dest_selection_lock (BraseroDestSelection *selection,
-			     gboolean locked);
-
-void
 brasero_dest_selection_choose_best (BraseroDestSelection *selection);
 
 G_END_DECLS

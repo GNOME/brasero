@@ -75,7 +75,7 @@ enum {
 
 G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_MEDIUM_SELECTION);
 
-void
+static void
 brasero_dest_selection_lock (BraseroDestSelection *self,
 			     gboolean locked)
 {
@@ -83,12 +83,16 @@ brasero_dest_selection_lock (BraseroDestSelection *self,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	gtk_widget_set_sensitive (GTK_WIDGET (self), (locked != TRUE));
+	if (locked == (priv->locked_drive != NULL))
+		return;
 
+	gtk_widget_set_sensitive (GTK_WIDGET (self), (locked != TRUE));
 	gtk_widget_queue_draw (GTK_WIDGET (self));
+
 	if (priv->locked_drive) {
 		brasero_drive_unlock (priv->locked_drive);
 		g_object_unref (priv->locked_drive);
+		priv->locked_drive = NULL;
 	}
 
 	if (locked) {
@@ -113,6 +117,14 @@ static void
 brasero_dest_selection_valid_session (BraseroSessionCfg *session,
 				      BraseroDestSelection *self)
 {
+	brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (self));
+}
+
+static void
+brasero_dest_selection_output_changed (BraseroSessionCfg *session,
+				       BraseroMedium *former,
+				       BraseroDestSelection *self)
+{
 	BraseroDestSelectionPrivate *priv;
 	BraseroMedium *medium;
 	BraseroDrive *burner;
@@ -123,12 +135,22 @@ brasero_dest_selection_valid_session (BraseroSessionCfg *session,
 	burner = brasero_burn_session_get_burner (priv->session);
 	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (self));
 	if (burner != brasero_medium_get_drive (medium))
-		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self), medium);
+		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self),
+						     brasero_drive_get_medium (burner));
 
 	if (medium)
 		g_object_unref (medium);
+}
 
-	brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (self));
+static void
+brasero_dest_selection_flags_changed (BraseroBurnSession *session,
+				      BraseroDestSelection *self)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	brasero_dest_selection_lock (self, (brasero_burn_session_get_flags (BRASERO_BURN_SESSION (priv->session)) & BRASERO_BURN_FLAG_MERGE) != 0);
 }
 
 static void
@@ -191,6 +213,12 @@ brasero_dest_selection_finalize (GObject *object)
 		priv->valid_sig = 0;
 	}
 
+	g_signal_handlers_disconnect_by_func (priv->session,
+					      brasero_dest_selection_output_changed,
+					      object);
+	g_signal_handlers_disconnect_by_func (priv->session,
+					      brasero_dest_selection_flags_changed,
+					      object);
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
@@ -232,8 +260,8 @@ brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 				       gpointer callback_data)
 {
 	BraseroBurnSession *session;
-	goffset session_blocks;
-	goffset burner_blocks;
+	goffset session_blocks = 0;
+	goffset burner_blocks = 0;
 	goffset medium_blocks;
 	BraseroDrive *burner;
 
@@ -362,6 +390,14 @@ brasero_dest_selection_set_property (GObject *object,
 						    "is-valid",
 						    G_CALLBACK (brasero_dest_selection_valid_session),
 						    object);
+		g_signal_connect (session,
+				  "output-changed",
+				  G_CALLBACK (brasero_dest_selection_output_changed),
+				  object);
+		g_signal_connect (session,
+				  "flags-changed",
+				  G_CALLBACK (brasero_dest_selection_flags_changed),
+				  object);
 
 		brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (object));
 		break;

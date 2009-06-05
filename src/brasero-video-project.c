@@ -30,6 +30,7 @@
 #include "brasero-file-monitor.h"
 #include "brasero-io.h"
 #include "brasero-marshal.h"
+#include "brasero-session.h"
 
 typedef struct _BraseroVideoProjectPrivate BraseroVideoProjectPrivate;
 struct _BraseroVideoProjectPrivate

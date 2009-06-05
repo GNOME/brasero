@@ -107,7 +107,10 @@ typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 #define BRASERO_STR_EQUAL(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
 typedef enum {
-	INPUT_CHANGED_SIGNAL,
+	FLAGS_CHANGED_SIGNAL,
+	TRACK_ADDED_SIGNAL,
+	TRACK_REMOVED_SIGNAL,
+	TRACK_CHANGED_SIGNAL,
 	OUTPUT_CHANGED_SIGNAL,
 	LAST_SIGNAL
 } BraseroBurnSessionSignalType;
@@ -159,12 +162,13 @@ brasero_session_settings_free (BraseroSessionSetting *settings)
 }
 
 static void
-brasero_burn_session_track_changed (BraseroDrive *drive,
+brasero_burn_session_track_changed (BraseroTrack *track,
 				    BraseroBurnSession *self)
 {
 	g_signal_emit (self,
-		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-		       0);
+		       brasero_burn_session_signals [TRACK_CHANGED_SIGNAL],
+		       0,
+		       track);
 }
 
 static void
@@ -202,6 +206,8 @@ static void
 brasero_burn_session_free_tracks (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
+	GSList *iter;
+	GSList *next;
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
@@ -209,13 +215,18 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 
 	brasero_burn_session_stop_tracks_monitoring (self);
 
-	g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
-	g_slist_free (priv->tracks);
-	priv->tracks = NULL;
+	for (iter = priv->tracks; iter; iter = next) {
+		BraseroTrack *track;
 
-	g_signal_emit (self,
-		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-		       0);
+		track = iter->data;
+		next = iter->next;
+		priv->tracks = g_slist_remove (priv->tracks, track);
+		g_signal_emit (self,
+			       brasero_burn_session_signals [TRACK_REMOVED_SIGNAL],
+			       0,
+			       track);
+		g_object_unref (track);
+	}
 }
 
 BraseroBurnResult
@@ -239,39 +250,31 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 	g_object_ref (new_track);
 	if (!priv->tracks) {
 		/* we only need to emit the signal here since if there are
-		 * multiple tracks they must be exactly of the same time */
+		 * multiple tracks they must be exactly of the same type */
 		priv->tracks = g_slist_prepend (NULL, new_track);
 		brasero_burn_session_start_track_monitoring (self, new_track);
 
 		/* if (!brasero_track_type_equal (priv->input, &new_type)) */
 		g_signal_emit (self,
-			       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-			       0);
+			       brasero_burn_session_signals [TRACK_ADDED_SIGNAL],
+			       0,
+			       new_track);
 
 		return BRASERO_BURN_OK;
 	}
 
 	/* if there is already a track, then we replace it on condition that it
 	 * has the same type and it's not AUDIO (only one allowed to have many) */
-	if (!BRASERO_IS_TRACK_STREAM (new_track)) {
-		brasero_burn_session_stop_tracks_monitoring (self);
+	if (!BRASERO_IS_TRACK_STREAM (new_track)
+	||  !BRASERO_IS_TRACK_STREAM (priv->tracks->data))
+		brasero_burn_session_free_tracks (self);
 
-		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
-		g_slist_free (priv->tracks);
-
-		priv->tracks = g_slist_prepend (NULL, new_track);
-		brasero_burn_session_start_track_monitoring (self, new_track);
-	}
-	else {
-		brasero_burn_session_start_track_monitoring (self, new_track);
-		priv->tracks = g_slist_append (priv->tracks, new_track);
-	}
-
-	/* Always emit the signal even when adding another BraseroTrackStream
-	 * since the size has probably changed. */
+	brasero_burn_session_start_track_monitoring (self, new_track);
+	priv->tracks = g_slist_append (priv->tracks, new_track);
 	g_signal_emit (self,
-		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-		       0);
+		       brasero_burn_session_signals [TRACK_ADDED_SIGNAL],
+		       0,
+		       new_track);
 
 	return BRASERO_BURN_OK;
 }
@@ -978,7 +981,13 @@ brasero_burn_session_set_flags (BraseroBurnSession *self,
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if (priv->settings->flags == flags)
+		return;
+
 	priv->settings->flags = flags;
+	g_signal_emit (self,
+		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
+		       0);
 }
 
 void
@@ -990,7 +999,13 @@ brasero_burn_session_add_flag (BraseroBurnSession *self,
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if ((priv->settings->flags & flag) == flag)
+		return;
+
 	priv->settings->flags |= flag;
+	g_signal_emit (self,
+		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
+		       0);
 }
 
 void
@@ -1002,7 +1017,13 @@ brasero_burn_session_remove_flag (BraseroBurnSession *self,
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if ((priv->settings->flags & flag) == 0)
+		return;
+
 	priv->settings->flags &= ~flag;
+	g_signal_emit (self,
+		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
+		       0);
 }
 
 BraseroBurnFlag
@@ -1218,6 +1239,7 @@ void
 brasero_burn_session_push_tracks (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
+	GSList *iter;
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
@@ -1226,11 +1248,18 @@ brasero_burn_session_push_tracks (BraseroBurnSession *self)
 	brasero_burn_session_stop_tracks_monitoring (self);
 
 	priv->pile_tracks = g_slist_prepend (priv->pile_tracks, priv->tracks);
+	iter = priv->tracks;
 	priv->tracks = NULL;
 
-	g_signal_emit (self,
-		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-		       0);
+	for (; iter; iter = iter->next) {
+		BraseroTrack *track;
+
+		track = iter->data;
+		g_signal_emit (self,
+			       brasero_burn_session_signals [TRACK_REMOVED_SIGNAL],
+			       0,
+			       track);
+	}
 }
 
 void
@@ -1248,18 +1277,9 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 		return;
 
 	if (priv->tracks) {
-		brasero_burn_session_stop_tracks_monitoring (self);
-
-		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
-		g_slist_free (priv->tracks);
-		priv->tracks = NULL;
-
-		if (!priv->pile_tracks) {
-			g_signal_emit (self,
-				       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-				       0);
+		brasero_burn_session_free_tracks (self);
+		if (!priv->pile_tracks)
 			return;
-		}
 	}
 
 	sources = priv->pile_tracks->data;
@@ -1271,11 +1291,11 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 
 		track = sources->data;
 		brasero_burn_session_start_track_monitoring (self, track);
+		g_signal_emit (self,
+			       brasero_burn_session_signals [TRACK_ADDED_SIGNAL],
+			       0,
+			       track);
 	}
-
-	g_signal_emit (self,
-		       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-		       0);
 }
 
 /**
@@ -1737,12 +1757,44 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_MEDIUM);
-
-	brasero_burn_session_signals [INPUT_CHANGED_SIGNAL] =
-	    g_signal_new ("input_changed",
+	brasero_burn_session_signals [TRACK_ADDED_SIGNAL] =
+	    g_signal_new ("track_added",
 			  BRASERO_TYPE_BURN_SESSION,
 			  G_SIGNAL_RUN_FIRST,
-			  G_STRUCT_OFFSET (BraseroBurnSessionClass, input_changed),
+			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_added),
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__OBJECT,
+			  G_TYPE_NONE,
+			  1,
+			  BRASERO_TYPE_TRACK);
+	brasero_burn_session_signals [TRACK_REMOVED_SIGNAL] =
+	    g_signal_new ("track_removed",
+			  BRASERO_TYPE_BURN_SESSION,
+			  G_SIGNAL_RUN_FIRST,
+			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_removed),
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__OBJECT,
+			  G_TYPE_NONE,
+			  1,
+			  BRASERO_TYPE_TRACK);
+	brasero_burn_session_signals [TRACK_CHANGED_SIGNAL] =
+	    g_signal_new ("track_changed",
+			  BRASERO_TYPE_BURN_SESSION,
+			  G_SIGNAL_RUN_FIRST,
+			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_changed),
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__OBJECT,
+			  G_TYPE_NONE,
+			  1,
+			  BRASERO_TYPE_TRACK);
+	brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL] =
+	    g_signal_new ("flags_changed",
+			  BRASERO_TYPE_BURN_SESSION,
+			  G_SIGNAL_RUN_FIRST,
+			  G_STRUCT_OFFSET (BraseroBurnSessionClass, flags_changed),
 			  NULL,
 			  NULL,
 			  g_cclosure_marshal_VOID__VOID,
