@@ -2055,7 +2055,7 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 						   BRASERO_TRACK_STREAM_ISRC_TAG,
 						   isrc);
 
-		brasero_burn_session_add_track (session, BRASERO_TRACK (track));
+		brasero_burn_session_add_track (session, BRASERO_TRACK (track), NULL);
 
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroBurnSession refs it. */

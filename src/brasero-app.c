@@ -726,7 +726,9 @@ brasero_app_burn_image (BraseroApp *app,
 	if (uri)
 		brasero_track_image_cfg_set_source (track, uri);
 
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (track));
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+					BRASERO_TRACK (track),
+					NULL);
 
 	if (brasero_app_burn_options (app, session))
 		brasero_app_burn (app, BRASERO_BURN_SESSION (session));
@@ -744,7 +746,9 @@ brasero_app_copy_disc (BraseroApp *app,
 
 	session = brasero_session_cfg_new ();
 	track = brasero_track_disc_new ();
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (track));
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+					BRASERO_TRACK (track),
+					NULL);
 
 	/* if a device is specified then get the corresponding medium */
 	if (device) {

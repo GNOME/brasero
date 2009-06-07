@@ -58,13 +58,14 @@ G_DEFINE_TYPE (BraseroTrackStreamCfg, brasero_track_stream_cfg, BRASERO_TYPE_TRA
 
 
 static void
-brasero_video_project_result_cb (GObject *obj,
-				 GError *error,
-				 const gchar *uri,
-				 GFileInfo *info,
-				 gpointer user_data)
+brasero_track_stream_cfg_results_cb (GObject *obj,
+				     GError *error,
+				     const gchar *uri,
+				     GFileInfo *info,
+				     gpointer user_data)
 {
 	guint64 len;
+	GObject *snapshot;
 	BraseroTrackStreamCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (obj);
@@ -78,6 +79,16 @@ brasero_video_project_result_cb (GObject *obj,
 	}
 
 	/* FIXME: we don't know whether it's audio or video that is required */
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		/* This error is special as it can be recovered from */
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_FILE_FOLDER,
+					   _("Directories cannot be added to video or audio discs"));
+
+		brasero_track_changed (BRASERO_TRACK (obj));
+		return;
+	}
+
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_REGULAR
 	|| (!g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)
 	&&  !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO))) {
@@ -85,7 +96,7 @@ brasero_video_project_result_cb (GObject *obj,
 
 		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
-					   BRASERO_BURN_ERR,
+					   BRASERO_BURN_ERROR_GENERAL,
 					   /* Translators: %s is the name of the file */
 					   _("\"%s\" is not suitable for audio or video media"),
 					   name);
@@ -120,7 +131,19 @@ brasero_video_project_result_cb (GObject *obj,
 												    0,
 												    len,
 												    0);
-					     
+
+	snapshot = g_file_info_get_attribute_object (info, BRASERO_IO_THUMBNAIL);
+	if (snapshot) {
+		GValue *value;
+
+		value = g_new0 (GValue, 1);
+		g_value_init (value, GDK_TYPE_PIXBUF);
+		g_value_set_object (value, g_object_ref (snapshot));
+		brasero_track_tag_add (BRASERO_TRACK (obj),
+				       BRASERO_TRACK_STREAM_THUMBNAIL_TAG,
+				       value);
+	}
+
 	/* Get the song info */
 	if (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE))
 		brasero_track_tag_add_string (BRASERO_TRACK (obj),
@@ -158,7 +181,7 @@ brasero_track_stream_cfg_get_info (BraseroTrackStreamCfg *track)
 	/* get info async for the file */
 	if (!priv->load_uri)
 		priv->load_uri = brasero_io_register (G_OBJECT (track),
-						      brasero_video_project_result_cb,
+						      brasero_track_stream_cfg_results_cb,
 						      NULL,
 						      NULL);
 
@@ -247,5 +270,11 @@ brasero_track_stream_cfg_class_init (BraseroTrackStreamCfgClass *klass)
 	track_class->get_status = brasero_track_stream_cfg_get_status;
 
 	parent_class->set_source = brasero_track_stream_cfg_set_source;
+}
+
+BraseroTrackStreamCfg *
+brasero_track_stream_cfg_new (void)
+{
+	return g_object_new (BRASERO_TYPE_TRACK_STREAM_CFG, NULL);
 }
 

@@ -474,7 +474,7 @@ brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
 	track = brasero_track_disc_new ();
 	brasero_track_disc_set_drive (track, drive);
 	brasero_track_set_checksum (BRASERO_TRACK (track), BRASERO_CHECKSUM_MD5, checksum);
-	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track));
+	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track), NULL);
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
@@ -565,7 +565,7 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 	track = brasero_track_disc_new ();
 	brasero_track_disc_set_drive (track, drive);
 	brasero_track_set_checksum (BRASERO_TRACK (track), BRASERO_CHECKSUM_DETECT, NULL);
-	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track));
+	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track), NULL);
 
 	/* no eject at the end (it should be default) */
 	brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_EJECT);

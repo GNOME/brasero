@@ -373,7 +373,7 @@ brasero_task_ctx_finished (BraseroTaskCtx *self)
 			BraseroTrack *track;
 
 			track = iter->data;
-			brasero_burn_session_add_track (priv->session, track);
+			brasero_burn_session_add_track (priv->session, track, NULL);
 
 			/* It's good practice to unref the track afterwards as
 			 * we don't need it anymore. BraseroBurnSession refs it.

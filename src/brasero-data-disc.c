@@ -1356,7 +1356,7 @@ brasero_data_disc_set_session_contents (BraseroDisc *self,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	brasero_burn_session_add_track (session, BRASERO_TRACK (priv->project));
+	brasero_burn_session_add_track (session, BRASERO_TRACK (priv->project), NULL);
 	return BRASERO_DISC_OK;
 }
 

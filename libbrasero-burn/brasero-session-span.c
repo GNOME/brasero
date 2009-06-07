@@ -151,8 +151,7 @@ brasero_session_span_possible (BraseroSessionSpan *session)
 	track = tracks->data;
 
 	if (BRASERO_IS_TRACK_DATA_CFG (track))
-		return brasero_track_data_cfg_span_possible (BRASERO_TRACK_DATA_CFG (track),
-							     max_sectors);
+		return brasero_track_data_cfg_span_possible (BRASERO_TRACK_DATA_CFG (track), max_sectors);
 
 	/* This is the common case */
 	brasero_track_get_size (BRASERO_TRACK (track),
@@ -242,7 +241,9 @@ brasero_session_span_next (BraseroSessionSpan *session)
 
 			pushed = TRUE;
 			brasero_burn_session_push_tracks (BRASERO_BURN_SESSION (session));
-			brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (new_track));
+			brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+							BRASERO_TRACK (new_track),
+							NULL);
 			break;
 		}
 
@@ -266,7 +267,7 @@ brasero_session_span_next (BraseroSessionSpan *session)
 		}
 
 		BRASERO_BURN_LOG ("Adding tracks");
-		brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), track);
+		brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), track, NULL);
 
 		if (priv->last_track)
 			g_object_unref (priv->last_track);

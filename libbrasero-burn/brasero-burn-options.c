@@ -786,7 +786,8 @@ brasero_status_dialog_uri_has_image (BraseroTrackDataCfg *track,
 	track_img = brasero_track_image_cfg_new ();
 	brasero_track_image_cfg_set_source (track_img, uri);
 	brasero_burn_session_add_track (BRASERO_BURN_SESSION (priv->session),
-					BRASERO_TRACK (track_img));
+					BRASERO_TRACK (track_img),
+					NULL);
 
 	return BRASERO_BURN_CANCEL;
 }

@@ -720,7 +720,9 @@ brasero_src_image_set_property (GObject *object,
 					}
 				}
 
-				brasero_burn_session_add_track (priv->session, BRASERO_TRACK (priv->track));
+				brasero_burn_session_add_track (priv->session,
+								BRASERO_TRACK (priv->track),
+								NULL);
 				g_free (image);
 				g_free (toc);
 			}
@@ -732,7 +734,9 @@ brasero_src_image_set_property (GObject *object,
 		else {
 			/* Add our own track */
 			priv->track = brasero_track_image_cfg_new ();
-			brasero_burn_session_add_track (priv->session, BRASERO_TRACK (priv->track));
+			brasero_burn_session_add_track (priv->session,
+							BRASERO_TRACK (priv->track),
+							NULL);
 		}
 
 		g_signal_connect (priv->track,

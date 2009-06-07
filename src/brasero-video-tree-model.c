@@ -29,9 +29,11 @@
 
 #include <gtk/gtk.h>
 
-#include "burn-basics.h"
+#include "brasero-session-cfg.h"
+#include "brasero-tags.h"
+#include "brasero-track-stream-cfg.h"
+
 #include "brasero-utils.h"
-#include "brasero-video-project.h"
 #include "brasero-video-tree-model.h"
 
 #include "eggtreemultidnd.h"
@@ -39,6 +41,8 @@
 typedef struct _BraseroVideoTreeModelPrivate BraseroVideoTreeModelPrivate;
 struct _BraseroVideoTreeModelPrivate
 {
+	BraseroSessionCfg *session;
+
 	guint stamp;
 	GtkIconTheme *theme;
 };
@@ -56,7 +60,7 @@ brasero_video_tree_model_iface_init (gpointer g_iface, gpointer data);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroVideoTreeModel,
 			 brasero_video_tree_model,
-			 BRASERO_TYPE_VIDEO_PROJECT,
+			 G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL,
 					        brasero_video_tree_model_iface_init)
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_DRAG_DEST,
@@ -118,8 +122,11 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 {
 	BraseroVideoTreeModelPrivate *priv;
 	BraseroVideoTreeModel *self;
-	BraseroVideoFile *file;
+	BraseroStatus *status;
+	BraseroTrack *track;
+	const gchar *string;
 	GdkPixbuf *pixbuf;
+	GValue *value_tag;
 	gchar *text;
 
 	self = BRASERO_VIDEO_TREE_MODEL (model);
@@ -129,20 +136,25 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	g_return_if_fail (priv->stamp == iter->stamp);
 	g_return_if_fail (iter->user_data != NULL);
 
-	file = iter->user_data;
+	track = iter->user_data;
 
 	switch (column) {
 	case BRASERO_VIDEO_TREE_MODEL_NAME:
 		g_value_init (value, G_TYPE_STRING);
 
-		if (file->info && file->info->title)
-			g_value_set_string (value, file->info->title);
+		string = brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_TITLE_TAG);
+		if (string)
+			g_value_set_string (value, string);
 		else {
+			gchar *uri;
 			gchar *name;
 			gchar *path;
 			gchar *unescaped;
 
-			unescaped = g_uri_unescape_string (file->uri, NULL);
+			uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
+			unescaped = g_uri_unescape_string (uri, NULL);
+			g_free (uri);
+
 			path = g_filename_from_uri (unescaped, NULL, NULL);
 			g_free (unescaped);
 
@@ -156,13 +168,18 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_MIME_ICON:
+		status = brasero_status_new ();
+		brasero_track_get_status (track, status);
+
 		g_value_init (value, GDK_TYPE_PIXBUF);
 
-		if (file->snapshot) {
-			pixbuf = file->snapshot;
-			g_object_ref (file->snapshot);
-		}
-		else if (file->is_loading) {
+		value_tag = NULL;
+		brasero_track_tag_lookup (BRASERO_TRACK (track),
+					  BRASERO_TRACK_STREAM_THUMBNAIL_TAG,
+					  &value_tag);
+		if (value_tag)
+			pixbuf = g_value_dup_object (value_tag);
+		else if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY) {
 			pixbuf = gtk_icon_theme_load_icon (priv->theme,
 							   "image-loading",
 							   48,
@@ -178,27 +195,42 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		}
 
 		g_value_set_object (value, pixbuf);
+		brasero_status_free (status);
 		g_object_unref (pixbuf);
-
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_SIZE:
+		status = brasero_status_new ();
+		brasero_track_get_status (track, status);
+
 		g_value_init (value, G_TYPE_STRING);
 
-		if (!file->is_loading) {
-			text = brasero_units_get_time_string (file->end - file->start, TRUE, FALSE);
+		if (brasero_status_get_result (status) == BRASERO_BURN_OK) {
+			guint64 len = 0;
+
+			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &len);
+			text = brasero_units_get_time_string (len, TRUE, FALSE);
 			g_value_set_string (value, text);
 			g_free (text);
 		}
 		else
 			g_value_set_string (value, _("(loading ...)"));
 
+		brasero_status_free (status);
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_EDITABLE:
 		g_value_init (value, G_TYPE_BOOLEAN);
-		g_value_set_boolean (value, file->editable);
+		/* This can be used for gap lines */
+		g_value_set_boolean (value, TRUE);
+		//g_value_set_boolean (value, file->editable);
+		return;
 
+	case BRASERO_VIDEO_TREE_MODEL_SELECTABLE:
+		g_value_init (value, G_TYPE_BOOLEAN);
+		/* This can be used for gap lines */
+		g_value_set_boolean (value, TRUE);
+		//g_value_set_boolean (value, file->editable);
 		return;
 
 	default:
@@ -209,17 +241,19 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 }
 
 GtkTreePath *
-brasero_video_tree_model_file_to_path (BraseroVideoTreeModel *self,
-				       BraseroVideoFile *file)
+brasero_video_tree_model_track_to_path (BraseroVideoTreeModel *self,
+				        BraseroTrack *track)
 {
 	BraseroVideoTreeModelPrivate *priv;
 	GtkTreePath *path;
+	GSList *tracks;
 	guint nth;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	path = gtk_tree_path_new ();
-	nth = brasero_video_project_get_item_index (BRASERO_VIDEO_PROJECT (self), file);
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
+	nth = g_slist_index (tracks, track);
 	gtk_tree_path_prepend_index (path, nth);
 
 	return path;
@@ -230,9 +264,8 @@ brasero_video_tree_model_get_path (GtkTreeModel *model,
 				   GtkTreeIter *iter)
 {
 	BraseroVideoTreeModelPrivate *priv;
-	BraseroVideoFile *file;
+	BraseroTrack *track;
 	GtkTreePath *path;
-	guint nth;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
@@ -240,22 +273,20 @@ brasero_video_tree_model_get_path (GtkTreeModel *model,
 	g_return_val_if_fail (priv->stamp == iter->stamp, NULL);
 	g_return_val_if_fail (iter->user_data != NULL, NULL);
 
-	file = iter->user_data;
+	track = iter->user_data;
 
 	/* NOTE: there is only one single file without a name: root */
-	path = gtk_tree_path_new ();
-	nth = brasero_video_project_get_item_index (BRASERO_VIDEO_PROJECT (model), file);
-	gtk_tree_path_prepend_index (path, nth);
-
+	path = brasero_video_tree_model_track_to_path (BRASERO_VIDEO_TREE_MODEL (model), track);
 	return path;
 }
 
-BraseroVideoFile *
-brasero_video_tree_model_path_to_file (BraseroVideoTreeModel *self,
-				       GtkTreePath *path)
+BraseroTrack *
+brasero_video_tree_model_path_to_track (BraseroVideoTreeModel *self,
+				        GtkTreePath *path)
 {
 	BraseroVideoTreeModelPrivate *priv;
 	const gint *indices;
+	GSList *tracks;
 	guint depth;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
@@ -268,7 +299,8 @@ brasero_video_tree_model_path_to_file (BraseroVideoTreeModel *self,
 	if (depth > 2)
 		return NULL;
 
-	return brasero_video_project_get_nth_item (BRASERO_VIDEO_PROJECT (self), indices  [0]);
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
+	return g_slist_nth_data (tracks, indices [0]);
 }
 
 static gboolean
@@ -277,23 +309,14 @@ brasero_video_tree_model_get_iter (GtkTreeModel *model,
 				   GtkTreePath *path)
 {
 	BraseroVideoTreeModelPrivate *priv;
-	BraseroVideoFile *file;
-	const gint *indices;
-	guint depth;
+	BraseroTrack *track;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
-
-	depth = gtk_tree_path_get_depth (path);
-	if (depth > 2)
+	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), path);
+	if (!track)
 		return FALSE;
 
-	indices = gtk_tree_path_get_indices (path);
-	file = brasero_video_project_get_nth_item (BRASERO_VIDEO_PROJECT (model),
-						   indices [0]);
-	if (!file)
-		return FALSE;
-
-	iter->user_data = file;
+	iter->user_data = track;
 	iter->stamp = priv->stamp;
 
 	return TRUE;
@@ -304,7 +327,9 @@ brasero_video_tree_model_iter_next (GtkTreeModel *model,
 				    GtkTreeIter *iter)
 {
 	BraseroVideoTreeModelPrivate *priv;
-	BraseroVideoFile *file;
+	BraseroTrack *track;
+	GSList *tracks;
+	GSList *node;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
@@ -312,11 +337,16 @@ brasero_video_tree_model_iter_next (GtkTreeModel *model,
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
 	g_return_val_if_fail (iter->user_data != NULL, FALSE);
 
-	file = iter->user_data;
-	if (!file || !file->next)
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
+	track = iter->user_data;
+	if (!track)
 		return FALSE;
 
-	iter->user_data = file->next;
+	node = g_slist_find (tracks, track);
+	if (!node || !node->next)
+		return FALSE;
+
+	iter->user_data = node->next->data;
 	return TRUE;
 }
 
@@ -335,6 +365,9 @@ brasero_video_tree_model_get_column_type (GtkTreeModel *model,
 		return G_TYPE_STRING;
 
 	case BRASERO_VIDEO_TREE_MODEL_EDITABLE:
+		return G_TYPE_BOOLEAN;
+
+	case BRASERO_VIDEO_TREE_MODEL_SELECTABLE:
 		return G_TYPE_BOOLEAN;
 
 	default:
@@ -403,14 +436,14 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 					     GtkTreePath *dest_path,
 					     GtkSelectionData *selection_data)
 {
-	BraseroVideoFile *file;
-	BraseroVideoFile *sibling;
-	BraseroVideoTreeModel *self;
+	BraseroTrack *track;
+	BraseroTrack *sibling;
+	BraseroVideoTreeModelPrivate *priv;
 
-	self = BRASERO_VIDEO_TREE_MODEL (drag_dest);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (drag_dest);
 
 	/* The new row(s) must be before dest_path but after our sibling */
-	sibling = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (drag_dest), dest_path);
+	sibling = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (drag_dest), dest_path);
 		
 	/* Received data: see where it comes from:
 	 * - from us, then that's a simple move
@@ -432,10 +465,12 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 			reference = iter->data;
 			treepath = gtk_tree_row_reference_get_path (reference);
 
-			file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (drag_dest), treepath);
+			track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (drag_dest), treepath);
 			gtk_tree_path_free (treepath);
 
-			brasero_video_project_move (BRASERO_VIDEO_PROJECT (self), file, sibling);
+			brasero_burn_session_move_track (BRASERO_BURN_SESSION (priv->session),
+							 track,
+							 sibling);
 		}
 	}
 	else if (selection_data->target == gdk_atom_intern ("text/uri-list", TRUE)) {
@@ -451,13 +486,14 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 			return TRUE;
 
 		for (i = 0; uris [i]; i ++) {
+			BraseroTrackStreamCfg *track;
+
 			/* Add the URIs to the project */
-			brasero_video_project_add_uri (BRASERO_VIDEO_PROJECT (self),
-						       uris [i],
-						       NULL,
-						       sibling,
-						       -1,
-						       -1);
+			track = brasero_track_stream_cfg_new ();
+			brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uris [i]);
+			brasero_burn_session_add_track (BRASERO_BURN_SESSION (priv->session),
+							BRASERO_TRACK (track),
+							sibling);
 		}
 		g_strfreev (uris);
 	}
@@ -484,120 +520,133 @@ brasero_video_tree_model_drag_data_delete (GtkTreeDragSource *source,
 }
 
 static void
-brasero_video_tree_model_clear (BraseroVideoTreeModel *self,
-				guint num_files)
-{
-	GtkTreePath *treepath;
-	BraseroVideoTreeModelPrivate *priv;
-
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
-
-	/* NOTE: no need to move to the next row since previous one was deleted */
-	treepath = gtk_tree_path_new_first ();
-	while (num_files > 0) {
-		num_files --;
-		gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), treepath);
-	}
-	gtk_tree_path_free (treepath);
-}
-
-static void
-brasero_video_tree_model_reset (BraseroVideoProject *project,
-				guint num_files)
-{
-	brasero_video_tree_model_clear (BRASERO_VIDEO_TREE_MODEL (project), num_files);
-
-	/* chain up this function except if we invalidated the file */
-	if (BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->reset)
-		BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->reset (project, num_files);
-}
-
-static gboolean
-brasero_video_tree_model_file_added (BraseroVideoProject *project,
-				     BraseroVideoFile *file)
+brasero_video_tree_model_track_added (BraseroBurnSession *session,
+				      BraseroTrack *track,
+				      BraseroVideoTreeModel *model)
 {
 	BraseroVideoTreeModelPrivate *priv;
+	BraseroStatus *status;
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (project);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
 	iter.stamp = priv->stamp;
-	iter.user_data = file;
+	iter.user_data = track;
 
-	path = brasero_video_tree_model_file_to_path (BRASERO_VIDEO_TREE_MODEL (project), file);
+	path = brasero_video_tree_model_track_to_path (model, track);
 
 	/* if the file is reloading (because of a file system change or because
 	 * it was a file that was a tmp folder) then no need to signal an added
 	 * signal but a changed one */
-	if (file->is_reloading) {
-		gtk_tree_model_row_changed (GTK_TREE_MODEL (project),
-					    path,
-					    &iter);
-		gtk_tree_path_free (path);
-		goto end;
-	}
-
-	/* Add the row itself */
-	gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
+	status = brasero_status_new ();
+	brasero_track_get_status (track, status);
+	gtk_tree_model_row_inserted (GTK_TREE_MODEL (model),
 				     path,
 				     &iter);
 	gtk_tree_path_free (path);
-
-end:
-	/* chain up this function */
-	if (BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->node_added)
-		return BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->node_added (project,
-													file);
-
-	return TRUE;
+	brasero_status_free (status);
 }
 
 static void
-brasero_video_tree_model_file_removed (BraseroVideoProject *project,
-				       BraseroVideoFile *file)
+brasero_video_tree_model_track_removed (BraseroBurnSession *session,
+					BraseroTrack *track,
+					guint former_location,
+					BraseroVideoTreeModel *model)
 {
 	BraseroVideoTreeModelPrivate *priv;
-	BraseroVideoFile *next;
 	GtkTreePath *path;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (project);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
 	/* remove the file. */
-	next = file->next;
-	path = brasero_video_tree_model_file_to_path (BRASERO_VIDEO_TREE_MODEL (project), next);
-	gtk_tree_model_row_deleted (GTK_TREE_MODEL (project), path);
+	path = gtk_tree_path_new_from_indices (former_location, -1);
+	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 	gtk_tree_path_free (path);
-
-	/* chain up this function */
-	if (BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->node_removed)
-		BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->node_removed (project,
-												   file);
 }
 
 static void
-brasero_video_tree_model_file_changed (BraseroVideoProject *project,
-				       BraseroVideoFile *file)
+brasero_video_tree_model_track_changed (BraseroBurnSession *session,
+					BraseroTrack *track,
+					BraseroVideoTreeModel *model)
 {
 	BraseroVideoTreeModelPrivate *priv;
+	GValue *value = NULL;
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (project);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+
+	/* scale the thumbnail */
+	brasero_track_tag_lookup (BRASERO_TRACK (track),
+				  BRASERO_TRACK_STREAM_THUMBNAIL_TAG,
+				  &value);
+	if (value) {
+		GdkPixbuf *scaled;
+		GdkPixbuf *snapshot;
+
+		snapshot = g_value_get_object (value);
+		scaled = gdk_pixbuf_scale_simple (snapshot,
+						  48 * gdk_pixbuf_get_width (snapshot) / gdk_pixbuf_get_height (snapshot),
+						  48,
+						  GDK_INTERP_BILINEAR);
+
+		value = g_new0 (GValue, 1);
+		g_value_init (value, GDK_TYPE_PIXBUF);
+		g_value_set_object (value, scaled);
+		brasero_track_tag_add (track,
+				       BRASERO_TRACK_STREAM_THUMBNAIL_TAG,
+				       value);
+	}
 
 	/* Get the iter for the file */
 	iter.stamp = priv->stamp;
-	iter.user_data = file;
+	iter.user_data = track;
 
-	path = brasero_video_tree_model_file_to_path (BRASERO_VIDEO_TREE_MODEL (project), file);
-	gtk_tree_model_row_changed (GTK_TREE_MODEL (project),
+	path = brasero_video_tree_model_track_to_path (model, track);
+	gtk_tree_model_row_changed (GTK_TREE_MODEL (model),
 				    path,
 				    &iter);
 	gtk_tree_path_free (path);
+}
 
-	/* chain up this function */
-	if (BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->node_changed)
-		BRASERO_VIDEO_PROJECT_CLASS (brasero_video_tree_model_parent_class)->node_changed (project, file);
+void
+brasero_video_tree_model_set_session (BraseroVideoTreeModel *model,
+				      BraseroSessionCfg *session)
+{
+	BraseroVideoTreeModelPrivate *priv;
+
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	if (!session)
+		return;
+
+	priv->session = g_object_ref (session);
+	g_signal_connect (session,
+			  "track-added",
+			  G_CALLBACK (brasero_video_tree_model_track_added),
+			  model);
+	g_signal_connect (session,
+			  "track-removed",
+			  G_CALLBACK (brasero_video_tree_model_track_removed),
+			  model);
+	g_signal_connect (session,
+			  "track-changed",
+			  G_CALLBACK (brasero_video_tree_model_track_changed),
+			  model);
+}
+
+BraseroSessionCfg *
+brasero_video_tree_model_get_session (BraseroVideoTreeModel *model)
+{
+	BraseroVideoTreeModelPrivate *priv;
+
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	return priv->session;
 }
 
 static void
@@ -703,16 +752,10 @@ static void
 brasero_video_tree_model_class_init (BraseroVideoTreeModelClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	BraseroVideoProjectClass *video_class = BRASERO_VIDEO_PROJECT_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroVideoTreeModelPrivate));
 
 	object_class->finalize = brasero_video_tree_model_finalize;
-
-	video_class->reset = brasero_video_tree_model_reset;
-	video_class->node_added = brasero_video_tree_model_file_added;
-	video_class->node_removed = brasero_video_tree_model_file_removed;
-	video_class->node_changed = brasero_video_tree_model_file_changed;
 }
 
 BraseroVideoTreeModel *

@@ -48,6 +48,7 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
+#include "libbrasero-marshal.h"
 #include "burn-image-format.h"
 
 #include "brasero-medium.h"
@@ -224,14 +225,16 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 		g_signal_emit (self,
 			       brasero_burn_session_signals [TRACK_REMOVED_SIGNAL],
 			       0,
-			       track);
+			       track,
+			       0);
 		g_object_unref (track);
 	}
 }
 
 BraseroBurnResult
 brasero_burn_session_add_track (BraseroBurnSession *self,
-				BraseroTrack *new_track)
+				BraseroTrack *new_track,
+				BraseroTrack *sibling)
 {
 	BraseroBurnSessionPrivate *priv;
 
@@ -270,12 +273,91 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 		brasero_burn_session_free_tracks (self);
 
 	brasero_burn_session_start_track_monitoring (self, new_track);
-	priv->tracks = g_slist_append (priv->tracks, new_track);
+	if (sibling) {
+		GSList *sibling_node;
+
+		sibling_node = g_slist_find (priv->tracks, sibling);
+		priv->tracks = g_slist_insert_before (priv->tracks,
+						      sibling_node,
+						      new_track);
+	}
+	else
+		priv->tracks = g_slist_append (priv->tracks, new_track);
+
 	g_signal_emit (self,
 		       brasero_burn_session_signals [TRACK_ADDED_SIGNAL],
 		       0,
 		       new_track);
 
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_session_move_track (BraseroBurnSession *session,
+				 BraseroTrack *track,
+				 BraseroTrack *sibling)
+{
+	BraseroBurnSessionPrivate *priv;
+	guint former_position;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+
+	/* Find the track, remove it */
+	former_position = g_slist_index (priv->tracks, track);
+	priv->tracks = g_slist_remove (priv->tracks, track);
+	g_signal_emit (session,
+		       brasero_burn_session_signals [TRACK_REMOVED_SIGNAL],
+		       0,
+		       track,
+		       former_position);
+
+	/* Re-add it */
+	if (sibling) {
+		GSList *sibling_node;
+
+		sibling_node = g_slist_find (priv->tracks, sibling);
+		priv->tracks = g_slist_insert_before (priv->tracks,
+						      sibling_node,
+						      track);
+	}
+	else
+		priv->tracks = g_slist_append (priv->tracks, track);
+
+	g_signal_emit (session,
+		       brasero_burn_session_signals [TRACK_ADDED_SIGNAL],
+		       0,
+		       track);
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_session_remove_track (BraseroBurnSession *session,
+				   BraseroTrack *track)
+{
+	BraseroBurnSessionPrivate *priv;
+	guint former_position;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+
+	/* Find the track, remove it */
+	former_position = g_slist_index (priv->tracks, track);
+	priv->tracks = g_slist_remove (priv->tracks, track);
+	g_signal_handlers_disconnect_by_func (track,
+					      brasero_burn_session_track_changed,
+					      session);
+
+	g_signal_emit (session,
+		       brasero_burn_session_signals [TRACK_REMOVED_SIGNAL],
+		       0,
+		       track,
+		       former_position);
+
+	g_object_unref (track);
 	return BRASERO_BURN_OK;
 }
 
@@ -1258,7 +1340,8 @@ brasero_burn_session_push_tracks (BraseroBurnSession *self)
 		g_signal_emit (self,
 			       brasero_burn_session_signals [TRACK_REMOVED_SIGNAL],
 			       0,
-			       track);
+			       track,
+			       0);
 	}
 }
 
@@ -1775,10 +1858,11 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_removed),
 			  NULL,
 			  NULL,
-			  g_cclosure_marshal_VOID__OBJECT,
+			  brasero_marshal_VOID__OBJECT_UINT,
 			  G_TYPE_NONE,
-			  1,
-			  BRASERO_TYPE_TRACK);
+			  2,
+			  BRASERO_TYPE_TRACK,
+			  G_TYPE_UINT);
 	brasero_burn_session_signals [TRACK_CHANGED_SIGNAL] =
 	    g_signal_new ("track_changed",
 			  BRASERO_TYPE_BURN_SESSION,

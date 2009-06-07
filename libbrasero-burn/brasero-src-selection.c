@@ -177,7 +177,9 @@ brasero_src_selection_set_property (GObject *object,
 		}
 		else {
 			priv->track = brasero_track_disc_new ();
-			brasero_burn_session_add_track (priv->session, BRASERO_TRACK (priv->track));
+			brasero_burn_session_add_track (priv->session,
+							BRASERO_TRACK (priv->track),
+							NULL);
 		}
 
 		drive = brasero_track_disc_get_drive (priv->track);

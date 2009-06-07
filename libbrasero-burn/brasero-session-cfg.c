@@ -515,9 +515,9 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	BraseroDrive *burner;
 	GValue *value = NULL;
 	/* in sectors */
-	gint64 session_size;
-	gint64 max_sectors;
-	gint64 disc_size;
+	goffset session_size;
+	goffset max_sectors;
+	goffset disc_size;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
@@ -656,9 +656,9 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0);
 		return;
-
 	}
-	else if (result == BRASERO_BURN_ERR) {
+
+	if (result == BRASERO_BURN_ERR) {
 		GError *error;
 
 		error = brasero_status_get_error (status);
@@ -686,7 +686,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	if (brasero_track_type_is_empty (source)) {
 		brasero_track_type_free (source);
 
-		priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
+		priv->is_valid = BRASERO_SESSION_EMPTY;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0);
@@ -890,10 +890,11 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 	if (priv->disabled)
 		return;
 
-	g_signal_connect (track,
-			  "session-loaded",
-			  G_CALLBACK (brasero_session_cfg_session_loaded),
-			  session);
+	if (BRASERO_IS_TRACK_DATA_CFG (track))
+		g_signal_connect (track,
+				  "session-loaded",
+				  G_CALLBACK (brasero_session_cfg_session_loaded),
+				  session);
 
 	/* when that happens it's mostly because a medium source changed, or
 	 * a new image was set. 
@@ -909,7 +910,8 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 
 static void
 brasero_session_cfg_track_removed (BraseroBurnSession *session,
-				   BraseroTrack *track)
+				   BraseroTrack *track,
+				   guint former_position)
 {
 	BraseroSessionCfgPrivate *priv;
 

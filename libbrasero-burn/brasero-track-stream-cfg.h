@@ -59,6 +59,9 @@ struct _BraseroTrackStreamCfg
 
 GType brasero_track_stream_cfg_get_type (void) G_GNUC_CONST;
 
+BraseroTrackStreamCfg *
+brasero_track_stream_cfg_new (void);
+
 G_END_DECLS
 
 #endif /* _BRASERO_TRACK_STREAM_CFG_H_ */

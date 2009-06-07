@@ -110,21 +110,8 @@ static void
 brasero_project_burn_cb (GtkAction *action, BraseroProject *project);
 
 static void
-brasero_project_size_changed_cb (BraseroDisc *disc,
-			         gint64 size,
-			         BraseroProject *project);
-static void
-brasero_project_flags_changed_cb (BraseroDisc *disc,
-				  BraseroBurnFlag flags,
-				  BraseroProject *project);
-
-static void
 brasero_project_burn_clicked_cb (GtkButton *button, BraseroProject *project);
 
-static void
-brasero_project_contents_changed_cb (BraseroDisc *disc,
-				     gint nb_files,
-				     BraseroProject *project);
 static void
 brasero_project_selection_changed_cb (BraseroDisc *disc,
 				      BraseroProject *project);
@@ -205,8 +192,6 @@ struct BraseroProjectPrivate {
 	guint has_focus:1;
 	guint oversized:1;
 	guint selected_uris:1;
-
-	guint merging:1;
 };
 
 static GtkActionEntry entries [] = {
@@ -535,22 +520,102 @@ brasero_project_icon_button_clicked (GtkWidget *button,
 	g_free (path);
 }
 
-static void
-brasero_project_icon_button_size_allocate (GtkWidget *widget,
-					   GtkAllocation *allocation,
-					   gpointer NULL_data)
+/********************************** size ***************************************/
+
+gchar *
+brasero_project_get_sectors_string (gint64 sectors,
+				    gboolean time_format)
 {
-	allocation->width = MAX (allocation->width, allocation->height);
-	allocation->height = MAX (allocation->width, allocation->height);
+	gint64 size_bytes;
+
+	if (time_format) {
+		size_bytes = sectors * GST_SECOND / 75;
+		return brasero_units_get_time_string (size_bytes, TRUE, FALSE);
+	}
+	else {
+		size_bytes = sectors * 2048;
+		return g_format_size_for_display (size_bytes);
+	}
 }
 
 static void
-brasero_project_icon_button_size_request (GtkWidget *widget,
-					  GtkRequisition *requisition,
-					  gpointer NULL_data)
+brasero_project_update_project_size (BraseroProject *project)
 {
-	requisition->width = MAX (requisition->width, requisition->height);
-	requisition->height = MAX (requisition->width, requisition->height);
+	goffset sectors = 0;
+	GtkWidget *status;
+	gchar *size_str;
+	gchar *string;
+
+	status = brasero_app_get_statusbar2 (brasero_app_get_default ());
+
+	if (!project->priv->status_ctx)
+		project->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
+									  "size_project");
+
+	gtk_statusbar_pop (GTK_STATUSBAR (status), project->priv->status_ctx);
+
+	brasero_burn_session_get_size (BRASERO_BURN_SESSION (project->priv->session),
+				       &sectors,
+				       NULL);
+
+	string = brasero_project_get_sectors_string (sectors, !BRASERO_IS_DATA_DISC (project->priv->current));
+	size_str = g_strdup_printf (_("Project estimated size: %s"), string);
+
+	g_free (string);
+
+	gtk_statusbar_push (GTK_STATUSBAR (status), project->priv->status_ctx, size_str);
+	g_free (size_str);
+}
+
+static void
+brasero_project_update_controls (BraseroProject *project)
+{
+	GtkAction *action;
+
+	brasero_project_set_remove_button_state (project);
+	brasero_project_set_add_button_state (project);
+
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
+	gtk_action_set_sensitive (action, (project->priv->empty == FALSE));
+}
+
+static void
+brasero_project_modified (BraseroProject *project)
+{
+	GtkAction *action;
+
+	brasero_project_update_controls (project);
+	brasero_project_update_project_size (project);
+
+	/* the state of the following depends on the existence of an opened project */
+	action = gtk_action_group_get_action (project->priv->project_group, "Save");
+	gtk_action_set_sensitive (action, TRUE);
+	project->priv->modified = TRUE;
+}
+
+static void
+brasero_project_track_removed (BraseroBurnSession *session,
+			       BraseroTrack *track,
+			       guint former_position,
+			       BraseroProject *project)
+{
+	brasero_project_modified (project);
+}
+
+static void
+brasero_project_track_changed (BraseroBurnSession *session,
+			       BraseroTrack *track,
+			       BraseroProject *project)
+{
+	brasero_project_modified (project);
+}
+
+static void
+brasero_project_track_added (BraseroBurnSession *session,
+			     BraseroTrack *track,
+			     BraseroProject *project)
+{
+	brasero_project_modified (project);
 }
 
 static void
@@ -576,10 +641,33 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 			  BraseroProject *project)
 {
 	BraseroSessionError valid;
+	BraseroStatus *status;
+	GdkWindow *window;
+	GdkCursor *cursor;
+	GtkAction *action;
+
+	/* Update the cursor */
+	status = brasero_status_new ();
+	brasero_burn_session_get_status (BRASERO_BURN_SESSION (session), status);
+
+	window = gtk_widget_get_window (GTK_WIDGET (project));
+	if (window) {
+		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY) {
+			cursor = gdk_cursor_new (GDK_WATCH);
+			gdk_window_set_cursor (window, cursor);
+			gdk_cursor_unref (cursor);
+		}
+		else
+			gdk_window_set_cursor (window, NULL);
+	}
+
+	brasero_status_free (status);
 
 	valid = brasero_session_cfg_get_error (project->priv->session);
 
 	/* Update burn button state */
+	action = gtk_action_group_get_action (project->priv->project_group, "Burn");
+	gtk_action_set_sensitive (action, BRASERO_SESSION_IS_VALID (valid));
 	gtk_widget_set_sensitive (project->priv->burn, BRASERO_SESSION_IS_VALID (valid));
 
 	/* FIXME: update option button state as well */
@@ -589,6 +677,8 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
+		project->priv->oversized = TRUE;
+
 		/* Here there is an alternative: we may be able to span the data
 		 * across multiple media. So try that. */
 		if (brasero_session_span_possible (BRASERO_SESSION_SPAN (project->priv->session)) == BRASERO_BURN_RETRY) {
@@ -620,6 +710,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
 		GtkWidget *message;
 
+		project->priv->oversized = TRUE;
 		message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 						      _("Would you like to burn beyond the disc reported capacity?"),
 						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
@@ -637,6 +728,9 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 				  "response",
 				  G_CALLBACK (brasero_project_message_response_overburn_cb),
 				  project);
+	}
+	else if (valid == BRASERO_SESSION_EMPTY) {
+		project->priv->empty = TRUE;
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
@@ -669,6 +763,25 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 					    10000,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
+
+	if (BRASERO_SESSION_IS_VALID (valid)) {
+		project->priv->empty = FALSE;
+		project->priv->oversized = FALSE;
+	}
+}
+
+static void
+brasero_project_flags_changed_cb (BraseroBurnSession *session,
+				  BraseroProject *project)
+{
+	BraseroBurnFlag flags;
+
+	flags = brasero_burn_session_get_flags (session);
+
+	/* see if the project name should be updated */
+	if (flags & BRASERO_BURN_FLAG_MERGE)
+		brasero_project_name_set_multisession_medium (BRASERO_PROJECT_NAME (project->priv->name_display),
+							      brasero_data_disc_get_loaded_medium (BRASERO_DATA_DISC (project->priv->current)));
 }
 
 static void
@@ -695,9 +808,28 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (obj->priv->message);
 
 	obj->priv->session = brasero_session_cfg_new ();
+
+	/* NOTE: "is-valid" is emitted whenever there is a change in the
+	 * contents of the session. So no need to connect to track-added, ... */
 	g_signal_connect (obj->priv->session,
 			  "is-valid",
 			  G_CALLBACK (brasero_project_is_valid),
+			  obj);
+	g_signal_connect (obj->priv->session,
+			  "flags-changed",
+			  G_CALLBACK (brasero_project_flags_changed_cb),
+			  obj);
+	g_signal_connect (obj->priv->session,
+			  "track-added",
+			  G_CALLBACK (brasero_project_track_added),
+			  obj);
+	g_signal_connect (obj->priv->session,
+			  "track-changed",
+			  G_CALLBACK (brasero_project_track_changed),
+			  obj);
+	g_signal_connect (obj->priv->session,
+			  "track-removed",
+			  G_CALLBACK (brasero_project_track_removed),
 			  obj);
 
 	/* bottom */
@@ -782,14 +914,6 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->icon_img = image;
 
 	button = gtk_button_new ();
-	g_signal_connect (button,
-			  "size-request",
-			  G_CALLBACK (brasero_project_icon_button_size_request),
-			  NULL);
-	g_signal_connect (button,
-			  "size-allocate",
-			  G_CALLBACK (brasero_project_icon_button_size_allocate),
-			  NULL);
 	gtk_widget_show (button);
 	gtk_button_set_image (GTK_BUTTON (button), image);
 	obj->priv->button_img = button;
@@ -844,14 +968,6 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->audio = brasero_audio_disc_new ();
 	gtk_widget_show (obj->priv->audio);
 	g_signal_connect (G_OBJECT (obj->priv->audio),
-			  "contents-changed",
-			  G_CALLBACK (brasero_project_contents_changed_cb),
-			  obj);
-	g_signal_connect (G_OBJECT (obj->priv->audio),
-			  "size-changed",
-			  G_CALLBACK (brasero_project_size_changed_cb),
-			  obj);
-	g_signal_connect (G_OBJECT (obj->priv->audio),
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
@@ -859,18 +975,6 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->data = brasero_data_disc_new ();
 	gtk_widget_show (obj->priv->data);
 	brasero_data_disc_set_right_button_group (BRASERO_DATA_DISC (obj->priv->data), size_group);
-	g_signal_connect (G_OBJECT (obj->priv->data),
-			  "contents-changed",
-			  G_CALLBACK (brasero_project_contents_changed_cb),
-			  obj);
-	g_signal_connect (G_OBJECT (obj->priv->data),
-			  "size-changed",
-			  G_CALLBACK (brasero_project_size_changed_cb),
-			  obj);
-	g_signal_connect (G_OBJECT (obj->priv->data),
-			  "flags-changed",
-			  G_CALLBACK (brasero_project_flags_changed_cb),
-			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->data),
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
@@ -882,14 +986,6 @@ brasero_project_init (BraseroProject *obj)
 
 	obj->priv->video = brasero_video_disc_new ();
 	gtk_widget_show (obj->priv->video);
-	g_signal_connect (G_OBJECT (obj->priv->video),
-			  "contents-changed",
-			  G_CALLBACK (brasero_project_contents_changed_cb),
-			  obj);
-	g_signal_connect (G_OBJECT (obj->priv->video),
-			  "size-changed",
-			  G_CALLBACK (brasero_project_size_changed_cb),
-			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->video),
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
@@ -941,97 +1037,6 @@ brasero_project_new ()
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (obj->priv->discs), 0);
 
 	return GTK_WIDGET (obj);
-}
-
-/********************************** size ***************************************/
-
-gchar *
-brasero_project_get_sectors_string (gint64 sectors,
-				    gboolean time_format)
-{
-	gint64 size_bytes;
-
-	if (time_format) {
-		size_bytes = sectors * GST_SECOND / 75;
-		return brasero_units_get_time_string (size_bytes, TRUE, FALSE);
-	}
-	else {
-		size_bytes = sectors * 2048;
-		return g_format_size_for_display (size_bytes);
-	}
-}
-
-static void
-brasero_project_update_project_size (BraseroProject *project,
-				     guint64 sectors)
-{
-	GtkWidget *status;
-	gchar *string;
-	gchar *size;
-
-	status = brasero_app_get_statusbar2 (brasero_app_get_default ());
-
-	if (!project->priv->status_ctx)
-		project->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
-									  "size_project");
-
-	gtk_statusbar_pop (GTK_STATUSBAR (status), project->priv->status_ctx);
-
-	string = brasero_project_get_sectors_string (sectors,
-						     !BRASERO_IS_DATA_DISC (project->priv->current));
-	if (project->priv->merging) {
-		gchar *medium_string;
-		BraseroMedium *medium;
-		gint64 free_space = 0;
-
-		medium = brasero_data_disc_get_loaded_medium (BRASERO_DATA_DISC (project->priv->current));
-		brasero_medium_get_free_space (medium,
-					       &free_space,
-					       NULL);
-
-		medium_string = g_format_size_for_display (free_space);
-		/* Translators: first %s is the size of the project and the 
-		 * second %s is the remaining free space on the disc that is
-		 * used for multisession */
-		size = g_strdup_printf (_("Project estimated size: %s/%s"),
-					string,
-					medium_string);
-		g_free (medium_string);
-	}
-	else
-		size = g_strdup_printf (_("Project estimated size: %s"), string);
-
-	g_free (string);
-
-	gtk_statusbar_push (GTK_STATUSBAR (status), project->priv->status_ctx, size);
-	g_free (size);
-}
-
-static void
-brasero_project_size_changed_cb (BraseroDisc *disc,
-			         gint64 sectors,
-			         BraseroProject *project)
-{
-	project->priv->sectors = sectors;
-	brasero_project_update_project_size (project, sectors);
-}
-
-static void
-brasero_project_flags_changed_cb (BraseroDisc *disc,
-				  BraseroBurnFlag flags,
-				  BraseroProject *project)
-{
-	gboolean merging;
-
-	merging = (flags & BRASERO_BURN_FLAG_MERGE) != 0;
-
-	/* see if the project name should be updated */
-	brasero_project_name_set_multisession_medium (BRASERO_PROJECT_NAME (project->priv->name_display),
-						      brasero_data_disc_get_loaded_medium (BRASERO_DATA_DISC (disc)));
-
-	/* we just need to know if MERGE flag is on */
-	project->priv->merging = merging;
-	brasero_project_update_project_size (project, project->priv->sectors);
 }
 
 /***************************** URIContainer ************************************/
@@ -1341,6 +1346,16 @@ brasero_project_create_audio_cover (BraseroProject *project,
 
 /********************************     ******************************************/
 static void
+brasero_project_reset (BraseroProject *project)
+{
+	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (project->priv->session),
+					BRASERO_BURN_FLAG_NONE);
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (project->priv->session),
+					NULL,
+					NULL);
+}
+
+static void
 brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
@@ -1357,8 +1372,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 				      "media-optical",
 				      GTK_ICON_SIZE_LARGE_TOOLBAR);
 
-	if (project->priv->current)
-		brasero_disc_reset (project->priv->current);
+	brasero_project_reset (project);
 
 	if (project->priv->chooser) {
 		gtk_widget_destroy (project->priv->chooser);
@@ -1367,7 +1381,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 	project->priv->empty = 1;
     	project->priv->burnt = 0;
-	project->priv->merging = 0;
 	project->priv->modified = 0;
 
 	if (project->priv->project) {
@@ -1396,8 +1409,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
-		brasero_project_update_project_size (project, 0);
-
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE);
 		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
@@ -1411,8 +1422,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
-		brasero_project_update_project_size (project, 0);
-
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE|
 							  BRASERO_MEDIA_TYPE_FILE);
@@ -1427,8 +1436,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 2);
-		brasero_project_update_project_size (project, 0);
-
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE|
 							  BRASERO_MEDIA_TYPE_FILE);
@@ -1579,9 +1586,7 @@ brasero_project_set_none (BraseroProject *project)
 		project->priv->chooser = NULL;
 	}
 
-	if (project->priv->current)
-		brasero_disc_reset (project->priv->current);
-
+	brasero_project_reset (project);
 	project->priv->current = NULL;
 
 	/* update buttons/menus */
@@ -1604,42 +1609,6 @@ brasero_project_set_none (BraseroProject *project)
 
 	if (project->priv->status_ctx)
 		gtk_statusbar_pop (GTK_STATUSBAR (status), project->priv->status_ctx);
-}
-
-/********************* update the appearance of menus and buttons **************/
-static void
-brasero_project_contents_changed_cb (BraseroDisc *disc,
-				     gint nb_files,
-				     BraseroProject *project)
-{
-	GtkAction *action;
-	gboolean sensitive;
-
-	project->priv->empty = (nb_files == 0);
-
-	if (brasero_disc_get_status (disc, NULL, NULL) != BRASERO_DISC_LOADING)
-		project->priv->modified = 1;
-
-	brasero_project_set_remove_button_state (project);
-	brasero_project_set_add_button_state (project);
-
-	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
-	gtk_action_set_sensitive (action, (project->priv->empty == FALSE));
-
-	/* the following button/action states depend on the project size too */
-	sensitive = (project->priv->oversized == 0 &&
-		     project->priv->empty == 0);
-
-	action = gtk_action_group_get_action (project->priv->project_group, "Burn");
-	gtk_action_set_sensitive (action, sensitive);
-	gtk_widget_set_sensitive (project->priv->burn, sensitive);
-
-	/* the state of the following depends on the existence of an opened project */
-	action = gtk_action_group_get_action (project->priv->project_group, "Save");
-	if (project->priv->modified)
-		gtk_action_set_sensitive (action, TRUE);
-	else
-		gtk_action_set_sensitive (action, FALSE);
 }
 
 /**************************** manage the relations with the sources ************/
@@ -2087,8 +2056,6 @@ brasero_project_open_project (BraseroProject *project,
 
 	if (!track)
 		return BRASERO_PROJECT_TYPE_INVALID;
-
-	brasero_project_update_project_size (project, 0);
 
 	if (track->type == BRASERO_PROJECT_TYPE_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;

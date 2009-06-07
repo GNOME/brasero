@@ -107,8 +107,6 @@ brasero_SOURCES = \
 	brasero-rename.c         \
 	brasero-video-disc.c         \
 	brasero-video-disc.h         \
-	brasero-video-project.h         \
-	brasero-video-project.c         \
 	brasero-video-tree-model.c         \
 	brasero-video-tree-model.h         \
 	brasero-app.c		\

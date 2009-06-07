@@ -33,6 +33,7 @@
 #include "eggtreemultidnd.h"
 
 #include "brasero-tags.h"
+#include "brasero-track-stream-cfg.h"
 
 #include "brasero-misc.h"
 #include "brasero-app.h"
@@ -40,7 +41,6 @@
 #include "brasero-io.h"
 #include "brasero-utils.h"
 #include "brasero-video-disc.h"
-#include "brasero-video-project.h"
 #include "brasero-video-tree-model.h"
 #include "brasero-multi-song-props.h"
 #include "brasero-song-properties.h"
@@ -184,8 +184,8 @@ brasero_video_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 				   BraseroVideoDisc *self)
 {
 	BraseroVideoDiscPrivate *priv;
-	BraseroVideoProject *project;
-	BraseroVideoFile *file;
+	BraseroTrack *track;
+	GtkTreeModel *model;
 	GtkTreePath *path;
 	GtkTreeIter row;
 
@@ -194,47 +194,26 @@ brasero_video_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 	priv->editing = 0;
 
 	path = gtk_tree_path_new_from_string (path_string);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 
 	/* see if this is still a valid path. It can happen a user removes it
 	 * while the name of the row is being edited */
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (project), &row, path)) {
+	if (!gtk_tree_model_get_iter (model, &row, path)) {
 		gtk_tree_path_free (path);
 		return;
 	}
 
-	file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (project), path);
+	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), path);
 	gtk_tree_path_free (path);
 
-	brasero_video_project_rename (project, file, text);
-}
+	brasero_track_tag_add_string (track, BRASERO_TRACK_STREAM_TITLE_TAG, text);
 
-static void
-brasero_video_disc_vfs_activity_changed (BraseroVideoProject *project,
-					 gboolean activity,
-					 BraseroVideoDisc *self)
-{
-	GdkCursor *cursor;
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-
-	if (!GTK_WIDGET (self)->window)
-		return;
-
-	if (activity) {
-		cursor = gdk_cursor_new (GDK_WATCH);
-		gdk_window_set_cursor (GTK_WIDGET (self)->window, cursor);
-		gdk_cursor_unref (cursor);
-	}
-	else
-		gdk_window_set_cursor (GTK_WIDGET (self)->window, NULL);
+	/* Advertize change to update view */
+	brasero_track_changed (track);
 }
 
 static gboolean
-brasero_video_disc_directory_dialog (BraseroVideoProject *project,
-				     const gchar *uri,
-				     BraseroVideoDisc *self)
+brasero_video_disc_directory_dialog (BraseroVideoDisc *self)
 {
 	gint answer;
 	GtkWidget *dialog;
@@ -263,10 +242,9 @@ brasero_video_disc_directory_dialog (BraseroVideoProject *project,
 }
 
 static void
-brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
-					  GError *error,
+brasero_video_disc_unreadable_uri_dialog (BraseroVideoDisc *self,
 					  const gchar *uri,
-					  BraseroVideoDisc *self)
+					  GError *error)
 {
 	gchar *primary;
 	gchar *name;
@@ -282,9 +260,8 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
 }
 
 static void
-brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
-				     const gchar *uri,
-				     BraseroVideoDisc *self)
+brasero_video_disc_not_video_dialog (BraseroVideoDisc *self,
+				     const gchar *uri)
 {
 	gchar *primary;
 	gchar *name;
@@ -299,42 +276,135 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 	g_free (name);
 }
 
+static void
+brasero_video_disc_session_changed (BraseroSessionCfg *session,
+				    BraseroVideoDisc *self)
+{
+	GSList *next;
+	GSList *tracks;
+	gboolean notready;
+	BraseroStatus *status;
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	if (!GTK_WIDGET (self)->window)
+		return;
+
+	/* make sure all tracks have video */
+	notready = FALSE;
+	status = brasero_status_new ();
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
+	for (; tracks; tracks = next) {
+		BraseroStreamFormat format;
+		BraseroTrackStream *track;
+		BraseroBurnResult result;
+
+		track = tracks->data;
+		next = tracks->next;
+
+		result = brasero_track_get_status (BRASERO_TRACK (track), status);
+		if (result == BRASERO_BURN_ERR) {
+			GError *error;
+			gboolean res;
+			gchar *uri;
+
+			uri = brasero_track_stream_get_source (track, TRUE);
+			error = brasero_status_get_error (status);
+			if (!error || error->code != BRASERO_BURN_ERROR_FILE_FOLDER)
+				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
+			else {
+				res = brasero_video_disc_directory_dialog (self);
+				if (res) {
+					
+				}
+			}
+
+			brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session),
+							   BRASERO_TRACK (track));
+			g_error_free (error);
+			g_free (uri);
+			continue;
+		}
+
+		if (result == BRASERO_BURN_NOT_READY) {
+			notready = TRUE;
+			continue;
+		}
+
+		if (result != BRASERO_BURN_OK)
+			continue;
+
+		format = brasero_track_stream_get_format (track);
+		if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (format)) {
+			gchar *uri;
+
+			uri = brasero_track_stream_get_source (track, TRUE);
+			brasero_video_disc_not_video_dialog (self, uri);
+			g_free (uri);
+
+			brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session),
+							   BRASERO_TRACK (track));
+		}
+	}
+	brasero_status_free (status);
+}
+
 static BraseroDiscResult
 brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 				 const gchar *uri,
+				 BraseroStreamInfo *info,
 				 gint pos,
 				 gint64 start,
 				 gint64 end,
 				 GtkTreePath **path_return)
 {
-	BraseroVideoFile *file;
-	BraseroVideoProject *project;
+	GtkTreeModel *model;
+	BraseroSessionCfg*session;
+	BraseroTrack *sibling = NULL;
+	BraseroTrackStreamCfg *track;
 	BraseroVideoDiscPrivate *priv;
-	BraseroVideoFile *sibling = NULL;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 	if (priv->reject_files)
 		return BRASERO_DISC_NOT_READY;
 
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 
-	if (pos > 0) {
-		GtkTreePath *treepath;
+	/* create track */
+	track = brasero_track_stream_cfg_new ();
+	brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uri);
+	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track), start, end, 0);
 
-		treepath = gtk_tree_path_new ();
-		gtk_tree_path_append_index (treepath, pos);
-		sibling = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (project), treepath);
-		gtk_tree_path_free (treepath);
+	if (info) {
+		brasero_track_tag_add_string (BRASERO_TRACK (track),
+					      BRASERO_TRACK_STREAM_TITLE_TAG,
+					      info->title);
+		brasero_track_tag_add_string (BRASERO_TRACK (track),
+					      BRASERO_TRACK_STREAM_ARTIST_TAG,
+					      info->artist);
+		brasero_track_tag_add_string (BRASERO_TRACK (track),
+					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
+					      info->composer);
+
+		brasero_track_tag_add_int (BRASERO_TRACK (track),
+					   BRASERO_TRACK_STREAM_ISRC_TAG,
+					   info->isrc);
 	}
 
-	file = brasero_video_project_add_uri (project,
-					      uri,
-					      NULL,
-					      sibling,
-					      start,
-					      end);
-	if (path_return && file)
-		*path_return = brasero_video_tree_model_file_to_path (BRASERO_VIDEO_TREE_MODEL (project), file);
+	/* insert it in the session */
+	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
+	if (pos > 0) {
+		GSList *tracks;
+
+		tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
+		sibling = g_slist_nth_data (tracks, pos - 1);
+	}
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), BRASERO_TRACK (track), sibling);
+
+	if (path_return)
+		*path_return = brasero_video_tree_model_track_to_path (BRASERO_VIDEO_TREE_MODEL (model),
+								       BRASERO_TRACK (track));
 
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 
@@ -352,6 +422,7 @@ brasero_video_disc_add_uri (BraseroDisc *self,
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 	result = brasero_video_disc_add_uri_real (BRASERO_VIDEO_DISC (self),
 						  uri,
+						  NULL,
 						  -1,
 						  -1,
 						  -1,
@@ -375,6 +446,7 @@ brasero_video_disc_delete_selected (BraseroDisc *self)
 {
 	BraseroVideoDiscPrivate *priv;
 	GtkTreeSelection *selection;
+	BraseroSessionCfg *session;
 	GtkTreeModel *model;
 	GList *selected;
 	GList *iter;
@@ -385,19 +457,22 @@ brasero_video_disc_delete_selected (BraseroDisc *self)
 
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
 	selected = g_list_reverse (selected);
+
+	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
+
 	for (iter = selected; iter; iter = iter->next) {
-		BraseroVideoFile *file;
+		BraseroTrack *track;
 		GtkTreePath *treepath;
 
 		treepath = iter->data;
 
-		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
 		gtk_tree_path_free (treepath);
 
-		if (!file)
+		if (!track)
 			continue;
 
-		brasero_video_project_remove_file (BRASERO_VIDEO_PROJECT (model), file);
+		brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session), track);
 	}
 	g_list_free (selected);
 }
@@ -419,13 +494,13 @@ brasero_video_disc_get_selected_uri (BraseroDisc *self,
 		return FALSE;
 
 	if (uri) {
-		BraseroVideoFile *file;
+		BraseroTrack *track;
 		GtkTreePath *treepath;
 
 		treepath = selected->data;
-		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-		if (file)
-			*uri = g_strdup (file->uri);
+		track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		if (track)
+			*uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 		else
 			*uri = NULL;
 	}
@@ -450,12 +525,14 @@ brasero_video_disc_selection_function (GtkTreeSelection *selection,
 				       gboolean path_currently_selected,
 				       gpointer NULL_data)
 {
-	BraseroVideoFile *file;
+	BraseroTrack *track;
 
-	file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-	if (file)
+	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+
+	/* FIXME: add a tag?? */
+/*	if (track)
 		file->editable = !path_currently_selected;
-
+*/
 	return TRUE;
 }
 
@@ -471,16 +548,18 @@ brasero_video_disc_rename_songs (GtkTreeModel *model,
 				 const gchar *old_name,
 				 const gchar *new_name)
 {
-	BraseroVideoFile *file;
+	BraseroTrack *track;
 
-	file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-	if (!file)
+	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+	if (!track)
 		return FALSE;
 
-	if (file->info->title)
-		g_free (file->info->title);
+	brasero_track_tag_add_string (track,
+				      BRASERO_TRACK_STREAM_TITLE_TAG,
+				      new_name);
 
-	file->info->title = g_strdup (new_name);
+	/* Signal the change to have the view reflect it */
+	brasero_track_changed (track);
 	return TRUE;
 }
 
@@ -533,32 +612,29 @@ brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
 						 &isrc,
 						 NULL);
 
-	/* start by the end in case we add silences since then the next
-	 * treepaths will be wrong */
 	copy = g_list_copy (list);
 	copy = g_list_reverse (copy);
 
 	for (item = copy; item; item = item->next) {
 		GtkTreePath *treepath;
-		BraseroVideoFile *file;
+		BraseroTrack *track;
 
 		treepath = item->data;
-		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-		if (!file)
+		track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		if (!track)
 			continue;
 
-		if (artist) {
-			g_free (file->info->artist);
-			file->info->artist = g_strdup (artist);
-		}
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_ARTIST_TAG,
+					      artist);
 
-		if (composer) {
-			g_free (file->info->composer);
-			file->info->composer = g_strdup (composer);
-		}
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
+					      composer);
 
-		if (isrc > 0)
-			file->info->isrc = isrc;
+		brasero_track_tag_add_int (track,
+					   BRASERO_TRACK_STREAM_ISRC_TAG,
+					   isrc);
 	}
 
 	g_list_free (copy);
@@ -571,7 +647,7 @@ end:
 
 static void
 brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
-					      BraseroVideoFile *file)
+					      BraseroTrack *track)
 {
 	gint isrc;
 	gint64 end;
@@ -580,6 +656,7 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 	gchar *artist;
 	gchar *composer;
 	GtkWidget *props;
+	guint64 length = 0;
 	GtkWidget *toplevel;
 	GtkTreeModel *model;
 	GtkResponseType result;
@@ -590,16 +667,18 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 
+	brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
+
 	props = brasero_song_props_new ();
 	brasero_song_props_set_properties (BRASERO_SONG_PROPS (props),
 					   -1,
-					   file->info->artist,
-					   file->info->title,
-					   file->info->composer,
-					   file->info->isrc,
-					   file->end - file->start,
-					   file->start,
-					   file->end,
+					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG),
+					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_TITLE_TAG),
+					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_COMPOSER_TAG),
+					   brasero_track_tag_lookup_int (track, BRASERO_TRACK_STREAM_ISRC_TAG),
+					   length,
+					   brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
+					   brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)),
 					   -1);
 
 	gtk_window_set_transient_for (GTK_WINDOW (props),
@@ -624,35 +703,37 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 					   NULL);
 
 	if (title) {
-		if (file->info->title)
-			g_free (file->info->title);
-
-		file->info->title = title;
-		file->title_set = TRUE;
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_TITLE_TAG,
+					      title);
+		g_free (title);
 	}
 
 	if (artist) {
-		if (file->info->artist)
-			g_free (file->info->artist);
-
-		file->info->artist = artist;
-		file->artist_set = TRUE;
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_ARTIST_TAG,
+					      artist);
+		g_free (artist);
 	}
 
 	if (composer) {
-		if (file->info->composer)
-			g_free (file->info->composer);
-
-		file->info->composer = composer;
-		file->composer_set = TRUE;
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
+					      composer);
+		g_free (composer);
 	}
 
-	if (isrc) {
-		file->info->isrc = isrc;
-		file->isrc_set = TRUE;
-	}
+	if (isrc)
+		brasero_track_tag_add_int (track,
+					   BRASERO_TRACK_STREAM_ISRC_TAG,
+					   isrc);
 
-	brasero_video_project_resize_file (BRASERO_VIDEO_PROJECT (model), file, start, end);
+	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
+					     start,
+					     end,
+					     0);
+	/* Signal the change */
+	brasero_track_changed (track);
 
 end:
 
@@ -677,14 +758,14 @@ brasero_video_disc_edit_information_cb (GtkAction *action,
 		return;
 
 	if (g_list_length (list) == 1) {
-		BraseroVideoFile *file;
+		BraseroTrack *track;
 		GtkTreePath *treepath;
 
 		treepath = list->data;
 
-		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-		if (file)
-			brasero_video_disc_edit_song_properties_file (self, file);
+		track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		if (track)
+			brasero_video_disc_edit_song_properties_file (self, track);
 	}
 	else
 		brasero_video_disc_edit_song_properties_list (self, list);
@@ -709,17 +790,19 @@ brasero_video_disc_open_file (BraseroVideoDisc *self)
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	for (item = list; item; item = item->next) {
-		BraseroVideoFile *file;
+		BraseroTrack *track;
+		gchar *uri;
 
 		treepath = item->data;
-		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
 		gtk_tree_path_free (treepath);
 
-		if (!file)
+		if (!track)
 			continue;
 
-		if (file->uri)
-			uris = g_slist_prepend (uris, file->uri);
+		uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
+		if (uri)
+			uris = g_slist_prepend (uris, uri);
 	}
 	g_list_free (list);
 
@@ -758,6 +841,7 @@ brasero_video_disc_clipboard_text_cb (GtkClipboard *clipboard,
 
 			brasero_video_disc_add_uri_real (self,
 							 uri,
+							 NULL,
 							 -1,
 							 -1,
 							 -1,
@@ -884,13 +968,13 @@ brasero_video_disc_button_pressed_cb (GtkTreeView *tree,
 
 		brasero_disc_selection_changed (BRASERO_DISC (self));
 		if (event->type == GDK_2BUTTON_PRESS) {
-			BraseroVideoFile *file;
+			BraseroTrack *track;
 			GtkTreeModel *model;
 
 			model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree));
-			file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-			if (file)
-				brasero_video_disc_edit_song_properties_file (self, file);
+			track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+			if (track)
+				brasero_video_disc_edit_song_properties_file (self, track);
 		}
 	}
 
@@ -1002,64 +1086,12 @@ brasero_video_disc_key_released_cb (GtkTreeView *tree,
 }
 
 static void
-brasero_video_disc_row_deleted_cb (GtkTreeModel *model,
-				   GtkTreePath *path,
-				   BraseroVideoDisc *self)
-{
-	BraseroVideoProject *project;
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	brasero_disc_contents_changed (BRASERO_DISC (self),
-				       brasero_video_project_get_file_num (BRASERO_VIDEO_PROJECT (model)));
-}
-
-static void
-brasero_video_disc_row_inserted_cb (GtkTreeModel *model,
-				    GtkTreePath *path,
-				    GtkTreeIter *iter,
-				    BraseroVideoDisc *self)
-{
-	BraseroVideoProject *project;
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	brasero_disc_contents_changed (BRASERO_DISC (self),
-				       brasero_video_project_get_file_num (BRASERO_VIDEO_PROJECT (model)));
-}
-
-static void
-brasero_video_disc_row_changed_cb (GtkTreeModel *model,
-				   GtkTreePath *path,
-				   GtkTreeIter *iter,
-				   BraseroVideoDisc *self)
-{
-	BraseroVideoProject *project;
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	brasero_disc_contents_changed (BRASERO_DISC (self),
-				       brasero_video_project_get_file_num (BRASERO_VIDEO_PROJECT (model)));
-}
-
-static void
-brasero_video_disc_size_changed_cb (BraseroVideoProject *project,
-				    BraseroVideoDisc *self)
-{
-	brasero_disc_size_changed (BRASERO_DISC (self), brasero_video_project_get_size (project));
-}
-
-static void
 brasero_video_disc_init (BraseroVideoDisc *object)
 {
 	BraseroVideoDiscPrivate *priv;
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
-	GtkTreeModel *model;
 	GtkWidget *mainbox;
 	GtkWidget *scroll;
 
@@ -1075,46 +1107,8 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), mainbox, NULL);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
 
-	/* Tree */
-	model = GTK_TREE_MODEL (brasero_video_tree_model_new ());
-
-	g_signal_connect (G_OBJECT (model),
-			  "row-deleted",
-			  G_CALLBACK (brasero_video_disc_row_deleted_cb),
-			  object);
-	g_signal_connect (G_OBJECT (model),
-			  "row-inserted",
-			  G_CALLBACK (brasero_video_disc_row_inserted_cb),
-			  object);
-	g_signal_connect (G_OBJECT (model),
-			  "row-changed",
-			  G_CALLBACK (brasero_video_disc_row_changed_cb),
-			  object);
-
-	g_signal_connect (G_OBJECT (model),
-			  "size-changed",
-			  G_CALLBACK (brasero_video_disc_size_changed_cb),
-			  object);
-	g_signal_connect (G_OBJECT (model),
-			  "not-video-uri",
-			  G_CALLBACK (brasero_video_disc_not_video_dialog),
-			  object);
-	g_signal_connect (G_OBJECT (model),
-			  "directory-uri",
-			  G_CALLBACK (brasero_video_disc_directory_dialog),
-			  object);
-	g_signal_connect (G_OBJECT (model),
-			  "unreadable-uri",
-			  G_CALLBACK (brasero_video_disc_unreadable_uri_dialog),
-			  object);
-	g_signal_connect (G_OBJECT (model),
-			  "vfs-activity",
-			  G_CALLBACK (brasero_video_disc_vfs_activity_changed),
-			  object);
-
-	priv->tree = gtk_tree_view_new_with_model (model);
+	priv->tree = gtk_tree_view_new ();
 	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (priv->tree));
-	g_object_unref (G_OBJECT (model));
 	gtk_widget_show (priv->tree);
 
 	g_signal_connect (priv->tree,
@@ -1220,37 +1214,6 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 }
 
 static void
-brasero_video_disc_reset_real (BraseroVideoDisc *self)
-{
-	BraseroVideoProject *project;
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	brasero_video_project_reset (project);
-	brasero_video_disc_vfs_activity_changed (project, FALSE, self);
-}
-
-static void
-brasero_video_disc_clear (BraseroDisc *disc)
-{
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
-
-	brasero_video_disc_reset_real (BRASERO_VIDEO_DISC (disc));
-
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
-	brasero_disc_size_changed (disc, 0);
-}
-
-static void
-brasero_video_disc_reset (BraseroDisc *disc)
-{
-	brasero_video_disc_reset_real (BRASERO_VIDEO_DISC (disc));
-}
-
-static void
 brasero_video_disc_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (brasero_video_disc_parent_class)->finalize (object);
@@ -1296,46 +1259,41 @@ brasero_video_disc_set_property (GObject * object,
 	}
 }
 
-static BraseroDiscResult
-brasero_video_disc_get_status (BraseroDisc *self,
-			       gint *remaining,
-			       gchar **current_task)
+static void
+brasero_video_disc_clear (BraseroDisc *disc)
 {
-	BraseroVideoProject *project;
 	BraseroVideoDiscPrivate *priv;
+	BraseroSessionCfg *session;
+	GtkTreeModel *model;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	return brasero_video_project_get_status (project, remaining, current_task);
+	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), NULL, NULL);
+
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
 }
 
-BraseroDiscResult
+static BraseroDiscResult
 brasero_video_disc_set_session_contents (BraseroDisc *self,
 					 BraseroBurnSession *session)
 {
-	GSList *tracks, *iter;
-	BraseroVideoProject *project;
+	BraseroVideoTreeModel *model;
 	BraseroVideoDiscPrivate *priv;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	tracks = brasero_video_project_get_contents (project, FALSE);
 
-	if (!tracks)
-		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
+	model = brasero_video_tree_model_new ();
+	brasero_video_tree_model_set_session (model, BRASERO_SESSION_CFG (session));
+	gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree),
+				 GTK_TREE_MODEL (model));
+	g_object_unref (model);
 
-	for (iter = tracks; iter; iter = iter->next) {
-		BraseroTrack *track;
-
-		track = iter->data;
-		brasero_burn_session_add_track (session, track);
-
-		/* It's good practice to unref the track afterwards as we don't
-		 * need it anymore. BraseroBurnSession refs it. */
-		g_object_unref (track);
-
-	}
-	g_slist_free (tracks);
+	g_signal_connect (session,
+			  "is-valid",
+			  G_CALLBACK (brasero_video_disc_session_changed),
+			  self);
 
 	return BRASERO_DISC_OK;
 }
@@ -1346,14 +1304,16 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 {
 	GSList *iter;
 	GSList *tracks;
-	BraseroVideoProject *project;
+	GtkTreeModel *model;
+	BraseroSessionCfg *session;
 	BraseroVideoDiscPrivate *priv;
 
 	disc_track->type = BRASERO_PROJECT_TYPE_VIDEO;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	tracks = brasero_video_project_get_contents (project, TRUE);
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
 
 	for (iter = tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
@@ -1379,9 +1339,6 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 		disc_track->contents.tracks = g_slist_append (disc_track->contents.tracks, song);
 	}
 
-	g_slist_foreach (tracks, (GFunc) g_object_unref, NULL);
-	g_slist_free (tracks);
-
 	return BRASERO_DISC_OK;
 }
 
@@ -1390,7 +1347,6 @@ brasero_video_disc_load_track (BraseroDisc *disc,
 			       BraseroDiscTrack *track)
 {
 	GSList *iter;
-	BraseroVideoProject *project;
 	BraseroVideoDiscPrivate *priv;
 
 	g_return_val_if_fail (track->type == BRASERO_PROJECT_TYPE_VIDEO, FALSE);
@@ -1399,20 +1355,19 @@ brasero_video_disc_load_track (BraseroDisc *disc,
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
-	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
 	priv->loading = g_slist_length (track->contents.tracks);
 
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
 
 		song = iter->data;
-
-		brasero_video_project_add_uri (BRASERO_VIDEO_PROJECT (project),
-					       song->uri,
-					       song->info,
-					       NULL,
-					       song->start,
-					       song->end);
+		brasero_video_disc_add_uri_real (BRASERO_VIDEO_DISC (disc),
+						 song->uri,
+						 song->info,
+						 -1,
+						 song->start,
+						 song->end,
+						 NULL);
 	}
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 
@@ -1425,9 +1380,7 @@ brasero_video_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->add_uri = brasero_video_disc_add_uri;
 	iface->delete_selected = brasero_video_disc_delete_selected;
 	iface->clear = brasero_video_disc_clear;
-	iface->reset = brasero_video_disc_reset;
 
-	iface->get_status = brasero_video_disc_get_status;
 	iface->set_session_contents = brasero_video_disc_set_session_contents;
 
 	iface->get_track = brasero_video_disc_get_track;

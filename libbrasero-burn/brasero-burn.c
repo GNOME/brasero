@@ -2187,7 +2187,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 	brasero_burn_session_push_tracks (priv->session);
 
 	brasero_track_disc_set_drive (BRASERO_TRACK_DISC (track), brasero_burn_session_get_burner (priv->session));
-	brasero_burn_session_add_track (priv->session, track);
+	brasero_burn_session_add_track (priv->session, track, NULL);
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
@@ -2441,7 +2441,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 
 	track = brasero_track_image_new ();
 	brasero_track_image_set_source (track, image, toc, format);
-	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track));
+	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track), NULL);
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */

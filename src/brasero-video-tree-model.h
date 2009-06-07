@@ -25,6 +25,9 @@
 
 #include <glib-object.h>
 
+#include "brasero-track.h"
+#include "brasero-session-cfg.h"
+
 G_BEGIN_DECLS
 
 /* This DND target when moving nodes inside ourselves */
@@ -41,6 +44,7 @@ typedef enum {
 	BRASERO_VIDEO_TREE_MODEL_MIME_ICON,
 	BRASERO_VIDEO_TREE_MODEL_SIZE,
 	BRASERO_VIDEO_TREE_MODEL_EDITABLE,
+	BRASERO_VIDEO_TREE_MODEL_SELECTABLE,
 	BRASERO_VIDEO_TREE_MODEL_COL_NUM
 } BraseroVideoProjectColumn;
 
@@ -56,12 +60,12 @@ typedef struct _BraseroVideoTreeModel BraseroVideoTreeModel;
 
 struct _BraseroVideoTreeModelClass
 {
-	BraseroVideoProjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 struct _BraseroVideoTreeModel
 {
-	BraseroVideoProject parent_instance;
+	GObject parent_instance;
 };
 
 GType brasero_video_tree_model_get_type (void) G_GNUC_CONST;
@@ -69,12 +73,19 @@ GType brasero_video_tree_model_get_type (void) G_GNUC_CONST;
 BraseroVideoTreeModel *
 brasero_video_tree_model_new (void);
 
-BraseroVideoFile *
-brasero_video_tree_model_path_to_file (BraseroVideoTreeModel *self,
-				       GtkTreePath *path);
+void
+brasero_video_tree_model_set_session (BraseroVideoTreeModel *model,
+				      BraseroSessionCfg *session);
+BraseroSessionCfg *
+brasero_video_tree_model_get_session (BraseroVideoTreeModel *model);
+
+BraseroTrack *
+brasero_video_tree_model_path_to_track (BraseroVideoTreeModel *self,
+					GtkTreePath *path);
+
 GtkTreePath *
-brasero_video_tree_model_file_to_path (BraseroVideoTreeModel *self,
-				       BraseroVideoFile *file);
+brasero_video_tree_model_track_to_path (BraseroVideoTreeModel *self,
+				        BraseroTrack *track);
 
 G_END_DECLS
 

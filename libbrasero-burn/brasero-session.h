@@ -70,7 +70,8 @@ struct _BraseroBurnSessionClass {
 	void			(*track_added)		(BraseroBurnSession *session,
 							 BraseroTrack *track);
 	void			(*track_removed)	(BraseroBurnSession *session,
-							 BraseroTrack *track);
+							 BraseroTrack *track,
+							 guint former_position);
 	void			(*track_changed)	(BraseroBurnSession *session,
 							 BraseroTrack *track);
 	void			(*output_changed)	(BraseroBurnSession *session,
@@ -88,10 +89,24 @@ BraseroBurnSession *brasero_burn_session_new ();
 
 BraseroBurnResult
 brasero_burn_session_add_track (BraseroBurnSession *session,
-				BraseroTrack *track);
+				BraseroTrack *track,
+				BraseroTrack *sibling);
+
+BraseroBurnResult
+brasero_burn_session_move_track (BraseroBurnSession *session,
+				 BraseroTrack *track,
+				 BraseroTrack *sibling);
+
+BraseroBurnResult
+brasero_burn_session_remove_track (BraseroBurnSession *session,
+				   BraseroTrack *track);
 
 GSList *
 brasero_burn_session_get_tracks (BraseroBurnSession *session);
+
+/**
+ * Get some information about the session
+ */
 
 BraseroBurnResult
 brasero_burn_session_get_status (BraseroBurnSession *session,
