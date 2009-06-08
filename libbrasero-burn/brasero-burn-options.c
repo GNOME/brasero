@@ -67,9 +67,6 @@ struct _BraseroBurnOptionsPrivate
 {
 	BraseroSessionCfg *session;
 
-	gulong valid_sig;
-	gulong input_sig;
-
 	GtkSizeGroup *size_group;
 
 	GtkWidget *source;
@@ -585,54 +582,12 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	priv->options = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), priv->options);
 
-	priv->valid_sig = g_signal_connect (priv->session,
-					    "is-valid",
-					    G_CALLBACK (brasero_burn_options_valid_cb),
-					    object);
+	g_signal_connect (priv->session,
+			  "is-valid",
+			  G_CALLBACK (brasero_burn_options_valid_cb),
+			  object);
 
 	brasero_burn_options_update_valid (object);
-}
-
-static void
-brasero_burn_options_finalize (GObject *object)
-{
-	BraseroBurnOptionsPrivate *priv;
-
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
-
-	if (priv->not_ready_id) {
-		g_source_remove (priv->not_ready_id);
-		priv->not_ready_id = 0;
-	}
-
-	if (priv->status_dialog) {
-		gtk_widget_destroy (priv->status_dialog);
-		priv->status_dialog = NULL;
-	}
-
-	if (priv->input_sig) {
-		g_signal_handler_disconnect (priv->session,
-					     priv->input_sig);
-		priv->input_sig = 0;
-	}
-
-	if (priv->valid_sig) {
-		g_signal_handler_disconnect (priv->session,
-					     priv->valid_sig);
-		priv->valid_sig = 0;
-	}
-
-	if (priv->session) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
-
-	if (priv->size_group) {
-		g_object_unref (priv->size_group);
-		priv->size_group = NULL;
-	}
-
-	G_OBJECT_CLASS (brasero_burn_options_parent_class)->finalize (object);
 }
 
 static void
@@ -928,7 +883,17 @@ brasero_burn_options_setup (BraseroBurnOptions *self)
 }
 
 static void
-brasero_burn_options_input_changed (BraseroBurnSession *session,
+brasero_burn_options_track_added (BraseroBurnSession *session,
+				  BraseroTrack *track,
+				  BraseroBurnOptions *dialog)
+{
+	brasero_burn_options_setup (dialog);
+}
+
+static void
+brasero_burn_options_track_removed (BraseroBurnSession *session,
+				    BraseroTrack *track,
+				    guint former_position,
 				    BraseroBurnOptions *dialog)
 {
 	brasero_burn_options_setup (dialog);
@@ -953,11 +918,14 @@ brasero_burn_options_set_property (GObject *object,
 		g_object_ref (priv->session);
 		g_object_notify (object, "session");
 
-		priv->input_sig = g_signal_connect (priv->session,
-						    "input-changed",
-						    G_CALLBACK (brasero_burn_options_input_changed),
-						    object);
-
+		g_signal_connect (priv->session,
+				  "track-added",
+				  G_CALLBACK (brasero_burn_options_track_added),
+				  object);
+		g_signal_connect (priv->session,
+				  "track-removed",
+				  G_CALLBACK (brasero_burn_options_track_removed),
+				  object);
 		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
 		brasero_burn_options_setup (BRASERO_BURN_OPTIONS (object));
 
@@ -993,6 +961,46 @@ brasero_burn_options_get_property (GObject *object,
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
+}
+
+static void
+brasero_burn_options_finalize (GObject *object)
+{
+	BraseroBurnOptionsPrivate *priv;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+
+	if (priv->not_ready_id) {
+		g_source_remove (priv->not_ready_id);
+		priv->not_ready_id = 0;
+	}
+
+	if (priv->status_dialog) {
+		gtk_widget_destroy (priv->status_dialog);
+		priv->status_dialog = NULL;
+	}
+
+	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_burn_options_track_added,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_burn_options_track_removed,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_burn_options_valid_cb,
+						      object);
+
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	if (priv->size_group) {
+		g_object_unref (priv->size_group);
+		priv->size_group = NULL;
+	}
+
+	G_OBJECT_CLASS (brasero_burn_options_parent_class)->finalize (object);
 }
 
 static void
