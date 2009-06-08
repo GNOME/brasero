@@ -1327,19 +1327,14 @@ void
 brasero_project_create_audio_cover (BraseroProject *project,
 				    BraseroJacketEdit *cover)
 {
-	BraseroBurnSession *session;
 	GtkWidget *window;
 
 	if (!BRASERO_IS_AUDIO_DISC (project->priv->current))
 		return;
 
-	session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
-	brasero_disc_set_session_contents (BRASERO_DISC (project->priv->current), session);
-	brasero_project_setup_session (project, session);
-
-	window = brasero_session_edit_cover (session, gtk_widget_get_toplevel (GTK_WIDGET (project)));
-	g_object_unref (session);
-
+	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
+	window = brasero_session_edit_cover (BRASERO_BURN_SESSION (project->priv->session),
+					     gtk_widget_get_toplevel (GTK_WIDGET (project)));
 	gtk_dialog_run (GTK_DIALOG (window));
 	gtk_widget_destroy (window);
 }
@@ -1396,9 +1391,11 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	client = gconf_client_get_default ();
 
 	/* remove the buttons from the "toolbar" */
-	if (project->priv->merge_id)
+	if (project->priv->merge_id) {
+		g_print ("REEEK\n");
 		gtk_ui_manager_remove_ui (project->priv->manager,
 					  project->priv->merge_id);
+	}
 
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		gtk_widget_hide (project->priv->button_img);
@@ -1411,7 +1408,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE);
-		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		gtk_widget_show (project->priv->button_img);
@@ -1425,7 +1421,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE|
 							  BRASERO_MEDIA_TYPE_FILE);
-		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		gtk_widget_hide (project->priv->button_img);
@@ -1439,8 +1434,9 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE|
 							  BRASERO_MEDIA_TYPE_FILE);
-		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 	}
+
+	brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 
 	if (project->priv->current)
 		brasero_disc_set_session_contents (project->priv->current, BRASERO_BURN_SESSION (project->priv->session));
