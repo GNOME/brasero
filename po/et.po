@@ -10,14 +10,172 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-04-22 16:30+0000\n"
-"PO-Revision-Date: 2009-04-29 08:07+0300\n"
+"POT-Creation-Date: 2009-06-02 19:04+0000\n"
+"PO-Revision-Date: 2009-06-07 22:53+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Should files be renamed to be fully Windows-compatible?"
+msgstr "Kas failid tuleks ümber nimetada, et saavutada Windowsiga ühilduvus?"
+
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
+msgstr "Mõne faili nimi pole Windows'iga ühilduva plaadi jaoks sobilik."
+
+msgid "Those names should be changed and truncated to 64 characters."
+msgstr "Need nimed tuleb muuta ja lühendada 64 märgini."
+
+msgid "_Disable Full Windows Compatibility"
+msgstr "Windows'iga ühilduvuse _keelamine"
+
+msgid "_Rename for Full Windows Compatibility"
+msgstr "Ümbernimetamine Windows'iga ühilduvuse saavutamiseks"
+
+#. general options
+msgid "Increase compatibility with _Windows systems"
+msgstr "Suurendatud ühilduvus _Windows süsteemidega"
+
+msgid ""
+"Improve compatibility with Windows systems by allowing to display long "
+"filenames (maximum 64 characters)"
+msgstr ""
+"Suurendab ühilduvust Windows süsteemidega, võimaldades neil kuvada pikki "
+"failinimesid (kuni 64 märki)"
+
+msgid "Disc options"
+msgstr "Plaadi valikud"
+
+msgid "Video format:"
+msgstr "Videovorming:"
+
+msgid "_NTSC"
+msgstr "_NTSC"
+
+msgid "Format used mostly on the North American Continent"
+msgstr "Põhiliselt Põhja-Ameerikas kasutatav vorming"
+
+msgid "_PAL/SECAM"
+msgstr "_PAL/SECAM"
+
+msgid "Format used mostly in Europe"
+msgstr "Põhiliselt Euroopas kasutatav vorming"
+
+msgid "Native _format"
+msgstr "Esialgne _vorming"
+
+msgid "Aspect ratio:"
+msgstr "Külgede suhe:"
+
+msgid "_4:3"
+msgstr "_4:3"
+
+msgid "_16:9"
+msgstr "_16:9"
+
+#. Video options for (S)VCD
+msgid "VCD type:"
+msgstr "VCD tüüp:"
+
+msgid "Create a SVCD"
+msgstr "Loo SVCD"
+
+msgid "Create a VCD"
+msgstr "Loo VCD"
+
+msgid "Video Options"
+msgstr "Video valikud"
+
+#| msgid "Display debug statements on stdout for Brasero media library"
+msgid "Display debug statements on stdout for Brasero burn library"
+msgstr "Brasero plaadikogu silumise teadete kuvamine standardväljundis"
+
+#| msgid "Brasero optical media library"
+msgid "Brasero media burning library"
+msgstr "Brasero plaadikogu"
+
+#| msgid "Display options for Brasero-media library"
+msgid "Display options for Brasero-burn library"
+msgstr "Brasero plaadikogu kuvavalikud"
+
+#. Translators: %s is the name of the file
+#, c-format
+#| msgid "\"%s\" does not have a suitable type for video projects."
+msgid "\"%s\" is not suitable for audio or video media"
+msgstr "\"%s\" ei ole sobivat tüüpi audio- ega videofail"
+
+msgid "Analysing video files"
+msgstr "Videofailide analüüsimine"
+
+#, c-format
+msgid "\"%s\" cannot be read"
+msgstr "\"%s\" ei saa lugeda"
+
+msgid "Hidden file"
+msgstr "Varjatud fail"
+
+msgid "Unreadable file"
+msgstr "Loetamatu fail"
+
+msgid "Broken symbolic link"
+msgstr "Vigane sümbolviit"
+
+#, c-format
+msgid "Recursive symbolic link"
+msgstr "Rekursiivne sümbolviit"
+
+msgid "(loading ...)"
+msgstr "(laadimine ...)"
+
+msgid "Empty"
+msgstr "Tühi"
+
+msgid "Disc file"
+msgstr "Plaadifail"
+
+#, c-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "%d kirje"
+msgstr[1] "%d kirjet"
+
+#, c-format
+msgid "New folder"
+msgstr "Uus kataloog"
+
+#, c-format
+msgid "New folder %i"
+msgstr "Uus kataloog %i"
+
+msgid "Analysing files"
+msgstr "Failide analüüsimine"
+
+#, c-format
+msgid "\"%s\" is a recursive symlink."
+msgstr "\"%s\" on rekursiivne sümbolviit."
+
+#, c-format
+msgid "\"%s\" cannot be found."
+msgstr "\"%s\" ei leitud."
+
+#, c-format
+msgid "The file does not appear to be a playlist"
+msgstr "Tundub, et see fail ei ole esitusnimekiri"
+
+#, c-format
+msgid "\"%s\" could not be handled by Gstreamer."
+msgstr "\"%s\" pole võimalik Gstreameriga käsitseda."
+
+#. Translators: %s is the name of the GstElement that
+#. * could not be created
+#. Translators: %s is the name of the GstElement that
+#. * element could not be created
+#, c-format
+msgid "%s element could not be created"
+msgstr "%s elementi pole võimalik luua"
 
 #. Translators: Error message saying no graft point
 #. * is specified. A graft point is the path (on the
@@ -362,10 +520,6 @@ msgstr "Audioradade kirjutamine ülekirjutatavale plaadile ei ole soovitatud."
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Kas jätkata Windowsiga mitteühilduva plaadi kirjutamist?"
 
-msgid ""
-"Some files don't have a suitable name for a fully Windows-compatible CD."
-msgstr "Mõne faili nimi pole Windows'iga ühilduva plaadi jaoks sobilik."
-
 #, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
 msgstr "Brasero - Tõmmise loomine (%i%% valmis)"
@@ -473,6 +627,19 @@ msgstr "Tee _veel üks koopia"
 msgid "_Create Cover"
 msgstr "_Tee plaadiümbris"
 
+msgid "There are some files left to burn"
+msgstr "Veel mõned failid ootavad kirjutamist"
+
+msgid "There are some more videos left to burn"
+msgstr "Veel mõned videod ootavad kirjutamist"
+
+msgid "There are some more songs left to burn"
+msgstr "Veel mõned laulud ootavad kirjutamist"
+
+#, c-format
+msgid "Not enough space available on the disc"
+msgstr "Kettal pole piisavalt vaba ruumi"
+
 msgid "Do you really want to quit?"
 msgstr "Kas tahad tõesti lõpetada?"
 
@@ -491,8 +658,9 @@ msgid ""
 msgstr ""
 "Palun sisesta kirjutatav CD või DVD, kui sa ei taha tõmmisfaili salvestada."
 
-msgid "Please choose another CD or DVD or insert a new one."
-msgstr "Palun vali teine CD või DVD või sisesta uus."
+#| msgid "Would you like to burn beyond the disc reported capacity?"
+msgid "Would you like to burn the selection of files across several media?"
+msgstr "Kas valitud failid kirjutada mitmele plaadile?"
 
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
@@ -500,6 +668,16 @@ msgid ""
 msgstr ""
 "Selle projekti suurus on plaadi jaoks liiga suur isegi siis, kui kasutada "
 "üle mahu kirjutamist."
+
+#| msgid "Burn the disc"
+msgid "_Burn Several Discs"
+msgstr "_Kirjutatakse mitu plaati"
+
+msgid "Burn the selection of files across several media"
+msgstr "Valitud failide jaotamine mitmele plaadile"
+
+msgid "Please choose another CD or DVD or insert a new one."
+msgstr "Palun vali teine CD või DVD või sisesta uus."
 
 msgid "There is no recordable disc inserted."
 msgstr "Pole sisestatud ühtki kirjutatavat plaati."
@@ -533,8 +711,12 @@ msgstr "Palun vali tõmmis."
 msgid "There is no selected image."
 msgstr "Tõmmis pole valitud."
 
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#| msgid "Please select another image."
+msgctxt "disc"
 msgid "Please select another image."
-msgstr "Palun vali teine tõmmis."
+msgstr "Palun vali mõni teine tõmmis."
 
 msgid "It doesn't appear to be a valid image or a valid cue file."
 msgstr "Tundub, et tõmmis või cue fail pole sobivad."
@@ -590,6 +772,42 @@ msgstr "_Kirjuta"
 msgid "Select a disc to write to"
 msgstr "Vali plaat, millele kirjutada"
 
+msgid "Disc Burning Setup"
+msgstr "Plaadi kirjutamise sätted"
+
+#, c-format
+msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+msgstr "Kas tahad kirjutada \"%s\" plaadile või lisada selle andmeprojekti?"
+
+msgid ""
+"This file is the image of a disc and can therefore be burnt to disc without "
+"having to add it to a data project first."
+msgstr ""
+"See fail on tõmmis ning seetõttu saab seda plaadile kirjutada ka ilma "
+"andmeprojekti lisamata."
+
+msgid "_Add to Project"
+msgstr "_Lisa projekti"
+
+msgid "_Burn..."
+msgstr "_Kirjuta"
+
+msgid "Image Burning Setup"
+msgstr "Tõmmise kirjutamise sätted"
+
+#. pack everything
+msgid "Select an image to write"
+msgstr "Vali tõmmis, mida kirjutada"
+
+msgid "CD/DVD Copy Options"
+msgstr "CD/DVD kopeerimise valikud"
+
+msgid "_Copy"
+msgstr "_Kopeeri"
+
+msgid "Select disc to copy"
+msgstr "Vali plaat, mida kopeerida"
+
 msgid "Burning CD/DVD"
 msgstr "CD/DVD kirjutamine"
 
@@ -642,10 +860,6 @@ msgid "Merging data is impossible with this disc"
 msgstr "Sellel plaadil on andmete ühendamine võimatu"
 
 #, c-format
-msgid "Not enough space available on the disc"
-msgstr "Kettal pole piisavalt vaba ruumi"
-
-#, c-format
 msgid "There is no track to be burnt"
 msgstr "Ei ole rada, mida kirjutada"
 
@@ -685,8 +899,9 @@ msgstr "Sisesta plaadilugejasse lähteplaadi asemele tühi plaat"
 
 #. NOTE for translators, the first %s is the medium name
 #, c-format
-msgid "%s: no free space"
-msgstr "%s: vaba ruumi pole"
+#| msgid "%s: no free space"
+msgid "%s: not enough free space"
+msgstr "%s: pole piisavalt vaba ruumi"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
@@ -694,85 +909,12 @@ msgstr "%s: vaba ruumi pole"
 msgid "%s: %s of free space"
 msgstr "%s: %s vaba ruumi"
 
-msgid "_Copy"
-msgstr "_Kopeeri"
-
-msgid "Select disc to copy"
-msgstr "Vali plaat, mida kopeerida"
-
-msgid "CD/DVD Copy Options"
-msgstr "CD/DVD kopeerimise valikud"
-
-msgid "Should files be renamed to be fully Windows-compatible?"
-msgstr "Kas failid tuleks ümber nimetada, et saavutada Windowsiga ühilduvus?"
-
-msgid "Those names should be changed and truncated to 64 characters."
-msgstr "Need nimed tuleb muuta ja lühendada 64 märgini."
-
-msgid "_Disable Full Windows Compatibility"
-msgstr "Windows'iga ühilduvuse _keelamine"
-
-msgid "_Rename for Full Windows Compatibility"
-msgstr "Ümbernimetamine Windows'iga ühilduvuse saavutamiseks"
-
-msgid "Increase compatibility with _Windows systems"
-msgstr "Suurendatud ühilduvus _Windows süsteemidega"
-
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-"Suurendab ühilduvust Windows süsteemidega, võimaldades neil kuvada pikki "
-"failinimesid (kuni 64 märki)"
-
-msgid "Disc options"
-msgstr "Plaadi valikud"
-
-msgid "Video format:"
-msgstr "Videovorming:"
-
-msgid "_NTSC"
-msgstr "_NTSC"
-
-msgid "Format used mostly on the North American Continent"
-msgstr "Põhiliselt Põhja-Ameerikas kasutatav vorming"
-
-msgid "_PAL/SECAM"
-msgstr "_PAL/SECAM"
-
-msgid "Format used mostly in Europe"
-msgstr "Põhiliselt Euroopas kasutatav vorming"
-
-msgid "Native _format"
-msgstr "Esialgne _vorming"
-
-msgid "Aspect ratio:"
-msgstr "Külgede suhe:"
-
-msgid "_4:3"
-msgstr "_4:3"
-
-msgid "_16:9"
-msgstr "_16:9"
-
-#. Video options for (S)VCD
-msgid "VCD type:"
-msgstr "VCD tüüp:"
-
-msgid "Create a SVCD"
-msgstr "Loo SVCD"
-
-msgid "Create a VCD"
-msgstr "Loo VCD"
-
-msgid "Video Options"
-msgstr "Video valikud"
-
-msgid "Disc Burning Setup"
-msgstr "Plaadi kirjutamise sätted"
-
-msgid "Unknown"
-msgstr "Teadmata"
+#. Translators: the first %s is the path of the directory where brasero
+#. * will store its temporary files; the second one is the size available
+#, c-format
+#| msgid "%s free"
+msgid "%s: %s free"
+msgstr "%s: %s vaba"
 
 msgid "Do you really want to choose this location?"
 msgstr "Kas tahad selle asukoha tõesti valida?"
@@ -809,10 +951,6 @@ msgstr "%.1f x (BD)"
 #, c-format
 msgid "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 msgstr "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
-
-#, c-format
-msgid "Properties of %s"
-msgstr "%s omadused"
 
 msgid "Impossible to retrieve speeds"
 msgstr "Kiiruste tuvastamine pole võimalik"
@@ -851,36 +989,40 @@ msgstr "Võimaldab plaadile hiljem andmeid lisada"
 msgid "Options"
 msgstr "Valikud"
 
-msgid "_Temporary directory free space:"
-msgstr "Aju_tiste failide kataloogis vaba ruumi:"
+#| msgid "Location for Temporary Files"
+msgid "Location for _Temporary Files"
+msgstr "_Ajutiste failide kataloog"
+
+msgid "Set the directory where to store temporary files"
+msgstr "Ajutiste failide kataloogi määramine"
 
 msgid "Temporary files"
 msgstr "Ajutised failid"
 
-#. pack everything
-msgid "Select an image to write"
-msgstr "Vali tõmmis, mida kirjutada"
-
-msgid "Image Burning Setup"
-msgstr "Tõmmise kirjutamise sätted"
-
 msgid "Image type:"
 msgstr "Tõmmise tüüp:"
 
-msgid "Let brasero choose (safest)"
-msgstr "Lase braserol otsustada (turvaline)"
+msgid "Autodetect"
+msgstr "Isetuvastus"
 
-msgid "*.iso image"
-msgstr "*.iso tõmmis"
+#| msgid "Images"
+msgid "ISO9660 images"
+msgstr "ISO9660 tõmmised"
 
-msgid "*.raw image"
-msgstr "*.raw tõmmis"
+msgid "Readcd/Readom images"
+msgstr "Readcd/Readom tõmmised"
 
-msgid "*.cue image"
-msgstr "*.cue tõmmis"
+#| msgid "*.cue image"
+msgid "Cue images"
+msgstr "Cue tõmmised"
 
-msgid "*.toc image (cdrdao)"
-msgstr "*.toc tõmmis (cdrdao)"
+#| msgid "Creating image"
+msgid "Cdrdao images"
+msgstr "Cdrdao tõmmised"
+
+#, c-format
+msgid "Properties of %s"
+msgstr "%s omadused"
 
 msgid ""
 "Do you really want to keep the current extension for the disc image name?"
@@ -946,6 +1088,7 @@ msgstr "\"%s\": %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
+#. Translators: this is a disc image
 msgid "Click here to select an _image"
 msgstr "_Tõmmise valimiseks klõpsa siia"
 
@@ -956,9 +1099,10 @@ msgid "All files"
 msgstr "Kõik failid"
 
 #. Translators: this a disc image here
+#| msgid "Image File"
 msgctxt "disc"
-msgid "Image files only"
-msgstr "Ainult tõmmised"
+msgid "Image files"
+msgstr "Tõmmisfailid"
 
 msgid "Menu"
 msgstr "Menüü"
@@ -1027,8 +1171,13 @@ msgstr "Edukas"
 msgid "\"%s\" did not behave properly"
 msgstr "\"%s\" ei käitunud korrektselt"
 
-msgid "Not enough space available on the disc (%"
-msgstr "Kettal pole piisavalt vaba ruumi (%"
+#. Translators: the first %s is the size of the free space on the medium
+#. * and the second %s is the size of the space required by the data to be
+#. * burnt.
+#, c-format
+#| msgid "Not enough space available on the disc (%lli available for %lli)"
+msgid "Not enough space available on the disc (%s available for %s)"
+msgstr "Kettal pole piisavalt vaba ruumi (%s vaba, %s vaja)"
 
 #, c-format
 msgid ""
@@ -1049,10 +1198,6 @@ msgstr ""
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Andmekandja suurust pole võimalik tuvastada"
-
-#, c-format
-msgid "\"%s\" already exists"
-msgstr "\"%s\" on juba olemas"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
@@ -1175,8 +1320,9 @@ msgstr "Vali värv"
 msgid "Directory could not be created (%s)"
 msgstr "Kataloogi pole võimalik luua (%s)"
 
-msgid "Error while loading the project."
-msgstr "Viga projekti laadimisel."
+#| msgid "Error while loading the project."
+msgid "Error while loading the project"
+msgstr "Viga projekti laadimisel"
 
 msgid "The project could not be opened."
 msgstr "Seda projekti pole võimalik avada."
@@ -1191,21 +1337,57 @@ msgid "Unnamed CD/DVD Drive"
 msgstr "Nimetu CD/DVD ajam"
 
 msgid "Display debug statements on stdout for Brasero media library"
-msgstr "Kuva Brasero plaadikogu silumise teated standardväljundis"
+msgstr "Kuva Brasero meediakogu silumise teated standardväljundis"
 
 msgid "Brasero optical media library"
-msgstr "Brasero plaadikogu"
+msgstr "Brasero optilise meedia kogu"
 
 msgid "Display options for Brasero-media library"
-msgstr "Brasero plaadikogu kuvavalikud"
+msgstr "Brasero meediakogu kuvavalikud"
 
-#. Translators: %lli is a duration expressed in minutes
-#. * hence the "min" as unit.
-#. Translators: the first %lli is the number of minutes
+#. Translators: this is hour minute second like '2 h 14 min 25'
+#, c-format
+#| msgid "%s in %s"
+msgid "%s h %s min %s"
+msgstr "%s h %s min %s"
+
+#. Translators: this is hour minute like '2 h 14'
+#, c-format
+#| msgid "%s / %s"
+msgid "%s h %s"
+msgstr "%s h %s min"
+
+#. Translators: this is hour like '2 h'
+#, c-format
+#| msgid "%s: %s"
+msgid "%s h"
+msgstr "%s h"
+
+#. Translators: this is 'hour:minute:second' like '2:14:25'
+#, c-format
+#| msgid "%s: %s"
+msgid "%s:%s:%s"
+msgstr "%s:%s:%s"
+
+#. Translators: this is 'hour:minute' or 'minute:second'
+#, c-format
+#| msgid "%s: %s"
+msgid "%s:%s"
+msgstr "%s:%s"
+
+#. Translators: %s is a duration expressed in minutes
+#, c-format
+#| msgid "%s in %s"
+msgid "%s min"
+msgstr "%s min"
+
+#. Translators: the first %s is the number of minutes
 #. * and the second one is the number of seconds.
 #. * The whole string expresses a duration
-msgid "%"
-msgstr ""
+#, c-format
+#| msgid "%s: %s"
+msgid "%s:%s min"
+msgstr "%s:%s min"
 
 #. NOTE for translators, the first %s is the medium name
 #, c-format
@@ -1425,9 +1607,6 @@ msgstr "Seansihalduse valikud:"
 
 msgid "Show session management options"
 msgstr "Seansihalduse valikute näitamine"
-
-msgid "Analysing video files"
-msgstr "Videofailide analüüsimine"
 
 msgid "Brasero Plugins"
 msgstr "Brasero pluginad"
@@ -1850,9 +2029,8 @@ msgstr "Raja lõppu lisatakse vaikust."
 msgid "The track is shorter than 6 seconds"
 msgstr "Rada on lühem kui 6 sekundit"
 
-#, c-format
-msgid "\"%s\" could not be handled by Gstreamer."
-msgstr "\"%s\" pole võimalik Gstreameriga käsitseda."
+msgid "Unknown"
+msgstr "Teadmata"
 
 msgid "Make sure the appropriate codec is installed"
 msgstr "Veendu, et sobiv koodek on paigaldatud"
@@ -1885,9 +2063,6 @@ msgstr "Otsi _kataloogist"
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "\"%s\" pole võimalik avada."
-
-msgid "(loading ...)"
-msgstr "(laadimine ...)"
 
 msgid "Select one song only please."
 msgstr "Palun vali ainult üks laul."
@@ -1944,19 +2119,6 @@ msgstr ""
 msgid "Disc Blanking"
 msgstr "Plaadi tühjendamine"
 
-#. Translators: %s is the name of the GstElement that
-#. * could not be created
-#. Translators: %s is the name of the GstElement that
-#. * element could not be created
-#, c-format
-msgid "%s element could not be created"
-msgstr "%s elementi pole võimalik luua"
-
-#. Translators: the %s is the mime type used to filter files
-#, c-format
-msgid "%s only"
-msgstr "ainult %s"
-
 msgid "Playlists"
 msgstr "Lugude nimekirjad"
 
@@ -1975,9 +2137,6 @@ msgstr "Viga lugude nimekirja \"%s\" töötlemisel."
 
 msgid "An unknown error occured"
 msgstr "Esines tundmatu viga"
-
-msgid "Empty"
-msgstr "Tühi"
 
 #. Translators: %d is the number of songs
 #, c-format
@@ -2127,14 +2286,6 @@ msgstr "Loo uus tühi kataloog"
 msgid "The session could not be imported."
 msgstr "Sessiooni pole võimalik importida."
 
-#, c-format
-msgid "New folder"
-msgstr "Uus kataloog"
-
-#, c-format
-msgid "New folder %i"
-msgstr "Uus kataloog %i"
-
 msgid "Click here not to use overburning"
 msgstr "Klõpsa siin et üle mahu kirjutamist mitte kasutada"
 
@@ -2154,36 +2305,11 @@ msgid "Continue with the current modified project"
 msgstr "Praeguse muudetud projektiga jätkamine"
 
 #, c-format
-msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr "Kas tahad kirjutada \"%s\" plaadile või lisada selle andmeprojekti?"
-
-msgid ""
-"This file is the image of a disc and can therefore be burnt to disc without "
-"having to add it to a data project first."
-msgstr ""
-"See fail on tõmmis ning seetõttu saab seda plaadile kirjutada ka ilma "
-"andmeprojekti lisamata."
-
-msgid "_Add to Project"
-msgstr "_Lisa projekti"
-
-msgid "_Burn..."
-msgstr "_Kirjuta"
-
-#, c-format
 msgid "\"%s\" cannot be added to the selection."
 msgstr "\"%s\" pole võimalik valikusse lisada."
 
-#, c-format
-msgid "\"%s\" is a recursive symlink."
-msgstr "\"%s\" on rekursiivne sümbolviit."
-
 msgid "It is a recursive symlink"
 msgstr "See on rekursiivne sümbolviit"
-
-#, c-format
-msgid "\"%s\" cannot be found."
-msgstr "\"%s\" ei leitud."
 
 msgid "It does not exist at the specified location"
 msgstr "See ei asu määratud kohas"
@@ -2286,9 +2412,6 @@ msgstr "_Katkesta laadimine"
 msgid "Cancel loading current project"
 msgstr "Katkseta projekti laadimine"
 
-msgid "Analysing files"
-msgstr "Failide analüüsimine"
-
 msgid "File Renaming"
 msgstr "Failide ümbernimetamine"
 
@@ -2304,16 +2427,19 @@ msgstr "Suurus"
 msgid "Space"
 msgstr "Ruum"
 
-msgid "Audio files only"
-msgstr "Ainult audiofailid"
+#| msgid "Audio files only"
+msgid "Audio files"
+msgstr "Audiofailid"
 
-msgid "Movies only"
-msgstr "Ainult filmid"
+#| msgid "Movies only"
+msgid "Movies"
+msgstr "Filmid"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
+#| msgid "Image File"
 msgctxt "picture"
-msgid "Image files only"
-msgstr "Ainult pildid"
+msgid "Image files"
+msgstr "Pildifailid"
 
 msgid "P_review"
 msgstr "_Eelvaade"
@@ -2412,6 +2538,19 @@ msgstr "Eemalda projektist kõik failid"
 
 msgid "Burn the disc"
 msgstr "Kirjuta plaat"
+
+#. Translators: this is a picture not
+#. * a disc image
+#| msgid "Please select another image."
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Palun vali teine tõmmis."
+
+msgid "Medium Icon"
+msgstr "Plaadi ikoon"
+
+msgid "Select an icon for the disc that will appear in file managers"
+msgstr "Ikooni valimine, mida näitavad failihaldurid"
 
 #. Name widget
 msgid "_Name:"
@@ -2848,9 +2987,6 @@ msgstr "ASUKOHT"
 msgid "The XID of the parent window"
 msgstr "Emaakna XID number"
 
-msgid "Display debug statements on stdout"
-msgstr "Kuva silumise teated stdout'i"
-
 msgid "Incompatible command line options used."
 msgstr "Kasutati kokkusobimatud käsurea võtmeid."
 
@@ -2920,6 +3056,17 @@ msgstr "Seadmel ei ole vaba ruumi"
 
 msgid "Use genisoimage to create images from a file selection"
 msgstr "Kasuta failidest tõmmise tegemiseks genisoimage't"
+
+#, c-format
+#| msgid ""
+#| "The location you chose to store the temporary image on does not have "
+#| "enough free space for the disc image (%ld MiB needed)"
+msgid ""
+"The location you chose to store the image on does not have enough free space "
+"for the disc image"
+msgstr ""
+"Asukohas, mille valisid ajutiste tõmmiste hoidmiseks, ei ole tõmmise jaoks "
+"piisavalt vaba ruumi"
 
 msgid "Use readom to create disc images"
 msgstr "Tõmmiste tegemiseks kasutatakse readom'i"
@@ -3284,15 +3431,6 @@ msgstr "Cdrdao kirjutamisrakenduste komplekt"
 msgid "Cdrtools burning suite"
 msgstr "Cdrtools kirjutamisrakenduste komplekt"
 
-msgid "Disc file"
-msgstr "Plaadifail"
-
-#, c-format
-msgid "%d item"
-msgid_plural "%d items"
-msgstr[0] "%d kirje"
-msgstr[1] "%d kirjet"
-
 #. Translators: this messages will appear as a list of possible
 #. * actions, like:
 #. *   To add/remove files you can:
@@ -3357,19 +3495,6 @@ msgid_plural "Show the _filtered file list (%d files)"
 msgstr[0] "Näita _filtreeritud failide nimekirja (%d fail)"
 msgstr[1] "Näita _filtreeritud failide nimekirja (%d faili)"
 
-msgid "Hidden file"
-msgstr "Varjatud fail"
-
-msgid "Unreadable file"
-msgstr "Loetamatu fail"
-
-msgid "Broken symbolic link"
-msgstr "Vigane sümbolviit"
-
-#, c-format
-msgid "Recursive symbolic link"
-msgstr "Rekursiivne sümbolviit"
-
 msgid "Filter Options"
 msgstr "Filtri valikud"
 
@@ -3403,14 +3528,6 @@ msgstr "_Vigaste sümbolviitade filter"
 
 msgid "Filtering options"
 msgstr "Failide filtreerimise valikud"
-
-#, c-format
-msgid "The file does not appear to be a playlist"
-msgstr "Tundub, et see fail ei ole esitusnimekiri"
-
-#, c-format
-msgid "\"%s\" cannot be read"
-msgstr "\"%s\" ei saa lugeda"
 
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
@@ -3578,1065 +3695,3 @@ msgstr "Kopeeri CD ja DVD plaate"
 
 msgid "Disc Copier"
 msgstr "Plaadikopeerija"
-
-#~ msgid "Not enough space available on the disc (%lli available for %lli)"
-#~ msgstr "Kettal pole piisavalt vaba ruumi (%lli vaba, %lli vaja)"
-
-#~ msgid "Drive"
-#~ msgstr "Ajam"
-
-#~ msgid "%lli min"
-#~ msgstr "%lli min"
-
-#~ msgid "%lli:%02lli min"
-#~ msgstr "%lli:%02lli min"
-
-#~ msgid "Unable to launch the cd burner application"
-#~ msgstr "CD kirjutamise rakendust pole võimalik käivitada"
-
-#~ msgid "A directory could not be created (%s)"
-#~ msgstr "Kataloogi pole võimalik luua (%s)"
-
-#~ msgid "_Erase..."
-#~ msgstr "_Kustuta..."
-
-#~ msgid "Erase a disc"
-#~ msgstr "Kustuta plaat"
-
-#~ msgid "Exit the program"
-#~ msgstr "Välju programmist"
-
-#~ msgid ""
-#~ "The size of the project is too large for the disc.\n"
-#~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
-#~ "which cannot be properly recognised and therefore need overburn option.\n"
-#~ "NOTE: This option might cause failure."
-#~ msgstr ""
-#~ "Projekti suurus on plaadi jaoks liiga suur.\n"
-#~ "Kasuta seda valikut 90 või 100 min CD-R(W) plaatide jaoks, mida ei ole "
-#~ "võimalik tuvastada ja seetõttu vajavad üle mahu kirjutamist.\n"
-#~ "MÄRKUS: Selle valimine võib põhjustada kirjutamise nurjumise."
-
-#~ msgid "The size could not be retrieved (%s)"
-#~ msgstr "Suurust pole võimalik tuvastada (%s)"
-
-#~ msgid "<keep current values>"
-#~ msgstr "<hoia praeguseid väärtusi>"
-
-#~ msgid "1 item"
-#~ msgstr "1 kirje"
-
-#~ msgid "Cdrdao toc file"
-#~ msgstr "Cdrdao toc fail"
-
-#~ msgid "Do you want to continue or discard the old project layout?"
-#~ msgstr "Kas tahad jätkata või vana projekti hüljata?"
-
-#~ msgid "Press if you want to cancel current project loading"
-#~ msgstr "Klõpsa, kui tahad projekti laadimise katkestada"
-
-#~ msgid "Add _AC3 audio stream"
-#~ msgstr "Lisa _AC3 audiovoog"
-
-#~ msgid "Add _MP2 audio stream"
-#~ msgstr "Lisa _MP2 audiovoog"
-
-#~ msgid "Audio Options"
-#~ msgstr "Audio valikud"
-
-#~ msgid "The disc could not be mounted (max attemps reached)"
-#~ msgstr ""
-#~ "Seda plaati pole võimalik külge haakida (katsete ülempiir saavutatud)"
-
-#~ msgid "CD/DVD burning"
-#~ msgstr "CD/DVD kirjutamine"
-
-#~ msgid "Substitute"
-#~ msgstr "Asenda"
-
-#~ msgid "Native aspect _ratio"
-#~ msgstr "Originaal_suhe"
-
-#~ msgid "Number of copies"
-#~ msgstr "Koopiate arv "
-
-#~ msgid "Eject media"
-#~ msgstr "Väljasta meedium"
-
-#~ msgid "Contents"
-#~ msgstr "Sisukord"
-
-#~ msgid "Brasero projects"
-#~ msgstr "Brasero projektid"
-
-#~ msgid "Should brasero ask to be set as the default app to burn"
-#~ msgstr "Kas küsitakse brasero vaikimisi kirjutajaks määramise kohta"
-
-#~ msgid ""
-#~ "Should brasero ask to be set as the default app to burn audio or data. "
-#~ "Set to true, brasero won't ask."
-#~ msgstr ""
-#~ "Kas brasero peaks küsima, kas määrata see vaikimisi audio- või "
-#~ "andmeplaatide kirjutamise rakenduseks. Kui tõene, siis brasero ei küsi."
-
-#~ msgid "File \"%s\" can't be opened."
-#~ msgstr "Faili \"%s\" ei saa avada."
-
-#~ msgid "this format is not supported by gstreamer"
-#~ msgstr "gstreamer ei toeta seda vormingut"
-
-#~ msgid "Show"
-#~ msgstr "Näita"
-
-#~ msgid "Plugins"
-#~ msgstr "Pluginad"
-
-#~ msgid "Total time:"
-#~ msgstr "Kulunud aeg:"
-
-#~ msgid "only in\t"
-#~ msgstr "ainult\t"
-
-#~ msgid "Cancel"
-#~ msgstr "Katkesta"
-
-#~ msgid "This file can't be opened."
-#~ msgstr "Seda faili ei saa avada."
-
-#~ msgid ""
-#~ "A recording was successfully completed.\n"
-#~ "The next recording will begin as soon as a recordable medium is inserted."
-#~ msgstr ""
-#~ "Kirjutamine lõpetati edukalt.\n"
-#~ "Järgmine kirjutamine algab kohe, kui sisestatakse kirjutatav meedium."
-
-#~ msgid "The disc in \"%s\" is a DVD."
-#~ msgstr "Plaat seadmes \"%s\" on DVD."
-
-#~ msgid "The disc in \"%s\" is a CD."
-#~ msgstr "Plaat seadmes \"%s\" on CD."
-
-#~ msgid "The disc in \"%s\" is not big enough."
-#~ msgstr "Plaat seadmes \"%s\" pole piisavalt suur."
-
-#~ msgid "Continue"
-#~ msgstr "Jätka"
-
-#~ msgid "An unknown error occured. Check your disc."
-#~ msgstr "Esines tundmatu viga. Kontrolli plaati."
-
-#~ msgid "_Cancel"
-#~ msgstr "_Katkesta"
-
-#~ msgid "_Import Session"
-#~ msgstr "_Impordi sessioon"
-
-#~ msgid "Leave the disc _open to add a data session later"
-#~ msgstr "Jäta plaat avatuks, et hiljem lisada andmesessioone"
-
-#~ msgid "Allow creating an enhanced CD or CD+"
-#~ msgstr "Luba laiendatud CD või CD+ loomine"
-
-#~ msgid "<b>Burning speed</b>"
-#~ msgstr "<b>Kirjutamise kiirus</b>"
-
-#~ msgid "Image File Properties"
-#~ msgstr "Tõmmise omadused"
-
-#~ msgid "Some tasks are not completed yet."
-#~ msgstr "Mõned ülesanded ei ole veel lõpetatud."
-
-#~ msgid "Ongoing Tasks"
-#~ msgstr "Ülesanded on täitmisel"
-
-#~ msgid "Add"
-#~ msgstr "Lisa"
-
-#~ msgid "Remove"
-#~ msgstr "Eemalda"
-
-#~ msgid "it doesn't seem to be a valid Brasero project."
-#~ msgstr "see ei tundu olema sobiv Brasero projektifail."
-
-#~ msgid "Create a new audio project"
-#~ msgstr "Loo uus audioprojekt"
-
-#~ msgid "Create a new data project"
-#~ msgstr "Loo uus andmeprojekt"
-
-#~ msgid "Create a new video project"
-#~ msgstr "Loo uus videoprojekt"
-
-#~ msgid "Burn an image"
-#~ msgstr "Kirjuta tõmmis"
-
-#~ msgid "Display File Browser"
-#~ msgstr "Näita faililehitsejat"
-
-#~ msgid "Display Playlists"
-#~ msgstr "Kuva lugude nimekirjad"
-
-#~ msgid "<big>Audi_o project</big>"
-#~ msgstr "<big>Audi_oprojekt</big>"
-
-#~ msgid "<big>D_ata project</big>"
-#~ msgstr "<big>_Andmeprojekt</big>"
-
-#~ msgid "<big>_Video project</big>"
-#~ msgstr "<big>_Videoprojekt</big>"
-
-#~ msgid "<big>Disc _copy</big>"
-#~ msgstr "<big>Plaadi _koopia</big>"
-
-#~ msgid "<big>Burn _image</big>"
-#~ msgstr "<big>_Tõmmise kirjutamine</big>"
-
-#~ msgid "a temporary file couldn't be created"
-#~ msgstr "ajutist faili ei saanud luua."
-
-#~ msgid "The inserted media is busy."
-#~ msgstr "Sisestatud meedium on hõivatud."
-
-#~ msgid "The inserted media is not supported."
-#~ msgstr "Sisestatud meedium ei ole toetatud."
-
-#~ msgid "Choose a media"
-#~ msgstr "Vali meedium"
-
-#~ msgid "no drive specified as source"
-#~ msgstr "lähteseade pole määratud"
-
-#~ msgid "the drive has no burning capabilities"
-#~ msgstr "sellel seadmel pole kirjutamise võimalusi"
-
-#~ msgid "ongoing burning process"
-#~ msgstr "kirjutamine käib"
-
-#~ msgid "The drive is busy."
-#~ msgstr "Seade on hõivatud."
-
-#~ msgid ""
-#~ "it's not possible to merge to this media because it hasn't got enough "
-#~ "space"
-#~ msgstr ""
-#~ "sellele meediumile pole võimalik lisada, kuna sellel pole piisavalt ruumi"
-
-#~ msgid "there is no drive to burn to"
-#~ msgstr "ei ole seadet, millega kirjutada"
-
-#~ msgid "this operation is not supported"
-#~ msgstr "see operatsioon ei ole toetatud"
-
-#~ msgid "internal error in plugin system"
-#~ msgstr "sisemine viga pluginasüsteemis"
-
-#~ msgid "it does not appear to be a primary volume descriptor"
-#~ msgstr "see ei tundu olema seadme esmane deskriptor"
-
-#~ msgid "invalid directory record"
-#~ msgstr "vigane kataloogikirje"
-
-#~ msgid "file name is too long"
-#~ msgstr "failinimi on liiga pikk"
-
-#~ msgid "plugin %s did not want to work. Try to deactivate it"
-#~ msgstr "plugin %s ei tahtnud töötada. Proovi selle plugina keelamist"
-
-#~ msgid "Insufficient space on media (%lli available for %lli)"
-#~ msgstr "Meediumil pole piisavalt ruumi (%lli saadaval %lli jaoks)"
-
-#~ msgid ""
-#~ "the selected location does not have enough free space to store the disc "
-#~ "image (%ld MiB needed)"
-#~ msgstr ""
-#~ "valitud asukohas ei ole piisavalt vaba ruumi, et mahutada plaadi tõmmist "
-#~ "(vaja %ld MB)"
-
-#~ msgid "the size of the volume can't be checked (Unknown error)"
-#~ msgstr "andmekandja suurust ei saanud kontrollida (tundmatu viga)"
-
-#~ msgid "no path"
-#~ msgstr "asukohta pole"
-
-#~ msgid "the pipe couldn't be created (%s)"
-#~ msgstr "toru ei saanud luua (%s)"
-
-#~ msgid ""
-#~ "plugin %s did not work properly.\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "plugin %s ei töötanud korrektselt.\n"
-#~ "Proovi selle keelamist"
-
-#~ msgid ""
-#~ "plugin %s didn't work properly (it does not support operation).\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "plugin %s ei töötanud korrektselt (ei toeta operatsiooni).\n"
-#~ "Proovi selle keelamist"
-
-#~ msgid "couldn't set non blocking mode"
-#~ msgstr "ei saanud seada mitteblokeerimise režiimi"
-
-#~ msgid "couldn't get pipe flags"
-#~ msgstr "ei saanud hankida toru võtmeid"
-
-#~ msgid "file"
-#~ msgstr "fail"
-
-#~ msgid "null graft point"
-#~ msgstr "siirdepunkt määramata"
-
-#~ msgid "wrong path"
-#~ msgstr "vale asukoht"
-
-#~ msgid "impossible to retrieve information"
-#~ msgstr "andmete hankimine võimatu"
-
-#~ msgid "no output specified"
-#~ msgstr "väljund pole määratud"
-
-#~ msgid "a temporary directory could not be created (%s)"
-#~ msgstr "ajutist kataloogi ei saa luua (%s)"
-
-#~ msgid "a temporary file can't be created: %s"
-#~ msgstr "ajutist faili ei saa luua: %s"
-
-#~ msgid "there isn't a valid volume descriptor"
-#~ msgstr "sobivat seadme deskriptorit pole"
-
-#~ msgid "the cue file (%s) seems to be invalid"
-#~ msgstr "cue fail (%s) tundub vigane"
-
-#~ msgid "the drive seems to be busy"
-#~ msgstr "seade tundub olema hõivatud"
-
-#~ msgid "cdrdao could not be found in the path"
-#~ msgstr "cdrdao ei leidunud otsinguteel"
-
-#~ msgid "toc2cue could not be found in the path"
-#~ msgstr "toc2cue ei leidu rajal"
-
-#~ msgid "the old image couldn't be read"
-#~ msgstr "vana tõmmist ei saa lugeda"
-
-#~ msgid "the image can't be created"
-#~ msgstr "tõmmist ei saa luua"
-
-#~ msgid "writing to file descriptor failed"
-#~ msgstr "failikirjeldusse kirjutamine nurjus"
-
-#~ msgid "Internal error: bad file descriptor"
-#~ msgstr "Sisemine viga: vigane faili kirjeldus"
-
-#~ msgid "The file is too large for a CD"
-#~ msgstr "Fail on CD jaoks liiga suur"
-
-#~ msgid ""
-#~ "failed to get the start point of the track. Make sure the media allow to "
-#~ "add files (it is not closed)"
-#~ msgstr ""
-#~ "raja alguspunkti leidmine nurjus. Veendu et meedium võimaldab failide "
-#~ "lisamist (pole suletud)"
-
-#~ msgid "genisoimage could not be found in the path"
-#~ msgstr "genisoimage ei leidunud rajal"
-
-#~ msgid "the drive is not ready"
-#~ msgstr "seade ei ole valmis"
-
-#~ msgid "you don't seem to have the required permissions to access the drive"
-#~ msgstr "tundub, et sul pole seadmele ligipääsuks vajalikke õiguseid"
-
-#~ msgid "internal error"
-#~ msgstr "sisemine viga"
-
-#~ msgid "raw images cannot be created with DVDs"
-#~ msgstr "DVD'dest ei saa luua toortõmmiseid"
-
-#~ msgid "There doesn't seem to be a disc in the drive"
-#~ msgstr "Tundub, et seadmes ei ole plaati"
-
-#~ msgid "input buffer error"
-#~ msgstr "sisendpuhvri viga"
-
-#~ msgid "The CD has already been recorded"
-#~ msgstr "See CD on juba salvestatud"
-
-#~ msgid "The CD cannot be blanked"
-#~ msgstr "Seda CD'd ei saa tühjendada"
-
-#~ msgid "The files selected did not fit on the CD"
-#~ msgstr "Valitud failid ei mahtunud CD'le"
-
-#~ msgid "a write error occured which was likely due to overburning the disc"
-#~ msgstr ""
-#~ "esines kirjutamise viga, mille põhjus oli tõenäoliselt \"üle mahu "
-#~ "kirjutamine\""
-
-#~ msgid ""
-#~ "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-#~ msgstr ""
-#~ "Kõik helifailid peavad olema stereos, 16-bitised digiaudio failid 44100Hz "
-#~ "eraldusega"
-
-#~ msgid "The image does not seem to be a proper iso9660 file system"
-#~ msgstr "Tundub, et tõmmises ei ole sobilik iso9660 failisüsteem"
-
-#~ msgid ""
-#~ "The drive seems to be busy (maybe check you have proper permissions to "
-#~ "use it)"
-#~ msgstr ""
-#~ "Seade tundub hõivatud (võid kontrollida, kas sul on piisavad õigused "
-#~ "selle kasutamiseks)"
-
-#~ msgid "The drive seems to be busy (maybe you should reload the media)"
-#~ msgstr "Seade tundub hõivatud (võid meediumi uuesti sisestada)"
-
-#~ msgid "the image file cannot be found"
-#~ msgstr "tõmmist ei leitud"
-
-#~ msgid "the cd information could not be written"
-#~ msgstr "cd andmeid ei saanud kirjutada"
-
-#~ msgid "the disc could not be closed"
-#~ msgstr "plaati ei saanud sulgeda"
-
-#~ msgid "the audio tracks are too short or not a multiple of 2352"
-#~ msgstr "audiorajad on liiga lühikesed või ei ole 2352 kordsed"
-
-#~ msgid "the inf file can't be written : %s"
-#~ msgstr "inf faili ei saa kirjutada : %s"
-
-#~ msgid "imager doesn't seem to be ready"
-#~ msgstr "tundub, et tõmmise looja ei ole veel valmis"
-
-#~ msgid "the size of the session cannot be retrieved"
-#~ msgstr "sessiooni suurust ei saanud tuvastada"
-
-#~ msgid "mkisofs could not be found in the path"
-#~ msgstr "mkisofs ei leidunud otsinguteel"
-
-#~ msgid "readcd could not be found in the path"
-#~ msgstr "readcd ei leidunud otsinguteel"
-
-#~ msgid "the data couldn't be written to the pipe (%i: %s)"
-#~ msgstr "andmeid ei saa torusse kirjutada (%i: %s)"
-
-#~ msgid "the data couldn't be written to the file (%i: %s)"
-#~ msgstr "andmeid ei saa faili kirjutada (%i: %s)"
-
-#~ msgid "Unhandled error, aborting"
-#~ msgstr "Käsitsematu viga, katkestati"
-
-#~ msgid "dvd+rw-format could not be found in the path"
-#~ msgstr "dvd+rw-format ei leidu rajal"
-
-#~ msgid "The disc is already burnt"
-#~ msgstr "Plaat on juba kirjutatud"
-
-#~ msgid "The recorder could not be accessed"
-#~ msgstr "Salvestajale puudub ligipääs"
-
-#~ msgid "the file /proc/self/fd/0 is missing"
-#~ msgstr "fail /proc/self/fd/0 on puudu"
-
-#~ msgid "the image is not stored locally"
-#~ msgstr "tõmmis ei ole salvestatud kohalikku asukohta"
-
-#~ msgid "growisofs could not be found in the path"
-#~ msgstr "growisofs ei leidu rajal"
-
-#~ msgid "unable to set the source"
-#~ msgstr "allika määramine võimatu"
-
-#~ msgid "unable to add the track to the session"
-#~ msgstr "raja lisamine sessiooni võimatu"
-
-#~ msgid "no profile available for the medium"
-#~ msgstr "meediumi jaoks puudub profiil"
-
-#~ msgid "/dev/null can't be opened"
-#~ msgstr "/dev/null ei saa avada"
-
-#~ msgid "libburn can't burn: %s"
-#~ msgstr "libburn ei saa kirjutada: %s"
-
-#~ msgid "the drive couldn't be initialized"
-#~ msgstr "seadet ei saa lähtestada"
-
-#~ msgid "a parent for the path (%s) could not be found in the tree"
-#~ msgstr "kataloogipuust ei leitud asukohale (%s) ülemkataloogi"
-
-#~ msgid "non local file %s"
-#~ msgstr "mittekohalik fail %s"
-
-#~ msgid "libisofs reported an error while adding directory %s (%x)"
-#~ msgstr "libisofs raporteeris veast, kui oli lisamas kataloogi %s (%x)"
-
-#~ msgid "source can't be created"
-#~ msgstr "allikat ei saanud luua"
-
-#~ msgid "decode can't be created"
-#~ msgstr "decode'i ei saa luua"
-
-#~ msgid "audioconvert can't be created"
-#~ msgstr "audioconvert'i ei saa luua"
-
-#~ msgid "audioresample can't be created"
-#~ msgstr "audioresample'i ei saa luua"
-
-#~ msgid "rganalysis can't be created"
-#~ msgstr "rganalysis't ei saa luua"
-
-#~ msgid "sink can't be created"
-#~ msgstr "sink'i ei saa luua"
-
-#~ msgid "GST plugin \"rgvolume\" could not be found"
-#~ msgstr "GST pluginat \"rgvolume\" ei leitud"
-
-#~ msgid "GST plugin \"rganalysis\" could not be found"
-#~ msgstr "GST pluginat \"rganalysis\" ei leitud"
-
-#~ msgid "filter can't be created"
-#~ msgstr "filtrit ei saanud luua"
-
-#~ msgid "error opening file for padding : %s"
-#~ msgstr "viga faili avamisel lõppu vaikuse lisamiseks : %s"
-
-#~ msgid " Preview "
-#~ msgstr "Eelvaade"
-
-#~ msgid "size can't be retrieved for %s: %s"
-#~ msgstr "%s suurust ei saa tuvastada: %s"
-
-#~ msgid "unreadable file"
-#~ msgstr "loetamatu fail"
-
-#~ msgid "recursive symlink"
-#~ msgstr "rekursiivne sümbolviit"
-
-#~ msgid "%s: %s of data"
-#~ msgstr "%s: %s andmeid"
-
-#~ msgid "the file %s couldn't be read (%s)"
-#~ msgstr "faili %s ei saa lugeda (%s)"
-
-#~ msgid "data could not be read from the pipe (%i: %s)"
-#~ msgstr "andmeid ei saa torust lugeda (%i: %s)"
-
-#~ msgid "the image is not local"
-#~ msgstr "tõmmis ei ole kohalik"
-
-#~ msgid "by "
-#~ msgstr "autorilt"
-
-#~ msgid "queue element can't be created"
-#~ msgstr "queue element'i ei saa luua"
-
-#~ msgid "ffenc_mp2 can't be created"
-#~ msgstr "ffenc_mp2 ei saa luua"
-
-#~ msgid "queue1 element can't be created"
-#~ msgstr "queue1 element'i ei saa luua"
-
-#~ msgid "ffenc_ac3 can't be created"
-#~ msgstr "ffenc_ac3 ei saa luua"
-
-#~ msgid "tee element can't be created"
-#~ msgstr "tee element'i ei saa luua"
-
-#~ msgid "framerate can't be created"
-#~ msgstr "framerate ei saa luua"
-
-#~ msgid "scale can't be created"
-#~ msgstr "scale ei saa luua"
-
-#~ msgid "ffmpegcolorspace can't be created"
-#~ msgstr "ffmpegcolorspace ei saa luua"
-
-#~ msgid "mpeg2enc can't be created"
-#~ msgstr "mpeg2enc ei saa luua"
-
-#~ msgid "mplex can't be created"
-#~ msgstr "mplex ei saa luua"
-
-#~ msgid "Brasero Disc Copier"
-#~ msgstr "Brasero plaadikopeerija"
-
-#~ msgid "Image Extension"
-#~ msgstr "Tõmmise laiend"
-
-#~ msgid "_Don't change extension"
-#~ msgstr "_Ära muuda laiendit"
-
-#~ msgid "Configure some options for the recording"
-#~ msgstr "Häälesta mõningaid kirjutamise valikuid"
-
-#~ msgid "_Disc Info"
-#~ msgstr "_Plaadi andmed"
-
-#~ msgid "Display information on blank discs currently inserted"
-#~ msgstr "Näita praegu sisestatud tühjade plaatide teavet"
-
-#~ msgid "Brasero Disc Burning"
-#~ msgstr "Brasero plaadikirjutaja"
-
-#~ msgid ""
-#~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-#~ msgstr "Kasutatakse ainult koos cdrecord'i -immed lipuga. Vaata immed_flag."
-
-#~ msgid "Track Length"
-#~ msgstr "Loo pikkus"
-
-#~ msgid "Unhandled Song"
-#~ msgstr "Käsitsematu laul"
-
-#~ msgid "Video File"
-#~ msgstr "Videofail"
-
-#~ msgid "_Ignore video"
-#~ msgstr "_Ignoreeri videoid"
-
-#~ msgid "_Add video"
-#~ msgstr "_Lisa video"
-
-#~ msgid "Directory Search"
-#~ msgstr "Kataloogi otsing"
-
-#~ msgid "Unreadable File"
-#~ msgstr "Loetamatu fail"
-
-#~ msgid "Error"
-#~ msgstr "Viga"
-
-#~ msgid "File Deletion"
-#~ msgstr "Faili kustutamine"
-
-#~ msgid "Error Blanking:"
-#~ msgstr "Viga tühjendamisel:"
-
-#~ msgid "Blanking Finished"
-#~ msgstr "Tühjendamine lõpetatud"
-
-#~ msgid "Unexpected error"
-#~ msgstr "Ootamatu viga"
-
-#~ msgid "Playlist Loading Error"
-#~ msgstr "Viga lugude nimekirja laadimisel"
-
-#~ msgid "Loading ..."
-#~ msgstr "Laadimine ..."
-
-#~ msgid "%i MiB"
-#~ msgstr "%i MB"
-
-#~ msgid "%i KiB"
-#~ msgstr "%i KB"
-
-#~ msgid "%i bytes"
-#~ msgstr "%i baiti"
-
-#~ msgid "Search Error"
-#~ msgstr "Otsingu viga"
-
-#~ msgid "waiting"
-#~ msgstr "ootel"
-
-#~ msgid "KiB"
-#~ msgstr "KB"
-
-#~ msgid "MiB"
-#~ msgstr "MB"
-
-#~ msgid "GiB"
-#~ msgstr "GB"
-
-#~ msgid "File Error"
-#~ msgstr "Faili viga"
-
-#~ msgid "Possible Data Loss"
-#~ msgstr "Võimalik andmekadu"
-
-#~ msgid "Multisession Disc"
-#~ msgstr "Multi-sessioon plaat"
-
-#~ msgid "Successful Simulation"
-#~ msgstr "Edukas simulatsioon"
-
-#~ msgid "Session Log Error"
-#~ msgstr "Sessiooni vealogi"
-
-#~ msgid "Burning Error"
-#~ msgstr "Viga kirjutamisel"
-
-#~ msgid "Confirm"
-#~ msgstr "Kinnita"
-
-#~ msgid "Session Import Error"
-#~ msgstr "Sessiooni importimise viga"
-
-#~ msgid "unknown error"
-#~ msgstr "tundmatu viga"
-
-#~ msgid "Recursive Symlink"
-#~ msgstr "Rekursiivne sümbolviit"
-
-#~ msgid "File Not Found"
-#~ msgstr "Faili ei leitud"
-
-#~ msgid "Already Existing File"
-#~ msgstr "Juba olemasolev fail"
-
-#~ msgid "_Don't replace"
-#~ msgstr "Ä_ra asenda"
-
-#~ msgid "File Over 2 GiB"
-#~ msgstr "Faili suurus üle 2 GB"
-
-#~ msgid "_Don't add"
-#~ msgstr "Ä_ra lisa"
-
-#~ msgid "Deep Directory"
-#~ msgstr "Kataloog sügaval"
-
-#~ msgid "_Don't rename"
-#~ msgstr "_Ära nimeta ümber"
-
-#~ msgid "Please Wait"
-#~ msgstr "Palun oota"
-
-#~ msgid "Empty Project"
-#~ msgstr "Tühi projekt"
-
-#~ msgid "New Project"
-#~ msgstr "Uus projekt"
-
-#~ msgid "Project Loading Error"
-#~ msgstr "Viga projekti laadimisel"
-
-#~ msgid "Modified Project"
-#~ msgstr "Muudetud projekt"
-
-#~ msgid " by %s"
-#~ msgstr " esitajalt %s"
-
-#~ msgid "File Integrity Check Error"
-#~ msgstr "Failide tervikluse kontrolli viga"
-
-#~ msgid "File Integrity Check Success"
-#~ msgstr "Edukas failide tervikluse kontroll"
-
-#~ msgid "Media Busy"
-#~ msgstr "Meedium hõivatud"
-
-#~ msgid "Media Error"
-#~ msgstr "Meediumi viga"
-
-#~ msgid "the disc could not be reloaded (max attemps reached)"
-#~ msgstr "plaati ei saa uuesti laadida (katsete ülempiir saavutatud)"
-
-#~ msgid "Open a data project with the contents of nautilus-cd-burner"
-#~ msgstr "Ava andmeprojekt nautilus-cd-burner'i sisuga"
-
-#~ msgid "Incompatible Options"
-#~ msgstr "Kokkusobimatud valikud"
-
-#~ msgid "the device is not ready"
-#~ msgstr "seade ei ole valmis"
-
-#~ msgid "Size Error"
-#~ msgstr "Suuruse viga"
-
-#~ msgid "No Silence"
-#~ msgstr "Vaikust pole"
-
-#~ msgid "Automatic Split"
-#~ msgstr "Automaatne tükeldamine"
-
-#~ msgid "Unhandled file"
-#~ msgstr "Käsitsematu fail"
-
-#~ msgid "Choose from the following options"
-#~ msgstr "Vali järgmiste valikute vahel"
-
-#~ msgid "Choose a recently opened project:"
-#~ msgstr "Vali hiljuti avatud projekt:"
-
-#~ msgid "no disc could be found"
-#~ msgstr "plaati ei leitud"
-
-#~ msgid ""
-#~ "This is a first time running dialog that won't be shown again. If you "
-#~ "change your mind, you can change your choice later in the Removable "
-#~ "Drives and Media Preferences whether or not you chose brasero."
-#~ msgstr ""
-#~ "See on esmakäivituse dialoog, mida enam ei näidata. Kui muudad meelt, "
-#~ "saad oma valikut muuta \"Eemaldatavad kettad ja andmekandjad\" "
-#~ "eelistustest, ükskõik kas valid praegu Brasero või ei."
-
-#~ msgid "_Keep using \"%s\""
-#~ msgstr "_Kasuta senist rakendust \"%s\""
-
-#~ msgid "_Use Brasero next time"
-#~ msgstr "_Kasuta järgmine kord Brasero't"
-
-#~ msgid "Would you like to use Brasero in the future to burn audio discs?"
-#~ msgstr "Kas ka edaspidi kasutada audioplaatide kirjutamiseks Brasero't?"
-
-#~ msgid "Would you like to use Brasero in the future to burn data discs?"
-#~ msgstr "Kas ka edaspidi kasutada andmeplaatide kirjutamiseks Brasero't?"
-
-#~ msgid "Hide the _filtered file list (no file)"
-#~ msgstr "Peida _filtreeritud failide nimekiri (faile pole)"
-
-#~ msgid "Show the _filtered file list (no file)"
-#~ msgstr "Näita _filtreeritud failide nimekirja (faile pole)"
-
-#~ msgid "There is no available medium. Please insert one."
-#~ msgstr "Andmekandjaid pole saadaval. Palun sisesta mõni."
-
-#~ msgid "no medium"
-#~ msgstr "meediumi pole"
-
-#~ msgid "no supported medium"
-#~ msgstr "toetatud meediumi pole"
-
-#~ msgid "medium busy"
-#~ msgstr "meedium hõivatud"
-
-#~ msgid "0"
-#~ msgstr "0"
-
-#~ msgid "<b>Size:</b>"
-#~ msgstr "<b>Suurus:</b>"
-
-#~ msgid "Disc Burning Application"
-#~ msgstr "Plaatide kirjutamise rakendus"
-
-#~ msgid "Choose the disc to write to"
-#~ msgstr "Vali plaat, millele kirjutada"
-
-#~ msgid "<i><b>Pause</b></i>"
-#~ msgstr "<i><b>Paus</b></i>"
-
-#~ msgid "<b>No results</b>"
-#~ msgstr "<b>Tulemusi pole</b>"
-
-#~ msgid "<b>Options</b>"
-#~ msgstr "<b>Valikud</b>"
-
-#~ msgid "<big><b>Creating image</b></big>"
-#~ msgstr "<big><b>Tõmmise loomine</b></big>"
-
-#~ msgid "<big><b>Burning video DVD</b></big>"
-#~ msgstr "<big><b>Video-DVD kirjutamine</b></big>"
-
-#~ msgid "<big><b>Burning data DVD</b></big>"
-#~ msgstr "<big><b>Andme-DVD kirjutamine</b></big>"
-
-#~ msgid "<big><b>Burning image to DVD</b></big>"
-#~ msgstr "<big><b>DVD tõmmise kirjutamine</b></big>"
-
-#~ msgid "<big><b>Copying data DVD</b></big>"
-#~ msgstr "<big><b>Andme-DVD kopeerimine</b></big>"
-
-#~ msgid "<big><b>Burning (S)VCD</b></big>"
-#~ msgstr "<big><b>(S)VCD kirjutamine</b></big>"
-
-#~ msgid "<big><b>Burning audio CD</b></big>"
-#~ msgstr "<big><b>Audio-CD kirjutamine</b></big>"
-
-#~ msgid "<big><b>Burning data CD</b></big>"
-#~ msgstr "<big><b>Andme-CD kirjutamine</b></big>"
-
-#~ msgid "<big><b>Copying CD</b></big>"
-#~ msgstr "<big><b>CD kopeerimine</b></big>"
-
-#~ msgid "<big><b>Burning image to CD</b></big>"
-#~ msgstr "<big><b>Tõmmise kirjutamine CD-le</b></big>"
-
-#~ msgid "<big><b>Burning video disc</b></big>"
-#~ msgstr "<big><b>Videoplaadi kirjutamine</b></big>"
-
-#~ msgid "<big><b>Burning data disc</b></big>"
-#~ msgstr "<big><b>Andmeplaadi kirjutamine</b></big>"
-
-#~ msgid "<big><b>Copying disc</b></big>"
-#~ msgstr "<big><b>Plaadi kopeerimine</b></big>"
-
-#~ msgid "<big><b>Burning image to disc</b></big>"
-#~ msgstr "<big><b>Tõmmise kirjutamine plaadile</b></big>"
-
-#~ msgid "Import session"
-#~ msgstr "Impordi session"
-
-#~ msgid "A multisession disc is inserted:"
-#~ msgstr "Sisestati multi-sessioon plaat:"
-
-#~ msgid "<b>Label of the disc</b>"
-#~ msgstr "<b>Plaadi pealkiri</b>"
-
-#~ msgid "<b>Title</b>"
-#~ msgstr "<b>Pealkiri</b>"
-
-#~ msgid "<i>the medium is not writable</i>"
-#~ msgstr "<i>see andmekandja pole kirjutatav</i>"
-
-#~ msgid "%s free"
-#~ msgstr "%s vaba"
-
-#~ msgid "the medium can be recorded (automatic blanking required)"
-#~ msgstr "see andmekandja on kirjutatav (vajab automaatset tühjendamist)"
-
-#~ msgid "the medium can be recorded"
-#~ msgstr "see andmekandja on kirjutatav"
-
-#~ msgid "data can be written or appended to the medium"
-#~ msgstr "andmed saab kandjale kirjutada või lisada"
-
-#~ msgid "data can be appended to the medium"
-#~ msgstr "andmeid saab kandjale lisada"
-
-#~ msgid ""
-#~ "The <b>image</b> will be saved to\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>Tõmmis</b> kirjutatakse kandjale\n"
-#~ "%s"
-
-#~ msgid "<b>Status:</b>"
-#~ msgstr "<b>Olek:</b>"
-
-#~ msgid "This image can't be burnt:"
-#~ msgstr "Tõmmist ei saanud kirjutada:"
-
-#~ msgid "Invalid Image"
-#~ msgstr "Vigane tõmmis"
-
-#~ msgid "No Image"
-#~ msgstr "Tõmmist pole"
-
-#~ msgid "Path:"
-#~ msgstr "Asukoht:"
-
-#~ msgid "Open an image"
-#~ msgstr "Ava tõmmis"
-
-#~ msgid "<b>Image</b>"
-#~ msgstr "<b>Tõmmis</b>"
-
-#~ msgid "Would you like to activate overburn?"
-#~ msgstr "Kas tahad aktiveerida üle mahu kirjutamise?"
-
-#~ msgid "_Don't use overburn"
-#~ msgstr "Ä_ra kasuta üle mahu kirjutamist"
-
-#~ msgid "Show the available media to be burnt"
-#~ msgstr "Näida kirjutatavat meediumi"
-
-#~ msgid "<i>%s</i> is busy"
-#~ msgstr "<i>%s</i> on hõivatud"
-
-#~ msgid "<i>%s</i> not properly supported"
-#~ msgstr "<i>%s</i> pole täielikult toetatud"
-
-#~ msgid "The disc in <i>%s</i> is not supported"
-#~ msgstr "Plaat seadmes <i>%s</i> pole toetatud"
-
-#~ msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
-#~ msgstr "<b>Ülesuuruses</b> (%s / %s <i>%s</i>)"
-
-#~ msgid "<b>Oversized</b> (%s / %s)"
-#~ msgstr "<b>Ülesuuruses</b> (%s / %s)"
-
-#~ msgid "<b>Empty</b> (%s free for <i>%s</i>)"
-#~ msgstr "<b>Tühi</b> (%s vaba plaadil <i>%s</i>)"
-
-#~ msgid "<b>Empty</b> (%s free)"
-#~ msgstr "<b>Tühi</b> (%s vaba)"
-
-#~ msgid "%s / %s (for <i>%s</i>)"
-#~ msgstr "%s / %s (seadmel <i>%s</i>)"
-
-#~ msgid "%s (DVD-R Dual Layer)"
-#~ msgstr "%s (DVD-R kahekihiline)"
-
-#~ msgid "%s (DVD-R)"
-#~ msgstr "%s (DVD-R)"
-
-#~ msgid "%s (CD-R)"
-#~ msgstr "%s (CD-R)"
-
-#~ msgid "<span size='x-large'><b>Create a new project:</b></span>"
-#~ msgstr "<span size='x-large'><b>Loo uus projekt:</b></span>"
-
-#~ msgid ""
-#~ "<span foreground='grey50'><b><i>Choose from the following options</i></"
-#~ "b></span>"
-#~ msgstr ""
-#~ "<span foreground='grey50'><b><i>Vali järgmiste võimaluste vahel</i></b></"
-#~ "span>"
-
-#~ msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
-#~ msgstr "<span size='x-large'><b>Vali hiljuti avatud projekt:</b></span>"
-
-#~ msgid "<b>Options:</b>"
-#~ msgstr "<b>Valikud:</b>"
-
-#~ msgid "Choose the disc to read from"
-#~ msgstr "Vali plaat, mida lugeda"
-
-#~ msgid "there isn't any available session on the disc"
-#~ msgstr "plaadil ei ole ühtki kasutatavat sessiooni"
-
-#~ msgid "<b>Filtering options</b>"
-#~ msgstr "<b>Filtri valikud</b>"
-
-#~ msgid "<b>Data %s</b>: \"%s\""
-#~ msgstr "<b>Andme-%s</b>: \"%s\""
-
-#~ msgid "<b>Blank %s</b> in %s"
-#~ msgstr "<b>Tühi %s</b> seadmes %s"
-
-#~ msgid "<b>Audio and data %s</b> in %s"
-#~ msgstr "<b>Audio- ja andme-%s</b> seadmes %s"
-
-#~ msgid "<b>Audio %s</b> in %s"
-#~ msgstr "<b>Audio-%s</b> seadmes %s"
-
-#~ msgid "<b>Data %s</b> in %s"
-#~ msgstr "<b>Andme-%s</b> seadmes %s"
-
-#~ msgid "<b>%s</b> in %s"
-#~ msgstr "<b>%s</b> seadmes %s"
-
-#~ msgid "<b>_Image</b>"
-#~ msgstr "<b>_Tõmmis</b>"
-
-#~ msgid ""
-#~ "<b>%s</b>\n"
-#~ "%s\n"
-#~ "<i>%s</i>"
-#~ msgstr ""
-#~ "<b>%s</b>\n"
-#~ "%s\n"
-#~ "<i>%s</i>"
-
-#~ msgid "%i kiB"
-#~ msgstr "%i KB"
-
-#~ msgid "<span weight=\"bold\">Name:</span>\t %s"
-#~ msgstr "<span weight=\"bold\">Nimi:</span>\t %s"
-
-#~ msgid "<span weight=\"bold\">%s</span>\n"
-#~ msgstr "<span weight=\"bold\">%s</span>\n"
-
-#~ msgid "Default Burning Application"
-#~ msgstr "Vaikimisi kirjutamise rakendus"
-
-#~ msgid "Open project"
-#~ msgstr "Ava projekt"
-
-#~ msgid "Enable use of cdrdao"
-#~ msgstr "Luba cdrdao kasutamine"
