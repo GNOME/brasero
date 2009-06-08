@@ -458,6 +458,9 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 		track = tracks->data;
 		next = tracks->next;
 
+		if (!BRASERO_IS_TRACK_STREAM (track))
+			continue;
+
 		result = brasero_track_get_status (BRASERO_TRACK (track), status);
 		if (result == BRASERO_BURN_ERR) {
 			GError *error;

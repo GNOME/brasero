@@ -1348,6 +1348,34 @@ brasero_data_disc_get_track (BraseroDisc *disc,
 	return BRASERO_DISC_OK;
 }
 
+static void
+brasero_data_disc_track_removed (BraseroBurnSession *session,
+				 BraseroTrack *track,
+				 guint former_position,
+				 BraseroDataDisc *disc)
+{
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
+	g_signal_handlers_disconnect_by_func (session,
+					      brasero_data_disc_track_removed,
+					      disc);
+
+	/* Hide all toggle actions for session importing */
+	if (gtk_action_group_get_visible (priv->import_group))
+		gtk_action_group_set_visible (priv->import_group, FALSE);
+
+	if (gtk_action_group_get_visible (priv->disc_group))
+		gtk_action_group_set_visible (priv->disc_group, FALSE);
+
+	if (priv->load_errors) {
+		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
+		g_slist_free (priv->load_errors);
+		priv->load_errors = NULL;
+	}
+}
+
 static BraseroDiscResult
 brasero_data_disc_set_session_contents (BraseroDisc *self,
 					BraseroBurnSession *session)
@@ -1356,7 +1384,14 @@ brasero_data_disc_set_session_contents (BraseroDisc *self,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	brasero_burn_session_add_track (session, BRASERO_TRACK (priv->project), NULL);
+	brasero_burn_session_add_track (session,
+					BRASERO_TRACK (priv->project),
+					NULL);
+	g_signal_connect (session,
+			  "track-removed",
+			  G_CALLBACK (brasero_data_disc_track_removed),
+			  self);
+
 	return BRASERO_DISC_OK;
 }
 

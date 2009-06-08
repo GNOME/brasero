@@ -1354,7 +1354,6 @@ static void
 brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
-	GConfClient *client;
 	
 	if (project->priv->project_status) {
 		gtk_widget_hide (project->priv->project_status);
@@ -1387,9 +1386,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		g_free (project->priv->cover);
 		project->priv->cover = NULL;
 	}
-
-	client = gconf_client_get_default ();
-
+g_print ("IN HERE\n");
 	/* remove the buttons from the "toolbar" */
 	if (project->priv->merge_id) {
 		g_print ("REEEK\n");
@@ -1424,7 +1421,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		gtk_widget_hide (project->priv->button_img);
-
+g_print ("KKK\n");
 		project->priv->current = BRASERO_DISC (project->priv->video);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,

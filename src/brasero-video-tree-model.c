@@ -138,6 +138,9 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 
 	track = iter->user_data;
 
+	if (!BRASERO_IS_TRACK_STREAM (track))
+		return;
+
 	switch (column) {
 	case BRASERO_VIDEO_TREE_MODEL_NAME:
 		g_value_init (value, G_TYPE_STRING);
@@ -234,10 +237,8 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		return;
 
 	default:
-		return;
+		break;
 	}
-
-	return;
 }
 
 GtkTreePath *
@@ -248,6 +249,9 @@ brasero_video_tree_model_track_to_path (BraseroVideoTreeModel *self,
 	GtkTreePath *path;
 	GSList *tracks;
 	guint nth;
+
+	if (!BRASERO_IS_TRACK_STREAM (track))
+		return NULL;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
@@ -529,6 +533,9 @@ brasero_video_tree_model_track_added (BraseroBurnSession *session,
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
+	if (!BRASERO_IS_TRACK_STREAM (track))
+		return;
+
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
 	iter.stamp = priv->stamp;
@@ -557,6 +564,9 @@ brasero_video_tree_model_track_removed (BraseroBurnSession *session,
 	BraseroVideoTreeModelPrivate *priv;
 	GtkTreePath *path;
 
+	if (!BRASERO_IS_TRACK_STREAM (track))
+		return;
+
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
 	/* remove the file. */
@@ -574,6 +584,9 @@ brasero_video_tree_model_track_changed (BraseroBurnSession *session,
 	GValue *value = NULL;
 	GtkTreePath *path;
 	GtkTreeIter iter;
+
+	if (!BRASERO_IS_TRACK_STREAM (track))
+		return;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
