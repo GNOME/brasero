@@ -327,7 +327,11 @@ brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 		g_free (hdr);
 		return src;
 	}
-	
+
+	/* clean and retry */
+	g_free (hdr);
+	hdr = NULL;
+
 	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_RD_RANDOM,
 							 &hdr,
