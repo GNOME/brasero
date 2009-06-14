@@ -41,10 +41,15 @@ typedef struct _BraseroDNDVideoContext BraseroDNDVideoContext;
 
 typedef enum {
 	BRASERO_VIDEO_TREE_MODEL_NAME		= 0,
-	BRASERO_VIDEO_TREE_MODEL_MIME_ICON,
+	BRASERO_VIDEO_TREE_MODEL_ARTIST		= 1,
+	BRASERO_VIDEO_TREE_MODEL_THUMBNAIL,
+	BRASERO_VIDEO_TREE_MODEL_ICON_NAME,
 	BRASERO_VIDEO_TREE_MODEL_SIZE,
 	BRASERO_VIDEO_TREE_MODEL_EDITABLE,
 	BRASERO_VIDEO_TREE_MODEL_SELECTABLE,
+	BRASERO_VIDEO_TREE_MODEL_INDEX,
+	BRASERO_VIDEO_TREE_MODEL_INDEX_NUM,
+	BRASERO_VIDEO_TREE_MODEL_IS_GAP,
 	BRASERO_VIDEO_TREE_MODEL_COL_NUM
 } BraseroVideoProjectColumn;
 
@@ -86,6 +91,11 @@ brasero_video_tree_model_path_to_track (BraseroVideoTreeModel *self,
 GtkTreePath *
 brasero_video_tree_model_track_to_path (BraseroVideoTreeModel *self,
 				        BraseroTrack *track);
+
+void
+brasero_video_tree_model_move_before (BraseroVideoTreeModel *self,
+				      GtkTreeIter *iter,
+				      GtkTreePath *dest_before);
 
 G_END_DECLS
 

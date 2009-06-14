@@ -43,6 +43,7 @@
 typedef struct _BraseroTrackStreamPrivate BraseroTrackStreamPrivate;
 struct _BraseroTrackStreamPrivate
 {
+        GFileMonitor *monitor;
 	gchar *uri;
 
 	BraseroStreamFormat format;
@@ -142,9 +143,9 @@ brasero_track_stream_set_format (BraseroTrackStream *track,
 
 static BraseroBurnResult
 brasero_track_stream_set_boundaries_real (BraseroTrackStream *track,
-					  guint64 start,
-					  guint64 end,
-					  guint64 gap)
+					  gint64 start,
+					  gint64 end,
+					  gint64 gap)
 {
 	BraseroTrackStreamPrivate *priv;
 
@@ -164,9 +165,9 @@ brasero_track_stream_set_boundaries_real (BraseroTrackStream *track,
 
 BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
-				     guint64 start,
-				     guint64 end,
-				     guint64 gap)
+				     gint64 start,
+				     gint64 end,
+				     gint64 gap)
 {
 	BraseroTrackStreamClass *klass;
 	BraseroBurnResult res;

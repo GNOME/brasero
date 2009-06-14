@@ -60,9 +60,9 @@ struct _BraseroTrackStreamClass
 							 BraseroStreamFormat format);
 
 	BraseroBurnResult       (*set_boundaries)       (BraseroTrackStream *track,
-							 guint64 start,
-							 guint64 end,
-							 guint64 gap);
+							 gint64 start,
+							 gint64 end,
+							 gint64 gap);
 };
 
 struct _BraseroTrackStream
@@ -85,9 +85,9 @@ brasero_track_stream_set_format (BraseroTrackStream *track,
 
 BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
-				     guint64 start,
-				     guint64 end,
-				     guint64 gap);
+				     gint64 start,
+				     gint64 end,
+				     gint64 gap);
 
 gchar *
 brasero_track_stream_get_source (BraseroTrackStream *track,

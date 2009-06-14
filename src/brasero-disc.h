@@ -130,10 +130,9 @@ brasero_disc_get_boundaries (BraseroDisc *disc,
 
 void
 brasero_disc_delete_selected (BraseroDisc *disc);
-void
+
+gboolean
 brasero_disc_clear (BraseroDisc *disc);
-void
-brasero_disc_reset (BraseroDisc *disc);
 
 BraseroDiscResult
 brasero_disc_get_status (BraseroDisc *disc,

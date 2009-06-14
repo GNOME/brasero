@@ -35,6 +35,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include "brasero-misc.h"
 
@@ -47,6 +48,8 @@ struct _BraseroTrackStreamCfgPrivate
 {
 	BraseroIOJobBase *load_uri;
 
+	GFileMonitor *monitor;
+
 	GError *error;
 
 	guint loading:1;
@@ -56,6 +59,41 @@ struct _BraseroTrackStreamCfgPrivate
 
 G_DEFINE_TYPE (BraseroTrackStreamCfg, brasero_track_stream_cfg, BRASERO_TYPE_TRACK_STREAM);
 
+static void
+brasero_track_stream_cfg_file_changed (GFileMonitor *monitor,
+								GFile *file,
+								GFile *other_file,
+								GFileMonitorEvent event,
+								BraseroTrackStream *track)
+{
+	BraseroTrackStreamCfgPrivate *priv;
+	gchar *name;
+
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (track);
+
+        switch (event) {
+ /*               case G_FILE_MONITOR_EVENT_CHANGED:
+                        return;
+*/
+                case G_FILE_MONITOR_EVENT_DELETED:
+                        g_object_unref (priv->monitor);
+                        priv->monitor = NULL;
+
+			name = g_file_get_basename (file);
+			priv->error = g_error_new (BRASERO_BURN_ERROR,
+								  BRASERO_BURN_ERROR_FILE_NOT_FOUND,
+								  /* Translators: %s is the name of the file that has just been deleted */
+								  _("\"%s\" was removed from the file system."),
+								 name);
+			g_free (name);
+                        break;
+
+                default:
+                        return;
+        }
+
+        brasero_track_changed (BRASERO_TRACK (track));
+}
 
 static void
 brasero_track_stream_cfg_results_cb (GObject *obj,
@@ -65,6 +103,7 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 				     gpointer user_data)
 {
 	guint64 len;
+	GFile *file;
 	GObject *snapshot;
 	BraseroTrackStreamCfgPrivate *priv;
 
@@ -84,6 +123,20 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_FILE_FOLDER,
 					   _("Directories cannot be added to video or audio discs"));
+
+		brasero_track_changed (BRASERO_TRACK (obj));
+		return;
+	}
+
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR
+	&&  (!strcmp (g_file_info_get_content_type (info), "audio/x-scpls")
+	||   !strcmp (g_file_info_get_content_type (info), "audio/x-ms-asx")
+	||   !strcmp (g_file_info_get_content_type (info), "audio/x-mp3-playlist")
+	||   !strcmp (g_file_info_get_content_type (info), "audio/x-mpegurl"))) {
+		/* This error is special as it can be recovered from */
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_FILE_PLAYLIST,
+					   _("Playlists cannot be added to video or audio discs"));
 
 		brasero_track_changed (BRASERO_TRACK (obj));
 		return;
@@ -144,6 +197,37 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 				       value);
 	}
 
+	if (g_file_info_get_content_type (info)) {
+		const gchar *icon_string = "text-x-preview";
+		GtkIconTheme *theme;
+		GIcon *icon;
+
+		theme = gtk_icon_theme_get_default ();
+
+		/* NOTE: implemented in glib 2.15.6 (not for windows though) */
+		icon = g_content_type_get_icon (g_file_info_get_content_type (info));
+		if (G_IS_THEMED_ICON (icon)) {
+			const gchar * const *names = NULL;
+
+			names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+			if (names) {
+				gint i;
+
+				for (i = 0; names [i]; i++) {
+					if (gtk_icon_theme_has_icon (theme, names [i])) {
+						icon_string = names [i];
+						break;
+					}
+				}
+			}
+		}
+
+		brasero_track_tag_add_string (BRASERO_TRACK (obj),
+					      BRASERO_TRACK_STREAM_MIME_TAG,
+					      icon_string);
+		g_object_unref (icon);
+	}
+
 	/* Get the song info */
 	if (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE))
 		brasero_track_tag_add_string (BRASERO_TRACK (obj),
@@ -161,6 +245,19 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		brasero_track_tag_add_int (BRASERO_TRACK (obj),
 					   BRASERO_TRACK_STREAM_ISRC_TAG,
 					   g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC));
+
+	/* Start monitoring it */
+	file = g_file_new_for_uri (uri);
+	priv->monitor = g_file_monitor_file (file,
+	                                     G_FILE_MONITOR_NONE,
+	                                     NULL,
+	                                     NULL);
+	g_object_unref (file);
+
+	g_signal_connect (priv->monitor,
+	                  "changed",
+	                  G_CALLBACK (brasero_track_stream_cfg_file_changed),
+	                  obj);
 
 	brasero_track_changed (BRASERO_TRACK (obj));
 }
@@ -196,12 +293,24 @@ brasero_track_stream_cfg_get_info (BraseroTrackStreamCfg *track)
 				  BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				  BRASERO_IO_INFO_METADATA_THUMBNAIL,
 				  track);
+	g_free (uri);
 }
 
 static BraseroBurnResult
 brasero_track_stream_cfg_set_source (BraseroTrackStream *track,
 				     const gchar *uri)
 {
+	BraseroTrackStreamCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (track);
+	if (priv->monitor) {
+		g_object_unref (priv->monitor);
+		priv->monitor = NULL;
+	}
+
+	if (priv->load_uri)
+		brasero_io_cancel_by_base (priv->load_uri);
+
 	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_source)
 		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_source (track, uri);
 
@@ -248,6 +357,18 @@ brasero_track_stream_cfg_finalize (GObject *object)
 	BraseroTrackStreamCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (object);
+
+	if (priv->load_uri) {
+		brasero_io_cancel_by_base (priv->load_uri);
+		g_free (priv->load_uri);
+		priv->load_uri = NULL;
+	}
+
+	if (priv->monitor) {
+		g_object_unref (priv->monitor);
+		priv->monitor = NULL;
+	}
+
 	if (priv->error) {
 		g_error_free (priv->error);
 		priv->error = NULL;

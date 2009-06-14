@@ -56,6 +56,7 @@ G_BEGIN_DECLS
 #define BRASERO_TRACK_STREAM_COMPOSER_TAG		"track::stream::info::composer"
 #define BRASERO_TRACK_STREAM_ARTIST_TAG			"track::stream::info::artist"
 #define BRASERO_TRACK_STREAM_THUMBNAIL_TAG		"track::stream::snapshot"
+#define BRASERO_TRACK_STREAM_MIME_TAG			"track::stream::mime"
 
 /**
  * Int

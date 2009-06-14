@@ -469,13 +469,19 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 
 			uri = brasero_track_stream_get_source (track, TRUE);
 			error = brasero_status_get_error (status);
-			if (!error || error->code != BRASERO_BURN_ERROR_FILE_FOLDER)
+			if (!error)
 				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
-			else {
+			else if (error->code != BRASERO_BURN_ERROR_FILE_FOLDER) {
 				res = brasero_video_disc_directory_dialog (self);
 				if (res)
 					brasero_video_disc_add_directory_contents (self, uri, BRASERO_TRACK (track));
 			}
+			else if (error->code == BRASERO_BURN_ERROR_FILE_NOT_FOUND) {
+				/* It could be a file that was deleted */
+				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
+			}
+			else
+				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
 
 			brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session),
 							   BRASERO_TRACK (track));
@@ -1197,7 +1203,9 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "pixbuf", BRASERO_VIDEO_TREE_MODEL_MIME_ICON);
+					    "pixbuf", BRASERO_VIDEO_TREE_MODEL_THUMBNAIL);
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "icon-name", BRASERO_VIDEO_TREE_MODEL_ICON_NAME);
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_signal_connect (G_OBJECT (renderer), "edited",
@@ -1334,22 +1342,6 @@ brasero_video_disc_set_property (GObject * object,
 	}
 }
 
-static void
-brasero_video_disc_clear (BraseroDisc *disc)
-{
-	BraseroVideoDiscPrivate *priv;
-	BraseroSessionCfg *session;
-	GtkTreeModel *model;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session), NULL, NULL);
-
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
-}
-
 static BraseroDiscResult
 brasero_video_disc_set_session_contents (BraseroDisc *self,
 					 BraseroBurnSession *session)
@@ -1358,6 +1350,11 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 	BraseroVideoDiscPrivate *priv;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	if (!session) {
+		gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree), NULL);
+		return BRASERO_DISC_OK;
+	}
 
 	model = brasero_video_tree_model_new ();
 	brasero_video_tree_model_set_session (model, BRASERO_SESSION_CFG (session));
@@ -1454,7 +1451,6 @@ brasero_video_disc_iface_disc_init (BraseroDiscIface *iface)
 {
 	iface->add_uri = brasero_video_disc_add_uri;
 	iface->delete_selected = brasero_video_disc_delete_selected;
-	iface->clear = brasero_video_disc_clear;
 
 	iface->set_session_contents = brasero_video_disc_set_session_contents;
 

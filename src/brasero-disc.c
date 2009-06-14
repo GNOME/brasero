@@ -161,16 +161,19 @@ brasero_disc_delete_selected (BraseroDisc *disc)
 		(* iface->delete_selected) (disc);
 }
 
-void
+gboolean
 brasero_disc_clear (BraseroDisc *disc)
 {
 	BraseroDiscIface *iface;
 
-	g_return_if_fail (BRASERO_IS_DISC (disc));
+	g_return_val_if_fail (BRASERO_IS_DISC (disc), FALSE);
 	
 	iface = BRASERO_DISC_GET_IFACE (disc);
-	if (iface->clear)
-		(* iface->clear) (disc);
+	if (!iface->clear)
+		return FALSE;
+
+	(* iface->clear) (disc);
+	return TRUE;
 }
 
 void
@@ -226,7 +229,6 @@ brasero_disc_set_session_contents (BraseroDisc *disc,
 	BraseroDiscIface *iface;
 
 	g_return_val_if_fail (BRASERO_IS_DISC (disc), BRASERO_DISC_ERROR_UNKNOWN);
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_DISC_ERROR_UNKNOWN);
 	
 	iface = BRASERO_DISC_GET_IFACE (disc);
 	if (iface->set_session_contents)

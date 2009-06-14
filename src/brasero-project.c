@@ -1354,7 +1354,7 @@ static void
 brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
-	
+
 	if (project->priv->project_status) {
 		gtk_widget_hide (project->priv->project_status);
 		gtk_dialog_response (GTK_DIALOG (project->priv->project_status),
@@ -1365,6 +1365,11 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
 				      "media-optical",
 				      GTK_ICON_SIZE_LARGE_TOOLBAR);
+
+	if (project->priv->current) {
+		brasero_disc_set_session_contents (project->priv->current, NULL);
+		project->priv->current = NULL;
+	}
 
 	brasero_project_reset (project);
 
@@ -1386,14 +1391,12 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		g_free (project->priv->cover);
 		project->priv->cover = NULL;
 	}
-g_print ("IN HERE\n");
+
 	/* remove the buttons from the "toolbar" */
-	if (project->priv->merge_id) {
-		g_print ("REEEK\n");
+	if (project->priv->merge_id > 0)
 		gtk_ui_manager_remove_ui (project->priv->manager,
 					  project->priv->merge_id);
-	}
-
+g_object_ref (project->priv->session);
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		gtk_widget_hide (project->priv->button_img);
 
@@ -1421,7 +1424,7 @@ g_print ("IN HERE\n");
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		gtk_widget_hide (project->priv->button_img);
-g_print ("KKK\n");
+
 		project->priv->current = BRASERO_DISC (project->priv->video);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1579,8 +1582,12 @@ brasero_project_set_none (BraseroProject *project)
 		project->priv->chooser = NULL;
 	}
 
+	if (project->priv->current) {
+		brasero_disc_set_session_contents (project->priv->current, NULL);
+		project->priv->current = NULL;
+	}
+
 	brasero_project_reset (project);
-	project->priv->current = NULL;
 
 	/* update buttons/menus */
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
@@ -1900,7 +1907,8 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 			return;
 	}
 
-	brasero_disc_clear (BRASERO_DISC (project->priv->current));
+	if (brasero_disc_clear (BRASERO_DISC (project->priv->current)))
+		brasero_burn_session_add_track (BRASERO_BURN_SESSION (project->priv->session), NULL, NULL);
 }
 
 static void
