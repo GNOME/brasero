@@ -591,6 +591,7 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 
 	/* FIXME: need a way to get a window for the operation */
 //	operation = gtk_mount_operation_new (GTK_WINDOW (brasero_app_get_default ()));
+	operation = NULL;
 	g_file_mount_enclosing_volume (file,
 				       G_MOUNT_MOUNT_NONE,
 				       operation,
