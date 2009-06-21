@@ -1439,6 +1439,7 @@ void
 brasero_project_burn (BraseroProject *project)
 {
 	gboolean res = FALSE;
+	BraseroDisc *current_disc;
 
 	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session)))
 		res = brasero_project_drive_properties (project);
@@ -1449,6 +1450,11 @@ brasero_project_burn (BraseroProject *project)
 		return;
 
 	project->priv->is_burning = 1;
+
+	current_disc = project->priv->current;
+	project->priv->current = NULL;
+	brasero_disc_set_session_contents (current_disc, NULL);
+
 	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 
 	/* This is to stop the preview widget from playing */
@@ -1457,6 +1463,9 @@ brasero_project_burn (BraseroProject *project)
 	/* now setup the burn dialog */
 	if (brasero_app_burn (brasero_app_get_default (), BRASERO_BURN_SESSION (project->priv->session)))
 		project->priv->burnt = TRUE;
+
+	project->priv->current = current_disc;
+	brasero_disc_set_session_contents (current_disc, BRASERO_BURN_SESSION (project->priv->session));
 
 	project->priv->is_burning = 0;
 }

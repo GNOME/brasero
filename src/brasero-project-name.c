@@ -542,6 +542,15 @@ brasero_project_name_track_added (BraseroBurnSession *session,
 }
 
 static void
+brasero_project_name_track_changed (BraseroBurnSession *session,
+				    BraseroTrack *track,
+				    BraseroProjectName *self)
+{
+	/* It can happen that stream tracks change */
+	brasero_project_name_session_changed (self);
+}
+
+static void
 brasero_project_name_track_removed (BraseroBurnSession *session,
 				    BraseroTrack *track,
 				    guint former_position,
@@ -567,17 +576,21 @@ brasero_project_name_set_property (GObject *object,
 	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
 
 	switch (property_id) {
-	case PROP_SESSION: /* Readable and only writable at creation time */
+	case PROP_SESSION:
 		priv->session = g_object_ref (g_value_get_object (value));
-		g_signal_connect (g_value_get_object (value),
+		g_signal_connect (priv->session,
 				  "track-added",
 				  G_CALLBACK (brasero_project_name_track_added),
 				  object);
-		g_signal_connect (g_value_get_object (value),
+		g_signal_connect (priv->session,
+				  "track-changed",
+				  G_CALLBACK (brasero_project_name_track_changed),
+				  object);
+			g_signal_connect (priv->session,
 				  "track-removed",
 				  G_CALLBACK (brasero_project_name_track_removed),
 				  object);
-		g_signal_connect (g_value_get_object (value),
+		g_signal_connect (priv->session,
 				  "flags-changed",
 				  G_CALLBACK (brasero_project_name_flags_changed),
 				  object);
