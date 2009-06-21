@@ -1428,7 +1428,6 @@ brasero_project_image_properties (BraseroProject *project)
 	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (dialog), project->priv->session);
 
 	/* launch the dialog */
-	gtk_widget_show (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
@@ -1452,8 +1451,8 @@ brasero_project_burn (BraseroProject *project)
 	project->priv->is_burning = 1;
 
 	current_disc = project->priv->current;
-	project->priv->current = NULL;
 	brasero_disc_set_session_contents (current_disc, NULL);
+	project->priv->current = NULL;
 
 	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 
@@ -1463,6 +1462,9 @@ brasero_project_burn (BraseroProject *project)
 	/* now setup the burn dialog */
 	if (brasero_app_burn (brasero_app_get_default (), BRASERO_BURN_SESSION (project->priv->session)))
 		project->priv->burnt = TRUE;
+
+	/* empty the stack of temporary tracks */
+	while (brasero_burn_session_pop_tracks (BRASERO_BURN_SESSION (project->priv->session)) == BRASERO_BURN_RETRY);
 
 	project->priv->current = current_disc;
 	brasero_disc_set_session_contents (current_disc, BRASERO_BURN_SESSION (project->priv->session));

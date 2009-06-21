@@ -1369,25 +1369,22 @@ brasero_burn_session_push_tracks (BraseroBurnSession *self)
 	}
 }
 
-void
+BraseroBurnResult
 brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 {
 	GSList *sources;
 	BraseroBurnSessionPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	/* Don't go further if there is no list of tracks on the pile */
 	if (!priv->pile_tracks)
-		return;
+		return BRASERO_BURN_OK;
 
-	if (priv->tracks) {
+	if (priv->tracks)
 		brasero_burn_session_free_tracks (self);
-		if (!priv->pile_tracks)
-			return;
-	}
 
 	sources = priv->pile_tracks->data;
 	priv->pile_tracks = g_slist_remove (priv->pile_tracks, sources);
@@ -1403,6 +1400,8 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 			       0,
 			       track);
 	}
+
+	return BRASERO_BURN_RETRY;
 }
 
 /**

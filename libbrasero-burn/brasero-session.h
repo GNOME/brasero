@@ -217,7 +217,7 @@ brasero_burn_session_pop_settings (BraseroBurnSession *session);
 
 void
 brasero_burn_session_push_tracks (BraseroBurnSession *session);
-void
+BraseroBurnResult
 brasero_burn_session_pop_tracks (BraseroBurnSession *session);
 
 /**
