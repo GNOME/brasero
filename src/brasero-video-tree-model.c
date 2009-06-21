@@ -247,18 +247,37 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_THUMBNAIL:
-		value_tag = NULL;
-		brasero_track_tag_lookup (track,
-					  BRASERO_TRACK_STREAM_THUMBNAIL_TAG,
-					  &value_tag);
+		g_value_init (value, GDK_TYPE_PIXBUF);
 
-		if (value_tag) {
-			g_value_init (value, GDK_TYPE_PIXBUF);
-			pixbuf = g_value_dup_object (value_tag);
-			g_value_set_object (value, pixbuf);
-			g_object_unref (pixbuf);
+		status = brasero_status_new ();
+		brasero_track_get_status (track, status);
+
+		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY)
+			pixbuf = gtk_icon_theme_load_icon (priv->theme,
+							   "image-loading",
+							   48,
+							   0,
+							   NULL);
+		else {
+			value_tag = NULL;
+			brasero_track_tag_lookup (track,
+						  BRASERO_TRACK_STREAM_THUMBNAIL_TAG,
+						  &value_tag);
+
+			if (value_tag)
+				pixbuf = g_value_dup_object (value_tag);
+			else
+				pixbuf = gtk_icon_theme_load_icon (priv->theme,
+								   "image-missing",
+								   48,
+								   0,
+								   NULL);
 		}
 
+		g_value_set_object (value, pixbuf);
+		g_object_unref (pixbuf);
+
+		brasero_status_free (status);
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_SIZE:

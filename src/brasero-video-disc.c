@@ -1175,8 +1175,6 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "pixbuf", BRASERO_VIDEO_TREE_MODEL_THUMBNAIL);
-	gtk_tree_view_column_add_attribute (column, renderer,
-					    "icon-name", BRASERO_VIDEO_TREE_MODEL_ICON_NAME);
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_signal_connect (G_OBJECT (renderer), "edited",
