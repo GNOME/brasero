@@ -980,6 +980,15 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 	audio = BRASERO_AUDIO_DISC (disc);
 
 	if (!session) {
+		GtkTreeModel *model;
+		BraseroSessionCfg *session;
+
+		model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
+		session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
+		g_signal_handlers_disconnect_by_func (session,
+						      brasero_audio_disc_session_changed,
+						      disc);
+
 		gtk_tree_view_set_model (GTK_TREE_VIEW (audio->priv->tree), NULL);
 		return BRASERO_DISC_OK;
 	}
