@@ -255,9 +255,11 @@ brasero_burn_reprobe (BraseroBurn *burn)
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
+	BRASERO_BURN_LOG ("Reprobing for medium");
+
 	/* reprobe the medium and wait for it to be probed */
 	brasero_drive_reprobe (priv->dest);
-	while (!(medium = brasero_drive_get_medium (priv->dest)))
+	while ((medium = brasero_drive_get_medium (priv->dest)) == NULL)
 		result = brasero_burn_sleep (burn, 250);
 
 	return result;

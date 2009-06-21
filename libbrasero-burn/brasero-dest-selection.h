@@ -66,6 +66,10 @@ GtkWidget *
 brasero_dest_selection_new (BraseroBurnSession *selection);
 
 void
+brasero_dest_selection_set_session (BraseroDestSelection *selection,
+				    BraseroBurnSession *session);
+
+void
 brasero_dest_selection_choose_best (BraseroDestSelection *selection);
 
 G_END_DECLS

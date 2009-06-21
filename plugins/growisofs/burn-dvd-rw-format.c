@@ -108,7 +108,8 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 	brasero_job_get_flags (BRASERO_JOB (process), &flags);
         if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BDRE)
 	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	&&  (flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
 		gchar *blank_str;
 
 		/* This creates a sequential DVD-RW */

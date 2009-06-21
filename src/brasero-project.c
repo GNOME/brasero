@@ -1450,9 +1450,12 @@ brasero_project_burn (BraseroProject *project)
 
 	project->priv->is_burning = 1;
 
+	/* This is to avoid having the settings being wrongly reflected or changed */
 	current_disc = project->priv->current;
 	brasero_disc_set_session_contents (current_disc, NULL);
 	project->priv->current = NULL;
+
+	brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (project->priv->selection), NULL);
 
 	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 
@@ -1468,6 +1471,9 @@ brasero_project_burn (BraseroProject *project)
 
 	project->priv->current = current_disc;
 	brasero_disc_set_session_contents (current_disc, BRASERO_BURN_SESSION (project->priv->session));
+
+	brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (project->priv->selection),
+					    project->priv->session);
 
 	project->priv->is_burning = 0;
 }

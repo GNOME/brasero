@@ -526,7 +526,8 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 		brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
 					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
 
-		if (priv->supported & BRASERO_BURN_FLAG_FAST_BLANK)
+		if (priv->supported & BRASERO_BURN_FLAG_FAST_BLANK
+		&& (media & BRASERO_MEDIUM_UNFORMATTED) == 0)
 			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
 						       BRASERO_BURN_FLAG_FAST_BLANK);
 

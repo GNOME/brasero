@@ -62,8 +62,6 @@ struct _BraseroDestSelectionPrivate
 	BraseroBurnSession *session;
 
 	BraseroDrive *locked_drive;
-
-	gulong valid_sig;
 };
 
 #define BRASERO_DEST_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DEST_SELECTION, BraseroDestSelectionPrivate))
@@ -201,25 +199,23 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 }
 
 static void
-brasero_dest_selection_finalize (GObject *object)
+brasero_dest_selection_clean (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	if (priv->valid_sig) {
-		g_signal_handler_disconnect (priv->session,
-					     priv->valid_sig);
-		priv->valid_sig = 0;
-	}
-
-	g_signal_handlers_disconnect_by_func (priv->session,
-					      brasero_dest_selection_output_changed,
-					      object);
-	g_signal_handlers_disconnect_by_func (priv->session,
-					      brasero_dest_selection_flags_changed,
-					      object);
 	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_dest_selection_valid_session,
+						      self);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_dest_selection_output_changed,
+						      self);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_dest_selection_flags_changed,
+						      self);
+
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
@@ -228,7 +224,12 @@ brasero_dest_selection_finalize (GObject *object)
 		brasero_drive_unlock (priv->locked_drive);
 		g_object_unref (priv->locked_drive);
 	}
+}
 
+static void
+brasero_dest_selection_finalize (GObject *object)
+{
+	brasero_dest_selection_clean (BRASERO_DEST_SELECTION (object));
 	G_OBJECT_CLASS (brasero_dest_selection_parent_class)->finalize (object);
 }
 
@@ -350,6 +351,54 @@ brasero_dest_selection_choose_best (BraseroDestSelection *self)
 	}
 }
 
+void
+brasero_dest_selection_set_session (BraseroDestSelection *selection,
+				    BraseroBurnSession *session)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+
+	if (priv->session)
+		brasero_dest_selection_clean (selection);
+
+	if (!session)
+		return;
+
+	priv->session = g_object_ref (session);
+	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE) {
+		BraseroDrive *drive;
+
+		drive = brasero_burn_session_get_burner (session);
+		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (selection),
+						     brasero_drive_get_medium (drive));
+	}
+	else {
+		BraseroMedium *medium;
+
+		medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (selection));
+		if (medium) {
+			brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
+			g_object_unref (medium);
+		}
+	}
+
+	g_signal_connect (session,
+			  "is-valid",
+			  G_CALLBACK (brasero_dest_selection_valid_session),
+			  selection);
+	g_signal_connect (session,
+			  "output-changed",
+			  G_CALLBACK (brasero_dest_selection_output_changed),
+			  selection);
+	g_signal_connect (session,
+			  "flags-changed",
+			  G_CALLBACK (brasero_dest_selection_flags_changed),
+			  selection);
+
+	brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (selection));
+}
+
 static void
 brasero_dest_selection_set_property (GObject *object,
 				     guint property_id,
@@ -366,40 +415,7 @@ brasero_dest_selection_set_property (GObject *object,
 		/* NOTE: no need to unref a potential previous session since
 		 * it's only set at construct time */
 		session = g_value_get_object (value);
-		priv->session = session;
-		g_object_ref (session);
-
-		if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE) {
-			BraseroDrive *drive;
-
-			drive = brasero_burn_session_get_burner (session);
-			brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (object),
-							     brasero_drive_get_medium (drive));
-		}
-		else {
-			BraseroMedium *medium;
-
-			medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (object));
-			if (medium) {
-				brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
-				g_object_unref (medium);
-			}
-		}
-
-		priv->valid_sig = g_signal_connect (session,
-						    "is-valid",
-						    G_CALLBACK (brasero_dest_selection_valid_session),
-						    object);
-		g_signal_connect (session,
-				  "output-changed",
-				  G_CALLBACK (brasero_dest_selection_output_changed),
-				  object);
-		g_signal_connect (session,
-				  "flags-changed",
-				  G_CALLBACK (brasero_dest_selection_flags_changed),
-				  object);
-
-		brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (object));
+		brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (object), session);
 		break;
 
 	default:
@@ -622,7 +638,7 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 							      "The session",
 							      "The session to work with",
 							      BRASERO_TYPE_BURN_SESSION,
-							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
+							      G_PARAM_READWRITE));
 }
 
 GtkWidget *
