@@ -713,59 +713,39 @@ brasero_data_disc_unknown_uri_cb (BraseroTrackDataCfg *vfs,
 }
 
 static void
-brasero_data_disc_use_joliet_response_cb (BraseroDiscMessage *message,
-					  GtkResponseType response,
-					  BraseroDataDisc *self)
+brasero_data_disc_joliet_rename_cb (BraseroTrackDataCfg *project,
+				    BraseroDataDisc *self)
 {
 	BraseroDataDiscPrivate *priv;
+	GtkWidget *dialog;
+	gchar *secondary;
+	gint answer;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
-	if (response == GTK_RESPONSE_YES)
+
+	dialog = brasero_app_dialog (brasero_app_get_default (),
+				     _("Should files be renamed to be fully Windows-compatible?"),
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_WARNING);
+	secondary = g_strdup_printf ("%s\n%s",
+				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),
+				     _("Those names should be changed and truncated to 64 characters."));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", secondary);
+	g_free (secondary);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Rename for Full Windows Compatibility"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Disable Full Windows Compatibility"), GTK_RESPONSE_CANCEL);
+
+	gtk_widget_show_all (dialog);
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (answer == GTK_RESPONSE_YES)
 		brasero_track_data_add_fs (BRASERO_TRACK_DATA (priv->project),
 					   BRASERO_IMAGE_FS_JOLIET);
 	else
 		brasero_track_data_rm_fs (BRASERO_TRACK_DATA (priv->project),
 					  BRASERO_IMAGE_FS_JOLIET);
-}
-
-static void
-brasero_data_disc_joliet_rename_cb (BraseroTrackDataCfg *project,
-				    BraseroDataDisc *self)
-{
-	BraseroDataDiscPrivate *priv;
-	GtkWidget *message;
-	gchar *secondary;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
-	secondary = g_strdup_printf ("%s\n%s",
-				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),
-				     _("Those names should be changed and truncated to 64 characters."));
-
-	message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
-					      _("Should files be renamed to be fully Windows-compatible?"),
-					      secondary,
-					      -1,
-					      BRASERO_NOTIFY_CONTEXT_SIZE);
-	g_free (secondary);
-
-	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
-					GTK_STOCK_DIALOG_WARNING);
-
-	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-				   BRASERO_DISC_MESSAGE (message),
-				   _("_Rename for Full Windows Compatibility"),
-				   NULL,
-				   GTK_RESPONSE_YES);
-	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-				   BRASERO_DISC_MESSAGE (message),
-				   _("_Disable Full Windows Compatibility"),
-				   NULL,
-				   GTK_RESPONSE_CANCEL);
-
-	g_signal_connect (BRASERO_DISC_MESSAGE (message),
-			  "response",
-			  G_CALLBACK (brasero_data_disc_use_joliet_response_cb),
-			  self);
 }
 
 static gboolean
@@ -2094,15 +2074,6 @@ brasero_data_disc_key_released_cb (GtkTreeView *tree,
 /**
  * Misc functions
  */
-
-gchar *
-brasero_data_disc_get_scaled_icon_path (BraseroDataDisc *disc)
-{
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-	return brasero_track_data_cfg_get_scaled_icon_path (priv->project);
-}
 
 void
 brasero_data_disc_set_right_button_group (BraseroDataDisc *self,
