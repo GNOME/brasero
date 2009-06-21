@@ -84,11 +84,6 @@ struct _BraseroDiscIface {
 							 gint *remaining,
 							 gchar **current_task);
 
-	BraseroDiscResult	(*load_track)		(BraseroDisc *disc,
-							 BraseroDiscTrack *track);
-	BraseroDiscResult	(*get_track)		(BraseroDisc *disc,
-							 BraseroDiscTrack *track);
-
 	BraseroDiscResult	(*set_session_contents)	(BraseroDisc *disc,
 							 BraseroBurnSession *session);
 
@@ -140,13 +135,6 @@ brasero_disc_get_status (BraseroDisc *disc,
 			 gchar **current_task);
 
 BraseroDiscResult
-brasero_disc_get_track (BraseroDisc *disc,
-			BraseroDiscTrack *track);
-BraseroDiscResult
-brasero_disc_load_track (BraseroDisc *disc,
-			 BraseroDiscTrack *track);
-
-BraseroDiscResult
 brasero_disc_set_session_contents (BraseroDisc *disc,
 				   BraseroBurnSession *session);
 
@@ -161,9 +149,5 @@ brasero_disc_contents_changed (BraseroDisc *disc,
 			       gint nb_files);
 void
 brasero_disc_selection_changed (BraseroDisc *disc);
-
-
-GtkWidget *
-brasero_disc_get_use_info_notebook (void);
 
 #endif /* DISC_H */

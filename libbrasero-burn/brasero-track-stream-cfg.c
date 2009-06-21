@@ -344,7 +344,7 @@ brasero_track_stream_cfg_get_status (BraseroTrack *track,
 	if (status)
 		brasero_status_set_completed (status);
 
-	return BRASERO_BURN_OK;
+	return BRASERO_TRACK_CLASS (brasero_track_stream_cfg_parent_class)->get_status (track, status);
 }
 
 static void

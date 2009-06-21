@@ -115,7 +115,6 @@ typedef enum {
 enum {
 	AVAILABLE,
 	LOADED,
-	ACTIVITY,
 	IMAGE,
 	UNREADABLE,
 	RECURSIVE,
@@ -2236,8 +2235,14 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (brasero_data_project_is_empty (BRASERO_DATA_PROJECT (priv->tree)))
+	if (brasero_data_project_is_empty (BRASERO_DATA_PROJECT (priv->tree))) {
+		if (status)
+			brasero_status_set_error (status,
+						  g_error_new (BRASERO_BURN_ERROR,
+							       BRASERO_BURN_ERROR_EMPTY,
+							       _("The project is empty")));
 		return BRASERO_BURN_ERR;
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -2678,11 +2683,6 @@ brasero_track_data_cfg_activity_changed (BraseroDataVFS *vfs,
 
 emit_signal:
 
-	g_signal_emit (self,
-		       brasero_track_data_cfg_signals [ACTIVITY],
-		       0,
-		       active);
-
 	brasero_track_changed (BRASERO_TRACK (self));
 }
 
@@ -3092,17 +3092,6 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  G_TYPE_NONE,
 			  2,
 			  G_TYPE_OBJECT,
-			  G_TYPE_BOOLEAN);
-
-	brasero_track_data_cfg_signals [ACTIVITY] = 
-	    g_signal_new ("vfs_activity",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_FIRST|G_SIGNAL_NO_RECURSE,
-			  0,
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__BOOLEAN,
-			  G_TYPE_NONE,
-			  1,
 			  G_TYPE_BOOLEAN);
 
 	brasero_track_data_cfg_signals [IMAGE] = 

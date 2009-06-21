@@ -748,32 +748,33 @@ brasero_project_manager_iso (BraseroProjectManager *manager,
 
 BraseroProjectType
 brasero_project_manager_open_project (BraseroProjectManager *manager,
-				      BraseroDiscTrack *track,
 				      const gchar *uri,
+				      gboolean playlist,
 				      gboolean burn)
 {
 	GtkAction *action;
 	BraseroProjectType type;
 
-    	if (track->type == BRASERO_PROJECT_TYPE_INVALID) {
+	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri, playlist);
+	if (type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
-		return BRASERO_PROJECT_TYPE_INVALID;
+		return type;
 	}
 
-	brasero_project_manager_switch (manager, track->type, NULL, NULL, FALSE);
-	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), track, uri);
-	if (type == BRASERO_PROJECT_TYPE_INVALID)
-		return type;
+	brasero_project_manager_switch (manager,
+					type,
+					NULL,
+					NULL,
+					FALSE);
 
 	if (burn) {
 		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
-		return track->type;
+		return type;
 	}
 
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 	gtk_action_set_sensitive (action, TRUE);
-
-	return track->type;
+	return type;
 }
 
 BraseroProjectType
@@ -784,28 +785,18 @@ brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
 	/* When our files/description of x-brasero mime type is not properly 
 	 * installed, it's returned as application/xml, so check that too. */
 	if (!strcmp (mime, "application/x-brasero")
-	||  !strcmp (mime, "application/xml")) {
-		BraseroDiscTrack *track = NULL;
-
-		if (!brasero_project_open_project_xml (uri, &track, TRUE))
-			return BRASERO_PROJECT_TYPE_INVALID;
-
-		return brasero_project_manager_open_project (manager, track, uri, FALSE);
-	}
+	||  !strcmp (mime, "application/xml"))
+		return brasero_project_manager_open_project (manager, uri, FALSE, FALSE);
 
 #ifdef BUILD_PLAYLIST
 
 	else if (!strcmp (mime, "audio/x-scpls")
 	     ||  !strcmp (mime, "audio/x-ms-asx")
 	     ||  !strcmp (mime, "audio/x-mp3-playlist")
-	     ||  !strcmp (mime, "audio/x-mpegurl")) {
-		BraseroDiscTrack *track = NULL;
+	     ||  !strcmp (mime, "audio/x-mpegurl"))
+		return brasero_project_manager_open_project (manager, uri, TRUE, FALSE);
 
-		if (!brasero_project_open_audio_playlist_project (uri, &track, TRUE))
-			return BRASERO_PROJECT_TYPE_INVALID;
 
-		return brasero_project_manager_open_project (manager, track, uri, FALSE);
-	}
 #endif
 
 	else if (!strcmp (mime, "application/x-cd-image")

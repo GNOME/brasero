@@ -35,7 +35,7 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-session.h"
+#include "brasero-session-cfg.h"
 
 G_BEGIN_DECLS
 
@@ -62,7 +62,7 @@ struct _BraseroMediumProperties
 GType brasero_medium_properties_get_type (void) G_GNUC_CONST;
 
 GtkWidget *
-brasero_medium_properties_new (BraseroBurnSession *session);
+brasero_medium_properties_new (BraseroSessionCfg *session);
 
 G_END_DECLS
 

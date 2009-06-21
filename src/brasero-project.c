@@ -88,6 +88,8 @@
 #include "brasero-burn-options.h"
 #include "brasero-project-name.h"
 
+#include "brasero-image-properties.h"
+
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);
 static void brasero_project_iface_uri_container_init (BraseroURIContainerIFace *iface);
@@ -135,22 +137,12 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *center,
 				gint *footer);
 
-typedef enum {
-	BRASERO_PROJECT_SAVE_XML			= 0,
-	BRASERO_PROJECT_SAVE_PLAIN			= 1,
-	BRASERO_PROJECT_SAVE_PLAYLIST_PLS		= 2,
-	BRASERO_PROJECT_SAVE_PLAYLIST_M3U		= 3,
-	BRASERO_PROJECT_SAVE_PLAYLIST_XSPF		= 4,
-	BRASERO_PROJECT_SAVE_PLAYLIST_IRIVER_PLA	= 5
-} BraseroProjectSave;
-
 struct BraseroProjectPrivate {
 	BraseroSessionCfg *session;
 
+	GtkWidget *help;
 	GtkWidget *selection;
 	GtkWidget *name_display;
-	GtkWidget *button_img;
-	GtkWidget *icon_img;
 	GtkWidget *discs;
 	GtkWidget *audio;
 	GtkWidget *data;
@@ -257,6 +249,19 @@ static GObjectClass *parent_class = NULL;
 #define BRASERO_PROJECT_VERSION "0.2"
 
 #define BRASERO_RESPONSE_ADD			1976
+
+enum {
+	TREE_MODEL_ROW = 150,
+	FILE_NODES_ROW,
+	TARGET_URIS_LIST,
+};
+
+static GtkTargetEntry ntables_cd[] = {
+	{"GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, TREE_MODEL_ROW},
+	{"GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, FILE_NODES_ROW},
+	{"text/uri-list", 0, TARGET_URIS_LIST}
+};
+static guint nb_targets_cd = sizeof (ntables_cd) / sizeof (ntables_cd [0]);
 
 GType
 brasero_project_get_type ()
@@ -411,113 +416,344 @@ brasero_project_name_changed_cb (BraseroProjectName *name,
 		gtk_action_set_sensitive (action, FALSE);
 }
 
-static void
-brasero_project_data_icon_error (BraseroProject *project,
-				 GError *error)
+/********************************** help ***************************************/
+static GtkWidget *
+brasero_utils_disc_find_tree_view_in_container (GtkContainer *container)
 {
-	if (error) {
-		brasero_app_alert (brasero_app_get_default (),
-				   /* Translators: this is a picture not
-				    * a disc image */
-				   C_("picture", "Please select another image."),
-				   error->message,
-				   GTK_MESSAGE_ERROR);
-	}
-	else {
-		brasero_app_alert (brasero_app_get_default (),
-				   /* Translators: this is a picture not
-				    * a disc image */
-				   C_("picture", "Please select another image."),
-				   _("Unknown error"),
-				   GTK_MESSAGE_ERROR);
-	}
-}
+	GList *children;
+	GList *iter;
 
-static void
-brasero_project_icon_changed_cb (BraseroDisc *disc,
-				 BraseroProject *project)
-{
-	GError *error = NULL;
-	GdkPixbuf *pixbuf;
-	gchar *icon; 
+	children = gtk_container_get_children (container);
+	for (iter = children; iter; iter = iter->next) {
+		GtkWidget *widget;
 
-	icon = brasero_data_disc_get_scaled_icon_path (BRASERO_DATA_DISC (project->priv->current));
-	if (!icon) {
-		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
-					      "media-optical",
-					      GTK_ICON_SIZE_LARGE_TOOLBAR);
-		return;
-	}
+		widget = iter->data;
+		if (GTK_IS_TREE_VIEW (widget)) {
+			g_list_free (children);
+			return widget;
+		}
 
-	/* Load and convert (48x48) the image into a pixbuf */
-	pixbuf = gdk_pixbuf_new_from_file_at_scale (icon,
-						    48,
-						    48,
-						    FALSE,
-						    &error);
-	g_free (icon);
-
-	if (!pixbuf) {
-		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
-					      "media-optical",
-					      GTK_ICON_SIZE_LARGE_TOOLBAR);
-		brasero_project_data_icon_error (project, error);
-		g_error_free (error);
-		return;
-	}
-
-	gtk_image_set_from_pixbuf (GTK_IMAGE (project->priv->icon_img), pixbuf);
-	g_object_unref (pixbuf);
-}
-
-static void
-brasero_project_icon_button_clicked (GtkWidget *button,
-				     BraseroProject *project)
-{
-	GtkFileFilter *filter;
-	GError *error = NULL;
-	GtkWidget *chooser;
-	gchar *path;
-	gint res;
-
-	if (!BRASERO_IS_DATA_DISC (project->priv->current))
-		return;
-
-	chooser = gtk_file_chooser_dialog_new (_("Medium Icon"),
-					       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (project))),
-					       GTK_FILE_CHOOSER_ACTION_OPEN,
-					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					       GTK_STOCK_OK, GTK_RESPONSE_OK,
-					       NULL);
-
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("All files"));
-	gtk_file_filter_add_pattern (filter, "*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
-
-	filter = gtk_file_filter_new ();
-	/* Translators: this is an image, a picture, not a "Disc Image" */
-	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
-	gtk_file_filter_add_mime_type (filter, "image/*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
-
-	gtk_widget_show (chooser);
-	res = gtk_dialog_run (GTK_DIALOG (chooser));
-	if (res != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (chooser);
-		return;
-	}
-
-	path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
-	gtk_widget_destroy (chooser);
-
-	if (!brasero_data_disc_set_icon_path (BRASERO_DATA_DISC (project->priv->current), path, &error)) {
-		if (error) {
-			brasero_project_data_icon_error (project, error);
-			g_error_free (error);
+		if (GTK_IS_CONTAINER (widget)) {
+			widget = brasero_utils_disc_find_tree_view_in_container (GTK_CONTAINER (widget));
+			if (widget) {
+				g_list_free (children);
+				return widget;
+			}
 		}
 	}
-	g_free (path);
+	g_list_free (children);
+
+	return NULL;
+}
+
+static GtkWidget *
+brasero_utils_disc_find_tree_view (BraseroDisc *widget)
+{
+	return brasero_utils_disc_find_tree_view_in_container (GTK_CONTAINER (widget));
+}
+
+static void
+brasero_utils_disc_hide_use_info_leave_cb (GtkWidget *widget,
+					   GdkDragContext *drag_context,
+					   guint time,
+					   BraseroProject *project)
+{
+	GtkWidget *other_widget;
+
+	other_widget = brasero_utils_disc_find_tree_view (project->priv->current);
+	if (!other_widget)
+		return;
+
+	g_signal_emit_by_name (other_widget,
+			       "drag-leave",
+			       drag_context,
+			       time);
+}
+
+static gboolean
+brasero_utils_disc_hide_use_info_drop_cb (GtkWidget *widget,
+					  GdkDragContext *drag_context,
+					  gint x,
+					  gint y,
+					  guint time,
+					  BraseroProject *project)
+{
+	GdkAtom target = GDK_NONE;
+	GtkWidget *other_widget;
+
+	/* here the treeview is not realized so we'll have a warning message
+	 * if we ever try to forward the event */
+	other_widget = brasero_utils_disc_find_tree_view (project->priv->current);
+	if (!other_widget)
+		return FALSE;
+
+	target = gtk_drag_dest_find_target (other_widget,
+					    drag_context,
+					    gtk_drag_dest_get_target_list (GTK_WIDGET (other_widget)));
+
+	if (target != GDK_NONE) {
+		gboolean return_value = FALSE;
+
+		/* The widget must be realized to receive such events. */
+		g_signal_emit_by_name (other_widget,
+				       "drag-drop",
+				       drag_context,
+				       x,
+				       y,
+				       time,
+				       &return_value);
+		return return_value;
+	}
+
+	return FALSE;
+}
+
+static void
+brasero_utils_disc_hide_use_info_data_received_cb (GtkWidget *widget,
+						   GdkDragContext *drag_context,
+						   gint x,
+						   gint y,
+						   GtkSelectionData *data,
+						   guint info,
+						   guint time,
+						   BraseroProject *project)
+{
+	GtkWidget *other_widget;
+
+	other_widget = brasero_utils_disc_find_tree_view (project->priv->current);
+	if (!other_widget)
+		return;
+
+	g_signal_emit_by_name (other_widget,
+			       "drag-data-received",
+			       drag_context,
+			       x,
+			       y,
+			       data,
+			       info,
+			       time);
+}
+
+static gboolean
+brasero_utils_disc_hide_use_info_motion_cb (GtkWidget *widget,
+					    GdkDragContext *drag_context,
+					    gint x,
+					    gint y,
+					    guint time,
+					    GtkNotebook *notebook)
+{
+	return TRUE;
+}
+
+static gboolean
+brasero_utils_disc_hide_use_info_button_cb (GtkWidget *widget,
+					    GdkEventButton *event,
+					    BraseroProject *project)
+{
+	GtkWidget *other_widget;
+	gboolean result;
+
+	if (event->button != 3)
+		return TRUE;
+
+	other_widget = brasero_utils_disc_find_tree_view (project->priv->current);
+	if (!other_widget)
+		return TRUE;
+
+	g_signal_emit_by_name (other_widget,
+			       "button-press-event",
+			       event,
+			       &result);
+
+	return result;
+}
+
+static void
+brasero_utils_disc_style_changed_cb (GtkWidget *widget,
+				     GtkStyle *previous,
+				     GtkWidget *event_box)
+{
+	/* The widget (a treeview here) needs to be realized to get proper style */
+	gtk_widget_realize (widget);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &widget->style->base[GTK_STATE_NORMAL]);
+}
+
+static void
+brasero_utils_disc_realized_cb (GtkWidget *event_box,
+				BraseroProject *project)
+{
+	GtkWidget *widget;
+
+	widget = brasero_utils_disc_find_tree_view (BRASERO_DISC (project->priv->data));
+
+	if (!widget || !GTK_IS_TREE_VIEW (widget))
+		return;
+
+	/* The widget (a treeview here) needs to be realized to get proper style */
+	gtk_widget_realize (widget);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &widget->style->base[GTK_STATE_NORMAL]);
+
+	g_signal_handlers_disconnect_by_func (widget,
+					      brasero_utils_disc_style_changed_cb,
+					      event_box);
+	g_signal_connect (widget,
+			  "style-set",
+			  G_CALLBACK (brasero_utils_disc_style_changed_cb),
+			  event_box);
+}
+
+static gboolean
+brasero_disc_draw_focus_around_help_text (GtkWidget *label,
+					  GdkEventExpose *event,
+					  gpointer NULL_data)
+{
+	if (!gtk_widget_is_focus (label))
+		return FALSE;
+
+	gtk_paint_focus (label->style,
+			 label->window,
+			 GTK_STATE_NORMAL,
+			 &event->area,
+			 label,
+			 NULL,
+			 label->style->xthickness, label->style->ythickness,
+			 label->allocation.width - label->style->xthickness * 2,
+			 label->allocation.height - label->style->ythickness * 2);
+	return FALSE;
+}
+
+static GtkWidget *
+brasero_disc_get_use_info_notebook (BraseroProject *project)
+{
+	GList	  *chain;
+	GtkWidget *frame;
+	GtkWidget *notebook;
+	GtkWidget *event_box;
+	GtkWidget *first_use;
+	gchar     *message_add, *message_add_header;
+	gchar     *message_remove, *message_remove_header;
+	gchar	  *first_use_message;
+
+	notebook = gtk_notebook_new ();
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
+
+	frame = gtk_frame_new (NULL);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook),
+				  frame,
+				  NULL);
+
+	/* Now this event box must be 'transparent' to have the same background 
+	 * color as a treeview */
+	event_box = gtk_event_box_new ();
+	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), TRUE);
+	gtk_drag_dest_set (event_box, 
+			   GTK_DEST_DEFAULT_MOTION,
+			   ntables_cd,
+			   nb_targets_cd,
+			   GDK_ACTION_COPY|
+			   GDK_ACTION_MOVE);
+
+	/* the following signals need to be forwarded to the widget underneath */
+	g_signal_connect (event_box,
+			  "drag-motion",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_motion_cb),
+			  project);
+	g_signal_connect (event_box,
+			  "drag-leave",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_leave_cb),
+			  project);
+	g_signal_connect (event_box,
+			  "drag-drop",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_drop_cb),
+			  project);
+	g_signal_connect (event_box,
+			  "button-press-event",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_button_cb),
+			  project);
+	g_signal_connect (event_box,
+			  "drag-data-received",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_data_received_cb),
+			  project);
+
+	gtk_container_add (GTK_CONTAINER (frame), event_box);
+
+	/* Translators: this messages will appear as a list of possible
+	 * actions, like:
+	 *   To add/remove files you can:
+         *      * perform action one
+         *      * perform action two
+	 * The full message will be showed in the main area of an empty
+	 * project, suggesting users how to add and remove items to project.
+	 * You simply have to translate messages in the best form
+         * for a list of actions. */
+	message_add_header = g_strconcat ("<big>", _("To add files to this project you can:"), "\n</big>", NULL);
+	message_add = g_strconcat ("\t* ", _("click the \"Add\" button to show a selection dialog"), "\n",
+				   "\t* ", _("select files in the selection pane and click the \"Add\" button"), "\n",
+				   "\t* ", _("drag files in this area from the selection pane or from the file manager"), "\n",
+				   "\t* ", _("double click on files in the selection pane"), "\n",
+				   "\t* ", _("copy files (from file manager for example) and paste in this area"), "\n",
+				   NULL);
+
+	message_remove_header = g_strconcat ("<big>", _("To remove files from this project you can:"), "\n</big>", NULL);
+	message_remove = g_strconcat ("\t* ", _("click on the \"Remove\" button to remove selected items in this area"), "\n",
+				      "\t* ", _("drag and release items out from this area"), "\n",
+				      "\t* ", _("select items in this area, and choose \"Remove\" from context menu"), "\n",
+				      "\t* ", _("select items in this area, and press \"Delete\" key"), "\n",
+				      NULL);
+	
+
+	first_use_message = g_strconcat ("<span foreground='grey50'>",
+					 message_add_header, message_add,
+					 "\n\n\n",
+					 message_remove_header, message_remove,
+					 "</span>", NULL);
+	first_use = gtk_label_new (first_use_message);
+	gtk_misc_set_alignment (GTK_MISC (first_use), 0.50, 0.30);
+	gtk_label_set_selectable (GTK_LABEL (first_use), TRUE);
+	gtk_label_set_ellipsize (GTK_LABEL (first_use), PANGO_ELLIPSIZE_END);
+	g_free (first_use_message);
+
+	gtk_misc_set_padding (GTK_MISC (first_use), 24, 0);
+	gtk_label_set_justify (GTK_LABEL (first_use), GTK_JUSTIFY_LEFT);
+	gtk_label_set_use_markup (GTK_LABEL (first_use), TRUE);
+	gtk_container_add (GTK_CONTAINER (event_box), first_use);
+
+	/* This is meant for accessibility so that screen readers can read it */
+	g_object_set (first_use,
+		      "can-focus", TRUE,
+		      NULL);
+
+	g_signal_connect_after (first_use,
+				"expose-event",
+				G_CALLBACK (brasero_disc_draw_focus_around_help_text),
+				NULL);
+
+	/* We don't want to have the whole text selected */
+	g_object_set (gtk_widget_get_settings (first_use),
+		      "gtk-label-select-on-focus", FALSE,
+		      NULL);
+
+	chain = g_list_prepend (NULL, first_use);
+	gtk_container_set_focus_chain (GTK_CONTAINER (frame), chain);
+	g_list_free (chain);
+
+	/* This gets all events and forward them to treeview */
+	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
+
+	g_free (message_add_header);
+	g_free (message_add);
+	g_free (message_remove_header);
+	g_free (message_remove);
+
+	g_signal_connect (event_box,
+			  "realize",
+			  G_CALLBACK (brasero_utils_disc_realized_cb),
+			  project);
+
+	gtk_widget_show_all (notebook);
+	return notebook;
 }
 
 /********************************** size ***************************************/
@@ -731,6 +967,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	}
 	else if (valid == BRASERO_SESSION_EMPTY) {
 		project->priv->empty = TRUE;
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->help), 1);
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
@@ -764,6 +1001,9 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 
+	if (BRASERO_SESSION_IS_VALID (valid) || valid == BRASERO_SESSION_NOT_READY)
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->help), 0);
+
 	if (BRASERO_SESSION_IS_VALID (valid)) {
 		project->priv->empty = FALSE;
 		project->priv->oversized = FALSE;
@@ -790,10 +1030,8 @@ brasero_project_init (BraseroProject *obj)
 	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
 	GtkWidget *selector;
-	GtkWidget *button;
 	GtkWidget *label;
 	GtkWidget *table;
-	GtkWidget *image;
 	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
@@ -838,9 +1076,10 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (box);
 	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, 0);
 
-	table = gtk_table_new (4, 2, FALSE);
+	table = gtk_table_new (3, 2, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 	gtk_widget_show (table);
 	gtk_box_pack_end (GTK_BOX (obj), table, FALSE, TRUE, 0);
 
@@ -849,8 +1088,8 @@ brasero_project_init (BraseroProject *obj)
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
-			  1, 2,
 			  0, 1,
+			  1, 2,
 			  GTK_FILL,
 			  GTK_EXPAND,
 			  0, 0);
@@ -860,8 +1099,8 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->selection = selector;
 
 	gtk_table_attach (GTK_TABLE (table), selector,
-			  2, 3,
-			  0, 1,
+			  1, 2,
+			  1, 2,
 			  GTK_FILL|GTK_EXPAND,
 			  GTK_FILL|GTK_EXPAND,
 			  0, 0);
@@ -870,20 +1109,8 @@ brasero_project_init (BraseroProject *obj)
 
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
-	/* Properties/options buttons */
-	button = brasero_medium_properties_new (obj->priv->session);
-	gtk_size_group_add_widget (GTK_SIZE_GROUP (size_group), button);
-	gtk_widget_show (button);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	gtk_table_attach (GTK_TABLE (table), button,
-			  3, 4,
-			  0, 1,
-			  GTK_FILL,
-			  GTK_EXPAND,
-			  0, 0);
-
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("_Burn"),
+	obj->priv->burn = brasero_utils_make_button (_("_Burn..."),
 						     NULL,
 						     "media-optical-burn",
 						     GTK_ICON_SIZE_BUTTON);
@@ -902,38 +1129,10 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
 	gtk_table_attach (GTK_TABLE (table), alignment,
-			  3, 4,
+			  2, 3,
 			  1, 2,
 			  GTK_FILL,
 			  GTK_EXPAND,
-			  0, 0);
-
-	/* icon */
-	image = gtk_image_new_from_icon_name ("media-optical", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_widget_show (image);
-	obj->priv->icon_img = image;
-
-	button = gtk_button_new ();
-	gtk_widget_show (button);
-	gtk_button_set_image (GTK_BUTTON (button), image);
-	obj->priv->button_img = button;
-
-	gtk_widget_set_tooltip_text (button, _("Select an icon for the disc that will appear in file managers"));
-
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_project_icon_button_clicked),
-			  obj);
-
-	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-	gtk_widget_show (alignment);
-	gtk_container_add (GTK_CONTAINER (alignment), button);
-
-	gtk_table_attach (GTK_TABLE (table), alignment,
-			  0, 1,
-			  0, 2,
-			  GTK_FILL,
-			  GTK_FILL|GTK_EXPAND,
 			  0, 0);
 
 	/* Name widget */
@@ -941,17 +1140,17 @@ brasero_project_init (BraseroProject *obj)
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
-			  1, 2,
-			  1, 2,
+			  0, 1,
+			  0, 1,
 			  GTK_FILL,
 			  GTK_EXPAND,
 			  0, 0);
 
-	obj->priv->name_display = brasero_project_name_new ();
+	obj->priv->name_display = brasero_project_name_new (BRASERO_BURN_SESSION (obj->priv->session));
 	gtk_widget_show (obj->priv->name_display);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->name_display,
-			  2, 3,
 			  1, 2,
+			  0, 1,
 			  GTK_EXPAND|GTK_FILL,
 			  GTK_EXPAND|GTK_FILL,
 			  0, 0);
@@ -979,10 +1178,6 @@ brasero_project_init (BraseroProject *obj)
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
-	g_signal_connect (obj->priv->data,
-			  "icon-changed",
-			  G_CALLBACK (brasero_project_icon_changed_cb),
-			  obj);
 
 	obj->priv->video = brasero_video_disc_new ();
 	gtk_widget_show (obj->priv->video);
@@ -990,6 +1185,9 @@ brasero_project_init (BraseroProject *obj)
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
+
+	obj->priv->help = brasero_disc_get_use_info_notebook (obj);
+	gtk_widget_show (obj->priv->help);
 
 	obj->priv->discs = gtk_notebook_new ();
 	gtk_widget_show (obj->priv->discs);
@@ -1003,8 +1201,11 @@ brasero_project_init (BraseroProject *obj)
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
 				   obj->priv->audio, NULL);
 
+	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->help),
+				   obj->priv->discs, NULL);
+
 	gtk_box_pack_start (GTK_BOX (obj),
-			    obj->priv->discs,
+			    obj->priv->help,
 			    TRUE,
 			    TRUE,
 			    0);
@@ -1087,166 +1288,6 @@ brasero_project_get_boundaries (BraseroURIContainer *container,
 					    end);
 }
 
-/******************** useful function to wait when burning/saving **************/
-static gboolean
-_wait_for_ready_state (GtkWidget *dialog)
-{
-	gchar *current_task = NULL;
-	GtkProgressBar *progress;
-	BraseroDiscResult status;
-	BraseroProject *project;
-	gint remaining = 0;
-	gint initial;
-
-	project = g_object_get_data (G_OBJECT (dialog), "Project");
-	if (project->priv->oversized
-	|| !project->priv->current
-	|| !project->priv->project_status) {
-		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
-		return FALSE;
-	}
-
-	progress = g_object_get_data (G_OBJECT (dialog), "ProgressBar");
-	initial = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (dialog), "Remaining"));
-	status = brasero_disc_get_status (project->priv->current, &remaining, &current_task);
-	if (status == BRASERO_DISC_NOT_READY || status == BRASERO_DISC_LOADING) {
-		gchar *string;
-		gchar *size_str;
-
-		if (initial <= 0 || remaining <= 0)
-			gtk_progress_bar_pulse (progress);
-		else
-			gtk_progress_bar_set_fraction (progress, (gdouble) ((gdouble) (initial - remaining) / (gdouble) initial));
-
-		if (current_task) {
-			GtkWidget *current_action;
-
-			current_action = g_object_get_data (G_OBJECT (dialog), "CurrentAction");
-			string = g_strdup_printf ("<i>%s</i>", current_task);
-			g_free (current_task);
-
-			gtk_label_set_markup (GTK_LABEL (current_action), string);
-			g_free (string);
-		}
-
-		string = brasero_project_get_sectors_string (project->priv->sectors,
-							     !BRASERO_IS_DATA_DISC (project->priv->current));
-
-		size_str = g_strdup_printf (_("Project estimated size: %s"), string);
-		g_free (string);
-
-		gtk_progress_bar_set_text (progress, size_str);
-		g_free (size_str);
-
-		return TRUE;
-	}
-
-	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	return FALSE;
-}
-
-static BraseroDiscResult
-brasero_project_check_status (BraseroProject *project,
-			      BraseroDisc *disc)
-{
-	int id;
-	int answer;
-	GtkWidget *box;
-	GtkWidget *dialog;
-	gchar *current_task;
-	GtkWidget *progress;
-	gint remaining = -1;
-	BraseroDiscResult result;
-	GtkWidget *current_action;
-
-	current_task = NULL;
-	result = brasero_disc_get_status (disc, &remaining, &current_task);
-	if (result != BRASERO_DISC_NOT_READY && result != BRASERO_DISC_LOADING)
-		return result;
-
-	/* we are not ready to create tracks presumably because
-	 * data or audio has not finished to explore a directory
-	 * or get the metadata of a song or a film  */
-
-	/* This dialog can run as a standalone window when run from nautilus
-	 * to burn burn:// URI contents. */
-	dialog = brasero_app_dialog (brasero_app_get_default (),
-				     _("Please wait until the estimation of the project size is completed."),
-				     GTK_BUTTONS_CANCEL,
-				     GTK_MESSAGE_OTHER);
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("All files from the project need to be analysed to complete this operation."));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Size Estimation"));
-
-	box = gtk_vbox_new (FALSE, 4);
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			  box,
-			  TRUE,
-			  TRUE,
-			  0);
-
-	progress = gtk_progress_bar_new ();
-	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress), " ");
-	gtk_box_pack_start (GTK_BOX (box),
-			    progress,
-			    TRUE,
-			    TRUE,
-			    0);
-
-	if (current_task) {
-		gchar *string;
-
-		string = g_strdup_printf ("<i>%s</i>", current_task);
-		g_free (current_task);
-
-		current_action = gtk_label_new (string);
-		g_free (string);
-	}
-	else
-		current_action = gtk_label_new ("");
-
-	gtk_label_set_use_markup (GTK_LABEL (current_action), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (current_action), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (box),
-			    current_action,
-			    FALSE,
-			    TRUE,
-			    0);
-
-	gtk_widget_show_all (dialog);
-	gtk_progress_bar_pulse (GTK_PROGRESS_BAR (progress));
-
-	g_object_set_data (G_OBJECT (dialog), "CurrentAction", current_action);
-	g_object_set_data (G_OBJECT (dialog), "ProgressBar", progress);
-	g_object_set_data (G_OBJECT (dialog), "Remaining", GINT_TO_POINTER (remaining));
-	g_object_set_data (G_OBJECT (dialog), "Project", project);
-
-	id = g_timeout_add (100,
-			    (GSourceFunc) _wait_for_ready_state,
-		            dialog);
-
-	project->priv->project_status = dialog;
-	answer = gtk_dialog_run (GTK_DIALOG (dialog));
-	g_source_remove (id);
-
-	gtk_widget_destroy (dialog);
-
-	if (!project->priv->project_status)
-		return BRASERO_DISC_CANCELLED;
-
-	project->priv->project_status = NULL;
-
-	if (answer != GTK_RESPONSE_OK)
-		return BRASERO_DISC_CANCELLED;
-	else if (project->priv->oversized)
-		return BRASERO_DISC_ERROR_SIZE;
-
-	return brasero_disc_get_status (disc, NULL, NULL);
-}
-
-/******************************** burning **************************************/
 static void
 brasero_project_no_song_dialog (BraseroProject *project)
 {
@@ -1265,6 +1306,43 @@ brasero_project_no_file_dialog (BraseroProject *project)
 			   GTK_MESSAGE_WARNING);
 }
 
+static BraseroBurnResult
+brasero_project_check_status (BraseroProject *project)
+{
+        GtkWidget *dialog;
+        BraseroStatus *status;
+	GtkResponseType response;
+	BraseroBurnResult result;
+
+        status = brasero_status_new ();
+        brasero_burn_session_get_status (BRASERO_BURN_SESSION (project->priv->session), status);
+        result = brasero_status_get_result (status);
+        brasero_status_free (status);
+
+        if (result == BRASERO_BURN_ERR) {
+                /* At the moment the only error possible is an empty project */
+                if (BRASERO_IS_AUDIO_DISC (project->priv->current))
+                        brasero_project_no_song_dialog (project);
+                else
+                        brasero_project_no_file_dialog (project);
+
+                return BRASERO_BURN_ERR;
+        }
+
+        if (result == BRASERO_BURN_OK)
+                return BRASERO_BURN_OK;
+
+        dialog = brasero_status_dialog_new (BRASERO_BURN_SESSION (project->priv->session),
+                                                                  gtk_widget_get_toplevel (GTK_WIDGET (project)));
+
+	gtk_widget_show (dialog);
+        response = gtk_dialog_run (GTK_DIALOG (dialog));
+        gtk_widget_destroy (dialog);
+
+        return (response == GTK_RESPONSE_OK)? BRASERO_BURN_OK:BRASERO_BURN_CANCEL;
+}
+
+/******************************** burning **************************************/
 static void
 brasero_project_setup_session (BraseroProject *project,
 			       BraseroBurnSession *session)
@@ -1286,31 +1364,110 @@ brasero_project_setup_session (BraseroProject *project,
 	}
 }
 
+static gboolean
+brasero_project_drive_properties (BraseroProject *project)
+{
+	GtkWidget *medium_prop;
+	GtkResponseType answer;
+	BraseroDrive *drive;
+	GtkWidget *toplevel;
+	gchar *display_name;
+	GtkWidget *button;
+	GtkWidget *dialog;
+	GtkWidget *box;
+	gchar *header;
+
+	/* Build dialog */
+	medium_prop = brasero_drive_properties_new (project->priv->session);
+	gtk_widget_show (medium_prop);
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (project->priv->session));
+	display_name = brasero_drive_get_display_name (drive);
+	header = g_strdup_printf (_("Properties of %s"), display_name);
+	g_free (display_name);
+
+	dialog = gtk_dialog_new_with_buttons (header,
+					      GTK_WINDOW (toplevel),
+					      GTK_DIALOG_MODAL|
+					      GTK_DIALOG_NO_SEPARATOR|
+					      GTK_DIALOG_DESTROY_WITH_PARENT,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      NULL);
+	g_free (header);
+
+	button = brasero_utils_make_button (_("_Burn"),
+					    NULL,
+					    "media-optical-burn",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
+				      button,
+				      GTK_RESPONSE_OK);
+
+	box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	gtk_box_pack_start (GTK_BOX (box), medium_prop, TRUE, TRUE, 0);
+
+	/* launch the dialog */
+	gtk_widget_show (dialog);
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	return (answer == GTK_RESPONSE_OK);
+}
+
+static gboolean
+brasero_project_image_properties (BraseroProject *project)
+{
+	GtkResponseType answer;
+	GtkWidget *toplevel;
+	GtkWidget *button;
+	GtkWidget *dialog;
+
+	/* Build dialog */
+	dialog = brasero_image_properties_new ();
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+
+	button = brasero_utils_make_button (_("_Burn"),
+					    NULL,
+					    "media-optical-burn",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
+				      button,
+				      GTK_RESPONSE_OK);
+
+	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (dialog), project->priv->session);
+
+	/* launch the dialog */
+	gtk_widget_show (dialog);
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	return (answer == GTK_RESPONSE_OK);
+}
+
 void
 brasero_project_burn (BraseroProject *project)
 {
-	BraseroDiscResult result;
+	gboolean res = FALSE;
 
-	result = brasero_project_check_status (project, project->priv->current);
-	if (result == BRASERO_DISC_CANCELLED)
-		return;
+	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session)))
+		res = brasero_project_drive_properties (project);
+	else
+		res = brasero_project_image_properties (project);
 
-	if (result == BRASERO_DISC_ERROR_SIZE)
-		return;
-
-	if (result == BRASERO_DISC_ERROR_EMPTY_SELECTION) {
-		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
-			brasero_project_no_song_dialog (project);
-		else
-			brasero_project_no_file_dialog (project);
-
-		return;
-	}
-
-	if (result != BRASERO_DISC_OK)
+	if (!res)
 		return;
 
 	project->priv->is_burning = 1;
+	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 
 	/* This is to stop the preview widget from playing */
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
@@ -1343,17 +1500,7 @@ brasero_project_create_audio_cover (BraseroProject *project,
 static void
 brasero_project_reset (BraseroProject *project)
 {
-	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (project->priv->session),
-					BRASERO_BURN_FLAG_NONE);
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (project->priv->session),
-					NULL,
-					NULL);
-}
-
-static void
-brasero_project_switch (BraseroProject *project, BraseroProjectType type)
-{
-	GtkAction *action;
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->help), 1);
 
 	if (project->priv->project_status) {
 		gtk_widget_hide (project->priv->project_status);
@@ -1362,25 +1509,15 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		project->priv->project_status = NULL;
 	}
 
-	gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->icon_img),
-				      "media-optical",
-				      GTK_ICON_SIZE_LARGE_TOOLBAR);
-
 	if (project->priv->current) {
 		brasero_disc_set_session_contents (project->priv->current, NULL);
 		project->priv->current = NULL;
 	}
 
-	brasero_project_reset (project);
-
 	if (project->priv->chooser) {
 		gtk_widget_destroy (project->priv->chooser);
 		project->priv->chooser = NULL;
 	}
-
-	project->priv->empty = 1;
-    	project->priv->burnt = 0;
-	project->priv->modified = 0;
 
 	if (project->priv->project) {
 		g_free (project->priv->project);
@@ -1396,40 +1533,45 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	if (project->priv->merge_id > 0)
 		gtk_ui_manager_remove_ui (project->priv->manager,
 					  project->priv->merge_id);
-g_object_ref (project->priv->session);
+
+	project->priv->empty = 1;
+    	project->priv->burnt = 0;
+	project->priv->modified = 0;
+
+	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (project->priv->session),
+					BRASERO_BURN_FLAG_NONE);
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (project->priv->session),
+					NULL,
+					NULL);
+
+	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
+	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
+	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+}
+
+static void
+brasero_project_switch (BraseroProject *project, BraseroProjectType type)
+{
+	GtkAction *action;
+
+	/* FIXME: */
+	g_object_ref (project->priv->session);
+
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
-		gtk_widget_hide (project->priv->button_img);
-
 		project->priv->current = BRASERO_DISC (project->priv->audio);
-		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
-							       project->priv->manager,
-							       project->priv->message);
-
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
-		gtk_widget_show (project->priv->button_img);
-
 		project->priv->current = BRASERO_DISC (project->priv->data);
-		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
-							       project->priv->manager,
-							       project->priv->message);
-
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE|
 							  BRASERO_MEDIA_TYPE_FILE);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
-		gtk_widget_hide (project->priv->button_img);
-
 		project->priv->current = BRASERO_DISC (project->priv->video);
-		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
-							       project->priv->manager,
-							       project->priv->message);
-
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 2);
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
 							  BRASERO_MEDIA_TYPE_WRITABLE|
@@ -1438,8 +1580,13 @@ g_object_ref (project->priv->session);
 
 	brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
 
-	if (project->priv->current)
-		brasero_disc_set_session_contents (project->priv->current, BRASERO_BURN_SESSION (project->priv->session));
+	if (project->priv->current) {
+		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
+							       project->priv->manager,
+							       project->priv->message);
+		brasero_disc_set_session_contents (project->priv->current,
+						   BRASERO_BURN_SESSION (project->priv->session));
+	}
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 
@@ -1464,6 +1611,7 @@ g_object_ref (project->priv->session);
 void
 brasero_project_set_audio (BraseroProject *project, GSList *uris)
 {
+	brasero_project_reset (project);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
 
 	for (; uris; uris = uris->next) {
@@ -1478,6 +1626,7 @@ void
 brasero_project_set_data (BraseroProject *project,
 			  GSList *uris)
 {
+	brasero_project_reset (project);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_DATA);
 
 	for (; uris; uris = uris->next) {
@@ -1491,6 +1640,7 @@ brasero_project_set_data (BraseroProject *project,
 void
 brasero_project_set_video (BraseroProject *project, GSList *uris)
 {
+	brasero_project_reset (project);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_VIDEO);
 
 	for (; uris; uris = uris->next) {
@@ -2047,48 +2197,85 @@ brasero_project_set_uri (BraseroProject *project,
 	gtk_action_set_sensitive (action, FALSE);
 }
 
-/******************************* Projects **************************************/
-BraseroProjectType
-brasero_project_open_project (BraseroProject *project,
-			      BraseroDiscTrack *track,
-			      const gchar *uri)	/* escaped */
+static BraseroProjectType
+brasero_project_get_session_type (BraseroProject *project)
 {
+	BraseroTrackType *session_type;
 	BraseroProjectType type;
 
-	if (!track)
+        session_type = brasero_track_type_new ();
+        brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (project->priv->session), session_type);
+
+	if (brasero_track_type_get_has_stream (session_type)) {
+                if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (session_type)))
+		        type = BRASERO_PROJECT_TYPE_VIDEO;
+                else
+		        type = BRASERO_PROJECT_TYPE_AUDIO;
+        }
+	else if (brasero_track_type_get_has_data (session_type))
+		type = BRASERO_PROJECT_TYPE_DATA;
+	else
+		type = BRASERO_PROJECT_TYPE_INVALID;
+
+    	brasero_track_type_free (session_type);
+
+        return type;
+}
+
+/******************************* Projects **************************************/
+BraseroProjectType
+brasero_project_open_project_real (BraseroProject *project,
+				   const gchar *uri,	/* escaped */
+				   gboolean playlist,
+				   gboolean warn_user)
+{
+	GValue *value;
+	BraseroProjectType type;
+
+	brasero_project_reset (project);
+
+#ifdef BUILD_PLAYLIST
+
+	if (playlist) {
+		if (!brasero_project_open_audio_playlist_project (uri, BRASERO_BURN_SESSION (project->priv->session), warn_user))
+			return BRASERO_PROJECT_TYPE_INVALID;
+	}
+	else
+
+#endif
+	
+	if (!brasero_project_open_project_xml (uri, BRASERO_BURN_SESSION (project->priv->session), warn_user))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (track->type == BRASERO_PROJECT_TYPE_AUDIO)
-		type = BRASERO_PROJECT_TYPE_AUDIO;
-	else if (track->type == BRASERO_PROJECT_TYPE_DATA)
-		type = BRASERO_PROJECT_TYPE_DATA;
-	else if (track->type == BRASERO_PROJECT_TYPE_VIDEO)
-		type = BRASERO_PROJECT_TYPE_VIDEO;
-	else
-		return BRASERO_PROJECT_TYPE_INVALID;
+        type = brasero_project_get_session_type (project);
+        if (type == BRASERO_PROJECT_TYPE_INVALID)
+                return type;
 
 	brasero_project_switch (project, type);
 
-	if (track->label) {
+	if (brasero_burn_session_get_label (BRASERO_BURN_SESSION (project->priv->session))) {
 		g_signal_handlers_block_by_func (project->priv->name_display,
 						 brasero_project_name_changed_cb,
 						 project);
-		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), track->label);
+		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display),
+					       brasero_burn_session_get_label (BRASERO_BURN_SESSION (project->priv->session)));
 		g_signal_handlers_unblock_by_func (project->priv->name_display,
 						   brasero_project_name_changed_cb,
 						   project);
 	}
 
-	if (track->cover) {
+	value = NULL;
+	brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (project->priv->session),
+					 BRASERO_COVER_URI,
+					 &value);
+	if (value) {
 		if (project->priv->cover)
 			g_free (project->priv->cover);
 
-		project->priv->cover = g_strdup (track->cover);
+		project->priv->cover = g_strdup (g_value_get_string (value));
 	}
 
-	brasero_disc_load_track (project->priv->current, track);
 	project->priv->modified = 0;
-
 	if (uri)
 		brasero_project_set_uri (project, uri, type);
 
@@ -2096,41 +2283,18 @@ brasero_project_open_project (BraseroProject *project,
 }
 
 BraseroProjectType
-brasero_project_load_session (BraseroProject *project, const gchar *uri)
+brasero_project_open_project (BraseroProject *project,
+			      const gchar *uri,
+			      gboolean playlist)	/* escaped */
 {
-	BraseroDiscTrack *track = NULL;
-	BraseroProjectType type;
+	return brasero_project_open_project_real (project, uri, playlist, TRUE);
+}
 
-	if (!brasero_project_open_project_xml (uri, &track, FALSE))
-		return BRASERO_PROJECT_TYPE_INVALID;
-
-	if (track->type == BRASERO_PROJECT_TYPE_AUDIO)
-		type = BRASERO_PROJECT_TYPE_AUDIO;
-	else if (track->type == BRASERO_PROJECT_TYPE_DATA)
-		type = BRASERO_PROJECT_TYPE_DATA;
-	else if (track->type == BRASERO_PROJECT_TYPE_VIDEO)
-		type = BRASERO_PROJECT_TYPE_VIDEO;
-	else {
-	    	brasero_track_free (track);
-		return BRASERO_PROJECT_TYPE_INVALID;
-	}
-
-	brasero_project_switch (project, type);
-
-	g_signal_handlers_block_by_func (project->priv->name_display,
-					 brasero_project_name_changed_cb,
-					 project);
-	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) track->label);
-	g_signal_handlers_unblock_by_func (project->priv->name_display,
-					   brasero_project_name_changed_cb,
-					   project);
-
-	brasero_disc_load_track (project->priv->current, track);
-	brasero_track_free (track);
-
-	project->priv->modified = 0;
-
-    	return type;
+BraseroProjectType
+brasero_project_load_session (BraseroProject *project,
+			      const gchar *uri)
+{
+	return brasero_project_open_project_real (project, uri, FALSE, FALSE);
 }
 
 /******************************** save project *********************************/
@@ -2190,542 +2354,19 @@ brasero_project_save_project_dialog (BraseroProject *project,
 }
 
 static gboolean
-_save_audio_track_xml (xmlTextWriter *project,
-		       BraseroDiscTrack *track)
-{
-	GSList *iter;
-	gint success;
-
-	for (iter = track->contents.tracks; iter; iter = iter->next) {
-		BraseroDiscSong *song;
-		BraseroStreamInfo *info;
-		xmlChar *escaped;
-		gchar *start;
-		gchar *isrc;
-		gchar *end;
-
-		song = iter->data;
-		info = song->info;
-
-		escaped = (unsigned char *) g_uri_escape_string (song->uri, NULL, FALSE);
-		success = xmlTextWriterWriteElement (project,
-						    (xmlChar *) "uri",
-						     escaped);
-		g_free (escaped);
-
-		if (success == -1)
-			return FALSE;
-
-		if (song->gap) {
-			gchar *silence;
-
-			silence = g_strdup_printf ("%"G_GINT64_FORMAT, song->gap);
-			success = xmlTextWriterWriteElement (project,
-							     (xmlChar *) "silence",
-							     (xmlChar *) silence);
-
-			g_free (silence);
-			if (success == -1)
-				return FALSE;
-		}
-
-		if (song->end > 0) {
-			/* start of the song */
-			start = g_strdup_printf ("%"G_GINT64_FORMAT, song->start);
-			success = xmlTextWriterWriteElement (project,
-							     (xmlChar *) "start",
-							     (xmlChar *) start);
-
-			g_free (start);
-			if (success == -1)
-				return FALSE;
-
-			/* end of the song */
-			end = g_strdup_printf ("%"G_GINT64_FORMAT, song->end);
-			success = xmlTextWriterWriteElement (project,
-							     (xmlChar *) "end",
-							     (xmlChar *) end);
-
-			g_free (end);
-			if (success == -1)
-				return FALSE;
-		}
-
-		if (!info)
-			continue;
-
-		if (info->title) {
-			escaped = (unsigned char *) g_uri_escape_string (info->title, NULL, FALSE);
-			success = xmlTextWriterWriteElement (project,
-							    (xmlChar *) "title",
-							     escaped);
-			g_free (escaped);
-
-			if (success == -1)
-				return FALSE;
-		}
-
-		if (info->artist) {
-			escaped = (unsigned char *) g_uri_escape_string (info->artist, NULL, FALSE);
-			success = xmlTextWriterWriteElement (project,
-							    (xmlChar *) "artist",
-							     escaped);
-			g_free (escaped);
-
-			if (success == -1)
-				return FALSE;
-		}
-
-		if (info->composer) {
-			escaped = (unsigned char *) g_uri_escape_string (info->composer, NULL, FALSE);
-			success = xmlTextWriterWriteElement (project,
-							    (xmlChar *) "composer",
-							     escaped);
-			g_free (escaped);
-
-			if (success == -1)
-				return FALSE;
-		}
-
-		if (info->isrc) {
-			isrc = g_strdup_printf ("%d", info->isrc);
-			success = xmlTextWriterWriteElement (project,
-							     (xmlChar *) "isrc",
-							     (xmlChar *) isrc);
-
-			g_free (isrc);
-			if (success == -1)
-				return FALSE;
-		}
-	}
-
-	return TRUE;
-}
-
-static gboolean
-_save_data_track_xml (xmlTextWriter *project,
-		      BraseroDiscTrack *track)
-{
-	gchar *uri;
-	gint success;
-	GSList *iter;
-	GSList *grafts;
-	BraseroGraftPt *graft;
-
-	if (track->contents.data.icon) {
-		/* Write the icon if any */
-		success = xmlTextWriterWriteElement (project, (xmlChar *) "icon", (xmlChar *) track->contents.data.icon);
-		if (success < 0)
-			return FALSE;
-	}
-
-	for (grafts = track->contents.data.grafts; grafts; grafts = grafts->next) {
-		graft = grafts->data;
-
-		success = xmlTextWriterStartElement (project, (xmlChar *) "graft");
-		if (success < 0)
-			return FALSE;
-
-		success = xmlTextWriterWriteElement (project, (xmlChar *) "path", (xmlChar *) graft->path);
-		if (success < 0)
-			return FALSE;
-
-		if (graft->uri) {
-			xmlChar *escaped;
-
-			escaped = (unsigned char *) g_uri_escape_string (graft->uri, NULL, FALSE);
-			success = xmlTextWriterWriteElement (project, (xmlChar *) "uri", escaped);
-			g_free (escaped);
-			if (success < 0)
-				return FALSE;
-		}
-
-		success = xmlTextWriterEndElement (project); /* graft */
-		if (success < 0)
-			return FALSE;
-	}
-
-	/* save excluded uris */
-	for (iter = track->contents.data.excluded; iter; iter = iter->next) {
-		xmlChar *escaped;
-
-		escaped = xmlURIEscapeStr ((xmlChar *) iter->data, NULL);
-		success = xmlTextWriterWriteElement (project, (xmlChar *) "excluded", (xmlChar *) escaped);
-		g_free (escaped);
-		if (success < 0)
-			return FALSE;
-	}
-
-	/* save restored uris */
-	for (iter = track->contents.data.restored; iter; iter = iter->next) {
-		uri = iter->data;
-		success = xmlTextWriterWriteElement (project, (xmlChar *) "restored", (xmlChar *) uri);
-		if (success < 0)
-			return FALSE;
-	}
-
-	/* NOTE: we don't write symlinks and unreadable they are useless */
-	return TRUE;
-}
-
-static gboolean 
-brasero_project_save_project_xml (BraseroProject *proj,
-				  const gchar *uri,
-				  BraseroDiscTrack *track,
-				  gboolean use_dialog)
-{
-	xmlTextWriter *project;
-	gboolean retval;
-	gint success;
-    	gchar *path;
-
-	path = g_filename_from_uri (uri, NULL, NULL);
-	if (!path)
-		return FALSE;
-
-	project = xmlNewTextWriterFilename (path, 0);
-	if (!project) {
-		g_free (path);
-
-	    	if (use_dialog)
-			brasero_project_not_saved_dialog (proj);
-
-		return FALSE;
-	}
-
-	xmlTextWriterSetIndent (project, 1);
-	xmlTextWriterSetIndentString (project, (xmlChar *) "\t");
-
-	success = xmlTextWriterStartDocument (project,
-					      NULL,
-					      "UTF8",
-					      NULL);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterStartElement (project, (xmlChar *) "braseroproject");
-	if (success < 0)
-		goto error;
-
-	/* write the name of the version */
-	success = xmlTextWriterWriteElement (project,
-					     (xmlChar *) "version",
-					     (xmlChar *) BRASERO_PROJECT_VERSION);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterWriteElement (project,
-					     (xmlChar *) "label",
-					     (xmlChar *) gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display)));
-	if (success < 0)
-		goto error;
-
-	if (proj->priv->cover) {
-		gchar *escaped;
-
-		escaped = g_uri_escape_string (proj->priv->cover, NULL, FALSE);
-		success = xmlTextWriterWriteElement (project,
-						     (xmlChar *) "cover",
-						     (xmlChar *) escaped);
-		g_free (escaped);
-
-		if (success < 0)
-			goto error;
-	}
-
-	success = xmlTextWriterStartElement (project, (xmlChar *) "track");
-	if (success < 0)
-		goto error;
-
-	if (track->type == BRASERO_PROJECT_TYPE_AUDIO) {
-		success = xmlTextWriterStartElement (project, (xmlChar *) "audio");
-		if (success < 0)
-			goto error;
-
-		retval = _save_audio_track_xml (project, track);
-		if (!retval)
-			goto error;
-
-		success = xmlTextWriterEndElement (project); /* audio */
-		if (success < 0)
-			goto error;
-	}
-	else if (track->type == BRASERO_PROJECT_TYPE_DATA) {
-		success = xmlTextWriterStartElement (project, (xmlChar *) "data");
-		if (success < 0)
-			goto error;
-
-		retval = _save_data_track_xml (project, track);
-		if (!retval)
-			goto error;
-
-		success = xmlTextWriterEndElement (project); /* data */
-		if (success < 0)
-			goto error;
-	}
-	else  if (track->type == BRASERO_PROJECT_TYPE_VIDEO) {
-		success = xmlTextWriterStartElement (project, (xmlChar *) "video");
-		if (success < 0)
-			goto error;
-
-		retval = _save_audio_track_xml (project, track);
-		if (!retval)
-			goto error;
-
-		success = xmlTextWriterEndElement (project); /* audio */
-		if (success < 0)
-			goto error;
-	}
-	else
-		retval = FALSE;
-
-	success = xmlTextWriterEndElement (project); /* track */
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterEndElement (project); /* braseroproject */
-	if (success < 0)
-		goto error;
-
-	xmlTextWriterEndDocument (project);
-	xmlFreeTextWriter (project);
-	g_free (path);
-	return TRUE;
-
-error:
-
-	xmlTextWriterEndDocument (project);
-	xmlFreeTextWriter (project);
-
-	g_remove (path);
-	g_free (path);
-
-    	if (use_dialog)
-		brasero_project_not_saved_dialog (proj);
-
-	return FALSE;
-}
-
-static gboolean
-brasero_project_save_audio_project_plain_text (BraseroProject *proj,
-					       const gchar *uri,
-					       BraseroDiscTrack *track,
-					       gboolean use_dialog)
-{
-	const gchar *title;
-	guint written;
-	GSList *iter;
-	gchar *path;
-	FILE *file;
-
-    	path = g_filename_from_uri (uri, NULL, NULL);
-    	if (!path)
-		return FALSE;
-
-	file = fopen (path, "w+");
-	g_free (path);
-	if (!file) {
-		if (use_dialog)
-			brasero_project_not_saved_dialog (proj);
-
-		return FALSE;
-	}
-
-	/* write title */
-	title = gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display));
-	written = fwrite (title, strlen (title), 1, file);
-	if (written != 1)
-		goto error;
-
-	written = fwrite ("\n", 1, 1, file);
-	if (written != 1)
-		goto error;
-
-	for (iter = track->contents.tracks; iter; iter = iter->next) {
-		BraseroDiscSong *song;
-		BraseroStreamInfo *info;
-		gchar *time;
-
-		song = iter->data;
-		info = song->info;
-
-		written = fwrite (info->title, 1, strlen (info->title), file);
-		if (written != strlen (info->title))
-			goto error;
-
-		time = brasero_units_get_time_string (song->end - song->start, TRUE, FALSE);
-		if (time) {
-			written = fwrite ("\t", 1, 1, file);
-			if (written != 1)
-				goto error;
-
-			written = fwrite (time, 1, strlen (time), file);
-			if (written != strlen (time)) {
-				g_free (time);
-				goto error;
-			}
-			g_free (time);
-		}
-
-		if (info->artist) {
-			gchar *string;
-
-			written = fwrite ("\t", 1, 1, file);
-			if (written != 1)
-				goto error;
-
-			/* Translators: %s is an artist */
-			string = g_strdup_printf (" by %s", info->artist);
-			written = fwrite (string, 1, strlen (string), file);
-			if (written != strlen (string)) {
-				g_free (string);
-				goto error;
-			}
-			g_free (string);
-		}
-
-		written = fwrite ("\n(", 1, 2, file);
-		if (written != 2)
-			goto error;
-
-		written = fwrite (song->uri, 1, strlen (song->uri), file);
-		if (written != strlen (song->uri))
-			goto error;
-
-		written = fwrite (")", 1, 1, file);
-		if (written != 1)
-			goto error;
-
-		written = fwrite ("\n\n", 1, 2, file);
-		if (written != 2)
-			goto error;
-	}
-
-	fclose (file);
-	return TRUE;
-	
-error:
-	fclose (file);
-
-    	if (use_dialog)
-		brasero_project_not_saved_dialog (proj);
-
-	return FALSE;
-}
-
-#ifdef BUILD_PLAYLIST
-
-static void
-brasero_project_save_audio_playlist_entry (GtkTreeModel *model,
-					   GtkTreeIter *iter,
-					   gchar **uri,
-					   gchar **title,
-					   gboolean *custom_title,
-					   gpointer user_data)
-{
-	gtk_tree_model_get (model, iter,
-			    0, uri,
-			    1, title,
-			    2, custom_title,
-			    -1);
-}
-
-static gboolean
-brasero_project_save_audio_project_playlist (BraseroProject *proj,
-					     const gchar *uri,
-					     BraseroProjectSave type,
-					     BraseroDiscTrack *track,
-					     gboolean use_dialog)
-{
-	TotemPlParserType pl_type;
-	TotemPlParser *parser;
-	GtkListStore *model;
-	GtkTreeIter t_iter;
-	gboolean result;
-	GSList *iter;
-	gchar *path;
-
-    	path = g_filename_from_uri (uri, NULL, NULL);
-    	if (!path)
-		return FALSE;
-
-	parser = totem_pl_parser_new ();
-
-	/* create and populate treemodel */
-	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
-	for (iter = track->contents.tracks; iter; iter = iter->next) {
-		BraseroDiscSong *song;
-		BraseroStreamInfo *info;
-
-		song = iter->data;
-		info = song->info;
-
-		gtk_list_store_append (model, &t_iter);
-		gtk_list_store_set (model, &t_iter,
-				    0, song->uri,
-				    1, info->title,
-				    2, TRUE,
-				    -1);
-	}
-
-	switch (type) {
-		case BRASERO_PROJECT_SAVE_PLAYLIST_M3U:
-			pl_type = TOTEM_PL_PARSER_M3U;
-			break;
-		case BRASERO_PROJECT_SAVE_PLAYLIST_XSPF:
-			pl_type = TOTEM_PL_PARSER_XSPF;
-			break;
-		case BRASERO_PROJECT_SAVE_PLAYLIST_IRIVER_PLA:
-			pl_type = TOTEM_PL_PARSER_IRIVER_PLA;
-			break;
-
-		case BRASERO_PROJECT_SAVE_PLAYLIST_PLS:
-		default:
-			pl_type = TOTEM_PL_PARSER_PLS;
-			break;
-	}
-
-	result = totem_pl_parser_write_with_title (parser,
-						   GTK_TREE_MODEL (model),
-						   brasero_project_save_audio_playlist_entry,
-						   path,
-						   gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display)),
-						   pl_type,
-						   NULL,
-						   NULL);
-	if (!result && use_dialog)
-		brasero_project_not_saved_dialog (proj);
-
-	if (result)
-		brasero_project_add_to_recents (proj, uri, FALSE);
-
-	g_object_unref (model);
-	g_object_unref (parser);
-	g_free (path);
-
-	return result;
-}
-
-#endif
-
-static gboolean
 brasero_project_save_project_real (BraseroProject *project,
 				   const gchar *uri,
 				   BraseroProjectSave save_type)
 {
 	BraseroDiscResult result;
 	BraseroProjectType type;
-	BraseroDiscTrack track;
 
 	g_return_val_if_fail (uri != NULL || project->priv->project != NULL, FALSE);
 
-	result = brasero_project_check_status (project, project->priv->current);
-	if (result != BRASERO_DISC_OK)
+	result = brasero_project_check_status (project);
+	if (result != BRASERO_BURN_OK)
 		return FALSE;
 
-	bzero (&track, sizeof (track));
-
-	result = brasero_disc_get_track (project->priv->current, &track);
 	if (result == BRASERO_DISC_ERROR_EMPTY_SELECTION) {
 		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
 			brasero_project_no_song_dialog (project);
@@ -2739,50 +2380,40 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 	}
 
-	if (track.type == BRASERO_PROJECT_TYPE_AUDIO)
-		type = BRASERO_PROJECT_TYPE_AUDIO;
-	else if (track.type == BRASERO_PROJECT_TYPE_DATA)
-		type = BRASERO_PROJECT_TYPE_DATA;
-	else if (track.type == BRASERO_PROJECT_TYPE_VIDEO)
-		type = BRASERO_PROJECT_TYPE_VIDEO;
-	else {
-		brasero_track_clear (&track);
-		return BRASERO_PROJECT_TYPE_INVALID;
-	}
+        type = brasero_project_get_session_type (project);
 
 	if (save_type == BRASERO_PROJECT_SAVE_XML
-	||  track.type == BRASERO_PROJECT_TYPE_DATA) {
+	||  type == BRASERO_PROJECT_TYPE_DATA) {
 		brasero_project_set_uri (project, uri, type);
-		if (!brasero_project_save_project_xml (project,
-						       uri ? uri : project->priv->project,
-						       &track,
-						       TRUE))
+		if (!brasero_project_save_project_xml (BRASERO_BURN_SESSION (project->priv->session),
+						       uri ? uri : project->priv->project)) {
+			brasero_project_not_saved_dialog (project);
 			return FALSE;
+		}
 
 		project->priv->modified = 0;
 	}
 	else if (save_type == BRASERO_PROJECT_SAVE_PLAIN) {
-		if (!brasero_project_save_audio_project_plain_text (project,
-								    uri,
-								    &track,
-								    TRUE))
+		if (!brasero_project_save_audio_project_plain_text (BRASERO_BURN_SESSION (project->priv->session),
+								    uri)) {
+			brasero_project_not_saved_dialog (project);
 			return FALSE;
+		}
 	}
 
 #ifdef BUILD_PLAYLIST
 
 	else {
-		if (!brasero_project_save_audio_project_playlist (project,
+		if (!brasero_project_save_audio_project_playlist (BRASERO_BURN_SESSION (project->priv->session),
 								  uri,
-								  save_type,
-								  &track,
-								  TRUE))
+								  save_type)) {
+			brasero_project_not_saved_dialog (project);
 			return FALSE;
+		}
 	}
 
 #endif
 
-	brasero_track_clear (&track);
 	return TRUE;
 }
 
@@ -2892,8 +2523,6 @@ brasero_project_save_session (BraseroProject *project,
 			      gchar **saved_uri,
 			      gboolean show_cancel)
 {
-    	BraseroDiscTrack track;
-
 	if (!project->priv->current) {
 		if (saved_uri)
 			*saved_uri = NULL;
@@ -2975,18 +2604,10 @@ brasero_project_save_session (BraseroProject *project,
 		return FALSE;
 	}
 
-    	bzero (&track, sizeof (track));
-	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK) {
-		/* NOTE: is this right? because brasero could not shut itself
-		 * down if an error occurs. */
-		if (!brasero_project_save_project_xml (project,
-						       uri,
-						       &track,
-						       FALSE))
-			return TRUE;
-	}
-
-	brasero_track_clear (&track);
+	/* NOTE: is this right? because brasero could not shut itself
+	 * down if an error occurs. */
+	if (!brasero_project_save_project_xml (BRASERO_BURN_SESSION (project->priv->session), uri))
+		return TRUE;
 
 	if (saved_uri)
 		*saved_uri = g_strdup (uri);

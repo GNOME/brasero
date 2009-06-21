@@ -82,8 +82,8 @@ brasero_project_manager_iso (BraseroProjectManager *manager,
 
 BraseroProjectType
 brasero_project_manager_open_project (BraseroProjectManager *manager,
-				      BraseroDiscTrack *track,
 				      const gchar *uri,
+				      gboolean playlist,
 				      gboolean burn);
 
 BraseroProjectType

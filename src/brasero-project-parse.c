@@ -45,92 +45,13 @@
 #include "brasero-project-parse.h"
 #include "brasero-app.h"
 
-#include "brasero-track-stream.h"
-#include "brasero-track-data.h"
+#include "brasero-units.h"
+#include "brasero-track-stream-cfg.h"
+#include "brasero-track-data-cfg.h"
+#include "brasero-session.h"
+#include "brasero-tags.h"
 
-void
-brasero_stream_info_free (BraseroStreamInfo *info)
-{
-	if (!info)
-		return;
-
-	g_free (info->title);
-	g_free (info->artist);
-	g_free (info->composer);
-	g_free (info);
-}
-
-BraseroStreamInfo *
-brasero_stream_info_copy (BraseroStreamInfo *info)
-{
-	BraseroStreamInfo *copy;
-
-	if (!info)
-		return NULL;
-
-	copy = g_new0 (BraseroStreamInfo, 1);
-
-	copy->title = g_strdup (info->title);
-	copy->artist = g_strdup (info->artist);
-	copy->composer = g_strdup (info->composer);
-	copy->isrc = info->isrc;
-
-	return copy;
-}
-
-static void
-brasero_track_clear_song (gpointer data)
-{
-	BraseroDiscSong *song;
-
-	song = data;
-
-	if (song->info)
-		brasero_stream_info_free (song->info);
-
-	g_free (song->uri);
-	g_free (song);
-}
-
-void
-brasero_track_clear (BraseroDiscTrack *track)
-{
-	if (!track)
-		return;
-
-	if (track->label) {
-		g_free (track->label);
-		track->label = NULL;
-	}
-
-	if (track->cover) {
-		g_free (track->cover);
-		track->cover = NULL;
-	}
-
-	if (track->type == BRASERO_PROJECT_TYPE_AUDIO) {
-		g_slist_foreach (track->contents.tracks, (GFunc) brasero_track_clear_song, NULL);
-		g_slist_free (track->contents.tracks);
-	}
-	else if (track->type == BRASERO_PROJECT_TYPE_DATA) {
-		g_free (track->contents.data.icon);
-		track->contents.data.icon = NULL;
-
-		g_slist_foreach (track->contents.data.grafts, (GFunc) brasero_graft_point_free, NULL);
-		g_slist_free (track->contents.data.grafts);
-		g_slist_foreach (track->contents.data.restored, (GFunc) g_free, NULL);
-		g_slist_free (track->contents.data.restored);
-		g_slist_foreach (track->contents.data.excluded, (GFunc) g_free, NULL);
-		g_slist_free (track->contents.data.excluded);
-	}
-}
-
-void
-brasero_track_free (BraseroDiscTrack *track)
-{
-	brasero_track_clear (track);
-	g_free (track);
-}
+#define BRASERO_PROJECT_VERSION "0.2"
 
 static void
 brasero_project_invalid_project_dialog (const char *reason)
@@ -141,14 +62,15 @@ brasero_project_invalid_project_dialog (const char *reason)
 			   GTK_MESSAGE_ERROR);
 }
 
-static gboolean
+static GSList *
 _read_graft_point (xmlDocPtr project,
 		   xmlNodePtr graft,
-		   BraseroDiscTrack *track)
+		   GSList *grafts)
 {
 	BraseroGraftPt *retval;
 
 	retval = g_new0 (BraseroGraftPt, 1);
+        grafts = g_slist_prepend (grafts, retval);
 	while (graft) {
 		if (!xmlStrcmp (graft->name, (const xmlChar *) "uri")) {
 			xmlChar *uri;
@@ -174,45 +96,35 @@ _read_graft_point (xmlDocPtr project,
 			if (!retval->path)
 				goto error;
 		}
-		else if (!xmlStrcmp (graft->name, (const xmlChar *) "excluded")) {
-			xmlChar *excluded;
-
-			excluded = xmlNodeListGetString (project,
-							 graft->xmlChildrenNode,
-							 1);
-			if (!excluded)
-				goto error;
-
-			track->contents.data.excluded = g_slist_prepend (track->contents.data.excluded,
-									 xmlURIUnescapeString ((char*) excluded, 0, NULL));
-			g_free (excluded);
-		}
 		else if (graft->type == XML_ELEMENT_NODE)
 			goto error;
 
 		graft = graft->next;
 	}
 
-	track->contents.data.grafts = g_slist_prepend (track->contents.data.grafts, retval);
-	return TRUE;
+	return grafts;
 
 error:
-	brasero_graft_point_free (retval);
-	return FALSE;
+
+        g_slist_foreach (grafts, (GFunc) brasero_graft_point_free, NULL);
+        g_slist_free (grafts);
+
+	return NULL;
 }
 
-static BraseroDiscTrack *
+static BraseroTrack *
 _read_data_track (xmlDocPtr project,
 		  xmlNodePtr item)
 {
-	BraseroDiscTrack *track;
+	BraseroTrackDataCfg *track;
+        GSList *grafts= NULL;
+        GSList *excluded = NULL;
 
-	track = g_new0 (BraseroDiscTrack, 1);
-	track->type = BRASERO_PROJECT_TYPE_DATA;
+	track = brasero_track_data_cfg_new ();
 
 	while (item) {
 		if (!xmlStrcmp (item->name, (const xmlChar *) "graft")) {
-			if (!_read_graft_point (project, item->xmlChildrenNode, track))
+			if (!(grafts = _read_graft_point (project, item->xmlChildrenNode, grafts)))
 				goto error;
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "icon")) {
@@ -224,10 +136,8 @@ _read_data_track (xmlDocPtr project,
 			if (!icon_path)
 				goto error;
 
-			if (track->contents.data.icon)
-				g_free (track->contents.data.icon);
-
-			track->contents.data.icon = (gchar *) icon_path;
+			brasero_track_data_cfg_set_icon (track, (gchar *) icon_path, NULL);
+                        g_free (icon_path);
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "restored")) {
 			xmlChar *restored;
@@ -238,20 +148,20 @@ _read_data_track (xmlDocPtr project,
 			if (!restored)
 				goto error;
 
-			track->contents.data.restored = g_slist_prepend (track->contents.data.restored, restored);
+                        brasero_track_data_cfg_dont_filter_uri (track, (gchar *) restored);
+                        g_free (restored);
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "excluded")) {
-			xmlChar *excluded;
+			xmlChar *excluded_uri;
 
-			excluded = xmlNodeListGetString (project,
-							 item->xmlChildrenNode,
-							 1);
-			if (!excluded)
+			excluded_uri = xmlNodeListGetString (project,
+							     item->xmlChildrenNode,
+							     1);
+			if (!excluded_uri)
 				goto error;
 
-			track->contents.data.excluded = g_slist_prepend (track->contents.data.excluded,
-									 xmlURIUnescapeString ((char*) excluded, 0, NULL));
-			g_free (excluded);
+			excluded = g_slist_prepend (excluded, xmlURIUnescapeString ((char*) excluded_uri, 0, NULL));
+			g_free (excluded_uri);
 		}
 		else if (item->type == XML_ELEMENT_NODE)
 			goto error;
@@ -259,28 +169,38 @@ _read_data_track (xmlDocPtr project,
 		item = item->next;
 	}
 
-	track->contents.data.excluded = g_slist_reverse (track->contents.data.excluded);
-	track->contents.data.grafts = g_slist_reverse (track->contents.data.grafts);
-	return track;
+        grafts = g_slist_reverse (grafts);
+        excluded = g_slist_reverse (excluded);
+        brasero_track_data_set_source (BRASERO_TRACK_DATA (track),
+                                                           grafts,
+                                                           excluded);
+	return BRASERO_TRACK (track);
 
 error:
-	brasero_track_free (track);
+
+        g_slist_foreach (grafts, (GFunc) brasero_graft_point_free, NULL);
+        g_slist_free (grafts);
+
+        g_slist_foreach (excluded, (GFunc) g_free, NULL);
+        g_slist_free (excluded);
+
+	g_object_unref (track);
+
 	return NULL;
 }
 
-static BraseroDiscTrack *
+static BraseroTrack *
 _read_audio_track (xmlDocPtr project,
 		   xmlNodePtr uris)
 {
-	BraseroDiscTrack *track;
-	BraseroDiscSong *song;
+	BraseroTrackStreamCfg *track;
 
-	track = g_new0 (BraseroDiscTrack, 1);
-	song = NULL;
+	track = brasero_track_stream_cfg_new ();
 
 	while (uris) {
 		if (!xmlStrcmp (uris->name, (const xmlChar *) "uri")) {
 			xmlChar *uri;
+                        gchar *unescaped_uri;
 
 			uri = xmlNodeListGetString (project,
 						    uris->xmlChildrenNode,
@@ -288,23 +208,17 @@ _read_audio_track (xmlDocPtr project,
 			if (!uri)
 				goto error;
 
-			song = g_new0 (BraseroDiscSong, 1);
-			song->uri = g_uri_unescape_string ((char *) uri, NULL);
+                        unescaped_uri = g_uri_unescape_string ((char *) uri, NULL);
+                        g_free (uri);
 
-			/* to know if this info was set or not */
-			song->start = -1;
-			song->end = -1;
-			g_free (uri);
-			track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
+			brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), unescaped_uri);
+                        g_free (unescaped_uri);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "silence")) {
 			gchar *silence;
 
-			if (!song)
-				goto error;
-
 			/* impossible to have two gaps in a row */
-			if (song->gap)
+			if (brasero_track_stream_get_gap (BRASERO_TRACK_STREAM (track)) > 0)
 				goto error;
 
 			silence = (gchar *) xmlNodeListGetString (project,
@@ -313,14 +227,14 @@ _read_audio_track (xmlDocPtr project,
 			if (!silence)
 				goto error;
 
-			song->gap = (gint64) g_ascii_strtoull (silence, NULL, 10);
+                        brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
+                                                                                     -1,
+                                                                                     -1,
+                                                                                     g_ascii_strtoull (silence, NULL, 10));
 			g_free (silence);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "start")) {
 			gchar *start;
-
-			if (!song)
-				goto error;
 
 			start = (gchar *) xmlNodeListGetString (project,
 								uris->xmlChildrenNode,
@@ -328,14 +242,14 @@ _read_audio_track (xmlDocPtr project,
 			if (!start)
 				goto error;
 
-			song->start = (gint64) g_ascii_strtoull (start, NULL, 10);
+                        brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
+                                                                                     -1,
+                                                                                     g_ascii_strtoull (start, NULL, 10),
+                                                                                     -1);
 			g_free (start);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "end")) {
 			gchar *end;
-
-			if (!song)
-				goto error;
 
 			end = (gchar *) xmlNodeListGetString (project,
 							      uris->xmlChildrenNode,
@@ -343,11 +257,15 @@ _read_audio_track (xmlDocPtr project,
 			if (!end)
 				goto error;
 
-			song->end = (gint64) g_ascii_strtoull (end, NULL, 10);
+                        brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
+                                                                                      g_ascii_strtoull (end, NULL, 10),
+                                                                                      -1,
+                                                                                      -1);
 			g_free (end);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "title")) {
 			xmlChar *title;
+			gchar *unescaped_title;
 
 			title = xmlNodeListGetString (project,
 						      uris->xmlChildrenNode,
@@ -355,17 +273,17 @@ _read_audio_track (xmlDocPtr project,
 			if (!title)
 				goto error;
 
-			if (!song->info)
-				song->info = g_new0 (BraseroStreamInfo, 1);
+                        unescaped_title = g_uri_unescape_string ((char *) title, NULL);
+                        g_free (title);
 
-			if (song->info->title)
-				g_free (song->info->title);
-
-			song->info->title = g_uri_unescape_string ((char *) title, NULL);
-			g_free (title);
+                        brasero_track_tag_add_string (BRASERO_TRACK (track),
+                                                      BRASERO_TRACK_STREAM_TITLE_TAG,
+                                                      unescaped_title);
+        		g_free (unescaped_title);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "artist")) {
 			xmlChar *artist;
+                        gchar *unescaped_artist;
 
 			artist = xmlNodeListGetString (project,
 						      uris->xmlChildrenNode,
@@ -373,17 +291,17 @@ _read_audio_track (xmlDocPtr project,
 			if (!artist)
 				goto error;
 
-			if (!song->info)
-				song->info = g_new0 (BraseroStreamInfo, 1);
-
-			if (song->info->artist)
-				g_free (song->info->artist);
-
-			song->info->artist = g_uri_unescape_string ((char *) artist, NULL);
+			unescaped_artist = g_uri_unescape_string ((char *) artist, NULL);
 			g_free (artist);
+
+                        brasero_track_tag_add_string (BRASERO_TRACK (track),
+                                                      BRASERO_TRACK_STREAM_ARTIST_TAG,
+                                                      unescaped_artist);
+        		g_free (unescaped_artist);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "composer")) {
 			xmlChar *composer;
+                        gchar *unescaped_composer;
 
 			composer = xmlNodeListGetString (project,
 							 uris->xmlChildrenNode,
@@ -391,14 +309,13 @@ _read_audio_track (xmlDocPtr project,
 			if (!composer)
 				goto error;
 
-			if (!song->info)
-				song->info = g_new0 (BraseroStreamInfo, 1);
-
-			if (song->info->composer)
-				g_free (song->info->composer);
-
-			song->info->composer = g_uri_unescape_string ((char *) composer, NULL);
+			unescaped_composer = g_uri_unescape_string ((char *) composer, NULL);
 			g_free (composer);
+
+                        brasero_track_tag_add_string (BRASERO_TRACK (track),
+                                                      BRASERO_TRACK_STREAM_COMPOSER_TAG,
+                                                      unescaped_composer);
+        		g_free (unescaped_composer);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "isrc")) {
 			gchar *isrc;
@@ -409,10 +326,9 @@ _read_audio_track (xmlDocPtr project,
 			if (!isrc)
 				goto error;
 
-			if (!song->info)
-				song->info = g_new0 (BraseroStreamInfo, 1);
-
-			song->info->isrc = (gint) g_ascii_strtod (isrc, NULL);
+                        brasero_track_tag_add_int (BRASERO_TRACK (track),
+                                                   BRASERO_TRACK_STREAM_ISRC_TAG,
+                                                   (gint) g_ascii_strtod (isrc, NULL));
 			g_free (isrc);
 		}
 		else if (uris->type == XML_ELEMENT_NODE)
@@ -421,57 +337,50 @@ _read_audio_track (xmlDocPtr project,
 		uris = uris->next;
 	}
 
-	track->contents.tracks = g_slist_reverse (track->contents.tracks);
-	return (BraseroDiscTrack*) track;
+	return BRASERO_TRACK (track);
 
 error:
-	brasero_track_free ((BraseroDiscTrack *) track);
+
+	g_object_unref (track);
+
 	return NULL;
 }
 
 static gboolean
 _get_tracks (xmlDocPtr project,
 	     xmlNodePtr track_node,
-	     BraseroDiscTrack **track)
+	     BraseroBurnSession *session)
 {
-	BraseroDiscTrack *newtrack;
+	GSList *tracks = NULL;
+	GSList *iter;
 
 	track_node = track_node->xmlChildrenNode;
 
-	newtrack = NULL;
 	while (track_node) {
-		if (!xmlStrcmp (track_node->name, (const xmlChar *) "audio")) {
-			if (newtrack)
-				goto error;
+		BraseroTrack *newtrack;
 
-			newtrack = _read_audio_track (project,
-						      track_node->xmlChildrenNode);
+		if (!xmlStrcmp (track_node->name, (const xmlChar *) "audio")) {
+			newtrack = _read_audio_track (project, track_node->xmlChildrenNode);
 			if (!newtrack)
 				goto error;
 
-			newtrack->type = BRASERO_PROJECT_TYPE_AUDIO;
+			tracks = g_slist_append (tracks, newtrack);
 		}
 		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "data")) {
-			if (newtrack)
-				goto error;
-
-			newtrack = _read_data_track (project,
-						     track_node->xmlChildrenNode);
+			newtrack = _read_data_track (project, track_node->xmlChildrenNode);
 
 			if (!newtrack)
 				goto error;
+
+			tracks = g_slist_append (tracks, newtrack);
 		}
 		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "video")) {
-			if (newtrack)
-				goto error;
-
-			newtrack = _read_audio_track (project,
-						      track_node->xmlChildrenNode);
+			newtrack = _read_audio_track (project, track_node->xmlChildrenNode);
 
 			if (!newtrack)
 				goto error;
 
-			newtrack->type = BRASERO_PROJECT_TYPE_VIDEO;
+			tracks = g_slist_append (tracks, newtrack);
 		}
 		else if (track_node->type == XML_ELEMENT_NODE)
 			goto error;
@@ -479,23 +388,33 @@ _get_tracks (xmlDocPtr project,
 		track_node = track_node->next;
 	}
 
-	if (!newtrack)
+	if (!tracks)
 		goto error;
 
-	*track = newtrack;
+	for (iter = tracks; iter; iter = iter->next) {
+		BraseroTrack *newtrack;
+
+		newtrack = tracks->data;
+		brasero_burn_session_add_track (session, newtrack, NULL);
+	}
+
+	g_slist_free (tracks);
+
 	return TRUE;
 
 error :
-	if (newtrack)
-		brasero_track_free (newtrack);
 
-	brasero_track_free (newtrack);
+	if (tracks) {
+		g_slist_foreach (tracks, (GFunc) g_object_unref, NULL);
+		g_slist_free (tracks);
+	}
+
 	return FALSE;
 }
 
 gboolean
 brasero_project_open_project_xml (const gchar *uri,
-				  BraseroDiscTrack **track,
+				  BraseroBurnSession *session,
 				  gboolean warn_user)
 {
 	xmlNodePtr track_node = NULL;
@@ -571,18 +490,29 @@ brasero_project_open_project_xml (const gchar *uri,
 		item = item->next;
 	}
 
-	retval = _get_tracks (project, track_node, track);
+	retval = _get_tracks (project, track_node, session);
 	if (!retval)
 		goto error;
 
 	xmlFreeDoc (project);
 
-	if (track && *track) {
-		(*track)->label = label;
-		(*track)->cover = cover;
-	}
+        brasero_burn_session_set_label (session, label);
+        g_free (label);
 
-	return retval;
+        if (cover) {
+                GValue *value;
+
+                value = g_new0 (GValue, 1);
+                g_value_init (value, G_TYPE_STRING);
+                g_value_set_string (value, cover);
+                brasero_burn_session_tag_add (session,
+                                               BRASERO_COVER_URI,
+                                               value);
+
+                g_free (cover);
+        }
+
+        return retval;
 
 error:
 
@@ -606,12 +536,9 @@ brasero_project_playlist_playlist_started (TotemPlParser *parser,
 					   GHashTable *metadata,
 					   gpointer user_data)
 {
-	gchar *string;
-	gchar **retval = user_data;
+        BraseroBurnSession *session = user_data;
 
-	string = g_hash_table_lookup (metadata, TOTEM_PL_PARSER_FIELD_TITLE);
-	if (string)
-		*retval = g_strdup (string);
+        brasero_burn_session_set_label (session, g_hash_table_lookup (metadata, TOTEM_PL_PARSER_FIELD_TITLE));
 }
 
 static void
@@ -620,30 +547,21 @@ brasero_project_playlist_entry_parsed (TotemPlParser *parser,
 				       GHashTable *metadata,
 				       gpointer user_data)
 {
-	BraseroDiscTrack *track = user_data;
-	BraseroDiscSong *song;
+	BraseroBurnSession *session = user_data;
+        BraseroTrackStreamCfg *track;
 
-	song = g_new0 (BraseroDiscSong, 1);
-	song->uri = g_strdup (uri);
-
-	/* to know if this info was set or not */
-	song->start = -1;
-	song->end = -1;
-	track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
+        track = brasero_track_stream_cfg_new ();
+        brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uri);
+        brasero_burn_session_add_track (session, BRASERO_TRACK (track), NULL);
 }
 
 gboolean
 brasero_project_open_audio_playlist_project (const gchar *uri,
-					     BraseroDiscTrack **track,
+					     BraseroBurnSession *session,
 					     gboolean warn_user)
 {
-	gchar *label = NULL;
 	TotemPlParser *parser;
 	TotemPlParserResult result;
-	BraseroDiscTrack *new_track;
-
-	new_track = g_new0 (BraseroDiscTrack, 1);
-	new_track->type = BRASERO_PROJECT_TYPE_AUDIO;
 
 	parser = totem_pl_parser_new ();
 	g_object_set (parser,
@@ -654,30 +572,550 @@ brasero_project_open_audio_playlist_project (const gchar *uri,
 	g_signal_connect (parser,
 			  "playlist-started",
 			  G_CALLBACK (brasero_project_playlist_playlist_started),
-			  &label);
+			  session);
 
 	g_signal_connect (parser,
 			  "entry-parsed",
 			  G_CALLBACK (brasero_project_playlist_entry_parsed),
-			  new_track);
+			  session);
 
 	result = totem_pl_parser_parse (parser, uri, FALSE);
 	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
 		if (warn_user)
 			brasero_project_invalid_project_dialog (_("It does not seem to be a valid Brasero project."));
-
-		brasero_track_free (new_track);
-	}
-	else {
-		if (new_track && label)
-			new_track->label = label;
-
-		*track = new_track;
 	}
 
 	g_object_unref (parser);
 
 	return (result == TOTEM_PL_PARSER_RESULT_SUCCESS);
+}
+
+#endif
+
+/**
+ * Project saving
+ */
+
+static gboolean
+_save_audio_track_xml (xmlTextWriter *project,
+		       BraseroTrackStream *track)
+{
+	xmlChar *escaped;
+	gchar *start;
+	gint success;
+	gchar *isrc;
+	gchar *uri;
+	gchar *end;
+
+	uri = brasero_track_stream_get_source (track, TRUE);
+	escaped = (unsigned char *) g_uri_escape_string (uri, NULL, FALSE);
+	g_free (uri);
+
+	success = xmlTextWriterWriteElement (project,
+					    (xmlChar *) "uri",
+					     escaped);
+	g_free (escaped);
+
+	if (success == -1)
+		return FALSE;
+
+	if (brasero_track_stream_get_gap (track) > 0) {
+		gchar *silence;
+
+		silence = g_strdup_printf ("%"G_GINT64_FORMAT, brasero_track_stream_get_gap (track));
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "silence",
+						     (xmlChar *) silence);
+
+		g_free (silence);
+		if (success == -1)
+			return FALSE;
+	}
+
+	if (brasero_track_stream_get_end (track) > 0) {
+		/* start of the song */
+		start = g_strdup_printf ("%"G_GINT64_FORMAT, brasero_track_stream_get_start (track));
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "start",
+						     (xmlChar *) start);
+
+		g_free (start);
+		if (success == -1)
+			return FALSE;
+
+		/* end of the song */
+		end = g_strdup_printf ("%"G_GINT64_FORMAT, brasero_track_stream_get_end (track));
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "end",
+						     (xmlChar *) end);
+
+		g_free (end);
+		if (success == -1)
+			return FALSE;
+	}
+
+	if (brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG)) {
+		escaped = (unsigned char *) g_uri_escape_string (brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG), NULL, FALSE);
+		success = xmlTextWriterWriteElement (project,
+						    (xmlChar *) "title",
+						     escaped);
+		g_free (escaped);
+
+		if (success == -1)
+			return FALSE;
+	}
+
+	if (brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ARTIST_TAG)) {
+		escaped = (unsigned char *) g_uri_escape_string (brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ARTIST_TAG), NULL, FALSE);
+		success = xmlTextWriterWriteElement (project,
+						    (xmlChar *) "artist",
+						     escaped);
+		g_free (escaped);
+
+		if (success == -1)
+			return FALSE;
+	}
+
+	if (brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_COMPOSER_TAG)) {
+		escaped = (unsigned char *) g_uri_escape_string (brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_COMPOSER_TAG), NULL, FALSE);
+		success = xmlTextWriterWriteElement (project,
+						    (xmlChar *) "composer",
+						     escaped);
+		g_free (escaped);
+		if (success == -1)
+			return FALSE;
+	}
+
+	if (brasero_track_tag_lookup_int (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG)) {
+		isrc = g_strdup_printf ("%d", brasero_track_tag_lookup_int (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG));
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "isrc",
+						     (xmlChar *) isrc);
+
+		g_free (isrc);
+		if (success == -1)
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+_save_data_track_xml (xmlTextWriter *project,
+		      BraseroBurnSession *session)
+{
+	gchar *uri;
+	gint success;
+	GSList *iter;
+	GSList *tracks;
+	GSList *grafts;
+	BraseroTrackDataCfg *track;
+
+	tracks = brasero_burn_session_get_tracks (session);
+	track = BRASERO_TRACK_DATA_CFG (tracks->data);
+
+	if (brasero_track_data_cfg_get_icon_path (track)) {
+		/* Write the icon if any */
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "icon", (xmlChar *) brasero_track_data_cfg_get_icon_path (track));
+		if (success < 0)
+			return FALSE;
+	}
+
+	grafts = brasero_track_data_get_grafts (BRASERO_TRACK_DATA (track));
+	for (; grafts; grafts = grafts->next) {
+		BraseroGraftPt *graft;
+
+		graft = grafts->data;
+
+		success = xmlTextWriterStartElement (project, (xmlChar *) "graft");
+		if (success < 0)
+			return FALSE;
+
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "path", (xmlChar *) graft->path);
+		if (success < 0)
+			return FALSE;
+
+		if (graft->uri) {
+			xmlChar *escaped;
+
+			escaped = (unsigned char *) g_uri_escape_string (graft->uri, NULL, FALSE);
+			success = xmlTextWriterWriteElement (project, (xmlChar *) "uri", escaped);
+			g_free (escaped);
+			if (success < 0)
+				return FALSE;
+		}
+
+		success = xmlTextWriterEndElement (project); /* graft */
+		if (success < 0)
+			return FALSE;
+	}
+
+	/* save excluded uris */
+	iter = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (track), FALSE);
+	for (; iter; iter = iter->next) {
+		xmlChar *escaped;
+
+		escaped = xmlURIEscapeStr ((xmlChar *) iter->data, NULL);
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "excluded", (xmlChar *) escaped);
+		g_free (escaped);
+		if (success < 0)
+			return FALSE;
+	}
+
+	/* save restored uris */
+	iter = brasero_track_data_cfg_get_restored_list (track);
+	for (; iter; iter = iter->next) {
+		uri = iter->data;
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "restored", (xmlChar *) uri);
+		if (success < 0)
+			return FALSE;
+	}
+
+	/* NOTE: we don't write symlinks and unreadable they are useless */
+	return TRUE;
+}
+
+gboolean 
+brasero_project_save_project_xml (BraseroBurnSession *session,
+				  const gchar *uri)
+{
+	BraseroTrackType *track_type = NULL;
+	xmlTextWriter *project;
+	gboolean retval;
+	GSList *tracks;
+	GValue *value;
+	gint success;
+	gchar *path;
+
+	path = g_filename_from_uri (uri, NULL, NULL);
+	if (!path)
+		return FALSE;
+
+	project = xmlNewTextWriterFilename (path, 0);
+	if (!project) {
+		g_free (path);
+		return FALSE;
+	}
+
+	xmlTextWriterSetIndent (project, 1);
+	xmlTextWriterSetIndentString (project, (xmlChar *) "\t");
+
+	success = xmlTextWriterStartDocument (project,
+					      NULL,
+					      "UTF8",
+					      NULL);
+	if (success < 0)
+		goto error;
+
+	success = xmlTextWriterStartElement (project, (xmlChar *) "braseroproject");
+	if (success < 0)
+		goto error;
+
+	/* write the name of the version */
+	success = xmlTextWriterWriteElement (project,
+					     (xmlChar *) "version",
+					     (xmlChar *) BRASERO_PROJECT_VERSION);
+	if (success < 0)
+		goto error;
+
+	if (brasero_burn_session_get_label (session)) {
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "label",
+						     (xmlChar *) brasero_burn_session_get_label (session));
+
+		if (success < 0)
+			goto error;
+	}
+
+	value = NULL;
+	brasero_burn_session_tag_lookup (session,
+					 BRASERO_COVER_URI,
+					 &value);
+	if (value) {
+		gchar *escaped;
+
+		escaped = g_uri_escape_string (g_value_get_string (value), NULL, FALSE);
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "cover",
+						     (xmlChar *) escaped);
+		g_free (escaped);
+
+		if (success < 0)
+			goto error;
+	}
+
+	success = xmlTextWriterStartElement (project, (xmlChar *) "track");
+	if (success < 0)
+		goto error;
+
+	track_type = brasero_track_type_new ();
+	tracks = brasero_burn_session_get_tracks (session);
+
+	for (; tracks; tracks = tracks->next) {
+		BraseroTrack *track;
+
+		track = tracks->data;
+
+		brasero_track_get_track_type (track, track_type);
+		if (brasero_track_type_get_has_stream (track_type)) {
+			if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (track_type)))
+				success = xmlTextWriterStartElement (project, (xmlChar *) "video");
+			else
+				success = xmlTextWriterStartElement (project, (xmlChar *) "audio");
+
+			if (success < 0)
+				goto error;
+
+			retval = _save_audio_track_xml (project, BRASERO_TRACK_STREAM (track));
+			if (!retval)
+				goto error;
+
+			success = xmlTextWriterEndElement (project); /* audio/video */
+			if (success < 0)
+				goto error;
+		}
+		else if (brasero_track_type_get_has_data (track_type)) {
+			success = xmlTextWriterStartElement (project, (xmlChar *) "data");
+			if (success < 0)
+				goto error;
+
+			retval = _save_data_track_xml (project, session);
+			if (!retval)
+				goto error;
+
+			success = xmlTextWriterEndElement (project); /* data */
+			if (success < 0)
+				goto error;
+		}
+		else
+			retval = FALSE;
+	}
+
+	success = xmlTextWriterEndElement (project); /* track */
+	if (success < 0)
+		goto error;
+
+	brasero_track_type_free (track_type);
+
+	success = xmlTextWriterEndElement (project); /* braseroproject */
+	if (success < 0)
+		goto error;
+
+	xmlTextWriterEndDocument (project);
+	xmlFreeTextWriter (project);
+	g_free (path);
+	return TRUE;
+
+error:
+
+	if (track_type)
+		brasero_track_type_free (track_type);
+
+	xmlTextWriterEndDocument (project);
+	xmlFreeTextWriter (project);
+
+	g_remove (path);
+	g_free (path);
+
+	return FALSE;
+}
+
+gboolean
+brasero_project_save_audio_project_plain_text (BraseroBurnSession *session,
+					       const gchar *uri)
+{
+	const gchar *title;
+	guint written;
+	GSList *iter;
+	gchar *path;
+	FILE *file;
+
+    	path = g_filename_from_uri (uri, NULL, NULL);
+    	if (!path)
+		return FALSE;
+
+	file = fopen (path, "w+");
+	g_free (path);
+	if (!file)
+		return FALSE;
+
+	/* write title */
+	title = brasero_burn_session_get_label (session);
+	written = fwrite (title, strlen (title), 1, file);
+	if (written != 1)
+		goto error;
+
+	written = fwrite ("\n", 1, 1, file);
+	if (written != 1)
+		goto error;
+
+	iter = brasero_burn_session_get_tracks (session);
+	for (; iter; iter = iter->next) {
+		BraseroTrackStream *track;
+		const gchar *text;
+		gchar *time;
+		guint64 len;
+		gchar *uri;
+
+		track = iter->data;
+
+		text = brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG);
+		written = fwrite (title, 1, strlen (title), file);
+		if (written != strlen (title))
+			goto error;
+
+		len = 0;
+		brasero_track_stream_get_length (track, &len);
+		time = brasero_units_get_time_string (len, TRUE, FALSE);
+		if (time) {
+			written = fwrite ("\t", 1, 1, file);
+			if (written != 1)
+				goto error;
+
+			written = fwrite (time, 1, strlen (time), file);
+			if (written != strlen (time)) {
+				g_free (time);
+				goto error;
+			}
+			g_free (time);
+		}
+
+		text = brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ARTIST_TAG);
+		if (text) {
+			gchar *string;
+
+			written = fwrite ("\t", 1, 1, file);
+			if (written != 1)
+				goto error;
+
+			/* Translators: %s is an artist */
+			string = g_strdup_printf (" by %s", text);
+			written = fwrite (string, 1, strlen (string), file);
+			if (written != strlen (string)) {
+				g_free (string);
+				goto error;
+			}
+			g_free (string);
+		}
+
+		written = fwrite ("\n(", 1, 2, file);
+		if (written != 2)
+			goto error;
+
+		uri = brasero_track_stream_get_source (track, TRUE);
+		written = fwrite (uri, 1, strlen (uri), file);
+		if (written != strlen (uri)) {
+			g_free (uri);
+			goto error;
+		}
+
+		g_free (uri);
+
+		written = fwrite (")", 1, 1, file);
+		if (written != 1)
+			goto error;
+
+		written = fwrite ("\n\n", 1, 2, file);
+		if (written != 2)
+			goto error;
+	}
+
+	fclose (file);
+	return TRUE;
+	
+error:
+
+	fclose (file);
+
+	return FALSE;
+}
+
+#ifdef BUILD_PLAYLIST
+
+static void
+brasero_project_save_audio_playlist_entry (GtkTreeModel *model,
+					   GtkTreeIter *iter,
+					   gchar **uri,
+					   gchar **title,
+					   gboolean *custom_title,
+					   gpointer user_data)
+{
+	gtk_tree_model_get (model, iter,
+			    0, uri,
+			    1, title,
+			    2, custom_title,
+			    -1);
+}
+
+gboolean
+brasero_project_save_audio_project_playlist (BraseroBurnSession *session,
+					     const gchar *uri,
+					     BraseroProjectSave type)
+{
+	TotemPlParserType pl_type;
+	TotemPlParser *parser;
+	GtkListStore *model;
+	GtkTreeIter t_iter;
+	gboolean result;
+	GSList *iter;
+	gchar *path;
+
+    	path = g_filename_from_uri (uri, NULL, NULL);
+    	if (!path)
+		return FALSE;
+
+	parser = totem_pl_parser_new ();
+
+	/* create and populate treemodel */
+	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+	iter = brasero_burn_session_get_tracks (session);
+	for (; iter; iter = iter->next) {
+		BraseroTrackStream *track;
+		gchar *uri;
+
+		track = iter->data;
+
+		uri = brasero_track_stream_get_source (track, TRUE);
+		gtk_list_store_append (model, &t_iter);
+		gtk_list_store_set (model, &t_iter,
+				    0, uri,
+				    1, brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG),
+				    2, TRUE,
+				    -1);
+		g_free (uri);
+	}
+
+	switch (type) {
+		case BRASERO_PROJECT_SAVE_PLAYLIST_M3U:
+			pl_type = TOTEM_PL_PARSER_M3U;
+			break;
+		case BRASERO_PROJECT_SAVE_PLAYLIST_XSPF:
+			pl_type = TOTEM_PL_PARSER_XSPF;
+			break;
+		case BRASERO_PROJECT_SAVE_PLAYLIST_IRIVER_PLA:
+			pl_type = TOTEM_PL_PARSER_IRIVER_PLA;
+			break;
+
+		case BRASERO_PROJECT_SAVE_PLAYLIST_PLS:
+		default:
+			pl_type = TOTEM_PL_PARSER_PLS;
+			break;
+	}
+
+	result = totem_pl_parser_write_with_title (parser,
+						   GTK_TREE_MODEL (model),
+						   brasero_project_save_audio_playlist_entry,
+						   path,
+						   brasero_burn_session_get_label (session),
+						   pl_type,
+						   NULL,
+						   NULL);
+
+	g_object_unref (model);
+	g_object_unref (parser);
+	g_free (path);
+
+	return result;
 }
 
 #endif

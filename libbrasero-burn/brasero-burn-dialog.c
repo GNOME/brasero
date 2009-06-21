@@ -751,8 +751,7 @@ brasero_burn_dialog_image_error (BraseroBurn *burn,
 		format = brasero_burn_session_get_output_format (priv->session);
 		brasero_burn_session_get_output (priv->session,
 						 &image,
-						 &toc,
-						 NULL);
+						 &toc);
 
 		if (toc) {
 			gchar *name;

@@ -107,9 +107,15 @@ brasero_session_cfg_is_supported (BraseroSessionCfg *cfg,
 gboolean
 brasero_session_cfg_is_compulsory (BraseroSessionCfg *cfg,
 				   BraseroBurnFlag flags);
+
+gboolean
+brasero_session_cfg_has_default_output_format (BraseroSessionCfg *cfg);
+
+gboolean
+brasero_session_cfg_has_default_output_path (BraseroSessionCfg *cfg);
+
 void
 brasero_session_cfg_disable (BraseroSessionCfg *self);
-
 
 G_END_DECLS
 

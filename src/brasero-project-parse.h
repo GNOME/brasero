@@ -30,9 +30,18 @@
 #include <glib.h>
 
 #include "brasero-track.h"
-#include "brasero-track-stream.h"
+#include "brasero-session.h"
 
 G_BEGIN_DECLS
+
+typedef enum {
+	BRASERO_PROJECT_SAVE_XML			= 0,
+	BRASERO_PROJECT_SAVE_PLAIN			= 1,
+	BRASERO_PROJECT_SAVE_PLAYLIST_PLS		= 2,
+	BRASERO_PROJECT_SAVE_PLAYLIST_M3U		= 3,
+	BRASERO_PROJECT_SAVE_PLAYLIST_XSPF		= 4,
+	BRASERO_PROJECT_SAVE_PLAYLIST_IRIVER_PLA	= 5
+} BraseroProjectSave;
 
 typedef enum {
 	BRASERO_PROJECT_TYPE_INVALID,
@@ -43,63 +52,28 @@ typedef enum {
 	BRASERO_PROJECT_TYPE_VIDEO
 } BraseroProjectType;
 
-struct _BraseroStreamInfo {
-	gchar *title;
-	gchar *artist;
-	gchar *composer;
-	gint isrc;
-};
-
-typedef struct _BraseroStreamInfo BraseroStreamInfo;
-
-void
-brasero_stream_info_free (BraseroStreamInfo *info);
-
-BraseroStreamInfo *
-brasero_stream_info_copy (BraseroStreamInfo *info);
-
-struct _BraseroDiscSong {
-	gchar *uri;
-	gint64 gap;
-	gint64 start;
-	gint64 end;
-
-	BraseroStreamInfo *info;
-};
-typedef struct _BraseroDiscSong BraseroDiscSong;
-
-typedef struct {
-	BraseroProjectType type;
-	gchar *label;
-	gchar *cover;
-
-	union  {
-		struct {
-			GSList *grafts;
-			GSList *excluded;
-			GSList *restored;
-			gchar *icon;
-		} data;
-
-		GSList *tracks; /* BraseroDiscSong */
-	} contents;
-} BraseroDiscTrack;
-
-void
-brasero_track_clear (BraseroDiscTrack *track);
-
-void
-brasero_track_free (BraseroDiscTrack *track);
-
 gboolean
 brasero_project_open_project_xml (const gchar *uri,
-				  BraseroDiscTrack **track,
+				  BraseroBurnSession *session,
 				  gboolean warn_user);
 
 gboolean
 brasero_project_open_audio_playlist_project (const gchar *uri,
-					     BraseroDiscTrack **track,
+					     BraseroBurnSession *session,
 					     gboolean warn_user);
+
+gboolean 
+brasero_project_save_project_xml (BraseroBurnSession *session,
+				  const gchar *uri);
+
+gboolean
+brasero_project_save_audio_project_plain_text (BraseroBurnSession *session,
+					       const gchar *uri);
+
+gboolean
+brasero_project_save_audio_project_playlist (BraseroBurnSession *session,
+					     const gchar *uri,
+					     BraseroProjectSave type);
 
 G_END_DECLS
 

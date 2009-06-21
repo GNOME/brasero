@@ -76,6 +76,7 @@ struct _BraseroSessionCfgPrivate
 enum
 {
 	IS_VALID_SIGNAL,
+	WRONG_EXTENSION_SIGNAL,
 	LAST_SIGNAL
 };
 
@@ -86,6 +87,189 @@ G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN
 
 #define BRASERO_DEST_SAVED_FLAGS		(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
 #define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
+
+/**
+ * Manages the output path
+ */
+
+gboolean
+brasero_session_cfg_has_default_output_path (BraseroSessionCfg *session)
+{
+	BraseroBurnSessionClass *klass;
+	BraseroBurnResult result;
+
+	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
+	result = klass->get_output_path (BRASERO_BURN_SESSION (session), NULL, NULL);
+	return (result == BRASERO_BURN_OK);
+}
+
+gboolean
+brasero_session_cfg_has_default_output_format (BraseroSessionCfg *session)
+{
+	BraseroBurnSessionClass *klass;
+	BraseroImageFormat format;
+
+	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
+	format = klass->get_output_format (BRASERO_BURN_SESSION (session));
+	return (format == BRASERO_IMAGE_FORMAT_NONE);
+}
+
+static gboolean
+brasero_session_cfg_wrong_extension_signal (BraseroSessionCfg *session)
+{
+	GValue instance_and_params [1];
+	GValue return_value;
+
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (session));
+	g_value_set_instance (instance_and_params, session);
+	
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_BOOLEAN);
+	g_value_set_int (&return_value, FALSE);
+
+	g_signal_emitv (instance_and_params,
+			session_cfg_signals [WRONG_EXTENSION_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+
+	return g_value_get_boolean (&return_value);
+}
+
+static BraseroBurnResult
+brasero_session_cfg_set_output_image (BraseroBurnSession *session,
+				      BraseroImageFormat format,
+				      const gchar *image,
+				      const gchar *toc)
+{
+	gchar *dot;
+	BraseroBurnResult result;
+	BraseroBurnSessionClass *klass;
+	const gchar *suffixes [] = {".iso",
+				    ".toc",
+				    ".cue",
+				    ".toc",
+				    NULL };
+
+	/* First set all information */
+	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
+	result = klass->set_output_image (session,
+					  format,
+					  image,
+					  toc);
+
+	if (!image && !toc)
+		return result;
+
+	if (format == BRASERO_IMAGE_FORMAT_NONE)
+		format = brasero_burn_session_get_output_format (session);
+
+	if (format == BRASERO_IMAGE_FORMAT_NONE)
+		return result;
+
+	if (format & BRASERO_IMAGE_FORMAT_BIN) {
+		dot = g_utf8_strrchr (image, -1, '.');
+		if (!strcmp (suffixes [0], dot)) {
+			gboolean res;
+
+			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
+			if (res)
+				brasero_image_format_fix_path_extension (format, FALSE, image);
+		}
+	}
+	else {
+		dot = g_utf8_strrchr (toc, -1, '.');
+
+		if (format & BRASERO_IMAGE_FORMAT_CLONE
+		&& !strcmp (suffixes [1], dot)) {
+			gboolean res;
+
+			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
+			if (res)
+				brasero_image_format_fix_path_extension (format, FALSE, toc);
+		}
+		else if (format & BRASERO_IMAGE_FORMAT_CUE
+		     && !strcmp (suffixes [2], dot)) {
+			gboolean res;
+
+			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
+			if (res)
+				brasero_image_format_fix_path_extension (format, FALSE, toc);
+		}
+		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
+		     && !strcmp (suffixes [3], dot)) {
+			gboolean res;
+
+			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
+			if (res)
+				brasero_image_format_fix_path_extension (format, FALSE, toc);
+		}
+	}
+
+	return result;
+}
+
+static BraseroBurnResult
+brasero_session_cfg_get_output_path (BraseroBurnSession *session,
+				     gchar **image,
+				     gchar **toc)
+{
+	gchar *path = NULL;
+	BraseroBurnResult result;
+	BraseroImageFormat format;
+	BraseroBurnSessionClass *klass;
+
+	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
+
+	result = klass->get_output_path (session,
+					 toc,
+					 image);
+	if (result == BRASERO_BURN_OK)
+		return result;
+
+	format = brasero_burn_session_get_output_format (session);
+	path = brasero_image_format_get_default_path (format);
+
+	switch (format) {
+	case BRASERO_IMAGE_FORMAT_BIN:
+		if (image)
+			*image = path;
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+	case BRASERO_IMAGE_FORMAT_CLONE:
+	case BRASERO_IMAGE_FORMAT_CUE:
+		if (toc)
+			*toc = path;
+
+		if (image)
+			*image = brasero_image_format_get_complement (format, path);
+		break;
+
+	default:
+		g_free (path);
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroImageFormat
+brasero_session_cfg_get_output_format (BraseroBurnSession *session)
+{
+	BraseroBurnSessionClass *klass;
+	BraseroImageFormat format;
+
+	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
+	format = klass->get_output_format (session);
+
+	if (format == BRASERO_IMAGE_FORMAT_NONE)
+		format = brasero_burn_session_get_default_output_format (session);
+
+	return format;
+}
 
 /**
  * Get a key to save parameters through GConf
@@ -1137,12 +1321,26 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 
 	object_class->finalize = brasero_session_cfg_finalize;
 
+	session_class->get_output_path = brasero_session_cfg_get_output_path;
+	session_class->get_output_format = brasero_session_cfg_get_output_format;
+	session_class->set_output_image = brasero_session_cfg_set_output_image;
+
 	session_class->track_added = brasero_session_cfg_track_added;
 	session_class->track_removed = brasero_session_cfg_track_removed;
 	session_class->track_changed = brasero_session_cfg_track_changed;
 	session_class->output_changed = brasero_session_cfg_output_changed;
 
-	session_cfg_signals[IS_VALID_SIGNAL] =
+	session_cfg_signals [WRONG_EXTENSION_SIGNAL] =
+		g_signal_new ("wrong_extension",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE,
+			      0,
+		              G_TYPE_NONE);
+	session_cfg_signals [IS_VALID_SIGNAL] =
 		g_signal_new ("is_valid",
 		              G_OBJECT_CLASS_TYPE (klass),
 		              G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,

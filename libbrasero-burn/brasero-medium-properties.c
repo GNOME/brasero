@@ -58,13 +58,6 @@ struct _BraseroMediumPropertiesPrivate
 	BraseroBurnSession *session;
 
 	GtkWidget *medium_prop;
-
-	glong valid_sig;
-	glong output_sig;
-
-	guint default_format:1;
-	guint default_path:1;
-	guint default_ext:1;
 };
 
 #define BRASERO_MEDIUM_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM_PROPERTIES, BraseroMediumPropertiesPrivate))
@@ -119,199 +112,18 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	priv->medium_prop = NULL;
 	gtk_widget_destroy (dialog);
-
-	/* FIXME: save */
-	//brasero_session_cfg_save_drive_properties (BRASERO_SESSION_CFG (priv->session));
-}
-
-static gchar *
-brasero_medium_properties_get_output_path (BraseroMediumProperties *self)
-{
-	gchar *path = NULL;
-	BraseroImageFormat format;
-	BraseroMediumPropertiesPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
-
-	format = brasero_burn_session_get_output_format (priv->session);
-	switch (format) {
-	case BRASERO_IMAGE_FORMAT_BIN:
-		brasero_burn_session_get_output (priv->session,
-						 &path,
-						 NULL,
-						 NULL);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CLONE:
-		brasero_burn_session_get_output (priv->session,
-						 NULL,
-						 &path,
-						 NULL);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		brasero_burn_session_get_output (priv->session,
-						 NULL,
-						 &path,
-						 NULL);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CUE:
-		brasero_burn_session_get_output (priv->session,
-						 NULL,
-						 &path,
-						 NULL);
-		break;
-
-	default:
-		break;
-	}
-
-	return path;
-}
-
-static void
-brasero_medium_properties_set_output_path (BraseroMediumProperties *self,
-					   BraseroImageFormat format,
-					   const gchar *path)
-{
-	BraseroMediumPropertiesPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
-
-	switch (format) {
-	case BRASERO_IMAGE_FORMAT_BIN:
-		brasero_burn_session_set_image_output_full (priv->session,
-							    format,
-							    path,
-							    NULL);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-	case BRASERO_IMAGE_FORMAT_CLONE:
-	case BRASERO_IMAGE_FORMAT_CUE:
-		brasero_burn_session_set_image_output_full (priv->session,
-							    format,
-							    NULL,
-							    path);
-		break;
-
-	default:
-		break;
-	}
-}
-
-static guint
-brasero_medium_properties_get_possible_output_formats (BraseroMediumProperties *self,
-						       BraseroImageFormat *formats)
-{
-	guint num = 0;
-	BraseroImageFormat format;
-	BraseroTrackType *output = NULL;
-	BraseroMediumPropertiesPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
-
-	/* see how many output format are available */
-	format = BRASERO_IMAGE_FORMAT_CDRDAO;
-	(*formats) = BRASERO_IMAGE_FORMAT_NONE;
-
-	output = brasero_track_type_new ();
-	brasero_track_type_set_has_image (output);
-
-	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		BraseroBurnResult result;
-
-		brasero_track_type_set_image_format (output, format);
-		result = brasero_burn_session_output_supported (priv->session, output);
-		if (result == BRASERO_BURN_OK) {
-			(*formats) |= format;
-			num ++;
-		}
-	}
-
-	brasero_track_type_free (output);
-
-	return num;
-}
-
-static void
-brasero_medium_properties_image_format_changed_cb (BraseroImageProperties *dialog,
-						   BraseroMediumProperties *self)
-{
-	BraseroMediumPropertiesPrivate *priv;
-	BraseroImageFormat format;
-	gchar *image_path;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
-
-	/* make sure the extension is still valid */
-	image_path = brasero_image_properties_get_path (dialog);
-	if (!image_path)
-		return;
-
-	format = brasero_image_properties_get_format (dialog);
-
-	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE)
-		format = brasero_burn_session_get_default_output_format (priv->session);
-
-	if (priv->default_path && !brasero_image_properties_is_path_edited (dialog)) {
-		/* not changed: get a new default path */
-		g_free (image_path);
-		image_path = brasero_image_format_get_default_path (format);
-	}
-	else if (image_path) {
-		gchar *tmp;
-
-		tmp = image_path;
-		image_path = brasero_image_format_fix_path_extension (format, FALSE, image_path);
-		g_free (tmp);
-	}
-	else {
-		priv->default_path = TRUE;
-		image_path = brasero_image_format_get_default_path (format);
-	}
-
-	brasero_image_properties_set_path (dialog, image_path);
 }
 
 static gboolean
-brasero_medium_properties_image_check_extension (BraseroMediumProperties *self,
-						 BraseroImageFormat format,
-						 const gchar *path)
-{
-	gchar *dot;
-	const gchar *suffixes [] = {".iso",
-				    ".toc",
-				    ".cue",
-				    ".toc",
-				    NULL };
-
-	dot = g_utf8_strrchr (path, -1, '.');
-	if (dot) {
-		if (format & BRASERO_IMAGE_FORMAT_BIN
-		&& !strcmp (suffixes [0], dot))
-			return TRUE;
-		else if (format & BRASERO_IMAGE_FORMAT_CLONE
-		     && !strcmp (suffixes [1], dot))
-			return TRUE;
-		else if (format & BRASERO_IMAGE_FORMAT_CUE
-		     && !strcmp (suffixes [2], dot))
-			return TRUE;
-		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
-		     && !strcmp (suffixes [3], dot))
-			return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-brasero_medium_properties_image_extension_ask (BraseroMediumProperties *self)
+brasero_medium_properties_wrong_extension (BraseroSessionCfg *session,
+					   BraseroMediumProperties *self)
 {
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
 	GtkResponseType answer;
+	BraseroMediumPropertiesPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
@@ -345,101 +157,29 @@ static void
 brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 {
 	BraseroMediumPropertiesPrivate *priv;
-	BraseroImageFormat formats;
-	BraseroImageFormat format;
-	gulong format_changed;
-	gchar *original_path;
 	GtkWindow *toplevel;
-	gchar *image_path;
-	gint answer;
-	guint num;
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
 
 	priv->medium_prop = brasero_image_properties_new ();
+	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (priv->medium_prop),
+					      BRASERO_SESSION_CFG (priv->session));
+
+	gtk_dialog_add_buttons (GTK_DIALOG (priv->medium_prop),
+				GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
+				NULL);
 
 	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self)));
 	gtk_window_set_transient_for (GTK_WINDOW (priv->medium_prop), GTK_WINDOW (toplevel));
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->medium_prop), TRUE);
 	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
 
-	/* set all information namely path and format */
-	original_path = brasero_medium_properties_get_output_path (self);
-	brasero_image_properties_set_path (BRASERO_IMAGE_PROPERTIES (priv->medium_prop), original_path);
-	g_free (original_path);
-
-	if (!priv->default_format)
-		format = brasero_burn_session_get_output_format (priv->session);
-	else
-		format = BRASERO_IMAGE_FORMAT_ANY;
-
-	num = brasero_medium_properties_get_possible_output_formats (self, &formats);
-	brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->medium_prop),
-					      num > 0 ? formats:BRASERO_IMAGE_FORMAT_NONE,
-					      format);
-
-	format_changed = g_signal_connect (priv->medium_prop,
-					   "format-changed",
-					   G_CALLBACK (brasero_medium_properties_image_format_changed_cb),
-					   self);
-
 	/* and here we go ... run the thing */
 	gtk_widget_show (priv->medium_prop);
-	answer = gtk_dialog_run (GTK_DIALOG (priv->medium_prop));
-
-	g_signal_handler_disconnect (priv->medium_prop, format_changed);
-
-	if (answer != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (priv->medium_prop);
-		priv->medium_prop = NULL;
-		return;
-	}
-
-	/* get and check format */
-	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->medium_prop));
-
-	/* see if we are to choose the format ourselves */
-	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
-		format = brasero_burn_session_get_default_output_format (priv->session);
-		priv->default_format = TRUE;
-	}
-	else
-		priv->default_format = FALSE;
-
-	/* see if the user has changed the path */
-	if (brasero_image_properties_is_path_edited (BRASERO_IMAGE_PROPERTIES (priv->medium_prop)))
-		priv->default_path = FALSE;
-
-	if (!priv->default_path) {
-		/* check the extension */
-		image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->medium_prop));
-
-		/* there is one special case: CLONE image tocs _must_ have a
-		 * correct suffix ".toc" so don't ask, fix it */
-		if (!brasero_medium_properties_image_check_extension (self, format, image_path)) {
-			if (format == BRASERO_IMAGE_FORMAT_CLONE
-			||  brasero_medium_properties_image_extension_ask (self)) {
-				gchar *tmp;
-
-				priv->default_ext = TRUE;
-				tmp = image_path;
-				image_path = brasero_image_format_fix_path_extension (format, TRUE, image_path);
-				g_free (tmp);
-			}
-			else
-				priv->default_ext = FALSE;
-		}
-	}
-	else
-		image_path = brasero_image_format_get_default_path (format);
+	gtk_dialog_run (GTK_DIALOG (priv->medium_prop));
 
 	gtk_widget_destroy (priv->medium_prop);
 	priv->medium_prop = NULL;
-
-	brasero_medium_properties_set_output_path (self,
-						format,
-						image_path);
-	g_free (image_path);
 }
 
 static void
@@ -461,95 +201,6 @@ brasero_medium_properties_clicked (GtkButton *button)
 }
 
 static void
-brasero_medium_properties_update_image_output (BraseroMediumProperties *self,
-					       gboolean is_valid)
-{
-	BraseroMediumPropertiesPrivate *priv;
-	BraseroImageFormat valid_format;
-	BraseroImageFormat format;
-	gchar *path = NULL;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
-
-	/* Get session current state */
-	format = brasero_burn_session_get_output_format (priv->session);
-	valid_format = format;
-
-	/* Check current set format if it's invalid */
-	if (format != BRASERO_IMAGE_FORMAT_NONE) {
-		/* The user set a format. There is nothing to do about it except
-		 * checking if the format is still available. If not, then set
-		 * default and remove the current one */
-		if (!is_valid) {
-			priv->default_format = TRUE;
-			valid_format = brasero_burn_session_get_default_output_format (priv->session);
-		}
-		else if (priv->default_format) {
-			/* since input, or caps changed, check if there isn't a
-			 * better format available. */
-			valid_format = brasero_burn_session_get_default_output_format (priv->session);
-		}
-	}
-	else {
-		/* This is always invalid; find one */
-		priv->default_format = TRUE;
-		valid_format = brasero_burn_session_get_default_output_format (priv->session);
-	}
-
-	/* see if we have a workable format */
-	if (valid_format == BRASERO_IMAGE_FORMAT_NONE) {
-		if (priv->medium_prop) {
-			gtk_widget_destroy (priv->medium_prop);
-			priv->medium_prop = NULL;
-		}
-
-		return;
-	}
-
-	path = brasero_medium_properties_get_output_path (self);
-
-	/* Now check, fix the output path, _provided__the__format__changed_ */
-	if (valid_format == format) {
-		g_free (path);
-		return;
-	}
-
-	if (!path) {
-		priv->default_path = TRUE;
-		priv->default_ext = TRUE;
-		path = brasero_image_format_get_default_path (valid_format);
-	}
-	else if (priv->default_ext
-	     &&  brasero_medium_properties_image_check_extension (self, format, path)) {
-		gchar *tmp;
-
-		priv->default_ext = TRUE;
-
-		tmp = path;
-		path = brasero_image_format_fix_path_extension (format, TRUE, path);
-		g_free (tmp);
-	}
-
-	/* we always need to do this */
-	brasero_medium_properties_set_output_path (self,
-						   valid_format,
-						   path);
-
-	g_free (path);
-
-	if (priv->medium_prop) {
-		BraseroImageFormat formats;
-		guint num;
-
-		/* update image settings dialog if needed */
-		num = brasero_medium_properties_get_possible_output_formats (self, &formats);
-		brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->medium_prop),
-						      num > 1 ? formats:BRASERO_IMAGE_FORMAT_NONE,
-						      BRASERO_IMAGE_FORMAT_ANY);
-	}
-}
-
-static void
 brasero_medium_properties_output_changed (BraseroBurnSession *session,
 					  BraseroMedium *former,
 					  BraseroMediumProperties *self)
@@ -567,19 +218,6 @@ brasero_medium_properties_output_changed (BraseroBurnSession *session,
 }
 
 static void
-brasero_medium_properties_valid_session (BraseroSessionCfg *session,
-					 BraseroMediumProperties *self)
-{
-	BraseroMediumPropertiesPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
-
-	/* make sure the current displayed path is valid */
-	if (brasero_burn_session_is_dest_file (priv->session))
-		brasero_medium_properties_update_image_output (self, BRASERO_SESSION_IS_VALID (brasero_session_cfg_get_error (session)));
-}
-
-static void
 brasero_medium_properties_init (BraseroMediumProperties *object)
 {
 	BraseroMediumPropertiesPrivate *priv;
@@ -587,10 +225,6 @@ brasero_medium_properties_init (BraseroMediumProperties *object)
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
 
 	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Configure recording options"));
-
-	priv->default_ext = TRUE;
-	priv->default_path = TRUE;
-	priv->default_format = TRUE;
 }
 
 static void
@@ -600,17 +234,10 @@ brasero_medium_properties_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
 
-	if (priv->valid_sig) {
-		g_signal_handler_disconnect (priv->session,
-					     priv->valid_sig);
-		priv->valid_sig = 0;
-	}
-	if (priv->output_sig) {
-		g_signal_handler_disconnect (priv->session,
-					     priv->output_sig);
-		priv->output_sig = 0;
-	}
 	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_medium_properties_output_changed,
+						      object);
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
@@ -641,14 +268,14 @@ brasero_medium_properties_set_property (GObject *object,
 		priv->session = session;
 		g_object_ref (session);
 
-		priv->valid_sig = g_signal_connect (session,
-						    "is-valid",
-						    G_CALLBACK (brasero_medium_properties_valid_session),
-						    object);
-		priv->output_sig = g_signal_connect (session,
-						     "output-changed",
-						     G_CALLBACK (brasero_medium_properties_output_changed),
-						     object);
+		g_signal_connect (session,
+				  "output-changed",
+				  G_CALLBACK (brasero_medium_properties_output_changed),
+				  object);
+		g_signal_connect (session,
+				  "wrong-extension",
+				  G_CALLBACK (brasero_medium_properties_wrong_extension),
+				  object);
 		break;
 
 	default:
@@ -694,13 +321,13 @@ brasero_medium_properties_class_init (BraseroMediumPropertiesClass *klass)
 					 g_param_spec_object ("session",
 							      "The session to work with",
 							      "The session to work with",
-							      BRASERO_TYPE_BURN_SESSION,
+							      BRASERO_TYPE_SESSION_CFG,
 							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
 
 }
 
 GtkWidget *
-brasero_medium_properties_new (BraseroBurnSession *session)
+brasero_medium_properties_new (BraseroSessionCfg *session)
 {
 	return g_object_new (BRASERO_TYPE_MEDIUM_PROPERTIES,
 			     "session", session,

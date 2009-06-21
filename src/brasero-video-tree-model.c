@@ -304,7 +304,9 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	case BRASERO_VIDEO_TREE_MODEL_INDEX:
 		tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
 		g_value_init (value, G_TYPE_STRING);
-		g_value_set_string_take_ownership (value, g_strdup_printf ("%02i", g_slist_index (tracks, track) + 1));
+		text = g_strdup_printf ("%02i", g_slist_index (tracks, track) + 1);
+		g_value_set_string (value, text);
+		g_free (text);
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_INDEX_NUM:
@@ -1037,6 +1039,15 @@ brasero_video_tree_model_set_session (BraseroVideoTreeModel *model,
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_video_tree_model_track_added,
+						      model);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_video_tree_model_track_removed,
+						      model);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_video_tree_model_track_changed,
+						      model);
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
@@ -1088,6 +1099,20 @@ brasero_video_tree_model_finalize (GObject *object)
 	BraseroVideoTreeModelPrivate *priv;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (object);
+
+	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_video_tree_model_track_added,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_video_tree_model_track_removed,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_video_tree_model_track_changed,
+						      object);
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
 
 	if (priv->gaps) {
 		g_slist_free (priv->gaps);

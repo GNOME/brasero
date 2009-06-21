@@ -207,22 +207,6 @@ brasero_disc_get_status (BraseroDisc *disc,
 }
 
 BraseroDiscResult
-brasero_disc_get_track (BraseroDisc *disc,
-			BraseroDiscTrack *track)
-{
-	BraseroDiscIface *iface;
-
-	g_return_val_if_fail (BRASERO_IS_DISC (disc), BRASERO_DISC_ERROR_UNKNOWN);
-	g_return_val_if_fail (track != NULL, BRASERO_DISC_ERROR_UNKNOWN);
-	
-	iface = BRASERO_DISC_GET_IFACE (disc);
-	if (iface->get_track)
-		return (* iface->get_track) (disc, track);
-
-	return BRASERO_DISC_ERROR_UNKNOWN;
-}
-
-BraseroDiscResult
 brasero_disc_set_session_contents (BraseroDisc *disc,
 				   BraseroBurnSession *session)
 {
@@ -233,22 +217,6 @@ brasero_disc_set_session_contents (BraseroDisc *disc,
 	iface = BRASERO_DISC_GET_IFACE (disc);
 	if (iface->set_session_contents)
 		return (* iface->set_session_contents) (disc, session);
-
-	return BRASERO_DISC_ERROR_UNKNOWN;
-}
-
-BraseroDiscResult
-brasero_disc_load_track (BraseroDisc *disc,
-			 BraseroDiscTrack *track)
-{
-	BraseroDiscIface *iface;
-
-	g_return_val_if_fail (BRASERO_IS_DISC (disc), BRASERO_DISC_ERROR_UNKNOWN);
-	g_return_val_if_fail (track != NULL, BRASERO_DISC_ERROR_UNKNOWN);
-	
-	iface = BRASERO_DISC_GET_IFACE (disc);
-	if (iface->load_track)
-		return (* iface->load_track) (disc, track);
 
 	return BRASERO_DISC_ERROR_UNKNOWN;
 }
@@ -439,7 +407,6 @@ brasero_utils_disc_hide_use_info_drop_cb (GtkWidget *widget,
 		gboolean return_value = FALSE;
 
 		/* The widget must be realized to receive such events. */
-		gtk_notebook_set_current_page (notebook, 1);
 		g_signal_emit_by_name (other_widget,
 				       "drag-drop",
 				       drag_context,
@@ -464,8 +431,6 @@ brasero_utils_disc_hide_use_info_data_received_cb (GtkWidget *widget,
 						   GtkNotebook *notebook)
 {
 	GtkWidget *other_widget;
-
-	gtk_notebook_set_current_page (notebook, 1);
 
 	other_widget = brasero_utils_disc_find_tree_view (notebook);
 	if (!other_widget)
@@ -570,7 +535,7 @@ brasero_disc_draw_focus_around_help_text (GtkWidget *label,
 }
 
 GtkWidget *
-brasero_disc_get_use_info_notebook (void)
+brasero_disc_get_use_info_notebook ()
 {
 	GList	  *chain;
 	GtkWidget *frame;

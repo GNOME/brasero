@@ -612,8 +612,7 @@ brasero_job_set_output_file (BraseroJob *self,
 
 			result = brasero_burn_session_get_output (session,
 								  &image,
-								  &toc,
-								  error);
+								  &toc);
 
 			/* check paths are set */
 			if (!image

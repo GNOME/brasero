@@ -50,7 +50,6 @@
 typedef struct _BraseroVideoDiscPrivate BraseroVideoDiscPrivate;
 struct _BraseroVideoDiscPrivate
 {
-	GtkWidget *notebook;
 	GtkWidget *tree;
 
 	GtkWidget *message;
@@ -217,7 +216,6 @@ brasero_video_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 static BraseroDiscResult
 brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 				 const gchar *uri,
-				 BraseroStreamInfo *info,
 				 gint pos,
 				 gint64 start,
 				 gint64 end,
@@ -240,22 +238,6 @@ brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 	brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uri);
 	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track), start, end, 0);
 
-	if (info) {
-		brasero_track_tag_add_string (BRASERO_TRACK (track),
-					      BRASERO_TRACK_STREAM_TITLE_TAG,
-					      info->title);
-		brasero_track_tag_add_string (BRASERO_TRACK (track),
-					      BRASERO_TRACK_STREAM_ARTIST_TAG,
-					      info->artist);
-		brasero_track_tag_add_string (BRASERO_TRACK (track),
-					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
-					      info->composer);
-
-		brasero_track_tag_add_int (BRASERO_TRACK (track),
-					   BRASERO_TRACK_STREAM_ISRC_TAG,
-					   info->isrc);
-	}
-
 	/* insert it in the session */
 	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
 	if (pos > 0) {
@@ -269,8 +251,6 @@ brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 	if (path_return)
 		*path_return = brasero_video_tree_model_track_to_path (BRASERO_VIDEO_TREE_MODEL (model),
 								       BRASERO_TRACK (track));
-
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 
 	return BRASERO_DISC_OK;
 }
@@ -286,7 +266,6 @@ brasero_video_disc_add_uri (BraseroDisc *self,
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 	result = brasero_video_disc_add_uri_real (BRASERO_VIDEO_DISC (self),
 						  uri,
-						  NULL,
 						  -1,
 						  -1,
 						  -1,
@@ -327,7 +306,6 @@ brasero_video_disc_add_directory_contents_result (GObject *obj,
 	/* Add a video file and set all information */
 	brasero_video_disc_add_uri_real (BRASERO_VIDEO_DISC (obj),
 					 uri,
-					 NULL,
 					 index,
 					 -1,
 					 -1,
@@ -913,7 +891,6 @@ brasero_video_disc_clipboard_text_cb (GtkClipboard *clipboard,
 
 			brasero_video_disc_add_uri_real (self,
 							 uri,
-							 NULL,
 							 -1,
 							 -1,
 							 -1,
@@ -1169,15 +1146,9 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
 
-	/* the information displayed about how to use this tree */
-	priv->notebook = brasero_disc_get_use_info_notebook ();
-	gtk_widget_show (priv->notebook);
-	gtk_box_pack_start (GTK_BOX (object), priv->notebook, TRUE, TRUE, 0);
-
 	mainbox = gtk_vbox_new (FALSE, 12);
 	gtk_widget_show (mainbox);
-	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), mainbox, NULL);
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
+	gtk_box_pack_start (GTK_BOX (object), mainbox, TRUE, TRUE, 0);
 
 	priv->tree = gtk_tree_view_new ();
 	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (priv->tree));
@@ -1370,82 +1341,6 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 	return BRASERO_DISC_OK;
 }
 
-static BraseroDiscResult
-brasero_video_disc_get_track (BraseroDisc *disc,
-			      BraseroDiscTrack *disc_track)
-{
-	GSList *iter;
-	GSList *tracks;
-	GtkTreeModel *model;
-	BraseroSessionCfg *session;
-	BraseroVideoDiscPrivate *priv;
-
-	disc_track->type = BRASERO_PROJECT_TYPE_VIDEO;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
-	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
-
-	for (iter = tracks; iter; iter = iter->next) {
-		BraseroDiscSong *song;
-		BraseroTrack *track;
-
-		track = iter->data;
-
-		song = g_new0 (BraseroDiscSong, 1);
-		song->uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
-		song->start = brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track));
-		song->end = brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track));
-
-		song->info = g_new0 (BraseroStreamInfo, 1);
-		song->info->artist = g_strdup (brasero_track_tag_lookup_string (BRASERO_TRACK (track),
-										BRASERO_TRACK_STREAM_ARTIST_TAG));
-		song->info->title = g_strdup (brasero_track_tag_lookup_string (BRASERO_TRACK (track),
-									       BRASERO_TRACK_STREAM_TITLE_TAG));
-		song->info->composer = g_strdup (brasero_track_tag_lookup_string (BRASERO_TRACK (track),
-										  BRASERO_TRACK_STREAM_COMPOSER_TAG));
-		song->info->isrc = brasero_track_tag_lookup_int (BRASERO_TRACK (track),
-								 BRASERO_TRACK_STREAM_ISRC_TAG);
-
-		disc_track->contents.tracks = g_slist_append (disc_track->contents.tracks, song);
-	}
-
-	return BRASERO_DISC_OK;
-}
-
-static BraseroDiscResult
-brasero_video_disc_load_track (BraseroDisc *disc,
-			       BraseroDiscTrack *track)
-{
-	GSList *iter;
-	BraseroVideoDiscPrivate *priv;
-
-	g_return_val_if_fail (track->type == BRASERO_PROJECT_TYPE_VIDEO, FALSE);
-
-	if (track->contents.tracks == NULL)
-		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
-	priv->loading = g_slist_length (track->contents.tracks);
-
-	for (iter = track->contents.tracks; iter; iter = iter->next) {
-		BraseroDiscSong *song;
-
-		song = iter->data;
-		brasero_video_disc_add_uri_real (BRASERO_VIDEO_DISC (disc),
-						 song->uri,
-						 song->info,
-						 -1,
-						 song->start,
-						 song->end,
-						 NULL);
-	}
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
-
-	return BRASERO_DISC_OK;
-}
-
 static void
 brasero_video_disc_iface_disc_init (BraseroDiscIface *iface)
 {
@@ -1453,9 +1348,6 @@ brasero_video_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->delete_selected = brasero_video_disc_delete_selected;
 
 	iface->set_session_contents = brasero_video_disc_set_session_contents;
-
-	iface->get_track = brasero_video_disc_get_track;
-	iface->load_track = brasero_video_disc_load_track;
 
 	iface->get_selected_uri = brasero_video_disc_get_selected_uri;
 	iface->add_ui = brasero_video_disc_add_ui;

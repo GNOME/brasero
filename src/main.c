@@ -268,7 +268,6 @@ brasero_app_open_project (BraseroApp *app,
 			  gboolean playlist,
 			  gboolean burn)
 {
-	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
 	GtkWidget *manager;
 	GFile *file;
@@ -280,23 +279,11 @@ brasero_app_open_project (BraseroApp *app,
 	uri = g_file_get_uri (file);
 	g_object_unref (file);
 
-#ifdef BUILD_PLAYLIST
-
-	if (playlist)
-		type = brasero_project_open_audio_playlist_project (uri, &track, TRUE);
-	else
-
-#endif
-		
-		type = brasero_project_open_project_xml (uri, &track, TRUE);
-
-	if (type == BRASERO_PROJECT_TYPE_INVALID)
-		return FALSE;
-
 	manager = brasero_app_get_project_manager (app);
-	brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (manager), track, uri, burn);
+	type = brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (manager), uri, playlist, burn);
+	g_free (uri);
 
-	return TRUE;
+	return (type != BRASERO_PROJECT_TYPE_INVALID);
 }
 
 static void

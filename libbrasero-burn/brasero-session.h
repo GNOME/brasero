@@ -60,6 +60,16 @@ struct _BraseroBurnSession {
 struct _BraseroBurnSessionClass {
 	GObjectClass parent_class;
 
+	/** Virtual functions **/
+	BraseroBurnResult	(*set_output_image)	(BraseroBurnSession *session,
+							 BraseroImageFormat format,
+							 const gchar *image,
+							 const gchar *toc);
+	BraseroBurnResult	(*get_output_path)	(BraseroBurnSession *session,
+							 gchar **image,
+							 gchar **toc);
+	BraseroImageFormat	(*get_output_format)	(BraseroBurnSession *session);
+
 	/**
 	 * GObject signals could be used to warned of individual property
 	 * changes but since changing one property could change others
@@ -159,8 +169,7 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *session,
 BraseroBurnResult
 brasero_burn_session_get_output (BraseroBurnSession *session,
 				 gchar **image,
-				 gchar **toc,
-				 GError **error);
+				 gchar **toc);
 
 BraseroImageFormat
 brasero_burn_session_get_output_format (BraseroBurnSession *session);
@@ -247,6 +256,10 @@ brasero_burn_session_output_supported (BraseroBurnSession *session,
 
 BraseroMedia
 brasero_burn_session_get_required_media_type (BraseroBurnSession *session);
+
+guint
+brasero_burn_session_get_possible_output_formats (BraseroBurnSession *session,
+						  BraseroImageFormat *formats);
 
 BraseroImageFormat
 brasero_burn_session_get_default_output_format (BraseroBurnSession *session);

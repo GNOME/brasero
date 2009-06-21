@@ -35,7 +35,7 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-track.h"
+#include "brasero-session-cfg.h"
 
 G_BEGIN_DECLS
 
@@ -61,25 +61,12 @@ struct _BraseroImageProperties
 
 GType brasero_image_properties_get_type (void) G_GNUC_CONST;
 
-GtkWidget *brasero_image_properties_new ();
-
-gchar *
-brasero_image_properties_get_path (BraseroImageProperties *self);
-
-gboolean
-brasero_image_properties_is_path_edited (BraseroImageProperties *self);
-
-BraseroImageFormat
-brasero_image_properties_get_format (BraseroImageProperties *self);
+GtkWidget *brasero_image_properties_new (void);
 
 void
-brasero_image_properties_set_path (BraseroImageProperties *self,
-				   const gchar *path);
+brasero_image_properties_set_session (BraseroImageProperties *prop,
+				      BraseroSessionCfg *session);
 
-void
-brasero_image_properties_set_formats (BraseroImageProperties *self,
-				      BraseroImageFormat formats,
-				      BraseroImageFormat format);
 G_END_DECLS
 
 #endif /* _BRASERO_IMAGE_PROPERTIES_H_ */

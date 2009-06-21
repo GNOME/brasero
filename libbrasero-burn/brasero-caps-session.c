@@ -945,6 +945,39 @@ brasero_burn_session_get_required_media_type (BraseroBurnSession *session)
 	return required_media;
 }
 
+guint
+brasero_burn_session_get_possible_output_formats (BraseroBurnSession *session,
+						  BraseroImageFormat *formats)
+{
+	guint num = 0;
+	BraseroImageFormat format;
+	BraseroTrackType *output = NULL;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), 0);
+
+	/* see how many output format are available */
+	format = BRASERO_IMAGE_FORMAT_CDRDAO;
+	(*formats) = BRASERO_IMAGE_FORMAT_NONE;
+
+	output = brasero_track_type_new ();
+	brasero_track_type_set_has_image (output);
+
+	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
+		BraseroBurnResult result;
+
+		brasero_track_type_set_image_format (output, format);
+		result = brasero_burn_session_output_supported (session, output);
+		if (result == BRASERO_BURN_OK) {
+			(*formats) |= format;
+			num ++;
+		}
+	}
+
+	brasero_track_type_free (output);
+
+	return num;
+}
+
 BraseroImageFormat
 brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 {

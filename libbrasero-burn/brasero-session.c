@@ -636,22 +636,35 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 
 BraseroBurnResult
 brasero_burn_session_get_output (BraseroBurnSession *self,
-				 gchar **image_ret,
-				 gchar **toc_ret,
-				 GError **error)
+				 gchar **image,
+				 gchar **toc)
+{
+	BraseroBurnSessionClass *klass;
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_IMAGE_FORMAT_NONE);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
+		BRASERO_BURN_LOG ("no file disc");
+		return BRASERO_BURN_ERR;
+	}
+
+	klass = BRASERO_BURN_SESSION_GET_CLASS (self);
+	return klass->get_output_path (self, image, toc);
+}
+
+
+static BraseroBurnResult
+brasero_burn_session_get_output_path_real (BraseroBurnSession *self,
+					   gchar **image_ret,
+					   gchar **toc_ret)
 {
 	gchar *toc = NULL;
 	gchar *image = NULL;
 	BraseroBurnSessionPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
-
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
-		BRASERO_BURN_LOG ("no file disc");
-		return BRASERO_BURN_ERR;
-	}
 
 	image = g_strdup (priv->settings->image);
 	toc = g_strdup (priv->settings->toc);
@@ -670,12 +683,6 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 			complement = brasero_image_format_get_complement (format, toc);
 			if (!complement) {
 				BRASERO_BURN_LOG ("no output specified");
-
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_OUTPUT_NONE,
-					     _("No path was specified for the image output"));
-
 				g_free (toc);
 				return BRASERO_BURN_ERR;
 			}
@@ -686,11 +693,6 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 			*image_ret = image;
 		else {
 			BRASERO_BURN_LOG ("no output specified");
-
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_OUTPUT_NONE,
-				     _("No path was specified for the image output"));
 			return BRASERO_BURN_ERR;
 		}
 	}
@@ -708,15 +710,25 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 BraseroImageFormat
 brasero_burn_session_get_output_format (BraseroBurnSession *self)
 {
+	BraseroBurnSessionClass *klass;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_IMAGE_FORMAT_NONE);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
 	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
 		return BRASERO_IMAGE_FORMAT_NONE;
 
+	klass = BRASERO_BURN_SESSION_GET_CLASS (self);
+	return klass->get_output_format (self);
+}
+
+static BraseroImageFormat
+brasero_burn_session_get_output_format_real (BraseroBurnSession *self)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	return priv->settings->format;
 }
 
@@ -754,15 +766,13 @@ brasero_burn_session_set_image_output_real (BraseroBurnSession *self,
 	priv->settings->format = format;
 }
 
-BraseroBurnResult
-brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
+static BraseroBurnResult
+brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 					    BraseroImageFormat format,
 					    const gchar *image,
 					    const gchar *toc)
 {
 	BraseroBurnSessionPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
@@ -810,6 +820,20 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 	}
 
 	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
+					    BraseroImageFormat format,
+					    const gchar *image,
+					    const gchar *toc)
+{
+	BraseroBurnSessionClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	klass = BRASERO_BURN_SESSION_GET_CLASS (self);
+	return klass->set_output_image (self, format, image, toc);
 }
 
 /**
@@ -1827,6 +1851,10 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 
 	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_burn_session_finalize;
+
+	klass->get_output_path = brasero_burn_session_get_output_path_real;
+	klass->get_output_format = brasero_burn_session_get_output_format_real;
+	klass->set_output_image = brasero_burn_session_set_output_image_real;
 
 	/* This is to delay the setting of track source until we know all settings */
 	brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL] =

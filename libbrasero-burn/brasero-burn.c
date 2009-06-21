@@ -1399,8 +1399,7 @@ start:
 		 * would clutter the disk, wasting space. */
 		brasero_burn_session_get_output (priv->session,
 						 &image,
-						 &toc,
-						 NULL);
+						 &toc);
 		if (image)
 			g_remove (image);
 		if (toc)

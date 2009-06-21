@@ -32,12 +32,17 @@
 #include "brasero-medium.h"
 #include "brasero-volume.h"
 
+#include "brasero-session.h"
+#include "brasero-track-data-cfg.h"
+
 #include "brasero-project-name.h"
 #include "brasero-project-type-chooser.h"
 
 typedef struct _BraseroProjectNamePrivate BraseroProjectNamePrivate;
 struct _BraseroProjectNamePrivate
 {
+	BraseroBurnSession *session;
+
 	BraseroProjectType type;
 	BraseroMedium *medium;
 
@@ -54,6 +59,170 @@ typedef enum {
 static guint brasero_project_name_signals [LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroProjectName, brasero_project_name, GTK_TYPE_ENTRY);
+
+enum {
+	PROP_0,
+	PROP_SESSION
+};
+
+static void
+brasero_project_name_data_icon_error (BraseroProjectName *project,
+				      GError *error)
+{
+	if (error) {
+		brasero_app_alert (brasero_app_get_default (),
+				   /* Translators: this is a picture not
+				    * a disc image */
+				   C_("picture", "Please select another image."),
+				   error->message,
+				   GTK_MESSAGE_ERROR);
+	}
+	else {
+		brasero_app_alert (brasero_app_get_default (),
+				   /* Translators: this is a picture not
+				    * a disc image */
+				   C_("picture", "Please select another image."),
+				   _("Unknown error"),
+				   GTK_MESSAGE_ERROR);
+	}
+}
+
+static void
+brasero_project_name_icon_update (BraseroProjectName *self,
+				  BraseroTrackDataCfg *track)
+{
+	GError *error = NULL;
+	GdkPixbuf *pixbuf;
+	gchar *icon; 
+
+	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
+					GTK_ENTRY_ICON_PRIMARY,
+					NULL);	
+	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
+					   GTK_ENTRY_ICON_PRIMARY,
+					   NULL);
+
+	icon = brasero_track_data_cfg_get_scaled_icon_path (track);
+	if (!icon) {
+		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
+						   GTK_ENTRY_ICON_PRIMARY,
+						   "media-optical");
+		return;
+	}
+
+	/* Load and convert the image into a pixbuf */
+	pixbuf = gdk_pixbuf_new_from_file_at_scale (icon,
+						    24,
+						    24,
+						    FALSE,
+						    &error);
+	g_free (icon);
+
+	if (!pixbuf) {
+		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
+						   GTK_ENTRY_ICON_PRIMARY,
+						   "media-optical");
+		brasero_project_name_data_icon_error (self, error);
+		g_error_free (error);
+		return;
+	}
+
+	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
+					GTK_ENTRY_ICON_PRIMARY,
+					pixbuf);
+	g_object_unref (pixbuf);
+}
+
+static void
+brasero_project_name_icon_changed_cb (BraseroTrackDataCfg *track,
+				      BraseroProjectName *self)
+{
+	brasero_project_name_icon_update (self, track);
+}
+
+static BraseroTrackDataCfg *
+brasero_project_name_get_track_data_cfg (BraseroProjectName *self)
+{
+	BraseroProjectNamePrivate *priv;
+	GSList *tracks;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+
+	tracks = brasero_burn_session_get_tracks (priv->session);
+	for (; tracks; tracks = tracks->next) {
+		BraseroTrackDataCfg *track;
+
+		track = tracks->data;
+		if (BRASERO_IS_TRACK_DATA_CFG (track))
+			return BRASERO_TRACK_DATA_CFG (track);
+	}
+
+	return NULL;
+}
+
+static void
+brasero_project_name_icon_button_clicked (BraseroProjectName *project,
+					  GtkEntryIconPosition position,
+					  GdkEvent *event,
+					  gpointer NULL_data)
+{
+	BraseroProjectNamePrivate *priv;
+	BraseroTrackDataCfg *track;
+	GtkFileFilter *filter;
+	const gchar *filename;
+	GError *error = NULL;
+	GtkWidget *chooser;
+	gchar *path;
+	gint res;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
+
+	track = brasero_project_name_get_track_data_cfg (project);
+	if (!track)
+		return;
+
+	filename = brasero_track_data_cfg_get_icon_path (track);
+
+	chooser = gtk_file_chooser_dialog_new (_("Medium Icon"),
+					       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (project))),
+					       GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					       GTK_STOCK_OK, GTK_RESPONSE_OK,
+					       NULL);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("All files"));
+	gtk_file_filter_add_pattern (filter, "*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
+
+	filter = gtk_file_filter_new ();
+	/* Translators: this is an image, a picture, not a "Disc Image" */
+	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
+	gtk_file_filter_add_mime_type (filter, "image/*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
+
+	if (filename)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), filename);
+
+	gtk_widget_show (chooser);
+	res = gtk_dialog_run (GTK_DIALOG (chooser));
+	if (res != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
+	path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+	gtk_widget_destroy (chooser);
+
+	/* Get the BraseroTrackDataCfg if any and set the icon */
+	if (!brasero_track_data_cfg_set_icon (track, path, &error)) {
+		if (error) {
+			brasero_project_name_data_icon_error (project, error);
+			g_error_free (error);
+		}
+	}
+	g_free (path);
+}
 
 static gchar *
 brasero_project_name_truncate_label (const gchar *label)
@@ -291,6 +460,11 @@ brasero_project_name_init (BraseroProjectName *object)
 
 	priv->label_modified = 0;
 	g_signal_connect (object,
+			  "icon-release",
+			  G_CALLBACK (brasero_project_name_icon_button_clicked),
+			  NULL);
+
+	g_signal_connect (object,
 			  "insert_text",
 			  G_CALLBACK (brasero_project_name_label_insert_text),
 			  NULL);
@@ -298,6 +472,117 @@ brasero_project_name_init (BraseroProjectName *object)
 			  "changed",
 			  G_CALLBACK (brasero_project_name_label_changed),
 			  NULL);
+}
+
+static void
+brasero_project_name_session_changed (BraseroProjectName *self)
+{
+	BraseroTrackType *type;
+	BraseroProjectNamePrivate *priv;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, type);
+	if (brasero_track_type_get_has_data (type)) {
+		BraseroTrackDataCfg *track;
+
+		track = brasero_project_name_get_track_data_cfg (self);
+		if (track) {
+			g_signal_connect (track,
+					  "icon-changed",
+					  G_CALLBACK (brasero_project_name_icon_changed_cb),
+					  self);
+			brasero_project_name_icon_update (self, track);
+			gtk_entry_set_icon_tooltip_text (GTK_ENTRY (self),
+							 GTK_ENTRY_ICON_PRIMARY,
+							 _("Select an icon for the disc that will appear in file managers"));
+		}
+	}
+	else {
+		gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
+						GTK_ENTRY_ICON_PRIMARY,
+						NULL);
+		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
+						   GTK_ENTRY_ICON_PRIMARY,
+						   NULL);
+		gtk_entry_set_icon_tooltip_text (GTK_ENTRY (self),
+						 GTK_ENTRY_ICON_PRIMARY,
+						 NULL);
+	}
+
+	brasero_track_type_free (type);
+}
+
+static void
+brasero_project_name_track_added (BraseroBurnSession *session,
+				  BraseroTrack *track,
+				  BraseroProjectName *self)
+{
+	brasero_project_name_session_changed (self);
+}
+
+static void
+brasero_project_name_track_removed (BraseroBurnSession *session,
+				    BraseroTrack *track,
+				    guint former_position,
+				    BraseroProjectName *self)
+{
+	/* Make sure we don't remain connected */
+	if (BRASERO_IS_TRACK_DATA_CFG (track))
+		g_signal_handlers_disconnect_by_func (track,
+						      brasero_project_name_icon_changed_cb,
+						      self);
+
+	brasero_project_name_session_changed (self);
+}
+
+static void
+brasero_project_name_set_property (GObject *object,
+				   guint property_id,
+				   const GValue *value,
+				   GParamSpec *pspec)
+{
+	BraseroProjectNamePrivate *priv;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
+
+	switch (property_id) {
+	case PROP_SESSION: /* Readable and only writable at creation time */
+		priv->session = g_object_ref (g_value_get_object (value));
+		g_signal_connect (g_value_get_object (value),
+				  "track-added",
+				  G_CALLBACK (brasero_project_name_track_added),
+				  object);
+		g_signal_connect (g_value_get_object (value),
+				  "track-removed",
+				  G_CALLBACK (brasero_project_name_track_removed),
+				  object);
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	}
+}
+
+static void
+brasero_project_name_get_property (GObject *object,
+				   guint property_id,
+				   GValue *value,
+				   GParamSpec *pspec)
+{
+	BraseroProjectNamePrivate *priv;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
+
+	switch (property_id) {
+	case PROP_SESSION:
+		g_value_set_object (value, G_OBJECT (priv->session));
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	}
 }
 
 static void
@@ -322,6 +607,9 @@ brasero_project_name_class_init (BraseroProjectNameClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroProjectNamePrivate));
 
 	object_class->finalize = brasero_project_name_finalize;
+	object_class->set_property = brasero_project_name_set_property;
+	object_class->get_property = brasero_project_name_get_property;
+
 	brasero_project_name_signals [CHANGED_SIGNAL] =
 	    g_signal_new ("name_changed",
 			  BRASERO_TYPE_PROJECT_NAME,
@@ -332,11 +620,21 @@ brasero_project_name_class_init (BraseroProjectNameClass *klass)
 			  g_cclosure_marshal_VOID__VOID,
 			  G_TYPE_NONE,
 			  0);
+
+	g_object_class_install_property (object_class,
+					 PROP_SESSION,
+					 g_param_spec_object ("session",
+							      "The session",
+							      "The session to work with",
+							      BRASERO_TYPE_BURN_SESSION,
+							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
 }
 
 GtkWidget *
-brasero_project_name_new (void)
+brasero_project_name_new (BraseroBurnSession *session)
 {
-	return g_object_new (BRASERO_TYPE_PROJECT_NAME, NULL);
+	return g_object_new (BRASERO_TYPE_PROJECT_NAME,
+			     "session", session,
+			     NULL);
 }
 

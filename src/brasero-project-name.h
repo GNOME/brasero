@@ -24,6 +24,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-session.h"
+
 #include "brasero-project-type-chooser.h"
 
 G_BEGIN_DECLS
@@ -51,7 +53,7 @@ struct _BraseroProjectName
 GType brasero_project_name_get_type (void) G_GNUC_CONST;
 
 GtkWidget *
-brasero_project_name_new (void);
+brasero_project_name_new (BraseroBurnSession *session);
 
 void
 brasero_project_name_set_type (BraseroProjectName *self,

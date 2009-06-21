@@ -542,7 +542,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	gtk_widget_show (priv->selection);
 	gtk_container_add (GTK_CONTAINER (alignment), priv->selection);
 
-	priv->properties = brasero_medium_properties_new (BRASERO_BURN_SESSION (priv->session));
+	priv->properties = brasero_medium_properties_new (priv->session);
 	gtk_size_group_add_widget (priv->size_group, priv->properties);
 	gtk_widget_show (priv->properties);
 	gtk_box_pack_start (GTK_BOX (selection),

@@ -442,29 +442,15 @@ brasero_dest_selection_get_output_path (BraseroDestSelection *self)
 	case BRASERO_IMAGE_FORMAT_BIN:
 		brasero_burn_session_get_output (priv->session,
 						 &path,
-						 NULL,
 						 NULL);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CLONE:
-		brasero_burn_session_get_output (priv->session,
-						 NULL,
-						 &path,
-						 NULL);
-		break;
-
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		brasero_burn_session_get_output (priv->session,
-						 NULL,
-						 &path,
-						 NULL);
-		break;
-
 	case BRASERO_IMAGE_FORMAT_CUE:
 		brasero_burn_session_get_output (priv->session,
 						 NULL,
-						 &path,
-						 NULL);
+						 &path);
 		break;
 
 	default:
