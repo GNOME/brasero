@@ -92,7 +92,7 @@ brasero_project_name_icon_update (BraseroProjectName *self,
 {
 	GError *error = NULL;
 	GdkPixbuf *pixbuf;
-	gchar *icon; 
+	const gchar *icon; 
 
 	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
 					GTK_ENTRY_ICON_PRIMARY,
@@ -101,7 +101,7 @@ brasero_project_name_icon_update (BraseroProjectName *self,
 					   GTK_ENTRY_ICON_PRIMARY,
 					   NULL);
 
-	icon = brasero_track_data_cfg_get_scaled_icon_path (track);
+	icon = brasero_track_data_cfg_get_icon_path (track);
 	if (!icon) {
 		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
 						   GTK_ENTRY_ICON_PRIMARY,
@@ -115,8 +115,6 @@ brasero_project_name_icon_update (BraseroProjectName *self,
 						    24,
 						    FALSE,
 						    &error);
-	g_free (icon);
-
 	if (!pixbuf) {
 		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
 						   GTK_ENTRY_ICON_PRIMARY,
@@ -199,6 +197,8 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (chooser), filter);
+
+	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (chooser), filter);
 
 	if (filename)
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), filename);
@@ -547,7 +547,7 @@ brasero_project_name_track_changed (BraseroBurnSession *session,
 				    BraseroProjectName *self)
 {
 	/* It can happen that stream tracks change */
-	brasero_project_name_session_changed (self);
+	brasero_project_name_set_type (self);
 }
 
 static void

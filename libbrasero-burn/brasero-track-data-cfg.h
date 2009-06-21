@@ -175,8 +175,6 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track);
 /**
  * Icon
  */
-gchar *
-brasero_track_data_cfg_get_scaled_icon_path (BraseroTrackDataCfg *track);
 
 const gchar *
 brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track);
