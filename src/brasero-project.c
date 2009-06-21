@@ -1392,7 +1392,6 @@ brasero_project_drive_properties (BraseroProject *project)
 	gtk_box_pack_start (GTK_BOX (box), medium_prop, TRUE, TRUE, 0);
 
 	/* launch the dialog */
-	gtk_widget_show (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
@@ -1421,6 +1420,7 @@ brasero_project_image_properties (BraseroProject *project)
 					    NULL,
 					    "media-optical-burn",
 					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
 				      button,
 				      GTK_RESPONSE_OK);
