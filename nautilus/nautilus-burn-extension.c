@@ -232,15 +232,14 @@ write_activate (GtkWindow *toplevel)
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* create the options box */
-	options = brasero_data_options_new (BRASERO_BURN_SESSION (priv->session));
+	options = brasero_data_options_new (BRASERO_BURN_SESSION (session));
 	gtk_widget_show (options);
-	brasero_burn_options_add_options (self, options);
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* NOTE: set the disc we're handling */
-	launch_brasero_on_window_track (BRASERO_TRACK (track),
-					box,
-					toplevel);
+	launch_brasero_on_window_session (session, options, toplevel);
+	g_object_unref (session);
+
 	/* cleanup */
 	g_object_unref (session);
 }
