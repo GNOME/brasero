@@ -67,7 +67,7 @@ enum {
 	PROP_SESSION
 };
 
-BraseroImageFormat
+static BraseroImageFormat
 brasero_image_properties_get_format (BraseroImageProperties *self)
 {
 	BraseroImagePropertiesPrivate *priv;
@@ -84,7 +84,7 @@ brasero_image_properties_get_format (BraseroImageProperties *self)
 	return format;
 }
 
-gchar *
+static gchar *
 brasero_image_properties_get_path (BraseroImageProperties *self)
 {
 	BraseroImagePropertiesPrivate *priv;
@@ -250,25 +250,29 @@ brasero_image_properties_set_output_path (BraseroImageProperties *self,
 }
 
 static void
-brasero_image_properties_file_activated (GtkFileChooser *chooser,
-					 BraseroImageProperties *self)
+brasero_image_properties_response (GtkFileChooser *chooser,
+				   gint response_id,
+				   gpointer NULL_data)
 {
 	BraseroImagePropertiesPrivate *priv;
 	BraseroImageFormat format;
 	gchar *path;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (chooser);
+
+	if (response_id != GTK_RESPONSE_OK)
+		return;
 
 	/* get and check format */
-	format = brasero_image_properties_get_format (self);
+	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (chooser));
 
 	/* see if the user has changed the path */
 	if (priv->edited)
-		path = brasero_image_properties_get_path (self);
+		path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (chooser));
 	else
 		path = NULL;
 
-	brasero_image_properties_set_output_path (self,
+	brasero_image_properties_set_output_path (BRASERO_IMAGE_PROPERTIES (chooser),
 						  format,
 						  path);
 	g_free (path);
@@ -359,9 +363,9 @@ brasero_image_properties_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_SESSION: /* Readable and only writable at creation time */
-		/*brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (object),
+		brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (object),
 						      g_value_get_object (value));
-		*/break;
+		break;
 
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -401,8 +405,8 @@ brasero_image_properties_init (BraseroImageProperties *object)
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_BOX (GTK_DIALOG (object)->vbox)), 10);
 
 	g_signal_connect (object,
-			  "file-activated",
-			  G_CALLBACK (brasero_image_properties_file_activated),
+			  "response",
+			  G_CALLBACK (brasero_image_properties_response),
 			  NULL);
 }
 
