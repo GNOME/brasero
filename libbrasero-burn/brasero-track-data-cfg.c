@@ -2794,6 +2794,25 @@ brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
 	return priv->image_path;
 }
 
+static gchar *
+brasero_track_data_cfg_get_scaled_icon_path (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+	gchar *path;
+	gchar *uri;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	if (!priv->icon || BRASERO_FILE_NODE_VIRTUAL (priv->icon))
+		return NULL;
+
+	uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), priv->icon);
+	path = g_filename_from_uri (uri, NULL, NULL);
+	g_free (uri);
+
+	return path;
+}
+
 gboolean
 brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
 				 const gchar *icon_path,

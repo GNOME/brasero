@@ -30,8 +30,7 @@ libbrasero_utils_la_LIBADD =					\
 
 libbrasero_utils_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
-	-no-undefined						\
-	$(AM_LDFLAGS)
+	-no-undefined
 #	-export-symbols ./libbrasero-utils.symbols
 
 libbrasero_utils_la_SOURCES =		\

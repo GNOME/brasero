@@ -69,8 +69,7 @@ libbrasero_burn_la_LIBADD =					\
 libbrasero_burn_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined						\
-	-export-dynamic						\
-	$(AM_LDFLAGS)
+	-export-dynamic
 #	-export-symbols ./libbrasero-burn.symbols
 
 libbrasero_burn_la_SOURCES = 		\
