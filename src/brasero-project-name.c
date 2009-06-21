@@ -44,7 +44,6 @@ struct _BraseroProjectNamePrivate
 	BraseroBurnSession *session;
 
 	BraseroProjectType type;
-	BraseroMedium *medium;
 
 	guint label_modified:1;
 };
@@ -248,14 +247,27 @@ brasero_project_name_get_default_label (BraseroProjectName *self)
 {
 	time_t t;
 	gchar buffer [128];
+	BraseroBurnFlag flags;
 	gchar *title_str = NULL;
 	BraseroProjectNamePrivate *priv;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
 
-	if (priv->medium) {
-		title_str = brasero_volume_get_name (BRASERO_VOLUME (priv->medium));
-		goto end;
+	if (priv->type == BRASERO_PROJECT_TYPE_INVALID)
+		return g_strdup ("");
+
+	flags = brasero_burn_session_get_flags (priv->session);
+	if (flags & BRASERO_BURN_FLAG_MERGE) {
+		BraseroMedium *medium;
+		BraseroDrive *burner;
+
+		burner = brasero_burn_session_get_burner (priv->session);
+		medium = brasero_drive_get_medium (burner);
+
+		if (medium) {
+			title_str = brasero_volume_get_name (BRASERO_VOLUME (medium));
+			goto end;
+		}
 	}
 
 	t = time (NULL);
@@ -394,22 +406,36 @@ brasero_project_name_label_changed (GtkEditable *editable,
 		       0);
 }
 
-void
-brasero_project_name_set_type (BraseroProjectName *self,
-			       BraseroProjectType type)
+static void
+brasero_project_name_set_type (BraseroProjectName *self)
 {
 	BraseroProjectNamePrivate *priv;
+	BraseroTrackType *track_type;
+	BraseroProjectType type;
 	gchar *title_str = NULL;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
 
-	priv->type = type;
+	track_type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, track_type);
 
-	if (priv->medium) {
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
+	if (brasero_track_type_get_has_data (track_type))
+		type = BRASERO_PROJECT_TYPE_DATA;
+	else if (brasero_track_type_get_has_stream (track_type)) {
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (track_type)))
+			type = BRASERO_PROJECT_TYPE_VIDEO;
+		else
+			type = BRASERO_PROJECT_TYPE_AUDIO;
 	}
+	else
+		type = BRASERO_PROJECT_TYPE_INVALID;
 
+	brasero_track_type_free (track_type);
+
+	if (priv->type == type)
+		return;
+
+	priv->type = type;
 	priv->label_modified = FALSE;
 
 	title_str = brasero_project_name_get_default_label (self);
@@ -421,23 +447,14 @@ brasero_project_name_set_type (BraseroProjectName *self,
 	g_free (title_str);
 }
 
-void
-brasero_project_name_set_multisession_medium (BraseroProjectName *self,
-					      BraseroMedium *medium)
+static void
+brasero_project_name_flags_changed (BraseroBurnSession *session,
+				    BraseroProjectName *self)
 {
 	BraseroProjectNamePrivate *priv;
 	gchar *title_str;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
-	if (priv->medium) {
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
-	}
-
-	priv->medium = medium;
-
-	if (medium)
-		g_object_ref (medium);
 
 	if (priv->label_modified)
 		return;
@@ -512,6 +529,8 @@ brasero_project_name_session_changed (BraseroProjectName *self)
 	}
 
 	brasero_track_type_free (type);
+
+	brasero_project_name_set_type (self);
 }
 
 static void
@@ -558,6 +577,10 @@ brasero_project_name_set_property (GObject *object,
 				  "track-removed",
 				  G_CALLBACK (brasero_project_name_track_removed),
 				  object);
+		g_signal_connect (g_value_get_object (value),
+				  "flags-changed",
+				  G_CALLBACK (brasero_project_name_flags_changed),
+				  object);
 		break;
 
 	default:
@@ -591,9 +614,16 @@ brasero_project_name_finalize (GObject *object)
 	BraseroProjectNamePrivate *priv;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
-	if (priv->medium) {
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
+	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_project_name_track_added,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_project_name_track_removed,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_project_name_flags_changed,
+						      object);
 	}
 
 	G_OBJECT_CLASS (brasero_project_name_parent_class)->finalize (object);

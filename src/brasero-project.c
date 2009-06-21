@@ -1011,20 +1011,6 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 }
 
 static void
-brasero_project_flags_changed_cb (BraseroBurnSession *session,
-				  BraseroProject *project)
-{
-	BraseroBurnFlag flags;
-
-	flags = brasero_burn_session_get_flags (session);
-
-	/* see if the project name should be updated */
-	if (flags & BRASERO_BURN_FLAG_MERGE)
-		brasero_project_name_set_multisession_medium (BRASERO_PROJECT_NAME (project->priv->name_display),
-							      brasero_data_disc_get_loaded_medium (BRASERO_DATA_DISC (project->priv->current)));
-}
-
-static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkSizeGroup *size_group;
@@ -1052,10 +1038,6 @@ brasero_project_init (BraseroProject *obj)
 	g_signal_connect (obj->priv->session,
 			  "is-valid",
 			  G_CALLBACK (brasero_project_is_valid),
-			  obj);
-	g_signal_connect (obj->priv->session,
-			  "flags-changed",
-			  G_CALLBACK (brasero_project_flags_changed_cb),
 			  obj);
 	g_signal_connect (obj->priv->session,
 			  "track-added",
@@ -1604,8 +1586,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	gtk_action_set_sensitive (action, TRUE);
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
 	gtk_action_set_sensitive (action, FALSE);
-
-	brasero_project_name_set_type (BRASERO_PROJECT_NAME (project->priv->name_display), type);
 }
 
 void

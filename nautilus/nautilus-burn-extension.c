@@ -211,14 +211,18 @@ write_activate (GtkWindow *toplevel)
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
+	session = brasero_session_cfg_new ();
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
+					BRASERO_TRACK (track),
+					NULL);
+	g_object_unref (track);
+
+	/* Add option widget */
 	box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
 	/* add name widget here to set the label of the volume */
-	name_options = brasero_project_name_new ();
-	brasero_project_name_set_type (BRASERO_PROJECT_NAME (name_options),
-				       BRASERO_PROJECT_TYPE_DATA);
-
+	name_options = brasero_project_name_new (BRASERO_BURN_SESSION (session));
 	string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
 	options = brasero_utils_pack_properties (string,
 						 name_options,
@@ -258,7 +262,8 @@ launch_brasero_on_window_track (BraseroTrack	*track,
 	/* create a session and add track */
 	session = brasero_session_cfg_new ();
 	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
-					BRASERO_TRACK (track));
+					BRASERO_TRACK (track),
+					NULL);
 
 	launch_brasero_on_window_session (session, options, window);
 	g_object_unref (session);
