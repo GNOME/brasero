@@ -17,7 +17,8 @@ EXTRA_DIST = 			\
 	intltool-merge.in	\
 	intltool-update.in	\
 	gnome-doc-utils.make	\
-	libbrasero-media.pc
+	libbrasero-media.pc	\
+	libbrasero-burn.pc
 
 noinst_PROGRAMS =
 
@@ -32,7 +33,7 @@ DISTCLEANFILES = \
 	gtk-doc.make
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libbrasero-media.pc
+pkgconfig_DATA = libbrasero-media.pc libbrasero-burn.pc
 
 # Copy all the spec files. Of course, only one is actually used.
 dist-hook:
