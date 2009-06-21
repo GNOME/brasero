@@ -2037,7 +2037,7 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 			return;
 	}
 
-	if (brasero_disc_clear (BRASERO_DISC (project->priv->current)))
+	if (!brasero_disc_clear (BRASERO_DISC (project->priv->current)))
 		brasero_burn_session_add_track (BRASERO_BURN_SESSION (project->priv->session), NULL, NULL);
 }
 
