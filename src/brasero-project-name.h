@@ -55,6 +55,10 @@ GType brasero_project_name_get_type (void) G_GNUC_CONST;
 GtkWidget *
 brasero_project_name_new (BraseroBurnSession *session);
 
+void
+brasero_project_name_set_session (BraseroProjectName *project,
+				  BraseroBurnSession *session);
+
 G_END_DECLS
 
 #endif /* _BRASERO_PROJECT_NAME_H_ */

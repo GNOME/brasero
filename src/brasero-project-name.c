@@ -566,6 +566,65 @@ brasero_project_name_track_removed (BraseroBurnSession *session,
 }
 
 static void
+brasero_project_name_unset_session (BraseroProjectName *project)
+{
+	BraseroProjectNamePrivate *priv;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
+
+	if (!priv->session)
+		return;
+
+	g_signal_handlers_disconnect_by_func (priv->session,
+					      brasero_project_name_track_added,
+					      project);
+	g_signal_handlers_disconnect_by_func (priv->session,
+					      brasero_project_name_track_changed,
+					      project);
+	g_signal_handlers_disconnect_by_func (priv->session,
+					      brasero_project_name_track_removed,
+					      project);
+	g_signal_handlers_disconnect_by_func (priv->session,
+					      brasero_project_name_flags_changed,
+					      project);
+
+	g_object_unref (priv->session);
+	priv->session = NULL;
+}
+
+void
+brasero_project_name_set_session (BraseroProjectName *project,
+				  BraseroBurnSession *session)
+{
+	BraseroProjectNamePrivate *priv;
+
+	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
+
+	brasero_project_name_unset_session (project);
+
+	if (!session)
+		return;
+
+	priv->session = g_object_ref (session);
+	g_signal_connect (priv->session,
+			  "track-added",
+			  G_CALLBACK (brasero_project_name_track_added),
+			  project);
+	g_signal_connect (priv->session,
+			  "track-changed",
+			  G_CALLBACK (brasero_project_name_track_changed),
+			  project);
+	g_signal_connect (priv->session,
+			  "track-removed",
+			  G_CALLBACK (brasero_project_name_track_removed),
+			  project);
+	g_signal_connect (priv->session,
+			  "flags-changed",
+			  G_CALLBACK (brasero_project_name_flags_changed),
+			  project);
+}
+
+static void
 brasero_project_name_set_property (GObject *object,
 				   guint property_id,
 				   const GValue *value,
@@ -577,23 +636,8 @@ brasero_project_name_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_SESSION:
-		priv->session = g_object_ref (g_value_get_object (value));
-		g_signal_connect (priv->session,
-				  "track-added",
-				  G_CALLBACK (brasero_project_name_track_added),
-				  object);
-		g_signal_connect (priv->session,
-				  "track-changed",
-				  G_CALLBACK (brasero_project_name_track_changed),
-				  object);
-			g_signal_connect (priv->session,
-				  "track-removed",
-				  G_CALLBACK (brasero_project_name_track_removed),
-				  object);
-		g_signal_connect (priv->session,
-				  "flags-changed",
-				  G_CALLBACK (brasero_project_name_flags_changed),
-				  object);
+		brasero_project_name_set_session (BRASERO_PROJECT_NAME (object),
+						  g_value_get_object (value));
 		break;
 
 	default:
@@ -670,7 +714,7 @@ brasero_project_name_class_init (BraseroProjectNameClass *klass)
 							      "The session",
 							      "The session to work with",
 							      BRASERO_TYPE_BURN_SESSION,
-							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
+							      G_PARAM_READWRITE));
 }
 
 GtkWidget *

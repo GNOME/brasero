@@ -644,8 +644,6 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 GtkWidget *
 brasero_dest_selection_new (BraseroBurnSession *session)
 {
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), NULL);
-
 	return g_object_new (BRASERO_TYPE_DEST_SELECTION,
 			     "session", session,
 			     NULL);

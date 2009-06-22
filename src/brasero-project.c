@@ -1031,27 +1031,6 @@ brasero_project_init (BraseroProject *obj)
 	gtk_box_pack_start (GTK_BOX (obj), obj->priv->message, FALSE, TRUE, 0);
 	gtk_widget_show (obj->priv->message);
 
-	obj->priv->session = brasero_session_cfg_new ();
-
-	/* NOTE: "is-valid" is emitted whenever there is a change in the
-	 * contents of the session. So no need to connect to track-added, ... */
-	g_signal_connect (obj->priv->session,
-			  "is-valid",
-			  G_CALLBACK (brasero_project_is_valid),
-			  obj);
-	g_signal_connect (obj->priv->session,
-			  "track-added",
-			  G_CALLBACK (brasero_project_track_added),
-			  obj);
-	g_signal_connect (obj->priv->session,
-			  "track-changed",
-			  G_CALLBACK (brasero_project_track_changed),
-			  obj);
-	g_signal_connect (obj->priv->session,
-			  "track-removed",
-			  G_CALLBACK (brasero_project_track_removed),
-			  obj);
-
 	/* bottom */
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (box), 0);
@@ -1076,7 +1055,7 @@ brasero_project_init (BraseroProject *obj)
 			  GTK_EXPAND,
 			  0, 0);
 
-	selector = brasero_dest_selection_new (BRASERO_BURN_SESSION (obj->priv->session));
+	selector = brasero_dest_selection_new (NULL);
 	gtk_widget_show (selector);
 	obj->priv->selection = selector;
 
@@ -1537,11 +1516,24 @@ brasero_project_reset (BraseroProject *project)
     	project->priv->burnt = 0;
 	project->priv->modified = 0;
 
-	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (project->priv->session),
-					BRASERO_BURN_FLAG_NONE);
-	brasero_burn_session_add_track (BRASERO_BURN_SESSION (project->priv->session),
-					NULL,
-					NULL);
+	if (project->priv->session) {
+		g_signal_handlers_disconnect_by_func (project->priv->session,
+						      brasero_project_is_valid,
+						      project);
+		g_signal_handlers_disconnect_by_func (project->priv->session,
+						      brasero_project_track_added,
+						      project);
+		g_signal_handlers_disconnect_by_func (project->priv->session,
+						      brasero_project_track_changed,
+						      project);
+		g_signal_handlers_disconnect_by_func (project->priv->session,
+						      brasero_project_track_removed,
+						      project);
+
+		/* unref session to force it to remove all temporary files */
+		g_object_unref (project->priv->session);
+		project->priv->session = NULL;
+	}
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
@@ -1549,12 +1541,44 @@ brasero_project_reset (BraseroProject *project)
 }
 
 static void
+brasero_project_new_session (BraseroProject *project)
+{
+	if (project->priv->session)
+		brasero_project_reset (project);
+
+	project->priv->session = brasero_session_cfg_new ();
+
+	/* NOTE: "is-valid" is emitted whenever there is a change in the
+	 * contents of the session. So no need to connect to track-added, ... */
+	g_signal_connect (project->priv->session,
+			  "is-valid",
+			  G_CALLBACK (brasero_project_is_valid),
+			  project);
+	g_signal_connect (project->priv->session,
+			  "track-added",
+			  G_CALLBACK (brasero_project_track_added),
+			  project);
+	g_signal_connect (project->priv->session,
+			  "track-changed",
+			  G_CALLBACK (brasero_project_track_changed),
+			  project);
+	g_signal_connect (project->priv->session,
+			  "track-removed",
+			  G_CALLBACK (brasero_project_track_removed),
+			  project);
+
+	brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (project->priv->selection),
+					    BRASERO_BURN_SESSION (project->priv->session));
+	brasero_project_name_set_session (BRASERO_PROJECT_NAME (project->priv->name_display),
+					  BRASERO_BURN_SESSION (project->priv->session));
+}
+
+static void
 brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
 
-	/* FIXME: */
-	g_object_ref (project->priv->session);
+	brasero_project_new_session (project);
 
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		project->priv->current = BRASERO_DISC (project->priv->audio);
@@ -1701,38 +1725,6 @@ brasero_project_set_none (BraseroProject *project)
 {
 	GtkAction *action;
 	GtkWidget *status;
-
-	if (project->priv->project_status) {
-		gtk_widget_hide (project->priv->project_status);
-		gtk_dialog_response (GTK_DIALOG (project->priv->project_status),
-				     GTK_RESPONSE_CANCEL);
-		project->priv->project_status = NULL;
-	}
-
-	if (project->priv->chooser) {
-		gtk_widget_destroy (project->priv->chooser);
-		project->priv->chooser = NULL;
-	}
-
-	if (project->priv->project) {
-		g_free (project->priv->project);
-		project->priv->project = NULL;
-	}
-
-	if (project->priv->cover) {
-		g_free (project->priv->cover);
-		project->priv->cover = NULL;
-	}
-
-	if (project->priv->chooser) {
-		gtk_widget_destroy (project->priv->chooser);
-		project->priv->chooser = NULL;
-	}
-
-	if (project->priv->current) {
-		brasero_disc_set_session_contents (project->priv->current, NULL);
-		project->priv->current = NULL;
-	}
 
 	brasero_project_reset (project);
 
