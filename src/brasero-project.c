@@ -1578,8 +1578,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
 
-	brasero_project_new_session (project);
-
 	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
@@ -1632,7 +1630,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 void
 brasero_project_set_audio (BraseroProject *project, GSList *uris)
 {
-	brasero_project_reset (project);
+	brasero_project_new_session (project);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
 
 	for (; uris; uris = uris->next) {
@@ -1647,7 +1645,7 @@ void
 brasero_project_set_data (BraseroProject *project,
 			  GSList *uris)
 {
-	brasero_project_reset (project);
+	brasero_project_new_session (project);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_DATA);
 
 	for (; uris; uris = uris->next) {
@@ -1661,7 +1659,7 @@ brasero_project_set_data (BraseroProject *project,
 void
 brasero_project_set_video (BraseroProject *project, GSList *uris)
 {
-	brasero_project_reset (project);
+	brasero_project_new_session (project);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_VIDEO);
 
 	for (; uris; uris = uris->next) {
@@ -2221,7 +2219,7 @@ brasero_project_open_project_real (BraseroProject *project,
 	GValue *value;
 	BraseroProjectType type;
 
-	brasero_project_reset (project);
+	brasero_project_new_session (project);
 
 #ifdef BUILD_PLAYLIST
 
@@ -2478,6 +2476,9 @@ brasero_project_save_project (BraseroProject *project)
 	gchar *uri = NULL;
 	gboolean result;
 
+	if (!project->priv->session)
+		return FALSE;
+
 	if (!project->priv->project && !(uri = brasero_project_save_project_ask_for_path (project, NULL)))
 		return FALSE;
 
@@ -2493,6 +2494,9 @@ brasero_project_save_project_as (BraseroProject *project)
 	BraseroProjectSave type = BRASERO_PROJECT_SAVE_XML;
 	gboolean result;
 	gchar *uri;
+
+	if (!project->priv->session)
+		return FALSE;
 
 	uri = brasero_project_save_project_ask_for_path (project, &type);
 	if (!uri)
@@ -2516,6 +2520,9 @@ brasero_project_save_session (BraseroProject *project,
 			      gchar **saved_uri,
 			      gboolean show_cancel)
 {
+	if (!project->priv->session)
+		return FALSE;
+
 	if (!project->priv->current) {
 		if (saved_uri)
 			*saved_uri = NULL;
