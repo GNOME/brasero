@@ -1131,6 +1131,12 @@ brasero_vob_clock_tick (BraseroJob *job)
 	gst_element_query_duration (priv->pipeline, &format, &duration);
 	gst_element_query_position (priv->pipeline, &format, &position);
 
+	if (duration <= 0.0 || position <= 0.0) {
+		format = GST_FORMAT_BYTES;
+		gst_element_query_duration (priv->pipeline, &format, &duration);
+		gst_element_query_position (priv->pipeline, &format, &position);
+	}
+
 	if (duration > 0.0 && position > 0.0) {
 		gdouble progress;
 
