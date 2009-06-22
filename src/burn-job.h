@@ -259,10 +259,10 @@ brasero_job_set_rate (BraseroJob *job,
 		      gint64 rate);
 BraseroBurnResult
 brasero_job_set_written_track (BraseroJob *job,
-			       gint64 written);
+			       goffset written);
 BraseroBurnResult
 brasero_job_set_written_session (BraseroJob *job,
-				 gint64 written);
+				 goffset written);
 BraseroBurnResult
 brasero_job_set_progress (BraseroJob *job,
 			  gdouble progress);
@@ -276,8 +276,8 @@ brasero_job_get_current_action (BraseroJob *job,
 				BraseroBurnAction *action);
 BraseroBurnResult
 brasero_job_set_output_size_for_current_track (BraseroJob *job,
-					       gint64 sectors,
-					       gint64 size);
+					       goffset sectors,
+					       goffset bytes);
 
 /**
  * Used to tell it's (or not) dangerous to interrupt this job

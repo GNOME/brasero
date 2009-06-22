@@ -55,8 +55,8 @@
 BRASERO_PLUGIN_BOILERPLATE (BraseroCDRecord, brasero_cdrecord, BRASERO_TYPE_PROCESS, BraseroProcess);
 
 struct _BraseroCDRecordPrivate {
-	gint64 current_track_end_pos;
-	gint64 current_track_written;
+	goffset current_track_end_pos;
+	goffset current_track_written;
 
 	gint current_track_num;
 	gint track_count;
@@ -203,34 +203,36 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 
 static void
 brasero_cdrecord_compute (BraseroCDRecord *cdrecord,
-			  gint mb_written,
-			  gint mb_total,
-			  gint track_num)
+			  goffset mb_written,
+			  goffset mb_total,
+			  goffset track_num)
 {
 	gboolean track_num_changed = FALSE;
 	BraseroCDRecordPrivate *priv;
 	gchar *action_string;
-	gint64 this_remain;
-	gint64 bytes;
-	gint64 total;
+	goffset this_remain;
+	goffset bytes;
+	goffset total;
 
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 	if (mb_total <= 0)
 		return;
 
-	total = mb_total * 1048576;
+	total = mb_total * (goffset) 1048576LL;
 
 	if (track_num > priv->current_track_num) {
 		track_num_changed = TRUE;
 		priv->current_track_num = track_num;
-		priv->current_track_end_pos += mb_total * 1048576;
+		priv->current_track_end_pos += mb_total * (goffset) 1048576LL;
 	}
 
-	this_remain = (mb_total - mb_written) * 1048576;
+	this_remain = (mb_total - mb_written) * (goffset) 1048576LL;
 	bytes = (total - priv->current_track_end_pos) + this_remain;
 	brasero_job_set_written_session (BRASERO_JOB (cdrecord), total - bytes);
 
+	/* Translators: %s is the number of the track */
 	action_string = g_strdup_printf ("Writing track %02i", track_num);
+
 	brasero_job_set_current_action (BRASERO_JOB (cdrecord),
 					BRASERO_BURN_ACTION_RECORDING,
 					action_string,
@@ -259,7 +261,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 			       (gdouble) CD_RATE;
 		brasero_job_set_rate (BRASERO_JOB (cdrecord), current_rate);
 
-		priv->current_track_written = mb_written * 1048576;
+		priv->current_track_written = (goffset) mb_written * (goffset) 1048576LL;
 		brasero_cdrecord_compute (cdrecord,
 					  mb_written,
 					  mb_total,
@@ -277,7 +279,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 			       (gdouble) CD_RATE;
 		brasero_job_set_rate (BRASERO_JOB (cdrecord), current_rate);
 
-		priv->current_track_written = mb_written * 1048576;
+		priv->current_track_written = (goffset) mb_written * (goffset) 1048576LL;
 		if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) == BRASERO_BURN_OK) {
 			gint64 bytes = 0;
 
@@ -285,7 +287,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 			brasero_job_get_session_output_size (BRASERO_JOB (cdrecord),
 							     NULL,
 							     &bytes);
-			mb_total = bytes / 1048576;
+			mb_total = bytes / (goffset) 1048576LL;
 			brasero_cdrecord_compute (cdrecord,
 						  mb_written,
 						  mb_total,
@@ -337,10 +339,15 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 	}
 	else if (g_str_has_prefix (line, "Fixating...")
 	     ||  g_str_has_prefix (line, "Writing Leadout...")) {
-		brasero_job_set_current_action (BRASERO_JOB (process),
-						BRASERO_BURN_ACTION_FIXATING,
-						NULL,
-						FALSE);
+		BraseroJobAction action;
+
+		/* Do this to avoid strange things to appear when erasing */
+		brasero_job_get_action (BRASERO_JOB (process), &action);
+		if (action == BRASERO_JOB_ACTION_RECORD)
+			brasero_job_set_current_action (BRASERO_JOB (process),
+							BRASERO_BURN_ACTION_FIXATING,
+							NULL,
+							FALSE);
 	}
 	else if (g_str_has_prefix (line, "Last chance to quit, ")) {
 		brasero_job_set_dangerous (BRASERO_JOB (process), TRUE);
