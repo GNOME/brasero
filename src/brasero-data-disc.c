@@ -279,7 +279,7 @@ brasero_data_disc_get_parent (BraseroDataDisc *self)
 	if (g_list_length (list) != 1) {
 		g_list_foreach (list, (GFunc) gtk_tree_path_free, NULL);
 		g_list_free (list);
-		return gtk_tree_path_new_first ();
+		return NULL;
 	}
 
 	treepath = list->data;
