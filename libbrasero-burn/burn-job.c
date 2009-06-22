@@ -1891,8 +1891,8 @@ brasero_job_set_rate (BraseroJob *self,
 
 BraseroBurnResult
 brasero_job_set_output_size_for_current_track (BraseroJob *self,
-					       gint64 sectors,
-					       gint64 size)
+					       goffset sectors,
+					       goffset bytes)
 {
 	BraseroJobPrivate *priv;
 
@@ -1912,12 +1912,12 @@ brasero_job_set_output_size_for_current_track (BraseroJob *self,
 
 	return brasero_task_ctx_set_output_size_for_current_track (priv->ctx,
 								   sectors,
-								   size);
+								   bytes);
 }
 
 BraseroBurnResult
 brasero_job_set_written_track (BraseroJob *self,
-			       gint64 written)
+			       goffset written)
 {
 	BraseroJobPrivate *priv;
 
@@ -1933,7 +1933,7 @@ brasero_job_set_written_track (BraseroJob *self,
 
 BraseroBurnResult
 brasero_job_set_written_session (BraseroJob *self,
-				 gint64 written)
+				 goffset written)
 {
 	BraseroJobPrivate *priv;
 

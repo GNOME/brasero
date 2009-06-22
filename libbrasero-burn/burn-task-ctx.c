@@ -534,8 +534,8 @@ brasero_task_ctx_set_rate (BraseroTaskCtx *self,
 
 BraseroBurnResult
 brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *self,
-						    gint64 sectors,
-						    gint64 size)
+						    goffset sectors,
+						    goffset bytes)
 {
 	BraseroTaskCtxPrivate *priv;
 
@@ -553,8 +553,8 @@ brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *self,
 	if (sectors >= 0)
 		priv->blocks += sectors;
 
-	if (size >= 0)
-		priv->size += size;
+	if (bytes >= 0)
+		priv->size += bytes;
 
 	BRASERO_BURN_LOG ("Task output modified %lli blocks %lli bytes",
 			  priv->blocks,
