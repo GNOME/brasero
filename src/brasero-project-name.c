@@ -671,17 +671,8 @@ brasero_project_name_finalize (GObject *object)
 	BraseroProjectNamePrivate *priv;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
-	if (priv->session) {
-		g_signal_handlers_disconnect_by_func (priv->session,
-						      brasero_project_name_track_added,
-						      object);
-		g_signal_handlers_disconnect_by_func (priv->session,
-						      brasero_project_name_track_removed,
-						      object);
-		g_signal_handlers_disconnect_by_func (priv->session,
-						      brasero_project_name_flags_changed,
-						      object);
-	}
+
+	brasero_project_name_unset_session (BRASERO_PROJECT_NAME (object));
 
 	G_OBJECT_CLASS (brasero_project_name_parent_class)->finalize (object);
 }
