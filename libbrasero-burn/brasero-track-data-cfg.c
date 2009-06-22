@@ -1922,6 +1922,8 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
 	priv->joliet_rename = FALSE;
+
+	brasero_track_changed (BRASERO_TRACK (track));
 	return TRUE;
 }
 

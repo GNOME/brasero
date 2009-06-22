@@ -72,18 +72,8 @@ struct _BraseroDiscIface {
 
 	/* signals */
 	void	(*selection_changed)			(BraseroDisc *disc);
-	void	(*contents_changed)			(BraseroDisc *disc,
-							 gint nb_files);
-	void	(*size_changed)				(BraseroDisc *disc,
-							 gint64 size);
-	void	(*flags_changed)			(BraseroDisc *disc,
-							 BraseroBurnFlag flags);
 
 	/* virtual functions */
-	BraseroDiscResult	(*get_status)		(BraseroDisc *disc,
-							 gint *remaining,
-							 gchar **current_task);
-
 	BraseroDiscResult	(*set_session_contents)	(BraseroDisc *disc,
 							 BraseroBurnSession *session);
 
@@ -98,7 +88,6 @@ struct _BraseroDiscIface {
 
 	void			(*delete_selected)	(BraseroDisc *disc);
 	void			(*clear)		(BraseroDisc *disc);
-	void			(*reset)		(BraseroDisc *disc);
 
 	guint			(*add_ui)		(BraseroDisc *disc,
 							 GtkUIManager *manager,
@@ -138,15 +127,6 @@ BraseroDiscResult
 brasero_disc_set_session_contents (BraseroDisc *disc,
 				   BraseroBurnSession *session);
 
-void
-brasero_disc_size_changed (BraseroDisc *disc,
-			   gint64 size);
-void
-brasero_disc_flags_changed (BraseroDisc *disc,
-			    BraseroBurnFlag flags);
-void
-brasero_disc_contents_changed (BraseroDisc *disc,
-			       gint nb_files);
 void
 brasero_disc_selection_changed (BraseroDisc *disc);
 

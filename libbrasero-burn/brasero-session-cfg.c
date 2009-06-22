@@ -877,6 +877,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			       0);
 		return;
 	}
+	/* it can be empty with an empty track */
 
 	if (brasero_track_type_get_has_medium (source)
 	&&  brasero_track_type_get_medium_type (source) == BRASERO_MEDIUM_NONE) {

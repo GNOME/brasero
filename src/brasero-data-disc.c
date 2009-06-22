@@ -863,8 +863,6 @@ brasero_data_disc_size_changed (gpointer user_data)
 	brasero_track_get_size (BRASERO_TRACK (priv->project),
 				&sectors,
 				NULL);
-	brasero_disc_size_changed (BRASERO_DISC (self), sectors);
-
 	priv->size_changed_id = 0;
 	return FALSE;
 }
@@ -1096,12 +1094,6 @@ brasero_data_disc_session_loaded_cb (BraseroTrackDataCfg *session,
 	g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, self);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), loaded);
 	g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, self);
-
-	/* Update buttons states */
-	if (loaded)
-		brasero_disc_flags_changed (BRASERO_DISC (self), BRASERO_BURN_FLAG_MERGE);
-	else
-		brasero_disc_flags_changed (BRASERO_DISC (self), BRASERO_BURN_FLAG_NONE);
 }
 
 /**
@@ -1136,9 +1128,6 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 
 	brasero_track_data_cfg_reset (priv->project);
-	brasero_disc_size_changed (disc, 0);
-
-	gdk_window_set_cursor (GTK_WIDGET (disc)->window, NULL);
 }
 
 static void
@@ -1404,9 +1393,6 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 		g_source_remove (priv->size_changed_id);
 		priv->size_changed_id = 0;
 	}
-
-	if (GTK_WIDGET (disc)->window)
-		gdk_window_set_cursor (GTK_WIDGET (disc)->window, NULL);
 
 	/* Hide all toggle actions for session importing */
 	if (gtk_action_group_get_visible (priv->import_group))
