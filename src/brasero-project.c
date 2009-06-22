@@ -1473,7 +1473,7 @@ brasero_project_burn (BraseroProject *project)
 	brasero_disc_set_session_contents (current_disc, BRASERO_BURN_SESSION (project->priv->session));
 
 	brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (project->priv->selection),
-					    project->priv->session);
+					    BRASERO_BURN_SESSION (project->priv->session));
 
 	project->priv->is_burning = 0;
 }
@@ -2273,8 +2273,6 @@ brasero_project_open_project_real (BraseroProject *project,
 	}
 
 	project->priv->modified = 0;
-	if (uri)
-		brasero_project_set_uri (project, uri, type);
 
 	return type;
 }
@@ -2284,7 +2282,13 @@ brasero_project_open_project (BraseroProject *project,
 			      const gchar *uri,
 			      gboolean playlist)	/* escaped */
 {
-	return brasero_project_open_project_real (project, uri, playlist, TRUE);
+	BraseroProjectType type;
+
+	type = brasero_project_open_project_real (project, uri, playlist, TRUE);
+	if (type != BRASERO_PROJECT_TYPE_INVALID && uri)
+		brasero_project_set_uri (project, uri, type);
+
+	return type;
 }
 
 BraseroProjectType
