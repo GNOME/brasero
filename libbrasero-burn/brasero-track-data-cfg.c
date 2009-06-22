@@ -357,6 +357,9 @@ brasero_track_data_cfg_iter_has_child (GtkTreeModel *model,
 	if (node->is_inserting)
 		return FALSE;
 
+	if (node->is_loading)
+		return FALSE;
+
 	if (node->is_file)
 		return FALSE;
 
