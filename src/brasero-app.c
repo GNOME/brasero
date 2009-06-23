@@ -551,7 +551,6 @@ brasero_app_alert (BraseroApp *app,
 						     primary_message,
 						     secondary_message,
 						     type);
-
 	if (!parent && priv->parent) {
 		is_on_top = FALSE;
 

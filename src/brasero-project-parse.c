@@ -57,7 +57,7 @@ static void
 brasero_project_invalid_project_dialog (const char *reason)
 {
 	brasero_app_alert (brasero_app_get_default (),
-			   _("Error while loading the project"),
+			   _("Error while loading the project."),
 			   reason,
 			   GTK_MESSAGE_ERROR);
 }
@@ -435,7 +435,7 @@ brasero_project_open_project_xml (const gchar *uri,
 
 	if (!project) {
 	    	if (warn_user)
-			brasero_project_invalid_project_dialog (_("The project could not be opened."));
+			brasero_project_invalid_project_dialog (_("The project could not be opened"));
 
 		return FALSE;
 	}
@@ -444,7 +444,7 @@ brasero_project_open_project_xml (const gchar *uri,
 	item = xmlDocGetRootElement (project);
 	if (!item) {
 	    	if (warn_user)
-			brasero_project_invalid_project_dialog (_("The file is empty."));
+			brasero_project_invalid_project_dialog (_("The file is empty"));
 
 		xmlFreeDoc (project);
 		return FALSE;
@@ -523,7 +523,7 @@ error:
 
 	xmlFreeDoc (project);
     	if (warn_user)
-		brasero_project_invalid_project_dialog (_("It does not seem to be a valid Brasero project."));
+		brasero_project_invalid_project_dialog (_("It does not seem to be a valid Brasero project"));
 
 	return FALSE;
 }
@@ -582,7 +582,7 @@ brasero_project_open_audio_playlist_project (const gchar *uri,
 	result = totem_pl_parser_parse (parser, uri, FALSE);
 	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
 		if (warn_user)
-			brasero_project_invalid_project_dialog (_("It does not seem to be a valid Brasero project."));
+			brasero_project_invalid_project_dialog (_("It does not seem to be a valid Brasero project"));
 	}
 
 	g_object_unref (parser);
