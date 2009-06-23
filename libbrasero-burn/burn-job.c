@@ -1504,7 +1504,6 @@ brasero_job_get_device (BraseroJob *self, gchar **device)
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
-	g_print ("DRIVE %p %s\n", drive, brasero_drive_get_device (drive));
 	path = brasero_drive_get_device (drive);
 	*device = g_strdup (path);
 

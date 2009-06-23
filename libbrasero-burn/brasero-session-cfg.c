@@ -539,8 +539,11 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 	}
 
 	/* When copying with same drive don't set write mode, it'll be set later */
-	if (!brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))) {
-		/* use DAO whenever it's possible */
+	if (!brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))
+	&&  !(media & BRASERO_MEDIUM_DVD)) {
+		/* use DAO whenever it's possible except for DVDs otherwise
+		 * wodime which claims to support it will be used by default
+		 * instead of say growisofs. */
 		if (priv->supported & BRASERO_BURN_FLAG_DAO) {
 			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), BRASERO_BURN_FLAG_DAO);
 
