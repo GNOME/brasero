@@ -2204,6 +2204,12 @@ brasero_medium_get_contents (BraseroMedium *self,
 	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		if (!BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
 			priv->info |= BRASERO_MEDIUM_APPENDABLE;
+
+			/* This is just to make sure the disc is in a correct
+			 * state as I saw some drive being flagged as unformatted
+			 * appendable */
+			priv->info &= ~(BRASERO_MEDIUM_UNFORMATTED);
+
 			BRASERO_MEDIA_LOG ("Appendable media");
 
 			priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
