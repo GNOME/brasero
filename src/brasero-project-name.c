@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-misc.h"
+
 #include "brasero-medium.h"
 #include "brasero-volume.h"
 
@@ -68,22 +70,15 @@ static void
 brasero_project_name_data_icon_error (BraseroProjectName *project,
 				      GError *error)
 {
-	if (error) {
-		brasero_app_alert (brasero_app_get_default (),
-				   /* Translators: this is a picture not
-				    * a disc image */
-				   C_("picture", "Please select another image."),
-				   error->message,
-				   GTK_MESSAGE_ERROR);
-	}
-	else {
-		brasero_app_alert (brasero_app_get_default (),
-				   /* Translators: this is a picture not
-				    * a disc image */
-				   C_("picture", "Please select another image."),
-				   _("Unknown error"),
-				   GTK_MESSAGE_ERROR);
-	}
+	GtkWidget *toplevel;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	brasero_utils_message_dialog (toplevel,
+				      /* Translators: this is a picture not
+				       * a disc image */
+				      C_("picture", "Please select another image."),
+				      error? error->message:_("Unknown error"),
+				      GTK_MESSAGE_ERROR);
 }
 
 static void
