@@ -530,7 +530,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	selection = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (selection);
 
-	alignment = gtk_alignment_new (0.0, 0.5, 1.0, 0.0);
+	alignment = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
 	gtk_widget_show (alignment);
 	gtk_box_pack_start (GTK_BOX (selection),
 			    alignment,
