@@ -914,8 +914,8 @@ brasero_burn_options_set_property (GObject *object,
 	switch (prop_id)
 	{
 	case PROP_SESSION: /* Readable and only writable at creation time */
-		priv->session = BRASERO_SESSION_CFG (g_value_get_object (value));
-		g_object_ref (priv->session);
+		priv->session = g_object_ref (g_value_get_object (value));
+
 		g_object_notify (object, "session");
 
 		g_signal_connect (priv->session,

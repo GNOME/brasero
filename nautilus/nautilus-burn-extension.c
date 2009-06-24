@@ -202,7 +202,7 @@ write_activate (GtkWindow *toplevel)
 	BraseroSessionCfg	*session;
 	GtkWidget 		*name_options;
 	GtkWidget		*options;
-	GtkWidget	        *box;
+	GtkWidget		*box;
 	gchar			*string;
 
 	if (nautilus_disc_burn_is_empty (toplevel))
@@ -229,6 +229,7 @@ write_activate (GtkWindow *toplevel)
 						 NULL);
 	g_free (string);
 	gtk_widget_show_all (options);
+
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* create the options box */
@@ -237,8 +238,7 @@ write_activate (GtkWindow *toplevel)
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
 
 	/* NOTE: set the disc we're handling */
-	launch_brasero_on_window_session (session, options, toplevel);
-	g_object_unref (session);
+	launch_brasero_on_window_session (session, box, toplevel);
 
 	/* cleanup */
 	g_object_unref (session);
