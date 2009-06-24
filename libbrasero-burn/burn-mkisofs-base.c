@@ -495,6 +495,30 @@ brasero_mkisofs_base_write_grafts (BraseroMkisofsBase *base,
 }
 
 static BraseroBurnResult
+brasero_mkisofs_base_create_video_empty (BraseroMkisofsBase *base,
+					 const gchar *disc_path)
+{
+	gchar *path;
+
+	BRASERO_BURN_LOG ("Creating an empty Video or Audio directory");
+
+	if (base->found_video_ts)
+		return BRASERO_BURN_OK;
+
+	base->found_video_ts = TRUE;
+
+	path = g_build_path (G_DIR_SEPARATOR_S,
+			     base->videodir,
+			     disc_path,
+			     NULL);
+
+	g_mkdir_with_parents (path, S_IRWXU);
+	g_free (path);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_mkisofs_base_empty_directory (BraseroMkisofsBase *base,
 				      const gchar *disc_path,
 				      GError **error)
@@ -503,6 +527,23 @@ brasero_mkisofs_base_empty_directory (BraseroMkisofsBase *base,
 	gchar buffer [MAXPATHLEN];
 	gchar *graft_point;
 	const gchar *path;
+
+	/* This is a special case when the URI is NULL which can happen mainly
+	 * when we have to deal with burn:// uri. */
+	if (base->videodir) {
+		/* try with "VIDEO_TS", "VIDEO_TS/", "VIDEO_TS/" and "/VIDEO_TS/"
+		 * to make sure we don't miss one */
+		if (!strcmp (disc_path, "VIDEO_TS")
+		||  !strcmp (disc_path, "/VIDEO_TS")
+		||  !strcmp (disc_path, "VIDEO_TS/")
+		||  !strcmp (disc_path, "/VIDEO_TS/")) {
+			brasero_mkisofs_base_create_video_empty (base, disc_path);
+
+			/* NOTE: joliet cannot be used in this case so that's
+			 * perfectly fine to forget about it. */
+			return BRASERO_BURN_OK;
+		}
+	}
 
 	/* Mangle the name in case joliet is required */
 	if (base->use_joliet) {
@@ -531,7 +572,12 @@ brasero_mkisofs_base_process_video_graft (BraseroMkisofsBase *base,
 	gchar *path;
 	int res;
 
-	path = g_filename_from_uri (graft->uri, NULL, NULL);
+	/* Make sure it's a path and not a URI */
+	if (!strncmp (graft->uri, "file:", 5))
+		path = g_filename_from_uri (graft->uri, NULL, NULL);
+	else
+		path = g_strdup (graft->uri);
+
 	if (g_str_has_suffix (path, G_DIR_SEPARATOR_S)) {
 		gchar *tmp;
 
@@ -601,13 +647,14 @@ brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 	 * passed by the calling plugins. */
 	if (base->videodir) {
 		BraseroBurnResult res;
+		gchar *parent;
 
 		/* try with "VIDEO_TS", "VIDEO_TS/", "VIDEO_TS/" and "/VIDEO_TS/"
 		 * to make sure we don't miss one */
-		if (!strcmp (graft->path , "VIDEO_TS")
-		||  !strcmp (graft->path , "/VIDEO_TS")
-		||  !strcmp (graft->path , "VIDEO_TS/")
-		||  !strcmp (graft->path , "/VIDEO_TS/")) {
+		if (!strcmp (graft->path, "VIDEO_TS")
+		||  !strcmp (graft->path, "/VIDEO_TS")
+		||  !strcmp (graft->path, "VIDEO_TS/")
+		||  !strcmp (graft->path, "/VIDEO_TS/")) {
 			res = brasero_mkisofs_base_process_video_graft (base, graft, error);
 			if (res != BRASERO_BURN_OK)
 				return res;
@@ -615,11 +662,26 @@ brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 			base->found_video_ts = TRUE;
 			return BRASERO_BURN_OK;
 		}
-		else if (!strcmp (graft->path , "AUDIO_TS")
-		     ||  !strcmp (graft->path , "/AUDIO_TS")
-		     ||  !strcmp (graft->path , "AUDIO_TS/")
-		     ||  !strcmp (graft->path , "/AUDIO_TS/"))
+
+		if (!strcmp (graft->path, "AUDIO_TS")
+		||  !strcmp (graft->path, "/AUDIO_TS")
+		||  !strcmp (graft->path, "AUDIO_TS/")
+		||  !strcmp (graft->path, "/AUDIO_TS/"))
 			return brasero_mkisofs_base_process_video_graft (base, graft, error);
+
+		/* it could also be a direct child of the VIDEO_TS directory */
+		parent = g_path_get_dirname (graft->path);
+		if (!strcmp (parent, "VIDEO_TS")
+		||  !strcmp (parent, "/VIDEO_TS")
+		||  !strcmp (parent, "VIDEO_TS/")
+		||  !strcmp (parent, "/VIDEO_TS/")) {
+			if (!base->found_video_ts)
+				brasero_mkisofs_base_create_video_empty (base, parent);
+
+			g_free (parent);
+			return brasero_mkisofs_base_process_video_graft (base, graft, error);
+		}
+		g_free (parent);
 	}
 
 	/* add the graft point */

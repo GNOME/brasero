@@ -1647,8 +1647,8 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (self, type);
-	BRASERO_BURN_LOG_TYPE (type, "Input\t=");
 
+	BRASERO_BURN_LOG_TYPE (type, "Input\t=");
 	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t=");
 
 	if (!brasero_burn_session_is_dest_file (self)) {
