@@ -222,7 +222,10 @@ write_activate (GtkWindow *toplevel)
 	gtk_widget_show (box);
 
 	/* add name widget here to set the label of the volume */
-	name_options = brasero_project_name_new (BRASERO_BURN_SESSION (session));
+	name_options = brasero_project_name_new (NULL);
+	brasero_project_name_set_session (BRASERO_PROJECT_NAME (name_options),
+					  BRASERO_BURN_SESSION (session));
+
 	string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
 	options = brasero_utils_pack_properties (string,
 						 name_options,

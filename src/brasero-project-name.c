@@ -596,7 +596,6 @@ brasero_project_name_set_session (BraseroProjectName *project,
 	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
 
 	brasero_project_name_unset_session (project);
-
 	if (!session)
 		return;
 
@@ -617,6 +616,8 @@ brasero_project_name_set_session (BraseroProjectName *project,
 			  "flags-changed",
 			  G_CALLBACK (brasero_project_name_flags_changed),
 			  project);
+
+	brasero_project_name_session_changed (project);
 }
 
 static void
