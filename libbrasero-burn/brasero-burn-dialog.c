@@ -894,7 +894,7 @@ brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 	BraseroBurnResult result;
 
 	secondary = g_strdup_printf ("%s\n%s",
-				     _("You might not be able to listen to them with stereos and CD-TEXT won't be written."),
+				     _("CD-RW audio discs may not play correctly in older CD players and CD-TEXT won't be written."),
 				     _("Do you want to continue anyway?"));
 
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
@@ -914,7 +914,7 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 	BraseroBurnResult result;
 
 	secondary = g_strdup_printf ("%s\n%s",
-				     _("You might not be able to listen to it with stereos."),
+				     _("CD-RW audio discs may not play correctly in older CD players."),
 				     _("Do you want to continue anyway?"));
 
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
