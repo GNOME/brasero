@@ -629,11 +629,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	g_free (main_message);
 	g_free (secondary_message);
 
-	/* update the infos */
-	brasero_burn_dialog_update_info (dialog,
-					 &priv->input, 
-					 brasero_burn_session_get_dest_media (priv->session));
-
 	if (result != GTK_RESPONSE_OK)
 		return BRASERO_BURN_CANCEL;
 
@@ -1177,9 +1172,6 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 		BraseroMedia media = BRASERO_MEDIUM_NONE;
 
 		brasero_burn_status (burn, &media, NULL, NULL, NULL);
-		brasero_burn_dialog_update_info (dialog,
-						 &priv->input,
-						 media);
 	}
 
 	priv->is_creating_image = (action == BRASERO_BURN_ACTION_CREATING_IMAGE);
@@ -2161,6 +2153,7 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
+	/* Update info */
 	brasero_burn_dialog_update_info (dialog, &priv->input, media);
 
 	/* start the recording session */
