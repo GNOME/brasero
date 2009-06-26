@@ -256,14 +256,14 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 		gchar *remaining_string;
 
 		remaining_string = brasero_units_get_time_string ((double) remaining * 1000000000, TRUE, FALSE);
-		text = g_strdup_printf (_("%s, %02i%% done, %s remaining"),
+		text = g_strdup_printf (_("%s, %d%% done, %s remaining"),
 					action_string,
 					tray->priv->percent,
 					remaining_string);
 		g_free (remaining_string);
 	}
 	else if (tray->priv->percent > 0)
-		text = g_strdup_printf (_("%s, %02i%% done"),
+		text = g_strdup_printf (_("%s, %d%% done"),
 					action_string,
 					tray->priv->percent);
 	else
