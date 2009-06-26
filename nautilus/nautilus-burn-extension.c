@@ -39,7 +39,6 @@
 
 #include "brasero-burn-lib.h"
 #include "brasero-track.h"
-#include "brasero-data-options.h"
 #include "brasero-track-data-cfg.h"
 #include "brasero-track-image-cfg.h"
 #include "brasero-track-disc.h"
