@@ -60,8 +60,9 @@ struct BraseroBurnProgressPrivate {
 	GtkWidget *progress;
 	GtkWidget *action;
 	GtkWidget *speed;
-	GtkWidget *bytes_written;
+	GtkWidget *speed_label;
 	GtkWidget *speed_table;
+	GtkWidget *bytes_written;
 
 	BraseroBurnAction current;
 	gdouble current_progress;
@@ -135,7 +136,8 @@ brasero_burn_progress_create_info (BraseroBurnProgress *obj)
 	obj->priv->speed_table = table;
 	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
 
-	label = gtk_label_new (_("Estimated drive speed:"));
+	label = gtk_label_new ("");
+	obj->priv->speed_label = label;
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0,
@@ -258,6 +260,7 @@ brasero_burn_progress_set_property (GObject *object,
 			if (progress->priv->speed_table) {
 				gtk_widget_destroy (progress->priv->speed_table);
 				progress->priv->speed_table = NULL;
+				progress->priv->speed_label = NULL;
 				progress->priv->speed = NULL;
 			}
 		}
@@ -485,7 +488,16 @@ brasero_burn_progress_set_action (BraseroBurnProgress *self,
 	if (action != BRASERO_BURN_ACTION_NONE) {
 		if (!string)
 			string = brasero_burn_action_to_string (action);
-	
+
+		if (self->priv->speed_label) {
+			if (action == BRASERO_BURN_ACTION_RECORDING
+			||  action == BRASERO_BURN_ACTION_DRIVE_COPY)
+				gtk_label_set_text (GTK_LABEL (self->priv->speed_label),
+						    _("Estimated drive speed:"));
+			else
+				gtk_label_set_text (GTK_LABEL (self->priv->speed_label), " ");
+		}
+
 		final_text = g_strconcat ("<i>", string, "</i>", NULL);
 		gtk_label_set_markup (GTK_LABEL (self->priv->action), final_text);
 		g_free (final_text);
@@ -516,10 +528,10 @@ brasero_burn_progress_reset (BraseroBurnProgress *progress)
 	progress->priv->current = BRASERO_BURN_ACTION_NONE;
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->priv->progress), " ");
 
+	if (progress->priv->speed_label)
+		gtk_label_set_text (GTK_LABEL (progress->priv->speed_label), " ");
 	if (progress->priv->speed)
-		gtk_label_set_text (GTK_LABEL (progress->priv->speed), NULL);
-	if (progress->priv->speed_table)
-		gtk_label_set_text (GTK_LABEL (progress->priv->speed_table), NULL);
+		gtk_label_set_text (GTK_LABEL (progress->priv->speed), " ");
 
 	gtk_label_set_text (GTK_LABEL (progress->priv->action), NULL);
 	gtk_label_set_text (GTK_LABEL (progress->priv->bytes_written), NULL);
