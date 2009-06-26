@@ -47,7 +47,6 @@
 #include "brasero-session.h"
 #include "brasero-session-helper.h"
 #include "brasero-burn-options.h"
-#include "brasero-data-options.h"
 #include "brasero-video-options.h"
 #include "brasero-src-image.h"
 #include "brasero-src-selection.h"
@@ -256,7 +255,6 @@ brasero_burn_options_not_ready_dialog_show_cb (gpointer data)
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
 	priv->not_ready_id = 0;
-	gtk_widget_show (priv->status_dialog);
 	return FALSE;
 }
 
@@ -292,6 +290,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 					  "response", 
 					  G_CALLBACK (brasero_burn_options_not_ready_dialog_cancel_cb),
 					  self);
+	gtk_widget_show (priv->status_dialog);
 			priv->not_ready_id = g_timeout_add_seconds (1,
 								    brasero_burn_options_not_ready_dialog_show_cb,
 								    self);

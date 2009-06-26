@@ -186,8 +186,6 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-track-stream-cfg.c                 \
 	brasero-track-stream-cfg.h                 \
 	brasero-tool-dialog-private.h                 \
-	brasero-data-options.c                 \
-	brasero-data-options.h                 \
 	brasero-video-options.h                 \
 	brasero-video-options.c                 \
 	brasero-session-span.h                 \
