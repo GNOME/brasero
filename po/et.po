@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-06-02 19:04+0000\n"
-"PO-Revision-Date: 2009-06-07 22:53+0300\n"
+"POT-Creation-Date: 2009-06-24 07:30+0000\n"
+"PO-Revision-Date: 2009-06-25 23:49+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -89,21 +89,32 @@ msgstr "Loo VCD"
 msgid "Video Options"
 msgstr "Video valikud"
 
-#| msgid "Display debug statements on stdout for Brasero media library"
 msgid "Display debug statements on stdout for Brasero burn library"
 msgstr "Brasero plaadikogu silumise teadete kuvamine standardväljundis"
 
-#| msgid "Brasero optical media library"
 msgid "Brasero media burning library"
 msgstr "Brasero plaadikogu"
 
-#| msgid "Display options for Brasero-media library"
 msgid "Display options for Brasero-burn library"
 msgstr "Brasero plaadikogu kuvavalikud"
 
+#. Translators: %s is the name of the file that has just been deleted
+#, c-format
+msgid "\"%s\" was removed from the file system."
+msgstr "Fail \"%s\" eemaldati failisüsteemist."
+
+#, c-format
+#| msgid "Directories cannot be added to video discs."
+msgid "Directories cannot be added to video or audio discs"
+msgstr "Video- ega audioplaadile pole võimalik katalooge lisada"
+
+#, c-format
+#| msgid "Directories cannot be added to video discs."
+msgid "Playlists cannot be added to video or audio discs"
+msgstr "Video- ega audioplaadile pole võimalik esitusnimekirju lisada"
+
 #. Translators: %s is the name of the file
 #, c-format
-#| msgid "\"%s\" does not have a suitable type for video projects."
 msgid "\"%s\" is not suitable for audio or video media"
 msgstr "\"%s\" ei ole sobivat tüüpi audio- ega videofail"
 
@@ -152,6 +163,10 @@ msgstr "Uus kataloog %i"
 
 msgid "Analysing files"
 msgstr "Failide analüüsimine"
+
+#, c-format
+msgid "The project is empty"
+msgstr "See projekt on tühi"
 
 #, c-format
 msgid "\"%s\" is a recursive symlink."
@@ -658,7 +673,6 @@ msgid ""
 msgstr ""
 "Palun sisesta kirjutatav CD või DVD, kui sa ei taha tõmmisfaili salvestada."
 
-#| msgid "Would you like to burn beyond the disc reported capacity?"
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "Kas valitud failid kirjutada mitmele plaadile?"
 
@@ -669,7 +683,6 @@ msgstr ""
 "Selle projekti suurus on plaadi jaoks liiga suur isegi siis, kui kasutada "
 "üle mahu kirjutamist."
 
-#| msgid "Burn the disc"
 msgid "_Burn Several Discs"
 msgstr "_Kirjutatakse mitu plaati"
 
@@ -692,10 +705,6 @@ msgstr "See võimalus pole valitud taustarakenduse poolt toetatud."
 msgid "Please add files."
 msgstr "Palun lisa faile."
 
-#, c-format
-msgid "The project is empty"
-msgstr "See projekt on tühi"
-
 msgid "Please add songs."
 msgstr "Palun lisa muusikat."
 
@@ -713,7 +722,6 @@ msgstr "Tõmmis pole valitud."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
-#| msgid "Please select another image."
 msgctxt "disc"
 msgid "Please select another image."
 msgstr "Palun vali mõni teine tõmmis."
@@ -789,6 +797,7 @@ msgstr ""
 msgid "_Add to Project"
 msgstr "_Lisa projekti"
 
+#. burn button set insensitive since there are no files in the selection
 msgid "_Burn..."
 msgstr "_Kirjuta"
 
@@ -899,7 +908,6 @@ msgstr "Sisesta plaadilugejasse lähteplaadi asemele tühi plaat"
 
 #. NOTE for translators, the first %s is the medium name
 #, c-format
-#| msgid "%s: no free space"
 msgid "%s: not enough free space"
 msgstr "%s: pole piisavalt vaba ruumi"
 
@@ -912,7 +920,6 @@ msgstr "%s: %s vaba ruumi"
 #. Translators: the first %s is the path of the directory where brasero
 #. * will store its temporary files; the second one is the size available
 #, c-format
-#| msgid "%s free"
 msgid "%s: %s free"
 msgstr "%s: %s vaba"
 
@@ -989,7 +996,6 @@ msgstr "Võimaldab plaadile hiljem andmeid lisada"
 msgid "Options"
 msgstr "Valikud"
 
-#| msgid "Location for Temporary Files"
 msgid "Location for _Temporary Files"
 msgstr "_Ajutiste failide kataloog"
 
@@ -1005,18 +1011,15 @@ msgstr "Tõmmise tüüp:"
 msgid "Autodetect"
 msgstr "Isetuvastus"
 
-#| msgid "Images"
 msgid "ISO9660 images"
 msgstr "ISO9660 tõmmised"
 
 msgid "Readcd/Readom images"
 msgstr "Readcd/Readom tõmmised"
 
-#| msgid "*.cue image"
 msgid "Cue images"
 msgstr "Cue tõmmised"
 
-#| msgid "Creating image"
 msgid "Cdrdao images"
 msgstr "Cdrdao tõmmised"
 
@@ -1066,10 +1069,6 @@ msgstr "Hinnanguliselt jäänud: %02i:%02i:%02i"
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB / %i MiB"
 
-#, c-format
-msgid "No path was specified for the image output"
-msgstr "Tõmmisfaili asukoht pole määratud"
-
 #. Translators: %s is a path
 #, c-format
 msgid "\"%s\": loading"
@@ -1099,7 +1098,6 @@ msgid "All files"
 msgstr "Kõik failid"
 
 #. Translators: this a disc image here
-#| msgid "Image File"
 msgctxt "disc"
 msgid "Image files"
 msgstr "Tõmmisfailid"
@@ -1175,7 +1173,6 @@ msgstr "\"%s\" ei käitunud korrektselt"
 #. * and the second %s is the size of the space required by the data to be
 #. * burnt.
 #, c-format
-#| msgid "Not enough space available on the disc (%lli available for %lli)"
 msgid "Not enough space available on the disc (%s available for %s)"
 msgstr "Kettal pole piisavalt vaba ruumi (%s vaba, %s vaja)"
 
@@ -1198,6 +1195,10 @@ msgstr ""
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Andmekandja suurust pole võimalik tuvastada"
+
+#, c-format
+msgid "No path was specified for the image output"
+msgstr "Tõmmisfaili asukoht pole määratud"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
@@ -1320,18 +1321,21 @@ msgstr "Vali värv"
 msgid "Directory could not be created (%s)"
 msgstr "Kataloogi pole võimalik luua (%s)"
 
-#| msgid "Error while loading the project."
-msgid "Error while loading the project"
-msgstr "Viga projekti laadimisel"
+#| msgid "Error while loading the project"
+msgid "Error while loading the project."
+msgstr "Viga projekti laadimisel."
 
-msgid "The project could not be opened."
-msgstr "Seda projekti pole võimalik avada."
+#| msgid "The project could not be opened."
+msgid "The project could not be opened"
+msgstr "Seda projekti pole võimalik avada"
 
-msgid "The file is empty."
-msgstr "See fail on tühi."
+#| msgid "The file is empty."
+msgid "The file is empty"
+msgstr "See fail on tühi"
 
-msgid "It does not seem to be a valid Brasero project."
-msgstr "Tundub, et see pole sobiv Brasero projektifail."
+#| msgid "It does not seem to be a valid Brasero project."
+msgid "It does not seem to be a valid Brasero project"
+msgstr "Tundub, et see pole sobiv Brasero projektifail"
 
 msgid "Unnamed CD/DVD Drive"
 msgstr "Nimetu CD/DVD ajam"
@@ -1347,37 +1351,31 @@ msgstr "Brasero meediakogu kuvavalikud"
 
 #. Translators: this is hour minute second like '2 h 14 min 25'
 #, c-format
-#| msgid "%s in %s"
 msgid "%s h %s min %s"
 msgstr "%s h %s min %s"
 
 #. Translators: this is hour minute like '2 h 14'
 #, c-format
-#| msgid "%s / %s"
 msgid "%s h %s"
 msgstr "%s h %s min"
 
 #. Translators: this is hour like '2 h'
 #, c-format
-#| msgid "%s: %s"
 msgid "%s h"
 msgstr "%s h"
 
 #. Translators: this is 'hour:minute:second' like '2:14:25'
 #, c-format
-#| msgid "%s: %s"
 msgid "%s:%s:%s"
 msgstr "%s:%s:%s"
 
 #. Translators: this is 'hour:minute' or 'minute:second'
 #, c-format
-#| msgid "%s: %s"
 msgid "%s:%s"
 msgstr "%s:%s"
 
 #. Translators: %s is a duration expressed in minutes
 #, c-format
-#| msgid "%s in %s"
 msgid "%s min"
 msgstr "%s min"
 
@@ -1385,7 +1383,6 @@ msgstr "%s min"
 #. * and the second one is the number of seconds.
 #. * The whole string expresses a duration
 #, c-format
-#| msgid "%s: %s"
 msgid "%s:%s min"
 msgstr "%s:%s min"
 
@@ -1670,6 +1667,20 @@ msgstr "_Kontrolli plaati..."
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "Kontrolli CD või DVD plaadi andmete terviklust"
 
+#. Translators: this is a picture not
+#. * a disc image
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Palun vali teine tõmmis."
+
+msgid "Medium Icon"
+msgstr "Plaadi ikoon"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+msgctxt "picture"
+msgid "Image files"
+msgstr "Pildifailid"
+
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
@@ -1690,6 +1701,9 @@ msgstr "Videoplaat (%s)"
 #, c-format
 msgid "Audio disc (%s)"
 msgstr "Audioplaat (%s)"
+
+msgid "Select an icon for the disc that will appear in file managers"
+msgstr "Ikooni valimine, mida näitavad failihaldurid"
 
 msgid "_Project"
 msgstr "_Projekt"
@@ -2029,9 +2043,6 @@ msgstr "Raja lõppu lisatakse vaikust."
 msgid "The track is shorter than 6 seconds"
 msgstr "Rada on lühem kui 6 sekundit"
 
-msgid "Unknown"
-msgstr "Teadmata"
-
 msgid "Make sure the appropriate codec is installed"
 msgstr "Veendu, et sobiv koodek on paigaldatud"
 
@@ -2069,22 +2080,6 @@ msgstr "Palun vali ainult üks laul."
 
 msgid "Impossible to split more than one song at a time"
 msgstr "Korraga ei saa tükeldada rohkem kui üht laulu"
-
-#. Translators: "%s" is the name of a file here
-#, c-format
-msgid "\"%s\" was removed from the file system."
-msgstr "Fail \"%s\" eemaldati failisüsteemist."
-
-#. Translators: This is when brasero detects that a file
-#. * in the audio project was removed from its original
-#. * location (on a hard drive, USB stick, whatever) so
-#. * it removes the file from the project (not from its
-#. * original location) and lets the user know. The "It"
-#. * refers to the file and this string is coupled with
-#. * previous string:
-#. * ""\"%s\" was removed from the file system."
-msgid "It will be removed from the project"
-msgstr "See eemaldatakse projektist"
 
 #. Translators: the following string
 #. * means there was an error while
@@ -2286,12 +2281,6 @@ msgstr "Loo uus tühi kataloog"
 msgid "The session could not be imported."
 msgstr "Sessiooni pole võimalik importida."
 
-msgid "Click here not to use overburning"
-msgstr "Klõpsa siin et üle mahu kirjutamist mitte kasutada"
-
-msgid "Please delete some files from the project."
-msgstr "Palun eemalda sellest projektist mõned failid."
-
 msgid "The contents of the project changed since it was saved."
 msgstr "Selle projekti sisu on pärast viimast salvestamiskorda muutunud."
 
@@ -2427,19 +2416,11 @@ msgstr "Suurus"
 msgid "Space"
 msgstr "Ruum"
 
-#| msgid "Audio files only"
 msgid "Audio files"
 msgstr "Audiofailid"
 
-#| msgid "Movies only"
 msgid "Movies"
 msgstr "Filmid"
-
-#. Translators: this is an image, a picture, not a "Disc Image"
-#| msgid "Image File"
-msgctxt "picture"
-msgid "Image files"
-msgstr "Pildifailid"
 
 msgid "P_review"
 msgstr "_Eelvaade"
@@ -2539,46 +2520,64 @@ msgstr "Eemalda projektist kõik failid"
 msgid "Burn the disc"
 msgstr "Kirjuta plaat"
 
-#. Translators: this is a picture not
-#. * a disc image
-#| msgid "Please select another image."
-msgctxt "picture"
-msgid "Please select another image."
-msgstr "Palun vali teine tõmmis."
+#. Translators: this messages will appear as a list of possible
+#. * actions, like:
+#. *   To add/remove files you can:
+#. *      * perform action one
+#. *      * perform action two
+#. * The full message will be showed in the main area of an empty
+#. * project, suggesting users how to add and remove items to project.
+#. * You simply have to translate messages in the best form
+#. * for a list of actions.
+msgid "To add files to this project you can:"
+msgstr "Sellesse projekti saad faile lisada:"
 
-msgid "Medium Icon"
-msgstr "Plaadi ikoon"
+msgid "click the \"Add\" button to show a selection dialog"
+msgstr "valikudialoogi nägemiseks klõpsa nupul \"Lisa\""
 
-msgid "Select an icon for the disc that will appear in file managers"
-msgstr "Ikooni valimine, mida näitavad failihaldurid"
+msgid "select files in the selection pane and click the \"Add\" button"
+msgstr "vali valikupaanilt failid ja klõpsa nupul \"Lisa\""
 
-#. Name widget
-msgid "_Name:"
-msgstr "_Nimi:"
+msgid ""
+"drag files in this area from the selection pane or from the file manager"
+msgstr "kui lohistad failid valikupaanilt või failihaldurist siia"
 
-msgid "Start to burn the contents of the selection"
-msgstr "Alusta valiku plaadile kirjutamisega"
+msgid "double click on files in the selection pane"
+msgstr "kui topeltklõpsad valikupaani failidel"
 
-#. Translators: first %s is the size of the project and the
-#. * second %s is the remaining free space on the disc that is
-#. * used for multisession
-#, c-format
-msgid "Project estimated size: %s/%s"
-msgstr "Projekti eeldatav suurus: %s/%s"
+msgid "copy files (from file manager for example) and paste in this area"
+msgstr "kui kopeerid failid (nt failihaldurist) ja asetad need siia"
+
+msgid "To remove files from this project you can:"
+msgstr "Faile saad projektist eemaldada:"
+
+msgid "click on the \"Remove\" button to remove selected items in this area"
+msgstr "kui valid siin alal failid ja klõpsad nupul \"Eemalda\""
+
+msgid "drag and release items out from this area"
+msgstr "kui lohistad kirjed siit alalt välja ja vabastad klahvi"
+
+msgid "select items in this area, and choose \"Remove\" from context menu"
+msgstr "kui valid siin alal kirjed ja hüpikmenüüst \"Eemalda\" "
+
+msgid "select items in this area, and press \"Delete\" key"
+msgstr "kui valid siin kirjed ja vajutad \"Delete\" klahvi"
 
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Projekti eeldatav suurus: %s"
 
-msgid "Please wait until the estimation of the project size is completed."
-msgstr "Palun oota kuni projekti suuruse hindamine lõpetatakse."
+#. Media selection widget
+#| msgid "_Discard"
+msgid "_Disc:"
+msgstr "_Plaat:"
 
-msgid ""
-"All files from the project need to be analysed to complete this operation."
-msgstr "Selle operatsiooni teostamiseks tuleb kõiki projekti faile analüüsida."
+msgid "Start to burn the contents of the selection"
+msgstr "Alusta valiku plaadile kirjutamisega"
 
-msgid "Project Size Estimation"
-msgstr "Projekti suuruse hinnang"
+#. Name widget
+msgid "_Name:"
+msgstr "_Nimi:"
 
 msgid "Please add songs to the project."
 msgstr "Lisa sellese projekti laule."
@@ -2799,6 +2798,9 @@ msgstr "Brasero - Plaadi kopeerimine"
 msgid "The project \"%s\" does not exist"
 msgstr "Projekti \"%s\" ei eksisteeri"
 
+msgid "Error while loading the project"
+msgstr "Viga projekti laadimisel"
+
 msgid "Open Project"
 msgstr "Projekti avamine"
 
@@ -2901,6 +2903,16 @@ msgstr "_Kontrolli"
 
 msgid "Disc Checking"
 msgstr "Plaadi kontrollimine"
+
+msgid "Project Size Estimation"
+msgstr "Projekti suuruse hinnang"
+
+msgid "Please wait until the estimation of the project size is completed."
+msgstr "Palun oota kuni projekti suuruse hindamine lõpetatakse."
+
+msgid ""
+"All files from the project need to be analysed to complete this operation."
+msgstr "Selle operatsiooni teostamiseks tuleb kõiki projekti faile analüüsida."
 
 msgid "The operation cannot be performed."
 msgstr "Operatsiooni pole võimalik teostada."
@@ -3058,9 +3070,6 @@ msgid "Use genisoimage to create images from a file selection"
 msgstr "Kasuta failidest tõmmise tegemiseks genisoimage't"
 
 #, c-format
-#| msgid ""
-#| "The location you chose to store the temporary image on does not have "
-#| "enough free space for the disc image (%ld MiB needed)"
 msgid ""
 "The location you chose to store the image on does not have enough free space "
 "for the disc image"
@@ -3081,6 +3090,12 @@ msgid ""
 msgstr ""
 "Arvuti on liiga aeglane, et CD'd sellise kiirusega kirjutada. Proovi "
 "väiksemat kiirust"
+
+#. Translators: %s is the number of the track
+#, c-format
+#| msgid "Writing track %02i"
+msgid "Writing track %s"
+msgstr "Raja %s kirjutamine"
 
 msgid "Formatting disc"
 msgstr "Plaadi formaatimine"
@@ -3431,49 +3446,6 @@ msgstr "Cdrdao kirjutamisrakenduste komplekt"
 msgid "Cdrtools burning suite"
 msgstr "Cdrtools kirjutamisrakenduste komplekt"
 
-#. Translators: this messages will appear as a list of possible
-#. * actions, like:
-#. *   To add/remove files you can:
-#. *      * perform action one
-#. *      * perform action two
-#. * The full message will be showed in the main area of an empty
-#. * project, suggesting users how to add and remove items to project.
-#. * You simply have to translate messages in the best form
-#. * for a list of actions.
-msgid "To add files to this project you can:"
-msgstr "Sellesse projekti saad faile lisada:"
-
-msgid "click the \"Add\" button to show a selection dialog"
-msgstr "valikudialoogi nägemiseks klõpsa nupul \"Lisa\""
-
-msgid "select files in the selection pane and click the \"Add\" button"
-msgstr "vali valikupaanilt failid ja klõpsa nupul \"Lisa\""
-
-msgid ""
-"drag files in this area from the selection pane or from the file manager"
-msgstr "kui lohistad failid valikupaanilt või failihaldurist siia"
-
-msgid "double click on files in the selection pane"
-msgstr "kui topeltklõpsad valikupaani failidel"
-
-msgid "copy files (from file manager for example) and paste in this area"
-msgstr "kui kopeerid failid (nt failihaldurist) ja asetad need siia"
-
-msgid "To remove files from this project you can:"
-msgstr "Faile saad projektist eemaldada:"
-
-msgid "click on the \"Remove\" button to remove selected items in this area"
-msgstr "kui valid siin alal failid ja klõpsad nupul \"Eemalda\""
-
-msgid "drag and release items out from this area"
-msgstr "kui lohistad kirjed siit alalt välja ja vabastad klahvi"
-
-msgid "select items in this area, and choose \"Remove\" from context menu"
-msgstr "kui valid siin alal kirjed ja hüpikmenüüst \"Eemalda\" "
-
-msgid "select items in this area, and press \"Delete\" key"
-msgstr "kui valid siin kirjed ja vajutad \"Delete\" klahvi"
-
 msgid "_Eject"
 msgstr "_Väljasta"
 
@@ -3695,3 +3667,18 @@ msgstr "Kopeeri CD ja DVD plaate"
 
 msgid "Disc Copier"
 msgstr "Plaadikopeerija"
+
+#~ msgid "Unknown"
+#~ msgstr "Teadmata"
+
+#~ msgid "It will be removed from the project"
+#~ msgstr "See eemaldatakse projektist"
+
+#~ msgid "Click here not to use overburning"
+#~ msgstr "Klõpsa siin et üle mahu kirjutamist mitte kasutada"
+
+#~ msgid "Please delete some files from the project."
+#~ msgstr "Palun eemalda sellest projektist mõned failid."
+
+#~ msgid "Project estimated size: %s/%s"
+#~ msgstr "Projekti eeldatav suurus: %s/%s"
