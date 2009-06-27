@@ -3233,7 +3233,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 		gap = 0;
 
 	if (track_num_str) {
-		track_num = (gint) g_strtod (track_num_str + 6 /* (ignore markup) */, NULL);
+		track_num = (gint) g_strtod (track_num_str, NULL);
 		g_free (track_num_str);
 	}
 	else
