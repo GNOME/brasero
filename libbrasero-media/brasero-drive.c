@@ -53,32 +53,31 @@
 #include "scsi-mmc1.h"
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
-#define DEVICE_MODEL	"info.product"
 #define BLOCK_DEVICE	"block.solaris.raw_device"
 #else
-#define DEVICE_MODEL	"storage.model"
 #define BLOCK_DEVICE	"block.device"
 #endif
 
 typedef struct _BraseroDrivePrivate BraseroDrivePrivate;
 struct _BraseroDrivePrivate
 {
+	GDrive *gdrive;
+
 	BraseroMedium *medium;
 	BraseroDriveCaps caps;
-	gchar *name;
+
+	gchar *udi;
 	gchar *path;
 	gchar *block_path;
-	gchar *udi;
 
 	gint bus;
 	gint target;
 	gint lun;
 
-	gulong hal_sig;
-
 	GCancellable *cancel;
 
 	guint probed:1;
+
 };
 
 #define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
@@ -115,11 +114,7 @@ brasero_volume_new (BraseroDrive *drive, const gchar *udi);
 GDrive *
 brasero_drive_get_gdrive (BraseroDrive *drive)
 {
-	const gchar *volume_path = NULL;
-	GVolumeMonitor *monitor;
-	GDrive *gdrive = NULL;
-	GList *drives;
-	GList *iter;
+	BraseroDrivePrivate *priv;
 
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
@@ -127,43 +122,9 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 	if (brasero_drive_is_fake (drive))
 		return NULL;
 
-#if defined(HAVE_STRUCT_USCSI_CMD)
-	volume_path = brasero_drive_get_block_device (drive);
-#else
-	volume_path = brasero_drive_get_device (drive);
-#endif
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
-	monitor = g_volume_monitor_get ();
-	drives = g_volume_monitor_get_connected_drives (monitor);
-	g_object_unref (monitor);
-
-	for (iter = drives; iter; iter = iter->next) {
-		gchar *device_path;
-		GDrive *tmp;
-
-		tmp = iter->data;
-		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-		if (!device_path)
-			continue;
-
-		BRASERO_MEDIA_LOG ("Found drive %s", device_path);
-		if (!strcmp (device_path, volume_path)) {
-			gdrive = tmp;
-			g_free (device_path);
-			g_object_ref (gdrive);
-			break;
-		}
-
-		g_free (device_path);
-	}
-	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
-	g_list_free (drives);
-
-	if (!drive)
-		BRASERO_MEDIA_LOG ("No drive found for medium");
-
-	return gdrive;
+	return g_object_ref (priv->gdrive);
 }
 
 /**
@@ -178,7 +139,6 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 gboolean
 brasero_drive_can_eject (BraseroDrive *drive)
 {
-	GDrive *gdrive;
 	GVolume *volume;
 	gboolean result;
 	BraseroDrivePrivate *priv;
@@ -188,24 +148,19 @@ brasero_drive_can_eject (BraseroDrive *drive)
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	gdrive = brasero_drive_get_gdrive (drive);
-	if (!gdrive) {
+	if (!priv->gdrive) {
 		BRASERO_MEDIA_LOG ("No GDrive");
 		goto last_resort;
 	}
 
-	if (!g_drive_can_eject (gdrive)) {
+	if (!g_drive_can_eject (priv->gdrive)) {
 		BRASERO_MEDIA_LOG ("GDrive can't eject");
 		goto last_resort;
 	}
 
-	g_object_unref (gdrive);
 	return TRUE;
 
 last_resort:
-
-	if (gdrive)
-		g_object_unref (gdrive);
 
 	if (!priv->medium)
 		return FALSE;
@@ -239,7 +194,6 @@ brasero_drive_eject (BraseroDrive *drive,
 {
 	BraseroDrivePrivate *priv;
 	GVolume *gvolume;
-	GDrive *gdrive;
 	gboolean res;
 
 	g_return_val_if_fail (drive != NULL, FALSE);
@@ -247,13 +201,10 @@ brasero_drive_eject (BraseroDrive *drive,
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	gdrive = brasero_drive_get_gdrive (drive);
-	res = brasero_gio_operation_eject_drive (gdrive,
+	res = brasero_gio_operation_eject_drive (priv->gdrive,
 						 priv->cancel,
 						 wait,
 						 error);
-	g_object_unref (gdrive);
-
 	if (res)
 		return TRUE;
 
@@ -288,7 +239,7 @@ brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->udi)
+	if (!priv->gdrive)
 		return NULL;
 
 	if (priv->bus < 0)
@@ -315,7 +266,7 @@ brasero_drive_is_fake (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return (priv->path == NULL);
+	return (priv->gdrive == NULL);
 }
 
 /**
@@ -337,7 +288,7 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->udi)
+	if (!priv->gdrive)
 		return FALSE;
 
 	handle = brasero_device_handle_open (priv->path, FALSE, NULL);
@@ -407,7 +358,7 @@ brasero_drive_lock (BraseroDrive *drive,
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->udi)
+	if (!priv->gdrive)
 		return FALSE;
 
 	watch = brasero_hal_watch_get_default ();
@@ -460,7 +411,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->udi)
+	if (!priv->gdrive)
 		return FALSE;
 
 	watch = brasero_hal_watch_get_default ();
@@ -496,14 +447,14 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->udi) {
+	if (!priv->gdrive) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
 		 * image on the hard drive. */
 		return g_strdup (_("Image File"));
 	}
 
-	return g_strdup (priv->name);
+	return g_drive_get_name (priv->gdrive);
 }
 
 /**
@@ -592,7 +543,7 @@ brasero_drive_get_medium (BraseroDrive *drive)
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	if (!priv->probed && priv->udi)
+	if (!priv->probed && priv->gdrive)
 		return NULL;
 
 	return priv->medium;
@@ -652,62 +603,6 @@ brasero_drive_init (BraseroDrive *object)
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
 	priv->cancel = g_cancellable_new ();
-}
-
-static void
-brasero_drive_finalize (GObject *object)
-{
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (object);
-
-	if (priv->name) {
-		libhal_free_string (priv->name);
-		priv->name = NULL;
-	}
-
-	if (priv->path) {
-		libhal_free_string (priv->path);
-		priv->path = NULL;
-	}
-
-	if (priv->block_path) {
-		libhal_free_string (priv->block_path);
-		priv->block_path = NULL;
-	}
-
-	if (priv->medium) {
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
-	}
-
-	if (priv->hal_sig) {
-		BraseroHALWatch *watch;
-		LibHalContext *ctx;
-		DBusError error;
-
-		watch = brasero_hal_watch_get_default ();
-		ctx = brasero_hal_watch_get_ctx (watch);
-
-		dbus_error_init (&error);
-		libhal_device_remove_property_watch (ctx, priv->udi, &error);
-
-		g_signal_handler_disconnect (watch, priv->hal_sig);
-		priv->hal_sig = 0;
-	}
-
-	if (priv->udi) {
-		g_free (priv->udi);
-		priv->udi = NULL;
-	}
-
-	if (priv->cancel) {
-		g_cancellable_cancel (priv->cancel);
-		g_object_unref (priv->cancel);
-		priv->cancel = NULL;
-	}
-
-	G_OBJECT_CLASS (brasero_drive_parent_class)->finalize (object);
 }
 
 static void
@@ -789,60 +684,19 @@ brasero_drive_reprobe (BraseroDrive *drive)
 			  drive);
 }
 
-#if 0
-
-void
-brasero_drive_hal_reprobe (BraseroDrive *self)
-{
-	BraseroDrivePrivate *priv;
-	BraseroHALWatch *watch;
-	LibHalContext *ctx;
-	DBusError error;
-
-	priv = BRASERO_DRIVE_PRIVATE (self);
-
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
-
-	dbus_error_init (&error);
-	if (!libhal_device_reprobe (ctx, priv->udi, &error)) {
-		BRASERO_MEDIA_LOG ("libhal_device_reprobe () failed %s",
-				  error.message);
-		dbus_error_free (&error);
-	}			      
-}
-
-#endif
-
 static void
-brasero_drive_check_medium_inside (BraseroDrive *self)
+brasero_drive_check_medium_inside_gdrive (BraseroDrive *self)
 {
 	BraseroDrivePrivate *priv;
-	BraseroHALWatch *watch;
-	gboolean has_medium;
-	LibHalContext *ctx;
-	DBusError error;
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
+	BRASERO_MEDIA_LOG ("Contents changed %i", g_drive_has_media (priv->gdrive));
 
-	BRASERO_MEDIA_LOG ("Contents changed");
+	if (g_drive_has_media (priv->gdrive)) {
+		if (priv->medium)
+			return;
 
-	dbus_error_init (&error);
-	has_medium = libhal_device_get_property_bool (ctx,
-						      priv->udi,
-						      "storage.removable.media_available",
-						      &error);
-	if (dbus_error_is_set (&error)) {
-		g_warning ("Hal connection problem :  %s\n",
-			   error.message);
-		dbus_error_free (&error);
-		return;
-	}
-
-	if (has_medium) {
 		BRASERO_MEDIA_LOG ("Medium inserted");
 
 		priv->probed = FALSE;
@@ -875,46 +729,24 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 }
 
 static void
-brasero_drive_medium_inside_property_changed_cb (BraseroHALWatch *watch,
-						 const char *udi,
-						 const char *key,
-						 BraseroDrive *drive)
+brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
+					BraseroDrive *drive)
 {
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (drive);
-
-	if (key && strcmp (key, "storage.removable.media_available")) {
-		priv->probed = TRUE;
-		return;
-	}
-
-	if (udi && strcmp (udi, priv->udi)) {
-		priv->probed = TRUE;
-		return;
-	}
-
-	brasero_drive_check_medium_inside (drive);
+	brasero_drive_check_medium_inside_gdrive (drive);
 }
 
 static void
-brasero_drive_init_real (BraseroDrive *drive)
+brasero_drive_init_hal (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 	BraseroHALWatch *watch;
 	LibHalContext *ctx;
-	DBusError error;
 	char *parent;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	watch = brasero_hal_watch_get_default ();
 	ctx = brasero_hal_watch_get_ctx (watch);
-
-	priv->name = libhal_device_get_property_string (ctx,
-							priv->udi,
-							DEVICE_MODEL,
-							NULL);
 
 	priv->path = libhal_device_get_property_string (ctx,
 							priv->udi,
@@ -981,21 +813,85 @@ brasero_drive_init_real (BraseroDrive *drive)
 				  priv->lun);
 		libhal_free_string (parent);
 	}
+}
 
-	/* Now check for the medium */
-	brasero_drive_check_medium_inside (drive);
+static GDrive *
+brasero_drive_get_gdrive_real (BraseroDrive *drive)
+{
+	const gchar *volume_path = NULL;
+	BraseroDrivePrivate *priv;
+	GVolumeMonitor *monitor;
+	GDrive *gdrive = NULL;
+	GList *drives;
+	GList *iter;
 
-	dbus_error_init (&error);
-	libhal_device_add_property_watch (ctx, priv->udi, &error);
-	if (dbus_error_is_set (&error)) {
-		g_warning ("Failed to watch property : %s\n", error.message);
-		dbus_error_free (&error);
+	g_return_val_if_fail (drive != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	if (!priv->path)
+		return NULL;
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	volume_path = brasero_drive_get_block_device (drive);
+#else
+	volume_path = brasero_drive_get_device (drive);
+#endif
+
+	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
+	monitor = g_volume_monitor_get ();
+	drives = g_volume_monitor_get_connected_drives (monitor);
+	g_object_unref (monitor);
+
+	for (iter = drives; iter; iter = iter->next) {
+		gchar *device_path;
+		GDrive *tmp;
+
+		tmp = iter->data;
+		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (!device_path)
+			continue;
+
+		BRASERO_MEDIA_LOG ("Found drive %s", device_path);
+		if (!strcmp (device_path, volume_path)) {
+			gdrive = tmp;
+			g_free (device_path);
+			g_object_ref (gdrive);
+			break;
+		}
+
+		g_free (device_path);
 	}
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+	g_list_free (drives);
 
-	priv->hal_sig = g_signal_connect (watch,
-					  "property-changed",
-					  G_CALLBACK (brasero_drive_medium_inside_property_changed_cb),
-					  drive);
+	if (!gdrive)
+		BRASERO_MEDIA_LOG ("No drive found for medium");
+
+	return gdrive;
+}
+
+static void
+brasero_drive_init_real (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	/* Put HAL initialization first to make sure the device path is set */
+	brasero_drive_init_hal (drive);
+
+	priv->gdrive = brasero_drive_get_gdrive_real (drive);
+	if (priv->gdrive) {
+		/* If it's not a fake drive then connect to signal for any
+		 * change and check medium inside */
+		g_signal_connect (priv->gdrive,
+				  "changed",
+				  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
+				  drive);
+
+		brasero_drive_check_medium_inside_gdrive (drive);
+	}
 }
 
 static void
@@ -1024,6 +920,8 @@ brasero_drive_set_property (GObject *object,
 			brasero_drive_init_real (BRASERO_DRIVE (object));
 			
 		break;
+	case PROP_DEVICE:
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1047,10 +945,57 @@ brasero_drive_get_property (GObject *object,
 	case PROP_UDI:
 		g_value_set_string (value, g_strdup (priv->udi));
 		break;
+	case PROP_DEVICE:
+		g_value_set_string (value, g_strdup (priv->block_path));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
+}
+
+static void
+brasero_drive_finalize (GObject *object)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	if (priv->path) {
+		libhal_free_string (priv->path);
+		priv->path = NULL;
+	}
+
+	if (priv->block_path) {
+		libhal_free_string (priv->block_path);
+		priv->block_path = NULL;
+	}
+
+	if (priv->medium) {
+		g_object_unref (priv->medium);
+		priv->medium = NULL;
+	}
+
+	if (priv->gdrive) {
+		g_signal_handlers_disconnect_by_func (priv->gdrive,
+						      brasero_drive_medium_gdrive_changed_cb,
+						      object);
+		g_object_unref (priv->gdrive);
+		priv->gdrive = NULL;
+	}
+
+	if (priv->udi) {
+		g_free (priv->udi);
+		priv->udi = NULL;
+	}
+
+	if (priv->cancel) {
+		g_cancellable_cancel (priv->cancel);
+		g_object_unref (priv->cancel);
+		priv->cancel = NULL;
+	}
+
+	G_OBJECT_CLASS (brasero_drive_parent_class)->finalize (object);
 }
 
 static void
@@ -1105,6 +1050,13 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	                                 g_param_spec_string("udi",
 	                                                     "HAL udi",
 	                                                     "HAL udi as a string",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+	                                 PROP_DEVICE,
+	                                 g_param_spec_string("device",
+	                                                     "Device path",
+	                                                     "Path to the device",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
