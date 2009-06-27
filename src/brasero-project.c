@@ -1018,7 +1018,6 @@ brasero_project_init (BraseroProject *obj)
 	GtkWidget *selector;
 	GtkWidget *label;
 	GtkWidget *table;
-	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
 
@@ -1032,13 +1031,8 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (obj->priv->message);
 
 	/* bottom */
-	box = gtk_hbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 0);
-	gtk_widget_show (box);
-	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, 0);
-
 	table = gtk_table_new (3, 2, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 6);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 	gtk_widget_show (table);
