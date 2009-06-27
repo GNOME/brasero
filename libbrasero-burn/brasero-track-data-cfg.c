@@ -2942,6 +2942,8 @@ brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
 
 		/* Add it as a graft to the project */
 		uri = g_filename_to_uri (path, NULL, NULL);
+		g_free (path);
+
 		priv->autorun = brasero_data_project_add_hidden_node (BRASERO_DATA_PROJECT (priv->tree),
 								      uri,
 								      "autorun.inf",
