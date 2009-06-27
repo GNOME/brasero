@@ -560,7 +560,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 					       &blocks);
 	}
 	else {
-		brasero_medium_get_free_space (medium, NULL, &blocks);
+		brasero_medium_get_free_space (medium, &size_bytes, &blocks);
 
 		/* if data would not fit, try to see if once blanked it would
 		 * work. This also covers the case where the media is closed as
