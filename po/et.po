@@ -10,44 +10,14 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-06-24 07:30+0000\n"
-"PO-Revision-Date: 2009-06-25 23:49+0300\n"
+"POT-Creation-Date: 2009-06-26 10:03+0000\n"
+"PO-Revision-Date: 2009-06-26 20:28+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid "Should files be renamed to be fully Windows-compatible?"
-msgstr "Kas failid tuleks ümber nimetada, et saavutada Windowsiga ühilduvus?"
-
-msgid ""
-"Some files don't have a suitable name for a fully Windows-compatible CD."
-msgstr "Mõne faili nimi pole Windows'iga ühilduva plaadi jaoks sobilik."
-
-msgid "Those names should be changed and truncated to 64 characters."
-msgstr "Need nimed tuleb muuta ja lühendada 64 märgini."
-
-msgid "_Disable Full Windows Compatibility"
-msgstr "Windows'iga ühilduvuse _keelamine"
-
-msgid "_Rename for Full Windows Compatibility"
-msgstr "Ümbernimetamine Windows'iga ühilduvuse saavutamiseks"
-
-#. general options
-msgid "Increase compatibility with _Windows systems"
-msgstr "Suurendatud ühilduvus _Windows süsteemidega"
-
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-"Suurendab ühilduvust Windows süsteemidega, võimaldades neil kuvada pikki "
-"failinimesid (kuni 64 märki)"
-
-msgid "Disc options"
-msgstr "Plaadi valikud"
 
 msgid "Video format:"
 msgstr "Videovorming:"
@@ -104,12 +74,10 @@ msgid "\"%s\" was removed from the file system."
 msgstr "Fail \"%s\" eemaldati failisüsteemist."
 
 #, c-format
-#| msgid "Directories cannot be added to video discs."
 msgid "Directories cannot be added to video or audio discs"
 msgstr "Video- ega audioplaadile pole võimalik katalooge lisada"
 
 #, c-format
-#| msgid "Directories cannot be added to video discs."
 msgid "Playlists cannot be added to video or audio discs"
 msgstr "Video- ega audioplaadile pole võimalik esitusnimekirju lisada"
 
@@ -518,22 +486,27 @@ msgid "_Continue"
 msgstr "_Jätka"
 
 msgid ""
-"You might not be able to listen to them with stereos and CD-TEXT won't be "
-"written."
+"CD-RW audio discs may not play correctly in older CD players and CD-TEXT "
+"won't be written."
 msgstr ""
-"Seda plaati ei pruugi saada plaadimängijas kuulata ja CD-TEXT'i ei kirjutata."
+"CD-RW audioplaadid ei pruugi vanemates plaadimängijates mängida, CD-TEXT'i "
+"ei kirjutata."
 
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "Audioradade lisamine CD lõppu pole soovitatud."
 
-msgid "You might not be able to listen to it with stereos."
-msgstr "Seda plaati ei pruugi saada plaadimängijas kuulata."
+msgid "CD-RW audio discs may not play correctly in older CD players."
+msgstr "CD-RW audioplaadid ei pruugi vanemates plaadimängijates mängida."
 
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr "Audioradade kirjutamine ülekirjutatavale plaadile ei ole soovitatud."
 
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Kas jätkata Windowsiga mitteühilduva plaadi kirjutamist?"
+
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
+msgstr "Mõne faili nimi pole Windows'iga ühilduva plaadi jaoks sobilik."
 
 #, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
@@ -1047,9 +1020,6 @@ msgstr "Muuda _laiendit"
 msgid "Configure recording options"
 msgstr "Salvestamise valikute seadmine"
 
-msgid "Estimated drive speed:"
-msgstr "Hinnanguline kirjutamise kiirus:"
-
 #. Translators: first %02i is hours, the second one is minutes and the
 #. * third one is seconds.
 #, c-format
@@ -1068,6 +1038,9 @@ msgstr "Hinnanguliselt jäänud: %02i:%02i:%02i"
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB / %i MiB"
+
+msgid "Estimated drive speed:"
+msgstr "Hinnanguline kirjutamise kiirus:"
 
 #. Translators: %s is a path
 #, c-format
@@ -1115,12 +1088,12 @@ msgid "Show dialog"
 msgstr "Näita dialoogi"
 
 #, c-format
-msgid "%s, %02i%% done, %s remaining"
-msgstr "%s, %02i%% valmis, %s jäänud"
+msgid "%s, %d%% done, %s remaining"
+msgstr "%s, %d%% valmis, %s jäänud"
 
 #, c-format
-msgid "%s, %02i%% done"
-msgstr "%s, %02i%% valmis"
+msgid "%s, %d%% done"
+msgstr "%s, %d%% valmis"
 
 msgid "Getting size"
 msgstr "Suuruse hankimine"
@@ -1321,19 +1294,15 @@ msgstr "Vali värv"
 msgid "Directory could not be created (%s)"
 msgstr "Kataloogi pole võimalik luua (%s)"
 
-#| msgid "Error while loading the project"
 msgid "Error while loading the project."
 msgstr "Viga projekti laadimisel."
 
-#| msgid "The project could not be opened."
 msgid "The project could not be opened"
 msgstr "Seda projekti pole võimalik avada"
 
-#| msgid "The file is empty."
 msgid "The file is empty"
 msgstr "See fail on tühi"
 
-#| msgid "It does not seem to be a valid Brasero project."
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Tundub, et see pole sobiv Brasero projektifail"
 
@@ -2303,6 +2272,18 @@ msgstr "See on rekursiivne sümbolviit"
 msgid "It does not exist at the specified location"
 msgstr "See ei asu määratud kohas"
 
+msgid "Should files be renamed to be fully Windows-compatible?"
+msgstr "Kas failid tuleks ümber nimetada, et saavutada Windowsiga ühilduvus?"
+
+msgid "Those names should be changed and truncated to 64 characters."
+msgstr "Need nimed tuleb muuta ja lühendada 64 märgini."
+
+msgid "_Rename for Full Windows Compatibility"
+msgstr "Ümbernimetamine Windows'iga ühilduvuse saavutamiseks"
+
+msgid "_Disable Full Windows Compatibility"
+msgstr "Windows'iga ühilduvuse _keelamine"
+
 #, c-format
 msgid "Do you really want to replace \"%s\"?"
 msgstr "Kas tahad tõesti \"%s\" asendada?"
@@ -2568,7 +2549,6 @@ msgid "Project estimated size: %s"
 msgstr "Projekti eeldatav suurus: %s"
 
 #. Media selection widget
-#| msgid "_Discard"
 msgid "_Disc:"
 msgstr "_Plaat:"
 
@@ -3093,7 +3073,6 @@ msgstr ""
 
 #. Translators: %s is the number of the track
 #, c-format
-#| msgid "Writing track %02i"
 msgid "Writing track %s"
 msgstr "Raja %s kirjutamine"
 
@@ -3667,6 +3646,22 @@ msgstr "Kopeeri CD ja DVD plaate"
 
 msgid "Disc Copier"
 msgstr "Plaadikopeerija"
+
+#~ msgid "Increase compatibility with _Windows systems"
+#~ msgstr "Suurendatud ühilduvus _Windows süsteemidega"
+
+#~ msgid ""
+#~ "Improve compatibility with Windows systems by allowing to display long "
+#~ "filenames (maximum 64 characters)"
+#~ msgstr ""
+#~ "Suurendab ühilduvust Windows süsteemidega, võimaldades neil kuvada pikki "
+#~ "failinimesid (kuni 64 märki)"
+
+#~ msgid "Disc options"
+#~ msgstr "Plaadi valikud"
+
+#~ msgid "You might not be able to listen to it with stereos."
+#~ msgstr "Seda plaati ei pruugi saada plaadimängijas kuulata."
 
 #~ msgid "Unknown"
 #~ msgstr "Teadmata"
