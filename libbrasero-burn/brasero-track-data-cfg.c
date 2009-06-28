@@ -66,6 +66,10 @@ struct _BraseroTrackDataCfgPrivate
 	BraseroDataTreeModel *tree;
 	guint stamp;
 
+	/* allows some sort of caching */
+	GSList *grafts;
+	GSList *excluded;
+
 	guint loading;
 	guint loading_remaining;
 	GSList *load_errors;
@@ -1382,6 +1386,26 @@ brasero_track_data_cfg_autorun_inf_parse (BraseroTrackDataCfg *track,
 }
 
 static void
+brasero_track_data_cfg_clean_cache (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	if (priv->grafts) {
+		g_slist_foreach (priv->grafts, (GFunc) brasero_graft_point_free, NULL);
+		g_slist_free (priv->grafts);
+		priv->grafts = NULL;
+	}
+
+	if (priv->excluded) {
+		g_slist_foreach (priv->excluded, (GFunc) g_free, NULL);
+		g_slist_free (priv->excluded);
+		priv->excluded = NULL;
+	}
+}
+
+static void
 brasero_track_data_cfg_node_added (BraseroDataProject *project,
 				   BraseroFileNode *node,
 				   BraseroTrackDataCfg *self)
@@ -1689,6 +1713,7 @@ brasero_track_data_cfg_finalize (GObject *object)
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (object);
 
 	brasero_track_data_clean_autorun (BRASERO_TRACK_DATA_CFG (object));
+	brasero_track_data_cfg_clean_cache (BRASERO_TRACK_DATA_CFG (object));
 
 	if (priv->shown) {
 		g_slist_free (priv->shown);
@@ -1923,6 +1948,8 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 	priv->deep_directory = FALSE;
 	priv->joliet_rename = FALSE;
 
+	brasero_track_data_cfg_clean_cache (track);
+
 	brasero_track_changed (BRASERO_TRACK (track));
 	return TRUE;
 }
@@ -2140,39 +2167,43 @@ brasero_track_data_cfg_get_grafts (BraseroTrackData *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroImageFS fs_type;
-	GSList *grafts = NULL;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+
+	if (priv->grafts)
+		return priv->grafts;
 
 	/* append a slash for mkisofs */
 	fs_type = brasero_track_data_cfg_get_fs (track);
 	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
-					   &grafts,
-					   NULL,
+					   &priv->grafts,
+					   &priv->excluded,
 					   TRUE, /* include hidden nodes */
 					   (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					   TRUE);
-	return grafts;
+	return priv->grafts;
 }
 
 static GSList *
 brasero_track_data_cfg_get_excluded (BraseroTrackData *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
-	GSList *unreadable = NULL;
 	BraseroImageFS fs_type;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
+	if (priv->excluded)
+		return priv->excluded;
+
 	/* append a slash for mkisofs */
 	fs_type = brasero_track_data_cfg_get_fs (track);
 	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
-					   NULL,
-					   &unreadable,
+					   &priv->grafts,
+					   &priv->excluded,
 					   TRUE, /* include hidden nodes */
 					   (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					   TRUE);
-	return unreadable;
+	return priv->excluded;
 }
 
 static guint64
@@ -2688,6 +2719,8 @@ brasero_track_data_cfg_activity_changed (BraseroDataVFS *vfs,
 
 emit_signal:
 
+	brasero_track_data_cfg_clean_cache (self);
+
 	brasero_track_changed (BRASERO_TRACK (self));
 }
 
@@ -2695,6 +2728,7 @@ static void
 brasero_track_data_cfg_size_changed_cb (BraseroDataProject *project,
 					BraseroTrackDataCfg *self)
 {
+	brasero_track_data_cfg_clean_cache (self);
 	brasero_track_changed (BRASERO_TRACK (self));
 }
 
