@@ -1013,6 +1013,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 static void
 brasero_project_init (BraseroProject *obj)
 {
+	GtkSizeGroup *name_size_group;
 	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
 	GtkWidget *selector;
@@ -1049,7 +1050,11 @@ brasero_project_init (BraseroProject *obj)
 			  GTK_EXPAND,
 			  0, 0);
 
+	name_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 	selector = brasero_dest_selection_new (NULL);
+	gtk_size_group_add_widget (GTK_SIZE_GROUP (name_size_group), selector);
+	g_object_unref (name_size_group);
+
 	gtk_widget_show (selector);
 	obj->priv->selection = selector;
 
@@ -1102,6 +1107,7 @@ brasero_project_init (BraseroProject *obj)
 			  0, 0);
 
 	obj->priv->name_display = brasero_project_name_new (BRASERO_BURN_SESSION (obj->priv->session));
+	gtk_size_group_add_widget (GTK_SIZE_GROUP (name_size_group), obj->priv->name_display);
 	gtk_widget_show (obj->priv->name_display);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->name_display,
 			  1, 2,
