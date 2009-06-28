@@ -93,6 +93,8 @@ struct _BraseroDataDiscPrivate
 
 	guint loading:1;
 
+	guint never_replace:1;
+	guint always_replace:1;
 	guint accept_2G_files:1;
 	guint reject_2G_files:1;
 	guint accept_deep_files:1;
@@ -765,7 +767,13 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	string = g_strdup_printf (_("Do you really want to replace \"%s\"?"), name);
+	if (priv->always_replace)
+		return TRUE;
+
+	if (priv->never_replace)
+		return FALSE;
+
+	string = g_strdup_printf (_("Do you really want to replace the project file \"%s\"?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
@@ -776,15 +784,30 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 						  _("It already exists in the directory."));
 
 	/* Translators: Keep means we're keeping the files that already existed
-	 * Replace means we're replacing it with a new one with the same name */
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Keep Project File"), GTK_RESPONSE_NO);
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Replace Project File"), GTK_RESPONSE_YES);
+	 * in the project.
+	 * Keep is a verb */
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Always K_eep"), GTK_RESPONSE_REJECT);
+	/* Translators: Keep means we're keeping the files that already existed
+	 * in the project.
+	 * Keep is a verb */
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Keep"), GTK_RESPONSE_NO);
+	/* Translators: Replace means we're replacing the file that already
+	 * existed in the project with a new one with the same name.
+	 * Replace is a verb */
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Replace"), GTK_RESPONSE_YES);
+	/* Translators: Replace means we're replacing the file that already
+	 * existed in the project with a new one with the same name.
+	 * Replace is a verb */
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Al_ways Replace"), GTK_RESPONSE_ACCEPT);
 
 	gtk_widget_show_all (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	return (answer != GTK_RESPONSE_YES);
+	priv->always_replace = (answer == GTK_RESPONSE_ACCEPT);
+	priv->never_replace = (answer == GTK_RESPONSE_REJECT);
+
+	return (answer != GTK_RESPONSE_YES && answer != GTK_RESPONSE_ACCEPT);
 }
 
 static gboolean
@@ -829,7 +852,7 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 	priv->accept_deep_files = (answer == GTK_RESPONSE_ACCEPT);
 	priv->reject_deep_files = (answer == GTK_RESPONSE_REJECT);
 
-	return (answer != GTK_RESPONSE_YES);
+	return (answer != GTK_RESPONSE_YES && answer != GTK_RESPONSE_ACCEPT);
 }
 
 static gboolean
@@ -1134,6 +1157,8 @@ brasero_data_disc_clear (BraseroDisc *disc)
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
+	priv->always_replace = FALSE;
+	priv->never_replace = FALSE;
 	priv->accept_deep_files = FALSE;
 	priv->reject_deep_files = FALSE;
 	priv->accept_2G_files = FALSE;
@@ -1411,6 +1436,8 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 	if (!priv->project)
 		return;
 
+	priv->always_replace = FALSE;
+	priv->never_replace = FALSE;
 	priv->accept_deep_files = FALSE;
 	priv->reject_deep_files = FALSE;
 	priv->accept_2G_files = FALSE;
