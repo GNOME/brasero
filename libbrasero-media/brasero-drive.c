@@ -849,6 +849,7 @@ brasero_drive_get_gdrive_real (BraseroDrive *drive)
 
 		tmp = iter->data;
 		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		g_print ("TETS %s\n", device_path);
 		if (!device_path)
 			continue;
 
