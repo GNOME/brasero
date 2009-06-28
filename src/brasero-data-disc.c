@@ -92,6 +92,11 @@ struct _BraseroDataDiscPrivate
 	guint overburning:1;
 
 	guint loading:1;
+
+	guint accept_2G_files:1;
+	guint reject_2G_files:1;
+	guint accept_deep_files:1;
+	guint reject_deep_files:1;
 };
 
 #define BRASERO_DATA_DISC_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_DISC, BraseroDataDiscPrivate))
@@ -794,6 +799,12 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
+	if (priv->accept_deep_files)
+		return TRUE;
+
+	if (priv->reject_deep_files)
+		return FALSE;
+
 	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
@@ -806,12 +817,17 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 						    "\nIt is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©."
 						    "\nHowever MacOS X cannot read images created with version 3 of ISO9660 standard."));
 
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add File"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Al_ways Add Such File"), GTK_RESPONSE_ACCEPT);
 
 	gtk_widget_show_all (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
+
+	priv->accept_deep_files = (answer == GTK_RESPONSE_ACCEPT);
+	priv->reject_deep_files = (answer == GTK_RESPONSE_REJECT);
 
 	return (answer != GTK_RESPONSE_YES);
 }
@@ -828,6 +844,12 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
+	if (priv->accept_2G_files)
+		return TRUE;
+
+	if (priv->reject_2G_files)
+		return FALSE;
+
 	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
@@ -840,14 +862,19 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
 						    "\nNOTE: Such a file hierarchy is known to work on linux."));
 
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add File"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Al_ways Add Such File"), GTK_RESPONSE_ACCEPT);
 
 	gtk_widget_show_all (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	return (answer != GTK_RESPONSE_YES);
+	priv->accept_2G_files = (answer == GTK_RESPONSE_ACCEPT);
+	priv->reject_2G_files = (answer == GTK_RESPONSE_REJECT);
+
+	return (answer != GTK_RESPONSE_YES && answer != GTK_RESPONSE_ACCEPT);
 }
 
 static gboolean
@@ -1106,6 +1133,11 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
+	priv->accept_deep_files = FALSE;
+	priv->reject_deep_files = FALSE;
+	priv->accept_2G_files = FALSE;
+	priv->reject_2G_files = FALSE;
 
 	if (priv->size_changed_id) {
 		g_source_remove (priv->size_changed_id);
@@ -1378,6 +1410,11 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 
 	if (!priv->project)
 		return;
+
+	priv->accept_deep_files = FALSE;
+	priv->reject_deep_files = FALSE;
+	priv->accept_2G_files = FALSE;
+	priv->reject_2G_files = FALSE;
 
 	/* Remove filtered files widget */
 	if (priv->filter) {
