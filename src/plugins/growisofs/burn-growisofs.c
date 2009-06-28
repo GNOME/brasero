@@ -693,6 +693,8 @@ brasero_growisofs_init (BraseroGrowisofs *obj)
 	else
 		priv->use_genisoimage = TRUE;
 
+	g_free (prog_name);
+
 	/* Don't use BRASERO_JOB_LOG () here!! */
 	if (priv->use_genisoimage)
 		res = g_spawn_command_line_sync ("genisoimage -input-charset utf8",
