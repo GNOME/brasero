@@ -508,6 +508,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 				    -1);
 		g_free (text);
 	}
+	g_free (rates);
 
 	/* Set active one preferably max speed */
 	gtk_tree_model_get_iter_first (model, &iter);
