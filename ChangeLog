@@ -1,3 +1,61 @@
+commit abb976fbd7d6834814091288325ac80d8f83c223
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Mon Jun 29 09:28:57 2009 +0200
+
+    Fix #582461 – Brasero hangs at normalizing tracks
+
+commit d3349f89e54eb8b7fd4e1388ad9c29436e6f7f17
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Sun Jun 28 14:16:25 2009 +0200
+
+    Bump version for upcoming release
+
+commit 4429f2030f02298ff4426b5e0247f01e0a864440
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Mon Jun 22 22:03:22 2009 +0200
+
+    Fix #582261 – brasero shows 0% done, while continues burning disc
+    Fixed an overflow in variable that stopped wodim/cdrecord to work properly for a size over 2GiB
+
+commit ca0098866b6e0243e9cee5d8d30e0b0b23c355df
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Sun Jun 28 14:00:25 2009 +0200
+
+    Fix 582513 – Bogus VIDEO_TS directory error if AUDIO_TS directory present
+    Now video DVD should work from burn:// URI
+
+commit 6ebe65d4ce24f1487770bb8c1084e53f3dc85763
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Fri Jun 26 10:51:53 2009 +0200
+
+    Fix #580617 – Brasero floods .xsession-errors log with "Unknown (or already deleted) monitored directory" warnings
+
+commit e0032f0c26e726598747ba39f402392fc72c01ba
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Fri Jun 26 11:42:33 2009 +0200
+
+    Fix #563501 – Brasero burning window shouldn't try to show drive speed while is converting audio files
+    Hide the speed information completely when it's not needed
+
+commit 71dd3a3b8a27dcce5421047bfbd8ab818fbc27cf
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Sun Jun 28 09:42:19 2009 +0200
+
+    Fix memleak
+
+commit 5a493344202b8ade360c797c48f440d8e10ef23b
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Sun Jun 28 09:43:55 2009 +0200
+
+    Fix memleak with growisofs
+
+commit bdec930881c2b6ca2fb64b15424fb1f6792dad5d
+Author: Philippe Rouquier <bonfire-app@wanadoo.fr>
+Date:   Sat Jun 27 18:27:30 2009 +0200
+
+    Fix #581305 – track number not correct displayed
+
+
 2009-04-14  Luis Medinas  <lmedinas@gnome.org>
 
 	* NEWS:
