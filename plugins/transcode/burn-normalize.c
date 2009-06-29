@@ -47,7 +47,6 @@ struct _BraseroNormalizePrivate
 	GstElement *analysis;
 	GstElement *decode;
 	GstElement *resample;
-	GstElement *source;
 
 	GSList *tracks;
 	BraseroTrack *track;
@@ -67,64 +66,6 @@ static gboolean
 brasero_normalize_bus_messages (GstBus *bus,
 				GstMessage *msg,
 				BraseroNormalize *normalize);
-
-static gboolean
-brasero_normalize_set_next_track (BraseroJob *job,
-				  BraseroTrack *track,
-				  GError **error)
-{
-	gchar *uri;
-	GstBus *bus = NULL;
-	GstElement *source;
-	BraseroNormalizePrivate *priv;
-
-	priv = BRASERO_NORMALIZE_PRIVATE (job);
-
-	/* destroy previous source */
-	if (priv->source) {
-		gst_element_unlink (priv->source, priv->decode);
-		gst_bin_remove (GST_BIN (priv->pipeline), priv->source);
-		priv->source = NULL;
-	}
-
-	/* create a new one */
-	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
-	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
-	if (source == NULL) {
-		g_free (uri);
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s element could not be created"),
-			     "\"Source\"");
-		return FALSE;
-	}
-	gst_bin_add (GST_BIN (priv->pipeline), source);
-	g_object_set (source,
-		      "typefind", FALSE,
-		      NULL);
-
-	priv->source = source;
-	if (!gst_element_link_many (source, priv->decode, NULL)) {
-		BRASERO_JOB_LOG (job, "Elements could not be linked");
-		return FALSE;
-	}
-
-	/* reconnect to the bus */	
-	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
-	gst_bus_add_watch (bus,
-			   (GstBusFunc) brasero_normalize_bus_messages,
-			   job);
-	gst_object_unref (bus);
-
-	priv->track = track;
-
-	BRASERO_JOB_LOG (job, "Analysing track %s", uri);
-	g_free (uri);
-
-	return TRUE;
-}
-
 static void
 brasero_normalize_stop_pipeline (BraseroNormalize *normalize)
 {
@@ -140,7 +81,232 @@ brasero_normalize_stop_pipeline (BraseroNormalize *normalize)
 	priv->resample = NULL;
 	priv->analysis = NULL;
 	priv->decode = NULL;
-	priv->source = NULL;
+}
+
+static void
+brasero_normalize_new_decoded_pad_cb (GstElement *decode,
+				      GstPad *pad,
+				      gboolean arg2,
+				      BraseroNormalize *normalize)
+{
+	GstPad *sink;
+	GstCaps *caps;
+	GstStructure *structure;
+	BraseroNormalizePrivate *priv;
+
+	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+
+	sink = gst_element_get_pad (priv->resample, "sink");
+	if (GST_PAD_IS_LINKED (sink)) {
+		BRASERO_JOB_LOG (normalize, "New decoded pad already linked");
+		return;
+	}
+
+	/* make sure we only have audio */
+	caps = gst_pad_get_caps (pad);
+	if (!caps)
+		return;
+
+	structure = gst_caps_get_structure (caps, 0);
+	if (structure && g_strrstr (gst_structure_get_name (structure), "audio")) {
+		if (gst_pad_link (pad, sink) != GST_PAD_LINK_OK) {
+			BRASERO_JOB_LOG (normalize, "New decoded pad can't be linked");
+			brasero_job_error (BRASERO_JOB (normalize), NULL);
+		}
+		else
+			BRASERO_JOB_LOG (normalize, "New decoded pad linked");
+	}
+	else
+		BRASERO_JOB_LOG (normalize, "New decoded pad with unsupported stream time");
+
+	gst_object_unref (sink);
+	gst_caps_unref (caps);
+}
+
+  static gboolean
+brasero_normalize_build_pipeline (BraseroNormalize *normalize,
+                                  const gchar *uri,
+                                  GstElement *analysis,
+                                  GError **error)
+{
+	GstBus *bus = NULL;
+	GstElement *source;
+	GstElement *decode;
+	GstElement *pipeline;
+	GstElement *sink = NULL;
+	GstElement *convert = NULL;
+	GstElement *resample = NULL;
+	BraseroNormalizePrivate *priv;
+
+	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+
+	BRASERO_JOB_LOG (normalize, "Creating new pipeline");
+
+	/* create filesrc ! decodebin ! audioresample ! audioconvert ! rganalysis ! fakesink */
+	pipeline = gst_pipeline_new (NULL);
+	priv->pipeline = pipeline;
+
+	/* a new source is created */
+	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+	if (source == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Source\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), source);
+	g_object_set (source,
+		      "typefind", FALSE,
+		      NULL);
+
+	/* decode */
+	decode = gst_element_factory_make ("decodebin", NULL);
+	if (decode == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Decodebin\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (pipeline), decode);
+	priv->decode = decode;
+
+	if (!gst_element_link (source, decode)) {
+		BRASERO_JOB_LOG (normalize, "Elements could not be linked");
+		goto error;
+	}
+
+	/* audioconvert */
+	convert = gst_element_factory_make ("audioconvert", NULL);
+	if (convert == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Audioconvert\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (pipeline), convert);
+
+	/* audioresample */
+	resample = gst_element_factory_make ("audioresample", NULL);
+	if (resample == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Audioresample\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (pipeline), resample);
+	priv->resample = resample;
+
+	/* rganalysis: set the number of tracks to be expected */
+	priv->analysis = analysis;
+	gst_bin_add (GST_BIN (pipeline), analysis);
+
+	/* sink */
+	sink = gst_element_factory_make ("fakesink", NULL);
+	if (!sink) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Fakesink\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (pipeline), sink);
+	g_object_set (sink,
+		      "sync", FALSE,
+		      NULL);
+
+	/* link everything */
+	g_signal_connect (G_OBJECT (decode),
+	                  "new-decoded-pad",
+	                  G_CALLBACK (brasero_normalize_new_decoded_pad_cb),
+	                  normalize);
+	gst_element_link_many (resample,
+			       convert,
+			       analysis,
+			       sink,
+			       NULL);
+
+	/* connect to the bus */	
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
+	gst_bus_add_watch (bus,
+			   (GstBusFunc) brasero_normalize_bus_messages,
+			   normalize);
+	gst_object_unref (bus);
+
+	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
+
+	return TRUE;
+
+error:
+
+	if (error && (*error))
+		BRASERO_JOB_LOG (normalize,
+				 "can't create object : %s \n",
+				 (*error)->message);
+
+	gst_object_unref (GST_OBJECT (pipeline));
+	return FALSE;
+}
+
+static gboolean
+brasero_normalize_set_next_track (BraseroJob *job,
+				  BraseroTrack *track,
+				  GError **error)
+{
+	gchar *uri;
+	GstElement *analysis;
+	BraseroNormalizePrivate *priv;
+
+	priv = BRASERO_NORMALIZE_PRIVATE (job);
+
+	if (!priv->analysis) {
+		analysis = gst_element_factory_make ("rganalysis", NULL);
+		if (analysis == NULL) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("%s element could not be created"),
+				     "\"Rganalysis\"");
+			return FALSE;
+		}
+
+		g_object_set (analysis,
+			      "num-tracks", g_slist_length (priv->tracks),
+			      NULL);
+	}
+	else {
+		/* destroy previous pipeline but save our plugin */
+		analysis = g_object_ref (priv->analysis);
+
+		/* NOTE: why lock state? because otherwise analysis would lose all 
+		 * information about tracks already analysed by going into the NULL
+		 * state. */
+		gst_element_set_locked_state (analysis, TRUE);
+		gst_bin_remove (GST_BIN (priv->pipeline), analysis);
+		brasero_normalize_stop_pipeline (BRASERO_NORMALIZE (job));
+		gst_element_set_locked_state (analysis, FALSE);
+	}
+
+	/* create a new one */
+	priv->track = track;
+	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
+	BRASERO_JOB_LOG (job, "Analysing track %s", uri);
+
+	if (!brasero_normalize_build_pipeline (BRASERO_NORMALIZE (job), uri, analysis, error)) {
+		g_free (uri);
+		return FALSE;
+	}
+
+	g_free (uri);
+	return TRUE;
 }
 
 static BraseroBurnResult
@@ -250,22 +416,14 @@ brasero_normalize_song_end_reached (BraseroNormalize *normalize)
 	}
 
 	/* jump to next track */
-	/* NOTE: why lock state? because otherwise analysis would lose all 
-	 * information about tracks already analysed by going into the NULL
-	 * state. */
-	gst_element_set_locked_state (priv->analysis, TRUE);
-	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
+
 
 	track = priv->tracks->data;
 	priv->tracks = g_slist_remove (priv->tracks, track);
 	if (!brasero_normalize_set_next_track (BRASERO_JOB (normalize), track, &error)) {
-		gst_element_set_locked_state (priv->analysis, FALSE);
 		brasero_job_error (BRASERO_JOB (normalize), error);
 		return;
 	}
-
-	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
-	gst_element_set_locked_state (priv->analysis, FALSE);
 }
 
 static gboolean
@@ -310,157 +468,6 @@ brasero_normalize_bus_messages (GstBus *bus,
 	return TRUE;
 }
 
-static void
-brasero_normalize_new_decoded_pad_cb (GstElement *decode,
-				      GstPad *pad,
-				      gboolean arg2,
-				      BraseroNormalize *normalize)
-{
-	GstPad *sink;
-	GstCaps *caps;
-	GstStructure *structure;
-	BraseroNormalizePrivate *priv;
-
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
-
-	sink = gst_element_get_pad (priv->resample, "sink");
-	if (GST_PAD_IS_LINKED (sink)) {
-		BRASERO_JOB_LOG (normalize, "New decoded pad already linked");
-		return;
-	}
-
-	/* make sure we only have audio */
-	caps = gst_pad_get_caps (pad);
-	if (!caps)
-		return;
-
-	structure = gst_caps_get_structure (caps, 0);
-	if (structure && g_strrstr (gst_structure_get_name (structure), "audio")) {
-		if (gst_pad_link (pad, sink) != GST_PAD_LINK_OK) {
-			BRASERO_JOB_LOG (normalize, "New decoded pad can't be linked");
-			brasero_job_error (BRASERO_JOB (normalize), NULL);
-		}
-		else
-			BRASERO_JOB_LOG (normalize, "New decoded pad linked");
-	}
-	else
-		BRASERO_JOB_LOG (normalize, "New decoded pad with unsupported stream time");
-		
-	gst_object_unref (sink);
-	gst_caps_unref (caps);
-}
-
-static gboolean
-brasero_normalize_build_pipeline (BraseroNormalize *normalize,
-				  GError **error)
-{
-	GstElement *decode;
-	GstElement *pipeline;
-	GstElement *sink = NULL;
-	GstElement *convert = NULL;
-	GstElement *analysis = NULL;
-	GstElement *resample = NULL;
-	BraseroNormalizePrivate *priv;
-
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
-
-	BRASERO_JOB_LOG (normalize, "Creating new pipeline");
-
-	/* create filesrc ! decodebin ! audioresample ! audioconvert ! rganalysis ! fakesink */
-	pipeline = gst_pipeline_new (NULL);
-	priv->pipeline = pipeline;
-
-	/* NOTE: a new source is created at start of every track */
-
-	/* decode */
-	decode = gst_element_factory_make ("decodebin", NULL);
-	if (decode == NULL) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s element could not be created"),
-			     "\"Decodebin\"");
-		goto error;
-	}
-	gst_bin_add (GST_BIN (pipeline), decode);
-	priv->decode = decode;
-
-	/* audioconvert */
-	convert = gst_element_factory_make ("audioconvert", NULL);
-	if (convert == NULL) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s element could not be created"),
-			     "\"Audioconvert\"");
-		goto error;
-	}
-	gst_bin_add (GST_BIN (pipeline), convert);
-
-	/* audioresample */
-	resample = gst_element_factory_make ("audioresample", NULL);
-	if (resample == NULL) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s element could not be created"),
-			     "\"Audioresample\"");
-		goto error;
-	}
-	gst_bin_add (GST_BIN (pipeline), resample);
-	priv->resample = resample;
-
-	/* rganalysis: set the number of tracks to be expected */
-	analysis = gst_element_factory_make ("rganalysis", NULL);
-	if (analysis == NULL) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s element could not be created"),
-			     "\"Rganalysis\"");
-		goto error;
-	}
-	priv->analysis = analysis;
-	gst_bin_add (GST_BIN (pipeline), analysis);
-
-	/* sink */
-	sink = gst_element_factory_make ("fakesink", NULL);
-	if (!sink) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s element could not be created"),
-			     "\"Fakesink\"");
-		goto error;
-	}
-	gst_bin_add (GST_BIN (pipeline), sink);
-	g_object_set (sink,
-		      "sync", FALSE,
-		      NULL);
-
-	/* link everything */
-	g_signal_connect (G_OBJECT (decode),
-			  "new-decoded-pad",
-			  G_CALLBACK (brasero_normalize_new_decoded_pad_cb),
-			  normalize);
-	gst_element_link_many (resample,
-			       convert,
-			       analysis,
-			       sink,
-			       NULL);
-	return TRUE;
-
-error:
-
-	if (error && (*error))
-		BRASERO_JOB_LOG (normalize,
-				 "can't create object : %s \n",
-				 (*error)->message);
-
-	gst_object_unref (GST_OBJECT (pipeline));
-	return FALSE;
-}
-
 static BraseroBurnResult
 brasero_normalize_start (BraseroJob *job,
 			 GError **error)
@@ -482,13 +489,6 @@ brasero_normalize_start (BraseroJob *job,
 	track = priv->tracks->data;
 	priv->tracks = g_slist_remove (priv->tracks, track);
 
-	if (!brasero_normalize_build_pipeline (BRASERO_NORMALIZE (job), error))
-		return BRASERO_BURN_ERR;
-
-	g_object_set (priv->analysis,
-		      "num-tracks", g_slist_length (priv->tracks),
-		      NULL);
-
 	if (!brasero_normalize_set_next_track (job, track, error))
 		return BRASERO_BURN_ERR;
 
@@ -497,7 +497,6 @@ brasero_normalize_start (BraseroJob *job,
 					BRASERO_BURN_ACTION_ANALYSING,
 					_("Normalizing tracks"),
 					FALSE);
-	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
 
 	return BRASERO_BURN_OK;
 }
