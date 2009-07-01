@@ -69,8 +69,6 @@ gint disc_check;
 gint open_ncb;
 gint parent_window;
 
-#define BRASERO_CONF_DIR "/apps/brasero"
-
 static const GOptionEntry options [] = {
 	{ "project", 'p', 0, G_OPTION_ARG_STRING, &project_uri,
 	  N_("Open the specified project"),
@@ -472,7 +470,6 @@ brasero_app_get_default (void)
 int
 main (int argc, char **argv)
 {
-	GConfClient *client;
 	GOptionContext *context;
 
 #ifdef ENABLE_NLS
@@ -503,18 +500,16 @@ main (int argc, char **argv)
 
 	g_option_context_free (context);
 
-	gst_init (&argc, &argv);
-
-	/* This is for missing codec automatic install */
+	/* REMINDER: this is done in burn library now */
+/*	gst_init (&argc, &argv);
 	gst_pb_utils_init ();
-
 	client = gconf_client_get_default ();
 	gconf_client_add_dir (client,
 			      BRASERO_CONF_DIR,
 			      GCONF_CLIENT_PRELOAD_NONE,
 			      NULL);
-
-	brasero_burn_library_start ();
+*/
+	brasero_burn_library_start (&argc, &argv);
 
 	brasero_enable_multi_DND ();
 
@@ -526,9 +521,6 @@ main (int argc, char **argv)
 	current_app = NULL;
 
 	brasero_burn_library_stop ();
-
-	gconf_client_remove_dir (client, BRASERO_CONF_DIR, NULL);
-	g_object_unref (client);
 
 	gst_deinit ();
 

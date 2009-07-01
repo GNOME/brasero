@@ -58,7 +58,8 @@ G_BEGIN_DECLS
  */
 
 gboolean
-brasero_burn_library_start (void);
+brasero_burn_library_start (int *argc,
+                            char **argv []);
 
 void
 brasero_burn_library_stop (void);

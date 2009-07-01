@@ -934,7 +934,7 @@ nautilus_module_initialize (GTypeModule *module)
         DEBUG_PRINT ("Initializing nautilus-disc-recorder\n");
 
         brasero_media_library_start ();
-        brasero_burn_library_start ();
+        brasero_burn_library_start (NULL, NULL);
         DEBUG_PRINT ("Libbrasero-media started\n");
 
         nautilus_disc_burn_register_type (module);

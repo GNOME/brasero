@@ -39,6 +39,9 @@
 
 #include <gconf/gconf-client.h>
 
+#include <gst/gst.h>
+#include <gst/pbutils/pbutils.h>
+
 #include "brasero-io.h"
 
 #include "burn-basics.h"
@@ -201,7 +204,8 @@ brasero_caps_list_dump (void)
 }
 
 gboolean
-brasero_burn_library_start (void)
+brasero_burn_library_start (int *argc,
+                            char **argv [])
 {
 	GConfClient *client;
 
@@ -209,6 +213,17 @@ brasero_burn_library_start (void)
 			  BRASERO_MAJOR_VERSION,
 			  BRASERO_MINOR_VERSION,
 			  BRASERO_SUB);
+
+	/* Initialize external libraries (threads... */
+	if (!g_thread_supported ())
+		g_thread_init (NULL);
+
+	/* ... and Gstreamer) */
+	if (!gst_init_check (argc, argv, NULL))
+		return FALSE;
+
+	/* This is for missing codec automatic install */
+	gst_pb_utils_init ();
 
 	/* preload some gconf keys */
 	client = gconf_client_get_default ();
@@ -244,6 +259,8 @@ brasero_burn_library_get_plugins_list (void)
 void
 brasero_burn_library_stop (void)
 {
+	GConfClient *client;
+
 	if (plugin_manager) {
 		g_object_unref (plugin_manager);
 		plugin_manager = NULL;
@@ -257,8 +274,8 @@ brasero_burn_library_stop (void)
 	/* Cleanup the io thing */
 	brasero_io_shutdown ();
 
-	/* close HAL connection */
-//	brasero_hal_watch_destroy ();
+	client = gconf_client_get_default ();
+	gconf_client_remove_dir (client, "/apps/brasero", NULL);
 }
 
 gboolean
