@@ -132,13 +132,12 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	gint forbidden;
 	gchar *character;
 	gchar *localpath;
-	gchar *unescaped_uri;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	/* make sure uri is local: otherwise error out */
 	/* FIXME: uri can be path or URI? problem with graft->uri */
 	if (uri && uri [0] == '/') {
-		localpath = g_strdup (unescaped_uri);
+		localpath = g_strdup (uri);
 	}
 	else if (uri && g_str_has_prefix (uri, "file://")) {
 		gchar *unescaped_uri;
