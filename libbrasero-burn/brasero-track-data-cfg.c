@@ -1841,6 +1841,7 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 	BraseroTrackDataCfgPrivate *priv;
 	gchar *default_name = NULL;
 	BraseroFileNode *node;
+	GtkTreePath *path;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
 
@@ -1878,7 +1879,11 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 	if (!node)
 		return NULL;
 
-	return brasero_track_data_cfg_node_to_path (track, node);
+	path = brasero_track_data_cfg_node_to_path (track, node);
+	if (path)
+		brasero_track_changed (BRASERO_TRACK (track));
+
+	return path;
 }
 
 gboolean
