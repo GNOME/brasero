@@ -494,6 +494,11 @@ brasero_utils_disc_hide_use_info_drop_cb (GtkWidget *widget,
 	if (target != GDK_NONE) {
 		gboolean return_value = FALSE;
 
+		/* It's necessary to make sure the treeview
+		 * is realized already before sending the
+		 * signal */
+		gtk_widget_realize (other_widget);
+
 		/* The widget must be realized to receive such events. */
 		g_signal_emit_by_name (other_widget,
 				       "drag-drop",
@@ -580,59 +585,32 @@ brasero_utils_disc_style_changed_cb (GtkWidget *widget,
 
 static void
 brasero_utils_disc_realized_cb (GtkWidget *event_box,
-				BraseroProject *project)
+				GtkWidget *textview)
 {
-	GtkWidget *widget;
-
-	widget = brasero_utils_disc_find_tree_view (BRASERO_DISC (project->priv->data));
-
-	if (!widget || !GTK_IS_TREE_VIEW (widget))
-		return;
-
 	/* The widget (a treeview here) needs to be realized to get proper style */
-	gtk_widget_realize (widget);
-	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &widget->style->base[GTK_STATE_NORMAL]);
+	gtk_widget_realize (textview);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &textview->style->base[GTK_STATE_NORMAL]);
 
-	g_signal_handlers_disconnect_by_func (widget,
+	g_signal_handlers_disconnect_by_func (textview,
 					      brasero_utils_disc_style_changed_cb,
 					      event_box);
-	g_signal_connect (widget,
+	g_signal_connect (textview,
 			  "style-set",
 			  G_CALLBACK (brasero_utils_disc_style_changed_cb),
 			  event_box);
 }
 
-static gboolean
-brasero_disc_draw_focus_around_help_text (GtkWidget *label,
-					  GdkEventExpose *event,
-					  gpointer NULL_data)
-{
-	if (!gtk_widget_is_focus (label))
-		return FALSE;
-
-	gtk_paint_focus (label->style,
-			 label->window,
-			 GTK_STATE_NORMAL,
-			 &event->area,
-			 label,
-			 NULL,
-			 label->style->xthickness, label->style->ythickness,
-			 label->allocation.width - label->style->xthickness * 2,
-			 label->allocation.height - label->style->ythickness * 2);
-	return FALSE;
-}
-
 static GtkWidget *
 brasero_disc_get_use_info_notebook (BraseroProject *project)
 {
-	GList	  *chain;
+	GList *chain;
+	GtkTextIter iter;
 	GtkWidget *frame;
+	GtkWidget *textview;
 	GtkWidget *notebook;
+	GtkWidget *alignment;
+	GtkTextBuffer *buffer;
 	GtkWidget *event_box;
-	GtkWidget *first_use;
-	gchar     *message_add, *message_add_header;
-	gchar     *message_remove, *message_remove_header;
-	gchar	  *first_use_message;
 
 	notebook = gtk_notebook_new ();
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
@@ -648,6 +626,7 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 	 * color as a treeview */
 	event_box = gtk_event_box_new ();
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), TRUE);
+	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
 	gtk_drag_dest_set (event_box, 
 			   GTK_DEST_DEFAULT_MOTION,
 			   ntables_cd,
@@ -679,6 +658,26 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 
 	gtk_container_add (GTK_CONTAINER (frame), event_box);
 
+	/* The alignment to set properly the position of the GtkTextView */
+	alignment = gtk_alignment_new (0.5, 0.3, 0.0, 0.0);
+	gtk_widget_show (alignment);
+	gtk_container_add (GTK_CONTAINER (event_box), alignment);
+
+	/* The TreeView for the message */
+	buffer = gtk_text_buffer_new (NULL);
+	gtk_text_buffer_create_tag (buffer, "Title",
+	                            "scale", 1.2,
+	                            "justification", GTK_JUSTIFY_LEFT,
+	                            "foreground", "grey50",
+	                            NULL);
+
+	gtk_text_buffer_create_tag (buffer, "TextBody",
+	                            "justification", GTK_JUSTIFY_LEFT,
+	                            "foreground", "grey50",
+	                            NULL);
+
+	gtk_text_buffer_get_start_iter (buffer, &iter);
+
 	/* Translators: this messages will appear as a list of possible
 	 * actions, like:
 	 *   To add/remove files you can:
@@ -688,69 +687,80 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 	 * project, suggesting users how to add and remove items to project.
 	 * You simply have to translate messages in the best form
          * for a list of actions. */
-	message_add_header = g_strconcat ("<big>", _("To add files to this project you can:"), "\n</big>", NULL);
-	message_add = g_strconcat ("\t* ", _("click the \"Add\" button to show a selection dialog"), "\n",
-				   "\t* ", _("select files in the selection pane and click the \"Add\" button"), "\n",
-				   "\t* ", _("drag files in this area from the selection pane or from the file manager"), "\n",
-				   "\t* ", _("double click on files in the selection pane"), "\n",
-				   "\t* ", _("copy files (from file manager for example) and paste in this area"), "\n",
-				   NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("To add files to this project you can:"), -1, "Title", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
 
-	message_remove_header = g_strconcat ("<big>", _("To remove files from this project you can:"), "\n</big>", NULL);
-	message_remove = g_strconcat ("\t* ", _("click on the \"Remove\" button to remove selected items in this area"), "\n",
-				      "\t* ", _("drag and release items out from this area"), "\n",
-				      "\t* ", _("select items in this area, and choose \"Remove\" from context menu"), "\n",
-				      "\t* ", _("select items in this area, and press \"Delete\" key"), "\n",
-				      NULL);
-	
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("click the \"Add\" button to show a selection dialog"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("select files in the selection pane and click the \"Add\" button"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("drag files in this area from the selection pane or from the file manager"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("double click on files in the selection pane"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("copy files (from file manager for example) and paste in this area"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert (buffer, &iter, "\n\n\n", -1);
 
-	first_use_message = g_strconcat ("<span foreground='grey50'>",
-					 message_add_header, message_add,
-					 "\n\n\n",
-					 message_remove_header, message_remove,
-					 "</span>", NULL);
-	first_use = gtk_label_new (first_use_message);
-	gtk_misc_set_alignment (GTK_MISC (first_use), 0.50, 0.30);
-	gtk_label_set_selectable (GTK_LABEL (first_use), TRUE);
-	gtk_label_set_ellipsize (GTK_LABEL (first_use), PANGO_ELLIPSIZE_END);
-	g_free (first_use_message);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("To remove files from this project you can:"), -1, "Title", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
 
-	gtk_misc_set_padding (GTK_MISC (first_use), 24, 0);
-	gtk_label_set_justify (GTK_LABEL (first_use), GTK_JUSTIFY_LEFT);
-	gtk_label_set_use_markup (GTK_LABEL (first_use), TRUE);
-	gtk_container_add (GTK_CONTAINER (event_box), first_use);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("click on the \"Remove\" button to remove selected items in this area"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("select items in this area, and choose \"Remove\" from context menu"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("select items in this area, and press \"Delete\" key"), -1, "TextBody", NULL);
 
-	/* This is meant for accessibility so that screen readers can read it */
-	g_object_set (first_use,
-		      "can-focus", TRUE,
-		      NULL);
+	textview = gtk_text_view_new_with_buffer (buffer);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
+	gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (textview), FALSE);
 
-	g_signal_connect_after (first_use,
-				"expose-event",
-				G_CALLBACK (brasero_disc_draw_focus_around_help_text),
-				NULL);
+	gtk_drag_dest_set (textview, 
+			   GTK_DEST_DEFAULT_MOTION,
+			   ntables_cd,
+			   nb_targets_cd,
+			   GDK_ACTION_COPY|
+			   GDK_ACTION_MOVE);
 
-	/* We don't want to have the whole text selected */
-	g_object_set (gtk_widget_get_settings (first_use),
-		      "gtk-label-select-on-focus", FALSE,
-		      NULL);
+	/* the following signals need to be forwarded to the widget underneath */
+	g_signal_connect (textview,
+			  "drag-motion",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_motion_cb),
+			  project);
+	g_signal_connect (textview,
+			  "drag-leave",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_leave_cb),
+			  project);
+	g_signal_connect (textview,
+			  "drag-drop",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_drop_cb),
+			  project);
+	g_signal_connect (textview,
+			  "button-press-event",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_button_cb),
+			  project);
+	g_signal_connect (textview,
+			  "drag-data-received",
+			  G_CALLBACK (brasero_utils_disc_hide_use_info_data_received_cb),
+			  project);
 
-	chain = g_list_prepend (NULL, first_use);
-	gtk_container_set_focus_chain (GTK_CONTAINER (frame), chain);
-	g_list_free (chain);
-
-	/* This gets all events and forward them to treeview */
-	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
-
-	g_free (message_add_header);
-	g_free (message_add);
-	g_free (message_remove_header);
-	g_free (message_remove);
+	gtk_container_add (GTK_CONTAINER (alignment), textview);
 
 	g_signal_connect (event_box,
 			  "realize",
 			  G_CALLBACK (brasero_utils_disc_realized_cb),
 			  project);
+
+	chain = g_list_prepend (NULL, event_box);
+	gtk_container_set_focus_chain (GTK_CONTAINER (frame), chain);
+	g_list_free (chain);
+
+	chain = g_list_prepend (NULL, alignment);
+	gtk_container_set_focus_chain (GTK_CONTAINER (event_box), chain);
+	g_list_free (chain);
+
+	chain = g_list_prepend (NULL, textview);
+	gtk_container_set_focus_chain (GTK_CONTAINER (alignment), chain);
+	g_list_free (chain);
 
 	gtk_widget_show_all (notebook);
 	return notebook;
