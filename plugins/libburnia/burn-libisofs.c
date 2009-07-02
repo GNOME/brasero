@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /***************************************************************************
  *            burn-libisofs.c
  *
@@ -674,24 +676,19 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			 * children of the parent directory. If there is a
 			 * sibling destroy it. */
 			sibling = NULL;
-			iso_dir_find_children (ISO_DIR (parent),
-					       iso_new_find_conditions_name (path_name),
-					       &sibling);
-			if (sibling) {
-				IsoNode *node;
+			iso_dir_get_children (ISO_DIR (parent), &sibling);
 
-				BRASERO_JOB_LOG (self,
-						 "Looking for sibling for %s",
-						 path_name);
+			IsoNode *node;
+			while (iso_dir_iter_next (sibling, &node) == 1) {
+				const gchar *iso_name;
 
-				while (iso_dir_iter_next (sibling, &node) == 1) {
+				/* check if it has the same name */
+				iso_name = iso_node_get_name (node);
+				if (iso_name && !strcmp (iso_name, path_name))
 					BRASERO_JOB_LOG (self,
 							 "Found sibling for %s: removing %x",
 							 path_name,
 							 iso_dir_iter_remove (sibling));
-				}
-
-				iso_dir_iter_free (sibling);
 			}
 
 			if  (is_directory) {
@@ -733,8 +730,9 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				IsoNode *node;
 				int err;
 
-				err = iso_tree_add_node (image,
+				err = iso_tree_add_new_node (image,
 							 ISO_DIR (parent),
+				                         path_name,
 							 local_path,
 							 &node);
 				if (err < 0) {

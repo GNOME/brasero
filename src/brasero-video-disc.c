@@ -46,6 +46,7 @@
 #include "brasero-song-properties.h"
 #include "brasero-session-cfg.h"
 #include "brasero-track-stream.h"
+#include "brasero-video-options.h"
 
 typedef struct _BraseroVideoDiscPrivate BraseroVideoDiscPrivate;
 struct _BraseroVideoDiscPrivate
@@ -1146,7 +1147,7 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
 
-	mainbox = gtk_vbox_new (FALSE, 12);
+	mainbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (mainbox);
 	gtk_box_pack_start (GTK_BOX (object), mainbox, TRUE, TRUE, 0);
 
