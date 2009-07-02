@@ -53,6 +53,10 @@ GType brasero_video_options_get_type (void) G_GNUC_CONST;
 GtkWidget *
 brasero_video_options_new (BraseroBurnSession *session);
 
+void
+brasero_video_options_set_session (BraseroVideoOptions *options,
+                                   BraseroBurnSession *session);
+
 G_END_DECLS
 
 #endif /* _BRASERO_VIDEO_OPTIONS_H_ */

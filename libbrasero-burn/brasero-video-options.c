@@ -75,6 +75,9 @@ brasero_video_options_audio_AC3 (BraseroVideoOptions *options)
 
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 
+	if (!priv->session)
+		return;
+
 	value = g_new0 (GValue, 1);
 	g_value_init (value, G_TYPE_INT);
 	g_value_set_int (value, BRASERO_AUDIO_FORMAT_AC3);
@@ -90,6 +93,9 @@ brasero_video_options_audio_MP2 (BraseroVideoOptions *options)
 	BraseroVideoOptionsPrivate *priv;
 
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+
+	if (!priv->session)
+		return;
 
 	value = g_new0 (GValue, 1);
 	g_value_init (value, G_TYPE_INT);
@@ -180,6 +186,9 @@ brasero_video_options_set_tag (BraseroVideoOptions *options,
 	BraseroVideoOptionsPrivate *priv;
 
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+
+	if (!priv->session)
+		return;
 
 	value = g_new0 (GValue, 1);
 	g_value_init (value, G_TYPE_INT);
@@ -289,6 +298,24 @@ brasero_video_options_4_3 (GtkToggleButton *button,
 				       BRASERO_VIDEO_ASPECT_4_3);
 }
 
+void
+brasero_video_options_set_session (BraseroVideoOptions *options,
+                                   BraseroBurnSession *session)
+{
+	BraseroVideoOptionsPrivate *priv;
+
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	if (session) {
+		priv->session = g_object_ref (session);
+		brasero_video_options_update (options);
+	}
+}
+
 static void
 brasero_video_options_set_property (GObject *object,
 				    guint prop_id,
@@ -303,10 +330,9 @@ brasero_video_options_set_property (GObject *object,
 
 	switch (prop_id)
 	{
-	case PROP_SESSION: /* Readable and only writable at creation time */
-		priv->session = BRASERO_BURN_SESSION (g_value_get_object (value));
-		g_object_ref (priv->session);
-		brasero_video_options_update (BRASERO_VIDEO_OPTIONS(object));
+	case PROP_SESSION:
+		brasero_video_options_set_session (BRASERO_VIDEO_OPTIONS (object),
+		                                   g_value_get_object (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -341,18 +367,17 @@ brasero_video_options_get_property (GObject *object,
 static void
 brasero_video_options_init (BraseroVideoOptions *object)
 {
-	gchar *string;
 	GtkWidget *label;
 	GtkWidget *table;
 	GtkWidget *widget;
 	GtkWidget *button1;
 	GtkWidget *button2;
 	GtkWidget *button3;
-	GtkWidget *options;
 	BraseroVideoOptionsPrivate *priv;
 
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (object);
 
+	gtk_container_set_border_width (GTK_CONTAINER (object), 6);
 	widget = gtk_vbox_new (FALSE, 0);
 
 	table = gtk_table_new (3, 4, FALSE);
@@ -501,13 +526,7 @@ brasero_video_options_init (BraseroVideoOptions *object)
 			  G_CALLBACK (brasero_video_options_VCD),
 			  object);
 
-	string = g_strdup_printf ("<b>%s</b>", _("Video Options"));
-	options = brasero_utils_pack_properties (string,
-						 table,
-						 NULL);
-	g_free (string);
-
-	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (widget), table, FALSE, FALSE, 0);
 
 	/* NOTE: audio options for DVDs were removed. For SVCD that is MP2 and
 	 * for Video DVD even if we have a choice AC3 is the most widespread
@@ -556,7 +575,7 @@ brasero_video_options_class_init (BraseroVideoOptionsClass *klass)
 							      "The session",
 							      "The session to work with",
 							      BRASERO_TYPE_BURN_SESSION,
-							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
+							      G_PARAM_READWRITE));
 }
 
 GtkWidget *

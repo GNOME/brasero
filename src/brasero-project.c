@@ -1338,20 +1338,20 @@ brasero_project_setup_session (BraseroProject *project,
 static gboolean
 brasero_project_drive_properties (BraseroProject *project)
 {
+	BraseroTrackType *track_type;
 	GtkWidget *medium_prop;
 	GtkResponseType answer;
 	BraseroDrive *drive;
 	GtkWidget *toplevel;
 	gchar *display_name;
+	GtkWidget *options;
 	GtkWidget *button;
 	GtkWidget *dialog;
 	GtkWidget *box;
 	gchar *header;
+	gchar *string;
 
 	/* Build dialog */
-	medium_prop = brasero_drive_properties_new (project->priv->session);
-	gtk_widget_show (medium_prop);
-
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (project->priv->session));
@@ -1378,6 +1378,28 @@ brasero_project_drive_properties (BraseroProject *project)
 				      GTK_RESPONSE_OK);
 
 	box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
+	track_type = brasero_track_type_new ();
+
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (project->priv->session), track_type);
+	if (brasero_track_type_get_has_stream (track_type)
+	&& BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (track_type))) {
+		/* Special case for video project */
+		options = brasero_video_options_new (BRASERO_BURN_SESSION (project->priv->session));
+		gtk_widget_show (options);
+
+		string = g_strdup_printf ("<b>%s</b>", _("Video Options"));
+		options = brasero_utils_pack_properties (string,
+							 options,
+							 NULL);
+		g_free (string);
+		gtk_box_pack_start (GTK_BOX (box), options, FALSE, TRUE, 0);
+	}
+
+	brasero_track_type_free (track_type);
+
+	medium_prop = brasero_drive_properties_new (project->priv->session);
+	gtk_widget_show (medium_prop);
 	gtk_box_pack_start (GTK_BOX (box), medium_prop, TRUE, TRUE, 0);
 
 	/* launch the dialog */
