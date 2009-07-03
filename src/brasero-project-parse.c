@@ -191,7 +191,8 @@ error:
 
 static BraseroTrack *
 _read_audio_track (xmlDocPtr project,
-		   xmlNodePtr uris)
+		   xmlNodePtr uris,
+                   gboolean is_video)
 {
 	BraseroTrackStreamCfg *track;
 
@@ -212,6 +213,13 @@ _read_audio_track (xmlDocPtr project,
                         g_free (uri);
 
 			brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), unescaped_uri);
+
+			/* For the moment pretend it is a video file. Since it is BraseroTrackStreamCfg, that
+			 * will be set properly afterwards. */
+			if (is_video)
+				brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track),
+				                                 BRASERO_VIDEO_FORMAT_UNDEFINED);
+
                         g_free (unescaped_uri);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "silence")) {
@@ -360,7 +368,7 @@ _get_tracks (xmlDocPtr project,
 		BraseroTrack *newtrack;
 
 		if (!xmlStrcmp (track_node->name, (const xmlChar *) "audio")) {
-			newtrack = _read_audio_track (project, track_node->xmlChildrenNode);
+			newtrack = _read_audio_track (project, track_node->xmlChildrenNode, FALSE);
 			if (!newtrack)
 				goto error;
 
@@ -375,7 +383,7 @@ _get_tracks (xmlDocPtr project,
 			tracks = g_slist_append (tracks, newtrack);
 		}
 		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "video")) {
-			newtrack = _read_audio_track (project, track_node->xmlChildrenNode);
+			newtrack = _read_audio_track (project, track_node->xmlChildrenNode, TRUE);
 
 			if (!newtrack)
 				goto error;
