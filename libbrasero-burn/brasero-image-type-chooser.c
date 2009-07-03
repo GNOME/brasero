@@ -205,6 +205,44 @@ brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
 }
 
 void
+brasero_image_type_chooser_set_VCD_type (BraseroImageTypeChooser *chooser,
+                                         gboolean is_SVCD)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *store;
+	BraseroImageTypeChooserPrivate *priv;
+
+	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (chooser);
+
+	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
+	
+	if (!gtk_tree_model_get_iter_first (store, &iter))
+		return;
+
+	do {
+		BraseroImageFormat iter_format;
+		gboolean is_svcd;
+
+		gtk_tree_model_get (store, &iter,
+				    FORMAT_TYPE, &iter_format,
+		                    FORMAT_SVCD, &is_svcd,
+				    -1);
+
+		if (iter_format == BRASERO_IMAGE_FORMAT_CUE && is_SVCD == is_svcd) {
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->combo), &iter);
+			return;
+		}
+
+	} while (gtk_tree_model_iter_next (store, &iter));
+
+	/* just to make sure we see if there is a line which is active. It can 
+	 * happens that the last time it was a CD and the user chose RAW. If it
+	 * is now a DVD it can't be raw any more */
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
+}
+
+void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat *format)
 {
@@ -215,7 +253,7 @@ brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 }
 
 gboolean
-brasero_image_type_chooser_is_SVCD (BraseroImageTypeChooser *chooser)
+brasero_image_type_chooser_get_VCD_type (BraseroImageTypeChooser *chooser)
 {
 	BraseroImageTypeChooserPrivate *priv;
 	GtkTreeModel *model;

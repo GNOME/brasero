@@ -214,8 +214,21 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 						      formats,
 	                                              FALSE,
 	                                              priv->is_video);
-	brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
-					       format);
+
+	if (priv->is_video && format == BRASERO_IMAGE_FORMAT_CUE) {
+		GValue *value = NULL;
+
+		/* see whether it's a SVCD or a VCD */
+		brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (priv->session),
+		                                 BRASERO_VCD_TYPE,
+		                                 &value);
+
+		brasero_image_type_chooser_set_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
+		                                         (value && g_value_get_int (value) == BRASERO_SVCD));
+	}
+	else
+		brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
+						       format);
 
 	if (num > 1)
 		gtk_widget_show (priv->format_box);
@@ -289,7 +302,7 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 		value = g_new0 (GValue, 1);
 		g_value_init (value, G_TYPE_INT);
 
-		res = brasero_image_type_chooser_is_SVCD (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
+		res = brasero_image_type_chooser_get_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
 		if (res)
 			g_value_set_int (value, BRASERO_SVCD);
 		else

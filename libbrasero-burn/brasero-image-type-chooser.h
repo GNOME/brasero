@@ -72,7 +72,11 @@ void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat *format);
 gboolean
-brasero_image_type_chooser_is_SVCD (BraseroImageTypeChooser *chooser);
+brasero_image_type_chooser_get_VCD_type (BraseroImageTypeChooser *chooser);
+
+void
+brasero_image_type_chooser_set_VCD_type (BraseroImageTypeChooser *chooser,
+                                         gboolean is_svcd);
 
 G_END_DECLS
 
