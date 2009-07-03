@@ -41,6 +41,7 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
+#include "brasero-tags.h"
 #include "burn-image-format.h"
 #include "brasero-image-properties.h"
 #include "brasero-image-type-chooser.h"
@@ -54,6 +55,7 @@ struct _BraseroImagePropertiesPrivate
 	GtkWidget *format_box;
 
 	guint edited:1;
+	guint is_video:1;
 };
 
 #define BRASERO_IMAGE_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_PROPERTIES, BraseroImagePropertiesPrivate))
@@ -132,7 +134,6 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 		return;
 
 	format = brasero_image_properties_get_format (self);
-
 	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE)
 		format = brasero_burn_session_get_default_output_format (BRASERO_BURN_SESSION (priv->session));
 
@@ -209,7 +210,8 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 
 	num = brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 						      formats,
-	                                              FALSE);
+	                                              FALSE,
+	                                              priv->is_video);
 	brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 					       format);
 
@@ -277,6 +279,24 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 						  format,
 						  path);
 	g_free (path);
+
+	if (priv->is_video && format == BRASERO_IMAGE_FORMAT_BIN) {
+		gboolean res;
+		GValue *value;
+
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_INT);
+
+		res = brasero_image_type_chooser_is_SVCD (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
+		if (res)
+			g_value_set_int (value, BRASERO_SVCD);
+		else
+			g_value_set_int (value, BRASERO_SVCD);
+
+		brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
+					      BRASERO_VCD_TYPE,
+					      value);
+	}
 }
 
 static gchar *
@@ -315,6 +335,7 @@ static void
 brasero_image_properties_update (BraseroImageProperties *self)
 {
 	BraseroImagePropertiesPrivate *priv;
+	BraseroTrackType *track_type;
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
 	gchar *path;
@@ -323,6 +344,17 @@ brasero_image_properties_update (BraseroImageProperties *self)
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
 	priv->edited = brasero_session_cfg_has_default_output_path (priv->session);
+
+	track_type = brasero_track_type_new ();
+
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (priv->session), track_type);
+	if (brasero_track_type_get_has_stream (track_type)
+	&& BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (track_type)))
+		priv->is_video = TRUE;
+	else
+		priv->is_video = FALSE;
+
+	brasero_track_type_free (track_type);
 
 	/* set all information namely path and format */
 	path = brasero_image_properties_get_output_path (self);

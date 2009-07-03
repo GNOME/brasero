@@ -48,6 +48,7 @@ G_DEFINE_TYPE (BraseroImageTypeChooser, brasero_image_type_chooser, GTK_TYPE_HBO
 enum {
 	FORMAT_TEXT,
 	FORMAT_TYPE,
+	FORMAT_SVCD,
 	FORMAT_LAST
 };
 
@@ -70,7 +71,8 @@ static GtkHBoxClass *parent_class = NULL;
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 				        BraseroImageFormat formats,
-                                        gboolean show_autodetect)
+                                        gboolean show_autodetect,
+                                        gboolean is_video)
 {
 	guint format_num;
 	GtkTreeIter iter;
@@ -100,7 +102,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("ISO9660 images"),
+				    FORMAT_TEXT, is_video? _("Video DVD image"):_("ISO9660 images"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_BIN,
 				    -1);
 	}
@@ -116,11 +118,29 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 
 	if (formats & BRASERO_IMAGE_FORMAT_CUE) {
 		format_num ++;
-		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("Cue images"),
-				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
-				    -1);
+		if (is_video) {
+			format_num ++;
+	
+			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+					    FORMAT_TEXT, _("VCD image"),
+					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
+					    -1);
+
+			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+					    FORMAT_TEXT, _("SVCD image"),
+					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
+			                    FORMAT_SVCD, TRUE,
+					    -1);
+		}
+		else {
+			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+					    FORMAT_TEXT, _("Cue images"),
+					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
+					    -1);
+		}
 	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_CDRDAO) {
@@ -194,6 +214,26 @@ brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 	*format = priv->format;
 }
 
+gboolean
+brasero_image_type_chooser_is_SVCD (BraseroImageTypeChooser *chooser)
+{
+	BraseroImageTypeChooserPrivate *priv;
+	GtkTreeModel *model;
+	gboolean value;
+	GtkTreeIter iter;
+
+	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (chooser);
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
+		return FALSE;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
+	gtk_tree_model_get (model, &iter,
+	                    FORMAT_SVCD, &value,
+	                    -1);
+
+	return value;
+}
+
 static void
 brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
 				       BraseroImageTypeChooser *self)
@@ -236,7 +276,8 @@ brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 
 	store = gtk_list_store_new (FORMAT_LAST,
 				    G_TYPE_STRING,
-				    G_TYPE_INT);
+				    G_TYPE_INT,
+	                            G_TYPE_BOOLEAN);
 
 	priv->combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (store));
 	g_signal_connect (priv->combo,

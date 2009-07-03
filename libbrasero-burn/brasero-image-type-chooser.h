@@ -63,13 +63,16 @@ GtkWidget *brasero_image_type_chooser_new ();
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 				        BraseroImageFormat formats,
-                                        gboolean show_autodetect);
+                                        gboolean show_autodetect,
+                                        gboolean is_video);
 void
 brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat format);
 void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat *format);
+gboolean
+brasero_image_type_chooser_is_SVCD (BraseroImageTypeChooser *chooser);
 
 G_END_DECLS
 

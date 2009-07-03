@@ -378,7 +378,7 @@ brasero_src_image_set_formats (BraseroSrcImage *dialog)
 
 	brasero_track_type_free (input);
 
-	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), formats,  TRUE);
+	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), formats,  TRUE, FALSE);
 
 	format = brasero_track_image_cfg_get_forced_format (priv->track);
 	brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), format);
