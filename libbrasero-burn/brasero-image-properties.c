@@ -182,6 +182,8 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 		GtkWidget *label;
 
 		box = gtk_hbox_new (FALSE, 6);
+		gtk_container_set_border_width (GTK_CONTAINER (box), 4);
+
 		gtk_widget_show (box);
 		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (self)->vbox),
 				  box,
