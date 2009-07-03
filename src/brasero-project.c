@@ -1346,7 +1346,6 @@ brasero_project_drive_properties (BraseroProject *project)
 	GtkWidget *medium_prop;
 	GtkResponseType answer;
 	BraseroDrive *drive;
-	GtkWidget *toplevel;
 	gchar *display_name;
 	GtkWidget *options;
 	GtkWidget *button;
@@ -1356,21 +1355,21 @@ brasero_project_drive_properties (BraseroProject *project)
 	gchar *string;
 
 	/* Build dialog */
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (project->priv->session));
 	display_name = brasero_drive_get_display_name (drive);
 	header = g_strdup_printf (_("Properties of %s"), display_name);
 	g_free (display_name);
 
 	dialog = gtk_dialog_new_with_buttons (header,
-					      GTK_WINDOW (toplevel),
+					      NULL,
 					      GTK_DIALOG_MODAL|
 					      GTK_DIALOG_NO_SEPARATOR|
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      NULL);
 	g_free (header);
+
+	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
 
 	button = brasero_utils_make_button (_("_Burn"),
 					    NULL,
