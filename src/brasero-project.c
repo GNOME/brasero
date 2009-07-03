@@ -381,6 +381,9 @@ brasero_project_set_add_button_state (BraseroProject *project)
 	}
 
 	widget = gtk_ui_manager_get_widget (project->priv->manager, "/Toolbar/Add");
+	if (!widget)
+		return;
+
 	widget = gtk_bin_get_child (GTK_BIN (widget));
 	GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_DEFAULT);
 	gtk_window_set_default (GTK_WINDOW (toplevel), widget);
@@ -1182,6 +1185,7 @@ brasero_project_init (BraseroProject *obj)
 			    0);
 
 	g_object_unref (size_group);
+	
 }
 
 static void
@@ -2139,6 +2143,8 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 	gtk_action_set_sensitive (action, FALSE);
 
 	project->priv->manager = manager;
+
+	gtk_widget_grab_focus (project->priv->name_display);
 }
 
 /******************************* common to save/open ***************************/
