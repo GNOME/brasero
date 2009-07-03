@@ -1417,17 +1417,15 @@ static gboolean
 brasero_project_image_properties (BraseroProject *project)
 {
 	GtkResponseType answer;
-	GtkWidget *toplevel;
 	GtkWidget *button;
 	GtkWidget *dialog;
 
 	/* Build dialog */
 	dialog = brasero_image_properties_new ();
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
@@ -1440,7 +1438,14 @@ brasero_project_image_properties (BraseroProject *project)
 				      button,
 				      GTK_RESPONSE_OK);
 
+	GTK_WIDGET_SET_FLAGS (button,
+	                      GTK_WIDGET_FLAGS (button)|
+	                      GTK_CAN_DEFAULT);
+
 	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (dialog), project->priv->session);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	gtk_widget_show_all (dialog);
 
 	/* launch the dialog */
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
