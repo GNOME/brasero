@@ -208,7 +208,8 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 	}
 
 	num = brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
-						      formats);
+						      formats,
+	                                              FALSE);
 	brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 					       format);
 
@@ -328,10 +329,7 @@ brasero_image_properties_update (BraseroImageProperties *self)
 	brasero_image_properties_set_path (self, path);
 	g_free (path);
 
-	if (!brasero_session_cfg_has_default_output_format (priv->session))
-		format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
-	else
-		format = BRASERO_IMAGE_FORMAT_ANY;
+	format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
 
 	num = brasero_burn_session_get_possible_output_formats (BRASERO_BURN_SESSION (priv->session), &formats);
 	brasero_image_properties_set_formats (self,

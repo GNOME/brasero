@@ -103,17 +103,6 @@ brasero_session_cfg_has_default_output_path (BraseroSessionCfg *session)
 	return (result == BRASERO_BURN_OK);
 }
 
-gboolean
-brasero_session_cfg_has_default_output_format (BraseroSessionCfg *session)
-{
-	BraseroBurnSessionClass *klass;
-	BraseroImageFormat format;
-
-	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
-	format = klass->get_output_format (BRASERO_BURN_SESSION (session));
-	return (format == BRASERO_IMAGE_FORMAT_NONE);
-}
-
 static gboolean
 brasero_session_cfg_wrong_extension_signal (BraseroSessionCfg *session)
 {

@@ -62,7 +62,8 @@ GtkWidget *brasero_image_type_chooser_new ();
 
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
-				        BraseroImageFormat formats);
+				        BraseroImageFormat formats,
+                                        gboolean show_autodetect);
 void
 brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat format);

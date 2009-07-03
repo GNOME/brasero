@@ -69,7 +69,8 @@ static GtkHBoxClass *parent_class = NULL;
 
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
-				        BraseroImageFormat formats)
+				        BraseroImageFormat formats,
+                                        gboolean show_autodetect)
 {
 	guint format_num;
 	GtkTreeIter iter;
@@ -87,11 +88,13 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	gtk_list_store_clear (GTK_LIST_STORE (store));
 
 	/* now we get the targets available and display them */
-	gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
-	gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-			    FORMAT_TEXT, _("Autodetect"),
-			    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_NONE,
-			    -1);
+	if (show_autodetect) {
+		gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
+		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+				    FORMAT_TEXT, _("Autodetect"),
+				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_NONE,
+				    -1);
+	}
 
 	if (formats & BRASERO_IMAGE_FORMAT_BIN) {
 		format_num ++;
