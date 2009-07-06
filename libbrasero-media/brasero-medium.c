@@ -115,6 +115,9 @@ struct _BraseroMediumPrivate
 	guint dummy_tao:1;
 	guint burnfree:1;
 
+	guint blank_command:1;
+	guint write_command:1;
+
 	guint probe_cancelled:1;
 };
 
@@ -858,6 +861,12 @@ brasero_medium_test_simulate_CD_TAO (BraseroMedium *self,
 	tao_desc = (BraseroScsiCDTAODesc *) desc->data;
 	priv->dummy_tao = tao_desc->dummy != 0;
 	priv->burnfree = tao_desc->buf != 0;
+
+	/* See if CD-RW is supported which means in
+	 * this case that we can blank */
+	priv->blank_command = (tao_desc->CDRW != 0);
+	BRASERO_MEDIA_LOG ("Medium %s be blanked", priv->blank_command? "can":"cannot");
+
 	g_free (hdr);
 	return TRUE;
 }
@@ -894,6 +903,7 @@ brasero_medium_test_simulate_CD_SAO (BraseroMedium *self,
 	sao_desc = (BraseroScsiCDSAODesc *) desc->data;
 	priv->dummy_sao = sao_desc->dummy != 0;
 	priv->burnfree = sao_desc->buf != 0;
+
 	g_free (hdr);
 	return TRUE;
 }
@@ -932,6 +942,12 @@ brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
 	priv->dummy_sao = less_wrt_desc->dummy != 0;
 	priv->dummy_tao = less_wrt_desc->dummy != 0;
 	priv->burnfree = less_wrt_desc->buf != 0;
+
+	/* NOTE: it's said that this is only valid when the current
+	 * bit is set which is always the case in this function */
+	priv->blank_command = (less_wrt_desc->rw_DVD != 0);
+	BRASERO_MEDIA_LOG ("Medium %s be blanked", priv->blank_command? "can":"cannot");
+
 	g_free (hdr);
 	return TRUE;
 }
@@ -971,6 +987,10 @@ brasero_medium_test_simulate_2A (BraseroMedium *self,
 	priv->dummy_sao = page_2A->dummy != 0;
 	priv->dummy_tao = page_2A->dummy != 0;
 	priv->burnfree = page_2A->buffer != 0;
+
+	priv->blank_command = (page_2A->wr_CDRW != 0);
+	BRASERO_MEDIA_LOG ("Medium %s be blanked", priv->blank_command? "can":"cannot");
+
 	g_free (data);
 }
 
@@ -991,7 +1011,7 @@ brasero_medium_init_caps (BraseroMedium *self,
 	if (priv->info & BRASERO_MEDIUM_CD) {
 		/* we have to do both */
 		res = brasero_medium_test_simulate_CD_SAO (self, handle, code);
-		if (res == BRASERO_SCSI_OK)
+		if (res)
 			brasero_medium_test_simulate_CD_TAO (self, handle, code);
 	}
 	else
@@ -1002,7 +1022,7 @@ brasero_medium_init_caps (BraseroMedium *self,
 			  priv->dummy_sao,
 			  priv->burnfree);
 
-	if (res == BRASERO_SCSI_OK)
+	if (res)
 		return;
 
 	/* it didn't work out as expected use fallback */
@@ -2906,7 +2926,8 @@ brasero_medium_probe_thread (gpointer self)
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	path = brasero_drive_get_device (priv->drive);
-
+	if (!path)
+		path = brasero_drive_get_block_device (priv->drive);
 	priv->info = BRASERO_MEDIUM_BUSY;
 
 	/* the drive might be busy (a burning is going on) so we don't block
@@ -3214,7 +3235,6 @@ gboolean
 brasero_medium_can_be_rewritten (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
-	BraseroDriveCaps caps;
 
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
@@ -3225,27 +3245,16 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
 	||   (priv->info & BRASERO_MEDIUM_FILE))
 		return FALSE;
 
-	caps = brasero_drive_get_caps (priv->drive);
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDRW))
-		return (caps & BRASERO_DRIVE_CAPS_CDRW) != 0;
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDRW)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW))
+		return priv->blank_command != 0;
 
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRAM) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE))
-		return (caps & BRASERO_DRIVE_CAPS_BDRW) != 0;
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE))
+		return priv->write_command != 0;
 
 	return FALSE;
 }

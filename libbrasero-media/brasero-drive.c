@@ -753,8 +753,11 @@ brasero_drive_init_hal (BraseroDrive *drive)
 
 	if (!priv->udi) {
 		priv->udi = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
-		BRASERO_MEDIA_LOG ("Using HAL backend udi = %s\n", priv->udi);
+		BRASERO_MEDIA_LOG ("Using HAL backend udi = %s", priv->udi);
 	}
+
+	if (!priv->udi)
+		return;
 
 	priv->path = libhal_device_get_property_string (ctx,
 							priv->udi,
@@ -763,15 +766,6 @@ brasero_drive_init_hal (BraseroDrive *drive)
 	if (priv->path && priv->path [0] == '\0') {
 		g_free (priv->path);
 		priv->path = NULL;
-	}
-
-	priv->block_path = libhal_device_get_property_string (ctx,
-							      priv->udi,
-							      "block.device",
-							      NULL);
-	if (priv->block_path && priv->block_path [0] == '\0') {
-		g_free (priv->block_path);
-		priv->block_path = NULL;
 	}
 
 	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.cdr", NULL))
@@ -829,6 +823,9 @@ brasero_drive_init_real (BraseroDrive *drive)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	priv->block_path = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	BRASERO_MEDIA_LOG ("Initializing drive %s", priv->block_path);
 
 	/* Put HAL initialization first to make sure the device path is set */
 	brasero_drive_init_hal (drive);
