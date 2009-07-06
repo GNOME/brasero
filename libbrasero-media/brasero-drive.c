@@ -91,7 +91,7 @@ static gulong drive_signals [LAST_SIGNAL] = {0, };
 
 enum {
 	PROP_NONE	= 0,
-	PROP_DEVICE,
+	PROP_GDRIVE,
 	PROP_UDI
 };
 
@@ -519,7 +519,10 @@ brasero_drive_get_udi (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return priv->udi;
+	if (!priv->gdrive)
+		return NULL;
+
+	return g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
 }
 
 /**
@@ -748,6 +751,11 @@ brasero_drive_init_hal (BraseroDrive *drive)
 	watch = brasero_hal_watch_get_default ();
 	ctx = brasero_hal_watch_get_ctx (watch);
 
+	if (!priv->udi) {
+		priv->udi = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
+		BRASERO_MEDIA_LOG ("Using HAL backend udi = %s\n", priv->udi);
+	}
+
 	priv->path = libhal_device_get_property_string (ctx,
 							priv->udi,
 							BLOCK_DEVICE,
@@ -815,62 +823,6 @@ brasero_drive_init_hal (BraseroDrive *drive)
 	}
 }
 
-static GDrive *
-brasero_drive_get_gdrive_real (BraseroDrive *drive)
-{
-	const gchar *volume_path = NULL;
-	BraseroDrivePrivate *priv;
-	GVolumeMonitor *monitor;
-	GDrive *gdrive = NULL;
-	GList *drives;
-	GList *iter;
-
-	g_return_val_if_fail (drive != NULL, NULL);
-	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
-
-	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->path)
-		return NULL;
-
-#if defined(HAVE_STRUCT_USCSI_CMD)
-	volume_path = brasero_drive_get_block_device (drive);
-#else
-	volume_path = brasero_drive_get_device (drive);
-#endif
-
-	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
-	monitor = g_volume_monitor_get ();
-	drives = g_volume_monitor_get_connected_drives (monitor);
-	g_object_unref (monitor);
-
-	for (iter = drives; iter; iter = iter->next) {
-		gchar *device_path;
-		GDrive *tmp;
-
-		tmp = iter->data;
-		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-		if (!device_path)
-			continue;
-
-		BRASERO_MEDIA_LOG ("Found drive %s", device_path);
-		if (!strcmp (device_path, volume_path)) {
-			gdrive = tmp;
-			g_free (device_path);
-			g_object_ref (gdrive);
-			break;
-		}
-
-		g_free (device_path);
-	}
-	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
-	g_list_free (drives);
-
-	if (!gdrive)
-		BRASERO_MEDIA_LOG ("No drive found for medium");
-
-	return gdrive;
-}
-
 static void
 brasero_drive_init_real (BraseroDrive *drive)
 {
@@ -881,17 +833,14 @@ brasero_drive_init_real (BraseroDrive *drive)
 	/* Put HAL initialization first to make sure the device path is set */
 	brasero_drive_init_hal (drive);
 
-	priv->gdrive = brasero_drive_get_gdrive_real (drive);
-	if (priv->gdrive) {
-		/* If it's not a fake drive then connect to signal for any
-		 * change and check medium inside */
-		g_signal_connect (priv->gdrive,
-				  "changed",
-				  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
-				  drive);
+	/* If it's not a fake drive then connect to signal for any
+	 * change and check medium inside */
+	g_signal_connect (priv->gdrive,
+			  "changed",
+			  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
+			  drive);
 
-		brasero_drive_check_medium_inside_gdrive (drive);
-	}
+	brasero_drive_check_medium_inside_gdrive (drive);
 }
 
 static void
@@ -908,9 +857,9 @@ brasero_drive_set_property (GObject *object,
 
 	switch (prop_id)
 	{
-	case PROP_UDI:
-		priv->udi = g_strdup (g_value_get_string (value));
-		if (!priv->udi) {
+	case PROP_GDRIVE:
+		priv->gdrive = g_value_get_object (value);
+		if (!priv->gdrive) {
 			priv->probed = TRUE;
 			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 						     "drive", object,
@@ -918,9 +867,6 @@ brasero_drive_set_property (GObject *object,
 		}
 		else
 			brasero_drive_init_real (BRASERO_DRIVE (object));
-			
-		break;
-	case PROP_DEVICE:
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -945,8 +891,8 @@ brasero_drive_get_property (GObject *object,
 	case PROP_UDI:
 		g_value_set_string (value, g_strdup (priv->udi));
 		break;
-	case PROP_DEVICE:
-		g_value_set_string (value, g_strdup (priv->block_path));
+	case PROP_GDRIVE:
+		g_value_set_object (value, priv->gdrive);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1051,13 +997,13 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	                                                     "HAL udi",
 	                                                     "HAL udi as a string",
 	                                                     NULL,
-	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                                                     G_PARAM_READABLE));
 	g_object_class_install_property (object_class,
-	                                 PROP_DEVICE,
-	                                 g_param_spec_string("device",
-	                                                     "Device path",
-	                                                     "Path to the device",
-	                                                     NULL,
+	                                 PROP_GDRIVE,
+	                                 g_param_spec_object ("gdrive",
+	                                                      "GDrive",
+	                                                      "A GDrive object for the drive",
+	                                                      G_TYPE_DRIVE,
 	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
@@ -1066,9 +1012,9 @@ brasero_drive_class_init (BraseroDriveClass *klass)
  */
 
 BraseroDrive *
-brasero_drive_new (const gchar *udi)
+brasero_drive_new (GDrive *gdrive)
 {
 	return g_object_new (BRASERO_TYPE_DRIVE,
-			     "udi", udi,
+			     "gdrive", gdrive,
 			     NULL);
 }
