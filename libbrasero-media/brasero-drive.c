@@ -854,6 +854,9 @@ brasero_drive_set_property (GObject *object,
 
 	switch (prop_id)
 	{
+	case PROP_UDI:
+		priv->udi = g_strdup (g_value_get_string (value));
+		break;
 	case PROP_GDRIVE:
 		priv->gdrive = g_value_get_object (value);
 		if (!priv->gdrive) {
@@ -994,7 +997,7 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	                                                     "HAL udi",
 	                                                     "HAL udi as a string",
 	                                                     NULL,
-	                                                     G_PARAM_READABLE));
+	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,
 	                                 PROP_GDRIVE,
 	                                 g_param_spec_object ("gdrive",
@@ -1002,16 +1005,4 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	                                                      "A GDrive object for the drive",
 	                                                      G_TYPE_DRIVE,
 	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-}
-
-/**
- * This is not public API. Declared in burn-monitor.h.
- */
-
-BraseroDrive *
-brasero_drive_new (GDrive *gdrive)
-{
-	return g_object_new (BRASERO_TYPE_DRIVE,
-			     "gdrive", gdrive,
-			     NULL);
 }

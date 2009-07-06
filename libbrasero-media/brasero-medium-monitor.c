@@ -84,9 +84,6 @@ G_DEFINE_TYPE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
  * here.
  */
 
-BraseroDrive *
-brasero_drive_new (GDrive *drive);
-
 gboolean
 brasero_drive_probing (BraseroDrive *drive);
 
@@ -381,7 +378,10 @@ brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
 	gdrive = brasero_medium_monitor_get_gdrive (self, device_path);
 	g_free (device_path);
 
-	drive = brasero_drive_new (gdrive);
+	drive = g_object_new (BRASERO_TYPE_DRIVE,
+	                      "udi", udi,
+	                      "gdrive", gdrive,
+	                      NULL);
 	priv->drives = g_slist_prepend (priv->drives, drive);
 
 	/* connect to signals. This must come before the g_signal_emit () so we
@@ -512,7 +512,10 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 		gdrive = brasero_medium_monitor_get_gdrive (object, device_path);
 		g_free (device_path);
 
-		drive = brasero_drive_new (gdrive);
+		drive = g_object_new (BRASERO_TYPE_DRIVE,
+		                      "udi", devices [i],
+		                      "gdrive", gdrive,
+		                      NULL);
 		priv->drives = g_slist_prepend (priv->drives, drive);
 
 		g_signal_connect (drive,
@@ -527,7 +530,7 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 	libhal_free_string_array (devices);
 
 	/* add fake/file drive */
-	drive = brasero_drive_new (NULL);
+	drive = g_object_new (BRASERO_TYPE_DRIVE, NULL);
 	priv->drives = g_slist_prepend (priv->drives, drive);
 
 	return;
