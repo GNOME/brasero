@@ -50,7 +50,13 @@
 #include "brasero-drive.h"
 #include "burn-hal-watch.h"
 
+#include "scsi-device.h"
+#include "scsi-utils.h"
+#include "scsi-spc1.h"
 #include "scsi-mmc1.h"
+#include "scsi-mmc2.h"
+#include "scsi-status-page.h"
+#include "scsi-mode-pages.h"
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 #define BLOCK_DEVICE	"block.solaris.raw_device"
@@ -62,6 +68,9 @@ typedef struct _BraseroDrivePrivate BraseroDrivePrivate;
 struct _BraseroDrivePrivate
 {
 	GDrive *gdrive;
+
+	GThread *probe;
+	gint probe_id;
 
 	BraseroMedium *medium;
 	BraseroDriveCaps caps;
@@ -77,7 +86,7 @@ struct _BraseroDrivePrivate
 	GCancellable *cancel;
 
 	guint probed:1;
-
+	guint probe_cancelled:1;
 };
 
 #define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
@@ -96,6 +105,8 @@ enum {
 };
 
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
+
+#define BRASERO_DRIVE_OPEN_ATTEMPTS			5
 
 /**
  * This is private API. The function is defined in brasero-volume.c
@@ -768,31 +779,6 @@ brasero_drive_init_hal (BraseroDrive *drive)
 		priv->path = NULL;
 	}
 
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.cdr", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_CDR;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.cdrw", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_CDRW;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdr", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDR;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdrw", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusr", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDR_PLUS;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusrw", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusrdl", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDR_PLUS_DL;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusrwdl", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdram", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_DVDRAM;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.bdr", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_BDR;
-	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.bdre", NULL))
-		priv->caps |= BRASERO_DRIVE_CAPS_BDRW;
-
-	BRASERO_MEDIA_LOG ("Drive caps are %d", priv->caps);
-
 	/* Also get its parent to retrieve the bus, host, lun values */
 	priv->bus = -1;
 	priv->lun = -1;
@@ -817,15 +803,16 @@ brasero_drive_init_hal (BraseroDrive *drive)
 	}
 }
 
-static void
-brasero_drive_init_real (BraseroDrive *drive)
+static gboolean
+brasero_drive_probed (gpointer data)
 {
+	BraseroDrive *drive = BRASERO_DRIVE (data);
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = BRASERO_DRIVE_PRIVATE (data);
 
-	priv->block_path = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-	BRASERO_MEDIA_LOG ("Initializing drive %s", priv->block_path);
+	g_thread_join (priv->probe);
+	priv->probe = NULL;
 
 	/* Put HAL initialization first to make sure the device path is set */
 	brasero_drive_init_hal (drive);
@@ -838,6 +825,208 @@ brasero_drive_init_real (BraseroDrive *drive)
 			  drive);
 
 	brasero_drive_check_medium_inside_gdrive (drive);
+
+	priv->probe_id = 0;
+	return FALSE;
+}
+
+static gboolean
+brasero_drive_get_caps_profiles (BraseroDrive *self,
+                                 BraseroDeviceHandle *handle,
+                                 BraseroScsiErrCode *code)
+{
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroScsiProfileDesc *profiles;
+	BraseroScsiFeatureDesc *desc;
+	BraseroDrivePrivate *priv;
+	BraseroScsiResult result;
+	int profiles_num;
+	int size;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	BRASERO_MEDIA_LOG ("Checking supported profiles");
+	result = brasero_mmc2_get_configuration_feature (handle,
+	                                                 BRASERO_SCSI_FEAT_PROFILES,
+	                                                 &hdr,
+	                                                 &size,
+	                                                 code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
+		return FALSE;
+	}
+
+	/* Go through all features available */
+	desc = hdr->desc;
+	profiles = (BraseroScsiProfileDesc *) desc->data;
+	profiles_num = desc->add_len / sizeof (BraseroScsiProfileDesc);
+
+	while (profiles_num) {
+		switch (BRASERO_GET_16 (profiles->number)) {
+			case BRASERO_SCSI_PROF_CDR:
+				priv->caps |= BRASERO_DRIVE_CAPS_CDR;
+				break;
+			case BRASERO_SCSI_PROF_CDRW:
+				priv->caps |= BRASERO_DRIVE_CAPS_CDRW;
+				break;
+			case BRASERO_SCSI_PROF_DVD_R: 
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDR;
+				break;
+			case BRASERO_SCSI_PROF_DVD_RW_SEQUENTIAL: 
+			case BRASERO_SCSI_PROF_DVD_RW_RESTRICTED: 
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDRW;
+				break;
+			case BRASERO_SCSI_PROF_DVD_RAM: 
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDRAM;
+				break;
+			case BRASERO_SCSI_PROF_DVD_R_PLUS_DL:
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDR_PLUS_DL;
+				break;
+			case BRASERO_SCSI_PROF_DVD_RW_PLUS_DL:
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL;
+				break;
+			case BRASERO_SCSI_PROF_DVD_R_PLUS:
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDR_PLUS;
+				break;
+			case BRASERO_SCSI_PROF_DVD_RW_PLUS:
+				priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS;
+				break;
+			case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
+			case BRASERO_SCSI_PROF_BR_R_RANDOM:
+				priv->caps |= BRASERO_DRIVE_CAPS_BDR;
+				break;
+			case BRASERO_SCSI_PROF_BD_RW:
+				priv->caps |= BRASERO_DRIVE_CAPS_BDRW;
+				break;
+			default:
+				break;
+		}
+
+		if (priv->probe_cancelled)
+			break;
+
+		/* Move the pointer to the next features */
+		profiles ++;
+		profiles_num --;
+	}
+
+	g_free (hdr);
+	return TRUE;
+}
+
+static void
+brasero_drive_get_caps_2A (BraseroDrive *self,
+                           BraseroDeviceHandle *handle,
+                           BraseroScsiErrCode *code)
+{
+	BraseroScsiStatusPage *page_2A = NULL;
+	BraseroScsiModeData *data = NULL;
+	BraseroDrivePrivate *priv;
+	BraseroScsiResult result;
+	int size = 0;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	result = brasero_spc1_mode_sense_get_page (handle,
+						   BRASERO_SPC_PAGE_STATUS,
+						   &data,
+						   &size,
+						   code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_MEDIA_LOG ("MODE SENSE failed");
+		return;
+	}
+
+	page_2A = (BraseroScsiStatusPage *) &data->page;
+
+	if (page_2A->wr_CDR != 0)
+		priv->caps |= BRASERO_DRIVE_CAPS_CDR;
+	if (page_2A->wr_CDRW != 0)
+		priv->caps |= BRASERO_DRIVE_CAPS_CDRW;
+	if (page_2A->wr_DVDR != 0)
+		priv->caps |= BRASERO_DRIVE_CAPS_DVDR;
+	if (page_2A->wr_DVDRAM != 0)
+		priv->caps |= BRASERO_DRIVE_CAPS_DVDRAM;
+
+	g_free (data);
+}
+
+static gpointer
+brasero_drive_probe_thread (gpointer data)
+{
+	gint counter = 0;
+	const gchar *path;
+	BraseroScsiErrCode code;
+	BraseroDrivePrivate *priv;
+	BraseroDeviceHandle *handle;
+	BraseroDrive *drive = BRASERO_DRIVE (data);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	path = brasero_drive_get_device (drive);
+	if (!path)
+		path = brasero_drive_get_block_device (drive);
+
+	/* the drive might be busy (a burning is going on) so we don't block
+	 * but we re-try to open it every second */
+	BRASERO_MEDIA_LOG ("Trying to open device %s", path);
+
+	handle = brasero_device_handle_open (path, FALSE, &code);
+	while (!handle && counter <= BRASERO_DRIVE_OPEN_ATTEMPTS) {
+		sleep (1);
+
+		if (priv->probe_cancelled) {
+			BRASERO_MEDIA_LOG ("Open () cancelled");
+			priv->probe = NULL;
+			return NULL;
+		}
+
+		counter ++;
+		handle = brasero_device_handle_open (path, FALSE, &code);
+	}
+
+	if (priv->probe_cancelled) {
+		BRASERO_MEDIA_LOG ("Open () cancelled");
+		priv->probe = NULL;
+		return NULL;
+	}
+
+	if (handle) {
+		BRASERO_MEDIA_LOG ("Open () succeeded");
+
+		if (!brasero_drive_get_caps_profiles (drive, handle, &code))
+			brasero_drive_get_caps_2A (drive, handle, &code);
+
+		brasero_device_handle_close (handle);
+
+		BRASERO_MEDIA_LOG ("Drive caps are %d", priv->caps);
+	}
+	else
+		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
+
+	priv->probe_id = g_idle_add (brasero_drive_probed, drive);
+	return NULL;
+}
+
+static void
+brasero_drive_init_real (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	priv->block_path = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+
+	BRASERO_MEDIA_LOG ("Initializing drive %s", priv->block_path);
+
+	/* NOTE: why a thread? Because in case of a damaged medium, brasero can
+	 * block on some functions until timeout and if we do this in the main
+	 * thread then our whole UI blocks. This medium won't be exported by the
+	 * BraseroDrive that exported until it returns PROBED signal.
+	 * One (good) side effect is that it also improves start time. */
+	priv->probe = g_thread_create (brasero_drive_probe_thread,
+				       drive,
+				       TRUE,
+				       NULL);
 }
 
 static void
@@ -906,6 +1095,17 @@ brasero_drive_finalize (GObject *object)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	if (priv->probe) {
+		priv->probe_cancelled = TRUE;
+		g_thread_join (priv->probe);
+		priv->probe = 0;
+	}
+
+	if (priv->probe_id) {
+		g_source_remove (priv->probe_id);
+		priv->probe_id = 0;
+	}
 
 	if (priv->path) {
 		libhal_free_string (priv->path);

@@ -174,8 +174,10 @@ brasero_device_handle_open (const gchar *path,
 	if (exclusive)
 		flags |= O_EXCL;
 
+	BRASERO_MEDIA_LOG ("Getting handle");
 	fd = open (path, flags);
 	if (fd < 0) {
+		BRASERO_MEDIA_LOG ("No handle: %s", strerror (errno));
 		if (code) {
 			if (errno == EAGAIN
 			||  errno == EWOULDBLOCK
@@ -191,6 +193,7 @@ brasero_device_handle_open (const gchar *path,
 	handle = g_new (BraseroDeviceHandle, 1);
 	handle->fd = fd;
 
+	BRASERO_MEDIA_LOG ("Handle ready");
 	return handle;
 }
 
