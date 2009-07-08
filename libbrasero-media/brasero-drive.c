@@ -109,12 +109,6 @@ G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 #define BRASERO_DRIVE_OPEN_ATTEMPTS			5
 
 /**
- * This is private API. The function is defined in brasero-volume.c
- */
-BraseroVolume *
-brasero_volume_new (BraseroDrive *drive, const gchar *udi);
-
-/**
  * brasero_drive_get_gdrive:
  * @drive: a #BraseroDrive
  *

@@ -459,22 +459,3 @@ brasero_volume_class_init (BraseroVolumeClass *klass)
 
 	object_class->finalize = brasero_volume_finalize;
 }
-
-/**
- * This is private API defined in brasero-drive.c
- */
-
-BraseroVolume *
-brasero_volume_new (BraseroDrive *drive,
-		    const gchar *udi)
-{
-	BraseroVolume *volume;
-
-	g_return_val_if_fail (drive != NULL, NULL);
-	volume = g_object_new (BRASERO_TYPE_VOLUME,
-			       "drive", drive,
-			       "udi", udi,
-			       NULL);
-
-	return volume;
-}
