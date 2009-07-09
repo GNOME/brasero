@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * Brasero
+ * Libbrasero-media
  * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
  *
  * Libbrasero-media is free software; you can redistribute it and/or modify
@@ -28,41 +28,82 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#include <glib.h>
-
-#include "scsi-base.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "scsi-error.h"
-#include "scsi-mode-pages.h"
+#include "scsi-utils.h"
+#include "scsi-base.h"
+#include "scsi-command.h"
+#include "scsi-opcodes.h"
 
-#ifndef _BURN_SPC1_H
-#define _BURN_SPC1_H
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
-G_BEGIN_DECLS
+struct _BraseroInquiryCDB {
+	uchar opcode;
 
-BraseroScsiResult
-brasero_spc1_test_unit_ready (BraseroDeviceHandle *handle,
-			      BraseroScsiErrCode *error);
+	uchar evpd			:1;
+	uchar cmd_dt			:1;
+	uchar reserved0		:6;
 
-BraseroScsiResult
-brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
-				  BraseroSPCPageType num,
-				  BraseroScsiModeData **data,
-				  int *data_size,
-				  BraseroScsiErrCode *error);
+	uchar op_code;
 
-BraseroScsiResult
-brasero_spc1_mode_select (BraseroDeviceHandle *handle,
-			  BraseroScsiModeData *data,
-			  int size,
-			  BraseroScsiErrCode *error);
+	uchar reserved1;
+
+	uchar alloc_len;
+
+	uchar ctl;
+};
+
+#else
+
+struct _BraseroInquiryCDB {
+	uchar opcode;
+
+	uchar reserved0		:6;
+	uchar cmd_dt			:1;
+	uchar evpd			:1;
+
+	uchar op_code;
+
+	uchar reserved1;
+
+	uchar alloc_len;
+
+	uchar ctl;
+};
+
+#endif
+
+typedef struct _BraseroInquiryCDB BraseroInquiryCDB;
+
+BRASERO_SCSI_COMMAND_DEFINE (BraseroInquiryCDB,
+			     INQUIRY,
+			     BRASERO_SCSI_READ);
 
 BraseroScsiResult
 brasero_spc1_inquiry_is_optical_drive (BraseroDeviceHandle *handle,
-                                       BraseroScsiErrCode *error);
+                                       BraseroScsiErrCode *error)
+{
+	BraseroInquiryCDB *cdb;
+	uchar data [36] = {0, };
+	BraseroScsiResult res;
 
-G_END_DECLS
+	cdb = brasero_scsi_command_new (&info, handle);
+	cdb->alloc_len = sizeof (data);
 
-#endif /* _BURN_SPC1_H */
+	res = brasero_scsi_command_issue_sync (cdb,
+					       data,
+					       sizeof (data),
+					       error);
+	brasero_scsi_command_free (cdb);
+
+	if (res != BRASERO_SCSI_OK)
+		return res;
+
+	/* NOTE: 0x05 is for CD/DVD players */
+	return (data [0] & 0x1F) == 0x05? BRASERO_SCSI_OK:BRASERO_SCSI_RECOVERABLE;
+}
 
  

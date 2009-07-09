@@ -479,7 +479,7 @@ brasero_drive_get_device (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return priv->path;
+	return priv->path? priv->path:priv->block_path;
 }
 
 /**
@@ -512,6 +512,7 @@ brasero_drive_get_block_device (BraseroDrive *drive)
  * to uniquely identify the drive.
  *
  * Return value: a string holding the HAL udi. Not to be freed
+ * Deprecated since 2.27.3
  **/
 const gchar *
 brasero_drive_get_udi (BraseroDrive *drive)

@@ -47,9 +47,12 @@
 
 #include "brasero-media-private.h"
 
+#include "scsi-device.h"
+#include "scsi-utils.h"
+#include "scsi-spc1.h"
+
 #include "brasero-drive.h"
 #include "brasero-medium.h"
-#include "burn-hal-watch.h"
 #include "brasero-medium-monitor.h"
 
 typedef struct _BraseroMediumMonitorPrivate BraseroMediumMonitorPrivate;
@@ -286,49 +289,6 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 	return list;
 }
 
-static GDrive *
-brasero_medium_monitor_get_gdrive (BraseroMediumMonitor *monitor,
-                                   const gchar *volume_path)
-{
-	BraseroMediumMonitorPrivate *priv;
-	GDrive *gdrive = NULL;
-	GList *drives;
-	GList *iter;
-
-	g_return_val_if_fail (volume_path != NULL, NULL);
-
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
-
-	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
-	drives = g_volume_monitor_get_connected_drives (priv->gmonitor);
-	for (iter = drives; iter; iter = iter->next) {
-		gchar *device_path;
-		GDrive *tmp;
-
-		tmp = iter->data;
-		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-		if (!device_path)
-			continue;
-
-		BRASERO_MEDIA_LOG ("Found drive %s", device_path);
-		if (!strcmp (device_path, volume_path)) {
-			gdrive = tmp;
-			g_free (device_path);
-			g_object_ref (gdrive);
-			break;
-		}
-
-		g_free (device_path);
-	}
-	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
-	g_list_free (drives);
-
-	if (!gdrive)
-		BRASERO_MEDIA_LOG ("No drive found for medium");
-
-	return gdrive;
-}
-
 static void
 brasero_medium_monitor_medium_added_cb (BraseroDrive *drive,
 					BraseroMedium *medium,
@@ -351,35 +311,50 @@ brasero_medium_monitor_medium_removed_cb (BraseroDrive *drive,
 		       medium);
 }
 
+static gboolean
+brasero_medium_monitor_is_drive (BraseroMediumMonitor *monitor,
+                                 GDrive *gdrive)
+{
+	BraseroMediumMonitorPrivate *priv;
+	BraseroDeviceHandle *handle;
+	BraseroScsiErrCode code;
+	gboolean result;
+	gchar *device;
+
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+
+	device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	BRASERO_MEDIA_LOG ("Testing drive %s", device);
+
+	handle = brasero_device_handle_open (device, FALSE, &code);
+	g_free (device);
+
+	if (!handle)
+		return FALSE;
+
+	result = (brasero_spc1_inquiry_is_optical_drive (handle, &code) == BRASERO_SCSI_OK);
+	brasero_device_handle_close (handle);
+
+	BRASERO_MEDIA_LOG ("Drive %s", result? "is optical":"is not optical");
+
+	return result;
+}
+
 static void
-brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
-				    const char *udi,
-				    BraseroMediumMonitor *self)
+brasero_medium_monitor_connected_cb (GVolumeMonitor *monitor,
+                                     GDrive *gdrive,
+                                     BraseroMediumMonitor *self)
 {
 	BraseroMediumMonitorPrivate *priv;
 	BraseroDrive *drive = NULL;
-	gchar *device_path;
-	LibHalContext *ctx;
-	GDrive *gdrive;
 
-	ctx = brasero_hal_watch_get_ctx (watch);
-	if (!libhal_device_query_capability (ctx, udi, "storage.cdrom", NULL))
+	if (!brasero_medium_monitor_is_drive (self, gdrive))
 		return;
 
 	BRASERO_MEDIA_LOG ("New drive added");
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	/* Get the gdrive */
-	device_path = libhal_device_get_property_string (ctx,
-	                                                 udi,
-	                                                 "block.device",
-	                                                 NULL);
-	gdrive = brasero_medium_monitor_get_gdrive (self, device_path);
-	g_free (device_path);
-
 	drive = g_object_new (BRASERO_TYPE_DRIVE,
-	                      "udi", udi,
 	                      "gdrive", gdrive,
 	                      NULL);
 	priv->drives = g_slist_prepend (priv->drives, drive);
@@ -409,32 +384,27 @@ brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
 }
 
 static void
-brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
-				   const char *udi,
-				   BraseroMediumMonitor *self)
+brasero_medium_monitor_disconnected_cb (GVolumeMonitor *monitor,
+                                        GDrive *gdrive,
+                                        BraseroMediumMonitor *self)
 {
 	BraseroMediumMonitorPrivate *priv;
-	LibHalContext *ctx;
-	GSList *iter;
 	GSList *next;
+	GSList *iter;
 
-	ctx = brasero_hal_watch_get_ctx (watch);
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
 	BRASERO_MEDIA_LOG ("HAL signal device removed");
 
 	for (iter = priv->drives; iter; iter = next) {
-		const gchar *device_udi;
+		GDrive *gdrive_iter;
 		BraseroDrive *drive;
 
 		drive = iter->data;
 		next = iter->next;
 
-		device_udi = brasero_drive_get_udi (drive);
-		if (!device_udi)
-			continue;
-
-		if (!strcmp (device_udi, udi)) {
+		gdrive_iter = brasero_drive_get_gdrive (drive);
+		if (gdrive == gdrive_iter) {
 			BraseroMedium *medium;
 
 			BRASERO_MEDIA_LOG ("Drive removed");
@@ -458,12 +428,9 @@ brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
 static void
 brasero_medium_monitor_init (BraseroMediumMonitor *object)
 {
-	DBusError error;
-	int nb_devices, i;
-	LibHalContext *ctx;
+	GList *iter;
+	GList *drives;
 	BraseroDrive *drive;
-	char **devices = NULL;
-	BraseroHALWatch *watch;
 	BraseroMediumMonitorPrivate *priv;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
@@ -473,61 +440,38 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 	 * connect to HAL before us. */
 	priv->gmonitor = g_volume_monitor_get ();
 
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
-
-	g_signal_connect (watch,
-			  "device-added",
-			  G_CALLBACK (brasero_medium_monitor_inserted_cb),
-			  object);
-	g_signal_connect (watch,
-			  "device-removed",
-			  G_CALLBACK (brasero_medium_monitor_removed_cb),
-			  object);
-
-	/* Now we get the list and cache it */
-	dbus_error_init (&error);
-	BRASERO_MEDIA_LOG ("Polling for drives");
-	devices = libhal_find_device_by_capability (ctx,
-						    "storage.cdrom", &nb_devices,
-						    &error);
-	if (dbus_error_is_set (&error)) {
-		BRASERO_MEDIA_LOG ("Hal is not running : %s\n", error.message);
-		dbus_error_free (&error);
-		return;
-	}
-
-	BRASERO_MEDIA_LOG ("Found %d drives", nb_devices);
-	for (i = 0; i < nb_devices; i++) {
+	drives = g_volume_monitor_get_connected_drives (priv->gmonitor);
+	for (iter = drives; iter; iter = iter->next) {
 		GDrive *gdrive;
-		gchar *device_path;
 
-		/* create the drive */
-		BRASERO_MEDIA_LOG ("Probing %s", devices [i]);
+		gdrive = iter->data;
+		if (brasero_medium_monitor_is_drive (object, gdrive)) {
+			drive = g_object_new (BRASERO_TYPE_DRIVE,
+					      "gdrive", gdrive,
+					      NULL);
+			priv->drives = g_slist_prepend (priv->drives, drive);
 
-		device_path = libhal_device_get_property_string (ctx,
-								 devices [i],
-								 "block.device",
-								 NULL);
-		gdrive = brasero_medium_monitor_get_gdrive (object, device_path);
-		g_free (device_path);
-
-		drive = g_object_new (BRASERO_TYPE_DRIVE,
-		                      "udi", devices [i],
-		                      "gdrive", gdrive,
-		                      NULL);
-		priv->drives = g_slist_prepend (priv->drives, drive);
-
-		g_signal_connect (drive,
-				  "medium-added",
-				  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
-				  object);
-		g_signal_connect (drive,
-				  "medium-removed",
-				  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
-				  object);
+			g_signal_connect (drive,
+					  "medium-added",
+					  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
+					  object);
+			g_signal_connect (drive,
+					  "medium-removed",
+					  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
+					  object);
+		}
 	}
-	libhal_free_string_array (devices);
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+	g_list_free (drives);
+
+	g_signal_connect (priv->gmonitor,
+			  "drive-connected",
+			  G_CALLBACK (brasero_medium_monitor_connected_cb),
+			  object);
+	g_signal_connect (priv->gmonitor,
+			  "drive-disconnected",
+			  G_CALLBACK (brasero_medium_monitor_disconnected_cb),
+			  object);
 
 	/* add fake/file drive */
 	drive = g_object_new (BRASERO_TYPE_DRIVE, NULL);
@@ -550,6 +494,12 @@ brasero_medium_monitor_finalize (GObject *object)
 	}
 
 	if (priv->gmonitor) {
+		g_signal_handlers_disconnect_by_func (priv->gmonitor,
+		                                      brasero_medium_monitor_connected_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->gmonitor,
+		                                      brasero_medium_monitor_disconnected_cb,
+		                                      object);
 		g_object_unref (priv->gmonitor);
 		priv->gmonitor = NULL;
 	}
