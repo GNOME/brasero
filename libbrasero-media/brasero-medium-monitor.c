@@ -39,12 +39,6 @@
 
 #include <gio/gio.h>
 
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
-#include <libhal.h>
-
 #include "brasero-media-private.h"
 
 #include "scsi-device.h"

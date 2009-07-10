@@ -39,12 +39,10 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#include <libhal.h>
 #include <gio/gio.h>
 
 #include "brasero-media-private.h"
 #include "brasero-gio-operation.h"
-#include "burn-hal-watch.h"
 
 #include "brasero-medium.h"
 #include "brasero-volume.h"
@@ -59,12 +57,6 @@
 #include "scsi-mode-pages.h"
 #include "scsi-sbc.h"
 
-#if defined(HAVE_STRUCT_USCSI_CMD)
-#define BLOCK_DEVICE	"block.solaris.raw_device"
-#else
-#define BLOCK_DEVICE	"block.device"
-#endif
-
 typedef struct _BraseroDrivePrivate BraseroDrivePrivate;
 struct _BraseroDrivePrivate
 {
@@ -76,13 +68,8 @@ struct _BraseroDrivePrivate
 	BraseroMedium *medium;
 	BraseroDriveCaps caps;
 
-	gchar *udi;
 	gchar *path;
 	gchar *block_path;
-
-	gint bus;
-	gint target;
-	gint lun;
 
 	GCancellable *cancel;
 
@@ -235,23 +222,16 @@ brasero_drive_eject (BraseroDrive *drive,
  * sometimes needed by some backends like cdrecord.
  *
  * Return value: a string or NULL. The string must be freed when not needed
+ *
+ * Deprecated since 2.27.3
  **/
 gchar *
 brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
 {
-	BraseroDrivePrivate *priv;
-
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->gdrive)
-		return NULL;
-
-	if (priv->bus < 0)
-		return NULL;
-
-	return g_strdup_printf ("%i,%i,%i", priv->bus, priv->target, priv->lun);
+	return NULL;
 }
 
 /**
@@ -728,60 +708,6 @@ brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 	brasero_drive_check_medium_inside_gdrive (drive);
 }
 
-static void
-brasero_drive_init_hal (BraseroDrive *drive)
-{
-	BraseroDrivePrivate *priv;
-	BraseroHALWatch *watch;
-	LibHalContext *ctx;
-	char *parent;
-
-	priv = BRASERO_DRIVE_PRIVATE (drive);
-
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
-
-	if (!priv->udi) {
-		priv->udi = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
-		BRASERO_MEDIA_LOG ("Using HAL backend udi = %s", priv->udi);
-	}
-
-	if (!priv->udi)
-		return;
-
-	priv->path = libhal_device_get_property_string (ctx,
-							priv->udi,
-							BLOCK_DEVICE,
-							NULL);
-	if (priv->path && priv->path [0] == '\0') {
-		g_free (priv->path);
-		priv->path = NULL;
-	}
-
-	/* Also get its parent to retrieve the bus, host, lun values */
-	priv->bus = -1;
-	priv->lun = -1;
-	priv->target = -1;
-	parent = libhal_device_get_property_string (ctx, priv->udi, "info.parent", NULL);
-	if (parent) {
-		/* Check it is a SCSI interface */
-		if (libhal_device_property_exists (ctx, parent, "scsi.host", NULL)
-		&&  libhal_device_property_exists (ctx, parent, "scsi.lun", NULL)
-		&&  libhal_device_property_exists (ctx, parent, "scsi.target", NULL)) {
-			priv->bus = libhal_device_get_property_int (ctx, parent, "scsi.host", NULL);
-			priv->lun = libhal_device_get_property_int (ctx, parent, "scsi.lun", NULL);
-			priv->target = libhal_device_get_property_int (ctx, parent, "scsi.target", NULL);
-		}
-
-		BRASERO_MEDIA_LOG ("Drive %s has bus,target,lun = %i %i %i",
-				  priv->path,
-				  priv->bus,
-				  priv->target,
-				  priv->lun);
-		libhal_free_string (parent);
-	}
-}
-
 static gboolean
 brasero_drive_probed (gpointer data)
 {
@@ -792,9 +718,6 @@ brasero_drive_probed (gpointer data)
 
 	g_thread_join (priv->probe);
 	priv->probe = NULL;
-
-	/* Put HAL initialization first to make sure the device path is set */
-	brasero_drive_init_hal (drive);
 
 	/* If it's not a fake drive then connect to signal for any
 	 * change and check medium inside */
@@ -1023,7 +946,6 @@ brasero_drive_set_property (GObject *object,
 	switch (prop_id)
 	{
 	case PROP_UDI:
-		priv->udi = g_strdup (g_value_get_string (value));
 		break;
 	case PROP_GDRIVE:
 		priv->gdrive = g_value_get_object (value);
@@ -1057,7 +979,6 @@ brasero_drive_get_property (GObject *object,
 	switch (prop_id)
 	{
 	case PROP_UDI:
-		g_value_set_string (value, g_strdup (priv->udi));
 		break;
 	case PROP_GDRIVE:
 		g_value_set_object (value, priv->gdrive);
@@ -1086,13 +1007,8 @@ brasero_drive_finalize (GObject *object)
 		priv->probe_id = 0;
 	}
 
-	if (priv->path) {
-		libhal_free_string (priv->path);
-		priv->path = NULL;
-	}
-
 	if (priv->block_path) {
-		libhal_free_string (priv->block_path);
+		g_free (priv->block_path);
 		priv->block_path = NULL;
 	}
 
@@ -1107,11 +1023,6 @@ brasero_drive_finalize (GObject *object)
 						      object);
 		g_object_unref (priv->gdrive);
 		priv->gdrive = NULL;
-	}
-
-	if (priv->udi) {
-		g_free (priv->udi);
-		priv->udi = NULL;
 	}
 
 	if (priv->cancel) {
@@ -1173,8 +1084,8 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	g_object_class_install_property (object_class,
 	                                 PROP_UDI,
 	                                 g_param_spec_string("udi",
-	                                                     "HAL udi",
-	                                                     "HAL udi as a string",
+	                                                     "Deprecated",
+	                                                     "HAL udi as a string (Deprecated)",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property (object_class,

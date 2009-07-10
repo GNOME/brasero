@@ -10,9 +10,7 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\
 	$(BRASERO_GIO_CFLAGS)						\
-	$(BRASERO_GTK_CFLAGS)						\
-	$(BRASERO_DBUS_CFLAGS)						\
-	$(BRASERO_HAL_CFLAGS)
+	$(BRASERO_GTK_CFLAGS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = libbrasero-marshal.h libbrasero-marshal.c
@@ -40,8 +38,6 @@ libbrasero_media_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
 	$(BRASERO_GIO_LIBS)					\
 	$(BRASERO_GTK_LIBS)					\
-	$(BRASERO_DBUS_LIBS)					\
-	$(BRASERO_HAL_LIBS)					\
 	$(BRASERO_SCSI_LIBS)
 
 libbrasero_media_la_LDFLAGS =					\
@@ -105,8 +101,6 @@ libbrasero_media_la_SOURCES =		\
 	scsi-sbc.h		\
 	scsi-test-unit-ready.c           \
 	brasero-media.c           \
-	burn-hal-watch.c           \
-	burn-hal-watch.h           \
 	brasero-medium-monitor.c         \
 	burn-susp.c         \
 	burn-susp.h         \

@@ -21,8 +21,7 @@ INCLUDES =					\
 	-DLIBEXECDIR=\""$(libexecdir)"\"	\
 	-DSHAREDIR=\""$(datadir)"\"		\
 	-DDATADIR=\""$(datadir)/brasero"\"	\
-	$(DISABLE_DEPRECATED)			\
-	$(BRASERO_HAL_CFLAGS)
+	$(DISABLE_DEPRECATED)
 
 @INTLTOOL_DESKTOP_RULE@
 

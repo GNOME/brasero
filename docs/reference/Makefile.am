@@ -81,7 +81,6 @@ IGNORE_HFILES=	scsi-base.h		\
 		brasero-media-private.h	\
 		brasero-medium-selection-priv.h	\
 		burn-susp.h		\
-		burn-hal-watch.h	\
 		libbrasero-marshal.h	\
 		brasero-gio-operation.h	\
 		brasero-burn-dialog.h	\
@@ -149,9 +148,7 @@ INCLUDES=								\
 	-I$(top_builddir)						\
 	$(BRASERO_GLIB_CFLAGS)						\
 	$(BRASERO_IO_CFLAGS)						\
-	$(BRASERO_GTK_CFLAGS)						\
-	$(BRASERO_DBUS_CFLAGS)						\
-	$(BRASERO_HAL_CFLAGS)
+	$(BRASERO_GTK_CFLAGS)
 
 GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media.la 
 #$(top_builddir)/libbrasero-burn/libbrasero-burn.la
