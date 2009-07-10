@@ -28,63 +28,66 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <glib.h>
 
-#ifndef _SCSI_CMD_OPCODES_H
-#define _SCSI_CMD_OPCODES_H
+#include "scsi-error.h"
+#include "scsi-utils.h"
+#include "scsi-base.h"
+#include "scsi-command.h"
+#include "scsi-opcodes.h"
 
-G_BEGIN_DECLS
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
-/**
- *	SBC1
- */
+struct _BraseroScsiPreventAllowMediumRemovalUnitCDB {
+	uchar opcode;
 
-#define BRASERO_PREVENT_ALLOW_MEDIUM_REMOVAL_OPCODE		0x1E
+	uchar res1			[3];
 
-/**
- *	SPC1
- */
+	uchar prevent			:2;
+	uchar res4			:6;
 
-#define BRASERO_TEST_UNIT_READY_OPCODE			0x00
-#define BRASERO_INQUIRY_OPCODE				0x12
-#define BRASERO_MODE_SENSE_OPCODE			0x5a
-#define BRASERO_MODE_SELECT_OPCODE			0x55
+	uchar ctl;
+};
 
+#else
 
-/**
- *	MMC1
- */
+struct _BraseroScsiPreventAllowMediumRemovalUnitCDB {
+	uchar opcode;
 
-#define BRASERO_MECHANISM_STATUS_OPCODE			0xBD
-#define BRASERO_READ_DISC_INFORMATION_OPCODE		0x51
-#define BRASERO_READ_TRACK_INFORMATION_OPCODE		0x52
-#define BRASERO_READ_TOC_PMA_ATIP_OPCODE		0x43
-#define BRASERO_READ_BUFFER_CAPACITY_OPCODE		0x5C
-#define BRASERO_READ_HEADER_OPCODE			0x44
-#define BRASERO_READ_SUB_CHANNEL_OPCODE			0x42
-#define BRASERO_READ_MASTER_CUE_OPCODE			0x59
-#define BRASERO_LOAD_CD_OPCODE				0xA6
-#define BRASERO_MECH_STATUS_OPCODE			0xBD
-#define BRASERO_READ_CD_OPCODE				0xBE
+	uchar res1			[3];
 
-/**
- *	MMC2
- */
+	uchar res4			:6;
+	uchar prevent			:2;
 
-#define BRASERO_GET_PERFORMANCE_OPCODE			0xac
-#define BRASERO_GET_CONFIGURATION_OPCODE		0x46
-#define BRASERO_READ_CAPACITY_OPCODE			0x25
-#define BRASERO_READ_FORMAT_CAPACITIES_OPCODE		0x23
-#define BRASERO_READ10_OPCODE				0x28
+	uchar ctl;
+};
 
-/**
- *	MMC3
- */
+#endif
 
-#define BRASERO_READ_DISC_STRUCTURE_OPCODE		0xAD
+typedef struct _BraseroScsiPreventAllowMediumRemovalUnitCDB BraseroScsiPreventAllowMediumRemovalUnitCDB;
 
-G_END_DECLS
+BRASERO_SCSI_COMMAND_DEFINE (BraseroScsiPreventAllowMediumRemovalUnitCDB,
+			     PREVENT_ALLOW_MEDIUM_REMOVAL,
+			     BRASERO_SCSI_READ);
 
-#endif /* _SCSI_CMD-OPCODES_H */
+BraseroScsiResult
+brasero_sbc_medium_removal (BraseroDeviceHandle *handle,
+                            int prevent_removal,
+                            BraseroScsiErrCode *error)
+{
+	BraseroScsiPreventAllowMediumRemovalUnitCDB *cdb;
+	BraseroScsiResult res;
 
- 
+	cdb = brasero_scsi_command_new (&info, handle);
+	cdb->prevent = prevent_removal;
+	res = brasero_scsi_command_issue_sync (cdb,
+					       NULL,
+					       0,
+					       error);
+	brasero_scsi_command_free (cdb);
+	return res;
+}

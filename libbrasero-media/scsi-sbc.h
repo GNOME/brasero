@@ -39,6 +39,11 @@
 G_BEGIN_DECLS
 
 BraseroScsiResult
+brasero_sbc_medium_removal (BraseroDeviceHandle *handle,
+                            int prevent_removal,
+                            BraseroScsiErrCode *error);
+
+BraseroScsiResult
 brasero_sbc_read10_block (BraseroDeviceHandle *handle,
 			  int start,
 			  int num_blocks,

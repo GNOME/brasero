@@ -44,11 +44,11 @@
 
 #include "brasero-media-private.h"
 #include "brasero-gio-operation.h"
+#include "burn-hal-watch.h"
 
 #include "brasero-medium.h"
 #include "brasero-volume.h"
 #include "brasero-drive.h"
-#include "burn-hal-watch.h"
 
 #include "scsi-device.h"
 #include "scsi-utils.h"
@@ -57,6 +57,7 @@
 #include "scsi-mmc2.h"
 #include "scsi-status-page.h"
 #include "scsi-mode-pages.h"
+#include "scsi-sbc.h"
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 #define BLOCK_DEVICE	"block.solaris.raw_device"
@@ -352,12 +353,10 @@ brasero_drive_lock (BraseroDrive *drive,
 		    const gchar *reason,
 		    gchar **reason_for_failure)
 {
+	BraseroDeviceHandle *handle;
 	BraseroDrivePrivate *priv;
-	BraseroHALWatch *watch;
-	LibHalContext *ctx;
-	DBusError error;
+	const gchar *device;
 	gboolean result;
-	gchar *failure;
 
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
@@ -366,31 +365,17 @@ brasero_drive_lock (BraseroDrive *drive,
 	if (!priv->gdrive)
 		return FALSE;
 
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
+	device = brasero_drive_get_device (drive);
+	handle = brasero_device_handle_open (device, FALSE, NULL);
+	if (!handle)
+		return FALSE;
 
-	dbus_error_init (&error);
-	result = libhal_device_lock (ctx,
-				     priv->udi,
-				     reason,
-				     &failure,
-				     &error);
-
-	if (dbus_error_is_set (&error))
-		dbus_error_free (&error);
-
-	if (reason_for_failure)
-		*reason_for_failure = g_strdup (failure);
-
-	if (failure)
-		dbus_free (failure);
-
-	if (result) {
-		BRASERO_MEDIA_LOG ("Device locked");
-	}
-	else {
+	result = (brasero_sbc_medium_removal (handle, 1, NULL) == BRASERO_SCSI_OK);
+	if (!result) {
 		BRASERO_MEDIA_LOG ("Device failed to lock");
 	}
+	else
+		BRASERO_MEDIA_LOG ("Device locked");
 
 	return result;
 }
@@ -406,10 +391,9 @@ brasero_drive_lock (BraseroDrive *drive,
 gboolean
 brasero_drive_unlock (BraseroDrive *drive)
 {
+	BraseroDeviceHandle *handle;
 	BraseroDrivePrivate *priv;
-	BraseroHALWatch *watch;
-	LibHalContext *ctx;
-	DBusError error;
+	const gchar *device;
 	gboolean result;
 
 	g_return_val_if_fail (drive != NULL, FALSE);
@@ -419,18 +403,18 @@ brasero_drive_unlock (BraseroDrive *drive)
 	if (!priv->gdrive)
 		return FALSE;
 
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
+	device = brasero_drive_get_device (drive);
+	handle = brasero_device_handle_open (device, FALSE, NULL);
+	if (!handle)
+		return FALSE;
 
-	dbus_error_init (&error);
-	result = libhal_device_unlock (ctx,
-				       priv->udi,
-				       &error);
+	result = (brasero_sbc_medium_removal (handle, 0, NULL) == BRASERO_SCSI_OK);
+	if (!result) {
+		BRASERO_MEDIA_LOG ("Device failed to unlock");
+	}
+	else
+		BRASERO_MEDIA_LOG ("Device unlocked");
 
-	if (dbus_error_is_set (&error))
-		dbus_error_free (&error);
-
-	BRASERO_MEDIA_LOG ("Device unlocked");
 	return result;
 }
 

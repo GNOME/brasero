@@ -418,7 +418,6 @@ last_chance:
 		name = g_strdup_printf (_("Data %s"), type);
 	}
 	else {
-		/* NOTE for translators: the first %s is the disc type. */
 		name = g_strdup (type);
 	}
 

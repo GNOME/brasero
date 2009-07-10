@@ -394,7 +394,7 @@ brasero_medium_monitor_disconnected_cb (GVolumeMonitor *monitor,
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-	BRASERO_MEDIA_LOG ("HAL signal device removed");
+	BRASERO_MEDIA_LOG ("Device removed");
 
 	for (iter = priv->drives; iter; iter = next) {
 		GDrive *gdrive_iter;
