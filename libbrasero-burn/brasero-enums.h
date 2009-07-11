@@ -55,9 +55,9 @@ typedef enum {
 	BRASERO_BURN_FLAG_NONE			= 0,
 
 	/* These flags should always be supported */
-	BRASERO_BURN_FLAG_EJECT			= 1,
+	BRASERO_BURN_FLAG_CHECK_SIZE		= 1,
 	BRASERO_BURN_FLAG_NOGRACE		= 1 << 1,
-	BRASERO_BURN_FLAG_CHECK_SIZE		= 1 << 2,
+	BRASERO_BURN_FLAG_EJECT			= 1 << 2,
 
 	/* These are of great importance for the result */
 	BRASERO_BURN_FLAG_MERGE			= 1 << 3,

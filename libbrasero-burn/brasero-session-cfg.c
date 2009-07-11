@@ -62,13 +62,13 @@ struct _BraseroSessionCfgPrivate
 
 	gchar *output;
 
-	glong caps_sig;
-
 	BraseroSessionError is_valid;
 
 	guint CD_TEXT_modified:1;
 	guint configuring:1;
 	guint disabled:1;
+
+	guint inhibit_flag_sig:1;
 };
 
 #define BRASERO_SESSION_CFG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SESSION_CFG, BraseroSessionCfgPrivate))
@@ -430,6 +430,7 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 	BraseroDrive *drive;
 	BraseroMedium *medium;
 	BraseroBurnResult result;
+	BraseroBurnFlag original_flags;
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
@@ -444,22 +445,26 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 
 	media = brasero_medium_get_status (medium);
 
-	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
+	/* This prevents signals to be emitted while (re-) adding them one by one */
+	priv->inhibit_flag_sig = TRUE;
+
+	original_flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
+	if (original_flags == flags)
+		return;
+
+	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self), BRASERO_BURN_FLAG_NONE);
 
 	priv->supported = BRASERO_BURN_FLAG_NONE;
 	priv->compulsory = BRASERO_BURN_FLAG_NONE;
 	result = brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
 						      &priv->supported,
 						      &priv->compulsory);
+
 	if (result != BRASERO_BURN_OK) {
-		brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self), flags);
+		brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self), original_flags | flags);
+		priv->inhibit_flag_sig = FALSE;
 		return;
 	}
-
-	/* These are always supported and better be set. */
-	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self),
-					BRASERO_BURN_FLAG_CHECK_SIZE|
-					BRASERO_BURN_FLAG_NOGRACE);
 
 	for (flag = BRASERO_BURN_FLAG_EJECT; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
 		/* see if this flag was originally set */
@@ -546,6 +551,15 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 			 * compulsory like BLANK_BEFORE for CDRW with data */
 		}
 	}
+
+	/* allow flag changed signal again */
+	priv->inhibit_flag_sig = FALSE;
+
+	/* These are always supported and better be set.
+	 * Set them now to trigger the "flags-changed" signal */
+	brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+	                               BRASERO_BURN_FLAG_CHECK_SIZE|
+	                               BRASERO_BURN_FLAG_NOGRACE);
 
 	/* Always save flags */
 	brasero_session_cfg_save_drive_flags (self, medium);
@@ -1178,6 +1192,20 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 				    TRUE);
 }
 
+static void
+brasero_session_cfg_flags_changed (BraseroBurnSession *session) 
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+
+	/* when we update the flags we don't want a
+	 * whole series of "flags-changed" emitted.
+	 * so make sure there is just one at the end */
+	if (priv->inhibit_flag_sig)
+		g_signal_stop_emission_by_name (session, "flags-changed");
+}
+
 void
 brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 			       BraseroBurnFlag flags)
@@ -1264,15 +1292,16 @@ brasero_session_cfg_init (BraseroSessionCfg *object)
 	priv = BRASERO_SESSION_CFG_PRIVATE (object);
 
 	manager = brasero_plugin_manager_get_default ();
-	priv->caps_sig = g_signal_connect (manager,
-					   "caps-changed",
-					   G_CALLBACK (brasero_session_cfg_caps_changed),
-					   object);
+	g_signal_connect (manager,
+	                  "caps-changed",
+	                  G_CALLBACK (brasero_session_cfg_caps_changed),
+	                  object);
 }
 
 static void
 brasero_session_cfg_finalize (GObject *object)
 {
+	BraseroPluginManager *manager;
 	BraseroSessionCfgPrivate *priv;
 	BraseroDrive *drive;
 	GSList *tracks;
@@ -1294,13 +1323,10 @@ brasero_session_cfg_finalize (GObject *object)
 						      object);
 	}
 
-	if (priv->caps_sig) {
-		BraseroPluginManager *manager;
-
-		manager = brasero_plugin_manager_get_default ();
-		g_signal_handler_disconnect (manager, priv->caps_sig);
-		priv->caps_sig = 0;
-	}
+	manager = brasero_plugin_manager_get_default ();
+	g_signal_handlers_disconnect_by_func (manager,
+	                                      brasero_session_cfg_caps_changed,
+	                                      object);
 
 	G_OBJECT_CLASS (brasero_session_cfg_parent_class)->finalize (object);
 }
@@ -1323,6 +1349,7 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 	session_class->track_removed = brasero_session_cfg_track_removed;
 	session_class->track_changed = brasero_session_cfg_track_changed;
 	session_class->output_changed = brasero_session_cfg_output_changed;
+	session_class->flags_changed = brasero_session_cfg_flags_changed;
 
 	session_cfg_signals [WRONG_EXTENSION_SIGNAL] =
 		g_signal_new ("wrong_extension",
