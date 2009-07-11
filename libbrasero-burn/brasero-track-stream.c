@@ -286,7 +286,7 @@ brasero_track_stream_get_status (BraseroTrack *track,
 			brasero_status_set_error (status,
 						  g_error_new (BRASERO_BURN_ERROR,
 							       BRASERO_BURN_ERROR_EMPTY,
-							       _("The project is empty")));
+							       _("There are no files to write to disc")));
 
 		return BRASERO_BURN_ERR;
 	}

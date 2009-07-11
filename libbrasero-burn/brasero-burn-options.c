@@ -317,7 +317,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 							      _("Would you like to burn the selection of files across several media?"),
-							      _("The size of the project is too large for the disc even with the overburn option."),
+							      _("The data size is too large for the disc even with the overburn option."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 			brasero_notify_button_add (BRASERO_NOTIFY (priv->message_output),
@@ -334,7 +334,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		else
 			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						    _("Please choose another CD or DVD or insert a new one."),
-						    _("The size of the project is too large for the disc even with the overburn option."),
+						    _("The data size is too large for the disc even with the overburn option."),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
@@ -361,19 +361,19 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		if (brasero_track_type_get_has_data (type))
 			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						    _("Please add files."),
-						    _("The project is empty"),
+						    _("There are no files to write to disc"),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 		else if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type)))
 			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						    _("Please add songs."),
-						    _("The project is empty"),
+						    _("There are no songs to write to disc"),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 		else
 			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						     _("Please add videos."),
-						    _("The project is empty"),
+						    _("There are no videos to write to disc"),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 		brasero_track_type_free (type);
@@ -441,7 +441,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						      _("Would you like to burn beyond the disc reported capacity?"),
-						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
+						      _("The data size is too large for the disc and you must remove files from the selection otherwise."
 							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
 						      -1,
@@ -683,29 +683,28 @@ brasero_status_dialog_uri_has_image (BraseroTrackDataCfg *track,
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-
-	name = brasero_utils_get_uri_name (uri);
-	string = g_strdup_printf (_("Do you want to burn \"%s\" to a disc or add it in to the data project?"), name);
 	dialog = gtk_message_dialog_new (GTK_WINDOW (self),
 					 GTK_DIALOG_MODAL |
 					 GTK_DIALOG_DESTROY_WITH_PARENT,
 					 GTK_MESSAGE_QUESTION,
 					 GTK_BUTTONS_NONE,
 					 "%s",
-					 string);
+					 _("Do you want to create a disc from the contents of the image or with the image file inside?"));
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+
+	name = brasero_utils_get_uri_name (uri);
+	/* Translators: %s is the name of the image */
+	string = g_strdup_printf (_("There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burnt."), name);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
 	g_free (string);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), "");
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."));
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Burn as _File"), GTK_RESPONSE_NO);
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add to Project"), GTK_RESPONSE_NO);
-
-	button = brasero_utils_make_button (_("_Burn..."),
-					    NULL,
-					    "media-optical-burn",
-					    GTK_ICON_SIZE_BUTTON);
+	button = brasero_utils_make_button (_("Burn _Contents..."),
+	                                    NULL,
+	                                    "media-optical-burn",
+	                                    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
 				      button,

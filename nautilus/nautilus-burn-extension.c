@@ -185,7 +185,7 @@ nautilus_disc_burn_is_empty (GtkWindow *toplevel)
 
 		brasero_utils_message_dialog (GTK_WIDGET (toplevel),
 					      _("Please add files."),
-					      _("The project is empty"),
+					      _("There are no files to write to disc"),
 					      GTK_MESSAGE_ERROR);
 		return TRUE;
 	}

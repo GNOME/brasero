@@ -121,7 +121,7 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 
 	brasero_track_type_free (type);
 
-	string = g_strdup_printf (_("Project estimated size: %s"), size_str);
+	string = g_strdup_printf (_("Estimated size: %s"), size_str);
 	g_free (size_str);
 
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (priv->progress), string);
@@ -456,9 +456,9 @@ brasero_status_dialog_new (BraseroBurnSession *session,
 			     "session", session,
 			     "transient-for", parent,
 			     "modal", TRUE,
-			     "title",  _("Project Size Estimation"),
+			     "title",  _("Size Estimation"),
 			     "message-type", GTK_MESSAGE_OTHER,
-			     "text", _("Please wait until the estimation of the project size is completed."),
-			     "secondary-text", _("All files from the project need to be analysed to complete this operation."),
+			     "text", _("Please wait until the estimation of the size is completed."),
+			     "secondary-text", _("All files need to be analysed to complete this operation."),
 			     NULL);
 }

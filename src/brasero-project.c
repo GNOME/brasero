@@ -1268,7 +1268,7 @@ brasero_project_no_song_dialog (BraseroProject *project)
 {
 	brasero_app_alert (brasero_app_get_default (),
 			   _("Please add songs to the project."),
-			   _("The project is empty"),
+			   _("There are no songs to write to disc"),
 			   GTK_MESSAGE_WARNING);
 }
 
@@ -1277,7 +1277,7 @@ brasero_project_no_file_dialog (BraseroProject *project)
 {
 	brasero_app_alert (brasero_app_get_default (),
 			   _("Please add files to the project."),
-			   _("The project is empty"),
+			   _("There are no files to write to disc"),
 			   GTK_MESSAGE_WARNING);
 }
 

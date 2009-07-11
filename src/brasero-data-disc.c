@@ -603,22 +603,22 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	name = brasero_utils_get_uri_name (uri);
-	string = g_strdup_printf (_("Do you want to burn \"%s\" to a disc or add it in to the data project?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
-				     string,
-				     GTK_BUTTONS_NONE,
-				     GTK_MESSAGE_QUESTION);
+	                             _("Do you want to create a disc from the contents of the image or with the image file inside?"),
+	                             GTK_BUTTONS_NONE,
+	                             GTK_MESSAGE_QUESTION);
+
+	name = brasero_utils_get_uri_name (uri);
+	/* Translators: %s is the name of the image */
+	string = g_strdup_printf (_("There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burnt."), name);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
 	g_free (string);
 	g_free (name);
 
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."));
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Burn as _File"), GTK_RESPONSE_NO);
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add to Project"), GTK_RESPONSE_NO);
-
-	button = brasero_utils_make_button (_("_Burn..."),
-					    NULL,
+	button = brasero_utils_make_button (_("Burn _Contents..."),
+	                                    NULL,
 					    "media-optical-burn",
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
