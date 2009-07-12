@@ -402,7 +402,7 @@ last_chance:
 	type = brasero_medium_get_type_string (BRASERO_MEDIUM (volume));
 	name = NULL;
 	if (media & BRASERO_MEDIUM_BLANK) {
-		/* NOTE for translators: the first %s is the disc type. */
+		/* NOTE for translators: the first %s is the disc type and Blank is an adjective. */
 		name = g_strdup_printf (_("Blank %s"), type);
 	}
 	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {

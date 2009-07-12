@@ -237,7 +237,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 	}
 	else if (result != BRASERO_BURN_OK) {
 		/* Translators: %s is a path and image refers to a disc image */
-		string = g_strdup_printf (_("\"%s\": unknown image type"), path);
+		string = g_strdup_printf (_("\"%s\": unknown disc image type"), path);
 
 		error = brasero_status_get_error (status);
 		if (!error)
@@ -267,7 +267,7 @@ end:
 	if (string) {
 		/* This is hackish and meant to avoid ellipsization to make the
 		 * label to small. */
-		if (strlen (string) > strlen (_("Click here to select an _image")) + 5)
+		if (strlen (string) > strlen (_("Click here to select a disc _image")) + 5)
 			gtk_label_set_ellipsize (GTK_LABEL (priv->label), PANGO_ELLIPSIZE_START);
 		else
 			gtk_label_set_ellipsize (GTK_LABEL (priv->label), PANGO_ELLIPSIZE_NONE);
@@ -426,7 +426,7 @@ brasero_src_image_clicked (GtkButton *button)
 	priv = BRASERO_SRC_IMAGE_PRIVATE (button);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (button));
-	priv->file = gtk_file_chooser_dialog_new (_("Select Image File"),
+	priv->file = gtk_file_chooser_dialog_new (_("Select Disc Image"),
 						  GTK_WINDOW (toplevel),
 						  GTK_FILE_CHOOSER_ACTION_OPEN,
 						  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -574,7 +574,7 @@ brasero_src_image_init (BraseroSrcImage *object)
 	g_free (uri);
 
 	/* Translators: this is a disc image */
-	string = g_strdup_printf ("<i>%s</i>", _("Click here to select an _image"));
+	string = g_strdup_printf ("<i>%s</i>", _("Click here to select a disc _image"));
 	label = gtk_label_new_with_mnemonic (string);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);

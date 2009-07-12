@@ -2402,7 +2402,7 @@ brasero_track_data_cfg_recursive_uri_cb (BraseroDataVFS *vfs,
 		gchar *name;
 
 		name = brasero_utils_get_uri_name (uri);
-		message = g_strdup_printf (_("\"%s\" is a recursive symlink."), name);
+		message = g_strdup_printf (_("\"%s\" is a recursive symbolic link."), name);
 		priv->load_errors = g_slist_prepend (priv->load_errors, message);
 		g_free (name);
 

@@ -146,7 +146,7 @@ brasero_filter_option_init (BraseroFilterOption *object)
 					BRASERO_REPLACE_SYMLINK_KEY,
 					NULL);
 
-	button_sym = gtk_check_button_new_with_mnemonic (_("Re_place symlinks"));
+	button_sym = gtk_check_button_new_with_mnemonic (_("Re_place symbolic links"));
 	gtk_widget_show (button_sym);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_sym), active);
 	g_signal_connect (button_sym,
@@ -169,7 +169,7 @@ brasero_filter_option_init (BraseroFilterOption *object)
 					BRASERO_FILTER_BROKEN_SYM_KEY,
 					NULL);
 
-	button_broken = gtk_check_button_new_with_mnemonic (_("Filter _broken symlinks"));
+	button_broken = gtk_check_button_new_with_mnemonic (_("Filter _broken symbolic links"));
 	gtk_widget_show (button_broken);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_broken), active);
 	g_signal_connect (button_broken,

@@ -855,9 +855,10 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 				  GtkDialog *dialog)
 {
 	return brasero_burn_dialog_loss_warnings_cb (dialog,
-						     _("Do you really want to erase the current disc?"),
+						     _("Do you really want to blank the current disc?"),
 						     _("The disc in the drive holds data."),
-						     _("_Erase Disc"),
+	                                             /* Translators: Blank is a verb here */
+						     _("_Blank Disc"),
 						     "media-optical-blank");
 }
 

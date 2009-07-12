@@ -126,7 +126,7 @@ brasero_process_check_path (const gchar *name,
 	 * another symlink, then GIO didn't follow that other symlink. And in
 	 * the end it didn't work. So forbid all symlink. */
 	if (g_file_test (prog_path, G_FILE_TEST_IS_SYMLINK)) {
-		*error = g_strdup_printf (_("\"%s\" is a symlink pointing to another program. Use the target program instead"), name);
+		*error = g_strdup_printf (_("\"%s\" is a symbolic link pointing to another program. Use the target program instead"), name);
 		g_free (prog_path);
 		return BRASERO_BURN_ERR;
 	}

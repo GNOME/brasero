@@ -398,8 +398,8 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
-							      _("Please select an image."),
-							      _("There is no selected image."),
+							      _("Please select a disc image."),
+							      _("There is no selected disc image."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
@@ -412,7 +412,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
 							      /* Translators: this is a disc image not a picture */
 							      C_("disc", "Please select another image."),
-							      _("It doesn't appear to be a valid image or a valid cue file."),
+							      _("It doesn't appear to be a valid disc image or a valid cue file."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
@@ -797,7 +797,7 @@ brasero_burn_options_setup_image (BraseroBurnOptions *self)
 	gtk_widget_show (file);
 
 	/* pack everything */
-	string = g_strdup_printf ("<b>%s</b>", _("Select an image to write"));
+	string = g_strdup_printf ("<b>%s</b>", _("Select a disc image to write"));
 	brasero_burn_options_add_source (self, 
 					 string,
 					 file,

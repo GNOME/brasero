@@ -191,7 +191,7 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 				  FALSE,
 				  0);
 
-		label = gtk_label_new (_("Image type:"));
+		label = gtk_label_new (_("Disc image type:"));
 		gtk_widget_show (label);
 		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 
