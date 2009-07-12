@@ -773,7 +773,8 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	if (priv->never_replace)
 		return FALSE;
 
-	string = g_strdup_printf (_("Do you really want to replace the project file \"%s\"?"), name);
+	/* Translators: %s is the name of the file */
+	string = g_strdup_printf (_("Do you really want to replace \"%s\"?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
@@ -781,7 +782,7 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("It already exists in the directory."));
+						  _("A file with the same name is about to be added into the same directory and will replace it if you accept."));
 
 	/* Translators: Keep means we're keeping the files that already existed
 	 * in the project.
