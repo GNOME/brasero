@@ -403,19 +403,19 @@ last_chance:
 	name = NULL;
 	if (media & BRASERO_MEDIUM_BLANK) {
 		/* NOTE for translators: the first %s is the disc type and Blank is an adjective. */
-		name = g_strdup_printf (_("Blank %s"), type);
+		name = g_strdup_printf (_("Blank disc (%s)"), type);
 	}
 	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
 		/* NOTE for translators: the first %s is the disc type. */
-		name = g_strdup_printf (_("Audio and data %s"), type);
+		name = g_strdup_printf (_("Audio and data disc (%s)"), type);
 	}
 	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
 		/* NOTE for translators: the first %s is the disc type. */
-		name = g_strdup_printf (_("Audio %s"), type);
+		name = g_strdup_printf (_("Audio disc (%s)"), type);
 	}
 	else if (media & BRASERO_MEDIUM_HAS_DATA) {
 		/* NOTE for translators: the first %s is the disc type. */
-		name = g_strdup_printf (_("Data %s"), type);
+		name = g_strdup_printf (_("Data disc (%s)"), type);
 	}
 	else {
 		name = g_strdup (type);
