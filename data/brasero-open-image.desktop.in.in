@@ -2,7 +2,6 @@
 _Name=Disc Burner
 _GenericName=Disc Burner
 _Comment=Create CDs and DVDs
-Categories=GNOME;AudioVideo;DiscBurning;
 Exec=brasero -i %u
 Icon=brasero
 MimeType=application/x-cd-image;application/x-cdrdao-toc;application/x-cue;application/x-toc;
@@ -10,6 +9,7 @@ StartupNotify=true
 Terminal=false
 Type=Application
 NoDisplay=true
+OnlyShowIn=GNOME;
 X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=brasero
 X-GNOME-Bugzilla-Component=general
