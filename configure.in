@@ -12,9 +12,17 @@ AC_SUBST(BRASERO_MINOR_VERSION)
 AC_SUBST(BRASERO_SUB)
 AC_SUBST(BRASERO_VERSION)
 
-LT_REVISION=1
-LT_AGE=1
-LT_CURRENT=1
+dnl Before making a release, the BURN_LT_VERSION string should be modified.
+dnl The string is of the form C:R:A.
+dnl - If interfaces have been changed or added, but binary compatibility has
+dnl   been preserved, change to C+1:0:A+1
+dnl - If binary compatibility has been broken (eg removed or changed interfaces)
+dnl   change to C+1:0:0
+dnl - If the interface is the same as the previous version, change to C:R+1:A
+
+LT_CURRENT=2
+LT_REVISION=0
+LT_AGE=2
 
 AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
