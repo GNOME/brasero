@@ -1030,7 +1030,6 @@ brasero_project_init (BraseroProject *obj)
 	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
 	GtkWidget *selector;
-	GtkWidget *label;
 	GtkWidget *table;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
@@ -1053,16 +1052,6 @@ brasero_project_init (BraseroProject *obj)
 	gtk_box_pack_end (GTK_BOX (obj), table, FALSE, TRUE, 0);
 
 	/* Media selection widget */
-	label = gtk_label_new_with_mnemonic (_("_Disc:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  1, 2,
-			  GTK_FILL,
-			  GTK_EXPAND,
-			  0, 0);
-
 	name_size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 	selector = brasero_dest_selection_new (NULL);
 	gtk_size_group_add_widget (GTK_SIZE_GROUP (name_size_group), selector);
@@ -1072,13 +1061,11 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->selection = selector;
 
 	gtk_table_attach (GTK_TABLE (table), selector,
-			  1, 2,
+			  0, 2,
 			  1, 2,
 			  GTK_FILL|GTK_EXPAND,
 			  GTK_FILL|GTK_EXPAND,
 			  0, 0);
-
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), selector);
 
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
@@ -1109,21 +1096,11 @@ brasero_project_init (BraseroProject *obj)
 			  0, 0);
 
 	/* Name widget */
-	label = gtk_label_new_with_mnemonic (_("_Name:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0, 1,
-			  0, 1,
-			  GTK_FILL,
-			  GTK_EXPAND,
-			  0, 0);
-
 	obj->priv->name_display = brasero_project_name_new (BRASERO_BURN_SESSION (obj->priv->session));
 	gtk_size_group_add_widget (GTK_SIZE_GROUP (name_size_group), obj->priv->name_display);
 	gtk_widget_show (obj->priv->name_display);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->name_display,
-			  1, 2,
+			  0, 2,
 			  0, 1,
 			  GTK_EXPAND|GTK_FILL,
 			  GTK_EXPAND|GTK_FILL,
@@ -1134,8 +1111,6 @@ brasero_project_init (BraseroProject *obj)
 			  "name-changed",
 			  G_CALLBACK (brasero_project_name_changed_cb),
 			  obj);
-
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), obj->priv->name_display);
 
 	/* The three panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
