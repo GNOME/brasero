@@ -102,7 +102,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, is_video? _("Video DVD image"):_("ISO9660 images"),
+				    FORMAT_TEXT, is_video? _("Video DVD image"):_("ISO9660 image"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_BIN,
 				    -1);
 	}
@@ -111,7 +111,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("Readcd/Readom images"),
+				    FORMAT_TEXT, _("Readcd/Readom image"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CLONE,
 				    -1);
 	}
@@ -137,7 +137,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		else {
 			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-					    FORMAT_TEXT, _("Cue images"),
+					    FORMAT_TEXT, _("Cue image"),
 					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
 					    -1);
 		}
@@ -147,7 +147,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 		format_num ++;
 		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("Cdrdao images"),
+				    FORMAT_TEXT, _("Cdrdao image"),
 				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CDRDAO,
 				    -1);
 	}
