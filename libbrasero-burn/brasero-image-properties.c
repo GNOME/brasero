@@ -177,14 +177,12 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 		return;
 	}	
 
-	if (!priv->format) {
+	if (!priv->format_box) {
 		GtkWidget *box;
 		GtkWidget *label;
 
 		box = gtk_hbox_new (FALSE, 6);
 		gtk_container_set_border_width (GTK_CONTAINER (box), 4);
-
-		gtk_widget_show (box);
 		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (self)->vbox),
 				  box,
 				  FALSE,
@@ -230,10 +228,13 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 		brasero_image_type_chooser_set_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 						       format);
 
-	if (num > 1)
-		gtk_widget_show (priv->format_box);
+	if (num < 2) {
+		gtk_widget_destroy (priv->format_box);
+		priv->format_box = NULL;
+		priv->format = NULL;
+	}
 	else
-		gtk_widget_hide (priv->format_box);
+		gtk_widget_show (priv->format_box);
 }
 
 static void
