@@ -283,49 +283,6 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 	return list;
 }
 
-static GDrive *
-brasero_medium_monitor_get_gdrive (BraseroMediumMonitor *monitor,
-                                   const gchar *volume_path)
-{
-	BraseroMediumMonitorPrivate *priv;
-	GDrive *gdrive = NULL;
-	GList *drives;
-	GList *iter;
-
-	g_return_val_if_fail (volume_path != NULL, NULL);
-
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
-
-	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
-	drives = g_volume_monitor_get_connected_drives (priv->gmonitor);
-	for (iter = drives; iter; iter = iter->next) {
-		gchar *device_path;
-		GDrive *tmp;
-
-		tmp = iter->data;
-		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-		if (!device_path)
-			continue;
-
-		BRASERO_MEDIA_LOG ("Found drive %s", device_path);
-		if (!strcmp (device_path, volume_path)) {
-			gdrive = tmp;
-			g_free (device_path);
-			g_object_ref (gdrive);
-			break;
-		}
-
-		g_free (device_path);
-	}
-	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
-	g_list_free (drives);
-
-	if (!gdrive)
-		BRASERO_MEDIA_LOG ("No drive found for medium");
-
-	return gdrive;
-}
-
 static void
 brasero_medium_monitor_medium_added_cb (BraseroDrive *drive,
 					BraseroMedium *medium,
@@ -471,6 +428,8 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 	BraseroMediumMonitorPrivate *priv;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
+
+	BRASERO_MEDIA_LOG ("Probing drives and media");
 
 	/* This must done early on. GVolumeMonitor when it relies on HAL (like
 	 * us) must be able to update its list of volumes before us so it must
