@@ -982,9 +982,9 @@ BraseroImageFormat
 brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 {
 	BraseroBurnCaps *self;
-	BraseroTrackType source;
 	BraseroTrackType output;
 	BraseroBurnResult result;
+	BraseroTrackType source = { BRASERO_TRACK_TYPE_NONE, { 0, }};
 
 	self = brasero_burn_caps_get_default ();
 
