@@ -68,6 +68,8 @@ struct _BraseroDrivePrivate
 	BraseroMedium *medium;
 	BraseroDriveCaps caps;
 
+	gchar *udi;
+
 	gchar *path;
 	gchar *block_path;
 
@@ -494,7 +496,11 @@ brasero_drive_get_udi (BraseroDrive *drive)
 	if (!priv->gdrive)
 		return NULL;
 
-	return g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
+	if (priv->udi)
+		return priv->udi;
+
+	priv->udi = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
+	return priv->udi;
 }
 
 /**
@@ -998,6 +1004,11 @@ brasero_drive_finalize (GObject *object)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	if (priv->udi) {
+		g_free (priv->udi);
+		priv->udi = NULL;
+	}
 
 	if (priv->probe) {
 		priv->probe_cancelled = TRUE;
