@@ -957,6 +957,7 @@ brasero_drive_set_property (GObject *object,
 		}
 		else
 			brasero_drive_init_real (BRASERO_DRIVE (object));
+
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

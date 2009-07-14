@@ -437,6 +437,8 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 	priv->gmonitor = g_volume_monitor_get ();
 
 	drives = g_volume_monitor_get_connected_drives (priv->gmonitor);
+	BRASERO_MEDIA_LOG ("Found %d drives", g_list_length (drives));
+
 	for (iter = drives; iter; iter = iter->next) {
 		GDrive *gdrive;
 
