@@ -235,9 +235,10 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (priv->tree), TRUE);
 
 	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)),
-						       "changed",
-						       G_CALLBACK (brasero_file_filtered_selection_changed_cb),
-						       object);
+	                  "changed",
+	                  G_CALLBACK (brasero_file_filtered_selection_changed_cb),
+	                  object);
+
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_expand (column, TRUE);
 
@@ -332,19 +333,20 @@ brasero_file_filtered_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_TRACK: /* Readable and only writable at creation time */
-		priv->track = g_object_ref (g_value_get_object (value));
+		priv->track = g_value_get_object (value);
 		model = brasero_track_data_cfg_get_filtered_model (priv->track);
 		gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree), model);
-		g_object_unref (model);
 
-		g_signal_connect (g_value_get_object (value),
+		g_signal_connect (model,
 				  "row-deleted",
 				  G_CALLBACK (brasero_file_filtered_row_deleted),
 				  object);
-		g_signal_connect (g_value_get_object (value),
+		g_signal_connect (model,
 				  "row-inserted",
 				  G_CALLBACK (brasero_file_filtered_row_inserted),
 				  object);
+
+		g_object_unref (model);
 		break;
 
 	default:
@@ -379,6 +381,17 @@ brasero_file_filtered_finalize (GObject *object)
 
 	priv = BRASERO_FILE_FILTERED_PRIVATE (object);
 	if (priv->track) {
+		GtkTreeModel *model;
+
+		model = brasero_track_data_cfg_get_filtered_model (priv->track);
+		g_signal_handlers_disconnect_by_func (model,
+		                                      brasero_file_filtered_row_deleted,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (model,
+		                                      brasero_file_filtered_row_inserted,
+		                                      object);
+		g_object_unref (model);
+
 		g_object_unref (priv->track);
 		priv->track = NULL;
 	}
