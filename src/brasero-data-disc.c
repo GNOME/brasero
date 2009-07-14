@@ -1054,6 +1054,31 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 }
 
 static void
+brasero_data_disc_remove_available_medium (BraseroDataDisc *self,
+                                           BraseroMedium *medium)
+{
+	int merge_id;
+	GtkAction *action;
+	gchar *action_name;
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
+	action = gtk_action_group_get_action (priv->import_group, action_name);
+	g_free (action_name);
+
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+
+	merge_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MERGE_ID));
+	gtk_ui_manager_remove_ui (priv->manager, merge_id);
+	gtk_action_group_remove_action (priv->import_group, action);
+
+	/* unref it since we reffed it when it was associated with the action */
+	g_object_unref (medium);
+}
+
+static void
 brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 					BraseroMedium *medium,
 					gboolean available,
@@ -1106,24 +1131,8 @@ brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 				  G_CALLBACK (brasero_disc_disc_session_import_response_cb),
 				  self);
 	}
-	else {
-		int merge_id;
-		GtkAction *action;
-		gchar *action_name;
-
-		action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
-		action = gtk_action_group_get_action (priv->import_group, action_name);
-		g_free (action_name);
-
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
-
-		merge_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MERGE_ID));
-		gtk_ui_manager_remove_ui (priv->manager, merge_id);
-		gtk_action_group_remove_action (priv->import_group, action);
-
-		/* unref it since we reffed it when it was associated with the action */
-		g_object_unref (medium);
-	}
+	else
+		brasero_data_disc_remove_available_medium (self, medium);
 }
 
 static void
@@ -1431,6 +1440,7 @@ static void
 brasero_data_disc_unset_track (BraseroDataDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
+	BraseroMedium *medium;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
@@ -1449,10 +1459,6 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 		gtk_widget_destroy (priv->filter);
 		priv->filter = NULL;
 	}
-
-	/* Unload session */
-	if (brasero_track_data_cfg_get_current_medium (BRASERO_TRACK_DATA_CFG (priv->project)))
-		brasero_track_data_cfg_unload_current_medium (BRASERO_TRACK_DATA_CFG (priv->project));
 
 	if (priv->size_changed_id) {
 		g_source_remove (priv->size_changed_id);
@@ -1511,6 +1517,11 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 	g_signal_handlers_disconnect_by_func (priv->project,
 					      brasero_data_disc_session_loaded_cb,
 					      disc);
+
+	/* Unload session */
+	medium = brasero_track_data_cfg_get_current_medium (BRASERO_TRACK_DATA_CFG (priv->project));
+	if (medium)
+		brasero_data_disc_remove_available_medium (disc, medium);
 
 	g_object_unref (priv->project);
 	priv->project = NULL;
