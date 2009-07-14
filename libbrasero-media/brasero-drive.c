@@ -357,6 +357,7 @@ brasero_drive_lock (BraseroDrive *drive,
 	else
 		BRASERO_MEDIA_LOG ("Device locked");
 
+	brasero_device_handle_close (handle);
 	return result;
 }
 
@@ -395,6 +396,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	else
 		BRASERO_MEDIA_LOG ("Device unlocked");
 
+	brasero_device_handle_close (handle);
 	return result;
 }
 
