@@ -4,9 +4,37 @@ Brasero 2.27.4
 Highlights:
 - Hal support removed, now relies on GIO only for drives/media probing
 - New layout for size reporting in data/audio/video project
+- Lot's of bug fixes
+- Fixed some memleaks
 
-+ some bugs fixed
-+ translation updated
+Bugs Fixed:
+- Fix #582261 – brasero shows 0% done, while continues burning disc
+- Fix 582513 – Bogus VIDEO_TS directory error if AUDIO_TS directory present
+- Fix #573805 – "Increase compatibility with Windows systems"?
+- Fix #585190 – remove 0 from 03 % status
+- Fix #586744 – Use AS_HELP_STRING for configure switches
+- Fix #584793 – Poor language in warning dialog when attempting to burn an
+audio CD onto a CDRW
+- Fix #580617 – Brasero floods .xsession-errors log with "Unknown (or already
+deleted) monitored directory" warnings
+- Fix #563501 – Brasero burning window shouldn't try to show drive speed while
+is converting audio files
+- Fix #485719 – Burn dialog CD icon
+- Fix #585481 – Deep hierarchy warning
+- Fix #554070 – The need of a "replace all" and "replace non" button
+- Fix #582461 – Brasero hangs at normalizing tracks
+- Fix #587284 – nautilus hangs every time
+- Fix #574093 – Caret visible in instructions for project creation
+- Fix #581742 – port from HAL to DeviceKit-disks
+- Fix #573801 – Bad error message when burning empty burn:///
+- Fix #573486 – Various i18n and string issues for good
+- Fix #587399 – License clarification
+- Fix #587554 – Unclear meaning of text
+- Fix #582979 – brasero should not include Categories in mime handler .desktop
+files
+- Fix #586040 – duplicated command listed in open-with dialog
+- Fixes for #573486 – Various i18n and string issues
+- Translation updates
 
 Homepage: http://www.gnome.org/projects/brasero
 
