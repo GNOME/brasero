@@ -350,8 +350,7 @@ brasero_project_set_remove_button_state (BraseroProject *project)
 	gboolean sensitive;
 
 	sensitive = (project->priv->has_focus &&
-	             project->priv->selected_uris &&
-		    !brasero_disc_is_empty (BRASERO_DISC (project->priv->current)));
+	             project->priv->selected_uris);
 
 	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
 	gtk_action_set_sensitive (action, sensitive);
