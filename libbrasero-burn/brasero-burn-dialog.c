@@ -1893,7 +1893,11 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	brasero_burn_dialog_activity_stop (dialog, primary);
 	g_free (primary);
 
-	if (!brasero_burn_session_is_dest_file (priv->session)) {
+	/* Don't show the "Make Another Copy" button if:
+	 * - we wrote to a file
+	 * - we wrote a merged session */
+	if (!brasero_burn_session_is_dest_file (priv->session)
+	&&!(brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MERGE)) {
 		/* Useful button but it shouldn't be used for images */
 		make_another = gtk_dialog_add_button (GTK_DIALOG (dialog),
 						      _("Make _Another Copy"),
