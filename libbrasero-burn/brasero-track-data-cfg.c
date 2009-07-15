@@ -225,7 +225,7 @@ brasero_track_data_cfg_nth_child (BraseroFileNode *parent,
 				  guint nth)
 {
 	BraseroFileNode *peers;
-	guint pos;
+	gint pos;
 
 	if (!parent)
 		return NULL;
@@ -235,11 +235,11 @@ brasero_track_data_cfg_nth_child (BraseroFileNode *parent,
 		peers = peers->next;
 		
 	for (pos = 0; pos < nth && peers; pos ++) {
-		/* Don't include hidden */
-		if (peers->is_hidden)
-			pos --;
-
 		peers = peers->next;
+
+		/* Skip hidden */
+		while (peers && peers->is_hidden)
+			peers = peers->next;
 	}
 
 	return peers;
@@ -385,14 +385,22 @@ brasero_track_data_cfg_iter_children (GtkTreeModel *model,
 
 	if (!parent) {
 		BraseroFileNode *root;
+		BraseroFileNode *node;
 
 		/* This is for the top directory */
 		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
-		if (!root || !brasero_track_data_cfg_get_n_children (root))
+		if (!root)
 			return FALSE;
 
+		node = BRASERO_FILE_NODE_CHILDREN (root);
+		while (node && node->is_hidden)
+			node = node->next;
+
+		if (!node || node->is_hidden)
+			return FALSE;
+
+		iter->user_data = node;
 		iter->stamp = priv->stamp;
-		iter->user_data = BRASERO_FILE_NODE_CHILDREN (root);
 		iter->user_data2 = GINT_TO_POINTER (BRASERO_ROW_REGULAR);
 		return TRUE;
 	}
@@ -449,10 +457,16 @@ brasero_track_data_cfg_iter_next (GtkTreeModel *model,
 	}
 
 	node = iter->user_data;
-	iter->user_data = node->next;
-	if (!node->next || node->next->is_hidden)
+	node = node->next;
+
+	/* skip all hidden files */
+	while (node && node->is_hidden)
+		node = node->next;
+
+	if (!node || node->is_hidden)
 		return FALSE;
 
+	iter->user_data = node;
 	return TRUE;
 }
 
