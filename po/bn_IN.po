@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: bn_IN\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
 "POT-Creation-Date: 2009-05-13 19:13+0000\n"
-"PO-Revision-Date: 2009-07-14 19:17+0530\n"
+"PO-Revision-Date: 2009-07-15 19:12+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
@@ -1249,7 +1249,7 @@ msgstr "দ্রুতগতিতে ফাঁকা করার ব্যব
 
 #: ../src/brasero-blank-dialog.c:389
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
-msgstr ""
+msgstr "ফাঁকা করার পুঙ্খানুপুঙ্খ পদ্ধতির পরিবর্তে দ্রুত ফাঁকা করার পদ্ধতি সক্রিয় করা হবে"
 
 #: ../src/brasero-blank-dialog.c:412
 msgid "Disc Blanking"
@@ -2194,7 +2194,7 @@ msgstr "নতুন ফোল্ডার %i"
 
 #: ../src/brasero-data-disc.c:617
 msgid "Click here not to use overburning"
-msgstr ""
+msgstr "ওভার-বার্ন বৈশিষ্ট্য ব্যবহার না করার জন্য এইখানে ক্লিক করুন"
 
 #: ../src/brasero-data-disc.c:627
 msgid "Please delete some files from the project."
@@ -2225,7 +2225,7 @@ msgstr "\"%s\"-কে ডিস্কের মধ্যে বার্ন ক�
 msgid ""
 "This file is the image of a disc and can therefore be burnt to disc without "
 "having to add it to a data project first."
-msgstr ""
+msgstr "এই ফাইলটি একটি ডিস্কের ইমেজ ও এর ফলে কোনো তথ্য বিশিষ্ট প্রজেক্টের মধ্যে এটি যোগ না করে সরাসরি ডিস্কের মধ্যে বার্ন করা যাবে।"
 
 #: ../src/brasero-data-disc.c:765
 msgid "_Add to Project"
@@ -2297,6 +2297,9 @@ msgid ""
 "However MacOS X cannot read images created with version 3 of ISO9660 "
 "standard."
 msgstr ""
+"ফাইলটি ২ গিবিবাইটের থেকে বেশি। ২ গিবিবাইটের থেকে বেশি মাপের ফাইলগুলি ISO9660 মানের প্রথম ও দ্বিতীয় সংস্করণে (সর্বাধিক ব্যবহৃত) দ্বারা সমর্থিত হয় না।\n"
+"অধিকাংশ অপারেটিং সিস্টেম যেমন Linux ও Windows ©-র সকল সংস্করণ দ্বারা সমর্থিত ISO9660-র তৃতীয় সংস্করণ ব্যবহার করা বিশেষভাবে বাঞ্ছনীয়।\n"
+"উল্লেখ্য, ISO9660-র তৃতীয় সংস্করণ সহযোগে নির্মিত ইমেজগুলি MacOS X দ্বারা পাঠযোগ্য নয়।"
 
 #: ../src/brasero-data-disc.c:1025
 #, c-format
@@ -2310,6 +2313,10 @@ msgid ""
 "disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
+"এই ডিরেক্টরির নিম্নবর্তী ডিরেক্টরির ক্ষেত্রে ৭-টি ঊর্ধ্বতন ডিরেক্টরি উপস্থিত থাকবে।\n"
+"Brasero দ্বারা এই ধরনের ফাইলের অনুক্রমের ইমেজ নির্মাণ করে বার্ন করা সম্ভব হলেও ডিস্কটি"
+"সর্বধরনের অপারেটিং সিস্টেম দ্বারা পাঠযোগ্য না হতে পারে।\n"
+"উল্লেখ্য: শুধুমাত্র linux-এ এই ধরনের অনুক্রমের সঠিক ব্যবহার প্রমাণিত হয়েছে।"
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -2382,7 +2389,7 @@ msgstr "মাপ"
 
 #: ../src/brasero-data-disc.c:2497
 msgid "Space"
-msgstr ""
+msgstr "স্থান"
 
 #: ../src/brasero-disc-option-dialog.c:328
 msgid "Should files be renamed to be fully Windows-compatible?"
@@ -2408,7 +2415,7 @@ msgstr "Windows সিস্টেমের সাথে সুসংগতি �
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
-msgstr ""
+msgstr "দীর্ঘ ফাইলের নাম প্রদর্শন সক্রিয় করে Windows সিস্টেমের সাথে সুসংগতি বৃদ্ধি করা হবে (সর্বাধিক ৬৪ অক্ষর বিশিষ্ট)"
 
 #: ../src/brasero-disc-option-dialog.c:419
 msgid "Disc name"
@@ -2499,6 +2506,8 @@ msgid ""
 "GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
+"এই ভলিউমের মধ্যে উপস্থিত ফাইল-সিস্টেম দ্বারা বৃহৎ মাপের ফাইল সমর্থিত হয় না (২ গিবিবাইটের বেশি)।\n"
+"এর ফলে DVD অথবা বৃহৎ মাপের ফাইল লেখার সময় সমস্যা দেখা দিতে পারে।"
 
 #. Translators %s.1f is the speed used to burn
 #: ../src/brasero-drive-properties.c:431
@@ -2550,7 +2559,7 @@ msgstr "বার্ন করার পূর্বে অনুকরণ ক�
 msgid ""
 "Brasero will simulate the burning and if it is successful, go on with actual "
 "burning after 10 seconds"
-msgstr ""
+msgstr "Brasero দ্বারা বার্ন কর্মের অনুকরণ করা হবে ও সফল হলে ১০ সেকেন্ডের পরে বার্ন করা হবে"
 
 #: ../src/brasero-drive-properties.c:575
 msgid "Use burn_proof (decrease the risk of failures)"
@@ -2697,6 +2706,8 @@ msgid ""
 "<span weight=\"bold\">%s</span>\n"
 "by <span size=\"smaller\"><i>%s</i></span>"
 msgstr ""
+"<span weight=\"bold\">%s</span>\n"
+"শিল্পী <span size=\"smaller\"><i>%s</i></span>"
 
 #: ../src/brasero-player.c:1058
 #, c-format
@@ -3703,7 +3714,7 @@ msgstr "\"-immed\" ফ্ল্যাগ সক্রিয় করুন (wodim 
 
 #: ../src/plugins/cdrkit/burn-wodim.c:1324
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
-msgstr ""
+msgstr "ড্রাইভ বাফার পূরণ করার সর্বনিম্ন অনুপাত (% অনুসারে ধার্য) (wodim-র সহায়িকা পড়ুন):"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1083
 msgid "Use cdrecord to burn CDs and DVDs"
@@ -3716,7 +3727,7 @@ msgstr "\"-immed\" ফ্ল্যাগ সক্রিয় করুন (cdreco
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1309
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
-msgstr ""
+msgstr "ড্রাইভ বাফার পূরণ করার সর্বনিম্ন অনুপাত (%% অনুসারে ধার্য) (cdrecord-র সহায়িকা পড়ুন):"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:130
 msgid "This version of mkisofs is not supported"
@@ -3915,7 +3926,7 @@ msgstr "নর্মেলাইজ করুন"
 
 #: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize allows to set consistent sound levels between tracks"
-msgstr ""
+msgstr "নর্মেলাইজ ব্যবহার করা হলে বিভিন্ন ট্র্যাকের মধ্যে সুসংগত শব্দের মাত্রা বজায় রাখা হবে"
 
 #. Translators: This message is sent
 #. * when brasero could not link together
@@ -3954,7 +3965,7 @@ msgstr "\"%s\" ট্রান্স-কোড করা হচ্ছে"
 
 #: ../src/plugins/transcode/burn-transcode.c:1608
 msgid "Transcode converts song files into a format proper to burn them on CDs"
-msgstr ""
+msgstr "CD-র মধ্যে বার্ন করার উদ্দেশ্যে গানের ফাইলগুলিকে সঠিক বিন্যাসে রূপান্তর করার জন্য ট্রান্সকোড ব্যবস্থা প্রয়োগ করা হয়"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -3968,7 +3979,7 @@ msgstr "আপনি কি নিশ্চিতরূপে ট্র্যা
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
-msgstr ""
+msgstr "ট্র্যাকটি বিভাজন করা হলে, নতুন ট্র্যাকটি ৬ সেকেন্ডের কম মাপের হবে ও সেটিকে প্যাড করা হবে।"
 
 #: ../src/brasero-split-dialog.c:166 ../src/brasero-split-dialog.c:739
 msgid "_Split"
@@ -4000,7 +4011,7 @@ msgstr "বিভাজন করা হবে না (_D)"
 
 #: ../src/brasero-split-dialog.c:956
 msgid "Do you really want to empty the slices preview?"
-msgstr ""
+msgstr "অংশের পূর্বদৃশ্য নিশ্চিতরূপে ফাঁকা করা হবে কি?"
 
 #: ../src/brasero-split-dialog.c:958 ../src/brasero-split-dialog.c:1260
 msgid "Re_move All"
@@ -4036,7 +4047,7 @@ msgstr "প্রতিটি নিঃশব্দ অংশে ট্র্য
 
 #: ../src/brasero-split-dialog.c:1081
 msgid "_Slice"
-msgstr ""
+msgstr "অংশ (_S"
 
 #: ../src/brasero-split-dialog.c:1092
 msgid "Add a splitting point"
@@ -4473,11 +4484,11 @@ msgstr "পটভূমির বৈশিষ্ট্য নির্ধার�
 
 #: ../src/brasero-jacket-view.c:781
 msgid "SIDES"
-msgstr ""
+msgstr "পৃষ্ঠ"
 
 #: ../src/brasero-jacket-view.c:797
 msgid "BACK COVER"
-msgstr ""
+msgstr "নীচের পৃষ্ঠ"
 
 #: ../src/brasero-jacket-view.c:814
 msgid "FRONT COVER"
@@ -4573,12 +4584,12 @@ msgstr "শেষে"
 
 #: ../src/brasero-rename.c:327
 msgid "Delete every occurence of"
-msgstr ""
+msgstr "চিহ্নিত বস্তুর প্রতিটি উপস্থিতি মুছে ফেলুন"
 
 #. Translators: this is a verb
 #: ../src/brasero-rename.c:342
 msgid "_Replace"
-msgstr "প্রতিস্থাপন (_R)"
+msgstr "প্রতিস্থাপন করতে (_R)"
 
 #. Reminder: if this string happens to be used somewhere else in brasero
 #. * we'll need a context with C_() macro
@@ -4586,7 +4597,7 @@ msgstr "প্রতিস্থাপন (_R)"
 #. * "with" [Entry].
 #: ../src/brasero-rename.c:357
 msgid "with"
-msgstr ""
+msgstr "ব্যবহার করা হবে"
 
 #: ../src/brasero-rename.c:371
 msgid "Rename to"
@@ -4623,7 +4634,7 @@ msgstr "অনুসন্ধান স্থল (_S)"
 #: ../src/brasero-video-disc.c:290
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
-msgstr ""
+msgstr "ভিডিও প্রজেক্টের জন্য \"%s\"-র মধ্যে কোনো প্রযোজ্য ধরন উপস্থিত নেই।"
 
 #: ../src/brasero-video-disc.c:293
 msgid "Please only add files with video contents"
@@ -4644,7 +4655,7 @@ msgstr "ভিডিও ফাইলকে MPEG2 বিন্যাসে রূ
 
 #: ../src/plugins/transcode/burn-vob.c:1216
 msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
-msgstr ""
+msgstr "যে কোনো ভিডিও ফাইলকে vob সহযোগে ভিডিও DVD-র জন্য প্রযোজ্য বিন্যাসে রূপান্তর করা যাবে"
 
 #: ../src/plugins/vcdimager/burn-vcdimager.c:474
 msgid "Use vcdimager to create SVCDs"
