@@ -350,8 +350,8 @@ brasero_project_set_remove_button_state (BraseroProject *project)
 	gboolean sensitive;
 
 	sensitive = (project->priv->has_focus &&
-		    !project->priv->empty &&
-		     project->priv->selected_uris);
+	             project->priv->selected_uris &&
+		    !brasero_disc_is_empty (BRASERO_DISC (project->priv->current)));
 
 	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
 	gtk_action_set_sensitive (action, sensitive);
@@ -825,7 +825,7 @@ brasero_project_update_controls (BraseroProject *project)
 	brasero_project_set_add_button_state (project);
 
 	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
-	gtk_action_set_sensitive (action, (project->priv->empty == FALSE));
+	gtk_action_set_sensitive (action, (brasero_disc_is_empty (BRASERO_DISC (project->priv->current))));
 }
 
 static void
@@ -980,7 +980,6 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	}
 	else if (valid == BRASERO_SESSION_EMPTY) {
 		project->priv->empty = TRUE;
-		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->help), 1);
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
@@ -1021,6 +1020,9 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		project->priv->empty = FALSE;
 		project->priv->oversized = FALSE;
 	}
+
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->help),
+	                               brasero_disc_is_empty (BRASERO_DISC (project->priv->current))? 0:1);
 }
 
 static void

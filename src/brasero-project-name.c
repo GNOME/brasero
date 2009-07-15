@@ -94,7 +94,7 @@ brasero_project_name_icon_update (BraseroProjectName *self,
 
 	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
 					GTK_ENTRY_ICON_PRIMARY,
-					NULL);	
+					NULL);
 	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
 					   GTK_ENTRY_ICON_PRIMARY,
 					   NULL);
@@ -176,8 +176,6 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 	if (!track)
 		return;
 
-	filename = brasero_track_data_cfg_get_icon_path (track);
-
 	chooser = gtk_file_chooser_dialog_new (_("Medium Icon"),
 					       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (project))),
 					       GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -198,6 +196,7 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 
 	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (chooser), filter);
 
+	filename = brasero_track_data_cfg_get_icon_path (track);
 	if (filename)
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), filename);
 

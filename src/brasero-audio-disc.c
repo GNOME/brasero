@@ -225,12 +225,23 @@ G_DEFINE_TYPE_WITH_CODE (BraseroAudioDisc,
 			 GTK_TYPE_VBOX,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_audio_disc_iface_disc_init));
+static gboolean
+brasero_audio_disc_is_empty (BraseroDisc *disc)
+{
+	GtkTreeModel *model;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (BRASERO_AUDIO_DISC (disc)->priv->tree));
+	return gtk_tree_model_iter_n_children (model, NULL) != 0;
+}
 
 static void
 brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface)
 {
 	iface->add_uri = brasero_audio_disc_add_uri;
 	iface->delete_selected = brasero_audio_disc_delete_selected;
+
+	iface->is_empty = brasero_audio_disc_is_empty;
+
 	iface->set_session_contents = brasero_audio_disc_set_session_contents;
 	iface->get_selected_uri = brasero_audio_disc_get_selected_uri;
 	iface->get_boundaries = brasero_audio_disc_get_boundaries;

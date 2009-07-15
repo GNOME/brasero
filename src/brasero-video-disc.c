@@ -1352,12 +1352,24 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 	return BRASERO_DISC_OK;
 }
 
+static gboolean
+brasero_video_disc_is_empty (BraseroDisc *disc)
+{
+	BraseroVideoDiscPrivate *priv;
+	GtkTreeModel *model;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	return gtk_tree_model_iter_n_children (model, NULL) != 0;
+}
+
 static void
 brasero_video_disc_iface_disc_init (BraseroDiscIface *iface)
 {
 	iface->add_uri = brasero_video_disc_add_uri;
 	iface->delete_selected = brasero_video_disc_delete_selected;
 
+	iface->is_empty = brasero_video_disc_is_empty;
 	iface->set_session_contents = brasero_video_disc_set_session_contents;
 
 	iface->get_selected_uri = brasero_video_disc_get_selected_uri;

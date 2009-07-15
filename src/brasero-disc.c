@@ -203,6 +203,24 @@ brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager, GtkWidget *messag
 	return 0;
 }
 
+gboolean
+brasero_disc_is_empty (BraseroDisc *disc)
+{
+	BraseroDiscIface *iface;
+
+	if (!disc)
+		return 0;
+
+	g_return_val_if_fail (BRASERO_IS_DISC (disc), 0);
+
+	iface = BRASERO_DISC_GET_IFACE (disc);
+	if (iface->is_empty)
+		return (* iface->is_empty) (disc);
+
+	return FALSE;
+
+}
+
 void
 brasero_disc_selection_changed (BraseroDisc *disc)
 {

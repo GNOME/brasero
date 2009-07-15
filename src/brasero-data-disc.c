@@ -2336,11 +2336,26 @@ brasero_data_disc_finalize (GObject *object)
 	G_OBJECT_CLASS (brasero_data_disc_parent_class)->finalize (object);
 }
 
+static gboolean
+brasero_data_disc_is_empty (BraseroDisc *disc)
+{
+	BraseroDataDiscPrivate *priv;
+	GtkTreeModel *model;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if(!model)
+		return FALSE;
+
+	return gtk_tree_model_iter_n_children (model, NULL) != 0;
+}
+
 static void
 brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 {
 	iface->add_uri = brasero_data_disc_add_uri;
 	iface->delete_selected = brasero_data_disc_delete_selected;
+	iface->is_empty = brasero_data_disc_is_empty;
 	iface->clear = brasero_data_disc_clear;
 	iface->set_session_contents = brasero_data_disc_set_session_contents;
 	iface->get_selected_uri = brasero_data_disc_get_selected_uri;

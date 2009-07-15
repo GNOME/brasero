@@ -2276,8 +2276,7 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree)) == NULL
-	&& brasero_data_project_is_empty (BRASERO_DATA_PROJECT (priv->tree))) {
+	if (brasero_data_project_is_empty (BRASERO_DATA_PROJECT (priv->tree))) {
 		if (status)
 			brasero_status_set_error (status,
 						  g_error_new (BRASERO_BURN_ERROR,

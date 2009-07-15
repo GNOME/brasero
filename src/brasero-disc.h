@@ -80,6 +80,7 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*add_uri)		(BraseroDisc *disc,
 							 const gchar *uri);
 
+	gboolean		(*is_empty)		(BraseroDisc *disc);
 	gboolean		(*get_selected_uri)	(BraseroDisc *disc,
 							 gchar **uri);
 	gboolean		(*get_boundaries)	(BraseroDisc *disc,
@@ -126,6 +127,9 @@ brasero_disc_get_status (BraseroDisc *disc,
 BraseroDiscResult
 brasero_disc_set_session_contents (BraseroDisc *disc,
 				   BraseroBurnSession *session);
+
+gboolean
+brasero_disc_is_empty (BraseroDisc *disc);
 
 void
 brasero_disc_selection_changed (BraseroDisc *disc);
