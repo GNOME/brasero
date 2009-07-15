@@ -1521,6 +1521,28 @@ brasero_track_data_cfg_node_added (BraseroDataProject *project,
 //		node->is_visible = TRUE;
 }
 
+static guint
+brasero_track_data_cfg_convert_former_position (BraseroFileNode *former_parent,
+                                                guint former_position)
+{
+	BraseroFileNode *child;
+	guint hidden_num = 0;
+	guint current_pos;
+
+	/* We need to convert former_position to the right position in the
+	 * treeview as there could be some hidden node before this position. */
+	child = BRASERO_FILE_NODE_CHILDREN (former_parent);
+
+	for (current_pos = 0; child && current_pos != former_position; current_pos ++) {
+		if (child->is_hidden)
+			hidden_num ++;
+
+		child = child->next;
+	}
+
+	return former_position - hidden_num;
+}
+
 static void
 brasero_track_data_cfg_node_removed (BraseroDataProject *project,
 				     BraseroFileNode *former_parent,
@@ -1589,7 +1611,7 @@ brasero_track_data_cfg_node_removed (BraseroDataProject *project,
 	/* remove the node. Do it after adding a possible BOGUS row.
 	 * NOTE since BOGUS row has been added move row. */
 	path = brasero_track_data_cfg_node_to_path (self, former_parent);
-	gtk_tree_path_append_index (path, former_position);
+	gtk_tree_path_append_index (path, brasero_track_data_cfg_convert_former_position (former_parent, former_position));
 
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), path);
 	gtk_tree_path_free (path);
