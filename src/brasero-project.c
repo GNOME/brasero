@@ -662,6 +662,7 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 
 	/* The alignment to set properly the position of the GtkTextView */
 	alignment = gtk_alignment_new (0.5, 0.3, 0.0, 0.0);
+	gtk_container_set_border_width (GTK_CONTAINER (alignment), 10);
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (event_box), alignment);
 
