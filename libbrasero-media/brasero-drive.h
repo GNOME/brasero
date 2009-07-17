@@ -122,6 +122,9 @@ brasero_drive_eject (BraseroDrive *drive,
 		     gboolean wait,
 		     GError **error);
 
+void
+brasero_drive_cancel_current_operation (BraseroDrive *drive);
+
 gboolean
 brasero_drive_is_door_open (BraseroDrive *drive);
 

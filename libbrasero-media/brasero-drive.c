@@ -217,6 +217,25 @@ brasero_drive_eject (BraseroDrive *drive,
 }
 
 /**
+ * brasero_drive_cancel_current_operation:
+ * @drive: #BraseroDrive *
+ *
+ * Cancels all operations currently running for @drive
+ *
+ **/
+void
+brasero_drive_cancel_current_operation (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	g_return_if_fail (drive != NULL);
+	g_return_if_fail (BRASERO_IS_DRIVE (drive));
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);	
+	g_cancellable_cancel (priv->cancel);
+}
+
+/**
  * brasero_drive_get_bus_target_lun_string:
  * @drive: a #BraseroDrive
  *
