@@ -35,32 +35,40 @@
 #include <gtk/gtk.h>
 
 #include "brasero-eject-dialog.h"
-#include "brasero-tool-dialog.h"
-#include "brasero-tool-dialog-private.h"
+#include "brasero-drive-selection.h"
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 #include "brasero-volume.h"
 #include "brasero-utils.h"
 #include "brasero-burn.h"
+#include "brasero-misc.h"
+#include "brasero-app.h"
 
-G_DEFINE_TYPE (BraseroEjectDialog, brasero_eject_dialog, BRASERO_TYPE_TOOL_DIALOG);
+typedef struct _BraseroEjectDialogPrivate BraseroEjectDialogPrivate;
+struct _BraseroEjectDialogPrivate {
+	GtkWidget *selector;
+	GtkWidget *eject_button;
+};
+
+#define BRASERO_EJECT_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_EJECT_DIALOG, BraseroEjectDialogPrivate))
+
+G_DEFINE_TYPE (BraseroEjectDialog, brasero_eject_dialog, GTK_TYPE_DIALOG);
 
 static void
-brasero_eject_dialog_medium_changed (BraseroToolDialog *dialog,
-				     BraseroMedium *medium)
-{
-	if (medium)
-		brasero_tool_dialog_set_valid (dialog, BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));
-	else
-		brasero_tool_dialog_set_valid (dialog, FALSE);
-}
-
-static gboolean
-brasero_eject_dialog_activate (BraseroToolDialog *dialog,
-			       BraseroMedium *medium)
+brasero_eject_dialog_activate (GtkDialog *dialog,
+			       GtkResponseType answer)
 {
 	BraseroDrive *drive;
 	GError *error = NULL;
+	BraseroEjectDialogPrivate *priv;
+
+	if (answer != GTK_RESPONSE_OK)
+		return;
+
+	priv = BRASERO_EJECT_DIALOG_PRIVATE (dialog);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->selector), FALSE);
+	gtk_widget_set_sensitive (priv->eject_button, FALSE);
 
 	/* In here we could also remove the lock held by any app (including 
 	 * brasero) through brasero_drive_unlock. We'd need a warning
@@ -71,7 +79,7 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 	/* NOTE 2: we'd need also the ability to reset the drive through a SCSI
 	 * command. The problem is brasero may need to be privileged then as
 	 * cdrecord/cdrdao seem to be. */
-	drive = brasero_medium_get_drive (medium);
+	drive = brasero_drive_selection_get_active (BRASERO_DRIVE_SELECTION (priv->selector));
 	brasero_drive_unlock (drive);
 
 	/*if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))
@@ -79,71 +87,114 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 		BRASERO_BURN_LOG ("Error unlocking medium: %s", error?error->message:"Unknown error");
 		return TRUE;
 	}*/
+	if (!brasero_drive_eject (drive, TRUE, &error)) {
+		gchar *string;
 
-	if (!brasero_drive_eject (drive, TRUE, &error))
-		return TRUE;
+		string = g_strdup_printf (_("The disc in \"%s\" cannot be ejected"),
+		                          brasero_drive_get_display_name (drive));
 
-	/* we'd need also to check what are the results of our operations namely
-	 * if we succeded to eject. To do that, the problem is the same as above
-	 * that is, since ejection can take time (a drive needs to slow down if
-	 * it was reading before ejection), we can't check if the drive is still
-	 * closed now as ejection is not instantaneous.
-	 * A message box announcing the results of the operation would be a good
-	 * thing as well probably. */
-	if (!brasero_drive_is_door_open (drive)) {
-		//gtk_message_dialog_new ();
+		brasero_app_alert (brasero_app_get_default (),
+		                   string,
+		                   error?error->message:_("An unknown error occured"),
+		                   GTK_MESSAGE_ERROR);
+
+		if (error)
+			g_error_free (error);
+
+		g_free (string);
+		return;
 	}
-	
+
+	g_object_unref (drive);
+}
+
+gboolean
+brasero_eject_dialog_cancel (BraseroEjectDialog *dialog)
+{
+	BraseroEjectDialogPrivate *priv;
+	BraseroDrive *drive;
+
+	priv = BRASERO_EJECT_DIALOG_PRIVATE (dialog);
+	drive = brasero_drive_selection_get_active (BRASERO_DRIVE_SELECTION (priv->selector));
+
+	if (drive) {
+		brasero_drive_cancel_current_operation (drive);
+		g_object_unref (drive);
+	}
+
 	return TRUE;
 }
 
-static gboolean
-brasero_eject_dialog_cancel (BraseroToolDialog *dialog)
+static void
+brasero_eject_dialog_cancel_cb (GtkWidget *button_cancel,
+                                BraseroEjectDialog *dialog)
 {
-	BraseroMedium *medium;
-
-	medium = brasero_tool_dialog_get_medium (dialog);
-
-	if (medium) {
-		brasero_volume_cancel_current_operation (BRASERO_VOLUME (medium));
-		g_object_unref (medium);
-	}
-
-	return TRUE;
+	brasero_eject_dialog_cancel (dialog);
 }
 
 static void
 brasero_eject_dialog_class_init (BraseroEjectDialogClass *klass)
 {
-	BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
+	GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
 
-	tool_dialog_class->activate = brasero_eject_dialog_activate;
-	tool_dialog_class->cancel = brasero_eject_dialog_cancel;
+	g_type_class_add_private (klass, sizeof (BraseroEjectDialogPrivate));
 
-	tool_dialog_class->medium_changed = brasero_eject_dialog_medium_changed;
+	dialog_class->response = brasero_eject_dialog_activate;
 }
 
 static void
 brasero_eject_dialog_init (BraseroEjectDialog *obj)
 {
-	BraseroMedium *medium;
+	gchar *title_str;
+	GtkWidget *box;
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *button;
+	BraseroEjectDialogPrivate *priv;
 
-	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
-					_("_Eject"),
-					NULL,
-					"media-eject");
+	priv = BRASERO_EJECT_DIALOG_PRIVATE (obj);
 
-	/* all kinds of media */
-	brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
-						   BRASERO_MEDIA_TYPE_ALL_BUT_FILE);
+	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
+	box = gtk_dialog_get_content_area (GTK_DIALOG (obj));
 
-	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
-	if (medium) {
-		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));
-		g_object_unref (medium);
-	}
-	else
-		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), FALSE);
+	priv->selector = brasero_drive_selection_new ();
+	gtk_widget_show (GTK_WIDGET (priv->selector));
+
+	title_str = g_strdup (_("Select a disc"));
+
+	label = gtk_label_new (title_str);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (box), hbox, FALSE, TRUE, 0);
+
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), priv->selector, FALSE, TRUE, 0);
+	g_free (title_str);
+
+	brasero_drive_selection_show_type (BRASERO_DRIVE_SELECTION (priv->selector),
+	                                   BRASERO_DRIVE_TYPE_ALL_BUT_FILE);
+
+	button = gtk_dialog_add_button (GTK_DIALOG (obj),
+	                                GTK_STOCK_CANCEL,
+	                                GTK_RESPONSE_CANCEL);
+	g_signal_connect (button,
+	                  "clicked",
+	                  G_CALLBACK (brasero_eject_dialog_cancel_cb),
+	                  obj);
+
+	button = brasero_utils_make_button (_("_Eject"),
+					    NULL,
+					    "media-eject",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
+	                              button,
+	                              GTK_RESPONSE_OK);
+	gtk_widget_show (button);
+	priv->eject_button = button;
 }
 
 GtkWidget *

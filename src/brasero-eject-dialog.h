@@ -31,8 +31,6 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-tool-dialog.h"
-
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_EJECT_DIALOG         (brasero_eject_dialog_get_type ())
@@ -43,19 +41,21 @@ G_BEGIN_DECLS
 #define BRASERO_EJECT_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_EJECT_DIALOG, BraseroEjectDialogClass))
 
 typedef struct _BraseroEjectDialog BraseroEjectDialog;
-typedef struct _BraseroEjectDialogPrivate BraseroEjectDialogPrivate;
 typedef struct _BraseroEjectDialogClass BraseroEjectDialogClass;
 
 struct _BraseroEjectDialog {
-	BraseroToolDialog parent;
+	GtkDialog parent;
 };
 
 struct _BraseroEjectDialogClass {
-	BraseroToolDialogClass parent_class;
+	GtkDialogClass parent_class;
 };
 
 GType brasero_eject_dialog_get_type ();
 GtkWidget *brasero_eject_dialog_new ();
+
+gboolean
+brasero_eject_dialog_cancel (BraseroEjectDialog *dialog);
 
 G_END_DECLS
 

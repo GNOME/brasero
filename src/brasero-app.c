@@ -426,8 +426,12 @@ brasero_app_save_contents (BraseroApp *app,
 	}
 
 	if (priv->tool_dialog) {
-		if (cancellable)
-			return (brasero_tool_dialog_cancel (BRASERO_TOOL_DIALOG (priv->tool_dialog)) == FALSE);
+		if (cancellable) {
+			if (BRASERO_IS_TOOL_DIALOG (priv->tool_dialog))
+				return (brasero_tool_dialog_cancel (BRASERO_TOOL_DIALOG (priv->tool_dialog)) == FALSE);
+			else if (BRASERO_IS_EJECT_DIALOG (priv->tool_dialog))
+				return (brasero_eject_dialog_cancel (BRASERO_EJECT_DIALOG (priv->tool_dialog)) == FALSE);
+		}
 
 		gtk_widget_destroy (priv->tool_dialog);
 		return FALSE;
