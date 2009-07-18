@@ -562,10 +562,17 @@ brasero_checksum_image_thread (gpointer data)
 			result = BRASERO_BURN_ERR;
 	}
 	else if (action == BRASERO_JOB_ACTION_IMAGE) {
-		if (BRASERO_IS_TRACK_IMAGE (track))
+		BraseroTrackType *input;
+
+		input = brasero_track_type_new ();
+		brasero_job_get_input_type (BRASERO_JOB (self), input);
+
+		if (brasero_track_type_get_has_image (input))
 			result = brasero_checksum_image_image_and_checksum (self, &error);
 		else
 			result = BRASERO_BURN_ERR;
+
+		brasero_track_type_free (input);
 	}
 
 	if (result != BRASERO_BURN_CANCEL) {
