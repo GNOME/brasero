@@ -588,6 +588,19 @@ brasero_data_disc_project_loaded_cb (BraseroTrackDataCfg *project,
 	}
 }
 
+static gboolean
+brasero_data_disc_launch_image (gpointer data)
+{
+	gchar *uri = data;
+	GtkWidget *manager;
+
+	manager = brasero_app_get_project_manager (brasero_app_get_default ());
+	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager), uri);
+	g_free (uri);
+
+	return FALSE;
+}
+
 static BraseroBurnResult
 brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 				const gchar *uri,
@@ -598,7 +611,6 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 	gchar *string;
 	GtkWidget *button;
 	GtkWidget *dialog;
-	GtkWidget *manager;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -633,10 +645,8 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 	if (answer != GTK_RESPONSE_YES)
 		return BRASERO_BURN_OK;
 
-	/* Tell project manager to switch. First function to avoid warnings */
-	brasero_track_data_cfg_reset (priv->project);
-	manager = brasero_app_get_project_manager (brasero_app_get_default ());
-	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager), uri);
+	/* Tell project manager to switch. */
+	g_idle_add (brasero_data_disc_launch_image, g_strdup (uri));
 
 	return BRASERO_BURN_CANCEL;
 }
