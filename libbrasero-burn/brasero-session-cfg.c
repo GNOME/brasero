@@ -435,6 +435,11 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
+	original_flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
+	BRASERO_BURN_LOG ("Resetting all flags");
+	BRASERO_BURN_LOG_FLAGS (original_flags, "Current are");
+	BRASERO_BURN_LOG_FLAGS (flags, "New should be");
+
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!drive)
 		return;
@@ -447,10 +452,6 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 
 	/* This prevents signals to be emitted while (re-) adding them one by one */
 	priv->inhibit_flag_sig = TRUE;
-
-	original_flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
-	if (original_flags == flags)
-		return;
 
 	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self), BRASERO_BURN_FLAG_NONE);
 
@@ -1214,6 +1215,7 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 	BraseroDrive *drive;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
 	if ((priv->supported & flags) != flags)
 		return;
 
