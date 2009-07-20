@@ -218,10 +218,10 @@ brasero_mmc2_get_profile (BraseroDeviceHandle *handle,
 	memset (&hdr, 0, sizeof (hdr));
 	BRASERO_SET_16 (cdb->alloc_len, sizeof (hdr));
 	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
+	brasero_scsi_command_free (cdb);
+
 	if (res)
 		return res;
-
-	brasero_scsi_command_free (cdb);
 
 	*profile = BRASERO_GET_16 (hdr.current_profile);
 	return BRASERO_SCSI_OK;
