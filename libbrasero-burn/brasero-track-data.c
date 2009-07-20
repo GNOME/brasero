@@ -413,6 +413,21 @@ brasero_track_data_init (BraseroTrackData *object)
 static void
 brasero_track_data_finalize (GObject *object)
 {
+	BraseroTrackDataPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_PRIVATE (object);
+	if (priv->grafts) {
+		g_slist_foreach (priv->grafts, (GFunc) brasero_graft_point_free, NULL);
+		g_slist_free (priv->grafts);
+		priv->grafts = NULL;
+	}
+
+	if (priv->excluded) {
+		g_slist_foreach (priv->excluded, (GFunc) g_free, NULL);
+		g_slist_free (priv->excluded);
+		priv->excluded = NULL;
+	}
+
 	G_OBJECT_CLASS (brasero_track_data_parent_class)->finalize (object);
 }
 
