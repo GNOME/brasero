@@ -25,7 +25,7 @@ SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED" 
-SCAN_OPTIONS=
+SCAN_OPTIONS=--source-dir=../../libbrasero-burn
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -47,7 +47,10 @@ CFILE_GLOB=$(top_srcdir)/libbrasero-media/*.c #$(top_srcdir)/libbrasero-burn/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=	scsi-base.h		\
+IGNORE_HFILES=	libbrasero-marshal.h	\
+		brasero-gio-operation.h	\
+		burn-volume-source.h	\
+		scsi-base.h		\
 		scsi-error.h		\
 		scsi-mmc1.h		\
 		scsi-opcodes.h		\
@@ -77,53 +80,49 @@ IGNORE_HFILES=	scsi-base.h		\
 		burn-iso-field.h	\
 		burn-iso9660.h		\
 		burn-volume.h		\
-		burn-volume-source.h	\
 		brasero-media-private.h	\
 		brasero-medium-selection-priv.h	\
 		burn-susp.h		\
-		libbrasero-marshal.h	\
-		brasero-gio-operation.h	\
-		brasero-burn-dialog.h	\
-		brasero-disc-message.h	\
-		brasero-image-properties.h	\
-		brasero-jacket-view.h	\
-		brasero-src-image.h	\
-		burn-caps.h		\
-		burn-plugin.h		\
-		burn-task-item.h	\
-		brasero-burn.h		\
-		brasero-disc-option-dialog.h	\
-		brasero-image-type-chooser.h	\
-		brasero-medium-properties.h	\
-		brasero-src-selection.h		\
-		burn-dbus.h			\
-		burn-plugin-manager.h		\
-		brasero-burn-lib.h		\
-		brasero-drive-properties.h	\
-		brasero-jacket-background.h	\
-		brasero-notify.h		\
-		brasero-tags.h			\
-		burn-debug.h			\
-		burn-plugin-private.h		\
-		brasero-burn-options.h		\
-		brasero-jacket-buffer.h		\
+		brasero-caps-burn.h		\
+		brasero-cover.h		\
+		brasero-data-project.h		\
+		brasero-data-session.h		\
+		brasero-data-tree-model.h		\
+		brasero-data-vfs.h		\
+		brasero-dest-selection.h		\
+		brasero-drive-properties.h		\
+		brasero-file-monitor.h		\
+		brasero-file-node.h		\
+		brasero-filtered-uri.h		\
+		brasero-image-properties.h		\
+		brasero-image-type-chooser.h		\
+		brasero-medium-properties.h		\
+		brasero-plugin.h		\
+		brasero-plugin-information.h		\
+		brasero-plugin-registration.h		\
 		brasero-progress.h		\
-		brasero-track.h			\
+		brasero-session-helper.h		\
+		brasero-src-image.h		\
+		brasero-src-selection.h		\
+		brasero-status-dialog.h		\
+		brasero-tool-dialog-private.h		\
+		brasero-track-type-private.h		\
+		brasero-tray.h		\
+		brasero-video-options.h		\
+		brasero-xfer.h		\
+		burn-basics.h		\
+		burn-caps.h		\
+		burn-dbus.h		\
+		burn-debug.h		\
 		burn-image-format.h		\
-		burn-process.h			\
-		brasero-dest-selection.h	\
-		brasero-jacket-edit.h		\
-		brasero-session-cfg.h		\
-		brasero-tray.h			\
-		burn-job.h			\
-		burn-task-ctx.h			\
-		brasero-disc-copy-dialog.h	\
-		brasero-image-option-dialog.h	\
-		brasero-jacket-font.h		\
-		brasero-session.h		\
-		burn-basics.h			\
+		burn-job.h		\
 		burn-mkisofs-base.h		\
-		burn-task.h
+		burn-plugin-manager.h		\
+		burn-process.h		\
+		burn-task-ctx.h		\
+		burn-task.h		\
+		burn-task-item.h
+
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -150,8 +149,7 @@ INCLUDES=								\
 	$(BRASERO_IO_CFLAGS)						\
 	$(BRASERO_GTK_CFLAGS)
 
-GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media.la 
-#$(top_builddir)/libbrasero-burn/libbrasero-burn.la
+GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media.la $(top_builddir)/libbrasero-burn/libbrasero-burn.la
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

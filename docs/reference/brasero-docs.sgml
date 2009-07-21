@@ -1,26 +1,66 @@
 <?xml version="1.0"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-<!ENTITY version SYSTEM "version.xml">
-<!ENTITY slash "/">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY version SYSTEM "version.xml">
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
 ]>
+
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
   <bookinfo>
-    <title>Libbrasero-media Reference Manual</title>
+    <title>Brasero Libraries Reference Manual</title>
     <releaseinfo>
-      for brasero &version;
+      for Libbrasero &version;
     </releaseinfo>
   </bookinfo>
 
   <chapter>
-    <title>API Reference</title>
-    <xi:include href="xml/brasero-drive-selection.xml"/>
+    <title>API Reference for Libbrasero-media</title>
+    <xi:include href="xml/brasero-media.xml"/>
+    <xi:include href="xml/brasero-units.xml"/>
+    <xi:include href="xml/brasero-medium-monitor.xml"/>
     <xi:include href="xml/brasero-drive.xml"/>
     <xi:include href="xml/brasero-medium.xml"/>
-    <xi:include href="xml/brasero-media.xml"/>
-    <xi:include href="xml/brasero-medium-monitor.xml"/>
-    <xi:include href="xml/brasero-medium-selection.xml"/>
-    <xi:include href="xml/brasero-units.xml"/>
     <xi:include href="xml/brasero-volume.xml"/>
+    <xi:include href="xml/brasero-medium-selection.xml"/>
+    <xi:include href="xml/brasero-drive-selection.xml"/>
   </chapter>
+.
+  <chapter>
+    <title>API Reference for Libbrasero-burn</title>
+    <xi:include href="xml/brasero-burn-lib.xml"/>
+    <xi:include href="xml/brasero-error.xml"/>
+    <xi:include href="xml/brasero-tags.xml"/>
+    <xi:include href="xml/brasero-status.xml"/>
+    <xi:include href="xml/brasero-track-type.xml"/>
+    <xi:include href="xml/brasero-track.xml"/>
+    <xi:include href="xml/brasero-track-disc.xml"/>
+    <xi:include href="xml/brasero-track-data.xml"/>
+    <xi:include href="xml/brasero-track-data-cfg.xml"/>
+    <xi:include href="xml/brasero-track-stream.xml"/>
+    <xi:include href="xml/brasero-track-stream-cfg.xml"/>
+    <xi:include href="xml/brasero-track-image.xml"/>
+    <xi:include href="xml/brasero-track-image-cfg.xml"/>
+    <xi:include href="xml/brasero-session.xml"/>
+    <xi:include href="xml/brasero-session-span.xml"/>
+    <xi:include href="xml/brasero-session-cfg.xml"/>
+    <xi:include href="xml/brasero-burn-options.xml"/>
+    <xi:include href="xml/brasero-burn.xml"/>
+    <xi:include href="xml/brasero-burn-dialog.xml"/>
+    <xi:include href="xml/brasero-tool-dialog.xml"/>
+    <xi:include href="xml/brasero-sum-dialog.xml"/>
+    <xi:include href="xml/brasero-blank-dialog.xml"/>
+
+  </chapter>
+ 
+  <chapter id="object-tree">
+    <title>Object Hierarchy</title>
+     <xi:include href="xml/tree_index.sgml"/>
+  </chapter>
+  <index id="api-index-full">
+    <title>API Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
 </book>
