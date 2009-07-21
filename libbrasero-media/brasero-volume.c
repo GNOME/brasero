@@ -57,7 +57,7 @@ G_DEFINE_TYPE (BraseroVolume, brasero_volume, BRASERO_TYPE_MEDIUM);
  * brasero_volume_get_gvolume:
  * @volume: #BraseroVolume
  *
- * Gets the corresponding #GVolume for @Medium.
+ * Gets the corresponding #GVolume for @volume.
  *
  * Return value: a #GVolume *.
  *

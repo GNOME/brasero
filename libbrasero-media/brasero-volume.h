@@ -67,7 +67,7 @@ GIcon *
 brasero_volume_get_icon (BraseroVolume *volume);
 
 GVolume *
-brasero_volume_get_gvolume (BraseroVolume *self);
+brasero_volume_get_gvolume (BraseroVolume *volume);
 
 gboolean
 brasero_volume_is_mounted (BraseroVolume *volume);

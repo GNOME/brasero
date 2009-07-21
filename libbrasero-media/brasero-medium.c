@@ -293,12 +293,14 @@ brasero_medium_get_status (BraseroMedium *medium)
 /**
  * brasero_medium_get_last_data_track_address:
  * @medium: #BraseroMedium
- * @byte: a #goffset * or NULL
- * @sector: a #goffset * or NULL
+ * @bytes: a #goffset * or NULL
+ * @sectors: a #goffset * or NULL
  *
- * Stores in either @byte (in bytes) or in @sector (in blocks) the address where
+ * Stores in either @bytes (in bytes) or in @sectors (in blocks) the address where
  * the last session starts. This is useful when creating a multisession image or
  * when reading the contents of this last track.
+ *
+ * Return value: a #gboolean. Returns TRUE if information could be retrieved.
  *
  **/
 gboolean
@@ -338,11 +340,13 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 /**
  * brasero_medium_get_last_data_track_space:
  * @medium: #BraseroMedium
- * @size: a #goffset * or NULL
- * @blocks: a #goffset * or NULL
+ * @bytes: a #goffset * or NULL
+ * @sectors: a #goffset * or NULL
  *
- * Stores in either @size (in bytes) or in @blocks (in blocks) the space used by
+ * Stores in either @bytes (in bytes) or in @sectors (in blocks) the space used by
  * the last track on the medium.
+ *
+ * Return value: a #gboolean. Returns TRUE if information could be retrieved.
  *
  **/
 gboolean
@@ -446,10 +450,10 @@ brasero_medium_get_track (BraseroMedium *medium,
  * brasero_medium_get_track_space:
  * @medium: a #BraseroMedium
  * @num: a #guint
- * @size: a #goffset * or NULL
- * @blocks: a #goffset * or NULL
+ * @bytes: a #goffset * or NULL
+ * @sectors: a #goffset * or NULL
  *
- * Stores in either @size (in bytes) or in @blocks (in blocks) the space used
+ * Stores in either @bytes (in bytes) or in @sectors (in blocks) the space used
  * by session @num on the disc.
  *
  * Return value: a #gboolean. Returns TRUE if information could be retrieved;
@@ -491,10 +495,10 @@ brasero_medium_get_track_space (BraseroMedium *medium,
  * brasero_medium_get_track_address:
  * @medium: a #BraseroMedium
  * @num: a #guint
- * @byte: a #goffset * or NULL
- * @sector: a #goffset * or NULL
+ * @bytes: a #goffset * or NULL
+ * @sectors: a #goffset * or NULL
  *
- * Stores in either @byte (in bytes) or in @sector (in blocks) the address at
+ * Stores in either @bytes (in bytes) or in @sectors (in blocks) the address at
  * which the session identified by @num starts.
  *
  * Return value: a #gboolean. Returns TRUE if information could be retrieved;
@@ -3258,6 +3262,16 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
 
 	return FALSE;
 }
+
+/**
+ * brasero_medium_can_use_dummy_for_sao:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium supports doing a test write with SAO on.
+ *
+ * Return value: a #gboolean. TRUE if the medium can use SAO write mode during a test write, FALSE otherwise.
+ *
+ **/
 gboolean
 brasero_medium_can_use_dummy_for_sao (BraseroMedium *medium)
 {
@@ -3269,6 +3283,15 @@ brasero_medium_can_use_dummy_for_sao (BraseroMedium *medium)
 	return priv->dummy_sao;
 }
 
+/**
+ * brasero_medium_can_use_dummy_for_tao:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium supports doing a test write with TAO on.
+ *
+ * Return value: a #gboolean. TRUE if the medium can use TAO write mode during a test write, FALSE otherwise.
+ *
+ **/
 gboolean
 brasero_medium_can_use_dummy_for_tao (BraseroMedium *medium)
 {
@@ -3280,6 +3303,15 @@ brasero_medium_can_use_dummy_for_tao (BraseroMedium *medium)
 	return priv->dummy_tao;
 }
 
+/**
+ * brasero_medium_can_use_burnfree:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium supports any burnfree technology.
+ *
+ * Return value: a #gboolean. TRUE if the medium can use any burnfree technology, FALSE otherwise.
+ *
+ **/
 gboolean
 brasero_medium_can_use_burnfree (BraseroMedium *medium)
 {
