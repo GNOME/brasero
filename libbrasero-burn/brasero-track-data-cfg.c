@@ -41,6 +41,7 @@
 #include <gtk/gtk.h>
 
 #include "brasero-units.h"
+#include "brasero-volume.h"
 
 #include "brasero-track-data-cfg.h"
 
@@ -61,7 +62,7 @@ struct _BraseroTrackDataCfgPrivate
 
 	BraseroFileNode *autorun;
 	BraseroFileNode *icon;
-	gchar *image_path;
+	GFile *image_file;
 
 	BraseroDataTreeModel *tree;
 	guint stamp;
@@ -1722,9 +1723,9 @@ brasero_track_data_clean_autorun (BraseroTrackDataCfg *track)
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
-	if (priv->image_path) {
-		g_free (priv->image_path);
-		priv->image_path = NULL;
+	if (priv->image_file) {
+		g_object_unref (priv->image_file);
+		priv->image_file = NULL;
 	}
 
 	if (priv->autorun) {
@@ -2852,8 +2853,7 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 /**
  * This is to handle the icon for the image
  */
-
-const gchar *
+gchar *
 brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
@@ -2861,7 +2861,31 @@ brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-	return priv->image_path;
+	if (!priv->image_file)
+		return NULL;
+
+	return g_file_get_path (priv->image_file);
+}
+
+GIcon *
+brasero_track_data_cfg_get_icon (BraseroTrackDataCfg *track)
+{
+	gchar *array [] = {"media-optical", NULL};
+	BraseroTrackDataCfgPrivate *priv;
+	BraseroMedium *medium;
+	GIcon *icon;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	if (priv->image_file)
+		icon = g_file_icon_new (priv->image_file);
+	else if ((medium = brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree))))
+		icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
+	else
+		icon = g_themed_icon_new_from_names (array, -1);
+
+	return icon;
 }
 
 static gchar *
@@ -3019,7 +3043,7 @@ brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
 		brasero_track_data_cfg_autorun_inf_update (track);
 	}
 
-	priv->image_path = g_strdup (icon_path);
+	priv->image_file = g_file_new_for_path (icon_path);
 	g_signal_emit (track,
 		       brasero_track_data_cfg_signals [ICON_CHANGED],
 		       0);

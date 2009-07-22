@@ -717,14 +717,17 @@ _save_data_track_xml (xmlTextWriter *project,
 	GSList *iter;
 	GSList *tracks;
 	GSList *grafts;
+	gchar *filename;
 	BraseroTrackDataCfg *track;
 
 	tracks = brasero_burn_session_get_tracks (session);
 	track = BRASERO_TRACK_DATA_CFG (tracks->data);
 
-	if (brasero_track_data_cfg_get_icon_path (track)) {
+	filename = brasero_track_data_cfg_get_icon_path (track);
+	if (filename) {
 		/* Write the icon if any */
-		success = xmlTextWriterWriteElement (project, (xmlChar *) "icon", (xmlChar *) brasero_track_data_cfg_get_icon_path (track));
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "icon", (xmlChar *) filename);
+		g_free (filename);
 		if (success < 0)
 			return FALSE;
 	}

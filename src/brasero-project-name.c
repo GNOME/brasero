@@ -88,18 +88,9 @@ static void
 brasero_project_name_icon_update (BraseroProjectName *self,
 				  BraseroTrackDataCfg *track)
 {
-	GError *error = NULL;
-	GdkPixbuf *pixbuf;
-	const gchar *icon; 
+	GIcon *icon; 
 
-	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
-					GTK_ENTRY_ICON_PRIMARY,
-					NULL);
-	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
-					   GTK_ENTRY_ICON_PRIMARY,
-					   NULL);
-
-	icon = brasero_track_data_cfg_get_icon_path (track);
+	icon = brasero_track_data_cfg_get_icon (track);
 	if (!icon) {
 		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
 						   GTK_ENTRY_ICON_PRIMARY,
@@ -107,25 +98,11 @@ brasero_project_name_icon_update (BraseroProjectName *self,
 		return;
 	}
 
-	/* Load and convert the image into a pixbuf */
-	pixbuf = gdk_pixbuf_new_from_file_at_scale (icon,
-						    24,
-						    24,
-						    FALSE,
-						    &error);
-	if (!pixbuf) {
-		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
-						   GTK_ENTRY_ICON_PRIMARY,
-						   "media-optical");
-		brasero_project_name_data_icon_error (self, error);
-		g_error_free (error);
-		return;
-	}
+	gtk_entry_set_icon_from_gicon (GTK_ENTRY (self),
+	                               GTK_ENTRY_ICON_PRIMARY,
+	                               icon);
 
-	gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
-					GTK_ENTRY_ICON_PRIMARY,
-					pixbuf);
-	g_object_unref (pixbuf);
+	g_object_unref (icon);
 }
 
 static void
@@ -164,7 +141,7 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 	BraseroProjectNamePrivate *priv;
 	BraseroTrackDataCfg *track;
 	GtkFileFilter *filter;
-	const gchar *filename;
+	gchar *filename;
 	GError *error = NULL;
 	GtkWidget *chooser;
 	gchar *path;
@@ -197,8 +174,10 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (chooser), filter);
 
 	filename = brasero_track_data_cfg_get_icon_path (track);
-	if (filename)
+	if (filename) {
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), filename);
+		g_free (filename);
+	}
 
 	gtk_widget_show (chooser);
 	res = gtk_dialog_run (GTK_DIALOG (chooser));
@@ -508,22 +487,12 @@ brasero_project_name_session_changed (BraseroProjectName *self)
 					  G_CALLBACK (brasero_project_name_icon_changed_cb),
 					  self);
 			brasero_project_name_icon_update (self, track);
-			gtk_entry_set_icon_tooltip_text (GTK_ENTRY (self),
-							 GTK_ENTRY_ICON_PRIMARY,
-							 _("Select an icon for the disc that will appear in file managers"));
 		}
 	}
-	else {
-		gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (self),
-						GTK_ENTRY_ICON_PRIMARY,
-						NULL);
-		gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self),
-						   GTK_ENTRY_ICON_PRIMARY,
-						   NULL);
-		gtk_entry_set_icon_tooltip_text (GTK_ENTRY (self),
-						 GTK_ENTRY_ICON_PRIMARY,
-						 NULL);
-	}
+	else
+		gtk_entry_set_icon_from_gicon (GTK_ENTRY (self),
+		                               GTK_ENTRY_ICON_PRIMARY,
+		                               NULL);
 
 	brasero_track_type_free (type);
 
