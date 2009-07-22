@@ -785,6 +785,8 @@ brasero_drive_get_caps_profiles (BraseroDrive *self,
 		return FALSE;
 	}
 
+	BRASERO_MEDIA_LOG ("Dectected media %x", BRASERO_GET_16 (hdr->current_profile));
+
 	/* Go through all features available */
 	desc = hdr->desc;
 	profiles = (BraseroScsiProfileDesc *) desc->data;

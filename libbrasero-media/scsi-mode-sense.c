@@ -135,8 +135,14 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 
 	/* Paranoïa, make sure:
 	 * - the size given in header, the one of the page returned are coherent
-	 * - the block descriptors are actually disabled
-	 */
+	 * - the block descriptors are actually disabled */
+	if (BRASERO_GET_16 (header.hdr.bdlen)) {
+		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
+		BRASERO_MEDIA_LOG ("Block descriptors not disabled %i", BRASERO_GET_16 (header.hdr.bdlen));
+		res = BRASERO_SCSI_FAILURE;
+		goto end;
+	}
+
 	request_size = BRASERO_GET_16 (header.hdr.len) +
 		       G_STRUCT_OFFSET (BraseroScsiModeHdr, len) +
 		       sizeof (header.hdr.len);
@@ -145,9 +151,9 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 		    G_STRUCT_OFFSET (BraseroScsiModePage, len) +
 		    sizeof (header.page.len);
 
-	if (BRASERO_GET_16 (header.hdr.bdlen)
-	||  request_size != page_size + sizeof (BraseroScsiModeHdr)) {
+	if (request_size != page_size + sizeof (BraseroScsiModeHdr)) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_SIZE_MISMATCH);
+		BRASERO_MEDIA_LOG ("Incoherent answer sizes: request %i, page %i", request_size, page_size);
 		res = BRASERO_SCSI_FAILURE;
 		goto end;
 	}
