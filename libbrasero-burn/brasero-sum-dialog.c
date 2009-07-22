@@ -727,6 +727,13 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), FALSE);
 }
 
+/**
+ * brasero_sum_dialog_new:
+ *
+ * Creates a new #BraseroSumDialog object
+ *
+ * Return value: a #BraseroSumDialog. Unref when it is not needed anymore.
+ **/
 BraseroSumDialog *
 brasero_sum_dialog_new ()
 {

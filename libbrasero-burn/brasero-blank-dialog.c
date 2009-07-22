@@ -404,6 +404,13 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
 }
 
+/**
+ * brasero_blank_dialog_new:
+ *
+ * Creates a new #BraseroBlankDialog object
+ *
+ * Return value: a #BraseroBlankDialog. Unref when it is not needed anymore.
+ **/
 BraseroBlankDialog *
 brasero_blank_dialog_new ()
 {

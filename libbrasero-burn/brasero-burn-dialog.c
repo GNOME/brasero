@@ -1379,6 +1379,13 @@ brasero_burn_dialog_finalize (GObject * object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+/**
+ * brasero_burn_dialog_new:
+ *
+ * Creates a new #BraseroBurnDialog object
+ *
+ * Return value: a #GtkWidget. Unref when it is not needed anymore.
+ **/
 GtkWidget *
 brasero_burn_dialog_new (void)
 {
@@ -2224,6 +2231,15 @@ brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
 	return (result == BRASERO_BURN_OK);
 }
 
+/**
+ * brasero_burn_dialog_run:
+ * @dialog: a #BraseroBurnDialog
+ * @session: a #BraseroBurnSession
+ *
+ * Start burning the contents of @session.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successfully carried out, FALSE otherwise.
+ **/
 gboolean
 brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 			 BraseroBurnSession *session)
@@ -2306,6 +2322,16 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 	return (result != GTK_RESPONSE_OK);
 }
 
+/**
+ * brasero_burn_dialog_cancel:
+ * @dialog: a #BraseroBurnDialog
+ * @force_cancellation: a #gboolean
+ *
+ * Cancel the ongoing operation run by @dialog; if @force_cancellation is FALSE then it can
+ * happen that the operation won't be cancelled if there is a risk to make a disc unusable.
+ *
+ * Return value: a #gboolean. TRUE if it was sucessfully cancelled, FALSE otherwise.
+ **/
 gboolean
 brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 			    gboolean force_cancellation)

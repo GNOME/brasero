@@ -917,6 +917,13 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 			  BRASERO_TYPE_MEDIUM);
 }
 
+/**
+ * brasero_medium_selection_new:
+ *
+ * Creates a new #BraseroMediumSelection object
+ *
+ * Return value: a #GtkWidget. Unref when it is not needed anymore.
+ **/
 GtkWidget *
 brasero_medium_selection_new (void)
 {

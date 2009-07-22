@@ -664,7 +664,15 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
 			  1,
 			  BRASERO_TYPE_DRIVE);
 }
-  
+
+/**
+ * brasero_drive_selection_new:
+ *
+ * Creates a new #BraseroDriveSelection object
+ *
+ * Return value: a #GtkWidget. Unref when it is not needed anymore.
+ **/
+
 GtkWidget *
 brasero_drive_selection_new (void)
 {
