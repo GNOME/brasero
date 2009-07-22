@@ -1365,6 +1365,9 @@ brasero_track_data_cfg_autorun_inf_parse (BraseroTrackDataCfg *track,
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
+	if (!uri)
+		return FALSE;
+
 	path = g_filename_from_uri (uri, NULL, NULL);
 	key_file = g_key_file_new ();
 
@@ -1443,13 +1446,18 @@ brasero_track_data_cfg_node_added (BraseroDataProject *project,
 		if (!strcasecmp (BRASERO_FILE_NODE_NAME (node), "autorun.inf")) {
 			gchar *uri;
 
+			
 			/* This has been added by the user or by a project so
 			 * we do display it; also we signal the change in icon.
 			 * NOTE: if we had our own autorun.inf it was wiped out
 			 * in the callback for "name-collision". */
 			uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), node);
-			priv->icon = brasero_track_data_cfg_autorun_inf_parse (self, uri);
-			g_free (uri);
+			if (!uri) {
+				/* URI can be NULL sometimes if the autorun.inf is from
+				 * the session of the imported medium */
+				priv->icon = brasero_track_data_cfg_autorun_inf_parse (self, uri);
+				g_free (uri);
+			}
 
 			g_signal_emit (self,
 				       brasero_track_data_cfg_signals [ICON_CHANGED],
@@ -2181,26 +2189,6 @@ brasero_track_data_cfg_get_fs (BraseroTrackData *track)
 
 	fs_type &= ~(priv->banned_fs);
 	return fs_type;
-}
-
-gboolean
-brasero_track_data_cfg_get_contents (BraseroTrackData *track,
-				     GSList **grafts,
-				     GSList **excluded)
-{
-	BraseroTrackDataCfgPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-
-	/* append a slash for mkisofs */
-	brasero_data_project_get_contents (BRASERO_DATA_PROJECT (priv->tree),
-					   grafts,
-					   excluded,
-					   FALSE,	/* no hidden node */
-					   FALSE,	/* no grafts for joliet incompatible nodes */
-					   FALSE);	/* no final slash for names */
-	return TRUE;
 }
 
 static GSList *

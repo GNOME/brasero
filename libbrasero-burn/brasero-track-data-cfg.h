@@ -89,11 +89,6 @@ BraseroTrackDataCfg *
 brasero_track_data_cfg_new (void);
 
 gboolean
-brasero_track_data_cfg_get_contents (BraseroTrackData *track,
-				     GSList **grafts,
-				     GSList **excluded);
-
-gboolean
 brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 			    const gchar *uri,
 			    GtkTreePath *parent);
