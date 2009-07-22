@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-07 02:01+0200\n"
-"PO-Revision-Date: 2009-07-07 02:07+0100\n"
+"POT-Creation-Date: 2009-07-22 14:01+0200\n"
+"PO-Revision-Date: 2009-07-22 14:11+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -127,68 +127,64 @@ msgstr "Trasig symbolisk länk"
 msgid "Recursive symbolic link"
 msgstr "Rekursiv symbolisk länk"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:607
-#: ../libbrasero-burn/brasero-track-data-cfg.c:703
-#: ../libbrasero-burn/brasero-track-data-cfg.c:714
-#: ../libbrasero-burn/brasero-track-data-cfg.c:775
-#: ../libbrasero-burn/brasero-track-data-cfg.c:780
+#: ../libbrasero-burn/brasero-track-data-cfg.c:621
+#: ../libbrasero-burn/brasero-track-data-cfg.c:717
+#: ../libbrasero-burn/brasero-track-data-cfg.c:728
+#: ../libbrasero-burn/brasero-track-data-cfg.c:789
+#: ../libbrasero-burn/brasero-track-data-cfg.c:794
 #: ../src/brasero-playlist.c:947
-#: ../src/brasero-video-tree-model.c:299
+#: ../src/brasero-video-tree-model.c:323
 msgid "(loading ...)"
 msgstr "(läser in ...)"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:609
-#: ../libbrasero-burn/brasero-track-data-cfg.c:786
+#: ../libbrasero-burn/brasero-track-data-cfg.c:623
+#: ../libbrasero-burn/brasero-track-data-cfg.c:800
 #: ../src/brasero-playlist.c:908
 msgid "Empty"
 msgstr "Tom"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:712
+#: ../libbrasero-burn/brasero-track-data-cfg.c:726
 msgid "Disc file"
 msgstr "Skivfil"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:790
+#: ../libbrasero-burn/brasero-track-data-cfg.c:804
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d objekt"
 msgstr[1] "%d objekt"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1864
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1900
 #, c-format
 msgid "New folder"
 msgstr "Ny mapp"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1867
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1903
 #, c-format
 msgid "New folder %i"
 msgstr "Ny mapp %i"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2257
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2267
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2293
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2303
 msgid "Analysing files"
 msgstr "Analyserar filer"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2284
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2320
 #: ../libbrasero-burn/brasero-burn-options.c:364
-#: ../libbrasero-burn/brasero-burn-options.c:370
-#: ../libbrasero-burn/brasero-burn-options.c:376
 #: ../nautilus/nautilus-burn-extension.c:188
-#: ../src/brasero-project.c:1271
-#: ../src/brasero-project.c:1280
+#: ../src/brasero-project.c:1257
 #: ../libbrasero-burn/brasero-track-data.c:402
 #: ../libbrasero-burn/brasero-track-stream.c:289
-#: ../src/main.c:247
 #, c-format
-msgid "The project is empty"
-msgstr "Projektet är tomt"
+msgid "There are no files to write to disc"
+msgstr "Det finns inga filer att skriva till skivan"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2404
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2440
 #, c-format
-msgid "\"%s\" is a recursive symlink."
+msgid "\"%s\" is a recursive symbolic link."
 msgstr "\"%s\" är en rekursiv symbolisk länk."
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2430
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2466
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "\"%s\" kan inte hittas."
@@ -199,7 +195,7 @@ msgid "The file does not appear to be a playlist"
 msgstr "Filen verkar inte vara en spellista"
 
 #: ../libbrasero-utils/brasero-metadata.c:674
-#: ../src/brasero-audio-disc.c:612
+#: ../src/brasero-audio-disc.c:623
 #, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
 msgstr "\"%s\" kan inte hanteras av Gstreamer."
@@ -215,55 +211,55 @@ msgstr "\"%s\" kan inte hanteras av Gstreamer."
 #: ../libbrasero-utils/brasero-metadata.c:1509
 #: ../libbrasero-utils/brasero-metadata.c:1518
 #: ../libbrasero-utils/brasero-metadata.c:1531
-#: ../plugins/transcode/burn-normalize.c:155
-#: ../plugins/transcode/burn-normalize.c:170
-#: ../plugins/transcode/burn-normalize.c:188
-#: ../plugins/transcode/burn-normalize.c:200
-#: ../plugins/transcode/burn-normalize.c:217
-#: ../plugins/transcode/burn-normalize.c:276
-#: ../plugins/transcode/burn-normalize.c:596
-#: ../plugins/transcode/burn-normalize.c:604
-#: ../plugins/transcode/burn-transcode.c:282
-#: ../plugins/transcode/burn-transcode.c:294
-#: ../plugins/transcode/burn-transcode.c:384
-#: ../plugins/transcode/burn-transcode.c:436
-#: ../plugins/transcode/burn-transcode.c:452
-#: ../plugins/transcode/burn-transcode.c:465
-#: ../plugins/transcode/burn-transcode.c:477
-#: ../plugins/transcode/burn-transcode.c:501
-#: ../plugins/transcode/burn-vob.c:256
-#: ../plugins/transcode/burn-vob.c:270
-#: ../plugins/transcode/burn-vob.c:284
-#: ../plugins/transcode/burn-vob.c:296
-#: ../plugins/transcode/burn-vob.c:308
-#: ../plugins/transcode/burn-vob.c:358
-#: ../plugins/transcode/burn-vob.c:370
-#: ../plugins/transcode/burn-vob.c:382
-#: ../plugins/transcode/burn-vob.c:394
-#: ../plugins/transcode/burn-vob.c:406
-#: ../plugins/transcode/burn-vob.c:418
-#: ../plugins/transcode/burn-vob.c:502
-#: ../plugins/transcode/burn-vob.c:514
-#: ../plugins/transcode/burn-vob.c:526
-#: ../plugins/transcode/burn-vob.c:538
-#: ../plugins/transcode/burn-vob.c:560
-#: ../plugins/transcode/burn-vob.c:577
-#: ../plugins/transcode/burn-vob.c:610
-#: ../plugins/transcode/burn-vob.c:687
-#: ../plugins/transcode/burn-vob.c:699
-#: ../plugins/transcode/burn-vob.c:714
-#: ../plugins/transcode/burn-vob.c:726
-#: ../plugins/transcode/burn-vob.c:737
-#: ../plugins/transcode/burn-vob.c:748
-#: ../plugins/transcode/burn-vob.c:914
-#: ../plugins/transcode/burn-vob.c:966
-#: ../plugins/transcode/burn-vob.c:981
-#: ../plugins/transcode/burn-vob.c:994
-#: ../plugins/transcode/burn-vob.c:1021
-#: ../plugins/transcode/burn-vob.c:1196
-#: ../plugins/transcode/burn-vob.c:1204
-#: ../plugins/transcode/burn-vob.c:1212
-#: ../plugins/transcode/burn-vob.c:1220
+#: ../plugins/transcode/burn-normalize.c:161
+#: ../plugins/transcode/burn-normalize.c:176
+#: ../plugins/transcode/burn-normalize.c:194
+#: ../plugins/transcode/burn-normalize.c:206
+#: ../plugins/transcode/burn-normalize.c:223
+#: ../plugins/transcode/burn-normalize.c:282
+#: ../plugins/transcode/burn-normalize.c:602
+#: ../plugins/transcode/burn-normalize.c:610
+#: ../plugins/transcode/burn-transcode.c:286
+#: ../plugins/transcode/burn-transcode.c:298
+#: ../plugins/transcode/burn-transcode.c:388
+#: ../plugins/transcode/burn-transcode.c:440
+#: ../plugins/transcode/burn-transcode.c:456
+#: ../plugins/transcode/burn-transcode.c:469
+#: ../plugins/transcode/burn-transcode.c:481
+#: ../plugins/transcode/burn-transcode.c:505
+#: ../plugins/transcode/burn-vob.c:262
+#: ../plugins/transcode/burn-vob.c:276
+#: ../plugins/transcode/burn-vob.c:290
+#: ../plugins/transcode/burn-vob.c:302
+#: ../plugins/transcode/burn-vob.c:314
+#: ../plugins/transcode/burn-vob.c:364
+#: ../plugins/transcode/burn-vob.c:376
+#: ../plugins/transcode/burn-vob.c:388
+#: ../plugins/transcode/burn-vob.c:400
+#: ../plugins/transcode/burn-vob.c:412
+#: ../plugins/transcode/burn-vob.c:424
+#: ../plugins/transcode/burn-vob.c:508
+#: ../plugins/transcode/burn-vob.c:520
+#: ../plugins/transcode/burn-vob.c:532
+#: ../plugins/transcode/burn-vob.c:544
+#: ../plugins/transcode/burn-vob.c:566
+#: ../plugins/transcode/burn-vob.c:583
+#: ../plugins/transcode/burn-vob.c:616
+#: ../plugins/transcode/burn-vob.c:693
+#: ../plugins/transcode/burn-vob.c:705
+#: ../plugins/transcode/burn-vob.c:720
+#: ../plugins/transcode/burn-vob.c:732
+#: ../plugins/transcode/burn-vob.c:743
+#: ../plugins/transcode/burn-vob.c:754
+#: ../plugins/transcode/burn-vob.c:920
+#: ../plugins/transcode/burn-vob.c:972
+#: ../plugins/transcode/burn-vob.c:987
+#: ../plugins/transcode/burn-vob.c:1000
+#: ../plugins/transcode/burn-vob.c:1027
+#: ../plugins/transcode/burn-vob.c:1202
+#: ../plugins/transcode/burn-vob.c:1210
+#: ../plugins/transcode/burn-vob.c:1218
+#: ../plugins/transcode/burn-vob.c:1226
 #, c-format
 msgid "%s element could not be created"
 msgstr "%s-element kunde inte skapas"
@@ -281,17 +277,17 @@ msgstr "%s-element kunde inte skapas"
 #: ../nautilus/nautilus-burn-extension.c:166
 #: ../src/main.c:204
 #: ../src/main.c:230
-#: ../plugins/cdrkit/burn-genisoimage.c:360
-#: ../plugins/cdrkit/burn-readom.c:117
-#: ../plugins/cdrkit/burn-readom.c:359
-#: ../plugins/cdrkit/burn-wodim.c:696
-#: ../plugins/cdrkit/burn-wodim.c:811
-#: ../plugins/cdrkit/burn-wodim.c:826
-#: ../plugins/cdrtools/burn-cdrecord.c:796
-#: ../plugins/cdrtools/burn-cdrecord.c:811
-#: ../plugins/cdrtools/burn-mkisofs.c:361
-#: ../plugins/cdrtools/burn-readcd.c:119
-#: ../plugins/cdrtools/burn-readcd.c:371
+#: ../plugins/cdrkit/burn-genisoimage.c:364
+#: ../plugins/cdrkit/burn-readom.c:121
+#: ../plugins/cdrkit/burn-readom.c:363
+#: ../plugins/cdrkit/burn-wodim.c:700
+#: ../plugins/cdrkit/burn-wodim.c:815
+#: ../plugins/cdrkit/burn-wodim.c:830
+#: ../plugins/cdrtools/burn-cdrecord.c:800
+#: ../plugins/cdrtools/burn-cdrecord.c:815
+#: ../plugins/cdrtools/burn-mkisofs.c:365
+#: ../plugins/cdrtools/burn-readcd.c:123
+#: ../plugins/cdrtools/burn-readcd.c:370
 #, c-format
 msgid "An internal error occured"
 msgstr "Ett internt fel inträffade"
@@ -326,7 +322,7 @@ msgstr "Brasero - Skapar avbildning"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:187
 #: ../libbrasero-burn/brasero-burn-dialog.c:201
-#: ../libbrasero-burn/brasero-burn-dialog.c:1007
+#: ../libbrasero-burn/brasero-burn-dialog.c:1008
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "Brasero - Bränner dvd (simulering)"
 
@@ -368,7 +364,7 @@ msgid "Burning image to DVD"
 msgstr "Bränner avbildning till dvd-skiva"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:229
-#: ../libbrasero-burn/brasero-burn-dialog.c:1001
+#: ../libbrasero-burn/brasero-burn-dialog.c:1002
 msgid "Brasero - Copying DVD (Simulation)"
 msgstr "Brasero - Kopierar dvd (simulering)"
 
@@ -427,7 +423,7 @@ msgid "Burning data CD"
 msgstr "Bränner data-cd-skiva"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:288
-#: ../libbrasero-burn/brasero-burn-dialog.c:1015
+#: ../libbrasero-burn/brasero-burn-dialog.c:1016
 msgid "Brasero - Copying CD (Simulation)"
 msgstr "Brasero - Kopierar cd (simulering)"
 
@@ -469,7 +465,7 @@ msgstr "Bränner videoskiva"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:346
 #: ../libbrasero-burn/brasero-burn-dialog.c:373
-#: ../libbrasero-burn/brasero-burn-dialog.c:1034
+#: ../libbrasero-burn/brasero-burn-dialog.c:1035
 msgid "Brasero - Burning Disc (Simulation)"
 msgstr "Brasero - Bränner skiva (simulering)"
 
@@ -487,7 +483,7 @@ msgid "Burning data disc"
 msgstr "Bränner dataskiva"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:360
-#: ../libbrasero-burn/brasero-burn-dialog.c:1028
+#: ../libbrasero-burn/brasero-burn-dialog.c:1029
 msgid "Brasero - Copying Disc (Simulation)"
 msgstr "Brasero - Kopierar skiva (simulering)"
 
@@ -580,10 +576,10 @@ msgid "Please insert a recordable CD or DVD with at least %i MiB of free space."
 msgstr "Mata in en inspelningsbar cd- eller dvd-skiva med minst %i MiB ledigt utrymme."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:553
-#: ../libbrasero-burn/brasero-burn-dialog.c:2117
-#: ../libbrasero-burn/brasero-burn-dialog.c:2129
+#: ../libbrasero-burn/brasero-burn-dialog.c:2122
+#: ../libbrasero-burn/brasero-burn-dialog.c:2134
 #: ../libbrasero-burn/brasero-burn-options.c:343
-#: ../src/brasero-project.c:987
+#: ../src/brasero-project.c:986
 msgid "Please insert a recordable CD or DVD."
 msgstr "Mata in en inspelningsbar cd eller dvd."
 
@@ -689,7 +685,7 @@ msgid "_Change Location"
 msgstr "B_yt plats"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:713
-#: ../libbrasero-burn/brasero-image-properties.c:447
+#: ../libbrasero-burn/brasero-image-properties.c:448
 msgid "Location for Image File"
 msgstr "Plats för avbildningsfil"
 
@@ -703,136 +699,137 @@ msgid "_Replace Disc"
 msgstr "_Byt ut skiva"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:858
-msgid "Do you really want to erase the current disc?"
+msgid "Do you really want to blank the current disc?"
 msgstr "Vill du verkligen radera den aktuella skivan?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:859
 msgid "The disc in the drive holds data."
 msgstr "Skivan i enheten innehåller data."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:860
-msgid "_Erase Disc"
+#. Translators: Blank is a verb here
+#: ../libbrasero-burn/brasero-burn-dialog.c:861
+msgid "_Blank Disc"
 msgstr "_Radera skiva"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:872
+#: ../libbrasero-burn/brasero-burn-dialog.c:873
 msgid "Already burnt files will be invisible (though still readable)."
 msgstr "Redan brända filer kommer att vara osynliga (dock fortfarande läsbara)."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:873
-#: ../libbrasero-burn/brasero-burn-dialog.c:893
-#: ../libbrasero-burn/brasero-burn-dialog.c:913
+#: ../libbrasero-burn/brasero-burn-dialog.c:874
+#: ../libbrasero-burn/brasero-burn-dialog.c:894
+#: ../libbrasero-burn/brasero-burn-dialog.c:914
 msgid "Do you want to continue anyway?"
 msgstr "Vill du fortsätta ändå?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:876
+#: ../libbrasero-burn/brasero-burn-dialog.c:877
 msgid "Appending new files to a multisession disc is not advised."
 msgstr "Lägga till nya filer till en multisessionsskiva rekommenderas inte."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:878
-#: ../libbrasero-burn/brasero-burn-dialog.c:898
-#: ../libbrasero-burn/brasero-burn-dialog.c:918
-#: ../libbrasero-burn/brasero-burn-dialog.c:959
+#: ../libbrasero-burn/brasero-burn-dialog.c:879
+#: ../libbrasero-burn/brasero-burn-dialog.c:899
+#: ../libbrasero-burn/brasero-burn-dialog.c:919
+#: ../libbrasero-burn/brasero-burn-dialog.c:960
 #: ../src/brasero-data-disc.c:573
 #: ../libbrasero-burn/brasero-tool-dialog.c:397
 msgid "_Continue"
 msgstr "_Fortsätt"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:892
+#: ../libbrasero-burn/brasero-burn-dialog.c:893
 msgid "CD-RW audio discs may not play correctly in older CD players and CD-TEXT won't be written."
 msgstr "CD-RW-ljudskivor kanske inte kan spelas korrekt i äldre cd-spelare och CD-TEXT kommer inte att skrivas."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:896
+#: ../libbrasero-burn/brasero-burn-dialog.c:897
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "Lägga till ljudspår till en cd rekommenderas inte."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:912
+#: ../libbrasero-burn/brasero-burn-dialog.c:913
 msgid "CD-RW audio discs may not play correctly in older CD players."
 msgstr "CD-RW-ljudskivor kanske inte kan spelas korrekt på äldre cd-spelare."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:916
+#: ../libbrasero-burn/brasero-burn-dialog.c:917
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr "Spela in ljudspår på en återinspelningsbar skiva rekommenderas inte."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:950
+#: ../libbrasero-burn/brasero-burn-dialog.c:951
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Vill du fortsätta med inaktiverad fullständig Windows-kompatibilitet?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:953
-#: ../src/brasero-data-disc.c:738
+#: ../libbrasero-burn/brasero-burn-dialog.c:954
+#: ../src/brasero-data-disc.c:748
 #: ../libbrasero-burn/brasero-status-dialog.c:245
 msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Några filer har inte lämpliga namn för en fullständigt Windows-kompatibel cd-skiva."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:997
+#: ../libbrasero-burn/brasero-burn-dialog.c:998
 #, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
 msgstr "Brasero - Skapar avbildning (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1003
+#: ../libbrasero-burn/brasero-burn-dialog.c:1004
 #, c-format
 msgid "Brasero - Copying DVD (%i%% Done)"
 msgstr "Brasero - Kopierar dvd (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1009
+#: ../libbrasero-burn/brasero-burn-dialog.c:1010
 #, c-format
 msgid "Brasero - Burning DVD (%i%% Done)"
 msgstr "Brasero - Bränner dvd (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1017
+#: ../libbrasero-burn/brasero-burn-dialog.c:1018
 #, c-format
 msgid "Brasero - Copying CD (%i%% Done)"
 msgstr "Brasero - Kopierar cd (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1021
+#: ../libbrasero-burn/brasero-burn-dialog.c:1022
 msgid "Brasero - Burning CD (simulation)"
 msgstr "Brasero - Bränner cd (simulering)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1023
+#: ../libbrasero-burn/brasero-burn-dialog.c:1024
 #, c-format
 msgid "Brasero - Burning CD (%i%% Done)"
 msgstr "Brasero - Bränner cd (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1030
+#: ../libbrasero-burn/brasero-burn-dialog.c:1031
 #, c-format
 msgid "Brasero - Copying Disc (%i%% Done)"
 msgstr "Brasero - Kopierar skiva (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1036
+#: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Brasero - Burning Disc (%i%% Done)"
 msgstr "Brasero - Bränner skiva (%i%% färdigt)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1222
+#: ../libbrasero-burn/brasero-burn-dialog.c:1223
 msgid "The simulation was successful."
 msgstr "Simuleringen lyckades."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1225
+#: ../libbrasero-burn/brasero-burn-dialog.c:1226
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "Fysisk skivbränning kommer att påbörjas om 10 sekunder."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1228
+#: ../libbrasero-burn/brasero-burn-dialog.c:1229
 msgid "Burn _Now"
 msgstr "Bränn _nu"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1559
+#: ../libbrasero-burn/brasero-burn-dialog.c:1560
 msgid "Save Current Session"
 msgstr "Spara aktuell session"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1619
 msgid "Session Log"
 msgstr "Sessionslogg"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1648
-#: ../libbrasero-burn/brasero-burn-dialog.c:1672
-#: ../libbrasero-burn/brasero-burn-dialog.c:1683
+#: ../libbrasero-burn/brasero-burn-dialog.c:1649
+#: ../libbrasero-burn/brasero-burn-dialog.c:1673
+#: ../libbrasero-burn/brasero-burn-dialog.c:1684
 msgid "The session log cannot be displayed."
 msgstr "Sessionsloggen kan inte visas."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1649
+#: ../libbrasero-burn/brasero-burn-dialog.c:1650
 msgid "The log file could not be found"
 msgstr "Loggfilen kunde inte hittas"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1664
+#: ../libbrasero-burn/brasero-burn-dialog.c:1665
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
@@ -840,113 +837,113 @@ msgstr ""
 "Det här är ett utdrag från sessionsloggen (de sista 10 MiB):\n"
 "\n"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1752
+#: ../libbrasero-burn/brasero-burn-dialog.c:1753
 msgid "An unknown error occured."
 msgstr "Ett okänt fel inträffade."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1762
+#: ../libbrasero-burn/brasero-burn-dialog.c:1763
 msgid "Error while burning."
 msgstr "Fel vid bränning."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1770
+#: ../libbrasero-burn/brasero-burn-dialog.c:1771
 msgid "_Save Log"
 msgstr "_Spara logg"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1777
+#: ../libbrasero-burn/brasero-burn-dialog.c:1778
 msgid "_View Log"
 msgstr "_Visa logg"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1840
+#: ../libbrasero-burn/brasero-burn-dialog.c:1841
 msgid "Audio CD successfully burnt"
 msgstr "Bränning av ljud-cd lyckades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1845
+#: ../libbrasero-burn/brasero-burn-dialog.c:1846
 msgid "DVD successfully copied"
 msgstr "Kopiering av dvd lyckades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1847
+#: ../libbrasero-burn/brasero-burn-dialog.c:1848
 msgid "CD successfully copied"
 msgstr "Kopiering av cd lyckades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1851
+#: ../libbrasero-burn/brasero-burn-dialog.c:1852
 msgid "Image of DVD successfully created"
 msgstr "Avbildning av dvd skapades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1853
+#: ../libbrasero-burn/brasero-burn-dialog.c:1854
 msgid "Image of CD successfully created"
 msgstr "Avbildning av cd skapades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1859
+#: ../libbrasero-burn/brasero-burn-dialog.c:1860
 msgid "Image successfully burnt to DVD"
 msgstr "Avbildningen brändes till dvd"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1861
+#: ../libbrasero-burn/brasero-burn-dialog.c:1862
 msgid "Image successfully burnt to CD"
 msgstr "Avbildningen brändes till cd"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1867
+#: ../libbrasero-burn/brasero-burn-dialog.c:1868
 msgid "Data DVD successfully burnt"
 msgstr "Bränning av data-dvd lyckades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1869
+#: ../libbrasero-burn/brasero-burn-dialog.c:1870
 msgid "Data CD successfully burnt"
 msgstr "Bränning av data-cd lyckades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1872
+#: ../libbrasero-burn/brasero-burn-dialog.c:1873
 msgid "Image successfully created"
 msgstr "Avbildningen skapades"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1898
+#: ../libbrasero-burn/brasero-burn-dialog.c:1903
 msgid "Make _Another Copy"
 msgstr "Gör _en kopia till"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1927
+#: ../libbrasero-burn/brasero-burn-dialog.c:1932
 msgid "_Create Cover"
 msgstr "Skapa _omslag"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2080
+#: ../libbrasero-burn/brasero-burn-dialog.c:2085
 msgid "There are some files left to burn"
 msgstr "Det finns några filer kvar att bränna"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2087
+#: ../libbrasero-burn/brasero-burn-dialog.c:2092
 msgid "There are some more videos left to burn"
 msgstr "Det finns några fler videor kvar att bränna"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2091
+#: ../libbrasero-burn/brasero-burn-dialog.c:2096
 msgid "There are some more songs left to burn"
 msgstr "Det finns några fler låtar kvar att bränna"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2130
+#: ../libbrasero-burn/brasero-burn-dialog.c:2135
 #: ../libbrasero-burn/brasero-burn.c:1666
-#: ../plugins/cdrkit/burn-genisoimage.c:197
-#: ../plugins/cdrkit/burn-wodim.c:104
-#: ../plugins/cdrtools/burn-cdrecord.c:104
-#: ../plugins/cdrtools/burn-mkisofs.c:198
-#: ../plugins/growisofs/burn-growisofs.c:190
+#: ../plugins/cdrkit/burn-genisoimage.c:201
+#: ../plugins/cdrkit/burn-wodim.c:108
+#: ../plugins/cdrtools/burn-cdrecord.c:108
+#: ../plugins/cdrtools/burn-mkisofs.c:202
+#: ../plugins/growisofs/burn-growisofs.c:193
 #, c-format
 msgid "Not enough space available on the disc"
 msgstr "Inte tillräckligt med ledigt utrymme på skivan"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2278
+#: ../libbrasero-burn/brasero-burn-dialog.c:2283
 #: ../libbrasero-burn/brasero-tool-dialog.c:389
 msgid "Do you really want to quit?"
 msgstr "Vill du verkligen avsluta?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2282
+#: ../libbrasero-burn/brasero-burn-dialog.c:2287
 #: ../libbrasero-burn/brasero-tool-dialog.c:392
 msgid "Interrupting the process may make disc unusable."
 msgstr "Avbryta processen kan göra att skivan blir oanvändbar."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2285
+#: ../libbrasero-burn/brasero-burn-dialog.c:2290
 msgid "C_ontinue Burning"
 msgstr "_Fortsätt bränning"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2292
+#: ../libbrasero-burn/brasero-burn-dialog.c:2297
 msgid "_Cancel Burning"
 msgstr "_Avbryt bränning"
 
 #: ../libbrasero-burn/brasero-burn-options.c:237
-#: ../src/brasero-project.c:1011
+#: ../src/brasero-project.c:1010
 msgid "Please insert a recordable CD or DVD if you don't want to write to an image file."
 msgstr "Mata in en inspelningsbar cd- eller dvd-skiva om du inte vill skriva till en avbildningsfil."
 
@@ -957,10 +954,8 @@ msgstr "Vill du bränna markeringen av filer över flera media?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:320
 #: ../libbrasero-burn/brasero-burn-options.c:337
-#: ../src/brasero-project.c:938
-#: ../src/brasero-project.c:955
-msgid "The size of the project is too large for the disc even with the overburn option."
-msgstr "Projektet är för stort för skivan även med överbränningsalternativet."
+msgid "The data size is too large for the disc even with the overburn option."
+msgstr "Datastorleken är för stor för skivan även med överbränningsalternativet."
 
 #: ../libbrasero-burn/brasero-burn-options.c:325
 #: ../src/brasero-project.c:943
@@ -978,17 +973,17 @@ msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Välj en annan cd- eller dvd-skiva eller mata in en ny."
 
 #: ../libbrasero-burn/brasero-burn-options.c:344
-#: ../src/brasero-project.c:988
+#: ../src/brasero-project.c:987
 msgid "There is no recordable disc inserted."
 msgstr "Det finns inget inspelningsbart media inmatat."
 
 #: ../libbrasero-burn/brasero-burn-options.c:350
-#: ../src/brasero-project.c:994
+#: ../src/brasero-project.c:993
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "Ingen spårinformation (artist, titel, ...) kommer att skrivas till skivan."
 
 #: ../libbrasero-burn/brasero-burn-options.c:351
-#: ../src/brasero-project.c:995
+#: ../src/brasero-project.c:994
 msgid "This is not supported by the current active burning backend."
 msgstr "Detta stöds inte av den för närvarande aktiva bakänden för bränning."
 
@@ -1001,21 +996,30 @@ msgstr "Lägg till filer."
 msgid "Please add songs."
 msgstr "Lägg till låtar."
 
+#: ../libbrasero-burn/brasero-burn-options.c:370
+#: ../src/brasero-project.c:1248
+msgid "There are no songs to write to disc"
+msgstr "Det finns inga låtar att skriva till skivan"
+
 #: ../libbrasero-burn/brasero-burn-options.c:375
 msgid "Please add videos."
 msgstr "Lägg till videor."
+
+#: ../libbrasero-burn/brasero-burn-options.c:376
+msgid "There are no videos to write to disc"
+msgstr "Det finns inga videor att skriva till skivan"
 
 #: ../libbrasero-burn/brasero-burn-options.c:390
 msgid "There is no inserted disc to copy."
 msgstr "Det finns ingen inmatad skiva att kopiera."
 
 #: ../libbrasero-burn/brasero-burn-options.c:401
-msgid "Please select an image."
-msgstr "Välj en avbildning."
+msgid "Please select a disc image."
+msgstr "Välj en skivavbildning."
 
 #: ../libbrasero-burn/brasero-burn-options.c:402
-msgid "There is no selected image."
-msgstr "Det finns ingen vald avbildning."
+msgid "There is no selected disc image."
+msgstr "Det finns ingen vald skivavbildning."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
@@ -1026,8 +1030,8 @@ msgid "Please select another image."
 msgstr "Välj en annan avbildning."
 
 #: ../libbrasero-burn/brasero-burn-options.c:415
-msgid "It doesn't appear to be a valid image or a valid cue file."
-msgstr "Det verkar inte vara en giltig avbildning eller en giltig cue-fil."
+msgid "It doesn't appear to be a valid disc image or a valid cue file."
+msgstr "Det verkar inte vara en giltig skivavbildning eller en giltig cue-fil."
 
 #: ../libbrasero-burn/brasero-burn-options.c:426
 msgid "Please insert a disc that is not copy protected."
@@ -1038,12 +1042,12 @@ msgid "Such a disc cannot be copied without the proper plugins."
 msgstr "En sådan skiva kan inte kopieras utan lämpliga insticksmoduler."
 
 #: ../libbrasero-burn/brasero-burn-options.c:434
-#: ../src/brasero-project.c:1001
+#: ../src/brasero-project.c:1000
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Byt ut skivan med en cd eller dvd som stöds."
 
 #: ../libbrasero-burn/brasero-burn-options.c:435
-#: ../src/brasero-project.c:1002
+#: ../src/brasero-project.c:1001
 msgid "It is not possible to write with the current set of plugins."
 msgstr "Det är inte möjligt att skriva med aktuell uppsättning insticksmoduler."
 
@@ -1053,14 +1057,13 @@ msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Vill du bränna bortom skivans rapporterade kapacitet?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:444
-#: ../src/brasero-project.c:965
 msgid ""
-"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
+"The data size is too large for the disc and you must remove files from the selection otherwise.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Projektet är för stort för skivan och du måste ta bort filer från projektet för att de ska få plats.\n"
-"Du kan använda detta alternativ om du använder en 90 eller 100 minuter lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver överbränningsalternativet.\n"
+"Datastorleken är för stor för skivan och du måste ta bort filer från markeringen för att de ska få plats.\n"
+"Du kan dock använda detta alternativ om du använder en 90 eller 100 minuter lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver överbränningsalternativet.\n"
 "OBSERVERA: Det här alternativet kan orsaka felaktigheter."
 
 #: ../libbrasero-burn/brasero-burn-options.c:451
@@ -1084,10 +1087,10 @@ msgstr "En ny inspelningsbar skiva kommer att behövas när den som för närvar
 #: ../libbrasero-burn/brasero-burn-options.c:514
 #: ../libbrasero-burn/brasero-burn-options.c:639
 #: ../libbrasero-burn/brasero-burn-options.c:658
-#: ../libbrasero-burn/brasero-burn-options.c:771
-#: ../libbrasero-burn/brasero-burn-options.c:792
-#: ../src/brasero-project.c:1374
-#: ../src/brasero-project.c:1431
+#: ../libbrasero-burn/brasero-burn-options.c:770
+#: ../libbrasero-burn/brasero-burn-options.c:791
+#: ../src/brasero-project.c:1351
+#: ../src/brasero-project.c:1408
 msgid "_Burn"
 msgstr "_Bränn"
 
@@ -1097,52 +1100,50 @@ msgstr "Välj en skiva att skriva till"
 
 #: ../libbrasero-burn/brasero-burn-options.c:637
 #: ../libbrasero-burn/brasero-burn-options.c:656
-#: ../libbrasero-burn/brasero-burn-options.c:769
+#: ../libbrasero-burn/brasero-burn-options.c:768
 msgid "Disc Burning Setup"
 msgstr "Konfiguration för skivbränning"
 
-#: ../libbrasero-burn/brasero-burn-options.c:688
-#: ../src/brasero-data-disc.c:607
+#: ../libbrasero-burn/brasero-burn-options.c:692
+#: ../src/brasero-data-disc.c:619
+msgid "Do you want to create a disc from the contents of the image or with the image file inside?"
+msgstr "Vill du skapa en skiva från innehållet i avbildningen eller med avbildningsfilen som enda fil?"
+
+#. Translators: %s is the name of the image
+#: ../libbrasero-burn/brasero-burn-options.c:697
+#: ../src/brasero-data-disc.c:625
 #, c-format
-msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr "Vill du bränna \"%s\" till en skiva eller lägga till den i dataprojektet?"
+msgid "There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burnt."
+msgstr "Det finns endast en vald fil (\"%s\"). Det är avbildningen av en skiva och dess innehåll kan brännas."
 
-#: ../libbrasero-burn/brasero-burn-options.c:701
-#: ../src/brasero-data-disc.c:616
-msgid "This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."
-msgstr "Denna fil är avbildningen av en skiva och kan därför brännas till skiva utan att först behöva läggas till i ett dataprojekt."
+#: ../libbrasero-burn/brasero-burn-options.c:702
+#: ../src/brasero-data-disc.c:630
+msgid "Burn as _File"
+msgstr "Bränn som en _fil"
 
-#: ../libbrasero-burn/brasero-burn-options.c:703
-#: ../src/brasero-data-disc.c:618
-msgid "_Add to Project"
-msgstr "_Lägg till i projekt"
+#: ../libbrasero-burn/brasero-burn-options.c:704
+#: ../src/brasero-data-disc.c:632
+msgid "Burn _Contents..."
+msgstr "Bränn _innehåll..."
 
-#. burn button set insensitive since there are no files in the selection
-#: ../libbrasero-burn/brasero-burn-options.c:705
-#: ../src/brasero-data-disc.c:620
-#: ../src/brasero-project.c:201
-#: ../src/brasero-project.c:1086
-msgid "_Burn..."
-msgstr "_Bränn..."
-
-#: ../libbrasero-burn/brasero-burn-options.c:790
+#: ../libbrasero-burn/brasero-burn-options.c:789
 msgid "Image Burning Setup"
 msgstr "Konfiguration för avbildningsbränning"
 
 #. pack everything
-#: ../libbrasero-burn/brasero-burn-options.c:801
-msgid "Select an image to write"
-msgstr "Välj en avbildning att skriva"
+#: ../libbrasero-burn/brasero-burn-options.c:800
+msgid "Select a disc image to write"
+msgstr "Välj en skivavbildning att skriva"
 
-#: ../libbrasero-burn/brasero-burn-options.c:821
+#: ../libbrasero-burn/brasero-burn-options.c:820
 msgid "CD/DVD Copy Options"
 msgstr "Kopieringsalternativ för cd/dvd"
 
-#: ../libbrasero-burn/brasero-burn-options.c:823
+#: ../libbrasero-burn/brasero-burn-options.c:822
 msgid "_Copy"
 msgstr "_Kopiera"
 
-#: ../libbrasero-burn/brasero-burn-options.c:830
+#: ../libbrasero-burn/brasero-burn-options.c:829
 msgid "Select disc to copy"
 msgstr "Välj skiva att kopiera"
 
@@ -1151,6 +1152,7 @@ msgid "Burning CD/DVD"
 msgstr "Bränner cd/dvd"
 
 #: ../libbrasero-burn/brasero-burn.c:295
+#: ../src/brasero-eject-dialog.c:93
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
 msgstr "Skivan i \"%s\" kan inte matas ut"
@@ -1215,16 +1217,16 @@ msgstr "Pågående kontroll av kontrollsumma"
 #: ../libbrasero-burn/brasero-burn.c:1551
 #: ../libbrasero-media/scsi-error.c:47
 #: ../libbrasero-burn/brasero-tool-dialog.c:88
-#: ../plugins/cdrdao/burn-cdrdao.c:233
-#: ../plugins/cdrkit/burn-readom.c:98
-#: ../plugins/cdrkit/burn-wodim.c:125
-#: ../plugins/cdrkit/burn-wodim.c:134
-#: ../plugins/cdrtools/burn-cdrecord.c:125
-#: ../plugins/cdrtools/burn-cdrecord.c:134
-#: ../plugins/cdrtools/burn-readcd.c:100
-#: ../plugins/growisofs/burn-dvd-rw-format.c:73
-#: ../plugins/growisofs/burn-growisofs.c:182
-#: ../plugins/libburnia/burn-libburn-common.c:175
+#: ../plugins/cdrdao/burn-cdrdao.c:237
+#: ../plugins/cdrkit/burn-readom.c:102
+#: ../plugins/cdrkit/burn-wodim.c:129
+#: ../plugins/cdrkit/burn-wodim.c:138
+#: ../plugins/cdrtools/burn-cdrecord.c:129
+#: ../plugins/cdrtools/burn-cdrecord.c:138
+#: ../plugins/cdrtools/burn-readcd.c:104
+#: ../plugins/growisofs/burn-dvd-rw-format.c:77
+#: ../plugins/growisofs/burn-growisofs.c:185
+#: ../plugins/libburnia/burn-libburn-common.c:179
 #, c-format
 msgid "The drive is busy"
 msgstr "Enheten är upptagen"
@@ -1309,9 +1311,9 @@ msgstr "Vill du verkligen välja den här platsen?"
 #: ../libbrasero-burn/brasero-session.c:918
 #: ../libbrasero-burn/brasero-session.c:976
 #: ../libbrasero-burn/burn-job.c:490
-#: ../plugins/cdrkit/burn-genisoimage.c:190
-#: ../plugins/cdrtools/burn-mkisofs.c:191
-#: ../plugins/libburnia/burn-libisofs.c:224
+#: ../plugins/cdrkit/burn-genisoimage.c:194
+#: ../plugins/cdrtools/burn-mkisofs.c:195
+#: ../plugins/libburnia/burn-libisofs.c:226
 #, c-format
 msgid "You do not have the required permission to write at this location"
 msgstr "Du har inte de nödvändiga rättigheterna för att skriva till den här platsen"
@@ -1392,7 +1394,7 @@ msgstr "Tillåt att lägga till mer data på skivan senare"
 #: ../libbrasero-burn/brasero-drive-properties.c:779
 #: ../src/brasero-song-properties.c:223
 #: ../libbrasero-burn/brasero-tool-dialog.c:281
-#: ../src/brasero-multi-song-props.c:304
+#: ../src/brasero-multi-song-props.c:307
 msgid "Options"
 msgstr "Alternativ"
 
@@ -1408,10 +1410,9 @@ msgstr "Ställ in katalogen där temporära filer ska lagras"
 msgid "Temporary files"
 msgstr "Temporära filer"
 
-#: ../libbrasero-burn/brasero-image-properties.c:194
-#: ../libbrasero-burn/brasero-src-image.c:482
-msgid "Image type:"
-msgstr "Avbildningstyp:"
+#: ../libbrasero-burn/brasero-image-properties.c:192
+msgid "Disc image type:"
+msgstr "Typ av skivavbildning:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:96
 msgid "Autodetect"
@@ -1422,12 +1423,12 @@ msgid "Video DVD image"
 msgstr "Video-DVD-avbildning"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:105
-msgid "ISO9660 images"
-msgstr "ISO9660-avbildningar"
+msgid "ISO9660 image"
+msgstr "ISO9660-avbildning"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:114
-msgid "Readcd/Readom images"
-msgstr "Readcd/Readom-avbildningar"
+msgid "Readcd/Readom image"
+msgstr "Readcd/Readom-avbildning"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:126
 msgid "VCD image"
@@ -1438,15 +1439,15 @@ msgid "SVCD image"
 msgstr "SVCD-avbildning"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:140
-msgid "Cue images"
-msgstr "Cue-avbildningar"
+msgid "Cue image"
+msgstr "Cue-avbildning"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:150
-msgid "Cdrdao images"
-msgstr "Cdrdao-avbildningar"
+msgid "Cdrdao image"
+msgstr "Cdrdao-avbildning"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:94
-#: ../src/brasero-project.c:1360
+#: ../src/brasero-project.c:1337
 #, c-format
 msgid "Properties of %s"
 msgstr "Egenskaper för %s"
@@ -1507,8 +1508,8 @@ msgstr "\"%s\": läser in"
 #. Translators: %s is a path and image refers to a disc image
 #: ../libbrasero-burn/brasero-src-image.c:240
 #, c-format
-msgid "\"%s\": unknown image type"
-msgstr "\"%s\": okänd avbildningstyp"
+msgid "\"%s\": unknown disc image type"
+msgstr "\"%s\": okänd skivavbildningstyp"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
@@ -1522,21 +1523,21 @@ msgstr "\"%s\": %s"
 #. Translators: this is a disc image
 #: ../libbrasero-burn/brasero-src-image.c:270
 #: ../libbrasero-burn/brasero-src-image.c:577
-msgid "Click here to select an _image"
-msgstr "Klicka här för att välja en a_vbildning"
+msgid "Click here to select a disc _image"
+msgstr "Klicka här för att välja en skiva_vbildning"
 
 #: ../libbrasero-burn/brasero-src-image.c:429
-msgid "Select Image File"
-msgstr "Välj avbildningsfil"
+msgid "Select Disc Image"
+msgstr "Välj skivavbildning"
 
 #: ../libbrasero-burn/brasero-src-image.c:458
-#: ../src/brasero-project-name.c:186
+#: ../src/brasero-project-name.c:187
 #: ../src/brasero-search-entry.c:610
 #: ../src/brasero-search-entry.c:650
 #: ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:475
 #: ../src/brasero-file-chooser.c:225
-#: ../src/brasero-project.c:1992
+#: ../src/brasero-project.c:1969
 msgid "All files"
 msgstr "Alla filer"
 
@@ -1546,10 +1547,14 @@ msgctxt "disc"
 msgid "Image files"
 msgstr "Avbildningsfiler"
 
+#: ../libbrasero-burn/brasero-src-image.c:482
+msgid "Image type:"
+msgstr "Avbildningstyp:"
+
 #: ../libbrasero-burn/brasero-tray.c:83
 #: ../src/brasero-audio-disc.c:148
 #: ../src/brasero-data-disc.c:124
-#: ../src/brasero-video-disc.c:97
+#: ../src/brasero-video-disc.c:100
 msgid "Menu"
 msgstr "Meny"
 
@@ -1661,7 +1666,7 @@ msgid "The location you chose to store the temporary image on does not have enou
 msgstr "Den valda platsen har inte tillräckligt mycket ledigt utrymme för att lagra den temporära avbildningen för skivavbildningen (%ld MiB behövs)"
 
 #: ../libbrasero-burn/burn-job.c:570
-#: ../plugins/dvdcss/burn-dvdcss.c:341
+#: ../plugins/dvdcss/burn-dvdcss.c:345
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Storleken på volymen kunde inte läsas av"
@@ -1676,18 +1681,18 @@ msgstr "Ingen sökväg angavs för utmatning av avbildningen"
 #: ../libbrasero-burn/burn-job.c:764
 #: ../src/main.c:202
 #: ../src/main.c:228
-#: ../plugins/cdrtools/burn-cdrecord.c:679
-#: ../plugins/libburnia/burn-libburn.c:690
-#: ../plugins/transcode/burn-transcode.c:654
+#: ../plugins/cdrtools/burn-cdrecord.c:683
+#: ../plugins/libburnia/burn-libburn.c:693
+#: ../plugins/transcode/burn-transcode.c:658
 #, c-format
 msgid "An internal error occured (%s)"
 msgstr "Ett internt fel inträffade (%s)"
 
 #: ../libbrasero-burn/burn-mkisofs-base.c:157
 #: ../libbrasero-burn/burn-mkisofs-base.c:635
-#: ../plugins/growisofs/burn-growisofs.c:520
-#: ../plugins/libburnia/burn-libisofs.c:670
-#: ../plugins/checksum/burn-checksum-image.c:276
+#: ../plugins/growisofs/burn-growisofs.c:523
+#: ../plugins/libburnia/burn-libisofs.c:672
+#: ../plugins/checksum/burn-checksum-image.c:280
 #, c-format
 msgid "The file is not stored locally"
 msgstr "Filen är inte lokalt lagrad"
@@ -1706,7 +1711,7 @@ msgstr "\"%s\" kunde inte hittas i sökvägen"
 
 #: ../libbrasero-burn/burn-process.c:129
 #, c-format
-msgid "\"%s\" is a symlink pointing to another program. Use the target program instead"
+msgid "\"%s\" is a symbolic link pointing to another program. Use the target program instead"
 msgstr "\"%s\" är en symbolisk länk som pekar på ett annat program. Använd målprogrammet istället"
 
 #. Translators: %s is the name of the brasero element
@@ -1827,8 +1832,8 @@ msgstr "Bilden kunde inte läsas in."
 msgid "Pick a Color"
 msgstr "Välj en färg"
 
-#: ../libbrasero-burn/brasero-xfer.c:125
-#: ../libbrasero-burn/brasero-xfer.c:261
+#: ../libbrasero-burn/brasero-xfer.c:130
+#: ../libbrasero-burn/brasero-xfer.c:266
 #, c-format
 msgid "Directory could not be created (%s)"
 msgstr "Katalogen kunde inte skapas (%s)"
@@ -1942,8 +1947,8 @@ msgstr "Ingen tillgänglig skiva"
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../libbrasero-media/brasero-drive.c:454
-#: ../libbrasero-media/brasero-medium.c:199
+#: ../libbrasero-media/brasero-drive.c:446
+#: ../libbrasero-media/brasero-medium.c:202
 #: ../libbrasero-media/brasero-volume.c:379
 msgid "Image File"
 msgstr "Avbildningsfil"
@@ -2024,35 +2029,35 @@ msgstr "Återskrivningsbar Blu-ray-skiva"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:209
+#: ../libbrasero-media/brasero-medium.c:212
 #, c-format
 msgid "Blank %s in %s"
 msgstr "Radera %s i %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:216
+#: ../libbrasero-media/brasero-medium.c:219
 #, c-format
 msgid "Audio and data %s in %s"
 msgstr "Ljud och data %s i %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:223
+#: ../libbrasero-media/brasero-medium.c:226
 #, c-format
 msgid "Audio %s in %s"
 msgstr "Ljud %s i %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:230
+#: ../libbrasero-media/brasero-medium.c:233
 #, c-format
 msgid "Data %s in %s"
 msgstr "Data %s i %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:237
+#: ../libbrasero-media/brasero-medium.c:240
 #, c-format
 msgid "%s in %s"
 msgstr "%s i %s"
@@ -2062,32 +2067,40 @@ msgstr "%s i %s"
 msgid "The disc mount point could not be retrieved"
 msgstr "Skivans monteringspunkt kunde inte läsas av"
 
-#. NOTE for translators: the first %s is the disc type.
+#. NOTE for translators: the first %s is the disc type and Blank is an adjective.
 #: ../libbrasero-media/brasero-volume.c:406
 #, c-format
-msgid "Blank %s"
-msgstr "Tom %s"
+msgid "Blank disc (%s)"
+msgstr "Tom skiva (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
 #: ../libbrasero-media/brasero-volume.c:410
 #, c-format
-msgid "Audio and data %s"
-msgstr "%s med ljud och data"
+msgid "Audio and data disc (%s)"
+msgstr "Skiva med ljud och data (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_ .
+#. * The %s is the date
 #: ../libbrasero-media/brasero-volume.c:414
+#: ../src/brasero-project-name.c:297
 #, c-format
-msgid "Audio %s"
-msgstr "Ljud-%s"
+msgid "Audio disc (%s)"
+msgstr "Ljudskiva (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_ otherwise it gets truncated.
+#. * The %s is the date
 #: ../libbrasero-media/brasero-volume.c:418
+#: ../src/brasero-project-name.c:278
 #, c-format
-msgid "Data %s"
-msgstr "Data-%s"
+msgid "Data disc (%s)"
+msgstr "Dataskiva (%s)"
 
 #: ../libbrasero-media/scsi-error.c:43
-#: ../src/brasero-project-name.c:80
+#: ../src/brasero-project-name.c:83
 msgid "Unknown error"
 msgstr "Okänt fel"
 
@@ -2203,27 +2216,27 @@ msgstr "Visa flaggor för sessionshantering"
 msgid "Brasero Plugins"
 msgstr "Insticksmoduler för Brasero"
 
-#: ../plugins/local-track/burn-uri.c:196
-#: ../plugins/local-track/burn-uri.c:283
-#: ../plugins/local-track/burn-uri.c:455
+#: ../plugins/local-track/burn-uri.c:200
+#: ../plugins/local-track/burn-uri.c:287
+#: ../plugins/local-track/burn-uri.c:459
 #, c-format
 msgid "Impossible to retrieve local file path"
 msgstr "Omöjligt att hämta lokal filsökväg"
 
-#: ../plugins/local-track/burn-uri.c:312
-#: ../plugins/local-track/burn-local-image.c:516
+#: ../plugins/local-track/burn-uri.c:316
+#: ../plugins/local-track/burn-local-image.c:520
 msgid "Copying files locally"
 msgstr "Kopierar filer lokalt"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/local-track/burn-uri.c:729
+#: ../plugins/local-track/burn-uri.c:733
 #: ../nautilus/nautilus-burn-bar.c:136
 msgid "CD/DVD Creator Folder"
 msgstr "Mapp för Cd/Dvd-skaparen"
 
-#: ../plugins/local-track/burn-uri.c:730
+#: ../plugins/local-track/burn-uri.c:734
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
 msgstr "Tillåter bränning av filer som lagts till i \"Mappen Cd/Dvd-skaparen\" i Nautilus"
 
@@ -2232,9 +2245,6 @@ msgid "CD/DVD Creator"
 msgstr "Cd/Dvd-skaparen"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:2
-#: ../data/brasero-open-image.desktop.in.in.h:1
-#: ../data/brasero-open-playlist.desktop.in.in.h:1
-#: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Skapa cd- och dvd-skivor"
 
@@ -2290,144 +2300,125 @@ msgstr "Kontrollera dataintegritet för denna cd- eller dvd-skiva"
 
 #. Translators: this is a picture not
 #. * a disc image
-#: ../src/brasero-project-name.c:79
+#: ../src/brasero-project-name.c:82
 msgctxt "picture"
 msgid "Please select another image."
 msgstr "Välj en annan bild."
 
-#: ../src/brasero-project-name.c:178
+#: ../src/brasero-project-name.c:179
 msgid "Medium Icon"
 msgstr "Medieikon"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-project-name.c:192
+#: ../src/brasero-project-name.c:193
 #: ../src/brasero-file-chooser.c:250
-#: ../src/brasero-project.c:2014
+#: ../src/brasero-project.c:1991
 msgctxt "picture"
 msgid "Image files"
 msgstr "Bildfiler"
 
 #. NOTE to translators: the final string must not be over
-#. * 32 _bytes_ otherwise it gets truncated.
-#. * The %s is the date
-#: ../src/brasero-project-name.c:276
-#, c-format
-msgid "Data disc (%s)"
-msgstr "Dataskiva (%s)"
-
-#. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
 #. * The %s is the date
-#: ../src/brasero-project-name.c:290
+#: ../src/brasero-project-name.c:292
 #, c-format
 msgid "Video disc (%s)"
 msgstr "Videoskiva (%s)"
 
-#. NOTE to translators: the final string must not be over
-#. * 32 _bytes_ .
-#. * The %s is the date
-#: ../src/brasero-project-name.c:295
-#, c-format
-msgid "Audio disc (%s)"
-msgstr "Ljudskiva (%s)"
-
-#: ../src/brasero-project-name.c:511
+#: ../src/brasero-project-name.c:513
 msgid "Select an icon for the disc that will appear in file managers"
 msgstr "Välj en ikon för skivan som ska visas i filhanterare"
 
-#: ../src/brasero-app.c:117
+#: ../src/brasero-app.c:120
 msgid "_Project"
 msgstr "_Projekt"
 
-#: ../src/brasero-app.c:118
+#: ../src/brasero-app.c:121
 msgid "_View"
 msgstr "_Visa"
 
-#: ../src/brasero-app.c:119
+#: ../src/brasero-app.c:122
 msgid "_Edit"
 msgstr "R_edigera"
 
-#: ../src/brasero-app.c:120
+#: ../src/brasero-app.c:123
 msgid "_Tools"
 msgstr "Ve_rktyg"
 
-#: ../src/brasero-app.c:122
+#: ../src/brasero-app.c:125
 msgid "_Help"
 msgstr "_Hjälp"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:127
 msgid "P_lugins"
 msgstr "Inst_icksmoduler"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:128
 msgid "Choose plugins for brasero"
 msgstr "Välj insticksmoduler för brasero"
 
-#: ../src/brasero-app.c:127
+#: ../src/brasero-app.c:130
 msgid "E_ject"
 msgstr "Ma_ta ut"
 
-#: ../src/brasero-app.c:128
+#: ../src/brasero-app.c:131
 msgid "Eject a disc"
 msgstr "Mata ut en skiva"
 
-#: ../src/brasero-app.c:130
+#: ../src/brasero-app.c:133
 msgid "_Blank..."
 msgstr "_Radera..."
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:134
 msgid "Blank a disc"
 msgstr "Radera en skiva"
 
-#: ../src/brasero-app.c:133
+#: ../src/brasero-app.c:136
 msgid "_Check Integrity..."
 msgstr "_Kontrollera integritet..."
 
-#: ../src/brasero-app.c:134
+#: ../src/brasero-app.c:137
 msgid "Check data integrity of disc"
 msgstr "Kontrollera skivans dataintegritet"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:140
 msgid "Quit Brasero"
 msgstr "Avsluta Brasero"
 
-#: ../src/brasero-app.c:139
+#: ../src/brasero-app.c:142
 msgid "_Contents"
 msgstr "_Innehåll"
 
-#: ../src/brasero-app.c:139
+#: ../src/brasero-app.c:142
 msgid "Display help"
 msgstr "Visa hjälp"
 
-#: ../src/brasero-app.c:142
+#: ../src/brasero-app.c:145
 msgid "About"
 msgstr "Om"
 
-#: ../src/brasero-app.c:563
+#: ../src/brasero-app.c:570
 #: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
 msgid "Disc Burner"
 msgstr "Skivbrännare"
 
-#: ../src/brasero-app.c:1008
+#: ../src/brasero-app.c:1015
 msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Brasero är fri programvara. Du kan distribuera det och/eller modifiera det under villkoren i GNU General Public License, publicerad av Free Software Foundation, antingen version 2 eller (om du så vill) någon senare version."
 
-#: ../src/brasero-app.c:1013
+#: ../src/brasero-app.c:1020
 msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Detta program distribueras i hopp om att det ska vara användbart, men UTAN NÅGON SOM HELST GARANTI, även utan underförstådd garanti om SÄLJBARHET eller LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU General Public License för ytterligare information."
 
-#: ../src/brasero-app.c:1018
+#: ../src/brasero-app.c:1025
 msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 msgstr "Du bör ha fått en kopia av GNU General Public License tillsammans med Brasero. Om inte, skriv till Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1030
+#: ../src/brasero-app.c:1037
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Ett lättanvänt GNOME-program för cd-/dvd-bränning"
 
-#: ../src/brasero-app.c:1047
+#: ../src/brasero-app.c:1054
 msgid "Brasero Homepage"
 msgstr "Braseros webbplats"
 
@@ -2439,7 +2430,7 @@ msgstr "Braseros webbplats"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1059
+#: ../src/brasero-app.c:1066
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander <po@danielnylander.se>\n"
@@ -2447,16 +2438,16 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "tp-sv@listor.tp-sv.se"
 
-#: ../src/brasero-app.c:1179
-#: ../src/brasero-app.c:1185
+#: ../src/brasero-app.c:1186
+#: ../src/brasero-app.c:1192
 msgid "_Recent Projects"
 msgstr "_Tidigare projekt"
 
-#: ../src/brasero-app.c:1180
+#: ../src/brasero-app.c:1187
 msgid "Display the projects recently opened"
 msgstr "Visa projekten som tidigare öppnats"
 
-#: ../src/brasero-app.c:1503
+#: ../src/brasero-app.c:1510
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero Disc Burner"
 msgstr "Skivbrännaren Brasero"
@@ -2530,16 +2521,16 @@ msgid "Pane to display video projects"
 msgstr "Panel för att visa videoprojekt"
 
 #: ../data/brasero.schemas.in.h:17
-msgid "Replace symlink files by their targets"
-msgstr "Ersätt symboliskt länkade filer med deras mål"
+msgid "Replace symbolic links by their targets"
+msgstr "Ersätt symboliska länkar med deras mål"
 
 #: ../data/brasero.schemas.in.h:18
-msgid "Should brasero filter broken symlinks files"
-msgstr "Ska brasero filtrera trasiga symboliskt länkade filer"
+msgid "Should brasero filter broken symbolic links"
+msgstr "Ska Brasero filtrera trasiga symboliskt länkade filer"
 
 #: ../data/brasero.schemas.in.h:19
-msgid "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
-msgstr "Ska brasero filtrera trasiga symboliska länkar. Ställ in till sant, och brasero kommer att filtrera trasiga symboliska länkar."
+msgid "Should brasero filter broken symbolic links. Set to true, brasero will filter broken symbolic links."
+msgstr "Ska Brasero filtrera trasiga symboliska länkar. Ställ in till true och Brasero kommer att filtrera trasiga symboliska länkar."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
@@ -2558,8 +2549,8 @@ msgid "Should brasero notify when files are filtered. Set to true, brasero will 
 msgstr "Ska brasero notifiera när filer filtreras. Ställ in till sant, och brasero kommer att visa notifieringen."
 
 #: ../data/brasero.schemas.in.h:24
-msgid "Should brasero replace symlinks by their target files in the project. Set to true, brasero will replace symlinks."
-msgstr "Om brasero ska ersätta symboliska länkar med sina målfiler i projektet. Ställ in till sant, och brasero kommer att ersätta symboliska länkar."
+msgid "Should brasero replace symbolic links by their target files in the project. Set to true, brasero will replace symbolic links."
+msgstr "Om Brasero ska ersätta symboliska länkar med sina målfiler i projektet. Ställ in till true och Brasero kommer att ersätta symboliska länkar."
 
 #: ../data/brasero.schemas.in.h:25
 msgid "The pane to display with audio projects. It should be one of the following: \"Chooser\", \"Search\" or \"Playlist\"."
@@ -2631,7 +2622,7 @@ msgid "Open the selected files"
 msgstr "Öppna markerade filer"
 
 #: ../src/brasero-audio-disc.c:151
-#: ../src/brasero-video-disc.c:100
+#: ../src/brasero-video-disc.c:103
 msgid "_Edit Information..."
 msgstr "R_edigera information..."
 
@@ -2647,7 +2638,7 @@ msgstr "Ta bort de markerade filerna från projektet"
 
 #: ../src/brasero-audio-disc.c:155
 #: ../src/brasero-data-disc.c:131
-#: ../src/brasero-video-disc.c:104
+#: ../src/brasero-video-disc.c:107
 msgid "Add the files stored in the clipboard"
 msgstr "Lägg till filerna lagrade i urklipp"
 
@@ -2667,90 +2658,90 @@ msgstr "_Dela spår..."
 msgid "Split the selected track"
 msgstr "Dela det markerade spåret"
 
-#: ../src/brasero-audio-disc.c:315
-#: ../src/brasero-video-tree-model.c:153
+#: ../src/brasero-audio-disc.c:326
+#: ../src/brasero-video-tree-model.c:177
 msgid "Pause"
 msgstr "Paus"
 
-#: ../src/brasero-audio-disc.c:321
+#: ../src/brasero-audio-disc.c:332
 msgid "Split"
 msgstr "Dela"
 
-#: ../src/brasero-audio-disc.c:389
+#: ../src/brasero-audio-disc.c:400
 msgid "Track"
 msgstr "Spår"
 
-#: ../src/brasero-audio-disc.c:425
-#: ../src/brasero-video-disc.c:1199
+#: ../src/brasero-audio-disc.c:436
+#: ../src/brasero-video-disc.c:1202
 msgid "Title"
 msgstr "Titel"
 
-#: ../src/brasero-audio-disc.c:451
+#: ../src/brasero-audio-disc.c:462
 msgid "Artist"
 msgstr "Artist"
 
-#: ../src/brasero-audio-disc.c:460
+#: ../src/brasero-audio-disc.c:471
 #: ../src/brasero-playlist.c:324
 #: ../src/brasero-split-dialog.c:1220
 msgid "Length"
 msgstr "Längd"
 
-#: ../src/brasero-audio-disc.c:554
+#: ../src/brasero-audio-disc.c:565
 msgid "The track will be padded at its end."
 msgstr "Spåret kommer att fyllas ut på slutet."
 
-#: ../src/brasero-audio-disc.c:555
+#: ../src/brasero-audio-disc.c:566
 msgid "The track is shorter than 6 seconds"
 msgstr "Spåret är kortare än 6 sekunder"
 
-#: ../src/brasero-audio-disc.c:615
+#: ../src/brasero-audio-disc.c:626
 msgid "Make sure the appropriate codec is installed"
 msgstr "Försäkra dig om att lämplig kodek är installerad"
 
-#: ../src/brasero-audio-disc.c:631
+#: ../src/brasero-audio-disc.c:642
 #, c-format
 msgid "Do you want to add \"%s\" which is a video file?"
 msgstr "Vill du lägga till \"%s\" som är en videofil?"
 
-#: ../src/brasero-audio-disc.c:640
+#: ../src/brasero-audio-disc.c:651
 msgid "This file is a video and therefore only the audio part can be written to the disc."
 msgstr "Denna fil är en video och därför kan endast ljuddelen skrivas till skivan."
 
-#: ../src/brasero-audio-disc.c:643
+#: ../src/brasero-audio-disc.c:654
 msgid "_Discard File"
 msgstr "För_kasta fil"
 
-#: ../src/brasero-audio-disc.c:646
-#: ../src/brasero-data-disc.c:845
-#: ../src/brasero-data-disc.c:890
+#: ../src/brasero-audio-disc.c:657
+#: ../src/brasero-data-disc.c:856
+#: ../src/brasero-data-disc.c:901
 #: ../libbrasero-burn/brasero-status-dialog.c:181
 #: ../libbrasero-burn/brasero-status-dialog.c:217
 msgid "_Add File"
 msgstr "_Lägg till fil"
 
-#: ../src/brasero-audio-disc.c:717
+#: ../src/brasero-audio-disc.c:728
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "Vill du söka efter ljudfiler inne i katalogen?"
 
-#: ../src/brasero-audio-disc.c:722
+#: ../src/brasero-audio-disc.c:733
 msgid "Directories cannot be added to an audio disc."
 msgstr "Kataloger kan inte läggas till på en ljudskiva."
 
-#: ../src/brasero-audio-disc.c:726
+#: ../src/brasero-audio-disc.c:737
 msgid "Search _Directory"
 msgstr "Sök _katalog"
 
-#: ../src/brasero-audio-disc.c:776
-#: ../src/brasero-video-disc.c:387
+#: ../src/brasero-audio-disc.c:787
+#: ../src/brasero-video-disc.c:390
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "\"%s\" kunde inte öppnas."
 
-#: ../src/brasero-audio-disc.c:1177
+#: ../src/brasero-audio-disc.c:1188
 msgid "Select one song only please."
 msgstr "Välj endast en låt."
 
-#: ../src/brasero-audio-disc.c:1178
+#: ../src/brasero-audio-disc.c:1189
 msgid "Impossible to split more than one song at a time"
 msgstr "Omöjligt att dela upp fler än en låt åt gången"
 
@@ -2818,8 +2809,9 @@ msgstr "Fel vid tolkning av spellistan \"%s\"."
 
 #: ../src/brasero-playlist.c:804
 #: ../src/brasero-data-disc.c:215
-#: ../src/brasero-project.c:2342
+#: ../src/brasero-project.c:2319
 #: ../libbrasero-burn/brasero-sum-dialog.c:161
+#: ../src/brasero-eject-dialog.c:98
 msgid "An unknown error occured"
 msgstr "Ett okänt fel inträffade"
 
@@ -2930,13 +2922,13 @@ msgid "Next Results"
 msgstr "Nästa resultat"
 
 #: ../src/brasero-search-beagle.c:408
-#: ../src/brasero-data-disc.c:2222
-#: ../src/brasero-file-filtered.c:258
+#: ../src/brasero-data-disc.c:2244
+#: ../src/brasero-file-filtered.c:259
 msgid "Files"
 msgstr "Filer"
 
 #: ../src/brasero-search-beagle.c:427
-#: ../src/brasero-data-disc.c:2250
+#: ../src/brasero-data-disc.c:2272
 msgid "Description"
 msgstr "Beskrivning"
 
@@ -2960,19 +2952,19 @@ msgstr "Titel:"
 #: ../src/brasero-song-properties.c:184
 #: ../src/brasero-song-properties.c:196
 #: ../src/brasero-song-properties.c:208
-#: ../src/brasero-multi-song-props.c:207
-#: ../src/brasero-multi-song-props.c:248
-#: ../src/brasero-multi-song-props.c:269
+#: ../src/brasero-multi-song-props.c:210
+#: ../src/brasero-multi-song-props.c:251
+#: ../src/brasero-multi-song-props.c:272
 msgid "This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."
 msgstr "Den här information kommer att skrivas till skivan med CD-TEXT-tekniken. Den kan läsas och visas av vissa cd-spelare."
 
 #: ../src/brasero-song-properties.c:186
-#: ../src/brasero-multi-song-props.c:238
+#: ../src/brasero-multi-song-props.c:241
 msgid "Artist:"
 msgstr "Artist:"
 
 #: ../src/brasero-song-properties.c:198
-#: ../src/brasero-multi-song-props.c:259
+#: ../src/brasero-multi-song-props.c:262
 msgid "Composer:"
 msgstr "Kompositör:"
 
@@ -2985,12 +2977,12 @@ msgid "Song end:"
 msgstr "Låtslut:"
 
 #: ../src/brasero-song-properties.c:244
-#: ../src/brasero-multi-song-props.c:313
+#: ../src/brasero-multi-song-props.c:316
 msgid "Pause length:"
 msgstr "Pauslängd:"
 
 #: ../src/brasero-song-properties.c:253
-#: ../src/brasero-multi-song-props.c:324
+#: ../src/brasero-multi-song-props.c:327
 msgid "Gives the length of the pause that should follow the track"
 msgstr "Anger längden på pausen som ska komma efter spåret"
 
@@ -2999,7 +2991,7 @@ msgid "Track length:"
 msgstr "Spårlängd:"
 
 #: ../src/brasero-song-properties.c:284
-#: ../src/brasero-multi-song-props.c:341
+#: ../src/brasero-multi-song-props.c:344
 msgid "Song Information"
 msgstr "Låtinformation"
 
@@ -3017,7 +3009,7 @@ msgid "Rename the selected file"
 msgstr "Byt namn på markerade filer"
 
 #: ../src/brasero-data-disc.c:133
-#: ../src/brasero-data-disc.c:1648
+#: ../src/brasero-data-disc.c:1670
 msgid "New _Folder"
 msgstr "Ny _mapp"
 
@@ -3046,61 +3038,62 @@ msgstr "För_kasta"
 msgid "Continue with the current modified project"
 msgstr "Fortsätt med det för närvarande ändrade projektet"
 
-#: ../src/brasero-data-disc.c:671
-#: ../src/brasero-data-disc.c:692
-#: ../src/brasero-data-disc.c:713
+#: ../src/brasero-data-disc.c:681
+#: ../src/brasero-data-disc.c:702
+#: ../src/brasero-data-disc.c:723
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
 msgstr "\"%s\" kan inte läggas till markeringen."
 
-#: ../src/brasero-data-disc.c:695
+#: ../src/brasero-data-disc.c:705
 msgid "It is a recursive symlink"
 msgstr "Det är en rekursiv symbolisk länk"
 
-#: ../src/brasero-data-disc.c:716
+#: ../src/brasero-data-disc.c:726
 msgid "It does not exist at the specified location"
 msgstr "Den finns inte på den angivna platsen"
 
-#: ../src/brasero-data-disc.c:734
+#: ../src/brasero-data-disc.c:744
 #: ../libbrasero-burn/brasero-status-dialog.c:242
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr "Ska filer få nya namn för att bli fullständigt Windows-kompatibla?"
 
-#: ../src/brasero-data-disc.c:739
+#: ../src/brasero-data-disc.c:749
 #: ../libbrasero-burn/brasero-status-dialog.c:246
 msgid "Those names should be changed and truncated to 64 characters."
 msgstr "Dessa namn bör ändras och kapas av till maximalt 64 tecken."
 
-#: ../src/brasero-data-disc.c:743
+#: ../src/brasero-data-disc.c:753
 #: ../libbrasero-burn/brasero-status-dialog.c:254
 msgid "_Rename for Full Windows Compatibility"
 msgstr "_Byt namn för fullständig Windows-kompatibilitet"
 
-#: ../src/brasero-data-disc.c:744
+#: ../src/brasero-data-disc.c:754
 #: ../libbrasero-burn/brasero-status-dialog.c:251
 msgid "_Disable Full Windows Compatibility"
 msgstr "_Inaktivera fullständig Windows-kompatibilitet"
 
-#: ../src/brasero-data-disc.c:776
+#. Translators: %s is the name of the file
+#: ../src/brasero-data-disc.c:787
 #, c-format
-msgid "Do you really want to replace the project file \"%s\"?"
-msgstr "Vill du verkligen ersätta projektfilen \"%s\"?"
+msgid "Do you really want to replace \"%s\"?"
+msgstr "Vill du verkligen ersätta \"%s\"?"
 
-#: ../src/brasero-data-disc.c:784
-msgid "It already exists in the directory."
-msgstr "Den finns redan i katalogen."
+#: ../src/brasero-data-disc.c:795
+msgid "A file with the same name is about to be added into the same directory and will replace it if you accept."
+msgstr "En fil med samma namn är på väg att läggas till i samma katalog och kommer att ersätta den om du godkänner det."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
 #. * Keep is a verb
-#: ../src/brasero-data-disc.c:789
+#: ../src/brasero-data-disc.c:800
 msgid "Always K_eep"
 msgstr "Behåll allti_d"
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
 #. * Keep is a verb
-#: ../src/brasero-data-disc.c:793
+#: ../src/brasero-data-disc.c:804
 msgid "_Keep"
 msgstr "_Behåll"
 
@@ -3108,25 +3101,25 @@ msgstr "_Behåll"
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
 #. Translators: this is a verb
-#: ../src/brasero-data-disc.c:797
-#: ../src/brasero-rename.c:342
+#: ../src/brasero-data-disc.c:808
+#: ../src/brasero-rename.c:345
 msgid "_Replace"
 msgstr "_Ersätt"
 
 #. Translators: Replace means we're replacing the file that already
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
-#: ../src/brasero-data-disc.c:801
+#: ../src/brasero-data-disc.c:812
 msgid "Al_ways Replace"
 msgstr "Ersätt a_lltid"
 
-#: ../src/brasero-data-disc.c:831
+#: ../src/brasero-data-disc.c:842
 #: ../libbrasero-burn/brasero-status-dialog.c:202
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"
 msgstr "Vill du verkligen lägga till \"%s\" till markeringen och använda den tredje versionen av ISO9660 för att ge stöd för den?"
 
-#: ../src/brasero-data-disc.c:839
+#: ../src/brasero-data-disc.c:850
 #: ../libbrasero-burn/brasero-status-dialog.c:212
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by ISO9660 standard in its first and second versions (the most widespread ones).\n"
@@ -3137,23 +3130,23 @@ msgstr ""
 "Det rekommenderas att använda den tredje versionen av ISO9660-standarden som stöds av de flesta operativsystem, inklusive Linux och alla versioner av Windows©.\n"
 "Ett känt undantag är MacOS X som inte kan läsa avbildningar skapade med version 3 av ISO9660-standarden."
 
-#: ../src/brasero-data-disc.c:843
-#: ../src/brasero-data-disc.c:888
+#: ../src/brasero-data-disc.c:854
+#: ../src/brasero-data-disc.c:899
 msgid "Ne_ver Add Such File"
 msgstr "Lä_gg aldrig till sådan fil"
 
-#: ../src/brasero-data-disc.c:846
-#: ../src/brasero-data-disc.c:891
+#: ../src/brasero-data-disc.c:857
+#: ../src/brasero-data-disc.c:902
 msgid "Al_ways Add Such File"
 msgstr "_Lägg alltid till sådan fil"
 
-#: ../src/brasero-data-disc.c:876
+#: ../src/brasero-data-disc.c:887
 #: ../libbrasero-burn/brasero-status-dialog.c:166
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "Vill du verkligen lägga till \"%s\" till markeringen?"
 
-#: ../src/brasero-data-disc.c:884
+#: ../src/brasero-data-disc.c:895
 #: ../libbrasero-burn/brasero-status-dialog.c:176
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
@@ -3166,81 +3159,81 @@ msgstr ""
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
-#: ../src/brasero-data-disc.c:986
+#: ../src/brasero-data-disc.c:997
 #, c-format
 msgid "Import %s"
 msgstr "Importera %s"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
-#: ../src/brasero-data-disc.c:993
+#: ../src/brasero-data-disc.c:1004
 #, c-format
 msgid "I_mport %s"
 msgstr "I_mportera %s"
 
 #. Translators: This is a verb. It's a toolbar button.
-#: ../src/brasero-data-disc.c:1023
+#: ../src/brasero-data-disc.c:1034
 msgid "I_mport"
 msgstr "I_mportera"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1079
+#: ../src/brasero-data-disc.c:1115
 #, c-format
 msgid "Do you want to import the session from '%s'?"
 msgstr "Vill du importera sessionen från \"%s\"?"
 
-#: ../src/brasero-data-disc.c:1082
+#: ../src/brasero-data-disc.c:1118
 msgid "That way, old files from previous sessions will be usable after burning."
 msgstr "På det sättet kommer gamla filer från tidigare sessioner att vara användbara efter bränning."
 
-#: ../src/brasero-data-disc.c:1093
+#: ../src/brasero-data-disc.c:1129
 msgid "I_mport Session"
 msgstr "I_mportera session"
 
-#: ../src/brasero-data-disc.c:1094
+#: ../src/brasero-data-disc.c:1130
 msgid "Click here to import its contents"
 msgstr "Klicka här för att importera dess innehåll"
 
-#: ../src/brasero-data-disc.c:1403
+#: ../src/brasero-data-disc.c:1423
 msgid "Please wait while the project is loading."
 msgstr "Vänta under tiden projektet läses in."
 
-#: ../src/brasero-data-disc.c:1414
+#: ../src/brasero-data-disc.c:1434
 msgid "_Cancel Loading"
 msgstr "_Avbryt inläsning"
 
-#: ../src/brasero-data-disc.c:1415
+#: ../src/brasero-data-disc.c:1435
 msgid "Cancel loading current project"
 msgstr "Avbryt inläsning av aktuellt projekt"
 
-#: ../src/brasero-data-disc.c:1793
+#: ../src/brasero-data-disc.c:1815
 msgid "File Renaming"
 msgstr "Namnbyte för fil"
 
-#: ../src/brasero-data-disc.c:1797
+#: ../src/brasero-data-disc.c:1819
 msgid "_Rename"
 msgstr "_Byt namn"
 
-#: ../src/brasero-data-disc.c:1805
+#: ../src/brasero-data-disc.c:1827
 msgid "Renaming mode"
 msgstr "Namnbytesläge"
 
-#: ../src/brasero-data-disc.c:2236
-#: ../src/brasero-video-disc.c:1217
+#: ../src/brasero-data-disc.c:2258
+#: ../src/brasero-video-disc.c:1220
 msgid "Size"
 msgstr "Storlek"
 
-#: ../src/brasero-data-disc.c:2266
+#: ../src/brasero-data-disc.c:2288
 msgid "Space"
 msgstr "Utrymme"
 
 #: ../src/brasero-file-chooser.c:232
-#: ../src/brasero-project.c:1997
+#: ../src/brasero-project.c:1974
 msgid "Audio files"
 msgstr "Ljudfiler"
 
 #: ../src/brasero-file-chooser.c:240
-#: ../src/brasero-project.c:2006
+#: ../src/brasero-project.c:1983
 msgid "Movies"
 msgstr "Filmer"
 
@@ -3352,13 +3345,19 @@ msgstr "_Ta bort filer"
 
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:199
-#: ../src/brasero-project.c:2077
+#: ../src/brasero-project.c:2054
 msgid "E_mpty Project"
 msgstr "Töm p_rojektet"
 
 #: ../src/brasero-project.c:200
 msgid "Remove all files from the project"
 msgstr "Ta bort alla filer från projektet"
+
+#. burn button set insensitive since there are no files in the selection
+#: ../src/brasero-project.c:201
+#: ../src/brasero-project.c:1075
+msgid "_Burn..."
+msgstr "_Bränn..."
 
 #: ../src/brasero-project.c:202
 msgid "Burn the disc"
@@ -3414,147 +3413,151 @@ msgid "select items in this area, and press \"Delete\" key"
 msgstr "markera objekt i den här rutan och tryck på knappen \"Ta bort\""
 
 #: ../src/brasero-project.c:811
-#: ../libbrasero-burn/brasero-status-dialog.c:124
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Projektets beräknade storlek: %s"
 
-#. Media selection widget
-#: ../src/brasero-project.c:1056
-msgid "_Disc:"
-msgstr "S_kiva:"
+#: ../src/brasero-project.c:938
+#: ../src/brasero-project.c:955
+msgid "The size of the project is too large for the disc even with the overburn option."
+msgstr "Projektet är för stort för skivan även med överbränningsalternativet."
 
-#: ../src/brasero-project.c:1098
+#: ../src/brasero-project.c:965
+msgid ""
+"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
+"NOTE: This option might cause failure."
+msgstr ""
+"Projektet är för stort för skivan och du måste ta bort filer från projektet för att de ska få plats.\n"
+"Du kan använda detta alternativ om du använder en 90 eller 100 minuter lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver överbränningsalternativet.\n"
+"OBSERVERA: Det här alternativet kan orsaka felaktigheter."
+
+#: ../src/brasero-project.c:1087
 msgid "Start to burn the contents of the selection"
 msgstr "Påbörja bränningen av innehållet"
 
-#. Name widget
-#: ../src/brasero-project.c:1112
-msgid "_Name:"
-msgstr "_Namn:"
-
-#: ../src/brasero-project.c:1270
+#: ../src/brasero-project.c:1247
 msgid "Please add songs to the project."
 msgstr "Lägg till låtar till projektet."
 
-#: ../src/brasero-project.c:1279
+#: ../src/brasero-project.c:1256
 #: ../src/main.c:246
 msgid "Please add files to the project."
 msgstr "Lägg till filer till projektet."
 
-#: ../src/brasero-project.c:1394
+#: ../src/brasero-project.c:1371
 msgid "Video Options"
 msgstr "Videoalternativ"
 
-#: ../src/brasero-project.c:1724
+#: ../src/brasero-project.c:1701
 msgid "Do you really want to create a new project and discard the changes to current one?"
 msgstr "Vill du verkligen skapa ett nytt projekt och förkasta ändringarna i det aktuella?"
 
-#: ../src/brasero-project.c:1729
+#: ../src/brasero-project.c:1706
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "Om du väljer att skapa ett nytt projekt kommer alla ändringar att gå förlorade."
 
-#: ../src/brasero-project.c:1731
+#: ../src/brasero-project.c:1708
 msgid "_Discard Changes"
 msgstr "_Förkasta ändringar"
 
-#: ../src/brasero-project.c:1739
+#: ../src/brasero-project.c:1716
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Vill du verkligen skapa ett nytt projekt och förkasta det aktuella?"
 
-#: ../src/brasero-project.c:1744
+#: ../src/brasero-project.c:1721
 msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Om du väljer att skapa ett nytt projekt kommer alla filer som lagts till att förkastas. Observera att filerna inte kommer att tas bort fysiskt, de tas bara bort från listan här."
 
-#: ../src/brasero-project.c:1749
+#: ../src/brasero-project.c:1726
 msgid "_Discard Project"
 msgstr "_Förkasta projekt"
 
-#: ../src/brasero-project.c:1955
+#: ../src/brasero-project.c:1932
 msgid "Select Files"
 msgstr "Välj filer"
 
-#: ../src/brasero-project.c:2066
+#: ../src/brasero-project.c:2043
 msgid "Do you really want to empty the current project?"
 msgstr "Vill du verkligen tömma det aktuella projektet?"
 
-#: ../src/brasero-project.c:2071
+#: ../src/brasero-project.c:2048
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Tömning av ett projekt kommer att ta bort alla filer som lagts till. Allt arbete kommer att gå förlorat. Observera att filerna inte kommer att tas bort fysiskt, de tas bara bort från listan här."
 
-#: ../src/brasero-project.c:2128
+#: ../src/brasero-project.c:2105
 msgid "_Save"
 msgstr "_Spara"
 
-#: ../src/brasero-project.c:2139
+#: ../src/brasero-project.c:2116
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: ../src/brasero-project.c:2144
+#: ../src/brasero-project.c:2121
 #: ../src/brasero-split-dialog.c:1250
 msgid "_Remove"
 msgstr "_Ta bort"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2207
+#: ../src/brasero-project.c:2184
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero - %s (dataskiva)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2210
+#: ../src/brasero-project.c:2187
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero - %s (ljudskiva)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2213
+#: ../src/brasero-project.c:2190
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (videoskiva)"
 
-#: ../src/brasero-project.c:2341
+#: ../src/brasero-project.c:2318
 msgid "Your project has not been saved."
 msgstr "Ditt projekt har inte sparats."
 
-#: ../src/brasero-project.c:2355
+#: ../src/brasero-project.c:2332
 msgid "Save the changes of current project before closing?"
 msgstr "Spara ändringar i aktuellt projekt innan stängning?"
 
-#: ../src/brasero-project.c:2360
+#: ../src/brasero-project.c:2337
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Om du inte sparar kommer ändringarna att gå förlorade."
 
-#: ../src/brasero-project.c:2364
-#: ../src/brasero-project.c:2370
+#: ../src/brasero-project.c:2341
+#: ../src/brasero-project.c:2347
 msgid "Cl_ose Without Saving"
 msgstr "St_äng utan att spara"
 
-#: ../src/brasero-project.c:2464
+#: ../src/brasero-project.c:2441
 msgid "Save Current Project"
 msgstr "Spara aktuellt projekt"
 
-#: ../src/brasero-project.c:2482
+#: ../src/brasero-project.c:2459
 msgid "Save project as Brasero audio project"
 msgstr "Spara projektet som ett Brasero-ljudprojekt"
 
-#: ../src/brasero-project.c:2483
+#: ../src/brasero-project.c:2460
 msgid "Save project as a plain text list"
 msgstr "Spara projekt som en vanlig textlista"
 
-#: ../src/brasero-project.c:2487
+#: ../src/brasero-project.c:2464
 msgid "Save project as a PLS playlist"
 msgstr "Spara projekt som en PLS-spellista"
 
-#: ../src/brasero-project.c:2488
+#: ../src/brasero-project.c:2465
 msgid "Save project as an M3U playlist"
 msgstr "Spara projekt som en M3U-spellista"
 
-#: ../src/brasero-project.c:2489
+#: ../src/brasero-project.c:2466
 msgid "Save project as a XSPF playlist"
 msgstr "Spara projekt som en XSPF-spellista"
 
-#: ../src/brasero-project.c:2490
+#: ../src/brasero-project.c:2467
 msgid "Save project as an IRIVER playlist"
 msgstr "Spara projekt som en IRIVER-spellista"
 
@@ -3846,17 +3849,22 @@ msgstr "_Kontrollera"
 msgid "Disc Checking"
 msgstr "Skivkontroll"
 
+#: ../libbrasero-burn/brasero-status-dialog.c:124
+#, c-format
+msgid "Estimated size: %s"
+msgstr "Beräknad storlek: %s"
+
 #: ../libbrasero-burn/brasero-status-dialog.c:459
-msgid "Project Size Estimation"
-msgstr "Beräkning av projektstorlek"
+msgid "Size Estimation"
+msgstr "Storleksberäkning"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:461
-msgid "Please wait until the estimation of the project size is completed."
-msgstr "Vänta under tiden beräkningen av projektets storlek färdigställs."
+msgid "Please wait until the estimation of the size is completed."
+msgstr "Vänta tills storleksberäkningen färdigställts."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:462
-msgid "All files from the project need to be analysed to complete this operation."
-msgstr "Alla filer från projektet behöver analyseras för att färdigställa denna åtgärd."
+msgid "All files need to be analysed to complete this operation."
+msgstr "Alla filer behöver analyseras för att färdigställa denna åtgärd."
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:77
 #: ../libbrasero-burn/brasero-tool-dialog.c:91
@@ -3865,12 +3873,12 @@ msgid "The operation cannot be performed."
 msgstr "Åtgärden kan inte genomföras."
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:78
-#: ../plugins/cdrkit/burn-wodim.c:141
-#: ../plugins/cdrkit/burn-wodim.c:391
-#: ../plugins/cdrtools/burn-cdrecord.c:141
-#: ../plugins/cdrtools/burn-cdrecord.c:376
-#: ../plugins/growisofs/burn-dvd-rw-format.c:66
-#: ../plugins/libburnia/burn-libburn.c:588
+#: ../plugins/cdrkit/burn-wodim.c:145
+#: ../plugins/cdrkit/burn-wodim.c:395
+#: ../plugins/cdrtools/burn-cdrecord.c:145
+#: ../plugins/cdrtools/burn-cdrecord.c:380
+#: ../plugins/growisofs/burn-dvd-rw-format.c:70
+#: ../plugins/libburnia/burn-libburn.c:591
 #, c-format
 msgid "The disc is not supported"
 msgstr "Skivan stöds inte"
@@ -3880,6 +3888,7 @@ msgid "The drive is empty"
 msgstr "Enheten är tom"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:511
+#: ../src/brasero-eject-dialog.c:163
 msgid "Select a disc"
 msgstr "Välj en skiva"
 
@@ -3976,6 +3985,10 @@ msgstr "SÖKVÄG"
 msgid "The XID of the parent window"
 msgstr "XID för föräldrafönstret"
 
+#: ../src/main.c:247
+msgid "The project is empty"
+msgstr "Projektet är tomt"
+
 #: ../src/main.c:329
 msgid "Incompatible command line options used."
 msgstr "Inkompatibla kommandoradsflaggor användes."
@@ -3993,190 +4006,190 @@ msgstr "[URI] [URI] ..."
 msgid "Please type %s --help to see all available options\n"
 msgstr "Kör %s --help för att se alla tillgängliga flaggor\n"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:92
+#: ../plugins/cdrdao/burn-cdrdao.c:96
 msgid "Copying audio track"
 msgstr "Kopierar ljudspår"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:98
+#: ../plugins/cdrdao/burn-cdrdao.c:102
 msgid "Copying data track"
 msgstr "Kopierar dataspår"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:134
+#: ../plugins/cdrdao/burn-cdrdao.c:138
 #, c-format
 msgid "Analysing track %02i"
 msgstr "Analyserar spår %02i"
 
 #. Translators: %s is a filename
-#: ../plugins/cdrdao/burn-cdrdao.c:201
-#: ../plugins/growisofs/burn-growisofs.c:502
+#: ../plugins/cdrdao/burn-cdrdao.c:205
+#: ../plugins/growisofs/burn-growisofs.c:505
 #, c-format
 msgid "\"%s\" could not be found"
 msgstr "\"%s\" kunde inte hittas"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:239
+#: ../plugins/cdrdao/burn-cdrdao.c:243
 #, c-format
 msgid "Your version of cdrdao does not seem to be supported by libbrasero"
 msgstr "Det verkar inte finnas stöd för din version av cdrdao i libbrasero"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:245
-#: ../plugins/cdrkit/burn-readom.c:104
-#: ../plugins/cdrkit/burn-readom.c:110
-#: ../plugins/cdrkit/burn-wodim.c:96
-#: ../plugins/cdrtools/burn-cdrecord.c:96
-#: ../plugins/cdrtools/burn-readcd.c:106
-#: ../plugins/cdrtools/burn-readcd.c:112
+#: ../plugins/cdrdao/burn-cdrdao.c:249
+#: ../plugins/cdrkit/burn-readom.c:108
+#: ../plugins/cdrkit/burn-readom.c:114
+#: ../plugins/cdrkit/burn-wodim.c:100
+#: ../plugins/cdrtools/burn-cdrecord.c:100
+#: ../plugins/cdrtools/burn-readcd.c:110
+#: ../plugins/cdrtools/burn-readcd.c:116
 #, c-format
 msgid "You do not have the required permissions to use this drive"
 msgstr "Du har inte de nödvändiga rättigheterna för att använda den här enheten"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:625
+#: ../plugins/cdrdao/burn-cdrdao.c:617
 msgid "Use cdrdao to copy and burn CDs"
 msgstr "Använd cdrdao för att kopiera och bränna cd-skivor"
 
-#: ../plugins/cdrdao/burn-cdrdao.c:691
+#: ../plugins/cdrdao/burn-cdrdao.c:683
 msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
 msgstr "Aktivera flaggan \"--driver generic-mmc-raw\" (se manual för cdrdao)"
 
-#: ../plugins/cdrdao/burn-toc2cue.c:260
+#: ../plugins/cdrdao/burn-toc2cue.c:264
 msgid "Converting toc file"
 msgstr "Konverterar innehållsfil"
 
-#: ../plugins/cdrdao/burn-toc2cue.c:317
+#: ../plugins/cdrdao/burn-toc2cue.c:321
 msgid "Toc2cue converts .toc files into .cue files"
 msgstr "Toc2cue konverterar .toc-filer till .cue-filer"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:110
-#: ../plugins/cdrtools/burn-mkisofs.c:111
-#: ../plugins/growisofs/burn-growisofs.c:196
-#: ../plugins/libburnia/burn-libisofs.c:485
+#: ../plugins/cdrkit/burn-genisoimage.c:114
+#: ../plugins/cdrtools/burn-mkisofs.c:115
+#: ../plugins/growisofs/burn-growisofs.c:199
+#: ../plugins/libburnia/burn-libisofs.c:487
 #, c-format
 msgid "Last session import failed"
 msgstr "Import av senaste session misslyckades"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:116
-#: ../plugins/cdrkit/burn-genisoimage.c:123
-#: ../plugins/cdrtools/burn-mkisofs.c:117
-#: ../plugins/cdrtools/burn-mkisofs.c:124
-#: ../plugins/growisofs/burn-growisofs.c:202
-#: ../plugins/growisofs/burn-growisofs.c:209
+#: ../plugins/cdrkit/burn-genisoimage.c:120
+#: ../plugins/cdrkit/burn-genisoimage.c:127
+#: ../plugins/cdrtools/burn-mkisofs.c:121
+#: ../plugins/cdrtools/burn-mkisofs.c:128
+#: ../plugins/growisofs/burn-growisofs.c:205
+#: ../plugins/growisofs/burn-growisofs.c:212
 msgid "An image could not be created"
 msgstr "En avbildning kunde inte skapas"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:129
+#: ../plugins/cdrkit/burn-genisoimage.c:133
 msgid "This version of genisoimage is not supported"
 msgstr "Den här versionen av genisoimage stöds inte"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:171
-#: ../plugins/cdrtools/burn-mkisofs.c:172
-#: ../plugins/growisofs/burn-growisofs.c:215
+#: ../plugins/cdrkit/burn-genisoimage.c:175
+#: ../plugins/cdrtools/burn-mkisofs.c:176
+#: ../plugins/growisofs/burn-growisofs.c:218
 msgid "Some files have invalid filenames"
 msgstr "Vissa filer har ogiltiga filnamn"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:177
-#: ../plugins/cdrtools/burn-mkisofs.c:178
-#: ../plugins/growisofs/burn-growisofs.c:221
+#: ../plugins/cdrkit/burn-genisoimage.c:181
+#: ../plugins/cdrtools/burn-mkisofs.c:182
+#: ../plugins/growisofs/burn-growisofs.c:224
 msgid "Unknown character encoding"
 msgstr "Okänd teckenkodning"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:183
-#: ../plugins/cdrtools/burn-mkisofs.c:184
+#: ../plugins/cdrkit/burn-genisoimage.c:187
+#: ../plugins/cdrtools/burn-mkisofs.c:188
 msgid "There is no space left on the device"
 msgstr "Det finns inget utrymme kvar på enheten"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:519
+#: ../plugins/cdrkit/burn-genisoimage.c:523
 msgid "Use genisoimage to create images from a file selection"
 msgstr "Använd genisoimage för att skapa avbildningar från filer"
 
-#: ../plugins/cdrkit/burn-readom.c:124
-#: ../plugins/cdrtools/burn-readcd.c:126
+#: ../plugins/cdrkit/burn-readom.c:128
+#: ../plugins/cdrtools/burn-readcd.c:130
 #, c-format
 msgid "The location you chose to store the image on does not have enough free space for the disc image"
 msgstr "Den valda platsen för lagring av avbildningen har inte tillräckligt mycket ledigt utrymme för skivavbildningen"
 
-#: ../plugins/cdrkit/burn-readom.c:439
+#: ../plugins/cdrkit/burn-readom.c:443
 msgid "Use readom to create disc images"
 msgstr "Använd readom för att skapa skivavbildningar"
 
-#: ../plugins/cdrkit/burn-wodim.c:112
-#: ../plugins/cdrtools/burn-cdrecord.c:112
-#: ../plugins/libburnia/burn-libburn.c:803
-#: ../plugins/libburnia/burn-libburn.c:834
+#: ../plugins/cdrkit/burn-wodim.c:116
+#: ../plugins/cdrtools/burn-cdrecord.c:116
+#: ../plugins/libburnia/burn-libburn.c:806
+#: ../plugins/libburnia/burn-libburn.c:837
 #, c-format
 msgid "An error occured while writing to disc"
 msgstr "Ett fel inträffade vid skrivning till skiva"
 
-#: ../plugins/cdrkit/burn-wodim.c:118
-#: ../plugins/cdrtools/burn-cdrecord.c:118
+#: ../plugins/cdrkit/burn-wodim.c:122
+#: ../plugins/cdrtools/burn-cdrecord.c:122
 #, c-format
 msgid "The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr "Systemet är för långsamt för att skriva skivan med denna hastighet. Prova med en lägre hastighet"
 
 #. Translators: %s is the number of the track
-#: ../plugins/cdrkit/burn-wodim.c:245
-#: ../plugins/cdrtools/burn-cdrecord.c:242
+#: ../plugins/cdrkit/burn-wodim.c:249
+#: ../plugins/cdrtools/burn-cdrecord.c:246
 #, c-format
 msgid "Writing track %s"
 msgstr "Skriver spår %s"
 
-#: ../plugins/cdrkit/burn-wodim.c:322
-#: ../plugins/cdrtools/burn-cdrecord.c:315
+#: ../plugins/cdrkit/burn-wodim.c:326
+#: ../plugins/cdrtools/burn-cdrecord.c:319
 msgid "Formatting disc"
 msgstr "Formaterar skiva"
 
-#: ../plugins/cdrkit/burn-wodim.c:342
-#: ../plugins/cdrtools/burn-cdrecord.c:327
+#: ../plugins/cdrkit/burn-wodim.c:346
+#: ../plugins/cdrtools/burn-cdrecord.c:331
 msgid "Writing cue sheet"
 msgstr "Skriver cue-fil"
 
-#: ../plugins/cdrkit/burn-wodim.c:364
-#: ../plugins/cdrtools/burn-cdrecord.c:349
+#: ../plugins/cdrkit/burn-wodim.c:368
+#: ../plugins/cdrtools/burn-cdrecord.c:353
 #, c-format
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "Skivan behöver matas in och ut innan den kan spelas in"
 
-#: ../plugins/cdrkit/burn-wodim.c:1238
+#: ../plugins/cdrkit/burn-wodim.c:1242
 msgid "Use wodim to burn CDs and DVDs"
 msgstr "Använd wodim för att bränna cd/dvd-skivor"
 
-#: ../plugins/cdrkit/burn-wodim.c:1393
+#: ../plugins/cdrkit/burn-wodim.c:1397
 msgid "Enable \"-immed\" flag (see wodim manual)"
 msgstr "Aktivera flaggan \"-immed\" (se manual för wodim)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1396
+#: ../plugins/cdrkit/burn-wodim.c:1400
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "Minimal fyllnadsförhållande för enhetsbuffert (i %) (se manual för wodim):"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1161
+#: ../plugins/cdrtools/burn-cdrecord.c:1165
 msgid "Use cdrecord to burn CDs and DVDs"
 msgstr "Använd cdrecord för att bränna cd/dvd-skivor"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1384
+#: ../plugins/cdrtools/burn-cdrecord.c:1388
 msgid "Enable \"-immed\" flag (see cdrecord manual)"
 msgstr "Aktivera flaggan \"-immed\" (se manual för cdrecord)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1387
+#: ../plugins/cdrtools/burn-cdrecord.c:1391
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
 msgstr "Minimal fyllnadsförhållande för enhetsbuffert (i %%)(se manual för cdrecord):"
 
-#: ../plugins/cdrtools/burn-mkisofs.c:130
+#: ../plugins/cdrtools/burn-mkisofs.c:134
 msgid "This version of mkisofs is not supported"
 msgstr "Den här versionen av mkisofs stöds inte"
 
-#: ../plugins/cdrtools/burn-mkisofs.c:526
+#: ../plugins/cdrtools/burn-mkisofs.c:530
 msgid "Use mkisofs to create image from a file selection"
 msgstr "Använd mkisofs för att skapa avbildningar från filer"
 
-#: ../plugins/cdrtools/burn-readcd.c:451
+#: ../plugins/cdrtools/burn-readcd.c:450
 msgid "Use readcd to create disc images"
 msgstr "Använd readcd för att skapa skivavbildningar"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:119
+#: ../plugins/dvdcss/burn-dvdcss.c:123
 #, c-format
 msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
 msgstr "Krypterad dvd: installera libdvdcss version 1.2.x"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:126
+#: ../plugins/dvdcss/burn-dvdcss.c:130
 #, c-format
 msgid ""
 "Libdvdcss version %s is not supported.\n"
@@ -4185,65 +4198,65 @@ msgstr ""
 "Libdvdcss version %s stöds inte.\n"
 "Installera libdvdcss version 1.2.x"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:136
+#: ../plugins/dvdcss/burn-dvdcss.c:140
 #, c-format
 msgid "Libdvdcss could not be loaded properly"
 msgstr "Libdvdcss kunde inte läsas in korrekt"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:210
-#: ../plugins/dvdcss/burn-dvdcss.c:461
-#: ../plugins/libburnia/burn-libisofs.c:150
-#: ../plugins/libburnia/burn-libisofs.c:251
-#: ../plugins/checksum/burn-checksum-files.c:185
-#: ../plugins/checksum/burn-checksum-files.c:208
-#: ../plugins/checksum/burn-checksum-image.c:163
+#: ../plugins/dvdcss/burn-dvdcss.c:214
+#: ../plugins/dvdcss/burn-dvdcss.c:465
+#: ../plugins/libburnia/burn-libisofs.c:152
+#: ../plugins/libburnia/burn-libisofs.c:253
+#: ../plugins/checksum/burn-checksum-files.c:189
+#: ../plugins/checksum/burn-checksum-files.c:212
+#: ../plugins/checksum/burn-checksum-image.c:167
 #, c-format
 msgid "Data could not be written (%s)"
 msgstr "Data kunde inte skrivas (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:270
+#: ../plugins/dvdcss/burn-dvdcss.c:274
 #, c-format
 msgid "Error reading video DVD (%s)"
 msgstr "fel vid läsning av video-dvd (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:315
+#: ../plugins/dvdcss/burn-dvdcss.c:319
 msgid "Retrieving DVD keys"
 msgstr "Hämtar dvd-nycklar"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:350
+#: ../plugins/dvdcss/burn-dvdcss.c:354
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "Video-dvd-skivan kunde inte öppnas"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:368
-#: ../plugins/dvdcss/burn-dvdcss.c:429
-#: ../plugins/dvdcss/burn-dvdcss.c:449
+#: ../plugins/dvdcss/burn-dvdcss.c:372
+#: ../plugins/dvdcss/burn-dvdcss.c:433
+#: ../plugins/dvdcss/burn-dvdcss.c:453
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Fel vid läsning av video-dvd (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:375
+#: ../plugins/dvdcss/burn-dvdcss.c:379
 msgid "Copying Video DVD"
 msgstr "Kopierar video-dvd"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:661
+#: ../plugins/dvdcss/burn-dvdcss.c:665
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr "Dvdcss tillåter att css-krypterade video-dvd-skivor kan läsas"
 
-#: ../plugins/growisofs/burn-dvd-rw-format.c:179
+#: ../plugins/growisofs/burn-dvd-rw-format.c:183
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "Dvd+rw-format raderar och formaterar dvd+/-r(w)"
 
-#: ../plugins/growisofs/burn-growisofs.c:740
+#: ../plugins/growisofs/burn-growisofs.c:743
 msgid "Growisofs burns DVDs"
 msgstr "Growisofs bränner dvd-skivor"
 
-#: ../plugins/growisofs/burn-growisofs.c:918
+#: ../plugins/growisofs/burn-growisofs.c:921
 msgid "Allow DAO use"
 msgstr "Tillåt användning av DAO"
 
-#: ../plugins/libburnia/burn-libburn.c:232
-#: ../plugins/libburnia/burn-libburn.c:240
+#: ../plugins/libburnia/burn-libburn.c:235
+#: ../plugins/libburnia/burn-libburn.c:243
 #, c-format
 msgid "Libburn track could not be created"
 msgstr "Libburn-spår kunde inte skapas"
@@ -4252,79 +4265,79 @@ msgstr "Libburn-spår kunde inte skapas"
 #. * generated from errno
 #. Translators: first %s is the filename, second %s
 #. * is the error generated from errno
-#: ../plugins/libburnia/burn-libburn.c:652
-#: ../plugins/checksum/burn-checksum-image.c:302
+#: ../plugins/libburnia/burn-libburn.c:655
+#: ../plugins/checksum/burn-checksum-image.c:306
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "\"%s\" kunde inte öppnas (%s)"
 
-#: ../plugins/libburnia/burn-libburn.c:921
+#: ../plugins/libburnia/burn-libburn.c:924
 msgid "Libburn burns CD(RW), DVD+/-(RW)"
 msgstr "Libburn bränner cd(rw), dvd+/-(rw)"
 
-#: ../plugins/libburnia/burn-libburn-common.c:148
+#: ../plugins/libburnia/burn-libburn-common.c:152
 #, c-format
 msgid "Libburn library could not be initialized"
 msgstr "Libburn-biblioteket kunde inte initieras"
 
-#: ../plugins/libburnia/burn-libburn-common.c:163
+#: ../plugins/libburnia/burn-libburn-common.c:167
 #, c-format
 msgid "The drive address could not be retrieved"
 msgstr "Enhetens adress kunde inte läsas av"
 
-#: ../plugins/libburnia/burn-libburn-common.c:354
+#: ../plugins/libburnia/burn-libburn-common.c:358
 #, c-format
 msgid "Writing track %02i"
 msgstr "Skriver spår %02i"
 
-#: ../plugins/libburnia/burn-libisofs.c:313
-#: ../plugins/libburnia/burn-libisofs.c:848
+#: ../plugins/libburnia/burn-libisofs.c:315
+#: ../plugins/libburnia/burn-libisofs.c:850
 #, c-format
 msgid "Libisofs could not be initialized."
 msgstr "Libisofs kunde inte initieras."
 
-#: ../plugins/libburnia/burn-libisofs.c:462
+#: ../plugins/libburnia/burn-libisofs.c:464
 #, c-format
 msgid "Read options could not be created"
 msgstr "Läsalternativ kunde inte skapas"
 
-#: ../plugins/libburnia/burn-libisofs.c:538
+#: ../plugins/libburnia/burn-libisofs.c:540
 #, c-format
 msgid "Volume could not be created"
 msgstr "Volymen kunde inte skapas"
 
 #. Translators: %s is the path
-#: ../plugins/libburnia/burn-libisofs.c:647
+#: ../plugins/libburnia/burn-libisofs.c:649
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
 msgstr "Ingen förälder kunde hittas i trädet för sökvägen \"%s\""
 
-#: ../plugins/libburnia/burn-libisofs.c:707
-#: ../plugins/libburnia/burn-libisofs.c:774
+#: ../plugins/libburnia/burn-libisofs.c:709
+#: ../plugins/libburnia/burn-libisofs.c:776
 #, c-format
 msgid "Libisofs reported an error while creating directory \"%s\""
 msgstr "Libisofs rapporterade ett fel när katalogen \"%s\" skapades"
 
-#: ../plugins/libburnia/burn-libisofs.c:722
+#: ../plugins/libburnia/burn-libisofs.c:724
 #, c-format
 msgid "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
 msgstr "Libisofs rapporterade ett fel när innehåll lades till i katalogen \"%s\" (%x)"
 
-#: ../plugins/libburnia/burn-libisofs.c:745
-#: ../plugins/libburnia/burn-libisofs.c:761
+#: ../plugins/libburnia/burn-libisofs.c:747
+#: ../plugins/libburnia/burn-libisofs.c:763
 #, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
 msgstr "Libisofs rapporterade ett fel när filen med sökvägen \"%s\" lades till"
 
-#: ../plugins/libburnia/burn-libisofs.c:1021
+#: ../plugins/libburnia/burn-libisofs.c:1023
 msgid "Libisofs creates disc images from files"
 msgstr "Libisofs skapar skivavbildningar från filer"
 
-#: ../plugins/local-track/burn-local-image.c:249
+#: ../plugins/local-track/burn-local-image.c:253
 msgid "Copying checksum file"
 msgstr "Kopierar fil med kontrollsumma"
 
-#: ../plugins/local-track/burn-local-image.c:533
+#: ../plugins/local-track/burn-local-image.c:537
 #, c-format
 msgid "Copying `%s` locally"
 msgstr "Kopierar \"%s\" lokalt"
@@ -4332,23 +4345,23 @@ msgstr "Kopierar \"%s\" lokalt"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/local-track/burn-local-image.c:899
+#: ../plugins/local-track/burn-local-image.c:903
 msgid "File Downloader"
 msgstr "Filhämtare"
 
-#: ../plugins/local-track/burn-local-image.c:900
+#: ../plugins/local-track/burn-local-image.c:904
 msgid "Allows to burn files not stored locally"
 msgstr "Tillåter bränning av filer som inte lagras lokalt"
 
-#: ../plugins/transcode/burn-normalize.c:498
+#: ../plugins/transcode/burn-normalize.c:504
 msgid "Normalizing tracks"
 msgstr "Normaliserar spår"
 
-#: ../plugins/transcode/burn-normalize.c:588
+#: ../plugins/transcode/burn-normalize.c:594
 msgid "Normalize"
 msgstr "Normalisera"
 
-#: ../plugins/transcode/burn-normalize.c:589
+#: ../plugins/transcode/burn-normalize.c:595
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr "Normalisering tillåter att man ställer in konsekventa ljudnivåer mellan spår"
 
@@ -4359,35 +4372,35 @@ msgstr "Normalisering tillåter att man ställer in konsekventa ljudnivåer mell
 #. * processing. This data transmission is
 #. * done through a pad. Maybe this is a bit
 #. * too technical and should be removed?
-#: ../plugins/transcode/burn-transcode.c:306
-#: ../plugins/transcode/burn-transcode.c:1469
+#: ../plugins/transcode/burn-transcode.c:310
+#: ../plugins/transcode/burn-transcode.c:1473
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "Omöjligt att länka samman insticksmoduler"
 
 #. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:914
-#: ../plugins/transcode/burn-transcode.c:1101
+#: ../plugins/transcode/burn-transcode.c:918
+#: ../plugins/transcode/burn-transcode.c:1105
 #, c-format
 msgid "Error while padding file (%s)"
 msgstr "Fel vid utfyllning av fil (%s)"
 
-#: ../plugins/transcode/burn-transcode.c:1177
+#: ../plugins/transcode/burn-transcode.c:1181
 #, c-format
 msgid "Error while getting duration"
 msgstr "Fel vid hämtning av längd"
 
-#: ../plugins/transcode/burn-transcode.c:1326
+#: ../plugins/transcode/burn-transcode.c:1330
 #, c-format
 msgid "Analysing \"%s\""
 msgstr "Analyserar \"%s\""
 
-#: ../plugins/transcode/burn-transcode.c:1363
+#: ../plugins/transcode/burn-transcode.c:1367
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr "Kodar om \"%s\""
 
-#: ../plugins/transcode/burn-transcode.c:1626
+#: ../plugins/transcode/burn-transcode.c:1630
 msgid "Transcode converts song files into a format proper to burn them on CDs"
 msgstr "Transcode konverterar låtfiler till ett format som är lämpligt att bränna på cd-skivor"
 
@@ -4559,31 +4572,31 @@ msgstr "Sekunder"
 msgid "Frames (1 second = 75 frames)"
 msgstr "Frames (1 sekund = 75 frames)"
 
-#: ../plugins/cdrkit/burn-cdrkit.h:33
+#: ../plugins/cdrkit/burn-cdrkit.h:38
 msgid "Cdrkit burning suite"
 msgstr "Bränningssvit för cdrkit"
 
-#: ../plugins/libburnia/burn-libburnia.h:32
+#: ../plugins/libburnia/burn-libburnia.h:38
 msgid "Libburnia burning suite"
 msgstr "Bränningssvit för libburnia"
 
-#: ../plugins/growisofs/burn-growisofs-common.h:33
+#: ../plugins/growisofs/burn-growisofs-common.h:38
 msgid "Growisofs burning suite"
 msgstr "Bränningssvit för growisofs"
 
-#: ../plugins/cdrdao/burn-cdrdao-common.h:33
+#: ../plugins/cdrdao/burn-cdrdao-common.h:38
 msgid "Cdrdao burning suite"
 msgstr "Bränningssvit för cdrdao"
 
-#: ../plugins/cdrtools/burn-cdrtools.h:33
+#: ../plugins/cdrtools/burn-cdrtools.h:38
 msgid "Cdrtools burning suite"
 msgstr "Bränningssvit för cdrtools"
 
-#: ../src/brasero-eject-dialog.c:132
+#: ../src/brasero-eject-dialog.c:189
 msgid "_Eject"
 msgstr "Mata u_t"
 
-#: ../src/brasero-eject-dialog.c:153
+#: ../src/brasero-eject-dialog.c:204
 msgid "Eject Disc"
 msgstr "Mata ut skiva"
 
@@ -4614,23 +4627,23 @@ msgstr "Filteralternativ"
 msgid "Select the files you want to restore and click on the \"Restore\" button"
 msgstr "Välj de filer som du vill återskapa och klicka på knappen \"Återskapa\""
 
-#: ../src/brasero-file-filtered.c:267
+#: ../src/brasero-file-filtered.c:268
 msgid "Type"
 msgstr "Typ"
 
-#: ../src/brasero-file-filtered.c:294
+#: ../src/brasero-file-filtered.c:295
 msgid "_Restore"
 msgstr "Åte_rskapa"
 
-#: ../src/brasero-file-filtered.c:303
+#: ../src/brasero-file-filtered.c:304
 msgid "Restore the selected files"
 msgstr "Återskapa de markerade filerna"
 
-#: ../src/brasero-file-filtered.c:305
+#: ../src/brasero-file-filtered.c:306
 msgid "_Options..."
 msgstr "Alter_nativ..."
 
-#: ../src/brasero-file-filtered.c:313
+#: ../src/brasero-file-filtered.c:314
 msgid "Set the options for file filtering"
 msgstr "Konfigurera alternativ för filtrering av filer"
 
@@ -4639,45 +4652,45 @@ msgid "Filter _hidden files"
 msgstr "Filtrera _dolda filer"
 
 #: ../src/brasero-filter-option.c:149
-msgid "Re_place symlinks"
+msgid "Re_place symbolic links"
 msgstr "E_rsätt symboliska länkar"
 
 #: ../src/brasero-filter-option.c:172
-msgid "Filter _broken symlinks"
+msgid "Filter _broken symbolic links"
 msgstr "Filtrera _trasiga symboliska länkar"
 
 #: ../src/brasero-filter-option.c:190
 msgid "Filtering options"
 msgstr "Filtreringsalternativ"
 
-#: ../plugins/checksum/burn-checksum-files.c:120
-#: ../plugins/checksum/burn-checksum-files.c:572
+#: ../plugins/checksum/burn-checksum-files.c:124
+#: ../plugins/checksum/burn-checksum-files.c:576
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
 msgstr "Filen \"%s\" kunde inte öppnas (%s)"
 
-#: ../plugins/checksum/burn-checksum-files.c:600
+#: ../plugins/checksum/burn-checksum-files.c:604
 msgid "Creating checksum for image files"
 msgstr "Skapar kontrollsumma för avbildningsfiler"
 
-#: ../plugins/checksum/burn-checksum-files.c:839
+#: ../plugins/checksum/burn-checksum-files.c:843
 #, c-format
 msgid "No checksum file could be found on the disc"
 msgstr "Ingen kontrollsummefil kunde hittas på skivan"
 
-#: ../plugins/checksum/burn-checksum-files.c:873
+#: ../plugins/checksum/burn-checksum-files.c:877
 msgid "Checking file integrity"
 msgstr "Kontrollerar filintegritet"
 
-#: ../plugins/checksum/burn-checksum-files.c:967
-#: ../plugins/checksum/burn-checksum-files.c:992
+#: ../plugins/checksum/burn-checksum-files.c:971
+#: ../plugins/checksum/burn-checksum-files.c:996
 #, c-format
 msgid "File \"%s\" could not be opened"
 msgstr "Filen \"%s\" kunde inte öppnas"
 
-#: ../plugins/checksum/burn-checksum-files.c:1065
-#: ../plugins/checksum/burn-checksum-files.c:1179
-#: ../plugins/checksum/burn-checksum-image.c:515
+#: ../plugins/checksum/burn-checksum-files.c:1069
+#: ../plugins/checksum/burn-checksum-files.c:1183
+#: ../plugins/checksum/burn-checksum-image.c:519
 #, c-format
 msgid "Some files may be corrupted on the disc"
 msgstr "Vissa filer kan vara skadade på skivan"
@@ -4685,117 +4698,117 @@ msgstr "Vissa filer kan vara skadade på skivan"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/checksum/burn-checksum-files.c:1451
+#: ../plugins/checksum/burn-checksum-files.c:1455
 msgid "File Checksum"
 msgstr "Filkontrollsumma"
 
-#: ../plugins/checksum/burn-checksum-files.c:1452
+#: ../plugins/checksum/burn-checksum-files.c:1456
 msgid "Allows to check file integrities on a disc"
 msgstr "Tillåter kontroll av filintegritet på en skiva"
 
-#: ../plugins/checksum/burn-checksum-files.c:1492
-#: ../plugins/checksum/burn-checksum-image.c:810
+#: ../plugins/checksum/burn-checksum-files.c:1496
+#: ../plugins/checksum/burn-checksum-image.c:821
 msgid "Hashing algorithm to be used:"
 msgstr "Hashalgoritm att använda:"
 
-#: ../plugins/checksum/burn-checksum-files.c:1495
-#: ../plugins/checksum/burn-checksum-image.c:813
+#: ../plugins/checksum/burn-checksum-files.c:1499
+#: ../plugins/checksum/burn-checksum-image.c:824
 msgid "MD5"
 msgstr "MD5"
 
-#: ../plugins/checksum/burn-checksum-files.c:1497
-#: ../plugins/checksum/burn-checksum-image.c:815
+#: ../plugins/checksum/burn-checksum-files.c:1501
+#: ../plugins/checksum/burn-checksum-image.c:826
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../plugins/checksum/burn-checksum-files.c:1499
-#: ../plugins/checksum/burn-checksum-image.c:817
+#: ../plugins/checksum/burn-checksum-files.c:1503
+#: ../plugins/checksum/burn-checksum-image.c:828
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../plugins/checksum/burn-checksum-image.c:113
+#: ../plugins/checksum/burn-checksum-image.c:117
 #, c-format
 msgid "Data could not be read (%s)"
 msgstr "Data kunde inte läsas (%s)"
 
-#: ../plugins/checksum/burn-checksum-image.c:348
-#: ../plugins/checksum/burn-checksum-image.c:421
+#: ../plugins/checksum/burn-checksum-image.c:352
+#: ../plugins/checksum/burn-checksum-image.c:425
 msgid "Creating image checksum"
 msgstr "Skapar kontrollsumma för avbildning"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/checksum/burn-checksum-image.c:785
+#: ../plugins/checksum/burn-checksum-image.c:796
 msgid "Image Checksum"
 msgstr "Avbildskontrollsumma"
 
-#: ../plugins/checksum/burn-checksum-image.c:786
+#: ../plugins/checksum/burn-checksum-image.c:797
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr "Tillåter kontroll av dataintegritet på skivan efter den är bränd"
 
-#: ../src/brasero-multi-song-props.c:86
-#: ../src/brasero-multi-song-props.c:94
-#: ../src/brasero-multi-song-props.c:102
-#: ../src/brasero-multi-song-props.c:120
-#: ../src/brasero-multi-song-props.c:136
-#: ../src/brasero-multi-song-props.c:157
-#: ../src/brasero-multi-song-props.c:170
-#: ../src/brasero-multi-song-props.c:245
-#: ../src/brasero-multi-song-props.c:266
-#: ../src/brasero-multi-song-props.c:287
-#: ../src/brasero-rename.c:87
-#: ../src/brasero-rename.c:279
+#: ../src/brasero-multi-song-props.c:89
+#: ../src/brasero-multi-song-props.c:97
+#: ../src/brasero-multi-song-props.c:105
+#: ../src/brasero-multi-song-props.c:123
+#: ../src/brasero-multi-song-props.c:139
+#: ../src/brasero-multi-song-props.c:160
+#: ../src/brasero-multi-song-props.c:173
+#: ../src/brasero-multi-song-props.c:248
+#: ../src/brasero-multi-song-props.c:269
+#: ../src/brasero-multi-song-props.c:290
+#: ../src/brasero-rename.c:90
+#: ../src/brasero-rename.c:282
 msgid "<Keep current values>"
 msgstr "<Behåll aktuella värden>"
 
-#: ../src/brasero-multi-song-props.c:123
-#: ../src/brasero-multi-song-props.c:140
+#: ../src/brasero-multi-song-props.c:126
+#: ../src/brasero-multi-song-props.c:143
 msgid "Remove silences"
 msgstr "Ta bort tystnad"
 
-#: ../src/brasero-multi-song-props.c:209
+#: ../src/brasero-multi-song-props.c:212
 msgid "Song titles"
 msgstr "Låttitlar"
 
-#: ../src/brasero-multi-song-props.c:226
+#: ../src/brasero-multi-song-props.c:229
 msgid "Additional song information"
 msgstr "Ytterligare låtinformation"
 
-#: ../src/brasero-rename.c:280
+#: ../src/brasero-rename.c:283
 msgid "Insert text"
 msgstr "Infoga text"
 
-#: ../src/brasero-rename.c:281
+#: ../src/brasero-rename.c:284
 msgid "Delete text"
 msgstr "Ta bort text"
 
-#: ../src/brasero-rename.c:282
+#: ../src/brasero-rename.c:285
 msgid "Substitute text"
 msgstr "Ersätt text"
 
-#: ../src/brasero-rename.c:283
+#: ../src/brasero-rename.c:286
 msgid "Number files according to a pattern"
 msgstr "Antal filer enligt ett mönster"
 
 #. Translators: This is a verb. This is completed later
-#: ../src/brasero-rename.c:298
+#: ../src/brasero-rename.c:301
 msgid "Insert"
 msgstr "Infoga"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
-#: ../src/brasero-rename.c:312
+#: ../src/brasero-rename.c:315
 msgid "at the begining"
 msgstr "i början"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the end".
-#: ../src/brasero-rename.c:316
+#: ../src/brasero-rename.c:319
 msgid "at the end"
 msgstr "på slutet"
 
-#: ../src/brasero-rename.c:327
+#: ../src/brasero-rename.c:330
 msgid "Delete every occurence of"
 msgstr "Ta bort varje förekomst av"
 
@@ -4803,69 +4816,69 @@ msgstr "Ta bort varje förekomst av"
 #. * we'll need a context with C_() macro
 #. Translators: this goes with above verb to say "_Replace" [Entry]
 #. * "with" [Entry].
-#: ../src/brasero-rename.c:357
+#: ../src/brasero-rename.c:360
 msgid "with"
 msgstr "med"
 
-#: ../src/brasero-rename.c:371
+#: ../src/brasero-rename.c:374
 msgid "Rename to"
 msgstr "Byt namn till"
 
-#: ../src/brasero-rename.c:380
+#: ../src/brasero-rename.c:383
 msgid "{number}"
 msgstr "{antal}"
 
-#: ../src/brasero-video-disc.c:98
+#: ../src/brasero-video-disc.c:101
 msgid "Open the selected video"
 msgstr "Öppna markerad video"
 
-#: ../src/brasero-video-disc.c:100
+#: ../src/brasero-video-disc.c:103
 msgid "Edit the video information (start, end, author, ...)"
 msgstr "Redigera videoinformationen (start, slut, upphovsman, ...)"
 
-#: ../src/brasero-video-disc.c:102
+#: ../src/brasero-video-disc.c:105
 msgid "Remove the selected videos from the project"
 msgstr "Ta bort de markerade videoklippen från projektet"
 
-#: ../src/brasero-video-disc.c:356
+#: ../src/brasero-video-disc.c:359
 msgid "Do you want to search for video files inside the directory?"
 msgstr "Vill du söka efter videofiler inne i katalogen?"
 
-#: ../src/brasero-video-disc.c:361
+#: ../src/brasero-video-disc.c:364
 msgid "Directories cannot be added to video discs."
 msgstr "Kataloger kan inte läggas till på videoskivor."
 
-#: ../src/brasero-video-disc.c:365
+#: ../src/brasero-video-disc.c:368
 msgid "_Search Directory"
 msgstr "_Sök katalog"
 
-#: ../src/brasero-video-disc.c:404
+#: ../src/brasero-video-disc.c:407
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
 msgstr "\"%s\" har inte en lämplig typ för videoprojekt."
 
-#: ../src/brasero-video-disc.c:407
+#: ../src/brasero-video-disc.c:410
 msgid "Please only add files with video contents"
 msgstr "Lägg endast till filer med videoinnehåll"
 
-#: ../plugins/dvdauthor/burn-dvdauthor.c:303
-#: ../plugins/vcdimager/burn-vcdimager.c:426
+#: ../plugins/dvdauthor/burn-dvdauthor.c:309
+#: ../plugins/vcdimager/burn-vcdimager.c:437
 msgid "Creating file layout"
 msgstr "Skapar fil-layout"
 
-#: ../plugins/dvdauthor/burn-dvdauthor.c:361
+#: ../plugins/dvdauthor/burn-dvdauthor.c:367
 msgid "Use dvdauthor to create Video DVDs"
 msgstr "Använd dvdauthor för att skapa video-dvd-skivor"
 
-#: ../plugins/transcode/burn-vob.c:1112
+#: ../plugins/transcode/burn-vob.c:1118
 msgid "Converting video file to MPEG2"
 msgstr "Konverterar videofil till MPEG2"
 
-#: ../plugins/transcode/burn-vob.c:1228
+#: ../plugins/transcode/burn-vob.c:1234
 msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr "Vob tillåter omkodning av alla videotyper till en format lämpligt för video-dvd-skivor"
 
-#: ../plugins/vcdimager/burn-vcdimager.c:475
+#: ../plugins/vcdimager/burn-vcdimager.c:486
 msgid "Use vcdimager to create SVCDs"
 msgstr "Använd vcdimager för att skapa svcd-skivor"
 
@@ -4877,6 +4890,32 @@ msgstr "Kopiera cd- och dvd-skivor"
 msgid "Disc Copier"
 msgstr "Skivkopierare"
 
+#~ msgid "_Erase Disc"
+#~ msgstr "_Radera skiva"
+#~ msgid ""
+#~ "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+#~ msgstr ""
+#~ "Vill du bränna \"%s\" till en skiva eller lägga till den i dataprojektet?"
+#~ msgid ""
+#~ "This file is the image of a disc and can therefore be burnt to disc "
+#~ "without having to add it to a data project first."
+#~ msgstr ""
+#~ "Denna fil är avbildningen av en skiva och kan därför brännas till skiva "
+#~ "utan att först behöva läggas till i ett dataprojekt."
+#~ msgid "_Add to Project"
+#~ msgstr "_Lägg till i projekt"
+#~ msgid "Blank %s"
+#~ msgstr "Tom %s"
+#~ msgid "Audio %s"
+#~ msgstr "Ljud-%s"
+#~ msgid "Data %s"
+#~ msgstr "Data-%s"
+#~ msgid "It already exists in the directory."
+#~ msgstr "Den finns redan i katalogen."
+#~ msgid "_Disc:"
+#~ msgstr "S_kiva:"
+#~ msgid "_Name:"
+#~ msgstr "_Namn:"
 #~ msgid "Increase compatibility with _Windows systems"
 #~ msgstr "Öka kompatibiliteten med _Windows-system"
 #~ msgid ""
@@ -5433,8 +5472,6 @@ msgstr "Skivkopierare"
 #~ msgstr "Skapa ett nytt dataprojekt"
 #~ msgid "Create a new video project"
 #~ msgstr "Skapa ett nytt videoprojekt"
-#~ msgid "Burn an image"
-#~ msgstr "Bränn en avbildning"
 #~ msgid "Display File Browser"
 #~ msgstr "Visa filbläddrare"
 #~ msgid "Display Playlists"
