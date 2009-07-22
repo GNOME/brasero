@@ -2549,6 +2549,15 @@ brasero_project_save_session (BraseroProject *project,
 		return FALSE;
 	}
 
+	if (project->priv->empty) {
+		/* the project is empty anyway. No need to ask anything.
+		 * return FALSE since this is not a tmp project */
+		if (saved_uri)
+			*saved_uri = NULL;
+
+		return FALSE;
+	}
+
 	if (project->priv->project) {
 		GtkResponseType answer;
 
@@ -2578,15 +2587,6 @@ brasero_project_save_session (BraseroProject *project,
 
 		if (saved_uri)
 			*saved_uri = g_strdup (project->priv->project);
-
-		return FALSE;
-	}
-
-	if (project->priv->empty) {
-		/* the project is empty anyway. No need to ask anything.
-		 * return FALSE since this is not a tmp project */
-		if (saved_uri)
-			*saved_uri = NULL;
 
 		return FALSE;
 	}
