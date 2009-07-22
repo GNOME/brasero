@@ -273,7 +273,15 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 		}
 
 		if (type & BRASERO_MEDIA_TYPE_FILE) {
-			if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
+			BraseroDrive *drive;
+
+			/* make sure the drive is indeed a fake one
+			 * since it can happen that some medium did
+			 * not properly carry out their initialization 
+			 * and are flagged as BRASERO_MEDIUM_FILE
+			 * whereas they are not */
+			drive = brasero_medium_get_drive (medium);
+			if (brasero_drive_is_fake (drive)) {
 				list = g_slist_prepend (list, medium);
 				g_object_ref (medium);
 			}
