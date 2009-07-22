@@ -192,7 +192,7 @@ G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 
 #define BRASERO_DATA_DISC_MEDIUM		"brasero-data-disc-medium"
 #define BRASERO_DATA_DISC_MERGE_ID		"brasero-data-disc-merge-id"
-#define BRASERO_MEDIUM_GET_UDI(medium)		(brasero_drive_get_udi (brasero_medium_get_drive (medium)))
+#define BRASERO_MEDIUM_GET_UDI(medium)		(brasero_drive_get_device (brasero_medium_get_drive (medium)))
 
 BraseroMedium *
 brasero_data_disc_get_loaded_medium (BraseroDataDisc *self)
