@@ -2598,7 +2598,8 @@ brasero_track_data_cfg_name_collision_cb (BraseroDataProject *project,
 
 		return FALSE;
 	}
-	else if (node == priv->icon) {
+
+	if (node == priv->icon) {
 		gchar *uri;
 		gchar *name = NULL;
 		BraseroFileNode *root;
@@ -3041,6 +3042,11 @@ brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
 
 		/* write the autorun.inf */
 		brasero_track_data_cfg_autorun_inf_update (track);
+	}
+
+	if (priv->image_file) {
+		g_object_unref (priv->image_file);
+		priv->image_file = NULL;
 	}
 
 	priv->image_file = g_file_new_for_path (icon_path);
