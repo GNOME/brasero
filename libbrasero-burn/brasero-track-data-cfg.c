@@ -654,7 +654,10 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	
 		case BRASERO_DATA_TREE_MODEL_COLOR:
 			g_value_init (value, G_TYPE_STRING);
-			g_value_set_string (value, NULL);
+			if (node->is_imported)
+				g_value_set_string (value, "grey50");
+			else
+				g_value_set_string (value, NULL);
 			return;
 
 		case BRASERO_DATA_TREE_MODEL_IS_FILE:
