@@ -2522,7 +2522,7 @@ brasero_track_data_cfg_find_icon_name (BraseroTrackDataCfg *track)
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 	do {
 		g_free (name);
-		name = g_strdup_printf ("Autorun%i.ico", i);
+		name = g_strdup_printf ("Autorun%i.ico", i++);
 	} while (brasero_file_node_check_name_existence (root, name));
 
 	return name;
@@ -2927,12 +2927,18 @@ brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 
 	if (!priv->autorun) {
-		if (brasero_file_node_check_name_existence_case (root, "autorun.inf")) {
+		BraseroFileNode *node;
+
+		node = brasero_file_node_check_name_existence_case (root, "autorun.inf");
+		if (node && !node->is_imported) {
 			/* There is a native autorun.inf file. That's why we can't edit
 			 * it; even if we were to create a temporary file with just the
 			 * icon changed then we could not save it as a project later.
 			 * If I change my mind, I should remember that it the path is
-			 * the value ON DISC. */
+			 * the value ON DISC.
+			 * The only exception is if the autorun.inf is an autorun.inf
+			 * that was imported from another session when we're 
+			 * merging. */
 			return FALSE;
 		}
 	}
