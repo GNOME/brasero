@@ -499,6 +499,8 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (obj);
 
+	gtk_window_set_icon_name (GTK_WINDOW (obj), "brasero");
+
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 
 	/* upper part */
