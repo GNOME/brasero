@@ -2348,8 +2348,11 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 
 		size = g_file_info_get_size (info);
 		if (BRASERO_BYTES_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT)
-			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name))
+			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name)) {
+				/* we need to exclude this uri */
+				brasero_data_project_exclude_uri (self, uri);
 				return NULL;
+			}
 	}
 	/* This is a special case where we won't try all checks for deep nested
 	 * files. Since this function is only used by brasero-data-vfs.c to 
@@ -2357,8 +2360,11 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	 * just check for a directory to have a depth of 6 (means parent has a
 	 * depth of 5. */
 	else if (brasero_file_node_get_depth (parent) == 5) {
-		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name))
+		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name)) {
+			/* we need to exclude this uri */
+			brasero_data_project_exclude_uri (self, uri);
 			return NULL;
+		}
 	} 
 
 	/* make sure that name doesn't exist */
@@ -2373,8 +2379,11 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 			brasero_file_node_set_from_info (node, stats, info);
 			brasero_data_project_virtual_sibling (self, node, sibling);
 		}
-		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling))
+		else if (brasero_data_project_node_signal (self, NAME_COLLISION_SIGNAL, sibling)) {
+			/* we need to exclude this uri */
+			brasero_data_project_exclude_uri (self, uri);
 			return NULL;
+		}
 		else {
 			/* The node existed and the user wants the existing to 
 			 * be replaced, so we delete that node (since the new
