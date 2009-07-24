@@ -1320,6 +1320,10 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 	gtk_widget_show (priv->filter);
 	gtk_box_pack_end (GTK_BOX (disc), priv->filter, FALSE, TRUE, 0);
 
+	/* Show all actions */
+	if (!gtk_action_group_get_visible (priv->disc_group))
+		gtk_action_group_set_visible (priv->disc_group, TRUE);
+
 	/* Now let's take care of all the available sessions */
 	if (!priv->import_group) {
 		GSList *iter;
@@ -1450,7 +1454,6 @@ static void
 brasero_data_disc_unset_track (BraseroDataDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
-	BraseroMedium *medium;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
@@ -1475,12 +1478,35 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 		priv->size_changed_id = 0;
 	}
 
-	/* Hide all toggle actions for session importing */
-	if (gtk_action_group_get_visible (priv->import_group))
-		gtk_action_group_set_visible (priv->import_group, FALSE);
-
+	/* Hide all actions */
 	if (gtk_action_group_get_visible (priv->disc_group))
 		gtk_action_group_set_visible (priv->disc_group, FALSE);
+
+	/* Remove each button for every available session that can be imported */
+	if (priv->import_group) {
+		GList *actions;
+
+		actions = gtk_action_group_list_actions (priv->import_group);
+		for (; actions; actions = actions->next) {
+			BraseroMedium *medium;
+			GtkAction *action;
+			int merge_id;
+
+			action = actions->data;
+
+			/* We reffed the medium associated with the action */
+			medium = g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MEDIUM);
+			g_object_unref (medium);
+
+			merge_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MERGE_ID));
+			gtk_ui_manager_remove_ui (priv->manager, merge_id);
+		}
+		g_list_free (actions);
+
+		gtk_ui_manager_remove_action_group (priv->manager,  priv->import_group);
+		g_object_unref (priv->import_group);
+		priv->import_group = NULL;
+	}
 
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
@@ -1527,11 +1553,6 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 	g_signal_handlers_disconnect_by_func (priv->project,
 					      brasero_data_disc_session_loaded_cb,
 					      disc);
-
-	/* Unload session */
-	medium = brasero_track_data_cfg_get_current_medium (BRASERO_TRACK_DATA_CFG (priv->project));
-	if (medium)
-		brasero_data_disc_remove_available_medium (disc, medium);
 
 	g_object_unref (priv->project);
 	priv->project = NULL;
