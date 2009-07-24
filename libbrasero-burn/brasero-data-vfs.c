@@ -274,7 +274,6 @@ brasero_data_vfs_directory_load_end (GObject *object,
 		if (!parent)
 			continue;
 
-		parent->is_exploring = FALSE;
 		brasero_data_project_directory_node_loaded (BRASERO_DATA_PROJECT (self), parent);
 	}
 

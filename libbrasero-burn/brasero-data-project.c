@@ -2245,15 +2245,6 @@ brasero_data_project_add_hidden_node (BraseroDataProject *self,
 	return brasero_data_project_add_loading_node_real (self, uri, name, TRUE, parent);
 }
 
-/**
- * This function is only used by brasero-data-vfs.c to add the contents of a 
- * directory. That's why if a node with the same name is already grafted we 
- * can't add it. It means that the node is probable excluded.
- * NOTE: all the files added through this function are not grafted since they
- * are added due to the exploration of their parent. If they collide with
- * anything it can only be with a grafed node.
- */
-
 void
 brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 					    BraseroFileNode *parent)
@@ -2261,6 +2252,22 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	if (parent->is_exploring) {
+		BraseroDataProjectClass *klass;
+
+		klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
+
+		parent->is_exploring = FALSE;
+		/* This is to make sure the directory row is
+		 * updated in case it is empty. Otherwise, it
+		 * would carry on to be displayed as loading
+		 * if it were empty.
+		 * Don't use brasero_data_project_node_changed
+		 * as we don't reorder the rows. */
+		if (klass->node_changed)
+			klass->node_changed (self, parent);
+	}
 
 	/* Mostly useful at project load time. */
 	if (priv->loading) {
@@ -2274,8 +2281,14 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 	}
 }
 
-/* This function is only used in brasero-data-vfs.c to add new nodes
- * discovered through exploration */
+/**
+ * This function is only used by brasero-data-vfs.c to add the contents of a 
+ * directory. That's why if a node with the same name is already grafted we 
+ * can't add it. It means that the node is probable excluded.
+ * NOTE: all the files added through this function are not grafted since they
+ * are added due to the exploration of their parent. If they collide with
+ * anything it can only be with a grafed node.
+ */
 
 BraseroFileNode *
 brasero_data_project_add_node_from_info (BraseroDataProject *self,

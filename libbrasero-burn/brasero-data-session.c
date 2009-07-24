@@ -248,7 +248,7 @@ brasero_data_session_load_dir_destroy (GObject *object,
 
 	parent = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (object), reference);
 	if (parent)
-		parent->is_exploring = FALSE;
+		brasero_data_project_directory_node_loaded (BRASERO_DATA_PROJECT (object), parent);
 
 	brasero_data_project_reference_free (BRASERO_DATA_PROJECT (object), reference);
 }
