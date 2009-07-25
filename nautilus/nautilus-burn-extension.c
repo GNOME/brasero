@@ -307,11 +307,6 @@ tool_dialog_run (BraseroToolDialog	*dialog,
 	BraseroDrive		*drive;
 	BraseroMediumMonitor	*monitor;
 
-	if (toplevel) {
-		gtk_window_set_transient_for (GTK_WINDOW (dialog), toplevel);
-		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	}
-
 	device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
 	if (!device_path) {
 		g_warning ("Drive device path not specified");
@@ -591,7 +586,8 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 			g_object_set_data (G_OBJECT (item), "window", window);
 			g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
 			g_signal_connect (item, "activate",
-					  G_CALLBACK (check_disc_activate_cb), window);
+					  G_CALLBACK (check_disc_activate_cb),
+			                  window);
 			items = g_list_append (items, item);
 		}
 
