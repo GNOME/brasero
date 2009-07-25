@@ -790,6 +790,7 @@ brasero_project_get_sectors_string (gint64 sectors,
 static void
 brasero_project_update_project_size (BraseroProject *project)
 {
+	BraseroTrackType *session_type;
 	goffset sectors = 0;
 	GtkWidget *status;
 	gchar *size_str;
@@ -807,9 +808,13 @@ brasero_project_update_project_size (BraseroProject *project)
 				       &sectors,
 				       NULL);
 
-	string = brasero_project_get_sectors_string (sectors, !BRASERO_IS_DATA_DISC (project->priv->current));
-	size_str = g_strdup_printf (_("Project estimated size: %s"), string);
+	session_type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (project->priv->session), session_type);
 
+	string = brasero_project_get_sectors_string (sectors, !brasero_track_type_get_has_data (session_type));
+	brasero_track_type_free (session_type);
+
+	size_str = g_strdup_printf (_("Project estimated size: %s"), string);
 	g_free (string);
 
 	gtk_statusbar_push (GTK_STATUSBAR (status), project->priv->status_ctx, size_str);
@@ -1499,8 +1504,7 @@ brasero_project_reset (BraseroProject *project)
 
 	if (project->priv->project_status) {
 		gtk_widget_hide (project->priv->project_status);
-		gtk_dialog_response (GTK_DIALOG (project->priv->project_status),
-				     GTK_RESPONSE_CANCEL);
+		gtk_dialog_response (GTK_DIALOG (project->priv->project_status), GTK_RESPONSE_CANCEL);
 		project->priv->project_status = NULL;
 	}
 
