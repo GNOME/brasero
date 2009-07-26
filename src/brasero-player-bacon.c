@@ -43,7 +43,6 @@
 #include <gst/interfaces/xoverlay.h>
 
 #include "brasero-player-bacon.h"
-#include "burn-debug.h"
  
 static void brasero_player_bacon_class_init(BraseroPlayerBaconClass *klass);
 static void brasero_player_bacon_init(BraseroPlayerBacon *sp);
@@ -557,7 +556,7 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 
 	case GST_MESSAGE_ERROR:
 		gst_message_parse_error (msg, &error, NULL);
-		BRASERO_BURN_LOG ("%s", error->message);
+		g_warning ("%s", error->message);
 
 		g_signal_emit (bacon,
 			       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
@@ -682,7 +681,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 
 	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
 	if (!bacon->priv->pipe) {
-		BRASERO_BURN_LOG ("Pipe creation error : can't create pipe.\n");
+		g_warning ("Pipe creation error : can't create pipe.\n");
 		return;
 	}
 
@@ -729,7 +728,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 	return;
 
 error:
-	BRASERO_BURN_LOG ("player creation error");
+	g_warning ("player creation error");
 	brasero_player_bacon_clear_pipe (bacon);
 	g_signal_emit (bacon,
 		       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],

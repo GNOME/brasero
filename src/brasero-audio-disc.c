@@ -40,7 +40,12 @@
 #include <gtk/gtk.h>
 
 #include "brasero-misc.h"
-#include "burn-basics.h"
+#include "brasero-io.h"
+
+#include "brasero-tags.h"
+#include "brasero-track-stream-cfg.h"
+#include "brasero-session-cfg.h"
+
 #include "brasero-app.h"
 #include "brasero-disc.h"
 #include "brasero-audio-disc.h"
@@ -48,12 +53,8 @@
 #include "brasero-utils.h"
 #include "brasero-multi-song-props.h"
 #include "brasero-song-properties.h"
-#include "brasero-io.h"
 #include "brasero-split-dialog.h"
-#include "brasero-track-stream-cfg.h"
-#include "brasero-session-cfg.h"
 #include "brasero-video-tree-model.h"
-#include "brasero-tags.h"
 
 #include "eggtreemultidnd.h"
 

@@ -36,6 +36,8 @@
 
 #include <gst/gst.h>
 
+#include "brasero-units.h"
+
 #include "brasero-song-properties.h"
 #include "brasero-time-button.h"
 

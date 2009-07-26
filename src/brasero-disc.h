@@ -33,7 +33,6 @@
 #include <gtk/gtk.h>
 
 #include "brasero-project-parse.h"
-#include "burn-basics.h"
 #include "brasero-session.h"
 
 G_BEGIN_DECLS

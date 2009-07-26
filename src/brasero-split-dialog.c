@@ -29,15 +29,17 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-split-dialog.h"
-#include "brasero-player.h"
-#include "brasero-utils.h"
+#include "brasero-misc.h"
 #include "brasero-metadata.h"
 
-#include "brasero-misc.h"
+#include "brasero-units.h"
 
 #include "brasero-track.h"
 #include "brasero-track-stream.h"
+
+#include "brasero-split-dialog.h"
+#include "brasero-player.h"
+#include "brasero-utils.h"
 
 enum {
 	START_COL,

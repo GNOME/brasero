@@ -32,8 +32,6 @@
 
 #include <gtk/gtk.h>
 
-#include "burn-basics.h"
-
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_SONG_PROPS         (brasero_song_props_get_type ())

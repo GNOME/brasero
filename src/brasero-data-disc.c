@@ -50,8 +50,6 @@
 #include "brasero-app.h"
 #include "brasero-project-manager.h"
 
-#include "burn-basics.h"
-
 #include "brasero-session-cfg.h"
 #include "brasero-tags.h"
 #include "brasero-track.h"

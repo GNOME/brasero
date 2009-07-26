@@ -31,8 +31,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "burn-basics.h"
-
 #ifndef _UTILS_H
 #define _UTILS_H
 

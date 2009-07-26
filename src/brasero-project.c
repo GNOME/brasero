@@ -52,6 +52,8 @@
 #include <totem-pl-parser.h>
 #endif
 
+#include "brasero-units.h"
+
 #include "brasero-misc.h"
 #include "brasero-jacket-edit.h"
 
@@ -64,13 +66,17 @@
 
 #include "brasero-track-data.h"
 #include "brasero-session-cfg.h"
-#include "brasero-burn-options.h"
-#include "brasero-cover.h"
 
+/* These includes are not in the exported *.h files by 
+ * libbrasero-burn. */
 #include "brasero-medium-selection-priv.h"
 #include "brasero-session-helper.h"
-#include "brasero-session-cfg.h"
 #include "brasero-dest-selection.h"
+#include "brasero-cover.h"
+#include "brasero-status-dialog.h"
+#include "brasero-video-options.h"
+#include "brasero-drive-properties.h"
+#include "brasero-image-properties.h"
 
 #include "brasero-project-type-chooser.h"
 #include "brasero-app.h"
@@ -85,10 +91,7 @@
 #include "brasero-file-chooser.h"
 #include "brasero-notify.h"
 #include "brasero-project-parse.h"
-#include "brasero-burn-options.h"
 #include "brasero-project-name.h"
-
-#include "brasero-image-properties.h"
 
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);

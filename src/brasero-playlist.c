@@ -49,6 +49,8 @@
 
 #include "brasero-misc.h"
 
+#include "brasero-units.h"
+
 #include "brasero-app.h"
 #include "brasero-playlist.h"
 #include "brasero-utils.h"

@@ -36,6 +36,11 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-io.h"
+
+#include "brasero-units.h"
+#include "brasero-medium-monitor.h"
+
 #include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-project.h"
@@ -44,8 +49,6 @@
 #include "brasero-file-chooser.h"
 #include "brasero-uri-container.h"
 #include "brasero-project-type-chooser.h"
-#include "brasero-io.h"
-#include "brasero-medium-monitor.h"
 
 #ifdef BUILD_SEARCH
 #include "brasero-search-beagle.h"

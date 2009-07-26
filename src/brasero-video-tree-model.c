@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-units.h"
+
 #include "brasero-session-cfg.h"
 #include "brasero-tags.h"
 #include "brasero-track-stream-cfg.h"
