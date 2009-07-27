@@ -189,7 +189,7 @@ void
 brasero_data_project_destroy_node (BraseroDataProject *self,
 				   BraseroFileNode *node);
 
-void
+gboolean
 brasero_data_project_node_loaded (BraseroDataProject *project,
 				  BraseroFileNode *node,
 				  const gchar *uri,

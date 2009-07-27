@@ -1988,7 +1988,7 @@ brasero_data_project_update_uri (BraseroDataProject *self,
 	brasero_data_project_graft_is_needed (self, former_uri_node);
 }
 
-void
+gboolean
 brasero_data_project_node_loaded (BraseroDataProject *self,
 				  BraseroFileNode *node,
 				  const gchar *uri,
@@ -2009,7 +2009,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 			/* exclude the URI we're replacing */
 			brasero_data_project_exclude_uri (self, uri);
 			brasero_data_project_convert_to_fake (self, node);
-			return;
+			return TRUE;
 		}
 
 		priv->loading --;
@@ -2052,7 +2052,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 		&&  BRASERO_FILE_NODE_SECTORS (node) < BRASERO_FILE_2G_LIMIT) {
 			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, g_file_info_get_name (info))) {
 				brasero_data_project_remove_node (self, node);
-				return;
+				return FALSE;
 			}
 		}
 	}
@@ -2060,7 +2060,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	/* avoid signalling twice for the same directory */
 	if (!brasero_data_project_is_deep (self, node->parent,  BRASERO_FILE_NODE_NAME (node), node->is_file)) {
 		brasero_data_project_remove_node (self, node);
-		return;
+		return FALSE;
 	}
 
 	size_changed = (BRASERO_BYTES_TO_SECTORS (size, 2048) != BRASERO_FILE_NODE_SECTORS (node));
@@ -2110,6 +2110,8 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 		g_signal_emit (self,
 			       brasero_data_project_signals [SIZE_CHANGED_SIGNAL],
 			       0);
+
+	return TRUE;
 }
 
 void

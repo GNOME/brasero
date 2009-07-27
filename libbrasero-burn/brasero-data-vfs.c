@@ -639,6 +639,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 	 * hidden files. */
 	for (iter = nodes; iter; iter = iter->next) {
 		guint reference;
+		gboolean added;
 		BraseroFileNode *node;
 
 		reference = GPOINTER_TO_INT (iter->data);
@@ -679,10 +680,13 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		}
 
 		/* update node */
-		brasero_data_project_node_loaded (BRASERO_DATA_PROJECT (self),
-						  node,
-						  uri,
-						  info);
+		added = brasero_data_project_node_loaded (BRASERO_DATA_PROJECT (self),
+		                                          node,
+		                                          uri,
+		                                          info);
+
+		if (!added)
+			continue;
 
 		/* See what type of file it is. If that's a directory then 
 		 * explore it right away */
