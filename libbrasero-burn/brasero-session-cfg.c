@@ -361,6 +361,15 @@ brasero_session_cfg_disable (BraseroSessionCfg *self)
 	priv->disabled = TRUE;
 }
 
+void
+brasero_session_cfg_enable (BraseroSessionCfg *self)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv->disabled = FALSE;
+}
+
 static void
 brasero_session_cfg_save_drive_flags (BraseroSessionCfg *self,
 				      BraseroMedium *medium)

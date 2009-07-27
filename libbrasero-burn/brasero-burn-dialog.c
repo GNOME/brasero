@@ -2281,6 +2281,10 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	priv->session = NULL;
 	g_object_unref (session);
 
+	/* re-enable autoconfiguration */
+	if (BRASERO_IS_SESSION_CFG (priv->session))
+		brasero_session_cfg_enable (BRASERO_SESSION_CFG (priv->session));
+
 	return (result == BRASERO_BURN_OK);
 }
 
