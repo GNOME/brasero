@@ -223,6 +223,7 @@ brasero_dest_selection_clean (BraseroDestSelection *self)
 	if (priv->locked_drive) {
 		brasero_drive_unlock (priv->locked_drive);
 		g_object_unref (priv->locked_drive);
+		priv->locked_drive = NULL;
 	}
 }
 
