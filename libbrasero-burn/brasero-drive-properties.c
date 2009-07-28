@@ -194,10 +194,11 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
 					     NULL,
 					     NULL);
+	g_object_unref (file);
+
 	if (!info) {
 		BRASERO_BURN_LOG ("Impossible to retrieve size for %s", path);
 		gtk_label_set_text (GTK_LABEL (priv->tmpdir), path);
-		g_object_unref (file);
 		return;
 	}
 
