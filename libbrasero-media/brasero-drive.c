@@ -939,12 +939,14 @@ brasero_drive_probe_thread (gpointer data)
 }
 
 static void
-brasero_drive_init_real (BraseroDrive *drive)
+brasero_drive_init_real (BraseroDrive *drive,
+                         GDrive *gdrive)
 {
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
+	priv->gdrive = g_object_ref (gdrive);
 	priv->block_path = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 
 	BRASERO_MEDIA_LOG ("Initializing drive %s", priv->block_path);
@@ -967,6 +969,7 @@ brasero_drive_set_property (GObject *object,
 			    GParamSpec *pspec)
 {
 	BraseroDrivePrivate *priv;
+	GDrive *gdrive = NULL;
 
 	g_return_if_fail (BRASERO_IS_DRIVE (object));
 
@@ -977,15 +980,15 @@ brasero_drive_set_property (GObject *object,
 	case PROP_UDI:
 		break;
 	case PROP_GDRIVE:
-		priv->gdrive = g_value_get_object (value);
-		if (!priv->gdrive) {
+		gdrive = g_value_get_object (value);
+		if (!gdrive) {
 			priv->probed = TRUE;
 			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 						     "drive", object,
 						     NULL);
 		}
 		else
-			brasero_drive_init_real (BRASERO_DRIVE (object));
+			brasero_drive_init_real (BRASERO_DRIVE (object), gdrive);
 
 		break;
 	default:
