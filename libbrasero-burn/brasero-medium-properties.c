@@ -238,6 +238,9 @@ brasero_medium_properties_finalize (GObject *object)
 		g_signal_handlers_disconnect_by_func (priv->session,
 						      brasero_medium_properties_output_changed,
 						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_medium_properties_wrong_extension,
+						      object);
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
