@@ -411,6 +411,15 @@ brasero_medium_monitor_disconnected_cb (GVolumeMonitor *monitor,
 
 			BRASERO_MEDIA_LOG ("Drive removed");
 			medium = brasero_drive_get_medium (drive);
+
+			/* disconnect the signal handlers to avoid having the "medium-removed" fired twice */
+			g_signal_handlers_disconnect_by_func (drive,
+			                                      brasero_medium_monitor_medium_added_cb,
+			                                      self);
+			g_signal_handlers_disconnect_by_func (drive,
+			                                      brasero_medium_monitor_medium_removed_cb,
+			                                      self);
+
 			if (medium)
 				g_signal_emit (self,
 					       medium_monitor_signals [MEDIUM_REMOVED],
