@@ -1029,11 +1029,6 @@ brasero_drive_finalize (GObject *object)
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
 
-	if (priv->udi) {
-		g_free (priv->udi);
-		priv->udi = NULL;
-	}
-
 	if (priv->probe) {
 		priv->probe_cancelled = TRUE;
 		g_thread_join (priv->probe);
@@ -1045,14 +1040,23 @@ brasero_drive_finalize (GObject *object)
 		priv->probe_id = 0;
 	}
 
+	if (priv->medium) {
+		g_signal_emit (object,
+			       drive_signals [MEDIUM_REMOVED],
+			       0,
+			       priv->medium);
+		g_object_unref (priv->medium);
+		priv->medium = NULL;
+	}
+
 	if (priv->block_path) {
 		g_free (priv->block_path);
 		priv->block_path = NULL;
 	}
 
-	if (priv->medium) {
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
+	if (priv->udi) {
+		g_free (priv->udi);
+		priv->udi = NULL;
 	}
 
 	if (priv->gdrive) {
