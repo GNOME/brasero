@@ -537,9 +537,11 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 	if (drive == priv->settings->burner)
 		return;
 
+	g_print ("xxxxx %s\n", brasero_drive_get_display_name (priv->settings->burner));
+
 	former = brasero_drive_get_medium (priv->settings->burner);
 	if (former)
-		former = g_object_ref (former);
+		g_object_ref (former);
 
 	/* If there was no drive before no need for a changing signal */
 	if (priv->settings->burner) {
@@ -576,6 +578,7 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
 		       0,
 		       former);
+
 	if (former)
 		g_object_unref (former);
 }
