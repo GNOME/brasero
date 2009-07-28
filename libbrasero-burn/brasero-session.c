@@ -537,8 +537,6 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 	if (drive == priv->settings->burner)
 		return;
 
-	g_print ("xxxxx %s\n", brasero_drive_get_display_name (priv->settings->burner));
-
 	former = brasero_drive_get_medium (priv->settings->burner);
 	if (former)
 		g_object_ref (former);
