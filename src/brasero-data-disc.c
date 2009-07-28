@@ -1483,14 +1483,15 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 	/* Remove each button for every available session that can be imported */
 	if (priv->import_group) {
 		GList *actions;
+		GList *iter;
 
 		actions = gtk_action_group_list_actions (priv->import_group);
-		for (; actions; actions = actions->next) {
+		for (iter = actions; iter; iter = iter->next) {
 			BraseroMedium *medium;
 			GtkAction *action;
 			int merge_id;
 
-			action = actions->data;
+			action = iter->data;
 
 			/* We reffed the medium associated with the action */
 			medium = g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MEDIUM);
