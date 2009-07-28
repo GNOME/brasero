@@ -333,7 +333,7 @@ brasero_file_filtered_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_TRACK: /* Readable and only writable at creation time */
-		priv->track = g_value_get_object (value);
+		priv->track = g_object_ref (g_value_get_object (value));
 		model = brasero_track_data_cfg_get_filtered_model (priv->track);
 		gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree), model);
 
