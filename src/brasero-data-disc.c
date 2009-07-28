@@ -1598,6 +1598,9 @@ brasero_data_disc_set_session_contents (BraseroDisc *self,
 						NULL);
 		brasero_data_disc_set_track (BRASERO_DATA_DISC (self),
 					     BRASERO_TRACK_DATA_CFG (data_track));
+
+		/* NOTE: that track was reffed in brasero_data_disc_set_track () */
+		g_object_unref (data_track);
 	}
 	else for (; tracks; tracks = tracks->next) {
 		BraseroTrack *track;
@@ -2340,6 +2343,11 @@ brasero_data_disc_finalize (GObject *object)
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (object);
+
+	if (priv->project) {
+		g_object_unref (priv->project);
+		priv->project = NULL;
+	}
 
 	if (priv->button_size) {
 		g_object_unref (priv->button_size);
