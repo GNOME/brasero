@@ -776,10 +776,10 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	if (priv->always_replace)
-		return TRUE;
+		return FALSE;
 
 	if (priv->never_replace)
-		return FALSE;
+		return TRUE;
 
 	/* Translators: %s is the name of the file */
 	string = g_strdup_printf (_("Do you really want to replace \"%s\"?"), name);
