@@ -272,7 +272,7 @@ brasero_burn_eject (BraseroBurn *self,
 {
 	guint counter = 0;
 
-	brasero_drive_eject (drive, TRUE, error);
+	brasero_drive_eject (drive, TRUE, NULL);
 
 	/* sleep some time and see what happened */
 	brasero_burn_sleep (self, 500);
@@ -299,7 +299,7 @@ brasero_burn_eject (BraseroBurn *self,
 		}
 
 		BRASERO_BURN_LOG ("Retrying ejection");
-		brasero_drive_eject (drive, TRUE, error);
+		brasero_drive_eject (drive, TRUE, NULL);
 		brasero_burn_sleep (self, 500);
 	}
 
