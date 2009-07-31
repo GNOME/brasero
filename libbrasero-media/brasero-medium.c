@@ -3156,6 +3156,14 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+
+/* This function is not public API yet because it was too
+ * late; so use it internally for now. It's mainly for 
+ * convenience.*/
+gboolean
+brasero_drive_can_write_media (BraseroDrive *drive,
+                               BraseroMedia media);
+
 /**
  * brasero_medium_can_be_written:
  * @medium: #BraseroMedium
@@ -3177,52 +3185,7 @@ brasero_medium_can_be_written (BraseroMedium *medium)
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
-	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE)
-	&&   (priv->info & BRASERO_MEDIUM_CLOSED))
-		return FALSE;
-
-	if (priv->info & BRASERO_MEDIUM_FILE)
-		return FALSE;
-
-	caps = brasero_drive_get_caps (priv->drive);
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR))
-		return (caps & BRASERO_DRIVE_CAPS_CDR) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR))
-		return (caps & BRASERO_DRIVE_CAPS_DVDR) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR_PLUS))
-		return (caps & BRASERO_DRIVE_CAPS_DVDR_PLUS) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDRW))
-		return (caps & BRASERO_DRIVE_CAPS_CDRW) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR_PLUS_DL))
-		return (caps & BRASERO_DRIVE_CAPS_DVDR_PLUS_DL) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM))
-		return (caps & BRASERO_DRIVE_CAPS_DVDRAM) != 0;
-
-	/* All types of BD-R */
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_WRITABLE))
-		return (caps & BRASERO_DRIVE_CAPS_BDR) != 0;
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE))
-		return (caps & BRASERO_DRIVE_CAPS_BDRW) != 0;
-
-	return FALSE;
+	return brasero_drive_can_write_media (priv->drive, priv->info);
 }
 
 /**
