@@ -669,7 +669,6 @@ brasero_burn_session_get_output_path_real (BraseroBurnSession *self,
 
 	image = g_strdup (priv->settings->image);
 	toc = g_strdup (priv->settings->toc);
-
 	if (!image && !toc)
 		return BRASERO_BURN_ERR;
 
@@ -806,7 +805,7 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 		brasero_burn_session_set_image_output_real (self, format, image, toc);
 
 		monitor = brasero_medium_monitor_get_default ();
-		list = brasero_medium_monitor_get_media (monitor,BRASERO_MEDIA_TYPE_FILE);
+		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
 		drive = brasero_medium_get_drive (list->data);
 		brasero_burn_session_set_burner (self, drive);
 		g_object_unref (monitor);
@@ -1322,7 +1321,6 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 	brasero_session_settings_copy (priv->settings, settings);
 
 	brasero_session_settings_free (settings);
-
 	if (priv->settings->burner) {
 		priv->dest_added_sig = g_signal_connect (priv->settings->burner,
 							 "medium-added",
@@ -1338,6 +1336,7 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
 		       0,
 		       former);
+
 	if (former)
 		g_object_unref (former);
 }
