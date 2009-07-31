@@ -92,6 +92,10 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *session,
 				  gchar **path,
 				  GError **error);
 
+BraseroBurnResult
+brasero_burn_session_get_tmp_image_type_same_src_dest (BraseroBurnSession *session,
+                                                       BraseroTrackType *image_type);
+
 G_END_DECLS
 
 #endif

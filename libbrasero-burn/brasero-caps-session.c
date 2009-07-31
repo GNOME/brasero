@@ -726,6 +726,7 @@ brasero_burn_session_output_supported (BraseroBurnSession *session,
 static BraseroBurnResult
 brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 						      BraseroBurnSession *session,
+                                                      BraseroTrackType *tmp_type,
 						      gboolean use_flags)
 {
 	GSList *iter;
@@ -797,12 +798,34 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 						    "Tested medium (%s)",
 						    result ? "working":"not working");
 
-			if (result)
+			if (result) {
+				if (tmp_type) {
+					tmp_type->type = BRASERO_TRACK_TYPE_IMAGE;
+					tmp_type->subtype.img_format = format;
+				}
+					
 				return BRASERO_BURN_OK;
+			}
 		}
 	}
 
 	return BRASERO_BURN_NOT_SUPPORTED;
+}
+
+BraseroBurnResult
+brasero_burn_session_get_tmp_image_type_same_src_dest (BraseroBurnSession *session,
+                                                       BraseroTrackType *image_type)
+{
+	BraseroBurnResult result;
+	BraseroBurnCaps *self;
+
+	self = brasero_burn_caps_get_default ();
+	result = brasero_burn_caps_is_session_supported_same_src_dest (self,
+	                                                               session,
+	                                                               image_type,
+	                                                               TRUE);
+	g_object_unref (self);
+	return result;
 }
 
 BraseroBurnResult
@@ -821,7 +844,7 @@ brasero_burn_session_can_burn (BraseroBurnSession *session,
 	if (brasero_burn_session_same_src_dest_drive (session)) {
 		BraseroBurnResult res;
 
-		res = brasero_burn_caps_is_session_supported_same_src_dest (self, session, use_flags);
+		res = brasero_burn_caps_is_session_supported_same_src_dest (self, session, NULL, use_flags);
 		g_object_unref (self);
 		return res;
 	}
