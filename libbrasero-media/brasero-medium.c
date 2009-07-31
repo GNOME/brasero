@@ -3031,6 +3031,8 @@ brasero_medium_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
+	BRASERO_MEDIA_LOG ("Finalizing Medium object");
+
 	if (priv->probe) {
 		priv->probe_cancelled = TRUE;
 		g_thread_join (priv->probe);
@@ -3178,7 +3180,6 @@ gboolean
 brasero_medium_can_be_written (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
-	BraseroDriveCaps caps;
 
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
