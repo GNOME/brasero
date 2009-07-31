@@ -196,6 +196,13 @@ brasero_drive_eject (BraseroDrive *drive,
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
+	/* reset if needed */
+	if (g_cancellable_is_cancelled (priv->cancel)) {
+		BRASERO_MEDIA_LOG ("Resetting GCancellable object");
+		g_cancellable_reset (priv->cancel);
+	}
+
+	BRASERO_MEDIA_LOG ("Trying to eject drive (?)");
 	res = brasero_gio_operation_eject_drive (priv->gdrive,
 						 priv->cancel,
 						 wait,
@@ -206,6 +213,13 @@ brasero_drive_eject (BraseroDrive *drive,
 	if (!priv->medium)
 		return FALSE;
 
+	/* reset if needed */
+	if (g_cancellable_is_cancelled (priv->cancel)) {
+		BRASERO_MEDIA_LOG ("Resetting GCancellable object");
+		g_cancellable_reset (priv->cancel);
+	}
+
+	BRASERO_MEDIA_LOG ("Trying to eject volume");
 	gvolume = brasero_volume_get_gvolume (BRASERO_VOLUME (priv->medium));
 	res = brasero_gio_operation_eject_volume (gvolume,
 						  priv->cancel,
@@ -231,7 +245,9 @@ brasero_drive_cancel_current_operation (BraseroDrive *drive)
 	g_return_if_fail (drive != NULL);
 	g_return_if_fail (BRASERO_IS_DRIVE (drive));
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);	
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	BRASERO_MEDIA_LOG ("Cancelling GIO operation");
 	g_cancellable_cancel (priv->cancel);
 }
 
@@ -542,8 +558,7 @@ brasero_drive_get_medium (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-
-	if (!priv->probed && priv->gdrive)
+	if (!priv->probed)
 		return NULL;
 
 	return priv->medium;
@@ -567,6 +582,73 @@ brasero_drive_get_caps (BraseroDrive *drive)
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->caps;
+}
+
+/**
+ * brasero_drive_can_write_media:
+ * @drive: a #BraseroDrive
+ * @media: a #BraseroMedia
+ *
+ * Returns whether the disc can burn a specific media type.
+ *
+ * Return value: a #gboolean. TRUE if the drive can write this type of media and FALSE otherwise
+ **/
+gboolean
+brasero_drive_can_write_media (BraseroDrive *drive,
+                               BraseroMedia media)
+{
+	BraseroDrivePrivate *priv;
+
+	g_return_val_if_fail (drive != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	if (!(media & BRASERO_MEDIUM_REWRITABLE)
+	&&   (media & BRASERO_MEDIUM_CLOSED))
+		return FALSE;
+
+	if (media & BRASERO_MEDIUM_FILE)
+		return FALSE;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_CDR))
+		return (priv->caps & BRASERO_DRIVE_CAPS_CDR) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDR))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDR) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDR_PLUS))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDR_PLUS) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_CDRW))
+		return (priv->caps & BRASERO_DRIVE_CAPS_CDRW) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDR_PLUS_DL))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDR_PLUS_DL) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVD_RAM))
+		return (priv->caps & BRASERO_DRIVE_CAPS_DVDRAM) != 0;
+
+	/* All types of BD-R */
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_WRITABLE))
+		return (priv->caps & BRASERO_DRIVE_CAPS_BDR) != 0;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BDRE))
+		return (priv->caps & BRASERO_DRIVE_CAPS_BDRW) != 0;
+
+	return FALSE;
 }
 
 /**
@@ -735,6 +817,22 @@ brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 	brasero_drive_check_medium_inside_gdrive (drive);
 }
 
+static void
+brasero_drive_init_gdrive (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	/* If it's not a fake drive then connect to signal for any
+	 * change and check medium inside */
+	g_signal_connect (priv->gdrive,
+			  "changed",
+			  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
+			  drive);
+
+	brasero_drive_check_medium_inside_gdrive (drive);
+}
+
 static gboolean
 brasero_drive_probed (gpointer data)
 {
@@ -746,14 +844,7 @@ brasero_drive_probed (gpointer data)
 	g_thread_join (priv->probe);
 	priv->probe = NULL;
 
-	/* If it's not a fake drive then connect to signal for any
-	 * change and check medium inside */
-	g_signal_connect (priv->gdrive,
-			  "changed",
-			  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
-			  drive);
-
-	brasero_drive_check_medium_inside_gdrive (drive);
+	brasero_drive_init_gdrive (drive);
 
 	priv->probe_id = 0;
 	return FALSE;
@@ -785,7 +876,7 @@ brasero_drive_get_caps_profiles (BraseroDrive *self,
 		return FALSE;
 	}
 
-	BRASERO_MEDIA_LOG ("Dectected media %x", BRASERO_GET_16 (hdr->current_profile));
+	BRASERO_MEDIA_LOG ("Dectected medium is 0x%x", BRASERO_GET_16 (hdr->current_profile));
 
 	/* Go through all features available */
 	desc = hdr->desc;
@@ -982,10 +1073,19 @@ brasero_drive_set_property (GObject *object,
 	case PROP_GDRIVE:
 		gdrive = g_value_get_object (value);
 		if (!gdrive) {
-			priv->probed = TRUE;
 			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 						     "drive", object,
 						     NULL);
+			priv->probed = TRUE;
+		}
+		else if (priv->gdrive) {
+			g_signal_handlers_disconnect_by_func (priv->gdrive,
+							      brasero_drive_medium_gdrive_changed_cb,
+							      object);
+			g_object_unref (priv->gdrive);
+
+			priv->gdrive = g_object_ref (gdrive);
+			brasero_drive_init_gdrive (BRASERO_DRIVE (object));
 		}
 		else
 			brasero_drive_init_real (BRASERO_DRIVE (object), gdrive);
@@ -1028,6 +1128,8 @@ brasero_drive_finalize (GObject *object)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	BRASERO_MEDIA_LOG ("Finalizing BraseroDrive");
 
 	if (priv->probe) {
 		priv->probe_cancelled = TRUE;
@@ -1136,6 +1238,6 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	                                                      "GDrive",
 	                                                      "A GDrive object for the drive",
 	                                                      G_TYPE_DRIVE,
-	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                                                     G_PARAM_READWRITE));
 }
 
