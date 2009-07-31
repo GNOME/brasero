@@ -1968,11 +1968,12 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 	/* save then wipe out flags from session to check them one by one */
 	flags = brasero_burn_session_get_flags (priv->session);
-	brasero_burn_session_remove_flag (priv->session, flags);
+	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (priv->session), BRASERO_BURN_FLAG_NONE);
 
 	result = brasero_burn_session_get_burn_flags (priv->session,
 						      &supported,
 						      &compulsory);
+
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -2333,7 +2334,6 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	GError *ret_error = NULL;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
-	BraseroImageFormat format;
 	BraseroTrackType *output = NULL;
 
 	/* we can't create a proper list of tasks here since we don't know the
@@ -2343,33 +2343,27 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 
 	/* get the first possible format */
 	output = brasero_track_type_new ();
-	brasero_track_type_set_has_image (output);
+	result = brasero_burn_session_get_tmp_image_type_same_src_dest (priv->session, output);
 
-	format = BRASERO_IMAGE_FORMAT_CDRDAO;
-	for (; format != BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		brasero_track_type_set_image_format (output, format);
-		result = brasero_burn_session_output_supported (priv->session,
-								output);
-		if (result == BRASERO_BURN_OK)
-			break;
-	}
-	brasero_track_type_free (output);
-
-	if (format == BRASERO_IMAGE_FORMAT_NONE) {
+	if (result != BRASERO_BURN_OK) {
+		brasero_track_type_free (output);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("No format for the temporary image could be found"));
-		return BRASERO_BURN_ERR;
+		return result;
 	}
 
-	/* get a new output. Also ask for both */
+	/* Save the flags for later */
 	brasero_burn_session_push_settings (priv->session);
+
+	/* get a new output. Also ask for both */
 	result = brasero_burn_session_get_tmp_image (priv->session,
-						     format,
+						     brasero_track_type_get_image_format (output),
 						     &image,
 						     &toc,
 						     &ret_error);
+
 	while (result != BRASERO_BURN_OK) {
 		gboolean is_temp;
 
@@ -2377,7 +2371,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 		||  (ret_error->code != BRASERO_BURN_ERROR_DISK_SPACE
 		&&   ret_error->code != BRASERO_BURN_ERROR_PERMISSION)) {
 			g_propagate_error (error, ret_error);
-			return result;
+			goto end;
 		}
 
 		/* That's an imager (outputs an image to the disc) so that means
@@ -2401,12 +2395,12 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 		g_error_free (ret_error);
 		ret_error = NULL;
 
-		if (result != BRASERO_BURN_OK)
-			return result;
+		if (result != BRASERO_BURN_OK) 
+			goto end;
 
 		/* retry */
 		result = brasero_burn_session_get_tmp_image (priv->session,
-							     format,
+							     brasero_track_type_get_image_format (output),
 							     &image,
 							     &toc,
 							     &ret_error);
@@ -2417,11 +2411,11 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	g_remove (toc);
 
 	result = brasero_burn_session_set_image_output_full (priv->session,
-							     format,
+							     brasero_track_type_get_image_format (output),
 							     image,
 							     toc);
 	if (result != BRASERO_BURN_OK)
-		return result;
+		goto end;
 
 	/* lock drive */
 	result = brasero_burn_lock_src_media (self, error);
@@ -2441,7 +2435,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 		goto end;
 
 	track = brasero_track_image_new ();
-	brasero_track_image_set_source (track, image, toc, format);
+	brasero_track_image_set_source (track, image, toc, brasero_track_type_get_image_format (output));
 	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track), NULL);
 
 	/* It's good practice to unref the track afterwards as we don't need it
@@ -2452,8 +2446,10 @@ end:
 	g_free (image);
 	g_free (toc);
 
-	brasero_burn_session_pop_settings (priv->session);
+	if (output)
+		brasero_track_type_free (output);
 
+	brasero_burn_session_pop_settings (priv->session);
 	return result;
 }
 
