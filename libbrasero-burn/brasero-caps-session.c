@@ -787,7 +787,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 				continue;
 
 			result = brasero_caps_find_link (caps,
-							 TRUE,
+							 use_flags,
 							 session_flags,
 							 caps->type.subtype.media,
 							 &output,
