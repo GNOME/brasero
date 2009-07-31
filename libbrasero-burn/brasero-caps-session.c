@@ -718,6 +718,13 @@ brasero_burn_session_output_supported (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
+/* This function is not public API yet because it was too
+ * late; so use it internally for now. It's mainly for 
+ * convenience.*/
+gboolean
+brasero_drive_can_write_media (BraseroDrive *drive,
+                               BraseroMedia media);
+
 /**
  * This is only to be used in case one wants to copy using the same drive.
  * It determines the possible middle image type.
@@ -730,6 +737,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 						      gboolean use_flags)
 {
 	GSList *iter;
+	BraseroDrive *burner;
 	BraseroTrackType input;
 	BraseroTrackType output;
 	BraseroImageFormat format;
@@ -760,6 +768,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 	/* Find one available output format */
 	format = BRASERO_IMAGE_FORMAT_CDRDAO;
 	output.type = BRASERO_TRACK_TYPE_IMAGE;
+	burner = brasero_burn_session_get_burner (session);
 
 	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
 		gboolean supported;
@@ -785,6 +794,10 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 			caps = iter->data;
 
 			if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+				continue;
+
+			/* Make sure this is supported by the drive */
+			if (!brasero_drive_can_write_media (burner, caps->type.subtype.media))
 				continue;
 
 			result = brasero_caps_find_link (caps,
