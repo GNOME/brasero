@@ -233,6 +233,11 @@ brasero_volume_umount (BraseroVolume *volume,
 	if (!gvolume)
 		return TRUE;
 
+	if (g_cancellable_is_cancelled (priv->cancel)) {
+		BRASERO_MEDIA_LOG ("Resetting GCancellable object");
+		g_cancellable_reset (priv->cancel);
+	}
+
 	result = brasero_gio_operation_umount (gvolume,
 					       priv->cancel,
 					       wait,
@@ -278,6 +283,11 @@ brasero_volume_mount (BraseroVolume *volume,
 	if (!gvolume)
 		return TRUE;
 
+	if (g_cancellable_is_cancelled (priv->cancel)) {
+		BRASERO_MEDIA_LOG ("Resetting GCancellable object");
+		g_cancellable_reset (priv->cancel);
+	}
+
 	result = brasero_gio_operation_mount (gvolume,
 					      parent_window,
 					      priv->cancel,
@@ -303,7 +313,10 @@ brasero_volume_cancel_current_operation (BraseroVolume *volume)
 	g_return_if_fail (volume != NULL);
 	g_return_if_fail (BRASERO_IS_VOLUME (volume));
 
-	priv = BRASERO_VOLUME_PRIVATE (volume);	
+	priv = BRASERO_VOLUME_PRIVATE (volume);
+
+	BRASERO_MEDIA_LOG ("Cancelling volume operation");
+
 	g_cancellable_cancel (priv->cancel);
 }
 
@@ -440,6 +453,7 @@ brasero_volume_finalize (GObject *object)
 
 	priv = BRASERO_VOLUME_PRIVATE (object);
 
+	BRASERO_MEDIA_LOG ("Finalizing Volume object");
 	if (priv->cancel) {
 		g_cancellable_cancel (priv->cancel);
 		g_object_unref (priv->cancel);
