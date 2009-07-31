@@ -790,7 +790,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 							 TRUE,
 							 session_flags,
 							 caps->type.subtype.media,
-							 &input,
+							 &output,
 							 BRASERO_PLUGIN_IO_ACCEPT_FILE);
 
 			BRASERO_BURN_LOG_DISC_TYPE (caps->type.subtype.media,
