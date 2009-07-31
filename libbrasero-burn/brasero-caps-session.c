@@ -1318,7 +1318,7 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 	else if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	if (((*supported_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+	if (((*supported_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) != 0) {
 		BraseroBurnFlag blank_compulsory = BRASERO_BURN_FLAG_NONE;
 		BraseroBurnFlag blank_supported = BRASERO_BURN_FLAG_NONE;
 
@@ -1341,8 +1341,6 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 		 * CDRW where it's useful.
 		 * Ex: a CDRW with data appendable can be either appended (then
 		 * no DAO possible) or blanked and written (DAO possible). */
-
-		(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 
 		/* result here is the result of the first operation, so if it
 		 * failed, BLANK before becomes compulsory. */
@@ -1546,6 +1544,7 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 
 	/* special case */
 	if (brasero_burn_session_same_src_dest_drive (session)) {
+		BRASERO_BURN_LOG ("Same source and destination");
 		result = brasero_burn_caps_get_flags_same_src_dest (self,
 								    session,
 								    &supported_flags,
