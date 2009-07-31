@@ -661,6 +661,16 @@ brasero_burn_session_input_supported (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_output_supported:
+ * @session: a #BraseroBurnSession *
+ * @output: a #BraseroTrackType *
+ *
+ * Make sure that the image type or medium type defined in @output can be
+ * created/burnt given the parameters set in @session.
+ *
+ * Return value: BRASERO_BURN_OK if the medium type or the image type can be used as an output.
+ **/
 BraseroBurnResult
 brasero_burn_session_output_supported (BraseroBurnSession *session,
 				       BraseroTrackType *output)
