@@ -2407,8 +2407,11 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	}
 
 	/* some, like cdrdao, can't overwrite the files */
-	g_remove (image);
-	g_remove (toc);
+	if (image)
+		g_remove (image);
+
+	if (toc)
+		g_remove (toc);
 
 	result = brasero_burn_session_set_image_output_full (priv->session,
 							     brasero_track_type_get_image_format (output),
