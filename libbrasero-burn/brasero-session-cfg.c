@@ -115,7 +115,7 @@ brasero_session_cfg_wrong_extension_signal (BraseroSessionCfg *session)
 	
 	return_value.g_type = 0;
 	g_value_init (&return_value, G_TYPE_BOOLEAN);
-	g_value_set_int (&return_value, FALSE);
+	g_value_set_boolean (&return_value, FALSE);
 
 	g_signal_emitv (instance_and_params,
 			session_cfg_signals [WRONG_EXTENSION_SIGNAL],
@@ -213,8 +213,8 @@ brasero_session_cfg_get_output_path (BraseroBurnSession *session,
 	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
 
 	result = klass->get_output_path (session,
-					 toc,
-					 image);
+					 image,
+					 toc);
 	if (result == BRASERO_BURN_OK)
 		return result;
 
@@ -1208,6 +1208,8 @@ brasero_session_cfg_flags_changed (BraseroBurnSession *session)
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	if (priv->disabled)
+		return;
 
 	/* when we update the flags we don't want a
 	 * whole series of "flags-changed" emitted.
