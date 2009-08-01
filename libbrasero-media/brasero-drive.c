@@ -740,6 +740,12 @@ brasero_drive_reprobe (BraseroDrive *drive)
 	g_return_if_fail (BRASERO_IS_DRIVE (drive));
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	if (priv->gdrive) {
+		/* reprobe the contents of the drive system wide */
+		g_drive_poll_for_media (priv->gdrive, NULL, NULL, NULL);
+	}
+
 	if (!priv->medium)
 		return;
 

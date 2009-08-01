@@ -1113,17 +1113,8 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 	brasero_drive_unlock (priv->dest);
 
 	if (!BRASERO_BURN_SESSION_EJECT (priv->session)) {
-		if (priv->dest) {
-			GDrive *gdrive;
-
-			gdrive = brasero_drive_get_gdrive (priv->dest);
-
-			/* reprobe the contents of the drive system wide */
-			g_drive_poll_for_media (gdrive, NULL, NULL, NULL);
-			g_object_unref (gdrive);
-
+		if (priv->dest)
 			brasero_drive_reprobe (priv->dest);
-		}
 	}
 	else
 		brasero_drive_eject (priv->dest, FALSE, error);
