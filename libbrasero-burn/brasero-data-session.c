@@ -550,8 +550,19 @@ static void
 brasero_data_session_finalize (GObject *object)
 {
 	BraseroDataSessionPrivate *priv;
+	BraseroMediumMonitor *monitor;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (object);
+
+	monitor = brasero_medium_monitor_get_default ();
+	g_signal_handlers_disconnect_by_func (monitor,
+	                                      brasero_data_session_disc_added_cb,
+	                                      object);
+	g_signal_handlers_disconnect_by_func (monitor,
+	                                      brasero_data_session_disc_removed_cb,
+	                                      object);
+	g_object_unref (monitor);
+
 	if (priv->loaded) {
 		g_object_unref (priv->loaded);
 		priv->loaded = NULL;
