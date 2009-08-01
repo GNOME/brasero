@@ -536,7 +536,7 @@ static BraseroBurnResult
 brasero_burn_lock_src_media (BraseroBurn *burn,
 			     GError **error)
 {
-	gchar *failure;
+	gchar *failure = NULL;
 	BraseroMedia media;
 	BraseroMedium *medium;
 	BraseroBurnResult result;
@@ -2321,7 +2321,6 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 {
 	gchar *toc = NULL;
 	gchar *image = NULL;
-	BraseroTrackImage *track;
 	GError *ret_error = NULL;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
@@ -2428,13 +2427,8 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
-	track = brasero_track_image_new ();
-	brasero_track_image_set_source (track, image, toc, brasero_track_type_get_image_format (output));
-	brasero_burn_session_add_track (priv->session, BRASERO_TRACK (track), NULL);
-
-	/* It's good practice to unref the track afterwards as we don't need it
-	 * anymore. BraseroBurnSession refs it. */
-	g_object_unref (track);
+	/* There should be a track at the top of the session stack
+	 * so no need to create a new one */
 
 end:
 	g_free (image);
