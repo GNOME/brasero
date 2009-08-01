@@ -37,6 +37,7 @@
 #include "scsi-base.h"
 #include "scsi-command.h"
 #include "scsi-opcodes.h"
+#include "scsi-inquiry.h"
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
@@ -83,19 +84,40 @@ BRASERO_SCSI_COMMAND_DEFINE (BraseroInquiryCDB,
 			     BRASERO_SCSI_READ);
 
 BraseroScsiResult
+brasero_spc1_inquiry (BraseroDeviceHandle *handle,
+                      BraseroScsiInquiry *hdr,
+                      BraseroScsiErrCode *error)
+{
+	BraseroInquiryCDB *cdb;
+	BraseroScsiResult res;
+
+	cdb = brasero_scsi_command_new (&info, handle);
+	cdb->alloc_len = sizeof (BraseroScsiInquiry);
+
+	memset (hdr, 0, sizeof (BraseroScsiInquiry));
+	res = brasero_scsi_command_issue_sync (cdb,
+					       hdr,
+					       sizeof (BraseroScsiInquiry),
+					       error);
+	brasero_scsi_command_free (cdb);
+	return res;
+}
+
+BraseroScsiResult
 brasero_spc1_inquiry_is_optical_drive (BraseroDeviceHandle *handle,
                                        BraseroScsiErrCode *error)
 {
 	BraseroInquiryCDB *cdb;
-	uchar data [36] = {0, };
+	BraseroScsiInquiry hdr;
 	BraseroScsiResult res;
 
 	cdb = brasero_scsi_command_new (&info, handle);
-	cdb->alloc_len = sizeof (data);
+	cdb->alloc_len = sizeof (hdr);
 
+	memset (&hdr, 0, sizeof (hdr));
 	res = brasero_scsi_command_issue_sync (cdb,
-					       data,
-					       sizeof (data),
+					       &hdr,
+					       sizeof (hdr),
 					       error);
 	brasero_scsi_command_free (cdb);
 
@@ -103,7 +125,7 @@ brasero_spc1_inquiry_is_optical_drive (BraseroDeviceHandle *handle,
 		return res;
 
 	/* NOTE: 0x05 is for CD/DVD players */
-	return (data [0] & 0x1F) == 0x05? BRASERO_SCSI_OK:BRASERO_SCSI_RECOVERABLE;
+	return hdr.type == 0x05? BRASERO_SCSI_OK:BRASERO_SCSI_RECOVERABLE;
 }
 
  

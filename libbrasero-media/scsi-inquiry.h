@@ -37,48 +37,100 @@ G_BEGIN_DECLS
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
-struct _BraseroScsiMechStatusHdr {
-	uchar current_slot	:5;
-	uchar changer_state	:2;
-	uchar fault		:1;
+struct _BraseroScsiInquiry {
+	uchar type			:5;
+	uchar qualifier			:3;
 
-	uchar res1		:4;
-	uchar door_open		:1;
-	uchar mech_state	:3;
+	uchar reserved0		:7;
+	uchar rmb				:1;
 
-	uchar current_lba	[3];
+	uchar ansi_ver			:3;
+	uchar ecma_ver		:3;
+	uchar iso_ver			:2;
 
-	uchar number_slot	:6;
-	uchar res2		:2;
+	uchar response_format	:4;
+	uchar reserved1		:1;
+	uchar norm_aca			:1;
+	uchar trmtsk			:1;
+	uchar aerc			:1;
 
-	uchar len		[2];
+	uchar add_len;
+
+	uchar reserved2;
+
+	uchar addr16			:1;
+	uchar addr32			:1;
+	uchar ack_req			:1;
+	uchar mchngr			:1;
+	uchar multiP			:1;
+	uchar vs1				:1;
+	uchar enc_serv			:1;
+	uchar reserved3		:1;
+
+	uchar vs2				:1;
+	uchar cmd_queue		:1;
+	uchar transdis			:1;
+	uchar linked			:1;
+	uchar sync			:1;
+	uchar wbus16			:1;
+	uchar wbus32			:1;
+	uchar rel_addr			:1;
+
+	uchar vendor			[8];
+	uchar name			[8];
+	uchar revision			[8];
 };
 
 #else
 
-struct _BraseroScsiMechStatusHdr {
-	uchar fault		:1;
-	uchar changer_state	:2;
-	uchar current_slot	:5;
+struct _BraseroScsiInquiry {
+	uchar qualifier			:3;
+	uchar type			:5;
 
-	uchar mech_state	:3;
-	uchar door_open		:1;
-	uchar res1		:4;
+	uchar rmb				:1;
+	uchar reserved0		:7;
 
-	uchar current_lba	[3];
+	uchar iso_ver			:2;
+	uchar ecma_ver		:3;
+	uchar ansi_ver			:3;
 
-	uchar res2		:2;
-	uchar number_slot	:6;
+	uchar aerc			:1;
+	uchar trmtsk			:1;
+	uchar norm_aca			:1;
+	uchar reserved1		:1;
+	uchar response_format	:4;
 
-	uchar len		[2];
+	uchar add_len;
+
+	uchar reserved2;
+
+	uchar reserved3		:1;
+	uchar enc_serv			:1;
+	uchar vs1				:1;
+	uchar multiP			:1;
+	uchar mchngr			:1;
+	uchar ack_req			:1;
+	uchar addr32			:1;
+	uchar addr16			:1;
+
+	uchar rel_addr			:1;
+	uchar wbus32			:1;
+	uchar wbus16			:1;
+	uchar sync			:1;
+	uchar linked			:1;
+	uchar transdis			:1;
+	uchar cmd_queue		:1;
+	uchar vs2				:1;
+
+	uchar vendor			[8];
+	uchar name			[8];
+	uchar revision			[8];
 };
 
 #endif
 
-typedef struct _BraseroScsiMechStatusHdr BraseroScsiMechStatusHdr;
+typedef struct _BraseroScsiInquiry BraseroScsiInquiry;
 
 G_END_DECLS
 
-#endif /* _SCSI_MECH_STATUS_H */
-
- 
+#endif
