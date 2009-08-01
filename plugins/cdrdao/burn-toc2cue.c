@@ -83,6 +83,7 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	gchar *tmp_img_path;
 	GIOChannel *source;
 	guint tmp_path_len;
+	goffset blocks = 0;
 	GIOStatus status;
 	gchar *img_path;
 	gchar *toc_path;
@@ -211,6 +212,9 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	g_free (tmp_img_path);
 	g_free (img_path);
 	g_free (toc_path);
+
+	brasero_job_get_session_output_size (BRASERO_JOB (self), &blocks, NULL);
+	brasero_track_image_set_block_num (track, blocks);
 
 	brasero_job_add_track (BRASERO_JOB (process), BRASERO_TRACK (track));
 

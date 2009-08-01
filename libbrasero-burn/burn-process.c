@@ -256,6 +256,7 @@ brasero_process_finished (BraseroProcess *self)
 	if (brasero_track_type_get_has_image (type)) {
 		gchar *toc = NULL;
 		gchar *image = NULL;
+		goffset blocks = 0;
 
 		track = BRASERO_TRACK (brasero_track_image_new ());
 		brasero_job_get_image_output (BRASERO_JOB (self),
@@ -269,6 +270,9 @@ brasero_process_finished (BraseroProcess *self)
 
 		g_free (image);
 		g_free (toc);
+
+		brasero_job_get_session_output_size (BRASERO_JOB (self), &blocks, NULL);
+		brasero_track_image_set_block_num (BRASERO_TRACK_IMAGE (track), blocks);
 	}
 	else if (brasero_track_type_get_has_stream (type)) {
 		gchar *uri = NULL;

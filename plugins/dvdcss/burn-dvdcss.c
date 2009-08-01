@@ -145,6 +145,7 @@ error_loading:
 static gboolean
 brasero_dvdcss_thread_finished (gpointer data)
 {
+	goffset blocks = 0;
 	gchar *image = NULL;
 	BraseroDvdcss *self = data;
 	BraseroDvdcssPrivate *priv;
@@ -170,6 +171,9 @@ brasero_dvdcss_thread_finished (gpointer data)
 					image,
 					NULL,
 					BRASERO_IMAGE_FORMAT_BIN);
+
+	brasero_job_get_session_output_size (BRASERO_JOB (self), &blocks, NULL);
+	brasero_track_image_set_block_num (track, blocks);
 
 	brasero_job_add_track (BRASERO_JOB (self), BRASERO_TRACK (track));
 

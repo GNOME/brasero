@@ -99,6 +99,7 @@ brasero_libisofs_thread_finished (gpointer data)
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) != BRASERO_BURN_OK) {
 		BraseroTrackImage *track = NULL;
 		gchar *output = NULL;
+		goffset blocks = 0;
 
 		/* Let's make a track */
 		track = brasero_track_image_new ();
@@ -109,6 +110,9 @@ brasero_libisofs_thread_finished (gpointer data)
 						output,
 						NULL,
 						BRASERO_IMAGE_FORMAT_BIN);
+
+		brasero_job_get_session_output_size (BRASERO_JOB (self), &blocks, NULL);
+		brasero_track_image_set_block_num (track, blocks);
 
 		brasero_job_add_track (BRASERO_JOB (self), BRASERO_TRACK (track));
 
