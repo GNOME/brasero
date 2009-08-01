@@ -28,8 +28,8 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef _SCSI_MECH_STATUS_H
-#define _SCSI_MECH_STATUS_H
+#ifndef _SCSI_INQUIRY_H
+#define _SCSI_INQUIRY_H
 
 #include <glib.h>
 

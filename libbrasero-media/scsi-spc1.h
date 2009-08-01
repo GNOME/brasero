@@ -34,6 +34,7 @@
 
 #include "scsi-error.h"
 #include "scsi-mode-pages.h"
+#include "scsi-inquiry.h"
 
 #ifndef _BURN_SPC1_H
 #define _BURN_SPC1_H
@@ -56,6 +57,11 @@ brasero_spc1_mode_select (BraseroDeviceHandle *handle,
 			  BraseroScsiModeData *data,
 			  int size,
 			  BraseroScsiErrCode *error);
+
+BraseroScsiResult
+brasero_spc1_inquiry (BraseroDeviceHandle *handle,
+                      BraseroScsiInquiry *hdr,
+                      BraseroScsiErrCode *error);
 
 BraseroScsiResult
 brasero_spc1_inquiry_is_optical_drive (BraseroDeviceHandle *handle,
