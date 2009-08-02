@@ -70,6 +70,8 @@ struct _BraseroDrivePrivate
 
 	gchar *udi;
 
+	gchar *name;
+
 	gchar *path;
 	gchar *block_path;
 
@@ -90,6 +92,7 @@ static gulong drive_signals [LAST_SIGNAL] = {0, };
 
 enum {
 	PROP_NONE	= 0,
+	PROP_DEVICE,
 	PROP_GDRIVE,
 	PROP_UDI
 };
@@ -118,6 +121,9 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 		return NULL;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	if (!priv->gdrive)
+		return NULL;
 
 	return g_object_ref (priv->gdrive);
 }
@@ -289,7 +295,7 @@ brasero_drive_is_fake (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return (priv->gdrive == NULL);
+	return (priv->block_path == NULL);
 }
 
 /**
@@ -311,10 +317,10 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->gdrive)
+	if (!!priv->block_path)
 		return FALSE;
 
-	handle = brasero_device_handle_open (priv->path, FALSE, NULL);
+	handle = brasero_device_handle_open (priv->block_path, FALSE, NULL);
 	if (!handle)
 		return FALSE;
 
@@ -379,7 +385,7 @@ brasero_drive_lock (BraseroDrive *drive,
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->gdrive)
+	if (!priv->block_path)
 		return FALSE;
 
 	device = brasero_drive_get_device (drive);
@@ -418,7 +424,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->gdrive)
+	if (!!priv->path)
 		return FALSE;
 
 	device = brasero_drive_get_device (drive);
@@ -455,14 +461,17 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->gdrive) {
+	if (!priv->block_path) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
 		 * image on the hard drive. */
 		return g_strdup (_("Image File"));
 	}
 
-	return g_drive_get_name (priv->gdrive);
+	if (priv->gdrive)
+		return g_drive_get_name (priv->gdrive);
+
+	return g_strdup (priv->name);
 }
 
 /**
@@ -490,7 +499,7 @@ brasero_drive_get_device (BraseroDrive *drive)
  * @drive: a #BraseroDrive
  *
  * Gets a string holding the block device path for the drive. This can be used on
- * some other OS, like Solaris, for burning operations instead of the device
+ * some other OSes, like Solaris, for burning operations instead of the device
  * path.
  *
  * Return value: a string holding the block device path
@@ -514,8 +523,7 @@ brasero_drive_get_block_device (BraseroDrive *drive)
  * Gets a string holding the HAL udi corresponding to this device. It can be used
  * to uniquely identify the drive.
  *
- * Return value: a string holding the HAL udi. Not to be freed
- * Deprecated since 2.27.3
+ * Return value: a string holding the HAL udi or NULL. Not to be freed
  **/
 const gchar *
 brasero_drive_get_udi (BraseroDrive *drive)
@@ -528,7 +536,7 @@ brasero_drive_get_udi (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->gdrive)
+	if (!priv->block_path || !priv->gdrive)
 		return NULL;
 
 	if (priv->udi)
@@ -824,7 +832,7 @@ brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 }
 
 static void
-brasero_drive_init_gdrive (BraseroDrive *drive)
+brasero_drive_update_gdrive (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
@@ -842,17 +850,14 @@ brasero_drive_init_gdrive (BraseroDrive *drive)
 static gboolean
 brasero_drive_probed (gpointer data)
 {
-	BraseroDrive *drive = BRASERO_DRIVE (data);
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (data);
 
 	g_thread_join (priv->probe);
 	priv->probe = NULL;
-
-	brasero_drive_init_gdrive (drive);
-
 	priv->probe_id = 0;
+
 	return FALSE;
 }
 
@@ -1019,8 +1024,40 @@ brasero_drive_probe_thread (gpointer data)
 	}
 
 	if (handle) {
+		BraseroScsiInquiry hdr;
+		BraseroScsiResult res;
+
 		BRASERO_MEDIA_LOG ("Open () succeeded");
 
+		/* get additional information like the name */
+		res = brasero_spc1_inquiry (handle, &hdr, NULL);
+		if (res == BRASERO_SCSI_OK) {
+			gchar *name_utf8;
+			gchar *vendor;
+			gchar *model;
+			gchar *name;
+
+			vendor = strndup ((gchar *) hdr.vendor, sizeof (hdr.vendor));
+			model = strndup ((gchar *) hdr.name, sizeof (hdr.name));
+			name = g_strdup_printf ("%s %s", g_strstrip (vendor), g_strstrip (model));
+			g_free (vendor);
+			g_free (model);
+
+			/* make sure that's proper UTF-8 */
+			name_utf8 = g_convert_with_fallback (name,
+			                                     -1,
+			                                     "ASCII",
+			                                     "UTF-8",
+			                                     "_",
+			                                     NULL,
+			                                     NULL,
+			                                     NULL);
+			g_free (name);
+
+			priv->name = name_utf8;
+		}
+
+		/* Get supported medium types */
 		if (!brasero_drive_get_caps_profiles (drive, handle, &code))
 			brasero_drive_get_caps_2A (drive, handle, &code);
 
@@ -1036,17 +1073,16 @@ brasero_drive_probe_thread (gpointer data)
 }
 
 static void
-brasero_drive_init_real (BraseroDrive *drive,
-                         GDrive *gdrive)
+brasero_drive_init_real_device (BraseroDrive *drive,
+                                const gchar *device)
 {
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	priv->gdrive = g_object_ref (gdrive);
-	priv->block_path = g_drive_get_identifier (priv->gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	priv->block_path = g_strdup (device);
 
-	BRASERO_MEDIA_LOG ("Initializing drive %s", priv->block_path);
+	BRASERO_MEDIA_LOG ("Initializing drive %s from device", priv->block_path);
 
 	/* NOTE: why a thread? Because in case of a damaged medium, brasero can
 	 * block on some functions until timeout and if we do this in the main
@@ -1077,25 +1113,44 @@ brasero_drive_set_property (GObject *object,
 	case PROP_UDI:
 		break;
 	case PROP_GDRIVE:
+		if (!priv->block_path)
+			break;
+
 		gdrive = g_value_get_object (value);
-		if (!gdrive) {
+		if (priv->gdrive) {
+			g_signal_handlers_disconnect_by_func (priv->gdrive,
+							      brasero_drive_medium_gdrive_changed_cb,
+							      object);
+			g_object_unref (priv->gdrive);
+		}
+
+		BRASERO_MEDIA_LOG ("Setting GDrive %p", gdrive);
+
+		if (gdrive) {
+			priv->gdrive = g_object_ref (gdrive);
+			brasero_drive_update_gdrive (BRASERO_DRIVE (object));
+		}
+		else if (!priv->medium) {
+			priv->probed = FALSE;
+			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
+						     "drive", object,
+						     NULL);
+
+			g_signal_connect (priv->medium,
+					  "probed",
+					  G_CALLBACK (brasero_drive_medium_probed),
+					  object);
+		}
+		break;
+	case PROP_DEVICE:
+		if (!g_value_get_string (value)) {
 			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 						     "drive", object,
 						     NULL);
 			priv->probed = TRUE;
 		}
-		else if (priv->gdrive) {
-			g_signal_handlers_disconnect_by_func (priv->gdrive,
-							      brasero_drive_medium_gdrive_changed_cb,
-							      object);
-			g_object_unref (priv->gdrive);
-
-			priv->gdrive = g_object_ref (gdrive);
-			brasero_drive_init_gdrive (BRASERO_DRIVE (object));
-		}
 		else
-			brasero_drive_init_real (BRASERO_DRIVE (object), gdrive);
-
+			brasero_drive_init_real_device (BRASERO_DRIVE (object), g_value_get_string (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1121,6 +1176,9 @@ brasero_drive_get_property (GObject *object,
 		break;
 	case PROP_GDRIVE:
 		g_value_set_object (value, priv->gdrive);
+		break;
+	case PROP_DEVICE:
+		g_value_set_string (value, priv->block_path);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1155,6 +1213,11 @@ brasero_drive_finalize (GObject *object)
 			       priv->medium);
 		g_object_unref (priv->medium);
 		priv->medium = NULL;
+	}
+
+	if (priv->name) {
+		g_free (priv->name);
+		priv->name = NULL;
 	}
 
 	if (priv->block_path) {
@@ -1245,5 +1308,12 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	                                                      "A GDrive object for the drive",
 	                                                      G_TYPE_DRIVE,
 	                                                     G_PARAM_READWRITE));
+	g_object_class_install_property (object_class,
+	                                 PROP_DEVICE,
+	                                 g_param_spec_string ("device",
+	                                                      "Device",
+	                                                      "Device path for the drive",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 

@@ -315,22 +315,18 @@ brasero_medium_monitor_medium_removed_cb (BraseroDrive *drive,
 
 static gboolean
 brasero_medium_monitor_is_drive (BraseroMediumMonitor *monitor,
-                                 GDrive *gdrive)
+                                 const gchar *device)
 {
 	BraseroMediumMonitorPrivate *priv;
 	BraseroDeviceHandle *handle;
 	BraseroScsiErrCode code;
 	gboolean result;
-	gchar *device;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
-	device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 	BRASERO_MEDIA_LOG ("Testing drive %s", device);
 
 	handle = brasero_device_handle_open (device, FALSE, &code);
-	g_free (device);
-
 	if (!handle)
 		return FALSE;
 
@@ -343,33 +339,25 @@ brasero_medium_monitor_is_drive (BraseroMediumMonitor *monitor,
 }
 
 static void
-brasero_medium_monitor_connected_cb (GVolumeMonitor *monitor,
-                                     GDrive *gdrive,
-                                     BraseroMediumMonitor *self)
+brasero_medium_monitor_device_added (BraseroMediumMonitor *self,
+                                     const gchar *device,
+                                     GDrive *gdrive)
 {
 	BraseroMediumMonitorPrivate *priv;
 	BraseroDrive *drive = NULL;
-	gchar *device;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	BRASERO_MEDIA_LOG ("Device addition signal");
-
-	if (!brasero_medium_monitor_is_drive (self, gdrive))
-		return;
 
 	/* See if the drive is waiting removal.
 	 * This is necessary as GIO behaves strangely sometimes
 	 * since it sends the "disconnected" signal when a medium
 	 * is removed soon followed by a "connected" signal */
-	device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 	drive = brasero_medium_monitor_get_drive (self, device);
-	g_free (device);
-
-	if (drive && g_slist_find (priv->waiting_removal, drive)) {
+	if (drive) {
+		/* Just in case that drive was waiting removal */
 		priv->waiting_removal = g_slist_remove (priv->waiting_removal, drive);
 
-		BRASERO_MEDIA_LOG ("Added signal was emitted but the drive is already in the list. Updating GDrive associated object.");
+		BRASERO_MEDIA_LOG ("Added signal was emitted but the drive is in the removal list. Updating GDrive associated object.");
 		g_object_set (drive,
 		              "gdrive", gdrive,
 		              NULL);
@@ -378,15 +366,14 @@ brasero_medium_monitor_connected_cb (GVolumeMonitor *monitor,
 		return;
 	}
 
-	if (drive) {
-		BRASERO_MEDIA_LOG ("A drive was connected which has the same device path as an already registered one");
-		g_object_unref (drive);
+	/* Make sure it's an optical drive */
+	if (!brasero_medium_monitor_is_drive (self, device))
 		return;
-	}
 
 	BRASERO_MEDIA_LOG ("New drive added");
 
 	drive = g_object_new (BRASERO_TYPE_DRIVE,
+	                      "device", device,
 	                      "gdrive", gdrive,
 	                      NULL);
 	priv->drives = g_slist_prepend (priv->drives, drive);
@@ -413,6 +400,45 @@ brasero_medium_monitor_connected_cb (GVolumeMonitor *monitor,
 			       medium_monitor_signals [MEDIUM_INSERTED],
 			       0,
 			       brasero_drive_get_medium (drive));
+}
+
+static void
+brasero_medium_monitor_connected_cb (GVolumeMonitor *monitor,
+                                     GDrive *gdrive,
+                                     BraseroMediumMonitor *self)
+{
+	gchar *device;
+
+	BRASERO_MEDIA_LOG ("GDrive addition signal");
+
+	device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	brasero_medium_monitor_device_added (self, device, gdrive);
+	g_free (device);
+}
+
+static void
+brasero_medium_monitor_volume_added_cb (GVolumeMonitor *monitor,
+                                        GVolume *gvolume,
+                                        BraseroMediumMonitor *self)
+{
+	gchar *device;
+	GDrive *gdrive;
+
+	BRASERO_MEDIA_LOG ("GVolume addition signal");
+
+	/* No need to signal that addition if the GVolume
+	 * object has an associated GDrive as this is just
+	 * meant to trap blank discs which have no GDrive
+	 * associated but a GVolume. */
+	gdrive = g_volume_get_drive (gvolume);
+	if (gdrive) {
+		g_object_unref (gdrive);
+		return;
+	}
+
+	device = g_volume_get_identifier (gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	brasero_medium_monitor_device_added (self, device, NULL);
+	g_free (device);
 }
 
 static gboolean
@@ -462,16 +488,15 @@ brasero_medium_monitor_disconnected_real (gpointer data)
 }
 
 static void
-brasero_medium_monitor_disconnected_cb (GVolumeMonitor *monitor,
-                                        GDrive *gdrive,
-                                        BraseroMediumMonitor *self)
+brasero_medium_monitor_device_removed (BraseroMediumMonitor *self,
+                                       const gchar *device,
+                                       GDrive *gdrive)
 {
 	BraseroMediumMonitorPrivate *priv;
-	GSList *iter;
+	GDrive *associated_gdrive;
+	BraseroDrive *drive;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	BRASERO_MEDIA_LOG ("Device removal signal");
 
 	/* Make sure it's one already detected */
 	/* GIO behaves strangely: every time a medium 
@@ -479,32 +504,71 @@ brasero_medium_monitor_disconnected_cb (GVolumeMonitor *monitor,
 	 * signal (which IMO it shouldn't) soon followed by
 	 * a connected signal.
 	 * So delay the removal by one or two seconds. */
-	for (iter = priv->drives; iter; iter = iter->next) {
-		GDrive *gdrive_iter;
-		BraseroDrive *drive;
 
-		drive = iter->data;
+	drive = brasero_medium_monitor_get_drive (self, device);
+	if (!drive)
+		return;
 
-		gdrive_iter = brasero_drive_get_gdrive (drive);
-		if (!gdrive_iter)
-			continue;
-
-		if (gdrive == gdrive_iter) {
-			BRASERO_MEDIA_LOG ("Found device to remove");
-
-			g_object_unref (gdrive_iter);
-
-			priv->waiting_removal = g_slist_append (priv->waiting_removal, drive);
-
-			if (!priv->waiting_removal_id)
-				priv->waiting_removal_id = g_timeout_add_seconds (2,
-				                                                  brasero_medium_monitor_disconnected_real, 
-				                                                  self);
-			return;
-		}
-
-		g_object_unref (gdrive_iter);
+	if (G_UNLIKELY (g_slist_find (priv->waiting_removal, drive) != NULL)) {
+		g_object_unref (drive);
+		return;
 	}
+
+	associated_gdrive = brasero_drive_get_gdrive (drive);
+	if (associated_gdrive == gdrive) {
+		BRASERO_MEDIA_LOG ("Found device to remove");
+		priv->waiting_removal = g_slist_append (priv->waiting_removal, drive);
+
+		if (!priv->waiting_removal_id)
+			priv->waiting_removal_id = g_timeout_add_seconds (2,
+			                                                  brasero_medium_monitor_disconnected_real, 
+			                                                  self);
+	}
+	else if (associated_gdrive) {
+		/* do nothing and wait for a "drive-disconnected" signal */
+		g_object_unref (associated_gdrive);
+	}
+
+	g_object_unref (drive);
+}
+
+static void
+brasero_medium_monitor_volume_removed_cb (GVolumeMonitor *monitor,
+                                          GVolume *gvolume,
+                                          BraseroMediumMonitor *self)
+{
+	gchar *device;
+	GDrive *gdrive;
+
+	BRASERO_MEDIA_LOG ("Volume removal signal");
+
+	/* No need to signal that removal if the GVolume
+	 * object has an associated GDrive as this is just
+	 * meant to trap blank discs which have no GDrive
+	 * associated but a GVolume. */
+	gdrive = g_volume_get_drive (gvolume);
+	if (gdrive) {
+		g_object_unref (gdrive);
+		return;
+	}
+
+	device = g_volume_get_identifier (gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	brasero_medium_monitor_device_removed (self, device, NULL);
+	g_free (device);
+}
+
+static void
+brasero_medium_monitor_disconnected_cb (GVolumeMonitor *monitor,
+                                        GDrive *gdrive,
+                                        BraseroMediumMonitor *self)
+{
+	gchar *device;
+
+	BRASERO_MEDIA_LOG ("Drive removal signal");
+
+	device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	brasero_medium_monitor_device_removed (self, device, gdrive);
+	g_free (device);
 }
 
 static void
@@ -512,6 +576,7 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 {
 	GList *iter;
 	GList *drives;
+	GList *volumes;
 	BraseroDrive *drive;
 	BraseroMediumMonitorPrivate *priv;
 
@@ -519,9 +584,6 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 
 	BRASERO_MEDIA_LOG ("Probing drives and media");
 
-	/* This must done early on. GVolumeMonitor when it relies on HAL (like
-	 * us) must be able to update its list of volumes before us so it must
-	 * connect to HAL before us. */
 	priv->gmonitor = g_volume_monitor_get ();
 
 	drives = g_volume_monitor_get_connected_drives (priv->gmonitor);
@@ -529,11 +591,55 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 
 	for (iter = drives; iter; iter = iter->next) {
 		GDrive *gdrive;
+		gchar *device;
 
 		gdrive = iter->data;
-		if (brasero_medium_monitor_is_drive (object, gdrive)) {
+
+		device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (brasero_medium_monitor_is_drive (object, device)) {
 			drive = g_object_new (BRASERO_TYPE_DRIVE,
+			                      "device", device,
 					      "gdrive", gdrive,
+					      NULL);
+
+			priv->drives = g_slist_prepend (priv->drives, drive);
+
+			g_signal_connect (drive,
+					  "medium-added",
+					  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
+					  object);
+			g_signal_connect (drive,
+					  "medium-removed",
+					  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
+					  object);
+		}
+		g_free (device);
+	}
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+	g_list_free (drives);
+
+	volumes = g_volume_monitor_get_volumes (priv->gmonitor);
+	BRASERO_MEDIA_LOG ("Found %d volumes", g_list_length (volumes));
+
+	for (iter = volumes; iter; iter = iter->next) {
+		GVolume *gvolume;
+		gchar *device;
+
+		gvolume = iter->data;
+		device = g_volume_get_identifier (gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+
+		/* make sure it isn't already in our list */
+		drive = brasero_medium_monitor_get_drive (object, device);
+		if (drive) {
+			g_free (device);
+			g_object_unref (drive);
+			continue;
+		}
+
+		if (brasero_medium_monitor_is_drive (object, device)) {
+			drive = g_object_new (BRASERO_TYPE_DRIVE,
+			                      "device", device,
+			                      "gdrive", NULL,
 					      NULL);
 			priv->drives = g_slist_prepend (priv->drives, drive);
 
@@ -546,10 +652,20 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 					  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
 					  object);
 		}
-	}
-	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
-	g_list_free (drives);
 
+		g_free (device);
+	}
+	g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+	g_list_free (volumes);
+
+	g_signal_connect (priv->gmonitor,
+			  "volume-added",
+			  G_CALLBACK (brasero_medium_monitor_volume_added_cb),
+			  object);
+	g_signal_connect (priv->gmonitor,
+			  "volume-removed",
+			  G_CALLBACK (brasero_medium_monitor_volume_removed_cb),
+			  object);
 	g_signal_connect (priv->gmonitor,
 			  "drive-connected",
 			  G_CALLBACK (brasero_medium_monitor_connected_cb),
@@ -560,7 +676,9 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 			  object);
 
 	/* add fake/file drive */
-	drive = g_object_new (BRASERO_TYPE_DRIVE, "gdrive", NULL, NULL);
+	drive = g_object_new (BRASERO_TYPE_DRIVE,
+	                      "device", NULL,
+	                      NULL);
 	priv->drives = g_slist_prepend (priv->drives, drive);
 
 	return;
@@ -590,6 +708,12 @@ brasero_medium_monitor_finalize (GObject *object)
 	}
 
 	if (priv->gmonitor) {
+		g_signal_handlers_disconnect_by_func (priv->gmonitor,
+		                                      brasero_medium_monitor_volume_added_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->gmonitor,
+		                                      brasero_medium_monitor_volume_removed_cb,
+		                                      object);
 		g_signal_handlers_disconnect_by_func (priv->gmonitor,
 		                                      brasero_medium_monitor_connected_cb,
 		                                      object);
