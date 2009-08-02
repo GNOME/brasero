@@ -175,11 +175,17 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 
 	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_STREAM_ROW_GAP) {
 		switch (column) {
+		case BRASERO_VIDEO_TREE_MODEL_WEIGHT:
+			g_value_init (value, PANGO_TYPE_STYLE);
+			g_value_set_enum (value, PANGO_WEIGHT_BOLD);
+			return;
+		case BRASERO_VIDEO_TREE_MODEL_STYLE:
+			g_value_init (value, PANGO_TYPE_STYLE);
+			g_value_set_enum (value, PANGO_STYLE_ITALIC);
+			return;
 		case BRASERO_VIDEO_TREE_MODEL_NAME:
-			text = g_strdup_printf ("<i><b>%s</b></i>", _("Pause"));
 			g_value_init (value, G_TYPE_STRING);
-			g_value_set_string (value, text);
-			g_free (text);
+			g_value_set_string (value, _("Pause"));
 			break;
 		case BRASERO_VIDEO_TREE_MODEL_ICON_NAME:
 			g_value_init (value, G_TYPE_STRING);
@@ -219,12 +225,21 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	}
 
 	switch (column) {
+	case BRASERO_VIDEO_TREE_MODEL_WEIGHT:
+		g_value_init (value, PANGO_TYPE_STYLE);
+		g_value_set_enum (value, PANGO_WEIGHT_NORMAL);
+		return;
+	case BRASERO_VIDEO_TREE_MODEL_STYLE:
+		g_value_init (value, PANGO_TYPE_STYLE);
+		g_value_set_enum (value, PANGO_STYLE_NORMAL);
+		return;
 	case BRASERO_VIDEO_TREE_MODEL_NAME:
 		g_value_init (value, G_TYPE_STRING);
 
 		string = brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_TITLE_TAG);
-		if (string)
+		if (string) {
 			g_value_set_string (value, string);
+		}
 		else {
 			gchar *uri;
 			gchar *name;
@@ -251,7 +266,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		g_value_init (value, G_TYPE_STRING);
 
 		string = brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG);
-		if (string)
+		if (string) 
 			g_value_set_string (value, string);
 
 		return;
@@ -633,6 +648,12 @@ brasero_video_tree_model_get_column_type (GtkTreeModel *model,
 
 	case BRASERO_VIDEO_TREE_MODEL_IS_GAP:
 		return G_TYPE_STRING;
+
+	case BRASERO_VIDEO_TREE_MODEL_WEIGHT:
+		return PANGO_TYPE_WEIGHT;
+
+	case BRASERO_VIDEO_TREE_MODEL_STYLE:
+		return PANGO_TYPE_STYLE;
 
 	default:
 		break;

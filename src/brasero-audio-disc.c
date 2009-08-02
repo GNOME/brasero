@@ -431,7 +431,11 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 
 	gtk_tree_view_column_pack_end (column, renderer, TRUE);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "markup", BRASERO_VIDEO_TREE_MODEL_NAME);
+					    "text", BRASERO_VIDEO_TREE_MODEL_NAME);
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "style", BRASERO_VIDEO_TREE_MODEL_STYLE);
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "weight", BRASERO_VIDEO_TREE_MODEL_WEIGHT);
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "editable", BRASERO_VIDEO_TREE_MODEL_EDITABLE);
 	gtk_tree_view_column_set_title (column, _("Title"));
@@ -487,10 +491,6 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	gtk_container_add (GTK_CONTAINER (scroll), obj->priv->tree);
 
 	gtk_box_pack_start (GTK_BOX (obj), scroll, TRUE, TRUE, 0);
-	/*gtk_notebook_append_page (GTK_NOTEBOOK (obj->priv->notebook),
-				  scroll,
-				  NULL);
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (obj->priv->notebook), 0);*/
 
 	/* dnd */
 	gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW (obj->priv->tree),
