@@ -107,9 +107,12 @@ brasero_medium_selection_foreach (BraseroMediumSelection *selection,
 		if (!medium)
 			return;
 
-		if (!function (medium, callback_data))
+		if (!function (medium, callback_data)) {
+			g_object_unref (medium);
 			break;
+		}
 
+		g_object_unref (medium);
 	} while (gtk_tree_model_iter_next (model, &iter));
 }
 
@@ -201,7 +204,10 @@ brasero_medium_selection_update_used_space (BraseroMediumSelection *selector,
 		gtk_tree_model_get (model, &iter,
 				    MEDIUM_COL, &medium,
 				    -1);
+
 		if (medium == medium_arg) {
+			g_object_unref (medium);
+
 			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 					    USED_COL, used_space,
 					    VISIBLE_PROGRESS_COL, (gboolean) (used_space > 0),
@@ -210,6 +216,7 @@ brasero_medium_selection_update_used_space (BraseroMediumSelection *selector,
 			break;
 		}
 
+		g_object_unref (medium);
 	} while (gtk_tree_model_iter_next (model, &iter));
 }
 
@@ -300,17 +307,19 @@ brasero_medium_selection_set_current_medium (BraseroMediumSelection *self,
 	else
 		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
 
-	if (priv->active == medium)
+	if (priv->active == medium) {
+		if (medium)
+			g_object_unref (medium);
+
 		return;
+	}
 
 	if (priv->active)
 		g_object_unref (priv->active);
 
+	/* NOTE: no need to ref priv->active as medium was 
+	 * already reffed in gtk_tree_model_get () */
 	priv->active = medium;
-
-	if (priv->active)
-		g_object_ref (priv->active);
-
 	g_signal_emit (self,
 		       brasero_medium_selection_signals [CHANGED_SIGNAL],
 		       0,
@@ -664,6 +673,8 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 
 	if (!add) {
+		BraseroMedium *tmp;
+
 		/* Try to get the first iter (it shouldn't fail) */
 		if (!gtk_tree_model_get_iter_first (model, &iter)) {
 			brasero_medium_selection_add_no_disc_entry (self);
@@ -671,12 +682,14 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 		}
 
 		/* See if that's a real medium or not; if so, return. */
-		medium = NULL;
+		tmp = NULL;
 		gtk_tree_model_get (model, &iter,
-				    MEDIUM_COL, &medium,
+				    MEDIUM_COL, &tmp,
 				    -1);
-		if (medium)
+		if (tmp) {
+			g_object_unref (tmp);
 			return;
+		}
 
 		brasero_medium_selection_update_no_disc_entry (self, model, &iter);
 		return;
