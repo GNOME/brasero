@@ -2,36 +2,23 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
                "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
 [
-  <!ENTITY version SYSTEM "version.xml">
   <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
 ]>
-
-<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
+<book id="index">
   <bookinfo>
-    <title>Brasero Libraries Reference Manual</title>
+    <title>Libbrasero-burn Reference Manual</title>
     <releaseinfo>
-      for Libbrasero &version;
+      for Libbrasero-burn [VERSION]
     </releaseinfo>
   </bookinfo>
 
-  <chapter>
-    <title>API Reference for Libbrasero-media</title>
-    <xi:include href="xml/brasero-media.xml"/>
-    <xi:include href="xml/brasero-units.xml"/>
-    <xi:include href="xml/brasero-medium-monitor.xml"/>
-    <xi:include href="xml/brasero-drive.xml"/>
-    <xi:include href="xml/brasero-medium.xml"/>
-    <xi:include href="xml/brasero-volume.xml"/>
-    <xi:include href="xml/brasero-medium-selection.xml"/>
-    <xi:include href="xml/brasero-drive-selection.xml"/>
-  </chapter>
-.
   <chapter>
     <title>API Reference for Libbrasero-burn</title>
     <xi:include href="xml/brasero-burn-lib.xml"/>
     <xi:include href="xml/brasero-error.xml"/>
     <xi:include href="xml/brasero-tags.xml"/>
     <xi:include href="xml/brasero-status.xml"/>
+    <xi:include href="xml/brasero-enums.xml"/>
     <xi:include href="xml/brasero-track-type.xml"/>
     <xi:include href="xml/brasero-track.xml"/>
     <xi:include href="xml/brasero-track-disc.xml"/>
@@ -51,8 +38,8 @@
     <xi:include href="xml/brasero-sum-dialog.xml"/>
     <xi:include href="xml/brasero-blank-dialog.xml"/>
 
+
   </chapter>
- 
   <chapter id="object-tree">
     <title>Object Hierarchy</title>
      <xi:include href="xml/tree_index.sgml"/>

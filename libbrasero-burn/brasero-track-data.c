@@ -54,6 +54,13 @@ struct _BraseroTrackDataPrivate
 
 G_DEFINE_TYPE (BraseroTrackData, brasero_track_data, BRASERO_TYPE_TRACK);
 
+/**
+ * brasero_graft_point_free:
+ * @graft: a #BraseroGraftPt
+ *
+ * Frees @graft. Do not use @grafts afterwards.
+ *
+ **/
 
 void
 brasero_graft_point_free (BraseroGraftPt *graft)
@@ -64,6 +71,15 @@ brasero_graft_point_free (BraseroGraftPt *graft)
 	g_free (graft->path);
 	g_free (graft);
 }
+
+/**
+ * brasero_graft_point_copy:
+ * @graft: a #BraseroGraftPt
+ *
+ * Copies @graft.
+ *
+ * Return value: a #BraseroGraftPt.
+ **/
 
 BraseroGraftPt *
 brasero_graft_point_copy (BraseroGraftPt *graft)
@@ -80,7 +96,7 @@ brasero_graft_point_copy (BraseroGraftPt *graft)
 	return newgraft;
 }
 
-BraseroBurnResult
+static BraseroBurnResult
 brasero_track_data_set_source_real (BraseroTrackData *track,
 				    GSList *grafts,
 				    GSList *unreadable)
@@ -108,6 +124,23 @@ brasero_track_data_set_source_real (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_data_set_source:
+ * @track: a #BraseroTrackData
+ * @grafts: a #GSList of #BraseroGraftPt
+ * @unreadable: a #GSList of URIS as strings
+ *
+ * Sets the lists of grafts points (@grafts) and excluded
+ * URIs (@unreadable) to be used to create an image.
+ *
+ * Be careful @track takes ownership of @grafts and
+ * @unreadable which must not be freed afterwards.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_data_set_source (BraseroTrackData *track,
 			       GSList *grafts,
@@ -131,6 +164,19 @@ brasero_track_data_add_fs_real (BraseroTrackData *track,
 	priv->fs_type |= fstype;
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_track_data_add_fs:
+ * @track: a #BraseroTrackData
+ * @fstype: a #BraseroImageFS
+ *
+ * Adds one or more parameters determining the file system type
+ * and various other options to create an image.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_track_data_add_fs (BraseroTrackData *track,
@@ -168,6 +214,19 @@ brasero_track_data_rm_fs_real (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_data_rm_fs:
+ * @track: a #BraseroTrackData
+ * @fstype: a #BraseroImageFS
+ *
+ * Removes one or more parameters determining the file system type
+ * and various other options to create an image.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_data_rm_fs (BraseroTrackData *track,
 			  BraseroImageFS fstype)
@@ -193,6 +252,18 @@ brasero_track_data_rm_fs (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_data_set_data_blocks:
+ * @track: a #BraseroTrackData
+ * @blocks: a #goffset
+ *
+ * Sets the size of the image to be created (in sectors of 2048 bytes).
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_data_set_data_blocks (BraseroTrackData *track,
 				    goffset blocks)
@@ -206,6 +277,18 @@ brasero_track_data_set_data_blocks (BraseroTrackData *track,
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_track_data_set_file_num:
+ * @track: a #BraseroTrackData
+ * @number: a #guint64
+ *
+ * Sets the number of files (not directories) in @track.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_track_data_set_file_num (BraseroTrackData *track,
@@ -221,6 +304,16 @@ brasero_track_data_set_file_num (BraseroTrackData *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_data_get_fs:
+ * @track: a #BraseroTrackData
+ *
+ * Returns the parameters determining the file system type
+ * and various other options to create an image.
+ *
+ * Return value: a #BraseroImageFS.
+ **/
+
 BraseroImageFS
 brasero_track_data_get_fs (BraseroTrackData *track)
 {
@@ -232,7 +325,7 @@ brasero_track_data_get_fs (BraseroTrackData *track)
 	return klass->get_fs (track);
 }
 
-BraseroImageFS
+static BraseroImageFS
 brasero_track_data_get_fs_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
@@ -240,6 +333,17 @@ brasero_track_data_get_fs_real (BraseroTrackData *track)
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
 	return priv->fs_type;
 }
+
+/**
+ * brasero_track_data_get_fs:
+ * @track: a #BraseroTrackData
+ *
+ * Returns a list of #BraseroGraftPt.
+ *
+ * Do not free after usage as @track retains ownership.
+ *
+ * Return value: a #GSList of #BraseroGraftPt or NULL if empty.
+ **/
 
 GSList *
 brasero_track_data_get_grafts (BraseroTrackData *track)
@@ -260,6 +364,21 @@ brasero_track_data_get_grafts_real (BraseroTrackData *track)
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
 	return priv->grafts;
 }
+
+/**
+ * brasero_track_data_get_excluded:
+ * @track: a #BraseroTrackData
+ * @copy: a #gboolean
+ *
+ * Returns a list of URIs which must not be included in
+ * the image to be created.
+ * If @copy is TRUE then the @list is a copy and must
+ * be freed once it is not needed anymore. If FALSE,
+ * do not free after usage as @track retains ownership.
+ *
+ * Return value: a #GSList of #gchar * or NULL if no
+ * URI should be excluded.
+ **/
 
 GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
@@ -296,6 +415,30 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
 	return priv->excluded;
 }
 
+/**
+ * brasero_track_data_get_paths:
+ * @track: a #BraseroTrackData
+ * @use_joliet: a #gboolean
+ * @grafts_path: a #gchar
+ * @excluded_path: a #gchar
+ * @emptydir: a #gchar
+ * @videodir: a #gchar
+ * @error: a #GError
+ *
+ * Write in @grafts_path (a path to a file) the graft points,
+ * in @excluded_path (a path to a file) the list of paths to
+ * be excluded, @emptydir (a path to a file) an empty
+ * directory to be used for created directories, @videodir
+ * (a path to a file) for a directory to be used to build the
+ * the video image.
+ *
+ * This is mostly for internal use by mkisofs and similar.
+ *
+ * This function takes care of mangling.
+ *
+ * Return value: a #BraseroBurnResult.
+ **/
+
 BraseroBurnResult
 brasero_track_data_get_paths (BraseroTrackData *track,
 			      gboolean use_joliet,
@@ -326,6 +469,17 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 						      error);
 	return result;
 }
+
+/**
+ * brasero_track_data_get_file_num:
+ * @track: a #BraseroTrackData
+ * @file_num: a #guint64
+ *
+ * Sets the number of files (not directories) in @file_num.
+ *
+ * Return value: a #BraseroBurnResult. TRUE if @file_num
+ * was set, FALSE otherwise.
+ **/
 
 BraseroBurnResult
 brasero_track_data_get_file_num (BraseroTrackData *track,
@@ -455,6 +609,14 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
 	track_data_class->get_excluded = brasero_track_data_get_excluded_real;
 	track_data_class->get_file_num = brasero_track_data_get_file_num_real;
 }
+
+/**
+ * brasero_track_data_new:
+ *
+ * Creates a new #BraseroTrackData.
+ *
+ * Return value: a #BraseroTrackData
+ **/
 
 BraseroTrackData *
 brasero_track_data_new (void)

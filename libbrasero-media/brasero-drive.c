@@ -266,7 +266,6 @@ brasero_drive_cancel_current_operation (BraseroDrive *drive)
  *
  * Return value: a string or NULL. The string must be freed when not needed
  *
- * Deprecated since 2.27.3
  **/
 gchar *
 brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
@@ -1297,7 +1296,7 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	g_object_class_install_property (object_class,
 	                                 PROP_UDI,
 	                                 g_param_spec_string("udi",
-	                                                     "Deprecated",
+	                                                     "udi",
 	                                                     "HAL udi as a string (Deprecated)",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));

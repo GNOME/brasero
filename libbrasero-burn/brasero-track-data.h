@@ -129,7 +129,7 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 
 BraseroBurnResult
 brasero_track_data_get_file_num (BraseroTrackData *track,
-				 guint64 *num_files);
+				 guint64 *file_num);
 
 BraseroImageFS
 brasero_track_data_get_fs (BraseroTrackData *track);

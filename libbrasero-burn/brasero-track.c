@@ -62,6 +62,16 @@ static guint track_signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroTrack, brasero_track, G_TYPE_OBJECT);
 
+/**
+ * brasero_track_get_track_type:
+ * @track: a #BraseroTrack
+ * @type: a #BraseroTrackType or NULL
+ *
+ * Sets @type to reflect the type of data contained in @track
+ *
+ * Return value: the#BraseroTrackDataType of the track
+ **/
+
 BraseroTrackDataType
 brasero_track_get_track_type (BraseroTrack *track,
 			      BraseroTrackType *type)
@@ -76,6 +86,20 @@ brasero_track_get_track_type (BraseroTrack *track,
 
 	return klass->get_type (track, type);
 }
+
+/**
+ * brasero_track_get_size:
+ * @track: a #BraseroTrack
+ * @blocks: a #goffset or NULL
+ * @bytes: a #goffset or NULL
+ *
+ * Returns the size of the data contained by @track in bytes or in sectors
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful
+ * BRASERO_BURN_NOT_READY if @track needs more time for processing the size
+ * BRASERO_BURN_ERR if something is wrong or if it is empty
+ **/
 
 BraseroBurnResult
 brasero_track_get_size (BraseroTrack *track,
@@ -106,6 +130,19 @@ brasero_track_get_size (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_get_status:
+ * @track: a #BraseroTrack
+ * @status: a #BraseroTrackStatus
+ *
+ * Sets @status to reflect whether @track is ready to be used
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful
+ * BRASERO_BURN_NOT_READY if @track needs more time for processing
+ * BRASERO_BURN_ERR if something is wrong or if it is empty
+ **/
+
 BraseroBurnResult
 brasero_track_get_status (BraseroTrack *track,
 			  BraseroStatus *status)
@@ -131,8 +168,17 @@ brasero_track_get_status (BraseroTrack *track,
 }
 
 /**
+ * brasero_track_set_checksum:
+ * @track: a #BraseroTrack
+ * @type: a #BraseroChecksumType
+ * @checksum: a #gchar * holding the checksum
  *
- */
+ * Sets a checksum for the track
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the checksum was previously empty or matches the new one
+ * BRASERO_BURN_ERR otherwise
+ **/
 
 BraseroBurnResult
 brasero_track_set_checksum (BraseroTrack *track,
@@ -162,6 +208,15 @@ brasero_track_set_checksum (BraseroTrack *track,
 	return result;
 }
 
+/**
+ * brasero_track_get_checksum:
+ * @track: a #BraseroTrack
+ *
+ * Get the current checksum (as a string) for the track
+ *
+ * Return value: a #gchar * (not to be freed) or NULL
+ **/
+
 const gchar *
 brasero_track_get_checksum (BraseroTrack *track)
 {
@@ -170,8 +225,17 @@ brasero_track_get_checksum (BraseroTrack *track)
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), NULL);
 	priv = BRASERO_TRACK_PRIVATE (track);
 
-	return priv->checksum ? priv->checksum : "";
+	return priv->checksum ? priv->checksum : NULL;
 }
+
+/**
+ * brasero_track_get_checksum_type:
+ * @track: a #BraseroTrack
+ *
+ * Get the current checksum type for the track if any.
+ *
+ * Return value: a #BraseroChecksumType
+ **/
 
 BraseroChecksumType
 brasero_track_get_checksum_type (BraseroTrack *track)
@@ -196,6 +260,22 @@ brasero_track_tag_value_free (gpointer user_data)
 	g_free (value);
 }
 
+/**
+ * brasero_track_tag_add:
+ * @track: a #BraseroTrack
+ * @tag: a #gchar *
+ * @value: a #GValue
+ *
+ * Associates a new @tag with a track. This can be used
+ * to pass arbitrary information for plugin, like parameters
+ * for video discs, ...
+ * See brasero-tags.h for a list of knowns tags.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_tag_add (BraseroTrack *track,
 		       const gchar *tag,
@@ -219,6 +299,21 @@ brasero_track_tag_add (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_tag_add_int:
+ * @track: a #BraseroTrack
+ * @tag: a #gchar *
+ * @value: a #int
+ *
+ * A wrapper around brasero_track_tag_add () to associate
+ * a int value with @track
+ * See also brasero_track_tag_add ()
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_tag_add_int (BraseroTrack *track,
 			   const gchar *tag,
@@ -233,6 +328,21 @@ brasero_track_tag_add_int (BraseroTrack *track,
 	return brasero_track_tag_add (track, tag, value);
 }
 
+/**
+ * brasero_track_tag_add_string:
+ * @track: a #BraseroTrack
+ * @tag: a #gchar *
+ * @string: a #gchar *
+ *
+ * A wrapper around brasero_track_tag_add () to associate
+ * a string with @track
+ * See also brasero_track_tag_add ()
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_tag_add_string (BraseroTrack *track,
 			      const gchar *tag,
@@ -246,6 +356,21 @@ brasero_track_tag_add_string (BraseroTrack *track,
 
 	return brasero_track_tag_add (track, tag, value);
 }
+
+/**
+ * brasero_track_tag_lookup:
+ * @track: a #BraseroTrack
+ * @tag: a #gchar *
+ * @value: a #GValue **
+ *
+ * Retrieves a value associated with @track through
+ * brasero_track_tag_add () and stores it in @value. Do
+ * not destroy @value afterwards as it is not a copy
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the retrieval was successful
+ * BRASERO_BURN_ERR otherwise
+ **/
 
 BraseroBurnResult
 brasero_track_tag_lookup (BraseroTrack *track,
@@ -272,6 +397,17 @@ brasero_track_tag_lookup (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_tag_lookup_int:
+ * @track: a #BraseroTrack
+ * @tag: a #gchar *
+ *
+ * Retrieves a int value associated with @track. This
+ * is a wrapper around brasero_track_tag_lookup ().
+ *
+ * Return value: a #int; the value or 0 otherwise
+ **/
+
 int
 brasero_track_tag_lookup_int (BraseroTrack *track,
 			      const gchar *tag)
@@ -292,6 +428,18 @@ brasero_track_tag_lookup_int (BraseroTrack *track,
 	return g_value_get_int (value);
 }
 
+/**
+ * brasero_track_tag_lookup_string:
+ * @track: a #BraseroTrack
+ * @tag: a #gchar *
+ *
+ * Retrieves a string value associated with @track. This
+ * is a wrapper around brasero_track_tag_lookup ().
+ *
+ * Return value: a #gchar *. The value or NULL otherwise.
+ * Do not free the string as it is not a copy.
+ **/
+
 const gchar *
 brasero_track_tag_lookup_string (BraseroTrack *track,
 				 const gchar *tag)
@@ -311,6 +459,16 @@ brasero_track_tag_lookup_string (BraseroTrack *track,
 
 	return g_value_get_string (value);
 }
+
+/**
+ * brasero_track_tag_copy_missing:
+ * @dest: a #BraseroTrack
+ * @src: a #BraseroTrack
+ *
+ * Adds all tags of @dest to @src provided they do not
+ * already exists.
+ *
+ **/
 
 void
 brasero_track_tag_copy_missing (BraseroTrack *dest,
@@ -354,6 +512,15 @@ brasero_track_tag_copy_missing (BraseroTrack *dest,
 		g_hash_table_insert (priv->tags, new_key, new_value);
 	}
 }
+
+/**
+ * brasero_track_changed:
+ * @track: a #BraseroTrack
+ * 
+ * Used internally in #BraseroTrack implementations to 
+ * signal a #BraseroTrack object has changed.
+ *
+ **/
 
 void
 brasero_track_changed (BraseroTrack *track)
