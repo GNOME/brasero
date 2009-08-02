@@ -235,7 +235,8 @@ brasero_dest_selection_finalize (GObject *object)
 }
 
 static goffset
-_get_medium_free_space (BraseroMedium *medium)
+_get_medium_free_space (BraseroMedium *medium,
+                        goffset session_blocks)
 {
 	BraseroMedia media;
 	goffset blocks = 0;
@@ -244,15 +245,15 @@ _get_medium_free_space (BraseroMedium *medium)
 	media = brasero_burn_library_get_media_capabilities (media);
 
 	/* NOTE: we always try to blank a medium when we can */
-	if (media & BRASERO_MEDIUM_REWRITABLE)
-		brasero_medium_get_free_space (medium,
-					       NULL,
-					       &blocks);
-	else {
-		brasero_medium_get_free_space (medium,
-					       NULL,
-					       &blocks);
-	}
+	brasero_medium_get_free_space (medium,
+				       NULL,
+				       &blocks);
+
+	if ((media & BRASERO_MEDIUM_REWRITABLE)
+	&& blocks < session_blocks)
+		brasero_medium_get_capacity (medium,
+		                             NULL,
+		                             &blocks);
 
 	return blocks;
 }
@@ -317,12 +318,12 @@ brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 choose_closest_size:
 
 	brasero_burn_session_get_size (session, &session_blocks, NULL);
-	medium_blocks = _get_medium_free_space (medium);
+	medium_blocks = _get_medium_free_space (medium, session_blocks);
 
 	if (medium_blocks - session_blocks <= 0)
 		return TRUE;
 
-	burner_blocks = _get_medium_free_space (brasero_drive_get_medium (burner));
+	burner_blocks = _get_medium_free_space (brasero_drive_get_medium (burner), session_blocks);
 	if (burner_blocks - session_blocks <= 0)
 		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
 	else if (burner_blocks - session_blocks > medium_blocks - session_blocks)

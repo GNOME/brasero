@@ -77,8 +77,8 @@ struct _BraseroScsiInquiry {
 	uchar rel_addr			:1;
 
 	uchar vendor			[8];
-	uchar name			[8];
-	uchar revision			[8];
+	uchar name			[16];
+	uchar revision			[4];
 };
 
 #else
@@ -123,8 +123,8 @@ struct _BraseroScsiInquiry {
 	uchar vs2				:1;
 
 	uchar vendor			[8];
-	uchar name			[8];
-	uchar revision			[8];
+	uchar name			[16];
+	uchar revision			[4];
 };
 
 #endif
