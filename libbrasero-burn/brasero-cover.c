@@ -244,12 +244,12 @@ brasero_session_edit_cover (BraseroBurnSession *session,
 					 BRASERO_COVER_URI,
 					 &cover_value);
 
-	brasero_jacket_edit_freeze (BRASERO_JACKET_EDIT (edit));
-	brasero_jacket_edit_set_audio_tracks_front (brasero_jacket_edit_get_front (BRASERO_JACKET_EDIT (edit)),
+	brasero_jacket_edit_freeze (contents);
+	brasero_jacket_edit_set_audio_tracks_front (brasero_jacket_edit_get_front (contents),
 						    cover_value? g_value_get_string (cover_value):NULL,
 						    title);
-	brasero_jacket_edit_set_audio_tracks_back (brasero_jacket_edit_get_back (BRASERO_JACKET_EDIT (edit)), title, tracks);
-	brasero_jacket_edit_thaw (BRASERO_JACKET_EDIT (edit));
+	brasero_jacket_edit_set_audio_tracks_back (brasero_jacket_edit_get_back (contents), title, tracks);
+	brasero_jacket_edit_thaw (contents);
 
 	return edit;
 }
