@@ -52,6 +52,18 @@ struct _BraseroTrackDiscPrivate
 
 G_DEFINE_TYPE (BraseroTrackDisc, brasero_track_disc, BRASERO_TYPE_TRACK);
 
+/**
+ * brasero_track_disc_set_track_num:
+ * @track: a #BraseroTrackDisc
+ * @num: a #guint
+ *
+ * Sets a track number which can be used
+ * to copy only one specific session on a multisession disc
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_track_disc_set_track_num (BraseroTrackDisc *track,
@@ -66,6 +78,16 @@ brasero_track_disc_set_track_num (BraseroTrackDisc *track,
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_track_disc_get_track_num:
+ * @track: a #BraseroTrackDisc
+ *
+ * Gets the track number which will be used
+ * to copy only one specific session on a multisession disc
+ *
+ * Return value: a #guint. 0 if none is set, any other number otherwise.
+ **/
 
 guint
 brasero_track_disc_get_track_num (BraseroTrackDisc *track)
@@ -109,6 +131,19 @@ brasero_track_disc_medium_changed (BraseroDrive *drive,
 	brasero_track_changed (track);
 }
 
+/**
+ * brasero_track_disc_set_drive:
+ * @track: a #BraseroTrackDisc
+ * @drive: a #BraseroDrive
+ *
+ * Sets @drive to be the #BraseroDrive that will be used
+ * as the source when copying
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_disc_set_drive (BraseroTrackDisc *track,
 			      BraseroDrive *drive)
@@ -142,6 +177,16 @@ brasero_track_disc_set_drive (BraseroTrackDisc *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_disc_get_drive:
+ * @track: a #BraseroTrackDisc
+ *
+ * Gets the #BraseroDrive object that will be used as
+ * the source when copying.
+ *
+ * Return value: a #BraseroDrive or NULL
+ **/
+
 BraseroDrive *
 brasero_track_disc_get_drive (BraseroTrackDisc *track)
 {
@@ -152,6 +197,17 @@ brasero_track_disc_get_drive (BraseroTrackDisc *track)
 	priv = BRASERO_TRACK_DISC_PRIVATE (track);
 	return priv->drive;
 }
+
+/**
+ * brasero_track_disc_get_medium_type:
+ * @track: a #BraseroTrackDisc
+ *
+ * Gets the #BraseroMedia for the medium that is
+ * currently inserted into the drive assigned for @track
+ * with brasero_track_disc_set_drive ().
+ *
+ * Return value: a #BraseroMedia.
+ **/
 
 BraseroMedia
 brasero_track_disc_get_medium_type (BraseroTrackDisc *track)
@@ -240,6 +296,14 @@ brasero_track_disc_class_init (BraseroTrackDiscClass *klass)
 	track_class->get_size = brasero_track_disc_get_size;
 	track_class->get_type = brasero_track_disc_get_track_type;
 }
+
+/**
+ * brasero_track_disc_new:
+ *
+ * Creates a new #BraseroTrackDisc object.
+ *
+ * Return value: a #BraseroTrackDisc.
+ **/
 
 BraseroTrackDisc *
 brasero_track_disc_new (void)
