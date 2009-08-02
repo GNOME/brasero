@@ -1484,8 +1484,7 @@ brasero_project_burn (BraseroProject *project)
 
 /******************************** cover ****************************************/
 void
-brasero_project_create_audio_cover (BraseroProject *project,
-				    BraseroJacketEdit *cover)
+brasero_project_create_audio_cover (BraseroProject *project)
 {
 	GtkWidget *window;
 

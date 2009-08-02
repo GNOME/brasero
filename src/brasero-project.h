@@ -104,7 +104,6 @@ brasero_project_register_ui (BraseroProject *project,
 			     GtkUIManager *manager);
 
 void
-brasero_project_create_audio_cover (BraseroProject *project,
-				    BraseroJacketEdit *cover);
+brasero_project_create_audio_cover (BraseroProject *project);
 
 #endif /* PROJECT_H */
