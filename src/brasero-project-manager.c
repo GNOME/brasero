@@ -785,6 +785,11 @@ brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
 				      const gchar *uri,
 				      const gchar *mime)
 {
+	if (!mime) {
+		/* that can happen when the URI could not be identified */
+		return BRASERO_PROJECT_TYPE_INVALID;
+	}
+
 	/* When our files/description of x-brasero mime type is not properly 
 	 * installed, it's returned as application/xml, so check that too. */
 	if (!strcmp (mime, "application/x-brasero")
