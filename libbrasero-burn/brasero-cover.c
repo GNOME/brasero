@@ -123,7 +123,7 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 
 		time = brasero_units_get_time_string (brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)) -
 						      brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
-						      TRUE,
+						      FALSE,
 						      FALSE);
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
 		g_free (time);
