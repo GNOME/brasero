@@ -246,6 +246,9 @@ brasero_burn_uri_retrieve_path (BraseroBurnURI *self,
 
 	priv = BRASERO_BURN_URI_PRIVATE (self);
 
+	if (!uri)
+		return FALSE;
+
 	file = g_file_new_for_uri (uri);
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_STANDARD_NAME ","
@@ -336,12 +339,15 @@ brasero_burn_uri_thread (gpointer data)
 
 		path_toc = NULL;
 		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (current), TRUE);
-		if (!brasero_burn_uri_retrieve_path (self, uri, &path_toc)) {
-			g_free (path_image);
+		if (uri) {
+			/* NOTE: if it's a .bin image there is not .toc file */
+			if (!brasero_burn_uri_retrieve_path (self, uri, &path_toc)) {
+				g_free (path_image);
+				g_free (uri);
+				goto end;
+			}
 			g_free (uri);
-			goto end;
 		}
-		g_free (uri);
 
 		brasero_track_get_size (current, &blocks, NULL);
 
