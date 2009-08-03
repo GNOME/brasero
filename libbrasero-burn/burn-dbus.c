@@ -37,9 +37,9 @@
 #include <dbus/dbus-glib.h>
 #include "burn-dbus.h"
 
-#define	GPM_DBUS_SERVICE		"org.freedesktop.PowerManagement"
-#define	GPM_DBUS_INHIBIT_PATH		"/org/freedesktop/PowerManagement/Inhibit"
-#define	GPM_DBUS_INHIBIT_INTERFACE	"org.freedesktop.PowerManagement.Inhibit"
+#define	GS_DBUS_SERVICE			"org.gnome.SessionManager"
+#define	GS_DBUS_INHIBIT_PATH		"/org/gnome/SessionManager"
+#define	GS_DBUS_INHIBIT_INTERFACE	"org.gnome.SessionManager"
 
 void 
 brasero_uninhibit_suspend (guint cookie)
@@ -63,17 +63,17 @@ brasero_uninhibit_suspend (guint cookie)
 	}
 
 	proxy = dbus_g_proxy_new_for_name (conn,
-					   GPM_DBUS_SERVICE,
-					   GPM_DBUS_INHIBIT_PATH,
-					   GPM_DBUS_INHIBIT_INTERFACE);
+					   GS_DBUS_SERVICE,
+					   GS_DBUS_INHIBIT_PATH,
+					   GS_DBUS_INHIBIT_INTERFACE);
 	if (proxy == NULL) {
-		g_warning ("Could not get DBUS proxy: %s", GPM_DBUS_SERVICE);
+		g_warning ("Could not get DBUS proxy: %s", GS_DBUS_SERVICE);
 		dbus_g_connection_unref (conn);
 		return;
 	}
 
 	res = dbus_g_proxy_call (proxy,
-				 "UnInhibit", &error,
+				 "Uninhibit", &error,
 				 G_TYPE_UINT, cookie,
 				 G_TYPE_INVALID,
 				 G_TYPE_INVALID);
@@ -107,19 +107,21 @@ brasero_inhibit_suspend (const char *reason)
 	}
 
 	proxy = dbus_g_proxy_new_for_name (conn,
-					   GPM_DBUS_SERVICE,
-					   GPM_DBUS_INHIBIT_PATH,
-					   GPM_DBUS_INHIBIT_INTERFACE);
+					   GS_DBUS_SERVICE,
+					   GS_DBUS_INHIBIT_PATH,
+					   GS_DBUS_INHIBIT_INTERFACE);
 	
 	if (proxy == NULL) {
-		g_warning ("Could not get DBUS proxy: %s", GPM_DBUS_SERVICE);
+		g_warning ("Could not get DBUS proxy: %s", GS_DBUS_SERVICE);
 		return -1;
 	}
 
 	res = dbus_g_proxy_call (proxy,
 				 "Inhibit", &error,
-				 G_TYPE_STRING, "Brasero",
-				 G_TYPE_STRING, reason,
+				 G_TYPE_STRING, "Brasero", /* app_id */
+				 G_TYPE_UINT, 0,           /* toplevel_xid */
+				 G_TYPE_STRING, reason,    /* reason */
+				 G_TYPE_UINT, 1 | 4,       /* flags (prevent logout, suspend) */
 				 G_TYPE_INVALID,
 				 G_TYPE_UINT, &cookie,
 				 G_TYPE_INVALID);
