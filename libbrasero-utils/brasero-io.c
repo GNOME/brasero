@@ -364,6 +364,11 @@ brasero_io_return_result_idle (gpointer callback_data)
 		g_mutex_unlock (priv->lock);
 
 		data = result->callback_data;
+
+		/* This is to make sure the object lives
+		 * as long as we need it. */
+		g_object_ref (base->object);
+
 		if (result->uri || result->info || result->error)
 			result->base->callback (base->object,
 						result->error,
@@ -371,11 +376,13 @@ brasero_io_return_result_idle (gpointer callback_data)
 						result->info,
 						data? data->callback_data:NULL);
 
-		/* Else this is just to call destroy () for callback data */
+		/* call destroy () for callback data */
 		brasero_io_unref_result_callback_data (data,
 						       base->object,
 						       base->destroy,
 						       FALSE);
+
+		g_object_unref (base->object);
 
 		brasero_io_job_result_free (result);
 

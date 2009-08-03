@@ -1754,29 +1754,6 @@ brasero_track_data_clean_autorun (BraseroTrackDataCfg *track)
 }
 
 static void
-brasero_track_data_cfg_finalize (GObject *object)
-{
-	BraseroTrackDataCfgPrivate *priv;
-
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (object);
-
-	brasero_track_data_clean_autorun (BRASERO_TRACK_DATA_CFG (object));
-	brasero_track_data_cfg_clean_cache (BRASERO_TRACK_DATA_CFG (object));
-
-	if (priv->shown) {
-		g_slist_free (priv->shown);
-		priv->shown = NULL;
-	}
-
-	if (priv->tree) {
-		g_object_unref (priv->tree);
-		priv->tree = NULL;
-	}
-
-	G_OBJECT_CLASS (brasero_track_data_cfg_parent_class)->finalize (object);
-}
-
-static void
 brasero_track_data_cfg_iface_init (gpointer g_iface, gpointer data)
 {
 	GtkTreeModelIface *iface = g_iface;
@@ -3155,6 +3132,88 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 			  "joliet-rename",
 			  G_CALLBACK (brasero_track_data_cfg_joliet_rename_cb),
 			  object);
+}
+
+static void
+brasero_track_data_cfg_finalize (GObject *object)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (object);
+
+	brasero_track_data_clean_autorun (BRASERO_TRACK_DATA_CFG (object));
+	brasero_track_data_cfg_clean_cache (BRASERO_TRACK_DATA_CFG (object));
+
+	if (priv->shown) {
+		g_slist_free (priv->shown);
+		priv->shown = NULL;
+	}
+
+	if (priv->tree) {
+		/* This object could outlive us just for some time
+		 * so we better remove all signals.
+		 * When an image URI is detected it can happen
+		 * that we'll be destroyed. */
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_node_added,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_node_changed,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_node_removed,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_node_reordered,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_size_changed_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_session_available_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_session_loaded_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_project_loaded,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_activity_changed,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_deep_directory,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_2G_file,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_unreadable_uri_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_unknown_uri_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_recursive_uri_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_image_uri_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_virtual_sibling_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_name_collision_cb,
+		                                      object);
+		g_signal_handlers_disconnect_by_func (priv->tree,
+		                                      brasero_track_data_cfg_joliet_rename_cb,
+		                                      object);
+
+		g_object_unref (priv->tree);
+		priv->tree = NULL;
+	}
+
+	G_OBJECT_CLASS (brasero_track_data_cfg_parent_class)->finalize (object);
 }
 
 static void
