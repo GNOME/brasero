@@ -106,7 +106,7 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 		if (!BRASERO_IS_TRACK_STREAM (track))
 			continue;
 
-		num = g_strdup_printf ("%i - ", g_slist_index (tracks, track) + 1);
+		num = g_strdup_printf ("%02d - ", g_slist_index (tracks, track) + 1);
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, num, "Subtitle", &start);
 		g_free (num);
 
