@@ -890,7 +890,8 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	}
 
 	uri = g_file_get_uri (file);
-	if (g_file_query_exists (file, NULL)) {
+	if (g_file_query_exists (file, NULL)
+	&& g_file_info_get_content_type (info)) {
 		const gchar *mime;
 
 		mime = g_file_info_get_content_type (info);
