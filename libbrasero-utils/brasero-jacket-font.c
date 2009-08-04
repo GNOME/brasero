@@ -135,12 +135,17 @@ brasero_jacket_font_set_name (BraseroJacketFont *self,
 		}
 	}
 
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->family));
+	if (!gtk_tree_model_get_iter_first (model, &iter)) {
+		/* No font in the model, no need to continue */
+		pango_font_description_free (desc);
+		return;
+	}
+
 	g_signal_handlers_block_by_func (priv->family,
 					 brasero_jacket_font_family_changed_cb,
 					 self);
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->family));
-	gtk_tree_model_get_iter_first (model, &iter);
 	do {
 		gtk_tree_model_get (model, &iter,
 				    FAMILY_COL, &family,
@@ -224,22 +229,21 @@ brasero_jacket_font_get_size (BraseroJacketFont *self)
 	return size * PANGO_SCALE;
 }
 static void
-brasero_jacket_fill_sizes (BraseroJacketFont *self)
+brasero_jacket_fill_sizes (BraseroJacketFont *self,
+                           GtkListStore *store)
 {
 	BraseroJacketFontPrivate *priv;
-	GtkTreeModel *model;
 	gint i;
 
 	priv = BRASERO_JACKET_FONT_PRIVATE (self);
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->size));
 	for (i = 0; i < G_N_ELEMENTS (font_sizes); i ++) {
 		GtkTreeIter iter;
 		gchar *string;
 
 		string = g_strdup_printf ("%i", font_sizes [i]);
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
 				    SIZE_STRING_COL, string,
 				    SIZE_COL, font_sizes [i],
 				    -1);
@@ -248,31 +252,30 @@ brasero_jacket_fill_sizes (BraseroJacketFont *self)
 }
 
 static void
-brasero_jacket_fill_families (BraseroJacketFont *self)
+brasero_jacket_fill_families (BraseroJacketFont *self,
+                              GtkListStore *store)
 {
 	BraseroJacketFontPrivate *priv;
 	PangoFontFamily **families;
-	GtkTreeModel *model;
 	gint num = 0;
 	gint i;
 
 	priv = BRASERO_JACKET_FONT_PRIVATE (self);
+
 	pango_context_list_families (gtk_widget_get_pango_context (GTK_WIDGET (self)),
 				     &families, &num);
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->family));
 	for (i = 0; i < num; i ++) {
 		const gchar *name;
 		GtkTreeIter iter;
 
 		name = pango_font_family_get_name (families [i]);
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
 				    FAMILY_COL, families [i],
 				    FAMILY_STRING_COL, name,
 				    -1);
 	}
-
 	g_free (families);
 }
 
@@ -290,6 +293,8 @@ brasero_jacket_font_init (BraseroJacketFont *object)
 	store = gtk_list_store_new (FAMILY_COL_NB,
 				    G_TYPE_STRING,
 				    G_TYPE_POINTER);
+	brasero_jacket_fill_families (object, store);
+
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store), FAMILY_STRING_COL, GTK_SORT_ASCENDING);
 	priv->family = gtk_combo_box_new_with_model (GTK_TREE_MODEL (store));
 	g_object_unref (store);
@@ -311,6 +316,8 @@ brasero_jacket_font_init (BraseroJacketFont *object)
 	store = gtk_list_store_new (SIZE_COL_NB,
 				    G_TYPE_STRING,
 				    G_TYPE_UINT);
+	brasero_jacket_fill_sizes (object, store);
+
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store), SIZE_COL, GTK_SORT_ASCENDING);
 	priv->size = gtk_combo_box_new_with_model (GTK_TREE_MODEL (store));
 	g_object_unref (store);
@@ -328,9 +335,6 @@ brasero_jacket_font_init (BraseroJacketFont *object)
 			  "changed",
 			  G_CALLBACK (brasero_jacket_font_size_changed_cb),
 			  object);
-
-	brasero_jacket_fill_families (object);
-	brasero_jacket_fill_sizes (object);
 }
 
 static void
