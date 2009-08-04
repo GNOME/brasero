@@ -386,12 +386,14 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	BraseroDeviceHandle *dev_handle;
 	BraseroVolFileHandle *handle;
 	BraseroBurnResult result;
+	BraseroDrive *burner;
+	BraseroMedium *medium;
 	BraseroVolFile *file;
 	BraseroTrack *track;
 	gchar buffer [2048];
 	BraseroVolSrc *vol;
 	goffset start_block;
-	gchar *device;
+	const gchar *device;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
 
@@ -407,9 +409,11 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 		return result;
 
 	/* try every file and make sure they are of the same type */
-	brasero_job_get_device (BRASERO_JOB (self), &device);
+	medium = NULL;
+	brasero_job_get_medium (BRASERO_JOB (self), &medium);
+	burner = brasero_medium_get_drive (medium);
+	device = brasero_drive_get_block_device (burner);
 	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
-	g_free (device);
 
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 	file = brasero_volume_get_file (vol,
@@ -828,7 +832,7 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	if (!brasero_medium_get_last_data_track_address (medium, NULL, &start_block))
 		return BRASERO_BURN_ERR;
 
-	device = brasero_drive_get_device (brasero_medium_get_drive (medium));
+	device = brasero_drive_get_block_device (brasero_medium_get_drive (medium));
 	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 

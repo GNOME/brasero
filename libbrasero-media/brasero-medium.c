@@ -2923,22 +2923,21 @@ static gpointer
 brasero_medium_probe_thread (gpointer self)
 {
 	gint counter = 0;
-	const gchar *path;
+	const gchar *device;
 	BraseroScsiErrCode code;
 	BraseroMediumPrivate *priv;
 	BraseroDeviceHandle *handle;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	path = brasero_drive_get_device (priv->drive);
-	if (!path)
-		path = brasero_drive_get_block_device (priv->drive);
+
 	priv->info = BRASERO_MEDIUM_BUSY;
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
-	BRASERO_MEDIA_LOG ("Trying to open device %s", path);
+	device = brasero_drive_get_block_device (priv->drive);
+	BRASERO_MEDIA_LOG ("Trying to open device %s", device);
 
-	handle = brasero_device_handle_open (path, FALSE, &code);
+	handle = brasero_device_handle_open (device, FALSE, &code);
 	while (!handle && counter <= BRASERO_MEDIUM_OPEN_ATTEMPTS) {
 		sleep (1);
 
@@ -2948,7 +2947,7 @@ brasero_medium_probe_thread (gpointer self)
 		}
 
 		counter ++;
-		handle = brasero_device_handle_open (path, FALSE, &code);
+		handle = brasero_device_handle_open (device, FALSE, &code);
 	}
 
 	if (priv->probe_cancelled) {

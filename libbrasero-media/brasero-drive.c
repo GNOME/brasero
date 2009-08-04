@@ -72,8 +72,8 @@ struct _BraseroDrivePrivate
 
 	gchar *name;
 
-	gchar *path;
-	gchar *block_path;
+	gchar *device;
+	gchar *block_device;
 
 	GCancellable *cancel;
 
@@ -294,7 +294,7 @@ brasero_drive_is_fake (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return (priv->block_path == NULL);
+	return (priv->device == NULL);
 }
 
 /**
@@ -308,6 +308,7 @@ brasero_drive_is_fake (BraseroDrive *drive)
 gboolean
 brasero_drive_is_door_open (BraseroDrive *drive)
 {
+	const gchar *device;
 	BraseroDrivePrivate *priv;
 	BraseroDeviceHandle *handle;
 	BraseroScsiMechStatusHdr hdr;
@@ -316,10 +317,11 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!!priv->block_path)
+	if (!priv->device)
 		return FALSE;
 
-	handle = brasero_device_handle_open (priv->block_path, FALSE, NULL);
+	device = brasero_drive_get_block_device (drive);
+	handle = brasero_device_handle_open (device, FALSE, NULL);
 	if (!handle)
 		return FALSE;
 
@@ -350,8 +352,7 @@ brasero_drive_can_use_exclusively (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	device = brasero_drive_get_device (drive);
-
+	device = brasero_drive_get_block_device (drive);
 	handle = brasero_device_handle_open (device, TRUE, NULL);
 	if (!handle)
 		return FALSE;
@@ -384,10 +385,10 @@ brasero_drive_lock (BraseroDrive *drive,
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->block_path)
+	if (!priv->device)
 		return FALSE;
 
-	device = brasero_drive_get_device (drive);
+	device = brasero_drive_get_block_device (drive);
 	handle = brasero_device_handle_open (device, FALSE, NULL);
 	if (!handle)
 		return FALSE;
@@ -423,10 +424,10 @@ brasero_drive_unlock (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!!priv->path)
+	if (!!priv->device)
 		return FALSE;
 
-	device = brasero_drive_get_device (drive);
+	device = brasero_drive_get_block_device (drive);
 	handle = brasero_device_handle_open (device, FALSE, NULL);
 	if (!handle)
 		return FALSE;
@@ -460,7 +461,7 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->block_path) {
+	if (!priv->device) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
 		 * image on the hard drive. */
@@ -490,7 +491,7 @@ brasero_drive_get_device (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return priv->path? priv->path:priv->block_path;
+	return priv->device;
 }
 
 /**
@@ -512,7 +513,7 @@ brasero_drive_get_block_device (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	return priv->block_path;
+	return priv->block_device? priv->block_device:priv->device;
 }
 
 /**
@@ -535,7 +536,7 @@ brasero_drive_get_udi (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!priv->block_path || !priv->gdrive)
+	if (!priv->device || !priv->gdrive)
 		return NULL;
 
 	if (priv->udi)
@@ -987,22 +988,20 @@ static gpointer
 brasero_drive_probe_thread (gpointer data)
 {
 	gint counter = 0;
-	const gchar *path;
+	const gchar *device;
 	BraseroScsiErrCode code;
 	BraseroDrivePrivate *priv;
 	BraseroDeviceHandle *handle;
 	BraseroDrive *drive = BRASERO_DRIVE (data);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	path = brasero_drive_get_device (drive);
-	if (!path)
-		path = brasero_drive_get_block_device (drive);
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
-	BRASERO_MEDIA_LOG ("Trying to open device %s", path);
+	device = brasero_drive_get_block_device (drive);
+	BRASERO_MEDIA_LOG ("Trying to open device %s", device);
 
-	handle = brasero_device_handle_open (path, FALSE, &code);
+	handle = brasero_device_handle_open (device, FALSE, &code);
 	while (!handle && counter <= BRASERO_DRIVE_OPEN_ATTEMPTS) {
 		sleep (1);
 
@@ -1013,7 +1012,7 @@ brasero_drive_probe_thread (gpointer data)
 		}
 
 		counter ++;
-		handle = brasero_device_handle_open (path, FALSE, &code);
+		handle = brasero_device_handle_open (device, FALSE, &code);
 	}
 
 	if (priv->probe_cancelled) {
@@ -1079,9 +1078,9 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	priv->block_path = g_strdup (device);
+	priv->device = g_strdup (device);
 
-	BRASERO_MEDIA_LOG ("Initializing drive %s from device", priv->block_path);
+	BRASERO_MEDIA_LOG ("Initializing drive %s from device", priv->device);
 
 	/* NOTE: why a thread? Because in case of a damaged medium, brasero can
 	 * block on some functions until timeout and if we do this in the main
@@ -1112,7 +1111,7 @@ brasero_drive_set_property (GObject *object,
 	case PROP_UDI:
 		break;
 	case PROP_GDRIVE:
-		if (!priv->block_path)
+		if (!priv->device)
 			break;
 
 		gdrive = g_value_get_object (value);
@@ -1177,7 +1176,7 @@ brasero_drive_get_property (GObject *object,
 		g_value_set_object (value, priv->gdrive);
 		break;
 	case PROP_DEVICE:
-		g_value_set_string (value, priv->block_path);
+		g_value_set_string (value, priv->device);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1219,9 +1218,14 @@ brasero_drive_finalize (GObject *object)
 		priv->name = NULL;
 	}
 
-	if (priv->block_path) {
-		g_free (priv->block_path);
-		priv->block_path = NULL;
+	if (priv->device) {
+		g_free (priv->device);
+		priv->device = NULL;
+	}
+
+	if (priv->block_device) {
+		g_free (priv->block_device);
+		priv->block_device = NULL;
 	}
 
 	if (priv->udi) {

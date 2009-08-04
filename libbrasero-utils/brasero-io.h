@@ -177,14 +177,6 @@ brasero_io_find_urgent (const BraseroIOJobBase *base,
 			gpointer callback_data);			
 
 void
-brasero_io_load_image_directory (const gchar *dev_image,
-				 gint64 session_block,
-				 gint64 block,
-				 const BraseroIOJobBase *base,
-				 BraseroIOFlags options,
-				 gpointer user_data);
-
-void
 brasero_io_load_directory (const gchar *uri,
 			   const BraseroIOJobBase *base,
 			   BraseroIOFlags options,
