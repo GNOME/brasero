@@ -450,6 +450,12 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 			gchar *uri;
 
 			uri = brasero_track_stream_get_source (track, TRUE);
+
+			/* Remove the track now otherwise on each session change we'll get the
+			 * same message over and over again. */
+			brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session),
+							   BRASERO_TRACK (track));
+
 			error = brasero_status_get_error (status);
 			if (!error)
 				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
@@ -465,8 +471,6 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 			else
 				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
 
-			brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session),
-							   BRASERO_TRACK (track));
 			g_error_free (error);
 			g_free (uri);
 			continue;
