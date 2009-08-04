@@ -155,6 +155,9 @@ BraseroBurnResult
 brasero_job_get_medium (BraseroJob *job, BraseroMedium **medium);
 
 BraseroBurnResult
+brasero_job_get_bus_target_lun (BraseroJob *job, gchar **BTL);
+
+BraseroBurnResult
 brasero_job_get_device (BraseroJob *job, gchar **device);
 
 BraseroBurnResult
