@@ -402,7 +402,7 @@ _get_tracks (xmlDocPtr project,
 	for (iter = tracks; iter; iter = iter->next) {
 		BraseroTrack *newtrack;
 
-		newtrack = tracks->data;
+		newtrack = iter->data;
 		brasero_burn_session_add_track (session, newtrack, NULL);
 	}
 
