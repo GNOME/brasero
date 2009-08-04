@@ -242,6 +242,12 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
+	/* Prevent adding the same tracks several times */
+	if (g_slist_find (priv->tracks, new_track)) {
+		BRASERO_BURN_LOG ("Tried to add the same track multiple times");
+		return BRASERO_BURN_OK;
+	}
+
 	if (!new_track) {
 		if (!priv->tracks)
 			return BRASERO_BURN_OK;
