@@ -378,13 +378,11 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 
 			g_ptr_array_add (argv, g_strdup ("-M"));
 
-#ifdef HAVE_CAM_LIB_H
-	/* FreeBSD like that better */
+			/* NOTE: that function returns either bus_target_lun or the device path
+			 * according to OSes. Basically it returns bus/target/lun only for FreeBSD
+			 * which is the only OS in need for that. For all others it returns the device
+			 * path. */
 			brasero_job_get_bus_target_lun (BRASERO_JOB (mkisofs), &device);
-#else
-			brasero_job_get_device (BRASERO_JOB (mkisofs), &device);
-#endif
-
 			g_ptr_array_add (argv, device);
 		}
 	}

@@ -198,3 +198,8 @@ brasero_device_handle_close (BraseroDeviceHandle *handle)
 	g_free (handle);
 }
 
+char *
+brasero_device_get_bus_target_lun (const gchar *device)
+{
+	return strdup (device);
+}

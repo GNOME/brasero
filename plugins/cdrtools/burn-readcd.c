@@ -344,11 +344,11 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 
-#ifdef HAVE_CAM_LIB_H
+	/* NOTE: that function returns either bus_target_lun or the device path
+	 * according to OSes. Basically it returns bus/target/lun only for FreeBSD
+	 * which is the only OS in need for that. For all others it returns the device
+	 * path. */
 	device = brasero_drive_get_bus_target_lun_string (drive);
-#else
-	device = g_strdup (brasero_drive_get_device (drive));
-#endif
 
 	if (!device)
 		return BRASERO_BURN_ERR;

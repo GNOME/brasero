@@ -47,6 +47,9 @@ brasero_device_handle_open (const gchar *path,
 void
 brasero_device_handle_close (BraseroDeviceHandle *handle);
 
+char *
+brasero_device_get_bus_target_lun (const gchar *device);
+
 G_END_DECLS
 
 #endif /* _SCSI_DEVICE_H */

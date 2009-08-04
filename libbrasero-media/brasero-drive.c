@@ -271,37 +271,21 @@ brasero_drive_cancel_current_operation (BraseroDrive *drive)
  * Returns the bus, target, lun ("{bus},{target},{lun}") as a string which is
  * sometimes needed by some backends like cdrecord.
  *
+ * NOTE: that function returns either bus/target/lun or the device path
+ * according to OSes. Basically it returns bus/target/lun only for FreeBSD
+ * which is the only OS in need for that. For all others it returns the device
+ * path. 
+ *
  * Return value: a string or NULL. The string must be freed when not needed
  *
  **/
 gchar *
 brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
 {
-#ifdef HAVE_CAM_LIB_H
-	struct cam_device *cam_dev;
-	char *addr;
-#endif
-
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-#ifdef HAVE_CAM_LIB_H
-	cam_dev = cam_open_device (brasero_drive_get_device (drive), O_RDWR);
-
-	if (cam_dev == NULL) {
-		BRASERO_MEDIA_LOG ("CAM: Failed to open %s: %s", brasero_drive_get_device (drive), g_strerror (errno));
-		return NULL;
-	}
-
-	addr = g_strdup_printf ("%i,%i,%i", cam_dev->path_id, cam_dev->target_id, cam_dev->target_lun);
-
-	cam_close_device (cam_dev);
-
-	return addr;
-#else
-
-	return NULL;
-#endif
+	return brasero_device_get_bus_target_lun (brasero_drive_get_device (drive));
 }
 
 /**
@@ -529,6 +513,8 @@ brasero_drive_get_device (BraseroDrive *drive)
  * Gets a string holding the block device path for the drive. This can be used on
  * some other OSes, like Solaris, for burning operations instead of the device
  * path.
+ *
+ * If such a path is not available, it returns the device path.
  *
  * Return value: a string holding the block device path
  **/

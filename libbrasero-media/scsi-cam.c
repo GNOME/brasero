@@ -47,6 +47,8 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
+#include <glib.h>
+
 #include "brasero-media-private.h"
 #include "scsi-command.h"
 #include "scsi-utils.h"
@@ -210,3 +212,21 @@ brasero_device_handle_close (BraseroDeviceHandle *handle)
 	g_free (handle);
 }
 
+char *
+brasero_device_get_bus_target_lun (const gchar *device)
+{
+	struct cam_device *cam_dev;
+	char *addr;
+
+	cam_dev = cam_open_device (device, O_RDWR);
+
+	if (cam_dev == NULL) {
+		BRASERO_MEDIA_LOG ("CAM: Failed to open %s: %s", device, g_strerror (errno));
+		return NULL;
+	}
+
+	addr = g_strdup_printf ("%i,%i,%i", cam_dev->path_id, cam_dev->target_id, cam_dev->target_lun);
+
+	cam_close_device (cam_dev);
+	return addr;
+}
