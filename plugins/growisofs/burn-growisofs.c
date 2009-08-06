@@ -740,7 +740,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "growisofs",
-			       _("Growisofs burns DVDs"),
+			       _("Burns and blanks DVDs and BDs"),
 			       "Philippe Rouquier",
 			       7);
 

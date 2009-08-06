@@ -1627,7 +1627,7 @@ brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "transcode",
-			       _("Transcode converts song files into a format proper to burn them on CDs"),
+			       _("Converts any song file into a format suitable for audio CDs"),
 			       "Philippe Rouquier",
 			       0);
 

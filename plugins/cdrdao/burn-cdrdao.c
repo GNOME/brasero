@@ -619,8 +619,8 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_BLANK;
 
 	brasero_plugin_define (plugin,
-			       "Cdrdao",
-			       _("Use cdrdao to copy and burn CDs"),
+			       "cdrdao",
+			       _("Copies, burns and blanks CDs"),
 			       "Philippe Rouquier",
 			       20);
 

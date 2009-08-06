@@ -440,7 +440,7 @@ brasero_readom_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "readom",
-			       _("Use readom to create disc images"),
+			       _("Copies any disc to a disc image"),
 			       "Philippe Rouquier",
 			       1);
 

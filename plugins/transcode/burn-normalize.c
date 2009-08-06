@@ -592,7 +592,7 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       N_("Normalize"),
-			       _("Normalize allows to set consistent sound levels between tracks"),
+			       _("Sets consistent sound levels between tracks"),
 			       "Philippe Rouquier",
 			       0);
 

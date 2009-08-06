@@ -1160,7 +1160,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "cdrecord",
-			       _("Use cdrecord to burn CDs and DVDs"),
+			       _("Burns, blanks and formats CDs, DVDs and BDs"),
 			       "Philippe Rouquier",
 			       1);
 

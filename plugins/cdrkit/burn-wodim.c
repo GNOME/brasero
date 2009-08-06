@@ -1239,7 +1239,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "wodim",
-			       _("Use wodim to burn CDs and DVDs"),
+			       _("Burns, blanks and formats CDs and DVDs"),
 			       "Philippe Rouquier",
 			       0);
 
