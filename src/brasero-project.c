@@ -929,12 +929,19 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 
 	/* FIXME: update option button state as well */
 
+	/* NOTE: empty error is the first checked error; so if another errors comes up
+	 * that means that file selection is not empty */
+
 	/* Clean any message */
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message),
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
-	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
+	if (valid == BRASERO_SESSION_EMPTY) {
+		project->priv->empty = TRUE;
+	}
+	else if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		project->priv->oversized = TRUE;
+		project->priv->empty = FALSE;
 
 		/* Here there is an alternative: we may be able to span the data
 		 * across multiple media. So try that. */
@@ -967,6 +974,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
 		GtkWidget *message;
 
+		project->priv->empty = FALSE;
 		project->priv->oversized = TRUE;
 		message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 						      _("Would you like to burn beyond the disc reported capacity?"),
@@ -986,13 +994,19 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 				  G_CALLBACK (brasero_project_message_response_overburn_cb),
 				  project);
 	}
-	else if (valid == BRASERO_SESSION_EMPTY) {
-		project->priv->empty = TRUE;
-	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
+		project->priv->empty = FALSE;
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 					    _("Please insert a recordable CD or DVD."),
 					    _("There is no recordable disc inserted."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
+		project->priv->empty = FALSE;
+		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+					    _("Please replace the disc with a supported CD or DVD."),
+					    _("It is not possible to write with the current set of plugins."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
@@ -1000,13 +1014,6 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 					    _("No track information (artist, title, ...) will be written to the disc."),
 					    _("This is not supported by the current active burning backend."),
-					    -1,
-					    BRASERO_NOTIFY_CONTEXT_SIZE);
-	}
-	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
-		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
-					    _("Please replace the disc with a supported CD or DVD."),
-					    _("It is not possible to write with the current set of plugins."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
