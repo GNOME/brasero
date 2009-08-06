@@ -187,7 +187,6 @@ brasero_tool_color_picker_clicked (BraseroToolColorPicker *self,
 			  self);
 
 	priv->dialog = dialog;
-
 	gtk_widget_show (dialog);
 	gtk_window_present (GTK_WINDOW (dialog));
 }
