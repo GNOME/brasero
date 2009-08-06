@@ -1455,8 +1455,10 @@ brasero_app_unique_message (UniqueApp *uapp,
 
 	priv = BRASERO_APP_PRIVATE (app);
 	if (command == UNIQUE_ACTIVATE) {
-		if (priv->mainwin_running)
+		if (priv->mainwin_running) {
+			gtk_widget_show (priv->mainwin);
 			gtk_window_present (GTK_WINDOW (priv->mainwin));
+		}
 	}
 
 	return UNIQUE_RESPONSE_OK;
