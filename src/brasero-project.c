@@ -942,7 +942,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		min_disc_size = brasero_session_span_get_max_space (BRASERO_SESSION_SPAN (session));
 
 		/* One rule should be that the maximum batch size should not exceed the disc size
-		 * FIXME: we could change it into a dialog telling the user what is the maximum
+		 * FIXME! we could change it into a dialog telling the user what is the maximum
 		 * size required. */
 		available_space = brasero_burn_session_get_available_medium_space (BRASERO_BURN_SESSION (session));
 
