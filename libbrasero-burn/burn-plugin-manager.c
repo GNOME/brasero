@@ -175,6 +175,11 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 			BraseroPlugin *plugin;
 
 			plugin = iter->data;
+
+			/* Skip plugins with a problem */
+			if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
+				continue;
+
 			brasero_plugin_set_active (plugin, TRUE);
 		}
 
@@ -186,6 +191,10 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
+
+		/* Skip plugins with a problem */
+		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
+			continue;
 
 		if (brasero_plugin_get_compulsory (plugin)) {
 			brasero_plugin_set_active (plugin, TRUE);
@@ -261,6 +270,10 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 		const gchar *name;
 
 		plugin = iter->data;
+
+		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
+			continue;
+
 		if (!brasero_plugin_get_active (plugin))
 			continue;
 
@@ -397,15 +410,15 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 			continue;
 		}
 
-		g_signal_connect (plugin,
-				  "activated",
-				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
-				  self);
-
 		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
 			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",
 					  brasero_plugin_get_error (plugin));
 		}
+		else
+			g_signal_connect (plugin,
+					  "activated",
+					  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
+					  self);
 
 		priv->plugins = g_slist_prepend (priv->plugins, plugin);
 	}
@@ -478,16 +491,14 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
 			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",
 					  brasero_plugin_get_error (plugin));
-			g_object_unref (plugin);
-			continue;
 		}
+		else
+			g_signal_connect (plugin,
+					  "activated",
+					  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
+					  self);
 
-		g_signal_connect (plugin,
-				  "activated",
-				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
-				  self);
-
-		g_assert (brasero_plugin_get_name(plugin));
+		g_assert (brasero_plugin_get_name (plugin));
 		priv->plugins = g_slist_prepend (priv->plugins, plugin);
 	}
 	g_dir_close (directory);
