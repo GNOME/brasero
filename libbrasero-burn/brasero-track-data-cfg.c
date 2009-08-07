@@ -924,7 +924,7 @@ brasero_track_data_cfg_get_path (GtkTreeModel *model,
 	return path;
 }
 
-BraseroFileNode *
+static BraseroFileNode *
 brasero_track_data_cfg_path_to_node (BraseroTrackDataCfg *self,
 				     GtkTreePath *path)
 {
@@ -1832,6 +1832,20 @@ brasero_track_data_cfg_sortable_iface_init (gpointer g_iface, gpointer data)
  * Track part
  */
 
+/**
+ * brasero_track_data_cfg_add:
+ * @track: a #BraseroTrackDataCfg
+ * @uri: a #gchar
+ * @parent: a #GtkTreePath or NULL
+ *
+ * Add a new file (with @uri as URI) under a directory (@parent).
+ * If @parent is NULL, the file is added to the root.
+ * Also if @uri is the path of a directory, this directory will be explored
+ * and all its children added to the tree.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successful, FALSE otherwise
+ **/
+
 gboolean
 brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 			    const gchar *uri,
@@ -1856,6 +1870,18 @@ brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 
 	return (brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (BRASERO_DATA_PROJECT (priv->tree)), uri, parent_node) != NULL);
 }
+
+/**
+ * brasero_track_data_cfg_add_empty_directory:
+ * @track: a #BraseroTrackDataCfg
+ * @name: a #gchar
+ * @parent: a #GtkTreePath or NULL
+ *
+ * Add a new empty directory (with @name as name) under another directory (@parent).
+ * If @parent is NULL, the file is added to the root.
+ *
+ * Return value: a #GtkTreePath which should be destroyed when not needed; NULL if the operation was not successful.
+ **/
 
 GtkTreePath *
 brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
@@ -1911,6 +1937,17 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 	return path;
 }
 
+/**
+ * brasero_track_data_cfg_remove:
+ * @track: a #BraseroTrackDataCfg
+ * @treepath: a #GtkTreePath
+ *
+ * Removes a file or a directory (as well as its children) from the tree.
+ * NOTE: some files cannot be removed like files from an imported session.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successful, FALSE otherwise
+ **/
+
 gboolean
 brasero_track_data_cfg_remove (BraseroTrackDataCfg *track,
 			       GtkTreePath *treepath)
@@ -1928,6 +1965,17 @@ brasero_track_data_cfg_remove (BraseroTrackDataCfg *track,
 	return TRUE;
 }
 
+/**
+ * brasero_track_data_cfg_rename:
+ * @track: a #BraseroTrackDataCfg
+ * @newname: a #gchar
+ * @treepath: a #GtkTreePath
+ *
+ * Renames the file in the tree pointed by @treepath.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successful, FALSE otherwise
+ **/
+
 gboolean
 brasero_track_data_cfg_rename (BraseroTrackDataCfg *track,
 			       const gchar *newname,
@@ -1943,6 +1991,15 @@ brasero_track_data_cfg_rename (BraseroTrackDataCfg *track,
 						 node,
 						 newname);
 }
+
+/**
+ * brasero_track_data_cfg_reset:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Completely empties @track and unloads any currently loaded session
+ *
+ * Return value: a #gboolean. TRUE if the operation was successful, FALSE otherwise
+ **/
 
 gboolean
 brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
@@ -1984,6 +2041,16 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 	return TRUE;
 }
 
+/**
+ * brasero_track_data_cfg_get_filtered_model:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Gets a GtkTreeModel which contains all the files that were
+ * automatically filtered while added directories were explored.
+ *
+ * Return value: a #GtkTreeModel. Unref when not needed.
+ **/
+
 GtkTreeModel *
 brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track)
 {
@@ -1996,6 +2063,18 @@ brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track)
 	g_object_ref (model);
 	return model;
 }
+
+/**
+ * brasero_track_data_cfg_restore:
+ * @track: a #BraseroTrackDataCfg
+ * @treepath: a #GtkTreePath
+ *
+ * Removes a file from the filtered file list (see brasero_track_data_cfg_get_filtered_model ())
+ * and re-adds it wherever it should be in the tree.
+ * @treepath is a #GtkTreePath associated with the #GtkTreeModel which holds the
+ * filtered files not the main tree.
+ *
+ **/
 
 void
 brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
@@ -2015,6 +2094,16 @@ brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
 	g_free (uri);
 }
 
+/**
+ * brasero_track_data_cfg_dont_filter_uri:
+ * @track: a #BraseroTrackDataCfg
+ * @uri: a #gchar
+ *
+ * Prevents @uri to be filtered while automatic exploration
+ * of added directories is performed.
+ *
+ **/
+
 void
 brasero_track_data_cfg_dont_filter_uri (BraseroTrackDataCfg *track,
 					const gchar *uri)
@@ -2030,6 +2119,15 @@ brasero_track_data_cfg_dont_filter_uri (BraseroTrackDataCfg *track,
 	brasero_data_project_restore_uri (BRASERO_DATA_PROJECT (priv->tree), uri);
 }
 
+/**
+ * brasero_track_data_cfg_get_restored_list:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Gets a list of URIs (as #gchar *) that were restored with brasero_track_data_cfg_restore ().
+ *
+ * Return value: a #GSList; free the list and its contents when not needed anymore.
+ **/
+
 GSList *
 brasero_track_data_cfg_get_restored_list (BraseroTrackDataCfg *track)
 {
@@ -2042,6 +2140,19 @@ brasero_track_data_cfg_get_restored_list (BraseroTrackDataCfg *track)
 	filtered = brasero_data_vfs_get_filtered_model (BRASERO_DATA_VFS (priv->tree));
 	return brasero_filtered_uri_get_restored_list (filtered);
 }
+
+/**
+ * brasero_track_data_cfg_load_medium:
+ * @track: a #BraseroTrackDataCfg
+ * @medium: a #BraseroMedium
+ * @error: a #GError
+ *
+ * Tries to load the contents of the last session of @medium so all its files will be included in the tree
+ * to perform a merge between files from the session and new added files.
+ * Errors are stored in @error.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successful, FALSE otherwise
+ **/
 
 gboolean
 brasero_track_data_cfg_load_medium (BraseroTrackDataCfg *track,
@@ -2057,6 +2168,15 @@ brasero_track_data_cfg_load_medium (BraseroTrackDataCfg *track,
 					      error);
 }
 
+/**
+ * brasero_track_data_cfg_unload_current_medium:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Unload the contents of the last session of the currently loaded medium.
+ * See brasero_track_data_cfg_load_medium ().
+ *
+ **/
+
 void
 brasero_track_data_cfg_unload_current_medium (BraseroTrackDataCfg *track)
 {
@@ -2067,6 +2187,16 @@ brasero_track_data_cfg_unload_current_medium (BraseroTrackDataCfg *track)
 	brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->tree));
 }
 
+/**
+ * brasero_track_data_cfg_get_current_medium:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Gets the currently loaded medium.
+ *
+ * Return value: a #BraseroMedium. NULL if no medium are currently loaded.
+ * Do not unref when the #BraseroMedium is not needed anymore.
+ **/
+
 BraseroMedium *
 brasero_track_data_cfg_get_current_medium (BraseroTrackDataCfg *track)
 {
@@ -2076,6 +2206,15 @@ brasero_track_data_cfg_get_current_medium (BraseroTrackDataCfg *track)
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 	return brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree));
 }
+
+/**
+ * brasero_track_data_cfg_get_available_media:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Gets a list of all the media that can be appended with new data and which have a session that can be loaded.
+ *
+ * Return value: a #GSList of #BraseroMedium. Free the list and unref its contents when the list is not needed anymore.
+ **/
 
 GSList *
 brasero_track_data_cfg_get_available_media (BraseroTrackDataCfg *track)
@@ -2771,6 +2910,22 @@ brasero_track_data_cfg_session_loaded_cb (BraseroDataSession *session,
 	brasero_track_changed (BRASERO_TRACK (self));
 }
 
+/**
+ * brasero_track_data_cfg_span:
+ * @track: a #BraseroTrackDataCfg
+ * @sectors: a #goffset
+ * @new_track: a #BraseroTrackData
+ *
+ * Creates a new #BraseroTrackData (stored in @new_track) from the files contained in @track. The sum of their sizes
+ * does not exceed @sectors. This allows to burn a tree on multiple discs. This function can be
+ * called repeatedly; in this case if some files were left out after the previous calls, the newly created BraseroTrackData
+ * is created with all or part of the remaining files.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if there is not anymore data.
+ * BRASERO_BURN_RETRY if the operation was successful and a new #BraseroTrackDataCfg was created.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
 			     goffset sectors,
@@ -2797,6 +2952,17 @@ brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
 	return BRASERO_BURN_RETRY;
 }
 
+/**
+ * brasero_track_data_cfg_span_again:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Checks whether some files were not included during calls to brasero_track_data_cfg_span ().
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if there is not anymore data.
+ * BRASERO_BURN_RETRY if the operation was successful and a new #BraseroTrackDataCfg was created.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_track_data_cfg_span_again (BraseroTrackDataCfg *track)
 {
@@ -2805,6 +2971,19 @@ brasero_track_data_cfg_span_again (BraseroTrackDataCfg *track)
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 	return brasero_data_project_span_again (BRASERO_DATA_PROJECT (priv->tree));
 }
+
+/**
+ * brasero_track_data_cfg_span_possible:
+ * @track: a #BraseroTrackDataCfg
+ * @sectors: a #goffset
+ *
+ * Checks if a new #BraseroTrackData can be created from the files remaining in the tree 
+ * after calls to brasero_track_data_cfg_span ().
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if there is not anymore data.
+ * BRASERO_BURN_RETRY if the operation was successful and a new #BraseroTrackDataCfg was created.
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
@@ -2822,6 +3001,13 @@ brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
 						   sectors);
 }
 
+/**
+ * brasero_track_data_cfg_span_stop:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Resets the list of files that were included after calls to brasero_track_data_cfg_span ().
+ **/
+
 void
 brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 {
@@ -2834,6 +3020,16 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 /**
  * This is to handle the icon for the image
  */
+
+/**
+ * brasero_track_data_cfg_get_icon_path:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Returns a path pointing to the currently selected icon file.
+ *
+ * Return value: a #gchar or NULL.
+ **/
+
 gchar *
 brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
 {
@@ -2847,6 +3043,15 @@ brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
 
 	return g_file_get_path (priv->image_file);
 }
+
+/**
+ * brasero_track_data_cfg_get_icon:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Returns the currently selected icon.
+ *
+ * Return value: a #GIcon or NULL.
+ **/
 
 GIcon *
 brasero_track_data_cfg_get_icon (BraseroTrackDataCfg *track)
@@ -2887,6 +3092,17 @@ brasero_track_data_cfg_get_scaled_icon_path (BraseroTrackDataCfg *track)
 
 	return path;
 }
+
+/**
+ * brasero_track_data_cfg_set_icon:
+ * @track: a #BraseroTrackDataCfg
+ * @icon_path: a #gchar
+ * @error: a #GError
+ *
+ * Sets the current icon.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successful, FALSE otherwise
+ **/
 
 gboolean
 brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
@@ -3380,6 +3596,14 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  0,
 			  G_TYPE_NONE);
 }
+
+/**
+ * brasero_track_data_cfg_new:
+ *
+ * Creates a new #BraseroTrackDataCfg.
+ *
+ * Return value: a new #BraseroTrackDataCfg.
+ **/
 
 BraseroTrackDataCfg *
 brasero_track_data_cfg_new (void)

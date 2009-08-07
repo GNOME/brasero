@@ -179,7 +179,7 @@ brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track);
 
 gboolean
 brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
-				 const gchar *path,
+				 const gchar *icon_path,
 				 GError **error);
 
 G_END_DECLS
