@@ -258,18 +258,35 @@ brasero_track_stream_get_size (BraseroTrack *track,
 			       goffset *block_size)
 {
 	BraseroTrackStreamPrivate *priv;
+	BraseroStreamFormat format;
 
 	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
 
-	if (blocks) {
-		guint64 length = 0;
+	format = brasero_track_stream_get_format (BRASERO_TRACK_STREAM (track));
+	if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (format)) {
+		if (blocks) {
+			guint64 length = 0;
 
-		brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
-		*blocks = length * 75LL / 1000000000LL;
+			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
+			*blocks = length * 75LL / 1000000000LL;
+		}
+
+		if (block_size)
+			*block_size = 2352;
 	}
+	else {
+		if (blocks) {
+			guint64 length = 0;
 
-	if (block_size)
-		*block_size = 2352;
+			/* This is based on a simple formula:
+			 * 4700000000 bytes means 2 hours */
+			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
+			*blocks = length * 47LL / 72000LL / 2048LL;
+		}
+
+		if (block_size)
+			*block_size = 2048;
+	}
 
 	return BRASERO_BURN_OK;
 }

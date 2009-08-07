@@ -776,16 +776,21 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 
 gchar *
 brasero_project_get_sectors_string (gint64 sectors,
-				    gboolean time_format)
+				    BraseroTrackType *type)
 {
 	gint64 size_bytes;
 
-	if (time_format) {
-		size_bytes = sectors * GST_SECOND / 75;
+	if (brasero_track_type_get_has_stream (type)) {
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type)))
+			/* This is an embarassing problem: this is an approximation
+			 * based on the fact that 2 hours = 4.3GiB */
+			size_bytes = sectors * 2048LL * 72000LL / 47LL;
+		else
+			size_bytes = sectors * GST_SECOND / 75LL;
 		return brasero_units_get_time_string (size_bytes, TRUE, FALSE);
 	}
 	else {
-		size_bytes = sectors * 2048;
+		size_bytes = sectors * 2048LL;
 		return g_format_size_for_display (size_bytes);
 	}
 }
@@ -814,7 +819,7 @@ brasero_project_update_project_size (BraseroProject *project)
 	session_type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (project->priv->session), session_type);
 
-	string = brasero_project_get_sectors_string (sectors, !brasero_track_type_get_has_data (session_type));
+	string = brasero_project_get_sectors_string (sectors, session_type);
 	brasero_track_type_free (session_type);
 
 	size_str = g_strdup_printf (_("Project estimated size: %s"), string);

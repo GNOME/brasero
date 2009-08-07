@@ -110,8 +110,20 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 	type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, type);
 
-	if (brasero_track_type_get_has_stream (type))
-		size_str = brasero_units_get_time_string (session_bytes, TRUE, FALSE);
+	if (brasero_track_type_get_has_stream (type)) {
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type))) {
+			guint64 free_time;
+
+			/* This is an embarassing problem: this is an approximation based on the fact that
+			 * 2 hours = 4.3GiB */
+			free_time = session_bytes * 72000LL / 47LL;
+			size_str = brasero_units_get_time_string (free_time,
+			                                          TRUE,
+			                                          TRUE);
+		}
+		else
+			size_str = brasero_units_get_time_string (session_bytes, TRUE, FALSE);
+	}
 	/* NOTE: this is perfectly fine as brasero_track_type_get_medium_type ()
 	 * will return BRASERO_MEDIUM_NONE if this is not a MEDIUM track type */
 	else if (brasero_track_type_get_medium_type (type) & BRASERO_MEDIUM_HAS_AUDIO)

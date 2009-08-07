@@ -556,6 +556,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 				       &data_blocks,
 				       &session_bytes);
 
+	/* Determine the size available for burning */
 	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
 		brasero_medium_get_free_space (medium,
 					       &size_bytes,
@@ -569,7 +570,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 		 * its free space would be 0. This is the best way to do it
 		 * instead of checking for a CLOSED medium as it allows the 
 		 * overwrite media to be appended or merged if need be. */
-		if ((!blocks || blocks > data_blocks)
+		if ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 		&& (brasero_burn_library_get_media_capabilities (media) & BRASERO_MEDIUM_REWRITABLE))
 			brasero_medium_get_capacity (medium,
 						     &size_bytes,
@@ -601,6 +602,18 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 
 	/* format the size */
 	if (brasero_track_type_get_has_stream (input)
+	&& BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
+		guint64 free_time;
+
+		/* This is an embarassing problem: this is an approximation
+		 * based on the fact that 2 hours = 4.3GiB */
+		free_time = size_bytes - session_bytes;
+		free_time = free_time * 72000LL / 47LL;
+		size_string = brasero_units_get_time_string (free_time,
+							     TRUE,
+							     TRUE);
+	}
+	else if (brasero_track_type_get_has_stream (input)
 	|| (brasero_track_type_get_has_medium (input)
 	&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)))
 		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes - session_bytes),
