@@ -968,7 +968,7 @@ brasero_disc_disc_session_import_response_cb (GtkButton *button,
 	g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, self);
 }
 
-static void
+static GtkAction *
 brasero_data_disc_import_button_new (BraseroDataDisc *self,
 				     BraseroMedium *medium)
 {
@@ -985,7 +985,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	if (!priv->manager)
-		return;
+		return NULL;
 
 	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 
@@ -1019,7 +1019,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 	action = gtk_action_group_get_action (priv->import_group, action_name);
 	if (!action) {
 		g_free (action_name);
-		return;
+		return NULL;
 	}
 
 	g_object_ref (medium);
@@ -1059,6 +1059,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 
 	g_free (description);
 	g_free (action_name);
+	return action;
 }
 
 static void
@@ -1300,6 +1301,7 @@ static BraseroDiscResult
 brasero_data_disc_set_track (BraseroDataDisc *disc,
 			     BraseroTrackDataCfg *track)
 {
+	BraseroMedium *loaded_medium;
 	BraseroDataDiscPrivate *priv;
 	BraseroStatus *status;
 	GtkWidget *message;
@@ -1323,6 +1325,7 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 		gtk_action_group_set_visible (priv->disc_group, TRUE);
 
 	/* Now let's take care of all the available sessions */
+	loaded_medium = brasero_track_data_cfg_get_current_medium (track);
 	if (!priv->import_group) {
 		GSList *iter;
 		GSList *list;
@@ -1336,9 +1339,15 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 		list = brasero_track_data_cfg_get_available_media (priv->project);
 		for (iter = list; iter; iter = iter->next) {
 			BraseroMedium *medium;
+			GtkAction *action;
 
 			medium = iter->data;
-			brasero_data_disc_import_button_new (BRASERO_DATA_DISC (disc), medium);
+			action = brasero_data_disc_import_button_new (BRASERO_DATA_DISC (disc), medium);
+			if (!action)
+				continue;
+
+			if (medium == loaded_medium)
+				gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), TRUE);
 		}
 		g_slist_foreach (list, (GFunc) g_object_unref, NULL);
 		g_slist_free (list);
