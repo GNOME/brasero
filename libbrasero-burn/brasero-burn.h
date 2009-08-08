@@ -107,7 +107,7 @@ brasero_burn_cancel (BraseroBurn *burn,
 
 BraseroBurnResult
 brasero_burn_status (BraseroBurn *burn,
-		     BraseroMedia *info,
+		     BraseroMedia *media,
 		     goffset *isosize,
 		     goffset *written,
 		     guint64 *rate);

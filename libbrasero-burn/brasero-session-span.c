@@ -82,6 +82,17 @@ brasero_session_span_get_available_medium_space (BraseroSessionSpan *session)
 	return available_blocks;
 }
 
+/**
+ * brasero_session_span_again:
+ * @session: a #BraseroSessionSpan
+ *
+ * Checks whether some data were not included during calls to brasero_session_span_next ().
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if there is not anymore data.
+ * BRASERO_BURN_RETRY if the operation was successful and a new #BraseroTrackDataCfg was created.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_session_span_again (BraseroSessionSpan *session)
 {
@@ -115,6 +126,19 @@ brasero_session_span_again (BraseroSessionSpan *session)
 
 	return (tracks != NULL)? BRASERO_BURN_RETRY:BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_session_span_possible:
+ * @session: a #BraseroSessionSpan
+ *
+ * Checks if a new #BraseroTrackData can be created from the files remaining in the tree 
+ * after calls to brasero_session_span_next (). The maximum size of the data will be the one
+ * of the medium inserted in the #BraseroDrive set for @session (see brasero_burn_session_set_burner ()).
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if there is not anymore data.
+ * BRASERO_BURN_RETRY if the operation was successful and a new #BraseroTrackDataCfg was created.
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_session_span_possible (BraseroSessionSpan *session)
@@ -165,6 +189,16 @@ brasero_session_span_possible (BraseroSessionSpan *session)
 	return BRASERO_BURN_RETRY;
 }
 
+/**
+ * brasero_session_span_start:
+ * @session: a #BraseroSessionSpan
+ *
+ * Get the object ready for spanning a #BraseroBurnSession object. This function
+ * must be called before brasero_session_span_next ().
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if successful.
+ **/
+
 BraseroBurnResult
 brasero_session_span_start (BraseroSessionSpan *session)
 {
@@ -182,6 +216,17 @@ brasero_session_span_start (BraseroSessionSpan *session)
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_session_span_next:
+ * @session: a #BraseroSessionSpan
+ *
+ * Sets the next batch of data to be burnt onto the medium inserted in the #BraseroDrive
+ * set for @session (see brasero_burn_session_set_burner ()). Its free space or it capacity
+ * will be used as the maximum amount of data to be burnt.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if successful.
+ **/
 
 BraseroBurnResult
 brasero_session_span_next (BraseroSessionSpan *session)
@@ -280,6 +325,14 @@ brasero_session_span_next (BraseroSessionSpan *session)
 	return (pushed? BRASERO_BURN_RETRY:BRASERO_BURN_ERR);
 }
 
+/**
+ * brasero_session_span_stop:
+ * @session: a #BraseroSessionSpan
+ *
+ * Ends and cleans a spanning operation started with brasero_session_span_start ().
+ *
+ **/
+
 void
 brasero_session_span_stop (BraseroSessionSpan *session)
 {
@@ -324,6 +377,14 @@ brasero_session_span_class_init (BraseroSessionSpanClass *klass)
 
 	object_class->finalize = brasero_session_span_finalize;
 }
+
+/**
+ * brasero_session_span_new:
+ *
+ * Creates a new #BraseroSessionSpan object.
+ *
+ * Return value: a #BraseroSessionSpan object
+ **/
 
 BraseroSessionSpan *
 brasero_session_span_new (void)

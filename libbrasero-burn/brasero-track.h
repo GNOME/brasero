@@ -81,10 +81,6 @@ struct _BraseroTrack
 
 GType brasero_track_get_type (void) G_GNUC_CONST;
 
-/**
- *
- */
-
 void
 brasero_track_changed (BraseroTrack *track);
 
@@ -129,10 +125,6 @@ brasero_track_get_checksum (BraseroTrack *track);
 
 BraseroChecksumType
 brasero_track_get_checksum_type (BraseroTrack *track);
-
-/**
- *
- */
 
 BraseroBurnResult
 brasero_track_tag_add (BraseroTrack *track,

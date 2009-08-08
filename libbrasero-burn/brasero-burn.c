@@ -161,6 +161,14 @@ brasero_burn_powermanagement (BraseroBurn *self,
 		brasero_uninhibit_suspend (priv->appcookie); 
 }
 
+/**
+ * brasero_burn_new:
+ *
+ *  Creates a new #BraseroBurn object.
+ *
+ * Return value: a #BraseroBurn object.
+ **/
+
 BraseroBurn *
 brasero_burn_new ()
 {
@@ -1181,6 +1189,20 @@ brasero_burn_action_changed (BraseroTask *task,
 	brasero_burn_action_changed_real (burn, action);
 }
 
+/**
+ * brasero_burn_get_action_string:
+ * @burn: a #BraseroBurn
+ * @action: a #BraseroBurnAction
+ * @string: a #gchar **
+ *
+ * This function returns the current action (in @string)  of
+ * an ongoing operation performed by @burn.
+ * @action is used to set a default string in case there was
+ * no string set by the backend to describe the current
+ * operation.
+ *
+ **/
+
 void
 brasero_burn_get_action_string (BraseroBurn *burn,
 				BraseroBurnAction action,
@@ -1199,6 +1221,24 @@ brasero_burn_get_action_string (BraseroBurn *burn,
 							    action,
 							    string);
 }
+
+/**
+ * brasero_burn_status:
+ * @burn: a #BraseroBurn
+ * @media: a #BraseroMedia or NULL
+ * @isosize: a #goffset or NULL
+ * @written: a #goffset or NULL
+ * @rate: a #guint64 or NULL
+ *
+ * Returns various information about the current operation 
+ * in @media (the current media type being burnt),
+ * @isosize (the size of the data being burnt), @written (the
+ * number of bytes having been written so far) and @rate
+ * (the speed at which data are written).
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if there is
+ * an ongoing operation; BRASERO_BURN_NOT_READY otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_status (BraseroBurn *burn,
@@ -1692,7 +1732,7 @@ start:
 	return BRASERO_BURN_ERR;
 }
 
-/* FIXME: for the moment we don't allow for mixed CD type */
+/* FIXME: at the moment we don't allow for mixed CD type */
 static BraseroBurnResult
 brasero_burn_run_tasks (BraseroBurn *burn,
 			gboolean erase_allowed,
@@ -2256,6 +2296,20 @@ brasero_burn_record_session (BraseroBurn *burn,
 	return result;
 }
 
+/**
+ * brasero_burn_check:
+ * @burn: a #BraseroBurn
+ * @session: a #BraseroBurnSession
+ * @error: a #GError
+ *
+ * Checks the integrity of a medium according to the parameters
+ * set in @session. The medium must be inserted in the #BraseroDrive
+ * set as the source of a #BraseroTrackDisc track inserted in @session.
+ *
+ * Return value: a #BraseroBurnResult. The result of the operation. 
+ * BRASERO_BURN_OK if it was successful.
+ **/
+
 BraseroBurnResult
 brasero_burn_check (BraseroBurn *self,
 		    BraseroBurnSession *session,
@@ -2515,6 +2569,19 @@ again:
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_record:
+ * @burn: a #BraseroBurn
+ * @session: a #BraseroBurnSession
+ * @error: a #GError
+ *
+ * Burns or creates a disc image according to the parameters
+ * set in @session.
+ *
+ * Return value: a #BraseroBurnResult. The result of the operation. 
+ * BRASERO_BURN_OK if it was successful.
+ **/
+
 BraseroBurnResult 
 brasero_burn_record (BraseroBurn *burn,
 		     BraseroBurnSession *session,
@@ -2668,6 +2735,20 @@ brasero_burn_blank_real (BraseroBurn *burn, GError **error)
 	return result;
 }
 
+/**
+ * brasero_burn_blank:
+ * @burn: a #BraseroBurn
+ * @session: a #BraseroBurnSession
+ * @error: a #GError
+ *
+ * Blanks a medium according to the parameters
+ * set in @session. The medium must be inserted in the #BraseroDrive
+ * set with brasero_burn_session_set_burner ().
+ *
+ * Return value: a #BraseroBurnResult. The result of the operation. 
+ * BRASERO_BURN_OK if it was successful.
+ **/
+
 BraseroBurnResult
 brasero_burn_blank (BraseroBurn *burn,
 		    BraseroBurnSession *session,
@@ -2734,6 +2815,19 @@ end:
 
 	return result;
 }
+
+/**
+ * brasero_burn_cancel:
+ * @burn: a #BraseroBurn
+ * @protect: a #gboolean
+ *
+ * Cancels any ongoing operation. If @protect is TRUE then
+ * cancellation will not take place for a "critical" task, a task whose interruption
+ * could damage the medium or the drive.
+ *
+ * Return value: a #BraseroBurnResult. The result of the operation. 
+ * BRASERO_BURN_OK if it was successful.
+ **/
 
 BraseroBurnResult
 brasero_burn_cancel (BraseroBurn *burn, gboolean protect)
