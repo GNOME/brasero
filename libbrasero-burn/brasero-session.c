@@ -140,7 +140,7 @@ brasero_session_settings_clean (BraseroSessionSetting *settings)
 	memset (settings, 0, sizeof (BraseroSessionSetting));
 }
 
-void
+static void
 brasero_session_settings_copy (BraseroSessionSetting *dest,
 			       BraseroSessionSetting *original)
 {
@@ -231,6 +231,21 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 	}
 }
 
+
+/**
+ * brasero_burn_session_add_track:
+ * @session: a #BraseroBurnSession
+ * @new_track: a #BraseroTrack or NULL
+ * @sibling: a #BraseroTrack or NULL
+ *
+ * Inserts a new track after @sibling or appended if @sibling is NULL. If @track is NULL then all tracks
+ * already in @session will be removed.
+ * NOTE: if there are already #BraseroTrack objects inserted in the session and if they are not
+ * of the same type as @new_track then they will be removed before the insertion of @new_track.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if the track was successfully inserted or BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_add_track (BraseroBurnSession *self,
 				BraseroTrack *new_track,
@@ -298,6 +313,17 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_move_track:
+ * @session: a #BraseroBurnSession
+ * @track: a #BraseroTrack
+ * @sibling: a #BraseroTrack or NULL
+ *
+ * Moves @track after @sibling; if @sibling is NULL then it is appended.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if the track was successfully moved or BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_move_track (BraseroBurnSession *session,
 				 BraseroTrack *track,
@@ -339,6 +365,16 @@ brasero_burn_session_move_track (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_remove_track:
+ * @session: a #BraseroBurnSession
+ * @track: a #BraseroTrack
+ *
+ * Removes @track from @session.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if the track was successfully removed or BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_remove_track (BraseroBurnSession *session,
 				   BraseroTrack *track)
@@ -367,6 +403,15 @@ brasero_burn_session_remove_track (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_get_tracks:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the list of #BraseroTrack added to @session.
+ *
+ * Return value: a #GSList or #BraseroTrack object. Do not unref the objects in the list nor destroy the list.
+ **/
+
 GSList *
 brasero_burn_session_get_tracks (BraseroBurnSession *self)
 {
@@ -378,6 +423,19 @@ brasero_burn_session_get_tracks (BraseroBurnSession *self)
 
 	return priv->tracks;
 }
+
+/**
+ * brasero_burn_session_get_status:
+ * @session: a #BraseroBurnSession
+ * @status: a #BraseroTrackStatus
+ *
+ * Sets @status to reflect whether @session is ready to be used.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful
+ * BRASERO_BURN_NOT_READY if @track needs more time for processing
+ * BRASERO_BURN_ERR if something is wrong or if it is empty
+ **/
 
 BraseroBurnResult
 brasero_burn_session_get_status (BraseroBurnSession *session,
@@ -435,6 +493,20 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_get_size:
+ * @session: a #BraseroBurnSession
+ * @blocks: a #goffset or NULL
+ * @bytes: a #goffset or NULL
+ *
+ * Returns the size of the data contained by @session in bytes or in sectors
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful
+ * BRASERO_BURN_NOT_READY if @track needs more time for processing the size
+ * BRASERO_BURN_ERR if something is wrong or if it is empty
+ **/
+
 BraseroBurnResult
 brasero_burn_session_get_size (BraseroBurnSession *session,
 			       goffset *blocks,
@@ -479,6 +551,17 @@ brasero_burn_session_get_size (BraseroBurnSession *session,
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_get_input_type:
+ * @session: a #BraseroBurnSession
+ * @type: a #BraseroTrackType or NULL
+ *
+ * Sets @type to reflect the type of data contained in @session
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful
+ **/
 
 BraseroBurnResult
 brasero_burn_session_get_input_type (BraseroBurnSession *self,
@@ -528,6 +611,15 @@ brasero_burn_session_dest_media_removed (BraseroDrive *drive,
 		       0,
 		       medium);
 }
+
+/**
+ * brasero_burn_session_set_burner:
+ * @session: a #BraseroBurnSession
+ * @drive: a #BraseroDrive
+ *
+ * Sets the #BraseroDrive that should be used to burn the session contents.
+ *
+ **/
 
 void
 brasero_burn_session_set_burner (BraseroBurnSession *self,
@@ -587,6 +679,15 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 		g_object_unref (former);
 }
 
+/**
+ * brasero_burn_session_get_burner:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the #BraseroDrive that should be used to burn the session contents.
+ *
+ * Return value: a #BraseroDrive or NULL. Do not unref after use.
+ **/
+
 BraseroDrive *
 brasero_burn_session_get_burner (BraseroBurnSession *self)
 {
@@ -598,8 +699,22 @@ brasero_burn_session_get_burner (BraseroBurnSession *self)
 	return priv->settings->burner;
 }
 
+/**
+ * brasero_burn_session_set_rate:
+ * @session: a #BraseroBurnSession
+ * @rate: a #guint64
+ *
+ * Sets the speed at which the medium should be burnt.
+ * NOTE: before using this function a #BraseroDrive should have been
+ * set with brasero_burn_session_set_burner ().
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful; BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
-brasero_burn_session_set_rate (BraseroBurnSession *self, guint64 rate)
+brasero_burn_session_set_rate (BraseroBurnSession *self,
+                               guint64 rate)
 {
 	BraseroBurnSessionPrivate *priv;
 
@@ -613,6 +728,17 @@ brasero_burn_session_set_rate (BraseroBurnSession *self, guint64 rate)
 	priv->settings->rate = rate;
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_get_rate:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the speed at which the medium should be burnt.
+ * NOTE: before using this function a #BraseroDrive should have been
+ * set with brasero_burn_session_set_burner ().
+ *
+ * Return value: a #guint64 or 0.
+ **/
 
 guint64
 brasero_burn_session_get_rate (BraseroBurnSession *self)
@@ -637,9 +763,23 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 }
 
 /**
- * This function returns a path only if we should output to a file image
- * and not burn.
- */
+ * brasero_burn_session_get_output:
+ * @session: a #BraseroBurnSession
+ * @image: a #gchar or NULL
+ * @toc: a #gchar or NULL
+ *
+ * When the contents of @session should be written to a
+ * file then this function returns the image path (and if
+ * necessary a toc path).
+ * @image and @toc should be freed if not used anymore.
+ *
+ * NOTE: before using this function a #BraseroDrive should have been
+ * set with brasero_burn_session_set_burner () and it should be the
+ * fake drive (see brasero_drive_is_fake ()).
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful; BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_session_get_output (BraseroBurnSession *self,
@@ -712,6 +852,20 @@ brasero_burn_session_get_output_path_real (BraseroBurnSession *self,
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_get_output_format:
+ * @session: a #BraseroBurnSession
+ *
+ * When the contents of @session should be written to a
+ * file then this function returns the format of the image to write.
+ *
+ * NOTE: before using this function a #BraseroDrive should have been
+ * set with brasero_burn_session_set_burner () and it should be the
+ * fake drive (see brasero_drive_is_fake ()).
+ *
+ * Return value: a #BraseroImageFormat. The format of the image to be written.
+ **/
 
 BraseroImageFormat
 brasero_burn_session_get_output_format (BraseroBurnSession *self)
@@ -828,6 +982,25 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_set_image_output_full:
+ * @session: a #BraseroBurnSession
+ * @format: a #BraseroImageFormat
+ * @image: a #gchar or NULL
+ * @toc: a #gchar or NULL
+ *
+ * When the contents of @session should be written to a
+ * file, this function sets the different parameters of this
+ * image like its path (and the one of the associated toc if
+ * necessary) and its format.
+ *
+ * NOTE: after a call to this function the #BraseroDrive for
+ * @session will be the fake #BraseroDrive.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it was successfully set;
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 					    BraseroImageFormat format,
@@ -843,8 +1016,16 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 }
 
 /**
+ * brasero_burn_session_set_tmpdir:
+ * @session: a #BraseroBurnSession
+ * @path: a #gchar or NULL
  *
- */
+ * Sets the path of the directory in which to write temporary directories and files.
+ * If set to NULL then the result of g_get_tmp_dir () will be used.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it was successfully set;
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
@@ -871,6 +1052,15 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_get_tmpdir:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the path of the directory in which to write temporary directories and files.
+ *
+ * Return value: a #gchar. The path to the temporary directory.
+ **/
+
 const gchar *
 brasero_burn_session_get_tmpdir (BraseroBurnSession *self)
 {
@@ -881,6 +1071,21 @@ brasero_burn_session_get_tmpdir (BraseroBurnSession *self)
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	return priv->settings->tmpdir? priv->settings->tmpdir:g_get_tmp_dir ();
 }
+
+/**
+ * brasero_burn_session_get_tmp_dir:
+ * @session: a #BraseroBurnSession
+ * @path: a #gchar or NULL
+ * @error: a #GError
+ *
+ * Creates then returns (in @path) a temporary directory at the proper location.
+ * On error, @error is set appropriately.
+ * See brasero_burn_session_set_tmpdir ().
+ * This function is used internally and is not public API.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it was successfully set;
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
@@ -930,6 +1135,23 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_get_tmp_file:
+ * @session: a #BraseroBurnSession
+ * @suffix: a #gchar
+ * @path: a #gchar or NULL
+ * @error: a #GError
+ *
+ * Creates then returns (in @path) a temporary file at the proper location. Its name
+ * will be appended with suffix.
+ * On error, @error is set appropriately.
+ * See brasero_burn_session_set_tmpdir ().
+ * This function is used internally and is not public API.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it was successfully set;
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
@@ -1027,6 +1249,10 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 	return retval;
 }
 
+/**
+ * This function is used internally and is not public API
+ */
+
 BraseroBurnResult
 brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 				    BraseroImageFormat format,
@@ -1084,6 +1310,15 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
  * used to modify session flags.
  */
 
+/**
+ * brasero_burn_session_set_flags:
+ * @session: a #BraseroBurnSession
+ * @flags: a #BraseroBurnFlag
+ *
+ * Replaces the current flags set in @session with @flags.
+ *
+ **/
+
 void
 brasero_burn_session_set_flags (BraseroBurnSession *self,
 			        BraseroBurnFlag flags)
@@ -1101,6 +1336,15 @@ brasero_burn_session_set_flags (BraseroBurnSession *self,
 		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
 		       0);
 }
+
+/**
+ * brasero_burn_session_add_flag:
+ * @session: a #BraseroBurnSession
+ * @flags: a #BraseroBurnFlag
+ *
+ * Merges the current flags set in @session with @flags.
+ *
+ **/
 
 void
 brasero_burn_session_add_flag (BraseroBurnSession *self,
@@ -1120,6 +1364,15 @@ brasero_burn_session_add_flag (BraseroBurnSession *self,
 		       0);
 }
 
+/**
+ * brasero_burn_session_remove_flag:
+ * @session: a #BraseroBurnSession
+ * @flags: a #BraseroBurnFlag
+ *
+ * Removes @flags from the current flags set for @session.
+ *
+ **/
+
 void
 brasero_burn_session_remove_flag (BraseroBurnSession *self,
 				  BraseroBurnFlag flag)
@@ -1138,6 +1391,15 @@ brasero_burn_session_remove_flag (BraseroBurnSession *self,
 		       0);
 }
 
+/**
+ * brasero_burn_session_get_flags:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the current flags set for @session.
+ *
+ * Return value: a #BraseroBurnFlag.
+ **/
+
 BraseroBurnFlag
 brasero_burn_session_get_flags (BraseroBurnSession *self)
 {
@@ -1152,7 +1414,16 @@ brasero_burn_session_get_flags (BraseroBurnSession *self)
 /**
  * Used to set the label or the title of an album. 
  */
- 
+
+/**
+ * brasero_burn_session_set_label:
+ * @session: a #BraseroBurnSession
+ * @label: a #gchar
+ *
+ * Sets the label for @session.
+ *
+ **/
+
 void
 brasero_burn_session_set_label (BraseroBurnSession *self,
 				const gchar *label)
@@ -1189,6 +1460,15 @@ brasero_burn_session_set_label (BraseroBurnSession *self,
 			priv->settings->label = g_strdup (label);
 	}
 }
+
+/**
+ * brasero_burn_session_get_label:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the label (a string) set for @session.
+ *
+ * Return value: a #gchar or NULL. Do not free after use.
+ **/
 
 const gchar *
 brasero_burn_session_get_label (BraseroBurnSession *self)
@@ -1918,6 +2198,14 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  0);
 }
+
+/**
+ * brasero_burn_session_new:
+ *
+ * Returns a new #BraseroBurnSession object.
+ *
+ * Return value: a #BraseroBurnSession.
+ **/
 
 BraseroBurnSession *
 brasero_burn_session_new ()

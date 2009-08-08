@@ -99,7 +99,7 @@ BraseroBurnSession *brasero_burn_session_new ();
 
 BraseroBurnResult
 brasero_burn_session_add_track (BraseroBurnSession *session,
-				BraseroTrack *track,
+				BraseroTrack *new_track,
 				BraseroTrack *sibling);
 
 BraseroBurnResult
@@ -158,7 +158,7 @@ brasero_burn_session_get_burner (BraseroBurnSession *session);
 
 void
 brasero_burn_session_set_burner (BraseroBurnSession *session,
-				 BraseroDrive *burner);
+				 BraseroDrive *drive);
 
 BraseroBurnResult
 brasero_burn_session_set_image_output_full (BraseroBurnSession *session,
@@ -181,15 +181,15 @@ brasero_burn_session_get_output_format (BraseroBurnSession *session);
 
 void
 brasero_burn_session_set_flags (BraseroBurnSession *session,
-			        BraseroBurnFlag flag);
+			        BraseroBurnFlag flags);
 
 void
 brasero_burn_session_add_flag (BraseroBurnSession *session,
-			       BraseroBurnFlag flag);
+			       BraseroBurnFlag flags);
 
 void
 brasero_burn_session_remove_flag (BraseroBurnSession *session,
-				  BraseroBurnFlag flag);
+				  BraseroBurnFlag flags);
 
 BraseroBurnFlag
 brasero_burn_session_get_flags (BraseroBurnSession *session);
