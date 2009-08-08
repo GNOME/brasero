@@ -251,6 +251,7 @@ brasero_track_get_checksum_type (BraseroTrack *track)
 /**
  * Can be used to set arbitrary data
  */
+
 static void
 brasero_track_tag_value_free (gpointer user_data)
 {
@@ -267,7 +268,7 @@ brasero_track_tag_value_free (gpointer user_data)
  * @value: a #GValue
  *
  * Associates a new @tag with a track. This can be used
- * to pass arbitrary information for plugin, like parameters
+ * to pass arbitrary information for plugins, like parameters
  * for video discs, ...
  * See brasero-tags.h for a list of knowns tags.
  *

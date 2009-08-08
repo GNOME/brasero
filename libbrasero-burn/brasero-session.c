@@ -585,10 +585,6 @@ brasero_burn_session_get_input_type (BraseroBurnSession *self,
 	return BRASERO_BURN_OK;
 }
 
-/**
- *
- */
-
 static void
 brasero_burn_session_dest_media_added (BraseroDrive *drive,
 				       BraseroMedium *medium,
@@ -1490,6 +1486,19 @@ brasero_burn_session_tag_value_free (gpointer user_data)
 	g_free (value);
 }
 
+/**
+ * brasero_burn_session_tag_remove:
+ * @session: a #BraseroBurnSession
+ * @tag: a #gchar *
+ *
+ * Removes a value associated with @session through
+ * brasero_session_tag_add ().
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the retrieval was successful
+ * BRASERO_BURN_ERR otherwise
+ **/
+
 BraseroBurnResult
 brasero_burn_session_tag_remove (BraseroBurnSession *self,
 				 const gchar *tag)
@@ -1505,6 +1514,22 @@ brasero_burn_session_tag_remove (BraseroBurnSession *self,
 	g_hash_table_remove (priv->tags, tag);
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_tag_add:
+ * @session: a #BraseroBurnSession
+ * @tag: a #gchar *
+ * @value: a #GValue *
+ *
+ * Associates a new @tag with @session. This can be used
+ * to pass arbitrary information for plugins, like parameters
+ * for video discs, ...
+ * See brasero-tags.h for a list of knowns tags.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_session_tag_add (BraseroBurnSession *self,
@@ -1524,6 +1549,21 @@ brasero_burn_session_tag_add (BraseroBurnSession *self,
 	g_hash_table_insert (priv->tags, g_strdup (tag), value);
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_tag_lookup:
+ * @session: a #BraseroBurnSession
+ * @tag: a #gchar *
+ * @value: a #GValue
+ *
+ * Retrieves a value associated with @session through
+ * brasero_session_tag_add () and stores it in @value. Do
+ * not destroy @value afterwards as it is not a copy.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the retrieval was successful
+ * BRASERO_BURN_ERR otherwise
+ **/
 
 BraseroBurnResult
 brasero_burn_session_tag_lookup (BraseroBurnSession *self,
@@ -1689,10 +1729,6 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 
 	return BRASERO_BURN_RETRY;
 }
-
-/**
- *
- */
 
 gboolean
 brasero_burn_session_is_dest_file (BraseroBurnSession *self)
@@ -2142,6 +2178,14 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	klass->set_output_image = brasero_burn_session_set_output_image_real;
 
 	/* This is to delay the setting of track source until we know all settings */
+	/**
+ 	* BraseroBurnSession::output-changed:
+ 	* @session: the object which received the signal
+  	* @former_medium: the medium which was previously set
+	*
+ 	* This signal gets emitted when the medium to burn to changed.
+ 	*
+ 	*/
 	brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("output_changed",
 			  BRASERO_TYPE_BURN_SESSION,
@@ -2153,6 +2197,14 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_MEDIUM);
+	/**
+ 	* BraseroBurnSession::track-added:
+ 	* @session: the object which received the signal
+  	* @track: the track that was added
+	*
+ 	* This signal gets emitted when a track is added to @session.
+ 	*
+ 	*/
 	brasero_burn_session_signals [TRACK_ADDED_SIGNAL] =
 	    g_signal_new ("track_added",
 			  BRASERO_TYPE_BURN_SESSION,
@@ -2164,6 +2216,15 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_TRACK);
+	/**
+ 	* BraseroBurnSession::track-removed:
+ 	* @session: the object which received the signal
+  	* @track: the track that was removed
+	* @former_position: the former position of @track
+	*
+ 	* This signal gets emitted when a track is removed from @session.
+ 	*
+ 	*/
 	brasero_burn_session_signals [TRACK_REMOVED_SIGNAL] =
 	    g_signal_new ("track_removed",
 			  BRASERO_TYPE_BURN_SESSION,
@@ -2176,6 +2237,14 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  2,
 			  BRASERO_TYPE_TRACK,
 			  G_TYPE_UINT);
+	/**
+ 	* BraseroBurnSession::track-changed:
+ 	* @session: the object which received the signal
+  	* @track: the track that changed
+	*
+ 	* This signal gets emitted when the contents of a track changed.
+ 	*
+ 	*/
 	brasero_burn_session_signals [TRACK_CHANGED_SIGNAL] =
 	    g_signal_new ("track_changed",
 			  BRASERO_TYPE_BURN_SESSION,
@@ -2187,6 +2256,13 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_TRACK);
+	/**
+ 	* BraseroBurnSession::flags-changed:
+ 	* @session: the object which received the signal
+	*
+ 	* This signal gets emitted when the flags changed for @session.
+ 	*
+ 	*/
 	brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL] =
 	    g_signal_new ("flags_changed",
 			  BRASERO_TYPE_BURN_SESSION,

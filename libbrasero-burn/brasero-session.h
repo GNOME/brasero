@@ -70,12 +70,6 @@ struct _BraseroBurnSessionClass {
 							 gchar **toc);
 	BraseroImageFormat	(*get_output_format)	(BraseroBurnSession *session);
 
-	/**
-	 * GObject signals could be used to warned of individual property
-	 * changes but since changing one property could change others
-	 * it's better to have one global signal and dialogs asking for
-	 * the session properties they are interested in.
-	 */
 	void			(*flags_changed)	(BraseroBurnSession *session);
 	void			(*track_added)		(BraseroBurnSession *session,
 							 BraseroTrack *track);
@@ -175,6 +169,20 @@ BraseroImageFormat
 brasero_burn_session_get_output_format (BraseroBurnSession *session);
 
 
+const gchar *
+brasero_burn_session_get_label (BraseroBurnSession *session);
+
+void
+brasero_burn_session_set_label (BraseroBurnSession *session,
+				const gchar *label);
+
+BraseroBurnResult
+brasero_burn_session_set_rate (BraseroBurnSession *session,
+			       guint64 rate);
+
+guint64
+brasero_burn_session_get_rate (BraseroBurnSession *session);
+
 /**
  * Session flags
  */
@@ -204,21 +212,6 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *session,
 				 const gchar *path);
 const gchar *
 brasero_burn_session_get_tmpdir (BraseroBurnSession *session);
-
-/**
- * Allow to save a whole session settings/source and restore it later.
- * (mostly used internally)
- */
-
-void
-brasero_burn_session_push_settings (BraseroBurnSession *session);
-void
-brasero_burn_session_pop_settings (BraseroBurnSession *session);
-
-void
-brasero_burn_session_push_tracks (BraseroBurnSession *session);
-BraseroBurnResult
-brasero_burn_session_pop_tracks (BraseroBurnSession *session);
 
 /**
  * Test the supported or compulsory flags for a given session
@@ -266,6 +259,7 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session);
 
 /**
  * This is to log a session
+ * (used internally)
  */
 
 const gchar *
@@ -289,20 +283,21 @@ brasero_burn_session_log (BraseroBurnSession *session,
 			  const gchar *format,
 			  ...);
 
-
-const gchar *
-brasero_burn_session_get_label (BraseroBurnSession *session);
+/**
+ * Allow to save a whole session settings/source and restore it later.
+ * (used internally)
+ */
 
 void
-brasero_burn_session_set_label (BraseroBurnSession *session,
-				const gchar *label);
+brasero_burn_session_push_settings (BraseroBurnSession *session);
+void
+brasero_burn_session_pop_settings (BraseroBurnSession *session);
 
+void
+brasero_burn_session_push_tracks (BraseroBurnSession *session);
 BraseroBurnResult
-brasero_burn_session_set_rate (BraseroBurnSession *session,
-			       guint64 rate);
+brasero_burn_session_pop_tracks (BraseroBurnSession *session);
 
-guint64
-brasero_burn_session_get_rate (BraseroBurnSession *session);
 
 G_END_DECLS
 

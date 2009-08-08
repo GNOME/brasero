@@ -137,6 +137,23 @@ brasero_burn_caps_get_blanking_flags_real (BraseroBurnCaps *caps,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_get_blank_flags:
+ * @session: a #BraseroBurnSession
+ * @supported: a #BraseroBurnFlag
+ * @compulsory: a #BraseroBurnFlag
+ *
+ * Given the various parameters stored in @session,
+ * stored in @supported and @compulsory, the flags
+ * that can be used (@supported) and must be used
+ * (@compulsory) when blanking the medium in the
+ * #BraseroDrive (set with brasero_burn_session_set_burner ()).
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the retrieval was successful.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_get_blank_flags (BraseroBurnSession *session,
 				      BraseroBurnFlag *supported,
@@ -232,6 +249,20 @@ brasero_burn_caps_can_blank_real (BraseroBurnCaps *self,
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
 
+/**
+ * brasero_burn_session_can_blank:
+ * @session: a #BraseroBurnSession
+ *
+ * Given the various parameters stored in @session, this
+ * function checks whether the medium in the
+ * #BraseroDrive (set with brasero_burn_session_set_burner ())
+ * can be blanked.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it is possible.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_can_blank (BraseroBurnSession *session)
 {
@@ -257,10 +288,6 @@ brasero_burn_session_can_blank (BraseroBurnSession *session)
 
 	return result;
 }
-
-/**
- *
- */
 
 static void
 brasero_caps_link_get_record_flags (BraseroCapsLink *link,
@@ -602,6 +629,24 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 				       io_flags);
 }
 
+/**
+ * brasero_burn_session_input_supported:
+ * @session: a #BraseroBurnSession
+ * @input: a #BraseroTrackType
+ * @use_flags: a #gboolean
+ *
+ * Given the various parameters stored in @session, this
+ * function checks whether a session with the data type
+ * @type could be burnt to the medium in the #BraseroDrive (set 
+ * through brasero_burn_session_set_burner ()).
+ * If @use_flags is TRUE, then flags are taken into account
+ * and are not if it is FALSE.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it is possible.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_input_supported (BraseroBurnSession *session,
 				      BraseroTrackType *input,
@@ -667,7 +712,7 @@ brasero_burn_session_input_supported (BraseroBurnSession *session,
  * @output: a #BraseroTrackType *
  *
  * Make sure that the image type or medium type defined in @output can be
- * created/burnt given the parameters set in @session.
+ * created/burnt given the parameters and the current data set in @session.
  *
  * Return value: BRASERO_BURN_OK if the medium type or the image type can be used as an output.
  **/
@@ -841,6 +886,23 @@ brasero_burn_session_get_tmp_image_type_same_src_dest (BraseroBurnSession *sessi
 	return result;
 }
 
+/**
+ * brasero_burn_session_can_burn:
+ * @session: a #BraseroBurnSession
+ * @use_flags: a #gboolean
+ *
+ * Given the various parameters stored in @session, this
+ * function checks whether the data contained in @session
+ * can be burnt to the medium in the #BraseroDrive (set 
+ * through brasero_burn_session_set_burner ()).
+ * If @use_flags is set to TRUE the flags are taken into
+ * account, otherwise they are not.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it is possible.
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
 BraseroBurnResult
 brasero_burn_session_can_burn (BraseroBurnSession *session,
 			       gboolean use_flags)
@@ -918,6 +980,16 @@ brasero_burn_session_can_burn (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_burn_session_get_required_media_type:
+ * @session: a #BraseroBurnSession
+ *
+ * Return the medium types that could be used to burn
+ * @session.
+ *
+ * Return value: a #BraseroMedia
+ **/
+
 BraseroMedia
 brasero_burn_session_get_required_media_type (BraseroBurnSession *session)
 {
@@ -991,6 +1063,17 @@ brasero_burn_session_get_required_media_type (BraseroBurnSession *session)
 	return required_media;
 }
 
+/**
+ * brasero_burn_session_get_possible_output_formats:
+ * @session: a #BraseroBurnSession
+ * @formats: a #BraseroImageFormat
+ *
+ * Returns the disc image types that could be set to create
+ * an image given the current state of @session.
+ *
+ * Return value: a #guint. The number of formats available.
+ **/
+
 guint
 brasero_burn_session_get_possible_output_formats (BraseroBurnSession *session,
 						  BraseroImageFormat *formats)
@@ -1023,6 +1106,16 @@ brasero_burn_session_get_possible_output_formats (BraseroBurnSession *session,
 
 	return num;
 }
+
+/**
+ * brasero_burn_session_get_default_output_format:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the default disc image type that should be set to create
+ * an image given the current state of @session.
+ *
+ * Return value: a #BraseroImageFormat
+ **/
 
 BraseroImageFormat
 brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
@@ -1544,6 +1637,23 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 	
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_burn_session_get_burn_flags:
+ * @session: a #BraseroBurnSession
+ * @supported: a #BraseroBurnFlag or NULL
+ * @compulsory: a #BraseroBurnFlag or NULL
+ *
+ * Given the various parameters stored in @session, this function
+ * stores:
+ * - the flags that can be used (@supported)
+ * - the flags that must be used (@compulsory)
+ * when writing @session to a disc.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the retrieval was successful.
+ * BRASERO_BURN_ERR otherwise.
+ **/
 
 BraseroBurnResult
 brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
