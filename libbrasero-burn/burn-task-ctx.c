@@ -40,6 +40,7 @@
 
 #include "burn-basics.h"
 #include "brasero-session.h"
+#include "brasero-session-helper.h"
 #include "burn-debug.h"
 #include "burn-task-ctx.h"
 

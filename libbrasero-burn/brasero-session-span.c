@@ -36,6 +36,7 @@
 #include "brasero-medium.h"
 
 #include "burn-debug.h"
+#include "brasero-session-helper.h"
 #include "brasero-track.h"
 #include "brasero-track-data.h"
 #include "brasero-track-data-cfg.h"

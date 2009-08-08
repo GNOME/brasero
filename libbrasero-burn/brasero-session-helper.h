@@ -96,6 +96,47 @@ BraseroBurnResult
 brasero_burn_session_get_tmp_image_type_same_src_dest (BraseroBurnSession *session,
                                                        BraseroTrackType *image_type);
 
+/**
+ * This is to log a session
+ * (used internally)
+ */
+
+const gchar *
+brasero_burn_session_get_log_path (BraseroBurnSession *session);
+
+void
+brasero_burn_session_set_log_path (BraseroBurnSession *session,
+				   const gchar *session_path);
+gboolean
+brasero_burn_session_start (BraseroBurnSession *session);
+
+void
+brasero_burn_session_stop (BraseroBurnSession *session);
+
+void
+brasero_burn_session_logv (BraseroBurnSession *session,
+			   const gchar *format,
+			   va_list arg_list);
+void
+brasero_burn_session_log (BraseroBurnSession *session,
+			  const gchar *format,
+			  ...);
+
+/**
+ * Allow to save a whole session settings/source and restore it later.
+ * (used internally)
+ */
+
+void
+brasero_burn_session_push_settings (BraseroBurnSession *session);
+void
+brasero_burn_session_pop_settings (BraseroBurnSession *session);
+
+void
+brasero_burn_session_push_tracks (BraseroBurnSession *session);
+BraseroBurnResult
+brasero_burn_session_pop_tracks (BraseroBurnSession *session);
+
 G_END_DECLS
 
 #endif
