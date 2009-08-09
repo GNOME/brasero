@@ -103,19 +103,19 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *cfg,
 				  BraseroBurnFlag flags);
 gboolean
 brasero_session_cfg_is_supported (BraseroSessionCfg *cfg,
-				  BraseroBurnFlag flags);
+				  BraseroBurnFlag flag);
 gboolean
 brasero_session_cfg_is_compulsory (BraseroSessionCfg *cfg,
-				   BraseroBurnFlag flags);
+				   BraseroBurnFlag flag);
 
 gboolean
 brasero_session_cfg_has_default_output_path (BraseroSessionCfg *cfg);
 
 void
-brasero_session_cfg_enable (BraseroSessionCfg *self);
+brasero_session_cfg_enable (BraseroSessionCfg *cfg);
 
 void
-brasero_session_cfg_disable (BraseroSessionCfg *self);
+brasero_session_cfg_disable (BraseroSessionCfg *cfg);
 
 G_END_DECLS
 

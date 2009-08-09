@@ -141,6 +141,14 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 	gtk_widget_show (priv->source_placeholder);
 }
 
+/**
+ * brasero_burn_options_add_options:
+ * @dialog: a #BraseroBurnOptions
+ * @options: a #GtkWidget
+ *
+ * Adds some new options to be displayed in the dialog.
+ **/
+
 void
 brasero_burn_options_add_options (BraseroBurnOptions *self,
 				  GtkWidget *options)
@@ -1020,6 +1028,15 @@ brasero_burn_options_class_init (BraseroBurnOptionsClass *klass)
 							      BRASERO_TYPE_BURN_SESSION,
 							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));
 }
+
+/**
+ * brasero_burn_options_new:
+ * @session: a #BraseroSessionCfg object
+ *
+ *  Creates a new #BraseroBurnOptions object.
+ *
+ * Return value: a #GtkWidget object.
+ **/
 
 GtkWidget *
 brasero_burn_options_new (BraseroSessionCfg *session)

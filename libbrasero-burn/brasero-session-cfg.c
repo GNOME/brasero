@@ -89,8 +89,17 @@ G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN
 #define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
 
 /**
- * Manages the output path
- */
+ * brasero_session_cfg_has_default_output_path:
+ * @cfg: a #BraseroSessionCfg
+ *
+ * This function returns whether the path returned
+ * by brasero_burn_session_get_output () is an 
+ * automatically created one.
+ *
+ * Return value: a #gboolean. TRUE if the path(s)
+ * creation is handled by @session, FALSE if it was
+ * set.
+ **/
 
 gboolean
 brasero_session_cfg_has_default_output_path (BraseroSessionCfg *session)
@@ -338,6 +347,16 @@ brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
 	return key;
 }
 
+/**
+ * brasero_session_cfg_get_error:
+ * @cfg: a #BraseroSessionCfg
+ *
+ * This function returns the current status and if
+ * autoconfiguration is/was successful.
+ *
+ * Return value: a #BraseroSessionError.
+ **/
+
 BraseroSessionError
 brasero_session_cfg_get_error (BraseroSessionCfg *self)
 {
@@ -352,6 +371,14 @@ brasero_session_cfg_get_error (BraseroSessionCfg *self)
 	return priv->is_valid;
 }
 
+/**
+ * brasero_session_cfg_disable:
+ * @cfg: a #BraseroSessionCfg
+ *
+ * This function disables autoconfiguration
+ *
+ **/
+
 void
 brasero_session_cfg_disable (BraseroSessionCfg *self)
 {
@@ -360,6 +387,14 @@ brasero_session_cfg_disable (BraseroSessionCfg *self)
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 	priv->disabled = TRUE;
 }
+
+/**
+ * brasero_session_cfg_enable:
+ * @cfg: a #BraseroSessionCfg
+ *
+ * This function (re)-enables autoconfiguration
+ *
+ **/
 
 void
 brasero_session_cfg_enable (BraseroSessionCfg *self)
@@ -1218,6 +1253,15 @@ brasero_session_cfg_flags_changed (BraseroBurnSession *session)
 		g_signal_stop_emission_by_name (session, "flags-changed");
 }
 
+/**
+ * brasero_session_cfg_add_flags:
+ * @cfg: a #BraseroSessionCfg
+ * @flags: a #BraseroBurnFlag
+ *
+ * Adds all flags from @flags that are not supported.
+ *
+ **/
+
 void
 brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 			       BraseroBurnFlag flags)
@@ -1250,6 +1294,15 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 				    FALSE);
 }
 
+/**
+ * brasero_session_cfg_remove_flags:
+ * @cfg: a #BraseroSessionCfg
+ * @flags: a #BraseroBurnFlag
+ *
+ * Removes all flags that are not compulsory.
+ *
+ **/
+
 void
 brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 				  BraseroBurnFlag flags)
@@ -1276,24 +1329,46 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 				    FALSE);
 }
 
+/**
+ * brasero_session_cfg_is_supported:
+ * @cfg: a #BraseroSessionCfg
+ * @flag: a #BraseroBurnFlag
+ *
+ * Checks whether a particular flag is supported.
+ *
+ * Return value: a #gboolean. TRUE if it is supported;
+ * FALSE otherwise.
+ **/
+
 gboolean
 brasero_session_cfg_is_supported (BraseroSessionCfg *self,
-				  BraseroBurnFlag flags)
+				  BraseroBurnFlag flag)
 {
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
-	return (priv->supported & flags) == flags;
+	return (priv->supported & flag) == flag;
 }
+
+/**
+ * brasero_session_cfg_is_compulsory:
+ * @cfg: a #BraseroSessionCfg
+ * @flag: a #BraseroBurnFlag
+ *
+ * Checks whether a particular flag is compulsory.
+ *
+ * Return value: a #gboolean. TRUE if it is compulsory;
+ * FALSE otherwise.
+ **/
 
 gboolean
 brasero_session_cfg_is_compulsory (BraseroSessionCfg *self,
-				   BraseroBurnFlag flags)
+				   BraseroBurnFlag flag)
 {
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
-	return (priv->compulsory & flags) == flags;
+	return (priv->compulsory & flag) == flag;
 }
 
 static void
@@ -1385,6 +1460,14 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 			      0,
 		              G_TYPE_NONE);
 }
+
+/**
+ * brasero_session_cfg_new:
+ *
+ *  Creates a new #BraseroSessionCfg object.
+ *
+ * Return value: a #BraseroSessionCfg object.
+ **/
 
 BraseroSessionCfg *
 brasero_session_cfg_new (void)

@@ -72,6 +72,16 @@ brasero_track_stream_set_source_real (BraseroTrackStream *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_stream_set_source:
+ * @track: a #BraseroTrackStream
+ * @uri: a #gchar
+ *
+ * Sets the stream (song or video) uri. 
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
+
 BraseroBurnResult
 brasero_track_stream_set_source (BraseroTrackStream *track,
 				 const gchar *uri)
@@ -92,6 +102,15 @@ brasero_track_stream_set_source (BraseroTrackStream *track,
 	brasero_track_changed (BRASERO_TRACK (track));
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_track_stream_get_format:
+ * @track: a #BraseroTrackStream
+ *
+ * This function returns the format of the stream.
+ *
+ * Return value: a #BraseroStreamFormat.
+ **/
 
 BraseroStreamFormat
 brasero_track_stream_get_format (BraseroTrackStream *track)
@@ -119,6 +138,16 @@ brasero_track_stream_set_format_real (BraseroTrackStream *track,
 	priv->format = format;
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_track_stream_set_format:
+ * @track: a #BraseroTrackStream
+ * @format: a #BraseroStreamFormat
+ *
+ * Sets the format of the stream.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
 
 BraseroBurnResult
 brasero_track_stream_set_format (BraseroTrackStream *track,
@@ -163,6 +192,19 @@ brasero_track_stream_set_boundaries_real (BraseroTrackStream *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_stream_set_boundaries:
+ * @track: a #BraseroTrackStream
+ * @start: a #gint64 or -1 to ignore
+ * @end: a #gint64 or -1 to ignore
+ * @gap: a #gint64 or -1 to ignore
+ *
+ * Sets the boundaries of the stream (where it starts, ends in the file;
+ * how long is the gap with the next track) in nano seconds.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
+
 BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
 				     gint64 start,
@@ -186,6 +228,17 @@ brasero_track_stream_set_boundaries (BraseroTrackStream *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_stream_get_source:
+ * @track: a #BraseroTrackStream
+ * @uri: a #gboolean
+ *
+ * This function returns the path or the URI (if @uri is TRUE)
+ * of the stream (song or video file).
+ *
+ * Return value: a #gchar.
+ **/
+
 gchar *
 brasero_track_stream_get_source (BraseroTrackStream *track,
 				 gboolean uri)
@@ -201,6 +254,15 @@ brasero_track_stream_get_source (BraseroTrackStream *track,
 		return brasero_string_get_localpath (priv->uri);
 }
 
+/**
+ * brasero_track_stream_get_gap:
+ * @track: a #BraseroTrackStream
+ *
+ * This function returns length of the gap (in nano seconds).
+ *
+ * Return value: a #guint64.
+ **/
+
 guint64
 brasero_track_stream_get_gap (BraseroTrackStream *track)
 {
@@ -211,6 +273,15 @@ brasero_track_stream_get_gap (BraseroTrackStream *track)
 	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
 	return priv->gap;
 }
+
+/**
+ * brasero_track_stream_get_start:
+ * @track: a #BraseroTrackStream
+ *
+ * This function returns start time in the stream (in nano seconds).
+ *
+ * Return value: a #guint64.
+ **/
 
 guint64
 brasero_track_stream_get_start (BraseroTrackStream *track)
@@ -223,6 +294,15 @@ brasero_track_stream_get_start (BraseroTrackStream *track)
 	return priv->start;
 }
 
+/**
+ * brasero_track_stream_get_end:
+ * @track: a #BraseroTrackStream
+ *
+ * This function returns end time in the stream (in nano seconds).
+ *
+ * Return value: a #guint64.
+ **/
+
 guint64
 brasero_track_stream_get_end (BraseroTrackStream *track)
 {
@@ -233,6 +313,18 @@ brasero_track_stream_get_end (BraseroTrackStream *track)
 	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
 	return priv->end;
 }
+
+/**
+ * brasero_track_stream_get_length:
+ * @track: a #BraseroTrackStream
+ * @length: a #guint64
+ *
+ * This function returns the length of the stream (in nano seconds)
+ * taking into account the start and end time as well as the length
+ * of the gap. It stores it in @length.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if @length was set.
+ **/
 
 BraseroBurnResult
 brasero_track_stream_get_length (BraseroTrackStream *track,
@@ -364,6 +456,14 @@ brasero_track_stream_class_init (BraseroTrackStreamClass *klass)
 	klass->set_format = brasero_track_stream_set_format_real;
 	klass->set_boundaries = brasero_track_stream_set_boundaries_real;
 }
+
+/**
+ * brasero_track_stream_new:
+ *
+ *  Creates a new #BraseroTrackStream object.
+ *
+ * Return value: a #BraseroTrackStream object.
+ **/
 
 BraseroTrackStream *
 brasero_track_stream_new (void)

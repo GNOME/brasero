@@ -81,6 +81,19 @@ brasero_track_image_set_source_real (BraseroTrackImage *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_image_set_source:
+ * @track: a #BraseroTrackImage
+ * @image: a #gchar or NULL
+ * @toc: a #gchar or NULL
+ * @format: a #BraseroImageFormat
+ *
+ * Sets the image source path (and its toc if need be)
+ * as well as its format.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
+
 BraseroBurnResult
 brasero_track_image_set_source (BraseroTrackImage *track,
 				const gchar *image,
@@ -119,6 +132,16 @@ brasero_track_image_set_block_num_real (BraseroTrackImage *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_image_set_block_num:
+ * @track: a #BraseroTrackImage
+ * @blocks: a #goffset
+ *
+ * Sets the image size (in sectors).
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
+
 BraseroBurnResult
 brasero_track_image_set_block_num (BraseroTrackImage *track,
 				   goffset blocks)
@@ -144,6 +167,17 @@ brasero_track_image_set_block_num (BraseroTrackImage *track,
 	brasero_track_changed (BRASERO_TRACK (track));
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * brasero_track_image_get_source:
+ * @track: a #BraseroTrackImage
+ * @uri: a #gboolean
+ *
+ * This function returns the path or the URI (if @uri is TRUE) of the
+ * source image file.
+ *
+ * Return value: a #gchar
+ **/
 
 gchar *
 brasero_track_image_get_source (BraseroTrackImage *track,
@@ -190,6 +224,17 @@ brasero_track_image_get_source (BraseroTrackImage *track,
 		return brasero_string_get_localpath (priv->image);
 }
 
+/**
+ * brasero_track_image_get_toc_source:
+ * @track: a #BraseroTrackImage
+ * @uri: a #gboolean
+ *
+ * This function returns the path or the URI (if @uri is TRUE) of the
+ * source toc file.
+ *
+ * Return value: a #gchar
+ **/
+
 gchar *
 brasero_track_image_get_toc_source (BraseroTrackImage *track,
 				    gboolean uri)
@@ -206,6 +251,16 @@ brasero_track_image_get_toc_source (BraseroTrackImage *track,
 	else
 		return brasero_string_get_localpath (priv->toc);
 }
+
+/**
+ * brasero_track_image_get_format:
+ * @track: a #BraseroTrackImage
+ *
+ * This function returns the format of the
+ * source image.
+ *
+ * Return value: a #BraseroImageFormat
+ **/
 
 BraseroImageFormat
 brasero_track_image_get_format (BraseroTrackImage *track)
@@ -308,6 +363,14 @@ brasero_track_image_class_init (BraseroTrackImageClass *klass)
 	klass->set_source = brasero_track_image_set_source_real;
 	klass->set_block_num = brasero_track_image_set_block_num_real;
 }
+
+/**
+ * brasero_track_image_new:
+ *
+ *  Creates a new #BraseroTrackImage object.
+ *
+ * Return value: a #BraseroTrackImage object.
+ **/
 
 BraseroTrackImage *
 brasero_track_image_new (void)

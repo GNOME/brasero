@@ -393,6 +393,14 @@ brasero_track_stream_cfg_class_init (BraseroTrackStreamCfgClass *klass)
 	parent_class->set_source = brasero_track_stream_cfg_set_source;
 }
 
+/**
+ * brasero_track_stream_cfg_new:
+ *
+ *  Creates a new #BraseroTrackStreamCfg object.
+ *
+ * Return value: a #BraseroTrackStreamCfg object.
+ **/
+
 BraseroTrackStreamCfg *
 brasero_track_stream_cfg_new (void)
 {

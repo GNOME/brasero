@@ -272,6 +272,16 @@ brasero_track_image_cfg_get_info (BraseroTrackImageCfg *track,
 	g_object_unref (res);
 }
 
+/**
+ * brasero_track_image_cfg_set_source:
+ * @track: a #BraseroTrackImageCfg
+ * @uri: a #gchar
+ *
+ * Sets the image uri. @track will then identify its format and retrieve its size.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
+
 BraseroBurnResult
 brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 				    const gchar *uri)
@@ -304,6 +314,16 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * brasero_track_image_cfg_get_forced_format:
+ * @track: a #BraseroTrackImageCfg
+ *
+ * This function returns the #BraseroImageFormat that was set for the image.
+ * See brasero_track_image_cfg_force_format ().
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
+
 BraseroImageFormat
 brasero_track_image_cfg_get_forced_format (BraseroTrackImageCfg *track)
 {
@@ -314,6 +334,19 @@ brasero_track_image_cfg_get_forced_format (BraseroTrackImageCfg *track)
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
 	return priv->format;
 }
+
+/**
+ * brasero_track_image_cfg_force_format:
+ * @track: a #BraseroTrackImageCfg
+ * @format: a #BraseroImageFormat
+ *
+ * This function allows to prevents the identification of the format of the image.
+ * It does not cancel size retrieval.
+ * If @format is BRASERO_IMAGE_FORMAT_NONE then the format of the image
+ * will be retrieved.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
+ **/
 
 BraseroBurnResult
 brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
@@ -444,6 +477,14 @@ brasero_track_image_cfg_class_init (BraseroTrackImageCfgClass *klass)
 
 	track_class->get_status = brasero_track_image_cfg_get_status;
 }
+
+/**
+ * brasero_track_image_cfg_new:
+ *
+ *  Creates a new #BraseroTrackImageCfg object.
+ *
+ * Return value: a #BraseroTrackImageCfg object.
+ **/
 
 BraseroTrackImageCfg *
 brasero_track_image_cfg_new (void)

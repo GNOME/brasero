@@ -339,6 +339,15 @@ brasero_tool_dialog_set_medium_type_shown (BraseroToolDialog *self,
 						  media_type);
 }
 
+/**
+ * brasero_tool_dialog_get_medium:
+ * @dialog: a #BraseroToolDialog
+ *
+ * This function returns the currently selected medium.
+ *
+ * Return value: a #BraseroMedium or NULL if none is set.
+ **/
+
 BraseroMedium *
 brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 {
@@ -347,6 +356,16 @@ brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
 	return brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selector));
 }
+
+/**
+ * brasero_tool_dialog_set_medium:
+ * @dialog: a #BraseroToolDialog
+ * @medium: a #BraseroMedium
+ *
+ * Selects the medium that should be currently selected.
+ *
+ * Return value: a #gboolean. TRUE if it was successful.
+ **/
 
 gboolean
 brasero_tool_dialog_set_medium (BraseroToolDialog *self,
@@ -412,9 +431,13 @@ brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 }
 
 /**
- * returns TRUE when cancellation went well
- * returns FALSE when it couldn't be done
- */
+ * brasero_tool_dialog_cancel:
+ * @dialog: a #BraseroToolDialog
+ *
+ * Cancels any ongoing operation.
+ *
+ * Return value: a #gboolean. TRUE when cancellation was successful. FALSE otherwise.
+ **/
 
 gboolean
 brasero_tool_dialog_cancel (BraseroToolDialog *self)
