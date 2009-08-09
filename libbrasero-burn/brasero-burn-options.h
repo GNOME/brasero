@@ -66,11 +66,8 @@ GType brasero_burn_options_get_type (void) G_GNUC_CONST;
 GtkWidget *
 brasero_burn_options_new (BraseroSessionCfg *session);
 
-BraseroBurnSession *
-brasero_burn_options_get_session (BraseroBurnOptions *self);
-
 void
-brasero_burn_options_add_options (BraseroBurnOptions *self,
+brasero_burn_options_add_options (BraseroBurnOptions *dialog,
 				  GtkWidget *options);
 
 G_END_DECLS
