@@ -1,0 +1,5215 @@
+# translation of brasero.gnome-2-26.po to catalan
+# Traducció del brasero de l'equip de Softcatalà.
+# Copyright © 2005-2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the brasero package.
+#
+# Philippe Rouquier <brasero-app@wanadoo.fr>, 2006.
+# Carles Escrig (simkin) <simkin@ono.com>, 2006.
+# Francesc Vilches <francesc.vilches@gmail.com>, 2007.
+# Joan Duran <jodufi@gmail.com>, 2008, 2009.
+# Carles Ferrando Garcia <carles.ferrando@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: brasero.gnome-2-26\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-09 11:09+0200\n"
+"PO-Revision-Date: 2009-08-06 09:03+0200\n"
+"Last-Translator: Carles Ferrando Garcia <carles.ferrando@gmail.com>\n"
+"Language-Team: catalan <tradgnome@softcatala.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: ../libbrasero-burn/brasero-video-options.c:388
+msgid "Video format:"
+msgstr "Format del vídeo:"
+
+#: ../libbrasero-burn/brasero-video-options.c:400
+msgid "_NTSC"
+msgstr "_NTSC"
+
+#: ../libbrasero-burn/brasero-video-options.c:401
+msgid "Format used mostly on the North American Continent"
+msgstr "Format utilitzat principalment en el continent nord americà"
+
+#: ../libbrasero-burn/brasero-video-options.c:415
+msgid "_PAL/SECAM"
+msgstr "_PAL/SECAM"
+
+#: ../libbrasero-burn/brasero-video-options.c:416
+msgid "Format used mostly in Europe"
+msgstr "Format utilitzat principalment a Europa"
+
+#: ../libbrasero-burn/brasero-video-options.c:430
+msgid "Native _format"
+msgstr "_Format nadiu"
+
+#: ../libbrasero-burn/brasero-video-options.c:444
+msgid "Aspect ratio:"
+msgstr "Relació de l'aspecte:"
+
+#: ../libbrasero-burn/brasero-video-options.c:456
+msgid "_4:3"
+msgstr "_4:3"
+
+#: ../libbrasero-burn/brasero-video-options.c:471
+msgid "_16:9"
+msgstr "_16:9"
+
+#. Video options for (S)VCD
+#: ../libbrasero-burn/brasero-video-options.c:486
+msgid "VCD type:"
+msgstr "Tipus VCD:"
+
+#: ../libbrasero-burn/brasero-video-options.c:499
+msgid "Create a SVCD"
+msgstr "Crea un SVCD"
+
+#: ../libbrasero-burn/brasero-video-options.c:514
+msgid "Create a VCD"
+msgstr "Crea un VCD"
+
+#: ../libbrasero-burn/burn-debug.c:51
+#, fuzzy
+msgid "Display debug statements on stdout for Brasero burn library"
+msgstr ""
+"Mostra els missatges de depuració de la biblioteca multimèdia del Brasero a "
+"la eixida estàndard"
+
+#: ../libbrasero-burn/burn-debug.c:70
+#, fuzzy
+msgid "Brasero media burning library"
+msgstr "Biblioteca òptica multimèdia del Brasero"
+
+#: ../libbrasero-burn/burn-debug.c:71
+#, fuzzy
+msgid "Display options for Brasero-burn library"
+msgstr "Mostra les opcions per a la biblioteca multimèdia del Brasero"
+
+#. Translators: %s is the name of the file that has just been deleted
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:86
+#, c-format
+msgid "\"%s\" was removed from the file system."
+msgstr "S'ha suprimit «%s» del sistema de fitxers."
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:125
+#, fuzzy, c-format
+msgid "Directories cannot be added to video or audio discs"
+msgstr "No es poden afegir directoris als discs de vídeo."
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:139
+#, fuzzy, c-format
+msgid "Playlists cannot be added to video or audio discs"
+msgstr "No es poden afegir directoris als discs de vídeo."
+
+#. Translators: %s is the name of the file
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:154
+#, fuzzy, c-format
+msgid "\"%s\" is not suitable for audio or video media"
+msgstr "«%s» no té un tipus adequat per a projectes de vídeo."
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:339
+msgid "Analysing video files"
+msgstr "S'estan analitzant els fitxers de vídeo"
+
+#: ../libbrasero-burn/brasero-data-vfs.c:218
+#, c-format
+msgid "\"%s\" cannot be read"
+msgstr "no es pot llegir «%s»"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:57
+msgid "Hidden file"
+msgstr "Fitxer ocult"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:58
+msgid "Unreadable file"
+msgstr "No es pot llegir el fitxer"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:59
+msgid "Broken symbolic link"
+msgstr "Enllaç simbòlic trencat"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:60
+#: ../libbrasero-utils/brasero-io.c:1142 ../libbrasero-utils/brasero-io.c:2012
+#, c-format
+msgid "Recursive symbolic link"
+msgstr "Enllaç simbòlic recursiu"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:622
+#: ../libbrasero-burn/brasero-track-data-cfg.c:721
+#: ../libbrasero-burn/brasero-track-data-cfg.c:732
+#: ../libbrasero-burn/brasero-track-data-cfg.c:793
+#: ../libbrasero-burn/brasero-track-data-cfg.c:798
+#: ../src/brasero-playlist.c:949 ../src/brasero-video-tree-model.c:340
+msgid "(loading ...)"
+msgstr "(s'està carregant...)"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:624
+#: ../libbrasero-burn/brasero-track-data-cfg.c:804
+#: ../src/brasero-playlist.c:910
+msgid "Empty"
+msgstr "Buit"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:730
+msgid "Disc file"
+msgstr "Fitxer de disc"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:808
+#, c-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "%i element"
+msgstr[1] "%i elements"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1915
+#, c-format
+msgid "New folder"
+msgstr "Carpeta nova"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1918
+#, c-format
+msgid "New folder %i"
+msgstr "Carpeta nova %i"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2401
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2411
+msgid "Analysing files"
+msgstr "S'estan analitzant els fitxers"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2428
+#: ../libbrasero-burn/brasero-burn-options.c:364
+#: ../nautilus/nautilus-burn-extension.c:188 ../src/brasero-project.c:1277
+#: ../libbrasero-burn/brasero-track-data.c:556
+#: ../libbrasero-burn/brasero-track-stream.c:306
+#, fuzzy, c-format
+msgid "There are no files to write to disc"
+msgstr "Arrossegueu o copieu fitxers a sota per a escriure'ls al disc"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2548
+#, fuzzy, c-format
+msgid "\"%s\" is a recursive symbolic link."
+msgstr "«%s» és un enllaç simbòlic recursiu."
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2574
+#, c-format
+msgid "\"%s\" cannot be found."
+msgstr "No es pot trobar «%s»."
+
+#: ../libbrasero-utils/brasero-io.c:1370
+#, c-format
+msgid "The file does not appear to be a playlist"
+msgstr "Pareix que el fitxer no és una llista de reproducció"
+
+#: ../libbrasero-utils/brasero-metadata.c:674 ../src/brasero-audio-disc.c:624
+#, c-format
+msgid "\"%s\" could not be handled by Gstreamer."
+msgstr "El GStreamer no ha pogut gestionar «%s»."
+
+#. Translators: %s is the name of the GstElement that
+#. * could not be created
+#. Translators: %s is the name of the GstElement that
+#. * element could not be created
+#: ../libbrasero-utils/brasero-metadata.c:746
+#: ../libbrasero-utils/brasero-metadata.c:759
+#: ../libbrasero-utils/brasero-metadata.c:772
+#: ../libbrasero-utils/brasero-metadata.c:1494
+#: ../libbrasero-utils/brasero-metadata.c:1509
+#: ../libbrasero-utils/brasero-metadata.c:1518
+#: ../libbrasero-utils/brasero-metadata.c:1531
+#: ../plugins/transcode/burn-normalize.c:161
+#: ../plugins/transcode/burn-normalize.c:176
+#: ../plugins/transcode/burn-normalize.c:194
+#: ../plugins/transcode/burn-normalize.c:206
+#: ../plugins/transcode/burn-normalize.c:223
+#: ../plugins/transcode/burn-normalize.c:282
+#: ../plugins/transcode/burn-normalize.c:602
+#: ../plugins/transcode/burn-normalize.c:610
+#: ../plugins/transcode/burn-transcode.c:286
+#: ../plugins/transcode/burn-transcode.c:298
+#: ../plugins/transcode/burn-transcode.c:388
+#: ../plugins/transcode/burn-transcode.c:440
+#: ../plugins/transcode/burn-transcode.c:456
+#: ../plugins/transcode/burn-transcode.c:469
+#: ../plugins/transcode/burn-transcode.c:481
+#: ../plugins/transcode/burn-transcode.c:505
+#: ../plugins/transcode/burn-vob.c:262 ../plugins/transcode/burn-vob.c:276
+#: ../plugins/transcode/burn-vob.c:290 ../plugins/transcode/burn-vob.c:302
+#: ../plugins/transcode/burn-vob.c:314 ../plugins/transcode/burn-vob.c:364
+#: ../plugins/transcode/burn-vob.c:376 ../plugins/transcode/burn-vob.c:388
+#: ../plugins/transcode/burn-vob.c:400 ../plugins/transcode/burn-vob.c:412
+#: ../plugins/transcode/burn-vob.c:424 ../plugins/transcode/burn-vob.c:508
+#: ../plugins/transcode/burn-vob.c:520 ../plugins/transcode/burn-vob.c:532
+#: ../plugins/transcode/burn-vob.c:544 ../plugins/transcode/burn-vob.c:566
+#: ../plugins/transcode/burn-vob.c:583 ../plugins/transcode/burn-vob.c:616
+#: ../plugins/transcode/burn-vob.c:693 ../plugins/transcode/burn-vob.c:705
+#: ../plugins/transcode/burn-vob.c:720 ../plugins/transcode/burn-vob.c:732
+#: ../plugins/transcode/burn-vob.c:743 ../plugins/transcode/burn-vob.c:754
+#: ../plugins/transcode/burn-vob.c:920 ../plugins/transcode/burn-vob.c:972
+#: ../plugins/transcode/burn-vob.c:987 ../plugins/transcode/burn-vob.c:1000
+#: ../plugins/transcode/burn-vob.c:1027 ../plugins/transcode/burn-vob.c:1202
+#: ../plugins/transcode/burn-vob.c:1210 ../plugins/transcode/burn-vob.c:1218
+#: ../plugins/transcode/burn-vob.c:1226
+#, c-format
+msgid "%s element could not be created"
+msgstr "No s'ha pogut crear l'element %s"
+
+#. Translators: Error message saying no graft point
+#. * is specified. A graft point is the path (on the
+#. * disc) where a file from any source will be added
+#. * ("grafted")
+#: ../libbrasero-burn/brasero-caps-burn.c:64
+#: ../libbrasero-burn/brasero-caps-burn.c:679
+#: ../libbrasero-burn/brasero-burn.c:2678 ../libbrasero-burn/burn-job.c:1215
+#: ../libbrasero-burn/burn-job.c:1224
+#: ../libbrasero-burn/burn-mkisofs-base.c:306
+#: ../nautilus/nautilus-burn-extension.c:166 ../src/main.c:204
+#: ../src/main.c:230 ../plugins/cdrkit/burn-genisoimage.c:364
+#: ../plugins/cdrkit/burn-readom.c:121 ../plugins/cdrkit/burn-readom.c:363
+#: ../plugins/cdrkit/burn-wodim.c:700 ../plugins/cdrkit/burn-wodim.c:815
+#: ../plugins/cdrkit/burn-wodim.c:830 ../plugins/cdrtools/burn-cdrecord.c:800
+#: ../plugins/cdrtools/burn-cdrecord.c:815
+#: ../plugins/cdrtools/burn-mkisofs.c:365
+#: ../plugins/cdrtools/burn-readcd.c:123 ../plugins/cdrtools/burn-readcd.c:374
+#, c-format
+msgid "An internal error occured"
+msgstr "S'ha produït un error intern"
+
+#: ../libbrasero-burn/brasero-caps-burn.c:777
+#: ../libbrasero-burn/brasero-burn.c:2338
+#, c-format
+msgid "Only one track at a time can be checked"
+msgstr "Només es pot comprovar una pista cada vegada"
+
+#: ../libbrasero-burn/brasero-track-image-cfg.c:378
+msgid "Retrieving image format and size"
+msgstr ""
+
+#. Translators: This is a disc image
+#: ../libbrasero-burn/brasero-track-image-cfg.c:398
+#, fuzzy
+msgid "The format of the disc image could not be identified"
+msgstr "No s'ha pogut obtindre la mida del volum"
+
+#: ../libbrasero-burn/brasero-track-image-cfg.c:399
+#, fuzzy
+msgid "Please set it manually"
+msgstr "Seleccioneu una imatge."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:180
+#: ../libbrasero-burn/burn-basics.c:76
+msgid "Creating image"
+msgstr "S'està creant la imatge"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:181
+msgid "Brasero - Creating Image"
+msgstr "Brasero - S'està creant la imatge"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:187
+#: ../libbrasero-burn/brasero-burn-dialog.c:201
+#: ../libbrasero-burn/brasero-burn-dialog.c:1008
+msgid "Brasero - Burning DVD (Simulation)"
+msgstr "Brasero - S'està enregistrant el DVD (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:188
+msgid "Simulation of video DVD burning"
+msgstr "S'està simulant l'enregistrament del DVD de vídeo"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:191
+#: ../libbrasero-burn/brasero-burn-dialog.c:205
+msgid "Brasero - Burning DVD"
+msgstr "Brasero - S'està enregistrant el DVD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:192
+msgid "Burning video DVD"
+msgstr "S'està enregistrant el DVD de vídeo"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:202
+msgid "Simulation of data DVD burning"
+msgstr "S'està simulant l'enregistrament del DVD de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:206
+msgid "Burning data DVD"
+msgstr "S'està enregistrant el DVD de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:215
+msgid "Burning DVD (Simulation)"
+msgstr "S'està enregistrant el DVD (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:216
+msgid "Simulation of image to DVD burning"
+msgstr "S'està simulant l'enregistrament de la imatge al DVD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:219
+msgid "Burning DVD"
+msgstr "S'està enregistrant el DVD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:220
+msgid "Burning image to DVD"
+msgstr "S'està enregistrant la imatge al DVD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:229
+#: ../libbrasero-burn/brasero-burn-dialog.c:1002
+msgid "Brasero - Copying DVD (Simulation)"
+msgstr "Brasero - S'està copiant el DVD (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:230
+msgid "Simulation of data DVD copying"
+msgstr "S'està simulant la còpia del DVD de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:233
+msgid "Brasero - Copying DVD"
+msgstr "Brasero - S'està copiant el DVD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:234
+msgid "Copying data DVD"
+msgstr "S'està copiant el DVD de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:246
+#: ../libbrasero-burn/brasero-burn-dialog.c:260
+#: ../libbrasero-burn/brasero-burn-dialog.c:274
+#: ../libbrasero-burn/brasero-burn-dialog.c:302
+#: ../libbrasero-burn/brasero-burn-dialog.c:332
+msgid "Brasero - Burning CD (Simulation)"
+msgstr "Brasero - S'està enregistrant el CD (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:247
+msgid "Simulation of (S)VCD burning"
+msgstr "S'està simulant l'enregistrament del VCD o SVCD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:250
+#: ../libbrasero-burn/brasero-burn-dialog.c:264
+#: ../libbrasero-burn/brasero-burn-dialog.c:278
+#: ../libbrasero-burn/brasero-burn-dialog.c:306
+#: ../libbrasero-burn/brasero-burn-dialog.c:336
+msgid "Brasero - Burning CD"
+msgstr "Brasero - S'està enregistrant el CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:251
+msgid "Burning (S)VCD"
+msgstr "S'està enregistrant el VCD o SVCD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:261
+#: ../libbrasero-burn/brasero-burn-dialog.c:333
+msgid "Simulation of audio CD burning"
+msgstr "S'està simulant l'enregistrament del CD d'àudio"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:265
+#: ../libbrasero-burn/brasero-burn-dialog.c:337
+msgid "Burning audio CD"
+msgstr "S'està enregistrant el CD d'àudio"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:275
+msgid "Simulation of data CD burning"
+msgstr "S'està simulant l'enregistrament del CD de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:279
+msgid "Burning data CD"
+msgstr "S'està enregistrant el CD de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:288
+#: ../libbrasero-burn/brasero-burn-dialog.c:1016
+msgid "Brasero - Copying CD (Simulation)"
+msgstr "Brasero - S'està copiant el CD (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:289
+msgid "Simulation of CD copying"
+msgstr "S'està simulant la còpia del CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:292
+msgid "Brasero - Copying CD"
+msgstr "Brasero - S'està copiant el CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:293
+msgid "Copying CD"
+msgstr "S'està copiant el CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:303
+msgid "Simulation of image to CD burning"
+msgstr "S'està simulant l'enregistrament de la imatge al CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:307
+msgid "Burning image to CD"
+msgstr "S'està enregistrant la imatge al CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:318
+msgid "Brasero - Burning disc (Simulation)"
+msgstr "Brasero - S'està enregistrant el disc (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:319
+msgid "Simulation of video disc burning"
+msgstr "S'està simulant l'enregistrament del disc de vídeo"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:322
+msgid "Brasero - Burning disc"
+msgstr "Brasero - S'està enregistrant el disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:323
+msgid "Burning video disc"
+msgstr "S'està enregistrant el disc de vídeo"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:346
+#: ../libbrasero-burn/brasero-burn-dialog.c:373
+#: ../libbrasero-burn/brasero-burn-dialog.c:1035
+msgid "Brasero - Burning Disc (Simulation)"
+msgstr "Brasero - S'està enregistrant el disc (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:347
+msgid "Simulation of data disc burning"
+msgstr "S'està simulant l'enregistrament del disc de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:350
+#: ../libbrasero-burn/brasero-burn-dialog.c:377
+msgid "Brasero - Burning Disc"
+msgstr "Brasero - S'està enregistrant el disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:351
+msgid "Burning data disc"
+msgstr "S'està enregistrant el disc de dades"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:360
+#: ../libbrasero-burn/brasero-burn-dialog.c:1029
+msgid "Brasero - Copying Disc (Simulation)"
+msgstr "Brasero - S'està copiant el disc (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:361
+msgid "Simulation of disc copying"
+msgstr "S'està simulant la còpia del disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:364
+msgid "Brasero - Copying Disc"
+msgstr "Brasero - S'està copiant el disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:365
+#: ../libbrasero-burn/burn-basics.c:80
+msgid "Copying disc"
+msgstr "S'està copiant el disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:374
+msgid "Simulation of image to disc burning"
+msgstr "S'està simulant l'enregistrament de la imatge al disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:378
+msgid "Burning image to disc"
+msgstr "S'està enregistrant la imatge al disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:489
+msgid "Please replace the disc with a rewritable disc holding data."
+msgstr "Substituïu el disc per un disc reenregistrable amb dades."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:491
+msgid "Please replace the disc with a disc holding data."
+msgstr "Substituïu el disc per un disc que continga dades."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:495
+msgid "Please insert a rewritable disc holding data."
+msgstr "Inseriu un disc reenregistrable amb dades."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:497
+#: ../libbrasero-burn/brasero-burn-options.c:389
+msgid "Please insert a disc holding data."
+msgstr "Inseriu un disc amb dades."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:512
+#, c-format
+msgid ""
+"Please replace the disc with a recordable CD with at least %i MiB of free "
+"space."
+msgstr ""
+"Substituïu el disc per un CD enregistrable amb almenys %i MiB d'espai lliure."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:515
+msgid "Please replace the disc with a recordable CD."
+msgstr "Substituïu el disc per un CD enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:519
+#, c-format
+msgid "Please insert a recordable CD with at least %i MiB of free space."
+msgstr "Inseriu un CD enregistrable amb almenys %i MiB d'espai lliure."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:522
+msgid "Please insert a recordable CD."
+msgstr "Inseriu un CD enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:528
+#, c-format
+msgid ""
+"Please replace the disc with a recordable DVD with at least %i MiB of free "
+"space."
+msgstr ""
+"Substituïu el disc per un DVD enregistrable amb almenys %i MiB d'espai "
+"lliure."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:531
+msgid "Please replace the disc with a recordable DVD."
+msgstr "Substituïu el disc per un DVD enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:535
+#, c-format
+msgid "Please insert a recordable DVD with at least %i MiB of free space."
+msgstr "Inseriu un DVD enregistrable amb almenys %i MiB d'espai lliure."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:538
+msgid "Please insert a recordable DVD."
+msgstr "Inseriu un DVD enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:543
+#, c-format
+msgid ""
+"Please replace the disc with a recordable CD or DVD with at least %i MiB of "
+"free space."
+msgstr ""
+"Substituïu el disc per un CD o DVD enregistrable amb almenys %i MiB d'espai "
+"lliure."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:546
+msgid "Please replace the disc with a recordable CD or DVD."
+msgstr "Substituïu el disc per un CD o DVD enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:550
+#, c-format
+msgid ""
+"Please insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Inseriu un CD o DVD enregistrable amb almenys %i MiB d'espai lliure."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:553
+#: ../libbrasero-burn/brasero-burn-dialog.c:2129
+#: ../libbrasero-burn/brasero-burn-dialog.c:2141
+#: ../libbrasero-burn/brasero-burn-options.c:343 ../src/brasero-project.c:1005
+msgid "Please insert a recordable CD or DVD."
+msgstr "Inseriu un CD o DVD enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:580
+msgid ""
+"An image of the disc has been created on your hard drive.\n"
+"Burning will begin as soon as a recordable disc is inserted."
+msgstr ""
+"S'ha creat una imatge del disc al disc dur.\n"
+"L'enregistrament començarà quan s'inserisca un disc enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:585
+msgid "A data integrity test will begin as soon as the disc is inserted."
+msgstr ""
+"La comprovació de la integritat de les dades començarà quan s'inserisca el "
+"disc."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:586
+msgid "Please re-insert the disc in the CD/DVD burner."
+msgstr "Torneu a inserir el disc a l'enregistrador de CD/DVD."
+
+#. Translators: %s is the name of a drive
+#: ../libbrasero-burn/brasero-burn-dialog.c:590
+#, c-format
+msgid "\"%s\" is busy."
+msgstr "«%s» està ocupat."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:591
+#: ../libbrasero-burn/brasero-burn.c:1357
+#: ../libbrasero-burn/brasero-burn.c:1391
+#: ../libbrasero-burn/brasero-burn.c:1572
+#: ../libbrasero-burn/brasero-burn.c:1583
+#: ../libbrasero-burn/brasero-tool-dialog.c:89
+msgid "Make sure another application is not using it"
+msgstr "Assegureu-vos que cap altra aplicació no l'estiga utilitzant"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:594
+#, c-format
+msgid "There is no disc in \"%s\"."
+msgstr "No hi ha cap disc a «%s»."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:598
+#, c-format
+msgid "The disc in \"%s\" is not supported."
+msgstr "El disc a «%s» no és compatible."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:602
+#, c-format
+msgid "The disc in \"%s\" is not rewritable."
+msgstr "El disc a «%s» no és reenregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:606
+#, c-format
+msgid "The disc in \"%s\" is empty."
+msgstr "El disc a «%s» és buit."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:610
+#, c-format
+msgid "The disc in \"%s\" is not writable."
+msgstr "El disc a «%s» no és enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:614
+#, c-format
+msgid "Not enough space available on the disc in \"%s\"."
+msgstr "No hi ha prou espai disponible al disc a «%s»."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:622
+#, c-format
+msgid "The disc in \"%s\" needs to be reloaded."
+msgstr "És necessari recarregar el disc a «%s»."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:623
+msgid "Please eject the disc and reload it."
+msgstr "Expulseu el disc i torneu-lo a carregar."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:665
+#: ../libbrasero-burn/brasero-sum-dialog.c:325
+msgid ""
+"A file could not be created at the location specified for temporary files"
+msgstr ""
+"No s'ha pogut crear un fitxer a l'ubicació especificada per als fitxers "
+"temporals"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:666
+msgid "The image could not be created at the specified location"
+msgstr "No s'ha pogut crear la imatge a la ubicació especificada"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:667
+msgid ""
+"Do you want to specify another location for this session or retry with the "
+"current location?"
+msgstr ""
+"Voleu especificar una altra ubicació per a esta sessió o tornar-ho a "
+"intentar amb la ubicació actual?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:682
+msgid "You may want to free some space on the disc and retry"
+msgstr "Podríeu alliberar espai del disc i tornar-ho a intentar"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:689
+#: ../libbrasero-burn/brasero-drive-properties.c:263
+#: ../libbrasero-burn/brasero-drive-properties.c:298
+#: ../libbrasero-burn/brasero-drive-properties.c:347
+msgid "_Keep Current Location"
+msgstr "_Manté la ubicació actual"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:691
+#: ../libbrasero-burn/brasero-drive-properties.c:264
+#: ../libbrasero-burn/brasero-drive-properties.c:299
+#: ../libbrasero-burn/brasero-drive-properties.c:348
+msgid "_Change Location"
+msgstr "_Canvia la ubicació"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:713
+#: ../libbrasero-burn/brasero-image-properties.c:448
+msgid "Location for Image File"
+msgstr "Ubicació del fitxer d'imatge"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:721
+#: ../libbrasero-burn/brasero-drive-properties.c:379
+msgid "Location for Temporary Files"
+msgstr "Ubicació dels fitxers temporals"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:820
+msgid "_Replace Disc"
+msgstr "_Substituïu el disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:858
+#, fuzzy
+msgid "Do you really want to blank the current disc?"
+msgstr "Segur que voleu esborrar el disc actual?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:859
+msgid "The disc in the drive holds data."
+msgstr "El disc de la unitat té dades."
+
+#. Translators: Blank is a verb here
+#: ../libbrasero-burn/brasero-burn-dialog.c:861
+#, fuzzy
+msgid "_Blank Disc"
+msgstr "_Esborra el disc..."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:873
+msgid "Already burnt files will be invisible (though still readable)."
+msgstr ""
+"Els fitxers que ja s'han enregistrat seran invisibles (tot i que encara es "
+"podran llegir)."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:874
+#: ../libbrasero-burn/brasero-burn-dialog.c:894
+#: ../libbrasero-burn/brasero-burn-dialog.c:914
+msgid "Do you want to continue anyway?"
+msgstr "Voleu continuar igualment?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:877
+msgid "Appending new files to a multisession disc is not advised."
+msgstr "No és recomanable afegir nous fitxers a un disc multisessió."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:879
+#: ../libbrasero-burn/brasero-burn-dialog.c:899
+#: ../libbrasero-burn/brasero-burn-dialog.c:919
+#: ../libbrasero-burn/brasero-burn-dialog.c:960 ../src/brasero-data-disc.c:571
+#: ../libbrasero-burn/brasero-tool-dialog.c:397
+msgid "_Continue"
+msgstr "_Continua"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:893
+#, fuzzy
+msgid ""
+"CD-RW audio discs may not play correctly in older CD players and CD-TEXT "
+"won't be written."
+msgstr ""
+"És possible que no pugueu escoltar-los en equips de música i no s'escriurà "
+"el CD-TEXT."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:897
+msgid "Appending audio tracks to a CD is not advised."
+msgstr "No es recomana afegir pistes d'àudio a un CD."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:913
+msgid "CD-RW audio discs may not play correctly in older CD players."
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:917
+msgid "Recording audio tracks on a rewritable disc is not advised."
+msgstr "No es recomana enregistrar pistes d'àudio a un disc reenregistrable."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:951
+msgid "Do you want to continue with full Windows compatibility disabled?"
+msgstr ""
+"Voleu continuar amb la compatibilitat total amb el Windows inhabilitada?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:954 ../src/brasero-data-disc.c:746
+#: ../libbrasero-burn/brasero-status-dialog.c:257
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
+msgstr ""
+"Alguns fitxers no tenen un nom adequat per a un CD totalment compatible amb "
+"el Windows."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:998
+#, c-format
+msgid "Brasero - Creating Image (%i%% Done)"
+msgstr "Brasero - S'està creant la imatge (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1004
+#, c-format
+msgid "Brasero - Copying DVD (%i%% Done)"
+msgstr "Brasero - S'està copiant el DVD (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1010
+#, c-format
+msgid "Brasero - Burning DVD (%i%% Done)"
+msgstr "Brasero - S'està enregistrant el DVD (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1018
+#, c-format
+msgid "Brasero - Copying CD (%i%% Done)"
+msgstr "Brasero - S'està copiant el CD (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1022
+msgid "Brasero - Burning CD (simulation)"
+msgstr "Brasero - S'està enregistrant el CD (simulació)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1024
+#, c-format
+msgid "Brasero - Burning CD (%i%% Done)"
+msgstr "Brasero - S'està enregistrant el CD (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1031
+#, c-format
+msgid "Brasero - Copying Disc (%i%% Done)"
+msgstr "Brasero - S'està copiant el disc (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1037
+#, c-format
+msgid "Brasero - Burning Disc (%i%% Done)"
+msgstr "Brasero - S'està enregistrant el disc (%i%% fet)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1223
+msgid "The simulation was successful."
+msgstr "La simulació s'ha realitzat amb èxit."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1226
+msgid "Real disc burning will take place in 10 seconds."
+msgstr "L'enregistrament de disc real començarà en 10 segons."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1229
+msgid "Burn _Now"
+msgstr "Enregistra _ara"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1567
+msgid "Save Current Session"
+msgstr "Alça la sessió actual"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1626
+msgid "Session Log"
+msgstr "Registre de la sessió"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1656
+#: ../libbrasero-burn/brasero-burn-dialog.c:1680
+#: ../libbrasero-burn/brasero-burn-dialog.c:1691
+msgid "The session log cannot be displayed."
+msgstr "No es pot mostrar el registre de la sessió."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1657
+msgid "The log file could not be found"
+msgstr "No s'ha pogut trobar el fitxer de registre"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1672
+msgid ""
+"This is a excerpt from the session log (the last 10 MiB):\n"
+"\n"
+msgstr ""
+"Això és un extracte del registre de la sessió (els últims 10 MiB):\n"
+"\n"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1760
+msgid "An unknown error occured."
+msgstr "S'ha produït un error desconegut."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1770
+msgid "Error while burning."
+msgstr "S'ha produït un error durant l'enregistrament."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1778
+msgid "_Save Log"
+msgstr "Al_ça el registre"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1785
+msgid "_View Log"
+msgstr "_Visualitza el registre"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1848
+msgid "Audio CD successfully burnt"
+msgstr "El CD d'àudio s'ha enregistrat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1853
+msgid "DVD successfully copied"
+msgstr "El DVD s'ha copiat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1855
+msgid "CD successfully copied"
+msgstr "El CD s'ha copiat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1859
+msgid "Image of DVD successfully created"
+msgstr "La imatge del DVD s'ha creat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1861
+msgid "Image of CD successfully created"
+msgstr "La imatge del CD s'ha creat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1867
+msgid "Image successfully burnt to DVD"
+msgstr "La imatge s'ha enregistrat amb èxit al DVD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1869
+msgid "Image successfully burnt to CD"
+msgstr "La imatge s'ha enregistrat amb èxit al CD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1875
+msgid "Data DVD successfully burnt"
+msgstr "El DVD de dades s'ha enregistrat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1877
+msgid "Data CD successfully burnt"
+msgstr "El CD de dades s'ha enregistrat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1880
+msgid "Image successfully created"
+msgstr "La imatge s'ha creat amb èxit"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1910
+msgid "Make _Another Copy"
+msgstr "Fes una _altra còpia"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1939
+msgid "_Create Cover"
+msgstr "_Crea una coberta"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2092
+msgid "There are some files left to burn"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2099
+msgid "There are some more videos left to burn"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2103
+msgid "There are some more songs left to burn"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2142
+#: ../libbrasero-burn/brasero-burn.c:1697
+#: ../plugins/cdrkit/burn-genisoimage.c:201 ../plugins/cdrkit/burn-wodim.c:108
+#: ../plugins/cdrtools/burn-cdrecord.c:108
+#: ../plugins/cdrtools/burn-mkisofs.c:202
+#: ../plugins/growisofs/burn-growisofs.c:193
+#, c-format
+msgid "Not enough space available on the disc"
+msgstr "No hi ha prou espai disponible al disc"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2303
+#: ../libbrasero-burn/brasero-tool-dialog.c:389
+msgid "Do you really want to quit?"
+msgstr "Segur que voleu eixir?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2307
+#: ../libbrasero-burn/brasero-tool-dialog.c:392
+msgid "Interrupting the process may make disc unusable."
+msgstr "Si interrompeu el procés pot ser que el disc esdevinga inservible."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2310
+#, fuzzy
+msgid "C_ontinue Burning"
+msgstr "_Cancel·la l'enregistrament"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2317
+msgid "_Cancel Burning"
+msgstr "_Cancel·la l'enregistrament"
+
+#: ../libbrasero-burn/brasero-burn-options.c:237 ../src/brasero-project.c:1030
+msgid ""
+"Please insert a recordable CD or DVD if you don't want to write to an image "
+"file."
+msgstr ""
+"Inseriu un CD o DVD enregistrable si no voleu escriure a un fitxer d'imatge."
+
+#: ../libbrasero-burn/brasero-burn-options.c:319 ../src/brasero-project.c:957
+#, fuzzy
+msgid "Would you like to burn the selection of files across several media?"
+msgstr "Voleu enregistrar més enllà de la capacitat del disc?"
+
+#: ../libbrasero-burn/brasero-burn-options.c:320
+#: ../libbrasero-burn/brasero-burn-options.c:337
+#, fuzzy
+msgid "The data size is too large for the disc even with the overburn option."
+msgstr ""
+"La mida del projecte és massa gran per al disc, fins i tot amb l'opció de "
+"sobreescriptura."
+
+#: ../libbrasero-burn/brasero-burn-options.c:325 ../src/brasero-project.c:963
+#, fuzzy
+msgid "_Burn Several Discs"
+msgstr "Enregistra el disc"
+
+#: ../libbrasero-burn/brasero-burn-options.c:326 ../src/brasero-project.c:964
+msgid "Burn the selection of files across several media"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-options.c:336 ../src/brasero-project.c:974
+msgid "Please choose another CD or DVD or insert a new one."
+msgstr "Trieu un altre CD o DVD o inseriu-ne un de nou."
+
+#: ../libbrasero-burn/brasero-burn-options.c:344 ../src/brasero-project.c:1006
+msgid "There is no recordable disc inserted."
+msgstr "No s'ha inserit cap disc enregistrable."
+
+#: ../libbrasero-burn/brasero-burn-options.c:350 ../src/brasero-project.c:1020
+#, fuzzy
+msgid "No track information (artist, title, ...) will be written to the disc."
+msgstr ""
+"No s'escriurà cap informació sobre la pista (artista, compositor...) al disc."
+
+#: ../libbrasero-burn/brasero-burn-options.c:351 ../src/brasero-project.c:1021
+msgid "This is not supported by the current active burning backend."
+msgstr "L'actual rerefons d'enregistrament actiu no ho admet."
+
+#: ../libbrasero-burn/brasero-burn-options.c:363
+#: ../nautilus/nautilus-burn-extension.c:187
+#, fuzzy
+msgid "Please add files."
+msgstr "Afegiu fitxers al projecte."
+
+#: ../libbrasero-burn/brasero-burn-options.c:369
+#, fuzzy
+msgid "Please add songs."
+msgstr "Afegiu cançons al projecte."
+
+#: ../libbrasero-burn/brasero-burn-options.c:370 ../src/brasero-project.c:1268
+#, fuzzy
+msgid "There are no songs to write to disc"
+msgstr "Arrossegueu o copieu fitxers a sota per a escriure'ls al disc"
+
+#: ../libbrasero-burn/brasero-burn-options.c:375
+#, fuzzy
+msgid "Please add videos."
+msgstr "Afegiu fitxers al projecte."
+
+#: ../libbrasero-burn/brasero-burn-options.c:376
+#, fuzzy
+msgid "There are no videos to write to disc"
+msgstr "Arrossegueu o copieu fitxers a sota per a escriure'ls al disc"
+
+#: ../libbrasero-burn/brasero-burn-options.c:390
+msgid "There is no inserted disc to copy."
+msgstr "No s'ha inserit cap disc per a copiar."
+
+#: ../libbrasero-burn/brasero-burn-options.c:401
+#, fuzzy
+msgid "Please select a disc image."
+msgstr "Seleccioneu una imatge."
+
+#: ../libbrasero-burn/brasero-burn-options.c:402
+#, fuzzy
+msgid "There is no selected disc image."
+msgstr "No s'ha seleccionat cap imatge."
+
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:414
+#: ../libbrasero-burn/brasero-src-image.c:166
+#, fuzzy
+msgctxt "disc"
+msgid "Please select another image."
+msgstr "Seleccioneu una altra imatge."
+
+#: ../libbrasero-burn/brasero-burn-options.c:415
+#, fuzzy
+msgid "It doesn't appear to be a valid disc image or a valid cue file."
+msgstr "Pareix que no és una imatge vàlida o un fitxer CUE vàlid."
+
+#: ../libbrasero-burn/brasero-burn-options.c:426
+msgid "Please insert a disc that is not copy protected."
+msgstr "Inseriu un disc que no estiga protegit contra còpia."
+
+#: ../libbrasero-burn/brasero-burn-options.c:427
+msgid "Such a disc cannot be copied without the proper plugins."
+msgstr "No es pot copiar el disc sense els connectors necessaris."
+
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:1013
+msgid "Please replace the disc with a supported CD or DVD."
+msgstr "Substituïu el disc per un CD o DVD compatible."
+
+#: ../libbrasero-burn/brasero-burn-options.c:435 ../src/brasero-project.c:1014
+msgid "It is not possible to write with the current set of plugins."
+msgstr "No es pot escriure amb el conjunt de connectors actual."
+
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:985
+msgid "Would you like to burn beyond the disc reported capacity?"
+msgstr "Voleu enregistrar més enllà de la capacitat del disc?"
+
+#: ../libbrasero-burn/brasero-burn-options.c:444
+#, fuzzy
+msgid ""
+"The data size is too large for the disc and you must remove files from the "
+"selection otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
+"cannot be properly recognised and therefore need overburn option.\n"
+"NOTE: This option might cause failure."
+msgstr ""
+"La mida del projecte és massa gran per al disc i heu de suprimir fitxers del "
+"projecte.\n"
+"Podeu utilitzar esta opció si esteu utilitzant CD-R(W) de 90 o 100 min que "
+"no s'hagen reconegut correctament, per als quals caldrà l'opció de "
+"sobreescriptura.\n"
+"NOTA: Esta opció pot provocar fallades."
+
+#: ../libbrasero-burn/brasero-burn-options.c:451 ../src/brasero-project.c:993
+msgid "_Overburn"
+msgstr "_Sobreescriptura"
+
+#: ../libbrasero-burn/brasero-burn-options.c:452 ../src/brasero-project.c:994
+msgid "Burn beyond the disc reported capacity"
+msgstr "Enregistra més enllà de la capacitat del disc"
+
+#: ../libbrasero-burn/brasero-burn-options.c:463
+msgid ""
+"The drive that holds the source disc will also be the one used to record."
+msgstr "La unitat que conté el disc font també s'utilitzarà per a enregistrar."
+
+#: ../libbrasero-burn/brasero-burn-options.c:464
+msgid ""
+"A new recordable disc will be required once the one currently loaded has "
+"been copied."
+msgstr ""
+"Es necessitarà un disc enregistrable nou un cop s'haja copiat l'actual."
+
+#: ../libbrasero-burn/brasero-burn-options.c:514
+#: ../libbrasero-burn/brasero-burn-options.c:639
+#: ../libbrasero-burn/brasero-burn-options.c:658
+#: ../libbrasero-burn/brasero-burn-options.c:770
+#: ../libbrasero-burn/brasero-burn-options.c:791 ../src/brasero-project.c:1371
+#: ../src/brasero-project.c:1428
+msgid "_Burn"
+msgstr "_Enregistra"
+
+#: ../libbrasero-burn/brasero-burn-options.c:557
+msgid "Select a disc to write to"
+msgstr "Seleccioneu un disc on escriure"
+
+#: ../libbrasero-burn/brasero-burn-options.c:637
+#: ../libbrasero-burn/brasero-burn-options.c:656
+#: ../libbrasero-burn/brasero-burn-options.c:768
+msgid "Disc Burning Setup"
+msgstr "Configuració de l'enregistrament del disc"
+
+#: ../libbrasero-burn/brasero-burn-options.c:692
+#: ../src/brasero-data-disc.c:617
+msgid ""
+"Do you want to create a disc from the contents of the image or with the "
+"image file inside?"
+msgstr ""
+
+#. Translators: %s is the name of the image
+#: ../libbrasero-burn/brasero-burn-options.c:697
+#: ../src/brasero-data-disc.c:623
+#, c-format
+msgid ""
+"There is only one selected file (\"%s\"). It is the image of a disc and its "
+"contents can be burnt."
+msgstr ""
+
+#: ../libbrasero-burn/brasero-burn-options.c:702
+#: ../src/brasero-data-disc.c:628
+#, fuzzy
+msgid "Burn as _File"
+msgstr "Enregistra una _imatge"
+
+#: ../libbrasero-burn/brasero-burn-options.c:704
+#: ../src/brasero-data-disc.c:630
+#, fuzzy
+msgid "Burn _Contents..."
+msgstr "_Contingut"
+
+#: ../libbrasero-burn/brasero-burn-options.c:789
+msgid "Image Burning Setup"
+msgstr "Configuració de l'enregistrament de la imatge"
+
+#. pack everything
+#: ../libbrasero-burn/brasero-burn-options.c:800
+#, fuzzy
+msgid "Select a disc image to write"
+msgstr "Seleccioneu una imatge a escriure"
+
+#: ../libbrasero-burn/brasero-burn-options.c:820
+msgid "CD/DVD Copy Options"
+msgstr "Opcions de còpia de CD/DVD"
+
+#: ../libbrasero-burn/brasero-burn-options.c:822
+msgid "_Copy"
+msgstr "_Copia"
+
+#: ../libbrasero-burn/brasero-burn-options.c:829
+msgid "Select disc to copy"
+msgstr "Seleccioneu el disc a copiar"
+
+#: ../libbrasero-burn/brasero-burn.c:159
+msgid "Burning CD/DVD"
+msgstr "S'està enregistrant el CD/DVD"
+
+#: ../libbrasero-burn/brasero-burn.c:303 ../src/brasero-eject-dialog.c:93
+#, c-format
+msgid "The disc in \"%s\" cannot be ejected"
+msgstr "No es pot expulsar el disc a %s"
+
+#: ../libbrasero-burn/brasero-burn.c:345 ../libbrasero-burn/brasero-burn.c:391
+#, c-format
+msgid "\"%s\" cannot be unlocked"
+msgstr "No es pot desbloquejar «%s»"
+
+#: ../libbrasero-burn/brasero-burn.c:522 ../libbrasero-burn/brasero-burn.c:647
+#: ../libbrasero-burn/brasero-burn.c:795
+#: ../libbrasero-burn/brasero-burn.c:1993
+#, c-format
+msgid "No burner specified"
+msgstr "No s'ha especificat cap enregistrador"
+
+#: ../libbrasero-burn/brasero-burn.c:559
+#, c-format
+msgid "No source drive specified"
+msgstr "No s'ha especificat cap unitat font"
+
+#: ../libbrasero-burn/brasero-burn.c:599
+msgid "Ongoing copying process"
+msgstr "Procés de còpia en curs"
+
+#: ../libbrasero-burn/brasero-burn.c:603 ../libbrasero-burn/brasero-burn.c:698
+#: ../libbrasero-burn/brasero-burn.c:945
+#: ../libbrasero-burn/brasero-burn.c:1056
+#, c-format
+msgid "The drive cannot be locked (%s)"
+msgstr "No es pot bloquejar la unitat (%s)"
+
+#: ../libbrasero-burn/brasero-burn.c:658
+#, c-format
+msgid "The drive has no rewriting capabilities"
+msgstr "La unitat no té capacitat de reescriptura"
+
+#: ../libbrasero-burn/brasero-burn.c:694
+msgid "Ongoing blanking process"
+msgstr "Procés d'esborrament en curs"
+
+#: ../libbrasero-burn/brasero-burn.c:810
+#, c-format
+msgid "The drive cannot burn or the disc cannot be burnt"
+msgstr "La unitat no pot enregistrar o bé el disc no es pot enregistrar"
+
+#: ../libbrasero-burn/brasero-burn.c:939
+#: ../libbrasero-burn/brasero-dest-selection.c:105
+msgid "Ongoing burning process"
+msgstr "Procés d'enregistrament en curs"
+
+#: ../libbrasero-burn/brasero-burn.c:1052
+msgid "Ongoing checksuming operation"
+msgstr "Comprovació de suma de verificació en curs"
+
+#: ../libbrasero-burn/brasero-burn.c:1356
+#: ../libbrasero-burn/brasero-burn.c:1390
+#: ../libbrasero-burn/brasero-burn.c:1571
+#: ../libbrasero-burn/brasero-burn.c:1582 ../libbrasero-media/scsi-error.c:47
+#: ../libbrasero-burn/brasero-tool-dialog.c:88
+#: ../plugins/cdrdao/burn-cdrdao.c:237 ../plugins/cdrkit/burn-readom.c:102
+#: ../plugins/cdrkit/burn-wodim.c:129 ../plugins/cdrkit/burn-wodim.c:138
+#: ../plugins/cdrtools/burn-cdrecord.c:129
+#: ../plugins/cdrtools/burn-cdrecord.c:138
+#: ../plugins/cdrtools/burn-readcd.c:104
+#: ../plugins/growisofs/burn-dvd-rw-format.c:77
+#: ../plugins/growisofs/burn-growisofs.c:185
+#: ../plugins/libburnia/burn-libburn-common.c:179
+#, c-format
+msgid "The drive is busy"
+msgstr "La unitat està ocupada"
+
+#: ../libbrasero-burn/brasero-burn.c:1696
+#: ../libbrasero-burn/brasero-burn.c:2041
+#, c-format
+msgid "Merging data is impossible with this disc"
+msgstr "No es poden combinar dades amb este disc"
+
+#: ../libbrasero-burn/brasero-burn.c:1978
+#, c-format
+msgid "There is no track to be burnt"
+msgstr "No hi ha cap pista per a enregistrar"
+
+#: ../libbrasero-burn/brasero-burn.c:2397
+#, c-format
+msgid "No format for the temporary image could be found"
+msgstr "No s'ha pogut trobar el format de la imatge temporal"
+
+#: ../libbrasero-burn/brasero-cover.c:119
+msgid "Unknown song"
+msgstr "Cançó desconeguda"
+
+#. Reminder: if this string happens to be used
+#. * somewhere else in brasero we'll need a
+#. * context with C_() macro
+#. Translators: "by" is followed by the name of an artist.
+#. * This text is the one written on the cover of a disc.
+#. * Before it there is the name of the song.
+#. * I had to break it because it is in a GtkTextBuffer
+#. * and every word has a different tag.
+#: ../libbrasero-burn/brasero-cover.c:144
+msgid "by"
+msgstr "per"
+
+#. NOTE for translators: the first %s is medium_name ("File
+#. * Image") and the second the path for the image file
+#: ../libbrasero-burn/brasero-dest-selection.c:511
+#, c-format
+msgid "%s: \"%s\""
+msgstr "%s: «%s»"
+
+#. Translators: this string is only used when the user
+#. * wants to copy a disc using the same destination and
+#. * source drive. It tells him that brasero will use as
+#. * destination disc a new one (once the source has been
+#. * copied) which is to be inserted in the drive currently
+#. * holding the source disc
+#: ../libbrasero-burn/brasero-dest-selection.c:543
+#, c-format
+msgid "New disc in the burner holding source disc"
+msgstr "El disc nou a l'enregistrador que conté el disc font"
+
+#. NOTE for translators, the first %s is the medium name
+#: ../libbrasero-burn/brasero-dest-selection.c:598
+#, fuzzy, c-format
+msgid "%s: not enough free space"
+msgstr "%s: no hi ha espai lliure"
+
+#. NOTE for translators: the first %s is the medium name, the second %s
+#. * is its available free space. "Free" here is the free space available.
+#: ../libbrasero-burn/brasero-dest-selection.c:629
+#, c-format
+msgid "%s: %s of free space"
+msgstr "%s: %s d'espai lliure"
+
+#. Translators: the first %s is the path of the directory where brasero
+#. * will store its temporary files; the second one is the size available
+#: ../libbrasero-burn/brasero-drive-properties.c:211
+#, fuzzy, c-format
+msgid "%s: %s free"
+msgstr "%s: %s d'espai lliure"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:255
+#: ../libbrasero-burn/brasero-drive-properties.c:291
+#: ../libbrasero-burn/brasero-drive-properties.c:340
+msgid "Do you really want to choose this location?"
+msgstr "Segur que voleu seleccionar esta ubicació?"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:293
+#: ../libbrasero-burn/brasero-session.c:1125
+#: ../libbrasero-burn/brasero-session.c:1200 ../libbrasero-burn/burn-job.c:490
+#: ../plugins/cdrkit/burn-genisoimage.c:194
+#: ../plugins/cdrtools/burn-mkisofs.c:195
+#: ../plugins/libburnia/burn-libisofs.c:230
+#, c-format
+msgid "You do not have the required permission to write at this location"
+msgstr "No teniu els permisos necessaris per a escriure a esta ubicació"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:343
+msgid ""
+"The filesystem on this volume does not support large files (size over 2 "
+"GiB).\n"
+"This can be a problem when writing DVDs or large images."
+msgstr ""
+"El sistema de fitxers d'este volum no admet fitxers grans (de mida superior "
+"a 2 GiB).\n"
+"Això pot ser un problema quan s'escriuen DVD o imatges grans."
+
+#. Translators %s.1f is the speed used to burn
+#: ../libbrasero-burn/brasero-drive-properties.c:547
+#, c-format
+msgid "%.1f x (DVD)"
+msgstr "%.1f x (DVD)"
+
+#. Translators %s.1f is the speed used to burn
+#: ../libbrasero-burn/brasero-drive-properties.c:551
+#, c-format
+msgid "%.1f x (CD)"
+msgstr "%.1f x (CD)"
+
+#. Translators %s.1f is the speed used to burn
+#: ../libbrasero-burn/brasero-drive-properties.c:555
+#, c-format
+msgid "%.1f x (BD)"
+msgstr "%.1f x (BD)"
+
+#. Translators %s.1f is the speed used to burn for every medium
+#. * type
+#: ../libbrasero-burn/brasero-drive-properties.c:560
+#, c-format
+msgid "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
+msgstr "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:598
+msgid "Impossible to retrieve speeds"
+msgstr "No s'han pogut obtindre les velocitats"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:607
+msgid "Max speed"
+msgstr "Velocitat màxima"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:733
+msgid "Burning speed"
+msgstr "Velocitat d'enregistrament"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:746
+msgid "_Simulate before burning"
+msgstr "_Simula abans d'enregistrar"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:747
+msgid ""
+"Brasero will simulate the burning and if it is successful, go on with actual "
+"burning after 10 seconds"
+msgstr ""
+"El Brasero simularà l'enregistrament i, si és correcte, continuarà amb este "
+"després de 10 segons."
+
+#: ../libbrasero-burn/brasero-drive-properties.c:749
+msgid "Use burn_proof (decrease the risk of failures)"
+msgstr "Utilitza el «burn_proof» (disminueix el risc de fallades)"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:751
+msgid "_Eject after burning"
+msgstr "_Expulsa després de l'enregistrament"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:753
+msgid "Burn the image directly _without saving it to disc"
+msgstr "Enregistra la imatge directament _sense alçar-la al disc"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:755
+msgid "Leave the disc _open to add other files later"
+msgstr "Deixa el disc _obert per a afegir-hi altres fitxers més avant"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:756
+msgid "Allow to add more data to the disc later"
+msgstr "Permet afegir més dades al disc més avant"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:780
+#: ../src/brasero-song-properties.c:225
+#: ../libbrasero-burn/brasero-tool-dialog.c:281
+#: ../src/brasero-multi-song-props.c:307
+msgid "Options"
+msgstr "Opcions"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:793
+#, fuzzy
+msgid "Location for _Temporary Files"
+msgstr "Ubicació dels fitxers temporals"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:813
+msgid "Set the directory where to store temporary files"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-drive-properties.c:818
+msgid "Temporary files"
+msgstr "Fitxers temporals"
+
+#: ../libbrasero-burn/brasero-image-properties.c:192
+#, fuzzy
+msgid "Disc image type:"
+msgstr "Tipus d'imatge:"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:96
+msgid "Autodetect"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:105
+#, fuzzy
+msgid "Video DVD image"
+msgstr "imatge *.iso"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:105
+msgid "ISO9660 image"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:114
+msgid "Readcd/Readom image"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:126
+#, fuzzy
+msgid "VCD image"
+msgstr "S'està creant la imatge"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:132
+msgid "SVCD image"
+msgstr ""
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:140
+#, fuzzy
+msgid "Cue image"
+msgstr "imatge *.cue"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:150
+#, fuzzy
+msgid "Cdrdao image"
+msgstr "imatge *.raw"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:94
+#: ../src/brasero-project.c:1357
+#, c-format
+msgid "Properties of %s"
+msgstr "Propietats de %s"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:134
+msgid ""
+"Do you really want to keep the current extension for the disc image name?"
+msgstr ""
+"Segur que voleu mantindre l'extensió actual per al nom de la imatge del disc?"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:138
+msgid ""
+"If you choose to keep it, programs may not be able to recognize the file "
+"type properly."
+msgstr ""
+"Si escolliu mantindre-la, pot ser que els programes no siguen capaços de "
+"reconèixer correctament el tipus de fitxer."
+
+#: ../libbrasero-burn/brasero-medium-properties.c:141
+msgid "_Keep Current Extension"
+msgstr "_Manté l'extensió actual"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:144
+msgid "Change _Extension"
+msgstr "Canvia l'_extensió"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:227
+msgid "Configure recording options"
+msgstr "Configura les opcions d'enregistrament"
+
+#. Translators: first %02i is hours, the second one is minutes and the
+#. * third one is seconds.
+#: ../libbrasero-burn/brasero-progress.c:193
+#, c-format
+msgid "Total time: %02i:%02i:%02i"
+msgstr "Temps total: %02i:%02i:%02i"
+
+#: ../libbrasero-burn/brasero-progress.c:204
+msgid "Average drive speed:"
+msgstr "Velocitat mitjana de la unitat:"
+
+#. Translators: first %02i is hours, the second one is minutes
+#. * and the third one is seconds.
+#: ../libbrasero-burn/brasero-progress.c:431
+#, c-format
+msgid "Estimated remaining time: %02i:%02i:%02i"
+msgstr "Temps restant estimat: %02i:%02i:%02i"
+
+#: ../libbrasero-burn/brasero-progress.c:473
+#, c-format
+msgid "%i MiB of %i MiB"
+msgstr "%i MiB de %i MiB"
+
+#: ../libbrasero-burn/brasero-progress.c:499
+msgid "Estimated drive speed:"
+msgstr "Velocitat estimada de la unitat:"
+
+#. Translators: %s is a path
+#: ../libbrasero-burn/brasero-src-image.c:234
+#, c-format
+msgid "\"%s\": loading"
+msgstr ""
+
+#. Translators: %s is a path and image refers to a disc image
+#: ../libbrasero-burn/brasero-src-image.c:240
+#, c-format
+msgid "\"%s\": unknown disc image type"
+msgstr ""
+
+#. NOTE to translators, the first %s is the path of the image
+#. * file and the second its size.
+#: ../libbrasero-burn/brasero-src-image.c:260
+#, c-format
+msgid "\"%s\": %s"
+msgstr "«%s»: %s"
+
+#. This is hackish and meant to avoid ellipsization to make the
+#. * label to small.
+#. Translators: this is a disc image
+#: ../libbrasero-burn/brasero-src-image.c:270
+#: ../libbrasero-burn/brasero-src-image.c:577
+#, fuzzy
+msgid "Click here to select a disc _image"
+msgstr "Feu clic ací per a seleccionar una _imatge"
+
+#: ../libbrasero-burn/brasero-src-image.c:429
+#, fuzzy
+msgid "Select Disc Image"
+msgstr "Selecciona el fitxer d'imatge"
+
+#: ../libbrasero-burn/brasero-src-image.c:458
+#: ../src/brasero-project-name.c:164 ../src/brasero-search-entry.c:610
+#: ../src/brasero-search-entry.c:650 ../src/brasero-search-entry.c:689
+#: ../src/brasero-search-beagle.c:474 ../src/brasero-file-chooser.c:225
+#: ../src/brasero-project.c:1987
+msgid "All files"
+msgstr "Tots els fitxers"
+
+#. Translators: this a disc image here
+#: ../libbrasero-burn/brasero-src-image.c:464
+#, fuzzy
+msgctxt "disc"
+msgid "Image files"
+msgstr "Fitxer d'imatge"
+
+#: ../libbrasero-burn/brasero-src-image.c:482
+msgid "Image type:"
+msgstr "Tipus d'imatge:"
+
+#: ../libbrasero-burn/brasero-tray.c:83 ../src/brasero-audio-disc.c:149
+#: ../src/brasero-data-disc.c:122 ../src/brasero-video-disc.c:100
+msgid "Menu"
+msgstr "Menú"
+
+#: ../libbrasero-burn/brasero-tray.c:84
+msgid "Cancel ongoing burning"
+msgstr "Cancel·la l'enregistrament en curs"
+
+#: ../libbrasero-burn/brasero-tray.c:89
+msgid "Show _Dialog"
+msgstr "Mostra el _diàleg"
+
+#: ../libbrasero-burn/brasero-tray.c:89
+msgid "Show dialog"
+msgstr "Mostra el diàleg"
+
+#: ../libbrasero-burn/brasero-tray.c:259
+#, fuzzy, c-format
+msgid "%s, %d%% done, %s remaining"
+msgstr "%s, %02i%% fet, %s restant"
+
+#: ../libbrasero-burn/brasero-tray.c:266
+#, fuzzy, c-format
+msgid "%s, %d%% done"
+msgstr "%s, %02i%% fet"
+
+#: ../libbrasero-burn/burn-basics.c:75
+msgid "Getting size"
+msgstr "S'està calculant la mida"
+
+#: ../libbrasero-burn/burn-basics.c:77
+msgid "Writing"
+msgstr "S'està escrivint"
+
+#: ../libbrasero-burn/burn-basics.c:78
+msgid "Blanking"
+msgstr "S'està esborrant"
+
+#: ../libbrasero-burn/burn-basics.c:79
+msgid "Creating checksum"
+msgstr "S'està creant la suma de verificació"
+
+#: ../libbrasero-burn/burn-basics.c:81
+msgid "Copying file"
+msgstr "S'està copiant el fitxer"
+
+#: ../libbrasero-burn/burn-basics.c:82
+msgid "Analysing audio files"
+msgstr "S'estan analitzant els fitxers d'àudio"
+
+#: ../libbrasero-burn/burn-basics.c:83
+msgid "Transcoding song"
+msgstr "S'està transcodificant la cançó"
+
+#: ../libbrasero-burn/burn-basics.c:84
+msgid "Preparing to write"
+msgstr "S'està preparant per a escriure"
+
+#: ../libbrasero-burn/burn-basics.c:85
+msgid "Writing leadin"
+msgstr "S'està escrivint la pista d'entrada"
+
+#: ../libbrasero-burn/burn-basics.c:86
+msgid "Writing CD-TEXT information"
+msgstr "S'està escrivint la informació CD-TEXT"
+
+#: ../libbrasero-burn/burn-basics.c:87
+#, fuzzy
+msgid "Finalizing"
+msgstr "S'està finalitzant"
+
+#: ../libbrasero-burn/burn-basics.c:88
+msgid "Writing leadout"
+msgstr "S'està escrivint la pista d'eixida"
+
+#: ../libbrasero-burn/burn-basics.c:89
+msgid "Starting to record"
+msgstr "S'està començant a escriure"
+
+#: ../libbrasero-burn/burn-basics.c:90
+msgid "Success"
+msgstr "Èxit"
+
+#. Translators: %s is the plugin name
+#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:793
+#: ../libbrasero-burn/burn-job.c:806 ../libbrasero-burn/burn-job.c:1025
+#: ../libbrasero-burn/burn-job.c:1115
+#, c-format
+msgid "\"%s\" did not behave properly"
+msgstr "«%s» no es comporta correctament"
+
+#. Translators: the first %s is the size of the free space on the medium
+#. * and the second %s is the size of the space required by the data to be
+#. * burnt.
+#: ../libbrasero-burn/burn-job.c:430
+#, fuzzy, c-format
+msgid "Not enough space available on the disc (%s available for %s)"
+msgstr "No hi ha prou espai disponible al disc (%lli disponible per a %lli)"
+
+#: ../libbrasero-burn/burn-job.c:520
+#, c-format
+msgid ""
+"The filesystem you chose to store the temporary image on cannot hold files "
+"with a size over 2 GiB"
+msgstr ""
+"El sistema de fitxers que heu triat per a emmagatzemar la imatge temporal no "
+"pot contindre fitxers de mida superior a 2 GiB"
+
+#: ../libbrasero-burn/burn-job.c:535 ../libbrasero-burn/burn-job.c:557
+#, c-format
+msgid ""
+"The location you chose to store the temporary image on does not have enough "
+"free space for the disc image (%ld MiB needed)"
+msgstr ""
+"La ubicació que heu seleccionat per a emmagatzemar la imatge temporal no té "
+"suficient espai lliure per a la imatge del disc (són necessaris %ld MiB)"
+
+#: ../libbrasero-burn/burn-job.c:570 ../plugins/dvdcss/burn-dvdcss.c:349
+#, c-format
+msgid "The size of the volume could not be retrieved"
+msgstr "No s'ha pogut obtindre la mida del volum"
+
+#: ../libbrasero-burn/burn-job.c:623
+#, c-format
+msgid "No path was specified for the image output"
+msgstr "No s'ha especificat cap camí per a la eixida de la imatge"
+
+#. Translators: %s is the error returned by libburn
+#. Translators: the %s is the error message from errno
+#: ../libbrasero-burn/burn-job.c:764 ../src/main.c:202 ../src/main.c:228
+#: ../plugins/cdrtools/burn-cdrecord.c:683
+#: ../plugins/libburnia/burn-libburn.c:693
+#: ../plugins/transcode/burn-transcode.c:658
+#, c-format
+msgid "An internal error occured (%s)"
+msgstr "S'ha produït un error intern (%s)"
+
+#: ../libbrasero-burn/burn-mkisofs-base.c:157
+#: ../libbrasero-burn/burn-mkisofs-base.c:635
+#: ../plugins/growisofs/burn-growisofs.c:523
+#: ../plugins/libburnia/burn-libisofs.c:676
+#: ../plugins/checksum/burn-checksum-image.c:280
+#, c-format
+msgid "The file is not stored locally"
+msgstr "El fitxer no està alçat en local"
+
+#: ../libbrasero-burn/burn-mkisofs-base.c:787
+#, c-format
+msgid "VIDEO_TS directory is missing or invalid"
+msgstr "Manca el directori VIDEO_TS o bé no és vàlid"
+
+#: ../libbrasero-burn/burn-process.c:112 ../libbrasero-burn/burn-process.c:118
+#: ../libbrasero-burn/burn-process.c:135
+#, c-format
+msgid "\"%s\" could not be found in the path"
+msgstr "No s'ha pogut trobar «%s» en el camí"
+
+#: ../libbrasero-burn/burn-process.c:129
+#, fuzzy, c-format
+msgid ""
+"\"%s\" is a symbolic link pointing to another program. Use the target "
+"program instead"
+msgstr ""
+"«%s» és un enllaç simbòlic a un altre programa. Utilitzeu el programa objectiu"
+
+#. Translators: %s is the name of the brasero element
+#: ../libbrasero-burn/burn-process.c:219
+#, c-format
+msgid "Process \"%s\" ended with an error code (%i)"
+msgstr "El procés «%s» ha acabat amb un codi d'error (%i)"
+
+#: ../libbrasero-utils/brasero-disc-message.c:157
+msgid "_Hide changes"
+msgstr "_Oculta els canvis"
+
+#: ../libbrasero-utils/brasero-disc-message.c:159
+msgid "_Show changes"
+msgstr "_Mostra els canvis"
+
+#: ../libbrasero-utils/brasero-disc-message.c:178
+msgid "_Show errors"
+msgstr "_Mostra els errors"
+
+#: ../libbrasero-utils/brasero-disc-message.c:333
+msgid "Close this notification window"
+msgstr "Tanca esta finestra de notificació"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:173
+msgid "Images"
+msgstr "Imatges"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:197
+msgid "_Color"
+msgstr "_Color"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:226
+msgid "Solid color"
+msgstr "Color sòlid"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:227
+msgid "Horizontal gradient"
+msgstr "Gradient horitzontal"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:228
+msgid "Vertical gradient"
+msgstr "Gradient vertical"
+
+#. second part
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:245
+msgid "_Image"
+msgstr "_Imatge"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:270
+msgid "Image path:"
+msgstr "Camí de la imatge:"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:282
+msgid "Choose an image"
+msgstr "Seleccioneu una imatge"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:293
+msgid "Image style:"
+msgstr "Estil de la imatge:"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:307
+msgid "Centered"
+msgstr "Centrat"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:308
+msgid "Tiled"
+msgstr "En mosaic"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:309
+msgid "Scaled"
+msgstr "Escalat"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:346
+msgid "Background Properties"
+msgstr "Propietats del fons"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:577
+msgid "Bac_kground Properties"
+msgstr "Propietats del _fons"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:674
+msgid "_Text Color"
+msgstr "_Color del text"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:804
+msgid "Cover Editor"
+msgstr "Editor de cobertes"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:799
+msgid "Set Bac_kground Properties"
+msgstr "Estableix les propietats del _fons"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:840
+msgid "SIDES"
+msgstr "LATERALS"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:856
+msgid "BACK COVER"
+msgstr "CONTRACOBERTA"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:873
+msgid "FRONT COVER"
+msgstr "COBERTA FRONTAL"
+
+#. Translators: This is an image,
+#. * a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-view.c:1144
+msgid "The image could not be loaded."
+msgstr "No s'ha pogut carregar la imatge."
+
+#: ../libbrasero-utils/brasero-tool-color-picker.c:165
+msgid "Pick a Color"
+msgstr "Trieu un color"
+
+#: ../libbrasero-burn/brasero-xfer.c:130 ../libbrasero-burn/brasero-xfer.c:266
+#, c-format
+msgid "Directory could not be created (%s)"
+msgstr "No s'ha pogut crear el directori (%s)"
+
+#: ../src/brasero-project-parse.c:60
+msgid "Error while loading the project."
+msgstr "S'ha produït un error en carregar el projecte."
+
+#: ../src/brasero-project-parse.c:446
+#, fuzzy
+msgid "The project could not be opened"
+msgstr "No s'ha pogut obrir el projecte."
+
+#: ../src/brasero-project-parse.c:455
+#, fuzzy
+msgid "The file is empty"
+msgstr "El fitxer és buit."
+
+#: ../src/brasero-project-parse.c:534 ../src/brasero-project-parse.c:593
+#, fuzzy
+msgid "It does not seem to be a valid Brasero project"
+msgstr "Pareix que no és un projecte del Brasero vàlid."
+
+#: ../libbrasero-media/brasero-drive-selection.c:346
+#: ../libbrasero-media/brasero-drive-selection.c:441
+msgid "Unnamed CD/DVD Drive"
+msgstr "Unitat de CD/DVD sense nom"
+
+#: ../libbrasero-media/brasero-media.c:53
+msgid "Display debug statements on stdout for Brasero media library"
+msgstr ""
+"Mostra els missatges de depuració de la biblioteca multimèdia del Brasero a "
+"la eixida estàndard"
+
+#: ../libbrasero-media/brasero-media.c:468
+msgid "Brasero optical media library"
+msgstr "Biblioteca òptica multimèdia del Brasero"
+
+#: ../libbrasero-media/brasero-media.c:469
+msgid "Display options for Brasero-media library"
+msgstr "Mostra les opcions per a la biblioteca multimèdia del Brasero"
+
+#. Translators: this is hour minute second like '2 h 14 min 25'
+#: ../libbrasero-media/brasero-units.c:71
+#, fuzzy, c-format
+msgid "%s h %s min %s"
+msgstr "%s a %s"
+
+#. Translators: this is hour minute like '2 h 14'
+#: ../libbrasero-media/brasero-units.c:77
+#, fuzzy, c-format
+msgid "%s h %s"
+msgstr "%s / %s"
+
+#. Translators: this is hour like '2 h'
+#: ../libbrasero-media/brasero-units.c:82
+#, fuzzy, c-format
+msgid "%s h"
+msgstr "%s: %s"
+
+#. Translators: this is 'hour:minute:second' like '2:14:25'
+#: ../libbrasero-media/brasero-units.c:86
+#, fuzzy, c-format
+msgid "%s:%s:%s"
+msgstr "%s: %s"
+
+#. Translators: this is 'hour:minute' or 'minute:second'
+#: ../libbrasero-media/brasero-units.c:92
+#: ../libbrasero-media/brasero-units.c:107
+#, fuzzy, c-format
+msgid "%s:%s"
+msgstr "%s: %s"
+
+#. Translators: %s is a duration expressed in minutes
+#: ../libbrasero-media/brasero-units.c:99
+#, fuzzy, c-format
+msgid "%s min"
+msgstr "%lli min"
+
+#. Translators: the first %s is the number of minutes
+#. * and the second one is the number of seconds.
+#. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:104
+#, fuzzy, c-format
+msgid "%s:%s min"
+msgstr "%s: %s"
+
+#. NOTE for translators, the first %s is the medium name
+#: ../libbrasero-media/brasero-medium-selection.c:146
+#, c-format
+msgid "%s: empty"
+msgstr "%s: buit"
+
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (kio, gio) used by data on the disc.
+#.
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (time) used by data on the disc.
+#. * I really don't know if I should set this string as
+#. * translatable.
+#: ../libbrasero-media/brasero-medium-selection.c:162
+#: ../libbrasero-media/brasero-medium-selection.c:174
+#, c-format
+msgid "%s: %s"
+msgstr "%s: %s"
+
+#: ../libbrasero-media/brasero-medium-selection.c:452
+msgid "Searching for available discs"
+msgstr "S'estan cercant els discs disponibles"
+
+#: ../libbrasero-media/brasero-medium-selection.c:461
+msgid "No available disc"
+msgstr "No hi ha disponible cap disc"
+
+#. Translators: This is a fake drive, a file, and means that
+#. * when we're writing, we're writing to a file and create an
+#. * image on the hard drive.
+#: ../libbrasero-media/brasero-drive.c:480
+#: ../libbrasero-media/brasero-medium.c:202
+#: ../libbrasero-media/brasero-volume.c:392
+msgid "Image File"
+msgstr "Fitxer d'imatge"
+
+#: ../libbrasero-media/burn-iso9660.c:158
+#: ../libbrasero-media/burn-iso9660.c:167
+#: ../libbrasero-media/burn-iso9660.c:402
+#: ../libbrasero-media/burn-iso9660.c:439
+#: ../libbrasero-media/burn-iso9660.c:488
+#: ../libbrasero-media/burn-volume.c:128
+#, c-format
+msgid "It does not appear to be a valid ISO image"
+msgstr "Pareix que no és una imatge ISO vàlida"
+
+#: ../libbrasero-media/brasero-medium.c:64
+msgid "File"
+msgstr "Fitxer"
+
+#: ../libbrasero-media/brasero-medium.c:65
+msgid "CDROM"
+msgstr "CDROM"
+
+#: ../libbrasero-media/brasero-medium.c:66
+msgid "CD-R"
+msgstr "CD-R"
+
+#: ../libbrasero-media/brasero-medium.c:67
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: ../libbrasero-media/brasero-medium.c:68
+msgid "DVDROM"
+msgstr "DVDROM"
+
+#: ../libbrasero-media/brasero-medium.c:69
+msgid "DVD-R"
+msgstr "DVD-R"
+
+#: ../libbrasero-media/brasero-medium.c:70
+msgid "DVD-RW"
+msgstr "DVD-RW"
+
+#: ../libbrasero-media/brasero-medium.c:71
+msgid "DVD+R"
+msgstr "DVD+R"
+
+#: ../libbrasero-media/brasero-medium.c:72
+msgid "DVD+RW"
+msgstr "DVD+RW"
+
+#: ../libbrasero-media/brasero-medium.c:73
+msgid "DVD+R dual layer"
+msgstr "DVD+R de doble capa"
+
+#: ../libbrasero-media/brasero-medium.c:74
+msgid "DVD+RW dual layer"
+msgstr "DVD+RW de doble capa"
+
+#: ../libbrasero-media/brasero-medium.c:75
+msgid "DVD-R dual layer"
+msgstr "DVD-R de doble capa"
+
+#: ../libbrasero-media/brasero-medium.c:76
+msgid "DVD-RAM"
+msgstr "DVD-RAM"
+
+#: ../libbrasero-media/brasero-medium.c:77
+msgid "Blu-ray disc"
+msgstr "Disc Blu-ray"
+
+#: ../libbrasero-media/brasero-medium.c:78
+msgid "Writable Blu-ray disc"
+msgstr "Disc Blu-ray enregistrable"
+
+#: ../libbrasero-media/brasero-medium.c:79
+msgid "Rewritable Blu-ray disc"
+msgstr "Disc Blu-ray reenregistrable"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:212
+#, c-format
+msgid "Blank %s in %s"
+msgstr "%s verge a %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:219
+#, c-format
+msgid "Audio and data %s in %s"
+msgstr "Àudio i dades %s a %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:226
+#, c-format
+msgid "Audio %s in %s"
+msgstr "Àudio %s a %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:233
+#, c-format
+msgid "Data %s in %s"
+msgstr "Dades %s a %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:240
+#, c-format
+msgid "%s in %s"
+msgstr "%s a %s"
+
+#: ../libbrasero-media/brasero-volume.c:193
+#, c-format
+msgid "The disc mount point could not be retrieved"
+msgstr "No s'ha pogut obtindre el punt de muntatge del disc"
+
+#. NOTE for translators: the first %s is the disc type and Blank is an adjective.
+#: ../libbrasero-media/brasero-volume.c:419
+#, fuzzy, c-format
+msgid "Blank disc (%s)"
+msgstr "Disc de dades (%s)"
+
+#. NOTE for translators: the first %s is the disc type.
+#: ../libbrasero-media/brasero-volume.c:423
+#, fuzzy, c-format
+msgid "Audio and data disc (%s)"
+msgstr "Àudio i dades %s"
+
+#. NOTE for translators: the first %s is the disc type.
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_ .
+#. * The %s is the date
+#: ../libbrasero-media/brasero-volume.c:427 ../src/brasero-project-name.c:276
+#, c-format
+msgid "Audio disc (%s)"
+msgstr "Disc d'àudio (%s)"
+
+#. NOTE for translators: the first %s is the disc type.
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_ otherwise it gets truncated.
+#. * The %s is the date
+#: ../libbrasero-media/brasero-volume.c:431 ../src/brasero-project-name.c:257
+#, c-format
+msgid "Data disc (%s)"
+msgstr "Disc de dades (%s)"
+
+#: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project-name.c:83
+msgid "Unknown error"
+msgstr "Error desconegut"
+
+#: ../libbrasero-media/scsi-error.c:44
+msgid "Size mismatch"
+msgstr "Mida incompatible"
+
+#: ../libbrasero-media/scsi-error.c:45
+msgid "Type mismatch"
+msgstr "Tipus incompatible"
+
+#: ../libbrasero-media/scsi-error.c:46
+msgid "Bad argument"
+msgstr "Argument incorrecte"
+
+#: ../libbrasero-media/scsi-error.c:48
+msgid "Outrange address"
+msgstr "Adreça fora de rang"
+
+#: ../libbrasero-media/scsi-error.c:49
+msgid "Invalid address"
+msgstr "Adreça invàlida"
+
+#: ../libbrasero-media/scsi-error.c:50
+msgid "Invalid command"
+msgstr "Orde invàlida"
+
+#: ../libbrasero-media/scsi-error.c:51
+msgid "Invalid parameter in command"
+msgstr "Paràmetre invàlid a l'orde"
+
+#: ../libbrasero-media/scsi-error.c:52
+msgid "Invalid field in command"
+msgstr "Camp invàlid a l'orde"
+
+#: ../libbrasero-media/scsi-error.c:53
+msgid "The device timed out"
+msgstr "El dispositiu ha excedit el temps"
+
+#: ../libbrasero-media/scsi-error.c:54
+msgid "Key not established"
+msgstr "No s'ha establit la clau"
+
+#: ../libbrasero-media/scsi-error.c:55
+msgid "Invalid track mode"
+msgstr "Mode de pista invàlid"
+
+#: ../src/eggdesktopfile.c:165
+#, c-format
+msgid "File is not a valid .desktop file"
+msgstr "El fitxer no és un fitxer .desktop vàlid"
+
+#: ../src/eggdesktopfile.c:188
+#, c-format
+msgid "Unrecognized desktop file Version '%s'"
+msgstr "No s'ha reconegut la versió «%s» del fitxer de l'escriptori"
+
+#: ../src/eggdesktopfile.c:958
+#, c-format
+msgid "Starting %s"
+msgstr "S'està iniciant %s"
+
+#: ../src/eggdesktopfile.c:1100
+#, c-format
+msgid "Application does not accept documents on command line"
+msgstr "L'aplicació no accepta documents des de la línia d'ordes"
+
+#: ../src/eggdesktopfile.c:1168
+#, c-format
+msgid "Unrecognized launch option: %d"
+msgstr "No s'ha reconegut l'opció de llançament: %d"
+
+#: ../src/eggdesktopfile.c:1373
+#, c-format
+msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+msgstr ""
+"No es poden passar URI de document a una entrada de l'escriptori del tipus "
+"«Type=Link»"
+
+#: ../src/eggdesktopfile.c:1392
+#, c-format
+msgid "Not a launchable item"
+msgstr "No és un element executable"
+
+#: ../src/eggsmclient.c:224
+msgid "Disable connection to session manager"
+msgstr "Inhabilita la connexió al gestor de sessió"
+
+#: ../src/eggsmclient.c:227
+msgid "Specify file containing saved configuration"
+msgstr "Especifica el fitxer que conté la configuració alçada"
+
+#: ../src/eggsmclient.c:227
+msgid "FILE"
+msgstr "FITXER"
+
+#: ../src/eggsmclient.c:230
+msgid "Specify session management ID"
+msgstr "Especifica l'identificador del gestor de sessió"
+
+#: ../src/eggsmclient.c:230
+msgid "ID"
+msgstr "IDENTIFICADOR"
+
+#: ../src/eggsmclient.c:244
+msgid "Session management options:"
+msgstr "Opcions del gestor de sessió:"
+
+#: ../src/eggsmclient.c:245
+msgid "Show session management options"
+msgstr "Mostra les opcions del gestor de sessió"
+
+#: ../src/brasero-pref.c:65
+msgid "Brasero Plugins"
+msgstr "Connectors del Brasero"
+
+#: ../plugins/local-track/burn-uri.c:200 ../plugins/local-track/burn-uri.c:290
+#: ../plugins/local-track/burn-uri.c:465
+#, c-format
+msgid "Impossible to retrieve local file path"
+msgstr "No s'ha pogut obtindre el camí del fitxer local"
+
+#: ../plugins/local-track/burn-uri.c:319
+#: ../plugins/local-track/burn-local-image.c:520
+msgid "Copying files locally"
+msgstr "S'estan copiant fitxers en local"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/local-track/burn-uri.c:739 ../nautilus/nautilus-burn-bar.c:136
+msgid "CD/DVD Creator Folder"
+msgstr "Carpeta del creador de CD/DVD"
+
+#: ../plugins/local-track/burn-uri.c:740
+msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
+msgstr ""
+"Permet enregistrar els fitxers afegits a la «Carpeta del creador de CD/DVD» "
+"del Nautilus"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+msgid "CD/DVD Creator"
+msgstr "Creador de CD/DVD"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
+msgid "Create CDs and DVDs"
+msgstr "Crea CD i DVD"
+
+#: ../nautilus/nautilus-burn-bar.c:143
+msgid "Drag or copy files below to write them to disc"
+msgstr "Arrossegueu o copieu fitxers a sota per a escriure'ls al disc"
+
+#: ../nautilus/nautilus-burn-bar.c:151
+msgid "Write to Disc"
+msgstr "Escriu al disc"
+
+#: ../nautilus/nautilus-burn-bar.c:163
+#: ../nautilus/nautilus-burn-extension.c:629
+msgid "Write contents to a CD or DVD disc"
+msgstr "Escriu els continguts a un CD o DVD"
+
+#: ../nautilus/nautilus-burn-extension.c:223
+msgid "Disc name"
+msgstr "Nom del disc"
+
+#: ../nautilus/nautilus-burn-extension.c:482
+#: ../nautilus/nautilus-burn-extension.c:628
+msgid "_Write to Disc..."
+msgstr "_Escriu al disc..."
+
+#: ../nautilus/nautilus-burn-extension.c:483
+msgid "Write disc image to a CD or DVD disc"
+msgstr "Escriu la imatge de disc a un CD o DVD"
+
+#: ../nautilus/nautilus-burn-extension.c:551
+msgid "_Copy Disc..."
+msgstr "_Copia el disc..."
+
+#: ../nautilus/nautilus-burn-extension.c:552
+msgid "Create a copy of this CD or DVD disc"
+msgstr "Crea una còpia d'este CD o DVD"
+
+#: ../nautilus/nautilus-burn-extension.c:565
+msgid "_Blank Disc..."
+msgstr "_Esborra el disc..."
+
+#: ../nautilus/nautilus-burn-extension.c:566
+msgid "Blank this CD or DVD disc"
+msgstr "Esborra este CD o DVD"
+
+#: ../nautilus/nautilus-burn-extension.c:582
+msgid "_Check Disc..."
+msgstr "_Comprova el disc..."
+
+#: ../nautilus/nautilus-burn-extension.c:583
+msgid "Check the data integrity on this CD or DVD disc"
+msgstr "Comprova la integritat de les dades d'este CD o DVD"
+
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:82
+#, fuzzy
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Seleccioneu una altra imatge."
+
+#: ../src/brasero-project-name.c:156
+msgid "Medium Icon"
+msgstr ""
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-project-name.c:170 ../src/brasero-file-chooser.c:250
+#: ../src/brasero-project.c:2009
+#, fuzzy
+msgctxt "picture"
+msgid "Image files"
+msgstr "Fitxer d'imatge"
+
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_.
+#. * The %s is the date
+#: ../src/brasero-project-name.c:271
+#, c-format
+msgid "Video disc (%s)"
+msgstr "Disc de vídeo (%s)"
+
+#: ../src/brasero-app.c:120
+msgid "_Project"
+msgstr "_Projecte"
+
+#: ../src/brasero-app.c:121
+msgid "_View"
+msgstr "_Visualització"
+
+#: ../src/brasero-app.c:122
+msgid "_Edit"
+msgstr "_Edita"
+
+#: ../src/brasero-app.c:123
+msgid "_Tools"
+msgstr "E_ines"
+
+#: ../src/brasero-app.c:125
+msgid "_Help"
+msgstr "_Ajuda"
+
+#: ../src/brasero-app.c:127
+msgid "P_lugins"
+msgstr "_Connectors"
+
+#: ../src/brasero-app.c:128
+msgid "Choose plugins for brasero"
+msgstr "Seleccioneu connectors per al Brasero"
+
+#: ../src/brasero-app.c:130
+msgid "E_ject"
+msgstr "E_xpulsa"
+
+#: ../src/brasero-app.c:131
+msgid "Eject a disc"
+msgstr "Expulsa un disc"
+
+#: ../src/brasero-app.c:133
+#, fuzzy
+msgid "_Blank..."
+msgstr "_Esborra"
+
+#: ../src/brasero-app.c:134
+#, fuzzy
+msgid "Blank a disc"
+msgstr "%s en blanc"
+
+#: ../src/brasero-app.c:136
+msgid "_Check Integrity..."
+msgstr "_Comprova la integritat..."
+
+#: ../src/brasero-app.c:137
+msgid "Check data integrity of disc"
+msgstr "Comprova la integritat del disc"
+
+#: ../src/brasero-app.c:140
+msgid "Quit Brasero"
+msgstr ""
+
+#: ../src/brasero-app.c:142
+msgid "_Contents"
+msgstr "_Contingut"
+
+#: ../src/brasero-app.c:142
+msgid "Display help"
+msgstr "Mostra l'ajuda"
+
+#: ../src/brasero-app.c:145
+msgid "About"
+msgstr "Quant a"
+
+#: ../src/brasero-app.c:570 ../data/brasero.desktop.in.in.h:3
+msgid "Disc Burner"
+msgstr "Enregistrador de discs"
+
+#: ../src/brasero-app.c:1015
+msgid ""
+"Brasero is free software; you can redistribute it and/or modify it under the "
+"terms of the GNU General Public License as published by the Free Software "
+"Foundation; either version 2 of the License, or (at your option) any later "
+"version."
+msgstr ""
+"El Braseró és programari lliure; el podeu redistribuir i/o modificar sota "
+"els termes de la llicència de documentació lliure GNU, tal com està publicat "
+"per la Free Software Foundation; ja siga a la versió 2 de la llicència, o (a "
+"elecció vostra) a qualsevol versió posterior."
+
+#: ../src/brasero-app.c:1020
+msgid ""
+"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
+msgstr ""
+"El Brasero es distribueix amb l'esperança de ser útil, pero SENSE CAP TIPUS "
+"DE GARANTIA; sense ni tan sols la garantia implícita per l'ÚS COMERCIAL o "
+"IDONEÏTAT PER A USOS PARTICULARS. Vegeu la Llicència de documentació lliure "
+"GNU per a més detalls."
+
+#: ../src/brasero-app.c:1025
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr ""
+"Hauríeu d'haver rebut una còpia de la Llicència de documentació lliure GNU "
+"amb el Brasero; en cas contrari, cal que escrigueu a The Free Software "
+"Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+
+#: ../src/brasero-app.c:1037
+msgid "A simple to use CD/DVD burning application for GNOME"
+msgstr ""
+"Una aplicació d'enregistrament de CD/DVD fàcil d'utilitzar per al GNOME"
+
+#: ../src/brasero-app.c:1054
+msgid "Brasero Homepage"
+msgstr "Pàgina web del Brasero"
+
+#. Translators: This is a special message that shouldn't be translated
+#. * literally. It is used in the about box to give credits to
+#. * the translators.
+#. * Thus, you should translate it to your name and email address.
+#. * You should also include other translators who have contributed to
+#. * this translation; in that case, please write each of them on a separate
+#. * line seperated by newlines (\n).
+#.
+#: ../src/brasero-app.c:1066
+msgid "translator-credits"
+msgstr ""
+"Carles Escrig (simkin) <simkin@ono.com>\n"
+"Francesc Vilches <francesc.vilches@gmail.com>\n"
+"Joan Duran <jodufi@gmail.com>"
+
+#: ../src/brasero-app.c:1186 ../src/brasero-app.c:1192
+msgid "_Recent Projects"
+msgstr "Projectes _recents"
+
+#: ../src/brasero-app.c:1187
+msgid "Display the projects recently opened"
+msgstr "Mostra els projectes oberts recentment"
+
+#: ../src/brasero-app.c:1512
+msgid "Brasero Disc Burner"
+msgstr "Enregistrador de discs Brasero"
+
+#: ../data/brasero.desktop.in.in.h:1
+#: ../data/brasero-copy-medium.desktop.in.in.h:1
+#, fuzzy
+msgid "Brasero"
+msgstr "Connectors del Brasero"
+
+#: ../data/brasero.desktop.in.in.h:2
+msgid "Create and copy CDs and DVDs"
+msgstr "Crea i copia CD i DVD"
+
+#: ../data/brasero.schemas.in.h:1
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"Conté la llista de connectors addicionals que el Brasero utilitzarà per a "
+"enregistrar els discs. Si s'estableix a «NULL», el Brasero els carregarà tots."
+
+#: ../data/brasero.schemas.in.h:2
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"Conté el nom del motor d'enregistrament preferit instal·lat. S'utilitzarà si "
+"és possible."
+
+#: ../data/brasero.schemas.in.h:3
+msgid "Default height for image preview."
+msgstr "Alçada predeterminada de la previsualització d'imatges."
+
+#: ../data/brasero.schemas.in.h:4
+msgid "Default height for video preview."
+msgstr "Alçada predeterminada de la previsualització de vídeos."
+
+#: ../data/brasero.schemas.in.h:5
+msgid "Default width for image preview."
+msgstr "Amplada predeterminada de la previsualització d'imatges."
+
+#: ../data/brasero.schemas.in.h:6
+msgid "Default width for video preview."
+msgstr "Amplada per defecte de la previsualització de vídeos."
+
+#: ../data/brasero.schemas.in.h:7
+msgid "Enable \"-immed\" flag with cdrecord"
+msgstr "Habilita l'indicador «-immed» amb el cdrecord"
+
+#: ../data/brasero.schemas.in.h:8
+msgid "Enable file preview"
+msgstr "Habilita la previsualització del fitxer"
+
+#: ../data/brasero.schemas.in.h:9
+msgid "Enable side pane"
+msgstr "Habilita la subfinestra lateral"
+
+#: ../data/brasero.schemas.in.h:10
+msgid "Favourite burn engine"
+msgstr "Motor d'enregistrament preferit"
+
+#: ../data/brasero.schemas.in.h:11
+msgid "Height for video preview"
+msgstr "Alçada de la previsualització dels vídeos"
+
+#: ../data/brasero.schemas.in.h:12
+msgid "Height of image preview"
+msgstr "Alçada de la previsualització d'imatges"
+
+#: ../data/brasero.schemas.in.h:13
+msgid "Layout of UI"
+msgstr "Disposició de la interfície d'usuari"
+
+#: ../data/brasero.schemas.in.h:14
+#, fuzzy
+msgid "Pane to display audio projects"
+msgstr "Subfinestra a mostrar per als projectes d'àudio"
+
+#: ../data/brasero.schemas.in.h:15
+#, fuzzy
+msgid "Pane to display data projects"
+msgstr "Subfinestra a mostrar per als projectes de dades"
+
+#: ../data/brasero.schemas.in.h:16
+#, fuzzy
+msgid "Pane to display video projects"
+msgstr "Subfinestra a mostrar per als projectes de vídeo"
+
+#: ../data/brasero.schemas.in.h:17
+#, fuzzy
+msgid "Replace symbolic links by their targets"
+msgstr "Reemplaça els enllaços simbòlics a fitxers pels seus objectius"
+
+#: ../data/brasero.schemas.in.h:18
+#, fuzzy
+msgid "Should brasero filter broken symbolic links"
+msgstr "Indica si el Brasero ha de filtrar els enllaços simbòlics trencats"
+
+#: ../data/brasero.schemas.in.h:19
+#, fuzzy
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"Indica si el Brasero ha de filtrar els enllaços simbòlics trencats. Si "
+"s'estableix a «True» (cert), el Brasero els filtrarà."
+
+#: ../data/brasero.schemas.in.h:20
+msgid "Should brasero filter hidden files"
+msgstr "Indica si el Brasero hauria de filtrar els fitxers ocults"
+
+#: ../data/brasero.schemas.in.h:21
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr ""
+"Indica si el Brasero hauria de filtrar els fitxers ocults. Si s'estableix a "
+"«True» (cert), el Brasero els filtrarà."
+
+#: ../data/brasero.schemas.in.h:22
+msgid "Should brasero notify when files are filtered"
+msgstr "Indica si el Brasero ha de notificar quan els fitxers estan filtrats"
+
+#: ../data/brasero.schemas.in.h:23
+msgid ""
+"Should brasero notify when files are filtered. Set to true, brasero will "
+"display the notification."
+msgstr ""
+"Indica si el Brasero ha de notificar quan els fitxers estan filtrats. Si "
+"s'estableix a «True» (cert), el Brasero mostrarà la notificació."
+
+#: ../data/brasero.schemas.in.h:24
+#, fuzzy
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"Indica si el Brasero ha de reemplaçar els enllaços simbòlics pels fitxers "
+"objectiu del projecte. Si s'estableix a «True» (cert), el Brasero els "
+"reemplaçarà."
+
+#: ../data/brasero.schemas.in.h:25
+msgid ""
+"The pane to display with audio projects. It should be one of the following: "
+"\"Chooser\", \"Search\" or \"Playlist\"."
+msgstr ""
+"La subfinestra a mostrar per als projectes d'àudio. Ha de ser algun dels "
+"següents: «Chooser» (Selector), «Search» (Cerca) o «Playlist» (Llista de "
+"reproducció)."
+
+#: ../data/brasero.schemas.in.h:26
+msgid ""
+"The pane to display with data projects. It should be one of the following: "
+"\"Chooser\" or \"Search\"."
+msgstr ""
+"La subfinestra a mostrar per als projectes de dades. Ha de ser algun dels "
+"següents: «Chooser» (Selector) o «Search» (Cerca)."
+
+#: ../data/brasero.schemas.in.h:27
+msgid ""
+"The pane to display with video projects. It should be one of the following: "
+"\"Chooser\", \"Search\" or \"Playlist\"."
+msgstr ""
+"La subfinestra a mostrar per als projectes de vídeo. Ha de ser algun dels "
+"següents: «Chooser» (Selector), «Search» (Cerca) o «Playlist» (Llista de "
+"reproducció)."
+
+#: ../data/brasero.schemas.in.h:28
+msgid ""
+"This key sets where the project pane should be (0 = on the right, 1 = on the "
+"left, 2 = at the top, 3 = at the bottom)"
+msgstr ""
+"Esta clau estableix on hauria d'estar la subfinestra (0 = a la dreta, 1 = a "
+"l'esquerra, 2 = a sobre, 3 = a sota)"
+
+#: ../data/brasero.schemas.in.h:29
+msgid "Used in conjunction with \"-immed\" flag with cdrecord"
+msgstr "Utilitzat juntament amb l'indicador «-immed» amb el cdrecord"
+
+#: ../data/brasero.schemas.in.h:30
+msgid "Whether to display a side pane. Set to true to use it."
+msgstr ""
+"Si s'ha de mostrar la subfinestra lateral. Establiu-ho a «True» (cert) per a "
+"utilitzar-la."
+
+#: ../data/brasero.schemas.in.h:31
+msgid "Whether to display file preview. Set to true to use it."
+msgstr ""
+"Si s'ha de mostrar la previsualització de fitxers. Establiu-ho a "
+"«True» (cert) per utilitzar-la."
+
+#: ../data/brasero.schemas.in.h:32
+msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr ""
+"Si s'ha d'utilitzar l'indicador «--driver generic-mmc-raw» amb el cdrdao"
+
+#: ../data/brasero.schemas.in.h:33
+msgid ""
+"Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, "
+"brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"Si s'ha d'utilitzar l'indicador «--driver generic-mmc-raw» amb el cdrdao. "
+"Establiu-ho a «True» (cert) per a utilitzar-lo; pot ser una solució temporal "
+"per a algunes unitats/configuracions."
+
+#: ../data/brasero.schemas.in.h:34
+msgid ""
+"Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) "
+"as it's only a workaround for some drives/setups."
+msgstr ""
+"Si s'ha d'utilitzar l'indicador «-immed» amb el cdrecord. Establiu-ho a "
+"«True» (cert) amb precaució, atès que només és una solució temporal per a "
+"algunes unitats/configuracions."
+
+#: ../data/brasero.schemas.in.h:35
+msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr ""
+"Si s'ha d'utilitzar l'indicador «-use-the-force-luke=dao» amb la growisofs"
+
+#: ../data/brasero.schemas.in.h:36
+msgid ""
+"Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr ""
+"Si s'ha d'utilitzar l'indicador «-use-the-force-luke=dao» amb la growisofs. "
+"Establiu-ho a «False» (fals) per a no utilitzar-lo; pot ser una solució "
+"temporal per a algunes unitats/configuracions."
+
+#: ../data/brasero.schemas.in.h:37
+msgid "White list of additional plugins to use"
+msgstr "Llista blanca de connectors addicionals a utilitzar"
+
+#: ../data/brasero.schemas.in.h:38
+msgid "Width for image preview"
+msgstr "Amplada de la previsualització d'imatges"
+
+#: ../data/brasero.schemas.in.h:39
+msgid "Width for video preview"
+msgstr "Amplada de la previsualització dels vídeos"
+
+#: ../data/brasero.xml.in.h:1
+msgid "Brasero project file"
+msgstr "Fitxer de projecte Brasero"
+
+#: ../src/brasero-audio-disc.c:150 ../src/brasero-data-disc.c:123
+msgid "Open the selected files"
+msgstr "Obri els fitxers seleccionats"
+
+#: ../src/brasero-audio-disc.c:152 ../src/brasero-video-disc.c:103
+msgid "_Edit Information..."
+msgstr "_Edita la informació..."
+
+#: ../src/brasero-audio-disc.c:152
+msgid "Edit the track information (start, end, author, ...)"
+msgstr "Edita la informació de la pista (inici, final, autor, ...)"
+
+#: ../src/brasero-audio-disc.c:154 ../src/brasero-data-disc.c:127
+#: ../src/brasero-project.c:200
+msgid "Remove the selected files from the project"
+msgstr "Suprimeix els fitxers seleccionats del projecte"
+
+#: ../src/brasero-audio-disc.c:156 ../src/brasero-data-disc.c:129
+#: ../src/brasero-video-disc.c:107
+msgid "Add the files stored in the clipboard"
+msgstr "Afig fitxers emmagatzemats al porta-retalls"
+
+#: ../src/brasero-audio-disc.c:158
+msgid "I_nsert a Pause"
+msgstr "I_nsereix una pausa"
+
+#: ../src/brasero-audio-disc.c:158
+msgid "Add a 2 second pause after the track"
+msgstr "Afig una pausa de dos segons després de la pista"
+
+#: ../src/brasero-audio-disc.c:160
+msgid "_Split Track..."
+msgstr "_Parteix la pista..."
+
+#: ../src/brasero-audio-disc.c:160
+msgid "Split the selected track"
+msgstr "Parteix la pista seleccionada"
+
+#: ../src/brasero-audio-disc.c:327 ../src/brasero-video-tree-model.c:188
+msgid "Pause"
+msgstr "Pausa"
+
+#: ../src/brasero-audio-disc.c:333
+msgid "Split"
+msgstr "Parteix"
+
+#: ../src/brasero-audio-disc.c:401
+msgid "Track"
+msgstr "Pista"
+
+#: ../src/brasero-audio-disc.c:441 ../src/brasero-video-disc.c:1206
+msgid "Title"
+msgstr "Títol"
+
+#: ../src/brasero-audio-disc.c:467
+msgid "Artist"
+msgstr "Artista"
+
+#: ../src/brasero-audio-disc.c:476 ../src/brasero-playlist.c:326
+#: ../src/brasero-split-dialog.c:1222
+msgid "Length"
+msgstr "Durada"
+
+#: ../src/brasero-audio-disc.c:566
+msgid "The track will be padded at its end."
+msgstr "La pista s'emplenarà al final."
+
+#: ../src/brasero-audio-disc.c:567
+msgid "The track is shorter than 6 seconds"
+msgstr "La pista dura menys de 6 segons"
+
+#: ../src/brasero-audio-disc.c:627
+msgid "Make sure the appropriate codec is installed"
+msgstr "Assegureu-vos que el còdec apropiat està instal·lat"
+
+#: ../src/brasero-audio-disc.c:643
+#, c-format
+msgid "Do you want to add \"%s\" which is a video file?"
+msgstr "Voleu afegir «%s», el qual és un fitxer de vídeo?"
+
+#: ../src/brasero-audio-disc.c:652
+msgid ""
+"This file is a video and therefore only the audio part can be written to the "
+"disc."
+msgstr ""
+"Este fitxer és un vídeo, per la qual cosa només se'n pot escriure l'àudio en "
+"el disc."
+
+#: ../src/brasero-audio-disc.c:655
+msgid "_Discard File"
+msgstr "_Descarta el fitxer"
+
+#: ../src/brasero-audio-disc.c:658 ../src/brasero-data-disc.c:854
+#: ../src/brasero-data-disc.c:899
+#: ../libbrasero-burn/brasero-status-dialog.c:193
+#: ../libbrasero-burn/brasero-status-dialog.c:229
+msgid "_Add File"
+msgstr "_Afig el fitxer"
+
+#: ../src/brasero-audio-disc.c:729
+msgid "Do you want to search for audio files inside the directory?"
+msgstr "Voleu cercar fitxers d'àudio dins del directori?"
+
+#: ../src/brasero-audio-disc.c:734
+msgid "Directories cannot be added to an audio disc."
+msgstr "No es poden afegir directoris a un disc d'àudio."
+
+#: ../src/brasero-audio-disc.c:738
+msgid "Search _Directory"
+msgstr "Cerca al _directori"
+
+#: ../src/brasero-audio-disc.c:788 ../src/brasero-video-disc.c:390
+#, c-format
+msgid "\"%s\" could not be opened."
+msgstr "No s'ha pogut obrir «%s»."
+
+#: ../src/brasero-audio-disc.c:1193
+msgid "Select one song only please."
+msgstr "Seleccioneu només una cançó."
+
+#: ../src/brasero-audio-disc.c:1194
+msgid "Impossible to split more than one song at a time"
+msgstr "No es pot partir més d'una cançó a la vegada"
+
+#. Translators: the following string
+#. * means there was an error while
+#. * blanking.
+#: ../libbrasero-burn/brasero-blank-dialog.c:221
+msgid "Error while blanking."
+msgstr "S'ha produït un error en esborrar."
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:223
+#: ../libbrasero-burn/brasero-blank-dialog.c:265
+msgid "Blank _Again"
+msgstr "Esborra _de nou"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:240
+msgid "Unknown error."
+msgstr "Error desconegut."
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:260
+msgid "The disc was successfully blanked."
+msgstr "El disc s'ha esborrat correctament."
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:263
+msgid "The disc is ready for use."
+msgstr "El disc està llest per a ser utilitzat."
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-blank-dialog.c:358
+msgid "_Blank"
+msgstr "_Esborra"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:389
+msgid "_Fast blanking"
+msgstr "Esborrament _ràpid"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:390
+msgid "Activate fast blanking by opposition to a longer thorough blanking"
+msgstr "Activa l'esborrament ràpid en comptes d'un esborrament lent"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:420
+msgid "Disc Blanking"
+msgstr "Esborrament del disc"
+
+#: ../src/brasero-playlist.c:305
+msgid "Playlists"
+msgstr "Llistes de reproducció"
+
+#: ../src/brasero-playlist.c:316
+msgid "Number of Songs"
+msgstr "Nombre de cançons"
+
+#: ../src/brasero-playlist.c:336
+msgid "Genre"
+msgstr "Gènere"
+
+#: ../src/brasero-playlist.c:637
+msgid "Select Playlist"
+msgstr "Seleccioneu una llista de reproducció"
+
+#: ../src/brasero-playlist.c:803
+#, c-format
+msgid "Error parsing playlist \"%s\"."
+msgstr "S'ha produït un error en analitzar la llista de reproducció «%s»."
+
+#: ../src/brasero-playlist.c:806 ../src/brasero-data-disc.c:213
+#: ../src/brasero-project.c:2337 ../libbrasero-burn/brasero-sum-dialog.c:161
+#: ../src/brasero-eject-dialog.c:98
+msgid "An unknown error occured"
+msgstr "S'ha produït un error desconegut"
+
+#. Translators: %d is the number of songs
+#: ../src/brasero-playlist.c:912
+#, c-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d cançó"
+msgstr[1] "%d cançons"
+
+#: ../src/brasero-plugin-manager-ui.c:63
+msgid "Plugin"
+msgstr "Connector"
+
+#: ../src/brasero-plugin-manager-ui.c:64
+msgid "Enabled"
+msgstr "Habilitat"
+
+# c-format
+#: ../src/brasero-plugin-manager-ui.c:144
+#, c-format
+msgid "Copyright %s"
+msgstr "Copyright %s"
+
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:953
+msgid "_About"
+msgstr "_Quant a"
+
+#: ../src/brasero-plugin-manager-ui.c:591
+#: ../src/brasero-plugin-manager-ui.c:959
+msgid "C_onfigure"
+msgstr "C_onfigura"
+
+#: ../src/brasero-plugin-manager-ui.c:601
+msgid "A_ctivate"
+msgstr "A_ctiva"
+
+#: ../src/brasero-plugin-manager-ui.c:613
+msgid "Ac_tivate All"
+msgstr "Ac_tiva-ho tot"
+
+#: ../src/brasero-plugin-manager-ui.c:618
+msgid "_Deactivate All"
+msgstr "_Desactiva-ho tot"
+
+#. Use the translated name for the plugin.
+#: ../src/brasero-plugin-option.c:394
+#, c-format
+msgid "Options for plugin %s"
+msgstr "Opcions del connector %s"
+
+#: ../src/brasero-search-entry.c:188
+msgid "Search:"
+msgstr "Cerca:"
+
+#: ../src/brasero-search-entry.c:272
+msgid "In _text documents"
+msgstr "Als documents de _text"
+
+#: ../src/brasero-search-entry.c:287
+msgid "In _pictures"
+msgstr "A les _imatges"
+
+#: ../src/brasero-search-entry.c:302
+msgid "In _music"
+msgstr "A la _música"
+
+#: ../src/brasero-search-entry.c:317
+msgid "In _videos"
+msgstr "Als _vídeos"
+
+#: ../src/brasero-search-entry.c:334
+msgid "Type your keywords or choose 'All files' from the menu"
+msgstr ""
+"Escriviu les paraules clau o seleccioneu l'opció «Tots els fitxers» del menú"
+
+#: ../src/brasero-search-entry.c:337
+msgid "Select if you want to search among image files only"
+msgstr "Seleccioneu si voleu cercar només els fitxers d'imatge"
+
+#: ../src/brasero-search-entry.c:339
+msgid "Select if you want to search among video files only"
+msgstr "Seleccioneu si voleu cercar només els fitxers de vídeo"
+
+#: ../src/brasero-search-entry.c:341
+msgid "Select if you want to search among audio files only"
+msgstr "Seleccioneu si voleu cercar només els fitxers d'àudio"
+
+#: ../src/brasero-search-entry.c:343
+msgid "Select if you want to search among your text documents only"
+msgstr "Seleccioneu si voleu cercar només els documents de text"
+
+#: ../src/brasero-search-entry.c:345
+msgid "Click to start the search"
+msgstr "Feu clic per a iniciar la cerca"
+
+#: ../src/brasero-search-beagle.c:325
+msgid "Previous Results"
+msgstr "Resultats anteriors"
+
+#: ../src/brasero-search-beagle.c:338 ../src/brasero-search-beagle.c:799
+msgid "No results"
+msgstr "No hi ha cap resultat"
+
+#: ../src/brasero-search-beagle.c:346
+msgid "Next Results"
+msgstr "Resultats següents"
+
+#: ../src/brasero-search-beagle.c:407 ../src/brasero-data-disc.c:2276
+#: ../src/brasero-file-filtered.c:259
+msgid "Files"
+msgstr "Fitxers"
+
+#: ../src/brasero-search-beagle.c:426 ../src/brasero-data-disc.c:2304
+msgid "Description"
+msgstr "Descripció"
+
+#: ../src/brasero-search-beagle.c:485
+msgid "Number of results displayed"
+msgstr "Nombre de resultats mostrats"
+
+#: ../src/brasero-search-beagle.c:791
+#, c-format
+msgid "Results %i - %i (out of %i)"
+msgstr "Resultats %i - %i (de %i)"
+
+#: ../src/brasero-search-beagle.c:1031
+msgid "Error querying Beagle."
+msgstr "Error en consultar el Beagle."
+
+#: ../src/brasero-song-properties.c:176
+msgid "Title:"
+msgstr "Títol:"
+
+#: ../src/brasero-song-properties.c:186 ../src/brasero-song-properties.c:198
+#: ../src/brasero-song-properties.c:210 ../src/brasero-multi-song-props.c:210
+#: ../src/brasero-multi-song-props.c:251 ../src/brasero-multi-song-props.c:272
+msgid ""
+"This information will be written to the disc using CD-TEXT technology. It "
+"can be read and displayed by some audio CD players."
+msgstr ""
+"Esta informació s'escriurà al disc utilitzant la tecnologia CD-TEXT. Alguns "
+"reproductors de CD poden llegir-la i mostrar-la."
+
+#: ../src/brasero-song-properties.c:188 ../src/brasero-multi-song-props.c:241
+msgid "Artist:"
+msgstr "Artista:"
+
+#: ../src/brasero-song-properties.c:200 ../src/brasero-multi-song-props.c:262
+msgid "Composer:"
+msgstr "Compositor:"
+
+#: ../src/brasero-song-properties.c:234
+msgid "Song start:"
+msgstr "Inici de la cançó:"
+
+#: ../src/brasero-song-properties.c:240
+msgid "Song end:"
+msgstr "Final de la cançó:"
+
+#: ../src/brasero-song-properties.c:246 ../src/brasero-multi-song-props.c:316
+msgid "Pause length:"
+msgstr "Durada de la pausa:"
+
+#: ../src/brasero-song-properties.c:255 ../src/brasero-multi-song-props.c:327
+msgid "Gives the length of the pause that should follow the track"
+msgstr "Estableix la longitud de la pausa que precedeix a la pista"
+
+#: ../src/brasero-song-properties.c:257
+msgid "Track length:"
+msgstr "Durada de la pista:"
+
+#: ../src/brasero-song-properties.c:286 ../src/brasero-multi-song-props.c:344
+msgid "Song Information"
+msgstr "Informació de la cançó"
+
+#: ../src/brasero-song-properties.c:371
+#, c-format
+msgid "Song information for track %02i"
+msgstr "Informació de la cançó de la pista %02i"
+
+#: ../src/brasero-data-disc.c:125
+msgid "R_ename..."
+msgstr "R_eanomena..."
+
+#: ../src/brasero-data-disc.c:125
+msgid "Rename the selected file"
+msgstr "Reanomena el fitxer seleccionat"
+
+#: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:1702
+msgid "New _Folder"
+msgstr "_Carpeta nova"
+
+#: ../src/brasero-data-disc.c:131
+msgid "Create a new empty folder"
+msgstr "Crea una carpeta buida nova"
+
+#: ../src/brasero-data-disc.c:212
+msgid "The session could not be imported."
+msgstr "No s'ha pogut importar la sessió."
+
+#: ../src/brasero-data-disc.c:558
+msgid "The contents of the project changed since it was saved."
+msgstr "S'han canviat els continguts del projecte des que es va alçar."
+
+#: ../src/brasero-data-disc.c:560 ../src/brasero-data-disc.c:567
+msgid "Discard the current modified project"
+msgstr "Descarta el projecte actual modificat"
+
+#: ../src/brasero-data-disc.c:566
+msgid "_Discard"
+msgstr "_Descarta"
+
+#: ../src/brasero-data-disc.c:572
+msgid "Continue with the current modified project"
+msgstr "Continua amb el projecte actual modificat"
+
+#: ../src/brasero-data-disc.c:679 ../src/brasero-data-disc.c:700
+#: ../src/brasero-data-disc.c:721
+#, c-format
+msgid "\"%s\" cannot be added to the selection."
+msgstr "No es pot afegir «%s» a la selecció."
+
+#: ../src/brasero-data-disc.c:703
+msgid "It is a recursive symlink"
+msgstr "Este és un enllaç simbòlic recursiu"
+
+#: ../src/brasero-data-disc.c:724
+msgid "It does not exist at the specified location"
+msgstr "Este no existeix a la ubicació especificada"
+
+#: ../src/brasero-data-disc.c:742
+#: ../libbrasero-burn/brasero-status-dialog.c:254
+msgid "Should files be renamed to be fully Windows-compatible?"
+msgstr ""
+"S'ha de canviar el nom dels fitxers perquè siguen totalment compatibles amb "
+"el Windows?"
+
+#: ../src/brasero-data-disc.c:747
+#: ../libbrasero-burn/brasero-status-dialog.c:258
+msgid "Those names should be changed and truncated to 64 characters."
+msgstr "Estos noms s'han de canviar i truncar a 64 caràcters."
+
+#: ../src/brasero-data-disc.c:751
+#: ../libbrasero-burn/brasero-status-dialog.c:266
+msgid "_Rename for Full Windows Compatibility"
+msgstr "_Reanomena per a una compatibilitat total amb el Windows"
+
+#: ../src/brasero-data-disc.c:752
+#: ../libbrasero-burn/brasero-status-dialog.c:263
+msgid "_Disable Full Windows Compatibility"
+msgstr "_Inhabilita la compatibilitat total amb el Windows"
+
+#. Translators: %s is the name of the file
+#: ../src/brasero-data-disc.c:785
+#, c-format
+msgid "Do you really want to replace \"%s\"?"
+msgstr "Realment voleu reemplaçar «%s»?"
+
+#: ../src/brasero-data-disc.c:793
+msgid ""
+"A file with the same name is about to be added into the same directory and "
+"will replace it if you accept."
+msgstr ""
+
+#. Translators: Keep means we're keeping the files that already existed
+#. * in the project.
+#. * Keep is a verb
+#: ../src/brasero-data-disc.c:798
+msgid "Always K_eep"
+msgstr ""
+
+#. Translators: Keep means we're keeping the files that already existed
+#. * in the project.
+#. * Keep is a verb
+#: ../src/brasero-data-disc.c:802
+#, fuzzy
+msgid "_Keep"
+msgstr "_Ajuda"
+
+#. Translators: Replace means we're replacing the file that already
+#. * existed in the project with a new one with the same name.
+#. * Replace is a verb
+#. Translators: this is a verb
+#: ../src/brasero-data-disc.c:806 ../src/brasero-rename.c:345
+msgid "_Replace"
+msgstr "_Reemplaça'l"
+
+#. Translators: Replace means we're replacing the file that already
+#. * existed in the project with a new one with the same name.
+#. * Replace is a verb
+#: ../src/brasero-data-disc.c:810
+#, fuzzy
+msgid "Al_ways Replace"
+msgstr "_Reemplaça'l"
+
+#: ../src/brasero-data-disc.c:840
+#: ../libbrasero-burn/brasero-status-dialog.c:214
+#, c-format
+msgid ""
+"Do you really want to add \"%s\" to the selection and use the third version "
+"of ISO9660 standard to support it?"
+msgstr ""
+"Realment voleu afegir «%s» a la selecció i utilitzar la tercera versió de "
+"l'estàndard ISO9660 per a admetre'l?"
+
+#: ../src/brasero-data-disc.c:848
+#: ../libbrasero-burn/brasero-status-dialog.c:224
+msgid ""
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
+"supported by ISO9660 standard in its first and second versions (the most "
+"widespread ones).\n"
+"It is recommended to use the third version of ISO9660 standard which is "
+"supported by most of the operating systems including Linux and all versions "
+"of Windows ©.\n"
+"However MacOS X cannot read images created with version 3 of ISO9660 "
+"standard."
+msgstr ""
+"La mida del fitxer és de més de 2 GiB. Els fitxers més grans de 2GiB no són "
+"compatibles amb la primera i la segona versió de l'estàndard ISO9660 (les "
+"més utilitzades).\n"
+"És recomanable utilitzar la tercera versió de l'estàndard ISO9660, la qual "
+"està admesa en la majoria de sistemes operatius, inclosos el Linux i totes "
+"les versions del Windows ©.\n"
+"Tot i així el MacOS X no pot llegir imatges creades amb la tercera versió de "
+"l'estàndard ISO9660."
+
+#: ../src/brasero-data-disc.c:852 ../src/brasero-data-disc.c:897
+#, fuzzy
+msgid "Ne_ver Add Such File"
+msgstr "_Afig el fitxer"
+
+#: ../src/brasero-data-disc.c:855 ../src/brasero-data-disc.c:900
+#, fuzzy
+msgid "Al_ways Add Such File"
+msgstr "_Afig el fitxer"
+
+#: ../src/brasero-data-disc.c:885
+#: ../libbrasero-burn/brasero-status-dialog.c:178
+#, c-format
+msgid "Do you really want to add \"%s\" to the selection?"
+msgstr "Segur que voleu afegir «%s» a la selecció?"
+
+#: ../src/brasero-data-disc.c:893
+#: ../libbrasero-burn/brasero-status-dialog.c:188
+msgid ""
+"The children of this directory will have 7 parent directories.\n"
+"Brasero can create an image of such a file hierarchy and burn it; but the "
+"disc may not be readable on all operating systems.\n"
+"NOTE: Such a file hierarchy is known to work on linux."
+msgstr ""
+"Els fills d'este directori tindran 7 directoris pare.\n"
+"El Brasero pot crear una imatge amb esta jerarquia de fitxers i enregistrar-"
+"la; però no tots els sistemes operatius podran llegir el disc.\n"
+"NOTA: esta jerarquia de fitxers funciona en Linux."
+
+#. Translators: %s is a string describing the type of medium and the
+#. * drive it is in. It's a tooltip.
+#: ../src/brasero-data-disc.c:995
+#, c-format
+msgid "Import %s"
+msgstr "Importa %s"
+
+#. Translators: %s is the name of the volume to import. It's a menu
+#. * entry and toolbar button (text added later).
+#: ../src/brasero-data-disc.c:1002
+#, c-format
+msgid "I_mport %s"
+msgstr "_Importa %s"
+
+#. Translators: This is a verb. It's a toolbar button.
+#: ../src/brasero-data-disc.c:1032
+msgid "I_mport"
+msgstr "_Importa"
+
+#. Translators: %s is the name of the volume to import
+#: ../src/brasero-data-disc.c:1114
+#, c-format
+msgid "Do you want to import the session from '%s'?"
+msgstr "Voleu importar la sessió des de «%s»?"
+
+#: ../src/brasero-data-disc.c:1117
+msgid ""
+"That way, old files from previous sessions will be usable after burning."
+msgstr ""
+"D'esta manera els fitxers antics de sessions anteriors es podran utilitzar "
+"després d'enregistrar."
+
+#: ../src/brasero-data-disc.c:1128
+msgid "I_mport Session"
+msgstr "_Importa una sessió"
+
+#: ../src/brasero-data-disc.c:1129
+msgid "Click here to import its contents"
+msgstr "Feu clic ací per a importar-ne els continguts"
+
+#: ../src/brasero-data-disc.c:1434
+msgid "Please wait while the project is loading."
+msgstr "Espereu mentre s'està carregant el projecte."
+
+#: ../src/brasero-data-disc.c:1445
+msgid "_Cancel Loading"
+msgstr "_Cancel·la la càrrega"
+
+#: ../src/brasero-data-disc.c:1446
+msgid "Cancel loading current project"
+msgstr "Cancel·la la càrrega del projecte actual"
+
+#: ../src/brasero-data-disc.c:1847
+msgid "File Renaming"
+msgstr "Canvi de nom del fitxer"
+
+#: ../src/brasero-data-disc.c:1851
+msgid "_Rename"
+msgstr "_Canvia el nom"
+
+#: ../src/brasero-data-disc.c:1859
+msgid "Renaming mode"
+msgstr "Mode de canvi de nom"
+
+#: ../src/brasero-data-disc.c:2290 ../src/brasero-video-disc.c:1224
+msgid "Size"
+msgstr "Mida"
+
+#: ../src/brasero-data-disc.c:2320
+msgid "Space"
+msgstr "Espai"
+
+#: ../src/brasero-file-chooser.c:232 ../src/brasero-project.c:1992
+#, fuzzy
+msgid "Audio files"
+msgstr "Només fitxers d'àudio"
+
+#: ../src/brasero-file-chooser.c:240 ../src/brasero-project.c:2001
+#, fuzzy
+msgid "Movies"
+msgstr "Només pel·lícules"
+
+#: ../src/brasero-layout.c:103
+msgid "P_review"
+msgstr "P_revisualitza"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-layout.c:105
+msgid "Display video, audio and image preview"
+msgstr "Mostra la previsualització de vídeo, àudio i imatge"
+
+#: ../src/brasero-layout.c:109
+msgid "_Show Side Panel"
+msgstr "_Mostra el quadre lateral"
+
+#: ../src/brasero-layout.c:110
+msgid "Show a side pane along the project"
+msgstr "Mostra una subfinestra lateral durant del projecte"
+
+#: ../src/brasero-layout.c:124
+msgid "_Horizontal Layout"
+msgstr "Disposició _horitzontal"
+
+#: ../src/brasero-layout.c:125
+msgid "Set an horizontal layout"
+msgstr "Estableix una disposició horitzontal"
+
+#: ../src/brasero-layout.c:127
+msgid "_Vertical Layout"
+msgstr "Disposició _vertical"
+
+#: ../src/brasero-layout.c:128
+msgid "Set a vertical layout"
+msgstr "Estableix una disposició vertical"
+
+#: ../src/brasero-layout.c:1481
+msgid "Click to close the side pane"
+msgstr "Feu clic per a tancar la subfinestra lateral"
+
+#. *
+#. * Translators: this is the position being played in the stream. The
+#. * first %s is the position and the second %s is the whole length of
+#. * the stream. I chose to make that translatable in case some languages
+#. * don't allow the "/"
+#: ../src/brasero-player.c:271
+#, c-format
+msgid "%s / %s"
+msgstr "%s / %s"
+
+#: ../src/brasero-player.c:395
+msgid "No file"
+msgstr "Cap fitxer"
+
+#: ../src/brasero-player.c:437
+msgid "Start and stop playing"
+msgstr "Comença i para la reproducció"
+
+#: ../src/brasero-player.c:806
+msgid "Name:"
+msgstr "Nom:"
+
+#: ../src/brasero-player.c:813
+#, c-format
+msgid ""
+"<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
+"pixels</span></i>"
+msgstr ""
+"<span weight=\"bold\">Mida:</span>\t<i><span size=\"smaller\"> %i x %i "
+"píxels</span></i>"
+
+#: ../src/brasero-player.c:836
+#, c-format
+msgid ""
+"<span weight=\"bold\">%s</span>\n"
+"by <span size=\"smaller\"><i>%s</i></span>"
+msgstr ""
+"<span weight=\"bold\">%s</span>\n"
+"per <span size=\"smaller\"><i>%s</i></span>"
+
+#: ../src/brasero-player.c:1055
+#, c-format
+msgid ""
+"<span weight=\"bold\">Loading information</span>\n"
+"about <span size=\"smaller\"><i>%s</i></span>"
+msgstr ""
+"<span weight=\"bold\">S'està carregant la informació</span>\n"
+"sobre <span size=\"smaller\"><i>%s</i></span>"
+
+#: ../src/brasero-project.c:194
+msgid "Save current project"
+msgstr "Alça el projecte actual"
+
+#: ../src/brasero-project.c:195
+msgid "Save _As..."
+msgstr "_Anomena i alça..."
+
+#: ../src/brasero-project.c:196
+msgid "Save current project to a different location"
+msgstr "Alça el projecte actual a una ubicació diferent"
+
+#: ../src/brasero-project.c:197
+msgid "_Add Files"
+msgstr "_Afig fitxers"
+
+#: ../src/brasero-project.c:198
+msgid "Add files to the project"
+msgstr "Afig fitxers al projecte"
+
+#: ../src/brasero-project.c:199
+msgid "_Remove Files"
+msgstr "_Suprimeix fitxers"
+
+#. Translators: "empty" is a verb here
+#: ../src/brasero-project.c:202 ../src/brasero-project.c:2072
+msgid "E_mpty Project"
+msgstr "_Buida el projecte"
+
+#: ../src/brasero-project.c:203
+msgid "Remove all files from the project"
+msgstr "Suprimeix tots els fitxers del projecte"
+
+#. burn button set insensitive since there are no files in the selection
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:1095
+msgid "_Burn..."
+msgstr "_Enregistra..."
+
+#: ../src/brasero-project.c:205
+msgid "Burn the disc"
+msgstr "Enregistra el disc"
+
+#. Translators: this messages will appear as a list of possible
+#. * actions, like:
+#. *   To add/remove files you can:
+#. *      * perform action one
+#. *      * perform action two
+#. * The full message will be showed in the main area of an empty
+#. * project, suggesting users how to add and remove items to project.
+#. * You simply have to translate messages in the best form
+#. * for a list of actions.
+#: ../src/brasero-project.c:696
+msgid "To add files to this project you can:"
+msgstr "Per a afegir fitxers al projecte podeu:"
+
+#: ../src/brasero-project.c:699
+msgid "click the \"Add\" button to show a selection dialog"
+msgstr "Fer clic al botó «Afig» per a mostrar un diàleg de selecció"
+
+#: ../src/brasero-project.c:701
+msgid "select files in the selection pane and click the \"Add\" button"
+msgstr ""
+"Seleccionar els fitxers a la subfinestra de selecció i fer clic al botó «Afig»"
+
+#: ../src/brasero-project.c:703
+msgid ""
+"drag files in this area from the selection pane or from the file manager"
+msgstr ""
+"Arrossegar els fitxers cap esta àrea des de la subfinestra de selecció o des "
+"del gestor de fitxers"
+
+#: ../src/brasero-project.c:705
+msgid "double click on files in the selection pane"
+msgstr "Fer doble click als fitxers a la subfinestra de selecció"
+
+#: ../src/brasero-project.c:707
+msgid "copy files (from file manager for example) and paste in this area"
+msgstr ""
+"Copiar els fitxers (per exemple des del gestor de fitxers) i enganxar-los en "
+"esta àrea"
+
+#: ../src/brasero-project.c:710
+msgid "To remove files from this project you can:"
+msgstr "Per a esborrar fitxers d'este projecte podeu:"
+
+#: ../src/brasero-project.c:713
+msgid "click on the \"Remove\" button to remove selected items in this area"
+msgstr ""
+"Fer clic al botó «Suprimeix» per a suprimir els elements seleccionats en esta "
+"àrea"
+
+#: ../src/brasero-project.c:715
+msgid "select items in this area, and choose \"Remove\" from context menu"
+msgstr ""
+"Seleccionar els elements d'esta àrea i fer clic a «Suprimeix» des del menú de "
+"context"
+
+#: ../src/brasero-project.c:717
+msgid "select items in this area, and press \"Delete\" key"
+msgstr "Seleccionar els elements d'esta àrea i fer clic a «Suprimeix»"
+
+#: ../src/brasero-project.c:825
+#, c-format
+msgid "Project estimated size: %s"
+msgstr "Mida estimada del projecte: %s"
+
+#: ../src/brasero-project.c:958 ../src/brasero-project.c:975
+msgid ""
+"The size of the project is too large for the disc even with the overburn "
+"option."
+msgstr ""
+"La mida del projecte és massa gran per al disc, fins i tot amb l'opció de "
+"sobreescriptura."
+
+#: ../src/brasero-project.c:986
+msgid ""
+"The size of the project is too large for the disc and you must remove files "
+"from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
+"cannot be properly recognised and therefore need overburn option.\n"
+"NOTE: This option might cause failure."
+msgstr ""
+"La mida del projecte és massa gran per al disc i heu de suprimir fitxers del "
+"projecte.\n"
+"Podeu utilitzar esta opció si esteu utilitzant CD-R(W) de 90 o 100 min que "
+"no s'hagen reconegut correctament, per als quals caldrà l'opció de "
+"sobreescriptura.\n"
+"NOTA: Esta opció pot provocar fallades."
+
+#: ../src/brasero-project.c:1107
+msgid "Start to burn the contents of the selection"
+msgstr "Comença a enregistrar els continguts de la selecció"
+
+#: ../src/brasero-project.c:1267
+msgid "Please add songs to the project."
+msgstr "Afegiu cançons al projecte."
+
+#: ../src/brasero-project.c:1276 ../src/main.c:246
+msgid "Please add files to the project."
+msgstr "Afegiu fitxers al projecte."
+
+#: ../src/brasero-project.c:1391
+msgid "Video Options"
+msgstr "Opcions de vídeo"
+
+#: ../src/brasero-project.c:1719
+msgid ""
+"Do you really want to create a new project and discard the changes to "
+"current one?"
+msgstr ""
+"Segur que voleu crear un projecte nou i descartar els canvis a l'actual?"
+
+#: ../src/brasero-project.c:1724
+msgid "If you choose to create a new project, all changes made will be lost."
+msgstr "Si escolliu crear un projecte nou, tots els canvis es perdran."
+
+#: ../src/brasero-project.c:1726
+msgid "_Discard Changes"
+msgstr "_Descarta els canvis"
+
+#: ../src/brasero-project.c:1734
+msgid "Do you really want to create a new project and discard the current one?"
+msgstr "Voleu realment crear un projecte nou i descartar l'actual?"
+
+#: ../src/brasero-project.c:1739
+msgid ""
+"If you choose to create a new project, all files already added will be "
+"discarded. Note that files will not be deleted from their own location, just "
+"no longer listed here."
+msgstr ""
+"Si escolliu crear un projecte nou, es descartaran tots els fitxers que hi "
+"hàgeu afegit. Tingueu en compte que els fitxers no seran suprimits de la "
+"seua ubicació, simplement no es llistaran ací."
+
+#: ../src/brasero-project.c:1744
+msgid "_Discard Project"
+msgstr "_Descarta el projecte"
+
+#: ../src/brasero-project.c:1950
+msgid "Select Files"
+msgstr "Selecciona fitxers"
+
+#: ../src/brasero-project.c:2061
+msgid "Do you really want to empty the current project?"
+msgstr "Segur que voleu buidar el projecte actual?"
+
+#: ../src/brasero-project.c:2066
+msgid ""
+"Emptying a project will remove all files already added. All the work will be "
+"lost. Note that files will not be deleted from their own location, just no "
+"longer listed here."
+msgstr ""
+"En buidar un projecte se'n suprimiran tots els fitxers afegits anteriorment, "
+"per la qual cosa es perdrà tota la faena. Tingueu en compte que els fitxers "
+"no seran suprimits de la seua ubicació, simplement no es llistaran ací."
+
+#: ../src/brasero-project.c:2123
+msgid "_Save"
+msgstr "Al_ça"
+
+#: ../src/brasero-project.c:2134
+msgid "_Add"
+msgstr "_Afig"
+
+#: ../src/brasero-project.c:2139 ../src/brasero-split-dialog.c:1252
+msgid "_Remove"
+msgstr "Sup_rimeix"
+
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:2202
+#, c-format
+msgid "Brasero - %s (Data Disc)"
+msgstr "Brasero - %s (disc de dades)"
+
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:2205
+#, c-format
+msgid "Brasero - %s (Audio Disc)"
+msgstr "Brasero - %s (disc d'àudio)"
+
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:2208
+#, c-format
+msgid "Brasero - %s (Video Disc)"
+msgstr "Brasero - %s (disc de vídeo)"
+
+#: ../src/brasero-project.c:2336
+msgid "Your project has not been saved."
+msgstr "El projecte no s'ha alçat."
+
+#: ../src/brasero-project.c:2350
+msgid "Save the changes of current project before closing?"
+msgstr "Voleu alçar els canvis del projecte actual abans de tancar?"
+
+#: ../src/brasero-project.c:2355
+msgid "If you don't save, changes will be permanently lost."
+msgstr "Si no ho alceu, els canvis es perdran per sempre més."
+
+#: ../src/brasero-project.c:2359 ../src/brasero-project.c:2365
+msgid "Cl_ose Without Saving"
+msgstr "_Tanca sense alçar"
+
+#: ../src/brasero-project.c:2459
+msgid "Save Current Project"
+msgstr "Alça el projecte actual"
+
+#: ../src/brasero-project.c:2477
+msgid "Save project as Brasero audio project"
+msgstr "Alça el projecte com un projecte d'àudio del Brasero"
+
+#: ../src/brasero-project.c:2478
+msgid "Save project as a plain text list"
+msgstr "Alça el projecte com una llista de text pla"
+
+#: ../src/brasero-project.c:2482
+msgid "Save project as a PLS playlist"
+msgstr "Alça el projecte com una llista de reproducció PLS"
+
+#: ../src/brasero-project.c:2483
+msgid "Save project as an M3U playlist"
+msgstr "Alça el projecte com una llista de reproducció M3U"
+
+#: ../src/brasero-project.c:2484
+msgid "Save project as a XSPF playlist"
+msgstr "Alça el projecte com una llista de reproducció XSPF"
+
+#: ../src/brasero-project.c:2485
+msgid "Save project as an IRIVER playlist"
+msgstr "Alça el projecte com una llista de reproducció IRIVER"
+
+#: ../src/brasero-project-manager.c:104
+msgid "_Cover Editor"
+msgstr "Editor de _cobertes"
+
+#: ../src/brasero-project-manager.c:105
+msgid "Design and print covers for CDs"
+msgstr "Dissenya i imprimeix cobertes per a CD"
+
+#: ../src/brasero-project-manager.c:106
+msgid "_New Project"
+msgstr "Projecte _nou"
+
+#: ../src/brasero-project-manager.c:107
+msgid "Create a new project"
+msgstr "Crea un projecte nou"
+
+#: ../src/brasero-project-manager.c:108
+msgid "_Empty Project"
+msgstr "_Buida el projecte"
+
+#: ../src/brasero-project-manager.c:109
+msgid "Let you choose your new project"
+msgstr "Vos permet seleccionar el projecte nou"
+
+#: ../src/brasero-project-manager.c:110
+msgid "New _Audio Project"
+msgstr "Projecte d'àudio _nou"
+
+#: ../src/brasero-project-manager.c:111
+#: ../src/brasero-project-type-chooser.c:74
+msgid ""
+"Create a traditional audio CD that will be playable on computers and stereos"
+msgstr ""
+"Crea un CD d'àudio tradicional que serà reproduïble a ordinadors i equips "
+"estèreo"
+
+#: ../src/brasero-project-manager.c:112
+msgid "New _Data Project"
+msgstr "Projecte de _dades nou"
+
+#: ../src/brasero-project-manager.c:113
+#: ../src/brasero-project-type-chooser.c:79
+msgid ""
+"Create a CD/DVD containing any type of data that can only be read on a "
+"computer"
+msgstr ""
+"Crea un CD/DVD amb qualsevol tipus de dades que només es llegiran a un "
+"ordinador"
+
+#: ../src/brasero-project-manager.c:114
+msgid "New _Video Project"
+msgstr "Projecte de _vídeo nou"
+
+#: ../src/brasero-project-manager.c:115
+#: ../src/brasero-project-type-chooser.c:84
+msgid "Create a video DVD or a SVCD that are readable on TV readers"
+msgstr ""
+"Crea un DVD de vídeo o un SVCD que serà reproduïble a tots els lectors de TV"
+
+#: ../src/brasero-project-manager.c:116
+msgid "Copy _Disc..."
+msgstr "Copia un _disc..."
+
+#: ../src/brasero-project-manager.c:117
+#: ../src/brasero-project-type-chooser.c:89
+msgid ""
+"Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
+"another CD/DVD"
+msgstr ""
+"Crea una còpia exacta d'un CD d'àudio o un CD/DVD de dades al disc dur o a "
+"un altre CD/DVD"
+
+#: ../src/brasero-project-manager.c:118
+msgid "_Burn Image..."
+msgstr "_Enregistra una imatge..."
+
+#: ../src/brasero-project-manager.c:119
+#: ../src/brasero-project-type-chooser.c:93
+#: ../src/brasero-project-type-chooser.c:94
+msgid "Burn an existing CD/DVD image to disc"
+msgstr "Enregistra una imatge de CD/DVD existent al disc"
+
+#: ../src/brasero-project-manager.c:121
+msgid "_Open..."
+msgstr "_Obri..."
+
+#: ../src/brasero-project-manager.c:122
+msgid "Open a project"
+msgstr "Obri un projecte"
+
+#: ../src/brasero-project-manager.c:260
+#, c-format
+msgid "%d file selected (%s)"
+msgid_plural "%d files selected (%s)"
+msgstr[0] "%d fitxer seleccionat (%s)"
+msgstr[1] "%d fitxers seleccionats (%s)"
+
+#: ../src/brasero-project-manager.c:271
+#, c-format
+msgid "%d file is supported (%s)"
+msgid_plural "%d files are supported (%s)"
+msgstr[0] "%d fitxer és compatible (%s)"
+msgstr[1] "%d fitxers són compatibles (%s)"
+
+#: ../src/brasero-project-manager.c:277
+#, c-format
+msgid "%d file can be added (%s)"
+msgid_plural "%d selected files can be added (%s)"
+msgstr[0] "es pot afegir %d fitxer (%s)"
+msgstr[1] "es poden afegir %d fitxers (%s)"
+
+#: ../src/brasero-project-manager.c:288
+#, c-format
+msgid "No file can be added (%i selected file)"
+msgid_plural "No file can be added (%i selected files)"
+msgstr[0] "No es pot afegir cap fitxer (%i fitxer seleccionat)"
+msgstr[1] "No es pot afegir cap fitxer (%i fitxers seleccionats)"
+
+#: ../src/brasero-project-manager.c:293
+#, c-format
+msgid "No file is supported (%i selected file)"
+msgid_plural "No file is supported (%i selected files)"
+msgstr[0] "No hi ha cap fitxer compatible (%i fitxer seleccionat)"
+msgstr[1] "No hi ha cap fitxer compatible (%i fitxers seleccionats)"
+
+#: ../src/brasero-project-manager.c:299 ../src/brasero-project-manager.c:453
+msgid "No file selected"
+msgstr "Cap fitxer seleccionat"
+
+#: ../src/brasero-project-manager.c:557
+msgid "Brasero - New Audio Disc Project"
+msgstr "Brasero - Projecte de disc d'àudio nou"
+
+#: ../src/brasero-project-manager.c:571
+msgid "Brasero - New Data Disc Project"
+msgstr "Brasero - Projecte de disc de dades nou"
+
+#: ../src/brasero-project-manager.c:585
+msgid "Brasero - New Video Disc Project"
+msgstr "Brasero - Projecte de disc de vídeo nou"
+
+#: ../src/brasero-project-manager.c:595
+msgid "Brasero - New Image File"
+msgstr "Brasero - Fitxer d'imatge nou"
+
+#: ../src/brasero-project-manager.c:612
+msgid "Brasero - Disc Copy"
+msgstr "Brasero - Copia un disc"
+
+#: ../src/brasero-project-manager.c:905
+#, c-format
+msgid "The project \"%s\" does not exist"
+msgstr "No existeix el projecte «%s»"
+
+#: ../src/brasero-project-manager.c:907 ../src/main.c:207 ../src/main.c:233
+#, fuzzy
+msgid "Error while loading the project"
+msgstr "S'ha produït un error en carregar el projecte."
+
+#: ../src/brasero-project-manager.c:931
+msgid "Open Project"
+msgstr "Obri un projecte"
+
+#: ../src/brasero-project-manager.c:1041
+msgid "_New"
+msgstr "_Nou"
+
+#: ../src/brasero-project-manager.c:1045
+msgid "_Open"
+msgstr "_Obri"
+
+#: ../src/brasero-project-manager.c:1096
+msgid "Browse the file system"
+msgstr "Explora el sistema de fitxers"
+
+#: ../src/brasero-project-manager.c:1119
+msgid "Search files using keywords"
+msgstr "Cerca fitxers utilitzant paraules clau"
+
+#: ../src/brasero-project-manager.c:1139
+msgid "Display playlists and their contents"
+msgstr "Mostra les llistes de reproducció i els seus continguts"
+
+#: ../src/brasero-project-type-chooser.c:72
+msgid "Audi_o project"
+msgstr "Projecte d'àudi_o"
+
+#: ../src/brasero-project-type-chooser.c:73
+msgid "Create a traditional audio CD"
+msgstr "Crea un CD d'àudio tradicional"
+
+#: ../src/brasero-project-type-chooser.c:77
+msgid "D_ata project"
+msgstr "Projecte de _dades"
+
+#: ../src/brasero-project-type-chooser.c:78
+msgid "Create a data CD/DVD"
+msgstr "Crea un CD/DVD de dades"
+
+#: ../src/brasero-project-type-chooser.c:82
+msgid "_Video project"
+msgstr "Projecte de _vídeo"
+
+#: ../src/brasero-project-type-chooser.c:83
+msgid "Create a video DVD or a SVCD"
+msgstr "Crea un DVD de vídeo o un SVCD"
+
+#: ../src/brasero-project-type-chooser.c:87
+msgid "Disc _copy"
+msgstr "_Copia un disc"
+
+#: ../src/brasero-project-type-chooser.c:88
+msgid "Create 1:1 copy of a CD/DVD"
+msgstr "Crea una còpia exacta d'un CD/DVD"
+
+#: ../src/brasero-project-type-chooser.c:92
+msgid "Burn _image"
+msgstr "Enregistra una _imatge"
+
+#: ../src/brasero-project-type-chooser.c:291
+msgid "Last _Unsaved Project"
+msgstr "Últim projecte _sense alçar"
+
+#: ../src/brasero-project-type-chooser.c:306
+msgid "Load the last project that was not burnt and not saved"
+msgstr "Carrega l'últim projecte que no es va enregistrar i tampoc es va alçar"
+
+#: ../src/brasero-project-type-chooser.c:412
+msgid "No recently used project"
+msgstr "No s'han utilitzat projectes recentment"
+
+#: ../src/brasero-project-type-chooser.c:474
+msgid "Create a new project:"
+msgstr "Crea un projecte nou:"
+
+#: ../src/brasero-project-type-chooser.c:520
+msgid "Recent projects:"
+msgstr "Projectes recents:"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:129
+#: ../libbrasero-burn/brasero-sum-dialog.c:207
+msgid "Check _Again"
+msgstr "Comprov_a de nou"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:160
+#: ../libbrasero-burn/brasero-sum-dialog.c:506
+msgid "The file integrity check could not be performed."
+msgstr "No s'ha pogut realitzar la comprovació d'integritat del fitxer."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:173
+msgid "The file integrity was performed successfully."
+msgstr "S'ha realitzat correctament la comprovació d'integritat del fitxer."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:174
+msgid "There seems to be no corrupted file on the disc"
+msgstr "Pareix que no hi ha fitxers malmesos al disc"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:202
+msgid "The following files appear to be corrupted:"
+msgstr "Pareix que els fitxers següents estan malmesos:"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:242
+msgid "Corrupted Files"
+msgstr "Fitxers malmesos"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:334
+msgid "Downloading md5 file"
+msgstr "S'està descarregant el fitxer MD5"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:389
+#, c-format
+msgid "\"%s\" is not a valid URI"
+msgstr "«%s» no és un URI vàlid"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:507
+msgid "No md5 file was given."
+msgstr "No s'ha especificat cap fitxer md5."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:683
+msgid "Use a _md5 file to check the disc"
+msgstr "Utilitza un fitxer _md5 per a comprovar el disc"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:684
+msgid "Use an external .md5 file that stores the checksum of a disc"
+msgstr ""
+"Utilitza un fitxer .md5 extern que conté la suma de verificació del disc"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:697
+msgid "Open a md5 file"
+msgstr "Obri un fitxer md5"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:712
+msgid "_Check"
+msgstr "_Comprova"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:743
+msgid "Disc Checking"
+msgstr "Comprovació del disc"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:136
+#, fuzzy, c-format
+msgid "Estimated size: %s"
+msgstr "Mida estimada del projecte: %s"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:471
+#, fuzzy
+msgid "Size Estimation"
+msgstr "Estimació de la mida del projecte"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:473
+#, fuzzy
+msgid "Please wait until the estimation of the size is completed."
+msgstr "Espereu mentre es completa l'estimació de la mida del projecte."
+
+#: ../libbrasero-burn/brasero-status-dialog.c:474
+#, fuzzy
+msgid "All files need to be analysed to complete this operation."
+msgstr ""
+"S'han d'analitzar tots els fitxers del projecte per a completar esta "
+"operació."
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:77
+#: ../libbrasero-burn/brasero-tool-dialog.c:91
+#: ../libbrasero-burn/brasero-tool-dialog.c:101
+msgid "The operation cannot be performed."
+msgstr "No es pot realitzar l'operació."
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:78
+#: ../plugins/cdrkit/burn-wodim.c:145 ../plugins/cdrkit/burn-wodim.c:395
+#: ../plugins/cdrtools/burn-cdrecord.c:145
+#: ../plugins/cdrtools/burn-cdrecord.c:380
+#: ../plugins/growisofs/burn-dvd-rw-format.c:70
+#: ../plugins/libburnia/burn-libburn.c:591
+#, c-format
+msgid "The disc is not supported"
+msgstr "El disc no és compatible"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:102
+msgid "The drive is empty"
+msgstr "La unitat és buida"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:513
+#: ../src/brasero-eject-dialog.c:163
+msgid "Select a disc"
+msgstr "Seleccioneu un disc"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:539
+msgid "Progress"
+msgstr "Progrés"
+
+#: ../src/main.c:74
+msgid "Open the specified project"
+msgstr "Obri el projecte especificat"
+
+#: ../src/main.c:75
+msgid "PROJECT"
+msgstr "PROJECTE"
+
+#: ../src/main.c:80
+msgid "Open the specified playlist as an audio project"
+msgstr "Obri la llista de reproducció especificada com un projecte d'àudio"
+
+#: ../src/main.c:81
+msgid "PLAYLIST"
+msgstr "LLISTA DE REPRODUCCIÓ"
+
+#: ../src/main.c:86
+msgid "Open an audio project adding the URIs given on the command line"
+msgstr "Obri un projecte d'àudio afegint els URI donats a la línia d'ordes"
+
+#: ../src/main.c:90
+msgid "Open a data project adding the URIs given on the command line"
+msgstr "Obri un projecte de dades afegint els URI donats a la línia d'ordes"
+
+#: ../src/main.c:94
+msgid "Copy a disc"
+msgstr "Copia un disc"
+
+#: ../src/main.c:95
+msgid "PATH TO DEVICE"
+msgstr "CAMÍ A LA UNITAT"
+
+#: ../src/main.c:98
+msgid "Cover to use"
+msgstr "Coberta a utilitzar"
+
+#: ../src/main.c:99
+msgid "PATH TO COVER"
+msgstr "CAMÍ A LA COBERTA"
+
+#: ../src/main.c:102
+msgid "Open a video project adding the URIs given on the command line"
+msgstr "Obri un projecte de vídeo afegint els URI donats a la línia d'ordes"
+
+#: ../src/main.c:106
+msgid "Uri of an image file to be burnt (autodetected)"
+msgstr "L'URI d'un fitxer d'imatge per a enregistrar (autodetectat)"
+
+#: ../src/main.c:107
+msgid "PATH TO PLAYLIST"
+msgstr "CAMÍ A LA LLISTA DE REPRODUCCIÓ"
+
+#: ../src/main.c:110
+msgid "Force brasero to display the project selection page"
+msgstr "Força el Brasero a mostrar la pàgina de selecció del projecte"
+
+#: ../src/main.c:114
+msgid "Open the blank disc dialog"
+msgstr "Obri el diàleg d'esborrar el disc"
+
+#: ../src/main.c:118
+msgid "Open the check disc dialog"
+msgstr "Obri el diàleg de comprovar el disc"
+
+#: ../src/main.c:122
+msgid "Burn the contents of burn:// URI"
+msgstr "Enregistra els continguts de l'URI burn://"
+
+#: ../src/main.c:126
+msgid ""
+"Burn the specified project and REMOVE it.\n"
+"This option is mainly useful for integration use with other applications."
+msgstr ""
+"Enregistra el projecte especificat i SUPRIMEIX-LO.\n"
+"Principalment esta opció és útil per a l'integració amb altres aplicacions."
+
+#: ../src/main.c:127
+msgid "PATH"
+msgstr "CAMÍ"
+
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other word, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/main.c:135
+msgid "The XID of the parent window"
+msgstr "El XID de la finestra pare"
+
+#: ../src/main.c:247
+msgid "The project is empty"
+msgstr "El projecte està buit"
+
+#: ../src/main.c:329
+msgid "Incompatible command line options used."
+msgstr "Opcions incompatibles utilitzades en la línia d'ordes."
+
+#: ../src/main.c:330
+msgid "Only one option can be given at a time"
+msgstr "Només es pot especificar una opció a la vegada"
+
+#: ../src/main.c:484
+msgid "[URI] [URI] ..."
+msgstr "[URI] [URI] ..."
+
+#: ../src/main.c:496
+#, c-format
+msgid "Please type %s --help to see all available options\n"
+msgstr "Escriviu %s --help per a mostrar totes les opcions disponibles\n"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:96
+msgid "Copying audio track"
+msgstr "S'està copiant una pista d'àudio"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:102
+msgid "Copying data track"
+msgstr "S'està copiant una pista de dades"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:138
+#, c-format
+msgid "Analysing track %02i"
+msgstr "Analitzant la pista %02i"
+
+#. Translators: %s is a filename
+#: ../plugins/cdrdao/burn-cdrdao.c:205
+#: ../plugins/growisofs/burn-growisofs.c:505
+#, c-format
+msgid "\"%s\" could not be found"
+msgstr "No s'ha pogut trobar «%s»"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:243
+#, c-format
+msgid "Your version of cdrdao does not seem to be supported by libbrasero"
+msgstr "Pareix que el libbrasero no admet la vostra versió del cdrdao"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:249 ../plugins/cdrkit/burn-readom.c:108
+#: ../plugins/cdrkit/burn-readom.c:114 ../plugins/cdrkit/burn-wodim.c:100
+#: ../plugins/cdrtools/burn-cdrecord.c:100
+#: ../plugins/cdrtools/burn-readcd.c:110 ../plugins/cdrtools/burn-readcd.c:116
+#, c-format
+msgid "You do not have the required permissions to use this drive"
+msgstr "No teniu els permisos necessaris per a utilitzar esta unitat"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:623
+msgid "Use cdrdao to copy and burn CDs"
+msgstr "Utilitza el cdrdao per a copiar i enregistrar CD"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:689
+msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
+msgstr ""
+"Habilita l'indicador «--driver generic-mmc-raw» (vegeu el manual del cdrdao)"
+
+#: ../plugins/cdrdao/burn-toc2cue.c:268
+msgid "Converting toc file"
+msgstr "S'està convertint el fitxer TOC"
+
+#: ../plugins/cdrdao/burn-toc2cue.c:325
+msgid "Toc2cue converts .toc files into .cue files"
+msgstr "El toc2cue converteix fitxers .toc a fitxers .cue"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:114
+#: ../plugins/cdrtools/burn-mkisofs.c:115
+#: ../plugins/growisofs/burn-growisofs.c:199
+#: ../plugins/libburnia/burn-libisofs.c:491
+#, c-format
+msgid "Last session import failed"
+msgstr "Ha fallat la importació de l'última sessió"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:120
+#: ../plugins/cdrkit/burn-genisoimage.c:127
+#: ../plugins/cdrtools/burn-mkisofs.c:121
+#: ../plugins/cdrtools/burn-mkisofs.c:128
+#: ../plugins/growisofs/burn-growisofs.c:205
+#: ../plugins/growisofs/burn-growisofs.c:212
+msgid "An image could not be created"
+msgstr "No s'ha pogut crear una imatge"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:133
+msgid "This version of genisoimage is not supported"
+msgstr "Esta versió del genisoimage no és compatible"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:175
+#: ../plugins/cdrtools/burn-mkisofs.c:176
+#: ../plugins/growisofs/burn-growisofs.c:218
+msgid "Some files have invalid filenames"
+msgstr "Alguns fitxers tenen noms invàlids"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:181
+#: ../plugins/cdrtools/burn-mkisofs.c:182
+#: ../plugins/growisofs/burn-growisofs.c:224
+msgid "Unknown character encoding"
+msgstr "Codificació de caràcters desconeguda"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:187
+#: ../plugins/cdrtools/burn-mkisofs.c:188
+msgid "There is no space left on the device"
+msgstr "No resta espai lliure a la unitat"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:523
+msgid "Use genisoimage to create images from a file selection"
+msgstr ""
+"Utilitza el genisoimage per a crear imatges des d'una selecció de fitxers"
+
+#: ../plugins/cdrkit/burn-readom.c:128 ../plugins/cdrtools/burn-readcd.c:130
+#, fuzzy, c-format
+msgid ""
+"The location you chose to store the image on does not have enough free space "
+"for the disc image"
+msgstr ""
+"La ubicació que heu seleccionat per a emmagatzemar la imatge temporal no té "
+"suficient espai lliure per a la imatge del disc (són necessaris %ld MiB)"
+
+#: ../plugins/cdrkit/burn-readom.c:443
+msgid "Use readom to create disc images"
+msgstr "Utilitza el readom per a crear imatges de disc"
+
+#: ../plugins/cdrkit/burn-wodim.c:116 ../plugins/cdrtools/burn-cdrecord.c:116
+#: ../plugins/libburnia/burn-libburn.c:806
+#: ../plugins/libburnia/burn-libburn.c:837
+#, c-format
+msgid "An error occured while writing to disc"
+msgstr "S'ha produït un error en escriure al disc"
+
+#: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
+#, c-format
+msgid ""
+"The system is too slow to write the disc at this speed. Try a lower speed"
+msgstr ""
+"El sistema és massa lent per a escriure el disc a esta velocitat. Intenteu-"
+"ho amb una velocitat inferior"
+
+#. Translators: %s is the number of the track
+#: ../plugins/cdrkit/burn-wodim.c:249 ../plugins/cdrtools/burn-cdrecord.c:246
+#, fuzzy, c-format
+msgid "Writing track %s"
+msgstr "S'està escrivint la pista %02i"
+
+#: ../plugins/cdrkit/burn-wodim.c:326 ../plugins/cdrtools/burn-cdrecord.c:319
+msgid "Formatting disc"
+msgstr "S'està formatant el disc"
+
+#: ../plugins/cdrkit/burn-wodim.c:346 ../plugins/cdrtools/burn-cdrecord.c:331
+msgid "Writing cue sheet"
+msgstr "S'està escrivint un full CUE"
+
+#: ../plugins/cdrkit/burn-wodim.c:368 ../plugins/cdrtools/burn-cdrecord.c:353
+#, c-format
+msgid "The disc needs to be reloaded before being recorded"
+msgstr "Cal tornar a carregar el disc abans d'enregistrar-lo"
+
+#: ../plugins/cdrkit/burn-wodim.c:1242
+msgid "Use wodim to burn CDs and DVDs"
+msgstr "Utilitza el wodim per a enregistrar CD i DVD"
+
+#: ../plugins/cdrkit/burn-wodim.c:1397
+msgid "Enable \"-immed\" flag (see wodim manual)"
+msgstr "Habilita l'indicador «-immed» (vegeu el manual del wodim)"
+
+#: ../plugins/cdrkit/burn-wodim.c:1400
+msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
+msgstr ""
+"Relació mínima a omplir de la memòria intermèdia de la unitat (en %) (vegeu "
+"el manual del wodim):"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1163
+msgid "Use cdrecord to burn CDs and DVDs"
+msgstr "Utilitza el cdrecord per a enregistrar CD i DVD"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1386
+msgid "Enable \"-immed\" flag (see cdrecord manual)"
+msgstr "Habilita l'indicador «-immed» (vegeu el manual del cdrecord)"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1389
+#, c-format
+msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
+msgstr ""
+"Relació mínima a omplir de la memòria intermèdia de la unitat (en %%) (vegeu "
+"el manual del cdrecord):"
+
+#: ../plugins/cdrtools/burn-mkisofs.c:134
+msgid "This version of mkisofs is not supported"
+msgstr "Esta versió del mkisofs no és compatible"
+
+#: ../plugins/cdrtools/burn-mkisofs.c:528
+msgid "Use mkisofs to create image from a file selection"
+msgstr "Utilitza el mkisofs per a crear imatges des d'una selecció de fitxers"
+
+#: ../plugins/cdrtools/burn-readcd.c:454
+msgid "Use readcd to create disc images"
+msgstr "Utilitza el readcd per a crear imatges de disc"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:123
+#, c-format
+msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
+msgstr "DVD xifrat: instal·leu la versió 1.2.x del libdvdcss"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:130
+#, c-format
+msgid ""
+"Libdvdcss version %s is not supported.\n"
+"Please install libdvdcss version 1.2.x"
+msgstr ""
+"La versió %s del livdvdcss no és compatible.\n"
+"Instal·leu la versió 1.2.x"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:140
+#, c-format
+msgid "Libdvdcss could not be loaded properly"
+msgstr "No s'ha pogut carregar correctament el libdvdcss"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:218 ../plugins/dvdcss/burn-dvdcss.c:469
+#: ../plugins/libburnia/burn-libisofs.c:156
+#: ../plugins/libburnia/burn-libisofs.c:257
+#: ../plugins/checksum/burn-checksum-files.c:189
+#: ../plugins/checksum/burn-checksum-files.c:212
+#: ../plugins/checksum/burn-checksum-image.c:167
+#, c-format
+msgid "Data could not be written (%s)"
+msgstr "No s'han pogut escriure les dades (%s)"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:278
+#, c-format
+msgid "Error reading video DVD (%s)"
+msgstr "Error en llegir el DVD de vídeo (%s)"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:323
+msgid "Retrieving DVD keys"
+msgstr "Obtenint les claus del DVD"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:358
+#, c-format
+msgid "Video DVD could not be opened"
+msgstr "No s'ha pogut obrir el DVD de vídeo"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:376 ../plugins/dvdcss/burn-dvdcss.c:437
+#: ../plugins/dvdcss/burn-dvdcss.c:457
+#, c-format
+msgid "Error while reading video DVD (%s)"
+msgstr "S'ha produït un error en llegir el DVD de vídeo (%s)"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:383
+msgid "Copying Video DVD"
+msgstr "S'està copiant el DVD de vídeo"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:669
+msgid "Dvdcss allows to read css encrypted video DVDs"
+msgstr "El dvdcss permet llegir DVD de vídeo xifrats amb css"
+
+#: ../plugins/growisofs/burn-dvd-rw-format.c:183
+#, fuzzy
+msgid "Dvd+rw-format blanks and formats DVD+/-R(W)"
+msgstr "El dvd+rw-format esborra i dóna format als DVD+/-R(W)"
+
+#: ../plugins/growisofs/burn-growisofs.c:743
+msgid "Growisofs burns DVDs"
+msgstr "El growisofs enregistra DVD"
+
+#: ../plugins/growisofs/burn-growisofs.c:921
+msgid "Allow DAO use"
+msgstr "Permet la utilització del DAO"
+
+#: ../plugins/libburnia/burn-libburn.c:235
+#: ../plugins/libburnia/burn-libburn.c:243
+#, c-format
+msgid "Libburn track could not be created"
+msgstr "No s'ha pogut crear la pista del libburn"
+
+#. Translators: first %s is the filename, second %s is the error
+#. * generated from errno
+#. Translators: first %s is the filename, second %s
+#. * is the error generated from errno
+#: ../plugins/libburnia/burn-libburn.c:655
+#: ../plugins/checksum/burn-checksum-image.c:306
+#, c-format
+msgid "\"%s\" could not be opened (%s)"
+msgstr "No s'ha pogut obrir «%s» (%s)"
+
+#: ../plugins/libburnia/burn-libburn.c:924
+msgid "Libburn burns CD(RW), DVD+/-(RW)"
+msgstr "El libburn enregistra CD(RW), DVD+/-(RW)"
+
+#: ../plugins/libburnia/burn-libburn-common.c:152
+#, c-format
+msgid "Libburn library could not be initialized"
+msgstr "No s'ha pogut iniciar la biblioteca libburn"
+
+#: ../plugins/libburnia/burn-libburn-common.c:167
+#, c-format
+msgid "The drive address could not be retrieved"
+msgstr "No s'ha pogut obtindre l'adreça de la unitat"
+
+#: ../plugins/libburnia/burn-libburn-common.c:358
+#, c-format
+msgid "Writing track %02i"
+msgstr "S'està escrivint la pista %02i"
+
+#: ../plugins/libburnia/burn-libisofs.c:319
+#: ../plugins/libburnia/burn-libisofs.c:854
+#, c-format
+msgid "Libisofs could not be initialized."
+msgstr "No s'ha pogut inicialitzar el libisofs."
+
+#: ../plugins/libburnia/burn-libisofs.c:468
+#, c-format
+msgid "Read options could not be created"
+msgstr "No s'han pogut crear les opcions de lectura"
+
+#: ../plugins/libburnia/burn-libisofs.c:544
+#, c-format
+msgid "Volume could not be created"
+msgstr "No s'ha pogut crear el volum"
+
+#. Translators: %s is the path
+#: ../plugins/libburnia/burn-libisofs.c:653
+#, c-format
+msgid "No parent could be found in the tree for the path \"%s\""
+msgstr "No s'ha pogut trobar el pare en l'arbre del camí «%s»"
+
+#: ../plugins/libburnia/burn-libisofs.c:713
+#: ../plugins/libburnia/burn-libisofs.c:780
+#, c-format
+msgid "Libisofs reported an error while creating directory \"%s\""
+msgstr "El libisofts ha informat d'un error en crear el directori «%s»"
+
+#: ../plugins/libburnia/burn-libisofs.c:728
+#, c-format
+msgid ""
+"Libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgstr ""
+"El libisofts ha informat d'un error en afegir els continguts al directori «%"
+"s» (%x)"
+
+#: ../plugins/libburnia/burn-libisofs.c:751
+#: ../plugins/libburnia/burn-libisofs.c:767
+#, c-format
+msgid "Libisofs reported an error while adding file at path \"%s\""
+msgstr "El libisofts ha informat d'un error en afegir el fitxer al camí «%s»"
+
+#: ../plugins/libburnia/burn-libisofs.c:1027
+msgid "Libisofs creates disc images from files"
+msgstr "El libisofts crea imatges de disc des de fitxers"
+
+#: ../plugins/local-track/burn-local-image.c:253
+msgid "Copying checksum file"
+msgstr "S'està copiant el fitxer de suma de verificació"
+
+#: ../plugins/local-track/burn-local-image.c:537
+#, c-format
+msgid "Copying `%s` locally"
+msgstr "S'està copiant en local %s"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/local-track/burn-local-image.c:903
+msgid "File Downloader"
+msgstr "Gestor de baixades"
+
+#: ../plugins/local-track/burn-local-image.c:904
+msgid "Allows to burn files not stored locally"
+msgstr "Permet enregistrar fitxers remots"
+
+#: ../plugins/transcode/burn-normalize.c:504
+msgid "Normalizing tracks"
+msgstr "S'estan normalitzant les pistes"
+
+#: ../plugins/transcode/burn-normalize.c:594
+msgid "Normalize"
+msgstr "Normalitza"
+
+#: ../plugins/transcode/burn-normalize.c:595
+msgid "Normalize allows to set consistent sound levels between tracks"
+msgstr ""
+"La normalització permet establir nivells de so consistents entre les pistes"
+
+#. Translators: This message is sent
+#. * when brasero could not link together
+#. * two gstreamer plugins so that one
+#. * sends its data to the second for further
+#. * processing. This data transmission is
+#. * done through a pad. Maybe this is a bit
+#. * too technical and should be removed?
+#: ../plugins/transcode/burn-transcode.c:310
+#: ../plugins/transcode/burn-transcode.c:1473
+#, c-format
+msgid "Impossible to link plugin pads"
+msgstr "No s'han pogut enllaçar els paquets del connector"
+
+#. Translators: %s is the string error from errno
+#: ../plugins/transcode/burn-transcode.c:918
+#: ../plugins/transcode/burn-transcode.c:1105
+#, c-format
+msgid "Error while padding file (%s)"
+msgstr "S'ha produït un error en emplenar el fitxer (%s)"
+
+#: ../plugins/transcode/burn-transcode.c:1181
+#, c-format
+msgid "Error while getting duration"
+msgstr "S'ha produït un error en obtindre la durada"
+
+#: ../plugins/transcode/burn-transcode.c:1330
+#, c-format
+msgid "Analysing \"%s\""
+msgstr "S'està analitzant «%s»"
+
+#: ../plugins/transcode/burn-transcode.c:1367
+#, c-format
+msgid "Transcoding \"%s\""
+msgstr "S'està transcodificant «%s»"
+
+#: ../plugins/transcode/burn-transcode.c:1630
+msgid "Transcode converts song files into a format proper to burn them on CDs"
+msgstr ""
+"La transcodificació converteix fitxers de cançons al format correcte per a "
+"poder enregistrar-les a CD"
+
+#: ../src/brasero-preview.c:170
+msgid "Preview"
+msgstr "Previsualitza"
+
+#: ../src/brasero-split-dialog.c:163
+msgid "Do you really want to split the track?"
+msgstr "Segur que voleu partir la pista?"
+
+#: ../src/brasero-split-dialog.c:166
+msgid ""
+"If you split the track, the size of the new track will be shorter than 6 "
+"seconds and will be padded."
+msgstr ""
+"Si partiu la pista, la mida de la pista nova serà de menys de 6 segons i "
+"serà emplenada."
+
+#: ../src/brasero-split-dialog.c:172 ../src/brasero-split-dialog.c:745
+msgid "_Split"
+msgstr "_Parteix"
+
+#: ../src/brasero-split-dialog.c:600
+msgid "The track wasn't split."
+msgstr "No s'ha partit la pista."
+
+#: ../src/brasero-split-dialog.c:601
+msgid "No silence could be detected"
+msgstr "No s'ha pogut detectar el silenci"
+
+#: ../src/brasero-split-dialog.c:624
+msgid "An error occured while detecting silences."
+msgstr "S'ha produït un error en detectar els silencis."
+
+#: ../src/brasero-split-dialog.c:703
+msgid "This will remove all previous results."
+msgstr "Es suprimiran tots els resultats anteriors."
+
+#: ../src/brasero-split-dialog.c:743
+msgid "Do you really want to carry on with automatic splitting?"
+msgstr "Encara voleu continuar amb la partició automàtica?"
+
+#: ../src/brasero-split-dialog.c:744
+msgid "_Don't split"
+msgstr "_No partisques"
+
+#: ../src/brasero-split-dialog.c:962
+msgid "Do you really want to empty the slices preview?"
+msgstr "Segur que voleu buidar la previsualització de les particions?"
+
+#: ../src/brasero-split-dialog.c:964 ../src/brasero-split-dialog.c:1266
+msgid "Re_move All"
+msgstr "Supri_meix-ho tot"
+
+#: ../src/brasero-split-dialog.c:1050
+msgid "Split Track"
+msgstr "Parteix la pista"
+
+#: ../src/brasero-split-dialog.c:1069
+msgid "M_ethod:"
+msgstr "Mè_tode:"
+
+#: ../src/brasero-split-dialog.c:1075
+msgid "Method to be used to split the track"
+msgstr "Mètode a utilitzar per partir la pista"
+
+#: ../src/brasero-split-dialog.c:1078
+msgid "Split track manually"
+msgstr "Parteix la pista manualment"
+
+#: ../src/brasero-split-dialog.c:1079
+msgid "Split track in parts with a fixed length"
+msgstr "Parteix la pista en parts de mida fixa"
+
+#: ../src/brasero-split-dialog.c:1080
+msgid "Split track in a fixed number of parts"
+msgstr "Parteix la pista en un nombre fix de parts"
+
+#: ../src/brasero-split-dialog.c:1081
+msgid "Split track for each silence"
+msgstr "Parteix la pista per cada silenci"
+
+#: ../src/brasero-split-dialog.c:1087
+msgid "_Slice"
+msgstr "_Partició"
+
+#: ../src/brasero-split-dialog.c:1098
+msgid "Add a splitting point"
+msgstr "Afig un punt de partició"
+
+#. Translators: this goes with the next (= "seconds")
+#: ../src/brasero-split-dialog.c:1115
+msgid "Split this track every"
+msgstr "Parteix la pista cada"
+
+#. Translators: this goes with the previous (= "Split track every")
+#: ../src/brasero-split-dialog.c:1124
+msgid "seconds"
+msgstr "segons"
+
+#. Translators: this goes with the next (= "parts")
+#: ../src/brasero-split-dialog.c:1133
+msgid "Split this track in"
+msgstr "Parteix la pista en"
+
+#. Translators: this goes with the previous (= "Split this track in")
+#: ../src/brasero-split-dialog.c:1142
+msgid "parts"
+msgstr "parts"
+
+#: ../src/brasero-split-dialog.c:1150
+msgid "Slicing Method"
+msgstr "Mètode de partició"
+
+#: ../src/brasero-split-dialog.c:1208
+msgid "Start"
+msgstr "Inici"
+
+#: ../src/brasero-split-dialog.c:1215
+msgid "End"
+msgstr "Final"
+
+#: ../src/brasero-split-dialog.c:1238
+msgid "Mer_ge"
+msgstr "_Combina"
+
+#: ../src/brasero-split-dialog.c:1249
+msgid "Merge a selected slice with the next selected one"
+msgstr "Combina una partició seleccionada amb la següent"
+
+#: ../src/brasero-split-dialog.c:1263
+msgid "Remove the selected slices"
+msgstr "Suprimeix les particions seleccionades"
+
+#: ../src/brasero-split-dialog.c:1277
+msgid "Clear the slices preview"
+msgstr "Neteja la previsualització de les particions"
+
+#: ../src/brasero-split-dialog.c:1287
+msgid "_List of slices that are to be created:"
+msgstr "_Llista de les particions que s'han de crear:"
+
+#: ../src/brasero-split-dialog.c:1295
+msgid "Slices Preview"
+msgstr "Previsualització de les particions"
+
+#: ../src/brasero-time-button.c:286
+msgid "Hours"
+msgstr "Hores"
+
+#. Translators: separating hours and minutes
+#. Translators: separating minutes and seconds
+#. Translators: separating seconds and frames
+#: ../src/brasero-time-button.c:291 ../src/brasero-time-button.c:301
+#: ../src/brasero-time-button.c:311
+msgid ":"
+msgstr ":"
+
+#: ../src/brasero-time-button.c:296
+msgid "Minutes"
+msgstr "Minuts"
+
+#: ../src/brasero-time-button.c:306
+msgid "Seconds"
+msgstr "Segons"
+
+#: ../src/brasero-time-button.c:316
+msgid "Frames (1 second = 75 frames)"
+msgstr "Quadres (1 segon = 75 quadres)"
+
+#: ../plugins/cdrkit/burn-cdrkit.h:38
+msgid "Cdrkit burning suite"
+msgstr "Conjunt de programes d'enregistrament cdrkit"
+
+#: ../plugins/libburnia/burn-libburnia.h:38
+msgid "Libburnia burning suite"
+msgstr "Conjunt de programes d'enregistrament libburnia"
+
+#: ../plugins/growisofs/burn-growisofs-common.h:38
+msgid "Growisofs burning suite"
+msgstr "Conjunt de programes d'enregistrament growisofs"
+
+#: ../plugins/cdrdao/burn-cdrdao-common.h:38
+msgid "Cdrdao burning suite"
+msgstr "Conjunt de programes d'enregistrament cdrdao"
+
+#: ../plugins/cdrtools/burn-cdrtools.h:38
+msgid "Cdrtools burning suite"
+msgstr "Conjunt de programes d'enregistrament cdrtools"
+
+#: ../src/brasero-eject-dialog.c:189
+msgid "_Eject"
+msgstr "_Expulsa"
+
+#: ../src/brasero-eject-dialog.c:204
+msgid "Eject Disc"
+msgstr "Expulsa el disc"
+
+#: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
+msgid "No file filtered"
+msgstr "No s'ha filtrat cap fitxer"
+
+#: ../src/brasero-file-filtered.c:77
+#, c-format
+msgid "Hide the _filtered file list (%d file)"
+msgid_plural "Hide the _filtered file list (%d files)"
+msgstr[0] "Oculta la llista de fitxers _filtrats (%d fitxer)"
+msgstr[1] "Oculta la llista de fitxers _filtrats (%d fitxers)"
+
+#: ../src/brasero-file-filtered.c:83
+#, c-format
+msgid "Show the _filtered file list (%d file)"
+msgid_plural "Show the _filtered file list (%d files)"
+msgstr[0] "Mostra la llista de fitxers _filtrats (%d fitxer)"
+msgstr[1] "Mostra la llista de fitxers _filtrats (%d fitxers)"
+
+#: ../src/brasero-file-filtered.c:138
+msgid "Filter Options"
+msgstr "Opcions de filtrat"
+
+#: ../src/brasero-file-filtered.c:221
+msgid ""
+"Select the files you want to restore and click on the \"Restore\" button"
+msgstr ""
+"Seleccioneu els fitxers que voleu restaurar i feu clic en el botó «Restaura»"
+
+#: ../src/brasero-file-filtered.c:268
+msgid "Type"
+msgstr "Tipus"
+
+#: ../src/brasero-file-filtered.c:295
+msgid "_Restore"
+msgstr "_Restaura"
+
+#: ../src/brasero-file-filtered.c:304
+msgid "Restore the selected files"
+msgstr "Restaura els fitxers seleccionats"
+
+#: ../src/brasero-file-filtered.c:306
+msgid "_Options..."
+msgstr "_Opcions..."
+
+#: ../src/brasero-file-filtered.c:314
+msgid "Set the options for file filtering"
+msgstr "Estableix les opcions per al filtre de fitxers"
+
+#: ../src/brasero-filter-option.c:126
+msgid "Filter _hidden files"
+msgstr "Filtra els _fitxers ocults"
+
+#: ../src/brasero-filter-option.c:149
+#, fuzzy
+msgid "Re_place symbolic links"
+msgstr "_Reemplaça els enllaços simbòlics"
+
+#: ../src/brasero-filter-option.c:172
+#, fuzzy
+msgid "Filter _broken symbolic links"
+msgstr "Filtra els _enllaços simbòlics trencats"
+
+#: ../src/brasero-filter-option.c:190
+msgid "Filtering options"
+msgstr "Opcions de filtrat"
+
+#: ../plugins/checksum/burn-checksum-files.c:124
+#: ../plugins/checksum/burn-checksum-files.c:580
+#, c-format
+msgid "File \"%s\" could not be opened (%s)"
+msgstr "No s'ha pogut obrir el fitxer «%s» (%s)"
+
+#: ../plugins/checksum/burn-checksum-files.c:608
+msgid "Creating checksum for image files"
+msgstr "S'està creant la suma de verificació per als fitxers d'imatge"
+
+#: ../plugins/checksum/burn-checksum-files.c:847
+#, c-format
+msgid "No checksum file could be found on the disc"
+msgstr "No s'ha pogut trobar cap fitxer de suma de verificació al disc"
+
+#: ../plugins/checksum/burn-checksum-files.c:881
+msgid "Checking file integrity"
+msgstr "S'està comprovant la integritat dels fitxers"
+
+#: ../plugins/checksum/burn-checksum-files.c:975
+#: ../plugins/checksum/burn-checksum-files.c:1000
+#, c-format
+msgid "File \"%s\" could not be opened"
+msgstr "No s'ha pogut obrir el fitxer «%s»"
+
+#: ../plugins/checksum/burn-checksum-files.c:1073
+#: ../plugins/checksum/burn-checksum-files.c:1187
+#: ../plugins/checksum/burn-checksum-image.c:519
+#, c-format
+msgid "Some files may be corrupted on the disc"
+msgstr "Alguns fitxers poden estar malmesos al disc"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/checksum/burn-checksum-files.c:1459
+msgid "File Checksum"
+msgstr "Fitxer de suma de verificació"
+
+#: ../plugins/checksum/burn-checksum-files.c:1460
+msgid "Allows to check file integrities on a disc"
+msgstr "Permet la comprovació de la integritat dels fitxers d'un disc"
+
+#: ../plugins/checksum/burn-checksum-files.c:1500
+#: ../plugins/checksum/burn-checksum-image.c:821
+msgid "Hashing algorithm to be used:"
+msgstr "Algorisme de resum a utilitzar:"
+
+#: ../plugins/checksum/burn-checksum-files.c:1503
+#: ../plugins/checksum/burn-checksum-image.c:824
+msgid "MD5"
+msgstr "MD5"
+
+#: ../plugins/checksum/burn-checksum-files.c:1505
+#: ../plugins/checksum/burn-checksum-image.c:826
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../plugins/checksum/burn-checksum-files.c:1507
+#: ../plugins/checksum/burn-checksum-image.c:828
+msgid "SHA256"
+msgstr "SHA256"
+
+#: ../plugins/checksum/burn-checksum-image.c:117
+#, c-format
+msgid "Data could not be read (%s)"
+msgstr "No s'han pogut llegir les dades (%s)"
+
+#: ../plugins/checksum/burn-checksum-image.c:352
+#: ../plugins/checksum/burn-checksum-image.c:425
+msgid "Creating image checksum"
+msgstr "S'està creant la suma de verificació de la imatge"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/checksum/burn-checksum-image.c:796
+msgid "Image Checksum"
+msgstr "Suma de verificació de la imatge"
+
+#: ../plugins/checksum/burn-checksum-image.c:797
+msgid "Allows to check data integrity on disc after it is burnt"
+msgstr ""
+"Permet la comprovació de la integritat de les dades del disc un cop "
+"enregistrat"
+
+#: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
+#: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
+#: ../src/brasero-multi-song-props.c:139 ../src/brasero-multi-song-props.c:160
+#: ../src/brasero-multi-song-props.c:173 ../src/brasero-multi-song-props.c:248
+#: ../src/brasero-multi-song-props.c:269 ../src/brasero-multi-song-props.c:290
+#: ../src/brasero-rename.c:90 ../src/brasero-rename.c:282
+msgid "<Keep current values>"
+msgstr "<Manté el valors actuals>"
+
+#: ../src/brasero-multi-song-props.c:126 ../src/brasero-multi-song-props.c:143
+msgid "Remove silences"
+msgstr "Suprimeix els silencis"
+
+#: ../src/brasero-multi-song-props.c:212
+msgid "Song titles"
+msgstr "Títols de les cançons"
+
+#: ../src/brasero-multi-song-props.c:229
+msgid "Additional song information"
+msgstr "Informació addicional de la cançó"
+
+#: ../src/brasero-rename.c:283
+msgid "Insert text"
+msgstr "Insereix text"
+
+#: ../src/brasero-rename.c:284
+msgid "Delete text"
+msgstr "Suprimeix el text"
+
+#: ../src/brasero-rename.c:285
+msgid "Substitute text"
+msgstr "Substitueix el text"
+
+#: ../src/brasero-rename.c:286
+msgid "Number files according to a pattern"
+msgstr "Número de fitxers que coincideixen amb un patró"
+
+#. Translators: This is a verb. This is completed later
+#: ../src/brasero-rename.c:301
+msgid "Insert"
+msgstr "Insereix"
+
+#. Translators: This finishes previous action "Insert". It goes like
+#. * this: "Insert" [Entry] "at the beginning".
+#: ../src/brasero-rename.c:315
+msgid "at the begining"
+msgstr "al començament"
+
+#. Translators: This finishes previous action "Insert". It goes like
+#. * this: "Insert" [Entry] "at the end".
+#: ../src/brasero-rename.c:319
+msgid "at the end"
+msgstr "al final"
+
+#: ../src/brasero-rename.c:330
+msgid "Delete every occurence of"
+msgstr "Suprimeix cada aparició de"
+
+#. Reminder: if this string happens to be used somewhere else in brasero
+#. * we'll need a context with C_() macro
+#. Translators: this goes with above verb to say "_Replace" [Entry]
+#. * "with" [Entry].
+#: ../src/brasero-rename.c:360
+msgid "with"
+msgstr "amb"
+
+#: ../src/brasero-rename.c:374
+msgid "Rename to"
+msgstr "Reanomena a"
+
+#: ../src/brasero-rename.c:383
+msgid "{number}"
+msgstr "{número}"
+
+#: ../src/brasero-video-disc.c:101
+msgid "Open the selected video"
+msgstr "Obri el vídeo seleccionat"
+
+#: ../src/brasero-video-disc.c:103
+msgid "Edit the video information (start, end, author, ...)"
+msgstr "Edita la informació del vídeo (inici, final, autor, ...)"
+
+#: ../src/brasero-video-disc.c:105
+msgid "Remove the selected videos from the project"
+msgstr "Suprimeix els vídeos seleccionats del projecte"
+
+#: ../src/brasero-video-disc.c:359
+msgid "Do you want to search for video files inside the directory?"
+msgstr "Voleu cercar fitxers de vídeo dins del directori?"
+
+#: ../src/brasero-video-disc.c:364
+msgid "Directories cannot be added to video discs."
+msgstr "No es poden afegir directoris als discs de vídeo."
+
+#: ../src/brasero-video-disc.c:368
+msgid "_Search Directory"
+msgstr "_Cerca al directori"
+
+#: ../src/brasero-video-disc.c:407
+#, c-format
+msgid "\"%s\" does not have a suitable type for video projects."
+msgstr "«%s» no té un tipus adequat per a projectes de vídeo."
+
+#: ../src/brasero-video-disc.c:410
+msgid "Please only add files with video contents"
+msgstr "Afegiu només fitxers amb contingut de vídeo"
+
+#: ../plugins/dvdauthor/burn-dvdauthor.c:309
+#: ../plugins/vcdimager/burn-vcdimager.c:437
+msgid "Creating file layout"
+msgstr "S'està creant la disposició del fitxer"
+
+#: ../plugins/dvdauthor/burn-dvdauthor.c:367
+msgid "Use dvdauthor to create Video DVDs"
+msgstr "Utilitza el dvdauthor per a crear DVD de vídeo"
+
+#: ../plugins/transcode/burn-vob.c:1118
+msgid "Converting video file to MPEG2"
+msgstr "S'està convertint el fitxer de vídeo a MPEG2"
+
+#: ../plugins/transcode/burn-vob.c:1234
+msgid ""
+"Vob allows to transcode any video file to a format suitable for video DVDs"
+msgstr ""
+"Vob permet transcodificar qualsevol fitxer de vídeo a un format adequat per "
+"a DVD de vídeo"
+
+#: ../plugins/vcdimager/burn-vcdimager.c:486
+msgid "Use vcdimager to create SVCDs"
+msgstr "Utilitza el vcdimager per a crear SVCD"
+
+#: ../data/brasero-copy-medium.desktop.in.in.h:2
+msgid "Copy CDs and DVDs"
+msgstr "Copia CD i DVD"
+
+#: ../data/brasero-copy-medium.desktop.in.in.h:3
+msgid "Disc Copier"
+msgstr "Copia un disc"
+
+#~ msgid "%lli:%02lli min"
+#~ msgstr "%lli:%02lli min"
+
+#~ msgid "Audio %s"
+#~ msgstr "Àudio %s"
+
+#~ msgid "Data %s"
+#~ msgstr "Dades %s"
+
+#~ msgid "Unable to launch the cd burner application"
+#~ msgstr "No es pot executar l'aplicació d'enregistrar CD"
+
+#~ msgctxt "disc"
+#~ msgid "Image files only"
+#~ msgstr "Només fitxers d'imatge"
+
+#~ msgid "_Erase..."
+#~ msgstr "_Esborra..."
+
+#~ msgid "Erase a disc"
+#~ msgstr "Esborra un disc"
+
+#~ msgid "Exit the program"
+#~ msgstr "Ix del programa"
+
+#~ msgid "It will be removed from the project"
+#~ msgstr "Este serà suprimit del projecte"
+
+#~ msgid "%s only"
+#~ msgstr "només %s"
+
+#~ msgid "_Erase Disc"
+#~ msgstr "_Esborra el disc"
+
+#~ msgid "You might not be able to listen to it with stereos."
+#~ msgstr "És possible que no pugueu escoltar-los en equips de música."
+
+#~ msgid "Click here not to use overburning"
+#~ msgstr "Feu clic ací per a utilitzar l'opció de sobreescriptura"
+
+#~ msgid "Please delete some files from the project."
+#~ msgstr "Hauríeu de suprimir alguns fitxers del projecte."
+
+#~ msgid ""
+#~ "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+#~ msgstr "Voleu enregistrar «%s» a un disc o afegir-lo al projecte de dades?"
+
+#~ msgid ""
+#~ "This file is the image of a disc and can therefore be burnt to disc "
+#~ "without having to add it to a data project first."
+#~ msgstr ""
+#~ "Este fitxer és la imatge d'un disc i per això es pot enregistrar al disc "
+#~ "sense primer haver-lo d'afegir a un projecte de dades."
+
+#~ msgid "_Add to Project"
+#~ msgstr "_Afig al projecte"
+
+#~ msgid "It already exists in the directory."
+#~ msgstr "Este ja existeix al directori."
+
+#~ msgid "_Keep Project File"
+#~ msgstr "_Manté el fitxer del projecte"
+
+#~ msgid "_Replace Project File"
+#~ msgstr "_Reemplaça el fitxer del projecte"
+
+#~ msgid "Increase compatibility with _Windows systems"
+#~ msgstr "Incrementa la compatibilitat amb els sistemes _Windows"
+
+#~ msgid ""
+#~ "Improve compatibility with Windows systems by allowing to display long "
+#~ "filenames (maximum 64 characters)"
+#~ msgstr ""
+#~ "Millora la compatibilitat amb els sistemes Windows permetent que es "
+#~ "mostren noms llargs de fitxers (64 caràcters com a màxim)"
+
+#~ msgid "Disc options"
+#~ msgstr "Opcions de disc"
+
+#~ msgid "Unknown"
+#~ msgstr "Desconegut"
+
+#~ msgid "_Temporary directory free space:"
+#~ msgstr "Espai lliure del directori _temporal:"
+
+#~ msgctxt "picture"
+#~ msgid "Image files only"
+#~ msgstr "Només imatges"
+
+#~ msgid "Let brasero choose (safest)"
+#~ msgstr "Deixeu que el Brasero trie (recomanat)"
+
+#~ msgid "*.toc image (cdrdao)"
+#~ msgstr "imatge *.toc (cdrdao)"
+
+#~ msgid "_Name:"
+#~ msgstr "_Nom:"
+
+#~ msgid "Project estimated size: %s/%s"
+#~ msgstr "Mida estimada del projecte: %s/%s"
+
+#~ msgid "\"%s\" already exists"
+#~ msgstr "ja existeix «%s»"
+
+#~ msgid "Display debug statements on stdout"
+#~ msgstr "Mostra les sentències de depuració a la eixida estàndard"
+
+#~ msgid "drag and release items out from this area"
+#~ msgstr "Arrossegar i deixar anar els elements fora d'esta àrea"
+
+#~ msgid "A directory could not be created (%s)"
+#~ msgstr "No s'ha pogut crear un directori (%s)"
