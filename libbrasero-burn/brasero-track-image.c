@@ -367,7 +367,9 @@ brasero_track_image_class_init (BraseroTrackImageClass *klass)
 /**
  * brasero_track_image_new:
  *
- *  Creates a new #BraseroTrackImage object.
+ * Creates a new #BraseroTrackImage object.
+ *
+ * This type of tracks is used to burn disc images.
  *
  * Return value: a #BraseroTrackImage object.
  **/

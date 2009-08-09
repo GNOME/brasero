@@ -34,6 +34,7 @@
 #include <glib.h>
 
 #include <brasero-enums.h>
+#include <brasero-media.h>
 
 G_BEGIN_DECLS
 
@@ -85,7 +86,7 @@ brasero_track_type_get_data_fs (const BraseroTrackType *type);
 
 void
 brasero_track_type_set_stream_format (BraseroTrackType *type,
-				      BraseroImageFormat format);
+				      BraseroStreamFormat format);
 void
 brasero_track_type_set_image_format (BraseroTrackType *type,
 				     BraseroImageFormat format);

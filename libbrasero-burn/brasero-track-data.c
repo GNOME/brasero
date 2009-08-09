@@ -614,6 +614,9 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
  * brasero_track_data_new:
  *
  * Creates a new #BraseroTrackData.
+ * 
+ *This type of tracks is used to create a disc image
+ * from or burn a selection of files.
  *
  * Return value: a #BraseroTrackData
  **/

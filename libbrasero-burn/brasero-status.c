@@ -43,11 +43,28 @@ struct _BraseroStatus {
 	gchar *current_action;
 };
 
+/**
+ * brasero_status_new:
+ *
+ * Creates a new #BraseroStatus structure.
+ * Free it with brasero_status_free ().
+ *
+ * Return value: a #BraseroStatus pointer.
+ **/
+
 BraseroStatus *
 brasero_status_new (void)
 {
 	return g_new0 (BraseroStatus, 1);
 }
+
+/**
+ * brasero_status_free:
+ * @status: a #BraseroStatus.
+ *
+ * Frees #BraseroStatus structure.
+ *
+ **/
 
 void
 brasero_status_free (BraseroStatus *status)
@@ -61,12 +78,35 @@ brasero_status_free (BraseroStatus *status)
 	g_free (status);
 }
 
+/**
+ * brasero_status_get_result:
+ * @status: a #BraseroStatus.
+ *
+ * After an object (see brasero_burn_track_get_status ()) has
+ * been requested its status, this function returns that status.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if the object is ready.
+ * BRASERO_BURN_NOT_READY if some time should be given to the object before it is ready.
+ * BRASERO_BURN_ERR if there is an error.
+ **/
+
 BraseroBurnResult
 brasero_status_get_result (BraseroStatus *status)
 {
 	g_return_val_if_fail (status != NULL, BRASERO_BURN_ERR);
 	return status->res;
 }
+
+/**
+ * brasero_status_get_progress:
+ * @status: a #BraseroStatus.
+ *
+ * If brasero_status_get_result () returned BRASERO_BURN_NOT_READY,
+ * this function returns the progress regarding the operation completion.
+ *
+ * Return value: a #gdouble
+ **/
 
 gdouble
 brasero_status_get_progress (BraseroStatus *status)
@@ -81,6 +121,16 @@ brasero_status_get_progress (BraseroStatus *status)
 	return status->progress;
 }
 
+/**
+ * brasero_status_get_error:
+ * @status: a #BraseroStatus.
+ *
+ * If brasero_status_get_result () returned BRASERO_BURN_ERR,
+ * this function returns the error.
+ *
+ * Return value: a #GError
+ **/
+
 GError *
 brasero_status_get_error (BraseroStatus *status)
 {
@@ -90,6 +140,17 @@ brasero_status_get_error (BraseroStatus *status)
 
 	return g_error_copy (status->error);
 }
+
+/**
+ * brasero_status_get_current_action:
+ * @status: a #BraseroStatus.
+ *
+ * If brasero_status_get_result () returned BRASERO_BURN_NOT_READY,
+ * this function returns a string describing the operation currently performed.
+ * Free the string when it is not needed anymore.
+ *
+ * Return value: a #gchar.
+ **/
 
 gchar *
 brasero_status_get_current_action (BraseroStatus *status)
@@ -105,6 +166,14 @@ brasero_status_get_current_action (BraseroStatus *status)
 
 }
 
+/**
+ * brasero_status_set_completed:
+ * @status: a #BraseroStatus.
+ *
+ * Sets the status for a request to BRASERO_BURN_OK.
+ *
+ **/
+
 void
 brasero_status_set_completed (BraseroStatus *status)
 {
@@ -112,6 +181,18 @@ brasero_status_set_completed (BraseroStatus *status)
 	status->res = BRASERO_BURN_OK;
 	status->progress = 1.0;
 }
+
+/**
+ * brasero_status_set_not_ready:
+ * @status: a #BraseroStatus.
+ * @progress: a #gdouble or -1.0.
+ * @current_action: a #gchar or NULL.
+ *
+ * Sets the status for a request to BRASERO_BURN_NOT_READY.
+ * Allows to set a string describing the operation currently performed
+ * as well as the progress regarding the operation completion.
+ *
+ **/
 
 void
 brasero_status_set_not_ready (BraseroStatus *status,
@@ -126,6 +207,15 @@ brasero_status_set_not_ready (BraseroStatus *status,
 		g_free (status->current_action);
 	status->current_action = g_strdup (current_action);
 }
+
+/**
+ * brasero_status_set_error:
+ * @status: a #BraseroStatus.
+ * @error: a #GError or NULL.
+ *
+ * Sets the status for a request to BRASERO_BURN_ERR.
+ *
+ **/
 
 void
 brasero_status_set_error (BraseroStatus *status,

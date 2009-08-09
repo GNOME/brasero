@@ -39,11 +39,28 @@
 #include "brasero-track-type.h"
 #include "brasero-track-type-private.h"
 
+/**
+ * brasero_track_type_new:
+ *
+ * Creates a new #BraseroTrackType structure.
+ * Free it with brasero_track_type_free ().
+ *
+ * Return value: a #BraseroTrackType pointer.
+ **/
+
 BraseroTrackType *
 brasero_track_type_new (void)
 {
 	return g_new0 (BraseroTrackType, 1);
 }
+
+/**
+ * brasero_track_type_free:
+ * @type: a #BraseroTrackType.
+ *
+ * Frees #BraseroTrackType structure.
+ *
+ **/
 
 void
 brasero_track_type_free (BraseroTrackType *type)
@@ -53,6 +70,17 @@ brasero_track_type_free (BraseroTrackType *type)
 
 	g_free (type);
 }
+
+/**
+ * brasero_track_type_get_image_format:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns the format of an image when
+ * brasero_track_type_get_has_image () returned
+ * TRUE.
+ *
+ * Return value: a #BraseroImageFormat
+ **/
 
 BraseroImageFormat
 brasero_track_type_get_image_format (const BraseroTrackType *type) 
@@ -65,6 +93,17 @@ brasero_track_type_get_image_format (const BraseroTrackType *type)
 	return type->subtype.img_format;
 }
 
+/**
+ * brasero_track_type_get_data_fs:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns the parameters for the image generation
+ * when brasero_track_type_get_has_data () returned
+ * TRUE.
+ *
+ * Return value: a #BraseroImageFS
+ **/
+
 BraseroImageFS
 brasero_track_type_get_data_fs (const BraseroTrackType *type) 
 {
@@ -75,6 +114,17 @@ brasero_track_type_get_data_fs (const BraseroTrackType *type)
 
 	return type->subtype.fs_type;
 }
+
+/**
+ * brasero_track_type_get_stream_format:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns the format for a stream (song or video)
+ * when brasero_track_type_get_has_stream () returned
+ * TRUE.
+ *
+ * Return value: a #BraseroStreamFormat
+ **/
 
 BraseroStreamFormat
 brasero_track_type_get_stream_format (const BraseroTrackType *type) 
@@ -87,6 +137,17 @@ brasero_track_type_get_stream_format (const BraseroTrackType *type)
 	return type->subtype.stream_format;
 }
 
+/**
+ * brasero_track_type_get_medium_type:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns the medium type
+ * when brasero_track_type_get_has_medium () returned
+ * TRUE.
+ *
+ * Return value: a #BraseroMedia
+ **/
+
 BraseroMedia
 brasero_track_type_get_medium_type (const BraseroTrackType *type) 
 {
@@ -97,6 +158,16 @@ brasero_track_type_get_medium_type (const BraseroTrackType *type)
 
 	return type->subtype.media;
 }
+
+/**
+ * brasero_track_type_set_image_format:
+ * @type: a #BraseroTrackType.
+ * @format: a #BraseroImageFormat
+ *
+ * Sets the #BraseroImageFormat. Must be called
+ * after brasero_track_type_set_has_image ().
+ *
+ **/
 
 void
 brasero_track_type_set_image_format (BraseroTrackType *type,
@@ -110,6 +181,16 @@ brasero_track_type_set_image_format (BraseroTrackType *type,
 	type->subtype.img_format = format;
 }
 
+/**
+ * brasero_track_type_set_data_fs:
+ * @type: a #BraseroTrackType.
+ * @fs_type: a #BraseroImageFS
+ *
+ * Sets the #BraseroImageFS. Must be called
+ * after brasero_track_type_set_has_data ().
+ *
+ **/
+
 void
 brasero_track_type_set_data_fs (BraseroTrackType *type,
 				BraseroImageFS fs_type) 
@@ -122,9 +203,19 @@ brasero_track_type_set_data_fs (BraseroTrackType *type,
 	type->subtype.fs_type = fs_type;
 }
 
+/**
+ * brasero_track_type_set_stream_format:
+ * @type: a #BraseroTrackType.
+ * @format: a #BraseroImageFormat
+ *
+ * Sets the #BraseroStreamFormat. Must be called
+ * after brasero_track_type_set_has_stream ().
+ *
+ **/
+
 void
 brasero_track_type_set_stream_format (BraseroTrackType *type,
-				      BraseroImageFormat format) 
+				      BraseroStreamFormat format) 
 {
 	g_return_if_fail (type != NULL);
 
@@ -133,6 +224,16 @@ brasero_track_type_set_stream_format (BraseroTrackType *type,
 
 	type->subtype.stream_format = format;
 }
+
+/**
+ * brasero_track_type_set_medium_type:
+ * @type: a #BraseroTrackType.
+ * @media: a #BraseroMedia
+ *
+ * Sets the #BraseroMedia. Must be called
+ * after brasero_track_type_set_has_medium ().
+ *
+ **/
 
 void
 brasero_track_type_set_medium_type (BraseroTrackType *type,
@@ -146,6 +247,15 @@ brasero_track_type_set_medium_type (BraseroTrackType *type,
 	type->subtype.media = media;
 }
 
+/**
+ * brasero_track_type_is_empty:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns TRUE if no type was set.
+ *
+ * Return value: a #gboolean
+ **/
+
 gboolean
 brasero_track_type_is_empty (const BraseroTrackType *type)
 {
@@ -153,6 +263,15 @@ brasero_track_type_is_empty (const BraseroTrackType *type)
 
 	return (type->type == BRASERO_TRACK_TYPE_NONE);
 }
+
+/**
+ * brasero_track_type_get_has_data:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns TRUE if DATA type (see brasero_track_data_new ()) was set.
+ *
+ * Return value: a #gboolean
+ **/
 
 gboolean
 brasero_track_type_get_has_data (const BraseroTrackType *type)
@@ -162,6 +281,15 @@ brasero_track_type_get_has_data (const BraseroTrackType *type)
 	return type->type == BRASERO_TRACK_TYPE_DATA;
 }
 
+/**
+ * brasero_track_type_get_has_image:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns TRUE if IMAGE type (see brasero_track_image_new ()) was set.
+ *
+ * Return value: a #gboolean
+ **/
+
 gboolean
 brasero_track_type_get_has_image (const BraseroTrackType *type)
 {
@@ -169,6 +297,15 @@ brasero_track_type_get_has_image (const BraseroTrackType *type)
 
 	return type->type == BRASERO_TRACK_TYPE_IMAGE;
 }
+
+/**
+ * brasero_track_type_get_has_image:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns TRUE if IMAGE type (see brasero_track_stream_new ()) was set.
+ *
+ * Return value: a #gboolean
+ **/
 
 gboolean
 brasero_track_type_get_has_stream (const BraseroTrackType *type)
@@ -178,6 +315,15 @@ brasero_track_type_get_has_stream (const BraseroTrackType *type)
 	return type->type == BRASERO_TRACK_TYPE_STREAM;
 }
 
+/**
+ * brasero_track_type_get_has_medium:
+ * @type: a #BraseroTrackType.
+ *
+ * Returns TRUE if MEDIUM type (see brasero_track_disc_new ()) was set.
+ *
+ * Return value: a #gboolean
+ **/
+
 gboolean
 brasero_track_type_get_has_medium (const BraseroTrackType *type)
 {
@@ -185,6 +331,14 @@ brasero_track_type_get_has_medium (const BraseroTrackType *type)
 
 	return type->type == BRASERO_TRACK_TYPE_DISC;
 }
+
+/**
+ * brasero_track_type_set_has_data:
+ * @type: a #BraseroTrackType.
+ *
+ * Set DATA type for @type.
+ *
+ **/
 
 void
 brasero_track_type_set_has_data (BraseroTrackType *type)
@@ -194,6 +348,14 @@ brasero_track_type_set_has_data (BraseroTrackType *type)
 	type->type = BRASERO_TRACK_TYPE_DATA;
 }
 
+/**
+ * brasero_track_type_set_has_image:
+ * @type: a #BraseroTrackType.
+ *
+ * Set IMAGE type for @type.
+ *
+ **/
+
 void
 brasero_track_type_set_has_image (BraseroTrackType *type)
 {
@@ -201,6 +363,14 @@ brasero_track_type_set_has_image (BraseroTrackType *type)
 
 	type->type = BRASERO_TRACK_TYPE_IMAGE;
 }
+
+/**
+ * brasero_track_type_set_has_stream:
+ * @type: a #BraseroTrackType.
+ *
+ * Set STREAM type for @type
+ *
+ **/
 
 void
 brasero_track_type_set_has_stream (BraseroTrackType *type)
@@ -210,6 +380,14 @@ brasero_track_type_set_has_stream (BraseroTrackType *type)
 	type->type = BRASERO_TRACK_TYPE_STREAM;
 }
 
+/**
+ * brasero_track_type_set_has_medium:
+ * @type: a #BraseroTrackType.
+ *
+ * Set MEDIUM type for @type.
+ *
+ **/
+
 void
 brasero_track_type_set_has_medium (BraseroTrackType *type)
 {
@@ -217,6 +395,17 @@ brasero_track_type_set_has_medium (BraseroTrackType *type)
 
 	type->type = BRASERO_TRACK_TYPE_DISC;
 }
+
+/**
+ * brasero_track_type_equal:
+ * @type_A: a #BraseroTrackType.
+ * @type_B: a #BraseroTrackType.
+ *
+ * Returns TRUE if @type_A and @type_B represents
+ * the same type and subtype.
+ *
+ * Return value: a #gboolean
+ **/
 
 gboolean
 brasero_track_type_equal (const BraseroTrackType *type_A,
@@ -255,6 +444,18 @@ brasero_track_type_equal (const BraseroTrackType *type_A,
 
 	return TRUE;
 }
+
+/**
+ * brasero_track_type_match:
+ * @type_A: a #BraseroTrackType.
+ * @type_B: a #BraseroTrackType.
+ *
+ * Returns TRUE if @type_A and @type_B match.
+ *
+ * (Used internally)
+ *
+ * Return value: a #gboolean
+ **/
 
 gboolean
 brasero_track_type_match (const BraseroTrackType *type_A,

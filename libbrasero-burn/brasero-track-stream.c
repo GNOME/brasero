@@ -462,6 +462,9 @@ brasero_track_stream_class_init (BraseroTrackStreamClass *klass)
  *
  *  Creates a new #BraseroTrackStream object.
  *
+ * This type of tracks is used to burn audio or
+ * video files.
+ *
  * Return value: a #BraseroTrackStream object.
  **/
 

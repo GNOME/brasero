@@ -302,6 +302,9 @@ brasero_track_disc_class_init (BraseroTrackDiscClass *klass)
  *
  * Creates a new #BraseroTrackDisc object.
  *
+ * This type of tracks is used to copy media either
+ * to a disc image file or to another medium.
+ *
  * Return value: a #BraseroTrackDisc.
  **/
 
