@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-10 21:46+0200\n"
-"PO-Revision-Date: 2009-08-10 22:10+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
+"POT-Creation-Date: 2009-08-10 20:48+0000\n"
+"PO-Revision-Date: 2009-08-11 12:16+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -69,8 +69,8 @@ msgstr "Sortu VCDa"
 #: ../libbrasero-burn/burn-debug.c:51
 msgid "Display debug statements on stdout for Brasero burn library"
 msgstr ""
-"Arazte-instrukzioak bistaratzen ditu irteera estandarrean Braseroren grabatzeko "
-"liburutegiarentzako"
+"Arazte-instrukzioak bistaratzen ditu irteera estandarrean Braseroren "
+"grabatzeko liburutegiarentzako"
 
 #: ../libbrasero-burn/burn-debug.c:70
 msgid "Brasero media burning library"
@@ -727,8 +727,8 @@ msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-TEXT "
 "won't be written."
 msgstr ""
-"Gerta daiteke CD-RW audio-erreproduzigailu batekin ezin irakurri izatea, eta ez du "
-"CD-Text informazioa grabatuko."
+"Gerta daiteke CD-RW audio-erreproduzigailu batekin ezin irakurri izatea, eta "
+"ez du CD-Text informazioa grabatuko."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:897
 msgid "Appending audio tracks to a CD is not advised."
@@ -948,8 +948,8 @@ msgstr "Hautatutako fitxategiak hainbat euskarritan grabatzea nahi duzu?"
 #: ../libbrasero-burn/brasero-burn-options.c:345
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
-"Datuen tamaina handiegia da diskoarentzat, gaingrabatzeko aukera gaituta egon "
-"arren ere."
+"Datuen tamaina handiegia da diskoarentzat, gaingrabatzeko aukera gaituta "
+"egon arren ere."
 
 #: ../libbrasero-burn/brasero-burn-options.c:333 ../src/brasero-project.c:963
 msgid "_Burn Several Discs"
@@ -1008,6 +1008,14 @@ msgstr "Hautatu disko-irudi bat."
 msgid "There is no selected disc image."
 msgstr "Ez da disko-irudirik hautatu."
 
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:422
+#: ../libbrasero-burn/brasero-src-image.c:166
+msgctxt "disc"
+msgid "Please select another image."
+msgstr "Hautatu beste disko-irudi bat."
+
 #: ../libbrasero-burn/brasero-burn-options.c:423
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Badirudi ez dagoela baliozko disko-irudirik edo baliozko cue fitxategirik."
@@ -1040,8 +1048,8 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Datuen tamaina handiegia da diskoarentzat, eta zenbait fitxategi ezabatu beharko "
-"dituzu.\n"
+"Datuen tamaina handiegia da diskoarentzat, eta zenbait fitxategi ezabatu "
+"beharko dituzu.\n"
 "Aukera hau erabiltzea nahi izan dezakezu 90 edo 100 minutudun CD-R(W) "
 "unitatea erabiltzen ari bazara. CD-R hauek ezin dira ongi ezagutu eta "
 "gaingrabazioa aukera behar dute.\n"
@@ -1103,8 +1111,8 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burnt."
 msgstr ""
-"Hautatutako fitxategi bat (\"%s\") bakarrik dago. Disko baten irudia da "
-"eta bere edukia graba daiteke."
+"Hautatutako fitxategi bat (\"%s\") bakarrik dago. Disko baten irudia da eta "
+"bere edukia graba daiteke."
 
 #: ../libbrasero-burn/brasero-burn-options.c:710
 #: ../src/brasero-data-disc.c:628
@@ -1529,6 +1537,12 @@ msgstr "Hautatu disko-irudia"
 #: ../src/brasero-project.c:1987
 msgid "All files"
 msgstr "Fitxategi guztiak"
+
+#. Translators: this a disc image here
+#: ../libbrasero-burn/brasero-src-image.c:464
+msgctxt "disc"
+msgid "Image files"
+msgstr "Disko-irudi fitxategiak"
 
 #: ../libbrasero-burn/brasero-src-image.c:482
 msgid "Image type:"
@@ -2280,9 +2294,23 @@ msgstr "_Egiaztatu diskoa..."
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "CD edo DVD diskoko datuen osotasuna egiaztatzen du"
 
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:82
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Hautatu beste irudi bat."
+
 #: ../src/brasero-project-name.c:156
 msgid "Medium Icon"
 msgstr "Euskarriaren ikonoa"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-project-name.c:170 ../src/brasero-file-chooser.c:250
+#: ../src/brasero-project.c:2009
+msgctxt "picture"
+msgid "Image files"
+msgstr "Irudi fitxategiak"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -2523,8 +2551,8 @@ msgid ""
 "Should brasero filter broken symbolic links. Set to true, brasero will "
 "filter broken symbolic links."
 msgstr ""
-"Brasero-k esteka sinboliko hautsiak iragazi behar dituen adierazten du. "
-"TRUE (egia) jarrita, esteka sinboliko hautsiak iragazi egingo ditu Brasero-k."
+"Brasero-k esteka sinboliko hautsiak iragazi behar dituen adierazten du. TRUE "
+"(egia) jarrita, esteka sinboliko hautsiak iragazi egingo ditu Brasero-k."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
@@ -3110,8 +3138,8 @@ msgid ""
 "A file with the same name is about to be added into the same directory and "
 "will replace it if you accept."
 msgstr ""
-"Izen berdineko fitxategi bat gehitzear dago direktorio berdinean eta hura ordeztu "
-"egingo du onartzen baduzu."
+"Izen berdineko fitxategi bat gehitzear dago direktorio berdinean eta hura "
+"ordeztu egingo du onartzen baduzu."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
