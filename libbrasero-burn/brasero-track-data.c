@@ -422,7 +422,7 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
  * @grafts_path: a #gchar
  * @excluded_path: a #gchar
  * @emptydir: a #gchar
- * @videodir: a #gchar
+ * @videodir: a #gchar or NULL
  * @error: a #GError
  *
  * Write in @grafts_path (a path to a file) the graft points,
