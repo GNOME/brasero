@@ -49,7 +49,8 @@ static gboolean debug = FALSE;
 static const GOptionEntry options [] = {
 	{ "brasero-burn-debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout for Brasero burn library"),
-	  NULL }
+	  NULL },
+	{ NULL }
 };
 
 /**

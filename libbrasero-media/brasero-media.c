@@ -51,7 +51,8 @@ static gboolean debug = 0;
 static const GOptionEntry options [] = {
 	{ "brasero-media-debug", 0, 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout for Brasero media library"),
-	  NULL }
+	  NULL },
+	{ NULL }
 };
 
 static GSList *
