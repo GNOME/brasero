@@ -2934,7 +2934,7 @@ brasero_medium_probe_thread (gpointer self)
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
-	device = brasero_drive_get_block_device (priv->drive);
+	device = brasero_drive_get_device (priv->drive);
 	BRASERO_MEDIA_LOG ("Trying to open device %s", device);
 
 	handle = brasero_device_handle_open (device, FALSE, &code);

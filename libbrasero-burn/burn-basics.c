@@ -214,6 +214,16 @@ brasero_burn_library_start (int *argc,
 			  BRASERO_MINOR_VERSION,
 			  BRASERO_SUB);
 
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	/* Work around: because on OpenSolaris brasero posiblely be run
+	 * as root for a user with 'Primary Administrator' profile,
+	 * a root dbus session will be autospawned at that time.
+	 * This fix is to work around
+	 * http://bugzilla.gnome.org/show_bug.cgi?id=526454
+	 */
+	g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
+#endif
+
 	/* Initialize external libraries (threads... */
 	if (!g_thread_supported ())
 		g_thread_init (NULL);

@@ -80,11 +80,10 @@ brasero_volume_get_gvolume (BraseroVolume *volume)
 
 	drive = brasero_medium_get_drive (BRASERO_MEDIUM (volume));
 
-#if defined(HAVE_STRUCT_USCSI_CMD)
+	/* This returns the block device which is the
+	 * same as the device for all OSes except
+	 * Solaris where the device is the raw device. */
 	volume_path = brasero_drive_get_block_device (drive);
-#else
-	volume_path = brasero_drive_get_device (drive);
-#endif
 
 	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
 	monitor = g_volume_monitor_get ();

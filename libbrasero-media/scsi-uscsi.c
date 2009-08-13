@@ -203,12 +203,19 @@ brasero_device_handle_open (const gchar *path,
 	int fd;
 	int flags = OPEN_FLAGS;
 	BraseroDeviceHandle *handle;
-	gchar *rawdisk = NULL;
 
 /* 	if (exclusive) */
 /* 		flags |= O_EXCL; */
 
-	fd = open (path, flags);
+	if (g_str_has_prefix(path, "/dev/dsk/")) {
+		gchar *rawdisk;
+		rawdisk = g_strdup_printf ("/dev/rdsk/%s", path + 9);
+		fd = open (rawdisk, flags);
+		g_free(rawdisk);
+	} else {
+		fd = open (path, flags);
+	}
+
 	if (fd < 0) {
 		if (code) {
 			if (errno == EAGAIN

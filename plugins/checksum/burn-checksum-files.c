@@ -412,7 +412,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	medium = NULL;
 	brasero_job_get_medium (BRASERO_JOB (self), &medium);
 	burner = brasero_medium_get_drive (medium);
-	device = brasero_drive_get_block_device (burner);
+	device = brasero_drive_get_device (burner);
 	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
 
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
@@ -832,7 +832,7 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	if (!brasero_medium_get_last_data_track_address (medium, NULL, &start_block))
 		return BRASERO_BURN_ERR;
 
-	device = brasero_drive_get_block_device (brasero_medium_get_drive (medium));
+	device = brasero_drive_get_device (brasero_medium_get_drive (medium));
 	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 

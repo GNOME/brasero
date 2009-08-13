@@ -324,7 +324,7 @@ brasero_data_session_load_directory_contents_real (BraseroDataSession *self,
 		return TRUE;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
-	device = brasero_drive_get_block_device (brasero_medium_get_drive (priv->loaded));
+	device = brasero_drive_get_device (brasero_medium_get_drive (priv->loaded));
 	brasero_medium_get_last_data_track_address (priv->loaded,
 						    NULL,
 						    &session_block);

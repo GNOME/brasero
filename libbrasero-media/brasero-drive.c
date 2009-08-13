@@ -332,7 +332,7 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	if (!priv->device)
 		return FALSE;
 
-	device = brasero_drive_get_block_device (drive);
+	device = brasero_drive_get_device (drive);
 	handle = brasero_device_handle_open (device, FALSE, NULL);
 	if (!handle)
 		return FALSE;
@@ -364,7 +364,7 @@ brasero_drive_can_use_exclusively (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	device = brasero_drive_get_block_device (drive);
+	device = brasero_drive_get_device (drive);
 	handle = brasero_device_handle_open (device, TRUE, NULL);
 	if (!handle)
 		return FALSE;
@@ -400,7 +400,7 @@ brasero_drive_lock (BraseroDrive *drive,
 	if (!priv->device)
 		return FALSE;
 
-	device = brasero_drive_get_block_device (drive);
+	device = brasero_drive_get_device (drive);
 	handle = brasero_device_handle_open (device, FALSE, NULL);
 	if (!handle)
 		return FALSE;
@@ -439,7 +439,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	if (!!priv->device)
 		return FALSE;
 
-	device = brasero_drive_get_block_device (drive);
+	device = brasero_drive_get_device (drive);
 	handle = brasero_device_handle_open (device, FALSE, NULL);
 	if (!handle)
 		return FALSE;
@@ -492,7 +492,8 @@ brasero_drive_get_display_name (BraseroDrive *drive)
  *
  * Gets a string holding the device path for the drive.
  *
- * Return value: a string holding the device path
+ * Return value: a string holding the device path.
+ * On Solaris returns raw device.
  **/
 const gchar *
 brasero_drive_get_device (BraseroDrive *drive)
@@ -511,8 +512,12 @@ brasero_drive_get_device (BraseroDrive *drive)
  * @drive: a #BraseroDrive
  *
  * Gets a string holding the block device path for the drive. This can be used on
- * some other OSes, like Solaris, for burning operations instead of the device
+ * some other OSes, like Solaris, for GIO operations instead of the device
  * path.
+ *
+ * Solaris uses block device for GIO operations and
+ * uses raw device for system calls and backends
+ * like cdrtool.
  *
  * If such a path is not available, it returns the device path.
  *
@@ -1012,7 +1017,7 @@ brasero_drive_probe_thread (gpointer data)
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
-	device = brasero_drive_get_block_device (drive);
+	device = brasero_drive_get_device (drive);
 	BRASERO_MEDIA_LOG ("Trying to open device %s", device);
 
 	handle = brasero_device_handle_open (device, FALSE, &code);
@@ -1049,8 +1054,8 @@ brasero_drive_probe_thread (gpointer data)
 			gchar *model;
 			gchar *name;
 
-			vendor = strndup ((gchar *) hdr.vendor, sizeof (hdr.vendor));
-			model = strndup ((gchar *) hdr.name, sizeof (hdr.name));
+			vendor = g_strndup ((gchar *) hdr.vendor, sizeof (hdr.vendor));
+			model = g_strndup ((gchar *) hdr.name, sizeof (hdr.name));
 			name = g_strdup_printf ("%s %s", g_strstrip (vendor), g_strstrip (model));
 			g_free (vendor);
 			g_free (model);
@@ -1092,7 +1097,15 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	/* On Solaris path points to raw device, block_path points to the block device. */
+	g_assert(g_str_has_prefix(device, "/dev/dsk/"));
+	priv->device = g_strdup_printf ("/dev/rdsk/%s", device + 9);
+	priv->block_device = g_strdup (device);
+	BRASERO_MEDIA_LOG ("Initializing block drive %s", priv->block_device);
+#else
 	priv->device = g_strdup (device);
+#endif
 
 	BRASERO_MEDIA_LOG ("Initializing drive %s from device", priv->device);
 
