@@ -261,6 +261,9 @@ brasero_data_project_span_again (BraseroDataProject *project);
 BraseroBurnResult
 brasero_data_project_span_possible (BraseroDataProject *project,
 				    goffset max_sectors);
+goffset
+brasero_data_project_get_max_space (BraseroDataProject *self);
+
 void
 brasero_data_project_span_stop (BraseroDataProject *project);
 

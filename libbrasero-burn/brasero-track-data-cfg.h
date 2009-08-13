@@ -164,6 +164,9 @@ BraseroBurnResult
 brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
 				      goffset sectors);
 
+goffset
+brasero_track_data_cfg_span_max_space (BraseroTrackDataCfg *track);
+
 void
 brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track);
 

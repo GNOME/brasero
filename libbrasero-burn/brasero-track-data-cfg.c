@@ -3018,6 +3018,29 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 }
 
 /**
+ * brasero_track_data_cfg_span_max_space:
+ * @track: a #BraseroTrackDataCfg
+ *
+ * Returns the maximum required space (in sectors) 
+ * among all the possible spanned batches.
+ * This means that when burningto a media
+ * it will also be the minimum required
+ * space to burn all the contents in several
+ * batches.
+ *
+ * Return value: a #goffset.
+ **/
+
+goffset
+brasero_track_data_cfg_span_max_space (BraseroTrackDataCfg *track)
+{
+	BraseroTrackDataCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	return brasero_data_project_get_max_space (BRASERO_DATA_PROJECT (priv->tree));
+}
+
+/**
  * This is to handle the icon for the image
  */
 

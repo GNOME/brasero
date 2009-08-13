@@ -53,6 +53,64 @@ struct _BraseroSessionSpanPrivate
 
 G_DEFINE_TYPE (BraseroSessionSpan, brasero_session_span, BRASERO_TYPE_BURN_SESSION);
 
+/**
+ * brasero_session_span_get_max_space:
+ * @session: a #BraseroSessionSpan
+ *
+ * Returns the maximum required space (in sectors) 
+ * among all the possible spanned batches.
+ * This means that when burningto a media
+ * it will also be the minimum required
+ * space to burn all the contents in several
+ * batches.
+ *
+ * Return value: a #goffset.
+ **/
+
+goffset
+brasero_session_span_get_max_space (BraseroSessionSpan *session)
+{
+	GSList *tracks;
+	goffset max_sectors = 0;
+	BraseroSessionSpanPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), 0);
+
+	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+
+	g_return_val_if_fail (priv->track_list != NULL, 0);
+
+	if (priv->last_track) {
+		tracks = g_slist_find (priv->track_list, priv->last_track);
+
+		if (!tracks->next)
+			return 0;
+
+		tracks = tracks->next;
+	}
+	else
+		tracks = priv->track_list;
+
+	for (; tracks; tracks = tracks->next) {
+		BraseroTrack *track;
+		goffset track_blocks = 0;
+
+		track = tracks->data;
+
+		if (BRASERO_IS_TRACK_DATA_CFG (track))
+			return brasero_track_data_cfg_span_max_space (BRASERO_TRACK_DATA_CFG (track));
+
+		/* This is the common case */
+		brasero_track_get_size (BRASERO_TRACK (track),
+					&track_blocks,
+					NULL);
+
+		max_sectors = MAX (max_sectors, track_blocks);
+	}
+
+	return max_sectors;
+}
+
 static goffset
 brasero_session_span_get_available_medium_space (BraseroSessionSpan *session)
 {

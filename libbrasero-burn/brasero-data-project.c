@@ -2849,6 +2849,39 @@ brasero_data_project_improve_image_size_accuracy (goffset sectors,
 	return sectors;
 }
 
+goffset
+brasero_data_project_get_max_space (BraseroDataProject *self)
+{
+	BraseroDataProjectPrivate *priv;
+	BraseroFileNode *children;
+	goffset max_sectors = 0;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	/* When empty this is an error */
+	if (!g_hash_table_size (priv->grafts))
+		return 0;
+
+	children = BRASERO_FILE_NODE_CHILDREN (priv->root);
+	while (children) {
+		goffset child_sectors;
+
+		if (g_slist_find (priv->spanned, children)) {
+			children = children->next;
+			continue;
+		}
+
+		if (children->is_file)
+			child_sectors = BRASERO_FILE_NODE_SECTORS (children);
+		else
+			child_sectors = brasero_data_project_get_folder_sectors (self, children);
+
+		max_sectors = MAX (max_sectors, BRASERO_FILE_NODE_SECTORS (children));
+	}
+
+	return max_sectors;
+}
+
 BraseroBurnResult
 brasero_data_project_span (BraseroDataProject *self,
 			   goffset max_sectors,

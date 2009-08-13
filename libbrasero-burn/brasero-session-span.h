@@ -74,6 +74,9 @@ brasero_session_span_start (BraseroSessionSpan *session);
 BraseroBurnResult
 brasero_session_span_next (BraseroSessionSpan *session);
 
+goffset
+brasero_session_span_get_max_space (BraseroSessionSpan *session);
+
 void
 brasero_session_span_stop (BraseroSessionSpan *session);
 
