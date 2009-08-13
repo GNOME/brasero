@@ -77,8 +77,15 @@ brasero_image_properties_get_format (BraseroImageProperties *self)
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
-	if (priv->format == NULL)
-		return BRASERO_IMAGE_FORMAT_NONE;
+	if (priv->format == NULL) {
+		/* This means that since there was just
+		 * one format available, we did not 
+		 * show the format chooser widget
+		 * which means in turn that we did not
+		 * changed the format that was set
+		 * at the beginning in session */
+		return brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
+	}
 
 	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 					       &format);
@@ -277,20 +284,16 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 	BraseroImageFormat format;
 	gchar *path;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (chooser);
-
 	if (response_id != GTK_RESPONSE_OK)
 		return;
+
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (chooser);
 
 	/* get and check format */
 	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (chooser));
 
 	/* see if the user has changed the path */
-	if (priv->edited)
-		path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (chooser));
-	else
-		path = NULL;
-
+	path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (chooser));
 	brasero_image_properties_set_output_path (BRASERO_IMAGE_PROPERTIES (chooser),
 						  format,
 						  path);

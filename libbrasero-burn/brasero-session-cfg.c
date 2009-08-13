@@ -46,6 +46,7 @@
 #include "brasero-session.h"
 #include "burn-plugin-manager.h"
 #include "burn-image-format.h"
+#include "libbrasero-marshal.h"
 
 #include "brasero-tags.h"
 #include "brasero-track-image.h"
@@ -143,6 +144,8 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 				      const gchar *toc)
 {
 	gchar *dot;
+	gchar *set_toc = NULL;
+	gchar * set_image = NULL;
 	BraseroBurnResult result;
 	BraseroBurnSessionClass *klass;
 	const gchar *suffixes [] = {".iso",
@@ -151,8 +154,39 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 				    ".toc",
 				    NULL };
 
-	/* First set all information */
+	/* Make sure something actually changed */
 	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
+	klass->get_output_path (BRASERO_BURN_SESSION (session),
+	                        &set_image,
+	                        &set_toc);
+
+	if (!set_image && !set_toc) {
+		/* see if image and toc set paths differ */
+		brasero_burn_session_get_output (BRASERO_BURN_SESSION (session),
+		                                 &set_image,
+		                                 &set_toc);
+		if (set_image && image && !strcmp (set_image, image)) {
+			/* It's the same default path so no 
+			 * need to carry on and actually set
+			 * the path of image. */
+			image = NULL;
+		}
+
+		if (set_toc && toc && !strcmp (set_toc, toc)) {
+			/* It's the same default path so no 
+			 * need to carry on and actually set
+			 * the path of image. */
+			toc = NULL;
+		}
+	}
+
+	if (set_image)
+		g_free (set_image);
+
+	if (set_toc)
+		g_free (set_toc);
+
+	/* First set all information */
 	result = klass->set_output_image (session,
 					  format,
 					  image,
@@ -169,40 +203,75 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 
 	if (format & BRASERO_IMAGE_FORMAT_BIN) {
 		dot = g_utf8_strrchr (image, -1, '.');
-		if (!strcmp (suffixes [0], dot)) {
+		if (strcmp (suffixes [0], dot)) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
-			if (res)
-				brasero_image_format_fix_path_extension (format, FALSE, image);
+			if (res) {
+				gchar *fixed_path;
+
+				fixed_path = brasero_image_format_fix_path_extension (format, FALSE, image);
+				/* NOTE: call ourselves with the fixed path as this way,
+				 * in case the path is the same as the default one after
+				 * fixing the extension we'll keep on using default path */
+				result = brasero_burn_session_set_image_output_full (session,
+				                                                     format,
+				                                                     fixed_path,
+				                                                     toc);
+				g_free (fixed_path);
+			}
 		}
 	}
 	else {
 		dot = g_utf8_strrchr (toc, -1, '.');
 
 		if (format & BRASERO_IMAGE_FORMAT_CLONE
-		&& !strcmp (suffixes [1], dot)) {
+		&& strcmp (suffixes [1], dot)) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
-			if (res)
-				brasero_image_format_fix_path_extension (format, FALSE, toc);
+			if (res) {
+				gchar *fixed_path;
+
+				fixed_path = brasero_image_format_fix_path_extension (format, FALSE, toc);
+				result = brasero_burn_session_set_image_output_full (session,
+				                                                     format,
+				                                                     image,
+				                                                     fixed_path);
+				g_free (fixed_path);
+			}
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_CUE
-		     && !strcmp (suffixes [2], dot)) {
+		     && strcmp (suffixes [2], dot)) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
-			if (res)
-				brasero_image_format_fix_path_extension (format, FALSE, toc);
+			if (res) {
+				gchar *fixed_path;
+
+				fixed_path = brasero_image_format_fix_path_extension (format, FALSE, toc);
+				result = brasero_burn_session_set_image_output_full (session,
+				                                                     format,
+				                                                     image,
+				                                                     fixed_path);
+				g_free (fixed_path);
+			}
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
-		     && !strcmp (suffixes [3], dot)) {
+		     && strcmp (suffixes [3], dot)) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
-			if (res)
-				brasero_image_format_fix_path_extension (format, FALSE, toc);
+			if (res) {
+				gchar *fixed_path;
+
+				fixed_path = brasero_image_format_fix_path_extension (format, FALSE, toc);
+				result = brasero_burn_session_set_image_output_full (session,
+				                                                     format,
+				                                                     image,
+				                                                     fixed_path);
+				g_free (fixed_path);
+			}
 		}
 	}
 
@@ -1445,8 +1514,8 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 		              G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
 		              0,
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE,
+		              brasero_marshal_BOOLEAN__VOID,
+		              G_TYPE_BOOLEAN,
 			      0,
 		              G_TYPE_NONE);
 	session_cfg_signals [IS_VALID_SIGNAL] =

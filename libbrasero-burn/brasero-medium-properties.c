@@ -177,7 +177,6 @@ brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 	/* and here we go ... run the thing */
 	gtk_widget_show (priv->medium_prop);
 	gtk_dialog_run (GTK_DIALOG (priv->medium_prop));
-
 	gtk_widget_destroy (priv->medium_prop);
 	priv->medium_prop = NULL;
 }
@@ -206,8 +205,15 @@ brasero_medium_properties_output_changed (BraseroBurnSession *session,
 					  BraseroMediumProperties *self)
 {
 	BraseroMediumPropertiesPrivate *priv;
+	BraseroDrive *burner;
 
 	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
+
+	/* make sure that's an actual change of medium
+	 * as it could also be a change of path for image */
+	burner = brasero_burn_session_get_burner (session);
+	if (former == brasero_drive_get_medium (burner))
+		return;
 
 	/* close properties dialog */
 	if (priv->medium_prop) {
