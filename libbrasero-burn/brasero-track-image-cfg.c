@@ -151,7 +151,8 @@ brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
 		const gchar *mime;
 		GFileInfo *file_info;
 
-		file = g_file_new_for_uri (info->uri);
+		/* check if we do have a URI */
+		file = g_file_new_for_commandline_arg (info->uri);
 		file_info = g_file_query_info (file,
 					       G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
 					       G_FILE_QUERY_INFO_NONE,
@@ -286,6 +287,8 @@ BraseroBurnResult
 brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 				    const gchar *uri)
 {
+	GFile *file;
+	gchar *uri_arg;
 	gchar *current_uri;
 	BraseroTrackImageCfgPrivate *priv;
 
@@ -295,20 +298,28 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
 
 	/* See if it has changed */
+	file = g_file_new_for_commandline_arg (uri);
+	uri_arg = g_file_get_uri (file);
+	g_object_unref (file);
+
+	if (!uri_arg)
+		return BRASERO_BURN_ERR;
+
 	current_uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
-	if (current_uri && !strcmp (current_uri, uri)) {
+	if (current_uri && !strcmp (current_uri, uri_arg)) {
 		g_free (current_uri);
+		g_free (uri_arg);
 		return BRASERO_BURN_OK;
 	}
 	g_free (current_uri);
 
 	/* Do it before to update our status first then update track info */
-	brasero_track_image_cfg_get_info (track, uri);
+	brasero_track_image_cfg_get_info (track, uri_arg);
 
 	/* Update the image info container values. If it was invalid then */
 	/* NOTE: this resets the size as well */
 	BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (track), 0);
-	brasero_track_image_cfg_set_uri (track, uri, priv->format);
+	brasero_track_image_cfg_set_uri (track, uri_arg, priv->format);
 	brasero_track_changed (BRASERO_TRACK (track));
 
 	return BRASERO_BURN_OK;
