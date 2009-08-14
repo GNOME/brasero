@@ -278,7 +278,7 @@ brasero_track_image_cfg_get_info (BraseroTrackImageCfg *track,
  * @track: a #BraseroTrackImageCfg
  * @uri: a #gchar
  *
- * Sets the image uri. @track will then identify its format and retrieve its size.
+ * Sets the image uri or path (absolute or relative). @track will then identify its format and retrieve its size.
  *
  * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
  **/
