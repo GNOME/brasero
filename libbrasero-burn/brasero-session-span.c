@@ -78,8 +78,6 @@ brasero_session_span_get_max_space (BraseroSessionSpan *session)
 
 	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
 
-	g_return_val_if_fail (priv->track_list != NULL, 0);
-
 	if (priv->last_track) {
 		tracks = g_slist_find (priv->track_list, priv->last_track);
 
@@ -88,8 +86,10 @@ brasero_session_span_get_max_space (BraseroSessionSpan *session)
 
 		tracks = tracks->next;
 	}
-	else
+	else if (priv->track_list)
 		tracks = priv->track_list;
+	else
+		tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
 
 	for (; tracks; tracks = tracks->next) {
 		BraseroTrack *track;
@@ -109,35 +109,6 @@ brasero_session_span_get_max_space (BraseroSessionSpan *session)
 	}
 
 	return max_sectors;
-}
-
-static goffset
-brasero_session_span_get_available_medium_space (BraseroSessionSpan *session)
-{
-	BraseroDrive *burner;
-	BraseroMedium *medium;
-	BraseroBurnFlag flags;
-	goffset available_blocks = 0;
-
-	/* Retrieve the size available for burning */
-	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (session));
-	if (!burner)
-		return 0;
-
-	medium = brasero_drive_get_medium (burner);
-	if (!medium)
-		return 0;
-
-	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (session));
-	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-		brasero_medium_get_free_space (medium, NULL, &available_blocks);
-	else if (brasero_burn_session_can_blank (BRASERO_BURN_SESSION (session)) == BRASERO_BURN_OK)
-		brasero_medium_get_capacity (medium, NULL, &available_blocks);
-	else
-		brasero_medium_get_free_space (medium, NULL, &available_blocks);
-
-	BRASERO_BURN_LOG ("Available space for spanning %" G_GINT64_FORMAT, available_blocks);
-	return available_blocks;
 }
 
 /**
@@ -211,7 +182,7 @@ brasero_session_span_possible (BraseroSessionSpan *session)
 
 	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
 
-	max_sectors = brasero_session_span_get_available_medium_space (session);
+	max_sectors = brasero_burn_session_get_available_medium_space (BRASERO_BURN_SESSION (session));
 	if (max_sectors <= 0)
 		return BRASERO_BURN_ERR;
 
@@ -301,7 +272,7 @@ brasero_session_span_next (BraseroSessionSpan *session)
 
 	g_return_val_if_fail (priv->track_list != NULL, BRASERO_BURN_ERR);
 
-	max_sectors = brasero_session_span_get_available_medium_space (session);
+	max_sectors = brasero_burn_session_get_available_medium_space (BRASERO_BURN_SESSION (session));
 	if (max_sectors <= 0)
 		return BRASERO_BURN_ERR;
 

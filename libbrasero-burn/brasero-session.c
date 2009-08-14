@@ -1759,6 +1759,47 @@ brasero_burn_session_get_dest_media (BraseroBurnSession *self)
 	return brasero_medium_get_status (medium);
 }
 
+/**
+ * brasero_burn_session_get_available_medium_space:
+ * @session: a #BraseroBurnSession
+ *
+ * Returns the maximum space available for the
+ * medium currently inserted in the #BraseroDrive
+ * set as burner with brasero_burn_session_set_burner ().
+ * This takes into account flags.
+ *
+ * Return value: a #goffset.
+ **/
+
+goffset
+brasero_burn_session_get_available_medium_space (BraseroBurnSession *session)
+{
+	BraseroDrive *burner;
+	BraseroBurnFlag flags;
+	BraseroMedium *medium;
+	goffset available_blocks = 0;
+
+	/* Retrieve the size available for burning */
+	burner = brasero_burn_session_get_burner (session);
+	if (!burner)
+		return 0;
+
+	medium = brasero_drive_get_medium (burner);
+	if (!medium)
+		return 0;
+
+	flags = brasero_burn_session_get_flags (session);
+	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+		brasero_medium_get_free_space (medium, NULL, &available_blocks);
+	else if (brasero_burn_session_can_blank (session) == BRASERO_BURN_OK)
+		brasero_medium_get_capacity (medium, NULL, &available_blocks);
+	else
+		brasero_medium_get_free_space (medium, NULL, &available_blocks);
+
+	BRASERO_BURN_LOG ("Available space on medium %" G_GINT64_FORMAT, available_blocks);
+	return available_blocks;
+}
+
 BraseroMedium *
 brasero_burn_session_get_src_medium (BraseroBurnSession *self)
 {

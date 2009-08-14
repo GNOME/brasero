@@ -945,12 +945,23 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		project->priv->empty = TRUE;
 	}
 	else if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
+		goffset min_disc_size;
+		goffset available_space;
+
 		project->priv->oversized = TRUE;
 		project->priv->empty = FALSE;
 
+		min_disc_size = brasero_session_span_get_max_space (BRASERO_SESSION_SPAN (session));
+
+		/* One rule should be that the maximum batch size should not exceed the disc size
+		 * FIXME: we could change it into a dialog telling the user what is the maximum
+		 * size required. */
+		available_space = brasero_burn_session_get_available_medium_space (BRASERO_BURN_SESSION (session));
+
 		/* Here there is an alternative: we may be able to span the data
 		 * across multiple media. So try that. */
-		if (brasero_session_span_possible (BRASERO_SESSION_SPAN (project->priv->session)) == BRASERO_BURN_RETRY) {
+		if (available_space > min_disc_size
+		&& brasero_session_span_possible (BRASERO_SESSION_SPAN (session)) == BRASERO_BURN_RETRY) {
 			GtkWidget *message;
 
 			message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),

@@ -44,6 +44,9 @@ G_BEGIN_DECLS
  * Some convenience functions used internally
  */
 
+goffset
+brasero_burn_session_get_available_medium_space (BraseroBurnSession *session);
+
 BraseroMedia
 brasero_burn_session_get_dest_media (BraseroBurnSession *session);
 
@@ -136,6 +139,7 @@ void
 brasero_burn_session_push_tracks (BraseroBurnSession *session);
 BraseroBurnResult
 brasero_burn_session_pop_tracks (BraseroBurnSession *session);
+
 
 G_END_DECLS
 
