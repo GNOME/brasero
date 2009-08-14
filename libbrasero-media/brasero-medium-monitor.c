@@ -104,6 +104,7 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
 	BraseroMediumMonitorPrivate *priv;
 
 	g_return_val_if_fail (monitor != NULL, NULL);
+	g_return_val_if_fail (device != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
@@ -437,6 +438,9 @@ brasero_medium_monitor_volume_added_cb (GVolumeMonitor *monitor,
 	}
 
 	device = g_volume_get_identifier (gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	if  (!device)
+		return;
+
 	brasero_medium_monitor_device_added (self, device, NULL);
 	g_free (device);
 }
@@ -553,6 +557,9 @@ brasero_medium_monitor_volume_removed_cb (GVolumeMonitor *monitor,
 	}
 
 	device = g_volume_get_identifier (gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+	if (!device)
+		return;
+
 	brasero_medium_monitor_device_removed (self, device, NULL);
 	g_free (device);
 }
@@ -627,6 +634,8 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 
 		gvolume = iter->data;
 		device = g_volume_get_identifier (gvolume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (!device)
+			continue;
 
 		/* make sure it isn't already in our list */
 		drive = brasero_medium_monitor_get_drive (object, device);
