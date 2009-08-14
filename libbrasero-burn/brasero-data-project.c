@@ -2877,6 +2877,8 @@ brasero_data_project_get_max_space (BraseroDataProject *self)
 			child_sectors = brasero_data_project_get_folder_sectors (self, children);
 
 		max_sectors = MAX (max_sectors, BRASERO_FILE_NODE_SECTORS (children));
+
+		children = children->next;
 	}
 
 	return max_sectors;
