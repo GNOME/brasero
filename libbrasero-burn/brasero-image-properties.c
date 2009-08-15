@@ -301,17 +301,20 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 
 	if (priv->is_video) {
 		if (format == BRASERO_IMAGE_FORMAT_CUE) {
-			gboolean res;
+			gboolean res = TRUE;
 			GValue *value;
 
 			value = g_new0 (GValue, 1);
 			g_value_init (value, G_TYPE_INT);
 
-			res = brasero_image_type_chooser_get_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
+			/* There should always be a priv->format in this case but who knows... */
+			if (priv->format)
+				res = brasero_image_type_chooser_get_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
+
 			if (res)
 				g_value_set_int (value, BRASERO_SVCD);
 			else
-				g_value_set_int (value, BRASERO_SVCD);
+				g_value_set_int (value, BRASERO_VCD_V2);
 
 			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
 						      BRASERO_VCD_TYPE,
