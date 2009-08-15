@@ -143,37 +143,12 @@ brasero_video_options_update (BraseroVideoOptions *options)
 		}
 	}
 	else if (media & BRASERO_MEDIUM_FILE) {
-		BraseroImageFormat format;
-
-		/* if we create a CUE file then that's a (S)VCD */
-		format = brasero_burn_session_get_output_format (priv->session);
-		if (format == BRASERO_IMAGE_FORMAT_NONE)
-			return;
-
-		if (format == BRASERO_IMAGE_FORMAT_CUE) {
-			brasero_video_options_audio_MP2 (options);
-			gtk_widget_show (priv->vcd_label);
-			gtk_widget_show (priv->vcd_button);
-			gtk_widget_show (priv->svcd_button);
-
-			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->vcd_button))) {
-				gtk_widget_set_sensitive (priv->button_4_3, FALSE);
-				gtk_widget_set_sensitive (priv->button_16_9, FALSE);
-			}
-			else {
-				gtk_widget_set_sensitive (priv->button_4_3, TRUE);
-				gtk_widget_set_sensitive (priv->button_16_9, TRUE);
-			}
-		}
-		else if (format == BRASERO_IMAGE_FORMAT_BIN) {
-			brasero_video_options_audio_AC3 (options);
-			gtk_widget_hide (priv->vcd_label);
-			gtk_widget_hide (priv->vcd_button);
-			gtk_widget_hide (priv->svcd_button);
-
-			gtk_widget_set_sensitive (priv->button_4_3, TRUE);
-			gtk_widget_set_sensitive (priv->button_16_9, TRUE);
-		}
+		/* Hide any options about (S)VCD type
+		 * as this is handled in BraseroImageTypeChooser 
+		 * object */
+		gtk_widget_hide (priv->vcd_label);
+		gtk_widget_hide (priv->vcd_button);
+		gtk_widget_hide (priv->svcd_button);
 	}
 }
 
