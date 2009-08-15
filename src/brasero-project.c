@@ -1423,6 +1423,7 @@ brasero_project_drive_properties (BraseroProject *project)
 static gboolean
 brasero_project_image_properties (BraseroProject *project)
 {
+	BraseroTrackType *track_type;
 	GtkResponseType answer;
 	GtkWidget *button;
 	GtkWidget *dialog;
@@ -1451,8 +1452,26 @@ brasero_project_image_properties (BraseroProject *project)
 
 	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (dialog), project->priv->session);
 
+	track_type = brasero_track_type_new ();
+
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (project->priv->session), track_type);
+	if (brasero_track_type_get_has_stream (track_type)
+	&& BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (track_type))) {
+		GtkWidget *box;
+		GtkWidget *options;
+
+		/* Special case for video project */
+		options = brasero_video_options_new (BRASERO_BURN_SESSION (project->priv->session));
+		gtk_widget_show (options);
+
+		box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+		gtk_box_pack_end (GTK_BOX (box), options, FALSE, TRUE, 0);
+	}
+
+	brasero_track_type_free (track_type);
+
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	gtk_widget_show_all (dialog);
+	gtk_widget_show (dialog);
 
 	/* launch the dialog */
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));

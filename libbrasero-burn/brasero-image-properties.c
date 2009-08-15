@@ -187,10 +187,13 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 	if (!priv->format_box) {
 		GtkWidget *box;
 		GtkWidget *label;
+		GtkWidget *dialog_box;
 
 		box = gtk_hbox_new (FALSE, 6);
 		gtk_container_set_border_width (GTK_CONTAINER (box), 4);
-		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (self)->vbox),
+
+		dialog_box = gtk_dialog_get_content_area (GTK_DIALOG (self));
+		gtk_box_pack_start (GTK_BOX (dialog_box),
 				  box,
 				  FALSE,
 				  FALSE,
@@ -469,13 +472,15 @@ static void
 brasero_image_properties_init (BraseroImageProperties *object)
 {
 	BraseroImagePropertiesPrivate *priv;
+	GtkWidget *box;
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
 
 	gtk_window_set_title (GTK_WINDOW (object), _("Location for Image File"));
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (object)->vbox), 12);
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_BOX (GTK_DIALOG (object)->vbox)), 10);
+
+	box = gtk_dialog_get_content_area (GTK_DIALOG (object));
+	gtk_container_set_border_width (GTK_CONTAINER (box), 10);
 
 	g_signal_connect (object,
 			  "response",
