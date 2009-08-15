@@ -664,6 +664,7 @@ brasero_burn_options_setup_audio (BraseroBurnOptions *self)
 static void
 brasero_burn_options_setup_video (BraseroBurnOptions *self)
 {
+	gchar *title;
 	GtkWidget *options;
 	BraseroBurnOptionsPrivate *priv;
 
@@ -682,6 +683,14 @@ brasero_burn_options_setup_video (BraseroBurnOptions *self)
 
 	/* create the options box */
 	options = brasero_video_options_new (BRASERO_BURN_SESSION (priv->session));
+	gtk_widget_show (options);
+
+	title = g_strdup_printf ("<b>%s</b>", _("Video Options"));
+	options = brasero_utils_pack_properties (title,
+	                                           options,
+	                                           NULL);
+	g_free (title);
+
 	gtk_widget_show (options);
 	brasero_burn_options_add_options (self, options);
 }
@@ -889,7 +898,7 @@ brasero_burn_options_setup (BraseroBurnOptions *self)
 			brasero_burn_options_setup_data (self);
 	}
 	else if (brasero_track_type_get_has_stream (type)) {
-		if (brasero_track_type_get_stream_format (type) & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)) {
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type))) {
 			if (!priv->has_video)
 				brasero_burn_options_setup_video (self);
 		}
@@ -912,6 +921,14 @@ brasero_burn_options_track_removed (BraseroBurnSession *session,
 				    BraseroTrack *track,
 				    guint former_position,
 				    BraseroBurnOptions *dialog)
+{
+	brasero_burn_options_setup (dialog);
+}
+
+static void
+brasero_burn_options_track_changed (BraseroBurnSession *session,
+                                    BraseroTrack *track,
+                                    BraseroBurnOptions *dialog)
 {
 	brasero_burn_options_setup (dialog);
 }
@@ -942,6 +959,10 @@ brasero_burn_options_set_property (GObject *object,
 		g_signal_connect (priv->session,
 				  "track-removed",
 				  G_CALLBACK (brasero_burn_options_track_removed),
+				  object);
+		g_signal_connect (priv->session,
+				  "track-changed",
+				  G_CALLBACK (brasero_burn_options_track_changed),
 				  object);
 		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
 		brasero_burn_options_setup (BRASERO_BURN_OPTIONS (object));
