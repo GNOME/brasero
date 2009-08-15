@@ -153,6 +153,14 @@ brasero_video_options_update (BraseroVideoOptions *options)
 }
 
 static void
+brasero_video_options_output_changed_cb (BraseroBurnSession *session,
+                                         BraseroMedium *former_medium,
+                                         BraseroVideoOptions *options)
+{
+	brasero_video_options_update (options);
+}
+
+static void
 brasero_video_options_set_tag (BraseroVideoOptions *options,
 			       const gchar *tag,
 			       gint contents)
@@ -281,6 +289,10 @@ brasero_video_options_set_session (BraseroVideoOptions *options,
 
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+		                                      brasero_video_options_output_changed_cb,
+		                                      options);
+
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
@@ -288,6 +300,10 @@ brasero_video_options_set_session (BraseroVideoOptions *options,
 	if (session) {
 		priv->session = g_object_ref (session);
 		brasero_video_options_update (options);
+		g_signal_connect (priv->session,
+		                  "output-changed",
+		                  G_CALLBACK (brasero_video_options_output_changed_cb),
+		                  options);
 	}
 }
 
@@ -526,6 +542,9 @@ brasero_video_options_finalize (GObject *object)
 
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (object);
 	if (priv->session) {
+		g_signal_handlers_disconnect_by_func (priv->session,
+		                                      brasero_video_options_output_changed_cb,
+		                                      object);
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
