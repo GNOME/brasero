@@ -62,6 +62,7 @@ struct _BraseroImageTypeChooserPrivate {
 	GtkWidget *combo;
 
 	BraseroImageFormat format;
+	gboolean is_svcd;
 
 	guint updating:1;
 };
@@ -277,6 +278,7 @@ brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
 				       BraseroImageTypeChooser *self)
 {
 	GtkTreeIter iter;
+	gboolean is_svcd;
 	GtkTreeModel *store;
 	BraseroImageFormat current;
 	BraseroImageTypeChooserPrivate *priv;
@@ -290,14 +292,18 @@ brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
 	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
 		gtk_tree_model_get (store, &iter,
 				    FORMAT_TYPE, &current,
+		                    FORMAT_SVCD, &is_svcd,
 				    -1);
 	else
 		current = BRASERO_IMAGE_FORMAT_NONE;
 
-	if (current == priv->format)
+	if (current == priv->format
+	&& is_svcd == priv->is_svcd)
 		return;
 
 	priv->format = current;
+	priv->is_svcd = is_svcd;
+
 	g_signal_emit (self,
 		       brasero_image_type_chooser_signals [CHANGED_SIGNAL],
 		       0);
