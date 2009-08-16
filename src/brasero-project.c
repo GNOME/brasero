@@ -1460,7 +1460,7 @@ brasero_project_image_properties (BraseroProject *project)
 		GtkWidget *box;
 		GtkWidget *options;
 
-		/* Special case for video project */
+		/* create video widget */
 		options = brasero_video_options_new (BRASERO_BURN_SESSION (project->priv->session));
 		gtk_widget_show (options);
 
@@ -1485,6 +1485,25 @@ brasero_project_burn (BraseroProject *project)
 {
 	gboolean res = FALSE;
 	BraseroDisc *current_disc;
+	BraseroTrackType *track_type;
+
+	track_type = brasero_track_type_new ();
+
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (project->priv->session), track_type);
+	if (brasero_track_type_get_has_stream (track_type)
+	&& BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (track_type))) {
+		GValue *value;
+
+		/* Special case for video project */
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_INT);
+		g_value_set_int (value, BRASERO_SVCD);
+		brasero_burn_session_tag_add (BRASERO_BURN_SESSION (project->priv->session),
+					      BRASERO_VCD_TYPE,
+					      value);
+	}
+
+	brasero_track_type_free (track_type);
 
 	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session)))
 		res = brasero_project_drive_properties (project);
