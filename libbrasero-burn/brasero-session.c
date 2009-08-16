@@ -108,6 +108,7 @@ typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 #define BRASERO_STR_EQUAL(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
 typedef enum {
+	TAG_CHANGED_SIGNAL,
 	FLAGS_CHANGED_SIGNAL,
 	TRACK_ADDED_SIGNAL,
 	TRACK_REMOVED_SIGNAL,
@@ -979,6 +980,46 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 }
 
 /**
+ * brasero_burn_session_set_image_output_format:
+ * @session: a #BraseroBurnSession
+ * @format: a #BraseroImageFormat
+ *
+ * When the contents of @session should be written to a
+ * file, this function sets format of the image that will be
+ * created.
+ *
+ * NOTE: after a call to this function the #BraseroDrive for
+ * @session will be the fake #BraseroDrive.
+ *
+ * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it was successfully set;
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
+BraseroBurnResult
+brasero_burn_session_set_image_output_format (BraseroBurnSession *self,
+					    BraseroImageFormat format)
+{
+	BraseroBurnSessionClass *klass;
+	BraseroBurnSessionPrivate *priv;
+	BraseroBurnResult res;
+	gchar *image;
+	gchar *toc;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	klass = BRASERO_BURN_SESSION_GET_CLASS (self);
+
+	image = g_strdup (priv->settings->image);
+	toc = g_strdup (priv->settings->toc);
+	res = klass->set_output_image (self, format, image, toc);
+	g_free (image);
+	g_free (toc);
+
+	return res;
+}
+
+/**
  * brasero_burn_session_set_image_output_full:
  * @session: a #BraseroBurnSession
  * @format: a #BraseroImageFormat
@@ -1512,6 +1553,11 @@ brasero_burn_session_tag_remove (BraseroBurnSession *self,
 		return BRASERO_BURN_ERR;
 
 	g_hash_table_remove (priv->tags, tag);
+
+	g_signal_emit (self,
+	               brasero_burn_session_signals [TAG_CHANGED_SIGNAL],
+	               0,
+	               tag);
 	return BRASERO_BURN_OK;
 }
 
@@ -1547,6 +1593,11 @@ brasero_burn_session_tag_add (BraseroBurnSession *self,
 						    g_free,
 						    brasero_burn_session_tag_value_free);
 	g_hash_table_insert (priv->tags, g_strdup (tag), value);
+	g_signal_emit (self,
+	               brasero_burn_session_signals [TAG_CHANGED_SIGNAL],
+	               0,
+	               tag);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -2218,7 +2269,6 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	klass->get_output_format = brasero_burn_session_get_output_format_real;
 	klass->set_output_image = brasero_burn_session_set_output_image_real;
 
-	/* This is to delay the setting of track source until we know all settings */
 	/**
  	* BraseroBurnSession::output-changed:
  	* @session: the object which received the signal
@@ -2238,6 +2288,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_MEDIUM);
+
 	/**
  	* BraseroBurnSession::track-added:
  	* @session: the object which received the signal
@@ -2257,6 +2308,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_TRACK);
+
 	/**
  	* BraseroBurnSession::track-removed:
  	* @session: the object which received the signal
@@ -2278,6 +2330,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  2,
 			  BRASERO_TYPE_TRACK,
 			  G_TYPE_UINT);
+
 	/**
  	* BraseroBurnSession::track-changed:
  	* @session: the object which received the signal
@@ -2297,6 +2350,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_TRACK);
+
 	/**
  	* BraseroBurnSession::flags-changed:
  	* @session: the object which received the signal
@@ -2314,6 +2368,25 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  g_cclosure_marshal_VOID__VOID,
 			  G_TYPE_NONE,
 			  0);
+
+	/**
+ 	* BraseroBurnSession::flags-changed:
+ 	* @session: the object which received the signal
+	*
+ 	* This signal gets emitted when the flags changed for @session.
+ 	*
+ 	*/
+	brasero_burn_session_signals [TAG_CHANGED_SIGNAL] =
+	    g_signal_new ("tag_changed",
+			  BRASERO_TYPE_BURN_SESSION,
+			  G_SIGNAL_RUN_FIRST,
+			  0,
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__STRING,
+			  G_TYPE_NONE,
+			  1,
+	                  G_TYPE_STRING);
 }
 
 /**

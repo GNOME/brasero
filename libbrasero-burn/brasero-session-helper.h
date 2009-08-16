@@ -41,6 +41,14 @@
 G_BEGIN_DECLS
 
 /**
+ * Functions meant to become public API
+ */
+
+BraseroBurnResult
+brasero_burn_session_set_image_output_format (BraseroBurnSession *self,
+					    BraseroImageFormat format);
+
+/**
  * Some convenience functions used internally
  */
 
