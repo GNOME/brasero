@@ -46,6 +46,8 @@
 #include "brasero-image-properties.h"
 #include "brasero-image-type-chooser.h"
 
+#include "brasero-session-helper.h"
+
 typedef struct _BraseroImagePropertiesPrivate BraseroImagePropertiesPrivate;
 struct _BraseroImagePropertiesPrivate
 {
@@ -77,15 +79,8 @@ brasero_image_properties_get_format (BraseroImageProperties *self)
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
-	if (priv->format == NULL) {
-		/* This means that since there was just
-		 * one format available, we did not 
-		 * show the format chooser widget
-		 * which means in turn that we did not
-		 * changed the format that was set
-		 * at the beginning in session */
-		return brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
-	}
+	if (priv->format == NULL)
+		return BRASERO_IMAGE_FORMAT_NONE;
 
 	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 					       &format);
@@ -141,8 +136,14 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 		return;
 
 	format = brasero_image_properties_get_format (self);
-	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE)
-		format = brasero_burn_session_get_default_output_format (BRASERO_BURN_SESSION (priv->session));
+
+	/* Set the format now */
+	brasero_burn_session_set_image_output_format (BRASERO_BURN_SESSION (priv->session), format);
+
+	/* make sure the format is valid and possibly update path */
+	if (format == BRASERO_IMAGE_FORMAT_ANY
+	||  format == BRASERO_IMAGE_FORMAT_NONE)
+		format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
 
 	if (!priv->edited) {
 		/* not changed: get a new default path */
@@ -162,6 +163,49 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 	}
 
 	brasero_image_properties_set_path (self, image_path);
+
+	/* This is specific to video projects */
+	if (priv->is_video) {
+		if (format == BRASERO_IMAGE_FORMAT_CUE) {
+			gboolean res = TRUE;
+			GValue *value;
+
+			value = g_new0 (GValue, 1);
+			g_value_init (value, G_TYPE_INT);
+
+			/* There should always be a priv->format in this case but who knows... */
+			if (priv->format)
+				res = brasero_image_type_chooser_get_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
+
+			if (res)
+				g_value_set_int (value, BRASERO_SVCD);
+			else
+				g_value_set_int (value, BRASERO_VCD_V2);
+
+			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
+						      BRASERO_VCD_TYPE,
+						      value);
+
+			/* This is for a (S)VCD set to MP2 */
+			value = g_new0 (GValue, 1);
+			g_value_init (value, G_TYPE_INT);
+			g_value_set_int (value, BRASERO_AUDIO_FORMAT_MP2);
+			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
+						      BRASERO_DVD_STREAM_FORMAT,
+						      value);
+		}
+		else {
+			GValue *value;
+
+			/* This is for a DVD set to AC3 */
+			value = g_new0 (GValue, 1);
+			g_value_init (value, G_TYPE_INT);
+			g_value_set_int (value, BRASERO_AUDIO_FORMAT_AC3);
+			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
+						      BRASERO_DVD_STREAM_FORMAT,
+						      value);
+		}
+	}
 }
 
 static void
@@ -253,10 +297,17 @@ brasero_image_properties_set_output_path (BraseroImageProperties *self,
 					  const gchar *path)
 {
 	BraseroImagePropertiesPrivate *priv;
+	BraseroImageFormat real_format;
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
-	switch (format) {
+	if (format == BRASERO_IMAGE_FORMAT_ANY
+	||  format == BRASERO_IMAGE_FORMAT_NONE)
+		real_format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
+	else
+		real_format = format;
+
+	switch (real_format) {
 	case BRASERO_IMAGE_FORMAT_BIN:
 		brasero_burn_session_set_image_output_full (BRASERO_BURN_SESSION (priv->session),
 							    format,
