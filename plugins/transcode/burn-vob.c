@@ -890,13 +890,13 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 
 			aspect = g_value_get_int (value);
 			if (aspect == BRASERO_VIDEO_ASPECT_4_3) {
-				BRASERO_JOB_LOG (vob, "Setting ration 4:3");
+				BRASERO_JOB_LOG (vob, "Setting ratio 4:3");
 				g_object_set (encode,
 					      "aspect", 2,
 					      NULL);
 			}
 			else if (aspect == BRASERO_VIDEO_ASPECT_16_9) {
-				BRASERO_JOB_LOG (vob, "Setting ration 16:9");
+				BRASERO_JOB_LOG (vob, "Setting ratio 16:9");
 				g_object_set (encode,
 					      "aspect", 3,
 					      NULL);	
@@ -905,7 +905,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 	else {
 		/* VCDs only support 4:3 */
-		BRASERO_JOB_LOG (vob, "Setting ration 4:3");
+		BRASERO_JOB_LOG (vob, "Setting ratio 4:3");
 		g_object_set (encode,
 			      "aspect", 2,
 			      NULL);
