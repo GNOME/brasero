@@ -43,18 +43,21 @@
 #include <gconf/gconf-client.h>
 
 #include "burn-basics.h"
-#include "brasero-track.h"
-#include "brasero-medium.h"
-#include "brasero-session.h"
-#include "brasero-drive.h"
-#include "brasero-volume.h"
-#include "brasero-burn-lib.h"
 #include "burn-plugin-manager.h"
 #include "brasero-medium-selection-priv.h"
+#include "brasero-session-helper.h"
 
 #include "brasero-dest-selection.h"
+
+#include "brasero-drive.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
+
+#include "brasero-burn-lib.h"
+#include "brasero-tags.h"
+#include "brasero-track.h"
+#include "brasero-session.h"
 #include "brasero-session-cfg.h"
-#include "brasero-session-helper.h"
 
 typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate
@@ -119,11 +122,33 @@ brasero_dest_selection_valid_session (BraseroSessionCfg *session,
 }
 
 static void
+brasero_dest_selection_set_tag (BraseroDestSelection *self,
+                                const gchar *tag,
+                                gint contents)
+{
+	GValue *value;
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	if (!priv->session)
+		return;
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, contents);
+	brasero_burn_session_tag_add (priv->session,
+				      tag,
+				      value);
+}
+
+static void
 brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 				       BraseroMedium *former,
 				       BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
+	BraseroTrackType *type;
 	BraseroMedium *medium;
 	BraseroDrive *burner;
 
@@ -136,8 +161,35 @@ brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self),
 						     brasero_drive_get_medium (burner));
 
-	if (medium)
-		g_object_unref (medium);
+	if (!medium)
+		return;
+
+	/* Case for video project */
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, type);
+
+	if (brasero_track_type_get_has_stream (type)
+	&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type))) {
+		BraseroMedia media;
+
+		media = brasero_medium_get_status (medium);
+		if (media & BRASERO_MEDIUM_DVD)
+			brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_AC3);
+		else if (media & BRASERO_MEDIUM_CD)
+			brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_MP2);
+		else {
+			BraseroImageFormat format;
+
+			format = brasero_burn_session_get_output_format (priv->session);
+			if (format == BRASERO_IMAGE_FORMAT_CUE)
+				brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_MP2);
+			else
+				brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_AC3);
+		}
+	}
+
+	brasero_track_type_free (type);
+	g_object_unref (medium);
 }
 
 static void
