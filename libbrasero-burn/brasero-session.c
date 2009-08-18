@@ -58,8 +58,20 @@
 #include "brasero-track.h"
 #include "brasero-track-disc.h"
 
+
 G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 #define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
+
+/**
+ * SECTION:BraseroBurnSession
+ * @short_description: #BraseroBurnSession
+ * @see_also: #BraseroBurn #BraseroBurnSessionCfg
+ * @include: brasero-session.h
+ *
+ * This object stores all parameters for all operations performed by #BraseroBurn such as
+ * burning, blanking and checksuming. To have this object configured automatically see
+ * #BraseroBurnSessionCfg.
+ **/
 
 struct _BraseroSessionSetting {
 	BraseroDrive *burner;
@@ -2407,10 +2419,11 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  0);
 
 	/**
- 	* BraseroBurnSession::flags-changed:
+ 	* BraseroBurnSession::tag-changed:
  	* @session: the object which received the signal
 	*
- 	* This signal gets emitted when the flags changed for @session.
+ 	* This signal gets emitted when a tag changed for @session (whether it
+	* was removed, added, or it changed).
  	*
  	*/
 	brasero_burn_session_signals [TAG_CHANGED_SIGNAL] =
