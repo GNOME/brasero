@@ -1127,8 +1127,8 @@ brasero_vob_start (BraseroJob *job,
 static BraseroBurnResult
 brasero_vob_clock_tick (BraseroJob *job)
 {
-	gint64 position = 0.0;
-	gint64 duration = 0.0;
+	gint64 position = 0;
+	gint64 duration = 0;
 	BraseroVobPrivate *priv;
 	GstFormat format = GST_FORMAT_TIME;
 
@@ -1136,14 +1136,15 @@ brasero_vob_clock_tick (BraseroJob *job)
 
 	gst_element_query_duration (priv->pipeline, &format, &duration);
 	gst_element_query_position (priv->pipeline, &format, &position);
-
-	if (duration <= 0.0 || position <= 0.0) {
+	if (duration <= 0 || position <= 0) {
 		format = GST_FORMAT_BYTES;
+		duration = 0;
+		position = 0;
 		gst_element_query_duration (priv->pipeline, &format, &duration);
 		gst_element_query_position (priv->pipeline, &format, &position);
 	}
 
-	if (duration > 0.0 && position > 0.0) {
+	if (duration > 0 && position > 0) {
 		gdouble progress;
 
 		progress = (gdouble) position / (gdouble) duration;
