@@ -553,6 +553,35 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
 		gchar *path;
 
+		input = brasero_track_type_new ();
+		brasero_burn_session_get_input_type (priv->session, input);
+
+		/* There should be a special name for image in video context */
+		if (brasero_track_type_get_has_stream (input)
+		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
+			BraseroImageFormat format;
+
+			format = brasero_burn_session_get_output_format (priv->session);
+			if (format == BRASERO_IMAGE_FORMAT_CUE) {
+				GValue *value = NULL;
+
+				g_free (medium_name);
+				brasero_burn_session_tag_lookup (priv->session,
+				                                 BRASERO_VCD_TYPE,
+				                                 &value);
+
+				if (value && g_value_get_int (value) == BRASERO_SVCD)
+					medium_name = g_strdup (_("SVCD image"));
+				else
+					medium_name = g_strdup (_("VCD image"));
+			}
+			else if (format == BRASERO_IMAGE_FORMAT_BIN) {
+				g_free (medium_name);
+				medium_name = g_strdup (_("Video DVD image"));
+			}
+		}
+		brasero_track_type_free (input);
+
 		/* get the set path for the image file */
 		path = brasero_dest_selection_get_output_path (BRASERO_DEST_SELECTION (selection));
 		if (!path)
