@@ -43,8 +43,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include "brasero-session.h"
-#include "brasero-track.h"
 
 #include "burn-basics.h"
 #include "burn-debug.h"
@@ -55,6 +53,9 @@
 #include "brasero-drive.h"
 #include "brasero-medium-monitor.h"
 
+#include "brasero-tags.h"
+#include "brasero-session.h"
+#include "brasero-track.h"
 #include "brasero-track-disc.h"
 
 G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
@@ -2064,6 +2065,42 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	BRASERO_BURN_LOG_TYPE (type, "Input\t=");
 	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t=");
+
+	/* also try all known tags */
+	if (brasero_track_type_get_has_stream (type)
+	&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type))) {
+		GValue *value;
+
+		BRASERO_BURN_LOG ("Tags set:");
+
+		value = NULL;
+		brasero_burn_session_tag_lookup (self,
+						 BRASERO_DVD_STREAM_FORMAT,
+						 &value);
+		if (value)
+			BRASERO_BURN_LOG ("Stream format %i", g_value_get_int (value));
+
+		value = NULL;
+		brasero_burn_session_tag_lookup (self,
+						 BRASERO_VCD_TYPE,
+						 &value);
+		if (value)
+			BRASERO_BURN_LOG ("(S)VCD type %i", g_value_get_int (value));
+
+		value = NULL;
+		brasero_burn_session_tag_lookup (self,
+						 BRASERO_VIDEO_OUTPUT_FRAMERATE,
+						 &value);
+		if (value)
+			BRASERO_BURN_LOG ("Framerate %i", g_value_get_int (value));
+
+		value = NULL;
+		brasero_burn_session_tag_lookup (self,
+						 BRASERO_VIDEO_OUTPUT_ASPECT,
+						 &value);
+		if (value)
+			BRASERO_BURN_LOG ("Aspect %i", g_value_get_int (value));
+	}
 
 	if (!brasero_burn_session_is_dest_file (self)) {
 		BraseroMedium *medium;
