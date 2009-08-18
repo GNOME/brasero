@@ -1026,6 +1026,9 @@ brasero_burn_options_finalize (GObject *object)
 						      brasero_burn_options_track_removed,
 						      object);
 		g_signal_handlers_disconnect_by_func (priv->session,
+						      brasero_burn_options_track_changed,
+						      object);
+		g_signal_handlers_disconnect_by_func (priv->session,
 						      brasero_burn_options_valid_cb,
 						      object);
 
