@@ -55,6 +55,16 @@
 #include "brasero-burn-lib.h"
 #include "brasero-session-helper.h"
 
+/**
+ * SECTION:brasero-session-cfg
+ * @short_description: Configure automatically a #BraseroBurnSession object
+ * @see_also: #BraseroBurn, #BraseroBurnSession
+ * @include: brasero-session-cfg.h
+ *
+ * This object configures automatically a session reacting to any change
+ * made to the various parameters.
+ **/
+
 typedef struct _BraseroSessionCfgPrivate BraseroSessionCfgPrivate;
 struct _BraseroSessionCfgPrivate
 {

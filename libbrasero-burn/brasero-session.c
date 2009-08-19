@@ -63,14 +63,14 @@ G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 #define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
 
 /**
- * SECTION:BraseroBurnSession
- * @short_description: #BraseroBurnSession
- * @see_also: #BraseroBurn #BraseroBurnSessionCfg
+ * SECTION:brasero-session
+ * @short_description: Store parameters when burning and blanking
+ * @see_also: #BraseroBurn, #BraseroSessionCfg
  * @include: brasero-session.h
  *
  * This object stores all parameters for all operations performed by #BraseroBurn such as
  * burning, blanking and checksuming. To have this object configured automatically see
- * #BraseroBurnSessionCfg.
+ * #BraseroSessionCfg.
  **/
 
 struct _BraseroSessionSetting {
