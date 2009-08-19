@@ -82,7 +82,7 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	
 	if (!strcmp (tag, BRASERO_VCD_TYPE)) {
-		BraseroImageFormat format;
+		BraseroMedia media;
 		gint svcd_type;
 
 		media = brasero_burn_session_get_dest_media (priv->session);
