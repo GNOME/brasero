@@ -82,8 +82,27 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	
 	if (!strcmp (tag, BRASERO_VCD_TYPE)) {
-		gint svcd_type = brasero_burn_session_tag_lookup_int (priv->session, tag);
+		BraseroImageFormat format;
+		gint svcd_type;
 
+		media = brasero_burn_session_get_dest_media (priv->session);
+		if (media & BRASERO_MEDIUM_DVD) {
+			/* Don't change anything in this case
+			 * as the tag has no influence over 
+			 * this type of image */
+			return;
+		}
+		else if (media & BRASERO_MEDIUM_FILE) {
+			BraseroImageFormat format;
+
+			format = brasero_burn_session_get_output_format (priv->session);
+
+			/* Same as above for the following case */
+			if (format == BRASERO_IMAGE_FORMAT_BIN)
+				return;
+		}
+
+		svcd_type = brasero_burn_session_tag_lookup_int (priv->session, tag);
 		if (svcd_type == BRASERO_SVCD) {
 			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->svcd_button)))
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->svcd_button), TRUE);
@@ -94,9 +113,6 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 		else {
 			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->vcd_button)))
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->vcd_button), TRUE);
-
-			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->button_4_3)))
-				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->button_4_3), TRUE);
 
 			gtk_widget_set_sensitive (priv->button_4_3, FALSE);
 			gtk_widget_set_sensitive (priv->button_16_9, FALSE);
