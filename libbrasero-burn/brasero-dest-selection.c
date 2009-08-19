@@ -514,14 +514,8 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 
 			format = brasero_burn_session_get_output_format (priv->session);
 			if (format == BRASERO_IMAGE_FORMAT_CUE) {
-				GValue *value = NULL;
-
 				g_free (medium_name);
-				brasero_burn_session_tag_lookup (priv->session,
-				                                 BRASERO_VCD_TYPE,
-				                                 &value);
-
-				if (value && g_value_get_int (value) == BRASERO_SVCD)
+				if (brasero_burn_session_tag_lookup_int (priv->session, BRASERO_VCD_TYPE) == BRASERO_SVCD)
 					medium_name = g_strdup (_("SVCD image"));
 				else
 					medium_name = g_strdup (_("VCD image"));

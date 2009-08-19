@@ -74,7 +74,6 @@ static void
 brasero_video_options_update_from_tag (BraseroVideoOptions *options,
                                        const gchar *tag)
 {
-	GValue *value = NULL;
 	BraseroVideoOptionsPrivate *priv;
 
 	if (!tag)
@@ -83,11 +82,9 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	
 	if (!strcmp (tag, BRASERO_VCD_TYPE)) {
-		brasero_burn_session_tag_lookup (priv->session,
-						 tag,
-						 &value);
+		gint svcd_type = brasero_burn_session_tag_lookup_int (priv->session, tag);
 
-		if (value && g_value_get_int (value) == BRASERO_SVCD) {
+		if (svcd_type == BRASERO_SVCD) {
 			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->svcd_button)))
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->svcd_button), TRUE);
 
@@ -106,6 +103,8 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 		}
 	}
 	else if (!strcmp (tag, BRASERO_VIDEO_OUTPUT_FRAMERATE)) {
+		GValue *value = NULL;
+
 		brasero_burn_session_tag_lookup (priv->session,
 						 tag,
 						 &value);
@@ -123,11 +122,9 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->button_native), TRUE);
 	}
 	else if (!strcmp (tag, BRASERO_VIDEO_OUTPUT_ASPECT)) {
-		brasero_burn_session_tag_lookup (priv->session,
-						 tag,
-						 &value);
+		gint aspect_type = brasero_burn_session_tag_lookup_int (priv->session, tag);
 
-		if (value && g_value_get_int (value) == BRASERO_VIDEO_ASPECT_16_9) {
+		if (aspect_type == BRASERO_VIDEO_ASPECT_16_9) {
 			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->button_16_9)))
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->button_16_9), TRUE);
 		}
