@@ -1687,7 +1687,10 @@ brasero_burn_session_tag_lookup (BraseroBurnSession *self,
 	if (!data)
 		return BRASERO_BURN_ERR;
 
-	*value = data;
+	/* value can be NULL if the function was just called
+	 * to check whether a tag was set. */
+	if (value)
+		*value = data;
 	return BRASERO_BURN_OK;
 }
 

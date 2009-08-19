@@ -181,16 +181,7 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
 				                                  BRASERO_VCD_TYPE,
 				                                  BRASERO_VCD_V2);
-
-			/* This is for a (S)VCD set to MP2 */
-			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-			                                  BRASERO_DVD_STREAM_FORMAT,
-			                                  BRASERO_AUDIO_FORMAT_MP2);
 		}
-		else
-			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-			                                  BRASERO_DVD_STREAM_FORMAT,
-			                                  BRASERO_AUDIO_FORMAT_AC3);
 	}
 }
 
@@ -355,16 +346,7 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
 								  BRASERO_VCD_TYPE,
 								  BRASERO_VCD_V2);
-
-			/* This is a (S)VCD set to MP2 */
-			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-			                                  BRASERO_DVD_STREAM_FORMAT,
-			                                  BRASERO_AUDIO_FORMAT_MP2);
 		}
-		else
-			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-			                                  BRASERO_DVD_STREAM_FORMAT,
-			                                  BRASERO_AUDIO_FORMAT_AC3);
 	}
 }
 

@@ -127,7 +127,6 @@ brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 				       BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
-	BraseroTrackType *type;
 	BraseroMedium *medium;
 	BraseroDrive *burner;
 
@@ -140,43 +139,8 @@ brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self),
 						     brasero_drive_get_medium (burner));
 
-	if (!medium)
-		return;
-
-	/* Case for video project */
-	type = brasero_track_type_new ();
-	brasero_burn_session_get_input_type (priv->session, type);
-
-	if (brasero_track_type_get_has_stream (type)
-	&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type))) {
-		BraseroMedia media;
-
-		media = brasero_medium_get_status (medium);
-		if (media & BRASERO_MEDIUM_DVD)
-			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-			                                  BRASERO_DVD_STREAM_FORMAT,
-			                                  BRASERO_AUDIO_FORMAT_AC3);
-		else if (media & BRASERO_MEDIUM_CD)
-			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-							  BRASERO_DVD_STREAM_FORMAT,
-							  BRASERO_AUDIO_FORMAT_MP2);
-		else {
-			BraseroImageFormat format;
-
-			format = brasero_burn_session_get_output_format (priv->session);
-			if (format == BRASERO_IMAGE_FORMAT_CUE)
-				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-								  BRASERO_DVD_STREAM_FORMAT,
-								  BRASERO_AUDIO_FORMAT_MP2);
-			else
-				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
-								  BRASERO_DVD_STREAM_FORMAT,
-								  BRASERO_AUDIO_FORMAT_AC3);
-		}
-	}
-
-	brasero_track_type_free (type);
-	g_object_unref (medium);
+	if (medium)
+		g_object_unref (medium);
 }
 
 static void

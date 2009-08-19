@@ -572,16 +572,6 @@ brasero_video_options_init (BraseroVideoOptions *object)
 
 	gtk_widget_show_all (widget);
 	gtk_container_add (GTK_CONTAINER (object), widget);
-
-	if (priv->session) {
-		/* Just to make sure our tags are correct in BraseroBurnSession */
-		brasero_burn_session_tag_add_int (priv->session,
-						  BRASERO_VCD_TYPE,
-						  BRASERO_SVCD);
-		brasero_burn_session_tag_add_int (priv->session,
-						  BRASERO_VIDEO_OUTPUT_ASPECT,
-						  BRASERO_VIDEO_ASPECT_4_3);
-	}
 }
 
 static void

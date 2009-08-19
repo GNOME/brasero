@@ -90,6 +90,26 @@ G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN
 #define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
 
 /**
+ * This is to handle tags (and more particularly video ones)
+ */
+
+static void
+brasero_session_cfg_tag_changed (BraseroBurnSession *session,
+                                 const gchar *tag,
+                                 gpointer NULL_data)
+{
+	if (!strcmp (tag, BRASERO_VCD_TYPE)) {
+		int svcd_type;
+
+		svcd_type = brasero_burn_session_tag_lookup_int (session, BRASERO_VCD_TYPE);
+		if (svcd_type != BRASERO_SVCD)
+			brasero_burn_session_tag_add_int (session,
+			                                  BRASERO_VIDEO_OUTPUT_ASPECT,
+			                                  BRASERO_VIDEO_ASPECT_4_3);
+	}
+}
+
+/**
  * brasero_session_cfg_has_default_output_path:
  * @cfg: a #BraseroSessionCfg
  *
@@ -991,8 +1011,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			       0);
 		return;
 	}
-	/* it can be empty with an empty track */
 
+	/* it can be empty with just an empty track */
 	if (brasero_track_type_get_has_medium (source)
 	&&  brasero_track_type_get_medium_type (source) == BRASERO_MEDIUM_NONE) {
 		brasero_track_type_free (source);
@@ -1130,6 +1150,16 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		return;
 	}
 
+	/* Special case for video projects */
+	if (brasero_track_type_get_has_stream (source)
+	&& BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (source))) {
+		/* Only set if it was not already set */
+		if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self), BRASERO_VCD_TYPE, NULL) != BRASERO_BURN_OK)
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (self),
+							  BRASERO_VCD_TYPE,
+							  BRASERO_SVCD);
+	}
+
 	brasero_track_type_free (source);
 
 	/* Configure flags */
@@ -1263,10 +1293,45 @@ brasero_session_cfg_output_changed (BraseroBurnSession *session,
 				    BraseroMedium *former)
 {
 	BraseroSessionCfgPrivate *priv;
+	BraseroTrackType *type;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 	if (priv->disabled)
 		return;
+
+	/* Case for video project */
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, type);
+
+	if (brasero_track_type_get_has_stream (type)
+	&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type))) {
+		BraseroMedia media;
+
+		media = brasero_burn_session_get_dest_media (session);
+		if (media & BRASERO_MEDIUM_DVD)
+			brasero_burn_session_tag_add_int (session,
+			                                  BRASERO_DVD_STREAM_FORMAT,
+			                                  BRASERO_AUDIO_FORMAT_AC3);
+		else if (media & BRASERO_MEDIUM_CD)
+			brasero_burn_session_tag_add_int (session,
+							  BRASERO_DVD_STREAM_FORMAT,
+							  BRASERO_AUDIO_FORMAT_MP2);
+		else {
+			BraseroImageFormat format;
+
+			format = brasero_burn_session_get_output_format (session);
+			if (format == BRASERO_IMAGE_FORMAT_CUE)
+				brasero_burn_session_tag_add_int (session,
+								  BRASERO_DVD_STREAM_FORMAT,
+								  BRASERO_AUDIO_FORMAT_MP2);
+			else
+				brasero_burn_session_tag_add_int (session,
+								  BRASERO_DVD_STREAM_FORMAT,
+								  BRASERO_AUDIO_FORMAT_AC3);
+		}
+	}
+
+	brasero_track_type_free (type);
 
 	brasero_session_cfg_save_drive_properties (BRASERO_SESSION_CFG (session),
 						   former);
@@ -1447,6 +1512,12 @@ brasero_session_cfg_init (BraseroSessionCfg *object)
 	                  "caps-changed",
 	                  G_CALLBACK (brasero_session_cfg_caps_changed),
 	                  object);
+
+	/* FIXME: to be changed in the future */
+	g_signal_connect (object,
+	                  "tag-changed",
+	                  G_CALLBACK (brasero_session_cfg_tag_changed),
+	                  NULL);
 }
 
 static void
@@ -1458,6 +1529,10 @@ brasero_session_cfg_finalize (GObject *object)
 	GSList *tracks;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (object);
+
+	g_signal_handlers_disconnect_by_func (object,
+	                                      brasero_session_cfg_tag_changed,
+	                                      NULL);
 
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (object));
 	if (drive && brasero_drive_get_medium (drive))
