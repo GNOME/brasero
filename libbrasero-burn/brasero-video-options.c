@@ -203,27 +203,6 @@ brasero_video_options_tag_changed_cb (BraseroBurnSession *session,
 }
 
 static void
-brasero_video_options_set_tag (BraseroVideoOptions *options,
-			       const gchar *tag,
-			       gint contents)
-{
-	GValue *value;
-	BraseroVideoOptionsPrivate *priv;
-
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
-
-	if (!priv->session)
-		return;
-
-	value = g_new0 (GValue, 1);
-	g_value_init (value, G_TYPE_INT);
-	g_value_set_int (value, contents);
-	brasero_burn_session_tag_add (priv->session,
-				      tag,
-				      value);
-}
-
-static void
 brasero_video_options_SVCD (GtkToggleButton *button,
 			    BraseroVideoOptions *options)
 {
@@ -232,14 +211,13 @@ brasero_video_options_SVCD (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	brasero_video_options_set_tag (options,
-				       BRASERO_VCD_TYPE,
-				       BRASERO_SVCD);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	brasero_burn_session_tag_add_int (priv->session,
+	                                  BRASERO_VCD_TYPE,
+	                                  BRASERO_SVCD);
 
 	/* NOTE: this is only possible when that's
 	 * not an image */
-
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 
 	gtk_widget_set_sensitive (priv->button_4_3, TRUE);
 	gtk_widget_set_sensitive (priv->button_16_9, TRUE);
@@ -254,14 +232,13 @@ brasero_video_options_VCD (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	brasero_video_options_set_tag (options,
-				       BRASERO_VCD_TYPE,
-				       BRASERO_VCD_V2);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	brasero_burn_session_tag_add_int (priv->session,
+	                                  BRASERO_VCD_TYPE,
+	                                  BRASERO_VCD_V2);
 
 	/* NOTE: this is only possible when that's
 	 * not an image */
-
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	gtk_widget_set_sensitive (priv->button_4_3, FALSE);
 	gtk_widget_set_sensitive (priv->button_16_9, FALSE);
 
@@ -272,24 +249,30 @@ static void
 brasero_video_options_NTSC (GtkToggleButton *button,
 			    BraseroVideoOptions *options)
 {
+	BraseroVideoOptionsPrivate *priv;
+
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	brasero_video_options_set_tag (options,
-				       BRASERO_VIDEO_OUTPUT_FRAMERATE,
-				       BRASERO_VIDEO_FRAMERATE_NTSC);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	brasero_burn_session_tag_add_int (priv->session,
+	                                  BRASERO_VIDEO_OUTPUT_FRAMERATE,
+	                                  BRASERO_VIDEO_FRAMERATE_NTSC);
 }
 
 static void
 brasero_video_options_PAL_SECAM (GtkToggleButton *button,
 				 BraseroVideoOptions *options)
 {
+	BraseroVideoOptionsPrivate *priv;
+
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	brasero_video_options_set_tag (options,
-				       BRASERO_VIDEO_OUTPUT_FRAMERATE,
-				       BRASERO_VIDEO_FRAMERATE_PAL_SECAM);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	brasero_burn_session_tag_add_int (priv->session,
+	                                  BRASERO_VIDEO_OUTPUT_FRAMERATE,
+	                                  BRASERO_VIDEO_FRAMERATE_PAL_SECAM);
 }
 
 static void
@@ -298,10 +281,10 @@ brasero_video_options_native_framerate (GtkToggleButton *button,
 {
 	BraseroVideoOptionsPrivate *priv;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	brasero_burn_session_tag_remove (priv->session, BRASERO_VIDEO_OUTPUT_FRAMERATE);
 }
 
@@ -309,24 +292,30 @@ static void
 brasero_video_options_16_9 (GtkToggleButton *button,
 			    BraseroVideoOptions *options)
 {
+	BraseroVideoOptionsPrivate *priv;
+
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	brasero_video_options_set_tag (options,
-				       BRASERO_VIDEO_OUTPUT_ASPECT,
-				       BRASERO_VIDEO_ASPECT_16_9);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	brasero_burn_session_tag_add_int (priv->session,
+	                                  BRASERO_VIDEO_OUTPUT_ASPECT,
+	                                  BRASERO_VIDEO_ASPECT_16_9);
 }
 
 static void
 brasero_video_options_4_3 (GtkToggleButton *button,
 			   BraseroVideoOptions *options)
 {
+	BraseroVideoOptionsPrivate *priv;
+
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	brasero_video_options_set_tag (options,
-				       BRASERO_VIDEO_OUTPUT_ASPECT,
-				       BRASERO_VIDEO_ASPECT_4_3);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	brasero_burn_session_tag_add_int (priv->session,
+	                                  BRASERO_VIDEO_OUTPUT_ASPECT,
+	                                  BRASERO_VIDEO_ASPECT_4_3);
 }
 
 void
@@ -584,13 +573,15 @@ brasero_video_options_init (BraseroVideoOptions *object)
 	gtk_widget_show_all (widget);
 	gtk_container_add (GTK_CONTAINER (object), widget);
 
-	/* Just to make sure our tags are correct in BraseroBurnSession */
-	brasero_video_options_set_tag (object,
-				       BRASERO_VCD_TYPE,
-				       BRASERO_SVCD);
-	brasero_video_options_set_tag (object,
-				       BRASERO_VIDEO_OUTPUT_ASPECT,
-				       BRASERO_VIDEO_ASPECT_4_3);
+	if (priv->session) {
+		/* Just to make sure our tags are correct in BraseroBurnSession */
+		brasero_burn_session_tag_add_int (priv->session,
+						  BRASERO_VCD_TYPE,
+						  BRASERO_SVCD);
+		brasero_burn_session_tag_add_int (priv->session,
+						  BRASERO_VIDEO_OUTPUT_ASPECT,
+						  BRASERO_VIDEO_ASPECT_4_3);
+	}
 }
 
 static void

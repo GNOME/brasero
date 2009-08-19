@@ -1560,6 +1560,7 @@ brasero_burn_session_tag_remove (BraseroBurnSession *self,
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	if (!priv->tags)
@@ -1583,6 +1584,7 @@ brasero_burn_session_tag_remove (BraseroBurnSession *self,
  * Associates a new @tag with @session. This can be used
  * to pass arbitrary information for plugins, like parameters
  * for video discs, ...
+ * NOTE: the #BraseroBurnSession object takes ownership of @value.
  * See brasero-tags.h for a list of knowns tags.
  *
  * Return value: a #BraseroBurnResult.
@@ -1598,6 +1600,7 @@ brasero_burn_session_tag_add (BraseroBurnSession *self,
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	if (!priv->tags)
@@ -1612,6 +1615,39 @@ brasero_burn_session_tag_add (BraseroBurnSession *self,
 	               tag);
 
 	return BRASERO_BURN_OK;
+}
+
+/**
+ * brasero_burn_session_tag_add_int:
+ * @session: a #BraseroBurnSession
+ * @tag: a #gchar *
+ * @value: a #gint
+ *
+ * Associates a new @tag with @session. This can be used
+ * to pass arbitrary information for plugins, like parameters
+ * for video discs, ...
+ * See brasero-tags.h for a list of knowns tags.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful,
+ * BRASERO_BURN_ERR otherwise.
+ **/
+
+BraseroBurnResult
+brasero_burn_session_tag_add_int (BraseroBurnSession *self,
+                                  const gchar *tag,
+                                  gint value)
+{
+	GValue *gvalue;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
+
+	gvalue = g_new0 (GValue, 1);
+	g_value_init (gvalue, G_TYPE_INT);
+	g_value_set_int (gvalue, value);
+
+	return brasero_burn_session_tag_add (self, tag, gvalue);
 }
 
 /**
@@ -1638,6 +1674,7 @@ brasero_burn_session_tag_lookup (BraseroBurnSession *self,
 	gpointer data;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	if (!value)
@@ -1652,6 +1689,30 @@ brasero_burn_session_tag_lookup (BraseroBurnSession *self,
 
 	*value = data;
 	return BRASERO_BURN_OK;
+}
+
+/**
+ * brasero_burn_session_tag_lookup_int:
+ * @session: a #BraseroBurnSession
+ * @tag: a #gchar
+ *
+ * Retrieves an int value associated with @session through
+ * brasero_session_tag_add () and returns it.
+ *
+ * Return value: a #gint.
+ **/
+
+gint
+brasero_burn_session_tag_lookup_int (BraseroBurnSession *self,
+                                     const gchar *tag)
+{
+	GValue *value = NULL;
+
+	brasero_burn_session_tag_lookup (self, tag, &value);
+	if (!value || !G_VALUE_HOLDS_INT (value))
+		return 0;
+
+	return g_value_get_int (value);
 }
 
 /**

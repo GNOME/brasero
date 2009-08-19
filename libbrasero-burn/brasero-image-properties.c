@@ -168,43 +168,29 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 	if (priv->is_video) {
 		if (format == BRASERO_IMAGE_FORMAT_CUE) {
 			gboolean res = TRUE;
-			GValue *value;
-
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_INT);
 
 			/* There should always be a priv->format in this case but who knows... */
 			if (priv->format)
 				res = brasero_image_type_chooser_get_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
 
 			if (res)
-				g_value_set_int (value, BRASERO_SVCD);
+				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+				                                  BRASERO_VCD_TYPE,
+				                                  BRASERO_SVCD);
 			else
-				g_value_set_int (value, BRASERO_VCD_V2);
-
-			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
-						      BRASERO_VCD_TYPE,
-						      value);
+				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+				                                  BRASERO_VCD_TYPE,
+				                                  BRASERO_VCD_V2);
 
 			/* This is for a (S)VCD set to MP2 */
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_INT);
-			g_value_set_int (value, BRASERO_AUDIO_FORMAT_MP2);
-			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
-						      BRASERO_DVD_STREAM_FORMAT,
-						      value);
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+			                                  BRASERO_DVD_STREAM_FORMAT,
+			                                  BRASERO_AUDIO_FORMAT_MP2);
 		}
-		else {
-			GValue *value;
-
-			/* This is for a DVD set to AC3 */
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_INT);
-			g_value_set_int (value, BRASERO_AUDIO_FORMAT_AC3);
-			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
-						      BRASERO_DVD_STREAM_FORMAT,
-						      value);
-		}
+		else
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+			                                  BRASERO_DVD_STREAM_FORMAT,
+			                                  BRASERO_AUDIO_FORMAT_AC3);
 	}
 }
 
@@ -356,43 +342,29 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 	if (priv->is_video) {
 		if (format == BRASERO_IMAGE_FORMAT_CUE) {
 			gboolean res = TRUE;
-			GValue *value;
-
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_INT);
 
 			/* There should always be a priv->format in this case but who knows... */
 			if (priv->format)
 				res = brasero_image_type_chooser_get_VCD_type (BRASERO_IMAGE_TYPE_CHOOSER (priv->format));
 
 			if (res)
-				g_value_set_int (value, BRASERO_SVCD);
+				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+								  BRASERO_VCD_TYPE,
+								  BRASERO_SVCD);
 			else
-				g_value_set_int (value, BRASERO_VCD_V2);
-
-			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
-						      BRASERO_VCD_TYPE,
-						      value);
+				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+								  BRASERO_VCD_TYPE,
+								  BRASERO_VCD_V2);
 
 			/* This is a (S)VCD set to MP2 */
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_INT);
-			g_value_set_int (value, BRASERO_AUDIO_FORMAT_MP2);
-			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
-						      BRASERO_DVD_STREAM_FORMAT,
-						      value);
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+			                                  BRASERO_DVD_STREAM_FORMAT,
+			                                  BRASERO_AUDIO_FORMAT_MP2);
 		}
-		else {
-			GValue *value;
-
-			/* This is a DVD set to AC3 */
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_INT);
-			g_value_set_int (value, BRASERO_AUDIO_FORMAT_AC3);
-			brasero_burn_session_tag_add (BRASERO_BURN_SESSION (priv->session),
-						      BRASERO_DVD_STREAM_FORMAT,
-						      value);
-		}
+		else
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+			                                  BRASERO_DVD_STREAM_FORMAT,
+			                                  BRASERO_AUDIO_FORMAT_AC3);
 	}
 }
 

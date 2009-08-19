@@ -122,27 +122,6 @@ brasero_dest_selection_valid_session (BraseroSessionCfg *session,
 }
 
 static void
-brasero_dest_selection_set_tag (BraseroDestSelection *self,
-                                const gchar *tag,
-                                gint contents)
-{
-	GValue *value;
-	BraseroDestSelectionPrivate *priv;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	if (!priv->session)
-		return;
-
-	value = g_new0 (GValue, 1);
-	g_value_init (value, G_TYPE_INT);
-	g_value_set_int (value, contents);
-	brasero_burn_session_tag_add (priv->session,
-				      tag,
-				      value);
-}
-
-static void
 brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 				       BraseroMedium *former,
 				       BraseroDestSelection *self)
@@ -174,17 +153,25 @@ brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 
 		media = brasero_medium_get_status (medium);
 		if (media & BRASERO_MEDIUM_DVD)
-			brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_AC3);
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+			                                  BRASERO_DVD_STREAM_FORMAT,
+			                                  BRASERO_AUDIO_FORMAT_AC3);
 		else if (media & BRASERO_MEDIUM_CD)
-			brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_MP2);
+			brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+							  BRASERO_DVD_STREAM_FORMAT,
+							  BRASERO_AUDIO_FORMAT_MP2);
 		else {
 			BraseroImageFormat format;
 
 			format = brasero_burn_session_get_output_format (priv->session);
 			if (format == BRASERO_IMAGE_FORMAT_CUE)
-				brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_MP2);
+				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+								  BRASERO_DVD_STREAM_FORMAT,
+								  BRASERO_AUDIO_FORMAT_MP2);
 			else
-				brasero_dest_selection_set_tag (self, BRASERO_DVD_STREAM_FORMAT, BRASERO_AUDIO_FORMAT_AC3);
+				brasero_burn_session_tag_add_int (BRASERO_BURN_SESSION (priv->session),
+								  BRASERO_DVD_STREAM_FORMAT,
+								  BRASERO_AUDIO_FORMAT_AC3);
 		}
 	}
 
