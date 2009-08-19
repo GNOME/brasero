@@ -70,7 +70,10 @@ struct _BraseroBurnSessionClass {
 							 gchar **toc);
 	BraseroImageFormat	(*get_output_format)	(BraseroBurnSession *session);
 
+	/** Signals **/
 	void			(*flags_changed)	(BraseroBurnSession *session);
+	void			(*tag_changed)	(BraseroBurnSession *session,
+					                   const gchar *tag);
 	void			(*track_added)		(BraseroBurnSession *session,
 							 BraseroTrack *track);
 	void			(*track_removed)	(BraseroBurnSession *session,

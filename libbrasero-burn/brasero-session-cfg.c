@@ -105,8 +105,7 @@ G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN
 
 static void
 brasero_session_cfg_tag_changed (BraseroBurnSession *session,
-                                 const gchar *tag,
-                                 gpointer NULL_data)
+                                 const gchar *tag)
 {
 	if (!strcmp (tag, BRASERO_VCD_TYPE)) {
 		int svcd_type;
@@ -1522,12 +1521,6 @@ brasero_session_cfg_init (BraseroSessionCfg *object)
 	                  "caps-changed",
 	                  G_CALLBACK (brasero_session_cfg_caps_changed),
 	                  object);
-
-	/* FIXME: to be changed in the future */
-	g_signal_connect (object,
-	                  "tag-changed",
-	                  G_CALLBACK (brasero_session_cfg_tag_changed),
-	                  NULL);
 }
 
 static void
@@ -1539,10 +1532,6 @@ brasero_session_cfg_finalize (GObject *object)
 	GSList *tracks;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (object);
-
-	g_signal_handlers_disconnect_by_func (object,
-	                                      brasero_session_cfg_tag_changed,
-	                                      NULL);
 
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (object));
 	if (drive && brasero_drive_get_medium (drive))
@@ -1586,6 +1575,7 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 	session_class->track_changed = brasero_session_cfg_track_changed;
 	session_class->output_changed = brasero_session_cfg_output_changed;
 	session_class->flags_changed = brasero_session_cfg_flags_changed;
+	session_class->tag_changed = brasero_session_cfg_tag_changed;
 
 	session_cfg_signals [WRONG_EXTENSION_SIGNAL] =
 		g_signal_new ("wrong_extension",
