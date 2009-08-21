@@ -635,6 +635,10 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 			priv->sig_handler = 1;
 		}
 
+		/* NOTE: for an unknown reason (to me)
+		 * libburn when minimally blanking a DVD-RW
+		 * will only allow to write to it with DAO 
+		 * afterwards... */
 		burn_disc_erase (priv->ctx->drive, (flags & BRASERO_BURN_FLAG_FAST_BLANK) != 0);
 		return BRASERO_BURN_OK;
 	}

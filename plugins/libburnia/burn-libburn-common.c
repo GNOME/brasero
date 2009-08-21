@@ -235,6 +235,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 
 	switch (status) {
 		case BURN_DRIVE_WRITING:
+			BRASERO_JOB_LOG (self, "Writing");
 			/* we ignore it if it happens after leadout */
 			if (ctx->status == BURN_DRIVE_WRITING_LEADOUT
 			||  ctx->status == BURN_DRIVE_CLOSING_TRACK
@@ -254,6 +255,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 
 		case BURN_DRIVE_WRITING_LEADIN:		/* DAO */
 		case BURN_DRIVE_WRITING_PREGAP:		/* TAO */
+			BRASERO_JOB_LOG (self, "Pregap/leadin");
 			ctx->has_leadin = 1;
 			action = BRASERO_BURN_ACTION_START_RECORDING;
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
@@ -262,6 +264,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 		case BURN_DRIVE_WRITING_LEADOUT: 	/* DAO */
 		case BURN_DRIVE_CLOSING_TRACK:		/* TAO */
 		case BURN_DRIVE_CLOSING_SESSION:	/* Multisession end */
+			BRASERO_JOB_LOG (self, "Closing");
 			ctx->sectors += ctx->track_sectors;
 			ctx->track_sectors = progress->sectors;
 
@@ -271,6 +274,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 
 		case BURN_DRIVE_ERASING:
 		case BURN_DRIVE_FORMATTING:
+			BRASERO_JOB_LOG (self, "Blanking/Formatting");
 			action = BRASERO_BURN_ACTION_BLANKING;
 			brasero_job_set_dangerous (BRASERO_JOB (self), TRUE);
 			break;
@@ -280,6 +284,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			return FALSE;
 
 		case BURN_DRIVE_SPAWNING:
+			BRASERO_JOB_LOG (self, "Starting");
 			if (ctx->status == BURN_DRIVE_IDLE)
 				action = BRASERO_BURN_ACTION_START_RECORDING;
 			else
@@ -288,6 +293,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			break;
 
 		case BURN_DRIVE_READING:
+			BRASERO_JOB_LOG (self, "Reading");
 			action = BRASERO_BURN_ACTION_DRIVE_COPY;
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
 			break;
@@ -326,7 +332,7 @@ brasero_libburn_common_status (BraseroJob *self,
 	 * that kind of use cases. For example, this 
 	 * happens when fast blanking a blank DVD-RW */
 	if (ctx->status == BURN_DRIVE_IDLE && status == BURN_DRIVE_IDLE) {
-		BRASERO_BURN_LOG ("Waiting for operation to start");
+		BRASERO_JOB_LOG (self, "Waiting for operation to start");
 		if (ctx->op_start == NULL) {
 			/* wait for action for 2 seconds until we timeout */
 			ctx->op_start = g_timer_new ();
@@ -345,7 +351,7 @@ brasero_libburn_common_status (BraseroJob *self,
 		}
 	}
 	else if (ctx->op_start) {
-		BRASERO_BURN_LOG ("Operation started");
+		BRASERO_JOB_LOG (self, "Operation started");
 		g_timer_destroy (ctx->op_start);
 		ctx->op_start = NULL;
 	}
