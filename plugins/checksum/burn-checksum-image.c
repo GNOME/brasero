@@ -56,6 +56,7 @@
 #include "brasero-drive.h"
 #include "brasero-track-disc.h"
 #include "brasero-track-image.h"
+#include "brasero-tags.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumImage, brasero_checksum_image, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -354,18 +355,44 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 
-	/* see if another plugin is sending us data to checksum */
+	/* see if another plugin is sending us data to checksum
+	 * or if we do it ourself (and then that must be from an
+	 * image file only). */
 	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
 		BraseroMedium *medium;
+		GValue *value = NULL;
 		BraseroDrive *drive;
+		guint64 start, end;
+		goffset sectors;
+		goffset bytes;
+
+		brasero_track_tag_lookup (track,
+					  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+					  &value);
+
+		/* we were given an address to start */
+		start = g_value_get_uint64 (value);
+
+		/* get the length now */
+		value = NULL;
+		brasero_track_tag_lookup (track,
+					  BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+					  &value);
+
+		end = g_value_get_uint64 (value);
+
+		priv->total = end - start;
 
 		/* we're only able to checksum ISO format at the moment so that
 		 * means we can only handle last session */
 		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 		medium = brasero_drive_get_medium (drive);
 		brasero_medium_get_last_data_track_space (medium,
-							  &priv->total,
-							  NULL);
+							  &bytes,
+							  &sectors);
+
+		/* That's the only way to get the sector size */
+		priv->total *= bytes / sectors;
 
 		return brasero_checksum_image_checksum_fd_input (self, checksum_type, error);
 	}

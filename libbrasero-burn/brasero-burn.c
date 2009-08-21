@@ -1754,6 +1754,9 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 	/* run all imaging tasks first */
 	for (iter = tasks; iter; iter = next) {
+		goffset len = 0;
+		BraseroDrive *drive;
+		BraseroMedium *medium;
 		BraseroTaskAction action;
 
 		next = iter->next;
@@ -1813,29 +1816,23 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			break;
 
 		/* try to get the output size */
-		if (BRASERO_MEDIUM_RANDOM_WRITABLE (brasero_burn_session_get_dest_media (priv->session))) {
-			goffset len = 0;
-			BraseroDrive *drive;
-			BraseroMedium *medium;
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
+							  &len,
+							  NULL);
 
-			brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
-								  &len,
-								  NULL);
+		drive = brasero_burn_session_get_burner (priv->session);
+		medium = brasero_drive_get_medium (drive);
 
-			drive = brasero_burn_session_get_burner (priv->session);
-			medium = brasero_drive_get_medium (drive);
+		if (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+			priv->session_start = brasero_medium_get_next_writable_address (medium);
+		else
+			priv->session_start = 0;
 
-			if (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-				priv->session_start = brasero_medium_get_next_writable_address (medium);
-			else
-				priv->session_start = 0;
+		priv->session_end = priv->session_start + len;
 
-			priv->session_end = priv->session_start + len;
-
-			BRASERO_BURN_LOG ("Burning from %lld to %lld",
-					  priv->session_start,
-					  priv->session_end);
-		}
+		BRASERO_BURN_LOG ("Burning from %lld to %lld",
+				  priv->session_start,
+				  priv->session_end);
 
 		/* see if we reached a recording task: it's the last task */
 		if (!next) {
@@ -2243,45 +2240,37 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	medium = brasero_drive_get_medium (priv->dest);
 
+	/* Why do we do this?
+	 * Because for a lot of medium types the size
+	 * of the track return is not the real size of the
+	 * data that was written; examples
+	 * - CD that was written in SAO mode 
+	 * - a DVD-R which usually aligns its track size
+	 *   to a 16 block boundary
+	 */
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
 	||  type == BRASERO_CHECKSUM_SHA256) {
-		BraseroMedia media;
+		GValue *value;
 
-		/* get the last written track address in case of DVD+RW/DVD-RW
-		 * restricted overwrite since there is no such thing as track
-		 * number for these drives. */
-		media = brasero_medium_get_status (medium);
+		/* get the last written track address */
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_UINT64);
 
-		if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media)) {
-			guint track_num;
+		BRASERO_BURN_LOG ("Start of last written track address == %lli", priv->session_start);
+		g_value_set_uint64 (value, priv->session_start);
+		brasero_track_tag_add (track,
+				       BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+				       value);
 
-			track_num = brasero_medium_get_track_num (medium);
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_UINT64);
 
-			BRASERO_BURN_LOG ("Last written track num == %i", track_num);
-			brasero_track_disc_set_track_num (BRASERO_TRACK_DISC (track), track_num);
-		}
-		else {
-			GValue *value;
-
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_UINT64);
-
-			BRASERO_BURN_LOG ("Start of last written track address == %lli", priv->session_start);
-			g_value_set_uint64 (value, priv->session_start);
-			brasero_track_tag_add (track,
-					       BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
-					       value);
-
-			value = g_new0 (GValue, 1);
-			g_value_init (value, G_TYPE_UINT64);
-
-			BRASERO_BURN_LOG ("End of last written track address == %lli", priv->session_end);
-			g_value_set_uint64 (value, priv->session_end);
-			brasero_track_tag_add (track,
-					       BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
-					       value);
-		}
+		BRASERO_BURN_LOG ("End of last written track address == %lli", priv->session_end);
+		g_value_set_uint64 (value, priv->session_end);
+		brasero_track_tag_add (track,
+				       BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+				       value);
 	}
 
 	result = brasero_burn_check_real (burn, track, error);
