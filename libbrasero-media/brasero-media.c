@@ -76,9 +76,12 @@ brasero_media_new_status (GSList *retval,
 						    BRASERO_MEDIUM_BLANK);
 
 		/* NOTE about BR-R they can be "formatted" but they are never
-		 * unformatted since by default they'll be used as sequential */
+		 * unformatted since by default they'll be used as sequential.
+		 * We don't consider DVD-RW as unformatted as in this case
+		 * they are treated as DVD-RW in sequential mode and therefore
+		 * don't require any formatting. */
 		if (!(media & BRASERO_MEDIUM_RAM)
-		&&   (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_REWRITABLE)
+		&&   (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
 		||    BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_REWRITABLE))) {
 			if (type & BRASERO_MEDIUM_UNFORMATTED)
 				retval = brasero_media_add_to_list (retval,

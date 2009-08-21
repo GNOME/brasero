@@ -1124,7 +1124,9 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	current = hdr->max_caps;
 	if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
 		BRASERO_MEDIA_LOG ("Unformatted media");
-		priv->info |= BRASERO_MEDIUM_UNFORMATTED;
+		/* If it's sequential, it's not unformatted */
+		if (!(priv->info & BRASERO_MEDIUM_SEQUENTIAL))
+			priv->info |= BRASERO_MEDIUM_UNFORMATTED;
 
 		/* if unformatted, a DVD-RAM will return its maximum formattable
 		 * size in this descriptor and that's what we're looking for. */
@@ -1674,7 +1676,7 @@ brasero_medium_track_set_leadout_DVDR_blank (BraseroMedium *self,
 	 * they are blank. */
 	current = hdr->max_caps;
 	if (current->type & BRASERO_SCSI_DESC_FORMATTED) {
-		BRASERO_MEDIA_LOG ("Unformatted medium");
+		BRASERO_MEDIA_LOG ("Formatted medium");
 		g_free (hdr);
 		return FALSE;
 	}
