@@ -56,6 +56,8 @@ struct _BraseroLibburnCtx {
 	gint64 track_sectors;
 
 	gint has_leadin;
+
+	GTimer *op_start;
 };
 typedef struct _BraseroLibburnCtx BraseroLibburnCtx;
 

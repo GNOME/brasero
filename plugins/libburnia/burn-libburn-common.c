@@ -108,6 +108,11 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 {
 	enum burn_drive_status status;
 
+	if (ctx->op_start) {
+		g_timer_destroy (ctx->op_start);
+		ctx->op_start = NULL;
+	}
+
 	BRASERO_BURN_LOG ("Stopping Drive");
 
 	/* try to properly cancel the drive */
@@ -316,8 +321,35 @@ brasero_libburn_common_status (BraseroJob *self,
 
 	status = burn_drive_get_status (ctx->drive, &progress);
 
-	/* FIXME! for some operations that libburn can't perform the drive stays
-	 * idle and we've got no way to tell that kind of use case */
+	/* For some operations that libburn can't perform
+	 * the drive stays idle and we've got no way to tell
+	 * that kind of use cases. For example, this 
+	 * happens when fast blanking a blank DVD-RW */
+	if (ctx->status == BURN_DRIVE_IDLE && status == BURN_DRIVE_IDLE) {
+		BRASERO_BURN_LOG ("Waiting for operation to start");
+		if (ctx->op_start == NULL) {
+			/* wait for action for 2 seconds until we timeout */
+			ctx->op_start = g_timer_new ();
+			g_timer_start (ctx->op_start);
+		}
+		else {
+			gdouble elapsed = 0.0;
+
+			/* See how long elapsed since we started.
+			 * NOTE: we do not consider this as an error. 
+			 * since it can be because of an unneeded 
+			 * operation like blanking on a blank disc. */
+			elapsed = g_timer_elapsed (ctx->op_start, NULL);
+			if (elapsed > 2.0)
+				return BRASERO_BURN_OK;
+		}
+	}
+	else if (ctx->op_start) {
+		BRASERO_BURN_LOG ("Operation started");
+		g_timer_destroy (ctx->op_start);
+		ctx->op_start = NULL;
+	}
+
 	if (ctx->status != status) {
 		gboolean running;
 
@@ -334,7 +366,6 @@ brasero_libburn_common_status (BraseroJob *self,
 	||  !progress.sectors
 	||  !progress.sector) {
 		ctx->sectors = 0;
-
 		ctx->track_num = progress.track;
 		ctx->track_sectors = progress.sectors;
 		return BRASERO_BURN_RETRY;
