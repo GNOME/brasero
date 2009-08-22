@@ -114,6 +114,8 @@ struct _BraseroMediumPrivate
 	guint dummy_sao:1;
 	guint dummy_tao:1;
 	guint burnfree:1;
+	guint sao:1;
+	guint tao:1;
 
 	guint blank_command:1;
 	guint write_command:1;
@@ -833,7 +835,7 @@ brasero_medium_get_capacity (BraseroMedium *medium,
  */
 
 static gboolean
-brasero_medium_test_simulate_CD_TAO (BraseroMedium *self,
+brasero_medium_test_CD_TAO_simulate (BraseroMedium *self,
 				     BraseroDeviceHandle *handle,
 				     BraseroScsiErrCode *code)
 {
@@ -859,8 +861,8 @@ brasero_medium_test_simulate_CD_TAO (BraseroMedium *self,
 	}
 
 	desc = hdr->desc;
-	if (!desc->current)
-		BRASERO_MEDIA_LOG ("Feature is not current");
+	priv->tao = (desc->current != 0);
+	BRASERO_MEDIA_LOG ("TAO feature is %s", priv->tao? "supported":"not supported");
 
 	tao_desc = (BraseroScsiCDTAODesc *) desc->data;
 	priv->dummy_tao = tao_desc->dummy != 0;
@@ -876,7 +878,7 @@ brasero_medium_test_simulate_CD_TAO (BraseroMedium *self,
 }
 
 static gboolean
-brasero_medium_test_simulate_CD_SAO (BraseroMedium *self,
+brasero_medium_test_CD_SAO_simulate (BraseroMedium *self,
 				     BraseroDeviceHandle *handle,
 				     BraseroScsiErrCode *code)
 {
@@ -901,8 +903,8 @@ brasero_medium_test_simulate_CD_SAO (BraseroMedium *self,
 	}
 
 	desc = hdr->desc;
-	if (!desc->current)
-		BRASERO_MEDIA_LOG ("Feature is not current");
+	priv->sao = (desc->current != 0);
+	BRASERO_MEDIA_LOG ("SAO feature is %s", priv->sao? "supported":"not supported");
 
 	sao_desc = (BraseroScsiCDSAODesc *) desc->data;
 	priv->dummy_sao = sao_desc->dummy != 0;
@@ -913,9 +915,9 @@ brasero_medium_test_simulate_CD_SAO (BraseroMedium *self,
 }
 
 static gboolean
-brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
-				    BraseroDeviceHandle *handle,
-				    BraseroScsiErrCode *code)
+brasero_medium_test_DVDRW_incremental_simulate (BraseroMedium *self,
+                                                BraseroDeviceHandle *handle,
+                                                BraseroScsiErrCode *code)
 {
 	BraseroScsiDVDRWlessWrtDesc *less_wrt_desc;
 	BraseroScsiGetConfigHdr *hdr = NULL;
@@ -926,8 +928,26 @@ brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
+	/* Try incremental feature */
+	BRASERO_MEDIA_LOG ("Checking incremental and simulate feature");
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_WRT_INCREMENT,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
+		return FALSE;
+	}
+
+	priv->tao = (hdr->desc->current != 0);
+	g_free (hdr);
+	hdr = NULL;
+
+	BRASERO_MEDIA_LOG ("Incremental feature is %s", priv->tao? "supported":"not supported");
+
 	/* Only DVD-R(W) support simulation */
-	BRASERO_MEDIA_LOG ("Checking simulate (DVD-R/W)");
+	BRASERO_MEDIA_LOG ("Checking (DVD-R(W) simulate)");
 	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_WRT_DVD_LESS,
 							 &hdr,
@@ -939,8 +959,11 @@ brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
 	}
 
 	desc = hdr->desc;
-	if (!desc->current)
-		BRASERO_MEDIA_LOG ("Feature is not current");
+
+	/* NOTE: SAO feature is always supported if this feature is current
+	 * See MMC5 5.3.25 Write feature parameters */
+	priv->sao = (desc->current != 0);
+	BRASERO_MEDIA_LOG ("SAO feature is %s", priv->sao? "supported":"not supported");
 
 	less_wrt_desc = (BraseroScsiDVDRWlessWrtDesc *) desc->data;
 	priv->dummy_sao = less_wrt_desc->dummy != 0;
@@ -961,7 +984,7 @@ brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
  */
 
 static void
-brasero_medium_test_simulate_2A (BraseroMedium *self,
+brasero_medium_test_2A_simulate (BraseroMedium *self,
 				 BraseroDeviceHandle *handle,
 				 BraseroScsiErrCode *code)
 {
@@ -973,6 +996,7 @@ brasero_medium_test_simulate_2A (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
+	/* FIXME: we need to get a way to get the write types */
 	result = brasero_spc1_mode_sense_get_page (handle,
 						   BRASERO_SPC_PAGE_STATUS,
 						   &data,
@@ -1008,18 +1032,18 @@ brasero_medium_init_caps (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	/* These special media don't support/need burnfree and simulation */
+	/* These special media don't support/need burnfree, simulation, tao/sao */
 	if (priv->info & (BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_BD))
 		return;
 
 	if (priv->info & BRASERO_MEDIUM_CD) {
 		/* we have to do both */
-		res = brasero_medium_test_simulate_CD_SAO (self, handle, code);
+		res = brasero_medium_test_CD_SAO_simulate (self, handle, code);
 		if (res)
-			brasero_medium_test_simulate_CD_TAO (self, handle, code);
+			brasero_medium_test_CD_TAO_simulate (self, handle, code);
 	}
 	else
-		res = brasero_medium_test_simulate_DVDRW (self, handle, code);
+		res = brasero_medium_test_DVDRW_incremental_simulate (self, handle, code);
 
 	BRASERO_MEDIA_LOG ("Tested simulation %d %d, burnfree %d",
 			  priv->dummy_tao,
@@ -1031,7 +1055,7 @@ brasero_medium_init_caps (BraseroMedium *self,
 
 	/* it didn't work out as expected use fallback */
 	BRASERO_MEDIA_LOG ("Using fallback 2A page for testing simulation and burnfree");
-	brasero_medium_test_simulate_2A (self, handle, code);
+	brasero_medium_test_2A_simulate (self, handle, code);
 
 	BRASERO_MEDIA_LOG ("Re-tested simulation %d %d, burnfree %d",
 			  priv->dummy_tao,
@@ -3226,6 +3250,45 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
 		return priv->write_command != 0;
 
 	return FALSE;
+}
+/**
+ * brasero_medium_can_use_sao:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium supports SAO.
+ *
+ * Return value: a #gboolean. TRUE if the medium can use SAO write mode , FALSE otherwise.
+ *
+ **/
+gboolean
+brasero_medium_can_use_sao (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->sao;
+}
+
+/**
+ * brasero_medium_can_use_tao:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium supports TAO.
+ *
+ * Return value: a #gboolean. TRUE if the medium can use TAO write mode, FALSE otherwise.
+ *
+ **/
+gboolean
+brasero_medium_can_use_tao (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->tao;
 }
 
 /**

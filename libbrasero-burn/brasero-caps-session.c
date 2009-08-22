@@ -1308,9 +1308,16 @@ brasero_caps_get_flags (BraseroCaps *caps,
 	return retval;
 }
 
-static BraseroBurnFlag
+/* FIXME: make this public */
+gboolean
+brasero_medium_can_use_sao (BraseroMedium *medium);
+gboolean
+brasero_medium_can_use_tao (BraseroMedium *medium);
+
+static void
 brasero_medium_supported_flags (BraseroMedium *medium,
-				BraseroBurnFlag flags)
+				BraseroBurnFlag *supported_flags,
+                                BraseroBurnFlag *compulsory_flags)
 {
 	BraseroMedia media;
 
@@ -1318,43 +1325,53 @@ brasero_medium_supported_flags (BraseroMedium *medium,
 
 	/* This is always FALSE */
 	if (media & BRASERO_MEDIUM_PLUS)
-		flags &= ~BRASERO_BURN_FLAG_DUMMY;
+		(*supported_flags) &= ~BRASERO_BURN_FLAG_DUMMY;
 
 	/* Simulation is only possible according to write modes. This mode is
 	 * mostly used by cdrecord/wodim for CLONE images. */
 	else if (media & BRASERO_MEDIUM_DVD) {
 		if (!brasero_medium_can_use_dummy_for_sao (medium))
-			flags &= ~BRASERO_BURN_FLAG_DUMMY;
+			(*supported_flags) &= ~BRASERO_BURN_FLAG_DUMMY;
 	}
-	else if (flags & BRASERO_BURN_FLAG_DAO) {
+	else if ((*supported_flags) & BRASERO_BURN_FLAG_DAO) {
 		if (!brasero_medium_can_use_dummy_for_sao (medium))
-			flags &= ~BRASERO_BURN_FLAG_DUMMY;
+			(*supported_flags) &= ~BRASERO_BURN_FLAG_DUMMY;
 	}
 	else if (!brasero_medium_can_use_dummy_for_tao (medium))
-		flags &= ~BRASERO_BURN_FLAG_DUMMY;
+		(*supported_flags) &= ~BRASERO_BURN_FLAG_DUMMY;
+
+	if (!brasero_medium_can_use_tao (medium)) {
+		(*supported_flags) &= ~BRASERO_BURN_FLAG_MULTI;
+
+		if (brasero_medium_can_use_sao (medium))
+			(*compulsory_flags) |= BRASERO_BURN_FLAG_DAO;
+		else
+			(*supported_flags) &= ~BRASERO_BURN_FLAG_DAO;
+	}
 
 	if (!brasero_medium_can_use_burnfree (medium))
-		flags &= ~BRASERO_BURN_FLAG_BURNPROOF;
-
-	return flags;
+		(*supported_flags) &= ~BRASERO_BURN_FLAG_BURNPROOF;
 }
 
-static BraseroBurnFlag
-brasero_burn_caps_flags_update_for_drive (BraseroBurnFlag flags,
-					  BraseroBurnSession *session)
+static void
+brasero_burn_caps_flags_update_for_drive (BraseroBurnSession *session,
+                                          BraseroBurnFlag *supported_flags,
+                                          BraseroBurnFlag *compulsory_flags)
 {
 	BraseroDrive *drive;
 	BraseroMedium *medium;
 
 	drive = brasero_burn_session_get_burner (session);
 	if (!drive)
-		return flags;
+		return;
 
 	medium = brasero_drive_get_medium (drive);
 	if (!medium)
-		return TRUE;
+		return;
 
-	return brasero_medium_supported_flags (medium, flags);
+	brasero_medium_supported_flags (medium,
+	                                supported_flags,
+	                                compulsory_flags);
 }
 
 static BraseroBurnResult
@@ -1761,8 +1778,9 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	supported_flags = brasero_burn_caps_flags_update_for_drive (supported_flags,
-								    session);
+	brasero_burn_caps_flags_update_for_drive (session,
+	                                          &supported_flags,
+	                                          &compulsory_flags);
 
 	if (supported)
 		*supported = supported_flags;
