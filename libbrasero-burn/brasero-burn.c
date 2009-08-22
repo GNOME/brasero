@@ -145,6 +145,8 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
 #define MAX_EJECT_ATTEMPTS	5
 #define MAX_MOUNT_ATTEMPTS	40
+#define MAX_REPROBE_ATTEMPTS	80
+
 #define MOUNT_TIMEOUT		500
 
 static GObjectClass *parent_class = NULL;
@@ -257,6 +259,7 @@ brasero_burn_sleep (BraseroBurn *burn, gint msec)
 static BraseroBurnResult
 brasero_burn_reprobe (BraseroBurn *burn)
 {
+	guint attempts = 0;
 	BraseroMedium *medium;
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
@@ -267,8 +270,10 @@ brasero_burn_reprobe (BraseroBurn *burn)
 
 	/* reprobe the medium and wait for it to be probed */
 	brasero_drive_reprobe (priv->dest);
-	while ((medium = brasero_drive_get_medium (priv->dest)) == NULL)
+	while (attempts < MAX_REPROBE_ATTEMPTS && (medium = brasero_drive_get_medium (priv->dest)) == NULL) {
 		result = brasero_burn_sleep (burn, 250);
+		attempts ++;
+	}
 
 	return result;
 }
