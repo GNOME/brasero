@@ -2986,8 +2986,15 @@ brasero_medium_probe_thread (gpointer self)
 
 		/* NOTE: if we wanted to know the status we'd need to read the 
 		 * error code variable which is currently NULL */
-		while (brasero_spc1_test_unit_ready (handle, NULL) != BRASERO_SCSI_OK) {
-			sleep (1);
+		while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
+			if (code != BRASERO_SCSI_NOT_READY) {
+				priv->probe = NULL;
+				brasero_device_handle_close (handle);
+				BRASERO_MEDIA_LOG ("Device does not respond");
+				break;
+			}
+
+			sleep (2);
 
 			if (priv->probe_cancelled) {
 				priv->probe = NULL;
