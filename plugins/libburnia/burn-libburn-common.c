@@ -380,39 +380,69 @@ brasero_libburn_common_status (BraseroJob *self,
 	if (status == BURN_DRIVE_CLOSING_SESSION
 	||  status == BURN_DRIVE_WRITING_LEADOUT) {
 		brasero_job_set_progress (self, 1.0);
+		brasero_job_start_progress (self, FALSE);
 	}
 	else if (status != BURN_DRIVE_ERASING
 	     &&  status != BURN_DRIVE_FORMATTING) {
 		gint64 cur_sector;
 
 		if (ctx->track_num != progress.track) {
-			gchar *string;
-
 			ctx->sectors += ctx->track_sectors;
 			ctx->track_sectors = progress.sectors;
 			ctx->track_num = progress.track;
-
-			string = g_strdup_printf (_("Writing track %02i"), progress.track);
-			brasero_job_set_current_action (self,
-							BRASERO_BURN_ACTION_RECORDING,
-							string,
-							TRUE);
-			g_free (string);
 		}
 
 		cur_sector = progress.sector + ctx->sectors;
-		brasero_job_set_written_session (self, (gint64) ((gint64) cur_sector * 2048ULL));
+
+		/* With some media libburn writes only 16 blocks then wait
+		 * which disrupt the whole process of time reporting */
+		if (cur_sector > 32) {
+			goffset total_sectors;
+
+			brasero_job_get_session_output_size (self, &total_sectors, NULL);
+
+			/* Sometimes we have to wait for a long
+			 * time while libburn sync the cache.
+			 * Tell the use we haven't given up. */
+			if (cur_sector != total_sectors) {
+				gchar *string;
+
+				brasero_job_set_written_session (self, (gint64) ((gint64) cur_sector * 2048ULL));
+				brasero_job_start_progress (self, FALSE);
+
+				string = g_strdup_printf (_("Writing track %02i"), progress.track + 1);
+				brasero_job_set_current_action (self,
+								BRASERO_BURN_ACTION_RECORDING,
+								string,
+								TRUE);
+				g_free (string);
+			}
+			else
+				brasero_job_set_current_action (self,
+				                                BRASERO_BURN_ACTION_FIXATING,
+								NULL,
+								FALSE);
+		}
+		else
+			brasero_job_set_current_action (self,
+							BRASERO_BURN_ACTION_START_RECORDING,
+							NULL,
+							FALSE);
 	}
-	else {
+	else if (progress.sector > 0) {
 		gdouble fraction;
+
+		/* NOTE: there is a strange behaviour which
+		 * leads to progress being reset after 30%
+		 * approx when blanking seq DVD-RW */
 
 		/* when erasing only set progress */
 		fraction = (gdouble) (progress.sector) /
 			   (gdouble) (progress.sectors);
 
 		brasero_job_set_progress (self, fraction);
+		brasero_job_start_progress (self, FALSE);
 	}
 
-	brasero_job_start_progress (self, FALSE);
 	return BRASERO_BURN_RETRY;
 }
