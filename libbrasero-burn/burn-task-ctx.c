@@ -623,14 +623,17 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 	priv->progress_changed = 1;
 
 	if (priv->use_average_rate) {
-		priv->progress = progress;
+		if (priv->progress < progress)
+			priv->progress = progress;
+
 		return BRASERO_BURN_OK;
 	}
 
 	/* here we prefer to use track written bytes instead of progress.
 	 * NOTE: usually plugins will return only one information. */
 	if (priv->last_written) {
-		priv->progress = progress;
+		if (priv->progress < progress)
+			priv->progress = progress;
 		return BRASERO_BURN_OK;
 	}
 
@@ -645,7 +648,9 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 		priv->current_elapsed = elapsed;
 	}
 
-	priv->progress = progress;
+	if (priv->progress < progress)
+		priv->progress = progress;
+
 	return BRASERO_BURN_OK;
 }
 
