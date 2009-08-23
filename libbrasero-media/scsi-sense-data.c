@@ -109,7 +109,7 @@ brasero_sense_data_not_ready (uchar *sense_data, BraseroScsiErrCode *err)
 {
 	BraseroScsiResult res = BRASERO_SCSI_FAILURE;
 
-	switch (SENSE_DATA_ASCQ (sense_data)) {
+	switch (SENSE_DATA_ASC (sense_data)) {
 		case ASC_CODE_NOT_READY:
 			BRASERO_SCSI_SET_ERRCODE (err, BRASERO_SCSI_NOT_READY);
 			break;
