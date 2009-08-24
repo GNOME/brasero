@@ -1805,6 +1805,18 @@ brasero_job_start_progress (BraseroJob *self,
 	return brasero_task_ctx_start_progress (priv->ctx, force);
 }
 
+BraseroBurnResult
+brasero_job_reset_progress (BraseroJob *self)
+{
+	BraseroJobPrivate *priv;
+
+	priv = BRASERO_JOB_PRIVATE (self);
+	if (priv->next)
+		return BRASERO_BURN_ERR;
+
+	return brasero_task_ctx_reset_progress (priv->ctx);
+}
+
 /**
  * these should be used to set the different values of the task by the jobs
  */

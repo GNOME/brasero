@@ -417,14 +417,16 @@ brasero_libburn_common_status (BraseroJob *self,
 								TRUE);
 				g_free (string);
 			}
-			else
+			else {
+				brasero_job_reset_progress (self);
 				brasero_job_set_current_action (self,
 				                                BRASERO_BURN_ACTION_FIXATING,
 								NULL,
 								FALSE);
+			}
 		}
 		else
-			brasero_job_set_current_action (self,
+			     brasero_job_set_current_action (self,
 							BRASERO_BURN_ACTION_START_RECORDING,
 							NULL,
 							FALSE);

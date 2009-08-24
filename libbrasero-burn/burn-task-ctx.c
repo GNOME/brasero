@@ -655,6 +655,40 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 }
 
 BraseroBurnResult
+brasero_task_ctx_reset_progress (BraseroTaskCtx *self)
+{
+	BraseroTaskCtxPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_TASK_CTX_PRIVATE (self);
+
+	priv->progress_changed = 1;
+
+	if (priv->timer) {
+		g_timer_destroy (priv->timer);
+		priv->timer = NULL;
+	}
+
+	priv->dangerous = 0;
+	priv->progress = -1.0;
+	priv->track_bytes = -1;
+	priv->session_bytes = -1;
+
+	priv->current_elapsed = 0;
+	priv->last_written = 0;
+	priv->last_elapsed = 0;
+	priv->last_progress = 0;
+
+	if (priv->times) {
+		g_slist_free (priv->times);
+		priv->times = NULL;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
 brasero_task_ctx_set_current_action (BraseroTaskCtx *self,
 				     BraseroBurnAction action,
 				     const gchar *string,

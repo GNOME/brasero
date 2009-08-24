@@ -272,6 +272,8 @@ BraseroBurnResult
 brasero_job_set_progress (BraseroJob *job,
 			  gdouble progress);
 BraseroBurnResult
+brasero_job_reset_progress (BraseroJob *job);
+BraseroBurnResult
 brasero_job_set_current_action (BraseroJob *job,
 				BraseroBurnAction action,
 				const gchar *string,
