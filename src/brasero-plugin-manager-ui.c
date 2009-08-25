@@ -41,7 +41,7 @@ fy
 
 #include "brasero-plugin.h"
 #include "brasero-plugin-information.h"
-#include "burn-plugin-manager.h"
+#include "brasero-burn-lib.h"
 #include "brasero-plugin-option.h"
 
 typedef enum {
@@ -912,7 +912,6 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	GtkWidget *viewport;
 	GtkWidget *alignment;
 	GtkWidget *vbuttonbox;
-	BraseroPluginManager *manager;
 	BraseroPluginManagerUIPrivate *priv;
 
 	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
@@ -977,8 +976,7 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	plugin_manager_ui_construct_tree (pm);
 
 	/* get the list of available plugins (or installed) */
-	manager = brasero_plugin_manager_get_default ();
-	priv->plugins = brasero_plugin_manager_get_plugins_list (manager);
+	priv->plugins = brasero_burn_library_get_plugins_list ();
 
 	if (!priv->plugins){
 		gtk_widget_set_sensitive (priv->about_button, FALSE);
@@ -997,6 +995,7 @@ brasero_plugin_manager_ui_finalize (GObject *object)
 	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
 
 	if (priv->plugins) {
+		g_slist_foreach (priv->plugins, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->plugins);
 		priv->plugins = NULL;
 	}

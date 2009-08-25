@@ -101,6 +101,7 @@ brasero_plugin_manager_get_plugins_list (BraseroPluginManager *self)
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
+		g_object_ref (plugin);
 		retval = g_slist_prepend (retval, plugin);
 	}
 
