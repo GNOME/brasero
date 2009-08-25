@@ -259,6 +259,15 @@ brasero_burn_library_start (int *argc,
 	return TRUE;
 }
 
+/**
+ * brasero_burn_library_get_plugins_list:
+ * 
+ * This function returns the list of plugins that 
+ * are available to libbrasero-burn.
+ *
+ * Returns: a #GSList that must be destroyed when not needed and each object unreffed.
+ **/
+
 GSList *
 brasero_burn_library_get_plugins_list (void)
 {
