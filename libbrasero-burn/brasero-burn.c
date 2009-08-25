@@ -2088,6 +2088,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 			     gboolean erase_allowed,
 			     GError **error)
 {
+	const gchar *checksum = NULL;
 	BraseroBurnFlag session_flags;
 	BraseroTrack *track = NULL;
 	BraseroChecksumType type;
@@ -2189,37 +2190,24 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
-	||  type == BRASERO_CHECKSUM_SHA256) {
-		const gchar *checksum = NULL;
-
+	||  type == BRASERO_CHECKSUM_SHA256)
 		checksum = brasero_track_get_checksum (track);
+	else if (type == BRASERO_CHECKSUM_MD5_FILE)
+		checksum = BRASERO_MD5_FILE;
+	else if (type == BRASERO_CHECKSUM_SHA1_FILE)
+		checksum = BRASERO_SHA1_FILE;
+	else if (type == BRASERO_CHECKSUM_SHA256_FILE)
+		checksum = BRASERO_SHA256_FILE;
 
-		/* the idea is to push a new track on the stack with
-		 * the current disc burnt and the checksum generated
-		 * during the session recording */
-		track = BRASERO_TRACK (brasero_track_disc_new ());
-		brasero_track_set_checksum (BRASERO_TRACK (track), type, checksum);
-	}
-	else if (type == BRASERO_CHECKSUM_MD5_FILE) {
-		track = BRASERO_TRACK (brasero_track_disc_new ());
-		brasero_track_set_checksum (BRASERO_TRACK (track),
-					    type,
-					    BRASERO_MD5_FILE);
-	}
-	else if (type == BRASERO_CHECKSUM_SHA1_FILE) {
-		track = BRASERO_TRACK (brasero_track_disc_new ());
-		brasero_track_set_checksum (BRASERO_TRACK (track),
-					    type,
-					    BRASERO_SHA1_FILE);
-	}
-	else if (type == BRASERO_CHECKSUM_SHA256_FILE) {
-		track = BRASERO_TRACK (brasero_track_disc_new ());
-		brasero_track_set_checksum (BRASERO_TRACK (track),
-					    type,
-					    BRASERO_SHA256_FILE);
-	}
-
+	/* the idea is to push a new track on the stack with
+	 * the current disc burnt and the checksum generated
+	 * during the session recording */
 	brasero_burn_session_push_tracks (priv->session);
+
+	track = BRASERO_TRACK (brasero_track_disc_new ());
+	brasero_track_set_checksum (BRASERO_TRACK (track),
+	                            type,
+	                            checksum);
 
 	brasero_track_disc_set_drive (BRASERO_TRACK_DISC (track), brasero_burn_session_get_burner (priv->session));
 	brasero_burn_session_add_track (priv->session, track, NULL);
@@ -2227,6 +2215,8 @@ brasero_burn_record_session (BraseroBurn *burn,
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroBurnSession refs it. */
 	g_object_unref (track);
+
+	BRASERO_BURN_DEBUG (burn, "Preparing to checksum (type %i %s)", type, checksum);
 
 	/* this may be necessary for the drive to settle down and possibly be
 	 * mounted by gnome-volume-manager (just temporarily) */
