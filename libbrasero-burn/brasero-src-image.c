@@ -535,6 +535,7 @@ update_gconf:
 				 NULL);
 	g_object_unref (client);
 
+	g_object_unref (data);
 }
 
 static void
@@ -570,7 +571,7 @@ brasero_src_image_init (BraseroSrcImage *object)
 					 0,
 					 priv->cancel,
 					 brasero_src_image_set_parent_directory,
-					 object);
+					 g_object_ref (object));
 		g_object_unref (file);
 	}
 	g_free (uri);
