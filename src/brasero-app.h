@@ -112,6 +112,13 @@ brasero_app_check (BraseroApp *app,
 		   const gchar *device);
 
 gboolean
+brasero_app_open_project (BraseroApp *app,
+                          const gchar *uri,
+                          gboolean is_playlist,
+                          gboolean warn_user,
+                          gboolean burn);
+
+gboolean
 brasero_app_open_uri (BraseroApp *app,
                       const gchar *uri_arg);
 

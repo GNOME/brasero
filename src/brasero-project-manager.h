@@ -35,6 +35,7 @@
 #include "brasero-medium.h"
 #include "brasero-project-parse.h"
 #include "brasero-project-type-chooser.h"
+#include "brasero-session-cfg.h"
 
 G_BEGIN_DECLS
 
@@ -59,7 +60,6 @@ typedef struct {
 GType brasero_project_manager_get_type ();
 GtkWidget *brasero_project_manager_new ();
 
-
 void
 brasero_project_manager_audio (BraseroProjectManager *manager,
 			       GSList *uris,
@@ -80,11 +80,10 @@ void
 brasero_project_manager_iso (BraseroProjectManager *manager,
 			     const gchar *uri);
 
-BraseroProjectType
-brasero_project_manager_open_project (BraseroProjectManager *manager,
-				      const gchar *uri,
-				      gboolean playlist,
-				      gboolean burn);
+gboolean
+brasero_project_manager_open_session (BraseroProjectManager *manager,
+                                      BraseroSessionCfg *session,
+                                      gboolean burn);
 
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
@@ -98,9 +97,6 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
 				      gchar **saved_uri,
 				      gboolean cancellable);
-gboolean
-brasero_project_manager_load_session (BraseroProjectManager *manager,
-				      const gchar *path);
 
 void
 brasero_project_manager_register_ui (BraseroProjectManager *manager,

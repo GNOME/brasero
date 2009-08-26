@@ -32,6 +32,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-session-cfg.h"
+
 #include "brasero-disc.h"
 #include "brasero-uri-container.h"
 #include "brasero-project-type-chooser.h"
@@ -82,17 +84,14 @@ brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source);
 
 BraseroProjectType
-brasero_project_open_project (BraseroProject *project,
-			      const gchar *uri,
-			      gboolean playlist);
+brasero_project_open_session (BraseroProject *project,
+			      BraseroSessionCfg *session);
 
 gboolean
 brasero_project_save_project (BraseroProject *project);
 gboolean
 brasero_project_save_project_as (BraseroProject *project);
 
-BraseroProjectType
-brasero_project_load_session (BraseroProject *project, const gchar *uri);
 gboolean
 brasero_project_save_session (BraseroProject *project,
 			      const gchar *uri,

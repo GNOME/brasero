@@ -1127,6 +1127,44 @@ on_configure_event_cb (GtkWidget *widget,
 	return FALSE;
 }
 
+gboolean
+brasero_app_open_project (BraseroApp *app,
+                          const gchar *uri,
+                          gboolean is_playlist,
+                          gboolean warn_user,
+                          gboolean burn)
+{
+	BraseroSessionCfg *session;
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+
+	session = brasero_session_cfg_new ();
+
+#ifdef BUILD_PLAYLIST
+
+	if (is_playlist) {
+		if (!brasero_project_open_audio_playlist_project (uri, BRASERO_BURN_SESSION (session), warn_user))
+			return FALSE;
+	}
+	else
+
+#endif
+	
+	if (!brasero_project_open_project_xml (uri, BRASERO_BURN_SESSION (session), warn_user))
+		return FALSE;
+
+	if (!priv->projects) {
+		brasero_app_create_mainwin (app);
+		brasero_project_manager_open_session (BRASERO_PROJECT_MANAGER (priv->projects), session, burn);
+		brasero_app_run_mainwin (app);
+	}
+	else
+		brasero_project_manager_open_session (BRASERO_PROJECT_MANAGER (priv->projects), session, burn);
+
+	return TRUE;
+}
+
 static gboolean
 brasero_app_open_by_mime (BraseroApp *app,
                           const gchar *uri,
@@ -1145,7 +1183,7 @@ brasero_app_open_by_mime (BraseroApp *app,
 	 * installed, it's returned as application/xml, so check that too. */
 	if (!strcmp (mime, "application/x-brasero")
 	||  !strcmp (mime, "application/xml"))
-		return (brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (priv->projects), uri, FALSE, FALSE) != BRASERO_PROJECT_TYPE_INVALID);
+		return brasero_app_open_project (app, uri, FALSE, TRUE, FALSE);
 
 #ifdef BUILD_PLAYLIST
 
@@ -1153,7 +1191,7 @@ brasero_app_open_by_mime (BraseroApp *app,
 	     ||  !strcmp (mime, "audio/x-ms-asx")
 	     ||  !strcmp (mime, "audio/x-mp3-playlist")
 	     ||  !strcmp (mime, "audio/x-mpegurl"))
-		return (brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (priv->projects), uri, TRUE, FALSE) != BRASERO_PROJECT_TYPE_INVALID);
+		return brasero_app_open_project (app, uri, TRUE,  TRUE, FALSE);
 
 #endif
 

@@ -260,30 +260,6 @@ brasero_handle_burn_uri (BraseroApp *app,
 	return;
 }
 
-static gboolean
-brasero_app_open_project (BraseroApp *app,
-			  const gchar *path,
-			  gboolean playlist,
-			  gboolean burn)
-{
-	BraseroProjectType type;
-	GtkWidget *manager;
-	GFile *file;
-	gchar *uri;
-
-	brasero_app_create_mainwin (app);
-
-	file = g_file_new_for_commandline_arg (path);
-	uri = g_file_get_uri (file);
-	g_object_unref (file);
-
-	manager = brasero_app_get_project_manager (app);
-	type = brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (manager), uri, playlist, burn);
-	g_free (uri);
-
-	return (type != BRASERO_PROJECT_TYPE_INVALID);
-}
-
 static void
 brasero_app_parse_options (BraseroApp *app)
 {
@@ -334,10 +310,10 @@ brasero_app_parse_options (BraseroApp *app)
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
 	}
 	else if (project_uri) {
-		brasero_app_open_project (app, project_uri, FALSE, FALSE);
+		brasero_app_open_project (app, project_uri, FALSE, TRUE, FALSE);
 	}
 	else if (burn_project_uri) {
-		brasero_app_open_project (app, burn_project_uri, FALSE, TRUE);
+		brasero_app_open_project (app, burn_project_uri, FALSE, TRUE, TRUE);
 
 		if (g_remove (burn_project_uri) != 0) {
 			gchar *path;
@@ -352,7 +328,7 @@ brasero_app_parse_options (BraseroApp *app)
 #ifdef BUILD_PLAYLIST
 
 	else if (playlist_uri) {
-		brasero_app_open_project (app, playlist_uri, TRUE, FALSE);
+		brasero_app_open_project (app, playlist_uri, TRUE, TRUE, FALSE);
 	}
 
 #endif

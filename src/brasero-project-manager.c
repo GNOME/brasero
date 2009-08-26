@@ -751,19 +751,18 @@ brasero_project_manager_iso (BraseroProjectManager *manager,
 					TRUE);
 }
 
-BraseroProjectType
-brasero_project_manager_open_project (BraseroProjectManager *manager,
-				      const gchar *uri,
-				      gboolean playlist,
-				      gboolean burn)
+gboolean
+brasero_project_manager_open_session (BraseroProjectManager *manager,
+                                      BraseroSessionCfg *session,
+                                      gboolean burn)
 {
 	GtkAction *action;
 	BraseroProjectType type;
 
-	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri, playlist);
+	type = brasero_project_open_session (BRASERO_PROJECT (manager->priv->project), session);
 	if (type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
-		return type;
+		return FALSE;
 	}
 
 	brasero_project_manager_switch (manager,
@@ -774,12 +773,12 @@ brasero_project_manager_open_project (BraseroProjectManager *manager,
 
 	if (burn) {
 		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
-		return type;
+		return TRUE;
 	}
 
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 	gtk_action_set_sensitive (action, TRUE);
-	return type;
+	return TRUE;
 }
 
 static void
@@ -829,30 +828,22 @@ brasero_project_manager_empty (BraseroProjectManager *manager)
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 }
 
-gboolean
-brasero_project_manager_load_session (BraseroProjectManager *manager,
-				      const gchar *path)
-{
-    	if (path) {
-		gchar *uri;
-		BraseroProjectType type;
-
-		uri = g_filename_to_uri (path, NULL, NULL);
-    		type = brasero_project_load_session (BRASERO_PROJECT (manager->priv->project), uri);
-		g_free (uri);
-
-		brasero_project_manager_switch (manager, type, NULL, NULL, FALSE);
-	}
-
-    	return TRUE;
-}
-
 static void
 brasero_project_manager_last_saved_clicked_cb (BraseroProjectTypeChooser *chooser,
 					       const gchar *path,
 					       BraseroProjectManager *manager)
 {
-	brasero_project_manager_load_session (manager, path);
+	if (path) {
+		gchar *uri;
+
+		uri = g_filename_to_uri (path, NULL, NULL);
+		brasero_app_open_project (brasero_app_get_default (),
+		                          uri,
+		                          FALSE, // not a playlist
+		                          FALSE, // should work so don't warn user
+		                          FALSE); // don't burn right away
+		g_free (uri);
+	}
 }
 
 gboolean

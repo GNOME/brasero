@@ -1606,12 +1606,16 @@ brasero_project_reset (BraseroProject *project)
 }
 
 static void
-brasero_project_new_session (BraseroProject *project)
+brasero_project_new_session (BraseroProject *project,
+                             BraseroSessionCfg *session)
 {
 	if (project->priv->session)
 		brasero_project_reset (project);
 
-	project->priv->session = brasero_session_cfg_new ();
+	if (session)
+		project->priv->session = g_object_ref (session);
+	else
+		project->priv->session = brasero_session_cfg_new ();
 
 	/* NOTE: "is-valid" is emitted whenever there is a change in the
 	 * contents of the session. So no need to connect to track-added, ... */
@@ -1695,7 +1699,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 void
 brasero_project_set_audio (BraseroProject *project, GSList *uris)
 {
-	brasero_project_new_session (project);
+	brasero_project_new_session (project, NULL);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
 
 	for (; uris; uris = uris->next) {
@@ -1710,7 +1714,7 @@ void
 brasero_project_set_data (BraseroProject *project,
 			  GSList *uris)
 {
-	brasero_project_new_session (project);
+	brasero_project_new_session (project, NULL);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_DATA);
 
 	for (; uris; uris = uris->next) {
@@ -1724,7 +1728,7 @@ brasero_project_set_data (BraseroProject *project,
 void
 brasero_project_set_video (BraseroProject *project, GSList *uris)
 {
-	brasero_project_new_session (project);
+	brasero_project_new_session (project, NULL);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_VIDEO);
 
 	for (; uris; uris = uris->next) {
@@ -2281,30 +2285,15 @@ brasero_project_get_session_type (BraseroProject *project)
 
 /******************************* Projects **************************************/
 BraseroProjectType
-brasero_project_open_project_real (BraseroProject *project,
-				   const gchar *uri,	/* escaped */
-				   gboolean playlist,
-				   gboolean warn_user)
+brasero_project_open_session (BraseroProject *project,
+                              BraseroSessionCfg *session)
 {
 	GValue *value;
 	BraseroProjectType type;
 
-	brasero_project_new_session (project);
+	brasero_project_new_session (project, session);
 
-#ifdef BUILD_PLAYLIST
-
-	if (playlist) {
-		if (!brasero_project_open_audio_playlist_project (uri, BRASERO_BURN_SESSION (project->priv->session), warn_user))
-			return BRASERO_PROJECT_TYPE_INVALID;
-	}
-	else
-
-#endif
-	
-	if (!brasero_project_open_project_xml (uri, BRASERO_BURN_SESSION (project->priv->session), warn_user))
-		return BRASERO_PROJECT_TYPE_INVALID;
-
-        type = brasero_project_get_session_type (project);
+	type = brasero_project_get_session_type (project);
         if (type == BRASERO_PROJECT_TYPE_INVALID)
                 return type;
 
@@ -2335,27 +2324,6 @@ brasero_project_open_project_real (BraseroProject *project,
 	project->priv->modified = 0;
 
 	return type;
-}
-
-BraseroProjectType
-brasero_project_open_project (BraseroProject *project,
-			      const gchar *uri,
-			      gboolean playlist)	/* escaped */
-{
-	BraseroProjectType type;
-
-	type = brasero_project_open_project_real (project, uri, playlist, TRUE);
-	if (type != BRASERO_PROJECT_TYPE_INVALID && uri)
-		brasero_project_set_uri (project, uri, type);
-
-	return type;
-}
-
-BraseroProjectType
-brasero_project_load_session (BraseroProject *project,
-			      const gchar *uri)
-{
-	return brasero_project_open_project_real (project, uri, FALSE, FALSE);
 }
 
 /******************************** save project *********************************/
