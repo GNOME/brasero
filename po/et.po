@@ -1,18 +1,20 @@
-# Brasero eesti keele tõlge
-# Estonian translation of Brasero CD burner
+# Brasero CD-kirjutaja eesti keele tõlge.
+# Estonian translation of Brasero CD burner.
 #
 # Copyright (C) 2008-2009 The GNOME Project.
 # This file is distributed under the same license as the Brasero package.
+#
 # Mattias Põldaru <mahfiaz gmail com>, 2008-2009.
 # Priit Laes <plaes plaes org>, 2009.
+# Ivar Smolin <okul linux ee>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: brasero\n"
+"Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-08-06 17:23+0000\n"
-"PO-Revision-Date: 2009-08-06 22:41+0300\n"
+"POT-Creation-Date: 2009-08-24 19:00+0000\n"
+"PO-Revision-Date: 2009-08-25 20:48+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -754,10 +756,13 @@ msgid "_Burn"
 msgstr "_Kirjuta"
 
 msgid "Select a disc to write to"
-msgstr "Vali plaat, millele kirjutada"
+msgstr "Plaadi valimine, millele kirjutada"
 
 msgid "Disc Burning Setup"
 msgstr "Plaadi kirjutamise sätted"
+
+msgid "Video Options"
+msgstr "Video valikud"
 
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
@@ -786,7 +791,7 @@ msgstr "Tõmmise kirjutamise sätted"
 
 #. pack everything
 msgid "Select a disc image to write"
-msgstr "Vali tõmmis, mida kirjutada"
+msgstr "Kirjutatava tõmmise valimine"
 
 msgid "CD/DVD Copy Options"
 msgstr "CD/DVD kopeerimise valikud"
@@ -795,7 +800,7 @@ msgid "_Copy"
 msgstr "_Kopeeri"
 
 msgid "Select disc to copy"
-msgstr "Vali plaat, mida kopeerida"
+msgstr "Kopeeritava plaadi valimine"
 
 msgid "Burning CD/DVD"
 msgstr "CD/DVD kirjutamine"
@@ -869,6 +874,15 @@ msgstr "Tundmatu lugu"
 #. * and every word has a different tag.
 msgid "by"
 msgstr "millega"
+
+msgid "SVCD image"
+msgstr "SVCD tõmmis"
+
+msgid "VCD image"
+msgstr "VCD tõmmis"
+
+msgid "Video DVD image"
+msgstr "Video-DVD tõmmis"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
@@ -991,20 +1005,11 @@ msgstr "Tõmmise tüüp:"
 msgid "Autodetect"
 msgstr "Isetuvastus"
 
-msgid "Video DVD image"
-msgstr "Video-DVD tõmmis"
-
 msgid "ISO9660 image"
 msgstr "ISO9660 tõmmis"
 
 msgid "Readcd/Readom image"
 msgstr "Readcd/Readom tõmmis"
-
-msgid "VCD image"
-msgstr "VCD tõmmis"
-
-msgid "SVCD image"
-msgstr "SVCD tõmmis"
 
 msgid "Cue image"
 msgstr "Cue tõmmis"
@@ -1243,7 +1248,7 @@ msgid "_Color"
 msgstr "_Värvus"
 
 msgid "Solid color"
-msgstr "Ühtlane värv"
+msgstr "Ühtlane värvus"
 
 msgid "Horizontal gradient"
 msgstr "Horisontaalne üleminek"
@@ -1269,7 +1274,7 @@ msgid "Image style:"
 msgstr "Tõmmise stiil:"
 
 msgid "Centered"
-msgstr "Keskele"
+msgstr "Keskel"
 
 msgid "Tiled"
 msgstr "Korduv"
@@ -1307,7 +1312,7 @@ msgid "The image could not be loaded."
 msgstr "Tõmmist pole võimalik laadida."
 
 msgid "Pick a Color"
-msgstr "Vali värv"
+msgstr "Värvuse valimine"
 
 #, c-format
 msgid "Directory could not be created (%s)"
@@ -1418,8 +1423,8 @@ msgstr "CD-R"
 msgid "CD-RW"
 msgstr "CD-RW"
 
-msgid "DVDROM"
-msgstr "DVDROM"
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
 
 msgid "DVD-R"
 msgstr "DVD-R"
@@ -1701,7 +1706,7 @@ msgid "P_lugins"
 msgstr "P_luginad"
 
 msgid "Choose plugins for brasero"
-msgstr "Vali brasero jaoks pluginad"
+msgstr "Brasero jaoks pluginate valimine"
 
 msgid "E_ject"
 msgstr "_Väljasta"
@@ -1719,7 +1724,7 @@ msgid "_Check Integrity..."
 msgstr "_Kontrolli terviklust..."
 
 msgid "Check data integrity of disc"
-msgstr "Kontrolli plaadi andmete terviklust"
+msgstr "Plaadi andmete tervikluse kontrollimine"
 
 msgid "Quit Brasero"
 msgstr "Brasero sulgemine"
@@ -1728,7 +1733,7 @@ msgid "_Contents"
 msgstr "_Sisukord"
 
 msgid "Display help"
-msgstr "Kuva abi"
+msgstr "Abiteabe kuvamine"
 
 msgid "About"
 msgstr "Programmist lähemalt"
@@ -1784,13 +1789,14 @@ msgstr "Brasero kodulehekülg"
 msgid "translator-credits"
 msgstr ""
 "Mattias Põldaru <mahfiaz gmail com>, 2008-2009.\n"
-"Priit Laes <plaes plaes org>, 2009"
+"Priit Laes <plaes plaes org>, 2009.\n"
+"Ivar Smolin <okul linux ee>, 2009."
 
 msgid "_Recent Projects"
 msgstr "_Hiljutised projektid"
 
 msgid "Display the projects recently opened"
-msgstr "Kuva hiljuti avatud projektid"
+msgstr "Hiljuti avatud projektide kuvamine"
 
 msgid "Brasero Disc Burner"
 msgstr "Brasero plaadikirjutaja"
@@ -2150,7 +2156,7 @@ msgstr "_Deaktiveeri kõik"
 #. Use the translated name for the plugin.
 #, c-format
 msgid "Options for plugin %s"
-msgstr "Plugina %s valikud"
+msgstr "Plugina \"%s\" valikud"
 
 msgid "Search:"
 msgstr "Otsing:"
@@ -2292,28 +2298,28 @@ msgid "Those names should be changed and truncated to 64 characters."
 msgstr "Need nimed tuleb muuta ja lühendada 64 märgini."
 
 msgid "_Rename for Full Windows Compatibility"
-msgstr "Ümbernimetamine Windows'iga ühilduvuse saavutamiseks"
+msgstr "Ümber_nimetamine Windows'iga ühilduvuse saavutamiseks"
 
 msgid "_Disable Full Windows Compatibility"
 msgstr "Windows'iga ühilduvuse _keelamine"
 
 #. Translators: %s is the name of the file
 #, c-format
-msgid "Do you really want to replace \"%s\"?"
-msgstr "Kas tahad tõesti faili \"%s\" asendada?"
+msgid "Do you want to replace \"%s\"?"
+msgstr "Kas soovid faili \"%s\" asendada?"
 
 msgid ""
-"A file with the same name is about to be added into the same directory and "
-"will replace it if you accept."
+"A file with this name already exists in the folder.  Replacing it will "
+"overwrite its content (on the disc only)."
 msgstr ""
-"Püüad kataloogi lisada sellist faili, millenimeline on juba olemas. "
-"Nõustumise korral esialgne fail asendatakse."
+"Sama nimega fail on juba selles kataloogis olemas.  Selle asendamine "
+"kirjutab faili sisu üle."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
 #. * Keep is a verb
 msgid "Always K_eep"
-msgstr "Alati _säilita"
+msgstr "Sä_ilita alati"
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -2332,7 +2338,7 @@ msgstr "_Asenda"
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
 msgid "Al_ways Replace"
-msgstr "_Alati asenda"
+msgstr "Asenda ala_ti"
 
 #, c-format
 msgid ""
@@ -2445,29 +2451,29 @@ msgid "Movies"
 msgstr "Filmid"
 
 msgid "P_review"
-msgstr "_Eelvaade"
+msgstr "_Eelvaatle"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 msgid "Display video, audio and image preview"
 msgstr "Näita video-, audio- ja piltide eelvaadet"
 
 msgid "_Show Side Panel"
-msgstr "_Külgpaani näitamine"
+msgstr "Näita _külgpaani"
 
 msgid "Show a side pane along the project"
-msgstr "Näita projekti kõrval külgpaani"
+msgstr "Projekti kõrval külgpaani näitamine"
 
 msgid "_Horizontal Layout"
 msgstr "_Rõhtlaotus"
 
 msgid "Set an horizontal layout"
-msgstr "Määra rõhtlaotus"
+msgstr "Rõhtsa laotuse määramine"
 
 msgid "_Vertical Layout"
-msgstr "_Püstjaotus"
+msgstr "_Püstlaotus"
 
 msgid "Set a vertical layout"
-msgstr "Määra püstjaotus"
+msgstr "Püstise laotuse määramine"
 
 msgid "Click to close the side pane"
 msgstr "Klõpsa külgpaani sulgemiseks"
@@ -2515,19 +2521,19 @@ msgstr ""
 "<span size=\"smaller\"><i>%s</i></span> kohta"
 
 msgid "Save current project"
-msgstr "Salvesta praegune projekt"
+msgstr "Käesoleva projekti salvestamine"
 
 msgid "Save _As..."
-msgstr "Salvesta _kui..."
+msgstr "Sal_vesta kui..."
 
 msgid "Save current project to a different location"
-msgstr "Salvesta praegune projekt teise asukohta"
+msgstr "Käesoleva projekti salvestamine teise asukohta"
 
 msgid "_Add Files"
 msgstr "_Lisa faile"
 
 msgid "Add files to the project"
-msgstr "Lisa projekti uusi faile"
+msgstr "Projektile uute failide lisamine"
 
 msgid "_Remove Files"
 msgstr "_Eemalda failid"
@@ -2537,14 +2543,14 @@ msgid "E_mpty Project"
 msgstr "_Tühjenda"
 
 msgid "Remove all files from the project"
-msgstr "Eemalda projektist kõik failid"
+msgstr "Kõikide failide eemaldamine projektist"
 
 #. burn button set insensitive since there are no files in the selection
 msgid "_Burn..."
 msgstr "_Kirjuta"
 
 msgid "Burn the disc"
-msgstr "Kirjuta plaat"
+msgstr "Plaadi kirjutamine"
 
 #. Translators: this messages will appear as a list of possible
 #. * actions, like:
@@ -2618,9 +2624,6 @@ msgstr "Lisa sellese projekti laule."
 
 msgid "Please add files to the project."
 msgstr "Palun lisa sellesse projekti faile."
-
-msgid "Video Options"
-msgstr "Video valikud"
 
 msgid ""
 "Do you really want to create a new project and discard the changes to "
@@ -2722,16 +2725,16 @@ msgid "Save project as an IRIVER playlist"
 msgstr "Salvesta projekt IRIVER lugude nimekirjana"
 
 msgid "_Cover Editor"
-msgstr "_Plaadiümbrise redigeerija"
+msgstr "_Plaadiümbrise redaktor"
 
 msgid "Design and print covers for CDs"
-msgstr "Disaini ja prindi plaadiümbriseid"
+msgstr "Plaadiümbriste kujundamine ja printimine"
 
 msgid "_New Project"
-msgstr "Uus projekt"
+msgstr "_Uus projekt"
 
 msgid "Create a new project"
-msgstr "Loo uus projekt"
+msgstr "Uue projekti loomine"
 
 msgid "_Empty Project"
 msgstr "_Tühjenda projekt"
@@ -2744,7 +2747,8 @@ msgstr "Uus _audioprojekt"
 
 msgid ""
 "Create a traditional audio CD that will be playable on computers and stereos"
-msgstr "Loo tavaline audioplaat, mida saab kuulata nii arvutis kui CD-mängijas"
+msgstr ""
+"Tavalise audioplaadi loomine, mida saab kuulata nii arvutis kui CD-mängijas"
 
 msgid "New _Data Project"
 msgstr "Uus an_dmeprojekt"
@@ -2753,13 +2757,14 @@ msgid ""
 "Create a CD/DVD containing any type of data that can only be read on a "
 "computer"
 msgstr ""
-"Loo CD/DVD plaat suvalist tüüpi andmetest, mida saab lugeda ainult arvutis"
+"CD/DVD-plaadi loomine suvalist tüüpi andmetest. Seda plaati saab lugeda "
+"ainult arvutis"
 
 msgid "New _Video Project"
 msgstr "Uus _videoprojekt"
 
 msgid "Create a video DVD or a SVCD that are readable on TV readers"
-msgstr "Loo video-DVD või SVCD plaat, mida saab vaadata kodukino seadmes"
+msgstr "Video-DVD või SVCD plaadi loomine, mida saab vaadata kodukino seadmes"
 
 msgid "Copy _Disc..."
 msgstr "Kopeeri _plaat..."
@@ -2768,20 +2773,20 @@ msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
 "another CD/DVD"
 msgstr ""
-"Loo 1:1 koopia audio-CD'st või andme-CD/DVD plaadist kõvakettale või teisele "
-"CD/DVD plaadile"
+"1:1 koopia loomine audio-CD'st või CD/DVD andmeplaadist kõvakettale või "
+"teisele CD/DVD-plaadile"
 
 msgid "_Burn Image..."
 msgstr "_Kirjuta tõmmis..."
 
 msgid "Burn an existing CD/DVD image to disc"
-msgstr "Kirjuta olemasolev CD/DVD tõmmis plaadile"
+msgstr "Olemasoleva CD/DVD-tõmmise kirjutamine plaadile"
 
 msgid "_Open..."
 msgstr "_Ava..."
 
 msgid "Open a project"
-msgstr "Ava projekt"
+msgstr "Projekti avamine"
 
 #, c-format
 msgid "%d file selected (%s)"
@@ -2833,7 +2838,7 @@ msgstr "Brasero - Plaadi kopeerimine"
 
 #, c-format
 msgid "The project \"%s\" does not exist"
-msgstr "Projekti \"%s\" ei eksisteeri"
+msgstr "Projekti \"%s\" ei ole olemas"
 
 msgid "Error while loading the project"
 msgstr "Viga projekti laadimisel"
@@ -2971,37 +2976,37 @@ msgid "Progress"
 msgstr "Edenemine"
 
 msgid "Open the specified project"
-msgstr "Ava määratud projekt"
+msgstr "Määratud projekti avamine"
 
 msgid "PROJECT"
 msgstr "PROJEKT"
 
 msgid "Open the specified playlist as an audio project"
-msgstr "Ava määratud lugude nimekiri audioprojektina"
+msgstr "Määratud lugude nimekirja avamine audioprojektina"
 
 msgid "PLAYLIST"
 msgstr "LUGUDE NIMEKIRI"
 
 msgid "Open an audio project adding the URIs given on the command line"
-msgstr "Ava audioprojekt lisades käsureal antud URI'd"
+msgstr "Audioprojekti avamine, lisades käsureal antud URI'd"
 
 msgid "Open a data project adding the URIs given on the command line"
-msgstr "Ava andmeprojekt lisades käsureal antud URI'd"
+msgstr "Andmeprojekti avamine, lisades käsureal antud URI'd"
 
 msgid "Copy a disc"
-msgstr "Kopeeri plaat"
+msgstr "Plaadi kopeerimine"
 
 msgid "PATH TO DEVICE"
 msgstr "SEADME ASUKOHT"
 
 msgid "Cover to use"
-msgstr "Plaadiümbris"
+msgstr "Kasutatav plaadiümbris"
 
 msgid "PATH TO COVER"
 msgstr "PLAADIÜMBRISE ASUKOHT"
 
 msgid "Open a video project adding the URIs given on the command line"
-msgstr "Ava videoprojekt lisades käsureal antud URI'd"
+msgstr "Videoprojekti avamine, lisades käsureal antud URI'd"
 
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr "Kirjutatava tõmmise URI (isetuvastatud)"
@@ -3010,13 +3015,13 @@ msgid "PATH TO PLAYLIST"
 msgstr "LUGUDE NIMEKIRJA ASUKOHT"
 
 msgid "Force brasero to display the project selection page"
-msgstr "Sunni brasero't projektivaliku lehte kuvama"
+msgstr "Brasero sundimine projektivaliku lehte kuvama"
 
 msgid "Open the blank disc dialog"
-msgstr "Ava plaaditühjendamise dialoog"
+msgstr "Plaaditühjendamise dialoogi avamine"
 
 msgid "Open the check disc dialog"
-msgstr "Ava plaadikontrolli dialoog"
+msgstr "Plaadikontrolli dialoogi avamine"
 
 msgid "Burn the contents of burn:// URI"
 msgstr "Kirjuta burn:// URI sisu plaadile"
@@ -3025,7 +3030,7 @@ msgid ""
 "Burn the specified project and REMOVE it.\n"
 "This option is mainly useful for integration use with other applications."
 msgstr ""
-"Määratud projekt kirjutatakse ning EEMALDATAKSE.\n"
+"Määratud projekti kirjutamine ning seejärel EEMALDAMINE.\n"
 "See valik on kasulik peamiselt teiste rakendustega integreerimisel."
 
 msgid "PATH"
@@ -3037,7 +3042,7 @@ msgstr "ASUKOHT"
 #. * xid. In other word, the window with the given xid will become brasero
 #. * parent as if brasero was a dialog for the parent application
 msgid "The XID of the parent window"
-msgstr "Emaakna XID number"
+msgstr "Põhiakna XID-number"
 
 msgid "The project is empty"
 msgstr "See projekt on tühi"
@@ -3140,7 +3145,7 @@ msgid "Writing track %s"
 msgstr "Raja %s kirjutamine"
 
 msgid "Formatting disc"
-msgstr "Plaadi formaatimine"
+msgstr "Plaadi vormindamine"
 
 msgid "Writing cue sheet"
 msgstr "\"Cue sheet\" kirjutamine"
@@ -3368,7 +3373,7 @@ msgid "No silence could be detected"
 msgstr "Vaikust ei suudetud tuvastada"
 
 msgid "An error occured while detecting silences."
-msgstr "Vaikusehetkede tuvastamisel esines viga:"
+msgstr "Vaikusehetkede tuvastamisel esines viga."
 
 msgid "This will remove all previous results."
 msgstr "See eemaldab kõik eelmised tulemused."
@@ -3492,7 +3497,7 @@ msgid "_Eject"
 msgstr "_Väljasta"
 
 msgid "Eject Disc"
-msgstr "Väljasta plaat"
+msgstr "Plaadi väljastamine"
 
 msgid "No file filtered"
 msgstr "Ükski fail ei jäänud filtrisse"
@@ -3575,7 +3580,7 @@ msgid "Allows to check file integrities on a disc"
 msgstr "Võimaldab kontrollida plaadil olevate failide terviklust"
 
 msgid "Hashing algorithm to be used:"
-msgstr "Kasutatav räsi-algoritm:"
+msgstr "Kasutatav räsialgoritm:"
 
 msgid "MD5"
 msgstr "MD5"
@@ -3699,6 +3704,9 @@ msgstr ""
 
 msgid "Use vcdimager to create SVCDs"
 msgstr "Kasuta vcdimager'i, et konverteerida failid SVCD'le kirjutamiseks"
+
+msgid "Brasero Disc Copier"
+msgstr "Brasero plaadikopeerija"
 
 msgid "Copy CDs and DVDs"
 msgstr "Kopeeri CD ja DVD plaate"
