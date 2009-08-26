@@ -1168,7 +1168,8 @@ brasero_app_open_project (BraseroApp *app,
 static gboolean
 brasero_app_open_by_mime (BraseroApp *app,
                           const gchar *uri,
-                          const gchar *mime)
+                          const gchar *mime,
+                          gboolean warn_user)
 {
 	BraseroAppPrivate *priv;
 
@@ -1183,7 +1184,7 @@ brasero_app_open_by_mime (BraseroApp *app,
 	 * installed, it's returned as application/xml, so check that too. */
 	if (!strcmp (mime, "application/x-brasero")
 	||  !strcmp (mime, "application/xml"))
-		return brasero_app_open_project (app, uri, FALSE, TRUE, FALSE);
+		return brasero_app_open_project (app, uri, FALSE, warn_user, FALSE);
 
 #ifdef BUILD_PLAYLIST
 
@@ -1191,7 +1192,7 @@ brasero_app_open_by_mime (BraseroApp *app,
 	     ||  !strcmp (mime, "audio/x-ms-asx")
 	     ||  !strcmp (mime, "audio/x-mp3-playlist")
 	     ||  !strcmp (mime, "audio/x-mpegurl"))
-		return brasero_app_open_project (app, uri, TRUE,  TRUE, FALSE);
+		return brasero_app_open_project (app, uri, TRUE,  warn_user, FALSE);
 
 #endif
 
@@ -1212,7 +1213,8 @@ brasero_app_open_by_mime (BraseroApp *app,
 
 gboolean
 brasero_app_open_uri (BraseroApp *app,
-                      const gchar *uri_arg)
+                      const gchar *uri_arg,
+                      gboolean warn_user)
 {
 	gchar *uri;
 	GFile *file;
@@ -1287,9 +1289,9 @@ brasero_app_open_uri (BraseroApp *app,
 		const gchar *mime;
 
 		mime = g_file_info_get_content_type (info);
-	  	type = brasero_app_open_by_mime (app, uri, mime);
+	  	type = brasero_app_open_by_mime (app, uri, mime, warn_user);
         } 
-	else {
+	else if (warn_user) {
 		gchar *string;
 
 		string = g_strdup_printf (_("The project \"%s\" does not exist"), uri);
@@ -1350,7 +1352,8 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 	/* Make sure it is no longer one shot */
 	brasero_app_open_by_mime (app,
 	                          uri,
-	                          mime);
+	                          mime,
+	                          TRUE);
 	gtk_recent_info_unref (item);
 	g_free (uri);
 }

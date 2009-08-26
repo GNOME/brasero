@@ -120,7 +120,8 @@ brasero_app_open_project (BraseroApp *app,
 
 gboolean
 brasero_app_open_uri (BraseroApp *app,
-                      const gchar *uri_arg);
+                      const gchar *uri_arg,
+                      gboolean warn_user);
 
 GtkWidget *
 brasero_app_get_statusbar1 (BraseroApp *app);

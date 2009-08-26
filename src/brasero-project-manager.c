@@ -810,7 +810,7 @@ brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manag
 	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
 	gtk_widget_destroy (chooser);
 
-	brasero_app_open_uri (brasero_app_get_default (), uri);
+	brasero_app_open_uri (brasero_app_get_default (), uri, TRUE);
 	g_free (uri);
 }
 
@@ -819,7 +819,7 @@ brasero_project_manager_recent_clicked_cb (BraseroProjectTypeChooser *chooser,
 					   const gchar *uri,
 					   BraseroProjectManager *manager)
 {
-	brasero_app_open_uri (brasero_app_get_default (), uri);
+	brasero_app_open_uri (brasero_app_get_default (), uri, TRUE);
 }
 
 void

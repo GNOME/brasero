@@ -407,7 +407,7 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else if (files) {
 		if (g_strv_length (files) == 1
-		&&  brasero_app_open_uri (app, files [0]))
+		&&  brasero_app_open_uri (app, files [0], FALSE))
 			return;
 
 		brasero_app_create_mainwin (app);
