@@ -230,18 +230,16 @@ brasero_src_image_update (BraseroSrcImage *self)
 	status = brasero_status_new ();
 	result = brasero_track_get_status (BRASERO_TRACK (priv->track), status);
 	if (result == BRASERO_BURN_NOT_READY) {
-		g_free (path);
-
 		/* Translators: %s is a path */
 		string = g_strdup_printf (_("\"%s\": loading"), path);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
+		g_free (path);
 		goto end;
 	}
 	else if (result != BRASERO_BURN_OK) {
-		g_free (path);
-
 		/* Translators: %s is a path and image refers to a disc image */
 		string = g_strdup_printf (_("\"%s\": unknown disc image type"), path);
+		g_free (path);
 
 		error = brasero_status_get_error (status);
 		if (!error)
