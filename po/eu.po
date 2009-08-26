@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2009-08-10 20:48+0000\n"
-"PO-Revision-Date: 2009-08-11 12:16+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-26 10:16+0200\n"
+"PO-Revision-Date: 2009-08-26 10:18+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,52 +17,52 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../libbrasero-burn/brasero-video-options.c:388
+#: ../libbrasero-burn/brasero-video-options.c:438
 msgid "Video format:"
 msgstr "Bideo-formatua:"
 
-#: ../libbrasero-burn/brasero-video-options.c:400
+#: ../libbrasero-burn/brasero-video-options.c:449
 msgid "_NTSC"
 msgstr "_NTSC"
 
-#: ../libbrasero-burn/brasero-video-options.c:401
+#: ../libbrasero-burn/brasero-video-options.c:451
 msgid "Format used mostly on the North American Continent"
 msgstr "Gehien bat Ipar Amerika kontinentean erabilia"
 
-#: ../libbrasero-burn/brasero-video-options.c:415
+#: ../libbrasero-burn/brasero-video-options.c:464
 msgid "_PAL/SECAM"
 msgstr "_PAL/SECAM"
 
-#: ../libbrasero-burn/brasero-video-options.c:416
+#: ../libbrasero-burn/brasero-video-options.c:466
 msgid "Format used mostly in Europe"
 msgstr "Gehien bat Europan erabilia"
 
-#: ../libbrasero-burn/brasero-video-options.c:430
+#: ../libbrasero-burn/brasero-video-options.c:480
 msgid "Native _format"
 msgstr "Bertako _formatua"
 
-#: ../libbrasero-burn/brasero-video-options.c:444
+#: ../libbrasero-burn/brasero-video-options.c:495
 msgid "Aspect ratio:"
 msgstr "Aspektu-erlazioa:"
 
-#: ../libbrasero-burn/brasero-video-options.c:456
+#: ../libbrasero-burn/brasero-video-options.c:507
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../libbrasero-burn/brasero-video-options.c:471
+#: ../libbrasero-burn/brasero-video-options.c:522
 msgid "_16:9"
 msgstr "_16:9"
 
 #. Video options for (S)VCD
-#: ../libbrasero-burn/brasero-video-options.c:486
+#: ../libbrasero-burn/brasero-video-options.c:537
 msgid "VCD type:"
 msgstr "VCD mota:"
 
-#: ../libbrasero-burn/brasero-video-options.c:499
+#: ../libbrasero-burn/brasero-video-options.c:550
 msgid "Create a SVCD"
 msgstr "Sortu SVCDa"
 
-#: ../libbrasero-burn/brasero-video-options.c:514
+#: ../libbrasero-burn/brasero-video-options.c:565
 msgid "Create a VCD"
 msgstr "Sortu VCDa"
 
@@ -72,11 +72,11 @@ msgstr ""
 "Arazte-instrukzioak bistaratzen ditu irteera estandarrean Braseroren "
 "grabatzeko liburutegiarentzako"
 
-#: ../libbrasero-burn/burn-debug.c:70
+#: ../libbrasero-burn/burn-debug.c:71
 msgid "Brasero media burning library"
 msgstr "Braseroren euskarriak grabatzeko liburutegia"
 
-#: ../libbrasero-burn/burn-debug.c:71
+#: ../libbrasero-burn/burn-debug.c:72
 msgid "Display options for Brasero-burn library"
 msgstr "Bistaratu Braseroren grabazio liburutegiaren aukerak"
 
@@ -171,8 +171,8 @@ msgid "Analysing files"
 msgstr "Fitxategiak analizatzen"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2428
-#: ../libbrasero-burn/brasero-burn-options.c:372
-#: ../nautilus/nautilus-burn-extension.c:188 ../src/brasero-project.c:1277
+#: ../libbrasero-burn/brasero-burn-options.c:383
+#: ../nautilus/nautilus-burn-extension.c:188 ../src/brasero-project.c:1288
 #: ../libbrasero-burn/brasero-track-data.c:556
 #: ../libbrasero-burn/brasero-track-stream.c:398
 #, c-format
@@ -240,9 +240,9 @@ msgstr "Gstreamer-ek ezin du \"%s\" maneiatu."
 #: ../plugins/transcode/burn-vob.c:743 ../plugins/transcode/burn-vob.c:754
 #: ../plugins/transcode/burn-vob.c:920 ../plugins/transcode/burn-vob.c:972
 #: ../plugins/transcode/burn-vob.c:987 ../plugins/transcode/burn-vob.c:1000
-#: ../plugins/transcode/burn-vob.c:1027 ../plugins/transcode/burn-vob.c:1202
-#: ../plugins/transcode/burn-vob.c:1210 ../plugins/transcode/burn-vob.c:1218
-#: ../plugins/transcode/burn-vob.c:1226
+#: ../plugins/transcode/burn-vob.c:1027 ../plugins/transcode/burn-vob.c:1203
+#: ../plugins/transcode/burn-vob.c:1211 ../plugins/transcode/burn-vob.c:1219
+#: ../plugins/transcode/burn-vob.c:1227
 #, c-format
 msgid "%s element could not be created"
 msgstr "Ezin izan da %s elementua sortu"
@@ -253,7 +253,7 @@ msgstr "Ezin izan da %s elementua sortu"
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-caps-burn.c:64
 #: ../libbrasero-burn/brasero-caps-burn.c:679
-#: ../libbrasero-burn/brasero-burn.c:2678 ../libbrasero-burn/burn-job.c:1215
+#: ../libbrasero-burn/brasero-burn.c:2662 ../libbrasero-burn/burn-job.c:1215
 #: ../libbrasero-burn/burn-job.c:1224
 #: ../libbrasero-burn/burn-mkisofs-base.c:306
 #: ../nautilus/nautilus-burn-extension.c:166 ../src/main.c:204
@@ -269,21 +269,21 @@ msgid "An internal error occured"
 msgstr "Barneko errorea gertatu da"
 
 #: ../libbrasero-burn/brasero-caps-burn.c:777
-#: ../libbrasero-burn/brasero-burn.c:2338
+#: ../libbrasero-burn/brasero-burn.c:2322
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Pista bat bakarra egiazta daiteke aldiko"
 
-#: ../libbrasero-burn/brasero-track-image-cfg.c:411
+#: ../libbrasero-burn/brasero-track-image-cfg.c:422
 msgid "Retrieving image format and size"
 msgstr "Irudiaren formatu eta tamaina eskuratzen"
 
 #. Translators: This is a disc image
-#: ../libbrasero-burn/brasero-track-image-cfg.c:431
+#: ../libbrasero-burn/brasero-track-image-cfg.c:442
 msgid "The format of the disc image could not be identified"
 msgstr "Disko irudiaren formatua ezin izan da identifikatu"
 
-#: ../libbrasero-burn/brasero-track-image-cfg.c:432
+#: ../libbrasero-burn/brasero-track-image-cfg.c:443
 msgid "Please set it manually"
 msgstr "Ezarri ezazu eskuz"
 
@@ -497,7 +497,7 @@ msgid "Please insert a rewritable disc holding data."
 msgstr "Sartu datuak dituen disko birgrabagarria."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:497
-#: ../libbrasero-burn/brasero-burn-options.c:397
+#: ../libbrasero-burn/brasero-burn-options.c:408
 msgid "Please insert a disc holding data."
 msgstr "Sartu datuak dituen diskoa."
 
@@ -560,7 +560,7 @@ msgstr "Sartu gutxienez %i MiB libre dituen CD edo DVD grabagarria."
 #: ../libbrasero-burn/brasero-burn-dialog.c:553
 #: ../libbrasero-burn/brasero-burn-dialog.c:2129
 #: ../libbrasero-burn/brasero-burn-dialog.c:2141
-#: ../libbrasero-burn/brasero-burn-options.c:351 ../src/brasero-project.c:1005
+#: ../libbrasero-burn/brasero-burn-options.c:362 ../src/brasero-project.c:1016
 msgid "Please insert a recordable CD or DVD."
 msgstr "Sartu CD edo DVD grabagarri bat."
 
@@ -587,10 +587,10 @@ msgid "\"%s\" is busy."
 msgstr "\"%s\" lanpetuta dago."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:591
-#: ../libbrasero-burn/brasero-burn.c:1357
-#: ../libbrasero-burn/brasero-burn.c:1391
-#: ../libbrasero-burn/brasero-burn.c:1572
-#: ../libbrasero-burn/brasero-burn.c:1583
+#: ../libbrasero-burn/brasero-burn.c:1362
+#: ../libbrasero-burn/brasero-burn.c:1396
+#: ../libbrasero-burn/brasero-burn.c:1577
+#: ../libbrasero-burn/brasero-burn.c:1588
 #: ../libbrasero-burn/brasero-tool-dialog.c:89
 msgid "Make sure another application is not using it"
 msgstr "Ziurtatu beste aplikazio bat ez dela hura erabiltzen ari."
@@ -672,7 +672,7 @@ msgid "_Change Location"
 msgstr "_Aldatu kokalekua"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:713
-#: ../libbrasero-burn/brasero-image-properties.c:448
+#: ../libbrasero-burn/brasero-image-properties.c:478
 msgid "Location for Image File"
 msgstr "Irudi-fitxategiaren kokalekua"
 
@@ -905,7 +905,7 @@ msgid "There are some more songs left to burn"
 msgstr "Oraindik abesti batzuk falta dira grabatzeko"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2142
-#: ../libbrasero-burn/brasero-burn.c:1697
+#: ../libbrasero-burn/brasero-burn.c:1702
 #: ../plugins/cdrkit/burn-genisoimage.c:201 ../plugins/cdrkit/burn-wodim.c:108
 #: ../plugins/cdrtools/burn-cdrecord.c:108
 #: ../plugins/cdrtools/burn-mkisofs.c:202
@@ -932,7 +932,7 @@ msgstr "_Jarraitu grabazioa"
 msgid "_Cancel Burning"
 msgstr "_Utzi grabazioa"
 
-#: ../libbrasero-burn/brasero-burn-options.c:245 ../src/brasero-project.c:1030
+#: ../libbrasero-burn/brasero-burn-options.c:245 ../src/brasero-project.c:1041
 msgid ""
 "Please insert a recordable CD or DVD if you don't want to write to an image "
 "file."
@@ -940,107 +940,99 @@ msgstr ""
 "Sartu CD edo DVD grabagarria, irudi-fitxategi batean grabatzea nahi ez "
 "baduzu."
 
-#: ../libbrasero-burn/brasero-burn-options.c:327 ../src/brasero-project.c:957
+#: ../libbrasero-burn/brasero-burn-options.c:338 ../src/brasero-project.c:968
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "Hautatutako fitxategiak hainbat euskarritan grabatzea nahi duzu?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:328
-#: ../libbrasero-burn/brasero-burn-options.c:345
+#: ../libbrasero-burn/brasero-burn-options.c:339
+#: ../libbrasero-burn/brasero-burn-options.c:356
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
 "Datuen tamaina handiegia da diskoarentzat, gaingrabatzeko aukera gaituta "
 "egon arren ere."
 
-#: ../libbrasero-burn/brasero-burn-options.c:333 ../src/brasero-project.c:963
+#: ../libbrasero-burn/brasero-burn-options.c:344 ../src/brasero-project.c:974
 msgid "_Burn Several Discs"
 msgstr "_Grabatu hainbat disko"
 
-#: ../libbrasero-burn/brasero-burn-options.c:334 ../src/brasero-project.c:964
+#: ../libbrasero-burn/brasero-burn-options.c:345 ../src/brasero-project.c:975
 msgid "Burn the selection of files across several media"
 msgstr "Grabatu hautatutako fitxategiak hainbat euskarritan"
 
-#: ../libbrasero-burn/brasero-burn-options.c:344 ../src/brasero-project.c:974
+#: ../libbrasero-burn/brasero-burn-options.c:355 ../src/brasero-project.c:985
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Aukeratu beste CD edo DVDa edo sartu berri bat."
 
-#: ../libbrasero-burn/brasero-burn-options.c:352 ../src/brasero-project.c:1006
+#: ../libbrasero-burn/brasero-burn-options.c:363 ../src/brasero-project.c:1017
 msgid "There is no recordable disc inserted."
 msgstr "Ez dago disko grabagarririk sartuta."
 
-#: ../libbrasero-burn/brasero-burn-options.c:358 ../src/brasero-project.c:1020
+#: ../libbrasero-burn/brasero-burn-options.c:369 ../src/brasero-project.c:1031
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "Ez da pistaren informaziorik (artista, titulua,...) grabatuko diskoan"
 
-#: ../libbrasero-burn/brasero-burn-options.c:359 ../src/brasero-project.c:1021
+#: ../libbrasero-burn/brasero-burn-options.c:370 ../src/brasero-project.c:1032
 msgid "This is not supported by the current active burning backend."
 msgstr "Uneko grabazio-motor aktiboak ez du hau onartzen."
 
-#: ../libbrasero-burn/brasero-burn-options.c:371
+#: ../libbrasero-burn/brasero-burn-options.c:382
 #: ../nautilus/nautilus-burn-extension.c:187
 msgid "Please add files."
 msgstr "Gehitu fitxategiak."
 
-#: ../libbrasero-burn/brasero-burn-options.c:377
+#: ../libbrasero-burn/brasero-burn-options.c:388
 msgid "Please add songs."
 msgstr "Gehitu abestiak."
 
-#: ../libbrasero-burn/brasero-burn-options.c:378 ../src/brasero-project.c:1268
+#: ../libbrasero-burn/brasero-burn-options.c:389 ../src/brasero-project.c:1279
 msgid "There are no songs to write to disc"
 msgstr "Ez dago abestirik diskoan grabatzeko"
 
-#: ../libbrasero-burn/brasero-burn-options.c:383
+#: ../libbrasero-burn/brasero-burn-options.c:394
 msgid "Please add videos."
 msgstr "Gehitu bideoak."
 
-#: ../libbrasero-burn/brasero-burn-options.c:384
+#: ../libbrasero-burn/brasero-burn-options.c:395
 msgid "There are no videos to write to disc"
 msgstr "Ez dago bideorik diskoan grabatzeko"
 
-#: ../libbrasero-burn/brasero-burn-options.c:398
+#: ../libbrasero-burn/brasero-burn-options.c:409
 msgid "There is no inserted disc to copy."
 msgstr "Ez dago diskorik sartuta kopiatzeko."
 
-#: ../libbrasero-burn/brasero-burn-options.c:409
+#: ../libbrasero-burn/brasero-burn-options.c:420
 msgid "Please select a disc image."
 msgstr "Hautatu disko-irudi bat."
 
-#: ../libbrasero-burn/brasero-burn-options.c:410
+#: ../libbrasero-burn/brasero-burn-options.c:421
 msgid "There is no selected disc image."
 msgstr "Ez da disko-irudirik hautatu."
 
-#. Translators: this is a disc image not a picture
-#. Translators: this is a disc image, not a picture
-#: ../libbrasero-burn/brasero-burn-options.c:422
-#: ../libbrasero-burn/brasero-src-image.c:166
-msgctxt "disc"
-msgid "Please select another image."
-msgstr "Hautatu beste disko-irudi bat."
-
-#: ../libbrasero-burn/brasero-burn-options.c:423
+#: ../libbrasero-burn/brasero-burn-options.c:434
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Badirudi ez dagoela baliozko disko-irudirik edo baliozko cue fitxategirik."
 
-#: ../libbrasero-burn/brasero-burn-options.c:434
+#: ../libbrasero-burn/brasero-burn-options.c:445
 msgid "Please insert a disc that is not copy protected."
 msgstr "Sartu kopiaren aurkako babesik ez duen diskoa."
 
-#: ../libbrasero-burn/brasero-burn-options.c:435
+#: ../libbrasero-burn/brasero-burn-options.c:446
 msgid "Such a disc cannot be copied without the proper plugins."
 msgstr "Halako disko bat ezin da kopiatu plugin egokirik gabe."
 
-#: ../libbrasero-burn/brasero-burn-options.c:442 ../src/brasero-project.c:1013
+#: ../libbrasero-burn/brasero-burn-options.c:453 ../src/brasero-project.c:1024
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Ordeztu diskoa onartutako CD edo DVD batekin."
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:1014
+#: ../libbrasero-burn/brasero-burn-options.c:454 ../src/brasero-project.c:1025
 msgid "It is not possible to write with the current set of plugins."
 msgstr "Uneko pluginekin ezin da grabatu."
 
-#: ../libbrasero-burn/brasero-burn-options.c:451 ../src/brasero-project.c:985
+#: ../libbrasero-burn/brasero-burn-options.c:462 ../src/brasero-project.c:996
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Diskoaren ahalmena baino gehiago grabatzea nahi duzu?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:452
+#: ../libbrasero-burn/brasero-burn-options.c:463
 msgid ""
 "The data size is too large for the disc and you must remove files from the "
 "selection otherwise.\n"
@@ -1055,19 +1047,19 @@ msgstr ""
 "gaingrabazioa aukera behar dute.\n"
 "OHARRA: aukera horrek hutsegitea eragin dezake."
 
-#: ../libbrasero-burn/brasero-burn-options.c:459 ../src/brasero-project.c:993
+#: ../libbrasero-burn/brasero-burn-options.c:470 ../src/brasero-project.c:1004
 msgid "_Overburn"
 msgstr "_Gaingrabatzea"
 
-#: ../libbrasero-burn/brasero-burn-options.c:460 ../src/brasero-project.c:994
+#: ../libbrasero-burn/brasero-burn-options.c:471 ../src/brasero-project.c:1005
 msgid "Burn beyond the disc reported capacity"
 msgstr "Grabatu diskoaren ahalmena baino gehiago"
 
-#: ../libbrasero-burn/brasero-burn-options.c:471
+#: ../libbrasero-burn/brasero-burn-options.c:482
 msgid "The drive that holds the source disc will also be the one used to record."
 msgstr "Iturburuko diskoa duen unitatea grabatzeko ere erabiliko da."
 
-#: ../libbrasero-burn/brasero-burn-options.c:472
+#: ../libbrasero-burn/brasero-burn-options.c:483
 msgid ""
 "A new recordable disc will be required once the one currently loaded has "
 "been copied."
@@ -1075,26 +1067,30 @@ msgstr ""
 "Unean kargatua dagoen euskarria kopiatzean euskarri grabagarri berri bat "
 "eskatuko da."
 
-#: ../libbrasero-burn/brasero-burn-options.c:522
-#: ../libbrasero-burn/brasero-burn-options.c:647
-#: ../libbrasero-burn/brasero-burn-options.c:666
-#: ../libbrasero-burn/brasero-burn-options.c:778
-#: ../libbrasero-burn/brasero-burn-options.c:799 ../src/brasero-project.c:1371
-#: ../src/brasero-project.c:1428
+#: ../libbrasero-burn/brasero-burn-options.c:533
+#: ../libbrasero-burn/brasero-burn-options.c:658
+#: ../libbrasero-burn/brasero-burn-options.c:678
+#: ../libbrasero-burn/brasero-burn-options.c:798
+#: ../libbrasero-burn/brasero-burn-options.c:819 ../src/brasero-project.c:1382
+#: ../src/brasero-project.c:1440
 msgid "_Burn"
 msgstr "_Grabatu"
 
-#: ../libbrasero-burn/brasero-burn-options.c:565
+#: ../libbrasero-burn/brasero-burn-options.c:576
 msgid "Select a disc to write to"
 msgstr "Hautatu diskoa grabatzeko"
 
-#: ../libbrasero-burn/brasero-burn-options.c:645
-#: ../libbrasero-burn/brasero-burn-options.c:664
-#: ../libbrasero-burn/brasero-burn-options.c:776
+#: ../libbrasero-burn/brasero-burn-options.c:656
+#: ../libbrasero-burn/brasero-burn-options.c:676
+#: ../libbrasero-burn/brasero-burn-options.c:796
 msgid "Disc Burning Setup"
 msgstr "Diskoak grabatzeko konfigurazioa"
 
-#: ../libbrasero-burn/brasero-burn-options.c:700
+#: ../libbrasero-burn/brasero-burn-options.c:688 ../src/brasero-project.c:1402
+msgid "Video Options"
+msgstr "Bideoaren aukerak"
+
+#: ../libbrasero-burn/brasero-burn-options.c:720
 #: ../src/brasero-data-disc.c:617
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
@@ -1104,7 +1100,7 @@ msgstr ""
 "barruan edukitzea?"
 
 #. Translators: %s is the name of the image
-#: ../libbrasero-burn/brasero-burn-options.c:705
+#: ../libbrasero-burn/brasero-burn-options.c:725
 #: ../src/brasero-data-disc.c:623
 #, c-format
 msgid ""
@@ -1114,101 +1110,101 @@ msgstr ""
 "Hautatutako fitxategi bat (\"%s\") bakarrik dago. Disko baten irudia da eta "
 "bere edukia graba daiteke."
 
-#: ../libbrasero-burn/brasero-burn-options.c:710
+#: ../libbrasero-burn/brasero-burn-options.c:730
 #: ../src/brasero-data-disc.c:628
 msgid "Burn as _File"
 msgstr "Grabatu _fitxategi gisa"
 
-#: ../libbrasero-burn/brasero-burn-options.c:712
+#: ../libbrasero-burn/brasero-burn-options.c:732
 #: ../src/brasero-data-disc.c:630
 msgid "Burn _Contents..."
 msgstr "Grabatu _edukia..."
 
-#: ../libbrasero-burn/brasero-burn-options.c:797
+#: ../libbrasero-burn/brasero-burn-options.c:817
 msgid "Image Burning Setup"
 msgstr "Irudiak grabatzeko konfigurazioa"
 
 #. pack everything
-#: ../libbrasero-burn/brasero-burn-options.c:808
+#: ../libbrasero-burn/brasero-burn-options.c:828
 msgid "Select a disc image to write"
 msgstr "Hautatu disko-irudia grabatzeko"
 
-#: ../libbrasero-burn/brasero-burn-options.c:828
+#: ../libbrasero-burn/brasero-burn-options.c:848
 msgid "CD/DVD Copy Options"
 msgstr "CDak/DVDak kopiatzeko aukerak"
 
-#: ../libbrasero-burn/brasero-burn-options.c:830
+#: ../libbrasero-burn/brasero-burn-options.c:850
 msgid "_Copy"
 msgstr "_Kopiatu"
 
-#: ../libbrasero-burn/brasero-burn-options.c:837
+#: ../libbrasero-burn/brasero-burn-options.c:857
 msgid "Select disc to copy"
 msgstr "Hautatu diskoa kopiatzeko"
 
-#: ../libbrasero-burn/brasero-burn.c:159
+#: ../libbrasero-burn/brasero-burn.c:161
 msgid "Burning CD/DVD"
 msgstr "CD/DVDak grabatzea"
 
-#: ../libbrasero-burn/brasero-burn.c:303 ../src/brasero-eject-dialog.c:93
+#: ../libbrasero-burn/brasero-burn.c:308 ../src/brasero-eject-dialog.c:93
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
 msgstr "Ezin da \"%s\" diskoa egotzi"
 
-#: ../libbrasero-burn/brasero-burn.c:345 ../libbrasero-burn/brasero-burn.c:391
+#: ../libbrasero-burn/brasero-burn.c:350 ../libbrasero-burn/brasero-burn.c:396
 #, c-format
 msgid "\"%s\" cannot be unlocked"
 msgstr "Ezin da \"%s\" desblokeatu"
 
-#: ../libbrasero-burn/brasero-burn.c:522 ../libbrasero-burn/brasero-burn.c:647
-#: ../libbrasero-burn/brasero-burn.c:795
-#: ../libbrasero-burn/brasero-burn.c:1993
+#: ../libbrasero-burn/brasero-burn.c:527 ../libbrasero-burn/brasero-burn.c:652
+#: ../libbrasero-burn/brasero-burn.c:800
+#: ../libbrasero-burn/brasero-burn.c:1995
 #, c-format
 msgid "No burner specified"
 msgstr "Ez da grabagailurik zehaztu"
 
-#: ../libbrasero-burn/brasero-burn.c:559
+#: ../libbrasero-burn/brasero-burn.c:564
 #, c-format
 msgid "No source drive specified"
 msgstr "Ez da iturburuko unitaterik zehaztu"
 
-#: ../libbrasero-burn/brasero-burn.c:599
+#: ../libbrasero-burn/brasero-burn.c:604
 msgid "Ongoing copying process"
 msgstr "Kopiatzen ari da"
 
-#: ../libbrasero-burn/brasero-burn.c:603 ../libbrasero-burn/brasero-burn.c:698
-#: ../libbrasero-burn/brasero-burn.c:945
-#: ../libbrasero-burn/brasero-burn.c:1056
+#: ../libbrasero-burn/brasero-burn.c:608 ../libbrasero-burn/brasero-burn.c:703
+#: ../libbrasero-burn/brasero-burn.c:950
+#: ../libbrasero-burn/brasero-burn.c:1061
 #, c-format
 msgid "The drive cannot be locked (%s)"
 msgstr "Unitatea ezin da blokeatu (%s)"
 
-#: ../libbrasero-burn/brasero-burn.c:658
+#: ../libbrasero-burn/brasero-burn.c:663
 #, c-format
 msgid "The drive has no rewriting capabilities"
 msgstr "Unitateak ez du birgrabatzeko ahalmenik"
 
-#: ../libbrasero-burn/brasero-burn.c:694
+#: ../libbrasero-burn/brasero-burn.c:699
 msgid "Ongoing blanking process"
 msgstr "Husten"
 
-#: ../libbrasero-burn/brasero-burn.c:810
+#: ../libbrasero-burn/brasero-burn.c:815
 #, c-format
 msgid "The drive cannot burn or the disc cannot be burnt"
 msgstr "Unitateak ezin du grabatu edo diskoa ezin da grabatu"
 
-#: ../libbrasero-burn/brasero-burn.c:939
-#: ../libbrasero-burn/brasero-dest-selection.c:105
+#: ../libbrasero-burn/brasero-burn.c:944
+#: ../libbrasero-burn/brasero-dest-selection.c:108
 msgid "Ongoing burning process"
 msgstr "Grabatze-prozesua aribidean"
 
-#: ../libbrasero-burn/brasero-burn.c:1052
+#: ../libbrasero-burn/brasero-burn.c:1057
 msgid "Ongoing checksuming operation"
 msgstr "Kontrol-baturak egiten"
 
-#: ../libbrasero-burn/brasero-burn.c:1356
-#: ../libbrasero-burn/brasero-burn.c:1390
-#: ../libbrasero-burn/brasero-burn.c:1571
-#: ../libbrasero-burn/brasero-burn.c:1582 ../libbrasero-media/scsi-error.c:47
+#: ../libbrasero-burn/brasero-burn.c:1361
+#: ../libbrasero-burn/brasero-burn.c:1395
+#: ../libbrasero-burn/brasero-burn.c:1576
+#: ../libbrasero-burn/brasero-burn.c:1587 ../libbrasero-media/scsi-error.c:47
 #: ../libbrasero-burn/brasero-tool-dialog.c:88
 #: ../plugins/cdrdao/burn-cdrdao.c:237 ../plugins/cdrkit/burn-readom.c:102
 #: ../plugins/cdrkit/burn-wodim.c:129 ../plugins/cdrkit/burn-wodim.c:138
@@ -1217,23 +1213,23 @@ msgstr "Kontrol-baturak egiten"
 #: ../plugins/cdrtools/burn-readcd.c:104
 #: ../plugins/growisofs/burn-dvd-rw-format.c:77
 #: ../plugins/growisofs/burn-growisofs.c:185
-#: ../plugins/libburnia/burn-libburn-common.c:179
+#: ../plugins/libburnia/burn-libburn-common.c:184
 #, c-format
 msgid "The drive is busy"
 msgstr "Unitatea lanpetuta dago"
 
-#: ../libbrasero-burn/brasero-burn.c:1696
-#: ../libbrasero-burn/brasero-burn.c:2041
+#: ../libbrasero-burn/brasero-burn.c:1701
+#: ../libbrasero-burn/brasero-burn.c:2043
 #, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "Disko horrekin ezin dira datuak konbinatu"
 
-#: ../libbrasero-burn/brasero-burn.c:1978
+#: ../libbrasero-burn/brasero-burn.c:1980
 #, c-format
 msgid "There is no track to be burnt"
 msgstr "Ez dago grabatzeko pistarik"
 
-#: ../libbrasero-burn/brasero-burn.c:2397
+#: ../libbrasero-burn/brasero-burn.c:2381
 #, c-format
 msgid "No format for the temporary image could be found"
 msgstr "Ezin da formaturik aurkitu aldi baterako irudiarentzat"
@@ -1254,9 +1250,24 @@ msgstr "Kanta ezezaguna"
 msgid "by"
 msgstr "egilea"
 
+#: ../libbrasero-burn/brasero-dest-selection.c:519
+#: ../libbrasero-burn/brasero-image-type-chooser.c:133
+msgid "SVCD image"
+msgstr "SVCD irudia"
+
+#: ../libbrasero-burn/brasero-dest-selection.c:521
+#: ../libbrasero-burn/brasero-image-type-chooser.c:127
+msgid "VCD image"
+msgstr "VCD irudia"
+
+#: ../libbrasero-burn/brasero-dest-selection.c:525
+#: ../libbrasero-burn/brasero-image-type-chooser.c:106
+msgid "Video DVD image"
+msgstr "Bideo DVDaren irudia"
+
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
-#: ../libbrasero-burn/brasero-dest-selection.c:511
+#: ../libbrasero-burn/brasero-dest-selection.c:537
 #, c-format
 msgid "%s: \"%s\""
 msgstr "%s: \"%s\""
@@ -1267,20 +1278,20 @@ msgstr "%s: \"%s\""
 #. * destination disc a new one (once the source has been
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
-#: ../libbrasero-burn/brasero-dest-selection.c:543
+#: ../libbrasero-burn/brasero-dest-selection.c:569
 #, c-format
 msgid "New disc in the burner holding source disc"
 msgstr "Disko berria iturburuko diskoa duen grabagailuan"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-burn/brasero-dest-selection.c:598
+#: ../libbrasero-burn/brasero-dest-selection.c:624
 #, c-format
 msgid "%s: not enough free space"
 msgstr "%s: ez dago nahikoa leku librerik"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../libbrasero-burn/brasero-dest-selection.c:629
+#: ../libbrasero-burn/brasero-dest-selection.c:655
 #, c-format
 msgid "%s: %s of free space"
 msgstr "%s: %s libre"
@@ -1299,8 +1310,8 @@ msgid "Do you really want to choose this location?"
 msgstr "Kokaleku hau aukeratzea nahi duzu?"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:293
-#: ../libbrasero-burn/brasero-session.c:1125
-#: ../libbrasero-burn/brasero-session.c:1200 ../libbrasero-burn/burn-job.c:490
+#: ../libbrasero-burn/brasero-session.c:1179
+#: ../libbrasero-burn/brasero-session.c:1254 ../libbrasero-burn/burn-job.c:490
 #: ../plugins/cdrkit/burn-genisoimage.c:194
 #: ../plugins/cdrtools/burn-mkisofs.c:195
 #: ../plugins/libburnia/burn-libisofs.c:230
@@ -1406,44 +1417,32 @@ msgstr "Ezarri direktorioa aldi baterako fitxategiak gordetzeko"
 msgid "Temporary files"
 msgstr "Aldi baterako fitxategiak"
 
-#: ../libbrasero-burn/brasero-image-properties.c:192
+#: ../libbrasero-burn/brasero-image-properties.c:223
 msgid "Disc image type:"
 msgstr "Disko-irudi mota:"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:96
+#: ../libbrasero-burn/brasero-image-type-chooser.c:97
 msgid "Autodetect"
 msgstr "Auto-detektatu"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:105
-msgid "Video DVD image"
-msgstr "Bideo DVDaren irudia"
-
-#: ../libbrasero-burn/brasero-image-type-chooser.c:105
+#: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "ISO9660 image"
 msgstr "ISO9660 irudia"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:114
+#: ../libbrasero-burn/brasero-image-type-chooser.c:115
 msgid "Readcd/Readom image"
 msgstr "Readcd/Readom irudia"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:126
-msgid "VCD image"
-msgstr "VCD irudia"
-
-#: ../libbrasero-burn/brasero-image-type-chooser.c:132
-msgid "SVCD image"
-msgstr "SVCD irudia"
-
-#: ../libbrasero-burn/brasero-image-type-chooser.c:140
+#: ../libbrasero-burn/brasero-image-type-chooser.c:141
 msgid "Cue image"
 msgstr "Cue irudia"
 
-#: ../libbrasero-burn/brasero-image-type-chooser.c:150
+#: ../libbrasero-burn/brasero-image-type-chooser.c:151
 msgid "Cdrdao image"
 msgstr "Cdrdao irudia"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:94
-#: ../src/brasero-project.c:1357
+#: ../src/brasero-project.c:1368
 #, c-format
 msgid "Properties of %s"
 msgstr "%s-(r)en propietateak"
@@ -1468,7 +1467,7 @@ msgstr "_Mantendu uneko luzapena"
 msgid "Change _Extension"
 msgstr "Aldatu _luzapena"
 
-#: ../libbrasero-burn/brasero-medium-properties.c:227
+#: ../libbrasero-burn/brasero-medium-properties.c:233
 msgid "Configure recording options"
 msgstr "Konfiguratu grabazioaren aukerak"
 
@@ -1534,15 +1533,9 @@ msgstr "Hautatu disko-irudia"
 #: ../src/brasero-project-name.c:164 ../src/brasero-search-entry.c:610
 #: ../src/brasero-search-entry.c:650 ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:474 ../src/brasero-file-chooser.c:225
-#: ../src/brasero-project.c:1987
+#: ../src/brasero-project.c:2017
 msgid "All files"
 msgstr "Fitxategi guztiak"
-
-#. Translators: this a disc image here
-#: ../libbrasero-burn/brasero-src-image.c:464
-msgctxt "disc"
-msgid "Image files"
-msgstr "Disko-irudi fitxategiak"
 
 #: ../libbrasero-burn/brasero-src-image.c:482
 msgid "Image type:"
@@ -1679,7 +1672,7 @@ msgstr "Ez da irteerako irudiaren bide-izenik zehaztu"
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:764 ../src/main.c:202 ../src/main.c:228
 #: ../plugins/cdrtools/burn-cdrecord.c:683
-#: ../plugins/libburnia/burn-libburn.c:693
+#: ../plugins/libburnia/burn-libburn.c:697
 #: ../plugins/transcode/burn-transcode.c:658
 #, c-format
 msgid "An internal error occured (%s)"
@@ -1689,7 +1682,7 @@ msgstr "Barne-errorea gertatu da (%s)"
 #: ../libbrasero-burn/burn-mkisofs-base.c:635
 #: ../plugins/growisofs/burn-growisofs.c:523
 #: ../plugins/libburnia/burn-libisofs.c:676
-#: ../plugins/checksum/burn-checksum-image.c:280
+#: ../plugins/checksum/burn-checksum-image.c:281
 #, c-format
 msgid "The file is not stored locally"
 msgstr "Fitxategia ez dago lokalki gordea"
@@ -1864,11 +1857,11 @@ msgstr ""
 "Arazte-laburpena bistaratzen du irteera estandarrean Braseroren euskarrien "
 "liburutegiarentzako"
 
-#: ../libbrasero-media/brasero-media.c:468
+#: ../libbrasero-media/brasero-media.c:472
 msgid "Brasero optical media library"
 msgstr "Braseroren euskarri optikoen liburutegia"
 
-#: ../libbrasero-media/brasero-media.c:469
+#: ../libbrasero-media/brasero-media.c:473
 msgid "Display options for Brasero-media library"
 msgstr "Bistaratu Braseroren euskarrien liburutegiaren aukerak"
 
@@ -1948,8 +1941,8 @@ msgstr "Ez dago diskorik erabilgarri"
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
 #: ../libbrasero-media/brasero-drive.c:480
-#: ../libbrasero-media/brasero-medium.c:202
-#: ../libbrasero-media/brasero-volume.c:392
+#: ../libbrasero-media/brasero-medium.c:204
+#: ../libbrasero-media/brasero-volume.c:391
 msgid "Image File"
 msgstr "Irudi-fitxategia"
 
@@ -1980,7 +1973,7 @@ msgid "CD-RW"
 msgstr "CD-RWa"
 
 #: ../libbrasero-media/brasero-medium.c:68
-msgid "DVDROM"
+msgid "DVD-ROM"
 msgstr "DVD-ROMa"
 
 #: ../libbrasero-media/brasero-medium.c:69
@@ -2029,52 +2022,52 @@ msgstr "Blu-ray disko birgrabagarria"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:212
+#: ../libbrasero-media/brasero-medium.c:214
 #, c-format
 msgid "Blank %s in %s"
 msgstr "%s hutsa %s gailuan"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:219
+#: ../libbrasero-media/brasero-medium.c:221
 #, c-format
 msgid "Audio and data %s in %s"
 msgstr "Audio eta datu %sa %s gailuan"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:226
+#: ../libbrasero-media/brasero-medium.c:228
 #, c-format
 msgid "Audio %s in %s"
 msgstr "Audio %sa %s gailuan"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:233
+#: ../libbrasero-media/brasero-medium.c:235
 #, c-format
 msgid "Data %s in %s"
 msgstr "Datu %sa %s gailuan"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:240
+#: ../libbrasero-media/brasero-medium.c:242
 #, c-format
 msgid "%s in %s"
 msgstr "%s %s gailuan"
 
-#: ../libbrasero-media/brasero-volume.c:193
+#: ../libbrasero-media/brasero-volume.c:192
 #, c-format
 msgid "The disc mount point could not be retrieved"
 msgstr "Ezin izan da eskuratu diskoaren muntatze-puntua."
 
 #. NOTE for translators: the first %s is the disc type and Blank is an adjective.
-#: ../libbrasero-media/brasero-volume.c:419
+#: ../libbrasero-media/brasero-volume.c:418
 #, c-format
 msgid "Blank disc (%s)"
 msgstr "Disko hutsa (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../libbrasero-media/brasero-volume.c:423
+#: ../libbrasero-media/brasero-volume.c:422
 #, c-format
 msgid "Audio and data disc (%s)"
 msgstr "Audio eta datuen diskoa (%s)"
@@ -2083,7 +2076,7 @@ msgstr "Audio eta datuen diskoa (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ .
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:427 ../src/brasero-project-name.c:276
+#: ../libbrasero-media/brasero-volume.c:426 ../src/brasero-project-name.c:276
 #, c-format
 msgid "Audio disc (%s)"
 msgstr "Audio-diskoa (%s)"
@@ -2092,7 +2085,7 @@ msgstr "Audio-diskoa (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:431 ../src/brasero-project-name.c:257
+#: ../libbrasero-media/brasero-volume.c:430 ../src/brasero-project-name.c:257
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Datu-diskoa (%s)"
@@ -2294,23 +2287,9 @@ msgstr "_Egiaztatu diskoa..."
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "CD edo DVD diskoko datuen osotasuna egiaztatzen du"
 
-#. Translators: this is a picture not
-#. * a disc image
-#: ../src/brasero-project-name.c:82
-msgctxt "picture"
-msgid "Please select another image."
-msgstr "Hautatu beste irudi bat."
-
 #: ../src/brasero-project-name.c:156
 msgid "Medium Icon"
 msgstr "Euskarriaren ikonoa"
-
-#. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-project-name.c:170 ../src/brasero-file-chooser.c:250
-#: ../src/brasero-project.c:2009
-msgctxt "picture"
-msgid "Image files"
-msgstr "Irudi fitxategiak"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -2388,7 +2367,7 @@ msgstr "Bistaratu laguntza"
 msgid "About"
 msgstr "Honi buruz"
 
-#: ../src/brasero-app.c:570 ../data/brasero.desktop.in.in.h:3
+#: ../src/brasero-app.c:570 ../data/brasero.desktop.in.in.h:4
 msgid "Disc Burner"
 msgstr "Disko grabatzailea"
 
@@ -2453,7 +2432,7 @@ msgstr "Proiektu _berrienak"
 msgid "Display the projects recently opened"
 msgstr "Proiektu ireki berriak bistaratzen ditu"
 
-#: ../src/brasero-app.c:1512
+#: ../src/brasero-app.c:1512 ../data/brasero.desktop.in.in.h:2
 msgid "Brasero Disc Burner"
 msgstr "Brasero, diskoak grabatzea"
 
@@ -2462,7 +2441,7 @@ msgstr "Brasero, diskoak grabatzea"
 msgid "Brasero"
 msgstr "Brasero"
 
-#: ../data/brasero.desktop.in.in.h:2
+#: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "Sortu eta kopiatu CD eta DVDak"
 
@@ -2874,7 +2853,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "Errorea \"%s\" erreprodukzio-zerrenda analizatzean."
 
 #: ../src/brasero-playlist.c:806 ../src/brasero-data-disc.c:213
-#: ../src/brasero-project.c:2337 ../libbrasero-burn/brasero-sum-dialog.c:161
+#: ../src/brasero-project.c:2370 ../libbrasero-burn/brasero-sum-dialog.c:161
 #: ../src/brasero-eject-dialog.c:98
 msgid "An unknown error occured"
 msgstr "Errore ezezaguna gertatu da"
@@ -2901,12 +2880,12 @@ msgid "Copyright %s"
 msgstr "Copyright %s"
 
 #: ../src/brasero-plugin-manager-ui.c:583
-#: ../src/brasero-plugin-manager-ui.c:953
+#: ../src/brasero-plugin-manager-ui.c:952
 msgid "_About"
 msgstr "Honi _buruz"
 
 #: ../src/brasero-plugin-manager-ui.c:591
-#: ../src/brasero-plugin-manager-ui.c:959
+#: ../src/brasero-plugin-manager-ui.c:958
 msgid "C_onfigure"
 msgstr "_Konfiguratu"
 
@@ -3130,16 +3109,16 @@ msgstr "_Desgaitu Windows-ekiko bateragarritasuna"
 #. Translators: %s is the name of the file
 #: ../src/brasero-data-disc.c:785
 #, c-format
-msgid "Do you really want to replace \"%s\"?"
-msgstr "Ziur zaude \"%s\" ordeztea nahi duzula?"
+msgid "Do you want to replace \"%s\"?"
+msgstr "\"%s\" ordeztu nahi duzu?"
 
 #: ../src/brasero-data-disc.c:793
 msgid ""
-"A file with the same name is about to be added into the same directory and "
-"will replace it if you accept."
+"A file with this name already exists in the folder.  Replacing it will "
+"overwrite its content (on the disc only)."
 msgstr ""
-"Izen berdineko fitxategi bat gehitzear dago direktorio berdinean eta hura "
-"ordeztu egingo du onartzen baduzu."
+"Izen berdineko fitxategia badago lehendik ere karpetan. Hura ordeztean "
+"bere edukia gainidatziko da (diskoan soilik)."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3300,11 +3279,11 @@ msgstr "Tamaina"
 msgid "Space"
 msgstr "Lekua"
 
-#: ../src/brasero-file-chooser.c:232 ../src/brasero-project.c:1992
+#: ../src/brasero-file-chooser.c:232 ../src/brasero-project.c:2022
 msgid "Audio files"
 msgstr "Audio-fitxategiak"
 
-#: ../src/brasero-file-chooser.c:240 ../src/brasero-project.c:2001
+#: ../src/brasero-file-chooser.c:240 ../src/brasero-project.c:2031
 msgid "Movies"
 msgstr "Filmak"
 
@@ -3419,7 +3398,7 @@ msgid "_Remove Files"
 msgstr "_Kendu fitxategiak"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202 ../src/brasero-project.c:2072
+#: ../src/brasero-project.c:202 ../src/brasero-project.c:2105
 msgid "E_mpty Project"
 msgstr "_Hustu proiektua"
 
@@ -3428,7 +3407,7 @@ msgid "Remove all files from the project"
 msgstr "Proiektuko fitxategi guztiak ezabatzen ditu"
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1095
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:1106
 msgid "_Burn..."
 msgstr "_Grabatu..."
 
@@ -3494,7 +3473,7 @@ msgstr "hautatu areako elementuak eta sakatu \"Ezabatu\" tekla"
 msgid "Project estimated size: %s"
 msgstr "Proiektuaren tamaina estimatua: %s"
 
-#: ../src/brasero-project.c:958 ../src/brasero-project.c:975
+#: ../src/brasero-project.c:969 ../src/brasero-project.c:986
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option."
@@ -3502,7 +3481,7 @@ msgstr ""
 "Proiektua handiegia da diskoarentzat, gaingrabatzeko aukera gaituta egon "
 "arren ere."
 
-#: ../src/brasero-project.c:986
+#: ../src/brasero-project.c:997
 msgid ""
 "The size of the project is too large for the disc and you must remove files "
 "from the project otherwise.\n"
@@ -3517,41 +3496,37 @@ msgstr ""
 "gaingrabazioa aukera behar dute.\n"
 "OHARRA: aukera horrek hutsegitea eragin dezake."
 
-#: ../src/brasero-project.c:1107
+#: ../src/brasero-project.c:1118
 msgid "Start to burn the contents of the selection"
 msgstr "Hautapenaren edukia grabatzen hasten da"
 
-#: ../src/brasero-project.c:1267
+#: ../src/brasero-project.c:1278
 msgid "Please add songs to the project."
 msgstr "Gehitu kantak proiektuari."
 
-#: ../src/brasero-project.c:1276 ../src/main.c:246
+#: ../src/brasero-project.c:1287 ../src/main.c:246
 msgid "Please add files to the project."
 msgstr "Gehitu fitxategiak proiektuari."
 
-#: ../src/brasero-project.c:1391
-msgid "Video Options"
-msgstr "Bideoaren aukerak"
-
-#: ../src/brasero-project.c:1719
+#: ../src/brasero-project.c:1749
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
 msgstr "Proiektu berria sortu eta unekoaren aldaketak baztertzea nahi duzu?"
 
-#: ../src/brasero-project.c:1724
+#: ../src/brasero-project.c:1754
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "Proiektu berria sortzea aukeratzen baduzu, aldaketa guztiak galduko dira."
 
-#: ../src/brasero-project.c:1726
+#: ../src/brasero-project.c:1756
 msgid "_Discard Changes"
 msgstr "_Baztertu aldaketak"
 
-#: ../src/brasero-project.c:1734
+#: ../src/brasero-project.c:1764
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Ziur zaude proiektu berria sortu eta unekoa baztertzea nahi duzula?"
 
-#: ../src/brasero-project.c:1739
+#: ../src/brasero-project.c:1769
 msgid ""
 "If you choose to create a new project, all files already added will be "
 "discarded. Note that files will not be deleted from their own location, just "
@@ -3561,19 +3536,19 @@ msgstr ""
 "guztiak baztertuko dira. Jakin ezazu fitxategi horiek ez direla ezabatuko "
 "haien kokalekutik, baizik eta hemen ez direla zerrendatuko soilik."
 
-#: ../src/brasero-project.c:1744
+#: ../src/brasero-project.c:1774
 msgid "_Discard Project"
 msgstr "_Baztertu proiektua"
 
-#: ../src/brasero-project.c:1950
+#: ../src/brasero-project.c:1980
 msgid "Select Files"
 msgstr "Hautatu fitxategiak"
 
-#: ../src/brasero-project.c:2061
+#: ../src/brasero-project.c:2094
 msgid "Do you really want to empty the current project?"
 msgstr "Ziur zaude uneko proiektua hustea nahi duzula?"
 
-#: ../src/brasero-project.c:2066
+#: ../src/brasero-project.c:2099
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -3583,77 +3558,77 @@ msgstr ""
 "osoa galduko da. Jakin ezazu fitxategi horiek ez direla ezabatuko haien "
 "kokalekutik, baizik eta hemen ez direla zerrendatuko soilik."
 
-#: ../src/brasero-project.c:2123
+#: ../src/brasero-project.c:2156
 msgid "_Save"
 msgstr "_Gorde"
 
-#: ../src/brasero-project.c:2134
+#: ../src/brasero-project.c:2167
 msgid "_Add"
 msgstr "_Gehitu"
 
-#: ../src/brasero-project.c:2139 ../src/brasero-split-dialog.c:1252
+#: ../src/brasero-project.c:2172 ../src/brasero-split-dialog.c:1252
 msgid "_Remove"
 msgstr "_Kendu"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2202
+#: ../src/brasero-project.c:2235
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero - %s (datu-diskoa)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2205
+#: ../src/brasero-project.c:2238
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero - %s (audio-diskoa)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2208
+#: ../src/brasero-project.c:2241
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (bideo-diskoa)"
 
-#: ../src/brasero-project.c:2336
+#: ../src/brasero-project.c:2369
 msgid "Your project has not been saved."
 msgstr "Proiektua ez da gorde."
 
-#: ../src/brasero-project.c:2350
+#: ../src/brasero-project.c:2383
 msgid "Save the changes of current project before closing?"
 msgstr "Gorde uneko proiektuaren aldaketak itxi aurretik?"
 
-#: ../src/brasero-project.c:2355
+#: ../src/brasero-project.c:2388
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Ez baduzu gordetzen, aldaketak betirako galduko dira."
 
-#: ../src/brasero-project.c:2359 ../src/brasero-project.c:2365
+#: ../src/brasero-project.c:2392 ../src/brasero-project.c:2398
 msgid "Cl_ose Without Saving"
 msgstr "It_xi gorde gabe"
 
-#: ../src/brasero-project.c:2459
+#: ../src/brasero-project.c:2492
 msgid "Save Current Project"
 msgstr "Gorde uneko proiektua"
 
-#: ../src/brasero-project.c:2477
+#: ../src/brasero-project.c:2510
 msgid "Save project as Brasero audio project"
 msgstr "Gorde proiektua Brasero-ren audio-proiektu gisa"
 
-#: ../src/brasero-project.c:2478
+#: ../src/brasero-project.c:2511
 msgid "Save project as a plain text list"
 msgstr "Gorde proiektua testu soileko zerrenda gisa"
 
-#: ../src/brasero-project.c:2482
+#: ../src/brasero-project.c:2515
 msgid "Save project as a PLS playlist"
 msgstr "Gorde proiektua PLS erreprodukzio-zerrenda gisa"
 
-#: ../src/brasero-project.c:2483
+#: ../src/brasero-project.c:2516
 msgid "Save project as an M3U playlist"
 msgstr "Gorde proiektua M3U erreprodukzio-zerrenda gisa"
 
-#: ../src/brasero-project.c:2484
+#: ../src/brasero-project.c:2517
 msgid "Save project as a XSPF playlist"
 msgstr "Gorde proiektua XSPF erreprodukzio-zerrenda gisa"
 
-#: ../src/brasero-project.c:2485
+#: ../src/brasero-project.c:2518
 msgid "Save project as an IRIVER playlist"
 msgstr "Gorde proiektua IRIVER erreprodukzio-zerrenda gisa"
 
@@ -4211,8 +4186,8 @@ msgid "Use readom to create disc images"
 msgstr "Erabili readom diskoen irudiak sortzeko"
 
 #: ../plugins/cdrkit/burn-wodim.c:116 ../plugins/cdrtools/burn-cdrecord.c:116
-#: ../plugins/libburnia/burn-libburn.c:806
-#: ../plugins/libburnia/burn-libburn.c:837
+#: ../plugins/libburnia/burn-libburn.c:810
+#: ../plugins/libburnia/burn-libburn.c:841
 #, c-format
 msgid "An error occured while writing to disc"
 msgstr "Errorea gertatu da diskoa grabatzean"
@@ -4304,7 +4279,7 @@ msgstr "Ezin izan da libdvdcss behar bezala kargatu"
 #: ../plugins/libburnia/burn-libisofs.c:257
 #: ../plugins/checksum/burn-checksum-files.c:189
 #: ../plugins/checksum/burn-checksum-files.c:212
-#: ../plugins/checksum/burn-checksum-image.c:167
+#: ../plugins/checksum/burn-checksum-image.c:168
 #, c-format
 msgid "Data could not be written (%s)"
 msgstr "Ezin izan dira datuak grabatu (%s)"
@@ -4359,27 +4334,27 @@ msgstr "Ezin izan da libburn pista sortu"
 #. * generated from errno
 #. Translators: first %s is the filename, second %s
 #. * is the error generated from errno
-#: ../plugins/libburnia/burn-libburn.c:655
-#: ../plugins/checksum/burn-checksum-image.c:306
+#: ../plugins/libburnia/burn-libburn.c:659
+#: ../plugins/checksum/burn-checksum-image.c:307
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "Ezin izan da \"%s\" ireki (%s)"
 
-#: ../plugins/libburnia/burn-libburn.c:924
+#: ../plugins/libburnia/burn-libburn.c:928
 msgid "Libburn burns CD(RW), DVD+/-(RW)"
 msgstr "Libburn-ek hauek grabatzen ditu: CD(RW), DVD+/-(RW)"
 
-#: ../plugins/libburnia/burn-libburn-common.c:152
+#: ../plugins/libburnia/burn-libburn-common.c:157
 #, c-format
 msgid "Libburn library could not be initialized"
 msgstr "Ezin izan da libburn liburutegia hasieratu"
 
-#: ../plugins/libburnia/burn-libburn-common.c:167
+#: ../plugins/libburnia/burn-libburn-common.c:172
 #, c-format
 msgid "The drive address could not be retrieved"
 msgstr "Ezin izan da unitatearen helbidea eskuratu"
 
-#: ../plugins/libburnia/burn-libburn-common.c:358
+#: ../plugins/libburnia/burn-libburn-common.c:413
 #, c-format
 msgid "Writing track %02i"
 msgstr "%02i pista grabatzen"
@@ -4789,7 +4764,7 @@ msgstr "Ezin da \"%s\" fitxategia ireki"
 
 #: ../plugins/checksum/burn-checksum-files.c:1073
 #: ../plugins/checksum/burn-checksum-files.c:1187
-#: ../plugins/checksum/burn-checksum-image.c:519
+#: ../plugins/checksum/burn-checksum-image.c:546
 #, c-format
 msgid "Some files may be corrupted on the disc"
 msgstr "Baliteke diskoko zenbait fitxategi hondatuak egotea"
@@ -4806,43 +4781,43 @@ msgid "Allows to check file integrities on a disc"
 msgstr "Diskoko fitxategien osotasuna egiaztatzea baimentzen du"
 
 #: ../plugins/checksum/burn-checksum-files.c:1500
-#: ../plugins/checksum/burn-checksum-image.c:821
+#: ../plugins/checksum/burn-checksum-image.c:848
 msgid "Hashing algorithm to be used:"
 msgstr "Hash algoritmoa erabiltzeko:"
 
 #: ../plugins/checksum/burn-checksum-files.c:1503
-#: ../plugins/checksum/burn-checksum-image.c:824
+#: ../plugins/checksum/burn-checksum-image.c:851
 msgid "MD5"
 msgstr "MD5"
 
 #: ../plugins/checksum/burn-checksum-files.c:1505
-#: ../plugins/checksum/burn-checksum-image.c:826
+#: ../plugins/checksum/burn-checksum-image.c:853
 msgid "SHA1"
 msgstr "SHA1"
 
 #: ../plugins/checksum/burn-checksum-files.c:1507
-#: ../plugins/checksum/burn-checksum-image.c:828
+#: ../plugins/checksum/burn-checksum-image.c:855
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../plugins/checksum/burn-checksum-image.c:117
+#: ../plugins/checksum/burn-checksum-image.c:118
 #, c-format
 msgid "Data could not be read (%s)"
 msgstr "Ezin izan dira datuak irakurri (%s)"
 
-#: ../plugins/checksum/burn-checksum-image.c:352
-#: ../plugins/checksum/burn-checksum-image.c:425
+#: ../plugins/checksum/burn-checksum-image.c:353
+#: ../plugins/checksum/burn-checksum-image.c:452
 msgid "Creating image checksum"
 msgstr "Irudiaren kontrol-batura sortzen"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/checksum/burn-checksum-image.c:796
+#: ../plugins/checksum/burn-checksum-image.c:823
 msgid "Image Checksum"
 msgstr "Irudiaren kontrol-batura"
 
-#: ../plugins/checksum/burn-checksum-image.c:797
+#: ../plugins/checksum/burn-checksum-image.c:824
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr "Diskoko datuen osotasuna egiaztatzen du grabatu ondoren"
 
@@ -4966,7 +4941,7 @@ msgstr "Erabili dvdauthor bideo DVDak sortzeko"
 msgid "Converting video file to MPEG2"
 msgstr "Bideo-fitxategia MPEG2 formatura bihurtzea"
 
-#: ../plugins/transcode/burn-vob.c:1234
+#: ../plugins/transcode/burn-vob.c:1235
 msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr ""
 "Vob-ek edozein bideo-fitxategi bideo DVDentzako formatu egokira "
@@ -4977,10 +4952,14 @@ msgid "Use vcdimager to create SVCDs"
 msgstr "Erabili vcdimager SVCDak sortzeko"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
+msgid "Brasero Disc Copier"
+msgstr "Brasero disko kopiatzailea"
+
+#: ../data/brasero-copy-medium.desktop.in.in.h:3
 msgid "Copy CDs and DVDs"
 msgstr "Kopiatu CD eta DVDak"
 
-#: ../data/brasero-copy-medium.desktop.in.in.h:3
+#: ../data/brasero-copy-medium.desktop.in.in.h:4
 msgid "Disc Copier"
 msgstr "Disko kopiatzailea"
 
