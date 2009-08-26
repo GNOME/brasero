@@ -234,11 +234,13 @@ brasero_drive_eject (BraseroDrive *drive,
 
 	BRASERO_MEDIA_LOG ("Trying to eject volume");
 	gvolume = brasero_volume_get_gvolume (BRASERO_VOLUME (priv->medium));
-	res = brasero_gio_operation_eject_volume (gvolume,
-						  priv->cancel,
-						  wait,
-						  error);
-	g_object_unref (gvolume);
+	if (gvolume) {
+		res = brasero_gio_operation_eject_volume (gvolume,
+							  priv->cancel,
+							  wait,
+							  error);
+		g_object_unref (gvolume);
+	}
 
 	return res;
 }
