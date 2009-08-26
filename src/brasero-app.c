@@ -1127,6 +1127,147 @@ on_configure_event_cb (GtkWidget *widget,
 	return FALSE;
 }
 
+static gboolean
+brasero_app_open_by_mime (BraseroApp *app,
+                          const gchar *uri,
+                          const gchar *mime)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+
+	if (!mime) {
+		/* that can happen when the URI could not be identified */
+		return FALSE;
+	}
+
+	/* When our files/description of x-brasero mime type is not properly 
+	 * installed, it's returned as application/xml, so check that too. */
+	if (!strcmp (mime, "application/x-brasero")
+	||  !strcmp (mime, "application/xml"))
+		return (brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (priv->projects), uri, FALSE, FALSE) != BRASERO_PROJECT_TYPE_INVALID);
+
+#ifdef BUILD_PLAYLIST
+
+	else if (!strcmp (mime, "audio/x-scpls")
+	     ||  !strcmp (mime, "audio/x-ms-asx")
+	     ||  !strcmp (mime, "audio/x-mp3-playlist")
+	     ||  !strcmp (mime, "audio/x-mpegurl"))
+		return (brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (priv->projects), uri, TRUE, FALSE) != BRASERO_PROJECT_TYPE_INVALID);
+
+
+#endif
+
+	else if (!strcmp (mime, "application/x-cd-image")
+	     ||  !strcmp (mime, "application/x-cdrdao-toc")
+	     ||  !strcmp (mime, "application/x-toc")
+	     ||  !strcmp (mime, "application/x-cue")) {
+		brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (priv->projects), uri);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+brasero_app_open_uri (BraseroApp *app,
+                      const gchar *uri_arg)
+{
+	gchar *uri;
+	GFile *file;
+	GFileInfo *info;
+	BraseroProjectType type;
+
+	/* FIXME: make that asynchronous */
+	/* NOTE: don't follow symlink because we want to identify them */
+	file = g_file_new_for_commandline_arg (uri_arg);
+	if (!file)
+		return BRASERO_PROJECT_TYPE_INVALID;
+
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
+				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+				  NULL,
+				  NULL);
+
+	if (!info) {
+		g_object_unref (file);
+		return BRASERO_PROJECT_TYPE_INVALID;
+	}
+
+	/* if that's a symlink, redo it on its target to get the real mime type
+	 * that usually also depends on the extension of the target:
+	 * ex: an iso file with the extension .iso will be seen as octet-stream
+	 * if the symlink hasn't got any extention at all */
+	while (g_file_info_get_is_symlink (info)) {
+		const gchar *target;
+		GFileInfo *tmp_info;
+		GFile *tmp_file;
+		GError *error = NULL;
+
+		target = g_file_info_get_symlink_target (info);
+		if (!g_path_is_absolute (target)) {
+			gchar *parent;
+			gchar *tmp;
+
+			tmp = g_file_get_path (file);
+			parent = g_path_get_dirname (tmp);
+			g_free (tmp);
+
+			target = g_build_filename (parent, target, NULL);
+			g_free (parent);
+		}
+
+		tmp_file = g_file_new_for_commandline_arg (target);
+		tmp_info = g_file_query_info (tmp_file,
+					      G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+					      G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
+					      G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+					      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+					      NULL,
+					      &error);
+		if (!tmp_info) {
+			g_object_unref (tmp_file);
+			break;
+		}
+
+		g_object_unref (info);
+		g_object_unref (file);
+
+		info = tmp_info;
+		file = tmp_file;
+	}
+
+	uri = g_file_get_uri (file);
+	if (g_file_query_exists (file, NULL)
+	&& g_file_info_get_content_type (info)) {
+		const gchar *mime;
+
+		mime = g_file_info_get_content_type (info);
+	  	type = brasero_app_open_by_mime (app, uri, mime);
+        } 
+	else {
+		gchar *string;
+
+		string = g_strdup_printf (_("The project \"%s\" does not exist"), uri);
+		brasero_app_alert (app,
+				   _("Error while loading the project"),
+				   string,
+				   GTK_MESSAGE_ERROR);
+		g_free (string);
+
+		type = BRASERO_PROJECT_TYPE_INVALID;
+	}
+
+	g_free (uri);
+	g_object_unref (file);
+	g_object_unref (info);
+
+	return type;
+}
+
 static void
 brasero_app_recent_open (GtkRecentChooser *chooser,
 			 BraseroApp *app)
@@ -1166,9 +1307,9 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 	}
 
 	/* Make sure it is no longer one shot */
-	brasero_project_manager_open_by_mime (BRASERO_PROJECT_MANAGER (priv->projects),
-					      uri,
-					      mime);
+	brasero_app_open_by_mime (app,
+	                          uri,
+	                          mime);
 	gtk_recent_info_unref (item);
 	g_free (uri);
 }

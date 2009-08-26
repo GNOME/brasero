@@ -111,6 +111,10 @@ void
 brasero_app_check (BraseroApp *app,
 		   const gchar *device);
 
+gboolean
+brasero_app_open_uri (BraseroApp *app,
+                      const gchar *uri_arg);
+
 GtkWidget *
 brasero_app_get_statusbar1 (BraseroApp *app);
 

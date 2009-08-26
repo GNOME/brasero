@@ -434,12 +434,8 @@ brasero_app_parse_options (BraseroApp *app)
 		manager = brasero_app_get_project_manager (app);
 
 		if (g_strv_length (files) == 1) {
-			BraseroProjectType type;
-
-			type = brasero_project_manager_open_uri (BRASERO_PROJECT_MANAGER (manager), files [0]);
-
 			/* Fallback if it hasn't got a suitable URI */
-			if (type == BRASERO_PROJECT_TYPE_INVALID) {
+			if (!brasero_app_open_uri (app, files [0])) {
 				BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
 			}
 		}

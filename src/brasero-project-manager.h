@@ -86,15 +86,6 @@ brasero_project_manager_open_project (BraseroProjectManager *manager,
 				      gboolean playlist,
 				      gboolean burn);
 
-BraseroProjectType
-brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
-				      const gchar *uri,
-				      const gchar *mime);
-
-BraseroProjectType
-brasero_project_manager_open_uri (BraseroProjectManager *manager,
-				  const gchar *uri_arg);
-
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
 
