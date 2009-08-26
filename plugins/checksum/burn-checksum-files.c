@@ -528,16 +528,16 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 	checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
 	g_object_unref (client);
 
-	if (checksum_type == BRASERO_CHECKSUM_NONE)
-		gchecksum_type = G_CHECKSUM_MD5;
-	else if (checksum_type & BRASERO_CHECKSUM_MD5_FILE)
+	if (checksum_type & BRASERO_CHECKSUM_MD5_FILE)
 		gchecksum_type = G_CHECKSUM_MD5;
 	else if (checksum_type & BRASERO_CHECKSUM_SHA1_FILE)
 		gchecksum_type = G_CHECKSUM_SHA1;
 	else if (checksum_type & BRASERO_CHECKSUM_SHA256_FILE)
 		gchecksum_type = G_CHECKSUM_SHA256;
-	else
+	else {
+		checksum_type = BRASERO_CHECKSUM_MD5_FILE;
 		gchecksum_type = G_CHECKSUM_MD5;
+	}
 
 	/* opens a file for the sums */
 	switch (gchecksum_type) {

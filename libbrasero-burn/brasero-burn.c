@@ -2185,9 +2185,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	track = tracks->data;
 	type = brasero_track_get_checksum_type (track);
-	if (type == BRASERO_CHECKSUM_NONE)
-		return BRASERO_BURN_OK;
-
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
 	||  type == BRASERO_CHECKSUM_SHA256)
@@ -2198,6 +2195,8 @@ brasero_burn_record_session (BraseroBurn *burn,
 		checksum = BRASERO_SHA1_FILE;
 	else if (type == BRASERO_CHECKSUM_SHA256_FILE)
 		checksum = BRASERO_SHA256_FILE;
+	else
+		return BRASERO_BURN_OK;
 
 	/* the idea is to push a new track on the stack with
 	 * the current disc burnt and the checksum generated

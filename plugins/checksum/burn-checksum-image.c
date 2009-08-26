@@ -419,9 +419,6 @@ brasero_checksum_get_checksum_type (void)
 	checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
 	g_object_unref (client);
 
-	if (!checksum_type)
-		checksum_type = BRASERO_CHECKSUM_MD5;
-
 	return checksum_type;
 }
 
@@ -436,16 +433,17 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
 
 	priv->checksum_type = brasero_checksum_get_checksum_type ();
-	if (priv->checksum_type == BRASERO_CHECKSUM_NONE)
-		checksum_type = G_CHECKSUM_MD5;
-	else if (priv->checksum_type & BRASERO_CHECKSUM_MD5)
+
+	if (priv->checksum_type & BRASERO_CHECKSUM_MD5)
 		checksum_type = G_CHECKSUM_MD5;
 	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA1)
 		checksum_type = G_CHECKSUM_SHA1;
 	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA256)
 		checksum_type = G_CHECKSUM_SHA256;
-	else
+	else {
 		checksum_type = G_CHECKSUM_MD5;
+		priv->checksum_type = BRASERO_CHECKSUM_MD5;
+	}
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CHECKSUM,
