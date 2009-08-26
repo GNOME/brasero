@@ -404,6 +404,7 @@ _get_tracks (xmlDocPtr project,
 
 		newtrack = iter->data;
 		brasero_burn_session_add_track (session, newtrack, NULL);
+		g_object_unref (newtrack);
 	}
 
 	g_slist_free (tracks);
