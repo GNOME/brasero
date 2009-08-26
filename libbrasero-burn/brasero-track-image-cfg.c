@@ -322,6 +322,8 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 	brasero_track_image_cfg_set_uri (track, uri_arg, priv->format);
 	brasero_track_changed (BRASERO_TRACK (track));
 
+	g_free (uri_arg);
+
 	return BRASERO_BURN_OK;
 }
 
