@@ -601,7 +601,7 @@ brasero_process_start (BraseroJob *job, GError **error)
 	gboolean read_stdout;
 	/* that's to make sure programs are not translated */
 	gchar *envp [] = {	"LANG=C",
-				"LANGUAGE=C"
+				"LANGUAGE=C",
 				"LC_ALL=C",
 				NULL};
 
