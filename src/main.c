@@ -430,17 +430,13 @@ brasero_app_parse_options (BraseroApp *app)
 		return;
 	}
 	else if (files) {
+		if (g_strv_length (files) == 1
+		&&  brasero_app_open_uri (app, files [0]))
+			return;
+
 		brasero_app_create_mainwin (app);
 		manager = brasero_app_get_project_manager (app);
-
-		if (g_strv_length (files) == 1) {
-			/* Fallback if it hasn't got a suitable URI */
-			if (!brasero_app_open_uri (app, files [0])) {
-				BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
-			}
-		}
-		else
-			BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
 	}
 	else {
 		brasero_app_create_mainwin (app);

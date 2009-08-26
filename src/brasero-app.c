@@ -1155,14 +1155,17 @@ brasero_app_open_by_mime (BraseroApp *app,
 	     ||  !strcmp (mime, "audio/x-mpegurl"))
 		return (brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (priv->projects), uri, TRUE, FALSE) != BRASERO_PROJECT_TYPE_INVALID);
 
-
 #endif
 
 	else if (!strcmp (mime, "application/x-cd-image")
 	     ||  !strcmp (mime, "application/x-cdrdao-toc")
 	     ||  !strcmp (mime, "application/x-toc")
 	     ||  !strcmp (mime, "application/x-cue")) {
-		brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (priv->projects), uri);
+		if (priv->projects)
+			brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (priv->projects), uri);
+		else
+			brasero_app_burn_image (app, uri);
+
 		return TRUE;
 	}
 
@@ -1467,6 +1470,9 @@ brasero_app_create_mainwin (BraseroApp *app)
 	BraseroPluginManager *plugin_manager;
 
 	priv = BRASERO_APP_PRIVATE (app);
+
+	if (priv->mainwin)
+		return;
 
 	/* New window */
 	priv->mainwin = gtk_window_new (GTK_WINDOW_TOPLEVEL);
