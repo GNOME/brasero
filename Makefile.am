@@ -22,9 +22,10 @@ EXTRA_DIST = 			\
 
 noinst_PROGRAMS =
 
-DIST_CHECK_CONFIGRE_FLAGS =		\
+DISTCHECK_CONFIGURE_FLAGS =		\
 	--disable-scrollkeeper		\
-	--enable-gtk-doc
+	--enable-gtk-doc			\
+	--with-nautilusdir='$${libdir}/nautilus/extensions-2.0-distcheck'
 
 DISTCLEANFILES = \
 	intltool-extract \

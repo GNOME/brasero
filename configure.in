@@ -222,6 +222,11 @@ AC_ARG_ENABLE(nautilus,
 			[enable_nautilus=$enableval],
 			[enable_nautilus="yes"])
 
+AC_ARG_WITH(nautilusdir,
+			AS_HELP_STRING([--with-nautilusdir=DIR],[Installation path for Nautilus extension @<:@auto@:>@]),
+			[ac_with_nautilusdir=$withval],
+			[ac_with_nautilusdir=""])
+
 if test x"$enable_nautilus" = "xyes"; then
 	PKG_CHECK_MODULES(NAUTILUS_EXTENSION,
 			  libnautilus-extension >= $NAUTILUS_REQUIRED,
@@ -234,8 +239,14 @@ fi
 if test x"$build_nautilus" = "xyes"; then
 	NAUTILUS_EXTENSION_CFLAGS="$BRASERO_GLIB_CFLAGS $BRASERO_UI_CFLAGS $NAUTILUS_EXTENSION_CFLAGS"
 	NAUTILUS_EXTENSION_LIBS="$BRASERO_GLIB_LIBS $BRASERO_UI_LIBS $NAUTILUS_EXTENSION_LIBS"
-	NAUTILUSDIR=`pkg-config --variable=extensiondir libnautilus-extension`
-	AC_SUBST(NAUTILUSDIR)
+
+	if test "${ac_with_nautilusdir}" = ""; then
+		ac_with_nautilusdir=`pkg-config --variable=extensiondir libnautilus-extension`
+	fi
+
+	AC_MSG_NOTICE([installing plugin in ${ac_with_nautilusdir}])
+	AC_SUBST([NAUTILUSDIR],[${ac_with_nautilusdir}])
+
 	AM_GLIB_DEFINE_LOCALEDIR([GNOMELOCALEDIR])
 fi
 
