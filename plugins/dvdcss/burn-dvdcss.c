@@ -370,7 +370,8 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	brasero_volume_file_free (files);
 	files = NULL;
 
-	if (dvdcss_seek (handle, 0, DVDCSS_NOFLAGS) != 0) {
+	if (dvdcss_seek (handle, 0, DVDCSS_NOFLAGS) < 0) {
+		BRASERO_JOB_LOG (self, "Error initial seeking");
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
 					   _("Error while reading video DVD (%s)"),
@@ -393,14 +394,14 @@ brasero_dvdcss_write_image_thread (gpointer data)
 
 		brasero_job_get_image_output (BRASERO_JOB (self), &output, NULL);
 		output_fd = fopen (output, "w");
-		g_free (output);
-
 		if (!output_fd) {
 			priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
 							   g_strerror (errno));
+			g_free (output);
 			goto end;
 		}
+		g_free (output);
 	}
 
 	while (remaining_sectors) {
@@ -426,17 +427,24 @@ brasero_dvdcss_write_image_thread (gpointer data)
 				num_blocks = range->start - written_sectors;
 		}
 		else {
+			int pos;
+
 			/* this is in a scrambled sectors range */
 			flag = DVDCSS_READ_DECRYPT;
 
 			/* see if we need to update the key */
-			if (written_sectors == range->start
-			&&  dvdcss_seek (handle, written_sectors, DVDCSS_SEEK_KEY) != written_sectors) {
-				priv->error = g_error_new (BRASERO_BURN_ERROR,
-							   BRASERO_BURN_ERROR_GENERAL,
-							   _("Error while reading video DVD (%s)"),
-							   dvdcss_error (handle));
-				break;
+			if (written_sectors == range->start) {
+				int pos;
+
+				pos = dvdcss_seek (handle, written_sectors, DVDCSS_SEEK_KEY);
+				if (pos < 0) {
+					BRASERO_JOB_LOG (self, "Error seeking");
+					priv->error = g_error_new (BRASERO_BURN_ERROR,
+								   BRASERO_BURN_ERROR_GENERAL,
+								   _("Error while reading video DVD (%s)"),
+								   dvdcss_error (handle));
+					break;
+				}
 			}
 
 			/* we don't want to mix scrambled and non scrambled sectors
@@ -451,7 +459,9 @@ brasero_dvdcss_write_image_thread (gpointer data)
 			}
 		}
 
-		if (dvdcss_read (handle, buf, num_blocks, flag) != num_blocks) {
+		num_blocks = dvdcss_read (handle, buf, num_blocks, flag);
+		if (num_blocks < 0) {
+			BRASERO_JOB_LOG (self, "Error reading");
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
 						   _("Error while reading video DVD (%s)"),
