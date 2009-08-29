@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
 "POT-Creation-Date: 2009-08-26 20:03+0000\n"
-"PO-Revision-Date: 2009-08-27 10:34+0300\n"
+"PO-Revision-Date: 2009-08-29 03:50+0300\n"
 "Last-Translator: Alexander Nyakhaychyk <nyakhaychyk@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,14 +73,16 @@ msgstr "Стварыць VCD"
 #: ../libbrasero-burn/burn-debug.c:51
 msgid "Display debug statements on stdout for Brasero burn library"
 msgstr ""
+"Адлюстроўваць зьвесткі для пошуку памылак у stdout для бібліятэкі запісу "
+"Brasero"
 
 #: ../libbrasero-burn/burn-debug.c:71
 msgid "Brasero media burning library"
-msgstr ""
+msgstr "Бібліятэка запісу носьбітаў Brasero"
 
 #: ../libbrasero-burn/burn-debug.c:72
 msgid "Display options for Brasero-burn library"
-msgstr ""
+msgstr "Адлюстроўваць опцыі для бібліятэкі запісу Brasero"
 
 #. Translators: %s is the name of the file that has just been deleted
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:86
@@ -91,18 +93,18 @@ msgstr "\"%s\" была выдалена з файлавай сістэмы."
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:125
 #, c-format
 msgid "Directories cannot be added to video or audio discs"
-msgstr ""
+msgstr "Нельга дадаць тэчку да аўдыё ці відэа дыскаў"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:139
 #, c-format
 msgid "Playlists cannot be added to video or audio discs"
-msgstr ""
+msgstr "Нельга дадаць плэйлісты да аўдыё ці відэа дыскаў"
 
 #. Translators: %s is the name of the file
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:154
 #, c-format
 msgid "\"%s\" is not suitable for audio or video media"
-msgstr ""
+msgstr "\"%s\" не падыходзіць для аўдыё/відэа носьбітаў"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:339
 msgid "Analysing video files"
@@ -111,25 +113,25 @@ msgstr "Аналізаваць відэа файлы"
 #: ../libbrasero-burn/brasero-data-vfs.c:218
 #, c-format
 msgid "\"%s\" cannot be read"
-msgstr ""
+msgstr "немагчыма прачытаць \"%s\""
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:57
 msgid "Hidden file"
-msgstr ""
+msgstr "Схаваны файл"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:58
 msgid "Unreadable file"
-msgstr ""
+msgstr "Недаступны файл"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:59
 msgid "Broken symbolic link"
-msgstr ""
+msgstr "Нядзейсная спасылка"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
 #: ../libbrasero-utils/brasero-io.c:1142 ../libbrasero-utils/brasero-io.c:2012
 #, c-format
 msgid "Recursive symbolic link"
-msgstr ""
+msgstr "Рэкурсыўная спасылка"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:622
 #: ../libbrasero-burn/brasero-track-data-cfg.c:721
@@ -148,7 +150,7 @@ msgstr "Пуста"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:730
 msgid "Disc file"
-msgstr ""
+msgstr "Файл вобразу"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:808
 #, c-format
@@ -171,7 +173,7 @@ msgstr "Новы каталог %i"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2401
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2411
 msgid "Analysing files"
-msgstr ""
+msgstr "Аналіз файлаў"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2428
 #: ../libbrasero-burn/brasero-burn-options.c:383
@@ -180,12 +182,12 @@ msgstr ""
 #: ../libbrasero-burn/brasero-track-stream.c:398
 #, c-format
 msgid "There are no files to write to disc"
-msgstr ""
+msgstr "Няма файлаў для запісу на дыск"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2548
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
-msgstr ""
+msgstr "\"%s\" - рэкурсыўная сымбальная спасылка."
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2574
 #, c-format
@@ -195,12 +197,12 @@ msgstr "\"%s\" не знойдзены."
 #: ../libbrasero-utils/brasero-io.c:1370
 #, c-format
 msgid "The file does not appear to be a playlist"
-msgstr ""
+msgstr "Файл не зьяўляецца плэйлістом"
 
 #: ../libbrasero-utils/brasero-metadata.c:674 ../src/brasero-audio-disc.c:624
 #, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
-msgstr ""
+msgstr "немагчыма ўжыць \"%s\" у Gstreamer."
 
 #. Translators: %s is the name of the GstElement that
 #. * could not be created
@@ -269,26 +271,26 @@ msgstr "%s элемэнт не можа быць створаны"
 #: ../plugins/cdrtools/burn-readcd.c:123 ../plugins/cdrtools/burn-readcd.c:374
 #, c-format
 msgid "An internal error occured"
-msgstr ""
+msgstr "Узьнікла ўнутраная памылка"
 
 #: ../libbrasero-burn/brasero-caps-burn.c:777
 #: ../libbrasero-burn/brasero-burn.c:2321
 #, c-format
 msgid "Only one track at a time can be checked"
-msgstr ""
+msgstr "За раз можна праверыць толькі адзін трэк"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:424
 msgid "Retrieving image format and size"
-msgstr ""
+msgstr "Атрыманьне фармату і памераў вобраза"
 
 #. Translators: This is a disc image
 #: ../libbrasero-burn/brasero-track-image-cfg.c:444
 msgid "The format of the disc image could not be identified"
-msgstr ""
+msgstr "Немагчыма вызначыць фармат вобразу дыска"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:445
 msgid "Please set it manually"
-msgstr ""
+msgstr "Калі ласка, задайе яго самастойна"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:180
 #: ../libbrasero-burn/burn-basics.c:76
@@ -303,11 +305,11 @@ msgstr "Brasero - Стварэньне вобраза"
 #: ../libbrasero-burn/brasero-burn-dialog.c:201
 #: ../libbrasero-burn/brasero-burn-dialog.c:1008
 msgid "Brasero - Burning DVD (Simulation)"
-msgstr ""
+msgstr "Brasero - Запіс DVD (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:188
 msgid "Simulation of video DVD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу відэа DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:191
 #: ../libbrasero-burn/brasero-burn-dialog.c:205
@@ -320,19 +322,19 @@ msgstr "Запіс відэа DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:202
 msgid "Simulation of data DVD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу DVD з данымі"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:206
 msgid "Burning data DVD"
-msgstr "Запіс DVD з дадзенымі"
+msgstr "Запіс DVD з данымі"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:215
 msgid "Burning DVD (Simulation)"
-msgstr ""
+msgstr "Запіс DVD (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:216
 msgid "Simulation of image to DVD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу вобразу на DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:219
 msgid "Burning DVD"
@@ -340,16 +342,16 @@ msgstr "Запіс DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:220
 msgid "Burning image to DVD"
-msgstr ""
+msgstr "Запіс вобразу на DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:229
 #: ../libbrasero-burn/brasero-burn-dialog.c:1002
 msgid "Brasero - Copying DVD (Simulation)"
-msgstr ""
+msgstr "Brasero - Капіяваньне DVD (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:230
 msgid "Simulation of data DVD copying"
-msgstr ""
+msgstr "Сымуляцыя капіяваньня DVD даных"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:233
 msgid "Brasero - Copying DVD"
@@ -365,11 +367,11 @@ msgstr "Капіяваньне DVD з дадзенымі"
 #: ../libbrasero-burn/brasero-burn-dialog.c:302
 #: ../libbrasero-burn/brasero-burn-dialog.c:332
 msgid "Brasero - Burning CD (Simulation)"
-msgstr ""
+msgstr "Brasero - Запіс CD (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:247
 msgid "Simulation of (S)VCD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу (S)VCD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:250
 #: ../libbrasero-burn/brasero-burn-dialog.c:264
@@ -386,7 +388,7 @@ msgstr "Запіс (S)VCD"
 #: ../libbrasero-burn/brasero-burn-dialog.c:261
 #: ../libbrasero-burn/brasero-burn-dialog.c:333
 msgid "Simulation of audio CD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу аўдыё CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:265
 #: ../libbrasero-burn/brasero-burn-dialog.c:337
@@ -395,7 +397,7 @@ msgstr "Запіс музычнага CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:275
 msgid "Simulation of data CD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу CD з данымі"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:279
 msgid "Burning data CD"
@@ -404,11 +406,11 @@ msgstr "Запіс CD з дадзенымі"
 #: ../libbrasero-burn/brasero-burn-dialog.c:288
 #: ../libbrasero-burn/brasero-burn-dialog.c:1016
 msgid "Brasero - Copying CD (Simulation)"
-msgstr ""
+msgstr "Brasero - Капіяваньне CD (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:289
 msgid "Simulation of CD copying"
-msgstr ""
+msgstr "Сымуляцыя капіяваньня CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:292
 msgid "Brasero - Copying CD"
@@ -420,19 +422,19 @@ msgstr "Капіяваньне CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:303
 msgid "Simulation of image to CD burning"
-msgstr ""
+msgstr "Сымуляцыя запісу вобраза CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:307
 msgid "Burning image to CD"
-msgstr ""
+msgstr "Запіс вобраза на CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:318
 msgid "Brasero - Burning disc (Simulation)"
-msgstr ""
+msgstr "Brasero - Запіс дыска (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:319
 msgid "Simulation of video disc burning"
-msgstr ""
+msgstr "Сымуляцыя запісу відэа дыска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:322
 msgid "Brasero - Burning disc"
@@ -446,11 +448,11 @@ msgstr "Запіс відэа дыска"
 #: ../libbrasero-burn/brasero-burn-dialog.c:373
 #: ../libbrasero-burn/brasero-burn-dialog.c:1035
 msgid "Brasero - Burning Disc (Simulation)"
-msgstr ""
+msgstr "Brasero - Запіс дыска (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:347
 msgid "Simulation of data disc burning"
-msgstr ""
+msgstr "Сымуляцыя запісу дыска з данымі"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:350
 #: ../libbrasero-burn/brasero-burn-dialog.c:377
@@ -464,11 +466,11 @@ msgstr "Запіс дыска з дадзенымі"
 #: ../libbrasero-burn/brasero-burn-dialog.c:360
 #: ../libbrasero-burn/brasero-burn-dialog.c:1029
 msgid "Brasero - Copying Disc (Simulation)"
-msgstr ""
+msgstr "Brasero - Капіяваньне дыска (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:361
 msgid "Simulation of disc copying"
-msgstr ""
+msgstr "Сымуляцыя капіяваньня дыска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:364
 msgid "Brasero - Copying Disc"
@@ -481,68 +483,68 @@ msgstr "Капіяваньне дыска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:374
 msgid "Simulation of image to disc burning"
-msgstr ""
+msgstr "Сымуляцыя запісу вобраза дыска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:378
 msgid "Burning image to disc"
-msgstr ""
+msgstr "Запіс вобраза на дыск"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:489
 msgid "Please replace the disc with a rewritable disc holding data."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на шматразовы дыск з данымі."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:491
 msgid "Please replace the disc with a disc holding data."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на дыск з данымі."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:495
 msgid "Please insert a rewritable disc holding data."
-msgstr ""
+msgstr "Калі ласка, устаўце шматразовы дыск з данымі."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:497
 #: ../libbrasero-burn/brasero-burn-options.c:408
 msgid "Please insert a disc holding data."
-msgstr "Калі ласка, устаўце дыск"
+msgstr "Калі ласка, устаўце дыск з данымі."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:512
 #, c-format
 msgid ""
 "Please replace the disc with a recordable CD with at least %i MiB of free "
 "space."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на аднаразовы CD з %i MiB вольнае прасторы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:515
 msgid "Please replace the disc with a recordable CD."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на аднаразовы CD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:519
 #, c-format
 msgid "Please insert a recordable CD with at least %i MiB of free space."
-msgstr ""
+msgstr "Калі ласка, устаўце аднаразовы CD з %i MiB вольнае прасторы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:522
 msgid "Please insert a recordable CD."
-msgstr ""
+msgstr "Калі ласка, устаўце аднаразовы CD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:528
 #, c-format
 msgid ""
 "Please replace the disc with a recordable DVD with at least %i MiB of free "
 "space."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на аднаразовы DVD з %i MiB вольнае прасторы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:531
 msgid "Please replace the disc with a recordable DVD."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на аднаразовы DVD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:535
 #, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
-msgstr ""
+msgstr "Калі ласка, устаўце аднаразовы DVD з %i MiB вольнае прасторы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:538
 msgid "Please insert a recordable DVD."
-msgstr ""
+msgstr "Калі ласка, устаўце аднаразовы DVD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:543
 #, c-format
@@ -550,16 +552,17 @@ msgid ""
 "Please replace the disc with a recordable CD or DVD with at least %i MiB of "
 "free space."
 msgstr ""
+"Калі ласка, замяніце дыск на аднаразовы CD ці DVD з %i MiB вольнае прасторы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:546
 msgid "Please replace the disc with a recordable CD or DVD."
-msgstr ""
+msgstr "Калі ласка, замяніце дыск на аднаразовы CD ці DVD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:550
 #, c-format
 msgid ""
 "Please insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr ""
+msgstr "Калі ласка, устаўце аднаразовы CD ці DVD з %i MiB вольнае прасторы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:553
 #: ../libbrasero-burn/brasero-burn-dialog.c:2129
@@ -573,14 +576,16 @@ msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a recordable disc is inserted."
 msgstr ""
+"Вобраз дыска быў створаны на вашым жорсткім дыске.\n"
+"Запіс пачнецца пасьля ўстаўкі аднаразовага дыска."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:585
 msgid "A data integrity test will begin as soon as the disc is inserted."
-msgstr ""
+msgstr "Праверка цэласнасьці пачнецца пасьля ўстаўкі дыска."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:586
 msgid "Please re-insert the disc in the CD/DVD burner."
-msgstr ""
+msgstr "Калі ласка, устаўце дыск яшчэ раз у CD/DVD."
 
 #. Translators: %s is the name of a drive
 #: ../libbrasero-burn/brasero-burn-dialog.c:590
@@ -595,7 +600,7 @@ msgstr "\"%s\" заняты"
 #: ../libbrasero-burn/brasero-burn.c:1588
 #: ../libbrasero-burn/brasero-tool-dialog.c:89
 msgid "Make sure another application is not using it"
-msgstr ""
+msgstr "Упэўніцеся, што іншае дастасаваньне не выкарыстоўвае яго"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:594
 #, c-format
@@ -610,17 +615,17 @@ msgstr "Дыск у \"%s\" не падтрымліваецца."
 #: ../libbrasero-burn/brasero-burn-dialog.c:602
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
-msgstr ""
+msgstr "Дыск \"%s\" не прызначаны для перазапісу."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:606
 #, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr "Дыск у \"%s\" чысты"
+msgstr "Дыск у \"%s\" пусты."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:610
 #, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr ""
+msgstr "Дыск \"%s\" не прызначаны для запісу."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:614
 #, c-format
@@ -630,86 +635,88 @@ msgstr "Недастаткова вольнай прасторы на дыску
 #: ../libbrasero-burn/brasero-burn-dialog.c:622
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr ""
+msgstr "Трэба перазагрузіць дыск \"%s\"."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:623
 msgid "Please eject the disc and reload it."
-msgstr ""
+msgstr "Калі ласка, вызваліце дыск і загрузіце яго яшчэ раз."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:665
 #: ../libbrasero-burn/brasero-sum-dialog.c:325
 msgid ""
 "A file could not be created at the location specified for temporary files"
-msgstr ""
+msgstr "Немагчыма стварыць файл у вызначаным месцы для часовых файлаў"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:666
 msgid "The image could not be created at the specified location"
-msgstr ""
+msgstr "Немагчыма стварыць файл у вызначаным месцы"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:667
 msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
 msgstr ""
+"Ці жадаеце вызначыць іншае месца для гэтага сэансу ці паўтарыць спробу ў "
+"гэтым месцы?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:682
 msgid "You may want to free some space on the disc and retry"
-msgstr ""
+msgstr "Вы можаце вызваліць крыху прасторы на дыске і паўтарыць спробу"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:689
 #: ../libbrasero-burn/brasero-drive-properties.c:263
 #: ../libbrasero-burn/brasero-drive-properties.c:298
 #: ../libbrasero-burn/brasero-drive-properties.c:347
 msgid "_Keep Current Location"
-msgstr ""
+msgstr "Пакінуць _бягучае месца"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:691
 #: ../libbrasero-burn/brasero-drive-properties.c:264
 #: ../libbrasero-burn/brasero-drive-properties.c:299
 #: ../libbrasero-burn/brasero-drive-properties.c:348
 msgid "_Change Location"
-msgstr ""
+msgstr "Зь_мяніць месца"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:713
 #: ../libbrasero-burn/brasero-image-properties.c:478
 msgid "Location for Image File"
-msgstr ""
+msgstr "Месца для файла вобразу"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:721
 #: ../libbrasero-burn/brasero-drive-properties.c:379
 msgid "Location for Temporary Files"
-msgstr ""
+msgstr "Месца для часовых файлаў"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:820
 msgid "_Replace Disc"
-msgstr ""
+msgstr "_Іншы дыск"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:858
 msgid "Do you really want to blank the current disc?"
-msgstr ""
+msgstr "Насамрэч жадаеце ачысьціць бягучы дыск?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:859
 msgid "The disc in the drive holds data."
-msgstr ""
+msgstr "Дыск у прыладзе зьмяшчае даныя."
 
 #. Translators: Blank is a verb here
 #: ../libbrasero-burn/brasero-burn-dialog.c:861
 msgid "_Blank Disc"
-msgstr ""
+msgstr "А_чысьціць"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:873
 msgid "Already burnt files will be invisible (though still readable)."
-msgstr ""
+msgstr "Запісаныя файлы будуць нябачныая (але даступныя для чытаньня)."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:874
 #: ../libbrasero-burn/brasero-burn-dialog.c:894
 #: ../libbrasero-burn/brasero-burn-dialog.c:914
 msgid "Do you want to continue anyway?"
-msgstr ""
+msgstr "Ці жадаеце працягваць?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:877
 msgid "Appending new files to a multisession disc is not advised."
-msgstr ""
+msgstr "Даданьне новых файлаў да шматсэансавых дыскаў непажадана."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:879
 #: ../libbrasero-burn/brasero-burn-dialog.c:899
@@ -724,28 +731,32 @@ msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-TEXT "
 "won't be written."
 msgstr ""
+"CD-RW аўдыё дыскі могуць ня йграць у старых CD плэерах і CD-TEXT ня будзе "
+"запісаны."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:897
 msgid "Appending audio tracks to a CD is not advised."
-msgstr ""
+msgstr "Даданьне аўдыё трэкаў да CD непажадана."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:913
 msgid "CD-RW audio discs may not play correctly in older CD players."
-msgstr ""
+msgstr "CD-RW аўдыё дыскі могуць ня йграць у старых CD плэерах."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:917
 msgid "Recording audio tracks on a rewritable disc is not advised."
-msgstr ""
+msgstr "Запіс аўдыё трэкаў на шматразовы дыск непажаданы."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:951
 msgid "Do you want to continue with full Windows compatibility disabled?"
-msgstr ""
+msgstr "Ці жадаеце працягваць бяз поўнае сумяшчальнасьці з Windows?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:954 ../src/brasero-data-disc.c:746
 #: ../libbrasero-burn/brasero-status-dialog.c:257
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr ""
+"Некаторыя файлы ня маюць адпаведнай назвы для поўнае сумяшчальнасьці з "
+"Windows."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:998
 #, c-format
@@ -765,38 +776,38 @@ msgstr "Brasero - Запіс DVD (%i%% зроблена)"
 #: ../libbrasero-burn/brasero-burn-dialog.c:1018
 #, c-format
 msgid "Brasero - Copying CD (%i%% Done)"
-msgstr ""
+msgstr "Brasero - Капіяваньне CD (%i%% зроблена)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1022
 msgid "Brasero - Burning CD (simulation)"
-msgstr ""
+msgstr "Brasero - Запіс CD (сымуляцыя)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1024
 #, c-format
 msgid "Brasero - Burning CD (%i%% Done)"
-msgstr ""
+msgstr "Brasero - Запіс CD (%i%% зроблена)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1031
 #, c-format
 msgid "Brasero - Copying Disc (%i%% Done)"
-msgstr ""
+msgstr "Brasero - Капіяваньне дыска (%i%% зроблена)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Brasero - Burning Disc (%i%% Done)"
-msgstr ""
+msgstr "Brasero - Запіс дыска (%i%% зроблена)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1223
 msgid "The simulation was successful."
-msgstr ""
+msgstr "Сымуляцыя пасьпяхова скончана!"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1226
 msgid "Real disc burning will take place in 10 seconds."
-msgstr ""
+msgstr "Сапраўдны запіс пачнецца праз 10 сэкундаў."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1229
 msgid "Burn _Now"
-msgstr "Запісаць _цяпер"
+msgstr "За_пісаць"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1567
 msgid "Save Current Session"
@@ -804,27 +815,29 @@ msgstr "Захаваць бягучы сэанс"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1626
 msgid "Session Log"
-msgstr ""
+msgstr "Храналёг сэанса"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1656
 #: ../libbrasero-burn/brasero-burn-dialog.c:1680
 #: ../libbrasero-burn/brasero-burn-dialog.c:1691
 msgid "The session log cannot be displayed."
-msgstr ""
+msgstr "Немагчыма адлюстраваць храналёг сэанса."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1657
 msgid "The log file could not be found"
-msgstr ""
+msgstr "Немагчыма адшукаць файл храналёгу"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1672
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
 msgstr ""
+"Гэта рэшткі сыстэмнага храналёгу (апошнія 10 MiB):\n"
+"\n"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1760
 msgid "An unknown error occured."
-msgstr ""
+msgstr "Узьнікла невядомая памылка."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1770
 msgid "Error while burning."
@@ -832,71 +845,71 @@ msgstr "Падчас запісу ўзнікла памылка"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1778
 msgid "_Save Log"
-msgstr ""
+msgstr "За_хаваць храналёг"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1785
 msgid "_View Log"
-msgstr ""
+msgstr "Г_лядзець храналёг"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1848
 msgid "Audio CD successfully burnt"
-msgstr ""
+msgstr "Аўдыё-CD пасьпяхова запісаны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1853
 msgid "DVD successfully copied"
-msgstr ""
+msgstr "DVD пасьпяхова скапіяваны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1855
 msgid "CD successfully copied"
-msgstr ""
+msgstr "CD пасьпяхова скапіяваны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1859
 msgid "Image of DVD successfully created"
-msgstr ""
+msgstr "Вобраз DVD пасьпяхова створаны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1861
 msgid "Image of CD successfully created"
-msgstr ""
+msgstr "Вобраз CD пасьпяхова створаны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1867
 msgid "Image successfully burnt to DVD"
-msgstr ""
+msgstr "Вобраз пасьпяхова запісаны на DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1869
 msgid "Image successfully burnt to CD"
-msgstr ""
+msgstr "Вобраз пасьпяхова запісаны на CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1875
 msgid "Data DVD successfully burnt"
-msgstr ""
+msgstr "DVD з данымі пасьпяхова запісаны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1877
 msgid "Data CD successfully burnt"
-msgstr ""
+msgstr "CD з данымі пасьпяхова запісаны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1880
 msgid "Image successfully created"
-msgstr ""
+msgstr "Вобраз пасьпяхова створаны"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1910
 msgid "Make _Another Copy"
-msgstr ""
+msgstr "Зрабіць _яшчэ копію"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1939
 msgid "_Create Cover"
-msgstr ""
+msgstr "С_тварыць вокладку"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2092
 msgid "There are some files left to burn"
-msgstr ""
+msgstr "Яшчэ засталіся файлы для запісу"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2099
 msgid "There are some more videos left to burn"
-msgstr ""
+msgstr "Яшчэ засталіся відэа стужкі для запісу"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2103
 msgid "There are some more songs left to burn"
-msgstr ""
+msgstr "Яшчэ засталіся сьпевы для запісу"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2142
 #: ../libbrasero-burn/brasero-burn.c:1702
@@ -906,25 +919,25 @@ msgstr ""
 #: ../plugins/growisofs/burn-growisofs.c:193
 #, c-format
 msgid "Not enough space available on the disc"
-msgstr "Не хапае прасторы на дыску"
+msgstr "Бракуе прасторы на дыску"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2303
 #: ../libbrasero-burn/brasero-tool-dialog.c:408
 msgid "Do you really want to quit?"
-msgstr "Вы ўпэўнены што жадаеце выйсьці?"
+msgstr "Ці насамрэч жадаеце выйсьці?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2307
 #: ../libbrasero-burn/brasero-tool-dialog.c:411
 msgid "Interrupting the process may make disc unusable."
-msgstr ""
+msgstr "Абрыў працэсу запісу зробіць дыск непрыдатным."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2310
 msgid "C_ontinue Burning"
-msgstr ""
+msgstr "Пра_цягнуць запіс"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2317
 msgid "_Cancel Burning"
-msgstr ""
+msgstr "С_касаваць запіс"
 
 #: ../libbrasero-burn/brasero-burn-options.c:245 ../src/brasero-project.c:1041
 msgid ""
@@ -936,20 +949,20 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-options.c:338 ../src/brasero-project.c:968
 msgid "Would you like to burn the selection of files across several media?"
-msgstr ""
+msgstr "Ці жадаеце запісаць вылучаныя файлы на некалькі носьбітаў?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:339
 #: ../libbrasero-burn/brasero-burn-options.c:356
 msgid "The data size is too large for the disc even with the overburn option."
-msgstr ""
+msgstr "Памер даных завялікі."
 
 #: ../libbrasero-burn/brasero-burn-options.c:344 ../src/brasero-project.c:974
 msgid "_Burn Several Discs"
-msgstr ""
+msgstr "За_пісаць некалькі дыскаў"
 
 #: ../libbrasero-burn/brasero-burn-options.c:345 ../src/brasero-project.c:975
 msgid "Burn the selection of files across several media"
-msgstr ""
+msgstr "Запісаць файлы на некалькі носьбітаў"
 
 #: ../libbrasero-burn/brasero-burn-options.c:355 ../src/brasero-project.c:985
 msgid "Please choose another CD or DVD or insert a new one."
@@ -961,7 +974,7 @@ msgstr "Не атрымалася знайсьці дыск для запісу"
 
 #: ../libbrasero-burn/brasero-burn-options.c:369 ../src/brasero-project.c:1031
 msgid "No track information (artist, title, ...) will be written to the disc."
-msgstr ""
+msgstr "Зьвесткі пра трэк (выканаўца, назва, ...) ня будуць запісаныя на дыск."
 
 #: ../libbrasero-burn/brasero-burn-options.c:370 ../src/brasero-project.c:1032
 msgid "This is not supported by the current active burning backend."
@@ -970,15 +983,15 @@ msgstr "Не падтрымліваецца гэтай сістэмай запі
 #: ../libbrasero-burn/brasero-burn-options.c:382
 #: ../nautilus/nautilus-burn-extension.c:187
 msgid "Please add files."
-msgstr ""
+msgstr "Калі ласка, дадайце файлы."
 
 #: ../libbrasero-burn/brasero-burn-options.c:388
 msgid "Please add songs."
-msgstr ""
+msgstr "Калі ласка, дадайце сьпевы."
 
 #: ../libbrasero-burn/brasero-burn-options.c:389 ../src/brasero-project.c:1279
 msgid "There are no songs to write to disc"
-msgstr ""
+msgstr "Няма сьпеваў для запісу на дыск"
 
 #: ../libbrasero-burn/brasero-burn-options.c:394
 msgid "Please add videos."
@@ -1080,7 +1093,7 @@ msgstr "Абярыце дыск для запісу"
 #: ../libbrasero-burn/brasero-burn-options.c:676
 #: ../libbrasero-burn/brasero-burn-options.c:796
 msgid "Disc Burning Setup"
-msgstr ""
+msgstr "Наладка запісу на дыск"
 
 #: ../libbrasero-burn/brasero-burn-options.c:688 ../src/brasero-project.c:1402
 msgid "Video Options"
@@ -1091,7 +1104,7 @@ msgstr "Відэа-опцыі"
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
-msgstr ""
+msgstr "Жадаеце стварыць дыск з вобразу ці запісаць файл вобраза на дыск?"
 
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:725
@@ -1101,11 +1114,13 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burnt."
 msgstr ""
+"Вылучаны толькі адзін файл (\"%s\"). Ён з'яўляецца вобразам дыска і яго "
+"зьмест можна запісаць."
 
 #: ../libbrasero-burn/brasero-burn-options.c:730
 #: ../src/brasero-data-disc.c:628
 msgid "Burn as _File"
-msgstr "Запісаць у _файл"
+msgstr "Запісаць _файл"
 
 #: ../libbrasero-burn/brasero-burn-options.c:732
 #: ../src/brasero-data-disc.c:630
@@ -1140,58 +1155,58 @@ msgstr "Запіс CD/DVD"
 #: ../libbrasero-burn/brasero-burn.c:308 ../src/brasero-eject-dialog.c:93
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
-msgstr ""
+msgstr "Немагчыма вызваліць дыск \"%s\""
 
 #: ../libbrasero-burn/brasero-burn.c:350 ../libbrasero-burn/brasero-burn.c:396
 #, c-format
 msgid "\"%s\" cannot be unlocked"
-msgstr ""
+msgstr "Немагчыма разамкнуць \"%s\""
 
 #: ../libbrasero-burn/brasero-burn.c:527 ../libbrasero-burn/brasero-burn.c:652
 #: ../libbrasero-burn/brasero-burn.c:800
 #: ../libbrasero-burn/brasero-burn.c:1995
 #, c-format
 msgid "No burner specified"
-msgstr ""
+msgstr "Ня вызначана прылада для запісу"
 
 #: ../libbrasero-burn/brasero-burn.c:564
 #, c-format
 msgid "No source drive specified"
-msgstr ""
+msgstr "Ня вызначана крыніца"
 
 #: ../libbrasero-burn/brasero-burn.c:604
 msgid "Ongoing copying process"
-msgstr ""
+msgstr "Працэс капіяваньня"
 
 #: ../libbrasero-burn/brasero-burn.c:608 ../libbrasero-burn/brasero-burn.c:703
 #: ../libbrasero-burn/brasero-burn.c:950
 #: ../libbrasero-burn/brasero-burn.c:1061
 #, c-format
 msgid "The drive cannot be locked (%s)"
-msgstr ""
+msgstr "Немагчыма манапалізаваць доступ да прылады (%s)"
 
 #: ../libbrasero-burn/brasero-burn.c:663
 #, c-format
 msgid "The drive has no rewriting capabilities"
-msgstr ""
+msgstr "Прылада ня мае магчымасьці перазапісу"
 
 #: ../libbrasero-burn/brasero-burn.c:699
 msgid "Ongoing blanking process"
-msgstr ""
+msgstr "Працэс ачысткі"
 
 #: ../libbrasero-burn/brasero-burn.c:815
 #, c-format
 msgid "The drive cannot burn or the disc cannot be burnt"
-msgstr ""
+msgstr "Дыск або прылада ня мае магчымасьці запісу"
 
 #: ../libbrasero-burn/brasero-burn.c:944
 #: ../libbrasero-burn/brasero-dest-selection.c:108
 msgid "Ongoing burning process"
-msgstr "Запіс дыску"
+msgstr "Працэс запісу дыска"
 
 #: ../libbrasero-burn/brasero-burn.c:1057
 msgid "Ongoing checksuming operation"
-msgstr ""
+msgstr "Працэс кантрольнаяе праверкі"
 
 #: ../libbrasero-burn/brasero-burn.c:1361
 #: ../libbrasero-burn/brasero-burn.c:1395
@@ -1214,21 +1229,21 @@ msgstr "Прылада занятая"
 #: ../libbrasero-burn/brasero-burn.c:2043
 #, c-format
 msgid "Merging data is impossible with this disc"
-msgstr ""
+msgstr "Аб'яднаньне даных на гэтым дыске немагчымае"
 
 #: ../libbrasero-burn/brasero-burn.c:1980
 #, c-format
 msgid "There is no track to be burnt"
-msgstr ""
+msgstr "Адсутнічаюць трэкі для запісу"
 
 #: ../libbrasero-burn/brasero-burn.c:2380
 #, c-format
 msgid "No format for the temporary image could be found"
-msgstr ""
+msgstr "Немагчыма адушкаць фармат для часовага вобразу"
 
 #: ../libbrasero-burn/brasero-cover.c:119
 msgid "Unknown song"
-msgstr ""
+msgstr "Невядомая песьня"
 
 #. Reminder: if this string happens to be used
 #. * somewhere else in brasero we'll need a
@@ -1240,22 +1255,22 @@ msgstr ""
 #. * and every word has a different tag.
 #: ../libbrasero-burn/brasero-cover.c:144
 msgid "by"
-msgstr ""
+msgstr "у выкананьні"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:519
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
 msgid "SVCD image"
-msgstr ""
+msgstr "SVCD вобраз"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:521
 #: ../libbrasero-burn/brasero-image-type-chooser.c:127
 msgid "VCD image"
-msgstr ""
+msgstr "VCD вобраз"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:525
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "Video DVD image"
-msgstr ""
+msgstr "Video DVD вобраз"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
@@ -1273,13 +1288,13 @@ msgstr "%s: \"%s\""
 #: ../libbrasero-burn/brasero-dest-selection.c:569
 #, c-format
 msgid "New disc in the burner holding source disc"
-msgstr ""
+msgstr "У прыладзе зыходны дыск, калі ласка, устаўце чысты"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-burn/brasero-dest-selection.c:624
 #, c-format
 msgid "%s: not enough free space"
-msgstr ""
+msgstr "%s: бракуе вольнае прасторы"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
@@ -1293,13 +1308,13 @@ msgstr "%s: %s вольнай прасторы"
 #: ../libbrasero-burn/brasero-drive-properties.c:211
 #, c-format
 msgid "%s: %s free"
-msgstr ""
+msgstr "%s: %s вольна"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:255
 #: ../libbrasero-burn/brasero-drive-properties.c:291
 #: ../libbrasero-burn/brasero-drive-properties.c:340
 msgid "Do you really want to choose this location?"
-msgstr ""
+msgstr "Насамрэч жадаеце зьмяніць месца?"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:293
 #: ../libbrasero-burn/brasero-session.c:1179
@@ -1309,7 +1324,7 @@ msgstr ""
 #: ../plugins/libburnia/burn-libisofs.c:230
 #, c-format
 msgid "You do not have the required permission to write at this location"
-msgstr ""
+msgstr "Вы ня маеце патрэбных правоў на запіс у гэтым месцы"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:343
 msgid ""
@@ -1345,19 +1360,19 @@ msgstr "%.1f x (BD) %.1f x (DVD) %.1f x (CD)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:598
 msgid "Impossible to retrieve speeds"
-msgstr ""
+msgstr "Немагчыма вызначыць хуткасьці"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:607
 msgid "Max speed"
-msgstr "Максімальная хуткасць"
+msgstr "Максімальная хуткасьць"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:733
 msgid "Burning speed"
-msgstr "Хуткасць запісу"
+msgstr "Хуткасьць запісу"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:746
 msgid "_Simulate before burning"
-msgstr ""
+msgstr "_Сымуляцыя перад запісам"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:747
 msgid ""
@@ -1390,7 +1405,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-tool-dialog.c:281
 #: ../src/brasero-multi-song-props.c:307
 msgid "Options"
-msgstr "Наладкі"
+msgstr "Опцыі"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:793
 msgid "Location for _Temporary Files"
@@ -1406,27 +1421,27 @@ msgstr "Часовыя файлы"
 
 #: ../libbrasero-burn/brasero-image-properties.c:223
 msgid "Disc image type:"
-msgstr ""
+msgstr "Тып вобразу:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:97
 msgid "Autodetect"
-msgstr ""
+msgstr "Аўтаматычна"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "ISO9660 image"
-msgstr ""
+msgstr "ISO9660"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:115
 msgid "Readcd/Readom image"
-msgstr ""
+msgstr "Readcd/Readom"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:141
 msgid "Cue image"
-msgstr ""
+msgstr "Cue"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:151
 msgid "Cdrdao image"
-msgstr ""
+msgstr "Cdrdao"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:94
 #: ../src/brasero-project.c:1368
@@ -1480,7 +1495,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-progress.c:473
 #, c-format
 msgid "%i MiB of %i MiB"
-msgstr ""
+msgstr "%i MiB з %i MiB"
 
 #: ../libbrasero-burn/brasero-progress.c:499
 msgid "Estimated drive speed:"
@@ -1529,7 +1544,7 @@ msgstr "Усе файлы"
 #: ../libbrasero-burn/brasero-src-image.c:466
 msgctxt "disc"
 msgid "Image files"
-msgstr ""
+msgstr "Вобразы"
 
 #: ../libbrasero-burn/brasero-src-image.c:484
 msgid "Image type:"
@@ -1555,12 +1570,12 @@ msgstr "Паказаць дыялог"
 #: ../libbrasero-burn/brasero-tray.c:259
 #, c-format
 msgid "%s, %d%% done, %s remaining"
-msgstr ""
+msgstr "%s, %d%% запісана, %s засталося"
 
 #: ../libbrasero-burn/brasero-tray.c:266
 #, c-format
 msgid "%s, %d%% done"
-msgstr ""
+msgstr "%s, %d%% запісана"
 
 #: ../libbrasero-burn/burn-basics.c:75
 msgid "Getting size"
@@ -1855,38 +1870,38 @@ msgstr "Паказаць опцыі для бібліятэкі Brasero"
 #: ../libbrasero-media/brasero-units.c:71
 #, c-format
 msgid "%s h %s min %s"
-msgstr ""
+msgstr "%s г %s хв %s"
 
 #. Translators: this is hour minute like '2 h 14'
 #: ../libbrasero-media/brasero-units.c:77
 #, c-format
 msgid "%s h %s"
-msgstr ""
+msgstr "%s г %s"
 
 #. Translators: this is hour like '2 h'
 #: ../libbrasero-media/brasero-units.c:82
 #, c-format
 msgid "%s h"
-msgstr ""
+msgstr "%s г"
 
 #. Translators: this is 'hour:minute:second' like '2:14:25'
 #: ../libbrasero-media/brasero-units.c:86
 #, c-format
 msgid "%s:%s:%s"
-msgstr ""
+msgstr "%s:%s:%s"
 
 #. Translators: this is 'hour:minute' or 'minute:second'
 #: ../libbrasero-media/brasero-units.c:92
 #: ../libbrasero-media/brasero-units.c:107
 #, c-format
 msgid "%s:%s"
-msgstr ""
+msgstr "%s:%s"
 
 #. Translators: %s is a duration expressed in minutes
 #: ../libbrasero-media/brasero-units.c:99
 #, c-format
 msgid "%s min"
-msgstr ""
+msgstr "%s хв"
 
 #. Translators: the first %s is the number of minutes
 #. * and the second one is the number of seconds.
@@ -1894,7 +1909,7 @@ msgstr ""
 #: ../libbrasero-media/brasero-units.c:104
 #, c-format
 msgid "%s:%s min"
-msgstr ""
+msgstr "%s:%s хв"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-media/brasero-medium-selection.c:146
@@ -1960,7 +1975,7 @@ msgstr "CD-RW"
 
 #: ../libbrasero-media/brasero-medium.c:68
 msgid "DVD-ROM"
-msgstr ""
+msgstr "DVD-ROM"
 
 #: ../libbrasero-media/brasero-medium.c:69
 msgid "DVD-R"
@@ -2050,13 +2065,13 @@ msgstr "Не была атрыманая кропка мацаваньня ды�
 #: ../libbrasero-media/brasero-volume.c:418
 #, c-format
 msgid "Blank disc (%s)"
-msgstr ""
+msgstr "Чысты дыск (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
 #: ../libbrasero-media/brasero-volume.c:422
 #, c-format
 msgid "Audio and data disc (%s)"
-msgstr ""
+msgstr "Аўдыё дыск з данымі (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
 #. NOTE to translators: the final string must not be over
@@ -2279,7 +2294,7 @@ msgstr "Праверыць некранутасць дадзеных на гэт
 #: ../src/brasero-project-name.c:82
 msgctxt "picture"
 msgid "Please select another image."
-msgstr ""
+msgstr "Калі ласка, вылучыце іншы відарыс."
 
 #: ../src/brasero-project-name.c:156
 msgid "Medium Icon"
@@ -2290,7 +2305,7 @@ msgstr ""
 #: ../src/brasero-project.c:2046
 msgctxt "picture"
 msgid "Image files"
-msgstr ""
+msgstr "Відарысы"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -2338,11 +2353,11 @@ msgstr "Вызваліць дыск"
 
 #: ../src/brasero-app.c:133
 msgid "_Blank..."
-msgstr ""
+msgstr "_Ачысьціць..."
 
 #: ../src/brasero-app.c:134
 msgid "Blank a disc"
-msgstr ""
+msgstr "Ачысьціць дыск"
 
 #: ../src/brasero-app.c:136
 msgid "_Check Integrity..."
@@ -2354,7 +2369,7 @@ msgstr "Праверыць некранутасць дадзеных дыску"
 
 #: ../src/brasero-app.c:140
 msgid "Quit Brasero"
-msgstr ""
+msgstr "Выйсьці з Brasero"
 
 #: ../src/brasero-app.c:142
 msgid "_Contents"
@@ -2434,11 +2449,11 @@ msgstr ""
 #: ../src/brasero-app.c:1297
 #, c-format
 msgid "The project \"%s\" does not exist"
-msgstr ""
+msgstr "Праэкт \"%s\" не існуе"
 
 #: ../src/brasero-app.c:1299 ../src/main.c:207 ../src/main.c:233
 msgid "Error while loading the project"
-msgstr ""
+msgstr "Памылка загрузкі праэкта"
 
 #: ../src/brasero-app.c:1371 ../src/brasero-app.c:1377
 msgid "_Recent Projects"
@@ -2455,7 +2470,7 @@ msgstr "Дастасаваньне для запісу дыскаў Brasero"
 #: ../data/brasero.desktop.in.in.h:1
 #: ../data/brasero-copy-medium.desktop.in.in.h:1
 msgid "Brasero"
-msgstr ""
+msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
@@ -2871,7 +2886,7 @@ msgstr[2] "%d песьняў"
 
 #: ../src/brasero-plugin-manager-ui.c:63
 msgid "Plugin"
-msgstr "Плагін"
+msgstr "Модуль"
 
 #: ../src/brasero-plugin-manager-ui.c:64
 msgid "Enabled"
@@ -2880,21 +2895,21 @@ msgstr "Уключаны"
 #: ../src/brasero-plugin-manager-ui.c:144
 #, c-format
 msgid "Copyright %s"
-msgstr "Капірайт %s"
+msgstr "Аўтарскія правы %s"
 
 #: ../src/brasero-plugin-manager-ui.c:583
 #: ../src/brasero-plugin-manager-ui.c:952
 msgid "_About"
-msgstr "Аб праграме"
+msgstr "_Аб праграме"
 
 #: ../src/brasero-plugin-manager-ui.c:591
 #: ../src/brasero-plugin-manager-ui.c:958
 msgid "C_onfigure"
-msgstr "_Канфігураваць"
+msgstr "На_ладзіць"
 
 #: ../src/brasero-plugin-manager-ui.c:601
 msgid "A_ctivate"
-msgstr "Уключыць"
+msgstr "У_ключыць"
 
 #: ../src/brasero-plugin-manager-ui.c:613
 msgid "Ac_tivate All"
@@ -2932,27 +2947,27 @@ msgstr "У відэа файлах"
 
 #: ../src/brasero-search-entry.c:334
 msgid "Type your keywords or choose 'All files' from the menu"
-msgstr ""
+msgstr "Увядзіце ключавыя словы альбо абярыце \"Усе файлы\" ў мэню"
 
 #: ../src/brasero-search-entry.c:337
 msgid "Select if you want to search among image files only"
-msgstr ""
+msgstr "Вылучыце, калі жадаеце шукаць толькі сярод файлаў зь відарысамі"
 
 #: ../src/brasero-search-entry.c:339
 msgid "Select if you want to search among video files only"
-msgstr "Абярыце, калі жадаеце шукаць толькі сярод відэа файлаў"
+msgstr "Вылучыце, калі жадаеце шукаць толькі сярод відэа файлаў"
 
 #: ../src/brasero-search-entry.c:341
 msgid "Select if you want to search among audio files only"
-msgstr "Абярыце, калі жадаеце шукаць толькі сярод музычных файлаў"
+msgstr "Вылучыце, калі жадаеце шукаць толькі сярод музычных файлаў"
 
 #: ../src/brasero-search-entry.c:343
 msgid "Select if you want to search among your text documents only"
-msgstr "Абярыце, калі жадаеце шукаць толькі сярод тэкставых дакументаў"
+msgstr "Вылучыце, калі жадаеце шукаць толькі сярод тэкставых дакументаў"
 
 #: ../src/brasero-search-entry.c:345
 msgid "Click to start the search"
-msgstr "Клікніце каб пачаць пошук"
+msgstr "Пстрыкніце каб пачаць пошук"
 
 #: ../src/brasero-search-beagle.c:325
 msgid "Previous Results"
@@ -2977,16 +2992,16 @@ msgstr "Апісаньне"
 
 #: ../src/brasero-search-beagle.c:485
 msgid "Number of results displayed"
-msgstr ""
+msgstr "Колькасьць адлюстраваных вынікаў"
 
 #: ../src/brasero-search-beagle.c:791
 #, c-format
 msgid "Results %i - %i (out of %i)"
-msgstr ""
+msgstr "Вынікі %i - %i (з %i)"
 
 #: ../src/brasero-search-beagle.c:1031
 msgid "Error querying Beagle."
-msgstr ""
+msgstr "Памылка зыпыту Beagle."
 
 #: ../src/brasero-song-properties.c:176
 msgid "Title:"
@@ -3006,23 +3021,23 @@ msgstr "Выканаўца:"
 
 #: ../src/brasero-song-properties.c:200 ../src/brasero-multi-song-props.c:262
 msgid "Composer:"
-msgstr ""
+msgstr "Кампазытар:"
 
 #: ../src/brasero-song-properties.c:234
 msgid "Song start:"
-msgstr "Пачатак песьні"
+msgstr "Пачатак:"
 
 #: ../src/brasero-song-properties.c:240
 msgid "Song end:"
-msgstr ""
+msgstr "Канец:"
 
 #: ../src/brasero-song-properties.c:246 ../src/brasero-multi-song-props.c:316
 msgid "Pause length:"
-msgstr ""
+msgstr "Паўцза:"
 
 #: ../src/brasero-song-properties.c:255 ../src/brasero-multi-song-props.c:327
 msgid "Gives the length of the pause that should follow the track"
-msgstr ""
+msgstr "Вызначае паўзу пасьля трэка"
 
 #: ../src/brasero-song-properties.c:257
 msgid "Track length:"
@@ -3039,7 +3054,7 @@ msgstr "зьвесткі пра трэк %02i"
 
 #: ../src/brasero-data-disc.c:125
 msgid "R_ename..."
-msgstr "Зьмяніць назву"
+msgstr "Перай_менаваць..."
 
 #: ../src/brasero-data-disc.c:125
 msgid "Rename the selected file"
@@ -3055,57 +3070,57 @@ msgstr "Стварыць новую парожнюю тэчку"
 
 #: ../src/brasero-data-disc.c:212
 msgid "The session could not be imported."
-msgstr ""
+msgstr "Немагчыма імпартаваць гэты сэанс."
 
 #: ../src/brasero-data-disc.c:558
 msgid "The contents of the project changed since it was saved."
-msgstr ""
+msgstr "Зьмест праэкту зьмяніўся з моманту апошняга захаваньня."
 
 #: ../src/brasero-data-disc.c:560 ../src/brasero-data-disc.c:567
 msgid "Discard the current modified project"
-msgstr ""
+msgstr "Забыцца на бягучы зьменены праэкт"
 
 #: ../src/brasero-data-disc.c:566
 msgid "_Discard"
-msgstr "Ад_кінуць"
+msgstr "За_быцца"
 
 #: ../src/brasero-data-disc.c:572
 msgid "Continue with the current modified project"
-msgstr ""
+msgstr "Працягваць з бягучым зьмененым праэктам"
 
 #: ../src/brasero-data-disc.c:679 ../src/brasero-data-disc.c:700
 #: ../src/brasero-data-disc.c:721
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
-msgstr ""
+msgstr "Немагчыма дадаць \"%s\" да вылучэньня."
 
 #: ../src/brasero-data-disc.c:703
 msgid "It is a recursive symlink"
-msgstr ""
+msgstr "Рэкурсыўная спасылка"
 
 #: ../src/brasero-data-disc.c:724
 msgid "It does not exist at the specified location"
-msgstr ""
+msgstr "Не існуе ў вызначаным месцы"
 
 #: ../src/brasero-data-disc.c:742
 #: ../libbrasero-burn/brasero-status-dialog.c:254
 msgid "Should files be renamed to be fully Windows-compatible?"
-msgstr ""
+msgstr "Ці трэба перайменаваць файлы для поўнае сумяшчальнасьці з Windows?"
 
 #: ../src/brasero-data-disc.c:747
 #: ../libbrasero-burn/brasero-status-dialog.c:258
 msgid "Those names should be changed and truncated to 64 characters."
-msgstr ""
+msgstr "Назвы мусяць быць абрэзаны да 64 знакаў."
 
 #: ../src/brasero-data-disc.c:751
 #: ../libbrasero-burn/brasero-status-dialog.c:266
 msgid "_Rename for Full Windows Compatibility"
-msgstr ""
+msgstr "Перай_менаваць для поўнае сумяшальнасьці з Windows"
 
 #: ../src/brasero-data-disc.c:752
 #: ../libbrasero-burn/brasero-status-dialog.c:263
 msgid "_Disable Full Windows Compatibility"
-msgstr ""
+msgstr "Адк_лючыць поўную сумяшчальнасьць з Windows"
 
 #. Translators: %s is the name of the file
 #: ../src/brasero-data-disc.c:785
@@ -3183,7 +3198,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-status-dialog.c:178
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
-msgstr ""
+msgstr "Ці жадаеце дадаць \"%s\" да вылучэньня?"
 
 #: ../src/brasero-data-disc.c:893
 #: ../libbrasero-burn/brasero-status-dialog.c:188
@@ -4554,7 +4569,7 @@ msgstr "Канец"
 
 #: ../src/brasero-split-dialog.c:1238
 msgid "Mer_ge"
-msgstr ""
+msgstr "Аб'_яднаць"
 
 #: ../src/brasero-split-dialog.c:1249
 msgid "Merge a selected slice with the next selected one"
@@ -4598,7 +4613,7 @@ msgstr "Секунды"
 
 #: ../src/brasero-time-button.c:316
 msgid "Frames (1 second = 75 frames)"
-msgstr ""
+msgstr "Кадры (1 сэкунда = 75 кадраў)"
 
 #: ../plugins/cdrkit/burn-cdrkit.h:38
 msgid "Cdrkit burning suite"
@@ -4622,11 +4637,11 @@ msgstr ""
 
 #: ../src/brasero-eject-dialog.c:189
 msgid "_Eject"
-msgstr "_Вызваліць"
+msgstr "Вы_зваліць"
 
 #: ../src/brasero-eject-dialog.c:204
 msgid "Eject Disc"
-msgstr ""
+msgstr "Вызваліць дыск"
 
 #: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
 msgid "No file filtered"
@@ -4648,7 +4663,7 @@ msgstr[1] ""
 
 #: ../src/brasero-file-filtered.c:138
 msgid "Filter Options"
-msgstr ""
+msgstr "Опцыі цэдлы"
 
 #: ../src/brasero-file-filtered.c:221
 msgid ""
@@ -4665,7 +4680,7 @@ msgstr "Адна_віць"
 
 #: ../src/brasero-file-filtered.c:304
 msgid "Restore the selected files"
-msgstr ""
+msgstr "Аднавіць вылучаныя файлы"
 
 #: ../src/brasero-file-filtered.c:306
 msgid "_Options..."
@@ -4699,7 +4714,7 @@ msgstr "Файл \"%s\" немагчыма адкрыць (%s)"
 
 #: ../plugins/checksum/burn-checksum-files.c:608
 msgid "Creating checksum for image files"
-msgstr ""
+msgstr "Стварэньне праверчае сумы для вобразу"
 
 #: ../plugins/checksum/burn-checksum-files.c:847
 #, c-format
@@ -4708,7 +4723,7 @@ msgstr ""
 
 #: ../plugins/checksum/burn-checksum-files.c:881
 msgid "Checking file integrity"
-msgstr ""
+msgstr "Праверка цэласнасьці"
 
 #: ../plugins/checksum/burn-checksum-files.c:975
 #: ../plugins/checksum/burn-checksum-files.c:1000
@@ -4737,7 +4752,7 @@ msgstr ""
 #: ../plugins/checksum/burn-checksum-files.c:1500
 #: ../plugins/checksum/burn-checksum-image.c:846
 msgid "Hashing algorithm to be used:"
-msgstr ""
+msgstr "Хэш-альгарытм:"
 
 #: ../plugins/checksum/burn-checksum-files.c:1503
 #: ../plugins/checksum/burn-checksum-image.c:849
