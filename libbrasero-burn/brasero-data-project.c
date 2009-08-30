@@ -426,13 +426,13 @@ brasero_data_project_joliet_add_node (BraseroDataProject *self,
 		g_hash_table_insert (priv->joliet,
 				     table_key,
 				     g_slist_prepend (NULL, node));
-		return;
 	}
-
-	list = g_slist_prepend (list, node);
-	g_hash_table_insert (priv->joliet,
-			     &key,
-			     list);
+	else {
+		list = g_slist_prepend (list, node);
+		g_hash_table_insert (priv->joliet,
+		                     &key,
+		                     list);
+	}
 
 	/* Signal that we'll have a collision */
 	g_signal_emit (self,
