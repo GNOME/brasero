@@ -1906,7 +1906,13 @@ brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
 	GSList *uris;
 	GSList *iter;
 
+	if (!project->priv->chooser)
+		return;
+
+	project->priv->chooser = NULL;
 	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
+	gtk_widget_destroy (GTK_WIDGET (chooser));
+
 	for (iter = uris; iter; iter = iter->next) {
 		gchar *uri;
 
@@ -1915,9 +1921,6 @@ brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
 	}
 	g_slist_foreach (uris, (GFunc) g_free, NULL);
 	g_slist_free (uris);
-
-	gtk_widget_destroy (GTK_WIDGET (project->priv->chooser));
-	project->priv->chooser = NULL;
 }
 
 static void
@@ -1928,13 +1931,19 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	GSList *uris;
 	GSList *iter;
 
+	if (!project->priv->chooser)
+		return;
+
 	if (response != BRASERO_RESPONSE_ADD) {
 		gtk_widget_destroy (chooser);
 		project->priv->chooser = NULL;
 		return;
 	}
 
+	project->priv->chooser = NULL;
 	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
+	gtk_widget_destroy (GTK_WIDGET (chooser));
+
 	for (iter = uris; iter; iter = iter->next) {
 		gchar *uri;
 
@@ -1943,9 +1952,6 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	}
 	g_slist_foreach (uris, (GFunc) g_free, NULL);
 	g_slist_free (uris);
-
-	gtk_widget_destroy (GTK_WIDGET (project->priv->chooser));
-	project->priv->chooser = NULL;
 }
 
 static void
