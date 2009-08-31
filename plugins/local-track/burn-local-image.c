@@ -357,7 +357,7 @@ error:
 static BraseroBurnResult
 brasero_local_track_update_track (BraseroLocalTrack *self)
 {
-	BraseroTrack *track;
+	BraseroTrack *track = NULL;
 	BraseroTrack *current = NULL;
 	BraseroLocalTrackPrivate *priv;
 
@@ -413,7 +413,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 				unreadable = g_slist_remove (unreadable, unreadable->data);
 		}
 	}
-	else if (BRASERO_IS_TRACK_STREAM (track)) {
+	else if (BRASERO_IS_TRACK_STREAM (current)) {
 		gchar *uri;
 		gchar *newuri;
 
@@ -430,7 +430,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 						     brasero_track_stream_get_gap (BRASERO_TRACK_STREAM (current)));
 		g_free (uri);
 	}
-	else if (BRASERO_IS_TRACK_IMAGE (track)) {
+	else if (BRASERO_IS_TRACK_IMAGE (current)) {
 		gchar *uri;
 		gchar *newtoc;
 		gchar *newimage;
