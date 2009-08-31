@@ -33,6 +33,8 @@
 
 #include <gtk/gtk.h>
 
+#include <gconf/gconf-client.h>
+
 #include "brasero-misc.h"
 
 #include "eggtreemultidnd.h"
@@ -161,6 +163,9 @@ enum {
 	TREE_MODEL_ROW		= 150,
 	TARGET_URIS_LIST,
 };
+
+#define GCONF_COLUMN_KEY				"/apps/brasero/display/data_column"
+#define GCONF_COLUMN_ORDER_KEY		"/apps/brasero/display/data_sort_order"
 
 static GtkTargetEntry ntables_cd [] = {
 	{BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, GTK_TARGET_SAME_WIDGET, TREE_MODEL_ROW},
@@ -1297,6 +1302,27 @@ brasero_data_disc_message_response_cb (BraseroDiscMessage *message,
 	brasero_data_disc_clear (BRASERO_DISC (self));
 }
 
+static 
+brasero_data_disc_sort_column_changed (GtkTreeSortable *sortable,
+                                       BraseroDataDisc *disc)
+{
+	GtkSortType sort_order;
+	GConfClient *client;
+	gint sort_column;
+
+	gtk_tree_sortable_get_sort_column_id (sortable, &sort_column, &sort_order);
+
+	client = gconf_client_get_default ();
+	gconf_client_set_int (client,
+	                      GCONF_COLUMN_KEY,
+	                      sort_column,
+	                      NULL);
+	gconf_client_set_int (client,
+	                      GCONF_COLUMN_ORDER_KEY,
+	                      sort_order,
+	                      NULL);
+}
+
 static BraseroDiscResult
 brasero_data_disc_set_track (BraseroDataDisc *disc,
 			     BraseroTrackDataCfg *track)
@@ -1305,10 +1331,31 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 	BraseroDataDiscPrivate *priv;
 	BraseroStatus *status;
 	GtkWidget *message;
+	GConfClient *client;
+	gint sort_column;
+	gint sort_order;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
 	priv->project = g_object_ref (track);
+
+	client = gconf_client_get_default ();
+	sort_column = gconf_client_get_int (client,
+	                                    GCONF_COLUMN_KEY,
+	                                    NULL);
+	sort_order = gconf_client_get_int (client,
+	                                   GCONF_COLUMN_ORDER_KEY,
+	                                   NULL);
+
+	if ((sort_column == BRASERO_DATA_TREE_MODEL_SIZE
+	||   sort_column == BRASERO_DATA_TREE_MODEL_MIME_DESC
+	||   sort_column == BRASERO_DATA_TREE_MODEL_NAME)
+	&& (sort_order == GTK_SORT_ASCENDING
+	||  sort_order == GTK_SORT_DESCENDING))
+		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (track),
+						      sort_column,
+						      sort_order);
+	g_object_unref (client);
 
 	/* filtered files */
 	priv->filter = brasero_file_filtered_new (priv->project);
@@ -1354,6 +1401,11 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 	}
 	else
 		gtk_action_group_set_visible (priv->import_group, TRUE);
+
+	g_signal_connect (track,
+	                  "sort-column-changed",
+	                  G_CALLBACK (brasero_data_disc_sort_column_changed),
+	                  disc);
 
 	g_signal_connect (track,
 			  "2G-file",
@@ -1522,6 +1574,9 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 		priv->load_errors = NULL;
 	}
 
+	g_signal_handlers_disconnect_by_func (priv->project,
+					      brasero_data_disc_sort_column_changed,
+					      disc);
 	g_signal_handlers_disconnect_by_func (priv->project,
 					      brasero_data_disc_2G_file_cb,
 					      disc);
