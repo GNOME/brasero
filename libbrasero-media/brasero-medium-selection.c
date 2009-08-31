@@ -408,7 +408,8 @@ brasero_medium_selection_set_active (BraseroMediumSelection *selector,
 			break;
 		}
 
-		g_object_unref (iter_medium);
+		if (iter_medium)
+			g_object_unref (iter_medium);
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	return result;
