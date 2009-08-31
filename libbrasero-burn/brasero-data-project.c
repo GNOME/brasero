@@ -1727,17 +1727,16 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 		g_free (name_uri);
 	}
 
+	if (!priv->is_loading_contents) {
+		/* Signal that something has changed in the tree */
+		klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
+		if (klass->node_added)
+			klass->node_added (self, node, uri != NEW_FOLDER? uri:NULL);
+	}
+
 	/* check joliet compatibility; do it after node was created. */
 	if (strlen (BRASERO_FILE_NODE_NAME (node)) > 64)
 		brasero_data_project_joliet_add_node (self, node);
-
-	if (priv->is_loading_contents)
-		return;
-
-	/* Signal that something has changed in the tree */
-	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
-	if (klass->node_added)
-		klass->node_added (self, node, uri != NEW_FOLDER? uri:NULL);
 }
 
 void

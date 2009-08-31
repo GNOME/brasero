@@ -494,8 +494,10 @@ brasero_app_dialog (BraseroApp *app,
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	if (priv->mainwin)
+	if (priv->mainwin) {
 		toplevel = GTK_WINDOW (priv->mainwin);
+		gtk_widget_show (priv->mainwin);
+	}
 	else if (!priv->toplevel) {
 		is_on_top = TRUE;
 		toplevel = NULL;
