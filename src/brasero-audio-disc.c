@@ -661,7 +661,7 @@ brasero_audio_disc_video_file_dialog (BraseroAudioDisc *disc,
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	return (answer == GTK_RESPONSE_OK);
+	return (answer != GTK_RESPONSE_OK);
 }
 
 static void
