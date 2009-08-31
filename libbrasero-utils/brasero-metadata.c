@@ -587,7 +587,11 @@ foreach_tag (const GstTagList *list,
 		gst_tag_list_get_string (list, tag, &(self->composer));
 	}
 */	else if (!strcmp (tag, GST_TAG_ISRC)) {
-		gst_tag_list_get_int (list, tag, &(priv->info->isrc));
+		gchar *isrc = NULL;
+		gst_tag_list_get_string (list, tag, &isrc);
+
+		if (isrc)
+			priv->info->isrc = (int) g_ascii_strtoull (isrc, NULL, 10);
 	}
 	else if (!strcmp (tag, GST_TAG_MUSICBRAINZ_TRACKID)) {
 		gst_tag_list_get_string (list, tag, &(priv->info->musicbrainz_id));

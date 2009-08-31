@@ -1265,12 +1265,12 @@ foreach_tag (const GstTagList *list,
 	}
 	else if (!strcmp (tag, GST_TAG_ISRC)) {
 		if (!brasero_track_tag_lookup_int (track, BRASERO_TRACK_STREAM_ISRC_TAG)) {
-			gint isrc = 0;
+			gchar *isrc = NULL;
 
-			gst_tag_list_get_int (list, tag, &isrc);
+			gst_tag_list_get_string (list, tag, &isrc);
 			brasero_track_tag_add_int (track,
 						   BRASERO_TRACK_STREAM_ARTIST_TAG,
-						   isrc);
+						   (int) g_ascii_strtoull (isrc, NULL, 10));
 		}
 	}
 	else if (!strcmp (tag, GST_TAG_PERFORMER)) {
