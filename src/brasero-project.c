@@ -2642,10 +2642,32 @@ brasero_project_save_session (BraseroProject *project,
 		return FALSE;
 	}
 
-	/* NOTE: is this right? because brasero could not shut itself
-	 * down if an error occurs. */
-	if (!brasero_project_save_project_xml (BRASERO_BURN_SESSION (project->priv->session), uri))
-		return TRUE;
+	if (!brasero_project_save_project_xml (BRASERO_BURN_SESSION (project->priv->session), uri)) {
+		GtkResponseType response;
+		GtkWidget *dialog;
+
+		/* If the automatic saving failed, let the user decide */
+		dialog = brasero_app_dialog (brasero_app_get_default (),
+					      _("Your project has not been saved."),
+					     GTK_BUTTONS_NONE,
+					     GTK_MESSAGE_WARNING);
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("If you don't save, changes will be permanently lost."));
+
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+		                        _("Cl_ose Without Saving"), GTK_RESPONSE_NO,
+		                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		                        NULL);
+
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		if (saved_uri)
+			*saved_uri = NULL;
+
+		return (response == GTK_RESPONSE_CANCEL);
+	}
 
 	if (saved_uri)
 		*saved_uri = g_strdup (uri);
