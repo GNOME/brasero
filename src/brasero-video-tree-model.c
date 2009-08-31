@@ -241,20 +241,20 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 			g_value_set_string (value, string);
 		}
 		else {
+			GFile *file;
 			gchar *uri;
 			gchar *name;
-			gchar *path;
 			gchar *unescaped;
 
 			uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 			unescaped = g_uri_unescape_string (uri, NULL);
 			g_free (uri);
 
-			path = g_filename_from_uri (unescaped, NULL, NULL);
+			file = g_file_new_for_uri (unescaped);
 			g_free (unescaped);
 
-			name = g_path_get_basename (path);
-			g_free (path);
+			name = g_file_get_basename (file);
+			g_object_unref (file);
 
 			g_value_set_string (value, name);
 			g_free (name);
