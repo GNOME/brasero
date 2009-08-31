@@ -1993,7 +1993,7 @@ brasero_project_add_uris_cb (GtkAction *action,
 							      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 							      NULL);
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (project->priv->chooser), FALSE);
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (project->priv->chooser), g_get_home_dir ());
 	brasero_file_chooser_customize (project->priv->chooser, NULL);
 	gtk_widget_show (project->priv->chooser);
