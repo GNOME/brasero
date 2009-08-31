@@ -995,6 +995,12 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 
 	audio = BRASERO_AUDIO_DISC (disc);
 
+	if (audio->priv->add_dir)
+		brasero_io_cancel_by_base (audio->priv->add_dir);
+
+	if (audio->priv->add_playlist)
+		brasero_io_cancel_by_base (audio->priv->add_playlist);
+
 	if (!session) {
 		GtkTreeModel *model;
 		BraseroSessionCfg *session;

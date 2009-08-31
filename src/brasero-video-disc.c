@@ -1328,6 +1328,9 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
+	if (priv->load_dir)
+		brasero_io_cancel_by_base (priv->load_dir);
+
 	if (!session) {
 		GtkTreeModel *model;
 		BraseroSessionCfg *session;
