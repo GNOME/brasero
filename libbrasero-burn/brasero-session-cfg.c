@@ -1081,61 +1081,105 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	}
 
 	/* Check that current input and output work */
-	if (priv->CD_TEXT_modified) {
-		/* Try to redo what we undid (after all a new plugin could have
-		 * been activated in the mean time ...) and see what happens */
-		brasero_track_type_set_image_format (source,
-						     BRASERO_METADATA_INFO|
-						     brasero_track_type_get_image_format (source));
-		result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-							       source,
-							       FALSE);
-		if (result == BRASERO_BURN_OK) {
-			priv->CD_TEXT_modified = FALSE;
-
-			priv->configuring = TRUE;
-			brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
-								     brasero_track_type_get_stream_format (source));
-			priv->configuring = FALSE;
-		}
-		else {
-			/* No, nothing's changed */
+	if (brasero_track_type_get_has_stream (source)) {
+		if (priv->CD_TEXT_modified) {
+			/* Try to redo what we undid (after all a new plugin could have
+			 * been activated in the mean time ...) and see what happens */
 			brasero_track_type_set_stream_format (source,
-							      (~BRASERO_METADATA_INFO) &
+							      BRASERO_METADATA_INFO|
 							      brasero_track_type_get_stream_format (source));
 			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
 								       source,
 								       FALSE);
-		}
-	}
-	else {
-		/* Don't use flags as they'll be adapted later. */
-		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
-							FALSE);
-		if (result != BRASERO_BURN_OK
-		&&  brasero_track_type_get_has_stream (source)
-		&& (brasero_track_type_get_stream_format (source) & BRASERO_METADATA_INFO)) {
-			/* Another special case in case some burning backends 
-			 * don't support CD-TEXT for audio (libburn). If no
-			 * other backend is available remove CD-TEXT option but
-			 * tell user... */
-			brasero_track_type_set_stream_format (source,
-							      (~BRASERO_METADATA_INFO) &
-							      brasero_track_type_get_stream_format (source));
-
-			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-								       source,
-								       FALSE);
-			BRASERO_BURN_LOG ("Tested support without Metadata information (result %d)", result);
 			if (result == BRASERO_BURN_OK) {
-				priv->CD_TEXT_modified = TRUE;
+				priv->CD_TEXT_modified = FALSE;
 
 				priv->configuring = TRUE;
 				brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
-									     brasero_track_type_get_has_stream (source));
+									     brasero_track_type_get_stream_format (source));
 				priv->configuring = FALSE;
 			}
+			else {
+				/* No, nothing's changed */
+				brasero_track_type_set_stream_format (source,
+								      (~BRASERO_METADATA_INFO) &
+								      brasero_track_type_get_stream_format (source));
+				result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
+									       source,
+									       FALSE);
+			}
 		}
+		else {
+			result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self), FALSE);
+
+			if (result != BRASERO_BURN_OK
+			&& (brasero_track_type_get_stream_format (source) & BRASERO_METADATA_INFO)) {
+				/* Another special case in case some burning backends 
+				 * don't support CD-TEXT for audio (libburn). If no
+				 * other backend is available remove CD-TEXT option but
+				 * tell user... */
+				brasero_track_type_set_stream_format (source,
+								      (~BRASERO_METADATA_INFO) &
+								      brasero_track_type_get_stream_format (source));
+
+				result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
+									       source,
+									       FALSE);
+				BRASERO_BURN_LOG ("Tested support without Metadata information (result %d)", result);
+				if (result == BRASERO_BURN_OK) {
+					priv->CD_TEXT_modified = TRUE;
+
+					priv->configuring = TRUE;
+					brasero_session_cfg_set_tracks_audio_format (BRASERO_BURN_SESSION (self),
+										     brasero_track_type_get_has_stream (source));
+					priv->configuring = FALSE;
+				}
+			}
+		}
+	}
+	else if (brasero_track_type_get_has_medium (source)
+	&&  (brasero_track_type_get_medium_type (source) & BRASERO_MEDIUM_HAS_AUDIO)) {
+		BraseroImageFormat format = BRASERO_IMAGE_FORMAT_NONE;
+
+		/* If we copy an audio disc check the image
+		 * type we're writing to as it may mean that
+		 * CD-TEXT cannot be copied.
+		 * Make sure that the writing backend
+		 * supports writing CD-TEXT?
+		 * no, if a backend reports it supports an
+		 * image type it should be able to burn all
+		 * its data. */
+		if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (self))) {
+			BraseroTrackType *tmp_type;
+
+			tmp_type = brasero_track_type_new ();
+
+			/* NOTE: this is the same as brasero_burn_session_can_burn () */
+			result = brasero_burn_session_get_tmp_image_type_same_src_dest (BRASERO_BURN_SESSION (self), tmp_type);
+			if (result == BRASERO_BURN_OK)
+				format = brasero_track_type_get_image_format (tmp_type);
+			else
+				format = BRASERO_IMAGE_FORMAT_NONE;
+
+			brasero_track_type_free (tmp_type);
+
+			BRASERO_BURN_LOG ("Temporary image type %i", format);
+		}
+		else {
+			result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
+			                                        FALSE);
+			format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (self));
+		}
+
+		priv->CD_TEXT_modified = FALSE;
+		if (!(format & (BRASERO_IMAGE_FORMAT_CDRDAO|BRASERO_IMAGE_FORMAT_CUE)))
+			priv->CD_TEXT_modified = TRUE;
+	}
+	else {
+		/* Don't use flags as they'll be adapted later. */
+		priv->CD_TEXT_modified = FALSE;
+		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
+							FALSE);
 	}
 
 	if (result != BRASERO_BURN_OK) {
