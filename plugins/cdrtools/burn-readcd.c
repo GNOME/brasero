@@ -241,8 +241,6 @@ brasero_readcd_get_size (BraseroReadcd *self,
 	BraseroTrack *track = NULL;
 	BraseroTrackType *output = NULL;
 
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-
 	output = brasero_track_type_new ();
 	brasero_job_get_output_type (BRASERO_JOB (self), output);
 
@@ -251,9 +249,10 @@ brasero_readcd_get_size (BraseroReadcd *self,
 		return BRASERO_BURN_ERR;
 	}
 
+	format = brasero_track_type_get_image_format (output);
 	brasero_track_type_free (output);
 
-	format = brasero_track_type_get_image_format (output);
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	brasero_track_tag_lookup (track,
 				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
 				  &value);
