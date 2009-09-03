@@ -298,7 +298,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_DAO|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
@@ -309,7 +308,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_JUMP|				\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
@@ -325,7 +323,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  (BRASERO_BURN_FLAG_APPEND|			\
 				  BRASERO_BURN_FLAG_MERGE|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
@@ -340,7 +337,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_DAO|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_NONE);			\
@@ -349,7 +345,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
@@ -363,7 +358,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  (BRASERO_BURN_FLAG_MERGE|			\
 				  BRASERO_BURN_FLAG_APPEND|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
@@ -376,7 +370,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_DAO|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
@@ -385,7 +378,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_DVDRW|				\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
@@ -402,7 +394,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  (BRASERO_BURN_FLAG_MERGE|			\
 				  BRASERO_BURN_FLAG_APPEND|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
@@ -424,7 +415,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_UNFORMATTED|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_MULTI|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_MULTI);			\
@@ -435,7 +425,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_CLOSED|			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
 				  (BRASERO_BURN_FLAG_MULTI|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE|			\
 				  BRASERO_BURN_FLAG_MERGE) &			\
 				  (~unsupported_MACRO),				\
@@ -453,7 +442,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_UNFORMATTED|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_MULTI|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_MULTI);			\
@@ -465,7 +453,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_CLOSED|			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
 				  (BRASERO_BURN_FLAG_MULTI|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE|			\
 				  BRASERO_BURN_FLAG_MERGE) &			\
 				  (~unsupported_MACRO),				\
@@ -480,7 +467,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_DAO|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
@@ -491,7 +477,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_BDR_SRM_POW|			\
 				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_BLANK,				\
-				  (BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
@@ -507,7 +492,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
 				  (BRASERO_BURN_FLAG_APPEND|			\
 				  BRASERO_BURN_FLAG_MERGE|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
@@ -529,7 +513,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_UNFORMATTED|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  (BRASERO_BURN_FLAG_MULTI|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_MULTI);			\
@@ -540,7 +523,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_MEDIUM_CLOSED|			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
 				  (BRASERO_BURN_FLAG_MULTI|			\
-				  BRASERO_BURN_FLAG_OVERBURN|			\
 				  BRASERO_BURN_FLAG_NOGRACE|			\
 				  BRASERO_BURN_FLAG_MERGE) &			\
 				  (~unsupported_MACRO),				\
