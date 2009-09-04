@@ -144,7 +144,7 @@ brasero_burn_caps_get_blanking_flags_real (BraseroBurnCaps *caps,
  * @compulsory: a #BraseroBurnFlag
  *
  * Given the various parameters stored in @session,
- * stored in @supported and @compulsory, the flags
+ * stores in @supported and @compulsory, the flags
  * that can be used (@supported) and must be used
  * (@compulsory) when blanking the medium in the
  * #BraseroDrive (set with brasero_burn_session_set_burner ()).
@@ -1340,7 +1340,8 @@ brasero_medium_supported_flags (BraseroMedium *medium,
 	else if (!brasero_medium_can_use_dummy_for_tao (medium))
 		(*supported_flags) &= ~BRASERO_BURN_FLAG_DUMMY;
 
-	if (!brasero_medium_can_use_tao (medium)) {
+	if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media)
+	&& !brasero_medium_can_use_tao (medium)) {
 		(*supported_flags) &= ~BRASERO_BURN_FLAG_MULTI;
 
 		if (brasero_medium_can_use_sao (medium))
