@@ -991,6 +991,7 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 					 BraseroBurnSession *session)
 {
 	BraseroAudioDisc *audio;
+	GtkTreeModel *current_model;
 	BraseroVideoTreeModel *model;
 
 	audio = BRASERO_AUDIO_DISC (disc);
@@ -1001,16 +1002,19 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 	if (audio->priv->add_playlist)
 		brasero_io_cancel_by_base (audio->priv->add_playlist);
 
+	/* disconnect some signals */
+	current_model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
+	if (current_model) {
+		BraseroSessionCfg *current_session;
+
+		current_session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (current_model));
+		if (current_session)
+			g_signal_handlers_disconnect_by_func (current_session,
+							      brasero_audio_disc_session_changed,
+							      disc);
+	}
+
 	if (!session) {
-		GtkTreeModel *model;
-		BraseroSessionCfg *session;
-
-		model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
-		session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
-		g_signal_handlers_disconnect_by_func (session,
-						      brasero_audio_disc_session_changed,
-						      disc);
-
 		gtk_tree_view_set_model (GTK_TREE_VIEW (audio->priv->tree), NULL);
 		return BRASERO_DISC_OK;
 	}

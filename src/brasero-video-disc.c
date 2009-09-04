@@ -1324,6 +1324,7 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 					 BraseroBurnSession *session)
 {
 	BraseroVideoTreeModel *model;
+	GtkTreeModel *current_model;
 	BraseroVideoDiscPrivate *priv;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
@@ -1331,16 +1332,18 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 	if (priv->load_dir)
 		brasero_io_cancel_by_base (priv->load_dir);
 
+	current_model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if (current_model) {
+		BraseroSessionCfg *current_session;
+
+		current_session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (current_model));
+		if (current_session)
+			g_signal_handlers_disconnect_by_func (current_session,
+							      brasero_video_disc_session_changed,
+							      self);
+	}
+
 	if (!session) {
-		GtkTreeModel *model;
-		BraseroSessionCfg *session;
-
-		model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-		session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
-		g_signal_handlers_disconnect_by_func (session,
-						      brasero_video_disc_session_changed,
-						      self);
-
 		gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree), NULL);
 		return BRASERO_DISC_OK;
 	}
