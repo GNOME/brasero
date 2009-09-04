@@ -912,9 +912,12 @@ static void
 brasero_metadata_install_plugins_completed (BraseroMetadataGstDownload *download)
 {
 	GSList *iter;
+	GSList *next;
 
-	for (iter = download->objects; iter; iter = iter->next)
+	for (iter = download->objects; iter; iter = next) {
+		next = iter->next;
 		brasero_metadata_completed (BRASERO_METADATA (iter->data));
+	}
 }
 
 static void
