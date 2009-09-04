@@ -368,7 +368,7 @@ brasero_project_set_add_button_state (BraseroProject *project)
 	GtkWidget *toplevel;
 
 	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
-		      !project->priv->oversized);
+		      !project->priv->oversized && !project->priv->chooser );
 
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
@@ -1903,6 +1903,8 @@ static void
 brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
 					   BraseroProject *project)
 {
+	gboolean sensitive;
+	GtkAction *action;
 	GSList *uris;
 	GSList *iter;
 
@@ -1912,6 +1914,12 @@ brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
 	project->priv->chooser = NULL;
 	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
 	gtk_widget_destroy (GTK_WIDGET (chooser));
+
+	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
+		      !project->priv->oversized);
+
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
+	gtk_action_set_sensitive (action, sensitive);
 
 	for (iter = uris; iter; iter = iter->next) {
 		gchar *uri;
@@ -1928,6 +1936,8 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 					  GtkResponseType response,
 					  BraseroProject *project)
 {
+	gboolean sensitive;
+	GtkAction *action;
 	GSList *uris;
 	GSList *iter;
 
@@ -1943,6 +1953,12 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	project->priv->chooser = NULL;
 	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
 	gtk_widget_destroy (GTK_WIDGET (chooser));
+
+	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
+		      !project->priv->oversized);
+
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
+	gtk_action_set_sensitive (action, sensitive);
 
 	for (iter = uris; iter; iter = iter->next) {
 		gchar *uri;
@@ -1985,6 +2001,11 @@ brasero_project_add_uris_cb (GtkAction *action,
 		brasero_project_transfer_uris_from_src (project);
 		return;
 	}
+
+	/* set the Add button grey as we don't want
+	 * the user to be able to click again until it
+	 * the dialog has been closed */
+	gtk_action_set_sensitive (action, FALSE);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	project->priv->chooser = gtk_file_chooser_dialog_new (_("Select Files"),
