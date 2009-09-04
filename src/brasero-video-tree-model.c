@@ -481,11 +481,12 @@ brasero_video_tree_model_path_to_track (BraseroVideoTreeModel *self,
 
 		index --;
 
-		if (index <= 0)
-			return BRASERO_TRACK (track);
+		if (brasero_track_stream_get_gap (track) > 0) {
+			if (index <= 0)
+				return BRASERO_TRACK (track);
 
-		if (brasero_track_stream_get_gap (track) > 0)
-			index --;
+				index --;
+		}
 	}
 
 	return NULL;
