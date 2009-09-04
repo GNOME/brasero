@@ -765,6 +765,9 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 		return 0;
 
 	medium = brasero_drive_get_medium (priv->settings->burner);
+	if (!medium)
+		return 0;
+
 	max_rate = brasero_medium_get_max_write_speed (medium);
 	if (priv->settings->rate <= 0)
 		return max_rate;

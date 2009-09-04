@@ -1666,6 +1666,9 @@ brasero_job_get_max_rate (BraseroJob *self, guint64 *rate)
 	drive = brasero_burn_session_get_burner (session);
 	medium = brasero_drive_get_medium (drive);
 
+	if (!medium)
+		return BRASERO_BURN_NOT_READY;
+
 	*rate = brasero_medium_get_max_write_speed (medium);
 
 	return BRASERO_BURN_OK;
@@ -1690,6 +1693,9 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 
 	drive = brasero_burn_session_get_burner (session);
 	medium = brasero_drive_get_medium (drive);
+	if (!medium)
+		return BRASERO_BURN_NOT_READY;
+
 	rate = brasero_medium_get_max_write_speed (medium);
 	media = brasero_medium_get_status (medium);
 	if (media & BRASERO_MEDIUM_DVD)
