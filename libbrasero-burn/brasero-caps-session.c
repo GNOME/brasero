@@ -1468,8 +1468,7 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 	/* see if we can add BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE. Add it when:
 	 * - media can be blanked, it has audio or data and we're not merging
 	 * - media is not formatted and it can be blanked/formatted */
-	if (BRASERO_BURN_CAPS_SHOULD_BLANK (media, session_flags)
-	&&  brasero_burn_caps_can_blank_real (self, media, session_flags) == BRASERO_BURN_OK)
+	if (brasero_burn_caps_can_blank_real (self, media, session_flags) == BRASERO_BURN_OK)
 		(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 	else if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 		return BRASERO_BURN_NOT_SUPPORTED;
