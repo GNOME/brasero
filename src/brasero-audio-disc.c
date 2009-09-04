@@ -578,8 +578,8 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 				 GtkTreePath **path_return)
 {
 	BraseroTrackStreamCfg *track;
+	BraseroTrack *sibling = NULL;
 	BraseroSessionCfg *session;
-	BraseroTrack *sibling;
 	GtkTreeModel *store;
 
 	g_return_val_if_fail (uri != NULL, BRASERO_DISC_ERROR_UNKNOWN);
