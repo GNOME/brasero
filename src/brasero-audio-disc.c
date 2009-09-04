@@ -881,6 +881,7 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 			brasero_burn_session_remove_track (BRASERO_BURN_SESSION (session),
 							   BRASERO_TRACK (track));
 			g_free (uri);
+			continue;
 		}
 
 		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (format)) {
