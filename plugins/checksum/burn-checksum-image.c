@@ -283,7 +283,7 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 	}
 
 	BRASERO_JOB_LOG (self,
-			 "Starting checksuming file %s (size = %i)",
+			 "Starting checksuming file %s (size = %"G_GOFFSET_FORMAT")",
 			 path,
 			 priv->total);
 
