@@ -438,7 +438,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (!!priv->device)
+	if (!priv->device)
 		return FALSE;
 
 	device = brasero_drive_get_device (drive);
