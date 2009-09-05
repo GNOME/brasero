@@ -174,7 +174,7 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 							end));
 	}
 	/* 0 means all disc, -1 problem */
-	else if (brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track)) > 0) {
+	else if (brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)) > 0) {
 		goffset start;
 		BraseroDrive *drive;
 		BraseroMedium *medium;
