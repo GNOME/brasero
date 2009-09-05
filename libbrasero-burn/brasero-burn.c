@@ -1552,16 +1552,6 @@ brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 	burner = brasero_burn_session_get_burner (priv->session);
 	burnt_medium = brasero_drive_get_medium (burner);
 
-	/* before we start let's see if that drive can be used exclusively.
-	 * Of course, it's not really safe since a process could take a lock
-	 * just after us but at least it'll give some time to HAL and friends
-	 * to finish what they're doing. 
-	 * This was done because more than often backends wouldn't be able to 
-	 * get a lock on a medium after a simulation. */
-	result = brasero_burn_can_use_drive_exclusively (burn, burner);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
 start:
 
 	/* this is just in case */
@@ -1588,6 +1578,16 @@ start:
 			     _("Make sure another application is not using it"));
 		return BRASERO_BURN_ERR;
 	}
+
+	/* before we start let's see if that drive can be used exclusively.
+	 * Of course, it's not really safe since a process could take a lock
+	 * just after us but at least it'll give some time to HAL and friends
+	 * to finish what they're doing. 
+	 * This was done because more than often backends wouldn't be able to 
+	 * get a lock on a medium after a simulation. */
+	result = brasero_burn_can_use_drive_exclusively (burn, burner);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* actual running of task */
 	result = brasero_task_run (priv->task, &ret_error);
