@@ -872,6 +872,29 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	brasero_burn_session_get_input_type (priv->session, input);
 	flags = brasero_burn_session_get_flags (priv->session);
 
+	if (brasero_track_type_get_has_image (input)) {
+		goffset medium_sec = 0;
+		goffset session_sec = 0;
+
+		/* This test is only valid when it's an image
+		 * as input which comes handy when copying
+		 * from the same drive as we're sure we do 
+		 * have an image. */
+		brasero_medium_get_capacity (medium,
+		                             NULL,
+		                             &medium_sec);
+		brasero_burn_session_get_size (priv->session,
+		                               &session_sec,
+		                               NULL);
+
+		if (session_sec > medium_sec) {
+			BRASERO_BURN_LOG ("Not enough space for image %"G_GOFFSET_FORMAT"/%"G_GOFFSET_FORMAT);
+			berror = BRASERO_BURN_ERROR_MEDIUM_SPACE;
+			result = BRASERO_BURN_NEED_RELOAD;
+			goto end;
+		}
+	}
+
 	if (must_blank) {
 		/* There is an error if APPEND was set since this disc is not
 		 * supported without a prior blanking. */
