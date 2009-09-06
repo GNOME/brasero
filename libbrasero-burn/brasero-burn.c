@@ -1760,218 +1760,6 @@ start:
 	return BRASERO_BURN_ERR;
 }
 
-/* FIXME: at the moment we don't allow for mixed CD type */
-static BraseroBurnResult
-brasero_burn_run_tasks (BraseroBurn *burn,
-			gboolean erase_allowed,
-			GError **error)
-{
-	BraseroBurnResult result;
-	GSList *tasks, *next, *iter;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
-
-	tasks = brasero_burn_caps_new_task (priv->caps,
-					    priv->session,
-					    error);
-	if (!tasks)
-		return BRASERO_BURN_NOT_SUPPORTED;
-
-	priv->tasks_done = 0;
-	priv->task_nb = g_slist_length (tasks);
-	BRASERO_BURN_LOG ("%i tasks to perform", priv->task_nb);
-
-	/* run all imaging tasks first */
-	for (iter = tasks; iter; iter = next) {
-		goffset len = 0;
-		BraseroDrive *drive;
-		BraseroMedium *medium;
-		BraseroTaskAction action;
-
-		next = iter->next;
-		priv->task = iter->data;
-		tasks = g_slist_remove (tasks, priv->task);
-
-		g_signal_connect (priv->task,
-				  "progress-changed",
-				  G_CALLBACK (brasero_burn_progress_changed),
-				  burn);
-		g_signal_connect (priv->task,
-				  "action-changed",
-				  G_CALLBACK (brasero_burn_action_changed),
-				  burn);
-
-		/* see what type of task it is. It could be a blank/erase one */
-		action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (priv->task));
-		if (action == BRASERO_TASK_ACTION_ERASE) {
-			/* This is to avoid a potential problem when running a 
-			 * dummy session first. When running dummy session the 
-			 * media gets erased if need be. Since it is not
-			 * reloaded afterwards, for brasero it has still got 
-			 * data on it when we get to the real recording. */
-			if (erase_allowed) {
-				result = brasero_burn_run_eraser (burn, error);
-				if (result != BRASERO_BURN_OK)
-					break;
-			}
-			else
-				result = BRASERO_BURN_OK;
-
-			g_object_unref (priv->task);
-			priv->task = NULL;
-			priv->tasks_done ++;
-
-			/* Reprobe. It can happen (like with dvd+rw-format) that
-			 * for the whole OS, the disc doesn't exist during the 
-			 * formatting. Wait for the disc to reappear */
-			/*  Likewise, this is necessary when we do a
-			 * simulation before blanking since it blanked the disc
-			 * and then to create all tasks necessary for the real
-			 * burning operation, we'll need the real medium status 
-			 * not to include a blanking job again. */
-			result = brasero_burn_reprobe (burn);
-			if (result != BRASERO_BURN_OK)
-				break;
-
-			continue;
-		}
-
-		/* Init the task and set the task output size. The task should
-		 * then check that the disc has enough space. If the output is
-		 * to the hard drive it will be done afterwards when not in fake
-		 * mode. */
-		result = brasero_burn_run_imager (burn, TRUE, error);
-		if (result != BRASERO_BURN_OK)
-			break;
-
-		/* try to get the output size */
-		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
-							  &len,
-							  NULL);
-
-		drive = brasero_burn_session_get_burner (priv->session);
-		medium = brasero_drive_get_medium (drive);
-
-		if (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-			priv->session_start = brasero_medium_get_next_writable_address (medium);
-		else
-			priv->session_start = 0;
-
-		priv->session_end = priv->session_start + len;
-
-		BRASERO_BURN_LOG ("Burning from %lld to %lld",
-				  priv->session_start,
-				  priv->session_end);
-
-		/* see if we reached a recording task: it's the last task */
-		if (!next) {
-			if (brasero_burn_session_is_dest_file (priv->session))
-				result = brasero_burn_run_imager (burn, FALSE, error);
-			else
-				result = brasero_burn_run_recorder (burn, error);
-
-			if (result == BRASERO_BURN_OK)
-				priv->tasks_done ++;
-
-			break;
-		}
-
-		/* run the imager */
-		result = brasero_burn_run_imager (burn, FALSE, error);
-		if (result != BRASERO_BURN_OK)
-			break;
-
-		g_object_unref (priv->task);
-		priv->task = NULL;
-		priv->tasks_done ++;
-	}
-
-	if (priv->task) {
-		g_object_unref (priv->task);
-		priv->task = NULL;
-	}
-
-	g_slist_foreach (tasks, (GFunc) g_object_unref, NULL);
-	g_slist_free (tasks);
-
-	return result;
-}
-
-static BraseroBurnResult
-brasero_burn_check_real (BraseroBurn *self,
-			 BraseroTrack *track,
-			 GError **error)
-{
-	BraseroMedium *medium;
-	BraseroBurnResult result;
-	BraseroBurnPrivate *priv;
-	BraseroChecksumType checksum_type;
-
-	priv = BRASERO_BURN_PRIVATE (self);
-
-	BRASERO_BURN_LOG ("Starting to check track integrity");
-
-	checksum_type = brasero_track_get_checksum_type (track);
-
-	/* if the input is a DISC and there isn't any checksum specified that 
-	 * means the checksum file is on the disc. */
-	medium = brasero_drive_get_medium (priv->dest);
-
-	/* get the task and run it */
-	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
-							     priv->session,
-							     error);
-	if (priv->task) {
-		priv->task_nb = 1;
-		priv->tasks_done = 0;
-		g_signal_connect (priv->task,
-				  "progress-changed",
-				  G_CALLBACK (brasero_burn_progress_changed),
-				  self);
-		g_signal_connect (priv->task,
-				  "action-changed",
-				  G_CALLBACK (brasero_burn_action_changed),
-				  self);
-
-
-		/* make sure one last time it is not mounted IF and only IF the
-		 * checksum type is NOT FILE_MD5 */
-		/* it seems to work without unmounting ... */
-		/* if (medium
-		 * &&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
-		 * && !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
-		 *	g_set_error (error,
-		 *		     BRASERO_BURN_ERROR,
-		 *		     BRASERO_BURN_ERROR_DRIVE_BUSY,
-		 *		     "%s. %s",
-		 *		     _("The drive is busy"),
-		 *		     _("Make sure another application is not using it"));
-		 *	return BRASERO_BURN_ERR;
-		 * }
-		 */
-
-		result = brasero_task_run (priv->task, error);
-		g_signal_emit (self,
-			       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
-			       0,
-			       1.0,
-			       1.0,
-			       -1);
-
-		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_CANCEL)
-			brasero_burn_action_changed_real (self,
-							  BRASERO_BURN_ACTION_FINISHED);
-
-		g_object_unref (priv->task);
-		priv->task = NULL;
-	}
-	else {
-		BRASERO_BURN_LOG ("The track cannot be checked");
-		result = BRASERO_BURN_NOT_SUPPORTED;
-	}
-
-	return result;
-}
-
 static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
 					GError **error)
@@ -2086,6 +1874,259 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	return BRASERO_BURN_OK;
 }
 
+/* FIXME: at the moment we don't allow for mixed CD type */
+static BraseroBurnResult
+brasero_burn_run_tasks (BraseroBurn *burn,
+			gboolean erase_allowed,
+                        gboolean *dummy_session,
+			GError **error)
+{
+	BraseroBurnResult result;
+	GSList *tasks, *next, *iter;
+	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+
+	tasks = brasero_burn_caps_new_task (priv->caps,
+					    priv->session,
+					    error);
+	if (!tasks)
+		return BRASERO_BURN_NOT_SUPPORTED;
+
+	priv->tasks_done = 0;
+	priv->task_nb = g_slist_length (tasks);
+	BRASERO_BURN_LOG ("%i tasks to perform", priv->task_nb);
+
+	/* push the session settings to keep the original session untainted */
+	brasero_burn_session_push_settings (priv->session);
+
+	/* check flags consistency */
+	result = brasero_burn_check_session_consistency (burn, error);
+	if (result != BRASERO_BURN_OK) {
+		brasero_burn_session_pop_settings (priv->session);
+		return result;
+	}
+
+	/* run all imaging tasks first */
+	for (iter = tasks; iter; iter = next) {
+		goffset len = 0;
+		BraseroDrive *drive;
+		BraseroMedium *medium;
+		BraseroTaskAction action;
+
+		next = iter->next;
+		priv->task = iter->data;
+		tasks = g_slist_remove (tasks, priv->task);
+
+		g_signal_connect (priv->task,
+				  "progress-changed",
+				  G_CALLBACK (brasero_burn_progress_changed),
+				  burn);
+		g_signal_connect (priv->task,
+				  "action-changed",
+				  G_CALLBACK (brasero_burn_action_changed),
+				  burn);
+
+		/* see what type of task it is. It could be a blank/erase one. */
+		/* FIXME!
+		 * If so then that's time to test the size of the image against
+		 * the size of the disc since erasing/formatting is always left
+		 * for the end, just before burning. We would not like to 
+		 * blank a disc and tell the user right after that the size of
+		 * the disc is not enough. */
+		action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (priv->task));
+		if (action == BRASERO_TASK_ACTION_ERASE) {
+			/* FIXME: how could it be possible for a drive to test
+			 * with a CLOSED CDRW for example. Maybe we should
+			 * format/blank anyway. */
+
+			/* This is to avoid a potential problem when running a 
+			 * dummy session first. When running dummy session the 
+			 * media gets erased if need be. Since it is not
+			 * reloaded afterwards, for brasero it has still got 
+			 * data on it when we get to the real recording. */
+			if (erase_allowed) {
+				result = brasero_burn_run_eraser (burn, error);
+				if (result != BRASERO_BURN_OK)
+					break;
+
+				/* Reprobe. It can happen (like with dvd+rw-format) that
+				 * for the whole OS, the disc doesn't exist during the 
+				 * formatting. Wait for the disc to reappear */
+				/*  Likewise, this is necessary when we do a
+				 * simulation before blanking since it blanked the disc
+				 * and then to create all tasks necessary for the real
+				 * burning operation, we'll need the real medium status 
+				 * not to include a blanking job again. */
+				result = brasero_burn_reprobe (burn);
+				if (result != BRASERO_BURN_OK)
+					break;
+
+				/* Since we blanked/formatted we need to recheck the burn 
+				 * flags with the new medium type as some flags could have
+				 * been given the benefit of the double (MULTI with a CLOSED
+				 * CD for example). Recheck the original flags as they were
+				 * passed. */
+				/* FIXME: for some important flags we should warn the user
+				 * that it won't be possible */
+				brasero_burn_session_pop_settings (priv->session);
+				brasero_burn_session_push_settings (priv->session);
+				result = brasero_burn_check_session_consistency (burn, error);
+				if (result != BRASERO_BURN_OK)
+					break;
+			}
+			else
+				result = BRASERO_BURN_OK;
+
+			g_object_unref (priv->task);
+			priv->task = NULL;
+			priv->tasks_done ++;
+
+			continue;
+		}
+
+		/* Init the task and set the task output size. The task should
+		 * then check that the disc has enough space. If the output is
+		 * to the hard drive it will be done afterwards when not in fake
+		 * mode. */
+		result = brasero_burn_run_imager (burn, TRUE, error);
+		if (result != BRASERO_BURN_OK)
+			break;
+
+		/* try to get the output size */
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
+							  &len,
+							  NULL);
+
+		drive = brasero_burn_session_get_burner (priv->session);
+		medium = brasero_drive_get_medium (drive);
+
+		if (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+			priv->session_start = brasero_medium_get_next_writable_address (medium);
+		else
+			priv->session_start = 0;
+
+		priv->session_end = priv->session_start + len;
+
+		BRASERO_BURN_LOG ("Burning from %lld to %lld",
+				  priv->session_start,
+				  priv->session_end);
+
+		/* see if we reached a recording task: it's the last task */
+		if (!next) {
+			if (!brasero_burn_session_is_dest_file (priv->session)) {
+				*dummy_session = (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_DUMMY);
+				result = brasero_burn_run_recorder (burn, error);
+			}
+			else
+				result = brasero_burn_run_imager (burn, FALSE, error);
+
+			if (result == BRASERO_BURN_OK)
+				priv->tasks_done ++;
+
+			break;
+		}
+
+		/* run the imager */
+		result = brasero_burn_run_imager (burn, FALSE, error);
+		if (result != BRASERO_BURN_OK)
+			break;
+
+		g_object_unref (priv->task);
+		priv->task = NULL;
+		priv->tasks_done ++;
+	}
+
+	/* restore the session settings. Keep the used flags
+	 * nevertheless to make sure we actually use the flags that were
+	 * set after checking for session consistency. */
+	brasero_burn_session_pop_settings (priv->session);
+
+	if (priv->task) {
+		g_object_unref (priv->task);
+		priv->task = NULL;
+	}
+
+	g_slist_foreach (tasks, (GFunc) g_object_unref, NULL);
+	g_slist_free (tasks);
+
+	return result;
+}
+
+static BraseroBurnResult
+brasero_burn_check_real (BraseroBurn *self,
+			 BraseroTrack *track,
+			 GError **error)
+{
+	BraseroMedium *medium;
+	BraseroBurnResult result;
+	BraseroBurnPrivate *priv;
+	BraseroChecksumType checksum_type;
+
+	priv = BRASERO_BURN_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Starting to check track integrity");
+
+	checksum_type = brasero_track_get_checksum_type (track);
+
+	/* if the input is a DISC and there isn't any checksum specified that 
+	 * means the checksum file is on the disc. */
+	medium = brasero_drive_get_medium (priv->dest);
+
+	/* get the task and run it */
+	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
+							     priv->session,
+							     error);
+	if (priv->task) {
+		priv->task_nb = 1;
+		priv->tasks_done = 0;
+		g_signal_connect (priv->task,
+				  "progress-changed",
+				  G_CALLBACK (brasero_burn_progress_changed),
+				  self);
+		g_signal_connect (priv->task,
+				  "action-changed",
+				  G_CALLBACK (brasero_burn_action_changed),
+				  self);
+
+
+		/* make sure one last time it is not mounted IF and only IF the
+		 * checksum type is NOT FILE_MD5 */
+		/* it seems to work without unmounting ... */
+		/* if (medium
+		 * &&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
+		 * && !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
+		 *	g_set_error (error,
+		 *		     BRASERO_BURN_ERROR,
+		 *		     BRASERO_BURN_ERROR_DRIVE_BUSY,
+		 *		     "%s. %s",
+		 *		     _("The drive is busy"),
+		 *		     _("Make sure another application is not using it"));
+		 *	return BRASERO_BURN_ERR;
+		 * }
+		 */
+
+		result = brasero_task_run (priv->task, error);
+		g_signal_emit (self,
+			       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
+			       0,
+			       1.0,
+			       1.0,
+			       -1);
+
+		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_CANCEL)
+			brasero_burn_action_changed_real (self,
+							  BRASERO_BURN_ACTION_FINISHED);
+
+		g_object_unref (priv->task);
+		priv->task = NULL;
+	}
+	else {
+		BRASERO_BURN_LOG ("The track cannot be checked");
+		result = BRASERO_BURN_NOT_SUPPORTED;
+	}
+
+	return result;
+}
+
 static void
 brasero_burn_unset_checksums (BraseroBurn *self)
 {
@@ -2112,33 +2153,22 @@ brasero_burn_record_session (BraseroBurn *burn,
 			     GError **error)
 {
 	const gchar *checksum = NULL;
-	BraseroBurnFlag session_flags;
 	BraseroTrack *track = NULL;
 	BraseroChecksumType type;
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
 	BraseroMedium *medium;
+	gboolean dummy_session;
 	GSList *tracks;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
-	/* unset checksum since no image has the exact same even if it is 
-	 * created from the same files */
+	/* unset checksum since no image has the exact
+	 * same even if it is created from the same files */
 	brasero_burn_unset_checksums (burn);
 
-	session_flags = BRASERO_BURN_FLAG_NONE;
 	do {
-		/* push the session settings to keep the original session untainted */
-		brasero_burn_session_push_settings (priv->session);
-
-		/* check flags consistency */
-		result = brasero_burn_check_session_consistency (burn, error);
-		if (result != BRASERO_BURN_OK) {
-			brasero_burn_session_pop_settings (priv->session);
-			break;
-		}
-
 		if (ret_error) {
 			g_error_free (ret_error);
 			ret_error = NULL;
@@ -2146,13 +2176,8 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 		result = brasero_burn_run_tasks (burn,
 						 erase_allowed,
+		                                 &dummy_session,
 						 &ret_error);
-
-		/* restore the session settings. Keep the used flags
-		 * nevertheless to make sure we actually use the flags that were
-		 * set after checking for session consistency. */
-		session_flags = brasero_burn_session_get_flags (priv->session);
-		brasero_burn_session_pop_settings (priv->session);
 	} while (result == BRASERO_BURN_RETRY);
 
 	if (result != BRASERO_BURN_OK) {
@@ -2171,7 +2196,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 	if (brasero_burn_session_is_dest_file (priv->session))
 		return BRASERO_BURN_OK;
 
-	if (session_flags & BRASERO_BURN_FLAG_DUMMY) {
+	if (dummy_session) {
 		/* if we are in dummy mode and successfully completed then:
 		 * - no need to checksum the media afterward (done later)
 		 * - no eject to have automatic real burning */
