@@ -649,26 +649,60 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
 
 	drive = brasero_medium_get_drive (medium);
+	if ((priv->type & BRASERO_MEDIA_TYPE_CD) == priv->type
+	&& (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD))
+		add = TRUE;
+
 	if ((priv->type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
-	&&  (brasero_drive_can_write (drive)))
-		add = TRUE;
-
-	if ((priv->type & BRASERO_MEDIA_TYPE_AUDIO)
-	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_AUDIO))
-		add = TRUE;
-
-	if ((priv->type & BRASERO_MEDIA_TYPE_DATA)
-	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_DATA))
-		add = TRUE;
-
-	if (priv->type & BRASERO_MEDIA_TYPE_WRITABLE) {
-		if (brasero_medium_can_be_written (medium))
+	&&  (brasero_drive_can_write (drive))) {
+		if ((priv->type & BRASERO_MEDIA_TYPE_CD)) {
+			if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)
+				add = TRUE;
+		}
+		else
 			add = TRUE;
 	}
 
-	if (priv->type & BRASERO_MEDIA_TYPE_REWRITABLE) {
-		if (brasero_medium_can_be_rewritten (medium))
+	if ((priv->type & BRASERO_MEDIA_TYPE_AUDIO)
+	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_AUDIO)) {
+		if ((priv->type & BRASERO_MEDIA_TYPE_CD)) {
+			if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)
+				add = TRUE;
+		}
+		else
 			add = TRUE;
+	}
+
+	if ((priv->type & BRASERO_MEDIA_TYPE_DATA)
+	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_DATA)) {
+		if ((priv->type & BRASERO_MEDIA_TYPE_CD)) {
+			if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)
+				add = TRUE;
+		}
+		else
+			add = TRUE;
+	}
+
+	if (priv->type & BRASERO_MEDIA_TYPE_WRITABLE) {
+		if (brasero_medium_can_be_written (medium)) {
+			if ((priv->type & BRASERO_MEDIA_TYPE_CD)) {
+				if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)
+					add = TRUE;
+			}
+			else
+				add = TRUE;
+		}
+	}
+
+	if (priv->type & BRASERO_MEDIA_TYPE_REWRITABLE) {
+		if (brasero_medium_can_be_rewritten (medium)) {
+			if ((priv->type & BRASERO_MEDIA_TYPE_CD)) {
+				if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)
+					add = TRUE;
+			}
+			else
+				add = TRUE;
+		}
 	}
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));

@@ -237,41 +237,98 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 		if (!medium)
 			continue;
 
-		if ((type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
-		&&  (brasero_drive_can_write (drive))) {
+		if ((type & BRASERO_MEDIA_TYPE_CD) == type
+		&& (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)) {
+			/* If used alone, returns all CDs */
 			list = g_slist_prepend (list, medium);
 			g_object_ref (medium);
+			continue;
+		}
+
+		if ((type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
+		&&  (brasero_drive_can_write (drive))) {
+			if ((type & BRASERO_MEDIA_TYPE_CD)) {
+				if ((brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)) {
+					list = g_slist_prepend (list, medium);
+					g_object_ref (medium);
+					continue;
+				}
+			}
+			else {
+				list = g_slist_prepend (list, medium);
+				g_object_ref (medium);
+				continue;
+			}
 			continue;
 		}
 
 		if ((type & BRASERO_MEDIA_TYPE_AUDIO)
 		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
 		&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_AUDIO)) {
-			list = g_slist_prepend (list, medium);
-			g_object_ref (medium);
+			if ((type & BRASERO_MEDIA_TYPE_CD)) {
+				if ((brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)) {
+					list = g_slist_prepend (list, medium);
+					g_object_ref (medium);
+					continue;
+				}
+			}
+			else {
+				list = g_slist_prepend (list, medium);
+				g_object_ref (medium);
+				continue;
+			}
 			continue;
 		}
 
 		if ((type & BRASERO_MEDIA_TYPE_DATA)
 		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
 		&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_DATA)) {
-			list = g_slist_prepend (list, medium);
-			g_object_ref (medium);
+			if ((type & BRASERO_MEDIA_TYPE_CD)) {
+				if ((brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)) {
+					list = g_slist_prepend (list, medium);
+					g_object_ref (medium);
+					continue;
+				}
+			}
+			else {
+				list = g_slist_prepend (list, medium);
+				g_object_ref (medium);
+				continue;
+			}
 			continue;
 		}
 
 		if (type & BRASERO_MEDIA_TYPE_WRITABLE) {
 			if (brasero_medium_can_be_written (medium)) {
-				list = g_slist_prepend (list, medium);
-				g_object_ref (medium);
-				continue;
+				if ((type & BRASERO_MEDIA_TYPE_CD)) {
+					if ((brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)) {
+						list = g_slist_prepend (list, medium);
+						g_object_ref (medium);
+						continue;
+					}
+				}
+				else {
+					list = g_slist_prepend (list, medium);
+					g_object_ref (medium);
+					continue;
+				}
 			}
 		}
 
 		if (type & BRASERO_MEDIA_TYPE_REWRITABLE) {
 			if (brasero_medium_can_be_rewritten (medium)) {
-				list = g_slist_prepend (list, medium);
-				g_object_ref (medium);
+				if ((type & BRASERO_MEDIA_TYPE_CD)) {
+					if ((brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD)) {
+						list = g_slist_prepend (list, medium);
+						g_object_ref (medium);
+						continue;
+					}
+				}
+				else {
+					list = g_slist_prepend (list, medium);
+					g_object_ref (medium);
+					continue;
+				}
 				continue;
 			}
 		}

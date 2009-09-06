@@ -1651,7 +1651,8 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (project->priv->selection),
-							  BRASERO_MEDIA_TYPE_WRITABLE);
+							  BRASERO_MEDIA_TYPE_WRITABLE|
+		                                          BRASERO_MEDIA_TYPE_CD);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		project->priv->current = BRASERO_DISC (project->priv->data);

@@ -85,7 +85,13 @@ typedef enum {
 	BRASERO_MEDIA_TYPE_WRITABLE			= 1 << 3,
 	BRASERO_MEDIA_TYPE_REWRITABLE			= 1 << 4,
 	BRASERO_MEDIA_TYPE_ANY_IN_BURNER		= 1 << 5,
-	BRASERO_MEDIA_TYPE_ALL_BUT_FILE			= 0xFE,
+
+	/* If combined with other flags it will filter.
+	 * if alone all CDs are returned.
+	 * It can't be combined with FILE type. */
+	BRASERO_MEDIA_TYPE_CD					= 1 << 6,
+
+	BRASERO_MEDIA_TYPE_ALL_BUT_FILE			= 0x7F,
 	BRASERO_MEDIA_TYPE_ALL				= 0xFF
 } BraseroMediaType;
 
