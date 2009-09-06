@@ -368,7 +368,7 @@ brasero_project_set_add_button_state (BraseroProject *project)
 	GtkWidget *toplevel;
 
 	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
-		      !project->priv->oversized && !project->priv->chooser );
+		      !project->priv->oversized && !project->priv->chooser);
 
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
@@ -943,6 +943,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 
 	if (valid == BRASERO_SESSION_EMPTY) {
 		project->priv->empty = TRUE;
+		project->priv->oversized = FALSE;
 	}
 	else if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		goffset min_disc_size;
