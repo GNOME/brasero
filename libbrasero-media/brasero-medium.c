@@ -2931,8 +2931,10 @@ brasero_medium_probed (gpointer data)
 
 	priv = BRASERO_MEDIUM_PRIVATE (data);
 
-	g_thread_join (priv->probe);
-	priv->probe = NULL;
+	if (priv->probe) {
+		g_thread_join (priv->probe);
+		priv->probe = NULL;
+	}
 
 	/* This signal must be emitted in the main thread */
 	GDK_THREADS_ENTER ();
@@ -3066,9 +3068,13 @@ brasero_medium_finalize (GObject *object)
 	BRASERO_MEDIA_LOG ("Finalizing Medium object");
 
 	if (priv->probe) {
+		GThread *probe;
+
+		probe = priv->probe;
 		priv->probe_cancelled = TRUE;
-		g_thread_join (priv->probe);
-		priv->probe = 0;
+
+		g_thread_join (probe);
+		priv->probe = NULL;
 	}
 
 	if (priv->probe_id) {
