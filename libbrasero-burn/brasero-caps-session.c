@@ -1340,8 +1340,14 @@ brasero_medium_supported_flags (BraseroMedium *medium,
 	else if (!brasero_medium_can_use_dummy_for_tao (medium))
 		(*supported_flags) &= ~BRASERO_BURN_FLAG_DUMMY;
 
-	if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media)
-	&& !brasero_medium_can_use_tao (medium)) {
+	/* The following is only true if we won't _have_ to blank
+	 * the disc since a CLOSED disc is not able for tao/sao.
+	 * so if BLANK_BEFORE_RIGHT is TRUE then we leave 
+	 * the benefit of the doubt, but flags should be rechecked
+	 * after the drive was blanked. */
+	if (((*compulsory_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) == 0
+	&&  !BRASERO_MEDIUM_RANDOM_WRITABLE (media)
+	&&  !brasero_medium_can_use_tao (medium)) {
 		(*supported_flags) &= ~BRASERO_BURN_FLAG_MULTI;
 
 		if (brasero_medium_can_use_sao (medium))
