@@ -36,6 +36,8 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
+#include <gdk/gdk.h>
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-session.h"
@@ -363,7 +365,11 @@ brasero_task_run_loop (BraseroTask *self,
 
 	priv->loop = g_main_loop_new (NULL, FALSE);
 	BRASERO_BURN_LOG ("entering loop");
+
+	GDK_THREADS_LEAVE ();  
 	g_main_loop_run (priv->loop);
+	GDK_THREADS_ENTER ();
+
 	BRASERO_BURN_LOG ("got out of loop");
 	g_main_loop_unref (priv->loop);
 	priv->loop = NULL;
