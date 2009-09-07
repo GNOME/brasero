@@ -3010,7 +3010,9 @@ brasero_medium_probe_thread (gpointer self)
 	else
 		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 
-	priv->probe_id = g_idle_add (brasero_medium_probed, self);
+	if (!priv->probe_cancelled)
+		priv->probe_id = g_idle_add (brasero_medium_probed, self);
+
 	return NULL;
 }
 
