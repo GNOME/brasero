@@ -2149,6 +2149,8 @@ brasero_burn_unset_checksums (BraseroBurn *self)
 						    BRASERO_CHECKSUM_NONE,
 						    NULL);
 	}
+
+	brasero_track_type_free (type);
 }
 
 static BraseroBurnResult
