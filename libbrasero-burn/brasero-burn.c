@@ -1934,9 +1934,40 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 		 * the disc is not enough. */
 		action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (priv->task));
 		if (action == BRASERO_TASK_ACTION_ERASE) {
+			BraseroTrackType *type;
+
 			/* FIXME: how could it be possible for a drive to test
 			 * with a CLOSED CDRW for example. Maybe we should
 			 * format/blank anyway. */
+
+			/* This is to avoid blanking a medium without knowing
+			 * if the data will fit on it. At this point we do know 
+			 * what the size of the data is going to be. */
+			type = brasero_track_type_new ();
+			brasero_burn_session_get_input_type (priv->session, type);
+			if (brasero_track_type_get_has_image (type)
+			||  brasero_track_type_get_has_medium (type)) {
+				BraseroMedium *medium;
+				goffset session_sec = 0;
+				goffset medium_sec = 0;
+
+				medium = brasero_drive_get_medium (priv->dest);
+				brasero_medium_get_capacity (medium,
+							     NULL,
+							     &medium_sec);
+
+				brasero_burn_session_get_size (priv->session,
+							       &session_sec,
+							       NULL);
+
+				if (session_sec > medium_sec) {
+					BRASERO_BURN_LOG ("Not enough space on medium %"G_GOFFSET_FORMAT"/%"G_GOFFSET_FORMAT, session_sec, medium_sec);
+					result = brasero_burn_reload_dest_media (burn,  BRASERO_BURN_ERROR_MEDIUM_SPACE, error);
+					if (result != BRASERO_BURN_OK)
+						break;
+				}
+			}
+			brasero_track_type_free (type);
 
 			/* This is to avoid a potential problem when running a 
 			 * dummy session first. When running dummy session the 
