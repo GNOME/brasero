@@ -957,8 +957,6 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
 		}
 	}
 	else {
-		gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (priv->mainwin));
-
 		/* hide main dialog if it is shown */
 		gtk_widget_hide (GTK_WIDGET (priv->mainwin));
 

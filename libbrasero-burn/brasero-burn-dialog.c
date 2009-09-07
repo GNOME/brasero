@@ -2275,6 +2275,9 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	}
 
 	do {
+		if (!GTK_WIDGET_VISIBLE (dialog))
+			gtk_widget_show (GTK_WIDGET (dialog));
+
 		result = brasero_burn_dialog_record_session (dialog, media);
 	} while (result == BRASERO_BURN_RETRY);
 
