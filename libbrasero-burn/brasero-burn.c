@@ -888,7 +888,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		                               NULL);
 
 		if (session_sec > medium_sec) {
-			BRASERO_BURN_LOG ("Not enough space for image %"G_GOFFSET_FORMAT"/%"G_GOFFSET_FORMAT);
+			BRASERO_BURN_LOG ("Not enough space for image %"G_GOFFSET_FORMAT"/%"G_GOFFSET_FORMAT, session_sec, medium_sec);
 			berror = BRASERO_BURN_ERROR_MEDIUM_SPACE;
 			result = BRASERO_BURN_NEED_RELOAD;
 			goto end;
