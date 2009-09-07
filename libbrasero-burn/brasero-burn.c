@@ -2131,19 +2131,23 @@ static void
 brasero_burn_unset_checksums (BraseroBurn *self)
 {
 	GSList *tracks;
+	BraseroTrackType *type;
 	BraseroBurnPrivate *priv;
 
 	priv = BRASERO_BURN_PRIVATE (self);
 
 	tracks = brasero_burn_session_get_tracks (priv->session);
+	type = brasero_track_type_new ();
 	for (; tracks; tracks = tracks->next) {
 		BraseroTrack *track;
 
-		/* unset checksum (might depend from copy to another). */
 		track = tracks->data;
-		brasero_track_set_checksum (track,
-					    BRASERO_CHECKSUM_NONE,
-					    NULL);
+		brasero_track_get_track_type (track, type);
+		if (!brasero_track_type_get_has_image (type)
+		&& !brasero_track_type_get_has_medium (type))
+			brasero_track_set_checksum (track,
+						    BRASERO_CHECKSUM_NONE,
+						    NULL);
 	}
 }
 
