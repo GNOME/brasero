@@ -831,8 +831,80 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 }
 
 /**
- * Test presence of simulate burning
+ * Test presence of simulate burning/ SAO/ DAO
  */
+
+static gboolean
+brasero_medium_set_write_mode_page_tao (BraseroMedium *self,
+                                        BraseroDeviceHandle *handle,
+                                        BraseroScsiErrCode *code)
+{
+	BraseroScsiModeData *data = NULL;
+	BraseroScsiWritePage *wrt_page;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	BRASERO_MEDIA_LOG ("Setting write mode page");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* NOTE: this works for CDR, DVDR+-, BDR-SRM */
+	/* make sure the current write mode is TAO. Otherwise the drive will
+	 * return the first sector of the pregap instead of the first user
+	 * accessible sector. */
+	result = brasero_spc1_mode_sense_get_page (handle,
+						   BRASERO_SPC_PAGE_WRITE,
+						   &data,
+						   &size,
+						   code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_MEDIA_LOG ("MODE SENSE failed");
+		/* This isn't necessarily a problem! we better try the rest */
+		return FALSE;
+	}
+
+	wrt_page = (BraseroScsiWritePage *) &data->page;
+
+	BRASERO_MEDIA_LOG ("Former write type %d", wrt_page->write_type);
+	BRASERO_MEDIA_LOG ("Former track mode %d", wrt_page->track_mode);
+	BRASERO_MEDIA_LOG ("Former data block type %d", wrt_page->data_block_type);
+
+	/* "reset some stuff to be on the safe side" (words and ideas
+	 * taken from k3b:)). */
+	wrt_page->ps = 0;
+	wrt_page->BUFE = 0;
+	wrt_page->multisession = 0;
+	wrt_page->testwrite = 0;
+	wrt_page->LS_V = 0;
+	wrt_page->copy = 0;
+	wrt_page->FP = 0;
+	wrt_page->session_format = 0;
+	BRASERO_SET_16 (wrt_page->pause_len, 150);
+
+	if (priv->info & BRASERO_MEDIUM_CD) {
+		wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
+		wrt_page->track_mode = 4;
+	}
+	else if (priv->info & BRASERO_MEDIUM_DVD) {
+		wrt_page->write_type = BRASERO_SCSI_WRITE_PACKET_INC;
+		wrt_page->track_mode = 5;
+	}
+
+	wrt_page->data_block_type = 8;
+
+	result = brasero_spc1_mode_select (handle, data, size, code);
+	g_free (data);
+
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_MEDIA_LOG ("MODE SELECT failed");
+
+		/* This isn't necessarily a problem! we better try */
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 static gboolean
 brasero_medium_test_CD_TAO_simulate (BraseroMedium *self,
@@ -1760,79 +1832,6 @@ brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 }
 
 static gboolean
-brasero_medium_set_write_mode_page (BraseroMedium *self,
-				    BraseroDeviceHandle *handle,
-				    BraseroScsiErrCode *code)
-{
-	BraseroScsiModeData *data = NULL;
-	BraseroScsiWritePage *wrt_page;
-	BraseroMediumPrivate *priv;
-	BraseroScsiResult result;
-	int size;
-
-	BRASERO_MEDIA_LOG ("Setting write mode page");
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-
-	/* NOTE: this works for CDR, DVDR+-, BDR-SRM */
-	/* make sure the current write mode is TAO. Otherwise the drive will
-	 * return the first sector of the pregap instead of the first user
-	 * accessible sector. */
-	result = brasero_spc1_mode_sense_get_page (handle,
-						   BRASERO_SPC_PAGE_WRITE,
-						   &data,
-						   &size,
-						   code);
-	if (result == BRASERO_SCSI_OK) {
-		wrt_page = (BraseroScsiWritePage *) &data->page;
-
-		BRASERO_MEDIA_LOG ("Former write type %d", wrt_page->write_type);
-		BRASERO_MEDIA_LOG ("Former track mode %d", wrt_page->track_mode);
-		BRASERO_MEDIA_LOG ("Former data block type %d", wrt_page->data_block_type);
-
-		/* "reset some stuff to be on the safe side" (words and ideas
-		 * taken from k3b:)). */
-		wrt_page->ps = 0;
-		wrt_page->BUFE = 0;
-		wrt_page->multisession = 0;
-		wrt_page->testwrite = 0;
-		wrt_page->LS_V = 0;
-		wrt_page->copy = 0;
-		wrt_page->FP = 0;
-		wrt_page->session_format = 0;
-		BRASERO_SET_16 (wrt_page->pause_len, 150);
-
-		if (priv->info & BRASERO_MEDIUM_CD) {
-			wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
-			wrt_page->track_mode = 4;
-		}
-		else if (priv->info & BRASERO_MEDIUM_DVD) {
-			wrt_page->write_type = BRASERO_SCSI_WRITE_PACKET_INC;
-			wrt_page->track_mode = 5;
-		}
-
-		wrt_page->data_block_type = 8;
-
-		result = brasero_spc1_mode_select (handle, data, size, code);
-		g_free (data);
-
-		if (result != BRASERO_SCSI_OK) {
-			BRASERO_MEDIA_LOG ("MODE SELECT failed");
-
-			/* This isn't necessarily a problem! we better try */
-			return FALSE;
-		}
-	}
-	else {
-		BRASERO_MEDIA_LOG ("MODE SENSE failed");
-		/* This isn't necessarily a problem! we better try the rest */
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
 brasero_medium_track_set_leadout (BraseroMedium *self,
 				  BraseroDeviceHandle *handle,
 				  BraseroMediumTrack *leadout,
@@ -1859,7 +1858,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		 * Carry on even if it fails.
 		 * This can work with CD-R/W and DVD-R/W. + media don't use the
 		 * write mode page anyway. */
-		result = brasero_medium_set_write_mode_page (self, handle, code);
+		result = brasero_medium_set_write_mode_page_tao (self, handle, code);
 		if (result == FALSE
 		&&  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
 			return brasero_medium_track_set_leadout_CDR_blank (self,
@@ -2875,6 +2874,10 @@ brasero_medium_init_real (BraseroMedium *object,
 	if (priv->probe_cancelled)
 		return;
 
+	brasero_medium_init_caps (object, handle, &code);
+	if (priv->probe_cancelled)
+		return;
+
 	result = brasero_medium_get_contents (object, handle, &code);
 	if (result != TRUE)
 	if (result != TRUE)
@@ -2888,10 +2891,6 @@ brasero_medium_init_real (BraseroMedium *object,
 	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_ROM)))
 		brasero_medium_get_css_feature (object, handle, &code);
 
-	if (priv->probe_cancelled)
-		return;
-
-	brasero_medium_init_caps (object, handle, &code);
 	if (priv->probe_cancelled)
 		return;
 
