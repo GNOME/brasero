@@ -2324,7 +2324,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		/* If this fails it means that this drive is probably older than
 		 * MMC1 spec or does not conform to it. */
 		if (result != TRUE)
-		if (result != TRUE)
 			return FALSE;
 
 		/* The only thing here left to determine is if that's a WRITABLE
@@ -2856,14 +2855,12 @@ brasero_medium_init_real (BraseroMedium *object,
 
 	result = brasero_medium_get_medium_type (object, handle, &code);
 	if (result != TRUE)
-	if (result != TRUE)
 		return;
 
 	if (priv->probe_cancelled)
 		return;
 
 	result = brasero_medium_get_speed (object, handle, &code);
-	if (result != TRUE)
 	if (result != TRUE)
 		return;
 
