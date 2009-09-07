@@ -1461,7 +1461,6 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 			       BraseroBurnFlag flags)
 {
 	BraseroSessionCfgPrivate *priv;
-	BraseroDrive *drive;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
@@ -1471,18 +1470,7 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 	if ((brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self)) & flags) == flags)
 		return;
 
-	brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), flags);
-	priv->supported = BRASERO_BURN_FLAG_NONE;
-	priv->compulsory = BRASERO_BURN_FLAG_NONE;
-	brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
-					     &priv->supported,
-					     &priv->compulsory);
-
-	/* Always save flags */
-	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-	if (drive && brasero_drive_get_medium (drive))
-		brasero_session_cfg_save_drive_flags (self, brasero_drive_get_medium (drive));
-
+	brasero_session_cfg_add_drive_properties_flags (self, flags);
 	brasero_session_cfg_update (self,
 				    FALSE,
 				    FALSE);
