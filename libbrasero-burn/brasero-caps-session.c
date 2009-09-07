@@ -129,6 +129,21 @@ brasero_burn_caps_get_blanking_flags_real (BraseroBurnCaps *caps,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
+	/* This is a special case that is in MMC specs:
+	 * DVD-RW sequential must be fully blanked
+	 * if we really want multisession support. */
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW)
+	&& (session_flags & BRASERO_BURN_FLAG_MULTI)) {
+		if (compulsory_flags & BRASERO_BURN_FLAG_FAST_BLANK) {
+			BRASERO_BURN_LOG ("fast media blanking only supported but multisession required for DVDRW");
+			return BRASERO_BURN_NOT_SUPPORTED;
+		}
+
+		supported_flags &= ~BRASERO_BURN_FLAG_FAST_BLANK;
+
+		BRASERO_BURN_LOG ("removed fast blank for a DVDRW with multisession");
+	}
+
 	if (supported)
 		*supported = supported_flags;
 	if (compulsory)
@@ -199,6 +214,16 @@ brasero_burn_caps_can_blank_real (BraseroBurnCaps *self,
 	BRASERO_BURN_LOG_DISC_TYPE (media, "Testing blanking caps for");
 	if (media == BRASERO_MEDIUM_NONE) {
 		BRASERO_BURN_LOG ("no media => no blanking possible");
+		return BRASERO_BURN_NOT_SUPPORTED;
+	}
+
+	/* This is a special case from MMC: DVD-RW sequential
+	 * can only be multisession is they were fully blanked
+	 * so if there are the two flags, abort. */
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW)
+	&&  (flags & BRASERO_BURN_FLAG_MULTI)
+	&&  (flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
+		BRASERO_BURN_LOG ("fast media blanking only supported but multisession required for DVDRW");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -1541,6 +1566,24 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 	}
 	else if (result != BRASERO_BURN_OK)
 		return result;
+
+	/* These are a special case for DVDRW sequential */
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW)) {
+		/* That's a way to give priority to MULTI over FAST
+		 * and leave the possibility to always use MULTI. */
+		if (session_flags & BRASERO_BURN_FLAG_MULTI)
+			(*supported_flags) &= ~BRASERO_BURN_FLAG_FAST_BLANK;
+		else if ((session_flags & BRASERO_BURN_FLAG_FAST_BLANK)
+		         &&  (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+			/* We should be able to handle this case differently but unfortunately
+			 * there are buggy firmwares that won't report properly the supported
+			 * mode writes */
+			if (!((*supported_flags) & BRASERO_BURN_FLAG_DAO))
+					 return BRASERO_BURN_NOT_SUPPORTED;
+
+			(*compulsory_flags) |= BRASERO_BURN_FLAG_DAO;
+		}
+	}
 
 	if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
 		/* make sure we remove MERGE/APPEND from supported and
