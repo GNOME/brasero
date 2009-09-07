@@ -564,12 +564,77 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self,
 }
 
 static void
+brasero_session_cfg_set_drive_properties_default_flags (BraseroSessionCfg *self)
+{
+	BraseroMedia media;
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
+	media = brasero_burn_session_get_dest_media (BRASERO_BURN_SESSION (self));
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+		/* This is a special case to favour libburn/growisofs
+		 * wodim/cdrecord for these types of media. */
+		if (priv->supported & BRASERO_BURN_FLAG_MULTI) {
+			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+						       BRASERO_BURN_FLAG_MULTI);
+
+			priv->supported = BRASERO_BURN_FLAG_NONE;
+			priv->compulsory = BRASERO_BURN_FLAG_NONE;
+			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
+		}
+	}
+
+	/* Always set this flag whenever possible */
+	if (priv->supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+
+		if (priv->supported & BRASERO_BURN_FLAG_FAST_BLANK
+		&& (media & BRASERO_MEDIUM_UNFORMATTED) == 0)
+			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+						       BRASERO_BURN_FLAG_FAST_BLANK);
+
+		priv->supported = BRASERO_BURN_FLAG_NONE;
+		priv->compulsory = BRASERO_BURN_FLAG_NONE;
+		brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+						     &priv->supported,
+						     &priv->compulsory);
+	}
+
+	/* When copying with same drive don't set write mode, it'll be set later */
+	if (!brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))
+	&&  !(media & BRASERO_MEDIUM_DVD)) {
+		/* use DAO whenever it's possible except for DVDs otherwise
+		 * wodime which claims to support it will be used by default
+		 * instead of say growisofs. */
+		if (priv->supported & BRASERO_BURN_FLAG_DAO) {
+			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), BRASERO_BURN_FLAG_DAO);
+
+			priv->supported = BRASERO_BURN_FLAG_NONE;
+			priv->compulsory = BRASERO_BURN_FLAG_NONE;
+			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
+
+			/* NOTE: after setting DAO, some flags may become
+			 * compulsory like BLANK_BEFORE for CDRW with data */
+		}
+	}
+}
+
+static void
 brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 						BraseroBurnFlag flags)
 {
+	BraseroDrive *drive;
 	BraseroMedia media;
 	BraseroBurnFlag flag;
-	BraseroDrive *drive;
 	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroBurnFlag original_flags;
@@ -641,59 +706,7 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 		}
 	}
 
-	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
-		/* This is a special case to favour libburn/growisofs
-		 * wodim/cdrecord for these types of media. */
-		if (priv->supported & BRASERO_BURN_FLAG_MULTI) {
-			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
-						       BRASERO_BURN_FLAG_MULTI);
-
-			priv->supported = BRASERO_BURN_FLAG_NONE;
-			priv->compulsory = BRASERO_BURN_FLAG_NONE;
-			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
-							     &priv->supported,
-							     &priv->compulsory);
-		}
-	}
-
-	/* Always set this flag whenever possible */
-	if (priv->supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-
-		if (priv->supported & BRASERO_BURN_FLAG_FAST_BLANK
-		&& (media & BRASERO_MEDIUM_UNFORMATTED) == 0)
-			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
-						       BRASERO_BURN_FLAG_FAST_BLANK);
-
-		priv->supported = BRASERO_BURN_FLAG_NONE;
-		priv->compulsory = BRASERO_BURN_FLAG_NONE;
-		brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
-						     &priv->supported,
-						     &priv->compulsory);
-	}
-
-	/* When copying with same drive don't set write mode, it'll be set later */
-	if (!brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))
-	&&  !(media & BRASERO_MEDIUM_DVD)) {
-		/* use DAO whenever it's possible except for DVDs otherwise
-		 * wodime which claims to support it will be used by default
-		 * instead of say growisofs. */
-		if (priv->supported & BRASERO_BURN_FLAG_DAO) {
-			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), BRASERO_BURN_FLAG_DAO);
-
-			priv->supported = BRASERO_BURN_FLAG_NONE;
-			priv->compulsory = BRASERO_BURN_FLAG_NONE;
-			brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
-							     &priv->supported,
-							     &priv->compulsory);
-
-			/* NOTE: after setting DAO, some flags may become
-			 * compulsory like BLANK_BEFORE for CDRW with data */
-		}
-	}
+	brasero_session_cfg_set_drive_properties_default_flags (self);
 
 	/* allow flag changed signal again */
 	priv->inhibit_flag_sig = FALSE;
@@ -1494,11 +1507,12 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
-	priv->supported = BRASERO_BURN_FLAG_NONE;
-	priv->compulsory = BRASERO_BURN_FLAG_NONE;
-	brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
-					     &priv->supported,
-					     &priv->compulsory);
+
+	/* For this case reset all flags as some flags could
+	 * be made available after the removal of one flag
+	 * Example: After the removal of MULTI, FAST_BLANK
+	 * becomes available again for DVDRW sequential */
+	brasero_session_cfg_set_drive_properties_default_flags (self);
 
 	/* Always save flags */
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
