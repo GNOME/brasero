@@ -1452,7 +1452,7 @@ brasero_session_cfg_flags_changed (BraseroBurnSession *session)
  * @cfg: a #BraseroSessionCfg
  * @flags: a #BraseroBurnFlag
  *
- * Adds all flags from @flags that are not supported.
+ * Adds all flags from @flags that are supported.
  *
  **/
 
