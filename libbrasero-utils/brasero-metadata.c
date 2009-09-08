@@ -523,6 +523,11 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 	mime = gst_structure_get_name (gst_caps_get_structure (caps, 0));
 	gst_object_unref (typefind);
 
+	BRASERO_UTILS_LOG ("Mime type %s", mime);
+
+	if (!mime)
+		return FALSE;
+
 	if (!strcmp (mime, "application/x-id3"))
 		priv->info->type = g_strdup ("audio/mpeg");
 	else

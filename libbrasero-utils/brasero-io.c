@@ -820,6 +820,9 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 	g_file_info_set_attribute_int32 (info, BRASERO_IO_ISRC, metadata->isrc);
 	g_file_info_set_attribute_uint64 (info, BRASERO_IO_LEN, metadata->len);
 
+	if (metadata->type)
+		g_file_info_set_content_type (info, metadata->type);
+
 	if (metadata->artist)
 		g_file_info_set_attribute_string (info, BRASERO_IO_ARTIST, metadata->artist);
 
@@ -998,12 +1001,13 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	priv = BRASERO_IO_PRIVATE (self);
 
 	mime = g_file_info_get_content_type (info);
+	BRASERO_UTILS_LOG ("Found file with type %s", mime);
+
 	if (mime
 	&& (!strncmp (mime, "image/", 6)
 	||  !strcmp (mime, "text/plain")
 	||  !strcmp (mime, "application/x-cue") /* this one make gstreamer crash */
-	||  !strcmp (mime, "application/x-cd-image")
-	||  !strcmp (mime, "application/octet-stream")))
+	||  !strcmp (mime, "application/x-cd-image")))
 		return FALSE;
 
 	BRASERO_UTILS_LOG ("Retrieving metadata info");
