@@ -85,6 +85,8 @@ typedef struct _BraseroMediumPrivate BraseroMediumPrivate;
 struct _BraseroMediumPrivate
 {
 	GThread *probe;
+	GMutex *mutex;
+	GCond *cond;
 	gint probe_id;
 
 	GSList *tracks;
@@ -2925,12 +2927,11 @@ brasero_medium_probed (gpointer data)
 {
 	BraseroMediumPrivate *priv;
 
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (data), FALSE);
+
 	priv = BRASERO_MEDIUM_PRIVATE (data);
 
-	if (priv->probe) {
-		g_thread_join (priv->probe);
-		priv->probe = NULL;
-	}
+	priv->probe_id = 0;
 
 	/* This signal must be emitted in the main thread */
 	GDK_THREADS_ENTER ();
@@ -2939,7 +2940,6 @@ brasero_medium_probed (gpointer data)
 		       0);
 	GDK_THREADS_LEAVE ();
 
-	priv->probe_id = 0;
 	return FALSE;
 }
 
@@ -2965,19 +2965,15 @@ brasero_medium_probe_thread (gpointer self)
 	while (!handle && counter <= BRASERO_MEDIUM_OPEN_ATTEMPTS) {
 		sleep (1);
 
-		if (priv->probe_cancelled) {
-			priv->probe = NULL;
-			return NULL;
-		}
+		if (priv->probe_cancelled)
+			goto end;
 
 		counter ++;
 		handle = brasero_device_handle_open (device, FALSE, &code);
 	}
 
-	if (priv->probe_cancelled) {
-		priv->probe = NULL;
-		return NULL;
-	}
+	if (priv->probe_cancelled)
+		goto end;
 
 	if (handle) {
 		BRASERO_MEDIA_LOG ("Open () succeeded");
@@ -2986,19 +2982,17 @@ brasero_medium_probe_thread (gpointer self)
 		 * error code variable which is currently NULL */
 		while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
 			if (code != BRASERO_SCSI_NOT_READY) {
-				priv->probe = NULL;
 				brasero_device_handle_close (handle);
 				BRASERO_MEDIA_LOG ("Device does not respond");
-				break;
+				goto end;
 			}
 
 			sleep (2);
 
 			if (priv->probe_cancelled) {
-				priv->probe = NULL;
 				brasero_device_handle_close (handle);
 				BRASERO_MEDIA_LOG ("Device probing cancelled");
-				return NULL;
+				goto end;
 			}
 		}
 
@@ -3010,8 +3004,17 @@ brasero_medium_probe_thread (gpointer self)
 	else
 		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 
+end:
+
 	if (!priv->probe_cancelled)
 		priv->probe_id = g_idle_add (brasero_medium_probed, self);
+
+	g_mutex_lock (priv->mutex);
+	priv->probe = NULL;
+	g_cond_broadcast (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
+	g_thread_exit (0);
 
 	return NULL;
 }
@@ -3028,10 +3031,12 @@ brasero_medium_probe (BraseroMedium *self)
 	 * thread then our whole UI blocks. This medium won't be exported by the
 	 * BraseroDrive that exported until it returns PROBED signal.
 	 * One (good) side effect is that it also improves start time. */
+	g_mutex_lock (priv->mutex);
 	priv->probe = g_thread_create (brasero_medium_probe_thread,
 				       self,
 				       TRUE,
 				       NULL);
+	g_mutex_unlock (priv->mutex);
 }
 
 static void
@@ -3053,6 +3058,9 @@ brasero_medium_init (BraseroMedium *object)
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 	priv->next_wr_add = -1;
 
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+
 	/* we can't do anything here since properties haven't been set yet */
 }
 
@@ -3065,19 +3073,26 @@ brasero_medium_finalize (GObject *object)
 
 	BRASERO_MEDIA_LOG ("Finalizing Medium object");
 
+	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
-		GThread *probe;
-
-		probe = priv->probe;
 		priv->probe_cancelled = TRUE;
-
-		g_thread_join (probe);
-		priv->probe = NULL;
+		g_cond_wait (priv->cond, priv->mutex);
 	}
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->probe_id) {
 		g_source_remove (priv->probe_id);
 		priv->probe_id = 0;
+	}
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
 	}
 
 	if (priv->id) {
