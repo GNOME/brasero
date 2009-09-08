@@ -91,7 +91,7 @@ typedef enum {
 	 * It can't be combined with FILE type. */
 	BRASERO_MEDIA_TYPE_CD					= 1 << 6,
 
-	BRASERO_MEDIA_TYPE_ALL_BUT_FILE			= 0x7F,
+	BRASERO_MEDIA_TYPE_ALL_BUT_FILE			= 0xFE,
 	BRASERO_MEDIA_TYPE_ALL				= 0xFF
 } BraseroMediaType;
 
