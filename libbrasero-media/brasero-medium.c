@@ -3034,7 +3034,7 @@ brasero_medium_probe (BraseroMedium *self)
 	g_mutex_lock (priv->mutex);
 	priv->probe = g_thread_create (brasero_medium_probe_thread,
 				       self,
-				       TRUE,
+				       FALSE,
 				       NULL);
 	g_mutex_unlock (priv->mutex);
 }
