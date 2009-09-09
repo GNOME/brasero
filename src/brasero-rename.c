@@ -128,7 +128,7 @@ brasero_rename_delete_string (BraseroRename *self,
 	if (!occurence)
 		return NULL;
 
-	return g_strdup_printf ("%.*s%s", occurence - name, name, occurence + strlen (text));
+	return g_strdup_printf ("%.*s%s", (int) (occurence - name), name, occurence + strlen (text));
 }
 
 static gchar *
@@ -149,7 +149,7 @@ brasero_rename_substitute_string (BraseroRename *self,
 		return NULL;
 
 	joker = gtk_entry_get_text (GTK_ENTRY (priv->joker_entry));
-	return g_strdup_printf ("%.*s%s%s", occurence - name, name, joker, occurence + strlen (text));
+	return g_strdup_printf ("%.*s%s%s", (int) (occurence - name), name, joker, occurence + strlen (text));
 }
 
 static gchar *

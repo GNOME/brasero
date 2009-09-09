@@ -139,7 +139,7 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 
 			tmp = buffer;
 			buffer = g_strdup_printf ("%.*s%s%s",
-						  location - buffer,
+						  (int) (location - buffer),
 						  buffer,
 						  img_path,
 						  location + tmp_path_len);

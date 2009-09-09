@@ -424,7 +424,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 
 		if (dot && dot > separator)
 			path = g_strdup_printf ("%.*s.inf",
-						dot - path,
+						(int) (dot - path),
 						path);
 		else
 			path = g_strdup_printf ("%s.inf",

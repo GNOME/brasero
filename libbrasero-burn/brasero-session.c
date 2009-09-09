@@ -1283,7 +1283,7 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 		if (g_str_has_suffix (path, ".bin"))
 			retval = g_strdup_printf ("%.*scue",
-						  strlen (path) - 3,
+						  (int) strlen (path) - 3,
 						  path);
 		else
 			retval = g_strdup_printf ("%s.cue", path);
@@ -1291,7 +1291,7 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 	else if (format == BRASERO_IMAGE_FORMAT_CDRDAO) {
 		if (g_str_has_suffix (path, ".bin"))
 			retval = g_strdup_printf ("%.*stoc",
-						  strlen (path) - 3,
+						  (int) strlen (path) - 3,
 						  path);
 		else
 			retval = g_strdup_printf ("%s.toc", path);

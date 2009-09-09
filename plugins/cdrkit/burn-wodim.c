@@ -438,7 +438,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 		separator = strrchr (path, G_DIR_SEPARATOR);
 
 		if (dot && dot > separator)
-			path = g_strdup_printf ("%.*s.inf", dot - path, path);
+			path = g_strdup_printf ("%.*s.inf", (int) (dot - path), path);
 		else
 			path = g_strdup_printf ("%s.inf", path);
 
