@@ -61,6 +61,10 @@ brasero_scsi_strerror (BraseroScsiErrCode code)
 	if (code > BRASERO_SCSI_ERROR_LAST || code < 0)
 		return NULL;
 
+	/* FIXME: this is for errors that don't have any message yet */
+	if (code > BRASERO_SCSI_ERRNO)
+		return NULL;
+
 	if (code == BRASERO_SCSI_ERRNO)
 		return g_strerror (errno);
 

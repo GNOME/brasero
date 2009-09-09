@@ -57,6 +57,7 @@
 #define SENSE_CODE_UNIT_ATTENTION			0x06
 
 #define ASC_CODE_NOT_READY				0x04
+#define ASC_CODE_NO_MEDIUM			0x3A
 #define ASC_CODE_PARAMETER				0x26
 #define ASC_CODE_PROTECTION_KEY				0x6F
 
@@ -110,6 +111,11 @@ brasero_sense_data_not_ready (uchar *sense_data, BraseroScsiErrCode *err)
 	BraseroScsiResult res = BRASERO_SCSI_FAILURE;
 
 	switch (SENSE_DATA_ASC (sense_data)) {
+		case ASC_CODE_NO_MEDIUM:
+			/* No need to use BRASERO_SCSI_SET_ERRCODE
+			 * as this is not necessarily an error */
+			*err = BRASERO_SCSI_NO_MEDIUM;
+			break;
 		case ASC_CODE_NOT_READY:
 			BRASERO_SCSI_SET_ERRCODE (err, BRASERO_SCSI_NOT_READY);
 			break;

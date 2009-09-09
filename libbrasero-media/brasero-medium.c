@@ -2325,8 +2325,10 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 		/* If this fails it means that this drive is probably older than
 		 * MMC1 spec or does not conform to it. */
-		if (result != TRUE)
+		if (result != TRUE) {
+			priv->info = BRASERO_MEDIUM_NONE;
 			return FALSE;
+		}
 
 		/* The only thing here left to determine is if that's a WRITABLE
 		 * or a REWRITABLE. To determine that information, we need to
@@ -2370,6 +2372,10 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	}
 
 	switch (profile) {
+	case BRASERO_SCSI_PROF_EMPTY:
+		priv->info = BRASERO_MEDIUM_NONE;
+		return FALSE;
+
 	case BRASERO_SCSI_PROF_CDROM:
 		priv->info = BRASERO_MEDIUM_CDROM;
 		priv->type = types [1];
@@ -2981,7 +2987,13 @@ brasero_medium_probe_thread (gpointer self)
 		/* NOTE: if we wanted to know the status we'd need to read the 
 		 * error code variable which is currently NULL */
 		while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
-			if (code != BRASERO_SCSI_NOT_READY) {
+			if (code == BRASERO_SCSI_NO_MEDIUM) {
+				brasero_device_handle_close (handle);
+				BRASERO_MEDIA_LOG ("No medium inserted");
+				priv->info = BRASERO_MEDIUM_NONE;
+				goto end;
+			}
+			else if (code != BRASERO_SCSI_NOT_READY) {
 				brasero_device_handle_close (handle);
 				BRASERO_MEDIA_LOG ("Device does not respond");
 				goto end;

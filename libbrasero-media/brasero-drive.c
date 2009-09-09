@@ -70,6 +70,8 @@ struct _BraseroDrivePrivate
 	GDrive *gdrive;
 
 	GThread *probe;
+	GMutex *mutex;
+	GCond *cond;
 	gint probe_id;
 
 	BraseroMedium *medium;
@@ -85,6 +87,7 @@ struct _BraseroDrivePrivate
 	GCancellable *cancel;
 
 	guint probed:1;
+	guint has_medium:1;
 	guint probe_cancelled:1;
 };
 
@@ -225,7 +228,7 @@ brasero_drive_eject (BraseroDrive *drive,
 			return TRUE;
 	}
 	else
-		BRASERO_BURN_LOG ("No GDrive");
+		BRASERO_MEDIA_LOG ("No GDrive");
 
 	if (!priv->medium)
 		return FALSE;
@@ -712,15 +715,6 @@ brasero_drive_can_write (BraseroDrive *drive)
 }
 
 static void
-brasero_drive_init (BraseroDrive *object)
-{
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (object);
-	priv->cancel = g_cancellable_new ();
-}
-
-static void
 brasero_drive_medium_probed (BraseroMedium *medium,
 			     BraseroDrive *self)
 {
@@ -731,6 +725,13 @@ brasero_drive_medium_probed (BraseroMedium *medium,
 	/* only when it is probed */
 	/* NOTE: BraseroMedium calls GDK_THREADS_ENTER/LEAVE() around g_signal_emit () */
 	priv->probed = TRUE;
+
+	if (brasero_medium_get_status (priv->medium) == BRASERO_MEDIUM_NONE) {
+		g_object_unref (priv->medium);
+		priv->medium = NULL;
+		return;
+	}
+
 	g_signal_emit (self,
 		       drive_signals [MEDIUM_INSERTED],
 		       0,
@@ -750,6 +751,208 @@ brasero_drive_probing (BraseroDrive *drive)
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->probed != TRUE;
+}
+
+static gboolean
+brasero_drive_probed_inside (gpointer data)
+{
+	BraseroDrive *self;
+	BraseroDrivePrivate *priv;
+
+	self = BRASERO_DRIVE (data);
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	g_mutex_lock (priv->mutex);
+	priv->probe_id = 0;
+	g_mutex_unlock (priv->mutex);
+
+	if (priv->has_medium) {
+		if (priv->medium)
+			return FALSE;
+
+		BRASERO_MEDIA_LOG ("Medium inserted");
+
+		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
+					     "drive", self,
+					     NULL);
+
+		g_signal_connect (priv->medium,
+				  "probed",
+				  G_CALLBACK (brasero_drive_medium_probed),
+				  self);
+	}
+	else if (priv->medium) {
+		BraseroMedium *medium;
+
+		BRASERO_MEDIA_LOG ("Medium removed");
+
+		medium = priv->medium;
+		priv->medium = NULL;
+
+		g_signal_emit (self,
+			       drive_signals [MEDIUM_REMOVED],
+			       0,
+			       medium);
+
+		g_object_unref (medium);
+		priv->probed = TRUE;
+	}
+	else
+		priv->probed = TRUE;
+
+	return FALSE;
+}
+
+static gpointer
+brasero_drive_probe_inside_thread (gpointer data)
+{
+	gint counter = 0;
+	const gchar *device;
+	BraseroScsiErrCode code;
+	BraseroDrivePrivate *priv;
+	BraseroDeviceHandle *handle;
+	BraseroDrive *drive = BRASERO_DRIVE (data);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	/* the drive might be busy (a burning is going on) so we don't block
+	 * but we re-try to open it every second */
+	device = brasero_drive_get_device (drive);
+	BRASERO_MEDIA_LOG ("Trying to open device %s", device);
+
+	handle = brasero_device_handle_open (device, FALSE, &code);
+	while (!handle && counter <= BRASERO_DRIVE_OPEN_ATTEMPTS) {
+		sleep (1);
+
+		if (priv->probe_cancelled) {
+			BRASERO_MEDIA_LOG ("Open () cancelled");
+			goto end;
+		}
+
+		counter ++;
+		handle = brasero_device_handle_open (device, FALSE, &code);
+	}
+
+	if (priv->probe_cancelled) {
+		BRASERO_MEDIA_LOG ("Open () cancelled");
+		goto end;
+	}
+
+	if (!handle) {
+		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
+		goto end;
+	}
+
+	while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
+		if (code == BRASERO_SCSI_NO_MEDIUM) {
+			BRASERO_MEDIA_LOG ("No medium inserted");
+
+			priv->has_medium = FALSE;
+			goto end;
+		}
+
+		if (code != BRASERO_SCSI_NOT_READY) {
+			brasero_device_handle_close (handle);
+			BRASERO_MEDIA_LOG ("Device does not respond");
+			goto end;
+		}
+
+		sleep (2);
+
+		if (priv->probe_cancelled) {
+			brasero_device_handle_close (handle);
+			BRASERO_MEDIA_LOG ("Device probing cancelled");
+			goto end;
+		}
+	}
+
+	BRASERO_MEDIA_LOG ("Medium inserted");
+	brasero_device_handle_close (handle);
+
+	priv->has_medium = TRUE;
+
+end:
+
+	g_mutex_lock (priv->mutex);
+
+	if (!priv->probe_cancelled)
+		priv->probe_id = g_idle_add (brasero_drive_probed_inside, drive);
+
+	priv->probe = NULL;
+	g_cond_broadcast (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
+	g_thread_exit (0);
+
+	return NULL;
+}
+
+static void
+brasero_drive_probe_inside (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	priv->probed = FALSE;
+
+	/* Check that a probe is not already being performed */
+	g_mutex_lock (priv->mutex);
+	if (!priv->probe) {
+		BRASERO_MEDIA_LOG ("Setting new probe");
+
+		if (priv->probe_id) {
+			/* Remove the result reporting as
+			 * the status seem to have changed */
+			g_source_remove (priv->probe_id);
+			priv->probe_id = 0;
+		}
+
+		priv->probe = g_thread_create (brasero_drive_probe_inside_thread,
+					       drive,
+					       FALSE,
+					       NULL);
+	}
+	else
+		BRASERO_MEDIA_LOG ("Ongoing probe");
+	g_mutex_unlock (priv->mutex);
+}
+
+static void
+brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
+					BraseroDrive *drive)
+{
+	brasero_drive_probe_inside (drive);
+}
+
+static void
+brasero_drive_update_gdrive (BraseroDrive *drive,
+                             GDrive *gdrive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	if (priv->gdrive) {
+		g_signal_handlers_disconnect_by_func (priv->gdrive,
+						      brasero_drive_medium_gdrive_changed_cb,
+						      drive);
+		g_object_unref (priv->gdrive);
+	}
+
+	BRASERO_MEDIA_LOG ("Setting GDrive %p", gdrive);
+
+	if (gdrive) {
+		priv->gdrive = g_object_ref (gdrive);
+
+		/* If it's not a fake drive then connect to signal for any
+		 * change and check medium inside */
+		g_signal_connect (priv->gdrive,
+				  "changed",
+				  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
+				  drive);
+	}
+
+	brasero_drive_probe_inside (drive);
 }
 
 /**
@@ -793,84 +996,8 @@ brasero_drive_reprobe (BraseroDrive *drive)
 		       0,
 		       medium);
 	g_object_unref (medium);
-	priv->probed = FALSE;
 
-	/* try to get a new one */
-	priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
-				     "drive", drive,
-				     NULL);
-	g_signal_connect (priv->medium,
-			  "probed",
-			  G_CALLBACK (brasero_drive_medium_probed),
-			  drive);
-}
-
-static void
-brasero_drive_check_medium_inside_gdrive (BraseroDrive *self)
-{
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (self);
-
-	BRASERO_MEDIA_LOG ("Contents changed %i", g_drive_has_media (priv->gdrive));
-
-	if (g_drive_has_media (priv->gdrive)) {
-		if (priv->medium)
-			return;
-
-		BRASERO_MEDIA_LOG ("Medium inserted");
-
-		priv->probed = FALSE;
-		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
-					     "drive", self,
-					     NULL);
-
-		g_signal_connect (priv->medium,
-				  "probed",
-				  G_CALLBACK (brasero_drive_medium_probed),
-				  self);
-	}
-	else if (priv->medium) {
-		BraseroMedium *medium;
-
-		BRASERO_MEDIA_LOG ("Medium removed");
-
-		medium = priv->medium;
-		priv->medium = NULL;
-
-		g_signal_emit (self,
-			       drive_signals [MEDIUM_REMOVED],
-			       0,
-			       medium);
-		g_object_unref (medium);
-		priv->probed = TRUE;
-	}
-	else
-		priv->probed = TRUE;
-}
-
-static void
-brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
-					BraseroDrive *drive)
-{
-	brasero_drive_check_medium_inside_gdrive (drive);
-}
-
-static void
-brasero_drive_update_gdrive (BraseroDrive *drive)
-{
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (drive);
-
-	/* If it's not a fake drive then connect to signal for any
-	 * change and check medium inside */
-	g_signal_connect (priv->gdrive,
-			  "changed",
-			  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
-			  drive);
-
-	brasero_drive_check_medium_inside_gdrive (drive);
+	brasero_drive_probe_inside (drive);
 }
 
 static gboolean
@@ -880,9 +1007,11 @@ brasero_drive_probed (gpointer data)
 
 	priv = BRASERO_DRIVE_PRIVATE (data);
 
-	g_thread_join (priv->probe);
-	priv->probe = NULL;
+	g_mutex_lock (priv->mutex);
 	priv->probe_id = 0;
+	g_mutex_unlock (priv->mutex);
+
+	brasero_drive_probe_inside (BRASERO_DRIVE (data));
 
 	return FALSE;
 }
@@ -1015,6 +1144,8 @@ brasero_drive_probe_thread (gpointer data)
 {
 	gint counter = 0;
 	const gchar *device;
+	BraseroScsiResult res;
+	BraseroScsiInquiry hdr;
 	BraseroScsiErrCode code;
 	BraseroDrivePrivate *priv;
 	BraseroDeviceHandle *handle;
@@ -1033,8 +1164,7 @@ brasero_drive_probe_thread (gpointer data)
 
 		if (priv->probe_cancelled) {
 			BRASERO_MEDIA_LOG ("Open () cancelled");
-			priv->probe = NULL;
-			return NULL;
+			goto end;
 		}
 
 		counter ++;
@@ -1043,56 +1173,86 @@ brasero_drive_probe_thread (gpointer data)
 
 	if (priv->probe_cancelled) {
 		BRASERO_MEDIA_LOG ("Open () cancelled");
-		priv->probe = NULL;
-		return NULL;
+		goto end;
 	}
 
-	if (handle) {
-		BraseroScsiInquiry hdr;
-		BraseroScsiResult res;
+	if (!handle) {
+		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
+		goto end;
+	}
 
-		BRASERO_MEDIA_LOG ("Open () succeeded");
-
-		/* get additional information like the name */
-		res = brasero_spc1_inquiry (handle, &hdr, NULL);
-		if (res == BRASERO_SCSI_OK) {
-			gchar *name_utf8;
-			gchar *vendor;
-			gchar *model;
-			gchar *name;
-
-			vendor = g_strndup ((gchar *) hdr.vendor, sizeof (hdr.vendor));
-			model = g_strndup ((gchar *) hdr.name, sizeof (hdr.name));
-			name = g_strdup_printf ("%s %s", g_strstrip (vendor), g_strstrip (model));
-			g_free (vendor);
-			g_free (model);
-
-			/* make sure that's proper UTF-8 */
-			name_utf8 = g_convert_with_fallback (name,
-			                                     -1,
-			                                     "ASCII",
-			                                     "UTF-8",
-			                                     "_",
-			                                     NULL,
-			                                     NULL,
-			                                     NULL);
-			g_free (name);
-
-			priv->name = name_utf8;
+	while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
+		if (code == BRASERO_SCSI_NO_MEDIUM) {
+			BRASERO_MEDIA_LOG ("No medium inserted");
+			break;
 		}
 
-		/* Get supported medium types */
-		if (!brasero_drive_get_caps_profiles (drive, handle, &code))
-			brasero_drive_get_caps_2A (drive, handle, &code);
+		if (code != BRASERO_SCSI_NOT_READY) {
+			brasero_device_handle_close (handle);
+			BRASERO_MEDIA_LOG ("Device does not respond");
+			goto end;
+		}
 
-		brasero_device_handle_close (handle);
+		sleep (2);
 
-		BRASERO_MEDIA_LOG ("Drive caps are %d", priv->caps);
+		if (priv->probe_cancelled) {
+			brasero_device_handle_close (handle);
+			BRASERO_MEDIA_LOG ("Device probing cancelled");
+			goto end;
+		}
 	}
-	else
-		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 
-	priv->probe_id = g_idle_add (brasero_drive_probed, drive);
+	BRASERO_MEDIA_LOG ("Device ready");
+
+	/* get additional information like the name */
+	res = brasero_spc1_inquiry (handle, &hdr, NULL);
+	if (res == BRASERO_SCSI_OK) {
+		gchar *name_utf8;
+		gchar *vendor;
+		gchar *model;
+		gchar *name;
+
+		vendor = g_strndup ((gchar *) hdr.vendor, sizeof (hdr.vendor));
+		model = g_strndup ((gchar *) hdr.name, sizeof (hdr.name));
+		name = g_strdup_printf ("%s %s", g_strstrip (vendor), g_strstrip (model));
+		g_free (vendor);
+		g_free (model);
+
+		/* make sure that's proper UTF-8 */
+		name_utf8 = g_convert_with_fallback (name,
+		                                     -1,
+		                                     "ASCII",
+		                                     "UTF-8",
+		                                     "_",
+		                                     NULL,
+		                                     NULL,
+		                                     NULL);
+		g_free (name);
+
+		priv->name = name_utf8;
+	}
+
+	/* Get supported medium types */
+	if (!brasero_drive_get_caps_profiles (drive, handle, &code))
+		brasero_drive_get_caps_2A (drive, handle, &code);
+
+	brasero_device_handle_close (handle);
+
+	BRASERO_MEDIA_LOG ("Drive caps are %d", priv->caps);
+
+end:
+
+	g_mutex_lock (priv->mutex);
+
+	if (!priv->probe_cancelled)
+		priv->probe_id = g_idle_add (brasero_drive_probed, drive);
+
+	priv->probe = NULL;
+	g_cond_broadcast (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
+	g_thread_exit (0);
+
 	return NULL;
 }
 
@@ -1121,10 +1281,12 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 	 * thread then our whole UI blocks. This medium won't be exported by the
 	 * BraseroDrive that exported until it returns PROBED signal.
 	 * One (good) side effect is that it also improves start time. */
+	g_mutex_lock (priv->mutex);
 	priv->probe = g_thread_create (brasero_drive_probe_thread,
 				       drive,
-				       TRUE,
+				       FALSE,
 				       NULL);
+	g_mutex_unlock (priv->mutex);
 }
 
 static void
@@ -1149,30 +1311,7 @@ brasero_drive_set_property (GObject *object,
 			break;
 
 		gdrive = g_value_get_object (value);
-		if (priv->gdrive) {
-			g_signal_handlers_disconnect_by_func (priv->gdrive,
-							      brasero_drive_medium_gdrive_changed_cb,
-							      object);
-			g_object_unref (priv->gdrive);
-		}
-
-		BRASERO_MEDIA_LOG ("Setting GDrive %p", gdrive);
-
-		if (gdrive) {
-			priv->gdrive = g_object_ref (gdrive);
-			brasero_drive_update_gdrive (BRASERO_DRIVE (object));
-		}
-		else if (!priv->medium) {
-			priv->probed = FALSE;
-			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
-						     "drive", object,
-						     NULL);
-
-			g_signal_connect (priv->medium,
-					  "probed",
-					  G_CALLBACK (brasero_drive_medium_probed),
-					  object);
-		}
+		brasero_drive_update_gdrive (BRASERO_DRIVE (object), gdrive);
 		break;
 	case PROP_DEVICE:
 		if (!g_value_get_string (value)) {
@@ -1219,6 +1358,18 @@ brasero_drive_get_property (GObject *object,
 }
 
 static void
+brasero_drive_init (BraseroDrive *object)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (object);
+	priv->cancel = g_cancellable_new ();
+
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+}
+
+static void
 brasero_drive_finalize (GObject *object)
 {
 	BraseroDrivePrivate *priv;
@@ -1227,15 +1378,26 @@ brasero_drive_finalize (GObject *object)
 
 	BRASERO_MEDIA_LOG ("Finalizing BraseroDrive");
 
+	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
 		priv->probe_cancelled = TRUE;
-		g_thread_join (priv->probe);
-		priv->probe = 0;
+		g_cond_wait (priv->cond, priv->mutex);
 	}
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->probe_id) {
 		g_source_remove (priv->probe_id);
 		priv->probe_id = 0;
+	}
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
 	}
 
 	if (priv->medium) {
