@@ -427,8 +427,6 @@ brasero_dvdcss_write_image_thread (gpointer data)
 				num_blocks = range->start - written_sectors;
 		}
 		else {
-			int pos;
-
 			/* this is in a scrambled sectors range */
 			flag = DVDCSS_READ_DECRYPT;
 
