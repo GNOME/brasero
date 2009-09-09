@@ -357,9 +357,14 @@ brasero_burn_library_input_supported (BraseroTrackType *type)
 }
 
 /**
+ * brasero_burn_library_get_media_capabilities:
+ * @media: a #BraseroMedia
+ *
  * Used to test what the library can do based on the medium type.
  * Returns BRASERO_MEDIUM_WRITABLE if the disc can be written
  * and / or BRASERO_MEDIUM_REWRITABLE if the disc can be erased.
+ *
+ * Returns: a #BraseroMedia
  */
 
 BraseroMedia
