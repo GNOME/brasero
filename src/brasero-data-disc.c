@@ -1302,7 +1302,7 @@ brasero_data_disc_message_response_cb (BraseroDiscMessage *message,
 	brasero_data_disc_clear (BRASERO_DISC (self));
 }
 
-static 
+static void
 brasero_data_disc_sort_column_changed (GtkTreeSortable *sortable,
                                        BraseroDataDisc *disc)
 {
