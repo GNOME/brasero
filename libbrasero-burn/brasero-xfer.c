@@ -93,8 +93,8 @@ brasero_xfer_recursive_transfer (BraseroXferCtx *ctx,
 				 GCancellable *cancel,
 				 GError **error)
 {
-	gboolean result;
 	GFileInfo *info;
+	gboolean result = TRUE;
 	GFileEnumerator *enumerator;
 
 	BRASERO_BURN_LOG ("Downloading directory contents");

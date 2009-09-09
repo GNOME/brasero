@@ -2052,7 +2052,8 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 
 	g_free (message);
 
-	fwrite ("\n", 1, 1, priv->session);
+	if (fwrite ("\n", 1, 1, priv->session) != 1)
+		g_warning ("Some log data could not be written");
 }
 
 void

@@ -1302,6 +1302,8 @@ brasero_app_open_uri (BraseroApp *app,
 
 		type = BRASERO_PROJECT_TYPE_INVALID;
 	}
+	else
+		type = BRASERO_PROJECT_TYPE_INVALID;
 
 	g_free (uri);
 	g_object_unref (file);

@@ -814,11 +814,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	BraseroVolFile *file;
 	BraseroDrive *drive;
 	BraseroMedium *medium;
-	BraseroVolFileHandle *handle;
 	GChecksumType gchecksum_type;
 	GArray *wrong_checksums = NULL;
 	BraseroDeviceHandle *dev_handle;
 	BraseroChecksumFilesPrivate *priv;
+	BraseroVolFileHandle *handle = NULL;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);

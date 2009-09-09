@@ -337,7 +337,7 @@ brasero_image_format_get_FILE_info (const gchar *ptr,
 	gchar *path = NULL;
 	gint64 start = 0;
 	GFileInfo *info;
-	GFile *file;
+	GFile *file = NULL;
 	gchar *tmp;
 
 	/* get the path and skip it */
@@ -396,6 +396,8 @@ stat_end:
 		file = g_file_new_for_commandline_arg (img_uri);
 		g_free (img_uri);
 	}
+	else
+		return FALSE;
 
 	g_free (path);
 
@@ -547,12 +549,12 @@ brasero_image_format_get_cue_size (gchar *uri,
 
 		if ((ptr = strstr (line, "FILE"))) {
 			GFileInfo *info;
-			GFile *file_img;
 			gchar *file_path;
+			GFile *file_img = NULL;
 
 			ptr += 4;
 
-			/* get the path */
+			/* get the path (NOTE: if ptr is NULL file_path as well) */
 			ptr = brasero_image_format_read_path (ptr, &file_path);
 			if (!ptr) {
 				g_object_unref (stream);

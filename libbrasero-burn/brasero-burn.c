@@ -2189,6 +2189,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 			     gboolean erase_allowed,
 			     GError **error)
 {
+	gboolean dummy_session = FALSE;
 	const gchar *checksum = NULL;
 	BraseroTrack *track = NULL;
 	BraseroChecksumType type;
@@ -2196,7 +2197,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
 	BraseroMedium *medium;
-	gboolean dummy_session;
 	GSList *tracks;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
