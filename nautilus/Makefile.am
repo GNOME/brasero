@@ -10,6 +10,7 @@ INCLUDES =					\
 	-I$(top_srcdir)/src/			\
 	-I$(top_builddir)/src/			\
 	$(NAUTILUS_EXTENSION_CFLAGS)		\
+	$(WARN_CFLAGS)							\
 	$(WERROR)				\
 	-D_FILE_OFFSET_BITS=64			\
 	-D_GNU_SOURCE				\
