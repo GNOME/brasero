@@ -215,13 +215,17 @@ brasero_drive_eject (BraseroDrive *drive,
 		g_cancellable_reset (priv->cancel);
 	}
 
-	BRASERO_MEDIA_LOG ("Trying to eject drive (?)");
-	res = brasero_gio_operation_eject_drive (priv->gdrive,
-						 priv->cancel,
-						 wait,
-						 error);
-	if (res)
-		return TRUE;
+	BRASERO_MEDIA_LOG ("Trying to eject drive");
+	if (priv->gdrive) {
+		res = brasero_gio_operation_eject_drive (priv->gdrive,
+							 priv->cancel,
+							 wait,
+							 error);
+		if (res)
+			return TRUE;
+	}
+	else
+		BRASERO_BURN_LOG ("No GDrive");
 
 	if (!priv->medium)
 		return FALSE;
@@ -858,6 +862,7 @@ brasero_drive_update_gdrive (BraseroDrive *drive)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
+
 	/* If it's not a fake drive then connect to signal for any
 	 * change and check medium inside */
 	g_signal_connect (priv->gdrive,
