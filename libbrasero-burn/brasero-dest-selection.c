@@ -582,26 +582,12 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 				       &data_blocks,
 				       &session_bytes);
 
-	/* Determine the size available for burning */
-	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
-		brasero_medium_get_free_space (medium,
-					       &size_bytes,
-					       &blocks);
-	}
-	else {
+	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
 		brasero_medium_get_free_space (medium, &size_bytes, &blocks);
-
-		/* if data would not fit, try to see if once blanked it would
-		 * work. This also covers the case where the media is closed as
-		 * its free space would be 0. This is the best way to do it
-		 * instead of checking for a CLOSED medium as it allows the 
-		 * overwrite media to be appended or merged if need be. */
-		if ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-		&& (brasero_burn_library_get_media_capabilities (media) & BRASERO_MEDIUM_REWRITABLE))
-			brasero_medium_get_capacity (medium,
-						     &size_bytes,
-						     &blocks);
-	}
+	else if (brasero_burn_library_get_media_capabilities (media) & BRASERO_MEDIUM_REWRITABLE)
+		brasero_medium_get_capacity (medium, &size_bytes, &blocks);
+	else
+		brasero_medium_get_free_space (medium, &size_bytes, &blocks);
 
 	if (blocks) {
 		used = data_blocks * 100 / blocks;
