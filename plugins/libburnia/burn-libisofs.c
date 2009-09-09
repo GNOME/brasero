@@ -182,6 +182,8 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
+	brasero_job_set_nonblocking_fd (BRASERO_JOB (self), NULL);
+
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CREATING_IMAGE,
 					NULL,
