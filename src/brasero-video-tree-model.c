@@ -688,7 +688,7 @@ brasero_video_tree_model_multi_drag_data_get (EggTreeMultiDragSource *drag_sourc
 					      GList *path_list,
 					      GtkSelectionData *selection_data)
 {
-	if (selection_data->target == gdk_atom_intern (BRASERO_DND_TARGET_SELF_FILE_NODES, TRUE)) {
+	if (gtk_selection_data_get_target (selection_data) == gdk_atom_intern (BRASERO_DND_TARGET_SELF_FILE_NODES, TRUE)) {
 		BraseroDNDVideoContext context;
 
 		context.model = GTK_TREE_MODEL (drag_source);
@@ -834,6 +834,7 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 {
 	BraseroTrack *sibling;
 	BraseroVideoTreeModelPrivate *priv;
+	GdkAtom target;
 
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (drag_dest);
 
@@ -844,11 +845,12 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 	 * - from us, then that's a simple move
 	 * - from another widget then it's going to be URIS and we add
 	 *   them to VideoProject */
-	if (selection_data->target == gdk_atom_intern (BRASERO_DND_TARGET_SELF_FILE_NODES, TRUE)) {
+	target = gtk_selection_data_get_target (selection_data);
+	if (target == gdk_atom_intern (BRASERO_DND_TARGET_SELF_FILE_NODES, TRUE)) {
 		BraseroDNDVideoContext *context;
 		GList *iter;
 
-		context = (BraseroDNDVideoContext *) selection_data->data;
+		context = (BraseroDNDVideoContext *) gtk_selection_data_get_data (selection_data);
 		if (context->model != GTK_TREE_MODEL (drag_dest))
 			return TRUE;
 
@@ -870,7 +872,7 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 							      dest_path);
 		}
 	}
-	else if (selection_data->target == gdk_atom_intern ("text/uri-list", TRUE)) {
+	else if (target == gdk_atom_intern ("text/uri-list", TRUE)) {
 		gint i;
 		gchar **uris = NULL;
 		gboolean success = FALSE;

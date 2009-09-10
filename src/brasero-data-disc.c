@@ -1905,7 +1905,7 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 
 		gtk_widget_show (frame);
 
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), frame, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), frame, TRUE, TRUE, 0);
 		gtk_widget_show (dialog);
 
 		answer = gtk_dialog_run (GTK_DIALOG (dialog));

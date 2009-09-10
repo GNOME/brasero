@@ -1088,7 +1088,7 @@ brasero_track_data_cfg_drag_data_get (GtkTreeDragSource *drag_source,
 				      GtkTreePath *treepath,
 				      GtkSelectionData *selection_data)
 {
-	if (selection_data->target == gdk_atom_intern (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, TRUE)) {
+	if (gtk_selection_data_get_target (selection_data) == gdk_atom_intern (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, TRUE)) {
 		GtkTreeRowReference *reference;
 
 		reference = gtk_tree_row_reference_new (GTK_TREE_MODEL (drag_source), treepath);
@@ -1123,6 +1123,7 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 	BraseroFileNode *node;
 	BraseroFileNode *parent;
 	GtkTreePath *dest_parent;
+	GdkAtom target;
 	BraseroTrackDataCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (drag_dest);
@@ -1142,14 +1143,15 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 
 	gtk_tree_path_free (dest_parent);
 
+	target = gtk_selection_data_get_target (selection_data);
 	/* Received data: see where it comes from:
 	 * - from us, then that's a simple move
 	 * - from another widget then it's going to be URIS and we add
 	 *   them to the DataProject */
-	if (selection_data->target == gdk_atom_intern (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, TRUE)) {
+	if (target == gdk_atom_intern (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, TRUE)) {
 		GList *iter;
 
-		iter = (GList *) selection_data->data;
+		iter = (GList *) gtk_selection_data_get_data (selection_data);
 
 		/* That's us: move the row and its children. */
 		for (; iter; iter = iter->next) {
@@ -1170,7 +1172,7 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 			brasero_data_project_move_node (BRASERO_DATA_PROJECT (priv->tree), node, parent);
 		}
 	}
-	else if (selection_data->target == gdk_atom_intern ("text/uri-list", TRUE)) {
+	else if (target == gdk_atom_intern ("text/uri-list", TRUE)) {
 		gint i;
 		gchar **uris;
 		gboolean success = FALSE;
@@ -1212,13 +1214,16 @@ brasero_track_data_cfg_row_drop_possible (GtkTreeDragDest *drag_dest,
 					  GtkTreePath *dest_path,
 					  GtkSelectionData *selection_data)
 {
+	GdkAtom target;
+
+	target = gtk_selection_data_get_target (selection_data);
 	/* See if we are dropping to ourselves */
-	if (selection_data->target == gdk_atom_intern_static_string (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST)) {
+	if (target == gdk_atom_intern_static_string (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST)) {
 		GtkTreePath *dest_parent;
 		BraseroFileNode *parent;
 		GList *iter;
 
-		iter = (GList *) selection_data->data;
+		iter = (GList *) target;
 
 		/* make sure the parent is a directory.
 		 * NOTE: in this case dest_path is the exact path where it
@@ -1290,7 +1295,7 @@ brasero_track_data_cfg_row_drop_possible (GtkTreeDragDest *drag_dest,
 		gtk_tree_path_free (dest_parent);
 		return FALSE;
 	}
-	else if (selection_data->target == gdk_atom_intern_static_string ("text/uri-list"))
+	else if (target == gdk_atom_intern_static_string ("text/uri-list"))
 		return TRUE;
 
 	return FALSE;

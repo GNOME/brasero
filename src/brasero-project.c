@@ -335,10 +335,14 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *center,
 				gint *footer)
 {
+	GtkAllocation allocation;
+
 	if (!BRASERO_PROJECT (object)->priv->name_display)
 		return;
 
-	*footer = BRASERO_PROJECT (object)->priv->name_display->parent->allocation.height;
+	gtk_widget_get_allocation (gtk_widget_get_parent (BRASERO_PROJECT (object)->priv->name_display),
+				   &allocation);
+	*footer = allocation.height;
 }
 
 static void
@@ -382,7 +386,7 @@ brasero_project_set_add_button_state (BraseroProject *project)
 		return;
 
 	widget = gtk_bin_get_child (GTK_BIN (widget));
-	GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_DEFAULT);
+	gtk_widget_set_has_window (widget, TRUE);
 	gtk_window_set_default (GTK_WINDOW (toplevel), widget);
 }
 
@@ -580,7 +584,7 @@ brasero_utils_disc_style_changed_cb (GtkWidget *widget,
 {
 	/* The widget (a treeview here) needs to be realized to get proper style */
 	gtk_widget_realize (widget);
-	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &widget->style->base[GTK_STATE_NORMAL]);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &gtk_widget_get_style (widget)->base[GTK_STATE_NORMAL]);
 }
 
 static void
@@ -589,7 +593,7 @@ brasero_utils_disc_realized_cb (GtkWidget *event_box,
 {
 	/* The widget (a treeview here) needs to be realized to get proper style */
 	gtk_widget_realize (textview);
-	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &textview->style->base[GTK_STATE_NORMAL]);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &gtk_widget_get_style (textview)->base[GTK_STATE_NORMAL]);
 
 	g_signal_handlers_disconnect_by_func (textview,
 					      brasero_utils_disc_style_changed_cb,
@@ -1537,9 +1541,7 @@ brasero_project_image_properties (BraseroProject *project)
 				      button,
 				      GTK_RESPONSE_OK);
 
-	GTK_WIDGET_SET_FLAGS (button,
-	                      GTK_WIDGET_FLAGS (button)|
-	                      GTK_CAN_DEFAULT);
+	gtk_widget_set_can_default (button, TRUE);
 
 	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (dialog), project->priv->session);
 

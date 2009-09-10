@@ -455,7 +455,7 @@ brasero_src_image_clicked (GtkButton *button)
 	/* add the type chooser to the dialog */
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (priv->file)->vbox),
+	gtk_box_pack_end (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (priv->file))),
 			  box,
 			  FALSE,
 			  FALSE,

@@ -80,7 +80,7 @@ brasero_blank_dialog_set_button (BraseroBurnSession *session,
 {
 	if (flag & supported) {
 		if (compulsory & flag) {
-			if (GTK_WIDGET_SENSITIVE (button))
+			if (gtk_widget_get_sensitive (button))
 				saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
 			gtk_widget_set_sensitive (button, FALSE);
@@ -89,7 +89,7 @@ brasero_blank_dialog_set_button (BraseroBurnSession *session,
 			brasero_burn_session_add_flag (session, flag);
 		}
 		else {
-			if (!GTK_WIDGET_SENSITIVE (button)) {
+			if (!gtk_widget_get_sensitive (button)) {
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), saved);
 
 				if (saved)
@@ -102,7 +102,7 @@ brasero_blank_dialog_set_button (BraseroBurnSession *session,
 		}
 	}
 	else {
-		if (GTK_WIDGET_SENSITIVE (button))
+		if (gtk_widget_get_sensitive (button))
 			saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
 		gtk_widget_set_sensitive (button, FALSE);
@@ -414,7 +414,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 	brasero_blank_dialog_device_opts_setup (obj);
 
 	/* if fast blank is supported check it by default */
-	if (GTK_WIDGET_IS_SENSITIVE (priv->fast))
+	if (gtk_widget_is_sensitive (priv->fast))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
 }
 

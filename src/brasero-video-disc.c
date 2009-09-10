@@ -429,7 +429,7 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
-	if (!GTK_WIDGET (self)->window)
+	if (!gtk_widget_get_window (GTK_WIDGET (self)))
 		return;
 
 	/* make sure all tracks have video */

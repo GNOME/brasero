@@ -62,7 +62,7 @@ brasero_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_source,
 	GList *iter;
 	gint i;
 
-	if (selection_data->target != gdk_atom_intern ("text/uri-list", TRUE))
+	if (gtk_selection_data_get_target (selection_data) != gdk_atom_intern ("text/uri-list", TRUE))
 		return TRUE;
 
 	for (iter = path_list; iter && iter->data; iter = iter->next) {
@@ -162,7 +162,7 @@ brasero_data_track_cfg_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_sou
 						GList *path_list,
 						GtkSelectionData *selection_data)
 {
-	if (selection_data->target == gdk_atom_intern (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, TRUE)) {
+	if (gtk_selection_data_get_target (selection_data) == gdk_atom_intern (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST, TRUE)) {
 		gtk_selection_data_set (selection_data,
 					gdk_atom_intern_static_string (BRASERO_DND_TARGET_DATA_TRACK_REFERENCE_LIST),
 					8,

@@ -894,7 +894,7 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 	BraseroStatus *status;
 	gboolean should_use_dts;
 
-	if (!GTK_WIDGET (self)->window)
+	if (!gtk_widget_get_window (GTK_WIDGET (self)))
 		return;
 
 	/* make sure all tracks have video */

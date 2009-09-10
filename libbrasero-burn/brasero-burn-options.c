@@ -554,6 +554,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	BraseroBurnOptionsPrivate *priv;
 	GtkWidget *selection;
 	GtkWidget *alignment;
+	GtkWidget *content_area;
 	gchar *string;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
@@ -579,7 +580,8 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 
 	/* Create an upper box for sources */
 	priv->source_placeholder = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (object));
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    priv->source_placeholder,
 			    FALSE,
 			    TRUE,
@@ -622,7 +624,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	g_free (string);
 	gtk_widget_show (selection);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    selection,
 			    FALSE,
 			    TRUE,
@@ -631,7 +633,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	/* Create a lower box for options */
 	alignment = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
 	gtk_widget_show (alignment);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    alignment,
 			    FALSE,
 			    TRUE,

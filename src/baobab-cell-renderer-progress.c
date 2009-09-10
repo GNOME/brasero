@@ -48,9 +48,8 @@ baobab_cell_renderer_progress_init (BaobabCellRendererProgress *cellprogress)
 
   g_object_set (cellprogress,
                 "mode", GTK_CELL_RENDERER_MODE_INERT,
-                "xpad", 4,
-                "ypad", 4,
-                NULL);
+		NULL);
+  gtk_cell_renderer_set_padding (GTK_CELL_RENDERER (cellprogress), 4, 4);
 }
 
 GtkCellRenderer*
@@ -109,11 +108,14 @@ baobab_cell_renderer_progress_get_size (GtkCellRenderer *cell,
 					gint            *width,
 					gint            *height)
 {
-  gint calc_width;
-  gint calc_height;
+  gint calc_width, calc_height;
+  gint xpad, ypad;
+  gfloat xalign, yalign;
 
-  calc_width  = (gint) cell->xpad * 2 + FIXED_WIDTH;
-  calc_height = (gint) cell->ypad * 2 + FIXED_HEIGHT;
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+
+  calc_width  = xpad * 2 + FIXED_WIDTH;
+  calc_height = ypad * 2 + FIXED_HEIGHT;
 
   if (width)
     *width = calc_width;
@@ -121,17 +123,18 @@ baobab_cell_renderer_progress_get_size (GtkCellRenderer *cell,
   if (height)
     *height = calc_height;
 
+  gtk_cell_renderer_get_alignment (cell, &xalign, &yalign);
   if (cell_area)
   {
     if (x_offset)
     {
-      *x_offset = cell->xalign * (cell_area->width - calc_width);
+      *x_offset = xalign * (cell_area->width - calc_width);
       *x_offset = MAX (*x_offset, 0);
     }
 
     if (y_offset)
     {
-      *y_offset = cell->yalign * (cell_area->height - calc_height);
+      *y_offset = yalign * (cell_area->height - calc_height);
       *y_offset = MAX (*y_offset, 0);
     }
   }
@@ -189,19 +192,22 @@ baobab_cell_renderer_progress_render (GtkCellRenderer *cell,
 				      guint            flags)
 {
   BaobabCellRendererProgress *cellprogress = BAOBAB_CELL_RENDERER_PROGRESS (cell);
+  GtkStyle *style;
   gint x, y, w, h, perc_w;
+  gint xpad, ypad;
   gboolean is_rtl;
   cairo_t *cr;
 
   is_rtl = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
-  
+
   cr = gdk_cairo_create (window);
+
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+  x = cell_area->x + xpad;
+  y = cell_area->y + ypad;
   
-  x = cell_area->x + cell->xpad;
-  y = cell_area->y + cell->ypad;
-  
-  w = cell_area->width - cell->xpad * 2;
-  h = cell_area->height - cell->ypad * 2;
+  w = cell_area->width - xpad * 2;
+  h = cell_area->height - ypad * 2;
 
   /*
    * we always use a white bar with black
@@ -213,11 +219,12 @@ baobab_cell_renderer_progress_render (GtkCellRenderer *cell,
   cairo_rectangle (cr, x, y, w, h);
   cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_fill (cr);
-  
-  x += widget->style->xthickness;
-  y += widget->style->ythickness;
-  w -= widget->style->xthickness * 2;
-  h -= widget->style->ythickness * 2;
+
+  style = gtk_widget_get_style (widget);
+  x += style->xthickness;
+  y += style->ythickness;
+  w -= style->xthickness * 2;
+  h -= style->ythickness * 2;
   
   cairo_rectangle (cr, x, y, w, h);
   cairo_set_source_rgb (cr, 1, 1, 1);

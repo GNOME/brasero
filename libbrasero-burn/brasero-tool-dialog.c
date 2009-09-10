@@ -202,6 +202,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	BraseroMedium *medium;
 	BraseroMedia media;
 	GdkCursor *cursor;
+	GdkWindow *window;
 
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
 	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selector));
@@ -212,7 +213,8 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->button), FALSE);
 
 	cursor = gdk_cursor_new (GDK_WATCH);
-	gdk_window_set_cursor (GTK_WIDGET (self)->window, cursor);
+	window = gtk_widget_get_window (GTK_WIDGET (self));
+	gdk_window_set_cursor (window, cursor);
 	gdk_cursor_unref (cursor);
 
 	gtk_button_set_label (GTK_BUTTON (priv->cancel), GTK_STOCK_CANCEL);
@@ -252,7 +254,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 
 end:
 
-	gdk_window_set_cursor (GTK_WIDGET (self)->window, NULL);
+	gdk_window_set_cursor (window, NULL);
 	gtk_button_set_label (GTK_BUTTON (priv->cancel), GTK_STOCK_CLOSE);
 
 	gtk_widget_set_sensitive (priv->upper_box, TRUE);
@@ -522,6 +524,7 @@ static void
 brasero_tool_dialog_init (BraseroToolDialog *obj)
 {
 	GtkWidget *title;
+	GtkWidget *content_area;
 	gchar *title_str;
 	BraseroToolDialogPrivate *priv;
 
@@ -550,7 +553,8 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 						  BRASERO_MEDIA_TYPE_AUDIO|
 						  BRASERO_MEDIA_TYPE_DATA);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (obj));
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    priv->upper_box,
 			    FALSE,
 			    FALSE,
@@ -582,13 +586,13 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 		      "show-info", FALSE,
 		      NULL);
 
-	gtk_box_pack_start (GTK_BOX (priv->lower_box),
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    priv->progress,
 			    FALSE,
 			    FALSE,
 			    0);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    priv->lower_box,
 			    FALSE,
 			    FALSE,

@@ -554,6 +554,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	GtkWidget *vbox;
 	GtkWidget *item;
 	GtkWidget *view;
+	GtkStyle *style;
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (object);
 
@@ -731,11 +732,12 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 
 	gtk_box_pack_start (GTK_BOX (main_box), view, FALSE, FALSE, 0);
 
-	if (pango_font_description_get_set_fields (priv->front->style->font_desc) & PANGO_FONT_MASK_SIZE) {
+	style = gtk_widget_get_style (priv->front);
+	if (pango_font_description_get_set_fields (style->font_desc) & PANGO_FONT_MASK_SIZE) {
 		guint size;
 		gchar string [8] = { 0, };
 
-		size = pango_font_description_get_size (priv->front->style->font_desc);
+		size = pango_font_description_get_size (style->font_desc);
 		sprintf (string, "%i", size);
 		brasero_jacket_font_set_name (BRASERO_JACKET_FONT (priv->fonts), "Sans 12");
 	}
@@ -825,7 +827,7 @@ brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
 	contents = brasero_jacket_edit_new ();
 	gtk_widget_show (contents);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), contents, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), contents, TRUE, TRUE, 0);
 	if (contents_ret)
 		*contents_ret = BRASERO_JACKET_EDIT (contents);
 

@@ -150,10 +150,11 @@ brasero_song_props_init (BraseroSongProps *obj)
 	GtkWidget *table;
 	GtkWidget *frame;
 	GtkWidget *alignment;
+	GtkWidget *content_area;
 
 	obj->priv = g_new0 (BraseroSongPropsPrivate, 1);
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (obj)->vbox), 0);
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (obj))), 0);
 	gtk_window_set_default_size (GTK_WINDOW (obj), 400, 300);
 
 	table = gtk_table_new (4, 2, FALSE);
@@ -162,7 +163,8 @@ brasero_song_props_init (BraseroSongProps *obj)
 
 	frame = brasero_utils_pack_properties ("", table, NULL);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (obj));
+	gtk_box_pack_start (GTK_BOX (content_area),
 			    frame,
 			    FALSE,
 			    FALSE,
@@ -229,7 +231,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	g_free (title_str);
 
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox), frame, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), frame, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("Song start:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

@@ -112,7 +112,7 @@ brasero_playlist_get_proportion (BraseroLayoutObject *object,
 {
 	GtkRequisition requisition;
 
-	gtk_widget_size_request (BRASERO_PLAYLIST (object)->priv->button_add->parent,
+	gtk_widget_size_request (gtk_widget_get_parent (BRASERO_PLAYLIST (object)->priv->button_add),
 				 &requisition);
 	(*footer) = requisition.height + BRASERO_PLAYLIST_SPACING;
 }
@@ -120,14 +120,17 @@ brasero_playlist_get_proportion (BraseroLayoutObject *object,
 static void
 brasero_playlist_increase_activity_counter (BraseroPlaylist *playlist)
 {
-	if (!GTK_WIDGET (playlist->priv->tree)->window)
+	GdkWindow *window;
+
+	window = gtk_widget_get_window (GTK_WIDGET (playlist->priv->tree));
+	if (!window)
 		return;
 
 	if (playlist->priv->activity_counter == 0) {
 		GdkCursor *cursor;
 
 		cursor = gdk_cursor_new (GDK_WATCH);
-		gdk_window_set_cursor (GTK_WIDGET (playlist->priv->tree)->window,
+		gdk_window_set_cursor (window,
 				       cursor);
 		gdk_cursor_unref (cursor);
 	}
@@ -137,15 +140,17 @@ brasero_playlist_increase_activity_counter (BraseroPlaylist *playlist)
 static void
 brasero_playlist_decrease_activity_counter (BraseroPlaylist *playlist)
 {
+	GdkWindow *window;
+
 	if (playlist->priv->activity_counter > 0)
 		playlist->priv->activity_counter--;
 
-	if (!GTK_WIDGET (playlist->priv->tree)->window)
+	window = gtk_widget_get_window (GTK_WIDGET (playlist->priv->tree));
+	if (!window)
 		return;
 
 	if (playlist->priv->activity_counter == 0)
-		gdk_window_set_cursor (GTK_WIDGET (playlist->priv->tree)->window,
-				       NULL);
+		gdk_window_set_cursor (window, NULL);
 }
 
 static void
@@ -573,7 +578,7 @@ brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
 	gint result;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (playlist));
-	if (!GTK_WIDGET_TOPLEVEL (toplevel))
+	if (!gtk_widget_is_toplevel (toplevel))
 		return;
 
 	dialog = gtk_file_chooser_dialog_new (_("Select Playlist"),

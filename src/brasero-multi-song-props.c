@@ -196,12 +196,14 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	GtkWidget *label;
 	GtkWidget *table;
 	GtkWidget *frame;
+	GtkWidget *content_area;
 	BraseroMultiSongPropsPrivate *priv;
 
 	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (object);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (object)->vbox), 0);
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (object));
+	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), 0);
 	gtk_window_set_default_size (GTK_WINDOW (object), 400, 200);
 
 	priv->title = brasero_rename_new ();
@@ -215,11 +217,11 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-						frame,
-						FALSE,
-						FALSE,
-						0);
+	gtk_box_pack_start (GTK_BOX (content_area),
+			    frame,
+			    FALSE,
+			    FALSE,
+			    0);
 
 	table = gtk_table_new (3, 2, FALSE);
 	gtk_widget_show (table);
@@ -232,11 +234,11 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-						frame,
-						FALSE,
-						FALSE,
-						0);
+	gtk_box_pack_start (GTK_BOX (content_area),
+			    frame,
+			    FALSE,
+			    FALSE,
+			    0);
 
 	label = gtk_label_new (_("Artist:"));
 	gtk_widget_show (label);
@@ -311,7 +313,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), frame, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), frame, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("Pause length:"));
 	gtk_widget_show (label);

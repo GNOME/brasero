@@ -206,7 +206,7 @@ brasero_app_load_window_state (BraseroApp *app)
 	/* Make sure that on first run the window has a default size of at least
 	 * 85% of the screen (hardware not GTK+) */
 	screen = gtk_window_get_screen (GTK_WINDOW (priv->mainwin));
-	monitor = gdk_screen_get_monitor_at_window (screen, GTK_WIDGET (priv->mainwin)->window);
+	monitor = gdk_screen_get_monitor_at_window (screen, gtk_widget_get_window (GTK_WIDGET (priv->mainwin)));
 	gdk_screen_get_monitor_geometry (screen, monitor, &rect);
 
 	brasero_setting_get_value (brasero_setting_get_default (),
@@ -353,7 +353,7 @@ brasero_app_dialog (BraseroApp *app,
 	if (!toplevel && priv->parent) {
 		gtk_widget_realize (GTK_WIDGET (dialog));
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-		gdk_window_set_transient_for (GTK_WIDGET (dialog)->window, priv->parent);
+		gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (dialog)), priv->parent);
 	}
 
 	if (is_on_top) {
@@ -402,7 +402,7 @@ brasero_app_alert (BraseroApp *app,
 
 		gtk_widget_realize (GTK_WIDGET (alert));
 		gtk_window_set_modal (GTK_WINDOW (alert), TRUE);
-		gdk_window_set_transient_for (GTK_WIDGET (alert)->window, priv->parent);
+		gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (alert)), priv->parent);
 	}
 
 	if (is_on_top) {
@@ -659,7 +659,7 @@ brasero_app_blank (BraseroApp *app,
 
 		if (priv->parent) {
 			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-			gdk_window_set_transient_for (GTK_WIDGET (dialog)->window, priv->parent);
+			gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (dialog)), priv->parent);
 		}
 	}
 	else {
@@ -744,7 +744,7 @@ brasero_app_check (BraseroApp *app,
 
 		if (priv->parent) {
 			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-			gdk_window_set_transient_for (GTK_WIDGET (dialog)->window, priv->parent);
+			gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (dialog)), priv->parent);
 		}
 	}
 	else {
@@ -790,7 +790,7 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
 	if (!priv->mainwin_running) {
 		if (priv->parent) {
 			gtk_widget_realize (GTK_WIDGET (window));
-			gdk_window_set_transient_for (GTK_WIDGET (window)->window, priv->parent);
+			gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (window)), priv->parent);
 		}
 		else {
 			gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), FALSE);
@@ -1481,7 +1481,7 @@ brasero_app_create_mainwin (BraseroApp *app)
 
 	if (priv->parent) {
 		gtk_window_set_modal (GTK_WINDOW (priv->mainwin), TRUE);
-		gdk_window_set_transient_for (GTK_WIDGET (priv->mainwin)->window, priv->parent);
+		gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (priv->mainwin)), priv->parent);
 	}
 
 	brasero_app_load_window_state (app);

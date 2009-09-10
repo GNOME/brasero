@@ -610,7 +610,7 @@ brasero_jacket_view_snapshot (BraseroJacketView *self)
 	else
 		scaled = g_object_ref (priv->scaled);
 
-	area = GTK_WIDGET (self)->allocation;
+	gtk_widget_get_allocation (GTK_WIDGET (self), &area);
 	area.x = 0;
 	area.y = 0;
 	brasero_jacket_view_render (self,
@@ -679,7 +679,7 @@ brasero_jacket_view_focus_in_cb (GtkWidget *view,
 	GtkTextView *text_view = GTK_TEXT_VIEW (view);
 	GtkTextBuffer *buffer;
 
-	if (text_view->editable) {
+	if (gtk_text_view_get_editable (text_view)) {
 		text_view->need_im_reset = TRUE;
 		gtk_im_context_focus_in (text_view->im_context);
 	}
@@ -700,7 +700,7 @@ brasero_jacket_view_focus_out_cb (GtkWidget *view,
 	GtkTextView *text_view = GTK_TEXT_VIEW (view);
 	GtkTextBuffer *buffer;
 
-	if (text_view->editable) {
+	if (gtk_text_view_get_editable (text_view)) {
 		text_view->need_im_reset = TRUE;
 		gtk_im_context_focus_out (text_view->im_context);
 	}
@@ -881,6 +881,8 @@ brasero_jacket_view_update_edit_image (BraseroJacketView *self)
 	GdkWindow *window;
 	GdkPixmap *pixmap;
 	GtkWidget *toplevel;
+	GtkAllocation allocation;
+	GtkStyle *style;
 	guint width, height, x, y;
 	BraseroJacketViewPrivate *priv;
 
@@ -901,8 +903,9 @@ brasero_jacket_view_update_edit_image (BraseroJacketView *self)
 
 	x = COVER_TEXT_MARGIN * resolution;
 	y = COVER_TEXT_MARGIN * resolution;
-	width = priv->edit->allocation.width;
-	height = priv->edit->allocation.height;
+	gtk_widget_get_allocation (priv->edit, &allocation);
+	width = allocation.width;
+	height = allocation.height;
 
 	if (priv->side == BRASERO_JACKET_BACK)
 		x += COVER_WIDTH_SIDE_INCH * resolution;
@@ -930,8 +933,9 @@ brasero_jacket_view_update_edit_image (BraseroJacketView *self)
 
 		gc = gdk_gc_new (GDK_DRAWABLE (pixmap));
 		gdk_gc_set_fill (gc, GDK_SOLID);
-		gdk_gc_set_rgb_fg_color (gc, &priv->edit->style->bg [0]);
-		gdk_gc_set_rgb_bg_color (gc, &priv->edit->style->bg [0]);
+		style = gtk_widget_get_style (priv->edit);
+		gdk_gc_set_rgb_fg_color (gc, &style->bg [0]);
+		gdk_gc_set_rgb_bg_color (gc, &style->bg [0]);
 		gdk_draw_rectangle (GDK_DRAWABLE (pixmap),
 				    gc,
 				    TRUE,
@@ -1268,12 +1272,13 @@ brasero_jacket_view_expose (GtkWidget *widget,
 	cairo_t *ctx;
 	gdouble resolution;
 	GtkWidget *toplevel;
+	GtkAllocation allocation, sides_allocation;
 	PangoLayout *layout;
 	BraseroJacketViewPrivate *priv;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
 
-	ctx = gdk_cairo_create (GDK_DRAWABLE (widget->window));
+	ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
 
 	toplevel = gtk_widget_get_toplevel (widget);
 	if (!GTK_IS_WINDOW (toplevel))
@@ -1281,9 +1286,10 @@ brasero_jacket_view_expose (GtkWidget *widget,
 
 	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
 	layout = gtk_widget_create_pango_layout (widget, NULL);
+	gtk_widget_get_allocation (widget, &allocation);
 	if (priv->side == BRASERO_JACKET_BACK) {
-		x = (widget->allocation.width - resolution * COVER_WIDTH_BACK_INCH) / 2;
-		y = (widget->allocation.height - resolution * COVER_HEIGHT_BACK_INCH) - BRASERO_JACKET_VIEW_MARGIN;
+		x = (allocation.width - resolution * COVER_WIDTH_BACK_INCH) / 2;
+		y = (allocation.height - resolution * COVER_HEIGHT_BACK_INCH) - BRASERO_JACKET_VIEW_MARGIN;
 
 		brasero_jacket_view_render (BRASERO_JACKET_VIEW (widget),
 					    ctx,
@@ -1310,11 +1316,12 @@ brasero_jacket_view_expose (GtkWidget *widget,
 		cairo_set_line_width (ctx, 0.5);
 		cairo_set_line_cap (ctx, CAIRO_LINE_CAP_ROUND);
 
+		gtk_widget_get_allocation (priv->sides, &sides_allocation);
 		cairo_rectangle (ctx,
-				 priv->sides->allocation.x - 1,
-				 priv->sides->allocation.y - 1,
-				 priv->sides->allocation.width + 2,
-				 priv->sides->allocation.height + 2);
+				 sides_allocation.x - 1,
+				 sides_allocation.y - 1,
+				 sides_allocation.width + 2,
+				 sides_allocation.height + 2);
 		cairo_stroke (ctx);
 
 		gtk_container_propagate_expose (GTK_CONTAINER (widget),
@@ -1322,8 +1329,8 @@ brasero_jacket_view_expose (GtkWidget *widget,
 						event);
 	}
 	else {
-		x = (widget->allocation.width - resolution * COVER_WIDTH_FRONT_INCH) / 2;
-		y = (widget->allocation.height - resolution * COVER_HEIGHT_FRONT_INCH) / 2;
+		x = (allocation.width - resolution * COVER_WIDTH_FRONT_INCH) / 2;
+		y = (allocation.height - resolution * COVER_HEIGHT_FRONT_INCH) / 2;
 
 		brasero_jacket_view_render (BRASERO_JACKET_VIEW (widget),
 					    ctx,
@@ -1350,16 +1357,19 @@ static void
 brasero_jacket_view_realize (GtkWidget *widget)
 {
 	BraseroJacketViewPrivate *priv;
+	GtkAllocation allocation;
+	GdkWindow *window;
 	GdkWindowAttr attributes;
 	gint attributes_mask;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
 
 	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.x = widget->allocation.x;
-	attributes.y = widget->allocation.y;
-	attributes.width = widget->allocation.width;
-	attributes.height = widget->allocation.height;
+	gtk_widget_get_allocation (widget, &allocation);
+	attributes.x = allocation.x;
+	attributes.y = allocation.y;
+	attributes.width = allocation.width;
+	attributes.height = allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.visual = gtk_widget_get_visual (widget);
 	attributes.colormap = gtk_widget_get_colormap (widget);
@@ -1367,12 +1377,13 @@ brasero_jacket_view_realize (GtkWidget *widget)
 	attributes.event_mask |= GDK_EXPOSURE_MASK|GDK_BUTTON_PRESS_MASK|GDK_LEAVE_NOTIFY_MASK;
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
 
-	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
-					 &attributes,
-					 attributes_mask);
-	gdk_window_set_user_data (widget->window, widget);
+	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
+						       &attributes,
+						       attributes_mask));
+	window = gtk_widget_get_window (widget);
+	gdk_window_set_user_data (window, widget);
 
-	widget->style = gtk_style_attach (widget->style, widget->window);
+	gtk_widget_set_style (widget, gtk_style_attach (gtk_widget_get_style (widget), window));
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 }
 
@@ -1380,7 +1391,7 @@ static void
 brasero_jacket_view_map (GtkWidget *widget)
 {
 	g_return_if_fail (widget != NULL);
-	gdk_window_show (widget->window);
+	gdk_window_show (gtk_widget_get_window (widget));
 
 	GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
 
@@ -1392,7 +1403,7 @@ static void
 brasero_jacket_view_unmap (GtkWidget *widget)
 {
 	g_return_if_fail (widget != NULL);
-	gdk_window_hide (widget->window);
+	gdk_window_hide (gtk_widget_get_window (widget));
 
 	GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
 
@@ -1410,7 +1421,7 @@ brasero_jacket_view_size_request (GtkWidget *widget,
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
 
-	if (!widget->parent)
+	if (!gtk_widget_get_parent (widget))
 		return;
 
 	toplevel = gtk_widget_get_toplevel (widget);
@@ -1497,9 +1508,9 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 	brasero_jacket_view_update_edit_image (BRASERO_JACKET_VIEW (widget));
 	gtk_widget_size_allocate (priv->edit, &view_alloc);
 
-	widget->allocation = *allocation;
-	if (GTK_WIDGET_REALIZED (widget) && !GTK_WIDGET_NO_WINDOW (widget)) {
-		gdk_window_move_resize (widget->window,
+	gtk_widget_set_allocation (widget, allocation);
+	if (GTK_WIDGET_REALIZED (widget) && gtk_widget_get_has_window (widget)) {
+		gdk_window_move_resize (gtk_widget_get_window (widget),
 					allocation->x,
 					allocation->y,
 					allocation->width,
@@ -1559,7 +1570,7 @@ brasero_jacket_view_init (BraseroJacketView *object)
 	priv->edit = gtk_text_view_new_with_buffer (buffer);
 	g_object_unref (buffer);
 
-	priv->b_color = priv->edit->style->bg [0];
+	priv->b_color = gtk_widget_get_style (priv->edit)->bg [0];
 	priv->color_style = BRASERO_JACKET_COLOR_SOLID;
 
 	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (priv->edit), GTK_WRAP_CHAR);

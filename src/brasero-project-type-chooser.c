@@ -550,18 +550,18 @@ brasero_project_type_expose_event (GtkWidget *widget, GdkEventExpose *event)
 
 	chooser = BRASERO_PROJECT_TYPE_CHOOSER (widget);
 
-	if (GTK_WIDGET_DRAWABLE (widget))
+	if (gtk_widget_is_drawable (widget))
 	{
 		(* GTK_WIDGET_CLASS (parent_class)->expose_event) (widget, event);
 
-		if (!GTK_WIDGET_NO_WINDOW (widget)) {
-			if (!GTK_WIDGET_APP_PAINTABLE (widget)
+		if (gtk_widget_get_has_window (widget)) {
+			if (!gtk_widget_get_app_paintable (widget)
 			&&  chooser->priv->background) {
 				int width, offset = 150;
 
 				width = gdk_pixbuf_get_width (chooser->priv->background);
-				gdk_draw_pixbuf (widget->window,
-					         widget->style->white_gc,
+				gdk_draw_pixbuf (gtk_widget_get_window (widget),
+					         gtk_widget_get_style (widget)->white_gc,
 						 chooser->priv->background,
 						 offset,
 						 0,

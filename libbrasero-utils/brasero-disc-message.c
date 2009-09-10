@@ -518,7 +518,7 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	GtkWidget *main_box;
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (object);
-	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (object), GTK_NO_WINDOW);
+	gtk_widget_set_has_window (GTK_WIDGET (object), FALSE);
 
 	main_box = gtk_hbox_new (FALSE, 12);
 	priv->main_box = main_box;
@@ -589,14 +589,18 @@ brasero_disc_message_size_request (GtkWidget *widget,
 				   GtkRequisition *requisition)
 {
 	GtkBin *bin = GTK_BIN (widget);
+	GtkWidget *child;
+	guint border_width;
 
-	requisition->width = GTK_CONTAINER (widget)->border_width * 2;
-	requisition->height = GTK_CONTAINER (widget)->border_width * 2;
+	border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+	requisition->width = border_width * 2;
+	requisition->height = border_width * 2;
 
-	if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
+	child = gtk_bin_get_child (bin);
+	if (child && gtk_widget_get_visible (child)) {
 		GtkRequisition child_requisition;
 
-		gtk_widget_size_request (bin->child, &child_requisition);
+		gtk_widget_size_request (child, &child_requisition);
 
 		requisition->width += child_requisition.width;
 		requisition->height += child_requisition.height;
@@ -608,9 +612,12 @@ brasero_disc_message_size_allocate (GtkWidget *widget,
 				    GtkAllocation *allocation)
 {
 	GtkBin *bin;
+	GtkWidget *child;
 	GtkAllocation child_allocation;
+	GdkWindow *window;
+	guint border_width;
 
-	widget->allocation = *allocation;
+	gtk_widget_set_allocation (widget, allocation);
 	bin = GTK_BIN (widget);
 
 	child_allocation.x = 0,
@@ -618,28 +625,35 @@ brasero_disc_message_size_allocate (GtkWidget *widget,
 	child_allocation.width = allocation->width;
 	child_allocation.height = allocation->height;
 
-	if (widget->window)
-		gdk_window_move_resize (widget->window,
-					allocation->x + GTK_CONTAINER (widget)->border_width,
-					allocation->y + GTK_CONTAINER (widget)->border_width,
+	window = gtk_widget_get_window (widget);
+	if (window) {
+		border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
+		gdk_window_move_resize (window,
+					allocation->x + border_width,
+					allocation->y + border_width,
 					child_allocation.width,
 					child_allocation.height);
+	}
 
-	if (bin->child)
-		gtk_widget_size_allocate (bin->child, &child_allocation);
+	child = gtk_bin_get_child (GTK_BIN (widget));
+	if (child)
+		gtk_widget_size_allocate (child, &child_allocation);
 }
 
 static void
 brasero_disc_message_realize (GtkWidget *widget)
 {
+	GtkAllocation allocation;
 	GdkWindowAttr attributes;
+	GdkWindow *window;
 	gint attributes_mask;
 
 	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.x = widget->allocation.x;
-	attributes.y = widget->allocation.y;
-	attributes.width = widget->allocation.width;
-	attributes.height = widget->allocation.height;
+	gtk_widget_get_allocation (widget, &allocation);
+	attributes.x = allocation.x;
+	attributes.y = allocation.y;
+	attributes.width = allocation.width;
+	attributes.height = allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.visual = gtk_widget_get_visual (widget);
 	attributes.colormap = gtk_widget_get_colormap (widget);
@@ -647,12 +661,13 @@ brasero_disc_message_realize (GtkWidget *widget)
 	attributes.event_mask |= GDK_EXPOSURE_MASK;
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
 
-	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
-					 &attributes,
-					 attributes_mask);
-	gdk_window_set_user_data (widget->window, widget);
+	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
+						       &attributes,
+						       attributes_mask));
+	window = gtk_widget_get_window (widget);
+	gdk_window_set_user_data (window, widget);
 
-	widget->style = gtk_style_attach (widget->style, widget->window);
+	gtk_widget_set_style (widget, gtk_style_attach (gtk_widget_get_style (widget), window));
     
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 }
@@ -661,8 +676,11 @@ static gboolean
 brasero_disc_message_expose_event (GtkWidget *widget,
 				   GdkEventExpose *event)
 {
-	gtk_paint_flat_box (widget->style,
-			    widget->window,
+	GtkAllocation allocation;
+
+	gtk_widget_get_allocation (widget, &allocation);
+	gtk_paint_flat_box (gtk_widget_get_style (widget),
+			    gtk_widget_get_window (widget),
 			    GTK_STATE_NORMAL,
 			    GTK_SHADOW_OUT,
 			    NULL,
@@ -670,8 +688,8 @@ brasero_disc_message_expose_event (GtkWidget *widget,
 			    "tooltip",
 			    0,
 			    0,
-			    widget->allocation.width,
-			    widget->allocation.height);
+			    allocation.width,
+			    allocation.height);
 
 	GTK_WIDGET_CLASS (brasero_disc_message_parent_class)->expose_event (widget, event);
 

@@ -102,17 +102,19 @@ brasero_tool_color_picker_expose (GtkWidget *widget,
 				  BraseroToolColorPicker *self)
 {
 	BraseroToolColorPickerPrivate *priv;
+	GtkAllocation allocation;
 	cairo_t *ctx;
 
 	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
 
-	ctx = gdk_cairo_create (GDK_DRAWABLE (widget->window));
+	ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
 	gdk_cairo_set_source_color (ctx, &priv->color);
+	gtk_widget_get_allocation (widget, &allocation);
 	cairo_rectangle (ctx,
-			 widget->allocation.x,
-			 widget->allocation.y,
-			 widget->allocation.width,
-			 widget->allocation.height);
+			 allocation.x,
+			 allocation.y,
+			 allocation.width,
+			 allocation.height);
 	cairo_fill (ctx);
 	cairo_stroke (ctx);
 	cairo_destroy (ctx);
@@ -141,7 +143,7 @@ brasero_tool_color_picker_response (GtkWidget *widget,
 	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
 
 	if (response == GTK_RESPONSE_OK) {
-		selection = GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (priv->dialog)->colorsel);
+		selection = GTK_COLOR_SELECTION (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (priv->dialog)));
 		gtk_color_selection_get_current_color (selection, &priv->color);
 
 		g_signal_emit (self,
@@ -165,10 +167,7 @@ brasero_tool_color_picker_clicked (BraseroToolColorPicker *self,
 	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
 
 	dialog = gtk_color_selection_dialog_new (_("Pick a Color"));
-	selection = NULL;
-	g_object_get (dialog,
-	              "color-selection", &selection,
-	              NULL);
+	selection = GTK_COLOR_SELECTION (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (dialog)));
 	gtk_color_selection_set_current_color (selection, &priv->color);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));

@@ -242,7 +242,7 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 	BraseroLayoutObject *source;
 	GtkWidget *alignment;
 
-	alignment = layout->priv->main_box->parent;
+	alignment = gtk_widget_get_parent (layout->priv->main_box);
 
 	if (layout->priv->layout_type == BRASERO_LAYOUT_TOP
 	||  layout->priv->layout_type == BRASERO_LAYOUT_BOTTOM) {
@@ -379,12 +379,15 @@ static void
 brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 				      gboolean visible)
 {
+	GtkWidget *parent;
 	gboolean preview_in_project;
 	GList *children;
 
 	children = gtk_container_get_children (GTK_CONTAINER (layout->priv->main_box));
 	preview_in_project = (g_list_find (children, layout->priv->preview_pane) == NULL);
 	g_list_free (children);
+
+	parent = gtk_widget_get_parent (layout->priv->main_box);
 
 	if (!visible) {
 		/* No side pane should be visible */
@@ -404,7 +407,7 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 		}
 
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
-		gtk_widget_hide (layout->priv->main_box->parent);
+		gtk_widget_hide (parent);
 	}
 	else {
 		BraseroLayoutObject *source;
@@ -433,7 +436,7 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 			brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (source));
 		}
 
-		gtk_widget_show (layout->priv->main_box->parent);
+		gtk_widget_show (parent);
 	}
 
 	g_signal_emit (layout,

@@ -251,7 +251,7 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 			GtkWidget *parent;
 
 			/* This is to avoid having the left part too small */
-			parent = widget->parent;
+			parent = gtk_widget_get_parent (widget);
 			width = parent->requisition.width;
 			height = parent->requisition.height;
 			gtk_widget_size_request (parent, &request);

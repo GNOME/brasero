@@ -442,7 +442,7 @@ brasero_burn_dialog_wait_for_insertion (BraseroBurnDialog *dialog,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
@@ -679,7 +679,7 @@ brasero_burn_dialog_image_error (BraseroBurn *burn,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
@@ -822,7 +822,7 @@ brasero_burn_dialog_loss_warnings_cb (BraseroBurnDialog *dialog,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
@@ -989,7 +989,7 @@ brasero_burn_dialog_eject_failure_cb (BraseroBurn *burn,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
@@ -1309,8 +1309,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	if (!GTK_WIDGET_MAPPED (dialog)) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
-	}
-	else
+	} else
 		hide = FALSE;
 
 	g_timer_stop (priv->total_time);
@@ -1423,7 +1422,7 @@ brasero_burn_dialog_activity_stop (BraseroBurnDialog *dialog,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	gdk_window_set_cursor (GTK_WIDGET (dialog)->window, NULL);
+	gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog)), NULL);
 
 	markup = g_strdup_printf ("<b><big>%s</big></b>", message);
 	gtk_label_set_text (GTK_LABEL (priv->header), markup);
@@ -1622,7 +1621,7 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 	else
 		secondary = g_strdup (_("An unknown error occurred."));
 
-	if (!GTK_WIDGET_VISIBLE (dialog))
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog)))
 		gtk_widget_show (GTK_WIDGET (dialog));
 
 	message = brasero_burn_dialog_create_message (dialog,
@@ -2312,7 +2311,7 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	priv->initial_icon = g_strdup (gtk_window_get_icon_name (GTK_WINDOW (dialog)));
 
 	do {
-		if (!GTK_WIDGET_VISIBLE (dialog))
+		if (!gtk_widget_get_visible (GTK_WIDGET (dialog)))
 			gtk_widget_show (GTK_WIDGET (dialog));
 
 		result = brasero_burn_dialog_record_session (dialog);

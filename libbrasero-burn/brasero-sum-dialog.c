@@ -255,7 +255,7 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scroll), tree);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (message)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (message))),
 			    scroll, 
 			    TRUE,
 			    TRUE,

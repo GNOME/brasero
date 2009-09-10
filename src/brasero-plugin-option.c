@@ -86,7 +86,7 @@ brasero_plugin_option_save_settings (BraseroPluginOption *self)
 		gchar *key;
 
 		widget = iter->data;
-		if (!GTK_WIDGET_IS_SENSITIVE (widget->widget))
+		if (!gtk_widget_is_sensitive (widget->widget))
 			continue;
 
 		brasero_plugin_conf_option_get_info (widget->option,
@@ -426,7 +426,7 @@ brasero_plugin_option_init (BraseroPluginOption *object)
 	gtk_container_set_border_width (GTK_CONTAINER (priv->vbox), 8);
 	gtk_container_add (GTK_CONTAINER (frame), priv->vbox);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))),
 			    frame,
 			    FALSE,
 			    FALSE,

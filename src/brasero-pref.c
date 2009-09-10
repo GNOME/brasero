@@ -69,7 +69,7 @@ brasero_pref_init (BraseroPref *object)
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (object)->vbox),
+	gtk_box_pack_end (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))),
 			  notebook,
 			  TRUE,
 			  TRUE,

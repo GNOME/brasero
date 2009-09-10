@@ -143,7 +143,7 @@ brasero_file_filtered_option_pressed_cb (GtkButton *button,
 					      NULL);
 	option = brasero_filter_option_new ();
 	gtk_widget_show (option);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), option, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), option, FALSE, FALSE, 0);
 	gtk_widget_show (dialog);
 
 	gtk_dialog_run (GTK_DIALOG (dialog));

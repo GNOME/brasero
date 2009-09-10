@@ -1055,7 +1055,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_OK, GTK_RESPONSE_OK);
 
-	vbox = GTK_DIALOG (object)->vbox;
+	vbox = gtk_dialog_get_content_area (GTK_DIALOG (object));
 	gtk_box_set_spacing (GTK_BOX (vbox), 0);
 
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);

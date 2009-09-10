@@ -219,6 +219,8 @@ brasero_player_bacon_get_property (GObject *obj,
 static void
 brasero_player_bacon_realize (GtkWidget *widget)
 {
+	GtkAllocation allocation;
+	GdkWindow *window;
 	GdkWindowAttr attributes;
 	BraseroPlayerBacon *bacon;
 	gint attributes_mask;
@@ -226,10 +228,11 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	bacon = BRASERO_PLAYER_BACON (widget);
 
 	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.x = widget->allocation.x;
-	attributes.y = widget->allocation.y;
-	attributes.width = widget->allocation.width;
-	attributes.height = widget->allocation.height;
+	gtk_widget_get_allocation (widget, &allocation);
+	attributes.x = allocation.x;
+	attributes.y = allocation.y;
+	attributes.width = allocation.width;
+	attributes.height = allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.visual = gtk_widget_get_visual (widget);
 	attributes.colormap = gtk_widget_get_colormap (widget);
@@ -237,12 +240,13 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	attributes.event_mask |= GDK_EXPOSURE_MASK;
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
 
-	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
-					 &attributes,
-					 attributes_mask);
-	gdk_window_set_user_data (widget->window, widget);
+	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
+						       &attributes,
+						       attributes_mask));
+	window = gtk_widget_get_window (widget);
+	gdk_window_set_user_data (window, widget);
 
-	widget->style = gtk_style_attach (widget->style, widget->window);
+	gtk_widget_set_style (widget, gtk_style_attach (gtk_widget_get_style (widget), window));
 	//gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
 	
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
@@ -263,7 +267,7 @@ static void
 brasero_player_bacon_map (GtkWidget *widget)
 {
 	g_return_if_fail (widget != NULL);
-	gdk_window_show (widget->window);
+	gdk_window_show (gtk_widget_get_window (widget));
 
 	GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
 }
@@ -272,7 +276,7 @@ static void
 brasero_player_bacon_unmap (GtkWidget *widget)
 {
 	g_return_if_fail (widget != NULL);
-	gdk_window_hide (widget->window);
+	gdk_window_hide (gtk_widget_get_window (widget));
 
 	GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
 }
@@ -281,6 +285,7 @@ static gboolean
 brasero_player_bacon_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	BraseroPlayerBacon *bacon;
+	GdkWindow * window;
 
 	if (event && event->count > 0)
 		return TRUE;
@@ -293,8 +298,8 @@ brasero_player_bacon_expose (GtkWidget *widget, GdkEventExpose *event)
 	&&  bacon->priv->state >= GST_STATE_PAUSED) {
 		gst_x_overlay_expose (bacon->priv->xoverlay);
 	}
-	else if (widget->window)
-		gdk_window_clear (widget->window);
+	else if ((window = gtk_widget_get_window (widget)))
+		gdk_window_clear (window);
 
 	return TRUE;
 }
@@ -344,12 +349,12 @@ brasero_player_bacon_size_allocate (GtkWidget *widget,
 		screen_x = allocation->x + (allocation->width - (gint) screen_width) / 2;
 		screen_y = allocation->y + (allocation->height - (gint) screen_height) / 2;
 	
-		gdk_window_move_resize (widget->window,
+		gdk_window_move_resize (gtk_widget_get_window (widget),
 					screen_x,
 					screen_y,
 					(gint) screen_width,
 					(gint) screen_height);
-		widget->allocation = *allocation;
+		gtk_widget_set_allocation (widget, allocation);
 	}
 	else if (GTK_WIDGET_CLASS (parent_class)->size_allocate)
 		GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
@@ -431,7 +436,7 @@ brasero_player_bacon_bus_messages_handler (GstBus *bus,
 		return GST_BUS_PASS;
 	}
 
-	window = GDK_WINDOW_XWINDOW (GTK_WIDGET (bacon)->window);
+	window = GDK_WINDOW_XWINDOW (gtk_widget_get_window (GTK_WIDGET (bacon)));
 	bacon->priv->xoverlay = GST_X_OVERLAY (GST_MESSAGE_SRC (message));
 	gst_x_overlay_set_xwindow_id (bacon->priv->xoverlay, window);
 
@@ -735,7 +740,7 @@ error:
 static void
 brasero_player_bacon_init (BraseroPlayerBacon *obj)
 {
-	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (obj), GTK_DOUBLE_BUFFERED);
+	gtk_widget_set_double_buffered (GTK_WIDGET (obj), FALSE);
 
 	obj->priv = g_new0 (BraseroPlayerBaconPrivate, 1);
 	brasero_player_bacon_setup_pipe (obj);
