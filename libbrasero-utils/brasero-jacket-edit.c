@@ -363,9 +363,9 @@ static void
 brasero_jacket_edit_font_changed_cb (BraseroJacketFont *button,
 				     BraseroJacketEdit *self)
 {
+	GtkTextTag *tag_family = NULL;
 	BraseroJacketEditPrivate *priv;
 	gchar *font_family = NULL;
-	GtkTextTag *tag_family;
 	GtkTextBuffer *buffer;
 	GtkTextTag *tag_size;
 	GtkTextIter start;
