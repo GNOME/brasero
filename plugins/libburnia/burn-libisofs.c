@@ -140,7 +140,7 @@ brasero_libisofs_write_sector_to_fd (BraseroLibisofs *self,
 		gint written;
 
 		written = write (fd,
-				 buffer + bytes_written,
+				 ((gchar *) buffer) + bytes_written,
 				 bytes_remaining);
 
 		if (priv->cancel)

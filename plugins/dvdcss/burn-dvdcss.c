@@ -202,7 +202,7 @@ brasero_dvdcss_write_sector_to_fd (BraseroDvdcss *self,
 		gint written;
 
 		written = write (fd,
-				 buffer + bytes_written,
+				 ((gchar *) buffer)  + bytes_written,
 				 bytes_remaining);
 
 		if (priv->cancel)
