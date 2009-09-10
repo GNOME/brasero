@@ -209,7 +209,7 @@ brasero_burn_library_start (int *argc,
 {
 	GConfClient *client;
 
-	BRASERO_BURN_LOG ("Initializing Brasero-%i.%i.%i",
+	BRASERO_BURN_LOG ("Initializing Brasero-burn %i.%i.%i",
 			  BRASERO_MAJOR_VERSION,
 			  BRASERO_MINOR_VERSION,
 			  BRASERO_SUB);

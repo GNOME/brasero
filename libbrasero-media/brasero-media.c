@@ -524,6 +524,25 @@ brasero_media_library_start (void)
 		return;
 	}
 
+	BRASERO_MEDIA_LOG ("Initializing Brasero-media %i.%i.%i",
+	                    BRASERO_MAJOR_VERSION,
+	                    BRASERO_MINOR_VERSION,
+	                    BRASERO_SUB);
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	/* Work around: because on OpenSolaris brasero posiblely be run
+	 * as root for a user with 'Primary Administrator' profile,
+	 * a root dbus session will be autospawned at that time.
+	 * This fix is to work around
+	 * http://bugzilla.gnome.org/show_bug.cgi?id=526454
+	 */
+	g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
+#endif
+
+	/* Initialize external libraries (threads... */
+	if (!g_thread_supported ())
+		g_thread_init (NULL);
+
 	/* Initialize i18n */
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
