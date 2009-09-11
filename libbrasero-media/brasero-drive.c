@@ -702,7 +702,7 @@ brasero_drive_get_udi (BraseroDrive *drive)
  * Gets the medium currently inserted in the drive. If there is no medium or if
  * the medium is not probed yet then it returns NULL.
  *
- * Return value: a #BraseroMedium object or NULL. No need to unref after use.
+ * Return value: (transfer none): a #BraseroMedium object or NULL. No need to unref after use.
  **/
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive)

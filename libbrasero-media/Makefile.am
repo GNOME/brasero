@@ -149,12 +149,33 @@ if HAVE_USCSI_H
 libbrasero_media_la_SOURCES += scsi-uscsi.c
 endif
 
+girdir = $(INTROSPECTION_GIRDIR)
+gir_DATA = BraseroMedia-1.0.gir
+
+typelibsdir = $(INTROSPECTION_TYPELIBDIR)
+typelibs_DATA = BraseroMedia-1.0.typelib
+
+BraseroMedia-1.0.gir: libbrasero-media.la $(INTROSPECTION_SCANNER)
+	$(INTROSPECTION_SCANNER) -v --namespace=BraseroMedia --nsversion=1.0 \
+            --include=Gtk-2.0 \
+	    --library=brasero-media \
+	    --libtool="$(LIBTOOL)" \
+            --output $@ \
+            --pkg=gtk+-2.0  \
+	    --strip-prefix=Brasero	\
+            $(libbraseromediainclude_HEADERS)	\
+	    *.c	    
+	    
+BraseroMedia-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) $(gir_DATA) -o $(typelibs_DATA)
+
 EXTRA_DIST =			\
 	libbrasero-marshal.list
 #	libbrasero-media.symbols
 
 CLEANFILES =			\
-	$(RECMARSHALFILES)
-	
+	$(RECMARSHALFILES)  \
+	$(gir_DATA)         \
+	$(typelibs_DATA)
 
 -include $(top_srcdir)/git.mk

@@ -496,7 +496,6 @@ brasero_medium_selection_add_no_disc_entry (BraseroMediumSelection *self)
  * @type: a #BraseroMediaType
  *
  * Filters and displays media corresponding to @type.
- *
  **/
 void
 brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,

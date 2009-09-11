@@ -511,12 +511,13 @@ brasero_media_message (const gchar *location,
 static BraseroMediumMonitor *default_monitor = NULL;
 
 /**
- * brasero_media_start:
+ * brasero_media_library_start:
  *
  * Initialize the library.
  *
  * You should call this function before using any other from the library.
  *
+ * Rename to: init
  **/
 void
 brasero_media_library_start (void)
@@ -558,10 +559,11 @@ brasero_media_library_start (void)
 }
 
 /**
- * brasero_media_stop:
+ * brasero_media_library_stop:
  *
  * De-initialize the library once you do not need the library anymore.
  *
+ * Rename to: deinit
  **/
 void
 brasero_media_library_stop (void)
