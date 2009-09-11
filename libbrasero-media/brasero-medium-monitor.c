@@ -163,7 +163,7 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
  *
  * Gets the list of available drives that are of the given type.
  *
- * Return value: a #GSList or NULL
+ * Return value: (element-type BraseroMedia.Drive) (transfer full): a #GSList of  #BraseroDrive or NULL. The list must be freed and the element unreffed when finished.
  **/
 GSList *
 brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
@@ -212,7 +212,7 @@ brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
  *
  * Obtains the list of available media that are of the given type.
  *
- * Return value: a #GSList or NULL
+ * Return value: (element-type BraseroMedia.Medium) (transfer full): a #GSList of  #BraseroMedium or NULL. The list must be freed and the element unreffed when finished.
  **/
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,

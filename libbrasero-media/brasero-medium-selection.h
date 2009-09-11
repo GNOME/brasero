@@ -64,6 +64,12 @@ struct _BraseroMediumSelectionClass
 							 BraseroMedium *medium);
 };
 
+/**
+ * BraseroMediumSelection:
+ *
+ * Rename to: MediumSelection
+ */
+
 struct _BraseroMediumSelection
 {
 	GtkComboBox parent_instance;

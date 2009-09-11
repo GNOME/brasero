@@ -45,7 +45,19 @@ G_BEGIN_DECLS
 #define BRASERO_MEDIUM_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_MEDIUM, BraseroMediumClass))
 
 typedef struct _BraseroMediumClass BraseroMediumClass;
+
+/**
+ * BraseroMedium:
+ *
+ * Represents a physical medium currently inserted in a #BraseroDrive.
+ **/
 typedef struct _BraseroMedium BraseroMedium;
+
+/**
+ * BraseroDrive:
+ *
+ * Represents a physical drive currently connected.
+ **/
 typedef struct _BraseroDrive BraseroDrive;
 
 struct _BraseroMediumClass

@@ -3395,7 +3395,7 @@ brasero_medium_can_use_burnfree (BraseroMedium *medium)
  *
  * Gets the #BraseroDrive in which the medium is inserted.
  *
- * Return value: a #BraseroDrive. No need to unref after use.
+ * Return value: (transfer none): a #BraseroDrive. No need to unref after use.
  *
  **/
 BraseroDrive *
