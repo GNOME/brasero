@@ -126,9 +126,9 @@ brasero_track_data_set_source_real (BraseroTrackData *track,
 
 /**
  * brasero_track_data_set_source:
- * @track: a #BraseroTrackData
- * @grafts: a #GSList of #BraseroGraftPt
- * @unreadable: a #GSList of URIS as strings
+ * @track: a #BraseroTrackData.
+ * @grafts: (element-type BraseroBurn.GraftPt) (in) (transfer full): a #GSList of #BraseroGraftPt.
+ * @unreadable: (element-type utf8) (allow-none) (in) (transfer full): a #GSList of URIS as strings or %NULL.
  *
  * Sets the lists of grafts points (@grafts) and excluded
  * URIs (@unreadable) to be used to create an image.
@@ -335,14 +335,14 @@ brasero_track_data_get_fs_real (BraseroTrackData *track)
 }
 
 /**
- * brasero_track_data_get_fs:
+ * brasero_track_data_get_grafts:
  * @track: a #BraseroTrackData
  *
  * Returns a list of #BraseroGraftPt.
  *
  * Do not free after usage as @track retains ownership.
  *
- * Return value: a #GSList of #BraseroGraftPt or NULL if empty.
+ * Return value: (transfer none) (element-type BraseroBurn.GraftPt) (allow-none): a #GSList of #BraseroGraftPt or %NULL if empty.
  **/
 
 GSList *
@@ -367,16 +367,16 @@ brasero_track_data_get_grafts_real (BraseroTrackData *track)
 
 /**
  * brasero_track_data_get_excluded:
- * @track: a #BraseroTrackData
- * @copy: a #gboolean
+ * @track: a #BraseroTrackData.
+ * @copy: a #gboolean.
  *
  * Returns a list of URIs which must not be included in
  * the image to be created.
- * If @copy is TRUE then the @list is a copy and must
- * be freed once it is not needed anymore. If FALSE,
+ * If @copy is %TRUE then the @list is a copy and must
+ * be freed once it is not needed anymore. If %FALSE,
  * do not free after usage as @track retains ownership.
  *
- * Return value: a #GSList of #gchar * or NULL if no
+ * Return value: (transfer full) (element-type utf8) (allow-none): a #GSList of #gchar * or %NULL if no
  * URI should be excluded.
  **/
 
@@ -417,13 +417,13 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
 
 /**
  * brasero_track_data_get_paths:
- * @track: a #BraseroTrackData
- * @use_joliet: a #gboolean
- * @grafts_path: a #gchar
- * @excluded_path: a #gchar
- * @emptydir: a #gchar
- * @videodir: a #gchar or NULL
- * @error: a #GError
+ * @track: a #BraseroTrackData.
+ * @use_joliet: a #gboolean.
+ * @grafts_path: a #gchar.
+ * @excluded_path: a #gchar.
+ * @emptydir: a #gchar.
+ * @videodir: (allow-none): a #gchar or %NULL.
+ * @error: a #GError.
  *
  * Write in @grafts_path (a path to a file) the graft points,
  * in @excluded_path (a path to a file) the list of paths to
@@ -472,13 +472,13 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 
 /**
  * brasero_track_data_get_file_num:
- * @track: a #BraseroTrackData
- * @file_num: a #guint64
+ * @track: a #BraseroTrackData.
+ * @file_num: (allow-none) (out): a #guint64 or %NULL.
  *
  * Sets the number of files (not directories) in @file_num.
  *
- * Return value: a #BraseroBurnResult. TRUE if @file_num
- * was set, FALSE otherwise.
+ * Return value: a #BraseroBurnResult. %TRUE if @file_num
+ * was set, %FALSE otherwise.
  **/
 
 BraseroBurnResult

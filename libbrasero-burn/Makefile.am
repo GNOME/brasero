@@ -205,8 +205,33 @@ EXTRA_DIST =			\
 	libbrasero-marshal.list
 #	libbrasero-burn.symbols
 
+girdir = $(INTROSPECTION_GIRDIR)
+gir_DATA = BraseroBurn-1.0.gir
+
+typelibsdir = $(INTROSPECTION_TYPELIBDIR)
+typelibs_DATA = BraseroBurn-1.0.typelib
+
+BraseroBurn-1.0.gir: libbrasero-burn.la $(INTROSPECTION_SCANNER)
+	$(INTROSPECTION_SCANNER) -v --namespace=BraseroBurn --nsversion=1.0 \
+	    -I$(top_builddir)/libbrasero-media	\
+            --include=Gtk-2.0 \
+            --add-include-path=$(top_builddir)/libbrasero-media	\
+	    --include=BraseroMedia-1.0 \
+	    --library=brasero-burn \
+	    --libtool="$(LIBTOOL)" \
+            --output $@ \
+            --pkg=gtk+-2.0  \
+	    --strip-prefix=Brasero	\
+            $(libbraseroburninclude_HEADERS)	\
+	    *.c	    
+	    
+BraseroBurn-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) $(gir_DATA) -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
+
 CLEANFILES =			\
-	$(RECMARSHALFILES)
+	$(RECMARSHALFILES)  \
+	$(gir_DATA)         \
+	$(typelibs_DATA)
 
 
 -include $(top_srcdir)/git.mk

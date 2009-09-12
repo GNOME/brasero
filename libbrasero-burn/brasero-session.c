@@ -302,9 +302,9 @@ brasero_burn_session_get_strict_support (BraseroBurnSession *session)
 
 /**
  * brasero_burn_session_add_track:
- * @session: a #BraseroBurnSession
- * @new_track: a #BraseroTrack or NULL
- * @sibling: a #BraseroTrack or NULL
+ * @session: a #BraseroBurnSession.
+ * @new_track: (allow-none): a #BraseroTrack or NULL.
+ * @sibling: (allow-none): a #BraseroTrack or NULL.
  *
  * Inserts a new track after @sibling or appended if @sibling is NULL. If @track is NULL then all tracks
  * already in @session will be removed.
@@ -383,9 +383,9 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 /**
  * brasero_burn_session_move_track:
- * @session: a #BraseroBurnSession
- * @track: a #BraseroTrack
- * @sibling: a #BraseroTrack or NULL
+ * @session: a #BraseroBurnSession.
+ * @track: a #BraseroTrack.
+ * @sibling: (allow-none): a #BraseroTrack or NULL.
  *
  * Moves @track after @sibling; if @sibling is NULL then it is appended.
  *
@@ -477,7 +477,8 @@ brasero_burn_session_remove_track (BraseroBurnSession *session,
  *
  * Returns the list of #BraseroTrack added to @session.
  *
- * Return value: a #GSList or #BraseroTrack object. Do not unref the objects in the list nor destroy the list.
+ * Return value: (element-type BraseroBurn.Track) (transfer none): a #GSList or #BraseroTrack object. Do not unref the objects in the list nor destroy the list.
+ *
  **/
 
 GSList *
@@ -758,7 +759,7 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
  *
  * Returns the #BraseroDrive that should be used to burn the session contents.
  *
- * Return value: a #BraseroDrive or NULL. Do not unref after use.
+ * Return value: (transfer none) (allow-none): a #BraseroDrive or NULL. Do not unref after use.
  **/
 
 BraseroDrive *
@@ -874,9 +875,9 @@ brasero_burn_session_get_output_type (BraseroBurnSession *self,
 
 /**
  * brasero_burn_session_get_output:
- * @session: a #BraseroBurnSession
- * @image: a #gchar or NULL
- * @toc: a #gchar or NULL
+ * @session: a #BraseroBurnSession.
+ * @image: (allow-none) (out): a #gchar to store the image path or NULL.
+ * @toc: (allow-none) (out): a #gchar to store the toc path or NULL.
  *
  * When the contents of @session should be written to a
  * file then this function returns the image path (and if
@@ -1128,10 +1129,10 @@ brasero_burn_session_set_image_output_format (BraseroBurnSession *self,
 
 /**
  * brasero_burn_session_set_image_output_full:
- * @session: a #BraseroBurnSession
- * @format: a #BraseroImageFormat
- * @image: a #gchar or NULL
- * @toc: a #gchar or NULL
+ * @session: a #BraseroBurnSession.
+ * @format: a #BraseroImageFormat.
+ * @image: (allow-none): a #gchar or NULL.
+ * @toc: (allow-none): a #gchar or NULL.
  *
  * When the contents of @session should be written to a
  * file, this function sets the different parameters of this
@@ -1562,7 +1563,7 @@ brasero_burn_session_get_flags (BraseroBurnSession *self)
 /**
  * brasero_burn_session_set_label:
  * @session: a #BraseroBurnSession
- * @label: a #gchar
+ * @label: (allow-none): a #gchar or %NULL
  *
  * Sets the label for @session.
  *

@@ -65,6 +65,15 @@ struct _BraseroTrackDataClass
 	BraseroTrackClass parent_class;
 
 	/* virtual functions */
+
+	/**
+	 * set_source:
+	 * @track: a #BraseroTrackData.
+	 * @grafts: (element-type BraseroBurn.GraftPt) (transfer full): a #GSList of #BraseroGraftPt.
+	 * @unreadable: (element-type utf8) (transfer full) (allow-none): a #GSList of URIs (as strings) or %NULL.
+	 *
+	 * Return value: a #BraseroBurnResult
+	 **/
 	BraseroBurnResult	(*set_source)		(BraseroTrackData *track,
 							 GSList *grafts,
 							 GSList *unreadable);
