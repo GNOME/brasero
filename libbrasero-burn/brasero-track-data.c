@@ -376,10 +376,11 @@ brasero_track_data_get_grafts_real (BraseroTrackData *track)
  * be freed once it is not needed anymore. If %FALSE,
  * do not free after usage as @track retains ownership.
  *
- * Return value: (transfer full) (element-type utf8) (allow-none): a #GSList of #gchar * or %NULL if no
+ * Return value: (transfer none) (element-type utf8) (allow-none): a #GSList of #gchar * or %NULL if no
  * URI should be excluded.
  **/
-
+/* FIXME the copy option is not easy for bindings
+ * we should probably use (allow-none) (default FALSE) */
 GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
 				 gboolean copy)
