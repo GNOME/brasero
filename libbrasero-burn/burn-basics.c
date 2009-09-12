@@ -203,6 +203,18 @@ brasero_caps_list_dump (void)
 	g_object_unref (self);
 }
 
+/**
+ * brasero_burn_library_start:
+ * @argc: an #int.
+ * @argv: a #char **.
+ *
+ * Starts the library. This function must be called
+ * before using any of the functions.
+ *
+ * Rename to: init
+ *
+ **/
+
 gboolean
 brasero_burn_library_start (int *argc,
                             char **argv [])
@@ -224,7 +236,7 @@ brasero_burn_library_start (int *argc,
 	g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
 #endif
 
-	/* Initialize external libraries (threads... */
+	/* Initialize external libraries (threads...) */
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
 
@@ -265,7 +277,7 @@ brasero_burn_library_start (int *argc,
  * This function returns the list of plugins that 
  * are available to libbrasero-burn.
  *
- * Returns: a #GSList that must be destroyed when not needed and each object unreffed.
+ * Returns: (element-type GObject.Object) (transfer full):a #GSList that must be destroyed when not needed and each object unreffed.
  **/
 
 GSList *
@@ -275,6 +287,15 @@ brasero_burn_library_get_plugins_list (void)
 	return brasero_plugin_manager_get_plugins_list (plugin_manager);
 }
 
+/**
+ * brasero_burn_library_stop:
+ *
+ * Stop the library. Don't use any of the functions or
+ * objects afterwards
+ *
+ * Rename to: deinit
+ *
+ **/
 void
 brasero_burn_library_stop (void)
 {
