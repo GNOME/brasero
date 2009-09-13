@@ -37,6 +37,7 @@ libbraseromediainclude_HEADERS =	\
 
 libbrasero_media_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
+	$(BRASERO_GTHREAD_LIBS)				\
 	$(BRASERO_GIO_LIBS)					\
 	$(BRASERO_GTK_LIBS)					\
 	$(BRASERO_SCSI_LIBS)

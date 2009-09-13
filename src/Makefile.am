@@ -130,6 +130,7 @@ brasero_LDADD =						\
 	$(top_builddir)/libbrasero-burn/libbrasero-burn.la	\
 	$(top_builddir)/libbrasero-utils/libbrasero-utils.la	\
 	$(BRASERO_GLIB_LIBS)		\
+	$(BRASERO_GTHREAD_LIBS)				\
 	$(BRASERO_GIO_LIBS)		\
 	$(BRASERO_GCONF_LIBS)		\
 	$(BRASERO_GSTREAMER_LIBS)	\
