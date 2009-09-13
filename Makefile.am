@@ -25,7 +25,9 @@ noinst_PROGRAMS =
 DISTCHECK_CONFIGURE_FLAGS =		\
 	--disable-scrollkeeper		\
 	--enable-gtk-doc			\
-	--with-nautilusdir='$${libdir}/nautilus/extensions-2.0-distcheck'
+	--with-nautilusdir='$${libdir}/nautilus/extensions-2.0-distcheck'	\
+	--with-girdir='$${datadir}/girdir-distcheck/'						\
+	--with-typelibdir='$${libdir}/typelibdir-distcheck'
 
 DISTCLEANFILES = \
 	intltool-extract \
