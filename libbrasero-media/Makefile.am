@@ -158,16 +158,24 @@ typelibs_DATA = BraseroMedia-1.0.typelib
 BraseroMedia-1.0.gir: libbrasero-media.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroMedia --nsversion=1.0 \
             --include=Gtk-2.0 \
+	    -I$(top_srcdir)/libbrasero-media	\
 	    --library=brasero-media \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
             --pkg=gtk+-2.0  \
 	    --strip-prefix=Brasero	\
-            $(libbraseromediainclude_HEADERS)	\
-	    *.c	    
-	    
+            $(top_srcdir)/libbrasero-media/brasero-drive.h			\
+	    $(top_srcdir)/libbrasero-media/brasero-medium-monitor.h		\
+	    $(top_builddir)/libbrasero-media/brasero-media.h			\
+	    $(top_srcdir)/libbrasero-media/brasero-units.h			\
+	    $(top_srcdir)/libbrasero-media/brasero-medium.h			\
+	    $(top_srcdir)/libbrasero-media/brasero-volume.h		\
+	    $(top_srcdir)/libbrasero-media/brasero-medium-selection.h	\
+	    $(top_srcdir)/libbrasero-media/brasero-drive-selection.h	\
+            $(top_srcdir)/libbrasero-media/*.c	    
+
 BraseroMedia-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) $(gir_DATA) -o $(typelibs_DATA)
+	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) -o $(typelibs_DATA)
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list
