@@ -61,6 +61,7 @@ libbrasero_burn_la_LIBADD =					\
 	../libbrasero-media/libbrasero-media.la			\
 	../libbrasero-utils/libbrasero-utils.la			\
 	$(BRASERO_GLIB_LIBS)					\
+	$(BRASERO_GTHREAD_LIBS)				\
 	$(BRASERO_GMODULE_LIBS)					\
 	$(BRASERO_GIO_LIBS)					\
 	$(BRASERO_GCONF_LIBS)					\
