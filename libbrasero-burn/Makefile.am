@@ -18,7 +18,8 @@ INCLUDES = \
 	$(BRASERO_GIO_CFLAGS)						\
 	$(BRASERO_GTK_CFLAGS)						\
 	$(BRASERO_GSTREAMER_CFLAGS)					\
-	$(BRASERO_DBUS_CFLAGS)
+	$(BRASERO_DBUS_CFLAGS)                                          \
+	$(BRASERO_CANBERRA_CFLAGS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = libbrasero-marshal.h libbrasero-marshal.c
@@ -67,7 +68,8 @@ libbrasero_burn_la_LIBADD =					\
 	$(BRASERO_GCONF_LIBS)					\
 	$(BRASERO_GTK_LIBS)					\
 	$(BRASERO_GSTREAMER_LIBS)	\
-	$(BRASERO_DBUS_LIBS)
+	$(BRASERO_DBUS_LIBS)                                    \
+	$(BRASERO_CANBERRA_LIBS)
 
 libbrasero_burn_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\

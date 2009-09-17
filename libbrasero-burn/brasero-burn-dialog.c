@@ -44,6 +44,8 @@
 
 #include <gtk/gtk.h>
 
+#include <canberra-gtk.h>
+
 #include "brasero-tray.h"
 #include "brasero-burn-dialog.h"
 #include "brasero-session-cfg.h"
@@ -1898,7 +1900,6 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 
 	primary = brasero_burn_dialog_get_success_message (dialog);
 	brasero_burn_dialog_activity_stop (dialog, primary);
-	g_free (primary);
 
 	/* Don't show the "Make Another Copy" button if:
 	 * - we wrote to a file
@@ -1939,6 +1940,14 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 						      _("_Create Cover"),
 						      GTK_RESPONSE_CLOSE);
 	}
+
+	gtk_widget_show(GTK_WIDGET(dialog));
+	ca_gtk_play_for_widget(GTK_WIDGET(dialog), 0,
+			       CA_PROP_EVENT_ID, "complete-media-burn",
+			       CA_PROP_EVENT_DESCRIPTION, primary,
+			       NULL);
+
+	g_free (primary);
 
 	res = brasero_burn_dialog_success_run (dialog);
 
