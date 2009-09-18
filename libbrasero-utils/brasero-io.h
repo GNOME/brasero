@@ -84,6 +84,8 @@ typedef enum {
 #define BRASERO_IO_HAS_VIDEO		"metadata::has_video"
 #define BRASERO_IO_IS_SEEKABLE		"metadata::is_seekable"
 
+#define BRASERO_IO_HAS_DTS			"metadata::audio::wav::has_dts"
+
 #define BRASERO_IO_CHANNELS		"metadata::audio::channels"
 #define BRASERO_IO_RATE				"metadata::audio::rate"
 

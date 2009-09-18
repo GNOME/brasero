@@ -845,6 +845,9 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 
 		if (metadata->rate)
 			g_file_info_set_attribute_int32 (info, BRASERO_IO_RATE, metadata->rate);
+
+		if (metadata->has_dts)
+			g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_DTS, TRUE);
 	}
 
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_VIDEO, metadata->has_video);

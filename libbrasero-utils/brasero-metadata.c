@@ -187,6 +187,7 @@ brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 	if (!dest || !src)
 		return;
 
+	dest->has_dts = src->has_dts;
 	dest->rate = src->rate;
 	dest->channels = src->channels;
 	dest->isrc = src->isrc;
@@ -531,6 +532,36 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 
 	if (!strcmp (mime, "application/x-id3"))
 		priv->info->type = g_strdup ("audio/mpeg");
+	else if (!strcmp (mime, "audio/x-wav")) {
+		GstElement *wavparse;
+
+		priv->info->type = g_strdup (mime);
+
+		/* make sure it doesn't have dts inside */
+		wavparse = gst_bin_get_by_name (GST_BIN (priv->decode), "wavparse0");
+		if (wavparse) {
+			GstPad *src_pad;
+			GstCaps *src_caps;
+			const gchar *name;
+			GstStructure *structure;
+
+			src_pad = gst_element_get_static_pad (wavparse, "src");
+			src_caps = gst_pad_get_caps (src_pad);
+			gst_object_unref (src_pad);
+
+			structure = gst_caps_get_structure (caps, 0);
+			gst_caps_unref (caps);
+			if (!structure)
+				return TRUE;
+
+			name = gst_structure_get_name (structure);
+			priv->info->has_dts = (g_strrstr (name, "audio") != NULL);
+
+			BRASERO_UTILS_LOG ("Wav file has dts: %s", priv->info->has_dts? "yes":"no");
+
+			gst_object_unref (wavparse);
+		}
+	}
 	else
 		priv->info->type = g_strdup (mime);
 

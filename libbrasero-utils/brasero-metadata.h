@@ -82,6 +82,7 @@ typedef struct {
 	guint is_seekable:1;
 	guint has_audio:1;
 	guint has_video:1;
+	guint has_dts:1;
 } BraseroMetadataInfo;
 
 void
