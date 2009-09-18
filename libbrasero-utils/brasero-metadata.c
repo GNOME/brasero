@@ -1024,7 +1024,6 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 		download = brasero_metadata_is_downloading (detail);
 		if (download) {
 			download->objects = g_slist_prepend (download->objects, self);
-			priv->downloads = g_slist_prepend (priv->downloads, download);
 			g_free (detail);
 			continue;
 		}
