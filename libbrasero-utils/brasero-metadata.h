@@ -72,6 +72,9 @@ typedef struct {
 	int isrc;
 	guint64 len;
 
+	gint channels;
+	gint rate;
+
 	GSList *silences;
 
 	GdkPixbuf *snapshot;

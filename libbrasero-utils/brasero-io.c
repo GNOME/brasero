@@ -839,6 +839,14 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 		g_file_info_set_attribute_string (info, BRASERO_IO_COMPOSER, metadata->composer);
 
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_AUDIO, metadata->has_audio);
+	if (metadata->has_audio) {
+		if (metadata->channels)
+			g_file_info_set_attribute_int32 (info, BRASERO_IO_CHANNELS, metadata->channels);
+
+		if (metadata->rate)
+			g_file_info_set_attribute_int32 (info, BRASERO_IO_RATE, metadata->rate);
+	}
+
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_VIDEO, metadata->has_video);
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE, metadata->is_seekable);
 

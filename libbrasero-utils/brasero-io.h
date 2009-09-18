@@ -84,6 +84,9 @@ typedef enum {
 #define BRASERO_IO_HAS_VIDEO		"metadata::has_video"
 #define BRASERO_IO_IS_SEEKABLE		"metadata::is_seekable"
 
+#define BRASERO_IO_CHANNELS		"metadata::audio::channels"
+#define BRASERO_IO_RATE				"metadata::audio::rate"
+
 #define BRASERO_IO_DIR_CONTENTS_ADDR	"image::directory::address"
 
 typedef struct _BraseroIOJobProgress BraseroIOJobProgress;

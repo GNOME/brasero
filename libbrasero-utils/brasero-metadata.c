@@ -187,6 +187,8 @@ brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 	if (!dest || !src)
 		return;
 
+	dest->rate = src->rate;
+	dest->channels = src->channels;
 	dest->isrc = src->isrc;
 	dest->len = src->len;
 	dest->is_seekable = src->is_seekable;
@@ -230,7 +232,6 @@ brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 
 		dest->silences = g_slist_append (dest->silences, copy);
 	}
-
 }
 
 static void
@@ -688,7 +689,7 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 		return brasero_metadata_completed (self);
 	}
 
-	BRASERO_UTILS_LOG ("found duration %lli for %s", duration, priv->info->uri);
+	BRASERO_UTILS_LOG ("Found duration %lli for %s", duration, priv->info->uri);
 
 	priv->info->len = duration;
 	return brasero_metadata_success (self);
@@ -867,11 +868,9 @@ brasero_metadata_install_plugins_free_data (GSList *downloads)
 			priv = BRASERO_METADATA_PRIVATE (meta->data);
 			priv->downloads = g_slist_remove (priv->downloads, download);
 		}
-
-		downloading = g_slist_remove (downloading, download);
-
 		g_slist_free (download->objects);
 
+		downloading = g_slist_remove (downloading, download);
 		g_free (download);
 	}
 
@@ -1018,8 +1017,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 		/* Check if this plugin:
 		 * - has already been downloaded (whether it was successful or not)
 		 * - is being downloaded
-		 * If so don't do anything.
-		 */
+		 * If so don't do anything. */
 		detail = gst_missing_plugin_message_get_installer_detail (iter->data);
 		download = brasero_metadata_is_downloading (detail);
 		if (download) {
@@ -1401,6 +1399,70 @@ brasero_metadata_link_dummy_pad (BraseroMetadata *self,
 }
 
 static void
+brasero_metadata_audio_caps (BraseroMetadata *self,
+                             GstCaps *caps)
+{
+	int i;
+	int num_caps;
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	num_caps = gst_caps_get_size (caps);
+	for (i = 0; i < num_caps; i++) {
+		const GstStructure *structure;
+
+		structure = gst_caps_get_structure (caps, i);
+		if (!structure)
+			continue;
+
+		if (gst_structure_has_field (structure, "channels")) {
+			if (gst_structure_get_field_type (structure, "channels") == G_TYPE_INT) {
+				priv->info->channels = 0;
+				gst_structure_get_int (structure, "channels", &priv->info->channels);
+
+				BRASERO_UTILS_LOG ("Number of channels %i", priv->info->channels);
+			}
+			else if (gst_structure_get_field_type (structure, "channels") == GST_TYPE_INT_RANGE) {
+				const GValue *value;
+
+				value = gst_structure_get_value (structure, "channels");
+				if (value) {
+					priv->info->channels = gst_value_get_int_range_max (value);
+					BRASERO_UTILS_LOG ("Number of channels %i", priv->info->channels);
+				}
+			}
+			else if (gst_structure_get_field_type (structure, "channels") != G_TYPE_INVALID) {
+				BRASERO_UTILS_LOG ("Unhandled type for channel prop %s",
+				                   g_type_name (gst_structure_get_field_type (structure, "channels")));
+			}
+		}
+
+		if (gst_structure_has_field (structure, "rate")) {
+			if (gst_structure_get_field_type (structure, "rate") == G_TYPE_INT) {
+				priv->info->rate = 0;
+				gst_structure_get_int (structure, "rate", &priv->info->rate);
+
+				BRASERO_UTILS_LOG ("Rate %i", priv->info->rate);
+			}
+			else if (gst_structure_get_field_type (structure, "rate") == GST_TYPE_INT_RANGE) {
+				const GValue *value;
+
+				value = gst_structure_get_value (structure, "rate");
+				if (value) {
+					priv->info->rate = gst_value_get_int_range_max (value);
+					BRASERO_UTILS_LOG ("Rate %i", priv->info->rate);
+				}
+			}
+			else if (gst_structure_get_field_type (structure, "rate") != G_TYPE_INVALID) {
+				BRASERO_UTILS_LOG ("Unhandled type for rate prop %s",
+				                   g_type_name (gst_structure_get_field_type (structure, "rate")));
+			}
+		}
+	}
+}
+
+static void
 brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 				     GstPad *pad,
 				     gboolean is_lastpad, /* deprecated */
@@ -1435,6 +1497,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	priv->info->has_video |= has_video;
 
 	if (has_audio && !priv->audio_linked) {
+		brasero_metadata_audio_caps (self, caps);
 		brasero_metadata_create_audio_pipeline (self);
 		sink = gst_element_get_static_pad (priv->audio, "sink");
 		if (sink && !GST_PAD_IS_LINKED (sink)) {
