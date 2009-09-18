@@ -37,6 +37,8 @@
 
 #include <gtk/gtk.h>
 
+#include <canberra-gtk.h>
+
 #include "brasero-misc.h"
 
 #include "burn-basics.h"
@@ -274,6 +276,12 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 		gtk_dialog_add_button (GTK_DIALOG (message),
 				       GTK_STOCK_CLOSE,
 				       GTK_RESPONSE_CLOSE);
+
+		gtk_widget_show (GTK_WIDGET (message));
+		ca_gtk_play_for_widget (GTK_WIDGET (message), 0,
+					CA_PROP_EVENT_ID, "complete-media-format",
+					CA_PROP_EVENT_DESCRIPTION, _("The disc was successfully blanked."),
+					NULL);
 
 		answer = gtk_dialog_run (GTK_DIALOG (message));
 		gtk_widget_destroy (message);

@@ -413,7 +413,8 @@ static gint
 brasero_burn_dialog_wait_for_insertion (BraseroBurnDialog *dialog,
 					BraseroDrive *drive,
 					const gchar *main_message,
-					const gchar *secondary_message)
+					const gchar *secondary_message,
+                                        gboolean sound_clue)
 {
 	gint result;
 	gint added_id;
@@ -464,6 +465,14 @@ brasero_burn_dialog_wait_for_insertion (BraseroBurnDialog *dialog,
 					   "medium-added",
 					   G_CALLBACK (brasero_burn_dialog_wait_for_insertion_cb),
 					   message);
+
+	if (sound_clue) {
+		gtk_widget_show (GTK_WIDGET (message));
+		ca_gtk_play_for_widget (GTK_WIDGET (message), 0,
+		                        CA_PROP_EVENT_ID, "complete-media-burn",
+		                        CA_PROP_EVENT_DESCRIPTION, main_message,
+		                        NULL);
+	}
 
 	result = gtk_dialog_run (GTK_DIALOG (message));
 
@@ -627,7 +636,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 	g_free (drive_name);
 
-	result = brasero_burn_dialog_wait_for_insertion (dialog, drive, main_message, secondary_message);
+	result = brasero_burn_dialog_wait_for_insertion (dialog, drive, main_message, secondary_message, FALSE);
 	g_free (main_message);
 	g_free (secondary_message);
 
@@ -1239,6 +1248,12 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
+
+	gtk_widget_show (GTK_WIDGET (message));
+	ca_gtk_play_for_widget (GTK_WIDGET (message), 0,
+	                        CA_PROP_EVENT_ID, "complete-media-burn-test",
+	                        CA_PROP_EVENT_DESCRIPTION, _("The simulation was successful."),
+	                        NULL);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
@@ -2092,6 +2107,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 	burner = brasero_burn_session_get_burner (priv->session);
 
+	/* Get the messages now as they can change */
 	type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, type);
 	success_message = brasero_burn_dialog_get_success_message (dialog);
@@ -2136,7 +2152,9 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 		res = brasero_burn_dialog_wait_for_insertion (dialog,
 							      burner,
 							      _("Please insert a recordable CD or DVD."),
-							      secondary_message);
+							      secondary_message, 
+		                                              TRUE);
+
 		if (res != GTK_RESPONSE_OK) {
 			g_free (secondary_message);
 			return BRASERO_BURN_CANCEL;
@@ -2148,7 +2166,8 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 			res = brasero_burn_dialog_wait_for_insertion (dialog,
 								      burner,
 								      _("Please insert a recordable CD or DVD."),
-								      _("Not enough space available on the disc"));
+								      _("Not enough space available on the disc"),
+			                                              FALSE);
 			if (res != GTK_RESPONSE_OK) {
 				g_free (secondary_message);
 				return BRASERO_BURN_CANCEL;
