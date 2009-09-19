@@ -146,6 +146,13 @@ BraseroBurnResult
 brasero_burn_session_tag_remove (BraseroBurnSession *session,
 				 const gchar *tag);
 
+BraseroBurnResult
+brasero_burn_session_tag_add_int (BraseroBurnSession *self,
+                                  const gchar *tag,
+                                  gint value);
+gint
+brasero_burn_session_tag_lookup_int (BraseroBurnSession *self,
+                                     const gchar *tag);
 /**
  * Destination 
  */
@@ -168,9 +175,12 @@ brasero_burn_session_get_output (BraseroBurnSession *session,
 				 gchar **image,
 				 gchar **toc);
 
+BraseroBurnResult
+brasero_burn_session_set_image_output_format (BraseroBurnSession *self,
+					    BraseroImageFormat format);
+
 BraseroImageFormat
 brasero_burn_session_get_output_format (BraseroBurnSession *session);
-
 
 const gchar *
 brasero_burn_session_get_label (BraseroBurnSession *session);
