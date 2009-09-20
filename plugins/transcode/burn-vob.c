@@ -159,6 +159,35 @@ brasero_vob_bus_messages (GstBus *bus,
 }
 
 static void
+brasero_vob_error_on_pad_linking (BraseroVob *self,
+                                  const gchar *function_name)
+{
+	BraseroVobPrivate *priv;
+	GstMessage *message;
+	GstBus *bus;
+
+	priv = BRASERO_VOB_PRIVATE (self);
+
+	BRASERO_JOB_LOG (self, "Error on pad linking");
+	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
+					 g_error_new (BRASERO_BURN_ERROR,
+						      BRASERO_BURN_ERROR_GENERAL,
+						      /* Translators: This message is sent
+						       * when brasero could not link together
+						       * two gstreamer plugins so that one
+						       * sends its data to the second for further
+						       * processing. This data transmission is
+						       * done through a pad. Maybe this is a bit
+						       * too technical and should be removed? */
+						      _("Impossible to link plugin pads")),
+					 function_name);
+
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
+	gst_bus_post (bus, message);
+	g_object_unref (bus);
+}
+
+static void
 brasero_vob_new_decoded_pad_cb (GstElement *decode,
 				GstPad *pad,
 				gboolean arg2,
@@ -179,17 +208,27 @@ brasero_vob_new_decoded_pad_cb (GstElement *decode,
 	structure = gst_caps_get_structure (caps, 0);
 	if (structure) {
 		if (g_strrstr (gst_structure_get_name (structure), "video")) {
+			GstPadLinkReturn res;
+
 			sink = gst_element_get_pad (priv->video, "sink");
-			gst_pad_link (pad, sink);
+			res = gst_pad_link (pad, sink);
 			gst_object_unref (sink);
+
+			if (res != GST_PAD_LINK_OK)
+				brasero_vob_error_on_pad_linking (vob, "Sent by brasero_vob_new_decoded_pad_cb");
 
 			gst_element_set_state (priv->video, GST_STATE_PLAYING);
 		}
 
 		if (g_strrstr (gst_structure_get_name (structure), "audio")) {
+			GstPadLinkReturn res;
+
 			sink = gst_element_get_pad (priv->audio, "sink");
-			gst_pad_link (pad, sink);
+			res = gst_pad_link (pad, sink);
 			gst_object_unref (sink);
+
+			if (res != GST_PAD_LINK_OK)
+				brasero_vob_error_on_pad_linking (vob, "Sent by brasero_vob_new_decoded_pad_cb");
 
 			gst_element_set_state (priv->audio, GST_STATE_PLAYING);
 		}
@@ -328,7 +367,14 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
 	gst_caps_unref (filtercaps);
 
-	gst_element_link_many (queue, resample, convert, filter, queue1, NULL);
+	if (!gst_element_link_many (queue, resample, convert, filter, queue1, NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+		goto error;
+	}
+
 	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 
 	return TRUE;
@@ -470,7 +516,13 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
 	gst_caps_unref (filtercaps);
 
-	gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL);
+	if (!gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+		goto error;
+	}
 
 	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 	return TRUE;
@@ -586,7 +638,14 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
 
-	gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL);
+	if (!gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+		goto error;
+	}
+
 	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 
 	return TRUE;
@@ -923,7 +982,13 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
 
-	gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, queue1, NULL);
+	if (!gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, queue1, NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+		goto error;
+	}
 
 	srcpad = gst_element_get_static_pad (queue1, "src");
 	sinkpad = gst_element_get_request_pad (muxer, "video_%d");
@@ -971,7 +1036,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
 			     "\"Source\"");
-		return FALSE;
+		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), source);
 	g_object_set (source,
@@ -989,7 +1054,14 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
-	gst_element_link_many (source, decode, NULL);
+
+	if (gst_element_link (source, decode)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+		goto error;
+	}
 
 	/* muxer: "mplex" */
 	muxer = gst_element_factory_make ("mplex", NULL);
@@ -1026,14 +1098,20 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
 			     "\"Sink\"");
-		return FALSE;
+		goto error;
 	}
 	g_object_set (sink,
 		      "location", output,
 		      NULL);
 
 	gst_bin_add (GST_BIN (pipeline), sink);
-	gst_element_link (muxer, sink);
+	if (!gst_element_link (muxer, sink)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+		goto error;
+	}
 
 	/* video encoding */
 	priv->video = brasero_vob_build_video_bin (vob, muxer, error);

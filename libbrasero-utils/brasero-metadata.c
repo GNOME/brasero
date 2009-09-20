@@ -1314,10 +1314,16 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 				  priv->level,
 				  priv->sink,
 				  NULL);
-		gst_element_link_many (priv->convert,
-				       priv->level,
-				       priv->sink,
-				       NULL);
+		if (!gst_element_link_many (priv->convert,
+		                            priv->level,
+		                            priv->sink,
+		                            NULL)) {
+			BRASERO_UTILS_LOG ("Impossible to link elements");
+			gst_object_unref (priv->audio);
+			priv->audio = NULL;
+			return FALSE;
+		}
+
 		audio_pad = gst_element_get_static_pad (priv->convert, "sink");
 	}
 	else if (priv->flags & BRASERO_METADATA_FLAG_THUMBNAIL) {
@@ -1332,10 +1338,16 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 				  priv->convert,
 				  priv->sink,
 				  NULL);
-		gst_element_link_many (queue,
-				       priv->convert,
-				       priv->sink,
-				       NULL);
+		if (!gst_element_link_many (queue,
+		                            priv->convert,
+		                            priv->sink,
+		                            NULL)) {
+			BRASERO_UTILS_LOG ("Impossible to link elements");
+			gst_object_unref (priv->audio);
+			priv->audio = NULL;
+			return FALSE;
+		}
+
 		audio_pad = gst_element_get_static_pad (queue, "sink");
 	}
 	else {
@@ -1347,7 +1359,13 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 		gst_object_ref (priv->sink);
 		gst_bin_add (GST_BIN (priv->audio), priv->sink);
 
-		gst_element_link (queue, priv->sink);
+		if (!gst_element_link (queue, priv->sink)) {
+			BRASERO_UTILS_LOG ("Impossible to link elements");
+			gst_object_unref (priv->audio);
+			priv->audio = NULL;
+			return FALSE;
+		}
+
 		audio_pad = gst_element_get_static_pad (queue, "sink");
 	}
 
@@ -1401,10 +1419,16 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 	gst_bin_add (GST_BIN (priv->video), queue);
 
 	/* link elements */
-	gst_element_link_many (queue,
-			       colorspace,
-			       priv->snapshot,
-			       NULL);
+	if (!gst_element_link_many (queue,
+	                            colorspace,
+	                            priv->snapshot,
+	                            NULL)) {
+		gst_object_unref (priv->video);
+		priv->video = NULL;
+
+		BRASERO_UTILS_LOG ("Impossible to link elements");
+		return FALSE;
+	}
 
 	video_pad = gst_element_get_static_pad (queue, "sink");
 	gst_element_add_pad (priv->video, gst_ghost_pad_new ("sink", video_pad));
