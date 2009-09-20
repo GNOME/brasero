@@ -533,34 +533,77 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 	if (!strcmp (mime, "application/x-id3"))
 		priv->info->type = g_strdup ("audio/mpeg");
 	else if (!strcmp (mime, "audio/x-wav")) {
-		GstElement *wavparse;
+		GstElement *wavparse = NULL;
+		gpointer element = NULL;
+		GstIteratorResult res;
+		GstIterator *iter;
 
 		priv->info->type = g_strdup (mime);
 
 		/* make sure it doesn't have dts inside */
-		wavparse = gst_bin_get_by_name (GST_BIN (priv->decode), "wavparse0");
+		iter = gst_bin_iterate_recurse (GST_BIN (priv->decode));
+
+		res = gst_iterator_next (iter, &element);
+		while (res == GST_ITERATOR_OK) {
+			gchar *name;
+
+			name = gst_object_get_name (GST_OBJECT (element));
+			if (name) {
+				if (!strncmp (name, "wavparse", 8)) {
+					wavparse = element;
+					g_free (name);
+					break;
+				}
+				g_free (name);
+			}
+
+			gst_object_unref (element);
+			element = NULL;
+
+			res = gst_iterator_next (iter, &element);
+		}
+		gst_iterator_free (iter);
+
 		if (wavparse) {
 			GstPad *src_pad;
-			GstCaps *src_caps;
-			const gchar *name;
-			GstStructure *structure;
 
-			src_pad = gst_element_get_static_pad (wavparse, "src");
-			src_caps = gst_pad_get_caps (src_pad);
-			gst_object_unref (src_pad);
+			iter = gst_element_iterate_src_pads (wavparse);
 
-			structure = gst_caps_get_structure (caps, 0);
-			gst_caps_unref (caps);
-			if (!structure)
-				return TRUE;
+			res = gst_iterator_next (iter, (gpointer *) &src_pad);
+			while (res == GST_ITERATOR_OK) {
+				GstCaps *src_caps;
 
-			name = gst_structure_get_name (structure);
-			priv->info->has_dts = (g_strrstr (name, "audio") != NULL);
+				src_caps = gst_pad_get_caps (src_pad);
+				if (src_caps) {
+					GstStructure *structure;
 
-			BRASERO_UTILS_LOG ("Wav file has dts: %s", priv->info->has_dts? "yes":"no");
+					structure = gst_caps_get_structure (src_caps, 0);
+					if (structure) {
+						const gchar *name;
 
+						name = gst_structure_get_name (structure);
+						priv->info->has_dts = (g_strrstr (name, "audio/x-dts") != NULL);
+						if (priv->info->has_dts) {
+							gst_object_unref (src_pad);
+							gst_caps_unref (src_caps);
+							src_pad = NULL;
+							break;
+						}
+					}
+					gst_caps_unref (src_caps);
+				}
+
+				gst_object_unref (src_pad);
+				src_pad = NULL;
+
+				res = gst_iterator_next (iter,  (gpointer *) &src_pad);
+			}
+
+			gst_iterator_free (iter);
 			gst_object_unref (wavparse);
 		}
+
+		BRASERO_UTILS_LOG ("Wav file has dts: %s", priv->info->has_dts? "yes":"no");
 	}
 	else
 		priv->info->type = g_strdup (mime);

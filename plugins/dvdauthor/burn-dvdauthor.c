@@ -377,8 +377,6 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_AUDIO_FORMAT_AC3|
 					BRASERO_AUDIO_FORMAT_MP2|
 					BRASERO_AUDIO_FORMAT_RAW|
-					BRASERO_AUDIO_FORMAT_44100|
-					BRASERO_AUDIO_FORMAT_48000|
 					BRASERO_METADATA_INFO|
 					BRASERO_VIDEO_FORMAT_VIDEO_DVD);
 
@@ -393,8 +391,6 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_AUDIO_FORMAT_AC3|
 					BRASERO_AUDIO_FORMAT_MP2|
 					BRASERO_AUDIO_FORMAT_RAW|
-					BRASERO_AUDIO_FORMAT_44100|
-					BRASERO_AUDIO_FORMAT_48000|
 					BRASERO_VIDEO_FORMAT_VIDEO_DVD);
 
 	brasero_plugin_link_caps (plugin, output, input);

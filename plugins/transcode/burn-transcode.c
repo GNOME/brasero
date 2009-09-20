@@ -268,7 +268,8 @@ brasero_transcode_create_volume (BraseroTranscode *transcode,
 static gboolean
 brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
 					    GstElement *pipeline,
-					    GstElement *source,				       GError **error)
+					    GstElement *source,
+                                            GError **error)
 {
 	BraseroTranscodePrivate *priv;
 	GstElement *parse;
@@ -324,11 +325,69 @@ brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
 	return TRUE;
 }
 
+static void
+brasero_transcode_error_on_pad_linking (BraseroTranscode *self,
+                                        const gchar *function_name)
+{
+	BraseroTranscodePrivate *priv;
+	GstMessage *message;
+	GstBus *bus;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (self);
+
+	BRASERO_JOB_LOG (self, "Error on pad linking");
+	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
+					 g_error_new (BRASERO_BURN_ERROR,
+						      BRASERO_BURN_ERROR_GENERAL,
+						      /* Translators: This message is sent
+						       * when brasero could not link together
+						       * two gstreamer plugins so that one
+						       * sends its data to the second for further
+						       * processing. This data transmission is
+						       * done through a pad. Maybe this is a bit
+						       * too technical and should be removed? */
+						      _("Impossible to link plugin pads")),
+					 function_name);
+
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
+	gst_bus_post (bus, message);
+	g_object_unref (bus);
+}
+
+static void
+brasero_transcode_wavparse_pad_added_cb (GstElement *wavparse,
+                                         GstPad *new_pad,
+                                         gpointer user_data)
+{
+	GstPad *pad = NULL;
+	BraseroTranscodePrivate *priv;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (user_data);
+
+	pad = gst_element_get_static_pad (priv->sink, "sink");
+	if (!pad) 
+		goto error;
+
+	if (gst_pad_link (new_pad, pad) != GST_PAD_LINK_OK)
+		goto error;
+
+	gst_element_set_state (priv->sink, GST_STATE_PLAYING);
+	return;
+
+error:
+
+	if (pad)
+		gst_object_unref (pad);
+
+	brasero_transcode_error_on_pad_linking (BRASERO_TRANSCODE (user_data), "Sent by brasero_transcode_wavparse_pad_added_cb");
+}
+
 static gboolean
 brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 				   GError **error)
 {
 	gchar *uri;
+	GValue *value = NULL;
 	GstElement *decode;
 	GstElement *source;
 	GstBus *bus = NULL;
@@ -342,6 +401,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	BraseroTrack *track = NULL;
 	GstElement *resample = NULL;
 	BraseroTranscodePrivate *priv;
+	BraseroStreamFormat session_format;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
@@ -446,7 +506,68 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	g_object_set (sink,
 		      "sync", FALSE,
 		      NULL);
-		
+
+	session_format = BRASERO_AUDIO_FORMAT_RAW;
+	brasero_job_tag_lookup (BRASERO_JOB (transcode), BRASERO_SESSION_STREAM_AUDIO_FORMAT, &value);
+	if (value)
+		session_format = g_value_get_int (value);
+	
+	if (action == BRASERO_JOB_ACTION_IMAGE
+	&& (session_format & BRASERO_AUDIO_FORMAT_DTS) != 0
+	&& (brasero_track_stream_get_format (BRASERO_TRACK_STREAM (track)) & BRASERO_AUDIO_FORMAT_DTS) != 0) {
+		GstElement *wavparse;
+		GstPad *sinkpad;
+
+		BRASERO_JOB_LOG (transcode, "DTS wav pipeline");
+
+		/* FIXME: volume normalization won't work here. We'd need to 
+		 * reencode it afterwards otherwise. */
+		/* This is a special case. This is DTS wav. So we only decode wav. */
+		wavparse = gst_element_factory_make ("wavparse", NULL);
+		if (wavparse == NULL) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("%s element could not be created"),
+				     "\"Wavparse\"");
+			goto error;
+		}
+		gst_bin_add (GST_BIN (pipeline), wavparse);
+
+		priv->link = NULL;
+		priv->sink = sink;
+		priv->decode = NULL;
+		priv->source = source;
+		priv->convert = NULL;
+		priv->pipeline = pipeline;
+
+		if (!gst_element_link (source, wavparse)) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+			             _("Impossible to link plugin pads"));
+			goto error;
+		}
+
+		g_signal_connect (wavparse,
+		                  "pad-added",
+		                  G_CALLBACK (brasero_transcode_wavparse_pad_added_cb),
+		                  transcode);
+
+		/* This is an ugly workaround for the lack of accuracy with
+		 * gstreamer. Yet this is unfortunately a necessary evil. */
+		priv->pos = 0;
+		priv->size = 0;
+		sinkpad = gst_element_get_pad (priv->sink, "sink");
+		priv->probe = gst_pad_add_buffer_probe (sinkpad,
+							G_CALLBACK (brasero_transcode_buffer_handler),
+							transcode);
+		gst_object_unref (sinkpad);
+
+		gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
+		return TRUE;
+	}
+
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
 	if (convert == NULL) {
@@ -516,8 +637,16 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
 		GstPad *sinkpad;
+		gboolean res;
 
-		gst_element_link_many (source, decode, NULL);
+		if (!gst_element_link_many (source, decode, NULL)) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+			             _("Impossible to link plugin pads"));
+			goto error;
+		}
+
 		priv->link = resample;
 		g_signal_connect (G_OBJECT (decode),
 				  "new-decoded-pad",
@@ -526,19 +655,28 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 
 		if (volume) {
 			gst_bin_add (GST_BIN (pipeline), volume);
-			gst_element_link_many (resample,
-					       convert,
-					       volume,
-					       filter,
-					       sink,
-					       NULL);
+			res = gst_element_link_many (resample,
+			                             convert,
+			                             volume,
+			                             filter,
+			                             sink,
+			                             NULL);
+
 		}
 		else
-			gst_element_link_many (resample,
-					       convert,
-					       filter,
-					       sink,
-					       NULL);
+			res = gst_element_link_many (resample,
+			                             convert,
+			                             filter,
+			                             sink,
+			                             NULL);
+
+		if (!res) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("Impossible to link plugin pads"));
+			goto error;
+		}
 
 		/* This is an ugly workaround for the lack of accuracy with
 		 * gstreamer. Yet this is unfortunately a necessary evil. */
@@ -551,8 +689,14 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		gst_object_unref (sinkpad);
 	}
 	else {
-		gst_element_link (source, decode);
-		gst_element_link (convert, sink);
+		if (!gst_element_link (source, decode)
+		||  !gst_element_link (convert, sink)) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("Impossible to link plugin pads"));
+			goto error;
+		}
 
 		priv->link = convert;
 		g_signal_connect (G_OBJECT (decode),
@@ -663,9 +807,9 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 
 	dest = brasero_track_stream_new ();
 	brasero_track_stream_set_source (dest, path_dest);
-	brasero_track_stream_set_format (dest,
-					 BRASERO_AUDIO_FORMAT_RAW|
-					 BRASERO_AUDIO_FORMAT_44100);
+
+	/* FIXME: what if input had metadata ?*/
+	brasero_track_stream_set_format (dest, BRASERO_AUDIO_FORMAT_RAW);
 
 	/* NOTE: there is no gap and start = 0 since these tracks are the result
 	 * of the transformation of previous ones */
@@ -939,9 +1083,9 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 
 	track = brasero_track_stream_new ();
 	brasero_track_stream_set_source (track, output);
-	brasero_track_stream_set_format (track,
-					 BRASERO_AUDIO_FORMAT_RAW|
-					 BRASERO_AUDIO_FORMAT_44100);
+
+	/* FIXME: what if input had metadata ?*/
+	brasero_track_stream_set_format (track, BRASERO_AUDIO_FORMAT_RAW);
 	brasero_track_stream_set_boundaries (track, 0, length, 0);
 	brasero_track_tag_copy_missing (BRASERO_TRACK (track), src);
 
@@ -1451,34 +1595,6 @@ brasero_transcode_bus_messages (GstBus *bus,
 }
 
 static void
-brasero_transcode_error_on_pad_linking (BraseroTranscode *self)
-{
-	BraseroTranscodePrivate *priv;
-	GstMessage *message;
-	GstBus *bus;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (self);
-
-	BRASERO_JOB_LOG (self, "Error on pad linking");
-	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
-					 g_error_new (BRASERO_BURN_ERROR,
-						      BRASERO_BURN_ERROR_GENERAL,
-						      /* Translators: This message is sent
-						       * when brasero could not link together
-						       * two gstreamer plugins so that one
-						       * sends its data to the second for further
-						       * processing. This data transmission is
-						       * done through a pad. Maybe this is a bit
-						       * too technical and should be removed? */
-						      _("Impossible to link plugin pads")),
-					 "Sent by brasero_metadata_error_on_pad_linking");
-
-	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
-	gst_bus_post (bus, message);
-	g_object_unref (bus);
-}
-
-static void
 brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				      GstPad *pad,
 				      gboolean arg2,
@@ -1513,13 +1629,13 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 			queue = gst_element_factory_make ("queue", NULL);
 			gst_bin_add (GST_BIN (priv->pipeline), queue);
 			if (!gst_element_link (queue, priv->link)) {
-				brasero_transcode_error_on_pad_linking (transcode);
+				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 				goto end;
 			}
 
 			sink = gst_element_get_pad (queue, "sink");
 			if (GST_PAD_IS_LINKED (sink)) {
-				brasero_transcode_error_on_pad_linking (transcode);
+				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 				goto end;
 			}
 
@@ -1527,7 +1643,7 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 			if (res == GST_PAD_LINK_OK)
 				gst_element_set_state (queue, GST_STATE_PLAYING);
 			else
-				brasero_transcode_error_on_pad_linking (transcode);
+				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 
 			gst_object_unref (sink);
 		}
@@ -1541,13 +1657,13 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 
 			fakesink = gst_element_factory_make ("fakesink", NULL);
 			if (!fakesink) {
-				brasero_transcode_error_on_pad_linking (transcode);
+				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 				goto end;
 			}
 
 			sink = gst_element_get_static_pad (fakesink, "sink");
 			if (!sink) {
-				brasero_transcode_error_on_pad_linking (transcode);
+				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 				gst_object_unref (fakesink);
 				goto end;
 			}
@@ -1558,7 +1674,7 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 			if (res == GST_PAD_LINK_OK)
 				gst_element_set_state (fakesink, GST_STATE_PLAYING);
 			else
-				brasero_transcode_error_on_pad_linking (transcode);
+				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 
 			gst_object_unref (sink);
 		}
@@ -1634,7 +1750,6 @@ brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					 BRASERO_AUDIO_FORMAT_RAW|
-					 BRASERO_AUDIO_FORMAT_44100|
 					 BRASERO_METADATA_INFO);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
@@ -1642,16 +1757,27 @@ brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_METADATA_INFO);
 
 	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (input);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_DTS|
+					BRASERO_METADATA_INFO);
+	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
 
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
-					 BRASERO_AUDIO_FORMAT_RAW|
-					 BRASERO_AUDIO_FORMAT_44100);
+					 BRASERO_AUDIO_FORMAT_RAW);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (input);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_DTS);
 
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);

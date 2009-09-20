@@ -39,6 +39,8 @@
 
 #include "brasero-misc.h"
 
+#include "burn-debug.h"
+
 #include "brasero-track-stream-cfg.h"
 #include "brasero-io.h"
 #include "brasero-tags.h"
@@ -102,8 +104,8 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 				     GFileInfo *info,
 				     gpointer user_data)
 {
-	guint64 len;
 	GFile *file;
+	guint64 len;
 	GObject *snapshot;
 	BraseroTrackStreamCfgPrivate *priv;
 
@@ -169,13 +171,20 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		g_free (sym_uri);
 	}
 
-	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_format)
+	/* Check whether the stream is wav+dts as it can be burnt as such */
+	if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_DTS)) {
+		BRASERO_BURN_LOG ("Track has DTS");
+		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_format (BRASERO_TRACK_STREAM (obj), 
+		                                                                                BRASERO_AUDIO_FORMAT_DTS|
+		                                                                                BRASERO_METADATA_INFO);
+	}
+	else if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_format)
 		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_format (BRASERO_TRACK_STREAM (obj),
-												(g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)?
-												 BRASERO_VIDEO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_NONE)|
-												(g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)?
-												 BRASERO_AUDIO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_NONE)|
-												BRASERO_METADATA_INFO);
+		                                                                                (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)?
+		                                                                                 BRASERO_VIDEO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_NONE)|
+		                                                                                (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)?
+		                                                                                 BRASERO_AUDIO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_NONE)|
+		                                                                                BRASERO_METADATA_INFO);
 
 	/* size */
 	len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);

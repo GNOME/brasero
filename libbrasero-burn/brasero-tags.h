@@ -84,7 +84,8 @@ G_BEGIN_DECLS
 /**
  * Define the audio streams for a DVD
  */
-#define BRASERO_DVD_STREAM_FORMAT		"session::DVD::stream::format"
+#define BRASERO_DVD_STREAM_FORMAT		"session::DVD::stream::format"			/* Int */
+#define BRASERO_SESSION_STREAM_AUDIO_FORMAT	"session::stream::audio::format"	/* Int */
 
 /**
  * Define the format: whether VCD or SVCD

@@ -238,8 +238,8 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 	if (format & BRASERO_AUDIO_FORMAT_UNDEFINED)
 		strcat (buffer, "AUDIO UNDEFINED ");
 
-	if (format & BRASERO_AUDIO_FORMAT_4_CHANNEL)
-		strcat (buffer, "4 CHANNELS ");
+	if (format & BRASERO_AUDIO_FORMAT_DTS)
+		strcat (buffer, "DTS WAV ");
 
 	if (format & BRASERO_AUDIO_FORMAT_MP2)
 		strcat (buffer, "MP2 ");

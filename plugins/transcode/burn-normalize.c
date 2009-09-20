@@ -40,6 +40,8 @@
 
 #include <gst/gst.h>
 
+#include "brasero-tags.h"
+
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
 #include "burn-normalize.h"
@@ -72,6 +74,7 @@ static gboolean
 brasero_normalize_bus_messages (GstBus *bus,
 				GstMessage *msg,
 				BraseroNormalize *normalize);
+
 static void
 brasero_normalize_stop_pipeline (BraseroNormalize *normalize)
 {
@@ -182,6 +185,10 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 
 	if (!gst_element_link (source, decode)) {
 		BRASERO_JOB_LOG (normalize, "Elements could not be linked");
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
 		goto error;
 	}
 
@@ -234,11 +241,16 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 	                  "new-decoded-pad",
 	                  G_CALLBACK (brasero_normalize_new_decoded_pad_cb),
 	                  normalize);
-	gst_element_link_many (resample,
-			       convert,
-			       analysis,
-			       sink,
-			       NULL);
+	if (!gst_element_link_many (resample,
+	                            convert,
+	                            analysis,
+	                            sink,
+	                            NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+		             _("Impossible to link plugin pads"));
+	}
 
 	/* connect to the bus */	
 	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
@@ -262,16 +274,49 @@ error:
 	return FALSE;
 }
 
-static gboolean
+static BraseroBurnResult
 brasero_normalize_set_next_track (BraseroJob *job,
-				  BraseroTrack *track,
-				  GError **error)
+                                  GError **error)
 {
 	gchar *uri;
+	GValue *value;
+	BraseroTrack *track;
 	GstElement *analysis;
+	BraseroTrackType *type;
 	BraseroNormalizePrivate *priv;
+	gboolean dts_allowed = FALSE;
 
 	priv = BRASERO_NORMALIZE_PRIVATE (job);
+
+	/* See if dts is allowed */
+	value = NULL;
+	brasero_job_tag_lookup (job, BRASERO_SESSION_STREAM_AUDIO_FORMAT, &value);
+	if (value)
+		dts_allowed = (g_value_get_int (value) & BRASERO_AUDIO_FORMAT_DTS) != 0;
+
+	type = brasero_track_type_new ();
+	while (priv->tracks && priv->tracks->data) {
+		track = priv->tracks->data;
+		priv->tracks = g_slist_remove (priv->tracks, track);
+
+		brasero_track_get_track_type (track, type);
+		if (brasero_track_type_get_has_stream (type)) {
+			if (!dts_allowed)
+				break;
+
+			/* skip DTS tracks as we won't modify them */
+			if ((brasero_track_type_get_stream_format (type) & BRASERO_AUDIO_FORMAT_DTS) == 0) 
+				break;
+
+			BRASERO_JOB_LOG (job, "Skipped DTS track");
+		}
+
+		track = NULL;
+	}
+	brasero_track_type_free (type);
+
+	if (!track)
+		return BRASERO_BURN_OK;
 
 	if (!priv->analysis) {
 		analysis = gst_element_factory_make ("rganalysis", NULL);
@@ -281,7 +326,7 @@ brasero_normalize_set_next_track (BraseroJob *job,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("%s element could not be created"),
 				     "\"Rganalysis\"");
-			return FALSE;
+			return BRASERO_BURN_ERR;
 		}
 
 		g_object_set (analysis,
@@ -308,11 +353,11 @@ brasero_normalize_set_next_track (BraseroJob *job,
 
 	if (!brasero_normalize_build_pipeline (BRASERO_NORMALIZE (job), uri, analysis, error)) {
 		g_free (uri);
-		return FALSE;
+		return BRASERO_BURN_ERR;
 	}
 
 	g_free (uri);
-	return TRUE;
+	return BRASERO_BURN_RETRY;
 }
 
 static BraseroBurnResult
@@ -367,8 +412,8 @@ static void
 brasero_normalize_song_end_reached (BraseroNormalize *normalize)
 {
 	GValue *value;
-	BraseroTrack *track;
 	GError *error = NULL;
+	BraseroBurnResult result;
 	BraseroNormalizePrivate *priv;
 
 	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
@@ -396,7 +441,8 @@ brasero_normalize_song_end_reached (BraseroNormalize *normalize)
 	priv->track_peak = 0.0;
 	priv->track_gain = 0.0;
 
-	if (!priv->tracks) {
+	result = brasero_normalize_set_next_track (BRASERO_JOB (normalize), &error);
+	if (result == BRASERO_BURN_OK) {
 		BRASERO_JOB_LOG (normalize,
 				 "Setting album peak (%lf) and gain (%lf)",
 				 priv->album_peak,
@@ -422,11 +468,7 @@ brasero_normalize_song_end_reached (BraseroNormalize *normalize)
 	}
 
 	/* jump to next track */
-
-
-	track = priv->tracks->data;
-	priv->tracks = g_slist_remove (priv->tracks, track);
-	if (!brasero_normalize_set_next_track (BRASERO_JOB (normalize), track, &error)) {
+	if (result == BRASERO_BURN_ERR) {
 		brasero_job_error (BRASERO_JOB (normalize), error);
 		return;
 	}
@@ -479,7 +521,7 @@ brasero_normalize_start (BraseroJob *job,
 			 GError **error)
 {
 	BraseroNormalizePrivate *priv;
-	BraseroTrack *track;
+	BraseroBurnResult result;
 
 	priv = BRASERO_NORMALIZE_PRIVATE (job);
 
@@ -492,11 +534,13 @@ brasero_normalize_start (BraseroJob *job,
 		return BRASERO_BURN_ERR;
 
 	priv->tracks = g_slist_copy (priv->tracks);
-	track = priv->tracks->data;
-	priv->tracks = g_slist_remove (priv->tracks, track);
 
-	if (!brasero_normalize_set_next_track (job, track, error))
+	result = brasero_normalize_set_next_track (job, error);
+	if (result == BRASERO_BURN_ERR)
 		return BRASERO_BURN_ERR;
+
+	if (result == BRASERO_BURN_OK)
+		return BRASERO_BURN_NOT_RUNNING;
 
 	/* ready to go */
 	brasero_job_set_current_action (job,
@@ -613,14 +657,20 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 	}
 	gst_object_unref (element);
 
+	/* Add dts to make sure that when they are mixed with regular songs
+	 * this plugin will be called for the regular tracks */
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED|
+	                                BRASERO_AUDIO_FORMAT_DTS|
 					BRASERO_METADATA_INFO);
 	brasero_plugin_process_caps (plugin, input);
 	g_slist_free (input);
 
+	/* Add dts to make sure that when they are mixed with regular songs
+	 * this plugin will be called for the regular tracks */
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
-					BRASERO_AUDIO_FORMAT_UNDEFINED);
+					BRASERO_AUDIO_FORMAT_UNDEFINED|
+	                                BRASERO_AUDIO_FORMAT_DTS);
 	brasero_plugin_process_caps (plugin, input);
 	g_slist_free (input);
 

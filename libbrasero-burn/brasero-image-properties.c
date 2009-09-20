@@ -46,8 +46,6 @@
 #include "brasero-image-properties.h"
 #include "brasero-image-type-chooser.h"
 
-#include "brasero-session-helper.h"
-
 typedef struct _BraseroImagePropertiesPrivate BraseroImagePropertiesPrivate;
 struct _BraseroImagePropertiesPrivate
 {
