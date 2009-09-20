@@ -581,20 +581,29 @@ BraseroBurnResult
 brasero_burn_session_get_input_type (BraseroBurnSession *self,
 				     BraseroTrackType *type)
 {
-	BraseroTrack *track;
+	GSList *iter;
+	BraseroStreamFormat format;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (!priv->tracks)
-		return BRASERO_BURN_OK;
-
 	/* there can be many tracks (in case of audio) but they must be
-	 * all of the same kind for the moment */
-	track = priv->tracks->data;
-	brasero_track_get_track_type (track, type);
+	 * all of the same kind for the moment. Yet their subtypes may
+	 * be different. */
+	format = BRASERO_AUDIO_FORMAT_NONE;
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroTrack *track;
+
+		track = iter->data;
+		brasero_track_get_track_type (track, type);
+		if (brasero_track_type_get_has_stream (type))
+			format |= brasero_track_type_get_stream_format (type);
+	}
+
+	if (brasero_track_type_get_has_stream (type))
+		brasero_track_type_set_image_format (type, format);
 
 	return BRASERO_BURN_OK;
 }
