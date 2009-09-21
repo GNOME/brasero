@@ -1,4 +1,36 @@
-7-09-2009
+21-09-2009
+Brasero 2.28.0:
+
+This releases tries to improve drives and media probing to make it safer. It also fixes a few warnings and bugs:
+- fix #594530 -  BRASERO_MEDIA_TYPE_ALL_BUT_FILE doesn't math ALL_BUT_FILE anymore
+- fix #594336 -  Brasero audio CD creator fails to load FLAC/WAV files without file type name extensions
+- fix for #594417 -  crashed with SIGSEGV in g_type_instance_get_private()
+- fix a potential data corruption with dvdcss and libisofs in certain conditions
+
+Lots of updated translations:
+Amitakhya Phukan <aphukan@fedoraproject.org>: Updated Assamese translations.
+A S Alam <aalam@users.sf.net>:  Updated Translation for Punjabi by A S Alam
+Adi Roiban <adi@roiban.ro>:  Updated Romanian translation
+Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>: Updated Japanese translation
+Rajesh Ranjan <rranjan@rranjan.csb>:  Updated hindi
+Tomasz Dominikowski <dominikowski@gmail.com>: Updated Polish translation
+Maxim V. Dziumanenko <dziumanenko@gmail.com>:  Added Ukrainian translation
+Bruce Cowan <bcowan@fastmail.co.uk>: Updated British English translation
+Kostas Papadimas <pkst@gnome.org>: Updated Greek help translation.
+Tommi Vainikainen <thv@iki.fi>:  Updated Finnish translation
+Ani <peter.ani@gmail.com>: Updated Malayalam Translations
+Shankar Prasad <svenkate@redhat.com>: Updated Kannada(kn) translation
+Fran Diéguez <fran.dieguez@glug.es>: Updated Galician Translation
+Mads Lundby <lundbymads@gmail.com>: Updated Danish translation
+Astur <malditoastur@gmail.com>:  Added Asturian translation
+Gintautas Miliauskas <gintautas@miliauskas.lt>: Updated Lithuanian translation.
+krishnababu k <kkrothap@redhat.ocm>: Updated Telugu Translation
+Runa Bhattacharjee <runab@redhat.com>:  Updated Bengali India Translations
+Aron Xu <aronxu@gnome.org> : Updated Simplified Chinese translation.
+
+
+  
+7-09-2009-
 Brasero 2.27.92:
 - some improvements when handling DVD-RW sequential
 - #593829 -  Brasero gets stuck in a loop at "Getting size" while burning another session on a multi-session disk
