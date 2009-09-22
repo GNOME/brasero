@@ -845,7 +845,7 @@ brasero_burn_options_setup_disc (BraseroBurnOptions *self)
 	brasero_burn_options_reset (self);
 
 	priv->has_disc = TRUE;
-	gtk_window_set_title (GTK_WINDOW (self), _("CD/DVD Copy Options"));
+	gtk_window_set_title (GTK_WINDOW (self), _("Copy CD/DVD"));
 	brasero_burn_options_add_burn_button (self,
 					      _("_Copy"),
 					      "media-optical-copy");
