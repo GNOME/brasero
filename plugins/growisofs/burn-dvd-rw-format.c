@@ -47,8 +47,15 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "brasero-medium.h"
-#include "burn-dvd-rw-format.h"
 #include "burn-growisofs-common.h"
+
+
+#define BRASERO_TYPE_DVD_RW_FORMAT         (brasero_dvd_rw_format_get_type ())
+#define BRASERO_DVD_RW_FORMAT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_DVD_RW_FORMAT, BraseroDvdRwFormat))
+#define BRASERO_DVD_RW_FORMAT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_DVD_RW_FORMAT, BraseroDvdRwFormatClass))
+#define BRASERO_IS_DVD_RW_FORMAT(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_DVD_RW_FORMAT))
+#define BRASERO_IS_DVD_RW_FORMAT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_DVD_RW_FORMAT))
+#define BRASERO_DVD_RW_FORMAT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_DVD_RW_FORMAT, BraseroDvdRwFormatClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdRwFormat, brasero_dvd_rw_format, BRASERO_TYPE_PROCESS, BraseroProcess);
 

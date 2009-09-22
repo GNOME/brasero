@@ -43,7 +43,14 @@
 #include "brasero-tags.h"
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
-#include "burn-vob.h"
+
+
+#define BRASERO_TYPE_VOB             (brasero_vob_get_type ())
+#define BRASERO_VOB(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_VOB, BraseroVob))
+#define BRASERO_VOB_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_VOB, BraseroVobClass))
+#define BRASERO_IS_VOB(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_VOB))
+#define BRASERO_IS_VOB_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_VOB))
+#define BRASERO_VOB_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_VOB, BraseroVobClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroVob, brasero_vob, BRASERO_TYPE_JOB, BraseroJob);
 

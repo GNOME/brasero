@@ -18,7 +18,7 @@ INCLUDES = \
 vcdimagerdir = $(libdir)/brasero/plugins
 vcdimager_LTLIBRARIES = libbrasero-vcdimager.la
 
-libbrasero_vcdimager_la_SOURCES = burn-vcdimager.c burn-vcdimager.h
+libbrasero_vcdimager_la_SOURCES = burn-vcdimager.c 
 libbrasero_vcdimager_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_vcdimager_la_LDFLAGS = -module -avoid-version
 

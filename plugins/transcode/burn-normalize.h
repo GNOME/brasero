@@ -31,18 +31,9 @@
 #ifndef _BRASERO_NORMALIZE_H_
 #define _BRASERO_NORMALIZE_H_
 
-#include <glib-object.h>
-
-#include "burn-job.h"
+#include <glib.h>
 
 G_BEGIN_DECLS
-
-#define BRASERO_TYPE_NORMALIZE             (brasero_normalize_get_type ())
-#define BRASERO_NORMALIZE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_NORMALIZE, BraseroNormalize))
-#define BRASERO_NORMALIZE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_NORMALIZE, BraseroNormalizeClass))
-#define BRASERO_IS_NORMALIZE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_NORMALIZE))
-#define BRASERO_IS_NORMALIZE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_NORMALIZE))
-#define BRASERO_NORMALIZE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_NORMALIZE, BraseroNormalizeClass))
 
 #define BRASERO_ALBUM_PEAK_VALUE	"peak_value"
 #define BRASERO_ALBUM_GAIN_VALUE	"gain_value"

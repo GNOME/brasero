@@ -49,8 +49,15 @@
 #include "burn-process.h"
 #include "brasero-plugin-registration.h"
 #include "burn-cdrtools.h"
-#include "burn-mkisofs.h"
 #include "brasero-track-data.h"
+
+
+#define BRASERO_TYPE_MKISOFS         (brasero_mkisofs_get_type ())
+#define BRASERO_MKISOFS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_MKISOFS, BraseroMkisofs))
+#define BRASERO_MKISOFS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_MKISOFS, BraseroMkisofsClass))
+#define BRASERO_IS_MKISOFS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_MKISOFS))
+#define BRASERO_IS_MKISOFS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_MKISOFS))
+#define BRASERO_MKISOFS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_MKISOFS, BraseroMkisofsClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroMkisofs, brasero_mkisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
 

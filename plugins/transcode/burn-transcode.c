@@ -49,8 +49,15 @@
 #include "brasero-tags.h"
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
-#include "burn-transcode.h"
 #include "burn-normalize.h"
+
+
+#define BRASERO_TYPE_TRANSCODE         (brasero_transcode_get_type ())
+#define BRASERO_TRANSCODE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_TRANSCODE, BraseroTranscode))
+#define BRASERO_TRANSCODE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_TRANSCODE, BraseroTranscodeClass))
+#define BRASERO_IS_TRANSCODE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_TRANSCODE))
+#define BRASERO_IS_TRANSCODE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_TRANSCODE))
+#define BRASERO_TRANSCODE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_TRANSCODE, BraseroTranscodeClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroTranscode, brasero_transcode, BRASERO_TYPE_JOB, BraseroJob);
 

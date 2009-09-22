@@ -18,8 +18,7 @@ INCLUDES = \
 
 checksumdir = $(libdir)/brasero/plugins
 checksum_LTLIBRARIES = libbrasero-checksum.la
-libbrasero_checksum_la_SOURCES = burn-checksum-image.c	\
-				 burn-checksum-image.h
+libbrasero_checksum_la_SOURCES = burn-checksum-image.c	
 
 libbrasero_checksum_la_LDFLAGS = -module -avoid-version
 libbrasero_checksum_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
@@ -27,7 +26,6 @@ libbrasero_checksum_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../..
 checksumfiledir = $(libdir)/brasero/plugins
 checksumfile_LTLIBRARIES = libbrasero-checksum-file.la
 libbrasero_checksum_file_la_SOURCES = burn-checksum-files.c	\
-				      burn-checksum-files.h\
 				      burn-volume-read.c  \
 				      burn-volume-read.h
 

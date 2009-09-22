@@ -44,11 +44,18 @@
 #include "brasero-units.h"
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
-#include "burn-uri.h"
 
 #include "brasero-track.h"
 #include "brasero-track-data.h"
 #include "brasero-track-image.h"
+
+
+#define BRASERO_TYPE_BURN_URI         (brasero_burn_uri_get_type ())
+#define BRASERO_BURN_URI(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_BURN_URI, BraseroBurnURI))
+#define BRASERO_BURN_URI_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_BURN_URI, BraseroBurnURIClass))
+#define BRASERO_IS_BURN_URI(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_BURN_URI))
+#define BRASERO_IS_BURN_URI_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURN_URI))
+#define BRASERO_BURN_URI_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN_URI, BraseroBurnURIClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroBurnURI, brasero_burn_uri, BRASERO_TYPE_JOB, BraseroJob);
 

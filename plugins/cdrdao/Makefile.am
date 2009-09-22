@@ -18,7 +18,7 @@ INCLUDES = \
 #cdrdao
 cdrdaodir = $(libdir)/brasero/plugins
 cdrdao_LTLIBRARIES = libbrasero-cdrdao.la
-libbrasero_cdrdao_la_SOURCES = burn-cdrdao.c burn-cdrdao.h \
+libbrasero_cdrdao_la_SOURCES = burn-cdrdao.c \
 	burn-cdrdao-common.h 
 libbrasero_cdrdao_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_cdrdao_la_LDFLAGS = -module -avoid-version
@@ -26,7 +26,7 @@ libbrasero_cdrdao_la_LDFLAGS = -module -avoid-version
 #toc2cue
 toc2cuedir = $(libdir)/brasero/plugins
 toc2cue_LTLIBRARIES = libbrasero-toc2cue.la
-libbrasero_toc2cue_la_SOURCES = burn-toc2cue.c burn-toc2cue.h \
+libbrasero_toc2cue_la_SOURCES = burn-toc2cue.c \
 	burn-cdrdao-common.h 
 libbrasero_toc2cue_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_toc2cue_la_LDFLAGS = -module -avoid-version

@@ -55,11 +55,18 @@
 #include "burn-process.h"
 #include "brasero-plugin-registration.h"
 #include "burn-cdrtools.h"
-#include "burn-cdrecord.h"
 
 #include "brasero-tags.h"
 #include "brasero-track-image.h"
 #include "brasero-track-stream.h"
+
+
+#define BRASERO_TYPE_CD_RECORD         (brasero_cdrecord_get_type ())
+#define BRASERO_CD_RECORD(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_CD_RECORD, BraseroCDRecord))
+#define BRASERO_CD_RECORD_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_CD_RECORD, BraseroCDRecordClass))
+#define BRASERO_IS_CD_RECORD(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_CD_RECORD))
+#define BRASERO_IS_CD_RECORD_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_CD_RECORD))
+#define BRASERO_CD_RECORD_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_CD_RECORD, BraseroCDRecordClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroCDRecord, brasero_cdrecord, BRASERO_TYPE_PROCESS, BraseroProcess);
 

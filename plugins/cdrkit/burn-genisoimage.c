@@ -48,8 +48,15 @@
 #include "burn-process.h"
 #include "brasero-plugin-registration.h"
 #include "burn-cdrkit.h"
-#include "burn-genisoimage.h"
 #include "brasero-track-data.h"
+
+
+#define BRASERO_TYPE_GENISOIMAGE         (brasero_genisoimage_get_type ())
+#define BRASERO_GENISOIMAGE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimage))
+#define BRASERO_GENISOIMAGE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimageClass))
+#define BRASERO_IS_GENISOIMAGE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_GENISOIMAGE))
+#define BRASERO_IS_GENISOIMAGE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_GENISOIMAGE))
+#define BRASERO_GENISOIMAGE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimageClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroGenisoimage, brasero_genisoimage, BRASERO_TYPE_PROCESS, BraseroProcess);
 

@@ -48,12 +48,19 @@
 
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
-#include "burn-dvdcss.h"
 #include "burn-dvdcss-private.h"
 #include "burn-volume.h"
 #include "brasero-medium.h"
 #include "brasero-track-image.h"
 #include "brasero-track-disc.h"
+
+
+#define BRASERO_TYPE_DVDCSS         (brasero_dvdcss_get_type ())
+#define BRASERO_DVDCSS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_DVDCSS, BraseroDvdcss))
+#define BRASERO_DVDCSS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_DVDCSS, BraseroDvdcssClass))
+#define BRASERO_IS_DVDCSS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_DVDCSS))
+#define BRASERO_IS_DVDCSS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_DVDCSS))
+#define BRASERO_DVDCSS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_DVDCSS, BraseroDvdcssClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BRASERO_TYPE_JOB, BraseroJob);
 

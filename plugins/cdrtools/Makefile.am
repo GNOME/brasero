@@ -18,7 +18,7 @@ INCLUDES = \
 #cdrecord
 cdrecorddir = $(libdir)/brasero/plugins
 cdrecord_LTLIBRARIES = libbrasero-cdrecord.la
-libbrasero_cdrecord_la_SOURCES = burn-cdrecord.c burn-cdrecord.h \
+libbrasero_cdrecord_la_SOURCES = burn-cdrecord.c \
 	burn-cdrtools.h 
 libbrasero_cdrecord_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_cdrecord_la_LDFLAGS = -module -avoid-version
@@ -26,7 +26,7 @@ libbrasero_cdrecord_la_LDFLAGS = -module -avoid-version
 #mkisofs
 mkisofsdir = $(libdir)/brasero/plugins
 mkisofs_LTLIBRARIES = libbrasero-mkisofs.la
-libbrasero_mkisofs_la_SOURCES = burn-mkisofs.c burn-mkisofs.h \
+libbrasero_mkisofs_la_SOURCES = burn-mkisofs.c \
 	burn-cdrtools.h 
 libbrasero_mkisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_mkisofs_la_LDFLAGS = -module -avoid-version
@@ -34,7 +34,7 @@ libbrasero_mkisofs_la_LDFLAGS = -module -avoid-version
 #readcd
 readcddir = $(libdir)/brasero/plugins
 readcd_LTLIBRARIES = libbrasero-readcd.la
-libbrasero_readcd_la_SOURCES = burn-readcd.c burn-readcd.h \
+libbrasero_readcd_la_SOURCES = burn-readcd.c \
 	burn-cdrtools.h 
 libbrasero_readcd_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_readcd_la_LDFLAGS = -module -avoid-version

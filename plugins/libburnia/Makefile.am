@@ -20,7 +20,6 @@ INCLUDES = \
 libburndir = $(libdir)/brasero/plugins
 libburn_LTLIBRARIES = libbrasero-libburn.la
 libbrasero_libburn_la_SOURCES = burn-libburn.c 		\
-				burn-libburn.h		\
 				burn-libburn-common.c	\
 				burn-libburn-common.h  \
 				burn-libburnia.h 
@@ -30,7 +29,7 @@ libbrasero_libburn_la_LDFLAGS = -module -avoid-version
 #libisofs (apparently libisofs needs one libburn function)
 libisofsdir = $(libdir)/brasero/plugins
 libisofs_LTLIBRARIES = libbrasero-libisofs.la
-libbrasero_libisofs_la_SOURCES = burn-libisofs.c burn-libisofs.h	\
+libbrasero_libisofs_la_SOURCES = burn-libisofs.c                       \
 	burn-libburn-common.c burn-libburn-common.h			\
 	burn-libburnia.h 
 libbrasero_libisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS) ../../libbrasero-burn/libbrasero-burn.la

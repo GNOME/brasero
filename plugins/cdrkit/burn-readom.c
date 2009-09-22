@@ -41,7 +41,6 @@
 #include <gmodule.h>
 
 #include "burn-cdrkit.h"
-#include "burn-readom.h"
 #include "burn-process.h"
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
@@ -51,7 +50,16 @@
 #include "burn-volume.h"
 #include "brasero-drive.h"
 
+
+#define BRASERO_TYPE_READOM         (brasero_readom_get_type ())
+#define BRASERO_READOM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_READOM, BraseroReadom))
+#define BRASERO_READOM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_READOM, BraseroReadomClass))
+#define BRASERO_IS_READOM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_READOM))
+#define BRASERO_IS_READOM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_READOM))
+#define BRASERO_READOM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_READOM, BraseroReadomClass))
+
 BRASERO_PLUGIN_BOILERPLATE (BraseroReadom, brasero_readom, BRASERO_TYPE_PROCESS, BraseroProcess);
+
 static GObjectClass *parent_class = NULL;
 
 static BraseroBurnResult

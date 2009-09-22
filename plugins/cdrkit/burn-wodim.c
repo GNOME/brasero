@@ -55,11 +55,18 @@
 #include "burn-process.h"
 #include "brasero-plugin-registration.h"
 #include "burn-cdrkit.h"
-#include "burn-wodim.h"
 
 #include "brasero-tags.h"
 #include "brasero-track-image.h"
 #include "brasero-track-stream.h"
+
+
+#define BRASERO_TYPE_WODIM         (brasero_wodim_get_type ())
+#define BRASERO_WODIM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_WODIM, BraseroWodim))
+#define BRASERO_WODIM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_WODIM, BraseroWodimClass))
+#define BRASERO_IS_WODIM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_WODIM))
+#define BRASERO_IS_WODIM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_WODIM))
+#define BRASERO_WODIM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_WODIM, BraseroWodimClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroWodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
 

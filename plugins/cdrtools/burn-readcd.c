@@ -41,7 +41,6 @@
 #include <gmodule.h>
 
 #include "burn-cdrtools.h"
-#include "burn-readcd.h"
 #include "burn-process.h"
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
@@ -50,6 +49,14 @@
 
 #include "burn-volume.h"
 #include "brasero-drive.h"
+
+
+#define BRASERO_TYPE_READCD         (brasero_readcd_get_type ())
+#define BRASERO_READCD(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_READCD, BraseroReadcd))
+#define BRASERO_READCD_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_READCD, BraseroReadcdClass))
+#define BRASERO_IS_READCD(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_READCD))
+#define BRASERO_IS_READCD_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_READCD))
+#define BRASERO_READCD_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_READCD, BraseroReadcdClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroReadcd, brasero_readcd, BRASERO_TYPE_PROCESS, BraseroProcess);
 static GObjectClass *parent_class = NULL;

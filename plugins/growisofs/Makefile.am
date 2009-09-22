@@ -18,7 +18,7 @@ INCLUDES = \
 #growisofs
 growisofsdir = $(libdir)/brasero/plugins
 growisofs_LTLIBRARIES = libbrasero-growisofs.la
-libbrasero_growisofs_la_SOURCES = burn-growisofs.c burn-growisofs.h \
+libbrasero_growisofs_la_SOURCES = burn-growisofs.c \
 	burn-growisofs-common.h 
 libbrasero_growisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_growisofs_la_LDFLAGS = -module -avoid-version
@@ -26,7 +26,7 @@ libbrasero_growisofs_la_LDFLAGS = -module -avoid-version
 #dvdrwformat
 dvdrwformatdir = $(libdir)/brasero/plugins
 dvdrwformat_LTLIBRARIES = libbrasero-dvdrwformat.la
-libbrasero_dvdrwformat_la_SOURCES = burn-dvd-rw-format.c burn-dvd-rw-format.h
+libbrasero_dvdrwformat_la_SOURCES = burn-dvd-rw-format.c 
 libbrasero_dvdrwformat_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_dvdrwformat_la_LDFLAGS = -module -avoid-version
 

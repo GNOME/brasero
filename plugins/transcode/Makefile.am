@@ -18,7 +18,7 @@ INCLUDES = \
 transcodedir = $(libdir)/brasero/plugins
 transcode_LTLIBRARIES = libbrasero-transcode.la
 
-libbrasero_transcode_la_SOURCES = burn-transcode.c burn-transcode.h burn-normalize.h
+libbrasero_transcode_la_SOURCES = burn-transcode.c burn-normalize.h 
 libbrasero_transcode_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_transcode_la_LDFLAGS = -module -avoid-version
 
@@ -32,7 +32,7 @@ libbrasero_normalize_la_LDFLAGS = -module -avoid-version
 vobdir = $(libdir)/brasero/plugins
 vob_LTLIBRARIES = libbrasero-vob.la
 
-libbrasero_vob_la_SOURCES = burn-vob.c burn-vob.h
+libbrasero_vob_la_SOURCES = burn-vob.c 
 libbrasero_vob_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_vob_la_LDFLAGS = -module -avoid-version
 

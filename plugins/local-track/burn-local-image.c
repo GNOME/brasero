@@ -52,9 +52,16 @@
 
 #include "burn-job.h"
 #include "brasero-plugin-registration.h"
-#include "burn-local-image.h"
 #include "brasero-xfer.h"
 #include "brasero-track-image.h"
+
+
+#define BRASERO_TYPE_LOCAL_TRACK         (brasero_local_track_get_type ())
+#define BRASERO_LOCAL_TRACK(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrack))
+#define BRASERO_LOCAL_TRACK_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrackClass))
+#define BRASERO_IS_LOCAL_TRACK(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_LOCAL_TRACK))
+#define BRASERO_IS_LOCAL_TRACK_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_LOCAL_TRACK))
+#define BRASERO_LOCAL_TRACK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrackClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLocalTrack, brasero_local_track, BRASERO_TYPE_JOB, BraseroJob);
 

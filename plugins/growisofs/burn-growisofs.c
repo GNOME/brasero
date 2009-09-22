@@ -51,10 +51,17 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "brasero-drive.h"
-#include "burn-growisofs.h"
 #include "burn-growisofs-common.h"
 #include "brasero-track-data.h"
 #include "brasero-track-image.h"
+
+
+#define BRASERO_TYPE_GROWISOFS         (brasero_growisofs_get_type ())
+#define BRASERO_GROWISOFS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_GROWISOFS, BraseroGrowisofs))
+#define BRASERO_GROWISOFS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_GROWISOFS, BraseroGrowisofsClass))
+#define BRASERO_IS_GROWISOFS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_GROWISOFS))
+#define BRASERO_IS_GROWISOFS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_GROWISOFS))
+#define BRASERO_GROWISOFS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_GROWISOFS, BraseroGrowisofsClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
 

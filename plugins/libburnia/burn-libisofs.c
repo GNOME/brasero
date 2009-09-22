@@ -48,13 +48,20 @@
 #include <libburn/libburn.h>
 
 #include "burn-libburnia.h"
-#include "burn-libisofs.h"
 #include "burn-job.h"
 #include "brasero-units.h"
 #include "brasero-plugin-registration.h"
 #include "burn-libburn-common.h"
 #include "brasero-track-data.h"
 #include "brasero-track-image.h"
+
+
+#define BRASERO_TYPE_LIBISOFS         (brasero_libisofs_get_type ())
+#define BRASERO_LIBISOFS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_LIBISOFS, BraseroLibisofs))
+#define BRASERO_LIBISOFS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_LIBISOFS, BraseroLibisofsClass))
+#define BRASERO_IS_LIBISOFS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_LIBISOFS))
+#define BRASERO_IS_LIBISOFS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_LIBISOFS))
+#define BRASERO_LIBISOFS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_LIBISOFS, BraseroLibisofsClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibisofs, brasero_libisofs, BRASERO_TYPE_JOB, BraseroJob);
 

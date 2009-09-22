@@ -46,7 +46,6 @@
 #include <gconf/gconf-client.h>
 
 #include "burn-cdrdao-common.h"
-#include "burn-cdrdao.h"
 #include "brasero-error.h"
 #include "brasero-plugin-registration.h"
 #include "burn-job.h"
@@ -55,6 +54,14 @@
 #include "brasero-track-image.h"
 #include "brasero-drive.h"
 #include "brasero-medium.h"
+
+
+#define BRASERO_TYPE_CDRDAO         (brasero_cdrdao_get_type ())
+#define BRASERO_CDRDAO(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdao))
+#define BRASERO_CDRDAO_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_CDRDAO, BraseroCdrdaoClass))
+#define BRASERO_IS_CDRDAO(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_CDRDAO))
+#define BRASERO_IS_CDRDAO_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_CDRDAO))
+#define BRASERO_CDRDAO_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdaoClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BRASERO_TYPE_PROCESS, BraseroProcess);
 

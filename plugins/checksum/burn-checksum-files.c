@@ -50,7 +50,6 @@
 #include "scsi-device.h"
 #include "brasero-plugin-registration.h"
 #include "burn-job.h"
-#include "burn-checksum-files.h"
 
 #include "brasero-tags.h"
 #include "brasero-track-data.h"
@@ -61,6 +60,14 @@
 #include "brasero-volume.h"
 
 #include "burn-volume-read.h"
+
+
+#define BRASERO_TYPE_CHECKSUM_FILES		(brasero_checksum_files_get_type ())
+#define BRASERO_CHECKSUM_FILES(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_CHECKSUM_FILES, BraseroChecksumFiles))
+#define BRASERO_CHECKSUM_FILES_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_CHECKSUM_FILES, BraseroChecksumFilesClass))
+#define BRASERO_IS_CHECKSUM_FILES(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_CHECKSUM_FILES))
+#define BRASERO_IS_CHECKSUM_FILES_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_CHECKSUM_FILES))
+#define BRASERO_CHECKSUM_FILES_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_CHECKSUM_FILES, BraseroChecksumFilesClass))
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumFiles, brasero_checksum_files, BRASERO_TYPE_JOB, BraseroJob);
 
