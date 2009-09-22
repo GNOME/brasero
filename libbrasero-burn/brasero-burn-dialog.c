@@ -881,7 +881,7 @@ brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
 	BraseroBurnResult result;
 
 	secondary = g_strdup_printf ("%s\n%s",
-				     _("Already burnt files will be invisible (though still readable)."),
+				     _("Already burned files will be invisible (though still readable)."),
 				     _("Do you want to continue anyway?"));
 				     
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
@@ -1862,7 +1862,7 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 
 	switch (priv->input.type) {
 	case BRASERO_TRACK_TYPE_STREAM:
-		return g_strdup (_("Audio CD successfully burnt"));
+		return g_strdup (_("Audio CD successfully burned"));
 
 	case BRASERO_TRACK_TYPE_DISC:
 		if (!brasero_drive_is_fake (drive)) {
@@ -1881,17 +1881,17 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 	case BRASERO_TRACK_TYPE_IMAGE:
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
-				return g_strdup (_("Image successfully burnt to DVD"));
+				return g_strdup (_("Image successfully burned to DVD"));
 			else
-				return g_strdup (_("Image successfully burnt to CD"));
+				return g_strdup (_("Image successfully burned to CD"));
 		}
 		break;
 	default:
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
-				return g_strdup (_("Data DVD successfully burnt"));
+				return g_strdup (_("Data DVD successfully burned"));
 			else
-				return g_strdup (_("Data CD successfully burnt"));
+				return g_strdup (_("Data CD successfully burned"));
 		}
 
 		return g_strdup (_("Image successfully created"));

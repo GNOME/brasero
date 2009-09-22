@@ -812,7 +812,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The drive cannot burn or the disc cannot be burnt"));
+			     _("The drive cannot burn or the disc cannot be burned"));
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
 
@@ -1788,7 +1788,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("There is no track to be burnt"));
+			     _("There is no track to burn"));
 		return BRASERO_BURN_ERR;
 	}
 	brasero_track_type_free (type);

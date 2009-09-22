@@ -722,7 +722,7 @@ brasero_status_dialog_uri_has_image (BraseroTrackDataCfg *track,
 
 	name = brasero_utils_get_uri_name (uri);
 	/* Translators: %s is the name of the image */
-	string = g_strdup_printf (_("There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burnt."), name);
+	string = g_strdup_printf (_("There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned."), name);
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
 	g_free (string);
 	g_free (name);

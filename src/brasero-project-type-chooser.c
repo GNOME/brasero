@@ -303,7 +303,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 				  self);
 
 		gtk_widget_show (link);
-		gtk_widget_set_tooltip_text (link, _("Load the last project that was not burnt and not saved"));
+		gtk_widget_set_tooltip_text (link, _("Load the last project that was not burned and not saved"));
 		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), link, FALSE, TRUE, 0);
 
 		gtk_size_group_add_widget (group, link);

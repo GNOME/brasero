@@ -103,7 +103,7 @@ static const GOptionEntry options [] = {
 	  NULL },
 
 	{ "image", 'i', 0, G_OPTION_ARG_STRING, &iso_uri,
-	 N_("Uri of an image file to be burnt (autodetected)"),
+	 N_("Uri of an image file to burn (autodetected)"),
           N_("PATH TO PLAYLIST") },
 
     	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
