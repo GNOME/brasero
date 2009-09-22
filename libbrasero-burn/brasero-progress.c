@@ -220,7 +220,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 		else
 			speed = (gfloat) BRASERO_RATE_TO_SPEED_CD (rate);
 
-		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f x)", rate / 1024, speed);
+		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f\303\227)", rate / 1024, speed);
 		obj->priv->speed = gtk_label_new (text);
 		g_free (text);
 
@@ -453,7 +453,7 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		else
 			speed = (gfloat) BRASERO_RATE_TO_SPEED_CD (rate);
 
-		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f x)", rate / 1024, speed);
+		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f\303\227)", rate / 1024, speed);
 		gtk_label_set_text (GTK_LABEL (self->priv->speed), text);
 		g_free (text);
 	}

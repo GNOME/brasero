@@ -544,20 +544,20 @@ brasero_drive_properties_format_disc_speed (BraseroMedia media,
 
 	if (media & BRASERO_MEDIUM_DVD)
 		/* Translators %s.1f is the speed used to burn */
-		text = g_strdup_printf (_("%.1f x (DVD)"),
+		text = g_strdup_printf (_("%.1f\303\227 (DVD)"),
 					BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_CD)
 		/* Translators %s.1f is the speed used to burn */
-		text = g_strdup_printf (_("%.1f x (CD)"),
+		text = g_strdup_printf (_("%.1f\303\227 (CD)"),
 					BRASERO_RATE_TO_SPEED_CD (rate));
 	else if (media & BRASERO_MEDIUM_BD)
 		/* Translators %s.1f is the speed used to burn */
-		text = g_strdup_printf (_("%.1f x (BD)"),
+		text = g_strdup_printf (_("%.1f\303\227 (BD)"),
 					BRASERO_RATE_TO_SPEED_BD (rate));
 	else
 		/* Translators %s.1f is the speed used to burn for every medium
 		 * type*/
-		text = g_strdup_printf (_("%.1f x (BD) %.1f x (DVD) %.1f x (CD)"),
+		text = g_strdup_printf (_("%.1f\303\227 (BD) %.1f\303\227 (DVD) %.1f\303\227 (CD)"),
 					BRASERO_RATE_TO_SPEED_BD (rate),
 					BRASERO_RATE_TO_SPEED_DVD (rate),
 					BRASERO_RATE_TO_SPEED_CD (rate));

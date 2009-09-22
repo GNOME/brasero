@@ -810,7 +810,7 @@ brasero_player_image (BraseroPlayer *player)
 	gtk_label_set_markup (GTK_LABEL (player->priv->header), string);
 	g_free (string);
 
-	string = g_strdup_printf (_("<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"), width, height);
+	string = g_strdup_printf (_("<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i \303\227 %i pixels</span></i>"), width, height);
 	gtk_label_set_markup (GTK_LABEL (player->priv->size), string);
 	g_free (string);
 
