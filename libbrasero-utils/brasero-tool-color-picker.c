@@ -165,7 +165,10 @@ brasero_tool_color_picker_clicked (BraseroToolColorPicker *self,
 	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
 
 	dialog = gtk_color_selection_dialog_new (_("Pick a Color"));
-	selection = GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (dialog)->colorsel);
+	selection = NULL;
+	g_object_get (dialog,
+	              "color-selection", &selection,
+	              NULL);
 	gtk_color_selection_set_current_color (selection, &priv->color);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
