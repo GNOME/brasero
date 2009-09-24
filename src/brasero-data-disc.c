@@ -795,7 +795,7 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-	                                          _("A file with this name already exists in the folder.  Replacing it will overwrite its content (on the disc only)."));
+	                                          _("A file with this name already exists in the folder.  Replacing it will overwrite its content on the disc to be burnt."));
 
 	/* Translators: Keep means we're keeping the files that already existed
 	 * in the project.
