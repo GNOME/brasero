@@ -49,7 +49,8 @@ baobab_cell_renderer_progress_init (BaobabCellRendererProgress *cellprogress)
   g_object_set (cellprogress,
                 "mode", GTK_CELL_RENDERER_MODE_INERT,
                 "xpad", 4,
-                "ypad", 4);
+                "ypad", 4,
+                NULL);
 }
 
 GtkCellRenderer*
