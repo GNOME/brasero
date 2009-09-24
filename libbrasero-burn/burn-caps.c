@@ -58,7 +58,6 @@
 G_DEFINE_TYPE (BraseroBurnCaps, brasero_burn_caps, G_TYPE_OBJECT);
 
 static GObjectClass *parent_class = NULL;
-static BraseroBurnCaps *default_caps = NULL;
 
 
 static void
@@ -214,8 +213,6 @@ brasero_burn_caps_finalize (GObject *object)
 
 	cobj = BRASERO_BURNCAPS (object);
 	
-	default_caps = NULL;
-
 	if (cobj->priv->groups) {
 		g_hash_table_destroy (cobj->priv->groups);
 		cobj->priv->groups = NULL;
@@ -249,15 +246,4 @@ brasero_burn_caps_init (BraseroBurnCaps *obj)
 							BRASERO_ENGINE_GROUP_KEY,
 							NULL);
 	g_object_unref (client);
-}
-
-BraseroBurnCaps *
-brasero_burn_caps_get_default ()
-{
-	if (!default_caps) 
-		default_caps = BRASERO_BURNCAPS (g_object_new (BRASERO_TYPE_BURNCAPS, NULL));
-	else
-		g_object_ref (default_caps);
-
-	return default_caps;
 }
