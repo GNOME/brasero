@@ -55,6 +55,7 @@
 
 static BraseroPluginManager *plugin_manager = NULL;
 static BraseroMediumMonitor *medium_manager = NULL;
+static BraseroBurnCaps *default_caps = NULL;
 
 
 GQuark
@@ -215,7 +216,7 @@ brasero_burn_library_start (int *argc,
 			  BRASERO_SUB);
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
-	/* Work around: because on OpenSolaris brasero posiblely be run
+	/* Work around: because on OpenSolaris brasero possibly be run
 	 * as root for a user with 'Primary Administrator' profile,
 	 * a root dbus session will be autospawned at that time.
 	 * This fix is to work around
@@ -250,13 +251,24 @@ brasero_burn_library_start (int *argc,
 		medium_manager = brasero_medium_monitor_get_default ();
 
 	/* initialize plugins */
-	brasero_burn_caps_get_default ();
+	if (!default_caps)
+		default_caps = BRASERO_BURNCAPS (g_object_new (BRASERO_TYPE_BURNCAPS, NULL));
 
 	if (!plugin_manager)
 		plugin_manager = brasero_plugin_manager_get_default ();
 
 	brasero_caps_list_dump ();
 	return TRUE;
+}
+
+BraseroBurnCaps *
+brasero_burn_caps_get_default ()
+{
+	if (!default_caps)
+		g_error ("You must call brasero_burn_library_start () before using API from libbrasero-burn");
+
+	g_object_ref (default_caps);
+	return default_caps;
 }
 
 /**
@@ -288,6 +300,11 @@ brasero_burn_library_stop (void)
 	if (medium_manager) {
 		g_object_unref (medium_manager);
 		medium_manager = NULL;
+	}
+
+	if (default_caps) {
+		g_object_unref (default_caps);
+		default_caps = NULL;
 	}
 
 	/* Cleanup the io thing */
