@@ -607,6 +607,37 @@ brasero_session_cfg_set_drive_properties_default_flags (BraseroSessionCfg *self)
 						     &priv->compulsory);
 	}
 
+#if 0
+	
+	/* NOTE: Stop setting DAO here except if it
+	 * is declared compulsory (but that's handled
+	 * somewhere else) or if it was explicity set.
+	 * If we set it just  by  default when it's
+	 * supported but not compulsory, MULTI
+	 * becomes not supported anymore.
+	 * For data the only way it'd be really useful
+	 * is if we wanted to fit a selection on the disc.
+	 * The problem here is that we don't know
+	 * what the size of the final image is going
+	 * to be.
+	 * For images there are cases when after 
+	 * writing an image the user may want to
+	 * add some more data to it later. As in the
+	 * case of data the only way this flag would
+	 * be useful would be to help fit the image
+	 * on the disc. But I doubt it would really
+	 * help a lot.
+	 * For audio we need it to write things like
+	 * CD-TEXT but in this case the backend
+	 * will return it as compulsory. */
+
+	/* Another case when this flag is needed is
+	 * for DVD-RW quick blanked as they only
+	 * support DAO. But there again this should
+	 * be covered by the backend that should
+	 * return DAO as compulsory. */
+
+	/* Leave the code as a reminder. */
 	/* When copying with same drive don't set write mode, it'll be set later */
 	if (!brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))
 	&&  !(media & BRASERO_MEDIUM_DVD)) {
@@ -623,9 +654,10 @@ brasero_session_cfg_set_drive_properties_default_flags (BraseroSessionCfg *self)
 							     &priv->compulsory);
 
 			/* NOTE: after setting DAO, some flags may become
-			 * compulsory like BLANK_BEFORE for CDRW with data */
+			 * compulsory like MULTI. */
 		}
 	}
+#endif
 }
 
 static void
@@ -704,6 +736,21 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 							     &priv->supported,
 							     &priv->compulsory);
 		}
+	}
+
+	if (original_flags & BRASERO_BURN_FLAG_DAO
+	&&  priv->supported & BRASERO_BURN_FLAG_DAO) {
+		/* Only set DAO if it was explicitely requested */
+		brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), BRASERO_BURN_FLAG_DAO);
+
+		priv->supported = BRASERO_BURN_FLAG_NONE;
+		priv->compulsory = BRASERO_BURN_FLAG_NONE;
+		brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (self),
+						     &priv->supported,
+						     &priv->compulsory);
+
+		/* NOTE: after setting DAO, some flags may become
+		 * compulsory like MULTI. */
 	}
 
 	brasero_session_cfg_set_drive_properties_default_flags (self);
