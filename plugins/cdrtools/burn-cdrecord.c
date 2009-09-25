@@ -1260,7 +1260,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* This is a CDR with data data can be merged or at least appended */
+	/* This is a CDR with data; data can be merged or at least appended */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CD|
 				  BRASERO_MEDIUM_WRITABLE|

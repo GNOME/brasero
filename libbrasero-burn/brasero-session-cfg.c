@@ -708,7 +708,7 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 
 	for (flag = BRASERO_BURN_FLAG_EJECT; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
 		/* see if this flag was originally set */
-		if (!(flags & flag))
+		if ((flags & flag) == 0)
 			continue;
 
 		/* Don't set write modes now in this case */

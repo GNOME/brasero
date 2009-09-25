@@ -1488,6 +1488,7 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 					BraseroBurnFlag *compulsory_flags)
 {
 	BraseroBurnResult result;
+	gboolean can_blank = FALSE;
 
 	/* See if medium is supported out of the box */
 	result = brasero_caps_get_flags_for_disc (self,
@@ -1501,16 +1502,14 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 	 * - media can be blanked, it has audio or data and we're not merging
 	 * - media is not formatted and it can be blanked/formatted */
 	if (brasero_burn_caps_can_blank_real (self, media, session_flags) == BRASERO_BURN_OK)
-		(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+		can_blank = TRUE;
 	else if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	if (((*supported_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) != 0) {
+	if (can_blank) {
+		gboolean first_success;
 		BraseroBurnFlag blank_compulsory = BRASERO_BURN_FLAG_NONE;
 		BraseroBurnFlag blank_supported = BRASERO_BURN_FLAG_NONE;
-
-		/* If BLANK flag is supported then MERGE/APPEND can't be compulsory */
-		(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
 
 		/* we reached this point in two cases:
 		 * - if the disc cannot be handled
@@ -1531,8 +1530,7 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 
 		/* result here is the result of the first operation, so if it
 		 * failed, BLANK before becomes compulsory. */
-		if (result != BRASERO_BURN_OK)
-			(*compulsory_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+		first_success = (result == BRASERO_BURN_OK);
 
 		/* pretends it is blank and formatted to see if it would work.
 		 * If it works then that means that the BLANK_BEFORE_WRITE flag
@@ -1551,18 +1549,34 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 							  compulsory_flags);
 
 		/* if both attempts failed, drop it */
-		if (result != BRASERO_BURN_OK
-		&& (((*compulsory_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)))
-			return result;
+		if (result != BRASERO_BURN_OK) {
+			/* See if we entirely failed */
+			if (!first_success)
+				return result;
 
-		/* need to add blanking flags */
-		brasero_burn_caps_get_blanking_flags_real (self,
-							   media,
-							   session_flags,
-							   &blank_supported,
-							   &blank_compulsory);
-		(*supported_flags) |= blank_supported;
-		(*compulsory_flags) |= blank_compulsory;
+			/* we tried with a blank medium but did not 
+			 * succeed. So that means the flags BLANK.
+			 * is not supported */
+		}
+		else {
+			(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+
+			if (!first_success)
+				(*compulsory_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+
+			/* If BLANK flag is supported then MERGE/APPEND can't be compulsory */
+			(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
+
+			/* need to add blanking flags */
+			brasero_burn_caps_get_blanking_flags_real (self,
+								   media,
+								   session_flags,
+								   &blank_supported,
+								   &blank_compulsory);
+			(*supported_flags) |= blank_supported;
+			(*compulsory_flags) |= blank_compulsory;
+		}
+		
 	}
 	else if (result != BRASERO_BURN_OK)
 		return result;
