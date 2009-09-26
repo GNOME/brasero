@@ -876,6 +876,19 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 	return BRASERO_BURN_OK;
 }
 
+static void
+brasero_libisofs_clean_output (BraseroLibisofs *self)
+{
+	BraseroLibisofsPrivate *priv;
+
+	priv = BRASERO_LIBISOFS_PRIVATE (self);
+
+	if (priv->libburn_src) {
+		burn_source_free (priv->libburn_src);
+		priv->libburn_src = NULL;
+	}
+}
+
 static BraseroBurnResult
 brasero_libisofs_start (BraseroJob *job,
 			GError **error)
@@ -889,6 +902,10 @@ brasero_libisofs_start (BraseroJob *job,
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
+		/* do this to avoid a problem when using
+		 * DUMMY flag. libisofs would not generate
+		 * a second time. */
+		brasero_libisofs_clean_output (BRASERO_LIBISOFS (job));
 		brasero_job_set_current_action (BRASERO_JOB (self),
 						BRASERO_BURN_ACTION_GETTING_SIZE,
 						NULL,
@@ -978,22 +995,6 @@ brasero_libisofs_init (BraseroLibisofs *obj)
 }
 
 static void
-brasero_libisofs_clean_output (BraseroLibisofs *self)
-{
-	BraseroLibisofsPrivate *priv;
-
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
-
-	if (priv->libburn_src) {
-		burn_source_free (priv->libburn_src);
-		priv->libburn_src = NULL;
-	}
-
-	/* close libisofs library */
-	iso_finish ();
-}
-
-static void
 brasero_libisofs_finalize (GObject *object)
 {
 	BraseroLibisofs *cobj;
@@ -1014,6 +1015,9 @@ brasero_libisofs_finalize (GObject *object)
 		g_cond_free (priv->cond);
 		priv->cond = NULL;
 	}
+
+	/* close libisofs library */
+	iso_finish ();
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
