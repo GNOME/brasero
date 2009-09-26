@@ -2978,43 +2978,49 @@ brasero_medium_probe_thread (gpointer self)
 		handle = brasero_device_handle_open (device, FALSE, &code);
 	}
 
-	if (priv->probe_cancelled)
+	if (!handle) {
+		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 		goto end;
+	}
 
-	if (handle) {
-		BRASERO_MEDIA_LOG ("Open () succeeded");
+	if (priv->probe_cancelled) {
+		brasero_device_handle_close (handle);
+		goto end;
+	}
 
-		/* NOTE: if we wanted to know the status we'd need to read the 
-		 * error code variable which is currently NULL */
-		while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
-			if (code == BRASERO_SCSI_NO_MEDIUM) {
-				brasero_device_handle_close (handle);
-				BRASERO_MEDIA_LOG ("No medium inserted");
-				priv->info = BRASERO_MEDIUM_NONE;
-				goto end;
-			}
-			else if (code != BRASERO_SCSI_NOT_READY) {
-				brasero_device_handle_close (handle);
-				BRASERO_MEDIA_LOG ("Device does not respond");
-				goto end;
-			}
+	BRASERO_MEDIA_LOG ("Open () succeeded");
 
-			sleep (2);
+	/* NOTE: if we wanted to know the status we'd need to read the 
+	 * error code variable which is currently NULL */
+	while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
+		if (code == BRASERO_SCSI_NO_MEDIUM) {
+			BRASERO_MEDIA_LOG ("No medium inserted");
+			priv->info = BRASERO_MEDIUM_NONE;
 
-			if (priv->probe_cancelled) {
-				brasero_device_handle_close (handle);
-				BRASERO_MEDIA_LOG ("Device probing cancelled");
-				goto end;
-			}
+			brasero_device_handle_close (handle);
+			goto end;
+		}
+		else if (code != BRASERO_SCSI_NOT_READY) {
+			BRASERO_MEDIA_LOG ("Device does not respond");
+
+			brasero_device_handle_close (handle);
+			goto end;
 		}
 
-		BRASERO_MEDIA_LOG ("Device ready");
+		sleep (2);
 
-		brasero_medium_init_real (BRASERO_MEDIUM (self), handle);
-		brasero_device_handle_close (handle);
+		if (priv->probe_cancelled) {
+			BRASERO_MEDIA_LOG ("Device probing cancelled");
+
+			brasero_device_handle_close (handle);
+			goto end;
+		}
 	}
-	else
-		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
+
+	BRASERO_MEDIA_LOG ("Device ready");
+
+	brasero_medium_init_real (BRASERO_MEDIUM (self), handle);
+	brasero_device_handle_close (handle);
 
 end:
 
