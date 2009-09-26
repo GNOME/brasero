@@ -680,12 +680,16 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 	BRASERO_BURN_LOG_FLAGS (flags, "New should be");
 
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-	if (!drive)
+	if (!drive) {
+		BRASERO_BURN_LOG ("No drive");
 		return;
+	}
 
 	medium = brasero_drive_get_medium (drive);
-	if (!medium)
+	if (!medium) {
+		BRASERO_BURN_LOG ("No medium");
 		return;
+	}
 
 	media = brasero_medium_get_status (medium);
 
@@ -1312,14 +1316,23 @@ brasero_session_cfg_session_loaded (BraseroTrackDataCfg *track,
 				    gboolean is_loaded,
 				    BraseroSessionCfg *session)
 {
+	BraseroBurnFlag session_flags;
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	if (priv->disabled)
+		return;
+
+	session_flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (session));
 	if (is_loaded) {
 		/* Set the correct medium and add the flag */
 		brasero_burn_session_set_burner (BRASERO_BURN_SESSION (session),
 						 brasero_medium_get_drive (medium));
 
-		brasero_session_cfg_add_drive_properties_flags (session, BRASERO_BURN_FLAG_MERGE);
+		if ((session_flags & BRASERO_BURN_FLAG_MERGE) == 0)
+			brasero_session_cfg_add_drive_properties_flags (session, BRASERO_BURN_FLAG_MERGE);
 	}
-	else
+	else if ((session_flags & BRASERO_BURN_FLAG_MERGE) != 0)
 		brasero_session_cfg_rm_drive_properties_flags (session, BRASERO_BURN_FLAG_MERGE);
 }
 
@@ -1344,8 +1357,7 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 	 * - reload saved flags
 	 * - check if all flags are thereafter supported
 	 * - check available formats for path
-	 * - set one path
-	 */
+	 * - set one path */
 	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
 				    TRUE,
 				    FALSE);
