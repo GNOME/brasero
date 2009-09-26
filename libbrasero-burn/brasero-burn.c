@@ -2152,7 +2152,7 @@ brasero_burn_check_real (BraseroBurn *self,
 	}
 	else {
 		BRASERO_BURN_LOG ("The track cannot be checked");
-		result = BRASERO_BURN_NOT_SUPPORTED;
+		result = BRASERO_BURN_OK;
 	}
 
 	return result;
