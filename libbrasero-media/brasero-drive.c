@@ -810,7 +810,7 @@ brasero_drive_probe_inside_thread (gpointer data)
 	const gchar *device;
 	BraseroScsiErrCode code;
 	BraseroDrivePrivate *priv;
-	BraseroDeviceHandle *handle;
+	BraseroDeviceHandle *handle = NULL;
 	BraseroDrive *drive = BRASERO_DRIVE (data);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -833,13 +833,15 @@ brasero_drive_probe_inside_thread (gpointer data)
 		handle = brasero_device_handle_open (device, FALSE, &code);
 	}
 
-	if (priv->probe_cancelled) {
-		BRASERO_MEDIA_LOG ("Open () cancelled");
+	if (!handle) {
+		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 		goto end;
 	}
 
-	if (!handle) {
-		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
+	if (priv->probe_cancelled) {
+		BRASERO_MEDIA_LOG ("Open () cancelled");
+
+		brasero_device_handle_close (handle);
 		goto end;
 	}
 
@@ -848,20 +850,24 @@ brasero_drive_probe_inside_thread (gpointer data)
 			BRASERO_MEDIA_LOG ("No medium inserted");
 
 			priv->has_medium = FALSE;
+
+			brasero_device_handle_close (handle);
 			goto end;
 		}
 
 		if (code != BRASERO_SCSI_NOT_READY) {
-			brasero_device_handle_close (handle);
 			BRASERO_MEDIA_LOG ("Device does not respond");
+
+			brasero_device_handle_close (handle);
 			goto end;
 		}
 
 		sleep (2);
 
 		if (priv->probe_cancelled) {
-			brasero_device_handle_close (handle);
 			BRASERO_MEDIA_LOG ("Device probing cancelled");
+
+			brasero_device_handle_close (handle);
 			goto end;
 		}
 	}
