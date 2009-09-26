@@ -866,6 +866,17 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 			if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
 				continue;
 
+			/* This type of disc cannot be burnt; skip them */
+			if (caps->type.subtype.media & BRASERO_MEDIUM_ROM)
+				continue;
+
+			/* These three types only work with CDs. Skip the rest. */
+			if ((output.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO
+			||   output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE
+			||   output.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE)
+			&& (caps->type.subtype.media & BRASERO_MEDIUM_CD) == 0)
+				continue;
+
 			/* Make sure this is supported by the drive */
 			if (!brasero_drive_can_write_media (burner, caps->type.subtype.media))
 				continue;
@@ -1653,7 +1664,7 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 		BraseroBurnResult result;
 		gboolean format_supported;
 
-		/* check this image type is possible given the current flags */
+		/* check if this image type is possible given the current flags */
 		if (format != BRASERO_IMAGE_FORMAT_CLONE
 		&& (session_flags & BRASERO_BURN_FLAG_RAW))
 			continue;
@@ -1685,6 +1696,17 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 
 			caps = iter->data;
 			if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+				continue;
+
+			/* This type of disc cannot be burnt; skip them */
+			if (caps->type.subtype.media & BRASERO_MEDIUM_ROM)
+				continue;
+
+			/* These three types only work with CDs. Skip the rest. */
+			if ((output.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO
+			||   output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE
+			||   output.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE)
+			&& (caps->type.subtype.media & BRASERO_MEDIUM_CD) == 0)
 				continue;
 
 			/* Merge all available flags for each possible medium type */
