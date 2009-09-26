@@ -161,16 +161,29 @@ brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 static void
 brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 				 BraseroTrackType *input,
-				 BraseroMedia media)
+                                 gboolean dummy)
 {
+	BraseroMedia media;
 	gchar *title = NULL;
 	gchar *header = NULL;
-	BraseroBurnFlag flags;
 	BraseroBurnDialogPrivate *priv;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	flags = brasero_burn_session_get_flags (priv->session);
+	if (brasero_burn_session_is_dest_file (priv->session))
+		media = BRASERO_MEDIUM_FILE;
+	else if (priv->input.type != BRASERO_TRACK_TYPE_DISC)
+		media = brasero_burn_session_get_dest_media (priv->session);
+	else {
+		BraseroMedium *medium;
+
+		medium = brasero_burn_session_get_src_medium (priv->session);
+		if (!medium)
+			media = brasero_burn_session_get_dest_media (BRASERO_BURN_SESSION (priv->session));
+		else
+			media = brasero_medium_get_status (medium);
+	}
+
 	if (media == BRASERO_MEDIUM_FILE) {
 		/* we are creating an image to the hard drive */
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
@@ -183,7 +196,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	else if (media & BRASERO_MEDIUM_DVD) {
 		if (input->type == BRASERO_TRACK_TYPE_STREAM
 		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video DVD burning"));
 			}
@@ -197,7 +210,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DATA) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data DVD burning"));
 			}
@@ -211,7 +224,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_IMAGE) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of image to DVD burning"));
 			}
@@ -225,7 +238,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DISC) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Copying DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data DVD copying"));
 			}
@@ -242,7 +255,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	else if (media & BRASERO_MEDIUM_CD) {
 		if (input->type == BRASERO_TRACK_TYPE_STREAM
 		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of (S)VCD burning"));
 			}
@@ -256,7 +269,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_STREAM) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of audio CD burning"));
 			}
@@ -270,7 +283,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DATA) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data CD burning"));
 			}
@@ -284,7 +297,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DISC) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Copying CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of CD copying"));
 			}
@@ -298,7 +311,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_IMAGE) {
-			if (flags & BRASERO_BURN_FLAG_DUMMY) {
+			if (dummy) {
 				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of image to CD burning"));
 			}
@@ -314,7 +327,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_STREAM
 	     &&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
-		if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		if (dummy) {
 			title = g_strdup (_("Brasero - Burning disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video disc burning"));
 		}
@@ -328,7 +341,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_STREAM) {
-		if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		if (dummy) {
 			title = g_strdup (_("Brasero - Burning CD (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of audio CD burning"));
 		}
@@ -342,7 +355,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_DATA) {
-		if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		if (dummy) {
 			title = g_strdup (_("Brasero - Burning Disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data disc burning"));
 		}
@@ -356,7 +369,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_DISC) {
-		if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		if (dummy) {
 			title = g_strdup (_("Brasero - Copying Disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of disc copying"));
 		}
@@ -369,7 +382,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_IMAGE) {
-		if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		if (dummy) {
 			title = g_strdup (_("Brasero - Burning Disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of image to disc burning"));
 		}
@@ -1249,6 +1262,10 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	g_timer_start (priv->total_time);
 
 	if (answer == GTK_RESPONSE_OK) {
+		brasero_burn_dialog_update_info (dialog,
+		                                 &priv->input,
+		                                 FALSE);
+
 		if (id)
 			g_source_remove (id);
 
@@ -2155,8 +2172,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 }
 
 static BraseroBurnResult
-brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
-				    BraseroMedia media)
+brasero_burn_dialog_record_session (BraseroBurnDialog *dialog)
 {
 	gboolean retry;
 	GError *error = NULL;
@@ -2166,7 +2182,9 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
 	/* Update info */
-	brasero_burn_dialog_update_info (dialog, &priv->input, media);
+	brasero_burn_dialog_update_info (dialog,
+	                                 &priv->input,
+	                                 (brasero_burn_session_get_flags (BRASERO_BURN_SESSION (priv->session)) & BRASERO_BURN_FLAG_DUMMY) != 0);
 
 	/* start the recording session */
 	brasero_burn_dialog_activity_start (dialog);
@@ -2278,7 +2296,7 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		if (!GTK_WIDGET_VISIBLE (dialog))
 			gtk_widget_show (GTK_WIDGET (dialog));
 
-		result = brasero_burn_dialog_record_session (dialog, media);
+		result = brasero_burn_dialog_record_session (dialog);
 	} while (result == BRASERO_BURN_RETRY);
 
 	priv->session = NULL;
