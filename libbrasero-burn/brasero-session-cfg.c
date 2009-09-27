@@ -806,11 +806,15 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
+	BRASERO_BURN_LOG ("Restoring session properties");
+
 	/* The next two must work as they were checked earlier */
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	medium = brasero_drive_get_medium (drive);
-	if (!medium || brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE)
+	if (!medium || brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE) {
+		BRASERO_BURN_LOG ("No media");
 		return;
+	}
 
 	/* Update/set the rate */
 	client = gconf_client_get_default ();
@@ -1022,9 +1026,7 @@ brasero_session_cfg_set_tracks_audio_format (BraseroBurnSession *session,
 }
 
 static void
-brasero_session_cfg_update (BraseroSessionCfg *self,
-			    gboolean update,
-			    gboolean check)
+brasero_session_cfg_update (BraseroSessionCfg *self)
 {
 	BraseroTrackType *source = NULL;
 	BraseroSessionCfgPrivate *priv;
@@ -1129,8 +1131,6 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			       0);
 		return;
 	}
-
-	/* FIXME: another easy error to catch: AUDIO project with a DVD */
 
 	/* make sure there is an output set */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
@@ -1288,11 +1288,6 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 						  BRASERO_BURN_FLAG_DUMMY|
 						  BRASERO_BURN_FLAG_NO_TMP_FILES);
 
-	if (update)
-		brasero_session_cfg_set_drive_properties (self);
-	else if (check)
-		brasero_session_cfg_check_drive_settings (self);
-
 	priv->configuring = FALSE;
 
 	/* Finally check size */
@@ -1358,9 +1353,8 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 	 * - check if all flags are thereafter supported
 	 * - check available formats for path
 	 * - set one path */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
-				    TRUE,
-				    FALSE);
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_set_drive_properties (BRASERO_SESSION_CFG (session));
 }
 
 static void
@@ -1386,9 +1380,8 @@ brasero_session_cfg_track_removed (BraseroBurnSession *session,
 	 * - check available formats for path
 	 * - set one path
 	 */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
-				    TRUE,
-				    FALSE);
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_set_drive_properties (BRASERO_SESSION_CFG (session));
 }
 
 static void
@@ -1408,9 +1401,8 @@ brasero_session_cfg_track_changed (BraseroBurnSession *session,
 	 * - check available formats for path
 	 * - set one path
 	 */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
-				    TRUE,
-				    FALSE);
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_set_drive_properties (BRASERO_SESSION_CFG (session));
 }
 
 static void
@@ -1464,11 +1456,9 @@ brasero_session_cfg_output_changed (BraseroBurnSession *session,
 	/* In this case need to :
 	 * - load flags 
 	 * - check if all flags are thereafter supported
-	 * - for images, set a path if it wasn't already set
-	 */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
-				    TRUE,
-				    FALSE);
+	 * - for images, set a path if it wasn't already set */
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_set_drive_properties (BRASERO_SESSION_CFG (session));
 }
 
 static void
@@ -1485,9 +1475,8 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 	 * - new flags are supported or not supported anymore
 	 * - new image types as input/output are supported
 	 * - if the current set of flags/input/output still works */
-	brasero_session_cfg_update (self,
-				    FALSE,
-				    TRUE);
+	brasero_session_cfg_update (self);
+	brasero_session_cfg_check_drive_settings (self);
 }
 
 static void
@@ -1530,9 +1519,7 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 		return;
 
 	brasero_session_cfg_add_drive_properties_flags (self, flags);
-	brasero_session_cfg_update (self,
-				    FALSE,
-				    FALSE);
+	brasero_session_cfg_update (self);
 }
 
 /**
@@ -1566,9 +1553,7 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 	if (drive && brasero_drive_get_medium (drive))
 		brasero_session_cfg_save_drive_flags (self, brasero_drive_get_medium (drive));
 
-	brasero_session_cfg_update (self,
-				    FALSE,
-				    FALSE);
+	brasero_session_cfg_update (self);
 }
 
 /**
