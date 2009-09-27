@@ -65,6 +65,8 @@ struct _BraseroDestSelectionPrivate
 	BraseroBurnSession *session;
 
 	BraseroDrive *locked_drive;
+
+	guint user_changed:1;
 };
 
 #define BRASERO_DEST_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DEST_SELECTION, BraseroDestSelectionPrivate))
@@ -188,17 +190,84 @@ chain:
 }
 
 static void
-brasero_dest_selection_init (BraseroDestSelection *object)
+brasero_dest_selection_user_change (BraseroDestSelection *selection,
+                                    GParamSpec *pspec,
+                                    gpointer NULL_data)
+{
+	gboolean shown = FALSE;
+	BraseroDestSelectionPrivate *priv;
+
+	/* we are only interested when the menu is shown */
+	g_object_get (selection,
+	              "popup-shown", &shown,
+	              NULL);
+
+	if (!shown)
+		return;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+	priv->user_changed = TRUE;
+}
+
+static void
+brasero_dest_selection_medium_removed (GtkTreeModel *model,
+                                       GtkTreePath *path,
+                                       gpointer user_data)
 {
 	BraseroDestSelectionPrivate *priv;
 
+	priv = BRASERO_DEST_SELECTION_PRIVATE (user_data);
+	if (priv->user_changed)
+		return;
+
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (user_data)) == -1)
+		brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (user_data));
+}
+
+static void
+brasero_dest_selection_medium_added (GtkTreeModel *model,
+                                     GtkTreePath *path,
+                                     GtkTreeIter *iter,
+                                     gpointer user_data)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (user_data);
+	if (priv->user_changed)
+		return;
+
+	brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (user_data));
+}
+
+static void
+brasero_dest_selection_init (BraseroDestSelection *object)
+{
+	BraseroDestSelectionPrivate *priv;
+	GtkTreeModel *model;
+
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (object));
+	g_signal_connect (model,
+	                  "row-inserted",
+	                  G_CALLBACK (brasero_dest_selection_medium_added),
+	                  object);
+	g_signal_connect (model,
+	                  "row-deleted",
+	                  G_CALLBACK (brasero_dest_selection_medium_removed),
+	                  object);
 
 	/* Only show media on which we can write and which are in a burner.
 	 * There is one exception though, when we're copying media and when the
 	 * burning device is the same as the dest device. */
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
 						  BRASERO_MEDIA_TYPE_WRITABLE);
+
+	/* This is to know when the user changed it on purpose */
+	g_signal_connect (object,
+	                  "notify::popup-shown",
+	                  G_CALLBACK (brasero_dest_selection_user_change),
+	                  NULL);
 }
 
 static void
@@ -273,7 +342,6 @@ brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 
 	session = callback_data;
 	burner = brasero_burn_session_get_burner (session);
-
 	if (!burner) {
 		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
 		return TRUE;
@@ -282,7 +350,6 @@ brasero_dest_selection_foreach_medium (BraseroMedium *medium,
 	/* no need to deal with this case */
 	if (brasero_drive_get_medium (burner) == medium)
 		return TRUE;
-
 
 	/* The rule is:
 	 * - blank media are our favourite since it avoids hiding/blanking data
@@ -341,6 +408,11 @@ brasero_dest_selection_choose_best (BraseroDestSelection *self)
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	priv->user_changed = FALSE;
+	if (!priv->session)
+		return;
+
 	if (!(brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MERGE)) {
 		BraseroDrive *drive;
 
