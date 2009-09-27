@@ -563,10 +563,10 @@ brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
 
 			medium = item->data;
 
-			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    MEDIUM_COL, medium,
-					    -1);
+			gtk_list_store_insert_with_values (GTK_LIST_STORE (model), &iter,
+			                                   -1,
+			                                   MEDIUM_COL, medium,
+			                                   -1);
 
 			medium_name = brasero_medium_selection_get_medium_string (selector, medium);
 			medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
@@ -743,10 +743,10 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 			g_object_unref (tmp);
 	}
 
-	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-			    MEDIUM_COL, medium,
-			    -1);
+	gtk_list_store_insert_with_values (GTK_LIST_STORE (model), &iter,
+	                                   -1,
+	                                   MEDIUM_COL, medium,
+	                                   -1);
 
 	medium_name = brasero_medium_selection_get_medium_string (self, medium);
 	medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
