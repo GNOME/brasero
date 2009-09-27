@@ -242,9 +242,9 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			||  ctx->status == BURN_DRIVE_CLOSING_SESSION)
 				return TRUE;
 
-			if (ctx->status == BURN_DRIVE_WRITING_LEADIN
-			||  ctx->status == BURN_DRIVE_WRITING_PREGAP) {
-				ctx->sectors += ctx->track_sectors;
+			if (!ctx->track_sectors) {
+				/* This is for when we just start writing 
+				 * the first bytes of the first tracks */
 				ctx->track_sectors = progress->sectors;
 				ctx->track_num = progress->track;
 			}
@@ -387,6 +387,7 @@ brasero_libburn_common_status (BraseroJob *self,
 		gint64 cur_sector;
 
 		if (ctx->track_num != progress.track) {
+			/* This is when we change tracks */
 			ctx->sectors += ctx->track_sectors;
 			ctx->track_sectors = progress.sectors;
 			ctx->track_num = progress.track;
