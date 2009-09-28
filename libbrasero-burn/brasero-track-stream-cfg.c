@@ -119,13 +119,29 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		return;
 	}
 
+	/* Also make sure it's duration is appropriate (!= 0) */
+	len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
+	if (len <= 0) {
+		gchar *name;
+
+		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_GENERAL,
+					   /* Translators: %s is the name of the file */
+					   _("\"%s\" is not suitable for audio or video media"),
+					   name);
+		g_free (name);
+
+		brasero_track_changed (BRASERO_TRACK (obj));
+		return;
+	}
+
 	/* FIXME: we don't know whether it's audio or video that is required */
 	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
 		/* This error is special as it can be recovered from */
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_FILE_FOLDER,
 					   _("Directories cannot be added to video or audio discs"));
-
 		brasero_track_changed (BRASERO_TRACK (obj));
 		return;
 	}
@@ -187,7 +203,6 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		                                                                                BRASERO_METADATA_INFO);
 
 	/* size */
-	len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
 	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries)
 		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries (BRASERO_TRACK_STREAM (obj),
 												    0,
