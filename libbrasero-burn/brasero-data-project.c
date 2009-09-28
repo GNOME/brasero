@@ -1655,14 +1655,13 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 	return TRUE;
 }
 
-static void
+static gboolean
 brasero_data_project_add_node_real (BraseroDataProject *self,
 				    BraseroFileNode *node,
 				    BraseroURINode *graft,
 				    const gchar *uri)
 {
 	BraseroDataProjectPrivate *priv;
-	BraseroDataProjectClass *klass;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
@@ -1728,15 +1727,20 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 	}
 
 	if (!priv->is_loading_contents) {
+		BraseroDataProjectClass *klass;
+
 		/* Signal that something has changed in the tree */
 		klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
-		if (klass->node_added)
-			klass->node_added (self, node, uri != NEW_FOLDER? uri:NULL);
+		if (klass->node_added
+		&& !klass->node_added (self, node, uri != NEW_FOLDER? uri:NULL))
+			return FALSE;
 	}
 
 	/* check joliet compatibility; do it after node was created. */
 	if (strlen (BRASERO_FILE_NODE_NAME (node)) > 64)
 		brasero_data_project_joliet_add_node (self, node);
+
+	return TRUE;
 }
 
 void
@@ -1931,7 +1935,8 @@ brasero_data_project_add_empty_directory (BraseroDataProject *self,
 
 	/* Add it (we must add a graft) */
 	graft = g_hash_table_lookup (priv->grafts, NEW_FOLDER);
-	brasero_data_project_add_node_real (self, node, graft, NEW_FOLDER);
+	if (!brasero_data_project_add_node_real (self, node, graft, NEW_FOLDER))
+		return NULL;
 
 	return node;
 }
@@ -2214,11 +2219,13 @@ brasero_data_project_add_loading_node_real (BraseroDataProject *self,
 	else
 		node = brasero_file_node_new_loading (name);
 
+	g_free (name);
+
 	brasero_file_node_add (parent, node, priv->sort_func);
 
 	node->is_hidden = is_hidden;
-	brasero_data_project_add_node_real (self, node, graft, uri);
-	g_free (name);
+	if (!brasero_data_project_add_node_real (self, node, graft, uri))
+		return NULL;
 
 	return node;
 }
@@ -2412,16 +2419,19 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 		brasero_data_project_exclude_uri (self, uri);
 
 		/* then we add the node */
-		brasero_data_project_add_node_real (self,
-						    node,
-						    graft,
-						    g_file_info_get_symlink_target (info));
+		if (!brasero_data_project_add_node_real (self,
+		                                         node,
+		                                         graft,
+		                                         g_file_info_get_symlink_target (info)))
+			return NULL;
 	}
-	else
-		brasero_data_project_add_node_real (self,
-						    node,
-						    graft,
-						    uri);
+	else {
+		if (!brasero_data_project_add_node_real (self,
+		                                         node,
+		                                         graft,
+		                                         uri))
+			return NULL;
+	}
 
 	if (type != G_FILE_TYPE_DIRECTORY)
 		g_signal_emit (self,
@@ -3384,9 +3394,10 @@ brasero_data_project_add_path (BraseroDataProject *self,
 
 		/* the following function checks for joliet, graft it */
 		brasero_data_project_add_node_real (self,
-						    node,
-						    graft,
-						    uri);
+		                                    node,
+		                                    graft,
+		                                    uri);
+			
 	}
 
 	return folders;
