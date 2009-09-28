@@ -720,7 +720,8 @@ brasero_metadata_success (BraseroMetadata *self)
 	}
 
 	/* before leaving, check if we need a snapshot */
-	if (priv->snapshot
+	if (priv->info->len > 0
+	&&  priv->snapshot
 	&&  priv->video_linked
 	&& !priv->snapshot_started)
 		return brasero_metadata_thumbnail (self);
@@ -1589,7 +1590,6 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	name = gst_structure_get_name (structure);
 	has_audio = (g_strrstr (name, "audio") != NULL);
 	has_video = (g_strrstr (name, "video") != NULL);
-
 	priv->info->has_audio |= has_audio;
 	priv->info->has_video |= has_video;
 
