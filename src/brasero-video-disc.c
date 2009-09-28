@@ -459,7 +459,7 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 			error = brasero_status_get_error (status);
 			if (!error)
 				brasero_video_disc_unreadable_uri_dialog (self, uri, error);
-			else if (error->code != BRASERO_BURN_ERROR_FILE_FOLDER) {
+			else if (error->code == BRASERO_BURN_ERROR_FILE_FOLDER) {
 				res = brasero_video_disc_directory_dialog (self);
 				if (res)
 					brasero_video_disc_add_directory_contents (self, uri, BRASERO_TRACK (track));
