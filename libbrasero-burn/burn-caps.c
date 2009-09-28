@@ -86,8 +86,17 @@ brasero_caps_link_active (BraseroCapsLink *link)
 }
 
 static void
+brasero_caps_test_free (BraseroCapsTest *caps)
+{
+	g_slist_foreach (caps->links, (GFunc) brasero_caps_link_free, NULL);
+	g_slist_free (caps->links);
+	g_free (caps);
+}
+
+static void
 brasero_caps_free (BraseroCaps *caps)
 {
+	g_slist_free (caps->modifiers);
 	g_slist_foreach (caps->links, (GFunc) brasero_caps_link_free, NULL);
 	g_slist_free (caps->links);
 	g_free (caps);
@@ -220,6 +229,17 @@ brasero_burn_caps_finalize (GObject *object)
 
 	g_slist_foreach (cobj->priv->caps_list, (GFunc) brasero_caps_free, NULL);
 	g_slist_free (cobj->priv->caps_list);
+
+	if (cobj->priv->group_str) {
+		g_free (cobj->priv->group_str);
+		cobj->priv->group_str = NULL;
+	}
+
+	if (cobj->priv->tests) {
+		g_slist_foreach (cobj->priv->tests, (GFunc) brasero_caps_test_free, NULL);
+		g_slist_free (cobj->priv->tests);
+		cobj->priv->tests = NULL;
+	}
 
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
