@@ -50,8 +50,8 @@ G_BEGIN_DECLS
 #define BRASERO_BURNCAPS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURNCAPS, BraseroBurnCapsClass))
 
 struct _BraseroCaps {
-	GSList *links;
-	GSList *modifiers;
+	GSList *links;			/* BraseroCapsLink */
+	GSList *modifiers;		/* BraseroPlugin */
 	BraseroTrackType type;
 	BraseroPluginIOFlag flags;
 };
@@ -71,8 +71,8 @@ typedef struct _BraseroCapsTest BraseroCapsTest;
 
 typedef struct BraseroBurnCapsPrivate BraseroBurnCapsPrivate;
 struct BraseroBurnCapsPrivate {
-	GSList *caps_list;
-	GSList *tests;
+	GSList *caps_list;		/* BraseroCaps */
+	GSList *tests;			/* BraseroCapsTest */
 
 	GHashTable *groups;
 
