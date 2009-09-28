@@ -3291,7 +3291,7 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL)
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM)
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE))
-		return priv->write_command != 0;
+		return TRUE;
 
 	return FALSE;
 }

@@ -329,7 +329,6 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 					g_object_ref (medium);
 					continue;
 				}
-				continue;
 			}
 		}
 
