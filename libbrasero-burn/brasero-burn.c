@@ -1370,6 +1370,7 @@ brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 	BraseroDrive *drive;
 	BraseroMedium *medium;
 	BraseroBurnPrivate *priv;
+	BraseroBurnResult result;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
@@ -1386,7 +1387,19 @@ brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 		return BRASERO_BURN_ERR;
 	}
 
-	return brasero_task_run (priv->task, error);
+	result = brasero_task_run (priv->task, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	/* Reprobe. It can happen (like with dvd+rw-format) that
+	 * for the whole OS, the disc doesn't exist during the 
+	 * formatting. Wait for the disc to reappear */
+	/*  Likewise, this is necessary when we do a
+	 * simulation before blanking since it blanked the disc
+	 * and then to create all tasks necessary for the real
+	 * burning operation, we'll need the real medium status 
+	 * not to include a blanking job again. */
+	return brasero_burn_reprobe (burn);
 }
 
 static BraseroBurnResult
@@ -1976,18 +1989,6 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			 * data on it when we get to the real recording. */
 			if (erase_allowed) {
 				result = brasero_burn_run_eraser (burn, error);
-				if (result != BRASERO_BURN_OK)
-					break;
-
-				/* Reprobe. It can happen (like with dvd+rw-format) that
-				 * for the whole OS, the disc doesn't exist during the 
-				 * formatting. Wait for the disc to reappear */
-				/*  Likewise, this is necessary when we do a
-				 * simulation before blanking since it blanked the disc
-				 * and then to create all tasks necessary for the real
-				 * burning operation, we'll need the real medium status 
-				 * not to include a blanking job again. */
-				result = brasero_burn_reprobe (burn);
 				if (result != BRASERO_BURN_OK)
 					break;
 
