@@ -435,8 +435,11 @@ brasero_metadata_thumbnail (BraseroMetadata *self)
 
 	/* find the right position and move forward */
 	position = 15 * GST_SECOND;
-	while (position >= priv->info->len)
+	while (position > 0 && position >= priv->info->len)
 		position -= 5 * GST_SECOND;
+
+	if (position <= 0)
+		return FALSE;
 
 	gst_element_set_state (priv->pipeline, GST_STATE_PAUSED);
 
