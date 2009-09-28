@@ -886,6 +886,11 @@ brasero_player_metadata_completed (GObject *obj,
 		return;
 	}
 
+	if (g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN) <= 0) {
+		brasero_player_no_multimedia_stream (player);
+		return;
+	}
+
 	mime = g_file_info_get_content_type (info);
 
 	/* based on the mime type, we try to determine the type of file */
