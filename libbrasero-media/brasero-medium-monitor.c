@@ -489,6 +489,7 @@ brasero_medium_monitor_volume_added_cb (GVolumeMonitor *monitor,
 	 * associated but a GVolume. */
 	gdrive = g_volume_get_drive (gvolume);
 	if (gdrive) {
+		BRASERO_MEDIA_LOG ("Existing GDrive skipping");
 		g_object_unref (gdrive);
 		return;
 	}
