@@ -647,9 +647,9 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 static void
 brasero_drive_properties_update (BraseroDriveProperties *self)
 {
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroDrivePropertiesPrivate *priv;
-	BraseroBurnFlag compulsory;
-	BraseroBurnFlag supported;
 	BraseroBurnFlag flags;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
