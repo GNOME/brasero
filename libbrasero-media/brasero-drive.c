@@ -72,6 +72,7 @@ struct _BraseroDrivePrivate
 	GThread *probe;
 	GMutex *mutex;
 	GCond *cond;
+	GCond *cond_probe;
 	gint probe_id;
 
 	BraseroMedium *medium;
@@ -196,7 +197,14 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 
 	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
+		/* This to signal that we are cancelling */
 		priv->probe_cancelled = TRUE;
+
+		/* This is to wake up the thread if it
+		 * was asleep waiting to retry to get
+		 * hold of a handle to probe the drive */
+		g_cond_signal (priv->cond_probe);
+
 		g_cond_wait (priv->cond, priv->mutex);
 	}
 	g_mutex_unlock (priv->mutex);
@@ -839,6 +847,7 @@ static gpointer
 brasero_drive_probe_inside_thread (gpointer data)
 {
 	gint counter = 0;
+	GTimeVal wait_time;
 	const gchar *device;
 	BraseroScsiErrCode code;
 	BraseroDrivePrivate *priv;
@@ -877,6 +886,9 @@ brasero_drive_probe_inside_thread (gpointer data)
 		goto end;
 	}
 
+	g_get_current_time (&wait_time);
+	g_time_val_add (&wait_time, 2000000);
+
 	while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
 		if (code == BRASERO_SCSI_NO_MEDIUM) {
 			BRASERO_MEDIA_LOG ("No medium inserted");
@@ -894,7 +906,14 @@ brasero_drive_probe_inside_thread (gpointer data)
 			goto end;
 		}
 
-		sleep (2);
+		g_get_current_time (&wait_time);
+		g_time_val_add (&wait_time, 2000000);
+
+		g_mutex_lock (priv->mutex);
+		g_cond_timed_wait (priv->cond_probe,
+		                   priv->mutex,
+		                   &wait_time);
+		g_mutex_unlock (priv->mutex);
 
 		if (priv->probe_cancelled) {
 			BRASERO_MEDIA_LOG ("Device probing cancelled");
@@ -1181,6 +1200,7 @@ static gpointer
 brasero_drive_probe_thread (gpointer data)
 {
 	gint counter = 0;
+	GTimeVal wait_time;
 	const gchar *device;
 	BraseroScsiResult res;
 	BraseroScsiInquiry hdr;
@@ -1231,7 +1251,14 @@ brasero_drive_probe_thread (gpointer data)
 			goto end;
 		}
 
-		sleep (2);
+		g_get_current_time (&wait_time);
+		g_time_val_add (&wait_time, 2000000);
+
+		g_mutex_lock (priv->mutex);
+		g_cond_timed_wait (priv->cond_probe,
+		                   priv->mutex,
+		                   &wait_time);
+		g_mutex_unlock (priv->mutex);
 
 		if (priv->probe_cancelled) {
 			brasero_device_handle_close (handle);
@@ -1405,6 +1432,7 @@ brasero_drive_init (BraseroDrive *object)
 
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();
+	priv->cond_probe = g_cond_new ();
 }
 
 static void
@@ -1426,6 +1454,11 @@ brasero_drive_finalize (GObject *object)
 	if (priv->cond) {
 		g_cond_free (priv->cond);
 		priv->cond = NULL;
+	}
+
+	if (priv->cond_probe) {
+		g_cond_free (priv->cond_probe);
+		priv->cond_probe = NULL;
 	}
 
 	if (priv->medium) {
