@@ -2241,6 +2241,14 @@ brasero_track_data_cfg_set_source (BraseroTrackData *track,
 							    grafts,
 							    excluded);
 
+	/* Remember that we own the list grafts and excluded
+	 * so we have to free them ourselves. */
+	g_slist_foreach (grafts, (GFunc) brasero_graft_point_free, NULL);
+	g_slist_free (grafts);
+
+	g_slist_foreach (excluded, (GFunc) g_free, NULL);
+	g_slist_free (excluded);
+
 	if (!priv->loading)
 		return BRASERO_BURN_OK;
 
