@@ -796,8 +796,11 @@ brasero_drive_probed_inside (gpointer data)
 	g_mutex_unlock (priv->mutex);
 
 	if (priv->has_medium) {
-		if (priv->medium)
+		if (priv->medium) {
+			priv->probed = TRUE;
+			BRASERO_MEDIA_LOG ("Already a medium. Skipping");
 			return FALSE;
+		}
 
 		BRASERO_MEDIA_LOG ("Probing new medium");
 
