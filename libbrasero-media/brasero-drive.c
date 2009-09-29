@@ -187,6 +187,26 @@ last_resort:
 	return result;
 }
 
+static void
+brasero_drive_cancel_probing (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	g_mutex_lock (priv->mutex);
+	if (priv->probe) {
+		priv->probe_cancelled = TRUE;
+		g_cond_wait (priv->cond, priv->mutex);
+	}
+	g_mutex_unlock (priv->mutex);
+
+	if (priv->probe_id) {
+		g_source_remove (priv->probe_id);
+		priv->probe_id = 0;
+	}
+}
+
 /**
  * brasero_drive_eject:
  * @drive: #BraseroDrive
@@ -220,6 +240,11 @@ brasero_drive_eject (BraseroDrive *drive,
 
 	BRASERO_MEDIA_LOG ("Trying to eject drive");
 	if (priv->gdrive) {
+		/* Cancel any ongoing probing as it
+		 * would prevent the door from being
+		 * opened. */
+		brasero_drive_cancel_probing (drive);
+
 		res = brasero_gio_operation_eject_drive (priv->gdrive,
 							 priv->cancel,
 							 wait,
@@ -242,6 +267,10 @@ brasero_drive_eject (BraseroDrive *drive,
 	BRASERO_MEDIA_LOG ("Trying to eject volume");
 	gvolume = brasero_volume_get_gvolume (BRASERO_VOLUME (priv->medium));
 	if (gvolume) {
+		/* Cancel any ongoing probing as it
+		 * would prevent the door from being
+		 * opened. */
+		brasero_drive_cancel_probing (drive);
 		res = brasero_gio_operation_eject_volume (gvolume,
 							  priv->cancel,
 							  wait,
@@ -770,7 +799,7 @@ brasero_drive_probed_inside (gpointer data)
 		if (priv->medium)
 			return FALSE;
 
-		BRASERO_MEDIA_LOG ("Medium inserted");
+		BRASERO_MEDIA_LOG ("Probing new medium");
 
 		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 					     "drive", self,
@@ -1384,17 +1413,7 @@ brasero_drive_finalize (GObject *object)
 
 	BRASERO_MEDIA_LOG ("Finalizing BraseroDrive");
 
-	g_mutex_lock (priv->mutex);
-	if (priv->probe) {
-		priv->probe_cancelled = TRUE;
-		g_cond_wait (priv->cond, priv->mutex);
-	}
-	g_mutex_unlock (priv->mutex);
-
-	if (priv->probe_id) {
-		g_source_remove (priv->probe_id);
-		priv->probe_id = 0;
-	}
+	brasero_drive_cancel_probing (BRASERO_DRIVE (object));
 
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
