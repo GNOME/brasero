@@ -2103,10 +2103,10 @@ brasero_burn_check_real (BraseroBurn *self,
 	 * means the checksum file is on the disc. */
 	medium = brasero_drive_get_medium (priv->dest);
 
-	/* get the task and run it */
+	/* get the task and run it skip it otherwise */
 	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
 							     priv->session,
-							     error);
+							     NULL);
 	if (priv->task) {
 		priv->task_nb = 1;
 		priv->tasks_done = 0;
@@ -2153,7 +2153,7 @@ brasero_burn_check_real (BraseroBurn *self,
 	}
 	else {
 		BRASERO_BURN_LOG ("The track cannot be checked");
-		result = BRASERO_BURN_OK;
+		return BRASERO_BURN_OK;
 	}
 
 	return result;
