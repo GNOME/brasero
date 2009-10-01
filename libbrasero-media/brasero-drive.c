@@ -891,9 +891,6 @@ brasero_drive_probe_inside_thread (gpointer data)
 		goto end;
 	}
 
-	g_get_current_time (&wait_time);
-	g_time_val_add (&wait_time, 2000000);
-
 	while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
 		if (code == BRASERO_SCSI_NO_MEDIUM) {
 			BRASERO_MEDIA_LOG ("No medium inserted");
