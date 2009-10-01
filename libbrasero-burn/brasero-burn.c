@@ -279,6 +279,44 @@ brasero_burn_reprobe (BraseroBurn *burn)
 }
 
 static BraseroBurnResult
+brasero_burn_unmount (BraseroBurn *self,
+                      BraseroMedium *medium,
+                      GError **error)
+{
+	guint counter = 0;
+
+	if (!medium)
+		return BRASERO_BURN_OK;
+
+	/* Retry several times, since sometimes the drives are really busy */
+	while (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
+		BraseroBurnResult result;
+
+		counter ++;
+		if (counter > MAX_EJECT_ATTEMPTS) {
+			BRASERO_BURN_LOG ("Max attempts reached at unmounting");
+			if (error && !(*error))
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_DRIVE_BUSY,
+					     "%s. %s",
+					     _("The drive is busy"),
+					     _("Make sure another application is not using it"));
+			return BRASERO_BURN_ERR;
+		}
+
+		BRASERO_BURN_LOG ("Retrying unmounting");
+		result = brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		brasero_burn_sleep (self, 500);
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_burn_eject (BraseroBurn *self,
 		    BraseroDrive *drive,
 		    GError **error)
@@ -1376,16 +1414,10 @@ brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 
 	drive = brasero_burn_session_get_burner (priv->session);
 	medium = brasero_drive_get_medium (drive);
-	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))
-	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_DRIVE_BUSY,
-			     "%s. %s",
-			     _("The drive is busy"),
-			     _("Make sure another application is not using it"));
-		return BRASERO_BURN_ERR;
-	}
+
+	result = brasero_burn_unmount (burn, medium, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	result = brasero_task_run (priv->task, error);
 	if (result != BRASERO_BURN_OK)
@@ -1419,18 +1451,11 @@ brasero_burn_run_imager (BraseroBurn *burn,
 start:
 
 	medium = brasero_drive_get_medium (src);
-
-	/* This is just in case */
-	if (medium
-	&&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
-	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_DRIVE_BUSY,
-			     "%s. %s",
-			     _("The drive is busy"),
-			     _("Make sure another application is not using it"));
-		return BRASERO_BURN_ERR;
+	if (medium) {
+		/* This is just in case */
+		result = brasero_burn_unmount (burn, medium, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	/* If it succeeds then the new track(s) will be at the top of
@@ -1591,29 +1616,15 @@ brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 start:
 
 	/* this is just in case */
-	if (BRASERO_BURN_SESSION_NO_TMP_FILE (priv->session)
-	&&  src_medium
-	&&  brasero_volume_is_mounted (BRASERO_VOLUME (src_medium))
-	&& !brasero_volume_umount (BRASERO_VOLUME (src_medium), TRUE, NULL)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_DRIVE_BUSY,
-			     "%s. %s",
-			     _("The drive is busy"),
-			     _("Make sure another application is not using it"));
-		return BRASERO_BURN_ERR;
+	if (BRASERO_BURN_SESSION_NO_TMP_FILE (priv->session)) {
+		result = brasero_burn_unmount (burn, src_medium, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
-	if (brasero_volume_is_mounted (BRASERO_VOLUME (burnt_medium))
-	&& !brasero_volume_umount (BRASERO_VOLUME (burnt_medium), TRUE, NULL)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_DRIVE_BUSY,
-			     "%s. %s",
-			     _("The drive is busy"),
-			     _("Make sure another application is not using it"));
-		return BRASERO_BURN_ERR;
-	}
+	result = brasero_burn_unmount (burn, burnt_medium, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* before we start let's see if that drive can be used exclusively.
 	 * Of course, it's not really safe since a process could take a lock
