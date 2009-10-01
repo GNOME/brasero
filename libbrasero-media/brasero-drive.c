@@ -213,6 +213,11 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 		g_source_remove (priv->probe_id);
 		priv->probe_id = 0;
 	}
+
+	if (priv->medium) {
+		g_object_unref (priv->medium);
+		priv->medium = NULL;
+	}
 }
 
 /**
