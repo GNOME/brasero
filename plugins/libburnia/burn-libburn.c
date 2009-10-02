@@ -738,9 +738,19 @@ brasero_libburn_start (BraseroJob *job,
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_RECORD) {
-		priv->ctx = brasero_libburn_common_ctx_new (job, error);
-		if (!priv->ctx)
+		GError *ret_error = NULL;
+
+		priv->ctx = brasero_libburn_common_ctx_new (job, &ret_error);
+		if (!priv->ctx) {
+			if (ret_error && ret_error->code == BRASERO_BURN_ERROR_DRIVE_BUSY) {
+				g_propagate_error (error, ret_error);
+				return BRASERO_BURN_RETRY;
+			}
+
+			if (error)
+				g_propagate_error (error, ret_error);
 			return BRASERO_BURN_ERR;
+		}
 
 		result = brasero_libburn_start_record (self, error);
 		if (result != BRASERO_BURN_OK)
@@ -752,9 +762,19 @@ brasero_libburn_start (BraseroJob *job,
 						FALSE);
 	}
 	else if (action == BRASERO_JOB_ACTION_ERASE) {
-		priv->ctx = brasero_libburn_common_ctx_new (job, error);
-		if (!priv->ctx)
+		GError *ret_error = NULL;
+
+		priv->ctx = brasero_libburn_common_ctx_new (job, &ret_error);
+		if (!priv->ctx) {
+			if (ret_error && ret_error->code == BRASERO_BURN_ERROR_DRIVE_BUSY) {
+				g_propagate_error (error, ret_error);
+				return BRASERO_BURN_RETRY;
+			}
+
+			if (error)
+				g_propagate_error (error, ret_error);
 			return BRASERO_BURN_ERR;
+		}
 
 		result = brasero_libburn_start_erase (self, error);
 		if (result != BRASERO_BURN_OK)

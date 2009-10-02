@@ -74,6 +74,9 @@ G_DEFINE_TYPE (BraseroTask, brasero_task, BRASERO_TYPE_TASK_CTX);
 
 static GObjectClass *parent_class = NULL;
 
+#define MAX_JOB_START_ATTEMPTS			5
+#define JOB_ATTEMPTS_WAIT_TIME			1
+
 void
 brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item)
 {
@@ -230,12 +233,58 @@ brasero_task_send_stop_signal (BraseroTask *task,
 	return (result == BRASERO_BURN_OK? retval:result);
 }
 
+static gboolean
+brasero_task_wakeup (gpointer user_data)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (user_data);
+
+	if (priv->loop)
+		g_main_loop_quit (priv->loop);
+
+	priv->clock_id = 0;
+	priv->retval = BRASERO_BURN_OK;
+	return FALSE;
+}
+
+static BraseroBurnResult
+brasero_task_sleep (BraseroTask *self, guint sec)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("wait loop");
+
+	priv->loop = g_main_loop_new (NULL, FALSE);
+	priv->clock_id = g_timeout_add_seconds (sec,
+	                                        brasero_task_wakeup,
+	                                        self);
+
+	GDK_THREADS_LEAVE ();  
+	g_main_loop_run (priv->loop);
+	GDK_THREADS_ENTER ();
+
+	g_main_loop_unref (priv->loop);
+	priv->loop = NULL;
+
+	if (priv->clock_id) {
+		g_source_remove (priv->clock_id);
+		priv->clock_id = 0;
+	}
+
+	return priv->retval;
+}
+
 static BraseroBurnResult
 brasero_task_start_item (BraseroTask *task,
 			 BraseroTaskItem *item,
 			 GError **error)
 {
+	guint attempts = 0;
 	BraseroBurnResult result;
+	GError *ret_error = NULL;
 	BraseroTaskItemIFace *klass;
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
@@ -244,7 +293,29 @@ brasero_task_start_item (BraseroTask *task,
 
 	BRASERO_BURN_LOG ("::start method %s", G_OBJECT_TYPE_NAME (item));
 
-	result = klass->start (item, error);
+	result = klass->start (item, &ret_error);
+	while (result == BRASERO_BURN_RETRY) {
+		/* FIXME: a GError?? */
+		if (attempts >= MAX_JOB_START_ATTEMPTS) {
+			if (ret_error)
+				g_propagate_error (error, ret_error);
+
+			return BRASERO_BURN_ERR;
+		}
+
+		if (ret_error) {
+			g_error_free (ret_error);
+			ret_error = NULL;
+		}
+
+		result = brasero_task_sleep (task, 1);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		attempts ++;
+		result = klass->start (item, &ret_error);
+	}
+
 	return result;
 }
 
@@ -364,6 +435,7 @@ brasero_task_run_loop (BraseroTask *self,
 					self);
 
 	priv->loop = g_main_loop_new (NULL, FALSE);
+
 	BRASERO_BURN_LOG ("entering loop");
 
 	GDK_THREADS_LEAVE ();  

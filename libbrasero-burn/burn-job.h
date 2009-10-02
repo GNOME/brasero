@@ -80,12 +80,14 @@ typedef struct {
 	/**
 	 * This function is compulsory.
 	 * returns 	BRASERO_BURN_OK if a loop should be run afterward
-	 *		The job can return BRASERO_BURN_NOT_RUNNING if it can't
-	 *		or already completed successfully the task then ::start
-	 * 		won't be called
-	 *		NOT_SUPPORTED if it can't do the action required. It
-	 *		must be noted that jobs can be required to do a SIZE 
-	 * 		action.
+	 *		The job can return BRASERO_BURN_NOT_RUNNING if it already
+	 *		completed successfully the task or don't need to be run. In this
+	 *		case, it's the whole task that will be skipped.
+	 *		NOT_SUPPORTED if it can't do the action required. When running
+	 *		in fake mode (to get size mostly), the job will be "forgiven" and
+	 *		deactivated.
+	 *		RETRY if the job is not able to start at the moment but should
+	 *		be given another chance later.
 	 * 		ERR otherwise
 	 */
 	BraseroBurnResult	(*start)		(BraseroJob *job,
