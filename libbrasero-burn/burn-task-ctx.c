@@ -738,7 +738,7 @@ brasero_task_ctx_set_current_action (BraseroTaskCtx *self,
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	if (priv->current_action == action && !force) {
+	if (priv->current_action == action) {
 		if (!force)
 			return BRASERO_BURN_OK;
 
