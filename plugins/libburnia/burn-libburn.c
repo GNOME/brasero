@@ -540,16 +540,22 @@ brasero_libburn_start_record (BraseroLibburn *self,
 		}
 	}
 
-	if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media))
+	if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media)) {
+		BRASERO_JOB_LOG (BRASERO_JOB (self), "Setting multi %i", (flags & BRASERO_BURN_FLAG_MULTI) != 0);
 		burn_write_opts_set_multi (opts, (flags & BRASERO_BURN_FLAG_MULTI) != 0);
+	}
 
 	burn_write_opts_set_underrun_proof (opts, (flags & BRASERO_BURN_FLAG_BURNPROOF) != 0);
+	BRASERO_JOB_LOG (BRASERO_JOB (self), "Setting burnproof %i", (flags & BRASERO_BURN_FLAG_BURNPROOF) != 0);
+
 	burn_write_opts_set_simulate (opts, (flags & BRASERO_BURN_FLAG_DUMMY) != 0);
+	BRASERO_JOB_LOG (BRASERO_JOB (self), "Setting dummy %i", (flags & BRASERO_BURN_FLAG_DUMMY) != 0);
 
 	brasero_job_get_rate (BRASERO_JOB (self), &rate);
 	burn_drive_set_speed (priv->ctx->drive, rate, 0);
 
 	if (burn_precheck_write (opts, priv->ctx->disc, reason, 0) < 1) {
+		BRASERO_JOB_LOG (BRASERO_JOB (self), "Precheck failed %s", reason);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -653,7 +659,8 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 		BRASERO_JOB_NOT_SUPPORTED (self);
 
 	/* This is the "fast option": basically we only write 64 Kib of 0 from
-	 * /dev/null */
+	 * /dev/null. If we reached that part it means we're dealing with
+	 * overwrite media. */
 	fd = open ("/dev/null", O_RDONLY);
 	if (fd == -1) {
 		int errnum = errno;
