@@ -127,7 +127,8 @@ libbrasero_media_la_SOURCES =		\
 	brasero-gio-operation.c         \
 	scsi-inquiry.c         \
 	scsi-prevent-allow-medium-removal.c         \
-	scsi-inquiry.h
+	scsi-inquiry.h         \
+	brasero-drive-priv.h
 
 # FreeBSD's SCSI CAM interface
 if HAVE_CAM_LIB_H
