@@ -205,6 +205,7 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 
 	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
+
 		/* This to signal that we are cancelling */
 		priv->probe_cancelled = TRUE;
 
@@ -216,6 +217,8 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 		g_cond_wait (priv->cond, priv->mutex);
 	}
 	g_mutex_unlock (priv->mutex);
+
+	priv->probed = TRUE;
 
 	if (priv->probe_id) {
 		g_source_remove (priv->probe_id);
@@ -825,6 +828,8 @@ brasero_drive_probed_inside (gpointer data)
 	priv->probe_id = 0;
 	g_mutex_unlock (priv->mutex);
 
+	priv->probed = TRUE;
+
 	if (priv->has_medium) {
 		if (priv->medium) {
 			priv->probed = TRUE;
@@ -834,6 +839,7 @@ brasero_drive_probed_inside (gpointer data)
 
 		BRASERO_MEDIA_LOG ("Probing new medium");
 
+		priv->probed = FALSE;
 		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 					     "drive", self,
 					     NULL);
@@ -857,10 +863,7 @@ brasero_drive_probed_inside (gpointer data)
 			       medium);
 
 		g_object_unref (medium);
-		priv->probed = TRUE;
 	}
-	else
-		priv->probed = TRUE;
 
 	return FALSE;
 }
@@ -882,6 +885,8 @@ brasero_drive_probe_inside_thread (gpointer data)
 	 * but we re-try to open it every second */
 	device = brasero_drive_get_device (drive);
 	BRASERO_MEDIA_LOG ("Trying to open device %s", device);
+
+	priv->has_medium = FALSE;
 
 	handle = brasero_device_handle_open (device, FALSE, &code);
 	while (!handle && counter <= BRASERO_DRIVE_OPEN_ATTEMPTS) {
@@ -911,8 +916,6 @@ brasero_drive_probe_inside_thread (gpointer data)
 	while (brasero_spc1_test_unit_ready (handle, &code) != BRASERO_SCSI_OK) {
 		if (code == BRASERO_SCSI_NO_MEDIUM) {
 			BRASERO_MEDIA_LOG ("No medium inserted");
-
-			priv->has_medium = FALSE;
 
 			brasero_device_handle_close (handle);
 			goto end;
