@@ -482,8 +482,6 @@ brasero_task_ctx_report_progress (BraseroTaskCtx *self)
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	if (priv->action_changed) {
-		goffset total = 0;
-
 		/* Give a last progress-changed signal
 		 * setting previous action as completely
 		 * finished only if the plugin set any
@@ -491,9 +489,12 @@ brasero_task_ctx_report_progress (BraseroTaskCtx *self)
 		 * This helps having the tray icon or the
 		 * taskbar icon set to be full on quick
 		 * burns. */
-		if (priv->progress >= 0
+
+		if (priv->progress >= 0.0
 		||  priv->track_bytes >= 0
 		||  priv->session_bytes >= 0) {
+			goffset total = 0;
+
 			priv->progress = 1.0;
 			priv->track_bytes = 0;
 			brasero_task_ctx_get_session_output_size (self, NULL, &total);

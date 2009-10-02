@@ -411,13 +411,11 @@ brasero_libburn_common_status (BraseroJob *self,
 								TRUE);
 				g_free (string);
 			}
-			else {
-				brasero_job_reset_progress (self);
+			else
 				brasero_job_set_current_action (self,
 				                                BRASERO_BURN_ACTION_FIXATING,
 								NULL,
 								FALSE);
-			}
 		}
 		else
 			     brasero_job_set_current_action (self,
@@ -440,8 +438,6 @@ brasero_libburn_common_status (BraseroJob *self,
 		brasero_job_set_progress (self, fraction);
 		brasero_job_start_progress (self, FALSE);
 	}
-	else
-		brasero_job_reset_progress (self);
 
 	return BRASERO_BURN_RETRY;
 }
