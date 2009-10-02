@@ -238,7 +238,6 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			BRASERO_JOB_LOG (self, "Writing");
 			/* we ignore it if it happens after leadout */
 			if (ctx->status == BURN_DRIVE_WRITING_LEADOUT
-			||  ctx->status == BURN_DRIVE_CLOSING_TRACK
 			||  ctx->status == BURN_DRIVE_CLOSING_SESSION)
 				return TRUE;
 
@@ -261,8 +260,8 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
 			break;
 
-		case BURN_DRIVE_WRITING_LEADOUT: 	/* DAO */
 		case BURN_DRIVE_CLOSING_TRACK:		/* TAO */
+		case BURN_DRIVE_WRITING_LEADOUT: 	/* DAO */
 		case BURN_DRIVE_CLOSING_SESSION:	/* Multisession end */
 			BRASERO_JOB_LOG (self, "Closing");
 			ctx->sectors += ctx->track_sectors;
@@ -377,13 +376,7 @@ brasero_libburn_common_status (BraseroJob *self,
 		return BRASERO_BURN_RETRY;
 	}
 
-	if (status == BURN_DRIVE_CLOSING_SESSION
-	||  status == BURN_DRIVE_WRITING_LEADOUT) {
-		brasero_job_set_progress (self, 1.0);
-		brasero_job_start_progress (self, FALSE);
-	}
-	else if (status != BURN_DRIVE_ERASING
-	     &&  status != BURN_DRIVE_FORMATTING) {
+	if (ctx->status == BURN_DRIVE_WRITING) {
 		gint64 cur_sector;
 
 		if (ctx->track_num != progress.track) {
@@ -405,7 +398,7 @@ brasero_libburn_common_status (BraseroJob *self,
 			/* Sometimes we have to wait for a long
 			 * time while libburn sync the cache.
 			 * Tell the use we haven't given up. */
-			if (cur_sector != total_sectors) {
+			if (cur_sector < total_sectors) {
 				gchar *string;
 
 				brasero_job_set_written_session (self, (gint64) ((gint64) cur_sector * 2048ULL));
@@ -432,7 +425,8 @@ brasero_libburn_common_status (BraseroJob *self,
 							NULL,
 							FALSE);
 	}
-	else if (progress.sector > 0) {
+	else if ((ctx->status == BURN_DRIVE_ERASING || ctx->status == BURN_DRIVE_FORMATTING)
+	     &&  progress.sector > 0) {
 		gdouble fraction;
 
 		/* NOTE: there is a strange behaviour which
@@ -446,6 +440,8 @@ brasero_libburn_common_status (BraseroJob *self,
 		brasero_job_set_progress (self, fraction);
 		brasero_job_start_progress (self, FALSE);
 	}
+	else
+		brasero_job_reset_progress (self);
 
 	return BRASERO_BURN_RETRY;
 }
