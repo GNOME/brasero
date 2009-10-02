@@ -90,6 +90,9 @@ struct _BraseroDrivePrivate
 	guint probed:1;
 	guint has_medium:1;
 	guint probe_cancelled:1;
+
+	guint locked:1;
+	guint probe_waiting:1;
 };
 
 #define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
@@ -111,6 +114,9 @@ enum {
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 
 #define BRASERO_DRIVE_OPEN_ATTEMPTS			5
+
+static void
+brasero_drive_probe_inside (BraseroDrive *drive);
 
 /**
  * brasero_drive_get_gdrive:
@@ -194,6 +200,8 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	priv->probe_waiting = FALSE;
 
 	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
@@ -457,11 +465,12 @@ brasero_drive_lock (BraseroDrive *drive,
 		return FALSE;
 
 	result = (brasero_sbc_medium_removal (handle, 1, NULL) == BRASERO_SCSI_OK);
-	if (!result) {
-		BRASERO_MEDIA_LOG ("Device failed to lock");
+	if (result) {
+		BRASERO_MEDIA_LOG ("Device locked");
+		priv->locked = TRUE;
 	}
 	else
-		BRASERO_MEDIA_LOG ("Device locked");
+		BRASERO_MEDIA_LOG ("Device failed to lock");
 
 	brasero_device_handle_close (handle);
 	return result;
@@ -496,13 +505,21 @@ brasero_drive_unlock (BraseroDrive *drive)
 		return FALSE;
 
 	result = (brasero_sbc_medium_removal (handle, 0, NULL) == BRASERO_SCSI_OK);
-	if (!result) {
-		BRASERO_MEDIA_LOG ("Device failed to unlock");
+	if (result) {
+		BRASERO_MEDIA_LOG ("Device unlocked");
+		priv->locked = FALSE;
+
+		if (priv->probe_waiting) {
+			/* See if a probe was waiting */
+			priv->probe_waiting = FALSE;
+			brasero_drive_probe_inside (drive);
+		}
 	}
 	else
-		BRASERO_MEDIA_LOG ("Device unlocked");
+		BRASERO_MEDIA_LOG ("Device failed to unlock");
 
 	brasero_device_handle_close (handle);
+
 	return result;
 }
 
@@ -974,6 +991,7 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 	}
 	else
 		BRASERO_MEDIA_LOG ("Ongoing probe");
+
 	g_mutex_unlock (priv->mutex);
 }
 
@@ -981,6 +999,23 @@ static void
 brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 					BraseroDrive *drive)
 {
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	if (priv->locked) {
+		BRASERO_MEDIA_LOG ("Waiting for next unlocking of the drive to probe");
+
+		/* Since the drive was locked, it should
+		 * not be possible that the medium
+		 * actually changed.
+		 * This allows to avoid probing while
+		 * we are burning something.
+		 * Delay the probe until brasero_drive_unlock ()
+		 * is called.  */
+		priv->probe_waiting = TRUE;
+		return;
+	}
+
 	brasero_drive_probe_inside (drive);
 }
 
@@ -1009,6 +1044,20 @@ brasero_drive_update_gdrive (BraseroDrive *drive,
 				  "changed",
 				  G_CALLBACK (brasero_drive_medium_gdrive_changed_cb),
 				  drive);
+	}
+
+	if (priv->locked) {
+		BRASERO_MEDIA_LOG ("Waiting for next unlocking of the drive to probe");
+
+		/* Since the drive was locked, it should
+		 * not be possible that the medium
+		 * actually changed.
+		 * This allows to avoid probing while
+		 * we are burning something.
+		 * Delay the probe until brasero_drive_unlock ()
+		 * is called.  */
+		priv->probe_waiting = TRUE;
+		return;
 	}
 
 	brasero_drive_probe_inside (drive);
@@ -1041,20 +1090,20 @@ brasero_drive_reprobe (BraseroDrive *drive)
 		g_drive_poll_for_media (priv->gdrive, NULL, NULL, NULL);
 	}
 
-	if (!priv->medium)
-		return;
+	priv->probe_waiting = FALSE;
 
 	BRASERO_MEDIA_LOG ("Reprobing inserted medium");
+	if (priv->medium) {
+		/* remove current medium */
+		medium = priv->medium;
+		priv->medium = NULL;
 
-	/* remove current medium */
-	medium = priv->medium;
-	priv->medium = NULL;
-
-	g_signal_emit (drive,
-		       drive_signals [MEDIUM_REMOVED],
-		       0,
-		       medium);
-	g_object_unref (medium);
+		g_signal_emit (drive,
+			       drive_signals [MEDIUM_REMOVED],
+			       0,
+			       medium);
+		g_object_unref (medium);
+	}
 
 	brasero_drive_probe_inside (drive);
 }
