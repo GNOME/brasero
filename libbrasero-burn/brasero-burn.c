@@ -1213,12 +1213,9 @@ brasero_burn_progress_changed (BraseroTaskCtx *task,
 			       BraseroBurn *burn)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
-	BraseroBurnAction action = BRASERO_BURN_ACTION_NONE;
 	gdouble overall_progress = -1.0;
 	gdouble task_progress = -1.0;
 	glong time_remaining = -1;
-
-	brasero_task_ctx_get_current_action (task, &action);
 
 	/* get the task current progress */
 	if (brasero_task_ctx_get_progress (task, &task_progress) == BRASERO_BURN_OK) {
