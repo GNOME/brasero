@@ -456,7 +456,7 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
-	priv->ctx = brasero_libburn_common_ctx_new (BRASERO_JOB (self), error);
+	priv->ctx = brasero_libburn_common_ctx_new (BRASERO_JOB (self), FALSE, error);
 	if (!priv->ctx)
 		return BRASERO_BURN_ERR;
 

@@ -740,7 +740,13 @@ brasero_libburn_start (BraseroJob *job,
 	if (action == BRASERO_JOB_ACTION_RECORD) {
 		GError *ret_error = NULL;
 
-		priv->ctx = brasero_libburn_common_ctx_new (job, &ret_error);
+		/* TRUE is a context that helps to adapt action
+		 * messages like for DVD+RW which need a
+		 * pre-formatting before actually writing
+		 * and without this we would not know if
+		 * we are actually formatting or just pre-
+		 * formatting == starting to record */
+		priv->ctx = brasero_libburn_common_ctx_new (job, TRUE, &ret_error);
 		if (!priv->ctx) {
 			if (ret_error && ret_error->code == BRASERO_BURN_ERROR_DRIVE_BUSY) {
 				g_propagate_error (error, ret_error);
@@ -764,7 +770,7 @@ brasero_libburn_start (BraseroJob *job,
 	else if (action == BRASERO_JOB_ACTION_ERASE) {
 		GError *ret_error = NULL;
 
-		priv->ctx = brasero_libburn_common_ctx_new (job, &ret_error);
+		priv->ctx = brasero_libburn_common_ctx_new (job, FALSE, &ret_error);
 		if (!priv->ctx) {
 			if (ret_error && ret_error->code == BRASERO_BURN_ERROR_DRIVE_BUSY) {
 				g_propagate_error (error, ret_error);
