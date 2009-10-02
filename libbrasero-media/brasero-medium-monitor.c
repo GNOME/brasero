@@ -41,6 +41,8 @@
 
 #include "brasero-media-private.h"
 
+#include "brasero-drive-priv.h"
+
 #include "scsi-device.h"
 #include "scsi-utils.h"
 #include "scsi-spc1.h"
@@ -78,14 +80,6 @@ static guint medium_monitor_signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
 
-
-/**
- * These definitions go here as they shouldn't be public and they're used only 
- * here.
- */
-
-gboolean
-brasero_drive_probing (BraseroDrive *drive);
 
 /**
  * brasero_medium_monitor_get_drive:

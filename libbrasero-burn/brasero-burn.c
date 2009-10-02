@@ -55,6 +55,8 @@
 #include "burn-task.h"
 #include "brasero-caps-burn.h"
 
+#include "brasero-drive-priv.h"
+
 #include "brasero-volume.h"
 #include "brasero-drive.h"
 
@@ -260,7 +262,6 @@ static BraseroBurnResult
 brasero_burn_reprobe (BraseroBurn *burn)
 {
 	guint attempts = 0;
-	BraseroMedium *medium;
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
@@ -270,7 +271,7 @@ brasero_burn_reprobe (BraseroBurn *burn)
 
 	/* reprobe the medium and wait for it to be probed */
 	brasero_drive_reprobe (priv->dest);
-	while (attempts < MAX_REPROBE_ATTEMPTS && (medium = brasero_drive_get_medium (priv->dest)) == NULL) {
+	while (attempts < MAX_REPROBE_ATTEMPTS && brasero_drive_probing (priv->dest)) {
 		result = brasero_burn_sleep (burn, 250);
 		attempts ++;
 	}
