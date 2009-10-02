@@ -862,10 +862,14 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 
 		sectors = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2048);
 
-		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT)
+		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT) {
+			node->is_2GiB = 1;
 			stats->num_2GiB ++;
-		else if (sectors <= BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) > BRASERO_FILE_2G_LIMIT)
+		}
+		else if (sectors <= BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) > BRASERO_FILE_2G_LIMIT) {
+			node->is_2GiB = 0;
 			stats->num_2GiB --;
+		}
 
 		/* The node isn't grafted and it's a file. So we must propagate
 		 * its size up to the parent graft node. */
