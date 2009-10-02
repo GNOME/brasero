@@ -223,7 +223,7 @@ brasero_burn_caps_can_blank_real (BraseroBurnCaps *self,
 	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW)
 	&&  (flags & BRASERO_BURN_FLAG_MULTI)
 	&&  (flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
-		BRASERO_BURN_LOG ("fast media blanking only supported but multisession required for DVDRW");
+		BRASERO_BURN_LOG ("fast media blanking only supported but multisession required for DVD-RW");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
