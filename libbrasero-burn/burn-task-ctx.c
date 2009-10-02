@@ -91,6 +91,8 @@ struct _BraseroTaskCtxPrivate
 
 	guint fake:1;
 	guint action_changed:1;
+	guint update_action_string:1;
+
 	guint written_changed:1;
 	guint progress_changed:1;
 	guint use_average_rate:1;
@@ -480,11 +482,47 @@ brasero_task_ctx_report_progress (BraseroTaskCtx *self)
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	if (priv->action_changed) {
+		goffset total = 0;
+
+		/* Give a last progress-changed signal
+		 * setting previous action as completely
+		 * finished only if the plugin set any
+		 * progress for it.
+		 * This helps having the tray icon or the
+		 * taskbar icon set to be full on quick
+		 * burns. */
+		if (priv->progress >= 0
+		||  priv->track_bytes >= 0
+		||  priv->session_bytes >= 0) {
+			priv->progress = 1.0;
+			priv->track_bytes = 0;
+			brasero_task_ctx_get_session_output_size (self, NULL, &total);
+			priv->session_bytes = total;
+
+			g_signal_emit (self,
+				       brasero_task_ctx_signals [PROGRESS_CHANGED_SIGNAL],
+				       0);
+		}
+
 		g_signal_emit (self,
 			       brasero_task_ctx_signals [ACTION_CHANGED_SIGNAL],
 			       0,
 			       priv->current_action);
+
+		brasero_task_ctx_reset_progress (self);
+		g_signal_emit (self,
+			       brasero_task_ctx_signals [PROGRESS_CHANGED_SIGNAL],
+			       0);
+
 		priv->action_changed = 0;
+	}
+	else if (priv->update_action_string) {
+		g_signal_emit (self,
+			       brasero_task_ctx_signals [ACTION_CHANGED_SIGNAL],
+			       0,
+			       priv->current_action);
+
+		priv->update_action_string = 0;
 	}
 
 	if (priv->timer) {
@@ -700,13 +738,20 @@ brasero_task_ctx_set_current_action (BraseroTaskCtx *self,
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	if (!force && priv->current_action == action)
-		return BRASERO_BURN_OK;
+	if (priv->current_action == action && !force) {
+		if (!force)
+			return BRASERO_BURN_OK;
 
-	g_mutex_lock (priv->lock);
+		g_mutex_lock (priv->lock);
 
-	priv->current_action = action;
-	priv->action_changed = 1;
+		priv->update_action_string = 1;
+	}
+	else {
+		g_mutex_lock (priv->lock);
+
+		priv->current_action = action;
+		priv->action_changed = 1;
+	}
 
 	if (priv->action_string)
 		g_free (priv->action_string);
@@ -974,6 +1019,7 @@ brasero_task_ctx_stop_progress (BraseroTaskCtx *self)
 
 	priv->current_action = BRASERO_BURN_ACTION_NONE;
 	priv->action_changed = 0;
+	priv->update_action_string = 0;
 
 	if (priv->timer) {
 		g_timer_destroy (priv->timer);
