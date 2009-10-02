@@ -142,6 +142,7 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 
 BraseroLibburnCtx *
 brasero_libburn_common_ctx_new (BraseroJob *job,
+                                gboolean is_burning,
 				GError **error)
 {
 	gchar libburn_device [BURN_DRIVE_ADR_LEN];
@@ -174,6 +175,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 	}
 
 	ctx = g_new0 (BraseroLibburnCtx, 1);
+	ctx->is_burning = is_burning;
 	res = burn_drive_scan_and_grab (&ctx->drive_info, libburn_device, 0);
 	BRASERO_JOB_LOG (job, "Drive (%s) init result = %d", libburn_device, res);
 	if (res <= 0) {
@@ -274,8 +276,16 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 		case BURN_DRIVE_ERASING:
 		case BURN_DRIVE_FORMATTING:
 			BRASERO_JOB_LOG (self, "Blanking/Formatting");
-			action = BRASERO_BURN_ACTION_BLANKING;
-			brasero_job_set_dangerous (BRASERO_JOB (self), TRUE);
+			if (!ctx->is_burning) {
+				action = BRASERO_BURN_ACTION_BLANKING;
+				brasero_job_set_dangerous (BRASERO_JOB (self), TRUE);
+			}
+			else {
+				/* DVD+RW need a preformatting before being written.
+				 * Adapt the message to "start recording". */
+				action = BRASERO_BURN_ACTION_START_RECORDING;
+				brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
+			}
 			break;
 
 		case BURN_DRIVE_IDLE:

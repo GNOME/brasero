@@ -55,14 +55,16 @@ struct _BraseroLibburnCtx {
 	gint64 cur_sector;
 	gint64 track_sectors;
 
-	gint has_leadin;
-
 	GTimer *op_start;
+
+	guint is_burning:1;
+	guint has_leadin:1;
 };
 typedef struct _BraseroLibburnCtx BraseroLibburnCtx;
 
 BraseroLibburnCtx *
 brasero_libburn_common_ctx_new (BraseroJob *job,
+                                gboolean is_burning,
 				GError **error);
 
 void
