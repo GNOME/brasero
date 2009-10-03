@@ -487,6 +487,7 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	}
 
 	if (result < 0) {
+		BRASERO_JOB_LOG (self, "Import failed 0x%x", result);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_IMAGE_LAST_SESSION,
@@ -548,6 +549,30 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		goto end;
 	}
 
+	iso_write_opts_new (&opts, 2);
+
+	brasero_job_get_flags (BRASERO_JOB (self), &flags);
+	if (flags & BRASERO_BURN_FLAG_MERGE) {
+		BraseroBurnResult result;
+
+		result = brasero_libisofs_import_last_session (self,
+							       image,
+							       opts,
+							       &priv->error);
+		if (result != BRASERO_BURN_OK) {
+			g_free (label);
+			goto end;
+		}
+	}
+	else if (flags & BRASERO_BURN_FLAG_APPEND) {
+		goffset start_block;
+
+		brasero_job_get_next_writable_address (BRASERO_JOB (self), &start_block);
+		iso_write_opts_set_ms_block (opts, start_block);
+	}
+
+	/* set label but set it after merging so the
+	 * new does not get replaced by the former */
 	publisher = g_strdup_printf ("Brasero-%i.%i.%i",
 				     BRASERO_MAJOR_VERSION,
 				     BRASERO_MINOR_VERSION,
@@ -561,27 +586,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 	g_free (publisher);
 	g_free (label);
-
-	iso_write_opts_new (&opts, 2);
-
-	brasero_job_get_flags (BRASERO_JOB (self), &flags);
-	if (flags & BRASERO_BURN_FLAG_MERGE) {
-		BraseroBurnResult result;
-
-		result = brasero_libisofs_import_last_session (self,
-							       image,
-							       opts,
-							       &priv->error);
-		if (result != BRASERO_BURN_OK)
-			goto end;
-	}
-	else if (flags & BRASERO_BURN_FLAG_APPEND) {
-		goffset start_block;
-
-		brasero_job_get_next_writable_address (BRASERO_JOB (self), &start_block);
-		iso_write_opts_set_ms_block (opts, start_block);
-	}
-
 
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
