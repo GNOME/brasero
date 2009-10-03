@@ -226,8 +226,17 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 	}
 
 	if (priv->medium) {
-		g_object_unref (priv->medium);
+		BraseroMedium *medium;
+
+		medium = priv->medium;
 		priv->medium = NULL;
+
+		g_signal_emit (drive,
+			       drive_signals [MEDIUM_REMOVED],
+			       0,
+			       medium);
+
+		g_object_unref (medium);
 	}
 }
 
