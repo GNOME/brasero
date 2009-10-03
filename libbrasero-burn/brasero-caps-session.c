@@ -1765,7 +1765,7 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 	gboolean res;
 	BraseroMedia media;
 	BraseroBurnCaps *self;
-	BraseroTrackType input;
+	BraseroTrackType *input;
 	BraseroBurnResult result;
 
 	BraseroBurnFlag session_flags;
@@ -1776,8 +1776,9 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 
 	self = brasero_burn_caps_get_default ();
 
-	brasero_burn_session_get_input_type (session, &input);
-	BRASERO_BURN_LOG_WITH_TYPE (&input,
+	input = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (session, input);
+	BRASERO_BURN_LOG_WITH_TYPE (input,
 				    BRASERO_PLUGIN_IO_NONE,
 				    "FLAGS: searching available flags for input");
 
@@ -1785,7 +1786,7 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 		BRASERO_BURN_LOG ("FLAGS: image required");
 
 		/* In this case no APPEND/MERGE is possible */
-		if (input.type == BRASERO_TRACK_TYPE_DISC)
+		if (brasero_track_type_get_has_medium (input))
 			supported_flags |= BRASERO_BURN_FLAG_EJECT;
 
 		*supported = supported_flags;
@@ -1794,6 +1795,7 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 		BRASERO_BURN_LOG_FLAGS (supported_flags, "FLAGS: supported");
 		BRASERO_BURN_LOG_FLAGS (compulsory_flags, "FLAGS: compulsory");
 
+		brasero_track_type_free (input);
 		g_object_unref (self);
 		return BRASERO_BURN_OK;
 	}
@@ -1824,6 +1826,7 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 		else
 			BRASERO_BURN_LOG ("No available flags for copy");
 
+		brasero_track_type_free (input);
 		g_object_unref (self);
 		return result;
 	}
@@ -1839,12 +1842,14 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 	res = brasero_check_flags_for_drive (brasero_burn_session_get_burner (session), session_flags);
 	if (!res) {
 		BRASERO_BURN_LOG ("Session flags not supported by drive");
+		brasero_track_type_free (input);
 		g_object_unref (self);
 		return BRASERO_BURN_ERR;
 	}
 
 	if ((session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
 	&&  (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+		brasero_track_type_free (input);
 		g_object_unref (self);
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
@@ -1854,10 +1859,11 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 	result = brasero_burn_caps_get_flags_for_medium (self,
 							 media,
 							 session_flags,
-							 &input,
+							 input,
 							 &supported_flags,
 							 &compulsory_flags);
 
+	brasero_track_type_free (input);
 	g_object_unref (self);
 
 	if (result != BRASERO_BURN_OK)
