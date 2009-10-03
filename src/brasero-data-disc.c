@@ -1733,7 +1733,7 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 	g_object_ref (message);
 
 	if (!priv->disc_group) {
-		priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION);
+		priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION "-data");
 		gtk_action_group_set_translation_domain (priv->disc_group, GETTEXT_PACKAGE);
 		gtk_action_group_add_actions (priv->disc_group,
 					      entries,
