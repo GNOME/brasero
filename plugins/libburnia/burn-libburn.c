@@ -508,7 +508,12 @@ brasero_libburn_start_record (BraseroLibburn *self,
 	 * checking thing earlier ourselves. Now there is a proper
 	 * disc and tray is locked. */
 	opts = burn_write_opts_new (priv->ctx->drive);
-	burn_write_opts_set_perform_opc (opts, 0);
+
+	/* only turn this on for CDs */
+	if ((media & BRASERO_MEDIUM_CD) != 0)
+		burn_write_opts_set_perform_opc (opts, 0);
+	else
+		burn_write_opts_set_perform_opc (opts, 0);
 
 	if (flags & BRASERO_BURN_FLAG_DAO)
 		burn_write_opts_set_write_type (opts,
@@ -965,8 +970,20 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* libburn has no OVERBURN capabilities */
 
 	/* CD(R)W */
-	BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS (plugin, BRASERO_BURN_FLAG_OVERBURN);
-	BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS (plugin, BRASERO_BURN_FLAG_OVERBURN);
+	/* Use DAO for first session since AUDIO need it to write CD-TEXT
+	 * Though libburn is unable to write CD-TEXT.... */
+	/* Note: when burning multiple tracks to a CD (like audio for example)
+	 * in dummy mode with TAO libburn will fail probably because it does
+	 * not use a correct next writable address for the second track (it uses
+	 * the same as for track #1). So remove dummy mode.
+	 * This is probably the same reason why it fails at merging another
+	 * session to a data CD in dummy mode. */
+	BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS (plugin,
+	                                       BRASERO_BURN_FLAG_OVERBURN|
+	                                       BRASERO_BURN_FLAG_DUMMY);
+	BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS (plugin,
+	                                        BRASERO_BURN_FLAG_OVERBURN|
+	                                        BRASERO_BURN_FLAG_DUMMY);
 
 	/* audio support for CDs only */
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
