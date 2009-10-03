@@ -302,7 +302,7 @@ brasero_audio_disc_add_ui (BraseroDisc *disc,
 	audio_disc = BRASERO_AUDIO_DISC (disc);
 
 	if (!audio_disc->priv->disc_group) {
-		audio_disc->priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION);
+		audio_disc->priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION "-audio");
 		gtk_action_group_set_translation_domain (audio_disc->priv->disc_group, GETTEXT_PACKAGE);
 		gtk_action_group_add_actions (audio_disc->priv->disc_group,
 					      entries,
