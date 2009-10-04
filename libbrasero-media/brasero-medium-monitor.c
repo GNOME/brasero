@@ -389,6 +389,37 @@ brasero_medium_monitor_is_drive (BraseroMediumMonitor *monitor,
 	return result;
 }
 
+static BraseroDrive *
+brasero_medium_monitor_drive_new (BraseroMediumMonitor *self,
+                                  const gchar *device,
+                                  GDrive *gdrive)
+{
+	BraseroMediumMonitorPrivate *priv;
+	BraseroDrive *drive;
+
+	if (!brasero_medium_monitor_is_drive (self, device))
+		return NULL;
+
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	drive = g_object_new (BRASERO_TYPE_DRIVE,
+	                      "device", device,
+			      "gdrive", gdrive,
+			      NULL);
+
+	priv->drives = g_slist_prepend (priv->drives, drive);
+
+	g_signal_connect (drive,
+			  "medium-added",
+			  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
+			  self);
+	g_signal_connect (drive,
+			  "medium-removed",
+			  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
+			  self);
+
+	return drive;
+}
+
 static void
 brasero_medium_monitor_device_added (BraseroMediumMonitor *self,
                                      const gchar *device,
@@ -418,28 +449,11 @@ brasero_medium_monitor_device_added (BraseroMediumMonitor *self,
 	}
 
 	/* Make sure it's an optical drive */
-	if (!brasero_medium_monitor_is_drive (self, device))
+	drive = brasero_medium_monitor_drive_new (self, device, gdrive);
+	if (!drive)
 		return;
 
 	BRASERO_MEDIA_LOG ("New drive added");
-
-	drive = g_object_new (BRASERO_TYPE_DRIVE,
-	                      "device", device,
-	                      "gdrive", gdrive,
-	                      NULL);
-	priv->drives = g_slist_prepend (priv->drives, drive);
-
-	/* connect to signals. This must come before the g_signal_emit () so we
-	 * are the first to get an update on the medium inside. */
-	g_signal_connect (drive,
-			  "medium-added",
-			  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
-			  self);
-	g_signal_connect (drive,
-			  "medium-removed",
-			  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
-			  self);
-
 	g_signal_emit (self,
 		       medium_monitor_signals [DRIVE_ADDED],
 		       0,
@@ -654,23 +668,7 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 		gdrive = iter->data;
 
 		device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-		if (brasero_medium_monitor_is_drive (object, device)) {
-			drive = g_object_new (BRASERO_TYPE_DRIVE,
-			                      "device", device,
-					      "gdrive", gdrive,
-					      NULL);
-
-			priv->drives = g_slist_prepend (priv->drives, drive);
-
-			g_signal_connect (drive,
-					  "medium-added",
-					  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
-					  object);
-			g_signal_connect (drive,
-					  "medium-removed",
-					  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
-					  object);
-		}
+		brasero_medium_monitor_drive_new (object, device, gdrive);
 		g_free (device);
 	}
 	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
@@ -696,23 +694,7 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 			continue;
 		}
 
-		if (brasero_medium_monitor_is_drive (object, device)) {
-			drive = g_object_new (BRASERO_TYPE_DRIVE,
-			                      "device", device,
-			                      "gdrive", NULL,
-					      NULL);
-			priv->drives = g_slist_prepend (priv->drives, drive);
-
-			g_signal_connect (drive,
-					  "medium-added",
-					  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
-					  object);
-			g_signal_connect (drive,
-					  "medium-removed",
-					  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
-					  object);
-		}
-
+		brasero_medium_monitor_drive_new (object, device, NULL);
 		g_free (device);
 	}
 	g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
