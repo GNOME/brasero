@@ -550,6 +550,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	}
 
 	iso_write_opts_new (&opts, 2);
+	iso_write_opts_set_relaxed_vol_atts(opts, 1);
 
 	brasero_job_get_flags (BRASERO_JOB (self), &flags);
 	if (flags & BRASERO_BURN_FLAG_MERGE) {
