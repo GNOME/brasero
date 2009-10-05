@@ -563,6 +563,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 
 	/* Items */
 	item = GTK_WIDGET (gtk_tool_button_new_from_stock (GTK_STOCK_PRINT));
+	gtk_widget_set_tooltip_text (item, _("Print"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -577,6 +578,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	item = GTK_WIDGET (gtk_tool_button_new (NULL, _("Bac_kground Properties")));
 	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "background");
 	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (item), TRUE);
+	gtk_widget_set_tooltip_text (item, _("Background properties"));
 	gtk_widget_show (item);
 	gtk_widget_set_sensitive (item, FALSE);
 	g_signal_connect (item,
@@ -591,6 +593,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
 	item = GTK_WIDGET (gtk_radio_tool_button_new_from_stock (NULL, GTK_STOCK_JUSTIFY_RIGHT));
+	gtk_widget_set_tooltip_text (item, _("Align right"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -600,6 +603,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	priv->right = item;
 
 	item = GTK_WIDGET (gtk_radio_tool_button_new_from_stock (gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (priv->right)), GTK_STOCK_JUSTIFY_CENTER));
+	gtk_widget_set_tooltip_text (item, _("Center"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -609,6 +613,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	priv->center = item;
 
 	item = GTK_WIDGET (gtk_radio_tool_button_new_from_stock (gtk_radio_tool_button_get_group (GTK_RADIO_TOOL_BUTTON (priv->right)), GTK_STOCK_JUSTIFY_LEFT));
+	gtk_widget_set_tooltip_text (item, _("Align left"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -622,6 +627,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
 	item = GTK_WIDGET (gtk_toggle_tool_button_new_from_stock (GTK_STOCK_UNDERLINE));
+	gtk_widget_set_tooltip_text (item, _("Underline"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -631,6 +637,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	priv->underline = item;
 
 	item = GTK_WIDGET (gtk_toggle_tool_button_new_from_stock (GTK_STOCK_ITALIC));
+	gtk_widget_set_tooltip_text (item, _("Italic"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -640,6 +647,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	priv->italic = item;
 
 	item = GTK_WIDGET (gtk_toggle_tool_button_new_from_stock (GTK_STOCK_BOLD));
+	gtk_widget_set_tooltip_text (item, _("Bold"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
@@ -665,6 +673,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 
 	item = GTK_WIDGET (gtk_tool_item_new ());
 	gtk_widget_show (item);
+	gtk_widget_set_tooltip_text (item, _("Font family and size"));
 	gtk_container_add (GTK_CONTAINER (item), priv->fonts);
 	gtk_tool_item_set_expand (GTK_TOOL_ITEM (item), FALSE);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
@@ -672,6 +681,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	priv->colours = brasero_tool_color_picker_new ();
 	brasero_tool_color_picker_set_text (BRASERO_TOOL_COLOR_PICKER (priv->colours),
 					    _("_Text Color"));
+	gtk_widget_set_tooltip_text (priv->colours, _("Text color"));
 	gtk_widget_show (priv->colours);
 	g_signal_connect (priv->colours,
 			  "color-set",
