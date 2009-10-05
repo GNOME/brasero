@@ -134,7 +134,7 @@ error_version:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("Libdvdcss version %s is not supported.\nPlease install libdvdcss version 1.2.x"),
+		     _("libdvdcss version %s is not supported.\nPlease install libdvdcss version 1.2.x"),
 		     dvdcss_interface_2);
 	g_module_close (module);
 	return FALSE;
@@ -144,7 +144,7 @@ error_loading:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("Libdvdcss could not be loaded properly"));
+		     _("libdvdcss could not be loaded properly"));
 	g_module_close (module);
 	return FALSE;
 }
@@ -681,7 +681,7 @@ brasero_dvdcss_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "dvdcss",
-			       _("Dvdcss allows to read css encrypted video DVDs"),
+			       _("dvdcss allows to CSS-encrypted video DVDs to be read"),
 			       "Philippe Rouquier",
 			       0);
 

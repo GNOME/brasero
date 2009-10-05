@@ -215,7 +215,7 @@ brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 {
 	brasero_app_alert (brasero_app_get_default (),
 			   _("The session could not be imported."),
-			   error?error->message:_("An unknown error occured"),
+			   error?error->message:_("An unknown error occurred"),
 			   GTK_MESSAGE_WARNING);
 }
 
@@ -842,7 +842,7 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 	if (priv->reject_deep_files)
 		return FALSE;
 
-	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"), name);
+	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection and use the third version of the ISO9660 standard to support it?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
@@ -850,9 +850,9 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by ISO9660 standard in its first and second versions (the most widespread ones)."
-						    "\nIt is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©."
-						    "\nHowever MacOS X cannot read images created with version 3 of ISO9660 standard."));
+						  _("The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones)."
+						    "\nIt is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows ©."
+						    "\nHowever, Mac OS X cannot read images created with version 3 of the ISO9660 standard."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
@@ -897,7 +897,7 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The children of this directory will have 7 parent directories."
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
-						    "\nNOTE: Such a file hierarchy is known to work on linux."));
+						    "\nNote: Such a file hierarchy is known to work on Linux."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
@@ -1116,7 +1116,7 @@ brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 		/* ask user */
 		volume_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
 		/* Translators: %s is the name of the volume to import */
-		string = g_strdup_printf (_("Do you want to import the session from \'%s\'?"), volume_name);
+		string = g_strdup_printf (_("Do you want to import the session from \"%s\"?"), volume_name);
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
 						      string,
 						      _("That way, old files from previous sessions will be usable after burning."),

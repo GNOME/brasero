@@ -806,7 +806,7 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     /* Translators: the %s is the error message from errno */
-			     _("An internal error occured (%s)"),
+			     _("An internal error occurred (%s)"),
 			     g_strerror (errsv));
 
 		goto error;

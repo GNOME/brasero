@@ -35,7 +35,7 @@
 
 G_BEGIN_DECLS
 
-#define GROWISOFS_DESCRIPTION		N_("Growisofs burning suite")
+#define GROWISOFS_DESCRIPTION		N_("growisofs burning suite")
 
 G_END_DECLS
 

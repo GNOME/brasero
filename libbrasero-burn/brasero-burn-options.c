@@ -459,7 +459,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		GtkWidget *message;
 
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-						      _("Would you like to burn beyond the disc reported capacity?"),
+						      _("Would you like to burn beyond the disc's reported capacity?"),
 						      _("The data size is too large for the disc and you must remove files from the selection otherwise."
 							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
@@ -468,7 +468,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		brasero_notify_button_add (BRASERO_NOTIFY (priv->message_output),
 					   BRASERO_DISC_MESSAGE (message),
 					   _("_Overburn"),
-					   _("Burn beyond the disc reported capacity"),
+					   _("Burn beyond the disc's reported capacity"),
 					   GTK_RESPONSE_OK);
 
 		g_signal_connect (message,
@@ -480,7 +480,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		/* The medium is valid but it's a special case */
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("The drive that holds the source disc will also be the one used to record."),
-					    _("A new recordable disc will be required once the one currently loaded has been copied."),
+					    _("A new recordable disc will be required once the currently loaded one has been copied."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}

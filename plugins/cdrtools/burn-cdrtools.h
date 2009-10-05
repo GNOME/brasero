@@ -35,7 +35,7 @@
 
 G_BEGIN_DECLS
 
-#define CDRTOOLS_DESCRIPTION		N_("Cdrtools burning suite")
+#define CDRTOOLS_DESCRIPTION		N_("cdrtools burning suite")
 
 G_END_DECLS
 

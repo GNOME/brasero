@@ -702,7 +702,7 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("drag files in this area from the selection pane or from the file manager"), -1, "TextBody", NULL);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("double click on files in the selection pane"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("double-click on files in the selection pane"), -1, "TextBody", NULL);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("copy files (from file manager for example) and paste in this area"), -1, "TextBody", NULL);
 	gtk_text_buffer_insert (buffer, &iter, "\n\n\n", -1);
@@ -822,7 +822,7 @@ brasero_project_update_project_size (BraseroProject *project)
 	string = brasero_project_get_sectors_string (sectors, session_type);
 	brasero_track_type_free (session_type);
 
-	size_str = g_strdup_printf (_("Project estimated size: %s"), string);
+	size_str = g_strdup_printf (_("Estimated project size: %s"), string);
 	g_free (string);
 
 	gtk_statusbar_push (GTK_STATUSBAR (status), project->priv->status_ctx, size_str);
@@ -967,7 +967,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 
 			message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 							      _("Would you like to burn the selection of files across several media?"),
-							      _("The size of the project is too large for the disc even with the overburn option."),
+							      _("The project is too large for the disc even with the overburn option."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 			brasero_notify_button_add (BRASERO_NOTIFY (project->priv->message),
@@ -984,7 +984,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		else
 			brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 						    _("Please choose another CD or DVD or insert a new one."),
-						    _("The size of the project is too large for the disc even with the overburn option."),
+						    _("The project is too large for the disc even with the overburn option."),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
@@ -994,16 +994,16 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		project->priv->empty = FALSE;
 		project->priv->oversized = TRUE;
 		message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
-						      _("Would you like to burn beyond the disc reported capacity?"),
-						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
-							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
-							"\nNOTE: This option might cause failure."),
+						      _("Would you like to burn beyond the disc's reported capacity?"),
+						      _("The project is too large for the disc and you must remove files from it."
+							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognized and therefore needs the overburn option."
+							"\nNote: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
 		brasero_notify_button_add (BRASERO_NOTIFY (project->priv->message),
 					   BRASERO_DISC_MESSAGE (message),
 					   _("_Overburn"),
-					   _("Burn beyond the disc reported capacity"),
+					   _("Burn beyond the disc's reported capacity"),
 					   GTK_RESPONSE_OK);
 
 		g_signal_connect (message,
@@ -2364,7 +2364,7 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 	error = xmlGetLastError ();
 	brasero_app_alert (brasero_app_get_default (),
 			   _("Your project has not been saved."),
-			   error? error->message:_("An unknown error occured"),
+			   error? error->message:_("An unknown error occurred"),
 			   GTK_MESSAGE_ERROR);
 	xmlResetLastError ();
 }
@@ -2504,15 +2504,15 @@ brasero_project_save_project_ask_for_path (BraseroProject *project,
 		combo = gtk_combo_box_new_text ();
 		gtk_widget_show (combo);
 
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as Brasero audio project"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a Brasero audio project"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a plain text list"));
 
 #ifdef BUILD_PLAYLIST
 
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a PLS playlist"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an M3U playlist"));
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a XSPF playlist"));
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an IRIVER playlist"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an XSPF playlist"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an iriver playlist"));
 
 #endif
 

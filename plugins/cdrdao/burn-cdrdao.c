@@ -693,7 +693,7 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NONE);
 
 	use_raw = brasero_plugin_conf_option_new (GCONF_KEY_RAW_FLAG,
-						  _("Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"),
+						  _("Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"),
 						  BRASERO_PLUGIN_OPTION_BOOL);
 
 	brasero_plugin_add_conf_option (plugin, use_raw);

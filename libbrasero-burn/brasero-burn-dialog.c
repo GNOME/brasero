@@ -914,7 +914,7 @@ brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 	BraseroBurnResult result;
 
 	secondary = g_strdup_printf ("%s\n%s",
-				     _("CD-RW audio discs may not play correctly in older CD players and CD-TEXT won't be written."),
+				     _("CD-RW audio discs may not play correctly in older CD players and CD-Text won't be written."),
 				     _("Do you want to continue anyway?"));
 
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
@@ -1791,7 +1791,7 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 		g_error_free (error);
 	}
 	else
-		secondary = g_strdup (_("An unknown error occured."));
+		secondary = g_strdup (_("An unknown error occurred."));
 
 	if (!GTK_WIDGET_VISIBLE (dialog))
 		gtk_widget_show (GTK_WIDGET (dialog));

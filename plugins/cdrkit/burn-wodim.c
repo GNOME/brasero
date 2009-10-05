@@ -202,13 +202,13 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 	**/
 
 	/** For these we'd rather have a message saying "cdrecord failed"
-	 *  as an internal error occured says nothing/even less
+	 *  as an internal error occurred says nothing/even less
 	else if (strstr (line, "Bad file descriptor. read error on input file")
 	     ||  strstr (line, "Input buffer error, aborting")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("An internal error occured")));
+						_("An internal error occurred")));
 	}
 
 	**/
@@ -704,7 +704,7 @@ error:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("An internal error occured"));
+		     _("An internal error occurred"));
 
 	return BRASERO_BURN_ERR;
 }
@@ -819,7 +819,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured"));
+				     _("An internal error occurred"));
 			return BRASERO_BURN_ERR;
 		}
 		
@@ -834,7 +834,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured"));
+				     _("An internal error occurred"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -1395,7 +1395,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* add some configure options */
 	immed = brasero_plugin_conf_option_new (GCONF_KEY_IMMEDIATE_FLAG,
-						_("Enable \"-immed\" flag (see wodim manual)"),
+						_("Enable the \"-immed\" flag (see wodim manual)"),
 						BRASERO_PLUGIN_OPTION_BOOL);
 	minbuf = brasero_plugin_conf_option_new (GCONF_KEY_MINBUF_VALUE,
 						 _("Minimum drive buffer fill ratio (in %) (see wodim manual):"),

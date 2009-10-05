@@ -621,7 +621,7 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 
 	if (error) {
 		brasero_utils_message_dialog (GTK_WIDGET (self),
-					      _("An error occured while detecting silences."),
+					      _("An error occurred while detecting silences."),
 					      error->message,
 					      GTK_MESSAGE_ERROR);
 		return;

@@ -160,7 +160,7 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
                           G_CALLBACK (button_clicked_cb),
                           bar);
 
-        gtk_widget_set_tooltip_text (bar->priv->button, _("Write contents to a CD or DVD disc"));
+        gtk_widget_set_tooltip_text (bar->priv->button, _("Write contents to a CD or DVD"));
 }
 
 static void

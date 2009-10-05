@@ -84,7 +84,7 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 							N_("Transcoding song"),
 							N_("Preparing to write"),
 							N_("Writing leadin"),
-							N_("Writing CD-TEXT information"),
+							N_("Writing CD-Text information"),
 							N_("Finalizing"),
 							N_("Writing leadout"),
 						        N_("Starting to record"),

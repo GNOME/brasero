@@ -368,7 +368,7 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured"));
+				     _("An internal error occurred"));
 			return BRASERO_BURN_ERR;
 		}
 

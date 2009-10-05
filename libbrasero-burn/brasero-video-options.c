@@ -448,7 +448,7 @@ brasero_video_options_init (BraseroVideoOptions *object)
 
 	button1 = gtk_radio_button_new_with_mnemonic (NULL, _("_NTSC"));
 	priv->button_ntsc = button1;
-	gtk_widget_set_tooltip_text (button1, _("Format used mostly on the North American Continent"));
+	gtk_widget_set_tooltip_text (button1, _("Format used mostly on the North American continent"));
 	g_signal_connect (button1,
 			  "toggled",
 			  G_CALLBACK (brasero_video_options_NTSC),
@@ -547,7 +547,7 @@ brasero_video_options_init (BraseroVideoOptions *object)
 			  GTK_FILL,
 			  0, 0);
 
-	button1 = gtk_radio_button_new_with_mnemonic_from_widget (NULL, _("Create a SVCD"));
+	button1 = gtk_radio_button_new_with_mnemonic_from_widget (NULL, _("Create an SVCD"));
 	priv->svcd_button = button1;
 	gtk_table_attach (GTK_TABLE (table),
 			  button1,

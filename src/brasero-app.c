@@ -125,7 +125,7 @@ static GtkActionEntry entries[] = {
 	{"HelpMenu", NULL, N_("_Help")},
 
 	{"Plugins", NULL, N_("P_lugins"), NULL,
-	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
+	 N_("Choose plugins for Brasero"), G_CALLBACK (on_prefs_cb)},
 
 	{"Eject", "media-eject", N_("E_ject"), NULL,
 	 N_("Eject a disc"), G_CALLBACK (on_eject_cb)},

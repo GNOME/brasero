@@ -35,7 +35,7 @@
 
 G_BEGIN_DECLS
 
-#define CDRKIT_DESCRIPTION		N_("Cdrkit burning suite")
+#define CDRKIT_DESCRIPTION		N_("cdrkit burning suite")
 
 G_END_DECLS
 

@@ -395,7 +395,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					   obj);
 
 	priv->fast = gtk_check_button_new_with_mnemonic (_("_Fast blanking"));
-	gtk_widget_set_tooltip_text (priv->fast, _("Activate fast blanking by opposition to a longer thorough blanking"));
+	gtk_widget_set_tooltip_text (priv->fast, _("Activate fast blanking, as opposed to a longer, thorough blanking"));
 	g_signal_connect (priv->fast,
 			  "clicked",
 			  G_CALLBACK (brasero_blank_dialog_fast_toggled),

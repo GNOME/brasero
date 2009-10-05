@@ -151,7 +151,7 @@ static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
 	{"OpenSong", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_audio_disc_open_activated_cb)},
-	{"EditSong", GTK_STOCK_PROPERTIES, N_("_Edit Information…"), NULL, N_("Edit the track information (start, end, author, ...)"),
+	{"EditSong", GTK_STOCK_PROPERTIES, N_("_Edit Information…"), NULL, N_("Edit the track information (start, end, author, etc.)"),
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
 	{"DeleteAudio", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
@@ -639,7 +639,7 @@ brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 	gchar *name;
 
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	primary = g_strdup_printf (_("\"%s\" could not be handled by Gstreamer."), name);
+	primary = g_strdup_printf (_("\"%s\" could not be handled by GStreamer."), name);
 	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   _("Make sure the appropriate codec is installed"),
@@ -658,7 +658,7 @@ brasero_audio_disc_video_file_dialog (BraseroAudioDisc *disc,
 	gchar *name;
 
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	string = g_strdup_printf (_("Do you want to add \"%s\" which is a video file?"), name);
+	string = g_strdup_printf (_("Do you want to add \"%s\", which is a video file?"), name);
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
@@ -849,9 +849,9 @@ brasero_audio_disc_wav_dts_file_dialog (BraseroAudioDisc *disc)
 
 	message = brasero_notify_message_add (BRASERO_NOTIFY (disc->priv->message),
 					      _("Do you want to create an audio CD with DTS tracks?"),
-					      _("Some of the selected songs are suitable to create DTS tracks."
-					        "\nThis type of audio CD track provides a higher quality for sound but can only be played by specific digital players."
-					        "\nNOTE: if you agree normalization will not be applied to these tracks."),
+					      _("Some of the selected songs are suitable for creating DTS tracks."
+					        "\nThis type of audio CD track provides a higher quality of sound but can only be played by specific digital players."
+					        "\nNote: if you agree, normalization will not be applied to these tracks."),
 					      0,
 					      BRASERO_AUDIO_DISC_CONTEXT);
 

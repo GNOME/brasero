@@ -61,7 +61,7 @@
 		g_set_error (error,						\
 			     BRASERO_BURN_ERROR,				\
 			     BRASERO_BURN_ERROR_GENERAL,			\
-			     _("An internal error occured"));	 		\
+			     _("An internal error occurred"));	 		\
 	BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (session);				\
 }
 
@@ -676,7 +676,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured"));
+				     _("An internal error occurred"));
 			g_slist_foreach (retval, (GFunc) g_object_unref, NULL);
 			g_slist_free (retval);
 			g_slist_free (list);

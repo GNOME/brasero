@@ -103,7 +103,7 @@ static const GOptionEntry options [] = {
 	  NULL },
 
 	{ "image", 'i', 0, G_OPTION_ARG_STRING, &iso_uri,
-	 N_("Uri of an image file to burn (autodetected)"),
+	 N_("URI of an image file to burn (autodetected)"),
           N_("PATH TO PLAYLIST") },
 
     	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
@@ -123,7 +123,7 @@ static const GOptionEntry options [] = {
 	  NULL },
 
 	{ "burn-and-remove-project", 'r', 0, G_OPTION_ARG_STRING, &burn_project_uri,
-	  N_("Burn the specified project and REMOVE it.\nThis option is mainly useful for integration use with other applications."),
+	  N_("Burn the specified project and remove it.\nThis option is mainly useful for integration with other applications."),
 	  N_("PATH") },
 
 	{ "transient-for", 'x', 0, G_OPTION_ARG_INT, &parent_window,
@@ -199,9 +199,9 @@ brasero_handle_burn_uri (BraseroApp *app,
 		gchar *string;
 
 		if (error)
-			string = g_strdup_printf (_("An internal error occured (%s)"), error->message);
+			string = g_strdup_printf (_("An internal error occurred (%s)"), error->message);
 		else
-			string = g_strdup (_("An internal error occured"));
+			string = g_strdup (_("An internal error occurred"));
 
 		brasero_app_alert (app,
 				   _("Error while loading the project"),
@@ -225,9 +225,9 @@ brasero_handle_burn_uri (BraseroApp *app,
 		gchar *string;
 
 		if (error)
-			string = g_strdup_printf (_("An internal error occured (%s)"), error->message);
+			string = g_strdup_printf (_("An internal error occurred (%s)"), error->message);
 		else
-			string = g_strdup (_("An internal error occured"));
+			string = g_strdup (_("An internal error occurred"));
 
 		brasero_app_alert (app,
 				   _("Error while loading the project"),
@@ -461,7 +461,7 @@ main (int argc, char **argv)
 	g_option_context_add_group (context, brasero_burn_library_get_option_group ());
 	g_option_context_add_group (context, gst_init_get_option_group ());
 	if (g_option_context_parse (context, &argc, &argv, NULL) == FALSE) {
-		g_print (_("Please type %s --help to see all available options\n"), argv [0]);
+		g_print (_("Please type \"%s --help\" to see all available options\n"), argv [0]);
 		g_option_context_free (context);
 		exit (1);
 	}

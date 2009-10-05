@@ -183,7 +183,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->title, 1, 2, 0, 1);
 	gtk_widget_set_tooltip_text (obj->priv->title,
-			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+			      _("This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."));
 
 	label = gtk_label_new (_("Artist:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -195,7 +195,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->artist, 1, 2, 1, 2);
 	gtk_widget_set_tooltip_text (obj->priv->artist,
-				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+				     _("This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."));
 
 	label = gtk_label_new (_("Composer:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -207,7 +207,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->composer, 1, 2, 2, 3);
 	gtk_widget_set_tooltip_text (obj->priv->composer,
-			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+			      _("This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."));
 
 	label = gtk_label_new ("ISRC:");
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

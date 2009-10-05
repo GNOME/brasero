@@ -35,7 +35,7 @@
 
 G_BEGIN_DECLS
 
-#define LIBBURNIA_DESCRIPTION		N_("Libburnia burning suite")
+#define LIBBURNIA_DESCRIPTION		N_("libburnia burning suite")
 
 G_END_DECLS
 

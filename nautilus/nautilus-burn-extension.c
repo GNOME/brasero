@@ -163,7 +163,7 @@ nautilus_disc_burn_is_empty (GtkWindow *toplevel)
 			return TRUE;
 		}
 
-		string = g_strdup_printf ("%s.", _("An internal error occured"));
+		string = g_strdup_printf ("%s.", _("An internal error occurred"));
 		brasero_utils_message_dialog (GTK_WIDGET (toplevel),
 					      string,
 					      error ? error->message:NULL,
@@ -480,7 +480,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 /* Whether or not this file is local is not a problem */
                 item = nautilus_menu_item_new ("NautilusDiscBurn::write_iso",
                                                _("_Write to Disc…"),
-                                               _("Write disc image to a CD or DVD disc"),
+                                               _("Write disc image to a CD or DVD"),
                                                "media-optical-data-new");
                 g_object_set_data (G_OBJECT (item), "file_info", file_info);
                 g_object_set_data (G_OBJECT (item), "window", window);
@@ -549,7 +549,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 			/* user may want to copy it ... */
 			item = nautilus_menu_item_new ("NautilusDiscBurn::copy_disc",
 						       _("_Copy Disc…"),
-						       _("Create a copy of this CD or DVD disc"),
+						       _("Create a copy of this CD or DVD"),
 						       "media-optical-copy");
 			g_object_set_data (G_OBJECT (item), "file_info", file_info);
 			g_object_set_data (G_OBJECT (item), "window", window);
@@ -563,7 +563,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 			/* ... or if it's a rewritable medium to blank it ... */
 			item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
 						       _("_Blank Disc…"),
-						       _("Blank this CD or DVD disc"),
+						       _("Blank this CD or DVD"),
 						       "media-optical-blank");
 			g_object_set_data (G_OBJECT (item), "file_info", file_info);
 			g_object_set_data (G_OBJECT (item), "window", window);
@@ -580,7 +580,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 			/* ... or verify medium. */
 			item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
 						       _("_Check Disc…"),
-						       _("Check the data integrity on this CD or DVD disc"),
+						       _("Check the data integrity on this CD or DVD"),
 						       NULL);
 			g_object_set_data (G_OBJECT (item), "file_info", file_info);
 			g_object_set_data (G_OBJECT (item), "window", window);
@@ -626,7 +626,7 @@ nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
 
                 item = nautilus_menu_item_new ("NautilusDiscBurn::write_menu",
                                                _("_Write to Disc…"),
-                                               _("Write contents to a CD or DVD disc"),
+                                               _("Write contents to a CD or DVD"),
                                                "brasero");
                 g_signal_connect (item, "activate",
                                   G_CALLBACK (write_activate_cb),

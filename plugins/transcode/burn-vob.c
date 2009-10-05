@@ -1317,7 +1317,7 @@ brasero_vob_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "transcode2vob",
-			       _("Vob allows to transcode any video file to a format suitable for video DVDs"),
+			       _("Vob allows any video file to be transcoded to a format suitable for video DVDs"),
 			       "Philippe Rouquier",
 			       0);
 

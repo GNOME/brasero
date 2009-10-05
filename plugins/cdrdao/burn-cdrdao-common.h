@@ -35,7 +35,7 @@
 
 G_BEGIN_DECLS
 
-#define CDRDAO_DESCRIPTION		N_("Cdrdao burning suite")
+#define CDRDAO_DESCRIPTION		N_("cdrdao burning suite")
 
 G_END_DECLS
 

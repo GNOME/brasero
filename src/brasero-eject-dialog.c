@@ -95,7 +95,7 @@ brasero_eject_dialog_activate (GtkDialog *dialog,
 
 		brasero_app_alert (brasero_app_get_default (),
 		                   string,
-		                   error?error->message:_("An unknown error occured"),
+		                   error?error->message:_("An unknown error occurred"),
 		                   GTK_MESSAGE_ERROR);
 
 		if (error)

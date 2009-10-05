@@ -126,7 +126,7 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("An internal error occured")));
+						_("An internal error occurred")));
 	}
 	else if (strstr (line, "No space left on device")) {
 		/* This is necessary as readcd won't return an error code on exit */
@@ -367,7 +367,7 @@ brasero_readom_set_argv (BraseroProcess *process,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("An internal error occured"));
+			     _("An internal error occurred"));
 		return BRASERO_BURN_ERR;
 	}
 

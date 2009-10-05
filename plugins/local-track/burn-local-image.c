@@ -908,7 +908,7 @@ brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 				* which will be translated only when it needs
 				* displaying. */
 			       N_("File Downloader"),
-			       _("Allows to burn files not stored locally"),
+			       _("Allows files not stored locally to be burned"),
 			       "Philippe Rouquier",
 			       10);
 

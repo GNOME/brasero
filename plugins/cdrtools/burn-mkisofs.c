@@ -369,7 +369,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured"));
+				     _("An internal error occurred"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -532,7 +532,7 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "mkisofs",
-			       _("Use mkisofs to create image from a file selection"),
+			       _("Use mkisofs to create an image from a file selection"),
 			       "Philippe Rouquier",
 			       0);
 

@@ -207,7 +207,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	priv->title = brasero_rename_new ();
 	gtk_widget_show (priv->title);
 	gtk_widget_set_tooltip_text (priv->title,
-				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+				     _("This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."));
 
 	title = g_strdup_printf ("<b>%s</b>", _("Song titles"));
 	frame = brasero_utils_pack_properties (title, priv->title, NULL);
@@ -248,7 +248,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_entry_set_text (GTK_ENTRY (priv->artist), _("<Keep current values>"));
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->artist, 1, 2, 1, 2);
 	gtk_widget_set_tooltip_text (priv->artist,
-				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+				     _("This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."));
 	g_signal_connect (priv->artist,
 			  "focus-in-event",
 			  G_CALLBACK (brasero_multi_song_props_entry_focus_in),
@@ -269,7 +269,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_entry_set_text (GTK_ENTRY (priv->composer), _("<Keep current values>"));
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->composer, 1, 2, 2, 3);
 	gtk_widget_set_tooltip_text (priv->composer,
-				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+				     _("This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."));
 	g_signal_connect (priv->composer,
 			  "focus-in-event",
 			  G_CALLBACK (brasero_multi_song_props_entry_focus_in),

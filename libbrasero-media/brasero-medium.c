@@ -62,7 +62,7 @@
 
 
 const gchar *types [] = {	N_("File"),
-				N_("CDROM"),
+				N_("CD-ROM"),
 				N_("CD-R"),
 				N_("CD-RW"),
 				N_("DVD-ROM"),
@@ -2342,7 +2342,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 						 &size,
 						 NULL);
 		if (result != BRASERO_SCSI_OK) {
-			/* CDROM */
+			/* CD-ROM */
 			priv->info = BRASERO_MEDIUM_CDROM;
 			priv->type = types [1];
 		}

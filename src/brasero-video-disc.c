@@ -100,7 +100,7 @@ static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
 	{"OpenVideo", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected video"),
 	 G_CALLBACK (brasero_video_disc_open_activated_cb)},
-	{"EditVideo", GTK_STOCK_PROPERTIES, N_("_Edit Information…"), NULL, N_("Edit the video information (start, end, author, ...)"),
+	{"EditVideo", GTK_STOCK_PROPERTIES, N_("_Edit Information…"), NULL, N_("Edit the video information (start, end, author, etc.)"),
 	 G_CALLBACK (brasero_video_disc_edit_information_cb)},
 	{"DeleteVideo", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected videos from the project"),
 	 G_CALLBACK (brasero_video_disc_delete_activated_cb)},
@@ -407,7 +407,7 @@ brasero_video_disc_not_video_dialog (BraseroVideoDisc *self,
 	primary = g_strdup_printf (_("\"%s\" does not have a suitable type for video projects."), name);
 	brasero_app_alert (brasero_app_get_default (),
 			   primary,
-			   _("Please only add files with video contents"),
+			   _("Please only add files with video content"),
 			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);

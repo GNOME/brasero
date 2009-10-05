@@ -239,7 +239,7 @@ brasero_libburn_add_track (struct burn_session *session,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Libburn track could not be created"));
+			     _("libburn track could not be created"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -247,7 +247,7 @@ brasero_libburn_add_track (struct burn_session *session,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Libburn track could not be created"));
+			     _("libburn track could not be created"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -713,7 +713,7 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     /* Translators: %s is the error returned by libburn */
-			     _("An internal error occured (%s)"),
+			     _("An internal error occurred (%s)"),
 			     reasons);
 		return BRASERO_BURN_ERR;
 	}
@@ -852,7 +852,7 @@ brasero_libburn_clock_tick (BraseroJob *job)
 		brasero_job_error (job,
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_WRITE_MEDIUM,
-						_("An error occured while writing to disc")));
+						_("An error occurred while writing to disc")));
 		return BRASERO_BURN_OK;
 	}
 
@@ -883,7 +883,7 @@ brasero_libburn_clock_tick (BraseroJob *job)
 		brasero_job_error (job,
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_WRITE_MEDIUM,
-						_("An error occured while writing to disc")));
+						_("An error occurred while writing to disc")));
 		return BRASERO_BURN_OK;
 	}
 
@@ -970,7 +970,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "libburn",
-			       _("Libburn burns CD(RW), DVD+/-(RW)"),
+			       _("libburn burns CD(RW), DVD+/-(RW)"),
 			       "Philippe Rouquier",
 			       15);
 

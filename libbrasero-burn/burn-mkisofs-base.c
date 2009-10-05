@@ -303,7 +303,7 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 			      * is specified. A graft point is the path (on the
 			      * disc) where a file from any source will be added
 			      * ("grafted") */
-			     _("An internal error occured"));
+			     _("An internal error occurred"));
 		return BRASERO_BURN_ERR;
 	}
 

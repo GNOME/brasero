@@ -604,7 +604,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-			    TEXT_COL, _("Max speed"),
+			    TEXT_COL, _("Maximum speed"),
 			    RATE_COL, rates [0],
 			    -1);
 
@@ -744,7 +744,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 					NULL);
 
 	priv->dummy = gtk_check_button_new_with_mnemonic (_("_Simulate before burning"));
-	gtk_widget_set_tooltip_text (priv->dummy, _("Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"));
+	gtk_widget_set_tooltip_text (priv->dummy, _("Brasero will simulate the burning and, if it is successful, go on with actual burning after 10 seconds"));
 	gtk_widget_show (priv->dummy);
 	priv->burnproof = gtk_check_button_new_with_mnemonic (_("Use burn_proof (decrease the risk of failures)"));
 	gtk_widget_show (priv->burnproof);

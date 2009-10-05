@@ -470,7 +470,7 @@ brasero_media_get_option_group (void)
 
 	group = g_option_group_new ("brasero-media",
 				    N_("Brasero optical media library"),
-				    N_("Display options for Brasero-media library"),
+				    N_("Display options for Brasero media library"),
 				    NULL,
 				    NULL);
 	g_option_group_add_entries (group, options);

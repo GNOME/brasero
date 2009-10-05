@@ -155,7 +155,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Libburn library could not be initialized"));
+			     _("libburn library could not be initialized"));
 		return NULL;
 	}
 

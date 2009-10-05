@@ -1116,7 +1116,7 @@ again:
 	}
 
 	if (!priv->dest_locked
-	&&  !brasero_drive_lock (priv->dest, _("Ongoing checksuming operation"), &failure)) {
+	&&  !brasero_drive_lock (priv->dest, _("Ongoing checksumming operation"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -2753,7 +2753,7 @@ end:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("An internal error occured"));
+			     _("An internal error occurred"));
 	}
 
 	if (result == BRASERO_BURN_CANCEL) {

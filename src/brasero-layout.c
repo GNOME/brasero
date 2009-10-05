@@ -122,7 +122,7 @@ const GtkToggleActionEntry entries [] = {
 /** see #547687 **/
 const GtkRadioActionEntry radio_entries [] = {
 	{ "HView", NULL, N_("_Horizontal Layout"),
-	  NULL, N_("Set an horizontal layout"), 1 },
+	  NULL, N_("Set a horizontal layout"), 1 },
 
 	{ "VView", NULL, N_("_Vertical Layout"),
 	  NULL, N_("Set a vertical layout"), 0 },

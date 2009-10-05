@@ -158,7 +158,7 @@ brasero_sum_dialog_message_error (BraseroSumDialog *self,
 
 	return brasero_sum_dialog_message (self,
 					   _("The file integrity check could not be performed."),
-					   error ? error->message:_("An unknown error occured"),
+					   error ? error->message:_("An unknown error occurred"),
 					   GTK_MESSAGE_ERROR);
 }
 
@@ -171,7 +171,7 @@ brasero_sum_dialog_success (BraseroSumDialog *self)
 
 	return brasero_sum_dialog_message (self,
 					   _("The file integrity was performed successfully."),
-					   _("There seems to be no corrupted file on the disc"),
+					   _("There seem to be no corrupted files on the disc"),
 					   GTK_MESSAGE_INFO);
 }
 
@@ -331,7 +331,7 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 
 	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
 					BRASERO_BURN_ACTION_FILE_COPY,
-					_("Downloading md5 file"));
+					_("Downloading MD5 file"));
 
 	id = g_timeout_add (500,
 			    brasero_sum_dialog_progress_poll,
@@ -504,7 +504,7 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	if (!uri) {
 		retval = brasero_sum_dialog_message (self,
 						     _("The file integrity check could not be performed."),
-						     error ? error->message:_("No md5 file was given."),
+						     error ? error->message:_("No MD5 file was given."),
 						     GTK_MESSAGE_ERROR);
 		return retval;
 	}
@@ -680,7 +680,7 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 
 	box = gtk_vbox_new (FALSE, 6);
 
-	priv->md5_check = gtk_check_button_new_with_mnemonic (_("Use a _md5 file to check the disc"));
+	priv->md5_check = gtk_check_button_new_with_mnemonic (_("Use an _MD5 file to check the disc"));
 	gtk_widget_set_tooltip_text (priv->md5_check, _("Use an external .md5 file that stores the checksum of a disc"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->md5_check), FALSE);
 	g_signal_connect (priv->md5_check,
@@ -694,7 +694,7 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 			    TRUE,
 			    0);
 
-	priv->md5_chooser = gtk_file_chooser_button_new (_("Open a md5 file"), GTK_FILE_CHOOSER_ACTION_OPEN);
+	priv->md5_chooser = gtk_file_chooser_button_new (_("Open an MD5 file"), GTK_FILE_CHOOSER_ACTION_OPEN);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->md5_chooser), FALSE);
 	gtk_widget_set_sensitive (priv->md5_chooser, FALSE);
 	gtk_box_pack_start (GTK_BOX (box),

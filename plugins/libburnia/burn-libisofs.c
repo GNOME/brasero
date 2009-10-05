@@ -325,7 +325,7 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Libisofs could not be initialized."));
+			     _("libisofs could not be initialized."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -723,7 +723,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 							 result);
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
-								   _("Libisofs reported an error while creating directory \"%s\""),
+								   _("libisofs reported an error while creating directory \"%s\""),
 								   graft->path);
 					g_free (path_name);
 					goto end;
@@ -738,7 +738,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 							 result);
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
-								   _("Libisofs reported an error while adding contents to directory \"%s\" (%x)"),
+								   _("libisofs reported an error while adding contents to directory \"%s\" (%x)"),
 								   graft->path,
 								   result);
 					g_free (path_name);
@@ -761,7 +761,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 							 err);
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
-								   _("Libisofs reported an error while adding file at path \"%s\""),
+								   _("libisofs reported an error while adding file at path \"%s\""),
 								   graft->path);
 					g_free (path_name);
 					goto end;
@@ -777,7 +777,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 								 err);
 						priv->error = g_error_new (BRASERO_BURN_ERROR,
 									   BRASERO_BURN_ERROR_GENERAL,
-									   _("Libisofs reported an error while adding file at path \"%s\""),
+									   _("libisofs reported an error while adding file at path \"%s\""),
 									   graft->path);
 						g_free (path_name);
 						goto end;
@@ -790,7 +790,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		else if (iso_tree_add_new_dir (ISO_DIR (parent), path_name, NULL) < 0) {
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
-						   _("Libisofs reported an error while creating directory \"%s\""),
+						   _("libisofs reported an error while creating directory \"%s\""),
 						   graft->path);
 			g_free (path_name);
 			goto end;
@@ -864,7 +864,7 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Libisofs could not be initialized."));
+			     _("libisofs could not be initialized."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1041,7 +1041,7 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "libisofs",
-			       _("Libisofs creates disc images from files"),
+			       _("libisofs creates disc images from files"),
 			       "Philippe Rouquier",
 			       0);
 

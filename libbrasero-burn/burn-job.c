@@ -761,7 +761,7 @@ brasero_job_item_start (BraseroTaskItem *item,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured (%s)"),
+				     _("An internal error occurred (%s)"),
 				     g_strerror (errsv));
 
 			return BRASERO_BURN_ERR;
@@ -1212,7 +1212,7 @@ brasero_job_set_nonblocking_fd (int fd, GError **error)
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("An internal error occured"));
+				     _("An internal error occurred"));
 			return BRASERO_BURN_ERR;
 		}
 	}
@@ -1221,7 +1221,7 @@ brasero_job_set_nonblocking_fd (int fd, GError **error)
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("An internal error occured"));
+			     _("An internal error occurred"));
 		return BRASERO_BURN_ERR;
 	}
 
