@@ -193,17 +193,17 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      GTK_ICON_SIZE_DIALOG);
 
 		header = g_strdup_printf ("<big><b>%s</b></big>", _("Creating image"));
-		title = g_strdup (_("Brasero - Creating Image"));
+		title = g_strdup (_("Brasero — Creating Image"));
 	}
 	else if (media & BRASERO_MEDIUM_DVD) {
 		if (input->type == BRASERO_TRACK_TYPE_STREAM
 		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video DVD burning"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Burning DVD"));
+				title = g_strdup (_("Brasero — Burning DVD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning video DVD"));
 			}
 
@@ -213,11 +213,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DATA) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data DVD burning"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Burning DVD"));
+				title = g_strdup (_("Brasero — Burning DVD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning data DVD"));
 			}
 
@@ -241,11 +241,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DISC) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Copying DVD (Simulation)"));
+				title = g_strdup (_("Brasero — Copying DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data DVD copying"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Copying DVD"));
+				title = g_strdup (_("Brasero — Copying DVD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Copying data DVD"));
 			}
 
@@ -258,11 +258,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		if (input->type == BRASERO_TRACK_TYPE_STREAM
 		&&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of (S)VCD burning"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Burning CD"));
+				title = g_strdup (_("Brasero — Burning CD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning (S)VCD"));
 			}
 
@@ -272,11 +272,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_STREAM) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of audio CD burning"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Burning CD"));
+				title = g_strdup (_("Brasero — Burning CD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning audio CD"));
 			}
 
@@ -286,11 +286,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DATA) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data CD burning"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Burning CD"));
+				title = g_strdup (_("Brasero — Burning CD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning data CD"));
 			}
 
@@ -300,11 +300,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_DISC) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Copying CD (Simulation)"));
+				title = g_strdup (_("Brasero — Copying CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of CD copying"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Copying CD"));
+				title = g_strdup (_("Brasero — Copying CD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Copying CD"));
 			}
 
@@ -314,11 +314,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_IMAGE) {
 			if (dummy) {
-				title = g_strdup (_("Brasero - Burning CD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning CD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of image to CD burning"));
 			}
 			else {
-				title = g_strdup (_("Brasero - Burning CD"));
+				title = g_strdup (_("Brasero — Burning CD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning image to CD"));
 			}
 		
@@ -330,11 +330,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	else if (input->type == BRASERO_TRACK_TYPE_STREAM
 	     &&  BRASERO_STREAM_FORMAT_HAS_VIDEO (input->subtype.stream_format)) {
 		if (dummy) {
-			title = g_strdup (_("Brasero - Burning disc (Simulation)"));
+			title = g_strdup (_("Brasero — Burning disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of video disc burning"));
 		}
 		else {
-			title = g_strdup (_("Brasero - Burning disc"));
+			title = g_strdup (_("Brasero — Burning disc"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning video disc"));
 		}
 
@@ -344,11 +344,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_STREAM) {
 		if (dummy) {
-			title = g_strdup (_("Brasero - Burning CD (Simulation)"));
+			title = g_strdup (_("Brasero — Burning CD (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of audio CD burning"));
 		}
 		else {
-			title = g_strdup (_("Brasero - Burning CD"));
+			title = g_strdup (_("Brasero — Burning CD"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning audio CD"));
 		}
 
@@ -358,11 +358,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_DATA) {
 		if (dummy) {
-			title = g_strdup (_("Brasero - Burning Disc (Simulation)"));
+			title = g_strdup (_("Brasero — Burning Disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of data disc burning"));
 		}
 		else {
-			title = g_strdup (_("Brasero - Burning Disc"));
+			title = g_strdup (_("Brasero — Burning Disc"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning data disc"));
 		}
 
@@ -372,11 +372,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_DISC) {
 		if (dummy) {
-			title = g_strdup (_("Brasero - Copying Disc (Simulation)"));
+			title = g_strdup (_("Brasero — Copying Disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of disc copying"));
 		}
 		else {
-			title = g_strdup (_("Brasero - Copying Disc"));
+			title = g_strdup (_("Brasero — Copying Disc"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Copying disc"));
 		}
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
@@ -385,11 +385,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_IMAGE) {
 		if (dummy) {
-			title = g_strdup (_("Brasero - Burning Disc (Simulation)"));
+			title = g_strdup (_("Brasero — Burning Disc (Simulation)"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of image to disc burning"));
 		}
 		else {
-			title = g_strdup (_("Brasero - Burning Disc"));
+			title = g_strdup (_("Brasero — Burning Disc"));
 			header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning image to disc"));
 		}
 
@@ -1019,46 +1019,46 @@ brasero_burn_dialog_update_title_writing_progress (BraseroBurnDialog *dialog,
 
 	/* This is used only when actually writing to a disc */
 	if (media == BRASERO_MEDIUM_FILE)
-		title = g_strdup_printf (_("Brasero - Creating Image (%i%% Done)"), percent);
+		title = g_strdup_printf (_("Brasero — Creating Image (%i%% Done)"), percent);
 	else if (media & BRASERO_MEDIUM_DVD) {
 		if (input->type == BRASERO_TRACK_TYPE_DISC) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY)
-				title = g_strdup (_("Brasero - Copying DVD (Simulation)"));
+				title = g_strdup (_("Brasero — Copying DVD (Simulation)"));
 			else
-				title = g_strdup_printf (_("Brasero - Copying DVD (%i%% Done)"), percent);
+				title = g_strdup_printf (_("Brasero — Copying DVD (%i%% Done)"), percent);
 		}
 		else {
 			if (flags & BRASERO_BURN_FLAG_DUMMY)
-				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning DVD (Simulation)"));
 			else
-				title = g_strdup_printf (_("Brasero - Burning DVD (%i%% Done)"), percent);
+				title = g_strdup_printf (_("Brasero — Burning DVD (%i%% Done)"), percent);
 		}
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
 		if (input->type == BRASERO_TRACK_TYPE_DISC) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY)
-				title = g_strdup (_("Brasero - Copying CD (Simulation)"));
+				title = g_strdup (_("Brasero — Copying CD (Simulation)"));
 			else
-				title = g_strdup_printf (_("Brasero - Copying CD (%i%% Done)"), percent);
+				title = g_strdup_printf (_("Brasero — Copying CD (%i%% Done)"), percent);
 		}
 		else {
 			if (flags & BRASERO_BURN_FLAG_DUMMY)
-				title = g_strdup (_("Brasero - Burning CD (simulation)"));
+				title = g_strdup (_("Brasero — Burning CD (simulation)"));
 			else
-				title = g_strdup_printf (_("Brasero - Burning CD (%i%% Done)"), percent);
+				title = g_strdup_printf (_("Brasero — Burning CD (%i%% Done)"), percent);
 		}
 	}
 	else if (input->type == BRASERO_TRACK_TYPE_DISC) {
 		if (flags & BRASERO_BURN_FLAG_DUMMY)
-			title = g_strdup (_("Brasero - Copying Disc (Simulation)"));
+			title = g_strdup (_("Brasero — Copying Disc (Simulation)"));
 		else
-			title = g_strdup_printf (_("Brasero - Copying Disc (%i%% Done)"), percent);
+			title = g_strdup_printf (_("Brasero — Copying Disc (%i%% Done)"), percent);
 	}
 	else {
 		if (flags & BRASERO_BURN_FLAG_DUMMY)
-			title = g_strdup (_("Brasero - Burning Disc (Simulation)"));
+			title = g_strdup (_("Brasero — Burning Disc (Simulation)"));
 		else
-			title = g_strdup_printf (_("Brasero - Burning Disc (%i%% Done)"), percent);
+			title = g_strdup_printf (_("Brasero — Burning Disc (%i%% Done)"), percent);
 	}
 
 	gtk_window_set_title (GTK_WINDOW (dialog), title);

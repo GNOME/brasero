@@ -303,7 +303,7 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 	gtk_widget_set_sensitive (priv->restore, FALSE);
 	gtk_widget_set_tooltip_text (priv->restore, _("Restore the selected files"));
 
-	button = gtk_button_new_with_mnemonic (_("_Options..."));
+	button = gtk_button_new_with_mnemonic (_("_Options…"));
 	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
 	g_signal_connect (button,

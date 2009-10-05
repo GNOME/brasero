@@ -124,7 +124,7 @@ static GtkActionEntry entries [] = {
 	{"ContextualMenu", NULL, N_("Menu")},
 	{"OpenFile", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_data_disc_open_activated_cb)},
-	{"RenameData", NULL, N_("R_ename..."), NULL, N_("Rename the selected file"),
+	{"RenameData", NULL, N_("R_ename…"), NULL, N_("Rename the selected file"),
 	 G_CALLBACK (brasero_data_disc_rename_activated_cb)},
 	{"DeleteData", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_data_disc_delete_activated_cb)},
@@ -632,7 +632,7 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Burn as _File"), GTK_RESPONSE_NO);
 
-	button = brasero_utils_make_button (_("Burn _Contents..."),
+	button = brasero_utils_make_button (_("Burn _Contents…"),
 	                                    NULL,
 					    "media-optical-burn",
 					    GTK_ICON_SIZE_BUTTON);

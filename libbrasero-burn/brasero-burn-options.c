@@ -729,7 +729,7 @@ brasero_status_dialog_uri_has_image (BraseroTrackDataCfg *track,
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Burn as _File"), GTK_RESPONSE_NO);
 
-	button = brasero_utils_make_button (_("Burn _Contents..."),
+	button = brasero_utils_make_button (_("Burn _Contents…"),
 	                                    NULL,
 	                                    "media-optical-burn",
 	                                    GTK_ICON_SIZE_BUTTON);

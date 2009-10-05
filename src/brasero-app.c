@@ -130,10 +130,10 @@ static GtkActionEntry entries[] = {
 	{"Eject", "media-eject", N_("E_ject"), NULL,
 	 N_("Eject a disc"), G_CALLBACK (on_eject_cb)},
 
-	{"Blank", "media-optical-blank", N_("_Blank..."), NULL,
+	{"Blank", "media-optical-blank", N_("_Blank…"), NULL,
 	 N_("Blank a disc"), G_CALLBACK (on_erase_cb)},
 
-	{"Check", NULL, N_("_Check Integrity..."), NULL,
+	{"Check", NULL, N_("_Check Integrity…"), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
 
 	{"Quit", GTK_STOCK_QUIT, NULL, NULL,

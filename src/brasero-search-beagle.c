@@ -788,7 +788,7 @@ brasero_search_update_header (BraseroSearch *search)
 
 		last = search->priv->first_hit + search->priv->max_results;
 		last = last <= search->priv->hits_num ? last : search->priv->hits_num;
-		tmp = g_strdup_printf (_("Results %i - %i (out of %i)"),
+		tmp = g_strdup_printf (_("Results %i–%i (out of %i)"),
 				       search->priv->first_hit + 1,
 				       last,
 				       search->priv->hits_num);

@@ -151,7 +151,7 @@ static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
 	{"OpenSong", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_audio_disc_open_activated_cb)},
-	{"EditSong", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the track information (start, end, author, ...)"),
+	{"EditSong", GTK_STOCK_PROPERTIES, N_("_Edit Information…"), NULL, N_("Edit the track information (start, end, author, ...)"),
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
 	{"DeleteAudio", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
@@ -159,7 +159,7 @@ static GtkActionEntry entries[] = {
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
 	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, N_("Add a 2 second pause after the track"),
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
-	{"Split", "transform-crop-and-resize", N_("_Split Track..."), NULL, N_("Split the selected track"),
+	{"Split", "transform-crop-and-resize", N_("_Split Track…"), NULL, N_("Split the selected track"),
 	 G_CALLBACK (brasero_audio_disc_split_cb)}
 };
 

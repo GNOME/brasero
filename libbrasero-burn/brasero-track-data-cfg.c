@@ -619,7 +619,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 		case BRASERO_DATA_TREE_MODEL_NAME:
 			g_value_init (value, G_TYPE_STRING);
 			if (node->is_exploring)
-				g_value_set_string (value, _("(loading ...)"));
+				g_value_set_string (value, _("(loading…)"));
 			else
 				g_value_set_string (value, _("Empty"));
 
@@ -718,7 +718,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	case BRASERO_DATA_TREE_MODEL_MIME_DESC:
 		g_value_init (value, G_TYPE_STRING);
 		if (node->is_loading)
-			g_value_set_string (value, _("(loading ...)"));
+			g_value_set_string (value, _("(loading…)"));
 		else if (!node->is_file) {
 			gchar *description;
 
@@ -729,7 +729,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 		else if (node->is_imported)
 			g_value_set_string (value, _("Disc file"));
 		else if (!BRASERO_FILE_NODE_MIME (node))
-			g_value_set_string (value, _("(loading ...)"));
+			g_value_set_string (value, _("(loading…)"));
 		else {
 			gchar *description;
 
@@ -790,12 +790,12 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	case BRASERO_DATA_TREE_MODEL_SIZE:
 		g_value_init (value, G_TYPE_STRING);
 		if (node->is_loading)
-			g_value_set_string (value, _("(loading ...)"));
+			g_value_set_string (value, _("(loading…)"));
 		else if (!node->is_file) {
 			guint nb_items;
 
 			if (node->is_exploring) {
-				g_value_set_string (value, _("(loading ...)"));
+				g_value_set_string (value, _("(loading…)"));
 				return;
 			}
 

@@ -192,7 +192,7 @@ struct BraseroProjectPrivate {
 static GtkActionEntry entries [] = {
 	{"Save", GTK_STOCK_SAVE, NULL, NULL,
 	 N_("Save current project"), G_CALLBACK (brasero_project_save_cb)},
-	{"SaveAs", GTK_STOCK_SAVE_AS, N_("Save _As..."), NULL,
+	{"SaveAs", GTK_STOCK_SAVE_AS, N_("Save _As…"), NULL,
 	 N_("Save current project to a different location"), G_CALLBACK (brasero_project_save_as_cb)},
 	{"Add", GTK_STOCK_ADD, N_("_Add Files"), NULL,
 	 N_("Add files to the project"), G_CALLBACK (brasero_project_add_uris_cb)},
@@ -201,7 +201,7 @@ static GtkActionEntry entries [] = {
 	/* Translators: "empty" is a verb here */
 	{"DeleteAll", GTK_STOCK_CLEAR, N_("E_mpty Project"), NULL,
 	 N_("Remove all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
-	{"Burn", "media-optical-burn", N_("_Burn..."), NULL,
+	{"Burn", "media-optical-burn", N_("_Burn…"), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
@@ -1104,7 +1104,7 @@ brasero_project_init (BraseroProject *obj)
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("_Burn..."),
+	obj->priv->burn = brasero_utils_make_button (_("_Burn…"),
 						     NULL,
 						     "media-optical-burn",
 						     GTK_ICON_SIZE_BUTTON);
@@ -2265,13 +2265,13 @@ brasero_project_set_uri (BraseroProject *project,
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	if (type == BRASERO_PROJECT_TYPE_DATA)
 		/* Translators: %s is the name of the project */
-		title = g_strdup_printf (_("Brasero - %s (Data Disc)"), name);
+		title = g_strdup_printf (_("Brasero — %s (Data Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
 		/* Translators: %s is the name of the project */
-		title = g_strdup_printf (_("Brasero - %s (Audio Disc)"), name);
+		title = g_strdup_printf (_("Brasero — %s (Audio Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO)
 		/* Translators: %s is the name of the project */
-		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
+		title = g_strdup_printf (_("Brasero — %s (Video Disc)"), name);
 	else
 		title = NULL;
  

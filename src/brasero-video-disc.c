@@ -100,13 +100,13 @@ static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
 	{"OpenVideo", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected video"),
 	 G_CALLBACK (brasero_video_disc_open_activated_cb)},
-	{"EditVideo", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the video information (start, end, author, ...)"),
+	{"EditVideo", GTK_STOCK_PROPERTIES, N_("_Edit Information…"), NULL, N_("Edit the video information (start, end, author, ...)"),
 	 G_CALLBACK (brasero_video_disc_edit_information_cb)},
 	{"DeleteVideo", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected videos from the project"),
 	 G_CALLBACK (brasero_video_disc_delete_activated_cb)},
 	{"PasteVideo", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_video_disc_paste_activated_cb)},
-/*	{"Split", "transform-crop-and-resize", N_("_Split Track..."), NULL, N_("Split the selected track"),
+/*	{"Split", "transform-crop-and-resize", N_("_Split Track…"), NULL, N_("Split the selected track"),
 	 G_CALLBACK (brasero_video_disc_split_cb)} */
 };
 

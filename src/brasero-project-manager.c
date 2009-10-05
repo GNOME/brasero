@@ -113,12 +113,12 @@ static GtkActionEntry entries [] = {
 	 N_("Create a CD/DVD containing any type of data that can only be read on a computer"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
 	{"NewVideo", "media-optical-video-new", N_("New _Video Project"), NULL,
 	 N_("Create a video DVD or a SVCD that are readable on TV readers"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
-	{"NewCopy", "media-optical-copy", N_("Copy _Disc..."), NULL,
+	{"NewCopy", "media-optical-copy", N_("Copy _Disc…"), NULL,
 	 N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
-	{"NewIso", "iso-image-burn", N_("_Burn Image..."), NULL,
+	{"NewIso", "iso-image-burn", N_("_Burn Image…"), NULL,
 	 N_("Burn an existing CD/DVD image to disc"), G_CALLBACK (brasero_project_manager_new_iso_prj_cb)},
 
-	{"Open", GTK_STOCK_OPEN, N_("_Open..."), NULL,
+	{"Open", GTK_STOCK_OPEN, N_("_Open…"), NULL,
 	 N_("Open a project"), G_CALLBACK (brasero_project_manager_open_cb)},
 };
 
@@ -554,7 +554,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		}
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Audio Disc Project"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero — New Audio Disc Project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
@@ -568,7 +568,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		}
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Data Disc Project"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero — New Data Disc Project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_VIDEO);
@@ -582,7 +582,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		}
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Video Disc Project"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero — New Video Disc Project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_ISO) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);
@@ -592,7 +592,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		gtk_action_set_sensitive (action, FALSE);
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Image File"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero — New Image File"));
 
 		brasero_project_manager_switch (manager,
 						BRASERO_PROJECT_TYPE_INVALID,
@@ -609,7 +609,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		gtk_action_set_sensitive (action, FALSE);
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Disc Copy"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero — Disc Copy"));
 
 		brasero_project_manager_switch (manager,
 						BRASERO_PROJECT_TYPE_INVALID,

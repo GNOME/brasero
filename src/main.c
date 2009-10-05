@@ -449,7 +449,7 @@ main (int argc, char **argv)
 	g_thread_init (NULL);
 	g_type_init ();
 
-	context = g_option_context_new (_("[URI] [URI] ..."));
+	context = g_option_context_new (_("[URI] [URI] …"));
 	g_option_context_add_main_entries (context,
 					   options,
 					   GETTEXT_PACKAGE);
