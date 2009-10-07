@@ -140,12 +140,6 @@ brasero_medium_can_use_dummy_for_tao (BraseroMedium *medium);
 gboolean
 brasero_medium_can_use_burnfree (BraseroMedium *medium);
 
-gboolean
-brasero_medium_can_use_sao (BraseroMedium *medium);
-
-gboolean
-brasero_medium_can_use_tao (BraseroMedium *medium);
-
 G_END_DECLS
 
 #endif /* _BURN_MEDIUM_H_ */

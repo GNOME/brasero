@@ -1344,6 +1344,12 @@ brasero_caps_get_flags (BraseroCaps *caps,
 	return retval;
 }
 
+/* FIXME: make this public */
+gboolean
+brasero_medium_can_use_sao (BraseroMedium *medium);
+gboolean
+brasero_medium_can_use_tao (BraseroMedium *medium);
+
 static void
 brasero_medium_supported_flags (BraseroMedium *medium,
 				BraseroBurnFlag *supported_flags,

@@ -3325,8 +3325,6 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
  *
  * Gets whether the medium supports SAO.
  *
- * Since 2.30
- *
  * Return value: a #gboolean. TRUE if the medium can use SAO write mode , FALSE otherwise.
  *
  **/
@@ -3346,8 +3344,6 @@ brasero_medium_can_use_sao (BraseroMedium *medium)
  * @medium: #BraseroMedium
  *
  * Gets whether the medium supports TAO.
- *
- * Since 2.30
  *
  * Return value: a #gboolean. TRUE if the medium can use TAO write mode, FALSE otherwise.
  *
