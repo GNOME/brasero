@@ -888,7 +888,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 			if (result) {
 				if (tmp_type) {
 					tmp_type->type = BRASERO_TRACK_TYPE_IMAGE;
-					tmp_type->subtype.img_format = brasero_track_type_get_image_format (&output);
+					tmp_type->subtype.img_format = format;
 				}
 					
 				return BRASERO_BURN_OK;
