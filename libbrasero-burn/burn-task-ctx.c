@@ -233,7 +233,14 @@ brasero_task_ctx_get_stored_tracks (BraseroTaskCtx *self,
 	if (!priv->current_track)
 		return BRASERO_BURN_ERR;
 
-	*tracks = priv->tracks;
+	if (tracks)
+		*tracks = priv->tracks;
+
+	/* If no track has been added let the caller
+	 * know with BRASERO_BURN_NOT_READY */
+	if (!priv->tracks)
+		return BRASERO_BURN_NOT_READY;
+
 	return BRASERO_BURN_OK;
 }
 

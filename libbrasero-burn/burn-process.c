@@ -253,6 +253,15 @@ brasero_process_finished (BraseroProcess *self)
 		return BRASERO_BURN_OK;
 	}
 
+	klass->post (BRASERO_JOB (self));
+
+	/* See if the plugin already added some new tracks
+	 * if so don't add it automatically */
+	if (brasero_job_get_done_tracks (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
+		brasero_track_type_free (type);
+		return BRASERO_BURN_OK;
+	}
+
 	if (brasero_track_type_get_has_image (type)) {
 		gchar *toc = NULL;
 		gchar *image = NULL;
@@ -295,7 +304,6 @@ brasero_process_finished (BraseroProcess *self)
 		g_object_unref (track);
 	}
 
-	klass->post (BRASERO_JOB (self));
 	return BRASERO_BURN_OK;
 }
 
