@@ -3251,6 +3251,14 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+
+/* This function is not public API yet because it was too
+ * late; so use it internally for now. It's mainly for 
+ * convenience.*/
+gboolean
+brasero_drive_can_write_media (BraseroDrive *drive,
+                               BraseroMedia media);
+
 /**
  * brasero_medium_can_be_written:
  * @medium: #BraseroMedium
@@ -3317,7 +3325,7 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
  *
  * Gets whether the medium supports SAO.
  *
- * Since 2.29
+ * Since 2.30
  *
  * Return value: a #gboolean. TRUE if the medium can use SAO write mode , FALSE otherwise.
  *
@@ -3339,7 +3347,7 @@ brasero_medium_can_use_sao (BraseroMedium *medium)
  *
  * Gets whether the medium supports TAO.
  *
- * Since 2.29
+ * Since 2.30
  *
  * Return value: a #gboolean. TRUE if the medium can use TAO write mode, FALSE otherwise.
  *

@@ -146,14 +146,6 @@ BraseroBurnResult
 brasero_burn_session_tag_remove (BraseroBurnSession *session,
 				 const gchar *tag);
 
-BraseroBurnResult
-brasero_burn_session_tag_add_int (BraseroBurnSession *self,
-                                  const gchar *tag,
-                                  gint value);
-gint
-brasero_burn_session_tag_lookup_int (BraseroBurnSession *self,
-                                     const gchar *tag);
-
 /**
  * Destination 
  */

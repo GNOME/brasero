@@ -112,10 +112,6 @@ BraseroDriveCaps
 brasero_drive_get_caps (BraseroDrive *drive);
 
 gboolean
-brasero_drive_can_write_media (BraseroDrive *drive,
-                               BraseroMedia media);
-
-gboolean
 brasero_drive_can_write (BraseroDrive *drive);
 
 gboolean
