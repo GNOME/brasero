@@ -1631,6 +1631,8 @@ brasero_burn_session_tag_add (BraseroBurnSession *self,
  * for video discs, ...
  * See brasero-tags.h for a list of knowns tags.
  *
+ * Since 2.29.0
+ *
  * Return value: a #BraseroBurnResult.
  * BRASERO_BURN_OK if it was successful,
  * BRASERO_BURN_ERR otherwise.
@@ -1704,6 +1706,8 @@ brasero_burn_session_tag_lookup (BraseroBurnSession *self,
  *
  * Retrieves an int value associated with @session through
  * brasero_session_tag_add () and returns it.
+ *
+ * Since 2.29.0
  *
  * Return value: a #gint.
  **/

@@ -40,24 +40,14 @@
 
 G_BEGIN_DECLS
 
+
 /**
- * Functions meant to become public API
+ * Some convenience functions used internally
  */
 
 BraseroBurnResult
 brasero_burn_session_set_image_output_format (BraseroBurnSession *self,
 					    BraseroImageFormat format);
-BraseroBurnResult
-brasero_burn_session_tag_add_int (BraseroBurnSession *self,
-                                  const gchar *tag,
-                                  gint value);
-gint
-brasero_burn_session_tag_lookup_int (BraseroBurnSession *self,
-                                     const gchar *tag);
-
-/**
- * Some convenience functions used internally
- */
 
 goffset
 brasero_burn_session_get_available_medium_space (BraseroBurnSession *session);
