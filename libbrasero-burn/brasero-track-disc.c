@@ -184,7 +184,7 @@ brasero_track_disc_set_drive (BraseroTrackDisc *track,
  * Gets the #BraseroDrive object that will be used as
  * the source when copying.
  *
- * Return value: a #BraseroDrive or NULL
+ * Return value: a #BraseroDrive or NULL. Don't unref or free it.
  **/
 
 BraseroDrive *
