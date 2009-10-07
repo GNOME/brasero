@@ -70,13 +70,13 @@ gint open_ncb;
 gint parent_window;
 
 static const GOptionEntry options [] = {
-	{ "project", 'p', 0, G_OPTION_ARG_STRING, &project_uri,
+	{ "project", 'p', 0, G_OPTION_ARG_FILENAME, &project_uri,
 	  N_("Open the specified project"),
 	  N_("PROJECT") },
 
 #ifdef BUILD_PLAYLIST
 
-	 { "playlist", 'l', 0, G_OPTION_ARG_STRING, &playlist_uri,
+	 { "playlist", 'l', 0, G_OPTION_ARG_FILENAME, &playlist_uri,
 	  N_("Open the specified playlist as an audio project"),
 	  N_("PLAYLIST") },
 
@@ -94,7 +94,7 @@ static const GOptionEntry options [] = {
 	  N_("Copy a disc"),
 	  N_("PATH TO DEVICE") },
 
-	{ "cover", 'j', 0, G_OPTION_ARG_STRING, &cover_project,
+	{ "cover", 'j', 0, G_OPTION_ARG_FILENAME, &cover_project,
 	  N_("Cover to use"),
 	  N_("PATH TO COVER") },
 
@@ -102,7 +102,7 @@ static const GOptionEntry options [] = {
 	  N_("Open a video project adding the URIs given on the command line"),
 	  NULL },
 
-	{ "image", 'i', 0, G_OPTION_ARG_STRING, &iso_uri,
+	{ "image", 'i', 0, G_OPTION_ARG_FILENAME, &iso_uri,
 	 N_("URI of an image file to burn (autodetected)"),
           N_("PATH TO PLAYLIST") },
 
@@ -122,7 +122,7 @@ static const GOptionEntry options [] = {
 	  N_("Burn the contents of burn:// URI"),
 	  NULL },
 
-	{ "burn-and-remove-project", 'r', 0, G_OPTION_ARG_STRING, &burn_project_uri,
+	{ "burn-and-remove-project", 'r', 0, G_OPTION_ARG_FILENAME, &burn_project_uri,
 	  N_("Burn the specified project and remove it.\nThis option is mainly useful for integration with other applications."),
 	  N_("PATH") },
 
