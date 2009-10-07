@@ -788,13 +788,6 @@ brasero_burn_session_output_supported (BraseroBurnSession *session,
 	return BRASERO_BURN_OK;
 }
 
-/* This function is not public API yet because it was too
- * late; so use it internally for now. It's mainly for 
- * convenience.*/
-gboolean
-brasero_drive_can_write_media (BraseroDrive *drive,
-                               BraseroMedia media);
-
 /**
  * This is only to be used in case one wants to copy using the same drive.
  * It determines the possible middle image type.

@@ -153,6 +153,7 @@ brasero_burn_session_tag_add_int (BraseroBurnSession *self,
 gint
 brasero_burn_session_tag_lookup_int (BraseroBurnSession *self,
                                      const gchar *tag);
+
 /**
  * Destination 
  */

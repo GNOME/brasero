@@ -698,6 +698,8 @@ brasero_drive_get_caps (BraseroDrive *drive)
  *
  * Returns whether the disc can burn a specific media type.
  *
+ * Since 2.29.0
+ *
  * Return value: a #gboolean. TRUE if the drive can write this type of media and FALSE otherwise
  **/
 gboolean
