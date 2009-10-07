@@ -432,10 +432,13 @@ brasero_project_open_project_xml (const gchar *uri,
 	xmlDocPtr project;
 	xmlNodePtr item;
 	gboolean retval;
+	GFile *file;
 	gchar *path;
 
-	path = g_filename_from_uri (uri, NULL, NULL);
-    	if (!path)
+	file = g_file_new_for_commandline_arg (uri);
+	path = g_file_get_path (file);
+	g_object_unref (file);
+	if (!path)
 		return FALSE;
 
 	/* start parsing xml doc */
@@ -571,6 +574,12 @@ brasero_project_open_audio_playlist_project (const gchar *uri,
 {
 	TotemPlParser *parser;
 	TotemPlParserResult result;
+	GFile *file;
+	char *_uri;
+
+	file = g_file_new_for_commandline_arg (uri);
+	_uri = g_file_get_uri (file);
+	g_object_unref (file);
 
 	parser = totem_pl_parser_new ();
 	g_object_set (parser,
@@ -588,12 +597,13 @@ brasero_project_open_audio_playlist_project (const gchar *uri,
 			  G_CALLBACK (brasero_project_playlist_entry_parsed),
 			  session);
 
-	result = totem_pl_parser_parse (parser, uri, FALSE);
+	result = totem_pl_parser_parse (parser, _uri, FALSE);
 	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
 		if (warn_user)
 			brasero_project_invalid_project_dialog (_("It does not seem to be a valid Brasero project"));
 	}
 
+	g_free (_uri);
 	g_object_unref (parser);
 
 	return (result == TOTEM_PL_PARSER_RESULT_SUCCESS);
