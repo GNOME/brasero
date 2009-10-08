@@ -43,21 +43,22 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "brasero-session.h"
+#include "brasero-session-helper.h"
 
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "libbrasero-marshal.h"
 #include "burn-image-format.h"
+#include "brasero-track-type-private.h"
 
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 #include "brasero-medium-monitor.h"
 
 #include "brasero-tags.h"
-#include "brasero-session.h"
 #include "brasero-track.h"
 #include "brasero-track-disc.h"
-
 
 G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 #define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
@@ -79,7 +80,7 @@ struct _BraseroSessionSetting {
 	/**
 	 * Used when outputting an image instead of burning
 	 */
-	BraseroImageFormat format;
+	BraseroTrackType output;
 	gchar *image;
 	gchar *toc;
 
@@ -785,6 +786,40 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 }
 
 /**
+ * brasero_burn_session_get_output_type:
+ * @session: a #BraseroBurnSession
+ * @output: a #BraseroTrackType or NULL
+ *
+ * This function returns the type of output set for the session.
+ *
+ * Return value: a #BraseroBurnResult.
+ * BRASERO_BURN_OK if it was successful; BRASERO_BURN_NOT_READY if no setting has been set; BRASERO_BURN_ERR otherwise.
+ **/
+BraseroBurnResult
+brasero_burn_session_get_output_type (BraseroBurnSession *self,
+                                      BraseroTrackType *output)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if (!priv->settings->burner)
+		return BRASERO_BURN_NOT_READY;
+
+	if (brasero_drive_is_fake (priv->settings->burner)) {
+		output->type = priv->settings->output.type;
+		output->subtype.img_format = priv->settings->output.subtype.img_format;
+	}
+	else {
+		output->type = BRASERO_TRACK_TYPE_DISC;
+		output->subtype.media = brasero_medium_get_status (brasero_drive_get_medium (priv->settings->burner));
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+/**
  * brasero_burn_session_get_output:
  * @session: a #BraseroBurnSession
  * @image: a #gchar or NULL
@@ -911,7 +946,7 @@ brasero_burn_session_get_output_format_real (BraseroBurnSession *self)
 	BraseroBurnSessionPrivate *priv;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	return priv->settings->format;
+	return brasero_track_type_get_image_format (&(priv->settings->output));
 }
 
 /**
@@ -945,7 +980,8 @@ brasero_burn_session_set_image_output_real (BraseroBurnSession *self,
 	else
 		priv->settings->toc = NULL;
 
-	priv->settings->format = format;
+	brasero_track_type_set_has_image (&(priv->settings->output));
+	brasero_track_type_set_image_format (&(priv->settings->output),  format);
 }
 
 static BraseroBurnResult
@@ -958,7 +994,7 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (priv->settings->format == format
+	if (brasero_track_type_get_image_format (&(priv->settings->output)) == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
 	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc)) {
 		if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {

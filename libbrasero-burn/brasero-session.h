@@ -157,6 +157,9 @@ brasero_burn_session_tag_lookup_int (BraseroBurnSession *self,
 /**
  * Destination 
  */
+BraseroBurnResult
+brasero_burn_session_get_output_type (BraseroBurnSession *self,
+                                      BraseroTrackType *output);
 
 BraseroDrive *
 brasero_burn_session_get_burner (BraseroBurnSession *session);
