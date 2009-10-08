@@ -37,9 +37,11 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-tool-dialog.h"
+#include "brasero-tool-dialog-private.h"
+
 #include "brasero-progress.h"
 #include "brasero-medium-selection.h"
-#include "brasero-tool-dialog.h"
 
 #include "brasero-misc.h"
 
