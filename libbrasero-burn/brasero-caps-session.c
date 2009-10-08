@@ -800,6 +800,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 						      gboolean use_flags)
 {
 	GSList *iter;
+	gboolean supported;
 	BraseroDrive *burner;
 	BraseroTrackType input;
 	BraseroTrackType output;
@@ -828,15 +829,79 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 	else
 		session_flags = BRASERO_BURN_FLAG_NONE;
 
-	/* Find one available output format */
-	format = BRASERO_IMAGE_FORMAT_CDRDAO;
-	output.type = BRASERO_TRACK_TYPE_IMAGE;
 	burner = brasero_burn_session_get_burner (session);
 
-	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		gboolean supported;
+	/* First see if it works with a stream type */
+	brasero_track_type_set_has_stream (&output);
 
-		output.subtype.img_format = format;
+	/* FIXME! */
+	brasero_track_type_set_stream_format (&output,
+	                                      BRASERO_AUDIO_FORMAT_RAW|
+	                                      BRASERO_METADATA_INFO);
+
+	BRASERO_BURN_LOG_TYPE (&output, "Testing stream type");
+	supported = brasero_caps_try_output_with_blanking (self,
+							   session,
+							   &output,
+							   &input,
+							   BRASERO_PLUGIN_IO_ACCEPT_FILE,
+							   use_flags);
+	if (supported) {
+		BRASERO_BURN_LOG ("Stream type seems to be supported as output");
+
+		/* This format can be used to create an image. Check if can be
+		 * burnt now. Just find at least one medium. */
+		for (iter = self->priv->caps_list; iter; iter = iter->next) {
+			BraseroCaps *caps;
+			gboolean result;
+
+			caps = iter->data;
+
+			if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+				continue;
+
+			/* Audio is only supported by CDs */
+			if ((caps->type.subtype.media & BRASERO_MEDIUM_CD) == 0)
+				continue;
+
+			/* This type of disc cannot be burnt; skip them */
+			if (caps->type.subtype.media & BRASERO_MEDIUM_ROM)
+				continue;
+
+			/* Make sure this is supported by the drive */
+			if (!brasero_drive_can_write_media (burner, caps->type.subtype.media))
+				continue;
+
+			result = brasero_caps_find_link (caps,
+							 use_flags,
+							 session_flags,
+							 caps->type.subtype.media,
+							 &output,
+							 BRASERO_PLUGIN_IO_ACCEPT_FILE);
+
+			BRASERO_BURN_LOG_DISC_TYPE (caps->type.subtype.media,
+						    "Tested medium (%s)",
+						    result ? "working":"not working");
+
+			if (result) {
+				if (tmp_type) {
+					tmp_type->type = BRASERO_TRACK_TYPE_STREAM;
+					tmp_type->subtype.stream_format = output.subtype.stream_format;
+				}
+					
+				return BRASERO_BURN_OK;
+			}
+		}
+	}
+	else
+		BRASERO_BURN_LOG ("Stream format not supported as output");
+
+	/* Find one available output format */
+	format = BRASERO_IMAGE_FORMAT_CDRDAO;
+	brasero_track_type_set_has_image (&output);
+
+	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
+		brasero_track_type_set_image_format (&output, format);
 
 		BRASERO_BURN_LOG_TYPE (&output, "Testing temporary image format");
 		supported = brasero_caps_try_output_with_blanking (self,
