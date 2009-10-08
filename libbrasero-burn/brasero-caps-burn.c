@@ -507,18 +507,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 	gboolean res;
 
 	/* determine the output and the flags for this task */
-	if (brasero_burn_session_is_dest_file (session)) {
-		media = BRASERO_MEDIUM_FILE;
-
-		output.type = BRASERO_TRACK_TYPE_IMAGE;
-		output.subtype.img_format = brasero_burn_session_get_output_format (session);
-	}
-	else {
-		media = brasero_burn_session_get_dest_media (session);
-
-		output.type = BRASERO_TRACK_TYPE_DISC;
-		output.subtype.media = media;
-	}
+	brasero_burn_session_get_output_type (session, &output);
 
 	if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
 		flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
