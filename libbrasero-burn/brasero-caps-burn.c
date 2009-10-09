@@ -508,6 +508,10 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 	/* determine the output and the flags for this task */
 	brasero_burn_session_get_output_type (session, &output);
+	if (brasero_track_type_get_has_medium (&output))
+		media = brasero_track_type_get_medium_type (&output);
+	else
+		media = BRASERO_MEDIUM_FILE;
 
 	if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
 		flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
