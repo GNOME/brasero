@@ -1045,6 +1045,8 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
  * NOTE: after a call to this function the #BraseroDrive for
  * @session will be the fake #BraseroDrive.
  *
+ * Since 2.29.0
+ *
  * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it was successfully set;
  * BRASERO_BURN_ERR otherwise.
  **/
