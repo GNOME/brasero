@@ -984,6 +984,23 @@ brasero_burn_session_set_image_output_real (BraseroBurnSession *self,
 	brasero_track_type_set_image_format (&(priv->settings->output),  format);
 }
 
+static void
+brasero_burn_session_set_fake_drive (BraseroBurnSession *self)
+{
+	BraseroMediumMonitor *monitor;
+	BraseroDrive *drive;
+	GSList *list;
+
+	/* NOTE: changing/changed signals are handled in
+	 * set_burner (). */
+	monitor = brasero_medium_monitor_get_default ();
+	list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
+	drive = brasero_medium_get_drive (list->data);
+	brasero_burn_session_set_burner (self, drive);
+	g_object_unref (monitor);
+	g_slist_free (list);
+}
+
 static BraseroBurnResult
 brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 					    BraseroImageFormat format,
@@ -997,45 +1014,20 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 	if (brasero_track_type_get_image_format (&(priv->settings->output)) == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
 	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc)) {
-		if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
-			BraseroMediumMonitor *monitor;
-			BraseroDrive *drive;
-			GSList *list;
-
-			/* NOTE: changing/changed signals are handled in
-			 * set_burner (). */
-			monitor = brasero_medium_monitor_get_default ();
-			list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
-			drive = brasero_medium_get_drive (list->data);
-			brasero_burn_session_set_burner (self, drive);
-			g_object_unref (monitor);
-			g_slist_free (list);
-		}
+		if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
+			brasero_burn_session_set_fake_drive (self);
 
 		return BRASERO_BURN_OK;
 	}
 
-	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
-		BraseroMediumMonitor *monitor;
-		BraseroDrive *drive;
-		GSList *list;
-
-		brasero_burn_session_set_image_output_real (self, format, image, toc);
-
-		monitor = brasero_medium_monitor_get_default ();
-		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
-		drive = brasero_medium_get_drive (list->data);
-		brasero_burn_session_set_burner (self, drive);
-		g_object_unref (monitor);
-		g_slist_free (list);
-	}
-	else {
-		brasero_burn_session_set_image_output_real (self, format, image, toc);
+	brasero_burn_session_set_image_output_real (self, format, image, toc);
+	if (BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
 		g_signal_emit (self,
 			       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
 			       0,
 			       brasero_drive_get_medium (priv->settings->burner));
-	}
+	else
+		brasero_burn_session_set_fake_drive (self);
 
 	return BRASERO_BURN_OK;
 }
