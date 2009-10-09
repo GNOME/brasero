@@ -1011,7 +1011,8 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (brasero_track_type_get_image_format (&(priv->settings->output)) == format
+	if (brasero_track_type_get_has_image (&(priv->settings->output))
+	&& brasero_track_type_get_image_format (&(priv->settings->output)) == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
 	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc)) {
 		if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
