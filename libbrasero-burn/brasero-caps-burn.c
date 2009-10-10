@@ -632,27 +632,14 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 		link = iter->data;
 
-		/* determine the plugin output */
-		if (iter->next) {
-			BraseroCapsLink *next_link;
-
-			next_link = iter->next->data;
-			if (next_link == link) {
-				/* That's a processing plugin so the output must
-				 * be the exact same as the input, which is not
-				 * necessarily the caps type referred to by the 
-				 * link if the link is amongst the first. In
-				 * that case that's the session input. */
-				memcpy (&plugin_output,
-					&plugin_input,
-					sizeof (BraseroTrackType));
-			}
-			else {
-				memcpy (&plugin_output,
-					&next_link->caps->type,
-					sizeof (BraseroTrackType));
-			}
-		}
+		/* determine the plugin output:
+		 * if it's not the last one it takes the input
+		 * of the next plugin as its output.
+		 * Otherwise it uses the final output type */
+		if (iter->next)
+			memcpy (&plugin_output,
+				&next_link->caps->type,
+				sizeof (BraseroTrackType));
 		else
 			memcpy (&plugin_output,
 				&output,
