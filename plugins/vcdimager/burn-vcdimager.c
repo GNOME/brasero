@@ -446,15 +446,6 @@ brasero_vcd_imager_set_argv (BraseroProcess *process,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroBurnResult
-brasero_vcd_imager_post (BraseroJob *job)
-{
-	BraseroVcdImagerPrivate *priv;
-
-	priv = BRASERO_VCD_IMAGER_PRIVATE (job);
-	return brasero_job_finished_session (job);
-}
-
 static void
 brasero_vcd_imager_init (BraseroVcdImager *object)
 {}
@@ -477,7 +468,7 @@ brasero_vcd_imager_class_init (BraseroVcdImagerClass *klass)
 	process_class->stdout_func = brasero_vcd_imager_read_stdout;
 	process_class->stderr_func = brasero_vcd_imager_read_stderr;
 	process_class->set_argv = brasero_vcd_imager_set_argv;
-	process_class->post = brasero_vcd_imager_post;
+	process_class->post = brasero_job_finished_session;
 }
 
 static BraseroBurnResult
