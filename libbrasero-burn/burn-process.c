@@ -91,6 +91,8 @@ struct _BraseroProcessPrivate {
 
 	guint watch;
 	guint return_status;
+
+	guint process_finished:1;
 };
 
 #define BRASERO_PROCESS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROCESS, BraseroProcessPrivate))
@@ -199,69 +201,49 @@ brasero_process_ask_argv (BraseroJob *job,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroBurnResult
-brasero_process_finished (BraseroProcess *self)
+static void
+brasero_process_add_automatic_track (BraseroProcess *self)
 {
 	BraseroBurnResult result;
 	BraseroTrack *track = NULL;
 	BraseroTrackType *type = NULL;
 	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
 	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
-	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (self);
-	
-	/* check if an error went undetected */
-	if (priv->return_status) {
-		if (priv->error) {
-			brasero_job_error (BRASERO_JOB (self),
-					   g_error_new (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-						        /* Translators: %s is the name of the brasero element */
-							_("Process \"%s\" ended with an error code (%i)"),
-							G_OBJECT_TYPE_NAME (self),
-							priv->return_status));
-		}
-		else {
-			brasero_job_error (BRASERO_JOB (self), priv->error);
-			priv->error = NULL;
-		}
 
-		return BRASERO_BURN_OK;
-	}
-	else if (priv->error) {
-		g_error_free (priv->error);
-		priv->error = NULL;
-	}
+	/* On error, don't automatically add a track */
+	if (priv->return_status)
+		return;
 
-	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
-		klass->post (BRASERO_JOB (self));
-		return BRASERO_BURN_OK;
-	}
+	/* See if the plugin already added some new
+	 * tracks while it was running; if so, don't add it
+	 * automatically */
+	if (brasero_job_get_done_tracks (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
+		return;
 
-	/* only for the last running job with imaging action */
+	/* Only the last running job when it images to a
+	 * file should add a track.
+	 * NOTE: the last job in a task is the one that
+	 * does not pipe anything. */
+	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
+		return;
+
 	brasero_job_get_action (BRASERO_JOB (self), &action);
-	if (action != BRASERO_JOB_ACTION_IMAGE) {
-		klass->post (BRASERO_JOB (self));
-		return BRASERO_BURN_OK;
-	}
+	if (action != BRASERO_JOB_ACTION_IMAGE)
+		return;
 
+	/* Now add a new track */
 	type = brasero_track_type_new ();
 	result = brasero_job_get_output_type (BRASERO_JOB (self), type);
-
-	if (result != BRASERO_BURN_OK || brasero_track_type_get_has_medium (type)) {
+	if (result != BRASERO_BURN_OK) {
 		brasero_track_type_free (type);
-		klass->post (BRASERO_JOB (self));
-		return BRASERO_BURN_OK;
+		return;
 	}
 
-	klass->post (BRASERO_JOB (self));
+	BRASERO_JOB_LOG (self, "Automatically adding track");
 
-	/* See if the plugin already added some new tracks
-	 * if so don't add it automatically */
-	if (brasero_job_get_done_tracks (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
-		brasero_track_type_free (type);
-		return BRASERO_BURN_OK;
-	}
-
+	/* NOTE: we are only able to handle the two
+	 * following track types. For other ones, the
+	 * plugin is supposed to handle that itself */
 	if (brasero_track_type_get_has_image (type)) {
 		gchar *toc = NULL;
 		gchar *image = NULL;
@@ -303,7 +285,45 @@ brasero_process_finished (BraseroProcess *self)
 		 * need it anymore. BraseroTaskCtx refs it. */
 		g_object_unref (track);
 	}
+}
 
+static BraseroBurnResult
+brasero_process_finished (BraseroProcess *self)
+{
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
+	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (self);
+
+	priv->process_finished = TRUE;
+
+	/* check if an error went undetected */
+	if (priv->return_status) {
+		if (priv->error) {
+			brasero_job_error (BRASERO_JOB (self),
+					   g_error_new (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+						        /* Translators: %s is the name of the brasero element */
+							_("Process \"%s\" ended with an error code (%i)"),
+							G_OBJECT_TYPE_NAME (self),
+							priv->return_status));
+		}
+		else {
+			brasero_job_error (BRASERO_JOB (self), priv->error);
+			priv->error = NULL;
+		}
+
+		return BRASERO_BURN_OK;
+	}
+
+	/* This is a deferred error that is an error that
+	 * was by a plugin and that should be only used
+	 * if the process finishes with a bad return value */
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
+
+	/* Tell the world we're done */
+	klass->post (BRASERO_JOB (self));
 	return BRASERO_BURN_OK;
 }
 
@@ -634,7 +654,9 @@ brasero_process_start (BraseroJob *job, GError **error)
 	read_stdout = (klass->stdout_func &&
 		       brasero_job_get_fd_out (BRASERO_JOB (process), NULL) != BRASERO_BURN_OK);
 
+	priv->process_finished = FALSE;
 	priv->return_status = 0;
+
 	if (!g_spawn_async_with_pipes (priv->working_directory,
 				       (gchar **) priv->argv->pdata,
 				       (gchar **) envp,
@@ -677,24 +699,28 @@ brasero_process_stop (BraseroJob *job,
 	priv = BRASERO_PROCESS_PRIVATE (process);
 
 	if (priv->watch) {
-		/* if the child is still running at this stage that means that
-		 * we were cancelled or that we decided to stop ourselves so
+		/* if the child is still running at this stage 
+		 * that means that we were cancelled or
+		 * that we decided to stop ourselves so
 		 * don't check the returned value */
 		g_source_remove (priv->watch);
 		priv->watch = 0;
 	}
 
-	/* it might happen that the slave detected an error triggered by the master
-	 * BEFORE the master so we finish reading whatever is in the pipes to see: 
-	 * fdsink will notice cdrecord closed the pipe before cdrecord reports it */
+	/* it might happen that the slave detected an
+	 * error triggered by the master BEFORE the
+	 * master so we finish reading whatever is in
+	 * the pipes to see: fdsink will notice cdrecord
+	 * closed the pipe before cdrecord reports it */
 	if (priv->pid) {
 		GPid pid;
 
 		pid = priv->pid;
 		priv->pid = 0;
 
-		/* Reminder: -1 is here to send the signal to all children of
-		 * the process with pid as well */
+		/* Reminder: -1 is here to send the signal
+		 * to all children of the process with pid as
+		 * well */
 		if (pid > 0 && kill ((-1) * pid, SIGTERM) == -1 && errno != ESRCH) {
 			BRASERO_JOB_LOG (process, 
 					 "process (%s) couldn't be killed: terminating",
@@ -794,6 +820,10 @@ brasero_process_stop (BraseroJob *job,
 		g_error_free (priv->error);
 		priv->error = NULL;
 	}
+
+	/* See if we need to automatically add a track */
+	if (priv->process_finished)
+		brasero_process_add_automatic_track (BRASERO_PROCESS (job));
 
 	return result;
 }
