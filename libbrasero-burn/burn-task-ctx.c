@@ -227,8 +227,6 @@ brasero_task_ctx_get_stored_tracks (BraseroTaskCtx *self,
 {
 	BraseroTaskCtxPrivate *priv;
 
-	g_return_val_if_fail (tracks != NULL, BRASERO_BURN_ERR);
-
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 	if (!priv->current_track)
 		return BRASERO_BURN_ERR;
