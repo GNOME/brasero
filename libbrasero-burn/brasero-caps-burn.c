@@ -638,7 +638,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		 * Otherwise it uses the final output type */
 		if (iter->next)
 			memcpy (&plugin_output,
-				&next_link->caps->type,
+				&((BraseroCapsLink *) (iter->next->data))->caps->type,
 				sizeof (BraseroTrackType));
 		else
 			memcpy (&plugin_output,
