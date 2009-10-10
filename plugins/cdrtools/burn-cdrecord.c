@@ -717,19 +717,31 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	for (iter = tracks; iter; iter = iter->next) {
 		goffset sectors;
 		BraseroTrack *track;
+		const gchar *track_inf;
 
 		track = iter->data;
-		result = brasero_cdrecord_write_inf (cdrecord,
-						     argv,
-						     track,
-						     tmpdir,
-						     album,
-						     index,
-						     start,
-						     (iter->next == NULL),
-						     error);
-		if (result != BRASERO_BURN_OK)
-			return result;
+
+		track_inf = brasero_track_tag_lookup_string (track, BRASERO_CDRTOOLS_TRACK_INF_FILE);
+		if (track_inf) {
+			BRASERO_JOB_LOG (cdrecord, "Already existing .inf file");
+
+			/* There is already an .inf file associated with this track */
+			if (argv)
+				g_ptr_array_add (argv, g_strdup (track_inf));
+		}
+		else {
+			result = brasero_cdrecord_write_inf (cdrecord,
+							     argv,
+							     track,
+							     tmpdir,
+							     album,
+							     index,
+							     start,
+							     (iter->next == NULL),
+							     error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+		}
 
 		index ++;
 		sectors = 0;
