@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 GSList *
 brasero_burn_caps_new_task (BraseroBurnCaps *caps,
 			    BraseroBurnSession *session,
+                            BraseroTrackType *temp_output,
 			    GError **error);
 BraseroTask *
 brasero_burn_caps_new_blanking_task (BraseroBurnCaps *caps,

@@ -1900,6 +1900,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 static BraseroBurnResult
 brasero_burn_run_tasks (BraseroBurn *burn,
 			gboolean erase_allowed,
+                        BraseroTrackType *temp_output,
                         gboolean *dummy_session,
 			GError **error)
 {
@@ -1909,6 +1910,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 	tasks = brasero_burn_caps_new_task (priv->caps,
 					    priv->session,
+	                                    temp_output,
 					    error);
 	if (!tasks)
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -2197,6 +2199,7 @@ brasero_burn_unset_checksums (BraseroBurn *self)
 static BraseroBurnResult
 brasero_burn_record_session (BraseroBurn *burn,
 			     gboolean erase_allowed,
+                             BraseroTrackType *temp_output,
 			     GError **error)
 {
 	gboolean dummy_session = FALSE;
@@ -2223,6 +2226,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 		result = brasero_burn_run_tasks (burn,
 						 erase_allowed,
+		                                 temp_output,
 		                                 &dummy_session,
 						 &ret_error);
 	} while (result == BRASERO_BURN_RETRY);
@@ -2265,7 +2269,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 		 * NOTE: don't bother to push the session. We know the changes 
 		 * that were made. */
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
-		result = brasero_burn_record_session (burn, FALSE, error);
+		result = brasero_burn_record_session (burn, FALSE, temp_output, error);
 		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
 
 		return result;
@@ -2451,9 +2455,6 @@ static BraseroBurnResult
 brasero_burn_same_src_dest_image (BraseroBurn *self,
 				  GError **error)
 {
-	gchar *toc = NULL;
-	gchar *image = NULL;
-	GError *ret_error = NULL;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
 	BraseroTrackType *output = NULL;
@@ -2466,7 +2467,6 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	/* get the first possible format */
 	output = brasero_track_type_new ();
 	result = brasero_burn_session_get_tmp_image_type_same_src_dest (priv->session, output);
-
 	if (result != BRASERO_BURN_OK) {
 		brasero_track_type_free (output);
 		g_set_error (error,
@@ -2476,93 +2476,32 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 		return result;
 	}
 
-	/* Save the flags for later */
-	brasero_burn_session_push_settings (priv->session);
-
-	/* get a new output. Also ask for both */
-	result = brasero_burn_session_get_tmp_image (priv->session,
-						     brasero_track_type_get_image_format (output),
-						     &image,
-						     &toc,
-						     &ret_error);
-
-	while (result != BRASERO_BURN_OK) {
-		gboolean is_temp;
-
-		if (!ret_error
-		||  (ret_error->code != BRASERO_BURN_ERROR_DISK_SPACE
-		&&   ret_error->code != BRASERO_BURN_ERROR_PERMISSION)) {
-			g_propagate_error (error, ret_error);
-			goto end;
-		}
-
-		/* That's an imager (outputs an image to the disc) so that means
-		 * that here the problem comes from the hard drive being too
-		 * small or we don't have the right permission. */
-
-		/* NOTE: Image file creation is always the last to take place 
-		 * when it's not temporary. Another job should not take place
-		 * afterwards */
-		if (!brasero_burn_session_is_dest_file (priv->session))
-			is_temp = TRUE;
-		else
-			is_temp = FALSE;
-
-		result = brasero_burn_ask_for_location (self,
-							ret_error,
-							is_temp,
-							error);
-
-		/* clean the error anyway since at worst the user will cancel */
-		g_error_free (ret_error);
-		ret_error = NULL;
-
-		if (result != BRASERO_BURN_OK) 
-			goto end;
-
-		/* retry */
-		result = brasero_burn_session_get_tmp_image (priv->session,
-							     brasero_track_type_get_image_format (output),
-							     &image,
-							     &toc,
-							     &ret_error);
-	}
-
-	result = brasero_burn_session_set_image_output_full (priv->session,
-							     brasero_track_type_get_image_format (output),
-							     image,
-							     toc);
-	if (result != BRASERO_BURN_OK)
-		goto end;
-
 	/* lock drive */
 	result = brasero_burn_lock_src_media (self, error);
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
 	/* run */
-	result = brasero_burn_record_session (self, TRUE, error);
-	if (result != BRASERO_BURN_OK) {
-		brasero_burn_unlock_src_media (self, NULL);
+	result = brasero_burn_record_session (self, TRUE, output, error);
+	brasero_burn_unlock_src_media (self, NULL);
+
+	if (result != BRASERO_BURN_OK)
 		goto end;
-	}
 
 	/* reset everything back to normal */
 	result = brasero_burn_eject_src_media (self, error);
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
-	/* There should be a track at the top of the session stack
-	 * so no need to create a new one */
+	/* There should be a track at the top of the
+	 * session stack so no need to create a new
+	 * one */
 
 end:
-	g_free (image);
-	g_free (toc);
 
 	if (output)
 		brasero_track_type_free (output);
 
-	brasero_burn_session_pop_settings (priv->session);
 	return result;
 }
 
@@ -2726,7 +2665,7 @@ brasero_burn_record (BraseroBurn *burn,
 	}
 
 	/* burn the session except if dummy session */
-	result = brasero_burn_record_session (burn, TRUE, error);
+	result = brasero_burn_record_session (burn, TRUE, NULL, error);
 
 end:
 

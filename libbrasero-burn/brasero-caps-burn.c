@@ -489,6 +489,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 GSList *
 brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			    BraseroBurnSession *session,
+                            BraseroTrackType *temp_output,
 			    GError **error)
 {
 	BraseroPluginProcessFlag position;
@@ -507,7 +508,13 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 	gboolean res;
 
 	/* determine the output and the flags for this task */
-	brasero_burn_session_get_output_type (session, &output);
+	if (temp_output) {
+		output.type = temp_output->type;
+		output.subtype.img_format = temp_output->subtype.img_format;
+	}
+	else
+		brasero_burn_session_get_output_type (session, &output);
+
 	if (brasero_track_type_get_has_medium (&output))
 		media = brasero_track_type_get_medium_type (&output);
 	else
