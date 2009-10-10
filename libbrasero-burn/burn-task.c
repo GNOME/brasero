@@ -188,7 +188,6 @@ brasero_task_deactivate_item (BraseroTask *task,
 				      error);
 
 	BRASERO_BURN_LOG ("stopped %s", G_OBJECT_TYPE_NAME (item));
-
 	return result;
 }
 
@@ -220,7 +219,7 @@ brasero_task_send_stop_signal (BraseroTask *task,
 			g_error_free (local_error);
 			local_error = item_error;
 		}
-	};
+	}
 
 	if (local_error) {
 		if (error && *error == NULL)
@@ -347,8 +346,9 @@ brasero_task_stop (BraseroTask *task,
 
 	priv = BRASERO_TASK_PRIVATE (task);
 
-	/* brasero_job_error/brasero_job_finished should not be called during
-	 * ::init and ::start. Instead a job should return any error directly */
+	/* brasero_job_error/brasero_job_finished ()
+	 * should not be called during ::init and ::start.
+	 * Instead a job should return errors directly */
 	result = brasero_task_send_stop_signal (task, retval, &error);
 
 	priv->retval = retval;
@@ -396,8 +396,8 @@ brasero_task_finished (BraseroTaskCtx *ctx,
 	priv = BRASERO_TASK_PRIVATE (self);
 
 	/* see if we have really started a loop */
-	/* FIXME: shouldn't it be an error if it is called while the loop is 
-	 * not running ? */
+	/* FIXME: shouldn't it be an error if it is called
+	 * while the loop is not running ? */
 	if (!brasero_task_is_running (self))
 		return;
 		
@@ -405,8 +405,8 @@ brasero_task_finished (BraseroTaskCtx *ctx,
 		BraseroTaskItem *item;
 		GError *error_item = NULL;
 
-		/* There are some tracks left, get the first task item and
-		 * restart it. */
+		/* There are some tracks left, get the first
+		 * task item and restart it. */
 		item = priv->leader;
 		while (brasero_task_item_previous (item))
 			item = brasero_task_item_previous (item);
