@@ -298,7 +298,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 					  "response", 
 					  G_CALLBACK (brasero_burn_options_not_ready_dialog_cancel_cb),
 					  self);
-	gtk_widget_show (priv->status_dialog);
+
 			priv->not_ready_id = g_timeout_add_seconds (1,
 								    brasero_burn_options_not_ready_dialog_show_cb,
 								    self);
