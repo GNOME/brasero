@@ -93,7 +93,7 @@ brasero_genisoimage_read_stdout (BraseroProcess *process, const gchar *line)
 	if (action == BRASERO_JOB_ACTION_SIZE)
 		return brasero_genisoimage_read_isosize (process, line);
 
-	return TRUE;
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
