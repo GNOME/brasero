@@ -390,8 +390,10 @@ brasero_gio_operation_eject_volume (GVolume *gvolume,
 {
 	gboolean result;
 
-	if (!g_volume_can_eject (gvolume))
+	if (!g_volume_can_eject (gvolume)) {
+		BRASERO_MEDIA_LOG ("GVolume cannot be ejected");
 		return FALSE;
+	}
 
 	if (wait) {
 		gulong eject_sig;

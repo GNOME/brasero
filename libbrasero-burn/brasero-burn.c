@@ -291,6 +291,8 @@ brasero_burn_unmount (BraseroBurn *self,
 
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
+		GError *ret_error;
+
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			BRASERO_BURN_LOG ("Max attempts reached at unmounting");
@@ -306,7 +308,14 @@ brasero_burn_unmount (BraseroBurn *self,
 
 		BRASERO_BURN_LOG ("Retrying unmounting");
 
+		ret_error = NULL;
 		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
+
+		if (ret_error) {
+			BRASERO_BURN_LOG ("Ejection error: %s", ret_error->message);
+			g_error_free (ret_error);
+		}
+
 		brasero_burn_sleep (self, 500);
 	}
 
@@ -324,6 +333,8 @@ brasero_burn_eject (BraseroBurn *self,
 
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_drive_get_medium (drive)) {
+		GError *ret_error;
+
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			gchar *name;
@@ -344,7 +355,14 @@ brasero_burn_eject (BraseroBurn *self,
 		}
 
 		BRASERO_BURN_LOG ("Retrying ejection");
-		brasero_drive_eject (drive, TRUE, NULL);
+		ret_error = NULL;
+		brasero_drive_eject (drive, TRUE, &ret_error);
+
+		if (ret_error) {
+			BRASERO_BURN_LOG ("Ejection error: %s", ret_error->message);
+			g_error_free (ret_error);
+		}
+
 		brasero_burn_sleep (self, 500);
 	}
 
@@ -367,8 +385,10 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 		return BRASERO_BURN_OK;
 
 	medium = brasero_drive_get_medium (priv->dest);
-	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium)))
-		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
+
+	result = brasero_burn_unmount (self, medium, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	if (priv->dest_locked) {
 		priv->dest_locked = 0;
@@ -1182,7 +1202,7 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 			brasero_drive_reprobe (priv->dest);
 	}
 	else
-		brasero_drive_eject (priv->dest, FALSE, error);
+		brasero_burn_eject (burn, priv->dest, error);
 
 	priv->dest = NULL;
 	return BRASERO_BURN_OK;
