@@ -840,12 +840,12 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 	                                      BRASERO_METADATA_INFO);
 
 	BRASERO_BURN_LOG_TYPE (&output, "Testing stream type");
-	supported = brasero_caps_try_output_with_blanking (self,
-							   session,
-							   &output,
-							   &input,
-							   BRASERO_PLUGIN_IO_ACCEPT_FILE,
-							   use_flags);
+	supported = brasero_caps_try_output (self,
+	                                     session_flags,
+	                                     use_flags,
+	                                     &output,
+	                                     &input,
+	                                     BRASERO_PLUGIN_IO_ACCEPT_FILE);
 	if (supported) {
 		BRASERO_BURN_LOG ("Stream type seems to be supported as output");
 
@@ -904,12 +904,16 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 		brasero_track_type_set_image_format (&output, format);
 
 		BRASERO_BURN_LOG_TYPE (&output, "Testing temporary image format");
-		supported = brasero_caps_try_output_with_blanking (self,
-								   session,
-								   &output,
-								   &input,
-								   BRASERO_PLUGIN_IO_ACCEPT_FILE,
-								   use_flags);
+
+		/* Don't need to try blanking here (saves
+		 * a few lines of debug) since that is an 
+		 * image */
+		supported = brasero_caps_try_output (self,
+		                                     session_flags,
+		                                     use_flags,
+		                                     &output,
+		                                     &input,
+		                                     BRASERO_PLUGIN_IO_ACCEPT_FILE);
 		if (!supported)
 			continue;
 
@@ -1523,7 +1527,7 @@ brasero_caps_get_flags_for_disc (BraseroBurnCaps *self,
 		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 
 	if ((supported_flags & BRASERO_BURN_FLAG_DAO)
-	&&   input->type == BRASERO_TRACK_TYPE_STREAM
+	&&   brasero_track_type_get_has_stream (input)
 	&&  (input->subtype.img_format & BRASERO_METADATA_INFO)) {
 		/* In this case, DAO is compulsory if we want to write CD-TEXT */
 		compulsory_flags |= BRASERO_BURN_FLAG_DAO;
@@ -1694,12 +1698,15 @@ brasero_burn_caps_get_flags_same_src_dest_for_types (BraseroBurnCaps *self,
 	 * no specific DISC => IMAGE flags. We just want to know if that
 	 * is possible. */
 	BRASERO_BURN_LOG_TYPE (output, "Testing temporary image format");
-	type_supported = brasero_caps_try_output_with_blanking (self,
-	                                                   session,
-	                                                   output,
-	                                                   input,
-	                                                   BRASERO_PLUGIN_IO_ACCEPT_FILE,
-	                                                   FALSE);
+
+	/* Here there is no need to try blanking as there
+	 * is no disc (saves a few debug lines) */
+	type_supported = brasero_caps_try_output (self,
+	                                          BRASERO_BURN_FLAG_NONE,
+	                                          FALSE,
+	                                          output,
+	                                          input,
+	                                          BRASERO_PLUGIN_IO_ACCEPT_FILE);
 	if (!type_supported) {
 		BRASERO_BURN_LOG_TYPE (output, "Format not supported");
 		return FALSE;
@@ -1742,12 +1749,14 @@ brasero_burn_caps_get_flags_same_src_dest_for_types (BraseroBurnCaps *self,
 		/* Merge all available flags for each possible medium type */
 		supported = BRASERO_BURN_FLAG_NONE;
 		compulsory = BRASERO_BURN_FLAG_NONE;
-		result = brasero_burn_caps_get_flags_for_medium (self,
-								 caps->type.subtype.media,
-								 session_flags,
-								 output,
-								 &supported,
-								 &compulsory);
+
+		result = brasero_caps_get_flags_for_disc (self,
+		                                          session_flags,
+		                                          caps->type.subtype.media,
+							  output,
+							  &supported,
+							  &compulsory);
+
 		if (result != BRASERO_BURN_OK)
 			continue;
 
@@ -1844,7 +1853,28 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 
 	*supported_ret |= supported_final;
 	*compulsory_ret |= compulsory_final;
-	
+
+	/* we also add these two flags as being supported
+	 * since they could be useful and can't be tested
+	 * until the disc is inserted which it is not at the
+	 * moment */
+	(*supported_ret) |= (BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+					 BRASERO_BURN_FLAG_FAST_BLANK);
+
+	if (brasero_track_type_get_medium_type (&input) & BRASERO_MEDIUM_HAS_AUDIO) {
+		/* This is a special case for audio discs.
+		 * Since they may contain CD-TEXT and
+		 * since CD-TEXT can only be written with
+		 * DAO then we must make sure the user
+		 * can't use MULTI since then DAO is
+		 * impossible. */
+		(*compulsory_ret) |= BRASERO_BURN_FLAG_DAO;
+
+		/* This is just to make sure */
+		(*supported_ret) &= (~BRASERO_BURN_FLAG_MULTI);
+		(*compulsory_ret) &= (~BRASERO_BURN_FLAG_MULTI);
+	}
+
 	return BRASERO_BURN_OK;
 }
 
