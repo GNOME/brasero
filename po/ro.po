@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-09-18 10:02+0000\n"
-"PO-Revision-Date: 2009-09-19 20:47+0300\n"
+"POT-Creation-Date: 2009-10-07 20:27+0000\n"
+"PO-Revision-Date: 2009-09-19 20:50+0300\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -89,23 +89,24 @@ msgstr "Afișează opțiuni pentru biblioteca Brasero-burn"
 msgid "\"%s\" was removed from the file system."
 msgstr "„%s” a fost șters din sistemul de fișiere."
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:125
-#, c-format
-msgid "Directories cannot be added to video or audio discs"
-msgstr "Directoarele nu pot fi adăugate discurilor video sau audio"
-
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:139
-#, c-format
-msgid "Playlists cannot be added to video or audio discs"
-msgstr "Listele de redare nu pot fi adăugate discurilor video sau audio"
-
 #. Translators: %s is the name of the file
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:154
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:129
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:170
 #, c-format
 msgid "\"%s\" is not suitable for audio or video media"
 msgstr "„%s” nu este potrivit pentru medii video sau audio"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:343
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:142
+#, c-format
+msgid "Directories cannot be added to video or audio discs"
+msgstr "Directoarele nu pot fi adăugate discurilor video sau audio"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:155
+#, c-format
+msgid "Playlists cannot be added to video or audio discs"
+msgstr "Listele de redare nu pot fi adăugate discurilor video sau audio"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:358
 msgid "Analysing video files"
 msgstr "Se analizează fișierele video"
 
@@ -169,12 +170,12 @@ msgstr "Dosar nou"
 msgid "New folder %i"
 msgstr "Dosar nou %i"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2401
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2411
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2409
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2419
 msgid "Analysing files"
 msgstr "Se analizează fișierele"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2428
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2436
 #: ../libbrasero-burn/brasero-burn-options.c:383
 #: ../nautilus/nautilus-burn-extension.c:188 ../src/brasero-project.c:1289
 #: ../libbrasero-burn/brasero-track-data.c:556
@@ -183,12 +184,12 @@ msgstr "Se analizează fișierele"
 msgid "There are no files to write to disc"
 msgstr "Nu există fișiere de scris pe disc"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2548
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2556
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
 msgstr "„%s” este o legătură simbolică recursivă."
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2574
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2582
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "„%s” nu poate fi găsit."
@@ -198,7 +199,7 @@ msgstr "„%s” nu poate fi găsit."
 msgid "The file does not appear to be a playlist"
 msgstr "Fișierul nu pare să fie o listă de redare"
 
-#: ../libbrasero-utils/brasero-metadata.c:683 ../src/brasero-audio-disc.c:624
+#: ../libbrasero-utils/brasero-metadata.c:687 ../src/brasero-audio-disc.c:624
 #, c-format
 msgid "\"%s\" could not be handled by Gstreamer."
 msgstr "„%s” nu poate fi operat de Gstreamer."
@@ -207,13 +208,13 @@ msgstr "„%s” nu poate fi operat de Gstreamer."
 #. * could not be created
 #. Translators: %s is the name of the GstElement that
 #. * element could not be created
-#: ../libbrasero-utils/brasero-metadata.c:755
-#: ../libbrasero-utils/brasero-metadata.c:768
-#: ../libbrasero-utils/brasero-metadata.c:781
-#: ../libbrasero-utils/brasero-metadata.c:1506
-#: ../libbrasero-utils/brasero-metadata.c:1521
-#: ../libbrasero-utils/brasero-metadata.c:1530
-#: ../libbrasero-utils/brasero-metadata.c:1543
+#: ../libbrasero-utils/brasero-metadata.c:759
+#: ../libbrasero-utils/brasero-metadata.c:772
+#: ../libbrasero-utils/brasero-metadata.c:785
+#: ../libbrasero-utils/brasero-metadata.c:1508
+#: ../libbrasero-utils/brasero-metadata.c:1523
+#: ../libbrasero-utils/brasero-metadata.c:1532
+#: ../libbrasero-utils/brasero-metadata.c:1545
 #: ../plugins/transcode/burn-normalize.c:161
 #: ../plugins/transcode/burn-normalize.c:176
 #: ../plugins/transcode/burn-normalize.c:194
@@ -257,7 +258,7 @@ msgstr "Elementul %s nu a putut fi creat"
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-caps-burn.c:64
 #: ../libbrasero-burn/brasero-caps-burn.c:679
-#: ../libbrasero-burn/brasero-burn.c:2746 ../libbrasero-burn/burn-job.c:1215
+#: ../libbrasero-burn/brasero-burn.c:2749 ../libbrasero-burn/burn-job.c:1215
 #: ../libbrasero-burn/burn-job.c:1224
 #: ../libbrasero-burn/burn-mkisofs-base.c:306
 #: ../nautilus/nautilus-burn-extension.c:166 ../src/main.c:204
@@ -273,7 +274,7 @@ msgid "An internal error occured"
 msgstr "S-a produs o eroare internă"
 
 #: ../libbrasero-burn/brasero-caps-burn.c:777
-#: ../libbrasero-burn/brasero-burn.c:2406
+#: ../libbrasero-burn/brasero-burn.c:2416
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Doar o pistă poate fi verificată la un moment dat"
@@ -291,221 +292,221 @@ msgstr "Nu s-a putut identifica formatul discului"
 msgid "Please set it manually"
 msgstr "Definiți manual"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:182
-#: ../libbrasero-burn/burn-basics.c:76
+#: ../libbrasero-burn/brasero-burn-dialog.c:193
+#: ../libbrasero-burn/burn-basics.c:79
 msgid "Creating image"
 msgstr "Se creează imaginea"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:183
+#: ../libbrasero-burn/brasero-burn-dialog.c:194
 msgid "Brasero - Creating Image"
 msgstr "Brasero - Se creează imaginea"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:189
-#: ../libbrasero-burn/brasero-burn-dialog.c:203
-#: ../libbrasero-burn/brasero-burn-dialog.c:1019
+#: ../libbrasero-burn/brasero-burn-dialog.c:200
+#: ../libbrasero-burn/brasero-burn-dialog.c:214
+#: ../libbrasero-burn/brasero-burn-dialog.c:1021
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "Brasero - Scriere DVD (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:190
+#: ../libbrasero-burn/brasero-burn-dialog.c:201
 msgid "Simulation of video DVD burning"
 msgstr "Simularea scrierii unui DVD video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:193
-#: ../libbrasero-burn/brasero-burn-dialog.c:207
+#: ../libbrasero-burn/brasero-burn-dialog.c:204
+#: ../libbrasero-burn/brasero-burn-dialog.c:218
 msgid "Brasero - Burning DVD"
 msgstr "Brasero - Scriere DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:194
+#: ../libbrasero-burn/brasero-burn-dialog.c:205
 msgid "Burning video DVD"
 msgstr "Se scrie DVD-ul video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:204
+#: ../libbrasero-burn/brasero-burn-dialog.c:215
 msgid "Simulation of data DVD burning"
 msgstr "Simularea scrierii unui DVD cu date"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:208
+#: ../libbrasero-burn/brasero-burn-dialog.c:219
 msgid "Burning data DVD"
 msgstr "Se scrie DVD-ul cu date"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:217
+#: ../libbrasero-burn/brasero-burn-dialog.c:228
 msgid "Burning DVD (Simulation)"
 msgstr "Se scrie DVD-ul (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:218
+#: ../libbrasero-burn/brasero-burn-dialog.c:229
 msgid "Simulation of image to DVD burning"
 msgstr "Simularea scrierii imaginii pe DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:221
+#: ../libbrasero-burn/brasero-burn-dialog.c:232
 msgid "Burning DVD"
 msgstr "Scriere DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:222
+#: ../libbrasero-burn/brasero-burn-dialog.c:233
 msgid "Burning image to DVD"
 msgstr "Se scrie imaginea pe DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:231
-#: ../libbrasero-burn/brasero-burn-dialog.c:1013
+#: ../libbrasero-burn/brasero-burn-dialog.c:242
+#: ../libbrasero-burn/brasero-burn-dialog.c:1015
 msgid "Brasero - Copying DVD (Simulation)"
 msgstr "Brasero - Se copiază DVD-ul (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:232
+#: ../libbrasero-burn/brasero-burn-dialog.c:243
 msgid "Simulation of data DVD copying"
 msgstr "Simularea copierii datelor de pe DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:235
+#: ../libbrasero-burn/brasero-burn-dialog.c:246
 msgid "Brasero - Copying DVD"
 msgstr "Brasero - Copiere DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:236
+#: ../libbrasero-burn/brasero-burn-dialog.c:247
 msgid "Copying data DVD"
 msgstr "Se copiază DVD-ul cu date"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:248
-#: ../libbrasero-burn/brasero-burn-dialog.c:262
-#: ../libbrasero-burn/brasero-burn-dialog.c:276
-#: ../libbrasero-burn/brasero-burn-dialog.c:304
-#: ../libbrasero-burn/brasero-burn-dialog.c:334
+#: ../libbrasero-burn/brasero-burn-dialog.c:259
+#: ../libbrasero-burn/brasero-burn-dialog.c:273
+#: ../libbrasero-burn/brasero-burn-dialog.c:287
+#: ../libbrasero-burn/brasero-burn-dialog.c:315
+#: ../libbrasero-burn/brasero-burn-dialog.c:345
 msgid "Brasero - Burning CD (Simulation)"
 msgstr "Brasero - Se scrie CD-ul (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:249
+#: ../libbrasero-burn/brasero-burn-dialog.c:260
 msgid "Simulation of (S)VCD burning"
 msgstr "Simularea scrierii unui (S)VCD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:252
-#: ../libbrasero-burn/brasero-burn-dialog.c:266
-#: ../libbrasero-burn/brasero-burn-dialog.c:280
-#: ../libbrasero-burn/brasero-burn-dialog.c:308
-#: ../libbrasero-burn/brasero-burn-dialog.c:338
+#: ../libbrasero-burn/brasero-burn-dialog.c:263
+#: ../libbrasero-burn/brasero-burn-dialog.c:277
+#: ../libbrasero-burn/brasero-burn-dialog.c:291
+#: ../libbrasero-burn/brasero-burn-dialog.c:319
+#: ../libbrasero-burn/brasero-burn-dialog.c:349
 msgid "Brasero - Burning CD"
 msgstr "Brasero - Scriere CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:253
+#: ../libbrasero-burn/brasero-burn-dialog.c:264
 msgid "Burning (S)VCD"
 msgstr "Se scrie (S)VCD-ul"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:263
-#: ../libbrasero-burn/brasero-burn-dialog.c:335
+#: ../libbrasero-burn/brasero-burn-dialog.c:274
+#: ../libbrasero-burn/brasero-burn-dialog.c:346
 msgid "Simulation of audio CD burning"
 msgstr "Simularea scrierii unui CD audio"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:267
-#: ../libbrasero-burn/brasero-burn-dialog.c:339
+#: ../libbrasero-burn/brasero-burn-dialog.c:278
+#: ../libbrasero-burn/brasero-burn-dialog.c:350
 msgid "Burning audio CD"
 msgstr "Se scrie CD-ul audio"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:277
+#: ../libbrasero-burn/brasero-burn-dialog.c:288
 msgid "Simulation of data CD burning"
 msgstr "Simularea scrierii datelor pe CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:281
+#: ../libbrasero-burn/brasero-burn-dialog.c:292
 msgid "Burning data CD"
 msgstr "Se scrie CD-ul cu date"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:290
-#: ../libbrasero-burn/brasero-burn-dialog.c:1027
+#: ../libbrasero-burn/brasero-burn-dialog.c:301
+#: ../libbrasero-burn/brasero-burn-dialog.c:1029
 msgid "Brasero - Copying CD (Simulation)"
 msgstr "Brasero - Se copiază CD-ul (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:291
+#: ../libbrasero-burn/brasero-burn-dialog.c:302
 msgid "Simulation of CD copying"
 msgstr "Simularea copierii CD-ului"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:294
+#: ../libbrasero-burn/brasero-burn-dialog.c:305
 msgid "Brasero - Copying CD"
 msgstr "Brasero - Copiere CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:295
+#: ../libbrasero-burn/brasero-burn-dialog.c:306
 msgid "Copying CD"
 msgstr "Se copiază CD-ul"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:305
+#: ../libbrasero-burn/brasero-burn-dialog.c:316
 msgid "Simulation of image to CD burning"
 msgstr "Simularea scrierii unei imagini pe CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:309
+#: ../libbrasero-burn/brasero-burn-dialog.c:320
 msgid "Burning image to CD"
 msgstr "Se scrie imaginea pe CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:320
+#: ../libbrasero-burn/brasero-burn-dialog.c:331
 msgid "Brasero - Burning disc (Simulation)"
 msgstr "Brasero - Scriere disc (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:321
+#: ../libbrasero-burn/brasero-burn-dialog.c:332
 msgid "Simulation of video disc burning"
 msgstr "Simularea scrierii unui disc video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:324
+#: ../libbrasero-burn/brasero-burn-dialog.c:335
 msgid "Brasero - Burning disc"
 msgstr "Brasero - Scriere disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:325
+#: ../libbrasero-burn/brasero-burn-dialog.c:336
 msgid "Burning video disc"
 msgstr "Se scrie discul video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:348
-#: ../libbrasero-burn/brasero-burn-dialog.c:375
-#: ../libbrasero-burn/brasero-burn-dialog.c:1046
+#: ../libbrasero-burn/brasero-burn-dialog.c:359
+#: ../libbrasero-burn/brasero-burn-dialog.c:386
+#: ../libbrasero-burn/brasero-burn-dialog.c:1048
 msgid "Brasero - Burning Disc (Simulation)"
 msgstr "Brasero - Se scrie discul (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:349
+#: ../libbrasero-burn/brasero-burn-dialog.c:360
 msgid "Simulation of data disc burning"
 msgstr "Simularea scrierii unui disc cu date"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:352
-#: ../libbrasero-burn/brasero-burn-dialog.c:379
+#: ../libbrasero-burn/brasero-burn-dialog.c:363
+#: ../libbrasero-burn/brasero-burn-dialog.c:390
 msgid "Brasero - Burning Disc"
 msgstr "Brasero - Se scrie disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:353
+#: ../libbrasero-burn/brasero-burn-dialog.c:364
 msgid "Burning data disc"
 msgstr "Se scrie discul cu date"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:362
-#: ../libbrasero-burn/brasero-burn-dialog.c:1040
+#: ../libbrasero-burn/brasero-burn-dialog.c:373
+#: ../libbrasero-burn/brasero-burn-dialog.c:1042
 msgid "Brasero - Copying Disc (Simulation)"
 msgstr "Brasero - Se copiază discul (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:363
+#: ../libbrasero-burn/brasero-burn-dialog.c:374
 msgid "Simulation of disc copying"
 msgstr "Simularea copierii unui disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:366
+#: ../libbrasero-burn/brasero-burn-dialog.c:377
 msgid "Brasero - Copying Disc"
 msgstr "Brasero - Se copiază un disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:367
-#: ../libbrasero-burn/burn-basics.c:80
+#: ../libbrasero-burn/brasero-burn-dialog.c:378
+#: ../libbrasero-burn/burn-basics.c:83
 msgid "Copying disc"
 msgstr "Se copiază un disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:376
+#: ../libbrasero-burn/brasero-burn-dialog.c:387
 msgid "Simulation of image to disc burning"
 msgstr "Simularea scrierii unei imagini pe disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:380
+#: ../libbrasero-burn/brasero-burn-dialog.c:391
 msgid "Burning image to disc"
 msgstr "Se scrie imaginea pe disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:500
+#: ../libbrasero-burn/brasero-burn-dialog.c:502
 msgid "Please replace the disc with a rewritable disc holding data."
 msgstr "Înlocuiți discul cu unul reinscriptibil ce conține informații."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:502
+#: ../libbrasero-burn/brasero-burn-dialog.c:504
 msgid "Please replace the disc with a disc holding data."
 msgstr "Înlocuiți discul cu unul ce conține informații."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:506
+#: ../libbrasero-burn/brasero-burn-dialog.c:508
 msgid "Please insert a rewritable disc holding data."
 msgstr "Introduceți un disc reinscriptibil ce conține informații."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:508
+#: ../libbrasero-burn/brasero-burn-dialog.c:510
 #: ../libbrasero-burn/brasero-burn-options.c:408
 msgid "Please insert a disc holding data."
 msgstr "Introduceți un disc cu date."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:523
+#: ../libbrasero-burn/brasero-burn-dialog.c:525
 #, c-format
 msgid ""
 "Please replace the disc with a recordable CD with at least %i MiB of free "
@@ -513,40 +514,40 @@ msgid ""
 msgstr ""
 "Înlocuiți discul cu un CD inscriptibil cu cel puțin %i MO de spațiu liber."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:526
+#: ../libbrasero-burn/brasero-burn-dialog.c:528
 msgid "Please replace the disc with a recordable CD."
 msgstr "Înlocuiți discul cu un CD inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:530
+#: ../libbrasero-burn/brasero-burn-dialog.c:532
 #, c-format
 msgid "Please insert a recordable CD with at least %i MiB of free space."
 msgstr "Introduceți un CD inscriptibil cu cel puțin %i MO de spațiu liber."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:533
+#: ../libbrasero-burn/brasero-burn-dialog.c:535
 msgid "Please insert a recordable CD."
 msgstr "Introduceți un CD inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:539
+#: ../libbrasero-burn/brasero-burn-dialog.c:541
 #, c-format
 msgid ""
 "Please replace the disc with a recordable DVD with at least %i MiB of free "
 "space."
 msgstr "Introduceți un DVD inscriptibil cu cel puțin %i MO de spațiu liber."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:542
+#: ../libbrasero-burn/brasero-burn-dialog.c:544
 msgid "Please replace the disc with a recordable DVD."
 msgstr "Înlocuiți discul cu un DVD inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:546
+#: ../libbrasero-burn/brasero-burn-dialog.c:548
 #, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
 msgstr "Introduceți un DVD inscriptibil cu cel puțin %i MO de spațiu liber."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:549
+#: ../libbrasero-burn/brasero-burn-dialog.c:551
 msgid "Please insert a recordable DVD."
 msgstr "Introduceți un DVD inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:554
+#: ../libbrasero-burn/brasero-burn-dialog.c:556
 #, c-format
 msgid ""
 "Please replace the disc with a recordable CD or DVD with at least %i MiB of "
@@ -555,25 +556,25 @@ msgstr ""
 "Înlocuiți discul cu un CD sau un DVD inscriptibil cu cel puțin %i MO de "
 "spațiu liber."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:557
+#: ../libbrasero-burn/brasero-burn-dialog.c:559
 msgid "Please replace the disc with a recordable CD or DVD."
 msgstr "Înlocuiți discul cu un CD sau un DVD reinscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:561
+#: ../libbrasero-burn/brasero-burn-dialog.c:563
 #, c-format
 msgid ""
 "Please insert a recordable CD or DVD with at least %i MiB of free space."
 msgstr ""
 "Introduceți un CD sau un DVD inscriptibil cu cel puțin %i MO de spațiu liber."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:564
-#: ../libbrasero-burn/brasero-burn-dialog.c:2154
-#: ../libbrasero-burn/brasero-burn-dialog.c:2168
+#: ../libbrasero-burn/brasero-burn-dialog.c:566
+#: ../libbrasero-burn/brasero-burn-dialog.c:2146
+#: ../libbrasero-burn/brasero-burn-dialog.c:2158
 #: ../libbrasero-burn/brasero-burn-options.c:362 ../src/brasero-project.c:1017
 msgid "Please insert a recordable CD or DVD."
 msgstr "Introduceți un CD sau un DVD inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:591
+#: ../libbrasero-burn/brasero-burn-dialog.c:593
 msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a recordable disc is inserted."
@@ -581,70 +582,67 @@ msgstr ""
 "O imagine a discului a fost creată pe hard-disk.\n"
 "Scrierea va începe imediat ce va fi introdus un mediu inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:596
+#: ../libbrasero-burn/brasero-burn-dialog.c:598
 msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr ""
 "Un test al integrității datelor va începe imediat ce va fi introdus discul."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:597
+#: ../libbrasero-burn/brasero-burn-dialog.c:599
 msgid "Please re-insert the disc in the CD/DVD burner."
 msgstr "Reintroduceți discul în unitatea optică de scriere."
 
 #. Translators: %s is the name of a drive
-#: ../libbrasero-burn/brasero-burn-dialog.c:601
+#: ../libbrasero-burn/brasero-burn-dialog.c:603
 #, c-format
 msgid "\"%s\" is busy."
 msgstr "„%s” este ocupat."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:602
-#: ../libbrasero-burn/brasero-burn.c:1385
-#: ../libbrasero-burn/brasero-burn.c:1419
-#: ../libbrasero-burn/brasero-burn.c:1590
-#: ../libbrasero-burn/brasero-burn.c:1601
+#: ../libbrasero-burn/brasero-burn-dialog.c:604
+#: ../libbrasero-burn/brasero-burn.c:305
 #: ../libbrasero-burn/brasero-tool-dialog.c:89
 msgid "Make sure another application is not using it"
 msgstr "Asigurați-vă că nu este accesat de altă aplicație"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:605
+#: ../libbrasero-burn/brasero-burn-dialog.c:607
 #, c-format
 msgid "There is no disc in \"%s\"."
 msgstr "Nu se află nici un disc în „%s”."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:609
+#: ../libbrasero-burn/brasero-burn-dialog.c:611
 #, c-format
 msgid "The disc in \"%s\" is not supported."
 msgstr "Discul „%s” nu este suportat."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:613
+#: ../libbrasero-burn/brasero-burn-dialog.c:615
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
 msgstr "Discul „%s” nu este reinscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:617
+#: ../libbrasero-burn/brasero-burn-dialog.c:619
 #, c-format
 msgid "The disc in \"%s\" is empty."
 msgstr "Discul din „%s” este gol."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:621
+#: ../libbrasero-burn/brasero-burn-dialog.c:623
 #, c-format
 msgid "The disc in \"%s\" is not writable."
 msgstr "Discul din „%s” nu este inscriptibil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:625
+#: ../libbrasero-burn/brasero-burn-dialog.c:627
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
 msgstr "Nu este destul spațiu liber pe discul din „%s”."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:633
+#: ../libbrasero-burn/brasero-burn-dialog.c:635
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
 msgstr "Discul din „%s” trebuie reintrodus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:634
+#: ../libbrasero-burn/brasero-burn-dialog.c:636
 msgid "Please eject the disc and reload it."
 msgstr "Scoateți discul și introduceți din nou."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:676
+#: ../libbrasero-burn/brasero-burn-dialog.c:678
 #: ../libbrasero-burn/brasero-sum-dialog.c:325
 msgid ""
 "A file could not be created at the location specified for temporary files"
@@ -652,11 +650,11 @@ msgstr ""
 "Un fișier nu a putut fi creat în locația specificată pentru fișierele "
 "temporare."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:677
+#: ../libbrasero-burn/brasero-burn-dialog.c:679
 msgid "The image could not be created at the specified location"
 msgstr "Imaginea nu a putut fi creată în locația indicată"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:678
+#: ../libbrasero-burn/brasero-burn-dialog.c:680
 msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
@@ -664,74 +662,74 @@ msgstr ""
 "Doriți să specificați o altă locație pentru această sesiune sau să "
 "reîncercați cu locația curentă?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:693
+#: ../libbrasero-burn/brasero-burn-dialog.c:695
 msgid "You may want to free some space on the disc and retry"
 msgstr "Puteți reîncerca după ce faceți suficient spațiu liber pe disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:700
+#: ../libbrasero-burn/brasero-burn-dialog.c:702
 #: ../libbrasero-burn/brasero-drive-properties.c:263
 #: ../libbrasero-burn/brasero-drive-properties.c:298
 #: ../libbrasero-burn/brasero-drive-properties.c:347
 msgid "_Keep Current Location"
 msgstr "_Păstrează locația curentă"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:702
+#: ../libbrasero-burn/brasero-burn-dialog.c:704
 #: ../libbrasero-burn/brasero-drive-properties.c:264
 #: ../libbrasero-burn/brasero-drive-properties.c:299
 #: ../libbrasero-burn/brasero-drive-properties.c:348
 msgid "_Change Location"
 msgstr "S_chimbă locația"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:724
+#: ../libbrasero-burn/brasero-burn-dialog.c:726
 #: ../libbrasero-burn/brasero-image-properties.c:478
 msgid "Location for Image File"
 msgstr "Locația pentru fișierul imagine"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:732
+#: ../libbrasero-burn/brasero-burn-dialog.c:734
 #: ../libbrasero-burn/brasero-drive-properties.c:379
 msgid "Location for Temporary Files"
 msgstr "Locația pentru fișierele temporare"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:831
+#: ../libbrasero-burn/brasero-burn-dialog.c:833
 msgid "_Replace Disc"
 msgstr "Î_nlocuiește disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:869
+#: ../libbrasero-burn/brasero-burn-dialog.c:871
 msgid "Do you really want to blank the current disc?"
 msgstr "Doriți să goliți discul curent?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:870
+#: ../libbrasero-burn/brasero-burn-dialog.c:872
 msgid "The disc in the drive holds data."
 msgstr "Discul din unitatea optică conține date."
 
 #. Translators: Blank is a verb here
-#: ../libbrasero-burn/brasero-burn-dialog.c:872
+#: ../libbrasero-burn/brasero-burn-dialog.c:874
 msgid "_Blank Disc"
 msgstr "_Golire disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:884
+#: ../libbrasero-burn/brasero-burn-dialog.c:886
 msgid "Already burnt files will be invisible (though still readable)."
 msgstr "Fișierele deja scrise vor fi invizibile (deși pot fi citite)."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:885
-#: ../libbrasero-burn/brasero-burn-dialog.c:905
-#: ../libbrasero-burn/brasero-burn-dialog.c:925
+#: ../libbrasero-burn/brasero-burn-dialog.c:887
+#: ../libbrasero-burn/brasero-burn-dialog.c:907
+#: ../libbrasero-burn/brasero-burn-dialog.c:927
 msgid "Do you want to continue anyway?"
 msgstr "Doriți să continuați oricum?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:888
+#: ../libbrasero-burn/brasero-burn-dialog.c:890
 msgid "Appending new files to a multisession disc is not advised."
 msgstr "Nu se recomandă adăugarea de fișiere noi la un disc multisesiune."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:890
-#: ../libbrasero-burn/brasero-burn-dialog.c:910
-#: ../libbrasero-burn/brasero-burn-dialog.c:930
-#: ../libbrasero-burn/brasero-burn-dialog.c:971 ../src/brasero-data-disc.c:576
+#: ../libbrasero-burn/brasero-burn-dialog.c:892
+#: ../libbrasero-burn/brasero-burn-dialog.c:912
+#: ../libbrasero-burn/brasero-burn-dialog.c:932
+#: ../libbrasero-burn/brasero-burn-dialog.c:973 ../src/brasero-data-disc.c:576
 #: ../libbrasero-burn/brasero-tool-dialog.c:416
 msgid "_Continue"
 msgstr "_Continuă"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:904
+#: ../libbrasero-burn/brasero-burn-dialog.c:906
 msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-TEXT "
 "won't be written."
@@ -739,80 +737,79 @@ msgstr ""
 "S-ar putea ca discurile audio CD-RW să nu fie redate corect pe unele CD "
 "playere mai vechi iar informațiile CD-TEXT nu vor fi scrise."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:908
+#: ../libbrasero-burn/brasero-burn-dialog.c:910
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "Nu este încurajată adăugarea pistelor audio la un CD."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:924
+#: ../libbrasero-burn/brasero-burn-dialog.c:926
 msgid "CD-RW audio discs may not play correctly in older CD players."
 msgstr ""
 "Discurile audio CD-RW s-ar putea să nu fie redate corect în CD player-ele "
 "mai vechi."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:928
+#: ../libbrasero-burn/brasero-burn-dialog.c:930
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr ""
 "Înregistrarea de piste audio pe un disc reînscriptibil nu este recomandată."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:962
+#: ../libbrasero-burn/brasero-burn-dialog.c:964
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Doriți să continuați cu modul de compatibilitate Windows dezactivat?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:965 ../src/brasero-data-disc.c:751
+#: ../libbrasero-burn/brasero-burn-dialog.c:967 ../src/brasero-data-disc.c:751
 #: ../libbrasero-burn/brasero-status-dialog.c:257
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Unele fișiere au nume ce nu sunt permise pe un CD compatibil Windows."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1009
+#: ../libbrasero-burn/brasero-burn-dialog.c:1011
 #, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
 msgstr "Brasero - Se creează imaginea (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1015
+#: ../libbrasero-burn/brasero-burn-dialog.c:1017
 #, c-format
 msgid "Brasero - Copying DVD (%i%% Done)"
 msgstr "Brasero - Se copiază DVD-ul (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1021
+#: ../libbrasero-burn/brasero-burn-dialog.c:1023
 #, c-format
 msgid "Brasero - Burning DVD (%i%% Done)"
 msgstr "Brasero - Se scrie DVD-ul (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1029
+#: ../libbrasero-burn/brasero-burn-dialog.c:1031
 #, c-format
 msgid "Brasero - Copying CD (%i%% Done)"
 msgstr "Brasero - Se copiaza CD-ul (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1033
+#: ../libbrasero-burn/brasero-burn-dialog.c:1035
 msgid "Brasero - Burning CD (simulation)"
 msgstr "Brasero - Scriere CD (simulare)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1035
+#: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Brasero - Burning CD (%i%% Done)"
 msgstr "Brasero - Se scrie CD-ul (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1042
+#: ../libbrasero-burn/brasero-burn-dialog.c:1044
 #, c-format
 msgid "Brasero - Copying Disc (%i%% Done)"
 msgstr "Brasero - Se copiază discul (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1048
+#: ../libbrasero-burn/brasero-burn-dialog.c:1050
 #, c-format
 msgid "Brasero - Burning Disc (%i%% Done)"
 msgstr "Brasero - Se scrie discul (%i%% gata)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1234
-#: ../libbrasero-burn/brasero-burn-dialog.c:1255
+#: ../libbrasero-burn/brasero-burn-dialog.c:1236
 msgid "The simulation was successful."
 msgstr "Simularea s-a sfârșit cu succes."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1237
+#: ../libbrasero-burn/brasero-burn-dialog.c:1239
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "Scrierea efectivă a discului va începe în 10 secunde."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1240
+#: ../libbrasero-burn/brasero-burn-dialog.c:1242
 msgid "Burn _Now"
 msgstr "Scrie acu_m"
 
@@ -898,28 +895,28 @@ msgstr "CD cu date scris cu succes"
 msgid "Image successfully created"
 msgstr "Imagine creată cu succes"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1926
+#: ../libbrasero-burn/brasero-burn-dialog.c:1927
 msgid "Make _Another Copy"
 msgstr "Fă o _altă copie"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1955
+#: ../libbrasero-burn/brasero-burn-dialog.c:1956
 msgid "_Create Cover"
 msgstr "_Creează copertă"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2117
+#: ../libbrasero-burn/brasero-burn-dialog.c:2109
 msgid "There are some files left to burn"
 msgstr "Au mai rămas fișiere de scris"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2124
+#: ../libbrasero-burn/brasero-burn-dialog.c:2116
 msgid "There are some more videos left to burn"
 msgstr "Au mai rămas fișiere video de scris"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2128
+#: ../libbrasero-burn/brasero-burn-dialog.c:2120
 msgid "There are some more songs left to burn"
 msgstr "Au mai rămas fișiere audio de scris"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2169
-#: ../libbrasero-burn/brasero-burn.c:1725
+#: ../libbrasero-burn/brasero-burn-dialog.c:2159
+#: ../libbrasero-burn/brasero-burn.c:1747
 #: ../plugins/cdrkit/burn-genisoimage.c:201 ../plugins/cdrkit/burn-wodim.c:108
 #: ../plugins/cdrtools/burn-cdrecord.c:108
 #: ../plugins/cdrtools/burn-mkisofs.c:202
@@ -928,21 +925,21 @@ msgstr "Au mai rămas fișiere audio de scris"
 msgid "Not enough space available on the disc"
 msgstr "Nu este destul spațiu liber pe disc"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2334
+#: ../libbrasero-burn/brasero-burn-dialog.c:2324
 #: ../libbrasero-burn/brasero-tool-dialog.c:408
 msgid "Do you really want to quit?"
 msgstr "Sigur doriți să ieșiți?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2338
+#: ../libbrasero-burn/brasero-burn-dialog.c:2328
 #: ../libbrasero-burn/brasero-tool-dialog.c:411
 msgid "Interrupting the process may make disc unusable."
 msgstr "Întreruperea procesului ar putea face discul inutilizabil."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2341
+#: ../libbrasero-burn/brasero-burn-dialog.c:2331
 msgid "C_ontinue Burning"
 msgstr "C_ontinuă scrierea"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2348
+#: ../libbrasero-burn/brasero-burn-dialog.c:2338
 msgid "_Cancel Burning"
 msgstr "Anulează s_crierea"
 
@@ -1167,70 +1164,11 @@ msgstr "_Copiere"
 msgid "Select disc to copy"
 msgstr "Alegeți disc pentru copiere"
 
-#: ../libbrasero-burn/brasero-burn.c:161
+#: ../libbrasero-burn/brasero-burn.c:163
 msgid "Burning CD/DVD"
 msgstr "Se scrie discul CD/DVD"
 
-#: ../libbrasero-burn/brasero-burn.c:308 ../src/brasero-eject-dialog.c:93
-#, c-format
-msgid "The disc in \"%s\" cannot be ejected"
-msgstr "Discul din „%s” nu poate fi ejectat"
-
-#: ../libbrasero-burn/brasero-burn.c:350 ../libbrasero-burn/brasero-burn.c:396
-#, c-format
-msgid "\"%s\" cannot be unlocked"
-msgstr "„%s” nu poate fi deblocat"
-
-#: ../libbrasero-burn/brasero-burn.c:527 ../libbrasero-burn/brasero-burn.c:652
-#: ../libbrasero-burn/brasero-burn.c:800
-#: ../libbrasero-burn/brasero-burn.c:1806
-#, c-format
-msgid "No burner specified"
-msgstr "Nu s-a specificat o unitate de scriere"
-
-#: ../libbrasero-burn/brasero-burn.c:564
-#, c-format
-msgid "No source drive specified"
-msgstr "Nu s-a specificat o unitate sursă"
-
-#: ../libbrasero-burn/brasero-burn.c:604
-msgid "Ongoing copying process"
-msgstr "Proces de copiere în curs"
-
-#: ../libbrasero-burn/brasero-burn.c:608 ../libbrasero-burn/brasero-burn.c:703
-#: ../libbrasero-burn/brasero-burn.c:973
-#: ../libbrasero-burn/brasero-burn.c:1084
-#, c-format
-msgid "The drive cannot be locked (%s)"
-msgstr "Unitatea nu poate fi blocată (%s)"
-
-#: ../libbrasero-burn/brasero-burn.c:663
-#, c-format
-msgid "The drive has no rewriting capabilities"
-msgstr "Unitatea nu are capacități de rescriere"
-
-#: ../libbrasero-burn/brasero-burn.c:699
-msgid "Ongoing blanking process"
-msgstr "Proces de golire în curs"
-
-#: ../libbrasero-burn/brasero-burn.c:815
-#, c-format
-msgid "The drive cannot burn or the disc cannot be burnt"
-msgstr "Unitatea nu poate scrie sau discul nu poate fi scris"
-
-#: ../libbrasero-burn/brasero-burn.c:967
-#: ../libbrasero-burn/brasero-dest-selection.c:108
-msgid "Ongoing burning process"
-msgstr "Proces de scriere în curs"
-
-#: ../libbrasero-burn/brasero-burn.c:1080
-msgid "Ongoing checksuming operation"
-msgstr "În curs de verificare a sumei de control"
-
-#: ../libbrasero-burn/brasero-burn.c:1384
-#: ../libbrasero-burn/brasero-burn.c:1418
-#: ../libbrasero-burn/brasero-burn.c:1589
-#: ../libbrasero-burn/brasero-burn.c:1600 ../libbrasero-media/scsi-error.c:47
+#: ../libbrasero-burn/brasero-burn.c:304 ../libbrasero-media/scsi-error.c:47
 #: ../libbrasero-burn/brasero-tool-dialog.c:88
 #: ../plugins/cdrdao/burn-cdrdao.c:237 ../plugins/cdrkit/burn-readom.c:102
 #: ../plugins/cdrkit/burn-wodim.c:129 ../plugins/cdrkit/burn-wodim.c:138
@@ -1239,23 +1177,79 @@ msgstr "În curs de verificare a sumei de control"
 #: ../plugins/cdrtools/burn-readcd.c:104
 #: ../plugins/growisofs/burn-dvd-rw-format.c:77
 #: ../plugins/growisofs/burn-growisofs.c:185
-#: ../plugins/libburnia/burn-libburn-common.c:184
+#: ../plugins/libburnia/burn-libburn-common.c:186
 #, c-format
 msgid "The drive is busy"
 msgstr "Dispozitivul este ocupat"
 
-#: ../libbrasero-burn/brasero-burn.c:1724
-#: ../libbrasero-burn/brasero-burn.c:1854
+#: ../libbrasero-burn/brasero-burn.c:347 ../src/brasero-eject-dialog.c:93
+#, c-format
+msgid "The disc in \"%s\" cannot be ejected"
+msgstr "Discul din „%s” nu poate fi ejectat"
+
+#: ../libbrasero-burn/brasero-burn.c:389 ../libbrasero-burn/brasero-burn.c:435
+#, c-format
+msgid "\"%s\" cannot be unlocked"
+msgstr "„%s” nu poate fi deblocat"
+
+#: ../libbrasero-burn/brasero-burn.c:566 ../libbrasero-burn/brasero-burn.c:691
+#: ../libbrasero-burn/brasero-burn.c:839
+#: ../libbrasero-burn/brasero-burn.c:1828
+#, c-format
+msgid "No burner specified"
+msgstr "Nu s-a specificat o unitate de scriere"
+
+#: ../libbrasero-burn/brasero-burn.c:603
+#, c-format
+msgid "No source drive specified"
+msgstr "Nu s-a specificat o unitate sursă"
+
+#: ../libbrasero-burn/brasero-burn.c:643
+msgid "Ongoing copying process"
+msgstr "Proces de copiere în curs"
+
+#: ../libbrasero-burn/brasero-burn.c:647 ../libbrasero-burn/brasero-burn.c:742
+#: ../libbrasero-burn/brasero-burn.c:1012
+#: ../libbrasero-burn/brasero-burn.c:1123
+#, c-format
+msgid "The drive cannot be locked (%s)"
+msgstr "Unitatea nu poate fi blocată (%s)"
+
+#: ../libbrasero-burn/brasero-burn.c:702
+#, c-format
+msgid "The drive has no rewriting capabilities"
+msgstr "Unitatea nu are capacități de rescriere"
+
+#: ../libbrasero-burn/brasero-burn.c:738
+msgid "Ongoing blanking process"
+msgstr "Proces de golire în curs"
+
+#: ../libbrasero-burn/brasero-burn.c:854
+#, c-format
+msgid "The drive cannot burn or the disc cannot be burnt"
+msgstr "Unitatea nu poate scrie sau discul nu poate fi scris"
+
+#: ../libbrasero-burn/brasero-burn.c:1006
+#: ../libbrasero-burn/brasero-dest-selection.c:110
+msgid "Ongoing burning process"
+msgstr "Proces de scriere în curs"
+
+#: ../libbrasero-burn/brasero-burn.c:1119
+msgid "Ongoing checksuming operation"
+msgstr "În curs de verificare a sumei de control"
+
+#: ../libbrasero-burn/brasero-burn.c:1746
+#: ../libbrasero-burn/brasero-burn.c:1876
 #, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "Combinarea datelor nu este posibilă pe acest disc"
 
-#: ../libbrasero-burn/brasero-burn.c:1791
+#: ../libbrasero-burn/brasero-burn.c:1813
 #, c-format
 msgid "There is no track to be burnt"
 msgstr "Nu există piste de scris"
 
-#: ../libbrasero-burn/brasero-burn.c:2465
+#: ../libbrasero-burn/brasero-burn.c:2475
 #, c-format
 msgid "No format for the temporary image could be found"
 msgstr "Nu s-a putut găsi un format pentru imaginea temporară"
@@ -1276,24 +1270,24 @@ msgstr "Piesă necunoscută"
 msgid "by"
 msgstr "de"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:519
+#: ../libbrasero-burn/brasero-dest-selection.c:591
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
 msgid "SVCD image"
 msgstr "Imagine SVCD"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:521
+#: ../libbrasero-burn/brasero-dest-selection.c:593
 #: ../libbrasero-burn/brasero-image-type-chooser.c:127
 msgid "VCD image"
 msgstr "Imagine VCD"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:525
+#: ../libbrasero-burn/brasero-dest-selection.c:597
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "Video DVD image"
 msgstr "Imagine DVD video"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
-#: ../libbrasero-burn/brasero-dest-selection.c:537
+#: ../libbrasero-burn/brasero-dest-selection.c:609
 #, c-format
 msgid "%s: \"%s\""
 msgstr "%s: „%s”"
@@ -1304,20 +1298,20 @@ msgstr "%s: „%s”"
 #. * destination disc a new one (once the source has been
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
-#: ../libbrasero-burn/brasero-dest-selection.c:569
+#: ../libbrasero-burn/brasero-dest-selection.c:641
 #, c-format
 msgid "New disc in the burner holding source disc"
 msgstr "Noul disc din unitatea optică conține informații"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-burn/brasero-dest-selection.c:610
+#: ../libbrasero-burn/brasero-dest-selection.c:682
 #, c-format
 msgid "%s: not enough free space"
 msgstr "%s: nu există suficient spațiu liber"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../libbrasero-burn/brasero-dest-selection.c:641
+#: ../libbrasero-burn/brasero-dest-selection.c:713
 #, c-format
 msgid "%s: %s of free space"
 msgstr "%s: %s spațiu liber"
@@ -1600,59 +1594,59 @@ msgstr "%s, %d%% finalizat, a mai rămas %s"
 msgid "%s, %d%% done"
 msgstr "%s, %d%% finalizat"
 
-#: ../libbrasero-burn/burn-basics.c:75
+#: ../libbrasero-burn/burn-basics.c:78
 msgid "Getting size"
 msgstr "Se obține mărimea"
 
-#: ../libbrasero-burn/burn-basics.c:77
+#: ../libbrasero-burn/burn-basics.c:80
 msgid "Writing"
 msgstr "Se scrie"
 
-#: ../libbrasero-burn/burn-basics.c:78
+#: ../libbrasero-burn/burn-basics.c:81
 msgid "Blanking"
 msgstr "Se golește"
 
-#: ../libbrasero-burn/burn-basics.c:79
+#: ../libbrasero-burn/burn-basics.c:82
 msgid "Creating checksum"
 msgstr "Se creează suma de control"
 
-#: ../libbrasero-burn/burn-basics.c:81
+#: ../libbrasero-burn/burn-basics.c:84
 msgid "Copying file"
 msgstr "Se copiază fișierul"
 
-#: ../libbrasero-burn/burn-basics.c:82
+#: ../libbrasero-burn/burn-basics.c:85
 msgid "Analysing audio files"
 msgstr "Se analizează fișierele audio"
 
-#: ../libbrasero-burn/burn-basics.c:83
+#: ../libbrasero-burn/burn-basics.c:86
 msgid "Transcoding song"
 msgstr "Se transcodează piesa"
 
-#: ../libbrasero-burn/burn-basics.c:84
+#: ../libbrasero-burn/burn-basics.c:87
 msgid "Preparing to write"
 msgstr "Se pregătește scrierea"
 
-#: ../libbrasero-burn/burn-basics.c:85
+#: ../libbrasero-burn/burn-basics.c:88
 msgid "Writing leadin"
 msgstr "Se scrie începutul"
 
-#: ../libbrasero-burn/burn-basics.c:86
+#: ../libbrasero-burn/burn-basics.c:89
 msgid "Writing CD-TEXT information"
 msgstr "Se scrie informația CD-TEXT"
 
-#: ../libbrasero-burn/burn-basics.c:87
+#: ../libbrasero-burn/burn-basics.c:90
 msgid "Finalizing"
 msgstr "Se finalizează"
 
-#: ../libbrasero-burn/burn-basics.c:88
+#: ../libbrasero-burn/burn-basics.c:91
 msgid "Writing leadout"
 msgstr "Se scrie sfârșitul"
 
-#: ../libbrasero-burn/burn-basics.c:89
+#: ../libbrasero-burn/burn-basics.c:92
 msgid "Starting to record"
 msgstr "Se începe înregistrarea"
 
-#: ../libbrasero-burn/burn-basics.c:90
+#: ../libbrasero-burn/burn-basics.c:93
 msgid "Success"
 msgstr "Succes"
 
@@ -1704,7 +1698,7 @@ msgstr "Nu a fost specificată nici o cale pentru ieșirea imaginii"
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:764 ../src/main.c:202 ../src/main.c:228
 #: ../plugins/cdrtools/burn-cdrecord.c:683
-#: ../plugins/libburnia/burn-libburn.c:697
+#: ../plugins/libburnia/burn-libburn.c:709
 #: ../plugins/transcode/burn-transcode.c:658
 #, c-format
 msgid "An internal error occured (%s)"
@@ -1713,7 +1707,7 @@ msgstr "S-a produs o eroare internă (%s)"
 #: ../libbrasero-burn/burn-mkisofs-base.c:157
 #: ../libbrasero-burn/burn-mkisofs-base.c:635
 #: ../plugins/growisofs/burn-growisofs.c:523
-#: ../plugins/libburnia/burn-libisofs.c:678
+#: ../plugins/libburnia/burn-libisofs.c:683
 #: ../plugins/checksum/burn-checksum-image.c:281
 #, c-format
 msgid "The file is not stored locally"
@@ -1866,15 +1860,15 @@ msgstr "Directorul nu a putut fi creat (%s)"
 msgid "Error while loading the project."
 msgstr "Eroare în timpul încărcării proiectului"
 
-#: ../src/brasero-project-parse.c:447
+#: ../src/brasero-project-parse.c:450
 msgid "The project could not be opened"
 msgstr "Proiectul nu a putut fi deschis"
 
-#: ../src/brasero-project-parse.c:456
+#: ../src/brasero-project-parse.c:459
 msgid "The file is empty"
 msgstr "Fișierul este gol"
 
-#: ../src/brasero-project-parse.c:535 ../src/brasero-project-parse.c:594
+#: ../src/brasero-project-parse.c:538 ../src/brasero-project-parse.c:603
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Nu pare să fie un proiect Brasero valid"
 
@@ -1972,8 +1966,8 @@ msgstr "Niciun disc disponibil"
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../libbrasero-media/brasero-drive.c:489
-#: ../libbrasero-media/brasero-medium.c:206
+#: ../libbrasero-media/brasero-drive.c:560
+#: ../libbrasero-media/brasero-medium.c:208
 #: ../libbrasero-media/brasero-volume.c:391
 msgid "Image File"
 msgstr "Fișier imagine"
@@ -2054,35 +2048,35 @@ msgstr "Disc Blu-ray reinscriptibil"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:216
+#: ../libbrasero-media/brasero-medium.c:218
 #, c-format
 msgid "Blank %s in %s"
 msgstr "%s gol în %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:223
+#: ../libbrasero-media/brasero-medium.c:225
 #, c-format
 msgid "Audio and data %s in %s"
 msgstr "%s audio și cu date în %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:230
+#: ../libbrasero-media/brasero-medium.c:232
 #, c-format
 msgid "Audio %s in %s"
 msgstr "%s audio în %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:237
+#: ../libbrasero-media/brasero-medium.c:239
 #, c-format
 msgid "Data %s in %s"
 msgstr "%s cu date în %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../libbrasero-media/brasero-medium.c:244
+#: ../libbrasero-media/brasero-medium.c:246
 #, c-format
 msgid "%s in %s"
 msgstr "%s în %s"
@@ -2392,7 +2386,7 @@ msgstr "Golește un disc"
 
 #: ../src/brasero-app.c:136
 msgid "_Check Integrity..."
-msgstr "_Verificare a integrității..."
+msgstr "_Verifică integritatea..."
 
 #: ../src/brasero-app.c:137
 msgid "Check data integrity of disc"
@@ -2865,42 +2859,41 @@ msgstr "Nu se poate împărți mai mult de o piesă odată"
 #. Translators: the following string
 #. * means there was an error while
 #. * blanking.
-#: ../libbrasero-burn/brasero-blank-dialog.c:223
+#: ../libbrasero-burn/brasero-blank-dialog.c:221
 msgid "Error while blanking."
 msgstr "Eroare la golire."
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:225
-#: ../libbrasero-burn/brasero-blank-dialog.c:267
+#: ../libbrasero-burn/brasero-blank-dialog.c:223
+#: ../libbrasero-burn/brasero-blank-dialog.c:265
 msgid "Blank _Again"
 msgstr "Golește din _nou"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:242
+#: ../libbrasero-burn/brasero-blank-dialog.c:240
 msgid "Unknown error."
 msgstr "Eroare necunoscută."
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:262
-#: ../libbrasero-burn/brasero-blank-dialog.c:283
+#: ../libbrasero-burn/brasero-blank-dialog.c:260
 msgid "The disc was successfully blanked."
 msgstr "Discul a fost golit cu succes."
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:265
+#: ../libbrasero-burn/brasero-blank-dialog.c:263
 msgid "The disc is ready for use."
 msgstr "Discul este pregătit pentru utilizare."
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-blank-dialog.c:366
+#: ../libbrasero-burn/brasero-blank-dialog.c:358
 msgid "_Blank"
 msgstr "_Golește"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:397
+#: ../libbrasero-burn/brasero-blank-dialog.c:389
 msgid "_Fast blanking"
 msgstr "Golire _rapidă"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:398
+#: ../libbrasero-burn/brasero-blank-dialog.c:390
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
 msgstr "Activează golirea rapidă în detrimentul celei complete, dar mai încete"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:428
+#: ../libbrasero-burn/brasero-blank-dialog.c:420
 msgid "Disc Blanking"
 msgstr "Golire disc"
 
@@ -3441,7 +3434,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "de <span size=\"smaller\"><i>%s</i></span"
 
-#: ../src/brasero-player.c:1055
+#: ../src/brasero-player.c:1060
 #, c-format
 msgid ""
 "<span weight=\"bold\">Loading information</span>\n"
@@ -4039,7 +4032,7 @@ msgstr "Operațiunea nu a putut fi efectuată."
 #: ../plugins/cdrtools/burn-cdrecord.c:145
 #: ../plugins/cdrtools/burn-cdrecord.c:380
 #: ../plugins/growisofs/burn-dvd-rw-format.c:70
-#: ../plugins/libburnia/burn-libburn.c:591
+#: ../plugins/libburnia/burn-libburn.c:602
 #, c-format
 msgid "The disc is not supported"
 msgstr "Tipul discului este unul nesuportat"
@@ -4222,7 +4215,7 @@ msgstr "Toc2cue convertește fișiere .toc în fișiere .cue"
 #: ../plugins/cdrkit/burn-genisoimage.c:114
 #: ../plugins/cdrtools/burn-mkisofs.c:115
 #: ../plugins/growisofs/burn-growisofs.c:199
-#: ../plugins/libburnia/burn-libisofs.c:493
+#: ../plugins/libburnia/burn-libisofs.c:494
 #, c-format
 msgid "Last session import failed"
 msgstr "Importarea ultimei sesiuni a eșuat"
@@ -4276,8 +4269,8 @@ msgid "Use readom to create disc images"
 msgstr "Folosește „readom” pentru a crea imagini de disc"
 
 #: ../plugins/cdrkit/burn-wodim.c:116 ../plugins/cdrtools/burn-cdrecord.c:116
-#: ../plugins/libburnia/burn-libburn.c:810
-#: ../plugins/libburnia/burn-libburn.c:841
+#: ../plugins/libburnia/burn-libburn.c:848
+#: ../plugins/libburnia/burn-libburn.c:879
 #, c-format
 msgid "An error occured while writing to disc"
 msgstr "A apărut o eroare în timpul scrierii pe disc"
@@ -4429,33 +4422,33 @@ msgstr "Pista libburn nu a putut fi creată"
 #. * generated from errno
 #. Translators: first %s is the filename, second %s
 #. * is the error generated from errno
-#: ../plugins/libburnia/burn-libburn.c:659
+#: ../plugins/libburnia/burn-libburn.c:671
 #: ../plugins/checksum/burn-checksum-image.c:307
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "„%s” nu a putut fi deschis (%s)"
 
-#: ../plugins/libburnia/burn-libburn.c:928
+#: ../plugins/libburnia/burn-libburn.c:966
 msgid "Libburn burns CD(RW), DVD+/-(RW)"
 msgstr "Libburn scrie CD(RW), DVD+/-(RW)"
 
-#: ../plugins/libburnia/burn-libburn-common.c:157
+#: ../plugins/libburnia/burn-libburn-common.c:158
 #, c-format
 msgid "Libburn library could not be initialized"
 msgstr "Biblioteca libburn nu a putut fi inițializată"
 
-#: ../plugins/libburnia/burn-libburn-common.c:172
+#: ../plugins/libburnia/burn-libburn-common.c:173
 #, c-format
 msgid "The drive address could not be retrieved"
 msgstr "Nu s-a putut obține adresa dispozitivului"
 
-#: ../plugins/libburnia/burn-libburn-common.c:413
+#: ../plugins/libburnia/burn-libburn-common.c:417
 #, c-format
 msgid "Writing track %02i"
 msgstr "Se scrie pista %02i"
 
 #: ../plugins/libburnia/burn-libisofs.c:321
-#: ../plugins/libburnia/burn-libisofs.c:856
+#: ../plugins/libburnia/burn-libisofs.c:861
 #, c-format
 msgid "Libisofs could not be initialized."
 msgstr "Libisofs nu a putut fi inițializat."
@@ -4465,24 +4458,24 @@ msgstr "Libisofs nu a putut fi inițializat."
 msgid "Read options could not be created"
 msgstr "Opțiunile de citire nu au putut fi create"
 
-#: ../plugins/libburnia/burn-libisofs.c:546
+#: ../plugins/libburnia/burn-libisofs.c:547
 #, c-format
 msgid "Volume could not be created"
 msgstr "Volumul nu a putut fi creat"
 
 #. Translators: %s is the path
-#: ../plugins/libburnia/burn-libisofs.c:655
+#: ../plugins/libburnia/burn-libisofs.c:660
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
 msgstr "Nici un părinte nu a putut fi găsit în arbore pentru calea „%s”"
 
-#: ../plugins/libburnia/burn-libisofs.c:715
-#: ../plugins/libburnia/burn-libisofs.c:782
+#: ../plugins/libburnia/burn-libisofs.c:720
+#: ../plugins/libburnia/burn-libisofs.c:787
 #, c-format
 msgid "Libisofs reported an error while creating directory \"%s\""
 msgstr "Libisofs a raportat o eroare la crearea directorului „%s”"
 
-#: ../plugins/libburnia/burn-libisofs.c:730
+#: ../plugins/libburnia/burn-libisofs.c:735
 #, c-format
 msgid ""
 "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
@@ -4490,13 +4483,13 @@ msgstr ""
 "Libisofs a raportat o eroare la adăugarea conținutului în directorul „%s” (%"
 "x)"
 
-#: ../plugins/libburnia/burn-libisofs.c:753
-#: ../plugins/libburnia/burn-libisofs.c:769
+#: ../plugins/libburnia/burn-libisofs.c:758
+#: ../plugins/libburnia/burn-libisofs.c:774
 #, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
 msgstr "Libisofs a raportat o eroare la adăugarea fișierului în calea „%s”"
 
-#: ../plugins/libburnia/burn-libisofs.c:1029
+#: ../plugins/libburnia/burn-libisofs.c:1038
 msgid "Libisofs creates disc images from files"
 msgstr "Libisofs creează imagini de disc din fișiere"
 
@@ -5063,4 +5056,3 @@ msgstr "Copiere CD-uri și DVD-uri"
 #: ../data/brasero-copy-medium.desktop.in.in.h:4
 msgid "Disc Copier"
 msgstr "Copiere de discuri"
-
