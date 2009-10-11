@@ -1203,6 +1203,11 @@ brasero_project_finalize (GObject *object)
 	BraseroProject *cobj;
 	cobj = BRASERO_PROJECT(object);
 
+	if (cobj->priv->session) {
+		g_object_unref (cobj->priv->session);
+		cobj->priv->session = NULL;
+	}
+
 	if (cobj->priv->project)
 		g_free (cobj->priv->project);
 
