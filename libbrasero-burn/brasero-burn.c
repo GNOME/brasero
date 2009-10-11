@@ -291,8 +291,6 @@ brasero_burn_unmount (BraseroBurn *self,
 
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
-		BraseroBurnResult result;
-
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			BRASERO_BURN_LOG ("Max attempts reached at unmounting");
@@ -307,10 +305,8 @@ brasero_burn_unmount (BraseroBurn *self,
 		}
 
 		BRASERO_BURN_LOG ("Retrying unmounting");
-		result = brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
-		if (result != BRASERO_BURN_OK)
-			return result;
 
+		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
 		brasero_burn_sleep (self, 500);
 	}
 
@@ -324,10 +320,7 @@ brasero_burn_eject (BraseroBurn *self,
 {
 	guint counter = 0;
 
-	brasero_drive_eject (drive, TRUE, NULL);
-
-	/* sleep some time and see what happened */
-	brasero_burn_sleep (self, 500);
+	BRASERO_BURN_LOG ("Ejecting drive/medium");
 
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_drive_get_medium (drive)) {
@@ -415,13 +408,10 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 
 	/* Release lock, unmount, ... */
 	medium = brasero_drive_get_medium (priv->src);
-	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
-		BraseroBurnResult result;
 
-		result = brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
+	result = brasero_burn_unmount (self, medium, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	if (priv->src_locked) {
 		priv->src_locked = 0;
