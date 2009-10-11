@@ -1677,15 +1677,103 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 }
 
 static BraseroBurnResult
+brasero_burn_caps_get_flags_same_src_dest_for_types (BraseroBurnCaps *self,
+                                                     BraseroBurnSession *session,
+                                                     BraseroTrackType *input,
+                                                     BraseroTrackType *output,
+                                                     BraseroBurnFlag *supported_ret,
+                                                     BraseroBurnFlag *compulsory_ret)
+{
+	GSList *iter;
+	gboolean type_supported;
+	BraseroBurnFlag session_flags;
+	BraseroBurnFlag supported_final = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory_final = BRASERO_BURN_FLAG_ALL;
+
+	/* NOTE: there is no need to get the flags here since there are
+	 * no specific DISC => IMAGE flags. We just want to know if that
+	 * is possible. */
+	BRASERO_BURN_LOG_TYPE (output, "Testing temporary image format");
+	type_supported = brasero_caps_try_output_with_blanking (self,
+	                                                   session,
+	                                                   output,
+	                                                   input,
+	                                                   BRASERO_PLUGIN_IO_ACCEPT_FILE,
+	                                                   FALSE);
+	if (!type_supported) {
+		BRASERO_BURN_LOG_TYPE (output, "Format not supported");
+		return FALSE;
+	}
+
+	session_flags = brasero_burn_session_get_flags (session);
+
+	/* This format can be used to create an image. Check if can be
+	 * burnt now. Just find at least one medium. */
+	type_supported = FALSE;
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroBurnFlag compulsory;
+		BraseroBurnFlag supported;
+		BraseroBurnResult result;
+		BraseroCaps *caps;
+
+		caps = iter->data;
+		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+			continue;
+
+		/* This type of disc cannot be burnt; skip them */
+		if (caps->type.subtype.media & BRASERO_MEDIUM_ROM)
+			continue;
+
+		if ((caps->type.subtype.media & BRASERO_MEDIUM_CD) == 0) {
+			if (brasero_track_type_get_has_image (output)) {
+				BraseroImageFormat format;
+
+				format = brasero_track_type_get_image_format (output);
+				/* These three types only work with CDs. */
+				if (format == BRASERO_IMAGE_FORMAT_CDRDAO
+				||   format == BRASERO_IMAGE_FORMAT_CLONE
+				||   format == BRASERO_IMAGE_FORMAT_CUE)
+					continue;
+			}
+			else if (brasero_track_type_get_has_stream (output))
+				continue;
+		}
+
+		/* Merge all available flags for each possible medium type */
+		supported = BRASERO_BURN_FLAG_NONE;
+		compulsory = BRASERO_BURN_FLAG_NONE;
+		result = brasero_burn_caps_get_flags_for_medium (self,
+								 caps->type.subtype.media,
+								 session_flags,
+								 output,
+								 &supported,
+								 &compulsory);
+		if (result != BRASERO_BURN_OK)
+			continue;
+
+		type_supported = TRUE;
+		supported_final |= supported;
+		compulsory_final &= compulsory;
+	}
+
+	BRASERO_BURN_LOG_TYPE (output, "Format supported %i", type_supported);
+	if (!type_supported)
+		return FALSE;
+
+	*supported_ret = supported_final;
+	*compulsory_ret = compulsory_final;
+	return type_supported;
+}
+
+static BraseroBurnResult
 brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 					   BraseroBurnSession *session,
 					   BraseroBurnFlag *supported_ret,
 					   BraseroBurnFlag *compulsory_ret)
 {
-	GSList *iter;
-	gboolean copy_supported;
 	BraseroTrackType input;
 	BraseroTrackType output;
+	gboolean copy_supported;
 	BraseroImageFormat format;
 	BraseroBurnFlag session_flags;
 	BraseroBurnFlag supported_final = BRASERO_BURN_FLAG_NONE;
@@ -1707,80 +1795,48 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 	if (session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_NO_TMP_FILES))
 		return BRASERO_BURN_NOT_SUPPORTED;
 
+	/* Check for stream type */
+	brasero_track_type_set_has_stream (&output);
+	/* FIXME! */
+	brasero_track_type_set_stream_format (&output,
+	                                      BRASERO_AUDIO_FORMAT_RAW|
+	                                      BRASERO_METADATA_INFO);
+	copy_supported = brasero_burn_caps_get_flags_same_src_dest_for_types (self,
+	                                                                      session,
+	                                                                      &input,
+	                                                                      &output,
+	                                                                      &supported_final,
+	                                                                      &compulsory_final);
+
 	/* Check flags for all available format */
 	format = BRASERO_IMAGE_FORMAT_CDRDAO;
-	output.type = BRASERO_TRACK_TYPE_IMAGE;
-
-	copy_supported = FALSE;
+	brasero_track_type_set_has_image (&output);
 	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		BraseroBurnResult result;
 		gboolean format_supported;
+		BraseroBurnFlag supported;
+		BraseroBurnFlag compulsory;
 
 		/* check if this image type is possible given the current flags */
 		if (format != BRASERO_IMAGE_FORMAT_CLONE
 		&& (session_flags & BRASERO_BURN_FLAG_RAW))
 			continue;
 
-		output.subtype.img_format = format;
+		brasero_track_type_set_image_format (&output, format);
 
-		/* NOTE: there is no need to get the flags here since there are
-		 * no specific DISC => IMAGE flags. We just want to know if that
-		 * is possible. */
-		BRASERO_BURN_LOG_TYPE (&output, "Testing temporary image format");
-		format_supported = brasero_caps_try_output_with_blanking (self,
-									  session,
-									  &output,
-									  &input,
-									  BRASERO_PLUGIN_IO_ACCEPT_FILE,
-									  FALSE);
-		if (!format_supported) {
-			BRASERO_BURN_LOG_TYPE (&output, "Format not supported");
+		supported = BRASERO_BURN_FLAG_NONE;
+		compulsory = BRASERO_BURN_FLAG_NONE;
+		format_supported = brasero_burn_caps_get_flags_same_src_dest_for_types (self,
+		                                                                        session,
+		                                                                        &input,
+		                                                                        &output,
+		                                                                        &supported,
+		                                                                        &compulsory);
+		if (!format_supported)
 			continue;
-		}
 
-		/* This format can be used to create an image. Check if can be
-		 * burnt now. Just find at least one medium. */
-		format_supported = FALSE;
-		for (iter = self->priv->caps_list; iter; iter = iter->next) {
-			BraseroBurnFlag compulsory;
-			BraseroBurnFlag supported;
-			BraseroCaps *caps;
-
-			caps = iter->data;
-			if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
-				continue;
-
-			/* This type of disc cannot be burnt; skip them */
-			if (caps->type.subtype.media & BRASERO_MEDIUM_ROM)
-				continue;
-
-			/* These three types only work with CDs. Skip the rest. */
-			if ((output.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO
-			||   output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE
-			||   output.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE)
-			&& (caps->type.subtype.media & BRASERO_MEDIUM_CD) == 0)
-				continue;
-
-			/* Merge all available flags for each possible medium type */
-			supported = BRASERO_BURN_FLAG_NONE;
-			compulsory = BRASERO_BURN_FLAG_NONE;
-			result = brasero_burn_caps_get_flags_for_medium (self,
-									 caps->type.subtype.media,
-									 session_flags,
-									 &output,
-									 &supported,
-									 &compulsory);
-			if (result != BRASERO_BURN_OK)
-				continue;
-
-			format_supported = TRUE;
-			supported_final |= supported;
-			compulsory_final &= compulsory;
-		}
-
-		BRASERO_BURN_LOG_TYPE (&output, "Format supported %i", format_supported);
-		if (format_supported)
-			copy_supported = TRUE;
+		copy_supported = TRUE;
+		supported_final |= supported;
+		compulsory_final &= compulsory;
 	}
 
 	if (!copy_supported)
