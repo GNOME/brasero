@@ -529,7 +529,8 @@ brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 		disc->priv->selected_path = NULL;
 	}
 
-	brasero_notify_message_remove (BRASERO_NOTIFY (disc->priv->message), BRASERO_AUDIO_DISC_CONTEXT);
+	if (disc->priv->message)
+		brasero_notify_message_remove (BRASERO_NOTIFY (disc->priv->message), BRASERO_AUDIO_DISC_CONTEXT);
 }
 
 static void
