@@ -39,4 +39,11 @@ libbrasero_readcd_la_SOURCES = burn-readcd.c \
 libbrasero_readcd_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_readcd_la_LDFLAGS = -module -avoid-version
 
+#cdda2wav
+cdda2wavdir = $(libdir)/brasero/plugins
+cdda2wav_LTLIBRARIES = libbrasero-cdda2wav.la
+libbrasero_cdda2wav_la_SOURCES = burn-cdda2wav.c burn-cdrtools.h 
+libbrasero_cdda2wav_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_cdda2wav_la_LDFLAGS = -module -avoid-version
+
 -include $(top_srcdir)/git.mk
