@@ -1220,30 +1220,38 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 
 			/* NOTE: this is the same as brasero_burn_session_can_burn () */
 			result = brasero_burn_session_get_tmp_image_type_same_src_dest (BRASERO_BURN_SESSION (self), tmp_type);
-			if (result == BRASERO_BURN_OK)
-				format = brasero_track_type_get_image_format (tmp_type);
+			if (result == BRASERO_BURN_OK) {
+				if (brasero_track_type_get_has_image (tmp_type)) {
+					format = brasero_track_type_get_image_format (tmp_type);
+					priv->CD_TEXT_modified = (format & (BRASERO_IMAGE_FORMAT_CDRDAO|BRASERO_IMAGE_FORMAT_CUE)) == 0;
+				}
+				else if (brasero_track_type_get_has_stream (tmp_type)) {
+					/* FIXME: for the moment
+					 * we consider that this
+					 * type will always allow
+					 * to copy CD-TEXT */
+					priv->CD_TEXT_modified = FALSE;
+				}
+				else
+					priv->CD_TEXT_modified = TRUE;
+			}
 			else
-				format = BRASERO_IMAGE_FORMAT_NONE;
+				priv->CD_TEXT_modified = TRUE;
 
 			brasero_track_type_free (tmp_type);
 
 			BRASERO_BURN_LOG ("Temporary image type %i", format);
 		}
 		else {
-			result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
-			                                        FALSE);
+			result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self), FALSE);
 			format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (self));
+			priv->CD_TEXT_modified = (format & (BRASERO_IMAGE_FORMAT_CDRDAO|BRASERO_IMAGE_FORMAT_CUE)) == 0;
 		}
-
-		priv->CD_TEXT_modified = FALSE;
-		if (!(format & (BRASERO_IMAGE_FORMAT_CDRDAO|BRASERO_IMAGE_FORMAT_CUE)))
-			priv->CD_TEXT_modified = TRUE;
 	}
 	else {
 		/* Don't use flags as they'll be adapted later. */
 		priv->CD_TEXT_modified = FALSE;
-		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self),
-							FALSE);
+		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self), FALSE);
 	}
 
 	if (result != BRASERO_BURN_OK) {
