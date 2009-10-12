@@ -1879,6 +1879,33 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 }
 
 /**
+ * This is meant to use as internal API
+ */
+BraseroBurnResult
+brasero_caps_session_get_file_flags (BraseroTrackType *input,
+                                     BraseroTrackType *output,
+                                     BraseroBurnFlag *supported,
+                                     BraseroBurnFlag *compulsory)
+{
+	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_CHECK_SIZE|BRASERO_BURN_FLAG_NOGRACE;
+
+	BRASERO_BURN_LOG ("FLAGS: image required");
+
+	/* In this case no APPEND/MERGE is possible */
+	if (brasero_track_type_get_has_medium (input))
+		supported_flags |= BRASERO_BURN_FLAG_EJECT;
+
+	*supported = supported_flags;
+	*compulsory = compulsory_flags;
+
+	BRASERO_BURN_LOG_FLAGS (supported_flags, "FLAGS: supported");
+	BRASERO_BURN_LOG_FLAGS (compulsory_flags, "FLAGS: compulsory");
+
+	return BRASERO_BURN_OK;
+}
+
+/**
  * brasero_burn_session_get_burn_flags:
  * @session: a #BraseroBurnSession
  * @supported: a #BraseroBurnFlag or NULL
@@ -1921,17 +1948,14 @@ brasero_burn_session_get_burn_flags (BraseroBurnSession *session,
 				    "FLAGS: searching available flags for input");
 
 	if (brasero_burn_session_is_dest_file (session)) {
+		BraseroTrackType *output;
+
 		BRASERO_BURN_LOG ("FLAGS: image required");
 
-		/* In this case no APPEND/MERGE is possible */
-		if (brasero_track_type_get_has_medium (input))
-			supported_flags |= BRASERO_BURN_FLAG_EJECT;
-
-		*supported = supported_flags;
-		*compulsory = compulsory_flags;
-
-		BRASERO_BURN_LOG_FLAGS (supported_flags, "FLAGS: supported");
-		BRASERO_BURN_LOG_FLAGS (compulsory_flags, "FLAGS: compulsory");
+		output = brasero_track_type_new ();
+		brasero_burn_session_get_output_type (session, output);
+		brasero_caps_session_get_file_flags (input, output, supported, compulsory);
+		brasero_track_type_free (output);
 
 		brasero_track_type_free (input);
 		g_object_unref (self);

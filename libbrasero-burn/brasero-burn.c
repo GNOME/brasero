@@ -1794,9 +1794,9 @@ start:
 
 static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
+                                        BraseroTrackType *output,
 					GError **error)
 {
-	BraseroMedia media;
 	BraseroBurnFlag flag;
 	BraseroBurnFlag flags;
 	BraseroBurnFlag retval;
@@ -1822,23 +1822,28 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			     _("There is no track to burn"));
 		return BRASERO_BURN_ERR;
 	}
-	brasero_track_type_free (input);
 
 	/* No need to check if a burner was set as this
 	 * is done when locking. */
-
-	media = brasero_burn_session_get_dest_media (priv->session);
 
 	/* save then wipe out flags from session to check them one by one */
 	flags = brasero_burn_session_get_flags (priv->session);
 	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (priv->session), BRASERO_BURN_FLAG_NONE);
 
-	result = brasero_burn_session_get_burn_flags (priv->session,
-						      &supported,
-						      &compulsory);
+	if (!output || brasero_track_type_get_has_medium (output))
+		result = brasero_burn_session_get_burn_flags (priv->session,
+							      &supported,
+							      &compulsory);
+	else
+		result = brasero_caps_session_get_file_flags (input,
+		                                              output,
+		                                              &supported,
+		                                              &compulsory);
 
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		brasero_track_type_free (input);
 		return result;
+	}
 
 	for (flag = 1; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
 		/* see if this flag was originally set */
@@ -1852,9 +1857,16 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		 * media type that doesn't need it. */
 		if (supported & flag) {
 			brasero_burn_session_add_flag (priv->session, flag);
-			brasero_burn_session_get_burn_flags (priv->session,
-							     &supported,
-							     &compulsory);
+
+			if (!output || brasero_track_type_get_has_medium (output))
+				result = brasero_burn_session_get_burn_flags (priv->session,
+									      &supported,
+									      &compulsory);
+			else
+				result = brasero_caps_session_get_file_flags (input,
+									      output,
+									      &supported,
+									      &compulsory);
 		}
 		else {
 			BRASERO_BURN_LOG_FLAGS (flag, "Flag set but not supported:");
@@ -1864,6 +1876,8 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 			}
 			else if (flag & BRASERO_BURN_FLAG_MERGE) {
+				brasero_track_type_free (input);
+
 				/* we pay attention to one flag in particular
 				 * (MERGE) if it was set then it must be
 				 * supported. Otherwise error out. */
@@ -1878,6 +1892,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			 * burnproof useless for them. */
 		}
 	}
+	brasero_track_type_free (input);
 
 	retval = brasero_burn_session_get_flags (priv->session);
 	if (retval != flags)
@@ -1909,7 +1924,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 	brasero_burn_session_push_settings (priv->session);
 
 	/* check flags consistency */
-	result = brasero_burn_check_session_consistency (burn, error);
+	result = brasero_burn_check_session_consistency (burn, temp_output, error);
 	if (result != BRASERO_BURN_OK) {
 		brasero_burn_session_pop_settings (priv->session);
 		return result;
@@ -2011,7 +2026,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 				 * that it won't be possible */
 				brasero_burn_session_pop_settings (priv->session);
 				brasero_burn_session_push_settings (priv->session);
-				result = brasero_burn_check_session_consistency (burn, error);
+				result = brasero_burn_check_session_consistency (burn, temp_output,error);
 				if (result != BRASERO_BURN_OK)
 					break;
 			}
