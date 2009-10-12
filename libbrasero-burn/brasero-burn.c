@@ -1801,7 +1801,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	BraseroBurnFlag flags;
 	BraseroBurnFlag retval;
 	BraseroBurnResult result;
-	BraseroTrackType *type = NULL;
+	BraseroTrackType *input = NULL;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
@@ -1809,12 +1809,11 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	BRASERO_BURN_DEBUG (burn, "Checking session consistency");
 
 	/* make sure there is a track in the session. */
-	type = brasero_track_type_new ();
-	brasero_burn_session_get_input_type (priv->session, type);
+	input = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, input);
 
-	if (brasero_track_type_is_empty (type)
-	|| !brasero_burn_session_get_tracks (priv->session)) {
-		brasero_track_type_free (type);
+	if (brasero_track_type_is_empty (input)) {
+		brasero_track_type_free (input);
 
 		BRASERO_BURN_DEBUG (burn, "No track set");
 		g_set_error (error,
@@ -1823,7 +1822,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			     _("There is no track to burn"));
 		return BRASERO_BURN_ERR;
 	}
-	brasero_track_type_free (type);
+	brasero_track_type_free (input);
 
 	/* No need to check if a burner was set as this
 	 * is done when locking. */
