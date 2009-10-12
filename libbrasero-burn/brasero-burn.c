@@ -2612,11 +2612,9 @@ again:
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	/* update the flags now before locking it since in lock function
-	 * we check the adequacy of the medium inserted. */
-	result = brasero_burn_check_session_consistency (burn, error);
-	if (result == BRASERO_BURN_CANCEL)
-		return result;
+	/* Note: we don't need to update the flags anymore
+	 * as they are updated in brasero_burn_run_tasks ()
+	 * anyway. */
 
 	if (result != BRASERO_BURN_OK) {
 		/* Tell the user his/her disc is not supported and reload */
