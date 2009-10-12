@@ -1918,17 +1918,6 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 	GSList *tasks, *next, *iter;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
-	tasks = brasero_burn_caps_new_task (priv->caps,
-					    priv->session,
-	                                    temp_output,
-					    error);
-	if (!tasks)
-		return BRASERO_BURN_NOT_SUPPORTED;
-
-	priv->tasks_done = 0;
-	priv->task_nb = g_slist_length (tasks);
-	BRASERO_BURN_LOG ("%i tasks to perform", priv->task_nb);
-
 	/* push the session settings to keep the original session untainted */
 	brasero_burn_session_push_settings (priv->session);
 
@@ -1938,6 +1927,19 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 		brasero_burn_session_pop_settings (priv->session);
 		return result;
 	}
+
+	tasks = brasero_burn_caps_new_task (priv->caps,
+					    priv->session,
+	                                    temp_output,
+					    error);
+	if (!tasks) {
+		brasero_burn_session_pop_settings (priv->session);
+		return BRASERO_BURN_NOT_SUPPORTED;
+	}
+
+	priv->tasks_done = 0;
+	priv->task_nb = g_slist_length (tasks);
+	BRASERO_BURN_LOG ("%i tasks to perform", priv->task_nb);
 
 	/* run all imaging tasks first */
 	for (iter = tasks; iter; iter = next) {
