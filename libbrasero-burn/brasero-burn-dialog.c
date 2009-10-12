@@ -1641,143 +1641,6 @@ brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 }
 
 static void
-brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
-{
-	gint words_num;
-	GtkWidget *view;
-	GtkTextIter iter;
-	struct stat stats;
-	GtkWidget *message;
-	GtkWidget *scrolled;
-	GtkTextBuffer *text;
-	const gchar *logfile;
-	GtkTextTag *object_tag;
-	GtkTextTag *domain_tag;
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
-
-	message = gtk_dialog_new_with_buttons (_("Session Log"),
-					       GTK_WINDOW (dialog),
-					       GTK_DIALOG_DESTROY_WITH_PARENT |
-					       GTK_DIALOG_MODAL,
-					       GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-					       NULL);
-	gtk_window_set_default_size (GTK_WINDOW (message), 500, 375);
-	scrolled = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_set_border_width (GTK_CONTAINER (scrolled), 6);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled),
-					     GTK_SHADOW_ETCHED_IN);
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (message)->vbox),
-			  scrolled,
-			  TRUE,
-			  TRUE,
-			  0);
-
-	view = gtk_text_view_new ();
-	gtk_text_view_set_editable (GTK_TEXT_VIEW (view), FALSE);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolled), view);
-
-	/* we better make sure the session log is not too big < 10 MB otherwise
-	 * everything will freeze and will take a huge part of memory. If it is
-	 * bigger then only show the end which is the most relevant. */
-	logfile = brasero_burn_session_get_log_path (priv->session);
-	if (g_stat (logfile, &stats) == -1) {
-		brasero_utils_message_dialog (GTK_WIDGET (dialog),
-					      _("The session log cannot be displayed."),
-					      _("The log file could not be found"),
-					      GTK_MESSAGE_ERROR);
-		gtk_widget_destroy (message);
-		return;
-	}
-
-	text = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
-	if (stats.st_size > 1 * 1024 * 1024) {
-		gchar contents [1 * 1024 * 1024];
-		GtkTextIter iter;
-		FILE *file;
-
-		gtk_text_buffer_get_start_iter (text, &iter);
-		gtk_text_buffer_insert (text,
-					&iter,
-					_("This is a excerpt from the session log (the last 10 MiB):\n\n"),
-					-1);
-
-		file = g_fopen (logfile, "r");
-		if (!file) {
-			int errsv = errno;
-
-			brasero_utils_message_dialog (GTK_WIDGET (dialog),
-						      _("The session log cannot be displayed."),
-						      g_strerror (errsv),
-						      GTK_MESSAGE_ERROR);
-			gtk_widget_destroy (message);
-			return;
-		}
-
-		if (fread (contents, 1, sizeof (contents), file) != sizeof (contents)) {
-			int errsv = errno;
-
-			brasero_utils_message_dialog (GTK_WIDGET (dialog),
-						      _("The session log cannot be displayed."),
-						      g_strerror (errsv),
-						      GTK_MESSAGE_ERROR);
-			gtk_widget_destroy (message);
-			return;
-		}
-
-		gtk_text_buffer_insert (text, &iter, contents, sizeof (contents));
-	}
-	else {
-		gchar *contents;
-
-		/* fill the buffer */
-		g_file_get_contents (brasero_burn_session_get_log_path (priv->session),
-				     &contents,
-				     NULL,
-				     NULL);
-		gtk_text_buffer_set_text (text, contents, -1);
-		g_free (contents);
-	}
-
-	/* create tags and apply them */
-	object_tag = gtk_text_buffer_create_tag (text,
-						 NULL,
-						 "foreground", "red",
-						 "weight", PANGO_WEIGHT_BOLD,
-						 NULL);
-	domain_tag = gtk_text_buffer_create_tag (text,
-						 NULL,
-						 "foreground", "blue",
-						 NULL);
-	gtk_text_buffer_get_start_iter (text, &iter);
-	words_num = 0;
-	while (gtk_text_iter_forward_word_end (&iter)) {
-		GtkTextIter start = iter;
-
-		gtk_text_iter_backward_word_start (&start);
-
-		if (words_num == 2)
-			gtk_text_buffer_apply_tag (text, object_tag, &start, &iter);
-		else if (gtk_text_iter_starts_line (&start)) {
-			words_num = 1;
-			gtk_text_buffer_apply_tag (text, domain_tag, &start, &iter);
-		}
-
-		words_num ++;
-	}
-
-	/* run everything */
-	gtk_widget_show_all (scrolled);
-	gtk_dialog_run (GTK_DIALOG (message));
-
-	gtk_widget_destroy (message);
-}
-
-static void
 brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 				  GError *error)
 {
@@ -1810,13 +1673,6 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 
 	button = gtk_dialog_add_button (GTK_DIALOG (message),
 					_("_Save Log"),
-					GTK_RESPONSE_APPLY);
-	gtk_button_set_image (GTK_BUTTON (button),
-			      gtk_image_new_from_stock (GTK_STOCK_SAVE_AS,
-							GTK_ICON_SIZE_BUTTON));
-
-	button = gtk_dialog_add_button (GTK_DIALOG (message),
-					_("_View Log"),
 					GTK_RESPONSE_OK);
 	gtk_button_set_image (GTK_BUTTON (button),
 			      gtk_image_new_from_stock (GTK_STOCK_SAVE_AS,
@@ -1827,14 +1683,8 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 			       GTK_RESPONSE_CLOSE);
 
 	response = gtk_dialog_run (GTK_DIALOG (message));
-	while (1) {
-		if (response == GTK_RESPONSE_APPLY)
-			brasero_burn_dialog_save_log (dialog);
-		else if (response == GTK_RESPONSE_OK)
-			brasero_burn_dialog_show_log (dialog);
-		else
-			break;
-
+	while (response == GTK_RESPONSE_OK) {
+		brasero_burn_dialog_save_log (dialog);
 		response = gtk_dialog_run (GTK_DIALOG (message));
 	}
 
