@@ -1825,20 +1825,8 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	}
 	brasero_track_type_free (type);
 
-	/* make sure there is a drive set as burner. */
-	if (!brasero_burn_session_is_dest_file (priv->session)) {
-		BraseroDrive *burner;
-
-		burner = brasero_burn_session_get_burner (priv->session);
-		if (!burner) {
-			BRASERO_BURN_DEBUG (burn, "No burner specified.");
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_OUTPUT_NONE,
-				     _("No burner specified"));
-			return BRASERO_BURN_ERR;	
-		}
-	}
+	/* No need to check if a burner was set as this
+	 * is done when locking. */
 
 	media = brasero_burn_session_get_dest_media (priv->session);
 
