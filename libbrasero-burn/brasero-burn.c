@@ -138,6 +138,7 @@ typedef enum {
 	PROGRESS_CHANGED_SIGNAL,
 	ACTION_CHANGED_SIGNAL,
 	DUMMY_SUCCESS_SIGNAL,
+	EJECT_FAILURE_SIGNAL,
 	LAST_SIGNAL
 } BraseroBurnSignalType;
 
@@ -323,6 +324,35 @@ brasero_burn_unmount (BraseroBurn *self,
 }
 
 static BraseroBurnResult
+brasero_burn_emit_eject_failure_signal (BraseroBurn *burn,
+                                        BraseroDrive *drive) 
+{
+	GValue instance_and_params [4];
+	GValue return_value;
+
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (burn));
+	g_value_set_instance (instance_and_params, burn);
+	
+	instance_and_params [1].g_type = 0;
+	g_value_init (instance_and_params + 1, G_TYPE_FROM_INSTANCE (drive));
+	g_value_set_instance (instance_and_params + 1, drive);
+
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (instance_and_params,
+			brasero_burn_signals [EJECT_FAILURE_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+
+	return g_value_get_int (&return_value);
+}
+
+static BraseroBurnResult
 brasero_burn_eject (BraseroBurn *self,
 		    BraseroDrive *drive,
 		    GError **error)
@@ -337,21 +367,15 @@ brasero_burn_eject (BraseroBurn *self,
 
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
-			gchar *name;
+			BraseroBurnResult result;
 
 			BRASERO_BURN_LOG ("Max attempts reached at ejecting");
 
-			/* FIXME: it'd be better if we asked the user to do it
-			 * manually */
-			name = brasero_drive_get_display_name (drive);
-			if (error && !(*error))
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("The disc in \"%s\" cannot be ejected"),
-					     name);
-			g_free (name);
-			return BRASERO_BURN_ERR;
+			result = brasero_burn_emit_eject_failure_signal (self, drive);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			continue;
 		}
 
 		BRASERO_BURN_LOG ("Retrying ejection");
@@ -3021,6 +3045,16 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      NULL, NULL,
 			      brasero_marshal_INT__VOID,
 			      G_TYPE_INT, 0);
+        brasero_burn_signals [EJECT_FAILURE_SIGNAL] =
+		g_signal_new ("eject_failure",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BraseroBurnClass,
+					       eject_failure),
+			      NULL, NULL,
+			      brasero_marshal_INT__OBJECT,
+			      G_TYPE_INT, 1,
+		              BRASERO_TYPE_DRIVE);
 }
 
 static void

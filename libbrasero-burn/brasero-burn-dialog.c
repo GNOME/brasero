@@ -946,6 +946,79 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 	return result;
 }
 
+static void
+brasero_burn_dialog_wait_for_ejection_cb (BraseroDrive *drive,
+                                          BraseroMedium *medium,
+                                          GtkDialog *message)
+{
+	/* we might have a dialog waiting for the 
+	 * insertion of a disc if so close it */
+	gtk_dialog_response (GTK_DIALOG (message), GTK_RESPONSE_OK);
+}
+
+static BraseroBurnResult
+brasero_burn_dialog_eject_failure_cb (BraseroBurn *burn,
+                                      BraseroDrive *drive,
+                                      GtkDialog *dialog)
+{
+	gint result;
+	gchar *name;
+	gint removal_id;
+	GtkWindow *window;
+	GtkWidget *message;
+	gboolean hide = FALSE;
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	if (!GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_show (GTK_WIDGET (dialog));
+		hide = TRUE;
+	}
+
+	g_timer_stop (priv->total_time);
+
+	window = GTK_WINDOW (dialog);
+
+	name = brasero_drive_get_display_name (drive);
+	message = gtk_message_dialog_new (window,
+					  GTK_DIALOG_DESTROY_WITH_PARENT|
+					  GTK_DIALOG_MODAL,
+					  GTK_MESSAGE_WARNING,
+					  GTK_BUTTONS_NONE,
+	                                  /* Translators: %s is the name of a drive */
+					  _("Please remove the disc from \"%s\" manually."),
+	                                  name);
+	g_free (name);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+	                                          _("The disc needs to be removed for operation to continue but it cannot be ejected."));
+
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+
+	/* connect to signals to be warned when media is removed */
+	removal_id = g_signal_connect_after (drive,
+	                                     "medium-removed",
+	                                     G_CALLBACK (brasero_burn_dialog_wait_for_ejection_cb),
+	                                     message);
+
+	result = gtk_dialog_run (GTK_DIALOG (message));
+
+	g_signal_handler_disconnect (drive, removal_id);
+	gtk_widget_destroy (message);
+
+	if (hide)
+		gtk_widget_hide (GTK_WIDGET (dialog));
+
+	g_timer_start (priv->total_time);
+
+	if (result == GTK_RESPONSE_ACCEPT)
+		return BRASERO_BURN_OK;
+
+	return BRASERO_BURN_CANCEL;
+}
+
 static BraseroBurnResult
 brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 				       GtkDialog *dialog)
@@ -1519,6 +1592,10 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 	g_signal_connect (priv->burn,
 			  "insert-media",
 			  G_CALLBACK (brasero_burn_dialog_insert_disc_cb),
+			  dialog);
+	g_signal_connect (priv->burn,
+			  "eject-failure",
+			  G_CALLBACK (brasero_burn_dialog_eject_failure_cb),
 			  dialog);
 	g_signal_connect (priv->burn,
 			  "location-request",
