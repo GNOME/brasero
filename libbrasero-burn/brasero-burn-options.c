@@ -360,7 +360,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("Please insert a recordable CD or DVD."),
-					    _("There is no recordable disc inserted."),
+					    NULL,
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}

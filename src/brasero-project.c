@@ -1015,7 +1015,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		project->priv->empty = FALSE;
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 					    _("Please insert a recordable CD or DVD."),
-					    _("There is no recordable disc inserted."),
+					    NULL,
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
