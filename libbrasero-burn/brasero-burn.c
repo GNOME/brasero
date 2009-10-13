@@ -330,7 +330,7 @@ brasero_burn_eject (BraseroBurn *self,
 	brasero_burn_sleep (self, 500);
 
 	/* Retry several times, since sometimes the drives are really busy */
-	while (brasero_drive_get_medium (drive)) {
+	while (brasero_drive_get_medium (drive) || brasero_drive_probing (drive)) {
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			gchar *name;
@@ -528,13 +528,12 @@ brasero_burn_ask_for_src_media (BraseroBurn *burn,
 				BraseroMedia required_media,
 				GError **error)
 {
-	BraseroMedia media;
 	BraseroMedium *medium;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
 	medium = brasero_drive_get_medium (priv->src);
-	media = brasero_medium_get_status (medium);
-	if (media != BRASERO_MEDIUM_NONE) {
+	if (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE
+	||  brasero_drive_probing (priv->src)) {
 		BraseroBurnResult result;
 		result = brasero_burn_eject_src_media (burn, error);
 		if (result != BRASERO_BURN_OK)
@@ -569,7 +568,8 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 	}
 
 	medium = brasero_drive_get_medium (priv->dest);
-	if (medium || brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+	if (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE
+	||  brasero_drive_probing (priv->dest)) {
 		BraseroBurnResult result;
 
 		result = brasero_burn_eject_dest_media (burn, error);
@@ -606,6 +606,11 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 
 
 again:
+
+	if (brasero_drive_probing (priv->src)) {
+		brasero_burn_sleep (burn, 500);
+		goto again;
+	}
 
 	medium = brasero_drive_get_medium (priv->src);
 	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
@@ -693,6 +698,11 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 	}
 
  again:
+
+	if (brasero_drive_probing (priv->dest)) {
+		brasero_burn_sleep (burn, 500);
+		goto again;
+	}
 
 	medium = brasero_drive_get_medium (priv->dest);
 	if (!brasero_medium_can_be_rewritten (medium)) {
@@ -1081,6 +1091,11 @@ brasero_burn_lock_checksum_media (BraseroBurn *burn,
 	priv->dest = brasero_burn_session_get_src_drive (priv->session);
 
 again:
+
+	if (brasero_drive_probing (priv->dest)) {
+		brasero_burn_sleep (burn, 500);
+		goto again;
+	}
 
 	medium = brasero_drive_get_medium (priv->dest);
 	media = brasero_medium_get_status (medium);
