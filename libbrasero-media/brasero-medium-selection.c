@@ -459,7 +459,7 @@ brasero_medium_selection_update_no_disc_entry (BraseroMediumSelection *self,
 	else {
 		icon = g_themed_icon_new_with_default_fallbacks ("drive-optical");
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
-				    NAME_COL, _("No available disc"),
+				    NAME_COL, _("No disc available"),
 				    ICON_COL, icon,
 				    VISIBLE_TEXT_COL, TRUE,
 				    VISIBLE_PROGRESS_COL, FALSE,
