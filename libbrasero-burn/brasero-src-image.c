@@ -172,7 +172,7 @@ static void
 brasero_src_image_update (BraseroSrcImage *self)
 {
 	gchar *uri;
-	gchar *path;
+	gchar *name;
 	GFile *file;
 	gchar *string;
 	goffset bytes = 0;
@@ -189,7 +189,6 @@ brasero_src_image_update (BraseroSrcImage *self)
 		return;
 
 	/* Retrieve a path or an uri */
-	path = NULL;
 	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (priv->track));
 	switch (format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
@@ -214,16 +213,9 @@ brasero_src_image_update (BraseroSrcImage *self)
 	file = g_file_new_for_uri (uri);
 	g_free (uri);
 
-	if (g_file_is_native (file)) {
-		path = g_file_get_path (file);
-		if (!path)
-			path = g_file_get_uri (file);
-	}
-	else
-		path = g_file_get_uri (file);
-
+	name = g_file_get_basename (file);
 	g_object_unref (file);
-	if (!path)
+	if (!name)
 		return;
 
 	/* See if information retrieval went fine and/or is ready */
@@ -231,15 +223,15 @@ brasero_src_image_update (BraseroSrcImage *self)
 	result = brasero_track_get_status (BRASERO_TRACK (priv->track), status);
 	if (result == BRASERO_BURN_NOT_READY) {
 		/* Translators: %s is a path */
-		string = g_strdup_printf (_("\"%s\": loading"), path);
+		string = g_strdup_printf (_("\"%s\": loading"), name);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
-		g_free (path);
+		g_free (name);
 		goto end;
 	}
 	else if (result != BRASERO_BURN_OK) {
 		/* Translators: %s is a path and image refers to a disc image */
-		string = g_strdup_printf (_("\"%s\": unknown disc image type"), path);
-		g_free (path);
+		string = g_strdup_printf (_("\"%s\": unknown disc image type"), name);
+		g_free (name);
 
 		error = brasero_status_get_error (status);
 		if (!error)
@@ -259,9 +251,9 @@ brasero_src_image_update (BraseroSrcImage *self)
 
 	/* NOTE to translators, the first %s is the path of the image
 	 * file and the second its size. */
-	string = g_strdup_printf (_("\"%s\": %s"), path, size_string);
+	string = g_strdup_printf (_("\"%s\": %s"), name, size_string);
 	g_free (size_string);
-	g_free (path);
+	g_free (name);
 
 end:
 
