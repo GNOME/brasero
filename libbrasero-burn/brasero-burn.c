@@ -274,6 +274,9 @@ brasero_burn_reprobe (BraseroBurn *burn)
 	brasero_drive_reprobe (priv->dest);
 	while (attempts < MAX_REPROBE_ATTEMPTS && brasero_drive_probing (priv->dest)) {
 		result = brasero_burn_sleep (burn, 250);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
 		attempts ++;
 	}
 
@@ -293,6 +296,7 @@ brasero_burn_unmount (BraseroBurn *self,
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		GError *ret_error;
+		BraseroBurnResult result;
 
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
@@ -317,7 +321,9 @@ brasero_burn_unmount (BraseroBurn *self,
 			g_error_free (ret_error);
 		}
 
-		brasero_burn_sleep (self, 500);
+		result = brasero_burn_sleep (self, 500);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	return BRASERO_BURN_OK;
@@ -364,11 +370,10 @@ brasero_burn_eject (BraseroBurn *self,
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_drive_get_medium (drive) || brasero_drive_probing (drive)) {
 		GError *ret_error;
+		BraseroBurnResult result;
 
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
-			BraseroBurnResult result;
-
 			BRASERO_BURN_LOG ("Max attempts reached at ejecting");
 
 			result = brasero_burn_emit_eject_failure_signal (self, drive);
@@ -387,7 +392,9 @@ brasero_burn_eject (BraseroBurn *self,
 			g_error_free (ret_error);
 		}
 
-		brasero_burn_sleep (self, 500);
+		result = brasero_burn_sleep (self, 500);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	return BRASERO_BURN_OK;
@@ -642,9 +649,10 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 
 again:
 
-	if (brasero_drive_probing (priv->src)) {
-		brasero_burn_sleep (burn, 500);
-		goto again;
+	while (brasero_drive_probing (priv->dest)) {
+		result = brasero_burn_sleep (burn, 500);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	medium = brasero_drive_get_medium (priv->src);
@@ -734,9 +742,10 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 
  again:
 
-	if (brasero_drive_probing (priv->dest)) {
-		brasero_burn_sleep (burn, 500);
-		goto again;
+	while (brasero_drive_probing (priv->dest)) {
+		result = brasero_burn_sleep (burn, 500);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	medium = brasero_drive_get_medium (priv->dest);
@@ -883,6 +892,12 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 			     BRASERO_BURN_ERROR_OUTPUT_NONE,
 			     _("No burner specified"));
 		return BRASERO_BURN_ERR;
+	}
+
+	while (brasero_drive_probing (priv->dest)) {
+		result = brasero_burn_sleep (burn, 500);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	medium = brasero_drive_get_medium (priv->dest);
@@ -1127,9 +1142,10 @@ brasero_burn_lock_checksum_media (BraseroBurn *burn,
 
 again:
 
-	if (brasero_drive_probing (priv->dest)) {
-		brasero_burn_sleep (burn, 500);
-		goto again;
+	while (brasero_drive_probing (priv->dest)) {
+		result = brasero_burn_sleep (burn, 500);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	medium = brasero_drive_get_medium (priv->dest);
@@ -1633,7 +1649,7 @@ brasero_burn_can_use_drive_exclusively (BraseroBurn *burn,
 	while (!brasero_drive_can_use_exclusively (drive)) {
 		BRASERO_BURN_LOG ("Device busy, retrying in 250 ms");
 		result = brasero_burn_sleep (burn, 250);
-		if (result == BRASERO_BURN_CANCEL)
+		if (result != BRASERO_BURN_OK)
 			return result;
 	}
 
@@ -1755,7 +1771,10 @@ start:
 		g_error_free (ret_error);
 		ret_error = NULL;
 
-		brasero_burn_sleep (burn, 2000);
+		result = brasero_burn_sleep (burn, 2000);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
 		has_slept = TRUE;
 
 		/* set speed at 8x max and even less if speed  */
