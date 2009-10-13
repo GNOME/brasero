@@ -987,12 +987,12 @@ brasero_burn_dialog_eject_failure_cb (BraseroBurn *burn,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 	                                  /* Translators: %s is the name of a drive */
-					  _("Please remove the disc from \"%s\" manually."),
+					  _("Please eject the disc from \"%s\" manually."),
 	                                  name);
 	g_free (name);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-	                                          _("The disc needs to be removed for operation to continue but it cannot be ejected."));
+	                                          _("The disc could not be ejected though it needs to be removed for the current operation to continue."));
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
 			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
