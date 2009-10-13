@@ -799,7 +799,7 @@ brasero_drive_medium_probed (BraseroMedium *medium,
 }
 
 /**
- * This is not public API. Defined in burn-monitor.h.
+ * This is not public API. Defined in brasero-drive-priv.h.
  */
 gboolean
 brasero_drive_probing (BraseroDrive *drive)
