@@ -1,17 +1,17 @@
 # Brasero 简体中文翻译
-# Copyright (c) 2008-2009 Free Software Foundation, Inc.
+# Copyright (c) 2008, 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the brasero package.
 # 甘露(Gan Lu) <rhythm.gan@gmail.com>, 2008.
 # Ray Wang <wanglei1123 at gmail dot com>, 2009.
+# Aron Xu <aronxu@gnome.org>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&component=general\n"
-"POT-Creation-Date: 2009-04-01 18:39+0000\n"
-"PO-Revision-Date: 2009-02-22 11:40+0700\n"
-"Last-Translator: Ray Wang <wanglei1123@gmail.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-14 02:36+0800\n"
+"PO-Revision-Date: 2009-09-08 07:12+0000\n"
+"Last-Translator: Aron Xu <aronxu@gnome.org>\n"
 "Language-Team: Chinese(simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -39,10 +39,6 @@ msgstr "看上去它不是一个有效的 Brasero 项目。"
 #: ../libbrasero-media/brasero-drive-selection.c:432
 msgid "Unnamed CD/DVD Drive"
 msgstr "未命名的 CD/DVD 驱动器"
-
-#: ../libbrasero-media/brasero-drive-selection.c:626
-msgid "Drive"
-msgstr "驱动器"
 
 #: ../libbrasero-media/brasero-media.c:52
 msgid "Display debug statements on stdout for Brasero media library"
@@ -175,7 +171,7 @@ msgstr "蓝光光盘"
 
 #: ../libbrasero-media/brasero-medium.c:80
 msgid "Writable Blu-ray disc"
-msgstr "可重写蓝光光盘"
+msgstr "可写蓝光光盘"
 
 #: ../libbrasero-media/brasero-medium.c:81
 msgid "Rewritable Blu-ray disc"
@@ -186,7 +182,7 @@ msgstr "可重写蓝光光盘"
 #: ../libbrasero-media/brasero-medium.c:285
 #, c-format
 msgid "Blank %s in %s"
-msgstr "在 %s 中擦除 %s"
+msgstr "擦除 %s 在 %s 中"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
@@ -322,7 +318,7 @@ msgstr "不能识别的桌面文件版本 '%s'"
 #: ../src/eggdesktopfile.c:958
 #, c-format
 msgid "Starting %s"
-msgstr "正在开始 %s "
+msgstr "正在开始 %s"
 
 #: ../src/eggdesktopfile.c:1100
 #, c-format
@@ -443,7 +439,7 @@ msgstr "写入到盘片(_W)..."
 
 #: ../nautilus/nautilus-burn-extension.c:376
 msgid "Write disc image to a CD or DVD disc"
-msgstr "将光盘映像写入到一张光盘或DVD盘"
+msgstr "将光盘映像写入到一张光盘或 DVD 盘"
 
 #: ../nautilus/nautilus-burn-extension.c:428
 msgid "_Copy Disc..."
@@ -526,7 +522,7 @@ msgctxt "disc"
 msgid "Image files only"
 msgstr "仅映像文件"
 
-#: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:200
+#: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:201
 msgid "Image type:"
 msgstr "映像类型："
 
@@ -552,7 +548,7 @@ msgstr "视频光盘 (%s)"
 #: ../src/brasero-project-name.c:119
 #, c-format
 msgid "Audio disc (%s)"
-msgstr "音乐光盘 (%s)"
+msgstr "音频光盘 (%s)"
 
 #: ../src/brasero-burn-options.c:226
 msgid ""
@@ -564,7 +560,7 @@ msgstr "如果你不想写入为映像文件，请插入一张可刻录 CD 或 D
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "请选择另外的 CD 或 DVD 或插入一张新盘片。"
 
-#: ../src/brasero-burn-options.c:260 ../src/brasero-data-disc.c:628
+#: ../src/brasero-burn-options.c:260 ../src/brasero-data-disc.c:618
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option."
@@ -623,11 +619,11 @@ msgstr "请用支持的 CD 或 DVD 片更换该盘片。"
 msgid "It is not possible to write with the current set of plugins."
 msgstr "无法用当前插件写入。"
 
-#: ../src/brasero-burn-options.c:337 ../src/brasero-data-disc.c:601
+#: ../src/brasero-burn-options.c:337 ../src/brasero-data-disc.c:591
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "你打算以超过光盘报告的容量来刻录吗？"
 
-#: ../src/brasero-burn-options.c:338 ../src/brasero-data-disc.c:602
+#: ../src/brasero-burn-options.c:338 ../src/brasero-data-disc.c:592
 msgid ""
 "The size of the project is too large for the disc and you must remove files "
 "from the project otherwise.\n"
@@ -640,11 +636,11 @@ msgstr ""
 "确识别，因此需要超刻选项)。\n"
 "注意：该选项可能导致刻录失败。"
 
-#: ../src/brasero-burn-options.c:345 ../src/brasero-data-disc.c:611
+#: ../src/brasero-burn-options.c:345 ../src/brasero-data-disc.c:601
 msgid "_Overburn"
 msgstr "超刻(_O)"
 
-#: ../src/brasero-burn-options.c:346 ../src/brasero-data-disc.c:612
+#: ../src/brasero-burn-options.c:346 ../src/brasero-data-disc.c:602
 msgid "Burn beyond the disc reported capacity"
 msgstr "以超过光盘报告的容量刻录"
 
@@ -690,15 +686,15 @@ msgstr "帮助(_H)"
 
 #: ../src/brasero-app.c:114
 msgid "P_lugins"
-msgstr "插件(_l)"
+msgstr "插件(_L)"
 
 #: ../src/brasero-app.c:115
 msgid "Choose plugins for brasero"
-msgstr "为 brasero 选择插件"
+msgstr "为 Brasero 选择插件"
 
 #: ../src/brasero-app.c:117
 msgid "E_ject"
-msgstr "弹出(_j)"
+msgstr "弹出(_J)"
 
 #: ../src/brasero-app.c:118
 msgid "Eject a disc"
@@ -706,7 +702,7 @@ msgstr "弹出光盘"
 
 #: ../src/brasero-app.c:120
 msgid "_Erase..."
-msgstr "擦除...(_E)"
+msgstr "擦除(_E)"
 
 #: ../src/brasero-app.c:121
 msgid "Erase a disc"
@@ -801,7 +797,27 @@ msgstr ""
 "  ericlu https://launchpad.net/~ctlu999\n"
 "  missmomo0911 https://launchpad.net/~missmomo0911\n"
 "  poshenghsu https://launchpad.net/~poshenghsu\n"
-"  yenteenyu https://launchpad.net/~yen-teenyu"
+"  yenteenyu https://launchpad.net/~yen-teenyu\n"
+"\n"
+"Launchpad Contributions:\n"
+"  Aron Xu https://launchpad.net/~happyaron\n"
+"  Chuanzhen YU https://launchpad.net/~yuchuanzhen\n"
+"  Guanglin Du https://launchpad.net/~dugl\n"
+"  Kakurady Drakenar https://launchpad.net/~kakurady\n"
+"  Liu Qishuai https://launchpad.net/~lqs\n"
+"  Ray Wang https://launchpad.net/~raywang\n"
+"  Tao Wei https://launchpad.net/~weitao1979\n"
+"  Zeta-GSY https://launchpad.net/~msa0011\n"
+"  junglejia https://launchpad.net/~junglejia\n"
+"  kaiman https://launchpad.net/~kaigfm\n"
+"  luojie-dune https://launchpad.net/~luojie-dune\n"
+"  marsteel https://launchpad.net/~magang\n"
+"  muzuiget https://launchpad.net/~muzuiget\n"
+"  rainofchaos https://launchpad.net/~rainofchaos\n"
+"  zhangmiao https://launchpad.net/~mymzhang\n"
+"  太和 https://launchpad.net/~tayhe\n"
+"  甘露 (Lu Gan) https://launchpad.net/~rhythm-gan\n"
+"  鲁艺 https://launchpad.net/~johnlu1991"
 
 #: ../src/brasero-app.c:1170 ../src/brasero-app.c:1176
 msgid "_Recent Projects"
@@ -835,19 +851,19 @@ msgstr "包含已安装的偏好刻录引擎名字。如果可以即会使用。
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
-msgstr "图片预览的默认高度"
+msgstr "预览图片的默认高度。"
 
 #: ../data/brasero.schemas.in.h:4
 msgid "Default height for video preview."
-msgstr "视频预览的默认高度"
+msgstr "预览视频的默认高度。"
 
 #: ../data/brasero.schemas.in.h:5
 msgid "Default width for image preview."
-msgstr "图片预览的默认宽度"
+msgstr "预览图片的默认宽度。"
 
 #: ../data/brasero.schemas.in.h:6
 msgid "Default width for video preview."
-msgstr "视频预览的默认宽度"
+msgstr "预览视频的默认宽度。"
 
 #: ../data/brasero.schemas.in.h:7
 msgid "Enable \"-immed\" flag with cdrecord"
@@ -1053,7 +1069,7 @@ msgstr "%s：没有空余空间"
 #: ../src/brasero-dest-selection.c:490
 #, c-format
 msgid "%s: %s of free space"
-msgstr "%s：空余空间的 %s "
+msgstr "%s：空余空间的 %s"
 
 #: ../src/brasero-audio-disc.c:300 ../src/brasero-tray.c:80
 #: ../src/brasero-data-disc.c:117 ../src/brasero-video-disc.c:92
@@ -1075,32 +1091,32 @@ msgstr "编辑音轨信息(开始，结束，作者...)"
 #: ../src/brasero-audio-disc.c:305 ../src/brasero-data-disc.c:122
 #: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
-msgstr "從專案中移除選取的檔案"
+msgstr "从这个项目移除选择的文件"
 
 #: ../src/brasero-audio-disc.c:307 ../src/brasero-data-disc.c:124
 #: ../src/brasero-video-disc.c:99
 msgid "Add the files stored in the clipboard"
-msgstr "增加剪貼簿中的檔案"
+msgstr "添加在剪贴板中保存的文件"
 
 #: ../src/brasero-audio-disc.c:309
 msgid "I_nsert a Pause"
-msgstr "插入暫停(_n)"
+msgstr "插入暂停(_N)"
 
 #: ../src/brasero-audio-disc.c:309
 msgid "Add a 2 second pause after the track"
-msgstr "在此音軌後增加2秒的間隔"
+msgstr "在这个音轨后添加2秒钟的暂停"
 
 #: ../src/brasero-audio-disc.c:311
 msgid "_Split Track..."
-msgstr "分割音軌...(_S)"
+msgstr "分割音轨(_S)..."
 
 #: ../src/brasero-audio-disc.c:311
 msgid "Split the selected track"
-msgstr "分割所選的音軌"
+msgstr "分割选择的音轨"
 
 #: ../src/brasero-audio-disc.c:525 ../src/brasero-audio-disc.c:1016
 msgid "Pause"
-msgstr "暫停"
+msgstr "暂停"
 
 #: ../src/brasero-audio-disc.c:531
 msgid "Split"
@@ -1110,9 +1126,9 @@ msgstr "分割"
 msgid "Track"
 msgstr "音轨"
 
-#: ../src/brasero-audio-disc.c:685 ../src/brasero-video-disc.c:1171
+#: ../src/brasero-audio-disc.c:685 ../src/brasero-video-disc.c:1159
 msgid "Title"
-msgstr "標題"
+msgstr "标题"
 
 #: ../src/brasero-audio-disc.c:712
 msgid "Artist"
@@ -1121,7 +1137,7 @@ msgstr "演出者"
 #: ../src/brasero-audio-disc.c:721 ../src/brasero-playlist.c:325
 #: ../src/brasero-split-dialog.c:1216
 msgid "Length"
-msgstr "長度"
+msgstr "长度"
 
 #: ../src/brasero-audio-disc.c:922 ../src/burn-basics.c:76
 msgid "Analysing audio files"
@@ -1133,7 +1149,7 @@ msgstr "音軌將被填塞在其末端。"
 
 #: ../src/brasero-audio-disc.c:1153
 msgid "The track is shorter than 6 seconds"
-msgstr "音軌長度短于6秒"
+msgstr "音轨长度小于6秒"
 
 #: ../src/brasero-audio-disc.c:1356 ../src/brasero-metadata.c:671
 #, c-format
@@ -1147,7 +1163,7 @@ msgstr "请确认已安装有适当的解码器"
 #: ../src/brasero-audio-disc.c:1375
 #, c-format
 msgid "Do you want to add \"%s\" which is a video file?"
-msgstr "你想添加 \"%s\" (这是一个视频文件)吗？"
+msgstr "您确定添加视频文件\"%s\"？"
 
 #: ../src/brasero-audio-disc.c:1384
 msgid ""
@@ -1159,18 +1175,18 @@ msgstr "本文件是一段视频，因此仅有音频部分能够写入光盘。
 msgid "_Discard File"
 msgstr "放弃文件(_D)"
 
-#: ../src/brasero-audio-disc.c:1390 ../src/brasero-data-disc.c:994
-#: ../src/brasero-data-disc.c:1038
+#: ../src/brasero-audio-disc.c:1390 ../src/brasero-data-disc.c:984
+#: ../src/brasero-data-disc.c:1028
 msgid "_Add File"
 msgstr "添加文件(_A)"
 
 #: ../src/brasero-audio-disc.c:1510
 msgid "Do you want to search for audio files inside the directory?"
-msgstr "你想在目录内搜索音频文件吗？"
+msgstr "是否在目录中搜索音频文件？"
 
 #: ../src/brasero-audio-disc.c:1515
 msgid "Directories cannot be added to an audio disc."
-msgstr "无法添加目录到音频光盘。"
+msgstr "无法将目录添加到音频光盘。"
 
 #: ../src/brasero-audio-disc.c:1519
 msgid "Search _Directory"
@@ -1179,7 +1195,7 @@ msgstr "搜索目录(_D)"
 #: ../src/brasero-audio-disc.c:1574 ../src/brasero-video-disc.c:272
 #, c-format
 msgid "\"%s\" could not be opened."
-msgstr "\"%s\" 无法打开"
+msgstr "无法打开\"%s\"。"
 
 #: ../src/brasero-audio-disc.c:1724 ../src/brasero-audio-disc.c:1736
 #: ../src/brasero-audio-disc.c:1761 ../src/brasero-playlist.c:953
@@ -1191,17 +1207,17 @@ msgstr "(正在载入...)"
 
 #: ../src/brasero-audio-disc.c:2902
 msgid "Select one song only please."
-msgstr "请选择仅一首歌曲"
+msgstr "请仅选择一首歌。"
 
 #: ../src/brasero-audio-disc.c:2903
 msgid "Impossible to split more than one song at a time"
 msgstr "无法同时分割多首歌曲"
 
 #. Translators: "%s" is the name of a file here
-#: ../src/brasero-audio-disc.c:3840
+#: ../src/brasero-audio-disc.c:3828
 #, c-format
 msgid "\"%s\" was removed from the file system."
-msgstr "\"%s\" 已从文件系统中删除"
+msgstr "\"%s\" 已从文件系统中删除。"
 
 #. Translators: This is when brasero detects that a file
 #. * in the audio project was removed from its original
@@ -1211,7 +1227,7 @@ msgstr "\"%s\" 已从文件系统中删除"
 #. * refers to the file and this string is coupled with
 #. * previous string:
 #. * ""\"%s\" was removed from the file system."
-#: ../src/brasero-audio-disc.c:3851
+#: ../src/brasero-audio-disc.c:3839
 msgid "It will be removed from the project"
 msgstr "它将从项目中移除"
 
@@ -1274,14 +1290,15 @@ msgstr "选择要复制的光盘"
 #: ../src/brasero-metadata.c:743 ../src/brasero-metadata.c:756
 #: ../src/brasero-metadata.c:769 ../src/brasero-metadata.c:1491
 #: ../src/brasero-metadata.c:1506 ../src/brasero-metadata.c:1515
-#: ../src/brasero-metadata.c:1528 ../src/plugins/transcode/burn-normalize.c:99
-#: ../src/plugins/transcode/burn-normalize.c:382
-#: ../src/plugins/transcode/burn-normalize.c:395
-#: ../src/plugins/transcode/burn-normalize.c:407
-#: ../src/plugins/transcode/burn-normalize.c:420
-#: ../src/plugins/transcode/burn-normalize.c:433
-#: ../src/plugins/transcode/burn-normalize.c:598
-#: ../src/plugins/transcode/burn-normalize.c:606
+#: ../src/brasero-metadata.c:1528
+#: ../src/plugins/transcode/burn-normalize.c:157
+#: ../src/plugins/transcode/burn-normalize.c:172
+#: ../src/plugins/transcode/burn-normalize.c:190
+#: ../src/plugins/transcode/burn-normalize.c:202
+#: ../src/plugins/transcode/burn-normalize.c:219
+#: ../src/plugins/transcode/burn-normalize.c:278
+#: ../src/plugins/transcode/burn-normalize.c:599
+#: ../src/plugins/transcode/burn-normalize.c:607
 #: ../src/plugins/transcode/burn-transcode.c:281
 #: ../src/plugins/transcode/burn-transcode.c:293
 #: ../src/plugins/transcode/burn-transcode.c:383
@@ -1335,7 +1352,7 @@ msgstr "仅 %s"
 
 #: ../src/brasero-playlist.c:304
 msgid "Playlists"
-msgstr "播放清单"
+msgstr "播放列表"
 
 #: ../src/brasero-playlist.c:315
 msgid "Number of Songs"
@@ -1392,7 +1409,7 @@ msgstr "关于(_A)"
 #: ../src/brasero-plugin-manager-ui.c:594
 #: ../src/brasero-plugin-manager-ui.c:962
 msgid "C_onfigure"
-msgstr "设置(_o)"
+msgstr "配置(_O)"
 
 #: ../src/brasero-plugin-manager-ui.c:604
 msgid "A_ctivate"
@@ -1404,7 +1421,7 @@ msgstr "全部激活(_t)"
 
 #: ../src/brasero-plugin-manager-ui.c:621
 msgid "_Deactivate All"
-msgstr "全部停止使用(_D)"
+msgstr "全部禁用(_D)"
 
 #. Use the translated name for the plugin.
 #: ../src/brasero-plugin-option.c:394
@@ -1412,32 +1429,32 @@ msgstr "全部停止使用(_D)"
 msgid "Options for plugin %s"
 msgstr "插件 %s 的选项"
 
-#: ../src/brasero-progress.c:138
-msgid "Estimated drive speed:"
-msgstr "预计光驱速度："
-
 #. Translators: first %02i is hours, the second one is minutes and the
 #. * third one is seconds.
-#: ../src/brasero-progress.c:188
+#: ../src/brasero-progress.c:190
 #, c-format
 msgid "Total time: %02i:%02i:%02i"
 msgstr "总共费时：%02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:199
+#: ../src/brasero-progress.c:201
 msgid "Average drive speed:"
 msgstr "平均光驱速度："
 
 #. Translators: first %02i is hours, the second one is minutes
 #. * and the third one is seconds.
-#: ../src/brasero-progress.c:425
+#: ../src/brasero-progress.c:428
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr "预计剩余时间：%02i:%02i:%02i"
 
-#: ../src/brasero-progress.c:467
+#: ../src/brasero-progress.c:470
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB / %i MiB"
+
+#: ../src/brasero-progress.c:496
+msgid "Estimated drive speed:"
+msgstr "预计光驱速度："
 
 #: ../src/brasero-search-entry.c:188
 msgid "Search:"
@@ -1495,12 +1512,12 @@ msgstr "无结果"
 msgid "Next Results"
 msgstr "下一个结果"
 
-#: ../src/brasero-search-beagle.c:406 ../src/brasero-data-disc.c:2453
+#: ../src/brasero-search-beagle.c:406 ../src/brasero-data-disc.c:2443
 #: ../src/brasero-file-filtered.c:528
 msgid "Files"
 msgstr "文件"
 
-#: ../src/brasero-search-beagle.c:425 ../src/brasero-data-disc.c:2481
+#: ../src/brasero-search-beagle.c:425 ../src/brasero-data-disc.c:2471
 msgid "Description"
 msgstr "描述"
 
@@ -1532,13 +1549,13 @@ msgstr ""
 
 #: ../src/brasero-song-properties.c:183 ../src/brasero-multi-song-props.c:237
 msgid "Artist:"
-msgstr "艺术家："
+msgstr "艺人："
 
 #: ../src/brasero-song-properties.c:195 ../src/brasero-multi-song-props.c:258
 msgid "Composer:"
-msgstr "作曲者："
+msgstr "作曲："
 
-#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:581
+#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:582
 #: ../src/brasero-tool-dialog.c:256 ../src/brasero-multi-song-props.c:303
 msgid "Options"
 msgstr "选项"
@@ -1940,11 +1957,11 @@ msgstr "保持当前位置(_K)"
 msgid "_Change Location"
 msgstr "更改位置(_C)"
 
-#: ../src/brasero-burn-dialog.c:690 ../src/brasero-image-properties.c:232
+#: ../src/brasero-burn-dialog.c:690 ../src/brasero-image-properties.c:236
 msgid "Location for Image File"
 msgstr "映像文件位置"
 
-#: ../src/brasero-burn-dialog.c:698 ../src/brasero-drive-properties.c:594
+#: ../src/brasero-burn-dialog.c:698 ../src/brasero-drive-properties.c:595
 msgid "Location for Temporary Files"
 msgstr "临时文件的位置"
 
@@ -1954,7 +1971,7 @@ msgstr "更换盘片(_R)"
 
 #: ../src/brasero-burn-dialog.c:836
 msgid "Do you really want to erase the current disc?"
-msgstr "你确定要擦除当前光盘吗?"
+msgstr "您确定要擦除光盘上的数据？"
 
 #: ../src/brasero-burn-dialog.c:837
 msgid "The disc in the drive holds data."
@@ -1979,7 +1996,7 @@ msgstr "不建议在多重区段光盘中加入新文件。"
 
 #: ../src/brasero-burn-dialog.c:856 ../src/brasero-burn-dialog.c:876
 #: ../src/brasero-burn-dialog.c:896 ../src/brasero-burn-dialog.c:934
-#: ../src/brasero-data-disc.c:679 ../src/brasero-tool-dialog.c:356
+#: ../src/brasero-data-disc.c:669 ../src/brasero-tool-dialog.c:356
 msgid "_Continue"
 msgstr "继续(_C)"
 
@@ -2008,7 +2025,7 @@ msgstr "你想使用完全不考虑 Windows 兼容性的方式继续吗？"
 #: ../src/brasero-burn-dialog.c:928 ../src/brasero-disc-option-dialog.c:331
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
-msgstr "对完全兼容 Windows 的光盘而言，一些文件含有不合适的文件名。"
+msgstr "一些文件的命名与Windows不完全兼容。"
 
 #: ../src/brasero-burn-dialog.c:971
 #, c-format
@@ -2171,7 +2188,7 @@ msgstr "重新命名(_e)"
 msgid "Rename the selected file"
 msgstr "重命名选定的文件"
 
-#: ../src/brasero-data-disc.c:126 ../src/brasero-data-disc.c:1784
+#: ../src/brasero-data-disc.c:126 ../src/brasero-data-disc.c:1774
 msgid "New _Folder"
 msgstr "新文件夹(_F)"
 
@@ -2193,101 +2210,101 @@ msgstr "新文件夹"
 msgid "New folder %i"
 msgstr "新文件夹 %i"
 
-#: ../src/brasero-data-disc.c:617
+#: ../src/brasero-data-disc.c:607
 msgid "Click here not to use overburning"
 msgstr "单击这里以不用超刻"
 
-#: ../src/brasero-data-disc.c:627
+#: ../src/brasero-data-disc.c:617
 msgid "Please delete some files from the project."
 msgstr "请从项目中删除一些文件。"
 
-#: ../src/brasero-data-disc.c:666
+#: ../src/brasero-data-disc.c:656
 msgid "The contents of the project changed since it was saved."
 msgstr "自保存后的项目内容有变化。"
 
-#: ../src/brasero-data-disc.c:668 ../src/brasero-data-disc.c:675
+#: ../src/brasero-data-disc.c:658 ../src/brasero-data-disc.c:665
 msgid "Discard the current modified project"
 msgstr "放弃当前修改过的项目"
 
-#: ../src/brasero-data-disc.c:674
+#: ../src/brasero-data-disc.c:664
 msgid "_Discard"
 msgstr "放弃(_D)"
 
-#: ../src/brasero-data-disc.c:680
+#: ../src/brasero-data-disc.c:670
 msgid "Continue with the current modified project"
 msgstr "继续当前修改过的项目"
 
-#: ../src/brasero-data-disc.c:754
+#: ../src/brasero-data-disc.c:744
 #, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
 msgstr "你想刻录 \"%s\" 到光盘或是添加到数据项目？"
 
-#: ../src/brasero-data-disc.c:763
+#: ../src/brasero-data-disc.c:753
 msgid ""
 "This file is the image of a disc and can therefore be burnt to disc without "
 "having to add it to a data project first."
 msgstr "本文件是一张光盘的映像，因此可以不用先添加到数据项目而直接刻录到光盘。"
 
-#: ../src/brasero-data-disc.c:765
+#: ../src/brasero-data-disc.c:755
 msgid "_Add to Project"
 msgstr "添加到项目(_A)"
 
-#: ../src/brasero-data-disc.c:767 ../src/brasero-project.c:210
+#: ../src/brasero-data-disc.c:757 ../src/brasero-project.c:210
 #: ../src/brasero-project.c:461
 msgid "_Burn..."
 msgstr "刻录...(_B)"
 
-#: ../src/brasero-data-disc.c:850 ../src/brasero-data-disc.c:881
-#: ../src/brasero-data-disc.c:912
+#: ../src/brasero-data-disc.c:840 ../src/brasero-data-disc.c:871
+#: ../src/brasero-data-disc.c:902
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
 msgstr "\"%s\" 无法添加到已选定中。"
 
-#: ../src/brasero-data-disc.c:874
+#: ../src/brasero-data-disc.c:864
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "\"%s\" 是一个循环的符号链接。"
 
-#: ../src/brasero-data-disc.c:884
+#: ../src/brasero-data-disc.c:874
 msgid "It is a recursive symlink"
 msgstr "循环的符号链接"
 
-#: ../src/brasero-data-disc.c:905
+#: ../src/brasero-data-disc.c:895
 #, c-format
 msgid "\"%s\" cannot be found."
-msgstr "\"%s\" 没有找到"
+msgstr "无法找到 \"%s\""
 
-#: ../src/brasero-data-disc.c:915
+#: ../src/brasero-data-disc.c:905
 msgid "It does not exist at the specified location"
 msgstr "不在指定位置中"
 
-#: ../src/brasero-data-disc.c:938
+#: ../src/brasero-data-disc.c:928
 #, c-format
 msgid "Do you really want to replace \"%s\"?"
 msgstr "你真的想替换 \"%s\" 吗？"
 
-#: ../src/brasero-data-disc.c:946
+#: ../src/brasero-data-disc.c:936
 msgid "It already exists in the directory."
 msgstr "已存在于该目录中。"
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * Replace means we're replacing it with a new one with the same name
-#: ../src/brasero-data-disc.c:950
+#: ../src/brasero-data-disc.c:940
 msgid "_Keep Project File"
 msgstr "保留项目文件(_K)"
 
-#: ../src/brasero-data-disc.c:951
+#: ../src/brasero-data-disc.c:941
 msgid "_Replace Project File"
 msgstr "替换项目文件(_R)"
 
-#: ../src/brasero-data-disc.c:981
+#: ../src/brasero-data-disc.c:971
 #, c-format
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of ISO9660 standard to support it?"
 msgstr "真的打算添加 \"%s\" 入选择并使用ISO9660 level 3 标准来支持吗？"
 
-#: ../src/brasero-data-disc.c:989
+#: ../src/brasero-data-disc.c:979
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by ISO9660 standard in its first and second versions (the most "
@@ -2300,16 +2317,16 @@ msgid ""
 msgstr ""
 "文件大小已超过 2 G。(最广泛使用的) ISO9660 标准的第一和第二版 并不支持大于 2 "
 "G 的文件。\n"
-"推荐使用ISO9660 第 3 版标准，该标准得到大多数操作系统包括 linux 及所有版本的"
-"微软视窗 © 的支持。\n"
-"但是 MacOS X 不能读取按照ISO9660 第 3 版标准创建的映像。"
+"推荐使用ISO9660 第 3 版标准，该标准得到大多数操作系统包括 Linux 及所有版本的"
+"微软 Windosw © 的支持。\n"
+"但是 MacOS X 不能读取按照 ISO9660 第 3 版标准创建的映像。"
 
-#: ../src/brasero-data-disc.c:1025
+#: ../src/brasero-data-disc.c:1015
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "你确定要添加 \"%s\" 到已选定中吗？"
 
-#: ../src/brasero-data-disc.c:1033
+#: ../src/brasero-data-disc.c:1023
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -2323,75 +2340,75 @@ msgstr ""
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
-#: ../src/brasero-data-disc.c:1131
+#: ../src/brasero-data-disc.c:1121
 #, c-format
 msgid "Import %s"
 msgstr "导入 %s"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
-#: ../src/brasero-data-disc.c:1138
+#: ../src/brasero-data-disc.c:1128
 #, c-format
 msgid "I_mport %s"
-msgstr "导入(_m) %s"
+msgstr "导入(_M) %s"
 
 #. Translators: This is a verb. It's a toolbar button.
-#: ../src/brasero-data-disc.c:1168
+#: ../src/brasero-data-disc.c:1158
 msgid "I_mport"
-msgstr "导入(_m)"
+msgstr "导入(_M)"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1224
+#: ../src/brasero-data-disc.c:1214
 #, c-format
 msgid "Do you want to import the session from '%s'?"
 msgstr "你想从 '%s' 导入该区段吗？"
 
-#: ../src/brasero-data-disc.c:1227
+#: ../src/brasero-data-disc.c:1217
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
 msgstr "那样的话，刻录完毕后先前区段的老文件仍然可以使用。"
 
-#: ../src/brasero-data-disc.c:1238
+#: ../src/brasero-data-disc.c:1228
 msgid "I_mport Session"
-msgstr "导入进程(_m)"
+msgstr "导入进程(_M)"
 
-#: ../src/brasero-data-disc.c:1239
+#: ../src/brasero-data-disc.c:1229
 msgid "Click here to import its contents"
 msgstr "点击这里以导入内容"
 
-#: ../src/brasero-data-disc.c:1669
+#: ../src/brasero-data-disc.c:1659
 msgid "Please wait while the project is loading."
 msgstr "项目载入中请等待。"
 
-#: ../src/brasero-data-disc.c:1679
+#: ../src/brasero-data-disc.c:1669
 msgid "_Cancel Loading"
 msgstr "取消载入(_C)"
 
-#: ../src/brasero-data-disc.c:1680
+#: ../src/brasero-data-disc.c:1670
 msgid "Cancel loading current project"
 msgstr "取消载入当前的项目"
 
-#: ../src/brasero-data-disc.c:1713
+#: ../src/brasero-data-disc.c:1703
 msgid "Analysing files"
 msgstr "正在分析文件"
 
-#: ../src/brasero-data-disc.c:1940
+#: ../src/brasero-data-disc.c:1930
 msgid "File Renaming"
 msgstr "文件重命名"
 
-#: ../src/brasero-data-disc.c:1944
+#: ../src/brasero-data-disc.c:1934
 msgid "_Rename"
 msgstr "重命名(_R)"
 
-#: ../src/brasero-data-disc.c:1952
+#: ../src/brasero-data-disc.c:1942
 msgid "Renaming mode"
 msgstr "正在重命名模式"
 
-#: ../src/brasero-data-disc.c:2467 ../src/brasero-video-disc.c:1189
+#: ../src/brasero-data-disc.c:2457 ../src/brasero-video-disc.c:1177
 msgid "Size"
 msgstr "大小"
 
-#: ../src/brasero-data-disc.c:2497
+#: ../src/brasero-data-disc.c:2487
 msgid "Space"
 msgstr "空间"
 
@@ -2435,7 +2452,7 @@ msgstr "视频格式："
 
 #: ../src/brasero-disc-option-dialog.c:597
 msgid "_NTSC"
-msgstr "_NTSC(_N)"
+msgstr "_NTSC"
 
 #: ../src/brasero-disc-option-dialog.c:598
 msgid "Format used mostly on the North American Continent"
@@ -2443,7 +2460,7 @@ msgstr "北美大陆最常用格式"
 
 #: ../src/brasero-disc-option-dialog.c:612
 msgid "_PAL/SECAM"
-msgstr "_PAL/SECAM(_P)"
+msgstr "_PAL/SECAM"
 
 #: ../src/brasero-disc-option-dialog.c:613
 msgid "Format used mostly in Europe"
@@ -2451,7 +2468,7 @@ msgstr "欧洲最常用格式"
 
 #: ../src/brasero-disc-option-dialog.c:627
 msgid "Native _format"
-msgstr "原始格式(_f)"
+msgstr "原生格式(_F)"
 
 #: ../src/brasero-disc-option-dialog.c:641
 msgid "Aspect ratio:"
@@ -2459,11 +2476,11 @@ msgstr "高宽比例："
 
 #: ../src/brasero-disc-option-dialog.c:653
 msgid "_4:3"
-msgstr "_4:3(_4)"
+msgstr "_4:3"
 
 #: ../src/brasero-disc-option-dialog.c:668
 msgid "_16:9"
-msgstr "_16:9(_16)"
+msgstr "_16:9"
 
 #. Video options for (S)VCD
 #: ../src/brasero-disc-option-dialog.c:683
@@ -2551,45 +2568,45 @@ msgstr "无法获知速度"
 msgid "Max speed"
 msgstr "最大速度"
 
-#: ../src/brasero-drive-properties.c:560
+#: ../src/brasero-drive-properties.c:561
 msgid "Burning speed"
 msgstr "刻录速度"
 
-#: ../src/brasero-drive-properties.c:573
+#: ../src/brasero-drive-properties.c:574
 msgid "_Simulate before burning"
 msgstr "刻录前先模拟(_S)"
 
-#: ../src/brasero-drive-properties.c:574
+#: ../src/brasero-drive-properties.c:575
 msgid ""
 "Brasero will simulate the burning and if it is successful, go on with actual "
 "burning after 10 seconds"
 msgstr "Brasero 将模拟刻录，如果成功，就将在10秒后进行实际刻录"
 
-#: ../src/brasero-drive-properties.c:575
+#: ../src/brasero-drive-properties.c:576
 msgid "Use burn_proof (decrease the risk of failures)"
 msgstr "使用 burn _proof (降低失败风险)"
 
-#: ../src/brasero-drive-properties.c:576
+#: ../src/brasero-drive-properties.c:577
 msgid "_Eject after burning"
 msgstr "刻录完毕后弹出光盘(_E)"
 
-#: ../src/brasero-drive-properties.c:577
+#: ../src/brasero-drive-properties.c:578
 msgid "Burn the image directly _without saving it to disc"
 msgstr "直接刻录映像文件而不保存到光盘(_w)"
 
-#: ../src/brasero-drive-properties.c:578
+#: ../src/brasero-drive-properties.c:579
 msgid "Leave the disc _open to add other files later"
 msgstr "不关闭盘片以稍候添加另外的文件(_o)"
 
-#: ../src/brasero-drive-properties.c:579
+#: ../src/brasero-drive-properties.c:580
 msgid "Allow to add more data to the disc later"
 msgstr "允许稍候添加更多数据到光盘"
 
-#: ../src/brasero-drive-properties.c:600
+#: ../src/brasero-drive-properties.c:601
 msgid "_Temporary directory free space:"
 msgstr "临时目录的空余空间(_T)："
 
-#: ../src/brasero-drive-properties.c:609
+#: ../src/brasero-drive-properties.c:610
 msgid "Temporary files"
 msgstr "临时文件"
 
@@ -2616,23 +2633,23 @@ msgstr "选择一个映像以写入"
 msgid "Image Burning Setup"
 msgstr "映像刻录设置"
 
-#: ../src/brasero-image-type-chooser.c:87
+#: ../src/brasero-image-type-chooser.c:90
 msgid "Let brasero choose (safest)"
 msgstr "让 brasero 选择(最保险)"
 
-#: ../src/brasero-image-type-chooser.c:94
+#: ../src/brasero-image-type-chooser.c:98
 msgid "*.iso image"
 msgstr "*.iso 映像"
 
-#: ../src/brasero-image-type-chooser.c:102
+#: ../src/brasero-image-type-chooser.c:107
 msgid "*.raw image"
 msgstr "*.raw 映像"
 
-#: ../src/brasero-image-type-chooser.c:110
+#: ../src/brasero-image-type-chooser.c:116
 msgid "*.cue image"
 msgstr "*.cue 映像"
 
-#: ../src/brasero-image-type-chooser.c:118
+#: ../src/brasero-image-type-chooser.c:125
 msgid "*.toc image (cdrdao)"
 msgstr "*.toc 映像 (cdrdao)"
 
@@ -2934,7 +2951,7 @@ msgstr "封面编辑器(_C)"
 
 #: ../src/brasero-project-manager.c:103
 msgid "Design and print covers for CDs"
-msgstr "设计并打印光盘封面"
+msgstr "为 CD 设计和打印封面"
 
 #: ../src/brasero-project-manager.c:104
 msgid "_New Project"
@@ -3059,7 +3076,7 @@ msgstr "Brasero - 新视频光盘项目"
 
 #: ../src/brasero-project-manager.c:599
 msgid "Brasero - New Image File"
-msgstr "Brasero - 新映像文件"
+msgstr "Brasero - 新建映像文件"
 
 #: ../src/brasero-project-manager.c:616
 msgid "Brasero - Disc Copy"
@@ -3154,7 +3171,7 @@ msgstr "最近的项目："
 msgid "Check _Again"
 msgstr "重新检查(_A)"
 
-#: ../src/brasero-sum-dialog.c:141 ../src/brasero-sum-dialog.c:469
+#: ../src/brasero-sum-dialog.c:141 ../src/brasero-sum-dialog.c:468
 msgid "The file integrity check could not be performed."
 msgstr "文件完整性检查无法执行。"
 
@@ -3183,27 +3200,27 @@ msgstr "正在下载 md5 文件"
 msgid "\"%s\" is not a valid URI"
 msgstr "\"%s\" 不是一个有效的 URI 地址"
 
-#: ../src/brasero-sum-dialog.c:470
+#: ../src/brasero-sum-dialog.c:469
 msgid "No md5 file was given."
 msgstr "没有指定 md5 文件"
 
-#: ../src/brasero-sum-dialog.c:639
+#: ../src/brasero-sum-dialog.c:638
 msgid "Use a _md5 file to check the disc"
 msgstr "使用 md5 文件检查光盘(_m)"
 
-#: ../src/brasero-sum-dialog.c:640
+#: ../src/brasero-sum-dialog.c:639
 msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr "使用储存有光盘检查值的外部 .md5 文件"
 
-#: ../src/brasero-sum-dialog.c:653
+#: ../src/brasero-sum-dialog.c:652
 msgid "Open a md5 file"
 msgstr "打开一个 md5 文件"
 
-#: ../src/brasero-sum-dialog.c:668
+#: ../src/brasero-sum-dialog.c:667
 msgid "_Check"
 msgstr "检查(_C)"
 
-#: ../src/brasero-sum-dialog.c:692
+#: ../src/brasero-sum-dialog.c:691
 msgid "Disc Checking"
 msgstr "光盘检查中"
 
@@ -3212,7 +3229,10 @@ msgstr "光盘检查中"
 msgid "The operation cannot be performed."
 msgstr "无法执行该操作。"
 
-#: ../src/brasero-tool-dialog.c:68
+#: ../src/brasero-tool-dialog.c:68 ../src/plugins/cdrkit/burn-wodim.c:136
+#: ../src/plugins/cdrkit/burn-wodim.c:378
+#: ../src/plugins/cdrtools/burn-cdrecord.c:136
+#: ../src/plugins/cdrtools/burn-cdrecord.c:365
 #: ../src/plugins/growisofs/burn-dvd-rw-format.c:65
 #: ../src/plugins/libburnia/burn-libburn.c:589
 #, c-format
@@ -3372,15 +3392,15 @@ msgstr "无法为临时映像找到某个格式"
 #: ../src/burn-mkisofs-base.c:303 ../src/main.c:211 ../src/main.c:237
 #: ../src/plugins/cdrkit/burn-genisoimage.c:360
 #: ../src/plugins/cdrkit/burn-readom.c:111
-#: ../src/plugins/cdrkit/burn-readom.c:321
-#: ../src/plugins/cdrkit/burn-wodim.c:654
-#: ../src/plugins/cdrkit/burn-wodim.c:766
-#: ../src/plugins/cdrkit/burn-wodim.c:779
-#: ../src/plugins/cdrtools/burn-cdrecord.c:749
-#: ../src/plugins/cdrtools/burn-cdrecord.c:762
+#: ../src/plugins/cdrkit/burn-readom.c:327
+#: ../src/plugins/cdrkit/burn-wodim.c:673
+#: ../src/plugins/cdrkit/burn-wodim.c:785
+#: ../src/plugins/cdrkit/burn-wodim.c:798
+#: ../src/plugins/cdrtools/burn-cdrecord.c:771
+#: ../src/plugins/cdrtools/burn-cdrecord.c:784
 #: ../src/plugins/cdrtools/burn-mkisofs.c:361
 #: ../src/plugins/cdrtools/burn-readcd.c:111
-#: ../src/plugins/cdrtools/burn-readcd.c:331
+#: ../src/plugins/cdrtools/burn-readcd.c:337
 #, c-format
 msgid "An internal error occured"
 msgstr "发生一个内部错误"
@@ -3429,14 +3449,14 @@ msgstr "\"%s\" 已存在"
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
 #: ../src/burn-job.c:775 ../src/main.c:209 ../src/main.c:235
-#: ../src/plugins/cdrtools/burn-cdrecord.c:636
+#: ../src/plugins/cdrtools/burn-cdrecord.c:658
 #: ../src/plugins/libburnia/burn-libburn.c:691
 #: ../src/plugins/transcode/burn-transcode.c:663
 #, c-format
 msgid "An internal error occured (%s)"
 msgstr "发生一个内部错误( %s)"
 
-#: ../src/burn-mkisofs-base.c:154 ../src/burn-mkisofs-base.c:586
+#: ../src/burn-mkisofs-base.c:154 ../src/burn-mkisofs-base.c:632
 #: ../src/plugins/growisofs/burn-growisofs.c:520
 #: ../src/plugins/libburnia/burn-libisofs.c:669
 #: ../src/plugins/checksum/burn-checksum-image.c:274
@@ -3444,7 +3464,7 @@ msgstr "发生一个内部错误( %s)"
 msgid "The file is not stored locally"
 msgstr "该文件不是在本地存放的"
 
-#: ../src/burn-mkisofs-base.c:722
+#: ../src/burn-mkisofs-base.c:784
 #, c-format
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "VIDEO_TS 目录缺失或无效"
@@ -3664,15 +3684,18 @@ msgid "Unknown character encoding"
 msgstr "未知的字符编码"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:183
+#: ../src/plugins/cdrkit/burn-readom.c:117
 #: ../src/plugins/cdrtools/burn-mkisofs.c:184
+#: ../src/plugins/cdrtools/burn-readcd.c:117
+#, c-format
 msgid "There is no space left on the device"
-msgstr "设备商没有剩余空间"
+msgstr "设备上无剩余空间"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:519
 msgid "Use genisoimage to create images from a file selection"
 msgstr "使用 genisoimage 从选定的文件中创建映像"
 
-#: ../src/plugins/cdrkit/burn-readom.c:401
+#: ../src/plugins/cdrkit/burn-readom.c:407
 msgid "Use readom to create disc images"
 msgstr "使用 readom 制作盘片映像"
 
@@ -3691,63 +3714,63 @@ msgid ""
 "The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr "如果以该速度刻录光盘这个系统太慢。请尝试使用较低的速度"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:305
-#: ../src/plugins/cdrtools/burn-cdrecord.c:297
+#: ../src/plugins/cdrkit/burn-wodim.c:311
+#: ../src/plugins/cdrtools/burn-cdrecord.c:306
 msgid "Formatting disc"
 msgstr "正在格式化盘片"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:324
-#: ../src/plugins/cdrtools/burn-cdrecord.c:308
+#: ../src/plugins/cdrkit/burn-wodim.c:330
+#: ../src/plugins/cdrtools/burn-cdrecord.c:317
 msgid "Writing cue sheet"
 msgstr "正在写入 cue 表"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:345
-#: ../src/plugins/cdrtools/burn-cdrecord.c:329
+#: ../src/plugins/cdrkit/burn-wodim.c:351
+#: ../src/plugins/cdrtools/burn-cdrecord.c:338
 #, c-format
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "记录前光盘需要重新载入"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1166
+#: ../src/plugins/cdrkit/burn-wodim.c:1185
 msgid "Use wodim to burn CDs and DVDs"
 msgstr "使用 wodim 刻录 CD 和 DVD"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1321
+#: ../src/plugins/cdrkit/burn-wodim.c:1340
 msgid "Enable \"-immed\" flag (see wodim manual)"
 msgstr "启用 \"-immed\" 标志 (参见 wodim 手册)"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1324
+#: ../src/plugins/cdrkit/burn-wodim.c:1343
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "最少的光驱缓冲填充率( %之内) (参见 wodim 手册)"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1083
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1105
 msgid "Use cdrecord to burn CDs and DVDs"
 msgstr "使用 cdrecord 刻录 CD 和 DVD"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1306
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1328
 msgid "Enable \"-immed\" flag (see cdrecord manual)"
 msgstr "启用 \"-immed\" 标记 (参见 cdrecord 手册)"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1309
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1331
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
 msgstr "最小的光驱缓冲填充率( %%之内) (参见 cdrecord 手册)"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:130
 msgid "This version of mkisofs is not supported"
-msgstr "不支持本版本的 mkisofs "
+msgstr "不支持本版本的 mkisofs"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:526
 msgid "Use mkisofs to create image from a file selection"
 msgstr "使用 mkisofs 从选定的文件创建映像"
 
-#: ../src/plugins/cdrtools/burn-readcd.c:411
+#: ../src/plugins/cdrtools/burn-readcd.c:417
 msgid "Use readcd to create disc images"
 msgstr "使用 readcd 制作盘片映像"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:122
 #, c-format
 msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
-msgstr "加密的 DVD：请安装版本为 1.2.x 的 libdvdcss "
+msgstr "加密的 DVD：请安装版本为 1.2.x 的 libdvdcss"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:129
 #, c-format
@@ -3756,7 +3779,7 @@ msgid ""
 "Please install libdvdcss version 1.2.x"
 msgstr ""
 "不支持版本为 %s 的 libdvdcss。\n"
-"请安装版本为 1.2.x 的 libdvdcss "
+"请安装版本为 1.2.x 的 libdvdcss"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:139
 #, c-format
@@ -3786,7 +3809,7 @@ msgstr "正在取回 DVD 密钥"
 #: ../src/plugins/dvdcss/burn-dvdcss.c:356
 #, c-format
 msgid "Video DVD could not be opened"
-msgstr "无法打开视频 DVD "
+msgstr "无法打开视频 DVD"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:374
 #: ../src/plugins/dvdcss/burn-dvdcss.c:435
@@ -3807,11 +3830,11 @@ msgstr "Dvdcss 允许读取 css 加密的视频 DVD"
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "Dvd+rw-format 可以删除和格式化 DVD+/-R(W)"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:738
+#: ../src/plugins/growisofs/burn-growisofs.c:740
 msgid "Growisofs burns DVDs"
 msgstr "Growisofs 可以刻录 DVD"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:916
+#: ../src/plugins/growisofs/burn-growisofs.c:918
 msgid "Allow DAO use"
 msgstr "允许使用 DAO"
 
@@ -3848,7 +3871,7 @@ msgstr "无法获得该光驱地址"
 #: ../src/plugins/libburnia/burn-libburn-common.c:354
 #, c-format
 msgid "Writing track %02i"
-msgstr "正在写入音轨 %02i "
+msgstr "正在写入音轨 %02i"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:312
 #: ../src/plugins/libburnia/burn-libisofs.c:851
@@ -3897,7 +3920,7 @@ msgstr "libisofs 可从文件创建光盘映像"
 #: ../src/plugins/local-track/burn-local-image.c:167
 #, c-format
 msgid "Copying `%s` locally"
-msgstr "正在本地复制 `%s` "
+msgstr "正在本地复制 `%s`"
 
 #: ../src/plugins/local-track/burn-local-image.c:231
 #: ../src/plugins/local-track/burn-local-image.c:321
@@ -3920,15 +3943,15 @@ msgstr "文件下载器"
 msgid "Allows to burn files not stored locally"
 msgstr "允许刻录非本地储存的文件"
 
-#: ../src/plugins/transcode/burn-normalize.c:499
+#: ../src/plugins/transcode/burn-normalize.c:501
 msgid "Normalizing tracks"
 msgstr "正在均化音轨"
 
-#: ../src/plugins/transcode/burn-normalize.c:590
+#: ../src/plugins/transcode/burn-normalize.c:591
 msgid "Normalize"
 msgstr "正常化"
 
-#: ../src/plugins/transcode/burn-normalize.c:591
+#: ../src/plugins/transcode/burn-normalize.c:592
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr "均化允许设定不同音轨的声音大小一致"
 
@@ -3977,17 +4000,17 @@ msgstr "预览"
 
 #: ../src/brasero-split-dialog.c:157
 msgid "Do you really want to split the track?"
-msgstr "你真的确定要分割音轨吗？"
+msgstr "您真的想要分割此音轨吗？"
 
 #: ../src/brasero-split-dialog.c:160
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
-msgstr "如果你分割音轨，新音轨的长度将短于6秒，将被补白。"
+msgstr "如果分割音轨，新音轨的长度将短于 6 秒且将被填补。"
 
 #: ../src/brasero-split-dialog.c:166 ../src/brasero-split-dialog.c:739
 msgid "_Split"
-msgstr "分割(_S"
+msgstr "分割(_S)"
 
 #: ../src/brasero-split-dialog.c:594
 msgid "The track wasn't split."
@@ -4007,7 +4030,7 @@ msgstr "这将删除所有前面的结果"
 
 #: ../src/brasero-split-dialog.c:737
 msgid "Do you really want to carry on with automatic splitting?"
-msgstr "你真的确定要进行自动分割吗？"
+msgstr "您真的想要继续自动分割吗？"
 
 #: ../src/brasero-split-dialog.c:738
 msgid "_Don't split"
@@ -4023,7 +4046,7 @@ msgstr "全部删除(_m)"
 
 #: ../src/brasero-split-dialog.c:1044
 msgid "Split Track"
-msgstr "分割音軌"
+msgstr "分割音轨"
 
 #: ../src/brasero-split-dialog.c:1063
 msgid "M_ethod:"
@@ -4231,7 +4254,7 @@ msgstr "从该区域拖动并释放项目到外面"
 
 #: ../src/brasero-disc.c:663
 msgid "select items in this area, and choose \"Remove\" from context menu"
-msgstr "在该区域中选定项目，然后从关联菜单中选择 \"删除\" "
+msgstr "在该区域中选定项目，然后从关联菜单中选择 \"删除\""
 
 #: ../src/brasero-disc.c:664
 msgid "select items in this area, and press \"Delete\" key"
@@ -4273,8 +4296,8 @@ msgstr "无法读取的文件"
 msgid "Broken symbolic link"
 msgstr "损坏的符号链接"
 
-#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1085
-#: ../src/brasero-io.c:1960
+#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1107
+#: ../src/brasero-io.c:1982
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "循环的符号链接"
@@ -4327,14 +4350,14 @@ msgstr "过滤选项"
 #: ../src/brasero-data-vfs.c:242
 #, c-format
 msgid "\"%s\" cannot be read"
-msgstr "\"%s\" 没有读取"
+msgstr "无法读取“%s”"
 
-#: ../src/brasero-io.c:1314
+#: ../src/brasero-io.c:1336
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "文件不像是一个播放清单"
 
-#: ../src/brasero-io.c:2423
+#: ../src/brasero-io.c:2445
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "无法创建目录 (%s)"
@@ -4481,25 +4504,25 @@ msgstr "缩放过的"
 msgid "Background Properties"
 msgstr "背景属性"
 
-#: ../src/brasero-jacket-view.c:740
+#: ../src/brasero-jacket-view.c:790
 msgid "Set Bac_kground Properties"
 msgstr "设定背景属性(_k)"
 
-#: ../src/brasero-jacket-view.c:781
+#: ../src/brasero-jacket-view.c:831
 msgid "SIDES"
 msgstr "侧边"
 
-#: ../src/brasero-jacket-view.c:797
+#: ../src/brasero-jacket-view.c:847
 msgid "BACK COVER"
-msgstr "背面图片"
+msgstr "背面封面"
 
-#: ../src/brasero-jacket-view.c:814
+#: ../src/brasero-jacket-view.c:864
 msgid "FRONT COVER"
-msgstr "封面图片"
+msgstr "正面封面"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../src/brasero-jacket-view.c:1100
+#: ../src/brasero-jacket-view.c:1135
 msgid "The image could not be loaded."
 msgstr "该映像无法载入。"
 
@@ -4673,6 +4696,240 @@ msgstr "复制 CD/DVD"
 msgid "Disc Copier"
 msgstr "光盘复制器"
 
+#~ msgid "Directories cannot be added to video or audio discs"
+#~ msgstr "无法向音/视频光盘添加目录"
+
+#~ msgid "Playlists cannot be added to video or audio discs"
+#~ msgstr "无法向音/视频光盘添加播放列表"
+
+#~ msgid "There are no files to write to disc"
+#~ msgstr "没有要写入光盘的文件"
+
+#~ msgid "\"%s\" is a recursive symbolic link."
+#~ msgstr "\"%s\" 是一个递归的符号连接。"
+
+#~ msgid "Retrieving image format and size"
+#~ msgstr "检出映像格式及大小"
+
+#~ msgid "The format of the disc image could not be identified"
+#~ msgstr "无法识别光盘映像格式"
+
+#~ msgid "Please set it manually"
+#~ msgstr "请手动设置"
+
+#~ msgid "_Blank Disc"
+#~ msgstr "擦除光盘(_B)"
+
+#~ msgid "CD-RW audio discs may not play correctly in older CD players."
+#~ msgstr "CD-RW音频光盘可能无法在旧型号的CD机上正确播放。"
+
+#~ msgid "There are some files left to burn"
+#~ msgstr "仍有一些文件没有刻录"
+
+#~ msgid "There are some more videos left to burn"
+#~ msgstr "仍有一些视频没有刻录"
+
+#~ msgid "There are some more songs left to burn"
+#~ msgstr "仍有一些曲目没有刻录"
+
+#~ msgid "C_ontinue Burning"
+#~ msgstr "继续刻录(_O)"
+
+#~ msgid ""
+#~ "The data size is too large for the disc even with the overburn option."
+#~ msgstr "即使使用超刻(overburn)，对于此光盘而言数据量仍然太大。"
+
+#~ msgid "Please add files."
+#~ msgstr "请添加文件。"
+
+#~ msgid "Please add songs."
+#~ msgstr "请添加曲目。"
+
+#~ msgid "There are no songs to write to disc"
+#~ msgstr "无曲目写入光盘"
+
+#~ msgid "Please add videos."
+#~ msgstr "请添加视频。"
+
+#~ msgid "There are no videos to write to disc"
+#~ msgstr "无视频写入光盘"
+
+#~ msgid "Please select a disc image."
+#~ msgstr "请选择映像。"
+
+#~ msgid "There is no selected disc image."
+#~ msgstr "未选择光盘映像"
+
+#~ msgctxt "disc"
+#~ msgid "Please select another image."
+#~ msgstr "请选择另一映像"
+
+#~ msgid ""
+#~ "The data size is too large for the disc and you must remove files from "
+#~ "the selection otherwise.\n"
+#~ "You may want to use this option if you're using 90 or 100 min CD-R(W) "
+#~ "which cannot be properly recognised and therefore need overburn option.\n"
+#~ "NOTE: This option might cause failure."
+#~ msgstr ""
+#~ "对该光盘而言数据量太大，您必须减少所选择的文件。\n"
+#~ "如下情况您可能会用到该选项：您使用的是90或100分钟容量的CD-R(W)光盘，且该光"
+#~ "盘无法被正确识别，需要使用超刻(Overburn)功能。\n"
+#~ "注意：该选项可能导致刻盘失败。"
+
+#~ msgid ""
+#~ "There is only one selected file (\"%s\"). It is the image of a disc and "
+#~ "its contents can be burnt."
+#~ msgstr "只选择了一个文件 (\"%s\")。该文件为光盘映像，其内容可以被刻录。"
+
+#~ msgid "SVCD image"
+#~ msgstr "SVCD 映像"
+
+#~ msgid "VCD image"
+#~ msgstr "VCD 映像"
+
+#~ msgid "Video DVD image"
+#~ msgstr "DVD 视频映像"
+
+#~ msgid "%s: not enough free space"
+#~ msgstr "%s: 剩余空间不足"
+
+#~ msgid "%s: %s free"
+#~ msgstr "%s: 剩余%s"
+
+#~ msgid "Location for _Temporary Files"
+#~ msgstr "临时文件位置(_T)"
+
+#~ msgid "Set the directory where to store temporary files"
+#~ msgstr "设置临时文件的存放目录"
+
+#~ msgid "Disc image type:"
+#~ msgstr "光盘映像类型："
+
+#~ msgid "Autodetect"
+#~ msgstr "自动检测"
+
+#~ msgid "ISO9660 image"
+#~ msgstr "ISO9660 映像"
+
+#~ msgid "Readcd/Readom image"
+#~ msgstr "Readcd/Readom 映像"
+
+#~ msgid "Cue image"
+#~ msgstr "Cue 映像"
+
+#~ msgid "Cdrdao image"
+#~ msgstr "Cdrdao 映像"
+
+#~ msgid "\"%s\": unknown disc image type"
+#~ msgstr "\"%s\": 未知映像类型"
+
+#~ msgid "Click here to select a disc _image"
+#~ msgstr "点此选择光盘映像(_I)"
+
+#~ msgid "Select Disc Image"
+#~ msgstr "选择光盘映像"
+
+#~ msgctxt "disc"
+#~ msgid "Image files"
+#~ msgstr "映像文件"
+
+#~ msgid "Not enough space available on the disc (%s available for %s)"
+#~ msgstr "没有光盘上足够空间(只有%s，需要%s)"
+
+#~ msgid ""
+#~ "\"%s\" is a symbolic link pointing to another program. Use the target "
+#~ "program instead"
+#~ msgstr "\"%s\" 是指向另一个程序的符号链接。使用目标程序来替代"
+
+#~ msgid "The project could not be opened"
+#~ msgstr "该项目无法打开"
+
+#~ msgid "The file is empty"
+#~ msgstr "此为空文件夹"
+
+#~ msgid "It does not seem to be a valid Brasero project"
+#~ msgstr "这似乎不是一个有效的Brasero项目"
+
+#~ msgid "%s h"
+#~ msgstr "%s小时"
+
+#~ msgid "%s:%s"
+#~ msgstr "%s:%s"
+
+#~ msgid "Blank disc (%s)"
+#~ msgstr "空白光盘(%s)"
+
+#~ msgctxt "picture"
+#~ msgid "Please select another image."
+#~ msgstr "请选择另一映像"
+
+#~ msgid "Medium Icon"
+#~ msgstr "中号图标"
+
+#~ msgctxt "picture"
+#~ msgid "Image files"
+#~ msgstr "图像文件"
+
+#~ msgid "Quit Brasero"
+#~ msgstr "退出Brasero"
+
+#~ msgid "Error while loading the project"
+#~ msgstr "载入项目时发生的错误"
+
+#~ msgid "Replace symbolic links by their targets"
+#~ msgstr "将符号链接替换为其目标"
+
+#~ msgid ""
+#~ "Should brasero replace symbolic links by their target files in the "
+#~ "project. Set to true, brasero will replace symbolic links."
+#~ msgstr ""
+#~ "是否让brasero将项目中的符号链接替换为其目标文件。设置为真(true)，brasero将"
+#~ "替换符号链接。"
+
+#~ msgid "Always K_eep"
+#~ msgstr "始终保留(_E)"
+
+#~ msgid "_Keep"
+#~ msgstr "保留(_K)"
+
+#~ msgid "Al_ways Replace"
+#~ msgstr "始终替换(_W)"
+
+#~ msgid "Ne_ver Add Such File"
+#~ msgstr "从不添加此文件(_V)"
+
+#~ msgid "Al_ways Add Such File"
+#~ msgstr "总是添加该文件(_W)"
+
+#~ msgid "Audio files"
+#~ msgstr "音频文件"
+
+#~ msgid "Estimated size: %s"
+#~ msgstr "估算大小： %s"
+
+#~ msgid "Size Estimation"
+#~ msgstr "估算大小"
+
+#~ msgid "Please wait until the estimation of the size is completed."
+#~ msgstr "请等待大小估算完成。"
+
+#~ msgid "All files need to be analysed to complete this operation."
+#~ msgstr "若要完成此操作所有文件都需经过分析."
+
+#~ msgid ""
+#~ "The location you chose to store the image on does not have enough free "
+#~ "space for the disc image"
+#~ msgstr "您所选择的位置没有足够剩余空间来存储光盘映像"
+
+#~ msgid "Re_place symbolic links"
+#~ msgstr "替换符号链接(_P)"
+
+#~ msgid "Filter _broken symbolic links"
+#~ msgstr "过滤残缺的符号链接(_B)"
+
+#~ msgid "Brasero Disc Copier"
+#~ msgstr "Brasero 光盘刻录器"
+
 #~ msgid ""
 #~ "The size of the project is too large for the disc.\n"
 #~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
@@ -4687,727 +4944,17 @@ msgstr "光盘复制器"
 #~ msgid "The size could not be retrieved (%s)"
 #~ msgstr "无法获得大小信息 (%s)"
 
-#~ msgid "<keep current values>"
-#~ msgstr "<保持当前值>"
-
-#~ msgid "Cdrdao toc file"
-#~ msgstr "Cdrdao 的 TOC 文件"
-
 #~ msgid "The disc could not be mounted (max attemps reached)"
 #~ msgstr "该光盘无法挂载(已达到最大尝试次数)"
-
-#~ msgid "1 item"
-#~ msgstr "1 项"
-
-#~ msgid "Substitute"
-#~ msgstr "字幕"
-
-#~ msgid "Do you want to continue or discard the old project layout?"
-#~ msgstr "你想继续还是放弃原项目布局？"
-
-#~ msgid "Press if you want to cancel current project loading"
-#~ msgstr "如果你想取消当前项目载入请按"
-
-#~ msgid "Native aspect _ratio"
-#~ msgstr "原始高宽比例(_r)"
-
-#~ msgid "Add _AC3 audio stream"
-#~ msgstr "添加 AC3 音频流(_A)"
-
-#~ msgid "Add _MP2 audio stream"
-#~ msgstr "添加 MP2 音频流(_M)"
 
 #~ msgid "Audio Options"
 #~ msgstr "音频选项"
 
-#~ msgid "CD/DVD burning"
-#~ msgstr "CD/DVD 刻录中"
-
-#~ msgid "Image Extension"
-#~ msgstr "映像扩展名"
-
-#~ msgid "_Don't change extension"
-#~ msgstr "不更改扩展名(_D)"
-
-#~ msgid "Configure some options for the recording"
-#~ msgstr "设置一些刻录的选项"
-
-#~ msgid "Number of copies "
-#~ msgstr "副本数量 "
-
-#~ msgid "Eject media"
-#~ msgstr "弹出媒介"
-
-#~ msgid "Contents"
-#~ msgstr "内容"
-
-#~ msgid "_Disc Info"
-#~ msgstr "光盘信息(_D)"
-
-#~ msgid "Display information on blank discs currently inserted"
-#~ msgstr "显示当前插入的空白盘片信息。"
-
-#~ msgid "Brasero projects"
-#~ msgstr "Brasero 项目"
-
-#~ msgid "Brasero Disc Burning"
-#~ msgstr "Brasero 光盘刻录中"
-
-#~ msgid ""
-#~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-#~ msgstr "仅和 cdrecord 的 - immed 标记一起使用。请参见 immed_flag 。"
-
-#~ msgid "Should brasero ask to be set as the default app to burn"
-#~ msgstr "是否让 brasero 请求设定为默认刻录程序"
-
-#~ msgid ""
-#~ "Should brasero ask to be set as the default app to burn audio or data. "
-#~ "Set to true, brasero won't ask."
-#~ msgstr ""
-#~ "是否让 brasero 请求设定为刻录音频或数据的默认程序。设定为真(true) ， "
-#~ "brasero 将不再询问。"
-
-#~ msgid "Track Length"
-#~ msgstr "音轨长度"
-
-#~ msgid "Unhandled Song"
-#~ msgstr "未处理的歌曲"
-
-#~ msgid "Video File"
-#~ msgstr "视频文件"
-
-#~ msgid "_Ignore video"
-#~ msgstr "忽略视频(_I)"
-
-#~ msgid "_Add video"
-#~ msgstr "添加视频(_A)"
-
-#~ msgid "Directory Search"
-#~ msgstr "目录搜索"
-
-#~ msgid "File \"%s\" can't be opened."
-#~ msgstr "文件 \"%s\" 无法打开"
-
-#~ msgid "Unreadable File"
-#~ msgstr "无法读取的文件"
-
-#~ msgid "loading"
-#~ msgstr "正在载入"
-
-#~ msgid "Error"
-#~ msgstr "错误"
-
-#~ msgid "File Deletion"
-#~ msgstr "文件删除"
-
-#~ msgid "Error Blanking:"
-#~ msgstr "擦除錯誤："
-
-#~ msgid "Blanking Finished"
-#~ msgstr "擦除完毕"
-
-#~ msgid "Unexpected error"
-#~ msgstr "未預期的錯誤"
-
-#~ msgid "this format is not supported by gstreamer"
-#~ msgstr "该格式不被 gstreamer 所支持"
-
-#~ msgid "Show"
-#~ msgstr "显示"
-
-#~ msgid "Playlist Loading Error"
-#~ msgstr "播放清单载入时出错"
-
-#~ msgid "Loading ..."
-#~ msgstr "正在载入..."
-
-#~ msgid "Plugins"
-#~ msgstr "插件"
-
-#~ msgid "Total time:"
-#~ msgstr "全部时间："
-
-#~ msgid "%i MiB"
-#~ msgstr "%i MiB"
-
-#~ msgid "%i KiB"
-#~ msgstr "%i KiB"
-
-#~ msgid "%i bytes"
-#~ msgstr "%i 字节"
-
 #~ msgid "only in\t"
-#~ msgstr "仅在 \t"
-
-#~ msgid "Search Error"
-#~ msgstr "搜索出错"
-
-#~ msgid "Cancel"
-#~ msgstr "取消"
-
-#~ msgid "waiting"
-#~ msgstr "等待中"
-
-#~ msgid "KiB"
-#~ msgstr "KiB"
-
-#~ msgid "MiB"
-#~ msgstr "MiB"
-
-#~ msgid "GiB"
-#~ msgstr "GiB"
-
-#~ msgid "This file can't be opened:"
-#~ msgstr "文件无法打开："
-
-#~ msgid "File Error"
-#~ msgstr "文件错误"
-
-#~ msgid ""
-#~ "A recording was successfully completed.\n"
-#~ "The next recording will begin as soon as a recordable medium is inserted."
-#~ msgstr ""
-#~ "刻录成功完成。\n"
-#~ "插入新可刻录媒介即开始下一次刻录。"
-
-#~ msgid "The disc in \"%s\" is a DVD."
-#~ msgstr "\"%s\" 中的盘片是一张 DVD。"
-
-#~ msgid "The disc in \"%s\" is a CD."
-#~ msgstr "\"%s\" 中的盘片是一张 CD。"
-
-#~ msgid "The disc in \"%s\" is not big enough."
-#~ msgstr "\"%s\" 内的光盘容量不够大。"
-
-#~ msgid "Possible Data Loss"
-#~ msgstr "有可能丢失数据"
-
-#~ msgid "Multisession Disc"
-#~ msgstr "多区段光盘"
-
-#~ msgid "Continue"
-#~ msgstr "继续"
-
-#~ msgid "Successful Simulation"
-#~ msgstr "模拟成功"
-
-#~ msgid "Session Log Error"
-#~ msgstr "区段日志错误"
-
-#~ msgid "An unknown error occured. Check your disc"
-#~ msgstr "一个未知错误发生，请检查你的光盘"
-
-#~ msgid "Burning Error"
-#~ msgstr "刻录错误"
-
-#~ msgid "Confirm"
-#~ msgstr "確認"
-
-#~ msgid "Session Import Error"
-#~ msgstr "进程导入错误"
-
-#~ msgid "unknown error"
-#~ msgstr "无知错误"
+#~ msgstr "仅在\t"
 
 #~ msgid "_Cancel"
 #~ msgstr "取消(_C)"
 
-#~ msgid "Recursive Symlink"
-#~ msgstr "循环的符号链接"
-
-#~ msgid "File Not Found"
-#~ msgstr "文件没有找到"
-
-#~ msgid "Already Existing File"
-#~ msgstr "已有文件存在"
-
-#~ msgid "_Don't replace"
-#~ msgstr "不更换(_D)"
-
-#~ msgid "File Over 2 GiB"
-#~ msgstr "文件超过 2 GiB"
-
-#~ msgid "_Don't add"
-#~ msgstr "不添加(_D)"
-
-#~ msgid "Deep Directory"
-#~ msgstr "深层目录"
-
-#~ msgid "_Don't rename"
-#~ msgstr "不重命名(_D)"
-
-#~ msgid ""
-#~ "Some files don't have a suitable name for a Windows-compatible CD. Those "
-#~ "names will be changed and truncated to 64 characters."
-#~ msgstr ""
-#~ "一些文件含有与 Windows 不兼容的名字。这些文件名将被改变并截断至64个字符。"
-
-#~ msgid "Leave the disc _open to add a data session later"
-#~ msgstr "不关闭光盘以使稍候可添加另一段数据(_o)"
-
-#~ msgid "Allow create what is called an enhanced CD or CD+"
-#~ msgstr "允许创建所谓的增强 CD 或 CD+"
-
-#~ msgid "<b>Burning speed</b>"
-#~ msgstr "<b>刻录速度</b>"
-
-#~ msgid "Image File Properties"
-#~ msgstr "映像文件属性"
-
-#~ msgid "Please wait:"
-#~ msgstr "请等待："
-
-#~ msgid "Please Wait"
-#~ msgstr "请等待"
-
-#~ msgid "some tasks are not completed yet."
-#~ msgstr "一些任务还没有完成"
-
-#~ msgid "Ongoing Tasks"
-#~ msgstr "正在进行的任务"
-
-#~ msgid "Empty Project"
-#~ msgstr "清空项目"
-
-#~ msgid "New Project"
-#~ msgstr "新项目"
-
-#~ msgid "Add"
-#~ msgstr "添加"
-
-#~ msgid "Remove"
-#~ msgstr "删除"
-
-#~ msgid "Project Loading Error"
-#~ msgstr "项目载入时出错"
-
-#~ msgid "Modified Project"
-#~ msgstr "修改过的项目"
-
-#~ msgid " by %s"
-#~ msgstr "由 %s"
-
-#~ msgid "Create a new audio project"
-#~ msgstr "创建新的音频项目"
-
-#~ msgid "Create a new data project"
-#~ msgstr "创建一个新的数据项目"
-
-#~ msgid "Create a new video project"
-#~ msgstr "创建一个新的视频项目"
-
-#~ msgid "Display File Browser"
-#~ msgstr "显示文件浏览器"
-
-#~ msgid "Display Playlists"
-#~ msgstr "显示播放清单"
-
-#~ msgid "<big>Audi_o project</big>"
-#~ msgstr "<big>视频项目(_o)</big>"
-
-#~ msgid "<big>D_ata project</big>"
-#~ msgstr "<big>数据项目(_a)</big>"
-
-#~ msgid "<big>_Video project</big>"
-#~ msgstr "<big>视频项目(_V)</big>"
-
-#~ msgid "<big>Disc _copy</big>"
-#~ msgstr "<big>光盘复制(_c)</big>"
-
-#~ msgid "<big>Burn _image</big>"
-#~ msgstr "<b>刻录映像(_i)</b>"
-
-#~ msgid "File Integrity Check Error"
-#~ msgstr "文件完整性检查出错"
-
-#~ msgid "File Integrity Check Success"
-#~ msgstr "文件完整性检查成功"
-
-#~ msgid "a temporary file couldn't be created"
-#~ msgstr "无法创建临时文件"
-
-#~ msgid "Media Busy"
-#~ msgstr "媒介正忙"
-
-#~ msgid "the inserted media is busy."
-#~ msgstr "插入的媒介正忙。"
-
-#~ msgid "Media Error"
-#~ msgstr "媒介出错"
-
-#~ msgid "the inserted media is not supported."
-#~ msgstr "不支持已插入的媒介。"
-
-#~ msgid "Choose a media"
-#~ msgstr "选择一个媒介"
-
-#~ msgid "the disc could not be reloaded (max attemps reached)"
-#~ msgstr "光盘无法重新加载(已达到最大尝试次数)"
-
-#~ msgid "no drive specified as source"
-#~ msgstr "没有光驱指定为源"
-
-#~ msgid "the drive has no burning capabilities"
-#~ msgstr "该光驱没有刻录能力"
-
-#~ msgid "the drive seems to be busy"
-#~ msgstr "光驱似乎正忙"
-
-#~ msgid ""
-#~ "it's not possible to merge to this media because it hasn't got enough "
-#~ "space"
-#~ msgstr "无法合并到本媒介因为没有足够空间"
-
-#~ msgid "there is no drive to burn to"
-#~ msgstr "没有光驱可刻录"
-
-#~ msgid "this operation is not supported"
-#~ msgstr "不支持该操作"
-
-#~ msgid "internal error in plugin system"
-#~ msgstr "插件系统内部错误"
-
-#~ msgid "it does not appear to be a primary volume descriptor"
-#~ msgstr "看上去它不是一个主卷描述符"
-
-#~ msgid "invalid directory record"
-#~ msgstr "无效的目录记录"
-
-#~ msgid "file name is too long"
-#~ msgstr "文件过长"
-
-#~ msgid "plugin %s did not want to work. Try to deactivate it"
-#~ msgstr "插件 %s 没有正常工作。请尝试禁用它。"
-
-#~ msgid "Insufficient space on media (%lli available for %lli)"
-#~ msgstr "媒介无足够空间(%lli 剩 %lli 空余)"
-
-#~ msgid ""
-#~ "the selected location does not have enough free space to store the disc "
-#~ "image (%ld MiB needed)"
-#~ msgstr "窜定的位置没有足够的空余空间存放光盘映像(需要 %ld MiB)"
-
-#~ msgid "the size of the volume can't be checked (Unknown error)"
-#~ msgstr "无法检查卷大小(未知错误)"
-
-#~ msgid "no path"
-#~ msgstr "没有路径"
-
-#~ msgid "the pipe couldn't be created (%s)"
-#~ msgstr "无法创建该管道 (%s)"
-
-#~ msgid ""
-#~ "plugin %s did not work properly.\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "插件 %s 没有正确工作。\n"
-#~ "请尝试禁用它"
-
-#~ msgid ""
-#~ "plugin %s didn't work properly (it does not support operation).\n"
-#~ "Try to deactivate it"
-#~ msgstr ""
-#~ "插件 %s 没有正确工作(不支持该操作)。\n"
-#~ "请尝试禁用它"
-
-#~ msgid "couldn't set non blocking mode"
-#~ msgstr "无法设定非模块化模式"
-
-#~ msgid "couldn't get pipe flags"
-#~ msgstr "无法获得管道标志"
-
-#~ msgid "file"
-#~ msgstr "文件"
-
-#~ msgid "null graft point"
-#~ msgstr "空结合点"
-
-#~ msgid "wrong path"
-#~ msgstr "错误路径"
-
-#~ msgid "impossible to retrieve information"
-#~ msgstr "无法获得信息"
-
-#~ msgid "no output specified"
-#~ msgstr "没有指定输出"
-
-#~ msgid "a temporary directory could not be created (%s)"
-#~ msgstr "无法创建临时目录 (%s)"
-
-#~ msgid "a temporary file can't be created: %s"
-#~ msgstr "无法创建临时文件：%s"
-
-#~ msgid "there isn't a valid volume descriptor"
-#~ msgstr "没有有效的卷描述符"
-
-#~ msgid "Open a data project with the contents of nautilus-cd-burner"
-#~ msgstr "用 nautilus-cd-burner 内容打开一个数据项目"
-
-#~ msgid "Incompatible Options"
-#~ msgstr "无兼容选项"
-
-#~ msgid "the cue file (%s) seems to be invalid"
-#~ msgstr "似乎是无效的 cue (%s) 文件"
-
-#~ msgid "cdrdao could not be found in the path"
-#~ msgstr "cdrdao 没有在路径中找到"
-
-#~ msgid "toc2cue could not be found in the path"
-#~ msgstr "toc2cue 没有在路径下找到"
-
-#~ msgid "the old image couldn't be read"
-#~ msgstr "旧映像无法读取"
-
-#~ msgid "the image can't be created"
-#~ msgstr "无法创建该映像"
-
-#~ msgid "writing to file descriptor failed"
-#~ msgstr "写入文件描述符失败"
-
-#~ msgid "Internal error: bad file descriptor"
-#~ msgstr "内部错误：坏的文件描述符"
-
-#~ msgid "The file is too large for a CD"
-#~ msgstr "对于该光盘来说文件太大了"
-
-#~ msgid ""
-#~ "failed to get the start point of the track. Make sure the media allow to "
-#~ "add files (it is not closed)"
-#~ msgstr "无法得到音轨的起始点。请确认媒介允许添加文件(没有关闭)"
-
-#~ msgid "genisoimage could not be found in the path"
-#~ msgstr " genisoimage没有在路径下找到"
-
-#~ msgid "the drive is not ready"
-#~ msgstr "光驱未准备好"
-
-#~ msgid "you don't seem to have the required permissions to access the drive"
-#~ msgstr "你似乎没有访问该光驱所要求的权限"
-
-#~ msgid "raw images cannot be created with DVDs"
-#~ msgstr "原始映像无法用 DVD 创建"
-
-#~ msgid "There doesn't seem to be a disc in the drive"
-#~ msgstr "光驱中似乎没有光盘"
-
-#~ msgid "input buffer error"
-#~ msgstr "输入缓冲出错"
-
-#~ msgid "The CD has already been recorded"
-#~ msgstr "本光盘已经刻录"
-
-#~ msgid "The CD cannot be blanked"
-#~ msgstr "无法清空光盘"
-
-#~ msgid "The files selected did not fit on the CD"
-#~ msgstr "选定的文件不适合该光盘"
-
-#~ msgid "a write error occured which was likely due to overburning the disc"
-#~ msgstr "发生写入错误，可能是超刻本光盘导致"
-
-#~ msgid ""
-#~ "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-#~ msgstr "所有音频文件必须是立体声，16位44100Hz采样率的数字音频。"
-
-#~ msgid "The image does not seem to be a proper iso9660 file system"
-#~ msgstr "该映像不像是合适的 iso9660 文件系统"
-
-#~ msgid ""
-#~ "The drive seems to be busy (maybe check you have proper permissions to "
-#~ "use it)"
-#~ msgstr "光驱似乎正忙(也可检查一下你是否有正确的权限去使用该光驱)"
-
-#~ msgid "The drive seems to be busy (maybe you should reload the media)"
-#~ msgstr "光驱似乎正忙(也可尝试重新加载本媒介)"
-
-#~ msgid "the image file cannot be found"
-#~ msgstr "没有找到该映像文件"
-
-#~ msgid "internal error"
-#~ msgstr "内部錯誤"
-
-#~ msgid "the cd information could not be written"
-#~ msgstr "光盘信息无法写入"
-
-#~ msgid "the disc could not be closed"
-#~ msgstr "无法关闭光盘"
-
-#~ msgid "the audio tracks are too short or not a multiple of 2352"
-#~ msgstr "音轨太短或者不是 2352 的倍数"
-
-#~ msgid "the inf file can't be written : %s"
-#~ msgstr "inf 文件无法写入：%s"
-
-#~ msgid "imager doesn't seem to be ready"
-#~ msgstr "映像制作器似乎没有准备完毕"
-
-#~ msgid "the size of the session cannot be retrieved"
-#~ msgstr "无法获取该区段大小"
-
-#~ msgid "mkisofs could not be found in the path"
-#~ msgstr "mkisofs 没有在路径下找到。"
-
-#~ msgid "readcd could not be found in the path"
-#~ msgstr "readcd 没有在路径下找到"
-
-#~ msgid "the data couldn't be written to the pipe (%i: %s)"
-#~ msgstr "数据无法写入管道 (%i: %s)"
-
-#~ msgid "the data couldn't be written to the file (%i: %s)"
-#~ msgstr "数据无法写入到文件 (%i: %s)"
-
-#~ msgid "Unhandled error, aborting"
-#~ msgstr "未处理的错误，放弃中"
-
-#~ msgid "dvd+rw-format could not be found in the path"
-#~ msgstr "dvd+rw-format 没有在路径下找到"
-
-#~ msgid "The disc is already burnt"
-#~ msgstr "该光盘已刻录"
-
-#~ msgid "The recorder could not be accessed"
-#~ msgstr "无法访问刻录机"
-
-#~ msgid "the file /proc/self/fd/0 is missing"
-#~ msgstr "文件 /proc/self/fd/0 缺失"
-
-#~ msgid "the image is not stored locally"
-#~ msgstr "该映像没有储存在本地"
-
-#~ msgid "growisofs could not be found in the path"
-#~ msgstr "growisofs 无法在路径下找到"
-
-#~ msgid "unable to set the source"
-#~ msgstr "无法设定源"
-
-#~ msgid "unable to add the track to the session"
-#~ msgstr "无法添加音轨到本区段"
-
-#~ msgid "no profile available for the medium"
-#~ msgstr "没有可获得的该媒介属性文件"
-
-#~ msgid "/dev/null can't be opened"
-#~ msgstr "无法打开 /dev/null "
-
-#~ msgid "libburn can't burn: %s"
-#~ msgstr "libburn 无法刻录：%s"
-
-#~ msgid "the drive couldn't be initialized"
-#~ msgstr "无法初始化该光驱"
-
-#~ msgid "a parent for the path (%s) could not be found in the tree"
-#~ msgstr "路径 (%s) 的上层目录无法在目录树下找到"
-
-#~ msgid "non local file %s"
-#~ msgstr "无本地文件 %s"
-
-#~ msgid "libisofs reported an error while adding directory %s (%x)"
-#~ msgstr "添加目录 %s (%x) 时，libisofs 报告了一个错误"
-
-#~ msgid "no disc could be found"
-#~ msgstr "没有找到光盘"
-
-#~ msgid "source can't be created"
-#~ msgstr "源无法创建"
-
-#~ msgid "decode can't be created"
-#~ msgstr "decode 无法创建"
-
-#~ msgid "audioconvert can't be created"
-#~ msgstr "audioconvert 无法创建"
-
-#~ msgid "audioresample can't be created"
-#~ msgstr "无法创建音频重采样率"
-
-#~ msgid "rganalysis can't be created"
-#~ msgstr "rganalysis 无法创建"
-
-#~ msgid "sink can't be created"
-#~ msgstr "无法创建 sink"
-
-#~ msgid "GST plugin \"rgvolume\" could not be found"
-#~ msgstr "GST 插件 \"rgvolume\" 没有找到"
-
-#~ msgid "GST plugin \"rganalysis\" could not be found"
-#~ msgstr "GST 插件 \"rganalysis\" 没有找到"
-
-#~ msgid "filter can't be created"
-#~ msgstr "无法创建过滤器"
-
-#~ msgid "error opening file for padding : %s"
-#~ msgstr "打开补白文件时出错：%s"
-
-#~ msgid "the device is not ready"
-#~ msgstr "该设备没有准备就绪"
-
-#~ msgid " Preview "
-#~ msgstr "预览"
-
-#~ msgid "Size Error"
-#~ msgstr "大小错误"
-
-#~ msgid "No Silence"
-#~ msgstr "没有无声部分"
-
-#~ msgid "Automatic Split"
-#~ msgstr "自动分割"
-
-#~ msgid "size can't be retrieved for %s: %s"
-#~ msgstr "无法获得 %s 的大小：%s"
-
-#~ msgid "unreadable file"
-#~ msgstr "无法读取的文件"
-
-#~ msgid "recursive symlink"
-#~ msgstr "循环的符号链接"
-
 #~ msgid "%s: %s of data"
 #~ msgstr "%s： %s 的数据"
-
-#~ msgid "the file %s couldn't be read (%s)"
-#~ msgstr "%s 文件无法读取 (%s)"
-
-#~ msgid "data could not be read from the pipe (%i: %s)"
-#~ msgstr "数据无法从管道中读取 (%i: %s)"
-
-#~ msgid "the image is not local"
-#~ msgstr "该映像非本地储存"
-
-#~ msgid "by "
-#~ msgstr "由"
-
-#~ msgid "Unhandled file"
-#~ msgstr "未处理的文件"
-
-#~ msgid "queue element can't be created"
-#~ msgstr "queue 元素无法创建"
-
-#~ msgid "ffenc_mp2 can't be created"
-#~ msgstr "ffenc_mp2 无法创建"
-
-#~ msgid "queue1 element can't be created"
-#~ msgstr "queue1 元素无法创建"
-
-#~ msgid "ffenc_ac3 can't be created"
-#~ msgstr "ffenc_ac3 无法创建"
-
-#~ msgid "tee element can't be created"
-#~ msgstr "tee 元素无法创建"
-
-#~ msgid "framerate can't be created"
-#~ msgstr "无法创建影像数率"
-
-#~ msgid "scale can't be created"
-#~ msgstr "无法创建 scale "
-
-#~ msgid "ffmpegcolorspace can't be created"
-#~ msgstr "ffmpegcolorspace 无法创建"
-
-#~ msgid "mpeg2enc can't be created"
-#~ msgstr "mpeg2enc 无法创建"
-
-#~ msgid "mplex can't be created"
-#~ msgstr "无法创建 mplex "
-
-#~ msgid "Brasero Disc Copier"
-#~ msgstr "Brasero 光盘刻录器"
