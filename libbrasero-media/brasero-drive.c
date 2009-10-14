@@ -92,6 +92,7 @@ struct _BraseroDrivePrivate
 	guint probe_cancelled:1;
 
 	guint locked:1;
+	guint ejecting:1;
 	guint probe_waiting:1;
 };
 
@@ -205,7 +206,6 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 
 	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
-
 		/* This to signal that we are cancelling */
 		priv->probe_cancelled = TRUE;
 
@@ -224,6 +224,24 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 		g_source_remove (priv->probe_id);
 		priv->probe_id = 0;
 	}
+}
+
+static void
+brasero_drive_wait_probing_thread (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	g_mutex_lock (priv->mutex);
+	if (priv->probe) {
+		/* This is to wake up the thread if it
+		 * was asleep waiting to retry to get
+		 * hold of a handle to probe the drive */
+		g_cond_signal (priv->cond_probe);
+		g_cond_wait (priv->cond, priv->mutex);
+	}
+	g_mutex_unlock (priv->mutex);
 }
 
 /**
@@ -259,15 +277,20 @@ brasero_drive_eject (BraseroDrive *drive,
 
 	BRASERO_MEDIA_LOG ("Trying to eject drive");
 	if (priv->gdrive) {
-		/* Cancel any ongoing probing as it
+		/*Wait for any ongoing probing as it
 		 * would prevent the door from being
 		 * opened. */
-		brasero_drive_cancel_probing (drive);
+		brasero_drive_wait_probing_thread (drive);
 
+		priv->ejecting = TRUE;
 		res = brasero_gio_operation_eject_drive (priv->gdrive,
 							 priv->cancel,
 							 wait,
 							 error);
+		priv->ejecting = FALSE;
+		if (priv->probe_waiting)
+			brasero_drive_probe_inside (drive);
+
 		if (res)
 			return TRUE;
 	}
@@ -290,11 +313,18 @@ brasero_drive_eject (BraseroDrive *drive,
 		/* Cancel any ongoing probing as it
 		 * would prevent the door from being
 		 * opened. */
-		brasero_drive_cancel_probing (drive);
+		brasero_drive_wait_probing_thread (drive);
+
+		priv->ejecting = TRUE;
 		res = brasero_gio_operation_eject_volume (gvolume,
 							  priv->cancel,
 							  wait,
 							  error);
+
+		priv->ejecting = FALSE;
+		if (priv->probe_waiting)
+			brasero_drive_probe_inside (drive);
+
 		g_object_unref (gvolume);
 	}
 
@@ -432,12 +462,36 @@ brasero_drive_can_use_exclusively (BraseroDrive *drive)
 }
 
 /**
+ * brasero_drive_is_locked:
+ * @drive: a #BraseroDrive
+ * @reason: a #gchar or NULL. A string to indicate what the drive was locked for if return value is %TRUE
+ *
+ * Checks whether a #BraseroDrive is currently locked. Manual ejection shouldn't be possible any more.
+ *
+ * Since 2.29.0
+ *
+ * Return value: %TRUE if the drive is locked or %FALSE.
+ **/
+gboolean
+brasero_drive_is_locked (BraseroDrive *drive,
+                         gchar **reason)
+{
+	BraseroDrivePrivate *priv;
+
+	g_return_val_if_fail (drive != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	return priv->locked;
+}
+
+/**
  * brasero_drive_lock:
  * @drive: a #BraseroDrive
  * @reason: a string to indicate what the drive was locked for
- * @reason_for_failure: a string to hold the reason why the locking failed
+ * @reason_for_failure: a string (or NULL) to hold the reason why the locking failed
  *
- * Locks a #BraseroDrive. Ejection shouldn't be possible any more.
+ * Locks a #BraseroDrive. Manual ejection shouldn't be possible any more.
  *
  * Return value: %TRUE if the drive was successfully locked or %FALSE.
  **/
@@ -509,7 +563,9 @@ brasero_drive_unlock (BraseroDrive *drive)
 		priv->locked = FALSE;
 
 		if (priv->probe_waiting) {
-			/* See if a probe was waiting */
+			BRASERO_MEDIA_LOG ("Probe on hold");
+
+			/* A probe was waiting */
 			priv->probe_waiting = FALSE;
 			brasero_drive_probe_inside (drive);
 		}
@@ -822,7 +878,9 @@ brasero_drive_probed_inside (gpointer data)
 	self = BRASERO_DRIVE (data);
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
-	g_mutex_lock (priv->mutex);
+	if (!g_mutex_trylock (priv->mutex))
+		return TRUE;
+
 	priv->probe_id = 0;
 	g_mutex_unlock (priv->mutex);
 
@@ -1003,7 +1061,7 @@ brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
-	if (priv->locked) {
+	if (priv->locked || priv->ejecting) {
 		BRASERO_MEDIA_LOG ("Waiting for next unlocking of the drive to probe");
 
 		/* Since the drive was locked, it should
@@ -1017,6 +1075,7 @@ brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 		return;
 	}
 
+	BRASERO_MEDIA_LOG ("GDrive changed");
 	brasero_drive_probe_inside (drive);
 }
 
@@ -1047,7 +1106,7 @@ brasero_drive_update_gdrive (BraseroDrive *drive,
 				  drive);
 	}
 
-	if (priv->locked) {
+	if (priv->locked || priv->ejecting) {
 		BRASERO_MEDIA_LOG ("Waiting for next unlocking of the drive to probe");
 
 		/* Since the drive was locked, it should
@@ -1116,7 +1175,9 @@ brasero_drive_probed (gpointer data)
 
 	priv = BRASERO_DRIVE_PRIVATE (data);
 
-	g_mutex_lock (priv->mutex);
+	if (!g_mutex_trylock (priv->mutex))
+		return TRUE;
+
 	priv->probe_id = 0;
 	g_mutex_unlock (priv->mutex);
 
