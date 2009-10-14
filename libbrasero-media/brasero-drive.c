@@ -888,7 +888,6 @@ brasero_drive_probed_inside (gpointer data)
 
 	if (priv->has_medium) {
 		if (priv->medium) {
-			priv->probed = TRUE;
 			BRASERO_MEDIA_LOG ("Already a medium. Skipping");
 			return FALSE;
 		}
@@ -1030,6 +1029,7 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	priv->probed = FALSE;
+	priv->probe_waiting = FALSE;
 
 	/* Check that a probe is not already being performed */
 	g_mutex_lock (priv->mutex);
