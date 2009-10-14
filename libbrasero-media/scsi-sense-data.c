@@ -70,6 +70,7 @@
 #define ASC_ASCQ_CODE_KEY_NOT_ESTABLISHED		0x6F02
 #define ASC_ASCQ_CODE_SCRAMBLED_SECTOR			0x6F03
 #define ASC_ASCQ_CODE_INVALID_TRACK_MODE		0x6400
+#define ASC_ASCQ_CODE_MEDIUM_CHANGED			0x2800
 
 /**
  * error processing 
@@ -180,6 +181,10 @@ brasero_sense_data_unit_attention (uchar *sense_data,
 	switch (SENSE_DATA_ASC_ASCQ (sense_data)) {
 		case ASC_ASCQ_CODE_INSUFFICIENT_TIME_FOR_OPERATION:
 			BRASERO_SCSI_SET_ERRCODE (err, BRASERO_SCSI_TIMEOUT);
+			break;
+
+		case ASC_ASCQ_CODE_MEDIUM_CHANGED:
+			BRASERO_SCSI_SET_ERRCODE (err, BRASERO_SCSI_NOT_READY);
 			break;
 
 		default:
