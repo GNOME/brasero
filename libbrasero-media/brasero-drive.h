@@ -142,6 +142,10 @@ brasero_drive_lock (BraseroDrive *drive,
 gboolean
 brasero_drive_unlock (BraseroDrive *drive);
 
+gboolean
+brasero_drive_is_locked (BraseroDrive *drive,
+                         gchar **reason);
+
 G_END_DECLS
 
 #endif /* _BURN_DRIVE_H_ */

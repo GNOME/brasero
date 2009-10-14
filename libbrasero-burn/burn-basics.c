@@ -90,7 +90,8 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 							N_("Finalizing"),
 							N_("Writing leadout"),
 						        N_("Starting to record"),
-							N_("Success") };
+							N_("Success"),
+							N_("Ejecting medium")};
 	return _(strings [action]);
 }
 

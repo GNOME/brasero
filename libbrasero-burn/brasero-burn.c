@@ -89,9 +89,6 @@ struct _BraseroBurnPrivate {
 	guint64 session_start;
 	guint64 session_end;
 
-	guint src_locked:1;
-	guint dest_locked:1;
-
 	guint mounted_by_us:1;
 };
 
@@ -364,15 +361,54 @@ brasero_burn_eject (BraseroBurn *self,
 		    GError **error)
 {
 	guint counter = 0;
+	BraseroMedium *medium;
+	BraseroBurnResult result;
 
 	BRASERO_BURN_LOG ("Ejecting drive/medium");
+
+	/* Unmount, ... */
+	medium = brasero_drive_get_medium (drive);
+	result = brasero_burn_unmount (self, medium, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	/* Release lock, ... */
+	if (brasero_drive_is_locked (drive, NULL)) {
+		if (!brasero_drive_unlock (drive)) {
+			gchar *name;
+
+			name = brasero_drive_get_display_name (drive);
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("\"%s\" cannot be unlocked"),
+				     name);
+			g_free (name);
+			return BRASERO_BURN_ERR;
+		}
+	}
 
 	/* Retry several times, since sometimes the drives are really busy */
 	while (brasero_drive_get_medium (drive) || brasero_drive_probing (drive)) {
 		GError *ret_error;
-		BraseroBurnResult result;
+
+		/* Don't interrupt a probe */
+		if (brasero_drive_probing (drive)) {
+			result = brasero_burn_sleep (self, 500);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			continue;
+		}
 
 		counter ++;
+		if (counter == 1) {
+			g_signal_emit (self,
+				       brasero_burn_signals [ACTION_CHANGED_SIGNAL],
+				       0,
+				       BRASERO_BURN_ACTION_EJECTING);
+		}
+
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			BRASERO_BURN_LOG ("Max attempts reached at ejecting");
 
@@ -398,94 +434,6 @@ brasero_burn_eject (BraseroBurn *self,
 	}
 
 	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
-brasero_burn_eject_dest_media (BraseroBurn *self,
-			       GError **error)
-{
-	BraseroBurnPrivate *priv;
-	BraseroBurnResult result;
-	BraseroMedium *medium;
-
-	priv = BRASERO_BURN_PRIVATE (self);
-
-	BRASERO_BURN_LOG ("Ejecting destination disc");
-
-	if (!priv->dest)
-		return BRASERO_BURN_OK;
-
-	medium = brasero_drive_get_medium (priv->dest);
-
-	result = brasero_burn_unmount (self, medium, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	if (priv->dest_locked) {
-		priv->dest_locked = 0;
-		if (!brasero_drive_unlock (priv->dest)) {
-			gchar *name;
-
-			name = brasero_drive_get_display_name (priv->dest);
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("\"%s\" cannot be unlocked"),
-				     name);
-			g_free (name);
-			return BRASERO_BURN_ERR;
-		}
-	}
-
-	result = brasero_burn_eject (self, priv->dest, error);
-	priv->dest = NULL;
-
-	return result;
-}
-
-static BraseroBurnResult
-brasero_burn_eject_src_media (BraseroBurn *self,
-			      GError **error)
-{
-	BraseroBurnPrivate *priv;
-	BraseroBurnResult result;
-	BraseroMedium *medium;
-
-	priv = BRASERO_BURN_PRIVATE (self);
-
-	BRASERO_BURN_LOG ("Ejecting source disc");
-
-	if (!priv->src)
-		return BRASERO_BURN_OK;
-
-	/* Release lock, unmount, ... */
-	medium = brasero_drive_get_medium (priv->src);
-
-	result = brasero_burn_unmount (self, medium, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	if (priv->src_locked) {
-		priv->src_locked = 0;
-		if (!brasero_drive_unlock (priv->src)) {
-			gchar *name;
-
-			name = brasero_drive_get_display_name (priv->src);
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("\"%s\" cannot be unlocked"),
-				     name);
-			g_free (name);
-			return BRASERO_BURN_ERR;
-		}
-	}
-
-	/* and eject */
-	result = brasero_burn_eject (self, priv->src, error);
-	priv->src = NULL;
-
-	return result;
 }
 
 static BraseroBurnResult
@@ -530,41 +478,6 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
-brasero_burn_ask_for_location (BraseroBurn *burn,
-			       GError *received_error,
-			       gboolean is_temporary,
-			       GError **error)
-{
-	GValue instance_and_params [3];
-	GValue return_value;
-
-	instance_and_params [0].g_type = 0;
-	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (burn));
-	g_value_set_instance (instance_and_params, burn);
-	
-	instance_and_params [1].g_type = 0;
-	g_value_init (instance_and_params + 1, G_TYPE_POINTER);
-	g_value_set_pointer (instance_and_params + 1, received_error);
-	
-	instance_and_params [2].g_type = 0;
-	g_value_init (instance_and_params + 2, G_TYPE_BOOLEAN);
-	g_value_set_boolean (instance_and_params + 2, is_temporary);
-	
-	return_value.g_type = 0;
-	g_value_init (&return_value, G_TYPE_INT);
-	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
-
-	g_signal_emitv (instance_and_params,
-			brasero_burn_signals [LOCATION_REQUEST_SIGNAL],
-			0,
-			&return_value);
-
-	g_value_unset (instance_and_params);
-	g_value_unset (instance_and_params + 1);
-
-	return g_value_get_int (&return_value);
-}
-static BraseroBurnResult
 brasero_burn_ask_for_src_media (BraseroBurn *burn,
 				BraseroBurnError error_type,
 				BraseroMedia required_media,
@@ -577,7 +490,7 @@ brasero_burn_ask_for_src_media (BraseroBurn *burn,
 	if (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE
 	||  brasero_drive_probing (priv->src)) {
 		BraseroBurnResult result;
-		result = brasero_burn_eject_src_media (burn, error);
+		result = brasero_burn_eject (burn, priv->src, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
@@ -595,12 +508,17 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 				 BraseroMedia required_media,
 				 GError **error)
 {
+	BraseroDrive *drive;
 	BraseroMedium *medium;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
+	/* Since in some cases (like when we reload
+	 * a medium after a copy), the destination
+	 * medium may not be locked yet we use 
+	 * separate variable drive. */
 	if (!priv->dest) {
-		priv->dest = brasero_burn_session_get_burner (priv->session);
-		if (!priv->dest) {
+		drive = brasero_burn_session_get_burner (priv->session);
+		if (!drive) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_OUTPUT_NONE,
@@ -608,19 +526,21 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 			return BRASERO_BURN_ERR;
 		}
 	}
+	else
+		drive = priv->dest;
 
-	medium = brasero_drive_get_medium (priv->dest);
+	medium = brasero_drive_get_medium (drive);
 	if (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE
-	||  brasero_drive_probing (priv->dest)) {
+	||  brasero_drive_probing (drive)) {
 		BraseroBurnResult result;
 
-		result = brasero_burn_eject_dest_media (burn, error);
+		result = brasero_burn_eject (burn, drive, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
 
 	return brasero_burn_ask_for_media (burn,
-					   priv->dest,
+					   drive,
 					   error_type,
 					   required_media,
 					   error);
@@ -649,7 +569,7 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 
 again:
 
-	while (brasero_drive_probing (priv->dest)) {
+	while (brasero_drive_probing (priv->src)) {
 		result = brasero_burn_sleep (burn, 500);
 		if (result != BRASERO_BURN_OK)
 			return result;
@@ -687,7 +607,7 @@ again:
 		goto again;
 	}
 
-	if (!priv->src_locked
+	if (!brasero_drive_is_locked (priv->src, NULL)
 	&&  !brasero_drive_lock (priv->src, _("Ongoing copying process"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -696,8 +616,6 @@ again:
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
-
-	priv->src_locked = 1;
 
 	return BRASERO_BURN_OK;
 }
@@ -788,7 +706,7 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		goto again;
 	}
 
-	if (!priv->dest_locked
+	if (!brasero_drive_is_locked (priv->dest, NULL)
 	&&  !brasero_drive_lock (priv->dest, _("Ongoing blanking process"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -797,8 +715,6 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
-
-	priv->dest_locked = 1;
 
 	return BRASERO_BURN_OK;
 }
@@ -813,61 +729,37 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 					     BraseroMedia media,
 					     gboolean *must_blank)
 {
-	BraseroTrackType *output = NULL;
-	BraseroMedia required_media;
-	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
-	BraseroMedia unsupported;
+	BraseroBurnPrivate *priv;
 	BraseroBurnFlag flags;
-	BraseroMedia missing;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
-	/* make sure that media is supported */
-	output = brasero_track_type_new ();
-	brasero_track_type_set_has_medium (output);
-	brasero_track_type_set_medium_type (output, media);
-
-	result = brasero_burn_session_output_supported (priv->session, output);
-	brasero_track_type_free (output);
+	/* make sure that media is supported.
+	 * Since we did not check the flags and
+	 * and since they might change check if the
+	 * session is supported without the flags */
+	result = brasero_burn_session_can_burn (priv->session, FALSE);
+	if (result != BRASERO_BURN_OK)
+		return BRASERO_BURN_ERROR_MEDIUM_INVALID;
 
 	flags = brasero_burn_session_get_flags (priv->session);
 
-	if (result == BRASERO_BURN_OK) {
-		/* NOTE: this flag is only supported when the media has some
-		 * data and/or audio and when we can blank it */
-		if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
+	/* NOTE: This is the only flags we
+	 * won't change or we'll error out. */
+	if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		if (flags & BRASERO_BURN_FLAG_MERGE)
 			*must_blank = FALSE;
-		else if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)))
+		else if ((media & BRASERO_MEDIUM_REWRITABLE) == 0)
+			/* In this case APPEND will be compulsory */
 			*must_blank = FALSE;
 		else
 			*must_blank = TRUE;
-
-		return BRASERO_BURN_ERROR_NONE;
 	}
-
-	if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+	else
 		*must_blank = FALSE;
-		return BRASERO_BURN_ERROR_MEDIUM_INVALID;
-	}
 
-	/* let's see what our media is missing and what's not supported */
-	required_media = brasero_burn_session_get_required_media_type (priv->session);
-	missing = required_media & (~media);
-	unsupported = media & (~required_media);
-
-	if (missing & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_APPENDABLE)) {
-		/* there is a special case if the disc is rewritable */
-		if ((media & BRASERO_MEDIUM_REWRITABLE)
-		&&   brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK) {
-			*must_blank = TRUE;
-			return BRASERO_BURN_ERROR_NONE;
-		}
-
-		return BRASERO_BURN_ERROR_MEDIUM_NOT_WRITABLE;
-	}
-
-	return BRASERO_BURN_ERROR_MEDIUM_INVALID;
+	return BRASERO_BURN_ERROR_NONE;
 }
 
 static BraseroBurnResult
@@ -894,6 +786,17 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 
+	/* Check the capabilities of the drive */
+	if (!brasero_drive_can_write (priv->dest)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("The drive cannot burn"));
+		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
+	}
+
+	/* NOTE: don't lock the drive here yet as
+	 * otherwise we'd be probing forever. */
 	while (brasero_drive_probing (priv->dest)) {
 		result = brasero_burn_sleep (burn, 500);
 		if (result != BRASERO_BURN_OK)
@@ -907,20 +810,10 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		goto end;
 	}
 
-	if (!brasero_medium_can_be_written (medium)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The drive cannot burn or the disc cannot be burned"));
-		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
-	}
-
-	/* if drive is mounted then unmount before checking anything */
-	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
-		if (!brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL))
-			BRASERO_BURN_LOG ("Couldn't unmount volume in drive: %s",
-					  brasero_drive_get_device (priv->dest));
-	}
+	/* unmount the medium */
+	result = brasero_burn_unmount (burn, medium, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	result = BRASERO_BURN_OK;
 	berror = BRASERO_BURN_ERROR_NONE;
@@ -930,14 +823,6 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 					 media,
 					 BRASERO_PLUGIN_IO_NONE,
 					 "Media inserted is");
-
-	if (priv->dest_locked) {
-		/* NOTE: after a blanking, for nautilus_burn the CD/DVD is still
-		 * full of data so if the drive has already been checked there
-		 * is no need to do that again since we would be asked if we 
-		 * want to blank it again */
-		return result;
-	}
 
 	if (media == BRASERO_MEDIUM_NONE) {
 		result = BRASERO_BURN_NEED_RELOAD;
@@ -961,6 +846,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	berror = brasero_burn_is_loaded_dest_media_supported (burn,
 							      media,
 							      &must_blank);
+
 	if (berror != BRASERO_BURN_ERROR_NONE) {
 		BRASERO_BURN_LOG ("Inserted media is not supported");
 		result = BRASERO_BURN_NEED_RELOAD;
@@ -969,7 +855,6 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 
 	input = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, input);
-	flags = brasero_burn_session_get_flags (priv->session);
 
 	if (brasero_track_type_get_has_image (input)) {
 		goffset medium_sec = 0;
@@ -994,6 +879,8 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		}
 	}
 
+	flags = brasero_burn_session_get_flags (priv->session);
+
 	if (must_blank) {
 		/* There is an error if APPEND was set since this disc is not
 		 * supported without a prior blanking. */
@@ -1009,7 +896,9 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
 		/* A few special warnings for the discs with data/audio on them
 		 * that don't need prior blanking or can't be blanked */
-		if (brasero_track_type_get_has_stream (input)) {
+		if ((media & BRASERO_MEDIUM_CD)
+		&&  brasero_track_type_get_has_stream (input)
+		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
 			/* We'd rather blank and rewrite a disc rather than
 			 * append audio to appendable disc. That's because audio
 			 * tracks have little chance to be readable by common CD
@@ -1045,24 +934,26 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		 * we are interested in is if it is AUDIO or not or if
 		 * the disc we are copying has audio tracks only or not */
 		if (brasero_track_type_get_has_stream (input)
-		&& !(brasero_track_type_get_stream_format (input) & (BRASERO_VIDEO_FORMAT_UNDEFINED|
-								     BRASERO_VIDEO_FORMAT_VCD|
-								     BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
-			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL, BRASERO_BURN_CANCEL);
+		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
+			result = brasero_burn_emit_signal (burn, 
+			                                   WARN_REWRITABLE_SIGNAL,
+			                                   BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
 
 		if (brasero_track_type_get_has_medium (input)
-		&& (brasero_track_type_get_medium_type (input) & (BRASERO_MEDIUM_HAS_AUDIO|
-								  BRASERO_MEDIUM_HAS_DATA)) == BRASERO_MEDIUM_HAS_AUDIO) {
-			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL, BRASERO_BURN_CANCEL);
+		&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)) {
+			result = brasero_burn_emit_signal (burn,
+			                                   WARN_REWRITABLE_SIGNAL,
+			                                   BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
 	}
 
-	if (!priv->dest_locked
+	/* Only lock the drive after all checks succeeded */
+	if (!brasero_drive_is_locked (priv->dest, NULL)
 	&&  !brasero_drive_lock (priv->dest, _("Ongoing burning process"), &failure)) {
 		brasero_track_type_free (input);
 
@@ -1074,14 +965,11 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 
-	priv->dest_locked = 1;
-
 end:
 
-	if (result != BRASERO_BURN_OK && priv->dest_locked) {
-		priv->dest_locked = 0;
+	if (result != BRASERO_BURN_OK
+	&& brasero_drive_is_locked (priv->dest, NULL))
 		brasero_drive_unlock (priv->dest);
-	}
 
 	if (result == BRASERO_BURN_NEED_RELOAD && ret_error)
 		*ret_error = berror;
@@ -1150,6 +1038,7 @@ again:
 
 	medium = brasero_drive_get_medium (priv->dest);
 	media = brasero_medium_get_status (medium);
+
 	error_type = BRASERO_BURN_ERROR_NONE;
 	BRASERO_BURN_LOG_DISC_TYPE (media, "Waiting for media to checksum");
 
@@ -1181,7 +1070,7 @@ again:
 		goto again;
 	}
 
-	if (!priv->dest_locked
+	if (!brasero_drive_is_locked (priv->dest, NULL)
 	&&  !brasero_drive_lock (priv->dest, _("Ongoing checksumming operation"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -1197,7 +1086,6 @@ again:
 		g_warning ("Couldn't unmount volume in drive: %s",
 			   brasero_drive_get_device (priv->dest));
 */
-	priv->dest_locked = 1;
 
 	return BRASERO_BURN_OK;
 }
@@ -1212,19 +1100,15 @@ brasero_burn_unlock_src_media (BraseroBurn *burn,
 	if (!priv->src)
 		return BRASERO_BURN_OK;
 
-	if (!priv->src_locked) {
-		priv->src = NULL;
-		return BRASERO_BURN_OK;
-	}
-
+	/* If we mounted it ourselves, unmount it */
 	medium = brasero_drive_get_medium (priv->src);
 	if (priv->mounted_by_us) {
-		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, error);
-		priv->mounted_by_us = 0;
+		brasero_burn_unmount (burn, medium, error);
+		priv->mounted_by_us = FALSE;
 	}
 
-	priv->src_locked = 0;
-	brasero_drive_unlock (priv->src);
+	if (brasero_drive_is_locked (priv->src, NULL))
+		brasero_drive_unlock (priv->src);
 
 	/* Never eject the source if we don't need to. Let the user do that. For
 	 * one thing it avoids breaking other applications that are using it
@@ -1245,18 +1129,11 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 	if (!priv->dest)
 		return BRASERO_BURN_OK;
 
-	if (!priv->dest_locked) {
-		priv->dest = NULL;
-		return BRASERO_BURN_OK;
-	}
+	if (brasero_drive_is_locked (priv->dest, NULL))
+		brasero_drive_unlock (priv->dest);
 
-	priv->dest_locked = 0;
-	brasero_drive_unlock (priv->dest);
-
-	if (!BRASERO_BURN_SESSION_EJECT (priv->session)) {
-		if (priv->dest)
-			brasero_drive_reprobe (priv->dest);
-	}
+	if (!BRASERO_BURN_SESSION_EJECT (priv->session))
+		brasero_drive_reprobe (priv->dest);
 	else
 		brasero_burn_eject (burn, priv->dest, error);
 
@@ -1464,6 +1341,42 @@ brasero_burn_ask_for_joliet (BraseroBurn *burn)
 	}
 
 	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_burn_ask_for_location (BraseroBurn *burn,
+			       GError *received_error,
+			       gboolean is_temporary,
+			       GError **error)
+{
+	GValue instance_and_params [3];
+	GValue return_value;
+
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (burn));
+	g_value_set_instance (instance_and_params, burn);
+	
+	instance_and_params [1].g_type = 0;
+	g_value_init (instance_and_params + 1, G_TYPE_POINTER);
+	g_value_set_pointer (instance_and_params + 1, received_error);
+	
+	instance_and_params [2].g_type = 0;
+	g_value_init (instance_and_params + 2, G_TYPE_BOOLEAN);
+	g_value_set_boolean (instance_and_params + 2, is_temporary);
+	
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (instance_and_params,
+			brasero_burn_signals [LOCATION_REQUEST_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (instance_and_params + 1);
+
+	return g_value_get_int (&return_value);
 }
 
 static BraseroBurnResult
@@ -2228,10 +2141,6 @@ brasero_burn_check_real (BraseroBurn *self,
 			       1.0,
 			       -1);
 
-		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_CANCEL)
-			brasero_burn_action_changed_real (self,
-							  BRASERO_BURN_ACTION_FINISHED);
-
 		g_object_unref (priv->task);
 		priv->task = NULL;
 	}
@@ -2314,9 +2223,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 		return result;
 	}
 
-	/* recording was successful, so tell it */
-	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
-
 	if (brasero_burn_session_is_dest_file (priv->session))
 		return BRASERO_BURN_OK;
 
@@ -2324,8 +2230,11 @@ brasero_burn_record_session (BraseroBurn *burn,
 		/* if we are in dummy mode and successfully completed then:
 		 * - no need to checksum the media afterward (done later)
 		 * - no eject to have automatic real burning */
-	
+
 		BRASERO_BURN_DEBUG (burn, "Dummy session successfully finished");
+
+		/* recording was successful, so tell it */
+		brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
 		/* need to try again but this time for real */
 		result = brasero_burn_emit_signal (burn,
@@ -2369,6 +2278,9 @@ brasero_burn_record_session (BraseroBurn *burn,
 		checksum = BRASERO_SHA256_FILE;
 	else
 		return BRASERO_BURN_OK;
+
+	/* recording was successful, so tell it */
+	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
 	/* the idea is to push a new track on the stack with
 	 * the current disc burnt and the checksum generated
@@ -2517,6 +2429,10 @@ brasero_burn_check (BraseroBurn *self,
 
 	/* no need to check the result of the comparison, it's set in session */
 
+	if (result == BRASERO_BURN_OK)
+		brasero_burn_action_changed_real (self,
+		                                  BRASERO_BURN_ACTION_FINISHED);
+
 	/* NOTE: unref session only AFTER drives are unlocked */
 	priv->session = NULL;
 	g_object_unref (session);
@@ -2556,19 +2472,26 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 
 	/* run */
 	result = brasero_burn_record_session (self, TRUE, output, error);
-	brasero_burn_unlock_src_media (self, NULL);
 
+	/* Check the results right now. If there was
+	 * an error the source medium will be dealt
+	 * with in brasero_burn_record () anyway 
+	 * with brasero_burn_unlock_medias () */
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
 	/* reset everything back to normal */
-	result = brasero_burn_eject_src_media (self, error);
+	result = brasero_burn_eject (self, priv->src, error);
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
-	/* There should be a track at the top of the
-	 * session stack so no need to create a new
-	 * one */
+	brasero_burn_unlock_src_media (self, NULL);
+
+	/* There should be (a) track(s) at the top of
+	 * the session stack so no need to create a
+	 * new one */
+
+	brasero_burn_action_changed_real (self, BRASERO_BURN_ACTION_FINISHED);
 
 end:
 
@@ -2586,7 +2509,6 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 	BraseroMedia required_media;
-	BraseroBurnFlag session_flags;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
@@ -2611,8 +2533,6 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 	if (required_media == BRASERO_MEDIUM_NONE)
 		required_media = BRASERO_MEDIUM_WRITABLE;
 
-	/* save the flags in case we modify them */
-	session_flags = brasero_burn_session_get_flags (priv->session);
 	berror = BRASERO_BURN_WARNING_INSERT_AFTER_COPY;
 
 again:
@@ -2631,19 +2551,15 @@ again:
 	if (result != BRASERO_BURN_OK) {
 		/* Tell the user his/her disc is not supported and reload */
 		berror = BRASERO_BURN_ERROR_MEDIUM_INVALID;
-		brasero_burn_session_set_flags (priv->session, session_flags);
 		goto again;
 	}
 
-	/* One thing could make us fail now that flags and media type are
-	 * supported: the size. */
 	result = brasero_burn_lock_dest_media (burn, &berror, error);
 	if (result == BRASERO_BURN_CANCEL)
 		return result;
 
 	if (result != BRASERO_BURN_OK) {
 		/* Tell the user his/her disc is not supported and reload */
-		brasero_burn_session_set_flags (priv->session, session_flags);
 		goto again;
 	}
 
@@ -2771,8 +2687,11 @@ end:
 		else
 			BRASERO_BURN_DEBUG (burn, "Session error : unknown");
 	}
-	else
+	else {
 		BRASERO_BURN_DEBUG (burn, "Session successfully finished");
+		brasero_burn_action_changed_real (burn,
+		                                  BRASERO_BURN_ACTION_FINISHED);
+	}
 
 	brasero_burn_powermanagement (burn, FALSE);
 
@@ -2809,9 +2728,6 @@ brasero_burn_blank_real (BraseroBurn *burn, GError **error)
 	result = brasero_burn_run_eraser (burn, error);
 	g_object_unref (priv->task);
 	priv->task = NULL;
-
-	if (result == BRASERO_BURN_OK)
-		brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
 	return result;
 }
@@ -2929,6 +2845,12 @@ brasero_burn_cancel (BraseroBurn *burn, gboolean protect)
 		g_main_loop_quit (priv->sleep_loop);
 		priv->sleep_loop = NULL;
 	}
+
+	if (priv->dest)
+		brasero_drive_cancel_current_operation (priv->dest);
+
+	if (priv->src)
+		brasero_drive_cancel_current_operation (priv->src);
 
 	if (priv->task && brasero_task_is_running (priv->task))
 		result = brasero_task_cancel (priv->task, protect);
