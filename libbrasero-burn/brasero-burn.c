@@ -214,6 +214,31 @@ brasero_burn_emit_signal (BraseroBurn *burn, guint signal, BraseroBurnResult def
 	return g_value_get_int (&return_value);
 }
 
+static void
+brasero_burn_action_changed_real (BraseroBurn *burn,
+				  BraseroBurnAction action)
+{
+	g_signal_emit (burn,
+		       brasero_burn_signals [ACTION_CHANGED_SIGNAL],
+		       0,
+		       action);
+
+	if (action == BRASERO_BURN_ACTION_FINISHED)
+		g_signal_emit (burn,
+		               brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
+		               0,
+		               1.0,
+		               1.0,
+		               -1);
+	else if (action == BRASERO_BURN_ACTION_EJECTING)
+		g_signal_emit (burn,
+			       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
+			       0,
+			       -1.0,
+			       -1.0,
+			       -1);
+}
+
 static gboolean
 brasero_burn_wakeup (BraseroBurn *burn)
 {
@@ -402,12 +427,8 @@ brasero_burn_eject (BraseroBurn *self,
 		}
 
 		counter ++;
-		if (counter == 1) {
-			g_signal_emit (self,
-				       brasero_burn_signals [ACTION_CHANGED_SIGNAL],
-				       0,
-				       BRASERO_BURN_ACTION_EJECTING);
-		}
+		if (counter == 1)
+			brasero_burn_action_changed_real (self, BRASERO_BURN_ACTION_EJECTING);
 
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			BRASERO_BURN_LOG ("Max attempts reached at ejecting");
@@ -1176,16 +1197,6 @@ brasero_burn_progress_changed (BraseroTaskCtx *task,
 		       overall_progress,
 		       task_progress,
 		       time_remaining);
-}
-
-static void
-brasero_burn_action_changed_real (BraseroBurn *burn,
-				  BraseroBurnAction action)
-{
-	g_signal_emit (burn,
-		       brasero_burn_signals [ACTION_CHANGED_SIGNAL],
-		       0,
-		       action);
 }
 
 static void
