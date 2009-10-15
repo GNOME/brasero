@@ -180,11 +180,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 		else if (input->type == BRASERO_TRACK_TYPE_IMAGE) {
 			if (dummy) {
-				title = g_strdup (_("Burning DVD (Simulation)"));
+				title = g_strdup (_("Brasero — Burning DVD (Simulation)"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Simulation of image to DVD burning"));
 			}
 			else {
-				title = g_strdup (_("Burning DVD"));
+				title = g_strdup (_("Brasero — Burning DVD"));
 				header = g_strdup_printf ("<big><b>%s</b></big>", _("Burning image to DVD"));
 			}
 
