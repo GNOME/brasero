@@ -593,10 +593,10 @@ brasero_medium_monitor_device_removed (BraseroMediumMonitor *self,
 			                                                  brasero_medium_monitor_disconnected_real, 
 			                                                  self);
 	}
-	else if (associated_gdrive) {
-		/* do nothing and wait for a "drive-disconnected" signal */
+	/* else do nothing and wait for a "drive-disconnected" signal */
+
+	if (associated_gdrive)
 		g_object_unref (associated_gdrive);
-	}
 
 	g_object_unref (drive);
 }
