@@ -524,6 +524,8 @@ brasero_drive_unlock (BraseroDrive *drive)
 		if (priv->probe_waiting) {
 			/* See if a probe was waiting */
 			priv->probe_waiting = FALSE;
+
+			BRASERO_MEDIA_LOG ("Probe on hold");
 			brasero_drive_probe_inside (drive);
 		}
 	}
@@ -982,28 +984,21 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
+	/* Check that a probe is not already being performed */
+	if (priv->probe) {
+		BRASERO_MEDIA_LOG ("Ongoing probe");
+		brasero_drive_cancel_probing (drive);
+	}
+
+	BRASERO_MEDIA_LOG ("Setting new probe");
+
 	priv->probed = FALSE;
 
-	/* Check that a probe is not already being performed */
 	g_mutex_lock (priv->mutex);
-	if (!priv->probe) {
-		BRASERO_MEDIA_LOG ("Setting new probe");
-
-		if (priv->probe_id) {
-			/* Remove the result reporting as
-			 * the status seem to have changed */
-			g_source_remove (priv->probe_id);
-			priv->probe_id = 0;
-		}
-
-		priv->probe = g_thread_create (brasero_drive_probe_inside_thread,
-					       drive,
-					       FALSE,
-					       NULL);
-	}
-	else
-		BRASERO_MEDIA_LOG ("Ongoing probe");
-
+	priv->probe = g_thread_create (brasero_drive_probe_inside_thread,
+	                               drive,
+				       FALSE,
+				       NULL);
 	g_mutex_unlock (priv->mutex);
 }
 
