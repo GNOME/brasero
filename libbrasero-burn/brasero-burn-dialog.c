@@ -46,8 +46,9 @@
 
 #include <canberra-gtk.h>
 
-#include "brasero-tray.h"
 #include "brasero-burn-dialog.h"
+
+#include "brasero-tray.h"
 #include "brasero-session-cfg.h"
 #include "brasero-session-helper.h"
 
@@ -67,14 +68,8 @@
 #include "brasero-misc.h"
 
 
-static void brasero_burn_dialog_class_init (BraseroBurnDialogClass *klass);
-static void brasero_burn_dialog_init (BraseroBurnDialog *obj);
-static void brasero_burn_dialog_finalize (GObject *object);
-static void brasero_burn_dialog_destroy (GtkObject *object);
+G_DEFINE_TYPE (BraseroBurnDialog, brasero_burn_dialog, GTK_TYPE_DIALOG);
 
-static gboolean
-brasero_burn_dialog_delete (GtkWidget *widget,
-			    GdkEventAny *event);
 
 static void
 brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
@@ -83,6 +78,7 @@ brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 static void
 brasero_burn_dialog_tray_cancel_cb (BraseroTrayIcon *tray,
 				    BraseroBurnDialog *dialog);
+
 static void
 brasero_burn_dialog_tray_show_dialog_cb (BraseroTrayIcon *tray,
 					 gboolean show,
@@ -112,49 +108,6 @@ struct BraseroBurnDialogPrivate {
 #define BRASERO_BURN_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogPrivate))
 
 #define TIMEOUT	10000
-
-static GObjectClass *parent_class = NULL;
-
-GType
-brasero_burn_dialog_get_type ()
-{
-	static GType type = 0;
-
-	if (type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroBurnDialogClass),
-			NULL,
-			NULL,
-			(GClassInitFunc) brasero_burn_dialog_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroBurnDialog),
-			0,
-			(GInstanceInitFunc) brasero_burn_dialog_init,
-		};
-
-		type = g_type_register_static (GTK_TYPE_DIALOG,
-					       "BraseroBurnDialog",
-					       &our_info, 0);
-	}
-
-	return type;
-}
-
-static void
-brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroBurnDialogPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
-	object_class->finalize = brasero_burn_dialog_finalize;
-	gtk_object_class->destroy = brasero_burn_dialog_destroy;
-	widget_class->delete_event = brasero_burn_dialog_delete;
-}
 
 /**
  * NOTE: if input is DISC then media is the media input
@@ -1369,141 +1322,6 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 }
 
 static void
-brasero_burn_dialog_init (BraseroBurnDialog * obj)
-{
-	GtkWidget *box;
-	GtkWidget *vbox;
-	GtkWidget *alignment;
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (obj);
-
-	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 0);
-
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-
-	priv->tray = brasero_tray_icon_new ();
-	g_signal_connect (priv->tray,
-			  "cancel",
-			  G_CALLBACK (brasero_burn_dialog_tray_cancel_cb),
-			  obj);
-	g_signal_connect (priv->tray,
-			  "show-dialog",
-			  G_CALLBACK (brasero_burn_dialog_tray_show_dialog_cb),
-			  obj);
-
-	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
-	gtk_widget_show (alignment);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 8, 6, 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    alignment,
-			    TRUE,
-			    TRUE,
-			    0);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (alignment), vbox);
-
-	box = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (box);
-	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, TRUE, 0);
-
-	priv->header = gtk_label_new (NULL);
-	gtk_widget_show (priv->header);
-	gtk_misc_set_alignment (GTK_MISC (priv->header), 0.0, 0.5);
-	gtk_misc_set_padding (GTK_MISC (priv->header), 0, 18);
-	gtk_box_pack_start (GTK_BOX (box), priv->header, FALSE, TRUE, 0);
-
-	priv->image = gtk_image_new ();
-	gtk_misc_set_alignment (GTK_MISC (priv->image), 1.0, 0.5);
-	gtk_widget_show (priv->image);
-	gtk_box_pack_start (GTK_BOX (box), priv->image, TRUE, TRUE, 0);
-
-	priv->progress = brasero_burn_progress_new ();
-	gtk_widget_show (priv->progress);
-	gtk_box_pack_start (GTK_BOX (vbox),
-			    priv->progress,
-			    FALSE,
-			    TRUE,
-			    0);
-
-	/* buttons */
-	priv->cancel = gtk_dialog_add_button (GTK_DIALOG (obj),
-					      GTK_STOCK_CANCEL,
-					      GTK_RESPONSE_CANCEL);
-}
-
-static void
-brasero_burn_dialog_destroy (GtkObject * object)
-{
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
-
-	if (priv->burn) {
-		g_object_unref (priv->burn);
-		priv->burn = NULL;
-	}
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		GTK_OBJECT_CLASS (parent_class)->destroy (object);
-}
-
-static void
-brasero_burn_dialog_finalize (GObject * object)
-{
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
-
-	if (priv->burn) {
-		brasero_burn_cancel (priv->burn, TRUE);
-		g_object_unref (priv->burn);
-		priv->burn = NULL;
-	}
-
-	if (priv->tray) {
-		g_object_unref (priv->tray);
-		priv->tray = NULL;
-	}
-
-	if (priv->session) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
-
-	if (priv->total_time) {
-		g_timer_destroy (priv->total_time);
-		priv->total_time = NULL;
-	}
-
-	if (priv->rates) {
-		g_slist_free (priv->rates);
-		priv->rates = NULL;
-	}
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-/**
- * brasero_burn_dialog_new:
- *
- * Creates a new #BraseroBurnDialog object
- *
- * Return value: a #GtkWidget. Unref when it is not needed anymore.
- **/
-GtkWidget *
-brasero_burn_dialog_new (void)
-{
-	BraseroBurnDialog *obj;
-
-	obj = BRASERO_BURN_DIALOG (g_object_new (BRASERO_TYPE_BURN_DIALOG, NULL));
-
-	return GTK_WIDGET (obj);
-}
-
-static void
 brasero_burn_dialog_activity_start (BraseroBurnDialog *dialog)
 {
 	GdkCursor *cursor;
@@ -2384,4 +2202,154 @@ brasero_burn_dialog_tray_show_dialog_cb (BraseroTrayIcon *tray,
 		gtk_widget_show (dialog);
 	else
 		gtk_widget_hide (dialog);
+}
+
+static void
+brasero_burn_dialog_init (BraseroBurnDialog * obj)
+{
+	GtkWidget *box;
+	GtkWidget *vbox;
+	GtkWidget *alignment;
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (obj);
+
+	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 0);
+
+	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
+
+	priv->tray = brasero_tray_icon_new ();
+	g_signal_connect (priv->tray,
+			  "cancel",
+			  G_CALLBACK (brasero_burn_dialog_tray_cancel_cb),
+			  obj);
+	g_signal_connect (priv->tray,
+			  "show-dialog",
+			  G_CALLBACK (brasero_burn_dialog_tray_show_dialog_cb),
+			  obj);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+	gtk_widget_show (alignment);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 8, 6, 6);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+			    alignment,
+			    TRUE,
+			    TRUE,
+			    0);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (alignment), vbox);
+
+	box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (box);
+	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, TRUE, 0);
+
+	priv->header = gtk_label_new (NULL);
+	gtk_widget_show (priv->header);
+	gtk_misc_set_alignment (GTK_MISC (priv->header), 0.0, 0.5);
+	gtk_misc_set_padding (GTK_MISC (priv->header), 0, 18);
+	gtk_box_pack_start (GTK_BOX (box), priv->header, FALSE, TRUE, 0);
+
+	priv->image = gtk_image_new ();
+	gtk_misc_set_alignment (GTK_MISC (priv->image), 1.0, 0.5);
+	gtk_widget_show (priv->image);
+	gtk_box_pack_start (GTK_BOX (box), priv->image, TRUE, TRUE, 0);
+
+	priv->progress = brasero_burn_progress_new ();
+	gtk_widget_show (priv->progress);
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    priv->progress,
+			    FALSE,
+			    TRUE,
+			    0);
+
+	/* buttons */
+	priv->cancel = gtk_dialog_add_button (GTK_DIALOG (obj),
+					      GTK_STOCK_CANCEL,
+					      GTK_RESPONSE_CANCEL);
+}
+
+static void
+brasero_burn_dialog_destroy (GtkObject * object)
+{
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
+
+	if (priv->burn) {
+		g_object_unref (priv->burn);
+		priv->burn = NULL;
+	}
+
+	if (GTK_OBJECT_CLASS (brasero_burn_dialog_parent_class)->destroy)
+		GTK_OBJECT_CLASS (brasero_burn_dialog_parent_class)->destroy (object);
+}
+
+static void
+brasero_burn_dialog_finalize (GObject * object)
+{
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
+
+	if (priv->burn) {
+		brasero_burn_cancel (priv->burn, TRUE);
+		g_object_unref (priv->burn);
+		priv->burn = NULL;
+	}
+
+	if (priv->tray) {
+		g_object_unref (priv->tray);
+		priv->tray = NULL;
+	}
+
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	if (priv->total_time) {
+		g_timer_destroy (priv->total_time);
+		priv->total_time = NULL;
+	}
+
+	if (priv->rates) {
+		g_slist_free (priv->rates);
+		priv->rates = NULL;
+	}
+
+	G_OBJECT_CLASS (brasero_burn_dialog_parent_class)->finalize (object);
+}
+
+static void
+brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroBurnDialogPrivate));
+
+	object_class->finalize = brasero_burn_dialog_finalize;
+	gtk_object_class->destroy = brasero_burn_dialog_destroy;
+	widget_class->delete_event = brasero_burn_dialog_delete;
+}
+
+/**
+ * brasero_burn_dialog_new:
+ *
+ * Creates a new #BraseroBurnDialog object
+ *
+ * Return value: a #GtkWidget. Unref when it is not needed anymore.
+ **/
+
+GtkWidget *
+brasero_burn_dialog_new (void)
+{
+	BraseroBurnDialog *obj;
+
+	obj = BRASERO_BURN_DIALOG (g_object_new (BRASERO_TYPE_BURN_DIALOG, NULL));
+
+	return GTK_WIDGET (obj);
 }

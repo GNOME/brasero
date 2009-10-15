@@ -55,7 +55,8 @@ typedef struct {
 	GtkDialogClass parent_class;
 } BraseroBurnDialogClass;
 
-GType brasero_burn_dialog_get_type ();
+GType brasero_burn_dialog_get_type () G_GNUC_CONST;
+
 GtkWidget *brasero_burn_dialog_new (void);
 
 gboolean
@@ -64,5 +65,7 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 gboolean
 brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 			    gboolean force_cancellation);
+
+G_END_DECLS
 
 #endif				/* BURN_DIALOG_H */
