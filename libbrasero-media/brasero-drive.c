@@ -55,6 +55,7 @@
 #include "brasero-volume.h"
 #include "brasero-drive.h"
 
+#include "brasero-drive-priv.h"
 #include "scsi-device.h"
 #include "scsi-utils.h"
 #include "scsi-spc1.h"
@@ -86,6 +87,9 @@ struct _BraseroDrivePrivate
 	gchar *block_device;
 
 	GCancellable *cancel;
+
+	guint initial_probe:1;
+	guint initial_probe_cancelled:1;
 
 	guint probed:1;
 	guint has_medium:1;
@@ -208,6 +212,7 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 
 		/* This to signal that we are cancelling */
 		priv->probe_cancelled = TRUE;
+		priv->initial_probe_cancelled = TRUE;
 
 		/* This is to wake up the thread if it
 		 * was asleep waiting to retry to get
@@ -984,6 +989,11 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
+	if (priv->initial_probe) {
+		BRASERO_MEDIA_LOG ("Still initializing the drive properties");
+		return;
+	}
+
 	/* Check that a probe is not already being performed */
 	if (priv->probe) {
 		BRASERO_MEDIA_LOG ("Ongoing probe");
@@ -992,13 +1002,17 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 
 	BRASERO_MEDIA_LOG ("Setting new probe");
 
-	priv->probed = FALSE;
-
 	g_mutex_lock (priv->mutex);
+
+	priv->probed = FALSE;
+	priv->probe_waiting = FALSE;
+	priv->probe_cancelled = FALSE;
+
 	priv->probe = g_thread_create (brasero_drive_probe_inside_thread,
 	                               drive,
 				       FALSE,
 				       NULL);
+
 	g_mutex_unlock (priv->mutex);
 }
 
@@ -1122,8 +1136,12 @@ brasero_drive_probed (gpointer data)
 
 	priv = BRASERO_DRIVE_PRIVATE (data);
 
-	g_mutex_lock (priv->mutex);
+	if (!g_mutex_trylock (priv->mutex))
+		return TRUE;
+
+	priv->initial_probe = FALSE;
 	priv->probe_id = 0;
+
 	g_mutex_unlock (priv->mutex);
 
 	brasero_drive_probe_inside (BRASERO_DRIVE (data));
@@ -1205,7 +1223,7 @@ brasero_drive_get_caps_profiles (BraseroDrive *self,
 				break;
 		}
 
-		if (priv->probe_cancelled)
+		if (priv->initial_probe_cancelled)
 			break;
 
 		/* Move the pointer to the next features */
@@ -1278,7 +1296,7 @@ brasero_drive_probe_thread (gpointer data)
 	while (!handle && counter <= BRASERO_DRIVE_OPEN_ATTEMPTS) {
 		sleep (1);
 
-		if (priv->probe_cancelled) {
+		if (priv->initial_probe_cancelled) {
 			BRASERO_MEDIA_LOG ("Open () cancelled");
 			goto end;
 		}
@@ -1287,7 +1305,7 @@ brasero_drive_probe_thread (gpointer data)
 		handle = brasero_device_handle_open (device, FALSE, &code);
 	}
 
-	if (priv->probe_cancelled) {
+	if (priv->initial_probe_cancelled) {
 		BRASERO_MEDIA_LOG ("Open () cancelled");
 		goto end;
 	}
@@ -1318,7 +1336,7 @@ brasero_drive_probe_thread (gpointer data)
 		                   &wait_time);
 		g_mutex_unlock (priv->mutex);
 
-		if (priv->probe_cancelled) {
+		if (priv->initial_probe_cancelled) {
 			brasero_device_handle_close (handle);
 			BRASERO_MEDIA_LOG ("Device probing cancelled");
 			goto end;
@@ -1367,7 +1385,7 @@ end:
 
 	g_mutex_lock (priv->mutex);
 
-	if (!priv->probe_cancelled)
+	if (!priv->initial_probe_cancelled)
 		priv->probe_id = g_idle_add (brasero_drive_probed, drive);
 
 	priv->probe = NULL;
@@ -1405,10 +1423,13 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 	 * BraseroDrive that exported until it returns PROBED signal.
 	 * One (good) side effect is that it also improves start time. */
 	g_mutex_lock (priv->mutex);
+
+	priv->initial_probe = TRUE;
 	priv->probe = g_thread_create (brasero_drive_probe_thread,
 				       drive,
 				       FALSE,
 				       NULL);
+
 	g_mutex_unlock (priv->mutex);
 }
 
