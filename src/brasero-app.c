@@ -692,6 +692,8 @@ brasero_app_burn (BraseroApp *app,
 
 	/* now setup the burn dialog */
 	dialog = brasero_burn_dialog_new ();
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
+
 	priv->burn_dialog = dialog;
 
 	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
@@ -713,6 +715,8 @@ brasero_app_burn_options (BraseroApp *app,
 
 	dialog = brasero_burn_options_new (session);
 	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
+
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 
 	/* The destruction of the dialog will bring the main window forward */
@@ -798,6 +802,7 @@ brasero_app_blank (BraseroApp *app,
 
 	priv = BRASERO_APP_PRIVATE (app);
 	dialog = brasero_blank_dialog_new ();
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
 
 	if (device) {
 		BraseroDrive *drive;
@@ -855,6 +860,7 @@ on_eject_cb (GtkAction *action, BraseroApp *app)
 	priv = BRASERO_APP_PRIVATE (app);
 
 	dialog = brasero_eject_dialog_new ();
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
 
 	/* FIXME! This is a bad idea and needs fixing */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (priv->mainwin));
@@ -880,6 +886,8 @@ brasero_app_check (BraseroApp *app,
 	priv = BRASERO_APP_PRIVATE (app);
 
 	dialog = brasero_sum_dialog_new ();
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
+
 	priv->tool_dialog = GTK_WIDGET (dialog);
 
 	if (device) {

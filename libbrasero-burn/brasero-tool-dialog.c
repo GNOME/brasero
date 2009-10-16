@@ -409,6 +409,9 @@ brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to quit?"));
 
+	gtk_window_set_icon_name (GTK_WINDOW (message),
+	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
+
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Interrupting the process may make disc unusable."));
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
@@ -523,8 +526,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	BraseroToolDialogPrivate *priv;
 
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (obj);
-
-	gtk_window_set_icon_name (GTK_WINDOW (obj), "brasero");
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 

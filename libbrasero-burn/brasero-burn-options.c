@@ -500,7 +500,6 @@ static void
 brasero_burn_options_init (BraseroBurnOptions *object)
 {
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
-	gtk_window_set_icon_name (GTK_WINDOW (object), "brasero");
 }
 
 /**
@@ -718,7 +717,10 @@ brasero_status_dialog_uri_has_image (BraseroTrackDataCfg *track,
 					 GTK_BUTTONS_NONE,
 					 "%s",
 					 _("Do you want to create a disc from the contents of the image or with the image file inside?"));
+
 	gtk_window_set_title (GTK_WINDOW (dialog), "");
+	gtk_window_set_icon_name (GTK_WINDOW (dialog),
+	                          gtk_window_get_icon_name (GTK_WINDOW (self)));
 
 	name = brasero_utils_get_uri_name (uri);
 	/* Translators: %s is the name of the image */

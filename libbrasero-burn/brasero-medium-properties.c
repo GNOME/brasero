@@ -88,6 +88,8 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 	gtk_widget_show (medium_prop);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	gtk_window_set_icon_name (GTK_WINDOW (medium_prop),
+	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 
 	drive = brasero_burn_session_get_burner (priv->session);
 	display_name = brasero_drive_get_display_name (drive);
@@ -133,6 +135,8 @@ brasero_medium_properties_wrong_extension (BraseroSessionCfg *session,
 					 GTK_BUTTONS_NONE,
 					 _("Do you really want to keep the current extension for the disc image name?"));
 
+	gtk_window_set_icon_name (GTK_WINDOW (dialog),
+	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 		
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("If you choose to keep it, programs may not be able to recognize the file type properly."));
@@ -173,6 +177,9 @@ brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 	gtk_window_set_transient_for (GTK_WINDOW (priv->medium_prop), GTK_WINDOW (toplevel));
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->medium_prop), TRUE);
 	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
+
+	gtk_window_set_icon_name (GTK_WINDOW (priv->medium_prop),
+	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 
 	/* and here we go ... run the thing */
 	gtk_widget_show (priv->medium_prop);

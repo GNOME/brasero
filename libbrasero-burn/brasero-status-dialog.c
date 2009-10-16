@@ -184,6 +184,9 @@ brasero_status_dialog_deep_directory_cb (BraseroTrackDataCfg *project,
 					  string);
 	g_free (string);
 
+	gtk_window_set_icon_name (GTK_WINDOW (message),
+	                          gtk_window_get_icon_name (GTK_WINDOW (dialog)));
+
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("The children of this directory will have 7 parent directories."
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
@@ -220,6 +223,9 @@ brasero_status_dialog_2G_file_cb (BraseroTrackDataCfg *track,
 					  string);
 	g_free (string);
 
+	gtk_window_set_icon_name (GTK_WINDOW (message),
+	                          gtk_window_get_icon_name (GTK_WINDOW (dialog)));
+
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones)."
 						    "\nIt is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows ©."
@@ -252,6 +258,9 @@ brasero_status_dialog_joliet_rename_cb (BraseroTrackData *track,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 					  _("Should files be renamed to be fully Windows-compatible?"));
+
+	gtk_window_set_icon_name (GTK_WINDOW (message),
+	                          gtk_window_get_icon_name (GTK_WINDOW (dialog)));
 
 	secondary = g_strdup_printf ("%s\n%s",
 				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),

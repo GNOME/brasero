@@ -222,6 +222,9 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 						 * blanking. */
 						   _("Error while blanking."));
 
+		gtk_window_set_icon_name (GTK_WINDOW (message),
+					  gtk_window_get_icon_name (GTK_WINDOW (self)));
+
 		button = brasero_utils_make_button (_("Blank _Again"),
 						    NULL,
 						    "media-optical-blank",
@@ -260,6 +263,9 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 						  GTK_MESSAGE_INFO,
 						  GTK_BUTTONS_NONE,
 						  _("The disc was successfully blanked."));
+
+		gtk_window_set_icon_name (GTK_WINDOW (message),
+					  gtk_window_get_icon_name (GTK_WINDOW (self)));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 							  _("The disc is ready for use."));

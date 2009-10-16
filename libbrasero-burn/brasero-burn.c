@@ -229,14 +229,14 @@ brasero_burn_action_changed_real (BraseroBurn *burn,
 		               0,
 		               1.0,
 		               1.0,
-		               -1);
+		               0);
 	else if (action == BRASERO_BURN_ACTION_EJECTING)
 		g_signal_emit (burn,
 			       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
 			       0,
 			       -1.0,
 			       -1.0,
-			       -1);
+			       0);
 }
 
 static gboolean

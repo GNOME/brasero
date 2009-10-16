@@ -254,6 +254,9 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 						 GTK_BUTTONS_NONE,
 						 _("Do you really want to choose this location?"));
 
+		gtk_window_set_icon_name (GTK_WINDOW (dialog),
+					  gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
+
 		string = g_strdup_printf ("%s.", error->message);
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", string);
 		g_error_free (error);
@@ -289,6 +292,9 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 						 GTK_MESSAGE_WARNING,
 						 GTK_BUTTONS_NONE,
 						 _("Do you really want to choose this location?"));
+
+		gtk_window_set_icon_name (GTK_WINDOW (dialog),
+					  gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 
 		string = g_strdup_printf ("%s.", _("You do not have the required permission to write at this location"));
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", string);
@@ -338,6 +344,9 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 						 GTK_MESSAGE_WARNING,
 						 GTK_BUTTONS_NONE,
 						 _("Do you really want to choose this location?"));
+
+		gtk_window_set_icon_name (GTK_WINDOW (dialog),
+					  gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("The filesystem on this volume does not support large files (size over 2 GiB)."

@@ -122,6 +122,9 @@ brasero_sum_dialog_message (BraseroSumDialog *self,
 					  GTK_BUTTONS_NONE,
 					  "%s", primary_message);
 
+	gtk_window_set_icon_name (GTK_WINDOW (message),
+	                          gtk_window_get_icon_name (GTK_WINDOW (self)));
+
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  "%s.",
 						  secondary_message);
@@ -200,6 +203,9 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 						      GTK_BUTTONS_NONE,
 						      "<b><big>%s</big></b>",
 						      _("The following files appear to be corrupted:"));
+
+	gtk_window_set_icon_name (GTK_WINDOW (message),
+	                          gtk_window_get_icon_name (GTK_WINDOW (self)));
 
 	gtk_window_set_resizable (GTK_WINDOW (message), TRUE);
 	gtk_widget_set_size_request (GTK_WIDGET (message), 440, 300);

@@ -101,16 +101,27 @@ static GObjectClass *parent_class;
 
 static void
 launch_brasero_on_window_session (BraseroSessionCfg	*session,
+                                  const gchar		*dialog_title,
 				  GtkWidget		*options,
 				  GtkWindow		*window)
 {
+	const gchar			*icon_name;
 	GtkWidget		*dialog;
 	GtkResponseType		 result;
 
+	/* Get the icon for the window */
+	if (window)
+		icon_name = gtk_window_get_icon_name (window);
+	else
+		icon_name = "brasero";
+
 	/* run option dialog */
 	dialog = brasero_burn_options_new (session);
-	if (window)
-		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
+
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), icon_name);
+
+	if (dialog_title)
+		gtk_window_set_title (GTK_WINDOW (dialog), dialog_title);
 
 	if (options)
 		brasero_burn_options_add_options (BRASERO_BURN_OPTIONS (dialog), options);
@@ -124,8 +135,11 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 
 	/* now run burn dialog */
 	dialog = brasero_burn_dialog_new ();
-	if (window)
-		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
+
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), icon_name);
+
+	if (dialog_title)
+		gtk_window_set_title (GTK_WINDOW (dialog), dialog_title);
 
 	brasero_session_cfg_disable (session);
 
@@ -228,7 +242,10 @@ write_activate (GtkWindow *toplevel)
 	gtk_widget_show_all (options);
 
 	/* NOTE: set the disc we're handling */
-	launch_brasero_on_window_session (session, options, toplevel);
+	launch_brasero_on_window_session (session,
+	                                  _("CD/DVD Creator"),
+	                                  options,
+	                                  toplevel);
 
 	/* cleanup */
 	g_object_unref (session);
@@ -243,6 +260,7 @@ write_activate_cb (NautilusMenuItem *item,
 
 static void
 launch_brasero_on_window_track (BraseroTrack	*track,
+                                const gchar	*dialog_title,
 				GtkWidget	*options,
 				GtkWindow	*window)
 {
@@ -254,7 +272,10 @@ launch_brasero_on_window_track (BraseroTrack	*track,
 					BRASERO_TRACK (track),
 					NULL);
 
-	launch_brasero_on_window_session (session, options, window);
+	launch_brasero_on_window_session (session,
+	                                  dialog_title,
+	                                  options,
+	                                  window);
 	g_object_unref (session);
 }
 
@@ -272,7 +293,10 @@ write_iso_activate_cb (NautilusMenuItem *item,
 	track = brasero_track_image_cfg_new ();
 	brasero_track_image_cfg_set_source (track, uri);
 
-	launch_brasero_on_window_track (BRASERO_TRACK (track), NULL, GTK_WINDOW (user_data));
+	launch_brasero_on_window_track (BRASERO_TRACK (track),
+	                                _("Write to Disc"),
+	                                NULL,
+	                                GTK_WINDOW (user_data));
 	g_object_unref (track);
 }
 
@@ -294,7 +318,10 @@ copy_disc_activate_cb (NautilusMenuItem *item,
 	brasero_track_disc_set_drive (track, drive);
 	g_object_unref (drive);
 
-	launch_brasero_on_window_track (BRASERO_TRACK (track), NULL, GTK_WINDOW (user_data));
+	launch_brasero_on_window_track (BRASERO_TRACK (track),
+	                                _("Copy Disc"),
+	                                NULL,
+	                                GTK_WINDOW (user_data));
 	g_object_unref (track);
 }
 
@@ -323,7 +350,12 @@ tool_dialog_run (BraseroToolDialog	*dialog,
 		g_object_unref (drive);
 	}
 
-	gtk_widget_show (GTK_WIDGET (dialog));
+	/* Get the icon for the window */
+	if (toplevel)
+		gtk_window_set_icon_name (GTK_WINDOW (dialog), gtk_window_get_icon_name (toplevel));
+	else
+		gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
+
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
