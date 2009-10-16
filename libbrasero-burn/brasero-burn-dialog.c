@@ -1296,6 +1296,10 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	g_timer_start (priv->total_time);
 
 	if (answer == GTK_RESPONSE_OK) {
+		if (priv->initial_icon)
+			gtk_window_set_icon_name (GTK_WINDOW (dialog), priv->initial_icon);
+		else
+			gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero-00.png");
 		brasero_burn_dialog_update_info (dialog,
 		                                 &priv->input,
 		                                 FALSE);
