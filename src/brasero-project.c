@@ -1383,8 +1383,6 @@ brasero_project_drive_properties (BraseroProject *project)
 					      NULL);
 	g_free (header);
 
-	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
-
 	button = brasero_utils_make_button (_("_Burn"),
 					    NULL,
 					    "media-optical-burn",
@@ -1416,8 +1414,10 @@ brasero_project_drive_properties (BraseroProject *project)
 	brasero_track_type_free (track_type);
 
 	medium_prop = brasero_drive_properties_new (project->priv->session);
-	gtk_widget_show (medium_prop);
 	gtk_box_pack_start (GTK_BOX (box), medium_prop, TRUE, TRUE, 0);
+	gtk_widget_show (medium_prop);
+
+	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
 
 	/* launch the dialog */
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1477,7 +1477,6 @@ brasero_project_image_properties (BraseroProject *project)
 	brasero_track_type_free (track_type);
 
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	gtk_widget_show (dialog);
 
 	/* launch the dialog */
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
