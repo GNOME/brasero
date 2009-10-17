@@ -243,6 +243,8 @@ brasero_gio_operation_umount (GVolume *gvolume,
 						     G_CALLBACK (brasero_gio_operation_umounted_cb),
 						     op);
 
+		/* NOTE: we own a reference to mount
+		 * object so no need to ref it even more */
 		g_mount_unmount (mount,
 				 G_MOUNT_UNMOUNT_NONE,
 				 cancel,
@@ -327,6 +329,10 @@ brasero_gio_operation_mount (GVolume *gvolume,
 		op = g_new0 (BraseroGioOperation, 1);
 		op->cancel = cancel;
 
+		/* Ref gvolume as it could be unreffed 
+		 * while we are in the loop */
+		g_object_ref (gvolume);
+
 		g_volume_mount (gvolume,
 				G_MOUNT_MOUNT_NONE,
 				operation,				/* authentification */
@@ -334,6 +340,8 @@ brasero_gio_operation_mount (GVolume *gvolume,
 				brasero_gio_operation_mount_finish,
 				op);
 		result = brasero_gio_operation_wait_for_operation_end (op, error);
+
+		g_object_unref (gvolume);
 	}
 	else {
 		g_volume_mount (gvolume,
@@ -408,6 +416,10 @@ brasero_gio_operation_eject_volume (GVolume *gvolume,
 					      G_CALLBACK (brasero_gio_operation_removed_cb),
 					      op);
 
+		/* Ref gvolume as it could be unreffed 
+		 * while we are in the loop */
+		g_object_ref (gvolume);
+
 		g_volume_eject (gvolume,
 				G_MOUNT_UNMOUNT_NONE,
 				cancel,
@@ -418,6 +430,8 @@ brasero_gio_operation_eject_volume (GVolume *gvolume,
 		g_signal_handler_disconnect (gvolume, eject_sig);
 
 		brasero_gio_operation_destroy (op);
+
+		g_object_unref (gvolume);
 	}
 	else {
 		g_volume_eject (gvolume,
@@ -491,10 +505,16 @@ brasero_gio_operation_eject_drive (GDrive *gdrive,
 			       brasero_gio_operation_eject_finish,
 			       op);
 
+		/* Ref gdrive as it could be unreffed 
+		 * while we are in the loop */
+		g_object_ref (gdrive);
+
 		result = brasero_gio_operation_wait_for_operation_end (op, error);
 		brasero_gio_operation_destroy (op);
 		g_signal_handler_disconnect (gdrive, eject_sig);
 		g_signal_handler_disconnect (gdrive, disconnect_sig);
+
+		g_object_unref (gdrive);
 	}
 	else {
 		g_drive_eject (gdrive,
