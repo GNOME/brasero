@@ -1,6 +1,20 @@
 <gconfschemafile>
     <schemalist>    
 
+    <schema>
+        <key>/schemas/apps/brasero/nautilus-extension-debug</key>
+	<applyto>/apps/brasero/nautilus-extension-debug</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Should Nautilus extension output debug statements</short>
+	  <long>
+	    Should Nautilus extension output debug statements. The value should be set to true if it should.
+	  </long>
+	</locale>
+      </schema>
+
       <schema>
         <key>/schemas/apps/brasero/config/engine-group</key>
 	<applyto>/apps/brasero/config/engine-group</applyto>
