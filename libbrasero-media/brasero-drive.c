@@ -298,6 +298,9 @@ brasero_drive_eject (BraseroDrive *drive,
 
 		if (res)
 			return TRUE;
+
+		if (g_cancellable_is_cancelled (priv->cancel))
+			return FALSE;
 	}
 	else
 		BRASERO_MEDIA_LOG ("No GDrive");

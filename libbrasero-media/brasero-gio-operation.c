@@ -156,9 +156,7 @@ brasero_gio_operation_wait_for_operation_end (BraseroGioOperation *operation,
 		operation->error = NULL;
 	}
 
-	g_cancellable_reset (operation->cancel);
 	g_object_unref (operation->cancel);
-
 	return operation->result;
 }
 
