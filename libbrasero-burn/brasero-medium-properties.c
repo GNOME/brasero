@@ -87,10 +87,6 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 	medium_prop = brasero_drive_properties_new (BRASERO_SESSION_CFG (priv->session));
 	gtk_widget_show (medium_prop);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	gtk_window_set_icon_name (GTK_WINDOW (medium_prop),
-	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
-
 	drive = brasero_burn_session_get_burner (priv->session);
 	display_name = brasero_drive_get_display_name (drive);
 	header = g_strdup_printf (_("Properties of %s"), display_name);
@@ -104,6 +100,10 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					      NULL);
 	g_free (header);
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	gtk_window_set_icon_name (GTK_WINDOW (dialog),
+	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 
 	box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	gtk_box_pack_start (GTK_BOX (box), medium_prop, TRUE, TRUE, 0);
