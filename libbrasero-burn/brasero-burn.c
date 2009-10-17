@@ -2312,14 +2312,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	BRASERO_BURN_DEBUG (burn, "Preparing to checksum (type %i %s)", type, checksum);
 
-	/* this may be necessary for the drive to settle down and possibly be
-	 * mounted by gnome-volume-manager (just temporarily) */
-	result = brasero_burn_sleep (burn, 5000);
-	if (result != BRASERO_BURN_OK) {
-		brasero_burn_session_pop_tracks (priv->session);
-		return result;
-	}
-
 	/* reprobe the medium and wait for it to be probed */
 	result = brasero_burn_reprobe (burn);
 	if (result != BRASERO_BURN_OK) {
