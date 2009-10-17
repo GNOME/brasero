@@ -1051,7 +1051,12 @@ brasero_drive_update_gdrive (BraseroDrive *drive,
 		g_signal_handlers_disconnect_by_func (priv->gdrive,
 						      brasero_drive_medium_gdrive_changed_cb,
 						      drive);
+
+		/* Stop any ongoing GIO operation */
+		g_cancellable_cancel (priv->cancel);
+	
 		g_object_unref (priv->gdrive);
+		priv->gdrive = NULL;
 	}
 
 	BRASERO_MEDIA_LOG ("Setting GDrive %p", gdrive);
