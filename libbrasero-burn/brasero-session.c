@@ -808,8 +808,8 @@ brasero_burn_session_get_output_type (BraseroBurnSession *self,
 		return BRASERO_BURN_NOT_READY;
 
 	if (brasero_drive_is_fake (priv->settings->burner)) {
-		output->type = priv->settings->output.type;
-		output->subtype.img_format = priv->settings->output.subtype.img_format;
+		output->type = BRASERO_TRACK_TYPE_IMAGE;
+		output->subtype.img_format = brasero_burn_session_get_output_format (self);
 	}
 	else {
 		output->type = BRASERO_TRACK_TYPE_DISC;
