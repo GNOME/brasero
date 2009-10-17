@@ -41,8 +41,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_BURN_LOG_DOMAIN					"BraseroBurn"
-
 #define BRASERO_BURN_LOG(format, ...)						\
 		brasero_burn_debug_message (G_STRLOC,				\
 					    format,				\
@@ -87,6 +85,9 @@ G_BEGIN_DECLS
 						       G_STRLOC,				\
 						       format,					\
 						       ##__VA_ARGS__);
+
+void
+brasero_burn_library_set_debug (gboolean value);
 
 void
 brasero_burn_debug_setup_module (GModule *handle);

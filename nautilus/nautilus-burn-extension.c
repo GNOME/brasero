@@ -29,6 +29,9 @@
 #include <glib/gi18n-lib.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
+
+#include <gconf/gconf-client.h>
+
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 
@@ -57,6 +60,9 @@
 #include "brasero-project-name.h"
 
 #include "brasero-misc.h"
+
+#include "brasero-media-private.h"
+#include "burn-debug.h"
 
 #define BURN_URI "burn:///"
 
@@ -959,10 +965,20 @@ nautilus_disc_burn_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule *module)
 {
+	GConfClient *client;
+
         DEBUG_PRINT ("Initializing nautilus-disc-recorder\n");
 
-        brasero_media_library_start ();
+	client = gconf_client_get_default ();
+	if (gconf_client_get_bool (client, "/apps/brasero/nautilus-extension-debug", NULL)) {
+		brasero_media_library_set_debug (TRUE);
+		brasero_burn_library_set_debug (TRUE);
+	}
+	g_object_unref (client);
+
+	brasero_media_library_start ();
         brasero_burn_library_start (NULL, NULL);
+
         DEBUG_PRINT ("Libbrasero-media started\n");
 
         nautilus_disc_burn_register_type (module);

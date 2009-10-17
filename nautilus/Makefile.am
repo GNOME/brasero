@@ -9,6 +9,7 @@ INCLUDES =					\
 	-I$(top_builddir)/libbrasero-burn/	\
 	-I$(top_srcdir)/src/			\
 	-I$(top_builddir)/src/			\
+	$(BRASERO_GCONF_CFLAGS)	\
 	$(NAUTILUS_EXTENSION_CFLAGS)		\
 	$(WARN_CFLAGS)							\
 	$(WERROR)				\
@@ -48,6 +49,7 @@ libnautilus_brasero_extension_la_SOURCES = 	\
 	../src/brasero-project-name.h
 
 libnautilus_brasero_extension_la_LIBADD =	\
+	$(BRASERO_GCONF_CFLAGS)	\
 	$(NAUTILUS_EXTENSION_LIBS)		\
 	../libbrasero-utils/libbrasero-utils.la	\
 	../libbrasero-media/libbrasero-media.la	\

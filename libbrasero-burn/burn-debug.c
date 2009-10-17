@@ -33,6 +33,7 @@
 #endif
 
 #include <string.h>
+#include <stdio.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -52,6 +53,12 @@ static const GOptionEntry options [] = {
 	  NULL },
 	{ NULL }
 };
+
+void
+brasero_burn_library_set_debug (gboolean value)
+{
+	debug = value;
+}
 
 /**
  * brasero_burn_library_get_option_group:
@@ -94,15 +101,12 @@ brasero_burn_debug_message (const gchar *location,
 	if (!debug)
 		return;
 
-	format_real = g_strdup_printf ("At %s: %s",
+	format_real = g_strdup_printf ("BraseroBurn: (at %s) %s\n",
 				       location,
 				       format);
 
 	va_start (arg_list, format);
-	g_logv (BRASERO_BURN_LOG_DOMAIN,
-		G_LOG_LEVEL_DEBUG,
-		format_real,
-		arg_list);
+	vprintf (format_real, arg_list);
 	va_end (arg_list);
 
 	g_free (format_real);
@@ -118,15 +122,11 @@ brasero_burn_debug_messagev (const gchar *location,
 	if (!debug)
 		return;
 
-	format_real = g_strdup_printf ("At %s: %s",
+	format_real = g_strdup_printf ("BraseroBurn: (at %s) %s\n",
 				       location,
 				       format);
 
-	g_logv (BRASERO_BURN_LOG_DOMAIN,
-		G_LOG_LEVEL_DEBUG,
-		format_real,
-		arg_list);
-
+	vprintf (format_real, arg_list);
 	g_free (format_real);
 }
 
@@ -179,16 +179,13 @@ brasero_burn_debug_flags_type_message (BraseroBurnFlag flags,
 
 	brasero_debug_burn_flags_to_string (buffer, flags);
 
-	format_real = g_strdup_printf ("At %s: %s %s",
+	format_real = g_strdup_printf ("BraseroBurn: (at %s) %s %s\n",
 				       location,
 				       format,
 				       buffer);
 
 	va_start (arg_list, format);
-	g_logv (BRASERO_BURN_LOG_DOMAIN,
-		G_LOG_LEVEL_DEBUG,
-		format_real,
-		arg_list);
+	vprintf (format_real, arg_list);
 	va_end (arg_list);
 
 	g_free (format_real);
@@ -317,16 +314,13 @@ brasero_burn_debug_track_type_struct_message (BraseroTrackType *type,
 	else
 		strcpy (buffer, "Undefined");
 
-	format_real = g_strdup_printf ("At %s: %s %s",
+	format_real = g_strdup_printf ("BraseroBurn: (at %s) %s %s\n",
 				       location,
 				       format,
 				       buffer);
 
 	va_start (arg_list, format);
-	g_logv (BRASERO_BURN_LOG_DOMAIN,
-		G_LOG_LEVEL_DEBUG,
-		format_real,
-		arg_list);
+	vprintf (format_real, arg_list);
 	va_end (arg_list);
 
 	g_free (format_real);
@@ -387,16 +381,13 @@ brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 		break;
 	}
 
-	format_real = g_strdup_printf ("At %s: %s %s",
+	format_real = g_strdup_printf ("BraseroBurn: (at %s) %s %s\n",
 				       location,
 				       format,
 				       buffer);
 
 	va_start (arg_list, format);
-	g_logv (BRASERO_BURN_LOG_DOMAIN,
-		G_LOG_LEVEL_DEBUG,
-		format_real,
-		arg_list);
+	vprintf (format_real, arg_list);
 	va_end (arg_list);
 
 	g_free (format_real);

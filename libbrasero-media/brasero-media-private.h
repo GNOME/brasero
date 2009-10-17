@@ -50,6 +50,9 @@ brasero_media_get_all_list (BraseroMedia type);
  */
 
 void
+brasero_media_library_set_debug (gboolean value);
+
+void
 brasero_media_to_string (BraseroMedia media,
 			 gchar *string);
 
