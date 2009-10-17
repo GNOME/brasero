@@ -282,7 +282,7 @@ brasero_drive_eject (BraseroDrive *drive,
 
 	BRASERO_MEDIA_LOG ("Trying to eject drive");
 	if (priv->gdrive) {
-		/*Wait for any ongoing probing as it
+		/* Wait for any ongoing probing as it
 		 * would prevent the door from being
 		 * opened. */
 		brasero_drive_wait_probing_thread (drive);
