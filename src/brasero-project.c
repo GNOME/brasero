@@ -773,8 +773,7 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 }
 
 /********************************** size ***************************************/
-
-gchar *
+static gchar *
 brasero_project_get_sectors_string (gint64 sectors,
 				    BraseroTrackType *type)
 {
@@ -2438,6 +2437,7 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 	}
 
+	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
         type = brasero_project_get_session_type (project);
 
 	if (save_type == BRASERO_PROJECT_SAVE_XML
@@ -2671,6 +2671,7 @@ brasero_project_save_session (BraseroProject *project,
 		return FALSE;
 	}
 
+	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 	if (!brasero_project_save_project_xml (BRASERO_BURN_SESSION (project->priv->session), uri)) {
 		GtkResponseType response;
 		GtkWidget *dialog;
