@@ -232,7 +232,7 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 
 	if (format & BRASERO_IMAGE_FORMAT_BIN) {
 		dot = g_utf8_strrchr (image, -1, '.');
-		if (strcmp (suffixes [0], dot)) {
+		if (!dot || strcmp (suffixes [0], dot)) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
@@ -255,7 +255,7 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 		dot = g_utf8_strrchr (toc, -1, '.');
 
 		if (format & BRASERO_IMAGE_FORMAT_CLONE
-		&& strcmp (suffixes [1], dot)) {
+		&& (!dot || strcmp (suffixes [1], dot))) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
@@ -271,7 +271,7 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 			}
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_CUE
-		     && strcmp (suffixes [2], dot)) {
+		     && (!dot || strcmp (suffixes [2], dot))) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
@@ -287,7 +287,7 @@ brasero_session_cfg_set_output_image (BraseroBurnSession *session,
 			}
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
-		     && strcmp (suffixes [3], dot)) {
+		     && (!dot || strcmp (suffixes [3], dot))) {
 			gboolean res;
 
 			res = brasero_session_cfg_wrong_extension_signal (BRASERO_SESSION_CFG (session));
