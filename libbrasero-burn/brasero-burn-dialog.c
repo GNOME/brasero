@@ -1605,22 +1605,29 @@ static gchar *
 brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 {
 	BraseroBurnDialogPrivate *priv;
-	BraseroDrive *drive;
 	BraseroMedia media;
+	BraseroDrive *drive;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
 	drive = brasero_burn_session_get_burner (priv->session);
-	if (priv->input.type != BRASERO_TRACK_TYPE_DISC)
+	if (!brasero_track_type_get_has_medium (&priv->input))
 		media = brasero_burn_session_get_dest_media (priv->session);
 	else
-		media = priv->input.subtype.media;
+		media = brasero_track_type_get_medium_type (&priv->input);
 
-	switch (priv->input.type) {
-	case BRASERO_TRACK_TYPE_STREAM:
-		return g_strdup (_("Audio CD successfully burned"));
+	if (brasero_track_type_get_has_stream (&priv->input)) {
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (&priv->input))) {
+			if (media & BRASERO_MEDIUM_DVD)
+				return g_strdup (_("Video DVD successfully burned"));
 
-	case BRASERO_TRACK_TYPE_DISC:
+			return g_strdup (_("(S)VCD successfully burned"));
+		}
+		else
+			return g_strdup (_("Audio CD successfully burned"));
+
+	}
+	else if (brasero_track_type_get_has_medium (&priv->input)) {
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
 				return g_strdup (_("DVD successfully copied"));
@@ -1633,16 +1640,16 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 			else
 				return g_strdup (_("Image of CD successfully created"));
 		}
-		break;
-	case BRASERO_TRACK_TYPE_IMAGE:
+	}
+	else if (brasero_track_type_get_has_image (&priv->input)) {
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
 				return g_strdup (_("Image successfully burned to DVD"));
 			else
 				return g_strdup (_("Image successfully burned to CD"));
 		}
-		break;
-	default:
+	}
+	else if (brasero_track_type_get_has_data (&priv->input)) {
 		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD)
 				return g_strdup (_("Data DVD successfully burned"));
