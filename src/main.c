@@ -273,6 +273,7 @@ brasero_app_parse_options (BraseroApp *app)
 	    	brasero_app_create_mainwin (app);
 		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
+		brasero_app_run_mainwin (app);
 		return;
 	}
 
