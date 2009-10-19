@@ -181,7 +181,9 @@ brasero_rename_do (BraseroRename *self,
 
 	priv = BRASERO_RENAME_PRIVATE (self);
 	mode = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo));
-	if (!mode)
+
+	mode -= priv->show_default;
+	if (mode < 0)
 		return TRUE;
 
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -201,16 +203,16 @@ brasero_rename_do (BraseroRename *self,
 
 redo:
 		switch (mode) {
-		case 1:
+		case 0:
 			new_name = brasero_rename_insert_string (self, name);
 			break;
-		case 2:
+		case 1:
 			new_name = brasero_rename_delete_string (self, name);
 			break;
-		case 3:
+		case 2:
 			new_name = brasero_rename_substitute_string (self, name);
 			break;
-		case 4:
+		case 3:
 			new_name = brasero_rename_number_string (self, name);
 			break;
 		default:
@@ -279,7 +281,7 @@ brasero_rename_init (BraseroRename *object)
 	gtk_box_pack_start (GTK_BOX (object), priv->combo, FALSE, FALSE, 0);
 
 	priv->show_default = 1;
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("<Keep current values>"));
+	gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->combo), _("<Keep current values>"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Insert text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Delete text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Substitute text"));
