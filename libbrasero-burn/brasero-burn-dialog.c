@@ -1862,6 +1862,13 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 
 	switch (priv->input.type) {
 	case BRASERO_TRACK_TYPE_STREAM:
+		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (priv->input.subtype.stream_format)) {
+			if (media & BRASERO_MEDIUM_DVD)
+				return g_strdup (_("Video DVD successfully burned"));
+
+			return g_strdup (_("(S)VCD successfully burned"));
+		}
+
 		return g_strdup (_("Audio CD successfully burnt"));
 
 	case BRASERO_TRACK_TYPE_DISC:
