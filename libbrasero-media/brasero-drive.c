@@ -229,20 +229,6 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 		g_source_remove (priv->probe_id);
 		priv->probe_id = 0;
 	}
-
-	if (priv->medium) {
-		BraseroMedium *medium;
-
-		medium = priv->medium;
-		priv->medium = NULL;
-
-		g_signal_emit (drive,
-			       drive_signals [MEDIUM_REMOVED],
-			       0,
-			       medium);
-
-		g_object_unref (medium);
-	}
 }
 
 static void
