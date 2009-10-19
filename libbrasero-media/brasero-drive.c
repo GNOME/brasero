@@ -851,7 +851,6 @@ brasero_drive_probed_inside (gpointer data)
 
 	if (priv->has_medium) {
 		if (priv->medium) {
-			priv->probed = TRUE;
 			BRASERO_MEDIA_LOG ("Already a medium. Skipping");
 			return FALSE;
 		}
