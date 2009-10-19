@@ -248,12 +248,6 @@ brasero_io_job_progress_report_stop (BraseroIO *self,
 	g_mutex_unlock (priv->lock);
 }
 
-const gchar *
-brasero_io_job_progress_get_current (BraseroIOJobProgress *progress)
-{
-	return g_strdup (progress->current);
-}
-
 guint
 brasero_io_job_progress_get_file_processed (BraseroIOJobProgress *progress)
 {
