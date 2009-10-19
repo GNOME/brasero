@@ -34,6 +34,8 @@
 
 #include <glib.h>
 
+#include "scsi-sbc.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"

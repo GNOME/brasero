@@ -32,6 +32,8 @@
 
 #include "scsi-base.h"
 #include "scsi-error.h"
+#include "scsi-device.h"
+
 #include "scsi-get-performance.h"
 #include "scsi-read-toc-pma-atip.h"
 

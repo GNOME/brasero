@@ -94,7 +94,6 @@ libbrasero_media_la_SOURCES =		\
 	scsi-read-cd.h	\
 	scsi-read-cd.c	\
 	scsi-device.h         \
-	scsi-eject.c         \
 	scsi-mech-status.c         \
 	scsi-mech-status.h         \
 	scsi-write-page.h         \

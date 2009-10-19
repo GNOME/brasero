@@ -31,6 +31,7 @@
 #include <glib.h>
 
 #include "scsi-base.h"
+#include "scsi-device.h"
 
 #include "scsi-error.h"
 #include "scsi-mode-pages.h"

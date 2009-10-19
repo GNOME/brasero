@@ -32,6 +32,7 @@
 
 #include "scsi-base.h"
 #include "scsi-error.h"
+#include "scsi-device.h"
 
 #ifndef _BURN_SBC_H
 #define _BURN_SBC_H

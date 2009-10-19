@@ -32,6 +32,8 @@
 #  include <config.h>
 #endif
 
+#include "scsi-spc1.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"

@@ -34,6 +34,8 @@
 
 #include <glib.h>
 
+#include "scsi-mmc2.h"
+
 #include "brasero-media-private.h"
 
 #include "scsi-error.h"
@@ -164,6 +166,12 @@ brasero_mmc2_read_generic_structure (BraseroDeviceHandle *handle,
 	return res;
 }
 
+#if 0
+
+/* So far this function only creates a warning at
+ * build time and is not used but may be in the
+ * future. */
+
 BraseroScsiResult
 brasero_mmc2_read_dvd_structure (BraseroDeviceHandle *handle,
 				 int address,
@@ -203,3 +211,5 @@ brasero_mmc5_read_bd_structure (BraseroDeviceHandle *handle,
 	brasero_scsi_command_free (cdb);
 	return res;
 }
+
+#endif

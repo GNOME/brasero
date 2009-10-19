@@ -32,6 +32,7 @@
 
 #include "scsi-base.h"
 #include "scsi-error.h"
+#include "scsi-device.h"
 #include "scsi-read-capacity.h"
 #include "scsi-get-configuration.h"
 #include "scsi-read-disc-structure.h"
