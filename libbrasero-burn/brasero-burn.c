@@ -341,6 +341,8 @@ brasero_burn_eject (BraseroBurn *self,
 
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
+			gchar *name;
+
 			BRASERO_BURN_LOG ("Max attempts reached at ejecting");
 
 			/* FIXME: it'd be better if we asked the user to do it
@@ -623,7 +625,7 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 
 again:
 
-	while (brasero_drive_probing (priv->dest)) {
+	while (brasero_drive_probing (priv->src)) {
 		result = brasero_burn_sleep (burn, 500);
 		if (result != BRASERO_BURN_OK)
 			return result;
@@ -1962,7 +1964,6 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 	tasks = brasero_burn_caps_new_task (priv->caps,
 					    priv->session,
-	                                    temp_output,
 					    error);
 	if (!tasks) {
 		brasero_burn_session_pop_settings (priv->session);
