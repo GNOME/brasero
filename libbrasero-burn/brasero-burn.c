@@ -335,6 +335,14 @@ brasero_burn_eject (BraseroBurn *self,
 		GError *ret_error;
 		BraseroBurnResult result;
 
+		while (brasero_drive_probing (drive)) {
+			result = brasero_burn_sleep (self, 500);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			continue;
+		}
+
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			gchar *name;
