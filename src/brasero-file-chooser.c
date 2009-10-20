@@ -140,10 +140,8 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 		 * the warning messages we get if we do */
 
 		if (found
-		&&  gtk_tree_selection_get_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (widget))) == GTK_SELECTION_MULTIPLE) {
-			gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (widget), TRUE);
+		&&  gtk_tree_selection_get_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (widget))) == GTK_SELECTION_MULTIPLE)
 			egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (widget));
-		}
 	}
 	else if (GTK_IS_BUTTON (widget)) {
 		GtkWidget *image;
