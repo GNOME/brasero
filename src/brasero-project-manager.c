@@ -459,7 +459,7 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 						   manager);
 }
 
-void
+static void
 brasero_project_manager_sidepane_changed (BraseroLayout *layout,
 					  gboolean visible,
 					  BraseroProjectManager *manager)

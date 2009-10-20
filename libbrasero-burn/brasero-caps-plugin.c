@@ -36,6 +36,8 @@
 
 #include <glib.h>
 
+#include "brasero-plugin-information.h"
+
 #include "brasero-media.h"
 #include "brasero-media-private.h"
 

@@ -613,7 +613,7 @@ brasero_playlist_get_selected_uri (BraseroURIContainer *container)
 	return NULL;
 }
 
-void
+static void
 brasero_playlist_unselect_all (BraseroPlaylist *playlist)
 {
 	GtkTreeSelection *selection;

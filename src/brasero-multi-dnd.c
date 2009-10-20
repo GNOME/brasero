@@ -24,6 +24,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-multi-dnd.h"
+
 #include "brasero-track-data-cfg.h"
 #include "eggtreemultidnd.h"
 

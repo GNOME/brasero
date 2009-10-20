@@ -35,6 +35,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-xsession.h"
+
 #include "eggsmclient.h"
 
 #include "brasero-app.h"

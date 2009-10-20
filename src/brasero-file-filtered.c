@@ -109,7 +109,7 @@ brasero_file_filtered_activate (GtkExpander *self)
 	brasero_file_filtered_update (BRASERO_FILE_FILTERED (self));
 }
 
-void
+static void
 brasero_file_filtered_row_inserted (GtkTreeModel *model,
 				    GtkTreePath *treepath,
 				    GtkTreeIter *iter,
@@ -118,7 +118,7 @@ brasero_file_filtered_row_inserted (GtkTreeModel *model,
 	brasero_file_filtered_update (self);
 }
 
-void
+static void
 brasero_file_filtered_row_deleted (GtkTreeModel *model,
 				   GtkTreePath *treepath,
 				   BraseroFileFiltered *self)

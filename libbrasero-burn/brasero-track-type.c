@@ -445,6 +445,7 @@ brasero_track_type_equal (const BraseroTrackType *type_A,
 	return TRUE;
 }
 
+#if 0
 /**
  * brasero_track_type_match:
  * @type_A: a #BraseroTrackType.
@@ -495,3 +496,4 @@ brasero_track_type_match (const BraseroTrackType *type_A,
 	return TRUE;
 }
 
+#endif

@@ -168,7 +168,7 @@ static const BraseroAsyncTaskType image_contents_type = {
 	brasero_io_image_directory_contents_destroy
 };
 
-void
+static void
 brasero_io_load_image_directory (const gchar *dev_image,
 				 gint64 session_block,
 				 gint64 block,

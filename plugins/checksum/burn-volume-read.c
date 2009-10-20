@@ -165,7 +165,7 @@ brasero_volume_file_rewind (BraseroVolFileHandle *handle)
 	return brasero_volume_file_rewind_real (handle);
 }
 
-BraseroBurnResult
+static BraseroBurnResult
 brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 {
 	/* check if we need to load a new block */
