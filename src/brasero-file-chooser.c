@@ -36,6 +36,8 @@
 
 #include <gtk/gtk.h>
 
+#include <gconf/gconf-client.h>
+
 #include "eggtreemultidnd.h"
 
 #include "brasero-file-chooser.h"
@@ -65,6 +67,10 @@ struct BraseroFileChooserPrivate {
 };
 
 static GObjectClass *parent_class = NULL;
+
+#define BRASERO_KEY_DISPLAY_FILE_CHOOSER_PERCENT "/apps/brasero/display/file_chooser_percent"
+#define BRASERO_KEY_DISPLAY_BRASERO_FILE_CHOOSER_PERCENT "/apps/brasero/display/file_brasero_chooser_percent"
+
 
 GType
 brasero_file_chooser_get_type ()
@@ -123,9 +129,92 @@ brasero_file_chooser_class_init (BraseroFileChooserClass *klass)
 	object_class->finalize = brasero_file_chooser_finalize;
 }
 
+static void
+brasero_file_chooser_paned_destroy (GObject *object,
+                                                      gpointer NULL_data)
+{
+	gint percent;
+	GConfClient *client;
+
+	percent = GPOINTER_TO_INT (g_object_get_data (object, "position-percent"));
+
+	client = gconf_client_get_default ();
+	if (GPOINTER_TO_INT (g_object_get_data (object, "is-stock-file-chooser")))
+		gconf_client_set_int (client, BRASERO_KEY_DISPLAY_FILE_CHOOSER_PERCENT, percent, NULL);
+	else
+		gconf_client_set_int (client, BRASERO_KEY_DISPLAY_BRASERO_FILE_CHOOSER_PERCENT, percent, NULL);
+
+	g_object_unref (client);
+}
+
+static void
+brasero_file_chooser_paned_map_event (GtkWidget *widget,
+                                      GdkEvent *event,
+                                      gpointer NULL_data)
+{
+	gint percent;
+	gint position;
+	GConfClient *client;
+	GtkWidget *toplevel;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
+	client = gconf_client_get_default ();
+	if (G_TYPE_FROM_INSTANCE (toplevel) == GTK_TYPE_FILE_CHOOSER_DIALOG) {
+		g_object_set_data (G_OBJECT (widget), "is-stock-file-chooser", GINT_TO_POINTER (1));
+		percent = gconf_client_get_int (client, BRASERO_KEY_DISPLAY_FILE_CHOOSER_PERCENT, NULL);
+	}
+	else
+		percent = gconf_client_get_int (client, BRASERO_KEY_DISPLAY_BRASERO_FILE_CHOOSER_PERCENT, NULL);
+
+	if (percent < 0)
+		return;
+
+	position = widget->allocation.width * percent / 100;
+	gtk_paned_set_position (GTK_PANED (widget), position);
+}
+
+static void
+brasero_file_chooser_position_percent (GObject *object,
+                                       gint width,
+                                       gint position)
+{
+	gint percent;
+
+	percent = position * 100 / width;
+	g_object_set_data (object, "position-percent", GINT_TO_POINTER (percent));
+}
+
+static void
+brasero_file_chooser_position_changed (GObject *object,
+                                       GParamSpec *param_spec,
+                                       gpointer NULL_data)
+{
+	gint position;
+	gint width;
+
+	position = gtk_paned_get_position (GTK_PANED (object));
+	width = GTK_WIDGET (object)->allocation.width;
+	brasero_file_chooser_position_percent (object, width, position);
+}
+
+static void
+brasero_file_chooser_allocation_changed (GObject *object,
+                                         GtkAllocation *allocation,
+                                         gpointer NULL_data)
+{
+	gint position;
+	gint width;
+
+	position = gtk_paned_get_position (GTK_PANED (object));
+	width = allocation->width;
+
+	brasero_file_chooser_position_percent (object, width, position);
+}
+
 void
 brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 {
+
 	/* we explore everything until we reach a treeview (there are two) */
 	if (GTK_IS_TREE_VIEW (widget)) {
 		GtkTargetList *list;
@@ -187,6 +276,25 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 					 TRUE,
 					 TRUE);
 			g_object_unref (left);
+
+			g_signal_connect (widget,
+			                  "notify::position",
+			                  G_CALLBACK (brasero_file_chooser_position_changed),
+			                  NULL);
+
+			g_signal_connect (widget,
+			                  "size-allocate",
+			                  G_CALLBACK (brasero_file_chooser_allocation_changed),
+			                  NULL);
+
+			g_signal_connect (widget,
+			                  "destroy",
+			                  G_CALLBACK (brasero_file_chooser_paned_destroy),
+			                  NULL);
+			g_signal_connect (widget,
+			                  "map-event",
+			                  G_CALLBACK (brasero_file_chooser_paned_map_event),
+			                  NULL);
 		}
 		gtk_container_foreach (GTK_CONTAINER (widget),
 				       brasero_file_chooser_customize,
