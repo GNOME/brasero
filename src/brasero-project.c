@@ -1949,6 +1949,12 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	if (!project->priv->chooser)
 		return;
 
+	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
+		      !project->priv->oversized);
+
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
+	gtk_action_set_sensitive (action, sensitive);
+
 	if (response != BRASERO_RESPONSE_ADD) {
 		gtk_widget_destroy (chooser);
 		project->priv->chooser = NULL;
@@ -1958,12 +1964,6 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	project->priv->chooser = NULL;
 	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
 	gtk_widget_destroy (GTK_WIDGET (chooser));
-
-	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
-		      !project->priv->oversized);
-
-	action = gtk_action_group_get_action (project->priv->project_group, "Add");
-	gtk_action_set_sensitive (action, sensitive);
 
 	for (iter = uris; iter; iter = iter->next) {
 		gchar *uri;
