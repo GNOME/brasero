@@ -36,10 +36,9 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include "eggtreemultidnd.h"
 
+#include "brasero-setting.h"
 #include "brasero-file-chooser.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
@@ -67,10 +66,6 @@ struct BraseroFileChooserPrivate {
 };
 
 static GObjectClass *parent_class = NULL;
-
-#define BRASERO_KEY_DISPLAY_FILE_CHOOSER_PERCENT "/apps/brasero/display/file_chooser_percent"
-#define BRASERO_KEY_DISPLAY_BRASERO_FILE_CHOOSER_PERCENT "/apps/brasero/display/file_brasero_chooser_percent"
-
 
 GType
 brasero_file_chooser_get_type ()
@@ -133,18 +128,14 @@ static void
 brasero_file_chooser_paned_destroy (GObject *object,
                                                       gpointer NULL_data)
 {
-	gint percent;
-	GConfClient *client;
-
-	percent = GPOINTER_TO_INT (g_object_get_data (object, "position-percent"));
-
-	client = gconf_client_get_default ();
 	if (GPOINTER_TO_INT (g_object_get_data (object, "is-stock-file-chooser")))
-		gconf_client_set_int (client, BRASERO_KEY_DISPLAY_FILE_CHOOSER_PERCENT, percent, NULL);
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
+		                           g_object_get_data (object, "position-percent"));
 	else
-		gconf_client_set_int (client, BRASERO_KEY_DISPLAY_BRASERO_FILE_CHOOSER_PERCENT, percent, NULL);
-
-	g_object_unref (client);
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
+		                           g_object_get_data (object, "position-percent"));
 }
 
 static void
@@ -152,24 +143,28 @@ brasero_file_chooser_paned_map_event (GtkWidget *widget,
                                       GdkEvent *event,
                                       gpointer NULL_data)
 {
-	gint percent;
 	gint position;
-	GConfClient *client;
+	gpointer percent;
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
-	client = gconf_client_get_default ();
 	if (G_TYPE_FROM_INSTANCE (toplevel) == GTK_TYPE_FILE_CHOOSER_DIALOG) {
 		g_object_set_data (G_OBJECT (widget), "is-stock-file-chooser", GINT_TO_POINTER (1));
-		percent = gconf_client_get_int (client, BRASERO_KEY_DISPLAY_FILE_CHOOSER_PERCENT, NULL);
+		brasero_setting_get_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
+		                           &percent);
 	}
 	else
-		percent = gconf_client_get_int (client, BRASERO_KEY_DISPLAY_BRASERO_FILE_CHOOSER_PERCENT, NULL);
+		brasero_setting_get_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
+		                           &percent);
 
-	if (percent < 0)
-		return;
+	if (GPOINTER_TO_INT (percent) < 0) {
+		/* No value so set something sane */
+		percent = GINT_TO_POINTER (30);
+	}
 
-	position = widget->allocation.width * percent / 100;
+	position = widget->allocation.width * GPOINTER_TO_INT (percent) / 100;
 	gtk_paned_set_position (GTK_PANED (widget), position);
 }
 

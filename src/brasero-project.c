@@ -38,19 +38,7 @@
 
 #include <gtk/gtk.h>
 
-#include <libxml/xmlerror.h>
-#include <libxml/xmlwriter.h>
-#include <libxml/parser.h>
-#include <libxml/xmlstring.h>
-#include <libxml/uri.h>
-
-#include <gconf/gconf-client.h>
-
 #include <gst/gst.h>
-
-#ifdef BUILD_PLAYLIST
-#include <totem-pl-parser.h>
-#endif
 
 #include "brasero-units.h"
 
@@ -59,6 +47,8 @@
 
 #include "brasero-tags.h"
 #include "brasero-session.h"
+
+#include "brasero-setting.h"
 
 #ifdef BUILD_PREVIEW
 #include "brasero-player.h"
@@ -246,8 +236,6 @@ static const gchar *description = {
 static GObjectClass *parent_class = NULL;
 
 #define BRASERO_PROJECT_SIZE_WIDGET_BORDER	1
-
-#define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/viewer"
 
 #define BRASERO_PROJECT_VERSION "0.2"
 
@@ -2007,9 +1995,9 @@ brasero_project_add_uris_cb (GtkAction *action,
 		return;
 	}
 
-	/* set the Add button grey as we don't want
-	 * the user to be able to click again until it
-	 * the dialog has been closed */
+	/* Set the Add button grey as we don't want
+	 * the user to be able to click again until the
+	 * dialog has been closed */
 	gtk_action_set_sensitive (action, FALSE);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
@@ -2081,15 +2069,14 @@ brasero_project_add_uris_cb (GtkAction *action,
 
 #ifdef BUILD_PREVIEW
 
-	GConfClient *client;
 	GtkWidget *player;
-	gboolean res;
+	gpointer value;
 
-	client = gconf_client_get_default ();
-	res = gconf_client_get_bool (client, BRASERO_KEY_SHOW_PREVIEW, NULL);
-	g_object_unref (client);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SHOW_PREVIEW,
+	                           &value);
 
-	if (!res)
+	if (!GPOINTER_TO_INT (value))
 		return;
 
 	/* if preview is activated add it */

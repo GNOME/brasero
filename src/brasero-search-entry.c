@@ -40,10 +40,9 @@
 
 #include <beagle/beagle.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-search-entry.h"
 #include "brasero-layout.h"
+#include "brasero-setting.h"
 
 static void brasero_search_entry_class_init (BraseroSearchEntryClass *klass);
 static void brasero_search_entry_init (BraseroSearchEntry *sp);
@@ -53,9 +52,6 @@ static void brasero_search_entry_destroy (GtkObject *gtk_object);
 struct BraseroSearchEntryPrivate {
 	GtkWidget *button;
 	GtkWidget *combo;
-	GSList *history;
-	GConfClient *client;
-	guint cxn;
 	gint search_id;
 
 	BraseroLayoutType ctx;
@@ -77,19 +73,15 @@ enum {
 
 static GObjectClass *parent_class = NULL;
 
-#define BRASERO_SEARCH_ENTRY_HISTORY_KEY "/apps/brasero/search_history"
 #define BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS	10
 
-static void brasero_search_entry_history_changed_cb (GConfClient *client,
-						      guint cxn_id,
-						      GConfEntry *entry,
-						      BraseroSearchEntry *widget);
 static void brasero_search_entry_button_clicked_cb (GtkButton *button,
 						      BraseroSearchEntry *entry);
 static void brasero_search_entry_entry_activated_cb (GtkComboBox *combo,
 						      BraseroSearchEntry *entry);
 static void brasero_search_entry_activated (BraseroSearchEntry *entry, gboolean query_now);
-static void brasero_search_entry_set_history (BraseroSearchEntry *entry);
+static void brasero_search_entry_set_history (BraseroSearchEntry *entry,
+                                              const gchar * const *history);
 static void brasero_search_entry_save_history (BraseroSearchEntry *entry);
 static void brasero_search_entry_add_current_keyword_to_history (BraseroSearchEntry *entry);
 static void brasero_search_entry_category_clicked_cb (GtkWidget *button, BraseroSearchEntry *entry);
@@ -172,10 +164,10 @@ static void
 brasero_search_entry_init (BraseroSearchEntry *obj)
 {
 	gchar *string;
+	gpointer value;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *entry;
-	GError *error = NULL;
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
@@ -344,54 +336,17 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 	gtk_widget_set_tooltip_text (obj->priv->button,
 				     _("Click to start the search"));
 
-	/* Set up GConf Client */
-	obj->priv->client = gconf_client_get_default ();
-	if (obj->priv->client) {
-		if (error) {
-			g_warning ("ERROR : %s\n", error->message);
-			g_error_free (error);
-			error = NULL;
-		}
-		else
-			obj->priv->cxn = gconf_client_notify_add (obj->priv->client,
-								  BRASERO_SEARCH_ENTRY_HISTORY_KEY,
-								  (GConfClientNotifyFunc) brasero_search_entry_history_changed_cb,
-								  obj, 
-								  NULL,
-								  &error);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SEARCH_ENTRY_HISTORY,
+	                           &value);
 
-		if (error) {
-			g_warning ("ERROR : %s\n", error->message);
-			g_error_free (error);
-			error = NULL;
-		}
-
-		obj->priv->history = gconf_client_get_list (obj->priv->client,
-							    BRASERO_SEARCH_ENTRY_HISTORY_KEY,
-							    GCONF_VALUE_STRING,
-							    &error);
-
-		if (error) {
-			g_warning ("ERROR : %s\n", error->message);
-			g_error_free (error);
-		}
-		else if (obj->priv->history)
-			brasero_search_entry_set_history (obj);
-	}
-	else
-		g_warning ("ERROR : could not connect to GCONF.\n");
+	brasero_search_entry_set_history (obj, value);
+	g_strfreev (value);
 }
 
 static void
 brasero_search_entry_destroy (GtkObject *gtk_object)
 {
-	BraseroSearchEntry *cobj;
-
-	cobj = BRASERO_SEARCH_ENTRY (gtk_object);
-
-	/* release gconf client */
-	g_object_unref (cobj->priv->client);
-
 	GTK_OBJECT_CLASS (parent_class)->destroy (gtk_object);
 }
 
@@ -401,10 +356,6 @@ brasero_search_entry_finalize (GObject *object)
 	BraseroSearchEntry *cobj;
 
 	cobj = BRASERO_SEARCH_ENTRY (object);
-
-	g_slist_foreach (cobj->priv->history, (GFunc) g_free, NULL);
-	g_slist_free (cobj->priv->history);
-	cobj->priv->history = NULL;
 
 	if (cobj->priv->search_id) {
 		g_source_remove (cobj->priv->search_id);
@@ -435,41 +386,6 @@ brasero_search_entry_category_clicked_cb (GtkWidget *button,
 		g_free (entry->priv->keywords);
 		entry->priv->keywords = NULL;
 	}
-}
-
-static void
-brasero_search_entry_history_changed_cb (GConfClient *client,
-					 guint cnx_id,
-					 GConfEntry *entry,
-					 BraseroSearchEntry *widget)
-{
-	GConfValue *value;
-	GSList *list = NULL, *iter;
-	const char *keywords;
-
-	/* a few checks */
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_LIST)
-		return;
-
-	if (gconf_value_get_list_type (value) != GCONF_VALUE_STRING)
-		return;
-
-	/* clears up history */
-	g_slist_foreach (widget->priv->history, (GFunc) g_free, NULL);
-	g_slist_free (widget->priv->history);
-	widget->priv->history = NULL;
-
-	/* get the new history */
-	list = gconf_value_get_list (value);
-	for (iter = list; iter && g_slist_length (widget->priv->history) < BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS; iter = iter->next) {
-		value = (GConfValue *) iter->data;
-		keywords = gconf_value_get_string (value);
-		widget->priv->history = g_slist_append (widget->priv->history,
-							g_strdup (keywords));
-	}
-
-	brasero_search_entry_set_history (widget);
 }
 
 static void
@@ -560,41 +476,24 @@ brasero_search_entry_activated (BraseroSearchEntry *entry,
 }
 
 static void
-brasero_search_entry_set_history (BraseroSearchEntry *entry)
+brasero_search_entry_set_history (BraseroSearchEntry *entry,
+                                  const gchar * const *history)
 {
 	int i;
-	GSList *iter;
 	GtkTreeIter row;
 	GtkListStore *store;
 
 	store = GTK_LIST_STORE (gtk_combo_box_get_model (GTK_COMBO_BOX (entry->priv->combo)));
 	gtk_list_store_clear (GTK_LIST_STORE (store));
 
-	if (entry->priv->history == NULL)
-		return;
-
-	i = 0;
-	for (iter = entry->priv->history; iter && i < BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS; iter = iter->next) {
-		gtk_list_store_append (store, &row);
-		gtk_list_store_set (store, &row,
-				    BRASERO_SEARCH_ENTRY_DISPLAY_COL, iter->data,
-				    BRASERO_SEARCH_ENTRY_BACKGRD_COL, NULL,
-				    -1);
-		i ++;
-	}
-
-	if (iter) {
-		GSList *next;
-
-		next = iter->next;
-
-		/* if there are other items simply free them */
-		entry->priv->history = g_slist_remove_link (entry->priv->history, iter);
-		g_free (iter->data);
-		g_slist_free (iter);
-
-		g_slist_foreach (next, (GFunc) g_free, NULL);
-		g_slist_free (next);
+	if (history) {
+		for (i = 0; history [i] && i < BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS; i ++) {
+			gtk_list_store_append (store, &row);
+			gtk_list_store_set (store, &row,
+					    BRASERO_SEARCH_ENTRY_DISPLAY_COL, history [i],
+					    BRASERO_SEARCH_ENTRY_BACKGRD_COL, NULL,
+					    -1);
+		}
 	}
 
 	/* separator */
@@ -616,64 +515,110 @@ brasero_search_entry_set_history (BraseroSearchEntry *entry)
 static void
 brasero_search_entry_save_history (BraseroSearchEntry *entry)
 {
-	GError *error = NULL;
+	GtkTreeModel *model;
+	int num_children;
+	GtkTreeIter iter;
+	gchar **array;
+	int i = 0;
 
-	gconf_client_notify_remove (entry->priv->client, entry->priv->cxn);
-	gconf_client_set_list (entry->priv->client,
-			       BRASERO_SEARCH_ENTRY_HISTORY_KEY,
-			       GCONF_VALUE_STRING,
-			       entry->priv->history, &error);
-	if (error) {
-		g_warning ("ERROR : %s\n", error->message);
-		g_error_free (error);
-		error = NULL;
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (entry->priv->combo));
+	if (!gtk_tree_model_get_iter_first (model, &iter)) {
+		brasero_setting_set_value (brasero_setting_get_default (),
+					   BRASERO_SETTING_SEARCH_ENTRY_HISTORY,
+					   NULL);
+		return;
 	}
 
-	entry->priv->cxn = gconf_client_notify_add (entry->priv->client,
-						    BRASERO_SEARCH_ENTRY_HISTORY_KEY,
-						    (GConfClientNotifyFunc) brasero_search_entry_history_changed_cb,
-						    entry, NULL, &error);
-	if (error) {
-		g_warning ("ERROR : %s\n", error->message);
-		g_error_free (error);
-	}
+	/* NOTE: the last item is not to be included nor
+	 * the blank line should be included. Only
+	 * substract one to have an empty row in the
+	 * array. */
+	num_children = gtk_tree_model_iter_n_children (model, NULL);
+	array = g_new0 (gchar *, -- num_children);
+
+	do {
+		gchar *string;
+
+		string = NULL;
+		gtk_tree_model_get (model, &iter,
+		                    BRASERO_SEARCH_ENTRY_DISPLAY_COL, &string,
+		                    -1);
+
+		/* break on the blank line */
+		if (string == NULL)
+			break;
+
+		array [i++] = string;
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SEARCH_ENTRY_HISTORY,
+	                           array);
+	g_strfreev (array);
 }
 
 static void
 brasero_search_entry_add_current_keyword_to_history (BraseroSearchEntry *entry)
 {
 	const char *keywords = NULL;
-	GSList *iter;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
 	/* we don't want to add static entry */
 	keywords =  gtk_entry_get_text (GTK_ENTRY (GTK_BIN (entry->priv->combo)->child));
 	if (!keywords || !strcmp (keywords, _("All files")))
 		return;
 
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (entry->priv->combo));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
 	/* make sure the item is not already in the list
 	 * otherwise just move it up in first position */
-	for (iter = entry->priv->history; iter; iter = iter->next) {
-		if (!strcmp (keywords, (char *) iter->data)) {
-			keywords = iter->data;
-			entry->priv->history = g_slist_remove (entry->priv->history,
-							       keywords);
-			entry->priv->history = g_slist_prepend (entry->priv->history,
-								(char *) keywords);
+	do {
+		gchar *string;
+
+		string = NULL;
+		gtk_tree_model_get (model, &iter,
+		                    BRASERO_SEARCH_ENTRY_DISPLAY_COL, &string,
+		                    -1);
+
+		/* break when we reach the blank line */
+		if (!string)
+			break;
+
+		if (!strcmp (keywords, string)) {
+			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+			gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			                    BRASERO_SEARCH_ENTRY_DISPLAY_COL, string,
+			                    -1);
+			g_free (string);
 			goto end;
 		}
+
+		g_free (string);
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	/* Remember that in model we have the 10 items
+	 * a NULL one and the "All Files" one */
+	if (gtk_tree_model_iter_n_children (model, NULL) == BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS + 2) {
+		gtk_tree_model_iter_nth_child (model,
+		                               &iter,
+		                               NULL, 
+		                               BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS - 1);
+
+		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 	}
 
-	if (g_slist_length (entry->priv->history) == BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS) {
-		iter = g_slist_last (entry->priv->history);
-		entry->priv->history = g_slist_remove (entry->priv->history, iter);
-	}
+	gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+	                    BRASERO_SEARCH_ENTRY_DISPLAY_COL, keywords,
+	                    -1);
 
-	entry->priv->history = g_slist_prepend (entry->priv->history,
-						g_strdup (keywords));
+end:
 
-      end:
 	brasero_search_entry_save_history (entry);
-	brasero_search_entry_set_history (entry);
 }
 
 BeagleQuery *

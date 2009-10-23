@@ -95,66 +95,6 @@
       </schema> 
 
       <schema>
-        <key>/schemas/apps/brasero/display/sidepane</key>
-	<applyto>/apps/brasero/display/sidepane</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>false</default>
-	<locale name="C">
-	  <short>Enable side pane</short>
-	  <long>Whether to display a side pane. Set to true to use it.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/display/audio_pane</key>
-	<applyto>/apps/brasero/display/audio_pane</applyto>
-	<owner>brasero</owner>
-	<type>string</type>
-	<default>Chooser</default>
-	<locale name="C">
-	  <short>Pane to display audio projects</short>
-	  <long>The pane to display with audio projects. It should be one of the following: "Chooser", "Search" or "Playlist".</long>
-	</locale>
-       </schema>
-
-       <schema>
-        <key>/schemas/apps/brasero/display/data_pane</key>
-	<applyto>/apps/brasero/display/data_pane</applyto>
-	<owner>brasero</owner>
-	<type>string</type>
-	<default>Chooser</default>
-	<locale name="C">
-	  <short>Pane to display data projects</short>
-	  <long>The pane to display with data projects. It should be one of the following: "Chooser" or "Search".</long>
-	</locale>
-       </schema>
-
-       <schema>
-        <key>/schemas/apps/brasero/display/video_pane</key>
-	<applyto>/apps/brasero/display/video_pane</applyto>
-	<owner>brasero</owner>
-	<type>string</type>
-	<default>Chooser</default>
-	<locale name="C">
-	  <short>Pane to display video projects</short>
-	  <long>The pane to display with video projects. It should be one of the following: "Chooser", "Search" or "Playlist".</long>
-	</locale>
-       </schema>
-
-       <schema>
-        <key>/schemas/apps/brasero/display/layout</key>
-	<applyto>/apps/brasero/display/layout</applyto>
-	<owner>brasero</owner>
-	<type>int</type>
-	<default>0</default>
-	<locale name="C">
-	  <short>Layout of UI</short>
-	  <long>This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)</long>
-	</locale>
-       </schema>
-
-      <schema>
         <key>/schemas/apps/brasero/display/viewer</key>
 	<applyto>/apps/brasero/display/viewer</applyto>
 	<owner>brasero</owner>
@@ -163,54 +103,6 @@
 	<locale name="C">
 	  <short>Enable file preview</short>
 	  <long>Whether to display file preview. Set to true to use it.</long>
-	</locale>
-       </schema>
-
-        <schema>
-        <key>/schemas/apps/brasero/display/image_width</key>
-	<applyto>/apps/brasero/display/image_width</applyto>
-	<owner>brasero</owner>
-	<type>int</type>
-	<default>120</default>
-	<locale name="C">
-	  <short>Width for image preview</short>
-	  <long>Default width for image preview.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/display/image_height</key>
-	<applyto>/apps/brasero/display/image_height</applyto>
-	<owner>brasero</owner>
-	<type>int</type>
-	<default>90</default>
-	<locale name="C">
-	  <short>Height of image preview</short>
-	  <long>Default height for image preview.</long>
-	</locale>
-       </schema>
-
-        <schema>
-        <key>/schemas/apps/brasero/display/video_width</key>
-	<applyto>/apps/brasero/display/video_width</applyto>
-	<owner>brasero</owner>
-	<type>int</type>
-	<default>120</default>
-	<locale name="C">
-	  <short>Width for video preview</short>
-	  <long>Default width for video preview.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/display/video_height</key>
-	<applyto>/apps/brasero/display/video_height</applyto>
-	<owner>brasero</owner>
-	<type>int</type>
-	<default>90</default>
-	<locale name="C">
-	  <short>Height for video preview</short>
-	  <long>Default height for video preview.</long>
 	</locale>
        </schema>
 
@@ -247,18 +139,6 @@
 	<locale name="C">
 	  <short>Should brasero filter broken symbolic links</short>
 	  <long>Should brasero filter broken symbolic links. Set to true, brasero will filter broken symbolic links.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/filter/notify</key>
-	<applyto>/apps/brasero/filter/notify</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>true</default>
-	<locale name="C">
-	  <short>Should brasero notify when files are filtered</short>
-	  <long>Should brasero notify when files are filtered. Set to true, brasero will display the notification.</long>
 	</locale>
        </schema>
 

@@ -37,13 +37,12 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include <gst/gst.h>
 #include <gst/interfaces/xoverlay.h>
 
 #include "brasero-player-bacon.h"
- 
+#include "brasero-setting.h"
+
 static void brasero_player_bacon_class_init(BraseroPlayerBaconClass *klass);
 static void brasero_player_bacon_init(BraseroPlayerBacon *sp);
 static void brasero_player_bacon_finalize(GObject *object);
@@ -365,19 +364,14 @@ brasero_player_bacon_destroy (GtkObject *obj)
 
 	/* save volume */
 	if (cobj->priv->pipe) {
-		GConfClient *client;
 		gdouble volume;
 
-		client = gconf_client_get_default ();
 		g_object_get (cobj->priv->pipe,
 			      "volume", &volume,
 			      NULL);
-
-		volume = gconf_client_set_int (client,
-					       GCONF_PLAYER_VOLUME,
-					       (gint) (volume * 100.0),
-					       NULL);
-		g_object_unref (client);
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_PLAYER_VOLUME,
+		                           GINT_TO_POINTER (volume * 100));
 	}
 
 	if (cobj->priv->xoverlay
@@ -676,8 +670,8 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 {
 	GstElement *video_sink, *audio_sink;
 	GstBus *bus = NULL;
-	GConfClient *client;
 	gdouble volume;
+	gpointer value;
 
 	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
 	if (!bacon->priv->pipe) {
@@ -717,13 +711,14 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 	gst_object_unref (bus);
 
 	/* set saved volume */
-	client = gconf_client_get_default ();
-	volume = gconf_client_get_int (client, GCONF_PLAYER_VOLUME, NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_PLAYER_VOLUME,
+	                           &value);
+	volume = GPOINTER_TO_INT (value);
 	volume = CLAMP (volume, 0, 500);
 	g_object_set (bacon->priv->pipe,
 		      "volume", (gdouble) volume / 100.0,
 		      NULL);
-	g_object_unref (client);
 
 	return;
 

@@ -123,7 +123,9 @@ brasero_SOURCES = \
 	eggsmclient.c        \
 	eggsmclient.h        \
 	eggsmclient-private.h        \
-	eggsmclient-xsmp.c
+	eggsmclient-xsmp.c        \
+	brasero-setting.h        \
+	brasero-setting.c
 
 brasero_LDADD =						\
 	$(top_builddir)/libbrasero-media/libbrasero-media.la	\

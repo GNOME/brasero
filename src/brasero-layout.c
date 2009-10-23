@@ -35,8 +35,7 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
+#include "brasero-setting.h"
 #include "brasero-layout.h"
 #include "brasero-preview.h"
 #include "brasero-project.h"
@@ -85,12 +84,6 @@ struct BraseroLayoutPrivate {
 
 	BraseroLayoutType ctx_type;
 	BraseroLayoutItem *active_item;
-
-	GConfClient *client;
-	gint radio_notify;
-	gint preview_notify;
-	gint layout_notify;
-	gint sidepane_notify;
 
 	GtkWidget *notebook;
 	GtkWidget *main_box;
@@ -143,17 +136,6 @@ const gchar description [] =
 		"</menu>"
 	"</menubar>"
 	"</ui>";
-
-/* GCONF keys */
-#define BRASERO_KEY_DISPLAY_LAYOUT	"/apps/brasero/display/layout"
-#define BRASERO_KEY_DISPLAY_POSITION	"/apps/brasero/display/position"
-
-
-#define BRASERO_KEY_DISPLAY_DIR		"/apps/brasero/display/"
-#define BRASERO_KEY_SHOW_SIDEPANE	BRASERO_KEY_DISPLAY_DIR "sidepane"
-#define BRASERO_KEY_LAYOUT_AUDIO	BRASERO_KEY_DISPLAY_DIR "audio_pane"
-#define BRASERO_KEY_LAYOUT_DATA		BRASERO_KEY_DISPLAY_DIR "data_pane"
-#define BRASERO_KEY_LAYOUT_VIDEO	BRASERO_KEY_DISPLAY_DIR "video_pane"
 
 /* signals */
 typedef enum {
@@ -342,58 +324,29 @@ brasero_layout_preview_toggled_cb (GtkToggleAction *action, BraseroLayout *layou
 		gtk_widget_show (layout->priv->preview_pane);
 	else
 		gtk_widget_hide (layout->priv->preview_pane);
-	
-	/* we set the correct value in GConf */
-	gconf_client_set_bool (layout->priv->client,
-			       BRASERO_KEY_SHOW_PREVIEW,
-			       active,
-			       NULL);
-}
 
-static void
-brasero_layout_preview_changed_cb (GConfClient *client,
-				   guint cxn,
-				   GConfEntry *entry,
-				   gpointer data)
-{
-	BraseroLayout *layout;
-	GtkAction *action;
-	GConfValue *value;
-	gboolean active;
-
-	layout = BRASERO_LAYOUT (data);
-
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_BOOL)
-		return;
-
-	active = gconf_value_get_bool (value);
-	action = gtk_action_group_get_action (layout->priv->action_group,
-					      BRASERO_LAYOUT_PREVIEW_ID);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), active);
-
-	if (active) {
-		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), TRUE);
-		gtk_widget_show (layout->priv->preview_pane);
-	}
-	else {
-		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), FALSE);
-		gtk_widget_hide (layout->priv->preview_pane);
-	}
+	brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), active);
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SHOW_PREVIEW,
+	                           GINT_TO_POINTER (active));
 }
 
 void
 brasero_layout_add_preview (BraseroLayout *layout,
 			    GtkWidget *preview)
 {
+	gpointer value;
 	gboolean active;
-	GtkAction *action;
 	gchar *accelerator;
-	GError *error = NULL;
 	GtkToggleActionEntry entry;
 
 	layout->priv->preview_pane = preview;
 	brasero_layout_pack_preview (layout);
+
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SHOW_PREVIEW,
+	                           &value);
+	active = GPOINTER_TO_INT (value);
 
 	/* add menu entry in display */
 	accelerator = g_strdup ("F11");
@@ -403,7 +356,7 @@ brasero_layout_add_preview (BraseroLayout *layout,
 	entry.label = BRASERO_LAYOUT_PREVIEW_MENU;
 	entry.accelerator = accelerator;
 	entry.tooltip = BRASERO_LAYOUT_PREVIEW_TOOLTIP;
-	entry.is_active = FALSE;
+	entry.is_active = active;
 	entry.callback = G_CALLBACK (brasero_layout_preview_toggled_cb);
 
 	gtk_action_group_add_toggle_actions (layout->priv->action_group,
@@ -413,40 +366,12 @@ brasero_layout_add_preview (BraseroLayout *layout,
 	g_free (accelerator);
 
 	/* initializes the display */
-	active = gconf_client_get_bool (layout->priv->client,
-					BRASERO_KEY_SHOW_PREVIEW,
-					&error);
-	if (error) {
-		g_warning ("Can't access GConf key %s. This is probably harmless (first launch of brasero).\n", error->message);
-		g_error_free (error);
-		error = NULL;
-	}
-
-	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_PREVIEW_ID);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), active);
-
-	if (active) {
-		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), TRUE);
+	if (active)
 		gtk_widget_show (layout->priv->preview_pane);
-	}
-	else {
-		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), FALSE);
+	else
 		gtk_widget_hide (layout->priv->preview_pane);
-	}
 
-	if (!layout->priv->preview_notify)
-		layout->priv->preview_notify = gconf_client_notify_add (layout->priv->client,
-									BRASERO_KEY_SHOW_PREVIEW,
-									brasero_layout_preview_changed_cb,
-									layout,
-									NULL,
-									&error);
-
-	if (error) {
-		g_warning ("Could set notify for GConf key %s.\n", error->message);
-		g_error_free (error);
-		error = NULL;
-	}
+	brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), active);
 }
 
 /**************************** for the source panes *****************************/
@@ -551,166 +476,21 @@ brasero_layout_item_set_active (BraseroLayout *layout,
 }
 
 static void
-brasero_layout_show_sidepane_changed_cb (GConfClient *client,
-					 guint cxn,
-					 GConfEntry *entry,
-					 gpointer data)
-{
-	BraseroLayout *layout;
-	GtkAction *action;
-	GConfValue *value;
-	gboolean show;
-
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_BOOL)
-		return;
-
-	show = gconf_value_get_bool (value);
-
-	layout = BRASERO_LAYOUT (data);
-
-	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), show);
-	brasero_layout_set_side_pane_visible (layout, show);
-}
-
-static void
-brasero_layout_displayed_item_changed_cb (GConfClient *client,
-					  guint cxn,
-					  GConfEntry *entry,
-					  gpointer data)
-{
-	BraseroLayout *layout;
-	GConfValue *value;
-	GtkTreeModel *model;
-	GtkAction *action;
-	GtkTreeIter iter;
-	const gchar *id;
-
-	layout = BRASERO_LAYOUT (data);
-
-	/* this is only called if the changed gconf key is the
-	 * one corresponding to the current type of layout */
-	if (!strcmp (entry->key, BRASERO_KEY_LAYOUT_AUDIO)
-	&&  layout->priv->ctx_type == BRASERO_LAYOUT_AUDIO)
-		return;
-
-	if (!strcmp (entry->key, BRASERO_KEY_LAYOUT_DATA)
-	&&  layout->priv->ctx_type == BRASERO_LAYOUT_DATA)
-		return;
-
-	if (!strcmp (entry->key, BRASERO_KEY_LAYOUT_VIDEO)
-	&&  layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO)
-		return;
-
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_STRING)
-		return;
-
-	id = gconf_value_get_string (value);
-
-	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
-	if (!id || !strcmp (id, BRASERO_LAYOUT_NONE_ID)) {
-		/* nothing should be displayed */
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), TRUE);
-		brasero_layout_set_side_pane_visible (layout, FALSE);
-		return;
-	}
-
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (layout->priv->combo));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
-
-	if (!gtk_tree_model_get_iter_first (model, &iter))
-		return;
-
-	do {
-		BraseroLayoutItem *item;
-
-		gtk_tree_model_get (model, &iter,
-				    ITEM_COL, &item,
-				    -1);
-		if (!strcmp (id, item->id))
-			brasero_layout_item_set_active (layout, item);
-	} while (gtk_tree_model_iter_next (model, &iter));
-}
-
-static void
 brasero_layout_save (BraseroLayout *layout,
 		     const gchar *id)
 {
-	GError *error = NULL;
-
-	/* update gconf value */
-	if (layout->priv->radio_notify) {
-		gconf_client_notify_remove (layout->priv->client,
-					    layout->priv->radio_notify);
-		layout->priv->radio_notify = 0;
-	}
-
-	if (layout->priv->ctx_type == BRASERO_LAYOUT_AUDIO) {
-		gconf_client_set_string (layout->priv->client,
-					 BRASERO_KEY_LAYOUT_AUDIO,
-					 id,
-					 &error);
-
-		if (error) {
-			g_warning ("Can't set GConf key %s. \n", error->message);
-			g_error_free (error);
-			error = NULL;
-		}
-
-		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
-								      BRASERO_KEY_LAYOUT_AUDIO,
-								      brasero_layout_displayed_item_changed_cb,
-								      layout,
-								      NULL,
-								      &error);
-	}
-	else if (layout->priv->ctx_type == BRASERO_LAYOUT_DATA) {
-		gconf_client_set_string (layout->priv->client,
-					 BRASERO_KEY_LAYOUT_DATA,
-					 id,
-					 &error);
-
-		if (error) {
-			g_warning ("Can't set GConf key %s. \n", error->message);
-			g_error_free (error);
-			error = NULL;
-		}
-
-		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
-								      BRASERO_KEY_LAYOUT_DATA,
-								      brasero_layout_displayed_item_changed_cb,
-								      layout,
-								      NULL,
-								      &error);
-	}
-	else if (layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO) {
-		gconf_client_set_string (layout->priv->client,
-					 BRASERO_KEY_LAYOUT_VIDEO,
-					 id,
-					 &error);
-
-		if (error) {
-			g_warning ("Can't set GConf key %s. \n", error->message);
-			g_error_free (error);
-			error = NULL;
-		}
-
-		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
-								      BRASERO_KEY_LAYOUT_VIDEO,
-								      brasero_layout_displayed_item_changed_cb,
-								      layout,
-								      NULL,
-								      &error);
-	}
-
-	if (error) {
-		g_warning ("Can't set GConf notify on key %s. \n", error->message);
-		g_error_free (error);
-		error = NULL;
-	}
+	if (layout->priv->ctx_type == BRASERO_LAYOUT_AUDIO)
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_DISPLAY_LAYOUT_AUDIO,
+		                           id);
+	else if (layout->priv->ctx_type == BRASERO_LAYOUT_DATA)
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_DISPLAY_LAYOUT_DATA,
+		                           id);
+	else if (layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO)
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_DISPLAY_LAYOUT_VIDEO,
+		                           id);
 }
 
 void
@@ -848,18 +628,11 @@ brasero_layout_load (BraseroLayout *layout,
 		     BraseroLayoutType type)
 {
 	gchar *layout_id = NULL;
-	GError *error = NULL;
 	GtkTreeModel *model;
-	GtkAction *action;
 	gboolean sidepane;
+	GtkAction *action;
+	gpointer value;
 	GtkTreeIter iter;
-
-	/* remove GCONF notification if any */
-	if (layout->priv->radio_notify) {
-		gconf_client_notify_remove (layout->priv->client,
-					    layout->priv->radio_notify);
-		layout->priv->radio_notify = 0;
-	}
 
 	if (layout->priv->preview_pane)
 		brasero_preview_hide (BRASERO_PREVIEW (layout->priv->preview_pane));
@@ -872,52 +645,23 @@ brasero_layout_load (BraseroLayout *layout,
 	gtk_widget_show (GTK_WIDGET (layout));
 
 	/* takes care of other panes */
-	if (type == BRASERO_LAYOUT_AUDIO)
-		layout_id = gconf_client_get_string (layout->priv->client,
-						     BRASERO_KEY_LAYOUT_AUDIO,
-						     &error);
-	else if (type == BRASERO_LAYOUT_DATA)
-		layout_id = gconf_client_get_string (layout->priv->client,
-						     BRASERO_KEY_LAYOUT_DATA,
-						     &error);
-	else if (type == BRASERO_LAYOUT_VIDEO)
-		layout_id = gconf_client_get_string (layout->priv->client,
-						     BRASERO_KEY_LAYOUT_VIDEO,
-						     &error);
-
-	if (error) {
-		g_warning ("Can't access GConf key %s. This is probably harmless (first launch of brasero).\n", error->message);
-		g_error_free (error);
-		error = NULL;
+	if (type == BRASERO_LAYOUT_AUDIO) {
+		brasero_setting_get_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_DISPLAY_LAYOUT_AUDIO,
+		                           &value);
+		layout_id = value;
 	}
-
-	/* add new notify for the new */
-	if (type == BRASERO_LAYOUT_AUDIO)
-		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
-								      BRASERO_KEY_LAYOUT_AUDIO,
-								      brasero_layout_displayed_item_changed_cb,
-								      layout,
-								      NULL,
-								      &error);
-	else if (type == BRASERO_LAYOUT_DATA)
-		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
-								      BRASERO_KEY_LAYOUT_DATA,
-								      brasero_layout_displayed_item_changed_cb,
-								      layout,
-								      NULL,
-								      &error);
-	else if (type == BRASERO_LAYOUT_VIDEO)
-		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
-								      BRASERO_KEY_LAYOUT_VIDEO,
-								      brasero_layout_displayed_item_changed_cb,
-								      layout,
-								      NULL,
-								      &error);
-
-	if (error) {
-		g_warning ("Could not set notify for GConf key %s.\n", error->message);
-		g_error_free (error);
-		error = NULL;
+	else if (type == BRASERO_LAYOUT_DATA) {
+		brasero_setting_get_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_DISPLAY_LAYOUT_DATA,
+		                           &value);
+		layout_id = value;
+	}
+	else if (type == BRASERO_LAYOUT_VIDEO) {
+		brasero_setting_get_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_DISPLAY_LAYOUT_VIDEO,
+		                           &value);
+		layout_id = value;
 	}
 
 	/* even if we're not showing a side pane go through all items to make 
@@ -968,9 +712,10 @@ brasero_layout_load (BraseroLayout *layout,
 	}
 
 	/* hide or show side pane */
-	sidepane = gconf_client_get_bool (layout->priv->client,
-					  BRASERO_KEY_SHOW_SIDEPANE,
-					  NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SHOW_SIDEPANE,
+	                           &value);
+	sidepane = GPOINTER_TO_INT (value);
 
 	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), sidepane);
@@ -982,10 +727,9 @@ brasero_layout_pane_moved_cb (GtkWidget *paned,
 			      GParamSpec *pspec,
 			      BraseroLayout *layout)
 {
-	gconf_client_set_int (layout->priv->client,
-			      BRASERO_KEY_DISPLAY_POSITION,
-			      gtk_paned_get_position (GTK_PANED (paned)),
-			      NULL);
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_DISPLAY_PROPORTION,
+	                           GINT_TO_POINTER (gtk_paned_get_position (GTK_PANED (paned))));
 }
 
 static void
@@ -1084,51 +828,6 @@ brasero_layout_change_type (BraseroLayout *layout,
 static void
 brasero_layout_HV_radio_button_toggled_cb (GtkRadioAction *radio,
 					   GtkRadioAction *current,
-					   BraseroLayout *layout);
-
-static void
-brasero_layout_type_changed_cb (GConfClient *client,
-				guint cxn,
-				GConfEntry *entry,
-				gpointer data)
-{
-	GSList *iter;
-	GSList *radios;
-	GtkAction *action;
-	GConfValue *value;
-	BraseroLayoutType layout_type;
-	BraseroLayout *layout = BRASERO_LAYOUT (data);
-
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_INT)
-		return;
-
-	layout_type = gconf_value_get_int (value);
-	brasero_layout_change_type (layout, layout_type);
-
-	/* make sure our radio actions reflect the change */
-	action = gtk_action_group_get_action (layout->priv->action_group, "HView");
-
-	radios = gtk_radio_action_get_group (GTK_RADIO_ACTION (action));
-	for (iter = radios; iter; iter = iter->next)
-		g_signal_handlers_block_by_func (iter->data,
-						 brasero_layout_HV_radio_button_toggled_cb,
-						 layout);
-
-	gtk_radio_action_set_current_value (GTK_RADIO_ACTION (action),
-					    GTK_IS_VPANED (layout->priv->pane));
-
-	for (iter = radios; iter; iter = iter->next)
-		g_signal_handlers_unblock_by_func (iter->data,
-						   brasero_layout_HV_radio_button_toggled_cb,
-						   layout);
-
-	g_slist_free (radios);
-}
-
-static void
-brasero_layout_HV_radio_button_toggled_cb (GtkRadioAction *radio,
-					   GtkRadioAction *current,
 					   BraseroLayout *layout)
 {
 	guint layout_type;
@@ -1139,25 +838,9 @@ brasero_layout_HV_radio_button_toggled_cb (GtkRadioAction *radio,
 		layout_type = BRASERO_LAYOUT_RIGHT;
 
 	brasero_layout_change_type (layout, layout_type);
-
-	/* update the GConf key */
-	gconf_client_notify_remove (layout->priv->client,
-				    layout->priv->layout_notify);
-	layout->priv->layout_notify = 0;
-
-	gconf_client_set_int (layout->priv->client,
-			      BRASERO_KEY_DISPLAY_LAYOUT,
-			      layout_type,
-			      NULL);
-
-	/* This is to avoid a notification for change */
-	gconf_client_clear_cache (layout->priv->client);
-	layout->priv->layout_notify = gconf_client_notify_add (layout->priv->client,
-							       BRASERO_KEY_DISPLAY_LAYOUT,
-							       brasero_layout_type_changed_cb,
-							       layout,
-							       NULL,
-							       NULL);
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_DISPLAY_LAYOUT,
+	                           GINT_TO_POINTER (layout_type));
 }
 
 static void
@@ -1180,34 +863,13 @@ brasero_layout_empty_toggled_cb (GtkToggleAction *action,
 				 BraseroLayout *layout)
 {
 	gboolean active;
-	GError *error = NULL;
 
 	active = gtk_toggle_action_get_active (action);
 	brasero_layout_set_side_pane_visible (layout, active);
 
-	if (layout->priv->sidepane_notify) {
-		gconf_client_notify_remove (layout->priv->client,
-					    layout->priv->sidepane_notify);
-		layout->priv->sidepane_notify = 0;
-	}
-
-	gconf_client_set_bool (layout->priv->client,
-			       BRASERO_KEY_SHOW_SIDEPANE,
-			       active,
-			       &error);
-
-	if (error) {
-		g_warning ("Can't set GConf key %s. \n", error->message);
-		g_error_free (error);
-		error = NULL;
-	}
-
-	layout->priv->sidepane_notify = gconf_client_notify_add (layout->priv->client,
-								 BRASERO_KEY_SHOW_SIDEPANE,
-								 brasero_layout_show_sidepane_changed_cb,
-								 layout,
-								 NULL,
-								 &error);
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_SHOW_SIDEPANE,
+	                           GINT_TO_POINTER (active));
 }
 
 void
@@ -1253,32 +915,22 @@ brasero_layout_foreach_item_cb (GtkTreeModel *model,
 }
 
 static void
-brasero_layout_destroy (GtkObject *object)
+brasero_layout_combo_destroy_cb (GtkObject *object,
+                                 gpointer NULL_data)
 {
-	BraseroLayout *cobj;
 	GtkTreeModel *model;
 
-	cobj = BRASERO_LAYOUT(object);
-
-	if (!cobj->priv->client) {
-		GTK_OBJECT_CLASS (parent_class)->destroy (object);
-		return;
-	}
-
-	/* close GConf */
-	gconf_client_notify_remove (cobj->priv->client, cobj->priv->layout_notify);
-	gconf_client_notify_remove (cobj->priv->client, cobj->priv->preview_notify);
-	gconf_client_notify_remove (cobj->priv->client, cobj->priv->radio_notify);
-	g_object_unref (cobj->priv->client);
-	cobj->priv->client = NULL;
-
 	/* empty tree */
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (cobj->priv->combo));
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (object));
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
 	gtk_tree_model_foreach (model,
 				brasero_layout_foreach_item_cb,
 				NULL);
+}
 
+static void
+brasero_layout_destroy (GtkObject *object)
+{
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
@@ -1328,6 +980,7 @@ brasero_layout_init (BraseroLayout *obj)
 	GtkTreeModel *model;
 	GtkWidget *button;
 	GtkWidget *box;
+	gpointer value;
 	gint position;
 
 	obj->priv = g_new0 (BraseroLayoutPrivate, 1);
@@ -1341,13 +994,12 @@ brasero_layout_init (BraseroLayout *obj)
 					     1,
 					     obj);
 
-	/* init GConf */
-	obj->priv->client = gconf_client_get_default ();
-
 	/* get our layout */
-	obj->priv->layout_type = gconf_client_get_int (obj->priv->client,
-						       BRASERO_KEY_DISPLAY_LAYOUT,
-						       NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_DISPLAY_LAYOUT,
+	                           &value);
+
+	obj->priv->layout_type = GPOINTER_TO_INT (value);
 
 	if (obj->priv->layout_type > BRASERO_LAYOUT_BOTTOM
 	||  obj->priv->layout_type < BRASERO_LAYOUT_RIGHT)
@@ -1385,9 +1037,11 @@ brasero_layout_init (BraseroLayout *obj)
 					    obj);
 
 	/* remember the position */
-	position = gconf_client_get_int (obj->priv->client,
-					 BRASERO_KEY_DISPLAY_POSITION,
-					 NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_DISPLAY_PROPORTION,
+	                           &value);
+
+	position = GPOINTER_TO_INT (value);
 	if (position > 0)
 		gtk_paned_set_position (GTK_PANED (obj->priv->pane), position);
 
@@ -1400,13 +1054,6 @@ brasero_layout_init (BraseroLayout *obj)
 		gtk_paned_pack1 (GTK_PANED (obj->priv->pane), box, TRUE, FALSE);
 	else
 		gtk_paned_pack2 (GTK_PANED (obj->priv->pane), box, TRUE, FALSE);
-
-	obj->priv->layout_notify = gconf_client_notify_add (obj->priv->client,
-							    BRASERO_KEY_DISPLAY_LAYOUT,
-							    brasero_layout_type_changed_cb,
-							    obj,
-							    NULL,
-							    NULL);
 
 	/* set up containers */
 	alignment = gtk_alignment_new (0.0, 0.0, 1.0, 1.0);
@@ -1421,13 +1068,6 @@ brasero_layout_init (BraseroLayout *obj)
 	obj->priv->main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->main_box);
 	gtk_widget_show (obj->priv->main_box);
-
-	obj->priv->sidepane_notify = gconf_client_notify_add (obj->priv->client,
-							      BRASERO_KEY_SHOW_SIDEPANE,
-							      brasero_layout_show_sidepane_changed_cb,
-							      obj,
-							      NULL,
-							      NULL);
 
 	/* close button and combo. Don't show it now. */
 	box = gtk_hbox_new (FALSE, 6);
@@ -1454,6 +1094,10 @@ brasero_layout_init (BraseroLayout *obj)
 	g_signal_connect (obj->priv->combo,
 			  "changed",
 			  G_CALLBACK (brasero_layout_combo_changed_cb),
+			  obj);
+	g_signal_connect (obj->priv->combo,
+			  "destroy",
+			  G_CALLBACK (brasero_layout_combo_destroy_cb),
 			  obj);
 	gtk_widget_show (obj->priv->combo);
 	g_object_unref (G_OBJECT (model));

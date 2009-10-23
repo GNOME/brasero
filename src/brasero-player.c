@@ -35,13 +35,13 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-misc.h"
 #include "brasero-metadata.h"
 #include "brasero-io.h"
 
 #include "brasero-units.h"
+
+#include "brasero-setting.h"
 
 #include "brasero-player.h"
 #include "brasero-player-bacon.h"
@@ -1244,33 +1244,21 @@ static void
 brasero_player_destroy (GtkObject *obj)
 {
 	BraseroPlayer *player;
-	GConfClient *client;
 
 	player = BRASERO_PLAYER (obj);
 
-	client = gconf_client_get_default ();
-
-	gconf_client_set_int (client,
-			      GCONF_IMAGE_SIZE_WIDTH,
-			      player->priv->image_width,
-			      NULL);
-
-	gconf_client_set_int (client,
-			      GCONF_IMAGE_SIZE_HEIGHT,
-			      player->priv->image_height,
-			      NULL);
-
-	gconf_client_set_int (client,
-			      GCONF_VIDEO_SIZE_WIDTH,
-			      player->priv->video_width,
-			      NULL);
-
-	gconf_client_set_int (client,
-			      GCONF_VIDEO_SIZE_HEIGHT,
-			      player->priv->video_height,
-			      NULL);
-
-	g_object_unref (client);
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_IMAGE_SIZE_WIDTH,
+	                           GINT_TO_POINTER (player->priv->image_width));
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_IMAGE_SIZE_HEIGHT,
+	                           GINT_TO_POINTER (player->priv->image_height));
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_VIDEO_SIZE_WIDTH,
+	                           GINT_TO_POINTER (player->priv->video_width));
+	brasero_setting_set_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_VIDEO_SIZE_WIDTH,
+	                           GINT_TO_POINTER (player->priv->video_width));
 
 	player->priv->image = NULL;
 
@@ -1346,7 +1334,7 @@ static void
 brasero_player_init (BraseroPlayer *obj)
 {
 	GtkWidget *alignment;
-	GConfClient *client;
+	gpointer value;
 
 	obj->priv = g_new0 (BraseroPlayerPrivate, 1);
 
@@ -1398,34 +1386,37 @@ brasero_player_init (BraseroPlayer *obj)
 				  obj->priv->bacon,
 				  NULL);
 
-	client = gconf_client_get_default ();
-	obj->priv->image_width = gconf_client_get_int (client,
-						       GCONF_IMAGE_SIZE_WIDTH,
-						       NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_IMAGE_SIZE_WIDTH,
+	                           &value);
+	obj->priv->image_width = GPOINTER_TO_INT (value);
 
 	if (obj->priv->image_width > PLAYER_BACON_WIDTH * 3
 	||  obj->priv->image_width < PLAYER_BACON_WIDTH)
 		obj->priv->image_width = PLAYER_BACON_WIDTH;
 
-	obj->priv->image_height = gconf_client_get_int (client,
-						        GCONF_IMAGE_SIZE_HEIGHT,
-						        NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_IMAGE_SIZE_HEIGHT,
+	                           &value);
+	obj->priv->image_height = GPOINTER_TO_INT (value);
 
 	if (obj->priv->image_height > PLAYER_BACON_HEIGHT * 3
 	||  obj->priv->image_height < PLAYER_BACON_HEIGHT)
 		obj->priv->image_height = PLAYER_BACON_HEIGHT;
 
-	obj->priv->video_width = gconf_client_get_int (client,
-						       GCONF_VIDEO_SIZE_WIDTH,
-						       NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_VIDEO_SIZE_WIDTH,
+	                           &value);
+	obj->priv->video_width = GPOINTER_TO_INT (value);
 
 	if (obj->priv->video_width > PLAYER_BACON_WIDTH * 3
 	||  obj->priv->video_width < PLAYER_BACON_WIDTH)
 		obj->priv->video_width = PLAYER_BACON_WIDTH;
 
-	obj->priv->video_height = gconf_client_get_int (client,
-							GCONF_VIDEO_SIZE_HEIGHT,
-							NULL);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_VIDEO_SIZE_HEIGHT,
+	                           &value);
+	obj->priv->video_height = GPOINTER_TO_INT (value);
 
 	if (obj->priv->video_height > PLAYER_BACON_HEIGHT * 3
 	||  obj->priv->video_height < PLAYER_BACON_HEIGHT)
@@ -1434,7 +1425,6 @@ brasero_player_init (BraseroPlayer *obj)
 	gtk_widget_set_size_request (obj->priv->bacon,
 				     obj->priv->video_width,
 				     obj->priv->video_height);
-	g_object_unref (client);
 }
 
 GtkWidget *

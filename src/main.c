@@ -487,6 +487,8 @@ main (int argc, char **argv)
 		return 1;
 
 	brasero_app_parse_options (current_app);
+
+	g_object_unref (current_app);
 	current_app = NULL;
 
 	brasero_burn_library_stop ();

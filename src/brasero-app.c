@@ -30,16 +30,12 @@
 
 #include <gtk/gtk.h>
 
-#include <libxml/xmlerror.h>
-#include <libxml/xmlwriter.h>
-#include <libxml/parser.h>
-#include <libxml/xmlstring.h>
-
 #include <unique/unique.h>
 
 #include "brasero-misc.h"
 
 #include "brasero-app.h"
+#include "brasero-setting.h"
 #include "brasero-blank-dialog.h"
 #include "brasero-sum-dialog.h"
 #include "brasero-eject-dialog.h"
@@ -66,6 +62,8 @@
 typedef struct _BraseroAppPrivate BraseroAppPrivate;
 struct _BraseroAppPrivate
 {
+	BraseroSetting *setting;
+
 	GdkWindow *parent;
 
 	GtkWidget *mainwin;
@@ -84,12 +82,9 @@ struct _BraseroAppPrivate
 
 	guint tooltip_ctx;
 
-	gint width;
-	gint height;
-
 	gchar *saved_contents;
 
-	guint is_maximised:1;
+	guint is_maximized:1;
 	guint mainwin_running:1;
 };
 
@@ -97,10 +92,6 @@ struct _BraseroAppPrivate
 
 
 G_DEFINE_TYPE (BraseroApp, brasero_app, G_TYPE_OBJECT);
-
-
-#define SESSION_VERSION "0.1"
-#define BRASERO_SESSION_TMP_SESSION_PATH	"brasero.session"
 
 /**
  * Menus and toolbar
@@ -198,17 +189,10 @@ brasero_app_get_path (const gchar *name)
 static gboolean
 brasero_app_load_window_state (BraseroApp *app)
 {
-	gchar *height_str = NULL;
-	gchar *width_str = NULL;
-	gchar *state_str = NULL;
-	gchar *version = NULL;
-	gint height;
 	gint width;
+	gint height;
 	gint state = 0;
-
-	gchar *session_path;
-	xmlNodePtr item;
-	xmlDocPtr session = NULL;
+	gpointer value;
 
 	GdkScreen *screen;
 	GdkRectangle rect;
@@ -223,183 +207,35 @@ brasero_app_load_window_state (BraseroApp *app)
 	screen = gtk_window_get_screen (GTK_WINDOW (priv->mainwin));
 	monitor = gdk_screen_get_monitor_at_window (screen, GTK_WIDGET (priv->mainwin)->window);
 	gdk_screen_get_monitor_geometry (screen, monitor, &rect);
-	width = rect.width / 100 * 85;
-	height = rect.height / 100 * 85;
 
-	session_path = brasero_app_get_path (BRASERO_SESSION_TMP_SESSION_PATH);
-	if (!session_path)
-		goto end;
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_WIN_WIDTH,
+	                           &value);
+	width = GPOINTER_TO_INT (value);
 
-	session = xmlParseFile (session_path);
-	g_free (session_path);
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_WIN_HEIGHT,
+	                           &value);
+	height = GPOINTER_TO_INT (value);
 
-	if (!session)
-		goto end;
+	brasero_setting_get_value (brasero_setting_get_default (),
+	                           BRASERO_SETTING_WIN_MAXIMIZED,
+	                           &value);
+	state = GPOINTER_TO_INT (value);
 
-	item = xmlDocGetRootElement (session);
-	if (!item)
-		goto end;
-
-	if (xmlStrcmp (item->name, (const xmlChar *) "Session") || item->next)
-		goto end;
-
-	item = item->children;
-	while (item) {
-		if (!xmlStrcmp (item->name, (const xmlChar *) "version")) {
-			if (version)
-				goto end;
-
-			version = (char *) xmlNodeListGetString (session,
-								 item->xmlChildrenNode,
-								 1);
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "width")) {
-			if (width_str)
-				goto end;
-
-			width_str = (char *) xmlNodeListGetString (session,
-								   item->xmlChildrenNode,
-								   1);
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "height")) {
-			if (height_str)
-				goto end;
-
-			height_str = (char *) xmlNodeListGetString (session,
-								    item->xmlChildrenNode,
-								    1);
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "state")) {
-			if (state_str)
-				goto end;
-
-			state_str = (char *) xmlNodeListGetString (session,
-								   item->xmlChildrenNode,
-								   1);
-		}
-		else if (item->type == XML_ELEMENT_NODE)
-			goto end;
-
-		item = item->next;
-	}
-
-	if (!version || strcmp (version, SESSION_VERSION))
-		goto end;
-
-	/* restore the window state */
-	if (height_str)
-		height = (int) g_strtod (height_str, NULL);
-
-	if (width_str)
-		width = (int) g_strtod (width_str, NULL);
-
-	if (state_str)
-		state = (int) g_strtod (state_str, NULL);
-
-end:
-	if (height_str)
-		g_free (height_str);
-
-	if (width_str)
-		g_free (width_str);
-
-	if (state_str)
-		g_free (state_str);
-
-	if (version)
-		g_free (version);
-
-	xmlFreeDoc (session);
-
-	if (width && height)
+	if (width > 0 && height > 0)
 		gtk_window_resize (GTK_WINDOW (priv->mainwin),
 				   width,
 				   height);
+	else
+		gtk_window_resize (GTK_WINDOW (priv->mainwin),
+		                   rect.width / 100 *85,
+		                   rect.height / 100 * 85);
 
 	if (state)
 		gtk_window_maximize (GTK_WINDOW (priv->mainwin));
 
 	return TRUE;
-}
-
-void
-brasero_app_save_window_state (BraseroApp *app)
-{
-	gint success;
-	gchar *session_path;
-	xmlTextWriter *session;
-	BraseroAppPrivate *priv;
-
-	priv = BRASERO_APP_PRIVATE (app);
-
-	/* now save the state of the window */
-	session_path = brasero_app_get_path (BRASERO_SESSION_TMP_SESSION_PATH);
-	if (!session_path)
-		return;
-
-	/* write information */
-	session = xmlNewTextWriterFilename (session_path, 0);
-	if (!session) {
-		g_free (session_path);
-		return;
-	}
-
-	xmlTextWriterSetIndent (session, 1);
-	xmlTextWriterSetIndentString (session, (xmlChar *) "\t");
-
-	success = xmlTextWriterStartDocument (session,
-					      NULL,
-					      NULL,
-					      NULL);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterStartElement (session,
-					     (xmlChar *) "Session");
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterWriteElement (session,
-					     (xmlChar *) "version",
-					     (xmlChar *) SESSION_VERSION);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterWriteFormatElement (session,
-						   (xmlChar *) "width",
-						   "%i",
-						   priv->width);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterWriteFormatElement (session,
-						   (xmlChar *) "height",
-						   "%i",
-						   priv->height);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterWriteFormatElement (session,
-						   (xmlChar *) "state",
-						   "%i",
-						   priv->is_maximised);
-	if (success < 0)
-		goto error;
-
-	success = xmlTextWriterEndElement (session);
-	if (success < 0)
-		goto error;
-
-	xmlTextWriterEndDocument (session);
-	xmlFreeTextWriter (session);
-	g_free (session_path);
-	return;
-
-error:
-	xmlTextWriterEndDocument (session);
-	xmlFreeTextWriter (session);
-	g_remove (session_path);
-	g_free (session_path);
 }
 
 /**
@@ -640,7 +476,6 @@ on_delete_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 	if (brasero_app_save_contents (app, TRUE))
 		return TRUE;
 
-	brasero_app_save_window_state (app);
 	return FALSE;
 }
 
@@ -654,10 +489,8 @@ on_exit_cb (GtkAction *action, BraseroApp *app)
 	if (brasero_app_save_contents (app, TRUE))
 		return;
 
-	if (priv->mainwin) {
-		brasero_app_save_window_state (app);
+	if (priv->mainwin)
 		gtk_widget_destroy (GTK_WIDGET (priv->mainwin));
-	}
 }
 
 gboolean
@@ -1109,10 +942,18 @@ on_window_state_changed_cb (GtkWidget *widget,
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	if (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED)
-		priv->is_maximised = 1;
-	else
-		priv->is_maximised = 0;
+	if (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) {
+		priv->is_maximized = 1;
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_WIN_MAXIMIZED,
+		                           GINT_TO_POINTER (1));
+	}
+	else {
+		priv->is_maximized = 0;
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_WIN_MAXIMIZED,
+		                           GINT_TO_POINTER (0));
+	}
 
 	return FALSE;
 }
@@ -1126,9 +967,13 @@ on_configure_event_cb (GtkWidget *widget,
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	if (!priv->is_maximised) {
-		priv->width = event->width;
-		priv->height = event->height;
+	if (!priv->is_maximized) {
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_WIN_WIDTH,
+		                           GINT_TO_POINTER (event->width));
+		brasero_setting_set_value (brasero_setting_get_default (),
+		                           BRASERO_SETTING_WIN_HEIGHT,
+		                           GINT_TO_POINTER (event->height));
 	}
 
 	return FALSE;
@@ -1701,10 +1546,14 @@ brasero_app_init (BraseroApp *object)
 {
 	BraseroAppPrivate *priv;
 
+	priv = BRASERO_APP_PRIVATE (object);
+
+	/* Load settings */
+	priv->setting = brasero_setting_get_default ();
+	brasero_setting_load (priv->setting);
+
 	/* Connect to session */
 	brasero_session_connect (object);
-
-	priv = BRASERO_APP_PRIVATE (object);
 
 	g_set_application_name (_("Brasero Disc Burner"));
 	gtk_window_set_default_icon_name ("brasero");
@@ -1716,6 +1565,10 @@ brasero_app_finalize (GObject *object)
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (object);
+
+	brasero_setting_save (priv->setting);
+	g_object_unref (priv->setting);
+	priv->setting = NULL;
 
 	brasero_session_disconnect (BRASERO_APP (object));
 

@@ -614,15 +614,6 @@ brasero_playlist_get_selected_uri (BraseroURIContainer *container)
 }
 
 static void
-brasero_playlist_unselect_all (BraseroPlaylist *playlist)
-{
-	GtkTreeSelection *selection;
-
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (playlist->priv->tree));
-	gtk_tree_selection_unselect_all (selection);
-}
-
-static void
 brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
 {
 	GtkWidget *dialog, *toplevel;

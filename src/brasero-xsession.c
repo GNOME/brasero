@@ -70,9 +70,6 @@ brasero_session_save_state_cb (EggSMClient *client,
     	const gint argc = 3;
     	const gchar *argv [] = { "brasero", "-p", NULL, NULL };
 
-	/* Save the state of the window */
-	brasero_app_save_window_state (app);
-
 	/* Try to save its contents */
 	argv [2] = brasero_app_get_saved_contents (app);
 

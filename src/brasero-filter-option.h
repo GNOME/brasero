@@ -29,8 +29,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_FILTER_NOTIFY_KEY		"/apps/brasero/filter/notify"
-
 #define BRASERO_TYPE_FILTER_OPTION             (brasero_filter_option_get_type ())
 #define BRASERO_FILTER_OPTION(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_FILTER_OPTION, BraseroFilterOption))
 #define BRASERO_FILTER_OPTION_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_FILTER_OPTION, BraseroFilterOptionClass))
