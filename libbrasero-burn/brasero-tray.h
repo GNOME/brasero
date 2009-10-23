@@ -63,8 +63,8 @@ typedef struct {
 
 } BraseroTrayIconClass;
 
-GType brasero_tray_icon_get_type ();
-BraseroTrayIcon *brasero_tray_icon_new ();
+GType brasero_tray_icon_get_type (void);
+BraseroTrayIcon *brasero_tray_icon_new (void);
 
 void
 brasero_tray_icon_set_progress (BraseroTrayIcon *tray,

@@ -70,7 +70,6 @@
 
 G_DEFINE_TYPE (BraseroBurnDialog, brasero_burn_dialog, GTK_TYPE_DIALOG);
 
-
 static void
 brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroBurnDialog *dialog);

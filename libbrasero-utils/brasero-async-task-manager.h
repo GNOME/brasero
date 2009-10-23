@@ -46,17 +46,19 @@ G_BEGIN_DECLS
 #define BRASERO_ASYNC_TASK_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_ASYNC_TASK_MANAGER, BraseroAsyncTaskManagerClass))
 
 typedef struct BraseroAsyncTaskManagerPrivate BraseroAsyncTaskManagerPrivate;
+typedef struct _BraseroAsyncTaskManagerClass BraseroAsyncTaskManagerClass;
+typedef struct _BraseroAsyncTaskManager BraseroAsyncTaskManager;
 
-typedef struct {
+struct _BraseroAsyncTaskManager {
 	GObject parent;
 	BraseroAsyncTaskManagerPrivate *priv;
-} BraseroAsyncTaskManager;
+};
 
-typedef struct {
+struct _BraseroAsyncTaskManagerClass {
 	GObjectClass parent_class;
-} BraseroAsyncTaskManagerClass;
+};
 
-GType brasero_async_task_manager_get_type ();
+GType brasero_async_task_manager_get_type (void);
 
 typedef enum {
 	BRASERO_ASYNC_TASK_FINISHED		= 0,
@@ -111,5 +113,7 @@ gboolean
 brasero_async_task_manager_find_urgent_task (BraseroAsyncTaskManager *manager,
 					     BraseroAsyncFindTask func,
 					     gpointer user_data);
+
+G_END_DECLS
 
 #endif /* ASYNC_JOB_MANAGER_H */

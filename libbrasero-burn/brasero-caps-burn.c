@@ -40,6 +40,8 @@
 #include "brasero-caps-burn.h"
 #include "burn-caps.h"
 #include "burn-debug.h"
+#include "brasero-plugin.h"
+#include "brasero-plugin-private.h"
 #include "brasero-plugin-information.h"
 #include "burn-task.h"
 #include "brasero-session-helper.h"

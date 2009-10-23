@@ -106,7 +106,7 @@ typedef struct {
 							 BraseroBurnError error);
 } BraseroJobClass;
 
-GType brasero_job_get_type ();
+GType brasero_job_get_type (void);
 
 /**
  * These functions are to be used to get information for running jobs.

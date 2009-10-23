@@ -58,9 +58,9 @@ struct _BraseroSumDialogClass {
 	BraseroToolDialogClass parent_class;
 };
 
-GType brasero_sum_dialog_get_type ();
+GType brasero_sum_dialog_get_type (void);
 
-BraseroSumDialog *brasero_sum_dialog_new ();
+BraseroSumDialog *brasero_sum_dialog_new (void);
 
 G_END_DECLS
 

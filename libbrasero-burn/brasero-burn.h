@@ -86,8 +86,8 @@ typedef struct {
 									 BraseroBurnAction action);
 } BraseroBurnClass;
 
-GType brasero_burn_get_type ();
-BraseroBurn *brasero_burn_new ();
+GType brasero_burn_get_type (void);
+BraseroBurn *brasero_burn_new (void);
 
 BraseroBurnResult 
 brasero_burn_record (BraseroBurn *burn,

@@ -61,12 +61,6 @@ struct _BraseroPlugin {
 
 GType brasero_plugin_get_type (void) G_GNUC_CONST;
 
-BraseroPlugin *
-brasero_plugin_new (const gchar *path);
-
-GType
-brasero_plugin_get_gtype (BraseroPlugin *plugin);
-
 /**
  * Plugin configure options
  */
@@ -79,19 +73,6 @@ typedef enum {
 	BRASERO_PLUGIN_OPTION_STRING,
 	BRASERO_PLUGIN_OPTION_CHOICE
 } BraseroPluginConfOptionType;
-
-typedef enum {
-	BRASERO_PLUGIN_RUN_NEVER		= 0,
-
-	/* pre-process initial track */
-	BRASERO_PLUGIN_RUN_PREPROCESSING	= 1,
-
-	/* run before final image/disc is created */
-	BRASERO_PLUGIN_RUN_BEFORE_TARGET	= 1 << 1,
-
-	/* run after final image/disc is created: post-processing */
-	BRASERO_PLUGIN_RUN_AFTER_TARGET		= 1 << 2,
-} BraseroPluginProcessFlag;
 
 G_END_DECLS
 

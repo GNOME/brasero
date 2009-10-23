@@ -59,9 +59,9 @@ typedef struct {
 	GtkVBoxClass parent_class;
 } BraseroBurnProgressClass;
 
-GType brasero_burn_progress_get_type();
+GType brasero_burn_progress_get_type (void);
 
-GtkWidget *brasero_burn_progress_new();
+GtkWidget *brasero_burn_progress_new (void);
 
 void
 brasero_burn_progress_reset (BraseroBurnProgress *progress);

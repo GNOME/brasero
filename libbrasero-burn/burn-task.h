@@ -59,9 +59,9 @@ struct _BraseroTaskClass {
 	BraseroTaskCtxClass parent_class;
 };
 
-GType brasero_task_get_type ();
+GType brasero_task_get_type (void);
 
-BraseroTask *brasero_task_new ();
+BraseroTask *brasero_task_new (void);
 
 void
 brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item);

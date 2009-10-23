@@ -57,8 +57,8 @@ struct _BraseroImageTypeChooserClass {
 	GtkHBoxClass parent_class;
 };
 
-GType brasero_image_type_chooser_get_type ();
-GtkWidget *brasero_image_type_chooser_new ();
+GType brasero_image_type_chooser_get_type (void);
+GtkWidget *brasero_image_type_chooser_new (void);
 
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,

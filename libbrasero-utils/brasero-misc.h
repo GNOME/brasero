@@ -75,6 +75,8 @@ brasero_utils_debug_message (const gchar *domain,
 	g_free (escaped_basename);						\
 }
 
+void
+brasero_utils_init (void);
 
 gchar *
 brasero_utils_get_uri_name (const gchar *uri);

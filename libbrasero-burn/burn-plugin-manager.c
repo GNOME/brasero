@@ -45,6 +45,7 @@
 #include "burn-debug.h"
 #include "brasero-track.h"
 #include "brasero-plugin.h"
+#include "brasero-plugin-private.h"
 #include "brasero-plugin-information.h"
 #include "burn-plugin-manager.h"
 

@@ -27,45 +27,61 @@
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
  */
-
-#ifndef BURN_DIALOG_H
-#define BURN_DIALOG_H
+ 
+#ifndef _BURN_PLUGIN_PRIVATE_H
+#define _BURN_PLUGIN_PRIVATE_H
 
 #include <glib.h>
-#include <glib-object.h>
 
-#include <gtk/gtk.h>
-
-#include <brasero-burn.h>
+#include "brasero-plugin.h"
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_BURN_DIALOG         (brasero_burn_dialog_get_type ())
-#define BRASERO_BURN_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialog))
-#define BRASERO_BURN_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogClass))
-#define BRASERO_IS_BURN_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_BURN_DIALOG))
-#define BRASERO_IS_BURN_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURN_DIALOG))
-#define BRASERO_BURN_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogClass))
+BraseroPlugin *
+brasero_plugin_new (const gchar *path);
 
-typedef struct {
-	GtkDialog parent;
-} BraseroBurnDialog;
-
-typedef struct {
-	GtkDialogClass parent_class;
-} BraseroBurnDialogClass;
-
-GType brasero_burn_dialog_get_type (void) G_GNUC_CONST;
-
-GtkWidget *brasero_burn_dialog_new (void);
+void
+brasero_plugin_set_group (BraseroPlugin *plugin, gint group_id);
 
 gboolean
-brasero_burn_dialog_run (BraseroBurnDialog *dialog,
-			 BraseroBurnSession *session);
+brasero_plugin_get_image_flags (BraseroPlugin *plugin,
+			        BraseroMedia media,
+				BraseroBurnFlag current,
+			        BraseroBurnFlag *supported,
+			        BraseroBurnFlag *compulsory);
 gboolean
-brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
-			    gboolean force_cancellation);
+brasero_plugin_get_blank_flags (BraseroPlugin *plugin,
+				BraseroMedia media,
+				BraseroBurnFlag current,
+				BraseroBurnFlag *supported,
+				BraseroBurnFlag *compulsory);
+gboolean
+brasero_plugin_get_record_flags (BraseroPlugin *plugin,
+				 BraseroMedia media,
+				 BraseroBurnFlag current,
+				 BraseroBurnFlag *supported,
+				 BraseroBurnFlag *compulsory);
+
+gboolean
+brasero_plugin_get_process_flags (BraseroPlugin *plugin,
+				  BraseroPluginProcessFlag *flags);
+
+gboolean
+brasero_plugin_check_image_flags (BraseroPlugin *plugin,
+				  BraseroMedia media,
+				  BraseroBurnFlag current);
+gboolean
+brasero_plugin_check_blank_flags (BraseroPlugin *plugin,
+				  BraseroMedia media,
+				  BraseroBurnFlag current);
+gboolean
+brasero_plugin_check_record_flags (BraseroPlugin *plugin,
+				   BraseroMedia media,
+				   BraseroBurnFlag current);
+gboolean
+brasero_plugin_check_media_restrictions (BraseroPlugin *plugin,
+					 BraseroMedia media);
 
 G_END_DECLS
 
-#endif				/* BURN_DIALOG_H */
+#endif

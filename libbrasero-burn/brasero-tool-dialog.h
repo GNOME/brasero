@@ -70,7 +70,7 @@ struct _BraseroToolDialogClass {
 						 BraseroMedium *medium);
 };
 
-GType brasero_tool_dialog_get_type ();
+GType brasero_tool_dialog_get_type (void);
 
 gboolean
 brasero_tool_dialog_cancel (BraseroToolDialog *dialog);

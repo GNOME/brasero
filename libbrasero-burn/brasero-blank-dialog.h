@@ -55,9 +55,9 @@ typedef struct {
 	BraseroToolDialogClass parent_class;
 } BraseroBlankDialogClass;
 
-GType brasero_blank_dialog_get_type ();
+GType brasero_blank_dialog_get_type (void);
 
-BraseroBlankDialog *brasero_blank_dialog_new ();
+BraseroBlankDialog *brasero_blank_dialog_new (void);
 
 G_END_DECLS
 

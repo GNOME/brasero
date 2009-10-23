@@ -194,7 +194,8 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-video-options.h                 \
 	brasero-video-options.c                 \
 	brasero-session-span.h                 \
-	brasero-session-span.c
+	brasero-session-span.c                 \
+	brasero-plugin-private.h
 
 if BUILD_INOTIFY
 libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

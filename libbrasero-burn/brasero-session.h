@@ -85,9 +85,9 @@ struct _BraseroBurnSessionClass {
 							 BraseroMedium *former_medium);
 };
 
-GType brasero_burn_session_get_type ();
+GType brasero_burn_session_get_type (void);
 
-BraseroBurnSession *brasero_burn_session_new ();
+BraseroBurnSession *brasero_burn_session_new (void);
 
 
 /**

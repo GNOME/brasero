@@ -36,13 +36,14 @@
 
 #include <glib.h>
 
-#include "brasero-plugin-information.h"
-
 #include "brasero-media.h"
 #include "brasero-media-private.h"
 
 #include "burn-caps.h"
 #include "burn-debug.h"
+
+#include "brasero-plugin-private.h"
+#include "brasero-plugin-information.h"
 
 #define SUBSTRACT(a, b)		((a) &= ~((b)&(a)))
 
@@ -849,14 +850,6 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 		link->plugins = g_slist_prepend (link->plugins, plugin);
 	}
 }
-
-/**
- * This is to register a plugin group 
- * This function is only define here (though it's implemented in burn-plugin.c).
- */
-
-void
-brasero_plugin_set_group (BraseroPlugin *plugin, gint group_id);
 
 void
 brasero_plugin_register_group (BraseroPlugin *plugin,

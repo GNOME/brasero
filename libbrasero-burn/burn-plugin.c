@@ -42,13 +42,15 @@
 
 #include "brasero-media-private.h"
 
+#include "brasero-media.h"
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-plugin.h"
+#include "brasero-plugin-private.h"
 #include "brasero-plugin-information.h"
 #include "brasero-plugin-registration.h"
 #include "burn-caps.h"
-#include "brasero-media.h"
 
 #define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config/priority"
 

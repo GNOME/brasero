@@ -45,6 +45,8 @@
 #include "brasero-track.h"
 #include "brasero-media.h"
 
+#include "brasero-burn-lib.h"
+
 static gboolean debug = FALSE;
 
 static const GOptionEntry options [] = {

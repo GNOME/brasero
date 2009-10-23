@@ -34,6 +34,7 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <glib-object.h>
 
 #include <gtk/gtk.h>
 

@@ -59,6 +59,9 @@ G_BEGIN_DECLS
 #define BRASERO_PLUGIN_BLANK_FLAG_MASK	(BRASERO_BURN_FLAG_NOGRACE|		\
 					 BRASERO_BURN_FLAG_FAST_BLANK)
 
+GType
+brasero_plugin_get_gtype (BraseroPlugin *plugin);
+
 /**
  * These are the functions a plugin must implement
  */
@@ -84,6 +87,19 @@ typedef enum {
 	BRASERO_PLUGIN_IO_ACCEPT_PIPE		= 1,
 	BRASERO_PLUGIN_IO_ACCEPT_FILE		= 1 << 1,
 } BraseroPluginIOFlag;
+
+typedef enum {
+	BRASERO_PLUGIN_RUN_NEVER		= 0,
+
+	/* pre-process initial track */
+	BRASERO_PLUGIN_RUN_PREPROCESSING	= 1,
+
+	/* run before final image/disc is created */
+	BRASERO_PLUGIN_RUN_BEFORE_TARGET	= 1 << 1,
+
+	/* run after final image/disc is created: post-processing */
+	BRASERO_PLUGIN_RUN_AFTER_TARGET		= 1 << 2,
+} BraseroPluginProcessFlag;
 
 GSList *
 brasero_caps_image_new (BraseroPluginIOFlag flags,
@@ -195,7 +211,8 @@ static void plugin_name##_class_init (PluginName##Class *klass);		\
 static void plugin_name##_init (PluginName *sp);				\
 static void plugin_name##_finalize (GObject *object);				\
 static BraseroBurnResult plugin_name##_export_caps (BraseroPlugin *plugin, gchar **error);	\
-										\
+G_MODULE_EXPORT GType								\
+brasero_plugin_register (BraseroPlugin *plugin, gchar **error);		\
 G_MODULE_EXPORT GType								\
 brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 {										\

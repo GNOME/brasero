@@ -54,6 +54,7 @@
 #include "brasero-medium-monitor.h"
 
 #include "brasero-burn-lib.h"
+#include "burn-caps.h"
 
 static BraseroPluginManager *plugin_manager = NULL;
 static BraseroMediumMonitor *medium_manager = NULL;

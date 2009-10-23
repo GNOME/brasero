@@ -28,8 +28,8 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef METADATA_H
-#define METADATA_H
+#ifndef _METADATA_H
+#define _METADATA_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -93,11 +93,10 @@ brasero_metadata_info_clear (BraseroMetadataInfo *info);
 void
 brasero_metadata_info_free (BraseroMetadataInfo *info);
 
-typedef struct {
-	GObject parent;
-} BraseroMetadata;
+typedef struct _BraseroMetadataClass BraseroMetadataClass;
+typedef struct _BraseroMetadata BraseroMetadata;
 
-typedef struct {
+struct _BraseroMetadataClass {
 	GObjectClass parent_class;
 
 	void		(*completed)	(BraseroMetadata *meta,
@@ -105,9 +104,14 @@ typedef struct {
 	void		(*progress)	(BraseroMetadata *meta,
 					 gdouble progress);
 
-} BraseroMetadataClass;
+};
 
-GType brasero_metadata_get_type ();
+struct _BraseroMetadata {
+	GObject parent;
+};
+
+GType brasero_metadata_get_type (void) G_GNUC_CONST;
+
 BraseroMetadata *brasero_metadata_new (void);
 
 gboolean
@@ -143,5 +147,6 @@ gboolean
 brasero_metadata_get_result (BraseroMetadata *metadata,
 			     BraseroMetadataInfo *info,
 			     GError **error);
+G_END_DECLS
 
 #endif				/* METADATA_H */

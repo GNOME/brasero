@@ -46,15 +46,11 @@
 #include <gst/pbutils/missing-plugins.h>
 #include <gst/tag/tag.h>
 
-#include "brasero-metadata.h"
 #include "brasero-misc.h"
+#include "brasero-metadata.h"
 
-#define BRASERO_METADATA_INITIAL_STATE		GST_STATE_PAUSED
-
-
-G_DEFINE_TYPE(BraseroMetadata, brasero_metadata, G_TYPE_OBJECT)
-
-#define BRASERO_METADATA_SILENCE_INTERVAL		100000000
+#define BRASERO_METADATA_SILENCE_INTERVAL		100000000LL
+#define BRASERO_METADATA_INITIAL_STATE			GST_STATE_PAUSED
 
 struct BraseroMetadataPrivate {
 	GstElement *pipeline;
@@ -115,7 +111,7 @@ static guint brasero_metadata_signals [LAST_SIGNAL] = { 0 };
 	(!((flags) & BRASERO_METADATA_FLAG_SILENCES) &&				\
 	((flags) & BRASERO_METADATA_FLAG_FAST))
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (BraseroMetadata, brasero_metadata, G_TYPE_OBJECT)
 
 static GSList *downloading = NULL;
 static GSList *downloaded = NULL;
@@ -1058,7 +1054,7 @@ brasero_metadata_install_plugins_result (GstInstallPluginsReturn res,
 	brasero_metadata_install_plugins_free_data (downloads);
 }
 
-BraseroMetadataGstDownload *
+static BraseroMetadataGstDownload *
 brasero_metadata_is_downloading (const gchar *detail)
 {
 	GSList *iter;
@@ -2031,7 +2027,7 @@ brasero_metadata_finalize (GObject *object)
 		priv->mutex = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_metadata_parent_class)->finalize (object);
 }
 
 static void
@@ -2094,8 +2090,6 @@ static void
 brasero_metadata_class_init (BraseroMetadataClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroMetadataPrivate));
 

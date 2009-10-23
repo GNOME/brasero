@@ -89,9 +89,9 @@ typedef struct {
 	GObjectClass parent_class;
 } BraseroBurnCapsClass;
 
-GType brasero_burn_caps_get_type();
+GType brasero_burn_caps_get_type (void);
 
-BraseroBurnCaps *brasero_burn_caps_get_default ();
+BraseroBurnCaps *brasero_burn_caps_get_default (void);
 
 gboolean
 brasero_caps_link_active (BraseroCapsLink *link);
