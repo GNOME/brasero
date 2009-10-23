@@ -242,7 +242,7 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 	/* The user may have forgotten to insert a disc so remind him of that if
 	 * there aren't any other possibility in the selection */
 	brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-				    _("Please insert a recordable CD or DVD if you don't want to write to an image file."),
+				    _("Please insert a writable CD or DVD if you don't want to write to an image file."),
 				    NULL,
 				    -1,
 				    BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
@@ -359,7 +359,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please insert a recordable CD or DVD."),
+					    _("Please insert a writable CD or DVD."),
 					    NULL,
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -480,7 +480,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		/* The medium is valid but it's a special case */
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("The drive that holds the source disc will also be the one used to record."),
-					    _("A new recordable disc will be required once the currently loaded one has been copied."),
+					    _("A new writable disc will be required once the currently loaded one has been copied."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}

@@ -502,48 +502,48 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		if ((type & BRASERO_MEDIUM_CD) && !(type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
 				if (isosize)
-					message = g_strdup_printf (_("Please replace the disc with a recordable CD with at least %i MiB of free space."), 
+					message = g_strdup_printf (_("Please replace the disc with a writable CD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("Please replace the disc with a recordable CD."));
+					message = g_strdup (_("Please replace the disc with a writable CD."));
 			}
 			else {
 				if (isosize)
-					message = g_strdup_printf (_("Please insert a recordable CD with at least %i MiB of free space."), 
+					message = g_strdup_printf (_("Please insert a writable CD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("Please insert a recordable CD."));
+					message = g_strdup (_("Please insert a writable CD."));
 			}
 		}
 		else if (!(type & BRASERO_MEDIUM_CD) && (type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
 				if (isosize)
-					message = g_strdup_printf (_("Please replace the disc with a recordable DVD with at least %i MiB of free space."), 
+					message = g_strdup_printf (_("Please replace the disc with a writable DVD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("Please replace the disc with a recordable DVD."));
+					message = g_strdup (_("Please replace the disc with a writable DVD."));
 			}
 			else {
 				if (isosize)
-					message = g_strdup_printf (_("Please insert a recordable DVD with at least %i MiB of free space."), 
+					message = g_strdup_printf (_("Please insert a writable DVD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("Please insert a recordable DVD."));
+					message = g_strdup (_("Please insert a writable DVD."));
 			}
 		}
 		else if (!insert) {
 			if (isosize)
-				message = g_strdup_printf (_("Please replace the disc with a recordable CD or DVD with at least %i MiB of free space."), 
+				message = g_strdup_printf (_("Please replace the disc with a writable CD or DVD with at least %i MiB of free space."), 
 							   (int) (isosize / 1048576));
 			else
-				message = g_strdup (_("Please replace the disc with a recordable CD or DVD."));
+				message = g_strdup (_("Please replace the disc with a writable CD or DVD."));
 		}
 		else {
 			if (isosize)
-				message = g_strdup_printf (_("Please insert a recordable CD or DVD with at least %i MiB of free space."), 
+				message = g_strdup_printf (_("Please insert a writable CD or DVD with at least %i MiB of free space."), 
 							   (int) (isosize / 1048576));
 			else
-				message = g_strdup (_("Please insert a recordable CD or DVD."));
+				message = g_strdup (_("Please insert a writable CD or DVD."));
 		}
 	}
 
@@ -571,7 +571,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 	if (error == BRASERO_BURN_WARNING_INSERT_AFTER_COPY) {
 		secondary_message = g_strdup (_("An image of the disc has been created on your hard drive."
-						"\nBurning will begin as soon as a recordable disc is inserted."));
+						"\nBurning will begin as soon as a writable disc is inserted."));
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_WARNING_CHECKSUM) {
@@ -1911,7 +1911,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 
 		res = brasero_burn_dialog_wait_for_insertion (dialog,
 							      burner,
-							      _("Please insert a recordable CD or DVD."),
+							      _("Please insert a writable CD or DVD."),
 							      secondary_message, 
 		                                              TRUE);
 
@@ -1925,7 +1925,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 			brasero_drive_eject (burner, FALSE, NULL);
 			res = brasero_burn_dialog_wait_for_insertion (dialog,
 								      burner,
-								      _("Please insert a recordable CD or DVD."),
+								      _("Please insert a writable CD or DVD."),
 								      _("Not enough space available on the disc"),
 			                                              FALSE);
 			if (res != GTK_RESPONSE_OK) {
