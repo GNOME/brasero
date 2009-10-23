@@ -89,11 +89,6 @@ struct BraseroPlayerPrivate {
 	gint64 length;
 };
 
-#define GCONF_IMAGE_SIZE_WIDTH	"/apps/brasero/display/image_width"
-#define GCONF_IMAGE_SIZE_HEIGHT	"/apps/brasero/display/image_height"
-#define GCONF_VIDEO_SIZE_WIDTH	"/apps/brasero/display/video_width"
-#define GCONF_VIDEO_SIZE_HEIGHT	"/apps/brasero/display/video_height"
-
 typedef enum {
 	READY_SIGNAL,
 	ERROR_SIGNAL,
