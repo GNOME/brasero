@@ -83,7 +83,7 @@ struct _BraseroSetting
 GType brasero_setting_get_type (void) G_GNUC_CONST;
 
 BraseroSetting *
-brasero_setting_get_default ();
+brasero_setting_get_default (void);
 
 gboolean
 brasero_setting_get_value (BraseroSetting *setting,

@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
+
 #define BRASERO_TYPE_MIME_FILTER         (brasero_mime_filter_get_type ())
 #define BRASERO_MIME_FILTER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_MIME_FILTER, BraseroMimeFilter))
 #define BRASERO_MIME_FILTER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_MIME_FILTER, BraseroMimeFilterClass))
@@ -57,8 +58,8 @@ typedef struct {
 	void (*changed) (BraseroMimeFilter * filter);
 } BraseroMimeFilterClass;
 
-GType brasero_mime_filter_get_type ();
-GtkWidget *brasero_mime_filter_new ();
+GType brasero_mime_filter_get_type (void);
+GtkWidget *brasero_mime_filter_new (void);
 
 void brasero_mime_filter_add_filter (BraseroMimeFilter * filter,
 				     GtkFileFilter * item);
@@ -69,5 +70,7 @@ void brasero_mime_filter_unref_mime (BraseroMimeFilter * filter,
 gboolean brasero_mime_filter_filter (BraseroMimeFilter * filter,
 				     char *filename, char *uri,
 				     char *display_name, char *mime_type);
+
+G_END_DECLS
 
 #endif				/* MIME_FILTER_H */

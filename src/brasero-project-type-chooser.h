@@ -61,7 +61,9 @@ typedef struct {
 					 BraseroProjectType type);
 } BraseroProjectTypeChooserClass;
 
-GType brasero_project_type_chooser_get_type ();
-GtkWidget *brasero_project_type_chooser_new ();
+GType brasero_project_type_chooser_get_type (void);
+GtkWidget *brasero_project_type_chooser_new (void);
+
+G_END_DECLS
 
 #endif				/* CD_TYPE_CHOOSER_H */

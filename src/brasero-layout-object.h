@@ -53,7 +53,7 @@ struct _BraseroLayoutIFace {
 					 BraseroLayoutType type);
 };
 
-GType brasero_layout_object_get_type ();
+GType brasero_layout_object_get_type (void);
 
 void brasero_layout_object_get_proportion (BraseroLayoutObject *self,
 					   gint *header,

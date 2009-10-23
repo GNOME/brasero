@@ -94,7 +94,7 @@ struct _BraseroDiscIface {
 							 GtkWidget *message);
 };
 
-GType brasero_disc_get_type ();
+GType brasero_disc_get_type (void);
 
 guint
 brasero_disc_add_ui (BraseroDisc *disc,

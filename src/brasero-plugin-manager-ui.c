@@ -40,6 +40,7 @@ fy
 #include "brasero-plugin-manager-ui.h"
 
 #include "brasero-plugin.h"
+#include "brasero-plugin-private.h"
 #include "brasero-plugin-information.h"
 #include "brasero-burn-lib.h"
 #include "brasero-plugin-option.h"

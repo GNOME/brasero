@@ -63,8 +63,8 @@ typedef struct {
 	GtkHPanedClass parent_class;
 } BraseroLayoutClass;
 
-GType brasero_layout_get_type ();
-GtkWidget *brasero_layout_new ();
+GType brasero_layout_get_type (void);
+GtkWidget *brasero_layout_new (void);
 
 void
 brasero_layout_add_project (BraseroLayout *layout,
@@ -87,5 +87,7 @@ brasero_layout_load (BraseroLayout *layout,
 void
 brasero_layout_register_ui (BraseroLayout *layout,
 			    GtkUIManager *manager);
+
+G_END_DECLS
 
 #endif /* BRASERO_LAYOUT_H */

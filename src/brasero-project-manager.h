@@ -57,8 +57,8 @@ typedef struct {
 	GtkNotebookClass parent_class;	
 } BraseroProjectManagerClass;
 
-GType brasero_project_manager_get_type ();
-GtkWidget *brasero_project_manager_new ();
+GType brasero_project_manager_get_type (void);
+GtkWidget *brasero_project_manager_new (void);
 
 void
 brasero_project_manager_audio (BraseroProjectManager *manager,

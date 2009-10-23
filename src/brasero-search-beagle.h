@@ -38,6 +38,7 @@
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
+
 #define BRASERO_TYPE_SEARCH         (brasero_search_get_type ())
 #define BRASERO_SEARCH(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_SEARCH, BraseroSearch))
 #define BRASERO_SEARCH_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_SEARCH, BraseroSearchClass))
@@ -55,9 +56,11 @@ typedef struct {
 	GtkVBoxClass parent_class;;
 } BraseroSearchClass;
 
-GType brasero_search_get_type ();
-GtkWidget *brasero_search_new ();
+GType brasero_search_get_type (void);
+GtkWidget *brasero_search_new (void);
 
-#endif				/* SEARCH_H */
+G_END_DECLS
+
+#endif
 
 #endif

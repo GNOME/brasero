@@ -52,7 +52,9 @@ typedef struct {
 	GtkVBoxClass parent_class;
 } BraseroAudioDiscClass;
 
-GType brasero_audio_disc_get_type();
-GtkWidget *brasero_audio_disc_new();
+GType brasero_audio_disc_get_type (void);
+GtkWidget *brasero_audio_disc_new (void);
+
+G_END_DECLS
 
 #endif /* AUDIO_DISC_H */

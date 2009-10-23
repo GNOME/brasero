@@ -52,8 +52,8 @@ typedef struct {
 	GtkDialogClass parent_class;
 } BraseroSongPropsClass;
 
-GType brasero_song_props_get_type ();
-GtkWidget *brasero_song_props_new ();
+GType brasero_song_props_get_type (void);
+GtkWidget *brasero_song_props_new (void);
 
 void
 brasero_song_props_get_properties (BraseroSongProps *self,
@@ -75,5 +75,7 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 				   gint64 start,
 				   gint64 end,
 				   gint64 gap);
+
+G_END_DECLS
 
 #endif /* SONG_PROPERTIES_H */

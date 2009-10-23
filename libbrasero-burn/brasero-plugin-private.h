@@ -33,6 +33,9 @@
 
 #include <glib.h>
 
+#include "brasero-media.h"
+
+#include "brasero-enums.h"
 #include "brasero-plugin.h"
 
 G_BEGIN_DECLS

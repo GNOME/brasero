@@ -51,8 +51,8 @@ struct _BraseroEjectDialogClass {
 	GtkDialogClass parent_class;
 };
 
-GType brasero_eject_dialog_get_type ();
-GtkWidget *brasero_eject_dialog_new ();
+GType brasero_eject_dialog_get_type (void);
+GtkWidget *brasero_eject_dialog_new (void);
 
 gboolean
 brasero_eject_dialog_cancel (BraseroEjectDialog *dialog);

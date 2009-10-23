@@ -61,8 +61,8 @@ typedef struct {
 	void	(*add_pressed)	(BraseroProject *project);
 } BraseroProjectClass;
 
-GType brasero_project_get_type ();
-GtkWidget *brasero_project_new ();
+GType brasero_project_get_type (void);
+GtkWidget *brasero_project_new (void);
 
 void
 brasero_project_burn (BraseroProject *project);
@@ -104,5 +104,7 @@ brasero_project_register_ui (BraseroProject *project,
 
 void
 brasero_project_create_audio_cover (BraseroProject *project);
+
+G_END_DECLS
 
 #endif /* PROJECT_H */

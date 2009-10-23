@@ -63,8 +63,8 @@ typedef struct {
 
 } BraseroSearchEntryClass;
 
-GType brasero_search_entry_get_type ();
-GtkWidget *brasero_search_entry_new ();
+GType brasero_search_entry_get_type (void);
+GtkWidget *brasero_search_entry_new (void);
 
 BeagleQuery *
 brasero_search_entry_get_query (BraseroSearchEntry *entry);
