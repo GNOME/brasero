@@ -886,18 +886,18 @@ brasero_player_metadata_completed (GObject *obj,
 		return;
 	}
 
-	if (g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN) <= 0) {
-		brasero_player_no_multimedia_stream (player);
-		g_signal_emit (player,
-			       brasero_player_signals [ERROR_SIGNAL],
-			       0);
-		return;
-	}
-
 	mime = g_file_info_get_content_type (info);
 
 	/* based on the mime type, we try to determine the type of file */
 	if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)) {
+		if (g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN) <= 0) {
+			brasero_player_no_multimedia_stream (player);
+			g_signal_emit (player,
+				       brasero_player_signals [ERROR_SIGNAL],
+				       0);
+			return;
+		}
+
 		/* video */
 		brasero_player_create_controls_stream (player, TRUE);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
@@ -912,6 +912,14 @@ brasero_player_metadata_completed (GObject *obj,
 		gtk_widget_show (player->priv->notebook);
 	}
 	else if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)) {
+		if (g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN) <= 0) {
+			brasero_player_no_multimedia_stream (player);
+			g_signal_emit (player,
+				       brasero_player_signals [ERROR_SIGNAL],
+				       0);
+			return;
+		}
+
 		/* audio */
 		brasero_player_create_controls_stream (player, FALSE);
 		gtk_widget_hide (player->priv->notebook);
@@ -925,7 +933,7 @@ brasero_player_metadata_completed (GObject *obj,
 	else if (mime && !strncmp ("image/", mime, 6)) {
 		/* Only do that if the image is < 20 M otherwise that's crap
 		 * FIXME: maybe a sort of error message here? or use thumbnail? */
-		if (g_file_info_get_size (info) > 100000000) {
+		if (g_file_info_get_size (info) > 100000000LL) {
 			brasero_player_no_multimedia_stream (player);
 			g_signal_emit (player,
 				       brasero_player_signals [ERROR_SIGNAL],
