@@ -366,7 +366,7 @@ brasero_search_init (BraseroSearch *obj)
 
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	g_signal_connect (G_OBJECT (obj->priv->tree), 
-			  "row_activated",
+			  "row-activated",
 			  G_CALLBACK (brasero_search_tree_activated_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree))),
@@ -518,12 +518,17 @@ brasero_search_destroy (GtkObject *object)
 	}
 
 	if (search->priv->tree) {
-		brasero_search_empty_tree (search);
-		search->priv->tree = NULL;
+		g_signal_handlers_disconnect_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (search->priv->tree)),
+		                                      brasero_search_tree_selection_changed_cb,
+		                                      search);
+
 		g_signal_handlers_disconnect_by_func (search->priv->filter,
 						      brasero_search_mime_filter_changed,
 						      search);
-		search->priv->filter = 0;
+
+		brasero_search_empty_tree (search);
+		search->priv->filter = NULL;
+		search->priv->tree = NULL;
 	}
 
 	if (search->priv->id) {
