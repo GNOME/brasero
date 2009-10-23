@@ -888,6 +888,9 @@ brasero_player_metadata_completed (GObject *obj,
 
 	if (g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN) <= 0) {
 		brasero_player_no_multimedia_stream (player);
+		g_signal_emit (player,
+			       brasero_player_signals [ERROR_SIGNAL],
+			       0);
 		return;
 	}
 
