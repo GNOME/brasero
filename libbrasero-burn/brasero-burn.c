@@ -1656,117 +1656,6 @@ start:
 }
 
 static BraseroBurnResult
-brasero_burn_check_data_loss (BraseroBurn *burn,
-                              GError **error)
-{
-	BraseroMedia media;
-	BraseroBurnFlag flags;
-	BraseroTrackType *input;
-	BraseroBurnResult result;
-	BraseroTrackType *output;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
-
-	output = brasero_track_type_new ();
-	brasero_burn_session_get_output_type (priv->session, output);
-	if (!brasero_track_type_get_has_medium (output)) {
-		brasero_track_type_free (output);
-		return BRASERO_BURN_OK;
-	}
-
-	flags = brasero_burn_session_get_flags (priv->session);
-	media = brasero_track_type_get_medium_type (output);
-	brasero_track_type_free (output);
-
-	input = brasero_track_type_new ();
-	brasero_burn_session_get_input_type (priv->session, input);
-
-	if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		/* There is an error if APPEND was set since this disc is not
-		 * supported without a prior blanking. */
-		
-		/* we warn the user is going to lose data even if in the case of
-		 * DVD+/-RW we don't really blank the disc we rather overwrite */
-		result = brasero_burn_emit_signal (burn,
-						   WARN_DATA_LOSS_SIGNAL,
-						   BRASERO_BURN_CANCEL);
-		if (result != BRASERO_BURN_OK)
-			goto reload;
-	}
-	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
-		/* A few special warnings for the discs with data/audio on them
-		 * that don't need prior blanking or can't be blanked */
-		if ((media & BRASERO_MEDIUM_CD)
-		&&  brasero_track_type_get_has_stream (input)
-		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
-			/* We'd rather blank and rewrite a disc rather than
-			 * append audio to appendable disc. That's because audio
-			 * tracks have little chance to be readable by common CD
-			 * player as last tracks */
-			result = brasero_burn_emit_signal (burn,
-							   WARN_AUDIO_TO_APPENDABLE_SIGNAL,
-							   BRASERO_BURN_CANCEL);
-			if (result != BRASERO_BURN_OK)
-				goto reload;
-		}
-
-		/* NOTE: if input is AUDIO we don't care since the OS
-		 * will load the last session of DATA anyway */
-		if ((media & BRASERO_MEDIUM_HAS_DATA)
-		&&   brasero_track_type_get_has_data (input)
-		&& !(flags & BRASERO_BURN_FLAG_MERGE)) {
-			/* warn the users that their previous data
-			 * session (s) will not be mounted by default by
-			 * the OS and that it'll be invisible */
-			result = brasero_burn_emit_signal (burn,
-							   WARN_PREVIOUS_SESSION_LOSS_SIGNAL,
-							   BRASERO_BURN_CANCEL);
-			if (result != BRASERO_BURN_OK)
-				goto reload;
-		}
-	}
-
-	if (media & BRASERO_MEDIUM_REWRITABLE) {
-		/* emits a warning for the user if it's a rewritable
-		 * disc and he wants to write only audio tracks on it */
-
-		/* NOTE: no need to error out here since the only thing
-		 * we are interested in is if it is AUDIO or not or if
-		 * the disc we are copying has audio tracks only or not */
-		if (brasero_track_type_get_has_stream (input)
-		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
-			result = brasero_burn_emit_signal (burn, 
-			                                   WARN_REWRITABLE_SIGNAL,
-			                                   BRASERO_BURN_CANCEL);
-			if (result != BRASERO_BURN_OK)
-				goto reload;
-		}
-
-		if (brasero_track_type_get_has_medium (input)
-		&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)) {
-			result = brasero_burn_emit_signal (burn,
-			                                   WARN_REWRITABLE_SIGNAL,
-			                                   BRASERO_BURN_CANCEL);
-			if (result != BRASERO_BURN_OK)
-				goto reload;
-		}
-	}
-
-	brasero_track_type_free (input);
-
-	return BRASERO_BURN_OK;
-
-reload:
-
-	brasero_track_type_free (input);
-
-	result = brasero_burn_reload_dest_media (burn, BRASERO_BURN_ERROR_NONE, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	return BRASERO_BURN_RETRY;
-}
-
-static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
                                         BraseroTrackType *output,
 					GError **error)
@@ -1802,6 +1691,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 	/* save then wipe out flags from session to check them one by one */
 	flags = brasero_burn_session_get_flags (priv->session);
+	flags &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (priv->session), BRASERO_BURN_FLAG_NONE);
 
 	if (!output || brasero_track_type_get_has_medium (output))
@@ -1880,6 +1770,157 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	brasero_burn_session_set_flags (priv->session, retval);
 	BRASERO_BURN_LOG_FLAGS (retval, "Flags after checking =");
 	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_burn_check_data_loss (BraseroBurn *burn,
+                              GError **error)
+{
+	BraseroMedia media;
+	BraseroBurnFlag flags;
+	BraseroTrackType *input;
+	BraseroBurnResult result;
+	BraseroTrackType *output;
+	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+
+	output = brasero_track_type_new ();
+	brasero_burn_session_get_output_type (priv->session, output);
+	if (!brasero_track_type_get_has_medium (output)) {
+		brasero_track_type_free (output);
+		return BRASERO_BURN_OK;
+	}
+
+	flags = brasero_burn_session_get_flags (priv->session);
+	media = brasero_track_type_get_medium_type (output);
+	brasero_track_type_free (output);
+
+	input = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (priv->session, input);
+
+	if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		/* There is an error if APPEND was set since this disc is not
+		 * supported without a prior blanking. */
+		
+		/* we warn the user is going to lose data even if in the case of
+		 * DVD+/-RW we don't really blank the disc we rather overwrite */
+		result = brasero_burn_emit_signal (burn,
+						   WARN_DATA_LOSS_SIGNAL,
+						   BRASERO_BURN_CANCEL);
+		if (result == BRASERO_BURN_NEED_RELOAD)
+			goto reload;
+
+		if (result != BRASERO_BURN_OK) {
+			brasero_track_type_free (input);
+			return result;
+		}
+	}
+	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
+		/* A few special warnings for the discs with data/audio on them
+		 * that don't need prior blanking or can't be blanked */
+		if ((media & BRASERO_MEDIUM_CD)
+		&&  brasero_track_type_get_has_stream (input)
+		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
+			/* We'd rather blank and rewrite a disc rather than
+			 * append audio to appendable disc. That's because audio
+			 * tracks have little chance to be readable by common CD
+			 * player as last tracks */
+			result = brasero_burn_emit_signal (burn,
+							   WARN_AUDIO_TO_APPENDABLE_SIGNAL,
+							   BRASERO_BURN_CANCEL);
+			if (result == BRASERO_BURN_NEED_RELOAD)
+				goto reload;
+
+			if (result != BRASERO_BURN_OK) {
+				brasero_track_type_free (input);
+				return result;
+			}
+		}
+
+		/* NOTE: if input is AUDIO we don't care since the OS
+		 * will load the last session of DATA anyway */
+		if ((media & BRASERO_MEDIUM_HAS_DATA)
+		&&   brasero_track_type_get_has_data (input)
+		&& !(flags & BRASERO_BURN_FLAG_MERGE)) {
+			/* warn the users that their previous data
+			 * session (s) will not be mounted by default by
+			 * the OS and that it'll be invisible */
+			result = brasero_burn_emit_signal (burn,
+							   WARN_PREVIOUS_SESSION_LOSS_SIGNAL,
+							   BRASERO_BURN_CANCEL);
+
+			if (result == BRASERO_BURN_RETRY) {
+				/* Wipe out the current flags,
+				 * Add a new one 
+				 * Recheck the result */
+				brasero_burn_session_pop_settings (priv->session);
+				brasero_burn_session_push_settings (priv->session);
+				brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MERGE);
+				result = brasero_burn_check_session_consistency (burn, NULL, error);
+				if (result != BRASERO_BURN_OK)
+					return result;
+			}
+
+			if (result == BRASERO_BURN_NEED_RELOAD)
+				goto reload;
+
+			if (result != BRASERO_BURN_OK) {
+				brasero_track_type_free (input);
+				return result;
+			}
+		}
+	}
+
+	if (media & BRASERO_MEDIUM_REWRITABLE) {
+		/* emits a warning for the user if it's a rewritable
+		 * disc and he wants to write only audio tracks on it */
+
+		/* NOTE: no need to error out here since the only thing
+		 * we are interested in is if it is AUDIO or not or if
+		 * the disc we are copying has audio tracks only or not */
+		if (brasero_track_type_get_has_stream (input)
+		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
+			result = brasero_burn_emit_signal (burn, 
+			                                   WARN_REWRITABLE_SIGNAL,
+			                                   BRASERO_BURN_CANCEL);
+
+			if (result == BRASERO_BURN_NEED_RELOAD)
+				goto reload;
+
+			if (result != BRASERO_BURN_OK) {
+				brasero_track_type_free (input);
+				return result;
+			}
+		}
+
+		if (brasero_track_type_get_has_medium (input)
+		&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)) {
+			result = brasero_burn_emit_signal (burn,
+			                                   WARN_REWRITABLE_SIGNAL,
+			                                   BRASERO_BURN_CANCEL);
+
+			if (result == BRASERO_BURN_NEED_RELOAD)
+				goto reload;
+
+			if (result != BRASERO_BURN_OK) {
+				brasero_track_type_free (input);
+				return result;
+			}
+		}
+	}
+
+	brasero_track_type_free (input);
+
+	return BRASERO_BURN_OK;
+
+reload:
+
+	brasero_track_type_free (input);
+
+	result = brasero_burn_reload_dest_media (burn, BRASERO_BURN_ERROR_NONE, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	return BRASERO_BURN_RETRY;
 }
 
 /* FIXME: at the moment we don't allow for mixed CD type */

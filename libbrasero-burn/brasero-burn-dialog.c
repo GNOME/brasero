@@ -774,7 +774,9 @@ brasero_burn_dialog_loss_warnings_cb (BraseroBurnDialog *dialog,
 				      const gchar *main_message,
 				      const gchar *secondary_message,
 				      const gchar *button_text,
-				      const gchar *button_icon)
+				      const gchar *button_icon,
+                                      const gchar *second_button_text,
+                                      const gchar *second_button_icon)
 {
 	gint result;
 	GtkWidget *button;
@@ -798,6 +800,17 @@ brasero_burn_dialog_loss_warnings_cb (BraseroBurnDialog *dialog,
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						 "%s", secondary_message);
+
+	if (second_button_text) {
+		button = gtk_dialog_add_button (GTK_DIALOG (message),
+						second_button_text,
+						GTK_RESPONSE_YES);
+
+		if (second_button_icon)
+			gtk_button_set_image (GTK_BUTTON (button),
+					      gtk_image_new_from_icon_name (second_button_icon,
+									    GTK_ICON_SIZE_BUTTON));
+	}
 
 	button = gtk_dialog_add_button (GTK_DIALOG (message),
 					_("_Replace Disc"),
@@ -824,6 +837,9 @@ brasero_burn_dialog_loss_warnings_cb (BraseroBurnDialog *dialog,
 
 	g_timer_start (priv->total_time);
 
+	if (result == GTK_RESPONSE_YES)
+		return BRASERO_BURN_RETRY;
+
 	if (result == GTK_RESPONSE_ACCEPT)
 		return BRASERO_BURN_NEED_RELOAD;
 
@@ -842,7 +858,9 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 						     _("The disc in the drive holds data."),
 	                                             /* Translators: Blank is a verb here */
 						     _("_Blank Disc"),
-						     "media-optical-blank");
+						     "media-optical-blank",
+	                                             NULL,
+	                                             NULL);
 }
 
 static BraseroBurnResult
@@ -853,14 +871,14 @@ brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
 	BraseroBurnResult result;
 
 	secondary = g_strdup_printf ("%s\n%s",
-				     _("Already burned files will be invisible (though still readable)."),
-				     _("Do you want to continue anyway?"));
+				     _("If you import them you will be able to see and use them once the current selection of files is burned."),
+	                             _("If you don't, they will be invisible (though still readable)."));
 				     
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
-						       _("Appending new files to a multisession disc is not advised."),
+						       _("There are files already burned on this disc. Would you like to import them?"),
 						       secondary,
-						       _("_Continue"),
-						       "media-optical-burn");
+						       _("_Import"), NULL,
+	                                               _("Only _Append"), NULL);
 	g_free (secondary);
 	return result;
 }
@@ -880,7 +898,9 @@ brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 						       _("Appending audio tracks to a CD is not advised."),
 						       secondary,
 						       _("_Continue"),
-						       "media-optical-burn");
+						       "media-optical-burn",
+	                                               NULL,
+	                                               NULL);
 	g_free (secondary);
 	return result;
 }
@@ -900,7 +920,9 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 						       _("Recording audio tracks on a rewritable disc is not advised."),
 						       secondary,
 						       _("_Continue"),
-						       "media-optical-burn");
+						       "media-optical-burn",
+	                                               NULL,
+	                                               NULL);
 	g_free (secondary);
 	return result;
 }
