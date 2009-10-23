@@ -815,6 +815,7 @@ brasero_layout_item_set_visible (BraseroLayout *layout,
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
+	guint num = 0;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (layout->priv->combo));
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
@@ -841,6 +842,23 @@ brasero_layout_item_set_visible (BraseroLayout *layout,
 		gtk_widget_show (item->widget);
 	else
 		gtk_widget_hide (item->widget);
+
+	gtk_tree_model_get_iter_first (model, &iter);
+	do {
+		gboolean visible;
+
+		gtk_tree_model_get (model, &iter,
+				    VISIBLE_COL, &visible,
+				    -1);
+
+		num += visible;
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+
+	if (num > 1)
+		gtk_widget_show (layout->priv->top_box);
+	else
+		gtk_widget_hide (layout->priv->top_box);
 }
 
 void
@@ -1485,7 +1503,6 @@ brasero_layout_init (BraseroLayout *obj)
 			  G_CALLBACK (brasero_layout_close_button_clicked_cb),
 			  obj);
 	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
-
 
 	obj->priv->notebook = gtk_notebook_new ();
 	gtk_widget_show (obj->priv->notebook);
