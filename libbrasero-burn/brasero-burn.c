@@ -1691,7 +1691,6 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 	/* save then wipe out flags from session to check them one by one */
 	flags = brasero_burn_session_get_flags (priv->session);
-	flags &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (priv->session), BRASERO_BURN_FLAG_NONE);
 
 	if (!output || brasero_track_type_get_has_medium (output))
