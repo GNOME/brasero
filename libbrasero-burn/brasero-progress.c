@@ -132,6 +132,7 @@ brasero_burn_progress_create_info (BraseroBurnProgress *obj)
 	if (obj->priv->speed_table) {
 		gtk_widget_destroy (obj->priv->speed_table);
 		obj->priv->speed_table = NULL;
+		obj->priv->speed_label = NULL;
 		obj->priv->speed = NULL;
 	}
 
@@ -180,8 +181,12 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 	gchar *markup;
 	gchar *text;
 
-	if (obj->priv->speed_table)
+	if (obj->priv->speed_table) {
 		gtk_widget_destroy (obj->priv->speed_table);
+		obj->priv->speed_table = NULL;
+		obj->priv->speed_label = NULL;
+		obj->priv->speed = NULL;
+	}
 
 	hrs = time / 3600;
 	time = ((int) time) % 3600;
