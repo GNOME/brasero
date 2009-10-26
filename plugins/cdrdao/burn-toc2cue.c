@@ -329,7 +329,7 @@ brasero_toc2cue_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "toc2cue",
-			       _("toc2cue converts .toc files into .cue files"),
+			       _("Converts .toc files into .cue files"),
 			       "Philippe Rouquier",
 			       0);
 

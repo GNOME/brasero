@@ -187,7 +187,7 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "dvd+rw-format",
-			       _("Dvd+rw-format blanks and formats DVD+/-R(W)"),
+			       _("Blanks and formats rewritable DVDs and BDs"),
 			       "Philippe Rouquier",
 			       4);
 

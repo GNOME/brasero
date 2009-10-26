@@ -527,7 +527,8 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "genisoimage",
-			       _("Use genisoimage to create images from a file selection"),
+	                       /* Translators: image is a disc image here */
+			       _("Creates disc images from a file selection"),
 			       "Philippe Rouquier",
 			       1);
 

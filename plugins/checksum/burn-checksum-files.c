@@ -1464,7 +1464,7 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
 				* which will be translated only when it needs
 				* displaying. */
 			       N_("File Checksum"),
-			       _("Allow file integrities to be checked on a disc"),
+			       _("Checks file integrities on a disc"),
 			       "Philippe Rouquier",
 			       0);
 
