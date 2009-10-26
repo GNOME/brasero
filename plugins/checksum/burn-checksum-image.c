@@ -705,12 +705,14 @@ brasero_checksum_image_clock_tick (BraseroJob *job)
 	BraseroChecksumImagePrivate *priv;
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
+
 	if (!priv->checksum)
 		return BRASERO_BURN_OK;
 
 	if (!priv->total)
 		return BRASERO_BURN_OK;
 
+	brasero_job_start_progress (job, FALSE);
 	brasero_job_set_progress (job,
 				  (gdouble) priv->bytes /
 				  (gdouble) priv->total);
