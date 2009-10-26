@@ -49,6 +49,7 @@ typedef struct _BraseroTrackImageInfo BraseroTrackImageInfo;
 struct _BraseroTrackImageInfo {
 	gchar *uri;
 	guint64 blocks;
+	GCancellable *cancel;
 	BraseroImageFormat format;
 };
 
@@ -98,24 +99,22 @@ brasero_track_image_cfg_get_info_cb (GObject *object,
 				     GAsyncResult *result,
 				     gpointer user_data)
 {
-	gboolean was_cancelled;
 	BraseroTrackImageInfo *info;
 	BraseroTrackImageCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (object);
 
-	was_cancelled = g_cancellable_is_cancelled (priv->cancel);
-	if (priv->cancel) {
+	info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	if (priv->cancel == info->cancel) {
 		g_object_unref (priv->cancel);
 		priv->cancel = NULL;
 	}
 
-	if (was_cancelled) {
+	if (g_cancellable_is_cancelled (info->cancel)) {
 		brasero_track_changed (BRASERO_TRACK (object));
 		return;
 	}
 
-	info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
 	if (info->format == BRASERO_IMAGE_FORMAT_NONE
 	||  info->blocks == 0) {
 		GError *error = NULL;
@@ -127,10 +126,9 @@ brasero_track_image_cfg_get_info_cb (GObject *object,
 		return;
 	}
 
-	if (priv->format == BRASERO_IMAGE_FORMAT_NONE)
-		brasero_track_image_cfg_set_uri (BRASERO_TRACK_IMAGE_CFG (object),
-						 info->uri,
-						 info->format);
+	brasero_track_image_cfg_set_uri (BRASERO_TRACK_IMAGE_CFG (object),
+	                                 info->uri,
+	                                 priv->format != BRASERO_IMAGE_FORMAT_NONE? priv->format:info->format);
 
 	BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (object), info->blocks);
 	brasero_track_changed (BRASERO_TRACK (object));
@@ -145,7 +143,6 @@ brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
 	GError *error = NULL;
 
 	info = g_simple_async_result_get_op_res_gpointer (result);
-
 	if (info->format == BRASERO_IMAGE_FORMAT_NONE) {
 		GFile *file;
 		const gchar *mime;
@@ -161,8 +158,12 @@ brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
 		g_object_unref (file);
 
 		if (!file_info) {
-			g_simple_async_result_set_from_error (result, error);
-			g_error_free (error);
+			if (error && !g_cancellable_is_cancelled (cancel))
+				g_simple_async_result_set_from_error (result, error);
+
+			if (error)
+				g_error_free (error);
+
 			return;
 		}
 
@@ -174,9 +175,10 @@ brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
 			info->format = brasero_image_format_identify_cuesheet (info->uri, cancel, &error);
 
 			if (error) {
-				g_simple_async_result_set_from_error (result, error);
-				g_error_free (error);
+				if (!g_cancellable_is_cancelled (cancel))
+					g_simple_async_result_set_from_error (result, error);
 
+				g_error_free (error);
 				g_object_unref (file_info);
 				return;
 			}
@@ -218,10 +220,11 @@ brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
 	else if (info->format == BRASERO_IMAGE_FORMAT_CUE)
 		brasero_image_format_get_cue_size (info->uri, &info->blocks, NULL, cancel, &error);
 
-	if (error) {
+	if (error && !g_cancellable_is_cancelled (cancel))
 		g_simple_async_result_set_from_error (result, error);
+
+	if (error)
 		g_error_free (error);
-	}
 }
 
 static void
@@ -229,6 +232,7 @@ brasero_track_image_info_free (gpointer data)
 {
 	BraseroTrackImageInfo *info = data;
 
+	g_object_unref (info->cancel);
 	g_free (info->uri);
 	g_free (info);
 }
@@ -260,12 +264,14 @@ brasero_track_image_cfg_get_info (BraseroTrackImageCfg *track,
 					 NULL,
 					 brasero_track_image_cfg_get_info);
 
+	priv->cancel = g_cancellable_new ();
+
 	info = g_new0 (BraseroTrackImageInfo, 1);
 	info->uri = g_strdup (uri);
 	info->format = priv->format;
-	g_simple_async_result_set_op_res_gpointer (res, info, brasero_track_image_info_free);
+	info->cancel = g_object_ref (priv->cancel);
 
-	priv->cancel = g_cancellable_new ();
+	g_simple_async_result_set_op_res_gpointer (res, info, brasero_track_image_info_free);
 	g_simple_async_result_run_in_thread (res,
 					     brasero_track_image_cfg_get_info_thread,
 					     G_PRIORITY_LOW,
