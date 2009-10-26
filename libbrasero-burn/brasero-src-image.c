@@ -343,35 +343,18 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 static void
 brasero_src_image_set_formats (BraseroSrcImage *dialog)
 {
-	BraseroTrackType *input = NULL;
 	BraseroSrcImagePrivate *priv;
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
 
-	if (!priv->format)
-		return;
-
-	/* get the available image types */
-	input = brasero_track_type_new ();
-	brasero_track_type_set_has_image (input);
-	formats = BRASERO_IMAGE_FORMAT_NONE;
-	format = BRASERO_IMAGE_FORMAT_CDRDAO;
-
-	for (; format != BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		BraseroBurnResult result;
-
-		brasero_track_type_set_image_format (input, format);
-		result = brasero_burn_session_input_supported (priv->session,
-							       input,
-							       FALSE);
-		if (result == BRASERO_BURN_OK)
-			formats |= format;
-	}
-
-	brasero_track_type_free (input);
-
+	/* Show all formats here even if we miss a
+	 * plugin to burn or use it */
+	formats = BRASERO_IMAGE_FORMAT_BIN|
+			 BRASERO_IMAGE_FORMAT_CUE|
+			 BRASERO_IMAGE_FORMAT_CDRDAO|
+			 BRASERO_IMAGE_FORMAT_CLONE;
 	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), formats,  TRUE, FALSE);
 
 	format = brasero_track_image_cfg_get_forced_format (priv->track);
