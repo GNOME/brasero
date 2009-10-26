@@ -92,6 +92,7 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 	header = g_strdup_printf (_("Properties of %s"), display_name);
 	g_free (display_name);
 
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	dialog = gtk_dialog_new_with_buttons (header,
 					      GTK_WINDOW (toplevel),
 					      GTK_DIALOG_MODAL|
@@ -101,7 +102,6 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 					      NULL);
 	g_free (header);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	gtk_window_set_icon_name (GTK_WINDOW (dialog),
 	                          gtk_window_get_icon_name (GTK_WINDOW (toplevel)));
 
