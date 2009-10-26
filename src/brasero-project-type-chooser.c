@@ -297,6 +297,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		gtk_button_set_alignment (GTK_BUTTON (link), 0.0, 0.5);
 		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
 		gtk_button_set_image (GTK_BUTTON (link), image);
+		gtk_button_set_use_underline (GTK_BUTTON (link), TRUE);
 		g_signal_connect (link,
 				  "clicked",
 				  G_CALLBACK (brasero_project_type_chooser_last_unsaved_clicked_cb),
