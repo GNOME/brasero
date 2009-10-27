@@ -80,7 +80,7 @@ struct _BraseroSessionSetting {
 	/**
 	 * Used when outputting an image instead of burning
 	 */
-	BraseroTrackType output;
+	BraseroImageFormat format;
 	gchar *image;
 	gchar *toc;
 
@@ -946,7 +946,7 @@ brasero_burn_session_get_output_format_real (BraseroBurnSession *self)
 	BraseroBurnSessionPrivate *priv;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	return brasero_track_type_get_image_format (&(priv->settings->output));
+	return priv->settings->format;
 }
 
 /**
@@ -980,8 +980,7 @@ brasero_burn_session_set_image_output_real (BraseroBurnSession *self,
 	else
 		priv->settings->toc = NULL;
 
-	brasero_track_type_set_has_image (&(priv->settings->output));
-	brasero_track_type_set_image_format (&(priv->settings->output),  format);
+	priv->settings->format = format;
 }
 
 static void
@@ -1011,8 +1010,7 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (brasero_track_type_get_has_image (&(priv->settings->output))
-	&& brasero_track_type_get_image_format (&(priv->settings->output)) == format
+	if (priv->settings->format == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
 	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc)) {
 		if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
