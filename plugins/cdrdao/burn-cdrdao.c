@@ -606,12 +606,11 @@ brasero_cdrdao_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_cdrdao_export_caps (BraseroPlugin *plugin)
 {
 	GSList *input;
 	GSList *output;
-	BraseroBurnResult result;
 	BraseroPluginConfOption *use_raw; 
 	const BraseroMedia media_w = BRASERO_MEDIUM_CD|
 				     BRASERO_MEDIUM_WRITABLE|
@@ -630,11 +629,6 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Copies, burns and blanks CDs"),
 			       "Philippe Rouquier",
 			       20);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("cdrdao", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	/* that's for cdrdao images: CDs only as input */
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
@@ -699,5 +693,10 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_add_conf_option (plugin, use_raw);
 
 	brasero_plugin_register_group (plugin, _(CDRDAO_DESCRIPTION));
-	return BRASERO_BURN_OK;
+}
+
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "cdrdao");
 }

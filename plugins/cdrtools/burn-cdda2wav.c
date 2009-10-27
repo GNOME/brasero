@@ -399,10 +399,9 @@ brasero_cdda2wav_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_cdda2wav_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_cdda2wav_export_caps (BraseroPlugin *plugin)
 {
-	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
@@ -412,12 +411,6 @@ brasero_cdda2wav_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "Philippe Rouquier",
 			       0);
 
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("cdda2wav", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	/* Caps */
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE /*|BRASERO_PLUGIN_IO_ACCEPT_PIPE*/, /* Keep on the fly on hold until it gets proper testing */
 					 BRASERO_AUDIO_FORMAT_RAW|
 	                                 BRASERO_METADATA_INFO);
@@ -434,6 +427,10 @@ brasero_cdda2wav_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	brasero_plugin_register_group (plugin, _(CDRTOOLS_DESCRIPTION));
+}
 
-	return BRASERO_BURN_OK;
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "cdda2wav");
 }

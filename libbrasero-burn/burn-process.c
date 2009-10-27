@@ -99,50 +99,6 @@ struct _BraseroProcessPrivate {
 
 static GObjectClass *parent_class = NULL;
 
-/* This is a helper function for plugins at load time */
-
-gboolean
-brasero_process_check_path (const gchar *name,
-			    gchar **error)
-{
-	gchar *prog_path;
-
-	/* First see if this plugin can be used, i.e. if cdrecord is in
-	 * the path */
-	prog_path = g_find_program_in_path (name);
-	if (!prog_path) {
-		*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
-		return BRASERO_BURN_ERR;
-	}
-
-	if (!g_file_test (prog_path, G_FILE_TEST_IS_EXECUTABLE)) {
-		g_free (prog_path);
-		*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
-		return BRASERO_BURN_ERR;
-	}
-
-	/* make sure that's not a symlink pointing to something with another
-	 * name like wodim.
-	 * NOTE: we used to test the target and see if it had the same name as
-	 * the symlink with GIO. The problem is, when the symlink pointed to
-	 * another symlink, then GIO didn't follow that other symlink. And in
-	 * the end it didn't work. So forbid all symlink. */
-	if (g_file_test (prog_path, G_FILE_TEST_IS_SYMLINK)) {
-		*error = g_strdup_printf (_("\"%s\" is a symbolic link pointing to another program. Use the target program instead"), name);
-		g_free (prog_path);
-		return BRASERO_BURN_ERR;
-	}
-	/* Make sure it's a regular file */
-	else if (!g_file_test (prog_path, G_FILE_TEST_IS_REGULAR)) {
-		*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
-		g_free (prog_path);
-		return BRASERO_BURN_ERR;
-	}
-
-	g_free (prog_path);
-	return BRASERO_BURN_OK;
-}
-
 void
 brasero_process_deferred_error (BraseroProcess *self,
 				GError *error)

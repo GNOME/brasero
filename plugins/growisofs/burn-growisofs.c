@@ -733,12 +733,11 @@ brasero_growisofs_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_growisofs_export_caps (BraseroPlugin *plugin)
 {
 	BraseroPluginConfOption *use_dao;
 	gboolean use_dao_gconf_key;
-	BraseroBurnResult result;
 	GSList *input_symlink;
 	GSList *input_joliet;
 	GConfClient *client;
@@ -750,11 +749,6 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Burns and blanks DVDs and BDs"),
 			       "Philippe Rouquier",
 			       7);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("growisofs", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	/* growisofs can write images to any type of BD/DVD-R as long as it's blank */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
@@ -931,6 +925,11 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_add_conf_option (plugin, use_dao); 
 
 	brasero_plugin_register_group (plugin, _(GROWISOFS_DESCRIPTION));
-
-	return BRASERO_BURN_OK;
 }
+
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "growisofs");
+}
+

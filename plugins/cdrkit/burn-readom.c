@@ -438,10 +438,9 @@ brasero_readom_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_readom_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_readom_export_caps (BraseroPlugin *plugin)
 {
-	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
@@ -450,11 +449,6 @@ brasero_readom_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Copies any disc to a disc image"),
 			       "Philippe Rouquier",
 			       1);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("readom", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	/* that's for clone mode only The only one to copy audio */
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
@@ -497,6 +491,10 @@ brasero_readom_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	brasero_plugin_register_group (plugin, _(CDRKIT_DESCRIPTION));
+}
 
-	return BRASERO_BURN_OK;
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "readom");
 }

@@ -518,10 +518,9 @@ brasero_genisoimage_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_genisoimage_export_caps (BraseroPlugin *plugin)
 {
-	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
@@ -531,11 +530,6 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Creates disc images from a file selection"),
 			       "Philippe Rouquier",
 			       1);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("genisoimage", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CDR|
@@ -586,6 +580,10 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 
 	brasero_plugin_register_group (plugin, _(CDRKIT_DESCRIPTION));
+}
 
-	return BRASERO_BURN_OK;
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "genisoimage");
 }

@@ -1453,8 +1453,8 @@ brasero_checksum_files_class_init (BraseroChecksumFilesClass *klass)
 	job_class->clock_tick = brasero_checksum_files_clock_tick;
 }
 
-static BraseroBurnResult
-brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_checksum_files_export_caps (BraseroPlugin *plugin)
 {
 	GSList *input;
 	BraseroPluginConfOption *checksum_type;
@@ -1516,6 +1516,4 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_add_conf_option (plugin, checksum_type);
 
 	brasero_plugin_set_compulsory (plugin, FALSE);
-
-	return BRASERO_BURN_OK;
 }

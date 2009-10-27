@@ -1211,8 +1211,8 @@ brasero_wodim_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_wodim_export_caps (BraseroPlugin *plugin)
 {
 	BraseroPluginConfOption *immed, *minbuf;
 	const BraseroMedia media = BRASERO_MEDIUM_CD|
@@ -1239,7 +1239,6 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_HAS_AUDIO|
 				      BRASERO_MEDIUM_HAS_DATA|
 				      BRASERO_MEDIUM_BLANK;
-	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
@@ -1249,11 +1248,6 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Burns, blanks and formats CDs and DVDs"),
 			       "Philippe Rouquier",
 			       0);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("wodim", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	/* for recording */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
@@ -1406,5 +1400,10 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_add_conf_option (plugin, immed);
 
 	brasero_plugin_register_group (plugin, _(CDRKIT_DESCRIPTION));
-	return BRASERO_BURN_OK;
+}
+
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "wodim");
 }

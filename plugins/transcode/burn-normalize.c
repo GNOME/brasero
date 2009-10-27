@@ -636,34 +636,16 @@ brasero_normalize_class_init (BraseroNormalizeClass *klass)
 	job_class->stop = brasero_normalize_stop;
 }
 
-static BraseroBurnResult
-brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_normalize_export_caps (BraseroPlugin *plugin)
 {
 	GSList *input;
-	GstElement *element;
 
 	brasero_plugin_define (plugin,
 			       N_("Normalize"),
 			       _("Sets consistent sound levels between tracks"),
 			       "Philippe Rouquier",
 			       0);
-
-	/* Let's see if we've got the plugins we need */
-	element = gst_element_factory_make ("rgvolume", NULL);
-	if (!element) {
-		*error = g_strdup_printf (_("%s element could not be created"),
-					  "\"Rgvolume\"");
-		return BRASERO_BURN_ERR;
-	}
-	gst_object_unref (element);
-
-	element = gst_element_factory_make ("rganalysis", NULL);
-	if (!element) {
-		*error = g_strdup_printf (_("%s element could not be created"),
-					  "\"Rganalysis\"");
-		return BRASERO_BURN_ERR;
-	}
-	gst_object_unref (element);
 
 	/* Add dts to make sure that when they are mixed with regular songs
 	 * this plugin will be called for the regular tracks */
@@ -686,6 +668,11 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
 
 	brasero_plugin_set_compulsory (plugin, FALSE);
+}
 
-	return BRASERO_BURN_OK;
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_gstreamer_plugin (plugin, "rgvolume");
+	brasero_plugin_test_gstreamer_plugin (plugin, "rganalysis");
 }

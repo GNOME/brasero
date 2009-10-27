@@ -1742,8 +1742,8 @@ brasero_transcode_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_transcode_export_caps (BraseroPlugin *plugin)
 {
 	GSList *input;
 	GSList *output;
@@ -1789,6 +1789,4 @@ brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
-
-	return BRASERO_BURN_OK;
 }

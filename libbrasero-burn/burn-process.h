@@ -77,13 +77,6 @@ void
 brasero_process_deferred_error (BraseroProcess *process,
 				GError *error);
 
-/**
- * helper function for plugins
- */
-gboolean
-brasero_process_check_path (const gchar *name,
-			    gchar **error);
-
 void
 brasero_process_set_working_directory (BraseroProcess *process,
 				       const gchar *directory);

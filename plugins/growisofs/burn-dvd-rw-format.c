@@ -170,8 +170,8 @@ brasero_dvd_rw_format_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin)
 {
 	/* NOTE: sequential and restricted are added later on demand */
 	const BraseroMedia media = BRASERO_MEDIUM_DVD|
@@ -182,7 +182,6 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 				   BRASERO_MEDIUM_HAS_DATA|
 				   BRASERO_MEDIUM_UNFORMATTED|
 				   BRASERO_MEDIUM_BLANK;
-	BraseroBurnResult result;
 	GSList *output;
 
 	brasero_plugin_define (plugin,
@@ -190,11 +189,6 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Blanks and formats rewritable DVDs and BDs"),
 			       "Philippe Rouquier",
 			       4);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("dvd+rw-format", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	output = brasero_caps_disc_new (media|
 					BRASERO_MEDIUM_BDRE|
@@ -219,6 +213,10 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NONE);
 
 	brasero_plugin_register_group (plugin, _(GROWISOFS_DESCRIPTION));
+}
 
-	return BRASERO_BURN_OK;
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "dvd+rw-format");
 }

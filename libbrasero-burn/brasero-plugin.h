@@ -90,6 +90,24 @@ typedef enum {
 	BRASERO_PLUGIN_RUN_AFTER_TARGET		= 1 << 2,
 } BraseroPluginProcessFlag;
 
+typedef enum {
+	BRASERO_PLUGIN_ERROR_NONE					= 0,
+	BRASERO_PLUGIN_ERROR_MODULE,
+	BRASERO_PLUGIN_ERROR_MISSING_APP,
+	BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION,
+	BRASERO_PLUGIN_ERROR_SYMBOLIC_LINK_APP,
+	BRASERO_PLUGIN_ERROR_MISSING_LIBRARY,
+	BRASERO_PLUGIN_ERROR_LIBRARY_VERSION,
+	BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN,
+} BraseroPluginErrorType;
+
+typedef struct _BraseroPluginError BraseroPluginError;
+
+struct _BraseroPluginError {
+	BraseroPluginErrorType type;
+	gchar *detail;
+};
+
 G_END_DECLS
 
 #endif /* _BURN_PLUGIN_H_ */

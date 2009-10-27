@@ -1275,45 +1275,11 @@ brasero_vob_class_init (BraseroVobClass *klass)
 	job_class->stop = brasero_vob_stop;
 }
 
-static BraseroBurnResult
-brasero_vob_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_vob_export_caps (BraseroPlugin *plugin)
 {
 	GSList *input;
 	GSList *output;
-	GstElement *element;
-
-	/* Let's see if we've got the plugins we need */
-	element = gst_element_factory_make ("ffenc_mpeg2video", NULL);
-	if (!element) {
-		*error = g_strdup_printf (_("%s element could not be created"),
-					  "\"ffenc_mpeg2video\"");
-		return BRASERO_BURN_ERR;
-	}
-	gst_object_unref (element);
-
-	element = gst_element_factory_make ("ffenc_ac3", NULL);
-	if (!element) {
-		*error = g_strdup_printf (_("%s element could not be created"),
-					  "\"ffenc_ac3\"");
-		return BRASERO_BURN_ERR;
-	}
-	gst_object_unref (element);
-
-	element = gst_element_factory_make ("ffenc_mp2", NULL);
-	if (!element) {
-		*error = g_strdup_printf (_("%s element could not be created"),
-					  "\"ffenc_mp2\"");
-		return BRASERO_BURN_ERR;
-	}
-	gst_object_unref (element);
-
-	element = gst_element_factory_make ("mplex", NULL);
-	if (!element) {
-		*error = g_strdup_printf (_("%s element could not be created"),
-					  "\"mplex\"");
-		return BRASERO_BURN_ERR;
-	}
-	gst_object_unref (element);
 
 	brasero_plugin_define (plugin,
 			       "transcode2vob",
@@ -1359,5 +1325,14 @@ brasero_vob_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
-	return BRASERO_BURN_OK;
+}
+
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	/* Let's see if we've got the plugins we need */
+	brasero_plugin_test_gstreamer_plugin (plugin, "ffenc_mpeg2video");
+	brasero_plugin_test_gstreamer_plugin (plugin, "ffenc_ac3");
+	brasero_plugin_test_gstreamer_plugin (plugin, "ffenc_mp2");
+	brasero_plugin_test_gstreamer_plugin (plugin, "mplex");
 }

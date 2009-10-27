@@ -817,8 +817,8 @@ brasero_checksum_image_class_init (BraseroChecksumImageClass *klass)
 	job_class->clock_tick = brasero_checksum_image_clock_tick;
 }
 
-static BraseroBurnResult
-brasero_checksum_image_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_checksum_image_export_caps (BraseroPlugin *plugin)
 {
 	GSList *input;
 	BraseroPluginConfOption *checksum_type;
@@ -864,6 +864,4 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_add_conf_option (plugin, checksum_type);
 
 	brasero_plugin_set_compulsory (plugin, FALSE);
-
-	return BRASERO_BURN_OK;
 }

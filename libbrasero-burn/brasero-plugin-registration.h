@@ -168,11 +168,27 @@ brasero_plugin_conf_option_choice_add (BraseroPluginConfOption *option,
 				       const gchar *string,
 				       gint value);
 
+void
+brasero_plugin_add_error (BraseroPlugin *plugin,
+                          BraseroPluginErrorType type,
+                          const gchar *detail);
+
+void
+brasero_plugin_test_gstreamer_plugin (BraseroPlugin *plugin,
+                                      const gchar *name);
+
+void
+brasero_plugin_test_app (BraseroPlugin *plugin,
+                         const gchar *name);
+
 /**
  * Boiler plate for plugin definition to save the hassle of definition.
  * To be put at the beginning of the .c file.
  */
-typedef GType	(* BraseroPluginRegisterType)	(BraseroPlugin *plugin, gchar **error);
+typedef GType	(* BraseroPluginRegisterType)	(BraseroPlugin *plugin);
+
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin);
 
 #define BRASERO_PLUGIN_BOILERPLATE(PluginName, plugin_name, PARENT_NAME, ParentName) \
 typedef struct {								\
@@ -193,37 +209,35 @@ plugin_name##_get_type (void)							\
 										\
 static void plugin_name##_class_init (PluginName##Class *klass);		\
 static void plugin_name##_init (PluginName *sp);				\
-static void plugin_name##_finalize (GObject *object);				\
-static BraseroBurnResult plugin_name##_export_caps (BraseroPlugin *plugin, gchar **error);	\
+static void plugin_name##_finalize (GObject *object);			\
+static void plugin_name##_export_caps (BraseroPlugin *plugin);	\
 G_MODULE_EXPORT GType								\
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error);		\
+brasero_plugin_register (BraseroPlugin *plugin);				\
 G_MODULE_EXPORT GType								\
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
-{										\
-	if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {			\
-		BraseroBurnResult result;					\
-		result = plugin_name##_export_caps (plugin, error);		\
-		if (result != BRASERO_BURN_OK)					\
-			return G_TYPE_NONE;					\
-	}									\
-	static const GTypeInfo our_info = {					\
-		sizeof (PluginName##Class),					\
-		NULL,								\
-		NULL,								\
-		(GClassInitFunc)plugin_name##_class_init,			\
-		NULL,								\
-		NULL,								\
-		sizeof (PluginName),						\
-		0,								\
-		(GInstanceInitFunc)plugin_name##_init,				\
-	};									\
-	plugin_name##_type = g_type_module_register_type (G_TYPE_MODULE (plugin),		\
-							  PARENT_NAME,		\
-							  G_STRINGIFY (PluginName),		\
-							  &our_info,		\
-							  0);			\
-	return plugin_name##_type;						\
-}
+brasero_plugin_register (BraseroPlugin *plugin)				\
+{														\
+	if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {	\
+		plugin_name##_export_caps (plugin);			\
+		static const GTypeInfo our_info = {					\
+			sizeof (PluginName##Class),					\
+			NULL,										\
+			NULL,										\
+			(GClassInitFunc)plugin_name##_class_init,			\
+			NULL,										\
+			NULL,										\
+			sizeof (PluginName),							\
+			0,											\
+			(GInstanceInitFunc)plugin_name##_init,			\
+		};												\
+		plugin_name##_type = g_type_module_register_type (G_TYPE_MODULE (plugin),		\
+								  PARENT_NAME,			\
+								  G_STRINGIFY (PluginName),		\
+								  &our_info,				\
+								  0);						\
+		return plugin_name##_type;						\
+	}													\
+	return brasero_plugin_get_gtype (plugin);				\
+}														\
 
 #define BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS(plugin_MACRO, unsupported_MACRO)	\
 	/* Use DAO for first session since AUDIO need it to write CD-TEXT */	\

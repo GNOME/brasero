@@ -898,8 +898,8 @@ brasero_local_track_init (BraseroLocalTrack *obj)
 	priv->cond = g_cond_new ();
 }
 
-static BraseroBurnResult
-brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_local_track_export_caps (BraseroPlugin *plugin)
 {
 	GSList *caps;
 
@@ -948,6 +948,4 @@ brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
 
 	brasero_plugin_set_compulsory (plugin, FALSE);
-
-	return BRASERO_BURN_OK;
 }

@@ -361,10 +361,9 @@ brasero_dvd_author_class_init (BraseroDvdAuthorClass *klass)
 	process_class->post = brasero_dvd_author_post;
 }
 
-static BraseroBurnResult
-brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_dvd_author_export_caps (BraseroPlugin *plugin)
 {
-	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
@@ -374,11 +373,6 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Creates disc images suitable for Video DVDs"),
 			       "Philippe Rouquier",
 			       1);
-
-	/* First see if this plugin can be used */
-	result = brasero_process_check_path ("dvdauthor", error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_AC3|
@@ -427,6 +421,10 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_HAS_DATA,
 				  BRASERO_BURN_FLAG_NONE,
 				  BRASERO_BURN_FLAG_NONE);
+}
 
-	return BRASERO_BURN_OK;
+G_MODULE_EXPORT void
+brasero_plugin_check_config (BraseroPlugin *plugin)
+{
+	brasero_plugin_test_app (plugin, "dvdauthor");
 }

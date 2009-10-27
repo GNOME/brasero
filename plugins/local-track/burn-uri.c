@@ -734,8 +734,8 @@ brasero_burn_uri_init (BraseroBurnURI *obj)
 	priv->cond = g_cond_new ();
 }
 
-static BraseroBurnResult
-brasero_burn_uri_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_burn_uri_export_caps (BraseroPlugin *plugin)
 {
 	GSList *caps;
 
@@ -758,6 +758,4 @@ brasero_burn_uri_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (caps);
 
 	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
-
-	return BRASERO_BURN_OK;
 }
