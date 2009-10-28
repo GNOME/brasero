@@ -364,7 +364,7 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
-				    ACTIVE_COLUMN, brasero_plugin_get_active (plugin),
+				    ACTIVE_COLUMN, brasero_plugin_get_active (plugin, 0),
 				    AVAILABLE_COLUMN, brasero_plugin_get_gtype (plugin) != G_TYPE_NONE && !brasero_plugin_get_compulsory (plugin),
 				    PLUGIN_COLUMN, plugin,
 				    -1);
@@ -417,7 +417,7 @@ plugin_manager_ui_set_active (GtkTreeIter  *iter,
 	/* set new value */
 	gtk_list_store_set (GTK_LIST_STORE (model), 
 			    iter, 
-			    ACTIVE_COLUMN, brasero_plugin_get_active (plugin),
+			    ACTIVE_COLUMN, brasero_plugin_get_active (plugin, 0),
 			    AVAILABLE_COLUMN, brasero_plugin_get_gtype (plugin) != G_TYPE_NONE && !brasero_plugin_get_compulsory (plugin),
 			    -1);
 
@@ -607,7 +607,7 @@ create_tree_popup_menu (BraseroPluginManagerUI *pm)
 	gtk_widget_set_sensitive (item,
 				  brasero_plugin_get_gtype (plugin) != G_TYPE_NONE && !brasero_plugin_get_compulsory (plugin));	
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item),
-					brasero_plugin_get_active (plugin));
+					brasero_plugin_get_active (plugin, 0));
 	g_signal_connect (item, "toggled",
 			  G_CALLBACK (enable_plugin_menu_cb), pm);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);					

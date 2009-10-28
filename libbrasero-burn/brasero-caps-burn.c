@@ -121,7 +121,7 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 
 		plugin = iter->data;
 
-		if (!brasero_plugin_get_active (plugin))
+		if (!brasero_plugin_get_active (plugin, 0))
 			continue;
 
 		if (output->type == BRASERO_TRACK_TYPE_DISC) {
@@ -449,7 +449,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 		GType type;
 
 		plugin = iter->data;
-		if (!brasero_plugin_get_active (plugin))
+		if (!brasero_plugin_get_active (plugin, 0))
 			continue;
 
 		brasero_plugin_get_process_flags (plugin, &flags);
@@ -812,7 +812,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 			BraseroPlugin *plugin;
 
 			plugin = plugins->data;
-			if (!brasero_plugin_get_active (plugin))
+			if (!brasero_plugin_get_active (plugin, 0))
 				continue;
 
 			/* note for checksuming task there is no group possible */
@@ -891,7 +891,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 
 			plugin = plugins->data;
 
-			if (!brasero_plugin_get_active (plugin))
+			if (!brasero_plugin_get_active (plugin, 0))
 				continue;
 
 			if (!candidate_plugin)
@@ -975,7 +975,7 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 
 				plugin = plugins->data;
 
-				if (!brasero_plugin_get_active (plugin))
+				if (!brasero_plugin_get_active (plugin, 0))
 					continue;
 
 				if (!brasero_plugin_check_blank_flags (plugin, media, flags))

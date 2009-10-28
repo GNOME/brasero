@@ -814,12 +814,17 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		goto end;
 	}
 
-	/* make sure that media is supported and can be written to */
-	/* make sure that media is supported.
-	 * Since we did not check the flags and
-	 * and since they might change check if the
-	 * session is supported without the flags */
-	result = brasero_burn_session_can_burn (priv->session, FALSE);
+	/* Make sure that media is supported and
+	 * can be written to */
+
+	/* NOTE: Since we did not check the flags
+	 * and since they might change, check if the
+	 * session is supported without the flags.
+	 * We use quite a strict checking though as
+	 * from now on we require plugins to be
+	 * ready. */
+	brasero_burn_session_set_check_flags (priv->session, 0);
+	result = brasero_burn_session_supported (priv->session);
 	if (result != BRASERO_BURN_OK) {
 		BRASERO_BURN_LOG ("Inserted media is not supported");
 		result = BRASERO_BURN_NEED_RELOAD;
@@ -1698,7 +1703,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 							      &supported,
 							      &compulsory);
 	else
-		result = brasero_caps_session_get_file_flags (input,
+		result = brasero_caps_session_get_image_flags (input,
 		                                              output,
 		                                              &supported,
 		                                              &compulsory);
@@ -1726,7 +1731,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 									      &supported,
 									      &compulsory);
 			else
-				result = brasero_caps_session_get_file_flags (input,
+				result = brasero_caps_session_get_image_flags (input,
 									      output,
 									      &supported,
 									      &compulsory);

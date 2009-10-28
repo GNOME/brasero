@@ -110,6 +110,8 @@ struct _BraseroBurnSessionPrivate {
 	guint dest_added_sig;
 	guint dest_removed_sig;
 
+	BraseroSessionCheckFlags check_flags;
+
 	GSList *tracks;
 	GSList *pile_tracks;
 };
@@ -246,6 +248,61 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 	}
 }
 
+/**
+ * brasero_burn_session_set_check_flags:
+ * @session: a #BraseroBurnSession.
+ * @flags: a #BraseroSessionCheckFlags
+ *
+ * For the following functions:
+ * brasero_burn_session_get_flags ()
+ * brasero_burn_session_supported ()
+ * brasero_burn_session_input_supported ()
+ * brasero_burn_session_output_supported ()
+ * brasero_burn_session_can_blank ()
+ * brasero_burn_session_get_blank_flags ()
+ * this function sets a few parameters describing
+ * how tests/checks should be performed.
+ */
+
+void
+brasero_burn_session_set_check_flags (BraseroBurnSession *session,
+                                           BraseroSessionCheckFlags flags)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_BURN_SESSION (session));
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv->check_flags = flags;
+}
+
+/**
+ * brasero_burn_session_get_check_flags:
+ * @session: a #BraseroBurnSession.
+ *
+ * For the following functions:
+ * brasero_burn_session_get_flags ()
+ * brasero_burn_session_supported ()
+ * brasero_burn_session_input_supported ()
+ * brasero_burn_session_output_supported ()
+ * brasero_burn_session_can_blank ()
+ * brasero_burn_session_get_blank_flags ()
+ * this function gets a few parameters describing
+ * how tests/checks should be performed.
+ *
+ * Returns:  #BraseroSessionCheckFlags
+ */
+
+BraseroSessionCheckFlags
+brasero_burn_session_get_check_flags (BraseroBurnSession *session)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_SESSION_CHECK_NONE);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	return priv->check_flags;
+}
 
 /**
  * brasero_burn_session_add_track:
@@ -808,12 +865,12 @@ brasero_burn_session_get_output_type (BraseroBurnSession *self,
 		return BRASERO_BURN_NOT_READY;
 
 	if (brasero_drive_is_fake (priv->settings->burner)) {
-		output->type = BRASERO_TRACK_TYPE_IMAGE;
-		output->subtype.img_format = brasero_burn_session_get_output_format (self);
+		brasero_track_type_set_has_image (output);
+		brasero_track_type_set_image_format (output, brasero_burn_session_get_output_format (self));
 	}
 	else {
-		output->type = BRASERO_TRACK_TYPE_DISC;
-		output->subtype.media = brasero_medium_get_status (brasero_drive_get_medium (priv->settings->burner));
+		brasero_track_type_set_has_medium (output);
+		brasero_track_type_set_medium_type (output, brasero_medium_get_status (brasero_drive_get_medium (priv->settings->burner)));
 	}
 
 	return BRASERO_BURN_OK;

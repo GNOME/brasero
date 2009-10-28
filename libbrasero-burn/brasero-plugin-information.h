@@ -42,8 +42,14 @@ G_BEGIN_DECLS
 void
 brasero_plugin_set_active (BraseroPlugin *plugin, gboolean active);
 
+typedef enum {
+	BRASERO_PLUGIN_ACTIVE_NONE,
+	BRASERO_PLUGIN_ACTIVE_IGNORE_ERRORS,
+} BraseroPluginActiveFlags;
+
 gboolean
-brasero_plugin_get_active (BraseroPlugin *plugin);
+brasero_plugin_get_active (BraseroPlugin *plugin,
+                           BraseroPluginActiveFlags flags);
 
 const gchar *
 brasero_plugin_get_name (BraseroPlugin *plugin);

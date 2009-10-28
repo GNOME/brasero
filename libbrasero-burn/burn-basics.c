@@ -340,7 +340,7 @@ brasero_burn_library_can_checksum (void)
 			BraseroCapsLink *link;
 
 			link = links->data;
-			if (brasero_caps_link_active (link)) {
+			if (brasero_caps_link_active (link, 0)) {
 				g_object_unref (self);
 				return TRUE;
 			}
@@ -436,7 +436,7 @@ brasero_burn_library_get_media_capabilities (BraseroMedia media)
 			BraseroPlugin *plugin;
 
 			plugin = plugins->data;
-			if (brasero_plugin_get_active (plugin)) {
+			if (brasero_plugin_get_active (plugin, BRASERO_PLUGIN_ACTIVE_NONE)) {
 				/* this link is valid */
 				active = TRUE;
 				break;

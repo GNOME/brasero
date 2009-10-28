@@ -68,7 +68,8 @@ brasero_caps_link_free (BraseroCapsLink *link)
 }
 
 gboolean
-brasero_caps_link_active (BraseroCapsLink *link)
+brasero_caps_link_active (BraseroCapsLink *link,
+                          BraseroPluginActiveFlags plugin_flags)
 {
 	GSList *iter;
 
@@ -78,11 +79,42 @@ brasero_caps_link_active (BraseroCapsLink *link)
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
-		if (brasero_plugin_get_active (plugin))
+		if (brasero_plugin_get_active (plugin, plugin_flags))
 			return TRUE;
 	}
 
 	return FALSE;
+}
+
+BraseroPlugin *
+brasero_caps_link_need_download (BraseroCapsLink *link)
+{
+	GSList *iter;
+	BraseroPlugin *plugin_ret = NULL;
+
+	/* See if for link to be active, we need to 
+	 * download additional apps/libs/.... */
+	for (iter = link->plugins; iter; iter = iter->next) {
+		BraseroPlugin *plugin;
+
+		plugin = iter->data;
+
+		/* If a plugin can be used without any
+		 * error then that means that the link
+		 * can be followed without additional
+		 * download. */
+		if (brasero_plugin_get_active (plugin, BRASERO_PLUGIN_ACTIVE_NONE))
+			return NULL;
+
+		if (brasero_plugin_get_active (plugin, BRASERO_PLUGIN_ACTIVE_IGNORE_ERRORS)) {
+			if (!plugin_ret)
+				plugin_ret = plugin;
+			else if (brasero_plugin_get_priority (plugin) > brasero_plugin_get_priority (plugin_ret))
+				plugin_ret = plugin;
+		}
+	}
+
+	return plugin_ret;
 }
 
 static void
@@ -115,7 +147,7 @@ brasero_caps_has_active_input (BraseroCaps *caps,
 		if (link->caps != input)
 			continue;
 
-		if (brasero_caps_link_active (link))
+		if (brasero_caps_link_active (link, BRASERO_PLUGIN_ACTIVE_NONE))
 			return TRUE;
 	}
 

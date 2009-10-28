@@ -67,6 +67,7 @@
 #include "brasero-video-options.h"
 #include "brasero-drive-properties.h"
 #include "brasero-image-properties.h"
+#include "burn-plugin-manager.h"
 
 #include "brasero-project-type-chooser.h"
 #include "brasero-app.h"
@@ -1297,16 +1298,16 @@ brasero_project_check_status (BraseroProject *project)
 
         if (result == BRASERO_BURN_ERR) {
                 /* At the moment the only error possible is an empty project */
-                if (BRASERO_IS_AUDIO_DISC (project->priv->current))
-                        brasero_project_no_song_dialog (project);
-                else
-                        brasero_project_no_file_dialog (project);
+		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
+			brasero_project_no_song_dialog (project);
+		else
+			brasero_project_no_file_dialog (project);
 
-                return BRASERO_BURN_ERR;
-        }
+		return BRASERO_BURN_ERR;
+	}
 
-        if (result == BRASERO_BURN_OK)
-                return BRASERO_BURN_OK;
+	if (result == BRASERO_BURN_OK)
+		return BRASERO_BURN_OK;
 
         dialog = brasero_status_dialog_new (BRASERO_BURN_SESSION (project->priv->session),
                                                                   gtk_widget_get_toplevel (GTK_WIDGET (project)));
@@ -1478,6 +1479,10 @@ brasero_project_burn (BraseroProject *project)
 	gboolean res = FALSE;
 	BraseroDisc *current_disc;
 
+	/* Check that we are ready */
+	if (brasero_project_check_status (project) != BRASERO_BURN_OK)
+		return;
+
 	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session)))
 		res = brasero_project_drive_properties (project);
 	else
@@ -1608,6 +1613,9 @@ brasero_project_new_session (BraseroProject *project,
 		project->priv->session = g_object_ref (session);
 	else
 		project->priv->session = brasero_session_cfg_new ();
+
+	brasero_burn_session_set_check_flags (BRASERO_BURN_SESSION (project->priv->session),
+	                                      BRASERO_SESSION_CHECK_IGNORE_PLUGIN_ERRORS);
 
 	/* NOTE: "is-valid" is emitted whenever there is a change in the
 	 * contents of the session. So no need to connect to track-added, ... */

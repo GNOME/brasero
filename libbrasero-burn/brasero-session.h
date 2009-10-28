@@ -248,17 +248,29 @@ brasero_burn_session_get_blank_flags (BraseroBurnSession *session,
  * Used to test the possibilities offered for a given session
  */
 
+typedef enum {
+	BRASERO_SESSION_CHECK_NONE					= 0,
+	BRASERO_SESSION_CHECK_USE_FLAGS,
+	BRASERO_SESSION_CHECK_IGNORE_PLUGIN_ERRORS,
+	BRASERO_SESSION_CHECK_SIGNAL_PLUGIN_ERRORS
+} BraseroSessionCheckFlags;
+
+void
+brasero_burn_session_set_check_flags (BraseroBurnSession *session,
+                                           BraseroSessionCheckFlags flags);
+
+BraseroSessionCheckFlags
+brasero_burn_session_get_check_flags (BraseroBurnSession *session);
+
 BraseroBurnResult
 brasero_burn_session_can_blank (BraseroBurnSession *session);
 
 BraseroBurnResult
-brasero_burn_session_can_burn (BraseroBurnSession *session,
-			       gboolean use_flags);
+brasero_burn_session_supported (BraseroBurnSession *session);
 
 BraseroBurnResult
 brasero_burn_session_input_supported (BraseroBurnSession *session,
-				      BraseroTrackType *input,
-				      gboolean use_flags);
+				      BraseroTrackType *input);
 
 BraseroBurnResult
 brasero_burn_session_output_supported (BraseroBurnSession *session,

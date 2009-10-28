@@ -46,7 +46,7 @@ G_BEGIN_DECLS
  */
 
 BraseroBurnResult
-brasero_caps_session_get_file_flags (BraseroTrackType *input,
+brasero_caps_session_get_image_flags (BraseroTrackType *input,
                                      BraseroTrackType *output,
                                      BraseroBurnFlag *supported,
                                      BraseroBurnFlag *compulsory);

@@ -51,8 +51,10 @@ struct _BraseroPluginClass {
 	GTypeModuleClass parent_class;
 
 	/* Signals */
+	void	(* errors)	(BraseroPlugin *plugin);
 	void	(* loaded)	(BraseroPlugin *plugin);
-	void	(* activated)	(BraseroPlugin *plugin);
+	void	(* activated)	(BraseroPlugin *plugin,
+			                  gboolean active);
 };
 
 struct _BraseroPlugin {

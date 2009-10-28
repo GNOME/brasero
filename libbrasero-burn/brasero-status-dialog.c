@@ -47,6 +47,7 @@
 #include "brasero-enums.h"
 #include "brasero-session.h"
 #include "brasero-status-dialog.h"
+#include "burn-plugin-manager.h"
 
 typedef struct _BraseroStatusDialogPrivate BraseroStatusDialogPrivate;
 struct _BraseroStatusDialogPrivate
@@ -140,6 +141,12 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 	g_free (string);
 }
 
+static void
+brasero_status_dialog_session_ready (BraseroStatusDialog *dialog)
+{
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+}
+
 static gboolean
 brasero_status_dialog_wait_for_ready_state (BraseroStatusDialog *dialog)
 {
@@ -153,7 +160,7 @@ brasero_status_dialog_wait_for_ready_state (BraseroStatusDialog *dialog)
 	result = brasero_burn_session_get_status (priv->session, status);
 
 	if (result != BRASERO_BURN_NOT_READY) {
-		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+		brasero_status_dialog_session_ready (dialog);
 		brasero_status_free (status);
 		priv->id = 0;
 		return FALSE;
@@ -300,6 +307,7 @@ brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (priv->session, status);
 	if (result != BRASERO_BURN_NOT_READY) {
+		brasero_status_dialog_session_ready (dialog);
 		brasero_status_free (status);
 		return;
 	}

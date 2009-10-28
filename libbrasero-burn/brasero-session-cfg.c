@@ -1152,9 +1152,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 			brasero_track_type_set_stream_format (source,
 							      BRASERO_METADATA_INFO|
 							      brasero_track_type_get_stream_format (source));
-			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-								       source,
-								       FALSE);
+			result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self), source);
 			if (result == BRASERO_BURN_OK) {
 				priv->CD_TEXT_modified = FALSE;
 
@@ -1168,13 +1166,11 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 				brasero_track_type_set_stream_format (source,
 								      (~BRASERO_METADATA_INFO) &
 								      brasero_track_type_get_stream_format (source));
-				result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-									       source,
-									       FALSE);
+				result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self), source);
 			}
 		}
 		else {
-			result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self), FALSE);
+			result = brasero_burn_session_supported (BRASERO_BURN_SESSION (self));
 
 			if (result != BRASERO_BURN_OK
 			&& (brasero_track_type_get_stream_format (source) & BRASERO_METADATA_INFO)) {
@@ -1186,9 +1182,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 								      (~BRASERO_METADATA_INFO) &
 								      brasero_track_type_get_stream_format (source));
 
-				result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self),
-									       source,
-									       FALSE);
+				result = brasero_burn_session_input_supported (BRASERO_BURN_SESSION (self), source);
+
 				BRASERO_BURN_LOG ("Tested support without Metadata information (result %d)", result);
 				if (result == BRASERO_BURN_OK) {
 					priv->CD_TEXT_modified = TRUE;
@@ -1218,7 +1213,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 
 			tmp_type = brasero_track_type_new ();
 
-			/* NOTE: this is the same as brasero_burn_session_can_burn () */
+			/* NOTE: this is the same as brasero_burn_session_supported () */
 			result = brasero_burn_session_get_tmp_image_type_same_src_dest (BRASERO_BURN_SESSION (self), tmp_type);
 			if (result == BRASERO_BURN_OK) {
 				if (brasero_track_type_get_has_image (tmp_type)) {
@@ -1243,7 +1238,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 			BRASERO_BURN_LOG ("Temporary image type %i", format);
 		}
 		else {
-			result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self), FALSE);
+			result = brasero_burn_session_supported (BRASERO_BURN_SESSION (self));
 			format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (self));
 			priv->CD_TEXT_modified = (format & (BRASERO_IMAGE_FORMAT_CDRDAO|BRASERO_IMAGE_FORMAT_CUE)) == 0;
 		}
@@ -1251,7 +1246,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	else {
 		/* Don't use flags as they'll be adapted later. */
 		priv->CD_TEXT_modified = FALSE;
-		result = brasero_burn_session_can_burn (BRASERO_BURN_SESSION (self), FALSE);
+		result = brasero_burn_session_supported (BRASERO_BURN_SESSION (self));
 	}
 
 	if (result != BRASERO_BURN_OK) {

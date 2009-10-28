@@ -38,6 +38,7 @@
 #include "brasero-track-type.h"
 #include "brasero-track-type-private.h"
 #include "brasero-plugin.h"
+#include "brasero-plugin-information.h"
 #include "brasero-plugin-registration.h"
 
 G_BEGIN_DECLS
@@ -93,8 +94,12 @@ GType brasero_burn_caps_get_type (void);
 
 BraseroBurnCaps *brasero_burn_caps_get_default (void);
 
+BraseroPlugin *
+brasero_caps_link_need_download (BraseroCapsLink *link);
+
 gboolean
-brasero_caps_link_active (BraseroCapsLink *link);
+brasero_caps_link_active (BraseroCapsLink *link,
+                          BraseroPluginActiveFlags check_flags);
 
 gboolean
 brasero_burn_caps_is_input (BraseroBurnCaps *self,
