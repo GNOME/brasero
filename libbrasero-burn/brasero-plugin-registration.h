@@ -216,28 +216,26 @@ brasero_plugin_register (BraseroPlugin *plugin);				\
 G_MODULE_EXPORT GType								\
 brasero_plugin_register (BraseroPlugin *plugin)				\
 {														\
-	if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {	\
-		plugin_name##_export_caps (plugin);			\
-		static const GTypeInfo our_info = {					\
-			sizeof (PluginName##Class),					\
-			NULL,										\
-			NULL,										\
-			(GClassInitFunc)plugin_name##_class_init,			\
-			NULL,										\
-			NULL,										\
-			sizeof (PluginName),							\
-			0,											\
-			(GInstanceInitFunc)plugin_name##_init,			\
-		};												\
-		plugin_name##_type = g_type_module_register_type (G_TYPE_MODULE (plugin),		\
-								  PARENT_NAME,			\
-								  G_STRINGIFY (PluginName),		\
-								  &our_info,				\
-								  0);						\
-		return plugin_name##_type;						\
-	}													\
-	return brasero_plugin_get_gtype (plugin);				\
-}														\
+	if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)	\
+		plugin_name##_export_caps (plugin);					\
+	static const GTypeInfo our_info = {					\
+		sizeof (PluginName##Class),					\
+		NULL,										\
+		NULL,										\
+		(GClassInitFunc)plugin_name##_class_init,			\
+		NULL,										\
+		NULL,										\
+		sizeof (PluginName),							\
+		0,											\
+		(GInstanceInitFunc)plugin_name##_init,			\
+	};												\
+	plugin_name##_type = g_type_module_register_type (G_TYPE_MODULE (plugin),		\
+							  PARENT_NAME,			\
+							  G_STRINGIFY (PluginName),		\
+							  &our_info,				\
+							  0);						\
+	return plugin_name##_type;						\
+}
 
 #define BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS(plugin_MACRO, unsupported_MACRO)	\
 	/* Use DAO for first session since AUDIO need it to write CD-TEXT */	\
