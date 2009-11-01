@@ -1306,6 +1306,23 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 		 * around after the bin they've been added to is destroyed
 		 * NOTE: now we destroy the pipeline every time which means
 		 * that it doesn't really matter. */
+		if (!priv->level) {
+			priv->level = gst_element_factory_make ("level", NULL);
+			if (!priv->level) {
+				priv->error = g_error_new (BRASERO_UTILS_ERROR,
+							   BRASERO_UTILS_ERROR_GENERAL,
+							   _("%s element could not be created"),
+							   "\"Level\"");
+				gst_object_unref (priv->audio);
+				priv->audio = NULL;
+				return FALSE;
+			}
+			g_object_set (priv->level,
+				      "message", TRUE,
+				      "interval", (guint64) BRASERO_METADATA_SILENCE_INTERVAL,
+				      NULL);
+		}
+
 		gst_object_ref (priv->convert);
 		gst_object_ref (priv->level);
 		gst_object_ref (priv->sink);
@@ -1315,6 +1332,7 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 				  priv->level,
 				  priv->sink,
 				  NULL);
+
 		if (!gst_element_link_many (priv->convert,
 		                            priv->level,
 		                            priv->sink,
@@ -1683,19 +1701,6 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 		return FALSE;
 	}
 
-	priv->level = gst_element_factory_make ("level", NULL);
-	if (!priv->level) {
-		priv->error = g_error_new (BRASERO_UTILS_ERROR,
-					   BRASERO_UTILS_ERROR_GENERAL,
-					   _("%s element could not be created"),
-					   "\"Level\"");
-		return FALSE;
-	}
-	g_object_set (priv->level,
-		      "message", TRUE,
-		      "interval", (guint64) BRASERO_METADATA_SILENCE_INTERVAL,
-		      NULL);
-
 	priv->sink = gst_element_factory_make ("fakesink", NULL);
 	if (priv->sink == NULL) {
 		priv->error = g_error_new (BRASERO_UTILS_ERROR,
@@ -1805,8 +1810,11 @@ brasero_metadata_set_uri (BraseroMetadata *self,
 
 	priv->flags = flags;
 	if (!brasero_metadata_set_new_uri (self, uri)) {
-		g_propagate_error (error, priv->error);
-		priv->error = NULL;
+		if (priv->error) {
+			BRASERO_UTILS_LOG ("Failed to set new URI %s", priv->error->message);
+			g_propagate_error (error, priv->error);
+			priv->error = NULL;
+		}
 
 		brasero_metadata_info_free (priv->info);
 		priv->info = NULL;
@@ -1848,6 +1856,7 @@ brasero_metadata_get_info_async (BraseroMetadata *self,
 		g_object_unref (self);
 
 		if (priv->error) {
+			BRASERO_UTILS_LOG ("Failed to set new URI %s", priv->error->message);
 			g_error_free (priv->error);
 			priv->error = NULL;
 		}
