@@ -385,8 +385,12 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoDisc *self,
 {
 	gchar *primary;
 	gchar *name;
+	GFile *file;
 
-	name = g_filename_display_basename (uri);
+	file = g_file_new_for_uri (uri);
+	name = g_file_get_basename (file);
+	g_object_unref (file);
+
 	primary = g_strdup_printf (_("\"%s\" could not be opened."), name);
 	brasero_app_alert (brasero_app_get_default (),
 			   primary,
