@@ -42,14 +42,9 @@ G_BEGIN_DECLS
 void
 brasero_plugin_set_active (BraseroPlugin *plugin, gboolean active);
 
-typedef enum {
-	BRASERO_PLUGIN_ACTIVE_NONE,
-	BRASERO_PLUGIN_ACTIVE_IGNORE_ERRORS,
-} BraseroPluginActiveFlags;
-
 gboolean
 brasero_plugin_get_active (BraseroPlugin *plugin,
-                           BraseroPluginActiveFlags flags);
+                           gboolean ignore_errors);
 
 const gchar *
 brasero_plugin_get_name (BraseroPlugin *plugin);
@@ -75,8 +70,17 @@ brasero_plugin_get_icon_name (BraseroPlugin *plugin);
 gchar *
 brasero_plugin_get_gconf_priority_key (BraseroPlugin *plugin);
 
-const gchar *
-brasero_plugin_get_error (BraseroPlugin *plugin);
+typedef struct _BraseroPluginError BraseroPluginError;
+struct _BraseroPluginError {
+	BraseroPluginErrorType type;
+	gchar *detail;
+};
+
+GSList *
+brasero_plugin_get_errors (BraseroPlugin *plugin);
+
+gchar *
+brasero_plugin_get_error_string (BraseroPlugin *plugin);
 
 gboolean
 brasero_plugin_get_compulsory (BraseroPlugin *plugin);

@@ -69,7 +69,7 @@ brasero_caps_link_free (BraseroCapsLink *link)
 
 gboolean
 brasero_caps_link_active (BraseroCapsLink *link,
-                          BraseroPluginActiveFlags plugin_flags)
+                          gboolean ignore_plugin_errors)
 {
 	GSList *iter;
 
@@ -79,7 +79,7 @@ brasero_caps_link_active (BraseroCapsLink *link,
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
-		if (brasero_plugin_get_active (plugin, plugin_flags))
+		if (brasero_plugin_get_active (plugin, ignore_plugin_errors))
 			return TRUE;
 	}
 
@@ -103,10 +103,10 @@ brasero_caps_link_need_download (BraseroCapsLink *link)
 		 * error then that means that the link
 		 * can be followed without additional
 		 * download. */
-		if (brasero_plugin_get_active (plugin, BRASERO_PLUGIN_ACTIVE_NONE))
+		if (brasero_plugin_get_active (plugin, FALSE))
 			return NULL;
 
-		if (brasero_plugin_get_active (plugin, BRASERO_PLUGIN_ACTIVE_IGNORE_ERRORS)) {
+		if (brasero_plugin_get_active (plugin, TRUE)) {
 			if (!plugin_ret)
 				plugin_ret = plugin;
 			else if (brasero_plugin_get_priority (plugin) > brasero_plugin_get_priority (plugin_ret))
@@ -147,7 +147,8 @@ brasero_caps_has_active_input (BraseroCaps *caps,
 		if (link->caps != input)
 			continue;
 
-		if (brasero_caps_link_active (link, BRASERO_PLUGIN_ACTIVE_NONE))
+		/* Ignore plugin errors */
+		if (brasero_caps_link_active (link, TRUE))
 			return TRUE;
 	}
 

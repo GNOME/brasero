@@ -58,7 +58,9 @@ libbrasero_utils_la_SOURCES =		\
 	brasero-io.c        \
 	brasero-io.h        \
 	brasero-metadata.c        \
-	brasero-metadata.h
+	brasero-metadata.h        \
+	brasero-pk.c        \
+	brasero-pk.h
 
 # EXTRA_DIST =			\
 #	libbrasero-utils.symbols

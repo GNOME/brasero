@@ -40,7 +40,6 @@
 #include <brasero-status.h>
 #include <brasero-track.h>
 
-
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_BURN_SESSION         (brasero_burn_session_get_type ())
@@ -248,29 +247,33 @@ brasero_burn_session_get_blank_flags (BraseroBurnSession *session,
  * Used to test the possibilities offered for a given session
  */
 
-typedef enum {
-	BRASERO_SESSION_CHECK_NONE					= 0,
-	BRASERO_SESSION_CHECK_USE_FLAGS,
-	BRASERO_SESSION_CHECK_IGNORE_PLUGIN_ERRORS,
-	BRASERO_SESSION_CHECK_SIGNAL_PLUGIN_ERRORS
-} BraseroSessionCheckFlags;
-
 void
-brasero_burn_session_set_check_flags (BraseroBurnSession *session,
-                                           BraseroSessionCheckFlags flags);
+brasero_burn_session_set_strict_support (BraseroBurnSession *session,
+                                         gboolean strict_check);
 
-BraseroSessionCheckFlags
-brasero_burn_session_get_check_flags (BraseroBurnSession *session);
+gboolean
+brasero_burn_session_get_strict_support (BraseroBurnSession *session);
 
 BraseroBurnResult
 brasero_burn_session_can_blank (BraseroBurnSession *session);
 
 BraseroBurnResult
-brasero_burn_session_supported (BraseroBurnSession *session);
+brasero_burn_session_can_burn (BraseroBurnSession *session,
+                               gboolean check_flags);
+
+typedef BraseroBurnResult	(* BraseroForeachPluginErrorCb)	(BraseroPluginErrorType type,
+		                                                         const gchar *detail,
+		                                                         gpointer user_data);
+
+BraseroBurnResult
+brasero_session_foreach_plugin_error (BraseroBurnSession *session,
+                                      BraseroForeachPluginErrorCb callback,
+                                      gpointer user_data);
 
 BraseroBurnResult
 brasero_burn_session_input_supported (BraseroBurnSession *session,
-				      BraseroTrackType *input);
+				      BraseroTrackType *input,
+                                      gboolean check_flags);
 
 BraseroBurnResult
 brasero_burn_session_output_supported (BraseroBurnSession *session,

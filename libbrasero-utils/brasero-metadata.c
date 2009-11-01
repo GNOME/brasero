@@ -1093,6 +1093,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 		 * - is being downloaded
 		 * If so don't do anything. */
 		detail = gst_missing_plugin_message_get_installer_detail (iter->data);
+
 		download = brasero_metadata_is_downloading (detail);
 		if (download) {
 			download->objects = g_slist_prepend (download->objects, self);
@@ -1181,10 +1182,10 @@ brasero_metadata_bus_messages (GstBus *bus,
 
 		/* here we just want to check if that's a missing codec */
 		if ((priv->flags & BRASERO_METADATA_FLAG_MISSING)
-		     &&   gst_is_missing_plugin_message (msg))
+		&&   gst_is_missing_plugin_message (msg))
 			priv->missing_plugins = g_slist_prepend (priv->missing_plugins, gst_message_ref (msg));
 		else if (!strcmp (gst_structure_get_name (msg->structure), "level")
-		     &&   gst_structure_has_field (msg->structure, "peak")) {
+		&&   gst_structure_has_field (msg->structure, "peak")) {
 			const GValue *value;
 			const GValue *list;
 			gdouble peak;

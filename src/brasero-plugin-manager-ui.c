@@ -205,6 +205,7 @@ plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 				     gpointer           data)
 {
 	BraseroPlugin *plugin;
+	gchar *error_string;
 	gchar *text;
 	
 	g_return_if_fail (tree_model != NULL);
@@ -217,13 +218,16 @@ plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 	if (!plugin)
 		return;
 
-	if (brasero_plugin_get_error (plugin))
+	error_string = brasero_plugin_get_error_string (plugin);
+	if (error_string) {
 		text = g_markup_printf_escaped ("<b>%s</b>\n%s\n<i>%s</i>",
 						/* Use the translated name of 
 						 * the plugin. */
 						_(brasero_plugin_get_name (plugin)),
 						brasero_plugin_get_description (plugin),
-						brasero_plugin_get_error (plugin));
+						error_string);
+		g_free (error_string);
+	}
 	else
 		text = g_markup_printf_escaped ("<b>%s</b>\n%s",
 						/* Use the translated name of 

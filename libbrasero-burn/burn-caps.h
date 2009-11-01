@@ -99,7 +99,7 @@ brasero_caps_link_need_download (BraseroCapsLink *link);
 
 gboolean
 brasero_caps_link_active (BraseroCapsLink *link,
-                          BraseroPluginActiveFlags check_flags);
+                          gboolean ignore_plugin_errors);
 
 gboolean
 brasero_burn_caps_is_input (BraseroBurnCaps *self,

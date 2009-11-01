@@ -88,9 +88,6 @@ brasero_plugin_check_media_restrictions (BraseroPlugin *plugin,
 void
 brasero_plugin_check_plugin_ready (BraseroPlugin *plugin);
 
-void
-brasero_plugin_need_download (BraseroPlugin *plugin);
-
 G_END_DECLS
 
 #endif

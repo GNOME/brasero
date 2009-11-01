@@ -136,7 +136,6 @@ enum
 {
 	LOADED_SIGNAL,
 	ACTIVATED_SIGNAL,
-	ERRORS_SIGNAL,
 	LAST_SIGNAL
 };
 
@@ -262,10 +261,10 @@ brasero_plugin_set_active (BraseroPlugin *self, gboolean active)
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 
-	was_active = brasero_plugin_get_active (self, BRASERO_PLUGIN_ACTIVE_NONE);
+	was_active = brasero_plugin_get_active (self, FALSE);
 	priv->active = active;
 
-	now_active = brasero_plugin_get_active (self, BRASERO_PLUGIN_ACTIVE_NONE);
+	now_active = brasero_plugin_get_active (self, FALSE);
 	if (was_active == now_active)
 		return;
 
@@ -281,7 +280,7 @@ brasero_plugin_set_active (BraseroPlugin *self, gboolean active)
 
 gboolean
 brasero_plugin_get_active (BraseroPlugin *plugin,
-                           BraseroPluginActiveFlags flags)
+                           gboolean ignore_errors)
 {
 	BraseroPluginPrivate *priv;
 
@@ -294,7 +293,7 @@ brasero_plugin_get_active (BraseroPlugin *plugin,
 		return FALSE;
 
 	if (priv->errors) {
-		if ((flags & BRASERO_PLUGIN_ACTIVE_IGNORE_ERRORS) == 0)
+		if (!ignore_errors)
 			return FALSE;
 	}
 
@@ -577,8 +576,29 @@ brasero_plugin_get_group (BraseroPlugin *self)
 	return priv->group;
 }
 
-const gchar *
-brasero_plugin_get_error (BraseroPlugin *plugin)
+/**
+ * brasero_plugin_get_errors:
+ * @plugin: a #BraseroPlugin.
+ *
+ * This function returns a list of all errors that
+ * prevents the plugin from working properly.
+ *
+ * Returns : a #GSList of #BraseroPluginError structures or %NULL.
+ * It must not be freed.
+ **/
+
+GSList *
+brasero_plugin_get_errors (BraseroPlugin *plugin)
+{
+	BraseroPluginPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_PLUGIN (plugin), NULL);
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return priv->errors;
+}
+
+gchar *
+brasero_plugin_get_error_string (BraseroPlugin *plugin)
 {
 	gchar *error_string = NULL;
 	BraseroPluginPrivate *priv;
@@ -1051,6 +1071,7 @@ brasero_plugin_get_gtype (BraseroPlugin *self)
 	BraseroPluginPrivate *priv;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
+
 	if (priv->errors)
 		return G_TYPE_NONE;
 
@@ -1140,36 +1161,14 @@ brasero_plugin_priority_changed (GConfClient *client,
 	else
 		priv->priority = gconf_value_get_int (value);
 
-	is_active = brasero_plugin_get_active (self, BRASERO_PLUGIN_ACTIVE_NONE);
+	is_active = brasero_plugin_get_active (self, FALSE);
 
 	g_object_notify (G_OBJECT (self), "priority");
-	if (is_active != brasero_plugin_get_active (self, BRASERO_PLUGIN_ACTIVE_NONE))
+	if (is_active != brasero_plugin_get_active (self, FALSE))
 		g_signal_emit (self,
 			       plugin_signals [ACTIVATED_SIGNAL],
 			       0,
 			       is_active);
-}
-
-/**
- * brasero_plugin_need_download:
- * @plugin: a #BraseroPlugin.
- *
- * This is mostly used internally and sends a 
- * signal to report that a plugin needs additional
- * applications/libraries/... to work.
- *
- **/
-
-void
-brasero_plugin_need_download (BraseroPlugin *plugin)
-{
-	BraseroPluginPrivate *priv;
-
-	g_return_if_fail (BRASERO_IS_PLUGIN (plugin));
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
-	g_signal_emit (plugin,
-	               plugin_signals [ERRORS_SIGNAL],
-	               0);
 }
 
 typedef void	(* BraseroPluginCheckConfig)	(BraseroPlugin *plugin);
@@ -1462,16 +1461,6 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
 		              g_cclosure_marshal_VOID__BOOLEAN,
 		              G_TYPE_NONE, 1,
 			      G_TYPE_BOOLEAN);
-
-	plugin_signals [ERRORS_SIGNAL] =
-		g_signal_new ("errors",
-		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-		              G_STRUCT_OFFSET (BraseroPluginClass, errors),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0,
-			      G_TYPE_NONE);
 }
 
 BraseroPlugin *

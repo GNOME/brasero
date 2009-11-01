@@ -823,8 +823,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	 * We use quite a strict checking though as
 	 * from now on we require plugins to be
 	 * ready. */
-	brasero_burn_session_set_check_flags (priv->session, 0);
-	result = brasero_burn_session_supported (priv->session);
+	result = brasero_burn_session_can_burn (priv->session, FALSE);
 	if (result != BRASERO_BURN_OK) {
 		BRASERO_BURN_LOG ("Inserted media is not supported");
 		result = BRASERO_BURN_NEED_RELOAD;

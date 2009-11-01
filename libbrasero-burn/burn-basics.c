@@ -436,7 +436,8 @@ brasero_burn_library_get_media_capabilities (BraseroMedia media)
 			BraseroPlugin *plugin;
 
 			plugin = plugins->data;
-			if (brasero_plugin_get_active (plugin, BRASERO_PLUGIN_ACTIVE_NONE)) {
+			/* Ignore plugin errors */
+			if (brasero_plugin_get_active (plugin, TRUE)) {
 				/* this link is valid */
 				active = TRUE;
 				break;

@@ -74,7 +74,6 @@ G_DEFINE_TYPE (BraseroPluginManager, brasero_plugin_manager, G_TYPE_OBJECT);
 
 enum
 {
-	PLUGIN_ERROR_SIGNAL,
 	CAPS_CHANGED_SIGNAL,
 	LAST_SIGNAL
 };
@@ -329,19 +328,6 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 		       0);
 }
 
-static void
-brasero_plugin_manager_plugin_error (BraseroPlugin *plugin,
-                                     BraseroPluginManager *manager)
-{
-	BraseroPluginManagerPrivate *priv;
-
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (manager);
-	g_signal_emit (manager,
-	               caps_signals [PLUGIN_ERROR_SIGNAL],
-	               0,
-	               plugin);
-}
-
 #if 0
 
 /**
@@ -501,14 +487,13 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 		}
 
 		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
-			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",
-					  brasero_plugin_get_error (plugin));
+			gchar *error_string;
+
+			error_string = brasero_plugin_get_error_string (plugin);
+			BRASERO_BURN_LOG ("Load failure, no GType was returned %s", error_string);
+			g_free (error_string);
 		}
 
-		g_signal_connect (plugin,
-		                  "errors",
-		                  G_CALLBACK (brasero_plugin_manager_plugin_error),
-		                  self);
 		g_signal_connect (plugin,
 		                  "activated",
 		                  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
@@ -564,16 +549,6 @@ brasero_plugin_manager_class_init (BraseroPluginManagerClass *klass)
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
-	caps_signals [PLUGIN_ERROR_SIGNAL] =
-		g_signal_new ("plugin_error",
-		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-		              0,
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
-		              G_TYPE_NONE,
-		              1,
-		              BRASERO_TYPE_PLUGIN);
 }
 
 BraseroPluginManager *

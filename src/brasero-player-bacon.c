@@ -723,7 +723,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 	return;
 
 error:
-	g_warning ("player creation error");
+	g_message ("player creation error");
 	brasero_player_bacon_clear_pipe (bacon);
 	g_signal_emit (bacon,
 		       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],

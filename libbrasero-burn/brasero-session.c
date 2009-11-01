@@ -110,10 +110,10 @@ struct _BraseroBurnSessionPrivate {
 	guint dest_added_sig;
 	guint dest_removed_sig;
 
-	BraseroSessionCheckFlags check_flags;
-
 	GSList *tracks;
 	GSList *pile_tracks;
+
+	guint strict_checks:1;
 };
 typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 
@@ -249,59 +249,55 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 }
 
 /**
- * brasero_burn_session_set_check_flags:
+ * brasero_burn_session_set_strict_support:
  * @session: a #BraseroBurnSession.
  * @flags: a #BraseroSessionCheckFlags
  *
  * For the following functions:
- * brasero_burn_session_get_flags ()
  * brasero_burn_session_supported ()
  * brasero_burn_session_input_supported ()
  * brasero_burn_session_output_supported ()
  * brasero_burn_session_can_blank ()
- * brasero_burn_session_get_blank_flags ()
- * this function sets a few parameters describing
- * how tests/checks should be performed.
+ * this function sets whether these functions will
+ * ignore the plugins with errors (%TRUE).
  */
 
 void
-brasero_burn_session_set_check_flags (BraseroBurnSession *session,
-                                           BraseroSessionCheckFlags flags)
+brasero_burn_session_set_strict_support (BraseroBurnSession *session,
+                                         gboolean strict_checks)
 {
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (session));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (session);
-	priv->check_flags = flags;
+	priv->strict_checks = strict_checks;
 }
 
 /**
- * brasero_burn_session_get_check_flags:
+ * brasero_burn_session_get_strict_support:
  * @session: a #BraseroBurnSession.
  *
  * For the following functions:
- * brasero_burn_session_get_flags ()
- * brasero_burn_session_supported ()
+ * brasero_burn_session_can_burn ()
  * brasero_burn_session_input_supported ()
  * brasero_burn_session_output_supported ()
  * brasero_burn_session_can_blank ()
- * brasero_burn_session_get_blank_flags ()
- * this function gets a few parameters describing
- * how tests/checks should be performed.
+ * this function gets whether the checks will 
+ * ignore the plugins with errors (return %TRUE).
  *
- * Returns:  #BraseroSessionCheckFlags
+ * Returns:  #gboolean
  */
 
-BraseroSessionCheckFlags
-brasero_burn_session_get_check_flags (BraseroBurnSession *session)
+gboolean
+brasero_burn_session_get_strict_support (BraseroBurnSession *session)
 {
 	BraseroBurnSessionPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_SESSION_CHECK_NONE);
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), FALSE);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (session);
-	return priv->check_flags;
+	return priv->strict_checks;
 }
 
 /**

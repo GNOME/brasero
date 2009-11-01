@@ -55,8 +55,6 @@ struct _BraseroPluginManagerClass
 
 	/* <Signals>*/
 	void	(*caps_changed)	(BraseroPluginManager *manager);
-	void	(*plugin_error)	(BraseroPluginManager *manager,
-			                    BraseroPlugin *plugin);
 };
 
 struct _BraseroPluginManager

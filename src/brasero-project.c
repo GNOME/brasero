@@ -37,6 +37,7 @@
 #include <gio/gio.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 
 #include <gst/gst.h>
 
@@ -44,6 +45,7 @@
 
 #include "brasero-misc.h"
 #include "brasero-jacket-edit.h"
+#include "brasero-pk.h"
 
 #include "brasero-tags.h"
 #include "brasero-session.h"
@@ -164,6 +166,8 @@ struct BraseroProjectPrivate {
 	BraseroDisc *current;
 
 	BraseroURIContainer *current_source;
+
+	GCancellable *cancel;
 
 	GtkWidget *chooser;
 	gulong selected_id;
@@ -1191,6 +1195,11 @@ brasero_project_finalize (GObject *object)
 	BraseroProject *cobj;
 	cobj = BRASERO_PROJECT(object);
 
+	if (cobj->priv->cancel) {
+		g_cancellable_cancel (cobj->priv->cancel);
+		cobj->priv->cancel = NULL;
+	}
+
 	if (cobj->priv->session) {
 		g_object_unref (cobj->priv->session);
 		cobj->priv->session = NULL;
@@ -1317,6 +1326,124 @@ brasero_project_check_status (BraseroProject *project)
         gtk_widget_destroy (dialog);
 
         return (response == GTK_RESPONSE_OK)? BRASERO_BURN_OK:BRASERO_BURN_CANCEL;
+}
+
+static BraseroBurnResult
+brasero_project_install_missing (BraseroPluginErrorType type,
+                                 const gchar *detail,
+                                 gpointer user_data)
+{
+	BraseroProject *project = BRASERO_PROJECT (user_data);
+	GCancellable *cancel;
+	BraseroPK *package;
+	GtkWidget *parent;
+	gboolean res;
+	int xid = 0;
+
+	/* Get the xid */
+	parent = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
+
+	package = brasero_pk_new ();
+	cancel = g_cancellable_new ();
+	project->priv->cancel = cancel;
+	switch (type) {
+		case BRASERO_PLUGIN_ERROR_MISSING_APP:
+			res = brasero_pk_install_missing_app (package, detail, xid, cancel);
+			break;
+
+		case BRASERO_PLUGIN_ERROR_MISSING_LIBRARY:
+			res = brasero_pk_install_missing_library (package, detail, xid, cancel);
+			break;
+
+		case BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN:
+			res = brasero_pk_install_gstreamer_plugin (package, detail, xid, cancel);
+			break;
+
+		default:
+			res = FALSE;
+			break;
+	}
+
+	if (package) {
+		g_object_unref (package);
+		package = NULL;
+	}
+
+	if (g_cancellable_is_cancelled (cancel)) {
+		g_object_unref (cancel);
+		return BRASERO_BURN_CANCEL;
+	}
+
+	project->priv->cancel = NULL;
+	g_object_unref (cancel);
+
+	if (!res)
+		return BRASERO_BURN_ERR;
+
+	return BRASERO_BURN_RETRY;
+}
+
+static BraseroBurnResult
+brasero_project_list_missing (BraseroPluginErrorType type,
+                              const gchar *detail,
+                              gpointer user_data)
+{
+	GString *string = user_data;
+
+	if (type == BRASERO_PLUGIN_ERROR_MISSING_APP) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing application */
+		g_string_append_printf (string, _("%s (application)"), detail);
+	}
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_LIBRARY) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing library */
+		g_string_append_printf (string, _("%s (library)"), detail);
+	}
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing Gstreamer plugin */
+		g_string_append_printf (string, _("%s (Gstreamer plugin)"), detail);
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_project_check_plugins_not_ready (BraseroProject *project,
+                                         BraseroBurnSession *session)
+{
+	BraseroBurnResult result;
+	GtkWidget *parent;
+	GString *string;
+
+	parent = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	gtk_widget_set_sensitive (parent, FALSE);
+
+	result = brasero_session_foreach_plugin_error (session,
+	                                               brasero_project_install_missing,
+	                                               project);
+	if (result == BRASERO_BURN_CANCEL)
+		return result;
+
+	gtk_widget_set_sensitive (parent, TRUE);
+
+	if (result == BRASERO_BURN_OK)
+		return result;
+
+	string = g_string_new (_("Please install the following manually and try again:"));
+	brasero_session_foreach_plugin_error (session,
+	                                      brasero_project_list_missing,
+	                                      string);
+
+	brasero_utils_message_dialog (parent,
+	                              _("All required applications and libraries are not installed."),
+	                              string->str,
+	                              GTK_MESSAGE_ERROR);
+	g_string_free (string, TRUE);
+
+	return BRASERO_BURN_ERR;
 }
 
 /******************************** burning **************************************/
@@ -1483,6 +1610,10 @@ brasero_project_burn (BraseroProject *project)
 	if (brasero_project_check_status (project) != BRASERO_BURN_OK)
 		return;
 
+	/* Check that we are not missing any plugin */
+	if (brasero_project_check_plugins_not_ready (project, BRASERO_BURN_SESSION (project->priv->session)) != BRASERO_BURN_OK)
+		return;
+
 	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session)))
 		res = brasero_project_drive_properties (project);
 	else
@@ -1614,8 +1745,7 @@ brasero_project_new_session (BraseroProject *project,
 	else
 		project->priv->session = brasero_session_cfg_new ();
 
-	brasero_burn_session_set_check_flags (BRASERO_BURN_SESSION (project->priv->session),
-	                                      BRASERO_SESSION_CHECK_IGNORE_PLUGIN_ERRORS);
+	brasero_burn_session_set_strict_support (BRASERO_BURN_SESSION (project->priv->session), FALSE);
 
 	/* NOTE: "is-valid" is emitted whenever there is a change in the
 	 * contents of the session. So no need to connect to track-added, ... */
