@@ -36,6 +36,7 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
+#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
@@ -60,6 +61,7 @@
 
 #include "brasero-notify.h"
 #include "brasero-misc.h"
+#include "brasero-pk.h"
 
 typedef struct _BraseroBurnOptionsPrivate BraseroBurnOptionsPrivate;
 struct _BraseroBurnOptionsPrivate
@@ -80,6 +82,8 @@ struct _BraseroBurnOptionsPrivate
 
 	guint not_ready_id;
 	GtkWidget *status_dialog;
+
+	GCancellable *cancel;
 
 	guint is_valid:1;
 
@@ -443,17 +447,17 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
 							      _("Please insert a disc that is not copy protected."),
-							      _("Such a disc cannot be copied without the proper plugins."),
+							      _("All required applications and libraries are not installed."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please replace the disc with a supported CD or DVD."),
-					    _("It is not possible to write with the current set of plugins."),
-					    -1,
-					    BRASERO_NOTIFY_CONTEXT_SIZE);
+		                            _("Please replace the disc with a supported CD or DVD."),
+		                            NULL,
+		                            -1,
+		                            BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
 		GtkWidget *message;
@@ -1010,6 +1014,11 @@ brasero_burn_options_finalize (GObject *object)
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
 
+	if (priv->cancel) {
+		g_cancellable_cancel (priv->cancel);
+		priv->cancel = NULL;
+	}
+
 	if (priv->not_ready_id) {
 		g_source_remove (priv->not_ready_id);
 		priv->not_ready_id = 0;
@@ -1046,16 +1055,139 @@ brasero_burn_options_finalize (GObject *object)
 	G_OBJECT_CLASS (brasero_burn_options_parent_class)->finalize (object);
 }
 
+static BraseroBurnResult
+brasero_burn_options_install_missing (BraseroPluginErrorType type,
+                                      const gchar *detail,
+                                      gpointer user_data)
+{
+	BraseroBurnOptionsPrivate *priv = BRASERO_BURN_OPTIONS_PRIVATE (user_data);
+	GCancellable *cancel;
+	BraseroPK *package;
+	gboolean res;
+	int xid = 0;
+
+	/* Get the xid */
+	xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (user_data)->window));
+
+	package = brasero_pk_new ();
+	cancel = g_cancellable_new ();
+	priv->cancel = cancel;
+	switch (type) {
+		case BRASERO_PLUGIN_ERROR_MISSING_APP:
+			res = brasero_pk_install_missing_app (package, detail, xid, cancel);
+			break;
+
+		case BRASERO_PLUGIN_ERROR_MISSING_LIBRARY:
+			res = brasero_pk_install_missing_library (package, detail, xid, cancel);
+			break;
+
+		case BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN:
+			res = brasero_pk_install_gstreamer_plugin (package, detail, xid, cancel);
+			break;
+
+		default:
+			res = FALSE;
+			break;
+	}
+
+	if (package) {
+		g_object_unref (package);
+		package = NULL;
+	}
+
+	if (g_cancellable_is_cancelled (cancel)) {
+		g_object_unref (cancel);
+		return BRASERO_BURN_CANCEL;
+	}
+
+	priv->cancel = NULL;
+	g_object_unref (cancel);
+
+	if (!res)
+		return BRASERO_BURN_ERR;
+
+	return BRASERO_BURN_RETRY;
+}
+
+static BraseroBurnResult
+brasero_burn_options_list_missing (BraseroPluginErrorType type,
+                                   const gchar *detail,
+                                   gpointer user_data)
+{
+	GString *string = user_data;
+
+	if (type == BRASERO_PLUGIN_ERROR_MISSING_APP) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing application */
+		g_string_append_printf (string, _("%s (application)"), detail);
+	}
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_LIBRARY) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing library */
+		g_string_append_printf (string, _("%s (library)"), detail);
+	}
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing Gstreamer plugin */
+		g_string_append_printf (string, _("%s (Gstreamer plugin)"), detail);
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static void
+brasero_burn_options_response (GtkDialog *dialog,
+                               GtkResponseType response)
+{
+	BraseroBurnOptionsPrivate *priv;
+	BraseroBurnResult result;
+	GString *string;
+
+	if (response != GTK_RESPONSE_OK)
+		return;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (dialog);
+	gtk_widget_set_sensitive (GTK_WIDGET (dialog), FALSE);
+
+	result = brasero_session_foreach_plugin_error (BRASERO_BURN_SESSION (priv->session),
+	                                               brasero_burn_options_install_missing,
+	                                               dialog);
+	if (result == BRASERO_BURN_CANCEL)
+		return;
+
+	gtk_widget_set_sensitive (GTK_WIDGET (dialog), TRUE);
+
+	if (result == BRASERO_BURN_OK)
+		return;
+
+	string = g_string_new (_("Please install the following manually and try again:"));
+	brasero_session_foreach_plugin_error (BRASERO_BURN_SESSION (priv->session),
+	                                      brasero_burn_options_list_missing,
+	                                      string);
+
+	brasero_utils_message_dialog (GTK_WIDGET (dialog),
+	                              _("All required applications and libraries are not installed."),
+	                              string->str,
+	                              GTK_MESSAGE_ERROR);
+	g_string_free (string, TRUE);
+
+	/* Cancel the rest */
+	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
+}
+
 static void
 brasero_burn_options_class_init (BraseroBurnOptionsClass *klass)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GtkDialogClass *gtk_dialog_class = GTK_DIALOG_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroBurnOptionsPrivate));
 
 	object_class->finalize = brasero_burn_options_finalize;
 	object_class->set_property = brasero_burn_options_set_property;
 	object_class->get_property = brasero_burn_options_get_property;
+
+	gtk_dialog_class->response = brasero_burn_options_response;
 
 	g_object_class_install_property (object_class,
 					 PROP_SESSION,

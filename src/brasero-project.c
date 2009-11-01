@@ -1015,7 +1015,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		project->priv->empty = FALSE;
 		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
 					    _("Please replace the disc with a supported CD or DVD."),
-					    _("It is not possible to write with the current set of plugins."),
+					    NULL,
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
