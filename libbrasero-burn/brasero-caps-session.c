@@ -541,13 +541,17 @@ brasero_caps_find_link_set_ctx (BraseroBurnSession *session,
 {
 	ctx->input = input;
 
-	if (ctx->check_session_flags)
+	if (ctx->check_session_flags) {
 		ctx->session_flags = brasero_burn_session_get_flags (session);
 
-	if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
-		ctx->io_flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
+		if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
+			ctx->io_flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
+		else
+			ctx->io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
+	}
 	else
-		ctx->io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
+		ctx->io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE|
+					BRASERO_PLUGIN_IO_ACCEPT_PIPE;
 
 	if (!ctx->callback)
 		ctx->ignore_plugin_errors = (brasero_burn_session_get_strict_support (session) == FALSE);
