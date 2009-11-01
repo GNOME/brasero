@@ -561,7 +561,7 @@ brasero_caps_find_link (BraseroCaps *caps,
 {
 	GSList *iter;
 
-	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "find_link");
+	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "(Has %i links) Found link", g_slist_length (caps->links));
 
 	/* Here we only make sure we have at least one link working. For a link
 	 * to be followed it must first:
@@ -630,6 +630,9 @@ brasero_caps_find_link (BraseroCaps *caps,
 
 		/* try to see where the inputs of this caps leads to */
 		result = brasero_caps_find_link (link->caps, ctx);
+		if (result == BRASERO_BURN_CANCEL)
+			return result;
+
 		if (result == BRASERO_BURN_OK) {
 			if (ctx->callback) {
 				BraseroPlugin *plugin;
@@ -1063,7 +1066,7 @@ brasero_burn_session_supported (BraseroBurnSession *session,
 	brasero_caps_find_link_set_ctx (session, ctx, &input);
 
 	BRASERO_BURN_LOG_TYPE (&output, "Checking support for session. Ouput is ");
-	BRASERO_BURN_LOG_TYPE (&input, "and input is ");
+	BRASERO_BURN_LOG_TYPE (&input, "and input is");
 
 	if (ctx->check_session_flags) {
 		result = brasero_check_flags_for_drive (brasero_burn_session_get_burner (session), ctx->session_flags);
