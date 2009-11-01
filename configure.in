@@ -45,8 +45,15 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AM_CONFIG_HEADER(config.h)
 
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
+
 AM_MAINTAINER_MODE
 
+
+dnl **************** documentation *****************************
+GNOME_DOC_INIT
+GTK_DOC_CHECK([1.9])
 
 dnl ***************** GNOME MACROS *****************************
 
@@ -60,9 +67,6 @@ dnl GNOME_DEBUG_CHECK
 GNOME_MAINTAINER_MODE_DEFINES
 
 dnl ***************** GENERAL **********************************
-
-AC_DISABLE_STATIC
-AM_PROG_LIBTOOL
 
 dnl ** reminder: the following set CFLAGS to -O2 -g if empty
 AC_PROG_CC
@@ -142,9 +146,6 @@ LIBXML2_REQUIRED=2.6.0
 LIBUNIQUE_REQUIRED=1.0.0
 DBUS_REQUIRED=0.7.2
 CANBERRA_REQUIRED=0.1
-
-GTK_DOC_CHECK([1.3])
-GNOME_DOC_INIT
 
 dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_GSTREAMER, 			\
@@ -442,9 +443,6 @@ if test "x${prefix}" = "xNONE"; then
 else
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Location of package locale files])
 fi
-
-dnl ***** API docs **********************
-GTK_DOC_CHECK(1.9)
 
 dnl ***** GCONF *************************
 
