@@ -84,31 +84,6 @@ brasero_pk_install_missing_files_result (DBusGProxy *proxy,
 }
 
 static void
-brasero_pk_install_gst_plugin_result (GstInstallPluginsReturn res,
-                                      gpointer user_data)
-{
-	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (user_data);
-
-	switch (res) {
-	case GST_INSTALL_PLUGINS_SUCCESS:
-		priv->res = TRUE;
-		break;
-
-	case GST_INSTALL_PLUGINS_PARTIAL_SUCCESS:
-	case GST_INSTALL_PLUGINS_USER_ABORT:
-
-	case GST_INSTALL_PLUGINS_NOT_FOUND:
-	case GST_INSTALL_PLUGINS_ERROR:
-	case GST_INSTALL_PLUGINS_CRASHED:
-	default:
-		priv->res = FALSE;
-		break;
-	}
-
-	g_main_loop_quit (priv->loop);
-}
-
-static void
 brasero_pk_cancelled (GCancellable *cancel,
                       BraseroPK *package)
 {
@@ -177,6 +152,31 @@ brasero_pk_connect (BraseroPK *package)
 	dbus_g_proxy_set_default_timeout (priv->proxy, INT_MAX);
 
 	return TRUE;
+}
+
+static void
+brasero_pk_install_gst_plugin_result (GstInstallPluginsReturn res,
+                                      gpointer user_data)
+{
+	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (user_data);
+
+	switch (res) {
+	case GST_INSTALL_PLUGINS_SUCCESS:
+		priv->res = TRUE;
+		break;
+
+	case GST_INSTALL_PLUGINS_PARTIAL_SUCCESS:
+	case GST_INSTALL_PLUGINS_USER_ABORT:
+
+	case GST_INSTALL_PLUGINS_NOT_FOUND:
+	case GST_INSTALL_PLUGINS_ERROR:
+	case GST_INSTALL_PLUGINS_CRASHED:
+	default:
+		priv->res = FALSE;
+		break;
+	}
+
+	g_main_loop_quit (priv->loop);
 }
 
 gboolean
