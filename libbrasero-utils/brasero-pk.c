@@ -34,11 +34,13 @@
 #endif
 
 #include <sys/utsname.h>
+#include <string.h>
 
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <dbus/dbus-glib.h>
 
+#include <gst/gst.h>
 #include <gst/pbutils/install-plugins.h>
 #include <gst/pbutils/missing-plugins.h>
 
@@ -90,7 +92,12 @@ brasero_pk_cancelled (GCancellable *cancel,
 	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (package);
 
 	priv->res = FALSE;
-	g_main_loop_quit (priv->loop);
+
+	if (priv->call)
+		dbus_g_proxy_cancel_call (priv->proxy, priv->call);
+
+	if (priv->loop)
+		g_main_loop_quit (priv->loop);
 }
 
 static gboolean
@@ -109,7 +116,7 @@ brasero_pk_wait_for_call_end (BraseroPK *package,
 	sig_int = g_signal_connect (cancel,
 	                            "cancelled",
 	                            G_CALLBACK (brasero_pk_cancelled),
-	                            loop);
+	                            package);
 
 	GDK_THREADS_LEAVE ();
 	g_main_loop_run (loop);
@@ -154,6 +161,15 @@ brasero_pk_connect (BraseroPK *package)
 	return TRUE;
 }
 
+#if 0
+
+/**
+ * This would be the proper way to do it except
+ * it has two faults:
+ * - it cannot be cancelled
+ * - it does not work for elements
+ **/
+ 
 static void
 brasero_pk_install_gst_plugin_result (GstInstallPluginsReturn res,
                                       gpointer user_data)
@@ -214,6 +230,8 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
 
 	return res;
 }
+
+#endif
 
 static gboolean
 brasero_pk_install_file_requirement (BraseroPK *package,
@@ -327,6 +345,57 @@ brasero_pk_install_missing_library (BraseroPK *package,
 	g_ptr_array_add (missing_files, NULL);
 
 	res = brasero_pk_install_file_requirement (package, missing_files, xid, cancel);
+
+	g_strfreev ((gchar **) missing_files->pdata);
+	g_ptr_array_free (missing_files, FALSE);
+
+	return res;
+}
+
+gboolean
+brasero_pk_install_gstreamer_plugin (BraseroPK *package,
+                                     const gchar *element_name,
+                                     int xid,
+                                     GCancellable *cancel)
+{
+	gboolean res;
+	gchar *resource;
+	const gchar *name;
+	BraseroPKPrivate *priv;
+	GPtrArray *missing_files;
+
+	priv = BRASERO_PK_PRIVATE (package);
+
+	/* The whole function is gross but it works:
+	 * - on fedora */
+
+	/* This is a special case for ffmpeg plugin. It
+	 * comes as a single library for all elements
+	 * so we have to workaround this */
+	if (!strncmp (element_name, "ff", 2))
+		name = "ffmpeg";
+	else
+		name = element_name;
+
+	if (pk_gst_is_x64_arch ())
+		resource = g_strdup_printf ("/usr/lib64/gstreamer-0.10/libgst%s.so", name);
+	else
+		resource = g_strdup_printf ("/usr/lib/gstreamer-0.10/libgst%s.so", name);
+
+	if (g_slist_find_custom (already_tested, resource, (GCompareFunc) g_strcmp0)) {
+		g_free (resource);
+		return FALSE;
+	}
+	already_tested = g_slist_prepend (already_tested, g_strdup (resource));
+
+	missing_files = g_ptr_array_new ();
+	g_ptr_array_add (missing_files, resource);
+	g_ptr_array_add (missing_files, NULL);
+
+	res = brasero_pk_install_file_requirement (package, missing_files, xid, cancel);
+
+	if (res)
+		 res = gst_update_registry ();
 
 	g_strfreev ((gchar **) missing_files->pdata);
 	g_ptr_array_free (missing_files, FALSE);
