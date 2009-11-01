@@ -191,6 +191,8 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
 	gboolean res = FALSE;
 	gchar *detail;
 
+	/* The problem with this is that we can't 
+	 * cancel a search */
 	gst_plugins = g_ptr_array_new ();
 	detail = gst_missing_element_installer_detail_new (element_name);
 	g_ptr_array_add (gst_plugins, detail);
@@ -203,7 +205,7 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
 	                                    brasero_pk_install_gst_plugin_result,
 	                                    package);
 
-	if (status == GST_INSTALL_PLUGINS_SUCCESS)
+	if (status == GST_INSTALL_PLUGINS_STARTED_OK)
 		res = brasero_pk_wait_for_call_end (package, cancel);
 
 	gst_install_plugins_context_free (context);
