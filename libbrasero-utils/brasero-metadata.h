@@ -147,6 +147,13 @@ gboolean
 brasero_metadata_get_result (BraseroMetadata *metadata,
 			     BraseroMetadataInfo *info,
 			     GError **error);
+
+typedef int	(*BraseroMetadataGetXidCb)	(gpointer user_data);
+
+void
+brasero_metadata_set_get_xid_callback (BraseroMetadata *metadata,
+                                       BraseroMetadataGetXidCb callback,
+                                       gpointer user_data);
 G_END_DECLS
 
 #endif				/* METADATA_H */

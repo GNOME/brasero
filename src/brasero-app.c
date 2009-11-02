@@ -33,6 +33,7 @@
 #include <unique/unique.h>
 
 #include "brasero-misc.h"
+#include "brasero-io.h"
 
 #include "brasero-app.h"
 #include "brasero-setting.h"
@@ -1541,6 +1542,26 @@ brasero_app_run_mainwin (BraseroApp *app)
 	return TRUE;
 }
 
+static GtkWindow *
+brasero_app_get_io_parent_window (gpointer user_data)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (user_data);
+	if (!priv->mainwin) {
+		if (priv->parent)
+			return GTK_WINDOW (priv->parent);
+	}
+	else {
+		GtkWidget *toplevel;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (priv->mainwin));
+		return GTK_WINDOW (toplevel);
+	}
+
+	return NULL;
+}
+
 static void
 brasero_app_init (BraseroApp *object)
 {
@@ -1557,6 +1578,8 @@ brasero_app_init (BraseroApp *object)
 
 	g_set_application_name (_("Brasero Disc Burner"));
 	gtk_window_set_default_icon_name ("brasero");
+
+	brasero_io_set_parent_window_callback (brasero_app_get_io_parent_window, object);
 }
 
 static void

@@ -85,6 +85,9 @@ struct BraseroMetadataPrivate {
 
 	gint listeners;
 
+	BraseroMetadataGetXidCb xid_callback;
+	gpointer xid_user_data;
+
 	guint started:1;
 	guint moved_forward:1;
 	guint prev_level_mes:1;
@@ -115,6 +118,30 @@ G_DEFINE_TYPE (BraseroMetadata, brasero_metadata, G_TYPE_OBJECT)
 
 static GSList *downloading = NULL;
 static GSList *downloaded = NULL;
+
+static int
+brasero_metadata_get_xid (BraseroMetadata *metadata)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (metadata);
+	if (!priv->xid_callback)
+		return 0;
+
+	return priv->xid_callback (priv->xid_user_data);
+}
+
+void
+brasero_metadata_set_get_xid_callback (BraseroMetadata *metadata,
+                                       BraseroMetadataGetXidCb callback,
+                                       gpointer user_data)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (metadata);
+	priv->xid_callback = callback;
+	priv->xid_user_data = user_data;
+}
 
 struct _BraseroMetadataGstDownload {
 	gchar *detail;
@@ -976,8 +1003,8 @@ brasero_metadata_install_plugins_abort (BraseroMetadataGstDownload *download)
 	GSList *iter;
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (iter->data);
 	for (iter = download->objects; iter; iter = iter->next) {
+		priv = BRASERO_METADATA_PRIVATE (iter->data);
 		g_error_free (priv->error);
 		priv->error = NULL;
 
@@ -1065,6 +1092,7 @@ brasero_metadata_is_downloading (const gchar *detail)
 		if (!strcmp (download->detail, detail))
 			return download;
 	}
+
 	return NULL;
 }
 
@@ -1130,6 +1158,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 	/* FIXME: we'd need the main window here to set it modal */
 
 	context = gst_install_plugins_context_new ();
+	gst_install_plugins_context_set_xid (context, brasero_metadata_get_xid (self));
 	status = gst_install_plugins_async ((gchar **) details->pdata,
 					    context,
 					    brasero_metadata_install_plugins_result,

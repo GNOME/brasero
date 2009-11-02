@@ -32,6 +32,7 @@
 #define _BRASERO_IO_H_
 
 #include <glib-object.h>
+#include <gtk/gtk.h>
 
 #include "brasero-async-task-manager.h"
 
@@ -160,6 +161,13 @@ brasero_io_return_result (const BraseroIOJobBase *base,
 			  GFileInfo *info,
 			  GError *error,
 			  BraseroIOResultCallbackData *callback_data);
+
+
+typedef GtkWindow *	(* BraseroIOGetParentWinCb)	(gpointer user_data);
+
+void
+brasero_io_set_parent_window_callback (BraseroIOGetParentWinCb callback,
+                                       gpointer user_data);
 
 void
 brasero_io_shutdown (void);
