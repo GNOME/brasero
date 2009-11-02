@@ -1034,8 +1034,8 @@ brasero_libisofs_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_libisofs_export_caps (BraseroPlugin *plugin)
 {
 	GSList *output;
 	GSList *input;
@@ -1091,6 +1091,4 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 
 	brasero_plugin_register_group (plugin, _(LIBBURNIA_DESCRIPTION));
-
-	return BRASERO_BURN_OK;
 }

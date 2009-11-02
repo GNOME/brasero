@@ -932,8 +932,8 @@ brasero_libburn_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static BraseroBurnResult
-brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
+static void
+brasero_libburn_export_caps (BraseroPlugin *plugin)
 {
 	const BraseroMedia media_cd = BRASERO_MEDIUM_CD|
 				      BRASERO_MEDIUM_REWRITABLE|
@@ -1086,5 +1086,4 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NONE);
 
 	brasero_plugin_register_group (plugin, _(LIBBURNIA_DESCRIPTION));
-	return BRASERO_BURN_OK;
 }
