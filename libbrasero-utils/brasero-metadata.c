@@ -974,14 +974,13 @@ static void
 brasero_metadata_install_plugins_abort (BraseroMetadataGstDownload *download)
 {
 	GSList *iter;
+	BraseroMetadataPrivate *priv;
 
+	priv = BRASERO_METADATA_PRIVATE (iter->data);
 	for (iter = download->objects; iter; iter = iter->next) {
-		BraseroMetadataPrivate *priv;
-
-		priv = BRASERO_METADATA_PRIVATE (iter->data);
-
 		g_error_free (priv->error);
 		priv->error = NULL;
+
 		brasero_metadata_completed (BRASERO_METADATA (iter->data));
 	}
 }
