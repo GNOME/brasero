@@ -530,5 +530,10 @@ brasero_vcd_imager_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	brasero_plugin_test_app (plugin, "vcdimager");
+	gint version [3] = { 0, 7, 0};
+	brasero_plugin_test_app (plugin,
+	                         "vcdimager",
+	                         "--version",
+	                         "vcdimager (GNU VCDImager) %d.%d.%d",
+	                         version);
 }

@@ -218,5 +218,10 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	brasero_plugin_test_app (plugin, "dvd+rw-format");
+	gint version [3] = { 5, 0, -1};
+	brasero_plugin_test_app (plugin,
+	                         "dvd+rw-format",
+	                         "-v",
+	                         "* BD/DVD±RW/-RAM format utility by <appro@fy.chalmers.se>, version %d.%d",
+	                         version);
 }

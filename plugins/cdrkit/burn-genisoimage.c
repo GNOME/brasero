@@ -585,5 +585,10 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	brasero_plugin_test_app (plugin, "genisoimage");
+	gint version [3] = { 1, 1, 0};
+	brasero_plugin_test_app (plugin,
+	                         "genisoimage",
+	                         "--version",
+	                         "genisoimage %d.%d.%d (Linux)",
+	                         version);
 }

@@ -186,9 +186,18 @@ brasero_plugin_test_gstreamer_plugin (BraseroPlugin *plugin,
 
 void
 brasero_plugin_test_app (BraseroPlugin *plugin,
-                         const gchar *name)
+                         const gchar *name,
+                         const gchar *version_arg,
+                         const gchar *version_format,
+                         gint version [3])
 {
+	gchar *standard_output = NULL;
+	gchar *standard_error = NULL;
+	guint major, minor, sub;
 	gchar *prog_path;
+	GPtrArray *argv;
+	gboolean res;
+	int i;
 
 	/* First see if this plugin can be used, i.e. if cdrecord is in
 	 * the path */
@@ -230,7 +239,56 @@ brasero_plugin_test_app (BraseroPlugin *plugin,
 		return;
 	}
 
+	if (!version_arg) {
+		g_free (prog_path);
+		return;
+	}
+
+	/* Check version */
+	argv = g_ptr_array_new ();
+	g_ptr_array_add (argv, prog_path);
+	g_ptr_array_add (argv, (gchar *) version_arg);
+	g_ptr_array_add (argv, NULL);
+
+	res = g_spawn_sync (NULL,
+	                    (gchar **) argv->pdata,
+	                    NULL,
+	                    0,
+	                    NULL,
+	                    NULL,
+	                    &standard_output,
+	                    &standard_error,
+	                    NULL,
+	                    NULL);
+
+	g_ptr_array_free (argv, TRUE);
 	g_free (prog_path);
+
+	if (!res) {
+		brasero_plugin_add_error (plugin,
+		                          BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION,
+		                          name);
+		return;
+	}
+
+	for (i = 0; i < 3 && version [i] >= 0; i++);
+
+	if ((standard_output && sscanf (standard_output, version_format, &major, &minor, &sub) == i)
+	||  (standard_error && sscanf (standard_error, version_format, &major, &minor, &sub) == i)) {
+		if (major < version [0]
+		||  (version [1] >= 0 && minor < version [1])
+		||  (version [2] >= 0 && sub < version [2]))
+			brasero_plugin_add_error (plugin,
+						  BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION,
+						  name);
+	}
+	else
+		brasero_plugin_add_error (plugin,
+		                          BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION,
+		                          name);
+
+	g_free (standard_output);
+	g_free (standard_error);
 }
 
 void
@@ -1212,8 +1270,6 @@ brasero_plugin_check_plugin_ready (BraseroPlugin *plugin)
 	}
 
 	function (BRASERO_PLUGIN (plugin));
-
-	BRASERO_BURN_LOG ("Module %s successfully loaded", priv->name);
 	g_module_close (handle);
 }
 
@@ -1251,8 +1307,6 @@ brasero_plugin_init_real (BraseroPlugin *object)
 		BRASERO_BURN_LOG ("Module %s encountered an error while registering its capabilities", priv->name);
 		return;
 	}
-
-	BRASERO_BURN_LOG ("Module %s successfully loaded", priv->name);
 
 	/* now see if we need to override the hardcoded priority of the plugin */
 	client = gconf_client_get_default ();

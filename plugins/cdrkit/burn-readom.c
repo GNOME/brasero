@@ -496,5 +496,10 @@ brasero_readom_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	brasero_plugin_test_app (plugin, "readom");
+	gint version [3] = { 1, 1, 0};
+	brasero_plugin_test_app (plugin,
+	                         "readom",
+	                         "--version",
+	                         "readcd %*s is not what you see here. This line is only a fake for too clever\nGUIs and other frontend applications. In fact, this program is:\nreadom %d.%d.%d",
+	                         version);
 }

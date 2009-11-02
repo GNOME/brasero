@@ -506,5 +506,10 @@ brasero_readcd_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	brasero_plugin_test_app (plugin, "readcd");
+	gint version [3] = { 2, 0, 0};
+	brasero_plugin_test_app (plugin,
+	                         "readcd",
+	                         "--version",
+	                         "readcd %d.%d.%da64 (x86_64-unknown-linux-gnu) Copyright (C) 1987, 1995-2009 J�rg Schilling",
+	                         version);
 }

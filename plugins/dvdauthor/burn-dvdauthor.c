@@ -426,5 +426,10 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	brasero_plugin_test_app (plugin, "dvdauthor");
+	gint version [3] = { 0, 6, 0};
+	brasero_plugin_test_app (plugin,
+	                         "dvdauthor",
+	                         "-h",
+	                         "DVDAuthor::dvdauthor, version %d.%d.%d.",
+	                         version);
 }

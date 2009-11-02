@@ -179,7 +179,10 @@ brasero_plugin_test_gstreamer_plugin (BraseroPlugin *plugin,
 
 void
 brasero_plugin_test_app (BraseroPlugin *plugin,
-                         const gchar *name);
+                         const gchar *name,
+                         const gchar *version_arg,
+                         const gchar *version_format,
+                         gint version [3]);
 
 /**
  * Boiler plate for plugin definition to save the hassle of definition.
