@@ -369,11 +369,11 @@ brasero_io_return_result_idle (gpointer callback_data)
 		g_object_ref (base->object);
 
 		if (result->uri || result->info || result->error)
-			result->base->callback (base->object,
-						result->error,
-						result->uri,
-						result->info,
-						data? data->callback_data:NULL);
+			base->callback (base->object,
+			                result->error,
+			                result->uri,
+			                result->info,
+			                data? data->callback_data:NULL);
 
 		/* call destroy () for callback data */
 		brasero_io_unref_result_callback_data (data,
