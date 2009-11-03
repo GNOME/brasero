@@ -378,7 +378,7 @@ brasero_player_bacon_destroy (GtkObject *obj)
 					       (gint) (volume * 100.0),
 					       NULL);
 		g_object_unref (client);
-	}
+    }
 
 	if (cobj->priv->xoverlay
 	&&  GST_IS_X_OVERLAY (cobj->priv->xoverlay)) {
