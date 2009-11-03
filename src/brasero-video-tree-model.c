@@ -839,7 +839,7 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 
 	/* The new row(s) must be before dest_path but after our sibling */
 	sibling = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (drag_dest), dest_path);
-		
+
 	/* Received data: see where it comes from:
 	 * - from us, then that's a simple move
 	 * - from another widget then it's going to be URIS and we add
@@ -872,16 +872,29 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 	}
 	else if (selection_data->target == gdk_atom_intern ("text/uri-list", TRUE)) {
 		gint i;
-		gchar **uris;
+		gchar **uris = NULL;
 		gboolean success = FALSE;
+		const guchar *selection_data_raw;
+
+		/* NOTE: for some reason gdk_text_property_to_utf8_list_for_display ()
+		 * fails with banshee DND URIs list when calling gtk_selection_data_get_uris ().
+		 * so do like nautilus */
 
 		/* NOTE: there can be many URIs at the same time. One
 		 * success is enough to return TRUE. */
-		success = FALSE;
+		selection_data_raw = gtk_selection_data_get_data (selection_data);
 		uris = gtk_selection_data_get_uris (selection_data);
+		if (!uris) {
+			const guchar *selection_data_raw;
+
+			selection_data_raw = gtk_selection_data_get_data (selection_data);
+			uris = g_uri_list_extract_uris ((gchar *) selection_data_raw);
+		}
+
 		if (!uris)
 			return TRUE;
 
+		success = FALSE;
 		for (i = 0; uris [i]; i ++) {
 			BraseroTrackStreamCfg *track;
 

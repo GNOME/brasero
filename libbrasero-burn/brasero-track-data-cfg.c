@@ -1179,6 +1179,13 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 		 * success is enough to return TRUE. */
 		success = FALSE;
 		uris = gtk_selection_data_get_uris (selection_data);
+		if (!uris) {
+			const guchar *selection_data_raw;
+
+			selection_data_raw = gtk_selection_data_get_data (selection_data);
+			uris = g_uri_list_extract_uris ((gchar *) selection_data_raw);
+		}
+
 		if (!uris)
 			return TRUE;
 
