@@ -79,6 +79,13 @@ brasero_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_source,
 		gtk_tree_path_free (path);
 
 		uris = gtk_selection_data_get_uris (selection_tmp);
+		if (!uris) {
+			const guchar *selection_data_raw;
+
+			selection_data_raw = gtk_selection_data_get_data (selection_data);
+			uris = g_uri_list_extract_uris ((gchar *) selection_data_raw);
+		}
+
 		for (tmp = uris; tmp && *tmp; tmp++)
 			uris_list = g_list_prepend (uris_list, *tmp);
 		g_free (uris);

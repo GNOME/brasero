@@ -907,7 +907,7 @@ brasero_audio_disc_add_uri (BraseroDisc *disc,
 	GtkTreePath *treepath = NULL;
 	BraseroAudioDisc *audio_disc;
 	BraseroDiscResult result;
-
+g_print ("RECEIVED\n");
 	audio_disc = BRASERO_AUDIO_DISC (disc);
 	result = brasero_audio_disc_add_uri_real (audio_disc,
 						  uri,
