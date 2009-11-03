@@ -64,7 +64,6 @@ struct _BraseroDrivePropertiesPrivate
 	GtkWidget *multi;
 	GtkWidget *burnproof;
 	GtkWidget *notmp;
-	GtkWidget *eject;
 
 	GtkWidget *tmpdir;
 };
@@ -99,23 +98,6 @@ brasero_drive_properties_no_tmp_toggled (GtkToggleButton *button,
 	else
 		brasero_session_cfg_remove_flags (priv->session,
 						  BRASERO_BURN_FLAG_NO_TMP_FILES);
-}
-
-static void
-brasero_drive_properties_eject_toggled (GtkToggleButton *button,
-					BraseroDriveProperties *self)
-{
-	BraseroDrivePropertiesPrivate *priv;
-
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
-
-	/* retrieve the flags */
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->eject)))
-		brasero_session_cfg_add_flags (priv->session,
-					       BRASERO_BURN_FLAG_EJECT);
-	else
-		brasero_session_cfg_remove_flags (priv->session,
-						  BRASERO_BURN_FLAG_EJECT);
 }
 
 static void
@@ -483,12 +465,6 @@ brasero_drive_properties_set_flags (BraseroDriveProperties *self,
 						   supported,
 						   compulsory);
 	brasero_drive_properties_set_toggle_state (self,
-						   priv->eject,
-						   BRASERO_BURN_FLAG_EJECT,
-						   flags,
-						   supported,
-						   compulsory);						   
-	brasero_drive_properties_set_toggle_state (self,
 						   priv->burnproof,
 						   BRASERO_BURN_FLAG_BURNPROOF,
 						   flags,
@@ -757,8 +733,6 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	gtk_widget_show (priv->dummy);
 	priv->burnproof = gtk_check_button_new_with_mnemonic (_("Use burn_proof (decrease the risk of failures)"));
 	gtk_widget_show (priv->burnproof);
-	priv->eject = gtk_check_button_new_with_mnemonic (_("_Eject after burning"));
-	gtk_widget_show (priv->eject);
 	priv->notmp = gtk_check_button_new_with_mnemonic (_("Burn the image directly _without saving it to disc"));
 	gtk_widget_show (priv->notmp);
 	priv->multi = gtk_check_button_new_with_mnemonic (_("Leave the disc _open to add other files later"));
@@ -773,10 +747,6 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 			  "toggled",
 			  G_CALLBACK (brasero_drive_properties_burnproof_toggled),
 			  object);
-	g_signal_connect (priv->eject,
-			  "toggled",
-			  G_CALLBACK (brasero_drive_properties_eject_toggled),
-			  object);
 	g_signal_connect (priv->multi,
 			  "toggled",
 			  G_CALLBACK (brasero_drive_properties_multi_toggled),
@@ -789,7 +759,6 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	string = g_strdup_printf ("<b>%s</b>", _("Options"));
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    brasero_utils_pack_properties (string,
-							   priv->eject,
 							   priv->dummy,
 							   priv->burnproof,
 							   priv->multi,

@@ -768,6 +768,13 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 	                               BRASERO_BURN_FLAG_CHECK_SIZE|
 	                               BRASERO_BURN_FLAG_NOGRACE);
 
+	/* This one is only supported when we are
+	 * burning to a disc or copying a disc but it
+	 * would better be set. */
+	if (priv->supported & BRASERO_BURN_FLAG_EJECT)
+		brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+		                               BRASERO_BURN_FLAG_EJECT);
+
 	/* Always save flags */
 	brasero_session_cfg_save_drive_flags (self, medium);
 }
