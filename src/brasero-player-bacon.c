@@ -371,7 +371,7 @@ brasero_player_bacon_destroy (GtkObject *obj)
 			      NULL);
 		brasero_setting_set_value (brasero_setting_get_default (),
 		                           BRASERO_SETTING_PLAYER_VOLUME,
-		                           GINT_TO_POINTER (volume * 100));
+		                           GINT_TO_POINTER ((gint)(volume * 100)));
 	}
 
 	if (cobj->priv->xoverlay
