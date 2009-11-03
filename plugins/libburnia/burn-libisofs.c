@@ -453,15 +453,6 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	if (!priv->ctx)
 		return BRASERO_BURN_ERR;
 
-	src = g_new0 (IsoDataSource, 1);
-	src->version = 0;
-	src->refcount = 1;
-	src->read_block = brasero_libisofs_import_read;
-	src->open = brasero_libisofs_import_open;
-	src->close = brasero_libisofs_import_close;
-	src->free_data = brasero_libisofs_import_free;
-	src->data = priv->ctx->drive;
-
 	result = iso_read_opts_new (&opts, 0);
 	if (result < 0) {
 		g_set_error (error,
@@ -470,6 +461,15 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 			     _("Read options could not be created"));
 		return BRASERO_BURN_ERR;
 	}
+
+	src = g_new0 (IsoDataSource, 1);
+	src->version = 0;
+	src->refcount = 1;
+	src->read_block = brasero_libisofs_import_read;
+	src->open = brasero_libisofs_import_open;
+	src->close = brasero_libisofs_import_close;
+	src->free_data = brasero_libisofs_import_free;
+	src->data = priv->ctx->drive;
 
 	brasero_job_get_last_session_address (BRASERO_JOB (self), &session_block);
 	iso_read_opts_set_start_block (opts, session_block);

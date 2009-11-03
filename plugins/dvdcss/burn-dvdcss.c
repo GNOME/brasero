@@ -256,12 +256,12 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 				BraseroScrambledSectorRange *range;
 				GSList *extents;
 
-				range = g_new0 (BraseroScrambledSectorRange, 1);
-
 				/* take the first address for each extent of the file */
 				if (!file->specific.file.extents)
 					return FALSE;
 
+				range = g_new0 (BraseroScrambledSectorRange, 1);
+				
 				for (extents = file->specific.file.extents; extents; extents = extents->next) {
 					BraseroVolFileExtent *extent;
 
