@@ -437,7 +437,7 @@ brasero_playlist_destroy (GtkObject *object)
 	 * raise problems since the GdkWindow has been destroyed */
 	if (playlist->priv->parse_type) {
 		brasero_io_cancel_by_base (playlist->priv->parse_type);
-		g_free (playlist->priv->parse_type);
+		brasero_io_job_base_free (playlist->priv->parse_type);
 		playlist->priv->parse_type = NULL;
 	}
 

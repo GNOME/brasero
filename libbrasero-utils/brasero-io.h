@@ -106,14 +106,21 @@ typedef gboolean	(*BraseroIOCompareCallback)	(gpointer data,
 							 gpointer user_data);
 
 
-struct _BraseroIOJobBase {
-	GObject *object;
+struct _BraseroIOJobCallbacks {
 	BraseroIOResultCallback callback;
 	BraseroIODestroyCallback destroy;
 	BraseroIOProgressCallback progress;
 
+	guint ref;
+
 	/* Whether we are returning something for this base */
 	guint in_use:1;
+};
+typedef struct _BraseroIOJobCallbacks BraseroIOJobCallbacks;
+
+struct _BraseroIOJobBase {
+	GObject *object;
+	BraseroIOJobCallbacks *methods;
 };
 typedef struct _BraseroIOJobBase BraseroIOJobBase;
 
@@ -159,11 +166,29 @@ brasero_io_return_result (const BraseroIOJobBase *base,
 void
 brasero_io_shutdown (void);
 
+/* NOTE: The split in methods and objects was
+ * done to prevent jobs sharing the same methods
+ * to return their results concurently. In other
+ * words only one job among those sharing the
+ * same methods can return its results. */
+ 
 BraseroIOJobBase *
 brasero_io_register (GObject *object,
 		     BraseroIOResultCallback callback,
 		     BraseroIODestroyCallback destroy,
 		     BraseroIOProgressCallback progress);
+
+BraseroIOJobBase *
+brasero_io_register_with_methods (GObject *object,
+                                  BraseroIOJobCallbacks *methods);
+
+BraseroIOJobCallbacks *
+brasero_io_register_job_methods (BraseroIOResultCallback callback,
+                                 BraseroIODestroyCallback destroy,
+                                 BraseroIOProgressCallback progress);
+
+void
+brasero_io_job_base_free (BraseroIOJobBase *base);
 
 void
 brasero_io_cancel_by_data (gpointer callback_data);

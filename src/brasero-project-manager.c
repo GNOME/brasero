@@ -1017,7 +1017,7 @@ brasero_project_manager_finalize (GObject *object)
 
 	if (cobj->priv->size_preview) {
 		brasero_io_cancel_by_base (cobj->priv->size_preview);
-		g_free (cobj->priv->size_preview);
+		brasero_io_job_base_free (cobj->priv->size_preview);
 		cobj->priv->size_preview = NULL;
 	}
 
