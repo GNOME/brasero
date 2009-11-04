@@ -1276,7 +1276,8 @@ brasero_video_disc_finalize (GObject *object)
 	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
 
 	if (priv->load_dir) {
-		g_free (priv->load_dir);
+		brasero_io_cancel_by_base (priv->load_dir);
+		brasero_io_job_base_free (priv->load_dir);
 		priv->load_dir = NULL;
 	}	
 

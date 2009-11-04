@@ -187,9 +187,9 @@ brasero_io_job_progress_report_cb (gpointer callback_data)
 
 		/* update our progress */
 		progress->progress (progress->job, progress);
-		progress->job->base->progress (progress->job->base->object,
-					       progress,
-					       callback_data);
+		progress->job->base->methods->progress (progress->job->base->object,
+		                                        progress,
+		                                        callback_data);
 	}
 	g_mutex_unlock (priv->lock);
 
@@ -206,7 +206,7 @@ brasero_io_job_progress_report_start (BraseroIO *self,
 
 	priv = BRASERO_IO_PRIVATE (self);
 
-	if (!job->base->progress)
+	if (!job->base->methods->progress)
 		return;
 
 	progress = g_new0 (BraseroIOJobProgress, 1);
@@ -326,8 +326,6 @@ brasero_io_return_result_idle (gpointer callback_data)
 	BraseroIOJobResult *result;
 	BraseroIOPrivate *priv;
 	guint results_id;
-	GSList *iter;
-	GSList *next;
 	int i;
 
 	priv = BRASERO_IO_PRIVATE (self);
@@ -336,62 +334,72 @@ brasero_io_return_result_idle (gpointer callback_data)
 
 	/* Put that to 0 for now so that a new idle call will be scheduled while
 	 * we are in the loop. That way if we block the other one will be able 
-	 * to deliver the results. */
+	 * to deliver results. */
 	results_id = priv->results_id;
 	priv->results_id = 0;
 
 	/* Return several results at a time that can be a huge speed gain.
 	 * What should be the value that provides speed and responsiveness? */
-	for (i = 0, iter = priv->results; iter && i < NUMBER_OF_RESULTS; iter = next) {
+	for (i = 0; priv->results && i < NUMBER_OF_RESULTS;) {
 		BraseroIOJobBase *base;
+		GSList *iter;
 
-		result = iter->data;
-		next = iter->next;
+		/* Find the next result that can be returned */
+		result = NULL;
+		for (iter = priv->results; iter; iter = iter->next) {
+			BraseroIOJobResult *tmp_result;
+
+			tmp_result = iter->data;
+			if (!tmp_result->base->methods->in_use) {
+				result = tmp_result;
+				break;
+			}
+		}
+
+		if (!result)
+			break;
 
 		/* Make sure another result is not returned for this base. This 
 		 * is to avoid BraseroDataDisc showing multiple dialogs for 
 		 * various problems; like one dialog for joliet, one for deep,
 		 * and one for name collision. */
-		if (result->base->in_use)
-			continue;
+		base = (BraseroIOJobBase *) result->base;
+		base->methods->in_use = TRUE;
 
 		priv->results = g_slist_remove (priv->results, result);
 
-		base = (BraseroIOJobBase *) result->base;
-		base->in_use = TRUE;
+		/* This is to make sure the object
+		 *  lives as long as we need it. */
+		g_object_ref (base->object);
 
 		g_mutex_unlock (priv->lock);
 
 		data = result->callback_data;
 
-		/* This is to make sure the object lives
-		 * as long as we need it. */
-		g_object_ref (base->object);
-
 		if (result->uri || result->info || result->error)
-			base->callback (base->object,
-			                result->error,
-			                result->uri,
-			                result->info,
-			                data? data->callback_data:NULL);
+			base->methods->callback (base->object,
+			                          result->error,
+			                          result->uri,
+			                          result->info,
+			                          data? data->callback_data:NULL);
 
 		/* call destroy () for callback data */
 		brasero_io_unref_result_callback_data (data,
 						       base->object,
-						       base->destroy,
+						       base->methods->destroy,
 						       FALSE);
-
-		g_object_unref (base->object);
 
 		brasero_io_job_result_free (result);
 
 		g_mutex_lock (priv->lock);
 
 		i ++;
-		base->in_use = FALSE;
+
+		g_object_unref (base->object);
+		base->methods->in_use = FALSE;
 	}
 
-	if (!priv->results_id && iter && i >= NUMBER_OF_RESULTS) {
+	if (!priv->results_id && priv->results && i >= NUMBER_OF_RESULTS) {
 		/* There are still results and no idle call is scheduled so we
 		 * have to restart ourselves to make sure we empty the queue */
 		priv->results_id = results_id;
@@ -519,10 +527,10 @@ brasero_io_job_free (gboolean cancelled,
 		 * add a dummy result to destroy callback_data. */
 		if (g_atomic_int_dec_and_test (&job->callback_data->ref)) {
 			if (cancelled) {
-				if (job->base->destroy)
-					job->base->destroy (job->base->object,
-							    TRUE,
-							    job->callback_data->callback_data);
+				if (job->base->methods->destroy)
+					job->base->methods->destroy (job->base->object,
+					                              TRUE,
+					                              job->callback_data->callback_data);
 
 				g_free (job->callback_data);
 			}
@@ -2169,7 +2177,7 @@ brasero_io_cancel_result (BraseroIO *self,
 	data = result->callback_data;
 	brasero_io_unref_result_callback_data (data,
 					       result->base->object,
-					       result->base->destroy,
+					       result->base->methods->destroy,
 					       TRUE);
 	brasero_io_job_result_free (result);
 }
@@ -2312,21 +2320,58 @@ brasero_io_find_urgent (const BraseroIOJobBase *base,
 						     
 }
 
+BraseroIOJobCallbacks *
+brasero_io_register_job_methods (BraseroIOResultCallback callback,
+                                 BraseroIODestroyCallback destroy,
+                                 BraseroIOProgressCallback progress)
+{
+	BraseroIOJobCallbacks *methods;
+
+	methods = g_new0 (BraseroIOJobCallbacks, 1);
+	methods->callback = callback;
+	methods->destroy = destroy;
+	methods->progress = progress;
+
+	return methods;
+}
+
+BraseroIOJobBase *
+brasero_io_register_with_methods (GObject *object,
+                                  BraseroIOJobCallbacks *methods)
+{
+	BraseroIOJobBase *base;
+
+	base = g_new0 (BraseroIOJobBase, 1);
+	base->object = object;
+	base->methods = methods;
+	methods->ref ++;
+
+	return base;
+}
+
 BraseroIOJobBase *
 brasero_io_register (GObject *object,
 		     BraseroIOResultCallback callback,
 		     BraseroIODestroyCallback destroy,
 		     BraseroIOProgressCallback progress)
 {
-	BraseroIOJobBase *base;
+	return brasero_io_register_with_methods (object, brasero_io_register_job_methods (callback, destroy, progress));
+}
 
-	base = g_new0 (BraseroIOJobBase, 1);
-	base->object = object;
-	base->callback = callback;
-	base->destroy = destroy;
-	base->progress = progress;
+void
+brasero_io_job_base_free (BraseroIOJobBase *base)
+{
+	BraseroIOJobCallbacks *methods;
 
-	return base;
+	if (!base)
+		return;
+
+	methods = base->methods;
+	g_free (base);
+
+	methods->ref --;
+	if (methods->ref <= 0)
+		g_free (methods);
 }
 
 static int

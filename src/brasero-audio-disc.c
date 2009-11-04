@@ -541,8 +541,8 @@ brasero_audio_disc_finalize (GObject *object)
 	
 	brasero_audio_disc_reset_real (cobj);
 
-	g_free (cobj->priv->add_dir);
-	g_free (cobj->priv->add_playlist);
+	brasero_io_job_base_free (cobj->priv->add_dir);
+	brasero_io_job_base_free (cobj->priv->add_playlist);
 	cobj->priv->add_dir = NULL;
 	cobj->priv->add_playlist = NULL;
 

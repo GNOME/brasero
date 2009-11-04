@@ -1285,7 +1285,7 @@ brasero_player_destroy (GtkObject *obj)
 
 	if (player->priv->meta_task){
 		brasero_io_cancel_by_base (player->priv->meta_task);
-		g_free (player->priv->meta_task);
+		brasero_io_job_base_free (player->priv->meta_task);
 		player->priv->meta_task = 0;
 	}
 

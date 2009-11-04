@@ -983,13 +983,13 @@ brasero_data_vfs_clear (BraseroDataVFS *self)
 	/* Stop all VFS operations */
 	if (priv->load_uri) {
 		brasero_io_cancel_by_base (priv->load_uri);
-		g_free (priv->load_uri);
+		brasero_io_job_base_free (priv->load_uri);
 		priv->load_uri = NULL;
 	}
 
 	if (priv->load_contents) {
 		brasero_io_cancel_by_base (priv->load_contents);
-		g_free (priv->load_contents);
+		brasero_io_job_base_free (priv->load_contents);
 		priv->load_contents = NULL;
 	}
 

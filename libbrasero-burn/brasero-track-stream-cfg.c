@@ -45,6 +45,8 @@
 #include "brasero-io.h"
 #include "brasero-tags.h"
 
+static BraseroIOJobCallbacks *io_methods = NULL;
+
 typedef struct _BraseroTrackStreamCfgPrivate BraseroTrackStreamCfgPrivate;
 struct _BraseroTrackStreamCfgPrivate
 {
@@ -304,11 +306,14 @@ brasero_track_stream_cfg_get_info (BraseroTrackStreamCfg *track)
 	}
 
 	/* get info async for the file */
-	if (!priv->load_uri)
-		priv->load_uri = brasero_io_register (G_OBJECT (track),
-						      brasero_track_stream_cfg_results_cb,
-						      NULL,
-						      NULL);
+	if (!priv->load_uri) {
+		if (!io_methods)
+			io_methods = brasero_io_register_job_methods (brasero_track_stream_cfg_results_cb,
+			                                              NULL,
+			                                              NULL);
+
+		priv->load_uri = brasero_io_register_with_methods (G_OBJECT (track), io_methods);
+	}
 
 	priv->loading = TRUE;
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
@@ -388,7 +393,11 @@ brasero_track_stream_cfg_finalize (GObject *object)
 
 	if (priv->load_uri) {
 		brasero_io_cancel_by_base (priv->load_uri);
-		g_free (priv->load_uri);
+
+		if (io_methods->ref == 1)
+			io_methods = NULL;
+
+		brasero_io_job_base_free (priv->load_uri);
 		priv->load_uri = NULL;
 	}
 
