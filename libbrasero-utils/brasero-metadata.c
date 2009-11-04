@@ -1003,14 +1003,6 @@ static void
 brasero_metadata_install_plugins_abort (BraseroMetadataGstDownload *download)
 {
 	GSList *iter;
-<<<<<<< HEAD:libbrasero-utils/brasero-metadata.c
-	BraseroMetadataPrivate *priv;
-
-	for (iter = download->objects; iter; iter = iter->next) {
-		priv = BRASERO_METADATA_PRIVATE (iter->data);
-		g_error_free (priv->error);
-		priv->error = NULL;
-=======
 	GSList *next;
 
 	for (iter = download->objects; iter; iter = next) {
@@ -1024,7 +1016,6 @@ brasero_metadata_install_plugins_abort (BraseroMetadataGstDownload *download)
 			g_error_free (priv->error);
 			priv->error = NULL;
 		}
->>>>>>> 1b7adc3... Fix a potential crash when aborting the download of a Gstreamer plugin throught PackageKit:libbrasero-utils/brasero-metadata.c
 
 		brasero_metadata_completed (BRASERO_METADATA (iter->data));
 	}
