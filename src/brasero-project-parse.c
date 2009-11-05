@@ -773,7 +773,7 @@ _save_data_track_xml (xmlTextWriter *project,
 	}
 
 	/* save excluded uris */
-	iter = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (track), FALSE);
+	iter = brasero_track_data_get_excluded_list (BRASERO_TRACK_DATA (track));
 	for (; iter; iter = iter->next) {
 		xmlChar *escaped;
 

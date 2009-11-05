@@ -596,7 +596,7 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 
 	/* we fill a hash table with all the files that are excluded globally */
 	excludedH = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	iter = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (track), FALSE);
+	iter = brasero_track_data_get_excluded_list (BRASERO_TRACK_DATA (track));
 	for (; iter; iter = iter->next) {
 		gchar *uri;
 		gchar *path;
@@ -1127,6 +1127,7 @@ brasero_checksum_files_end (gpointer data)
 
 	/* let's create a new DATA track with the md5 file created */
 	if (BRASERO_IS_TRACK_DATA (current)) {
+		GSList *iter;
 		GSList *grafts;
 		GSList *excluded;
 		BraseroGraftPt *graft;
@@ -1162,7 +1163,13 @@ brasero_checksum_files_end (gpointer data)
 				 graft->uri);
 
 		new_grafts = g_slist_prepend (new_grafts, graft);
-		excluded = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), TRUE);
+		excluded = brasero_track_data_get_excluded_list (BRASERO_TRACK_DATA (current));
+
+		/* Duplicate the list since brasero_track_data_set_source ()
+		 * takes ownership afterwards */
+		excluded = g_slist_copy (excluded);
+		for (iter = excluded; iter; iter = iter->next)
+			iter->data = g_strdup (iter->data);
 
 		track = brasero_track_data_new ();
 		brasero_track_data_add_fs (track, brasero_track_data_get_fs (BRASERO_TRACK_DATA (current)));

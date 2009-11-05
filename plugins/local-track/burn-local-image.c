@@ -406,7 +406,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 		/* Translate the globally excluded.
 		 * NOTE: if we can't find a parent for an excluded URI that
 		 * means it shouldn't be included. */
-		unreadable = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), FALSE);
+		unreadable = brasero_track_data_get_excluded_list (BRASERO_TRACK_DATA (current));
 		for (; unreadable; unreadable = next) {
 			gchar *new_uri;
 

@@ -366,6 +366,30 @@ brasero_track_data_get_grafts_real (BraseroTrackData *track)
 }
 
 /**
+ * brasero_track_data_get_excluded_list:
+ * @track: a #BraseroTrackData.
+ *
+ * Returns a list of URIs which must not be included in
+ * the image to be created.
+ * Do not free the list or any of the URIs after
+ * usage as @track retains ownership.
+ *
+ * Return value: (transfer none) (element-type utf8) (allow-none): a #GSList of #gchar * or %NULL if no
+ * URI should be excluded.
+ **/
+
+GSList *
+brasero_track_data_get_excluded_list (BraseroTrackData *track)
+{
+	BraseroTrackDataClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
+
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
+	return klass->get_excluded (track);
+}
+
+/**
  * brasero_track_data_get_excluded:
  * @track: a #BraseroTrackData.
  * @copy: a #gboolean.
@@ -376,11 +400,12 @@ brasero_track_data_get_grafts_real (BraseroTrackData *track)
  * be freed once it is not needed anymore. If %FALSE,
  * do not free after usage as @track retains ownership.
  *
- * Return value: (transfer none) (element-type utf8) (allow-none): a #GSList of #gchar * or %NULL if no
+ * Deprecated since 2.29.2
+ *
+ * Return value: a #GSList of #gchar * or %NULL if no
  * URI should be excluded.
  **/
-/* FIXME the copy option is not easy for bindings
- * we should probably use (allow-none) (default FALSE) */
+
 GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
 				 gboolean copy)

@@ -604,7 +604,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	grafts = g_slist_sort (grafts, brasero_libisofs_sort_graft_points);
 
 	/* add global exclusions */
-	for (excluded = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (track), FALSE);
+	for (excluded = brasero_track_data_get_excluded_list (BRASERO_TRACK_DATA (track));
 	     excluded; excluded = excluded->next) {
 		gchar *uri, *local;
 

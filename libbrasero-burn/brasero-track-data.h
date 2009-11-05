@@ -124,6 +124,9 @@ GSList *
 brasero_track_data_get_grafts (BraseroTrackData *track);
 
 GSList *
+brasero_track_data_get_excluded_list (BraseroTrackData *track);
+
+GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
 				 gboolean copy);
 

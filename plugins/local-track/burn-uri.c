@@ -498,7 +498,7 @@ brasero_burn_uri_thread (gpointer data)
 	grafts = g_slist_reverse (grafts);
 
 	/* remove all excluded starting by burn:// from the list */
-	for (src = brasero_track_data_get_excluded (BRASERO_TRACK_DATA (current), FALSE); src; src = src->next) {
+	for (src = brasero_track_data_get_excluded_list (BRASERO_TRACK_DATA (current)); src; src = src->next) {
 		gchar *uri;
 
 		uri = src->data;
