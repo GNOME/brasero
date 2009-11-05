@@ -741,14 +741,14 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
  * brasero_burn_session_input_supported:
  * @session: a #BraseroBurnSession
  * @input: a #BraseroTrackType
- * @use_flags: a #gboolean
+ * @check_flags: a #gboolean
  *
  * Given the various parameters stored in @session, this
  * function checks whether a session with the data type
  * @type could be burnt to the medium in the #BraseroDrive (set 
  * through brasero_burn_session_set_burner ()).
- * If @use_flags is TRUE, then flags are taken into account
- * and are not if it is FALSE.
+ * If @check_flags is %TRUE, then flags are taken into account
+ * and are not if it is %FALSE.
  *
  * Return value: a #BraseroBurnResult.
  * BRASERO_BURN_OK if it is possible.
@@ -1099,13 +1099,13 @@ brasero_burn_session_supported (BraseroBurnSession *session,
 /**
  * brasero_burn_session_can_burn:
  * @session: a #BraseroBurnSession
- * @use_flags: a #gboolean
+ * @check_flags: a #gboolean
  *
  * Given the various parameters stored in @session, this
  * function checks whether the data contained in @session
  * can be burnt to the medium in the #BraseroDrive (set 
  * through brasero_burn_session_set_burner ()).
- * If @flags determine the behavior of this function.
+ * If @check_flags determine the behavior of this function.
  *
  * Return value: a #BraseroBurnResult.
  * BRASERO_BURN_OK if it is possible.

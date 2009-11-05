@@ -299,10 +299,10 @@ brasero_track_type_get_has_image (const BraseroTrackType *type)
 }
 
 /**
- * brasero_track_type_get_has_image:
+ * brasero_track_type_get_has_stream:
  * @type: a #BraseroTrackType.
  *
- * Returns TRUE if IMAGE type (see brasero_track_stream_new ()) was set.
+ * This function returns %TRUE if IMAGE type (see brasero_track_stream_new ()) was set.
  *
  * Return value: a #gboolean
  **/

@@ -218,6 +218,7 @@ brasero_caps_list_dump (void)
  *
  * Rename to: init
  *
+ * Returns: a #gboolean
  **/
 
 gboolean
@@ -339,6 +340,15 @@ brasero_burn_library_stop (void)
 	gconf_client_remove_dir (client, "/apps/brasero", NULL);
 }
 
+/**
+ * brasero_burn_library_can_checksum:
+ *
+ * Checks whether the library can do any kind of
+ * checksum at all.
+ *
+ * Returns: a #gboolean
+ */
+
 gboolean
 brasero_burn_library_can_checksum (void)
 {
@@ -371,6 +381,15 @@ brasero_burn_library_can_checksum (void)
 	g_object_unref (self);
 	return FALSE;
 }
+
+/**
+ * brasero_burn_library_input_supported:
+ * @type: a #BraseroTrackType
+ *
+ * Checks whether @type can be used as input.
+ *
+ * Returns: a #BraseroBurnResult
+ */
 
 BraseroBurnResult
 brasero_burn_library_input_supported (BraseroTrackType *type)
