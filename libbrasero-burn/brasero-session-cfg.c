@@ -979,9 +979,11 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 		return BRASERO_SESSION_VALID;
 	}
 
-	/* FIXME: This is not good since with a DVD 3% of 4.3G may be too much
-	 * with 3% we are slightly over the limit of the most overburnable discs
-	 * but at least users can try to overburn as much as they can. */
+	/* Overburn is only for CDs */
+	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD == 0) {
+		priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
+		return BRASERO_SESSION_INSUFFICIENT_SPACE;
+	}
 
 	/* The idea would be to test write the disc with cdrecord from /dev/null
 	 * until there is an error and see how much we were able to write. So,
