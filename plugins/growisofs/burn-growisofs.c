@@ -343,13 +343,12 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 		return result;
 	}
 
-	result = brasero_track_data_get_paths (BRASERO_TRACK_DATA (track),
-					       (fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
-					       grafts_path,
-					       excluded_path,
-					       emptydir,
-					       videodir,
-					       error);
+	result = brasero_track_data_write_to_paths (BRASERO_TRACK_DATA (track),
+	                                            grafts_path,
+	                                            excluded_path,
+	                                            emptydir,
+	                                            videodir,
+	                                            error);
 	g_free (emptydir);
 
 	if (result != BRASERO_BURN_OK) {

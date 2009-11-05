@@ -462,6 +462,8 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
  *
  * This function takes care of mangling.
  *
+ * Deprecated since 2.29.2
+ *
  * Return value: a #BraseroBurnResult.
  **/
 
@@ -488,6 +490,59 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 	result = brasero_mkisofs_base_write_to_files (grafts,
 						      excluded,
 						      use_joliet,
+						      emptydir,
+						      videodir,
+						      grafts_path,
+						      excluded_path,
+						      error);
+	return result;
+}
+
+/**
+ * brasero_track_data_write_to_paths:
+ * @track: a #BraseroTrackData.
+ * @grafts_path: a #gchar.
+ * @excluded_path: a #gchar.
+ * @emptydir: a #gchar.
+ * @videodir: (allow-none): a #gchar or %NULL.
+ * @error: a #GError.
+ *
+ * Write to @grafts_path (a path to a file) the graft points,
+ * and to @excluded_path (a path to a file) the list of paths to
+ * be excluded; @emptydir is (path) is an empty
+ * directory to be used for created directories;
+ * @videodir (a path) is a directory to be used to build the
+ * the video image.
+ *
+ * This is mostly for internal use by mkisofs and similar.
+ *
+ * This function takes care of file name mangling.
+ *
+ * Return value: a #BraseroBurnResult.
+ **/
+
+BraseroBurnResult
+brasero_track_data_write_to_paths (BraseroTrackData *track,
+                                   const gchar *grafts_path,
+                                   const gchar *excluded_path,
+                                   const gchar *emptydir,
+                                   const gchar *videodir,
+                                   GError **error)
+{
+	GSList *grafts;
+	GSList *excluded;
+	BraseroBurnResult result;
+	BraseroTrackDataClass *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
+
+	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
+	grafts = klass->get_grafts (track);
+	excluded = klass->get_excluded (track);
+
+	result = brasero_mkisofs_base_write_to_files (grafts,
+						      excluded,
+						      brasero_track_data_get_fs (track),
 						      emptydir,
 						      videodir,
 						      grafts_path,

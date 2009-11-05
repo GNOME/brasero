@@ -140,6 +140,14 @@ brasero_track_data_get_paths (BraseroTrackData *track,
 			      GError **error);
 
 BraseroBurnResult
+brasero_track_data_write_to_paths (BraseroTrackData *track,
+                                   const gchar *grafts_path,
+                                   const gchar *excluded_path,
+                                   const gchar *emptydir,
+                                   const gchar *videodir,
+                                   GError **error);
+
+BraseroBurnResult
 brasero_track_data_get_file_num (BraseroTrackData *track,
 				 guint64 *file_num);
 

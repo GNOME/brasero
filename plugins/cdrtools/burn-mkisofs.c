@@ -309,13 +309,12 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		return result;
 	}
 
-	result = brasero_track_data_get_paths (BRASERO_TRACK_DATA (track),
-					       (image_fs & BRASERO_IMAGE_FS_JOLIET) != 0,
-					       grafts_path,
-					       excluded_path,
-					       emptydir,
-					       videodir,
-					       error);
+	result = brasero_track_data_write_to_paths (BRASERO_TRACK_DATA (track),
+	                                            grafts_path,
+	                                            excluded_path,
+	                                            emptydir,
+	                                            videodir,
+	                                            error);
 	g_free (emptydir);
 
 	if (result != BRASERO_BURN_OK) {
