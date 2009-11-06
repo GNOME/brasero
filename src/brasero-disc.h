@@ -133,4 +133,6 @@ brasero_disc_is_empty (BraseroDisc *disc);
 void
 brasero_disc_selection_changed (BraseroDisc *disc);
 
+G_END_DECLS
+
 #endif /* DISC_H */
