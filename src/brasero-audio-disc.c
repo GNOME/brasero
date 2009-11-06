@@ -988,7 +988,7 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 			g_free (uri);
 		}
 	}
-	brasero_status_free (status);
+	g_object_unref (status);
 
 	if (should_use_dts
 	&&  brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (session), BRASERO_SESSION_STREAM_AUDIO_FORMAT, NULL) != BRASERO_BURN_OK)

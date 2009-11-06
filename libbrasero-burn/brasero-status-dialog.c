@@ -164,13 +164,13 @@ brasero_status_dialog_wait_for_ready_state (BraseroStatusDialog *dialog)
 
 	if (result != BRASERO_BURN_NOT_READY) {
 		brasero_status_dialog_session_ready (dialog);
-		brasero_status_free (status);
+		g_object_unref (status);
 		priv->id = 0;
 		return FALSE;
 	}
 
 	brasero_status_dialog_update (dialog, status);
-	brasero_status_free (status);
+	g_object_unref (status);
 	return TRUE;
 }
 
@@ -311,7 +311,7 @@ brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 	result = brasero_burn_session_get_status (priv->session, status);
 	if (result != BRASERO_BURN_NOT_READY) {
 		brasero_status_dialog_session_ready (dialog);
-		brasero_status_free (status);
+		g_object_unref (status);
 		return;
 	}
 
@@ -344,7 +344,7 @@ brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 	brasero_track_type_free (track_type);
 
 	brasero_status_dialog_update (dialog, status);
-	brasero_status_free (status);
+	g_object_unref (status);
 	priv->id = g_timeout_add (200,
 				  (GSourceFunc) brasero_status_dialog_wait_for_ready_state,
 				  dialog);

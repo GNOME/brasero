@@ -39,7 +39,7 @@ struct _BraseroTrackType {
 	BraseroTrackDataType type;
 	union {
 		BraseroImageFormat img_format;		/* used with IMAGE type */
-		BraseroMedia media;			/* used with DISC types */
+		BraseroMedia media;					/* used with DISC types */
 		BraseroImageFS fs_type;
 		BraseroStreamFormat stream_format;
 	} subtype;

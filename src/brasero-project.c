@@ -895,17 +895,17 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 			  BraseroProject *project)
 {
 	BraseroSessionError valid;
-	BraseroStatus *status;
 	GdkWindow *window;
 	GdkCursor *cursor;
 	GtkAction *action;
 
 	/* Update the cursor */
-	status = brasero_status_new ();
-	brasero_burn_session_get_status (BRASERO_BURN_SESSION (session), status);
-
 	window = gtk_widget_get_window (GTK_WIDGET (project));
 	if (window) {
+		BraseroStatus *status;
+
+		status = brasero_status_new ();
+		brasero_burn_session_get_status (BRASERO_BURN_SESSION (session), status);
 		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY) {
 			cursor = gdk_cursor_new (GDK_WATCH);
 			gdk_window_set_cursor (window, cursor);
@@ -913,9 +913,9 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		}
 		else
 			gdk_window_set_cursor (window, NULL);
-	}
 
-	brasero_status_free (status);
+		g_object_unref (status);
+	}
 
 	valid = brasero_session_cfg_get_error (project->priv->session);
 
@@ -1303,7 +1303,7 @@ brasero_project_check_status (BraseroProject *project)
         status = brasero_status_new ();
         brasero_burn_session_get_status (BRASERO_BURN_SESSION (project->priv->session), status);
         result = brasero_status_get_result (status);
-        brasero_status_free (status);
+        g_object_unref (status);
 
         if (result == BRASERO_BURN_ERR) {
                 /* At the moment the only error possible is an empty project */

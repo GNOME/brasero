@@ -257,7 +257,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 
 end:
 
-	brasero_status_free (status);
+	g_object_unref (status);
 	if (string) {
 		/* This is hackish and meant to avoid ellipsization to make the
 		 * label to small. */

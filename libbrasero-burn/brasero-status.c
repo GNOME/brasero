@@ -35,27 +35,33 @@
 
 #include "brasero-status.h"
 
-struct _BraseroStatus {
-	BraseroBurnResult res;
 
-	GError *error;
+typedef struct _BraseroStatusPrivate BraseroStatusPrivate;
+struct _BraseroStatusPrivate
+{
+	BraseroBurnResult res;
+	GError * error;
 	gdouble progress;
-	gchar *current_action;
+	gchar * current_action;
 };
+
+#define BRASERO_STATUS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_STATUS, BraseroStatusPrivate))
+
+G_DEFINE_TYPE (BraseroStatus, brasero_status, G_TYPE_OBJECT);
+
 
 /**
  * brasero_status_new:
  *
- * Creates a new #BraseroStatus structure.
- * Free it with brasero_status_free ().
+ * Creates a new #BraseroStatus object.
  *
- * Return value: a #BraseroStatus pointer.
+ * Return value: a #BraseroStatus.
  **/
 
 BraseroStatus *
 brasero_status_new (void)
 {
-	return g_new0 (BraseroStatus, 1);
+	return g_object_new (BRASERO_TYPE_STATUS, NULL);
 }
 
 /**
@@ -64,18 +70,14 @@ brasero_status_new (void)
  *
  * Frees #BraseroStatus structure.
  *
+ * Deprecated since 2.29.2.
+ *
  **/
 
-void
+G_GNUC_DEPRECATED void
 brasero_status_free (BraseroStatus *status)
 {
-	if (status->error)
-		g_error_free (status->error);
-
-	if (status->current_action)
-		g_free (status->current_action);
-
-	g_free (status);
+	g_object_unref (status);
 }
 
 /**
@@ -94,8 +96,13 @@ brasero_status_free (BraseroStatus *status)
 BraseroBurnResult
 brasero_status_get_result (BraseroStatus *status)
 {
+	BraseroStatusPrivate *priv;
+
 	g_return_val_if_fail (status != NULL, BRASERO_BURN_ERR);
-	return status->res;
+	g_return_val_if_fail (BRASERO_IS_STATUS (status), BRASERO_BURN_ERR);
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+	return priv->res;
 }
 
 /**
@@ -111,14 +118,19 @@ brasero_status_get_result (BraseroStatus *status)
 gdouble
 brasero_status_get_progress (BraseroStatus *status)
 {
+	BraseroStatusPrivate *priv;
+
 	g_return_val_if_fail (status != NULL, -1.0);
-	if (status->res == BRASERO_BURN_OK)
+	g_return_val_if_fail (BRASERO_IS_STATUS (status), -1.0);
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+	if (priv->res == BRASERO_BURN_OK)
 		return 1.0;
 
-	if (status->res != BRASERO_BURN_NOT_READY)
+	if (priv->res != BRASERO_BURN_NOT_READY)
 		return -1.0;
 
-	return status->progress;
+	return priv->progress;
 }
 
 /**
@@ -134,11 +146,16 @@ brasero_status_get_progress (BraseroStatus *status)
 GError *
 brasero_status_get_error (BraseroStatus *status)
 {
+	BraseroStatusPrivate *priv;
+
 	g_return_val_if_fail (status != NULL, NULL);
-	if (status->res != BRASERO_BURN_ERR)
+	g_return_val_if_fail (BRASERO_IS_STATUS (status), NULL);
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+	if (priv->res != BRASERO_BURN_ERR)
 		return NULL;
 
-	return g_error_copy (status->error);
+	return g_error_copy (priv->error);
 }
 
 /**
@@ -156,12 +173,17 @@ gchar *
 brasero_status_get_current_action (BraseroStatus *status)
 {
 	gchar *string;
+	BraseroStatusPrivate *priv;
 
 	g_return_val_if_fail (status != NULL, NULL);
-	if (status->res != BRASERO_BURN_NOT_READY)
+	g_return_val_if_fail (BRASERO_IS_STATUS (status), NULL);
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+
+	if (priv->res != BRASERO_BURN_NOT_READY)
 		return NULL;
 
-	string = g_strdup (status->current_action);
+	string = g_strdup (priv->current_action);
 	return string;
 
 }
@@ -177,9 +199,15 @@ brasero_status_get_current_action (BraseroStatus *status)
 void
 brasero_status_set_completed (BraseroStatus *status)
 {
+	BraseroStatusPrivate *priv;
+
 	g_return_if_fail (status != NULL);
-	status->res = BRASERO_BURN_OK;
-	status->progress = 1.0;
+	g_return_if_fail (BRASERO_IS_STATUS (status));
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+
+	priv->res = BRASERO_BURN_OK;
+	priv->progress = 1.0;
 }
 
 /**
@@ -199,13 +227,19 @@ brasero_status_set_not_ready (BraseroStatus *status,
 			      gdouble progress,
 			      const gchar *current_action)
 {
-	g_return_if_fail (status != NULL);
-	status->res = BRASERO_BURN_NOT_READY;
-	status->progress = progress;
+	BraseroStatusPrivate *priv;
 
-	if (status->current_action)
-		g_free (status->current_action);
-	status->current_action = g_strdup (current_action);
+	g_return_if_fail (status != NULL);
+	g_return_if_fail (BRASERO_IS_STATUS (status));
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+
+	priv->res = BRASERO_BURN_NOT_READY;
+	priv->progress = progress;
+
+	if (priv->current_action)
+		g_free (priv->current_action);
+	priv->current_action = g_strdup (current_action);
 }
 
 /**
@@ -221,13 +255,47 @@ void
 brasero_status_set_error (BraseroStatus *status,
 			  GError *error)
 {
+	BraseroStatusPrivate *priv;
+
 	g_return_if_fail (status != NULL);
+	g_return_if_fail (BRASERO_IS_STATUS (status));
 
-	status->res = BRASERO_BURN_ERR;
-	status->progress = -1.0;
+	priv = BRASERO_STATUS_PRIVATE (status);
 
-	if (status->error)
-		g_error_free (status->error);
-	status->error = error;
+	priv->res = BRASERO_BURN_ERR;
+	priv->progress = -1.0;
+
+	if (priv->error)
+		g_error_free (priv->error);
+	priv->error = error;
+}
+
+static void
+brasero_status_init (BraseroStatus *object)
+{}
+
+static void
+brasero_status_finalize (GObject *object)
+{
+	BraseroStatusPrivate *priv;
+
+	priv = BRASERO_STATUS_PRIVATE (object);
+	if (priv->error)
+		g_error_free (priv->error);
+
+	if (priv->current_action)
+		g_free (priv->current_action);
+
+	G_OBJECT_CLASS (brasero_status_parent_class)->finalize (object);
+}
+
+static void
+brasero_status_class_init (BraseroStatusClass *klass)
+{
+	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroStatusPrivate));
+
+	object_class->finalize = brasero_status_finalize;
 }
 

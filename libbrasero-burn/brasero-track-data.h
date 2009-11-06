@@ -37,11 +37,19 @@
 
 G_BEGIN_DECLS
 
-struct _BraseroGraftPt {
+/**
+ * BraseroGraftPt:
+ * @uri: a URI
+ * @path: a file path
+ *
+ * A pair of strings describing:
+ * @uri the actual current location of the file
+ * @path the path of the file on the future ISO9660/UDF/... filesystem
+ **/
+typedef struct _BraseroGraftPt {
 	gchar *uri;
 	gchar *path;
-};
-typedef struct _BraseroGraftPt BraseroGraftPt;
+} BraseroGraftPt;
 
 void
 brasero_graft_point_free (BraseroGraftPt *graft);

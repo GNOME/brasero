@@ -32,12 +32,36 @@
 #define _BRASERO_STATUS_H_
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include <brasero-enums.h>
 
 G_BEGIN_DECLS
 
+#define BRASERO_TYPE_STATUS             (brasero_status_get_type ())
+#define BRASERO_STATUS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_STATUS, BraseroStatus))
+#define BRASERO_STATUS_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_STATUS, BraseroStatusClass))
+#define BRASERO_IS_STATUS(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_STATUS))
+#define BRASERO_IS_STATUS_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_STATUS))
+#define BRASERO_STATUS_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_STATUS, BraseroStatusClass))
+
+typedef struct _BraseroStatusClass BraseroStatusClass;
 typedef struct _BraseroStatus BraseroStatus;
+
+struct _BraseroStatusClass
+{
+	GObjectClass parent_class;
+};
+
+struct _BraseroStatus
+{
+	GObject parent_instance;
+};
+
+GType brasero_status_get_type (void) G_GNUC_CONST;
+
+BraseroStatus *
+brasero_status_new (void);
 
 typedef enum {
 	BRASERO_STATUS_OK			= 0,
@@ -46,10 +70,7 @@ typedef enum {
 	BRASERO_STATUS_INFORMATION
 } BraseroStatusType;
 
-BraseroStatus *
-brasero_status_new (void);
-
-void
+G_GNUC_DEPRECATED void
 brasero_status_free (BraseroStatus *status);
 
 BraseroBurnResult

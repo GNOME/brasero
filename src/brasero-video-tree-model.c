@@ -284,7 +284,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		else
 			g_value_set_string (value, "image-missing");
 
-		brasero_status_free (status);
+		g_object_unref (status);
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_THUMBNAIL:
@@ -318,7 +318,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		g_value_set_object (value, pixbuf);
 		g_object_unref (pixbuf);
 
-		brasero_status_free (status);
+		g_object_unref (status);
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_SIZE:
@@ -339,7 +339,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		else
 			g_value_set_string (value, _("(loading…)"));
 
-		brasero_status_free (status);
+		g_object_unref (status);
 		return;
 
 	case BRASERO_VIDEO_TREE_MODEL_EDITABLE:

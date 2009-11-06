@@ -2148,7 +2148,7 @@ brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
 
 		result = brasero_burn_session_get_status (priv->session, status);
 	}
-	brasero_status_free (status);
+	g_object_unref (status);
 
 	return (result == BRASERO_BURN_OK);
 }

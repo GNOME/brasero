@@ -1052,7 +1052,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (BRASERO_BURN_SESSION (self), status);
 	if (result == BRASERO_BURN_NOT_READY) {
-		brasero_status_free (status);
+		g_object_unref (status);
 
 		priv->is_valid = BRASERO_SESSION_NOT_READY;
 		g_signal_emit (self,
@@ -1067,7 +1067,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 		error = brasero_status_get_error (status);
 		if (error) {
 			if (error->code == BRASERO_BURN_ERROR_EMPTY) {
-				brasero_status_free (status);
+				g_object_unref (status);
 				g_error_free (error);
 
 				priv->is_valid = BRASERO_SESSION_EMPTY;
@@ -1080,7 +1080,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 			g_error_free (error);
 		}
 	}
-	brasero_status_free (status);
+	g_object_unref (status);
 
 	/* Make sure there is a source */
 	source = brasero_track_type_new ();

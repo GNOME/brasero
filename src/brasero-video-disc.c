@@ -500,7 +500,7 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 							   BRASERO_TRACK (track));
 		}
 	}
-	brasero_status_free (status);
+	g_object_unref (status);
 }
 
 static void

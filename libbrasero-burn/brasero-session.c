@@ -535,14 +535,14 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 		if (result == BRASERO_BURN_NOT_READY)
 			not_ready ++;
 		else if (result != BRASERO_BURN_OK) {
-			brasero_status_free (track_status);
+			g_object_unref (track_status);
 			return brasero_track_get_status (track, status);
 		}
 
 		if (brasero_status_get_progress (track_status) != -1.0)
 			done += brasero_status_get_progress (track_status);
 	}
-	brasero_status_free (track_status);
+	g_object_unref (track_status);
 
 	if (not_ready > 0) {
 		if (status) {
