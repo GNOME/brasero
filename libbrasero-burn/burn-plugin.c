@@ -641,7 +641,7 @@ brasero_plugin_get_group (BraseroPlugin *self)
  * This function returns a list of all errors that
  * prevents the plugin from working properly.
  *
- * Returns : a #GSList of #BraseroPluginError structures or %NULL.
+ * Returns: a #GSList of #BraseroPluginError structures or %NULL.
  * It must not be freed.
  **/
 

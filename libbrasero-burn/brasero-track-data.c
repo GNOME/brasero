@@ -406,7 +406,7 @@ brasero_track_data_get_excluded_list (BraseroTrackData *track)
  * URI should be excluded.
  **/
 
-GSList *
+G_GNUC_DEPRECATED GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
 				 gboolean copy)
 {
@@ -467,7 +467,7 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
  * Return value: a #BraseroBurnResult.
  **/
 
-BraseroBurnResult
+G_GNUC_DEPRECATED BraseroBurnResult
 brasero_track_data_get_paths (BraseroTrackData *track,
 			      gboolean use_joliet,
 			      const gchar *grafts_path,

@@ -134,11 +134,11 @@ brasero_track_data_get_grafts (BraseroTrackData *track);
 GSList *
 brasero_track_data_get_excluded_list (BraseroTrackData *track);
 
-GSList *
+G_GNUC_DEPRECATED GSList *
 brasero_track_data_get_excluded (BraseroTrackData *track,
 				 gboolean copy);
 
-BraseroBurnResult
+G_GNUC_DEPRECATED BraseroBurnResult
 brasero_track_data_get_paths (BraseroTrackData *track,
 			      gboolean use_joliet,
 			      const gchar *grafts_path,
