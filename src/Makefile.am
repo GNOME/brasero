@@ -46,8 +46,6 @@ brasero_SOURCES = \
 	brasero-utils.c         \
 	brasero-search-entry.c         \
 	brasero-search-entry.h         \
-	brasero-search-beagle.c         \
-	brasero-search-beagle.h         \
 	brasero-mime-filter.c         \
 	brasero-mime-filter.h         \
 	brasero-playlist.c         \
@@ -125,7 +123,9 @@ brasero_SOURCES = \
 	eggsmclient-private.h        \
 	eggsmclient-xsmp.c        \
 	brasero-setting.h        \
-	brasero-setting.c
+	brasero-setting.c        \
+	brasero-search.h        \
+	brasero-search.c
 
 brasero_LDADD =						\
 	$(top_builddir)/libbrasero-media/libbrasero-media.la	\

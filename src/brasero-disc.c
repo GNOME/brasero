@@ -34,7 +34,6 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-marshal.h"
 #include "brasero-disc.h"
 #include "brasero-session.h"
  
