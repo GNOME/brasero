@@ -657,7 +657,7 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 	gtk_container_add (GTK_CONTAINER (frame), event_box);
 
 	/* The alignment to set properly the position of the GtkTextView */
-	alignment = gtk_alignment_new (0.5, 0.3, 0.0, 0.0);
+	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 0.0);
 	gtk_container_set_border_width (GTK_CONTAINER (alignment), 10);
 	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (event_box), alignment);
@@ -665,49 +665,16 @@ brasero_disc_get_use_info_notebook (BraseroProject *project)
 	/* The TreeView for the message */
 	buffer = gtk_text_buffer_new (NULL);
 	gtk_text_buffer_create_tag (buffer, "Title",
-	                            "scale", 1.2,
-	                            "justification", GTK_JUSTIFY_LEFT,
+	                            "scale", 1.1,
+	                            "justification", GTK_JUSTIFY_CENTER,
 	                            "foreground", "grey50",
-	                            NULL);
-
-	gtk_text_buffer_create_tag (buffer, "TextBody",
-	                            "justification", GTK_JUSTIFY_LEFT,
-	                            "foreground", "grey50",
+	                            "wrap-mode", GTK_WRAP_WORD,
 	                            NULL);
 
 	gtk_text_buffer_get_start_iter (buffer, &iter);
-
-	/* Translators: this messages will appear as a list of possible
-	 * actions, like:
-	 *   To add/remove files you can:
-         *      * perform action one
-         *      * perform action two
-	 * The full message will be showed in the main area of an empty
-	 * project, suggesting users how to add and remove items to project.
-	 * You simply have to translate messages in the best form
-         * for a list of actions. */
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("To add files to this project you can:"), -1, "Title", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("click the \"Add\" button to show a selection dialog"), -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("select files in the selection pane and click the \"Add\" button"), -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("drag files in this area from the selection pane or from the file manager"), -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("double-click on files in the selection pane"), -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("copy files (from file manager for example) and paste in this area"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("To add files to this project click the \"Add\" button or drag files to this area"), -1, "Title", NULL);
 	gtk_text_buffer_insert (buffer, &iter, "\n\n\n", -1);
-
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("To remove files from this project you can:"), -1, "Title", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("click on the \"Remove\" button to remove selected items in this area"), -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("select items in this area, and choose \"Remove\" from context menu"), -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, "\n\t* ", -1, "TextBody", NULL);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("select items in this area, and press \"Delete\" key"), -1, "TextBody", NULL);
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, _("To remove files select them then click on the \"Remove\" button or press \"Delete\" key"), -1, "Title", NULL);
 
 	textview = gtk_text_view_new_with_buffer (buffer);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (textview), FALSE);
