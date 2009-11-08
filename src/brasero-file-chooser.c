@@ -164,7 +164,7 @@ brasero_file_chooser_paned_map_event (GtkWidget *widget,
 		percent = GINT_TO_POINTER (30);
 	}
 
-	position = widget->allocation.width * GPOINTER_TO_INT (percent) / 100;
+	position = widget->allocation.width * GPOINTER_TO_INT (percent) / 10000;
 	gtk_paned_set_position (GTK_PANED (widget), position);
 }
 
@@ -175,7 +175,14 @@ brasero_file_chooser_position_percent (GObject *object,
 {
 	gint percent;
 
-	percent = position * 100 / width;
+	percent = position * 10000;
+	if (percent % width) {
+		percent /= width;
+		percent ++;
+	}
+	else
+		percent /= width;
+
 	g_object_set_data (object, "position-percent", GINT_TO_POINTER (percent));
 }
 
