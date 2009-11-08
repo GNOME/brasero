@@ -106,7 +106,7 @@ brasero_mime_filter_init (BraseroMimeFilter * obj)
 	obj->priv = g_new0 (BraseroMimeFilterPrivate, 1);
 
 	store = gtk_list_store_new (BRASERO_MIME_FILTER_NB_COL,
-				    G_TYPE_STRING,
+				    G_TYPE_ICON,
 				    G_TYPE_STRING,
 				    G_TYPE_INT,
 				    G_TYPE_POINTER);
@@ -118,7 +118,7 @@ brasero_mime_filter_init (BraseroMimeFilter * obj)
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (obj->combo), renderer,
 				    FALSE);
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (obj->combo),
-				       renderer, "icon-name",
+				       renderer, "gicon",
 				       BRASERO_MIME_FILTER_ICON_COL);
 
 	renderer = gtk_cell_renderer_text_new ();
@@ -161,50 +161,47 @@ brasero_mime_filter_finalize (GObject * object)
 GtkWidget *
 brasero_mime_filter_new ()
 {
-	BraseroMimeFilter *obj;
-
-	obj =
-	    BRASERO_MIME_FILTER (g_object_new
-				 (BRASERO_TYPE_MIME_FILTER, NULL));
-
-	return GTK_WIDGET (obj);
+	return g_object_new (BRASERO_TYPE_MIME_FILTER, NULL);
 }
 
 void
-brasero_mime_filter_unref_mime (BraseroMimeFilter * filter, char *mime)
+brasero_mime_filter_unref_mime (BraseroMimeFilter * filter, const char *mime)
 {
 	GtkFileFilter *item;
 
 	item = g_hash_table_lookup (filter->priv->table, mime);
+	g_print ("IIII %p %s\n", item, mime);
 	if (item)
 		g_object_unref (item);
 }
 
 static void
-brasero_mime_filter_destroy_item_cb (GtkFileFilter *item,
-				     BraseroMimeFilter *filter)
+brasero_mime_filter_destroy_item_cb (BraseroMimeFilter *filter,
+                                     GtkFileFilter *item,
+                                     gboolean is_last_ref)
 {
 	GtkTreeModel *model;
-	GtkTreeIter row;
 	GtkFileFilter *item2;
+	GtkTreeIter row;
 
 	g_hash_table_remove (filter->priv->table,
 			     gtk_file_filter_get_name (item));
 
 	/* Now we must remove the item from the combo as well */
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (filter->combo));
-	if (gtk_tree_model_get_iter_first (model, &row) == TRUE) {
-		do {
-			gtk_tree_model_get (model, &row,
-					    BRASERO_MIME_FILTER_FILTER_COL, &item2,
-					    -1);
+	if (!gtk_tree_model_get_iter_first (model, &row))
+		return;
 
-			if (item == item2) {
-				gtk_list_store_remove (GTK_LIST_STORE (model), &row);
-				break;
-			}
-		} while (gtk_tree_model_iter_next (model, &row) == TRUE);
-	}
+	do {
+		gtk_tree_model_get (model, &row,
+				    BRASERO_MIME_FILTER_FILTER_COL, &item2,
+				    -1);
+
+		if (item == item2) {
+			gtk_list_store_remove (GTK_LIST_STORE (model), &row);
+			break;
+		}
+	} while (gtk_tree_model_iter_next (model, &row));
 
 	/* we check that the first entry at least is visible */
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (filter->combo)) == -1
@@ -214,62 +211,43 @@ brasero_mime_filter_destroy_item_cb (GtkFileFilter *item,
 }
 
 void
-brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
+brasero_mime_filter_add_mime (BraseroMimeFilter *filter,
+                              const gchar *mime)
 {
 	GtkFileFilter *item;
 
 	item = g_hash_table_lookup (filter->priv->table, mime);
-	if (item == NULL) {
+	if (!item) {
 		GIcon *icon;
 		GtkTreeIter row;
 		GtkTreeModel *model;
 		const gchar *description;
-		const gchar *icon_string = BRASERO_DEFAULT_ICON;
 
 		description = g_content_type_get_description (mime);
-
 		icon = g_content_type_get_icon (mime);
-		if (G_IS_THEMED_ICON (icon)) {
-			const gchar * const *names = NULL;
 
-			names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-			if (names) {
-				gint i;
-				GtkIconTheme *theme;
-
-				theme = gtk_icon_theme_get_default ();
-				for (i = 0; names [i]; i++) {
-					if (gtk_icon_theme_has_icon (theme, names [i])) {
-						icon_string = names [i];
-						break;
-					}
-				}
-			}
-		}
-		
 		/* create the GtkFileFilter */
 		item = gtk_file_filter_new ();
 		gtk_file_filter_set_name (item, mime);
 		gtk_file_filter_add_mime_type (item, mime);
-		g_signal_connect (G_OBJECT (item), "destroy",
-				  G_CALLBACK (brasero_mime_filter_destroy_item_cb),
-				  filter);
-
 		g_hash_table_insert (filter->priv->table,
 				     g_strdup (mime),
 				     item);
 
+		g_object_add_toggle_ref (G_OBJECT (item),
+		                         (GToggleNotify) brasero_mime_filter_destroy_item_cb,
+		                         filter);
+
 		model = gtk_combo_box_get_model (GTK_COMBO_BOX (filter->combo));
 		gtk_list_store_append (GTK_LIST_STORE (model), &row);
 
-		g_object_ref (item);
+		g_object_ref_sink (item);
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    BRASERO_MIME_FILTER_DISPLAY_COL, description,
-				    BRASERO_MIME_FILTER_ICON_COL, icon_string,
+				    BRASERO_MIME_FILTER_ICON_COL, icon,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
-		g_object_ref_sink (GTK_OBJECT (item));
-//		g_object_unref (icon);
+		g_object_unref (icon);
 
 		/* we check that the first entry at least is visible */
 		if (gtk_combo_box_get_active (GTK_COMBO_BOX (filter->combo)) == -1
@@ -314,14 +292,13 @@ brasero_mime_filter_add_filter (BraseroMimeFilter *filter,
 }
 
 gboolean
-brasero_mime_filter_filter (BraseroMimeFilter * filter, char *filename,
-			    char *uri, char *display_name, char *mime_type)
+brasero_mime_filter_filter (BraseroMimeFilter * filter, const char *filename,
+			    const char *uri, const char *display_name, const char *mime_type)
 {
 	GtkTreeModel *model;
 	GtkFileFilterInfo info;
 	GtkFileFilter *item;
 	GtkTreeIter row;
-	gboolean result;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (filter->combo));
 	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (filter->combo), &row) == FALSE)
@@ -333,17 +310,16 @@ brasero_mime_filter_filter (BraseroMimeFilter * filter, char *filename,
 
 	info.contains = gtk_file_filter_get_needed (item);
 	if (info.contains & GTK_FILE_FILTER_FILENAME)
-		info.filename = filename;
+		info.filename = (gchar *) filename;
 
 	if (info.contains & GTK_FILE_FILTER_URI)
-		info.uri = uri;
+		info.uri = (gchar *) uri;
 
 	if (info.contains & GTK_FILE_FILTER_DISPLAY_NAME)
-		info.display_name = display_name;
+		info.display_name = (gchar *) display_name;
 
 	if (info.contains & GTK_FILE_FILTER_MIME_TYPE)
-		info.mime_type = mime_type;
+		info.mime_type =  (gchar *) mime_type;
 
-	result = gtk_file_filter_filter (item, &info);
-	return result;
+	return gtk_file_filter_filter (item, &info);
 }

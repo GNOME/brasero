@@ -66,10 +66,10 @@ void brasero_mime_filter_add_filter (BraseroMimeFilter * filter,
 void brasero_mime_filter_add_mime (BraseroMimeFilter * filter,
 				   const char *mime);
 void brasero_mime_filter_unref_mime (BraseroMimeFilter * filter,
-				     char *mime);
+				     const char *mime);
 gboolean brasero_mime_filter_filter (BraseroMimeFilter * filter,
-				     char *filename, char *uri,
-				     char *display_name, char *mime_type);
+				     const char *filename, const char *uri,
+				     const char *display_name, const char *mime_type);
 
 G_END_DECLS
 

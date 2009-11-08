@@ -43,7 +43,8 @@
 
 #include <gtk/gtk.h>
 
-#include <beagle/beagle.h>
+#include "brasero-search.h"
+#include "brasero-search-engine.h"
 
 #include "brasero-misc.h"
 
@@ -51,7 +52,7 @@
 #include "brasero-utils.h"
 #include "brasero-search-entry.h"
 #include "brasero-mime-filter.h"
-#include "brasero-search-beagle.h"
+#include "brasero-search-engine.h"
 #include "eggtreemultidnd.h"
 
 #include "brasero-uri-container.h"
@@ -59,8 +60,7 @@
 
 
 struct BraseroSearchPrivate {
-	BeagleClient *client;
-	BeagleQuery *query;
+	GtkTreeViewColumn *sort_column;
 
 	GtkWidget *tree;
 	GtkWidget *entry;
@@ -70,17 +70,13 @@ struct BraseroSearchPrivate {
 	GtkWidget *left;
 	GtkWidget *results_label;
 
-	GSList *hits;
-	gint hits_num;
+	BraseroSearchEngine *engine;
 	gint first_hit;
 
 	gint max_results;
 
-	guint id;
-	guint activity;
+	int id;
 };
-
-static GObjectClass *parent_class = NULL;
 
 enum {
 	TARGET_URIS_LIST,
@@ -90,16 +86,6 @@ static GtkTargetEntry ntables_find[] = {
 	{"text/uri-list", 0, TARGET_URIS_LIST}
 };
 static guint nb_ntables_find = sizeof (ntables_find) / sizeof (ntables_find[0]);
-
-enum {
-	BRASERO_SEARCH_TREE_ICON_COL,
-	BRASERO_SEARCH_TREE_TITLE_COL,
-	BRASERO_SEARCH_TREE_DESCRIPTION_COL,
-	BRASERO_SEARCH_TREE_SCORE_COL,
-	BRASERO_SEARCH_TREE_URI_COL,
-	BRASERO_SEARCH_TREE_MIME_COL,
-	BRASERO_SEARCH_TREE_NB_COL
-};
 
 #define BRASERO_SEARCH_SPACING 6
 
@@ -116,57 +102,102 @@ G_DEFINE_TYPE_WITH_CODE (BraseroSearch,
 
 
 
-static gboolean
-brasero_search_try_again (BraseroSearch *search)
+static void
+brasero_search_column_icon_cb (GtkTreeViewColumn *tree_column,
+                               GtkCellRenderer *cell,
+                               GtkTreeModel *model,
+                               GtkTreeIter *iter,
+                               gpointer data)
 {
-	search->priv->client = beagle_client_new (NULL);
-	if (!search->priv->client)
-		return TRUE;
+	GIcon *icon;
+	gpointer hit = NULL;
 
-	gtk_widget_set_sensitive (GTK_WIDGET (search), TRUE);
-	search->priv->id = 0;
-	return FALSE;
+	gtk_tree_model_get (model, iter,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
+	                    -1);
+
+	icon = brasero_search_engine_icon_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	g_object_set (G_OBJECT (cell),
+		      "gicon", icon,
+		      NULL);
+	g_object_unref (icon);
+}
+
+static void
+brasero_search_column_name_cb (GtkTreeViewColumn *tree_column,
+                               GtkCellRenderer *cell,
+                               GtkTreeModel *model,
+                               GtkTreeIter *iter,
+                               gpointer data)
+{
+	gchar *name;
+	gpointer hit = NULL;
+
+	gtk_tree_model_get (model, iter,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
+	                    -1);
+
+	name = brasero_search_engine_name_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	g_object_set (G_OBJECT (cell),
+		      "text", name,
+		      NULL);
+	g_free (name);
+}
+
+static void
+brasero_search_column_description_cb (GtkTreeViewColumn *tree_column,
+                                      GtkCellRenderer *cell,
+                                      GtkTreeModel *model,
+                                      GtkTreeIter *iter,
+                                      gpointer data)
+{
+	const gchar *description;
+	gpointer hit = NULL;
+
+	gtk_tree_model_get (model, iter,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
+	                    -1);
+
+	description = brasero_search_engine_description_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	g_object_set (G_OBJECT (cell),
+		      "text", description,
+		      NULL);
 }
 
 static void
 brasero_search_increase_activity (BraseroSearch *search)
 {
-	search->priv->activity ++;
-	if (search->priv->activity == 1) {
-		GdkCursor *cursor;
+	GdkCursor *cursor;
 
-		cursor = gdk_cursor_new (GDK_WATCH);
-		gdk_window_set_cursor (GTK_WIDGET (search)->window, cursor);
-		gdk_cursor_unref (cursor);
-	}
+	cursor = gdk_cursor_new (GDK_WATCH);
+	gdk_window_set_cursor (GTK_WIDGET (search)->window, cursor);
+	gdk_cursor_unref (cursor);
 }
 
 static void
 brasero_search_decrease_activity (BraseroSearch *search)
 {
-	if (search->priv->activity == 0)
-		return;
-
-	search->priv->activity --;
-	if (!search->priv->activity)
-		gdk_window_set_cursor (GTK_WIDGET (search)->window, NULL);
+	gdk_window_set_cursor (GTK_WIDGET (search)->window, NULL);
 }
 
 static void
 brasero_search_update_header (BraseroSearch *search)
 {
 	gchar *string;
+	gint num_hits;
 
-	if (search->priv->hits_num) {
+	num_hits = brasero_search_engine_num_hits (search->priv->engine);
+	if (num_hits) {
 		gint last;
 		gchar *tmp;
 
 		last = search->priv->first_hit + search->priv->max_results;
-		last = last <= search->priv->hits_num ? last : search->priv->hits_num;
+		last = MIN (last, num_hits);
+
 		tmp = g_strdup_printf (_("Results %i–%i (out of %i)"),
 				       search->priv->first_hit + 1,
 				       last,
-				       search->priv->hits_num);
+				       num_hits);
 		string = g_strdup_printf ("<b>%s</b>", tmp);
 		g_free (tmp);
 	}
@@ -176,7 +207,7 @@ brasero_search_update_header (BraseroSearch *search)
 	gtk_label_set_markup (GTK_LABEL (search->priv->results_label), string);
 	g_free (string);
 
-	if (search->priv->first_hit + search->priv->max_results < search->priv->hits_num)
+	if (search->priv->first_hit + search->priv->max_results < num_hits)
 		gtk_widget_set_sensitive (search->priv->right, TRUE);
 	else
 		gtk_widget_set_sensitive (search->priv->right, FALSE);
@@ -191,166 +222,103 @@ static void
 brasero_search_empty_tree (BraseroSearch *search)
 {
 	GtkTreeModel *model;
+	GtkTreeModel *sort;
 	GtkTreeIter row;
-	gchar *mime;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
+	sort = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
+	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (sort));
 
-	if (gtk_tree_model_get_iter_first (model, &row) == TRUE) {
+	if (gtk_tree_model_get_iter_first (model, &row)) {
 		do {
+			gpointer hit;
+			const gchar *mime;
+
+			hit = NULL;
 			gtk_tree_model_get (model, &row,
-					    BRASERO_SEARCH_TREE_MIME_COL, &mime, 
+					    BRASERO_SEARCH_TREE_HIT_COL, &hit,
 					    -1);
+
+			if (!hit)
+				continue;
+
+			mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
+			if (!mime)
+				continue;
+
 			brasero_mime_filter_unref_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
-			g_free (mime);
-		} while (gtk_list_store_remove (GTK_LIST_STORE (model), &row) == TRUE);
+		} while (gtk_list_store_remove (GTK_LIST_STORE (model), &row));
 	}
 }
 
-/**
- * Start of beagle specific code
- **/
+static void
+brasero_search_row_inserted (GtkTreeModel *model,
+                             GtkTreePath *path,
+                             GtkTreeIter *iter,
+                             BraseroSearch *search)
+{
+	const gchar *mime;
+	gpointer hit = NULL;
 
-static GSList *
-brasero_search_add_hit_to_tree (BraseroSearch *search,
-				GSList *list,
-				gint max)
+	gtk_tree_model_get (model, iter,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
+	                    -1);
+
+	if (!hit)
+		return;
+
+	mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
+
+	/* add the mime type to the filter combo */
+	brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
+}
+
+static gboolean
+brasero_search_update_tree (BraseroSearch *search)
 {
 	GtkTreeModel *model;
-	GtkTreeIter row;
-	BeagleHit *hit;
-	GSList *iter;
-	GSList *next;
+	GtkTreeModel *sort;
+	gint max_hits;
+	gint last_hit;
 
-	gchar *name, *mime; 
-	const gchar *icon_string = BRASERO_DEFAULT_ICON;
-	const gchar *description;
-	GIcon *icon;
-	gint score;
-	gint num;
+	if (search->priv->first_hit < 0)
+		search->priv->first_hit = 0;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
-
-	num = 0;
-	for (iter = list; iter && num < max; iter = next, num ++) {
-		gchar *unescaped_uri, *uri;
-		GFile *file;
-
-		hit = iter->data;
-		next = iter->next;
-
-		uri = g_strdup (beagle_hit_get_uri (hit));
-
-		/* beagle return badly formed uri not encoded in UTF-8
-		 * locale charset so we check them just in case */
-		unescaped_uri = g_uri_unescape_string (uri, NULL);
-		if (!g_utf8_validate (unescaped_uri, -1, NULL)) {
-			g_free (unescaped_uri);
-			g_free (uri);
-			continue;
-		}
-
-		file = g_file_new_for_uri (uri);
-
-		name = g_path_get_basename (unescaped_uri);
-		g_free (unescaped_uri);
-
-		mime = g_strdup (beagle_hit_get_mime_type (hit));
-		if (!mime) {
-			g_warning ("Strange beagle reports a URI (%s) but cannot tell the mime.\n", uri);
-			g_free (name);
-			g_free (uri);
-			continue;
-		}
-
-		if (!strcmp (mime, "inode/directory")) {
-			g_free (mime);
-			mime = g_strdup ("x-directory/normal");
-		}
-
-		description = g_content_type_get_description (mime);
-
-		icon = g_content_type_get_icon (mime);
-		icon_string = NULL;
-		if (G_IS_THEMED_ICON (icon)) {
-			const gchar * const *names = NULL;
-
-			names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-			if (names) {
-				gint i;
-				GtkIconTheme *theme;
-
-				theme = gtk_icon_theme_get_default ();
-				for (i = 0; names [i]; i++) {
-					if (gtk_icon_theme_has_icon (theme, names [i])) {
-						icon_string = names [i];
-						break;
-					}
-				}
-			}
-		}
-
-		score = (int) (beagle_hit_get_score (hit) * 100);
-
-		gtk_list_store_append (GTK_LIST_STORE (model), &row);
-		gtk_list_store_set (GTK_LIST_STORE (model), &row,
-				    BRASERO_SEARCH_TREE_ICON_COL, icon_string,
-				    BRASERO_SEARCH_TREE_TITLE_COL, name,
-				    BRASERO_SEARCH_TREE_DESCRIPTION_COL, description,
-				    BRASERO_SEARCH_TREE_URI_COL, uri,
-				    BRASERO_SEARCH_TREE_SCORE_COL, score,
-				    BRASERO_SEARCH_TREE_MIME_COL, mime,
-				    -1);
-
-		/* add the mime type to the filter combo */
-		brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
-
-		g_object_unref (icon);
-		g_free (name);
-		g_free (mime);
-		g_free (uri);
+	max_hits = brasero_search_engine_num_hits (search->priv->engine);
+	if (search->priv->first_hit > max_hits) {
+		search->priv->first_hit = max_hits;
+		return FALSE;
 	}
 
-	return iter;
+	last_hit = MIN (max_hits, search->priv->max_results + search->priv->first_hit);
+
+	brasero_search_empty_tree (search);
+
+	sort = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
+	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (sort));
+
+	brasero_search_engine_add_hits (search->priv->engine,
+	                                model,
+	                                search->priv->first_hit,
+	                                last_hit);
+
+	brasero_search_update_header (search);
+	return TRUE;
 }
 
 static void
 brasero_search_left_button_clicked_cb (GtkButton *button,
 				       BraseroSearch *search)
 {
-	GSList *first;
-
-	if (!search->priv->first_hit)
-		return;
-
 	search->priv->first_hit -= search->priv->max_results;
-	if (search->priv->first_hit < 0)
-		search->priv->first_hit = 0;
-
-	first = g_slist_nth (search->priv->hits, search->priv->first_hit);
-
-	brasero_search_empty_tree (search);
-	brasero_search_add_hit_to_tree (search, first, search->priv->max_results);
-	brasero_search_update_header (search);
+	brasero_search_update_tree (search);
 }
 
 static void
 brasero_search_right_button_clicked_cb (GtkButton *button,
 					BraseroSearch *search)
 {
-	GSList *first;
-
-	if (search->priv->first_hit + search->priv->max_results > search->priv->hits_num)
-		return;
-
 	search->priv->first_hit += search->priv->max_results;
-	first = g_slist_nth (search->priv->hits, search->priv->first_hit);
-
-	brasero_search_empty_tree (search);
-	brasero_search_add_hit_to_tree (search, first, search->priv->max_results);
-	brasero_search_update_header (search);
+	brasero_search_update_tree (search);
 }
 
 static void
@@ -358,6 +326,12 @@ brasero_search_max_results_num_changed_cb (GtkComboBox *combo,
 					   BraseroSearch *search)
 {
 	gint index;
+	gint page_num;
+
+	if (search->priv->max_results)
+		page_num = search->priv->first_hit / search->priv->max_results;
+	else
+		page_num = 0;
 
 	index = gtk_combo_box_get_active (combo);
 	switch (index) {
@@ -372,273 +346,158 @@ brasero_search_max_results_num_changed_cb (GtkComboBox *combo,
 		break;
 	}
 
-	if (search->priv->hits_num) {
-		GSList *first;
-
-		brasero_search_empty_tree (search);
-		first = g_slist_nth (search->priv->hits, search->priv->first_hit);
-		brasero_search_add_hit_to_tree (search, first, search->priv->max_results);
-	}
-
-	brasero_search_update_header (search);
+	search->priv->first_hit = page_num * search->priv->max_results;
+	brasero_search_update_tree (search);
 }
 
 static void
-brasero_search_check_for_possible_missing (BraseroSearch *search)
+brasero_search_finished_cb (BraseroSearchEngine *engine,
+                            BraseroSearch *search)
 {
-	gint num_missing;
-	gint num_displayed;
-	gint num_remaining;
-	GtkTreeModel *model;
-
-	/* now let's see if we should append new results */
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
-
-	num_displayed = gtk_tree_model_iter_n_children (model, NULL);
-	num_missing = search->priv->max_results - num_displayed;
-	num_remaining = search->priv->hits_num - search->priv->first_hit;
-
-	if (num_displayed == num_remaining)
-		return;
-
-	if (num_missing > 0) {
-		GSList *first;
-
-		first = g_slist_nth (search->priv->hits, search->priv->first_hit);
-		brasero_search_add_hit_to_tree (search, first, num_missing);
-	}
-}
-
-/**
- * Really Beagle specific code
- **/
-
-static gint
-_sort_hits_by_score (BeagleHit *a, BeagleHit *b)
-{
-	gdouble score_a, score_b;
-
-	score_a = beagle_hit_get_score (a);
-	score_b = beagle_hit_get_score (b);
-
-	if (score_b == score_a)
-		return 0;
-
-	if (score_b > score_a);
-		return -1;
-
-	return 1;
-}
-
-static void
-brasero_search_beagle_hit_added_cb (BeagleQuery *query,
-				    BeagleHitsAddedResponse *response,
-				    BraseroSearch *search)
-{
-	GSList *list;
-
-	/* NOTE : list must not be modified nor freed */
-	list = beagle_hits_added_response_get_hits (response);
-	search->priv->hits_num += g_slist_length (list);
-
-	list = g_slist_copy (list);
-	g_slist_foreach (list, (GFunc) beagle_hit_ref, NULL);
-
-	if (!search->priv->hits) {
-		search->priv->hits = g_slist_sort (list, (GCompareFunc) _sort_hits_by_score);
-		brasero_search_add_hit_to_tree (search, search->priv->hits, search->priv->max_results);
-	}
-	else {
-		GSList *first;
-
-		search->priv->hits = g_slist_concat (search->priv->hits, list);
-		search->priv->hits = g_slist_sort (search->priv->hits, (GCompareFunc) _sort_hits_by_score);
-
-		brasero_search_empty_tree (search);
-		first = g_slist_nth (search->priv->hits, search->priv->first_hit);
-		brasero_search_add_hit_to_tree (search, first, search->priv->max_results);
-	}
-
-	brasero_search_update_header (search);
-	brasero_search_check_for_possible_missing (search);
-}
-
-static void
-brasero_search_beagle_hit_substracted_cb (BeagleQuery *query,
-					  BeagleHitsSubtractedResponse *response,
-					  BraseroSearch *search)
-{
-	gchar *uri;
-	GSList *list, *iter;
-	const gchar *removed_uri;
-
-	GtkTreeModel *model;
-	GtkTreeIter row;
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
-
-	list = beagle_hits_subtracted_response_get_uris (response);
-	for (iter = list; iter; iter = iter->next) {
-		GSList *next, *hit_iter;
-
-		removed_uri = iter->data;
-
-		if (gtk_tree_model_get_iter_first (model, &row)) {
-			do {
-				gtk_tree_model_get (model, &row,
-						    BRASERO_SEARCH_TREE_URI_COL,
-						    &uri, -1);
-				if (!strcmp (uri, removed_uri)) {
-					g_free (uri);
-					gtk_list_store_remove
-					    (GTK_LIST_STORE (model), &row);
-					break;
-				}
-
-				g_free (uri);
-			} while (gtk_tree_model_iter_next (model, &row));
-		}
-
-		/* see if it isn't in the hits that are still waiting */
-		for (hit_iter = search->priv->hits; hit_iter; hit_iter = next) {
-			BeagleHit *hit;
-			const char *hit_uri;
-	
-			next = hit_iter->next;
-			hit = hit_iter->data;
-
-			hit_uri = beagle_hit_get_uri (hit);
-			if (!strcmp (hit_uri, removed_uri)) {
-				search->priv->hits = g_slist_remove (search->priv->hits, hit);
-				beagle_hit_unref (hit);
-
-				search->priv->hits_num --;
-			}
-		}
-	}
-
-	brasero_search_update_header (search);
-	brasero_search_check_for_possible_missing (search);
-}
-
-static void
-brasero_search_beagle_finished_cb (BeagleQuery *query,
-				   BeagleFinishedResponse *response,
-				   BraseroSearch *search)
-{
-	brasero_search_update_header (search);
 	brasero_search_decrease_activity (search);
 }
 
 static void
-brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
-{
-	brasero_app_alert (brasero_app_get_default (),
-			   _("Error querying Beagle."),
-			   error->message,
-			   GTK_MESSAGE_ERROR);
-}
-
-static void
-brasero_search_beagle_error_cb (BeagleRequest *request,
-				GError *error,
-				BraseroSearch *search)
+brasero_search_error_cb (BraseroSearchEngine *engine,
+                         GError *error,
+                         BraseroSearch *search)
 {
 	brasero_search_update_header (search);
 	if (error)
-		brasero_search_beagle_error_dialog (search, error);
+		brasero_app_alert (brasero_app_get_default (),
+				   _("Error querying for keywords."),
+				   error->message,
+				   GTK_MESSAGE_ERROR);
+
 	brasero_search_decrease_activity (search);
+}
+
+static void
+brasero_search_hit_added_cb (BraseroSearchEngine *engine,
+                             gpointer hit,
+                             BraseroSearch *search)
+{
+	gint num;
+	gint hit_num;
+	GtkTreeIter iter;
+	const gchar *mime;
+	GtkTreeModel *model;
+
+	hit_num = brasero_search_engine_num_hits (search->priv->engine);
+	if (hit_num < search->priv->first_hit
+	&& hit_num >= search->priv->first_hit + search->priv->max_results) {
+		brasero_search_update_header (search);
+		return;
+	}
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
+	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
+
+	num = gtk_tree_model_iter_n_children (model, NULL);
+	if (num >= search->priv->max_results) {
+		brasero_search_update_header (search);
+		return;
+	}
+
+	gtk_list_store_insert_with_values (GTK_LIST_STORE (model), &iter, -1,
+	                                   BRASERO_SEARCH_TREE_HIT_COL, hit,
+	                                   -1);
+
+	mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
+	brasero_search_update_header (search);
+}
+
+static void
+brasero_search_hit_removed_cb (BraseroSearchEngine *engine,
+                               gpointer hit,
+                               BraseroSearch *search)
+{
+	int num = 0;
+	int range_end;
+	int range_start;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
+	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
+
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
+	do {
+		gpointer model_hit;
+
+		model_hit = NULL;
+		gtk_tree_model_get (model, &iter,
+				    BRASERO_SEARCH_TREE_HIT_COL, &model_hit,
+				    -1);
+
+		if (hit == model_hit) {
+			const gchar *mime;
+
+			mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
+			brasero_mime_filter_unref_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
+
+			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+			break;
+		}
+
+		num ++;
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	if (num < search->priv->first_hit
+	&& num >= search->priv->first_hit + search->priv->max_results) {
+		brasero_search_update_header (search);
+		return;
+	}
+
+	range_start = search->priv->first_hit + search->priv->max_results - 1;
+	range_end = search->priv->first_hit + search->priv->max_results;
+	brasero_search_engine_add_hits (search->priv->engine,
+	                                model,
+	                                range_start,
+	                                range_end);
+
+	brasero_search_update_header (search);
 }
 
 static void
 brasero_search_entry_activated_cb (BraseroSearchEntry *entry,
 				   BraseroSearch *search)
 {
-	BeagleQuery *query;
-	GError *error = NULL;
+	brasero_search_increase_activity (search);
 
 	/* we first empty everything including the filter box */
 	brasero_search_empty_tree (search);
-	if (search->priv->query) {
-		brasero_search_decrease_activity (search);
-		g_object_unref (search->priv->query);
-		search->priv->query = NULL;
-	}
-
-	if (search->priv->hits) {
-		g_slist_foreach (search->priv->hits, (GFunc) beagle_hit_unref, NULL);
-		g_slist_free (search->priv->hits);
-		search->priv->hits = NULL;
-	}
-
-	search->priv->hits_num = 0;
-	search->priv->first_hit = 0;
+	brasero_search_entry_set_query (entry, search->priv->engine);
+	brasero_search_engine_start_query (search->priv->engine);
 	brasero_search_update_header (search);
-
-	/* search itself */
-	query = brasero_search_entry_get_query (entry);
-	if (!query) {
-		g_warning ("No query\n");
-		return;
-	}
-
-	beagle_query_set_max_hits (query, 10000);
-	g_signal_connect (G_OBJECT (query), "hits-added",
-			  G_CALLBACK (brasero_search_beagle_hit_added_cb),
-			  search);
-	g_signal_connect (G_OBJECT (query), "hits-subtracted",
-			  G_CALLBACK
-			  (brasero_search_beagle_hit_substracted_cb),
-			  search);
-	g_signal_connect (G_OBJECT (query), "finished",
-			  G_CALLBACK (brasero_search_beagle_finished_cb),
-			  search);
-	g_signal_connect (G_OBJECT (query), "error",
-			  G_CALLBACK (brasero_search_beagle_error_cb),
-			  search);
-	beagle_client_send_request_async (search->priv->client,
-					  BEAGLE_REQUEST (query),
-					  &error);
-	if (error) {
-		brasero_search_beagle_error_dialog (search, error);
-		g_error_free (error);
-	}
-	else {
-		search->priv->query = query;
-		brasero_search_increase_activity (search);
-	}
 }
-
-/**
- * End of beagle specific code
- **/
 
 static gboolean
 brasero_search_is_visible_cb (GtkTreeModel *model,
 			      GtkTreeIter *iter,
 			      BraseroSearch *search)
 {
-	char *filename, *uri, *display_name, *mime_type;
+	const gchar *uri, *mime;
+	gpointer hit = NULL;
 	gboolean result;
+	gchar *name;
 
 	gtk_tree_model_get (model, iter,
-			    BRASERO_SEARCH_TREE_TITLE_COL, &filename,
-			    BRASERO_SEARCH_TREE_URI_COL, &uri,
-			    BRASERO_SEARCH_TREE_TITLE_COL, &display_name,
-			    BRASERO_SEARCH_TREE_MIME_COL, &mime_type, -1);
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
+	                    -1);
 
+	name = brasero_search_engine_name_from_hit (search->priv->engine, hit);
+	uri = brasero_search_engine_uri_from_hit (search->priv->engine, hit);
+	mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
 	result = brasero_mime_filter_filter (BRASERO_MIME_FILTER (search->priv->filter),
-					     filename,
+					     name,
 					     uri,
-					     display_name,
-					     mime_type);
+					     name,
+					     mime);
 
-	g_free (filename);
-	g_free (uri);
-	g_free (display_name);
-	g_free (mime_type);
+	g_free (name);
 	return result;
 }
 
@@ -663,10 +522,10 @@ brasero_search_get_selected_rows (BraseroSearch *search)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
-	GtkTreeIter row;
+	gchar **uris = NULL;
 	GList *rows, *iter;
-	gchar **uris = NULL, *uri;
-	gint i;
+	GtkTreeIter row;
+	int i;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (search->priv->tree));
 	rows = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -675,14 +534,18 @@ brasero_search_get_selected_rows (BraseroSearch *search)
 
 	uris = g_new0 (char *, g_list_length (rows) + 1);
 	for (iter = rows, i = 0; iter != NULL; iter = iter->next, i++) {
+		gpointer hit;
+
 		gtk_tree_model_get_iter (model,
 					 &row,
 					 (GtkTreePath *) iter->data);
 		gtk_tree_path_free (iter->data);
+
+		hit = NULL;
 		gtk_tree_model_get (model, &row,
-				    BRASERO_SEARCH_TREE_URI_COL, &uri,
+				    BRASERO_SEARCH_TREE_HIT_COL, &hit,
 				    -1);
-		uris[i] = uri;
+		uris[i] = g_strdup (brasero_search_engine_uri_from_hit (search->priv->engine, hit));
 	}
 
 	g_list_free (rows);
@@ -761,44 +624,139 @@ brasero_search_set_context (BraseroLayoutObject *object,
 	brasero_search_entry_set_context (BRASERO_SEARCH_ENTRY (self->priv->entry), type);
 }
 
+static gint
+brasero_search_sort_name (GtkTreeModel *model,
+                          GtkTreeIter  *iter1,
+                          GtkTreeIter  *iter2,
+                          gpointer user_data)
+{
+	gint res;
+	gpointer hit1, hit2;
+	gchar *name1, *name2;
+	BraseroSearch *search = BRASERO_SEARCH (user_data);
+
+	gtk_tree_model_get (model, iter1,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit1,
+	                    -1);
+	gtk_tree_model_get (model, iter2,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit2,
+	                    -1);
+
+	name1 = brasero_search_engine_name_from_hit (search->priv->engine, hit1);
+	name2 = brasero_search_engine_name_from_hit (search->priv->engine, hit2);
+
+	res = g_strcmp0 (name1, name2);
+	g_free (name1);
+	g_free (name2);
+
+	return res;
+}
+
+static gint
+brasero_search_sort_description (GtkTreeModel *model,
+                                 GtkTreeIter  *iter1,
+                                 GtkTreeIter  *iter2,
+                                 gpointer user_data)
+{
+	gpointer hit1, hit2;
+	BraseroSearch *search = BRASERO_SEARCH (user_data);
+
+	gtk_tree_model_get (model, iter1,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit1,
+	                    -1);
+	gtk_tree_model_get (model, iter2,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit2,
+	                    -1);
+
+	return g_strcmp0 (brasero_search_engine_description_from_hit (search->priv->engine, hit1),
+	                  brasero_search_engine_description_from_hit (search->priv->engine, hit2));
+}
+
+static gint
+brasero_search_sort_score (GtkTreeModel *model,
+                           GtkTreeIter  *iter1,
+                           GtkTreeIter  *iter2,
+                           gpointer user_data)
+{
+	gpointer hit1, hit2;
+	BraseroSearch *search = BRASERO_SEARCH (user_data);
+
+	gtk_tree_model_get (model, iter1,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit1,
+	                    -1);
+	gtk_tree_model_get (model, iter2,
+	                    BRASERO_SEARCH_TREE_HIT_COL, &hit2,
+	                    -1);
+
+	return brasero_search_engine_score_from_hit (search->priv->engine, hit1) -
+		    brasero_search_engine_score_from_hit (search->priv->engine, hit2);
+}
+
 static void
 brasero_search_column_clicked (GtkTreeViewColumn *column,
 			       BraseroSearch *search)
 {
-	gint model_id;
-	gint column_id;
+	GtkTreeModel *sort;
 	GtkTreeModel *model;
 	GtkSortType model_order;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
+	sort = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
+	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (sort));
 
 	gtk_tree_sortable_get_sort_column_id (GTK_TREE_SORTABLE (model),
-					      &model_id,
+					      NULL,
 					      &model_order);
-	column_id = gtk_tree_view_column_get_sort_column_id (column);
 
-	if (column_id == model_id && model_order == GTK_SORT_DESCENDING) {
-		gtk_tree_view_column_set_sort_indicator (column, FALSE);
-		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
-						      BRASERO_SEARCH_TREE_SCORE_COL,
-						      GTK_SORT_DESCENDING);
-	}
-	else if (model_id == BRASERO_SEARCH_TREE_SCORE_COL) {
+	if (!gtk_tree_view_column_get_sort_indicator (column)) {
+		GtkTreeIterCompareFunc sort_func;
+
+		if (search->priv->sort_column)
+			gtk_tree_view_column_set_sort_indicator (search->priv->sort_column, FALSE);
+
+		search->priv->sort_column = column;
 		gtk_tree_view_column_set_sort_indicator (column, TRUE);
+
 		gtk_tree_view_column_set_sort_order (column, GTK_SORT_ASCENDING);
 		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
-						      column_id,
-						      GTK_SORT_ASCENDING);
+		                                      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID,
+		                                      GTK_SORT_ASCENDING);
+
+		sort_func = g_object_get_data (G_OBJECT (column), "SortFunc");
+		gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (model),
+							 sort_func,
+							 search,
+							 NULL);
+	}
+	else if (model_order == GTK_SORT_DESCENDING) {
+		gtk_tree_view_column_set_sort_indicator (column, FALSE);
+		gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (model),
+							 brasero_search_sort_score,
+							 search,
+							 NULL);
+		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
+		                                      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID,
+		                                      GTK_SORT_ASCENDING);
 	}
 	else {
 		gtk_tree_view_column_set_sort_order (column, GTK_SORT_DESCENDING);
 		gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
-						      column_id,
-						      GTK_SORT_DESCENDING);
+		                                      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID,
+		                                      GTK_SORT_DESCENDING);
 	}
 
 	g_signal_stop_emission_by_name (column, "clicked");
+}
+
+static gboolean
+brasero_search_try_again (BraseroSearch *search)
+{
+	if (brasero_search_engine_is_available (search->priv->engine)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (search), TRUE);
+		search->priv->id = 0;
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
@@ -821,6 +779,24 @@ brasero_search_init (BraseroSearch *obj)
 
 	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_SEARCH_SPACING);
 	obj->priv = g_new0 (BraseroSearchPrivate, 1);
+
+	obj->priv->engine = brasero_search_engine_get_default ();
+	g_signal_connect (obj->priv->engine,
+	                  "search-finished",
+	                  G_CALLBACK (brasero_search_finished_cb),
+	                  obj);
+	g_signal_connect (obj->priv->engine,
+	                  "search-error",
+	                  G_CALLBACK (brasero_search_error_cb),
+	                  obj);
+	g_signal_connect (obj->priv->engine,
+	                  "hit-removed",
+	                  G_CALLBACK (brasero_search_hit_removed_cb),
+	                  obj);
+	g_signal_connect (obj->priv->engine,
+	                  "hit-added",
+	                  G_CALLBACK (brasero_search_hit_added_cb),
+	                  obj);
 
 	/* separator */
 	separator = gtk_hseparator_new ();
@@ -877,7 +853,34 @@ brasero_search_init (BraseroSearch *obj)
 	obj->priv->right = button;
 
 	/* Tree */
-	obj->priv->tree = gtk_tree_view_new ();
+	store = gtk_list_store_new (BRASERO_SEARCH_TREE_NB_COL,
+				    G_TYPE_POINTER);
+
+	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (store),
+	                                         brasero_search_sort_score,
+        	                                 obj,
+                	                         NULL);
+
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store),
+					      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID,
+					      GTK_SORT_ASCENDING);
+
+	g_signal_connect (store,
+	                  "row-inserted",
+	                  G_CALLBACK (brasero_search_row_inserted),
+	                  obj);
+
+	model = gtk_tree_model_filter_new (GTK_TREE_MODEL (store), NULL);
+	g_object_unref (G_OBJECT (store));
+
+	gtk_tree_model_filter_set_visible_func (GTK_TREE_MODEL_FILTER (model),
+						(GtkTreeModelFilterVisibleFunc) brasero_search_is_visible_cb,
+						obj,
+						NULL);
+
+	obj->priv->tree = gtk_tree_view_new_with_model (model);
+	g_object_unref (G_OBJECT (model));
+
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (obj->priv->tree));
 
@@ -895,69 +898,60 @@ brasero_search_init (BraseroSearch *obj)
 			  obj);
 
 	gtk_tree_view_set_headers_clickable (GTK_TREE_VIEW (obj->priv->tree), TRUE);
-	store = gtk_list_store_new (BRASERO_SEARCH_TREE_NB_COL,
-				    G_TYPE_STRING,
-				    G_TYPE_STRING,
-				    G_TYPE_STRING,
-				    G_TYPE_INT,
-				    G_TYPE_STRING,
-				    G_TYPE_STRING);
-
-	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (store),
-					      BRASERO_SEARCH_TREE_SCORE_COL,
-					      GTK_SORT_DESCENDING);
-
-	model = gtk_tree_model_filter_new (GTK_TREE_MODEL (store), NULL);
-	g_object_unref (G_OBJECT (store));
-	gtk_tree_model_filter_set_visible_func (GTK_TREE_MODEL_FILTER (model),
-						(GtkTreeModelFilterVisibleFunc) brasero_search_is_visible_cb,
-						obj,
-						NULL);
-
-	gtk_tree_view_set_model (GTK_TREE_VIEW (obj->priv->tree), model);
-	g_object_unref (G_OBJECT (model));
 
 	column = gtk_tree_view_column_new ();
-	g_signal_connect (column,
-			  "clicked",
-			  G_CALLBACK (brasero_search_column_clicked),
-			  obj);
 
+	gtk_tree_view_column_set_clickable (column, TRUE);
 	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_title (column, _("Files"));
 	gtk_tree_view_column_set_min_width (column, 128);
-	gtk_tree_view_column_set_sort_column_id (column,
-						 BRASERO_SEARCH_TREE_TITLE_COL);
 
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	gtk_tree_view_column_pack_start (column, renderer, FALSE);
-	gtk_tree_view_column_add_attribute (column, renderer, "icon-name",
-					    BRASERO_SEARCH_TREE_ICON_COL);
-
-	renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, renderer, TRUE);
-	gtk_tree_view_column_add_attribute (column, renderer, "text",
-					    BRASERO_SEARCH_TREE_TITLE_COL);
-
-	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
-				     column);
-
-	renderer = gtk_cell_renderer_text_new ();
-	column =  gtk_tree_view_column_new_with_attributes (_("Description"),
-							    renderer, "text",
-						            BRASERO_SEARCH_TREE_DESCRIPTION_COL,
-						            NULL);
-	gtk_tree_view_column_set_resizable (column, TRUE);
-	gtk_tree_view_column_set_min_width (column, 128);
-	gtk_tree_view_column_set_sort_column_id (column,
-						 BRASERO_SEARCH_TREE_DESCRIPTION_COL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
-				     column);
+	g_object_set_data (G_OBJECT (column), "SortFunc", brasero_search_sort_name);
 	g_signal_connect (column,
 			  "clicked",
 			  G_CALLBACK (brasero_search_column_clicked),
 			  obj);
 
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_set_cell_data_func (column,
+	                                         renderer,
+	                                         brasero_search_column_icon_cb,
+	                                         obj,
+	                                         NULL);
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func (column,
+	                                         renderer,
+	                                         brasero_search_column_name_cb,
+	                                         obj,
+	                                         NULL);
+
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
+				     column);
+
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_title (column, _("Description"));
+	gtk_tree_view_column_set_clickable (column, TRUE);
+	gtk_tree_view_column_set_resizable (column, TRUE);
+	gtk_tree_view_column_set_min_width (column, 128);
+
+	g_object_set_data (G_OBJECT (column), "SortFunc", brasero_search_sort_description);
+	g_signal_connect (column,
+			  "clicked",
+			  G_CALLBACK (brasero_search_column_clicked),
+			  obj);
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func (column,
+	                                         renderer,
+	                                         brasero_search_column_description_cb,
+	                                         obj,
+	                                         NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
+				     column);
 	/* dnd */
 	gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (obj->priv->tree),
 						GDK_BUTTON1_MASK,
@@ -1019,6 +1013,14 @@ brasero_search_init (BraseroSearch *obj)
 
 	gtk_box_pack_start (GTK_BOX (box1), combo, FALSE, FALSE, 0);
 
+	if (!brasero_search_engine_is_available (obj->priv->engine)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (obj), FALSE);
+
+		/* we will retry in 10 seconds */
+		obj->priv->id = g_timeout_add_seconds (10,
+		                                       (GSourceFunc) brasero_search_try_again,
+		                                       obj);
+	} 
 }
 
 static void
@@ -1027,16 +1029,6 @@ brasero_search_destroy (GtkObject *object)
 	BraseroSearch *search;
 
 	search = BRASERO_SEARCH (object);
-	if (search->priv->query) {
-		g_object_unref (search->priv->query);
-		search->priv->query = NULL;
-	}
-
-	if (search->priv->client) {
-		g_object_unref (search->priv->client);
-		search->priv->client = NULL;
-	}
-
 	if (search->priv->tree) {
 		g_signal_handlers_disconnect_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (search->priv->tree)),
 		                                      brasero_search_tree_selection_changed_cb,
@@ -1056,14 +1048,13 @@ brasero_search_destroy (GtkObject *object)
 		search->priv->id = 0;
 	}
 
-	if (search->priv->hits) {
-		g_slist_foreach (search->priv->hits, (GFunc) beagle_hit_unref, NULL);
-		g_slist_free (search->priv->hits);
-		search->priv->hits = NULL;
+	if (search->priv->engine) {
+		g_object_unref (search->priv->engine);
+		search->priv->engine = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	if (GTK_OBJECT_CLASS (brasero_search_parent_class)->destroy)
+		GTK_OBJECT_CLASS (brasero_search_parent_class)->destroy (object);
 }
 
 static void
@@ -1074,7 +1065,7 @@ brasero_search_finalize (GObject *object)
 	cobj = BRASERO_SEARCH (object);
 
 	g_free (cobj->priv);
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_search_parent_class)->finalize (object);
 }
 
 static void
@@ -1097,7 +1088,6 @@ brasero_search_class_init (BraseroSearchClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkObjectClass *gtkobject_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_search_finalize;
 	gtkobject_class->destroy = brasero_search_destroy;
 }
@@ -1105,23 +1095,7 @@ brasero_search_class_init (BraseroSearchClass *klass)
 GtkWidget *
 brasero_search_new ()
 {
-	BraseroSearch *obj;
-
-	obj = BRASERO_SEARCH (g_object_new (BRASERO_TYPE_SEARCH, NULL));
-
-	/* FIXME : there are better ways to do the following with the new API
-	 * see beagle_util_daemon_is_running (void) */
-	obj->priv->client = beagle_client_new (NULL);
-	if (!obj->priv->client) {
-		gtk_widget_set_sensitive (GTK_WIDGET (obj), FALSE);
-
-		/* we will retry in 10 seconds */
-		obj->priv->id = g_timeout_add_seconds (10,
-						       (GSourceFunc) brasero_search_try_again,
-						       obj);
-	}
-
-	return GTK_WIDGET (obj);
+	return g_object_new (BRASERO_TYPE_SEARCH, NULL);
 }
 
 #endif

@@ -51,7 +51,7 @@
 #include "brasero-project-type-chooser.h"
 
 #ifdef BUILD_SEARCH
-#include "brasero-search-beagle.h"
+#include "brasero-search.h"
 #endif
 
 #ifdef BUILD_PLAYLIST

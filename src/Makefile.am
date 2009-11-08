@@ -125,7 +125,11 @@ brasero_SOURCES = \
 	brasero-setting.h        \
 	brasero-setting.c        \
 	brasero-search.h        \
-	brasero-search.c
+	brasero-search.c        \
+	brasero-search-beagle.h        \
+	brasero-search-beagle.c        \
+	brasero-search-engine.h        \
+	brasero-search-engine.c
 
 brasero_LDADD =						\
 	$(top_builddir)/libbrasero-media/libbrasero-media.la	\

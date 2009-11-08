@@ -38,8 +38,6 @@
 
 #include <gtk/gtk.h>
 
-#include <beagle/beagle.h>
-
 #include "brasero-search-entry.h"
 #include "brasero-layout.h"
 #include "brasero-setting.h"
@@ -621,88 +619,32 @@ end:
 	brasero_search_entry_save_history (entry);
 }
 
-BeagleQuery *
-brasero_search_entry_get_query (BraseroSearchEntry *entry)
+gboolean
+brasero_search_entry_set_query (BraseroSearchEntry *entry,
+                                BraseroSearchEngine *search)
 {
-	BeagleQuery *query;
-	BeagleQueryPartHuman *text;
-	BeagleQueryPartOr *or_part = NULL;
+	BraseroSearchScope scope;
 
-	/* Not sure about all this */
-	query = beagle_query_new ();
+	if (!strcmp (entry->priv->keywords, _("All files")))
+		scope = BRASERO_SEARCH_SCOPE_WILDCARD;
 
-	if (strcmp (entry->priv->keywords, _("All files"))) {
-		BeagleQueryPartHuman *text;
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->documents)))
+		scope |= BRASERO_SEARCH_SCOPE_DOCUMENTS;
 
-		text = beagle_query_part_human_new ();
-		beagle_query_part_human_set_string (text, entry->priv->keywords);
-		beagle_query_part_set_logic (BEAGLE_QUERY_PART (text),
-					     BEAGLE_QUERY_PART_LOGIC_REQUIRED);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->pictures)))
+		scope |= BRASERO_SEARCH_SCOPE_PICTURES;
 
-		beagle_query_add_part (query, BEAGLE_QUERY_PART (text));
-	}
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->music)))
+		scope |= BRASERO_SEARCH_SCOPE_MUSIC;
 
-	text = beagle_query_part_human_new ();
-	beagle_query_part_human_set_string (text, "type:File");
-	beagle_query_add_part (query, BEAGLE_QUERY_PART (text));
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->video)))
+		scope |= BRASERO_SEARCH_SCOPE_VIDEO;
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->documents))) {
-		BeagleQueryPartProperty *filetype;
+	brasero_search_engine_set_query (search,
+	                                 scope,
+	                                 entry->priv->keywords);
 
-		if (!or_part)
-			or_part = beagle_query_part_or_new ();
-
-		filetype = beagle_query_part_property_new ();
-		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
-		beagle_query_part_property_set_key (filetype, "beagle:FileType");
-		beagle_query_part_property_set_value (filetype, "document");
-		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
-	}
-
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->pictures))) {
-		BeagleQueryPartProperty *filetype;
-
-		if (!or_part)
-			or_part = beagle_query_part_or_new ();
-
-		filetype = beagle_query_part_property_new ();
-		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
-		beagle_query_part_property_set_key (filetype, "beagle:FileType");
-		beagle_query_part_property_set_value (filetype, "image");
-		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
-	}
-
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->music))) {
-		BeagleQueryPartProperty *filetype;
-
-		if (!or_part)
-			or_part = beagle_query_part_or_new ();
-
-		filetype = beagle_query_part_property_new ();
-		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
-		beagle_query_part_property_set_key (filetype, "beagle:FileType");
-		beagle_query_part_property_set_value (filetype, "audio");
-		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
-	}
-
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->video))) {
-		BeagleQueryPartProperty *filetype;
-
-		if (!or_part)
-			or_part = beagle_query_part_or_new ();
-
-		filetype = beagle_query_part_property_new ();
-		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
-		beagle_query_part_property_set_key (filetype, "beagle:FileType");
-		beagle_query_part_property_set_value (filetype, "video");
-		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
-	}
-
-	if (!or_part)
-		return query;
-
-	beagle_query_add_part (query, BEAGLE_QUERY_PART (or_part));
-	return query;
+	return TRUE;
 }
 
 void

@@ -1,66 +1,54 @@
-/***************************************************************************
-*            search.h
-*
-*  dim mai 22 11:20:54 2005
-*  Copyright  2005  Philippe Rouquier
-*  brasero-app@wanadoo.fr
-****************************************************************************/
-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
+ * Brasero
+ * Copyright (C) Philippe Rouquier 2005-2009 <bonfire-app@wanadoo.fr>
+ * 
  *  Brasero is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
- *  Brasero is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to:
+ * 
+ * brasero is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with brasero.  If not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#ifndef _BRASERO_SEARCH_BEAGLE_H_
+#define _BRASERO_SEARCH_BEAGLE_H_
 
-#ifdef BUILD_SEARCH
-
-#ifndef SEARCH_H
-#define SEARCH_H
-
-#include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_SEARCH         (brasero_search_get_type ())
-#define BRASERO_SEARCH(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_SEARCH, BraseroSearch))
-#define BRASERO_SEARCH_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_SEARCH, BraseroSearchClass))
-#define BRASERO_IS_SEARCH(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_SEARCH))
-#define BRASERO_IS_SEARCH_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_SEARCH))
-#define BRASERO_SEARCH_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_SEARCH, BraseroSearchClass))
-typedef struct BraseroSearchPrivate BraseroSearchPrivate;
+#define BRASERO_TYPE_SEARCH_BEAGLE             (brasero_search_beagle_get_type ())
+#define BRASERO_SEARCH_BEAGLE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_SEARCH_BEAGLE, BraseroSearchBeagle))
+#define BRASERO_SEARCH_BEAGLE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_SEARCH_BEAGLE, BraseroSearchBeagleClass))
+#define BRASERO_IS_SEARCH_BEAGLE(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_SEARCH_BEAGLE))
+#define BRASERO_IS_SEARCH_BEAGLE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_SEARCH_BEAGLE))
+#define BRASERO_SEARCH_BEAGLE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_SEARCH_BEAGLE, BraseroSearchBeagleClass))
 
-typedef struct {
-	GtkVBox parent;
-	BraseroSearchPrivate *priv;
-} BraseroSearch;
+typedef struct _BraseroSearchBeagleClass BraseroSearchBeagleClass;
+typedef struct _BraseroSearchBeagle BraseroSearchBeagle;
 
-typedef struct {
-	GtkVBoxClass parent_class;;
-} BraseroSearchClass;
+struct _BraseroSearchBeagleClass
+{
+	GObjectClass parent_class;
+};
 
-GType brasero_search_get_type (void);
-GtkWidget *brasero_search_new (void);
+struct _BraseroSearchBeagle
+{
+	GObject parent_instance;
+};
+
+GType brasero_search_beagle_get_type (void) G_GNUC_CONST;
 
 G_END_DECLS
 
-#endif
-
-#endif
+#endif /* _BRASERO_SEARCH_BEAGLE_H_ */
