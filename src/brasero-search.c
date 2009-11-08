@@ -31,8 +31,6 @@
 #  include <config.h>
 #endif
 
-#ifdef BUILD_SEARCH
-
 #include <string.h>
 
 #include <glib.h>
@@ -780,7 +778,7 @@ brasero_search_init (BraseroSearch *obj)
 	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_SEARCH_SPACING);
 	obj->priv = g_new0 (BraseroSearchPrivate, 1);
 
-	obj->priv->engine = brasero_search_engine_get_default ();
+	obj->priv->engine = brasero_search_engine_new_default ();
 	g_signal_connect (obj->priv->engine,
 	                  "search-finished",
 	                  G_CALLBACK (brasero_search_finished_cb),
@@ -1098,4 +1096,3 @@ brasero_search_new ()
 	return g_object_new (BRASERO_TYPE_SEARCH, NULL);
 }
 
-#endif

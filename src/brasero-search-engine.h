@@ -36,12 +36,11 @@ enum {
 };
 
 typedef enum {
-	BRASERO_SEARCH_SCOPE_NONE		= 0,
+	BRASERO_SEARCH_SCOPE_ANY		= 0,
 	BRASERO_SEARCH_SCOPE_VIDEO		= 1,
 	BRASERO_SEARCH_SCOPE_MUSIC		= 1 << 1,
 	BRASERO_SEARCH_SCOPE_PICTURES	= 1 << 2,
 	BRASERO_SEARCH_SCOPE_DOCUMENTS	= 1 << 3,
-	BRASERO_SEARCH_SCOPE_WILDCARD	= 1 << 4
 } BraseroSearchScope;
 
 #define BRASERO_TYPE_SEARCH_ENGINE         (brasero_search_engine_get_type ())
@@ -65,10 +64,12 @@ struct _BraseroSearchEngineIface {
 
 	/* <Virtual functions> */
 	gboolean	(*is_available)			(BraseroSearchEngine *search);
-	gboolean	(*query_set)			(BraseroSearchEngine *search,
-					                     BraseroSearchScope scope,
+	gboolean	(*query_new)			(BraseroSearchEngine *search,
 					                     const gchar *keywords);
-
+	gboolean	(*query_set_scope)	(BraseroSearchEngine *search,
+					                     BraseroSearchScope scope);
+	gboolean	(*query_set_mime)		(BraseroSearchEngine *search,
+					                     const gchar **mimes);
 	gboolean	(*query_start)		(BraseroSearchEngine *search);
 
 	gboolean	(*add_hits)			(BraseroSearchEngine *search,
@@ -95,7 +96,7 @@ struct _BraseroSearchEngineIface {
 GType brasero_search_engine_get_type (void);
 
 BraseroSearchEngine *
-brasero_search_engine_get_default (void);
+brasero_search_engine_new_default (void);
 
 gboolean
 brasero_search_engine_is_available (BraseroSearchEngine *search);
@@ -104,9 +105,16 @@ gint
 brasero_search_engine_num_hits (BraseroSearchEngine *search);
 
 gboolean
-brasero_search_engine_set_query (BraseroSearchEngine *search,
-                                 BraseroSearchScope scope,
+brasero_search_engine_new_query (BraseroSearchEngine *search,
                                  const gchar *keywords);
+
+gboolean
+brasero_search_engine_set_query_scope (BraseroSearchEngine *search,
+                                       BraseroSearchScope scope);
+
+gboolean
+brasero_search_engine_set_query_mime (BraseroSearchEngine *search,
+                                      const gchar **mimes);
 
 gboolean
 brasero_search_engine_start_query (BraseroSearchEngine *search);

@@ -325,20 +325,18 @@ brasero_search_beagle_clean (BraseroSearchBeagle *beagle)
 }
 
 static gboolean
-brasero_search_beagle_query_set (BraseroSearchEngine *search,
-                                 BraseroSearchScope scope,
-                                 const gchar *keywords)
+brasero_search_beagle_query_new (BraseroSearchEngine *search,
+                                  const gchar *keywords)
 {
-	BeagleQueryPartHuman *text;
-	BeagleQueryPartOr *or_part = NULL;
 	BraseroSearchBeaglePrivate *priv;
+	BeagleQueryPartHuman *text;
 
 	priv = BRASERO_SEARCH_BEAGLE_PRIVATE (search);
 
 	brasero_search_beagle_clean (BRASERO_SEARCH_BEAGLE (search));
 	priv->query = beagle_query_new ();
 
-	if ((scope & BRASERO_SEARCH_SCOPE_WILDCARD) == 0) {
+	if (keywords) {
 		BeagleQueryPartHuman *text;
 
 		text = beagle_query_part_human_new ();
@@ -352,6 +350,21 @@ brasero_search_beagle_query_set (BraseroSearchEngine *search,
 	text = beagle_query_part_human_new ();
 	beagle_query_part_human_set_string (text, "type:File");
 	beagle_query_add_part (priv->query, BEAGLE_QUERY_PART (text));
+
+	return TRUE;
+}
+
+static gboolean
+brasero_search_beagle_query_set_scope (BraseroSearchEngine *search,
+                                       BraseroSearchScope scope)
+{
+	BeagleQueryPartOr *or_part = NULL;
+	BraseroSearchBeaglePrivate *priv;
+
+	priv = BRASERO_SEARCH_BEAGLE_PRIVATE (search);
+
+	if (!priv->query)
+		return FALSE;
 
 	if (scope & BRASERO_SEARCH_SCOPE_DOCUMENTS) {
 		BeagleQueryPartProperty *filetype;
@@ -412,6 +425,35 @@ brasero_search_beagle_query_set (BraseroSearchEngine *search,
 	return TRUE;
 }
 
+static gboolean
+brasero_search_beagle_set_query_mime (BraseroSearchEngine *search,
+                                      const gchar **mimes)
+{
+	int i;
+	BeagleQueryPartOr *or_part;
+	BraseroSearchBeaglePrivate *priv;
+
+	priv = BRASERO_SEARCH_BEAGLE_PRIVATE (search);
+
+	if (!priv->query)
+		return FALSE;
+
+	or_part = beagle_query_part_or_new ();
+	for (i = 0; mimes [i]; i ++) {
+		BeagleQueryPartProperty *filetype;
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:MimeType");
+		beagle_query_part_property_set_value (filetype, mimes [i]);
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+	}
+
+	beagle_query_add_part (priv->query, BEAGLE_QUERY_PART (or_part));
+
+	return TRUE;
+}
+
 static void
 brasero_search_beagle_init_engine (BraseroSearchEngineIface *iface)
 {
@@ -422,7 +464,9 @@ brasero_search_beagle_init_engine (BraseroSearchEngineIface *iface)
 	iface->score_from_hit = brasero_search_beagle_score_from_hit;
 	iface->mime_from_hit = brasero_search_beagle_mime_from_hit;
 	iface->description_from_hit = brasero_search_beagle_description_from_hit;
-	iface->query_set = brasero_search_beagle_query_set;
+	iface->query_new = brasero_search_beagle_query_new;
+	iface->query_set_scope = brasero_search_beagle_query_set_scope;
+	iface->query_set_mime = brasero_search_beagle_set_query_mime;
 	iface->query_start = brasero_search_beagle_query_start;
 	iface->add_hits = brasero_search_beagle_add_hit_to_tree;
 	iface->num_hits = brasero_search_beagle_num_hits;

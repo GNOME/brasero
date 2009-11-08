@@ -28,8 +28,6 @@
 #  include <config.h>
 #endif
 
-#ifdef BUILD_SEARCH
-
 #ifndef SEARCH_ENTRY_H
 #define SEARCH_ENTRY_H
 
@@ -73,7 +71,5 @@ brasero_search_entry_set_query (BraseroSearchEntry *entry,
 void
 brasero_search_entry_set_context (BraseroSearchEntry *entry,
 				  BraseroLayoutType type);
-
-#endif				/* SEARCH_ENTRY_H */
 
 #endif

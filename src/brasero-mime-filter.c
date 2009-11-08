@@ -170,7 +170,6 @@ brasero_mime_filter_unref_mime (BraseroMimeFilter * filter, const char *mime)
 	GtkFileFilter *item;
 
 	item = g_hash_table_lookup (filter->priv->table, mime);
-	g_print ("IIII %p %s\n", item, mime);
 	if (item)
 		g_object_unref (item);
 }

@@ -30,8 +30,6 @@
 #  include <config.h>
 #endif
 
-#ifdef BUILD_SEARCH
-
 #ifndef SEARCH_H
 #define SEARCH_H
 
@@ -62,7 +60,5 @@ GType brasero_search_get_type (void);
 GtkWidget *brasero_search_new (void);
 
 G_END_DECLS
-
-#endif
 
 #endif

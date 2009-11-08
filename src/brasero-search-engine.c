@@ -70,19 +70,48 @@ brasero_search_engine_start_query (BraseroSearchEngine *search)
 }
 
 gboolean
-brasero_search_engine_set_query (BraseroSearchEngine *search,
-                                   BraseroSearchScope scope,
-                                   const gchar *keywords)
+brasero_search_engine_new_query (BraseroSearchEngine *search,
+                                 const gchar *keywords)
 {
 	BraseroSearchEngineIface *iface;
 
 	g_return_val_if_fail (BRASERO_IS_SEARCH_ENGINE (search), FALSE);
 
 	iface = BRASERO_SEARCH_ENGINE_GET_IFACE (search);
-	if (!iface->query_set)
+	if (!iface->query_new)
 		return FALSE;
 
-	return (* iface->query_set) (search, scope, keywords);
+	return (* iface->query_new) (search, keywords);
+}
+
+gboolean
+brasero_search_engine_set_query_scope (BraseroSearchEngine *search,
+                                       BraseroSearchScope scope)
+{
+	BraseroSearchEngineIface *iface;
+
+	g_return_val_if_fail (BRASERO_IS_SEARCH_ENGINE (search), FALSE);
+
+	iface = BRASERO_SEARCH_ENGINE_GET_IFACE (search);
+	if (!iface->query_set_scope)
+		return FALSE;
+
+	return (* iface->query_set_scope) (search, scope);
+}
+
+gboolean
+brasero_search_engine_set_query_mime (BraseroSearchEngine *search,
+                                      const gchar **mimes)
+{
+	BraseroSearchEngineIface *iface;
+
+	g_return_val_if_fail (BRASERO_IS_SEARCH_ENGINE (search), FALSE);
+
+	iface = BRASERO_SEARCH_ENGINE_GET_IFACE (search);
+	if (!iface->query_set_mime)
+		return FALSE;
+
+	return (* iface->query_set_mime) (search, mimes);
 }
 
 gboolean
@@ -344,17 +373,24 @@ brasero_search_engine_base_init (gpointer g_class)
 	initialized = TRUE;
 }
 
+#ifdef BUILD_SEARCH
+
 #include "brasero-search-beagle.h"
 
 BraseroSearchEngine *search_engine = NULL;
 
 BraseroSearchEngine *
-brasero_search_engine_get_default (void)
+brasero_search_engine_new_default (void)
 {
-	if (!search_engine)
-		search_engine = g_object_new (BRASERO_TYPE_SEARCH_BEAGLE, NULL);
-	else
-		g_object_ref (search_engine);
-
-	return search_engine;
+	return g_object_new (BRASERO_TYPE_SEARCH_BEAGLE, NULL);
 }
+
+#else
+
+BraseroSearchEngine *
+brasero_search_engine_new_default (void)
+{
+	return NULL;
+}
+
+#endif

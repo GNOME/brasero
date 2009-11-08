@@ -28,8 +28,6 @@
 #  include <config.h>
 #endif
 
-#ifdef BUILD_SEARCH
-
 #include <string.h>
 
 #include <glib.h>
@@ -623,10 +621,11 @@ gboolean
 brasero_search_entry_set_query (BraseroSearchEntry *entry,
                                 BraseroSearchEngine *search)
 {
-	BraseroSearchScope scope;
+	BraseroSearchScope scope = BRASERO_SEARCH_SCOPE_ANY;
+	const gchar *keywords = NULL;
 
-	if (!strcmp (entry->priv->keywords, _("All files")))
-		scope = BRASERO_SEARCH_SCOPE_WILDCARD;
+	if (strcmp (entry->priv->keywords, _("All files")))
+		keywords = entry->priv->keywords;
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->documents)))
 		scope |= BRASERO_SEARCH_SCOPE_DOCUMENTS;
@@ -640,9 +639,8 @@ brasero_search_entry_set_query (BraseroSearchEntry *entry,
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->video)))
 		scope |= BRASERO_SEARCH_SCOPE_VIDEO;
 
-	brasero_search_engine_set_query (search,
-	                                 scope,
-	                                 entry->priv->keywords);
+	brasero_search_engine_new_query (search, keywords);
+	brasero_search_engine_set_query_scope (search, scope);
 
 	return TRUE;
 }
@@ -669,4 +667,3 @@ brasero_search_entry_set_context (BraseroSearchEntry *self,
 	}
 }
 
-#endif /*BUILD_SEARCH*/
