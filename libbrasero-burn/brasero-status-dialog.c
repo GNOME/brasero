@@ -269,8 +269,6 @@ brasero_status_dialog_2G_file_cb (BraseroTrackDataCfg *track,
 						    "\nHowever, Mac OS X cannot read images created with version 3 of the ISO9660 standard."));
 
 	gtk_dialog_add_button (GTK_DIALOG (message), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
-	gtk_dialog_add_button (GTK_DIALOG (message), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
-	gtk_dialog_add_button (GTK_DIALOG (message), _("_Add File"), GTK_RESPONSE_YES);
 	gtk_dialog_add_button (GTK_DIALOG (message), _("Al_ways Add Such File"), GTK_RESPONSE_ACCEPT);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
