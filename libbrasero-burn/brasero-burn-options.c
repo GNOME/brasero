@@ -257,7 +257,17 @@ brasero_burn_options_not_ready_dialog_cancel_cb (GtkDialog *dialog,
 						 guint response,
 						 gpointer data)
 {
-	gtk_dialog_response (GTK_DIALOG (data), GTK_RESPONSE_CANCEL);
+	BraseroBurnOptionsPrivate *priv;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+
+	if (priv->not_ready_id) {
+		g_source_remove (priv->not_ready_id);
+		priv->not_ready_id = 0;
+	}
+	gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+	gtk_dialog_response (GTK_DIALOG (data),
+	                     GTK_RESPONSE_CANCEL);
 }
 
 static gboolean
@@ -266,8 +276,27 @@ brasero_burn_options_not_ready_dialog_show_cb (gpointer data)
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+
+	/* icon should be set by now */
+	gtk_window_set_icon_name (GTK_WINDOW (priv->status_dialog),
+	                          gtk_window_get_icon_name (GTK_WINDOW (data)));
+
+	gtk_widget_show (priv->status_dialog);
 	priv->not_ready_id = 0;
 	return FALSE;
+}
+
+static void
+brasero_burn_options_not_ready_dialog_shown_cb (GtkWidget *widget,
+                                                gpointer data)
+{
+	BraseroBurnOptionsPrivate *priv;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+	if (priv->not_ready_id) {
+		g_source_remove (priv->not_ready_id);
+		priv->not_ready_id = 0;
+	}
 }
 
 static void
@@ -301,6 +330,15 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 			g_signal_connect (priv->status_dialog,
 					  "response", 
 					  G_CALLBACK (brasero_burn_options_not_ready_dialog_cancel_cb),
+					  self);
+
+			g_signal_connect (priv->status_dialog,
+					  "show", 
+					  G_CALLBACK (brasero_burn_options_not_ready_dialog_shown_cb),
+					  self);
+			g_signal_connect (priv->status_dialog,
+					  "user-interaction", 
+					  G_CALLBACK (brasero_burn_options_not_ready_dialog_shown_cb),
 					  self);
 
 			priv->not_ready_id = g_timeout_add_seconds (1,
