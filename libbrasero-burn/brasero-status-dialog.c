@@ -57,6 +57,9 @@ struct _BraseroStatusDialogPrivate
 	GtkWidget *action;
 
 	guint id;
+
+	guint accept_2G_files:1;
+	guint reject_2G_files:1;
 };
 
 #define BRASERO_STATUS_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_STATUS_DIALOG, BraseroStatusDialogPrivate))
@@ -182,6 +185,15 @@ brasero_status_dialog_deep_directory_cb (BraseroTrackDataCfg *project,
 	gint answer;
 	gchar *string;
 	GtkWidget *message;
+	BraseroStatusDialogPrivate *priv;
+
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+
+	if (priv->accept_2G_files)
+		return TRUE;
+
+	if (priv->reject_2G_files)
+		return FALSE;
 
 	gtk_widget_hide (GTK_WIDGET (dialog));
 
@@ -202,15 +214,20 @@ brasero_status_dialog_deep_directory_cb (BraseroTrackDataCfg *project,
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
 						    "\nNote: Such a file hierarchy is known to work on Linux."));
 
+	gtk_dialog_add_button (GTK_DIALOG (message), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
 	gtk_dialog_add_button (GTK_DIALOG (message), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
 	gtk_dialog_add_button (GTK_DIALOG (message), _("_Add File"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (message), _("Al_ways Add Such File"), GTK_RESPONSE_ACCEPT);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 
-	return (answer != GTK_RESPONSE_YES);
+	priv->accept_2G_files = (answer == GTK_RESPONSE_ACCEPT);
+	priv->reject_2G_files = (answer == GTK_RESPONSE_REJECT);
+
+	return (answer != GTK_RESPONSE_YES && answer != GTK_RESPONSE_ACCEPT);
 }
 
 static gboolean
