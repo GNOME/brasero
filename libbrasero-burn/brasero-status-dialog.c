@@ -215,8 +215,6 @@ brasero_status_dialog_deep_directory_cb (BraseroTrackDataCfg *project,
 						    "\nNote: Such a file hierarchy is known to work on Linux."));
 
 	gtk_dialog_add_button (GTK_DIALOG (message), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
-	gtk_dialog_add_button (GTK_DIALOG (message), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
-	gtk_dialog_add_button (GTK_DIALOG (message), _("_Add File"), GTK_RESPONSE_YES);
 	gtk_dialog_add_button (GTK_DIALOG (message), _("Al_ways Add Such File"), GTK_RESPONSE_ACCEPT);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
