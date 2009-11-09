@@ -427,11 +427,10 @@ dnl line parameter. This is to be able to use make distcheck.
 
 GOBJECT_INTROSPECTION_REQUIRED=0.6.3
 
-enable_introspection=yes
 AC_ARG_ENABLE(introspection,
-                  AS_HELP_STRING([--enable-introspection[=@<:@no/auto/yes@:>@]],
-		  [Enable introspection for this build]),, 
-		  [enable_introspection=auto])
+                  AS_HELP_STRING([--enable-introspection[=@<:@no/auto/yes@:>@]], [Enable introspection for this build]),
+		  [enable_introspection=$enableval],
+		  [enable_introspection="auto"])
 
 AC_ARG_WITH(girdir,
 			AS_HELP_STRING([--with-girdir=DIR],[Installation path for .gir files @<:@auto@:>@]),
@@ -589,6 +588,7 @@ echo "Version: $BRASERO_VERSION
 	Build cdrtools plugins : ${build_cdrtools}
 	Build cdrkit plugins : ${build_cdrkit}
 	Build libburnia plugins : ${build_libburnia}
+	Build GObject-Introspection : ${found_introspection}
 "
 echo
 echo
