@@ -980,7 +980,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	}
 
 	/* Overburn is only for CDs */
-	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD == 0) {
+	if ((brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD) == 0) {
 		priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
 		return BRASERO_SESSION_INSUFFICIENT_SPACE;
 	}
