@@ -60,6 +60,8 @@ struct _BraseroStatusDialogPrivate
 
 	guint accept_2G_files:1;
 	guint reject_2G_files:1;
+	guint accept_deep_files:1;
+	guint reject_deep_files:1;
 };
 
 #define BRASERO_STATUS_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_STATUS_DIALOG, BraseroStatusDialogPrivate))
@@ -237,6 +239,16 @@ brasero_status_dialog_2G_file_cb (BraseroTrackDataCfg *track,
 	gchar *string;
 	GtkWidget *message;
 
+	BraseroStatusDialogPrivate *priv;
+
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+
+	if (priv->accept_deep_files)
+		return TRUE;
+
+	if (priv->reject_deep_files)
+		return FALSE;
+
 	gtk_widget_hide (GTK_WIDGET (dialog));
 
 	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection and use the third version of the ISO9660 standard to support it?"), name);
@@ -256,15 +268,20 @@ brasero_status_dialog_2G_file_cb (BraseroTrackDataCfg *track,
 						    "\nIt is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows ©."
 						    "\nHowever, Mac OS X cannot read images created with version 3 of the ISO9660 standard."));
 
+	gtk_dialog_add_button (GTK_DIALOG (message), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
 	gtk_dialog_add_button (GTK_DIALOG (message), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
 	gtk_dialog_add_button (GTK_DIALOG (message), _("_Add File"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (message), _("Al_ways Add Such File"), GTK_RESPONSE_ACCEPT);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 
-	return (answer != GTK_RESPONSE_YES);
+	priv->accept_deep_files = (answer == GTK_RESPONSE_ACCEPT);
+	priv->reject_deep_files = (answer == GTK_RESPONSE_REJECT);
+
+	return (answer != GTK_RESPONSE_YES && answer != GTK_RESPONSE_ACCEPT);
 }
 
 static void
