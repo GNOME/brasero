@@ -195,6 +195,16 @@ nautilus_disc_burn_is_empty (GtkWindow *toplevel)
 }
 
 static void
+brasero_session_name_changed (BraseroProjectName *project_name,
+                              BraseroBurnSession *session)
+{
+	const gchar *label;
+
+	label = gtk_entry_get_text (GTK_ENTRY (project_name));
+	brasero_burn_session_set_label (session, label);
+}
+
+static void
 write_activate (GtkWindow *toplevel)
 {
 	BraseroTrackDataCfg	*track;
@@ -219,6 +229,10 @@ write_activate (GtkWindow *toplevel)
 	name_options = brasero_project_name_new (NULL);
 	brasero_project_name_set_session (BRASERO_PROJECT_NAME (name_options),
 					  BRASERO_BURN_SESSION (session));
+	g_signal_connect (name_options,
+	                  "name-changed",
+	                  G_CALLBACK (brasero_session_name_changed),
+	                  session);
 
 	string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
 	options = brasero_utils_pack_properties (string,
