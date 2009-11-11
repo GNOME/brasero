@@ -443,7 +443,6 @@ brasero_src_image_clicked (GtkButton *button)
 	gtk_file_filter_add_mime_type (filter, mimes [1]);
 	gtk_file_filter_add_mime_type (filter, mimes [2]);
 	gtk_file_filter_add_mime_type (filter, mimes [3]);
-	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->file), filter);
 	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->file), filter);
 
