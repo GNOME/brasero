@@ -59,6 +59,8 @@
 #include "brasero-session.h"
 #include "brasero-session-cfg.h"
 
+#define BRASERO_SECTORS_TO_DURATION(sectors)	(guint64) ((sectors) * 1000000000LL / 75LL)
+
 typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate
 {
@@ -700,7 +702,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	else if (brasero_track_type_get_has_stream (input)
 	|| (brasero_track_type_get_has_medium (input)
 	&& (brasero_track_type_get_medium_type (input) & BRASERO_MEDIUM_HAS_AUDIO)))
-		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes - session_bytes),
+		size_string = brasero_units_get_time_string (BRASERO_SECTORS_TO_DURATION (blocks),
 							     TRUE,
 							     TRUE);
 	else
