@@ -71,19 +71,30 @@ G_BEGIN_DECLS
  **/
 
 #define BRASERO_DURATION_TO_BYTES(duration)					\
-	((gint64) (duration) * 75 * 2352 / 1000000000 +				\
-	(((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0))
+	((gint64) (duration) * 75LL * 2352LL / 1000000000LL +				\
+	(((gint64) ((duration) * 75LL * 2352LL) % 1000000000LL) ? 1:0))
 
 #define BRASERO_DURATION_TO_SECTORS(duration)					\
-	((gint64) (duration) * 75 / 1000000000 +				\
-	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
+	((gint64) (duration) * 75LL / 1000000000LL +				\
+	(((gint64) ((duration) * 75LL) % 1000000000LL) ? 1:0))
 
 #define BRASERO_BYTES_TO_SECTORS(size, secsize)					\
 	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
 
 #define BRASERO_BYTES_TO_DURATION(bytes)					\
-	(guint64) ((guint64) ((guint64) (bytes) * 1000000000) / (guint64) (2352 * 75) + 				\
-	(guint64) (((guint64) ((guint64) (bytes) * 1000000000) % (guint64) (2352 * 75)) ? 1:0))
+	(guint64) ((guint64) ((guint64) (bytes) * 1000000000LL) / (guint64) (2352LL * 75LL) + 				\
+	(guint64) (((guint64) ((guint64) (bytes) * 1000000000LL) % (guint64) (2352LL * 75LL)) ? 1:0))
+
+/* NOTE: 1 sec = 75 sectors */
+
+/**
+ * BRASERO_SECTORS_TO_DURATION:
+ * This macro is used to convert sector sizes in
+ * in length (in nanoseconds).
+ *
+**/
+#define BRASERO_SECTORS_TO_DURATION(sectors)	\
+	(guint64) ((sectors) * 1000000000LL / 75LL)
 
 /**
  * Used to get string

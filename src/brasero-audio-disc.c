@@ -43,6 +43,8 @@
 #include "brasero-io.h"
 #include "brasero-notify.h"
 
+#include "brasero-units.h"
+
 #include "brasero-tags.h"
 #include "brasero-track-stream-cfg.h"
 #include "brasero-session-cfg.h"
@@ -217,8 +219,6 @@ enum {
 	PROP_REJECT_FILE,
 };
 
-/* 1 sec = 75 sectors, len is in nanosecond */
-#define BRASERO_SECTORS_TO_TIME(sectors)	(gint64) (sectors * GST_SECOND / 75)
 #define COL_KEY "column_key"
 
 #define BRASERO_AUDIO_DISC_CONTEXT		1000
@@ -614,7 +614,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
 					     start,
 					     end,
-					     BRASERO_SECTORS_TO_TIME (gap_sectors));
+					     BRASERO_SECTORS_TO_DURATION (gap_sectors));
 
 	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (store));
 	if (pos > 0) {
@@ -1654,7 +1654,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
                                                                       start,
                                                                       end,
-                                                                      BRASERO_SECTORS_TO_TIME (gap));
+                                                                      BRASERO_SECTORS_TO_DURATION (gap));
 
 	if (title)
 		brasero_track_tag_add_string (BRASERO_TRACK (track),
@@ -1676,7 +1676,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 					   BRASERO_TRACK_STREAM_ISRC_TAG,
 					   isrc);
 
-	if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_STREAM_LENGTH)
+	if (end - start + BRASERO_SECTORS_TO_DURATION (gap) < BRASERO_MIN_STREAM_LENGTH)
 		brasero_audio_disc_short_track_dialog (disc);
 
 	g_free (title);

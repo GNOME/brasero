@@ -59,8 +59,6 @@
 #include "brasero-session.h"
 #include "brasero-session-cfg.h"
 
-#define BRASERO_SECTORS_TO_DURATION(sectors)	(guint64) ((sectors) * 1000000000LL / 75LL)
-
 typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate
 {
