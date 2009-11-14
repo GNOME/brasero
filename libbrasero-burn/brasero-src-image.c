@@ -173,9 +173,9 @@ brasero_src_image_update (BraseroSrcImage *self)
 {
 	gchar *uri;
 	gchar *name;
-	GFile *file;
 	gchar *string;
 	goffset bytes = 0;
+	GFile *file = NULL;
 	GError *error = NULL;
 	BraseroStatus *status;
 	BraseroBurnResult result;
@@ -214,9 +214,11 @@ brasero_src_image_update (BraseroSrcImage *self)
 	g_free (uri);
 
 	name = g_file_get_basename (file);
-	g_object_unref (file);
-	if (!name)
+	if (!name) {
+		if (file)
+			g_object_unref (file);
 		return;
+	}
 
 	/* See if information retrieval went fine and/or is ready */
 	status = brasero_status_new ();
@@ -243,7 +245,8 @@ brasero_src_image_update (BraseroSrcImage *self)
 		goto end;
 	}
 
-	gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
+	uri = g_file_get_uri (file);
+	gtk_widget_set_tooltip_text (GTK_WIDGET (self), uri);
 
 	/* Deal with size */
 	brasero_track_get_size (BRASERO_TRACK (priv->track), NULL, &bytes);
@@ -256,6 +259,9 @@ brasero_src_image_update (BraseroSrcImage *self)
 	g_free (name);
 
 end:
+
+	if (file)
+		g_object_unref (file);
 
 	g_object_unref (status);
 	if (string) {
