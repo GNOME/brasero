@@ -332,7 +332,7 @@ brasero_search_tracker_clean (BraseroSearchTracker *search)
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
 
 	if (priv->results) {
-		g_ptr_array_foreach (priv->results, (GFunc) g_free, NULL);
+		g_ptr_array_foreach (priv->results, (GFunc) g_strfreev, NULL);
 		g_ptr_array_free (priv->results, TRUE);
 		priv->results = NULL;
 	}
