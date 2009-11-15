@@ -149,6 +149,7 @@ if HAVE_USCSI_H
 libbrasero_media_la_SOURCES += scsi-uscsi.c
 endif
 
+if HAVE_INTROSPECTION
 girdir = $(INTROSPECTION_GIRDIR)
 gir_DATA = BraseroMedia-1.0.gir
 
@@ -176,6 +177,7 @@ BraseroMedia-1.0.gir: libbrasero-media.la $(INTROSPECTION_SCANNER)
 
 BraseroMedia-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
 	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media.la -o $(typelibs_DATA)
+endif
 
 EXTRA_DIST =			\
 	libbrasero-marshal.list

@@ -205,6 +205,7 @@ EXTRA_DIST =			\
 	libbrasero-marshal.list
 #	libbrasero-burn.symbols
 
+if HAVE_INTROSPECTION
 girdir = $(INTROSPECTION_GIRDIR)
 gir_DATA = BraseroBurn-1.0.gir
 
@@ -246,9 +247,10 @@ BraseroBurn-1.0.gir: libbrasero-burn.la $(INTROSPECTION_SCANNER)
             $(top_srcdir)/libbrasero-burn/brasero-tool-dialog.h					\
 	    $(top_srcdir)/libbrasero-burn/brasero-sum-dialog.h					\
 	    $(top_srcdir)/libbrasero-burn/*.c	    
-	    
+
 BraseroBurn-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
 	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-burn/$(gir_DATA) --shared-library=libbrasero-burn.la -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
+endif
 
 CLEANFILES =			\
 	$(RECMARSHALFILES)  \
