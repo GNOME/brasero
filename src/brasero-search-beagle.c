@@ -44,7 +44,7 @@ struct _BraseroSearchBeaglePrivate
 	BeagleClient *client;
 	BeagleQuery *query;
 
-	GSList * hits;
+	GSList *hits;
 };
 
 #define BRASERO_SEARCH_BEAGLE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SEARCH_BEAGLE, BraseroSearchBeaglePrivate))
@@ -86,31 +86,6 @@ brasero_search_beagle_uri_from_hit (BraseroSearchEngine *engine,
 	return beagle_hit_get_uri (BEAGLE_HIT (hit));
 }
 
-static gchar *
-brasero_search_beagle_name_from_hit (BraseroSearchEngine *engine,
-                                     gpointer hit)
-{
-	gchar *name;
-	const gchar *uri;
-	gchar *unescaped_uri;
-
-	uri = beagle_hit_get_uri (BEAGLE_HIT (hit));
-
-	/* beagle return badly formed uri not
-	 * encoded in UTF-8 locale charset so we
-	 * check them just in case */
-	unescaped_uri = g_uri_unescape_string (uri, NULL);
-	if (!g_utf8_validate (unescaped_uri, -1, NULL)) {
-		g_free (unescaped_uri);
-		return NULL;
-	}
-
-	name = g_path_get_basename (unescaped_uri);
-	g_free (unescaped_uri);
-
-	return name;
-}
-
 static const gchar *
 brasero_search_beagle_mime_from_hit (BraseroSearchEngine *engine,
                                      gpointer hit)
@@ -118,40 +93,11 @@ brasero_search_beagle_mime_from_hit (BraseroSearchEngine *engine,
 	return beagle_hit_get_mime_type (BEAGLE_HIT (hit));
 }
 
-static const gchar *
-brasero_search_beagle_description_from_hit (BraseroSearchEngine *engine,
-                                            gpointer hit)
-{
-	const gchar *mime;
-
-	mime = beagle_hit_get_mime_type (BEAGLE_HIT (hit));
-	if (!mime)
-		return NULL;
-
-	return g_content_type_get_description (mime);
-}
-
 static int
 brasero_search_beagle_score_from_hit (BraseroSearchEngine *engine,
                                       gpointer hit)
 {
 	return (int) (beagle_hit_get_score (BEAGLE_HIT (hit)) * 100);
-}
-
-static GIcon *
-brasero_search_beagle_icon_from_hit (BraseroSearchEngine *engine,
-                                     gpointer hit)
-{
-	const gchar *mime;
-
-	mime = beagle_hit_get_mime_type (BEAGLE_HIT (hit));
-	if (!mime)
-		return NULL;
-
-	if (!strcmp (mime, "inode/directory"))
-		mime = "x-directory/normal";
-
-	return g_content_type_get_icon (mime);
 }
 
 static gboolean
@@ -326,7 +272,7 @@ brasero_search_beagle_clean (BraseroSearchBeagle *beagle)
 
 static gboolean
 brasero_search_beagle_query_new (BraseroSearchEngine *search,
-                                  const gchar *keywords)
+				 const gchar *keywords)
 {
 	BraseroSearchBeaglePrivate *priv;
 	BeagleQueryPartHuman *text;
@@ -459,11 +405,8 @@ brasero_search_beagle_init_engine (BraseroSearchEngineIface *iface)
 {
 	iface->is_available = brasero_search_beagle_is_available;
 	iface->uri_from_hit = brasero_search_beagle_uri_from_hit;
-	iface->name_from_hit = brasero_search_beagle_name_from_hit;
-	iface->icon_from_hit = brasero_search_beagle_icon_from_hit;
 	iface->score_from_hit = brasero_search_beagle_score_from_hit;
 	iface->mime_from_hit = brasero_search_beagle_mime_from_hit;
-	iface->description_from_hit = brasero_search_beagle_description_from_hit;
 	iface->query_new = brasero_search_beagle_query_new;
 	iface->query_set_scope = brasero_search_beagle_query_set_scope;
 	iface->query_set_mime = brasero_search_beagle_set_query_mime;

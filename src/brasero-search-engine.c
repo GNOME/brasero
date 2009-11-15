@@ -131,42 +131,6 @@ brasero_search_engine_add_hits (BraseroSearchEngine *search,
 	return iface->add_hits (search, model, range_start, range_end);
 }
 
-GIcon *
-brasero_search_engine_icon_from_hit (BraseroSearchEngine *search,
-                                     gpointer hit)
-{
-	BraseroSearchEngineIface *iface;
-
-	g_return_val_if_fail (BRASERO_IS_SEARCH_ENGINE (search), NULL);
-
-	if (!hit)
-		return NULL;
-
-	iface = BRASERO_SEARCH_ENGINE_GET_IFACE (search);
-	if (!iface->icon_from_hit)
-		return FALSE;
-
-	return (* iface->icon_from_hit) (search, hit);
-}
-
-gchar *
-brasero_search_engine_name_from_hit (BraseroSearchEngine *search,
-                                     gpointer hit)
-{
-	BraseroSearchEngineIface *iface;
-
-	g_return_val_if_fail (BRASERO_IS_SEARCH_ENGINE (search), NULL);
-
-	if (!hit)
-		return NULL;
-
-	iface = BRASERO_SEARCH_ENGINE_GET_IFACE (search);
-	if (!iface->name_from_hit)
-		return FALSE;
-
-	return (* iface->name_from_hit) (search, hit);
-}
-
 const gchar *
 brasero_search_engine_uri_from_hit (BraseroSearchEngine *search,
                                      gpointer hit)
@@ -201,24 +165,6 @@ brasero_search_engine_mime_from_hit (BraseroSearchEngine *search,
 		return FALSE;
 
 	return (* iface->mime_from_hit) (search, hit);
-}
-
-const gchar *
-brasero_search_engine_description_from_hit (BraseroSearchEngine *search,
-                                            gpointer hit)
-{
-	BraseroSearchEngineIface *iface;
-
-	g_return_val_if_fail (BRASERO_IS_SEARCH_ENGINE (search), NULL);
-
-	if (!hit)
-		return NULL;
-
-	iface = BRASERO_SEARCH_ENGINE_GET_IFACE (search);
-	if (!iface->description_from_hit)
-		return FALSE;
-
-	return (* iface->description_from_hit) (search, hit);
 }
 
 gint
@@ -335,9 +281,10 @@ brasero_search_engine_base_init (gpointer g_class)
 			  G_STRUCT_OFFSET (BraseroSearchEngineIface, search_error),
 			  NULL,
 			  NULL,
-			  g_cclosure_marshal_VOID__VOID,
+			  g_cclosure_marshal_VOID__POINTER,
 			  G_TYPE_NONE,
-			  0);
+			  1,
+			  G_TYPE_POINTER);
 	brasero_search_engine_signals [SEARCH_FINISHED] =
 	    g_signal_new ("search_finished",
 			  BRASERO_TYPE_SEARCH_ENGINE,
@@ -375,15 +322,29 @@ brasero_search_engine_base_init (gpointer g_class)
 
 #ifdef BUILD_SEARCH
 
-#include "brasero-search-beagle.h"
+#ifdef BUILD_TRACKER
 
-BraseroSearchEngine *search_engine = NULL;
+#include "brasero-search-tracker.h"
+
+BraseroSearchEngine *
+brasero_search_engine_new_default (void)
+{
+	return g_object_new (BRASERO_TYPE_SEARCH_TRACKER, NULL);
+}
+
+#endif
+
+#ifdef BUILD_BEAGLE
+
+#include "brasero-search-beagle.h"
 
 BraseroSearchEngine *
 brasero_search_engine_new_default (void)
 {
 	return g_object_new (BRASERO_TYPE_SEARCH_BEAGLE, NULL);
 }
+
+#endif
 
 #else
 

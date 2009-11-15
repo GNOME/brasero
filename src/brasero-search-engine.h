@@ -55,42 +55,37 @@ struct _BraseroSearchEngineIface {
 	GTypeInterface g_iface;
 
 	/* <Signals> */
-	void	(*search_error)			(BraseroSearchEngine *search);
+	void	(*search_error)				(BraseroSearchEngine *search,
+							 GError *error);
 	void	(*search_finished)			(BraseroSearchEngine *search);
-	void	(*hit_removed)			(BraseroSearchEngine *search,
-					                   gpointer hit);
+	void	(*hit_removed)				(BraseroSearchEngine *search,
+					                 gpointer hit);
 	void	(*hit_added)				(BraseroSearchEngine *search,
-						                 gpointer hit);
+						         gpointer hit);
 
 	/* <Virtual functions> */
 	gboolean	(*is_available)			(BraseroSearchEngine *search);
 	gboolean	(*query_new)			(BraseroSearchEngine *search,
-					                     const gchar *keywords);
-	gboolean	(*query_set_scope)	(BraseroSearchEngine *search,
-					                     BraseroSearchScope scope);
+					                 const gchar *keywords);
+	gboolean	(*query_set_scope)		(BraseroSearchEngine *search,
+					                 BraseroSearchScope scope);
 	gboolean	(*query_set_mime)		(BraseroSearchEngine *search,
-					                     const gchar **mimes);
-	gboolean	(*query_start)		(BraseroSearchEngine *search);
+					                 const gchar **mimes);
+	gboolean	(*query_start)			(BraseroSearchEngine *search);
 
 	gboolean	(*add_hits)			(BraseroSearchEngine *search,
-					                    GtkTreeModel *model,
-					                    gint range_start,
-					                    gint range_end);
+	    GtkTreeModel *model,
+					                 gint range_start,
+					                 gint range_end);
 
-	gint			(*num_hits)			(BraseroSearchEngine *engine);
+	gint		(*num_hits)			(BraseroSearchEngine *engine);
 
-	const gchar*	(*uri_from_hit)		(BraseroSearchEngine *engine,
-				                        gpointer hit);
-	gchar*		(*name_from_hit)		(BraseroSearchEngine *engine,
-				                        gpointer hit);
-	GIcon*		(*icon_from_hit)		(BraseroSearchEngine *engine,
+	const gchar*	(*uri_from_hit)			(BraseroSearchEngine *engine,
 				                         gpointer hit);
-	gint			(*score_from_hit)		(BraseroSearchEngine *engine,
-						                      gpointer hit);
 	const gchar *	(*mime_from_hit)		(BraseroSearchEngine *engine,
-				                              gpointer hit);
-	const gchar *	(*description_from_hit)	(BraseroSearchEngine *engine,
-				                               gpointer hit);
+				                	 gpointer hit);
+	gint		(*score_from_hit)		(BraseroSearchEngine *engine,
+							 gpointer hit);
 };
 
 GType brasero_search_engine_get_type (void);
@@ -133,21 +128,12 @@ void
 brasero_search_engine_hit_added (BraseroSearchEngine *search,
                                  gpointer hit);
 
-GIcon *
-brasero_search_engine_icon_from_hit (BraseroSearchEngine *search,
-                                     gpointer hit);
-gchar *
-brasero_search_engine_name_from_hit (BraseroSearchEngine *search,
-                                     gpointer hit);
 const gchar *
 brasero_search_engine_uri_from_hit (BraseroSearchEngine *search,
                                      gpointer hit);
 const gchar *
 brasero_search_engine_mime_from_hit (BraseroSearchEngine *search,
                                      gpointer hit);
-const gchar *
-brasero_search_engine_description_from_hit (BraseroSearchEngine *search,
-                                            gpointer hit);
 gint
 brasero_search_engine_score_from_hit (BraseroSearchEngine *search,
                                       gpointer hit);

@@ -108,17 +108,49 @@ brasero_search_column_icon_cb (GtkTreeViewColumn *tree_column,
                                gpointer data)
 {
 	GIcon *icon;
+	const gchar *mime;
 	gpointer hit = NULL;
 
 	gtk_tree_model_get (model, iter,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
 	                    -1);
 
-	icon = brasero_search_engine_icon_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	mime = brasero_search_engine_mime_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	if (!mime)
+		return;
+	
+	if (!strcmp (mime, "inode/directory"))
+		mime = "x-directory/normal";
+
+	icon = g_content_type_get_icon (mime);
 	g_object_set (G_OBJECT (cell),
 		      "gicon", icon,
 		      NULL);
 	g_object_unref (icon);
+}
+
+static gchar *
+brasero_search_name_from_hit (BraseroSearch *search,
+			      gpointer hit)
+{
+	gchar *name;
+	const gchar *uri;
+	gchar *unescaped_uri;
+
+	uri = brasero_search_engine_uri_from_hit (search->priv->engine, hit);
+
+	/* beagle can return badly formed uri not
+	 * encoded in UTF-8 locale charset so we
+	 * check them just in case */
+	unescaped_uri = g_uri_unescape_string (uri, NULL);
+	if (!g_utf8_validate (unescaped_uri, -1, NULL)) {
+		g_free (unescaped_uri);
+		return NULL;
+	}
+
+	name = g_path_get_basename (unescaped_uri);
+	g_free (unescaped_uri);
+	return name;
 }
 
 static void
@@ -135,11 +167,24 @@ brasero_search_column_name_cb (GtkTreeViewColumn *tree_column,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
 	                    -1);
 
-	name = brasero_search_engine_name_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	name = brasero_search_name_from_hit (data, hit);
 	g_object_set (G_OBJECT (cell),
 		      "text", name,
 		      NULL);
 	g_free (name);
+}
+
+static const gchar*
+brasero_search_description_from_hit (BraseroSearch *search,
+				     gpointer hit)
+{
+	const gchar *mime;
+
+	mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
+	if (!mime)
+		return NULL;
+
+	return g_content_type_get_description (mime);
 }
 
 static void
@@ -156,7 +201,7 @@ brasero_search_column_description_cb (GtkTreeViewColumn *tree_column,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
 	                    -1);
 
-	description = brasero_search_engine_description_from_hit (BRASERO_SEARCH (data)->priv->engine, hit);
+	description = brasero_search_description_from_hit (data, hit);
 	g_object_set (G_OBJECT (cell),
 		      "text", description,
 		      NULL);
@@ -266,8 +311,10 @@ brasero_search_row_inserted (GtkTreeModel *model,
 
 	mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
 
-	/* add the mime type to the filter combo */
-	brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
+	if (mime) {
+		/* add the mime type to the filter combo */
+		brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
+	}
 }
 
 static gboolean
@@ -486,7 +533,7 @@ brasero_search_is_visible_cb (GtkTreeModel *model,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit,
 	                    -1);
 
-	name = brasero_search_engine_name_from_hit (search->priv->engine, hit);
+	name = brasero_search_name_from_hit (search, hit);
 	uri = brasero_search_engine_uri_from_hit (search->priv->engine, hit);
 	mime = brasero_search_engine_mime_from_hit (search->priv->engine, hit);
 	result = brasero_mime_filter_filter (BRASERO_MIME_FILTER (search->priv->filter),
@@ -640,8 +687,8 @@ brasero_search_sort_name (GtkTreeModel *model,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit2,
 	                    -1);
 
-	name1 = brasero_search_engine_name_from_hit (search->priv->engine, hit1);
-	name2 = brasero_search_engine_name_from_hit (search->priv->engine, hit2);
+	name1 = brasero_search_name_from_hit (search, hit1);
+	name2 = brasero_search_name_from_hit (search, hit2);
 
 	res = g_strcmp0 (name1, name2);
 	g_free (name1);
@@ -666,8 +713,8 @@ brasero_search_sort_description (GtkTreeModel *model,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit2,
 	                    -1);
 
-	return g_strcmp0 (brasero_search_engine_description_from_hit (search->priv->engine, hit1),
-	                  brasero_search_engine_description_from_hit (search->priv->engine, hit2));
+	return g_strcmp0 (brasero_search_description_from_hit (search, hit1),
+	                  brasero_search_description_from_hit (search, hit2));
 }
 
 static gint
@@ -686,8 +733,8 @@ brasero_search_sort_score (GtkTreeModel *model,
 	                    BRASERO_SEARCH_TREE_HIT_COL, &hit2,
 	                    -1);
 
-	return brasero_search_engine_score_from_hit (search->priv->engine, hit1) -
-		    brasero_search_engine_score_from_hit (search->priv->engine, hit2);
+	return brasero_search_engine_score_from_hit (search->priv->engine, hit2) -
+	       brasero_search_engine_score_from_hit (search->priv->engine, hit1);
 }
 
 static void

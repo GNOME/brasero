@@ -128,16 +128,27 @@ brasero_SOURCES += \
 
 endif
 
+if BUILD_TRACKER
+brasero_SOURCES += \
+		   brasero-search-tracker.h	\
+		   brasero-search-tracker.c
+endif
+
+if BUILD_BEAGLE
+brasero_SOURCES += 				\
+		   brasero-search-beagle.h	\
+		   brasero-search-beagle.c
+endif
+
 if BUILD_SEARCH
+
 brasero_SOURCES += \
 		   brasero-mime-filter.c         \
 		   brasero-mime-filter.h         \
 		   brasero-search-entry.c         \
 		   brasero-search-entry.h         \
 		   brasero-search.h		\
-		   brasero-search.c		\
-		   brasero-search-beagle.h	\
-		   brasero-search-beagle.c
+		   brasero-search.c
 endif
 
 brasero_LDADD =						\
