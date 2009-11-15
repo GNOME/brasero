@@ -177,9 +177,9 @@ brasero_gio_operation_umount_finish (GObject *source,
 	if (!op->loop)
 		return;
 
-	op->result = g_mount_unmount_finish (G_MOUNT (source),
-					     result,
-					     &op->error);
+	op->result = g_mount_unmount_with_operation_finish (G_MOUNT (source),
+					     		    result,
+					     		    &op->error);
 
 	BRASERO_MEDIA_LOG ("Umount operation completed (result = %d)", op->result);
 
@@ -243,21 +243,23 @@ brasero_gio_operation_umount (GVolume *gvolume,
 
 		/* NOTE: we own a reference to mount
 		 * object so no need to ref it even more */
-		g_mount_unmount (mount,
-				 G_MOUNT_UNMOUNT_NONE,
-				 cancel,
-				 brasero_gio_operation_umount_finish,
-				 op);
+		g_mount_unmount_with_operation (mount,
+				 		G_MOUNT_UNMOUNT_NONE,
+						NULL,
+				 		cancel,
+				 		brasero_gio_operation_umount_finish,
+				 		op);
 		result = brasero_gio_operation_wait_for_operation_end (op, error);
 		brasero_gio_operation_destroy (op);
 		g_signal_handler_disconnect (mount, umount_sig);
 	}
 	else {
-		g_mount_unmount (mount,
-				 G_MOUNT_UNMOUNT_NONE,
-				 cancel,
-				 NULL,					/* callback */
-				 NULL);
+		g_mount_unmount_with_operation (mount,
+				 		G_MOUNT_UNMOUNT_NONE,
+						NULL,
+				 		cancel,
+				 		NULL,					/* callback */
+				 		NULL);
 		result = TRUE;
 	}
 	g_object_unref (mount);
@@ -367,11 +369,11 @@ brasero_gio_operation_eject_finish (GObject *source,
 	BraseroGioOperation *operation = user_data;
 
 	if (G_IS_DRIVE (source))
-		operation->result = g_drive_eject_finish (G_DRIVE (source),
+		operation->result = g_drive_eject_with_operation_finish (G_DRIVE (source),
 							  result,
 							  &operation->error);
 	else
-		operation->result = g_volume_eject_finish (G_VOLUME (source),
+		operation->result = g_volume_eject_with_operation_finish (G_VOLUME (source),
 							   result,
 							   &operation->error);
 
@@ -418,11 +420,12 @@ brasero_gio_operation_eject_volume (GVolume *gvolume,
 		 * while we are in the loop */
 		g_object_ref (gvolume);
 
-		g_volume_eject (gvolume,
-				G_MOUNT_UNMOUNT_NONE,
-				cancel,
-				brasero_gio_operation_eject_finish,
-				op);
+		g_volume_eject_with_operation (gvolume,
+					       G_MOUNT_UNMOUNT_NONE,
+					       NULL,
+					       cancel,
+				  	       brasero_gio_operation_eject_finish,
+					       op);
 
 		result = brasero_gio_operation_wait_for_operation_end (op, error);
 		g_signal_handler_disconnect (gvolume, eject_sig);
@@ -432,11 +435,12 @@ brasero_gio_operation_eject_volume (GVolume *gvolume,
 		g_object_unref (gvolume);
 	}
 	else {
-		g_volume_eject (gvolume,
-				G_MOUNT_UNMOUNT_NONE,
-				cancel,
-				NULL,
-				NULL);
+		g_volume_eject_with_operation (gvolume,
+					       G_MOUNT_UNMOUNT_NONE,
+				               NULL,
+					       cancel,
+					       NULL,
+					       NULL);
 		result = TRUE;
 	}
 
@@ -497,11 +501,12 @@ brasero_gio_operation_eject_drive (GDrive *gdrive,
 						   G_CALLBACK (brasero_gio_operation_disconnected_cb),
 						   op);
 
-		g_drive_eject (gdrive,
-			       G_MOUNT_UNMOUNT_NONE,
-			       cancel,
-			       brasero_gio_operation_eject_finish,
-			       op);
+		g_drive_eject_with_operation (gdrive,
+			       		      G_MOUNT_UNMOUNT_NONE,
+			                      NULL,
+					      cancel,
+			                      brasero_gio_operation_eject_finish,
+			                      op);
 
 		/* Ref gdrive as it could be unreffed 
 		 * while we are in the loop */
@@ -515,11 +520,12 @@ brasero_gio_operation_eject_drive (GDrive *gdrive,
 		g_object_unref (gdrive);
 	}
 	else {
-		g_drive_eject (gdrive,
-			       G_MOUNT_UNMOUNT_NONE,
-			       cancel,
-			       NULL,
-			       NULL);
+		g_drive_eject_with_operation (gdrive,
+			       		      G_MOUNT_UNMOUNT_NONE,
+					      NULL,
+			         	      cancel,
+			       		      NULL,
+			       		      NULL);
 		result = TRUE;
 	}
 

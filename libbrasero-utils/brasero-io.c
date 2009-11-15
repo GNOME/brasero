@@ -2500,11 +2500,12 @@ brasero_io_finalize (GObject *object)
 			mount = iter->data;
 
 			BRASERO_UTILS_LOG ("Unmountin volume");
-			g_mount_unmount (mount,
-					 G_MOUNT_UNMOUNT_NONE,
-					 NULL,
-					 NULL,
-					 NULL);
+			g_mount_unmount_with_operation (mount,
+					 		G_MOUNT_UNMOUNT_NONE,
+							NULL,
+					 		NULL,
+					 		NULL,
+					 		NULL);
 			g_object_unref (mount);
 		}
 	}
