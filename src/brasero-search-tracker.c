@@ -71,33 +71,6 @@ brasero_search_tracker_num_hits (BraseroSearchEngine *engine)
 	return priv->results->len;
 }
 
-static gboolean
-brasero_search_tracker_add_hit_to_tree (BraseroSearchEngine *search,
-                                        GtkTreeModel *model,
-                                        gint range_start,
-                                        gint range_end)
-{
-	BraseroSearchTrackerPrivate *priv;
-	gint i;
-
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
-
-	if (!priv->results)
-		return FALSE;
-
-	for (i = range_start; g_ptr_array_index (priv->results, i) && i < range_end; i ++) {
-		gchar **hit;
-		GtkTreeIter row;
-
-		hit = g_ptr_array_index (priv->results, i);
-		gtk_list_store_insert_with_values (GTK_LIST_STORE (model), &row, -1,
-		                                   BRASERO_SEARCH_TREE_HIT_COL, hit,
-		                                   -1);
-	}
-
-	return TRUE;
-}
-
 static const gchar *
 brasero_search_tracker_uri_from_hit (BraseroSearchEngine *engine,
                                      gpointer hit)
@@ -178,7 +151,8 @@ brasero_search_tracker_reply (GPtrArray *results,
 }
 
 static gboolean
-brasero_search_tracker_query_start (BraseroSearchEngine *search)
+brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
+					 gint index)
 {
 	BraseroSearchTrackerPrivate *priv;
 	gboolean res = FALSE;
@@ -186,60 +160,31 @@ brasero_search_tracker_query_start (BraseroSearchEngine *search)
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
 
-	if (!priv->mimes && !priv->scope) {
-		if (!priv->keywords)
-			return FALSE;
+	query = g_string_new ("SELECT ?file ?mime fts:rank(?file) "		/* Which variables should be returned */
+			      "WHERE {"						/* Start defining the search and its scope */
+			      "  ?file a nfo:FileDataObject . "			/* File must be a file (not a stream, ...) */
+			      "  ?file nie:mimeType ?mime . ");			/* Get its mime */
 
-		query = g_string_new ("SELECT ?file ?mime "			/* Which variables should be returned */
-				      "WHERE {"					/* Start defining the search and its scope */
-				      "  ?file a nfo:FileDataObject . ");	/* File must be a file (not a stream, ...) */
-
-		g_string_append_printf(query,
-				      "  ?file fts:match \"%s\" . "		/* File must match keywords */
-				      "OPTIONAL {  ?file nie:mimeType ?mime } "	/* Get its mime */
-				      "} "
-				      "ORDER BY ASC(?file) "
-				      "OFFSET 0 "
-				      "LIMIT 10000",
-				      priv->keywords);
-	}
-	else if (priv->mimes) {
+	if (priv->mimes) {
 		int i;
 
-		query = g_string_new ("SELECT ?file ?mime "			/* Which variables should be returned */
-				      "WHERE {"					/* Start defining the search and its scope */
-				      "  ?file a nfo:FileDataObject . ");       /* File must be a file (not a stream, ...) */
-
-		if (priv->keywords)
-			g_string_append_printf (query,
-						"  ?file fts:match \"%s\" . ",  /* File must match possible keywords */
-						priv->keywords);
-
-		g_string_append (query,
-				 "  ?file nie:mimeType ?mime "			/* Get its mime */
-				 " FILTER ( ");
-
-		for (i = 0; priv->mimes [i]; i ++) {				/* And filter files according to their mime type */
+		g_string_append (query, " FILTER ( ");
+		for (i = 0; priv->mimes [i]; i ++) {				/* Filter files according to their mime type */
 			if (i > 0)
 				g_string_append (query, " || ");
 			g_string_append_printf (query,
 						"?mime = \"%s\"",
 						priv->mimes [i]);
 		}
-		g_string_append (query,						/* Finish the query */
-				 ") } "
-				 "ORDER BY ASC(?file) "
-				 "OFFSET 0 "
-				 "LIMIT 10000");
+		g_string_append (query, " ) ");
 	}
-	else if (priv->scope) {
+
+	if (priv->scope) {
 		gboolean param_added = FALSE;
 
-		query = g_string_new ("SELECT ?file ?mime fts:rank(?file) "
-				      "WHERE { "
-				      "  ?file a nfo:FileDataObject . "
-				      "  ?file a ?type . "
-				      "  FILTER ( ");
+		g_string_append (query,
+				 "  ?file a ?type . "
+				 "  FILTER ( ");
 
 		if (priv->scope & BRASERO_SEARCH_SCOPE_MUSIC) {
 			query = g_string_append (query, "?type = nmm:MusicPiece");
@@ -270,22 +215,18 @@ brasero_search_tracker_query_start (BraseroSearchEngine *search)
 
 		g_string_append (query,
 				 " ) ");
-
-		if (priv->keywords)
-			g_string_append_printf (query,
-						"  ?file fts:match \"%s\" ",
-						priv->keywords);
-
-		g_string_append (query,
-				 "OPTIONAL {  ?file nie:mimeType ?mime } "
-				 "} "
-				 "ORDER BY ASC(fts:rank(?file)) "
-				 "OFFSET 0 "
-				 "LIMIT 10000");
 	}
 
-	if (!query)
-		return FALSE;
+	if (priv->keywords)
+		g_string_append_printf (query,
+					"  ?file fts:match \"%s\" ",		/* File must match possible keywords */
+					priv->keywords);
+
+	g_string_append (query,
+			 " } "
+			 "ORDER BY ASC(fts:rank(?file)) "
+			 "OFFSET 0 "
+			 "LIMIT 10000");
 
 	res = tracker_resources_sparql_query_async (priv->client,
 						    query->str,
@@ -294,6 +235,39 @@ brasero_search_tracker_query_start (BraseroSearchEngine *search)
 	g_string_free (query, TRUE);
 
 	return res;
+}
+
+static gboolean
+brasero_search_tracker_query_start (BraseroSearchEngine *search)
+{
+	return brasero_search_tracker_query_start_real (search, 0);
+}
+
+static gboolean
+brasero_search_tracker_add_hit_to_tree (BraseroSearchEngine *search,
+                                        GtkTreeModel *model,
+                                        gint range_start,
+                                        gint range_end)
+{
+	BraseroSearchTrackerPrivate *priv;
+	gint i;
+
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+
+	if (!priv->results)
+		return FALSE;
+
+	for (i = range_start; g_ptr_array_index (priv->results, i) && i < range_end; i ++) {
+		gchar **hit;
+		GtkTreeIter row;
+
+		hit = g_ptr_array_index (priv->results, i);
+		gtk_list_store_insert_with_values (GTK_LIST_STORE (model), &row, -1,
+		                                   BRASERO_SEARCH_TREE_HIT_COL, hit,
+		                                   -1);
+	}
+
+	return TRUE;
 }
 
 static gboolean
