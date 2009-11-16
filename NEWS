@@ -1,3 +1,29 @@
+16-11-2009: 2.29.2
+
+New Features:
+- Integrate Brasero with PackageKit
+- Gobject-introspection support for libbrasero-media and libbrasero-burn
+- Added Tracker support for searches besides Beagle
+
+Bugs Fixed:
+- Fix compile failure using --disable-introspection see bgo #602027
+- Removed deprecated GLib symbols fixes bgo #601040
+- Fix #601871 - Wrong remaining space when audio CD of size greater than 70
+min
+- Fix #601496 - Select disc image selector allows to selecd pictures
+- Fix #601109 - burning disks with burn:// doesn't set the disk label
+- Fix #601259 - Problems with folder depth
+- Fix #599655 - brasero crashed with SIGSEGV in g_main_context_dispatch()
+- Fix #588323 - crash in Disc Copier: Dragging a track from Banshee
+- Fix #600007 - Memory leaks in brasero
+- Fix #600293 - Fails to build error: cannot convert to a pointer type
+
+- Update Translations.
+
+NOTES:
+- gtk-doc 1.12 (unreleased yet) is needed to enable gobject-introspection for
+now simply add --disable-introspection
+
 26-10-2009: 2.29.1
 
 First development release.
