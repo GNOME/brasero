@@ -37,6 +37,7 @@
 #include "brasero-medium.h"
 #include "brasero-volume.h"
 
+#include "brasero-tags.h"
 #include "brasero-session.h"
 #include "brasero-track-data-cfg.h"
 
@@ -269,11 +270,63 @@ brasero_project_name_get_default_label (BraseroProjectName *self)
 			 * 32 _bytes_.
 			 * The %s is the date */
 			title_str = g_strdup_printf (_("Video disc (%s)"), buffer);
-		else if (priv->type == BRASERO_PROJECT_TYPE_AUDIO)
-			/* NOTE to translators: the final string must not be over
-			 * 32 _bytes_ .
-			 * The %s is the date */
-			title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
+		else if (priv->type == BRASERO_PROJECT_TYPE_AUDIO) {
+			GSList *tracks;
+			const gchar *album = NULL;
+			const gchar *artist = NULL;
+			gboolean default_album_name = TRUE;
+
+			/* Go through all audio tracks and see if they have the 
+			 * same album and artist name. If so set the album name */
+			tracks = brasero_burn_session_get_tracks (priv->session);
+			for (; tracks; tracks = tracks->next) {
+				BraseroTrack *track;
+				const gchar *tmp_album;
+				const gchar *tmp_artist;
+
+				track = tracks->data;
+
+				tmp_album = brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ALBUM_TAG);
+
+				if (!tmp_album) {
+					default_album_name = FALSE;
+					break;
+				}
+
+				if (album) {
+					if (strcmp (tmp_album, album)) {
+						default_album_name = FALSE;
+						break;
+					}
+				}
+				else
+					album = tmp_album;
+
+				tmp_artist = brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG);
+				if (!tmp_artist) {
+					default_album_name = FALSE;
+					break;
+				}
+
+				if (artist) {
+					if (strcmp (tmp_artist, artist)) {
+						default_album_name = FALSE;
+						break;
+					}
+				}
+				else
+					artist = tmp_artist;
+			}
+
+			if (!artist || !album || !default_album_name) {
+				/* NOTE to translators: the final string must not be over
+				 * 32 _bytes_ .
+				 * The %s is the date */
+				title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
+			}
+			else
+				title_str = g_strdup (album);
+		}
 
 		if (strlen (title_str) > 32) {
 			g_free (title_str);
@@ -389,8 +442,14 @@ brasero_project_name_set_type (BraseroProjectName *self)
 	BraseroTrackType *track_type;
 	BraseroProjectType type;
 	gchar *title_str = NULL;
+	BraseroStatus *status;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+
+	status = brasero_status_new ();
+	brasero_burn_session_get_status (priv->session, status);
+	if (brasero_status_get_result (status) != BRASERO_BURN_OK)
+		return;
 
 	track_type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, track_type);
@@ -408,8 +467,12 @@ brasero_project_name_set_type (BraseroProjectName *self)
 
 	brasero_track_type_free (track_type);
 
-	if (priv->type == type)
-		return;
+	/* This is not necessarily true for audio projects as those can have the
+	 * name of their album set as default; so it could easily change */
+	if (type != BRASERO_PROJECT_TYPE_AUDIO) {
+		if (priv->type == type)
+			return;
+	}
 
 	priv->type = type;
 	priv->label_modified = FALSE;
@@ -571,6 +634,7 @@ brasero_project_name_set_session (BraseroProjectName *project,
 		return;
 
 	priv->session = g_object_ref (session);
+
 	g_signal_connect (priv->session,
 			  "track-added",
 			  G_CALLBACK (brasero_project_name_track_added),

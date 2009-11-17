@@ -265,6 +265,11 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		brasero_track_tag_add_string (BRASERO_TRACK (obj),
 					      BRASERO_TRACK_STREAM_ARTIST_TAG,
 					      g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST));
+	if (g_file_info_get_attribute_string (info, BRASERO_IO_ALBUM)
+	&& !brasero_track_tag_lookup_string (BRASERO_TRACK (obj), BRASERO_TRACK_STREAM_ALBUM_TAG))
+		brasero_track_tag_add_string (BRASERO_TRACK (obj),
+					      BRASERO_TRACK_STREAM_ALBUM_TAG,
+					      g_file_info_get_attribute_string (info, BRASERO_IO_ALBUM));
 	if (g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER)
 	&& !brasero_track_tag_lookup_string (BRASERO_TRACK (obj), BRASERO_TRACK_STREAM_COMPOSER_TAG))
 		brasero_track_tag_add_string (BRASERO_TRACK (obj),
