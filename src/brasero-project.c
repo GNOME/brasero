@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /***************************************************************************
  *            project.c
  *
@@ -1452,6 +1454,7 @@ brasero_project_drive_properties (BraseroProject *project)
 
 	/* Build dialog */
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (project->priv->session));
+
 	display_name = brasero_drive_get_display_name (drive);
 	header = g_strdup_printf (_("Properties of %s"), display_name);
 	g_free (display_name);

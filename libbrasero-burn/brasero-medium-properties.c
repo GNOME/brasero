@@ -89,6 +89,7 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 
 	drive = brasero_burn_session_get_burner (priv->session);
 	display_name = brasero_drive_get_display_name (drive);
+
 	header = g_strdup_printf (_("Properties of %s"), display_name);
 	g_free (display_name);
 

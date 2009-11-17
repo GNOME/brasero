@@ -610,9 +610,6 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 		return g_strdup (_("Image File"));
 	}
 
-	if (priv->gdrive)
-		return g_drive_get_name (priv->gdrive);
-
 	return g_strdup (priv->name);
 }
 
