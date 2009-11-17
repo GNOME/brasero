@@ -1,4 +1,4 @@
-SUBDIRS = cdrdao transcode dvdcss growisofs checksum local-track dvdauthor vcdimager
+SUBDIRS = transcode dvdcss checksum local-track dvdauthor vcdimager
 
 if BUILD_LIBBURNIA
 SUBDIRS += libburnia
@@ -10,6 +10,14 @@ endif
 
 if BUILD_CDRTOOLS
 SUBDIRS += cdrtools
+endif
+
+if BUILD_CDRDAO
+SUBDIRS += cdrdao
+endif
+
+if BUILD_GROWISOFS
+SUBDIRS += growisofs
 endif
 
 -include $(top_srcdir)/git.mk

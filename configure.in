@@ -308,6 +308,19 @@ else
 fi
 AM_CONDITIONAL(BUILD_CDRTOOLS, test x"$build_cdrtools" = "xyes")
 
+dnl **************** check for cdrdao **********************
+AC_ARG_ENABLE(cdrdao,
+			AS_HELP_STRING([--enable-cdrdao],[Build cdrdao plugins [[default=yes]]]),
+			[build_cdrdao=$enableval],
+			[build_cdrdao="yes"])
+
+if test x"$build_cdrdao" = "xyes"; then
+	AC_DEFINE(BUILD_CDRDAO, 1, [define if you  want to build cdrdao plugins])
+else
+	build_cdrdao="no"
+fi
+AM_CONDITIONAL(BUILD_CDRDAO, test x"$build_cdrdao" = "xyes")
+
 dnl **************** check for cdrkit ************************
 AC_ARG_ENABLE(cdrkit,
 			AS_HELP_STRING([--enable-cdrkit],[Build cdrkit plugins [[default=yes]]]),
@@ -320,6 +333,19 @@ else
 	build_cdrkit="no"
 fi
 AM_CONDITIONAL(BUILD_CDRKIT, test x"$build_cdrkit" = "xyes")
+
+dnl **************** check for growisofs ************************
+AC_ARG_ENABLE(growisofs,
+			AS_HELP_STRING([--enable-growisofs],[Build growisofs plugins [[default=yes]]]),
+			[build_growisofs=$enableval],
+			[build_growisofs="yes"])
+
+if test x"$build_growisofs" = "xyes"; then
+	AC_DEFINE(BUILD_GROWISOFS, 1, [define if you  want to build growisofs plugins])
+else
+	build_growisofs="no"
+fi
+AM_CONDITIONAL(BUILD_GROWISOFS, test x"$build_growisofs" = "xyes")
 
 dnl ****************check for libnotify (optional)**************
 dnl disable because not used any more
@@ -604,8 +630,10 @@ echo "Version: $BRASERO_VERSION
 	Build search pane : ${build_search}
 	Build playlist pane : ${build_totem}
 	Build Preview pane : ${enable_preview}
+	Build cdrdao plugins : ${build_cdrdao}
 	Build cdrtools plugins : ${build_cdrtools}
 	Build cdrkit plugins : ${build_cdrkit}
+	Build growisofs plugins : ${build_growisofs}
 	Build libburnia plugins : ${build_libburnia}
 	Build GObject-Introspection : ${found_introspection}
 "
