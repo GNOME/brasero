@@ -1097,7 +1097,7 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	brasero_track_tag_copy_missing (BRASERO_TRACK (track), src);
 
 	brasero_job_add_track (BRASERO_JOB (transcode), BRASERO_TRACK (track));
-
+	
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroTaskCtx refs it. */
 	g_object_unref (track);
@@ -1420,7 +1420,7 @@ foreach_tag (const GstTagList *list,
 
 			gst_tag_list_get_string (list, tag, &isrc);
 			brasero_track_tag_add_int (track,
-						   BRASERO_TRACK_STREAM_ARTIST_TAG,
+						   BRASERO_TRACK_STREAM_ISRC_TAG,
 						   (int) g_ascii_strtoull (isrc, NULL, 10));
 		}
 	}
