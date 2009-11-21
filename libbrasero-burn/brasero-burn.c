@@ -1800,35 +1800,15 @@ brasero_burn_check_data_loss (BraseroBurn *burn,
 	input = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, input);
 
-	if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		/* There is an error if APPEND was set since this disc is not
-		 * supported without a prior blanking. */
-		
-		/* we warn the user is going to lose data even if in the case of
-		 * DVD+/-RW we don't really blank the disc we rather overwrite */
-		result = brasero_burn_emit_signal (burn,
-						   WARN_DATA_LOSS_SIGNAL,
-						   BRASERO_BURN_CANCEL);
-		if (result == BRASERO_BURN_NEED_RELOAD)
-			goto reload;
-
-		if (result != BRASERO_BURN_OK) {
-			brasero_track_type_free (input);
-			return result;
-		}
-	}
-	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
-		/* A few special warnings for the discs with data/audio on them
-		 * that don't need prior blanking or can't be blanked */
-		if ((media & BRASERO_MEDIUM_CD)
-		&&  brasero_track_type_get_has_stream (input)
-		&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
-			/* We'd rather blank and rewrite a disc rather than
-			 * append audio to appendable disc. That's because audio
-			 * tracks have little chance to be readable by common CD
-			 * player as last tracks */
+	if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
+		if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+			/* There is an error if APPEND was set since this disc is not
+			 * supported without a prior blanking. */
+	g_print ("REAAA\n");
+			/* we warn the user is going to lose data even if in the case of
+			 * DVD+/-RW we don't really blank the disc we rather overwrite */
 			result = brasero_burn_emit_signal (burn,
-							   WARN_AUDIO_TO_APPENDABLE_SIGNAL,
+							   WARN_DATA_LOSS_SIGNAL,
 							   BRASERO_BURN_CANCEL);
 			if (result == BRASERO_BURN_NEED_RELOAD)
 				goto reload;
@@ -1838,37 +1818,59 @@ brasero_burn_check_data_loss (BraseroBurn *burn,
 				return result;
 			}
 		}
+		else {
+			/* A few special warnings for the discs with data/audio on them
+			 * that don't need prior blanking or can't be blanked */
+			if ((media & BRASERO_MEDIUM_CD)
+			&&  brasero_track_type_get_has_stream (input)
+			&& !BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (input))) {
+				/* We'd rather blank and rewrite a disc rather than
+				 * append audio to appendable disc. That's because audio
+				 * tracks have little chance to be readable by common CD
+				 * player as last tracks */
+				result = brasero_burn_emit_signal (burn,
+								   WARN_AUDIO_TO_APPENDABLE_SIGNAL,
+								   BRASERO_BURN_CANCEL);
+				if (result == BRASERO_BURN_NEED_RELOAD)
+					goto reload;
 
-		/* NOTE: if input is AUDIO we don't care since the OS
-		 * will load the last session of DATA anyway */
-		if ((media & BRASERO_MEDIUM_HAS_DATA)
-		&&   brasero_track_type_get_has_data (input)
-		&& !(flags & BRASERO_BURN_FLAG_MERGE)) {
-			/* warn the users that their previous data
-			 * session (s) will not be mounted by default by
-			 * the OS and that it'll be invisible */
-			result = brasero_burn_emit_signal (burn,
-							   WARN_PREVIOUS_SESSION_LOSS_SIGNAL,
-							   BRASERO_BURN_CANCEL);
-
-			if (result == BRASERO_BURN_RETRY) {
-				/* Wipe out the current flags,
-				 * Add a new one 
-				 * Recheck the result */
-				brasero_burn_session_pop_settings (priv->session);
-				brasero_burn_session_push_settings (priv->session);
-				brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MERGE);
-				result = brasero_burn_check_session_consistency (burn, NULL, error);
-				if (result != BRASERO_BURN_OK)
+				if (result != BRASERO_BURN_OK) {
+					brasero_track_type_free (input);
 					return result;
+				}
 			}
 
-			if (result == BRASERO_BURN_NEED_RELOAD)
-				goto reload;
+			/* NOTE: if input is AUDIO we don't care since the OS
+			 * will load the last session of DATA anyway */
+			if ((media & BRASERO_MEDIUM_HAS_DATA)
+			&&   brasero_track_type_get_has_data (input)
+			&& !(flags & BRASERO_BURN_FLAG_MERGE)) {
+				/* warn the users that their previous data
+				 * session (s) will not be mounted by default by
+				 * the OS and that it'll be invisible */
+				result = brasero_burn_emit_signal (burn,
+								   WARN_PREVIOUS_SESSION_LOSS_SIGNAL,
+								   BRASERO_BURN_CANCEL);
 
-			if (result != BRASERO_BURN_OK) {
-				brasero_track_type_free (input);
-				return result;
+				if (result == BRASERO_BURN_RETRY) {
+					/* Wipe out the current flags,
+					 * Add a new one 
+					 * Recheck the result */
+					brasero_burn_session_pop_settings (priv->session);
+					brasero_burn_session_push_settings (priv->session);
+					brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MERGE);
+					result = brasero_burn_check_session_consistency (burn, NULL, error);
+					if (result != BRASERO_BURN_OK)
+						return result;
+				}
+
+				if (result == BRASERO_BURN_NEED_RELOAD)
+					goto reload;
+
+				if (result != BRASERO_BURN_OK) {
+					brasero_track_type_free (input);
+					return result;
+				}
 			}
 		}
 	}
