@@ -506,7 +506,7 @@ brasero_track_tag_copy_missing (BraseroTrack *dest,
 		new_value = g_new0 (GValue, 1);
 
 		g_value_init (new_value, G_VALUE_TYPE (value));
-		g_value_copy (new_value, value);
+		g_value_copy (value, new_value);
 
 		new_key = g_strdup (key);
 
