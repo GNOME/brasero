@@ -970,6 +970,9 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 
+			/* This is to make sure the CD-TEXT stuff gets written */
+			g_ptr_array_add (argv, g_strdup ("-text"));
+
 			cue_str = g_strdup_printf ("cuefile=%s", cuepath);
 			g_ptr_array_add (argv, cue_str);
 			g_free (cuepath);

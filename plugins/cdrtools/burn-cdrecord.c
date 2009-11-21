@@ -954,6 +954,9 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 
+			/* This is to make sure the CD-TEXT stuff gets written */
+			g_ptr_array_add (argv, g_strdup ("-text"));
+
 			cue_str = g_strdup_printf ("cuefile=%s", cuepath);
 			g_ptr_array_add (argv, cue_str);
 			g_free (cuepath);
@@ -1355,6 +1358,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
+
 	/* again DVD+RW don't support dummy */
 	brasero_plugin_set_blank_flags (plugin,
 					BRASERO_MEDIUM_DVDRW_PLUS|
