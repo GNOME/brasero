@@ -1298,26 +1298,20 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 	}
 
 	brasero_burn_session_get_input_type (session, &source);
-	if (source.type == BRASERO_TRACK_TYPE_NONE) {
+	if (brasero_track_type_is_empty (&source)) {
 		g_object_unref (self);
 		return BRASERO_IMAGE_FORMAT_NONE;
 	}
 
-	if (source.type == BRASERO_TRACK_TYPE_IMAGE) {
+	if (brasero_track_type_get_has_image (&source)) {
 		g_object_unref (self);
-		return source.subtype.img_format;
+		return brasero_track_type_get_image_format (&source);
 	}
 
-	output.type = BRASERO_TRACK_TYPE_IMAGE;
-	output.subtype.img_format = BRASERO_IMAGE_FORMAT_NONE;
+	brasero_track_type_set_has_image (&output);
+	brasero_track_type_set_image_format (&output, BRASERO_IMAGE_FORMAT_NONE);
 
-	if (source.type == BRASERO_TRACK_TYPE_STREAM) {
-		/* If that's AUDIO only without VIDEO then return */
-		if (!(source.subtype.stream_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
-			g_object_unref (self);
-			return BRASERO_IMAGE_FORMAT_NONE;
-		}
-
+	if (brasero_track_type_get_has_stream (&source)) {
 		/* Otherwise try all possible image types */
 		output.subtype.img_format = BRASERO_IMAGE_FORMAT_CDRDAO;
 		for (; output.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
@@ -1327,7 +1321,7 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 									&output);
 			if (result == BRASERO_BURN_OK) {
 				g_object_unref (self);
-				return output.subtype.img_format;
+				return brasero_track_type_get_image_format (&output);
 			}
 		}
 
@@ -1335,13 +1329,11 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 		return BRASERO_IMAGE_FORMAT_NONE;
 	}
 
-	if (source.type == BRASERO_TRACK_TYPE_DATA
-	|| (source.type == BRASERO_TRACK_TYPE_DISC
-	&& (source.subtype.media & BRASERO_MEDIUM_DVD))) {
-		output.subtype.img_format = BRASERO_IMAGE_FORMAT_BIN;
-		result = brasero_burn_session_output_supported (session,
-								&output);
-
+	if (brasero_track_type_get_has_data (&source)
+	|| (brasero_track_type_get_has_medium (&source)
+	&& (brasero_track_type_get_medium_type (&source) & BRASERO_MEDIUM_DVD))) {
+		brasero_track_type_set_image_format (&output, BRASERO_IMAGE_FORMAT_BIN);
+		result = brasero_burn_session_output_supported (session, &output);
 		g_object_unref (self);
 
 		if (result != BRASERO_BURN_OK)
@@ -1355,11 +1347,10 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 	for (; output.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
 	       output.subtype.img_format >>= 1) {
 	
-		result = brasero_burn_session_output_supported (session,
-								&output);
+		result = brasero_burn_session_output_supported (session, &output);
 		if (result == BRASERO_BURN_OK) {
 			g_object_unref (self);
-			return output.subtype.img_format;
+			return brasero_track_type_get_image_format (&output);
 		}
 	}
 
