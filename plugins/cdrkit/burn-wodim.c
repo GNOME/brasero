@@ -966,12 +966,17 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 			gchar *cue_str;
 			gchar *cuepath;
+			gchar *parent;
 
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!cuepath) {
 				brasero_track_type_free (type);
 				BRASERO_JOB_NOT_READY (wodim);
 			}
+
+			parent = g_path_get_dirname (cuepath);
+			brasero_process_set_working_directory (BRASERO_PROCESS (wodim), parent);
+			g_free (parent);
 
 			/* we need to check endianness */
 			if (brasero_track_image_need_byte_swap (BRASERO_TRACK_IMAGE (track)))
