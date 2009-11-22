@@ -141,6 +141,8 @@ typedef enum {
 
 	BRASERO_METADATA_INFO			= 1 << 10,
 
+	BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN  = 1 << 11,
+
 	/* Deprecated */
 	BRASERO_AUDIO_FORMAT_4_CHANNEL		= 0
 } BraseroStreamFormat;

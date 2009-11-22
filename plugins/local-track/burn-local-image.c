@@ -921,6 +921,7 @@ brasero_local_track_export_caps (BraseroPlugin *plugin)
 				       BRASERO_AUDIO_FORMAT_UNDEFINED|
 	                               BRASERO_AUDIO_FORMAT_DTS|
 				       BRASERO_AUDIO_FORMAT_RAW|
+				       BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN|
 				       BRASERO_VIDEO_FORMAT_UNDEFINED|
 				       BRASERO_VIDEO_FORMAT_VCD|
 				       BRASERO_VIDEO_FORMAT_VIDEO_DVD|
@@ -934,6 +935,7 @@ brasero_local_track_export_caps (BraseroPlugin *plugin)
 				       BRASERO_AUDIO_FORMAT_UNDEFINED|
 	                               BRASERO_AUDIO_FORMAT_DTS|
 				       BRASERO_AUDIO_FORMAT_RAW|
+				       BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN|
 				       BRASERO_VIDEO_FORMAT_UNDEFINED|
 				       BRASERO_VIDEO_FORMAT_VCD|
 				       BRASERO_VIDEO_FORMAT_VIDEO_DVD|

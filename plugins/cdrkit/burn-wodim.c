@@ -864,7 +864,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			/* NOTE: when we don't want wodim to use stdin then we
 			 * give the audio file on the command line. Otherwise we
 			 * use the .inf */
-			g_ptr_array_add (argv, g_strdup ("-swab"));
 			g_ptr_array_add (argv, g_strdup ("-audio"));
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
 			g_ptr_array_add (argv, g_strdup ("-text"));
@@ -888,7 +887,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 
 		g_ptr_array_add (argv, g_strdup ("fs=16m"));
 		g_ptr_array_add (argv, g_strdup ("-audio"));
-		g_ptr_array_add (argv, g_strdup ("-swab"));
 		g_ptr_array_add (argv, g_strdup ("-pad"));
 	
 		g_ptr_array_add (argv, g_strdup ("-useinfo"));

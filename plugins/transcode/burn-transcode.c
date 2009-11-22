@@ -394,11 +394,12 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 				   GError **error)
 {
 	gchar *uri;
-	GValue *value = NULL;
+	gboolean keep_dts;
 	GstElement *decode;
 	GstElement *source;
 	GstBus *bus = NULL;
 	GstCaps *filtercaps;
+	GValue *value = NULL;
 	GstElement *pipeline;
 	GstElement *sink = NULL;
 	BraseroJobAction action;
@@ -408,7 +409,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	BraseroTrack *track = NULL;
 	GstElement *resample = NULL;
 	BraseroTranscodePrivate *priv;
-	BraseroStreamFormat session_format;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
@@ -514,13 +514,16 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		      "sync", FALSE,
 		      NULL);
 
-	session_format = BRASERO_AUDIO_FORMAT_RAW;
-	brasero_job_tag_lookup (BRASERO_JOB (transcode), BRASERO_SESSION_STREAM_AUDIO_FORMAT, &value);
+	brasero_job_tag_lookup (BRASERO_JOB (transcode),
+				BRASERO_SESSION_STREAM_AUDIO_FORMAT,
+				&value);
 	if (value)
-		session_format = g_value_get_int (value);
-	
-	if (action == BRASERO_JOB_ACTION_IMAGE
-	&& (session_format & BRASERO_AUDIO_FORMAT_DTS) != 0
+		keep_dts = (g_value_get_int (value) & BRASERO_AUDIO_FORMAT_DTS) != 0;
+	else
+		keep_dts = FALSE;
+
+	if (keep_dts
+	&&  action == BRASERO_JOB_ACTION_IMAGE
 	&& (brasero_track_stream_get_format (BRASERO_TRACK_STREAM (track)) & BRASERO_AUDIO_FORMAT_DTS) != 0) {
 		GstElement *wavparse;
 		GstPad *sinkpad;
@@ -588,6 +591,14 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	gst_bin_add (GST_BIN (pipeline), convert);
 
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
+		BraseroStreamFormat session_format;
+		BraseroTrackType *output_type;
+
+		output_type = brasero_track_type_new ();
+		brasero_job_get_output_type (BRASERO_JOB (transcode), output_type);
+		session_format = brasero_track_type_get_stream_format (output_type);
+		brasero_track_type_free (output_type);
+
 		/* audioresample */
 		resample = gst_element_factory_make ("audioresample", NULL);
 		if (resample == NULL) {
@@ -615,9 +626,8 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 								   "channels", G_TYPE_INT, 2,
 								   "width", G_TYPE_INT, 16,
 								   "depth", G_TYPE_INT, 16,
-								   /* NOTE: we use little endianness only
-								    * for libburn which requires little */
-								   "endianness", G_TYPE_INT, 1234,
+								   /* NOTE: we use little endianness only for libburn which requires little */
+								   "endianness", G_TYPE_INT, (session_format & BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN) != 0 ? 1234:4321,
 								   "rate", G_TYPE_INT, 44100,
 								   "signed", G_TYPE_BOOLEAN, TRUE,
 								   NULL),
@@ -1759,6 +1769,7 @@ brasero_transcode_export_caps (BraseroPlugin *plugin)
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					 BRASERO_AUDIO_FORMAT_RAW|
+					 BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN|
 					 BRASERO_METADATA_INFO);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
@@ -1777,7 +1788,8 @@ brasero_transcode_export_caps (BraseroPlugin *plugin)
 
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
-					 BRASERO_AUDIO_FORMAT_RAW);
+					 BRASERO_AUDIO_FORMAT_RAW|
+					 BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED);

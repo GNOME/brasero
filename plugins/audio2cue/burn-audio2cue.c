@@ -417,8 +417,8 @@ brasero_audio2cue_create_thread (gpointer data)
 		goto end;
 	}
 
-	/** Least significant byte first (MOTOROLA otherwise) **/
-	line = g_strdup_printf ("FILE \"%s\" BINARY\n", image);
+	/** Most significant byte first (BINARY otherwise as far as I can tell) **/
+	line = g_strdup_printf ("FILE \"%s\" MOTOROLA\n", image);
 	if (write (fd_out, line, strlen (line)) < 0) {
 		int err_saved = errno;
 		priv->error = g_error_new_literal (BRASERO_BURN_ERROR,

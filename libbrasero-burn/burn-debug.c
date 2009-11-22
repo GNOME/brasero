@@ -234,6 +234,9 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 	if (format & BRASERO_AUDIO_FORMAT_RAW)
 		strcat (buffer, "RAW ");
 
+	if (format & BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN)
+		strcat (buffer, "RAW (little endian)");
+
 	if (format & BRASERO_AUDIO_FORMAT_UNDEFINED)
 		strcat (buffer, "AUDIO UNDEFINED ");
 

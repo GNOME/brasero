@@ -860,7 +860,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			}
 		}
 		else if (brasero_track_type_get_has_stream (type)) {
-			g_ptr_array_add (argv, g_strdup ("-swab"));
 			g_ptr_array_add (argv, g_strdup ("-audio"));
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
 			g_ptr_array_add (argv, g_strdup ("-text"));
@@ -884,7 +883,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 
 		g_ptr_array_add (argv, g_strdup ("fs=16m"));
 		g_ptr_array_add (argv, g_strdup ("-audio"));
-		g_ptr_array_add (argv, g_strdup ("-swab"));
 		g_ptr_array_add (argv, g_strdup ("-pad"));
 	
 		g_ptr_array_add (argv, g_strdup ("-useinfo"));
