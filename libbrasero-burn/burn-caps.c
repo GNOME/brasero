@@ -240,7 +240,7 @@ brasero_burn_caps_find_start_caps (BraseroBurnCaps *self,
 		if (!brasero_caps_is_compatible_type (caps, output))
 			continue;
 
-		if (caps->type.type == BRASERO_TRACK_TYPE_DISC
+		if (brasero_track_type_get_has_medium (&caps->type)
 		|| (caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE))
 			return caps;
 	}
