@@ -699,7 +699,8 @@ brasero_burn_options_setup_audio (BraseroBurnOptions *self)
 					      _("_Burn"),
 					      "media-optical-burn");
 	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (self),
-					     BRASERO_MEDIA_TYPE_WRITABLE);
+					     BRASERO_MEDIA_TYPE_WRITABLE|
+					     BRASERO_MEDIA_TYPE_FILE);
 }
 
 static void

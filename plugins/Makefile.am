@@ -1,4 +1,4 @@
-SUBDIRS = transcode dvdcss checksum local-track dvdauthor vcdimager
+SUBDIRS = transcode dvdcss checksum local-track dvdauthor vcdimager audio2cue
 
 if BUILD_LIBBURNIA
 SUBDIRS += libburnia
