@@ -1579,22 +1579,44 @@ brasero_caps_get_flags_for_disc (BraseroBurnCaps *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	/* RAW write mode should (must) only be used in this case */
-	if ((supported_flags & BRASERO_BURN_FLAG_RAW)
-	&&   input->type == BRASERO_TRACK_TYPE_IMAGE
-	&&   input->subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
-		supported_flags &= ~BRASERO_BURN_FLAG_DAO;
-		compulsory_flags &= ~BRASERO_BURN_FLAG_DAO;
-		compulsory_flags |= BRASERO_BURN_FLAG_RAW;
-	}
-	else
-		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
+	if (brasero_track_type_get_has_image (input)) {
+		BraseroImageFormat format;
 
-	if ((supported_flags & BRASERO_BURN_FLAG_DAO)
-	&&   brasero_track_type_get_has_stream (input)
-	&&  (input->subtype.img_format & BRASERO_METADATA_INFO)) {
-		/* In this case, DAO is compulsory if we want to write CD-TEXT */
-		compulsory_flags |= BRASERO_BURN_FLAG_DAO;
+		format = brasero_track_type_get_image_format (input);
+		if (format == BRASERO_IMAGE_FORMAT_CUE
+		||  format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+			if (supported_flags & BRASERO_BURN_FLAG_DAO)
+				compulsory_flags |= BRASERO_BURN_FLAG_DAO;
+			else
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+		else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
+			/* RAW write mode should (must) only be used in this case */
+			if (supported_flags & BRASERO_BURN_FLAG_RAW) {
+				supported_flags &= ~BRASERO_BURN_FLAG_DAO;
+				compulsory_flags &= ~BRASERO_BURN_FLAG_DAO;
+				compulsory_flags |= BRASERO_BURN_FLAG_RAW;
+			}
+			else
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+		else
+			supported_flags &= ~BRASERO_BURN_FLAG_RAW;
+	}
+	else if (brasero_track_type_get_has_stream (input)) {
+		if (brasero_track_type_get_stream_format (input) & BRASERO_METADATA_INFO) {
+			/* In this case, DAO is compulsory if we want to write CD-TEXT */
+			if (supported_flags & BRASERO_BURN_FLAG_DAO)
+				compulsory_flags |= BRASERO_BURN_FLAG_DAO;
+			else
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+	}
+
+	if (compulsory_flags & BRASERO_BURN_FLAG_DAO) {
+		/* unlikely */
+		compulsory_flags &= ~BRASERO_BURN_FLAG_RAW;
+		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 	}
 
 	if (io_flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE) {
