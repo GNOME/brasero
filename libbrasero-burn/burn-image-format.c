@@ -543,16 +543,10 @@ brasero_image_format_cue_bin_byte_swap (gchar *uri,
 		if ((ptr = strstr (line, "FILE"))) {
 			if (strstr (ptr, "BINARY"))
 				is_binary = TRUE;
-
-			g_free (line);
-			break;
 		}
 		else if ((ptr = strstr (line, "TRACK"))) {
 			if (strstr (ptr, "AUDIO"))
 				is_audio = TRUE;
-
-			g_free (line);
-			break;
 		}
 		g_free (line);
 	}

@@ -273,6 +273,37 @@ brasero_track_image_get_format (BraseroTrackImage *track)
 	return priv->format;
 }
 
+/**
+ * brasero_track_image_need_byte_swap:
+ * @track: a #BraseroTrackImage
+ *
+ * This function returns whether the data bytes need swapping. Some .bin files
+ * associated with .cue files are little endian for audio whereas they should
+ * be big endian.
+ *
+ * Return value: a #gboolean
+ **/
+
+gboolean
+brasero_track_image_need_byte_swap (BraseroTrackImage *track)
+{
+	BraseroTrackImagePrivate *priv;
+	gchar *cueuri;
+	gboolean res;
+
+	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), BRASERO_IMAGE_FORMAT_NONE);
+
+	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	if (priv->format != BRASERO_IMAGE_FORMAT_CUE)
+		return FALSE;
+
+	cueuri = brasero_string_get_uri (priv->toc);
+	res = brasero_image_format_cue_bin_byte_swap (cueuri, NULL, NULL);
+	g_free (cueuri);
+
+	return res;
+}
+
 static BraseroTrackDataType
 brasero_track_image_get_track_type (BraseroTrack *track,
 				    BraseroTrackType *type)

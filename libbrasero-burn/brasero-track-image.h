@@ -92,6 +92,9 @@ brasero_track_image_get_toc_source (BraseroTrackImage *track,
 BraseroImageFormat
 brasero_track_image_get_format (BraseroTrackImage *track);
 
+gboolean
+brasero_track_image_need_byte_swap (BraseroTrackImage *track);
+
 G_END_DECLS
 
 #endif /* _BURN_TRACK_IMAGE_H_ */
