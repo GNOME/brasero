@@ -55,6 +55,8 @@
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 
+#include "burn-image-format.h"
+
 
 #define BRASERO_TYPE_CDRDAO         (brasero_cdrdao_get_type ())
 #define BRASERO_CDRDAO(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdao))
@@ -365,14 +367,23 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 		if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CUE) {
 			gchar *parent;
+			gchar *cueuri;
 
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			parent = g_path_get_dirname (cuepath);
 			brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao), parent);
 			g_free (parent);
+
+			/* we need to check endianness */
+			cueuri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
+			if (brasero_image_format_cue_bin_byte_swap (cueuri, NULL, NULL))
+				g_ptr_array_add (argv, g_strdup ("-swap"));
+			g_free (cueuri);
 		}
-		else if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CDRDAO)
+		else if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CDRDAO) {
+			/* CDRDAO files are always BIG ENDIAN */
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
+		}
 		else {
 			brasero_track_type_free (type);
 			BRASERO_JOB_NOT_SUPPORTED (cdrdao);

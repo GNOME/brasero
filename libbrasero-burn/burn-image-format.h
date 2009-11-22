@@ -78,6 +78,10 @@ brasero_image_format_get_clone_size (gchar *uri,
 				     GCancellable *cancel,
 				     GError **error);
 
+gboolean
+brasero_image_format_cue_bin_byte_swap (gchar *uri,
+					GCancellable *cancel,
+					GError **error);
 G_END_DECLS
 
 #endif /* _BURN_IMAGES_FORMAT_H */

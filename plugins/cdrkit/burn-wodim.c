@@ -60,6 +60,8 @@
 #include "brasero-track-image.h"
 #include "brasero-track-stream.h"
 
+#include "burn-image-format.h"
+
 
 #define BRASERO_TYPE_WODIM         (brasero_wodim_get_type ())
 #define BRASERO_WODIM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_WODIM, BraseroWodim))
@@ -968,12 +970,19 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 		else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 			gchar *cue_str;
 			gchar *cuepath;
+			gchar *cueuri;
 
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
 			if (!cuepath) {
 				brasero_track_type_free (type);
 				BRASERO_JOB_NOT_READY (wodim);
 			}
+
+			/* we need to check endianness */
+			cueuri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
+			if (brasero_image_format_cue_bin_byte_swap (cueuri, NULL, NULL))
+				g_ptr_array_add (argv, g_strdup ("-swab"));
+			g_free (cueuri);
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 
