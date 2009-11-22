@@ -386,7 +386,8 @@ brasero_project_set_add_button_state (BraseroProject *project)
 		return;
 
 	widget = gtk_bin_get_child (GTK_BIN (widget));
-	gtk_widget_set_has_window (widget, TRUE);
+	gtk_widget_set_can_default (widget, TRUE);
+
 	gtk_window_set_default (GTK_WINDOW (toplevel), widget);
 }
 
@@ -2310,7 +2311,8 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 
 	project->priv->manager = manager;
 
-	gtk_widget_grab_focus (project->priv->name_display);
+	if (GTK_WIDGET_REALIZED (project->priv->name_display))
+		gtk_widget_grab_focus (project->priv->name_display);
 }
 
 /******************************* common to save/open ***************************/
