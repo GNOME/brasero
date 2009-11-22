@@ -615,6 +615,8 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 								   "channels", G_TYPE_INT, 2,
 								   "width", G_TYPE_INT, 16,
 								   "depth", G_TYPE_INT, 16,
+								   /* NOTE: we use little endianness only
+								    * for libburn which requires little */
 								   "endianness", G_TYPE_INT, 1234,
 								   "rate", G_TYPE_INT, 44100,
 								   "signed", G_TYPE_BOOLEAN, TRUE,

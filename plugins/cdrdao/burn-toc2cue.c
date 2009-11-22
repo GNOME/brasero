@@ -103,6 +103,11 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	if (!strstr (line, "Converted toc-file"))
 		return BRASERO_BURN_OK;
 
+	/**
+	 * FIXME: THIS IS WRONG AND WILL FAIL IF THE TEMPORARY DIRECTORY IS NOT
+	 * ON THE SAME FILE SYSTEM AS THE DESTINATION DIRECTORY
+	 */
+
 	/* Now we also need to replace all the occurences of tmp file name by
 	 * the real output file name in the created cue */
 	source = g_io_channel_new_file (priv->output, "r", &error);
