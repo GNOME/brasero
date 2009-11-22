@@ -178,7 +178,8 @@ brasero_time_button_set_max (BraseroTimeButton *self,
 	gint64 frames;
 
 	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
-	if (max > 1000000000)
+
+	if (max >= 1000000000)
 		frames = (max % 1000000000) * 75;
 	else
 		frames = max * 75;
