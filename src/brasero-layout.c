@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /***************************************************************************
  *            brasero-layout.c
  *
@@ -800,9 +802,9 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
 	}
 	else {
-		brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (source));
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 					    BRASERO_URI_CONTAINER (source));
+		brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (source));
 	}
 
 	brasero_layout_save (layout, item->id);
