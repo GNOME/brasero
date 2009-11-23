@@ -120,4 +120,6 @@ brasero_burn_get_action_string (BraseroBurn *burn,
 				BraseroBurnAction action,
 				gchar **string);
 
+G_END_DECLS
+
 #endif /* BURN_H */

@@ -58,4 +58,6 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
 					GError **error);
 
 
+G_END_DECLS
+
 #endif /* _BRASERO_CAPS_BURN_H_ */

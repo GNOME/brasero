@@ -57,4 +57,6 @@ GtkWidget *brasero_audio_disc_new (void);
 
 G_END_DECLS
 
+G_END_DECLS
+
 #endif /* AUDIO_DISC_H */

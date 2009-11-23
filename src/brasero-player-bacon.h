@@ -80,4 +80,6 @@ gboolean brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon, gdouble pos);
 gboolean brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon, gint64 *pos);
 gdouble  brasero_player_bacon_get_volume (BraseroPlayerBacon *bacon);
 
+G_END_DECLS
+
 #endif /* PLAYER_BACON_H */

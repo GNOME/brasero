@@ -60,6 +60,6 @@ GtkWidget *brasero_playlist_new (void);
 
 G_END_DECLS
 
-#endif
+#endif				/* PLAY_LIST_H */
 
 #endif

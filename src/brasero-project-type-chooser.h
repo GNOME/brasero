@@ -66,4 +66,6 @@ GtkWidget *brasero_project_type_chooser_new (void);
 
 G_END_DECLS
 
+G_END_DECLS
+
 #endif				/* CD_TYPE_CHOOSER_H */

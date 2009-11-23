@@ -113,4 +113,6 @@ gboolean
 brasero_caps_is_compatible_type (const BraseroCaps *caps,
 				 const BraseroTrackType *type);
 
+G_END_DECLS
+
 #endif /* BURN_CAPS_H */

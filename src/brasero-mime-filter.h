@@ -73,4 +73,6 @@ gboolean brasero_mime_filter_filter (BraseroMimeFilter * filter,
 
 G_END_DECLS
 
+G_END_DECLS
+
 #endif				/* MIME_FILTER_H */
