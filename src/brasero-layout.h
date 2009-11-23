@@ -88,4 +88,6 @@ void
 brasero_layout_register_ui (BraseroLayout *layout,
 			    GtkUIManager *manager);
 
+G_END_DECLS
+
 #endif /* BRASERO_LAYOUT_H */

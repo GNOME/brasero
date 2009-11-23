@@ -73,6 +73,8 @@ void
 brasero_search_entry_set_context (BraseroSearchEntry *entry,
 				  BraseroLayoutType type);
 
+G_END_DECLS
+
 #endif				/* SEARCH_ENTRY_H */
 
 #endif

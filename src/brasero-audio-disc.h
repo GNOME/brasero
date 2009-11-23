@@ -55,4 +55,6 @@ typedef struct {
 GType brasero_audio_disc_get_type();
 GtkWidget *brasero_audio_disc_new();
 
+G_END_DECLS
+
 #endif /* AUDIO_DISC_H */

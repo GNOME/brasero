@@ -58,6 +58,8 @@ typedef struct {
 GType brasero_search_get_type ();
 GtkWidget *brasero_search_new ();
 
+G_END_DECLS
+
 #endif				/* SEARCH_H */
 
 #endif

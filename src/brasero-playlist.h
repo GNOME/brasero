@@ -57,6 +57,8 @@ typedef struct {
 GType brasero_playlist_get_type ();
 GtkWidget *brasero_playlist_new ();
 
+G_END_DECLS
+
 #endif				/* PLAY_LIST_H */
 
 #endif

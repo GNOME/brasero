@@ -80,4 +80,6 @@ void
 brasero_tray_icon_set_show_dialog (BraseroTrayIcon *tray,
 				   gboolean show);
 
+G_END_DECLS
+
 #endif /* TRAY_H */

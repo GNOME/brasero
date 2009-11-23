@@ -70,4 +70,6 @@ gboolean brasero_mime_filter_filter (BraseroMimeFilter * filter,
 				     char *filename, char *uri,
 				     char *display_name, char *mime_type);
 
+G_END_DECLS
+
 #endif				/* MIME_FILTER_H */

@@ -87,4 +87,6 @@ brasero_burn_progress_set_action (BraseroBurnProgress *progress,
 				  BraseroBurnAction action,
 				  const gchar *string);
 
+G_END_DECLS
+
 #endif /* PROGRESS_H */

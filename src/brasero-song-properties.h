@@ -76,4 +76,6 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 				   gint64 end,
 				   gint64 gap);
 
+G_END_DECLS
+
 #endif /* SONG_PROPERTIES_H */

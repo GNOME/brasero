@@ -76,4 +76,6 @@ brasero_player_get_pos (BraseroPlayer *player);
 gint64
 brasero_player_get_length (BraseroPlayer *player);
 
+G_END_DECLS
+
 #endif

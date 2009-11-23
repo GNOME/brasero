@@ -88,4 +88,6 @@ void
 brasero_process_set_working_directory (BraseroProcess *process,
 				       const gchar *directory);
 
+G_END_DECLS
+
 #endif /* PROCESS_H */

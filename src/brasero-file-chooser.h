@@ -59,4 +59,6 @@ void
 brasero_file_chooser_customize (GtkWidget *widget,
 				gpointer null_data);
 
+G_END_DECLS
+
 #endif /* BRASERO_FILE_CHOOSER_H */

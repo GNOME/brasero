@@ -65,4 +65,6 @@ gboolean
 brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 			    gboolean force_cancellation);
 
+G_END_DECLS
+
 #endif				/* BURN_DIALOG_H */

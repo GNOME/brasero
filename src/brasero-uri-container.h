@@ -73,4 +73,6 @@ brasero_uri_container_uri_selected (BraseroURIContainer *container);
 void
 brasero_uri_container_uri_activated (BraseroURIContainer *container);
 
+G_END_DECLS
+
 #endif /* BRASERO_URI_CONTAINER_H */

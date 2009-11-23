@@ -105,4 +105,6 @@ brasero_project_register_ui (BraseroProject *project,
 void
 brasero_project_create_audio_cover (BraseroProject *project);
 
+G_END_DECLS
+
 #endif /* PROJECT_H */
