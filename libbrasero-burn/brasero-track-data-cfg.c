@@ -1223,7 +1223,7 @@ brasero_track_data_cfg_row_drop_possible (GtkTreeDragDest *drag_dest,
 		BraseroFileNode *parent;
 		GList *iter;
 
-		iter = (GList *) target;
+		iter = (GList *) gtk_selection_data_get_data (selection_data);
 
 		/* make sure the parent is a directory.
 		 * NOTE: in this case dest_path is the exact path where it
