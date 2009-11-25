@@ -544,13 +544,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		}
 		gst_bin_add (GST_BIN (pipeline), wavparse);
 
-		priv->link = NULL;
-		priv->sink = sink;
-		priv->decode = NULL;
-		priv->source = source;
-		priv->convert = NULL;
-		priv->pipeline = pipeline;
-
 		if (!gst_element_link (source, wavparse)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -568,13 +561,21 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		 * gstreamer. Yet this is unfortunately a necessary evil. */
 		priv->pos = 0;
 		priv->size = 0;
-		sinkpad = gst_element_get_pad (priv->sink, "sink");
+		sinkpad = gst_element_get_pad (sink, "sink");
 		priv->probe = gst_pad_add_buffer_probe (sinkpad,
 							G_CALLBACK (brasero_transcode_buffer_handler),
 							transcode);
 		gst_object_unref (sinkpad);
 
-		gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
+
+		priv->link = NULL;
+		priv->sink = sink;
+		priv->decode = NULL;
+		priv->source = source;
+		priv->convert = NULL;
+		priv->pipeline = pipeline;
+
+		gst_element_set_state (pipeline, GST_STATE_PLAYING);
 		return TRUE;
 	}
 
@@ -648,17 +649,12 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
 
-	priv->sink = sink;
-	priv->decode = decode;
-	priv->source = source;
-	priv->convert = convert;
-	priv->pipeline = pipeline;
-
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
 		GstPad *sinkpad;
 		gboolean res;
 
-		if (!gst_element_link_many (source, decode, NULL)) {
+		if (!gst_element_link (source, decode)) {
+			BRASERO_JOB_LOG (transcode, "Impossible to link plugin pads");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -675,12 +671,11 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		if (volume) {
 			gst_bin_add (GST_BIN (pipeline), volume);
 			res = gst_element_link_many (resample,
-			                             convert,
 			                             volume,
+						     convert,
 			                             filter,
 			                             sink,
 			                             NULL);
-
 		}
 		else
 			res = gst_element_link_many (resample,
@@ -690,6 +685,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 			                             NULL);
 
 		if (!res) {
+			BRASERO_JOB_LOG (transcode, "Impossible to link plugin pads");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -701,7 +697,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		 * gstreamer. Yet this is unfortunately a necessary evil. */
 		priv->pos = 0;
 		priv->size = 0;
-		sinkpad = gst_element_get_pad (priv->sink, "sink");
+		sinkpad = gst_element_get_pad (sink, "sink");
 		priv->probe = gst_pad_add_buffer_probe (sinkpad,
 							G_CALLBACK (brasero_transcode_buffer_handler),
 							transcode);
@@ -710,6 +706,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	else {
 		if (!gst_element_link (source, decode)
 		||  !gst_element_link (convert, sink)) {
+			BRASERO_JOB_LOG (transcode, "Impossible to link plugin pads");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -724,7 +721,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 				  transcode);
 	}
 
-	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
+	priv->sink = sink;
+	priv->decode = decode;
+	priv->source = source;
+	priv->convert = convert;
+	priv->pipeline = pipeline;
+
+	gst_element_set_state (pipeline, GST_STATE_PLAYING);
 	return TRUE;
 
 error:

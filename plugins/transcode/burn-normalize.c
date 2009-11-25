@@ -288,11 +288,11 @@ brasero_normalize_set_next_track (BraseroJob *job,
 {
 	gchar *uri;
 	GValue *value;
-	BraseroTrack *track;
 	GstElement *analysis;
 	BraseroTrackType *type;
-	BraseroNormalizePrivate *priv;
+	BraseroTrack *track = NULL;
 	gboolean dts_allowed = FALSE;
+	BraseroNormalizePrivate *priv;
 
 	priv = BRASERO_NORMALIZE_PRIVATE (job);
 
