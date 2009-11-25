@@ -604,7 +604,7 @@ brasero_track_data_get_size (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroTrackDataType
+static BraseroBurnResult
 brasero_track_data_get_track_type (BraseroTrack *track,
 				   BraseroTrackType *type)
 {
@@ -612,13 +612,10 @@ brasero_track_data_get_track_type (BraseroTrack *track,
 
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
 
-	if (!type)
-		return BRASERO_TRACK_TYPE_DATA;
-
 	brasero_track_type_set_has_data (type);
 	brasero_track_type_set_data_fs (type, priv->fs_type);
 
-	return BRASERO_TRACK_TYPE_DATA;
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult

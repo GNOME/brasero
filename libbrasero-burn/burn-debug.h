@@ -37,6 +37,7 @@
 #include "brasero-medium.h"
 
 #include "brasero-track.h"
+#include "brasero-track-type-private.h"
 #include "brasero-plugin-registration.h"
 
 G_BEGIN_DECLS

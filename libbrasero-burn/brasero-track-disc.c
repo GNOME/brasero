@@ -251,7 +251,7 @@ brasero_track_disc_get_size (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroTrackDataType
+static BraseroBurnResult
 brasero_track_disc_get_track_type (BraseroTrack *track,
 				   BraseroTrackType *type)
 {
@@ -260,15 +260,12 @@ brasero_track_disc_get_track_type (BraseroTrack *track,
 
 	priv = BRASERO_TRACK_DISC_PRIVATE (track);
 
-	if (!type)
-		return BRASERO_TRACK_TYPE_DISC;
-
 	medium = brasero_drive_get_medium (priv->drive);
 
 	brasero_track_type_set_has_medium (type);
 	brasero_track_type_set_medium_type (type, brasero_medium_get_status (medium));
 
-	return BRASERO_TRACK_TYPE_DISC;
+	return BRASERO_BURN_OK;
 }
 
 static void

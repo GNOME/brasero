@@ -75,9 +75,9 @@ brasero_burn_caps_sort (gconstpointer a, gconstpointer b)
 	const BraseroCaps *caps_b = b;
 	gint result;
 
-	/* First put DISC (the most used caps) then IMAGE type; these two types
-	 * are the ones that most often searched. At the end of the list we put
-	 * DATA  and AUDIO.
+	/* First put DISC (the most used caps) then AUDIO then IMAGE type; these
+	 * two types are the ones that most often searched. At the end of the
+	 * list we put DATA.
 	 * Another (sub)rule is that for DATA, DISC, AUDIO we put a caps that is
 	 * encompassed by another before.
 	 */

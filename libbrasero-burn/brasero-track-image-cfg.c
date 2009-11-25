@@ -380,7 +380,7 @@ brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
 
 	current_format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
-	if (format != BRASERO_TRACK_TYPE_NONE) {
+	if (format != BRASERO_IMAGE_FORMAT_NONE) {
 		if (current_format == format)
 			return BRASERO_BURN_OK;
 	}

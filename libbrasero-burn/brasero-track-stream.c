@@ -403,7 +403,7 @@ brasero_track_stream_get_status (BraseroTrack *track,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroTrackDataType
+static BraseroBurnResult
 brasero_track_stream_get_track_type (BraseroTrack *track,
 				     BraseroTrackType *type)
 {
@@ -411,13 +411,10 @@ brasero_track_stream_get_track_type (BraseroTrack *track,
 
 	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
 
-	if (!type)
-		return BRASERO_TRACK_TYPE_STREAM;
-
 	brasero_track_type_set_has_stream (type);
 	brasero_track_type_set_stream_format (type, priv->format);
 
-	return BRASERO_TRACK_TYPE_STREAM;
+	return BRASERO_BURN_OK;
 }
 
 static void

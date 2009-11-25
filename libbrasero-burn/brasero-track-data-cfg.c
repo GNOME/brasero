@@ -2390,7 +2390,7 @@ brasero_track_data_cfg_get_file_num (BraseroTrackData *track)
 	return stats->children;
 }
 
-static BraseroTrackDataType
+static BraseroBurnResult
 brasero_track_data_cfg_get_track_type (BraseroTrack *track,
 				       BraseroTrackType *type)
 {
@@ -2398,13 +2398,10 @@ brasero_track_data_cfg_get_track_type (BraseroTrack *track,
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
 
-	if (!type)
-		return BRASERO_TRACK_TYPE_DATA;
-
 	brasero_track_type_set_has_data (type);
 	brasero_track_type_set_data_fs (type, brasero_track_data_cfg_get_fs (BRASERO_TRACK_DATA (track)));
 
-	return BRASERO_TRACK_TYPE_DATA;
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult

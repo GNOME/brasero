@@ -69,20 +69,21 @@ G_DEFINE_TYPE (BraseroTrack, brasero_track, G_TYPE_OBJECT);
  *
  * Sets @type to reflect the type of data contained in @track
  *
- * Return value: the#BraseroTrackDataType of the track
+ * Return value: the #BraseroBurnResult of the track
  **/
 
-BraseroTrackDataType
+BraseroBurnResult
 brasero_track_get_track_type (BraseroTrack *track,
 			      BraseroTrackType *type)
 {
 	BraseroTrackClass *klass;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_TRACK_TYPE_NONE);
+	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_BURN_ERR);
+	g_return_val_if_fail (type != NULL, BRASERO_BURN_ERR);
 
 	klass = BRASERO_TRACK_GET_CLASS (track);
 	if (!klass->get_type)
-		return BRASERO_TRACK_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 
 	return klass->get_type (track, type);
 }
@@ -111,7 +112,7 @@ brasero_track_get_size (BraseroTrack *track,
 	goffset blocks_local = 0;
 	goffset block_size_local = 0;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_TRACK_TYPE_NONE);
+	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_BURN_ERR);
 
 	klass = BRASERO_TRACK_GET_CLASS (track);
 	if (!klass->get_size)
@@ -149,7 +150,7 @@ brasero_track_get_status (BraseroTrack *track,
 {
 	BraseroTrackClass *klass;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_TRACK_TYPE_NONE);
+	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_BURN_ERR);
 
 	klass = BRASERO_TRACK_GET_CLASS (track);
 

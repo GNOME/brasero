@@ -304,7 +304,7 @@ brasero_track_image_need_byte_swap (BraseroTrackImage *track)
 	return res;
 }
 
-static BraseroTrackDataType
+static BraseroBurnResult
 brasero_track_image_get_track_type (BraseroTrack *track,
 				    BraseroTrackType *type)
 {
@@ -312,13 +312,10 @@ brasero_track_image_get_track_type (BraseroTrack *track,
 
 	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
 
-	if (!type)
-		return BRASERO_TRACK_TYPE_IMAGE;
-
 	brasero_track_type_set_has_image (type);
 	brasero_track_type_set_image_format (type, priv->format);
 
-	return BRASERO_TRACK_TYPE_IMAGE;
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
