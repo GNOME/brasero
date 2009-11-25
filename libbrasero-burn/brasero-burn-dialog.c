@@ -1665,15 +1665,18 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 	drive = brasero_burn_session_get_burner (priv->session);
 
 	if (brasero_track_type_get_has_stream (&priv->input)) {
-		if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (&priv->input))) {
-			if (priv->media & BRASERO_MEDIUM_DVD)
-				return g_strdup (_("Video DVD successfully burned"));
+		if (!brasero_drive_is_fake (drive)) {
+			if (BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (&priv->input))) {
+				if (priv->media & BRASERO_MEDIUM_DVD)
+					return g_strdup (_("Video DVD successfully burned"));
 
-			return g_strdup (_("(S)VCD successfully burned"));
+				return g_strdup (_("(S)VCD successfully burned"));
+			}
+			else
+				return g_strdup (_("Audio CD successfully burned"));
 		}
-		else
-			return g_strdup (_("Audio CD successfully burned"));
 
+		return g_strdup (_("Image successfully created"));
 	}
 	else if (brasero_track_type_get_has_medium (&priv->input)) {
 		if (!brasero_drive_is_fake (drive)) {
