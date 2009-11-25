@@ -197,8 +197,7 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		if (!cuepath)
 			return FALSE;
 
-		if (strstr (line, cuepath)
-		&&  strstr (line, "ERROR: Could not find input file")) {
+		if (!strstr (line, "ERROR: Could not find input file")) {
 			g_free (cuepath);
 			return FALSE;
 		}
@@ -215,7 +214,7 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		g_free (name);
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 static BraseroBurnResult
