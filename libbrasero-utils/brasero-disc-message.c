@@ -175,7 +175,7 @@ brasero_disc_message_add_errors (BraseroDiscMessage *self,
 	if (priv->expander)
 		gtk_widget_destroy (priv->expander);
 
-	priv->expander = gtk_expander_new_with_mnemonic (_("_Show errors"));
+	priv->expander = gtk_expander_new_with_mnemonic (_("_Show changes"));
 	gtk_widget_show (priv->expander);
 	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->expander, FALSE, TRUE, 0);
 
