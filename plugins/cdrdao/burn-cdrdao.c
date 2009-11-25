@@ -244,12 +244,6 @@ brasero_cdrdao_read_stderr (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_DRIVE_BUSY,
 						_("The drive is busy")));
 	}
-	else if (strstr (line, "Illegal command")) {
-		brasero_job_error (BRASERO_JOB (cdrdao),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("Your version of cdrdao does not seem to be supported by libbrasero")));
-	}
 	else if (strstr (line, "Operation not permitted. Cannot send SCSI")) {
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
