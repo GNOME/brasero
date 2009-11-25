@@ -367,9 +367,11 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 			brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao), parent);
 			g_free (parent);
 
+			/* This does not work as toc2cue will use BINARY even if
+			 * if endianness is big endian */
 			/* we need to check endianness */
-			if (brasero_track_image_need_byte_swap (BRASERO_TRACK_IMAGE (track)))
-				g_ptr_array_add (argv, g_strdup ("--swap"));			
+			/* if (brasero_track_image_need_byte_swap (BRASERO_TRACK_IMAGE (track)))
+				g_ptr_array_add (argv, g_strdup ("--swap")); */
 		}
 		else if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CDRDAO) {
 			/* CDRDAO files are always BIG ENDIAN */
