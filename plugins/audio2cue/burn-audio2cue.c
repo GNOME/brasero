@@ -131,10 +131,14 @@ static gboolean
 brasero_audio2cue_create_finished (gpointer user_data)
 {
 	gchar *toc = NULL;
+	goffset blocks = 0;
 	gchar *image = NULL;
 	BraseroTrackImage *track;
 
 	track = brasero_track_image_new ();
+
+	brasero_job_get_session_output_size (user_data, &blocks, NULL);
+	brasero_track_image_set_block_num (track, blocks);
 	brasero_job_get_image_output (user_data,
 				      &image,
 				      &toc);
