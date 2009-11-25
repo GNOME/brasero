@@ -863,20 +863,17 @@ brasero_audio_disc_wav_dts_file_dialog (BraseroAudioDisc *disc)
 					      0,
 					      BRASERO_AUDIO_DISC_CONTEXT);
 
-	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
-					GTK_MESSAGE_INFO);
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (message), GTK_MESSAGE_INFO);
 
-	brasero_notify_button_add (BRASERO_NOTIFY (disc->priv->message),
-				   BRASERO_DISC_MESSAGE (message),
-				   _("Create _Regular Tracks"),
-				   _("Click here to burn all songs as regular tracks"),
-				   GTK_RESPONSE_NO);
+	gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+							    						  _("Create _Regular Tracks"),
+							    						  GTK_RESPONSE_NO),
+					     	     _("Click here to burn all songs as regular tracks"));
 
-	brasero_notify_button_add (BRASERO_NOTIFY (disc->priv->message),
-				   BRASERO_DISC_MESSAGE (message),
-				   _("Create _DTS Tracks"),
-				   _("Click here to burn all suitable songs as DTS tracks"),
-				   GTK_RESPONSE_OK);
+	gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+							    						  _("Create _DTS Tracks"),
+							    						  GTK_RESPONSE_OK),
+					     	     _("Click here to burn all suitable songs as DTS tracks"));
 
 	g_signal_connect (BRASERO_DISC_MESSAGE (message),
 			  "response",

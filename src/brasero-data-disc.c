@@ -560,18 +560,18 @@ brasero_data_disc_project_loaded_cb (BraseroTrackDataCfg *project,
 		brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message),
 						    _("Discard the current modified project"));
 
-		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),GTK_STOCK_DIALOG_WARNING);
+		gtk_info_bar_set_message_type (GTK_INFO_BAR (message), GTK_MESSAGE_WARNING);
+
 		brasero_disc_message_set_progress_active (BRASERO_DISC_MESSAGE (message), FALSE);
-		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-					   BRASERO_DISC_MESSAGE (message),
-					   _("_Discard"),
-					   _("Discard the current modified project"),
-					   GTK_RESPONSE_CANCEL);
-		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-					   BRASERO_DISC_MESSAGE (message),
-					   _("_Continue"),
-					   _("Continue with the current modified project"),
-					   GTK_RESPONSE_OK);
+		gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+								      _("_Discard"),
+							    	      GTK_RESPONSE_CANCEL),
+					     _("Discard the current modified project"));
+
+		gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+								      _("_Continue"),
+							    	      GTK_RESPONSE_OK),
+					     _("Continue with the current modified project"));
 
 		brasero_disc_message_add_errors (BRASERO_DISC_MESSAGE (message),
 						 priv->load_errors);
@@ -1117,14 +1117,11 @@ brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 		g_free (volume_name);
 		g_free (string);
 
-		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
-						GTK_STOCK_DIALOG_INFO);
-
-		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-					   BRASERO_DISC_MESSAGE (message),
-					   _("I_mport Session"),
-					   _("Click here to import its contents"),
-					   GTK_RESPONSE_OK);
+		gtk_info_bar_set_message_type (GTK_INFO_BAR (message), GTK_MESSAGE_INFO);
+		gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+								      _("I_mport Session"),
+							    	      GTK_RESPONSE_OK),
+					     _("Click here to import its contents"));
 
 		/* no need to ref the medium since its removal would cause the
 		 * hiding of the message it's associated with */
@@ -1476,15 +1473,15 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 					      -1,
 					      BRASERO_NOTIFY_CONTEXT_LOADING);
 
-	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),GTK_STOCK_DIALOG_INFO);
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (message), GTK_MESSAGE_INFO);
 	brasero_disc_message_set_progress (BRASERO_DISC_MESSAGE (message),
 					   brasero_status_get_progress (status));
 
-	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
-				   BRASERO_DISC_MESSAGE (message),
-				   _("_Cancel Loading"),
-				   _("Cancel loading current project"),
-				   GTK_RESPONSE_CANCEL);
+	gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+							      _("_Cancel Loading"),
+						    	      GTK_RESPONSE_CANCEL),
+				     _("Cancel loading current project"));
+
 	g_signal_connect (message,
 			  "response",
 			  G_CALLBACK (brasero_data_disc_message_response_cb),

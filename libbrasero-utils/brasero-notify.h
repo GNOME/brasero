@@ -76,12 +76,6 @@ brasero_notify_message_add (BraseroNotify *notify,
 			    const gchar *secondary,
 			    gint timeout,
 			    guint context_id);
-GtkWidget *
-brasero_notify_button_add (BraseroNotify *notify,
-			   BraseroDiscMessage *message,
-			   const gchar *text,
-			   const gchar *tooltip,
-			   GtkResponseType response);
 
 void
 brasero_notify_message_remove (BraseroNotify *notify,

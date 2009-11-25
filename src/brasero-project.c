@@ -936,11 +936,10 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 							      _("The project is too large for the disc even with the overburn option."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
-			brasero_notify_button_add (BRASERO_NOTIFY (project->priv->message),
-						   BRASERO_DISC_MESSAGE (message),
-						   _("_Burn Several Discs"),
-						   _("Burn the selection of files across several media"),
-						   GTK_RESPONSE_OK);
+			gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+									      _("_Burn Several Discs"),
+								    	      GTK_RESPONSE_OK),
+						     _("Burn the selection of files across several media"));
 
 			g_signal_connect (message,
 					  "response",
@@ -966,11 +965,10 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 							"\nNote: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
-		brasero_notify_button_add (BRASERO_NOTIFY (project->priv->message),
-					   BRASERO_DISC_MESSAGE (message),
-					   _("_Overburn"),
-					   _("Burn beyond the disc's reported capacity"),
-					   GTK_RESPONSE_OK);
+		gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
+								      _("_Overburn"),
+							    	      GTK_RESPONSE_OK),
+					     _("Burn beyond the disc's reported capacity"));
 
 		g_signal_connect (message,
 				  "response",

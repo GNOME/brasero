@@ -42,7 +42,6 @@
 struct _BraseroNotifyPrivate
 {
 	GtkSizeGroup *message;
-	GtkSizeGroup *button;
 };
 
 typedef struct _BraseroNotifyPrivate BraseroNotifyPrivate;
@@ -136,9 +135,9 @@ brasero_notify_message_add (BraseroNotify *self,
 
 	priv = BRASERO_NOTIFY_PRIVATE (self);
 
-	GDK_THREADS_ENTER ();
-
 	brasero_notify_message_remove (self, context_id);
+
+	GDK_THREADS_ENTER ();
 
 	message = brasero_disc_message_new ();
 	gtk_size_group_add_widget (priv->message, message);
@@ -156,30 +155,12 @@ brasero_notify_message_add (BraseroNotify *self,
 	return message;
 }
 
-GtkWidget *
-brasero_notify_button_add (BraseroNotify *self,
-			   BraseroDiscMessage *message,
-			   const gchar *text,
-			   const gchar *tooltip,
-			   GtkResponseType response)
-{
-	BraseroNotifyPrivate *priv;
-
-	priv = BRASERO_NOTIFY_PRIVATE (self);
-	return brasero_disc_message_add_button (BRASERO_DISC_MESSAGE (message),
-						priv->button,
-						text,
-						tooltip,
-						response);
-}
-
 static void
 brasero_notify_init (BraseroNotify *object)
 {
 	BraseroNotifyPrivate *priv;
 
 	priv = BRASERO_NOTIFY_PRIVATE (object);
-	priv->button = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 	priv->message = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 }
 
@@ -189,11 +170,6 @@ brasero_notify_finalize (GObject *object)
 	BraseroNotifyPrivate *priv;
 
 	priv = BRASERO_NOTIFY_PRIVATE (object);
-
-	if (priv->button) {
-		g_object_unref (priv->button);
-		priv->button = NULL;
-	}
 
 	if (priv->message) {
 		g_object_unref (priv->message);

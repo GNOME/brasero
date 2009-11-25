@@ -57,10 +57,6 @@ struct _BraseroDiscMessagePrivate
 	GtkWidget *primary;
 	GtkWidget *secondary;
 
-	GtkWidget *image;
-
-	GtkWidget *main_box;
-	GtkWidget *button_box;
 	GtkWidget *text_box;
 
 	guint context;
@@ -68,22 +64,12 @@ struct _BraseroDiscMessagePrivate
 	guint id;
 	guint timeout;
 
-	guint changing_style:1;
 	guint prevent_destruction:1;
 };
 
 #define BRASERO_DISC_MESSAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DISC_MESSAGE, BraseroDiscMessagePrivate))
 
-enum
-{
-	RESPONSE,
-	LAST_SIGNAL
-};
-
-
-static guint disc_message_signals[LAST_SIGNAL] = { 0 };
-
-G_DEFINE_TYPE (BraseroDiscMessage, brasero_disc_message, GTK_TYPE_BIN);
+G_DEFINE_TYPE (BraseroDiscMessage, brasero_disc_message, GTK_TYPE_INFO_BAR);
 
 #define RESPONSE_TYPE	"ResponseType"
 
@@ -101,10 +87,7 @@ brasero_disc_message_timeout (gpointer data)
 	priv->timeout = 0;
 
 	priv->prevent_destruction = TRUE;
-	g_signal_emit (data,
-		       disc_message_signals [RESPONSE],
-		       0,
-		       GTK_RESPONSE_DELETE_EVENT);
+	gtk_info_bar_response (data, GTK_RESPONSE_DELETE_EVENT);
 	priv->prevent_destruction = FALSE;
 
 	gtk_widget_destroy (GTK_WIDGET (data));
@@ -234,24 +217,6 @@ brasero_disc_message_remove_errors (BraseroDiscMessage *self)
 	priv->expander = NULL;
 }
 
-static void
-brasero_disc_message_button_clicked_cb (GtkButton *button,
-					BraseroDiscMessage *self)
-{
-	BraseroDiscMessagePrivate *priv;
-
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
-
-	priv->prevent_destruction = TRUE;
-	g_signal_emit (self,
-		       disc_message_signals [RESPONSE],
-		       0,
-		       GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button), RESPONSE_TYPE)));
-	priv->prevent_destruction = FALSE;
-
-	gtk_widget_destroy (GTK_WIDGET (self));
-}
-
 void
 brasero_disc_message_destroy (BraseroDiscMessage *self)
 {
@@ -265,97 +230,13 @@ brasero_disc_message_destroy (BraseroDiscMessage *self)
 	gtk_widget_destroy (GTK_WIDGET (self));
 }
 
-GtkWidget *
-brasero_disc_message_add_button (BraseroDiscMessage *self,
-				 GtkSizeGroup *group,
-				 const gchar *text,
-				 const gchar *tooltip,
-				 GtkResponseType response)
-{
-	GtkWidget *button;
-	PangoLayout *layout;
-	BraseroDiscMessagePrivate *priv;
-
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
-
-	button = gtk_button_new_from_stock (text);
-
-	/* only add buttons to group if the text is not wrapped. Otherwise
-	 * buttons would be too big. */
-	layout = gtk_label_get_layout (GTK_LABEL (priv->primary));
-	if (!pango_layout_is_wrapped (layout))
-		gtk_size_group_add_widget (priv->group, button);
-
-	gtk_widget_set_tooltip_text (button, tooltip);
-	gtk_widget_show (button);
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_disc_message_button_clicked_cb),
-			  self);
-
-	g_object_set_data (G_OBJECT (button), RESPONSE_TYPE, GINT_TO_POINTER (response));
-
-	gtk_box_pack_start (GTK_BOX (priv->button_box),
-			    button,
-			    FALSE,
-			    TRUE,
-			    0);
-	gtk_widget_queue_draw (GTK_WIDGET (self));
-	return button;
-}
-
-void
-brasero_disc_message_add_close_button (BraseroDiscMessage *self)
-{
-	GtkWidget *button;
-	PangoLayout *layout;
-	GtkWidget *alignment;
-	BraseroDiscMessagePrivate *priv;
-
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
-
-	button = gtk_button_new ();
-
-	/* only add buttons to group if the text is not wrapped. Otherwise
-	 * buttons would be too big. */
-	layout = gtk_label_get_layout (GTK_LABEL (priv->primary));
-	if (pango_layout_is_wrapped (layout))
-		gtk_size_group_add_widget (priv->group, button);
-
-	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
-	gtk_widget_show (alignment);
-	gtk_container_add (GTK_CONTAINER (alignment), button);
-
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_image (GTK_BUTTON (button),
-			      gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_BUTTON));
-
-	gtk_widget_set_tooltip_text (button, _("Close this notification window"));
-	gtk_widget_show (button);
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_disc_message_button_clicked_cb),
-			  self);
-
-	g_object_set_data (G_OBJECT (button),
-			   RESPONSE_TYPE,
-			   GINT_TO_POINTER (GTK_RESPONSE_CLOSE));
-
-	gtk_box_pack_start (GTK_BOX (priv->main_box),
-			    alignment,
-			    FALSE,
-			    TRUE,
-			    0);
-	gtk_widget_queue_draw (GTK_WIDGET (self));
-}
-
 void
 brasero_disc_message_remove_buttons (BraseroDiscMessage *self)
 {
 	BraseroDiscMessagePrivate *priv;
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
-	gtk_container_foreach (GTK_CONTAINER (priv->button_box),
+	gtk_container_foreach (GTK_CONTAINER (gtk_info_bar_get_action_area (GTK_INFO_BAR (self))),
 			       (GtkCallback) gtk_widget_destroy,
 			       NULL);
 }
@@ -423,18 +304,6 @@ brasero_disc_message_set_progress (BraseroDiscMessage *self,
 }
 
 void
-brasero_disc_message_set_image (BraseroDiscMessage *self,
-				const gchar *stock_id)
-{
-	BraseroDiscMessagePrivate *priv;
-
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
-	gtk_image_set_from_stock (GTK_IMAGE (priv->image),
-				  stock_id,
-				  GTK_ICON_SIZE_DIALOG);
-}
-
-void
 brasero_disc_message_set_primary (BraseroDiscMessage *self,
 				  const gchar *message)
 {
@@ -478,39 +347,6 @@ brasero_disc_message_set_secondary (BraseroDiscMessage *self,
 	gtk_widget_show (priv->secondary);
 }
 
-/**
- * Two following functions are Cut and Pasted from gedit-message-area.c
- */
-static void
-style_set (GtkWidget        *widget,
-	   GtkStyle         *prev_style,
-	   BraseroDiscMessage *self)
-{
-	BraseroDiscMessagePrivate *priv;
-	GtkWidget *window;
-	GtkStyle *style;
-
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
-
-	if (priv->changing_style)
-		return;
-
-	window = gtk_window_new (GTK_WINDOW_POPUP);
-	gtk_widget_set_name (window, "gtk-tooltip");
-	gtk_widget_ensure_style (window);
-	style = gtk_widget_get_style (window);
-
-	priv->changing_style = TRUE;
-	gtk_widget_set_style (GTK_WIDGET (self), style);
-	priv->changing_style = FALSE;
-
-	gtk_widget_destroy (window);
-
-//	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-
-	gtk_widget_queue_draw (GTK_WIDGET (self));
-}
-
 static void
 brasero_disc_message_init (BraseroDiscMessage *object)
 {
@@ -520,27 +356,10 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (object);
 	gtk_widget_set_has_window (GTK_WIDGET (object), FALSE);
 
-	main_box = gtk_hbox_new (FALSE, 12);
-	priv->main_box = main_box;
-	gtk_widget_show (main_box);
-	gtk_container_set_border_width (GTK_CONTAINER (main_box), 8);
-	gtk_container_add (GTK_CONTAINER (object), main_box);
-
-	/* Note that we connect to style-set on one of the internal
-	 * widgets, not on the message area itself, since gtk does
-	 * not deliver any further style-set signals for a widget on
-	 * which the style has been forced with gtk_widget_set_style() */
-	g_signal_connect (main_box,
-			  "style-set",
-			  G_CALLBACK (style_set),
-			  object);
+	main_box = gtk_info_bar_get_content_area (GTK_INFO_BAR (object));
+	gtk_container_set_border_width (GTK_CONTAINER (main_box), 0);
 
 	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
-
-	priv->image = gtk_image_new ();
-	gtk_widget_show (priv->image);
-	gtk_misc_set_alignment (GTK_MISC (priv->image), 0.5, 0.0);
-	gtk_box_pack_start (GTK_BOX (main_box), priv->image, FALSE, FALSE, 0);
 
 	priv->text_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (priv->text_box);
@@ -552,14 +371,6 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	gtk_size_group_add_widget (priv->group, priv->primary);
 	gtk_misc_set_alignment (GTK_MISC (priv->primary), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, TRUE, TRUE, 0);
-
-	priv->button_box = gtk_vbox_new (FALSE, 8);
-	gtk_widget_show (priv->button_box);
-	gtk_box_pack_start (GTK_BOX (main_box),
-			    priv->button_box,
-			    FALSE,
-			    FALSE,
-			    0);
 }
 
 static void
@@ -585,151 +396,13 @@ brasero_disc_message_finalize (GObject *object)
 }
 
 static void
-brasero_disc_message_size_request (GtkWidget *widget,
-				   GtkRequisition *requisition)
-{
-	GtkBin *bin = GTK_BIN (widget);
-	GtkWidget *child;
-	guint border_width;
-
-	border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
-	requisition->width = border_width * 2;
-	requisition->height = border_width * 2;
-
-	child = gtk_bin_get_child (bin);
-	if (child && gtk_widget_get_visible (child)) {
-		GtkRequisition child_requisition;
-
-		gtk_widget_size_request (child, &child_requisition);
-
-		requisition->width += child_requisition.width;
-		requisition->height += child_requisition.height;
-	}
-}
-
-static void
-brasero_disc_message_size_allocate (GtkWidget *widget,
-				    GtkAllocation *allocation)
-{
-	GtkBin *bin;
-	GtkWidget *child;
-	GtkAllocation child_allocation;
-	GdkWindow *window;
-	guint border_width;
-
-	gtk_widget_set_allocation (widget, allocation);
-	bin = GTK_BIN (widget);
-
-	child_allocation.x = 0,
-	child_allocation.y = 0;
-	child_allocation.width = allocation->width;
-	child_allocation.height = allocation->height;
-
-	window = gtk_widget_get_window (widget);
-	if (window) {
-		border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
-		gdk_window_move_resize (window,
-					allocation->x + border_width,
-					allocation->y + border_width,
-					child_allocation.width,
-					child_allocation.height);
-	}
-
-	child = gtk_bin_get_child (GTK_BIN (widget));
-	if (child)
-		gtk_widget_size_allocate (child, &child_allocation);
-}
-
-static void
-brasero_disc_message_realize (GtkWidget *widget)
-{
-	GtkAllocation allocation;
-	GdkWindowAttr attributes;
-	GdkWindow *window;
-	gint attributes_mask;
-
-	attributes.window_type = GDK_WINDOW_CHILD;
-	gtk_widget_get_allocation (widget, &allocation);
-	attributes.x = allocation.x;
-	attributes.y = allocation.y;
-	attributes.width = allocation.width;
-	attributes.height = allocation.height;
-	attributes.wclass = GDK_INPUT_OUTPUT;
-	attributes.visual = gtk_widget_get_visual (widget);
-	attributes.colormap = gtk_widget_get_colormap (widget);
-	attributes.event_mask = gtk_widget_get_events (widget);
-	attributes.event_mask |= GDK_EXPOSURE_MASK;
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
-
-	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
-						       &attributes,
-						       attributes_mask));
-	window = gtk_widget_get_window (widget);
-	gdk_window_set_user_data (window, widget);
-
-	gtk_widget_set_style (widget, gtk_style_attach (gtk_widget_get_style (widget), window));
-    
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-}
-
-static gboolean
-brasero_disc_message_expose_event (GtkWidget *widget,
-				   GdkEventExpose *event)
-{
-	GtkAllocation allocation;
-
-	gtk_widget_get_allocation (widget, &allocation);
-	gtk_paint_flat_box (gtk_widget_get_style (widget),
-			    gtk_widget_get_window (widget),
-			    GTK_STATE_NORMAL,
-			    GTK_SHADOW_OUT,
-			    NULL,
-			    widget,
-			    "tooltip",
-			    0,
-			    0,
-			    allocation.width,
-			    allocation.height);
-
-	GTK_WIDGET_CLASS (brasero_disc_message_parent_class)->expose_event (widget, event);
-
-	return FALSE;
-}
-
-static void
 brasero_disc_message_class_init (BraseroDiscMessageClass *klass)
 {
-	GtkWidgetClass* widget_class = GTK_WIDGET_CLASS (klass);
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	GtkBindingSet *binding_set;
 
 	g_type_class_add_private (klass, sizeof (BraseroDiscMessagePrivate));
 
 	object_class->finalize = brasero_disc_message_finalize;
-
-	widget_class->expose_event = brasero_disc_message_expose_event;
-	widget_class->realize = brasero_disc_message_realize;
-
-	widget_class->size_request = brasero_disc_message_size_request;
-	widget_class->size_allocate = brasero_disc_message_size_allocate;
-
-	disc_message_signals[RESPONSE] =
-		g_signal_new ("response",
-		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_CLEANUP | G_SIGNAL_NO_RECURSE,
-		              G_STRUCT_OFFSET (BraseroDiscMessageClass, response),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__INT,
-		              G_TYPE_NONE, 1,
-		              G_TYPE_INT);
-
-	binding_set = gtk_binding_set_by_class (klass);
-	gtk_binding_entry_add_signal (binding_set,
-				      GDK_Escape,
-				      0,
-				      "response",
-				      0,
-				      G_TYPE_INT, GTK_RESPONSE_CLOSE);
 }
 
 GtkWidget *

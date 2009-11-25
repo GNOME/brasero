@@ -48,16 +48,12 @@ typedef struct _BraseroDiscMessage BraseroDiscMessage;
 
 struct _BraseroDiscMessageClass
 {
-	GtkBinClass parent_class;
-
-	/* Signals */
-	void	(*response)	(BraseroDiscMessage *message,
-				 GtkResponseType response);
+	GtkInfoBarClass parent_class;
 };
 
 struct _BraseroDiscMessage
 {
-	GtkBin parent_instance;
+	GtkInfoBar parent_instance;
 };
 
 GType brasero_disc_message_get_type (void) G_GNUC_CONST;
@@ -74,23 +70,13 @@ brasero_disc_message_set_primary (BraseroDiscMessage *message,
 void
 brasero_disc_message_set_secondary (BraseroDiscMessage *message,
 				    const gchar *text);
-void
-brasero_disc_message_set_image (BraseroDiscMessage *message,
-				const gchar *image);
+
 void
 brasero_disc_message_set_progress_active (BraseroDiscMessage *message,
 					  gboolean active);
 void
 brasero_disc_message_set_progress (BraseroDiscMessage *self,
 				   gdouble progress);
-GtkWidget *
-brasero_disc_message_add_button (BraseroDiscMessage *message,
-				 GtkSizeGroup *group,
-				 const gchar *text,
-				 const gchar *tooltip,
-				 GtkResponseType type);
-void
-brasero_disc_message_add_close_button (BraseroDiscMessage *message);
 
 void
 brasero_disc_message_remove_buttons (BraseroDiscMessage *message);
