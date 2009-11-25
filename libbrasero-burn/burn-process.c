@@ -97,8 +97,6 @@ struct _BraseroProcessPrivate {
 
 #define BRASERO_PROCESS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROCESS, BraseroProcessPrivate))
 
-static GObjectClass *parent_class = NULL;
-
 void
 brasero_process_deferred_error (BraseroProcess *self,
 				GError *error)
@@ -279,14 +277,14 @@ brasero_process_finished (BraseroProcess *self)
 	}
 
 	/* Tell the world we're done */
-	klass->post (BRASERO_JOB (self));
-	return BRASERO_BURN_OK;
+	return klass->post (BRASERO_JOB (self));
 }
 
 static gboolean
 brasero_process_watch_child (gpointer data)
 {
 	int status;
+	BraseroBurnResult result;
 	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (data);
 
 	if (waitpid (priv->pid, &status, WNOHANG) <= 0)
@@ -298,9 +296,33 @@ brasero_process_watch_child (gpointer data)
 	 * error message or simply decide all went well, in one word override */
 	priv->return_status = WEXITSTATUS (status);
 	priv->watch = 0;
+	priv->pid = 0;
 
 	BRASERO_JOB_LOG (data, "process finished with status %i", WEXITSTATUS (status));
-	brasero_process_finished (BRASERO_PROCESS (data));
+
+	result = brasero_process_finished (data);
+	if (result == BRASERO_BURN_RETRY) {
+		GError *error = NULL;
+		BraseroJobClass *job_class;
+
+		priv->process_finished = FALSE;
+
+		job_class = BRASERO_JOB_GET_CLASS (data);
+		if (job_class->stop) {
+			result = job_class->stop (data, &error);
+			if (result != BRASERO_BURN_OK) {
+				brasero_job_error (data, error);
+				return FALSE;
+			}
+		}
+
+		if (job_class->start) {
+			/* we were asked by the plugin to restart it */
+			result = job_class->start (data, &error);
+			if (result != BRASERO_BURN_OK)
+				brasero_job_error (data, error);
+		}
+	}
 
 	return FALSE;
 }
@@ -859,7 +881,7 @@ brasero_process_finalize (GObject *object)
 		priv->working_directory = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_process_parent_class)->finalize (object);
 }
 
 static void
@@ -870,7 +892,6 @@ brasero_process_class_init (BraseroProcessClass *klass)
 
 	g_type_class_add_private (klass, sizeof (BraseroProcessPrivate));
 
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_process_finalize;
 
 	job_class->start = brasero_process_start;

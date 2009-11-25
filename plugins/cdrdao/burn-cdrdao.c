@@ -45,7 +45,6 @@
 
 #include <gconf/gconf-client.h>
 
-#include "burn-cdrdao-common.h"
 #include "brasero-error.h"
 #include "brasero-plugin-registration.h"
 #include "burn-job.h"
@@ -55,6 +54,7 @@
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 
+#define CDRDAO_DESCRIPTION		N_("cdrdao burning suite")
 
 #define BRASERO_TYPE_CDRDAO         (brasero_cdrdao_get_type ())
 #define BRASERO_CDRDAO(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdao))
@@ -66,7 +66,8 @@
 BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BRASERO_TYPE_PROCESS, BraseroProcess);
 
 struct _BraseroCdrdaoPrivate {
-  	guint use_raw:1;
+ 	gchar *tmp_toc_path;
+	guint use_raw:1;
 };
 typedef struct _BraseroCdrdaoPrivate BraseroCdrdaoPrivate;
 #define BRASERO_CDRDAO_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdaoPrivate)) 
@@ -439,16 +440,71 @@ brasero_cdrdao_set_argv_blank (BraseroCdrdao *cdrdao,
 }
 
 static BraseroBurnResult
+brasero_cdrdao_post (BraseroJob *job)
+{
+	BraseroCdrdaoPrivate *priv;
+
+	priv = BRASERO_CDRDAO_PRIVATE (job);
+	if (!priv->tmp_toc_path) {
+		brasero_job_finished_session (job);
+		return BRASERO_BURN_OK;
+	}
+
+	/* we have to run toc2cue now to convert the toc file into a cue file */
+	return BRASERO_BURN_RETRY;
+}
+
+static BraseroBurnResult
+brasero_cdrdao_start_toc2cue (BraseroCdrdao *cdrdao,
+			      GPtrArray *argv,
+			      GError **error)
+{
+	gchar *cue_output;
+	BraseroBurnResult result;
+	BraseroCdrdaoPrivate *priv;
+
+	priv = BRASERO_CDRDAO_PRIVATE (cdrdao);
+
+	g_ptr_array_add (argv, g_strdup ("toc2cue"));
+
+	g_ptr_array_add (argv, priv->tmp_toc_path);
+	priv->tmp_toc_path = NULL;
+
+	result = brasero_job_get_image_output (BRASERO_JOB (cdrdao),
+					       NULL,
+					       &cue_output);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	g_ptr_array_add (argv, cue_output);
+
+	/* if there is a file toc2cue will fail */
+	g_remove (cue_output);
+
+	brasero_job_set_current_action (BRASERO_JOB (cdrdao),
+					BRASERO_BURN_ACTION_CREATING_IMAGE,
+					_("Converting toc file"),
+					TRUE);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 			       GPtrArray *argv,
 			       GError **error)
 {
 	gchar *image = NULL, *toc = NULL;
 	BraseroTrackType *output = NULL;
+	BraseroCdrdaoPrivate *priv;
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroDrive *drive;
 	BraseroTrack *track;
+
+	priv = BRASERO_CDRDAO_PRIVATE (cdrdao);
+	if (priv->tmp_toc_path)
+		return brasero_cdrdao_start_toc2cue (cdrdao, argv, error);
 
 	g_ptr_array_add (argv, g_strdup ("cdrdao"));
 	g_ptr_array_add (argv, g_strdup ("read-cd"));
@@ -479,7 +535,9 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 			return result;
 		}
 	}
-	else {
+	else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_CUE) {
+		/* NOTE: we don't generate the .cue file right away; we'll call
+		 * toc2cue right after we finish */
 		result = brasero_job_get_image_output (BRASERO_JOB (cdrdao),
 						       &image,
 						       NULL);
@@ -487,15 +545,19 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 			brasero_track_type_free (output);
 			return result;
 		}
-	
+
 		result = brasero_job_get_tmp_file (BRASERO_JOB (cdrdao),
 						   NULL,
 						   &toc,
 						   error);
 		if (result != BRASERO_BURN_OK) {
+			g_free (image);
 			brasero_track_type_free (output);
 			return result;
 		}
+
+		/* save the temporary toc path to resuse it later. */
+		priv->tmp_toc_path = g_strdup (toc);
 	}
 
 	brasero_track_type_free (output);
@@ -586,7 +648,7 @@ brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 
 	process_class->stderr_func = brasero_cdrdao_read_stderr;
 	process_class->set_argv = brasero_cdrdao_set_argv;
-	process_class->post = brasero_job_finished_session;
+	process_class->post = brasero_cdrdao_post;
 }
 
 static void
@@ -602,13 +664,20 @@ brasero_cdrdao_init (BraseroCdrdao *obj)
  	priv->use_raw = gconf_client_get_bool (client,
 					       GCONF_KEY_RAW_FLAG,
 					       NULL);
-
  	g_object_unref (client); 
 }
 
 static void
 brasero_cdrdao_finalize (GObject *object)
 {
+	BraseroCdrdaoPrivate *priv;
+
+	priv = BRASERO_CDRDAO_PRIVATE (object);
+	if (priv->tmp_toc_path) {
+		g_free (priv->tmp_toc_path);
+		priv->tmp_toc_path = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -649,7 +718,11 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin)
 	/* an image can be created ... */
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					 BRASERO_IMAGE_FORMAT_CDRDAO);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
 
+	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					 BRASERO_IMAGE_FORMAT_CUE);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
@@ -709,5 +782,11 @@ brasero_plugin_check_config (BraseroPlugin *plugin)
 	                         "cdrdao",
 	                         "version",
 	                         "Cdrdao version %d.%d.%d - (C) Andreas Mueller <andreas@daneb.de>",
+	                         version);
+
+	brasero_plugin_test_app (plugin,
+	                         "toc2cue",
+	                         "-V",
+	                         "%d.%d.%d",
 	                         version);
 }
