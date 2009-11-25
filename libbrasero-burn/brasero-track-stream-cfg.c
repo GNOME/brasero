@@ -204,12 +204,12 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		                                                                                 BRASERO_AUDIO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_NONE)|
 		                                                                                BRASERO_METADATA_INFO);
 
-	/* size */
+	/* Size/length. Do forget to respect the gap size/len with -1 */
 	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries)
 		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries (BRASERO_TRACK_STREAM (obj),
 												    0,
 												    len,
-												    0);
+												    -1);
 
 	snapshot = g_file_info_get_attribute_object (info, BRASERO_IO_THUMBNAIL);
 	if (snapshot) {
