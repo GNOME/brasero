@@ -48,8 +48,6 @@
 typedef struct _BraseroDiscMessagePrivate BraseroDiscMessagePrivate;
 struct _BraseroDiscMessagePrivate
 {
-	GtkSizeGroup *group;
-
 	GtkWidget *progress;
 
 	GtkWidget *expander;
@@ -354,12 +352,9 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	GtkWidget *main_box;
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (object);
-	gtk_widget_set_has_window (GTK_WIDGET (object), FALSE);
 
 	main_box = gtk_info_bar_get_content_area (GTK_INFO_BAR (object));
 	gtk_container_set_border_width (GTK_CONTAINER (main_box), 0);
-
-	priv->group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 
 	priv->text_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (priv->text_box);
@@ -368,7 +363,6 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	priv->primary = gtk_label_new (NULL);
 	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->primary), GTK_WRAP_WORD);
 	gtk_label_set_line_wrap (GTK_LABEL (priv->primary), TRUE);
-	gtk_size_group_add_widget (priv->group, priv->primary);
 	gtk_misc_set_alignment (GTK_MISC (priv->primary), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, TRUE, TRUE, 0);
 }
@@ -388,9 +382,6 @@ brasero_disc_message_finalize (GObject *object)
 		g_source_remove (priv->timeout);
 		priv->timeout = 0;
 	}
-
-	g_object_unref (priv->group);
-	priv->group = NULL;
 
 	G_OBJECT_CLASS (brasero_disc_message_parent_class)->finalize (object);
 }
