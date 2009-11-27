@@ -533,7 +533,7 @@ brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 	}
 
 	if (disc->priv->message)
-		brasero_notify_message_remove (BRASERO_NOTIFY (disc->priv->message), BRASERO_AUDIO_DISC_CONTEXT);
+		brasero_notify_message_remove (disc->priv->message, BRASERO_AUDIO_DISC_CONTEXT);
 }
 
 static void
@@ -844,7 +844,7 @@ brasero_audio_disc_wav_dts_file_dialog (BraseroAudioDisc *disc)
 	BraseroSessionCfg *session;
 	GtkTreeModel *model;
 
-	if (brasero_notify_get_message_by_context_id (BRASERO_NOTIFY (disc->priv->message),
+	if (brasero_notify_get_message_by_context_id (disc->priv->message,
 	                                              BRASERO_AUDIO_DISC_CONTEXT))
 		return;
 
@@ -855,7 +855,7 @@ brasero_audio_disc_wav_dts_file_dialog (BraseroAudioDisc *disc)
 	                                  BRASERO_SESSION_STREAM_AUDIO_FORMAT,
 	                                  BRASERO_AUDIO_FORMAT_RAW);
 
-	message = brasero_notify_message_add (BRASERO_NOTIFY (disc->priv->message),
+	message = brasero_notify_message_add (disc->priv->message,
 					      _("Do you want to create an audio CD with DTS tracks?"),
 					      _("Some of the selected songs are suitable for creating DTS tracks."
 					        "\nThis type of audio CD track provides a higher quality of sound but can only be played by specific digital players."

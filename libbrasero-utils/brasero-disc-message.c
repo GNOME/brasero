@@ -41,9 +41,6 @@
 
 #include "brasero-disc-message.h"
 
-/**
- * This code was heavily inspired by gedit famous message area (gedit-message-area.c)
- */
 
 typedef struct _BraseroDiscMessagePrivate BraseroDiscMessagePrivate;
 struct _BraseroDiscMessagePrivate
@@ -68,8 +65,6 @@ struct _BraseroDiscMessagePrivate
 #define BRASERO_DISC_MESSAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DISC_MESSAGE, BraseroDiscMessagePrivate))
 
 G_DEFINE_TYPE (BraseroDiscMessage, brasero_disc_message, GTK_TYPE_INFO_BAR);
-
-#define RESPONSE_TYPE	"ResponseType"
 
 enum {
 	TEXT_COL,
@@ -313,7 +308,6 @@ brasero_disc_message_set_primary (BraseroDiscMessage *self,
 	markup = g_strdup_printf ("<b>%s</b>", message);
 	gtk_label_set_markup (GTK_LABEL (priv->primary), markup);
 	g_free (markup);
-
 	gtk_widget_show (priv->primary);
 }
 
@@ -354,17 +348,17 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (object);
 
 	main_box = gtk_info_bar_get_content_area (GTK_INFO_BAR (object));
-	gtk_container_set_border_width (GTK_CONTAINER (main_box), 0);
 
 	priv->text_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (priv->text_box);
-	gtk_box_pack_start (GTK_BOX (main_box), priv->text_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), priv->text_box, FALSE, FALSE, 0);
 
 	priv->primary = gtk_label_new (NULL);
+	gtk_widget_show (priv->primary);
 	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->primary), GTK_WRAP_WORD);
 	gtk_label_set_line_wrap (GTK_LABEL (priv->primary), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (priv->primary), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, FALSE, FALSE, 0);
 }
 
 static void

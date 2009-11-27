@@ -39,26 +39,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_NOTIFY             (brasero_notify_get_type ())
-#define BRASERO_NOTIFY(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_NOTIFY, BraseroNotify))
-#define BRASERO_NOTIFY_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_NOTIFY, BraseroNotifyClass))
-#define BRASERO_IS_NOTIFY(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BRASERO_TYPE_NOTIFY))
-#define BRASERO_IS_NOTIFY_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_NOTIFY))
-#define BRASERO_NOTIFY_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_NOTIFY, BraseroNotifyClass))
-
-typedef struct _BraseroNotifyClass BraseroNotifyClass;
-typedef struct _BraseroNotify BraseroNotify;
-
-struct _BraseroNotifyClass
-{
-	GtkVBoxClass parent_class;
-};
-
-struct _BraseroNotify
-{
-	GtkVBox parent_instance;
-};
-
 typedef enum {
 	BRASERO_NOTIFY_CONTEXT_NONE		= 0,
 	BRASERO_NOTIFY_CONTEXT_SIZE		= 1,
@@ -71,21 +51,18 @@ GType brasero_notify_get_type (void) G_GNUC_CONST;
 GtkWidget *brasero_notify_new (void);
 
 GtkWidget *
-brasero_notify_message_add (BraseroNotify *notify,
+brasero_notify_message_add (GtkWidget *notify,
 			    const gchar *primary,
 			    const gchar *secondary,
 			    gint timeout,
 			    guint context_id);
 
 void
-brasero_notify_message_remove (BraseroNotify *notify,
+brasero_notify_message_remove (GtkWidget *notify,
 			       guint context_id);
 
-void
-brasero_notify_remove_all_messages (BraseroNotify *notify);
-
 GtkWidget *
-brasero_notify_get_message_by_context_id (BraseroNotify *notify,
+brasero_notify_get_message_by_context_id (GtkWidget *notify,
 					  guint context_id);
 
 G_END_DECLS

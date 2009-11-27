@@ -1804,7 +1804,7 @@ brasero_burn_check_data_loss (BraseroBurn *burn,
 		if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
 			/* There is an error if APPEND was set since this disc is not
 			 * supported without a prior blanking. */
-	g_print ("REAAA\n");
+
 			/* we warn the user is going to lose data even if in the case of
 			 * DVD+/-RW we don't really blank the disc we rather overwrite */
 			result = brasero_burn_emit_signal (burn,

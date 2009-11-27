@@ -904,7 +904,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	 * that means that file selection is not empty */
 
 	/* Clean any message */
-	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message),
+	brasero_notify_message_remove (project->priv->message,
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
 	if (valid == BRASERO_SESSION_EMPTY) {
@@ -931,7 +931,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		&& brasero_session_span_possible (BRASERO_SESSION_SPAN (session)) == BRASERO_BURN_RETRY) {
 			GtkWidget *message;
 
-			message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+			message = brasero_notify_message_add (project->priv->message,
 							      _("Would you like to burn the selection of files across several media?"),
 							      _("The project is too large for the disc even with the overburn option."),
 							      -1,
@@ -947,7 +947,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 					  project);
 		}
 		else
-			brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+			brasero_notify_message_add (project->priv->message,
 						    _("Please choose another CD or DVD or insert a new one."),
 						    _("The project is too large for the disc even with the overburn option."),
 						    -1,
@@ -958,7 +958,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 
 		project->priv->empty = FALSE;
 		project->priv->oversized = TRUE;
-		message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+		message = brasero_notify_message_add (project->priv->message,
 						      _("Would you like to burn beyond the disc's reported capacity?"),
 						      _("The project is too large for the disc and you must remove files from it."
 							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognized and therefore needs the overburn option."
@@ -977,7 +977,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		project->priv->empty = FALSE;
-		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+		brasero_notify_message_add (project->priv->message,
 					    _("Please insert a writable CD or DVD."),
 					    NULL,
 					    -1,
@@ -985,14 +985,14 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
 		project->priv->empty = FALSE;
-		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+		brasero_notify_message_add (project->priv->message,
 					    _("Please replace the disc with a supported CD or DVD."),
 					    NULL,
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_CD_TEXT) {
-		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+		brasero_notify_message_add (project->priv->message,
 					    _("No track information (artist, title, ...) will be written to the disc."),
 					    _("This is not supported by the current active burning backend."),
 					    -1,
@@ -1002,7 +1002,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 	     &&  brasero_medium_selection_get_media_num (BRASERO_MEDIUM_SELECTION (project->priv->selection)) == 1) {
 		/* The user may have forgotten to insert a disc so remind him of that if
 		 * there aren't any other possibility in the selection */
-		brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+		brasero_notify_message_add (project->priv->message,
 					    _("Please insert a writable CD or DVD if you don't want to write to an image file."),
 					    NULL,
 					    10000,
@@ -1699,9 +1699,9 @@ brasero_project_reset (BraseroProject *project)
 		project->priv->session = NULL;
 	}
 
-	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
-	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
-	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+	brasero_notify_message_remove (project->priv->message, BRASERO_NOTIFY_CONTEXT_SIZE);
+	brasero_notify_message_remove (project->priv->message, BRASERO_NOTIFY_CONTEXT_LOADING);
+	brasero_notify_message_remove (project->priv->message, BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 }
 
 static void
@@ -1781,7 +1781,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 						   BRASERO_BURN_SESSION (project->priv->session));
 	}
 
-	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
+	brasero_notify_message_remove (project->priv->message, BRASERO_NOTIFY_CONTEXT_SIZE);
 
 	/* update the menus */
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");

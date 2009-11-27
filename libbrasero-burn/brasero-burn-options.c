@@ -238,14 +238,14 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 	if (!priv->is_valid
 	||  !brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))
 	||   brasero_medium_selection_get_media_num (BRASERO_MEDIUM_SELECTION (priv->selection)) != 1) {
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+		brasero_notify_message_remove (priv->message_output,
 					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
 		return;
 	}
 
 	/* The user may have forgotten to insert a disc so remind him of that if
 	 * there aren't any other possibility in the selection */
-	brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+	brasero_notify_message_add (priv->message_output,
 				    _("Please insert a writable CD or DVD if you don't want to write to an image file."),
 				    NULL,
 				    -1,
@@ -316,11 +316,11 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 	if (priv->message_input) {
 		gtk_widget_hide (priv->message_input);
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_input),
+		brasero_notify_message_remove (priv->message_input,
 					       BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 
-	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+	brasero_notify_message_remove (priv->message_output,
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
 	if (valid == BRASERO_SESSION_NOT_READY) {
@@ -373,10 +373,10 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		/* Here there is an alternative: we may be able to span the data
 		 * across multiple media. So try that. */
 		if (available_space > min_disc_size
-		&& brasero_session_span_possible (BRASERO_SESSION_SPAN (priv->session)) == BRASERO_BURN_RETRY) {
+		&&  brasero_session_span_possible (BRASERO_SESSION_SPAN (priv->session)) == BRASERO_BURN_RETRY) {
 			GtkWidget *message;
 
-			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+			message = brasero_notify_message_add (priv->message_output,
 							      _("Would you like to burn the selection of files across several media?"),
 							      _("The data size is too large for the disc even with the overburn option."),
 							      -1,
@@ -393,21 +393,21 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 					  self);
 		}
 		else
-			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+			brasero_notify_message_add (priv->message_output,
 						    _("Please choose another CD or DVD or insert a new one."),
 						    _("The data size is too large for the disc even with the overburn option."),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
-		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+		brasero_notify_message_add (priv->message_output,
 					    _("Please insert a writable CD or DVD."),
 					    NULL,
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_CD_TEXT) {
-		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+		brasero_notify_message_add (priv->message_output,
 					    _("No track information (artist, title, ...) will be written to the disc."),
 					    _("This is not supported by the current active burning backend."),
 					    -1,
@@ -420,19 +420,19 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (priv->session), type);
 
 		if (brasero_track_type_get_has_data (type))
-			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+			brasero_notify_message_add (priv->message_output,
 						    _("Please add files."),
 						    _("There are no files to write to disc"),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 		else if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (brasero_track_type_get_stream_format (type)))
-			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+			brasero_notify_message_add (priv->message_output,
 						    _("Please add songs."),
 						    _("There are no songs to write to disc"),
 						    -1,
 						    BRASERO_NOTIFY_CONTEXT_SIZE);
 		else
-			brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+			brasero_notify_message_add (priv->message_output,
 						     _("Please add videos."),
 						    _("There are no videos to write to disc"),
 						    -1,
@@ -446,7 +446,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
+			message = brasero_notify_message_add (priv->message_input,
 							      _("Please insert a disc holding data."),
 							      _("There is no inserted disc to copy."),
 							      -1,
@@ -458,7 +458,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
+			message = brasero_notify_message_add (priv->message_input,
 							      _("Please select a disc image."),
 							      _("There is no selected disc image."),
 							      -1,
@@ -470,7 +470,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
+			message = brasero_notify_message_add (priv->message_input,
 							      /* Translators: this is a disc image not a picture */
 							      C_("disc", "Please select another image."),
 							      _("It doesn't appear to be a valid disc image or a valid cue file."),
@@ -483,7 +483,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
+			message = brasero_notify_message_add (priv->message_input,
 							      _("Please insert a disc that is not copy protected."),
 							      _("All required applications and libraries are not installed."),
 							      -1,
@@ -491,7 +491,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		}
 	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
-		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+		brasero_notify_message_add (priv->message_output,
 		                            _("Please replace the disc with a supported CD or DVD."),
 		                            NULL,
 		                            -1,
@@ -500,13 +500,14 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
 		GtkWidget *message;
 
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+		message = brasero_notify_message_add (priv->message_output,
 						      _("Would you like to burn beyond the disc's reported capacity?"),
 						      _("The data size is too large for the disc and you must remove files from the selection otherwise."
 							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
+
 		gtk_widget_set_tooltip_text (gtk_info_bar_add_button (GTK_INFO_BAR (message),
 								      _("_Overburn"),
 								      GTK_RESPONSE_OK),
@@ -519,11 +520,12 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	}
 	else if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (priv->session))) {
 		/* The medium is valid but it's a special case */
-		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+		brasero_notify_message_add (priv->message_output,
 					    _("The drive that holds the source disc will also be the one used to record."),
 					    _("A new writable disc will be required once the currently loaded one has been copied."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
+		gtk_widget_show_all (priv->message_output);
 	}
 
 	brasero_burn_options_update_no_medium_warning (self);

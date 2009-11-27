@@ -253,7 +253,7 @@ brasero_data_disc_import_session_cb (GtkToggleAction *action,
 	if (!medium)
 		return;
 
-	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+	brasero_notify_message_remove (priv->message, BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 	res = brasero_data_disc_import_session (self,
 						medium,
 						gtk_toggle_action_get_active (action));
@@ -529,7 +529,7 @@ brasero_data_disc_project_loading_cb (BraseroTrackDataCfg *project,
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 	priv->loading = TRUE;
 
-	message = brasero_notify_get_message_by_context_id (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
+	message = brasero_notify_get_message_by_context_id (priv->message, BRASERO_NOTIFY_CONTEXT_LOADING);
 	if (!message)
 		return;
 
@@ -548,7 +548,7 @@ brasero_data_disc_project_loaded_cb (BraseroTrackDataCfg *project,
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 	priv->loading = FALSE;
 
-	message = brasero_notify_get_message_by_context_id (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
+	message = brasero_notify_get_message_by_context_id (priv->message, BRASERO_NOTIFY_CONTEXT_LOADING);
 	if (!message)
 		return;
 
@@ -1074,7 +1074,7 @@ brasero_data_disc_remove_available_medium (BraseroDataDisc *self,
 	action = gtk_action_group_get_action (priv->import_group, action_name);
 	g_free (action_name);
 
-	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+	brasero_notify_message_remove (priv->message, BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 
 	merge_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MERGE_ID));
 	gtk_ui_manager_remove_ui (priv->manager, merge_id);
@@ -1109,7 +1109,7 @@ brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 		volume_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
 		/* Translators: %s is the name of the volume to import */
 		string = g_strdup_printf (_("Do you want to import the session from \"%s\"?"), volume_name);
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+		message = brasero_notify_message_add (priv->message,
 						      string,
 						      _("That way, old files from previous sessions will be usable after burning."),
 						      10000,
@@ -1193,9 +1193,9 @@ brasero_data_disc_clear (BraseroDisc *disc)
 
 	priv->overburning = FALSE;
 
- 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
-	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
-	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+ 	brasero_notify_message_remove (priv->message, BRASERO_NOTIFY_CONTEXT_SIZE);
+	brasero_notify_message_remove (priv->message, BRASERO_NOTIFY_CONTEXT_LOADING);
+	brasero_notify_message_remove (priv->message, BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 
 	brasero_track_data_cfg_reset (priv->project);
 }
@@ -1467,7 +1467,7 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 		return BRASERO_DISC_ERROR_UNKNOWN;
 	}
 
-	message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+	message = brasero_notify_message_add (priv->message,
 					      _("Please wait while the project is loading."),
 					      NULL,
 					      -1,
