@@ -223,7 +223,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 	/* See if information retrieval went fine and/or is ready */
 	status = brasero_status_new ();
 	result = brasero_track_get_status (BRASERO_TRACK (priv->track), status);
-	if (result == BRASERO_BURN_NOT_READY) {
+	if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING) {
 		/* Translators: %s is a path */
 		string = g_strdup_printf (_("\"%s\": loading"), name);
 		gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);

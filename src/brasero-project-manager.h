@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /***************************************************************************
  *            brasero-project-manager.h
  *
@@ -60,30 +62,9 @@ typedef struct {
 GType brasero_project_manager_get_type (void);
 GtkWidget *brasero_project_manager_new (void);
 
-void
-brasero_project_manager_audio (BraseroProjectManager *manager,
-			       GSList *uris,
-			       gboolean burn);
-void
-brasero_project_manager_data (BraseroProjectManager *manager,
-			      GSList *uris,
-			      gboolean burn);
-void
-brasero_project_manager_video (BraseroProjectManager *manager,
-			       GSList *uris,
-			       gboolean burn);
-void
-brasero_project_manager_copy (BraseroProjectManager *manager,
-			      const gchar *device,
-			      const gchar *cover);
-void
-brasero_project_manager_iso (BraseroProjectManager *manager,
-			     const gchar *uri);
-
 gboolean
 brasero_project_manager_open_session (BraseroProjectManager *manager,
-                                      BraseroSessionCfg *session,
-                                      gboolean burn);
+                                      BraseroSessionCfg *session);
 
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
@@ -101,6 +82,11 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 void
 brasero_project_manager_register_ui (BraseroProjectManager *manager,
 				     GtkUIManager *ui_manager);
+
+void
+brasero_project_manager_switch (BraseroProjectManager *manager,
+				BraseroProjectType type,
+				gboolean reset);
 
 G_END_DECLS
 

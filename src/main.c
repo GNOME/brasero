@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /*
  * Brasero is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,9 +45,12 @@
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
+#include "brasero-medium-monitor.h"
+
 #include "brasero-project-manager.h"
 #include "brasero-multi-dnd.h"
 #include "brasero-utils.h"
+#include "brasero-misc.h"
 #include "brasero-app.h"
 
 #include "brasero-burn-lib.h"
@@ -53,21 +58,52 @@
 
 #include "eggsmclient.h"
 
+BraseroDrive *burner = NULL;
+
 gchar *burn_project_uri;
 gchar *project_uri;
 gchar *cover_project;
 gchar *playlist_uri;
-gchar *iso_uri;
+gchar *copy_project_path;
+gchar *image_project_uri;
+
 gchar **files;
+
 gint audio_project;
 gint data_project;
 gint video_project;
-gint copy_project;
 gint empty_project;
-gint disc_blank;
-gint disc_check;
 gint open_ncb;
 gint parent_window;
+gint burn_immediately;
+gint disc_blank;
+gint disc_check;
+
+gboolean copy_project;
+gboolean image_project;
+
+static gboolean
+brasero_main_copy_project (const gchar *option_name,
+                           const gchar *value,
+                           gpointer data,
+                           GError **error);
+static gboolean
+brasero_main_image_project (const gchar *option_name,
+   			    const gchar *value,
+                            gpointer data,
+                            GError **error);
+
+static gboolean
+brasero_main_fake_device (const gchar *option_name,
+			  const gchar *value,
+			  gpointer data,
+			  GError **error);
+
+static gboolean
+brasero_main_burning_device (const gchar *option_name,
+			     const gchar *value,
+			     gpointer data,
+			     GError **error);
 
 static const GOptionEntry options [] = {
 	{ "project", 'p', 0, G_OPTION_ARG_FILENAME, &project_uri,
@@ -82,6 +118,14 @@ static const GOptionEntry options [] = {
 
 #endif
 
+	{ "device", 0, G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, brasero_main_burning_device,
+	  N_("Set the drive to be used for burning"),
+	  N_("DEVICE PATH") },
+
+	{ "image-file", 0, G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, brasero_main_fake_device,
+	  N_("Create an image file instead of burning"),
+	  NULL },
+
 	{ "audio", 'a', 0, G_OPTION_ARG_NONE, &audio_project,
 	  N_("Open an audio project adding the URIs given on the command line"),
 	  NULL },
@@ -90,7 +134,7 @@ static const GOptionEntry options [] = {
          N_("Open a data project adding the URIs given on the command line"),
           NULL },
 
-	{ "copy", 'c', 0, G_OPTION_ARG_NONE, &copy_project,
+	{ "copy", 'c', G_OPTION_FLAG_OPTIONAL_ARG|G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, brasero_main_copy_project,
 	  N_("Copy a disc"),
 	  N_("PATH TO DEVICE") },
 
@@ -102,9 +146,9 @@ static const GOptionEntry options [] = {
 	  N_("Open a video project adding the URIs given on the command line"),
 	  NULL },
 
-	{ "image", 'i', 0, G_OPTION_ARG_FILENAME, &iso_uri,
+	{ "image", 'i', G_OPTION_FLAG_OPTIONAL_ARG|G_OPTION_FLAG_FILENAME, G_OPTION_ARG_CALLBACK, brasero_main_image_project,
 	 N_("URI of an image file to burn (autodetected)"),
-          N_("PATH TO PLAYLIST") },
+          N_("PATH TO IMAGE") },
 
     	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
          N_("Force brasero to display the project selection page"),
@@ -112,14 +156,18 @@ static const GOptionEntry options [] = {
 
 	{ "blank", 'b', 0, G_OPTION_ARG_NONE, &disc_blank,
 	  N_("Open the blank disc dialog"),
-	  NULL },
+	  N_("PATH TO DEVICE") },
 
 	{ "check", 'k', 0, G_OPTION_ARG_NONE, &disc_check,
 	  N_("Open the check disc dialog"),
-	  NULL },
+	  N_("PATH TO DEVICE") },
 
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
 	  N_("Burn the contents of burn:// URI"),
+	  NULL },
+
+	{ "immediately", 0, 0, G_OPTION_ARG_NONE, &burn_immediately,
+	  N_("Start burning immediately."),
 	  NULL },
 
 	{ "burn-and-remove-project", 'r', 0, G_OPTION_ARG_FILENAME, &burn_project_uri,
@@ -140,124 +188,103 @@ static const GOptionEntry options [] = {
 	{ NULL }
 };
 
-#define BRASERO_PROJECT_OPEN_URI(manager_MACRO, function, path)		\
-{									\
-	GFile *file;							\
-	gchar *uri;							\
-	file = g_file_new_for_commandline_arg (path);			\
-	uri = g_file_get_uri (file);					\
-	g_object_unref (file);						\
-	function (BRASERO_PROJECT_MANAGER (manager_MACRO), uri);	\
-}
-
-#define BRASERO_PROJECT_OPEN_LIST(manager_MACRO, function_MACRO, uris_MACROS, burn_MACRO)	\
-{										\
-	GSList *list = NULL;							\
-	gchar **iter;								\
-	/* convert all names into a GSList * */					\
-	for (iter = uris_MACROS; iter && *iter; iter ++) {				\
-		gchar *uri;							\
-		GFile *file;							\
-		file = g_file_new_for_commandline_arg (*iter);			\
-		uri = g_file_get_uri (file);					\
-		g_object_unref (file);						\
-		list = g_slist_prepend (list, uri);				\
-	}									\
-	/* reverse to keep the order of files */				\
-	list = g_slist_reverse (list);						\
-	function_MACRO (BRASERO_PROJECT_MANAGER (manager_MACRO), list, burn_MACRO);		\
-	g_slist_foreach (list, (GFunc) g_free, NULL);				\
-	g_slist_free (list);							\
-}
-
-static void
-brasero_handle_burn_uri (BraseroApp *app,
-			 GtkWidget *manager)
+static gboolean
+brasero_main_fake_device (const gchar *option_name,
+                          const gchar *value,
+                          gpointer data,
+                          GError **error)
 {
-	GFileEnumerator *enumerator;
-	GFileInfo *info = NULL;
-	GError *error = NULL;
-	GSList *list = NULL;
-	GFile *file;
+	BraseroMediumMonitor *monitor;
+	GSList *list;
 
-	/* Here we get the contents from the burn:// URI and add them
-	 * individually to the data project. This is done in case it is
-	 * empty no to start the "Getting Project Size" dialog and then
-	 * show the "Project is empty" dialog. Do this synchronously as:
-	 * - we only want the top nodes which reduces time needed
-	 * - it's always local
-	 * - windows haven't been shown yet
-	 * NOTE: don't use any file specified on the command line. */
-	file = g_file_new_for_uri ("burn://");
-	enumerator = g_file_enumerate_children (file,
-						G_FILE_ATTRIBUTE_STANDARD_NAME,
-						G_FILE_QUERY_INFO_NONE,
-						NULL,
-						&error);
+	/* Wait for the libbrasero-media to be ready */
+	monitor = brasero_medium_monitor_get_default ();
+	while (brasero_medium_monitor_is_probing (monitor))
+		sleep (1);
 
-	if (!enumerator) {
-		gchar *string;
+	list = brasero_medium_monitor_get_drives (monitor, BRASERO_DRIVE_TYPE_FILE);
+	if (!list)
+		return FALSE;
 
-		if (error)
-			string = g_strdup_printf (_("An internal error occurred (%s)"), error->message);
-		else
-			string = g_strdup (_("An internal error occurred"));
-
-		brasero_app_alert (app,
-				   _("Error while loading the project"),
-				   string,
-				   GTK_MESSAGE_ERROR);
-
-		g_free (string);
-		g_object_unref (file);
-		return;
-	}
-
-	while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)) != NULL) {
-		list = g_slist_prepend (list, g_strconcat ("burn:///", g_file_info_get_name (info), NULL));
-		g_object_unref (info);
-	}
-
-	g_object_unref (enumerator);
-	g_object_unref (file);
-
-	if (error) {
-		gchar *string;
-
-		if (error)
-			string = g_strdup_printf (_("An internal error occurred (%s)"), error->message);
-		else
-			string = g_strdup (_("An internal error occurred"));
-
-		brasero_app_alert (app,
-				   _("Error while loading the project"),
-				   string,
-				   GTK_MESSAGE_ERROR);
-
-		g_free (string);
-
-		g_slist_foreach (list, (GFunc) g_free, NULL);
-		g_slist_free (list);
-		return;
-	}
-
-	if (!list) {
-		brasero_app_alert (app,
-				   _("Please add files to the project."),
-				   _("The project is empty"),
-				   GTK_MESSAGE_ERROR);
-		return;
-	}
-
-	/* reverse to keep the order of files */
-	list = g_slist_reverse (list);
-	brasero_app_create_mainwin (app);
-	manager = brasero_app_get_project_manager (app);
-	brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list, TRUE);
-
-	g_slist_foreach (list, (GFunc) g_free, NULL);
+	burner = list->data;
 	g_slist_free (list);
-	return;
+
+	return TRUE;
+}
+
+static gboolean
+brasero_main_burning_device (const gchar *option_name,
+			     const gchar *value,
+			     gpointer data,
+			     GError **error)
+{
+	BraseroDrive *burner;
+	BraseroMediumMonitor *monitor;
+
+	if (!value)
+		return FALSE;
+
+	/* Wait for the libbrasero-media to be ready */
+	monitor = brasero_medium_monitor_get_default ();
+	while (brasero_medium_monitor_is_probing (monitor))
+		sleep (1);
+
+	burner = brasero_medium_monitor_get_drive (monitor, value);
+	g_object_unref (monitor);
+
+	if (burner) {
+		if (!brasero_drive_can_write (burner)) {
+			gchar *string;
+
+			/* Translators: %s is the path of drive */
+			string = g_strdup_printf (_("\"%s\" cannot write."), value);
+			brasero_utils_message_dialog (NULL,
+						      string,
+						      NULL,
+						      GTK_MESSAGE_ERROR);
+
+			g_object_unref (burner);
+			return FALSE;
+		}
+	}
+	else {
+		gchar *string;
+
+		/* Translators: %s is the path of a drive */
+		string = g_strdup_printf (_("\"%s\" cannot be found."), value);
+		brasero_utils_message_dialog (NULL,
+					      string,
+					      NULL,
+					      GTK_MESSAGE_ERROR);
+		g_free (string);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+brasero_main_copy_project (const gchar *option_name,
+                           const gchar *value,
+                           gpointer data,
+                           GError **error)
+{
+	copy_project = TRUE;
+	copy_project_path = g_strdup (value);
+
+	return TRUE;
+}
+
+static gboolean
+brasero_main_image_project (const gchar *option_name,
+			    const gchar *value,
+        		    gpointer data,
+	                    GError **error)
+{
+	image_project = TRUE;
+	image_project_uri = g_strdup (value);
+
+	return TRUE;
 }
 
 static void
@@ -278,10 +305,10 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 
 	/* we first check that only one of the options was given
-	 * (except for --debug and cover argument) */
+	 * (except for --debug, cover argument and device) */
 	if (copy_project)
 		nb ++;
-	if (iso_uri)
+	if (image_project)
 		nb ++;
 	if (project_uri)
 		nb ++;
@@ -311,10 +338,21 @@ brasero_app_parse_options (BraseroApp *app)
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
 	}
 	else if (project_uri) {
-		brasero_app_open_project (app, project_uri, FALSE, TRUE, FALSE);
+		brasero_app_open_project (app,
+					  burner,
+					  project_uri,
+					  FALSE,
+					  TRUE,
+					  burn_immediately != 0);
+		return;
 	}
 	else if (burn_project_uri) {
-		brasero_app_open_project (app, burn_project_uri, FALSE, TRUE, TRUE);
+		brasero_app_open_project (app,
+					  burner,
+					  burn_project_uri,
+					  FALSE,
+					  TRUE,
+					  TRUE);
 
 		if (g_remove (burn_project_uri) != 0) {
 			gchar *path;
@@ -329,91 +367,66 @@ brasero_app_parse_options (BraseroApp *app)
 #ifdef BUILD_PLAYLIST
 
 	else if (playlist_uri) {
-		brasero_app_open_project (app, playlist_uri, TRUE, TRUE, FALSE);
+		brasero_app_open_project (app,
+					  burner,
+					  playlist_uri,
+					  TRUE,
+					  TRUE,
+					  burn_immediately != 0);
+		return;
 	}
 
 #endif
-
-	else if (open_ncb) {
-		brasero_handle_burn_uri (app, manager);
-		return;
-	}
-	else if (audio_project) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files, FALSE);
-	}
-	else if (data_project) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
-	}
-	else if (video_project) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files, FALSE);
-	}
 	else if (copy_project) {
-		gchar *device = NULL;
-
-		/* Make sure there is only one file in the remaining list for
-		* specifying the source device. It could be extended to let
-		* the user specify the destination device as well */
-		if (files
-		&&  files [0] != NULL
-		&&  files [1] == NULL)
-			device = files [0]; 
-
-		brasero_app_copy_disc (app, device, cover_project);
+		brasero_app_copy_disc (app,
+				       burner,
+				       copy_project_path,
+				       cover_project,
+				       burn_immediately != 0);
 		return;
 	}
-	else if (iso_uri) {
-		GFile *file;
-		gchar *uri;
-
-		file = g_file_new_for_commandline_arg (iso_uri);
-		uri = g_file_get_uri (file);
-		g_object_unref (file);
-
-		brasero_app_burn_image (app, uri);
+	else if (image_project) {
+		brasero_app_image (app,
+				   burner,
+				   image_project_uri,
+				   burn_immediately != 0);
+		return;
+	}
+	else if (open_ncb) {
+		brasero_app_burn_uri (app, burner, burn_immediately != 0);
 		return;
 	}
 	else if (disc_blank) {
-		gchar *device = NULL;
-
-		/* make sure there is only one file in the remaining list for
-		 * specifying the source device. It could be extended to let
-		 * the user specify the destination device as well */
-		if (files
-		&&  files [0] != NULL
-		&&  files [1] == NULL)
-			device = files [0];
-
-		brasero_app_blank (app, device);
+		brasero_app_blank (app, burner, burn_immediately != 0);
 		return;
 	}
 	else if (disc_check) {
-		gchar *device = NULL;
-
-		/* make sure there is only one file in the remaining list for
-		 * specifying the source device. It could be extended to let
-		 * the user specify the destination device as well */
-		if (files
-		&&  files [0] != NULL
-		&&  files [1] == NULL)
-			device = files [0];
-
-		brasero_app_check (app, device);
+		brasero_app_check (app, burner, burn_immediately != 0);
 		return;
+	}
+	else if (audio_project) {
+		brasero_app_stream (app, burner, files, FALSE, burn_immediately != 0);
+		if (burn_immediately)
+			return;
+	}
+	else if (data_project) {
+		brasero_app_data (app, burner, files, burn_immediately != 0);
+		if (burn_immediately)
+			return;
+	}
+	else if (video_project) {
+		brasero_app_stream (app, burner, files, TRUE, burn_immediately != 0);
+		if (burn_immediately)
+			return;
 	}
 	else if (files) {
 		if (g_strv_length (files) == 1
 		&&  brasero_app_open_uri (app, files [0], FALSE))
 			return;
 
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
+		brasero_app_data (app, burner, files, burn_immediately != 0);
+		if (burn_immediately)
+			return;
 	}
 	else {
 		brasero_app_create_mainwin (app);
@@ -450,6 +463,10 @@ main (int argc, char **argv)
 	g_thread_init (NULL);
 	g_type_init ();
 
+	gtk_init (&argc, &argv);
+
+	brasero_burn_library_start (&argc, &argv);
+
 	context = g_option_context_new (_("[URI] [URI] …"));
 	g_option_context_add_main_entries (context,
 					   options,
@@ -466,19 +483,7 @@ main (int argc, char **argv)
 		g_option_context_free (context);
 		exit (1);
 	}
-
 	g_option_context_free (context);
-
-	/* REMINDER: this is done in burn library now */
-/*	gst_init (&argc, &argv);
-	gst_pb_utils_init ();
-	client = gconf_client_get_default ();
-	gconf_client_add_dir (client,
-			      BRASERO_CONF_DIR,
-			      GCONF_CLIENT_PRELOAD_NONE,
-			      NULL);
-*/
-	brasero_burn_library_start (&argc, &argv);
 
 	brasero_enable_multi_DND ();
 
@@ -497,3 +502,13 @@ main (int argc, char **argv)
 
 	return 0;
 }
+
+	/* REMINDER: this is done in burn library now */
+/*	gst_init (&argc, &argv);
+	gst_pb_utils_init ();
+	client = gconf_client_get_default ();
+	gconf_client_add_dir (client,
+			      BRASERO_CONF_DIR,
+			      GCONF_CLIENT_PRELOAD_NONE,
+			      NULL);
+*/

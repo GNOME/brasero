@@ -2423,10 +2423,9 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 	 * yet in the project and therefore project will look empty */
 	if (brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))) {
 		if (status)
-			brasero_status_set_not_ready (status,
-						      -1.0,
-						      _("Analysing files"));
-
+			brasero_status_set_running (status,
+						    -1.0,
+						    _("Analysing files"));
 		return BRASERO_BURN_NOT_READY;
 	}
 
@@ -2508,10 +2507,10 @@ brasero_track_data_cfg_image_uri_cb (BraseroDataVFS *vfs,
 	g_value_init (params, G_TYPE_STRING);
 	g_value_set_string (params, uri);
 
-	/* default to CANCEL */
+	/* default to OK (for addition) */
 	return_value.g_type = 0;
 	g_value_init (&return_value, G_TYPE_INT);
-	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+	g_value_set_int (&return_value, BRASERO_BURN_OK);
 
 	g_signal_emitv (instance_and_params,
 			brasero_track_data_cfg_signals [IMAGE],

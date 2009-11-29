@@ -511,6 +511,7 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 				 BraseroStatus *status)
 {
 	BraseroBurnSessionPrivate *priv;
+	BraseroMediumMonitor *monitor;
 	BraseroStatus *track_status;
 	gdouble num_tracks = 0.0;
 	gdouble done = -1.0;
@@ -524,6 +525,17 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 		return BRASERO_BURN_ERR;
 
 	track_status = brasero_status_new ();
+
+	/* Make sure that libbrasero-media is initialized */
+	monitor = brasero_medium_monitor_get_default ();
+	if (brasero_medium_monitor_is_probing (monitor)) {
+		BRASERO_BURN_LOG ("Media library not ready yet");
+		brasero_status_set_not_ready (status, -1, NULL);
+		g_object_unref (monitor);
+		return BRASERO_BURN_NOT_READY;
+	}
+	g_object_unref (monitor);
+
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroTrack *track;
 		BraseroBurnResult result;
@@ -532,7 +544,7 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 		result = brasero_track_get_status (track, track_status);
 		num_tracks ++;
 
-		if (result == BRASERO_BURN_NOT_READY)
+		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING)
 			not_ready ++;
 		else if (result != BRASERO_BURN_OK) {
 			g_object_unref (track_status);

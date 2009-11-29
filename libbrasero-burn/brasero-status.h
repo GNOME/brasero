@@ -94,6 +94,11 @@ brasero_status_set_not_ready (BraseroStatus *status,
 			      const gchar *current_action);
 
 void
+brasero_status_set_running (BraseroStatus *status,
+			    gdouble progress,
+			    const gchar *current_action);
+
+void
 brasero_status_set_error (BraseroStatus *status,
 			  GError *error);
 

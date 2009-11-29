@@ -95,24 +95,49 @@ brasero_app_burn_options (BraseroApp *app,
 			  BraseroSessionCfg *session);
 
 void
-brasero_app_burn_image (BraseroApp *app,
-			const gchar *uri);
+brasero_app_burn_uri (BraseroApp *app,
+		      BraseroDrive *burner,
+		      gboolean burn);
+
+void
+brasero_app_data (BraseroApp *app,
+		  BraseroDrive *burner,
+		  gchar * const *uris,
+		  gboolean burn);
+
+void
+brasero_app_stream (BraseroApp *app,
+		    BraseroDrive *burner,
+		    gchar * const *uris,
+		    gboolean is_video,
+		    gboolean burn);
+
+void
+brasero_app_image (BraseroApp *app,
+		   BraseroDrive *burner,
+		   const gchar *uri,
+		   gboolean burn);
 
 void
 brasero_app_copy_disc (BraseroApp *app,
+		       BraseroDrive *burner,
 		       const gchar *device,
-		       const gchar *cover);
+		       const gchar *cover,
+		       gboolean burn);
 
 void
 brasero_app_blank (BraseroApp *app,
-		   const gchar *device);
+		   BraseroDrive *burner,
+		   gboolean burn);
 
 void
 brasero_app_check (BraseroApp *app,
-		   const gchar *device);
+		   BraseroDrive *burner,
+		   gboolean burn);
 
 gboolean
 brasero_app_open_project (BraseroApp *app,
+			  BraseroDrive *burner,
                           const gchar *uri,
                           gboolean is_playlist,
                           gboolean warn_user,

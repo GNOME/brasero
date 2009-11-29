@@ -1051,7 +1051,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	/* Make sure the session is ready */
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (BRASERO_BURN_SESSION (self), status);
-	if (result == BRASERO_BURN_NOT_READY) {
+	if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING) {
 		g_object_unref (status);
 
 		priv->is_valid = BRASERO_SESSION_NOT_READY;

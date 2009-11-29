@@ -953,7 +953,7 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 			continue;
 		}
 
-		if (result == BRASERO_BURN_NOT_READY) {
+		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING) {
 			notready = TRUE;
 			continue;
 		}

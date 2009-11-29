@@ -172,7 +172,7 @@ brasero_status_dialog_wait_for_ready_state (BraseroStatusDialog *dialog)
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (priv->session, status);
 
-	if (result != BRASERO_BURN_NOT_READY) {
+	if (result != BRASERO_BURN_NOT_READY && result != BRASERO_BURN_RUNNING) {
 		brasero_status_dialog_session_ready (dialog);
 		g_object_unref (status);
 		priv->id = 0;
@@ -373,7 +373,7 @@ brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 	/* Make sure we really need to run this dialog */
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (priv->session, status);
-	if (result != BRASERO_BURN_NOT_READY) {
+	if (result != BRASERO_BURN_NOT_READY && result != BRASERO_BURN_RUNNING) {
 		brasero_status_dialog_session_ready (dialog);
 		g_object_unref (status);
 		return;

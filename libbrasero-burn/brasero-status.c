@@ -243,6 +243,38 @@ brasero_status_set_not_ready (BraseroStatus *status,
 }
 
 /**
+ * brasero_status_set_running:
+ * @status: a #BraseroStatus.
+ * @progress: a #gdouble or -1.0.
+ * @current_action: a #gchar or NULL.
+ *
+ * Sets the status for a request to BRASERO_BURN_RUNNING.
+ * Allows to set a string describing the operation currently performed
+ * as well as the progress regarding the operation completion.
+ *
+ **/
+
+void
+brasero_status_set_running (BraseroStatus *status,
+			    gdouble progress,
+			    const gchar *current_action)
+{
+	BraseroStatusPrivate *priv;
+
+	g_return_if_fail (status != NULL);
+	g_return_if_fail (BRASERO_IS_STATUS (status));
+
+	priv = BRASERO_STATUS_PRIVATE (status);
+
+	priv->res = BRASERO_BURN_RUNNING;
+	priv->progress = progress;
+
+	if (priv->current_action)
+		g_free (priv->current_action);
+	priv->current_action = g_strdup (current_action);
+}
+
+/**
  * brasero_status_set_error:
  * @status: a #BraseroStatus.
  * @error: a #GError or NULL.

@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /***************************************************************************
  *            project.h
  *
@@ -71,11 +73,11 @@ gboolean
 brasero_project_confirm_switch (BraseroProject *project);
 
 void
-brasero_project_set_audio (BraseroProject *project, GSList *uris);
+brasero_project_set_audio (BraseroProject *project);
 void
-brasero_project_set_data (BraseroProject *project, GSList *uris);
+brasero_project_set_data (BraseroProject *project);
 void
-brasero_project_set_video (BraseroProject *project, GSList *uris);
+brasero_project_set_video (BraseroProject *project);
 void
 brasero_project_set_none (BraseroProject *project);
 

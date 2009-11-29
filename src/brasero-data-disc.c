@@ -591,10 +591,8 @@ static gboolean
 brasero_data_disc_launch_image (gpointer data)
 {
 	gchar *uri = data;
-	GtkWidget *manager;
 
-	manager = brasero_app_get_project_manager (brasero_app_get_default ());
-	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager), uri);
+	brasero_app_image (brasero_app_get_default (), NULL, uri, FALSE);
 	g_free (uri);
 
 	return FALSE;
@@ -1314,6 +1312,7 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 {
 	BraseroMedium *loaded_medium;
 	BraseroDataDiscPrivate *priv;
+	BraseroBurnResult result;
 	BraseroStatus *status;
 	GtkWidget *message;
 	gint sort_column;
@@ -1454,15 +1453,15 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 
 	status = brasero_status_new ();
 	brasero_track_get_status (BRASERO_TRACK (track), status);
-
-	if (brasero_status_get_result (status) == BRASERO_BURN_OK) {
+	result = brasero_status_get_result (status);
+	if (result == BRASERO_BURN_OK || result == BRASERO_BURN_RUNNING) {
 		g_object_unref (status);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->filter), TRUE);
 		return BRASERO_DISC_OK;
 	}
 
-	if (brasero_status_get_result (status) != BRASERO_BURN_NOT_READY) {
+	if (result != BRASERO_BURN_NOT_READY) {
 		g_object_unref (status);
 		return BRASERO_DISC_ERROR_UNKNOWN;
 	}

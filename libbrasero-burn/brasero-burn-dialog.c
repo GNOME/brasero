@@ -104,6 +104,8 @@ struct BraseroBurnDialogPrivate {
 	gint64 total_size;
 	GSList *rates;
 
+	GMainLoop *loop;
+	gint wait_ready_state_id;
 	GCancellable *cancel_plugin;
 
 	gchar *initial_title;
@@ -2118,17 +2120,18 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog)
 }
 
 static gboolean
-brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
+brasero_burn_dialog_wait_for_ready_state_cb (BraseroBurnDialog *dialog)
 {
 	BraseroBurnDialogPrivate *priv;
-	BraseroBurnResult result;
 	BraseroStatus *status;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
 	status = brasero_status_new ();
-	result = brasero_burn_session_get_status (priv->session, status);
-	while (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY) {
+	brasero_burn_session_get_status (priv->session, status);
+
+	if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY
+	||  brasero_status_get_result (status) == BRASERO_BURN_RUNNING) {
 		gdouble progress;
 		gchar *action;
 
@@ -2147,9 +2150,56 @@ brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
 							   progress,
 							   -1.0,
 							   priv->media);
+		g_object_unref (status);
 
+		/* Continue */
+		return TRUE;
+	}
+
+	if (priv->loop)
+		g_main_loop_quit (priv->loop);
+
+	priv->wait_ready_state_id = 0;
+
+	g_object_unref (status);
+	return FALSE;
+}
+
+static gboolean
+brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
+{
+	BraseroBurnDialogPrivate *priv;
+	BraseroBurnResult result;
+	BraseroStatus *status;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	status = brasero_status_new ();
+	result = brasero_burn_session_get_status (priv->session, status);
+	if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING) {
+		GMainLoop *loop;
+
+		loop = g_main_loop_new (NULL, FALSE);
+		priv->loop = loop;
+
+		priv->wait_ready_state_id = g_timeout_add_seconds (1,
+								   (GSourceFunc) brasero_burn_dialog_wait_for_ready_state_cb,
+								   dialog);
+		g_main_loop_run (loop);
+
+		priv->loop = NULL;
+
+		if (priv->wait_ready_state_id) {
+			g_source_remove (priv->wait_ready_state_id);
+			priv->wait_ready_state_id = 0;
+		}
+
+		g_main_loop_unref (loop);
+
+		/* Get the final status */
 		result = brasero_burn_session_get_status (priv->session, status);
 	}
+
 	g_object_unref (status);
 
 	return (result == BRASERO_BURN_OK);
@@ -2295,6 +2345,9 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	brasero_burn_session_get_input_type (session, &priv->input);
 	brasero_burn_dialog_update_media (dialog);
 
+	/* show it early */
+	gtk_widget_show (GTK_WIDGET (dialog));
+
 	/* wait for ready state */
 	if (!brasero_burn_dialog_wait_for_ready_state (dialog))
 		return FALSE;
@@ -2396,6 +2449,11 @@ brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 	BraseroBurnDialogPrivate *priv;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	if (priv->loop) {
+		g_main_loop_quit (priv->loop);
+		return TRUE;
+	}
 
 	if (!priv->burn)
 		return TRUE;
@@ -2551,6 +2609,11 @@ brasero_burn_dialog_finalize (GObject * object)
 	BraseroBurnDialogPrivate *priv;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
+
+	if (priv->wait_ready_state_id) {
+		g_source_remove (priv->wait_ready_state_id);
+		priv->wait_ready_state_id = 0;
+	}
 
 	if (priv->cancel_plugin) {
 		g_cancellable_cancel (priv->cancel_plugin);

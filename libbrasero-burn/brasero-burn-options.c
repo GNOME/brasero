@@ -266,8 +266,14 @@ brasero_burn_options_not_ready_dialog_cancel_cb (GtkDialog *dialog,
 		priv->not_ready_id = 0;
 	}
 	gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
-	gtk_dialog_response (GTK_DIALOG (data),
-	                     GTK_RESPONSE_CANCEL);
+
+	if (response != GTK_RESPONSE_OK)
+		gtk_dialog_response (GTK_DIALOG (data),
+				     GTK_RESPONSE_CANCEL);
+	else {
+		priv->status_dialog = NULL;
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	}		
 }
 
 static gboolean
@@ -1015,9 +1021,6 @@ brasero_burn_options_set_property (GObject *object,
 		brasero_burn_options_build_contents (BRASERO_BURN_OPTIONS (object));
 		brasero_burn_options_setup (BRASERO_BURN_OPTIONS (object));
 
-		/* Only try to set a better drive if there isn't one already set */
-		if (!brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session)))
-			brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (priv->selection));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

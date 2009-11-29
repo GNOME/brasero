@@ -154,6 +154,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 {
 	BraseroVideoTreeModelPrivate *priv;
 	BraseroVideoTreeModel *self;
+	BraseroBurnResult result;
 	BraseroStatus *status;
 	BraseroTrack *track;
 	const gchar *string;
@@ -277,7 +278,8 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		g_value_init (value, G_TYPE_STRING);
 
 		value_tag = NULL;
-		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY)
+		result = brasero_status_get_result (status);
+		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING)
 			g_value_set_string (value, "image-loading");
 		else if (brasero_track_tag_lookup (track, BRASERO_TRACK_STREAM_MIME_TAG, &value_tag) == BRASERO_BURN_OK)
 			g_value_set_string (value, g_value_get_string (value_tag));
@@ -292,8 +294,9 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 
 		status = brasero_status_new ();
 		brasero_track_get_status (track, status);
+		result = brasero_status_get_result (status);
 
-		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY)
+		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING)
 			pixbuf = gtk_icon_theme_load_icon (priv->theme,
 							   "image-loading",
 							   48,
@@ -327,7 +330,8 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 
 		g_value_init (value, G_TYPE_STRING);
 
-		if (brasero_status_get_result (status) == BRASERO_BURN_OK) {
+		result = brasero_status_get_result (status);
+		if (result == BRASERO_BURN_OK) {
 			guint64 len = 0;
 
 			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &len);

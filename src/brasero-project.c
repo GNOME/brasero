@@ -880,7 +880,8 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 
 		status = brasero_status_new ();
 		brasero_burn_session_get_status (BRASERO_BURN_SESSION (session), status);
-		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY) {
+		if (brasero_status_get_result (status) == BRASERO_BURN_NOT_READY
+		||  brasero_status_get_result (status) == BRASERO_BURN_RUNNING) {
 			cursor = gdk_cursor_new (GDK_WATCH);
 			gdk_window_set_cursor (window, cursor);
 			gdk_cursor_unref (cursor);
@@ -1771,8 +1772,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							  BRASERO_MEDIA_TYPE_FILE);
 	}
 
-	brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (project->priv->selection));
-
 	if (project->priv->current) {
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1800,46 +1799,24 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 }
 
 void
-brasero_project_set_audio (BraseroProject *project, GSList *uris)
+brasero_project_set_audio (BraseroProject *project)
 {
 	brasero_project_new_session (project, NULL);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
-
-	for (; uris; uris = uris->next) {
-		gchar *uri;
-
-	    	uri = uris->data;
-		brasero_disc_add_uri (project->priv->current, uri);
-	}
 }
 
 void
-brasero_project_set_data (BraseroProject *project,
-			  GSList *uris)
+brasero_project_set_data (BraseroProject *project)
 {
 	brasero_project_new_session (project, NULL);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_DATA);
-
-	for (; uris; uris = uris->next) {
-		gchar *uri;
-
-	    	uri = uris->data;
-		brasero_disc_add_uri (project->priv->current, uri);
-	}
 }
 
 void
-brasero_project_set_video (BraseroProject *project, GSList *uris)
+brasero_project_set_video (BraseroProject *project)
 {
 	brasero_project_new_session (project, NULL);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_VIDEO);
-
-	for (; uris; uris = uris->next) {
-		gchar *uri;
-
-	    	uri = uris->data;
-		brasero_disc_add_uri (project->priv->current, uri);
-	}
 }
 
 gboolean
