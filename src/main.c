@@ -239,8 +239,8 @@ brasero_main_burning_device (const gchar *option_name,
 			/* Translators: %s is the path of drive */
 			string = g_strdup_printf (_("\"%s\" cannot write."), value);
 			brasero_utils_message_dialog (NULL,
+						      _("Wrong command line option."),
 						      string,
-						      NULL,
 						      GTK_MESSAGE_ERROR);
 
 			g_object_unref (burner);
@@ -253,8 +253,8 @@ brasero_main_burning_device (const gchar *option_name,
 		/* Translators: %s is the path of a drive */
 		string = g_strdup_printf (_("\"%s\" cannot be found."), value);
 		brasero_utils_message_dialog (NULL,
+					      _("Wrong command line option."),
 					      string,
-					      NULL,
 					      GTK_MESSAGE_ERROR);
 		g_free (string);
 		return FALSE;
