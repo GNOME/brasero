@@ -261,7 +261,8 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 	 * There is one exception though, when we're copying media and when the
 	 * burning device is the same as the dest device. */
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
-						  BRASERO_MEDIA_TYPE_WRITABLE);
+						  BRASERO_MEDIA_TYPE_WRITABLE|
+						  BRASERO_MEDIA_TYPE_FILE);
 
 	/* This is to know when the user changed it on purpose */
 	g_signal_connect (object,
@@ -446,18 +447,29 @@ brasero_dest_selection_set_session (BraseroDestSelection *selection,
 	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE) {
 		BraseroDrive *drive;
 
+		/* Prevent automatic resetting since a drive was set */
+		priv->user_changed = TRUE;
+
 		drive = brasero_burn_session_get_burner (session);
 		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (selection),
 						     brasero_drive_get_medium (drive));
 	}
 	else {
-		BraseroMedium *medium;
+		BraseroDrive *burner;
 
-		medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (selection));
-		if (medium) {
-			brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
-			g_object_unref (medium);
+		/* Only try to set a better drive if there isn't one already set */
+		burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session));
+		if (burner) {
+			BraseroMedium *medium;
+
+			/* Prevent automatic resetting since a drive was set */
+			priv->user_changed = TRUE;
+
+			medium = brasero_drive_get_medium (burner);
+			brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (selection), medium);
 		}
+		else
+			brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (selection));
 	}
 
 	g_signal_connect (session,
@@ -571,6 +583,9 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+
+	if (!priv->session)
+		return NULL;
 
 	medium_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
 	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
