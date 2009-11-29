@@ -84,6 +84,10 @@ typedef struct {
 									 glong time_remaining);
 	void				(*action_changed)		(BraseroBurn *obj,
 									 BraseroBurnAction action);
+
+	BraseroBurnResult		(*install_missing)		(BraseroBurn *obj,
+									 BraseroPluginErrorType error,
+									 const gchar *detail);
 } BraseroBurnClass;
 
 GType brasero_burn_get_type (void);

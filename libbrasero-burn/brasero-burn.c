@@ -136,6 +136,7 @@ typedef enum {
 	ACTION_CHANGED_SIGNAL,
 	DUMMY_SUCCESS_SIGNAL,
 	EJECT_FAILURE_SIGNAL,
+	INSTALL_MISSING_SIGNAL,
 	LAST_SIGNAL
 } BraseroBurnSignalType;
 
@@ -1660,6 +1661,66 @@ start:
 }
 
 static BraseroBurnResult
+brasero_burn_install_missing (BraseroPluginErrorType error,
+			      const gchar *details,
+			      gpointer user_data)
+{
+	GValue instance_and_params [3];
+	GValue return_value;
+
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (user_data));
+	g_value_set_instance (instance_and_params, user_data);
+	
+	instance_and_params [1].g_type = 0;
+	g_value_init (instance_and_params + 1, G_TYPE_INT);
+	g_value_set_int (instance_and_params + 1, error);
+
+	instance_and_params [2].g_type = 0;
+	g_value_init (instance_and_params + 2, G_TYPE_STRING);
+	g_value_set_string (instance_and_params + 2, details);
+
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_ERROR);
+
+	g_signal_emitv (instance_and_params,
+			brasero_burn_signals [INSTALL_MISSING_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+
+	return g_value_get_int (&return_value);		       
+}
+
+static BraseroBurnResult
+brasero_burn_list_missing (BraseroPluginErrorType type,
+			   const gchar *detail,
+			   gpointer user_data)
+{
+	GString *string = user_data;
+
+	if (type == BRASERO_PLUGIN_ERROR_MISSING_APP) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing application */
+		g_string_append_printf (string, _("%s (application)"), detail);
+	}
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_LIBRARY) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing library */
+		g_string_append_printf (string, _("%s (library)"), detail);
+	}
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN) {
+		g_string_append_c (string, '\n');
+		/* Translators: %s is the name of a missing Gstreamer plugin */
+		g_string_append_printf (string, _("%s (Gstreamer plugin)"), detail);
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
                                         BraseroTrackType *output,
 					GError **error)
@@ -1687,6 +1748,34 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("There is no track to burn"));
+		return BRASERO_BURN_ERR;
+	}
+
+	/* Check missing applications/GStreamer plugins.
+	 * This is the best place. */
+	result = brasero_burn_session_can_burn (priv->session, FALSE);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	result = brasero_session_foreach_plugin_error (priv->session,
+	                                               brasero_burn_install_missing,
+	                                               burn);
+	if (result != BRASERO_BURN_OK) {
+		if (result != BRASERO_BURN_CANCEL) {
+			GString *string;
+
+			string = g_string_new (_("Please install the following required applications and libraries manually and try again:"));
+			brasero_session_foreach_plugin_error (priv->session,
+			                                      brasero_burn_list_missing,
+	        			                      string);
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_MISSING_APP_AND_PLUGIN,
+				     string->str);
+
+			g_string_free (string, TRUE);
+		}
+
 		return BRASERO_BURN_ERR;
 	}
 
@@ -3061,6 +3150,17 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      brasero_marshal_INT__OBJECT,
 			      G_TYPE_INT, 1,
 		              BRASERO_TYPE_DRIVE);
+        brasero_burn_signals [INSTALL_MISSING_SIGNAL] =
+		g_signal_new ("install_missing",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BraseroBurnClass,
+					       install_missing),
+			      NULL, NULL,
+			      brasero_marshal_INT__INT_STRING,
+			      G_TYPE_INT, 2,
+		              G_TYPE_INT,
+			      G_TYPE_STRING);
 }
 
 static void
