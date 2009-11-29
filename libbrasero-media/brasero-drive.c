@@ -1425,6 +1425,7 @@ end:
 	brasero_drive_update_medium (drive);
 
 	priv->probe = NULL;
+	priv->initial_probe = FALSE;
 
 	g_cond_broadcast (priv->cond);
 	g_mutex_unlock (priv->mutex);
