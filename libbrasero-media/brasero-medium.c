@@ -43,6 +43,7 @@
 #include <gdk/gdk.h>
 
 #include "brasero-media-private.h"
+#include "brasero-drive-priv.h"
 
 #include "brasero-medium.h"
 #include "brasero-drive.h"
@@ -2930,6 +2931,17 @@ brasero_medium_init_real (BraseroMedium *object,
 	}
 }
 
+gboolean
+brasero_medium_probing (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->probe != NULL;
+}
+
 static gboolean
 brasero_medium_probed (gpointer data)
 {
@@ -3034,10 +3046,11 @@ brasero_medium_probe_thread (gpointer self)
 
 end:
 
+	g_mutex_lock (priv->mutex);
+
 	if (!priv->probe_cancelled)
 		priv->probe_id = g_idle_add (brasero_medium_probed, self);
 
-	g_mutex_lock (priv->mutex);
 	priv->probe = NULL;
 	g_cond_broadcast (priv->cond);
 	g_mutex_unlock (priv->mutex);

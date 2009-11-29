@@ -38,6 +38,9 @@ G_BEGIN_DECLS
 gboolean
 brasero_drive_probing (BraseroDrive *drive);
 
+gboolean
+brasero_medium_probing (BraseroMedium *medium);
+
 G_END_DECLS
 
 #endif

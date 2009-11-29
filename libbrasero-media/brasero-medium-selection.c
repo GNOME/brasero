@@ -647,6 +647,24 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 
 	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
 
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+
+	/* Make sure it's not already in our list */
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		do {
+			BraseroMedium *tmp;
+
+			tmp = NULL;
+			gtk_tree_model_get (model, &iter,
+					    MEDIUM_COL, &tmp,
+					    -1);
+			if (tmp == medium)
+				return;
+
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+
+	/* Make sure it does fit the types of media to display */
 	drive = brasero_medium_get_drive (medium);
 	if ((priv->type & BRASERO_MEDIA_TYPE_CD) == priv->type
 	&& (brasero_medium_get_status (medium) & BRASERO_MEDIUM_CD))
@@ -703,8 +721,6 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 				add = TRUE;
 		}
 	}
-
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 
 	if (!add) {
 		BraseroMedium *tmp;
@@ -825,7 +841,6 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 					      "medium-removed",
 					      G_CALLBACK (brasero_medium_selection_medium_removed_cb),
 					      object);
-
 	g_object_unref (monitor);
 
 	/* get the list and fill the model */
