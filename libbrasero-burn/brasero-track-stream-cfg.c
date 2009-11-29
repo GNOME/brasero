@@ -121,23 +121,6 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		return;
 	}
 
-	/* Also make sure it's duration is appropriate (!= 0) */
-	len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
-	if (len <= 0) {
-		gchar *name;
-
-		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-		priv->error = g_error_new (BRASERO_BURN_ERROR,
-					   BRASERO_BURN_ERROR_GENERAL,
-					   /* Translators: %s is the name of the file */
-					   _("\"%s\" is not suitable for audio or video media"),
-					   name);
-		g_free (name);
-
-		brasero_track_changed (BRASERO_TRACK (obj));
-		return;
-	}
-
 	/* FIXME: we don't know whether it's audio or video that is required */
 	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
 		/* This error is special as it can be recovered from */
@@ -165,6 +148,23 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_REGULAR
 	|| (!g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)
 	&&  !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO))) {
+		gchar *name;
+
+		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_GENERAL,
+					   /* Translators: %s is the name of the file */
+					   _("\"%s\" is not suitable for audio or video media"),
+					   name);
+		g_free (name);
+
+		brasero_track_changed (BRASERO_TRACK (obj));
+		return;
+	}
+
+	/* Also make sure it's duration is appropriate (!= 0) */
+	len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
+	if (len <= 0) {
 		gchar *name;
 
 		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);

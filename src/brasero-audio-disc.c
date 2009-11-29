@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /***************************************************************************
  *            audio-disc.c
  *
@@ -924,6 +926,7 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 							   BRASERO_TRACK (track));
 
 			error = brasero_status_get_error (status);
+			g_print ("ERR %i\n", error->code);
 			if (!error)
 				brasero_audio_disc_file_type_error_dialog (self, uri);
 			else if (error->code == BRASERO_BURN_ERROR_FILE_FOLDER) {
