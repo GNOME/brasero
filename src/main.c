@@ -463,10 +463,6 @@ main (int argc, char **argv)
 	g_thread_init (NULL);
 	g_type_init ();
 
-	gtk_init (&argc, &argv);
-
-	brasero_burn_library_start (&argc, &argv);
-
 	context = g_option_context_new (_("[URI] [URI] …"));
 	g_option_context_add_main_entries (context,
 					   options,
@@ -484,6 +480,8 @@ main (int argc, char **argv)
 		exit (1);
 	}
 	g_option_context_free (context);
+
+	brasero_burn_library_start (&argc, &argv);
 
 	brasero_enable_multi_DND ();
 
