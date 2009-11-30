@@ -390,6 +390,7 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 		gtk_entry_set_text (GTK_ENTRY (self->priv->title), title);
 	if (composer)
 		gtk_entry_set_text (GTK_ENTRY (self->priv->composer), composer);
+
 	if (isrc) {
 		string = g_strdup_printf ("%i", isrc);
 		gtk_entry_set_text (GTK_ENTRY (self->priv->isrc), string);
@@ -414,7 +415,7 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->end), length);
 	brasero_time_button_set_value (BRASERO_TIME_BUTTON (self->priv->end), end);
 	g_signal_handlers_unblock_by_func (self->priv->end,
-					   brasero_song_props_end_changed_cb,
+	        			   brasero_song_props_end_changed_cb,
 					   self);
 
 	brasero_song_props_update_length (self);
