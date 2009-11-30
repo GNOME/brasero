@@ -1613,8 +1613,8 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
         /* information about the track */
         gtk_tree_model_get_iter (model, &iter, treepath);
         gtk_tree_model_get (model, &iter,
-                                         BRASERO_VIDEO_TREE_MODEL_INDEX_NUM, &track_num,
-                                         -1);
+                            BRASERO_VIDEO_TREE_MODEL_INDEX_NUM, &track_num,
+                            -1);
         brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
 
 	/* set up dialog */
@@ -1655,9 +1655,9 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 					   &gap);
 
 	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
-                                                                      start,
-                                                                      end,
-                                                                      BRASERO_SECTORS_TO_DURATION (gap));
+                                             start,
+                                             end,
+                                             gap);
 
 	if (title)
 		brasero_track_tag_add_string (BRASERO_TRACK (track),
