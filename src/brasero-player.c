@@ -136,7 +136,7 @@ brasero_player_no_multimedia_stream (BraseroPlayer *player)
 	}
 
 	gtk_alignment_set_padding (GTK_ALIGNMENT (player), 0, 0, 0, 0);
-
+	
 	gtk_widget_hide (player->priv->notebook);
 
 	player->priv->length = 0;
