@@ -1636,8 +1636,8 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 				if (!brasero_io_get_file_count_process_playlist (self, cancel, data, child_uri))
 					data->files_invalid ++;
 			}
-
-			data->files_invalid ++;
+			else
+				data->files_invalid ++;
 		}
 
 #endif
@@ -1743,8 +1743,8 @@ brasero_io_get_file_count_start (BraseroIO *self,
 				  (data->job.options & BRASERO_IO_INFO_FOLLOW_SYMLINK)?G_FILE_QUERY_INFO_NONE:G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,	/* follow symlinks by default*/
 				  cancel,
 				  NULL);
-
 	data->files_num ++;
+
 	if (!info) {
 		g_object_unref (file);
 		data->files_invalid ++;
@@ -1794,7 +1794,8 @@ brasero_io_get_file_count_thread (BraseroAsyncTaskManager *manager,
 		brasero_io_get_file_count_process_directory (BRASERO_IO (manager), cancel, data);
 		return BRASERO_ASYNC_TASK_RESCHEDULE;
 	}
-	else if (!data->uris) {
+
+	if (!data->uris) {
 		info = g_file_info_new ();
 
 		/* set GFileInfo information */
