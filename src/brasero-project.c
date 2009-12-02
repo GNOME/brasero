@@ -1394,6 +1394,17 @@ brasero_project_check_plugins_not_ready (BraseroProject *project,
 	parent = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	gtk_widget_set_sensitive (parent, FALSE);
 
+	brasero_burn_session_set_strict_support (BRASERO_BURN_SESSION (session), TRUE);
+	result = brasero_burn_session_can_burn (session, FALSE);
+	brasero_burn_session_set_strict_support (BRASERO_BURN_SESSION (session), FALSE);
+
+	if (result == BRASERO_BURN_OK)
+		return result;
+
+	result = brasero_burn_session_can_burn (session, FALSE);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
 	result = brasero_session_foreach_plugin_error (session,
 	                                               brasero_project_install_missing,
 	                                               project);

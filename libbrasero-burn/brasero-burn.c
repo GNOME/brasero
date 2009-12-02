@@ -1751,34 +1751,6 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* Check missing applications/GStreamer plugins.
-	 * This is the best place. */
-	result = brasero_burn_session_can_burn (priv->session, FALSE);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	result = brasero_session_foreach_plugin_error (priv->session,
-	                                               brasero_burn_install_missing,
-	                                               burn);
-	if (result != BRASERO_BURN_OK) {
-		if (result != BRASERO_BURN_CANCEL) {
-			GString *string;
-
-			string = g_string_new (_("Please install the following required applications and libraries manually and try again:"));
-			brasero_session_foreach_plugin_error (priv->session,
-			                                      brasero_burn_list_missing,
-	        			                      string);
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_MISSING_APP_AND_PLUGIN,
-				     string->str);
-
-			g_string_free (string, TRUE);
-		}
-
-		return BRASERO_BURN_ERR;
-	}
-
 	/* No need to check if a burner was set as this
 	 * is done when locking. */
 
@@ -1861,6 +1833,42 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 	brasero_burn_session_set_flags (priv->session, retval);
 	BRASERO_BURN_LOG_FLAGS (retval, "Flags after checking =");
+
+	/* Check missing applications/GStreamer plugins.
+	 * This is the best place. */
+	brasero_burn_session_set_strict_support (BRASERO_BURN_SESSION (priv->session), TRUE);
+	result = brasero_burn_session_can_burn (priv->session, FALSE);
+	brasero_burn_session_set_strict_support (BRASERO_BURN_SESSION (priv->session), FALSE);
+
+	if (result == BRASERO_BURN_OK)
+		return result;
+
+	result = brasero_burn_session_can_burn (priv->session, FALSE);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	result = brasero_session_foreach_plugin_error (priv->session,
+	                                               brasero_burn_install_missing,
+	                                               burn);
+	if (result != BRASERO_BURN_OK) {
+		if (result != BRASERO_BURN_CANCEL) {
+			GString *string;
+
+			string = g_string_new (_("Please install the following required applications and libraries manually and try again:"));
+			brasero_session_foreach_plugin_error (priv->session,
+			                                      brasero_burn_list_missing,
+	        			                      string);
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_MISSING_APP_AND_PLUGIN,
+				     string->str);
+
+			g_string_free (string, TRUE);
+		}
+
+		return BRASERO_BURN_ERR;
+	}
+
 	return BRASERO_BURN_OK;
 }
 
