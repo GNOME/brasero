@@ -666,9 +666,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 					    downloads);
 
 	gst_install_plugins_context_free (context);
-
-	/* FIXME: shouldn't we free the array as well? */
-	g_ptr_array_free (details, FALSE);
+	g_ptr_array_free (details, TRUE);
 
 	BRASERO_UTILS_LOG ("Download status %i", status);
 
