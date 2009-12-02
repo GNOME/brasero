@@ -809,6 +809,8 @@ typedef struct _BraseroIOMetadataTask BraseroIOMetadataTask;
 struct _BraseroIOMetadataCached {
 	guint64 last_modified;
 	BraseroMetadataInfo *info;
+
+	guint missing_codec_used:1;
 };
 typedef struct _BraseroIOMetadataCached BraseroIOMetadataCached;
 
@@ -951,6 +953,7 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 			      GCancellable *cancel,
 			      GFileInfo *info,
 			      BraseroMetadata *metadata,
+			      BraseroMetadataFlag flags,
 			      BraseroMetadataInfo *meta_info)
 {
 	gboolean result;
@@ -986,6 +989,8 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 
 			cached->info = g_new0 (BraseroMetadataInfo, 1);
 			brasero_metadata_get_result (metadata, cached->info, NULL);
+
+			cached->missing_codec_used = (flags & BRASERO_METADATA_FLAG_MISSING) != 0;
 
 			g_queue_push_head (priv->meta_buffer, cached);
 			if (g_queue_get_length (priv->meta_buffer) > MAX_BUFFERED_META) {
@@ -1050,15 +1055,24 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		cached = node->data;
 		last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 		if (last_modified == cached->last_modified) {
+			gboolean refresh_cache = FALSE;
+
+			if (flags & BRASERO_METADATA_FLAG_MISSING) {
+				/* This cached result may indicate an error and
+				 * this error could be related to the fact that
+				 * it was not first looked for with missing
+				 * codec detection. */
+				if (!cached->missing_codec_used)
+					refresh_cache = TRUE;
+			}
+
 			if (flags & BRASERO_METADATA_FLAG_THUMBNAIL) {
 				/* If there isn't any snapshot retry */
-				if (cached->info->snapshot) {
-					brasero_metadata_info_copy (meta_info, cached->info);
-					g_mutex_unlock (priv->lock_metadata);
-					return TRUE;
-				}
+				if (!cached->info->snapshot)
+					refresh_cache = TRUE;
 			}
-			else {
+
+			if (!refresh_cache) {
 				brasero_metadata_info_copy (meta_info, cached->info);
 				g_mutex_unlock (priv->lock_metadata);
 				return TRUE;
@@ -1085,6 +1099,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 					     cancel,
 					     info,
 					     metadata,
+					     flags,
 					     meta_info);
 }
 
