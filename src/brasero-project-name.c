@@ -448,8 +448,11 @@ brasero_project_name_set_type (BraseroProjectName *self)
 
 	status = brasero_status_new ();
 	brasero_burn_session_get_status (priv->session, status);
-	if (brasero_status_get_result (status) != BRASERO_BURN_OK)
+	if (brasero_status_get_result (status) != BRASERO_BURN_OK) {
+		g_object_unref (status);
 		return;
+	}
+	g_object_unref (status);
 
 	track_type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, track_type);
