@@ -148,36 +148,6 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 }
 
-static void
-brasero_player_bacon_show (GtkWidget *widget)
-{
-	GdkWindow *window;
-
-	g_return_if_fail (widget != NULL);
-
-	window = gtk_widget_get_window (widget);
-	if (window)
-		gdk_window_show (window);
-
-	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->show)
-		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->show (widget);
-}
-
-static void
-brasero_player_bacon_hide (GtkWidget *widget)
-{
-	GdkWindow *window;
-
-	g_return_if_fail (widget != NULL);
-
-	window = gtk_widget_get_window (widget);
-	if (window)
-		gdk_window_hide (window);
-
-	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->hide)
-		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->hide (widget);
-}
-
 static gboolean
 brasero_player_bacon_expose (GtkWidget *widget, GdkEventExpose *event)
 {
@@ -652,8 +622,6 @@ brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
 	gtk_object_class->destroy = brasero_player_bacon_destroy;
 
 	widget_class->expose_event = brasero_player_bacon_expose;
-	widget_class->show = brasero_player_bacon_show;
-	widget_class->hide = brasero_player_bacon_hide;
 	widget_class->realize = brasero_player_bacon_realize;
 	widget_class->size_request = brasero_player_bacon_size_request;
 	widget_class->size_allocate = brasero_player_bacon_size_allocate;
