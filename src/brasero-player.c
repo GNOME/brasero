@@ -385,7 +385,7 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 	GtkWidget *alignment;
 	GtkWidget *volume;
 	GtkWidget *image;
-
+	
 	if (player->priv->controls)
 		brasero_player_destroy_controls (player);
 
@@ -510,7 +510,7 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 
 		hbox = gtk_hbox_new (FALSE, 0);
 		alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
-		player->priv->button = gtk_button_new ();
+		player->priv->button = gtk_toggle_button_new ();
 		gtk_container_add (GTK_CONTAINER (alignment), hbox);
 		gtk_box_pack_start (GTK_BOX (box),
 				    alignment,
@@ -933,7 +933,7 @@ brasero_player_metadata_completed (GObject *obj,
 		brasero_player_create_controls_stream (player, FALSE);
 		gtk_widget_hide (player->priv->notebook);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
-;
+
 		if (g_file_info_get_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE))
 			gtk_widget_set_sensitive (player->priv->progress, TRUE);
 		else
