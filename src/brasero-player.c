@@ -901,8 +901,7 @@ brasero_player_metadata_completed (GObject *obj,
 		/* video */
 		brasero_player_create_controls_stream (player, TRUE);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
-
-		if (g_file_info_get_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE))
+		if (g_file_info_get_attribute_boolean (info,BRASERO_IO_IS_SEEKABLE))
 			gtk_widget_set_sensitive (player->priv->progress, TRUE);
 		else
 			gtk_widget_set_sensitive (player->priv->progress, FALSE);
@@ -924,7 +923,6 @@ brasero_player_metadata_completed (GObject *obj,
 		brasero_player_create_controls_stream (player, FALSE);
 		gtk_widget_hide (player->priv->notebook);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
-
 		if (g_file_info_get_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE))
 			gtk_widget_set_sensitive (player->priv->progress, TRUE);
 		else

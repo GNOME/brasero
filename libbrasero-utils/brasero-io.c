@@ -849,7 +849,6 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_AUDIO, metadata->has_audio);
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_VIDEO, metadata->has_video);
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE, metadata->is_seekable);
-
 	if (metadata->snapshot)
 		g_file_info_set_attribute_object (info, BRASERO_IO_THUMBNAIL, G_OBJECT (metadata->snapshot));
 
