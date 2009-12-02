@@ -535,14 +535,14 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 
 		hbox = gtk_hbox_new (FALSE, 0);
 		alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
-		player->priv->button = gtk_toggle_button_new ();
+
 		gtk_container_add (GTK_CONTAINER (alignment), hbox);
 		gtk_box_pack_start (GTK_BOX (box),
 				    alignment,
 				    TRUE,
 				    TRUE,
 				    0);
-
+		
 		image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_BUTTON);
 		zoom = gtk_button_new ();
 		gtk_button_set_image (GTK_BUTTON (zoom), image);
@@ -1172,7 +1172,7 @@ static void
 brasero_player_eof_cb (BraseroPlayerBacon *bacon, BraseroPlayer *player)
 {
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (player->priv->button), FALSE);
-	
+
 	if (player->priv->update_scale_id) {
 		g_source_remove (player->priv->update_scale_id);
 		player->priv->update_scale_id = 0;
