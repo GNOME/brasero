@@ -284,7 +284,8 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 								   "No file can be added (%i selected files)",
 								   files_num),
 							 files_num);
-		else if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
+		else if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
+		     ||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO)
 			status_string = g_strdup_printf (ngettext ("No file is supported (%i selected file)",
 								   "No file is supported (%i selected files)",
 								   files_num),
@@ -349,7 +350,7 @@ brasero_project_manager_selected_uris_preview (gpointer data)
 								   brasero_project_manager_size_preview,
 								   NULL,
 								   NULL);
-    
+
 	for (iter = manager->priv->selected; iter && *iter; iter ++)
 		list = g_slist_prepend (list, *iter);
 
