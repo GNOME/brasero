@@ -499,8 +499,13 @@ brasero_metadata_is_seekable (BraseroMetadata *self)
 	priv = BRASERO_METADATA_PRIVATE (self);
 
 	priv->info->is_seekable = FALSE;
-	query = gst_query_new_seeking (GST_FORMAT_DEFAULT);
-	if (!gst_element_query (priv->source, query))
+
+	/* NOTE: apparently GST_FORMAT_DEFAULT does not work here */
+	query = gst_query_new_seeking (GST_FORMAT_TIME);
+
+	/* NOTE: it works better now on the pipeline than on the source as we
+	 * used to do */
+	if (!gst_element_query (priv->pipeline, query))
 		goto end;
 
 	gst_query_parse_seeking (query,
@@ -512,6 +517,7 @@ brasero_metadata_is_seekable (BraseroMetadata *self)
 	priv->info->is_seekable = seekable;
 
 end:
+
 	gst_query_unref (query);
 }
 
