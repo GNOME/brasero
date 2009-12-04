@@ -1398,20 +1398,24 @@ brasero_project_check_plugins_not_ready (BraseroProject *project,
 	result = brasero_burn_session_can_burn (session, FALSE);
 	brasero_burn_session_set_strict_support (BRASERO_BURN_SESSION (session), FALSE);
 
-	if (result == BRASERO_BURN_OK)
+	if (result == BRASERO_BURN_OK) {
+		gtk_widget_set_sensitive (parent, TRUE);
 		return result;
+	}
 
 	result = brasero_burn_session_can_burn (session, FALSE);
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		gtk_widget_set_sensitive (parent, TRUE);
 		return result;
+	}
 
 	result = brasero_session_foreach_plugin_error (session,
 	                                               brasero_project_install_missing,
 	                                               project);
+	gtk_widget_set_sensitive (parent, TRUE);
+
 	if (result == BRASERO_BURN_CANCEL)
 		return result;
-
-	gtk_widget_set_sensitive (parent, TRUE);
 
 	if (result == BRASERO_BURN_OK)
 		return result;
