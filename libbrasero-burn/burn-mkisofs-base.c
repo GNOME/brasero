@@ -39,7 +39,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/param.h>
+
 
 #include <glib.h>
 #include <glib-object.h>
@@ -59,7 +59,6 @@ struct _BraseroMkisofsBase {
 	gint excluded_fd;
 
 	GHashTable *grafts;
-	GHashTable *joliet;
 
 	guint found_video_ts:1;
 	guint use_joliet:1;
@@ -83,9 +82,6 @@ brasero_mkisofs_base_clean (BraseroMkisofsBase *base)
 		close (base->grafts_fd);
 	if (base->excluded_fd)
 		close (base->excluded_fd);
-	if (base->joliet)
-		g_hash_table_destroy (base->joliet);
-
 	if (base->grafts) {
 		g_hash_table_destroy (base->grafts);
 		base->grafts = NULL;
@@ -315,131 +311,15 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 	return BRASERO_BURN_OK;
 }
 
-/**
- * Manages the Joliet incompatible names and mangles names if need be
- */
-
-static GHashTable *
-brasero_mkisofs_base_mangle_joliet_name (GHashTable *joliet,
-					 const gchar *path,
-					 gchar *buffer)
-{
-	gboolean has_slash = FALSE;
-	gint dot_pos = -1;
-	gint dot_len = -1;
-	gchar *name;
-	gint width;
-	gint start;
-	gint num;
-	gint end;
-
-	/* NOTE: this wouldn't work on windows (not a big deal) */
-	end = strlen (path);
-	if (!end) {
-		buffer [0] = '\0';
-		return joliet;
-	}
-
-	memcpy (buffer, path, MIN (end, MAXPATHLEN));
-	buffer [MIN (end, MAXPATHLEN)] = '\0';
-
-	/* move back until we find a character different from G_DIR_SEPARATOR */
-	end --;
-	while (end >= 0 && G_IS_DIR_SEPARATOR (path [end])) {
-		end --;
-		has_slash = TRUE;
-	}
-
-	/* There are only slashes */
-	if (end == -1)
-		return joliet;
-
-	start = end - 1;
-	while (start >= 0 && !G_IS_DIR_SEPARATOR (path [start])) {
-		/* Find the extension while at it */
-		if (dot_pos <= 0 && path [start] == '.')
-			dot_pos = start;
-
-		start --;
-	}
-
-	if (end - start <= 64)
-		return joliet;
-
-	name = buffer + start + 1;
-	if (dot_pos > 0)
-		dot_len = end - dot_pos + 1;
-
-	if (dot_len > 1 && dot_len < 5)
-		memcpy (name + 64 - dot_len,
-			path + dot_pos,
-			dot_len);
-
-	name [64] = '\0';
-
-	if (!joliet) {
-		joliet = g_hash_table_new_full (g_str_hash,
-						g_str_equal,
-						g_free,
-						NULL);
-
-		g_hash_table_insert (joliet, g_strdup (buffer), GINT_TO_POINTER (1));
-		if (has_slash)
-			strcat (buffer, G_DIR_SEPARATOR_S);
-
-		BRASERO_BURN_LOG ("Mangled name to %s (truncated)", buffer);
-		return joliet;
-	}
-
-	/* see if this path was already used */
-	num = GPOINTER_TO_INT (g_hash_table_lookup (joliet, buffer));
-	if (!num) {
-		g_hash_table_insert (joliet, g_strdup (buffer), GINT_TO_POINTER (1));
-
-		if (has_slash)
-			strcat (buffer, G_DIR_SEPARATOR_S);
-
-		BRASERO_BURN_LOG ("Mangled name to %s (truncated)", buffer);
-		return joliet;
-	}
-
-	/* NOTE: g_hash_table_insert frees key_path */
-	num ++;
-	g_hash_table_insert (joliet, g_strdup (buffer), GINT_TO_POINTER (num));
-
-	width = 1;
-	while (num / (width * 10)) width ++;
-
-	/* try to keep the extension */
-	if (dot_len < 5 && dot_len > 1 )
-		sprintf (name + (64 - width - dot_len),
-			 "%i%s",
-			 num,
-			 path + dot_pos);
-	else
-		sprintf (name + (64 - width),
-			 "%i",
-			 num);
-
-	if (has_slash)
-		strcat (buffer, G_DIR_SEPARATOR_S);
-
-	BRASERO_BURN_LOG ("Mangled name to %s", buffer);
-	return joliet;
-}
-
 static gboolean
 _foreach_write_grafts (const gchar *uri,
 		       GSList *grafts,
 		       BraseroWriteGraftData *data)
 {
-	gchar buffer [MAXPATHLEN];
 	BraseroBurnResult result;
 	BraseroGraftPt *graft;
 
 	for (; grafts; grafts = grafts->next) {
-		const gchar *path;
-
 		graft = grafts->data;
 
 		if (!graft->path) {
@@ -453,18 +333,9 @@ _foreach_write_grafts (const gchar *uri,
 			continue;
 		}
 
-		if (data->base->use_joliet) {
-			data->base->joliet = brasero_mkisofs_base_mangle_joliet_name (data->base->joliet,
-										      graft->path,
-										      buffer);
-			path = buffer;
-		}
-		else
-			path = graft->path;
-
 		result = brasero_mkisofs_base_write_graft (data->base,
 							   graft->uri,
-							   path,
+							   graft->path,
 							   data->error);
 		if (result != BRASERO_BURN_OK)
 			return TRUE;
@@ -523,9 +394,7 @@ brasero_mkisofs_base_empty_directory (BraseroMkisofsBase *base,
 				      GError **error)
 {
 	BraseroBurnResult result;
-	gchar buffer [MAXPATHLEN];
 	gchar *graft_point;
-	const gchar *path;
 
 	/* This is a special case when the URI is NULL which can happen mainly
 	 * when we have to deal with burn:// uri. */
@@ -544,18 +413,8 @@ brasero_mkisofs_base_empty_directory (BraseroMkisofsBase *base,
 		}
 	}
 
-	/* Mangle the name in case joliet is required */
-	if (base->use_joliet) {
-		base->joliet = brasero_mkisofs_base_mangle_joliet_name (base->joliet,
-									disc_path,
-									buffer);
-		path = buffer;
-	}
-	else
-		path = disc_path;
-
 	/* Special case for uri = NULL; that is treated as if it were a directory */
-	graft_point = _build_graft_point (base->emptydir, path);
+	graft_point = _build_graft_point (base->emptydir, disc_path);
 	result = _write_line (base->grafts_fd, graft_point, error);
 	g_free (graft_point);
 

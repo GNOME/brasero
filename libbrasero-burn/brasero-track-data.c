@@ -32,12 +32,15 @@
 #  include <config.h>
 #endif
 
+#include <sys/param.h>
+
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include "brasero-track-data.h"
 #include "burn-mkisofs-base.h"
+#include "burn-debug.h"
 
 typedef struct _BraseroTrackDataPrivate BraseroTrackDataPrivate;
 struct _BraseroTrackDataPrivate
@@ -334,6 +337,115 @@ brasero_track_data_get_fs_real (BraseroTrackData *track)
 	return priv->fs_type;
 }
 
+static GHashTable *
+brasero_track_data_mangle_joliet_name (GHashTable *joliet,
+				       const gchar *path,
+				       gchar *buffer)
+{
+	gboolean has_slash = FALSE;
+	gint dot_pos = -1;
+	gint dot_len = -1;
+	gchar *name;
+	gint width;
+	gint start;
+	gint num;
+	gint end;
+
+	/* NOTE: this wouldn't work on windows (not a big deal) */
+	end = strlen (path);
+	if (!end) {
+		buffer [0] = '\0';
+		return joliet;
+	}
+
+	memcpy (buffer, path, MIN (end, MAXPATHLEN));
+	buffer [MIN (end, MAXPATHLEN)] = '\0';
+
+	/* move back until we find a character different from G_DIR_SEPARATOR */
+	end --;
+	while (end >= 0 && G_IS_DIR_SEPARATOR (path [end])) {
+		end --;
+		has_slash = TRUE;
+	}
+
+	/* There are only slashes */
+	if (end == -1)
+		return joliet;
+
+	start = end - 1;
+	while (start >= 0 && !G_IS_DIR_SEPARATOR (path [start])) {
+		/* Find the extension while at it */
+		if (dot_pos <= 0 && path [start] == '.')
+			dot_pos = start;
+
+		start --;
+	}
+
+	if (end - start <= 64)
+		return joliet;
+
+	name = buffer + start + 1;
+	if (dot_pos > 0)
+		dot_len = end - dot_pos + 1;
+
+	if (dot_len > 1 && dot_len < 5)
+		memcpy (name + 64 - dot_len,
+			path + dot_pos,
+			dot_len);
+
+	name [64] = '\0';
+
+	if (!joliet) {
+		joliet = g_hash_table_new_full (g_str_hash,
+						g_str_equal,
+						g_free,
+						NULL);
+
+		g_hash_table_insert (joliet, g_strdup (buffer), GINT_TO_POINTER (1));
+		if (has_slash)
+			strcat (buffer, G_DIR_SEPARATOR_S);
+
+		BRASERO_BURN_LOG ("Mangled name to %s (truncated)", buffer);
+		return joliet;
+	}
+
+	/* see if this path was already used */
+	num = GPOINTER_TO_INT (g_hash_table_lookup (joliet, buffer));
+	if (!num) {
+		g_hash_table_insert (joliet, g_strdup (buffer), GINT_TO_POINTER (1));
+
+		if (has_slash)
+			strcat (buffer, G_DIR_SEPARATOR_S);
+
+		BRASERO_BURN_LOG ("Mangled name to %s (truncated)", buffer);
+		return joliet;
+	}
+
+	/* NOTE: g_hash_table_insert frees key_path */
+	num ++;
+	g_hash_table_insert (joliet, g_strdup (buffer), GINT_TO_POINTER (num));
+
+	width = 1;
+	while (num / (width * 10)) width ++;
+
+	/* try to keep the extension */
+	if (dot_len < 5 && dot_len > 1 )
+		sprintf (name + (64 - width - dot_len),
+			 "%i%s",
+			 num,
+			 path + dot_pos);
+	else
+		sprintf (name + (64 - width),
+			 "%i",
+			 num);
+
+	if (has_slash)
+		strcat (buffer, G_DIR_SEPARATOR_S);
+
+	BRASERO_BURN_LOG ("Mangled name to %s", buffer);
+	return joliet;
+}
+
 /**
  * brasero_track_data_get_grafts:
  * @track: a #BraseroTrackData
@@ -349,11 +461,37 @@ GSList *
 brasero_track_data_get_grafts (BraseroTrackData *track)
 {
 	BraseroTrackDataClass *klass;
+	GHashTable *mangle = NULL;
+	BraseroImageFS image_fs;
+	GSList *grafts;
+	GSList *iter;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
 
 	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
-	return klass->get_grafts (track);
+	grafts = klass->get_grafts (track);
+
+	image_fs = brasero_track_data_get_fs (track);
+	if ((image_fs & BRASERO_IMAGE_FS_JOLIET) == 0)
+		return grafts;
+
+	for (iter = grafts; iter; iter = iter->next) {
+		BraseroGraftPt *graft;
+		gchar newpath [MAXPATHLEN];
+
+		graft = grafts->data;
+		mangle = brasero_track_data_mangle_joliet_name (mangle,
+								graft->path,
+								newpath);
+
+		g_free (graft->path);
+		graft->path = g_strdup (newpath);
+	}
+
+	if (mangle)
+		g_hash_table_destroy (mangle);
+
+	return grafts;
 }
 
 static GSList *

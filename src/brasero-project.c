@@ -1292,7 +1292,7 @@ brasero_project_check_status (BraseroProject *project)
 		return BRASERO_BURN_OK;
 
         dialog = brasero_status_dialog_new (BRASERO_BURN_SESSION (project->priv->session),
-                                                                  gtk_widget_get_toplevel (GTK_WIDGET (project)));
+                                            gtk_widget_get_toplevel (GTK_WIDGET (project)));
 
 	gtk_widget_show (dialog);
         response = gtk_dialog_run (GTK_DIALOG (dialog));
