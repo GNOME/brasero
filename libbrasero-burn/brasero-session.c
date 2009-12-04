@@ -54,6 +54,7 @@
 
 #include "brasero-medium.h"
 #include "brasero-drive.h"
+#include "brasero-drive-priv.h"
 #include "brasero-medium-monitor.h"
 
 #include "brasero-tags.h"
@@ -511,11 +512,10 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 				 BraseroStatus *status)
 {
 	BraseroBurnSessionPrivate *priv;
-	BraseroMediumMonitor *monitor;
 	BraseroStatus *track_status;
 	gdouble num_tracks = 0.0;
-	gdouble done = -1.0;
 	guint not_ready = 0;
+	gdouble done = -1.0;
 	GSList *iter;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_TRACK_TYPE_NONE);
@@ -526,15 +526,11 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 
 	track_status = brasero_status_new ();
 
-	/* Make sure that libbrasero-media is initialized */
-	monitor = brasero_medium_monitor_get_default ();
-	if (brasero_medium_monitor_is_probing (monitor)) {
-		BRASERO_BURN_LOG ("Media library not ready yet");
+	if (priv->settings->burner && brasero_drive_probing (priv->settings->burner)) {
+		BRASERO_BURN_LOG ("Drive not ready yet");
 		brasero_status_set_not_ready (status, -1, NULL);
-		g_object_unref (monitor);
 		return BRASERO_BURN_NOT_READY;
 	}
-	g_object_unref (monitor);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroTrack *track;
