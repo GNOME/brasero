@@ -514,10 +514,8 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 
 		element = gst_bin_get_by_interface (GST_BIN (video_sink),
 						    GST_TYPE_X_OVERLAY);
-		if (element && GST_IS_X_OVERLAY (element)) {
+		if (element && GST_IS_X_OVERLAY (element))
 			bacon->priv->xoverlay = GST_X_OVERLAY (element);
-			g_print ("OOO\n");
-		}
 	}
 
 	bus = gst_pipeline_get_bus (GST_PIPELINE (bacon->priv->pipe));
