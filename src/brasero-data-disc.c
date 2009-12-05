@@ -126,7 +126,7 @@ static GtkActionEntry entries [] = {
 	 G_CALLBACK (brasero_data_disc_rename_activated_cb)},
 	{"DeleteData", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_data_disc_delete_activated_cb)},
-	{"PasteData", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
+	{"PasteData", NULL, N_("Paste files"), NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_data_disc_paste_activated_cb)},
 	{"NewFolder", "folder-new", N_("New _Folder"), NULL, N_("Create a new empty folder"),
 	 G_CALLBACK (brasero_data_disc_new_folder_clicked_cb)},
