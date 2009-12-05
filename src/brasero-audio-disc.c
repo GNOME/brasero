@@ -153,7 +153,7 @@ static GtkActionEntry entries[] = {
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
 	{"DeleteAudio", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
-	{"PasteAudio", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
+	{"PasteAudio", NULL, N_("Paste files"), NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
 	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, N_("Add a 2 second pause after the track"),
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
