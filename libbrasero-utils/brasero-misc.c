@@ -271,6 +271,27 @@ brasero_utils_unregister_string (const gchar *string)
 }
 
 GtkWidget *
+brasero_utils_properties_get_label (GtkWidget *properties)
+{
+	GList *children;
+	GList *iter;
+
+	children = gtk_container_get_children (GTK_CONTAINER (properties));
+	for (iter = children; iter; iter = iter->next) {
+		GtkWidget *widget;
+
+		widget = iter->data;
+		if (GTK_IS_LABEL (widget)) {
+			g_list_free (children);
+			return widget;
+		}
+	}
+
+	g_list_free (children);
+	return NULL;
+}
+
+GtkWidget *
 brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 {
 	GtkWidget *hbox, *vbox_main, *vbox_prop;

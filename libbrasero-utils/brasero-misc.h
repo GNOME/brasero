@@ -89,6 +89,9 @@ void
 brasero_utils_unregister_string (const gchar *string);
 
 GtkWidget *
+brasero_utils_properties_get_label (GtkWidget *widget);
+
+GtkWidget *
 brasero_utils_pack_properties (const gchar *title, ...);
 GtkWidget *
 brasero_utils_pack_properties_list (const gchar *title, GSList *list);

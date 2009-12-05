@@ -170,7 +170,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 			    FALSE,
 			    0);
 
-	obj->priv->label = gtk_frame_get_label_widget (GTK_FRAME (frame));
+	obj->priv->label = brasero_utils_properties_get_label (frame);
 	gtk_label_set_single_line_mode (GTK_LABEL (obj->priv->label), FALSE);
 	gtk_label_set_use_markup (GTK_LABEL (obj->priv->label), TRUE);
 	gtk_label_set_line_wrap (GTK_LABEL (obj->priv->label), TRUE);
