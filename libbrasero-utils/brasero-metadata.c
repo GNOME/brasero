@@ -1168,7 +1168,7 @@ brasero_metadata_mp3_bus_messages (GstBus *bus,
 	case GST_MESSAGE_ERROR:
 		/* save the error message */
 		gst_message_parse_error (msg, &error, &debug_string);
-		BRASERO_UTILS_LOG ("Gstreamer error - mp3 - (%s)", debug_string);
+		BRASERO_UTILS_LOG ("GStreamer error - mp3 - (%s)", debug_string);
 		g_free (debug_string);
 		if (!priv->error && error)
 			priv->error = error;
@@ -1310,7 +1310,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 	case GST_MESSAGE_ERROR:
 		/* save the error message */
 		gst_message_parse_error (msg, &error, &debug_string);
-		BRASERO_UTILS_LOG ("Gstreamer error (%s)", debug_string);
+		BRASERO_UTILS_LOG ("GStreamer error (%s)", debug_string);
 		g_free (debug_string);
 		if (!priv->error && error)
 			priv->error = error;

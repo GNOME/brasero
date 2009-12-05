@@ -246,7 +246,7 @@ brasero_burn_library_start (int *argc,
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
 
-	/* ... and Gstreamer) */
+	/* ... and GStreamer) */
 	if (!gst_init_check (argc, argv, NULL))
 		return FALSE;
 

@@ -679,7 +679,7 @@ brasero_plugin_get_error_string (BraseroPlugin *plugin)
 				break;
 			case BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN:
 				g_string_append_c (string, '\n');
-				g_string_append_printf (string, _("\"%s\" Gstreamer plugin could not be found"), error->detail);
+				g_string_append_printf (string, _("\"%s\" GStreamer plugin could not be found"), error->detail);
 				break;
 			case BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION:
 				g_string_append_c (string, '\n');

@@ -1173,8 +1173,8 @@ brasero_burn_options_list_missing (BraseroPluginErrorType type,
 	}
 	else if (type == BRASERO_PLUGIN_ERROR_MISSING_GSTREAMER_PLUGIN) {
 		g_string_append_c (string, '\n');
-		/* Translators: %s is the name of a missing Gstreamer plugin */
-		g_string_append_printf (string, _("%s (Gstreamer plugin)"), detail);
+		/* Translators: %s is the name of a missing GStreamer plugin */
+		g_string_append_printf (string, _("%s (GStreamer plugin)"), detail);
 	}
 
 	return BRASERO_BURN_OK;
