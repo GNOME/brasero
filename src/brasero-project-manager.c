@@ -512,8 +512,39 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
 	||  manager->priv->type == BRASERO_PROJECT_TYPE_DATA
 	||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO) {
-		if (!brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
+		BraseroBurnResult result;
+		gboolean keep_files = FALSE;
+
+		if (manager->priv->type != type
+		&& (((manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO ||
+		      manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO) &&
+		     type == BRASERO_PROJECT_TYPE_DATA)
+		||  manager->priv->type == BRASERO_PROJECT_TYPE_DATA))
+			keep_files = TRUE;
+
+		result = brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project), keep_files);
+		if (result == BRASERO_BURN_CANCEL)
 			return;
+
+		if (result == BRASERO_BURN_RETRY) {
+			if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
+			||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO)
+				type = brasero_project_convert_to_data (BRASERO_PROJECT (manager->priv->project));
+			else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA) {
+				BraseroProjectType new_type;
+
+				/* Keep type untouched */
+				new_type = brasero_project_convert_to_stream (BRASERO_PROJECT (manager->priv->project),
+									      type == BRASERO_PROJECT_TYPE_VIDEO);
+				if (new_type == BRASERO_PROJECT_TYPE_INVALID)
+					type = new_type;
+			}
+
+			if (type != BRASERO_PROJECT_TYPE_INVALID)
+				reset = FALSE;
+			else
+				reset = TRUE;
+		}
 	}
 
 	if (manager->priv->status_ctx) {

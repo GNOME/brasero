@@ -59,6 +59,8 @@
 #endif
 
 #include "brasero-track-data.h"
+#include "brasero-track-data-cfg.h"
+#include "brasero-track-stream-cfg.h"
 #include "brasero-session-cfg.h"
 
 /* These includes are not in the exported *.h files by 
@@ -1834,8 +1836,9 @@ brasero_project_set_video (BraseroProject *project)
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_VIDEO);
 }
 
-gboolean
-brasero_project_confirm_switch (BraseroProject *project)
+BraseroBurnResult
+brasero_project_confirm_switch (BraseroProject *project,
+				gboolean keep_files)
 {
 	GtkWidget *dialog;
 	GtkResponseType answer;
@@ -1850,10 +1853,30 @@ brasero_project_confirm_switch (BraseroProject *project)
 					     GTK_MESSAGE_WARNING);
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("If you choose to create a new project, all changes made will be lost."));
-		gtk_dialog_add_button (GTK_DIALOG (dialog),
-				       _("_Discard Changes"), GTK_RESPONSE_OK);
+							  _("If you choose to create a new empty project, all changes will be lost."));
 
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Discard Changes"),
+				       GTK_RESPONSE_OK);
+	}
+	else if (keep_files) {
+		if (project->priv->empty)
+			return TRUE;
+
+		dialog = brasero_app_dialog (brasero_app_get_default (),
+					     _("Do you want to discard the file selection or add it to the new project?"),
+					     GTK_BUTTONS_CANCEL,
+					     GTK_MESSAGE_WARNING);
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("If you choose to create a new empty project, the file selection will be discarded."));
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Discard File Selection"),
+				       GTK_RESPONSE_OK);
+
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Keep File Selection"),
+				       GTK_RESPONSE_ACCEPT);
 	}
 	else {
 		if (project->priv->empty)
@@ -1865,21 +1888,22 @@ brasero_project_confirm_switch (BraseroProject *project)
 					     GTK_MESSAGE_WARNING);
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("If you choose to create a new project, "
-							    "all files already added will be discarded. "
-							    "Note that files will not be deleted from their own location, "
-							    "just no longer listed here."));
+							  _("If you choose to create a new empty project, the file selection will be discarded."));
 		gtk_dialog_add_button (GTK_DIALOG (dialog),
-				       _("_Discard Project"), GTK_RESPONSE_OK);
+				       _("_Discard Project"),
+				       GTK_RESPONSE_OK);
 	}
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	if (answer != GTK_RESPONSE_OK)
-		return FALSE;
+	if (answer == GTK_RESPONSE_ACCEPT)
+		return BRASERO_BURN_RETRY;
 
-	return TRUE;
+	if (answer != GTK_RESPONSE_OK)
+		return BRASERO_BURN_CANCEL;
+
+	return BRASERO_BURN_OK;
 }
 
 void
@@ -2444,6 +2468,84 @@ brasero_project_open_session (BraseroProject *project,
 	}
 
 	project->priv->modified = 0;
+
+	return type;
+}
+
+BraseroProjectType
+brasero_project_convert_to_data (BraseroProject *project)
+{
+	GSList *tracks;
+	BraseroProjectType type;
+	BraseroSessionCfg *newsession;
+	BraseroTrackDataCfg *data_track;
+
+	newsession = brasero_session_cfg_new ();
+	data_track = brasero_track_data_cfg_new ();
+	brasero_burn_session_add_track (BRASERO_BURN_SESSION (newsession),
+					BRASERO_TRACK (data_track),
+					NULL);
+	g_object_unref (data_track);
+
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (project->priv->session));
+	for (; tracks; tracks = tracks->next) {
+		BraseroTrackStream *track;
+		gchar *uri;
+
+		track = tracks->data;
+		uri = brasero_track_stream_get_source (track, TRUE);
+		brasero_track_data_cfg_add (data_track, uri, NULL);
+		g_free (uri);
+	}
+
+	type = brasero_project_open_session (project, newsession);
+	g_object_unref (newsession);
+
+	return type;
+}
+
+BraseroProjectType
+brasero_project_convert_to_stream (BraseroProject *project,
+				   gboolean is_video)
+{
+	GSList *tracks;
+	GtkTreeIter iter;
+	BraseroProjectType type;
+	BraseroSessionCfg *newsession;
+	BraseroTrackDataCfg *data_track;
+
+	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (project->priv->session));
+	if (!tracks)
+		return BRASERO_PROJECT_TYPE_INVALID;
+
+	data_track = tracks->data;
+	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (data_track), &iter))
+		return BRASERO_PROJECT_TYPE_INVALID;
+
+	newsession = brasero_session_cfg_new ();
+	do {
+		gchar *uri;
+		BraseroTrackStreamCfg *track;
+
+		gtk_tree_model_get (GTK_TREE_MODEL (data_track), &iter,
+				    BRASERO_DATA_TREE_MODEL_URI, &uri,
+				    -1);
+
+		track = brasero_track_stream_cfg_new ();
+		brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), uri);
+		brasero_track_stream_set_format (BRASERO_TRACK_STREAM (track),
+						 is_video ? BRASERO_VIDEO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_UNDEFINED);
+		g_free (uri);
+
+		brasero_burn_session_add_track (BRASERO_BURN_SESSION (newsession),
+						BRASERO_TRACK (track),
+						NULL);
+		g_object_unref (track);
+
+	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (data_track), &iter));
+
+	type = brasero_project_open_session (project, newsession);
+	g_object_unref (newsession);
 
 	return type;
 }

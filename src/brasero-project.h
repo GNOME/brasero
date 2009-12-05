@@ -69,8 +69,9 @@ GtkWidget *brasero_project_new (void);
 void
 brasero_project_burn (BraseroProject *project);
 
-gboolean
-brasero_project_confirm_switch (BraseroProject *project);
+BraseroBurnResult
+brasero_project_confirm_switch (BraseroProject *project,
+				gboolean keep_files);
 
 void
 brasero_project_set_audio (BraseroProject *project);
@@ -84,6 +85,13 @@ brasero_project_set_none (BraseroProject *project);
 void
 brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source);
+
+BraseroProjectType
+brasero_project_convert_to_data (BraseroProject *project);
+
+BraseroProjectType
+brasero_project_convert_to_stream (BraseroProject *project,
+				   gboolean is_video);
 
 BraseroProjectType
 brasero_project_open_session (BraseroProject *project,
