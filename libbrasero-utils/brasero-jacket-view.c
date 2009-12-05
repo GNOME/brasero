@@ -503,11 +503,11 @@ brasero_jacket_view_print (BraseroJacketView *self,
 			   guint y)
 {
 	cairo_t *ctx;
-	GdkPixbuf *scaled;
 	GdkRectangle rect;
 	PangoLayout *layout;
 	gdouble resolution_x;
 	gdouble resolution_y;
+	GdkPixbuf *scaled = NULL;
 	BraseroJacketViewPrivate *priv;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
@@ -534,7 +534,7 @@ brasero_jacket_view_print (BraseroJacketView *self,
 		scaled = brasero_jacket_view_scale_image (self,
 							  resolution_x,
 							  resolution_y);
-	else
+	else if (priv->scaled)
 		scaled = g_object_ref (priv->scaled);
 
 	layout = gtk_print_context_create_pango_layout (context);
@@ -559,7 +559,9 @@ brasero_jacket_view_print (BraseroJacketView *self,
 					 FALSE);
 
 	g_object_unref (layout);
-	g_object_unref (scaled);
+
+	if (scaled)
+		g_object_unref (scaled);
 
 	return rect.height;
 }
