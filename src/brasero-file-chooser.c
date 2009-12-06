@@ -139,9 +139,8 @@ brasero_file_chooser_paned_destroy (GObject *object,
 }
 
 static void
-brasero_file_chooser_paned_map_event (GtkWidget *widget,
-                                      GdkEvent *event,
-                                      gpointer NULL_data)
+brasero_file_chooser_paned_realize_event (GtkWidget *widget,
+        				  gpointer NULL_data)
 {
 	gint position;
 	gpointer percent;
@@ -294,10 +293,11 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 			                  G_CALLBACK (brasero_file_chooser_paned_destroy),
 			                  NULL);
 			g_signal_connect (widget,
-			                  "map-event",
-			                  G_CALLBACK (brasero_file_chooser_paned_map_event),
+			                  "realize",
+			                  G_CALLBACK (brasero_file_chooser_paned_realize_event),
 			                  NULL);
 		}
+
 		gtk_container_foreach (GTK_CONTAINER (widget),
 				       brasero_file_chooser_customize,
 				       NULL);
