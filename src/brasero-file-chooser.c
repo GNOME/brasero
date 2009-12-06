@@ -139,35 +139,6 @@ brasero_file_chooser_paned_destroy (GObject *object,
 }
 
 static void
-brasero_file_chooser_paned_realize_event (GtkWidget *widget,
-        				  gpointer NULL_data)
-{
-	gint position;
-	gpointer percent;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
-	if (G_TYPE_FROM_INSTANCE (toplevel) == GTK_TYPE_FILE_CHOOSER_DIALOG) {
-		g_object_set_data (G_OBJECT (widget), "is-stock-file-chooser", GINT_TO_POINTER (1));
-		brasero_setting_get_value (brasero_setting_get_default (),
-		                           BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
-		                           &percent);
-	}
-	else
-		brasero_setting_get_value (brasero_setting_get_default (),
-		                           BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
-		                           &percent);
-
-	if (GPOINTER_TO_INT (percent) < 0) {
-		/* No value so set something sane */
-		percent = GINT_TO_POINTER (30);
-	}
-
-	position = widget->allocation.width * GPOINTER_TO_INT (percent) / 10000;
-	gtk_paned_set_position (GTK_PANED (widget), position);
-}
-
-static void
 brasero_file_chooser_position_percent (GObject *object,
                                        gint width,
                                        gint position)
@@ -199,17 +170,46 @@ brasero_file_chooser_position_changed (GObject *object,
 }
 
 static void
-brasero_file_chooser_allocation_changed (GObject *object,
+brasero_file_chooser_allocation_changed (GtkWidget *widget,
                                          GtkAllocation *allocation,
                                          gpointer NULL_data)
 {
 	gint position;
 	gint width;
 
-	position = gtk_paned_get_position (GTK_PANED (object));
+	/* See if it's the first allocation. If so set the position and don't
+	 * save it */
+	if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "position_set")) <= 0) {
+		gpointer percent;
+		GtkWidget *toplevel;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
+		if (G_TYPE_FROM_INSTANCE (toplevel) == GTK_TYPE_FILE_CHOOSER_DIALOG) {
+			g_object_set_data (G_OBJECT (widget), "is-stock-file-chooser", GINT_TO_POINTER (1));
+			brasero_setting_get_value (brasero_setting_get_default (),
+				                   BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
+				                   &percent);
+		}
+		else
+			brasero_setting_get_value (brasero_setting_get_default (),
+				                   BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
+				                   &percent);
+
+		if (GPOINTER_TO_INT (percent) < 0) {
+			/* No value so set something sane */
+			percent = GINT_TO_POINTER (30);
+		}
+
+		position = allocation->width * GPOINTER_TO_INT (percent) / 10000;
+		gtk_paned_set_position (GTK_PANED (widget), position);
+		g_object_set_data (G_OBJECT (widget), "position_set", GINT_TO_POINTER (TRUE));
+		return;
+	}
+
+	position = gtk_paned_get_position (GTK_PANED (widget));
 	width = allocation->width;
 
-	brasero_file_chooser_position_percent (object, width, position);
+	brasero_file_chooser_position_percent (G_OBJECT (widget), width, position);
 }
 
 void
@@ -291,10 +291,6 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 			g_signal_connect (widget,
 			                  "destroy",
 			                  G_CALLBACK (brasero_file_chooser_paned_destroy),
-			                  NULL);
-			g_signal_connect (widget,
-			                  "realize",
-			                  G_CALLBACK (brasero_file_chooser_paned_realize_event),
 			                  NULL);
 		}
 
