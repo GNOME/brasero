@@ -3515,7 +3515,7 @@ brasero_data_project_load_contents_notify_directory (BraseroDataProject *self,
 
 		/* The child could be removed during the process */
 		next = child->next;
-			
+
 		/**
 		 * This is to get the number of operations remaining before the
 		 * whole project is loaded.
@@ -3526,20 +3526,21 @@ brasero_data_project_load_contents_notify_directory (BraseroDataProject *self,
 		if (child->is_fake) {
 			/* This is a fake directory, there is no operation */
 			res = func (self, child, NULL);
-			child = next;
-			continue;
 		}
+		else {
+			uri = brasero_data_project_node_to_uri (self, child);
+			res = func (self, child, uri);
+			g_free (uri);
 
-		uri = brasero_data_project_node_to_uri (self, child);
-		res = func (self, child, uri);
-		g_free (uri);
-
-		if (res)
-			num ++;
+			if (res)
+				num ++;
+		}
 
 		/* for whatever reason the node could have been invalidated */
 		if (res && !child->is_file) {
-			num ++;
+			if (!child->is_fake)
+				num ++;
+
 			num += brasero_data_project_load_contents_notify_directory (self,
 										    child,
 										    func);
@@ -3619,7 +3620,6 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 							 path,
 							 uri,
 							 folders);
-
 		g_free (path);
 		g_free (uri);
 	}
