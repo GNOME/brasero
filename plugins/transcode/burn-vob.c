@@ -1153,6 +1153,7 @@ error:
 				 (*error)->message);
 
 	gst_object_unref (GST_OBJECT (pipeline));
+	priv->pipeline = NULL;
 	return FALSE;
 }
 
