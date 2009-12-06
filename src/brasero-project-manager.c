@@ -515,12 +515,16 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		BraseroBurnResult result;
 		gboolean keep_files = FALSE;
 
-		if (manager->priv->type != type
-		&& (((manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO ||
-		      manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO) &&
-		     type == BRASERO_PROJECT_TYPE_DATA)
-		||  manager->priv->type == BRASERO_PROJECT_TYPE_DATA))
-			keep_files = TRUE;
+		if (type == BRASERO_PROJECT_TYPE_AUDIO
+		||  type == BRASERO_PROJECT_TYPE_DATA
+		||  type == BRASERO_PROJECT_TYPE_VIDEO) {
+			if (manager->priv->type != type
+			&& (((manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO ||
+			      manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO) &&
+			     type == BRASERO_PROJECT_TYPE_DATA)
+			||  manager->priv->type == BRASERO_PROJECT_TYPE_DATA))
+				keep_files = TRUE;
+		}
 
 		result = brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project), keep_files);
 		if (result == BRASERO_BURN_CANCEL)
