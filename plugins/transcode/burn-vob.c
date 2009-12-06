@@ -375,6 +375,7 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	gst_caps_unref (filtercaps);
 
 	if (!gst_element_link_many (queue, resample, convert, filter, queue1, NULL)) {
+		BRASERO_JOB_LOG (vob, "Error while linking pads");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -524,6 +525,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	gst_caps_unref (filtercaps);
 
 	if (!gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL)) {
+		BRASERO_JOB_LOG (vob, "Error while linking pads");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -646,6 +648,7 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
 
 	if (!gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL)) {
+		BRASERO_JOB_LOG (vob, "Error while linking pads");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -990,6 +993,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
 
 	if (!gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, queue1, NULL)) {
+		BRASERO_JOB_LOG (vob, "Error while linking pads");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -1037,7 +1041,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 	brasero_job_get_current_track (BRASERO_JOB (vob), &track);
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
-	if (source == NULL) {
+	if (!source) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -1052,7 +1056,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 
 	/* decode */
 	decode = gst_element_factory_make ("decodebin", NULL);
-	if (decode == NULL) {
+	if (!decode) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -1062,7 +1066,8 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
 
-	if (gst_element_link (source, decode)) {
+	if (!gst_element_link (source, decode)) {
+		BRASERO_JOB_LOG (vob, "Error while linking pads");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -1113,6 +1118,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 
 	gst_bin_add (GST_BIN (pipeline), sink);
 	if (!gst_element_link (muxer, sink)) {
+		BRASERO_JOB_LOG (vob, "Error while linking pads");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
