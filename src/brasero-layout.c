@@ -90,6 +90,8 @@ struct BraseroLayoutPrivate {
 	GtkWidget *notebook;
 	GtkWidget *main_box;
 	GtkWidget *preview_pane;
+
+	guint pane_size_allocated:1;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -750,9 +752,50 @@ brasero_layout_pane_moved_cb (GtkWidget *paned,
 			      GParamSpec *pspec,
 			      BraseroLayout *layout)
 {
+	GtkAllocation allocation = {0, 0};
+	gint position;
+	gint percent;
+
+	gtk_widget_get_allocation (GTK_WIDGET (paned), &allocation);
+	position = gtk_paned_get_position (GTK_PANED (paned));
+
+	percent = position * 10000;
+	if (percent % allocation.width) {
+		percent /= allocation.width;
+		percent ++;
+	}
+	else
+		percent /= allocation.width;
+
 	brasero_setting_set_value (brasero_setting_get_default (),
 	                           BRASERO_SETTING_DISPLAY_PROPORTION,
-	                           GINT_TO_POINTER (gtk_paned_get_position (GTK_PANED (paned))));
+	                           GINT_TO_POINTER (percent));
+}
+
+static void
+brasero_layout_main_pane_size_allocate (GtkWidget *widget,
+					GtkAllocation *allocation,
+					BraseroLayout *layout)
+{
+	if (!layout->priv->pane_size_allocated) {
+		guint position;
+		gpointer value = NULL;
+
+		brasero_setting_get_value (brasero_setting_get_default (),
+			                   BRASERO_SETTING_DISPLAY_PROPORTION,
+			                   &value);
+
+		position = allocation->width * GPOINTER_TO_INT (value) / 10000;
+		if (position >= 0)
+			gtk_paned_set_position (GTK_PANED (layout->priv->pane), position);
+
+		g_signal_connect (layout->priv->pane,
+				  "notify::position",
+				  G_CALLBACK (brasero_layout_pane_moved_cb),
+				  layout);
+
+		layout->priv->pane_size_allocated = TRUE;
+	}
 }
 
 static void
@@ -787,6 +830,7 @@ brasero_layout_change_type (BraseroLayout *layout,
 
 		gtk_widget_destroy (layout->priv->pane);
 		layout->priv->pane = NULL;
+		layout->priv->pane_size_allocated = FALSE;
 	}
 
 	if (layout_type > BRASERO_LAYOUT_BOTTOM
@@ -811,9 +855,10 @@ brasero_layout_change_type (BraseroLayout *layout,
 	gtk_widget_show (layout->priv->pane);
 	gtk_box_pack_end (GTK_BOX (layout), layout->priv->pane, TRUE, TRUE, 0);
 
+	/* This function will set its proportion */
 	g_signal_connect (layout->priv->pane,
-			  "notify::position",
-			  G_CALLBACK (brasero_layout_pane_moved_cb),
+			  "size-allocate",
+			  G_CALLBACK (brasero_layout_main_pane_size_allocate),
 			  layout);
 
 	layout->priv->layout_type = layout_type;
@@ -1004,7 +1049,6 @@ brasero_layout_init (BraseroLayout *obj)
 	GtkWidget *button;
 	GtkWidget *box;
 	gpointer value;
-	gint position;
 
 	obj->priv = g_new0 (BraseroLayoutPrivate, 1);
 
@@ -1043,13 +1087,14 @@ brasero_layout_init (BraseroLayout *obj)
 			break;
 	}
 
-	g_signal_connect (obj->priv->pane,
-			  "notify::position",
-			  G_CALLBACK (brasero_layout_pane_moved_cb),
-			  obj);
-
 	gtk_widget_show (obj->priv->pane);
 	gtk_box_pack_end (GTK_BOX (obj), obj->priv->pane, TRUE, TRUE, 0);
+
+	/* This function will set its proportion */
+	g_signal_connect (obj->priv->pane,
+			  "size-allocate",
+			  G_CALLBACK (brasero_layout_main_pane_size_allocate),
+			  obj);
 
 	/* reflect that layout in the menus */
 	gtk_action_group_add_radio_actions (obj->priv->action_group,
@@ -1058,15 +1103,6 @@ brasero_layout_init (BraseroLayout *obj)
 					    GTK_IS_VPANED (obj->priv->pane),
 					    G_CALLBACK (brasero_layout_HV_radio_button_toggled_cb),
 					    obj);
-
-	/* remember the position */
-	brasero_setting_get_value (brasero_setting_get_default (),
-	                           BRASERO_SETTING_DISPLAY_PROPORTION,
-	                           &value);
-
-	position = GPOINTER_TO_INT (value);
-	if (position > 0)
-		gtk_paned_set_position (GTK_PANED (obj->priv->pane), position);
 
 	/* set up pane for project */
 	box = gtk_vbox_new (FALSE, 0);
