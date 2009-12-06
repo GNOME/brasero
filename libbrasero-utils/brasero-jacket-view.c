@@ -1387,30 +1387,8 @@ brasero_jacket_view_realize (GtkWidget *widget)
 
 	gtk_widget_set_style (widget, gtk_style_attach (gtk_widget_get_style (widget), window));
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-}
 
-static void
-brasero_jacket_view_map (GtkWidget *widget)
-{
-	g_return_if_fail (widget != NULL);
 	gdk_window_show (gtk_widget_get_window (widget));
-
-	GTK_WIDGET_SET_FLAGS (widget, GTK_MAPPED);
-
-	if (GTK_WIDGET_CLASS (brasero_jacket_view_parent_class)->map)
-		GTK_WIDGET_CLASS (brasero_jacket_view_parent_class)->map (widget);
-}
-
-static void
-brasero_jacket_view_unmap (GtkWidget *widget)
-{
-	g_return_if_fail (widget != NULL);
-	gdk_window_hide (gtk_widget_get_window (widget));
-
-	GTK_WIDGET_UNSET_FLAGS (widget, GTK_MAPPED);
-
-	if (GTK_WIDGET_CLASS (brasero_jacket_view_parent_class)->unmap)
-		GTK_WIDGET_CLASS (brasero_jacket_view_parent_class)->unmap (widget);
 }
 
 static void
@@ -1650,8 +1628,6 @@ brasero_jacket_view_class_init (BraseroJacketViewClass *klass)
 	object_class->finalize = brasero_jacket_view_finalize;
 
 	widget_class->expose_event = brasero_jacket_view_expose;
-	widget_class->map = brasero_jacket_view_map;
-	widget_class->unmap = brasero_jacket_view_unmap;
 	widget_class->realize = brasero_jacket_view_realize;
 	widget_class->size_allocate = brasero_jacket_view_size_allocate;
 	widget_class->size_request = brasero_jacket_view_size_request;
