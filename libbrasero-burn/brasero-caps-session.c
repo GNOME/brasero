@@ -1604,7 +1604,11 @@ brasero_caps_get_flags_for_disc (BraseroBurnCaps *self,
 			supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 	}
 	else if (brasero_track_type_get_has_stream (input)) {
-		if (brasero_track_type_get_stream_format (input) & BRASERO_METADATA_INFO) {
+		BraseroStreamFormat format;
+
+		format = brasero_track_type_get_stream_format (input);
+		if (!(format & BRASERO_METADATA_INFO)
+		&&   BRASERO_STREAM_FORMAT_VIDEO (format)) {
 			/* In this case, DAO is compulsory if we want to write CD-TEXT */
 			if (supported_flags & BRASERO_BURN_FLAG_DAO)
 				compulsory_flags |= BRASERO_BURN_FLAG_DAO;
