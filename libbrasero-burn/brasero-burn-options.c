@@ -80,6 +80,9 @@ struct _BraseroBurnOptionsPrivate
 	GtkWidget *options_placeholder;
 	GtkWidget *button;
 
+	GtkWidget *burn;
+	GtkWidget *burn_multi;
+
 	guint not_ready_id;
 	GtkWidget *status_dialog;
 
@@ -162,30 +165,6 @@ brasero_burn_options_add_options (BraseroBurnOptions *self,
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 	gtk_box_pack_start (GTK_BOX (priv->options), options, FALSE, TRUE, 0);
 	gtk_widget_show (priv->options);
-}
-
-static GtkWidget *
-brasero_burn_options_add_burn_button (BraseroBurnOptions *self,
-				      const gchar *text,
-				      const gchar *icon)
-{
-	BraseroBurnOptionsPrivate *priv;
-
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-
-	if (priv->button) {
-		gtk_widget_destroy (priv->button);
-		priv->button = NULL;
-	}
-
-	priv->button = gtk_dialog_add_button (GTK_DIALOG (self),
-					      text,
-					      GTK_RESPONSE_OK);
-	gtk_button_set_image (GTK_BUTTON (priv->button),
-			      gtk_image_new_from_icon_name (icon,
-							    GTK_ICON_SIZE_BUTTON));
-
-	return priv->button;
 }
 
 static void
@@ -306,6 +285,66 @@ brasero_burn_options_not_ready_dialog_shown_cb (GtkWidget *widget,
 }
 
 static void
+brasero_burn_options_setup_buttons (BraseroBurnOptions *self)
+{
+	BraseroBurnOptionsPrivate *priv;
+	BraseroTrackType *type;
+	gchar *label_m = "";
+	gchar *label;
+	gchar *icon;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+
+	/* add the new widgets */
+	type = brasero_track_type_new ();
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (priv->session), type);
+	if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))) {
+		label = _("Create _Image");
+		icon = "iso-image-new";
+	}
+	else if (brasero_track_type_get_has_medium (type)) {
+		/* Translators: This is a verb, an action */
+		label = _("_Copy");
+		icon = "media-optical-copy";
+	
+		label_m = _("Make _Several Copies");
+	}
+	else {
+		/* Translators: This is a verb, an action */
+		label = _("_Burn");
+		icon = "media-optical-burn";
+
+		label_m = _("Burn _Several Copies");
+	}
+
+	if (priv->burn_multi)
+		gtk_button_set_label (GTK_BUTTON (priv->burn_multi), label_m);
+	else
+		priv->burn_multi = gtk_dialog_add_button (GTK_DIALOG (self),
+							  label_m,
+							  GTK_RESPONSE_ACCEPT);
+
+	if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session)))
+		gtk_widget_hide (priv->burn_multi);
+	else
+		gtk_widget_show (priv->burn_multi);
+
+	if (priv->burn)
+		gtk_button_set_label (GTK_BUTTON (priv->burn), label);
+	else
+		priv->burn = gtk_dialog_add_button (GTK_DIALOG (self),
+						    label,
+						    GTK_RESPONSE_OK);
+
+	gtk_button_set_image (GTK_BUTTON (priv->burn), gtk_image_new_from_icon_name (icon, GTK_ICON_SIZE_BUTTON));
+
+	gtk_widget_set_sensitive (priv->burn, priv->is_valid);
+	gtk_widget_set_sensitive (priv->burn_multi, priv->is_valid);
+
+	brasero_track_type_free (type);
+}
+
+static void
 brasero_burn_options_update_valid (BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
@@ -316,7 +355,8 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	valid = brasero_session_cfg_get_error (priv->session);
 	priv->is_valid = BRASERO_SESSION_IS_VALID (valid);
 
-	gtk_widget_set_sensitive (priv->button, priv->is_valid);
+	brasero_burn_options_setup_buttons (self);
+
 	gtk_widget_set_sensitive (priv->options, priv->is_valid);
 	gtk_widget_set_sensitive (priv->properties, priv->is_valid);
 
@@ -559,9 +599,9 @@ static void
 brasero_burn_options_build_contents (BraseroBurnOptions *object)
 {
 	BraseroBurnOptionsPrivate *priv;
+	GtkWidget *content_area;
 	GtkWidget *selection;
 	GtkWidget *alignment;
-	GtkWidget *content_area;
 	gchar *string;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
@@ -575,15 +615,8 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 
 	/* Create a cancel button */
 	gtk_dialog_add_button (GTK_DIALOG (object),
-			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-
-	/* Create a default Burn button */
-	priv->button = gtk_dialog_add_button (GTK_DIALOG (object),
-					      _("_Burn"),
-					      GTK_RESPONSE_OK);
-	gtk_button_set_image (GTK_BUTTON (priv->button),
-			      gtk_image_new_from_icon_name ("media-optical-burn",
-							    GTK_ICON_SIZE_BUTTON));
+			       GTK_STOCK_CANCEL,
+			       GTK_RESPONSE_CANCEL);
 
 	/* Create an upper box for sources */
 	priv->source_placeholder = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
@@ -704,9 +737,6 @@ brasero_burn_options_setup_audio (BraseroBurnOptions *self)
 
 	priv->has_audio = TRUE;
 	gtk_window_set_title (GTK_WINDOW (self), _("Disc Burning Setup"));
-	brasero_burn_options_add_burn_button (self,
-					      _("_Burn"),
-					      "media-optical-burn");
 	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (self),
 					     BRASERO_MEDIA_TYPE_WRITABLE|
 					     BRASERO_MEDIA_TYPE_FILE);
@@ -725,9 +755,6 @@ brasero_burn_options_setup_video (BraseroBurnOptions *self)
 
 	priv->has_video = TRUE;
 	gtk_window_set_title (GTK_WINDOW (self), _("Disc Burning Setup"));
-	brasero_burn_options_add_burn_button (self,
-					      _("_Burn"),
-					      "media-optical-burn");
 	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (self),
 					     BRASERO_MEDIA_TYPE_WRITABLE|
 					     BRASERO_MEDIA_TYPE_FILE);
@@ -848,9 +875,6 @@ brasero_burn_options_setup_data (BraseroBurnOptions *self)
 
 	priv->has_data = TRUE;
 	gtk_window_set_title (GTK_WINDOW (self), _("Disc Burning Setup"));
-	brasero_burn_options_add_burn_button (self,
-					      _("_Burn"),
-					      "media-optical-burn");
 	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (self),
 					     BRASERO_MEDIA_TYPE_WRITABLE|
 					     BRASERO_MEDIA_TYPE_FILE);
@@ -869,9 +893,6 @@ brasero_burn_options_setup_image (BraseroBurnOptions *self)
 
 	priv->has_image = TRUE;
 	gtk_window_set_title (GTK_WINDOW (self), _("Image Burning Setup"));
-	brasero_burn_options_add_burn_button (self,
-					      _("_Burn"),
-					      "media-optical-burn");
 	brasero_burn_options_set_type_shown (self, BRASERO_MEDIA_TYPE_WRITABLE);
 
 	/* Image properties */
@@ -900,9 +921,6 @@ brasero_burn_options_setup_disc (BraseroBurnOptions *self)
 
 	priv->has_disc = TRUE;
 	gtk_window_set_title (GTK_WINDOW (self), _("Copy CD/DVD"));
-	brasero_burn_options_add_burn_button (self,
-					      _("_Copy"),
-					      "media-optical-copy");
 
 	/* take care of source media */
 	source = brasero_src_selection_new (BRASERO_BURN_SESSION (priv->session));
@@ -960,6 +978,8 @@ brasero_burn_options_setup (BraseroBurnOptions *self)
 			brasero_burn_options_setup_audio (self);
 	}
 	brasero_track_type_free (type);
+
+	brasero_burn_options_setup_buttons (self);
 }
 
 static void

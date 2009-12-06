@@ -1458,7 +1458,7 @@ brasero_project_setup_session (BraseroProject *project,
 	}
 }
 
-static gboolean
+static BraseroBurnResult
 brasero_project_drive_properties (BraseroProject *project)
 {
 	BraseroTrackType *track_type;
@@ -1488,6 +1488,10 @@ brasero_project_drive_properties (BraseroProject *project)
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      NULL);
 	g_free (header);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("Burn _Several Copies"),
+			       GTK_RESPONSE_ACCEPT);
 
 	button = brasero_utils_make_button (_("_Burn"),
 					    NULL,
@@ -1529,7 +1533,13 @@ brasero_project_drive_properties (BraseroProject *project)
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	return (answer == GTK_RESPONSE_OK);
+	if (answer == GTK_RESPONSE_OK)
+		return BRASERO_BURN_OK;
+
+	if (answer == GTK_RESPONSE_ACCEPT)
+		return BRASERO_BURN_RETRY;
+
+	return BRASERO_BURN_CANCEL;
 }
 
 static gboolean
@@ -1547,18 +1557,14 @@ brasero_project_image_properties (BraseroProject *project)
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       GTK_STOCK_CANCEL,
+			       GTK_RESPONSE_CANCEL);
 
-	button = brasero_utils_make_button (_("_Burn"),
-					    NULL,
-					    "media-optical-burn",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
-				      button,
-				      GTK_RESPONSE_OK);
-
-	gtk_widget_set_can_default (button, TRUE);
+	button = gtk_dialog_add_button (GTK_DIALOG (dialog),
+					_("Create _Image"),
+				       GTK_RESPONSE_OK);
+	gtk_button_set_image (GTK_BUTTON (button), gtk_image_new_from_icon_name ("iso-image-new", GTK_ICON_SIZE_BUTTON));
 
 	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (dialog), project->priv->session);
 
@@ -1586,13 +1592,13 @@ brasero_project_image_properties (BraseroProject *project)
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	return (answer == GTK_RESPONSE_OK);
+	return (answer == GTK_RESPONSE_OK) ? BRASERO_BURN_OK:BRASERO_BURN_ERR;
 }
 
 void
 brasero_project_burn (BraseroProject *project)
 {
-	gboolean res = FALSE;
+	BraseroBurnResult res;
 	BraseroDisc *current_disc;
 
 	/* Check that we are ready */
@@ -1608,7 +1614,7 @@ brasero_project_burn (BraseroProject *project)
 	else
 		res = brasero_project_image_properties (project);
 
-	if (!res)
+	if (res != BRASERO_BURN_OK && res != BRASERO_BURN_RETRY)
 		return;
 
 	project->priv->is_burning = 1;
@@ -1626,8 +1632,9 @@ brasero_project_burn (BraseroProject *project)
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 
 	/* now setup the burn dialog */
-	if (brasero_app_burn (brasero_app_get_default (), BRASERO_BURN_SESSION (project->priv->session)))
-		project->priv->burnt = TRUE;
+	project->priv->burnt = brasero_app_burn (brasero_app_get_default (),
+						 BRASERO_BURN_SESSION (project->priv->session),
+						 res == BRASERO_BURN_RETRY);
 
 	/* empty the stack of temporary tracks */
 	while (brasero_burn_session_pop_tracks (BRASERO_BURN_SESSION (project->priv->session)) == BRASERO_BURN_RETRY);

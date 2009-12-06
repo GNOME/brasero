@@ -1831,7 +1831,7 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 	if (!GTK_WIDGET_VISIBLE (dialog))
 		gtk_widget_show (GTK_WIDGET (dialog));
 
-	main_message = g_strdup_printf (_("Copy #%i has been burned successfully."), ++ priv->num_copies);
+	main_message = g_strdup_printf (_("Copy #%i has been burned successfully."), priv->num_copies ++);
 	message = brasero_burn_dialog_create_message (dialog,
 	                                              GTK_MESSAGE_INFO,
 	                                              GTK_BUTTONS_CANCEL,
@@ -1902,8 +1902,8 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	 * - we wrote a merged session
 	 * - we were not already asked for a series of copy */
 	if (!priv->num_copies
-	&& !brasero_burn_session_is_dest_file (priv->session)
-	&&!(brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MERGE)) {
+	&&  !brasero_burn_session_is_dest_file (priv->session)
+	&& !(brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MERGE)) {
 		/* Useful button but it shouldn't be used for images */
 		make_another = gtk_dialog_add_button (GTK_DIALOG (dialog),
 						      _("Make _More Copies"),
@@ -2021,9 +2021,11 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 	}
 	else if (priv->num_copies) {
 		retry = brasero_burn_dialog_notify_copy_finished (dialog, error);
+		if (!retry)
+			brasero_burn_dialog_notify_success (dialog);
 	}
 	else {
-		/* see if an image was created. If so, add it to GtkRecent */
+		/* see if an image was created. If so, add it to GtkRecent. */
 		if (brasero_burn_session_is_dest_file (priv->session)) {
 			GSList *tracks;
 
@@ -2037,7 +2039,7 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 		}
 
 		retry = brasero_burn_dialog_notify_success (dialog);
-		priv->num_copies = retry;
+		priv->num_copies = retry * 2;
 	}
 
 	if (priv->burn) {
@@ -2269,18 +2271,9 @@ brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
 	return (result == BRASERO_BURN_OK);
 }
 
-/**
- * brasero_burn_dialog_run:
- * @dialog: a #BraseroBurnDialog
- * @session: a #BraseroBurnSession
- *
- * Start burning the contents of @session.
- *
- * Return value: a #gboolean. TRUE if the operation was successfully carried out, FALSE otherwise.
- **/
-gboolean
-brasero_burn_dialog_run (BraseroBurnDialog *dialog,
-			 BraseroBurnSession *session)
+static gboolean
+brasero_burn_dialog_run_real (BraseroBurnDialog *dialog,
+			      BraseroBurnSession *session)
 {
 	BraseroBurnResult result;
 	BraseroBurnDialogPrivate *priv;
@@ -2338,6 +2331,55 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	if (BRASERO_IS_SESSION_CFG (priv->session))
 		brasero_session_cfg_enable (BRASERO_SESSION_CFG (priv->session));
 
+	return (result == BRASERO_BURN_OK);
+}
+
+/**
+ * brasero_burn_dialog_run_multi:
+ * @dialog: a #BraseroBurnDialog
+ * @session: a #BraseroBurnSession
+ *
+ * Start burning the contents of @session. Once a disc is burnt, a dialog
+ * will be shown to the user and wait for a new insertion before starting to burn
+ * again.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successfully carried out, FALSE otherwise.
+ **/
+gboolean
+brasero_burn_dialog_run_multi (BraseroBurnDialog *dialog,
+			       BraseroBurnSession *session)
+{
+	BraseroBurnResult result;
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv->num_copies = 1;
+
+	result = brasero_burn_dialog_run_real (dialog, session);
+	return (result == BRASERO_BURN_OK);
+}
+
+
+/**
+ * brasero_burn_dialog_run:
+ * @dialog: a #BraseroBurnDialog
+ * @session: a #BraseroBurnSession
+ *
+ * Start burning the contents of @session.
+ *
+ * Return value: a #gboolean. TRUE if the operation was successfully carried out, FALSE otherwise.
+ **/
+gboolean
+brasero_burn_dialog_run (BraseroBurnDialog *dialog,
+			 BraseroBurnSession *session)
+{
+	BraseroBurnResult result;
+	BraseroBurnDialogPrivate *priv;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv->num_copies = 0;
+
+	result = brasero_burn_dialog_run_real (dialog, session);
 	return (result == BRASERO_BURN_OK);
 }
 

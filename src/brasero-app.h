@@ -88,7 +88,8 @@ brasero_app_alert (BraseroApp *app,
 
 gboolean
 brasero_app_burn (BraseroApp *app,
-		  BraseroBurnSession *session);
+		  BraseroBurnSession *session,
+		  gboolean multi);
 
 gboolean
 brasero_app_burn_options (BraseroApp *app,

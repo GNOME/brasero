@@ -62,6 +62,11 @@ GtkWidget *brasero_burn_dialog_new (void);
 gboolean
 brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 			 BraseroBurnSession *session);
+
+gboolean
+brasero_burn_dialog_run_multi (BraseroBurnDialog *dialog,
+			       BraseroBurnSession *session);
+
 gboolean
 brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 			    gboolean force_cancellation);

@@ -518,7 +518,8 @@ brasero_app_set_parent (BraseroApp *app,
 
 gboolean
 brasero_app_burn (BraseroApp *app,
-		  BraseroBurnSession *session)
+		  BraseroBurnSession *session,
+		  gboolean multi)
 {
 	gboolean success;
 	GtkWidget *dialog;
@@ -533,7 +534,12 @@ brasero_app_burn (BraseroApp *app,
 	priv->burn_dialog = dialog;
 
 	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
-	success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog), session);
+	if (!multi)
+		success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
+						   BRASERO_BURN_SESSION (session));
+	else
+		success = brasero_burn_dialog_run_multi (BRASERO_BURN_DIALOG (dialog),
+							 BRASERO_BURN_SESSION (session));
 	priv->burn_dialog = NULL;
 
 	/* The destruction of the dialog will bring the main window forward */
@@ -546,17 +552,24 @@ brasero_app_burn_options (BraseroApp *app,
 			  BraseroSessionCfg *session)
 {
 	GtkWidget *dialog;
-	GtkResponseType result;
+	GtkResponseType answer;
 
 	dialog = brasero_burn_options_new (session);
 	brasero_app_set_toplevel (app, GTK_WINDOW (dialog));
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
 
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 
 	/* The destruction of the dialog will bring the main window forward */
 	gtk_widget_destroy (dialog);
-	return (result == GTK_RESPONSE_OK);
+	if (answer == GTK_RESPONSE_OK)
+		return BRASERO_BURN_OK;
+
+	if (answer == GTK_RESPONSE_ACCEPT)
+		return BRASERO_BURN_RETRY;
+
+	return BRASERO_BURN_CANCEL;
+
 }
 
 static void
@@ -602,10 +615,15 @@ brasero_app_session_burn (BraseroApp *app,
 			return;
 		}
 
-		brasero_app_burn (app, BRASERO_BURN_SESSION (session));
+		brasero_app_burn (app, BRASERO_BURN_SESSION (session), FALSE);
 	}
-	else if (brasero_app_burn_options (app, session))
-		brasero_app_burn (app, BRASERO_BURN_SESSION (session));
+	else {
+		BraseroBurnResult result;
+
+		result = brasero_app_burn_options (app, session);
+		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_RETRY)
+			brasero_app_burn (app, BRASERO_BURN_SESSION (session), (result == BRASERO_BURN_RETRY));
+	}
 }
 
 void
