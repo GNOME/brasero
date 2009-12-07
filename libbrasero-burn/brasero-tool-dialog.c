@@ -182,11 +182,11 @@ brasero_tool_dialog_get_burn (BraseroToolDialog *self)
 
 	priv->burn = brasero_burn_new ();
 	g_signal_connect (priv->burn,
-			  "progress_changed",
+			  "progress-changed",
 			  G_CALLBACK (brasero_tool_dialog_progress_changed),
 			  self);
 	g_signal_connect (priv->burn,
-			  "action_changed",
+			  "action-changed",
 			  G_CALLBACK (brasero_tool_dialog_action_changed),
 			  self);
 
@@ -566,6 +566,12 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	gtk_widget_set_sensitive (priv->lower_box, FALSE);
 	gtk_widget_show (priv->lower_box);
 
+	gtk_box_pack_start (GTK_BOX (content_area),
+			    priv->lower_box,
+			    FALSE,
+			    FALSE,
+			    0);
+
 	title_str = g_strdup_printf ("<b>%s</b>", _("Progress"));
 	title = gtk_label_new (title_str);
 	g_free (title_str);
@@ -588,12 +594,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	gtk_box_pack_start (GTK_BOX (content_area),
 			    priv->progress,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	gtk_box_pack_start (GTK_BOX (content_area),
-			    priv->lower_box,
 			    FALSE,
 			    FALSE,
 			    0);
