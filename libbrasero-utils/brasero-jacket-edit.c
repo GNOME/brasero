@@ -123,9 +123,13 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 			  self);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+
+	/* NOTE: when a dialog is hidden while it was run by gtk_dialog_run ()
+	 * a response will be sent (GTK_RESPONSE_NONE) */
+	gtk_widget_hide (toplevel);
 	res = gtk_print_operation_run (print,
 				       GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-				       GTK_WINDOW (toplevel),
+				       gtk_window_get_transient_for (GTK_WINDOW (toplevel)),
 				       &error);
 	g_object_unref (print);
 }

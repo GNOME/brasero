@@ -169,10 +169,8 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 
 	gtk_text_buffer_get_start_iter (buffer, &start);
 
-	if (label) {
+	if (label)
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
-	}
-
 }
 
 static void

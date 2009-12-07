@@ -1876,7 +1876,12 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 		GtkWidget *window;
 
 		window = brasero_session_edit_cover (priv->session, GTK_WIDGET (dialog));
-		gtk_dialog_run (GTK_DIALOG (window));
+		/* This strange hack is a way to workaround #568358.
+		 * At one point we'll need to hide the dialog which means it
+		 * will anwer with a GTK_RESPONSE_NONE */
+		while (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_NONE)
+			gtk_widget_show (GTK_WIDGET (dialog));
+
 		gtk_widget_destroy (window);
 		return FALSE;
 	}

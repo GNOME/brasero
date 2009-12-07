@@ -1660,7 +1660,13 @@ brasero_project_create_audio_cover (BraseroProject *project)
 	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 	window = brasero_session_edit_cover (BRASERO_BURN_SESSION (project->priv->session),
 					     gtk_widget_get_toplevel (GTK_WIDGET (project)));
-	gtk_dialog_run (GTK_DIALOG (window));
+
+	/* This strange hack is a way to workaround #568358.
+	 * At one point we'll need to hide the dialog which means it
+	 * will anwer with a GTK_RESPONSE_NONE */
+	while (gtk_dialog_run (GTK_DIALOG (window)) == GTK_RESPONSE_NONE)
+		gtk_widget_show (GTK_WIDGET (window));
+
 	gtk_widget_destroy (window);
 }
 
