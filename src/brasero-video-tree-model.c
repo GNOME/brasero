@@ -852,15 +852,18 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 	target = gtk_selection_data_get_target (selection_data);
 	if (target == gdk_atom_intern (BRASERO_DND_TARGET_SELF_FILE_NODES, TRUE)) {
 		BraseroDNDVideoContext *context;
+		GtkTreeRowReference *dest;
 		GList *iter;
 
 		context = (BraseroDNDVideoContext *) gtk_selection_data_get_data (selection_data);
 		if (context->model != GTK_TREE_MODEL (drag_dest))
 			return TRUE;
 
+		dest = gtk_tree_row_reference_new (GTK_TREE_MODEL (drag_dest), dest_path);
 		/* That's us: move the row and its children. */
 		for (iter = context->references; iter; iter = iter->next) {
 			GtkTreeRowReference *reference;
+			GtkTreePath *destination;
 			GtkTreePath *treepath;
 			GtkTreeIter tree_iter;
 
@@ -871,10 +874,13 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 						 treepath);
 			gtk_tree_path_free (treepath);
 
+			destination = gtk_tree_row_reference_get_path (dest);
 			brasero_video_tree_model_move_before (BRASERO_VIDEO_TREE_MODEL (drag_dest),
 							      &tree_iter,
-							      dest_path);
+							      destination);
+			gtk_tree_path_free (destination);
 		}
+		gtk_tree_row_reference_free (dest);
 	}
 	else if (target == gdk_atom_intern ("text/uri-list", TRUE)) {
 		gint i;
