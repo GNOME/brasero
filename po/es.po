@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-11-29 21:36+0000\n"
-"PO-Revision-Date: 2009-11-29 23:42+0100\n"
+"POT-Creation-Date: 2009-12-17 23:57+0000\n"
+"PO-Revision-Date: 2009-12-19 13:28+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgstr "Descripción"
 #: ../src/brasero-search.c:1033 ../libbrasero-burn/brasero-src-image.c:441
 #: ../src/brasero-project-name.c:165 ../src/brasero-search-entry.c:505
 #: ../src/brasero-search-entry.c:565 ../src/brasero-search-entry.c:627
-#: ../src/brasero-file-chooser.c:333 ../src/brasero-project.c:2128
+#: ../src/brasero-file-chooser.c:318 ../src/brasero-project.c:2180
 msgid "All files"
 msgstr "Todos los archivos"
 
@@ -73,7 +73,8 @@ msgstr "No se pudo encontrar «%s» en la ruta"
 
 #: ../libbrasero-burn/burn-plugin.c:682
 #, c-format
-msgid "\"%s\" Gstreamer plugin could not be found"
+#| msgid "\"%s\" Gstreamer plugin could not be found"
+msgid "\"%s\" GStreamer plugin could not be found"
 msgstr "No se pudo encontrar el complemento de GStreamer «%s»"
 
 #: ../libbrasero-burn/burn-plugin.c:686 ../libbrasero-burn/burn-plugin.c:698
@@ -216,7 +217,7 @@ msgid "Broken symbolic link"
 msgstr "Enlace simbólico roto"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1172 ../libbrasero-utils/brasero-io.c:2042
+#: ../libbrasero-utils/brasero-io.c:1186 ../libbrasero-utils/brasero-io.c:2057
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Enlace simbólico recursivo"
@@ -263,9 +264,9 @@ msgid "Analysing files"
 msgstr "Analizando archivos"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2444
-#: ../libbrasero-burn/brasero-burn-options.c:431
-#: ../nautilus/nautilus-burn-extension.c:208 ../src/brasero-project.c:1264
-#: ../libbrasero-burn/brasero-track-data.c:634
+#: ../libbrasero-burn/brasero-burn-options.c:471
+#: ../nautilus/nautilus-burn-extension.c:214 ../src/brasero-project.c:1266
+#: ../libbrasero-burn/brasero-track-data.c:772
 #: ../libbrasero-burn/brasero-track-stream.c:398
 #, c-format
 msgid "There are no files to write to disc"
@@ -282,12 +283,12 @@ msgstr "«%s» es un enlace simbólico recursivo."
 msgid "\"%s\" cannot be found."
 msgstr "no se puede encontrar «%s»."
 
-#: ../libbrasero-utils/brasero-io.c:1400
+#: ../libbrasero-utils/brasero-io.c:1414
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "El archivo no parece ser una lista de reproducción"
 
-#: ../libbrasero-utils/brasero-metadata.c:785 ../src/brasero-audio-disc.c:648
+#: ../libbrasero-utils/brasero-metadata.c:1138 ../src/brasero-audio-disc.c:648
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "Gstreamer no pudo manejar «%s»."
@@ -296,13 +297,13 @@ msgstr "Gstreamer no pudo manejar «%s»."
 #. * could not be created
 #. Translators: %s is the name of the GstElement that
 #. * element could not be created
-#: ../libbrasero-utils/brasero-metadata.c:857
-#: ../libbrasero-utils/brasero-metadata.c:870
-#: ../libbrasero-utils/brasero-metadata.c:883
-#: ../libbrasero-utils/brasero-metadata.c:1351
-#: ../libbrasero-utils/brasero-metadata.c:1721
-#: ../libbrasero-utils/brasero-metadata.c:1736
-#: ../libbrasero-utils/brasero-metadata.c:1745
+#: ../libbrasero-utils/brasero-metadata.c:1210
+#: ../libbrasero-utils/brasero-metadata.c:1223
+#: ../libbrasero-utils/brasero-metadata.c:1236
+#: ../libbrasero-utils/brasero-metadata.c:1378
+#: ../libbrasero-utils/brasero-metadata.c:1749
+#: ../libbrasero-utils/brasero-metadata.c:1764
+#: ../libbrasero-utils/brasero-metadata.c:1773
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
@@ -320,19 +321,19 @@ msgstr "Gstreamer no pudo manejar «%s»."
 #: ../plugins/transcode/burn-transcode.c:646
 #: ../plugins/transcode/burn-vob.c:308 ../plugins/transcode/burn-vob.c:322
 #: ../plugins/transcode/burn-vob.c:336 ../plugins/transcode/burn-vob.c:348
-#: ../plugins/transcode/burn-vob.c:360 ../plugins/transcode/burn-vob.c:417
-#: ../plugins/transcode/burn-vob.c:429 ../plugins/transcode/burn-vob.c:441
-#: ../plugins/transcode/burn-vob.c:453 ../plugins/transcode/burn-vob.c:465
-#: ../plugins/transcode/burn-vob.c:477 ../plugins/transcode/burn-vob.c:567
-#: ../plugins/transcode/burn-vob.c:579 ../plugins/transcode/burn-vob.c:591
-#: ../plugins/transcode/burn-vob.c:603 ../plugins/transcode/burn-vob.c:625
-#: ../plugins/transcode/burn-vob.c:642 ../plugins/transcode/burn-vob.c:682
-#: ../plugins/transcode/burn-vob.c:759 ../plugins/transcode/burn-vob.c:771
-#: ../plugins/transcode/burn-vob.c:786 ../plugins/transcode/burn-vob.c:798
-#: ../plugins/transcode/burn-vob.c:809 ../plugins/transcode/burn-vob.c:820
-#: ../plugins/transcode/burn-vob.c:986 ../plugins/transcode/burn-vob.c:1044
-#: ../plugins/transcode/burn-vob.c:1059 ../plugins/transcode/burn-vob.c:1079
-#: ../plugins/transcode/burn-vob.c:1106
+#: ../plugins/transcode/burn-vob.c:360 ../plugins/transcode/burn-vob.c:418
+#: ../plugins/transcode/burn-vob.c:430 ../plugins/transcode/burn-vob.c:442
+#: ../plugins/transcode/burn-vob.c:454 ../plugins/transcode/burn-vob.c:466
+#: ../plugins/transcode/burn-vob.c:478 ../plugins/transcode/burn-vob.c:569
+#: ../plugins/transcode/burn-vob.c:581 ../plugins/transcode/burn-vob.c:593
+#: ../plugins/transcode/burn-vob.c:605 ../plugins/transcode/burn-vob.c:627
+#: ../plugins/transcode/burn-vob.c:644 ../plugins/transcode/burn-vob.c:685
+#: ../plugins/transcode/burn-vob.c:762 ../plugins/transcode/burn-vob.c:774
+#: ../plugins/transcode/burn-vob.c:789 ../plugins/transcode/burn-vob.c:801
+#: ../plugins/transcode/burn-vob.c:812 ../plugins/transcode/burn-vob.c:823
+#: ../plugins/transcode/burn-vob.c:989 ../plugins/transcode/burn-vob.c:1048
+#: ../plugins/transcode/burn-vob.c:1063 ../plugins/transcode/burn-vob.c:1084
+#: ../plugins/transcode/burn-vob.c:1111
 #, c-format
 msgid "%s element could not be created"
 msgstr "No se pudo crear el elemento %s"
@@ -343,10 +344,10 @@ msgstr "No se pudo crear el elemento %s"
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-caps-burn.c:66
 #: ../libbrasero-burn/brasero-caps-burn.c:668
-#: ../libbrasero-burn/brasero-burn.c:2813 ../libbrasero-burn/burn-job.c:1217
+#: ../libbrasero-burn/brasero-burn.c:2821 ../libbrasero-burn/burn-job.c:1217
 #: ../libbrasero-burn/burn-job.c:1226
-#: ../libbrasero-burn/burn-mkisofs-base.c:306
-#: ../nautilus/nautilus-burn-extension.c:186 ../src/brasero-app.c:746
+#: ../libbrasero-burn/burn-mkisofs-base.c:302
+#: ../nautilus/nautilus-burn-extension.c:192 ../src/brasero-app.c:764
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
 #: ../plugins/cdrkit/burn-wodim.c:707 ../plugins/cdrkit/burn-wodim.c:822
@@ -359,7 +360,7 @@ msgid "An internal error occurred"
 msgstr "Ocurrió un error interno"
 
 #: ../libbrasero-burn/brasero-caps-burn.c:766
-#: ../libbrasero-burn/brasero-burn.c:2543
+#: ../libbrasero-burn/brasero-burn.c:2551
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Sólo se puede verificar una pista cada vez"
@@ -540,7 +541,7 @@ msgid "Please insert a rewritable disc holding data."
 msgstr "Introduzca un disco regrabable que contenga datos."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:522
-#: ../libbrasero-burn/brasero-burn-options.c:456
+#: ../libbrasero-burn/brasero-burn-options.c:496
 msgid "Please insert a disc holding data."
 msgstr "Introduzca un disco que contenga datos."
 
@@ -605,9 +606,9 @@ msgid "Please insert a writable CD or DVD with at least %i MiB of free space."
 msgstr "Introduzca un CD o DVD grabable con al menos %i MiB de espacio libre."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:578
-#: ../libbrasero-burn/brasero-burn-dialog.c:2114
-#: ../libbrasero-burn/brasero-burn-dialog.c:2128
-#: ../libbrasero-burn/brasero-burn-options.c:410 ../src/brasero-project.c:982
+#: ../libbrasero-burn/brasero-burn-dialog.c:2121
+#: ../libbrasero-burn/brasero-burn-dialog.c:2135
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:984
 msgid "Please insert a writable CD or DVD."
 msgstr "Introduzca un CD o DVD grabable."
 
@@ -852,7 +853,7 @@ msgstr "Guardar la sesión actual"
 msgid "An unknown error occurred."
 msgstr "Ocurrió un error desconocido."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1696 ../src/brasero-app.c:596
+#: ../libbrasero-burn/brasero-burn-dialog.c:1696 ../src/brasero-app.c:609
 msgid "Error while burning."
 msgstr "Error durante la grabación."
 
@@ -922,27 +923,27 @@ msgstr ""
 "Otra copia comenzará tan pronto como introduzca un disco grabable nuevo. Si "
 "no quiere grabar otra copia pulse «Cancelar»."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1909
+#: ../libbrasero-burn/brasero-burn-dialog.c:1914
 msgid "Make _More Copies"
 msgstr "Hacer _más copias"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1918
+#: ../libbrasero-burn/brasero-burn-dialog.c:1923
 msgid "_Create Cover"
 msgstr "_Crear carátula"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2077
+#: ../libbrasero-burn/brasero-burn-dialog.c:2084
 msgid "There are some files left to burn"
 msgstr "Aún quedan algunos archivos que grabar"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2084
+#: ../libbrasero-burn/brasero-burn-dialog.c:2091
 msgid "There are some more videos left to burn"
 msgstr "Aún quedan algunos vídeos más que grabar"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2088
+#: ../libbrasero-burn/brasero-burn-dialog.c:2095
 msgid "There are some more songs left to burn"
 msgstr "Aún quedan algunas canciones más que grabar"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2129
+#: ../libbrasero-burn/brasero-burn-dialog.c:2136
 #: ../libbrasero-burn/brasero-burn.c:1625
 #: ../plugins/cdrkit/burn-genisoimage.c:208 ../plugins/cdrkit/burn-wodim.c:115
 #: ../plugins/cdrtools/burn-cdrecord.c:115
@@ -952,129 +953,154 @@ msgstr "Aún quedan algunas canciones más que grabar"
 msgid "Not enough space available on the disc"
 msgstr "No hay suficiente espacio disponible en el disco"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2354
+#: ../libbrasero-burn/brasero-burn-dialog.c:2401
 #: ../libbrasero-burn/brasero-tool-dialog.c:412
 msgid "Do you really want to quit?"
 msgstr "¿Seguro que desea salir?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2358
+#: ../libbrasero-burn/brasero-burn-dialog.c:2405
 #: ../libbrasero-burn/brasero-tool-dialog.c:418
 msgid "Interrupting the process may make disc unusable."
 msgstr "Interrumpir el proceso puede inutilizar el disco."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2361
+#: ../libbrasero-burn/brasero-burn-dialog.c:2408
 msgid "C_ontinue Burning"
 msgstr "C_ontinuar la grabación"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2368
+#: ../libbrasero-burn/brasero-burn-dialog.c:2415
 msgid "_Cancel Burning"
 msgstr "_Cancelar la grabación"
 
-#: ../libbrasero-burn/brasero-burn-options.c:249 ../src/brasero-project.c:1007
+#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1009
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
 msgstr ""
 "Introduzca un CD o DVD grabable si no quiere escribir un archivo imagen."
 
-#: ../libbrasero-burn/brasero-burn-options.c:386 ../src/brasero-project.c:936
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1565
+#| msgid "Creating Image"
+msgid "Create _Image"
+msgstr "Crear _imagen"
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-burn-options.c:307
+msgid "_Copy"
+msgstr "C_opiar"
+
+#: ../libbrasero-burn/brasero-burn-options.c:310
+#| msgid "Make _More Copies"
+msgid "Make _Several Copies"
+msgstr "Hacer _varias copias"
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1496
+msgid "_Burn"
+msgstr "Gra_bar"
+
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1493
+#| msgid "_Burn Several Discs"
+msgid "Burn _Several Copies"
+msgstr "Gra_bar varias copias"
+
+#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:938
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "¿Quiere grabar la selección de archivos en varios medios?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:387
-#: ../libbrasero-burn/brasero-burn-options.c:404
+#: ../libbrasero-burn/brasero-burn-options.c:427
+#: ../libbrasero-burn/brasero-burn-options.c:444
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
 "El tamaño de los datos es demasiado grande para el disco, aún con la opción "
 "de sobregrabado activada."
 
-#: ../libbrasero-burn/brasero-burn-options.c:392 ../src/brasero-project.c:941
+#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:943
 msgid "_Burn Several Discs"
 msgstr "Gra_bar varios discos"
 
-#: ../libbrasero-burn/brasero-burn-options.c:394 ../src/brasero-project.c:943
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:945
 msgid "Burn the selection of files across several media"
 msgstr "Grabar la selección de archivos en varios soportes"
 
-#: ../libbrasero-burn/brasero-burn-options.c:403 ../src/brasero-project.c:952
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:954
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Elija otro CD o DVD o introduzca uno nuevo."
 
-#: ../libbrasero-burn/brasero-burn-options.c:417 ../src/brasero-project.c:997
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:999
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr ""
 "No se escribirá ninguna información sobre la pista (artista, compositor, …) "
 "al disco."
 
-#: ../libbrasero-burn/brasero-burn-options.c:418 ../src/brasero-project.c:998
+#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1000
 msgid "This is not supported by the current active burning backend."
 msgstr "El actual «backend» activo no lo soporta."
 
-#: ../libbrasero-burn/brasero-burn-options.c:430
-#: ../nautilus/nautilus-burn-extension.c:207
+#: ../libbrasero-burn/brasero-burn-options.c:470
+#: ../nautilus/nautilus-burn-extension.c:213
 msgid "Please add files."
 msgstr "Añada archivos."
 
-#: ../libbrasero-burn/brasero-burn-options.c:436
+#: ../libbrasero-burn/brasero-burn-options.c:476
 msgid "Please add songs."
 msgstr "Añada canciones."
 
-#: ../libbrasero-burn/brasero-burn-options.c:437 ../src/brasero-project.c:1255
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1257
 msgid "There are no songs to write to disc"
 msgstr "No hay canciones para grabar en el disco"
 
-#: ../libbrasero-burn/brasero-burn-options.c:442
+#: ../libbrasero-burn/brasero-burn-options.c:482
 msgid "Please add videos."
 msgstr "Añada vídeos."
 
-#: ../libbrasero-burn/brasero-burn-options.c:443
+#: ../libbrasero-burn/brasero-burn-options.c:483
 msgid "There are no videos to write to disc"
 msgstr "No hay vídeos para grabar en el disco"
 
-#: ../libbrasero-burn/brasero-burn-options.c:457
+#: ../libbrasero-burn/brasero-burn-options.c:497
 msgid "There is no inserted disc to copy."
 msgstr "No hay ningún disco introducido para copiar."
 
-#: ../libbrasero-burn/brasero-burn-options.c:468
+#: ../libbrasero-burn/brasero-burn-options.c:508
 msgid "Please select a disc image."
 msgstr "Seleccione una imagen de disco."
 
-#: ../libbrasero-burn/brasero-burn-options.c:469
+#: ../libbrasero-burn/brasero-burn-options.c:509
 msgid "There is no selected disc image."
 msgstr "No hay ninguna imagen de disco seleccionada."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
-#: ../libbrasero-burn/brasero-burn-options.c:481
+#: ../libbrasero-burn/brasero-burn-options.c:521
 #: ../libbrasero-burn/brasero-src-image.c:166
 msgctxt "disc"
 msgid "Please select another image."
 msgstr "Seleccione otra imagen."
 
-#: ../libbrasero-burn/brasero-burn-options.c:482
+#: ../libbrasero-burn/brasero-burn-options.c:522
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "No parece ser una imagen de disco o archivo cue válido."
 
-#: ../libbrasero-burn/brasero-burn-options.c:493
+#: ../libbrasero-burn/brasero-burn-options.c:533
 msgid "Please insert a disc that is not copy protected."
 msgstr "Introduzca un disco que no esté protegido contra copia."
 
-#: ../libbrasero-burn/brasero-burn-options.c:494
-#: ../libbrasero-burn/brasero-burn-options.c:1214
-#: ../src/brasero-project.c:1414
+#: ../libbrasero-burn/brasero-burn-options.c:534
+#: ../libbrasero-burn/brasero-burn-options.c:1234
+#: ../src/brasero-project.c:1431
 msgid "All required applications and libraries are not installed."
 msgstr "Todas las aplicaciones y bibliotecas necesarias no están instaladas."
 
-#: ../libbrasero-burn/brasero-burn-options.c:501 ../src/brasero-project.c:990
+#: ../libbrasero-burn/brasero-burn-options.c:541 ../src/brasero-project.c:992
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Reemplace el disco por un CD o DVD soportado."
 
-#: ../libbrasero-burn/brasero-burn-options.c:510 ../src/brasero-project.c:963
+#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:965
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr ""
 "¿Quiere grabar más allá de la capacidad de grabación informada del disco?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:511
+#: ../libbrasero-burn/brasero-burn-options.c:551
 msgid ""
 "The data size is too large for the disc and you must remove files from the "
 "selection otherwise.\n"
@@ -1089,21 +1115,21 @@ msgstr ""
 "opción de sobregrabado.\n"
 "NOTA: Esta opción puede causar fallos."
 
-#: ../libbrasero-burn/brasero-burn-options.c:518 ../src/brasero-project.c:970
+#: ../libbrasero-burn/brasero-burn-options.c:558 ../src/brasero-project.c:972
 msgid "_Overburn"
 msgstr "_Sobregrabado"
 
-#: ../libbrasero-burn/brasero-burn-options.c:520 ../src/brasero-project.c:972
+#: ../libbrasero-burn/brasero-burn-options.c:560 ../src/brasero-project.c:974
 msgid "Burn beyond the disc's reported capacity"
 msgstr "Grabar por encima de la capacidad informada del disco"
 
-#: ../libbrasero-burn/brasero-burn-options.c:530
+#: ../libbrasero-burn/brasero-burn-options.c:570
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
 msgstr ""
 "La unidad que contiene el disco de origen será también la usada para grabar."
 
-#: ../libbrasero-burn/brasero-burn-options.c:531
+#: ../libbrasero-burn/brasero-burn-options.c:571
 msgid ""
 "A new writable disc will be required once the currently loaded one has been "
 "copied."
@@ -1111,30 +1137,21 @@ msgstr ""
 "Se necesitará un disco grabable una vez que se haya copiado el disco "
 "actualmente cargado."
 
-#: ../libbrasero-burn/brasero-burn-options.c:582
-#: ../libbrasero-burn/brasero-burn-options.c:708
-#: ../libbrasero-burn/brasero-burn-options.c:729
-#: ../libbrasero-burn/brasero-burn-options.c:852
-#: ../libbrasero-burn/brasero-burn-options.c:873 ../src/brasero-project.c:1475
-#: ../src/brasero-project.c:1535
-msgid "_Burn"
-msgstr "Gra_bar"
-
-#: ../libbrasero-burn/brasero-burn-options.c:626
+#: ../libbrasero-burn/brasero-burn-options.c:659
 msgid "Select a disc to write to"
 msgstr "Seleccionar un disco en el que grabar"
 
-#: ../libbrasero-burn/brasero-burn-options.c:706
-#: ../libbrasero-burn/brasero-burn-options.c:727
-#: ../libbrasero-burn/brasero-burn-options.c:850
+#: ../libbrasero-burn/brasero-burn-options.c:739
+#: ../libbrasero-burn/brasero-burn-options.c:757
+#: ../libbrasero-burn/brasero-burn-options.c:877
 msgid "Disc Burning Setup"
 msgstr "Opciones de grabación"
 
-#: ../libbrasero-burn/brasero-burn-options.c:739 ../src/brasero-project.c:1495
+#: ../libbrasero-burn/brasero-burn-options.c:766 ../src/brasero-project.c:1516
 msgid "Video Options"
 msgstr "Opciones de vídeo"
 
-#: ../libbrasero-burn/brasero-burn-options.c:771
+#: ../libbrasero-burn/brasero-burn-options.c:798
 #: ../src/brasero-data-disc.c:616
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
@@ -1144,7 +1161,7 @@ msgstr ""
 "imagen dentro?"
 
 #. Translators: %s is the name of the image
-#: ../libbrasero-burn/brasero-burn-options.c:779
+#: ../libbrasero-burn/brasero-burn-options.c:806
 #, c-format
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
@@ -1153,60 +1170,57 @@ msgstr ""
 "Sólo hay un archivo seleccionado («%s»). Es la imagen de un disco y su "
 "contenido se puede grabar."
 
-#: ../libbrasero-burn/brasero-burn-options.c:784
+#: ../libbrasero-burn/brasero-burn-options.c:811
 #: ../src/brasero-data-disc.c:627
 msgid "Burn as _File"
 msgstr "Grabar como archivo"
 
-#: ../libbrasero-burn/brasero-burn-options.c:786
+#: ../libbrasero-burn/brasero-burn-options.c:813
 #: ../src/brasero-data-disc.c:629
 msgid "Burn _Contents…"
 msgstr "Grabar co_ntenido…"
 
-#: ../libbrasero-burn/brasero-burn-options.c:871
+#: ../libbrasero-burn/brasero-burn-options.c:895
 msgid "Image Burning Setup"
 msgstr "Opciones de grabación de imagen"
 
 #. pack everything
-#: ../libbrasero-burn/brasero-burn-options.c:882
+#: ../libbrasero-burn/brasero-burn-options.c:903
 msgid "Select a disc image to write"
 msgstr "Seleccionar una imagen para grabar"
 
-#: ../libbrasero-burn/brasero-burn-options.c:902
+#: ../libbrasero-burn/brasero-burn-options.c:923
 msgid "Copy CD/DVD"
 msgstr "Copiar CD y DVD"
 
-#: ../libbrasero-burn/brasero-burn-options.c:904
-msgid "_Copy"
-msgstr "C_opiar"
-
-#: ../libbrasero-burn/brasero-burn-options.c:911
+#: ../libbrasero-burn/brasero-burn-options.c:929
 msgid "Select disc to copy"
 msgstr "Seleccione el disco para copiar"
 
 #. Translators: %s is the name of a missing application
-#: ../libbrasero-burn/brasero-burn-options.c:1167
-#: ../libbrasero-burn/brasero-burn.c:1707 ../src/brasero-project.c:1370
+#: ../libbrasero-burn/brasero-burn-options.c:1187
+#: ../libbrasero-burn/brasero-burn.c:1707 ../src/brasero-project.c:1372
 #, c-format
 msgid "%s (application)"
 msgstr "%s (aplicación)"
 
 #. Translators: %s is the name of a missing library
-#: ../libbrasero-burn/brasero-burn-options.c:1172
-#: ../libbrasero-burn/brasero-burn.c:1712 ../src/brasero-project.c:1375
+#: ../libbrasero-burn/brasero-burn-options.c:1192
+#: ../libbrasero-burn/brasero-burn.c:1712 ../src/brasero-project.c:1377
 #, c-format
 msgid "%s (library)"
 msgstr "%s (biblioteca)"
 
-#. Translators: %s is the name of a missing Gstreamer plugin
-#: ../libbrasero-burn/brasero-burn-options.c:1177
-#: ../libbrasero-burn/brasero-burn.c:1717 ../src/brasero-project.c:1380
+#. Translators: %s is the name of a missing GStreamer plugin
+#: ../libbrasero-burn/brasero-burn-options.c:1197
+#: ../libbrasero-burn/brasero-burn.c:1717 ../src/brasero-project.c:1382
 #, c-format
-msgid "%s (Gstreamer plugin)"
+#| msgid "%s (Gstreamer plugin)"
+msgid "%s (GStreamer plugin)"
 msgstr "%s (complemento de GStreamer)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1208
-#: ../src/brasero-project.c:1408
+#: ../libbrasero-burn/brasero-burn-options.c:1228
+#: ../src/brasero-project.c:1425
 msgid "Please install the following manually and try again:"
 msgstr "Instale manualmente lo siguiente e inténtelo de nuevo:"
 
@@ -1278,7 +1292,7 @@ msgid "Ongoing checksumming operation"
 msgstr "Se está realizando la operación de la suma de verificación"
 
 #: ../libbrasero-burn/brasero-burn.c:1624
-#: ../libbrasero-burn/brasero-burn.c:1843
+#: ../libbrasero-burn/brasero-burn.c:1815
 #, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "No se pueden mezclar los datos con este disco"
@@ -1288,8 +1302,7 @@ msgstr "No se pueden mezclar los datos con este disco"
 msgid "There is no track to burn"
 msgstr "No hay pista que grabar"
 
-#: ../libbrasero-burn/brasero-burn.c:1767
-#| msgid "Please install the following manually and try again:"
+#: ../libbrasero-burn/brasero-burn.c:1857
 msgid ""
 "Please install the following required applications and libraries manually "
 "and try again:"
@@ -1297,7 +1310,7 @@ msgstr ""
 "Instale manualmente las siguientes aplicaciones y bibliotecas requeridas e "
 "inténtelo de nuevo:"
 
-#: ../libbrasero-burn/brasero-burn.c:2602
+#: ../libbrasero-burn/brasero-burn.c:2610
 #, c-format
 msgid "No format for the temporary image could be found"
 msgstr "No se pudo encontrar un formato para la imagen temporal"
@@ -1378,8 +1391,8 @@ msgid "Do you really want to choose this location?"
 msgstr "¿Está seguro de que quiere elegir esta lugar?"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:281
-#: ../libbrasero-burn/brasero-session.c:1286
-#: ../libbrasero-burn/brasero-session.c:1361 ../libbrasero-burn/burn-job.c:490
+#: ../libbrasero-burn/brasero-session.c:1282
+#: ../libbrasero-burn/brasero-session.c:1357 ../libbrasero-burn/burn-job.c:490
 #: ../plugins/cdrkit/burn-genisoimage.c:201
 #: ../plugins/cdrtools/burn-mkisofs.c:202
 #: ../plugins/libburnia/burn-libisofs.c:239
@@ -1506,7 +1519,7 @@ msgid "Cdrdao image"
 msgstr "Imagen cdrdao"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1463
+#: ../src/brasero-project.c:1480
 #, c-format
 msgid "Properties of %s"
 msgstr "Propiedades de %s"
@@ -1746,8 +1759,8 @@ msgstr "No se especificó ninguna ruta para la salida de la imagen"
 msgid "An internal error occurred (%s)"
 msgstr "Ocurrió un error interno (%s)"
 
-#: ../libbrasero-burn/burn-mkisofs-base.c:157
-#: ../libbrasero-burn/burn-mkisofs-base.c:635
+#: ../libbrasero-burn/burn-mkisofs-base.c:153
+#: ../libbrasero-burn/burn-mkisofs-base.c:494
 #: ../plugins/growisofs/burn-growisofs.c:529
 #: ../plugins/libburnia/burn-libisofs.c:690
 #: ../plugins/checksum/burn-checksum-image.c:288
@@ -1755,7 +1768,7 @@ msgstr "Ocurrió un error interno (%s)"
 msgid "The file is not stored locally"
 msgstr "El archivo no está almacenado localmente"
 
-#: ../libbrasero-burn/burn-mkisofs-base.c:787
+#: ../libbrasero-burn/burn-mkisofs-base.c:646
 #, c-format
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "Falta el directorio VIDEO_TS o no es válido"
@@ -1833,77 +1846,77 @@ msgstr "Escalado"
 msgid "Background Properties"
 msgstr "Propiedades del fondo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:568
+#: ../libbrasero-utils/brasero-jacket-edit.c:572
 msgid "Print"
 msgstr "Imprimir"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:580
+#: ../libbrasero-utils/brasero-jacket-edit.c:584
 msgid "Bac_kground Properties"
 msgstr "Propiedades del _fondo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:583
+#: ../libbrasero-utils/brasero-jacket-edit.c:587
 msgid "Background properties"
 msgstr "Propiedades del fondo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:598
+#: ../libbrasero-utils/brasero-jacket-edit.c:602
 msgid "Align right"
 msgstr "Alinear a la derecha"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:608
+#: ../libbrasero-utils/brasero-jacket-edit.c:612
 msgid "Center"
 msgstr "Centrado"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:618
+#: ../libbrasero-utils/brasero-jacket-edit.c:622
 msgid "Align left"
 msgstr "Alinear a la izquierda"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:632
+#: ../libbrasero-utils/brasero-jacket-edit.c:636
 msgid "Underline"
 msgstr "Subrayar"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:642
+#: ../libbrasero-utils/brasero-jacket-edit.c:646
 msgid "Italic"
 msgstr "Cursiva"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:652
+#: ../libbrasero-utils/brasero-jacket-edit.c:656
 msgid "Bold"
 msgstr "Negrita"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:678
+#: ../libbrasero-utils/brasero-jacket-edit.c:682
 msgid "Font family and size"
 msgstr "Familia y tamaño de la tipografía"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:685
+#: ../libbrasero-utils/brasero-jacket-edit.c:689
 msgid "_Text Color"
 msgstr "Color del _texto"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:686
+#: ../libbrasero-utils/brasero-jacket-edit.c:690
 msgid "Text color"
 msgstr "Color del texto"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:817
+#: ../libbrasero-utils/brasero-jacket-edit.c:821
 msgid "Cover Editor"
 msgstr "Editor de carátulas"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:799
+#: ../libbrasero-utils/brasero-jacket-view.c:801
 msgid "Set Bac_kground Properties"
 msgstr "Establecer las propiedades del _fondo"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:840
+#: ../libbrasero-utils/brasero-jacket-view.c:842
 msgid "SIDES"
 msgstr "Laterales"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:856
+#: ../libbrasero-utils/brasero-jacket-view.c:858
 msgid "BACK COVER"
 msgstr "Carátula trasera"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:873
+#: ../libbrasero-utils/brasero-jacket-view.c:875
 msgid "FRONT COVER"
 msgstr "Carátula frontal"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1148
+#: ../libbrasero-utils/brasero-jacket-view.c:1150
 msgid "The image could not be loaded."
 msgstr "No se pudo cargar la imagen."
 
@@ -2318,7 +2331,7 @@ msgstr ""
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:266
+#: ../nautilus/nautilus-burn-extension.c:272
 msgid "CD/DVD Creator"
 msgstr "Creador de CD/DVD"
 
@@ -2331,53 +2344,53 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "Arrastre o copie los archivos de abajo para grabarlos al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:151
-#: ../nautilus/nautilus-burn-extension.c:317
+#: ../nautilus/nautilus-burn-extension.c:323
 msgid "Write to Disc"
 msgstr "Grabar al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:681
+#: ../nautilus/nautilus-burn-extension.c:687
 msgid "Write contents to a CD or DVD"
 msgstr "Graba el contenido en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:257
+#: ../nautilus/nautilus-burn-extension.c:263
 msgid "Disc name"
 msgstr "Nombre del disco"
 
-#: ../nautilus/nautilus-burn-extension.c:342
+#: ../nautilus/nautilus-burn-extension.c:348
 msgid "Copy Disc"
 msgstr "Copiar disco"
 
-#: ../nautilus/nautilus-burn-extension.c:534
-#: ../nautilus/nautilus-burn-extension.c:680
+#: ../nautilus/nautilus-burn-extension.c:540
+#: ../nautilus/nautilus-burn-extension.c:686
 msgid "_Write to Disc…"
 msgstr "_Grabar al disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:535
+#: ../nautilus/nautilus-burn-extension.c:541
 msgid "Write disc image to a CD or DVD"
 msgstr "Grabar la imagen de disco en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:603
+#: ../nautilus/nautilus-burn-extension.c:609
 msgid "_Copy Disc…"
 msgstr "_Copiar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:604
+#: ../nautilus/nautilus-burn-extension.c:610
 msgid "Create a copy of this CD or DVD"
 msgstr "Crea una copia de este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:617
+#: ../nautilus/nautilus-burn-extension.c:623
 msgid "_Blank Disc…"
 msgstr "_Borrar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:618
+#: ../nautilus/nautilus-burn-extension.c:624
 msgid "Blank this CD or DVD"
 msgstr "Borrar este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:634
+#: ../nautilus/nautilus-burn-extension.c:640
 msgid "_Check Disc…"
 msgstr "_Comprobar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:635
+#: ../nautilus/nautilus-burn-extension.c:641
 msgid "Check the data integrity on this CD or DVD"
 msgstr "Verificar la integridad de los datos en este CD o DVD"
 
@@ -2393,8 +2406,8 @@ msgid "Medium Icon"
 msgstr "Icono mediano"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-project-name.c:171 ../src/brasero-file-chooser.c:358
-#: ../src/brasero-project.c:2153
+#: ../src/brasero-project-name.c:171 ../src/brasero-file-chooser.c:343
+#: ../src/brasero-project.c:2205
 msgctxt "picture"
 msgid "Image files"
 msgstr "Archivos de imagen"
@@ -2479,20 +2492,20 @@ msgstr "Acerca de"
 msgid "Disc Burner"
 msgstr "Grabador de discos"
 
-#: ../src/brasero-app.c:749 ../src/brasero-app.c:782 ../src/brasero-app.c:1441
+#: ../src/brasero-app.c:767 ../src/brasero-app.c:800 ../src/brasero-app.c:1459
 msgid "Error while loading the project"
 msgstr "Error al cargar proyecto"
 
-#: ../src/brasero-app.c:791 ../src/brasero-app.c:820 ../src/brasero-app.c:884
-#: ../src/brasero-project.c:1263
+#: ../src/brasero-app.c:809 ../src/brasero-app.c:838 ../src/brasero-app.c:902
+#: ../src/brasero-project.c:1265
 msgid "Please add files to the project."
 msgstr "Añada archivos al proyecto."
 
-#: ../src/brasero-app.c:792 ../src/brasero-app.c:821 ../src/brasero-app.c:885
+#: ../src/brasero-app.c:810 ../src/brasero-app.c:839 ../src/brasero-app.c:903
 msgid "The project is empty"
 msgstr "El proyecto está vacío"
 
-#: ../src/brasero-app.c:1139
+#: ../src/brasero-app.c:1157
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -2504,7 +2517,7 @@ msgstr ""
 "Software Foundation; ya sea en la versión 2 de la Licencia, o (a su opción) "
 "cualquier versión posterior."
 
-#: ../src/brasero-app.c:1144
+#: ../src/brasero-app.c:1162
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -2516,7 +2529,7 @@ msgstr ""
 "PARA UN PROPÓSITO DETERMINADO. Vea la Licencia Pública General de GNU para "
 "más detalles."
 
-#: ../src/brasero-app.c:1149
+#: ../src/brasero-app.c:1167
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -2526,11 +2539,11 @@ msgstr ""
 "con Brasero; si no es así, escriba a la Free Software Foundation, Inc, 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, EE. UU."
 
-#: ../src/brasero-app.c:1161
+#: ../src/brasero-app.c:1179
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Una aplicación de grabación de CD/DVD fácil de usar para GNOME"
 
-#: ../src/brasero-app.c:1178
+#: ../src/brasero-app.c:1196
 msgid "Brasero Homepage"
 msgstr "Página web de Brasero"
 
@@ -2542,7 +2555,7 @@ msgstr "Página web de Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1190
+#: ../src/brasero-app.c:1208
 msgid "translator-credits"
 msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2009\n"
@@ -2550,20 +2563,20 @@ msgstr ""
 "Sergio Rivadero <sergiorivadero@argentina.com>, 2006\n"
 "Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006"
 
-#: ../src/brasero-app.c:1439
+#: ../src/brasero-app.c:1457
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "El proyecto «%s» no existe"
 
-#: ../src/brasero-app.c:1515 ../src/brasero-app.c:1521
+#: ../src/brasero-app.c:1533 ../src/brasero-app.c:1539
 msgid "_Recent Projects"
 msgstr "Proyectos _recientes"
 
-#: ../src/brasero-app.c:1516
+#: ../src/brasero-app.c:1534
 msgid "Display the projects recently opened"
 msgstr "Mostrar los proyectos abiertos recientemente"
 
-#: ../src/brasero-app.c:1868 ../data/brasero.desktop.in.in.h:2
+#: ../src/brasero-app.c:1886 ../data/brasero.desktop.in.in.h:2
 msgid "Brasero Disc Burner"
 msgstr "Grabador de discos Brasero"
 
@@ -2724,9 +2737,16 @@ msgid "Edit the track information (start, end, author, etc.)"
 msgstr "Editar la información de las pista (inicio, final, autor, etc.)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
-#: ../src/brasero-project.c:197
+#: ../src/brasero-project.c:199
 msgid "Remove the selected files from the project"
 msgstr "Quitar los archivos seleccionados del proyecto"
+
+#: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
+#: ../src/brasero-video-disc.c:107
+#| msgctxt "disc"
+#| msgid "Image files"
+msgid "Paste files"
+msgstr "Pegar archivos"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
@@ -2857,11 +2877,11 @@ msgstr "Crear pistas _DTS"
 msgid "Click here to burn all suitable songs as DTS tracks"
 msgstr "Pulsar aquí para grabar todas las canciones apropiadas como pistas DTS"
 
-#: ../src/brasero-audio-disc.c:1302
+#: ../src/brasero-audio-disc.c:1301
 msgid "Select one song only please."
 msgstr "Seleccione sólo una canción."
 
-#: ../src/brasero-audio-disc.c:1303
+#: ../src/brasero-audio-disc.c:1302
 msgid "Impossible to split more than one song at a time"
 msgstr "Imposible partir más de una canción al mismo tiempo"
 
@@ -2915,7 +2935,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "Error al analizar lista de reproducción «%s»."
 
 #: ../src/brasero-playlist.c:393 ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2445 ../libbrasero-burn/brasero-sum-dialog.c:164
+#: ../src/brasero-project.c:2575 ../libbrasero-burn/brasero-sum-dialog.c:164
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
 msgstr "Ocurrió un error desconocido"
@@ -3338,48 +3358,48 @@ msgstr "Tamaño"
 msgid "Space"
 msgstr "Espacio"
 
-#: ../src/brasero-file-chooser.c:340 ../src/brasero-project.c:2133
+#: ../src/brasero-file-chooser.c:325 ../src/brasero-project.c:2185
 msgid "Audio files"
 msgstr "Archivos de sonido"
 
-#: ../src/brasero-file-chooser.c:348 ../src/brasero-project.c:2142
+#: ../src/brasero-file-chooser.c:333 ../src/brasero-project.c:2194
 msgid "Movies"
 msgstr "Películas"
 
-#: ../src/brasero-layout.c:98
+#: ../src/brasero-layout.c:100
 msgid "P_review"
 msgstr "Vista p_revia"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-layout.c:100
+#: ../src/brasero-layout.c:102
 msgid "Display video, audio and image preview"
 msgstr "Vista previa del sonido, vídeo e imágenes"
 
-#: ../src/brasero-layout.c:104
+#: ../src/brasero-layout.c:106
 msgid "_Show Side Panel"
 msgstr "_Mostrar el panel lateral"
 
-#: ../src/brasero-layout.c:105
+#: ../src/brasero-layout.c:107
 msgid "Show a side pane along the project"
 msgstr "Mostrar un panel lateral junto con el proyecto"
 
-#: ../src/brasero-layout.c:119
+#: ../src/brasero-layout.c:121
 msgid "_Horizontal Layout"
 msgstr "Disposición _horizontal"
 
-#: ../src/brasero-layout.c:120
+#: ../src/brasero-layout.c:122
 msgid "Set a horizontal layout"
 msgstr "Establecer una disposición horizontal"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:124
 msgid "_Vertical Layout"
 msgstr "Disposición _vertical"
 
-#: ../src/brasero-layout.c:123
+#: ../src/brasero-layout.c:125
 msgid "Set a vertical layout"
 msgstr "Establecer una disposición vertical"
 
-#: ../src/brasero-layout.c:1148
+#: ../src/brasero-layout.c:1184
 msgid "Click to close the side pane"
 msgstr "Pulse para cerrar el panel lateral"
 
@@ -3388,24 +3408,24 @@ msgstr "Pulse para cerrar el panel lateral"
 #. * first %s is the position and the second %s is the whole length of
 #. * the stream. I chose to make that translatable in case some languages
 #. * don't allow the "/"
-#: ../src/brasero-player.c:274
+#: ../src/brasero-player.c:301
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-player.c:399
+#: ../src/brasero-player.c:427
 msgid "No file"
 msgstr "Sin archivo"
 
-#: ../src/brasero-player.c:442
+#: ../src/brasero-player.c:470
 msgid "Start and stop playing"
 msgstr "Comenzar y parar la reproducción"
 
-#: ../src/brasero-player.c:813
+#: ../src/brasero-player.c:866
 msgid "Name:"
 msgstr "Nombre:"
 
-#: ../src/brasero-player.c:820
+#: ../src/brasero-player.c:873
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i × %i "
@@ -3414,7 +3434,7 @@ msgstr ""
 "<span weight=\"bold\">Tamaño:</span>\t<i><span size=\"smaller\"> %i x %i "
 "píxeles</span></i>"
 
-#: ../src/brasero-player.c:843
+#: ../src/brasero-player.c:896
 #, c-format
 msgid ""
 "<span weight=\"bold\">%s</span>\n"
@@ -3423,7 +3443,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "por <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-player.c:1078
+#: ../src/brasero-player.c:1130
 #, c-format
 msgid ""
 "<span weight=\"bold\">Loading information</span>\n"
@@ -3432,49 +3452,49 @@ msgstr ""
 "<span weight=\"bold\">Cargando información</span>\n"
 "sobre <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:191
+#: ../src/brasero-project.c:193
 msgid "Save current project"
 msgstr "Guardar el proyecto actual"
 
-#: ../src/brasero-project.c:192
+#: ../src/brasero-project.c:194
 msgid "Save _As…"
 msgstr "Guardar co_mo…"
 
-#: ../src/brasero-project.c:193
+#: ../src/brasero-project.c:195
 msgid "Save current project to a different location"
 msgstr "Guarda el proyecto actual en un lugar diferente"
 
-#: ../src/brasero-project.c:194
+#: ../src/brasero-project.c:196
 msgid "_Add Files"
 msgstr "_Añadir archivos"
 
-#: ../src/brasero-project.c:195
+#: ../src/brasero-project.c:197
 msgid "Add files to the project"
 msgstr "Añadir archivos al proyecto"
 
-#: ../src/brasero-project.c:196
+#: ../src/brasero-project.c:198
 msgid "_Remove Files"
 msgstr "_Quitar archivos"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:199 ../src/brasero-project.c:2215
+#: ../src/brasero-project.c:201 ../src/brasero-project.c:2267
 msgid "E_mpty Project"
 msgstr "_Vaciar proyecto"
 
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Remove all files from the project"
 msgstr "Borrar todos los archivos del proyecto"
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/brasero-project.c:201 ../src/brasero-project.c:1072
+#: ../src/brasero-project.c:203 ../src/brasero-project.c:1074
 msgid "_Burn…"
 msgstr "Gra_bar…"
 
-#: ../src/brasero-project.c:202
+#: ../src/brasero-project.c:204
 msgid "Burn the disc"
 msgstr "Grabar el disco"
 
-#: ../src/brasero-project.c:682
+#: ../src/brasero-project.c:684
 msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
@@ -3482,7 +3502,7 @@ msgstr ""
 "Para añadir archivos a este proyecto pulse el botón «Añadir» o arrastre "
 "archivos en este área"
 
-#: ../src/brasero-project.c:684
+#: ../src/brasero-project.c:686
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
@@ -3490,18 +3510,18 @@ msgstr ""
 "Para quitar archivos selecciónelos y pulse el botón «Quitar» o pulse la tecla "
 "«Suprimir»"
 
-#: ../src/brasero-project.c:791
+#: ../src/brasero-project.c:793
 #, c-format
 msgid "Estimated project size: %s"
 msgstr "Tamaño estimado del proyecto: %s"
 
-#: ../src/brasero-project.c:937 ../src/brasero-project.c:953
+#: ../src/brasero-project.c:939 ../src/brasero-project.c:955
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
 "El proyecto es demasiado grande para el disco incluso con la opción de "
 "sobregrabado activada."
 
-#: ../src/brasero-project.c:964
+#: ../src/brasero-project.c:966
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -3515,56 +3535,76 @@ msgstr ""
 "sobregrabado.\n"
 "NOTA: Esta opción puede causar fallos."
 
-#: ../src/brasero-project.c:1084
+#: ../src/brasero-project.c:1086
 msgid "Start to burn the contents of the selection"
 msgstr "Iniciar la grabación del contenido de la selección"
 
-#: ../src/brasero-project.c:1254
+#: ../src/brasero-project.c:1256
 msgid "Please add songs to the project."
 msgstr "Añada canciones al proyecto."
 
-#: ../src/brasero-project.c:1833
+#: ../src/brasero-project.c:1864
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
 msgstr "¿Quiere crear un proyecto nuevo y descartar los cambios en el actual?"
 
-#: ../src/brasero-project.c:1838
-msgid "If you choose to create a new project, all changes made will be lost."
+#: ../src/brasero-project.c:1869
+#| msgid ""
+#| "If you choose to create a new project, all changes made will be lost."
+msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr ""
-"Si elije crear un proyecto nuevo se perderán todos los cambios realizados."
+"Si elije crear un proyecto nuevo vacío se perderán todos los cambios "
+"realizados."
 
-#: ../src/brasero-project.c:1840
+#: ../src/brasero-project.c:1872
 msgid "_Discard Changes"
 msgstr "_Descartar los cambios"
 
-#: ../src/brasero-project.c:1848
+#: ../src/brasero-project.c:1880
+#| msgid ""
+#| "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+msgid "Do you want to discard the file selection or add it to the new project?"
+msgstr ""
+"¿Quiere descartar la selección de archivos o añadirla al proyecto nuevo?"
+
+#: ../src/brasero-project.c:1885 ../src/brasero-project.c:1904
+#| msgid ""
+#| "If you choose to create a new project, all changes made will be lost."
+msgid ""
+"If you choose to create a new empty project, the file selection will be "
+"discarded."
+msgstr ""
+"Si elije crear un proyecto nuevo vacío se descartará la selección de "
+"archivos."
+
+#: ../src/brasero-project.c:1887
+#| msgid "_Discard File"
+msgid "_Discard File Selection"
+msgstr "_Descartar la selección de archivos"
+
+#: ../src/brasero-project.c:1891
+#| msgid "File Deletion"
+msgid "_Keep File Selection"
+msgstr "_Mantener la selección de archivos"
+
+#: ../src/brasero-project.c:1899
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "¿Quiere crear un proyecto nuevo y descartar el actual?"
 
-#: ../src/brasero-project.c:1853
-msgid ""
-"If you choose to create a new project, all files already added will be "
-"discarded. Note that files will not be deleted from their own location, just "
-"no longer listed here."
-msgstr ""
-"Si elije crear un proyecto nuevo se descartarán todos los archivos ya "
-"añadidos. Note que los archivos no se borrarán de sus ubicaciones, "
-"simplemente no se listarán aquí."
-
-#: ../src/brasero-project.c:1858
+#: ../src/brasero-project.c:1906
 msgid "_Discard Project"
 msgstr "_Descartar el proyecto"
 
-#: ../src/brasero-project.c:2091
+#: ../src/brasero-project.c:2143
 msgid "Select Files"
 msgstr "Seleccionar archivos"
 
-#: ../src/brasero-project.c:2204
+#: ../src/brasero-project.c:2256
 msgid "Do you really want to empty the current project?"
 msgstr "¿Está seguro de que quiere vaciar el proyecto actual?"
 
-#: ../src/brasero-project.c:2209
+#: ../src/brasero-project.c:2261
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -3574,78 +3614,78 @@ msgstr ""
 "el trabajo. Note que los archivos no se borrarán de sus ubicaciones, "
 "simplemente no se listarán aquí."
 
-#: ../src/brasero-project.c:2266
+#: ../src/brasero-project.c:2318
 msgid "_Save"
 msgstr "_Guardar"
 
-#: ../src/brasero-project.c:2277
+#: ../src/brasero-project.c:2329
 msgid "_Add"
 msgstr "_Añadir"
 
-#: ../src/brasero-project.c:2282 ../src/brasero-split-dialog.c:1252
+#: ../src/brasero-project.c:2334 ../src/brasero-split-dialog.c:1252
 msgid "_Remove"
 msgstr "_Quitar"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2346
+#: ../src/brasero-project.c:2398
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero — %s (disco de datos)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2349
+#: ../src/brasero-project.c:2401
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero — %s (disco de sonido)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2352
+#: ../src/brasero-project.c:2404
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (disco de vídeo)"
 
-#: ../src/brasero-project.c:2444 ../src/brasero-project.c:2760
+#: ../src/brasero-project.c:2574 ../src/brasero-project.c:2890
 msgid "Your project has not been saved."
 msgstr "Su proyecto no se ha guardado."
 
-#: ../src/brasero-project.c:2458
+#: ../src/brasero-project.c:2588
 msgid "Save the changes of current project before closing?"
 msgstr "¿Guardar los cambios del proyecto actual antes de cerrar?"
 
-#: ../src/brasero-project.c:2463 ../src/brasero-project.c:2765
+#: ../src/brasero-project.c:2593 ../src/brasero-project.c:2895
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Los cambios se perderán permanentemente si no los guarda."
 
-#: ../src/brasero-project.c:2467 ../src/brasero-project.c:2473
-#: ../src/brasero-project.c:2768
+#: ../src/brasero-project.c:2597 ../src/brasero-project.c:2603
+#: ../src/brasero-project.c:2898
 msgid "Cl_ose Without Saving"
 msgstr "Ce_rrar sin guardar"
 
-#: ../src/brasero-project.c:2568
+#: ../src/brasero-project.c:2698
 msgid "Save Current Project"
 msgstr "Guardar el proyecto actual"
 
-#: ../src/brasero-project.c:2586
+#: ../src/brasero-project.c:2716
 msgid "Save project as a Brasero audio project"
 msgstr "Guardar el proyecto como un proyecto de sonido de Brasero"
 
-#: ../src/brasero-project.c:2587
+#: ../src/brasero-project.c:2717
 msgid "Save project as a plain text list"
 msgstr "Guardar el proyecto como una lista en texto plano"
 
-#: ../src/brasero-project.c:2591
+#: ../src/brasero-project.c:2721
 msgid "Save project as a PLS playlist"
 msgstr "Guardar el proyecto como una lista de reproducción PLS"
 
-#: ../src/brasero-project.c:2592
+#: ../src/brasero-project.c:2722
 msgid "Save project as an M3U playlist"
 msgstr "Guardar el proyecto como una lista de reproducción M3U"
 
-#: ../src/brasero-project.c:2593
+#: ../src/brasero-project.c:2723
 msgid "Save project as an XSPF playlist"
 msgstr "Guardar el proyecto como una lista de reproducción XSPF"
 
-#: ../src/brasero-project.c:2594
+#: ../src/brasero-project.c:2724
 msgid "Save project as an iriver playlist"
 msgstr "Guardar el proyecto como una lista de reproducción iriver"
 
@@ -3738,86 +3778,86 @@ msgstr "_Abrir…"
 msgid "Open a project"
 msgstr "Abrir un proyecto"
 
-#: ../src/brasero-project-manager.c:255
+#: ../src/brasero-project-manager.c:261
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d archivo seleccionado (%s)"
 msgstr[1] "%d archivos seleccionados (%s)"
 
-#: ../src/brasero-project-manager.c:266
+#: ../src/brasero-project-manager.c:272
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
 msgstr[0] "%d archivo soportado (%s)"
 msgstr[1] "%d archivos soportados (%s)"
 
-#: ../src/brasero-project-manager.c:272
+#: ../src/brasero-project-manager.c:278
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
 msgstr[0] "se pueden añadir %d archivo (%s)"
 msgstr[1] "se pueden añadir %d archivos (%s)"
 
-#: ../src/brasero-project-manager.c:283
+#: ../src/brasero-project-manager.c:289
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] "No se puede añadir ningún archivo (%i archivo seleccionado)"
 msgstr[1] "No se puede añadir ningún archivo (%i archivos seleccionados)"
 
-#: ../src/brasero-project-manager.c:288
+#: ../src/brasero-project-manager.c:295
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "Ningún archivo está soportado (%i archivo seleccionado)"
 msgstr[1] "Ningún archivo está soportado (%i archivos seleccionados)"
 
-#: ../src/brasero-project-manager.c:294 ../src/brasero-project-manager.c:448
+#: ../src/brasero-project-manager.c:301 ../src/brasero-project-manager.c:455
 msgid "No file selected"
 msgstr "No hay ningún archivo seleccionado"
 
-#: ../src/brasero-project-manager.c:550
+#: ../src/brasero-project-manager.c:592
 msgid "Brasero — New Audio Disc Project"
 msgstr "Brasero — Proyecto de disco de sonido nuevo"
 
-#: ../src/brasero-project-manager.c:564
+#: ../src/brasero-project-manager.c:606
 msgid "Brasero — New Data Disc Project"
 msgstr "Brasero — Proyecto de disco de datos nuevo"
 
-#: ../src/brasero-project-manager.c:578
+#: ../src/brasero-project-manager.c:620
 msgid "Brasero — New Video Disc Project"
 msgstr "Brasero — Proyecto de disco de vídeo nuevo"
 
-#: ../src/brasero-project-manager.c:588
+#: ../src/brasero-project-manager.c:630
 msgid "Brasero — New Image File"
 msgstr "Brasero — Archivo de imagen nuevo"
 
-#: ../src/brasero-project-manager.c:603
+#: ../src/brasero-project-manager.c:645
 msgid "Brasero — Disc Copy"
 msgstr "Brasero — Copia de disco"
 
-#: ../src/brasero-project-manager.c:687
+#: ../src/brasero-project-manager.c:729
 msgid "Open Project"
 msgstr "Abrir proyecto"
 
-#: ../src/brasero-project-manager.c:790
+#: ../src/brasero-project-manager.c:832
 msgid "_New"
 msgstr "_Nuevo"
 
-#: ../src/brasero-project-manager.c:794
+#: ../src/brasero-project-manager.c:836
 msgid "_Open"
 msgstr "_Abrir"
 
-#: ../src/brasero-project-manager.c:845
+#: ../src/brasero-project-manager.c:887
 msgid "Browse the file system"
 msgstr "Examinar el sistema de archivos"
 
-#: ../src/brasero-project-manager.c:868
+#: ../src/brasero-project-manager.c:910
 msgid "Search files using keywords"
 msgstr "Buscar archivos usando palabras clave"
 
-#: ../src/brasero-project-manager.c:888
+#: ../src/brasero-project-manager.c:930
 msgid "Display playlists and their contents"
 msgstr "Mostrar listas de reproducción y su contenido"
 
@@ -3979,7 +4019,7 @@ msgstr "La unidad está vacía"
 msgid "Select a disc"
 msgstr "Seleccione un disco"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:569
+#: ../libbrasero-burn/brasero-tool-dialog.c:575
 msgid "Progress"
 msgstr "Progreso"
 
@@ -4000,7 +4040,6 @@ msgid "PLAYLIST"
 msgstr "LISTA DE REPRODUCCIÓN"
 
 #: ../src/main.c:122
-#| msgid "Click here not to use overburning"
 msgid "Set the drive to be used for burning"
 msgstr "Establecer la unidad que usar para grabar"
 
@@ -4009,7 +4048,6 @@ msgid "DEVICE PATH"
 msgstr "RUTA DEL DISPOSITIVO"
 
 #: ../src/main.c:126
-#| msgid "the image file cannot be found"
 msgid "Create an image file instead of burning"
 msgstr "Crear un archivo imagen en lugar de grabar"
 
@@ -4049,7 +4087,6 @@ msgid "URI of an image file to burn (autodetected)"
 msgstr "URI del archivo de imagen para grabar (autodetectado)"
 
 #: ../src/main.c:151
-#| msgid "PATH TO DEVICE"
 msgid "PATH TO IMAGE"
 msgstr "RUTA AL LA IMAGEN"
 
@@ -4070,7 +4107,6 @@ msgid "Burn the contents of burn:// URI"
 msgstr "Grabar el contenido del URI burn://"
 
 #: ../src/main.c:170
-#| msgid "cdrkit burning suite"
 msgid "Start burning immediately."
 msgstr "Comenzar a grabar inmediatamente."
 
@@ -4098,12 +4134,10 @@ msgstr "El XID de la ventana padre"
 #. Translators: %s is the path of drive
 #: ../src/main.c:240
 #, c-format
-#| msgid "\"%s\" cannot be read"
 msgid "\"%s\" cannot write."
 msgstr "No se puede escribir «%s»."
 
 #: ../src/main.c:242 ../src/main.c:256
-#| msgid "Incompatible command line options used."
 msgid "Wrong command line option."
 msgstr "Opción de línea de comandos incorrecta."
 
@@ -4115,11 +4149,11 @@ msgstr "Se usaron opciones de línea de comandos incompatibles."
 msgid "Only one option can be given at a time"
 msgstr "Solamente se puede especificar una opción por vez."
 
-#: ../src/main.c:470
+#: ../src/main.c:466
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:482
+#: ../src/main.c:478
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Escriba «%s --help» para ver todas las opciones disponibles\n"
@@ -4462,10 +4496,10 @@ msgstr "Permite grabar archivos que no están almacenados localmente"
 #: ../plugins/transcode/burn-transcode.c:661
 #: ../plugins/transcode/burn-transcode.c:692
 #: ../plugins/transcode/burn-transcode.c:713
-#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:381
-#: ../plugins/transcode/burn-vob.c:530 ../plugins/transcode/burn-vob.c:652
-#: ../plugins/transcode/burn-vob.c:996 ../plugins/transcode/burn-vob.c:1069
-#: ../plugins/transcode/burn-vob.c:1119
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:382
+#: ../plugins/transcode/burn-vob.c:532 ../plugins/transcode/burn-vob.c:655
+#: ../plugins/transcode/burn-vob.c:1000 ../plugins/transcode/burn-vob.c:1074
+#: ../plugins/transcode/burn-vob.c:1125
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "No se pudieron enlazar las interfaces de los complementos"
@@ -4970,11 +5004,11 @@ msgstr "Creando disposición de archivo"
 msgid "Creates disc images suitable for Video DVDs"
 msgstr "Crea imágenes de discos apropiados para DVD de vídeo"
 
-#: ../plugins/transcode/burn-vob.c:1203
+#: ../plugins/transcode/burn-vob.c:1210
 msgid "Converting video file to MPEG2"
 msgstr "Convirtiendo el archivo de vídeo a MPEG2"
 
-#: ../plugins/transcode/burn-vob.c:1286
+#: ../plugins/transcode/burn-vob.c:1293
 msgid "Converts any video file into a format suitable for Video DVDs"
 msgstr ""
 "Convierte cualquier archivo de vídeo en un formato de apropiado para DVD de "
@@ -4995,6 +5029,15 @@ msgstr "Copie CD y DVD"
 #: ../data/brasero-copy-medium.desktop.in.in.h:4
 msgid "Disc Copier"
 msgstr "Copiador de discos"
+
+#~ msgid ""
+#~ "If you choose to create a new project, all files already added will be "
+#~ "discarded. Note that files will not be deleted from their own location, "
+#~ "just no longer listed here."
+#~ msgstr ""
+#~ "Si elije crear un proyecto nuevo se descartarán todos los archivos ya "
+#~ "añadidos. Note que los archivos no se borrarán de sus ubicaciones, "
+#~ "simplemente no se listarán aquí."
 
 #~ msgid "PATH TO PLAYLIST"
 #~ msgstr "RUTA A LA LISTA DE REPRODUCCIÓN"
@@ -5368,10 +5411,6 @@ msgstr "Copiador de discos"
 
 #~ msgid "_Name:"
 #~ msgstr "_Nombre:"
-
-#~ msgid ""
-#~ "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-#~ msgstr "¿Quiere grabar «%s» a un disco o añadirlo en un proyecto de datos?"
 
 #~ msgid ""
 #~ "This file is the image of a disc and can therefore be burnt to disc "
@@ -6173,9 +6212,6 @@ msgstr "Copiador de discos"
 
 #~ msgid "Error"
 #~ msgstr "Error"
-
-#~ msgid "File Deletion"
-#~ msgstr "Borrado de archivos"
 
 #~ msgid "Playlist Loading Error"
 #~ msgstr "Error al cargar la lista de reproducción"
