@@ -1058,21 +1058,6 @@ error:
 
 #ifdef BUILD_PLAYLIST
 
-static void
-brasero_project_save_audio_playlist_entry (GtkTreeModel *model,
-					   GtkTreeIter *iter,
-					   gchar **uri,
-					   gchar **title,
-					   gboolean *custom_title,
-					   gpointer user_data)
-{
-	gtk_tree_model_get (model, iter,
-			    0, uri,
-			    1, title,
-			    2, custom_title,
-			    -1);
-}
-
 gboolean
 brasero_project_save_audio_project_playlist (BraseroBurnSession *session,
 					     const gchar *uri,
@@ -1080,34 +1065,33 @@ brasero_project_save_audio_project_playlist (BraseroBurnSession *session,
 {
 	TotemPlParserType pl_type;
 	TotemPlParser *parser;
-	GtkListStore *model;
-	GtkTreeIter t_iter;
+	TotemPlPlaylist *playlist;
+	TotemPlPlaylistIter pl_iter;
 	gboolean result;
+	GFile *file;
 	GSList *iter;
-	gchar *path;
 
-    	path = g_filename_from_uri (uri, NULL, NULL);
-    	if (!path)
-		return FALSE;
-
+	file = g_file_new_for_uri (uri);
 	parser = totem_pl_parser_new ();
+	playlist = totem_pl_playlist_new ();
 
-	/* create and populate treemodel */
-	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+	/* populate playlist */
 	iter = brasero_burn_session_get_tracks (session);
 	for (; iter; iter = iter->next) {
 		BraseroTrackStream *track;
+		const gchar *title;
 		gchar *uri;
 
 		track = iter->data;
 
 		uri = brasero_track_stream_get_source (track, TRUE);
-		gtk_list_store_append (model, &t_iter);
-		gtk_list_store_set (model, &t_iter,
-				    0, uri,
-				    1, brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG),
-				    2, TRUE,
-				    -1);
+		title = brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG);
+
+		totem_pl_playlist_append (playlist, &pl_iter);
+		totem_pl_playlist_set (playlist, &pl_iter,
+				       TOTEM_PL_PARSER_FIELD_URI, uri,
+				       TOTEM_PL_PARSER_FIELD_TITLE, title,
+				       NULL);
 		g_free (uri);
 	}
 
@@ -1128,18 +1112,13 @@ brasero_project_save_audio_project_playlist (BraseroBurnSession *session,
 			break;
 	}
 
-	result = totem_pl_parser_write_with_title (parser,
-						   GTK_TREE_MODEL (model),
-						   brasero_project_save_audio_playlist_entry,
-						   path,
-						   brasero_burn_session_get_label (session),
-						   pl_type,
-						   NULL,
-						   NULL);
+	result = totem_pl_parser_save (parser, playlist, file,
+				       brasero_burn_session_get_label (session),
+				       type, NULL);
 
-	g_object_unref (model);
+	g_object_unref (playlist);
 	g_object_unref (parser);
-	g_free (path);
+	g_object_unref (file);
 
 	return result;
 }
