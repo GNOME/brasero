@@ -1476,7 +1476,6 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
 	object_class->set_property = brasero_plugin_set_property;
 	object_class->get_property = brasero_plugin_get_property;
 
-	parent_class = G_TYPE_MODULE_CLASS (g_type_class_peek_parent (klass));
 	module_class->load = brasero_plugin_load;
 	module_class->unload = brasero_plugin_unload;
 
