@@ -104,6 +104,29 @@ static GObjectClass *parent_class;
 //#define DEBUG_PRINT(format_MACRO,...)           g_print (format_MACRO, ##__VA_ARGS__);
 #define DEBUG_PRINT(format_MACRO,...)             
 
+/* do not call brasero_*_start() at nautilus startup, they are very expensive;
+ * lazily initialize those instead */
+static void
+ensure_initialized()
+{
+	static gboolean initialized = FALSE;
+	GConfClient *client;
+
+	if (!initialized) {
+		client = gconf_client_get_default ();
+		if (gconf_client_get_bool (client, "/apps/brasero/nautilus-extension-debug", NULL)) {
+		    brasero_media_library_set_debug (TRUE);
+		    brasero_burn_library_set_debug (TRUE);
+		}
+		g_object_unref (client);
+
+		brasero_media_library_start ();
+		brasero_burn_library_start (NULL, NULL);
+
+		DEBUG_PRINT ("Libbrasero-media started\n");
+		initialized = TRUE;
+	}
+}
 
 static void
 launch_brasero_on_window_session (BraseroSessionCfg	*session,
@@ -313,6 +336,8 @@ write_iso_activate_cb (NautilusMenuItem *item,
         NautilusFileInfo	*file_info;
         char			*uri;
 
+	ensure_initialized();
+
         file_info = g_object_get_data (G_OBJECT (item), "file_info");
         uri = nautilus_file_info_get_uri (file_info);
 
@@ -334,6 +359,8 @@ copy_disc_activate_cb (NautilusMenuItem *item,
 	BraseroMediumMonitor	*monitor;
 	BraseroTrackDisc	*track;
 	BraseroDrive		*drive;
+
+	ensure_initialized();
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
 	monitor = brasero_medium_monitor_get_default ();
@@ -391,6 +418,8 @@ blank_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
 	BraseroBlankDialog *dialog;
+
+	ensure_initialized();
 
 	dialog = brasero_blank_dialog_new ();
 	tool_dialog_run (BRASERO_TOOL_DIALOG (dialog),
@@ -590,6 +619,8 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 		BraseroMedium		*medium;
 		BraseroMedia		 media;
 		BraseroTrackType	*type;
+
+		ensure_initialized();
 
                 device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 		monitor = brasero_medium_monitor_get_default ();
@@ -985,22 +1016,7 @@ nautilus_disc_burn_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule *module)
 {
-	GConfClient *client;
-
         DEBUG_PRINT ("Initializing nautilus-disc-recorder\n");
-
-	client = gconf_client_get_default ();
-	if (gconf_client_get_bool (client, "/apps/brasero/nautilus-extension-debug", NULL)) {
-		brasero_media_library_set_debug (TRUE);
-		brasero_burn_library_set_debug (TRUE);
-	}
-	g_object_unref (client);
-
-	brasero_media_library_start ();
-        brasero_burn_library_start (NULL, NULL);
-
-        DEBUG_PRINT ("Libbrasero-media started\n");
-
         nautilus_disc_burn_register_type (module);
 }
 
