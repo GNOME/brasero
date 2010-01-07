@@ -184,6 +184,8 @@ brasero_device_handle_open (const gchar *path,
 		handle->fd = fd;
 	}
 	else {
+		int serrno;
+
 		if (code) {
 			if (errno == EAGAIN
 			||  errno == EWOULDBLOCK
@@ -192,6 +194,15 @@ brasero_device_handle_open (const gchar *path,
 			else
 				*code = BRASERO_SCSI_ERRNO;
 		}
+
+		serrno = errno;
+
+		if (fd > -1)
+			close (fd);
+		if (cam)
+			cam_close_device (cam);
+
+		errno = serrno;
 
 		return NULL;
 	}
