@@ -624,9 +624,9 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 	g_free (string);
 	g_free (name);
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Burn as _File"), GTK_RESPONSE_NO);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Burn as _Data"), GTK_RESPONSE_NO);
 
-	button = brasero_utils_make_button (_("Burn _Contents…"),
+	button = brasero_utils_make_button (_("Burn as _Image"),
 	                                    NULL,
 					    "media-optical-burn",
 					    GTK_ICON_SIZE_BUTTON);
