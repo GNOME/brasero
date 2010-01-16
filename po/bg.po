@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-11 05:53+0200\n"
-"PO-Revision-Date: 2010-01-10 14:20+0200\n"
+"POT-Creation-Date: 2010-01-16 19:45+0200\n"
+"PO-Revision-Date: 2010-01-16 19:45+0200\n"
 "Last-Translator: Ivaylo Valkov <ivaylo@e-valkov.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -1162,12 +1162,10 @@ msgstr ""
 "да бъде записано."
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
-#: ../src/brasero-data-disc.c:627
 msgid "Burn as _File"
 msgstr "Запис като _файл"
 
 #: ../libbrasero-burn/brasero-burn-options.c:813
-#: ../src/brasero-data-disc.c:629
 msgid "Burn _Contents…"
 msgstr "Запис на _съдържанието…"
 
@@ -1193,21 +1191,21 @@ msgstr "Избор на диск за копиране"
 #: ../libbrasero-burn/brasero-burn.c:1707 ../src/brasero-project.c:1372
 #, c-format
 msgid "%s (application)"
-msgstr "„%s“ – програма"
+msgstr "„%s“ — програма"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn-options.c:1192
 #: ../libbrasero-burn/brasero-burn.c:1712 ../src/brasero-project.c:1377
 #, c-format
 msgid "%s (library)"
-msgstr "„%s“ – библиотека"
+msgstr "„%s“ — библиотека"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn-options.c:1197
 #: ../libbrasero-burn/brasero-burn.c:1717 ../src/brasero-project.c:1382
 #, c-format
 msgid "%s (GStreamer plugin)"
-msgstr "„%s“ – приставка на GStreamer"
+msgstr "„%s“ — приставка на GStreamer"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1228
 #: ../src/brasero-project.c:1425
@@ -2013,7 +2011,7 @@ msgstr "%s: празен"
 #: ../libbrasero-media/brasero-medium-selection.c:174
 #, c-format
 msgid "%s: %s"
-msgstr "%s: използвано пространство – %s"
+msgstr "%s: използвано пространство — %s"
 
 #: ../libbrasero-media/brasero-medium-selection.c:453
 msgid "Searching for available discs"
@@ -3124,6 +3122,14 @@ msgid ""
 msgstr ""
 "Избран е само един файл („%s“). Той е образ на диск и съдържанието му може "
 "да бъде записано"
+
+#: ../src/brasero-data-disc.c:627
+msgid "Burn as _Data"
+msgstr "Запис като _данни"
+
+#: ../src/brasero-data-disc.c:629
+msgid "Burn as _Image"
+msgstr "Запис като о_браз"
 
 #: ../src/brasero-data-disc.c:678 ../src/brasero-data-disc.c:699
 #: ../src/brasero-data-disc.c:720
