@@ -7,16 +7,15 @@
 # Sergio Rivadero <sergiorivadero@argentina.com>, 2006.
 # Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009.
 # Miguel Angel Ruiz Manzano <mruiz@openminds.cl>, 2009.
-# Jorge González <jorgegonz@svn.gnome.org>, 2009.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-12-17 23:57+0000\n"
-"PO-Revision-Date: 2009-12-19 13:28+0100\n"
+"POT-Creation-Date: 2010-01-14 03:29+0000\n"
+"PO-Revision-Date: 2010-01-17 15:11+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +72,6 @@ msgstr "No se pudo encontrar «%s» en la ruta"
 
 #: ../libbrasero-burn/burn-plugin.c:682
 #, c-format
-#| msgid "\"%s\" Gstreamer plugin could not be found"
 msgid "\"%s\" GStreamer plugin could not be found"
 msgstr "No se pudo encontrar el complemento de GStreamer «%s»"
 
@@ -265,7 +263,7 @@ msgstr "Analizando archivos"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2444
 #: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:214 ../src/brasero-project.c:1266
+#: ../nautilus/nautilus-burn-extension.c:237 ../src/brasero-project.c:1266
 #: ../libbrasero-burn/brasero-track-data.c:772
 #: ../libbrasero-burn/brasero-track-stream.c:398
 #, c-format
@@ -347,7 +345,7 @@ msgstr "No se pudo crear el elemento %s"
 #: ../libbrasero-burn/brasero-burn.c:2821 ../libbrasero-burn/burn-job.c:1217
 #: ../libbrasero-burn/burn-job.c:1226
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
-#: ../nautilus/nautilus-burn-extension.c:192 ../src/brasero-app.c:764
+#: ../nautilus/nautilus-burn-extension.c:215 ../src/brasero-app.c:764
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
 #: ../plugins/cdrkit/burn-wodim.c:707 ../plugins/cdrkit/burn-wodim.c:822
@@ -979,7 +977,6 @@ msgstr ""
 "Introduzca un CD o DVD grabable si no quiere escribir un archivo imagen."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1565
-#| msgid "Creating Image"
 msgid "Create _Image"
 msgstr "Crear _imagen"
 
@@ -989,7 +986,6 @@ msgid "_Copy"
 msgstr "C_opiar"
 
 #: ../libbrasero-burn/brasero-burn-options.c:310
-#| msgid "Make _More Copies"
 msgid "Make _Several Copies"
 msgstr "Hacer _varias copias"
 
@@ -999,7 +995,6 @@ msgid "_Burn"
 msgstr "Gra_bar"
 
 #: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1493
-#| msgid "_Burn Several Discs"
 msgid "Burn _Several Copies"
 msgstr "Gra_bar varias copias"
 
@@ -1037,7 +1032,7 @@ msgid "This is not supported by the current active burning backend."
 msgstr "El actual «backend» activo no lo soporta."
 
 #: ../libbrasero-burn/brasero-burn-options.c:470
-#: ../nautilus/nautilus-burn-extension.c:213
+#: ../nautilus/nautilus-burn-extension.c:236
 msgid "Please add files."
 msgstr "Añada archivos."
 
@@ -1171,12 +1166,10 @@ msgstr ""
 "contenido se puede grabar."
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
-#: ../src/brasero-data-disc.c:627
 msgid "Burn as _File"
 msgstr "Grabar como archivo"
 
 #: ../libbrasero-burn/brasero-burn-options.c:813
-#: ../src/brasero-data-disc.c:629
 msgid "Burn _Contents…"
 msgstr "Grabar co_ntenido…"
 
@@ -1215,7 +1208,6 @@ msgstr "%s (biblioteca)"
 #: ../libbrasero-burn/brasero-burn-options.c:1197
 #: ../libbrasero-burn/brasero-burn.c:1717 ../src/brasero-project.c:1382
 #, c-format
-#| msgid "%s (Gstreamer plugin)"
 msgid "%s (GStreamer plugin)"
 msgstr "%s (complemento de GStreamer)"
 
@@ -2331,7 +2323,7 @@ msgstr ""
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:272
+#: ../nautilus/nautilus-burn-extension.c:295
 msgid "CD/DVD Creator"
 msgstr "Creador de CD/DVD"
 
@@ -2344,53 +2336,53 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "Arrastre o copie los archivos de abajo para grabarlos al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:151
-#: ../nautilus/nautilus-burn-extension.c:323
+#: ../nautilus/nautilus-burn-extension.c:348
 msgid "Write to Disc"
 msgstr "Grabar al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:687
+#: ../nautilus/nautilus-burn-extension.c:718
 msgid "Write contents to a CD or DVD"
 msgstr "Graba el contenido en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:263
+#: ../nautilus/nautilus-burn-extension.c:286
 msgid "Disc name"
 msgstr "Nombre del disco"
 
-#: ../nautilus/nautilus-burn-extension.c:348
+#: ../nautilus/nautilus-burn-extension.c:375
 msgid "Copy Disc"
 msgstr "Copiar disco"
 
-#: ../nautilus/nautilus-burn-extension.c:540
-#: ../nautilus/nautilus-burn-extension.c:686
+#: ../nautilus/nautilus-burn-extension.c:569
+#: ../nautilus/nautilus-burn-extension.c:717
 msgid "_Write to Disc…"
 msgstr "_Grabar al disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:541
+#: ../nautilus/nautilus-burn-extension.c:570
 msgid "Write disc image to a CD or DVD"
 msgstr "Grabar la imagen de disco en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:609
+#: ../nautilus/nautilus-burn-extension.c:640
 msgid "_Copy Disc…"
 msgstr "_Copiar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:610
+#: ../nautilus/nautilus-burn-extension.c:641
 msgid "Create a copy of this CD or DVD"
 msgstr "Crea una copia de este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:623
+#: ../nautilus/nautilus-burn-extension.c:654
 msgid "_Blank Disc…"
 msgstr "_Borrar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:624
+#: ../nautilus/nautilus-burn-extension.c:655
 msgid "Blank this CD or DVD"
 msgstr "Borrar este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:640
+#: ../nautilus/nautilus-burn-extension.c:671
 msgid "_Check Disc…"
 msgstr "_Comprobar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:641
+#: ../nautilus/nautilus-burn-extension.c:672
 msgid "Check the data integrity on this CD or DVD"
 msgstr "Verificar la integridad de los datos en este CD o DVD"
 
@@ -2558,7 +2550,7 @@ msgstr "Página web de Brasero"
 #: ../src/brasero-app.c:1208
 msgid "translator-credits"
 msgstr ""
-"Jorge González <jorgegonz@svn.gnome.org>, 2007-2009\n"
+"Jorge González <jorgegonz@svn.gnome.org>, 2007-2010\n"
 "Francisco Javier F. Serrador <serrador@openshine.com>, 2006\n"
 "Sergio Rivadero <sergiorivadero@argentina.com>, 2006\n"
 "Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006"
@@ -2743,8 +2735,6 @@ msgstr "Quitar los archivos seleccionados del proyecto"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
-#| msgctxt "disc"
-#| msgid "Image files"
 msgid "Paste files"
 msgstr "Pegar archivos"
 
@@ -3145,6 +3135,16 @@ msgid ""
 msgstr ""
 "Sólo hay un archivo seleccionado («%s»). Es la imagen de un disco y su "
 "contenido se puede grabar."
+
+#: ../src/brasero-data-disc.c:627
+#| msgid "Burn as _File"
+msgid "Burn as _Data"
+msgstr "Grabar como _datos"
+
+#: ../src/brasero-data-disc.c:629
+#| msgid "Burn _image"
+msgid "Burn as _Image"
+msgstr "Grabar como _imagen"
 
 #: ../src/brasero-data-disc.c:678 ../src/brasero-data-disc.c:699
 #: ../src/brasero-data-disc.c:720
@@ -3550,8 +3550,6 @@ msgid ""
 msgstr "¿Quiere crear un proyecto nuevo y descartar los cambios en el actual?"
 
 #: ../src/brasero-project.c:1869
-#| msgid ""
-#| "If you choose to create a new project, all changes made will be lost."
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr ""
 "Si elije crear un proyecto nuevo vacío se perderán todos los cambios "
@@ -3562,15 +3560,11 @@ msgid "_Discard Changes"
 msgstr "_Descartar los cambios"
 
 #: ../src/brasero-project.c:1880
-#| msgid ""
-#| "Do you want to burn \"%s\" to a disc or add it in to the data project?"
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
 "¿Quiere descartar la selección de archivos o añadirla al proyecto nuevo?"
 
 #: ../src/brasero-project.c:1885 ../src/brasero-project.c:1904
-#| msgid ""
-#| "If you choose to create a new project, all changes made will be lost."
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
@@ -3579,12 +3573,10 @@ msgstr ""
 "archivos."
 
 #: ../src/brasero-project.c:1887
-#| msgid "_Discard File"
 msgid "_Discard File Selection"
 msgstr "_Descartar la selección de archivos"
 
 #: ../src/brasero-project.c:1891
-#| msgid "File Deletion"
 msgid "_Keep File Selection"
 msgstr "_Mantener la selección de archivos"
 
