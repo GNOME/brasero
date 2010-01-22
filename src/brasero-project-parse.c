@@ -253,8 +253,8 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
                         brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
-                                                                                     -1,
                                                                                      g_ascii_strtoull (start, NULL, 10),
+                                                                                     -1,
                                                                                      -1);
 			g_free (start);
 		}
@@ -268,8 +268,8 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
                         brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
-                                                                                      g_ascii_strtoull (end, NULL, 10),
                                                                                       -1,
+                                                                                      g_ascii_strtoull (end, NULL, 10),
                                                                                       -1);
 			g_free (end);
 		}
