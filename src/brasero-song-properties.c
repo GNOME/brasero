@@ -414,7 +414,7 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 	g_signal_handlers_block_by_func (self->priv->end,
 					 brasero_song_props_end_changed_cb,
 					 self);
-	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->end), length);
+	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->end), start + length);
 	brasero_time_button_set_value (BRASERO_TIME_BUTTON (self->priv->end), end);
 	g_signal_handlers_unblock_by_func (self->priv->end,
 	        			   brasero_song_props_end_changed_cb,
