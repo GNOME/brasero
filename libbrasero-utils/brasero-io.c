@@ -2434,9 +2434,9 @@ brasero_io_free_async_queue (BraseroAsyncTaskManager *manager,
 			     gpointer callback_data,
 			     gpointer NULL_data)
 {
-	BraseroIOJob *job = callback_data;
-
-	brasero_io_job_free (TRUE, job);
+	/* don't do anything here, the async task manager
+	 * will destroy the job anyway.
+	 */
 	return TRUE;
 }
 
