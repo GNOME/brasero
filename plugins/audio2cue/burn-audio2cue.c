@@ -312,18 +312,18 @@ brasero_audio2cue_len_to_string (guint64 len)
 	int min;
 	guint64 frame;
 
-	if (len >= 1000000000)
-		frame = (len % 1000000000) * 75;
+	if (len >= 1000000000LL)
+		frame = (len % 1000000000LL) * 75;
 	else
 		frame = len * 75;
 
-	frame = frame / 1000000000 + ((frame % 1000000000) ? 1:0);
+	frame = frame / 1000000000 + ((frame % 1000000000LL) ? 1:0);
 
-	len /= 1000000000;
+	len /= 1000000000LL;
 	min = len / 60;
 	sec = len % 60;
 
-	return g_strdup_printf ("%02i:%02i:%02i", min, sec, frame);
+	return g_strdup_printf ("%02i:%02i:%02" G_GINT64_FORMAT, min, sec, frame);
 }
 
 static gpointer
