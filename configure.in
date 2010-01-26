@@ -410,7 +410,7 @@ AM_CONDITIONAL(BUILD_BEAGLE, test x"$build_beagle" = "xyes")
 AM_CONDITIONAL(BUILD_TRACKER, test x"$build_tracker" = "xyes")
 
 dnl ****************check for playlist (optional)**************
-TOTEM_REQUIRED=2.22.0
+TOTEM_REQUIRED=2.29.1
 
 AC_ARG_ENABLE(playlist,
 			AS_HELP_STRING([--enable-playlist],[Build playlist pane (if totem is available)[[default=yes]]]),
