@@ -214,6 +214,8 @@ _read_audio_track (xmlDocPtr project,
                         unescaped_uri = g_uri_unescape_string ((char *) uri, NULL);
                         g_free (uri);
 
+			/* Note: this must come before brasero_track_stream_set_boundaries ()
+			 * or we will reset the end point to 0 */
 			brasero_track_stream_set_source (BRASERO_TRACK_STREAM (track), unescaped_uri);
 
 			/* For the moment pretend it is a video file. Since it is BraseroTrackStreamCfg, that
@@ -238,9 +240,9 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
                         brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
-                                                                                     -1,
-                                                                                     -1,
-                                                                                     g_ascii_strtoull (silence, NULL, 10));
+                                                             -1,
+                                                             -1,
+                                                             g_ascii_strtoull (silence, NULL, 10));
 			g_free (silence);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "start")) {
@@ -253,9 +255,9 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
                         brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
-                                                                                     g_ascii_strtoull (start, NULL, 10),
-                                                                                     -1,
-                                                                                     -1);
+                                                             g_ascii_strtoull (start, NULL, 10),
+                                                             -1,
+                                                             -1);
 			g_free (start);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "end")) {
@@ -268,9 +270,9 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
                         brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
-                                                                                      -1,
-                                                                                      g_ascii_strtoull (end, NULL, 10),
-                                                                                      -1);
+                                                             -1,
+                                                             g_ascii_strtoull (end, NULL, 10),
+                                                             -1);
 			g_free (end);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "title")) {

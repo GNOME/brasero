@@ -204,12 +204,36 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		                                                                                 BRASERO_AUDIO_FORMAT_UNDEFINED:BRASERO_AUDIO_FORMAT_NONE)|
 		                                                                                BRASERO_METADATA_INFO);
 
-	/* Size/length. Do forget to respect the gap size/len with -1 */
-	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries)
-		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries (BRASERO_TRACK_STREAM (obj),
-												    0,
-												    len,
-												    -1);
+	/* Size/length. Only set when end value has not been already set.
+	 * Fix #607752 -  audio track start and end points are overwritten after
+	 * being read from a project file.
+	 * We don't want to set a new len if one has been set already. Nevertheless
+	 * if the length we detected is smaller than the one that was set we go
+	 * for the new one. */
+	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries) {
+		gint64 min_start;
+
+		/* Make sure that the start value is coherent */
+		min_start = (len - BRASERO_MIN_STREAM_LENGTH) >= 0? (len - BRASERO_MIN_STREAM_LENGTH):0;
+		if (min_start && brasero_track_stream_get_start (BRASERO_TRACK_STREAM (obj)) > min_start) {
+			BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries (BRASERO_TRACK_STREAM (obj),
+													    min_start,
+													    -1,
+													    -1);
+		}
+
+		if (brasero_track_stream_get_end (BRASERO_TRACK_STREAM (obj)) > len
+		||  brasero_track_stream_get_end (BRASERO_TRACK_STREAM (obj)) <= 0) {
+			/* Don't set either gap or start to make sure we don't remove
+			 * values set by project parser or values set from the beginning
+			 * Fix #607752 -  audio track start and end points are overwritten
+			 * after being read from a project file */
+			BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_boundaries (BRASERO_TRACK_STREAM (obj),
+													    -1,
+													    len,
+													    -1);
+		}
+	}
 
 	snapshot = g_file_info_get_attribute_object (info, BRASERO_IO_THUMBNAIL);
 	if (snapshot) {

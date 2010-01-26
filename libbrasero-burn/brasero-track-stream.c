@@ -69,6 +69,10 @@ brasero_track_stream_set_source_real (BraseroTrackStream *track,
 		g_free (priv->uri);
 
 	priv->uri = g_strdup (uri);
+
+	/* Since that's a new URI chances are, the end point is different */
+	priv->end = 0;
+
 	return BRASERO_BURN_OK;
 }
 
@@ -77,7 +81,10 @@ brasero_track_stream_set_source_real (BraseroTrackStream *track,
  * @track: a #BraseroTrackStream
  * @uri: a #gchar
  *
- * Sets the stream (song or video) uri. 
+ * Sets the stream (song or video) uri.
+ *
+ * Note: it resets the end point of the track to 0 but keeps start point and gap
+ * unchanged.
  *
  * Return value: a #BraseroBurnResult. BRASERO_BURN_OK if it is successful.
  **/
