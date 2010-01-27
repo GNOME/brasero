@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the brasero package.
 #
 # Matic Žgur <mr.zgur@gmail.com>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2007 - 2009.
+# Matej Urbančič <mateju@svn.gnome.org>, 2007 - 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2009-12-08 07:45+0000\n"
-"PO-Revision-Date: 2009-12-11 21:17+0100\n"
+"POT-Creation-Date: 2010-01-26 00:38+0000\n"
+"PO-Revision-Date: 2010-01-26 08:28+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -270,7 +270,7 @@ msgstr "Razčlenjevanje datotek"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2444
 #: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:214
+#: ../nautilus/nautilus-burn-extension.c:237
 #: ../src/brasero-project.c:1266
 #: ../libbrasero-burn/brasero-track-data.c:772
 #: ../libbrasero-burn/brasero-track-stream.c:398
@@ -370,7 +370,7 @@ msgstr "%s predmeta ni mogoče ustvariti"
 #: ../libbrasero-burn/burn-job.c:1217
 #: ../libbrasero-burn/burn-job.c:1226
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
-#: ../nautilus/nautilus-burn-extension.c:192
+#: ../nautilus/nautilus-burn-extension.c:215
 #: ../src/brasero-app.c:764
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129
@@ -1028,7 +1028,7 @@ msgid "This is not supported by the current active burning backend."
 msgstr "Možnost ni podprta pri trenutno dejavnem hrbtnem programu za zapisovanje."
 
 #: ../libbrasero-burn/brasero-burn-options.c:470
-#: ../nautilus/nautilus-burn-extension.c:213
+#: ../nautilus/nautilus-burn-extension.c:236
 msgid "Please add files."
 msgstr "Dodajte datoteke."
 
@@ -1148,12 +1148,10 @@ msgid "There is only one selected file (\"%s\"). It is the image of a disc and i
 msgstr "Na voljo je le ena izbrana datoteka (\"%s\"). Ta datoteka je odtis diska, njegovo vsebino pa je mogoče zapisati."
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
-#: ../src/brasero-data-disc.c:627
 msgid "Burn as _File"
 msgstr "Zapiši kot _datoteko"
 
 #: ../libbrasero-burn/brasero-burn-options.c:813
-#: ../src/brasero-data-disc.c:629
 msgid "Burn _Contents…"
 msgstr "Zapiši _vsebino ..."
 
@@ -1675,7 +1673,7 @@ msgstr "Uspešno zaključeno"
 
 #: ../libbrasero-burn/burn-basics.c:95
 msgid "Ejecting medium"
-msgstr "Izvrževanje diska"
+msgstr "Vračanje nosilca"
 
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322
@@ -2300,7 +2298,7 @@ msgid "Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be bur
 msgstr "Omogoča zapisovanje datotek dodanih v \"Zapisovalno CD/DVD mapo\" v Nautilusu"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:272
+#: ../nautilus/nautilus-burn-extension.c:295
 msgid "CD/DVD Creator"
 msgstr "CD/DVD zapisovalnik"
 
@@ -2313,53 +2311,53 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "Potegnite ali kopirajte datoteke v spodnje okno za zapisovanje na disk."
 
 #: ../nautilus/nautilus-burn-bar.c:151
-#: ../nautilus/nautilus-burn-extension.c:323
+#: ../nautilus/nautilus-burn-extension.c:348
 msgid "Write to Disc"
 msgstr "Zapiši na disk"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:687
+#: ../nautilus/nautilus-burn-extension.c:718
 msgid "Write contents to a CD or DVD"
 msgstr "Zapis vsebine na CD ali DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:263
+#: ../nautilus/nautilus-burn-extension.c:286
 msgid "Disc name"
 msgstr "Ime diska"
 
-#: ../nautilus/nautilus-burn-extension.c:348
+#: ../nautilus/nautilus-burn-extension.c:375
 msgid "Copy Disc"
 msgstr "Kopiraj disk"
 
-#: ../nautilus/nautilus-burn-extension.c:540
-#: ../nautilus/nautilus-burn-extension.c:686
+#: ../nautilus/nautilus-burn-extension.c:569
+#: ../nautilus/nautilus-burn-extension.c:717
 msgid "_Write to Disc…"
 msgstr "_Zapiši na disk ..."
 
-#: ../nautilus/nautilus-burn-extension.c:541
+#: ../nautilus/nautilus-burn-extension.c:570
 msgid "Write disc image to a CD or DVD"
 msgstr "Zapiši odtis diska na CD ali na DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:609
+#: ../nautilus/nautilus-burn-extension.c:640
 msgid "_Copy Disc…"
 msgstr "_Kopiraj disk ..."
 
-#: ../nautilus/nautilus-burn-extension.c:610
+#: ../nautilus/nautilus-burn-extension.c:641
 msgid "Create a copy of this CD or DVD"
 msgstr "Ustvarite kopijo CD ali DVD nosilca"
 
-#: ../nautilus/nautilus-burn-extension.c:623
+#: ../nautilus/nautilus-burn-extension.c:654
 msgid "_Blank Disc…"
 msgstr "_Sprazni disk ..."
 
-#: ../nautilus/nautilus-burn-extension.c:624
+#: ../nautilus/nautilus-burn-extension.c:655
 msgid "Blank this CD or DVD"
 msgstr "Sprazni CD ali DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:640
+#: ../nautilus/nautilus-burn-extension.c:671
 msgid "_Check Disc…"
 msgstr "Pre_veri disk ..."
 
-#: ../nautilus/nautilus-burn-extension.c:641
+#: ../nautilus/nautilus-burn-extension.c:672
 msgid "Check the data integrity on this CD or DVD"
 msgstr "Preverjanje celovitosti podatkov na CD-ju ali DVD-ju"
 
@@ -3061,6 +3059,14 @@ msgstr "Nadaljuj z delom na trenutno dejavnem projektu"
 #, c-format
 msgid "There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned"
 msgstr "Na voljo je le ena izbrana datoteka (\"%s\"). Ta datoteka je odtis diska, njegovo vsebino pa je mogoče zapisati."
+
+#: ../src/brasero-data-disc.c:627
+msgid "Burn as _Data"
+msgstr "Zapiši kot _podatke"
+
+#: ../src/brasero-data-disc.c:629
+msgid "Burn as _Image"
+msgstr "Zapiši kot _odtis"
 
 #: ../src/brasero-data-disc.c:678
 #: ../src/brasero-data-disc.c:699
@@ -4186,7 +4192,7 @@ msgstr "Omogoči \"-immed\" zastavico (več v wodim priročniku)"
 
 #: ../plugins/cdrkit/burn-wodim.c:1405
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
-msgstr "Najmanjša vrednost predpomnilnika pogona za polnjenje (v %) (več v priročniku wodim):"
+msgstr "Najmanjša vrednost medpomnilnika pogona za polnjenje (v %) (več v priročniku wodim):"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:123
 #: ../plugins/libburnia/burn-libburn.c:855
@@ -4207,7 +4213,7 @@ msgstr "Omogoči \"-immed\" zastavico (več v cdrdao priročniku)"
 #: ../plugins/cdrtools/burn-cdrecord.c:1407
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
-msgstr "Najmanjša velikost predpomnilnika pogona za polnjenje (v %%)(več v cdrdao priročniku):"
+msgstr "Najmanjša velikost medpomnilnika pogona za polnjenje (v %%)(več v cdrdao priročniku):"
 
 #: ../plugins/cdrtools/burn-mkisofs.c:141
 msgid "This version of mkisofs is not supported"
@@ -5454,7 +5460,7 @@ msgstr "Kopiranje diskov"
 
 #, fuzzy
 #~ msgid "Input buffer error"
-#~ msgstr "Notranja napaka"
+#~ msgstr "Notranja napaka medpomnilnika"
 
 #, fuzzy
 #~ msgid "A write error occured which was likely due to overburning the disc"
@@ -5695,7 +5701,7 @@ msgstr "Kopiranje diskov"
 #~ msgid "Find all available documents"
 #~ msgstr "Najdi vse razpoložljive dokumente"
 #~ msgid "Find all available spreadsheets"
-#~ msgstr "Najdi vse razpoložljive razpredelnice"
+#~ msgstr "Najdi vse razpoložljive preglednice"
 #~ msgid "Find all available presentations"
 #~ msgstr "Najdi vse razpoložljive predstavitve"
 #~ msgid "Find all available Pdf / Postscripts"
