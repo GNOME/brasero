@@ -828,7 +828,7 @@ brasero_project_save_project_xml (BraseroBurnSession *session,
 
 	success = xmlTextWriterStartDocument (project,
 					      NULL,
-					      "UTF8",
+					      "UTF-8",
 					      NULL);
 	if (success < 0)
 		goto error;
