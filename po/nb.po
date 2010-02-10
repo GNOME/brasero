@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero 2.29 x\n"
-"Report-Msgid-Bugs-To:\n"
-"POT-Creation-Date: 2010-01-19 11:22+0100\n"
-"PO-Revision-Date: 2010-01-19 11:46+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-10 19:54+0100\n"
+"PO-Revision-Date: 2010-02-10 19:57+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@broadpark.no>\n"
 "Language-Team: Norsk bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "Spillelister kan ikke legges til video- eller lydplater"
 msgid "\"%s\" is not suitable for audio or video media"
 msgstr "«%s» passer ikke for lyd- eller bildemedia"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:377
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
 msgstr "Analyserer videofiler"
 
@@ -255,7 +255,7 @@ msgstr "Analyserer filer"
 #: ../libbrasero-burn/brasero-burn-options.c:471
 #: ../nautilus/nautilus-burn-extension.c:237 ../src/brasero-project.c:1266
 #: ../libbrasero-burn/brasero-track-data.c:772
-#: ../libbrasero-burn/brasero-track-stream.c:398
+#: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "Ingen filer å skrive til platen"
@@ -685,7 +685,9 @@ msgstr "Løs ut platen og last den på nytt."
 #: ../libbrasero-burn/brasero-sum-dialog.c:331
 msgid ""
 "A file could not be created at the location specified for temporary files"
-msgstr "En fil kunne ikke opprettes i lokasjonen som er oppgitt for midlertidige filer"
+msgstr ""
+"En fil kunne ikke opprettes i lokasjonen som er oppgitt for midlertidige "
+"filer"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:694
 msgid "The image could not be created at the specified location"
@@ -749,14 +751,13 @@ msgid ""
 msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:913
-#, fuzzy
 msgid "If you don't, they will be invisible (though still readable)."
-msgstr "Allerede skrevne filer vil bli usynlige (men fremdeles lesbare)."
+msgstr "Hvis ikke vil filene vil bli usynlige (men fremdeles lesbare)."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:916
 msgid ""
 "There are files already burned on this disc. Would you like to import them?"
-msgstr ""
+msgstr "Det er skrevet filer på denne platen allerede. Vil du importere dem?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:918
 msgid "_Import"
@@ -960,7 +961,8 @@ msgstr "_Avbryt skriving"
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
-msgstr "Sett inn skrivbar CD eller DVD hvis du ikke vil skrive til en avtrykksfil."
+msgstr ""
+"Sett inn skrivbar CD eller DVD hvis du ikke vil skrive til en avtrykksfil."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1565
 msgid "Create _Image"
@@ -1679,7 +1681,9 @@ msgstr "Ikke nok plass tilgjengelig på platen (%s tilgjengelig for %s)"
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
-msgstr "Filsystemet du har valgt til å lagre midlertidige filer støtter ikke filer med størrelse over 2 GiB"
+msgstr ""
+"Filsystemet du har valgt til å lagre midlertidige filer støtter ikke filer "
+"med størrelse over 2 GiB"
 
 #: ../libbrasero-burn/burn-job.c:535 ../libbrasero-burn/burn-job.c:557
 #, fuzzy, c-format
@@ -1882,15 +1886,15 @@ msgstr "Kunne ikke opprette katalog (%s)"
 msgid "Error while loading the project."
 msgstr "Feil under lasting av prosjekt."
 
-#: ../src/brasero-project-parse.c:452
+#: ../src/brasero-project-parse.c:454
 msgid "The project could not be opened"
 msgstr "Kunne ikke åpne prosjektet"
 
-#: ../src/brasero-project-parse.c:461
+#: ../src/brasero-project-parse.c:463
 msgid "The file is empty"
 msgstr "Filen er tom"
 
-#: ../src/brasero-project-parse.c:540 ../src/brasero-project-parse.c:605
+#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Ser ikke ut til å være et gyldig Brasero-prosjekt"
 
@@ -3751,16 +3755,15 @@ msgstr "Skr_iv avtrykk"
 
 #: ../src/brasero-project-type-chooser.c:291
 msgid "Last _Unsaved Project"
-msgstr ""
+msgstr "Siste ikke la_grede prosjekt"
 
 #: ../src/brasero-project-type-chooser.c:307
-#, fuzzy
 msgid "Load the last project that was not burned and not saved"
-msgstr "Brenneren kunne ikke aksesseres."
+msgstr "Last siste prosjekt som ikke ble skrevet eller lagret"
 
 #: ../src/brasero-project-type-chooser.c:413
 msgid "No recently used project"
-msgstr ""
+msgstr "Ingen nylig brukte prosjekter"
 
 #: ../src/brasero-project-type-chooser.c:475
 msgid "Create a new project:"
@@ -3777,22 +3780,20 @@ msgstr "Sjekk _igjen"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:163
 #: ../libbrasero-burn/brasero-sum-dialog.c:512
-#, fuzzy
 msgid "The file integrity check could not be performed."
-msgstr "Brenneren kunne ikke aksesseres."
+msgstr "Sjekk av filintegritet kunne ikke utføres."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:176
 msgid "The file integrity was performed successfully."
-msgstr ""
+msgstr "Sjekk av filintegritet ble fullført."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:177
-#, fuzzy
 msgid "There seem to be no corrupted files on the disc"
-msgstr "Ikke nok plass tilgjengelig på enheten."
+msgstr "Det ser ikke ut til å være korrupte filer på platen"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:205
 msgid "The following files appear to be corrupted:"
-msgstr ""
+msgstr "Følgende filer ser ut til å være korrupte:"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:248
 msgid "Corrupted Files"
@@ -4129,12 +4130,10 @@ msgid "An error occured while writing to disc"
 msgstr "En feil oppsto under skriving til platen"
 
 #: ../plugins/cdrkit/burn-wodim.c:129 ../plugins/cdrtools/burn-cdrecord.c:129
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The system is too slow to write the disc at this speed. Try a lower speed"
-msgstr ""
-"Systemet er for tregt til å skrive CDer med denne hastigheten. Prøv en "
-"lavere hastighet."
+msgstr "Systemet er for tregt til å skrive platen med denne hastigheten. Prøv en lavere hastighet."
 
 #. Translators: %s is the number of the track
 #: ../plugins/cdrkit/burn-wodim.c:256 ../plugins/cdrtools/burn-cdrecord.c:253
