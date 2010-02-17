@@ -55,7 +55,7 @@ brasero_search_tracker_is_available (BraseroSearchEngine *engine)
 	if (priv->client)
 		return TRUE;
 
-	priv->client = tracker_connect (TRUE, 30000);
+	priv->client = tracker_client_new (1, 30000);
 	return (priv->client != NULL);
 }
 
@@ -361,7 +361,7 @@ brasero_search_tracker_init (BraseroSearchTracker *object)
 	BraseroSearchTrackerPrivate *priv;
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (object);
-	priv->client = tracker_connect (TRUE, 30000);
+	priv->client = tracker_client_new (1, 30000);
 }
 
 static void
@@ -374,7 +374,7 @@ brasero_search_tracker_finalize (GObject *object)
 	brasero_search_tracker_clean (BRASERO_SEARCH_TRACKER (object));
 
 	if (priv->client) {
-		tracker_disconnect (priv->client);
+		g_object_unref (priv->client);
 		priv->client = NULL;
 	}
 
