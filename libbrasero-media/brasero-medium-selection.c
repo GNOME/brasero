@@ -80,7 +80,16 @@ enum {
 	NUM_COL
 };
 
-G_DEFINE_TYPE (BraseroMediumSelection, brasero_medium_selection, GTK_TYPE_COMBO_BOX);
+/* GtkBuildable */
+static GtkBuildableIface *parent_buildable_iface;
+
+static void
+brasero_medium_selection_buildable_init (GtkBuildableIface *iface)
+{
+	parent_buildable_iface = g_type_interface_peek_parent (iface);
+} 
+
+G_DEFINE_TYPE_WITH_CODE (BraseroMediumSelection, brasero_medium_selection, GTK_TYPE_COMBO_BOX, G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_medium_selection_buildable_init));
 
 void
 brasero_medium_selection_foreach (BraseroMediumSelection *selection,
