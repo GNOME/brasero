@@ -64,7 +64,8 @@ struct _BraseroDriveSelection
 	GtkComboBox parent_instance;
 };
 
-GType brasero_drive_selection_get_type (void) G_GNUC_CONST;
+G_MODULE_EXPORT GType brasero_drive_selection_get_type (void) G_GNUC_CONST;
+
 GtkWidget* brasero_drive_selection_new (void);
 
 BraseroDrive *

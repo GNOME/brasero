@@ -82,7 +82,7 @@ enum {
 static void
 brasero_drive_selection_buildable_init (GtkBuildableIface *iface)
 {
-  parent_buildable_iface = g_type_interface_peek_parent (iface);
+	parent_buildable_iface = g_type_interface_peek_parent (iface);
 }  
 
 G_DEFINE_TYPE_WITH_CODE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_COMBO_BOX, G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_drive_selection_buildable_init));

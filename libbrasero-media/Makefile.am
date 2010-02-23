@@ -10,6 +10,7 @@ INCLUDES = \
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\
+	$(BRASERO_GMODULE_EXPORT_CFLAGS)					\
 	$(BRASERO_GIO_CFLAGS)						\
 	$(BRASERO_GTK_CFLAGS)
 
@@ -35,11 +36,12 @@ libbraseromediainclude_HEADERS =	\
 	brasero-medium-selection.h	\
 	brasero-drive-selection.h
 
-libbrasero_media_la_LIBADD =					\
-	$(BRASERO_GLIB_LIBS)					\
-	$(BRASERO_GTHREAD_LIBS)				\
-	$(BRASERO_GIO_LIBS)					\
-	$(BRASERO_GTK_LIBS)					\
+libbrasero_media_la_LIBADD =                                     \
+	$(BRASERO_GLIB_LIBS)                                     \
+	$(BRASERO_GMODULE_EXPORT_LIBS)                                     \
+	$(BRASERO_GTHREAD_LIBS)                                     \
+	$(BRASERO_GIO_LIBS)                                     \
+	$(BRASERO_GTK_LIBS)                                     \
 	$(BRASERO_SCSI_LIBS)
 
 libbrasero_media_la_LDFLAGS =					\
