@@ -249,7 +249,7 @@ BraseroBurn-1.0.gir: libbrasero-burn.la $(INTROSPECTION_SCANNER)
 	    $(top_srcdir)/libbrasero-burn/*.c	    
 
 BraseroBurn-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-burn/$(gir_DATA) --shared-library=libbrasero-burn.la -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
+	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-burn/$(gir_DATA) --shared-library=libbrasero-burn -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
 endif
 
 CLEANFILES =			\

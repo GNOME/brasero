@@ -178,7 +178,7 @@ BraseroMedia-1.0.gir: libbrasero-media.la $(INTROSPECTION_SCANNER)
             $(top_srcdir)/libbrasero-media/*.c	    
 
 BraseroMedia-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media.la -o $(typelibs_DATA)
+	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media -o $(typelibs_DATA)
 endif
 
 EXTRA_DIST =			\
