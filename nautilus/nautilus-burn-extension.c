@@ -265,6 +265,8 @@ write_activate (GtkWindow *toplevel)
 	if (nautilus_disc_burn_is_empty (toplevel))
 		return;
 
+	ensure_initialized ();
+
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
@@ -433,6 +435,8 @@ check_disc_activate_cb (NautilusMenuItem *item,
 {
 	BraseroSumDialog *dialog;
 
+	ensure_initialized ();
+
 	dialog = brasero_sum_dialog_new ();
 	tool_dialog_run (BRASERO_TOOL_DIALOG (dialog),
 			 GTK_WINDOW (user_data),
@@ -504,7 +508,12 @@ drive_is_cd_device (GDrive *gdrive)
 
         DEBUG_PRINT ("Got device: %s\n", device);
 
-        monitor = brasero_medium_monitor_get_default ();
+	/* FIXME: since we call the monitor, the library should be initialized.
+	 * To avoid all the initializing we'll be able to use the new GIO API
+	 * (#594649 -  Have a way to detect optical drives) */
+	ensure_initialized();
+
+	monitor = brasero_medium_monitor_get_default ();
         drive = brasero_medium_monitor_get_drive (monitor, device);
         g_object_unref (monitor);
         g_free (device);
@@ -620,7 +629,10 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 		BraseroMedia		 media;
 		BraseroTrackType	*type;
 
-		ensure_initialized();
+		/* Reminder: the following is not needed since it is already 
+		 * called in drive_is_cd_device ().
+		 * ensure_initialized();
+		 */
 
                 device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 		monitor = brasero_medium_monitor_get_default ();
