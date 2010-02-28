@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-28 18:26+0200\n"
-"PO-Revision-Date: 2010-02-28 18:26+0200\n"
+"POT-Creation-Date: 2010-02-28 20:01+0200\n"
+"PO-Revision-Date: 2010-02-28 20:01+0200\n"
 "Last-Translator: Timo Jyrinki <timo.jyrinki@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -75,11 +75,9 @@ msgid "The version of \"%s\" is too old"
 msgstr "Ohjelman ”%s” versio on liian vanha"
 
 #: ../libbrasero-burn/burn-plugin.c:690
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is a symbolic link pointing to another program"
-msgstr ""
-"”%s” on toiseen ohjelmaan osoittava symbolinen linkki. Käytä sen sijaan "
-"kohteena olevaa ohjelmaa"
+msgstr "”%s” on toiseen ohjelmaan osoittava symbolinen linkki"
 
 #. Translators: %s is a filename
 #: ../libbrasero-burn/burn-plugin.c:694 ../plugins/cdrdao/burn-cdrdao.c:212
@@ -1078,7 +1076,7 @@ msgstr "Laita asemaan levy, joka ei ole kopiosuojattu."
 #: ../libbrasero-burn/brasero-burn-options.c:1234
 #: ../src/brasero-project.c:1431
 msgid "All required applications and libraries are not installed."
-msgstr ""
+msgstr "Kaikkia tarvittavia sovelluksia tai kirjastoja ei ole asennettu."
 
 #: ../libbrasero-burn/brasero-burn-options.c:541 ../src/brasero-project.c:992
 msgid "Please replace the disc with a supported CD or DVD."
@@ -1683,7 +1681,7 @@ msgstr "Onnistui"
 
 #: ../libbrasero-burn/burn-basics.c:95
 msgid "Ejecting medium"
-msgstr ""
+msgstr "Poistetaan mediaa asemasta"
 
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:795
@@ -2599,13 +2597,15 @@ msgstr "Korvaa symboliset linkit linkin kohteella"
 
 #: ../data/brasero.schemas.in.h:7
 msgid "Should Nautilus extension output debug statements"
-msgstr ""
+msgstr "Tulostaa Nautilus-laajennus virheenjäljitystietoja"
 
 #: ../data/brasero.schemas.in.h:8
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
 msgstr ""
+"Tulostaa Nautilus-laajennus virheenjäljitystietoja. Tulisi asettaa todeksi, "
+"jos halutaan tulostavan."
 
 #: ../data/brasero.schemas.in.h:9
 msgid "Should brasero filter broken symbolic links"
@@ -2822,22 +2822,26 @@ msgid ""
 "be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
+"Jotkin valituista kappaleista sopivat DTS-raitojen luomiseen.\n"
+"Tämän tyyppinen ääni-CD-raita tarjoaa korkeampaa äänenlaatua, mutta se "
+"voidaan toistaa vain tietyillä digitaalisilla soittimilla.\n"
+"Huomaa: jos hyväksyt, normalisaatiota ei toteuteta näille raidoille."
 
 #: ../src/brasero-audio-disc.c:871
 msgid "Create _Regular Tracks"
-msgstr ""
+msgstr "Luo tavallisia _raitoja"
 
 #: ../src/brasero-audio-disc.c:873
 msgid "Click here to burn all songs as regular tracks"
-msgstr ""
+msgstr "Napsauta tässä kirjoittaaksesi kaikki kappaleet tavallisina raitoina"
 
 #: ../src/brasero-audio-disc.c:876
 msgid "Create _DTS Tracks"
-msgstr ""
+msgstr "Luo _DTS-raitoja"
 
 #: ../src/brasero-audio-disc.c:878
 msgid "Click here to burn all suitable songs as DTS tracks"
-msgstr ""
+msgstr "Napsauta tässä kirjoittaaksesi kaikki sopivat kappaleet DTS-raitoina"
 
 #: ../src/brasero-audio-disc.c:1301
 msgid "Select one song only please."
@@ -3193,7 +3197,7 @@ msgstr "K_orvaa aina"
 
 #: ../src/brasero-data-disc.c:839
 #: ../libbrasero-burn/brasero-status-dialog.c:273
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of the ISO9660 standard to support it?"
@@ -3203,7 +3207,6 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:847
 #: ../libbrasero-burn/brasero-status-dialog.c:291
-#, fuzzy
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by the ISO9660 standard in its first and second versions (the most "
@@ -3219,7 +3222,7 @@ msgstr ""
 "On suositeltavaa käyttää ISO9660-standardin kolmatta versiota, joka on "
 "tuettu useimmissa käyttöjärjestelmissä, mukaanlukien Linux ja kaikki "
 "Windows©-versiot.\n"
-"MacOS X ei kuitenkaan osaa lukea ISO9660 version 3 mukaisia levykuvia."
+"Mac OS X ei kuitenkaan osaa lukea ISO9660 version 3 mukaisia levykuvia."
 
 #: ../src/brasero-data-disc.c:851 ../src/brasero-data-disc.c:894
 #: ../libbrasero-burn/brasero-status-dialog.c:234
@@ -3241,7 +3244,6 @@ msgstr "Haluatko varmasti lisätä ”%s” valintaan?"
 
 #: ../src/brasero-data-disc.c:890
 #: ../libbrasero-burn/brasero-status-dialog.c:230
-#, fuzzy
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -3251,7 +3253,7 @@ msgstr ""
 "Tämän kansion lapsitiedostoilla on seitsemän yläkansiota.\n"
 "Brasero voi luoda ja kirjoittaa tällaisen levyn, mutta sitä ei välttämättä "
 "pysty lukemaan kaikissa käyttöjärjestelmissä.\n"
-"Huomaa, että linuxissa näiden levyjen pitäisi toimia."
+"Huomaa, että Linuxissa nämä levyt toimivat kyllä."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -3274,9 +3276,9 @@ msgstr "_Tuo"
 
 #. Translators: %s is the name of the volume to import
 #: ../src/brasero-data-disc.c:1109
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to import the session from \"%s\"?"
-msgstr "Haluatko tuoda istunnon taltiolta ”%s”?"
+msgstr "Haluatko tuoda istunnon levyltä ”%s”?"
 
 #: ../src/brasero-data-disc.c:1112
 msgid ""
@@ -3355,9 +3357,8 @@ msgid "_Horizontal Layout"
 msgstr "_Vaakasuuntainen asettelu"
 
 #: ../src/brasero-layout.c:122
-#, fuzzy
 msgid "Set a horizontal layout"
-msgstr "Aseta vaakasuuntain asettelu"
+msgstr "Aseta vaakasuuntainen asettelu"
 
 #: ../src/brasero-layout.c:124
 msgid "_Vertical Layout"
@@ -3394,12 +3395,12 @@ msgid "Name:"
 msgstr "Nimi:"
 
 #: ../src/brasero-player.c:873
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i × %i "
 "pixels</span></i>"
 msgstr ""
-"<span weight=\"bold\">Koko:</span>\t<i><span size=\"smaller\"> %i x %i "
+"<span weight=\"bold\">Koko:</span>\t<i><span size=\"smaller\"> %i × %i "
 "pikseliä</span></i>"
 
 #: ../src/brasero-player.c:896
@@ -3425,9 +3426,8 @@ msgid "Save current project"
 msgstr "Tallenna nykyinen projekti"
 
 #: ../src/brasero-project.c:194
-#, fuzzy
 msgid "Save _As…"
-msgstr "_Tallenna nimellä..."
+msgstr "_Tallenna nimellä…"
 
 #: ../src/brasero-project.c:195
 msgid "Save current project to a different location"
@@ -3456,9 +3456,8 @@ msgstr "Poista kaikki tiedostot projektista"
 
 #. burn button set insensitive since there are no files in the selection
 #: ../src/brasero-project.c:203 ../src/brasero-project.c:1074
-#, fuzzy
 msgid "_Burn…"
-msgstr "_Kirjoita"
+msgstr "_Kirjoita…"
 
 #: ../src/brasero-project.c:204
 msgid "Burn the disc"
@@ -3469,27 +3468,29 @@ msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
 msgstr ""
+"Napsauta ”Lisää”-painiketta tai raahaa tiedostoja tälle alueelle lisätäksesi "
+"projektiin tiedostoja"
 
 #: ../src/brasero-project.c:686
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
+"Valitse tiedostoja ja napsauta ”Poista”-painiketta tai paina ”Delete”-"
+"näppäintä näppäimistöltä poistaaksesi tiedostoja"
 
 #: ../src/brasero-project.c:793
-#, fuzzy, c-format
+#, c-format
 msgid "Estimated project size: %s"
-msgstr "Arvioitu koko: %s"
+msgstr "Arvioitu projektin koko: %s"
 
 #: ../src/brasero-project.c:939 ../src/brasero-project.c:955
-#, fuzzy
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
 "Projektin koko on liian suuri levylle, vaikka käytettäisiin ylipoltto-"
 "valitsinta."
 
 #: ../src/brasero-project.c:966
-#, fuzzy
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -3519,35 +3520,32 @@ msgstr ""
 "tehdyt muutokset?"
 
 #: ../src/brasero-project.c:1869
-#, fuzzy
 msgid "If you choose to create a new empty project, all changes will be lost."
-msgstr "Jos päätät luoda uuden projektin, kaikki tehdyt muutokset hukataan."
+msgstr ""
+"Jos päätät luoda uuden tyhjän projektin, kaikki tehdyt muutokset hukataan."
 
 #: ../src/brasero-project.c:1872
 msgid "_Discard Changes"
 msgstr "_Hylkää muutokset"
 
 #: ../src/brasero-project.c:1880
-#, fuzzy
 msgid "Do you want to discard the file selection or add it to the new project?"
-msgstr "Haluatko etsiä äänitiedostoja kansiosta?"
+msgstr "Haluatko hylätä tiedostovalinnan vai lisätä sen uuteen projektiin?"
 
 #: ../src/brasero-project.c:1885 ../src/brasero-project.c:1904
-#, fuzzy
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
-msgstr "Jos päätät luoda uuden projektin, kaikki tehdyt muutokset hukataan."
+msgstr ""
+"Jos valitset uuden tyhjän projektin luonnin, tiedostovalinta unohdetaan."
 
 #: ../src/brasero-project.c:1887
-#, fuzzy
 msgid "_Discard File Selection"
-msgstr "_Hylkää tiedosto"
+msgstr "_Hylkää tiedostovalinta"
 
 #: ../src/brasero-project.c:1891
-#, fuzzy
 msgid "_Keep File Selection"
-msgstr "Säilytä ny_kyinen sijainti"
+msgstr "Säilytä _tiedostovalinta"
 
 #: ../src/brasero-project.c:1899
 msgid "Do you really want to create a new project and discard the current one?"
@@ -3589,21 +3587,21 @@ msgstr "_Poista"
 
 #. Translators: %s is the name of the project
 #: ../src/brasero-project.c:2398
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero — %s (Data Disc)"
-msgstr "Brasero - %s (datalevy)"
+msgstr "Brasero – %s (datalevy)"
 
 #. Translators: %s is the name of the project
 #: ../src/brasero-project.c:2401
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero — %s (Audio Disc)"
-msgstr "Brasero - %s (äänilevy)"
+msgstr "Brasero – %s (äänilevy)"
 
 #. Translators: %s is the name of the project
 #: ../src/brasero-project.c:2404
-#, fuzzy, c-format
+#, c-format
 msgid "Brasero — %s (Video Disc)"
-msgstr "Brasero - %s (videolevy)"
+msgstr "Brasero – %s (videolevy)"
 
 #: ../src/brasero-project.c:2574 ../src/brasero-project.c:2890
 msgid "Your project has not been saved."
@@ -3627,7 +3625,6 @@ msgid "Save Current Project"
 msgstr "Tallenna nykyinen projekti"
 
 #: ../src/brasero-project.c:2716
-#, fuzzy
 msgid "Save project as a Brasero audio project"
 msgstr "Tallenna projekti Braseron äänilevyprojektina"
 
@@ -3644,14 +3641,12 @@ msgid "Save project as an M3U playlist"
 msgstr "Tallenna projekti M3U-soittolistana"
 
 #: ../src/brasero-project.c:2723
-#, fuzzy
 msgid "Save project as an XSPF playlist"
 msgstr "Tallenna projekti XSPF-soittolistana"
 
 #: ../src/brasero-project.c:2724
-#, fuzzy
 msgid "Save project as an iriver playlist"
-msgstr "Tallenna projekti M3U-soittolistana"
+msgstr "Tallenna projekti iriver-soittolistana"
 
 #: ../src/brasero-project-manager.c:99
 msgid "_Cover Editor"
@@ -3706,14 +3701,12 @@ msgstr "Uusi _videoprojekti"
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:84
-#, fuzzy
 msgid "Create a video DVD or an SVCD that are readable on TV readers"
 msgstr "Luo video-DVD tai SVCD, jotka ovat luettavissa TV-toistimilla"
 
 #: ../src/brasero-project-manager.c:111
-#, fuzzy
 msgid "Copy _Disc…"
-msgstr "Kopioi _levy..."
+msgstr "Kopioi _levy…"
 
 #: ../src/brasero-project-manager.c:112
 #: ../src/brasero-project-type-chooser.c:89
@@ -3725,9 +3718,8 @@ msgstr ""
 "levylle"
 
 #: ../src/brasero-project-manager.c:113
-#, fuzzy
 msgid "_Burn Image…"
-msgstr "Kirjoita _levykuva..."
+msgstr "Kirjoita _levykuva…"
 
 #: ../src/brasero-project-manager.c:114
 #: ../src/brasero-project-type-chooser.c:93
@@ -3736,9 +3728,8 @@ msgid "Burn an existing CD/DVD image to disc"
 msgstr "Kirjoita olemassa oleva CD- tai DVD-levykuva levylle"
 
 #: ../src/brasero-project-manager.c:116
-#, fuzzy
 msgid "_Open…"
-msgstr "_Avaa"
+msgstr "_Avaa…"
 
 #: ../src/brasero-project-manager.c:117
 msgid "Open a project"
@@ -3784,29 +3775,24 @@ msgid "No file selected"
 msgstr "Ei valittua tiedostoa"
 
 #: ../src/brasero-project-manager.c:592
-#, fuzzy
 msgid "Brasero — New Audio Disc Project"
-msgstr "Brasero - uusi äänilevyprojekti"
+msgstr "Brasero – uusi äänilevyprojekti"
 
 #: ../src/brasero-project-manager.c:606
-#, fuzzy
 msgid "Brasero — New Data Disc Project"
-msgstr "Brasero - uusi datalevyprojekti"
+msgstr "Brasero – uusi datalevyprojekti"
 
 #: ../src/brasero-project-manager.c:620
-#, fuzzy
 msgid "Brasero — New Video Disc Project"
-msgstr "Brasero - uusi videolevyprojekti"
+msgstr "Brasero – uusi videolevyprojekti"
 
 #: ../src/brasero-project-manager.c:630
-#, fuzzy
 msgid "Brasero — New Image File"
-msgstr "Brasero - uusi levykuvatiedosto"
+msgstr "Brasero – uusi levykuvatiedosto"
 
 #: ../src/brasero-project-manager.c:645
-#, fuzzy
 msgid "Brasero — Disc Copy"
-msgstr "Brasero - CD-levyn kopiointi"
+msgstr "Brasero – levyn kopiointi"
 
 #: ../src/brasero-project-manager.c:729
 msgid "Open Project"
@@ -3853,7 +3839,6 @@ msgid "_Video project"
 msgstr "_Videoprojekti"
 
 #: ../src/brasero-project-type-chooser.c:83
-#, fuzzy
 msgid "Create a video DVD or an SVCD"
 msgstr "Luo video-DVD tai SVCD"
 
@@ -3874,7 +3859,6 @@ msgid "Last _Unsaved Project"
 msgstr "Viimeisin _tallentamaton projekti"
 
 #: ../src/brasero-project-type-chooser.c:307
-#, fuzzy
 msgid "Load the last project that was not burned and not saved"
 msgstr "Lataa viimeisin projekti, jota ei kirjoitettu eikä tallennettu"
 
@@ -3905,7 +3889,6 @@ msgid "The file integrity was performed successfully."
 msgstr "Tiedostojen eheystarkistus onnistui."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:177
-#, fuzzy
 msgid "There seem to be no corrupted files on the disc"
 msgstr "Levyllä ei näytä olevan viallisia tiedostoja"
 
@@ -3918,9 +3901,8 @@ msgid "Corrupted Files"
 msgstr "Vialliset tiedostot"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:340
-#, fuzzy
 msgid "Downloading MD5 file"
-msgstr "Haetaan md5-tiedostoa"
+msgstr "Haetaan MD5-tiedostoa"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:395
 #, c-format
@@ -3928,23 +3910,20 @@ msgid "\"%s\" is not a valid URI"
 msgstr "URI ”%s” ei ole kelvollinen"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:513
-#, fuzzy
 msgid "No MD5 file was given."
-msgstr "md5-tiedostoa ei annettu."
+msgstr "MD5-tiedostoa ei annettu."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:689
-#, fuzzy
 msgid "Use an _MD5 file to check the disc"
-msgstr "Käytä md5-tiedostoa levyn tarkistamiseen"
+msgstr "Käytä _MD5-tiedostoa levyn tarkistamiseen"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:690
 msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr "Käytä ulkoista md5-tiedostoa, joka sisältää levyn tarkistussumman"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:703
-#, fuzzy
 msgid "Open an MD5 file"
-msgstr "Avaa md5-tiedosto"
+msgstr "Avaa MD5-tiedosto"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:718
 msgid "_Check"
@@ -4019,15 +3998,15 @@ msgstr "SOITTOLISTA"
 
 #: ../src/main.c:122
 msgid "Set the drive to be used for burning"
-msgstr ""
+msgstr "Aseta kirjoitukseen käytettävä asema"
 
 #: ../src/main.c:123
 msgid "DEVICE PATH"
-msgstr ""
+msgstr "LAITTEEN POLKU"
 
 #: ../src/main.c:126
 msgid "Create an image file instead of burning"
-msgstr ""
+msgstr "Luo levykuvatiedosto kirjoittamisen sijaan"
 
 #: ../src/main.c:130
 msgid "Open an audio project adding the URIs given on the command line"
@@ -4058,14 +4037,12 @@ msgid "Open a video project adding the URIs given on the command line"
 msgstr "Avaa videolevyprojekti lisäämällä komentorivillä annetut URIt"
 
 #: ../src/main.c:150
-#, fuzzy
 msgid "URI of an image file to burn (autodetected)"
-msgstr "Kirjoitettava levykuvatiedoston URI (automaattinen tunnistus)"
+msgstr "Kirjoitettavan levykuvatiedoston URI (automaattinen tunnistus)"
 
 #: ../src/main.c:151
-#, fuzzy
 msgid "PATH TO IMAGE"
-msgstr "LAITTEEN POLKU"
+msgstr "LEVYKUVAN POLKU"
 
 #: ../src/main.c:154
 msgid "Force brasero to display the project selection page"
@@ -4084,12 +4061,10 @@ msgid "Burn the contents of burn:// URI"
 msgstr "Kirjoita burn://-URI-osoitteen sisältö"
 
 #: ../src/main.c:170
-#, fuzzy
 msgid "Start burning immediately."
-msgstr "Cdrkit-kirjoitusohjelmisto"
+msgstr "Käynnistä kirjoitus välittömästi."
 
 #: ../src/main.c:174
-#, fuzzy
 msgid ""
 "Burn the specified project and remove it.\n"
 "This option is mainly useful for integration with other applications."
@@ -4112,14 +4087,13 @@ msgstr "Yläikkunan XID-tunniste"
 
 #. Translators: %s is the path of drive
 #: ../src/main.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot write."
-msgstr "”%s” ei voi lukea"
+msgstr "”%s” ei voi kirjoittaa."
 
 #: ../src/main.c:242 ../src/main.c:256
-#, fuzzy
 msgid "Wrong command line option."
-msgstr "Käytettiin epäyhteensopivia komentorivivalitsimia."
+msgstr "Väärä komentorivivalitsin."
 
 #: ../src/main.c:333
 msgid "Incompatible command line options used."
@@ -4130,14 +4104,13 @@ msgid "Only one option can be given at a time"
 msgstr "Vain yksi valitsin voidaan antaa kerralla"
 
 #: ../src/main.c:466
-#, fuzzy
 msgid "[URI] [URI] …"
-msgstr "[URI] [URI] ..."
+msgstr "[URI] [URI] …"
 
 #: ../src/main.c:478
-#, fuzzy, c-format
+#, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
-msgstr "Kirjoita %s --help nähdäksesi kaikki mahdolliset valitsimet\n"
+msgstr "Kirjoita ”%s --help” nähdäksesi kaikki mahdolliset valitsimet\n"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:191
 #: ../plugins/checksum/burn-checksum-image.c:125
@@ -4158,12 +4131,11 @@ msgstr "Tietoja ei voitu kirjoittaa (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:722
 msgid "Generates .cue files from audio"
-msgstr ""
+msgstr "Luo .cue-tiedostoja äänestä"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:57
-#, fuzzy
 msgid "cdrdao burning suite"
-msgstr "Cdrdao-kirjoitusohjelmisto"
+msgstr "cdrdao-kirjoitusohjelmisto"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:104
 msgid "Copying audio track"
@@ -4192,10 +4164,9 @@ msgstr "Muunnetaan TOC-tiedostoksi"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:699
 msgid "Copies, burns and blanks CDs"
-msgstr ""
+msgstr "Kopioi, kirjoittaa ja tyhjentää CD-levyjä"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:764
-#, fuzzy
 msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
 msgstr "Käytä ”--driver-generic-mmc-raw”-lippua (lisätietoja cdrdaon ohjeesta)"
 
@@ -4241,9 +4212,8 @@ msgstr "Laitteella ei ole tilaa jäljellä"
 #: ../plugins/cdrkit/burn-genisoimage.c:529
 #: ../plugins/cdrtools/burn-mkisofs.c:533
 #: ../plugins/libburnia/burn-libisofs.c:1045
-#, fuzzy
 msgid "Creates disc images from a file selection"
-msgstr "Luo levykuvia valituista tiedostoista komennolla mkisofs"
+msgstr "Luo levykuvia valituista tiedostoista"
 
 #: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
 #, c-format
@@ -4253,9 +4223,8 @@ msgid ""
 msgstr "Valitussa sijainnissa ei ole tarpeeksi vapaata tilaa levykuvaa varten"
 
 #: ../plugins/cdrkit/burn-readom.c:449 ../plugins/cdrtools/burn-readcd.c:459
-#, fuzzy
 msgid "Copies any disc to a disc image"
-msgstr "Luo levykuvia komennolla readcd"
+msgstr "Kopioi minkä tahansa levyn levykuvaksi"
 
 #: ../plugins/cdrkit/burn-wodim.c:123
 #, c-format
@@ -4290,12 +4259,10 @@ msgid "The disc needs to be reloaded before being recorded"
 msgstr "Levy täytyy ladata uudelleen ennen kirjoitusta"
 
 #: ../plugins/cdrkit/burn-wodim.c:1258
-#, fuzzy
 msgid "Burns, blanks and formats CDs and DVDs"
-msgstr "Luo ja kopioi CD- ja DVD-levyjä"
+msgstr "Kirjoittaa, tyhjentää ja alustaa CD- ja DVD-levyjä"
 
 #: ../plugins/cdrkit/burn-wodim.c:1402
-#, fuzzy
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "Ota ”-immed”-lippu käyttöön (lisätietoja wodimin ohjeesta)"
 
@@ -4308,22 +4275,21 @@ msgstr ""
 #: ../plugins/cdrtools/burn-cdrecord.c:123
 #: ../plugins/libburnia/burn-libburn.c:855
 #: ../plugins/libburnia/burn-libburn.c:886
-#, fuzzy, c-format
+#, c-format
 msgid "An error occurred while writing to disc"
 msgstr "Tapahtui virhe kirjoitettaessa levyä"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1191
 #: ../plugins/libburnia/burn-libburn.c:973
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
-msgstr ""
+msgstr "Kirjoittaa, tyhjentää ja alustaa CD-, DVD- ja BD-levyjä"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1404
-#, fuzzy
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Käytä ”-immed”-lippua (lisätietoja cdrecordin ohjeesta)"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1407
-#, fuzzy, c-format
+#, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr ""
 "Pienin mahdollinen aseman puskurin täyttöaste prosenteissa (lisätietoja "
@@ -4359,17 +4325,16 @@ msgstr "Kopioidaan DVD-videolevyä"
 
 #. Translators: image is not a picture but a disc image
 #: ../plugins/dvdcss/burn-dvdcss.c:677
-#, fuzzy
 msgid "Copies css encrypted Video DVDs to a disc image"
-msgstr "Valitse _levykuva napsauttamalla tästä"
+msgstr "Kopioi CSS-salatun Video-DVD-levyn levykuvaksi"
 
 #: ../plugins/growisofs/burn-dvd-rw-format.c:189
 msgid "Blanks and formats rewritable DVDs and BDs"
-msgstr ""
+msgstr "Tyhjentää ja alustaa uudelleen kirjoitettavia DVD- ja BD-levyjä"
 
 #: ../plugins/growisofs/burn-growisofs.c:748
 msgid "Burns and blanks DVDs and BDs"
-msgstr ""
+msgstr "Kirjoittaa ja tyhjentää DVD- ja BD-levyjä"
 
 #: ../plugins/growisofs/burn-growisofs.c:921
 msgid "Allow DAO use"
@@ -4377,9 +4342,9 @@ msgstr "Salli DAOn käyttö"
 
 #: ../plugins/libburnia/burn-libburn.c:242
 #: ../plugins/libburnia/burn-libburn.c:250
-#, fuzzy, c-format
+#, c-format
 msgid "libburn track could not be created"
-msgstr "Libburn-raitaa ei voitu luoda"
+msgstr "libburn-raitaa ei voi luoda"
 
 #. Translators: first %s is the filename, second %s is the error
 #. * generated from errno
@@ -4392,9 +4357,9 @@ msgid "\"%s\" could not be opened (%s)"
 msgstr "”%s”-levyä ei voitu avata (%s)"
 
 #: ../plugins/libburnia/burn-libburn-common.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "libburn library could not be initialized"
-msgstr "Libburn-kirjastoa ei voitu alustaa"
+msgstr "libburn-kirjastoa ei voitu alustaa"
 
 #: ../plugins/libburnia/burn-libburn-common.c:173
 #, c-format
@@ -4408,9 +4373,9 @@ msgstr "Kirjoitetaan raitaa %02i"
 
 #: ../plugins/libburnia/burn-libisofs.c:328
 #: ../plugins/libburnia/burn-libisofs.c:868
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs could not be initialized."
-msgstr "Libisofs-kirjastoa ei voitu alustaa."
+msgstr "libisofs-kirjastoa ei voi alustaa."
 
 #: ../plugins/libburnia/burn-libisofs.c:468
 #, c-format
@@ -4430,21 +4395,21 @@ msgstr "Polun ”%s” yläkansiota ei löydy puusta"
 
 #: ../plugins/libburnia/burn-libisofs.c:727
 #: ../plugins/libburnia/burn-libisofs.c:794
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs reported an error while creating directory \"%s\""
-msgstr "Libisofs kertoi virheestä luotaessa kansiota ”%s”"
+msgstr "libisofs kertoi virheestä luotaessa kansiota ”%s”"
 
 #: ../plugins/libburnia/burn-libisofs.c:742
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr "Libisofs kertoi virheestä lisättäessä sisältöä kansioon ”%s” (%x)"
+msgstr "libisofs kertoi virheestä lisättäessä sisältöä kansioon ”%s” (%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:765
 #: ../plugins/libburnia/burn-libisofs.c:781
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs reported an error while adding file at path \"%s\""
-msgstr "Libisofs kertoi virheestä lisättäessä tiedostoa polulla ”%s”"
+msgstr "libisofs kertoi virheestä lisättäessä tiedostoa polulla ”%s”"
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
@@ -4463,7 +4428,6 @@ msgid "File Downloader"
 msgstr "Tiedostojen noutaja"
 
 #: ../plugins/local-track/burn-local-image.c:911
-#, fuzzy
 msgid "Allows files not stored locally to be burned"
 msgstr "Sallii ei-paikallisten tiedostojen kirjoituksen"
 
@@ -4499,11 +4463,8 @@ msgid "Normalize"
 msgstr "Normalisoi"
 
 #: ../plugins/transcode/burn-normalize.c:646
-#, fuzzy
 msgid "Sets consistent sound levels between tracks"
-msgstr ""
-"Normalisointi mahdollistaa eri raitojen välisen yhtenäisen "
-"äänenvoimakkuuksien tason"
+msgstr "Mahdollistaa eri raitojen välisen yhtenäisen äänenvoimakkuuksien tason"
 
 #. Translators: %s is the string error from errno
 #: ../plugins/transcode/burn-transcode.c:1084
@@ -4528,10 +4489,9 @@ msgid "Transcoding \"%s\""
 msgstr "Transkoodataan ”%s”"
 
 #: ../plugins/transcode/burn-transcode.c:1768
-#, fuzzy
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr ""
-"Vob mahdollistaa minkä tahansa videotiedoston muuntamisen video-DVD-levyille "
+"Mahdollistaa minkä tahansa äänitiedoston muuntamisen ääni-CD-levyille "
 "sopivaksi"
 
 #: ../src/brasero-preview.c:170
@@ -4563,7 +4523,6 @@ msgid "No silence could be detected"
 msgstr "Hiljaista kohtaa ei löytynyt"
 
 #: ../src/brasero-split-dialog.c:624
-#, fuzzy
 msgid "An error occurred while detecting silences."
 msgstr "Tapahtui virhe etsittäessä hiljaisia kohtia."
 
@@ -4704,24 +4663,20 @@ msgid "Frames (1 second = 75 frames)"
 msgstr "Ruutuja (1 sekunti = 75 ruutua)"
 
 #: ../plugins/cdrkit/burn-cdrkit.h:38
-#, fuzzy
 msgid "cdrkit burning suite"
-msgstr "Cdrkit-kirjoitusohjelmisto"
+msgstr "cdrkit-kirjoitusohjelmisto"
 
 #: ../plugins/libburnia/burn-libburnia.h:38
-#, fuzzy
 msgid "libburnia burning suite"
-msgstr "Libburn-kirjoitusohjelmisto"
+msgstr "libburnia-kirjoitusohjelmisto"
 
 #: ../plugins/growisofs/burn-growisofs-common.h:38
-#, fuzzy
 msgid "growisofs burning suite"
-msgstr "Growisofs-kirjoitusohjelmisto"
+msgstr "growisofs-kirjoitusohjelmisto"
 
 #: ../plugins/cdrtools/burn-cdrtools.h:38
-#, fuzzy
 msgid "cdrtools burning suite"
-msgstr "Cdrtools-kirjoitusohjelmisto"
+msgstr "cdrtools-kirjoitusohjelmisto"
 
 #: ../src/brasero-eject-dialog.c:95
 #, c-format
@@ -4776,9 +4731,8 @@ msgid "Restore the selected files"
 msgstr "Palauta valitut tiedostos"
 
 #: ../src/brasero-file-filtered.c:306
-#, fuzzy
 msgid "_Options…"
-msgstr "Asetukset"
+msgstr "_Valinnat…"
 
 #: ../src/brasero-file-filtered.c:314
 msgid "Set the options for file filtering"
@@ -4840,9 +4794,8 @@ msgid "File Checksum"
 msgstr "Tiedoston tarkistussumma"
 
 #: ../plugins/checksum/burn-checksum-files.c:1474
-#, fuzzy
 msgid "Checks file integrities on a disc"
-msgstr "Sallii levyn tiedostojen eheystarkistuksen"
+msgstr "Levyn tiedostojen eheystarkistus"
 
 #: ../plugins/checksum/burn-checksum-files.c:1514
 #: ../plugins/checksum/burn-checksum-image.c:855
@@ -4877,10 +4830,8 @@ msgid "Image Checksum"
 msgstr "Levykuvan tarkistussumma"
 
 #: ../plugins/checksum/burn-checksum-image.c:831
-#, fuzzy
 msgid "Checks disc integrity after it is burnt"
-msgstr ""
-"Sallii levylle kirjoitettujen tietojen eheystarkistuksen kirjoituksen jälkeen"
+msgstr "Levylle kirjoitettujen tietojen eheystarkistus kirjoituksen jälkeen"
 
 #: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
 #: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
@@ -4921,7 +4872,7 @@ msgstr "Numeroi tiedostot mallin mukaan"
 
 #: ../src/brasero-rename.c:324
 msgid "Insert number sequence at beginning"
-msgstr ""
+msgstr "Lisää numerointi alkuun"
 
 #. Translators: This is a verb. This is completed later
 #: ../src/brasero-rename.c:339
@@ -4931,7 +4882,6 @@ msgstr "Lisää"
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
 #: ../src/brasero-rename.c:353
-#, fuzzy
 msgid "at the beginning"
 msgstr "alkuun"
 
@@ -4942,7 +4892,6 @@ msgid "at the end"
 msgstr "loppuun"
 
 #: ../src/brasero-rename.c:368
-#, fuzzy
 msgid "Delete every occurrence of"
 msgstr "Poista jokainen ilmentymä kohteesta"
 
@@ -4967,9 +4916,8 @@ msgid "Open the selected video"
 msgstr "Avaa valittu video"
 
 #: ../src/brasero-video-disc.c:103
-#, fuzzy
 msgid "Edit the video information (start, end, author, etc.)"
-msgstr "Muokkaa videotietoja (alku, loppu, tekijä, ...)"
+msgstr "Muokkaa videotietoja (alku, loppu, tekijä jne.)"
 
 #: ../src/brasero-video-disc.c:105
 msgid "Remove the selected videos from the project"
@@ -4993,7 +4941,6 @@ msgid "\"%s\" does not have a suitable type for video projects."
 msgstr "Kohde ”%s” ei ole videoprojekteille sopivaa tyyppiä."
 
 #: ../src/brasero-video-disc.c:414
-#, fuzzy
 msgid "Please only add files with video content"
 msgstr "Lisää vain videota sisältäviä tiedostoja"
 
@@ -5003,25 +4950,22 @@ msgid "Creating file layout"
 msgstr "Luodaan tiedostoasettelua"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:373
-#, fuzzy
 msgid "Creates disc images suitable for Video DVDs"
-msgstr "Kirjoita levykuva CD- tai DVD-levylle"
+msgstr "Luo Video-DVD-levyille sopivia levykuvia"
 
 #: ../plugins/transcode/burn-vob.c:1210
 msgid "Converting video file to MPEG2"
 msgstr "Muunnetaan video MPEG2-tiedostoksi"
 
 #: ../plugins/transcode/burn-vob.c:1293
-#, fuzzy
 msgid "Converts any video file into a format suitable for Video DVDs"
 msgstr ""
-"Vob mahdollistaa minkä tahansa videotiedoston muuntamisen video-DVD-levyille "
+"Mahdollistaa minkä tahansa videotiedoston muuntamisen video-DVD-levyille "
 "sopivaksi"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:483
-#, fuzzy
 msgid "Creates disc images suitable for SVCDs"
-msgstr "Kirjoita levykuva CD- tai DVD-levylle"
+msgstr "Luo SVCD-levyille sopivia levykuvia"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Brasero Disc Copier"
