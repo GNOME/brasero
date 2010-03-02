@@ -315,6 +315,9 @@ brasero_task_start_item (BraseroTask *task,
 		result = klass->start (item, &ret_error);
 	}
 
+	if (ret_error)
+		g_propagate_error (error, ret_error);
+
 	return result;
 }
 
