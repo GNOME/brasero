@@ -215,7 +215,9 @@ typelibs_DATA = BraseroBurn-1.0.typelib
 BraseroBurn-1.0.gir: libbrasero-burn.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroBurn --nsversion=1.0 \
 	    -I$(top_srcdir)/libbrasero-media	\
+	    -I$(top_builddir)/libbrasero-media	\
 	    -I$(top_srcdir)/libbrasero-burn		\
+	    -I$(top_builddir)/libbrasero-burn	\
             --include=Gtk-2.0 \
             --add-include-path=$(top_builddir)/libbrasero-media	\
 	    --include=BraseroMedia-1.0 \
