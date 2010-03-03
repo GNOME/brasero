@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero 2.29 x\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-10 19:54+0100\n"
-"PO-Revision-Date: 2010-02-10 19:57+0100\n"
+"Report-Msgid-Bugs-To:\n"
+"POT-Creation-Date: 2010-03-03 13:56+0100\n"
+"PO-Revision-Date: 2010-03-03 14:00+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@broadpark.no>\n"
 "Language-Team: Norsk bokmål <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -1686,7 +1686,7 @@ msgstr ""
 "med størrelse over 2 GiB"
 
 #: ../libbrasero-burn/burn-job.c:535 ../libbrasero-burn/burn-job.c:557
-#, fuzzy, c-format
+#, c-format, fuzzy
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
@@ -1730,7 +1730,7 @@ msgstr "VIDEO_TS-katalogen mangler eller er ugyldig"
 #: ../libbrasero-burn/burn-process.c:259
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
-msgstr ""
+msgstr "Prosess «%s» avsluttet med en feilkode (%i)"
 
 #: ../libbrasero-utils/brasero-disc-message.c:133
 msgid "_Hide changes"
@@ -1909,7 +1909,7 @@ msgstr ""
 
 #: ../libbrasero-media/brasero-media.c:477
 msgid "Brasero optical media library"
-msgstr ""
+msgstr "Brasero-bibliotek for optiske medier"
 
 #: ../libbrasero-media/brasero-media.c:478
 msgid "Display options for Brasero media library"
@@ -1961,7 +1961,7 @@ msgid "%s:%s min"
 msgstr "%s:%s min"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-media/brasero-medium-selection.c:146
+#: ../libbrasero-media/brasero-medium-selection.c:155
 #, c-format
 msgid "%s: empty"
 msgstr "%s: tom"
@@ -1973,17 +1973,17 @@ msgstr "%s: tom"
 #. * second %s is the space (time) used by data on the disc.
 #. * I really don't know if I should set this string as
 #. * translatable.
-#: ../libbrasero-media/brasero-medium-selection.c:162
-#: ../libbrasero-media/brasero-medium-selection.c:174
+#: ../libbrasero-media/brasero-medium-selection.c:171
+#: ../libbrasero-media/brasero-medium-selection.c:183
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../libbrasero-media/brasero-medium-selection.c:453
+#: ../libbrasero-media/brasero-medium-selection.c:462
 msgid "Searching for available discs"
 msgstr "Søker etter tilgjengelige plater"
 
-#: ../libbrasero-media/brasero-medium-selection.c:462
+#: ../libbrasero-media/brasero-medium-selection.c:471
 msgid "No disc available"
 msgstr "Ingen plate tilgjengelig"
 
@@ -2158,7 +2158,7 @@ msgstr "Ugyldig argument"
 
 #: ../libbrasero-media/scsi-error.c:48
 msgid "Outrange address"
-msgstr ""
+msgstr "Adresse utenfor gyldig område"
 
 #: ../libbrasero-media/scsi-error.c:49
 msgid "Invalid address"
@@ -2280,7 +2280,7 @@ msgid ""
 msgstr "Lar deg skrive filer som er lagt til i «CD/DVD mappen» i Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:295
+#: ../nautilus/nautilus-burn-extension.c:297
 msgid "CD/DVD Creator"
 msgstr "CD/DVD-skriving"
 
@@ -2293,53 +2293,53 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "Dra eller kopier filer hit for å skrive dem til platen"
 
 #: ../nautilus/nautilus-burn-bar.c:151
-#: ../nautilus/nautilus-burn-extension.c:348
+#: ../nautilus/nautilus-burn-extension.c:350
 msgid "Write to Disc"
 msgstr "Skriv til plate"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:718
+#: ../nautilus/nautilus-burn-extension.c:730
 msgid "Write contents to a CD or DVD"
 msgstr "Skriv innholdet til en CD eller DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:286
+#: ../nautilus/nautilus-burn-extension.c:288
 msgid "Disc name"
 msgstr "Navn på plate"
 
-#: ../nautilus/nautilus-burn-extension.c:375
+#: ../nautilus/nautilus-burn-extension.c:377
 msgid "Copy Disc"
 msgstr "Kopier plate"
 
-#: ../nautilus/nautilus-burn-extension.c:569
-#: ../nautilus/nautilus-burn-extension.c:717
+#: ../nautilus/nautilus-burn-extension.c:578
+#: ../nautilus/nautilus-burn-extension.c:729
 msgid "_Write to Disc…"
 msgstr "_Skriv til plate..."
 
-#: ../nautilus/nautilus-burn-extension.c:570
+#: ../nautilus/nautilus-burn-extension.c:579
 msgid "Write disc image to a CD or DVD"
 msgstr "Skriv avtrykk av platen til en CD eller DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:640
+#: ../nautilus/nautilus-burn-extension.c:652
 msgid "_Copy Disc…"
 msgstr "_Kopier plate..."
 
-#: ../nautilus/nautilus-burn-extension.c:641
+#: ../nautilus/nautilus-burn-extension.c:653
 msgid "Create a copy of this CD or DVD"
 msgstr "Lag en kopi av denne CDen eller DVDen"
 
-#: ../nautilus/nautilus-burn-extension.c:654
+#: ../nautilus/nautilus-burn-extension.c:666
 msgid "_Blank Disc…"
 msgstr "Tø_m plate..."
 
-#: ../nautilus/nautilus-burn-extension.c:655
+#: ../nautilus/nautilus-burn-extension.c:667
 msgid "Blank this CD or DVD"
 msgstr "Tøm denne CDen eller DVDen"
 
-#: ../nautilus/nautilus-burn-extension.c:671
+#: ../nautilus/nautilus-burn-extension.c:683
 msgid "_Check Disc…"
 msgstr "_Sjekk plate..."
 
-#: ../nautilus/nautilus-burn-extension.c:672
+#: ../nautilus/nautilus-burn-extension.c:684
 msgid "Check the data integrity on this CD or DVD"
 msgstr "Sjekk dataintegritet for denne CDen eller DVDen"
 
@@ -2508,7 +2508,7 @@ msgstr "Siste p_rosjekter"
 
 #: ../src/brasero-app.c:1534
 msgid "Display the projects recently opened"
-msgstr ""
+msgstr "Vis sist åpnede prosjekter"
 
 #: ../src/brasero-app.c:1886 ../data/brasero.desktop.in.in.h:2
 msgid "Brasero Disc Burner"
@@ -2541,7 +2541,7 @@ msgstr "Slå på forhånsvisning av filer"
 
 #: ../data/brasero.schemas.in.h:4
 msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr ""
+msgstr "Bruk flagget «-immed» med cdrecord"
 
 #: ../data/brasero.schemas.in.h:5
 msgid "Favourite burn engine"
@@ -2643,12 +2643,12 @@ msgstr "R_ediger informasjon..."
 
 #: ../src/brasero-audio-disc.c:158
 msgid "Edit the track information (start, end, author, etc.)"
-msgstr ""
+msgstr "Rediger informasjon om spor (start, slutt, forfatter, etc.)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:199
 msgid "Remove the selected files from the project"
-msgstr ""
+msgstr "Fjern valgte filer fra prosjektet"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
@@ -4110,7 +4110,7 @@ msgstr "Ingen plass tilgjengelig på enheten"
 #: ../plugins/cdrtools/burn-mkisofs.c:533
 #: ../plugins/libburnia/burn-libisofs.c:1045
 msgid "Creates disc images from a file selection"
-msgstr ""
+msgstr "Lager plateavtrykk fra et filutvalg"
 
 #: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
 #, fuzzy, c-format
@@ -4133,7 +4133,9 @@ msgstr "En feil oppsto under skriving til platen"
 #, c-format
 msgid ""
 "The system is too slow to write the disc at this speed. Try a lower speed"
-msgstr "Systemet er for tregt til å skrive platen med denne hastigheten. Prøv en lavere hastighet."
+msgstr ""
+"Systemet er for tregt til å skrive platen med denne hastigheten. Prøv en "
+"lavere hastighet."
 
 #. Translators: %s is the number of the track
 #: ../plugins/cdrkit/burn-wodim.c:256 ../plugins/cdrtools/burn-cdrecord.c:253
@@ -4655,9 +4657,9 @@ msgid "Creating checksum for image files"
 msgstr "Lager sjekksum for avtrykk"
 
 #: ../plugins/checksum/burn-checksum-files.c:854
-#, fuzzy, c-format
+#, c-format
 msgid "No checksum file could be found on the disc"
-msgstr "Brenneren kunne ikke aksesseres."
+msgstr "Fant ingen sjekksumfil på platen."
 
 #: ../plugins/checksum/burn-checksum-files.c:888
 msgid "Checking file integrity"
@@ -4672,9 +4674,9 @@ msgstr "Fil «%s» kunne ikke åpnes"
 #: ../plugins/checksum/burn-checksum-files.c:1080
 #: ../plugins/checksum/burn-checksum-files.c:1201
 #: ../plugins/checksum/burn-checksum-image.c:551
-#, fuzzy, c-format
+#, c-format
 msgid "Some files may be corrupted on the disc"
-msgstr "Ikke nok plass tilgjengelig på enheten."
+msgstr "Noen filer kan være korrupte på platen"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -4720,9 +4722,8 @@ msgid "Image Checksum"
 msgstr "Sjekksum for avtrykk"
 
 #: ../plugins/checksum/burn-checksum-image.c:831
-#, fuzzy
 msgid "Checks disc integrity after it is burnt"
-msgstr "Lar deg sjekke platens dataintegritet etter skriving"
+msgstr "Sjekk platens dataintegritet etter skriving"
 
 #: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
 #: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
