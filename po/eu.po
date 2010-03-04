@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-02 13:25+0100\n"
-"PO-Revision-Date: 2010-03-02 15:31+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
+"POT-Creation-Date: 2010-03-04 13:24+0000\n"
+"PO-Revision-Date: 2010-03-04 21:34+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -1044,6 +1044,15 @@ msgstr "Hautatu disko-irudi bat."
 msgid "There is no selected disc image."
 msgstr "Ez da disko-irudirik hautatu."
 
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:521
+#: ../libbrasero-burn/brasero-src-image.c:166
+#| msgid "Please select a disc image."
+msgctxt "disc"
+msgid "Please select another image."
+msgstr "Hautatu beste irudi bat."
+
 #: ../libbrasero-burn/brasero-burn-options.c:522
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Badirudi ez dagoela baliozko disko-irudirik edo baliozko cue fitxategirik."
@@ -1268,8 +1277,8 @@ msgid ""
 "Please install the following required applications and libraries manually "
 "and try again:"
 msgstr ""
-"Instalatu eskuz beharrezkoak diren honako aplikazio eta liburutegiak "
-"eta saiatu berriro:"
+"Instalatu eskuz beharrezkoak diren honako aplikazio eta liburutegiak eta "
+"saiatu berriro:"
 
 #: ../libbrasero-burn/brasero-burn.c:2610
 #, c-format
@@ -1566,6 +1575,13 @@ msgstr "Egin klik hemen disko-_irudia hautatzeko"
 #: ../libbrasero-burn/brasero-src-image.c:412
 msgid "Select Disc Image"
 msgstr "Hautatu disko-irudia"
+
+#. Translators: this a disc image here
+#: ../libbrasero-burn/brasero-src-image.c:447
+#| msgid "Image File"
+msgctxt "disc"
+msgid "Image files"
+msgstr "Irudi-fitxategiak"
 
 #: ../libbrasero-burn/brasero-src-image.c:464
 msgid "Image type:"
@@ -2344,9 +2360,25 @@ msgstr "_Egiaztatu diskoa..."
 msgid "Check the data integrity on this CD or DVD"
 msgstr "CD edo DVD diskoko datuen osotasuna egiaztatzen du"
 
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:83
+#| msgid "Please select a disc image."
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Hautatu beste irudi bat."
+
 #: ../src/brasero-project-name.c:157
 msgid "Medium Icon"
 msgstr "Euskarriaren ikonoa"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-project-name.c:171 ../src/brasero-file-chooser.c:343
+#: ../src/brasero-project.c:2205
+#| msgid "Image File"
+msgctxt "picture"
+msgid "Image files"
+msgstr "Irudi-fitxategiak"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -2561,8 +2593,8 @@ msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
 msgstr ""
-"Nautilus-en hedapenak arazketako instrukzioak atera behar dituen edo ez. True (egia) "
-"gisa ezarri arazketako instrukzioak aterateko."
+"Nautilus-en hedapenak arazketako instrukzioak atera behar dituen edo ez. "
+"True (egia) gisa ezarri arazketako instrukzioak aterateko."
 
 #: ../data/brasero.schemas.in.h:9
 msgid "Should brasero filter broken symbolic links"
@@ -2631,9 +2663,8 @@ msgid ""
 "true) as it's only a workaround for some drives/setups."
 msgstr ""
 "Cdrecord-ekin \"-immed\" bandera erabili behar den ala ez adierazten du. "
-"Kontuz erabili behar da (true ezarriz), izan ere, zenbait "
-"grabagailuren eta konfigurazio jakinen arazoak konpontzeko itzulinguru bat "
-"besterik ez da."
+"Kontuz erabili behar da (true ezarriz), izan ere, zenbait grabagailuren eta "
+"konfigurazio jakinen arazoak konpontzeko itzulinguru bat besterik ez da."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
@@ -3440,8 +3471,8 @@ msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Fitxategiak proiektutik kentzeko, hautatu haiek eta egin klik \"Kendu\" botoian "
-"edo sakatu \"Ezabatu\" tekla."
+"Fitxategiak proiektutik kentzeko, hautatu haiek eta egin klik \"Kendu\" "
+"botoian edo sakatu \"Ezabatu\" tekla."
 
 #: ../src/brasero-project.c:793
 #, c-format
@@ -3484,7 +3515,9 @@ msgstr "Proiektu berria sortu eta unekoaren aldaketak baztertzea nahi duzu?"
 
 #: ../src/brasero-project.c:1869
 msgid "If you choose to create a new empty project, all changes will be lost."
-msgstr "Proiektu huts berria sortzea aukeratzen baduzu, aldaketa guztiak galduko dira."
+msgstr ""
+"Proiektu huts berria sortzea aukeratzen baduzu, aldaketa guztiak galduko "
+"dira."
 
 #: ../src/brasero-project.c:1872
 msgid "_Discard Changes"
@@ -3498,7 +3531,9 @@ msgstr "Nahi duzu fitxategien hautapena baztertzea edo proiektu berriari gehitze
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
-msgstr "Proiektu huts berria sortzea aukeratzen baduzu, fitxategien hautapena baztertu egingo da."
+msgstr ""
+"Proiektu huts berria sortzea aukeratzen baduzu, fitxategien hautapena "
+"baztertu egingo da."
 
 #: ../src/brasero-project.c:1887
 msgid "_Discard File Selection"
@@ -4449,9 +4484,7 @@ msgstr "\"%s\" transkodetzen"
 
 #: ../plugins/transcode/burn-transcode.c:1768
 msgid "Converts any song file into a format suitable for audio CDs"
-msgstr ""
-"Edozein abesti fitxategi Audio CDentzako formatu egokira "
-"bihurtzen ditu"
+msgstr "Edozein abesti fitxategi Audio CDentzako formatu egokira bihurtzen ditu"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -4919,9 +4952,7 @@ msgstr "Bideo-fitxategia MPEG2 formatura bihurtzea"
 
 #: ../plugins/transcode/burn-vob.c:1293
 msgid "Converts any video file into a format suitable for Video DVDs"
-msgstr ""
-"Edozein bideo-fitxategi bideo DVDentzako formatu egokira "
-"bihurtzen du"
+msgstr "Edozein bideo-fitxategi bideo DVDentzako formatu egokira bihurtzen du"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:483
 msgid "Creates disc images suitable for SVCDs"
