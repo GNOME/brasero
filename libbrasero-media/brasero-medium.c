@@ -2701,7 +2701,7 @@ _next_CD_TEXT_pack (BraseroScsiCDTextData *cd_text,
 	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_UPC_EAN_ISRC &&
 	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_BLOCK_SIZE) {
 		current ++;
-		if (current > max)
+		if (current >= max)
 			return -1;
 	}
 
