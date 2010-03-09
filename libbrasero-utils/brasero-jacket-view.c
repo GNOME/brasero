@@ -1489,7 +1489,7 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 	gtk_widget_size_allocate (priv->edit, &view_alloc);
 
 	gtk_widget_set_allocation (widget, allocation);
-	if (GTK_WIDGET_REALIZED (widget) && gtk_widget_get_has_window (widget)) {
+	if (gtk_widget_get_realized (widget) && gtk_widget_get_has_window (widget)) {
 		gdk_window_move_resize (gtk_widget_get_window (widget),
 					allocation->x,
 					allocation->y,

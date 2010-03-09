@@ -108,7 +108,7 @@ brasero_uri_container_get_boundaries (BraseroURIContainer *container,
 
 	g_return_val_if_fail (BRASERO_IS_URI_CONTAINER (container), FALSE);
 
-	if (!GTK_WIDGET_MAPPED (container))
+	if (!gtk_widget_get_mapped (container))
 		return FALSE;
 
 	iface = BRASERO_URI_CONTAINER_GET_IFACE (container);
@@ -125,7 +125,7 @@ brasero_uri_container_get_selected_uri (BraseroURIContainer *container)
 
 	g_return_val_if_fail (BRASERO_IS_URI_CONTAINER (container), NULL);
 
-	if (!GTK_WIDGET_MAPPED (container))
+	if (!gtk_widget_get_mapped (container))
 		return NULL;
 
 	iface = BRASERO_URI_CONTAINER_GET_IFACE (container);
@@ -142,7 +142,7 @@ brasero_uri_container_get_selected_uris (BraseroURIContainer *container)
 
 	g_return_val_if_fail (BRASERO_IS_URI_CONTAINER (container), NULL);
 
-	if (!GTK_WIDGET_MAPPED (container))
+	if (!gtk_widget_get_mapped (container))
 		return NULL;
 
 	iface = BRASERO_URI_CONTAINER_GET_IFACE (container);

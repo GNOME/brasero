@@ -2082,7 +2082,7 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	if (GTK_WIDGET_REALIZED (priv->tree)) {
+	if (gtk_widget_get_realized (priv->tree)) {
 		result = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (priv->tree),
 							event->x,
 							event->y,

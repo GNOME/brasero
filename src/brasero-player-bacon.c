@@ -202,7 +202,7 @@ brasero_player_bacon_size_allocate (GtkWidget *widget,
 	g_return_if_fail (widget != NULL);
 	bacon = BRASERO_PLAYER_BACON (widget);
 
-	if (!GTK_WIDGET_REALIZED (widget))
+	if (!gtk_widget_get_realized (widget))
 		return;
 
 	if (bacon->priv->xoverlay) {

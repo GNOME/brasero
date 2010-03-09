@@ -2338,7 +2338,7 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 
 	project->priv->manager = manager;
 
-	if (GTK_WIDGET_REALIZED (project->priv->name_display))
+	if (gtk_widget_get_realized (project->priv->name_display))
 		gtk_widget_grab_focus (project->priv->name_display);
 }
 
