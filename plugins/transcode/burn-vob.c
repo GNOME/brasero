@@ -62,6 +62,8 @@ struct _BraseroVobPrivate
 	GstElement *audio;
 	GstElement *video;
 
+	GstElement *source;
+
 	BraseroStreamFormat format;
 
 	guint svcd:1;
@@ -73,6 +75,11 @@ struct _BraseroVobPrivate
 static GObjectClass *parent_class = NULL;
 
 
+/* This is for 3 seconds of buffering (default is 1) */
+#define MAX_SIZE_BUFFER		200		/* Use unlimited (0) if it does not work */
+#define MAX_SIZE_BYTES		10485760	/* Use unlimited (0) if it does not work */
+#define MAX_SIZE_TIME		3000000000LL    /* Use unlimited (0) if it does not work */
+
 static void
 brasero_vob_stop_pipeline (BraseroVob *vob)
 {
@@ -81,6 +88,8 @@ brasero_vob_stop_pipeline (BraseroVob *vob)
 	priv = BRASERO_VOB_PRIVATE (vob);
 	if (!priv->pipeline)
 		return;
+
+	priv->source = NULL;
 
 	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
 	gst_object_unref (GST_OBJECT (priv->pipeline));
@@ -310,6 +319,11 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
+	g_object_set (queue,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	/* audioresample */
 	resample = gst_element_factory_make ("audioresample", NULL);
@@ -350,6 +364,11 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+	g_object_set (queue1,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	/* create a filter */
 	filter = gst_element_factory_make ("capsfilter", NULL);
@@ -420,6 +439,11 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
+	g_object_set (queue,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
@@ -468,7 +492,12 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
-
+	g_object_set (queue1,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
+	
 	/* create a filter */
 	filter = gst_element_factory_make ("capsfilter", NULL);
 	if (filter == NULL) {
@@ -570,7 +599,12 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 			     "\"Queue\"");
 		goto error;
 	}
-	gst_bin_add (GST_BIN (priv->pipeline), queue);
+	gst_bin_add (GST_BIN (priv->pipeline), queue);;
+	g_object_set (queue,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
@@ -646,6 +680,11 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+	g_object_set (queue1,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	if (!gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL)) {
 		BRASERO_JOB_LOG (vob, "Error while linking pads");
@@ -764,6 +803,11 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
+	g_object_set (queue,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	/* framerate and video type control */
 	framerate = gst_element_factory_make ("videorate", NULL);
@@ -971,6 +1015,15 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 					      NULL);	
 			}
 		}
+		else if (priv->svcd) {
+			/* This format only supports 4:3 or 16:9. Enforce one of
+			 * the two.
+			 * FIXME: there should be a way to choose the closest.*/
+			BRASERO_JOB_LOG (vob, "Setting ratio 4:3");
+					 g_object_set (encode,
+						       "aspect", 2,
+						       NULL);
+		}
 	}
 	else {
 		/* VCDs only support 4:3 */
@@ -991,6 +1044,11 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+	g_object_set (queue1,
+		      "max-size-buffers", MAX_SIZE_BUFFER,
+		      "max-size-bytes", MAX_SIZE_BYTES,
+		      "max-size-time", MAX_SIZE_TIME,
+		      NULL);
 
 	if (!gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, queue1, NULL)) {
 		BRASERO_JOB_LOG (vob, "Error while linking pads");
@@ -1053,6 +1111,8 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 	g_object_set (source,
 		      "typefind", FALSE,
 		      NULL);
+
+	priv->source = source;
 
 	/* decode */
 	decode = gst_element_factory_make ("decodebin", NULL);
@@ -1216,34 +1276,53 @@ brasero_vob_start (BraseroJob *job,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroBurnResult
-brasero_vob_clock_tick (BraseroJob *job)
+static gdouble
+brasero_vob_get_progress_from_element (BraseroJob *job,
+				       GstElement *element)
 {
 	gint64 position = 0;
 	gint64 duration = 0;
-	BraseroVobPrivate *priv;
 	GstFormat format = GST_FORMAT_TIME;
 
-	priv = BRASERO_VOB_PRIVATE (job);
+	gst_element_query_duration (element, &format, &duration);
+	gst_element_query_position (element, &format, &position);
 
-	gst_element_query_duration (priv->pipeline, &format, &duration);
-	gst_element_query_position (priv->pipeline, &format, &position);
-	if (duration <= 0 || position <= 0) {
+	if (duration <= 0 || position < 0) {
 		format = GST_FORMAT_BYTES;
 		duration = 0;
 		position = 0;
-		gst_element_query_duration (priv->pipeline, &format, &duration);
-		gst_element_query_position (priv->pipeline, &format, &position);
+		gst_element_query_duration (element, &format, &duration);
+		gst_element_query_position (element, &format, &position);
 	}
 
-	if (duration > 0 && position > 0) {
+	if (duration > 0 && position >= 0) {
 		gdouble progress;
 
 		progress = (gdouble) position / (gdouble) duration;
 		brasero_job_set_progress (job, progress);
+		return TRUE;
 	}
-	else
-		brasero_job_set_progress (job, -1.0);
+
+	return FALSE;
+}
+
+static BraseroBurnResult
+brasero_vob_clock_tick (BraseroJob *job)
+{
+
+	BraseroVobPrivate *priv;
+
+	priv = BRASERO_VOB_PRIVATE (job);
+
+	if (brasero_vob_get_progress_from_element (job, priv->pipeline))
+		return BRASERO_BURN_OK;
+
+	BRASERO_JOB_LOG (job, "Pipeline failed to report position");
+
+	if (brasero_vob_get_progress_from_element (job, priv->source))
+		return BRASERO_BURN_OK;
+
+	BRASERO_JOB_LOG (job, "Source failed to report position");
 
 	return BRASERO_BURN_OK;
 }
