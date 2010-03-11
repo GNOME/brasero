@@ -316,6 +316,7 @@ brasero_task_ctx_set_next_track (BraseroTaskCtx *self)
 	priv->session_bytes += priv->track_bytes;
 	priv->track_bytes = 0;
 	priv->last_written = 0;
+	priv->progress = 0;
 
 	if (priv->current_track)
 		g_object_unref (priv->current_track);
