@@ -865,12 +865,8 @@ brasero_app_data (BraseroApp *app,
 		uri = g_file_get_uri (file);
 		g_object_unref (file);
 
-		if (!brasero_track_data_cfg_add (track, uri, NULL)) {
-			g_free (uri);
-			g_object_unref (session);
-			return;
-		}
-
+		/* Ignore the return value */
+		brasero_track_data_cfg_add (track, uri, NULL);
 		g_free (uri);
 	}
 
