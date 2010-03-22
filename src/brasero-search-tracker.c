@@ -19,7 +19,7 @@
 
 #include <stdlib.h>
 
-#include <libtracker-client/tracker.h>
+#include <libtracker-client/tracker-client.h>
 
 #include "brasero-search-tracker.h"
 #include "brasero-search-engine.h"
