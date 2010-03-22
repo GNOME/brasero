@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-01-14 03:29+0000\n"
-"PO-Revision-Date: 2010-01-17 15:11+0100\n"
+"POT-Creation-Date: 2010-03-04 13:24+0000\n"
+"PO-Revision-Date: 2010-03-22 08:41+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../src/brasero-search.c:240
@@ -193,7 +193,7 @@ msgstr ""
 msgid "\"%s\" is not suitable for audio or video media"
 msgstr "«%s» no es un archivo multimedia de sonido o vídeo adecuado"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:377
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
 msgstr "Analizando archivos de vídeo"
 
@@ -265,7 +265,7 @@ msgstr "Analizando archivos"
 #: ../libbrasero-burn/brasero-burn-options.c:471
 #: ../nautilus/nautilus-burn-extension.c:237 ../src/brasero-project.c:1266
 #: ../libbrasero-burn/brasero-track-data.c:772
-#: ../libbrasero-burn/brasero-track-stream.c:398
+#: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "No hay archivos para grabar en el disco"
@@ -1925,15 +1925,15 @@ msgstr "No se pudo crear un directorio (%s)"
 msgid "Error while loading the project."
 msgstr "Error al cargar proyecto."
 
-#: ../src/brasero-project-parse.c:452
+#: ../src/brasero-project-parse.c:454
 msgid "The project could not be opened"
 msgstr "No se pudo abrir el proyecto"
 
-#: ../src/brasero-project-parse.c:461
+#: ../src/brasero-project-parse.c:463
 msgid "The file is empty"
 msgstr "El archivo está vacío"
 
-#: ../src/brasero-project-parse.c:540 ../src/brasero-project-parse.c:605
+#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
 msgid "It does not seem to be a valid Brasero project"
 msgstr "No parece ser un proyecto de Brasero válido"
 
@@ -2002,7 +2002,7 @@ msgid "%s:%s min"
 msgstr "%s:%s min"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-media/brasero-medium-selection.c:146
+#: ../libbrasero-media/brasero-medium-selection.c:155
 #, c-format
 msgid "%s: empty"
 msgstr "%s: vacío"
@@ -2014,17 +2014,17 @@ msgstr "%s: vacío"
 #. * second %s is the space (time) used by data on the disc.
 #. * I really don't know if I should set this string as
 #. * translatable.
-#: ../libbrasero-media/brasero-medium-selection.c:162
-#: ../libbrasero-media/brasero-medium-selection.c:174
+#: ../libbrasero-media/brasero-medium-selection.c:171
+#: ../libbrasero-media/brasero-medium-selection.c:183
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../libbrasero-media/brasero-medium-selection.c:453
+#: ../libbrasero-media/brasero-medium-selection.c:462
 msgid "Searching for available discs"
 msgstr "Buscando discos disponibles"
 
-#: ../libbrasero-media/brasero-medium-selection.c:462
+#: ../libbrasero-media/brasero-medium-selection.c:471
 msgid "No disc available"
 msgstr "No hay ningún disco disponible"
 
@@ -2323,7 +2323,7 @@ msgstr ""
 "Nautilus"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:295
+#: ../nautilus/nautilus-burn-extension.c:297
 msgid "CD/DVD Creator"
 msgstr "Creador de CD/DVD"
 
@@ -2336,53 +2336,53 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "Arrastre o copie los archivos de abajo para grabarlos al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:151
-#: ../nautilus/nautilus-burn-extension.c:348
+#: ../nautilus/nautilus-burn-extension.c:350
 msgid "Write to Disc"
 msgstr "Grabar al disco"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:718
+#: ../nautilus/nautilus-burn-extension.c:730
 msgid "Write contents to a CD or DVD"
 msgstr "Graba el contenido en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:286
+#: ../nautilus/nautilus-burn-extension.c:288
 msgid "Disc name"
 msgstr "Nombre del disco"
 
-#: ../nautilus/nautilus-burn-extension.c:375
+#: ../nautilus/nautilus-burn-extension.c:377
 msgid "Copy Disc"
 msgstr "Copiar disco"
 
-#: ../nautilus/nautilus-burn-extension.c:569
-#: ../nautilus/nautilus-burn-extension.c:717
+#: ../nautilus/nautilus-burn-extension.c:578
+#: ../nautilus/nautilus-burn-extension.c:729
 msgid "_Write to Disc…"
 msgstr "_Grabar al disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:570
+#: ../nautilus/nautilus-burn-extension.c:579
 msgid "Write disc image to a CD or DVD"
 msgstr "Grabar la imagen de disco en un CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:640
+#: ../nautilus/nautilus-burn-extension.c:652
 msgid "_Copy Disc…"
 msgstr "_Copiar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:641
+#: ../nautilus/nautilus-burn-extension.c:653
 msgid "Create a copy of this CD or DVD"
 msgstr "Crea una copia de este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:654
+#: ../nautilus/nautilus-burn-extension.c:666
 msgid "_Blank Disc…"
 msgstr "_Borrar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:655
+#: ../nautilus/nautilus-burn-extension.c:667
 msgid "Blank this CD or DVD"
 msgstr "Borrar este CD o DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:671
+#: ../nautilus/nautilus-burn-extension.c:683
 msgid "_Check Disc…"
 msgstr "_Comprobar disco…"
 
-#: ../nautilus/nautilus-burn-extension.c:672
+#: ../nautilus/nautilus-burn-extension.c:684
 msgid "Check the data integrity on this CD or DVD"
 msgstr "Verificar la integridad de los datos en este CD o DVD"
 
@@ -3137,12 +3137,10 @@ msgstr ""
 "contenido se puede grabar."
 
 #: ../src/brasero-data-disc.c:627
-#| msgid "Burn as _File"
 msgid "Burn as _Data"
 msgstr "Grabar como _datos"
 
 #: ../src/brasero-data-disc.c:629
-#| msgid "Burn _image"
 msgid "Burn as _Image"
 msgstr "Grabar como _imagen"
 
@@ -3891,7 +3889,7 @@ msgstr "Grabar una _imagen"
 
 #: ../src/brasero-project-type-chooser.c:291
 msgid "Last _Unsaved Project"
-msgstr "_Último proyecto sin guardar"
+msgstr "Últi_mo proyecto sin guardar"
 
 #: ../src/brasero-project-type-chooser.c:307
 msgid "Load the last project that was not burned and not saved"
