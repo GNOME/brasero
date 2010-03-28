@@ -11,9 +11,9 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-12-07 20:53+0000\n"
-"PO-Revision-Date: 2009-12-03 01:03+0800\n"
-"Last-Translator: Aron Xu <happyaron.xu@gmail.com>\n"
+"POT-Creation-Date: 2010-03-17 22:09+0000\n"
+"PO-Revision-Date: 2010-03-28 21:28+0800\n"
+"Last-Translator: Eleanor Chen <chenyueg@gmail.com>\n"
 "Language-Team: Chinese(simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -67,8 +67,7 @@ msgid "\"%s\" could not be found in the path"
 msgstr "“%s” 无法在路径中找到"
 
 #: ../libbrasero-burn/burn-plugin.c:682
-#, fuzzy, c-format
-#| msgid "\"%s\" Gstreamer plugin could not be found"
+#, c-format
 msgid "\"%s\" GStreamer plugin could not be found"
 msgstr "“%s” Gstreamer 插件没有找到"
 
@@ -103,52 +102,52 @@ msgstr "正在准备复制音频光盘"
 msgid "Copy tracks from an audio CD with all associated information"
 msgstr "从光盘中复制音轨与所有关联信息"
 
-#: ../libbrasero-burn/brasero-video-options.c:438
+#: ../libbrasero-burn/brasero-video-options.c:451
 msgid "Video format:"
 msgstr "视频格式："
 
-#: ../libbrasero-burn/brasero-video-options.c:449
+#: ../libbrasero-burn/brasero-video-options.c:462
 msgid "_NTSC"
 msgstr "_NTSC"
 
-#: ../libbrasero-burn/brasero-video-options.c:451
+#: ../libbrasero-burn/brasero-video-options.c:464
 msgid "Format used mostly on the North American continent"
 msgstr "北美大陆最常用格式"
 
-#: ../libbrasero-burn/brasero-video-options.c:464
+#: ../libbrasero-burn/brasero-video-options.c:477
 msgid "_PAL/SECAM"
 msgstr "_PAL/SECAM"
 
-#: ../libbrasero-burn/brasero-video-options.c:466
+#: ../libbrasero-burn/brasero-video-options.c:479
 msgid "Format used mostly in Europe"
 msgstr "欧洲最常用格式"
 
-#: ../libbrasero-burn/brasero-video-options.c:480
+#: ../libbrasero-burn/brasero-video-options.c:493
 msgid "Native _format"
 msgstr "原生格式(_F)"
 
-#: ../libbrasero-burn/brasero-video-options.c:495
+#: ../libbrasero-burn/brasero-video-options.c:508
 msgid "Aspect ratio:"
 msgstr "高宽比例："
 
-#: ../libbrasero-burn/brasero-video-options.c:507
+#: ../libbrasero-burn/brasero-video-options.c:519
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../libbrasero-burn/brasero-video-options.c:522
+#: ../libbrasero-burn/brasero-video-options.c:534
 msgid "_16:9"
 msgstr "_16:9"
 
 #. Video options for (S)VCD
-#: ../libbrasero-burn/brasero-video-options.c:537
+#: ../libbrasero-burn/brasero-video-options.c:549
 msgid "VCD type:"
 msgstr "VCD 类型："
 
-#: ../libbrasero-burn/brasero-video-options.c:550
+#: ../libbrasero-burn/brasero-video-options.c:562
 msgid "Create an SVCD"
 msgstr "创建一个 SVCD"
 
-#: ../libbrasero-burn/brasero-video-options.c:565
+#: ../libbrasero-burn/brasero-video-options.c:577
 msgid "Create a VCD"
 msgstr "创建一个 VCD"
 
@@ -187,7 +186,7 @@ msgstr "无法向音/视频光盘添加播放列表"
 msgid "\"%s\" is not suitable for audio or video media"
 msgstr "“%s”与音频或视频媒体不适合"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:377
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
 msgstr "正在分析视频文件"
 
@@ -256,9 +255,9 @@ msgstr "正在分析文件"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2444
 #: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:214 ../src/brasero-project.c:1266
+#: ../nautilus/nautilus-burn-extension.c:237 ../src/brasero-project.c:1266
 #: ../libbrasero-burn/brasero-track-data.c:772
-#: ../libbrasero-burn/brasero-track-stream.c:398
+#: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "没有要写入光盘的文件"
@@ -310,21 +309,21 @@ msgstr "“%s” 不能被 Gstreamer 处理。"
 #: ../plugins/transcode/burn-transcode.c:609
 #: ../plugins/transcode/burn-transcode.c:621
 #: ../plugins/transcode/burn-transcode.c:646
-#: ../plugins/transcode/burn-vob.c:308 ../plugins/transcode/burn-vob.c:322
-#: ../plugins/transcode/burn-vob.c:336 ../plugins/transcode/burn-vob.c:348
-#: ../plugins/transcode/burn-vob.c:360 ../plugins/transcode/burn-vob.c:418
-#: ../plugins/transcode/burn-vob.c:430 ../plugins/transcode/burn-vob.c:442
+#: ../plugins/transcode/burn-vob.c:317 ../plugins/transcode/burn-vob.c:336
+#: ../plugins/transcode/burn-vob.c:350 ../plugins/transcode/burn-vob.c:362
+#: ../plugins/transcode/burn-vob.c:379 ../plugins/transcode/burn-vob.c:437
 #: ../plugins/transcode/burn-vob.c:454 ../plugins/transcode/burn-vob.c:466
-#: ../plugins/transcode/burn-vob.c:478 ../plugins/transcode/burn-vob.c:569
-#: ../plugins/transcode/burn-vob.c:581 ../plugins/transcode/burn-vob.c:593
-#: ../plugins/transcode/burn-vob.c:605 ../plugins/transcode/burn-vob.c:627
-#: ../plugins/transcode/burn-vob.c:644 ../plugins/transcode/burn-vob.c:685
-#: ../plugins/transcode/burn-vob.c:762 ../plugins/transcode/burn-vob.c:774
-#: ../plugins/transcode/burn-vob.c:789 ../plugins/transcode/burn-vob.c:801
-#: ../plugins/transcode/burn-vob.c:812 ../plugins/transcode/burn-vob.c:823
-#: ../plugins/transcode/burn-vob.c:989 ../plugins/transcode/burn-vob.c:1048
-#: ../plugins/transcode/burn-vob.c:1063 ../plugins/transcode/burn-vob.c:1084
-#: ../plugins/transcode/burn-vob.c:1111
+#: ../plugins/transcode/burn-vob.c:478 ../plugins/transcode/burn-vob.c:490
+#: ../plugins/transcode/burn-vob.c:507 ../plugins/transcode/burn-vob.c:598
+#: ../plugins/transcode/burn-vob.c:615 ../plugins/transcode/burn-vob.c:627
+#: ../plugins/transcode/burn-vob.c:639 ../plugins/transcode/burn-vob.c:661
+#: ../plugins/transcode/burn-vob.c:678 ../plugins/transcode/burn-vob.c:724
+#: ../plugins/transcode/burn-vob.c:801 ../plugins/transcode/burn-vob.c:818
+#: ../plugins/transcode/burn-vob.c:833 ../plugins/transcode/burn-vob.c:845
+#: ../plugins/transcode/burn-vob.c:856 ../plugins/transcode/burn-vob.c:867
+#: ../plugins/transcode/burn-vob.c:1042 ../plugins/transcode/burn-vob.c:1106
+#: ../plugins/transcode/burn-vob.c:1123 ../plugins/transcode/burn-vob.c:1144
+#: ../plugins/transcode/burn-vob.c:1171
 #, c-format
 msgid "%s element could not be created"
 msgstr "无法创建 %s 元素"
@@ -338,7 +337,7 @@ msgstr "无法创建 %s 元素"
 #: ../libbrasero-burn/brasero-burn.c:2821 ../libbrasero-burn/burn-job.c:1217
 #: ../libbrasero-burn/burn-job.c:1226
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
-#: ../nautilus/nautilus-burn-extension.c:192 ../src/brasero-app.c:764
+#: ../nautilus/nautilus-burn-extension.c:215 ../src/brasero-app.c:764
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
 #: ../plugins/cdrkit/burn-wodim.c:707 ../plugins/cdrkit/burn-wodim.c:822
@@ -950,10 +949,8 @@ msgid ""
 msgstr "如果您不想写入为映像文件，请插入一张可写 CD 或 DVD 盘片。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1565
-#, fuzzy
-#| msgid "Creating Image"
 msgid "Create _Image"
-msgstr "正在创建映像"
+msgstr "正在创建映像(_I)"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:307
@@ -961,10 +958,8 @@ msgid "_Copy"
 msgstr "复制(_C)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:310
-#, fuzzy
-#| msgid "Make _More Copies"
 msgid "Make _Several Copies"
-msgstr "制作更多副本(_M)"
+msgstr "制作多份副本(_S)"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1496
@@ -972,10 +967,8 @@ msgid "_Burn"
 msgstr "刻录(_B)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1493
-#, fuzzy
-#| msgid "_Burn Several Discs"
 msgid "Burn _Several Copies"
-msgstr "刻录多张光盘(_B)"
+msgstr "刻录多张光盘(_S)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:938
 msgid "Would you like to burn the selection of files across several media?"
@@ -1007,7 +1000,7 @@ msgid "This is not supported by the current active burning backend."
 msgstr "当前激活的刻录后端不支持该操作。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:470
-#: ../nautilus/nautilus-burn-extension.c:213
+#: ../nautilus/nautilus-burn-extension.c:236
 msgid "Please add files."
 msgstr "请添加文件。"
 
@@ -1131,12 +1124,10 @@ msgid ""
 msgstr "只选择了一个文件 (“%s”)。该文件为光盘映像，其内容可以被刻录。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
-#: ../src/brasero-data-disc.c:627
 msgid "Burn as _File"
 msgstr "作为文件来刻录(_F)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:813
-#: ../src/brasero-data-disc.c:629
 msgid "Burn _Contents…"
 msgstr "刻录内容(_C)"
 
@@ -1174,8 +1165,7 @@ msgstr "%s (库)"
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn-options.c:1197
 #: ../libbrasero-burn/brasero-burn.c:1717 ../src/brasero-project.c:1382
-#, fuzzy, c-format
-#| msgid "%s (Gstreamer plugin)"
+#, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (Gstreamer 插件)"
 
@@ -1263,11 +1253,10 @@ msgid "There is no track to burn"
 msgstr "没有要刻录的音轨"
 
 #: ../libbrasero-burn/brasero-burn.c:1857
-#, fuzzy
 msgid ""
 "Please install the following required applications and libraries manually "
 "and try again:"
-msgstr "请手动安装以下内容然后重新尝试："
+msgstr "请手动安装以下程序和库后重新尝试："
 
 #: ../libbrasero-burn/brasero-burn.c:2610
 #, c-format
@@ -1881,15 +1870,15 @@ msgstr "无法创建目录 (%s)"
 msgid "Error while loading the project."
 msgstr "导入项目时发生错误。"
 
-#: ../src/brasero-project-parse.c:452
+#: ../src/brasero-project-parse.c:454
 msgid "The project could not be opened"
 msgstr "该项目无法打开"
 
-#: ../src/brasero-project-parse.c:461
+#: ../src/brasero-project-parse.c:463
 msgid "The file is empty"
 msgstr "此为空文件夹"
 
-#: ../src/brasero-project-parse.c:540 ../src/brasero-project-parse.c:605
+#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
 msgid "It does not seem to be a valid Brasero project"
 msgstr "这似乎不是一个有效的Brasero项目"
 
@@ -1956,7 +1945,7 @@ msgid "%s:%s min"
 msgstr "%s:%s 分"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-media/brasero-medium-selection.c:146
+#: ../libbrasero-media/brasero-medium-selection.c:155
 #, c-format
 msgid "%s: empty"
 msgstr "%s：空白"
@@ -1968,17 +1957,17 @@ msgstr "%s：空白"
 #. * second %s is the space (time) used by data on the disc.
 #. * I really don't know if I should set this string as
 #. * translatable.
-#: ../libbrasero-media/brasero-medium-selection.c:162
-#: ../libbrasero-media/brasero-medium-selection.c:174
+#: ../libbrasero-media/brasero-medium-selection.c:171
+#: ../libbrasero-media/brasero-medium-selection.c:183
 #, c-format
 msgid "%s: %s"
 msgstr "%s：%s"
 
-#: ../libbrasero-media/brasero-medium-selection.c:453
+#: ../libbrasero-media/brasero-medium-selection.c:462
 msgid "Searching for available discs"
 msgstr "正在搜索可用的盘片"
 
-#: ../libbrasero-media/brasero-medium-selection.c:462
+#: ../libbrasero-media/brasero-medium-selection.c:471
 msgid "No disc available"
 msgstr "没有可用盘片"
 
@@ -2274,7 +2263,7 @@ msgid ""
 msgstr "允许刻录已加入到 nautilus 中的“CD/DVD 创建器”文件夹的文件"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:272
+#: ../nautilus/nautilus-burn-extension.c:297
 msgid "CD/DVD Creator"
 msgstr "CD/DVD 创建器"
 
@@ -2287,53 +2276,53 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "拖曳或复制文件到下面以将其写入盘片"
 
 #: ../nautilus/nautilus-burn-bar.c:151
-#: ../nautilus/nautilus-burn-extension.c:323
+#: ../nautilus/nautilus-burn-extension.c:350
 msgid "Write to Disc"
 msgstr "写入到盘片"
 
 #: ../nautilus/nautilus-burn-bar.c:163
-#: ../nautilus/nautilus-burn-extension.c:687
+#: ../nautilus/nautilus-burn-extension.c:730
 msgid "Write contents to a CD or DVD"
 msgstr "将内容写入到一张光盘或DVD盘"
 
-#: ../nautilus/nautilus-burn-extension.c:263
+#: ../nautilus/nautilus-burn-extension.c:288
 msgid "Disc name"
 msgstr "盘片名"
 
-#: ../nautilus/nautilus-burn-extension.c:348
+#: ../nautilus/nautilus-burn-extension.c:377
 msgid "Copy Disc"
 msgstr "复制光盘"
 
-#: ../nautilus/nautilus-burn-extension.c:540
-#: ../nautilus/nautilus-burn-extension.c:686
+#: ../nautilus/nautilus-burn-extension.c:578
+#: ../nautilus/nautilus-burn-extension.c:729
 msgid "_Write to Disc…"
 msgstr "写入到盘片(_W)"
 
-#: ../nautilus/nautilus-burn-extension.c:541
+#: ../nautilus/nautilus-burn-extension.c:579
 msgid "Write disc image to a CD or DVD"
 msgstr "将光盘映像写入到一张光盘或 DVD 盘"
 
-#: ../nautilus/nautilus-burn-extension.c:609
+#: ../nautilus/nautilus-burn-extension.c:652
 msgid "_Copy Disc…"
 msgstr "复制光盘(_C)"
 
-#: ../nautilus/nautilus-burn-extension.c:610
+#: ../nautilus/nautilus-burn-extension.c:653
 msgid "Create a copy of this CD or DVD"
 msgstr "创建这张 CD/DVD 的副本"
 
-#: ../nautilus/nautilus-burn-extension.c:623
+#: ../nautilus/nautilus-burn-extension.c:666
 msgid "_Blank Disc…"
 msgstr "擦除光盘(_B)"
 
-#: ../nautilus/nautilus-burn-extension.c:624
+#: ../nautilus/nautilus-burn-extension.c:667
 msgid "Blank this CD or DVD"
 msgstr "清空这张光盘或 DVD 盘"
 
-#: ../nautilus/nautilus-burn-extension.c:640
+#: ../nautilus/nautilus-burn-extension.c:683
 msgid "_Check Disc…"
 msgstr "检查盘片(_C)"
 
-#: ../nautilus/nautilus-burn-extension.c:641
+#: ../nautilus/nautilus-burn-extension.c:684
 msgid "Check the data integrity on this CD or DVD"
 msgstr "检查 CD 或 DVD 盘片上数据的完整性"
 
@@ -2435,20 +2424,20 @@ msgstr "关于"
 msgid "Disc Burner"
 msgstr "光盘刻录器"
 
-#: ../src/brasero-app.c:767 ../src/brasero-app.c:800 ../src/brasero-app.c:1459
+#: ../src/brasero-app.c:767 ../src/brasero-app.c:800 ../src/brasero-app.c:1455
 msgid "Error while loading the project"
 msgstr "载入项目时发生错误"
 
-#: ../src/brasero-app.c:809 ../src/brasero-app.c:838 ../src/brasero-app.c:902
+#: ../src/brasero-app.c:809 ../src/brasero-app.c:838 ../src/brasero-app.c:898
 #: ../src/brasero-project.c:1265
 msgid "Please add files to the project."
 msgstr "请添加文件到项目中。"
 
-#: ../src/brasero-app.c:810 ../src/brasero-app.c:839 ../src/brasero-app.c:903
+#: ../src/brasero-app.c:810 ../src/brasero-app.c:839 ../src/brasero-app.c:899
 msgid "The project is empty"
 msgstr "项目为空"
 
-#: ../src/brasero-app.c:1157
+#: ../src/brasero-app.c:1153
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -2458,7 +2447,7 @@ msgstr ""
 "Brasero 是自由软件；您可以在由自由软件基金会(Free Software Foundation)发布的 "
 "GNU 通用公共许可证条款下进行分发或修改；适用于版本2或(由您选择)任何后续版本。"
 
-#: ../src/brasero-app.c:1162
+#: ../src/brasero-app.c:1158
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -2468,7 +2457,7 @@ msgstr ""
 "Brasero 分发是希望它有所用处，但是没有任何担保；没有即便是暗示的商品授权和适"
 "当其他特殊目的。更多细节请参见 GNU 通用公共许可证。"
 
-#: ../src/brasero-app.c:1167
+#: ../src/brasero-app.c:1163
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -2478,11 +2467,11 @@ msgstr ""
 "到 Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
 "MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1175
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "一个使用简单的  CD/DVD GNOME 刻录程序"
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1192
 msgid "Brasero Homepage"
 msgstr "Brasero 主页"
 
@@ -2494,7 +2483,7 @@ msgstr "Brasero 主页"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1208
+#: ../src/brasero-app.c:1204
 msgid "translator-credits"
 msgstr ""
 "甘露(Gan Lu) <rhythm.gan@gmail.com>\n"
@@ -2521,20 +2510,20 @@ msgstr ""
 "  甘露 (Lu Gan) https://launchpad.net/~rhythm-gan\n"
 "  鲁艺 https://launchpad.net/~johnlu1991"
 
-#: ../src/brasero-app.c:1457
+#: ../src/brasero-app.c:1453
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "项目“%s”不存在"
 
-#: ../src/brasero-app.c:1533 ../src/brasero-app.c:1539
+#: ../src/brasero-app.c:1529 ../src/brasero-app.c:1535
 msgid "_Recent Projects"
 msgstr "最近的项目(_R)"
 
-#: ../src/brasero-app.c:1534
+#: ../src/brasero-app.c:1530
 msgid "Display the projects recently opened"
 msgstr "显示最近打开过的项目"
 
-#: ../src/brasero-app.c:1886 ../data/brasero.desktop.in.in.h:2
+#: ../src/brasero-app.c:1882 ../data/brasero.desktop.in.in.h:2
 msgid "Brasero Disc Burner"
 msgstr "Brasero 光盘刻录器"
 
@@ -2690,11 +2679,8 @@ msgstr "从这个项目移除选择的文件"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
-#, fuzzy
-#| msgctxt "disc"
-#| msgid "Image files"
 msgid "Paste files"
-msgstr "映像文件"
+msgstr "粘贴文件"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
@@ -3085,6 +3071,14 @@ msgid ""
 "contents can be burned"
 msgstr "只选择了一个文件(“%s”)。该文件为光盘映像，其内容可以被刻录。"
 
+#: ../src/brasero-data-disc.c:627
+msgid "Burn as _Data"
+msgstr "作为数据来刻录(_D)"
+
+#: ../src/brasero-data-disc.c:629
+msgid "Burn as _Image"
+msgstr "刻录映像(_I)"
+
 #: ../src/brasero-data-disc.c:678 ../src/brasero-data-disc.c:699
 #: ../src/brasero-data-disc.c:720
 #, c-format
@@ -3427,13 +3421,13 @@ msgstr "刻录本光盘"
 msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
-msgstr ""
+msgstr "点击添加按钮或者将文件拖放进此区域以添加文件"
 
 #: ../src/brasero-project.c:686
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
-msgstr ""
+msgstr "若要删除文件，请选择你要删除的文件并点击删除按钮或者按Delete键"
 
 #: ../src/brasero-project.c:793
 #, c-format
@@ -3471,43 +3465,30 @@ msgid ""
 msgstr "您确定要创建新项目并丢弃当前项目的改变吗?"
 
 #: ../src/brasero-project.c:1869
-#, fuzzy
-#| msgid ""
-#| "If you choose to create a new project, all changes made will be lost."
 msgid "If you choose to create a new empty project, all changes will be lost."
-msgstr "如果您选择创建一个新项目，所有的改变都将丢失。"
+msgstr "如果您选择创建一个新的空项目，所有的改变都将丢失。"
 
 #: ../src/brasero-project.c:1872
 msgid "_Discard Changes"
 msgstr "放弃修改(_D)"
 
 #: ../src/brasero-project.c:1880
-#, fuzzy
-#| msgid ""
-#| "Do you want to burn \"%s\" to a disc or add it in to the data project?"
 msgid "Do you want to discard the file selection or add it to the new project?"
-msgstr "您想刻录 \"%s\" 到光盘或是添加到数据项目？"
+msgstr "你想要放弃这个文件或者将它添加到一个新的项目中吗？"
 
 #: ../src/brasero-project.c:1885 ../src/brasero-project.c:1904
-#, fuzzy
-#| msgid ""
-#| "If you choose to create a new project, all changes made will be lost."
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
-msgstr "如果您选择创建一个新项目，所有的改变都将丢失。"
+msgstr "如果您选择创建一个新的空项目，所有的选择都将丢失。"
 
 #: ../src/brasero-project.c:1887
-#, fuzzy
-#| msgid "_Discard File"
 msgid "_Discard File Selection"
-msgstr "放弃文件(_D)"
+msgstr "放弃文件选择(_D)"
 
 #: ../src/brasero-project.c:1891
-#, fuzzy
-#| msgid "_Keep Current Location"
 msgid "_Keep File Selection"
-msgstr "保持当前位置(_K)"
+msgstr "保持文件选择(_K)"
 
 #: ../src/brasero-project.c:1899
 msgid "Do you really want to create a new project and discard the current one?"
@@ -3954,11 +3935,11 @@ msgstr "单击这里以不用超刻"
 
 #: ../src/main.c:123
 msgid "DEVICE PATH"
-msgstr ""
+msgstr "设备路径"
 
 #: ../src/main.c:126
 msgid "Create an image file instead of burning"
-msgstr ""
+msgstr "创建一个映像文件而不是刻录"
 
 #: ../src/main.c:130
 msgid "Open an audio project adding the URIs given on the command line"
@@ -3995,7 +3976,7 @@ msgstr "将要刻录的映像文件的 URI 地址(自动检测)"
 #: ../src/main.c:151
 #, fuzzy
 msgid "PATH TO IMAGE"
-msgstr "设备路径"
+msgstr "映像路径"
 
 #: ../src/main.c:154
 msgid "Force brasero to display the project selection page"
@@ -4014,9 +3995,8 @@ msgid "Burn the contents of burn:// URI"
 msgstr "刻录 burn:// URI 的内容"
 
 #: ../src/main.c:170
-#, fuzzy
 msgid "Start burning immediately."
-msgstr "cdrkit 刻录套件"
+msgstr "马上开始刻录"
 
 #: ../src/main.c:174
 msgid ""
@@ -4041,14 +4021,13 @@ msgstr "父窗口的 XID"
 
 #. Translators: %s is the path of drive
 #: ../src/main.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot write."
-msgstr "无法读取“%s”"
+msgstr "无法写入“%s”"
 
 #: ../src/main.c:242 ../src/main.c:256
-#, fuzzy
 msgid "Wrong command line option."
-msgstr "使用了不兼容的命令行选项。"
+msgstr "错误的命令行选项。"
 
 #: ../src/main.c:333
 msgid "Incompatible command line options used."
@@ -4086,7 +4065,7 @@ msgstr "数据无法写入(%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:722
 msgid "Generates .cue files from audio"
-msgstr ""
+msgstr "从音频中生成 .cue 文件"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:57
 msgid "cdrdao burning suite"
@@ -4395,10 +4374,10 @@ msgstr "允许刻录非本地储存的文件"
 #: ../plugins/transcode/burn-transcode.c:661
 #: ../plugins/transcode/burn-transcode.c:692
 #: ../plugins/transcode/burn-transcode.c:713
-#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:382
-#: ../plugins/transcode/burn-vob.c:532 ../plugins/transcode/burn-vob.c:655
-#: ../plugins/transcode/burn-vob.c:1000 ../plugins/transcode/burn-vob.c:1074
-#: ../plugins/transcode/burn-vob.c:1125
+#: ../plugins/transcode/burn-vob.c:198 ../plugins/transcode/burn-vob.c:401
+#: ../plugins/transcode/burn-vob.c:561 ../plugins/transcode/burn-vob.c:694
+#: ../plugins/transcode/burn-vob.c:1058 ../plugins/transcode/burn-vob.c:1134
+#: ../plugins/transcode/burn-vob.c:1185
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "无法链接到插件板"
@@ -4896,11 +4875,11 @@ msgstr "正在创建文件布局"
 msgid "Creates disc images suitable for Video DVDs"
 msgstr "创建一个适合视频DVD的映像"
 
-#: ../plugins/transcode/burn-vob.c:1210
+#: ../plugins/transcode/burn-vob.c:1270
 msgid "Converting video file to MPEG2"
 msgstr "正在转换视频文件为 MPEG2"
 
-#: ../plugins/transcode/burn-vob.c:1293
+#: ../plugins/transcode/burn-vob.c:1372
 msgid "Converts any video file into a format suitable for Video DVDs"
 msgstr "转换任何视频文件到适合视频 DVD 的某个格式"
 
