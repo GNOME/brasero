@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0200\n"
-"PO-Revision-Date: 2010-03-31 12:30+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
+"POT-Creation-Date: 2010-03-31 10:24+0000\n"
+"PO-Revision-Date: 2010-03-31 14:25+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -1014,6 +1014,15 @@ msgstr "Hautatu disko-irudi bat."
 msgid "There is no selected disc image."
 msgstr "Ez da disko-irudirik hautatu."
 
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:433
+#: ../libbrasero-burn/brasero-src-image.c:166
+#| msgid "Please select a disc image."
+msgctxt "disc"
+msgid "Please select another image."
+msgstr "Hautatu bestelako disko-irudia."
+
 #: ../libbrasero-burn/brasero-burn-options.c:434
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Badirudi ez dagoela baliozko disko-irudirik edo baliozko cue fitxategirik."
@@ -1048,9 +1057,9 @@ msgid ""
 msgstr ""
 "Datuen tamaina handiegia da diskoarentzat, eta zenbait fitxategi ezabatu "
 "beharko dituzu.\n"
-"Aukera hau erabiltzea nahi izan dezakezu 90 edo 100 minututako iraupena duen CD-R(W) "
-"unitatea erabiltzen ari bazara. CD-R hauek ezin dira ongi ezagutu eta "
-"gaingrabazioa aukera behar dute.\n"
+"Aukera hau erabiltzea nahi izan dezakezu 90 edo 100 minututako iraupena duen "
+"CD-R(W) unitatea erabiltzen ari bazara. CD-R hauek ezin dira ongi ezagutu "
+"eta gaingrabazioa aukera behar dute.\n"
 "OHARRA: aukera horrek hutsegitea eragin dezake."
 
 #: ../libbrasero-burn/brasero-burn-options.c:470 ../src/brasero-project.c:1004
@@ -1539,6 +1548,13 @@ msgstr "Hautatu disko-irudia"
 #: ../src/brasero-project.c:2053
 msgid "All files"
 msgstr "Fitxategi guztiak"
+
+#. Translators: this a disc image here
+#: ../libbrasero-burn/brasero-src-image.c:466
+#| msgid "Image File"
+msgctxt "disc"
+msgid "Image files"
+msgstr "Irudi-fitxategiak"
 
 #: ../libbrasero-burn/brasero-src-image.c:483
 msgid "Image type:"
@@ -2287,9 +2303,25 @@ msgstr "_Egiaztatu diskoa..."
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "CD edo DVD diskoko datuen osotasuna egiaztatzen du"
 
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:82
+#| msgid "Please select a disc image."
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Hautatu bestelako irudia."
+
 #: ../src/brasero-project-name.c:156
 msgid "Medium Icon"
 msgstr "Euskarriaren ikonoa"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-project-name.c:170 ../src/brasero-file-chooser.c:250
+#: ../src/brasero-project.c:2078
+#| msgid "Image File"
+msgctxt "picture"
+msgid "Image files"
+msgstr "Irudi-fitxategiak"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -3500,9 +3532,9 @@ msgid ""
 msgstr ""
 "Proiektua handiegia da diskoarentzat, eta zenbait fitxategi ezabatu beharko "
 "dituzu.\n"
-"Aukera hau erabiltzea nahi izan dezakezu 90 edo 100 minututako iraupena duen CD-R(W) "
-"unitatea erabiltzen ari bazara. CD-R hauek ezin dira ongi ezagutu eta "
-"gaingrabazioa aukera behar dute.\n"
+"Aukera hau erabiltzea nahi izan dezakezu 90 edo 100 minututako iraupena duen "
+"CD-R(W) unitatea erabiltzen ari bazara. CD-R hauek ezin dira ongi ezagutu "
+"eta gaingrabazioa aukera behar dute.\n"
 "OHARRA: aukera horrek hutsegitea eragin dezake."
 
 #: ../src/brasero-project.c:1118
