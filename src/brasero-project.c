@@ -532,6 +532,8 @@ brasero_utils_disc_hide_use_info_data_received_cb (GtkWidget *widget,
 {
 	GtkWidget *other_widget;
 
+	g_return_if_fail(BRASERO_IS_PROJECT(project));
+
 	other_widget = brasero_utils_disc_find_tree_view (project->priv->current);
 	if (!other_widget)
 		return;
