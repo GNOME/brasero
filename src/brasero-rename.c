@@ -203,7 +203,7 @@ brasero_rename_do (BraseroRename *self,
 	guint item_num;
 	guint nb_items;
 	GList *item;
-	guint mode;
+	gint mode;
 
 	priv = BRASERO_RENAME_PRIVATE (self);
 	mode = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo));
