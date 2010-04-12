@@ -620,7 +620,8 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 	name = brasero_utils_get_uri_name (uri);
 	/* Translators: %s is the name of the image */
 	string = g_strdup_printf (_("There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned"), name);
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+											  "%s", string);
 	g_free (string);
 	g_free (name);
 
@@ -732,7 +733,6 @@ brasero_data_disc_joliet_rename_cb (BraseroTrackDataCfg *project,
 {
 	BraseroDataDiscPrivate *priv;
 	GtkWidget *dialog;
-	gchar *secondary;
 	gint answer;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -741,11 +741,10 @@ brasero_data_disc_joliet_rename_cb (BraseroTrackDataCfg *project,
 				     _("Should files be renamed to be fully Windows-compatible?"),
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_WARNING);
-	secondary = g_strdup_printf ("%s\n%s",
-				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+					 "%s\n%s",
+					 _("Some files don't have a suitable name for a fully Windows-compatible CD."),
 				     _("Those names should be changed and truncated to 64 characters."));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", secondary);
-	g_free (secondary);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Rename for Full Windows Compatibility"), GTK_RESPONSE_YES);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Disable Full Windows Compatibility"), GTK_RESPONSE_CANCEL);
@@ -789,7 +788,7 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-	                                          _("A file with this name already exists in the folder.  Replacing it will overwrite its content on the disc to be burnt."));
+					 "%s", _("A file with this name already exists in the folder.  Replacing it will overwrite its content on the disc to be burnt."));
 
 	/* Translators: Keep means we're keeping the files that already existed
 	 * in the project.
@@ -844,6 +843,7 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  "%s",
 						  _("The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones)."
 						    "\nIt is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows ©."
 						    "\nHowever, Mac OS X cannot read images created with version 3 of the ISO9660 standard."));
@@ -887,6 +887,7 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  "%s",
 						  _("The children of this directory will have 7 parent directories."
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
 						    "\nNote: Such a file hierarchy is known to work on Linux."));
