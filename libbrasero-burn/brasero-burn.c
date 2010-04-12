@@ -540,7 +540,7 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_OUTPUT_NONE,
-				     _("No burner specified"));
+				     "%s", _("No burner specified"));
 			return BRASERO_BURN_ERR;
 		}
 	}
@@ -580,7 +580,7 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("No source drive specified"));
+			     "%s", _("No source drive specified"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -672,7 +672,7 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_OUTPUT_NONE,
-			     _("No burner specified"));
+			     "%s", _("No burner specified"));
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -689,7 +689,7 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE,
-			     _("The drive has no rewriting capabilities"));
+			     "%s", _("The drive has no rewriting capabilities"));
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -755,7 +755,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_OUTPUT_NONE,
-			     _("No burner specified"));
+			     "%s", _("No burner specified"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -764,7 +764,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The drive cannot burn"));
+			     "%s", _("The drive cannot burn"));
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
 
@@ -1750,7 +1750,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("There is no track to burn"));
+			     "%s", _("There is no track to burn"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1815,7 +1815,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("Merging data is impossible with this disc"));
+					     "%s", _("Merging data is impossible with this disc"));
 				return BRASERO_BURN_ERR;
 			}
 			/* No need to tell the user burnproof is not supported
@@ -1864,7 +1864,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_MISSING_APP_AND_PLUGIN,
-				     string->str);
+				     "%s", string->str);
 
 			g_string_free (string, TRUE);
 		}
@@ -2551,7 +2551,7 @@ brasero_burn_check (BraseroBurn *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Only one track at a time can be checked"));
+			     "%s", _("Only one track at a time can be checked"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -2610,7 +2610,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("No format for the temporary image could be found"));
+			     "%s", _("No format for the temporary image could be found"));
 		return result;
 	}
 
@@ -2821,7 +2821,7 @@ end:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("An internal error occurred"));
+			     "%s", _("An internal error occurred"));
 	}
 
 	if (result == BRASERO_BURN_CANCEL) {

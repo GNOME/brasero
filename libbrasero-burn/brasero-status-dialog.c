@@ -216,6 +216,7 @@ brasero_status_dialog_deep_directory_cb (BraseroTrackDataCfg *project,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
+					  "%s",
 					  string);
 	g_free (string);
 
@@ -277,6 +278,7 @@ brasero_status_dialog_2G_file_cb (BraseroTrackDataCfg *track,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
+					  "%s",
 					  string);
 	g_free (string);
 
@@ -327,6 +329,7 @@ brasero_status_dialog_joliet_rename_cb (BraseroTrackData *track,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
+					  "%s",
 					  _("Should files be renamed to be fully Windows-compatible?"));
 
 	if (gtk_window_get_icon_name (GTK_WINDOW (dialog)))
