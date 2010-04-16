@@ -56,6 +56,7 @@ private_icons = \
 	hicolor_actions_32x32_media-optical-copy.png \
 	hicolor_actions_32x32_media-optical-data-new.png \
     hicolor_actions_32x32_media-optical-video-new.png \
+	hicolor_actions_32x32_transform-crop-and-resize.png \
     hicolor_actions_48x48_media-optical-video-new.png \
 	hicolor_actions_scalable_insert-pause.svg \
 	hicolor_actions_scalable_iso-image-burn.svg \
@@ -200,6 +201,7 @@ noinst_DATA = \
 	hicolor_actions_32x32_media-optical-burn.svg \
 	hicolor_actions_32x32_media-optical-copy.svg \
 	hicolor_actions_32x32_media-optical-data-new.svg \
+	hicolor_actions_32x32_transform-crop-and-resize.svg \
 	hicolor_apps_16x16_brasero.svg \
 	hicolor_apps_22x22_brasero.svg \
 	hicolor_apps_32x32_brasero.svg \
