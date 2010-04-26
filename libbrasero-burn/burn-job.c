@@ -510,6 +510,8 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 	BRASERO_BURN_LOG ("%s filesystem detected", filesystem);
 
+	brasero_job_get_session_output_size (self, NULL, &output_size);
+
 	if (output_size >= 2147483648ULL
 	&&  filesystem
 	&& !strcmp (filesystem, "msdos")) {
