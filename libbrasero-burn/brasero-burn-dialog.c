@@ -1050,7 +1050,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (!gtk_widget_get_visible (dialog)) {
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
@@ -1308,7 +1308,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (!gtk_widget_get_mapped (dialog)) {
+	if (!gtk_widget_get_mapped (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	} else
@@ -1828,7 +1828,7 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 
 	brasero_burn_dialog_update_session_info (dialog);
 
-	if (!gtk_widget_get_visible (dialog))
+	if (!gtk_widget_get_visible (GTK_WIDGET (dialog)))
 		gtk_widget_show (GTK_WIDGET (dialog));
 
 	main_message = g_strdup_printf (_("Copy #%i has been burned successfully."), priv->num_copies ++);
