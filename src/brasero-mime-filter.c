@@ -219,8 +219,8 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter,
 	if (!item) {
 		GIcon *icon;
 		GtkTreeIter row;
+		gchar *description;
 		GtkTreeModel *model;
-		const gchar *description;
 
 		description = g_content_type_get_description (mime);
 		icon = g_content_type_get_icon (mime);
@@ -247,6 +247,7 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
 		g_object_unref (icon);
+		g_free (description);
 
 		/* we check that the first entry at least is visible */
 		if (gtk_combo_box_get_active (GTK_COMBO_BOX (filter->combo)) == -1
