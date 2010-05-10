@@ -357,7 +357,10 @@ brasero_search_entry_finalize (GObject *object)
 		g_source_remove (cobj->priv->search_id);
 		cobj->priv->search_id = 0;
 	}
-
+	if (cobj->priv->keywords) {
+		g_free (cobj->priv->keywords);
+		cobj->priv->keywords = NULL;
+	}
 	g_free (cobj->priv);
 	cobj->priv = NULL;
 
