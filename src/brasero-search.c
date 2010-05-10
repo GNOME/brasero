@@ -174,7 +174,7 @@ brasero_search_column_name_cb (GtkTreeViewColumn *tree_column,
 	g_free (name);
 }
 
-static const gchar*
+static gchar*
 brasero_search_description_from_hit (BraseroSearch *search,
 				     gpointer hit)
 {
@@ -194,7 +194,7 @@ brasero_search_column_description_cb (GtkTreeViewColumn *tree_column,
                                       GtkTreeIter *iter,
                                       gpointer data)
 {
-	const gchar *description;
+	gchar *description;
 	gpointer hit = NULL;
 
 	gtk_tree_model_get (model, iter,
@@ -205,6 +205,7 @@ brasero_search_column_description_cb (GtkTreeViewColumn *tree_column,
 	g_object_set (G_OBJECT (cell),
 		      "text", description,
 		      NULL);
+	g_free (description);
 }
 
 static void
