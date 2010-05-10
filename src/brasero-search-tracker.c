@@ -34,6 +34,8 @@ struct _BraseroSearchTrackerPrivate
 
 	gchar **mimes;
 	gchar *keywords;
+
+	guint current_call_id;
 };
 
 #define BRASERO_SEARCH_TRACKER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SEARCH_TRACKER, BraseroSearchTrackerPrivate))
@@ -228,10 +230,10 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 			 "OFFSET 0 "
 			 "LIMIT 10000");
 
-	res = tracker_resources_sparql_query_async (priv->client,
-						    query->str,
-						    brasero_search_tracker_reply,
-						    search);
+	priv->current_call_id = tracker_resources_sparql_query_async (priv->client,
+								      query->str,
+	                                                              brasero_search_tracker_reply,
+	                                                              search);
 	g_string_free (query, TRUE);
 
 	return res;
@@ -305,7 +307,8 @@ brasero_search_tracker_clean (BraseroSearchTracker *search)
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
 
-	tracker_cancel_last_call (priv->client);
+	if (priv->current_call_id)
+		tracker_cancel_call (priv->client, priv->current_call_id);
 
 	if (priv->results) {
 		g_ptr_array_foreach (priv->results, (GFunc) g_strfreev, NULL);
