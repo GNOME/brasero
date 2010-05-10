@@ -74,7 +74,7 @@ struct _BraseroSearchEngineIface {
 	gboolean	(*query_start)			(BraseroSearchEngine *search);
 
 	gboolean	(*add_hits)			(BraseroSearchEngine *search,
-	    GtkTreeModel *model,
+					                 GtkTreeModel *model,
 					                 gint range_start,
 					                 gint range_end);
 

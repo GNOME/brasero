@@ -84,8 +84,8 @@ brasero_search_tracker_uri_from_hit (BraseroSearchEngine *engine,
 	if (!tracker_hit)
 		return NULL;
 
-	if (g_strv_length (tracker_hit) >= 1)
-		return tracker_hit [0];
+	if (g_strv_length (tracker_hit) >= 2)
+		return tracker_hit [1];
 
 	return NULL;
 }
@@ -101,8 +101,8 @@ brasero_search_tracker_mime_from_hit (BraseroSearchEngine *engine,
 	if (!tracker_hit)
 		return NULL;
 
-	if (g_strv_length (tracker_hit) >= 2)
-		return tracker_hit [1];
+	if (g_strv_length (tracker_hit) >= 3)
+		return tracker_hit [2];
 
 	return NULL;
 }
@@ -118,8 +118,8 @@ brasero_search_tracker_score_from_hit (BraseroSearchEngine *engine,
 	if (!tracker_hit)
 		return 0;
 
-	if (g_strv_length (tracker_hit) >= 3)
-		return (int) strtof (tracker_hit [2], NULL);
+	if (g_strv_length (tracker_hit) >= 4)
+		return (int) strtof (tracker_hit [3], NULL);
 
 	return 0;
 }
@@ -162,10 +162,11 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
 
-	query = g_string_new ("SELECT ?file ?mime fts:rank(?file) "		/* Which variables should be returned */
+	query = g_string_new ("SELECT ?file ?url ?mime fts:rank(?file) "	/* Which variables should be returned */
 			      "WHERE {"						/* Start defining the search and its scope */
 			      "  ?file a nfo:FileDataObject . "			/* File must be a file (not a stream, ...) */
-			      "  ?file nie:mimeType ?mime . ");			/* Get its mime */
+	                      "  ?file nie:url ?url . "				/* Get the url of the file */
+	                      "  ?file nie:mimeType ?mime . ");			/* Get its mime */
 
 	if (priv->mimes) {
 		int i;
@@ -174,6 +175,7 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 		for (i = 0; priv->mimes [i]; i ++) {				/* Filter files according to their mime type */
 			if (i > 0)
 				g_string_append (query, " || ");
+
 			g_string_append_printf (query,
 						"?mime = \"%s\"",
 						priv->mimes [i]);
