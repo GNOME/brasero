@@ -1973,6 +1973,9 @@ brasero_track_data_cfg_remove (BraseroTrackDataCfg *track,
 		return FALSE;
 
 	node = brasero_track_data_cfg_path_to_node (track, treepath);
+	if (!node)
+		return FALSE;
+
 	brasero_data_project_remove_node (BRASERO_DATA_PROJECT (priv->tree), node);
 	return TRUE;
 }
