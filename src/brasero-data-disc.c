@@ -1198,29 +1198,58 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	brasero_track_data_cfg_reset (priv->project);
 }
 
+static GSList *
+brasero_data_disc_convert_tree_paths_to_references (GtkTreeModel *model,
+                                            	    GList *treepaths)
+{
+	GList *iter;
+	GSList *retval = NULL;
+
+	for (iter = treepaths; iter; iter = iter->next) {
+		GtkTreePath *treepath;
+		GtkTreeRowReference *reference;
+
+		treepath = iter->data;
+		reference = gtk_tree_row_reference_new (model, treepath);
+		retval = g_slist_prepend (retval, reference);
+	}
+
+	return retval;
+}
+
 static void
 brasero_data_disc_delete_selected (BraseroDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
 	GtkTreeSelection *selection;
 	GtkTreePath *cursorpath;
-	GList *list, *iter;
+	GSList *references;
+	GSList *iter;
+	GList *list;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
 	/* we must start by the end for the treepaths to point to valid rows */
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, NULL);
-	list = g_list_reverse (list);
 
 	gtk_tree_view_get_cursor (GTK_TREE_VIEW (priv->tree),
 				  &cursorpath,
 				  NULL);
 
-	for (iter = list; iter; iter = iter->next) {
+	/* Since we are going to modify the model by suppressing the selected
+	 * rows, take a safe approach and convert all tree paths into references */
+	references = brasero_data_disc_convert_tree_paths_to_references (GTK_TREE_MODEL (priv->project), list);
+	g_list_foreach (list, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (list);
+
+	for (iter = references; iter; iter = iter->next) {
+		GtkTreeRowReference *reference;
 		GtkTreePath *treepath;
 
-		treepath = iter->data;
+		reference = iter->data;
+		treepath = gtk_tree_row_reference_get_path (reference);
+
 		if (cursorpath && !gtk_tree_path_compare (cursorpath, treepath)) {
 			GtkTreePath *tmp_path;
 
@@ -1236,9 +1265,11 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 		}
 
 		brasero_track_data_cfg_remove (BRASERO_TRACK_DATA_CFG (priv->project), treepath);
- 		gtk_tree_path_free (treepath);
+
+ 		gtk_tree_row_reference_free (reference);
+		gtk_tree_path_free (treepath);
 	}
-	g_list_free (list);
+	g_slist_free (references);
 
 	if (cursorpath)
 		gtk_tree_path_free (cursorpath);
