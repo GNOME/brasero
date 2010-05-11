@@ -73,131 +73,218 @@ static void
 _gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
                                      GSList	       *tags)
 {
-  guint left_margin_accumulative = 0;
-  guint right_margin_accumulative = 0;
+	guint left_margin_accumulative = 0;
+	guint right_margin_accumulative = 0;
 
-  g_return_if_fail (!dest->realized);
+	g_return_if_fail (!dest->realized);
 
-  for (; tags; tags = tags->next)
-    {
-      GtkTextTag *tag;
-      GtkTextAttributes *vals;
+	for (; tags; tags = tags->next) {
+		GtkTextTag *tag;
+		gboolean accumulative_margin;
+		gboolean background_set;
+		gboolean fg_color_set;
+		gboolean pg_bg_color_set;
+		gboolean bg_stipple_set;
+		gboolean fg_stipple_set;
+		gboolean scale_set;
+		gboolean left_margin_set;
+		gboolean justification_set;
+		gboolean indent_set;
+		gboolean rise_set;
+		gboolean right_margin_set;
+		gboolean pixels_above_lines_set;
+		gboolean pixels_below_lines_set;
+		gboolean tabs_set;
+		gboolean wrap_mode_set;
+		gboolean pixels_inside_wrap_set;
+		gboolean underline_set;
+		gboolean strikethrough_set;
+		gboolean invisible_set;
+		gboolean editable_set;
+		gboolean bg_full_height_set;
+		gboolean language_set;
+		GtkTextDirection direction;
+		PangoFontDescription *font_desc;
 
-      tag = tags->data;
-      vals = tag->values;
+		tag = tags->data;
 
-      if (tag->bg_color_set)
-        {
-          dest->appearance.bg_color = vals->appearance.bg_color;
+		g_object_get (tag,
+		              "accumulative-margin", &accumulative_margin,
+		              "background-set", &background_set,
+		              "foreground-set", &fg_color_set,
+		              "paragraph-background-set", &pg_bg_color_set,
+		              "background-stipple-set", &bg_stipple_set,
+		              "foreground-stipple-set", &fg_stipple_set,
+		              "scale-set", &scale_set,
+		              "left-margin-set", &left_margin_set,
+		              "justification-set", &justification_set,
+		              "indent-set", &indent_set,
+		              "rise-set", &rise_set,
+		              "right-margin-set", &right_margin_set,
+		              "pixels-above-lines-set", &pixels_above_lines_set,
+		              "pixels-below-lines-set", &pixels_below_lines_set,
+		              "tabs-set", &tabs_set,
+		              "wrap-mode-set", &wrap_mode_set,
+		              "pixels-inside-wrap-set", &pixels_inside_wrap_set,
+		              "underline-set", &underline_set,
+		              "strikethrough-set", &strikethrough_set,
+		              "invisible-set", &invisible_set,
+		              "editable-set", &editable_set,
+		              "background-full-height-set", &bg_full_height_set,
+		              "language-set", &language_set,
+		              "direction", &direction,
+		              "font-desc", &font_desc,
+		              NULL);
 
-          dest->appearance.draw_bg = TRUE;
-        }
-      if (tag->fg_color_set)
-        dest->appearance.fg_color = vals->appearance.fg_color;
-      
-      if (tag->pg_bg_color_set)
-        {
-          dest->pg_bg_color = gdk_color_copy (vals->pg_bg_color);
-        }
+		if (dest->appearance.draw_bg) {
+			 GdkColor *color = NULL;
 
-      if (tag->bg_stipple_set)
-        {
-          g_object_ref (vals->appearance.bg_stipple);
-          if (dest->appearance.bg_stipple)
-            g_object_unref (dest->appearance.bg_stipple);
-          dest->appearance.bg_stipple = vals->appearance.bg_stipple;
+			 g_object_get (tag, "background-gdk", &color, NULL);
+			 dest->appearance.bg_color = *color;
+			 gdk_color_free (color);
 
-          dest->appearance.draw_bg = TRUE;
-        }
+			 dest->appearance.draw_bg = TRUE;
+		 }
 
-      if (tag->fg_stipple_set)
-        {
-          g_object_ref (vals->appearance.fg_stipple);
-          if (dest->appearance.fg_stipple)
-            g_object_unref (dest->appearance.fg_stipple);
-          dest->appearance.fg_stipple = vals->appearance.fg_stipple;
-        }
+		if (fg_color_set) {
+			GdkColor *color = NULL;
 
-      if (vals->font)
-	{
-	  if (dest->font)
-	    pango_font_description_merge (dest->font, vals->font, TRUE);
-	  else
-	    dest->font = pango_font_description_copy (vals->font);
-	}
+			g_object_get (tag, "foreground-gdk", &color, NULL);
+			dest->appearance.fg_color = *color;
+			gdk_color_free (color);
+		}
 
-      /* multiply all the scales together to get a composite */
-      if (tag->scale_set)
-        dest->font_scale *= vals->font_scale;
-      
-      if (tag->justification_set)
-        dest->justification = vals->justification;
+		if (pg_bg_color_set) {
+			if (dest->pg_bg_color)
+				gdk_color_free (dest->pg_bg_color);
 
-      if (vals->direction != GTK_TEXT_DIR_NONE)
-        dest->direction = vals->direction;
+			g_object_get (tag, "paragraph-background-gdk", &dest->pg_bg_color, NULL);
+		}
 
-      if (tag->left_margin_set) 
-        {
-          if (tag->accumulative_margin)
-            left_margin_accumulative += vals->left_margin;
-          else
-            dest->left_margin = vals->left_margin;
-        }
+		if (bg_stipple_set) {
+			if (dest->appearance.bg_stipple)
+				g_object_unref (dest->appearance.bg_stipple);
+			g_object_get (tag, "background-stipple", &dest->appearance.bg_stipple, NULL);
 
-      if (tag->indent_set)
-        dest->indent = vals->indent;
+			dest->appearance.draw_bg = TRUE;
+		}
 
-      if (tag->rise_set)
-        dest->appearance.rise = vals->appearance.rise;
+		if (fg_stipple_set) {
+			if (dest->appearance.fg_stipple)
+				g_object_unref (dest->appearance.fg_stipple);
+			g_object_get (tag, "foreground-stipple", &dest->appearance.fg_stipple, NULL);
+		}
 
-      if (tag->right_margin_set) 
-        {
-          if (tag->accumulative_margin)
-            right_margin_accumulative += vals->right_margin;
-          else
-            dest->right_margin = vals->right_margin;
-        }
+		if (font_desc) {
+			if (dest->font) {
+				pango_font_description_merge (dest->font, font_desc, TRUE);
+				pango_font_description_free (font_desc);
+			}
+			else
+				dest->font = font_desc;
+		}
 
-      if (tag->pixels_above_lines_set)
-        dest->pixels_above_lines = vals->pixels_above_lines;
+		/* multiply all the scales together to get a composite */
+		if (scale_set) {
+			gdouble font_scale;
+			g_object_get (tag, "foreground-stipple", &font_scale, NULL);
+			dest->font_scale *= font_scale;
+		}
 
-      if (tag->pixels_below_lines_set)
-        dest->pixels_below_lines = vals->pixels_below_lines;
+		if (justification_set)
+			g_object_get (tag, "justification", &dest->justification, NULL);
 
-      if (tag->pixels_inside_wrap_set)
-        dest->pixels_inside_wrap = vals->pixels_inside_wrap;
+		if (direction != GTK_TEXT_DIR_NONE)
+			dest->direction = direction;
 
-      if (tag->tabs_set)
-        {
-          if (dest->tabs)
-            pango_tab_array_free (dest->tabs);
-          dest->tabs = pango_tab_array_copy (vals->tabs);
-        }
+		if (left_margin_set) {
+			gint left_margin;
 
-      if (tag->wrap_mode_set)
-        dest->wrap_mode = vals->wrap_mode;
+			g_object_get (tag, "left-margin", &left_margin, NULL);
+			if (accumulative_margin)
+				left_margin_accumulative += left_margin;
+			else
+				dest->left_margin = left_margin;
+		}
 
-      if (tag->underline_set)
-        dest->appearance.underline = vals->appearance.underline;
+		if (indent_set)
+			g_object_get (tag, "indent", &dest->indent, NULL);
 
-      if (tag->strikethrough_set)
-        dest->appearance.strikethrough = vals->appearance.strikethrough;
+		if (rise_set)
+			g_object_get (tag, "rise", &dest->appearance.rise, NULL);
 
-      if (tag->invisible_set)
-        dest->invisible = vals->invisible;
+		if (right_margin_set) {
+			gint right_margin;
 
-      if (tag->editable_set)
-        dest->editable = vals->editable;
+			g_object_get (tag, "right-margin", &right_margin, NULL);
 
-      if (tag->bg_full_height_set)
-        dest->bg_full_height = vals->bg_full_height;
+			if (accumulative_margin)
+				right_margin_accumulative += right_margin;
+			else
+				dest->right_margin = right_margin;
+		}
 
-      if (tag->language_set)
-	dest->language = vals->language;
+		if (pixels_above_lines_set)
+			g_object_get (tag, "pixels-above-lines", &dest->pixels_above_lines, NULL);
+
+		if (pixels_below_lines_set)
+			g_object_get (tag, "pixels-below-lines", &dest->pixels_below_lines, NULL);
+
+		if (pixels_inside_wrap_set)
+			g_object_get (tag, "pixels-inside-wrap", &dest->pixels_inside_wrap, NULL);
+
+		if (tabs_set) {
+			if (dest->tabs)
+				pango_tab_array_free (dest->tabs);
+			g_object_get (tag, "pixels-inside-wrap", &dest->tabs, NULL);
+		}
+
+		if (wrap_mode_set)
+			g_object_get (tag, "wrap-mode", &dest->wrap_mode, NULL);
+
+		if (underline_set) {
+			gint underline;
+
+			g_object_get (tag, "underline", &underline, NULL);
+			dest->appearance.underline = underline;
+		}
+
+		if (strikethrough_set) {
+			gint strikethrough;
+
+			g_object_get (tag, "strikethrough", &strikethrough, NULL);
+			dest->appearance.strikethrough = strikethrough;
+		}
+
+		if (invisible_set) {
+			gint invisible;
+
+			g_object_get (tag, "invisible", &invisible, NULL);
+			dest->invisible = invisible;
+		}
+
+		if (editable_set) {
+			gint editable;
+
+			g_object_get (tag, "editable", &editable, NULL);
+			dest->editable = editable;
+		}
+
+		if (bg_full_height_set) {
+			gint bg_full_height;
+
+			g_object_get (tag, "background-full-height", &bg_full_height, NULL);
+			dest->bg_full_height = bg_full_height;
+		}
+
+		if (language_set) {
+			g_free (dest->language);
+			g_object_get (tag, "language", &dest->language, NULL);
+		}
     }
 
-  dest->left_margin += left_margin_accumulative;
-  dest->right_margin += right_margin_accumulative;
+	dest->left_margin += left_margin_accumulative;
+	dest->right_margin += right_margin_accumulative;
 }
 
 void
