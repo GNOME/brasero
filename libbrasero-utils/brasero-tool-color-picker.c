@@ -194,7 +194,6 @@ static void
 brasero_tool_color_picker_init (BraseroToolColorPicker *object)
 {
 	BraseroToolColorPickerPrivate *priv;
-	GtkWidget *frame;
 
 	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (object);
 
@@ -207,19 +206,15 @@ brasero_tool_color_picker_init (BraseroToolColorPicker *object)
 	gtk_widget_show (priv->label);
 	gtk_tool_button_set_label_widget (GTK_TOOL_BUTTON (object), priv->label);
 
-	frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_OUT);
-	gtk_widget_show (frame);
-
-	priv->icon = gtk_alignment_new (0.5, 0.5, 1., 1.);
+	priv->icon = gtk_image_new ();
 	gtk_widget_show (priv->icon);
 	g_signal_connect (priv->icon,
 			  "expose-event",
 			  G_CALLBACK (brasero_tool_color_picker_expose),
 			  object);
-	gtk_container_add (GTK_CONTAINER (frame), priv->icon);
 
-	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (object), frame);
+	/* This function expects a GtkMisc object!! */
+	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (object), priv->icon);
 }
 
 static void

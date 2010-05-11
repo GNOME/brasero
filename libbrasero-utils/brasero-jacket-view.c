@@ -685,7 +685,7 @@ brasero_jacket_view_focus_in_cb (GtkWidget *view,
 		text_view->need_im_reset = TRUE;
 		gtk_im_context_focus_in (text_view->im_context);
 	}
-
+	
 	buffer = gtk_text_view_get_buffer (text_view);
 	brasero_jacket_buffer_show_default_text (BRASERO_JACKET_BUFFER (buffer), FALSE);
 
@@ -1384,9 +1384,9 @@ brasero_jacket_view_realize (GtkWidget *widget)
 						       attributes_mask));
 	window = gtk_widget_get_window (widget);
 	gdk_window_set_user_data (window, widget);
+	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 
 	gtk_widget_style_attach (widget);
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 
 	gdk_window_show (gtk_widget_get_window (widget));
 }
