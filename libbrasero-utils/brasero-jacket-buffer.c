@@ -342,7 +342,6 @@ brasero_jacket_buffer_cursor_position_changed_cb (GObject *buffer,
 
 	g_slist_foreach (priv->tags, (GFunc) g_object_unref, NULL);
 	g_slist_free (priv->tags);
-	priv->tags = NULL;
  
 	priv->tags = gtk_text_iter_get_tags (&iter);
 	g_slist_foreach (priv->tags, (GFunc) g_object_ref, NULL);
@@ -486,6 +485,11 @@ brasero_jacket_buffer_finalize (GObject *object)
 	if (priv->default_text) {
 		g_free (priv->default_text);
 		priv->default_text = NULL;
+	}
+
+	if (priv->tags) {
+		g_slist_foreach (priv->tags, (GFunc) g_object_unref, NULL);
+		g_slist_free (priv->tags);
 	}
 
 	G_OBJECT_CLASS (brasero_jacket_buffer_parent_class)->finalize (object);
