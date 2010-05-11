@@ -1406,7 +1406,8 @@ brasero_jacket_view_realize (GtkWidget *widget)
 						       attributes_mask));
 	window = gtk_widget_get_window (widget);
 	gdk_window_set_user_data (window, widget);
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+
+	gtk_widget_set_realized (widget, TRUE);
 
 	gtk_widget_style_attach (widget);
 
