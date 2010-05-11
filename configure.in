@@ -65,6 +65,8 @@ dnl This could be use one day not to compile all debugging message
 dnl GNOME_DEBUG_CHECK
 
 GNOME_MAINTAINER_MODE_DEFINES
+DISABLE_DEPRECATED="$DISABLE_DEPRECATED -DGSEAL_ENABLE"
+AC_SUBST(DISABLE_DEPRECATED)
 
 dnl ***************** GENERAL **********************************
 

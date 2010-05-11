@@ -245,13 +245,13 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 		&& (!strcmp (stock_id,GTK_STOCK_ADD)
 		||  !strcmp (stock_id, GTK_STOCK_REMOVE))) {
 			GtkRequisition request;
-			gint width, height;
+			gint width;
 			GtkWidget *parent;
 
 			/* This is to avoid having the left part too small */
 			parent = gtk_widget_get_parent (widget);
-			width = parent->requisition.width;
-			height = parent->requisition.height;
+			gtk_widget_get_requisition (parent, &request);
+			width = request.width;
 			gtk_widget_size_request (parent, &request);
 			if (request.width >= width)
 				gtk_widget_set_size_request (parent,

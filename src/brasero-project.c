@@ -1319,7 +1319,7 @@ brasero_project_install_missing (BraseroPluginErrorType type,
 
 	/* Get the xid */
 	parent = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
+	xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (gtk_widget_get_window (parent)));
 
 	package = brasero_pk_new ();
 	cancel = g_cancellable_new ();

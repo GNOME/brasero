@@ -2540,7 +2540,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
 	gtk_widget_show (alignment);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 8, 6, 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (obj))),
 			    alignment,
 			    TRUE,
 			    TRUE,
