@@ -145,7 +145,7 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	gtk_widget_style_attach (widget);
 	//gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
 
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+	gtk_widget_set_realized (widget, TRUE);
 }
 
 static gboolean
