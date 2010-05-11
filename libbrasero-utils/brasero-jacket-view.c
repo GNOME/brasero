@@ -706,13 +706,13 @@ brasero_jacket_view_focus_out_cb (GtkWidget *view,
 		text_view->need_im_reset = TRUE;
 		gtk_im_context_focus_out (text_view->im_context);
 	}
-
+	
 	buffer = gtk_text_view_get_buffer (text_view);
 	brasero_jacket_buffer_show_default_text (BRASERO_JACKET_BUFFER (buffer), TRUE);
 
 	g_signal_emit (self,
 		       jacket_view_signals [TAGS_CHANGED],
-		       0);
+	               0);
 }
 
 static void
@@ -1265,6 +1265,28 @@ brasero_jacket_view_get_side_buffer (BraseroJacketView *self)
 	return gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->sides));
 }
 
+static void
+brasero_jacket_expose_textview (GtkWidget *widget,
+                                GtkWidget *textview,
+                                GdkEventExpose *event)
+{
+	GdkRectangle child_area;
+
+	if (gtk_widget_intersect (textview, &event->area, &child_area)) {
+		GdkWindow *window;
+
+		window = gtk_text_view_get_window (GTK_TEXT_VIEW (textview), GTK_TEXT_WINDOW_WIDGET);
+
+		g_object_ref (window);
+		gdk_window_invalidate_rect (window, &child_area, TRUE);
+		gdk_window_process_updates (window, TRUE);
+		g_object_unref (window);
+
+		/* Reminder: the following would not work...
+		 * gtk_container_propagate_expose (GTK_CONTAINER (widget), textview, &child_event); */
+	}
+}
+
 static gboolean
 brasero_jacket_view_expose (GtkWidget *widget,
 			    GdkEventExpose *event)
@@ -1274,14 +1296,13 @@ brasero_jacket_view_expose (GtkWidget *widget,
 	cairo_t *ctx;
 	gdouble resolution;
 	GtkWidget *toplevel;
-	GtkAllocation allocation, sides_allocation;
 	PangoLayout *layout;
+	GtkAllocation allocation, sides_allocation;
 	BraseroJacketViewPrivate *priv;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
 
 	ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
-
 	toplevel = gtk_widget_get_toplevel (widget);
 	if (!GTK_IS_WINDOW (toplevel))
 		return FALSE;
@@ -1325,10 +1346,6 @@ brasero_jacket_view_expose (GtkWidget *widget,
 				 sides_allocation.width + 2,
 				 sides_allocation.height + 2);
 		cairo_stroke (ctx);
-
-		gtk_container_propagate_expose (GTK_CONTAINER (widget),
-						priv->sides,
-						event);
 	}
 	else {
 		x = (allocation.width - resolution * COVER_WIDTH_FRONT_INCH) / 2;
@@ -1346,12 +1363,17 @@ brasero_jacket_view_expose (GtkWidget *widget,
 					    TRUE);
 	}
 
-	gtk_container_propagate_expose (GTK_CONTAINER (widget),
-					priv->edit,
-					event);
-
 	g_object_unref (layout);
 	cairo_destroy (ctx);
+
+	if (priv->sides)
+		brasero_jacket_expose_textview (widget,
+		                                priv->sides,
+		                                event);
+
+	brasero_jacket_expose_textview (widget,
+	                                priv->edit,
+	                                event);
 	return FALSE;
 }
 
