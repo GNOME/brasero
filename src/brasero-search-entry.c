@@ -230,7 +230,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 					NULL);
 
 	/* set auto completion */
-	entry = GTK_BIN (obj->priv->combo)->child;
+	entry = gtk_bin_get_child (GTK_BIN (obj->priv->combo));
 	completion = gtk_entry_completion_new ();
 	gtk_entry_completion_set_model (completion, GTK_TREE_MODEL (store));
 	gtk_entry_completion_set_text_column (completion, BRASERO_SEARCH_ENTRY_DISPLAY_COL);
@@ -318,8 +318,9 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  obj);
 
 	/* add tooltips */
-	gtk_widget_set_tooltip_text (GTK_BIN (obj->priv->combo)->child,
-				     _("Type your keywords or choose 'All files' from the menu"));
+	gtk_widget_set_tooltip_text (gtk_bin_get_child (GTK_BIN (obj->priv->combo)),
+	                             _("Type your keywords or choose 'All files' from the menu"));
+
 	/* Translators: this is an image, a picture, not a "Disc Image" */
 	gtk_widget_set_tooltip_text (obj->priv->pictures,
 				     _("Select if you want to search among image files only"));
@@ -416,7 +417,7 @@ brasero_search_entry_check_keywords (BraseroSearchEntry *entry)
 	 * sets a pointer to the string; that's why we can't free the
 	 * keywords until the query has been sent and even then ... */
 
-	keywords = gtk_entry_get_text (GTK_ENTRY (GTK_BIN (entry->priv->combo)->child));
+	keywords = gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (entry->priv->combo))));
 	if (!keywords)
 		return;
 
@@ -564,7 +565,7 @@ brasero_search_entry_add_current_keyword_to_history (BraseroSearchEntry *entry)
 	GtkTreeIter iter;
 
 	/* we don't want to add static entry */
-	keywords =  gtk_entry_get_text (GTK_ENTRY (GTK_BIN (entry->priv->combo)->child));
+	keywords =  gtk_entry_get_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (entry->priv->combo))));
 	if (!keywords || !strcmp (keywords, _("All files")))
 		return;
 
