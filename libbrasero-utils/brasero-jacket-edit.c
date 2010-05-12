@@ -89,8 +89,8 @@ brasero_jacket_edit_print_page (GtkPrintOperation *operation,
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
-	y = brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->front), context, 0, 0);
-	brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->back), context, 0, y + 20);
+	y = brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->front), context, 0., 0.);
+	brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->back), context, 0., y + 20.);
 }
 
 static void

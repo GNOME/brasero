@@ -209,14 +209,15 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 				      cairo_t *ctx,
 				      PangoLayout *layout,
 				      gdouble resolution,
-				      guint x,
-				      guint y)
+				      gdouble x,
+				      gdouble y,
+                                      gdouble delta)
 {
-	guint y_left;
-	guint y_right;
-	guint width;
-	guint x_left;
-	guint x_right;
+	gdouble y_left;
+	gdouble y_right;
+	gdouble width;
+	gdouble x_left;
+	gdouble x_right;
 	guint line_num;
 	guint line_max;
 	GtkTextBuffer *buffer;
@@ -228,11 +229,11 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 	line_max = gtk_text_buffer_get_line_count (buffer);
 
 	width = resolution * COVER_HEIGHT_SIDE_INCH;
-	x_left = x;
-	y_left = y + COVER_HEIGHT_SIDE_INCH * resolution;
+	x_left = x + 0.5;
+	y_left = y + COVER_HEIGHT_SIDE_INCH * resolution + 0.5;
 
-	x_right = x + COVER_WIDTH_BACK_INCH * resolution;
-	y_right = y;
+	x_right = x + COVER_WIDTH_BACK_INCH * resolution + 0.5;
+	y_right = y + 0.5;
 
 	for (line_num = 0; line_num < line_max; line_num ++) {
 		gchar *text;
@@ -289,13 +290,14 @@ brasero_jacket_view_render (BraseroJacketView *self,
 			    GdkPixbuf *scaled,
 			    gdouble resolution_x,
 			    gdouble resolution_y,
-			    guint x,
-			    guint y,
+			    gdouble x,
+			    gdouble y,
+                            gdouble delta,
 			    GdkRectangle *area,
 			    gboolean render_if_empty)
 {
 	BraseroJacketViewPrivate *priv;
-	gint height, width;
+	int height, width;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 
@@ -318,7 +320,7 @@ brasero_jacket_view_render (BraseroJacketView *self,
 	cairo_paint (ctx);
 
 	/* draw background */
-	cairo_rectangle (ctx, x, y, width, height);
+	cairo_rectangle (ctx, x, y, width + 1.0, height + 1.0);
 	cairo_clip (ctx);
 
 	if (priv->pattern) {
@@ -333,7 +335,7 @@ brasero_jacket_view_render (BraseroJacketView *self,
 		if (priv->image_style == BRASERO_JACKET_IMAGE_CENTER)
 			gdk_cairo_set_source_pixbuf (ctx,
 						     scaled,
-						     x + (width - gdk_pixbuf_get_width (scaled))/ 2.0,
+						     x + (width - gdk_pixbuf_get_width (scaled)) / 2.0,
 						     y + (height - gdk_pixbuf_get_height (scaled)) / 2.0);
 		else
 			gdk_cairo_set_source_pixbuf (ctx, scaled, x, y);
@@ -349,27 +351,33 @@ brasero_jacket_view_render (BraseroJacketView *self,
 	}
 
 	if (priv->side == BRASERO_JACKET_BACK) {
+		gdouble line_x, line_y;
+
 		cairo_save (ctx);
 
 		/* Draw the rectangle */
 		cairo_set_antialias (ctx, CAIRO_ANTIALIAS_DEFAULT);
-		cairo_set_source_rgb (ctx, 0.5, 0.5, 0.5);
-		cairo_set_line_width (ctx, 0.5);
+		cairo_set_source_rgb (ctx, 0.0, 0.0, 0.0);
+		cairo_set_line_width (ctx, 1.0);
 		cairo_set_line_cap (ctx, CAIRO_LINE_CAP_ROUND);
 
-		cairo_move_to (ctx,
-			       x + COVER_WIDTH_SIDE_INCH * resolution_x,
-			       y);
-		cairo_line_to (ctx,
-			       x + COVER_WIDTH_SIDE_INCH * resolution_x,
-			       y + (COVER_HEIGHT_SIDE_INCH * resolution_y));
+		line_y = y + (COVER_HEIGHT_SIDE_INCH * resolution_y) + delta;
 
+		line_x = (int) (x + (COVER_WIDTH_SIDE_INCH * resolution_x)) + delta;
 		cairo_move_to (ctx,
-			       x + (COVER_WIDTH_BACK_INCH - COVER_WIDTH_SIDE_INCH) * resolution_x,
-			       y);
+			       line_x,
+			       y + delta);
 		cairo_line_to (ctx,
-			       x + (COVER_WIDTH_BACK_INCH - COVER_WIDTH_SIDE_INCH) * resolution_x,
-			       y + (COVER_HEIGHT_SIDE_INCH * resolution_y));
+			       line_x,
+			       line_y);
+
+		line_x = (int) (x + ((COVER_WIDTH_BACK_INCH - COVER_WIDTH_SIDE_INCH) * resolution_x)) + delta;
+		cairo_move_to (ctx,
+			       line_x,
+			       y + delta);
+		cairo_line_to (ctx,
+			       line_x,
+			       line_y);
 
 		cairo_stroke (ctx);
 
@@ -382,19 +390,20 @@ brasero_jacket_view_render (BraseroJacketView *self,
 						      layout,
 						      resolution_y,
 						      x,
-						      y);
+						      y,
+		                                      delta);
 
 		cairo_restore (ctx);
 	}
 
 	/* Draw the rectangle */
-	cairo_set_source_rgb (ctx, 0.5, 0.5, 0.5);
-	cairo_set_line_width (ctx, 0.5);
+	cairo_set_source_rgb (ctx, 0.0, 0.0, 0.0);
+	cairo_set_line_width (ctx, 1.0);
 	cairo_set_line_cap (ctx, CAIRO_LINE_CAP_ROUND);
 
 	cairo_rectangle (ctx,
-			 x,
-			 y,
+			 x + delta,
+			 y + delta,
 			 width,
 			 height);
 	cairo_stroke (ctx);
@@ -499,8 +508,8 @@ brasero_jacket_view_scale_image (BraseroJacketView *self,
 guint
 brasero_jacket_view_print (BraseroJacketView *self,
 			   GtkPrintContext *context,
-			   guint x,
-			   guint y)
+			   gdouble x,
+			   gdouble y)
 {
 	cairo_t *ctx;
 	GdkRectangle rect;
@@ -517,16 +526,16 @@ brasero_jacket_view_print (BraseroJacketView *self,
 	/* set clip */
 	resolution_x = gtk_print_context_get_dpi_x (context);
 	resolution_y = gtk_print_context_get_dpi_y (context);
-	rect.x = x;
-	rect.y = y;
+	rect.x = x + 0.5;
+	rect.y = y + 0.5;
 
 	if (priv->side == BRASERO_JACKET_BACK) {
-		rect.width = resolution_x * COVER_WIDTH_BACK_INCH;
-		rect.height = resolution_y * COVER_HEIGHT_BACK_INCH;
+		rect.width = (resolution_x * COVER_WIDTH_BACK_INCH) + 1.0;
+		rect.height = (resolution_y * COVER_HEIGHT_BACK_INCH) + 1.0;
 	}
 	else {
-		rect.width = resolution_x * COVER_WIDTH_FRONT_INCH;
-		rect.height = resolution_y * COVER_HEIGHT_FRONT_INCH;
+		rect.width = (resolution_x * COVER_WIDTH_FRONT_INCH) + 1.0;
+		rect.height = (resolution_y * COVER_HEIGHT_FRONT_INCH) + 1.0;
 	}
 
 	/* Make sure we scale the image with the correct resolution */
@@ -546,6 +555,7 @@ brasero_jacket_view_print (BraseroJacketView *self,
 				    resolution_y,
 				    x,
 				    y,
+	                            0.5,
 				    &rect,
 				    FALSE);
 
@@ -623,6 +633,7 @@ brasero_jacket_view_snapshot (BraseroJacketView *self)
 				    resolution,
 				    0,
 				    0,
+	                            0.0,
 				    &area,
 				    FALSE);
 
@@ -1312,6 +1323,7 @@ brasero_jacket_view_expose (GtkWidget *widget,
 					    resolution,
 					    x,
 					    y,
+		                            0.5,
 					    &event->area,
 					    TRUE);
 
@@ -1325,14 +1337,14 @@ brasero_jacket_view_expose (GtkWidget *widget,
 		cairo_move_to (ctx, 0., 0.);
 
 		cairo_set_antialias (ctx, CAIRO_ANTIALIAS_DEFAULT);
-		cairo_set_source_rgb (ctx, 0.5, 0.5, 0.5);
-		cairo_set_line_width (ctx, 0.5);
+		cairo_set_source_rgb (ctx, 0.0, 0.0, 0.0);
+		cairo_set_line_width (ctx, 1.0);
 		cairo_set_line_cap (ctx, CAIRO_LINE_CAP_ROUND);
 
 		gtk_widget_get_allocation (priv->sides, &sides_allocation);
 		cairo_rectangle (ctx,
-				 sides_allocation.x - 1,
-				 sides_allocation.y - 1,
+				 sides_allocation.x - 1 + 0.5,
+				 sides_allocation.y - 1 + 0.5,
 				 sides_allocation.width + 2,
 				 sides_allocation.height + 2);
 		cairo_stroke (ctx);
@@ -1349,6 +1361,7 @@ brasero_jacket_view_expose (GtkWidget *widget,
 					    resolution,
 					    x,
 					    y,
+		                            0.5,
 					    &event->area,
 					    TRUE);
 	}

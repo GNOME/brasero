@@ -44,19 +44,19 @@ typedef enum {
 	BRASERO_JACKET_BACK		= 1,
 } BraseroJacketSide;
 
-#define COVER_HEIGHT_FRONT_MM		120
-#define COVER_WIDTH_FRONT_MM		120
+#define COVER_HEIGHT_FRONT_MM		120.0
+#define COVER_WIDTH_FRONT_MM		120.0
 #define COVER_WIDTH_FRONT_INCH		4.724
 #define COVER_HEIGHT_FRONT_INCH		4.724
 
 #define COVER_HEIGHT_BACK_MM		117.5
-#define COVER_WIDTH_BACK_MM		152
+#define COVER_WIDTH_BACK_MM		152.0
 #define COVER_HEIGHT_BACK_INCH		4.646
 #define COVER_WIDTH_BACK_INCH		5.984
 
-#define COVER_HEIGHT_SIDE_MM		117.5
-#define COVER_WIDTH_SIDE_MM		6
-#define COVER_HEIGHT_SIDE_INCH		4.625
+#define COVER_HEIGHT_SIDE_MM		COVER_HEIGHT_BACK_MM
+#define COVER_WIDTH_SIDE_MM		6.0
+#define COVER_HEIGHT_SIDE_INCH		COVER_HEIGHT_BACK_INCH
 #define COVER_WIDTH_SIDE_INCH		0.235
 
 #define COVER_TEXT_MARGIN		/*1.*/0.03 //0.079
@@ -119,8 +119,8 @@ brasero_jacket_view_configure_background (BraseroJacketView *view);
 guint
 brasero_jacket_view_print (BraseroJacketView *view,
 			   GtkPrintContext *context,
-			   guint x,
-			   guint y);
+			   gdouble x,
+			   gdouble y);
 
 cairo_surface_t *
 brasero_jacket_view_snapshot (BraseroJacketView *self);
