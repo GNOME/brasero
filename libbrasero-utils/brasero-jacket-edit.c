@@ -108,8 +108,10 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 	BraseroJacketEditPrivate *priv;
 	GtkPrintOperationResult res;
 	GtkPrintOperation *print;
+	GtkPrintSettings *settings;
 	GError *error = NULL;
 	GtkWidget *toplevel;
+	gchar *path;
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 	print = gtk_print_operation_new ();
@@ -124,6 +126,13 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 
+	path = g_build_path (G_DIR_SEPARATOR_S, g_get_user_config_dir (), "brasero", "print-settings", NULL);
+	settings = gtk_print_settings_new_from_file (path, NULL);
+	if (settings) {
+		gtk_print_operation_set_print_settings (print, settings);
+		g_object_unref (settings);
+	}
+
 	/* NOTE: when a dialog is hidden while it was run by gtk_dialog_run ()
 	 * a response will be sent (GTK_RESPONSE_NONE) */
 	gtk_widget_hide (toplevel);
@@ -131,6 +140,13 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 				       GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
 				       gtk_window_get_transient_for (GTK_WINDOW (toplevel)),
 				       &error);
+
+	if (res == GTK_PRINT_OPERATION_RESULT_APPLY) {
+		settings = gtk_print_operation_get_print_settings (print);
+		gtk_print_settings_to_file (settings, path, NULL);
+		g_free (path);
+	}
+
 	g_object_unref (print);
 }
 
