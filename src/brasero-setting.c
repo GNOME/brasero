@@ -280,6 +280,23 @@ brasero_setting_set_value (BraseroSetting *setting,
 	return TRUE;
 }
 
+static gint
+brasero_setting_get_integer (GKeyFile *file,
+                             const gchar *group_name,
+                             const gchar *key)
+{
+	GError *error = NULL;
+	gint int_value;
+
+	int_value = g_key_file_get_integer (file, group_name, key, &error);
+	if (!int_value && error) {
+		g_error_free (error);
+		return -1;
+	}
+
+	return int_value;
+}
+
 gboolean
 brasero_setting_load (BraseroSetting *setting)
 {
@@ -344,14 +361,12 @@ brasero_setting_load (BraseroSetting *setting)
 	                                             "Display",
 	                                             "main-window-maximized",
 	                                             NULL);
-	priv->stock_file_chooser_percent = g_key_file_get_integer (key_file,
-	                                                           "Display",
-	                                                           "stock-file-chooser-percent",
-	                                                           NULL);
-	priv->brasero_file_chooser_percent = g_key_file_get_integer (key_file,
-	                                                             "Display",
-	                                                             "brasero-file-chooser-percent",
-	                                                             NULL);
+	priv->stock_file_chooser_percent = brasero_setting_get_integer (key_file,
+	                                                                "Display",
+	                                                                "stock-file-chooser-percent");
+	priv->brasero_file_chooser_percent = brasero_setting_get_integer (key_file,
+	                                                                  "Display",
+	                                                                  "brasero-file-chooser-percent");
 	priv->player_volume = g_key_file_get_integer (key_file,
 	                                              "Player",
 	                                              "player-volume",
@@ -384,10 +399,9 @@ brasero_setting_load (BraseroSetting *setting)
 	                                                  "Player",
 	                                                  "video-size-height",
 	                                                  NULL);
-	priv->display_proportion = g_key_file_get_integer (key_file,
-	                                                   "Display",
-	                                                   "pane-position",
-	                                                   NULL);
+	priv->display_proportion = brasero_setting_get_integer (key_file,
+	                                                        "Display",
+	                                                        "pane-position");
 	g_key_file_free (key_file);
 
 	return TRUE;

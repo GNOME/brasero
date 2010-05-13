@@ -777,17 +777,20 @@ brasero_layout_main_pane_size_allocate (GtkWidget *widget,
 					GtkAllocation *allocation,
 					BraseroLayout *layout)
 {
-	if (!layout->priv->pane_size_allocated) {
-		guint position;
+	if (!layout->priv->pane_size_allocated && gtk_widget_get_visible (widget)) {
+		gint position;
+		gint value_int;
 		gpointer value = NULL;
 
 		brasero_setting_get_value (brasero_setting_get_default (),
 			                   BRASERO_SETTING_DISPLAY_PROPORTION,
 			                   &value);
 
-		position = allocation->width * GPOINTER_TO_INT (value) / 10000;
-		if (position >= 0)
+		value_int = GPOINTER_TO_INT (value);
+		if (value_int >= 0) {
+			position = value_int * allocation->width / 10000;
 			gtk_paned_set_position (GTK_PANED (layout->priv->pane), position);
+		}
 
 		g_signal_connect (layout->priv->pane,
 				  "notify::position",
@@ -1087,8 +1090,8 @@ brasero_layout_init (BraseroLayout *obj)
 			break;
 	}
 
-	gtk_widget_show (obj->priv->pane);
 	gtk_box_pack_end (GTK_BOX (obj), obj->priv->pane, TRUE, TRUE, 0);
+	gtk_widget_show (obj->priv->pane);
 
 	/* This function will set its proportion */
 	g_signal_connect (obj->priv->pane,

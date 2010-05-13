@@ -188,16 +188,15 @@ brasero_file_chooser_allocation_changed (GtkWidget *widget,
 				                   BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
 				                   &percent);
 
-		if (GPOINTER_TO_INT (percent) < 0) {
-			/* No value so set something sane */
-			percent = GINT_TO_POINTER (30);
+		if (GPOINTER_TO_INT (percent) >= 0) {
+			position = allocation->width * GPOINTER_TO_INT (percent) / 10000;
+			gtk_paned_set_position (GTK_PANED (widget), position);
 		}
-
-		position = allocation->width * GPOINTER_TO_INT (percent) / 10000;
-		gtk_paned_set_position (GTK_PANED (widget), position);
-		g_object_set_data (G_OBJECT (widget), "position_set", GINT_TO_POINTER (TRUE));
+		else
+			gtk_paned_set_position (GTK_PANED (widget), 30 * allocation->width / 100);
 
 		/* Don't connect to position signal until it was first allocated */
+		g_object_set_data (G_OBJECT (widget), "position_set", GINT_TO_POINTER (TRUE));
 		g_signal_connect (widget,
 		                  "notify::position",
 		                  G_CALLBACK (brasero_file_chooser_position_changed),
