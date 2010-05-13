@@ -384,11 +384,10 @@ brasero_setting_load (BraseroSetting *setting)
 	                                                  "Player",
 	                                                  "video-size-height",
 	                                                  NULL);
-	priv->display_proportion = priv->image_size_width = g_key_file_get_integer (key_file,
-	                                                                          "Display",
-	                                                                          "pane-position",
-	                                                                          NULL);
-
+	priv->display_proportion = g_key_file_get_integer (key_file,
+	                                                   "Display",
+	                                                   "pane-position",
+	                                                   NULL);
 	g_key_file_free (key_file);
 
 	return TRUE;
