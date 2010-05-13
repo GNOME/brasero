@@ -64,7 +64,7 @@ brasero_jacket_buffer_get_text (BraseroJacketBuffer *self,
 	if (priv->empty && !get_default_text)
 		return NULL;
 
-	return gtk_text_buffer_get_text (GTK_TEXT_BUFFER (self), start, end, invisible_chars);
+	return gtk_text_buffer_get_slice (GTK_TEXT_BUFFER (self), start, end, invisible_chars);
 }
 
 /* As the name suggests it is copied from GTK 2.14.3

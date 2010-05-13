@@ -122,9 +122,6 @@ brasero_jacket_view_print (BraseroJacketView *view,
 			   gdouble x,
 			   gdouble y);
 
-cairo_surface_t *
-brasero_jacket_view_snapshot (BraseroJacketView *self);
-
 GtkTextBuffer *
 brasero_jacket_view_get_active_buffer (BraseroJacketView *view);
 
