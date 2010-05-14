@@ -87,21 +87,23 @@ static GSList *
 brasero_jacket_view_tag_begins (GtkTextIter *iter,
 				GtkTextAttributes *attributes)
 {
+	gint index;
 	PangoAttribute *attr;
 	GSList *open_attr = NULL;
 
+	index = gtk_text_iter_get_visible_line_index (iter);
 	attr = pango_attr_foreground_new (attributes->appearance.fg_color.red,
 					  attributes->appearance.fg_color.green,
 					  attributes->appearance.fg_color.blue);
-	attr->start_index = gtk_text_iter_get_visible_line_index (iter);
+	attr->start_index = index;
 	open_attr = g_slist_prepend (open_attr, attr);
 
 	attr = pango_attr_font_desc_new (attributes->font);
-	attr->start_index = gtk_text_iter_get_visible_line_index (iter);
+	attr->start_index = index;
 	open_attr = g_slist_prepend (open_attr, attr);
 
 	attr = pango_attr_underline_new (attributes->appearance.underline);
-	attr->start_index = gtk_text_iter_get_visible_line_index (iter);
+	attr->start_index = index;
 	open_attr = g_slist_prepend (open_attr, attr);
 
 	return open_attr;
@@ -126,7 +128,8 @@ brasero_jacket_view_tag_ends (GtkTextIter *iter,
 static void
 brasero_jacket_view_set_line_attributes (GtkTextView *view,
 					 PangoLayout *layout,
-					 guint line_num)
+					 GtkTextIter *start,
+                                         GtkTextIter *end)
 {
 	PangoAttrList *attributes = NULL;
 	GtkTextAttributes *text_attr;
@@ -134,12 +137,11 @@ brasero_jacket_view_set_line_attributes (GtkTextView *view,
 	PangoAlignment alignment;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
-	GtkTextIter end;
 
 	attributes = pango_attr_list_new ();
 
 	buffer = gtk_text_view_get_buffer (view);
-	gtk_text_buffer_get_iter_at_line (buffer, &iter, line_num);
+	iter = *start;
 
 	text_attr = gtk_text_view_get_default_attributes (view);
 	gtk_text_iter_get_attributes (&iter, text_attr);
@@ -163,7 +165,7 @@ brasero_jacket_view_set_line_attributes (GtkTextView *view,
 	gtk_text_attributes_unref (text_attr);
 
 	while (gtk_text_iter_forward_to_tag_toggle (&iter, NULL) &&
-	       gtk_text_iter_get_line (&iter) == line_num &&
+	       gtk_text_iter_compare (&iter, end) < 0 &&
 	      !gtk_text_iter_is_end (&iter)) {
 
 		brasero_jacket_view_tag_ends (&iter, attributes, open_attr);
@@ -190,12 +192,8 @@ brasero_jacket_view_set_line_attributes (GtkTextView *view,
 		gtk_text_attributes_unref (text_attr);
 	}
 
-	/* Safer to do this in case one tag finishes on next line */
-	gtk_text_buffer_get_iter_at_line (buffer, &end, line_num);
-	gtk_text_iter_forward_to_line_end (&end);
-
 	/* go through all still opened attributes */
-	brasero_jacket_view_tag_ends (&end, attributes, open_attr);
+	brasero_jacket_view_tag_ends (end, attributes, open_attr);
 	g_slist_free (open_attr);
 
 	pango_layout_set_attributes (layout, attributes);
@@ -213,21 +211,16 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 				      gdouble y)
 {
 	gdouble y_left;
-	gdouble y_right;
-	gdouble width;
 	gdouble x_left;
 	gdouble x_right;
-	guint line_num;
-	guint line_max;
+	gdouble y_right;
 	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
 	PangoContext *pango_ctx;
 	BraseroJacketViewPrivate *priv;
 	cairo_font_options_t *font_options;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
-
-	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->sides));
-	line_max = gtk_text_buffer_get_line_count (buffer);
 
 	cairo_set_source_rgb (ctx, 0.0, 0.0, 0.0);
 
@@ -243,11 +236,7 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 	pango_cairo_context_set_font_options (pango_ctx, font_options);
 	cairo_font_options_destroy (font_options);
 
-	pango_cairo_update_layout (ctx, layout);
-
-	width = resolution * COVER_HEIGHT_SIDE_INCH;
-	pango_layout_set_width (layout, width * PANGO_SCALE);
-	pango_layout_set_wrap (layout, PANGO_WRAP_CHAR);
+	pango_layout_set_width (layout, resolution * COVER_HEIGHT_SIDE_INCH * PANGO_SCALE);
 
 	x_left = x + 0.5;
 	y_left = y + COVER_HEIGHT_SIDE_INCH * resolution - 0.5;
@@ -255,14 +244,15 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 	x_right = x + COVER_WIDTH_BACK_INCH * resolution - 0.5;
 	y_right = y + 0.5;
 
-	for (line_num = 0; line_num < line_max; line_num ++) {
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->sides));
+	gtk_text_buffer_get_start_iter (buffer, &start);
+	end = start;
+
+	while (!gtk_text_iter_is_end (&start)) {
 		gchar *text;
 		PangoRectangle rect;
-		GtkTextIter start, end;
 
-		gtk_text_buffer_get_iter_at_line (buffer, &start, line_num);
-		gtk_text_buffer_get_iter_at_line (buffer, &end, line_num);
-		gtk_text_iter_forward_to_line_end (&end);
+		gtk_text_view_forward_display_line_end (GTK_TEXT_VIEW (priv->sides), &end);
 
 		text = brasero_jacket_buffer_get_text (BRASERO_JACKET_BUFFER (buffer), &start, &end, FALSE, FALSE);
 		if (text && text [0] != '\0' && text [0] != '\n') {
@@ -272,7 +262,7 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 		else
 			pango_layout_set_text (layout, " ", -1);
 
-		brasero_jacket_view_set_line_attributes (GTK_TEXT_VIEW (priv->sides), layout, line_num);
+		brasero_jacket_view_set_line_attributes (GTK_TEXT_VIEW (priv->sides), layout, &start, &end);
 
 		cairo_save (ctx);
 
@@ -296,6 +286,9 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 
 		x_right -= rect.height;
 		x_left += rect.height;
+
+		gtk_text_view_forward_display_line (GTK_TEXT_VIEW (priv->sides), &end);
+		start = end;
 	}
 }
 
@@ -309,29 +302,19 @@ brasero_jacket_view_render_body (BraseroJacketView *self,
 				 guint y,
 				 gboolean render_if_empty)
 {
-	gdouble width;
-	gint line_max;
-	gint line_num = 0;
 	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
 	PangoContext *pango_ctx;
 	BraseroJacketViewPrivate *priv;
 	cairo_font_options_t *font_options;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 
-	if (priv->side == BRASERO_JACKET_BACK)
-		width = (COVER_WIDTH_BACK_INCH - (COVER_WIDTH_SIDE_INCH + COVER_TEXT_MARGIN) * 2.0) * resolution_x;
-	else
-		width = (COVER_WIDTH_FRONT_INCH - COVER_TEXT_MARGIN * 2.0) * resolution_x;
-
-	pango_layout_set_width (layout, width * PANGO_SCALE);
-	pango_layout_set_wrap (layout, PANGO_WRAP_CHAR);
-
 	/* This is vital to get the exact same layout when printing. By default
 	 * this is off for printing and on for screen display */
 	font_options = cairo_font_options_create ();
 	cairo_font_options_set_antialias (font_options, CAIRO_ANTIALIAS_GRAY);
-	cairo_font_options_set_hint_metrics (font_options, CAIRO_HINT_METRICS_ON);
+	cairo_font_options_set_hint_metrics (font_options, CAIRO_HINT_METRICS_OFF);
 	cairo_font_options_set_hint_style (font_options, CAIRO_HINT_STYLE_SLIGHT);
 	cairo_set_font_options (ctx, font_options);
 
@@ -339,16 +322,21 @@ brasero_jacket_view_render_body (BraseroJacketView *self,
 	pango_cairo_context_set_font_options (pango_ctx, font_options);
 	cairo_font_options_destroy (font_options);
 
+	/* This is necessary for the alignment of text */
+	if (priv->side == BRASERO_JACKET_BACK)
+		pango_layout_set_width (layout, (COVER_WIDTH_BACK_INCH - (COVER_WIDTH_SIDE_INCH + COVER_TEXT_MARGIN) * 2.0) * resolution_x * PANGO_SCALE);
+	else
+		pango_layout_set_width (layout, (COVER_WIDTH_FRONT_INCH - COVER_TEXT_MARGIN * 2.0) * resolution_x * PANGO_SCALE);
+
 	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->edit));
-	line_max = gtk_text_buffer_get_line_count (buffer);
-	for (line_num = 0; line_num < line_max; line_num ++) {
+	gtk_text_buffer_get_start_iter (buffer, &start);
+	end = start;
+
+	while (!gtk_text_iter_is_end (&start)) {
 		gchar *text;
 		PangoRectangle rect;
-		GtkTextIter start, end;
 
-		gtk_text_buffer_get_iter_at_line (buffer, &start, line_num);
-		gtk_text_buffer_get_iter_at_line (buffer, &end, line_num);
-		gtk_text_iter_forward_to_line_end (&end);
+		gtk_text_view_forward_display_line_end (GTK_TEXT_VIEW (priv->edit), &end);
 
 		text = brasero_jacket_buffer_get_text (BRASERO_JACKET_BUFFER (buffer), &start, &end, FALSE, render_if_empty);
 		if (text && text [0] != '\0' && text [0] != '\n') {
@@ -358,21 +346,24 @@ brasero_jacket_view_render_body (BraseroJacketView *self,
 		else
 			pango_layout_set_text (layout, " ", -1);
 
-		brasero_jacket_view_set_line_attributes (GTK_TEXT_VIEW (priv->edit), layout, line_num);
-
+		brasero_jacket_view_set_line_attributes (GTK_TEXT_VIEW (priv->edit), layout, &start, &end);
 		pango_cairo_update_layout (ctx, layout);
+
 		if (priv->side == BRASERO_JACKET_BACK)
 			cairo_move_to (ctx,
-				       x + (COVER_WIDTH_SIDE_INCH + COVER_TEXT_MARGIN) * resolution_x,
+				       x + (COVER_WIDTH_SIDE_INCH + COVER_TEXT_MARGIN) * resolution_x + 0.5,
 				       y + COVER_TEXT_MARGIN * resolution_y);
 		else
 			cairo_move_to (ctx,
-				       x + COVER_TEXT_MARGIN * resolution_x,
+				       x + COVER_TEXT_MARGIN * resolution_x + 0.5,
 				       y + COVER_TEXT_MARGIN * resolution_y);
-		pango_cairo_show_layout (ctx, layout);
 
+		pango_cairo_show_layout (ctx, layout);
 		pango_layout_get_pixel_extents (layout, NULL, &rect);
 		y += rect.height;
+
+		gtk_text_view_forward_display_line (GTK_TEXT_VIEW (priv->edit), &end);
+		start = end;
 	}
 }
 
