@@ -565,7 +565,7 @@ brasero_caps_find_link (BraseroCaps *caps,
 {
 	GSList *iter;
 
-	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "(Has %i links) Found link", g_slist_length (caps->links));
+	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "Found link (with %i links):", g_slist_length (caps->links));
 
 	/* Here we only make sure we have at least one link working. For a link
 	 * to be followed it must first:
@@ -587,17 +587,20 @@ brasero_caps_find_link (BraseroCaps *caps,
 
 		if (!link->caps)
 			continue;
-
+		
 		/* check that the link has some active plugin */
 		if (!brasero_caps_link_active (link, ctx->ignore_plugin_errors))
 			continue;
 
 		/* since this link contains recorders, check that at least one
 		 * of them can handle the record flags */
-		if (ctx->check_session_flags
-		&&  brasero_track_type_get_has_medium (&caps->type)
-		&& !brasero_caps_link_check_record_flags (link, ctx->ignore_plugin_errors, ctx->session_flags, ctx->media))
-			continue;
+		if (ctx->check_session_flags && brasero_track_type_get_has_medium (&caps->type)) {
+			if (!brasero_caps_link_check_record_flags (link, ctx->ignore_plugin_errors, ctx->session_flags, ctx->media))
+				continue;
+
+			if (brasero_caps_link_check_recorder_flags_for_input (link, ctx->session_flags) != BRASERO_BURN_OK)
+				continue;
+		}
 
 		/* first see if that's the perfect fit:
 		 * - it must have the same caps (type + subtype)
@@ -1358,6 +1361,39 @@ brasero_burn_session_get_default_output_format (BraseroBurnSession *session)
 	return BRASERO_IMAGE_FORMAT_NONE;
 }
 
+static BraseroBurnResult
+brasero_caps_set_flags_from_recorder_input (BraseroTrackType *input,
+                                            BraseroBurnFlag *supported,
+                                            BraseroBurnFlag *compulsory)
+{
+	if (brasero_track_type_get_has_image (input)) {
+		BraseroImageFormat format;
+
+		format = brasero_track_type_get_image_format (input);
+		if (format == BRASERO_IMAGE_FORMAT_CUE
+		||  format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+			if ((*supported) & BRASERO_BURN_FLAG_DAO)
+				(*compulsory) |= BRASERO_BURN_FLAG_DAO;
+			else
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+		else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
+			/* RAW write mode should (must) only be used in this case */
+			if ((*supported) & BRASERO_BURN_FLAG_RAW) {
+				(*supported) &= ~BRASERO_BURN_FLAG_DAO;
+				(*compulsory) &= ~BRASERO_BURN_FLAG_DAO;
+				(*compulsory) |= BRASERO_BURN_FLAG_RAW;
+			}
+			else
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+		else
+			(*supported) &= ~BRASERO_BURN_FLAG_RAW;
+	}
+	
+	return BRASERO_BURN_OK;
+}
+
 static BraseroPluginIOFlag
 brasero_caps_get_flags (BraseroCaps *caps,
                         gboolean ignore_plugin_errors,
@@ -1392,6 +1428,7 @@ brasero_caps_get_flags (BraseroCaps *caps,
 
 		if (brasero_track_type_get_has_medium (&caps->type)) {
 			BraseroBurnFlag tmp;
+			BraseroBurnResult result;
 
 			brasero_caps_link_get_record_flags (link,
 			                                    ignore_plugin_errors,
@@ -1404,6 +1441,14 @@ brasero_caps_get_flags (BraseroCaps *caps,
 			 * NOTE: compulsory are not a failure in this case. */
 			tmp = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
 			if ((tmp & rec_supported) != tmp)
+				continue;
+
+			/* This is the recording plugin, check its input as
+			 * some flags depend on it. */
+			result = brasero_caps_set_flags_from_recorder_input (&link->caps->type,
+			                                                     &rec_supported,
+			                                                     &rec_compulsory);
+			if (result != BRASERO_BURN_OK)
 				continue;
 		}
 
@@ -1460,8 +1505,8 @@ brasero_caps_get_flags (BraseroCaps *caps,
 		if (io_flags == BRASERO_PLUGIN_IO_NONE)
 			continue;
 
-		retval |= (io_flags & flags);
 		(*compulsory) &= rec_compulsory;
+		retval |= (io_flags & flags);
 		(*supported) |= data_supported|rec_supported;
 	}
 
@@ -1579,36 +1624,17 @@ brasero_caps_get_flags_for_disc (BraseroBurnCaps *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	if (brasero_track_type_get_has_image (input)) {
-		BraseroImageFormat format;
+	/* NOTE: DO NOT TEST the input image here. What should be tested is the
+	 * type of the input right before the burner plugin. See:
+	 * brasero_burn_caps_set_flags_from_recorder_input())
+	 * For example in the following situation: AUDIO => CUE => BURNER the
+	 * DAO flag would not be set otherwise. */
 
-		format = brasero_track_type_get_image_format (input);
-		if (format == BRASERO_IMAGE_FORMAT_CUE
-		||  format == BRASERO_IMAGE_FORMAT_CDRDAO) {
-			if (supported_flags & BRASERO_BURN_FLAG_DAO)
-				compulsory_flags |= BRASERO_BURN_FLAG_DAO;
-			else
-				return BRASERO_BURN_NOT_SUPPORTED;
-		}
-		else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
-			/* RAW write mode should (must) only be used in this case */
-			if (supported_flags & BRASERO_BURN_FLAG_RAW) {
-				supported_flags &= ~BRASERO_BURN_FLAG_DAO;
-				compulsory_flags &= ~BRASERO_BURN_FLAG_DAO;
-				compulsory_flags |= BRASERO_BURN_FLAG_RAW;
-			}
-			else
-				return BRASERO_BURN_NOT_SUPPORTED;
-		}
-		else
-			supported_flags &= ~BRASERO_BURN_FLAG_RAW;
-	}
-	else if (brasero_track_type_get_has_stream (input)) {
+	if (brasero_track_type_get_has_stream (input)) {
 		BraseroStreamFormat format;
 
 		format = brasero_track_type_get_stream_format (input);
-		if (!(format & BRASERO_METADATA_INFO)
-		&&   BRASERO_STREAM_FORMAT_VIDEO (format)) {
+		if (format & BRASERO_METADATA_INFO) {
 			/* In this case, DAO is compulsory if we want to write CD-TEXT */
 			if (supported_flags & BRASERO_BURN_FLAG_DAO)
 				compulsory_flags |= BRASERO_BURN_FLAG_DAO;
@@ -1622,7 +1648,7 @@ brasero_caps_get_flags_for_disc (BraseroBurnCaps *self,
 		compulsory_flags &= ~BRASERO_BURN_FLAG_RAW;
 		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 	}
-
+	
 	if (io_flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE) {
 		supported_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 
@@ -1965,7 +1991,7 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 	 * until the disc is inserted which it is not at the
 	 * moment */
 	(*supported_ret) |= (BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-					 BRASERO_BURN_FLAG_FAST_BLANK);
+			     BRASERO_BURN_FLAG_FAST_BLANK);
 
 	if (brasero_track_type_get_medium_type (&input) & BRASERO_MEDIUM_HAS_AUDIO) {
 		/* This is a special case for audio discs.
