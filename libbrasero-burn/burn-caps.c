@@ -67,6 +67,29 @@ brasero_caps_link_free (BraseroCapsLink *link)
 	g_free (link);
 }
 
+BraseroBurnResult
+brasero_caps_link_check_recorder_flags_for_input (BraseroCapsLink *link,
+                                                  BraseroBurnFlag session_flags)
+{
+	if (brasero_track_type_get_has_image (&link->caps->type)) {
+		BraseroImageFormat format;
+
+		format = brasero_track_type_get_image_format (&link->caps->type);
+		if (format == BRASERO_IMAGE_FORMAT_CUE
+		||  format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+			if ((session_flags & BRASERO_BURN_FLAG_DAO) == 0)
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+		else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
+			/* RAW write mode should (must) only be used in this case */
+			if ((session_flags & BRASERO_BURN_FLAG_RAW) == 0)
+				return BRASERO_BURN_NOT_SUPPORTED;
+		}
+	}
+
+	return BRASERO_BURN_OK;
+}
+
 gboolean
 brasero_caps_link_active (BraseroCapsLink *link,
                           gboolean ignore_plugin_errors)

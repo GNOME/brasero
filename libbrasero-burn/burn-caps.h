@@ -113,6 +113,10 @@ gboolean
 brasero_caps_is_compatible_type (const BraseroCaps *caps,
 				 const BraseroTrackType *type);
 
+BraseroBurnResult
+brasero_caps_link_check_recorder_flags_for_input (BraseroCapsLink *link,
+                                                  BraseroBurnFlag session_flags);
+
 G_END_DECLS
 
 #endif /* BURN_CAPS_H */
