@@ -262,8 +262,8 @@ brasero_burn_session_can_burn (BraseroBurnSession *session,
                                gboolean check_flags);
 
 typedef BraseroBurnResult	(* BraseroForeachPluginErrorCb)	(BraseroPluginErrorType type,
-		                                                         const gchar *detail,
-		                                                         gpointer user_data);
+		                                                 const gchar *detail,
+		                                                 gpointer user_data);
 
 BraseroBurnResult
 brasero_session_foreach_plugin_error (BraseroBurnSession *session,
