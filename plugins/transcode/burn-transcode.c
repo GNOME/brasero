@@ -484,6 +484,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 			g_object_set (sink,
 				      "location", output,
 				      NULL);
+			g_free (output);
 		}
 		else {
 			int fd;
@@ -1105,6 +1106,7 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 
 	track = brasero_track_stream_new ();
 	brasero_track_stream_set_source (track, output);
+	g_free (output);
 
 	/* FIXME: what if input had metadata ?*/
 	brasero_track_stream_set_format (track, BRASERO_AUDIO_FORMAT_RAW);
@@ -1548,6 +1550,7 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 					 "start decoding %s to %s",
 					 uri,
 					 dest);
+			g_free (dest);
 		}
 		else
 			BRASERO_JOB_LOG (transcode,
@@ -1767,7 +1770,7 @@ brasero_transcode_export_caps (BraseroPlugin *plugin)
 			       "transcode",
 			       _("Converts any song file into a format suitable for audio CDs"),
 			       "Philippe Rouquier",
-			       0);
+			       1);
 
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
