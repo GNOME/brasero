@@ -147,7 +147,7 @@ typedef enum {
 	BRASERO_AUDIO_FORMAT_4_CHANNEL		= 0
 } BraseroStreamFormat;
 
-#define BRASERO_STREAM_FORMAT_AUDIO(stream_FORMAT)	((stream_FORMAT) & 0x007F)
+#define BRASERO_STREAM_FORMAT_AUDIO(stream_FORMAT)	((stream_FORMAT) & 0x087F)
 #define BRASERO_STREAM_FORMAT_VIDEO(stream_FORMAT)	((stream_FORMAT) & 0x0380)
 
 #define	BRASERO_MIN_STREAM_LENGTH			((gint64) 6 * 1000000000LL)
