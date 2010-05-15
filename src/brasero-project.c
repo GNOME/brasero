@@ -1368,12 +1368,15 @@ brasero_project_list_missing (BraseroPluginErrorType type,
 {
 	GString *string = user_data;
 
-	if (type == BRASERO_PLUGIN_ERROR_MISSING_APP) {
+	if (type == BRASERO_PLUGIN_ERROR_MISSING_APP ||
+	    type == BRASERO_PLUGIN_ERROR_SYMBOLIC_LINK_APP ||
+	    type == BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION) {
 		g_string_append_c (string, '\n');
 		/* Translators: %s is the name of a missing application */
 		g_string_append_printf (string, _("%s (application)"), detail);
 	}
-	else if (type == BRASERO_PLUGIN_ERROR_MISSING_LIBRARY) {
+	else if (type == BRASERO_PLUGIN_ERROR_MISSING_LIBRARY ||
+	         type == BRASERO_PLUGIN_ERROR_LIBRARY_VERSION) {
 		g_string_append_c (string, '\n');
 		/* Translators: %s is the name of a missing library */
 		g_string_append_printf (string, _("%s (library)"), detail);
