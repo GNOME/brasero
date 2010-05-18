@@ -956,6 +956,11 @@ brasero_video_disc_button_pressed_cb (GtkTreeView *tree,
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
+	/* Avoid minding signals that happen out of the tree area (like in the 
+	 * headers for example) */
+	if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (tree)))
+		return FALSE;
+
 	widget_class = GTK_WIDGET_GET_CLASS (tree);
 
 	if (event->button == 3) {

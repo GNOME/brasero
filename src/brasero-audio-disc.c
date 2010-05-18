@@ -1825,8 +1825,14 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 {
 	GtkWidgetClass *widget_class;
 
+	/* Avoid minding signals that happen out of the tree area (like in the 
+	 * headers for example) */
+	if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (tree)))
+		return FALSE;
+
 	widget_class = GTK_WIDGET_GET_CLASS (tree);
 
+	/* Check that the click happened in the main window with rows. */
 	if (event->button == 3) {
 		GtkTreeSelection *selection;
 		GtkTreePath *path = NULL;
@@ -1890,7 +1896,7 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 		 * so it can update itself (paticularly its selection) before we have
 		 * a look at it */
 		widget_class->button_press_event (GTK_WIDGET (tree), event);
-		
+
 		if (!treepath) {
 			GtkTreeSelection *selection;
 
@@ -1901,7 +1907,7 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 			gtk_tree_selection_unselect_all (selection);
 			return FALSE;
 		}
-	
+
 		if (!result)
 			return FALSE;
 
