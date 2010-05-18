@@ -2113,6 +2113,11 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
+	/* Avoid minding signals that happen out of the tree area (like in the 
+	 * headers for example) */
+	if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (tree)))
+		return FALSE;
+
 	if (gtk_widget_get_realized (priv->tree)) {
 		result = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (priv->tree),
 							event->x,
