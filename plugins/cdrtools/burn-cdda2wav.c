@@ -409,7 +409,7 @@ brasero_cdda2wav_export_caps (BraseroPlugin *plugin)
 			       "cdda2wav",
 			       _("Copy tracks from an audio CD with all associated information"),
 			       "Philippe Rouquier",
-			       0);
+			       1);
 
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE /*|BRASERO_PLUGIN_IO_ACCEPT_PIPE*/, /* Keep on the fly on hold until it gets proper testing */
 					 BRASERO_AUDIO_FORMAT_RAW|

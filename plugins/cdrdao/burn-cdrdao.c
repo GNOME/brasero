@@ -698,7 +698,7 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin)
 			       "cdrdao",
 			       _("Copies, burns and blanks CDs"),
 			       "Philippe Rouquier",
-			       20);
+			       0);
 
 	/* that's for cdrdao images: CDs only as input */
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
