@@ -418,12 +418,12 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 							   "text", BRASERO_VIDEO_TREE_MODEL_INDEX,
 							   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree), column);
-	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_column_set_resizable (column, TRUE);
 
 	/* Other columns */
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_resizable (column, TRUE);
-	gtk_tree_view_column_set_min_width (column, 200);
+	gtk_tree_view_column_set_expand (column, TRUE);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
@@ -456,14 +456,10 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 					    "editable", BRASERO_VIDEO_TREE_MODEL_EDITABLE);
 	gtk_tree_view_column_set_title (column, _("Title"));
 	g_object_set (G_OBJECT (column),
-		      "expand", TRUE,
 		      "spacing", 4,
 		      NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
-				     column);
-
-	gtk_tree_view_set_expander_column (GTK_TREE_VIEW (obj->priv->tree),
-					   column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree), column);
+	gtk_tree_view_set_expander_column (GTK_TREE_VIEW (obj->priv->tree), column);
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set_data (G_OBJECT (renderer), COL_KEY, BRASERO_TRACK_STREAM_ARTIST_TAG);
@@ -483,8 +479,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	column = gtk_tree_view_column_new_with_attributes (_("Artist"), renderer,
 							   "text", BRASERO_VIDEO_TREE_MODEL_ARTIST,
 							   NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
-				     column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree), column);
 	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_min_width (column, 200);
 
@@ -493,9 +488,8 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 							   "text", BRASERO_VIDEO_TREE_MODEL_SIZE,
 							  /* "background", BACKGROUND_COL, */
 							   NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
-				     column);
-	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree), column);
+	gtk_tree_view_column_set_resizable (column, TRUE);
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scroll);
