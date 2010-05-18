@@ -270,6 +270,45 @@ brasero_caps_get_plugin_results (BraseroCapsLinkList *node,
 	return results;
 }
 
+static gboolean
+brasero_caps_link_list_have_processing_plugin (GSList *list)
+{
+	GSList *iter;
+	BraseroPluginProcessFlag position;
+
+	position = BRASERO_PLUGIN_RUN_BEFORE_TARGET;
+
+	for (iter = list; iter; iter = iter->next) {
+		BraseroCapsLinkList *node;
+		BraseroCaps *caps;
+		GSList *modifiers;
+
+		node = list->data;
+		caps = node->link->caps;
+
+		if (brasero_track_type_get_has_medium (&caps->type))
+			continue;
+
+		if (!iter->next)
+			position = BRASERO_PLUGIN_RUN_PREPROCESSING;
+
+		for (modifiers = caps->modifiers; modifiers; modifiers = modifiers->next) {
+			BraseroPluginProcessFlag flags;
+			BraseroPlugin *plugin;
+
+			plugin = modifiers->data;
+			if (!brasero_plugin_get_active (plugin, 0))
+				continue;
+
+			brasero_plugin_get_process_flags (plugin, &flags);
+			if ((flags & position) == position)
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 static GSList *
 brasero_caps_find_best_link (BraseroCaps *caps,
 			     gint group_id,
@@ -282,6 +321,9 @@ brasero_caps_find_best_link (BraseroCaps *caps,
 	GSList *iter;
 	GSList *list = NULL;
 	GSList *results = NULL;
+	gboolean perfect_fit = FALSE;
+	BraseroCapsLinkList *node = NULL;
+	gboolean have_processing_plugin = FALSE;
 
 	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "find_best_link");
 
@@ -303,7 +345,6 @@ brasero_caps_find_best_link (BraseroCaps *caps,
 	 * instead of simply: CDRDAO (input) cdrdao => (DISC) */
 
 	for (iter = caps->links; iter; iter = iter->next) {
-		BraseroCapsLinkList *node;
 		BraseroPlugin *plugin;
 		BraseroCapsLink *link;
 		gboolean fits;
@@ -387,86 +428,117 @@ brasero_caps_find_best_link (BraseroCaps *caps,
 
 	/* Then, go through this list (starting with highest priority links)
 	 * The rule is we prefer the links with the highest priority; if two
-	 * links have the same priority and one of them leads to a caps
-	 * with the correct type then choose this one. */
+	 * links have the same priority and one of them leads to a caps with
+	 * the correct type then choose this one. */
 	for (iter = list; iter; iter = iter->next) {
-		BraseroCapsLinkList *node;
+		BraseroCapsLinkList *iter_node;
 
-		node = iter->data;
+		iter_node = iter->data;
 
 		BRASERO_BURN_LOG ("Trying %s with a priority of %i",
-			          brasero_plugin_get_name (node->plugin),
-			          brasero_plugin_get_priority (node->plugin));
+			          brasero_plugin_get_name (iter_node->plugin),
+			          brasero_plugin_get_priority (iter_node->plugin));
 
 		/* see if that's a perfect fit; if so, then we're good. 
 		 * - it must have the same caps (type + subtype)
-		 * - it must have the proper IO (file) */
-		if ((node->link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
-		&&   brasero_caps_is_compatible_type (node->link->caps, input)) {
-			results = g_slist_prepend (NULL, node);
-			list = g_slist_remove (list, node);
+		 * - it must have the proper IO (file).
+		 * The only case where we don't want a perfect fit is when the
+		 * other possibility allows for the inclusion and expression
+		 * of active track processing plugins. It allows for example to
+		 * choose:
+		 * mkisofs => checksum image => growisofs
+		 * instead of simply:
+		 * growisofs.  */
+		if ((iter_node->link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
+		&&   brasero_caps_is_compatible_type (iter_node->link->caps, input)) {
+			perfect_fit = TRUE;
 			break;
 		}
 
-		results = brasero_caps_get_plugin_results (node,
-		                                           group_id,
-		                                           used_caps,
-		                                           session_flags,
-		                                           media,
-		                                           input,
-		                                           io_flags);
+		results = brasero_caps_get_plugin_results (iter_node,
+			                                   group_id,
+			                                   used_caps,
+			                                   session_flags,
+			                                   media,
+			                                   input,
+			                                   io_flags);
 		if (results) {
-			BraseroCapsLinkList *next_node;
-
-			/* There may be other link with the same priority (most
-			 * the time because it is the same plugin) so we try 
-			 * them as well and keep the one whose next plugin in
-			 * the list has the highest priority. */
-			while (iter->next && (next_node = iter->next->data) &&
-			       brasero_plugin_get_priority (next_node->plugin) ==
-			       brasero_plugin_get_priority (node->plugin)) {
-				GSList *other_results;
-				
-				iter = iter->next;
-
-				BRASERO_BURN_LOG ("Trying %s with a priority of %i",
-						  brasero_plugin_get_name (next_node->plugin),
-						  brasero_plugin_get_priority (next_node->plugin));
-
-				/* see if that's a perfect fit; if so, then we're good. 
-				 * - it must have the same caps (type + subtype)
-				 * - it must have the proper IO (file) */
-				if ((next_node->link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) == 0
-				||  !brasero_caps_is_compatible_type (next_node->link->caps, input)) {
-					other_results = brasero_caps_get_plugin_results (next_node,
-						                                         group_id,
-						                                         used_caps,
-						                                         session_flags,
-						                                         media,
-						                                         input,
-						                                         io_flags);
-					if (!other_results)
-						continue;
-
-					results = brasero_caps_get_best_path (results, other_results);
-					if (results == other_results)
-						node = next_node;
-				}
-				else {
-					g_slist_foreach (results, (GFunc) g_free, NULL);
-					g_slist_free (results);
-					results = NULL;
-
-					node = next_node;
-				}
-			}
-
-			results = g_slist_prepend (results, node);
-			list = g_slist_remove (list, node);
-
+			have_processing_plugin = brasero_caps_link_list_have_processing_plugin (results);
 			break;
 		}
 	}
+
+	/* Do not check for results that could be NULL in case of a perfect fit */
+	if (!iter)
+		goto end;
+
+	node = iter->data;
+
+	/* Stage 3: there may be other link with the same priority (most the
+	 * time because it is the same plugin) so we try them as well and keep
+	 * the one whose next plugin in the list has the highest priority. */
+	for (iter = iter->next; iter; iter = iter->next) {
+		GSList *other_results;
+		BraseroCapsLinkList *iter_node;
+
+		iter_node = iter->data;
+		if (brasero_plugin_get_priority (iter_node->plugin) !=
+		    brasero_plugin_get_priority (node->plugin))
+			break;
+
+		BRASERO_BURN_LOG ("Trying %s with a priority of %i",
+			          brasero_plugin_get_name (iter_node->plugin),
+			          brasero_plugin_get_priority (iter_node->plugin));
+
+		/* see if that's a perfect fit */
+		if ((iter_node->link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) == 0
+		||  !brasero_caps_is_compatible_type (iter_node->link->caps, input)) {
+			other_results = brasero_caps_get_plugin_results (iter_node,
+				                                         group_id,
+				                                         used_caps,
+				                                         session_flags,
+				                                         media,
+				                                         input,
+				                                         io_flags);
+			if (!other_results)
+				continue;
+
+			if (perfect_fit) {
+				have_processing_plugin = brasero_caps_link_list_have_processing_plugin (other_results);
+				if (have_processing_plugin) {
+					/* Note: results == NULL for perfect fit */
+					results = other_results;
+
+					perfect_fit = FALSE;
+					node = iter_node;
+				}
+				else {
+					g_slist_foreach (other_results, (GFunc) g_free, NULL);
+					g_slist_free (other_results);
+				}
+			}
+			else {
+				results = brasero_caps_get_best_path (results, other_results);
+				if (results == other_results) {
+					have_processing_plugin = brasero_caps_link_list_have_processing_plugin (other_results);
+					node = iter_node;
+				}
+			}
+		}
+		else if (!perfect_fit && !have_processing_plugin) {
+			g_slist_foreach (results, (GFunc) g_free, NULL);
+			g_slist_free (results);
+			results = NULL;
+
+			perfect_fit = TRUE;
+			node = iter_node;
+		}
+	}
+
+	results = g_slist_prepend (results, node);
+	list = g_slist_remove (list, node);
+
+end:
 
 	/* clear up */
 	used_caps = g_slist_remove (used_caps, caps);
@@ -498,8 +570,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 	GSList *modifiers;
 	GSList *iter;
 
-	if (position == BRASERO_PLUGIN_RUN_NEVER
-	||  caps->type.type == BRASERO_TRACK_TYPE_DISC)
+	if (brasero_track_type_get_has_medium (&caps->type))
 		return NULL;
 
 	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
@@ -635,7 +706,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		 * handle this flag (means that the plugin should erase and
 		 * then write on its own. Basically that works only with
 		 * overwrite formatted discs, DVD+RW, ...) */
-		if (output.type != BRASERO_TRACK_TYPE_DISC)
+		if (!brasero_track_type_get_has_medium (&output))
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
 		/* output is a disc try with initial blanking */
@@ -656,7 +727,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			   BRASERO_MEDIUM_HAS_AUDIO);
 		media |= BRASERO_MEDIUM_BLANK;
 
-		output.subtype.media = media;
+		brasero_track_type_set_medium_type (&output, media);
 
 		last_caps = brasero_burn_caps_find_start_caps (self, &output);
 		if (!last_caps)
@@ -774,7 +845,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 							    BRASERO_PLUGIN_RUN_AFTER_TARGET);
 	retval = g_slist_concat (retval, list);
 
-	if (last_caps->type.type == BRASERO_TRACK_TYPE_DISC && blanking) {
+	if (brasero_track_type_get_has_medium (&last_caps->type) && blanking) {
 		retval = g_slist_insert_before (retval,
 						g_slist_last (retval),
 						blanking);
@@ -920,12 +991,10 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 	list = g_slist_reverse (list);
 	for (iter = list; iter; iter = iter->next) {
 		GType type;
-		GSList *plugins;
-		BraseroCapsLink *link;
-		BraseroPlugin *candidate_plugin;
+		BraseroCapsLinkList *node;
 		BraseroTrackType *plugin_output;
 
-		link = iter->data;
+		node = iter->data;
 
 		/* determine the plugin output */
 		if (iter->next) {
@@ -937,37 +1006,21 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 		else
 			plugin_output = &last_caps->type;
 
-		/* find the best plugin */
-		candidate_plugin = NULL;
-		for (plugins = link->plugins; plugins; plugins = plugins->next) {
-			BraseroPlugin *plugin;
-
-			plugin = plugins->data;
-
-			if (!brasero_plugin_get_active (plugin, 0))
-				continue;
-
-			if (!candidate_plugin)
-				candidate_plugin = plugin;
-			else if (brasero_plugin_get_priority (plugin) >
-				 brasero_plugin_get_priority (candidate_plugin))
-				candidate_plugin = plugin;
-		}
-
 		/* create the object */
-		type = brasero_plugin_get_gtype (candidate_plugin);
+		type = brasero_plugin_get_gtype (node->plugin);
 		job = BRASERO_JOB (g_object_new (type,
 						 "output", plugin_output,
 						 NULL));
 		g_signal_connect (job,
 				  "error",
 				  G_CALLBACK (brasero_burn_caps_job_error_cb),
-				  link);
+				  node->link);
 
 		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
 
-		BRASERO_BURN_LOG ("%s added to task", brasero_plugin_get_name (candidate_plugin));
+		BRASERO_BURN_LOG ("%s added to task", brasero_plugin_get_name (node->plugin));
 	}
+	g_slist_foreach (list, (GFunc) g_free, NULL);
 	g_slist_free (list);
 
 	/* Create the candidate */
