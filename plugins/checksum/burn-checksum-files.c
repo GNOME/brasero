@@ -1475,15 +1475,13 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin)
 			       "Philippe Rouquier",
 			       0);
 
-	/* we can only generate a file for DATA input */
+	/* only generate a file for DATA input */
 	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ANY);
 	brasero_plugin_process_caps (plugin, input);
 	g_slist_free (input);
 
-	/* we can run on initial track or later for whatever a DATA track */
-	brasero_plugin_set_process_flags (plugin,
-					  BRASERO_PLUGIN_RUN_PREPROCESSING|
-					  BRASERO_PLUGIN_RUN_BEFORE_TARGET);
+	/* run on initial track for whatever a DATA track */
+	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
 
 	/* For discs, we can only check each files on a disc against an md5sum 
 	 * file (provided we managed to mount the disc).
