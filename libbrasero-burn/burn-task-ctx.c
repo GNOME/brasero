@@ -867,7 +867,7 @@ brasero_task_ctx_get_remaining_time (BraseroTaskCtx *self,
 		return BRASERO_BURN_NOT_READY;
 
 	elapsed = g_timer_elapsed (priv->timer, NULL);
-	*remaining = (gdouble) priv->total_time - (gdouble) elapsed;
+	*remaining = priv->total_time - elapsed;
 
 	return BRASERO_BURN_OK;
 }
