@@ -633,6 +633,11 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 		if (!BRASERO_IS_TRACK_DATA (track))
 			return BRASERO_BURN_NOT_SUPPORTED;
 
+		/* If another job is piping data to us leave it to the job to 
+		 * retrieve the data size. */
+		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
+			return BRASERO_BURN_NOT_SUPPORTED;
+
 		result = brasero_growisofs_set_argv_record (BRASERO_GROWISOFS (process),
 							    argv,
 							    error);
@@ -649,6 +654,7 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 
 	return result;
 }
+
 static void
 brasero_growisofs_class_init (BraseroGrowisofsClass *klass)
 {
