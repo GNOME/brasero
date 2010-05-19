@@ -171,7 +171,7 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 	memset (&hdr, 0, sizeof (hdr));
 	BRASERO_SET_16 (cdb->max_desc, 0);
 	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
-	if (res)
+	if (res != BRASERO_SCSI_OK)
 		return res;
 
 	/* ... get the request size ... */
@@ -193,7 +193,7 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		      sizeof (buffer->hdr.len);
 
 	if (request_size < buffer_size) {
-		BraseroScsiGetPerfHdr *tmp_hdr;
+		BraseroScsiGetPerfData *new_buffer;
 
 		/* Strangely some drives returns a buffer size that is bigger
 		 * than the one they returned on the first time. So redo whole
@@ -203,22 +203,26 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 				   request_size,
 				   buffer_size);
 
-		tmp_hdr = &buffer->hdr;
-		request_size = buffer_size;
-		buffer = brasero_get_performance_get_buffer (cdb,
-							     sizeof_descriptors,
-							     tmp_hdr,
-							     error);
-		buffer_size = BRASERO_GET_32 (buffer->hdr.len) +
-			      G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
-			      sizeof (buffer->hdr.len);
-		
-		g_free (tmp_hdr);
+		/* Try to get a new buffer of the new size */
+		memcpy (&hdr, &buffer->hdr, sizeof (hdr));
+		new_buffer = brasero_get_performance_get_buffer (cdb,
+		                                         	 sizeof_descriptors,
+		                                                 &hdr,
+		                                                 error);
+		if (new_buffer) {
+			g_free (buffer);
+			buffer = new_buffer;
+
+			request_size = buffer_size;
+			buffer_size = BRASERO_GET_32 (buffer->hdr.len) +
+				      G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
+				      sizeof (buffer->hdr.len);
+		}
 	}
 	else if (request_size > buffer_size)
 		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i",
-				  request_size,
-				  buffer_size);
+				   request_size,
+				   buffer_size);
 	*data = buffer;
 	*data_size = MIN (buffer_size, request_size);
 
