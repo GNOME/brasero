@@ -421,6 +421,8 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	burner = brasero_medium_get_drive (medium);
 	device = brasero_drive_get_device (burner);
 	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
+	if (!dev_handle)
+		return BRASERO_BURN_ERR;
 
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 	file = brasero_volume_get_file (vol,
@@ -841,6 +843,9 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 
 	device = brasero_drive_get_device (brasero_medium_get_drive (medium));
 	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
+	if (!dev_handle)
+		return BRASERO_BURN_ERROR;
+
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 
 	/* open checksum file */

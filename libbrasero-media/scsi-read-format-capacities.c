@@ -70,6 +70,8 @@ brasero_mmc2_read_format_capacities (BraseroDeviceHandle *handle,
 	BraseroScsiResult res;
 	int request_size;
 
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
 	if (!data || !size) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
 		return BRASERO_SCSI_FAILURE;

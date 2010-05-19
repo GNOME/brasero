@@ -93,6 +93,8 @@ brasero_spc1_inquiry (BraseroDeviceHandle *handle,
 	BraseroInquiryCDB *cdb;
 	BraseroScsiResult res;
 
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
 	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->alloc_len = sizeof (BraseroScsiInquiry);
 
@@ -112,6 +114,8 @@ brasero_spc1_inquiry_is_optical_drive (BraseroDeviceHandle *handle,
 	BraseroInquiryCDB *cdb;
 	BraseroScsiInquiry hdr;
 	BraseroScsiResult res;
+
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
 
 	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->alloc_len = sizeof (hdr);

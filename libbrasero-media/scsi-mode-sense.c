@@ -112,6 +112,8 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 	BraseroScsiModeData header;
 	BraseroScsiModeData *buffer;
 
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
 	if (!data || !data_size) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
 		return BRASERO_SCSI_FAILURE;

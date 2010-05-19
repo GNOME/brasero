@@ -102,6 +102,8 @@ brasero_mmc1_read_disc_information_std (BraseroDeviceHandle *handle,
 	int request_size;
 	int buffer_size;
 
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
 	if (!info_return || !size) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
 		return BRASERO_SCSI_FAILURE;

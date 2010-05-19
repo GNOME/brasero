@@ -242,6 +242,8 @@ brasero_mmc3_get_performance_wrt_spd_desc (BraseroDeviceHandle *handle,
 	BraseroGetPerformanceCDB *cdb;
 	BraseroScsiResult res;
 
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
 	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->type = BRASERO_GET_PERFORMANCE_WR_SPEED_TYPE;
 

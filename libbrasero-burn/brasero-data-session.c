@@ -115,6 +115,21 @@ brasero_io_image_directory_contents_thread (BraseroAsyncTaskManager *manager,
 	BraseroVolSrc *vol;
 
 	handle = brasero_device_handle_open (data->job.uri, FALSE, NULL);
+	if (!handle) {
+		GError *error;
+
+		error = g_error_new (BRASERO_BURN_ERROR,
+		                     BRASERO_BURN_ERROR_GENERAL,
+		                     _("The drive is busy"));
+
+		brasero_io_return_result (data->job.base,
+					  data->job.uri,
+					  NULL,
+					  error,
+					  data->job.callback_data);
+		return BRASERO_ASYNC_TASK_FINISHED;
+	}
+
 	vol = brasero_volume_source_open_device_handle (handle, &error);
 	if (!vol) {
 		brasero_device_handle_close (handle);

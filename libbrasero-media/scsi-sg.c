@@ -110,6 +110,8 @@ brasero_scsi_command_issue_sync (gpointer command,
 	BraseroScsiResult res;
 	BraseroScsiCmd *cmd;
 
+	g_return_val_if_fail (command != NULL, BRASERO_SCSI_FAILURE);
+
 	cmd = command;
 	brasero_sg_command_setup (&transport,
 				  sense_buffer,
@@ -139,6 +141,8 @@ brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
 			  BraseroDeviceHandle *handle) 
 {
 	BraseroScsiCmd *cmd;
+
+	g_return_val_if_fail (handle != NULL, NULL);
 
 	/* make sure we can set the flags of the descriptor */
 
