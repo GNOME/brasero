@@ -93,6 +93,8 @@ brasero_mmc2_read_capacity (BraseroDeviceHandle *handle,
 	BraseroReadCapacityCDB *cdb;
 	BraseroScsiResult res;
 
+	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+
 	/* NOTE: all the fields are ignored by MM drives */
 	cdb = brasero_scsi_command_new (&info, handle);
 

@@ -310,6 +310,8 @@ brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 	BraseroScsiResult result;
 	BraseroScsiGetConfigHdr *hdr = NULL;
 
+	g_return_val_if_fail (handle != NULL, NULL);
+
 	src = g_new0 (BraseroVolSrc, 1);
 	src->ref = 1;
 	src->data = handle;
