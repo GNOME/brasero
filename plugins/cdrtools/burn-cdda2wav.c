@@ -432,10 +432,36 @@ brasero_cdda2wav_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
+	gchar *prog_path;
+
+	/* Just check that the program is in the path and executable. */
+	prog_path = g_find_program_in_path ("cdda2wav");
+	if (!prog_path) {
+		brasero_plugin_add_error (plugin,
+		                          BRASERO_PLUGIN_ERROR_MISSING_APP,
+		                          "cdda2wav");
+		return;
+	}
+
+	if (!g_file_test (prog_path, G_FILE_TEST_IS_EXECUTABLE)) {
+		g_free (prog_path);
+		brasero_plugin_add_error (plugin,
+		                          BRASERO_PLUGIN_ERROR_MISSING_APP,
+		                          "cdda2wav");
+		return;
+	}
+	g_free (prog_path);
+
+	/* This is what it should be. Now, as I did not write and icedax plugin
+	 * the above is enough so that cdda2wav can use a symlink to icedax.
+	 * As for the version checking, it becomes impossible given that with
+	 * icedax the string would not start with cdda2wav. So ... */
+	/*
 	gint version [3] = { 2, 0, 0};
 	brasero_plugin_test_app (plugin,
 	                         "cdda2wav",
 	                         "--version",
 	                         "cdda2wav %d.%d.%da64 (x86_64-unknown-linux-gnu) Copyright (C) 1993-2004 Heiko Ei�feldt (C) 2004-2009 J�rg Schilling",
 	                         version);
+	*/
 }
