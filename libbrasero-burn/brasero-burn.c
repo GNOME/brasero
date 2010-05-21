@@ -136,6 +136,7 @@ typedef enum {
 	ACTION_CHANGED_SIGNAL,
 	DUMMY_SUCCESS_SIGNAL,
 	EJECT_FAILURE_SIGNAL,
+	BLANK_FAILURE_SIGNAL,
 	INSTALL_MISSING_SIGNAL,
 	LAST_SIGNAL
 } BraseroBurnSignalType;
@@ -191,7 +192,9 @@ brasero_burn_log (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
-brasero_burn_emit_signal (BraseroBurn *burn, guint signal, BraseroBurnResult default_answer)
+brasero_burn_emit_signal (BraseroBurn *burn,
+                          guint signal,
+                          BraseroBurnResult default_answer)
 {
 	GValue instance_and_params;
 	GValue return_value;
@@ -2050,9 +2053,8 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 		return result;
 	}
 
-	/* performed some additional tests that can
-	 * only be performed at this point. They are
-	 * mere warnings. */
+	/* performed some additional tests that can only be performed at this
+	 * point. They are mere warnings. */
 	result = brasero_burn_check_data_loss (burn, error);
 	if (result != BRASERO_BURN_OK) {
 		brasero_burn_session_pop_settings (priv->session);
@@ -2129,8 +2131,10 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 				if (session_sec > medium_sec) {
 					BRASERO_BURN_LOG ("Not enough space on medium %"G_GOFFSET_FORMAT"/%"G_GOFFSET_FORMAT, session_sec, medium_sec);
-					result = brasero_burn_reload_dest_media (burn,  BRASERO_BURN_ERROR_MEDIUM_SPACE, error);
-					if (result != BRASERO_BURN_OK)
+					result = brasero_burn_reload_dest_media (burn,
+					                                         BRASERO_BURN_ERROR_MEDIUM_SPACE,
+					                                         error);
+					if (result == BRASERO_BURN_OK)
 						break;
 				}
 			}
@@ -2143,8 +2147,25 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			 * data on it when we get to the real recording. */
 			if (erase_allowed) {
 				result = brasero_burn_run_eraser (burn, error);
-				if (result != BRASERO_BURN_OK)
+
+				/* If the erasing process did not work then do
+				 * not fail and cancel the entire session but
+				 * ask the user if he wants to insert another
+				 * disc instead. */
+				if (result != BRASERO_BURN_OK) {
+					result = brasero_burn_emit_signal (burn,
+					                                   BLANK_FAILURE_SIGNAL,
+					                                   BRASERO_BURN_ERR);
+					if (result == BRASERO_BURN_OK) {
+						result = brasero_burn_reload_dest_media (burn,
+						                                         BRASERO_BURN_ERROR_NONE,
+						                                         NULL);
+						if (result == BRASERO_BURN_OK)
+							result = BRASERO_BURN_RETRY;
+					}
+
 					break;
+				}
 
 				/* Since we blanked/formatted we need to recheck the burn 
 				 * flags with the new medium type as some flags could have
@@ -2920,9 +2941,9 @@ brasero_burn_blank (BraseroBurn *burn,
 		goto end;
 
 	result = brasero_burn_blank_real (burn, &ret_error);
-	while (result == BRASERO_BURN_ERR
-	&&     ret_error
-	&&     ret_error->code == BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE) {
+	while (result == BRASERO_BURN_ERR &&
+	       ret_error &&
+	       ret_error->code == BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE) {
 		g_error_free (ret_error);
 		ret_error = NULL;
 
@@ -3161,7 +3182,17 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      brasero_marshal_INT__OBJECT,
 			      G_TYPE_INT, 1,
 		              BRASERO_TYPE_DRIVE);
-        brasero_burn_signals [INSTALL_MISSING_SIGNAL] =
+        brasero_burn_signals [BLANK_FAILURE_SIGNAL] =
+		g_signal_new ("blank_failure",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BraseroBurnClass,
+					       blank_failure),
+			      NULL, NULL,
+			      brasero_marshal_INT__VOID,
+			      G_TYPE_INT, 0,
+		              G_TYPE_NONE);
+	brasero_burn_signals [INSTALL_MISSING_SIGNAL] =
 		g_signal_new ("install_missing",
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,

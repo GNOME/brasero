@@ -62,8 +62,10 @@ typedef struct {
 									 BraseroBurnError error,
 									 BraseroMedia required_media);
 
-	BraseroBurnResult		(*eject_failure)				(BraseroBurn *obj,
-							                                  BraseroDrive *drive);
+	BraseroBurnResult		(*eject_failure)		(BraseroBurn *obj,
+							                 BraseroDrive *drive);
+
+	BraseroBurnResult		(*blank_failure)		(BraseroBurn *obj);
 
 	BraseroBurnResult		(*location_request)		(BraseroBurn *obj,
 									 GError *error,

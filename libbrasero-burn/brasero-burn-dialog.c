@@ -1039,8 +1039,10 @@ brasero_burn_dialog_eject_failure_cb (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
-brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
-				       BraseroBurnDialog *dialog)
+brasero_burn_dialog_continue_question (BraseroBurnDialog *dialog,
+                                       const gchar *primary_message,
+                                       const gchar *secondary_message,
+                                       const gchar *button_message)
 {
 	gint result;
 	GtkWidget *button;
@@ -1060,16 +1062,18 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 	message = brasero_burn_dialog_create_message (dialog,
 	                                              GTK_MESSAGE_WARNING,
 	                                              GTK_BUTTONS_NONE,
-	                                              _("Do you want to continue with full Windows compatibility disabled?"));
+	                                              primary_message);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Some files don't have a suitable name for a fully Windows-compatible CD."));
+						  "%s",
+	                                          secondary_message);
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
-			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+			       GTK_STOCK_CANCEL,
+	                       GTK_RESPONSE_CANCEL);
 
 	button = gtk_dialog_add_button (GTK_DIALOG (message),
-					_("_Continue"),
+					button_message,
 					GTK_RESPONSE_OK);
 	gtk_button_set_image (GTK_BUTTON (button),
 			      gtk_image_new_from_stock (GTK_STOCK_OK,
@@ -1086,7 +1090,27 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 	if (result != GTK_RESPONSE_OK)
 		return BRASERO_BURN_CANCEL;
 
-	return BRASERO_BURN_OK;
+	return BRASERO_BURN_OK;	
+}
+
+static BraseroBurnResult
+brasero_burn_dialog_blank_failure_cb (BraseroBurn *burn,
+                                      BraseroBurnDialog *dialog)
+{
+	return brasero_burn_dialog_continue_question (dialog,
+	                                              _("Do you want to replace the disc and continue?"),
+	                                              _("The currently inserted disc could not be blanked."),
+	                                              _("_Replace Disc"));
+}
+
+static BraseroBurnResult
+brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
+				       BraseroBurnDialog *dialog)
+{
+	return brasero_burn_dialog_continue_question (dialog,
+	                                              _("Do you want to continue with full Windows compatibility disabled?"),
+	                                              _("Some files don't have a suitable name for a fully Windows-compatible CD."),
+	                                              _("_Continue"));
 }
 
 static void
@@ -1538,6 +1562,10 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 	g_signal_connect (priv->burn,
 			  "insert-media",
 			  G_CALLBACK (brasero_burn_dialog_insert_disc_cb),
+			  dialog);
+	g_signal_connect (priv->burn,
+			  "blank-failure",
+			  G_CALLBACK (brasero_burn_dialog_blank_failure_cb),
 			  dialog);
 	g_signal_connect (priv->burn,
 			  "eject-failure",
