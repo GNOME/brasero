@@ -2129,9 +2129,13 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 				if (session_sec > medium_sec) {
 					BRASERO_BURN_LOG ("Not enough space on medium %"G_GOFFSET_FORMAT"/%"G_GOFFSET_FORMAT, session_sec, medium_sec);
-					result = brasero_burn_reload_dest_media (burn,  BRASERO_BURN_ERROR_MEDIUM_SPACE, error);
-					if (result != BRASERO_BURN_OK)
-						break;
+					result = brasero_burn_reload_dest_media (burn,
+					                                         BRASERO_BURN_ERROR_MEDIUM_SPACE,
+					                                         error);
+					if (result == BRASERO_BURN_OK)
+						result = BRASERO_BURN_RETRY;
+
+					break;
 				}
 			}
 			brasero_track_type_free (type);
