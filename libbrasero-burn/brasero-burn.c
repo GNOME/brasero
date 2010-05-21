@@ -2135,7 +2135,9 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 					                                         BRASERO_BURN_ERROR_MEDIUM_SPACE,
 					                                         error);
 					if (result == BRASERO_BURN_OK)
-						break;
+						result = BRASERO_BURN_RETRY;
+
+					break;
 				}
 			}
 			brasero_track_type_free (type);
