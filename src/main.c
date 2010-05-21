@@ -344,7 +344,8 @@ brasero_app_parse_options (BraseroApp *app)
 					  FALSE,
 					  TRUE,
 					  burn_immediately != 0);
-		return;
+		if (burn_immediately)
+			return;
 	}
 	else if (burn_project_uri) {
 		brasero_app_open_project (app,
@@ -373,7 +374,8 @@ brasero_app_parse_options (BraseroApp *app)
 					  TRUE,
 					  TRUE,
 					  burn_immediately != 0);
-		return;
+		if (burn_immediately)
+			return;
 	}
 
 #endif
