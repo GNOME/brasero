@@ -204,9 +204,6 @@ void
 brasero_io_job_base_free (BraseroIOJobBase *base);
 
 void
-brasero_io_cancel_by_data (gpointer callback_data);
-
-void
 brasero_io_cancel_by_base (BraseroIOJobBase *base);
 
 void

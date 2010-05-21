@@ -2245,53 +2245,6 @@ brasero_io_cancel_by_base (BraseroIOJobBase *base)
 	g_object_unref (self);
 }
 
-static gboolean
-brasero_io_cancel_tasks_by_data_cb (BraseroAsyncTaskManager *manager,
-				    gpointer callback_data,
-				    gpointer user_data)
-{
-	BraseroIOJob *job = callback_data;
-
-	if (job->callback_data && job->callback_data->callback_data != user_data)
-		return FALSE;
-
-	return TRUE;
-}
-
-void
-brasero_io_cancel_by_data (gpointer callback_data)
-{
-	GSList *iter;
-	GSList *next;
-	BraseroIOPrivate *priv;
-	BraseroIO *self = brasero_io_get_default ();
-
-	priv = BRASERO_IO_PRIVATE (self);
-
-	brasero_async_task_manager_foreach_unprocessed_remove (BRASERO_ASYNC_TASK_MANAGER (self),
-							       brasero_io_cancel_tasks_by_data_cb,
-							       callback_data);
-
-	brasero_async_task_manager_foreach_active_remove (BRASERO_ASYNC_TASK_MANAGER (self),
-							  brasero_io_cancel_tasks_by_data_cb,
-							  callback_data);
-
-	/* do it afterwards in case some results slipped through */
-	for (iter = priv->results; iter; iter = next) {
-		BraseroIOJobResult *result;
-
-		result = iter->data;
-		next = iter->next;
-
-		if (result->callback_data != callback_data)
-			continue;
-
-		brasero_io_cancel_result (self, result);
-	}
-
-	g_object_unref (self);
-}
-
 struct _BraseroIOJobCompareData {
 	BraseroIOCompareCallback func;
 	const BraseroIOJobBase *base;
@@ -2538,9 +2491,39 @@ brasero_io_class_init (BraseroIOClass *klass)
 	object_class->finalize = brasero_io_finalize;
 }
 
+static gboolean
+brasero_io_cancel (BraseroAsyncTaskManager *manager,
+                   gpointer callback_data,
+                   gpointer user_data)
+{
+	return TRUE;
+}
+
 void
 brasero_io_shutdown (void)
 {
+	GSList *iter, *next;
+	BraseroIOPrivate *priv;
+
+	priv = BRASERO_IO_PRIVATE (singleton);
+
+	brasero_async_task_manager_foreach_unprocessed_remove (BRASERO_ASYNC_TASK_MANAGER (singleton),
+							       brasero_io_cancel,
+							       NULL);
+
+	brasero_async_task_manager_foreach_active_remove (BRASERO_ASYNC_TASK_MANAGER (singleton),
+							  brasero_io_cancel,
+							  NULL);
+
+	/* do it afterwards in case some results slipped through */
+	for (iter = priv->results; iter; iter = next) {
+		BraseroIOJobResult *result;
+
+		result = iter->data;
+		next = iter->next;
+		brasero_io_cancel_result (singleton, result);
+	}
+
 	if (singleton) {
 		g_object_unref (singleton);
 		singleton = NULL;
