@@ -533,14 +533,14 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 
 		if ((type & BRASERO_MEDIUM_CD) && !(type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
-				if (isosize)
+				if (isosize > 0)
 					message = g_strdup_printf (_("Please replace the disc with a writable CD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
 					message = g_strdup (_("Please replace the disc with a writable CD."));
 			}
 			else {
-				if (isosize)
+				if (isosize > 0)
 					message = g_strdup_printf (_("Please insert a writable CD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
@@ -549,14 +549,14 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		}
 		else if (!(type & BRASERO_MEDIUM_CD) && (type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
-				if (isosize)
+				if (isosize > 0)
 					message = g_strdup_printf (_("Please replace the disc with a writable DVD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
 					message = g_strdup (_("Please replace the disc with a writable DVD."));
 			}
 			else {
-				if (isosize)
+				if (isosize > 0)
 					message = g_strdup_printf (_("Please insert a writable DVD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
