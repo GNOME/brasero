@@ -2149,20 +2149,24 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			 * data on it when we get to the real recording. */
 			if (erase_allowed) {
 				result = brasero_burn_run_eraser (burn, error);
+				if (result == BRASERO_BURN_CANCEL)
+					return result;
 
 				/* If the erasing process did not work then do
 				 * not fail and cancel the entire session but
 				 * ask the user if he wants to insert another
 				 * disc instead. */
 				if (result != BRASERO_BURN_OK) {
-					result = brasero_burn_emit_signal (burn,
-					                                   BLANK_FAILURE_SIGNAL,
-					                                   BRASERO_BURN_ERR);
-					if (result == BRASERO_BURN_OK) {
-						result = brasero_burn_reload_dest_media (burn,
-						                                         BRASERO_BURN_ERROR_NONE,
-						                                         NULL);
-						if (result == BRASERO_BURN_OK)
+					BraseroBurnResult local_result;
+
+					local_result = brasero_burn_emit_signal (burn,
+					                                         BLANK_FAILURE_SIGNAL,
+					                                         BRASERO_BURN_ERR);
+					if (local_result == BRASERO_BURN_OK) {
+						local_result = brasero_burn_reload_dest_media (burn,
+						                                               BRASERO_BURN_ERROR_NONE,
+						                                               NULL);
+						if (local_result == BRASERO_BURN_OK)
 							result = BRASERO_BURN_RETRY;
 					}
 
