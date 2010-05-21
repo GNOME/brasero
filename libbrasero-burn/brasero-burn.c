@@ -1346,7 +1346,7 @@ start:
 				       0,
 				       1.0,
 				       1.0,
-				       -1);
+				       -1L);
 		}
 		return BRASERO_BURN_OK;
 	}
