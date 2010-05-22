@@ -1408,7 +1408,8 @@ start:
 		goto start;
 	}
 	else if (error_code == BRASERO_BURN_ERROR_DISK_SPACE
-	     ||  error_code == BRASERO_BURN_ERROR_PERMISSION) {
+	     ||  error_code == BRASERO_BURN_ERROR_PERMISSION
+	     ||  error_code == BRASERO_BURN_ERROR_TMP_DIRECTORY) {
 		gboolean is_temp;
 
 		/* That's an imager (outputs an image to the disc) so that means

@@ -33,10 +33,10 @@
 #endif
 
 #include <errno.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -98,7 +98,7 @@ struct _BraseroSessionSetting {
 typedef struct _BraseroSessionSetting BraseroSessionSetting;
 
 struct _BraseroBurnSessionPrivate {
-	FILE *session;
+	int session;
 	gchar *session_path;
 
 	GSList *tmpfiles;
@@ -1190,8 +1190,7 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (priv->settings->tmpdir && path
-	&& !strcmp (priv->settings->tmpdir, path))
+	if (!g_strcmp0 (priv->settings->tmpdir, path))
 		return BRASERO_BURN_OK;
 
 	if (priv->settings->tmpdir)
@@ -1272,13 +1271,13 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 		if (errsv != EACCES)
 			g_set_error (error, 
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
+				     BRASERO_BURN_ERROR_TMP_DIRECTORY,
 				     "%s",
 				     g_strerror (errsv));
 		else
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_PERMISSION,
+				     BRASERO_BURN_ERROR_TMP_DIRECTORY,
 				     _("You do not have the required permission to write at this location"));
 		return BRASERO_BURN_ERR;
 	}
@@ -1347,13 +1346,13 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 		if (errsv != EACCES)
 			g_set_error (error, 
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
+				     BRASERO_BURN_ERROR_TMP_DIRECTORY,
 				     "%s",
 				     g_strerror (errsv));
 		else
 			g_set_error (error, 
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_PERMISSION,
+				     BRASERO_BURN_ERROR_TMP_DIRECTORY,
 				     _("You do not have the required permission to write at this location"));
 
 		return BRASERO_BURN_ERR;
@@ -2131,6 +2130,7 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 			   const gchar *format,
 			   va_list arg_list)
 {
+	int len;
 	gchar *message;
 	gchar *offending;
 	BraseroBurnSessionPrivate *priv;
@@ -2151,12 +2151,13 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 	if (!g_utf8_validate (message, -1, (const gchar**) &offending))
 		*offending = '\0';
 
-	if (fwrite (message, strlen (message), 1, priv->session) != 1)
+	len = strlen (message);
+	if (write (priv->session, message, len) != len)
 		g_warning ("Some log data couldn't be written: %s\n", message);
 
 	g_free (message);
 
-	if (fwrite ("\n", 1, 1, priv->session) != 1)
+	if (write (priv->session, "\n", 1) != 1)
 		g_warning ("Some log data could not be written");
 }
 
@@ -2175,24 +2176,6 @@ brasero_burn_session_log (BraseroBurnSession *self,
 	va_start (args, format);
 	brasero_burn_session_logv (self, format, args);
 	va_end (args);
-}
-
-void
-brasero_burn_session_set_log_path (BraseroBurnSession *self,
-				   const gchar *session_path)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	if (priv->session_path) {
-		g_free (priv->session_path);
-		priv->session_path = NULL;
-	}
-
-	if (session_path)
-		priv->session_path = g_strdup (session_path);
 }
 
 const gchar *
@@ -2216,28 +2199,31 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (!priv->session_path) {
-		int fd;
-		const gchar *tmpdir;
+	/* This must obey the path of the temporary directory if possible */
+	priv->session_path = g_build_path (G_DIR_SEPARATOR_S,
+					   priv->settings->tmpdir,
+					   BRASERO_BURN_TMP_FILE_NAME,
+					   NULL);
+	priv->session = g_mkstemp_full (priv->session_path,
+	                                O_CREAT|O_WRONLY,
+	                                S_IRWXU);
 
-		/* takes care of the output file */
-		tmpdir = priv->settings->tmpdir ?
-			 priv->settings->tmpdir :
-			 g_get_tmp_dir ();
+	if (priv->session < 0) {
+		g_free (priv->session_path);
 
-		/* This must obey the path of the temporary directory */
 		priv->session_path = g_build_path (G_DIR_SEPARATOR_S,
-						   tmpdir,
+						   g_get_tmp_dir (),
 						   BRASERO_BURN_TMP_FILE_NAME,
 						   NULL);
-
-		fd = g_mkstemp (priv->session_path);
-		priv->session = fdopen (fd, "w");
+		priv->session = g_mkstemp_full (priv->session_path,
+		                                O_CREAT|O_WRONLY,
+		                                S_IRWXU);
 	}
-	else
-		priv->session = fopen (priv->session_path, "w");
 
-	if (!priv->session) {
+	if (priv->session < 0) {
+		g_free (priv->session_path);
+		priv->session_path = NULL;
+
 		g_warning ("Impossible to open a session file\n");
 		return FALSE;
 	}
@@ -2312,15 +2298,16 @@ brasero_burn_session_stop (BraseroBurnSession *self)
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	if (priv->session) {
-		fclose (priv->session);
-		priv->session = NULL;
+	if (priv->session > 0) {
+		close (priv->session);
+		priv->session = -1;
+	}
+
+	if (priv->session_path) {
+		g_free (priv->session_path);
+		priv->session_path = NULL;
 	}
 }
-
-/**
- *
- */
 
 static void
 brasero_burn_session_track_list_free (GSList *list)
@@ -2456,9 +2443,9 @@ brasero_burn_session_finalize (GObject *object)
 	}
 	g_slist_free (priv->tmpfiles);
 
-	if (priv->session) {
-		fclose (priv->session);
-		priv->session = NULL;
+	if (priv->session > 0) {
+		close (priv->session);
+		priv->session = -1;
 	}
 
 	if (priv->session_path) {
@@ -2474,7 +2461,12 @@ brasero_burn_session_finalize (GObject *object)
 
 static void
 brasero_burn_session_init (BraseroBurnSession *obj)
-{ }
+{
+	BraseroBurnSessionPrivate *priv;
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (obj);
+	priv->session = -1;
+}
 
 static void
 brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
