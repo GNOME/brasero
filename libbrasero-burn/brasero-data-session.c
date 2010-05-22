@@ -305,24 +305,30 @@ brasero_data_session_load_dir_result (GObject *owner,
 							       info,
 							       parent);
 	if (!node) {
-		/* a problem ? */
+		/* This is not a problem, it could be simply that the user did 
+		 * not want to overwrite, so do not do the following (reminder):
 		g_signal_emit (owner,
 			       brasero_data_session_signals [LOADED_SIGNAL],
 			       0,
 			       priv->loaded,
-			       FALSE);
+			       (priv->nodes != NULL));
+		*/
 		return;
  	}
 
 	/* Only if we're exploring root directory */
-	if (!parent)
+	if (!parent) {
 		priv->nodes = g_slist_prepend (priv->nodes, node);
 
-	g_signal_emit (owner,
-		       brasero_data_session_signals [LOADED_SIGNAL],
-		       0,
-		       priv->loaded,
-		       TRUE);
+		if (g_slist_length (priv->nodes) == 1) {
+			/* Only tell when the first top node is successfully loaded */
+			g_signal_emit (owner,
+				       brasero_data_session_signals [LOADED_SIGNAL],
+				       0,
+				       priv->loaded,
+				       TRUE);
+		}
+	}
 }
 
 static gboolean
@@ -374,6 +380,9 @@ brasero_data_session_load_directory_contents (BraseroDataSession *self,
 					      BraseroFileNode *node,
 					      GError **error)
 {
+	if (node == NULL)
+		return FALSE;
+
 	return brasero_data_session_load_directory_contents_real (self, node, error);
 }
 
@@ -385,6 +394,10 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	BraseroDataSessionPrivate *priv;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+
+	if (priv->nodes)
+		return FALSE;
+
 	priv->loaded = medium;
 	g_object_ref (medium);
 
