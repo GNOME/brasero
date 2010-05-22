@@ -114,9 +114,6 @@ brasero_burn_session_get_tmp_image_type_same_src_dest (BraseroBurnSession *sessi
 const gchar *
 brasero_burn_session_get_log_path (BraseroBurnSession *session);
 
-void
-brasero_burn_session_set_log_path (BraseroBurnSession *session,
-				   const gchar *session_path);
 gboolean
 brasero_burn_session_start (BraseroBurnSession *session);
 

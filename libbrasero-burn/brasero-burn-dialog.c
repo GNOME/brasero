@@ -1637,6 +1637,7 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 static void
 brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 {
+	GError *error;
 	gchar *contents;
 	gchar *path = NULL;
 	GtkWidget *chooser;
@@ -1678,10 +1679,17 @@ brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 		return;
 	}
 
-	g_file_get_contents (brasero_burn_session_get_log_path (priv->session),
-			     &contents,
-			     NULL,
-			     NULL);
+	error = NULL;
+	if (!g_file_get_contents (brasero_burn_session_get_log_path (priv->session),
+	                          &contents,
+	                          NULL,
+	                          &error)) {
+		g_warning ("Error while saving log file: %s\n", error? error->message:"none");
+		g_error_free (error);
+		g_free (path);
+		return;
+	}
+	
 	g_file_set_contents (path, contents, -1, NULL);
 
 	g_free (contents);
