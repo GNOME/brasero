@@ -1630,7 +1630,6 @@ brasero_project_burn (BraseroProject *project)
 	project->priv->current = NULL;
 
 	brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (project->priv->selection), NULL);
-
 	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
 
 	/* This is to stop the preview widget from playing */
@@ -1646,11 +1645,12 @@ brasero_project_burn (BraseroProject *project)
 
 	project->priv->current = current_disc;
 	brasero_disc_set_session_contents (current_disc, BRASERO_BURN_SESSION (project->priv->session));
-
 	brasero_dest_selection_set_session (BRASERO_DEST_SELECTION (project->priv->selection),
 					    BRASERO_BURN_SESSION (project->priv->session));
 
 	project->priv->is_burning = 0;
+
+	brasero_project_update_controls (project);
 }
 
 /******************************** cover ****************************************/
