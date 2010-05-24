@@ -353,8 +353,7 @@ brasero_app_parse_options (BraseroApp *app)
 					  burn_project_uri,
 					  FALSE,
 					  TRUE,
-					  TRUE);
-
+					  burn_immediately != 0 /* This is to keep the current behavior which is open main window */);
 		if (g_remove (burn_project_uri) != 0) {
 			gchar *path;
 
@@ -422,11 +421,10 @@ brasero_app_parse_options (BraseroApp *app)
 			return;
 	}
 	else if (files) {
-		if (g_strv_length (files) == 1
-		&&  brasero_app_open_uri (app, files [0], FALSE))
-			return;
+		if (g_strv_length (files) != 1
+		||  brasero_app_open_uri (app, files [0], FALSE) == BRASERO_PROJECT_TYPE_INVALID)
+			brasero_app_data (app, burner, files, burn_immediately != 0);
 
-		brasero_app_data (app, burner, files, burn_immediately != 0);
 		if (burn_immediately)
 			return;
 	}
