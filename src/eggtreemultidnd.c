@@ -349,6 +349,15 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
   return TRUE;
 }
 
+static void
+_treeview_destroyed (GtkWidget *widget,
+                     gpointer user_data)
+{
+	gboolean *called = user_data;
+	*called = TRUE;
+	g_object_ref (widget);
+}
+
 static gboolean
 egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
 					GdkEventButton *event,
@@ -395,7 +404,9 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
   if (path && gtk_tree_selection_path_is_selected (selection, path))
     {
       GList *iter;
+      gulong sig_id;
       GList *selected;
+      gboolean called = FALSE;
       GtkWidgetClass *widget_klass;
 
       /* The call to ::button_press_event will unselect all selected rows so
@@ -403,14 +414,30 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
        * again. */
       selected = gtk_tree_selection_get_selected_rows (selection, NULL);
 
+      /* In some rare cases (like for a GtkFileChooserDialog when the user
+       * double-clicks a row) "destroy" is called during ::button_press_event
+       * calls which makes widget and selection invalid afterwards.
+       * Note: it seems that a call to "destroy" makes all signals invalid as
+       * well so do not disconnect */
+      sig_id = g_signal_connect (widget,
+                                 "destroy",
+                                 G_CALLBACK (_treeview_destroyed),
+                                 &called);
+
       widget_klass = GTK_WIDGET_GET_CLASS (tree_view);
       widget_klass->button_press_event (widget, event);
 
-      for (iter = selected; iter; iter = iter->next) {
-        gtk_tree_selection_select_path (selection, iter->data);
-	gtk_tree_path_free (iter->data);
+      if (!called)
+	g_signal_handler_disconnect (widget, sig_id);
+
+      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
+      if (selection) {
+	      for (iter = selected; iter; iter = iter->next) {
+		gtk_tree_selection_select_path (selection, iter->data);
+		gtk_tree_path_free (iter->data);
+	      }
+	      g_list_free (selected);
       }
-      g_list_free (selected);
 
       priv_data->pressed_button = event->button;
       priv_data->x = event->x;
