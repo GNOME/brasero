@@ -652,12 +652,12 @@ void
 brasero_layout_load (BraseroLayout *layout,
 		     BraseroLayoutType type)
 {
-	gchar *layout_id = NULL;
+	const gchar *layout_id = NULL;
 	GtkTreeModel *model;
 	gboolean sidepane;
 	GtkAction *action;
-	gpointer value;
 	GtkTreeIter iter;
+	gpointer value;
 
 	if (layout->priv->preview_pane)
 		brasero_preview_hide (BRASERO_PREVIEW (layout->priv->preview_pane));
@@ -744,7 +744,6 @@ brasero_layout_load (BraseroLayout *layout,
 
 	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), sidepane);
-	g_free (layout_id);
 }
 
 static void
