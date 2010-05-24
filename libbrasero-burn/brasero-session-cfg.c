@@ -534,7 +534,6 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self,
 {
 	BraseroSessionCfgPrivate *priv;
 	GConfClient *client;
-	const gchar *path;
 	guint64 rate;
 	gchar *key;
 
@@ -552,12 +551,6 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self,
 	}
 
 	gconf_client_set_int (client, key, rate / 1000, NULL);
-	g_free (key);
-
-	/* temporary directory */
-	path = brasero_burn_session_get_tmpdir (BRASERO_BURN_SESSION (self));
-	key = g_strdup_printf ("%s/tmpdir", BRASERO_DRIVE_PROPERTIES_KEY);
-	gconf_client_set_string (client, key, path, NULL);
 	g_free (key);
 
 	g_object_unref (client);

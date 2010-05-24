@@ -211,7 +211,7 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 
 	file = g_file_new_for_commandline_arg (path);
 	if (!file)
-		return FALSE;
+		return TRUE;
 
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
@@ -255,10 +255,10 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 
 		g_object_unref (info);
 		g_object_unref (file);
-		if (answer == GTK_RESPONSE_OK)
-			return FALSE;
+		if (answer != GTK_RESPONSE_OK)
+			return TRUE;
 
-		return TRUE;
+		return FALSE;
 	}
 
 	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
@@ -293,10 +293,10 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 
 		g_object_unref (info);
 		g_object_unref (file);
-		if (answer == GTK_RESPONSE_OK)
-			return FALSE;
+		if (answer != GTK_RESPONSE_OK)
+			return TRUE;
 
-		return TRUE;
+		return FALSE;
 	}
 
 	g_object_unref (info);
@@ -314,7 +314,7 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 	 * filesystems have a maximum file size limit of 4 GiB and more than
 	 * often we need a temporary file size of 4 GiB or more. */
 	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-	if (filesystem && !strcmp (filesystem, "msdos")) {
+	if (!g_strcmp0 (filesystem, "msdos")) {
 		gint answer;
 		GtkWidget *dialog;
 		GtkWidget *toplevel;
@@ -344,8 +344,8 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 		gtk_widget_destroy (dialog);
 
 		g_object_unref (info);
-		if (answer == GTK_RESPONSE_OK)
-			return FALSE;
+		if (answer != GTK_RESPONSE_OK)
+			return TRUE;
 	}
 	else if (info)
 		g_object_unref (info);

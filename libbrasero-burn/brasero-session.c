@@ -43,6 +43,8 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include <gconf/gconf-client.h>
+
 #include "brasero-session.h"
 #include "brasero-session-helper.h"
 
@@ -91,8 +93,6 @@ struct _BraseroSessionSetting {
 	gchar *label;
 	guint64 rate;
 
-	gchar *tmpdir;
-
 	BraseroBurnFlag flags;
 };
 typedef struct _BraseroSessionSetting BraseroSessionSetting;
@@ -101,6 +101,7 @@ struct _BraseroBurnSessionPrivate {
 	int session;
 	gchar *session_path;
 
+	gchar *tmpdir;
 	GSList *tmpfiles;
 
 	BraseroSessionSetting settings [1];
@@ -137,6 +138,8 @@ typedef enum {
 static guint brasero_burn_session_signals [LAST_SIGNAL] = { 0 };
 static GObjectClass *parent_class = NULL;
 
+#define  BRASERO_TEMPORARY_DIRECTORY_KEY    "/apps/brasero/drives/tmpdir"
+
 static void
 brasero_session_settings_clean (BraseroSessionSetting *settings)
 {
@@ -145,9 +148,6 @@ brasero_session_settings_clean (BraseroSessionSetting *settings)
 
 	if (settings->toc)
 		g_free (settings->toc);
-
-	if (settings->tmpdir)
-		g_free (settings->tmpdir);
 
 	if (settings->label)
 		g_free (settings->label);
@@ -170,7 +170,6 @@ brasero_session_settings_copy (BraseroSessionSetting *dest,
 	dest->image = g_strdup (original->image);
 	dest->toc = g_strdup (original->toc);
 	dest->label = g_strdup (original->label);
-	dest->tmpdir = g_strdup (original->tmpdir);
 }
 
 static void
@@ -1185,21 +1184,26 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 				 const gchar *path)
 {
 	BraseroBurnSessionPrivate *priv;
+	GConfClient *client;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (!g_strcmp0 (priv->settings->tmpdir, path))
+	if (!g_strcmp0 (priv->tmpdir, path))
 		return BRASERO_BURN_OK;
 
-	if (priv->settings->tmpdir)
-		g_free (priv->settings->tmpdir);
+	if (priv->tmpdir)
+		g_free (priv->tmpdir);
 
 	if (path)
-		priv->settings->tmpdir = g_strdup (path);
+		priv->tmpdir = g_strdup (path);
 	else
-		priv->settings->tmpdir = NULL;
+		priv->tmpdir = NULL;
+
+	client = gconf_client_get_default ();
+	gconf_client_set_string (client, BRASERO_TEMPORARY_DIRECTORY_KEY, priv->tmpdir, NULL);
+	g_object_unref (client);
 
 	return BRASERO_BURN_OK;
 }
@@ -1221,7 +1225,7 @@ brasero_burn_session_get_tmpdir (BraseroBurnSession *self)
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	return priv->settings->tmpdir? priv->settings->tmpdir:g_get_tmp_dir ();
+	return priv->tmpdir? priv->tmpdir:g_get_tmp_dir ();
 }
 
 /**
@@ -1253,8 +1257,8 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	/* create a working directory in tmp */
-	tmpdir = priv->settings->tmpdir ?
-		 priv->settings->tmpdir :
+	tmpdir = priv->tmpdir ?
+		 priv->tmpdir :
 		 g_get_tmp_dir ();
 
 	tmp = g_build_path (G_DIR_SEPARATOR_S,
@@ -1325,8 +1329,8 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 		return BRASERO_BURN_OK;
 
 	/* takes care of the output file */
-	tmpdir = priv->settings->tmpdir ?
-		 priv->settings->tmpdir :
+	tmpdir = priv->tmpdir ?
+		 priv->tmpdir :
 		 g_get_tmp_dir ();
 
 	name = g_strconcat (BRASERO_BURN_TMP_FILE_NAME, suffix, NULL);
@@ -2201,7 +2205,7 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	/* This must obey the path of the temporary directory if possible */
 	priv->session_path = g_build_path (G_DIR_SEPARATOR_S,
-					   priv->settings->tmpdir,
+					   priv->tmpdir,
 					   BRASERO_BURN_TMP_FILE_NAME,
 					   NULL);
 	priv->session = g_mkstemp_full (priv->session_path,
@@ -2382,6 +2386,7 @@ static void
 brasero_burn_session_finalize (GObject *object)
 {
 	BraseroBurnSessionPrivate *priv;
+	GConfClient *client;
 	GSList *iter;
 
 	BRASERO_BURN_LOG ("Cleaning session");
@@ -2432,6 +2437,15 @@ brasero_burn_session_finalize (GObject *object)
 		priv->pile_settings = NULL;
 	}
 
+	client = gconf_client_get_default ();
+	gconf_client_set_string (client, BRASERO_TEMPORARY_DIRECTORY_KEY, priv->tmpdir, NULL);
+	g_object_unref (client);
+
+	if (priv->tmpdir) {
+		g_free (priv->tmpdir);
+		priv->tmpdir = NULL;
+	}
+
 	/* clean tmpfiles */
 	for (iter = priv->tmpfiles; iter; iter = iter->next) {
 		gchar *tmpfile;
@@ -2463,9 +2477,14 @@ static void
 brasero_burn_session_init (BraseroBurnSession *obj)
 {
 	BraseroBurnSessionPrivate *priv;
+	GConfClient *client;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (obj);
 	priv->session = -1;
+
+	client = gconf_client_get_default ();
+	priv->tmpdir = gconf_client_get_string (client, BRASERO_TEMPORARY_DIRECTORY_KEY, NULL);
+	g_object_unref (client);
 }
 
 static void
