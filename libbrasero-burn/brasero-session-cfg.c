@@ -1149,8 +1149,9 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	/* Check that current input and output work */
 	if (brasero_track_type_get_has_stream (source)) {
 		if (priv->CD_TEXT_modified) {
-			/* Try to redo what we undid (after all a new plugin could have
-			 * been activated in the mean time ...) and see what happens */
+			/* Try to redo what we undid (after all a new plugin
+			 * could have been activated in the mean time ...) and
+			 * see what happens */
 			brasero_track_type_set_stream_format (source,
 							      BRASERO_METADATA_INFO|
 							      brasero_track_type_get_stream_format (source));
