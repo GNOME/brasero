@@ -3048,10 +3048,10 @@ end:
 
 	g_mutex_lock (priv->mutex);
 
+	priv->probe = NULL;
 	if (!priv->probe_cancelled)
 		priv->probe_id = g_idle_add (brasero_medium_probed, self);
 
-	priv->probe = NULL;
 	g_cond_broadcast (priv->cond);
 	g_mutex_unlock (priv->mutex);
 
