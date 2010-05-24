@@ -200,31 +200,27 @@ static const GInterfaceInfo brasero_data_track_cfg_multi_DND_drag_source_info = 
 	NULL
 };
 
+gboolean
+brasero_enable_multi_DND_for_model_type (GType type)
+{
+	g_type_add_interface_static (type,
+				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
+				     &multi_DND_drag_source_info);
+	return TRUE;
+}
+
 void
 brasero_enable_multi_DND (void)
 {
-	GType object_type;
-
-	object_type = gtk_tree_model_filter_get_type ();
-	g_type_add_interface_static (object_type,
+	g_type_add_interface_static (GTK_TYPE_TREE_MODEL_SORT,
 				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
 				     &multi_DND_drag_source_info);
-
-	object_type = gtk_tree_model_sort_get_type ();
-	g_type_add_interface_static (object_type,
+	g_type_add_interface_static (GTK_TYPE_TREE_STORE,
 				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
 				     &multi_DND_drag_source_info);
-
-	object_type = gtk_tree_store_get_type ();
-	g_type_add_interface_static (object_type,
+	g_type_add_interface_static (GTK_TYPE_LIST_STORE,
 				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
 				     &multi_DND_drag_source_info);
-
-	object_type = gtk_list_store_get_type ();
-	g_type_add_interface_static (object_type,
-				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
-				     &multi_DND_drag_source_info);
-
 	g_type_add_interface_static (BRASERO_TYPE_TRACK_DATA_CFG,
 				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
 				     &brasero_data_track_cfg_multi_DND_drag_source_info);
