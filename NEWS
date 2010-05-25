@@ -1,219 +1,41 @@
-29-03-2010: 2.30.0
-
-First stable release for GNOME 2.30
-
-Bug Fixes:
-* Fix a problem if multiple tracks were processed in a single pass by
-a plugin then progress was not smooth (Philippe Rouquier) 
-* Fix video options so that for SVCD we do have a proper default for
-aspect ratio (set to 4:3) (Philippe Rouquier)
-* Fix two problem with video transcoding: (Philippe Rouquier) 
-  - a hang that was caused by buffers being too little  
-  - progress reporting that did not always properly work 
-* Make soft autodetection. (Maciej Piechotka)
-* Update to latest GTK code (Andre Klapper)
-* Fix #Bug 611111 - brasero burn:/// hangs (Philippe Rouquier)
-* Use gtk_widget_style_attach () in realize implementations (Javier Jardón)
-* Fix new headers required by tracker >=0.7.25. (Luis Medinas)
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-10-03-2010: 2.29.92
-
-- Fix #608170 - Drive selection widget unusable from GtkBuilder
-- Add support for GtkBuilder interface to BraseroMediumSelection
-  widget
-- Fix gobject-introspection shared libraries
-- Fix #608719 - nautilus crashed with signal 5 in brasero_burn_caps_get_default()
-- Fix building libbrasero-burn with GObject Introspection in some cases
-- Fix memory leak where a GError was not propagated properly
-- Ran autoupdate on configure.in to straight things up
-- Fix #611373 - messages in the Brasero Manual V2.2 are different from
-  the real
-- Fix a test that could lead to read outside the allocated buffer.
-- Many Updated translations
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-22-02-2010: 2.29.91
-
-- Fixed bug ##610186 - Use new tracker API.
-- Updated Translations.
-
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-09-02-2010: 2.29.90
-
-- Fixe Bug 609016 -  XML produced by saving is out of standards
-- Updated Translations
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-
-26-01-2010: 2.29.6
-
-Bugs Fixed:
-
-- Fix #604084 - Speed up nautilus extension startup (Martin Pitt)
-- Fix #605433 - [PATCH] Fix some leaks in the CAM code (Joe Marcus Clarke)
-- [help] Fixed a typo in the help (Milo Casagrande)
-- Update Copyrights to 2010 (Luis Medinas)
-- Set the max value for the song properties end point button correctly
-(Jonathan Matthew)
-- Fix #607745 - Fix crash when shutting down with outstanding IO jobs (Jonathan Matthew)
-- Set start and end points correctly when reading a project file (Jonathan
-Matthew)
-- Fix Bug 607767 - integer overflow in brasero_audio2cue_len_to_string (Luis
-Medinas)
-- Fix #607752 - audio track start and end points are overwritten after being
-read from a project file (Philippe Rouquier) 
-- Fixes Bug 603969 - CD/DVD creator dialog is REALLY unclear for burning an ISO
-(Luis Medinas)
-- Use totem_pl_parser_save() for playlist saving (bgo#605314). (Carlos Garnacho)
-- Updated Translations
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-22-12-2009: 2.29.4
-
-Bugs Fixed:
-- Fix #602872 - User is unable to fast-forward neither rewing sound preview
-- Fix #588406 - Allow user to zoom in/out in media previewer with mouse wheel
-- Fix for #603605 - .checksum.md5 ("file integrity check" plugin) broken when
-using "Increase compatibility with Windows"
-- Fix #558440 - Convert from audio project to data project
-- Fix #598924 - Brasero wouldn't let me rename files by pasting the new name
-- A potential fix for #590648 - Text in cover editor does not show up automatically
-- Fix #581532 - Image Burning Setup dialog needs counter (second part)
-- Fix #602888 - The files on new directory on Brasero project isn't saved correctly.
-- Fix #603871 - [Audio project] Song order inverted when moving songs up in the tracklist
-- Fix (or rather workaround) #568358 - Not accessibe error dialog in print preview
-- Fixed memleaks
-- Fixes for Video DVD
-- Updated translations
-
-NOTE: You need gtk-doc >=1.12 in order to build gobject-introspection
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-30-11-2009: 2.29.3
-
-Bugs Fixed:
-- Fix #559664 Add a configure switch for enabling/disabling cdrdao support
-- Fix #566898 Enter sound disks' names automatically
-- Fix #538060 Brasero fails to read cue file when PATH contains a non fully
-qualified path
-- Fix #602566 libbrasero-burn has broken headers
-- Attempt at fixing #602947 - brasero_drive_get_medium() isn't sync
-- Fix #602181 Add a parameter to specify the drive you want to use
-- Make sure CD-TEXT from .cue files gets properly written
-- Fix #594716 Use accessor functions instead direct access.
-- Move code to use GtkInfoBar
-- Misc Bug Fixes
-- Updated Translations
-
-Homepage: http://www.gnome.org/projects/brasero
-
-Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
-
-Mailing List for User and Developer discussion: brasero-list@gnome.org
-
-GIT Repository: http://git.gnome.org/cgit/brasero/
-
-Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
-
-
-16-11-2009: 2.29.2
-
-New Features:
-- Integrate Brasero with PackageKit
-- Gobject-introspection support for libbrasero-media and libbrasero-burn
-- Added Tracker support for searches besides Beagle
-
-Bugs Fixed:
-- Fix compile failure using --disable-introspection see bgo #602027
-- Removed deprecated GLib symbols fixes bgo #601040
-- Fix #601871 - Wrong remaining space when audio CD of size greater than 70
-min
-- Fix #601496 - Select disc image selector allows to selecd pictures
-- Fix #601109 - burning disks with burn:// doesn't set the disk label
-- Fix #601259 - Problems with folder depth
-- Fix #599655 - brasero crashed with SIGSEGV in g_main_context_dispatch()
-- Fix #588323 - crash in Disc Copier: Dragging a track from Banshee
-- Fix #600007 - Memory leaks in brasero
-- Fix #600293 - Fails to build error: cannot convert to a pointer type
-
-- Update Translations.
-
-NOTES:
-- gtk-doc 1.12 (unreleased yet) is needed to enable gobject-introspection for
-now simply add --disable-introspection
-
-26-10-2009: 2.29.1
+26-05-2010: 2.31.1
 
 First development release.
 
-New features:
-- new cdda2wav plugin to copy more accurately audio CDs
-- support burning DTS wav files
-
-Improvements:
-- multiple copies: now brasero will chain up copies on every insertion
-- start to move away from 
-- lots of code cleanups
-- new dialog when ejection did not work
-- lots of strings changed (and hopefully improved)
-
-+ lots of small improvements
+Bug Fixes:
+- Added support for Tracker 0.8.x
+- Fixed lot's of memleaks
+- Fixed some search problems
+- Fix part of 616935 - Crash in brasero_data_project_node_removed at
+brasero-data-project.c:1163
+- Fix #615526 - brasero crashed with SIGSEGV in
+brasero_data_project_remove_node()
+- Fix #590648 - Text in cover editor does not show up automatically
+- Fix part of 594716 - Use accessor functions instead direct access
+(use GSEAL GnomeGoal)
+- Fix part of 617831 - "Write to Disc" button sensitivity regression
+- Fix flaw in mask that led libburn plugin not to work (not to be
+picked up actually) in some circumstances
+- Fix #617494 - Fails to burn ANY audio project (part 1)
+- Some more fixes for #617494 - Fails to burn ANY audio project
+- Fix #564411 - Move columns doesn't work
+- Fix #618917 - Brasero does not correctly handle double clicking on
+column separators
+- Fix #618942 - Bad info when burning, high CPU usage and slow burn
+- Change the priority for cdrdao and raised the one of cdda2wav plugin
+- Fix #608424 - String review
+- Fix for #615988 - brasero crashed with SIGSEGV in
+brasero_mmc3_get_performance_wrt_spd_desc()
+- Fix #597694 - brasero crashed with SIGSEGV in
+brasero_scsi_command_issue_sync()
+- Do not check for symlinks on cdda2wav so the plugin can use icedax.
+- Fix #598145 - Brasero's failure with some file names
+- Fix #613986 - Pressing create audio cd does nothing
+- Fix #602854 - Empty project not available
+- Fix #619366 - can't actually save error logs
+- Second fix for #613986 - Pressing create audio cd does nothing
+- Lot's of misc fixes
+- Translation updates
 
 Homepage: http://www.gnome.org/projects/brasero
 
