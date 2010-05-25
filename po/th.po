@@ -9,53 +9,53 @@ msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-03-29 15:00+0000\n"
-"PO-Revision-Date: 2010-04-13 15:29+0700\n"
-"Last-Translator: Thappitak Karoonboonyanan <thep@linux.thai.net>\n"
+"POT-Creation-Date: 2010-05-24 19:41+0000\n"
+"PO-Revision-Date: 2010-05-25 13:18+0700\n"
+"Last-Translator: Sira Nokyoongtong <gumaraa@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/brasero-search.c:240
+#: ../src/brasero-search.c:241
 #, c-format
 msgid "Results %i–%i (out of %i)"
 msgstr "ผลลัพธ์ที่ %i-%i (จากทั้งหมด %i)"
 
-#: ../src/brasero-search.c:248 ../src/brasero-search.c:879
+#: ../src/brasero-search.c:249 ../src/brasero-search.c:880
 msgid "No results"
 msgstr "ไม่พบรายการที่ต้องการ"
 
-#: ../src/brasero-search.c:413
+#: ../src/brasero-search.c:414
 msgid "Error querying for keywords."
 msgstr "เกิดข้อผิดพลาดขณะสอบถามด้วยคำค้น"
 
-#: ../src/brasero-search.c:866
+#: ../src/brasero-search.c:867
 msgid "Previous Results"
 msgstr "ผลการค้นหาหน้าก่อน"
 
-#: ../src/brasero-search.c:887
+#: ../src/brasero-search.c:888
 msgid "Next Results"
 msgstr "ผลการค้นหาหน้าถัดไป"
 
-#: ../src/brasero-search.c:951 ../src/brasero-data-disc.c:2315
+#: ../src/brasero-search.c:952 ../src/brasero-data-disc.c:2352
 #: ../src/brasero-file-filtered.c:259
 msgid "Files"
 msgstr "แฟ้ม"
 
-#: ../src/brasero-search.c:980 ../src/brasero-data-disc.c:2343
+#: ../src/brasero-search.c:981 ../src/brasero-data-disc.c:2380
 msgid "Description"
 msgstr "คำอธิบาย"
 
-#: ../src/brasero-search.c:1033 ../libbrasero-burn/brasero-src-image.c:441
-#: ../src/brasero-project-name.c:165 ../src/brasero-search-entry.c:505
-#: ../src/brasero-search-entry.c:565 ../src/brasero-search-entry.c:627
-#: ../src/brasero-file-chooser.c:318 ../src/brasero-project.c:2180
+#: ../src/brasero-search.c:1034 ../libbrasero-burn/brasero-src-image.c:441
+#: ../src/brasero-project-name.c:165 ../src/brasero-search-entry.c:509
+#: ../src/brasero-search-entry.c:569 ../src/brasero-search-entry.c:631
+#: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2185
 msgid "All files"
 msgstr "แฟ้มทั้งหมด"
 
-#: ../src/brasero-search.c:1044
+#: ../src/brasero-search.c:1045
 msgid "Number of results displayed"
 msgstr "จำนวนผลลัพธ์ที่แสดง"
 
@@ -193,6 +193,21 @@ msgstr "กำลังวิเคราะห์แฟ้มวีดิทั
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" ไม่สามารถอ่านได้"
 
+#: ../libbrasero-burn/brasero-data-session.c:123
+#: ../libbrasero-burn/brasero-burn.c:331 ../libbrasero-media/scsi-error.c:47
+#: ../libbrasero-burn/brasero-tool-dialog.c:90
+#: ../plugins/cdrdao/burn-cdrdao.c:244 ../plugins/cdrkit/burn-readom.c:110
+#: ../plugins/cdrkit/burn-wodim.c:136 ../plugins/cdrkit/burn-wodim.c:145
+#: ../plugins/cdrtools/burn-cdrecord.c:136
+#: ../plugins/cdrtools/burn-cdrecord.c:145
+#: ../plugins/cdrtools/burn-readcd.c:111
+#: ../plugins/growisofs/burn-dvd-rw-format.c:84
+#: ../plugins/growisofs/burn-growisofs.c:192
+#: ../plugins/libburnia/burn-libburn-common.c:186
+#, c-format
+msgid "The drive is busy"
+msgstr "ไดรว์ไม่ว่าง"
+
 #: ../libbrasero-burn/brasero-filtered-uri.c:57
 msgid "Hidden file"
 msgstr "แฟ้มซ่อน"
@@ -246,27 +261,27 @@ msgstr "โฟลเดอร์ใหม่"
 msgid "New folder %i"
 msgstr "โฟลเดอร์ใหม่ %i"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2418
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2428
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2421
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2431
 msgid "Analysing files"
 msgstr "กำลังวิเคราะห์แฟ้มต่างๆ"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2444
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2447
 #: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:237 ../src/brasero-project.c:1266
+#: ../nautilus/nautilus-burn-extension.c:237 ../src/brasero-project.c:1268
 #: ../libbrasero-burn/brasero-track-data.c:772
 #: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "ไม่มีแฟ้มที่จะเขียนลงแผ่น"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2564
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2567
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
 msgstr "\"%s\" เป็นลิงก์สัญลักษณ์ที่วนเข้าหาตัวเอง"
 
 #. Translators: %s is the path of a drive
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2590 ../src/main.c:254
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2593 ../src/main.c:254
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "ไม่พบ \"%s\""
@@ -276,7 +291,7 @@ msgstr "ไม่พบ \"%s\""
 msgid "The file does not appear to be a playlist"
 msgstr "แฟ้มดูเหมือนไม่ใช่รายการการเล่น"
 
-#: ../libbrasero-utils/brasero-metadata.c:1138 ../src/brasero-audio-disc.c:648
+#: ../libbrasero-utils/brasero-metadata.c:1138 ../src/brasero-audio-disc.c:642
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "GStreamer ไม่สามารถจัดการกับ \"%s\" ได้"
@@ -301,12 +316,12 @@ msgstr "GStreamer ไม่สามารถจัดการกับ \"%s\" 
 #: ../plugins/transcode/burn-transcode.c:294
 #: ../plugins/transcode/burn-transcode.c:306
 #: ../plugins/transcode/burn-transcode.c:455
-#: ../plugins/transcode/burn-transcode.c:507
-#: ../plugins/transcode/burn-transcode.c:541
-#: ../plugins/transcode/burn-transcode.c:588
-#: ../plugins/transcode/burn-transcode.c:609
-#: ../plugins/transcode/burn-transcode.c:621
-#: ../plugins/transcode/burn-transcode.c:646
+#: ../plugins/transcode/burn-transcode.c:508
+#: ../plugins/transcode/burn-transcode.c:542
+#: ../plugins/transcode/burn-transcode.c:589
+#: ../plugins/transcode/burn-transcode.c:610
+#: ../plugins/transcode/burn-transcode.c:622
+#: ../plugins/transcode/burn-transcode.c:647
 #: ../plugins/transcode/burn-vob.c:317 ../plugins/transcode/burn-vob.c:336
 #: ../plugins/transcode/burn-vob.c:350 ../plugins/transcode/burn-vob.c:362
 #: ../plugins/transcode/burn-vob.c:379 ../plugins/transcode/burn-vob.c:437
@@ -331,9 +346,8 @@ msgstr "ไม่สามารถสร้างอิลิเมนต์ %s
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/brasero-caps-burn.c:668
-#: ../libbrasero-burn/brasero-burn.c:2821 ../libbrasero-burn/burn-job.c:1217
-#: ../libbrasero-burn/burn-job.c:1226
+#: ../libbrasero-burn/brasero-burn.c:2852 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:215 ../src/brasero-app.c:764
 #: ../plugins/cdrkit/burn-genisoimage.c:370
@@ -347,8 +361,8 @@ msgstr "ไม่สามารถสร้างอิลิเมนต์ %s
 msgid "An internal error occurred"
 msgstr "เกิดข้อผิดพลาดภายใน"
 
-#: ../libbrasero-burn/brasero-caps-burn.c:766
-#: ../libbrasero-burn/brasero-burn.c:2551
+#: ../libbrasero-burn/brasero-caps-burn.c:890
+#: ../libbrasero-burn/brasero-burn.c:2582
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "สามารถตรวจสอบได้ทีละร่องเท่านั้น"
@@ -373,38 +387,38 @@ msgid "%s (%i%% Done)"
 msgstr "%s (เสร็จแล้ว %i%%)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:206
-#: ../libbrasero-burn/brasero-burn-dialog.c:1111
+#: ../libbrasero-burn/brasero-burn-dialog.c:1135
 msgid "Creating Image"
 msgstr "กำลังสร้างอิมเมจ"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:211
-#: ../libbrasero-burn/brasero-burn-dialog.c:1120
+#: ../libbrasero-burn/brasero-burn-dialog.c:1144
 msgid "Burning DVD"
 msgstr "กำลังเขียนดีวีดี"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:215
-#: ../libbrasero-burn/brasero-burn-dialog.c:1116
+#: ../libbrasero-burn/brasero-burn-dialog.c:1140
 msgid "Copying DVD"
 msgstr "กำลังทำสำเนาดีวีดี"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:221
-#: ../libbrasero-burn/brasero-burn-dialog.c:1130
+#: ../libbrasero-burn/brasero-burn-dialog.c:1154
 msgid "Burning CD"
 msgstr "กำลังเขียนซีดี"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:225
 #: ../libbrasero-burn/brasero-burn-dialog.c:346
-#: ../libbrasero-burn/brasero-burn-dialog.c:1126
+#: ../libbrasero-burn/brasero-burn-dialog.c:1150
 msgid "Copying CD"
 msgstr "กำลังทำสำเนาซีดี"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:231
-#: ../libbrasero-burn/brasero-burn-dialog.c:1140
+#: ../libbrasero-burn/brasero-burn-dialog.c:1164
 msgid "Burning Disc"
 msgstr "กำลังเขียนแผ่น"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:235
-#: ../libbrasero-burn/brasero-burn-dialog.c:1136
+#: ../libbrasero-burn/brasero-burn-dialog.c:1160
 msgid "Copying Disc"
 msgstr "กำลังทำสำเนาแผ่น"
 
@@ -590,9 +604,9 @@ msgid "Please insert a writable CD or DVD with at least %i MiB of free space."
 msgstr "กรุณาใส่แผ่นซีดีหรือดีวีดีชนิดเขียนได้ ซึ่งมีที่ว่างอย่างน้อย %i MiB"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:578
-#: ../libbrasero-burn/brasero-burn-dialog.c:2121
-#: ../libbrasero-burn/brasero-burn-dialog.c:2135
-#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:984
+#: ../libbrasero-burn/brasero-burn-dialog.c:2157
+#: ../libbrasero-burn/brasero-burn-dialog.c:2171
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:986
 msgid "Please insert a writable CD or DVD."
 msgstr "กรุณาใส่แผ่นซีดีหรือดีวีดีชนิดเขียนได้"
 
@@ -619,7 +633,7 @@ msgid "\"%s\" is busy."
 msgstr "\"%s\" ไม่ว่าง"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:616
-#: ../libbrasero-burn/brasero-burn.c:329
+#: ../libbrasero-burn/brasero-burn.c:332
 #: ../libbrasero-burn/brasero-tool-dialog.c:91
 msgid "Make sure another application is not using it"
 msgstr "กรุณาตรวจสอบให้แน่ใจว่าไม่มีโปรแกรมอื่นใช้ไดรว์อยู่"
@@ -708,6 +722,7 @@ msgid "Location for Temporary Files"
 msgstr "ตำแหน่งสำหรับแฟ้มชั่วคราว"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:854
+#: ../libbrasero-burn/brasero-burn-dialog.c:1103
 msgid "_Replace Disc"
 msgstr "เ_ปลี่ยนแผ่น"
 
@@ -765,7 +780,7 @@ msgstr "ไม่แนะนำให้เขียนเพลงต่อใ
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:938
 #: ../libbrasero-burn/brasero-burn-dialog.c:960
-#: ../libbrasero-burn/brasero-burn-dialog.c:1072
+#: ../libbrasero-burn/brasero-burn-dialog.c:1113
 #: ../src/brasero-data-disc.c:572 ../libbrasero-burn/brasero-tool-dialog.c:423
 msgid "_Continue"
 msgstr "_ทำต่อ"
@@ -790,101 +805,109 @@ msgid ""
 "operation to continue."
 msgstr "ไม่สามารถดันแผ่นออกได้ แม้จะจำเป็นต้องเอาแผ่นออกเพื่อจะได้ทำงานต่อไปได้"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1063
+#: ../libbrasero-burn/brasero-burn-dialog.c:1101
+msgid "Do you want to replace the disc and continue?"
+msgstr "คุณต้องการเปลี่ยนแผ่นแล้วดำเนินการต่อหรือไม่?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1102
+msgid "The currently inserted disc could not be blanked."
+msgstr "แผ่นที่ใส่อยู่นี้ไม่สามารถล้างข้อมูลได้"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1111
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "คุณต้องการทำต่อโดยไม่เปิดใช้คุณสมบัติความเข้ากันได้กับวินโดวส์แบบเต็มที่หรือไม่?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1066
-#: ../src/brasero-data-disc.c:745
-#: ../libbrasero-burn/brasero-status-dialog.c:340
+#: ../libbrasero-burn/brasero-burn-dialog.c:1112
+#: ../src/brasero-data-disc.c:746
+#: ../libbrasero-burn/brasero-status-dialog.c:343
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "แฟ้มบางแฟ้มมีชื่อไม่เหมาะกับการสร้างซีดีที่เข้ากับวินโดวส์แบบเต็มที่"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1322
-#: ../libbrasero-burn/brasero-burn-dialog.c:1343
+#: ../libbrasero-burn/brasero-burn-dialog.c:1346
+#: ../libbrasero-burn/brasero-burn-dialog.c:1367
 msgid "The simulation was successful."
 msgstr "การจำลองประสบความสำเร็จ"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1325
+#: ../libbrasero-burn/brasero-burn-dialog.c:1349
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "จะเริ่มเขียนแผ่นจริงใน 10 วินาที"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1328
+#: ../libbrasero-burn/brasero-burn-dialog.c:1352
 msgid "Burn _Now"
 msgstr "เขียน_ทันที"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1620
+#: ../libbrasero-burn/brasero-burn-dialog.c:1649
 msgid "Save Current Session"
 msgstr "บันทึกวาระการทำงานปัจจุบัน"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1688
+#: ../libbrasero-burn/brasero-burn-dialog.c:1724
 msgid "An unknown error occurred."
 msgstr "เกิดข้อผิดพลาดไม่ทราบสาเหตุ"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1696 ../src/brasero-app.c:609
+#: ../libbrasero-burn/brasero-burn-dialog.c:1732 ../src/brasero-app.c:609
 msgid "Error while burning."
 msgstr "เกิดข้อผิดพลาดขณะเขียนแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1704
+#: ../libbrasero-burn/brasero-burn-dialog.c:1740
 msgid "_Save Log"
 msgstr "_บันทึกปูม"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1737
+#: ../libbrasero-burn/brasero-burn-dialog.c:1773
 msgid "Video DVD successfully burned"
 msgstr "เขียนแผ่นดีวีดีภาพยนตร์สำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1739
+#: ../libbrasero-burn/brasero-burn-dialog.c:1775
 msgid "(S)VCD successfully burned"
 msgstr "เขียนแผ่น (S)VCD สำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1742
+#: ../libbrasero-burn/brasero-burn-dialog.c:1778
 msgid "Audio CD successfully burned"
 msgstr "เขียนแผ่นซีดีเพลงสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1745
-#: ../libbrasero-burn/brasero-burn-dialog.c:1777
+#: ../libbrasero-burn/brasero-burn-dialog.c:1781
+#: ../libbrasero-burn/brasero-burn-dialog.c:1813
 msgid "Image successfully created"
 msgstr "สร้างอิมเมจสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1750
+#: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "DVD successfully copied"
 msgstr "ทำสำเนาดีวีดีสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1752
+#: ../libbrasero-burn/brasero-burn-dialog.c:1788
 msgid "CD successfully copied"
 msgstr "ทำสำเนาซีดีสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1756
+#: ../libbrasero-burn/brasero-burn-dialog.c:1792
 msgid "Image of DVD successfully created"
 msgstr "สร้างอิมเมจของดีวีดีสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1758
+#: ../libbrasero-burn/brasero-burn-dialog.c:1794
 msgid "Image of CD successfully created"
 msgstr "สร้างอิมเมจของซีดีสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1764
+#: ../libbrasero-burn/brasero-burn-dialog.c:1800
 msgid "Image successfully burned to DVD"
 msgstr "เขียนอิมเมจลงดีวีดีสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1766
+#: ../libbrasero-burn/brasero-burn-dialog.c:1802
 msgid "Image successfully burned to CD"
 msgstr "เขียนอิมเมจลงซีดีสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1772
+#: ../libbrasero-burn/brasero-burn-dialog.c:1808
 msgid "Data DVD successfully burned"
 msgstr "เขียนแผ่นดีวีดีข้อมูลสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1774
+#: ../libbrasero-burn/brasero-burn-dialog.c:1810
 msgid "Data CD successfully burned"
 msgstr "เขียนแผ่นซีดีข้อมูลสำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1834
+#: ../libbrasero-burn/brasero-burn-dialog.c:1870
 #, c-format
 msgid "Copy #%i has been burned successfully."
 msgstr "เขียนสำเนา #%i สำเร็จแล้ว"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1842
+#: ../libbrasero-burn/brasero-burn-dialog.c:1878
 msgid ""
 "Another copy will start as soon as you insert a new writable disc. If you do "
 "not want to burn another copy, press \"Cancel\"."
@@ -892,28 +915,28 @@ msgstr ""
 "จะเริ่มเขียนสำเนาถัดไปทันทีที่คุณใส่แผ่นชนิดเขียนได้เข้ามา ถ้าคุณไม่ต้องการจะเขียนสำเนาถัดไปอีก "
 "ก็กด \"ยกเลิก\""
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1914
+#: ../libbrasero-burn/brasero-burn-dialog.c:1950
 msgid "Make _More Copies"
 msgstr "เขียนแผ่นสำเนาเ_พิ่ม"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1923
+#: ../libbrasero-burn/brasero-burn-dialog.c:1959
 msgid "_Create Cover"
 msgstr "สร้าง_ปก"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2084
+#: ../libbrasero-burn/brasero-burn-dialog.c:2120
 msgid "There are some files left to burn"
 msgstr "ยังมีแฟ้มที่ต้องเขียนเหลืออยู่"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2091
+#: ../libbrasero-burn/brasero-burn-dialog.c:2127
 msgid "There are some more videos left to burn"
 msgstr "ยังมีวีดิทัศน์ที่ต้องเขียนเหลืออยู่"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2095
+#: ../libbrasero-burn/brasero-burn-dialog.c:2131
 msgid "There are some more songs left to burn"
 msgstr "ยังมีเพลงที่ต้องเขียนเหลืออยู่"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2136
-#: ../libbrasero-burn/brasero-burn.c:1625
+#: ../libbrasero-burn/brasero-burn-dialog.c:2172
+#: ../libbrasero-burn/brasero-burn.c:1629
 #: ../plugins/cdrkit/burn-genisoimage.c:208 ../plugins/cdrkit/burn-wodim.c:115
 #: ../plugins/cdrtools/burn-cdrecord.c:115
 #: ../plugins/cdrtools/burn-mkisofs.c:209
@@ -922,31 +945,31 @@ msgstr "ยังมีเพลงที่ต้องเขียนเหล
 msgid "Not enough space available on the disc"
 msgstr "มีเนื้อที่ว่างบนแผ่นไม่พอ"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2401
+#: ../libbrasero-burn/brasero-burn-dialog.c:2437
 #: ../libbrasero-burn/brasero-tool-dialog.c:412
 msgid "Do you really want to quit?"
 msgstr "ยืนยันว่าจะออกจากโปรแกรมหรือไม่?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2405
+#: ../libbrasero-burn/brasero-burn-dialog.c:2441
 #: ../libbrasero-burn/brasero-tool-dialog.c:418
 msgid "Interrupting the process may make disc unusable."
 msgstr "การหยุดกระบวนการเขียนกลางคัน อาจทำให้แผ่นใช้การไม่ได้"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2408
+#: ../libbrasero-burn/brasero-burn-dialog.c:2444
 msgid "C_ontinue Burning"
 msgstr "เขียนแผ่น_ต่อไป"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2415
+#: ../libbrasero-burn/brasero-burn-dialog.c:2451
 msgid "_Cancel Burning"
 msgstr "_ยกเลิกการเขียนแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1009
+#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1011
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
 msgstr "กรุณาใส่แผ่นซีดีหรือดีวีดีชนิดเขียนได้ ถ้าคุณไม่ต้องการจะเขียนลงแฟ้มอิมเมจ"
 
-#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1565
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1570
 msgid "Create _Image"
 msgstr "สร้าง_อิมเมจ"
 
@@ -960,15 +983,15 @@ msgid "Make _Several Copies"
 msgstr "ทำสำเนาห_ลายชุด"
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1496
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1501
 msgid "_Burn"
 msgstr "เ_ขียนแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1493
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1498
 msgid "Burn _Several Copies"
 msgstr "เขียนสำเนาห_ลายชุด"
 
-#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:938
+#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:940
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "คุณต้องการเขียนแฟ้มชุดนี้ข้ามแผ่นหลายแผ่นหรือไม่?"
 
@@ -977,23 +1000,23 @@ msgstr "คุณต้องการเขียนแฟ้มชุดนี
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr "ขนาดของข้อมูลใหญ่เกินความจุแผ่น ถึงแม้จะใช้ตัวเลือก overburn แล้ว"
 
-#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:943
+#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:945
 msgid "_Burn Several Discs"
 msgstr "เ_ขียนลงหลายแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:945
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:947
 msgid "Burn the selection of files across several media"
 msgstr "เขียนชุดแฟ้มข้ามแผ่นหลายแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:954
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:956
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "กรุณาเลือกซีดีหรือดีวีดีแผ่นอื่น หรือใส่แผ่นใหม่เข้ามา"
 
-#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:999
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1001
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "จะไม่มีการเขียนข้อมูลเพลง (ศิลปิน, ชื่อเพลง ฯลฯ) ลงในแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1000
+#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1002
 msgid "This is not supported by the current active burning backend."
 msgstr "แบ็กเอนด์สำหรับเขียนที่ใช้อยู่ไม่รองรับการเขียนดังกล่าว"
 
@@ -1006,7 +1029,7 @@ msgstr "กรุณาเพิ่มแฟ้ม"
 msgid "Please add songs."
 msgstr "กรุณาเพิ่มเพลง"
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1257
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1259
 msgid "There are no songs to write to disc"
 msgstr "ไม่มีเพลงที่จะเขียนลงแผ่น"
 
@@ -1047,16 +1070,16 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "กรุณาใส่แผ่นที่ไม่มีการป้องกันการทำสำเนา"
 
 #: ../libbrasero-burn/brasero-burn-options.c:534
-#: ../libbrasero-burn/brasero-burn-options.c:1234
-#: ../src/brasero-project.c:1431
+#: ../libbrasero-burn/brasero-burn-options.c:1237
+#: ../src/brasero-project.c:1436
 msgid "All required applications and libraries are not installed."
 msgstr "ไม่ได้ติดตั้งโปรแกรมและไลบรารีที่ต้องใช้ทั้งหมด"
 
-#: ../libbrasero-burn/brasero-burn-options.c:541 ../src/brasero-project.c:992
+#: ../libbrasero-burn/brasero-burn-options.c:541 ../src/brasero-project.c:994
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "กรุณาเปลี่ยนแผ่นเป็นแผ่นซีดีหรือดีวีดีชนิดที่โปรแกรมรองรับ"
 
-#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:965
+#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:967
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "คุณต้องการเขียนข้อมูลเกินความจุแผ่นตามที่ได้รับรายงานหรือไม่?"
 
@@ -1074,11 +1097,11 @@ msgstr ""
 "ซึ่งไม่สามารถตรวจจับได้ และจำเป็นต้องใช้ตัวเลือก overburn\n"
 "หมายเหตุ: ตัวเลือกนี้อาจทำให้เขียนแผ่นไม่สำเร็จได้"
 
-#: ../libbrasero-burn/brasero-burn-options.c:558 ../src/brasero-project.c:972
+#: ../libbrasero-burn/brasero-burn-options.c:558 ../src/brasero-project.c:974
 msgid "_Overburn"
 msgstr "_Overburn"
 
-#: ../libbrasero-burn/brasero-burn-options.c:560 ../src/brasero-project.c:974
+#: ../libbrasero-burn/brasero-burn-options.c:560 ../src/brasero-project.c:976
 msgid "Burn beyond the disc's reported capacity"
 msgstr "เขียนข้อมูลเกินความจุแผ่นตามที่ได้รับรายงาน"
 
@@ -1103,11 +1126,11 @@ msgstr "เลือกแผ่นปลายทางที่ต้องก
 msgid "Disc Burning Setup"
 msgstr "ตั้งค่าการเขียนแผ่น"
 
-#: ../libbrasero-burn/brasero-burn-options.c:766 ../src/brasero-project.c:1516
+#: ../libbrasero-burn/brasero-burn-options.c:766 ../src/brasero-project.c:1521
 msgid "Video Options"
 msgstr "ตัวเลือกวีดิทัศน์"
 
-#: ../libbrasero-burn/brasero-burn-options.c:798
+#: ../libbrasero-burn/brasero-burn-options.c:797
 #: ../src/brasero-data-disc.c:616
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
@@ -1149,117 +1172,96 @@ msgid "Select disc to copy"
 msgstr "เลือกแผ่นต้นฉบับที่ต้องการทำสำเนา"
 
 #. Translators: %s is the name of a missing application
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../libbrasero-burn/brasero-burn.c:1707 ../src/brasero-project.c:1372
+#: ../libbrasero-burn/brasero-burn-options.c:1189
+#: ../libbrasero-burn/brasero-burn.c:1713 ../src/brasero-project.c:1376
 #, c-format
 msgid "%s (application)"
 msgstr "%s (โปรแกรม)"
 
 #. Translators: %s is the name of a missing library
-#: ../libbrasero-burn/brasero-burn-options.c:1192
-#: ../libbrasero-burn/brasero-burn.c:1712 ../src/brasero-project.c:1377
+#: ../libbrasero-burn/brasero-burn-options.c:1195
+#: ../libbrasero-burn/brasero-burn.c:1719 ../src/brasero-project.c:1382
 #, c-format
 msgid "%s (library)"
 msgstr "%s (ไลบรารี)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
-#: ../libbrasero-burn/brasero-burn-options.c:1197
-#: ../libbrasero-burn/brasero-burn.c:1717 ../src/brasero-project.c:1382
+#: ../libbrasero-burn/brasero-burn-options.c:1200
+#: ../libbrasero-burn/brasero-burn.c:1724 ../src/brasero-project.c:1387
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (ปลั๊กอิน GStreamer)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1425
+#: ../libbrasero-burn/brasero-burn-options.c:1231
+#: ../src/brasero-project.c:1430
 msgid "Please install the following manually and try again:"
 msgstr "กรุณาติดตั้งสิ่งต่างๆ ต่อไปนี้แล้วลองใหม่:"
 
-#: ../libbrasero-burn/brasero-burn.c:161
+#: ../libbrasero-burn/brasero-burn.c:162
 msgid "Burning CD/DVD"
 msgstr "กำลังเขียนซีดี/ดีวีดี"
 
-#: ../libbrasero-burn/brasero-burn.c:328 ../libbrasero-media/scsi-error.c:47
-#: ../libbrasero-burn/brasero-tool-dialog.c:90
-#: ../plugins/cdrdao/burn-cdrdao.c:244 ../plugins/cdrkit/burn-readom.c:110
-#: ../plugins/cdrkit/burn-wodim.c:136 ../plugins/cdrkit/burn-wodim.c:145
-#: ../plugins/cdrtools/burn-cdrecord.c:136
-#: ../plugins/cdrtools/burn-cdrecord.c:145
-#: ../plugins/cdrtools/burn-readcd.c:111
-#: ../plugins/growisofs/burn-dvd-rw-format.c:84
-#: ../plugins/growisofs/burn-growisofs.c:192
-#: ../plugins/libburnia/burn-libburn-common.c:186
-#, c-format
-msgid "The drive is busy"
-msgstr "ไดรว์ไม่ว่าง"
-
-#: ../libbrasero-burn/brasero-burn.c:406
+#: ../libbrasero-burn/brasero-burn.c:409
 #, c-format
 msgid "\"%s\" cannot be unlocked"
 msgstr "ไม่สามารถปลดล็อค \"%s\""
 
-#: ../libbrasero-burn/brasero-burn.c:543 ../libbrasero-burn/brasero-burn.c:675
-#: ../libbrasero-burn/brasero-burn.c:758
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
+#: ../libbrasero-burn/brasero-burn.c:761
 msgid "No burner specified"
 msgstr "ไม่ได้ระบุเครื่องเขียนแผ่น"
 
-#: ../libbrasero-burn/brasero-burn.c:583
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:586
 msgid "No source drive specified"
 msgstr "ไม่ได้ระบุไดรว์ต้นทาง"
 
-#: ../libbrasero-burn/brasero-burn.c:629
+#: ../libbrasero-burn/brasero-burn.c:632
 msgid "Ongoing copying process"
 msgstr "กระบวนการทำสำเนาแผ่นกำลังทำงานอยู่"
 
-#: ../libbrasero-burn/brasero-burn.c:633 ../libbrasero-burn/brasero-burn.c:732
-#: ../libbrasero-burn/brasero-burn.c:869 ../libbrasero-burn/brasero-burn.c:984
+#: ../libbrasero-burn/brasero-burn.c:636 ../libbrasero-burn/brasero-burn.c:735
+#: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
 #, c-format
 msgid "The drive cannot be locked (%s)"
 msgstr "ไม่สามารถล็อคไดรว์ได้ (%s)"
 
-#: ../libbrasero-burn/brasero-burn.c:692
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:695
 msgid "The drive has no rewriting capabilities"
 msgstr "ไดรว์ไม่สามารถเขียนแผ่นซ้ำได้"
 
-#: ../libbrasero-burn/brasero-burn.c:728
+#: ../libbrasero-burn/brasero-burn.c:731
 msgid "Ongoing blanking process"
 msgstr "กระบวนการล้างข้อมูลในแผ่นกำลังทำงานอยู่"
 
-#: ../libbrasero-burn/brasero-burn.c:767
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:770
 msgid "The drive cannot burn"
 msgstr "ไดรว์ไม่สามารถเขียนแผ่นได้"
 
-#: ../libbrasero-burn/brasero-burn.c:863
+#: ../libbrasero-burn/brasero-burn.c:866
 #: ../libbrasero-burn/brasero-dest-selection.c:110
 msgid "Ongoing burning process"
 msgstr "กระบวนการเขียนแผ่นกำลังทำงานอยู่"
 
-#: ../libbrasero-burn/brasero-burn.c:980
+#: ../libbrasero-burn/brasero-burn.c:983
 msgid "Ongoing checksumming operation"
 msgstr "กระบวนการ checksum กำลังทำงานอยู่"
 
-#: ../libbrasero-burn/brasero-burn.c:1624
-#: ../libbrasero-burn/brasero-burn.c:1815
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:1628
+#: ../libbrasero-burn/brasero-burn.c:1822
 msgid "Merging data is impossible with this disc"
 msgstr "ไม่สามารถผสานข้อมูลโดยใช้แผ่นนี้ได้"
 
-#: ../libbrasero-burn/brasero-burn.c:1750
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:1757
 msgid "There is no track to burn"
 msgstr "ไม่มีร่องที่จะเขียน"
 
-#: ../libbrasero-burn/brasero-burn.c:1857
+#: ../libbrasero-burn/brasero-burn.c:1864
 msgid ""
 "Please install the following required applications and libraries manually "
 "and try again:"
 msgstr "กรุณาติดตั้งโปรแกรมและไลบรารีที่จำเป็นต่อไปนี้แล้วลองใหม่:"
 
-#: ../libbrasero-burn/brasero-burn.c:2610
-#, c-format
+#: ../libbrasero-burn/brasero-burn.c:2641
 msgid "No format for the temporary image could be found"
 msgstr "ไม่พบฟอร์แมตที่จะใช้สำหรับอิมเมจชั่วคราว"
 
@@ -1339,8 +1341,8 @@ msgid "Do you really want to choose this location?"
 msgstr "คุณต้องการเลือกตำแหน่งนี้จริงหรือ?"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:281
-#: ../libbrasero-burn/brasero-session.c:1282
-#: ../libbrasero-burn/brasero-session.c:1357 ../libbrasero-burn/burn-job.c:490
+#: ../libbrasero-burn/brasero-session.c:1285
+#: ../libbrasero-burn/brasero-session.c:1360 ../libbrasero-burn/burn-job.c:490
 #: ../plugins/cdrkit/burn-genisoimage.c:201
 #: ../plugins/cdrtools/burn-mkisofs.c:202
 #: ../plugins/libburnia/burn-libisofs.c:239
@@ -1464,7 +1466,7 @@ msgid "Cdrdao image"
 msgstr "อิมเมจ Cdrdao"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1480
+#: ../src/brasero-project.c:1485
 #, c-format
 msgid "Properties of %s"
 msgstr "คุณสมบัติของ %s"
@@ -1648,9 +1650,9 @@ msgid "Ejecting medium"
 msgstr "กำลังดันแผ่นออก"
 
 #. Translators: %s is the plugin name
-#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:795
-#: ../libbrasero-burn/burn-job.c:808 ../libbrasero-burn/burn-job.c:1027
-#: ../libbrasero-burn/burn-job.c:1117
+#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:797
+#: ../libbrasero-burn/burn-job.c:810 ../libbrasero-burn/burn-job.c:1029
+#: ../libbrasero-burn/burn-job.c:1119
 #, c-format
 msgid "\"%s\" did not behave properly"
 msgstr "\"%s\" ทำงานไม่ถูกต้อง"
@@ -1663,14 +1665,14 @@ msgstr "\"%s\" ทำงานไม่ถูกต้อง"
 msgid "Not enough space available on the disc (%s available for %s)"
 msgstr "มีเนื้อที่ว่างบนแผ่นไม่พอ (มี %s แต่ต้องการ %s)"
 
-#: ../libbrasero-burn/burn-job.c:520
+#: ../libbrasero-burn/burn-job.c:522
 #, c-format
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr "ระบบแฟ้มที่คุณเลือกเป็นที่เก็บอิมเมจชั่วคราวไม่สามารถเก็บแฟ้มที่มีขนาดเกิน 2GiB ได้"
 
-#: ../libbrasero-burn/burn-job.c:535 ../libbrasero-burn/burn-job.c:557
+#: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
@@ -1679,21 +1681,21 @@ msgstr ""
 "ตำแหน่งที่คุณเลือกเป็นที่เก็บอิมเมจชั่วคราวมีเนื้อที่ว่างไม่พอสำหรับเก็บอิมเมจของแผ่น (ต้องการ %ld "
 "MiB)"
 
-#: ../libbrasero-burn/burn-job.c:570 ../plugins/dvdcss/burn-dvdcss.c:349
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:349
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "ไม่สามารถอ่านข้อมูลขนาดของโวลุมได้"
 
-#: ../libbrasero-burn/burn-job.c:625
+#: ../libbrasero-burn/burn-job.c:627
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "ไม่ได้ระบุพาธสำหรับอิมเมจผลลัพธ์"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:766 ../plugins/cdrtools/burn-cdrecord.c:690
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:690
 #: ../plugins/libburnia/burn-libburn.c:716
-#: ../plugins/transcode/burn-transcode.c:824
+#: ../plugins/transcode/burn-transcode.c:825
 #, c-format
 msgid "An internal error occurred (%s)"
 msgstr "เกิดข้อผิดพลาดภายใน (%s)"
@@ -1785,77 +1787,77 @@ msgstr "ขยายให้พอดี"
 msgid "Background Properties"
 msgstr "คุณสมบัติพื้นหลัง"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:572
+#: ../libbrasero-utils/brasero-jacket-edit.c:588
 msgid "Print"
 msgstr "พิมพ์"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:584
+#: ../libbrasero-utils/brasero-jacket-edit.c:600
 msgid "Bac_kground Properties"
 msgstr "คุณสมบัติ_พื้นหลัง"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:587
+#: ../libbrasero-utils/brasero-jacket-edit.c:603
 msgid "Background properties"
 msgstr "คุณสมบัติพื้นหลัง"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:602
+#: ../libbrasero-utils/brasero-jacket-edit.c:618
 msgid "Align right"
 msgstr "ชิดขอบขวา"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:612
+#: ../libbrasero-utils/brasero-jacket-edit.c:628
 msgid "Center"
 msgstr "กึ่งกลาง"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:622
+#: ../libbrasero-utils/brasero-jacket-edit.c:638
 msgid "Align left"
 msgstr "ชิดขอบซ้าย"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:636
+#: ../libbrasero-utils/brasero-jacket-edit.c:652
 msgid "Underline"
 msgstr "ขีดเส้นใต้"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:646
+#: ../libbrasero-utils/brasero-jacket-edit.c:662
 msgid "Italic"
 msgstr "ตัวเอียง"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:656
+#: ../libbrasero-utils/brasero-jacket-edit.c:672
 msgid "Bold"
 msgstr "ตัวหนา"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:682
+#: ../libbrasero-utils/brasero-jacket-edit.c:698
 msgid "Font family and size"
 msgstr "ตระกูลแบบอักษรและขนาด"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:689
+#: ../libbrasero-utils/brasero-jacket-edit.c:705
 msgid "_Text Color"
 msgstr "สี_ข้อความ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:690
+#: ../libbrasero-utils/brasero-jacket-edit.c:706
 msgid "Text color"
 msgstr "สีข้อความ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:821
+#: ../libbrasero-utils/brasero-jacket-edit.c:837
 msgid "Cover Editor"
 msgstr "เครื่องมือแก้ไขปก"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:801
+#: ../libbrasero-utils/brasero-jacket-view.c:735
 msgid "Set Bac_kground Properties"
 msgstr "ตั้งคุณสมบัติ_พื้นหลัง"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:842
+#: ../libbrasero-utils/brasero-jacket-view.c:776
 msgid "SIDES"
 msgstr "ด้านข้าง"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:858
+#: ../libbrasero-utils/brasero-jacket-view.c:792
 msgid "BACK COVER"
 msgstr "ปกหลัง"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:875
+#: ../libbrasero-utils/brasero-jacket-view.c:809
 msgid "FRONT COVER"
 msgstr "ปกหน้า"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1150
+#: ../libbrasero-utils/brasero-jacket-view.c:1084
 msgid "The image could not be loaded."
 msgstr "ไม่สามารถโหลดรูปภาพได้"
 
@@ -2340,8 +2342,8 @@ msgid "Medium Icon"
 msgstr "ไอคอนสื่อ"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-project-name.c:171 ../src/brasero-file-chooser.c:343
-#: ../src/brasero-project.c:2205
+#: ../src/brasero-project-name.c:171 ../src/brasero-file-chooser.c:375
+#: ../src/brasero-project.c:2210
 msgctxt "picture"
 msgid "Image files"
 msgstr "แฟ้มรูปภาพ"
@@ -2431,7 +2433,7 @@ msgid "Error while loading the project"
 msgstr "เกิดข้อผิดพลาดขณะอ่านข้อมูลโครงการ"
 
 #: ../src/brasero-app.c:809 ../src/brasero-app.c:838 ../src/brasero-app.c:898
-#: ../src/brasero-project.c:1265
+#: ../src/brasero-project.c:1267
 msgid "Please add files to the project."
 msgstr "กรุณาเพิ่มแฟ้มเข้าในโครงการ"
 
@@ -2698,72 +2700,72 @@ msgstr "ตัดแบ่ง"
 msgid "Track"
 msgstr "ร่องเสียง"
 
-#: ../src/brasero-audio-disc.c:457 ../src/brasero-video-disc.c:1210
+#: ../src/brasero-audio-disc.c:457 ../src/brasero-video-disc.c:1215
 msgid "Title"
 msgstr "ชื่อเพลง"
 
-#: ../src/brasero-audio-disc.c:483
+#: ../src/brasero-audio-disc.c:479
 msgid "Artist"
 msgstr "ศิลปิน"
 
-#: ../src/brasero-audio-disc.c:492 ../src/brasero-playlist.c:771
+#: ../src/brasero-audio-disc.c:487 ../src/brasero-playlist.c:771
 #: ../src/brasero-split-dialog.c:1222
 msgid "Length"
 msgstr "ความยาว"
 
-#: ../src/brasero-audio-disc.c:590
+#: ../src/brasero-audio-disc.c:584
 msgid "The track will be padded at its end."
 msgstr "จะมีการเติมช่วงว่างที่ท้ายร่องเสียง"
 
-#: ../src/brasero-audio-disc.c:591
+#: ../src/brasero-audio-disc.c:585
 msgid "The track is shorter than 6 seconds"
 msgstr "ร่องเสียงนี้สั้นกว่า 6 วินาที"
 
-#: ../src/brasero-audio-disc.c:651
+#: ../src/brasero-audio-disc.c:645
 msgid "Make sure the appropriate codec is installed"
 msgstr "กรุณาตรวจสอบว่าได้ติดตั้ง codec ที่จำเป็น"
 
-#: ../src/brasero-audio-disc.c:667
+#: ../src/brasero-audio-disc.c:661
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
 msgstr "คุณต้องการเพิ่ม \"%s\" ซึ่งเป็นแฟ้มวีดิทัศน์หรือไม่?"
 
-#: ../src/brasero-audio-disc.c:676
+#: ../src/brasero-audio-disc.c:670
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
 msgstr "แฟ้มนี้เป็นแฟ้มวีดิทัศน์ และสามารถเขียนเฉพาะส่วนข้อมูลเสียงเท่านั้นลงแผ่นได้"
 
-#: ../src/brasero-audio-disc.c:679
+#: ../src/brasero-audio-disc.c:673
 msgid "_Discard File"
 msgstr "_ละทิ้งแฟ้ม"
 
-#: ../src/brasero-audio-disc.c:682
+#: ../src/brasero-audio-disc.c:676
 msgid "_Add File"
 msgstr "เ_พิ่มแฟ้ม"
 
-#: ../src/brasero-audio-disc.c:753
+#: ../src/brasero-audio-disc.c:747
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "คุณต้องการค้นหาแฟ้มเพลงในไดเรกทอรีหรือไม่?"
 
-#: ../src/brasero-audio-disc.c:758
+#: ../src/brasero-audio-disc.c:752
 msgid "Directories cannot be added to an audio disc."
 msgstr "ไม่สามารถใส่ไดเรกทอรีในแผ่นเพลงได้"
 
-#: ../src/brasero-audio-disc.c:762
+#: ../src/brasero-audio-disc.c:756
 msgid "Search _Directory"
 msgstr "ค้นไ_ดเรกทอรี"
 
-#: ../src/brasero-audio-disc.c:816 ../src/brasero-video-disc.c:394
+#: ../src/brasero-audio-disc.c:810 ../src/brasero-video-disc.c:394
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "ไม่สามารถเปิด \"%s\""
 
-#: ../src/brasero-audio-disc.c:861
+#: ../src/brasero-audio-disc.c:855
 msgid "Do you want to create an audio CD with DTS tracks?"
 msgstr "คุณต้องการสร้างซีดีเพลงโดยใช้ร่องเสียงแบบ DTS หรือไม่?"
 
-#: ../src/brasero-audio-disc.c:862
+#: ../src/brasero-audio-disc.c:856
 msgid ""
 "Some of the selected songs are suitable for creating DTS tracks.\n"
 "This type of audio CD track provides a higher quality of sound but can only "
@@ -2774,27 +2776,27 @@ msgstr ""
 "ร่องเสียงซีดีชนิดนี้จะให้คุณภาพเสียงสูงกว่า แต่จะสามารถเล่นได้ในเครื่องเล่นดิจิทัลบางชนิดเท่านั้น\n"
 "หมายเหตุ: ถ้าคุณเลือกสร้างร่องเสียงแบบ DTS ก็จะไม่มีการเกลี่ยความดังเสียงในร่องเสียงเหล่านี้"
 
-#: ../src/brasero-audio-disc.c:871
+#: ../src/brasero-audio-disc.c:865
 msgid "Create _Regular Tracks"
 msgstr "สร้างร่องเสียงแบบธรร_มดา"
 
-#: ../src/brasero-audio-disc.c:873
+#: ../src/brasero-audio-disc.c:867
 msgid "Click here to burn all songs as regular tracks"
 msgstr "คลิกที่นี่ถ้าต้องการเขียนเพลงทั้งหมดเป็นร่องเสียงธรรมดา"
 
-#: ../src/brasero-audio-disc.c:876
+#: ../src/brasero-audio-disc.c:870
 msgid "Create _DTS Tracks"
 msgstr "สร้างร่องเสียงแบบ _DTS"
 
-#: ../src/brasero-audio-disc.c:878
+#: ../src/brasero-audio-disc.c:872
 msgid "Click here to burn all suitable songs as DTS tracks"
 msgstr "คลิกที่นี่ถ้าต้องการเขียนเพลงทั้งหมดที่เขียนแบบ DTS ได้เป็นร่องเสียงแบบ DTS"
 
-#: ../src/brasero-audio-disc.c:1301
+#: ../src/brasero-audio-disc.c:1295
 msgid "Select one song only please."
 msgstr "กรุณาเลือกทีละเพลง"
 
-#: ../src/brasero-audio-disc.c:1302
+#: ../src/brasero-audio-disc.c:1296
 msgid "Impossible to split more than one song at a time"
 msgstr "ไม่สามารถตัดแบ่งเพลงมากกว่าครั้งละหนึ่งเพลงได้"
 
@@ -2846,7 +2848,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "เกิดข้อผิดพลาดขณะแจงรายการการเล่น \"%s\""
 
 #: ../src/brasero-playlist.c:393 ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2575 ../libbrasero-burn/brasero-sum-dialog.c:164
+#: ../src/brasero-project.c:2580 ../libbrasero-burn/brasero-sum-dialog.c:164
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
 msgstr "เกิดข้อผิดพลาดไม่ทราบสาเหตุ"
@@ -2939,23 +2941,23 @@ msgstr "ใน_วีดิทัศน์"
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "ใส่คำที่ต้องการค้น หรือเลือก 'แฟ้มทั้งหมด' จากเมนู"
 
-#: ../src/brasero-search-entry.c:325
+#: ../src/brasero-search-entry.c:326
 msgid "Select if you want to search among image files only"
 msgstr "เลือกเมื่อต้องการหาเฉพาะรูปภาพ"
 
-#: ../src/brasero-search-entry.c:327
+#: ../src/brasero-search-entry.c:328
 msgid "Select if you want to search among video files only"
 msgstr "เลือกเมื่อต้องการหาเฉพาะวีดิทัศน์"
 
-#: ../src/brasero-search-entry.c:329
+#: ../src/brasero-search-entry.c:330
 msgid "Select if you want to search among audio files only"
 msgstr "เลือกเมื่อต้องการหาเฉพาะเพลง"
 
-#: ../src/brasero-search-entry.c:331
+#: ../src/brasero-search-entry.c:332
 msgid "Select if you want to search among your text documents only"
 msgstr "เลือกเมื่อต้องการหาเฉพาะเอกสารข้อความ"
 
-#: ../src/brasero-search-entry.c:333
+#: ../src/brasero-search-entry.c:334
 msgid "Click to start the search"
 msgstr "คลิกเพื่อเริ่มค้นหา"
 
@@ -3016,7 +3018,7 @@ msgstr "เ_ปลี่ยนชื่อ…"
 msgid "Rename the selected file"
 msgstr "เปลี่ยนชื่อแฟ้มที่เลือก"
 
-#: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:1741
+#: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:1773
 msgid "New _Folder"
 msgstr "โฟ_ลเดอร์ใหม่"
 
@@ -3053,55 +3055,55 @@ msgid ""
 msgstr ""
 "มีแฟ้มที่เลือกไว้เพียงแฟ้มเดียว (\"%s\") ซึ่งเป็นอิมเมจของแผ่นและตัวเนื้อหาสามารถเขียนลงแผ่นได้"
 
-#: ../src/brasero-data-disc.c:627
+#: ../src/brasero-data-disc.c:628
 msgid "Burn as _Data"
 msgstr "เขียนเป็น_ข้อมูล"
 
-#: ../src/brasero-data-disc.c:629
+#: ../src/brasero-data-disc.c:630
 msgid "Burn as _Image"
 msgstr "เขียนเป็น_อิมเมจ"
 
-#: ../src/brasero-data-disc.c:678 ../src/brasero-data-disc.c:699
-#: ../src/brasero-data-disc.c:720
+#: ../src/brasero-data-disc.c:679 ../src/brasero-data-disc.c:700
+#: ../src/brasero-data-disc.c:721
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
 msgstr "ไม่สามารถเพิ่ม \"%s\" เข้าในรายการการเลือก"
 
-#: ../src/brasero-data-disc.c:702
+#: ../src/brasero-data-disc.c:703
 msgid "It is a recursive symlink"
 msgstr "รายการดังกล่าวเป็น symlink ที่วนเข้าหาตัวเอง"
 
-#: ../src/brasero-data-disc.c:723
+#: ../src/brasero-data-disc.c:724
 msgid "It does not exist at the specified location"
 msgstr "ไม่มีรายการดังกล่าวในตำแหน่งที่ระบุ"
 
 #: ../src/brasero-data-disc.c:741
-#: ../libbrasero-burn/brasero-status-dialog.c:330
+#: ../libbrasero-burn/brasero-status-dialog.c:333
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr "ต้องการเปลี่ยนชื่อบางแฟ้มให้ใช้กับวินโดวส์ได้อย่างเต็มที่หรือไม่?"
 
-#: ../src/brasero-data-disc.c:746
-#: ../libbrasero-burn/brasero-status-dialog.c:341
+#: ../src/brasero-data-disc.c:747
+#: ../libbrasero-burn/brasero-status-dialog.c:344
 msgid "Those names should be changed and truncated to 64 characters."
 msgstr "ควรเปลี่ยนชื่อแฟ้มดังกล่าวโดยตัดให้เหลือ 64 ตัวอักษร"
 
-#: ../src/brasero-data-disc.c:750
-#: ../libbrasero-burn/brasero-status-dialog.c:349
+#: ../src/brasero-data-disc.c:749
+#: ../libbrasero-burn/brasero-status-dialog.c:352
 msgid "_Rename for Full Windows Compatibility"
 msgstr "เ_ปลี่ยนชื่อเพื่อความเข้ากันได้กับวินโดวส์แบบเต็มที่"
 
-#: ../src/brasero-data-disc.c:751
-#: ../libbrasero-burn/brasero-status-dialog.c:346
+#: ../src/brasero-data-disc.c:750
+#: ../libbrasero-burn/brasero-status-dialog.c:349
 msgid "_Disable Full Windows Compatibility"
 msgstr "ไ_ม่เปิดคุณสมบัติความเข้ากันได้กับวินโดวส์แบบเต็มที่"
 
 #. Translators: %s is the name of the file
-#: ../src/brasero-data-disc.c:784
+#: ../src/brasero-data-disc.c:783
 #, c-format
 msgid "Do you want to replace \"%s\"?"
 msgstr "คุณต้องการเขียนข้อมูลทับ \"%s\" หรือไม่?"
 
-#: ../src/brasero-data-disc.c:792
+#: ../src/brasero-data-disc.c:791
 msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its content on the disc to be burnt."
@@ -3110,14 +3112,14 @@ msgstr "มีแฟ้มชื่อนี้อยู่ก่อนแล้
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
 #. * Keep is a verb
-#: ../src/brasero-data-disc.c:797
+#: ../src/brasero-data-disc.c:796
 msgid "Always K_eep"
 msgstr "คงไ_ว้เสมอ"
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
 #. * Keep is a verb
-#: ../src/brasero-data-disc.c:801
+#: ../src/brasero-data-disc.c:800
 msgid "_Keep"
 msgstr "_คงไว้"
 
@@ -3125,19 +3127,19 @@ msgstr "_คงไว้"
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
 #. Translators: this is a verb
-#: ../src/brasero-data-disc.c:805 ../src/brasero-rename.c:383
+#: ../src/brasero-data-disc.c:804 ../src/brasero-rename.c:383
 msgid "_Replace"
 msgstr "แ_ทนที่"
 
 #. Translators: Replace means we're replacing the file that already
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
-#: ../src/brasero-data-disc.c:809
+#: ../src/brasero-data-disc.c:808
 msgid "Al_ways Replace"
 msgstr "แท_นที่เสมอ"
 
-#: ../src/brasero-data-disc.c:839
-#: ../libbrasero-burn/brasero-status-dialog.c:273
+#: ../src/brasero-data-disc.c:838
+#: ../libbrasero-burn/brasero-status-dialog.c:274
 #, c-format
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
@@ -3147,7 +3149,7 @@ msgstr ""
 "รุ่นที่สามเพื่อรองรับรายการดังกล่าวหรือไม่?"
 
 #: ../src/brasero-data-disc.c:847
-#: ../libbrasero-burn/brasero-status-dialog.c:291
+#: ../libbrasero-burn/brasero-status-dialog.c:293
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by the ISO9660 standard in its first and second versions (the most "
@@ -3164,15 +3166,15 @@ msgstr ""
 "รวมถึงลินุกซ์และวินโดวส์ทุกรุ่น\n"
 "อย่างไรก็ดี Mac OS X ไม่สามารถอ่านอิมเมจที่สร้างด้วยมาตรฐาน ISO9660 รุ่นที่สามได้"
 
-#: ../src/brasero-data-disc.c:851 ../src/brasero-data-disc.c:894
-#: ../libbrasero-burn/brasero-status-dialog.c:234
-#: ../libbrasero-burn/brasero-status-dialog.c:295
+#: ../src/brasero-data-disc.c:851 ../src/brasero-data-disc.c:895
+#: ../libbrasero-burn/brasero-status-dialog.c:235
+#: ../libbrasero-burn/brasero-status-dialog.c:297
 msgid "Ne_ver Add Such File"
 msgstr "ไ_ม่ต้องเพิ่มแฟ้มดังกล่าวตลอดไป"
 
-#: ../src/brasero-data-disc.c:852 ../src/brasero-data-disc.c:895
-#: ../libbrasero-burn/brasero-status-dialog.c:235
-#: ../libbrasero-burn/brasero-status-dialog.c:296
+#: ../src/brasero-data-disc.c:852 ../src/brasero-data-disc.c:896
+#: ../libbrasero-burn/brasero-status-dialog.c:236
+#: ../libbrasero-burn/brasero-status-dialog.c:298
 msgid "Al_ways Add Such File"
 msgstr "เ_พิ่มแฟ้มดังกล่าวเสมอ"
 
@@ -3182,8 +3184,8 @@ msgstr "เ_พิ่มแฟ้มดังกล่าวเสมอ"
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "คุณต้องการเพิ่ม \"%s\" ในรายการที่เลือกหรือไม่?"
 
-#: ../src/brasero-data-disc.c:890
-#: ../libbrasero-burn/brasero-status-dialog.c:230
+#: ../src/brasero-data-disc.c:891
+#: ../libbrasero-burn/brasero-status-dialog.c:231
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -3197,81 +3199,81 @@ msgstr ""
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
-#: ../src/brasero-data-disc.c:990
+#: ../src/brasero-data-disc.c:991
 #, c-format
 msgid "Import %s"
 msgstr "นำเข้า %s"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
-#: ../src/brasero-data-disc.c:997
+#: ../src/brasero-data-disc.c:998
 #, c-format
 msgid "I_mport %s"
 msgstr "_นำเข้า %s"
 
 #. Translators: This is a verb. It's a toolbar button.
-#: ../src/brasero-data-disc.c:1027
+#: ../src/brasero-data-disc.c:1028
 msgid "I_mport"
 msgstr "_นำเข้า"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1109
+#: ../src/brasero-data-disc.c:1110
 #, c-format
 msgid "Do you want to import the session from \"%s\"?"
 msgstr "คุณต้องการนำเข้าวาระการเขียนจาก \"%s\" หรือไม่?"
 
-#: ../src/brasero-data-disc.c:1112
+#: ../src/brasero-data-disc.c:1113
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
 msgstr ""
 "การนำเข้าวาระการเขียน จะทำให้สามารถใช้งานแฟ้มเก่าในการเขียนวาระก่อนๆ ได้ "
 "หลังจากเขียนแผ่นเสร็จแล้ว"
 
-#: ../src/brasero-data-disc.c:1120
+#: ../src/brasero-data-disc.c:1121
 msgid "I_mport Session"
 msgstr "_นำเข้าวาระการเขียน"
 
-#: ../src/brasero-data-disc.c:1122
+#: ../src/brasero-data-disc.c:1123
 msgid "Click here to import its contents"
 msgstr "คลิกที่นี่เพื่อนำเข้าเนื้อหา"
 
-#: ../src/brasero-data-disc.c:1470
+#: ../src/brasero-data-disc.c:1502
 msgid "Please wait while the project is loading."
 msgstr "กรุณารอขณะอ่านข้อมูลโครงการ"
 
-#: ../src/brasero-data-disc.c:1480
+#: ../src/brasero-data-disc.c:1512
 msgid "_Cancel Loading"
 msgstr "เ_ลิกอ่าน"
 
-#: ../src/brasero-data-disc.c:1482
+#: ../src/brasero-data-disc.c:1514
 msgid "Cancel loading current project"
 msgstr "ยกเลิกการอ่านโครงการปัจจุบัน"
 
-#: ../src/brasero-data-disc.c:1886
+#: ../src/brasero-data-disc.c:1918
 msgid "File Renaming"
 msgstr "การเปลี่ยนชื่อแฟ้ม"
 
-#: ../src/brasero-data-disc.c:1890
+#: ../src/brasero-data-disc.c:1922
 msgid "_Rename"
 msgstr "เ_ปลี่ยนชื่อ"
 
-#: ../src/brasero-data-disc.c:1898
+#: ../src/brasero-data-disc.c:1930
 msgid "Renaming mode"
 msgstr "วิธีการเปลี่ยนชื่อ"
 
-#: ../src/brasero-data-disc.c:2329 ../src/brasero-video-disc.c:1228
+#: ../src/brasero-data-disc.c:2366 ../src/brasero-video-disc.c:1233
 msgid "Size"
 msgstr "ขนาด"
 
-#: ../src/brasero-data-disc.c:2359
+#: ../src/brasero-data-disc.c:2396
 msgid "Space"
 msgstr "ที่ว่าง"
 
-#: ../src/brasero-file-chooser.c:325 ../src/brasero-project.c:2185
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2190
 msgid "Audio files"
 msgstr "แฟ้มเสียง"
 
-#: ../src/brasero-file-chooser.c:333 ../src/brasero-project.c:2194
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2199
 msgid "Movies"
 msgstr "ภาพยนตร์"
 
@@ -3308,7 +3310,7 @@ msgstr "จัดวางแนว_ตั้ง"
 msgid "Set a vertical layout"
 msgstr "ใช้การจัดวางแนวตั้ง"
 
-#: ../src/brasero-layout.c:1184
+#: ../src/brasero-layout.c:1186
 msgid "Click to close the side pane"
 msgstr "คลิกเพื่อปิดช่องด้านข้าง"
 
@@ -3386,7 +3388,7 @@ msgid "_Remove Files"
 msgstr "_ลบแฟ้ม"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:201 ../src/brasero-project.c:2267
+#: ../src/brasero-project.c:201 ../src/brasero-project.c:2272
 msgid "E_mpty Project"
 msgstr "ลบทุ_กแฟ้ม"
 
@@ -3395,7 +3397,7 @@ msgid "Remove all files from the project"
 msgstr "ลบแฟ้มทั้งหมดออกจากโครงการ"
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/brasero-project.c:203 ../src/brasero-project.c:1074
+#: ../src/brasero-project.c:203 ../src/brasero-project.c:1076
 msgid "_Burn…"
 msgstr "เ_ขียนแผ่น…"
 
@@ -3403,28 +3405,28 @@ msgstr "เ_ขียนแผ่น…"
 msgid "Burn the disc"
 msgstr "เขียนแผ่น"
 
-#: ../src/brasero-project.c:684
+#: ../src/brasero-project.c:686
 msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
 msgstr "เพิ่มแฟ้มเข้าในโครงการได้โดยคลิกปุ่ม \"เพิ่ม\" หรือลากแฟ้มมาวางในพื้นที่นี้"
 
-#: ../src/brasero-project.c:686
+#: ../src/brasero-project.c:688
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr "ลบแฟ้มได้โดยเลือกแฟ้มที่จะลบแล้วคลิกปุ่ม \"เอาออก\" หรือกดปุ่ม \"Delete\" ที่แป้นพิมพ์"
 
-#: ../src/brasero-project.c:793
+#: ../src/brasero-project.c:795
 #, c-format
 msgid "Estimated project size: %s"
 msgstr "ขนาดโครงการโดยประมาณ: %s"
 
-#: ../src/brasero-project.c:939 ../src/brasero-project.c:955
+#: ../src/brasero-project.c:941 ../src/brasero-project.c:957
 msgid "The project is too large for the disc even with the overburn option."
 msgstr "โครงการมีขนาดใหญ่เกินขนาดแผ่น ถึงแม้จะใช้ตัวเลือก overburn แล้ว"
 
-#: ../src/brasero-project.c:966
+#: ../src/brasero-project.c:968
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -3436,63 +3438,63 @@ msgstr ""
 "ซึ่งไม่สามารถตรวจจับได้ และจำเป็นต้องใช้ตัวเลือก overburn\n"
 "หมายเหตุ: ตัวเลือกนี้อาจทำให้เขียนแผ่นไม่สำเร็จได้"
 
-#: ../src/brasero-project.c:1086
+#: ../src/brasero-project.c:1088
 msgid "Start to burn the contents of the selection"
 msgstr "เริ่มเขียนข้อมูลที่เลือกไว้"
 
-#: ../src/brasero-project.c:1256
+#: ../src/brasero-project.c:1258
 msgid "Please add songs to the project."
 msgstr "กรุณาเพิ่มเพลงเข้าในโครงการ"
 
-#: ../src/brasero-project.c:1864
+#: ../src/brasero-project.c:1869
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
 msgstr "คุณต้องการสร้างโครงการใหม่ และทิ้งสิ่งที่ทำไปในโครงการเดิมหรือไม่?"
 
-#: ../src/brasero-project.c:1869
+#: ../src/brasero-project.c:1874
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr "ถ้าคุณเลือกสร้างโครงการว่างอันใหม่ การเปลี่ยนแปลงที่ผ่านมาจะถูกละทิ้ง"
 
-#: ../src/brasero-project.c:1872
+#: ../src/brasero-project.c:1877
 msgid "_Discard Changes"
 msgstr "_ละทิ้งการเปลี่ยนแปลง"
 
-#: ../src/brasero-project.c:1880
+#: ../src/brasero-project.c:1885
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "คุณต้องการละทิ้งชุดแฟ้มที่เลือก หรือต้องการเพิ่มเข้าในโครงการใหม่?"
 
-#: ../src/brasero-project.c:1885 ../src/brasero-project.c:1904
+#: ../src/brasero-project.c:1890 ../src/brasero-project.c:1909
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr "ถ้าคุณเลือกสร้างโครงการว่างอันใหม่ ก็จะละทิ้งชุดแฟ้มที่เลือก"
 
-#: ../src/brasero-project.c:1887
+#: ../src/brasero-project.c:1892
 msgid "_Discard File Selection"
 msgstr "_ละทิ้งชุดแฟ้มที่เลือก"
 
-#: ../src/brasero-project.c:1891
+#: ../src/brasero-project.c:1896
 msgid "_Keep File Selection"
 msgstr "เ_ก็บชุดแฟ้มที่เลือกไว้"
 
-#: ../src/brasero-project.c:1899
+#: ../src/brasero-project.c:1904
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "คุณต้องการสร้างโครงการใหม่ และทิ้งโครงการปัจจุบันหรือไม่?"
 
-#: ../src/brasero-project.c:1906
+#: ../src/brasero-project.c:1911
 msgid "_Discard Project"
 msgstr "_ละทิ้งโครงการ"
 
-#: ../src/brasero-project.c:2143
+#: ../src/brasero-project.c:2148
 msgid "Select Files"
 msgstr "เลือกแฟ้ม"
 
-#: ../src/brasero-project.c:2256
+#: ../src/brasero-project.c:2261
 msgid "Do you really want to empty the current project?"
 msgstr "ยืนยันที่จะล้างข้อมูลในโครงการนี้หรือไม่?"
 
-#: ../src/brasero-project.c:2261
+#: ../src/brasero-project.c:2266
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -3501,78 +3503,78 @@ msgstr ""
 "การล้างข้อมูลโครงการจะล้างแฟ้มทั้งหมดที่เคยใส่ไว้ ข้อมูลเหล่านี้จะยังไม่ถูกลบออกจากเครื่อง "
 "แต่จะไม่แสดงรายชื่อในโครงการเท่านั้น"
 
-#: ../src/brasero-project.c:2318
+#: ../src/brasero-project.c:2323
 msgid "_Save"
 msgstr "_บันทึก"
 
-#: ../src/brasero-project.c:2329
+#: ../src/brasero-project.c:2334
 msgid "_Add"
 msgstr "เ_พิ่ม"
 
-#: ../src/brasero-project.c:2334 ../src/brasero-split-dialog.c:1252
+#: ../src/brasero-project.c:2339 ../src/brasero-split-dialog.c:1252
 msgid "_Remove"
 msgstr "_ลบ"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2398
+#: ../src/brasero-project.c:2403
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero — %s (แผ่นข้อมูล)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2401
+#: ../src/brasero-project.c:2406
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero — %s (แผ่นเพลง)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2404
+#: ../src/brasero-project.c:2409
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (แผ่นภาพยนตร์)"
 
-#: ../src/brasero-project.c:2574 ../src/brasero-project.c:2890
+#: ../src/brasero-project.c:2579 ../src/brasero-project.c:2895
 msgid "Your project has not been saved."
 msgstr "โครงการของคุณยังไม่ได้บันทึก"
 
-#: ../src/brasero-project.c:2588
+#: ../src/brasero-project.c:2593
 msgid "Save the changes of current project before closing?"
 msgstr "คุณต้องการบันทึกการเปลี่ยนแปลงต่างๆ ในโครงการก่อนสั่งปิดหรือไม่?"
 
-#: ../src/brasero-project.c:2593 ../src/brasero-project.c:2895
+#: ../src/brasero-project.c:2598 ../src/brasero-project.c:2900
 msgid "If you don't save, changes will be permanently lost."
 msgstr "ถ้าคุณไม่บันทึก การเปลี่ยนแปลงทั้งหมดจะสูญหายอย่างถาวร"
 
-#: ../src/brasero-project.c:2597 ../src/brasero-project.c:2603
-#: ../src/brasero-project.c:2898
+#: ../src/brasero-project.c:2602 ../src/brasero-project.c:2608
+#: ../src/brasero-project.c:2903
 msgid "Cl_ose Without Saving"
 msgstr "_ปิดโดยไม่บันทึก"
 
-#: ../src/brasero-project.c:2698
+#: ../src/brasero-project.c:2703
 msgid "Save Current Project"
 msgstr "บันทึกโครงการปัจจุบัน"
 
-#: ../src/brasero-project.c:2716
+#: ../src/brasero-project.c:2721
 msgid "Save project as a Brasero audio project"
 msgstr "บันทึกโครงการเป็นโครงการแผ่นเพลง Brasero"
 
-#: ../src/brasero-project.c:2717
+#: ../src/brasero-project.c:2722
 msgid "Save project as a plain text list"
 msgstr "บันทึกโครงการเป็นรายชื่อแบบข้อความ"
 
-#: ../src/brasero-project.c:2721
+#: ../src/brasero-project.c:2726
 msgid "Save project as a PLS playlist"
 msgstr "บันทึกโครงการเป็นรายการการเล่นแบบ PLS"
 
-#: ../src/brasero-project.c:2722
+#: ../src/brasero-project.c:2727
 msgid "Save project as an M3U playlist"
 msgstr "บันทึกโครงการเป็นรายการการเล่นแบบ M3U"
 
-#: ../src/brasero-project.c:2723
+#: ../src/brasero-project.c:2728
 msgid "Save project as an XSPF playlist"
 msgstr "บันทึกโครงการเป็นรายการการเล่นแบบ XSPF"
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2729
 msgid "Save project as an iriver playlist"
 msgstr "บันทึกโครงการเป็นรายการการเล่นแบบ iriver"
 
@@ -3857,15 +3859,15 @@ msgstr "การตรวจสอบแผ่น"
 msgid "Estimated size: %s"
 msgstr "ขนาดโดยประมาณ: %s"
 
-#: ../libbrasero-burn/brasero-status-dialog.c:566
+#: ../libbrasero-burn/brasero-status-dialog.c:569
 msgid "Size Estimation"
 msgstr "การประเมินขนาด"
 
-#: ../libbrasero-burn/brasero-status-dialog.c:568
+#: ../libbrasero-burn/brasero-status-dialog.c:571
 msgid "Please wait until the estimation of the size is completed."
 msgstr "กรุณารอการประเมินขนาด"
 
-#: ../libbrasero-burn/brasero-status-dialog.c:569
+#: ../libbrasero-burn/brasero-status-dialog.c:572
 msgid "All files need to be analysed to complete this operation."
 msgstr "การกระทำนี้ต้องวิเคราะห์แฟ้มทุกแฟ้ม"
 
@@ -4237,18 +4239,18 @@ msgstr "กำลังคัดลอกดีวีดีภาพยนตร
 
 #. Translators: image is not a picture but a disc image
 #: ../plugins/dvdcss/burn-dvdcss.c:677
-msgid "Copies css encrypted Video DVDs to a disc image"
-msgstr "ทำสำเนาดีวีดีภาพยนตร์ที่เข้ารหัสลับแบบ css ในรูปอิมเมจของแผ่น"
+msgid "Copies CSS encrypted Video DVDs to a disc image"
+msgstr "ทำสำเนาดีวีดีภาพยนตร์ที่เข้ารหัสลับแบบ CSS ในรูปอิมเมจของแผ่น"
 
 #: ../plugins/growisofs/burn-dvd-rw-format.c:189
 msgid "Blanks and formats rewritable DVDs and BDs"
 msgstr "ล้างข้อมูลและฟอร์แมตดีวีดีและบีดีชนิดเขียนซ้ำได้"
 
-#: ../plugins/growisofs/burn-growisofs.c:748
+#: ../plugins/growisofs/burn-growisofs.c:754
 msgid "Burns and blanks DVDs and BDs"
 msgstr "เขียนแผ่นและล้างข้อมูลดีวีดี/บีดี"
 
-#: ../plugins/growisofs/burn-growisofs.c:921
+#: ../plugins/growisofs/burn-growisofs.c:927
 msgid "Allow DAO use"
 msgstr "อนุญาตให้ใช้ DAO"
 
@@ -4354,10 +4356,10 @@ msgstr "ช่วยเขียนแฟ้มจากเครือข่า
 #: ../plugins/transcode/burn-normalize.c:260
 #: ../plugins/transcode/burn-transcode.c:318
 #: ../plugins/transcode/burn-transcode.c:356
-#: ../plugins/transcode/burn-transcode.c:551
-#: ../plugins/transcode/burn-transcode.c:661
-#: ../plugins/transcode/burn-transcode.c:692
-#: ../plugins/transcode/burn-transcode.c:713
+#: ../plugins/transcode/burn-transcode.c:552
+#: ../plugins/transcode/burn-transcode.c:662
+#: ../plugins/transcode/burn-transcode.c:693
+#: ../plugins/transcode/burn-transcode.c:714
 #: ../plugins/transcode/burn-vob.c:198 ../plugins/transcode/burn-vob.c:401
 #: ../plugins/transcode/burn-vob.c:561 ../plugins/transcode/burn-vob.c:694
 #: ../plugins/transcode/burn-vob.c:1058 ../plugins/transcode/burn-vob.c:1134
@@ -4379,28 +4381,28 @@ msgid "Sets consistent sound levels between tracks"
 msgstr "ปรับความดังของเพลงต่างๆ ให้สม่ำเสมอกัน"
 
 #. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:1084
-#: ../plugins/transcode/burn-transcode.c:1271
+#: ../plugins/transcode/burn-transcode.c:1085
+#: ../plugins/transcode/burn-transcode.c:1273
 #, c-format
 msgid "Error while padding file (%s)"
 msgstr "เกิดข้อผิดพลาดขณะเติมข้อมูลอุดช่องว่างในแฟ้ม (%s)"
 
-#: ../plugins/transcode/burn-transcode.c:1347
+#: ../plugins/transcode/burn-transcode.c:1349
 #, c-format
 msgid "Error while getting duration"
 msgstr "เกิดข้อผิดพลาดขณะอ่านความยาวเพลง"
 
-#: ../plugins/transcode/burn-transcode.c:1496
+#: ../plugins/transcode/burn-transcode.c:1498
 #, c-format
 msgid "Analysing \"%s\""
 msgstr "กำลังวิเคราะห์ \"%s\""
 
-#: ../plugins/transcode/burn-transcode.c:1533
+#: ../plugins/transcode/burn-transcode.c:1535
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr "กำลังแปลงรหัส \"%s\""
 
-#: ../plugins/transcode/burn-transcode.c:1768
+#: ../plugins/transcode/burn-transcode.c:1771
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr "แปลงฟอร์แมตแฟ้มเพลงต่างๆ ให้เป็นฟอร์แมตที่เหมาะสมสำหรับซีดีเพลง"
 
@@ -4661,32 +4663,32 @@ msgid "Filtering options"
 msgstr "ตัวเลือกการกรอง"
 
 #: ../plugins/checksum/burn-checksum-files.c:131
-#: ../plugins/checksum/burn-checksum-files.c:587
+#: ../plugins/checksum/burn-checksum-files.c:589
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
 msgstr "ไม่สามารถเปิดแฟ้ม \"%s\" ได้ (%s)"
 
-#: ../plugins/checksum/burn-checksum-files.c:615
+#: ../plugins/checksum/burn-checksum-files.c:617
 msgid "Creating checksum for image files"
 msgstr "กำลังสร้าง checksum สำหรับแฟ้มอิมเมจต่างๆ"
 
-#: ../plugins/checksum/burn-checksum-files.c:854
+#: ../plugins/checksum/burn-checksum-files.c:859
 #, c-format
 msgid "No checksum file could be found on the disc"
 msgstr "ไม่พบแฟ้ม checksum ในแผ่น"
 
-#: ../plugins/checksum/burn-checksum-files.c:888
+#: ../plugins/checksum/burn-checksum-files.c:893
 msgid "Checking file integrity"
 msgstr "กำลังตรวจสอบความถูกต้องของข้อมูลแฟ้ม"
 
-#: ../plugins/checksum/burn-checksum-files.c:982
-#: ../plugins/checksum/burn-checksum-files.c:1007
+#: ../plugins/checksum/burn-checksum-files.c:987
+#: ../plugins/checksum/burn-checksum-files.c:1012
 #, c-format
 msgid "File \"%s\" could not be opened"
 msgstr "ไม่สามารถเปิดแฟ้ม  \"%s\" ได้"
 
-#: ../plugins/checksum/burn-checksum-files.c:1080
-#: ../plugins/checksum/burn-checksum-files.c:1201
+#: ../plugins/checksum/burn-checksum-files.c:1085
+#: ../plugins/checksum/burn-checksum-files.c:1206
 #: ../plugins/checksum/burn-checksum-image.c:551
 #, c-format
 msgid "Some files may be corrupted on the disc"
@@ -4695,30 +4697,30 @@ msgstr "บางแฟ้มในแผ่นอาจเสียหาย"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/checksum/burn-checksum-files.c:1473
+#: ../plugins/checksum/burn-checksum-files.c:1478
 msgid "File Checksum"
 msgstr "Checksum ของแฟ้ม"
 
-#: ../plugins/checksum/burn-checksum-files.c:1474
+#: ../plugins/checksum/burn-checksum-files.c:1479
 msgid "Checks file integrities on a disc"
 msgstr "ตรวจสอบความถูกต้องของข้อมูลของแฟ้มต่างๆ ในแผ่น"
 
-#: ../plugins/checksum/burn-checksum-files.c:1514
+#: ../plugins/checksum/burn-checksum-files.c:1517
 #: ../plugins/checksum/burn-checksum-image.c:855
 msgid "Hashing algorithm to be used:"
 msgstr "อัลกอริทึมแฮชที่จะใช้:"
 
-#: ../plugins/checksum/burn-checksum-files.c:1517
+#: ../plugins/checksum/burn-checksum-files.c:1520
 #: ../plugins/checksum/burn-checksum-image.c:858
 msgid "MD5"
 msgstr "MD5"
 
-#: ../plugins/checksum/burn-checksum-files.c:1519
+#: ../plugins/checksum/burn-checksum-files.c:1522
 #: ../plugins/checksum/burn-checksum-image.c:860
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../plugins/checksum/burn-checksum-files.c:1521
+#: ../plugins/checksum/burn-checksum-files.c:1524
 #: ../plugins/checksum/burn-checksum-image.c:862
 msgid "SHA256"
 msgstr "SHA256"
