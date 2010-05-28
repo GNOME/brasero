@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-01-31 17:11+0000\n"
-"PO-Revision-Date: 2010-01-31 21:40+0300\n"
+"POT-Creation-Date: 2010-05-26 19:27+0000\n"
+"PO-Revision-Date: 2010-05-28 15:22+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -151,6 +151,10 @@ msgstr "Videofailide analüüsimine"
 #, c-format
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" ei saa lugeda"
+
+#, c-format
+msgid "The drive is busy"
+msgstr "Seade on hõivatud"
 
 msgid "Hidden file"
 msgstr "Varjatud fail"
@@ -559,6 +563,12 @@ msgstr ""
 "Seda plaati pole võimalik väljastada, kuid järgmise tegevuse sooritamiseks "
 "tuleb see eemaldada."
 
+msgid "Do you want to replace the disc and continue?"
+msgstr "Kas soovid plaadi asendada ja jätkata?"
+
+msgid "The currently inserted disc could not be blanked."
+msgstr "Praegu lugejas olevat plaati pole võimalik tühjendada."
+
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Kas jätkata Windowsiga mitteühilduva plaadi kirjutamist?"
 
@@ -853,18 +863,12 @@ msgid "Burning CD/DVD"
 msgstr "CD/DVD kirjutamine"
 
 #, c-format
-msgid "The drive is busy"
-msgstr "Seade on hõivatud"
-
-#, c-format
 msgid "\"%s\" cannot be unlocked"
 msgstr "\"%s\" pole võimalik lukust lahti võtta"
 
-#, c-format
 msgid "No burner specified"
 msgstr "Kirjutaja pole määratud"
 
-#, c-format
 msgid "No source drive specified"
 msgstr "Allikseade pole määratud"
 
@@ -875,14 +879,12 @@ msgstr "Käib kopeerimine"
 msgid "The drive cannot be locked (%s)"
 msgstr "Seadet pole võimalik lukustada (%s)"
 
-#, c-format
 msgid "The drive has no rewriting capabilities"
 msgstr "Sellel seadmel pole ülekirjutamise võimalusi"
 
 msgid "Ongoing blanking process"
 msgstr "Käib tühjendamine"
 
-#, c-format
 msgid "The drive cannot burn"
 msgstr "Seade pole võimeline kirjutama"
 
@@ -892,11 +894,9 @@ msgstr "Kirjutamine käib"
 msgid "Ongoing checksumming operation"
 msgstr "Käib kontrollsumma arvutamine"
 
-#, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "Sellel plaadil on andmete ühendamine võimatu"
 
-#, c-format
 msgid "There is no track to burn"
 msgstr "Ei ole rada, mida kirjutada"
 
@@ -907,7 +907,6 @@ msgstr ""
 "Palun paigalda järgmised vajalikud rakendused ja teegid käsitsi ning proovi "
 "uuesti:"
 
-#, c-format
 msgid "No format for the temporary image could be found"
 msgstr "Ajutise tõmmise vormingut pole võimalik leida"
 
@@ -3214,8 +3213,8 @@ msgid "Copying Video DVD"
 msgstr "Video-DVD kopeerimine"
 
 #. Translators: image is not a picture but a disc image
-msgid "Copies css encrypted Video DVDs to a disc image"
-msgstr "Kopeerib css-krüpteeringuga video-DVD plaaditõmmiseks"
+msgid "Copies CSS encrypted Video DVDs to a disc image"
+msgstr "Salvestab CSS-krüpteeringuga video-DVD plaaditõmmiseks"
 
 msgid "Blanks and formats rewritable DVDs and BDs"
 msgstr "Tühjendab ja vormindab ülekirjutatavaid DVD- ja BD-plaate"
