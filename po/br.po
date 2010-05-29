@@ -1,15 +1,15 @@
 # Breton translation for brasero
 # Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the brasero package.
-# Alan Monfort <alan.monfort@free.fr>, 2009.
+# Alan Monfort <alan.monfort@free.fr>, 2009-2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2010-03-11 12:04+0000\n"
-"PO-Revision-Date: 2010-03-12 18:10+0100\n"
-"Last-Translator: Denis <denisarnuad@yahoo.fr>\n"
+"POT-Creation-Date: 2010-05-28 09:18+0000\n"
+"PO-Revision-Date: 2010-05-29 07:39+0100\n"
+"Last-Translator: Alan Monfort <alan.monfort@free.fr>\n"
 "Language-Team: An Drouizig <drouizig@drouizig.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,9 +27,8 @@ msgid "No results"
 msgstr "Disoc'h ebet"
 
 #: ../src/brasero-search.c:413
-#, fuzzy
 msgid "Error querying for keywords."
-msgstr "Fazi en ur glask Beagle."
+msgstr "Fazi e-pad ma oa o kerc'hat gerioù-alc'hwez."
 
 #: ../src/brasero-search.c:866
 msgid "Previous Results"
@@ -57,7 +56,7 @@ msgstr "Deskrivadur"
 #: ../src/brasero-search-entry.c:565
 #: ../src/brasero-search-entry.c:627
 #: ../src/brasero-file-chooser.c:318
-#: ../src/brasero-project.c:2180
+#: ../src/brasero-project.c:2182
 msgid "All files"
 msgstr "An holl restroù"
 
@@ -77,14 +76,14 @@ msgstr "An enlugellad GStreamer \"%s\" n'hall ket bezañ kavet"
 
 #: ../libbrasero-burn/burn-plugin.c:686
 #: ../libbrasero-burn/burn-plugin.c:698
-#, fuzzy, c-format
+#, c-format
 msgid "The version of \"%s\" is too old"
-msgstr "N'eo ket skoret an handelv-mañ eus mkisoft"
+msgstr "Re gozh eo an handelv eus \"%s\""
 
 #: ../libbrasero-burn/burn-plugin.c:690
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is a symbolic link pointing to another program"
-msgstr "Un ere arouezel o vukañ davit ur goulev all eo \\\"%s\\\". Arverañ ar goulev arvoned en e lec'h"
+msgstr "\"%s\" zo un ere arouezek o poentañ davit un arload all"
 
 #. Translators: %s is a filename
 #: ../libbrasero-burn/burn-plugin.c:694
@@ -101,13 +100,12 @@ msgid "Copying audio track %02d"
 msgstr "Eiladur al loabr audio %02d"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:265
-#, fuzzy
 msgid "Preparing to copy audio disc"
-msgstr "Prientiñ ar skrivañ"
+msgstr "O prientiñ an eiladur eus ur gantennad aodio"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:410
 msgid "Copy tracks from an audio CD with all associated information"
-msgstr ""
+msgstr "Eilañ tonioù diouzh ur CD aodio gant an holl ditouroù kevredet"
 
 #: ../libbrasero-burn/brasero-video-options.c:451
 msgid "Video format:"
@@ -191,7 +189,7 @@ msgstr "N'haller ket ouzhpennañ rolloù tonioù da gantennadoù video pe audio.
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:174
 #, c-format
 msgid "\"%s\" is not suitable for audio or video media"
-msgstr ""
+msgstr "\"%s\" n'eo ket dereat evit ar media aodio pe video"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
@@ -266,12 +264,12 @@ msgstr "Dielfennadur ar restroù"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2444
 #: ../libbrasero-burn/brasero-burn-options.c:471
 #: ../nautilus/nautilus-burn-extension.c:237
-#: ../src/brasero-project.c:1266
+#: ../src/brasero-project.c:1268
 #: ../libbrasero-burn/brasero-track-data.c:772
 #: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
 msgid "There are no files to write to disc"
-msgstr ""
+msgstr "N'eus restr ebet da skrivañ war ar gantenn"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2564
 #, c-format
@@ -362,11 +360,11 @@ msgstr "Elfenn %s n'hall ket bezañ krouet"
 #: ../libbrasero-burn/brasero-caps-burn.c:66
 #: ../libbrasero-burn/brasero-caps-burn.c:668
 #: ../libbrasero-burn/brasero-burn.c:2821
-#: ../libbrasero-burn/burn-job.c:1217
-#: ../libbrasero-burn/burn-job.c:1226
+#: ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:215
-#: ../src/brasero-app.c:764
+#: ../src/brasero-app.c:767
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129
 #: ../plugins/cdrkit/burn-readom.c:370
@@ -390,548 +388,545 @@ msgstr "Ur restr hepken a vez gwiriet diouzh an dro"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:430
 msgid "Retrieving image format and size"
-msgstr ""
+msgstr "Oc'h adkavout ment ha mentrezh al lunienn"
 
 #. Translators: This is a disc image
 #: ../libbrasero-burn/brasero-track-image-cfg.c:450
 msgid "The format of the disc image could not be identified"
-msgstr ""
+msgstr "N'hall ket hennadet mentrezh lunienn ar gantenn"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:451
 msgid "Please set it manually"
-msgstr ""
+msgstr "Mar plij, arventennit gant an dorn"
 
 #. Translators: This string is used in the title bar %s is the action currently performed
-#: ../libbrasero-burn/brasero-burn-dialog.c:184
+#: ../libbrasero-burn/brasero-burn-dialog.c:205
 #, c-format
 msgid "%s (%i%% Done)"
 msgstr "%s  (%i%% graet)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:206
-#: ../libbrasero-burn/brasero-burn-dialog.c:1111
+#: ../libbrasero-burn/brasero-burn-dialog.c:227
+#: ../libbrasero-burn/brasero-burn-dialog.c:1132
 msgid "Creating Image"
 msgstr "Krouadur al lunienn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:211
-#: ../libbrasero-burn/brasero-burn-dialog.c:1120
+#: ../libbrasero-burn/brasero-burn-dialog.c:232
+#: ../libbrasero-burn/brasero-burn-dialog.c:1141
 msgid "Burning DVD"
 msgstr "Engravadur un DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:215
-#: ../libbrasero-burn/brasero-burn-dialog.c:1116
+#: ../libbrasero-burn/brasero-burn-dialog.c:236
+#: ../libbrasero-burn/brasero-burn-dialog.c:1137
 msgid "Copying DVD"
 msgstr "Oc'h eilañ an DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:221
-#: ../libbrasero-burn/brasero-burn-dialog.c:1130
+#: ../libbrasero-burn/brasero-burn-dialog.c:242
+#: ../libbrasero-burn/brasero-burn-dialog.c:1151
 msgid "Burning CD"
 msgstr "Engravadur ur CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:225
-#: ../libbrasero-burn/brasero-burn-dialog.c:346
-#: ../libbrasero-burn/brasero-burn-dialog.c:1126
+#: ../libbrasero-burn/brasero-burn-dialog.c:246
+#: ../libbrasero-burn/brasero-burn-dialog.c:367
+#: ../libbrasero-burn/brasero-burn-dialog.c:1147
 msgid "Copying CD"
 msgstr "Oc'h eilañ ar CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:231
-#: ../libbrasero-burn/brasero-burn-dialog.c:1140
+#: ../libbrasero-burn/brasero-burn-dialog.c:252
+#: ../libbrasero-burn/brasero-burn-dialog.c:1161
 msgid "Burning Disc"
 msgstr "Engravadur ur gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:235
-#: ../libbrasero-burn/brasero-burn-dialog.c:1136
+#: ../libbrasero-burn/brasero-burn-dialog.c:256
+#: ../libbrasero-burn/brasero-burn-dialog.c:1157
 msgid "Copying Disc"
 msgstr "Oc'h eilañ ar gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:265
+#: ../libbrasero-burn/brasero-burn-dialog.c:286
 #: ../libbrasero-burn/burn-basics.c:80
 msgid "Creating image"
 msgstr "Krouadur al lunienn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:271
+#: ../libbrasero-burn/brasero-burn-dialog.c:292
 msgid "Simulation of video DVD burning"
 msgstr "Darvanadur eus engravadur un DVD mod video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:273
+#: ../libbrasero-burn/brasero-burn-dialog.c:294
 msgid "Burning video DVD"
 msgstr "Engravadur un DVD mod video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:281
+#: ../libbrasero-burn/brasero-burn-dialog.c:302
 msgid "Simulation of data DVD burning"
 msgstr "Darvanadur eus engravadur un DVDad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:283
+#: ../libbrasero-burn/brasero-burn-dialog.c:304
 msgid "Burning data DVD"
 msgstr "Engravadur un DVDad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:291
+#: ../libbrasero-burn/brasero-burn-dialog.c:312
 msgid "Simulation of image to DVD burning"
 msgstr "Darvanadur ul lunienn eus engravadur un DVDad"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:293
+#: ../libbrasero-burn/brasero-burn-dialog.c:314
 msgid "Burning image to DVD"
 msgstr "Engravadur al lunienn war un DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:301
+#: ../libbrasero-burn/brasero-burn-dialog.c:322
 msgid "Simulation of data DVD copying"
 msgstr "Darvanadur eiladur un DVDad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:303
+#: ../libbrasero-burn/brasero-burn-dialog.c:324
 msgid "Copying data DVD"
 msgstr "Eiladur un DVDad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:314
+#: ../libbrasero-burn/brasero-burn-dialog.c:335
 msgid "Simulation of (S)VCD burning"
 msgstr "Darvanadur engravadur ur (S)VCD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:316
+#: ../libbrasero-burn/brasero-burn-dialog.c:337
 msgid "Burning (S)VCD"
 msgstr "Engravadur (S)VCD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:324
-#: ../libbrasero-burn/brasero-burn-dialog.c:377
+#: ../libbrasero-burn/brasero-burn-dialog.c:345
+#: ../libbrasero-burn/brasero-burn-dialog.c:398
 msgid "Simulation of audio CD burning"
 msgstr "Darvanadur engravadur ur CDad audio"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:326
-#: ../libbrasero-burn/brasero-burn-dialog.c:379
+#: ../libbrasero-burn/brasero-burn-dialog.c:347
+#: ../libbrasero-burn/brasero-burn-dialog.c:400
 msgid "Burning audio CD"
 msgstr "Engravadur ur CDad sonioù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:334
+#: ../libbrasero-burn/brasero-burn-dialog.c:355
 msgid "Simulation of data CD burning"
 msgstr "Darvanadur engravadur ur CDad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:336
+#: ../libbrasero-burn/brasero-burn-dialog.c:357
 msgid "Burning data CD"
 msgstr "Engravadur ur CDad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:344
+#: ../libbrasero-burn/brasero-burn-dialog.c:365
 msgid "Simulation of CD copying"
 msgstr "Darvanadur eiladur ur CDad"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:354
+#: ../libbrasero-burn/brasero-burn-dialog.c:375
 msgid "Simulation of image to CD burning"
 msgstr "Darvanadur engravadur lunienn ur CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:356
+#: ../libbrasero-burn/brasero-burn-dialog.c:377
 msgid "Burning image to CD"
 msgstr "Engravadur ul lunienn war ar CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:367
+#: ../libbrasero-burn/brasero-burn-dialog.c:388
 msgid "Simulation of video disc burning"
 msgstr "Darvanadur engravadur ur gantennad video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:369
+#: ../libbrasero-burn/brasero-burn-dialog.c:390
 msgid "Burning video disc"
 msgstr "Engravadur ur gantennad video"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:387
+#: ../libbrasero-burn/brasero-burn-dialog.c:408
 msgid "Simulation of data disc burning"
 msgstr "Darvanadur engravadur ur gantennad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:389
+#: ../libbrasero-burn/brasero-burn-dialog.c:410
 msgid "Burning data disc"
 msgstr "Engravadur ur gantennad roadennoù"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:397
+#: ../libbrasero-burn/brasero-burn-dialog.c:418
 msgid "Simulation of disc copying"
 msgstr "Darvanadur eiladur ur CDad"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:399
+#: ../libbrasero-burn/brasero-burn-dialog.c:420
 #: ../libbrasero-burn/burn-basics.c:84
 msgid "Copying disc"
 msgstr "Oc'h eilañ ar gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:407
+#: ../libbrasero-burn/brasero-burn-dialog.c:428
 msgid "Simulation of image to disc burning"
 msgstr "Darvanadur engravadur ul lunienn war ur CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:409
+#: ../libbrasero-burn/brasero-burn-dialog.c:430
 msgid "Burning image to disc"
 msgstr "Engravadur al lunienn war ur gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:514
+#: ../libbrasero-burn/brasero-burn-dialog.c:535
 msgid "Please replace the disc with a rewritable disc holding data."
 msgstr "Mar plij, amsavit ar gantenn gant ur gantenn adskrivus gant roadennoù."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:516
+#: ../libbrasero-burn/brasero-burn-dialog.c:537
 msgid "Please replace the disc with a disc holding data."
 msgstr "Mar plij, amsavit ar gantenn gant ur gantenn gant roadennoù."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:520
+#: ../libbrasero-burn/brasero-burn-dialog.c:541
 msgid "Please insert a rewritable disc holding data."
 msgstr "Mar plij, enlakait ur gantenn adskrivus gant roadennoù."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:522
+#: ../libbrasero-burn/brasero-burn-dialog.c:543
 #: ../libbrasero-burn/brasero-burn-options.c:496
 msgid "Please insert a disc holding data."
 msgstr "Enlakait ur gantenn o tegemer roadennoù enni, mar plij."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:537
+#: ../libbrasero-burn/brasero-burn-dialog.c:558
 #, c-format
 msgid "Please replace the disc with a writable CD with at least %i MiB of free space."
 msgstr "Mar plij, amsavit ar gantenn gant ur CD skrivus gant %i Me a egor dieub da vihanañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:540
+#: ../libbrasero-burn/brasero-burn-dialog.c:561
 msgid "Please replace the disc with a writable CD."
 msgstr "Mar plij, amsavit ar gantenn gant ur CD skrivus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:544
+#: ../libbrasero-burn/brasero-burn-dialog.c:565
 #, c-format
 msgid "Please insert a writable CD with at least %i MiB of free space."
 msgstr "Mar plij, enlakait ur CD skrivus gant %i Me a egor dieub da vihanañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:547
+#: ../libbrasero-burn/brasero-burn-dialog.c:568
 msgid "Please insert a writable CD."
 msgstr "Mar plij, enlakait ur CD skrivus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:553
+#: ../libbrasero-burn/brasero-burn-dialog.c:574
 #, c-format
 msgid "Please replace the disc with a writable DVD with at least %i MiB of free space."
 msgstr "Mar plij, amsavit ar gantenn gant un DVD skrivus gant %i Me a egor dieub da vihanañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:556
+#: ../libbrasero-burn/brasero-burn-dialog.c:577
 msgid "Please replace the disc with a writable DVD."
 msgstr "Mar plij, amsavit ar gantenn gant un DVD skrivus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:560
+#: ../libbrasero-burn/brasero-burn-dialog.c:581
 #, c-format
 msgid "Please insert a writable DVD with at least %i MiB of free space."
 msgstr "Mar plij, enlakait un DVD skrivus gant %i Me a egor dieub da vihanañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:563
+#: ../libbrasero-burn/brasero-burn-dialog.c:584
 msgid "Please insert a writable DVD."
 msgstr "Mar plij, enlakait un DVD skrivus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:568
+#: ../libbrasero-burn/brasero-burn-dialog.c:589
 #, c-format
 msgid "Please replace the disc with a writable CD or DVD with at least %i MiB of free space."
 msgstr "Mar plij, amsavit ar gantenn gant ur CD pe un DVD skrivus gant %i Me a egor dieub da vihanañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:571
+#: ../libbrasero-burn/brasero-burn-dialog.c:592
 msgid "Please replace the disc with a writable CD or DVD."
 msgstr "Mar plij, amsavit ar gantenn gant ur CD pe un DVD skrivus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:575
+#: ../libbrasero-burn/brasero-burn-dialog.c:596
 #, c-format
 msgid "Please insert a writable CD or DVD with at least %i MiB of free space."
 msgstr "Mar plij, enlakait ur CD pe un DVD skrivus gant %i Me a egor dieub da vihanañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:578
-#: ../libbrasero-burn/brasero-burn-dialog.c:2121
-#: ../libbrasero-burn/brasero-burn-dialog.c:2135
+#: ../libbrasero-burn/brasero-burn-dialog.c:599
+#: ../libbrasero-burn/brasero-burn-dialog.c:2171
+#: ../libbrasero-burn/brasero-burn-dialog.c:2185
 #: ../libbrasero-burn/brasero-burn-options.c:450
-#: ../src/brasero-project.c:984
+#: ../src/brasero-project.c:986
 msgid "Please insert a writable CD or DVD."
 msgstr "Mar plij, enlakait ur CD pe un DVD skrivus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:605
-#, fuzzy
+#: ../libbrasero-burn/brasero-burn-dialog.c:626
 msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a writable disc is inserted."
 msgstr ""
-"Krouez ez eus bet ul lunienn eus ar gantennad war ho kantenn galet.\\n"
-"\n"
-"Diouzhtu ma vo lakaet ur gantenn skrivus e krogo an engravañ."
+"Ul lunienn eus ho kantennad zo bet krouet war ho kantenn galet.\n"
+"Kregiñ a ray an engrañ pa vo enlakaet ur gantenn engravadus."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:610
+#: ../libbrasero-burn/brasero-burn-dialog.c:631
 msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr "Diouzhtu ma vo lakaet ur gantenn skrivus e krogo amprouadur anterinder ar roadennoù."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:611
+#: ../libbrasero-burn/brasero-burn-dialog.c:632
 msgid "Please re-insert the disc in the CD/DVD burner."
 msgstr "Mar plij, adlakait ar gantenn en engravezrez CD/DVD."
 
 #. Translators: %s is the name of a drive
-#: ../libbrasero-burn/brasero-burn-dialog.c:615
+#: ../libbrasero-burn/brasero-burn-dialog.c:636
 #, c-format
 msgid "\"%s\" is busy."
 msgstr "Ac'hubet eo \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:616
+#: ../libbrasero-burn/brasero-burn-dialog.c:637
 #: ../libbrasero-burn/brasero-burn.c:329
 #: ../libbrasero-burn/brasero-tool-dialog.c:91
 msgid "Make sure another application is not using it"
 msgstr "Bezit sur n'emañ ket un arload all oc'h ober ganti"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:619
+#: ../libbrasero-burn/brasero-burn-dialog.c:640
 #, c-format
 msgid "There is no disc in \"%s\"."
 msgstr "N'eus ket ur gantenn e \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:623
+#: ../libbrasero-burn/brasero-burn-dialog.c:644
 #, c-format
 msgid "The disc in \"%s\" is not supported."
 msgstr "N'eo ket skoret ar gantenn e \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:627
+#: ../libbrasero-burn/brasero-burn-dialog.c:648
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
 msgstr "N'haller ket adskrivañ war ar gantenn e \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:631
+#: ../libbrasero-burn/brasero-burn-dialog.c:652
 #, c-format
 msgid "The disc in \"%s\" is empty."
 msgstr "Goullo eo ar gantenn e \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:635
+#: ../libbrasero-burn/brasero-burn-dialog.c:656
 #, c-format
 msgid "The disc in \"%s\" is not writable."
 msgstr "N'haller ket skrivañ war ar gantenn e \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:639
+#: ../libbrasero-burn/brasero-burn-dialog.c:660
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
 msgstr "N'eus ket plas a-walc'h hergerz war ar gantenn e \"%s\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:647
+#: ../libbrasero-burn/brasero-burn-dialog.c:668
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
 msgstr "Ar gantenn e \"%s\" a rank bezañ karget en-dro."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:648
+#: ../libbrasero-burn/brasero-burn-dialog.c:669
 msgid "Please eject the disc and reload it."
 msgstr "Mar plij, distaolit ar gantenn ha kargit hi en-dro."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:693
+#: ../libbrasero-burn/brasero-burn-dialog.c:714
 #: ../libbrasero-burn/brasero-sum-dialog.c:331
 msgid "A file could not be created at the location specified for temporary files"
 msgstr "N'haller ket krouiñ ur restr el lec'h erspizet evit ar restroù padennek"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:694
+#: ../libbrasero-burn/brasero-burn-dialog.c:715
 msgid "The image could not be created at the specified location"
 msgstr "N'haller ket krouiñ ul lunienn el lec'h erspizet evit ar restroù padennek"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:695
+#: ../libbrasero-burn/brasero-burn-dialog.c:716
 msgid "Do you want to specify another location for this session or retry with the current location?"
 msgstr "Ha fellout a ra deoc'h erspizañ ul lec'h all evit an estez-mañ pe klask en-dro gant al lec'h bremanel ?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:707
+#: ../libbrasero-burn/brasero-burn-dialog.c:728
 msgid "You may want to free some space on the disc and retry"
 msgstr "Marteze e fell deoc'h dieubiñ un tamm egor war ar gantenn galet ha klask en-dro"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:714
+#: ../libbrasero-burn/brasero-burn-dialog.c:735
 #: ../libbrasero-burn/brasero-drive-properties.c:248
 #: ../libbrasero-burn/brasero-drive-properties.c:286
 #: ../libbrasero-burn/brasero-drive-properties.c:338
 msgid "_Keep Current Location"
 msgstr "_Mirout al lec'hiadur bremanel"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:716
+#: ../libbrasero-burn/brasero-burn-dialog.c:737
 #: ../libbrasero-burn/brasero-drive-properties.c:249
 #: ../libbrasero-burn/brasero-drive-properties.c:287
 #: ../libbrasero-burn/brasero-drive-properties.c:339
 msgid "_Change Location"
 msgstr "_Kemmañ al lec'hiadur"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:738
+#: ../libbrasero-burn/brasero-burn-dialog.c:759
 #: ../libbrasero-burn/brasero-image-properties.c:476
 msgid "Location for Image File"
 msgstr "Lec'hiadur evit restr ul lunienn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:746
+#: ../libbrasero-burn/brasero-burn-dialog.c:767
 #: ../libbrasero-burn/brasero-drive-properties.c:370
 msgid "Location for Temporary Files"
 msgstr "Lec'hiadur evit ar restroù padennek"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:854
+#: ../libbrasero-burn/brasero-burn-dialog.c:875
 msgid "_Replace Disc"
 msgstr "_Amsaviñ ar gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:895
+#: ../libbrasero-burn/brasero-burn-dialog.c:916
 msgid "Do you really want to blank the current disc?"
 msgstr "Ha fellout a ra deoc'h goullonderiñ ar gantennad vremanel ?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:896
+#: ../libbrasero-burn/brasero-burn-dialog.c:917
 msgid "The disc in the drive holds data."
 msgstr "Roadennoù ez eus war ar gantenn emañ en drobarzhell."
 
 #. Translators: Blank is a verb here
-#: ../libbrasero-burn/brasero-burn-dialog.c:898
+#: ../libbrasero-burn/brasero-burn-dialog.c:919
 msgid "_Blank Disc"
 msgstr "_Goullonderiñ ar gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:912
+#: ../libbrasero-burn/brasero-burn-dialog.c:933
 msgid "If you import them you will be able to see and use them once the current selection of files is burned."
-msgstr ""
+msgstr "Mar enporzhot anezho e viot gouest d'ober ganto ur wech ma vo engravet an diuzad restroù diuzet."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:913
-#, fuzzy
+#: ../libbrasero-burn/brasero-burn-dialog.c:934
 msgid "If you don't, they will be invisible (though still readable)."
-msgstr "Diwelus e vo ar restroù bet engravet endeo (lennus c'hoazh memes tra)."
+msgstr "Ma ne reot ket e vint diwelus (lennadus e vint avat)"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:916
+#: ../libbrasero-burn/brasero-burn-dialog.c:937
 msgid "There are files already burned on this disc. Would you like to import them?"
-msgstr ""
+msgstr "Restroù bet engravet endeo ez eus war ar gantenn. Ha fellout a ra deoc'h o enporzhiañ ?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:918
+#: ../libbrasero-burn/brasero-burn-dialog.c:939
 msgid "_Import"
 msgstr "Enporzh_iañ"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:919
+#: ../libbrasero-burn/brasero-burn-dialog.c:940
 msgid "Only _Append"
-msgstr ""
+msgstr "Ouzhpennañ _hepken"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:932
+#: ../libbrasero-burn/brasero-burn-dialog.c:953
 msgid "CD-RW audio discs may not play correctly in older CD players and CD-Text won't be written."
-msgstr ""
+msgstr "Marteze ne vo ket lennet mat ur CD-RW aodio gant lennerioù koshoc'h ha ne vo ket engravet ur CD-Testenn."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:933
-#: ../libbrasero-burn/brasero-burn-dialog.c:955
+#: ../libbrasero-burn/brasero-burn-dialog.c:954
+#: ../libbrasero-burn/brasero-burn-dialog.c:976
 msgid "Do you want to continue anyway?"
 msgstr "Ha fellout a ra deoc'h kenderc'hel memes tra ?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:936
+#: ../libbrasero-burn/brasero-burn-dialog.c:957
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "N'eo ket kuzuliet ouzhpennañ loabroù audio war ur CD."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:938
-#: ../libbrasero-burn/brasero-burn-dialog.c:960
-#: ../libbrasero-burn/brasero-burn-dialog.c:1072
+#: ../libbrasero-burn/brasero-burn-dialog.c:959
+#: ../libbrasero-burn/brasero-burn-dialog.c:981
+#: ../libbrasero-burn/brasero-burn-dialog.c:1093
 #: ../src/brasero-data-disc.c:572
 #: ../libbrasero-burn/brasero-tool-dialog.c:423
 msgid "_Continue"
 msgstr "_Kenderc'hel"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:954
+#: ../libbrasero-burn/brasero-burn-dialog.c:975
 msgid "CD-RW audio discs may not play correctly in older CD players."
-msgstr ""
+msgstr "Marteze ne vo ket lennet mat ur CD-RW aodio gant lennerioù koshoc'h."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:958
+#: ../libbrasero-burn/brasero-burn-dialog.c:979
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr "N'eo ket kuzuliet ouzhpennañ loabroù audio war ur gantenn adskrivus."
 
 #. Translators: %s is the name of a drive
-#: ../libbrasero-burn/brasero-burn-dialog.c:1005
-#, fuzzy, c-format
+#: ../libbrasero-burn/brasero-burn-dialog.c:1026
+#, c-format
 msgid "Please eject the disc from \"%s\" manually."
-msgstr "Mar plij, distaolit ar gantenn ha kargit hi en-dro."
+msgstr "Mar plij, diskasit ar gantenn diouzh \"%s\" gant an dorn."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1014
+#: ../libbrasero-burn/brasero-burn-dialog.c:1035
 msgid "The disc could not be ejected though it needs to be removed for the current operation to continue."
-msgstr ""
+msgstr "Ar gantenn n'hall ket bezañ diskaset daoust ma 'z eo ret bezañ tennet kuit a-benn ma kendalc'ho ar gwezhiadur bremanel."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1063
+#: ../libbrasero-burn/brasero-burn-dialog.c:1084
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Ha fellout a ra deoc'h kenderc'hel gant ar geverlec'hded gant Windows diweredekaet ?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1066
+#: ../libbrasero-burn/brasero-burn-dialog.c:1087
 #: ../src/brasero-data-disc.c:745
 #: ../libbrasero-burn/brasero-status-dialog.c:340
 msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Restroù zo n'o deus ket un anv dereat evit ur CD keverlec'h klok gant Windows."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1322
-#: ../libbrasero-burn/brasero-burn-dialog.c:1343
+#: ../libbrasero-burn/brasero-burn-dialog.c:1355
+#: ../libbrasero-burn/brasero-burn-dialog.c:1376
 msgid "The simulation was successful."
 msgstr "Un taol berzh eo bet an darvanadur."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1325
+#: ../libbrasero-burn/brasero-burn-dialog.c:1358
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "Engravadur gwir ar gantenn a grogo a-benn 10 eilenn."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1328
+#: ../libbrasero-burn/brasero-burn-dialog.c:1361
 msgid "Burn _Now"
 msgstr "Engravañ _bremañ"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1620
+#: ../libbrasero-burn/brasero-burn-dialog.c:1670
 msgid "Save Current Session"
 msgstr "Enrollañ an estez bremanel"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1688
+#: ../libbrasero-burn/brasero-burn-dialog.c:1738
 msgid "An unknown error occurred."
 msgstr "Degouezhet ez eus bet ur fazi dianav."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1696
-#: ../src/brasero-app.c:609
+#: ../libbrasero-burn/brasero-burn-dialog.c:1746
+#: ../src/brasero-app.c:612
 msgid "Error while burning."
 msgstr "Fazi e-pad an engravañ."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1704
+#: ../libbrasero-burn/brasero-burn-dialog.c:1754
 msgid "_Save Log"
 msgstr "Enrollañ ar _c'herzhlevr"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1737
+#: ../libbrasero-burn/brasero-burn-dialog.c:1787
 msgid "Video DVD successfully burned"
 msgstr "DVD video engravet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1739
+#: ../libbrasero-burn/brasero-burn-dialog.c:1789
 msgid "(S)VCD successfully burned"
 msgstr "(S)VCD engravet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1742
+#: ../libbrasero-burn/brasero-burn-dialog.c:1792
 msgid "Audio CD successfully burned"
 msgstr "CD audio engravet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1745
-#: ../libbrasero-burn/brasero-burn-dialog.c:1777
+#: ../libbrasero-burn/brasero-burn-dialog.c:1795
+#: ../libbrasero-burn/brasero-burn-dialog.c:1827
 msgid "Image successfully created"
 msgstr "Lunienn krouet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1750
+#: ../libbrasero-burn/brasero-burn-dialog.c:1800
 msgid "DVD successfully copied"
 msgstr "DVD eilet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1752
+#: ../libbrasero-burn/brasero-burn-dialog.c:1802
 msgid "CD successfully copied"
 msgstr "CD eilet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1756
+#: ../libbrasero-burn/brasero-burn-dialog.c:1806
 msgid "Image of DVD successfully created"
 msgstr "Lunienn an DVD krouet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1758
+#: ../libbrasero-burn/brasero-burn-dialog.c:1808
 msgid "Image of CD successfully created"
 msgstr "Lunienn ar CD krouet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1764
+#: ../libbrasero-burn/brasero-burn-dialog.c:1814
 msgid "Image successfully burned to DVD"
 msgstr "Lunienn engravet gant berzh war an DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1766
+#: ../libbrasero-burn/brasero-burn-dialog.c:1816
 msgid "Image successfully burned to CD"
 msgstr "Lunienn engravet gant berzh war ar CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1772
+#: ../libbrasero-burn/brasero-burn-dialog.c:1822
 msgid "Data DVD successfully burned"
 msgstr "Roadennoù an DVD engravet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1774
+#: ../libbrasero-burn/brasero-burn-dialog.c:1824
 msgid "Data CD successfully burned"
 msgstr "Roadennoù ar CD engravet gant berzh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1834
+#: ../libbrasero-burn/brasero-burn-dialog.c:1884
 #, c-format
 msgid "Copy #%i has been burned successfully."
-msgstr ""
+msgstr "Eilad #%i zo bet engravet gant berzh."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1842
+#: ../libbrasero-burn/brasero-burn-dialog.c:1892
 msgid "Another copy will start as soon as you insert a new writable disc. If you do not want to burn another copy, press \"Cancel\"."
-msgstr ""
+msgstr "Un eilad a vo savet diouzhtu ma vo enlakaet ur gantenn engravadus nevez. Ma ne fell ket deoc'h engravañ un eilad all, pouezit war \"Dilezel\"."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1914
+#: ../libbrasero-burn/brasero-burn-dialog.c:1964
 msgid "Make _More Copies"
 msgstr "Sevel un eilad _all"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1923
+#: ../libbrasero-burn/brasero-burn-dialog.c:1973
 msgid "_Create Cover"
 msgstr "_Krouiñ ur golo"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2084
+#: ../libbrasero-burn/brasero-burn-dialog.c:2134
 msgid "There are some files left to burn"
-msgstr ""
+msgstr "Chom a ra restroù da engravañ c'hoazh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2091
+#: ../libbrasero-burn/brasero-burn-dialog.c:2141
 msgid "There are some more videos left to burn"
-msgstr ""
+msgstr "Chom a ra videoioù da engravañ c'hoazh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2095
+#: ../libbrasero-burn/brasero-burn-dialog.c:2145
 msgid "There are some more songs left to burn"
-msgstr ""
+msgstr "Chom a ra muioc'h a ganaouennoù da engravañ c'hoazh"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2136
+#: ../libbrasero-burn/brasero-burn-dialog.c:2186
 #: ../libbrasero-burn/brasero-burn.c:1625
 #: ../plugins/cdrkit/burn-genisoimage.c:208
 #: ../plugins/cdrkit/burn-wodim.c:115
@@ -942,31 +937,31 @@ msgstr ""
 msgid "Not enough space available on the disc"
 msgstr "N'eus ket plas a-walc'h war ar gantenn"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2401
+#: ../libbrasero-burn/brasero-burn-dialog.c:2451
 #: ../libbrasero-burn/brasero-tool-dialog.c:412
 msgid "Do you really want to quit?"
 msgstr "Ha fellout a ra deoc'h kuitaat ?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2405
+#: ../libbrasero-burn/brasero-burn-dialog.c:2455
 #: ../libbrasero-burn/brasero-tool-dialog.c:418
 msgid "Interrupting the process may make disc unusable."
 msgstr "Mar bez paouezet an argerzh ne vo ket tro da arverañ ar gantenn."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2408
+#: ../libbrasero-burn/brasero-burn-dialog.c:2458
 msgid "C_ontinue Burning"
 msgstr "_Kenderc'hel an engravadur"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2415
+#: ../libbrasero-burn/brasero-burn-dialog.c:2465
 msgid "_Cancel Burning"
 msgstr "_Dilezel an engravadur"
 
 #: ../libbrasero-burn/brasero-burn-options.c:228
-#: ../src/brasero-project.c:1009
+#: ../src/brasero-project.c:1011
 msgid "Please insert a writable CD or DVD if you don't want to write to an image file."
 msgstr "Mar plij, enlakait un DVD pe ur CD skrivus ma ne fell ket deoc'h skrivañ en ur restr lunienn."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302
-#: ../src/brasero-project.c:1565
+#: ../src/brasero-project.c:1567
 msgid "Create _Image"
 msgstr "Krouadur al lunienn"
 
@@ -981,47 +976,47 @@ msgstr "Sevel un eilad _all"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:314
-#: ../src/brasero-project.c:1496
+#: ../src/brasero-project.c:1498
 msgid "_Burn"
 msgstr "E_ngravañ"
 
 #: ../libbrasero-burn/brasero-burn-options.c:317
-#: ../src/brasero-project.c:1493
+#: ../src/brasero-project.c:1495
 msgid "Burn _Several Copies"
-msgstr ""
+msgstr "Engravañ _meur a eilad"
 
 #: ../libbrasero-burn/brasero-burn-options.c:426
-#: ../src/brasero-project.c:938
+#: ../src/brasero-project.c:940
 msgid "Would you like to burn the selection of files across several media?"
 msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-options.c:427
 #: ../libbrasero-burn/brasero-burn-options.c:444
 msgid "The data size is too large for the disc even with the overburn option."
-msgstr "Re vras eo ment ar roadennoù evit ur gantenn gant an dibarzh 'oberburn' zoken."
+msgstr "Re vras eo ment ar roadennoù evit ur gantenn gant an dibarzh 'overburn' zoken."
 
 #: ../libbrasero-burn/brasero-burn-options.c:432
-#: ../src/brasero-project.c:943
+#: ../src/brasero-project.c:945
 msgid "_Burn Several Discs"
-msgstr ""
+msgstr "_Engravañ meur a gantenn"
 
 #: ../libbrasero-burn/brasero-burn-options.c:434
-#: ../src/brasero-project.c:945
+#: ../src/brasero-project.c:947
 msgid "Burn the selection of files across several media"
-msgstr ""
+msgstr "Engravañ an diuzad restroù dre meur a vediom"
 
 #: ../libbrasero-burn/brasero-burn-options.c:443
-#: ../src/brasero-project.c:954
+#: ../src/brasero-project.c:956
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Mar plij, dibabit ur CD pe un DVD all pe enlakait unan nevez."
 
 #: ../libbrasero-burn/brasero-burn-options.c:457
-#: ../src/brasero-project.c:999
+#: ../src/brasero-project.c:1001
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "Ne vo ket skrivet titouroù loabr (arzour, titl,...) war ar gantenn."
 
 #: ../libbrasero-burn/brasero-burn-options.c:458
-#: ../src/brasero-project.c:1000
+#: ../src/brasero-project.c:1002
 msgid "This is not supported by the current active burning backend."
 msgstr "N'eo ket skoret gant an dermenell engravañ bremanel oberiant."
 
@@ -1035,9 +1030,9 @@ msgid "Please add songs."
 msgstr "Mar plij, ouzhpennit kanaouennoù."
 
 #: ../libbrasero-burn/brasero-burn-options.c:477
-#: ../src/brasero-project.c:1257
+#: ../src/brasero-project.c:1259
 msgid "There are no songs to write to disc"
-msgstr ""
+msgstr "N'eus kanaouenn ebet da engravañ war ar gantenn"
 
 #: ../libbrasero-burn/brasero-burn-options.c:482
 msgid "Please add videos."
@@ -1045,7 +1040,7 @@ msgstr "Mar plij, ouzhpennit videoioù."
 
 #: ../libbrasero-burn/brasero-burn-options.c:483
 msgid "There are no videos to write to disc"
-msgstr ""
+msgstr "N'eus video ebet da engravañ war ar gantenn"
 
 #: ../libbrasero-burn/brasero-burn-options.c:497
 msgid "There is no inserted disc to copy."
@@ -1077,20 +1072,19 @@ msgstr "Mar plij, enlakait ur gantenn nad eo ket gwarezet a-enep an eilañ."
 
 #: ../libbrasero-burn/brasero-burn-options.c:534
 #: ../libbrasero-burn/brasero-burn-options.c:1234
-#: ../src/brasero-project.c:1431
+#: ../src/brasero-project.c:1433
 msgid "All required applications and libraries are not installed."
-msgstr ""
+msgstr "N'eo ket bet staliet an holl arloadoù ha levraouegoù."
 
 #: ../libbrasero-burn/brasero-burn-options.c:541
-#: ../src/brasero-project.c:992
+#: ../src/brasero-project.c:994
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Mar plij, amsavit ar gantenn gant ur CD pe un DVD skoret."
 
 #: ../libbrasero-burn/brasero-burn-options.c:550
-#: ../src/brasero-project.c:965
-#, fuzzy
+#: ../src/brasero-project.c:967
 msgid "Would you like to burn beyond the disc's reported capacity?"
-msgstr "Ha fellout a ra deoc'h engravañ dreist dalc'had meneget ar gantenn ?"
+msgstr "Ha fellout a rafe deoc'h engravañ dreist barregezhioù kadaviñ ar gantenn ?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:551
 msgid ""
@@ -1099,17 +1093,17 @@ msgid ""
 "NOTE: This option might cause failure."
 msgstr ""
 "Re vras eo ment ar roadennoù evit ar gantenn ha ret eo deoc'h dilemel restroù diouzh ar raktres neuze.\n"
-"Marteze e fello deco'h ober gant an dibarzh-mañ mard emaocc'h oc'h arverañ ur CD-R(W) 90 pe 100 mun nad int ket anavezet mat hag ezhomm o deus dibarzh an engravañ dreisti (overburn).\n"
+"Marteze e fello deoc'h ober gant an dibarzh-mañ mard emaoc'h oc'h arverañ ur CD-R(W) 90 pe 100 mun nad int ket anavezet mat hag ezhomm o deus dibarzh an engravañ dreisti (overburn).\n"
 "NOTENN : Gant an dibarzh-mañ e tegouezh c'hwitadennoù."
 
 # Hervez ma geriadur, arabat treiñ ar ger-mañ. Un mod eo hennezh, da skrivañ atav gant ur bennlizherenn.
 #: ../libbrasero-burn/brasero-burn-options.c:558
-#: ../src/brasero-project.c:972
+#: ../src/brasero-project.c:974
 msgid "_Overburn"
 msgstr "_Overburn"
 
 #: ../libbrasero-burn/brasero-burn-options.c:560
-#: ../src/brasero-project.c:974
+#: ../src/brasero-project.c:976
 msgid "Burn beyond the disc's reported capacity"
 msgstr "Engravañ dreist barregezhioù anavezet ar gantenn"
 
@@ -1132,20 +1126,20 @@ msgid "Disc Burning Setup"
 msgstr "Kefluniadur an engravañ war ar gantenn"
 
 #: ../libbrasero-burn/brasero-burn-options.c:766
-#: ../src/brasero-project.c:1516
+#: ../src/brasero-project.c:1518
 msgid "Video Options"
 msgstr "Dibarzhioù video"
 
 #: ../libbrasero-burn/brasero-burn-options.c:798
 #: ../src/brasero-data-disc.c:616
 msgid "Do you want to create a disc from the contents of the image or with the image file inside?"
-msgstr ""
+msgstr "Ha fellout a ra deoc'h krouiñ ur gantennad diwar endalc'hadoù al lunienn pe ur gantennad gant restroù al lunienn enni ?"
 
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:806
 #, c-format
 msgid "There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned."
-msgstr ""
+msgstr "Ur restr nemtken zo bet diuzet (\"%s\"). Lunienn ur gantennad eo hag engravet e c'hell bezañ hec'h endalc'had."
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
 msgid "Burn as _File"
@@ -1175,7 +1169,7 @@ msgstr "Diuzañ ar gantennad da eilañ"
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn-options.c:1187
 #: ../libbrasero-burn/brasero-burn.c:1707
-#: ../src/brasero-project.c:1372
+#: ../src/brasero-project.c:1374
 #, c-format
 msgid "%s (application)"
 msgstr "%s (arload)"
@@ -1183,7 +1177,7 @@ msgstr "%s (arload)"
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn-options.c:1192
 #: ../libbrasero-burn/brasero-burn.c:1712
-#: ../src/brasero-project.c:1377
+#: ../src/brasero-project.c:1379
 #, c-format
 msgid "%s (library)"
 msgstr "%s (levraoueg)"
@@ -1191,15 +1185,15 @@ msgstr "%s (levraoueg)"
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn-options.c:1197
 #: ../libbrasero-burn/brasero-burn.c:1717
-#: ../src/brasero-project.c:1382
+#: ../src/brasero-project.c:1384
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (enlugellad GStreamer)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1425
+#: ../src/brasero-project.c:1427
 msgid "Please install the following manually and try again:"
-msgstr ""
+msgstr "Mar plij, staliit ar re-se dre zorn ha klaskit en-dro :"
 
 #: ../libbrasero-burn/brasero-burn.c:161
 msgid "Burning CD/DVD"
@@ -1261,9 +1255,9 @@ msgid "Ongoing blanking process"
 msgstr "Argerzh goullonderiñ war erounit"
 
 #: ../libbrasero-burn/brasero-burn.c:767
-#, fuzzy, c-format
+#, c-format
 msgid "The drive cannot burn"
-msgstr "An drobarzhell n'hall ket bezañ prennet (%s)"
+msgstr "An drobarzhell n'hall ket engravañ"
 
 #: ../libbrasero-burn/brasero-burn.c:863
 #: ../libbrasero-burn/brasero-dest-selection.c:110
@@ -1271,9 +1265,8 @@ msgid "Ongoing burning process"
 msgstr "Argerzh engravañ war erounit"
 
 #: ../libbrasero-burn/brasero-burn.c:980
-#, fuzzy
 msgid "Ongoing checksumming operation"
-msgstr "Gwezhiadur da sevel ur sammad gwiriañ war erounit"
+msgstr ""
 
 #: ../libbrasero-burn/brasero-burn.c:1624
 #: ../libbrasero-burn/brasero-burn.c:1815
@@ -1288,7 +1281,7 @@ msgstr "N'eus loabr ebet da engravañ"
 
 #: ../libbrasero-burn/brasero-burn.c:1857
 msgid "Please install the following required applications and libraries manually and try again:"
-msgstr ""
+msgstr "Mar plij, staliit an arloadoù ha levraouegoù azgoulennet dre zorn ha klaskit en-dro :"
 
 #: ../libbrasero-burn/brasero-burn.c:2610
 #, c-format
@@ -1340,15 +1333,15 @@ msgstr "%s: \"%s\""
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
 #: ../libbrasero-burn/brasero-dest-selection.c:656
-#, fuzzy, c-format
+#, c-format
 msgid "New disc in the burner holding the source disc"
-msgstr "Kantenn nevez en engraverez hag a zo gant ar gantennad tarzh enni"
+msgstr "Ur gantenn nevez e-barzh an engraver emañ roadennoù ar gantenn darzh gantañ"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-burn/brasero-dest-selection.c:697
-#, fuzzy, c-format
+#, c-format
 msgid "%s: not enough free space"
-msgstr "%s : N'eus ket plas a-walc'h hergerz war ar gantenn e \"%s\"."
+msgstr "%s : n'eus ket egor diac'hub a-walc'h"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
@@ -1464,7 +1457,7 @@ msgstr "Lec'hiadur evit ar restroù pa_dennek"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:791
 msgid "Set the directory where to store temporary files"
-msgstr ""
+msgstr "Arventennañ ar c'havlec'hiad ma vo kadavet ar restroù padennek ennañ"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:796
 msgid "Temporary files"
@@ -1495,7 +1488,7 @@ msgid "Cdrdao image"
 msgstr "Lunienn Cdrdao"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1480
+#: ../src/brasero-project.c:1482
 #, c-format
 msgid "Properties of %s"
 msgstr "Perzhioù eus %s"
@@ -1659,7 +1652,7 @@ msgstr "Skrivadur titouroù CD-TEXT"
 
 #: ../libbrasero-burn/burn-basics.c:91
 msgid "Finalizing"
-msgstr ""
+msgstr "O peurechuiñ"
 
 #: ../libbrasero-burn/burn-basics.c:92
 msgid "Writing leadout"
@@ -1675,14 +1668,14 @@ msgstr "Berzh"
 
 #: ../libbrasero-burn/burn-basics.c:95
 msgid "Ejecting medium"
-msgstr ""
+msgstr "O tiskas ar mediom"
 
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322
-#: ../libbrasero-burn/burn-job.c:795
-#: ../libbrasero-burn/burn-job.c:808
-#: ../libbrasero-burn/burn-job.c:1027
-#: ../libbrasero-burn/burn-job.c:1117
+#: ../libbrasero-burn/burn-job.c:797
+#: ../libbrasero-burn/burn-job.c:810
+#: ../libbrasero-burn/burn-job.c:1029
+#: ../libbrasero-burn/burn-job.c:1119
 #, c-format
 msgid "\"%s\" did not behave properly"
 msgstr "\\\"%s\\\" n'en deus ket un emzalc'h dereat"
@@ -1695,31 +1688,31 @@ msgstr "\\\"%s\\\" n'en deus ket un emzalc'h dereat"
 msgid "Not enough space available on the disc (%s available for %s)"
 msgstr "N'eus ket egor a-walc'h hegerz war ar gantenn (%s hegerz evit %s)"
 
-#: ../libbrasero-burn/burn-job.c:520
+#: ../libbrasero-burn/burn-job.c:522
 #, c-format
 msgid "The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB"
 msgstr "Ar reizhiad restroù hoc'h eus dibabet evit kadaviñ al luniennoù padennek n'eo ket barrek da dapout restroù o ment dreist 2 Ge"
 
-#: ../libbrasero-burn/burn-job.c:535
-#: ../libbrasero-burn/burn-job.c:557
+#: ../libbrasero-burn/burn-job.c:537
+#: ../libbrasero-burn/burn-job.c:559
 #, c-format
 msgid "The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"
 msgstr "Al lec'h hoc'h eus dibabet evit kadaviñ al luniennoù padennek n'en deus ket plas dieub a-walc'h evit lunienn ar gantennad (%ld Me ret)"
 
-#: ../libbrasero-burn/burn-job.c:570
+#: ../libbrasero-burn/burn-job.c:572
 #: ../plugins/dvdcss/burn-dvdcss.c:349
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "N'haller ket adkavout ment ar bezhienn"
 
-#: ../libbrasero-burn/burn-job.c:625
+#: ../libbrasero-burn/burn-job.c:627
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "N'eo ket bet erspizet un treug davit ec'hankad al lunienn"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:766
+#: ../libbrasero-burn/burn-job.c:768
 #: ../plugins/cdrtools/burn-cdrecord.c:690
 #: ../plugins/libburnia/burn-libburn.c:716
 #: ../plugins/transcode/burn-transcode.c:824
@@ -1936,19 +1929,19 @@ msgstr "Dibarzhioù skrammañ evit levraoueg mediaoù Brasero"
 #: ../libbrasero-media/brasero-units.c:71
 #, c-format
 msgid "%s h %s min %s"
-msgstr ""
+msgstr "%s h %s min %s"
 
 #. Translators: this is hour minute like '2 h 14'
 #: ../libbrasero-media/brasero-units.c:77
 #, c-format
 msgid "%s h %s"
-msgstr ""
+msgstr "%s h %s"
 
 #. Translators: this is hour like '2 h'
 #: ../libbrasero-media/brasero-units.c:82
 #, c-format
 msgid "%s h"
-msgstr ""
+msgstr "%s eur"
 
 #. Translators: this is 'hour:minute:second' like '2:14:25'
 #: ../libbrasero-media/brasero-units.c:86
@@ -1967,7 +1960,7 @@ msgstr "%s : %s"
 #: ../libbrasero-media/brasero-units.c:99
 #, c-format
 msgid "%s min"
-msgstr ""
+msgstr "%s a vunutennoù"
 
 #. Translators: the first %s is the number of minutes
 #. * and the second one is the number of seconds.
@@ -1975,7 +1968,7 @@ msgstr ""
 #: ../libbrasero-media/brasero-units.c:104
 #, c-format
 msgid "%s:%s min"
-msgstr ""
+msgstr "%s : %s mn"
 
 #. NOTE for translators, the first %s is the medium name
 #: ../libbrasero-media/brasero-medium-selection.c:155
@@ -2372,12 +2365,12 @@ msgstr "Diuzañ ur skeudenn all, mar plij."
 
 #: ../src/brasero-project-name.c:157
 msgid "Medium Icon"
-msgstr ""
+msgstr "Arlun ar mediom"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-project-name.c:171
 #: ../src/brasero-file-chooser.c:343
-#: ../src/brasero-project.c:2205
+#: ../src/brasero-project.c:2207
 msgctxt "picture"
 msgid "Image files"
 msgstr "Restroù skeudenn"
@@ -2390,115 +2383,115 @@ msgstr "Restroù skeudenn"
 msgid "Video disc (%s)"
 msgstr "Kantennad video (%s)"
 
-#: ../src/brasero-app.c:115
+#: ../src/brasero-app.c:117
 msgid "_Project"
 msgstr "_Raktres"
 
-#: ../src/brasero-app.c:116
+#: ../src/brasero-app.c:118
 msgid "_View"
 msgstr "G_welout"
 
-#: ../src/brasero-app.c:117
+#: ../src/brasero-app.c:119
 msgid "_Edit"
 msgstr "_Embann"
 
-#: ../src/brasero-app.c:118
+#: ../src/brasero-app.c:120
 msgid "_Tools"
 msgstr "_Binvioù"
 
-#: ../src/brasero-app.c:120
+#: ../src/brasero-app.c:122
 msgid "_Help"
 msgstr "S_koazell"
 
-#: ../src/brasero-app.c:122
+#: ../src/brasero-app.c:124
 msgid "P_lugins"
 msgstr "En_lugelladoù"
 
-#: ../src/brasero-app.c:123
+#: ../src/brasero-app.c:125
 msgid "Choose plugins for Brasero"
 msgstr "Dibab enlugelladoù evit Brasero"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:127
 msgid "E_ject"
 msgstr "Kas er-mae_z"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:128
 msgid "Eject a disc"
 msgstr "Disteurel ur gantenn"
 
-#: ../src/brasero-app.c:128
+#: ../src/brasero-app.c:130
 msgid "_Blank…"
 msgstr "_Goullonderiñ..."
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:131
 msgid "Blank a disc"
 msgstr "Goullonderiñ ur gantenn"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:133
 msgid "_Check Integrity…"
 msgstr "_Gwiriañ an anterinder..."
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:134
 msgid "Check data integrity of disc"
 msgstr "Gwiriañ anterinder roadennoù ar gantennad"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:137
 msgid "Quit Brasero"
 msgstr "Kuitaat Brasero"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:139
 msgid "_Contents"
 msgstr "Endal_c'hadoù"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:139
 msgid "Display help"
 msgstr "Skrammañ ar skoazell"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:142
 msgid "About"
 msgstr "Diwar-benn"
 
-#: ../src/brasero-app.c:412
+#: ../src/brasero-app.c:415
 #: ../data/brasero.desktop.in.in.h:4
 msgid "Disc Burner"
 msgstr "Engraverez kantennoù"
 
-#: ../src/brasero-app.c:767
-#: ../src/brasero-app.c:800
-#: ../src/brasero-app.c:1459
+#: ../src/brasero-app.c:770
+#: ../src/brasero-app.c:803
+#: ../src/brasero-app.c:1458
 msgid "Error while loading the project"
 msgstr "Fazi e-pad ma oa o kargañ ar raktres"
 
-#: ../src/brasero-app.c:809
-#: ../src/brasero-app.c:838
-#: ../src/brasero-app.c:902
-#: ../src/brasero-project.c:1265
+#: ../src/brasero-app.c:812
+#: ../src/brasero-app.c:841
+#: ../src/brasero-app.c:901
+#: ../src/brasero-project.c:1267
 msgid "Please add files to the project."
 msgstr "Mar plij, ouzhpennit restroù er raktres."
 
-#: ../src/brasero-app.c:810
-#: ../src/brasero-app.c:839
-#: ../src/brasero-app.c:903
+#: ../src/brasero-app.c:813
+#: ../src/brasero-app.c:842
+#: ../src/brasero-app.c:902
 msgid "The project is empty"
 msgstr "Goullo eo ar raktres"
 
-#: ../src/brasero-app.c:1157
+#: ../src/brasero-app.c:1156
 msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Ur meziant digor eo Brasero ; dasparzhet pe/ha daskemmet e vez dindan termenoù al Lañvaz Foran Hollek GNU evel ma'z eo bet embannet gant Diazezadenn ar Meziantoù Digor ; da lâret eo handelv 2 eus al lañvaz pe (evel ma plij deoc'h) ne vern pe handelv nevesoc'h."
 
-#: ../src/brasero-app.c:1162
+#: ../src/brasero-app.c:1161
 msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Dasparzhet eo Brasero gant ar spi e vo talvoudus met GANT GWARANT EBET ; hep ar gwarant enpleg a-fet TALVOUDEGEZH KENWERZHEL pe VARREGEZH EVIT UR PAL PERSONEL. Taolit ur sell war Lañvaz Foran Hollek GNU evit gouzout hiroc'h."
 
-#: ../src/brasero-app.c:1167
+#: ../src/brasero-app.c:1166
 msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 msgstr "Moarvat hoc'h eus bet un eilad eus al Lañvaz Foran Hollek GNU gant Brasero ; ma n'hoc'h eus ket bet,skrivit da : Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1178
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Un arload da engravañ CD/DVD eeun evit GNOME"
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1195
 msgid "Brasero Homepage"
 msgstr "Pennbajennad Brasero"
 
@@ -2510,31 +2503,32 @@ msgstr "Pennbajennad Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1208
+#: ../src/brasero-app.c:1207
 msgid "translator-credits"
 msgstr ""
 "Alan Monfort <alan.monfort@free.fr>\n"
 "\n"
 "Launchpad Contributions:\n"
 "  Alan https://launchpad.net/~alan-monfort\n"
-"  Breizh https://launchpad.net/~jamybzh-free\n"
-"  Denis https://launchpad.net/~bibar"
+"  Denis https://launchpad.net/~bibar\n"
+"  Luke Yelavich https://launchpad.net/~themuso\n"
+"  michel https://launchpad.net/~mnedeleg"
 
-#: ../src/brasero-app.c:1457
+#: ../src/brasero-app.c:1456
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "Ar raktres \"%s\" n'eus ket anezhañ"
 
-#: ../src/brasero-app.c:1533
-#: ../src/brasero-app.c:1539
+#: ../src/brasero-app.c:1532
+#: ../src/brasero-app.c:1538
 msgid "_Recent Projects"
 msgstr "_Raktresoù nevesañ"
 
-#: ../src/brasero-app.c:1534
+#: ../src/brasero-app.c:1533
 msgid "Display the projects recently opened"
 msgstr "Skrammañ ar raktresoù digoret nevez zo"
 
-#: ../src/brasero-app.c:1886
+#: ../src/brasero-app.c:1887
 #: ../data/brasero.desktop.in.in.h:2
 msgid "Brasero Disc Burner"
 msgstr "Engraverez kantennoù Brasero"
@@ -2574,11 +2568,11 @@ msgstr "Amsaviñ restroù an ereoù arouezel gant o bukennoù"
 
 #: ../data/brasero.schemas.in.h:7
 msgid "Should Nautilus extension output debug statements"
-msgstr ""
+msgstr "Menegiñ a ra mar bez diskouezet stlennoù an diveugañ gant Nautilus"
 
 #: ../data/brasero.schemas.in.h:8
 msgid "Should Nautilus extension output debug statements. The value should be set to true if it should."
-msgstr ""
+msgstr "Menegiñ a ra mar bez diskouezet stlennoù an diveugañ gant Nautilus. Lakaat ar werzh da wir mar bez diskouezet."
 
 #: ../data/brasero.schemas.in.h:9
 msgid "Should brasero filter broken symbolic links"
@@ -2773,14 +2767,17 @@ msgid ""
 "This type of audio CD track provides a higher quality of sound but can only be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
+"Ul lod eus an tonioù diuzet zo dereat evit krouiñ loabroù mod DTS.\n"
+"Gant al loabroù DTS e teu un son kalz gwelloc'h met lennet e vez gant lennerioù niverel arbennik hepken.\n"
+"Notenn : ne vez ket sevenet ar skoueriekadur d'al loabroù mod DTS."
 
 #: ../src/brasero-audio-disc.c:871
 msgid "Create _Regular Tracks"
-msgstr ""
+msgstr "Krouiñ loabroù _reol"
 
 #: ../src/brasero-audio-disc.c:873
 msgid "Click here to burn all songs as regular tracks"
-msgstr ""
+msgstr "Klikañ amañ a-benn engravañ an holl donioù evel loabroù reol"
 
 #: ../src/brasero-audio-disc.c:876
 msgid "Create _DTS Tracks"
@@ -2788,7 +2785,7 @@ msgstr "Krouiñ loabroù _DTS"
 
 #: ../src/brasero-audio-disc.c:878
 msgid "Click here to burn all suitable songs as DTS tracks"
-msgstr ""
+msgstr "Klikañ amañ a-benn engravañ an holl donioù a vez evel loabroù mod DTS"
 
 #: ../src/brasero-audio-disc.c:1301
 msgid "Select one song only please."
@@ -2833,9 +2830,8 @@ msgid "_Fast blanking"
 msgstr "Goullonderiñ _herrek"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:404
-#, fuzzy
 msgid "Activate fast blanking, as opposed to a longer, thorough blanking"
-msgstr "Gweredekaat ar goullonderiñ herrek a-enep un doare goullonderiñ hiroc'h ha resisoc'h"
+msgstr "Gweredekaat an diverkañ herrek a-gevenep d'an diverkañ spis ha hiroc'h"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:434
 msgid "Disc Blanking"
@@ -2848,7 +2844,7 @@ msgstr "Fazi dezrannadur ar roll tonioù \\\"%s\\\"."
 
 #: ../src/brasero-playlist.c:393
 #: ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2575
+#: ../src/brasero-project.c:2577
 #: ../libbrasero-burn/brasero-sum-dialog.c:164
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
@@ -3060,7 +3056,7 @@ msgstr "Kenderc'hel gant ar raktres bremanel daskemmet"
 #: ../src/brasero-data-disc.c:622
 #, c-format
 msgid "There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned"
-msgstr ""
+msgstr "Ur restr nemtken zo bet diuzet (\"%s\"). Lunienn ur gantennad eo hag engravet e c'hell bezañ hec'h endalc'had."
 
 #: ../src/brasero-data-disc.c:627
 msgid "Burn as _Data"
@@ -3109,11 +3105,11 @@ msgstr "_Diweredekaat ar geverlec'hded gant Windows"
 #: ../src/brasero-data-disc.c:784
 #, c-format
 msgid "Do you want to replace \"%s\"?"
-msgstr ""
+msgstr "Ha fellout a ra deoc'h amsaviñ \"%s\" ?"
 
 #: ../src/brasero-data-disc.c:792
 msgid "A file with this name already exists in the folder.  Replacing it will overwrite its content on the disc to be burnt."
-msgstr ""
+msgstr "Ur restr gant an anv-mañ ez eus anezhi endeo en teuliad. Mar bez amsavet e vo flastret hec'h endalc'had war ar gantennad a vo engravet."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3143,7 +3139,7 @@ msgstr "Am_saviñ"
 #. * Replace is a verb
 #: ../src/brasero-data-disc.c:809
 msgid "Al_ways Replace"
-msgstr ""
+msgstr "Amsaviñ _bepred"
 
 #: ../src/brasero-data-disc.c:839
 #: ../libbrasero-burn/brasero-status-dialog.c:273
@@ -3169,14 +3165,14 @@ msgstr ""
 #: ../libbrasero-burn/brasero-status-dialog.c:234
 #: ../libbrasero-burn/brasero-status-dialog.c:295
 msgid "Ne_ver Add Such File"
-msgstr ""
+msgstr "_Morse ouzhpennañ restroù a seurt-se"
 
 #: ../src/brasero-data-disc.c:852
 #: ../src/brasero-data-disc.c:895
 #: ../libbrasero-burn/brasero-status-dialog.c:235
 #: ../libbrasero-burn/brasero-status-dialog.c:296
 msgid "Al_ways Add Such File"
-msgstr ""
+msgstr "Be_pred ouzhpennañ restroù a seurt-se"
 
 #: ../src/brasero-data-disc.c:882
 #: ../libbrasero-burn/brasero-status-dialog.c:212
@@ -3268,12 +3264,12 @@ msgid "Space"
 msgstr "Esaouioù"
 
 #: ../src/brasero-file-chooser.c:325
-#: ../src/brasero-project.c:2185
+#: ../src/brasero-project.c:2187
 msgid "Audio files"
 msgstr "Restroù audio"
 
 #: ../src/brasero-file-chooser.c:333
-#: ../src/brasero-project.c:2194
+#: ../src/brasero-project.c:2196
 msgid "Movies"
 msgstr "Filmoù"
 
@@ -3385,7 +3381,7 @@ msgstr "_Dilemel ar restroù"
 
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:201
-#: ../src/brasero-project.c:2267
+#: ../src/brasero-project.c:2269
 msgid "E_mpty Project"
 msgstr "_Goullonderiñ ar raktres"
 
@@ -3395,7 +3391,7 @@ msgstr "Dilemel an holl restroù diouzh ar raktres"
 
 #. burn button set insensitive since there are no files in the selection
 #: ../src/brasero-project.c:203
-#: ../src/brasero-project.c:1074
+#: ../src/brasero-project.c:1076
 msgid "_Burn…"
 msgstr "E_ngravañ..."
 
@@ -3403,171 +3399,167 @@ msgstr "E_ngravañ..."
 msgid "Burn the disc"
 msgstr "Engravañ war ar gantenn"
 
-#: ../src/brasero-project.c:684
-msgid "To add files to this project click the \"Add\" button or drag files to this area"
-msgstr ""
-
 #: ../src/brasero-project.c:686
+msgid "To add files to this project click the \"Add\" button or drag files to this area"
+msgstr "A-benn ouzhpennañ restroù d'ar raktres-mañ, klikañ war \"Ouzhpennañ\" pe riklañ ar restroù betek ar maez-mañ"
+
+#: ../src/brasero-project.c:688
 msgid "To remove files select them then click on the \"Remove\" button or press \"Delete\" key"
-msgstr ""
+msgstr "A-benn dilemel restroù, diuzit i ha klikit war \"Dilemel\" pe bouezit war ar stokell \"Diverkañ\""
 
-#: ../src/brasero-project.c:793
-#, fuzzy, c-format
+#: ../src/brasero-project.c:795
+#, c-format
 msgid "Estimated project size: %s"
-msgstr "Ment priziet : %s"
+msgstr "Ment priziet ar raktres : %s"
 
-#: ../src/brasero-project.c:939
-#: ../src/brasero-project.c:955
+#: ../src/brasero-project.c:941
+#: ../src/brasero-project.c:957
 msgid "The project is too large for the disc even with the overburn option."
-msgstr "Re vras eo ment ar raktres evit ur gantenn gant an dibarzh 'oberburn' zoken."
+msgstr "Re vras eo ment ar raktres evit ur gantenn gant an dibarzh 'overburn' zoken."
 
-#: ../src/brasero-project.c:966
+#: ../src/brasero-project.c:968
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognized and therefore needs the overburn option.\n"
 "Note: This option might cause failure."
 msgstr ""
 "Re vras eo ment ar raktres-mañ evit ar gantenn ha ret eo deoc'h dilemel restroù diouzh ar raktres neuze.\n"
-"Marteze e fello deco'h ober gant an dibarzh-mañ mard emaocc'h oc'h arverañ ur CD-R(W) 90 pe 100 mun nad int ket anavezet mat hag ezhomm o deus dibarzh an engravañ dreisti (overburn).\n"
+"Marteze e fello deoc'h ober gant an dibarzh-mañ mard emaoc'h oc'h arverañ ur CD-R(W) 90 pe 100 mun nad int ket anavezet mat hag ezhomm o deus dibarzh an engravañ dreisti (overburn).\n"
 "NOTENN : Gant an dibarzh-mañ e tegouezh c'hwitadennoù."
 
-#: ../src/brasero-project.c:1086
+#: ../src/brasero-project.c:1088
 msgid "Start to burn the contents of the selection"
 msgstr "Kregiñ gant engravañ an diuzad"
 
-#: ../src/brasero-project.c:1256
+#: ../src/brasero-project.c:1258
 msgid "Please add songs to the project."
 msgstr "Mar plij, ouzhpennit kanaouennoù er raktres."
 
-#: ../src/brasero-project.c:1864
+#: ../src/brasero-project.c:1866
 msgid "Do you really want to create a new project and discard the changes to current one?"
 msgstr "Ha fellout a ra deoc'h krouiñ ur raktres nevez ha dilezel ar c'hemmoù en hini bremanel ?"
 
-#: ../src/brasero-project.c:1869
+#: ../src/brasero-project.c:1871
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr "Mar bez krouet ur raktres nevez ganeoc'h e vo kollet an holl gemmoù graet."
 
-#: ../src/brasero-project.c:1872
+#: ../src/brasero-project.c:1874
 msgid "_Discard Changes"
 msgstr "_Dilezel ar c'hemmoù"
 
-#: ../src/brasero-project.c:1880
-#, fuzzy
+#: ../src/brasero-project.c:1882
 msgid "Do you want to discard the file selection or add it to the new project?"
-msgstr "Ha fellout a ra deoc'h engravañ \"%s\" war ur gantenn pe hec'h ouzhpennañ en ur raktres dre roadennoù ?"
-
-#: ../src/brasero-project.c:1885
-#: ../src/brasero-project.c:1904
-#, fuzzy
-msgid "If you choose to create a new empty project, the file selection will be discarded."
-msgstr "Mar bez krouet ur raktres nevez ganeoc'h e vo kollet an holl gemmoù graet."
+msgstr "Ha fellout a ra deoc'h tennañ kuit an diuzad restroù pe e ouzhpennañ d'ar raktres nevez ?"
 
 #: ../src/brasero-project.c:1887
-#, fuzzy
+#: ../src/brasero-project.c:1906
+msgid "If you choose to create a new empty project, the file selection will be discarded."
+msgstr "Mar bez divizet ganeoc'h krouiñ ur raktres goullo nevez e vo tennet kuit an diuzad restroù."
+
+#: ../src/brasero-project.c:1889
 msgid "_Discard File Selection"
-msgstr "_Dilezel ar restr"
+msgstr "_Tennañ kuit an diuzad restroù"
 
-#: ../src/brasero-project.c:1891
-#, fuzzy
+#: ../src/brasero-project.c:1893
 msgid "_Keep File Selection"
-msgstr "_Mirout al lec'hiadur bremanel"
+msgstr "_Mirout an diuzad restroù"
 
-#: ../src/brasero-project.c:1899
+#: ../src/brasero-project.c:1901
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Ha fellout a ra deoc'h krouiñ ur raktres nevez ha dilezel an hini bremanel ?"
 
-#: ../src/brasero-project.c:1906
+#: ../src/brasero-project.c:1908
 msgid "_Discard Project"
 msgstr "_Dilezel ar raktres"
 
-#: ../src/brasero-project.c:2143
+#: ../src/brasero-project.c:2145
 msgid "Select Files"
 msgstr "Diuzañ restroù"
 
-#: ../src/brasero-project.c:2256
+#: ../src/brasero-project.c:2258
 msgid "Do you really want to empty the current project?"
 msgstr "Ha fellout a ra deoc'h goullonderiñ ar raktres bremanel ?"
 
-#: ../src/brasero-project.c:2261
+#: ../src/brasero-project.c:2263
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Mar bez goullonderet ur raktres ganeoc'h e vo dilamet an holl restroù bet ouzhpennet a-raok. Notennit ne vo ket diverket ar restroù diwar ho lec'h, ne vint ket war ar roll hepken."
 
-#: ../src/brasero-project.c:2318
+#: ../src/brasero-project.c:2320
 msgid "_Save"
 msgstr "_Enrollañ"
 
-#: ../src/brasero-project.c:2329
+#: ../src/brasero-project.c:2331
 msgid "_Add"
 msgstr "Ouzhpenn_añ"
 
-#: ../src/brasero-project.c:2334
+#: ../src/brasero-project.c:2336
 #: ../src/brasero-split-dialog.c:1252
 msgid "_Remove"
 msgstr "_Dilemel"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2398
+#: ../src/brasero-project.c:2400
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero - %s (Kantennad roadennoù)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2401
+#: ../src/brasero-project.c:2403
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero - %s (Kantennad audio)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2404
+#: ../src/brasero-project.c:2406
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero - %s (Kantennad video)"
 
-#: ../src/brasero-project.c:2574
-#: ../src/brasero-project.c:2890
+#: ../src/brasero-project.c:2576
+#: ../src/brasero-project.c:2892
 msgid "Your project has not been saved."
 msgstr "N'eo ket bet enrollet ho raktres."
 
-#: ../src/brasero-project.c:2588
+#: ../src/brasero-project.c:2590
 msgid "Save the changes of current project before closing?"
 msgstr "Enrollañ ar c'hemmoù war ar raktres bremanel kent serriñ ?"
 
-#: ../src/brasero-project.c:2593
-#: ../src/brasero-project.c:2895
+#: ../src/brasero-project.c:2595
+#: ../src/brasero-project.c:2897
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Ma ne enrollot ket e vo kollet ar c'hemmoù da vat."
 
-#: ../src/brasero-project.c:2597
-#: ../src/brasero-project.c:2603
-#: ../src/brasero-project.c:2898
+#: ../src/brasero-project.c:2599
+#: ../src/brasero-project.c:2605
+#: ../src/brasero-project.c:2900
 msgid "Cl_ose Without Saving"
 msgstr "Serriñ hep enr_ollañ"
 
-#: ../src/brasero-project.c:2698
+#: ../src/brasero-project.c:2700
 msgid "Save Current Project"
 msgstr "Enrollañ ar raktres bremanel"
 
-#: ../src/brasero-project.c:2716
+#: ../src/brasero-project.c:2718
 msgid "Save project as a Brasero audio project"
 msgstr "Enrollañ ar raktres evel ur raktres audio eus Brasero"
 
-#: ../src/brasero-project.c:2717
+#: ../src/brasero-project.c:2719
 msgid "Save project as a plain text list"
 msgstr "Enrollañ ar raktres evel ur roll testenn eeun"
 
-#: ../src/brasero-project.c:2721
+#: ../src/brasero-project.c:2723
 msgid "Save project as a PLS playlist"
 msgstr "Enrollañ ar raktres evel ur roll tonioù mod PLS"
 
-#: ../src/brasero-project.c:2722
+#: ../src/brasero-project.c:2724
 msgid "Save project as an M3U playlist"
 msgstr "Enrollañ ar raktres evel ur roll tonioù mod M3U"
 
-#: ../src/brasero-project.c:2723
+#: ../src/brasero-project.c:2725
 msgid "Save project as an XSPF playlist"
 msgstr "Enrollañ ar raktres evel ur roll tonioù mod XSPF"
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2726
 msgid "Save project as an iriver playlist"
 msgstr "Enrollañ ar raktres evel ur roll tonioù mod M3U"
 
@@ -3702,9 +3694,8 @@ msgid "Brasero — New Video Disc Project"
 msgstr "Brasero - Raktres ur gantennad video nevez"
 
 #: ../src/brasero-project-manager.c:630
-#, fuzzy
 msgid "Brasero — New Image File"
-msgstr "Brasero - Restr skeudenn nevez"
+msgstr "Brasero — Lunienn restroù nevez"
 
 #: ../src/brasero-project-manager.c:645
 msgid "Brasero — Disc Copy"
@@ -3860,7 +3851,7 @@ msgstr "Priziadur ar vent"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:568
 msgid "Please wait until the estimation of the size is completed."
-msgstr ""
+msgstr "Gortozit mar plij betek ma vo peurechuet priziadur ar vent."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:569
 msgid "All files need to be analysed to complete this operation."
@@ -3913,9 +3904,8 @@ msgid "PLAYLIST"
 msgstr "ROLL TONIOÙ"
 
 #: ../src/main.c:122
-#, fuzzy
 msgid "Set the drive to be used for burning"
-msgstr "Klikañ amañ a-benn na arverañ an overburning"
+msgstr "Arventennañ al lenner a vo arveret evit engravañ"
 
 #: ../src/main.c:123
 msgid "DEVICE PATH"
@@ -3923,7 +3913,7 @@ msgstr "TREUG AN DROBARZHELL"
 
 #: ../src/main.c:126
 msgid "Create an image file instead of burning"
-msgstr ""
+msgstr "Krouiñ ul lunienn kentoc'h eget engravañ"
 
 #: ../src/main.c:130
 msgid "Open an audio project adding the URIs given on the command line"
@@ -3960,9 +3950,8 @@ msgid "URI of an image file to burn (autodetected)"
 msgstr "URI ur restr lunienn da engravañ (emzinoet)"
 
 #: ../src/main.c:151
-#, fuzzy
 msgid "PATH TO IMAGE"
-msgstr "TREUG DAVIT AN DROBARZHELL"
+msgstr "TREUG DAVIT AL LUNIENN"
 
 #: ../src/main.c:154
 msgid "Force brasero to display the project selection page"
@@ -3981,19 +3970,16 @@ msgid "Burn the contents of burn:// URI"
 msgstr "Engravañ endalc'hadoù an engravadur://URI"
 
 #: ../src/main.c:170
-#, fuzzy
 msgid "Start burning immediately."
-msgstr "Heuliad da engravañ Cdrkit"
+msgstr "Erounit an engravadur diouzhtu."
 
 #: ../src/main.c:174
-#, fuzzy
 msgid ""
 "Burn the specified project and remove it.\n"
 "This option is mainly useful for integration with other applications."
 msgstr ""
-"Engravañ ar raktres erspizet ha DILEMEL eñ.\\n"
-"\n"
-"Talvoudus eo an dibarzh-mañ evit un arver enframmañ e arloadoù all."
+"Engravañ ar raktres erspizet ha dilamit eñ.\n"
+"Talvoudus eo an dibarzh-mañ evit an enkorfadur gant arloadoù dreist-holl."
 
 #: ../src/main.c:175
 msgid "PATH"
@@ -4010,9 +3996,9 @@ msgstr "XID ar prenestr kar"
 
 #. Translators: %s is the path of drive
 #: ../src/main.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot write."
-msgstr "\"%s\" n'hall ket bezañ lennet"
+msgstr "\"%s\" n'hall ket engravañ."
 
 #: ../src/main.c:242
 #: ../src/main.c:256
@@ -4032,9 +4018,9 @@ msgid "[URI] [URI] …"
 msgstr "[URI] [URI] ..."
 
 #: ../src/main.c:478
-#, fuzzy, c-format
+#, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
-msgstr "Biziata skoazell %s a-benn gwelout an dibarzhioù hegerz\n"
+msgstr "Mar plij, biziatait \"%s --help\" evit gwelout an holl zibarzhioù hegerz\n"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:191
 #: ../plugins/checksum/burn-checksum-image.c:125
@@ -4056,7 +4042,7 @@ msgstr "N'haller ket skrivañ ar roadennoù (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:722
 msgid "Generates .cue files from audio"
-msgstr ""
+msgstr "Genel a ra restroù mod .cue diouzh un tarzh aodio"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:57
 msgid "cdrdao burning suite"
@@ -4092,12 +4078,11 @@ msgstr "Emdroadur restroù mod toc"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:699
 msgid "Copies, burns and blanks CDs"
-msgstr ""
+msgstr "Eilañ a ra, engravañ ha diverkañ kantennadoù"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:764
-#, fuzzy
 msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
-msgstr "Gweredekaat baniell \"--driver generic-mmc-raw\" (gwelout dornlevr cdrdao)"
+msgstr "Gweredekaat an dibarzh \"--driver generic-mmc-raw\" (gwelout dornlevr cdrdao)"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:121
 #: ../plugins/cdrtools/burn-mkisofs.c:122
@@ -4141,9 +4126,8 @@ msgstr "N'eus tamm plas ebet war an drobarzhell"
 #: ../plugins/cdrkit/burn-genisoimage.c:529
 #: ../plugins/cdrtools/burn-mkisofs.c:533
 #: ../plugins/libburnia/burn-libisofs.c:1045
-#, fuzzy
 msgid "Creates disc images from a file selection"
-msgstr "Arverañ mkisoft da grouiñ ul lunienn diouzh un diuzad restroù"
+msgstr "Krouiñ a ra luniennoù ur gantennad diouzh un diuzad restroù"
 
 #: ../plugins/cdrkit/burn-readom.c:136
 #: ../plugins/cdrtools/burn-readcd.c:137
@@ -4153,9 +4137,8 @@ msgstr "Al lec'h hoc'h eus dibabet evit kadaviñ al luniennoù n'en deus ket pla
 
 #: ../plugins/cdrkit/burn-readom.c:449
 #: ../plugins/cdrtools/burn-readcd.c:459
-#, fuzzy
 msgid "Copies any disc to a disc image"
-msgstr "Arverañ readcd da grouiñ luniennoù kantennadoù"
+msgstr "Eilañ a ra ne vern pe gantenn e lunienn ur gantennad"
 
 #: ../plugins/cdrkit/burn-wodim.c:123
 #, c-format
@@ -4192,9 +4175,8 @@ msgid "The disc needs to be reloaded before being recorded"
 msgstr "Ret eo d'ar gantennad bezañ adkarget kent bezañ enrollet"
 
 #: ../plugins/cdrkit/burn-wodim.c:1258
-#, fuzzy
 msgid "Burns, blanks and formats CDs and DVDs"
-msgstr "Krouiñ hag eilañ CDoù ha DVDoù"
+msgstr "Engravañ a ra, diverkañ ha mentrezhañ CDoù ha DVDoù"
 
 #: ../plugins/cdrkit/burn-wodim.c:1402
 msgid "Enable the \"-immed\" flag (see wodim manual)"
@@ -4214,20 +4196,20 @@ msgstr "Degouezhet ez eus bet ur fazi e-pad ma oa o skrivañ war ar gantenn"
 #: ../plugins/cdrtools/burn-cdrecord.c:1191
 #: ../plugins/libburnia/burn-libburn.c:973
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
-msgstr ""
+msgstr "Engravañ a ra, diverkañ ha mentrezhañ CDoù ha DVDoù ha BDoù"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1404
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Gweredekaat banniel \\\"-immed\\\" (gwelout dornlevr cdrecord)"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1407
-#, fuzzy, c-format
+#, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
-msgstr "Feur leuniañ uc'hek evit skurzher an drobarzhell (e %%) (gwelout kerzhlevr cdrecord) :"
+msgstr "Keñver leuniañ izek skurzher al lenner (e %%) (gwelout dornlevr cdrecord) :"
 
 #: ../plugins/cdrtools/burn-mkisofs.c:141
 msgid "This version of mkisofs is not supported"
-msgstr "N'eo ket skoret an handelv-mañ eus mkisoft"
+msgstr "N'eo ket skoret an handelv-mañ eus mkisofs"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:278
 #, c-format
@@ -4256,17 +4238,16 @@ msgstr "Eiladur an DVDad video"
 
 #. Translators: image is not a picture but a disc image
 #: ../plugins/dvdcss/burn-dvdcss.c:677
-#, fuzzy
 msgid "Copies css encrypted Video DVDs to a disc image"
-msgstr "Klikañ amañ da ziuzañ ul _lunienn"
+msgstr "Eilañ a ra an DVDoù video enrineget gant CSS e lunienn ur gantennad"
 
 #: ../plugins/growisofs/burn-dvd-rw-format.c:189
 msgid "Blanks and formats rewritable DVDs and BDs"
-msgstr ""
+msgstr "Diverkañ a ra ha mentrezhañ DVDoù ha BDoù adskrivadus"
 
 #: ../plugins/growisofs/burn-growisofs.c:748
 msgid "Burns and blanks DVDs and BDs"
-msgstr ""
+msgstr "Engravañ a ra ha diverkañ DVDoù ha BDoù"
 
 #: ../plugins/growisofs/burn-growisofs.c:921
 msgid "Allow DAO use"
@@ -4423,9 +4404,8 @@ msgid "Transcoding \"%s\""
 msgstr "Treuzvonegadur \"%s\""
 
 #: ../plugins/transcode/burn-transcode.c:1768
-#, fuzzy
 msgid "Converts any song file into a format suitable for audio CDs"
-msgstr "Vob a ro tro da dreuzvonegañ ne vern pe restroù video d'ur mentrezh dereat evit DVDoù video"
+msgstr "Amdreiñ a ra ne vern pe donioù d'ur mentrezh dereat evit ar CDoù aodio"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -4811,7 +4791,7 @@ msgstr "Niver a restroù hervez ur goustur"
 
 #: ../src/brasero-rename.c:324
 msgid "Insert number sequence at beginning"
-msgstr ""
+msgstr "Ensoc'hañ un niverennadur en derou"
 
 #. Translators: This is a verb. This is completed later
 #: ../src/brasero-rename.c:339
@@ -4889,9 +4869,8 @@ msgid "Creating file layout"
 msgstr "Krouadur un aozadur restroù"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:373
-#, fuzzy
 msgid "Creates disc images suitable for Video DVDs"
-msgstr "Skrivañ lunienn ar gantennad war ur CD pe un DVD"
+msgstr "Krouiñ a ra luniennoù kantennad dereat evit an DVDoù video"
 
 #: ../plugins/transcode/burn-vob.c:1270
 msgid "Converting video file to MPEG2"
@@ -4907,7 +4886,7 @@ msgstr "Skrivañ lunienn ar gantennad war ur CD pe un DVD"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Brasero Disc Copier"
-msgstr ""
+msgstr "Arload da eilañ Brasero"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:3
 msgid "Copy CDs and DVDs"
@@ -4917,6 +4896,26 @@ msgstr "Eilañ CDoù ha DVDoù"
 msgid "Disc Copier"
 msgstr "Eilerez kantennoù"
 
+#~ msgid "_Open..."
+#~ msgstr "_Digeriñ..."
+#~ msgid "_Options..."
+#~ msgstr "_Dibarzhioù..."
+#~ msgid "_Write to Disc..."
+#~ msgstr "_Skrivañ war ar gantenn..."
+#~ msgid "_Blank Disc..."
+#~ msgstr "Kantenn werc'h..."
+#~ msgid "Such a disc cannot be copied without the proper plugins."
+#~ msgstr "Ur gantennad evel homañ ne vez ket eilet hep an enlugelladoù dereat."
+#~ msgid "Layout of UI"
+#~ msgstr "Aozadur ar c'hetal"
+#~ msgid "Width for image preview"
+#~ msgstr "Led evit alberz al lunienn"
+#~ msgid "Width for video preview"
+#~ msgstr "Led evit alberz ar video"
+#~ msgid "_Split Track..."
+#~ msgstr "_Troc'hañ ul loabr..."
+#~ msgid "CD/DVD Copy Options"
+#~ msgstr "Dibarzhioù eilañ ar CD/DVD"
 #~ msgid "Brasero - Creating Image"
 #~ msgstr "Brasero - Krouadur al lunienn"
 #~ msgid "Brasero - Burning DVD (Simulation)"
@@ -4931,41 +4930,44 @@ msgstr "Eilerez kantennoù"
 #~ msgstr "Brasero - Eiladur un DVD"
 #~ msgid "Brasero - Burning CD (Simulation)"
 #~ msgstr "Brasero - Eiladur ur CD (Darvanañ)"
-#~ msgid "Brasero - Burning CD"
-#~ msgstr "Brasero - Engravadur war ur CD"
 #~ msgid "Brasero - Copying CD (Simulation)"
 #~ msgstr "Brasero - Eiladur ur CD (Darvanañ)"
 #~ msgid "Brasero - Copying CD"
 #~ msgstr "Brasero - Eiladur ur CD"
 #~ msgid "Brasero - Burning disc (Simulation)"
 #~ msgstr "Brasero - Engravadur ur gantennad (Darvanañ)"
-#~ msgid "Brasero - Burning disc"
-#~ msgstr "Brasero - Engravadur ur gantennad"
-#~ msgid "Brasero - Burning Disc (Simulation)"
-#~ msgstr "Brasero - Engravadur ur gantennad (Darvanañ)"
-#~ msgid "Brasero - Burning Disc"
-#~ msgstr "Brasero - Engravadur ur gantennad"
 #~ msgid "Brasero - Copying Disc (Simulation)"
 #~ msgstr "Brasero - Eiladur ur gantennad (Darvanañ)"
 #~ msgid "Brasero - Copying Disc"
 #~ msgstr "Brasero - Eiladur ur gantennad"
-#~ msgid "Appending new files to a multisession disc is not advised."
-#~ msgstr ""
-#~ "N'eo ket kuzuliet ouzhpennañ restroù nevez war ur gantennad liesestez."
+
+#, c-format
 #~ msgid "Brasero - Creating Image (%i%% Done)"
 #~ msgstr "Brasero - Krouadur al lunienn (%i%% graet)"
+
+#, c-format
 #~ msgid "Brasero - Copying DVD (%i%% Done)"
 #~ msgstr "Brasero - Eiladur an DVD (%i%% graet)"
+
+#, c-format
 #~ msgid "Brasero - Burning DVD (%i%% Done)"
 #~ msgstr "Brasero - Engravadur an DVD (%i%% graet)"
+
+#, c-format
 #~ msgid "Brasero - Copying CD (%i%% Done)"
 #~ msgstr "Brasero - Eiladur ar CD (%i%% graet)"
 #~ msgid "Brasero - Burning CD (simulation)"
 #~ msgstr "Brasero - Engravadur ar CD (darvanadur)"
+
+#, c-format
 #~ msgid "Brasero - Burning CD (%i%% Done)"
 #~ msgstr "Brasero - Engravadur ar CD (%i%% graet)"
+
+#, c-format
 #~ msgid "Brasero - Copying Disc (%i%% Done)"
 #~ msgstr "Brasero - Eiladur ar gantennad (%i%% graet)"
+
+#, c-format
 #~ msgid "Brasero - Burning Disc (%i%% Done)"
 #~ msgstr "Brasero - Engravadur ar gantennad (%i%% graet)"
 #~ msgid "Session Log"
@@ -4974,39 +4976,20 @@ msgstr "Eilerez kantennoù"
 #~ msgstr "Kerzhlevr an estez n'hall ket bezañ skrammet"
 #~ msgid "The log file could not be found"
 #~ msgstr "Kerzhlevr an estez n'hall ket bezañ kavet"
-#~ msgid ""
-#~ "This is a excerpt from the session log (the last 10 MiB):\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Un nemedenn diwar kerzhlevr an estez (ar re 10 Me diwezhañ) eo homañ :"
-#~ "\\n\n"
-#~ "\\n\n"
-#~ "\n"
 #~ msgid "_View Log"
 #~ msgstr "_Gwelout ar c'herzhlevr"
-#~ msgid "There is no recordable disc inserted."
-#~ msgstr "N'eus ket ur gantenn skrivus bet enlakaet."
-#~ msgid "Such a disc cannot be copied without the proper plugins."
-#~ msgstr ""
-#~ "Ur gantennad evel homañ ne vez ket eilet hep an enlugelladoù dereat."
-#~ msgid "It is not possible to write with the current set of plugins."
-#~ msgstr "N'eus ket tro da skrivañ gant ar spletad enlugelladoù bremanel."
-#~ msgid "The drive cannot burn or the disc cannot be burned"
-#~ msgstr ""
-#~ "An drobarzhell n'hall ket engravañ pe ar gantenn n'hall ket bezañ skrivet "
-#~ "warni"
+#~ msgid "R_ename..."
+#~ msgstr "Ad_envel..."
+#~ msgid "_Burn..."
+#~ msgstr "_Engravañ..."
 #~ msgid "_Eject after burning"
 #~ msgstr "_Disteurel goude an engravañ"
-#~ msgid "_Show errors"
-#~ msgstr "_Diskouez ar fazioù"
-#~ msgid "Close this notification window"
-#~ msgstr "Serriñ ar prenestr rebuziñ-mañ"
-#~ msgid "_Write to Disc..."
-#~ msgstr "_Skrivañ war ar gantenn..."
-#~ msgid "_Blank Disc..."
-#~ msgstr "Kantenn werc'h..."
-#~ msgid "_Blank..."
-#~ msgstr "_Goullonderiñ..."
+#~ msgid "Use vcdimager to create SVCDs"
+#~ msgstr "Ober gant vcdimager a-benn krouiñ SVCDoù"
+#~ msgid "There is no recordable disc inserted."
+#~ msgstr "N'eus ket ur gantenn skrivus bet enlakaet."
+#~ msgid "It is not possible to write with the current set of plugins."
+#~ msgstr "N'eus ket tro da skrivañ gant ar spletad enlugelladoù bremanel."
 #~ msgid "Default height for image preview."
 #~ msgstr "Sav dre ziouer evit alberz ar skeudenn"
 #~ msgid "Default height for video preview."
@@ -5021,108 +5004,28 @@ msgstr "Eilerez kantennoù"
 #~ msgstr "Sav evit alberz ar video"
 #~ msgid "Height of image preview"
 #~ msgstr "Sav evit alberz ar skeudenn"
-#~ msgid "Layout of UI"
-#~ msgstr "Aozadur ar c'hetal"
-#~ msgid "Pane to display audio projects"
-#~ msgstr "Panell da skrammañ raktresoù audio"
-#~ msgid "Pane to display data projects"
-#~ msgstr "Panell da skrammañ raktresoù gant roadennoù"
-#~ msgid "Pane to display video projects"
-#~ msgstr "Panell da skrammañ raktresoù video"
 #~ msgid "Should brasero notify when files are filtered"
 #~ msgstr "Brasero a ranko menegiñ pa vez silet ar restroù"
 #~ msgid ""
 #~ "Should brasero notify when files are filtered. Set to true, brasero will "
 #~ "display the notification."
 #~ msgstr ""
-#~ "Brasero a ranko menegiñ pa vezo silet ar restroù. Mar gwir e vo skrammet "
-#~ "ar venegadenn gant Brasero."
-#~ msgid ""
-#~ "The pane to display with audio projects. It should be one of the "
-#~ "following: \"Chooser\", \"Search\" or \"Playlist\"."
-#~ msgstr ""
-#~ "Ar banell da skrammañ gant ar raktresoù audio. Unan eus ar re-se e tlefe "
-#~ "bezañ : \\\"Dibaber\\\", \\\"Klask\\\" pe \\\"Roll tonioù\\\"."
-#~ msgid ""
-#~ "The pane to display with data projects. It should be one of the "
-#~ "following: \"Chooser\" or \"Search\"."
-#~ msgstr ""
-#~ "Ar banell da skrammañ gant ar raktresoù evit roadennoù. Unan eus ar re-se "
-#~ "e tlefe bezañ : \\\"Dibaber\\\" pe \\\"Klask\\\"."
-#~ msgid ""
-#~ "The pane to display with video projects. It should be one of the "
-#~ "following: \"Chooser\", \"Search\" or \"Playlist\"."
-#~ msgstr ""
-#~ "Ar banell da skrammañ gant ar raktresoù video. Unan eus ar re-se e tlefe "
-#~ "bezañ : \\\"Dibaber\\\", \\\"Klask\\\" pe \\\"Roll tonioù\\\"."
-#~ msgid ""
-#~ "This key sets where the project pane should be (0 = on the right, 1 = on "
-#~ "the left, 2 = at the top, 3 = at the bottom)"
-#~ msgstr ""
-#~ "Arventennañ a ra an alc'hwez-mañ pelec'h e vo panell ar raktres (0 = war "
-#~ "an tu dehou, 1 = war an tu kleiz, 2 = e krec'h, 3 = d'an traoñ)"
-#~ msgid "Whether to display a side pane. Set to true to use it."
-#~ msgstr "Mar bez skrammet ur banell du. Lakaat da wir a-benn hec'h arverañ."
-#~ msgid "Width for image preview"
-#~ msgstr "Led evit alberz al lunienn"
-#~ msgid "Width for video preview"
-#~ msgstr "Led evit alberz ar video"
-#~ msgid "_Split Track..."
-#~ msgstr "_Troc'hañ ul loabr..."
-#~ msgid "R_ename..."
-#~ msgstr "Ad_envel..."
-#~ msgid "_Burn..."
-#~ msgstr "_Engravañ..."
-#~ msgid "To add files to this project you can:"
-#~ msgstr "A-benn ouzhpennañ restroù er raktres-se e vez :"
-#~ msgid "click the \"Add\" button to show a selection dialog"
-#~ msgstr ""
-#~ "kliket war an afell \\\"Ouzhpennañ\\\" da ziskouez ur voestad emziviz "
-#~ "diuzañ"
-#~ msgid "select files in the selection pane and click the \"Add\" button"
-#~ msgstr ""
-#~ "diuzet restroù war ar banell da ziuzañ ha klikañ war an afell \"Ouzhpennañ"
-#~ "\""
-#~ msgid ""
-#~ "drag files in this area from the selection pane or from the file manager"
-#~ msgstr ""
-#~ "riklet restroù war ar maez-se diwar ar banell da ziuzañ pe diwar an "
-#~ "ardoer restroù"
-#~ msgid "double click on files in the selection pane"
-#~ msgstr "daouglikañ war ar restroù war ar banell da ziuzañ"
-#~ msgid "copy files (from file manager for example) and paste in this area"
-#~ msgstr ""
-#~ "eilet restroù (diwar an ardoer restroù da skouer) hag o fegañ war ar maez-"
-#~ "se"
-#~ msgid "To remove files from this project you can:"
-#~ msgstr "A-benn dilemel restroù diouzh ar raktres-se e vez :"
-#~ msgid "click on the \"Remove\" button to remove selected items in this area"
-#~ msgstr ""
-#~ "kliket war an afell \"Dilemel\" da zilemel an elfennoù diuzet er maez-se"
-#~ msgid "select items in this area, and choose \"Remove\" from context menu"
-#~ msgstr ""
-#~ "diuzet elfennoù er maez-se ha dibabet \\\"Dilemel\\\" diwar al lañser "
-#~ "kemperzhel"
-#~ msgid "select items in this area, and press \"Delete\" key"
-#~ msgstr "diuzet elfennoù er maez-se ha pouezet war ar stokell \"Diverkañ\""
+#~ "Brasero a ranko menegiñ pa vezo silet ar restroù. Mar gwir e vo skrammet ar "
+#~ "venegadenn gant Brasero."
+#~ msgid "Brasero - Burning CD"
+#~ msgstr "Brasero - Engravadur war ur CD"
+#~ msgid "Brasero - Burning disc"
+#~ msgstr "Brasero - Engravadur ur gantennad"
+#~ msgid "Brasero - Burning Disc (Simulation)"
+#~ msgstr "Brasero - Engravadur ur gantennad (Darvanañ)"
+#~ msgid "Brasero - Burning Disc"
+#~ msgstr "Brasero - Engravadur ur gantennad"
+
+#, c-format
 #~ msgid "Project estimated size: %s"
 #~ msgstr "Ment priziet ar raktres : %s"
-#~ msgid ""
-#~ "If you choose to create a new project, all files already added will be "
-#~ "discarded. Note that files will not be deleted from their own location, "
-#~ "just no longer listed here."
-#~ msgstr ""
-#~ "Mar bez krouet ur raktres nevez ganeoc'h e vo dilezet an holl restroù "
-#~ "ouzhpennet. Notennit ne vo ket diverket ar restroù diwar ho lec'h, ne "
-#~ "vint ket war ar roll hepken."
 #~ msgid "Save project as an IRIVER playlist"
 #~ msgstr "Enrollañ ar raktres evel ur roll tonioù mod IRIVER"
-#~ msgid "_Open..."
-#~ msgstr "_Digeriñ..."
-#~ msgid "PATH TO PLAYLIST"
-#~ msgstr "TREUG ER ROLL TONIOÙ"
-#~ msgid "Your version of cdrdao does not seem to be supported by libbrasero"
-#~ msgstr "Ho handelv eus cdrdao n'hañval ket bezañ skoret gant libbrasero"
 #~ msgid "Use cdrdao to copy and burn CDs"
 #~ msgstr "Arverañ cdrdao a-benn eilañ hag engravañ CDoù"
 #~ msgid "Toc2cue converts .toc files into .cue files"
@@ -5135,118 +5038,130 @@ msgstr "Eilerez kantennoù"
 #~ msgstr "Arverañ wodim da engravañ CDoù ha DVDoù"
 #~ msgid "Use cdrecord to burn CDs and DVDs"
 #~ msgstr "Arverañ cdrecord da engravañ CDoù ha DVDoù"
-#~ msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
-#~ msgstr "DVD enrineget : staliit libdvdcss, handelv 1.2.x"
+#~ msgid "_Show errors"
+#~ msgstr "_Diskouez ar fazioù"
+#~ msgid "Use dvdauthor to create Video DVDs"
+#~ msgstr "Arverañ dvdauthor da grouiñ DVDoù video"
+#~ msgid "Whether to display a side pane. Set to true to use it."
+#~ msgstr "Mar bez skrammet ur banell du. Lakaat da wir a-benn hec'h arverañ."
+#~ msgid ""
+#~ "The pane to display with data projects. It should be one of the following: "
+#~ "\"Chooser\" or \"Search\"."
+#~ msgstr ""
+#~ "Ar banell da skrammañ gant ar raktresoù evit roadennoù. Unan eus ar re-se e "
+#~ "tlefe bezañ : \\\"Dibaber\\\" pe \\\"Klask\\\"."
+#~ msgid ""
+#~ "This key sets where the project pane should be (0 = on the right, 1 = on the "
+#~ "left, 2 = at the top, 3 = at the bottom)"
+#~ msgstr ""
+#~ "Arventennañ a ra an alc'hwez-mañ pelec'h e vo panell ar raktres (0 = war an "
+#~ "tu dehou, 1 = war an tu kleiz, 2 = e krec'h, 3 = d'an traoñ)"
+#~ msgid "Appending new files to a multisession disc is not advised."
+#~ msgstr ""
+#~ "N'eo ket kuzuliet ouzhpennañ restroù nevez war ur gantennad liesestez."
+#~ msgid ""
+#~ "This is a excerpt from the session log (the last 10 MiB):\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Un nemedenn diwar kerzhlevr an estez (ar re 10 Me diwezhañ) eo homañ :\\n\n"
+#~ "\\n\n"
+#~ "\n"
+#~ msgid ""
+#~ "If you choose to create a new project, all files already added will be "
+#~ "discarded. Note that files will not be deleted from their own location, just "
+#~ "no longer listed here."
+#~ msgstr ""
+#~ "Mar bez krouet ur raktres nevez ganeoc'h e vo dilezet an holl restroù "
+#~ "ouzhpennet. Notennit ne vo ket diverket ar restroù diwar ho lec'h, ne vint "
+#~ "ket war ar roll hepken."
+
+#, c-format
+#~ msgid "Your version of cdrdao does not seem to be supported by libbrasero"
+#~ msgstr "Ho handelv eus cdrdao n'hañval ket bezañ skoret gant libbrasero"
+
+#, c-format
 #~ msgid ""
 #~ "Libdvdcss version %s is not supported.\n"
 #~ "Please install libdvdcss version 1.2.x"
 #~ msgstr ""
 #~ "N'eo ket skoret libdvdcss, handelv %s.\\n\n"
 #~ "Mar plij, staliit libdvdcss, handelv 1.2.x"
+
+#, c-format
 #~ msgid "Libdvdcss could not be loaded properly"
 #~ msgstr "N'haller ket kargañ libdvdcss gant un doare dereat"
+
+#, c-format
+#~ msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
+#~ msgstr "DVD enrineget : staliit libdvdcss, handelv 1.2.x"
+#~ msgid "Libburn burns CD(RW), DVD+/-(RW)"
+#~ msgstr "Libburn a engrav CD(RW), DVD+/-(RW)"
 #~ msgid "Dvdcss allows to read css encrypted video DVDs"
 #~ msgstr "Dvdcss a ro tro da lenn DVDoù video enrineget dre css"
 #~ msgid "Growisofs burns DVDs"
 #~ msgstr "Growisofs a engrav DVDoù"
-#~ msgid "Libburn burns CD(RW), DVD+/-(RW)"
-#~ msgstr "Libburn a engrav CD(RW), DVD+/-(RW)"
 #~ msgid "Libisofs creates disc images from files"
 #~ msgstr "Libisofs a grou luniennoù kantennadoù diouzh restroù"
 #~ msgid ""
 #~ "Transcode converts song files into a format proper to burn them on CDs"
 #~ msgstr ""
-#~ "An treuzvonegañ a emdro restroù ar c'hanaouennoù d'ur mentrezh dereatoc'h "
-#~ "a-benn ma vint engravet war CDoù"
-#~ msgid "_Options..."
-#~ msgstr "_Dibarzhioù..."
-#~ msgid "Use dvdauthor to create Video DVDs"
-#~ msgstr "Arverañ dvdauthor da grouiñ DVDoù video"
-#~ msgid "Use vcdimager to create SVCDs"
-#~ msgstr "Ober gant vcdimager a-benn krouiñ SVCDoù"
-#~ msgid "CD/DVD Copy Options"
-#~ msgstr "Dibarzhioù eilañ ar CD/DVD"
-#~ msgid "%lli:%02lli min"
-#~ msgstr "%lli:%02lli mun"
-#~ msgid "DVDROM"
-#~ msgstr "DVDROM"
-#~ msgid "Unknown"
-#~ msgstr "Dianav"
-#~ msgid "_Name:"
-#~ msgstr "A_nv :"
-#~ msgid "Data %s"
-#~ msgstr "%s evit roadennoù"
-#~ msgid "Audio %s"
-#~ msgstr "%s evit sonioù"
-#~ msgid "Unable to launch the cd burner application"
-#~ msgstr "Dibosupl eo loc'hañ ar meziant engravañ"
-#~ msgctxt "disc"
-#~ msgid "Image files only"
-#~ msgstr "Restoù lunienn nemetken"
-#~ msgid "_Erase..."
-#~ msgstr "_Diverkañ..."
-#~ msgid "Erase a disc"
-#~ msgstr "Diverkañ ur gantennad"
-#~ msgid "Exit the program"
-#~ msgstr "Kuitaat ar meziant"
-#~ msgid "It will be removed from the project"
-#~ msgstr "Dilamet e vo diouzh ar raktres."
-#~ msgid "%s only"
-#~ msgstr "%s nemetken"
-#~ msgid "_Erase Disc"
-#~ msgstr "_Diverkañ ar gantenn"
-#~ msgid "_Add to Project"
-#~ msgstr "_Ouzhpennañ d'ar raktres"
-#~ msgid "_Keep Project File"
-#~ msgstr "_Mirout restr ar raktres"
-#~ msgid "_Replace Project File"
-#~ msgstr "_Amsaviñ restr ar raktres"
-#~ msgid "Disc options"
-#~ msgstr "Dibarzhioù ar gantenn"
-#~ msgid "*.toc image (cdrdao)"
-#~ msgstr "Lunienn *.toc (cdrdao)"
-#~ msgid "\"%s\" already exists"
-#~ msgstr "\"%s\" zo anezhi endeo"
-#~ msgid "A directory could not be created (%s)"
-#~ msgstr "Ur c'havlec'hiad n'hall ket bezañ krouet (%s)"
-#~ msgid "You might not be able to listen to it with stereos."
-#~ msgstr "Ne viot ket evit selaou an dra-se gant un ijinenn stereo."
-#~ msgid "Please delete some files from the project."
-#~ msgstr "Mar plij, diverkit restroù zo diouzh ho raktres."
+#~ "An treuzvonegañ a emdro restroù ar c'hanaouennoù d'ur mentrezh dereatoc'h a-"
+#~ "benn ma vint engravet war CDoù"
+#~ msgid "To add files to this project you can:"
+#~ msgstr "A-benn ouzhpennañ restroù er raktres-se e vez :"
+#~ msgid "double click on files in the selection pane"
+#~ msgstr "daouglikañ war ar restroù war ar banell da ziuzañ"
 #~ msgid ""
-#~ "This file is the image of a disc and can therefore be burnt to disc "
-#~ "without having to add it to a data project first."
+#~ "drag files in this area from the selection pane or from the file manager"
 #~ msgstr ""
-#~ "Ul lunienn eus ur gantennad eo ar restr-mañ ha neuze n'hall ket bezañ "
-#~ "engravet war ur gantenn hep bezañ bet ouzhpennet en ur raktres dre "
-#~ "roadennoù da gentañ."
-#~ msgid "Do you really want to replace \"%s\"?"
-#~ msgstr "Ha fellout a ra deoc'h amsaviñ \"%s\" ?"
-#~ msgid "It already exists in the directory."
-#~ msgstr "Er c'havlec'hiad emañ endeo."
-#~ msgid "Increase compatibility with _Windows systems"
-#~ msgstr "Kreskaat keverlec'hded gant reizhiadoù _Windows"
+#~ "riklet restroù war ar maez-se diwar ar banell da ziuzañ pe diwar an ardoer "
+#~ "restroù"
+#~ msgid "To remove files from this project you can:"
+#~ msgstr "A-benn dilemel restroù diouzh ar raktres-se e vez :"
+#~ msgid "Close this notification window"
+#~ msgstr "Serriñ ar prenestr rebuziñ-mañ"
+#~ msgid "copy files (from file manager for example) and paste in this area"
+#~ msgstr ""
+#~ "eilet restroù (diwar an ardoer restroù da skouer) hag o fegañ war ar maez-se"
+#~ msgid "select files in the selection pane and click the \"Add\" button"
+#~ msgstr ""
+#~ "diuzet restroù war ar banell da ziuzañ ha klikañ war an afell \"Ouzhpennañ\""
+#~ msgid "click the \"Add\" button to show a selection dialog"
+#~ msgstr ""
+#~ "kliket war an afell \\\"Ouzhpennañ\\\" da ziskouez ur voestad emziviz diuzañ"
+#~ msgid "click on the \"Remove\" button to remove selected items in this area"
+#~ msgstr ""
+#~ "kliket war an afell \"Dilemel\" da zilemel an elfennoù diuzet er maez-se"
+#~ msgid "select items in this area, and choose \"Remove\" from context menu"
+#~ msgstr ""
+#~ "diuzet elfennoù er maez-se ha dibabet \\\"Dilemel\\\" diwar al lañser "
+#~ "kemperzhel"
+#~ msgid "select items in this area, and press \"Delete\" key"
+#~ msgstr "diuzet elfennoù er maez-se ha pouezet war ar stokell \"Diverkañ\""
+#~ msgid "_Blank..."
+#~ msgstr "_Goullonderiñ..."
+#~ msgid "Pane to display audio projects"
+#~ msgstr "Panell da skrammañ raktresoù audio"
+#~ msgid "Pane to display data projects"
+#~ msgstr "Panell da skrammañ raktresoù gant roadennoù"
+#~ msgid "Pane to display video projects"
+#~ msgstr "Panell da skrammañ raktresoù video"
 #~ msgid ""
-#~ "Improve compatibility with Windows systems by allowing to display long "
-#~ "filenames (maximum 64 characters)"
+#~ "The pane to display with audio projects. It should be one of the following: "
+#~ "\"Chooser\", \"Search\" or \"Playlist\"."
 #~ msgstr ""
-#~ "Gwelaat keverlec'hded gant reizhiadoù Windows dre aotren da skrammañ "
-#~ "anvioù restr hir (64 arouezenn d'an uc'hekañ)"
-#~ msgctxt "picture"
-#~ msgid "Image files only"
-#~ msgstr "Restroù skeudenn nemetken"
-#~ msgid "Let brasero choose (safest)"
-#~ msgstr "Leuskel Brasero da zibab (surañ)"
-#~ msgid "Project estimated size: %s/%s"
-#~ msgstr "Ment priziet ar raktres : %s/%s"
-#~ msgid "Finalising"
-#~ msgstr "Peurechuiñ"
-#~ msgid "_Temporary directory free space:"
-#~ msgstr "Egor dieub ar c'havlec'hiad _padennek :"
-#~ msgid "Display debug statements on stdout"
-#~ msgstr "Skrammañ stadoù an diveugañ war 'stdout'"
-#~ msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
-#~ msgstr "Un DVD e ventrezh +RW a ziverk ha mentrezh DVD+/-R(W)"
-#~ msgid "drag and release items out from this area"
-#~ msgstr "riklet ha laosket an elfennoù er-maez eus ar maez-se"
+#~ "Ar banell da skrammañ gant ar raktresoù audio. Unan eus ar re-se e tlefe "
+#~ "bezañ : \\\"Dibaber\\\", \\\"Klask\\\" pe \\\"Roll tonioù\\\"."
+#~ msgid ""
+#~ "The pane to display with video projects. It should be one of the following: "
+#~ "\"Chooser\", \"Search\" or \"Playlist\"."
+#~ msgstr ""
+#~ "Ar banell da skrammañ gant ar raktresoù video. Unan eus ar re-se e tlefe "
+#~ "bezañ : \\\"Dibaber\\\", \\\"Klask\\\" pe \\\"Roll tonioù\\\"."
+#~ msgid "PATH TO PLAYLIST"
+#~ msgstr "TREUG ER ROLL TONIOÙ"
+#~ msgid "The drive cannot burn or the disc cannot be burned"
+#~ msgstr ""
+#~ "An drobarzhell n'hall ket engravañ pe ar gantenn n'hall ket bezañ skrivet "
+#~ "warni"
 
