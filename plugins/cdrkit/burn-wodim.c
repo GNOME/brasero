@@ -284,7 +284,10 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	if (sscanf (line, "Track %2u: %d of %d MB written (fifo %d%%) [buf %d%%] %d.%dx.",
-		    &track, &mb_written, &mb_total, &fifo, &buf, &speed_1, &speed_2) == 7) {
+		    &track, &mb_written, &mb_total, &fifo, &buf, &speed_1, &speed_2) == 7 ||
+	    /* This is for DVD+R */
+	    sscanf (line, "Track %2u:    %d of %d MB written (fifo  %d%%) [buf  %d%%] |%*s  %*s|   %d.%dx.",
+	            &track, &mb_written, &mb_total, &fifo, &buf, &speed_1, &speed_2) == 7) {
 		gdouble current_rate;
 
 		current_rate = (gdouble) ((gdouble) speed_1 +
@@ -301,6 +304,8 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	} 
 	else if (sscanf (line, "Track %2u:    %d MB written (fifo %d%%) [buf  %d%%]  %d.%dx.",
+			 &track, &mb_written, &fifo, &buf, &speed_1, &speed_2) == 6 ||
+	         sscanf (line, "Track %2u:    %d MB written (fifo %d%%) [buf  %d%%] |%*s  %*s|   %d.%dx.",
 			 &track, &mb_written, &fifo, &buf, &speed_1, &speed_2) == 6) {
 		gdouble current_rate;
 
