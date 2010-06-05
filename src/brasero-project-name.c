@@ -478,8 +478,15 @@ brasero_project_name_set_type (BraseroProjectName *self)
 	}
 
 	priv->type = type;
-	priv->label_modified = FALSE;
+	if (brasero_burn_session_get_label (priv->session)) {
+		priv->label_modified = TRUE;
+		g_signal_handlers_block_by_func (self, brasero_project_name_label_changed, NULL);
+		gtk_entry_set_text (GTK_ENTRY (self), brasero_burn_session_get_label (priv->session));
+		g_signal_handlers_unblock_by_func (self, brasero_project_name_label_changed, NULL);
+		return;
+	}
 
+	priv->label_modified = FALSE;
 	title_str = brasero_project_name_get_default_label (self);
 
 	g_signal_handlers_block_by_func (self, brasero_project_name_label_changed, NULL);
