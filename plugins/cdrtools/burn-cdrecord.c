@@ -260,6 +260,33 @@ brasero_cdrecord_compute (BraseroCDRecord *cdrecord,
 	g_free (action_string);
 }
 
+static void
+brasero_cdrecord_set_rate (BraseroProcess *process,
+                           int speed_1,
+                           int speed_2)
+{
+	gdouble current_rate;
+	BraseroMedia media;
+
+	if (brasero_job_get_media (BRASERO_JOB (process), &media) != BRASERO_BURN_OK)
+		return;
+
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_CD))
+		current_rate = (gdouble) ((gdouble) speed_1 +
+			       (gdouble) speed_2 / 10.0) *
+			       (gdouble) CD_RATE;
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVD))
+		current_rate = (gdouble) ((gdouble) speed_1 +
+			       (gdouble) speed_2 / 10.0) *
+			       (gdouble) DVD_RATE;
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BD))
+		current_rate = (gdouble) ((gdouble) speed_1 +
+			       (gdouble) speed_2 / 10.0) *
+			       (gdouble) BD_RATE;
+
+	brasero_job_set_rate (BRASERO_JOB (process), current_rate);
+}
+
 static BraseroBurnResult
 brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 {
@@ -277,13 +304,8 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 	    /* This is for DVD+R */
 	    sscanf (line, "Track %2u:    %d of %d MB written (fifo  %d%%) [buf  %d%%] |%*s  %*s|   %d.%dx.",
 	            &track, &mb_written, &mb_total, &fifo, &buf, &speed_1, &speed_2) == 7) {
-		gdouble current_rate;
 
-		current_rate = (gdouble) ((gdouble) speed_1 +
-			       (gdouble) speed_2 / 10.0) *
-			       (gdouble) CD_RATE;
-		brasero_job_set_rate (BRASERO_JOB (cdrecord), current_rate);
-
+		brasero_cdrecord_set_rate (process, speed_1, speed_2);
 		priv->current_track_written = (goffset) mb_written * (goffset) 1048576LL;
 		brasero_cdrecord_compute (cdrecord,
 					  mb_written,
@@ -296,14 +318,8 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 			 &track, &mb_written, &fifo, &buf, &speed_1, &speed_2) == 6 ||
 	         sscanf (line, "Track %2u:    %d MB written (fifo %d%%) [buf  %d%%] |%*s  %*s|   %d.%dx.",
 			 &track, &mb_written, &fifo, &buf, &speed_1, &speed_2) == 6) {
-		gdouble current_rate;
 
-		/* this line is printed when cdrecord writes on the fly */
-		current_rate = (gdouble) ((gdouble) speed_1 +
-			       (gdouble) speed_2 / 10.0) *
-			       (gdouble) CD_RATE;
-		brasero_job_set_rate (BRASERO_JOB (cdrecord), current_rate);
-
+				 brasero_cdrecord_set_rate (process, speed_1, speed_2);
 		priv->current_track_written = (goffset) mb_written * (goffset) 1048576LL;
 		if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) == BRASERO_BURN_OK) {
 			goffset bytes = 0;
