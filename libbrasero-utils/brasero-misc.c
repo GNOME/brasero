@@ -416,8 +416,9 @@ brasero_utils_create_message_dialog (GtkWidget *parent,
 					  "%s",
 					  primary_message);
 
-	gtk_window_set_icon_name (GTK_WINDOW (message),
-	                          gtk_window_get_icon_name (GTK_WINDOW (parent)));
+	if (parent)
+		gtk_window_set_icon_name (GTK_WINDOW (message),
+			                  gtk_window_get_icon_name (GTK_WINDOW (parent)));
 
 	gtk_window_set_title (GTK_WINDOW (message), "");
 
