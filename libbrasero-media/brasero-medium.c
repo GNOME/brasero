@@ -1567,12 +1567,26 @@ brasero_medium_track_written_SAO (BraseroDeviceHandle *handle,
 				  int track_num,
 				  int track_start)
 {
+	BraseroScsiErrCode error = BRASERO_SCSI_ERROR_NONE;
 	unsigned char buffer [2048];
 	BraseroScsiResult result;
 
 	BRASERO_MEDIA_LOG ("Checking for TDBs in track pregap.");
 
-	/* The two following sectors are readable */
+	/* To avoid blocking try to check whether it is readable */
+	result = brasero_mmc1_read_block (handle,
+					  TRUE,
+					  BRASERO_SCSI_BLOCK_TYPE_ANY,
+					  BRASERO_SCSI_BLOCK_HEADER_NONE,
+					  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
+					  track_start - 1,
+					  1,
+					  NULL,
+					  0,
+					  &error);
+	if (result != BRASERO_SCSI_OK || error != BRASERO_SCSI_ERROR_NONE)
+		return TRUE;
+
 	result = brasero_mmc1_read_block (handle,
 					  TRUE,
 					  BRASERO_SCSI_BLOCK_TYPE_ANY,
@@ -1582,9 +1596,8 @@ brasero_medium_track_written_SAO (BraseroDeviceHandle *handle,
 					  1,
 					  buffer,
 					  sizeof (buffer),
-					  NULL);
-
-	if (result == BRASERO_SCSI_OK) {
+					  &error);
+	if (result == BRASERO_SCSI_OK && error == BRASERO_SCSI_ERROR_NONE) {
 		int i;
 
 		if (buffer [0] != 'T' || buffer [1] != 'D' || buffer [2] != 'I') {
@@ -1699,8 +1712,8 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	     &&  (priv->info & BRASERO_MEDIUM_CD)
 	     && !(priv->info & BRASERO_MEDIUM_ROM)) {
 		BRASERO_MEDIA_LOG ("Data track belongs to first session of multisession CD. "
-				  "Checking for real size (%i sectors currently).",
-				  track->blocks_num);
+				   "Checking for real size (%i sectors currently).",
+				   track->blocks_num);
 
 		/* we test the pregaps blocks for TDB: these are special blocks
 		 * filling the pregap of a track when it was recorded as TAO or
@@ -2010,6 +2023,9 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	BRASERO_MEDIA_LOG ("Reading Toc");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+tryagain:
+
 	result = brasero_mmc1_read_toc_formatted (handle,
 						  0,
 						  &toc,
@@ -2018,6 +2034,20 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		BRASERO_MEDIA_LOG ("READ TOC failed");
 		return FALSE;
+	}
+
+	if (priv->probe_cancelled) {
+		g_free (toc);
+		return FALSE;
+	}
+
+	/* My drive with some Video CDs gets a size of 2 (basically the size
+	 * member of the structure) without any error. Consider the drive is not
+	 * ready and needs retrying */
+	if (size < sizeof (BraseroScsiFormattedTocData)) {
+		g_free (toc);
+		toc = NULL;
+		goto tryagain;
 	}
 
 	num = (size - sizeof (BraseroScsiFormattedTocData)) /
