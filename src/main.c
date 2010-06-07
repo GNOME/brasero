@@ -421,8 +421,23 @@ brasero_app_parse_options (BraseroApp *app)
 			return;
 	}
 	else if (files) {
-		if (g_strv_length (files) != 1
-		||  brasero_app_open_uri (app, files [0], FALSE) == BRASERO_PROJECT_TYPE_INVALID)
+		if (g_strv_length (files) == 1) {
+			gboolean result;
+
+			result = brasero_app_open_uri_drive_detection (app,
+			                                               burner,
+			                                               files [0],
+			                                               cover_project,
+			                                               burn_immediately);
+			/* Return here if the URI was related to a disc operation */
+			if (result)
+				return;
+
+			result = brasero_app_open_uri (app, files [0], FALSE);
+			if (!result)
+				brasero_app_data (app, burner, files, burn_immediately != 0);
+		}
+		else
 			brasero_app_data (app, burner, files, burn_immediately != 0);
 
 		if (burn_immediately)

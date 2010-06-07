@@ -45,6 +45,8 @@
 #include "brasero-pref.h"
 
 #include "brasero-drive.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
 
 #include "brasero-tags.h"
 #include "brasero-burn.h"
@@ -651,6 +653,9 @@ brasero_app_copy_disc (BraseroApp *app,
 		monitor = brasero_medium_monitor_get_default ();
 		drive = brasero_medium_monitor_get_drive (monitor, device);
 		g_object_unref (monitor);
+
+		if (!drive)
+			return;
 
 		brasero_track_disc_set_drive (BRASERO_TRACK_DISC (track), drive);
 		g_object_unref (drive);
@@ -1367,34 +1372,14 @@ brasero_app_open_by_mime (BraseroApp *app,
 	return FALSE;
 }
 
-gboolean
-brasero_app_open_uri (BraseroApp *app,
-                      const gchar *uri_arg,
-                      gboolean warn_user)
+static gboolean
+brasero_app_open_uri_file (BraseroApp *app,
+                           GFile *file,
+                           GFileInfo *info,
+                           gboolean warn_user)
 {
-	gchar *uri;
-	GFile *file;
-	GFileInfo *info;
 	BraseroProjectType type;
-
-	/* FIXME: make that asynchronous */
-	/* NOTE: don't follow symlink because we want to identify them */
-	file = g_file_new_for_commandline_arg (uri_arg);
-	if (!file)
-		return BRASERO_PROJECT_TYPE_INVALID;
-
-	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
-				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
-				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
-				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-				  NULL,
-				  NULL);
-
-	if (!info) {
-		g_object_unref (file);
-		return BRASERO_PROJECT_TYPE_INVALID;
-	}
+	gchar *uri = NULL;
 
 	/* if that's a symlink, redo it on its target to get the real mime type
 	 * that usually also depends on the extension of the target:
@@ -1441,7 +1426,7 @@ brasero_app_open_uri (BraseroApp *app,
 
 	uri = g_file_get_uri (file);
 	if (g_file_query_exists (file, NULL)
-	&& g_file_info_get_content_type (info)) {
+	&&  g_file_info_get_content_type (info)) {
 		const gchar *mime;
 
 		mime = g_file_info_get_content_type (info);
@@ -1463,10 +1448,220 @@ brasero_app_open_uri (BraseroApp *app,
 		type = BRASERO_PROJECT_TYPE_INVALID;
 
 	g_free (uri);
+	return (type != BRASERO_PROJECT_TYPE_INVALID);
+}
+
+gboolean
+brasero_app_open_uri (BraseroApp *app,
+                      const gchar *uri_arg,
+                      gboolean warn_user)
+{
+	GFile *file;
+	GFileInfo *info;
+	gboolean retval;
+
+	/* FIXME: make that asynchronous */
+	/* NOTE: don't follow symlink because we want to identify them */
+	file = g_file_new_for_commandline_arg (uri_arg);
+	if (!file)
+		return FALSE;
+
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
+				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+				  NULL,
+				  NULL);
+
+	if (!info) {
+		g_object_unref (file);
+		return FALSE;
+	}
+
+	retval = brasero_app_open_uri_file (app, file, info, warn_user);
+
 	g_object_unref (file);
 	g_object_unref (info);
 
-	return type;
+	return retval;
+}
+
+gboolean
+brasero_app_open_uri_drive_detection (BraseroApp *app,
+                                      BraseroDrive *burner,
+                                      const gchar *uri_arg,
+                                      const gchar *cover_project,
+                                      gboolean burn_immediately)
+{
+	gchar *uri;
+	GFile *file;
+	GFileInfo *info;
+	gboolean retval = FALSE;
+
+	file = g_file_new_for_commandline_arg (uri_arg);
+	if (!file)
+		return FALSE;
+
+	/* Note: if the path is the path of a mounted volume the uri returned
+	 * will be entirely different like if /path/to/somewhere is where
+	 * an audio CD is mounted will return cdda://sr0/ */
+	uri = g_file_get_uri (file);
+	info = g_file_query_info (file,
+	                          G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+	                          G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
+				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+				  NULL,
+				  NULL);
+	if (!info) {
+		g_object_unref (file);
+		g_free (uri);
+		return FALSE;
+	}
+
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_SPECIAL) {
+		/* It could be a block device, try */
+		if (!g_strcmp0 (g_file_info_get_content_type (info), "inode/blockdevice")) {
+			gchar *device;
+			BraseroMedia media;
+			BraseroDrive *drive;
+			BraseroMedium *medium;
+			BraseroMediumMonitor *monitor;
+
+			g_object_unref (info);
+			g_free (uri);
+
+			monitor = brasero_medium_monitor_get_default ();
+			while (brasero_medium_monitor_is_probing (monitor))
+				sleep (1);
+
+			device = g_file_get_path (file);
+			drive = brasero_medium_monitor_get_drive (monitor, device);
+			g_object_unref (monitor);
+
+			if (!drive) {
+				/* This is not a known optical drive to us. */
+				g_object_unref (file);
+				return FALSE;
+			}
+
+			medium = brasero_drive_get_medium (drive);
+			if (!medium) {
+				g_object_unref (file);
+				g_object_unref (drive);
+				return FALSE;
+			}
+
+			media = brasero_medium_get_status (medium);
+			if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BLANK)) {
+				/* This medium is blank so it rules out blanking
+				 * copying, checksuming. Open a data project. */
+				g_object_unref (file);
+				g_object_unref (drive);
+				return FALSE;
+			}
+			g_object_unref (drive);
+
+			/* It seems that we are expected to copy the disc */
+			device = g_strdup (g_file_get_path (file));
+			g_object_unref (file);
+			brasero_app_copy_disc (app,
+					       burner,
+					       device,
+					       cover_project,
+					       burn_immediately != 0);
+			g_free (device);
+			return TRUE;
+		}
+
+		/* The rest are unsupported */
+	}
+	else if (g_str_has_prefix (uri, "cdda:")) {
+		GFile *child;
+		gchar *device;
+		BraseroMediumMonitor *monitor;
+
+		/* Make sure we are talking of the root */
+		child = g_file_get_parent (file);
+		if (child) {
+			g_object_unref (child);
+			g_object_unref (info);
+			g_object_unref (file);
+			g_free (uri);
+			return FALSE;
+		}
+
+		/* We need to wait for the monitor to be ready */
+		monitor = brasero_medium_monitor_get_default ();
+		while (brasero_medium_monitor_is_probing (monitor))
+			sleep (1);
+		g_object_unref (monitor);
+
+		if (g_str_has_suffix (uri, "/"))
+			device = g_strdup_printf ("/dev/%.*s",
+				                  (int) (strrchr (uri, '/') - uri - 7),
+				                  uri + 7);
+		else
+			device = g_strdup_printf ("/dev/%s", uri + 7);
+		brasero_app_copy_disc (app,
+				       burner,
+				       device,
+				       cover_project,
+				       burn_immediately != 0);
+		g_free (device);
+
+		retval = TRUE;
+	}
+	else if (g_str_has_prefix (uri, "file:/")
+	     &&  g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		BraseroMediumMonitor *monitor;
+		gchar *directory_path;
+		GSList *drives;
+		GSList *iter;
+
+		/* Try to detect a mounted optical disc */
+		monitor = brasero_medium_monitor_get_default ();
+		while (brasero_medium_monitor_is_probing (monitor))
+			sleep (1);
+
+		/* Check if this is a mount point for an optical disc */
+		directory_path = g_file_get_path (file);
+		drives = brasero_medium_monitor_get_drives (monitor, BRASERO_DRIVE_TYPE_ALL_BUT_FILE);
+		for (iter = drives; iter; iter = iter->next) {
+			gchar *mountpoint;
+			BraseroDrive *drive;
+			BraseroMedium *medium;
+
+			drive = iter->data;
+			medium = brasero_drive_get_medium (drive);
+			mountpoint = brasero_volume_get_mount_point (BRASERO_VOLUME (medium), NULL);
+			if (!mountpoint)
+				continue;
+
+			if (!g_strcmp0 (mountpoint, directory_path)) {
+				g_free (mountpoint);
+				brasero_app_copy_disc (app,
+						       burner,
+						       brasero_drive_get_device (drive),
+						       cover_project,
+						       burn_immediately != 0);
+				retval = TRUE;
+				break;
+			}
+			g_free (mountpoint);
+		}
+		g_slist_foreach (drives, (GFunc) g_object_unref, NULL);
+		g_slist_free (drives);
+
+		g_free (directory_path);
+	}
+
+	g_object_unref (info);
+	g_object_unref (file);
+	g_free (uri);
+	return retval;
 }
 
 static void

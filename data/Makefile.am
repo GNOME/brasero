@@ -10,9 +10,8 @@ schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 @INTLTOOL_DESKTOP_RULE@
 
 desktopdir=$(datadir)/applications
-desktop_in_files =	brasero.desktop.in			\
-			brasero-copy-medium.desktop.in
-		
+desktop_in_files =	brasero.desktop.in
+
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 @INTLTOOL_XML_RULE@

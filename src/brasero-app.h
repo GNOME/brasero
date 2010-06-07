@@ -149,6 +149,12 @@ brasero_app_open_uri (BraseroApp *app,
                       const gchar *uri_arg,
                       gboolean warn_user);
 
+gboolean
+brasero_app_open_uri_drive_detection (BraseroApp *app,
+                                      BraseroDrive *burner,
+                                      const gchar *uri,
+                                      const gchar *cover_project,
+                                      gboolean burn);
 GtkWidget *
 brasero_app_get_statusbar1 (BraseroApp *app);
 
