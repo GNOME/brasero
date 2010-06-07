@@ -71,13 +71,10 @@ brasero_src_selection_medium_changed (BraseroMediumSelection *selection,
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
-	if (!priv->session || !priv->track)
-		goto chain;
-
-	drive = brasero_medium_get_drive (medium);
-	brasero_track_disc_set_drive (priv->track, drive);
-
-chain:
+	if (priv->session && priv->track) {
+		drive = brasero_medium_get_drive (medium);
+		brasero_track_disc_set_drive (priv->track, drive);
+	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (selection), drive != NULL);
 
