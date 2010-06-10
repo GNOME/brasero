@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-05 12:36+0300\n"
-"PO-Revision-Date: 2010-06-05 13:18+0200\n"
+"POT-Creation-Date: 2010-06-10 12:08+0300\n"
+"PO-Revision-Date: 2010-06-10 12:09+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "MIME-Version: 1.0\n"
@@ -345,12 +345,12 @@ msgstr "לא ניתן ליצור את הפריט %s."
 #: ../libbrasero-burn/brasero-burn.c:2852 ../libbrasero-burn/burn-job.c:1219
 #: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
-#: ../nautilus/nautilus-burn-extension.c:215 ../src/brasero-app.c:764
+#: ../nautilus/nautilus-burn-extension.c:215 ../src/brasero-app.c:769
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:707 ../plugins/cdrkit/burn-wodim.c:822
-#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrtools/burn-cdrecord.c:819
-#: ../plugins/cdrtools/burn-cdrecord.c:834
+#: ../plugins/cdrkit/burn-wodim.c:727 ../plugins/cdrkit/burn-wodim.c:842
+#: ../plugins/cdrkit/burn-wodim.c:857 ../plugins/cdrtools/burn-cdrecord.c:840
+#: ../plugins/cdrtools/burn-cdrecord.c:855
 #: ../plugins/cdrtools/burn-mkisofs.c:371
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
 #, c-format
@@ -843,7 +843,7 @@ msgstr "שמור צריבה נוכחית"
 msgid "An unknown error occurred."
 msgstr "ארעה שגיאה לא ידועה."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1732 ../src/brasero-app.c:609
+#: ../libbrasero-burn/brasero-burn-dialog.c:1732 ../src/brasero-app.c:611
 msgid "Error while burning."
 msgstr "שגיאה במהלך הצריבה."
 
@@ -1697,7 +1697,7 @@ msgstr "לא סופק נתיב עבור פלט התמונה"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:690
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:711
 #: ../plugins/libburnia/burn-libburn.c:716
 #: ../plugins/transcode/burn-transcode.c:825
 #, c-format
@@ -2360,117 +2360,117 @@ msgstr "קובצי תמונה"
 msgid "Video disc (%s)"
 msgstr "תקליטור וידאו (%s)"
 
-#: ../src/brasero-app.c:115
+#: ../src/brasero-app.c:117
 msgid "_Project"
 msgstr "_פרויקט"
 
-#: ../src/brasero-app.c:116
+#: ../src/brasero-app.c:118
 msgid "_View"
 msgstr "_תצוגה"
 
-#: ../src/brasero-app.c:117
+#: ../src/brasero-app.c:119
 msgid "_Edit"
 msgstr "_עריכה"
 
-#: ../src/brasero-app.c:118
+#: ../src/brasero-app.c:120
 msgid "_Tools"
 msgstr "_כלים"
 
-#: ../src/brasero-app.c:120
+#: ../src/brasero-app.c:122
 msgid "_Help"
 msgstr "_עזרה"
 
-#: ../src/brasero-app.c:122
+#: ../src/brasero-app.c:124
 msgid "P_lugins"
 msgstr "תוס_פים"
 
-#: ../src/brasero-app.c:123
+#: ../src/brasero-app.c:125
 msgid "Choose plugins for Brasero"
 msgstr "בחירת תוספים עבור brasero"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:127
 msgid "E_ject"
 msgstr "הוצ_אה"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:128
 msgid "Eject a disc"
 msgstr "הוצאת התקליטור"
 
-#: ../src/brasero-app.c:128
+#: ../src/brasero-app.c:130
 msgid "_Blank…"
 msgstr "_מחיקה"
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:131
 msgid "Blank a disc"
 msgstr "מחיקת תקליטור"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:133
 msgid "_Check Integrity…"
 msgstr "_בדיקת תקינות..."
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:134
 msgid "Check data integrity of disc"
 msgstr "בדיקת תקינות הנתונים על התקליטור"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:137
 msgid "Quit Brasero"
 msgstr "יציאה מ־Brasero"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:139
 msgid "_Contents"
 msgstr "_תכנים"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:139
 msgid "Display help"
 msgstr "הצג עזרה"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:142
 msgid "About"
 msgstr "אודות"
 
-#: ../src/brasero-app.c:412 ../data/brasero.desktop.in.in.h:4
+#: ../src/brasero-app.c:414
 msgid "Disc Burner"
 msgstr "צורב תקליטורים"
 
-#: ../src/brasero-app.c:767 ../src/brasero-app.c:800 ../src/brasero-app.c:1455
+#: ../src/brasero-app.c:772 ../src/brasero-app.c:805 ../src/brasero-app.c:1440
 msgid "Error while loading the project"
 msgstr "שגיאה בטעינת הפרויקט"
 
-#: ../src/brasero-app.c:809 ../src/brasero-app.c:838 ../src/brasero-app.c:898
+#: ../src/brasero-app.c:814 ../src/brasero-app.c:843 ../src/brasero-app.c:903
 #: ../src/brasero-project.c:1267
 msgid "Please add files to the project."
 msgstr "נא להוסיף קבצים לפרויקט."
 
-#: ../src/brasero-app.c:810 ../src/brasero-app.c:839 ../src/brasero-app.c:899
+#: ../src/brasero-app.c:815 ../src/brasero-app.c:844 ../src/brasero-app.c:904
 msgid "The project is empty"
 msgstr "הפרויקט ריק"
 
-#: ../src/brasero-app.c:1153
-msgid ""
-"Brasero is free software; you can redistribute it and/or modify it under the "
-"terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
-msgstr ""
-"Brasero is free software; you can redistribute it and/or modify it under the "
-"terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
-
 #: ../src/brasero-app.c:1158
 msgid ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
+"Brasero is free software; you can redistribute it and/or modify it under the "
+"terms of the GNU General Public License as published by the Free Software "
+"Foundation; either version 2 of the License, or (at your option) any later "
+"version."
 msgstr ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
+"Brasero is free software; you can redistribute it and/or modify it under the "
+"terms of the GNU General Public License as published by the Free Software "
+"Foundation; either version 2 of the License, or (at your option) any later "
+"version."
 
 #: ../src/brasero-app.c:1163
 msgid ""
+"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
+msgstr ""
+"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
+
+#: ../src/brasero-app.c:1168
+msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
@@ -2479,11 +2479,11 @@ msgstr ""
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1175
+#: ../src/brasero-app.c:1180
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "יישום פשוט לשימוש לצריבת CD/DVD ב־GNOME"
 
-#: ../src/brasero-app.c:1192
+#: ../src/brasero-app.c:1197
 msgid "Brasero Homepage"
 msgstr "דף הבית של Brasero"
 
@@ -2495,7 +2495,7 @@ msgstr "דף הבית של Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1204
+#: ../src/brasero-app.c:1209
 msgid "translator-credits"
 msgstr ""
 "מארק קרפיבנר <mark125@gmail.com>\n"
@@ -2505,31 +2505,34 @@ msgstr ""
 "פרוייקט תרגום GNOME לעברית:\n"
 "http://gnome-il.berlios.de"
 
-#: ../src/brasero-app.c:1453
+#: ../src/brasero-app.c:1438
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "הפרויקט \"%s\" לא קיים."
 
-#: ../src/brasero-app.c:1529 ../src/brasero-app.c:1535
+#: ../src/brasero-app.c:1724 ../src/brasero-app.c:1730
 msgid "_Recent Projects"
 msgstr "פרויקטים _אחרונים"
 
-#: ../src/brasero-app.c:1530
+#: ../src/brasero-app.c:1725
 msgid "Display the projects recently opened"
 msgstr "הצג פרויקטים שנפתחו לאחרונה"
 
-#: ../src/brasero-app.c:1882 ../data/brasero.desktop.in.in.h:2
+#: ../src/brasero-app.c:2077 ../data/brasero.desktop.in.in.h:2
 msgid "Brasero Disc Burner"
 msgstr "צורב התקליטורים Brasero"
 
 #: ../data/brasero.desktop.in.in.h:1
-#: ../data/brasero-copy-medium.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "יציאה מ־Brasero"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "יצירה והעתקה של תקליטורי CD ו־DVD"
+
+#: ../data/brasero.desktop.in.in.h:4
+msgid "Disc Burner and Copier"
+msgstr "צורב ומעתיק תקליטורים"
 
 #: ../data/brasero.schemas.in.h:1
 msgid ""
@@ -3903,9 +3906,9 @@ msgid "The operation cannot be performed."
 msgstr "לא ניתן לבצע את הפעולה."
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:80
-#: ../plugins/cdrkit/burn-wodim.c:152 ../plugins/cdrkit/burn-wodim.c:402
+#: ../plugins/cdrkit/burn-wodim.c:152 ../plugins/cdrkit/burn-wodim.c:422
 #: ../plugins/cdrtools/burn-cdrecord.c:152
-#: ../plugins/cdrtools/burn-cdrecord.c:387
+#: ../plugins/cdrtools/burn-cdrecord.c:408
 #: ../plugins/growisofs/burn-dvd-rw-format.c:77
 #: ../plugins/libburnia/burn-libburn.c:609
 #, c-format
@@ -4048,11 +4051,11 @@ msgstr "Incompatible command line options used."
 msgid "Only one option can be given at a time"
 msgstr "only one option can be given at a time"
 
-#: ../src/main.c:466
+#: ../src/main.c:481
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:478
+#: ../src/main.c:493
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Please type %s --help to see all available options\n"
@@ -4190,28 +4193,28 @@ msgstr "המערכת לא מהירה מספיק כדי לצרוב במהירות
 msgid "Writing track %s"
 msgstr "כותב את רצועה %s"
 
-#: ../plugins/cdrkit/burn-wodim.c:333 ../plugins/cdrtools/burn-cdrecord.c:326
+#: ../plugins/cdrkit/burn-wodim.c:353 ../plugins/cdrtools/burn-cdrecord.c:347
 msgid "Formatting disc"
 msgstr "מאתחל את התקליטור"
 
-#: ../plugins/cdrkit/burn-wodim.c:353 ../plugins/cdrtools/burn-cdrecord.c:338
+#: ../plugins/cdrkit/burn-wodim.c:373 ../plugins/cdrtools/burn-cdrecord.c:359
 msgid "Writing cue sheet"
 msgstr "כותב גיליון cue"
 
-#: ../plugins/cdrkit/burn-wodim.c:375 ../plugins/cdrtools/burn-cdrecord.c:360
+#: ../plugins/cdrkit/burn-wodim.c:395 ../plugins/cdrtools/burn-cdrecord.c:381
 #, c-format
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "יש לטעון מחדש את התקליטור לפני שניתן יהיה לצרוב עליו"
 
-#: ../plugins/cdrkit/burn-wodim.c:1258
+#: ../plugins/cdrkit/burn-wodim.c:1278
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "צורב, מוחק ומפרמט תקליטורי CD ו־DVD"
 
-#: ../plugins/cdrkit/burn-wodim.c:1402
+#: ../plugins/cdrkit/burn-wodim.c:1422
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "Enable \"-immed\" flag (see wodim manual)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1405
+#: ../plugins/cdrkit/burn-wodim.c:1425
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "יחס מילוי חוצץ הכונן המזערי (ב־%) (ניתן לעיין במדריך של wodim):"
 
@@ -4222,16 +4225,16 @@ msgstr "יחס מילוי חוצץ הכונן המזערי (ב־%) (ניתן ל�
 msgid "An error occurred while writing to disc"
 msgstr "התרחשה שגיאה לא ידועה בזמן הכתיבה אל התקליטור"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1191
+#: ../plugins/cdrtools/burn-cdrecord.c:1212
 #: ../plugins/libburnia/burn-libburn.c:973
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "צרוב מוכן ומפרמט תקליטורי CD,‏ DVD ו־BD"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1404
+#: ../plugins/cdrtools/burn-cdrecord.c:1425
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Enable \"-immed\" flag (see cdrecord manual)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1407
+#: ../plugins/cdrtools/burn-cdrecord.c:1428
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr "יחס מילוי חוצץ הכונן המזערי (ב־%%) (ניתן לעיין במדריך של cdrecord):"
@@ -4902,17 +4905,14 @@ msgstr "ממיר כל מבנה וידאו למבנה התואם לווידאו D
 msgid "Creates disc images suitable for SVCDs"
 msgstr "יוצר תמונות דיסק התואמות ל־SVCD"
 
-#: ../data/brasero-copy-medium.desktop.in.in.h:2
-msgid "Brasero Disc Copier"
-msgstr "מעתיק התקליטורים Brasero"
+#~ msgid "Brasero Disc Copier"
+#~ msgstr "מעתיק התקליטורים Brasero"
 
-#: ../data/brasero-copy-medium.desktop.in.in.h:3
-msgid "Copy CDs and DVDs"
-msgstr "העתקת תקליטורים"
+#~ msgid "Copy CDs and DVDs"
+#~ msgstr "העתקת תקליטורים"
 
-#: ../data/brasero-copy-medium.desktop.in.in.h:4
-msgid "Disc Copier"
-msgstr "מעתיק תקליטורים"
+#~ msgid "Disc Copier"
+#~ msgstr "מעתיק תקליטורים"
 
 #~ msgid "Appending new files to a multisession disc is not advised."
 #~ msgstr "צירוף קבצים חדשים לתקליטור מרובה בצריבות לא מומלץ."
