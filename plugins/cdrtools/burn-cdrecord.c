@@ -1438,10 +1438,10 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin)
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	gint version [3] = { 2, 0, 0};
+	gint version [3] = { 2, 0, -1};
 	brasero_plugin_test_app (plugin,
 	                         "cdrecord",
 	                         "--version",
-	                         "Cdrecord-ProDVD-ProBD-Clone %d.%d.%da64 (x86_64-unknown-linux-gnu) Copyright (C) 1995-2009 J�rg Schilling",
+	                         "Cdrecord-ProDVD-ProBD-Clone %d.%d",
 	                         version);
 }
