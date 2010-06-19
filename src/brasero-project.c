@@ -1464,6 +1464,14 @@ brasero_project_setup_session (BraseroProject *project,
 	}
 }
 
+static void
+brasero_project_output_changed (BraseroBurnSession *session,
+                                BraseroMedium *former_medium,
+                                GtkDialog *dialog)
+{
+	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
+}
+
 static BraseroBurnResult
 brasero_project_drive_properties (BraseroProject *project)
 {
@@ -1475,6 +1483,7 @@ brasero_project_drive_properties (BraseroProject *project)
 	GtkWidget *options;
 	GtkWidget *button;
 	GtkWidget *dialog;
+	glong cancel_sig;
 	GtkWidget *box;
 	gchar *header;
 	gchar *string;
@@ -1494,6 +1503,12 @@ brasero_project_drive_properties (BraseroProject *project)
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      NULL);
 	g_free (header);
+
+	/* This is in case the medium gets ejected instead of our locking it */
+	cancel_sig = g_signal_connect (project->priv->session,
+	                               "output-changed",
+	                               G_CALLBACK (brasero_project_output_changed),
+	                               dialog);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       _("Burn _Several Copies"),
@@ -1538,6 +1553,8 @@ brasero_project_drive_properties (BraseroProject *project)
 	/* launch the dialog */
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
+
+	g_signal_handler_disconnect (project->priv->session, cancel_sig);
 
 	if (answer == GTK_RESPONSE_OK)
 		return BRASERO_BURN_OK;
@@ -1616,8 +1633,7 @@ brasero_project_burn (BraseroProject *project)
 	if (brasero_project_check_plugins_not_ready (project, BRASERO_BURN_SESSION (project->priv->session)) != BRASERO_BURN_OK)
 		return;
 
-	/* Set saved temporary directory for the session.
-	 * NOTE: BraseroBurnSession can cope with NULL path */
+	/* Set saved parameters for the session */
 	settings = brasero_drive_settings_new ();
 	brasero_drive_settings_set_session (settings, BRASERO_BURN_SESSION (project->priv->session));
 
