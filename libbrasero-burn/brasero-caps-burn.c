@@ -75,28 +75,6 @@ brasero_burn_caps_job_error_cb (BraseroJob *job,
 				BraseroBurnError error,
 				BraseroBurnCaps *caps)
 {
-#if 0
-	GError *error = NULL;
-	GConfClient *client;
-
-	/* This was originally to fix a bug in fedora 5 that prevents from
-	 * sending SCSI commands as a normal user through cdrdao. There is a
-	 * fallback fortunately with cdrecord and raw images but no on_the_fly
-	 * burning.
-	 * That could be used as a hook to know how a job runs and give a
-	 * "penalty" to job types being too often faulty. There could also be
-	 * a dialog to ask the user if he wants to use another backend.
-	 */
-
-	/* set it in GConf to remember that next time */
-	client = gconf_client_get_default ();
-	gconf_client_set_bool (client, GCONF_KEY_CDRDAO_DISABLED, TRUE, &error);
-	if (error) {
-		g_warning ("Can't write with GConf: %s", error->message);
-		g_error_free (error);
-	}
-	g_object_unref (client);
-#endif
 	return BRASERO_BURN_ERR;
 }
 

@@ -38,8 +38,6 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-media-private.h"
 
 #include "burn-basics.h"
@@ -53,7 +51,8 @@
 #include "burn-caps.h"
 #include "brasero-track-type-private.h"
 
-#define BRASERO_ENGINE_GROUP_KEY	"/apps/brasero/config/engine-group"
+#define BRASERO_ENGINE_GROUP_KEY	"engine-group"
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
 
 G_DEFINE_TYPE (BraseroBurnCaps, brasero_burn_caps, G_TYPE_OBJECT);
 
@@ -313,13 +312,11 @@ brasero_burn_caps_class_init (BraseroBurnCapsClass *klass)
 static void
 brasero_burn_caps_init (BraseroBurnCaps *obj)
 {
-	GConfClient *client;
+	GSettings *settings;
 
 	obj->priv = g_new0 (BraseroBurnCapsPrivate, 1);
 
-	client = gconf_client_get_default ();
-	obj->priv->group_str = gconf_client_get_string (client,
-							BRASERO_ENGINE_GROUP_KEY,
-							NULL);
-	g_object_unref (client);
+	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
+	obj->priv->group_str = g_settings_get_string (settings, BRASERO_ENGINE_GROUP_KEY);
+	g_object_unref (settings);
 }

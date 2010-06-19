@@ -12,15 +12,14 @@ INCLUDES = \
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)				\
-	$(BRASERO_GLIB_CFLAGS)				\
-	$(BRASERO_GCONF_CFLAGS)
+	$(BRASERO_GLIB_CFLAGS)
 
 #cdrecord
 cdrecorddir = $(libdir)/brasero/plugins
 cdrecord_LTLIBRARIES = libbrasero-cdrecord.la
 libbrasero_cdrecord_la_SOURCES = burn-cdrecord.c \
 	burn-cdrtools.h 
-libbrasero_cdrecord_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_cdrecord_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_cdrecord_la_LDFLAGS = -module -avoid-version
 
 #mkisofs

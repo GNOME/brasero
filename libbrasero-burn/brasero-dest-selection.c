@@ -40,8 +40,6 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include "burn-basics.h"
 #include "burn-plugin-manager.h"
 #include "brasero-medium-selection-priv.h"
@@ -147,6 +145,7 @@ brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 
 static void
 brasero_dest_selection_flags_changed (BraseroBurnSession *session,
+                                      GParamSpec *pspec,
 				      BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
@@ -481,7 +480,7 @@ brasero_dest_selection_set_session (BraseroDestSelection *selection,
 			  G_CALLBACK (brasero_dest_selection_output_changed),
 			  selection);
 	g_signal_connect (session,
-			  "flags-changed",
+			  "notify::flags",
 			  G_CALLBACK (brasero_dest_selection_flags_changed),
 			  selection);
 

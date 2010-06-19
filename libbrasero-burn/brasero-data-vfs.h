@@ -39,10 +39,10 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_FILTER_HIDDEN_KEY		"/apps/brasero/filter/hidden"
-#define BRASERO_FILTER_BROKEN_SYM_KEY		"/apps/brasero/filter/broken_sym"
-#define BRASERO_REPLACE_SYMLINK_KEY		"/apps/brasero/filter/replace_sym"
-
+#define BRASERO_SCHEMA_FILTER			"org.gnome.brasero.filter"
+#define BRASERO_PROPS_FILTER_HIDDEN	        "hidden"
+#define BRASERO_PROPS_FILTER_BROKEN	        "broken-sym"
+#define BRASERO_PROPS_FILTER_REPLACE_SYMLINK    "replace-sym"
 
 #define BRASERO_TYPE_DATA_VFS             (brasero_data_vfs_get_type ())
 #define BRASERO_DATA_VFS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_DATA_VFS, BraseroDataVFS))

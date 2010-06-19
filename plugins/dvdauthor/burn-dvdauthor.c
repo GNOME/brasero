@@ -370,6 +370,7 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "dvdauthor",
+	                       NULL,
 			       _("Creates disc images suitable for Video DVDs"),
 			       "Philippe Rouquier",
 			       1);

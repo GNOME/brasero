@@ -47,8 +47,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-units.h"
 
 #include "burn-job.h"
@@ -88,8 +86,9 @@ typedef struct _BraseroCDRecordPrivate BraseroCDRecordPrivate;
 
 static GObjectClass *parent_class = NULL;
 
-#define GCONF_KEY_IMMEDIATE_FLAG	"/apps/brasero/config/immed_flag"
-#define GCONF_KEY_MINBUF_VALUE		"/apps/brasero/config/minbuf_value"
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
+#define BRASERO_KEY_IMMEDIATE_FLAG      "immed-flag"
+#define BRASERO_KEY_MINBUF_VALUE	"minbuf-value"
 
 static BraseroBurnResult
 brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
@@ -1135,23 +1134,20 @@ brasero_cdrecord_class_init (BraseroCDRecordClass *klass)
 static void
 brasero_cdrecord_init (BraseroCDRecord *obj)
 {
-	GConfClient *client;
+	GSettings *settings;
 	BraseroCDRecordPrivate *priv;
 
 	/* load our "configuration" */
 	priv = BRASERO_CD_RECORD_PRIVATE (obj);
 
-	client = gconf_client_get_default ();
-	priv->immediate = gconf_client_get_bool (client,
-						 GCONF_KEY_IMMEDIATE_FLAG,
-						 NULL);
-	priv->minbuf = gconf_client_get_int (client,
-					     GCONF_KEY_MINBUF_VALUE,
-					     NULL);
+	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
+
+	priv->immediate = g_settings_get_boolean (settings, BRASERO_KEY_IMMEDIATE_FLAG);
+	priv->minbuf = g_settings_get_int (settings, BRASERO_KEY_MINBUF_VALUE);
 	if (priv->minbuf > 95 || priv->minbuf < 25)
 		priv->minbuf = 30;
 
-	g_object_unref (client);
+	g_object_unref (settings);
 }
 
 static void
@@ -1209,6 +1205,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "cdrecord",
+	                       NULL,
 			       _("Burns, blanks and formats CDs, DVDs and BDs"),
 			       "Philippe Rouquier",
 			       1);
@@ -1421,10 +1418,10 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin)
 					BRASERO_BURN_FLAG_NONE);
 
 	/* add some configure options */
-	immed = brasero_plugin_conf_option_new (GCONF_KEY_IMMEDIATE_FLAG,
+	immed = brasero_plugin_conf_option_new (BRASERO_KEY_IMMEDIATE_FLAG,
 						_("Enable the \"-immed\" flag (see cdrecord manual)"),
 						BRASERO_PLUGIN_OPTION_BOOL);
-	minbuf = brasero_plugin_conf_option_new (GCONF_KEY_MINBUF_VALUE,
+	minbuf = brasero_plugin_conf_option_new (BRASERO_KEY_MINBUF_VALUE,
 						 _("Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"),
 						 BRASERO_PLUGIN_OPTION_INT);
 	brasero_plugin_conf_option_int_set_range (minbuf, 25, 95);

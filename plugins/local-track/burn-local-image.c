@@ -904,6 +904,7 @@ brasero_local_track_export_caps (BraseroPlugin *plugin)
 	GSList *caps;
 
 	brasero_plugin_define (plugin,
+	                       "file-downloader",
 			       /* Translators: this is the name of the plugin
 				* which will be translated only when it needs
 				* displaying. */

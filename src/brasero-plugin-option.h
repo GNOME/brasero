@@ -58,9 +58,6 @@ void
 brasero_plugin_option_set_plugin (BraseroPluginOption *dialog,
 				  BraseroPlugin *plugin);
 
-void
-brasero_plugin_option_save_settings (BraseroPluginOption *dialog);
-
 G_END_DECLS
 
 #endif /* _BRASERO_PLUGIN_OPTION_H_ */

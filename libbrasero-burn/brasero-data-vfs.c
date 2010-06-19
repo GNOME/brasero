@@ -37,8 +37,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-misc.h"
 
 #include "brasero-data-vfs.h"
@@ -65,6 +63,8 @@ struct _BraseroDataVFSPrivate
 
 	BraseroIOJobBase *load_uri;
 	BraseroIOJobBase *load_contents;
+
+	GSettings *settings;
 
 	guint replace_sym:1;
 	guint filter_hidden:1;
@@ -414,7 +414,7 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 	&& !g_file_info_get_symlink_target (info)) {
 		/* See if this file is already in restored or if we should filter */
 		if (priv->filter_broken_sym
-		&& !brasero_filtered_uri_lookup_restored (priv->filtered, uri)) {
+		    && !brasero_filtered_uri_lookup_restored (priv->filtered, uri)) {
 			brasero_filtered_uri_filter (priv->filtered,
 						     uri,
 						     BRASERO_FILTER_BROKEN_SYM);
@@ -1030,63 +1030,25 @@ brasero_data_vfs_reset (BraseroDataProject *project,
 }
 
 static void
-brasero_data_vfs_filter_hidden_changed (GConfClient *client,
-					guint cxn,
-					GConfEntry *entry,
-					gpointer data)
+brasero_data_vfs_settings_changed (GSettings *settings,
+                                   const gchar *key,
+                                   BraseroDataVFS *self)
 {
 	BraseroDataVFSPrivate *priv;
-	GConfValue *value;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (data);
+	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_BOOL)
-		return;
-
-	priv->filter_hidden = gconf_value_get_bool (value);
-}
-
-static void
-brasero_data_vfs_filter_broken_sym_changed (GConfClient *client,
-					    guint cxn,
-					    GConfEntry *entry,
-					    gpointer data)
-{
-	BraseroDataVFSPrivate *priv;
-	GConfValue *value;
-
-	priv = BRASERO_DATA_VFS_PRIVATE (data);
-
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_BOOL)
-		return;
-
-	priv->filter_broken_sym = gconf_value_get_bool (value);
-}
-
-static void
-brasero_data_vfs_replace_sym_changed (GConfClient *client,
-				      guint cxn,
-				      GConfEntry *entry,
-				      gpointer data)
-{
-	BraseroDataVFSPrivate *priv;
-	GConfValue *value;
-
-	priv = BRASERO_DATA_VFS_PRIVATE (data);
-
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_BOOL)
-		return;
-
-	priv->replace_sym = gconf_value_get_bool (value);
+	if (g_strcmp0 (key, BRASERO_PROPS_FILTER_REPLACE_SYMLINK))
+		priv->replace_sym = g_settings_get_boolean (settings, BRASERO_PROPS_FILTER_REPLACE_SYMLINK);
+	if (g_strcmp0 (key, BRASERO_PROPS_FILTER_BROKEN))
+		priv->filter_broken_sym = g_settings_get_boolean (settings, BRASERO_PROPS_FILTER_BROKEN);
+	if (g_strcmp0 (key, BRASERO_PROPS_FILTER_HIDDEN))
+		priv->filter_hidden = g_settings_get_boolean (settings, BRASERO_PROPS_FILTER_HIDDEN);
 }
 
 static void
 brasero_data_vfs_init (BraseroDataVFS *object)
 {
-	GConfClient *client;
 	BraseroDataVFSPrivate *priv;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (object);
@@ -1094,36 +1056,14 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 	priv->filtered = brasero_filtered_uri_new ();
 
 	/* load the fitering rules */
-	client = gconf_client_get_default ();
-	priv->replace_sym = gconf_client_get_bool (client,
-						   BRASERO_REPLACE_SYMLINK_KEY,
-						   NULL);
-	priv->filter_hidden = gconf_client_get_bool (client,
-						     BRASERO_FILTER_HIDDEN_KEY,
-						     NULL);
-	priv->filter_broken_sym = gconf_client_get_bool (client,
-							 BRASERO_FILTER_BROKEN_SYM_KEY,
-							 NULL);
-
-	gconf_client_notify_add (client,
-				 BRASERO_FILTER_HIDDEN_KEY,
-				 brasero_data_vfs_filter_hidden_changed,
-				 object,
-				 NULL,
-				 NULL);
-	gconf_client_notify_add (client,
-				 BRASERO_FILTER_BROKEN_SYM_KEY,
-				 brasero_data_vfs_filter_broken_sym_changed,
-				 object,
-				 NULL,
-				 NULL);
-	gconf_client_notify_add (client,
-				 BRASERO_REPLACE_SYMLINK_KEY,
-				 brasero_data_vfs_replace_sym_changed,
-				 object,
-				 NULL,
-				 NULL);
-	g_object_unref (client);
+	priv->settings = g_settings_new (BRASERO_SCHEMA_FILTER);
+	priv->replace_sym = g_settings_get_boolean (priv->settings, BRASERO_PROPS_FILTER_REPLACE_SYMLINK);
+	priv->filter_broken_sym = g_settings_get_boolean (priv->settings, BRASERO_PROPS_FILTER_BROKEN);
+	priv->filter_hidden = g_settings_get_boolean (priv->settings, BRASERO_PROPS_FILTER_HIDDEN);
+	g_signal_connect (priv->settings,
+	                  "changed",
+	                  G_CALLBACK (brasero_data_vfs_settings_changed),
+	                  object);
 
 	/* create the hash tables */
 	priv->loading = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1152,6 +1092,11 @@ brasero_data_vfs_finalize (GObject *object)
 	if (priv->filtered) {
 		g_object_unref (priv->filtered);
 		priv->filtered = NULL;
+	}
+
+	if (priv->settings) {
+		g_object_unref (priv->settings);
+		priv->settings = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_data_vfs_parent_class)->finalize (object);

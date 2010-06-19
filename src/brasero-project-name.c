@@ -498,6 +498,7 @@ brasero_project_name_set_type (BraseroProjectName *self)
 
 static void
 brasero_project_name_flags_changed (BraseroBurnSession *session,
+                                    GParamSpec *pspec,
 				    BraseroProjectName *self)
 {
 	BraseroProjectNamePrivate *priv;
@@ -658,7 +659,7 @@ brasero_project_name_set_session (BraseroProjectName *project,
 			  G_CALLBACK (brasero_project_name_track_removed),
 			  project);
 	g_signal_connect (priv->session,
-			  "flags-changed",
+			  "notify::flags",
 			  G_CALLBACK (brasero_project_name_flags_changed),
 			  project);
 

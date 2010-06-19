@@ -407,6 +407,7 @@ brasero_cdda2wav_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "cdda2wav",
+	                       NULL,
 			       _("Copy tracks from an audio CD with all associated information"),
 			       "Philippe Rouquier",
 			       1);

@@ -66,9 +66,6 @@ typedef struct {
 GType brasero_project_get_type (void);
 GtkWidget *brasero_project_new (void);
 
-void
-brasero_project_burn (BraseroProject *project);
-
 BraseroBurnResult
 brasero_project_confirm_switch (BraseroProject *project,
 				gboolean keep_files);

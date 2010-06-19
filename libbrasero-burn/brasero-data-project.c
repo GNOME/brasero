@@ -42,8 +42,6 @@
 
 #include <gio/gio.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-units.h"
 
 #include "brasero-data-project.h"

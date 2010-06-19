@@ -1,0 +1,107 @@
+<schemalist>
+  <schema id="org.gnome.brasero" path="/apps/brasero/">
+    <key name="nautilus-extension-debug" type="b">
+      <default>false</default>
+      <_summary>Should Nautilus extension output debug statements</_summary>
+      <_description>Should Nautilus extension output debug statements. The value should be set to true if it should.</_description>
+    </key>
+    <child name="config" schema="org.gnome.brasero.config"/>
+    <child name="display" schema="org.gnome.brasero.display"/>
+    <child name="filter" schema="org.gnome.brasero.filter"/>
+  </schema>
+  <schema id="org.gnome.brasero.config" path="/apps/brasero/config/">
+    <key name="checksum-image" type="i">
+      <default>0</default>
+      <_summary>The type of checksum used for images</_summary>
+      <_description>Set to 0 for MD5, 1 for SHA1 and 2 for SHA256</_description>
+    </key>
+    <key name="checksum-files" type="i">
+      <default>0</default>
+      <_summary>The type of checksum used for files</_summary>
+      <_description>Set to 0 for MD5, 1 for SHA1 and 2 for SHA256</_description>
+    </key>
+    <key name="tmpdir" type="s">
+      <default>''</default>
+      <_summary>Directory to use for temporary files</_summary>
+      <_description>Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used.</_description>
+    </key>
+    <key name="engine-group" type="s">
+      <default>''</default>
+      <_summary>Favourite burn engine</_summary>
+      <_description>Contains the name of the favourite burn engine suite installed. It will be used if possible.</_description>
+    </key>
+    <key name="plugins" type="as">
+      <default>[]</default>
+      <_summary>White list of additional plugins to use</_summary>
+      <_description>Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all.</_description>
+    </key>
+    <key name="immed-flag" type="b">
+      <default>false</default>
+      <_summary>Enable the "-immed" flag with cdrecord</_summary>
+      <_description>Whether to use the "-immed" flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups.</_description>
+    </key>
+    <key name="dao-flag" type="b">
+      <default>false</default>
+      <_summary>Whether to use the "-use-the-force-luke=dao" flag with growisofs</_summary>
+      <_description>Whether to use the "-use-the-force-luke=dao" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups.</_description>
+    </key>
+    <key name="minbuf-value" type="i">
+      <default>0</default>
+      <_summary>Used in conjunction with the "-immed" flag with cdrecord</_summary>
+      <_description>Used in conjunction with the "-immed" flag with cdrecord.</_description>
+    </key>
+    <key name="raw-flag" type="b">
+      <default>false</default>
+      <_summary>Whether to use the "--driver generic-mmc-raw" flag with cdrdao</_summary>
+      <_description>Whether to use the "--driver generic-mmc-raw" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups.</_description>
+    </key>
+  </schema>
+  <schema id="org.gnome.brasero.display" path="/apps/brasero/display/">
+    <key name="iso-folder" type="s">
+      <default>''</default>
+      <_summary>The last browsed folder while looking for images to burn</_summary>
+      <_description>Contains the absolute path of the directory that was last browsed for images to burn</_description>
+    </key>
+    <key name="viewer" type="b">
+      <default>true</default>
+      <_summary>Enable file preview</_summary>
+      <_description>Whether to display file preview. Set to true to use it.</_description>
+    </key>
+  </schema>
+  <schema id="org.gnome.brasero.filter" path="/apps/brasero/filter/">
+    <key name="hidden" type="b">
+      <default>true</default>
+      <_summary>Should brasero filter hidden files</_summary>
+      <_description>Should brasero filter hidden files. Set to true, brasero will filter hidden files.</_description>
+    </key>
+    <key name="replace-sym" type="b">
+      <default>true</default>
+      <_summary>Replace symbolic links by their targets</_summary>
+      <_description>Should brasero replace symbolic links by their target files in the project. Set to true, brasero will replace symbolic links.</_description>
+    </key>
+    <key name="broken-sym" type="b">
+      <default>true</default>
+      <_summary>Should brasero filter broken symbolic links</_summary>
+      <_description>Should brasero filter broken symbolic links. Set to true, brasero will filter broken symbolic links.</_description>
+    </key>
+  </schema>
+  <schema id="org.gnome.brasero.plugins">
+    <key name="priority" type="i">
+      <default>0</default>
+      <_summary>The priority value for the plugin</_summary>
+      <_description>When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native priority is used. A positive value overrides the plugin's native priority. A negative value disables the plugin.</_description>
+    </key>
+  </schema>
+  <schema id="org.gnome.brasero.drives">
+    <key name="flags" type="i">
+      <default>1</default>
+      <_summary>Burning flags to be used</_summary>
+      <_description>This value represents the burning flags that were used in such a context the last time.</_description>
+    </key>
+    <key name="speed" type="i">
+      <default>0</default>
+      <_summary>The speed to be used</_summary>
+      <_description>This value represents the speed that was used in such a context the last time.</_description>
+    </key>
+  </schema>
+</schemalist>

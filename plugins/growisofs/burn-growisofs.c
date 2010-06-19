@@ -43,8 +43,6 @@
 
 #include <gmodule.h>
 
-#include <gconf/gconf-client.h> 
-
 #include "brasero-units.h"
 
 #include "brasero-plugin-registration.h"
@@ -76,7 +74,8 @@ typedef struct BraseroGrowisofsPrivate BraseroGrowisofsPrivate;
 
 static GObjectClass *parent_class = NULL;
 
-#define GCONF_KEY_DAO_FLAG "/apps/brasero/config/dao_flag" 
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
+#define BRASERO_KEY_DAO_FLAG		"dao-flag"
 
 /* Process start */
 static BraseroBurnResult
@@ -741,16 +740,17 @@ brasero_growisofs_finalize (GObject *object)
 static void
 brasero_growisofs_export_caps (BraseroPlugin *plugin)
 {
-	BraseroPluginConfOption *use_dao;
-	gboolean use_dao_gconf_key;
+	BraseroPluginConfOption *use_dao_opt;
 	GSList *input_symlink;
 	GSList *input_joliet;
-	GConfClient *client;
+	GSettings *settings;
+	gboolean use_dao;
 	GSList *output;
 	GSList *input;
 
 	brasero_plugin_define (plugin,
 			       "growisofs",
+	                       NULL,
 			       _("Burns and blanks DVDs and BDs"),
 			       "Philippe Rouquier",
 			       7);
@@ -860,14 +860,12 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin)
 
 	/* DVD+R and DVD-R. DAO and growisofs doesn't always work well with
 	 * these types of media and with some drives. So don't allow it if the
-	 * workaround is set in GConf (and it should be by default). */
-	client = gconf_client_get_default ();
-	use_dao_gconf_key = gconf_client_get_bool (client,
-						   GCONF_KEY_DAO_FLAG,
-						   NULL);
-	g_object_unref (client);
+	 * workaround is set with GSettings (and it should be by default). */
+	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
+	use_dao = g_settings_get_boolean (settings, BRASERO_KEY_DAO_FLAG);
+	g_object_unref (settings);
 
-	if (use_dao_gconf_key == TRUE) {
+	if (use_dao == TRUE) {
 		BRASERO_PLUGIN_ADD_STANDARD_DVDR_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 		BRASERO_PLUGIN_ADD_STANDARD_DVDR_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 	}
@@ -923,11 +921,10 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_FAST_BLANK);
 
-	use_dao = brasero_plugin_conf_option_new (GCONF_KEY_DAO_FLAG,
-						  _("Allow DAO use"),
-						  BRASERO_PLUGIN_OPTION_BOOL);
-
-	brasero_plugin_add_conf_option (plugin, use_dao); 
+	use_dao_opt = brasero_plugin_conf_option_new (BRASERO_KEY_DAO_FLAG,
+	                                              _("Allow DAO use"),
+	                                              BRASERO_PLUGIN_OPTION_BOOL);
+	brasero_plugin_add_conf_option (plugin, use_dao_opt); 
 
 	brasero_plugin_register_group (plugin, _(GROWISOFS_DESCRIPTION));
 }

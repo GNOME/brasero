@@ -16,7 +16,6 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\
 	$(BRASERO_GIO_CFLAGS)						\
-	$(BRASERO_GCONF_CFLAGS)						\
 	$(BRASERO_GSTREAMER_CFLAGS)					\
 	$(BRASERO_GSTREAMER_BASE_CFLAGS)				\
 	$(BRASERO_GTK_CFLAGS)						\
@@ -119,7 +118,9 @@ brasero_SOURCES = \
 	brasero-setting.h        \
 	brasero-setting.c        \
 	brasero-search-engine.h        \
-	brasero-search-engine.c
+	brasero-search-engine.c        \
+	brasero-drive-settings.h        \
+	brasero-drive-settings.c
 
 if BUILD_PLAYLIST
 brasero_SOURCES += \
@@ -158,7 +159,6 @@ brasero_LDADD =						\
 	$(BRASERO_GLIB_LIBS)		\
 	$(BRASERO_GTHREAD_LIBS)				\
 	$(BRASERO_GIO_LIBS)		\
-	$(BRASERO_GCONF_LIBS)		\
 	$(BRASERO_GSTREAMER_LIBS)	\
 	$(BRASERO_GSTREAMER_BASE_LIBS)	\
 	$(BRASERO_GTK_LIBS)		\

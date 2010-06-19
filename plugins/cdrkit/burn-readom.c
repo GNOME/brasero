@@ -446,6 +446,7 @@ brasero_readom_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "readom",
+	                       NULL,
 			       _("Copies any disc to a disc image"),
 			       "Philippe Rouquier",
 			       1);

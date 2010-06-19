@@ -480,6 +480,7 @@ brasero_vcd_imager_export_caps (BraseroPlugin *plugin)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "vcdimager",
+	                       NULL,
 			       _("Creates disc images suitable for SVCDs"),
 			       "Philippe Rouquier",
 			       1);

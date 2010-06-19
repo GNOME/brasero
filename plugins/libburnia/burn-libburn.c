@@ -970,6 +970,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "libburn",
+	                       NULL,
 			       _("Burns, blanks and formats CDs, DVDs and BDs"),
 			       "Philippe Rouquier",
 			       15);

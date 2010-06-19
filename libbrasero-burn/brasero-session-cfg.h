@@ -60,11 +60,6 @@ struct _BraseroSessionCfg
 
 GType brasero_session_cfg_get_type (void) G_GNUC_CONST;
 
-#define BRASERO_DRIVE_PROPERTIES_FLAGS	       (BRASERO_BURN_FLAG_DUMMY|	\
-						BRASERO_BURN_FLAG_MULTI|	\
-						BRASERO_BURN_FLAG_BURNPROOF|	\
-						BRASERO_BURN_FLAG_NO_TMP_FILES)
-
 /**
  * This is for the signal sent to tell whether or not session is valid
  */

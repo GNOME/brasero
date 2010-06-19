@@ -40,8 +40,6 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
@@ -469,6 +467,8 @@ main (int argc, char **argv)
 {
 	GOptionContext *context;
 
+	g_setenv ("GSETTINGS_BACKEND", "gconf", FALSE);
+
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -515,13 +515,3 @@ main (int argc, char **argv)
 
 	return 0;
 }
-
-	/* REMINDER: this is done in burn library now */
-/*	gst_init (&argc, &argv);
-	gst_pb_utils_init ();
-	client = gconf_client_get_default ();
-	gconf_client_add_dir (client,
-			      BRASERO_CONF_DIR,
-			      GCONF_CLIENT_PRELOAD_NONE,
-			      NULL);
-*/

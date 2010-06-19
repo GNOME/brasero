@@ -642,7 +642,8 @@ brasero_normalize_export_caps (BraseroPlugin *plugin)
 	GSList *input;
 
 	brasero_plugin_define (plugin,
-			       N_("Normalize"),
+	                       "normalize",
+			       N_("Normalization"),
 			       _("Sets consistent sound levels between tracks"),
 			       "Philippe Rouquier",
 			       0);

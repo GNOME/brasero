@@ -43,8 +43,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-session.h"
 #include "brasero-session-helper.h"
 
@@ -127,7 +125,6 @@ typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 
 typedef enum {
 	TAG_CHANGED_SIGNAL,
-	FLAGS_CHANGED_SIGNAL,
 	TRACK_ADDED_SIGNAL,
 	TRACK_REMOVED_SIGNAL,
 	TRACK_CHANGED_SIGNAL,
@@ -136,9 +133,15 @@ typedef enum {
 } BraseroBurnSessionSignalType;
 
 static guint brasero_burn_session_signals [LAST_SIGNAL] = { 0 };
-static GObjectClass *parent_class = NULL;
 
-#define  BRASERO_TEMPORARY_DIRECTORY_KEY    "/apps/brasero/drives/tmpdir"
+enum {
+	PROP_0,
+	PROP_TMPDIR,
+	PROP_RATE,
+	PROP_FLAGS
+};
+
+static GObjectClass *parent_class = NULL;
 
 static void
 brasero_session_settings_clean (BraseroSessionSetting *settings)
@@ -356,7 +359,7 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 	}
 
 	/* if there is already a track, then we replace it on condition that it
-	 * has the same type and it's not AUDIO (only one allowed to have many) */
+	 * is not AUDIO (only one type allowed to have several tracks) */
 	if (!BRASERO_IS_TRACK_STREAM (new_track)
 	||  !BRASERO_IS_TRACK_STREAM (priv->tracks->data))
 		brasero_burn_session_free_tracks (self);
@@ -807,6 +810,7 @@ brasero_burn_session_set_rate (BraseroBurnSession *self,
 		return BRASERO_BURN_ERR;
 
 	priv->settings->rate = rate;
+	g_object_notify (G_OBJECT (self), "speed");
 	return BRASERO_BURN_OK;
 }
 
@@ -1184,7 +1188,6 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 				 const gchar *path)
 {
 	BraseroBurnSessionPrivate *priv;
-	GConfClient *client;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
@@ -1193,17 +1196,19 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 	if (!g_strcmp0 (priv->tmpdir, path))
 		return BRASERO_BURN_OK;
 
-	if (priv->tmpdir)
+	if (!path) {
 		g_free (priv->tmpdir);
-
-	if (path)
-		priv->tmpdir = g_strdup (path);
-	else
 		priv->tmpdir = NULL;
+		g_object_notify (G_OBJECT (self), "tmpdir");
+		return BRASERO_BURN_OK;
+	}
 
-	client = gconf_client_get_default ();
-	gconf_client_set_string (client, BRASERO_TEMPORARY_DIRECTORY_KEY, priv->tmpdir, NULL);
-	g_object_unref (client);
+	if (!g_str_has_prefix (path, G_DIR_SEPARATOR_S))
+		return BRASERO_BURN_ERR;
+
+	g_free (priv->tmpdir);
+	priv->tmpdir = g_strdup (path);
+	g_object_notify (G_OBJECT (self), "tmpdir");
 
 	return BRASERO_BURN_OK;
 }
@@ -1488,9 +1493,7 @@ brasero_burn_session_set_flags (BraseroBurnSession *self,
 		return;
 
 	priv->settings->flags = flags;
-	g_signal_emit (self,
-		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
-		       0);
+	g_object_notify (G_OBJECT (self), "flags");
 }
 
 /**
@@ -1515,9 +1518,7 @@ brasero_burn_session_add_flag (BraseroBurnSession *self,
 		return;
 
 	priv->settings->flags |= flag;
-	g_signal_emit (self,
-		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
-		       0);
+	g_object_notify (G_OBJECT (self), "flags");
 }
 
 /**
@@ -1542,9 +1543,7 @@ brasero_burn_session_remove_flag (BraseroBurnSession *self,
 		return;
 
 	priv->settings->flags &= ~flag;
-	g_signal_emit (self,
-		       brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL],
-		       0);
+	g_object_notify (G_OBJECT (self), "flags");
 }
 
 /**
@@ -2386,7 +2385,6 @@ static void
 brasero_burn_session_finalize (GObject *object)
 {
 	BraseroBurnSessionPrivate *priv;
-	GConfClient *client;
 	GSList *iter;
 
 	BRASERO_BURN_LOG ("Cleaning session");
@@ -2437,10 +2435,6 @@ brasero_burn_session_finalize (GObject *object)
 		priv->pile_settings = NULL;
 	}
 
-	client = gconf_client_get_default ();
-	gconf_client_set_string (client, BRASERO_TEMPORARY_DIRECTORY_KEY, priv->tmpdir, NULL);
-	g_object_unref (client);
-
 	if (priv->tmpdir) {
 		g_free (priv->tmpdir);
 		priv->tmpdir = NULL;
@@ -2477,14 +2471,72 @@ static void
 brasero_burn_session_init (BraseroBurnSession *obj)
 {
 	BraseroBurnSessionPrivate *priv;
-	GConfClient *client;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (obj);
 	priv->session = -1;
+}
 
-	client = gconf_client_get_default ();
-	priv->tmpdir = gconf_client_get_string (client, BRASERO_TEMPORARY_DIRECTORY_KEY, NULL);
-	g_object_unref (client);
+static void
+brasero_burn_session_set_property (GObject *object,
+                                   guint prop_id,
+                                   const GValue *value,
+                                   GParamSpec *pspec)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_BURN_SESSION (object));
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_TMPDIR:
+		brasero_burn_session_set_tmpdir (BRASERO_BURN_SESSION (object),
+		                                 g_value_get_string (value));
+		break;
+	case PROP_RATE:
+		brasero_burn_session_set_rate (BRASERO_BURN_SESSION (object),
+		                               g_value_get_int64 (value));
+		break;
+	case PROP_FLAGS:
+		brasero_burn_session_set_flags (BRASERO_BURN_SESSION (object),
+		                                g_value_get_int (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_burn_session_get_property (GObject *object,
+                                   guint prop_id,
+                                   GValue *value,
+                                   GParamSpec *pspec)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_BURN_SESSION (object));
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (object);
+
+	/* Here we do not call the accessors functions to honour the 0/NULL value
+	 * which means use system default. */
+	switch (prop_id)
+	{
+	case PROP_TMPDIR:
+		g_value_set_string (value, priv->tmpdir);
+		break;
+	case PROP_RATE:
+		g_value_set_int64 (value, priv->settings->rate);
+		break;
+	case PROP_FLAGS:
+		g_value_set_int (value, priv->settings->flags);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
 }
 
 static void
@@ -2495,7 +2547,10 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroBurnSessionPrivate));
 
 	parent_class = g_type_class_peek_parent(klass);
+
 	object_class->finalize = brasero_burn_session_finalize;
+	object_class->set_property = brasero_burn_session_set_property;
+	object_class->get_property = brasero_burn_session_get_property;
 
 	klass->get_output_path = brasero_burn_session_get_output_path_real;
 	klass->get_output_format = brasero_burn_session_get_output_format_real;
@@ -2512,7 +2567,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("output_changed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST,
+			  G_SIGNAL_RUN_LAST,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, output_changed),
 			  NULL,
 			  NULL,
@@ -2532,7 +2587,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [TRACK_ADDED_SIGNAL] =
 	    g_signal_new ("track_added",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST,
+			  G_SIGNAL_RUN_LAST,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_added),
 			  NULL,
 			  NULL,
@@ -2553,7 +2608,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [TRACK_REMOVED_SIGNAL] =
 	    g_signal_new ("track_removed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST,
+			  G_SIGNAL_RUN_LAST,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_removed),
 			  NULL,
 			  NULL,
@@ -2574,7 +2629,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [TRACK_CHANGED_SIGNAL] =
 	    g_signal_new ("track_changed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST,
+			  G_SIGNAL_RUN_LAST,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, track_changed),
 			  NULL,
 			  NULL,
@@ -2582,24 +2637,6 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  BRASERO_TYPE_TRACK);
-
-	/**
- 	* BraseroBurnSession::flags-changed:
- 	* @session: the object which received the signal
-	*
- 	* This signal gets emitted when the flags changed for @session.
- 	*
- 	*/
-	brasero_burn_session_signals [FLAGS_CHANGED_SIGNAL] =
-	    g_signal_new ("flags_changed",
-			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST,
-			  G_STRUCT_OFFSET (BraseroBurnSessionClass, flags_changed),
-			  NULL,
-			  NULL,
-			  g_cclosure_marshal_VOID__VOID,
-			  G_TYPE_NONE,
-			  0);
 
 	/**
  	* BraseroBurnSession::tag-changed:
@@ -2620,6 +2657,32 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 			  G_TYPE_NONE,
 			  1,
 	                  G_TYPE_STRING);
+
+	g_object_class_install_property (object_class,
+	                                 PROP_TMPDIR,
+	                                 g_param_spec_string ("tmpdir",
+	                                                      "Temporary directory",
+	                                                      "The path to the temporary directory",
+	                                                      NULL,
+	                                                      G_PARAM_READABLE|G_PARAM_WRITABLE));
+	g_object_class_install_property (object_class,
+	                                 PROP_RATE,
+	                                 g_param_spec_int64 ("speed",
+	                                                     "Burning speed",
+	                                                     "The speed at which a disc should be burned",
+	                                                     0,
+	                                                     G_MAXINT64,
+	                                                     0,
+	                                                     G_PARAM_READABLE|G_PARAM_WRITABLE));
+	g_object_class_install_property (object_class,
+	                                 PROP_FLAGS,
+	                                 g_param_spec_int ("flags",
+	                                                   "Burning flags",
+	                                                   "The flags that will be used to burn",
+	                                                   0,
+	                                                   G_MAXINT,
+	                                                   0,
+	                                                   G_PARAM_READABLE|G_PARAM_WRITABLE));
 }
 
 /**

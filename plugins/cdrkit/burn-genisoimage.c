@@ -525,6 +525,7 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "genisoimage",
+	                       NULL,
 	                       /* Translators: image is a disc image here */
 			       _("Creates disc images from a file selection"),
 			       "Philippe Rouquier",

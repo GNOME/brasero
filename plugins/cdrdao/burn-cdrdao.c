@@ -43,8 +43,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-error.h"
 #include "brasero-plugin-registration.h"
 #include "burn-job.h"
@@ -74,7 +72,8 @@ typedef struct _BraseroCdrdaoPrivate BraseroCdrdaoPrivate;
 
 static GObjectClass *parent_class = NULL;
 
-#define GCONF_KEY_RAW_FLAG "/apps/brasero/config/raw_flag" 
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
+#define BRASERO_KEY_RAW_FLAG		"raw-flag"
 
 static gboolean
 brasero_cdrdao_read_stderr_image (BraseroCdrdao *cdrdao, const gchar *line)
@@ -649,17 +648,15 @@ brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 static void
 brasero_cdrdao_init (BraseroCdrdao *obj)
 {  
-	GConfClient *client;
+	GSettings *settings;
  	BraseroCdrdaoPrivate *priv;
  	
 	/* load our "configuration" */
  	priv = BRASERO_CDRDAO_PRIVATE (obj);
- 	
- 	client = gconf_client_get_default ();
- 	priv->use_raw = gconf_client_get_bool (client,
-					       GCONF_KEY_RAW_FLAG,
-					       NULL);
- 	g_object_unref (client); 
+
+	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
+	priv->use_raw = g_settings_get_boolean (settings, BRASERO_KEY_RAW_FLAG);
+	g_object_unref (settings);
 }
 
 static void
@@ -696,6 +693,7 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "cdrdao",
+	                       NULL,
 			       _("Copies, burns and blanks CDs"),
 			       "Philippe Rouquier",
 			       0);
@@ -760,7 +758,7 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
-	use_raw = brasero_plugin_conf_option_new (GCONF_KEY_RAW_FLAG,
+	use_raw = brasero_plugin_conf_option_new (BRASERO_KEY_RAW_FLAG,
 						  _("Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"),
 						  BRASERO_PLUGIN_OPTION_BOOL);
 

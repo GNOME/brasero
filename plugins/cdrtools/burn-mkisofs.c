@@ -530,6 +530,7 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "mkisofs",
+	                       NULL,
 			       _("Creates disc images from a file selection"),
 			       "Philippe Rouquier",
 			       2);

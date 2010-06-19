@@ -91,10 +91,6 @@ brasero_app_burn (BraseroApp *app,
 		  BraseroBurnSession *session,
 		  gboolean multi);
 
-gboolean
-brasero_app_burn_options (BraseroApp *app,
-			  BraseroSessionCfg *session);
-
 void
 brasero_app_burn_uri (BraseroApp *app,
 		      BraseroDrive *burner,

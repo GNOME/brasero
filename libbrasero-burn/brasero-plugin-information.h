@@ -50,6 +50,9 @@ const gchar *
 brasero_plugin_get_name (BraseroPlugin *plugin);
 
 const gchar *
+brasero_plugin_get_display_name (BraseroPlugin *plugin);
+
+const gchar *
 brasero_plugin_get_author (BraseroPlugin *plugin);
 
 guint
@@ -66,9 +69,6 @@ brasero_plugin_get_description (BraseroPlugin *plugin);
 
 const gchar *
 brasero_plugin_get_icon_name (BraseroPlugin *plugin);
-
-gchar *
-brasero_plugin_get_gconf_priority_key (BraseroPlugin *plugin);
 
 typedef struct _BraseroPluginError BraseroPluginError;
 struct _BraseroPluginError {

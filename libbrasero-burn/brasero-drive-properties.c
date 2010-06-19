@@ -49,7 +49,6 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "brasero-session-cfg.h"
 #include "brasero-drive-properties.h"
 
 typedef struct _BraseroDrivePropertiesPrivate BraseroDrivePropertiesPrivate;

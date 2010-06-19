@@ -1369,6 +1369,7 @@ brasero_vob_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "transcode2vob",
+	                       NULL,
 			       _("Converts any video file into a format suitable for Video DVDs"),
 			       "Philippe Rouquier",
 			       0);

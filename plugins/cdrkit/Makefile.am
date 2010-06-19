@@ -12,15 +12,14 @@ INCLUDES = \
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)				\
-	$(BRASERO_GLIB_CFLAGS)				\
-	$(BRASERO_GCONF_CFLAGS)
+	$(BRASERO_GLIB_CFLAGS)
 
 #wodim
 wodimdir = $(libdir)/brasero/plugins
 wodim_LTLIBRARIES = libbrasero-wodim.la
 libbrasero_wodim_la_SOURCES = burn-wodim.c \
 	burn-cdrkit.h 
-libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
 libbrasero_wodim_la_LDFLAGS = -module -avoid-version
 
 #genisoimage

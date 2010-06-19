@@ -456,6 +456,7 @@ brasero_readcd_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "readcd",
+	                       NULL,
 			       _("Copies any disc to a disc image"),
 			       "Philippe Rouquier",
 			       0);

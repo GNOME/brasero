@@ -719,6 +719,7 @@ brasero_audio2cue_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "audio2cue",
+	                       NULL,
 			       _("Generates .cue files from audio"),
 			       "Philippe Rouquier",
 			       0);

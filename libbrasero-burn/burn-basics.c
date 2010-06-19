@@ -37,8 +37,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <gconf/gconf-client.h>
-
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
@@ -225,8 +223,6 @@ gboolean
 brasero_burn_library_start (int *argc,
                             char **argv [])
 {
-	GConfClient *client;
-
 	BRASERO_BURN_LOG ("Initializing Brasero-burn %i.%i.%i",
 			  BRASERO_MAJOR_VERSION,
 			  BRASERO_MINOR_VERSION,
@@ -252,13 +248,6 @@ brasero_burn_library_start (int *argc,
 
 	/* This is for missing codec automatic install */
 	gst_pb_utils_init ();
-
-	/* preload some gconf keys */
-	client = gconf_client_get_default ();
-	gconf_client_add_dir (client,
-			      "/apps/brasero",
-			      GCONF_CLIENT_PRELOAD_NONE,
-			      NULL);
 
 	/* initialize the media library */
 	brasero_media_library_start ();
@@ -316,8 +305,6 @@ brasero_burn_library_get_plugins_list (void)
 void
 brasero_burn_library_stop (void)
 {
-	GConfClient *client;
-
 	if (plugin_manager) {
 		g_object_unref (plugin_manager);
 		plugin_manager = NULL;
@@ -335,9 +322,6 @@ brasero_burn_library_stop (void)
 
 	/* Cleanup the io thing */
 	brasero_io_shutdown ();
-
-	client = gconf_client_get_default ();
-	gconf_client_remove_dir (client, "/apps/brasero", NULL);
 }
 
 /**

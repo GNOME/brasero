@@ -45,8 +45,6 @@
 
 #include <gmodule.h>
 
-#include <gconf/gconf-client.h>
-
 #include "scsi-device.h"
 #include "brasero-plugin-registration.h"
 #include "burn-job.h"
@@ -94,7 +92,9 @@ typedef struct _BraseroChecksumFilesPrivate BraseroChecksumFilesPrivate;
 #define BRASERO_CHECKSUM_FILES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CHECKSUM_FILES, BraseroChecksumFilesPrivate))
 
 #define BLOCK_SIZE			64
-#define GCONF_KEY_CHECKSUM_TYPE		"/apps/brasero/config/checksum_files"
+
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
+#define BRASERO_PROPS_CHECKSUM_FILES	"checksum-files"
 
 static BraseroJobClass *parent_class = NULL;
 
@@ -523,7 +523,7 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 	GSList *iter;
 	guint64 file_nb;
 	BraseroTrack *track;
-	GConfClient *client;
+	GSettings *settings;
 	GHashTable *excludedH;
 	GChecksumType gchecksum_type;
 	BraseroChecksumFilesPrivate *priv;
@@ -533,9 +533,9 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
 
 	/* get the checksum type */
-	client = gconf_client_get_default ();
-	checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
-	g_object_unref (client);
+	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
+	checksum_type = g_settings_get_int (settings, BRASERO_PROPS_CHECKSUM_FILES);
+	g_object_unref (settings);
 
 	if (checksum_type & BRASERO_CHECKSUM_MD5_FILE)
 		gchecksum_type = G_CHECKSUM_MD5;
@@ -1472,6 +1472,7 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin)
 	BraseroPluginConfOption *checksum_type;
 
 	brasero_plugin_define (plugin,
+	                       "file-checksum",
 			       /* Translators: this is the name of the plugin
 				* which will be translated only when it needs
 				* displaying. */
@@ -1513,7 +1514,7 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin)
 	g_slist_free (input);
 
 	/* add some configure options */
-	checksum_type = brasero_plugin_conf_option_new (GCONF_KEY_CHECKSUM_TYPE,
+	checksum_type = brasero_plugin_conf_option_new (BRASERO_PROPS_CHECKSUM_FILES,
 							_("Hashing algorithm to be used:"),
 							BRASERO_PLUGIN_OPTION_CHOICE);
 	brasero_plugin_conf_option_choice_add (checksum_type,

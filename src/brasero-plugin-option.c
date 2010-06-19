@@ -31,8 +31,6 @@
 
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-plugin.h"
 #include "brasero-plugin-information.h"
 #include "brasero-plugin-option.h"
@@ -46,154 +44,36 @@ enum {
 typedef struct _BraseroPluginOptionPrivate BraseroPluginOptionPrivate;
 struct _BraseroPluginOptionPrivate
 {
-	GSList *widgets;
 	GtkWidget *title;
 	GtkWidget *vbox;
-};
 
-struct _BraseroPluginOptionWidget {
-	GtkWidget *widget;
-	GtkWidget *sensitive;
-	BraseroPluginConfOption *option;
-
-	GSList *suboptions;
+	GSettings *settings;
 };
-typedef struct _BraseroPluginOptionWidget BraseroPluginOptionWidget;
 
 #define BRASERO_PLUGIN_OPTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PLUGIN_OPTION, BraseroPluginOptionPrivate))
 
 G_DEFINE_TYPE (BraseroPluginOption, brasero_plugin_option, GTK_TYPE_DIALOG);
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
 
-void
-brasero_plugin_option_save_settings (BraseroPluginOption *self)
-{
-	GSList *iter;
-	GtkTreeModel *model;
-	GConfClient *client;
-	GtkTreeIter tree_iter;
-	BraseroPluginOptionPrivate *priv;
-
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
-
-	client = gconf_client_get_default ();
-
-	for (iter = priv->widgets; iter; iter = iter->next) {
-		BraseroPluginOptionWidget *widget;
-		BraseroPluginConfOptionType type;
-		const gchar *value_str;
-		gboolean value_bool;
-		gint value_int;
-		gchar *key;
-
-		widget = iter->data;
-		if (!gtk_widget_is_sensitive (widget->widget))
-			continue;
-
-		brasero_plugin_conf_option_get_info (widget->option,
-						     &key,
-						     NULL,
-						     &type);
-		switch (type) {
-		case BRASERO_PLUGIN_OPTION_BOOL:
-			value_bool = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget->widget));
-			gconf_client_set_bool (client, key, value_bool, NULL);
-			break;
-
-		case BRASERO_PLUGIN_OPTION_INT:
-			value_int = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (widget->widget));
-			gconf_client_set_int (client, key, value_int, NULL);
-			break;
-
-		case BRASERO_PLUGIN_OPTION_STRING:
-			value_str = gtk_entry_get_text (GTK_ENTRY (widget->widget));
-			gconf_client_set_string (client, key, value_str, NULL);
-			break;
-
-		case BRASERO_PLUGIN_OPTION_CHOICE:
-			model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget->widget));
-			gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget->widget), &tree_iter);
-			gtk_tree_model_get (model, &tree_iter,
-					    VALUE_COL, &value_int,
-					    -1);
-			gconf_client_set_int (client, key, value_int, NULL);
-		default:
-			break;
-		}
-
-		g_free (key);
-	}
-
-	g_object_unref (client);
-}
-
-static void
-brasero_plugin_option_set_toggle_slaves (BraseroPluginOption *self,
-					 BraseroPluginOptionWidget *option,
-					 gboolean active)
-{
-	BraseroPluginOptionPrivate *priv;
-	GSList *iter;
-
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
-
-	for (iter = option->suboptions; iter; iter = iter->next) {
-		BraseroPluginOptionWidget *suboption;
-
-		suboption = iter->data;
-		gtk_widget_set_sensitive (suboption->sensitive, active);
-	}
-}
-
-static void
-brasero_plugin_option_toggled_changed (GtkWidget *button,
-				       BraseroPluginOption *self)
-{
-	BraseroPluginOptionPrivate *priv;
-	gboolean active;
-	GSList *iter;
-
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
-
-	active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-	for (iter = priv->widgets; iter; iter = iter->next) {
-		BraseroPluginOptionWidget *option;
-
-		option = iter->data;
-		if (option->widget == button) {
-			brasero_plugin_option_set_toggle_slaves (self,
-								 option,
-								 active);
-			break;
-		}
-	}
-}
-
-static BraseroPluginOptionWidget *
+static GtkWidget *
 brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 				       BraseroPluginConfOption *option,
 				       GtkBox *container)
 {
 	BraseroPluginOptionPrivate *priv;
-	BraseroPluginOptionWidget *info;
-	GSList *suboptionsw = NULL;
+	BraseroPluginConfOptionType type;
+	GtkCellRenderer *renderer;
 	GtkListStore *model;
-	GConfClient *client;
-	gboolean value_bool;
-	gchar *value_str;
-	gint value_int;
+	gchar *description;
 	GSList *suboptions;
 	GtkWidget *widget;
 	GtkWidget *label;
+	GtkTreeIter iter;
 	GtkWidget *hbox;
 	GtkWidget *box;
-	GtkTreeIter iter;
-	GtkCellRenderer *renderer;
-	BraseroPluginConfOptionType type;
-	gchar *description;
 	gchar *key;
 
 	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
-	client = gconf_client_get_default ();
 
 	brasero_plugin_conf_option_get_info (option,
 					     &key,
@@ -212,11 +92,11 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 	switch (type) {
 	case BRASERO_PLUGIN_OPTION_BOOL:
 		widget = gtk_check_button_new_with_label (description);
+		g_settings_bind (priv->settings, key,
+			         widget, "active",
+			         G_SETTINGS_BIND_DEFAULT);
 
 		gtk_widget_show (widget);
-
-		value_bool = gconf_client_get_bool (client, key, NULL);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), value_bool);
 
 		suboptions = brasero_plugin_conf_option_bool_get_suboptions (option);
 		if (suboptions) {
@@ -235,21 +115,17 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 					    0);
 
 			for (; suboptions; suboptions = suboptions->next) {
+				GtkWidget *child;
 				BraseroPluginConfOption *suboption;
 
 				suboption = suboptions->data;
 
 				/* first create the slaves then set state */
-				info = brasero_plugin_option_add_conf_widget (self, suboption, GTK_BOX (box));
-				gtk_widget_set_sensitive (info->sensitive, value_bool);
-
-				suboptionsw = g_slist_prepend (suboptionsw, info);
+				child = brasero_plugin_option_add_conf_widget (self, suboption, GTK_BOX (box));
+				g_settings_bind (priv->settings, key,
+				                 child, "sensitive",
+				                 G_SETTINGS_BIND_DEFAULT);
 			}
-
-			g_signal_connect (widget,
-					  "toggled",
-					  G_CALLBACK (brasero_plugin_option_toggled_changed),
-					  self);
 		}
 		else
 			gtk_box_pack_start (GTK_BOX (hbox),
@@ -266,7 +142,9 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 
-		widget = gtk_spin_button_new_with_range (1.0, 500.0, 1.0);
+		widget = gtk_spin_button_new_with_range (brasero_plugin_conf_option_int_get_min (option),
+		                                         brasero_plugin_conf_option_int_get_max (option),
+		                                         1.0);
 		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
 
 		gtk_widget_show_all (box);
@@ -276,15 +154,9 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 				    FALSE,
 				    0);
 
-		value_int = gconf_client_get_int (client, key, NULL);
-
-		if (brasero_plugin_conf_option_int_get_min (option) > value_int)
-			value_int = brasero_plugin_conf_option_int_get_min (option);
-
-		if (brasero_plugin_conf_option_int_get_max (option) > value_int)
-			value_int = brasero_plugin_conf_option_int_get_max (option);
-
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON (widget), value_int);
+		g_settings_bind (priv->settings, key,
+			         widget, "value",
+			         G_SETTINGS_BIND_DEFAULT);
 		break;
 
 	case BRASERO_PLUGIN_OPTION_STRING:
@@ -304,9 +176,9 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 				    FALSE,
 				    0);
 
-		value_str = gconf_client_get_string (client, key, NULL);
-		gtk_entry_set_text (GTK_ENTRY (widget), value_str);
-		g_free (value_str);
+		g_settings_bind (priv->settings, key,
+			         widget, "text",
+			         G_SETTINGS_BIND_DEFAULT);
 		break;
 
 	case BRASERO_PLUGIN_OPTION_CHOICE:
@@ -330,7 +202,6 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 						"text", STRING_COL,
 						NULL);
 
-		value_int = gconf_client_get_int (client, key, NULL);
 		suboptions = brasero_plugin_conf_option_choice_get (option);
 		for (; suboptions; suboptions = suboptions->next) {
 			BraseroPluginChoicePair *pair;
@@ -341,11 +212,12 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 					    STRING_COL, pair->string,
 					    VALUE_COL, pair->value,
 					    -1);
-
-			if (pair->value == value_int)
-				gtk_combo_box_set_active_iter (GTK_COMBO_BOX (widget), &iter);
 		}
 
+		g_settings_bind (priv->settings, key,
+			         widget, "active",
+			         G_SETTINGS_BIND_DEFAULT);
+			
 		if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter)) {
 			if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
 				gtk_combo_box_set_active_iter (GTK_COMBO_BOX (widget), &iter);
@@ -359,24 +231,16 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 				    0);
 		break;
 
+
 	default:
 		widget = NULL;
 		break;
 	}
 
-	info = g_new0 (BraseroPluginOptionWidget, 1);
-	info->widget = widget;
-	info->option = option;
-	info->suboptions = suboptionsw;
-	info->sensitive = box;
-
-	priv->widgets = g_slist_prepend (priv->widgets, info);
-
 	g_free (key);
 	g_free (description);
 
-	g_object_unref (client);
-	return info;
+	return widget;
 }
 
 void
@@ -391,7 +255,7 @@ brasero_plugin_option_set_plugin (BraseroPluginOption *self,
 	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
 
 	/* Use the translated name for the plugin. */
-	tmp = g_strdup_printf (_("Options for plugin %s"), _(brasero_plugin_get_name (plugin)));
+	tmp = g_strdup_printf (_("Options for plugin %s"), _(brasero_plugin_get_display_name (plugin)));
 	string = g_strdup_printf ("<b>%s</b>", tmp);
 	g_free (tmp);
 
@@ -434,16 +298,9 @@ brasero_plugin_option_init (BraseroPluginOption *object)
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 	gtk_dialog_add_button (GTK_DIALOG (object),
-			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	gtk_dialog_add_button (GTK_DIALOG (object),
-			       GTK_STOCK_APPLY, GTK_RESPONSE_OK);
-}
+			       GTK_STOCK_CLOSE, GTK_RESPONSE_OK);
 
-static void
-brasero_plugin_option_widget_free (BraseroPluginOptionWidget *option)
-{
-	g_slist_free (option->suboptions);
-	g_free (option);
+	priv->settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
 }
 
 static void
@@ -453,9 +310,10 @@ brasero_plugin_option_finalize (GObject *object)
 
 	priv = BRASERO_PLUGIN_OPTION_PRIVATE (object);
 
-	g_slist_foreach (priv->widgets, (GFunc) brasero_plugin_option_widget_free, NULL);
-	g_slist_free (priv->widgets);
-	priv->widgets = NULL;
+	if (priv->settings) {
+		g_object_unref (priv->settings);
+		priv->settings = NULL;
+	}
 
 	G_OBJECT_CLASS (brasero_plugin_option_parent_class)->finalize (object);
 }

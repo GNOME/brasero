@@ -47,8 +47,6 @@
 
 #include <gmodule.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-plugin-registration.h"
 #include "burn-job.h"
 #include "burn-volume.h"
@@ -87,7 +85,8 @@ typedef struct _BraseroChecksumImagePrivate BraseroChecksumImagePrivate;
 
 #define BRASERO_CHECKSUM_IMAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CHECKSUM_IMAGE, BraseroChecksumImagePrivate))
 
-#define GCONF_KEY_CHECKSUM_TYPE		"/apps/brasero/config/checksum_image"
+#define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
+#define BRASERO_PROPS_CHECKSUM_IMAGE	"checksum-image"
 
 static BraseroJobClass *parent_class = NULL;
 
@@ -419,12 +418,12 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 static BraseroChecksumType
 brasero_checksum_get_checksum_type (void)
 {
-	GConfClient *client;
+	GSettings *settings;
 	GChecksumType checksum_type;
 
-	client = gconf_client_get_default ();
-	checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
-	g_object_unref (client);
+	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
+	checksum_type = g_settings_get_int (settings, BRASERO_PROPS_CHECKSUM_IMAGE);
+	g_object_unref (settings);
 
 	return checksum_type;
 }
@@ -824,6 +823,7 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin)
 	BraseroPluginConfOption *checksum_type;
 
 	brasero_plugin_define (plugin,
+	                       "image-checksum",
 			       /* Translators: this is the name of the plugin
 				* which will be translated only when it needs
 				* displaying. */
@@ -851,7 +851,7 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin)
 	g_slist_free (input);
 
 	/* add some configure options */
-	checksum_type = brasero_plugin_conf_option_new (GCONF_KEY_CHECKSUM_TYPE,
+	checksum_type = brasero_plugin_conf_option_new (BRASERO_PROPS_CHECKSUM_IMAGE,
 							_("Hashing algorithm to be used:"),
 							BRASERO_PLUGIN_OPTION_CHOICE);
 	brasero_plugin_conf_option_choice_add (checksum_type,

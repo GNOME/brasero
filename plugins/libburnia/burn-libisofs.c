@@ -1042,6 +1042,7 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "libisofs",
+	                       NULL,
 			       _("Creates disc images from a file selection"),
 			       "Philippe Rouquier",
 			       3);

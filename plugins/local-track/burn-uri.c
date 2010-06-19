@@ -740,6 +740,7 @@ brasero_burn_uri_export_caps (BraseroPlugin *plugin)
 	GSList *caps;
 
 	brasero_plugin_define (plugin,
+	                       "burn-uri",
 			       /* Translators: this is the name of the plugin
 				* which will be translated only when it needs
 				* displaying. */

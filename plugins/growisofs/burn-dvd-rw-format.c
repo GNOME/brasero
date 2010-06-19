@@ -185,7 +185,8 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin)
 	GSList *output;
 
 	brasero_plugin_define (plugin,
-			       "dvd+rw-format",
+			       "dvd-rw-format",
+	                       NULL,
 			       _("Blanks and formats rewritable DVDs and BDs"),
 			       "Philippe Rouquier",
 			       4);

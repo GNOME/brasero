@@ -64,6 +64,7 @@
 #include "brasero-jacket-edit.h"
 
 #include "burn-plugin-manager.h"
+#include "brasero-drive-settings.h"
 
 typedef struct _BraseroAppPrivate BraseroAppPrivate;
 struct _BraseroAppPrivate
@@ -98,6 +99,7 @@ struct _BraseroAppPrivate
 
 
 G_DEFINE_TYPE (BraseroApp, brasero_app, G_TYPE_OBJECT);
+
 
 /**
  * Menus and toolbar
@@ -549,7 +551,7 @@ brasero_app_burn (BraseroApp *app,
 	return success;
 }
 
-gboolean
+static BraseroBurnResult
 brasero_app_burn_options (BraseroApp *app,
 			  BraseroSessionCfg *session)
 {
@@ -579,6 +581,13 @@ brasero_app_session_burn (BraseroApp *app,
 			  BraseroSessionCfg *session,
 			  gboolean burn)
 {
+	BraseroDriveSettings *settings;
+
+	/* Set saved temporary directory for the session.
+	 * NOTE: BraseroBurnSession can cope with NULL path */
+	settings = brasero_drive_settings_new ();
+	brasero_drive_settings_set_session (settings, BRASERO_BURN_SESSION (session));
+
 	/* We need to have a drive to start burning immediately */
 	if (burn && brasero_burn_session_get_burner (BRASERO_BURN_SESSION (session))) {
 		BraseroStatus *status;
@@ -600,8 +609,10 @@ brasero_app_session_burn (BraseroApp *app,
 		}
 		g_object_unref (status);
 
-		if (result == BRASERO_BURN_CANCEL)
+		if (result == BRASERO_BURN_CANCEL) {
+			g_object_unref (settings);
 			return;
+		}
 
 		if (result != BRASERO_BURN_OK) {
 			GError *error;
@@ -614,18 +625,26 @@ brasero_app_session_burn (BraseroApp *app,
 			if (error)
 				g_error_free (error);
 
+			g_object_unref (settings);
 			return;
 		}
 
-		brasero_app_burn (app, BRASERO_BURN_SESSION (session), FALSE);
+		result = brasero_app_burn (app,
+		                           BRASERO_BURN_SESSION (session),
+		                           FALSE);
 	}
 	else {
 		BraseroBurnResult result;
 
 		result = brasero_app_burn_options (app, session);
-		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_RETRY)
-			brasero_app_burn (app, BRASERO_BURN_SESSION (session), (result == BRASERO_BURN_RETRY));
+		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_RETRY) {
+			result = brasero_app_burn (app,
+			                           BRASERO_BURN_SESSION (session),
+			                           (result == BRASERO_BURN_RETRY));
+		}
 	}
+
+	g_object_unref (settings);
 }
 
 void

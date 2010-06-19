@@ -30,8 +30,6 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-#include <gconf/gconf-client.h>
-
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 
@@ -60,6 +58,7 @@
 #include "brasero-project-name.h"
 
 #include "brasero-misc.h"
+#include "brasero-drive-settings.h"
 
 #include "brasero-media-private.h"
 #include "burn-debug.h"
@@ -104,21 +103,25 @@ static GObjectClass *parent_class;
 //#define DEBUG_PRINT(format_MACRO,...)           g_print (format_MACRO, ##__VA_ARGS__);
 #define DEBUG_PRINT(format_MACRO,...)             
 
+#define BRASERO_SCHEMA				"org.gnome.brasero"
+#define BRASERO_PROPS_NAUTILUS_EXT_DEBUG	"nautilus-extension-debug"
+
 /* do not call brasero_*_start() at nautilus startup, they are very expensive;
  * lazily initialize those instead */
 static void
-ensure_initialized()
+ensure_initialized ()
 {
 	static gboolean initialized = FALSE;
-	GConfClient *client;
 
 	if (!initialized) {
-		client = gconf_client_get_default ();
-		if (gconf_client_get_bool (client, "/apps/brasero/nautilus-extension-debug", NULL)) {
-		    brasero_media_library_set_debug (TRUE);
-		    brasero_burn_library_set_debug (TRUE);
+		GSettings *settings;
+
+		settings = g_settings_new (BRASERO_SCHEMA);
+		if (g_settings_get_boolean (settings, BRASERO_PROPS_NAUTILUS_EXT_DEBUG)) {
+			brasero_media_library_set_debug (TRUE);
+			brasero_burn_library_set_debug (TRUE);
 		}
-		g_object_unref (client);
+		g_object_unref (settings);
 
 		brasero_media_library_start ();
 		brasero_burn_library_start (NULL, NULL);
@@ -134,9 +137,16 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 				  GtkWidget		*options,
 				  GtkWindow		*window)
 {
+	gboolean		 success;
+	GtkResponseType		 result;
 	const gchar		*icon_name;
 	GtkWidget		*dialog;
-	GtkResponseType		 result;
+	BraseroDriveSettings	*settings;
+
+	/* Set saved temporary directory for the session.
+	 * NOTE: BraseroBurnSession can cope with NULL path */
+	settings = brasero_drive_settings_new ();
+	brasero_drive_settings_set_session (settings, BRASERO_BURN_SESSION (session));
 
 	/* Get the icon for the window */
 	if (window)
@@ -146,7 +156,6 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 
 	/* run option dialog */
 	dialog = brasero_burn_options_new (session);
-
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), icon_name);
 
 	if (dialog_title)
@@ -160,8 +169,10 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	gtk_widget_destroy (dialog);
 
 	if (result != GTK_RESPONSE_OK
-	&&  result != GTK_RESPONSE_ACCEPT)
+	&&  result != GTK_RESPONSE_ACCEPT) {
+		g_object_unref (settings);
 		return;
+	}
 
 	/* now run burn dialog */
 	dialog = brasero_burn_dialog_new ();
@@ -177,13 +188,15 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	gtk_window_present (GTK_WINDOW (dialog));
 
 	if (result == GTK_RESPONSE_OK)
-		brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
-					 BRASERO_BURN_SESSION (session));
+		success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
+		                                   BRASERO_BURN_SESSION (session));
 	else
-		brasero_burn_dialog_run_multi (BRASERO_BURN_DIALOG (dialog),
-					       BRASERO_BURN_SESSION (session));
+		success = brasero_burn_dialog_run_multi (BRASERO_BURN_DIALOG (dialog),
+		                                         BRASERO_BURN_SESSION (session));
 
 	gtk_widget_destroy (dialog);
+
+	g_object_unref (settings);
 }
 
 static gboolean

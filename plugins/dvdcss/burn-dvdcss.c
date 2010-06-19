@@ -673,6 +673,7 @@ brasero_dvdcss_export_caps (BraseroPlugin *plugin)
 
 	brasero_plugin_define (plugin,
 			       "dvdcss",
+	                       NULL,
 	                       /* Translators: image is not a picture but a disc image */
 			       _("Copies CSS encrypted Video DVDs to a disc image"),
 			       "Philippe Rouquier",

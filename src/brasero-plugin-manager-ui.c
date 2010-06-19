@@ -33,8 +33,6 @@ fy
 
 #include <glib/gi18n.h>
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-misc.h"
 
 #include "brasero-plugin-manager-ui.h"
@@ -146,7 +144,7 @@ about_button_cb (GtkWidget          *button,
 				     brasero_plugin_get_author (plugin));
 
 	dialog = g_object_new (GTK_TYPE_ABOUT_DIALOG,
-			       "program-name", _(brasero_plugin_get_name (plugin)),
+			       "program-name", _(brasero_plugin_get_display_name (plugin)),
 			       "copyright", copyright,
 			       "authors", authors,
 			       "comments", brasero_plugin_get_description (plugin),
@@ -191,9 +189,6 @@ configure_button_cb (GtkWidget          *button,
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result == GTK_RESPONSE_OK)
-		brasero_plugin_option_save_settings (BRASERO_PLUGIN_OPTION (dialog));
-
 	gtk_widget_destroy (dialog);
 }
 
@@ -223,7 +218,7 @@ plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 		text = g_markup_printf_escaped ("<b>%s</b>\n%s\n<i>%s</i>",
 						/* Use the translated name of 
 						 * the plugin. */
-						_(brasero_plugin_get_name (plugin)),
+						_(brasero_plugin_get_display_name (plugin)),
 						brasero_plugin_get_description (plugin),
 						error_string);
 		g_free (error_string);
@@ -232,7 +227,7 @@ plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 		text = g_markup_printf_escaped ("<b>%s</b>\n%s",
 						/* Use the translated name of 
 						 * the plugin. */
-						_(brasero_plugin_get_name (plugin)),
+						_(brasero_plugin_get_display_name (plugin)),
 						brasero_plugin_get_description (plugin));
 
 	g_object_set (G_OBJECT (cell),
@@ -515,7 +510,7 @@ name_search_cb (GtkTreeModel *model,
 		return FALSE;
 
 	/* Use translated name for the plugin */
-	normalized_string = g_utf8_normalize (_(brasero_plugin_get_name (plugin)),
+	normalized_string = g_utf8_normalize (_(brasero_plugin_get_display_name (plugin)),
 					      -1,
 					      G_NORMALIZE_ALL);
 	normalized_key = g_utf8_normalize (key,
@@ -821,8 +816,8 @@ model_name_sort_func (GtkTreeModel *model,
 		return 1;
 
 	/* Use the translated name for the plugins */
-	return g_utf8_collate (_(brasero_plugin_get_name (plugin1)),
-			       _(brasero_plugin_get_name (plugin2)));
+	return g_utf8_collate (_(brasero_plugin_get_display_name (plugin1)),
+			       _(brasero_plugin_get_display_name (plugin2)));
 }
 
 static void

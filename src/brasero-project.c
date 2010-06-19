@@ -89,6 +89,7 @@
 #include "brasero-notify.h"
 #include "brasero-project-parse.h"
 #include "brasero-project-name.h"
+#include "brasero-drive-settings.h"
 
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);
@@ -1600,11 +1601,12 @@ brasero_project_image_properties (BraseroProject *project)
 	return (answer == GTK_RESPONSE_OK) ? BRASERO_BURN_OK:BRASERO_BURN_ERR;
 }
 
-void
+static void
 brasero_project_burn (BraseroProject *project)
 {
 	BraseroBurnResult res;
 	BraseroDisc *current_disc;
+	BraseroDriveSettings *settings;
 
 	/* Check that we are ready */
 	if (brasero_project_check_status (project) != BRASERO_BURN_OK)
@@ -1614,13 +1616,21 @@ brasero_project_burn (BraseroProject *project)
 	if (brasero_project_check_plugins_not_ready (project, BRASERO_BURN_SESSION (project->priv->session)) != BRASERO_BURN_OK)
 		return;
 
+	/* Set saved temporary directory for the session.
+	 * NOTE: BraseroBurnSession can cope with NULL path */
+	settings = brasero_drive_settings_new ();
+	brasero_drive_settings_set_session (settings, BRASERO_BURN_SESSION (project->priv->session));
+
 	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (project->priv->session)))
 		res = brasero_project_drive_properties (project);
 	else
 		res = brasero_project_image_properties (project);
 
-	if (res != BRASERO_BURN_OK && res != BRASERO_BURN_RETRY)
+	if (res != BRASERO_BURN_OK
+	&&  res != BRASERO_BURN_RETRY) {
+		g_object_unref (settings);
 		return;
+	}
 
 	project->priv->is_burning = 1;
 
@@ -1639,6 +1649,8 @@ brasero_project_burn (BraseroProject *project)
 	project->priv->burnt = brasero_app_burn (brasero_app_get_default (),
 						 BRASERO_BURN_SESSION (project->priv->session),
 						 res == BRASERO_BURN_RETRY);
+
+	g_object_unref (settings);
 
 	/* empty the stack of temporary tracks */
 	while (brasero_burn_session_pop_tracks (BRASERO_BURN_SESSION (project->priv->session)) == BRASERO_BURN_RETRY);

@@ -68,6 +68,7 @@ GType brasero_plugin_register_caps (BraseroPlugin *plugin, gchar **error);
 void
 brasero_plugin_define (BraseroPlugin *plugin,
 		       const gchar *name,
+                       const gchar *display_name,
 		       const gchar *description,
 		       const gchar *author,
 		       guint priority);
