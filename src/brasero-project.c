@@ -1463,6 +1463,14 @@ brasero_project_setup_session (BraseroProject *project,
 	}
 }
 
+static void
+brasero_project_output_changed (BraseroBurnSession *session,
+                                BraseroMedium *former_medium,
+                                GtkDialog *dialog)
+{
+	gtk_dialog_response (dialog, GTK_RESPONSE_CANCEL);
+}
+
 static BraseroBurnResult
 brasero_project_drive_properties (BraseroProject *project)
 {
@@ -1474,6 +1482,7 @@ brasero_project_drive_properties (BraseroProject *project)
 	GtkWidget *options;
 	GtkWidget *button;
 	GtkWidget *dialog;
+	glong cancel_sig;
 	GtkWidget *box;
 	gchar *header;
 	gchar *string;
@@ -1493,6 +1502,12 @@ brasero_project_drive_properties (BraseroProject *project)
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      NULL);
 	g_free (header);
+
+	/* This is in case the medium gets ejected instead of our locking it */
+	cancel_sig = g_signal_connect (project->priv->session,
+	                               "output-changed",
+	                               G_CALLBACK (brasero_project_output_changed),
+	                               dialog);
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
 			       _("Burn _Several Copies"),
@@ -1537,6 +1552,8 @@ brasero_project_drive_properties (BraseroProject *project)
 	/* launch the dialog */
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
+
+	g_signal_handler_disconnect (project->priv->session, cancel_sig);
 
 	if (answer == GTK_RESPONSE_OK)
 		return BRASERO_BURN_OK;
