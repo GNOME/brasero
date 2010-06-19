@@ -1480,6 +1480,11 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	desc = page_2A->wr_spd_desc;
 	for (i = 0; i < desc_num; i ++) {
+		/* It happens (I have such a drive) that it returns descriptors
+		 * with the same speeds each (in this case the maximum) */
+		if (i > 0 && priv->wr_speeds [i-1] == BRASERO_GET_16 (desc [i].speed))
+			continue;
+
 		priv->wr_speeds [i] = BRASERO_GET_16 (desc [i].speed);
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
 	}
