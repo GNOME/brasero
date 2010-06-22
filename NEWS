@@ -1,3 +1,59 @@
+21-06-2010: 2.30.2
+
+Bug Fixes:
+- Lot's of memleak fixes
+- Fixed a runtime warning related to cancelling tracker searches
+- Fix part of bgo#616935  - Crash in brasero_data_project_node_removed at brasero-data-project.c:1163
+- Fix bgo#615526  - brasero crashed with SIGSEGV in brasero_data_project_remove_node()
+- Fix a few runtime warnings with the Cover Editor
+- Fix #590648  - Text in cover editor does not show up automatically
+- Removed use of deprecated flags
+- Fix part of 594716  - Use accessor functions instead direct access (use GSEA
+L GnomeGoal)
+- Fix a bug in the layout on first start (side pane was hidden and remained so
+ until the user moved it)
+- Save printer settings for cover printing
+- Write the contents of the GtkTextBuffer displayed line by displayed line whi
+ch should improve the layout
+- Fix part of 617831  - "Write to Disc" button sensitivity regression
+- Fix flaw in mask that led libburn plugin not to work (not to be picked up ac
+tually) in some circumstances
+- Fix bgo#617494  - Fails to burn ANY audio project (part 1)
+- Some more fixes for #617494  - Fails to burn ANY audio project
+- Fix #564411  - Move columns doesn't work
+- Fix #618917  - Brasero does not correctly handle double clicking on column s
+eparators
+- Fix #618942  - Bad info when burning, high CPU usage and slow burn
+- Change the priority for cdrdao and raised the one of cdda2wav plugin
+- Fix for #615988  - brasero crashed with SIGSEGV in brasero_mmc3_get_performa
+nce_wrt_spd_desc()
+- Fix #597694  - brasero crashed with SIGSEGV in brasero_scsi_command_issue_sy
+nc()
+- Do not check for symlinks on cdda2wav so the plugin can use icedax.
+- Fix #598145  - Brasero's failure with some file names
+- Fix #613986  - Pressing create audio cd does nothing
+- Fix #602854  - Empty project not available
+- Fix #619366  - can't actually save error logs
+- Fix #619368  - doesn't handle incorrect temp dirs properly
+- Fix multi DND in GtkFileChooser
+- Fix #615959  - Displays "starting to record" during whole burn process
+- Fix wrong report of speed with both cdrecord and wodim
+- Fix #620589  - Disk project doesn't save the disk title
+- Fix #621243  - Brasero reports outdated cdrtools on cdrtools-3.00
+- misc bug fixes
+- Updated Translations (Thanks people you rock!!)
+
+Homepage: http://www.gnome.org/projects/brasero
+
+Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
+
+Mailing List for User and Developer discussion: brasero-list@gnome.org
+
+GIT Repository: http://git.gnome.org/cgit/brasero/
+
+Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
+
+
 26-04-2010: 2.30.1
 
 Bug Fixes:
