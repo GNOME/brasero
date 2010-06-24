@@ -1315,7 +1315,10 @@ brasero_audio_disc_split (BraseroAudioDisc *disc)
 	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
-	brasero_split_dialog_set_uri (BRASERO_SPLIT_DIALOG (dialog), uri);
+	brasero_split_dialog_set_uri (BRASERO_SPLIT_DIALOG (dialog),
+	                              uri,
+	                              brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_TITLE_TAG),
+	                              brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG));
 	g_free (uri);
 
 	brasero_split_dialog_set_boundaries (BRASERO_SPLIT_DIALOG (dialog),

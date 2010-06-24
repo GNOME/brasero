@@ -112,6 +112,21 @@ brasero_player_bacon_get_property (GObject *obj,
 }
 
 static void
+brasero_player_bacon_unrealize (GtkWidget *widget)
+{
+	BraseroPlayerBacon *bacon;
+
+	bacon = BRASERO_PLAYER_BACON (widget);
+
+	/* Stop the pipeline as otherwise it would try to write video to a destroyed window */
+	gst_element_set_state (bacon->priv->pipe, GST_STATE_READY);
+	bacon->priv->xid = 0;
+
+	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->unrealize)
+		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->unrealize (widget);
+}
+
+static void
 brasero_player_bacon_realize (GtkWidget *widget)
 {
 	GdkWindow *window;
@@ -119,21 +134,34 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	GtkAllocation allocation;
 	GdkWindowAttr attributes;
 	BraseroPlayerBacon *bacon;
+	gfloat screen_width, screen_height, ratio;
 
 	bacon = BRASERO_PLAYER_BACON (widget);
 
 	attributes.window_type = GDK_WINDOW_CHILD;
 
 	gtk_widget_get_allocation (widget, &allocation);
-	attributes.x = 0;
-	attributes.y = 0;
-	attributes.width = allocation.width;
-	attributes.height = allocation.height;
+
+	screen_width = allocation.width;
+	screen_height = allocation.height;
+	
+	if ((gfloat) screen_width / PLAYER_BACON_WIDTH > 
+	    (gfloat) screen_height / PLAYER_BACON_HEIGHT)
+		ratio = (gfloat) screen_height / PLAYER_BACON_HEIGHT;
+	else
+		ratio = (gfloat) screen_width / PLAYER_BACON_WIDTH;
+
+	attributes.x = allocation.x + (allocation.width - (gint) screen_width) / 2;
+	attributes.y = allocation.y + (allocation.height - (gint) screen_height) / 2;
+	attributes.width = screen_width;
+	attributes.height = screen_height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.visual = gtk_widget_get_visual (widget);
 	attributes.colormap = gtk_widget_get_colormap (widget);
 	attributes.event_mask = gtk_widget_get_events (widget);
-	attributes.event_mask |= GDK_EXPOSURE_MASK|GDK_BUTTON_PRESS_MASK;
+	attributes.event_mask |= GDK_EXPOSURE_MASK|
+				 GDK_BUTTON_PRESS_MASK|
+				 GDK_BUTTON_RELEASE_MASK;
 	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
 
 	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
@@ -166,9 +194,8 @@ brasero_player_bacon_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	if (bacon->priv->xoverlay
 	&&  GST_IS_X_OVERLAY (bacon->priv->xoverlay)
-	&&  bacon->priv->state >= GST_STATE_PAUSED) {
+	&&  bacon->priv->state >= GST_STATE_PAUSED)
 		gst_x_overlay_expose (bacon->priv->xoverlay);
-	}
 	else if (window)
 		gdk_window_clear (window);
 
@@ -242,9 +269,8 @@ brasero_player_bacon_bus_messages_handler (GstBus *bus,
 	if (!structure)
 		return GST_BUS_PASS;
 
-	if (!gst_structure_has_name (structure, "prepare-xwindow-id")) {
+	if (!gst_structure_has_name (structure, "prepare-xwindow-id"))
 		return GST_BUS_PASS;
-	}
 
 	/* NOTE: apparently GDK does not like to be asked to retrieve the XID
 	 * in a thread so we do it in the callback of the expose event. */
@@ -322,14 +348,15 @@ brasero_player_bacon_set_boundaries (BraseroPlayerBacon *bacon, gint64 start, gi
 }
 
 void
-brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon, gdouble volume)
+brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon,
+                                 gdouble volume)
 {
 	if (!bacon->priv->pipe)
 		return;
 
-	volume = CLAMP (volume, 0, 100) / 100.0;
+	volume = CLAMP (volume, 0, 1.0);
 	g_object_set (bacon->priv->pipe,
-		      "volume", volume * 100,
+		      "volume", volume,
 		      NULL);
 }
 
@@ -345,7 +372,7 @@ brasero_player_bacon_get_volume (BraseroPlayerBacon *bacon)
 		      "volume", &volume,
 		      NULL);
 
-	return volume / 5.0;
+	return volume;
 }
 
 static gboolean
@@ -435,18 +462,45 @@ brasero_player_bacon_stop (BraseroPlayerBacon *bacon)
 }
 
 gboolean
-brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon,
-			      gdouble pos)
+brasero_player_bacon_forward (BraseroPlayerBacon *bacon,
+                              gint64 pos)
 {
-	gint64 duration;
-	GstFormat format = GST_FORMAT_TIME;
-
 	if (!bacon->priv->pipe)
 		return FALSE;
 
-	gst_element_query_duration (bacon->priv->pipe,
-				    &format,
-				    &duration);
+	return gst_element_seek (bacon->priv->pipe,
+				 1.0,
+				 GST_FORMAT_TIME,
+				 GST_SEEK_FLAG_FLUSH,
+				 GST_SEEK_TYPE_CUR,
+				 pos,
+				 GST_SEEK_TYPE_NONE,
+				 0);
+}
+
+gboolean
+brasero_player_bacon_backward (BraseroPlayerBacon *bacon,
+                               gint64 pos)
+{
+	if (!bacon->priv->pipe)
+		return FALSE;
+
+	return gst_element_seek (bacon->priv->pipe,
+				 1.0,
+				 GST_FORMAT_TIME,
+				 GST_SEEK_FLAG_FLUSH,
+				 GST_SEEK_TYPE_SET,
+				 - pos,
+				 GST_SEEK_TYPE_NONE,
+				 0);
+}
+
+gboolean
+brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon,
+			      gdouble pos)
+{
+	if (!bacon->priv->pipe)
+		return FALSE;
 
 	return gst_element_seek (bacon->priv->pipe,
 				 1.0,
@@ -532,7 +586,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 	                           BRASERO_SETTING_PLAYER_VOLUME,
 	                           &value);
 	volume = GPOINTER_TO_INT (value);
-	volume = CLAMP (volume, 0, 500);
+	volume = CLAMP (volume, 0, 100);
 	g_object_set (bacon->priv->pipe,
 		      "volume", (gdouble) volume / 100.0,
 		      NULL);
@@ -621,6 +675,7 @@ brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
 
 	widget_class->expose_event = brasero_player_bacon_expose;
 	widget_class->realize = brasero_player_bacon_realize;
+	widget_class->unrealize = brasero_player_bacon_unrealize;
 	widget_class->size_request = brasero_player_bacon_size_request;
 	widget_class->size_allocate = brasero_player_bacon_size_allocate;
 

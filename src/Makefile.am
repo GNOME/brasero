@@ -120,7 +120,9 @@ brasero_SOURCES = \
 	brasero-search-engine.h        \
 	brasero-search-engine.c        \
 	brasero-drive-settings.h        \
-	brasero-drive-settings.c
+	brasero-drive-settings.c	\
+	brasero-song-control.h        \
+	brasero-song-control.c
 
 if BUILD_PLAYLIST
 brasero_SOURCES += \

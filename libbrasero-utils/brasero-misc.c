@@ -341,7 +341,7 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 		label = gtk_label_new (title);
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-		gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 		gtk_widget_show (label);
 
 		gtk_box_pack_start (GTK_BOX (vbox), vbox_main, TRUE, TRUE, 0);

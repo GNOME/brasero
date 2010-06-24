@@ -62,7 +62,9 @@ brasero_split_dialog_new (void);
 
 void
 brasero_split_dialog_set_uri (BraseroSplitDialog *dialog,
-			      const gchar *uri);
+			      const gchar *uri,
+                              const gchar *title,
+                              const gchar *artist);
 void
 brasero_split_dialog_set_boundaries (BraseroSplitDialog *dialog,
 				     gint64 start,

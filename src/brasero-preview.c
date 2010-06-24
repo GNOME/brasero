@@ -40,7 +40,6 @@ typedef struct _BraseroPreviewPrivate BraseroPreviewPrivate;
 struct _BraseroPreviewPrivate
 {
 	GtkWidget *player;
-	GtkWidget *frame;
 
 	guint set_uri_id;
 
@@ -89,7 +88,7 @@ brasero_preview_source_selection_changed_cb (BraseroURIContainer *source,
 	/* Should we always hide ? */
 	uri = brasero_uri_container_get_selected_uri (source);
 	if (!uri)
-		gtk_widget_hide (priv->frame);
+		gtk_widget_hide (priv->player);
 
 	/* clean the potentially previous uri information */
 	priv->end = -1;
@@ -127,7 +126,7 @@ brasero_preview_hide (BraseroPreview *self)
 	BraseroPreviewPrivate *priv;
 
 	priv = BRASERO_PREVIEW_PRIVATE (self);
-	gtk_widget_hide (priv->frame);
+	gtk_widget_hide (priv->player);
 }
 
 void
@@ -147,7 +146,7 @@ brasero_preview_player_error_cb (BraseroPlayer *player,
 	BraseroPreviewPrivate *priv;
 
 	priv = BRASERO_PREVIEW_PRIVATE (self);
-	gtk_widget_hide (priv->frame);
+	gtk_widget_hide (priv->player);
 }
 
 static void
@@ -157,7 +156,7 @@ brasero_preview_player_ready_cb (BraseroPlayer *player,
 	BraseroPreviewPrivate *priv;
 
 	priv = BRASERO_PREVIEW_PRIVATE (self);
-	gtk_widget_show (priv->frame);
+	gtk_widget_show (priv->player);
 }
 
 static void
@@ -167,13 +166,10 @@ brasero_preview_init (BraseroPreview *object)
 
 	priv = BRASERO_PREVIEW_PRIVATE (object);
 
-	priv->frame = gtk_frame_new (_("Preview"));
-	gtk_container_add (GTK_CONTAINER (object), priv->frame);
-
 	priv->player = brasero_player_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (priv->player), 4);
-	gtk_widget_show_all (priv->player);
-	gtk_container_add (GTK_CONTAINER (priv->frame), priv->player);
+
+	gtk_container_add (GTK_CONTAINER (object), priv->player);
 	g_signal_connect (priv->player,
 			  "error",
 			  G_CALLBACK (brasero_preview_player_error_cb),

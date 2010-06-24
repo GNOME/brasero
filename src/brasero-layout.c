@@ -26,11 +26,11 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#include <string.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <string.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -383,8 +383,9 @@ static void
 brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 				      gboolean visible)
 {
-	GtkWidget *parent;
+	BraseroLayoutObject *source;
 	gboolean preview_in_project;
+	GtkWidget *parent;
 	GList *children;
 
 	children = gtk_container_get_children (GTK_CONTAINER (layout->priv->main_box));
@@ -392,6 +393,7 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 	g_list_free (children);
 
 	parent = gtk_widget_get_parent (layout->priv->main_box);
+	source = brasero_layout_item_get_object (layout->priv->active_item);
 
 	if (!visible) {
 		/* No side pane should be visible */
@@ -412,10 +414,10 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
 		gtk_widget_hide (parent);
+
+		brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (source));
 	}
 	else {
-		BraseroLayoutObject *source;
-
 		/* The side pane should be visible */
 		if (preview_in_project) {
 			/* we need to unparent the preview widget
@@ -429,7 +431,6 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 		}
 
 		/* Now tell the project which source it gets URIs from */
-		source = brasero_layout_item_get_object (layout->priv->active_item);
 		if (!BRASERO_IS_URI_CONTAINER (source)) {
 			brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 						    NULL);
@@ -921,7 +922,6 @@ brasero_layout_close_button_clicked_cb (GtkWidget *button,
 
 	action = gtk_action_group_get_action (layout->priv->action_group,
 					      BRASERO_LAYOUT_NONE_ID);
-
 	if (!action)
 		return;
 

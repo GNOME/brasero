@@ -133,18 +133,20 @@ brasero_jacket_edit_set_audio_tracks_back (BraseroJacketView *back,
 		info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),
 							BRASERO_TRACK_STREAM_ARTIST_TAG);
 		if (info) {
+			gchar *string;
+
 			/* Reminder: if this string happens to be used
 			 * somewhere else in brasero we'll need a
 			 * context with C_() macro */
-			/* Translators: "by" is followed by the name of an artist.
+			/* Translators: %s is the name of the artist.
 			 * This text is the one written on the cover of a disc.
 			 * Before it there is the name of the song.
 			 * I had to break it because it is in a GtkTextBuffer
 			 * and every word has a different tag. */
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by"), "Artist", &start);
+			string = g_strdup_printf (_("by %s"), info);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, string, "Artist", &start);
 			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info, "Artist", &start);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
+			g_free (string);
 		}
 
 		info = brasero_track_tag_lookup_string (BRASERO_TRACK (track),

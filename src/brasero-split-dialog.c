@@ -38,7 +38,7 @@
 #include "brasero-track-stream.h"
 
 #include "brasero-split-dialog.h"
-#include "brasero-player.h"
+#include "brasero-song-control.h"
 #include "brasero-utils.h"
 
 enum {
@@ -85,12 +85,15 @@ G_DEFINE_TYPE (BraseroSplitDialog, brasero_split_dialog, GTK_TYPE_DIALOG);
 
 void
 brasero_split_dialog_set_uri (BraseroSplitDialog *self,
-			      const gchar *uri)
+			      const gchar *uri,
+                              const gchar *title,
+                              const gchar *artist)
 {
 	BraseroSplitDialogPrivate *priv;
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
-	brasero_player_set_uri (BRASERO_PLAYER (priv->player), uri);
+	brasero_song_control_set_uri (BRASERO_SONG_CONTROL (priv->player), uri);
+	brasero_song_control_set_info (BRASERO_SONG_CONTROL (priv->player), title, artist);
 }
 
 void
@@ -114,9 +117,9 @@ brasero_split_dialog_set_boundaries (BraseroSplitDialog *self,
 	priv->start = start;
 	priv->end = end;
 
-	brasero_player_set_boundaries (BRASERO_PLAYER (priv->player),
-				       priv->start,
-				       priv->end);
+	brasero_song_control_set_boundaries (BRASERO_SONG_CONTROL (priv->player),
+	                                     priv->start,
+	                                     priv->end);
 }
 
 GSList *
@@ -211,7 +214,7 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 
 		/* nothing in the tree yet */
 		if (priv->end <= 0)
-			end = brasero_player_get_length (BRASERO_PLAYER (priv->player));
+			end = brasero_song_control_get_length (BRASERO_SONG_CONTROL (priv->player));
 		else
 			end = priv->end;
 
@@ -733,7 +736,7 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 		gint64 pos;
 
 		/* this one is before since it doesn't wipe all slices */
-		pos = brasero_player_get_pos (BRASERO_PLAYER (priv->player));
+		pos = brasero_song_control_get_pos (BRASERO_SONG_CONTROL (priv->player));
 		brasero_split_dialog_cut (self, pos + priv->start, TRUE);
 		return;
 	}
@@ -798,7 +801,7 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 			  G_CALLBACK (brasero_split_dialog_metadata_finished_cb),
 			  self);
 	brasero_metadata_get_info_async (priv->metadata,
-					 brasero_player_get_uri (BRASERO_PLAYER (priv->player)),
+					 brasero_song_control_get_uri (BRASERO_SONG_CONTROL (priv->player)),
 					 BRASERO_METADATA_FLAG_SILENCES);
 
 	/* stop anything from playing and grey out things */
@@ -1103,7 +1106,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
 
-	priv->player = brasero_player_new ();
+	priv->player = brasero_song_control_new ();
 	gtk_widget_show (priv->player);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->player, NULL);
 

@@ -2148,7 +2148,7 @@ brasero_project_update_preview (GtkFileChooser *chooser,
 {
 	gchar *uri;
 
-	gtk_file_chooser_set_preview_widget_active (chooser, FALSE);
+	gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
 
 	uri = gtk_file_chooser_get_preview_uri (chooser);
 	brasero_player_set_uri (player, uri);
@@ -2255,7 +2255,7 @@ brasero_project_add_uris_cb (GtkAction *action,
 	player = brasero_player_new ();
 
 	gtk_widget_show (player);
-	gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (project->priv->chooser), FALSE);
+	gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
 	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (project->priv->chooser), FALSE);
 	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (project->priv->chooser), player);
 
