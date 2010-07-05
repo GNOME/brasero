@@ -44,6 +44,7 @@
 #include "burn-basics.h"
 
 #include "brasero-session.h"
+#include "brasero-session-helper.h"
 #include "brasero-burn.h"
 
 #include "burn-plugin-manager.h"
@@ -202,6 +203,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
 
 	burn = brasero_tool_dialog_get_burn (dialog);
+	brasero_burn_session_start (priv->session);
 	result = brasero_burn_blank (burn,
 				     priv->session,
 				     &error);
