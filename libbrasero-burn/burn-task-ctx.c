@@ -682,19 +682,18 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 		return BRASERO_BURN_OK;
 	}
 
+	if (priv->timer) {
+		elapsed = g_timer_elapsed (priv->timer, NULL);
+
+		if ((elapsed - priv->last_elapsed) > 0.5) {
+			priv->last_progress = priv->progress;
+			priv->last_elapsed = priv->current_elapsed;
+			priv->current_elapsed = elapsed;
+		}
+	}
+
 	if (priv->progress < progress)
 		priv->progress = progress;
-
-	if (!priv->timer)
-		return BRASERO_BURN_OK;
-
-	elapsed = g_timer_elapsed (priv->timer, NULL);
-
-	if ((elapsed - priv->last_elapsed) > 0.5) {
-		priv->last_progress = priv->progress;
-		priv->last_elapsed = priv->current_elapsed;
-		priv->current_elapsed = elapsed;
-	}
 
 	return BRASERO_BURN_OK;
 }
