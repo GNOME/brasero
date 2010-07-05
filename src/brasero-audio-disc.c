@@ -749,7 +749,7 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 				     GTK_MESSAGE_WARNING);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  "%s."
+						  "%s.",
 						  _("Directories cannot be added to video or audio discs"));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
