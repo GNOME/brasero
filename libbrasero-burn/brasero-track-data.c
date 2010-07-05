@@ -479,7 +479,7 @@ brasero_track_data_get_grafts (BraseroTrackData *track)
 		BraseroGraftPt *graft;
 		gchar newpath [MAXPATHLEN];
 
-		graft = grafts->data;
+		graft = iter->data;
 		mangle = brasero_track_data_mangle_joliet_name (mangle,
 								graft->path,
 								newpath);
