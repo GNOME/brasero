@@ -138,10 +138,9 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 			   (gdouble) 100.0;
 
 		brasero_job_set_progress (BRASERO_JOB (process), fraction);
-
 		brasero_job_get_current_action (BRASERO_JOB (process), &action);
-		if (action == BRASERO_BURN_ACTION_BLANKING
-		&&  fraction >= 0.01) {
+
+		if (action == BRASERO_BURN_ACTION_BLANKING && fraction >= 0.01) {
 			/* we nullified 1% of the medium (more than 65536)
 			 * that's enough to make the filesystem unusable and
 			 * looking blank. A signal SIGTERM will be sent to stop
