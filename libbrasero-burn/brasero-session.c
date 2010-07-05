@@ -2134,6 +2134,7 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 			   va_list arg_list)
 {
 	int len;
+	int wlen;
 	gchar *message;
 	gchar *offending;
 	BraseroBurnSessionPrivate *priv;
@@ -2155,8 +2156,14 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 		*offending = '\0';
 
 	len = strlen (message);
-	if (write (priv->session, message, len) != len)
-		g_warning ("Some log data couldn't be written: %s\n", message);
+	wlen = write (priv->session, message, len);
+	if (wlen != len) {
+		int errnum = errno;
+
+		g_warning ("Some log data couldn't be written: %s (%i out of %i) (%s)\n",
+		           message, wlen, len,
+		           strerror (errnum));
+	}
 
 	g_free (message);
 

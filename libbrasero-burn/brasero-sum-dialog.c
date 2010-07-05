@@ -60,6 +60,8 @@
 
 #include "brasero-tags.h"
 #include "brasero-track-disc.h"
+
+#include "brasero-session-helper.h"
 #include "brasero-burn.h"
 
 G_DEFINE_TYPE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
@@ -622,6 +624,7 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 	self = BRASERO_SUM_DIALOG (dialog);
 	priv = BRASERO_SUM_DIALOG_PRIVATE (dialog);
 
+	brasero_burn_session_start (priv->session);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->md5_check)))
 		result = brasero_sum_dialog_check_disc_sum (self, brasero_medium_get_drive (medium));
 	else

@@ -45,7 +45,6 @@
 
 #include "brasero-misc.h"
 
-#include "brasero-session.h"
 #include "brasero-burn.h"
 
 #include "brasero-medium.h"
