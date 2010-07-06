@@ -1163,7 +1163,6 @@ brasero_project_init (BraseroProject *obj)
 			    0);
 
 	g_object_unref (size_group);
-	
 }
 
 static void

@@ -239,7 +239,7 @@ brasero_audio_disc_is_empty (BraseroDisc *disc)
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (BRASERO_AUDIO_DISC (disc)->priv->tree));
 	if (!model)
-		return TRUE;
+		return FALSE;
 
 	return gtk_tree_model_iter_n_children (model, NULL) != 0;
 }
