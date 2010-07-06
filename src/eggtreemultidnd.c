@@ -196,7 +196,7 @@ egg_tree_multi_drag_button_release_event (GtkWidget      *widget,
     priv_data->button_release_handler = 0;
   }
 
-  for (l = priv_data->event_list; l != NULL; l = l->next) 
+  for (l = priv_data->event_list; l != NULL && gtk_widget_get_realized (widget); l = l->next)
     gtk_propagate_event (widget, l->data);
 
   stop_drag_check (widget);
@@ -232,6 +232,15 @@ set_context_data (GdkDragContext *context,
                           "egg-tree-view-multi-source-row",
                           path_list,
                           (GDestroyNotify) path_list_free);
+}
+
+static void
+egg_tree_multi_drag_begin (GtkWidget *tree,
+                           GdkDragContext *context,
+                           gpointer user_data)
+{
+  gtk_drag_set_icon_default (context);
+  g_signal_stop_emission_by_name (tree, "drag-begin");
 }
 
 static GList *
@@ -332,14 +341,22 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
       model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
       if (egg_tree_multi_drag_source_row_draggable (EGG_TREE_MULTI_DRAG_SOURCE (model), path_list))
 	{
+	  gulong sig;
+
+	  /* This is to disconnect the default signal handler for treeviews as
+  	   * it sometimes gives a warning. The default handler just sets the
+	   * icon which we do as well in our callback so it is fine. */
+	  sig = g_signal_connect (widget,
+	                          "drag-begin",
+	                          G_CALLBACK (egg_tree_multi_drag_begin),
+	                          NULL);
 	  context = gtk_drag_begin (widget,
 				    gtk_drag_source_get_target_list (widget),
 				    di->source_actions,
-				    priv_data->pressed_button,
+	                            priv_data->pressed_button,
 				    (GdkEvent*)event);
+	  g_signal_handler_disconnect (widget, sig);
 	  set_context_data (context, path_list);
-	  gtk_drag_set_icon_default (context);
-
 	}
       else
 	{
@@ -347,15 +364,6 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
 	}
     }
   return TRUE;
-}
-
-static void
-_treeview_destroyed (GtkWidget *widget,
-                     gpointer user_data)
-{
-	gboolean *called = user_data;
-	*called = TRUE;
-	g_object_ref (widget);
 }
 
 static gboolean
@@ -369,7 +377,7 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
   gint cell_x, cell_y;
   GtkTreeSelection *selection;
   EggTreeMultiDndData *priv_data;
-
+  
   tree_view = GTK_TREE_VIEW (widget);
   priv_data = g_object_get_data (G_OBJECT (tree_view), EGG_TREE_MULTI_DND_STRING);
   if (priv_data == NULL)
@@ -378,18 +386,18 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
       g_object_set_data (G_OBJECT (tree_view), EGG_TREE_MULTI_DND_STRING, priv_data);
     }
 
-  if (g_slist_find (priv_data->event_list, event)) 
+  if (g_slist_find (priv_data->event_list, event))
     return FALSE;
 
-  if (priv_data->event_list) 
+  if (priv_data->event_list)
     {
       /* save the event to be propagated in order */
       priv_data->event_list = g_slist_append (priv_data->event_list, gdk_event_copy ((GdkEvent*)event));
       return TRUE;
     }
-  
+
   if (event->type == GDK_2BUTTON_PRESS)
-   	return FALSE;
+    return FALSE;
   
   if (event->button == 3)
     return FALSE;
@@ -400,45 +408,8 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
 				 &cell_x, &cell_y);
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
-
   if (path && gtk_tree_selection_path_is_selected (selection, path))
     {
-      GList *iter;
-      gulong sig_id;
-      GList *selected;
-      gboolean called = FALSE;
-      GtkWidgetClass *widget_klass;
-
-      /* The call to ::button_press_event will unselect all selected rows so
-       * we must save the selection and select all previously selected rows
-       * again. */
-      selected = gtk_tree_selection_get_selected_rows (selection, NULL);
-
-      /* In some rare cases (like for a GtkFileChooserDialog when the user
-       * double-clicks a row) "destroy" is called during ::button_press_event
-       * calls which makes widget and selection invalid afterwards.
-       * Note: it seems that a call to "destroy" makes all signals invalid as
-       * well so do not disconnect */
-      sig_id = g_signal_connect (widget,
-                                 "destroy",
-                                 G_CALLBACK (_treeview_destroyed),
-                                 &called);
-
-      widget_klass = GTK_WIDGET_GET_CLASS (tree_view);
-      widget_klass->button_press_event (widget, event);
-
-      if (!called)
-	g_signal_handler_disconnect (widget, sig_id);
-
-      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
-      if (selection) {
-	      for (iter = selected; iter; iter = iter->next) {
-		gtk_tree_selection_select_path (selection, iter->data);
-		gtk_tree_path_free (iter->data);
-	      }
-	      g_list_free (selected);
-      }
-
       priv_data->pressed_button = event->button;
       priv_data->x = event->x;
       priv_data->y = event->y;
