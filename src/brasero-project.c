@@ -2023,6 +2023,9 @@ void
 brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source)
 {
+	if (project->priv->chooser)
+		gtk_dialog_response (GTK_DIALOG (project->priv->chooser), GTK_RESPONSE_CANCEL);
+
 	if (project->priv->activated_id) {
 		g_signal_handler_disconnect (project->priv->current_source,
 					     project->priv->activated_id);
