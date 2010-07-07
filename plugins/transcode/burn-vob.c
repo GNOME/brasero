@@ -312,8 +312,9 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     /* Translators: %s is the name of the GstElement that 
-			      * could not be created */
+			     /* Translators: %s is the name of the object (as in
+			      * GObject) from the Gstreamer library that could
+			      * not be created */
 			     _("%s element could not be created"),
 			     "\"Queue\"");
 		goto error;
@@ -331,8 +332,9 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     /* Translators: %s is the name of the GstElement that 
-			      * could not be created */
+			     /* Translators: %s is the name of the object (as in
+			      * GObject) from the Gstreamer library that could
+			      * not be created */
 			     _("%s element could not be created"),
 			     "\"Audioresample\"");
 		goto error;
@@ -345,8 +347,9 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     /* Translators: %s is the name of the GstElement that 
-			      * element could not be created */
+			     /* Translators: %s is the name of the object (as in
+			      * GObject) from the Gstreamer library that could
+			      * not be created */
 			     _("%s element could not be created"),
 			     "\"Audioconvert\"");
 		goto error;
@@ -1370,7 +1373,7 @@ brasero_vob_export_caps (BraseroPlugin *plugin)
 	brasero_plugin_define (plugin,
 			       "transcode2vob",
 	                       NULL,
-			       _("Converts any video file into a format suitable for Video DVDs"),
+			       _("Converts any video file into a format suitable for video DVDs"),
 			       "Philippe Rouquier",
 			       0);
 

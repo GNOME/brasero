@@ -81,7 +81,7 @@ static ItemDescription items [] = {
 	BRASERO_PROJECT_TYPE_DATA},
        {N_("_Video project"),
 	N_("Create a video DVD or an SVCD"),
-	N_("Create a video DVD or an SVCD that are readable on TV readers"),
+	N_("Create a video DVD or an SVCD that is readable on TV readers"),
 	"media-optical-video-new",
 	BRASERO_PROJECT_TYPE_VIDEO},
        {N_("Disc _copy"),

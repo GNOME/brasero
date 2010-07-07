@@ -175,7 +175,7 @@ brasero_sum_dialog_success (BraseroSumDialog *self)
 					NULL);
 
 	return brasero_sum_dialog_message (self,
-					   _("The file integrity was performed successfully."),
+					   _("The file integrity check was performed successfully."),
 					   _("There seem to be no corrupted files on the disc"),
 					   GTK_MESSAGE_INFO);
 }

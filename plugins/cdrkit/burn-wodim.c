@@ -113,13 +113,13 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_MEDIUM_SPACE,
 						_("Not enough space available on the disc")));
 	}
-	else if (strstr (line ,"cdrecord: A write error occured")
+	else if (strstr (line ,"cdrecord: A write error occurred")
 	     ||  strstr (line, "Could not write Lead-in")
 	     ||  strstr (line, "Cannot fixate disk")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_WRITE_MEDIUM,
-						_("An error occured while writing to disc")));
+						_("An error occurred while writing to disc")));
 	}
 	else if (strstr (line, "DMA speed too slow") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),

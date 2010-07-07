@@ -658,7 +658,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		g_free (path_parent);
 
 		if (!parent) {
-			/* an error has occured, possibly libisofs hasn't been
+			/* an error has occurred, possibly libisofs hasn't been
 			 * able to find a parent for this node */
 			g_free (path_name);
 			priv->error = g_error_new (BRASERO_BURN_ERROR,

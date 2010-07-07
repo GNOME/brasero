@@ -788,7 +788,7 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-					 "%s", _("A file with this name already exists in the folder.  Replacing it will overwrite its content on the disc to be burnt."));
+					 "%s", _("A file with this name already exists in the folder.  Replacing it will overwrite its contents on the disc to be burnt."));
 
 	/* Translators: Keep means we're keeping the files that already existed
 	 * in the project.
@@ -845,7 +845,7 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  "%s",
 						  _("The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones)."
-						    "\nIt is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows ©."
+						    "\nIt is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows™."
 						    "\nHowever, Mac OS X cannot read images created with version 3 of the ISO9660 standard."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);
@@ -889,7 +889,7 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  "%s",
 						  _("The children of this directory will have 7 parent directories."
-						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
+						    "\nBrasero can create an image of such a file hierarchy and burn it but the disc may not be readable on all operating systems."
 						    "\nNote: Such a file hierarchy is known to work on Linux."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("Ne_ver Add Such File"), GTK_RESPONSE_REJECT);

@@ -1073,7 +1073,6 @@ brasero_project_init (BraseroProject *obj)
 
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
-	/* burn button set insensitive since there are no files in the selection */
 	obj->priv->burn = brasero_utils_make_button (_("_Burn…"),
 						     NULL,
 						     "media-optical-burn",
@@ -1893,7 +1892,7 @@ brasero_project_confirm_switch (BraseroProject *project,
 			return TRUE;
 
 		dialog = brasero_app_dialog (brasero_app_get_default (),
-					     _("Do you really want to create a new project and discard the changes to current one?"),
+					     _("Do you really want to create a new project and discard the current one?"),
 					     GTK_BUTTONS_CANCEL,
 					     GTK_MESSAGE_WARNING);
 

@@ -149,7 +149,7 @@ static const GOptionEntry options [] = {
           N_("PATH TO IMAGE") },
 
     	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
-         N_("Force brasero to display the project selection page"),
+         N_("Force Brasero to display the project selection page"),
           NULL },
 
 	{ "blank", 'b', 0, G_OPTION_ARG_NONE, &disc_blank,
@@ -161,7 +161,7 @@ static const GOptionEntry options [] = {
 	  N_("PATH TO DEVICE") },
 
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
-	  N_("Burn the contents of burn:// URI"),
+	  N_("Burn the contents of the burn:// URI"),
 	  NULL },
 
 	{ "immediately", 0, 0, G_OPTION_ARG_NONE, &burn_immediately,

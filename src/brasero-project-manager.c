@@ -107,7 +107,7 @@ static GtkActionEntry entries [] = {
 	{"NewData", "media-optical-data-new", N_("New _Data Project"), NULL,
 	 N_("Create a CD/DVD containing any type of data that can only be read on a computer"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
 	{"NewVideo", "media-optical-video-new", N_("New _Video Project"), NULL,
-	 N_("Create a video DVD or an SVCD that are readable on TV readers"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
+	 N_("Create a video DVD or an SVCD that is readable on TV readers"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
 	{"NewCopy", "media-optical-copy", N_("Copy _Disc…"), NULL,
 	 N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
 	{"NewIso", "iso-image-burn", N_("_Burn Image…"), NULL,
@@ -258,6 +258,8 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 		else
 			return;
 
+		/* Translators: the %s is a string representing the total size
+		 * of the file selection */
 		status_string = g_strdup_printf (ngettext ("%d file selected (%s)", "%d files selected (%s)", files_num),
 						 files_num,
 						 size_string);

@@ -275,7 +275,7 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 						g_set_error (error,
 							     BRASERO_BURN_ERROR,
 							     BRASERO_BURN_ERROR_GENERAL,
-							     _("Error reading video DVD (%s)"),
+							     _("Error while reading video DVD (%s)"),
 							     dvdcss_error (handle));
 						return FALSE;
 					}
@@ -381,7 +381,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_DRIVE_COPY,
-					_("Copying Video DVD"),
+					_("Copying video DVD"),
 					FALSE);
 
 	brasero_job_start_progress (BRASERO_JOB (self), TRUE);
@@ -674,8 +674,7 @@ brasero_dvdcss_export_caps (BraseroPlugin *plugin)
 	brasero_plugin_define (plugin,
 			       "dvdcss",
 	                       NULL,
-	                       /* Translators: image is not a picture but a disc image */
-			       _("Copies CSS encrypted Video DVDs to a disc image"),
+			       _("Copies CSS encrypted video DVDs to a disc image"),
 			       "Philippe Rouquier",
 			       0);
 

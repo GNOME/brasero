@@ -256,6 +256,10 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 		gchar *remaining_string;
 
 		remaining_string = brasero_units_get_time_string ((double) remaining * 1000000000, TRUE, FALSE);
+		/* Translators: the first %s is a string containing a description of the ongoing action
+		 *	        the first %d is a number (a percentage) representing how much of the above task has been completed so far
+		 *	        the second %s is a string containing the remaining time before completion.
+		 */
 		text = g_strdup_printf (_("%s, %d%% done, %s remaining"),
 					action_string,
 					tray->priv->percent,
@@ -263,6 +267,9 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 		g_free (remaining_string);
 	}
 	else if (tray->priv->percent > 0)
+		/* Translators: the first %s is a string containing a description of the ongoing action
+		 *	        the first %d is a number (a percentage) representing how much of the above task has been completed so far
+		 */
 		text = g_strdup_printf (_("%s, %d%% done"),
 					action_string,
 					tray->priv->percent);

@@ -219,9 +219,6 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 						   GTK_DIALOG_MODAL,
 						   GTK_MESSAGE_ERROR,
 						   GTK_BUTTONS_CLOSE,
-						/* Translators: the following string
-						 * means there was an error while
-						 * blanking. */
 						   _("Error while blanking."));
 
 		gtk_window_set_icon_name (GTK_WINDOW (message),

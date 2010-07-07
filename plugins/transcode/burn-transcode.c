@@ -450,8 +450,9 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     /* Translators: %s is the name of the GstElement that 
-			      * could not be created */
+			     /* Translators: %s is the name of the object (as in
+			      * GObject) from the Gstreamer library that could
+			      * not be created */
 			     _("%s element could not be created"),
 			     "\"Source\"");
 		goto error;

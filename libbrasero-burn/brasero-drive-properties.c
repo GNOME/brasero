@@ -535,12 +535,12 @@ brasero_drive_properties_format_disc_speed (BraseroMedia media,
 		text = g_strdup_printf (_("%.1f\303\227 (CD)"),
 					BRASERO_RATE_TO_SPEED_CD (rate));
 	else if (media & BRASERO_MEDIUM_BD)
-		/* Translators %s.1f is the speed used to burn */
+		/* Translators %s.1f is the speed used to burn. BD = Blu Ray*/
 		text = g_strdup_printf (_("%.1f\303\227 (BD)"),
 					BRASERO_RATE_TO_SPEED_BD (rate));
 	else
 		/* Translators %s.1f is the speed used to burn for every medium
-		 * type*/
+		 * type. BD = Blu Ray*/
 		text = g_strdup_printf (_("%.1f\303\227 (BD) %.1f\303\227 (DVD) %.1f\303\227 (CD)"),
 					BRASERO_RATE_TO_SPEED_BD (rate),
 					BRASERO_RATE_TO_SPEED_DVD (rate),

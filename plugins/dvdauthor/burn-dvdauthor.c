@@ -371,7 +371,7 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin)
 	brasero_plugin_define (plugin,
 			       "dvdauthor",
 	                       NULL,
-			       _("Creates disc images suitable for Video DVDs"),
+			       _("Creates disc images suitable for video DVDs"),
 			       "Philippe Rouquier",
 			       1);
 

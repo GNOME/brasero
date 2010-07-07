@@ -267,7 +267,7 @@ end:
 	g_object_unref (status);
 	if (string) {
 		/* This is hackish and meant to avoid ellipsization to make the
-		 * label to small. */
+		 * label too small. */
 		if (strlen (string) > strlen (_("Click here to select a disc _image")) + 5)
 			gtk_label_set_ellipsize (GTK_LABEL (priv->label), PANGO_ELLIPSIZE_START);
 		else

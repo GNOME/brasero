@@ -140,6 +140,8 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
         gtk_widget_show (label);
         gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
+        /* Translators: be careful, anything longer than the English will likely
+         * not fit on small Nautilus windows */
         string = g_strdup_printf ("<i>%s</i>", _("Drag or copy files below to write them to disc"));
         label = gtk_label_new (string);
         g_free (string);

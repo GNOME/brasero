@@ -55,7 +55,7 @@ static BraseroPluginManager *default_manager = NULL;
 	g_set_error (error,							\
 		     BRASERO_BURN_ERROR,					\
 		     BRASERO_BURN_ERROR_GENERAL,				\
-		     _("An internal error occured"),				\
+		     _("An internal error occurred"),				\
 		     G_STRLOC);							\
 	return BRASERO_BURN_NOT_SUPPORTED;					\
 }
