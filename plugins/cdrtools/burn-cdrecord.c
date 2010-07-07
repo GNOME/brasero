@@ -264,7 +264,7 @@ brasero_cdrecord_set_rate (BraseroProcess *process,
                            int speed_1,
                            int speed_2)
 {
-	gdouble current_rate;
+	gdouble current_rate = -1.0;
 	BraseroMedia media;
 
 	if (brasero_job_get_media (BRASERO_JOB (process), &media) != BRASERO_BURN_OK)
