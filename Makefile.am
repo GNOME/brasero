@@ -32,8 +32,7 @@ DISTCHECK_CONFIGURE_FLAGS =		\
 DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
-	intltool-update		\
-	gtk-doc.make
+	intltool-update
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libbrasero-media.pc libbrasero-burn.pc
