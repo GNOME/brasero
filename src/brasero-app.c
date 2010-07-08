@@ -30,8 +30,6 @@
 
 #include <gtk/gtk.h>
 
-#include <unique/unique.h>
-
 #include "brasero-misc.h"
 #include "brasero-io.h"
 
@@ -69,6 +67,8 @@
 typedef struct _BraseroAppPrivate BraseroAppPrivate;
 struct _BraseroAppPrivate
 {
+	GApplication *gapp;
+
 	BraseroSetting *setting;
 
 	GdkWindow *parent;
@@ -100,6 +100,10 @@ struct _BraseroAppPrivate
 
 G_DEFINE_TYPE (BraseroApp, brasero_app, G_TYPE_OBJECT);
 
+enum {
+	PROP_NONE,
+	PROP_GAPP
+};
 
 /**
  * Menus and toolbar
@@ -420,15 +424,6 @@ brasero_app_alert (BraseroApp *app,
 
 	gtk_dialog_run (GTK_DIALOG (alert));
 	gtk_widget_destroy (alert);
-}
-
-GtkUIManager *
-brasero_app_get_ui_manager (BraseroApp *app)
-{
-	BraseroAppPrivate *priv;
-
-	priv = BRASERO_APP_PRIVATE (app);
-	return priv->manager;
 }
 
 GtkWidget *
@@ -2004,58 +1999,42 @@ brasero_app_create_mainwin (BraseroApp *app)
 	brasero_app_load_window_state (app);
 }
 
-static UniqueResponse
-brasero_app_unique_message (UniqueApp *uapp,
-			    gint command,
-			    UniqueMessageData *message_data,
-			    guint time,
-			    BraseroApp *app)
+static void
+brasero_app_prepare_activation (GApplication *gapp,
+                                GVariant *arguments,
+                                GVariant *platform_data,
+                                BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
-	if (command == UNIQUE_ACTIVATE) {
-		if (priv->mainwin_running) {
-			gtk_widget_show (priv->mainwin);
-			gtk_window_present (GTK_WINDOW (priv->mainwin));
-		}
-	}
 
-	return UNIQUE_RESPONSE_OK;
+	/* Except if we are supposed to quit show the window */
+	if (priv->mainwin_running) {
+		gtk_widget_show (priv->mainwin);
+		gtk_window_present (GTK_WINDOW (priv->mainwin));
+	}
 }
 
 gboolean
 brasero_app_run_mainwin (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
-	UniqueApp *uapp;
 
 	priv = BRASERO_APP_PRIVATE (app);
+
+	if (priv->mainwin_running)
+		return TRUE;
 
 	priv->mainwin_running = 1;
 	gtk_widget_show (GTK_WIDGET (priv->mainwin));
 
-	uapp = unique_app_new ("org.gnome.Brasero", NULL);
-	g_signal_connect (uapp,
-			  "message-received",
-			  G_CALLBACK (brasero_app_unique_message),
-			  app);
-
-	if (unique_app_is_running (uapp))
-	{
-		UniqueResponse response;
-
-		response = unique_app_send_message (uapp, UNIQUE_ACTIVATE, NULL);
-    		g_object_unref (uapp);
-		uapp = NULL;
-
-		/* FIXME: we should tell the user why it did not work. Or is it
-		 * handled by libunique? */
-		return (response == UNIQUE_RESPONSE_OK);
-	}
-
+	if (priv->gapp)
+		g_signal_connect (priv->gapp,
+				  "prepare-activation",
+				  G_CALLBACK (brasero_app_prepare_activation),
+				  app);
 	gtk_main ();
-
 	return TRUE;
 }
 
@@ -2119,6 +2098,51 @@ brasero_app_finalize (GObject *object)
 
 	G_OBJECT_CLASS (brasero_app_parent_class)->finalize (object);
 }
+static void
+brasero_app_set_property (GObject *object,
+                          guint prop_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
+{
+	BraseroAppPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_APP (object));
+
+	priv = BRASERO_APP_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_GAPP:
+		priv->gapp = g_value_dup_object (value);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_app_get_property (GObject *object,
+			  guint prop_id,
+			  GValue *value,
+			  GParamSpec *pspec)
+{
+	BraseroAppPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_APP (object));
+
+	priv = BRASERO_APP_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_GAPP:
+		g_value_set_object (value, priv->gapp);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
 
 static void
 brasero_app_class_init (BraseroAppClass *klass)
@@ -2128,10 +2152,22 @@ brasero_app_class_init (BraseroAppClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroAppPrivate));
 
 	object_class->finalize = brasero_app_finalize;
+	object_class->set_property = brasero_app_set_property;
+	object_class->get_property = brasero_app_get_property;
+
+	g_object_class_install_property (object_class,
+	                                 PROP_GAPP,
+	                                 g_param_spec_object("gapp",
+	                                                     "GApplication",
+	                                                     "The GApplication object",
+	                                                     G_TYPE_APPLICATION,
+	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 BraseroApp *
-brasero_app_new (void)
+brasero_app_new (GApplication *gapp)
 {
-	return g_object_new (BRASERO_TYPE_APP, NULL);
+	return g_object_new (BRASERO_TYPE_APP,
+	                     "gapp", gapp,
+	                     NULL);
 }

@@ -20,11 +20,9 @@ INCLUDES = \
 	$(BRASERO_GSTREAMER_BASE_CFLAGS)				\
 	$(BRASERO_GTK_CFLAGS)						\
 	$(BRASERO_DBUS_CFLAGS)						\
-	$(BRASERO_LIBUNIQUE_CFLAGS)                                     \
 	$(BRASERO_LIBXML_CFLAGS)					\
 	$(BRASERO_SEARCH_CFLAGS)					\
 	$(BRASERO_PL_PARSER_CFLAGS)					\
-	$(BRASERO_LIBUNIQUE_CFLAGS)					\
 	$(BRASERO_SM_CFLAGS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
@@ -122,7 +120,9 @@ brasero_SOURCES = \
 	brasero-drive-settings.h        \
 	brasero-drive-settings.c	\
 	brasero-song-control.h        \
-	brasero-song-control.c
+	brasero-song-control.c        \
+	brasero-cli.c        \
+	brasero-cli.h
 
 if BUILD_PLAYLIST
 brasero_SOURCES += \
@@ -166,11 +166,9 @@ brasero_LDADD =						\
 	$(BRASERO_GTK_LIBS)		\
 	$(BRASERO_GMODULE_LIBS)		\
 	$(BRASERO_DBUS_LIBS)		\
-	$(BRASERO_LIBUNIQUE_LIBS)	\
 	$(BRASERO_LIBXML_LIBS)		\
 	$(BRASERO_SEARCH_LIBS)		\
 	$(BRASERO_PL_PARSER_LIBS)	\
-	$(BRASERO_LIBUNIQUE_LIBS)	\
 	$(BRASERO_SM_LIBS)
 
 EXTRA_DIST =			\
