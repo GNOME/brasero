@@ -63,7 +63,7 @@ brasero_app_get_default (void)
 int
 main (int argc, char **argv)
 {
-	GApplication *gapp;
+	GApplication *gapp = NULL;
 	GOptionContext *context;
 
 	g_setenv ("GSETTINGS_BACKEND", "gconf", FALSE);
