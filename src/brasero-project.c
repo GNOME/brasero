@@ -2658,7 +2658,7 @@ brasero_project_save_project_real (BraseroProject *project,
 				   const gchar *uri,
 				   BraseroProjectSave save_type)
 {
-	BraseroDiscResult result;
+	BraseroBurnResult result;
 	BraseroProjectType type;
 
 	g_return_val_if_fail (uri != NULL || project->priv->project != NULL, FALSE);
@@ -2666,19 +2666,6 @@ brasero_project_save_project_real (BraseroProject *project,
 	result = brasero_project_check_status (project);
 	if (result != BRASERO_BURN_OK)
 		return FALSE;
-
-	if (result == BRASERO_DISC_ERROR_EMPTY_SELECTION) {
-		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
-			brasero_project_no_song_dialog (project);
-		else if (BRASERO_IS_DATA_DISC (project->priv->current))
-			brasero_project_no_file_dialog (project);
-
-		return FALSE;
-	}
-	else if (result != BRASERO_DISC_OK) {
-		brasero_project_not_saved_dialog (project);
-		return FALSE;
-	}
 
 	brasero_project_setup_session (project, BRASERO_BURN_SESSION (project->priv->session));
         type = brasero_project_get_session_type (project);

@@ -803,7 +803,7 @@ brasero_layout_main_pane_size_allocate (GtkWidget *widget,
 
 static void
 brasero_layout_change_type (BraseroLayout *layout,
-			    BraseroLayoutType layout_type)
+			    BraseroLayoutLocation layout_type)
 {
 	GtkWidget *source_pane = NULL;
 	GtkWidget *project_pane = NULL;
