@@ -289,7 +289,7 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 
 	/* continue while remaining data is too small to fit buffer */
 	while (!len || (len - buffer_offset) > (handle->buffer_max - handle->offset)) {
-		BraseroScsiResult result;
+		BraseroBurnResult result;
 
 		/* copy what we already have in the buffer. */
 		if (buffer)

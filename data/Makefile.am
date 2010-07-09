@@ -3,7 +3,8 @@ SUBDIRS = icons mime
 convertdir=$(datadir)/GConf/gsettings
 convert_DATA=brasero.convert
 
-gsettings_SCHEMAS = org.gnome.brasero.gschema.xml
+gsettings_in_file = org.gnome.brasero.gschema.xml.in
+gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 @INTLTOOL_XML_NOMERGE_RULE@
 @GSETTINGS_RULES@
 
@@ -16,11 +17,11 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 IMAGES=	logo.png
 
 CLEANFILES =		$(desktop_DATA)		\
-			$(schemas_DATA)
+			$(gsettings_SCHEMAS)
 
 
 EXTRA_DIST = 		$(desktop_in_files)	\
-			$(gsettings_SCHEMAS)	\
+			$(gsettings_in_file)	\
 			$(convert_DATA)
 
 UPDATE_DESKTOP = \

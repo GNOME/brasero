@@ -15,10 +15,10 @@ INCLUDES = \
 	$(BRASERO_GLIB_CFLAGS)
 
 #audio2cue
-audio2cuedir = $(libdir)/brasero/plugins
+audio2cuedir = $(BRASERO_PLUGIN_DIRECTORY)
 audio2cue_LTLIBRARIES = libbrasero-audio2cue.la
 libbrasero_audio2cue_la_SOURCES = burn-audio2cue.c
-libbrasero_audio2cue_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_audio2cue_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_audio2cue_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk

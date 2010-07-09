@@ -22,21 +22,20 @@ libbrasero-marshal.h: libbrasero-marshal.list
 libbrasero-marshal.c: libbrasero-marshal.h
 	( $(GLIB_GENMARSHAL) --prefix=brasero_marshal $(srcdir)/libbrasero-marshal.list --body --header > libbrasero-marshal.c )
 
+headerdir=$(includedir)/brasero@BRASERO_LIBRARY_SUFFIX@
+header_HEADERS =	brasero-drive.h			\
+		brasero-medium-monitor.h		\
+		brasero-media.h			\
+		brasero-units.h			\
+		brasero-medium.h			\
+		brasero-volume.h		\
+		brasero-medium-selection.h	\
+		brasero-drive-selection.h
+
 lib_LTLIBRARIES = 				\
-	libbrasero-media.la
+	libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la
 
-libbraseromediaincludedir = $(pkgincludedir)/
-libbraseromediainclude_HEADERS =	\
-	brasero-drive.h			\
-	brasero-medium-monitor.h		\
-	brasero-media.h			\
-	brasero-units.h			\
-	brasero-medium.h			\
-	brasero-volume.h		\
-	brasero-medium-selection.h	\
-	brasero-drive-selection.h
-
-libbrasero_media_la_LIBADD =                                     \
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =                                     \
 	$(BRASERO_GLIB_LIBS)                                     \
 	$(BRASERO_GMODULE_EXPORT_LIBS)                                     \
 	$(BRASERO_GTHREAD_LIBS)                                     \
@@ -44,13 +43,13 @@ libbrasero_media_la_LIBADD =                                     \
 	$(BRASERO_GTK_LIBS)                                     \
 	$(BRASERO_SCSI_LIBS)
 
-libbrasero_media_la_LDFLAGS =					\
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined
 	$(AM_LDFLAGS)
 #	-export-symbols ./libbrasero-media.symbols
 
-libbrasero_media_la_SOURCES =		\
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES =		\
 	libbrasero-marshal.c		\
 	libbrasero-marshal.h		\
 	brasero-drive.h			\
@@ -133,39 +132,39 @@ libbrasero_media_la_SOURCES =		\
 
 # FreeBSD's SCSI CAM interface
 if HAVE_CAM_LIB_H
-libbrasero_media_la_SOURCES += scsi-cam.c
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-cam.c
 endif
 
 # Linux's SCSI CAM interface
 if HAVE_SG_IO_HDR_T
-libbrasero_media_la_SOURCES += scsi-sg.c
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-sg.c
 endif
 
 # NetBSD's scsi(4)
 if HAVE_SCSIIO_H
-libbrasero_media_la_SOURCES += scsi-netbsd.c
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-netbsd.c
 endif
 
 # Solaris's USCSI interface
 if HAVE_USCSI_H
-libbrasero_media_la_SOURCES += scsi-uscsi.c
+libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-uscsi.c
 endif
 
 if HAVE_INTROSPECTION
 girdir = $(INTROSPECTION_GIRDIR)
-gir_DATA = BraseroMedia-1.0.gir
+gir_DATA = BraseroMedia-@BRASERO_VERSION@.gir
 
 typelibsdir = $(INTROSPECTION_TYPELIBDIR)
-typelibs_DATA = BraseroMedia-1.0.typelib
+typelibs_DATA = BraseroMedia-@BRASERO_VERSION@.typelib
 
-BraseroMedia-1.0.gir: libbrasero-media.la $(INTROSPECTION_SCANNER)
+BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroMedia --nsversion=1.0 \
-            --include=Gtk-2.0 \
+            --include=Gtk-@GTK_API_VERSION@.0 \
 	    -I$(top_srcdir)/libbrasero-media	\
-	    --library=brasero-media \
+	    --library=brasero-media@BRASERO_LIBRARY_SUFFIX@ \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
-            --pkg=gtk+-2.0  \
+            --pkg=gtk+-@GTK_API_VERSION@.0  \
 	    --strip-prefix=Brasero	\
             $(top_srcdir)/libbrasero-media/brasero-drive.h			\
 	    $(top_srcdir)/libbrasero-media/brasero-medium-monitor.h		\
@@ -177,8 +176,8 @@ BraseroMedia-1.0.gir: libbrasero-media.la $(INTROSPECTION_SCANNER)
 	    $(top_srcdir)/libbrasero-media/brasero-drive-selection.h	\
             $(top_srcdir)/libbrasero-media/*.c	    
 
-BraseroMedia-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media -o $(typelibs_DATA)
+BraseroMedia-@BRASERO_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media@BRASERO_LIBRARY_SUFFIX@ -o $(typelibs_DATA)
 endif
 
 EXTRA_DIST =			\

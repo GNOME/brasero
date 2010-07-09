@@ -28,38 +28,37 @@ libbrasero-marshal.h: libbrasero-marshal.list
 libbrasero-marshal.c: libbrasero-marshal.h
 	( $(GLIB_GENMARSHAL) --prefix=brasero_marshal $(srcdir)/libbrasero-marshal.list --body --header > libbrasero-marshal.c )
 
+headerdir=$(includedir)/brasero@BRASERO_LIBRARY_SUFFIX@
+header_HEADERS =	brasero-tags.h						\
+		brasero-enums.h						\
+		brasero-error.h						\
+		brasero-status.h					\
+		brasero-burn-lib.h					\
+		brasero-track-type.h					\
+		brasero-track.h						\
+		brasero-track-data.h                 			\
+		brasero-track-data-cfg.h				\
+		brasero-track-disc.h                 			\
+		brasero-track-stream.h                 			\
+		brasero-track-stream-cfg.h             			\
+		brasero-track-image.h					\
+		brasero-track-image-cfg.h				\
+		brasero-session.h                 			\
+		brasero-session-span.h					\
+		brasero-session-cfg.h					\
+		brasero-burn.h						\
+		brasero-burn-options.h        			        \
+		brasero-burn-dialog.h					\
+		brasero-tool-dialog.h					\
+		brasero-sum-dialog.h					\
+		brasero-blank-dialog.h
+
 lib_LTLIBRARIES = \
-	libbrasero-burn.la
+	libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 
-libbraseroburnincludedir = $(pkgincludedir)/
-libbraseroburninclude_HEADERS =					\
-	brasero-tags.h						\
-	brasero-enums.h						\
-	brasero-error.h						\
-	brasero-status.h					\
-	brasero-burn-lib.h					\
-	brasero-track-type.h					\
-	brasero-track.h						\
-	brasero-track-data.h                 			\
-	brasero-track-data-cfg.h				\
-	brasero-track-disc.h                 			\
-	brasero-track-stream.h                 			\
-	brasero-track-stream-cfg.h             			\
-	brasero-track-image.h					\
-	brasero-track-image-cfg.h				\
-	brasero-session.h                 			\
-	brasero-session-span.h					\
-	brasero-session-cfg.h					\
-	brasero-burn.h						\
-	brasero-burn-options.h        			        \
-	brasero-burn-dialog.h					\
-	brasero-tool-dialog.h					\
-	brasero-sum-dialog.h					\
-	brasero-blank-dialog.h
-
-libbrasero_burn_la_LIBADD =					\
-	../libbrasero-media/libbrasero-media.la			\
-	../libbrasero-utils/libbrasero-utils.la			\
+libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =					\
+	../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la			\
+	../libbrasero-utils/libbrasero-utils@BRASERO_LIBRARY_SUFFIX@.la			\
 	$(BRASERO_GLIB_LIBS)					\
 	$(BRASERO_GTHREAD_LIBS)					\
 	$(BRASERO_GMODULE_LIBS)					\
@@ -69,13 +68,13 @@ libbrasero_burn_la_LIBADD =					\
 	$(BRASERO_DBUS_LIBS)                                    \
 	$(BRASERO_CANBERRA_LIBS)
 
-libbrasero_burn_la_LDFLAGS =					\
+libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined						\
 	-export-dynamic
 #	-export-symbols ./libbrasero-burn.symbols
 
-libbrasero_burn_la_SOURCES = 		\
+libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_SOURCES = 		\
 	libbrasero-marshal.c		\
 	libbrasero-marshal.h		\
 	brasero-tool-dialog.c         \
@@ -196,7 +195,7 @@ libbrasero_burn_la_SOURCES = 		\
 	brasero-plugin-private.h                 
 
 if BUILD_INOTIFY
-libbrasero_burn_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
+libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
 endif
 
 EXTRA_DIST =			\
@@ -205,24 +204,24 @@ EXTRA_DIST =			\
 
 if HAVE_INTROSPECTION
 girdir = $(INTROSPECTION_GIRDIR)
-gir_DATA = BraseroBurn-1.0.gir
+gir_DATA = BraseroBurn-@BRASERO_VERSION@.gir
 
 typelibsdir = $(INTROSPECTION_TYPELIBDIR)
-typelibs_DATA = BraseroBurn-1.0.typelib
+typelibs_DATA = BraseroBurn-@BRASERO_VERSION@.typelib
 
-BraseroBurn-1.0.gir: libbrasero-burn.la $(INTROSPECTION_SCANNER)
+BraseroBurn-@BRASERO_VERSION@.gir: libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroBurn --nsversion=1.0 \
 	    -I$(top_srcdir)/libbrasero-media	\
 	    -I$(top_builddir)/libbrasero-media	\
 	    -I$(top_srcdir)/libbrasero-burn		\
 	    -I$(top_builddir)/libbrasero-burn	\
-            --include=Gtk-2.0 \
+            --include=Gtk-@GTK_API_VERSION@.0 \
             --add-include-path=$(top_builddir)/libbrasero-media	\
-	    --include=BraseroMedia-1.0 \
-	    --library=brasero-burn \
+	    --include=BraseroMedia-@BRASERO_VERSION@ \
+	    --library=brasero-burn@BRASERO_LIBRARY_SUFFIX@ \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
-            --pkg=gtk+-2.0  \
+            --pkg=gtk+-@GTK_API_VERSION@.0  \
 	    --strip-prefix=Brasero	\
             $(top_srcdir)/libbrasero-burn/brasero-tags.h						\
             $(top_srcdir)/libbrasero-burn/brasero-enums.h						\
@@ -248,8 +247,8 @@ BraseroBurn-1.0.gir: libbrasero-burn.la $(INTROSPECTION_SCANNER)
 	    $(top_srcdir)/libbrasero-burn/brasero-sum-dialog.h					\
 	    $(top_srcdir)/libbrasero-burn/*.c	    
 
-BraseroBurn-1.0.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-burn/$(gir_DATA) --shared-library=libbrasero-burn -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
+BraseroBurn-@BRASERO_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
+	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-burn/$(gir_DATA) --shared-library=libbrasero-burn@BRASERO_LIBRARY_SUFFIX@ -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
 endif
 
 CLEANFILES =			\

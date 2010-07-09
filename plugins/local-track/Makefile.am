@@ -16,19 +16,19 @@ INCLUDES = \
 	$(BRASERO_GIO_CFLAGS)
 
 #local-track
-local_trackdir = $(libdir)/brasero/plugins
+local_trackdir = $(BRASERO_PLUGIN_DIRECTORY)
 local_track_LTLIBRARIES = libbrasero-local-track.la
 
 libbrasero_local_track_la_SOURCES = burn-local-image.c 
-libbrasero_local_track_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GIO_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_local_track_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GIO_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_local_track_la_LDFLAGS = -module -avoid-version
 
 #burn-uri
-burn_uridir = $(libdir)/brasero/plugins
+burn_uridir = $(BRASERO_PLUGIN_DIRECTORY)
 burn_uri_LTLIBRARIES = libbrasero-burn-uri.la
 
 libbrasero_burn_uri_la_SOURCES = burn-uri.c 
-libbrasero_burn_uri_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GIO_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_burn_uri_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GIO_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_burn_uri_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk

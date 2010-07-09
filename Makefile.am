@@ -7,7 +7,6 @@ endif
 
 braserodocdir = ${prefix}/docs/brasero
 
-
 EXTRA_DIST = 			\
 	AUTHORS			\
 	MAINTAINERS		\
@@ -16,9 +15,7 @@ EXTRA_DIST = 			\
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\
-	gnome-doc-utils.make	\
-	libbrasero-media.pc	\
-	libbrasero-burn.pc
+	gnome-doc-utils.make
 
 noinst_PROGRAMS =
 
@@ -32,18 +29,14 @@ DISTCHECK_CONFIGURE_FLAGS =		\
 DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
-	intltool-update
+	intltool-update	\
+	libbrasero-media@BRASERO_LIBRARY_SUFFIX@.pc	\
+	libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.pc
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libbrasero-media.pc libbrasero-burn.pc
+pkgconfig_DATA = libbrasero-media@BRASERO_LIBRARY_SUFFIX@.pc libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.pc
 
-# Copy all the spec files. Of course, only one is actually used.
 dist-hook:
-	for specfile in *.spec; do \
-		if test -f $$specfile; then \
-			cp -p $$specfile $(distdir); \
-		fi \
-	done
 	@if test -d "$(srcdir)/.git"; \
 	then \
 		echo Creating ChangeLog && \

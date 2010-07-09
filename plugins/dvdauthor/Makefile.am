@@ -15,11 +15,11 @@ INCLUDES = \
 	$(BRASERO_GLIB_CFLAGS)				\
 	$(BRASERO_LIBXML_CFLAGS)
 
-dvdauthordir = $(libdir)/brasero/plugins
+dvdauthordir = $(BRASERO_PLUGIN_DIRECTORY)
 dvdauthor_LTLIBRARIES = libbrasero-dvdauthor.la
 
 libbrasero_dvdauthor_la_SOURCES = burn-dvdauthor.c 
-libbrasero_dvdauthor_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_dvdauthor_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_dvdauthor_la_LDFLAGS = -module -avoid-version
 
 

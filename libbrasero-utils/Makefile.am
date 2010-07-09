@@ -19,9 +19,9 @@ INCLUDES = \
 
 
 lib_LTLIBRARIES = \
-	libbrasero-utils.la
+	libbrasero-utils@BRASERO_LIBRARY_SUFFIX@.la
 
-libbrasero_utils_la_LIBADD =					\
+libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
 	$(BRASERO_GIO_LIBS)		\
 	$(BRASERO_DBUS_LIBS)		\
@@ -30,13 +30,12 @@ libbrasero_utils_la_LIBADD =					\
 	$(BRASERO_PL_PARSER_LIBS)	\
 	$(BRASERO_GTK_LIBS)
 
-
-libbrasero_utils_la_LDFLAGS =					\
+libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined
 #	-export-symbols ./libbrasero-utils.symbols
 
-libbrasero_utils_la_SOURCES =		\
+libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_SOURCES =		\
 	brasero-disc-message.c        \
 	brasero-disc-message.h        \
 	brasero-misc.c        \
@@ -69,6 +68,5 @@ libbrasero_utils_la_SOURCES =		\
 
 CLEANFILES =			\
 	$(RECMARSHALFILES)
-	
 
 -include $(top_srcdir)/git.mk

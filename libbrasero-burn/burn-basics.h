@@ -39,9 +39,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_PLUGIN_DIRECTORY		BRASERO_LIBDIR "/brasero/plugins"
-#define BRASERO_PLUGIN_KEY			"/apps/brasero/config/plugins"
-
 #define BRASERO_BURN_TMP_FILE_NAME		"brasero_tmp_XXXXXX"
 
 #define BRASERO_MD5_FILE			".checksum.md5"

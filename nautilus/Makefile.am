@@ -50,9 +50,9 @@ libnautilus_brasero_extension_la_SOURCES = 	\
 
 libnautilus_brasero_extension_la_LIBADD =	\
 	$(NAUTILUS_EXTENSION_LIBS)		\
-	../libbrasero-utils/libbrasero-utils.la	\
-	../libbrasero-media/libbrasero-media.la	\
-	../libbrasero-burn/libbrasero-burn.la
+	../libbrasero-utils/libbrasero-utils@BRASERO_LIBRARY_SUFFIX@.la	\
+	../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la	\
+	../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 	
 libnautilus_brasero_extension_la_LDFLAGS = $(module_flags)
 

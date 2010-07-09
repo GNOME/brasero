@@ -15,20 +15,20 @@ INCLUDES = \
 	$(BRASERO_GLIB_CFLAGS)				\
 	$(BRASERO_GTK_CFLAGS)
 
-checksumdir = $(libdir)/brasero/plugins
+checksumdir = $(BRASERO_PLUGIN_DIRECTORY)
 checksum_LTLIBRARIES = libbrasero-checksum.la
 libbrasero_checksum_la_SOURCES = burn-checksum-image.c	
 
 libbrasero_checksum_la_LDFLAGS = -module -avoid-version
-libbrasero_checksum_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_checksum_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 
-checksumfiledir = $(libdir)/brasero/plugins
+checksumfiledir = $(BRASERO_PLUGIN_DIRECTORY)
 checksumfile_LTLIBRARIES = libbrasero-checksum-file.la
 libbrasero_checksum_file_la_SOURCES = burn-checksum-files.c	\
 				      burn-volume-read.c  \
 				      burn-volume-read.h
 
 libbrasero_checksum_file_la_LDFLAGS = -module -avoid-version
-libbrasero_checksum_file_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GTK_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_checksum_file_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GTK_LIBS) ../../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 
 -include $(top_srcdir)/git.mk

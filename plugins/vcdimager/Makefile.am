@@ -15,11 +15,11 @@ INCLUDES = \
 	$(BRASERO_GLIB_CFLAGS)					\
 	$(BRASERO_LIBXML_CFLAGS)
 
-vcdimagerdir = $(libdir)/brasero/plugins
+vcdimagerdir = $(BRASERO_PLUGIN_DIRECTORY)
 vcdimager_LTLIBRARIES = libbrasero-vcdimager.la
 
 libbrasero_vcdimager_la_SOURCES = burn-vcdimager.c 
-libbrasero_vcdimager_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_vcdimager_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_vcdimager_la_LDFLAGS = -module -avoid-version
 
 

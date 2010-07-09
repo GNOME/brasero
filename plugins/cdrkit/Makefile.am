@@ -15,27 +15,27 @@ INCLUDES = \
 	$(BRASERO_GLIB_CFLAGS)
 
 #wodim
-wodimdir = $(libdir)/brasero/plugins
+wodimdir = $(BRASERO_PLUGIN_DIRECTORY)
 wodim_LTLIBRARIES = libbrasero-wodim.la
 libbrasero_wodim_la_SOURCES = burn-wodim.c \
 	burn-cdrkit.h 
-libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_wodim_la_LDFLAGS = -module -avoid-version
 
 #genisoimage
-genisoimagedir = $(libdir)/brasero/plugins
+genisoimagedir = $(BRASERO_PLUGIN_DIRECTORY)
 genisoimage_LTLIBRARIES = libbrasero-genisoimage.la
 libbrasero_genisoimage_la_SOURCES = burn-genisoimage.c \
 	burn-cdrkit.h 
-libbrasero_genisoimage_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_genisoimage_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_genisoimage_la_LDFLAGS = -module -avoid-version
 
 #readom
-readomdir = $(libdir)/brasero/plugins
+readomdir = $(BRASERO_PLUGIN_DIRECTORY)
 readom_LTLIBRARIES = libbrasero-readom.la
 libbrasero_readom_la_SOURCES = burn-readom.c \
 	burn-cdrkit.h 
-libbrasero_readom_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media.la ../../libbrasero-burn/libbrasero-burn.la
+libbrasero_readom_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
 libbrasero_readom_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk
