@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-07-08 19:00+0000\n"
-"PO-Revision-Date: 2010-07-08 23:11+0200\n"
+"POT-Creation-Date: 2010-07-09 13:14+0000\n"
+"PO-Revision-Date: 2010-07-10 10:19+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -65,6 +65,144 @@ msgstr "Todos los archivos"
 #: ../src/brasero-search.c:1045
 msgid "Number of results displayed"
 msgstr "Número de resultados mostrados"
+
+#: ../src/brasero-cli.c:70
+msgid "Open the specified project"
+msgstr "Abrir el proyecto especificado"
+
+#: ../src/brasero-cli.c:71
+msgid "PROJECT"
+msgstr "PROYECTO"
+
+#: ../src/brasero-cli.c:76
+msgid "Open the specified playlist as an audio project"
+msgstr "Abrir la lista de reproducción especificada como un proyecto de sonido"
+
+#: ../src/brasero-cli.c:77
+msgid "PLAYLIST"
+msgstr "LISTA DE REPRODUCCIÓN"
+
+#: ../src/brasero-cli.c:82
+msgid "Set the drive to be used for burning"
+msgstr "Establecer la unidad que usar para grabar"
+
+#: ../src/brasero-cli.c:83
+msgid "DEVICE PATH"
+msgstr "RUTA DEL DISPOSITIVO"
+
+#: ../src/brasero-cli.c:86
+msgid "Create an image file instead of burning"
+msgstr "Crear un archivo imagen en lugar de grabar"
+
+#: ../src/brasero-cli.c:90
+msgid "Open an audio project adding the URIs given on the command line"
+msgstr ""
+"Abre un proyecto de sonido añadiendo los URI dados en la línea de comandos"
+
+#: ../src/brasero-cli.c:94
+msgid "Open a data project adding the URIs given on the command line"
+msgstr ""
+"Abre un proyecto de datos añadiendo los URI dados en la línea de comandos"
+
+#: ../src/brasero-cli.c:98
+msgid "Copy a disc"
+msgstr "Copiar un disco"
+
+#: ../src/brasero-cli.c:99 ../src/brasero-cli.c:119 ../src/brasero-cli.c:123
+msgid "PATH TO DEVICE"
+msgstr "RUTA AL DISPOSITIVO"
+
+#: ../src/brasero-cli.c:102
+msgid "Cover to use"
+msgstr "Carátula que usar"
+
+#: ../src/brasero-cli.c:103
+msgid "PATH TO COVER"
+msgstr "RUTA A LA CARÁTULA"
+
+#: ../src/brasero-cli.c:106
+msgid "Open a video project adding the URIs given on the command line"
+msgstr ""
+"Abre un proyecto de vídeo añadiendo los URI dados en la línea de comandos"
+
+#: ../src/brasero-cli.c:110
+msgid "URI of an image file to burn (autodetected)"
+msgstr "URI del archivo de imagen para grabar (autodetectado)"
+
+#: ../src/brasero-cli.c:111
+msgid "PATH TO IMAGE"
+msgstr "RUTA AL LA IMAGEN"
+
+#: ../src/brasero-cli.c:114
+#| msgid "Force brasero to display the project selection page"
+msgid "Force Brasero to display the project selection page"
+msgstr "Obligar a Brasero a mostrar la página de selección de proyectos"
+
+#: ../src/brasero-cli.c:118
+msgid "Open the blank disc dialog"
+msgstr "Abrir el diálogo de borrar disco"
+
+#: ../src/brasero-cli.c:122
+msgid "Open the check disc dialog"
+msgstr "Abrir el diálogo de comprobar disco"
+
+#: ../src/brasero-cli.c:126
+#| msgid "Burn the contents of burn:// URI"
+msgid "Burn the contents of the burn:// URI"
+msgstr "Grabar el contenido del URI burn://"
+
+#: ../src/brasero-cli.c:130
+msgid "Start burning immediately."
+msgstr "Comenzar a grabar inmediatamente."
+
+#: ../src/brasero-cli.c:134
+msgid "Don't connect to an already-running instance"
+msgstr "No conectar con una instancia ya en ejecución"
+
+#: ../src/brasero-cli.c:138
+msgid ""
+"Burn the specified project and remove it.\n"
+"This option is mainly useful for integration with other applications."
+msgstr ""
+"Grabar el proyecto especificado y eliminarlo.\n"
+"Esta opción es útil para la integración con otras aplicaciones."
+
+#: ../src/brasero-cli.c:139
+msgid "PATH"
+msgstr "RUTA"
+
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other words, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/brasero-cli.c:147
+msgid "The XID of the parent window"
+msgstr "El XID de la ventana padre"
+
+#. Translators: %s is the path of drive
+#: ../src/brasero-cli.c:204
+#, c-format
+msgid "\"%s\" cannot write."
+msgstr "No se puede escribir «%s»."
+
+#: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
+msgid "Wrong command line option."
+msgstr "Opción de línea de comandos incorrecta."
+
+#. Translators: %s is the path of a drive
+#: ../src/brasero-cli.c:218 ../libbrasero-burn/brasero-track-data-cfg.c:2593
+#, c-format
+msgid "\"%s\" cannot be found."
+msgstr "no se puede encontrar «%s»."
+
+#: ../src/brasero-cli.c:297
+msgid "Incompatible command line options used."
+msgstr "Se usaron opciones de línea de comandos incompatibles."
+
+#: ../src/brasero-cli.c:298
+msgid "Only one option can be given at a time"
+msgstr "Solamente se puede especificar una opción por vez."
 
 #: ../libbrasero-burn/burn-plugin.c:645
 #, c-format
@@ -291,11 +429,6 @@ msgstr "No hay archivos para grabar en el disco"
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
 msgstr "«%s» es un enlace simbólico recursivo."
-
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2593
-#, c-format
-msgid "\"%s\" cannot be found."
-msgstr "no se puede encontrar «%s»."
 
 #: ../libbrasero-utils/brasero-io.c:1414
 #, c-format
@@ -1326,7 +1459,6 @@ msgstr "Canción desconocida"
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-song-control.c:274
 #: ../src/brasero-player.c:419
 #, c-format
-#| msgid " by %s"
 msgid "by %s"
 msgstr "por %s"
 
@@ -2601,7 +2733,6 @@ msgid "Disc Burner and Copier"
 msgstr "Grabador y copiador de discos"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-#| msgid "Burning image to disc"
 msgid "Burning flags to be used"
 msgstr "Grabando las opciones para usar"
 
@@ -2610,6 +2741,8 @@ msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
 msgstr ""
+"Contiene la ruta absoluta a la carpeta que se examinó por última vez con "
+"imágenes para grabar"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
 msgid ""
@@ -2633,9 +2766,11 @@ msgid ""
 "files. If that value is empty, the default directory set for glib will be "
 "used."
 msgstr ""
+"Contiene la ruta a la carpeta donde brasero debería almacenar los archivos "
+"temporales. Si el valor está vacío se usará la carpeta predeterminada "
+"establecida para glib."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
-#| msgid "Set the directory where to store temporary files"
 msgid "Directory to use for temporary files"
 msgstr "Carpeta que usar para almacenar los archivos temporales"
 
@@ -2706,24 +2841,21 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:19
 msgid "The last browsed folder while looking for images to burn"
-msgstr ""
+msgstr "La última carpeta examinada donde buscar imágenes para grabar"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
 msgid "The priority value for the plugin"
-msgstr ""
+msgstr "El valor de prioridad para el complemento"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:21
-#| msgid "the drive seems to be busy"
 msgid "The speed to be used"
 msgstr "La velocidad que usar"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for files"
 msgstr "El tipo de suma de verificación que usar para los archivos"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:23
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for images"
 msgstr "El tipo de suma de verificación que usar para las imágenes"
 
@@ -2732,12 +2864,15 @@ msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
 msgstr ""
+"Este valor representa las opciones de grabado que la última vez se usaron en "
+"tal contexto."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
 msgstr ""
+"Este valor representa la velocidad que la última vez se usó en tal contexto."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:26
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -2754,6 +2889,11 @@ msgid ""
 "priority is used. A positive value overrides the plugin's native priority. A "
 "negative value disables the plugin."
 msgstr ""
+"Cuando existen varios complementos disponibles para la misma tarea, este "
+"valor se usa para determinar a qué complemento se debe dar preferencia. «0» "
+"significa que se usará la prioridad nativa del complemento. Un valor "
+"positivo sobreescribe la prioridad nativa del complemento. Un valor negativo "
+"desactiva el complemento."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
@@ -3287,9 +3427,6 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "¿Quiere reemplazar «%s»?"
 
 #: ../src/brasero-data-disc.c:791
-#| msgid ""
-#| "A file with this name already exists in the folder.  Replacing it will "
-#| "overwrite its content on the disc to be burnt."
 msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its contents on the disc to be burnt."
@@ -3338,7 +3475,6 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:847
 #: ../libbrasero-burn/brasero-status-dialog.c:293
-#, fuzzy
 #| msgid ""
 #| "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 #| "supported by the ISO9660 standard in its first and second versions (the "
@@ -3362,9 +3498,8 @@ msgstr ""
 "soporta en su primera y segunda versiones (las más extendidas).\n"
 "Se recomienda usar la tercera versión del estándar ISO9660, soportado por la "
 "mayoría de los sistemas operativos incluyendo GNU/Linux y todas las "
-"versiones de Windows ©.\n"
-"Una excepción es MacOS X que no puede leer imágenes creadas con la versión 3 "
-"del estándar ISO9660."
+"versiones de Windows™. No obstante MacOS X que no puede leer imágenes "
+"creadas con la versión 3 del estándar ISO9660."
 
 #: ../src/brasero-data-disc.c:851 ../src/brasero-data-disc.c:895
 #: ../libbrasero-burn/brasero-status-dialog.c:235
@@ -3386,7 +3521,6 @@ msgstr "¿Está seguro de que quiere añadir «%s» a la selección?"
 
 #: ../src/brasero-data-disc.c:891
 #: ../libbrasero-burn/brasero-status-dialog.c:231
-#, fuzzy
 #| msgid ""
 #| "The children of this directory will have 7 parent directories.\n"
 #| "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -3527,7 +3661,6 @@ msgstr "%i × %i píxeles"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
-#| msgid " Preview "
 msgid "No preview"
 msgstr "Sin vista previa"
 
@@ -3708,7 +3841,7 @@ msgstr "Brasero — %s (disco de sonido)"
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (disco de vídeo)"
 
-#: ../src/brasero-project.c:2608 ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2608 ../src/brasero-project.c:2911
 msgid "Your project has not been saved."
 msgstr "Su proyecto no se ha guardado."
 
@@ -3716,40 +3849,40 @@ msgstr "Su proyecto no se ha guardado."
 msgid "Save the changes of current project before closing?"
 msgstr "¿Guardar los cambios del proyecto actual antes de cerrar?"
 
-#: ../src/brasero-project.c:2627 ../src/brasero-project.c:2929
+#: ../src/brasero-project.c:2627 ../src/brasero-project.c:2916
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Los cambios se perderán permanentemente si no los guarda."
 
 #: ../src/brasero-project.c:2631 ../src/brasero-project.c:2637
-#: ../src/brasero-project.c:2932
+#: ../src/brasero-project.c:2919
 msgid "Cl_ose Without Saving"
 msgstr "Ce_rrar sin guardar"
 
-#: ../src/brasero-project.c:2732
+#: ../src/brasero-project.c:2719
 msgid "Save Current Project"
 msgstr "Guardar el proyecto actual"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2737
 msgid "Save project as a Brasero audio project"
 msgstr "Guardar el proyecto como un proyecto de sonido de Brasero"
 
-#: ../src/brasero-project.c:2751
+#: ../src/brasero-project.c:2738
 msgid "Save project as a plain text list"
 msgstr "Guardar el proyecto como una lista en texto plano"
 
-#: ../src/brasero-project.c:2755
+#: ../src/brasero-project.c:2742
 msgid "Save project as a PLS playlist"
 msgstr "Guardar el proyecto como una lista de reproducción PLS"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2743
 msgid "Save project as an M3U playlist"
 msgstr "Guardar el proyecto como una lista de reproducción M3U"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2744
 msgid "Save project as an XSPF playlist"
 msgstr "Guardar el proyecto como una lista de reproducción XSPF"
 
-#: ../src/brasero-project.c:2758
+#: ../src/brasero-project.c:2745
 msgid "Save project as an iriver playlist"
 msgstr "Guardar el proyecto como una lista de reproducción iriver"
 
@@ -3808,7 +3941,6 @@ msgstr "Proyecto de _vídeo nuevo"
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:84
-#| msgid "Create a video DVD or an SVCD that are readable on TV readers"
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
 msgstr "Crear un DVD de vídeo o un SVCD legibles en lectores de TV"
 
@@ -3995,7 +4127,6 @@ msgid "The file integrity check could not be performed."
 msgstr "No se pudo ejecutar la verificación de integridad de archivos."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
-#| msgid "The file integrity was performed successfully."
 msgid "The file integrity check was performed successfully."
 msgstr "La verificación de integridad de archivos se ejecutó correctamente."
 
@@ -4300,12 +4431,10 @@ msgid "Video DVD could not be opened"
 msgstr "No se pudo abrir el DVD de vídeo"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:384
-#| msgid "Copying Video DVD"
 msgid "Copying video DVD"
 msgstr "Copiando DVD de vídeo"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:677
-#| msgid "Copies CSS encrypted Video DVDs to a disc image"
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Copia DVD cifrados con CSS a una imagen de disco"
 
@@ -4441,7 +4570,6 @@ msgid "Normalizing tracks"
 msgstr "Normalizando pistas"
 
 #: ../plugins/transcode/burn-normalize.c:646
-#| msgid "Normalize"
 msgid "Normalization"
 msgstr "Normalización"
 
@@ -4929,7 +5057,6 @@ msgid "Creating file layout"
 msgstr "Creando disposición de archivo"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:374
-#| msgid "Creates disc images suitable for Video DVDs"
 msgid "Creates disc images suitable for video DVDs"
 msgstr "Crea imágenes de discos apropiados para DVD de vídeo"
 
@@ -4938,7 +5065,6 @@ msgid "Converting video file to MPEG2"
 msgstr "Convirtiendo el archivo de vídeo a MPEG2"
 
 #: ../plugins/transcode/burn-vob.c:1376
-#| msgid "Converts any video file into a format suitable for Video DVDs"
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr ""
 "Convierte cualquier archivo de vídeo en un formato de apropiado para DVD de "
@@ -4983,98 +5109,6 @@ msgstr "Crea imágenes de disco apropiados para SVCD"
 #~ "current one?"
 #~ msgstr ""
 #~ "¿Quiere crear un proyecto nuevo y descartar los cambios en el actual?"
-
-#~ msgid "Open the specified project"
-#~ msgstr "Abrir el proyecto especificado"
-
-#~ msgid "PROJECT"
-#~ msgstr "PROYECTO"
-
-#~ msgid "Open the specified playlist as an audio project"
-#~ msgstr ""
-#~ "Abrir la lista de reproducción especificada como un proyecto de sonido"
-
-#~ msgid "PLAYLIST"
-#~ msgstr "LISTA DE REPRODUCCIÓN"
-
-#~ msgid "Set the drive to be used for burning"
-#~ msgstr "Establecer la unidad que usar para grabar"
-
-#~ msgid "DEVICE PATH"
-#~ msgstr "RUTA DEL DISPOSITIVO"
-
-#~ msgid "Create an image file instead of burning"
-#~ msgstr "Crear un archivo imagen en lugar de grabar"
-
-#~ msgid "Open an audio project adding the URIs given on the command line"
-#~ msgstr ""
-#~ "Abre un proyecto de sonido añadiendo los URI dados en la línea de comandos"
-
-#~ msgid "Open a data project adding the URIs given on the command line"
-#~ msgstr ""
-#~ "Abre un proyecto de datos añadiendo los URI dados en la línea de comandos"
-
-#~ msgid "Copy a disc"
-#~ msgstr "Copiar un disco"
-
-#~ msgid "PATH TO DEVICE"
-#~ msgstr "RUTA AL DISPOSITIVO"
-
-#~ msgid "Cover to use"
-#~ msgstr "Carátula que usar"
-
-#~ msgid "PATH TO COVER"
-#~ msgstr "RUTA A LA CARÁTULA"
-
-#~ msgid "Open a video project adding the URIs given on the command line"
-#~ msgstr ""
-#~ "Abre un proyecto de vídeo añadiendo los URI dados en la línea de comandos"
-
-#~ msgid "URI of an image file to burn (autodetected)"
-#~ msgstr "URI del archivo de imagen para grabar (autodetectado)"
-
-#~ msgid "PATH TO IMAGE"
-#~ msgstr "RUTA AL LA IMAGEN"
-
-#~ msgid "Force brasero to display the project selection page"
-#~ msgstr "Obligar a Brasero a mostrar la página de selección de proyectos"
-
-#~ msgid "Open the blank disc dialog"
-#~ msgstr "Abrir el diálogo de borrar disco"
-
-#~ msgid "Open the check disc dialog"
-#~ msgstr "Abrir el diálogo de comprobar disco"
-
-#~ msgid "Burn the contents of burn:// URI"
-#~ msgstr "Grabar el contenido del URI burn://"
-
-#~ msgid "Start burning immediately."
-#~ msgstr "Comenzar a grabar inmediatamente."
-
-#~ msgid ""
-#~ "Burn the specified project and remove it.\n"
-#~ "This option is mainly useful for integration with other applications."
-#~ msgstr ""
-#~ "Grabar el proyecto especificado y eliminarlo.\n"
-#~ "Esta opción es útil para la integración con otras aplicaciones."
-
-#~ msgid "PATH"
-#~ msgstr "RUTA"
-
-#~ msgid "The XID of the parent window"
-#~ msgstr "El XID de la ventana padre"
-
-#~ msgid "\"%s\" cannot write."
-#~ msgstr "No se puede escribir «%s»."
-
-#~ msgid "Wrong command line option."
-#~ msgstr "Opción de línea de comandos incorrecta."
-
-#~ msgid "Incompatible command line options used."
-#~ msgstr "Se usaron opciones de línea de comandos incompatibles."
-
-#~ msgid "Only one option can be given at a time"
-#~ msgstr "Solamente se puede especificar una opción por vez."
 
 #~ msgid "An error occured while writing to disc"
 #~ msgstr "Ocurrió un error al grabar al disco"
