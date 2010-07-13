@@ -1,3 +1,34 @@
+14-07-2010: 2.31.5
+
+Features:
+- Bump GTK+ and libcanberra to 3.0
+- Fix bgo #622332 - Port to GApplication
+- Allow to build with gtk2 and gtk3
+
+Bug Fixes:
+- Fix bgo #623484 - No estimated drive speed shown
+- Fix session logging for tool dialogs (sum+blank)
+- Fix bgo #623545 - "Increase compatibility with Windows" only cuts the
+  length of ONE single filename to 64 characters
+- Close any GtkFileChooserDialog if the user clicks to display the
+  side pane
+- Fix bgo #622968 - Add File Selector mis-behaves: No Places
+  pane. Ctrl/click action wrong.
+- Fix bgo #614229 - Please review strings for translation
+- Misc fixes
+
+- Updated translations
+
+Homepage: http://www.gnome.org/projects/brasero
+
+Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
+
+Mailing List for User and Developer discussion: brasero-list@gnome.org
+
+GIT Repository: http://git.gnome.org/cgit/brasero/
+
+Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
+
 28-06-2010: 2.31.4
 
 Third development release:
