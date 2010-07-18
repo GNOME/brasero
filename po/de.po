@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-07-08 19:00+0000\n"
-"PO-Revision-Date: 2010-07-09 12:55+0100\n"
+"POT-Creation-Date: 2010-07-09 13:14+0000\n"
+"PO-Revision-Date: 2010-07-18 19:42+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -65,6 +65,146 @@ msgstr "Alle Dateien"
 #: ../src/brasero-search.c:1045
 msgid "Number of results displayed"
 msgstr "Anzahl der angezeigten Ergebnisse"
+
+#: ../src/brasero-cli.c:70
+msgid "Open the specified project"
+msgstr "Das angegebene Projekt öffnen"
+
+#: ../src/brasero-cli.c:71
+msgid "PROJECT"
+msgstr "PROJEKT"
+
+#: ../src/brasero-cli.c:76
+msgid "Open the specified playlist as an audio project"
+msgstr "Angegebene Wiedergabeliste als Audio-Projekt öffnen"
+
+#: ../src/brasero-cli.c:77
+msgid "PLAYLIST"
+msgstr "WIEDERGABELISTE"
+
+#: ../src/brasero-cli.c:82
+msgid "Set the drive to be used for burning"
+msgstr "Das Laufwerk für den Brennvorgang festlegen"
+
+#: ../src/brasero-cli.c:83
+msgid "DEVICE PATH"
+msgstr "GERÄT PFAD"
+
+#: ../src/brasero-cli.c:86
+msgid "Create an image file instead of burning"
+msgstr "Eine Abbild-Datei erstellen, anstatt zu brennen"
+
+#: ../src/brasero-cli.c:90
+msgid "Open an audio project adding the URIs given on the command line"
+msgstr ""
+"Ein Audio-Projekt öffnen und die in der Befehlszeile angegebenen Adressen "
+"hinzufügen"
+
+#: ../src/brasero-cli.c:94
+msgid "Open a data project adding the URIs given on the command line"
+msgstr ""
+"Ein Daten-Projekt öffnen und die in der Befehlszeile angegebenen Adressen "
+"hinzufügen"
+
+#: ../src/brasero-cli.c:98
+msgid "Copy a disc"
+msgstr "Eine CD/DVD kopieren"
+
+#: ../src/brasero-cli.c:99 ../src/brasero-cli.c:119 ../src/brasero-cli.c:123
+msgid "PATH TO DEVICE"
+msgstr "PFAD ZUM GERÄT"
+
+#: ../src/brasero-cli.c:102
+msgid "Cover to use"
+msgstr "Zu verwendendes Cover"
+
+#: ../src/brasero-cli.c:103
+msgid "PATH TO COVER"
+msgstr "PFAD ZUM COVER"
+
+#: ../src/brasero-cli.c:106
+msgid "Open a video project adding the URIs given on the command line"
+msgstr ""
+"Ein Audio-Projekt öffnen und die in der Befehlszeile angegebenen Adressen "
+"hinzufügen"
+
+#: ../src/brasero-cli.c:110
+msgid "URI of an image file to burn (autodetected)"
+msgstr "Die Adresse des Abbilds, das gebrannt werden soll (automatisch erkannt)"
+
+#: ../src/brasero-cli.c:111
+msgid "PATH TO IMAGE"
+msgstr "PFAD ZUM ABBILD"
+
+#: ../src/brasero-cli.c:114
+msgid "Force Brasero to display the project selection page"
+msgstr "Brasero zur Anzeige der Auswahlseite für Projekte zwingen"
+
+#: ../src/brasero-cli.c:118
+msgid "Open the blank disc dialog"
+msgstr "Dialog für leere Medien öffnen"
+
+#: ../src/brasero-cli.c:122
+msgid "Open the check disc dialog"
+msgstr "Dialog zum Überprüfen der CD/DVD öffnen"
+
+#: ../src/brasero-cli.c:126
+msgid "Burn the contents of the burn:// URI"
+msgstr "Den Inhalt von Adresse burn:// brennen"
+
+#: ../src/brasero-cli.c:130
+msgid "Start burning immediately."
+msgstr "Den Brennvorgang sofort beginnen."
+
+#: ../src/brasero-cli.c:134
+msgid "Don't connect to an already-running instance"
+msgstr "Nicht mit einer schon laufenden Instanz verbinden"
+
+#: ../src/brasero-cli.c:138
+msgid ""
+"Burn the specified project and remove it.\n"
+"This option is mainly useful for integration with other applications."
+msgstr ""
+"Brennt das angegebene Projekt und löscht es.\n"
+"Diese Option wird hauptsächlich für die Integration in andere Anwendungen "
+"benutzt."
+
+#: ../src/brasero-cli.c:139
+msgid "PATH"
+msgstr "PFAD"
+
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other words, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/brasero-cli.c:147
+msgid "The XID of the parent window"
+msgstr "Die XID-Kennung des Eltern-Fensters"
+
+#. Translators: %s is the path of drive
+#: ../src/brasero-cli.c:204
+#, c-format
+msgid "\"%s\" cannot write."
+msgstr "»%s« kann nicht beschrieben werden."
+
+#: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
+msgid "Wrong command line option."
+msgstr "Falsche Befehlszeilenoption."
+
+#. Translators: %s is the path of a drive
+#: ../src/brasero-cli.c:218 ../libbrasero-burn/brasero-track-data-cfg.c:2593
+#, c-format
+msgid "\"%s\" cannot be found."
+msgstr "»%s« kann nicht gefunden werden."
+
+#: ../src/brasero-cli.c:297
+msgid "Incompatible command line options used."
+msgstr "Inkompatible Befehlszeilenoptionen wurden benutzt."
+
+#: ../src/brasero-cli.c:298
+msgid "Only one option can be given at a time"
+msgstr "Es können nicht mehrere Optionen gleichzeitig gewählt werden"
 
 #: ../libbrasero-burn/burn-plugin.c:645
 #, c-format
@@ -292,11 +432,6 @@ msgstr "Keine Dateien zum Schreiben auf ein Medium vorhanden"
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
 msgstr "»%s« ist eine rekursive symbolische Verknüpfung."
-
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2593
-#, c-format
-msgid "\"%s\" cannot be found."
-msgstr "»%s« kann nicht gefunden werden."
 
 #: ../libbrasero-utils/brasero-io.c:1414
 #, c-format
@@ -3729,7 +3864,7 @@ msgstr "Brasero — %s (Audio-CD)"
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (Video-CD/DVD)"
 
-#: ../src/brasero-project.c:2608 ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2608 ../src/brasero-project.c:2911
 msgid "Your project has not been saved."
 msgstr "Ihr Projekt wurde nicht gespeichert."
 
@@ -3739,40 +3874,40 @@ msgstr ""
 "Möchten Sie die Änderungen des aktuellen Projektes vor dem Schließen "
 "speichern?"
 
-#: ../src/brasero-project.c:2627 ../src/brasero-project.c:2929
+#: ../src/brasero-project.c:2627 ../src/brasero-project.c:2916
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Nicht gespeicherte Änderungen sind unwiederbringlich verloren."
 
 #: ../src/brasero-project.c:2631 ../src/brasero-project.c:2637
-#: ../src/brasero-project.c:2932
+#: ../src/brasero-project.c:2919
 msgid "Cl_ose Without Saving"
 msgstr "Ohne Speichern _schließen"
 
-#: ../src/brasero-project.c:2732
+#: ../src/brasero-project.c:2719
 msgid "Save Current Project"
 msgstr "Aktuelles Projekt speichern"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2737
 msgid "Save project as a Brasero audio project"
 msgstr "Projekt als Brasero Audioprojekt speichern"
 
-#: ../src/brasero-project.c:2751
+#: ../src/brasero-project.c:2738
 msgid "Save project as a plain text list"
 msgstr "Projekt als einfache Textdatei speichern"
 
-#: ../src/brasero-project.c:2755
+#: ../src/brasero-project.c:2742
 msgid "Save project as a PLS playlist"
 msgstr "Projekt als PLS-Wiedergabeliste speichern"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2743
 msgid "Save project as an M3U playlist"
 msgstr "Projekt als M3U-Wiedergabeliste speichern"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2744
 msgid "Save project as an XSPF playlist"
 msgstr "Projekt als XSPF-Wiedergabeliste speichern"
 
-#: ../src/brasero-project.c:2758
+#: ../src/brasero-project.c:2745
 msgid "Save project as an iriver playlist"
 msgstr "Projekt als iRiver-Wiedergabeliste speichern"
 
@@ -5005,102 +5140,6 @@ msgstr "Erstellt für SVCDs geeignete Abbilder"
 #~ msgstr ""
 #~ "Möchten Sie wirklich ein neues Projekt erstellen? Alle Änderungen am "
 #~ "aktuellen Projekt werden verworfen."
-
-#~ msgid "Open the specified project"
-#~ msgstr "Das angegebene Projekt öffnen"
-
-#~ msgid "PROJECT"
-#~ msgstr "PROJEKT"
-
-#~ msgid "Open the specified playlist as an audio project"
-#~ msgstr "Angegebene Wiedergabeliste als Audio-Projekt öffnen"
-
-#~ msgid "PLAYLIST"
-#~ msgstr "WIEDERGABELISTE"
-
-#~ msgid "Set the drive to be used for burning"
-#~ msgstr "Das Laufwerk für den Brennvorgang festlegen"
-
-#~ msgid "DEVICE PATH"
-#~ msgstr "GERÄT PFAD"
-
-#~ msgid "Create an image file instead of burning"
-#~ msgstr "Eine Abbild-Datei erstellen, anstatt zu brennen"
-
-#~ msgid "Open an audio project adding the URIs given on the command line"
-#~ msgstr ""
-#~ "Ein Audio-Projekt öffnen und die in der Befehlszeile angegebenen Adressen "
-#~ "hinzufügen"
-
-#~ msgid "Open a data project adding the URIs given on the command line"
-#~ msgstr ""
-#~ "Ein Daten-Projekt öffnen und die in der Befehlszeile angegebenen Adressen "
-#~ "hinzufügen"
-
-#~ msgid "Copy a disc"
-#~ msgstr "Eine CD/DVD kopieren"
-
-#~ msgid "PATH TO DEVICE"
-#~ msgstr "PFAD ZUM GERÄT"
-
-#~ msgid "Cover to use"
-#~ msgstr "Zu verwendendes Cover"
-
-#~ msgid "PATH TO COVER"
-#~ msgstr "PFAD ZUM COVER"
-
-#~ msgid "Open a video project adding the URIs given on the command line"
-#~ msgstr ""
-#~ "Ein Audio-Projekt öffnen und die in der Befehlszeile angegebenen Adressen "
-#~ "hinzufügen"
-
-#~ msgid "URI of an image file to burn (autodetected)"
-#~ msgstr ""
-#~ "Die Adresse des Abbilds, das gebrannt werden soll (automatisch erkannt)"
-
-#~ msgid "PATH TO IMAGE"
-#~ msgstr "PFAD ZUM ABBILD"
-
-#~ msgid "Force brasero to display the project selection page"
-#~ msgstr "Brasero zur Anzeige der Auswahlseite für Projekte zwingen"
-
-#~ msgid "Open the blank disc dialog"
-#~ msgstr "Dialog für leere Medien öffnen"
-
-#~ msgid "Open the check disc dialog"
-#~ msgstr "Dialog zum Überprüfen der CD/DVD öffnen"
-
-#~ msgid "Burn the contents of burn:// URI"
-#~ msgstr "Den Inhalt von Adresse burn:// brennen"
-
-#~ msgid "Start burning immediately."
-#~ msgstr "Den Brennvorgang sofort beginnen."
-
-#~ msgid ""
-#~ "Burn the specified project and remove it.\n"
-#~ "This option is mainly useful for integration with other applications."
-#~ msgstr ""
-#~ "Brennt das angegebene Projekt und löscht es.\n"
-#~ "Diese Option wird hauptsächlich für die Integration in andere Anwendungen "
-#~ "benutzt."
-
-#~ msgid "PATH"
-#~ msgstr "PFAD"
-
-#~ msgid "The XID of the parent window"
-#~ msgstr "Die XID-Kennung des Eltern-Fensters"
-
-#~ msgid "\"%s\" cannot write."
-#~ msgstr "»%s« kann nicht beschrieben werden."
-
-#~ msgid "Wrong command line option."
-#~ msgstr "Falsche Befehlszeilenoption."
-
-#~ msgid "Incompatible command line options used."
-#~ msgstr "Inkompatible Befehlszeilenoptionen wurden benutzt."
-
-#~ msgid "Only one option can be given at a time"
-#~ msgstr "Es können nicht mehrere Optionen gleichzeitig gewählt werden"
 
 #~ msgid "An error occured while writing to disc"
 #~ msgstr "Ein Fehler trat beim Beschreiben der CD/DVD auf"
