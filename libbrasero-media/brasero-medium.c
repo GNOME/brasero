@@ -2791,10 +2791,14 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 		return;
 	}
 
-	/* Get the number of CD-Text Data Packs */
-	num = (BRASERO_GET_16 (cd_text->hdr->len) -
-	      (sizeof (BraseroScsiTocPmaAtipHdr) - sizeof (cd_text->hdr->len)))  /
-	       sizeof (BraseroScsiCDTextPackData);
+	/* Get the number of CD-Text Data Packs.
+	 * Some drives seem to report an idiotic cd_text->hdr->len. So use size
+	 * to be on the safe side. */
+	num = (size - sizeof (BraseroScsiTocPmaAtipHdr)) / sizeof (BraseroScsiCDTextPackData);
+	if (num <= 0) {
+		g_free (cd_text);
+		return;
+	}
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
