@@ -2799,7 +2799,7 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 		return;
 	}
 
-	num = (num - sizeof (BraseroScsiTocPmaAtipHdr)) / sizeof (BraseroScsiCDTextPackData);
+	num = (size - sizeof (BraseroScsiTocPmaAtipHdr)) / sizeof (BraseroScsiCDTextPackData);
 	if (num <= 0) {
 		g_free (cd_text);
 		return;
