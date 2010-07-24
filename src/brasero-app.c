@@ -2072,7 +2072,7 @@ brasero_app_init (BraseroApp *object)
 	/* Connect to session */
 	brasero_session_connect (object);
 
-	g_set_application_name (_("Brasero Disc Burner"));
+	g_set_application_name (_("Disc Burner"));
 	gtk_window_set_default_icon_name ("brasero");
 
 	brasero_io_set_parent_window_callback (brasero_app_get_io_parent_window, object);
