@@ -118,7 +118,7 @@ brasero_inhibit_suspend (const char *reason)
 
 	res = dbus_g_proxy_call (proxy,
 				 "Inhibit", &error,
-				 G_TYPE_STRING, "Brasero", /* app_id */
+				 G_TYPE_STRING, g_get_application_name (), /* This is the human readable name of the application */
 				 G_TYPE_UINT, 0,           /* toplevel_xid */
 				 G_TYPE_STRING, reason,    /* reason */
 				 G_TYPE_UINT, 1 | 4,       /* flags (prevent logout, suspend) */
