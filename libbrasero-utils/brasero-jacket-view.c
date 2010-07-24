@@ -818,8 +818,7 @@ brasero_jacket_view_update_edit_image (BraseroJacketView *self)
 	GdkPixmap *pixmap;
 	GtkWidget *toplevel;
 	GtkAllocation allocation;
-	GtkStyle *style;
-	guint width, height, x, y;
+	gint width, height, x, y;
 	BraseroJacketViewPrivate *priv;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
@@ -853,88 +852,73 @@ brasero_jacket_view_update_edit_image (BraseroJacketView *self)
 
 	ctx = gdk_cairo_create (GDK_DRAWABLE (pixmap));
 
-	if (priv->pattern) {
-		cairo_rectangle (ctx,
-				 0,
-				 0,
-				 width,
-				 height);
-		cairo_clip (ctx);
+	cairo_rectangle (ctx,
+			 0,
+			 0,
+			 width,
+			 height);
 
+	if (priv->pattern)
 		cairo_set_source (ctx, priv->pattern);
-		cairo_paint (ctx);
-	}
-	else {
-		GdkGC *gc;
 
-		gc = gdk_gc_new (GDK_DRAWABLE (pixmap));
-		gdk_gc_set_fill (gc, GDK_SOLID);
-		style = gtk_widget_get_style (priv->edit);
-		gdk_gc_set_rgb_fg_color (gc, &style->bg [0]);
-		gdk_gc_set_rgb_bg_color (gc, &style->bg [0]);
-		gdk_draw_rectangle (GDK_DRAWABLE (pixmap),
-				    gc,
-				    TRUE,
-				    0,
-				    0,
-				    width,
-				    height);
-		g_object_unref (gc);
-	}
+	cairo_clip (ctx);
+	cairo_paint (ctx);
 
 	if (priv->scaled) {
 		if (priv->image_style == BRASERO_JACKET_IMAGE_CENTER) {
-			if (width < gdk_pixbuf_get_width (priv->scaled))
-				gdk_draw_pixbuf (GDK_DRAWABLE (pixmap),
-						 NULL,
-						 priv->scaled,
-						(gdk_pixbuf_get_width (priv->scaled) - width) / 2,
-						(gdk_pixbuf_get_height (priv->scaled) - height) / 2,
-						 0, 0,
-						 width,
-						 height,
-						 GDK_RGB_DITHER_NORMAL,
-						 -1,
-						 -1);
-			else
-				gdk_draw_pixbuf (GDK_DRAWABLE (pixmap),
-						 NULL,
-						 priv->scaled,
-						 0, 0,
-						 (width - gdk_pixbuf_get_width (priv->scaled)) / 2,
-						 (height - gdk_pixbuf_get_height (priv->scaled)) / 2,
-						 -1,
-						 -1,
-						 GDK_RGB_DITHER_NORMAL,
-						 -1,
-						 -1);
+			gdk_cairo_set_source_pixbuf (ctx,
+			                             priv->scaled,
+			                             (width - gdk_pixbuf_get_width (priv->scaled)) / 2,
+			                             (height - gdk_pixbuf_get_height (priv->scaled)) / 2);
 		}
 		else if (priv->image_style == BRASERO_JACKET_IMAGE_TILE) {
 			cairo_pattern_t *pattern;
 
-			gdk_cairo_set_source_pixbuf (ctx, priv->scaled, -x, -y);
+			gdk_cairo_set_source_pixbuf (ctx, priv->scaled, 0, 0);
 			pattern = cairo_get_source (ctx);
 			cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-			cairo_paint (ctx);
 		}
 		else
-			gdk_draw_pixbuf (GDK_DRAWABLE (pixmap),
-					 NULL,
-					 priv->scaled,
-					 x,
-					 y,
-					 0, 0,
-					 width,
-					 height,
-					 GDK_RGB_DITHER_NORMAL,
-					 -1,
-					 -1);
+			gdk_cairo_set_source_pixbuf (ctx, priv->scaled, x, y);
+
+		cairo_paint (ctx);
 	}
 
 	cairo_destroy (ctx);
 
 	gdk_window_set_back_pixmap (window, pixmap, FALSE);
 	g_object_unref (pixmap);
+}
+
+static GdkPixbuf *
+brasero_jacket_view_crop_image (BraseroJacketView *self,
+				guint width,
+                                guint height)
+{
+	BraseroJacketViewPrivate *priv;
+	gint x, y;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+
+	if (gdk_pixbuf_get_width (priv->image) > width) {
+		x = 0;
+		width = gdk_pixbuf_get_width (priv->image);
+	}
+	else
+		x = (gdk_pixbuf_get_width (priv->image) - width) / 2;
+
+	if (gdk_pixbuf_get_height (priv->image) > height) {
+		y = 0;
+		height = gdk_pixbuf_get_height (priv->image);
+	}
+	else
+		y = (gdk_pixbuf_get_height (priv->image) - height) / 2;
+
+	return gdk_pixbuf_new_subpixbuf (priv->image,
+	                                 x,
+	                                 y,
+	                                 width,
+	                                 height);
 }
 
 static void
@@ -948,12 +932,16 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 		return;
 
 	if (priv->image_style == BRASERO_JACKET_IMAGE_CENTER) {
-		g_object_ref (priv->image);
-		priv->scaled = priv->image;
-	}
-	else if (priv->image_style == BRASERO_JACKET_IMAGE_TILE) {
-		g_object_ref (priv->image);
-		priv->scaled = priv->image;		
+		GtkAllocation allocation;
+
+		gtk_widget_get_allocation (priv->edit, &allocation);
+		if (allocation.width < gdk_pixbuf_get_width (priv->image)
+		||  allocation.height < gdk_pixbuf_get_height (priv->image))
+			priv->scaled = brasero_jacket_view_crop_image (self,
+			                                               allocation.width,
+			                                               allocation.height);
+		else
+			priv->scaled = g_object_ref (priv->image);
 	}
 	else if (priv->image_style == BRASERO_JACKET_IMAGE_STRETCH) {
 		guint resolution;
@@ -966,6 +954,8 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 		resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
 		priv->scaled = brasero_jacket_view_scale_image (self, resolution, resolution);
 	}
+	else if (priv->image_style == BRASERO_JACKET_IMAGE_TILE)
+		priv->scaled = g_object_ref (priv->image);
 
 	brasero_jacket_view_update_edit_image (self);
 	gtk_widget_queue_draw (GTK_WIDGET (self));

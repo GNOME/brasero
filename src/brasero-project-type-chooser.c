@@ -557,20 +557,19 @@ brasero_project_type_expose_event (GtkWidget *widget, GdkEventExpose *event)
 		if (gtk_widget_get_has_window (widget)) {
 			if (!gtk_widget_get_app_paintable (widget)
 			&&  chooser->priv->background) {
-				int width, offset = 150;
+				int width, height, offset = 150;
+				cairo_t *ctx;
 
 				width = gdk_pixbuf_get_width (chooser->priv->background);
-				gdk_draw_pixbuf (gtk_widget_get_window (widget),
-					         gtk_widget_get_style (widget)->white_gc,
-						 chooser->priv->background,
-						 offset,
-						 0,
-						 0,
-						 0,
-						 width - offset,
-						 -1,
-						 GDK_RGB_DITHER_NORMAL,
-						 0, 0);
+				height = gdk_pixbuf_get_height (chooser->priv->background);
+				ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
+				cairo_rectangle (ctx, 0, 0, width - offset, height);
+				cairo_clip (ctx);
+				gdk_cairo_set_source_pixbuf (ctx,
+					                     chooser->priv->background,
+					                     0, 0);
+				cairo_paint (ctx);
+				cairo_destroy (ctx);
 			}
 		}
 	}
