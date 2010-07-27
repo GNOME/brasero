@@ -34,7 +34,6 @@
 #endif
 
 #include <glib.h>
-#include <dbus/dbus-glib.h>
 
 void
 brasero_uninhibit_suspend (guint cookie);

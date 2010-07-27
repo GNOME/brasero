@@ -34,106 +34,100 @@
 #endif
 
 #include <glib.h>
-#include <dbus/dbus-glib.h>
+#include <gtk/gtk.h>
 #include "burn-dbus.h"
 
 #define	GS_DBUS_SERVICE			"org.gnome.SessionManager"
 #define	GS_DBUS_INHIBIT_PATH		"/org/gnome/SessionManager"
 #define	GS_DBUS_INHIBIT_INTERFACE	"org.gnome.SessionManager"
 
+static GDBusConnection *conn;
+
 void 
 brasero_uninhibit_suspend (guint cookie)
 {
-	DBusGProxy	*proxy;
-	gboolean	res;
 	GError		*error = NULL;
-	DBusGConnection *conn	= NULL;
+	GVariant 	*res;
 
 	if (cookie < 0) {
 		g_warning ("Invalid cookie");
 		return;
 	}
 
-	conn = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-	if (!conn) {
+	conn = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+
+	if (conn == NULL) {
 		g_warning ("Couldn't get a DBUS connection: %s",
 			    error->message);
 		g_error_free (error);
 		return;
 	}
 
-	proxy = dbus_g_proxy_new_for_name (conn,
-					   GS_DBUS_SERVICE,
-					   GS_DBUS_INHIBIT_PATH,
-					   GS_DBUS_INHIBIT_INTERFACE);
-	if (proxy == NULL) {
-		g_warning ("Could not get DBUS proxy: %s", GS_DBUS_SERVICE);
-		dbus_g_connection_unref (conn);
-		return;
-	}
+	res = g_dbus_connection_call_sync (conn,
+					   GS_DBUS_SERVICE, 
+					   GS_DBUS_INHIBIT_PATH, 
+					   GS_DBUS_INHIBIT_INTERFACE,
+					   "Uninhibit", 
+					   g_variant_new("(u)", 
+							 cookie),
+					   NULL,
+					   G_DBUS_CALL_FLAGS_NONE, 
+					   -1,
+					   NULL,
+					   &error);
 
-	res = dbus_g_proxy_call (proxy,
-				 "Uninhibit", &error,
-				 G_TYPE_UINT, cookie,
-				 G_TYPE_INVALID,
-				 G_TYPE_INVALID);
-	if (!res) {
+	if (res == NULL) {
 		g_warning ("Failed to restore the system power manager: %s",
 			    error->message);
 		g_error_free (error);
 	}
 
-	g_object_unref (G_OBJECT (proxy));
-	dbus_g_connection_unref (conn);
+	g_variant_unref (res);
 }
 
 gint
 brasero_inhibit_suspend (const char *reason)
 {
-	DBusGProxy	*proxy;
 	guint	         cookie;
-	gboolean	 res;
 	GError		*error	= NULL;
-	DBusGConnection *conn	= NULL;
+	GVariant 	*res;
 
 	g_return_val_if_fail (reason != NULL, -1);
 
-	conn = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-	if (!conn) {
+	conn = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+
+	if (conn == NULL) {
 		g_warning ("Couldn't get a DBUS connection: %s",
 			    error->message);
 		g_error_free (error);
 		return -1;
 	}
 
-	proxy = dbus_g_proxy_new_for_name (conn,
+	res = g_dbus_connection_call_sync (conn,
 					   GS_DBUS_SERVICE,
-					   GS_DBUS_INHIBIT_PATH,
-					   GS_DBUS_INHIBIT_INTERFACE);
-	
-	if (proxy == NULL) {
-		g_warning ("Could not get DBUS proxy: %s", GS_DBUS_SERVICE);
-		return -1;
-	}
+					   GS_DBUS_INHIBIT_PATH, 
+					   GS_DBUS_INHIBIT_INTERFACE,
+					   "Inhibit",
+					   g_variant_new("(u^asms)",
+							 g_get_application_name (),
+							 0,
+							 reason,
+							 1 | 4,
+							 &cookie),
+					   NULL,
+					   G_DBUS_CALL_FLAGS_NONE, 
+					   -1,
+					   NULL,
+					   &error);
 
-	res = dbus_g_proxy_call (proxy,
-				 "Inhibit", &error,
-				 G_TYPE_STRING, g_get_application_name (), /* This is the human readable name of the application */
-				 G_TYPE_UINT, 0,           /* toplevel_xid */
-				 G_TYPE_STRING, reason,    /* reason */
-				 G_TYPE_UINT, 1 | 4,       /* flags (prevent logout, suspend) */
-				 G_TYPE_INVALID,
-				 G_TYPE_UINT, &cookie,
-				 G_TYPE_INVALID);
-	if (!res) {
+	if (res == NULL) {
 		g_warning ("Failed to inhibit the system from suspending: %s",
 			    error->message);
 		g_error_free (error);
 		cookie = -1;
 	}
 
-	g_object_unref (G_OBJECT (proxy));
-	dbus_g_connection_unref (conn);
+	g_variant_unref (res);
 
 	return cookie;
 }
