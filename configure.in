@@ -277,8 +277,8 @@ AC_SUBST(BRASERO_CANBERRA_CFLAGS)
 AC_SUBST(BRASERO_CANBERRA_LIBS)
 
 dnl ****************Nautilus**********************************
-# Note: the extension is built against gtk+3 so we cannot build extension with gtk+2
-NAUTILUS_REQUIRED=2.31.3
+# Note: the extension is built against gtk+-2.0 so we cannot build extension with gtk+-3.0
+NAUTILUS_REQUIRED=2.22.2
 
 AC_ARG_ENABLE(nautilus,
 			AS_HELP_STRING([--enable-nautilus],[Build Nautilus extension [[default=yes]]]),
@@ -290,17 +290,13 @@ AC_ARG_WITH(nautilusdir,
 			[ac_with_nautilusdir=$withval],
 			[ac_with_nautilusdir=""])
 
-if test "x$enable_gtk3" = "xyes"; then
- if test x"$enable_nautilus" = "xyes"; then
- 	PKG_CHECK_MODULES(NAUTILUS_EXTENSION,
+if test x"$enable_nautilus" = "xyes"; then
+    	PKG_CHECK_MODULES(NAUTILUS_EXTENSION,
 			  libnautilus-extension >= $NAUTILUS_REQUIRED,
 			  build_nautilus=yes,
 			  build_nautilus=no)
- else
-	build_nautilus="no"
- fi
 else
- build_nautilus="no"
+	build_nautilus="no"
 fi
 
 if test x"$build_nautilus" = "xyes"; then
