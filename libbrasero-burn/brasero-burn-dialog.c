@@ -1110,7 +1110,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 	return brasero_burn_dialog_continue_question (dialog,
 	                                              _("Do you want to continue with full Windows compatibility disabled?"),
 	                                              _("Some files don't have a suitable name for a fully Windows-compatible CD."),
-	                                              _("_Continue"));
+	                                              _("C_ontinue"));
 }
 
 static void
