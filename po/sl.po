@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2010-08-01 17:50+0000\n"
-"PO-Revision-Date: 2010-08-04 09:14+0100\n"
+"POT-Creation-Date: 2010-08-04 12:29+0000\n"
+"PO-Revision-Date: 2010-08-04 20:08+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -136,7 +136,6 @@ msgid "PATH TO IMAGE"
 msgstr "POT DO ODTISA"
 
 #: ../src/brasero-cli.c:114
-#, fuzzy
 msgid "Force Brasero to display the project selection page"
 msgstr "Vsili prikaz strani izbire projektov"
 
@@ -149,7 +148,6 @@ msgid "Open the check disc dialog"
 msgstr "Odpri pogovorno okno preverjanja vsebine diska"
 
 #: ../src/brasero-cli.c:126
-#, fuzzy
 msgid "Burn the contents of the burn:// URI"
 msgstr "Zapiši vsebino naslova burn:// URI"
 
@@ -158,9 +156,8 @@ msgid "Start burning immediately."
 msgstr "Takoj začni z zapisovanjem."
 
 #: ../src/brasero-cli.c:134
-#, fuzzy
 msgid "Don't connect to an already-running instance"
-msgstr "Ne poveži se z že zagnanim programom"
+msgstr "Ne poveži se z že začetim primerkom"
 
 #: ../src/brasero-cli.c:138
 msgid ""
@@ -1450,9 +1447,9 @@ msgstr "Neznana skladba"
 #: ../libbrasero-burn/brasero-cover.c:146
 #: ../src/brasero-song-control.c:274
 #: ../src/brasero-player.c:419
-#, fuzzy, c-format
+#, c-format
 msgid "by %s"
-msgstr "%s"
+msgstr "izvajalca %s"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
@@ -2698,13 +2695,12 @@ msgid "Disc Burner and Copier"
 msgstr "Zapisovalnik in kopirnik diskov"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-#, fuzzy
 msgid "Burning flags to be used"
-msgstr "Nastavitev pogona za zapisovanje"
+msgstr "Zastavica zapisovanje za uporabo"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid "Contains the absolute path of the directory that was last browsed for images to burn"
-msgstr ""
+msgstr "Vključuje absolutno pot do mape, ki je bila odprta med zadnjim zapisovanjem odtisa"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
 msgid "Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all."
@@ -2716,12 +2712,11 @@ msgstr "Vsebuje ime nameščenega orodja za zapisovanje, ki bo po vsej verjetnos
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:5
 msgid "Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used."
-msgstr ""
+msgstr "Vključuje absolutno pot do mape, kjer program shranjuje začasne datoteke. V kolikor je vrednost prazna, bo uporabljena privzeta mapa, določena za glib."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
-#, fuzzy
 msgid "Directory to use for temporary files"
-msgstr "Izbor mape za shranjevanje začasnih datotek"
+msgstr "Mapa za shranjevanje začasnih datotek"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid "Enable file preview"
@@ -2776,31 +2771,28 @@ msgid "The last browsed folder while looking for images to burn"
 msgstr "Nazadnje prebrskana mapa med iskanjem odtisov za zapisovanje"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
-#, fuzzy
 msgid "The priority value for the plugin"
-msgstr "Datoteka ikone za vstavek"
+msgstr "Vrednost prednosti vstavka"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:21
 msgid "The speed to be used"
 msgstr "Uporabljena hitrost"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
-#, fuzzy
 msgid "The type of checksum used for files"
-msgstr "Ustvarjanje nadzorne vsote za datoteke odtisov"
+msgstr "Vrsta nadzorne vsote uporabljena za datoteke"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:23
-#, fuzzy
 msgid "The type of checksum used for images"
-msgstr "Programu manjka podpora za vrsto nadzorne vsote"
+msgstr "Vrsta nadzorne vsote uporabljena za datoteke odtisov"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:24
 msgid "This value represents the burning flags that were used in such a context the last time."
-msgstr ""
+msgstr "Vrednost predstavlja zastavice zapisovanja, ki so bile nazadnje uporabljene za enako nalogo."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid "This value represents the speed that was used in such a context the last time."
-msgstr ""
+msgstr "Vrednost predstavlja hitrost, ki je bila nazadnje uporabljana za enako nalogo."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:26
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -2812,7 +2804,7 @@ msgstr "Uporabljeno v povezavi z \"-immed\"  zastavico pri cdrecord."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:28
 msgid "When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native priority is used. A positive value overrides the plugin's native priority. A negative value disables the plugin."
-msgstr ""
+msgstr "Kadar je na voljo več vstavkov za enako nalogo, je s to nastavitvijo mogoče določiti prednost vstavkov. Vrednost 0 pomeni, da bo privzeto uporabljen izvorni vstavek. Katerakoli pozitivna številka prepiše to nastavitev. Negativna vrednost onemogoči vstavek."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
@@ -3333,7 +3325,6 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "Ali zares želite zamenjati \"%s\"?"
 
 #: ../src/brasero-data-disc.c:791
-#, fuzzy
 msgid "A file with this name already exists in the folder.  Replacing it will overwrite its contents on the disc to be burnt."
 msgstr "Datoteka s tem imenom že obstaja v mapi. Z zamenjavo bo prepisana vsebina pripravljena za zapisovanje."
 
@@ -3375,15 +3366,14 @@ msgstr "Ali zares želite dodati \"%s\" v izbor in uporabiti tretjo različico s
 
 #: ../src/brasero-data-disc.c:847
 #: ../libbrasero-burn/brasero-status-dialog.c:293
-#, fuzzy
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones).\n"
 "It is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows™.\n"
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 standard."
 msgstr ""
-"Velikost datoteke je nad 2 GiB. Datoteke večje od te vrednosti niso podprte s standardom ISO9660 različice 1 in 2 (najpogosteje uporabljene).\n"
-"Priporočljivo je uporabljati različico 3 standarda ISO9660, ki je podprt na večini operacijskih sistemih vključno z Linux sistemi in z vsemi različicami sistemov Windows ©.\n"
-"Operacijski sistem MacOS X ne podpira tega standarda."
+"Velikost datoteke je nad 2 GiB. Datoteke večje od te vrednosti niso podprte s standardom ISO9660 različice 1 in 2 (ta sta najpogosteje uporabljena).\n"
+"Priporočljivo je uporabljati različico 3 standarda ISO9660, ki je podprt na večini operacijskih sistemih vključno z Linux sistemi in z vsemi različicami sistemov Windows™.\n"
+"Operacijski sistem MacOS tega standarda X ne podpira."
 
 #: ../src/brasero-data-disc.c:851
 #: ../src/brasero-data-disc.c:895
@@ -3407,15 +3397,14 @@ msgstr "Ali zares želite dodati \"%s\" v izboru?"
 
 #: ../src/brasero-data-disc.c:891
 #: ../libbrasero-burn/brasero-status-dialog.c:231
-#, fuzzy
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it but the disc may not be readable on all operating systems.\n"
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 "Podrejena mapa ima 7 nadrejenih map.\n"
-"Program Brasero lahko zapiše vsebino s tako razporeditvijo ravni map, vendar diska ne bo mogoče brati na vseh operacijskih sistemih.\n"
-"OPOMBA: Zapis s tako razporeditvijo ravni map deluje na Linux sistemih."
+"S programom Brasero je mogoče zapisati vsebino s tako razporeditvijo ravni map, vendar diska morda ne bo mogoče brati na vseh operacijskih sistemih.\n"
+"Opomba: zapis s tako razporeditvijo ravni map deluje na Linux sistemih."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -3541,9 +3530,8 @@ msgstr "%i × %i točk"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
-#, fuzzy
 msgid "No preview"
-msgstr "Predogled ni na voljo"
+msgstr "Brez _predogleda"
 
 #: ../src/brasero-project.c:194
 msgid "Save current project"
@@ -3797,7 +3785,6 @@ msgstr "Nov _video projekt"
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:84
-#, fuzzy
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
 msgstr "Ustvari video DVD ali SVCD, ki ga je mogoče predvajati na TV sprejemnikih"
 
@@ -3991,9 +3978,8 @@ msgid "The file integrity check could not be performed."
 msgstr "Ni mogoče izvesti preverjanja celovitosti datotek."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
-#, fuzzy
 msgid "The file integrity check was performed successfully."
-msgstr "Ni mogoče izvesti preverjanja celovitosti datotek."
+msgstr "Preverjanje celovitosti datoteke je uspešno končano."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:179
 msgid "There seem to be no corrupted files on the disc"
@@ -4298,14 +4284,12 @@ msgid "Video DVD could not be opened"
 msgstr "Video DVD nosilca ni mogoče odpreti."
 
 #: ../plugins/dvdcss/burn-dvdcss.c:384
-#, fuzzy
 msgid "Copying video DVD"
 msgstr "Kopiranje video DVD nosilca"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:677
-#, fuzzy
 msgid "Copies CSS encrypted video DVDs to a disc image"
-msgstr "kopira CSS šifrirani Video DVD v odtis diska"
+msgstr "Kopira CSS šifrirani Video DVD v odtis diska"
 
 #: ../plugins/growisofs/burn-dvd-rw-format.c:190
 msgid "Blanks and formats rewritable DVDs and BDs"
@@ -4440,7 +4424,6 @@ msgid "Normalizing tracks"
 msgstr "Izravnavanje sledi"
 
 #: ../plugins/transcode/burn-normalize.c:646
-#, fuzzy
 msgid "Normalization"
 msgstr "Izenačevanje glasnosti"
 
@@ -4935,19 +4918,18 @@ msgid "Creating file layout"
 msgstr "Ustvarjanje razporeditve datotek"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:374
-#, fuzzy
 msgid "Creates disc images suitable for video DVDs"
-msgstr "Ustvari odtis diska v ustrezni DVD zapis."
+msgstr "Ustvari odtis diska v ustrezni video DVD zapis."
 
 #: ../plugins/transcode/burn-vob.c:1273
 msgid "Converting video file to MPEG2"
 msgstr "Pretvarjanje datoteke v MPEG2"
 
 #: ../plugins/transcode/burn-vob.c:1376
-#, fuzzy
 msgid "Converts any video file into a format suitable for video DVDs"
-msgstr "Prekodira katerokoli video datoteko v ustrezni video DVD zapis"
+msgstr "Prekodira katerokoli video datoteko v ustrezni video DVD zapis."
 
 #: ../plugins/vcdimager/burn-vcdimager.c:484
 msgid "Creates disc images suitable for SVCDs"
 msgstr "Zapiši odtis diska v obliki SVCD."
+
