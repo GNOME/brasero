@@ -9,15 +9,16 @@
 # Suso Baleato <suso.baleato@xunta.es>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@ubuntu.com>, 2009, 2010.
+# Fran Dieguez <frandieguez@ubuntu.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero-master-po-gl-6740\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-14 11:30+0200\n"
-"PO-Revision-Date: 2010-07-14 11:30+0200\n"
-"Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
-"Language-Team: Galician <gnome@g11n.net>\n"
+"POT-Creation-Date: 2010-08-05 16:12+0200\n"
+"PO-Revision-Date: 2010-08-05 16:12+0200\n"
+"Last-Translator: Fran Dieguez <frandieguez@ubuntu.com>\n"
+"Language-Team: Galician <gnome-gl-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -933,9 +934,8 @@ msgid "Appending audio tracks to a CD is not advised."
 msgstr "Non se recomenda engadir ficheiros de son a un CD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:938
-#: ../libbrasero-burn/brasero-burn-dialog.c:960
-#: ../libbrasero-burn/brasero-burn-dialog.c:1113
-#: ../src/brasero-data-disc.c:572 ../libbrasero-burn/brasero-tool-dialog.c:422
+#: ../libbrasero-burn/brasero-burn-dialog.c:960 ../src/brasero-data-disc.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:422
 msgid "_Continue"
 msgstr "_Continuar"
 
@@ -983,6 +983,10 @@ msgid ""
 msgstr ""
 "Algúns ficheiros non teñen un nome apropiado para un CD totalmente "
 "compatíbel con Windows."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1113
+msgid "C_ontinue"
+msgstr "_Continuar"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1346
 #: ../libbrasero-burn/brasero-burn-dialog.c:1367
@@ -2049,7 +2053,7 @@ msgstr "CONTRAPORTADA"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1084
+#: ../libbrasero-utils/brasero-jacket-view.c:1074
 msgid "The image could not be loaded."
 msgstr "Non foi posíbel cargar a imaxe."
 
@@ -2624,7 +2628,7 @@ msgstr "Mostrar a axuda"
 msgid "About"
 msgstr "Sobre"
 
-#: ../src/brasero-app.c:420
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2075
 msgid "Disc Burner"
 msgstr "Gravador de discos"
 
@@ -2709,13 +2713,13 @@ msgstr "Proxectos _recentes"
 msgid "Display the projects recently opened"
 msgstr "Mostrar os proxectos abertos recentemente"
 
-#: ../src/brasero-app.c:2075 ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Gravador de discos Brasero"
-
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "Brasero"
+
+#: ../data/brasero.desktop.in.in.h:2
+msgid "Brasero Disc Burner"
+msgstr "Gravador de discos Brasero"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
