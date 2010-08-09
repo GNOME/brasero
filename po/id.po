@@ -2,15 +2,14 @@
 # Copyright (C) 2010 brasero's COPYRIGHT HOLDER
 # This file is distributed under the same license as the brasero package.
 # Nana Suryana <nana@suryana.or.id>, 2010.
-# Andika Triwidada <andika@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-07-27 22:50+0000\n"
-"PO-Revision-Date: 2010-08-04 13:02+0700\n"
+"POT-Creation-Date: 2010-07-29 22:17+0000\n"
+"PO-Revision-Date: 2010-08-09 18:13+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +43,7 @@ msgstr "Hasil Berikutnya"
 #: ../src/brasero-search.c:952 ../src/brasero-data-disc.c:2352
 #: ../src/brasero-file-filtered.c:259
 msgid "Files"
-msgstr "Berkas"
+msgstr "File"
 
 #: ../src/brasero-search.c:981 ../src/brasero-data-disc.c:2380
 msgid "Description"
@@ -55,11 +54,11 @@ msgstr "Deskripsi"
 #: ../src/brasero-search-entry.c:569 ../src/brasero-search-entry.c:631
 #: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2214
 msgid "All files"
-msgstr "Semua berkas"
+msgstr "Semua file"
 
 #: ../src/brasero-search.c:1045
 msgid "Number of results displayed"
-msgstr "Cacah hasil yang ditampilkan"
+msgstr "Jumlah hasil yang ditampilkan"
 
 #: ../src/brasero-cli.c:70
 msgid "Open the specified project"
@@ -87,7 +86,7 @@ msgstr "DEVICE PATH"
 
 #: ../src/brasero-cli.c:86
 msgid "Create an image file instead of burning"
-msgstr "Buat berkas image, bukan dibakar"
+msgstr "Buat file image, bukan dibakar"
 
 #: ../src/brasero-cli.c:90
 msgid "Open an audio project adding the URIs given on the command line"
@@ -107,7 +106,7 @@ msgstr "PATH KE PERANGKAT"
 
 #: ../src/brasero-cli.c:102
 msgid "Cover to use"
-msgstr "Sampul yang dipakai"
+msgstr "Cover yang dipakai"
 
 #: ../src/brasero-cli.c:103
 msgid "PATH TO COVER"
@@ -119,13 +118,14 @@ msgstr "Buka projek video menambahkan URI yang diberikan pada baris perintah"
 
 #: ../src/brasero-cli.c:110
 msgid "URI of an image file to burn (autodetected)"
-msgstr "URI dari berkas image untuk dibakar (otodeteksi)"
+msgstr "URI dari file image untuk dibakar (otodeteksi)"
 
 #: ../src/brasero-cli.c:111
 msgid "PATH TO IMAGE"
 msgstr "PATH KE IMAGE"
 
 #: ../src/brasero-cli.c:114
+#| msgid "Force brasero to display the project selection page"
 msgid "Force Brasero to display the project selection page"
 msgstr "Paksa Brasero untuk menampilkan halaman pilihan proyek"
 
@@ -138,6 +138,7 @@ msgid "Open the check disc dialog"
 msgstr "Buka dialog pemeriksaan disk"
 
 #: ../src/brasero-cli.c:126
+#| msgid "Burn the contents of burn:// URI"
 msgid "Burn the contents of the burn:// URI"
 msgstr "Membakar isi URI burn://"
 
@@ -300,7 +301,7 @@ msgstr "Tampilan pilihan untuk Brasero-burn library"
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:90
 #, c-format
 msgid "\"%s\" was removed from the file system."
-msgstr "\"%s\" telah dihapus dari sistem berkas."
+msgstr "\"%s\" telah dihapus dari sistem file."
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:129
 #: ../src/brasero-audio-disc.c:753 ../src/brasero-video-disc.c:365
@@ -322,7 +323,7 @@ msgstr "\"%s\" tidak cocok untuk media audio atau video"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
-msgstr "Menganalisis berkas video"
+msgstr "Menganalisis file video"
 
 #: ../libbrasero-burn/brasero-data-vfs.c:218
 #, c-format
@@ -346,11 +347,11 @@ msgstr "Drive sedang sibuk"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:57
 msgid "Hidden file"
-msgstr "Berkas tersembunyi"
+msgstr "File tersembunyi"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:58
 msgid "Unreadable file"
-msgstr "Berkas tak dapat terbaca"
+msgstr "File tak dapat terbaca"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:59
 msgid "Broken symbolic link"
@@ -379,7 +380,7 @@ msgstr "Kosong"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:730
 msgid "Disc file"
-msgstr "Berkas disc"
+msgstr "File disc"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:808
 #, c-format
@@ -400,7 +401,7 @@ msgstr "Folder baru %i"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2421
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2431
 msgid "Analysing files"
-msgstr "Menganalisis berkas"
+msgstr "Menganalisis file"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2447
 #: ../libbrasero-burn/brasero-burn-options.c:471
@@ -409,7 +410,7 @@ msgstr "Menganalisis berkas"
 #: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
 msgid "There are no files to write to disc"
-msgstr "Tidak ada berkas untuk dinulis ke disk"
+msgstr "Tidak ada file untuk menulis ke disk"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2567
 #, c-format
@@ -419,7 +420,7 @@ msgstr "\"%s\" adalah link simbolik rekursif."
 #: ../libbrasero-utils/brasero-io.c:1414
 #, c-format
 msgid "The file does not appear to be a playlist"
-msgstr "Berkas nampaknya bukan suatu playlist"
+msgstr "File tidak muncul untuk menjadi playlist"
 
 #: ../libbrasero-utils/brasero-metadata.c:1138 ../src/brasero-audio-disc.c:642
 #, c-format
@@ -818,8 +819,7 @@ msgstr "Harap mengeluarkan disk dan memuatnya kembali."
 msgid ""
 "A file could not be created at the location specified for temporary files"
 msgstr ""
-"Sebuah berkas tidak dapat dibuat di lokasi yang dinyatakan untuk berkas "
-"sementara"
+"Sebuah file tidak dapat dibuat di lokasi yang dinyatakan untuk file sementara"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:694
 msgid "The image could not be created at the specified location"
@@ -855,12 +855,12 @@ msgstr "_Ubah Lokasi"
 #: ../libbrasero-burn/brasero-burn-dialog.c:738
 #: ../libbrasero-burn/brasero-image-properties.c:476
 msgid "Location for Image File"
-msgstr "Lokasi untuk Berkas Image"
+msgstr "Lokasi untuk File Image"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:746
 #: ../libbrasero-burn/brasero-drive-properties.c:369
 msgid "Location for Temporary Files"
-msgstr "Lokasi untuk Berkas Sementara"
+msgstr "Lokasi untuk File Sementara"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:854
 #: ../libbrasero-burn/brasero-burn-dialog.c:1103
@@ -885,8 +885,8 @@ msgid ""
 "If you import them you will be able to see and use them once the current "
 "selection of files is burned."
 msgstr ""
-"Jika Anda mengimpornya, Anda akan dapat melihat dan menggunakannya setelah "
-"pilihan berkas kini dibakar."
+"Jika Anda mengimpornya, Anda akan dapat melihat dan menggunakannya sekali  "
+"dari pilihan file yang di burned."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:913
 msgid "If you don't, they will be invisible (though still readable)."
@@ -895,7 +895,7 @@ msgstr "Jika tidak, mereka akan terlihat (meskipun masih dibaca)."
 #: ../libbrasero-burn/brasero-burn-dialog.c:916
 msgid ""
 "There are files already burned on this disc. Would you like to import them?"
-msgstr "Ada berkas telah dibakar di CD ini. Apakah Anda ingin mengimpornya?"
+msgstr "Ada file telah dibakar di CD ini. Apakah Anda ingin mengimpornya?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:918
 msgid "_Import"
@@ -923,9 +923,8 @@ msgid "Appending audio tracks to a CD is not advised."
 msgstr "Menambahkan trek audio ke CD tidak disarankan."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:938
-#: ../libbrasero-burn/brasero-burn-dialog.c:960
-#: ../libbrasero-burn/brasero-burn-dialog.c:1113
-#: ../src/brasero-data-disc.c:572 ../libbrasero-burn/brasero-tool-dialog.c:422
+#: ../libbrasero-burn/brasero-burn-dialog.c:960 ../src/brasero-data-disc.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:422
 msgid "_Continue"
 msgstr "_Lanjut"
 
@@ -971,8 +970,13 @@ msgstr "Apakah Anda ingin melanjutkan tanpa kompatibilitas untuk Windows?"
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr ""
-"Beberapa berkas tidak punya nama yang cocok untuk CD yang kompatibel penuh "
-"dengan Windows."
+"Beberapa file tidak punya nama yang cocok untuk kompatiblitas penuh dengan "
+"CD Windows."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1113
+#| msgid "_Continue"
+msgid "C_ontinue"
+msgstr "L_anjutkan"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1346
 #: ../libbrasero-burn/brasero-burn-dialog.c:1367
@@ -1075,7 +1079,7 @@ msgstr "_Buat Sampul"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2120
 msgid "There are some files left to burn"
-msgstr "Ada beberapa berkas yang tersisa untuk dibakar"
+msgstr "Ada beberapa file yang tersisa untuk dibakar"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2127
 msgid "There are some more videos left to burn"
@@ -1118,7 +1122,7 @@ msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
 msgstr ""
-"Masukkan CD atau DVD writable jika Anda tidak ingin menulis ke berkas image."
+"Masukkan CD atau DVD writable jika Anda tidak ingin menulis ke file image."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1586
 msgid "Create _Image"
@@ -1144,8 +1148,7 @@ msgstr "Bakar _Beberapa Salinan"
 
 #: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:941
 msgid "Would you like to burn the selection of files across several media?"
-msgstr ""
-"Apakah Anda ingin membakar berkas yang telah dipilih ke beberapa media?"
+msgstr "Apakah Anda ingin membakar file yang telah dipilih ke beberapa media?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:427
 #: ../libbrasero-burn/brasero-burn-options.c:444
@@ -1158,7 +1161,7 @@ msgstr "_Bakar Beberapa Disc"
 
 #: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:948
 msgid "Burn the selection of files across several media"
-msgstr "Bakar berkas yang telah dipilih ke beberapa media"
+msgstr "Bakar file yang telah dipilih ke beberapa media"
 
 #: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:957
 msgid "Please choose another CD or DVD or insert a new one."
@@ -1175,7 +1178,7 @@ msgstr "Hal ini tidak didukung oleh backend pembakaran yang saat ini aktif."
 #: ../libbrasero-burn/brasero-burn-options.c:470
 #: ../nautilus/nautilus-burn-extension.c:249
 msgid "Please add files."
-msgstr "Harap tambahkan berkas."
+msgstr "Harap tambahkan file."
 
 #: ../libbrasero-burn/brasero-burn-options.c:476
 msgid "Please add songs."
@@ -1215,7 +1218,7 @@ msgstr "Silakan pilih image lain."
 
 #: ../libbrasero-burn/brasero-burn-options.c:522
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
-msgstr "Sepertinya bukan image disk atau berkas cue yang valid."
+msgstr "Ini tidak muncul sebagai image disk atau cue file yang valid."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
 msgid "Please insert a disc that is not copy protected."
@@ -1243,7 +1246,7 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Ukuran data terlalu besar untuk disk dan Anda harus menghapus berkas dari "
+"Ukuran data terlalu besar untuk disk dan Anda harus menghapus file dari "
 "pilihan.\n"
 "Anda mungkin ingin menggunakan opsi ini jika Anda menggunakan 90 atau 100 "
 "min CD-R(W) yang tidak dapat dikenali dan karenanya membutuhkan pilihan "
@@ -1292,7 +1295,7 @@ msgstr "Opsi Video"
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
-msgstr "Apakah Anda ingin membuat disk dari isi image atau berkas image?"
+msgstr "Apakah Anda ingin membuat disk dari isi image atau file image?"
 
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:806
@@ -1301,12 +1304,12 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
 msgstr ""
-"Hanya ada satu berkas yang dipilih (\"%s\"). Ini adalah image dari disk dan "
+"Hanya ada satu file yang dipilih (\"%s\"). Ini adalah image dari disk dan "
 "isinya dapat dibakar."
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
 msgid "Burn as _File"
-msgstr "Bakar sebagai _Berkas"
+msgstr "Bakar sebagai _File"
 
 #: ../libbrasero-burn/brasero-burn-options.c:813
 msgid "Burn _Contents…"
@@ -1520,8 +1523,8 @@ msgid ""
 "GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
-"Sistem berkas pada volume ini tidak mendukung berkas besar (ukuran lebih "
-"dari 2 GiB).\n"
+"File sistem pada volume ini tidak mendukung file besar (ukuran lebih dari 2 "
+"GiB).\n"
 "Ini dapat menjadi masalah ketika menulis DVD atau image besar."
 
 #. Translators %s.1f is the speed used to burn
@@ -1583,7 +1586,7 @@ msgstr "Bakar image langsung tanpa menyimpannya ke disk"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:737
 msgid "Leave the disc _open to add other files later"
-msgstr "Biarkan disk terbuka untuk menambahkan berkas lainnya kemudian"
+msgstr "Biarkan disk terbuka untuk menambahkan file lainnya kemudian"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:738
 msgid "Allow to add more data to the disc later"
@@ -1598,15 +1601,15 @@ msgstr "Pilihan"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:770
 msgid "Location for _Temporary Files"
-msgstr "Lokasi untuk Berkas Semen_tara"
+msgstr "Lokasi untuk File Semen_tara"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:790
 msgid "Set the directory where to store temporary files"
-msgstr "Set direktori tempat penyimpanan berkas sementara"
+msgstr "Set direktori tempat penyimpanan file sementara"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:795
 msgid "Temporary files"
-msgstr "Berkas sementara"
+msgstr "File sementara"
 
 #: ../libbrasero-burn/brasero-image-properties.c:221
 msgid "Disc image type:"
@@ -1651,7 +1654,7 @@ msgid ""
 "type properly."
 msgstr ""
 "Jika Anda memilih untuk menyimpannya, program tidak dapat mengenali jenis "
-"berkas yang benar."
+"file yang benar."
 
 #: ../libbrasero-burn/brasero-medium-properties.c:146
 msgid "_Keep Current Extension"
@@ -1727,7 +1730,7 @@ msgstr "Pilih Image Disk"
 #: ../libbrasero-burn/brasero-src-image.c:450
 msgctxt "disc"
 msgid "Image files"
-msgstr "Berkas image"
+msgstr "File image"
 
 #: ../libbrasero-burn/brasero-src-image.c:467
 msgid "Image type:"
@@ -1785,11 +1788,11 @@ msgstr "Membuat checksum"
 
 #: ../libbrasero-burn/burn-basics.c:83
 msgid "Copying file"
-msgstr "Menyalin berkas"
+msgstr "Menyalin file"
 
 #: ../libbrasero-burn/burn-basics.c:84
 msgid "Analysing audio files"
-msgstr "Menganalisis berkas audio"
+msgstr "Menganalisis file audio"
 
 #: ../libbrasero-burn/burn-basics.c:85
 msgid "Transcoding song"
@@ -1849,8 +1852,8 @@ msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr ""
-"Sistem berkas yang Anda pilih untuk menyimpan image sementara tidak dapat "
-"menyimpan berkas dengan ukuran lebih dari 2 GiB"
+"File sistem yang Anda pilih untuk menyimpan image sementara tidak dapat "
+"menyimpan file dengan ukuran lebih dari 2 GiB"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
@@ -1887,7 +1890,7 @@ msgstr "Terjadi kesalahan internal (%s)"
 #: ../plugins/checksum/burn-checksum-image.c:287
 #, c-format
 msgid "The file is not stored locally"
-msgstr "Berkas tersebut tidak disimpan secara lokal"
+msgstr "File tersebut tidak disimpan secara lokal"
 
 #: ../libbrasero-burn/burn-mkisofs-base.c:646
 #, c-format
@@ -2060,7 +2063,7 @@ msgstr "Projek ini tidak bisa dibuka"
 
 #: ../src/brasero-project-parse.c:463
 msgid "The file is empty"
-msgstr "Berkas ini kosong"
+msgstr "File ini kosong"
 
 #: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
 msgid "It does not seem to be a valid Brasero project"
@@ -2162,7 +2165,7 @@ msgstr "Tidak ada disk yang tersedia"
 #: ../libbrasero-media/brasero-medium.c:209
 #: ../libbrasero-media/brasero-volume.c:391
 msgid "Image File"
-msgstr "Berkas Image"
+msgstr "File Image"
 
 #: ../libbrasero-media/burn-iso9660.c:158
 #: ../libbrasero-media/burn-iso9660.c:167
@@ -2176,7 +2179,7 @@ msgstr "Ini tidak muncul untuk menjadi citra ISO yang sah"
 
 #: ../libbrasero-media/brasero-medium.c:65
 msgid "File"
-msgstr "Berkas"
+msgstr "File"
 
 #: ../libbrasero-media/brasero-medium.c:66
 msgid "CD-ROM"
@@ -2359,12 +2362,12 @@ msgstr "Mode trek tidak valid"
 #: ../src/eggdesktopfile.c:165
 #, c-format
 msgid "File is not a valid .desktop file"
-msgstr "Berkas bukanlah berkas .desktop yang valid"
+msgstr "File bukanlah file .desktop yang valid"
 
 #: ../src/eggdesktopfile.c:188
 #, c-format
 msgid "Unrecognized desktop file Version '%s'"
-msgstr "Tidak mengenal berkas desktop Versi '%s'"
+msgstr "Tidak mengenal file desktop Versi '%s'"
 
 #: ../src/eggdesktopfile.c:958
 #, c-format
@@ -2397,11 +2400,11 @@ msgstr "Nonaktifkan koneksi ke manajer sesi"
 
 #: ../src/eggsmclient.c:227
 msgid "Specify file containing saved configuration"
-msgstr "Tentukan berkas yang berisi konfigurasi disimpan"
+msgstr "Tentukan file yang berisi konfigurasi disimpan"
 
 #: ../src/eggsmclient.c:227
 msgid "FILE"
-msgstr "BERKAS"
+msgstr "FILE"
 
 #: ../src/eggsmclient.c:230
 msgid "Specify session management ID"
@@ -2427,12 +2430,12 @@ msgstr "Brasero Plugin"
 #: ../plugins/local-track/burn-uri.c:472
 #, c-format
 msgid "Impossible to retrieve local file path"
-msgstr "Mustahil untuk mengambil path berkas lokal"
+msgstr "Mustahil untuk mengambil path file lokal"
 
 #: ../plugins/local-track/burn-uri.c:326
 #: ../plugins/local-track/burn-local-image.c:527
 msgid "Copying files locally"
-msgstr "Menyalin berkas secara lokal"
+msgstr "Menyalin file lokal"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -2445,8 +2448,8 @@ msgstr "CD/DVD Creator Folder"
 msgid ""
 "Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
 msgstr ""
-"Memungkinkan berkas ditambahkan ke \"CD/DVD Creator Folder\" di Nautilus "
-"untuk dibakar"
+"Memungkinkan file ditambahkan ke \"CD/DVD Creator Folder\" di Nautilus untuk "
+"dibakar"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 #: ../nautilus/nautilus-burn-extension.c:310
@@ -2461,7 +2464,7 @@ msgstr "Buat CD dan DVD"
 #. * not fit on small Nautilus windows
 #: ../nautilus/nautilus-burn-bar.c:145
 msgid "Drag or copy files below to write them to disc"
-msgstr "Tarik atau salin berkas di bawah ini untuk menuliskannya ke disk"
+msgstr "Tarik atau salin file di bawah ini untuk menuliskannya ke disk"
 
 #: ../nautilus/nautilus-burn-bar.c:153
 #: ../nautilus/nautilus-burn-extension.c:363
@@ -2619,7 +2622,7 @@ msgstr "Kesalahan saat memuat projek"
 #: ../src/brasero-app.c:828 ../src/brasero-app.c:857 ../src/brasero-app.c:917
 #: ../src/brasero-project.c:1266
 msgid "Please add files to the project."
-msgstr "Harap menambahkan berkas ke projek."
+msgstr "Harap menambahkan file ke projek."
 
 #: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
 msgid "The project is empty"
@@ -2706,10 +2709,12 @@ msgid "Create and copy CDs and DVDs"
 msgstr "Membuat dan salin CD dan DVD"
 
 #: ../data/brasero.desktop.in.in.h:4
+#| msgid "Disc Burner"
 msgid "Disc Burner and Copier"
 msgstr "Pembakar dan Penyalin Disk"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
+#| msgid "Burning image to disc"
 msgid "Burning flags to be used"
 msgstr "Flag pembakaran yang akan dipakai"
 
@@ -2745,12 +2750,13 @@ msgstr ""
 "Bila nilai itu kosong, direktori bawaan yang ditata bagi glib akan dipakai."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
+#| msgid "Set the directory where to store temporary files"
 msgid "Directory to use for temporary files"
 msgstr "Set direktori tempat penyimpanan berkas sementara"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid "Enable file preview"
-msgstr "Aktifkan pratilik berkas"
+msgstr "Aktifkan pratinjau file"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
 msgid "Enable the \"-immed\" flag with cdrecord"
@@ -2794,22 +2800,22 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:16
 msgid "Should brasero filter hidden files"
-msgstr "Haruskah brasero menyaring berkas tersembunyi"
+msgstr "Haruskah brasero filter file tersembunyi"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:17
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr ""
-"Haruskah brasero menyaring berkas tersembunyi. Diatur ke true, brasero akan "
-"menyaring berkas tersembunyi."
+"Haruskah brasero filter file tersembunyi. Diatur ke true, brasero akan "
+"menyaring file tersembunyi."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:18
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
 msgstr ""
-"Haruskah brasero mengganti link simbolik oleh berkas target mereka dalam "
+"Haruskah brasero mengganti link simbolik oleh file target mereka dalam "
 "projek tersebut. Diatur ke true, brasero akan menggantikan link simbolik."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:19
@@ -2825,10 +2831,12 @@ msgid "The speed to be used"
 msgstr "Kecepatan yang akan dipakai"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
+#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for files"
 msgstr "Jenis checksum yang dipakai untuk berkas"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for images"
 msgstr "Jenis checksum yang dipakai untuk image"
 
@@ -2871,7 +2879,7 @@ msgstr ""
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
-"Apakah untuk menampilkan pratilik berkas. Set ke true untuk menggunakannya."
+"Apakah untuk menampilkan pratinjau file. Set ke true untuk menggunakannya."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:30
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
@@ -2915,11 +2923,11 @@ msgstr "Daftar resmi plugin tambahan yang dapat dipakai"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
-msgstr "Berkas projek Brasero"
+msgstr "File projek Brasero"
 
 #: ../src/brasero-audio-disc.c:156 ../src/brasero-data-disc.c:123
 msgid "Open the selected files"
-msgstr "Buka berkas yang dipilih"
+msgstr "Buka file yang dipilih"
 
 #: ../src/brasero-audio-disc.c:158 ../src/brasero-video-disc.c:103
 msgid "_Edit Information…"
@@ -2932,17 +2940,17 @@ msgstr "Edit informasi trek (awal, akhir, penulis, dll)"
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:200
 msgid "Remove the selected files from the project"
-msgstr "Hapus berkas yang dipilih dari projek"
+msgstr "Hapus file yang dipilih dari projek"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
 msgid "Paste files"
-msgstr "Paste berkas"
+msgstr "Paste file"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
 msgid "Add the files stored in the clipboard"
-msgstr "Tambahkan berkas yang tersimpan dalam clipboard"
+msgstr "Tambahkan file yang tersimpan dalam clipboard"
 
 #: ../src/brasero-audio-disc.c:164
 msgid "I_nsert a Pause"
@@ -3000,27 +3008,27 @@ msgstr "Pastikan codec yang sesuai dipasang"
 #: ../src/brasero-audio-disc.c:661
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
-msgstr "Apakah Anda ingin menambahkan \"%s\", yang merupakan berkas video?"
+msgstr "Apakah Anda ingin menambahkan \"%s\", yang merupakan file video?"
 
 #: ../src/brasero-audio-disc.c:670
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
 msgstr ""
-"Berkas ini adalah video dan karena itu hanya bagian audio dapat ditulis ke "
+"File ini adalah video dan karena itu hanya bagian audio dapat ditulis ke "
 "disk."
 
 #: ../src/brasero-audio-disc.c:673
 msgid "_Discard File"
-msgstr "_Buang Berkas"
+msgstr "_Buang File"
 
 #: ../src/brasero-audio-disc.c:676
 msgid "_Add File"
-msgstr "_Tambah Berkas"
+msgstr "_Tambah File"
 
 #: ../src/brasero-audio-disc.c:747
 msgid "Do you want to search for audio files inside the directory?"
-msgstr "Apakah Anda ingin mencari berkas audio di dalam direktori?"
+msgstr "Apakah Anda ingin mencari file audio di dalam direktori?"
 
 #: ../src/brasero-audio-disc.c:757
 msgid "Search _Directory"
@@ -3209,19 +3217,19 @@ msgstr "Dalam _video"
 
 #: ../src/brasero-search-entry.c:322
 msgid "Type your keywords or choose 'All files' from the menu"
-msgstr "Ketik kata kunci atau pilih 'Semua berkas' dari menu"
+msgstr "Ketik kata kunci atau pilih 'Semua file' dari menu"
 
 #: ../src/brasero-search-entry.c:326
 msgid "Select if you want to search among image files only"
-msgstr "Pilih jika Anda ingin mencari di antara berkas gambar saja"
+msgstr "Pilih jika Anda ingin mencari di antara file gambar saja"
 
 #: ../src/brasero-search-entry.c:328
 msgid "Select if you want to search among video files only"
-msgstr "Pilih jika Anda ingin mencari diantara berkas video saja"
+msgstr "Pilih jika Anda ingin mencari di antara video file saja"
 
 #: ../src/brasero-search-entry.c:330
 msgid "Select if you want to search among audio files only"
-msgstr "Pilih jika Anda ingin mencari hanya diantara berkas audio"
+msgstr "Pilih jika Anda ingin mencari hanya di antara file audio"
 
 #: ../src/brasero-search-entry.c:332
 msgid "Select if you want to search among your text documents only"
@@ -3294,7 +3302,7 @@ msgstr "%s / %s"
 
 #: ../src/brasero-song-control.c:531
 msgid "No file"
-msgstr "Tidak ada berkas"
+msgstr "Tidak ada file"
 
 #: ../src/brasero-song-control.c:566
 msgid "Start and stop playing"
@@ -3306,7 +3314,7 @@ msgstr "_Ganti nama ..."
 
 #: ../src/brasero-data-disc.c:125
 msgid "Rename the selected file"
-msgstr "Ubah nama berkas yang dipilih"
+msgstr "Ubah nama file yang dipilih"
 
 #: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:1773
 msgid "New _Folder"
@@ -3343,7 +3351,7 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
 msgstr ""
-"Hanya ada satu berkas yang dipilih (\"%s\"). Ini adalah image dari disk dan "
+"Hanya ada satu file yang dipilih (\"%s\"). Ini adalah image dari disk dan "
 "isinya dapat dibakar"
 
 #: ../src/brasero-data-disc.c:628
@@ -3371,8 +3379,7 @@ msgstr "Memang tidak ada di lokasi yang ditentukan"
 #: ../src/brasero-data-disc.c:741
 #: ../libbrasero-burn/brasero-status-dialog.c:333
 msgid "Should files be renamed to be fully Windows-compatible?"
-msgstr ""
-"Haruskah berkas diganti nama menjadi yang sepenuhnya kompatibel Windows?"
+msgstr "Haruskah file diganti nama menjadi sepenuhnya kompatibel Windows?"
 
 #: ../src/brasero-data-disc.c:747
 #: ../libbrasero-burn/brasero-status-dialog.c:344
@@ -3396,6 +3403,9 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "Apakah Anda ingin mengganti \"%s\"?"
 
 #: ../src/brasero-data-disc.c:791
+#| msgid ""
+#| "A file with this name already exists in the folder.  Replacing it will "
+#| "overwrite its content on the disc to be burnt."
 msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its contents on the disc to be burnt."
@@ -3444,6 +3454,15 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:847
 #: ../libbrasero-burn/brasero-status-dialog.c:293
+#| msgid ""
+#| "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
+#| "supported by the ISO9660 standard in its first and second versions (the "
+#| "most widespread ones).\n"
+#| "It is recommended to use the third version of the ISO9660 standard, which "
+#| "is supported by most operating systems, including Linux and all versions "
+#| "of Windows ©.\n"
+#| "However, Mac OS X cannot read images created with version 3 of the "
+#| "ISO9660 standard."
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by the ISO9660 standard in its first and second versions (the most "
@@ -3467,13 +3486,13 @@ msgstr ""
 #: ../libbrasero-burn/brasero-status-dialog.c:235
 #: ../libbrasero-burn/brasero-status-dialog.c:297
 msgid "Ne_ver Add Such File"
-msgstr "_Jangan Tambah Berkas Seperti Itu"
+msgstr "_Jangan Tambah File tersebut"
 
 #: ../src/brasero-data-disc.c:852 ../src/brasero-data-disc.c:896
 #: ../libbrasero-burn/brasero-status-dialog.c:236
 #: ../libbrasero-burn/brasero-status-dialog.c:298
 msgid "Al_ways Add Such File"
-msgstr "_Selalu Tambah Berkas Seperti Itu"
+msgstr "_Selalu Tambah File tersebut"
 
 #: ../src/brasero-data-disc.c:882
 #: ../libbrasero-burn/brasero-status-dialog.c:212
@@ -3483,6 +3502,11 @@ msgstr "Apakah Anda benar-benar ingin menambahkan \"%s\" untuk pemilihan?"
 
 #: ../src/brasero-data-disc.c:891
 #: ../libbrasero-burn/brasero-status-dialog.c:231
+#| msgid ""
+#| "The children of this directory will have 7 parent directories.\n"
+#| "Brasero can create an image of such a file hierarchy and burn it; but the "
+#| "disc may not be readable on all operating systems.\n"
+#| "Note: Such a file hierarchy is known to work on Linux."
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it but the "
@@ -3523,7 +3547,7 @@ msgstr "Apa Anda ingin mengimpor acara dari \"%s\"?"
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
 msgstr ""
-"Dengan begitu, berkas lama dari sesi sebelumnya akan digunakan setelah "
+"Dengan begitu, file lama dari sesi sebelumnya akan digunakan setelah "
 "pembakaran."
 
 #: ../src/brasero-data-disc.c:1121
@@ -3548,7 +3572,7 @@ msgstr "Membatalkan projek yang dimuat saat ini"
 
 #: ../src/brasero-data-disc.c:1918
 msgid "File Renaming"
-msgstr "Mengganti Nama Berkas"
+msgstr "Mengganti Nama File"
 
 #: ../src/brasero-data-disc.c:1922
 msgid "_Rename"
@@ -3568,7 +3592,7 @@ msgstr "Ruang"
 
 #: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2219
 msgid "Audio files"
-msgstr "Berkas audio"
+msgstr "File audio"
 
 #: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2228
 msgid "Movies"
@@ -3618,6 +3642,7 @@ msgstr "%i × %i piksel"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
+#| msgid "Preview"
 msgid "No preview"
 msgstr "Tak ada pratilik"
 
@@ -3635,15 +3660,15 @@ msgstr "Simpan projek saat ini di lokasi yang berbeda"
 
 #: ../src/brasero-project.c:197
 msgid "_Add Files"
-msgstr "T_ambah Berkas"
+msgstr "_Tambah File"
 
 #: ../src/brasero-project.c:198
 msgid "Add files to the project"
-msgstr "Tambah berkas ke projek"
+msgstr "Tambah file untuk projek"
 
 #: ../src/brasero-project.c:199
 msgid "_Remove Files"
-msgstr "Hapus Be_rkas"
+msgstr "_Hapus File"
 
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:202 ../src/brasero-project.c:2301
@@ -3652,7 +3677,7 @@ msgstr "Projek _Kosong"
 
 #: ../src/brasero-project.c:203
 msgid "Remove all files from the project"
-msgstr "Hapus semua berkas dari projek"
+msgstr "Hapus semua file dari projek"
 
 #: ../src/brasero-project.c:204 ../src/brasero-project.c:1076
 msgid "_Burn…"
@@ -3667,15 +3692,15 @@ msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
 msgstr ""
-"Untuk menambahkan berkas ke projek ini klik tombol \"Add\" atau menyeret "
-"berkas ke area ini"
+"Untuk menambahkan file ke projek ini klik tombol \"Add\" atau menggeret file "
+"ke area ini"
 
 #: ../src/brasero-project.c:689
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Untuk menghapus berkas pilih mereka kemudian klik pada tombol \"Hapus\" atau "
+"Untuk menghapus file pilih mereka kemudian klik pada tombol \"Hapus\" atau "
 "tekan tombol \"Delete\" "
 
 #: ../src/brasero-project.c:796
@@ -3694,7 +3719,7 @@ msgid ""
 "cannot be properly recognized and therefore needs the overburn option.\n"
 "Note: This option might cause failure."
 msgstr ""
-"Projek ini terlalu besar untuk disk dan Anda harus menghapus berkas dari "
+"Projek ini terlalu besar untuk disk dan Anda harus menghapus file dari "
 "projek.\n"
 "Anda mungkin ingin menggunakan opsi ini jika Anda menggunakan 90 atau 100 "
 "min CD-R (W) yang tidak dapat dikenali sehingga kebutuhan opsi overburn.\n"
@@ -3726,7 +3751,7 @@ msgstr "_Buang Perubahan"
 #: ../src/brasero-project.c:1911
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
-"Apakah Anda ingin membatalkan pilihan berkas atau menambahkannya ke projek "
+"Apakah Anda ingin membatalkan pilihan file atau menambahkannya ke projek "
 "baru?"
 
 #: ../src/brasero-project.c:1916 ../src/brasero-project.c:1935
@@ -3734,7 +3759,7 @@ msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr ""
-"Jika Anda memilih untuk membuat sebuah projek kosong baru, pilihan berkas "
+"Jika Anda memilih untuk membuat sebuah projek kosong baru, pemilihan file "
 "akan dibuang."
 
 #: ../src/brasero-project.c:1918
@@ -3743,7 +3768,7 @@ msgstr "_Buang Berkas Pemilihan"
 
 #: ../src/brasero-project.c:1922
 msgid "_Keep File Selection"
-msgstr "Simpan Pilihan Ber_kas"
+msgstr "_Simpan File Seleksi"
 
 #: ../src/brasero-project.c:1937
 msgid "_Discard Project"
@@ -3751,7 +3776,7 @@ msgstr "_Buang Projek"
 
 #: ../src/brasero-project.c:2177
 msgid "Select Files"
-msgstr "Pilih Berkas"
+msgstr "Pilih File"
 
 #: ../src/brasero-project.c:2290
 msgid "Do you really want to empty the current project?"
@@ -3763,9 +3788,9 @@ msgid ""
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
 msgstr ""
-"Mengosongkan sebuah projek akan menghapus semua berkas yang telah "
-"ditambahkan. Semua pekerjaan akan hilang. Perhatikan bahwa berkas tidak akan "
-"dihapus dari lokasi mereka sendiri, hanya tidak lagi tercantum di sini."
+"Mengosongkan sebuah projek akan menghapus semua file yang telah ditambahkan. "
+"Semua pekerjaan akan hilang. Perhatikan bahwa file tidak akan dihapus dari "
+"lokasi mereka sendiri, hanya tidak lagi tercantum di sini."
 
 #: ../src/brasero-project.c:2352
 msgid "_Save"
@@ -3895,6 +3920,7 @@ msgstr "Projek Baru _Video"
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:84
+#| msgid "Create a video DVD or an SVCD that are readable on TV readers"
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
 msgstr "Membuat DVD video atau SVCD yang dapat dibaca pada pembaca TV"
 
@@ -3935,35 +3961,35 @@ msgstr "Buka projek"
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
-msgstr[0] "%d berkas dipilih (%s)"
+msgstr[0] "%d file dipilih (%s)"
 
 #: ../src/brasero-project-manager.c:274
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
-msgstr[0] "%d berkas yang didukung (%s)"
+msgstr[0] "%d file yang didukung (%s)"
 
 #: ../src/brasero-project-manager.c:280
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
-msgstr[0] "%d berkas dapat ditambahkan (%s)"
+msgstr[0] "%d file dapat ditambah (%s)"
 
 #: ../src/brasero-project-manager.c:291
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
-msgstr[0] "Tidak ada berkas yang dapat ditambahkan (%i berkas dipilih)"
+msgstr[0] "Tidak ada file yang dapat ditambah (%i file dipilih)"
 
 #: ../src/brasero-project-manager.c:297
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
-msgstr[0] "Tidak ada berkas yang didukung (%i berkas dipilih)"
+msgstr[0] "Tidak ada file yang didukung (%i file dipilih)"
 
 #: ../src/brasero-project-manager.c:303 ../src/brasero-project-manager.c:457
 msgid "No file selected"
-msgstr "Tidak ada berkas yang dipilih"
+msgstr "Tidak ada file yang dipilih"
 
 #: ../src/brasero-project-manager.c:594
 msgid "Brasero — New Audio Disc Project"
@@ -3979,7 +4005,7 @@ msgstr "Brasero — Projek Baru Disk Video"
 
 #: ../src/brasero-project-manager.c:632
 msgid "Brasero — New Image File"
-msgstr "Brasero — Berkas Image Baru"
+msgstr "Brasero — File Image Baru"
 
 #: ../src/brasero-project-manager.c:647
 msgid "Brasero — Disc Copy"
@@ -3999,11 +4025,11 @@ msgstr "B_uka"
 
 #: ../src/brasero-project-manager.c:889
 msgid "Browse the file system"
-msgstr "Ramban sistem berkas"
+msgstr "Ramban sistem file"
 
 #: ../src/brasero-project-manager.c:912
 msgid "Search files using keywords"
-msgstr "Cari berkas dengan menggunakan kata kunci"
+msgstr "Cari file dengan menggunakan kata kunci"
 
 #: ../src/brasero-project-manager.c:932
 msgid "Display playlists and their contents"
@@ -4073,27 +4099,28 @@ msgstr "Periksa L_agi"
 #: ../libbrasero-burn/brasero-sum-dialog.c:165
 #: ../libbrasero-burn/brasero-sum-dialog.c:514
 msgid "The file integrity check could not be performed."
-msgstr "Pemeriksaan integritas berkas tidak dapat dilakukan."
+msgstr "Pemeriksaan integritas file tidak dapat dilakukan."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
+#| msgid "The file integrity was performed successfully."
 msgid "The file integrity check was performed successfully."
 msgstr "Pemeriksaan integritas berkas berhasil dilakukan."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:179
 msgid "There seem to be no corrupted files on the disc"
-msgstr "Tampaknya tidak ada berkas rusak pada disk"
+msgstr "Tampaknya ada ada file rusak pada disk"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:207
 msgid "The following files appear to be corrupted:"
-msgstr "Berkas berikut tampak rusak:"
+msgstr "File-file berikut tampak rusak:"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:250
 msgid "Corrupted Files"
-msgstr "Berkas Rusak"
+msgstr "File rusak"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:342
 msgid "Downloading MD5 file"
-msgstr "Mengunduh berkas MD5"
+msgstr "Mengunduh file MD5"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:397
 #, c-format
@@ -4106,15 +4133,15 @@ msgstr "Tidak ada berkas MD5 diberikan."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:692
 msgid "Use an _MD5 file to check the disc"
-msgstr "Gunakan berkas _MD5 untuk memeriksa disk"
+msgstr "Gunakan _MD5 file untuk memeriksa disk"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:693
 msgid "Use an external .md5 file that stores the checksum of a disc"
-msgstr "Gunakan berkas .md5 eksternal yang menyimpan checksum dari sebuah disk"
+msgstr "Gunakan eksternal .md5 file yang menyimpan checksum dari sebuah disk"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:706
 msgid "Open an MD5 file"
-msgstr "Buka suatu berkas MD5"
+msgstr "Buka file MD5"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:721
 msgid "_Check"
@@ -4139,7 +4166,7 @@ msgstr "Harap menunggu sampai estimasi ukuran selesai."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:572
 msgid "All files need to be analysed to complete this operation."
-msgstr "Semua berkas perlu dianalisis untuk menyelesaikan operasi ini."
+msgstr "Semua file perlu dianalisis untuk menyelesaikan operasi ini."
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:78
 #: ../libbrasero-burn/brasero-tool-dialog.c:92
@@ -4199,7 +4226,7 @@ msgstr "Data tidak dapat ditulis (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:723
 msgid "Generates .cue files from audio"
-msgstr "Menghasilkan berkas .cue dari audio"
+msgstr "Menghasilkan file .cue dari audio"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:55
 msgid "cdrdao burning suite"
@@ -4228,7 +4255,7 @@ msgstr "Anda tidak memiliki izin yang diperlukan untuk menggunakan drive ini"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:480
 msgid "Converting toc file"
-msgstr "Mengkonversi berkas toc"
+msgstr "Mengkonversi file toc"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:697
 msgid "Copies, burns and blanks CDs"
@@ -4263,7 +4290,7 @@ msgstr "Versi genisoimage tidak didukung"
 #: ../plugins/cdrtools/burn-mkisofs.c:183
 #: ../plugins/growisofs/burn-growisofs.c:223
 msgid "Some files have invalid filenames"
-msgstr "Beberapa berkas memiliki nama berkas tidak valid"
+msgstr "Beberapa file memiliki nama file tidak valid"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:188
 #: ../plugins/cdrtools/burn-mkisofs.c:189
@@ -4280,7 +4307,7 @@ msgstr "Tidak ada ruang yang tersisa pada perangkat"
 #: ../plugins/cdrtools/burn-mkisofs.c:534
 #: ../plugins/libburnia/burn-libisofs.c:1046
 msgid "Creates disc images from a file selection"
-msgstr "Membuat image disk dari berkas pilihan"
+msgstr "Membuat image disk dari file pilihan"
 
 #: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
 #, c-format
@@ -4375,10 +4402,12 @@ msgid "Video DVD could not be opened"
 msgstr "Video DVD tidak bisa dibuka"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:384
+#| msgid "Copying Video DVD"
 msgid "Copying video DVD"
 msgstr "Menyalin DVD video"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:677
+#| msgid "Copies CSS encrypted Video DVDs to a disc image"
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Salin video DVD terenkripsi CSS ke suatu image disk"
 
@@ -4464,12 +4493,11 @@ msgstr ""
 #: ../plugins/libburnia/burn-libisofs.c:781
 #, c-format
 msgid "libisofs reported an error while adding file at path \"%s\""
-msgstr ""
-"libisofs melaporkan kesalahan ketika menambahkan berkas pada path \"%s\""
+msgstr "libisofs melaporkan kesalahan ketika menambahkan file pada path \"%s\""
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
-msgstr "Menyalin berkas checksum"
+msgstr "Menyalin file checksum"
 
 #: ../plugins/local-track/burn-local-image.c:544
 #, c-format
@@ -4481,11 +4509,11 @@ msgstr "Menyalin `%s` lokal"
 #. * displaying.
 #: ../plugins/local-track/burn-local-image.c:911
 msgid "File Downloader"
-msgstr "Pengunduh Berkas"
+msgstr "File Downloader"
 
 #: ../plugins/local-track/burn-local-image.c:912
 msgid "Allows files not stored locally to be burned"
-msgstr "Memungkinkan berkas tidak disimpan secara lokal untuk dibakar"
+msgstr "Memungkinkan file tidak disimpan secara lokal untuk dibakar"
 
 #. Translators: This message is sent
 #. * when brasero could not link together
@@ -4515,6 +4543,7 @@ msgid "Normalizing tracks"
 msgstr "Normalisasi trek"
 
 #: ../plugins/transcode/burn-normalize.c:646
+#| msgid "Normalize"
 msgid "Normalization"
 msgstr "Normalisasi"
 
@@ -4527,7 +4556,7 @@ msgstr "Mengatur tingkat suara yang konsisten antara trek"
 #: ../plugins/transcode/burn-transcode.c:1274
 #, c-format
 msgid "Error while padding file (%s)"
-msgstr "Galat ketika padding berkas (%s)"
+msgstr "Error ketika padding file (%s)"
 
 #: ../plugins/transcode/burn-transcode.c:1350
 #, c-format
@@ -4546,7 +4575,7 @@ msgstr "Transcoding \"%s\""
 
 #: ../plugins/transcode/burn-transcode.c:1773
 msgid "Converts any song file into a format suitable for audio CDs"
-msgstr "Mengkonversi berkas lagu ke format yang sesuai untuk CD audio"
+msgstr "Mengkonversi file lagu ke format yang sesuai untuk CD audio"
 
 #: ../src/brasero-split-dialog.c:166
 msgid "Do you really want to split the track?"
@@ -4743,19 +4772,19 @@ msgstr "Keluarkan Disk"
 
 #: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
 msgid "No file filtered"
-msgstr "Tidak ada berkas disaring"
+msgstr "Tidak ada file disaring"
 
 #: ../src/brasero-file-filtered.c:77
 #, c-format
 msgid "Hide the _filtered file list (%d file)"
 msgid_plural "Hide the _filtered file list (%d files)"
-msgstr[0] "Sembunyikan da_ftar berkas tersaring (%d berkas)"
+msgstr[0] "Sembunyikan daftar _filter file (%d file)"
 
 #: ../src/brasero-file-filtered.c:83
 #, c-format
 msgid "Show the _filtered file list (%d file)"
 msgid_plural "Show the _filtered file list (%d files)"
-msgstr[0] "Tampilkan daftar berkas tersaring (%d berkas)"
+msgstr[0] "Tampilkan daftar _filter file (%d file)"
 
 #: ../src/brasero-file-filtered.c:138
 msgid "Filter Options"
@@ -4764,7 +4793,7 @@ msgstr "Opsi Filter"
 #: ../src/brasero-file-filtered.c:221
 msgid ""
 "Select the files you want to restore and click on the \"Restore\" button"
-msgstr "Pilih berkas yang ingin dikembalikan dan klik pada tombol \"Restore\" "
+msgstr "Pilih file yang ingin dikembalikan dan klik pada tombol \"Restore\" "
 
 #: ../src/brasero-file-filtered.c:268
 msgid "Type"
@@ -4776,7 +4805,7 @@ msgstr "_Restore"
 
 #: ../src/brasero-file-filtered.c:304
 msgid "Restore the selected files"
-msgstr "Mengembalikan berkas yang dipilih"
+msgstr "Mengembalikan file yang dipilih"
 
 #: ../src/brasero-file-filtered.c:306
 msgid "_Options…"
@@ -4784,12 +4813,12 @@ msgstr "_Pilihan ..."
 
 #: ../src/brasero-file-filtered.c:314
 msgid "Set the options for file filtering"
-msgstr "Tetapkan pilihan untuk berkas penyaringan"
+msgstr "Tetapkan pilihan untuk file penyaringan"
 
 #. filter hidden files
 #: ../src/brasero-filter-option.c:63
 msgid "Filter _hidden files"
-msgstr "Saring berkas _tersembunyi"
+msgstr "Filter file yang _tersembunyi"
 
 #. replace symlink
 #: ../src/brasero-filter-option.c:70
@@ -4809,11 +4838,11 @@ msgstr "Opsi penyaringan"
 #: ../plugins/checksum/burn-checksum-files.c:589
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
-msgstr "Berkas \"%s\" tidak bisa dibuka (%s)"
+msgstr "File \"%s\" tidak bisa dibuka (%s)"
 
 #: ../plugins/checksum/burn-checksum-files.c:617
 msgid "Creating checksum for image files"
-msgstr "Membuat checksum untuk berkas image"
+msgstr "Membuat checksum untuk file image"
 
 #: ../plugins/checksum/burn-checksum-files.c:859
 #, c-format
@@ -4822,31 +4851,31 @@ msgstr "Tidak ada berkas checksum dapat ditemukan di CD"
 
 #: ../plugins/checksum/burn-checksum-files.c:893
 msgid "Checking file integrity"
-msgstr "Memeriksa integritas berkas"
+msgstr "Memeriksa integritas file"
 
 #: ../plugins/checksum/burn-checksum-files.c:987
 #: ../plugins/checksum/burn-checksum-files.c:1012
 #, c-format
 msgid "File \"%s\" could not be opened"
-msgstr "Berkas \"%s\" tidak bisa dibuka"
+msgstr "File \"%s\" tidak bisa dibuka"
 
 #: ../plugins/checksum/burn-checksum-files.c:1085
 #: ../plugins/checksum/burn-checksum-files.c:1206
 #: ../plugins/checksum/burn-checksum-image.c:550
 #, c-format
 msgid "Some files may be corrupted on the disc"
-msgstr "Beberapa berkas mungkin rusak pada disk"
+msgstr "Beberapa file mungkin rusak pada disk"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
 #: ../plugins/checksum/burn-checksum-files.c:1479
 msgid "File Checksum"
-msgstr "Checksum Berkas"
+msgstr "Checksum File"
 
 #: ../plugins/checksum/burn-checksum-files.c:1480
 msgid "Checks file integrities on a disc"
-msgstr "Memeriksa integritas berkas pada disk"
+msgstr "Memeriksa integritas file pada disk"
 
 #: ../plugins/checksum/burn-checksum-files.c:1518
 #: ../plugins/checksum/burn-checksum-image.c:855
@@ -4919,7 +4948,7 @@ msgstr "Pengganti teks"
 
 #: ../src/brasero-rename.c:323
 msgid "Number files according to a pattern"
-msgstr "Nomori berkas sesuai dengan suatu pola"
+msgstr "Nomor file sesuai dengan pola"
 
 #: ../src/brasero-rename.c:324
 msgid "Insert number sequence at beginning"
@@ -4976,7 +5005,7 @@ msgstr "Hapus video yang dipilih dari projek"
 
 #: ../src/brasero-video-disc.c:359
 msgid "Do you want to search for video files inside the directory?"
-msgstr "Apakah Anda ingin mencari berkas video di dalam direktori?"
+msgstr "Apakah Anda ingin mencari file video di dalam direktori?"
 
 #: ../src/brasero-video-disc.c:369
 msgid "_Search Directory"
@@ -4989,22 +5018,24 @@ msgstr "\"%s\" tidak memiliki jenis yang cocok untuk projek-projek video."
 
 #: ../src/brasero-video-disc.c:415
 msgid "Please only add files with video content"
-msgstr "Harap hanya menambah berkas dengan konten video"
+msgstr "Harap hanya menambah file dengan konten video"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:316
 #: ../plugins/vcdimager/burn-vcdimager.c:444
 msgid "Creating file layout"
-msgstr "Membuat tata letak berkas"
+msgstr "Membuat file layout"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:374
+#| msgid "Creates disc images suitable for Video DVDs"
 msgid "Creates disc images suitable for video DVDs"
 msgstr "Membuat image disc yang cocok untuk DVD video"
 
 #: ../plugins/transcode/burn-vob.c:1273
 msgid "Converting video file to MPEG2"
-msgstr "Konversi berkas video ke MPEG2"
+msgstr "Konversi file video MPEG2"
 
 #: ../plugins/transcode/burn-vob.c:1376
+#| msgid "Converts any video file into a format suitable for Video DVDs"
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "Mengkonversi berkas video ke format yang sesuai untuk DVD video"
 
