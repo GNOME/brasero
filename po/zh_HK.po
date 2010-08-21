@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: brasero 2.31.5\n"
+"Project-Id-Version: brasero 2.31.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-14 19:34+0800\n"
-"PO-Revision-Date: 2010-07-14 19:35+0800\n"
+"POT-Creation-Date: 2010-08-21 19:53+0800\n"
+"PO-Revision-Date: 2010-08-21 19:53+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
@@ -904,9 +904,8 @@ msgid "Appending audio tracks to a CD is not advised."
 msgstr "不建議將軌道加入 CD。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:938
-#: ../libbrasero-burn/brasero-burn-dialog.c:960
-#: ../libbrasero-burn/brasero-burn-dialog.c:1113
-#: ../src/brasero-data-disc.c:572 ../libbrasero-burn/brasero-tool-dialog.c:422
+#: ../libbrasero-burn/brasero-burn-dialog.c:960 ../src/brasero-data-disc.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:422
 msgid "_Continue"
 msgstr "繼續(_C)"
 
@@ -948,6 +947,10 @@ msgstr "是否啟用不考慮 Windows 兼容問題的方式繼續？"
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "對 Windows 兼容的 CD 而言，某些檔名並不適當。"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1113
+msgid "C_ontinue"
+msgstr "繼續(_O)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1346
 #: ../libbrasero-burn/brasero-burn-dialog.c:1367
@@ -1986,7 +1989,7 @@ msgstr "封面"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1084
+#: ../libbrasero-utils/brasero-jacket-view.c:1074
 msgid "The image could not be loaded."
 msgstr "無法載入圖片。"
 
@@ -2555,7 +2558,7 @@ msgstr "顯示說明文件"
 msgid "About"
 msgstr "關於"
 
-#: ../src/brasero-app.c:420
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2075
 msgid "Disc Burner"
 msgstr "光碟燒錄器"
 
@@ -2637,13 +2640,13 @@ msgstr "最近使用的專案(_R)"
 msgid "Display the projects recently opened"
 msgstr "顯示最近開啟過的專案"
 
-#: ../src/brasero-app.c:2075 ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Brasero 光碟燒錄程式"
-
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "Brasero"
+
+#: ../data/brasero.desktop.in.in.h:2
+msgid "Brasero Disc Burner"
+msgstr "Brasero 光碟燒錄程式"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
@@ -2759,8 +2762,6 @@ msgid "The type of checksum used for files"
 msgstr "用於檔案的總和檢查碼(checksum)類型"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:23
-#, fuzzy
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for images"
 msgstr "用於圖片的總和檢查碼(checksum)類型"
 
@@ -5584,9 +5585,6 @@ msgstr "建立適合 SVCD 的光碟映像檔"
 
 #~ msgid "Multisession Disc"
 #~ msgstr "多區段資料(Multi-Session)的光碟片"
-
-#~ msgid "Continue"
-#~ msgstr "繼續"
 
 #~ msgid "Successful Simulation"
 #~ msgstr "模擬成功"
