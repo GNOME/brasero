@@ -314,12 +314,12 @@ brasero_cli_apply_options (BraseroApp *app)
 	else if (cmd_line_options.burn_project_uri) {
 		gboolean res;
 
-		brasero_app_open_project (app,
-					  cmd_line_options.burner,
-					  cmd_line_options.burn_project_uri,
-					  FALSE,
-					  TRUE,
-					  FALSE /* This is to keep the current behavior which is open main window */);
+		res = brasero_app_open_project (app,
+		                                cmd_line_options.burner,
+		                                cmd_line_options.burn_project_uri,
+		                                FALSE,
+		                                TRUE,
+		                                FALSE /* This is to keep the current behavior which is open main window */);
 		if (res)
 			brasero_app_run_mainwin (app);
 
