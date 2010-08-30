@@ -348,12 +348,17 @@ brasero_app_parse_options (BraseroApp *app)
 			return;
 	}
 	else if (burn_project_uri) {
-		brasero_app_open_project (app,
-					  burner,
-					  burn_project_uri,
-					  FALSE,
-					  TRUE,
-					  burn_immediately != 0 /* This is to keep the current behavior which is open main window */);
+		gboolean res;
+
+		res = brasero_app_open_project (app,
+		                                burner,
+		                                burn_project_uri,
+		                                FALSE,
+		                                TRUE,
+		                                FALSE /* This is to keep the current behavior which is open main window */);
+		if (res)
+			brasero_app_run_mainwin (app);
+
 		if (g_remove (burn_project_uri) != 0) {
 			gchar *path;
 
