@@ -75,6 +75,12 @@ main (int argc, char **argv)
 #endif
 
 	g_thread_init (NULL);
+	g_type_init ();
+
+	/* Though we use gtk_get_option_group we nevertheless want gtk+ to be
+	 * in a usable state to display our error messages while brasero
+	 * specific options are parsed. Otherwise on error that crashes. */
+	gtk_init (&argc, &argv);
 
 	memset (&cmd_line_options, 0, sizeof (cmd_line_options));
 
