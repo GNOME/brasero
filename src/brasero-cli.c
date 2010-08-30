@@ -312,12 +312,17 @@ brasero_cli_apply_options (BraseroApp *app)
 			return;
 	}
 	else if (cmd_line_options.burn_project_uri) {
+		gboolean res;
+
 		brasero_app_open_project (app,
 					  cmd_line_options.burner,
 					  cmd_line_options.burn_project_uri,
 					  FALSE,
 					  TRUE,
-					  cmd_line_options.burn_immediately != 0 /* This is to keep the current behavior which is open main window */);
+					  FALSE /* This is to keep the current behavior which is open main window */);
+		if (res)
+			brasero_app_run_mainwin (app);
+
 		if (g_remove (cmd_line_options.burn_project_uri) != 0) {
 			gchar *path;
 
