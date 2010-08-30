@@ -236,7 +236,7 @@ brasero_main_burning_device (const gchar *option_name,
 		if (!brasero_drive_can_write (burner)) {
 			gchar *string;
 
-			/* Translators: %s is the path of drive */
+			/* Translators: %s is the path of a drive */
 			string = g_strdup_printf (_("\"%s\" cannot write."), value);
 			brasero_utils_message_dialog (NULL,
 						      _("Wrong command line option."),
@@ -462,6 +462,11 @@ main (int argc, char **argv)
 
 	g_thread_init (NULL);
 	g_type_init ();
+
+	/* Though we use gtk_get_option_group we nevertheless want gtk+ to be
+	 * in a usable state to display our error messages while brasero
+	 * specific options are parsed. Otherwise on error that crashes. */
+	gtk_init (&argc, &argv);
 
 	context = g_option_context_new (_("[URI] [URI] …"));
 	g_option_context_add_main_entries (context,
