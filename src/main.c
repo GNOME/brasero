@@ -66,8 +66,6 @@ main (int argc, char **argv)
 	GApplication *gapp = NULL;
 	GOptionContext *context;
 
-	g_setenv ("GSETTINGS_BACKEND", "gconf", FALSE);
-
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
