@@ -320,7 +320,6 @@ AM_CONDITIONAL(BUILD_NAUTILUS, test x"$build_nautilus" = "xyes")
 #
 
 BRASERO_PLUGIN_DIRECTORY=${libdir}/brasero${BRASERO_LIBRARY_SUFFIX}/plugins
-AC_DEFINE_UNQUOTED(BRASERO_PLUGIN_DIRECTORY, "${BRASERO_PLUGIN_DIRECTORY}", [Path where the plugins are installed])
 AC_SUBST(BRASERO_PLUGIN_DIRECTORY)
 
 dnl ****************check for libburn (optional)**************

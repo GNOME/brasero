@@ -10,6 +10,7 @@ INCLUDES = \
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   			\
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    		\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
+	-DBRASERO_PLUGIN_DIRECTORY=\"$(BRASERO_PLUGIN_DIRECTORY)\"	\
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GMODULE_CFLAGS)					\
