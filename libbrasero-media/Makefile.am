@@ -159,12 +159,12 @@ typelibs_DATA = BraseroMedia-@BRASERO_VERSION@.typelib
 
 BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroMedia --nsversion=1.0 \
-            --include=Gtk-@GTK_API_VERSION@.0 \
+            --include=Gtk-@GTK_API_VERSION@ \
 	    -I$(top_srcdir)/libbrasero-media	\
 	    --library=brasero-media@BRASERO_LIBRARY_SUFFIX@ \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
-            --pkg=gtk+-@GTK_API_VERSION@.0  \
+            --pkg=gtk+-@GTK_API_VERSION@  \
 	    --strip-prefix=Brasero	\
             $(top_srcdir)/libbrasero-media/brasero-drive.h			\
 	    $(top_srcdir)/libbrasero-media/brasero-medium-monitor.h		\

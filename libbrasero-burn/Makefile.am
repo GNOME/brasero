@@ -216,13 +216,13 @@ BraseroBurn-@BRASERO_VERSION@.gir: libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la $(
 	    -I$(top_builddir)/libbrasero-media	\
 	    -I$(top_srcdir)/libbrasero-burn		\
 	    -I$(top_builddir)/libbrasero-burn	\
-            --include=Gtk-@GTK_API_VERSION@.0 \
+            --include=Gtk-@GTK_API_VERSION@ \
             --add-include-path=$(top_builddir)/libbrasero-media	\
 	    --include=BraseroMedia-@BRASERO_VERSION@ \
 	    --library=brasero-burn@BRASERO_LIBRARY_SUFFIX@ \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
-            --pkg=gtk+-@GTK_API_VERSION@.0  \
+            --pkg=gtk+-@GTK_API_VERSION@  \
 	    --strip-prefix=Brasero	\
             $(top_srcdir)/libbrasero-burn/brasero-tags.h						\
             $(top_srcdir)/libbrasero-burn/brasero-enums.h						\
