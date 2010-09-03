@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-25 17:54+0200\n"
-"PO-Revision-Date: 2010-07-26 21:24+0100\n"
+"POT-Creation-Date: 2010-09-04 00:39+0200\n"
+"PO-Revision-Date: 2010-09-04 00:48+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -131,9 +131,8 @@ msgid "PATH TO IMAGE"
 msgstr "SÖKVÄG TILL AVBILDNING"
 
 #: ../src/brasero-cli.c:114
-#, fuzzy
 msgid "Force Brasero to display the project selection page"
-msgstr "Tvinga brasero att visa sidan för projektval"
+msgstr "Tvinga Brasero att visa sidan för projektval"
 
 #: ../src/brasero-cli.c:118
 msgid "Open the blank disc dialog"
@@ -144,7 +143,6 @@ msgid "Open the check disc dialog"
 msgstr "Öppna dialogen för skivkontroll"
 
 #: ../src/brasero-cli.c:126
-#, fuzzy
 msgid "Burn the contents of the burn:// URI"
 msgstr "Bränn innehållet för URI:n burn://"
 
@@ -935,7 +933,6 @@ msgstr "Lägga till ljudspår till en cd rekommenderas inte."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:938
 #: ../libbrasero-burn/brasero-burn-dialog.c:960
-#: ../libbrasero-burn/brasero-burn-dialog.c:1113
 #: ../src/brasero-data-disc.c:572
 #: ../libbrasero-burn/brasero-tool-dialog.c:422
 msgid "_Continue"
@@ -976,6 +973,10 @@ msgstr "Vill du fortsätta med inaktiverad fullständig Windows-kompatibilitet?"
 #: ../libbrasero-burn/brasero-status-dialog.c:343
 msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Några filer har inte lämpliga namn för en fullständigt Windows-kompatibel cd-skiva."
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1113
+msgid "C_ontinue"
+msgstr "F_ortsätt"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1346
 #: ../libbrasero-burn/brasero-burn-dialog.c:1367
@@ -2690,13 +2691,12 @@ msgid "Disc Burner and Copier"
 msgstr "Skivbrännare och -kopierare"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-#, fuzzy
 msgid "Burning flags to be used"
-msgstr "Bränner avbildning till skiva"
+msgstr "Bränningsflaggor att använda"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid "Contains the absolute path of the directory that was last browsed for images to burn"
-msgstr ""
+msgstr "Innehåller absolut sökväg för katalogen som senast bläddrades i efter avbildningar att bränna"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
 msgid "Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all."
@@ -2708,7 +2708,7 @@ msgstr "Innehåller namnet på den favoritbrännmotorsviten som är installerad.
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:5
 msgid "Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used."
-msgstr ""
+msgstr "Innehåller sökvägen för katalogen där brasero ska lagra temporära filer. Om värdet är tomt kommer standardkatalogen som är inställd för glib att användas."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
 msgid "Directory to use for temporary files"
@@ -2764,34 +2764,31 @@ msgstr "Om Brasero ska ersätta symboliska länkar med sina målfiler i projekte
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:19
 msgid "The last browsed folder while looking for images to burn"
-msgstr ""
+msgstr "Senast bläddrad mapp vid sökning efter avbildningar att bränna"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
 msgid "The priority value for the plugin"
-msgstr ""
+msgstr "Prioritetsvärdet för insticksmodulen"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:21
-#, fuzzy
 msgid "The speed to be used"
-msgstr "enheten verkar vara upptagen"
+msgstr "Hastigheten att använda"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
-#, fuzzy
 msgid "The type of checksum used for files"
-msgstr "Skapar kontrollsumma för avbildningsfiler"
+msgstr "Typ av kontrollsumma att använda för filer"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:23
-#, fuzzy
 msgid "The type of checksum used for images"
-msgstr "Skapar kontrollsumma för avbildningsfiler"
+msgstr "Typ av kontrollsumma att använda för avbildningar"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:24
 msgid "This value represents the burning flags that were used in such a context the last time."
-msgstr ""
+msgstr "Detta värde representerar bränningsflaggorna som användes i ett sådant sammanhang senast."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid "This value represents the speed that was used in such a context the last time."
-msgstr ""
+msgstr "Detta värde representerar hastigheten som användes i ett sådant sammanhang senast."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:26
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -2803,7 +2800,7 @@ msgstr "Används tillsammans med flaggan \"-immed\" med cdrecord."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:28
 msgid "When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native priority is used. A positive value overrides the plugin's native priority. A negative value disables the plugin."
-msgstr ""
+msgstr "När flera insticksmoduler finns tillgängliga för samma uppgift så används detta värde för att bestämma vilken insticksmodul som ska ges prioritet. 0 betyder att insticksmodulens inbyggda prioritet används. Ett positivt värde överstiger insticksmodulens inbyggda prioritet. Ett negativt värde inaktiverar insticksmodulen."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
@@ -3322,7 +3319,6 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "Vill du ersätta \"%s\"?"
 
 #: ../src/brasero-data-disc.c:791
-#, fuzzy
 msgid "A file with this name already exists in the folder.  Replacing it will overwrite its contents on the disc to be burnt."
 msgstr "En fil med detta namn finns redan i mappen.  Ersättning av den kommer att skriva över dess innehåll på skivan som ska brännas."
 
@@ -3364,14 +3360,13 @@ msgstr "Vill du verkligen lägga till \"%s\" till markeringen och använda den t
 
 #: ../src/brasero-data-disc.c:847
 #: ../libbrasero-burn/brasero-status-dialog.c:293
-#, fuzzy
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones).\n"
 "It is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows™.\n"
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 standard."
 msgstr ""
 "Storleken på filen är över 2 GiB. Filer större än 2 GiB stöds inte av ISO9660-standarden i dess första och andra versioner (de mest vanliga).\n"
-"Det rekommenderas att använda den tredje versionen av ISO9660-standarden, vilken stöds av de flesta operativsystem, inklusive Linux och alla versioner av Windows ©.\n"
+"Det rekommenderas att använda den tredje versionen av ISO9660-standarden, vilken stöds av de flesta operativsystem, inklusive Linux och alla versioner av Windows™.\n"
 "Ett känt undantag är Mac OS X som inte kan läsa avbildningar skapade med version 3 av ISO9660-standarden."
 
 #: ../src/brasero-data-disc.c:851
@@ -3396,7 +3391,6 @@ msgstr "Vill du verkligen lägga till \"%s\" till markeringen?"
 
 #: ../src/brasero-data-disc.c:891
 #: ../libbrasero-burn/brasero-status-dialog.c:231
-#, fuzzy
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it but the disc may not be readable on all operating systems.\n"
@@ -3530,9 +3524,8 @@ msgstr "%i × %i bildpunkter"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
-#, fuzzy
 msgid "No preview"
-msgstr " Förhandsgranskning"
+msgstr "Ingen förhandsgranskning"
 
 #: ../src/brasero-project.c:194
 msgid "Save current project"
@@ -3786,7 +3779,6 @@ msgstr "Nytt _videoprojekt"
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:84
-#, fuzzy
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
 msgstr "Skapa en video-dvd eller svcd som är läsbar på tv-läsare"
 
@@ -3970,9 +3962,8 @@ msgid "The file integrity check could not be performed."
 msgstr "Kontroll av filintegritet kunde inte genomföras."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
-#, fuzzy
 msgid "The file integrity check was performed successfully."
-msgstr "Filintegriteten genomfördes utan problem."
+msgstr "Kontroll av filintegriteten genomfördes utan problem."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:179
 msgid "There seem to be no corrupted files on the disc"
@@ -4066,11 +4057,11 @@ msgstr "Välj en skiva"
 msgid "Progress"
 msgstr "Förlopp"
 
-#: ../src/main.c:81
+#: ../src/main.c:85
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] …"
 
-#: ../src/main.c:93
+#: ../src/main.c:97
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Skriv \"%s --help\" för att se alla tillgängliga flaggor\n"
@@ -4277,12 +4268,10 @@ msgid "Video DVD could not be opened"
 msgstr "Video-dvd-skivan kunde inte öppnas"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:384
-#, fuzzy
 msgid "Copying video DVD"
 msgstr "Kopierar video-dvd"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:677
-#, fuzzy
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Kopierar css-krypterade video-dvd-skivor till en skivavbildning"
 
@@ -4755,22 +4744,22 @@ msgid "Checks file integrities on a disc"
 msgstr "Kontrollerar filintegritet på en skiva"
 
 #: ../plugins/checksum/burn-checksum-files.c:1518
-#: ../plugins/checksum/burn-checksum-image.c:855
+#: ../plugins/checksum/burn-checksum-image.c:856
 msgid "Hashing algorithm to be used:"
 msgstr "Hashalgoritm att använda:"
 
 #: ../plugins/checksum/burn-checksum-files.c:1521
-#: ../plugins/checksum/burn-checksum-image.c:858
+#: ../plugins/checksum/burn-checksum-image.c:859
 msgid "MD5"
 msgstr "MD5"
 
 #: ../plugins/checksum/burn-checksum-files.c:1523
-#: ../plugins/checksum/burn-checksum-image.c:860
+#: ../plugins/checksum/burn-checksum-image.c:861
 msgid "SHA1"
 msgstr "SHA1"
 
 #: ../plugins/checksum/burn-checksum-files.c:1525
-#: ../plugins/checksum/burn-checksum-image.c:862
+#: ../plugins/checksum/burn-checksum-image.c:863
 msgid "SHA256"
 msgstr "SHA256"
 
@@ -4782,11 +4771,11 @@ msgstr "Skapar kontrollsumma för avbildning"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/checksum/burn-checksum-image.c:830
+#: ../plugins/checksum/burn-checksum-image.c:831
 msgid "Image Checksum"
 msgstr "Avbildskontrollsumma"
 
-#: ../plugins/checksum/burn-checksum-image.c:831
+#: ../plugins/checksum/burn-checksum-image.c:832
 msgid "Checks disc integrity after it is burnt"
 msgstr "Kontrollerar skivans integritet efter den har bränts"
 
@@ -4910,18 +4899,16 @@ msgid "Creating file layout"
 msgstr "Skapar fil-layout"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:374
-#, fuzzy
 msgid "Creates disc images suitable for video DVDs"
-msgstr "Skapar skivavbildningar lämpliga för video-dvd"
+msgstr "Skapar skivavbildningar lämpliga för video-dvd-skivor"
 
 #: ../plugins/transcode/burn-vob.c:1273
 msgid "Converting video file to MPEG2"
 msgstr "Konverterar videofil till MPEG2"
 
 #: ../plugins/transcode/burn-vob.c:1376
-#, fuzzy
 msgid "Converts any video file into a format suitable for video DVDs"
-msgstr "Konverterar alla videofiler till en format lämpligt för video-dvd"
+msgstr "Konverterar alla videofiler till ett format lämpligt för video-dvd-skivor"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:484
 msgid "Creates disc images suitable for SVCDs"
@@ -5729,8 +5716,6 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ msgstr "Möjlig dataförlust"
 #~ msgid "Multisession Disc"
 #~ msgstr "Multisessionsskiva"
-#~ msgid "Continue"
-#~ msgstr "Fortsätt"
 #~ msgid "Rewritable Disc"
 #~ msgstr "Återskrivningsbar skiva"
 #~ msgid "Successful Simulation"
