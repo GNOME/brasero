@@ -680,6 +680,7 @@ brasero_checksum_image_activate (BraseroJob *job,
 	brasero_job_get_action (job, &action);
 
 	if (action == BRASERO_JOB_ACTION_IMAGE
+	&&  brasero_track_get_checksum_type (track) != BRASERO_CHECKSUM_NONE
 	&&  brasero_track_get_checksum_type (track) == brasero_checksum_get_checksum_type ()) {
 		BRASERO_JOB_LOG (job,
 				 "There is a checksum already %d",
