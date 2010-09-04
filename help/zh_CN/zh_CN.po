@@ -1,15 +1,15 @@
 # Simplified Chinese translation of brasero help.
 # Copyright (C) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the brasero package.
-# 苏运强 <wzssyqa@gmail.com>, 2009.
+# YunQiang Su <wzssyqa@gmail.com>, 2009.
 #    Thanks to 黄文苗 <hwmz1987.my265@yahoo.com.cn> for helping polish the style.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero gnome-2-28\n"
-"POT-Creation-Date: 2009-09-28 18:55+0000\n"
-"PO-Revision-Date: 2009-10-01 01:38+0800\n"
-"Last-Translator: 苏运强 <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2010-07-22 07:27+0000\n"
+"PO-Revision-Date: 2010-07-23 01:29+0800\n"
+"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -352,13 +352,13 @@ msgid ""
 "This window is the starting point for all of your projects. You can click on "
 "the project type you wish to start from here. If you have created other "
 "projects with <application>Brasero</application>, you will be able to select "
-"them from the <guilabel>Choose a recently opened project</guilabel> (see "
-"<xref linkend=\"brasero-open-recent-project\"/> for more information)."
+"them from the <guilabel>Recent projects</guilabel> (see <xref linkend="
+"\"brasero-open-recent-project\"/> for more information)."
 msgstr ""
 "本窗口是您所有项目的起点。您可以点击您希望从这开始的项目类型。如果您曾经使用 "
-"<application>Brasero</application> 创建过其它项目，您将可以从 <guilabel>选择"
-"最近打开的项目</guilabel> 中选择它们(参见 <xref linkend=\"brasero-open-"
-"recent-project\"/> 以获取更多信息)。"
+"<application>Brasero</application> 创建过其它项目，您将可以从 <guilabel>最近"
+"项目</guilabel> 中选择它们(参见 <xref linkend=\"brasero-open-recent-project"
+"\"/> 以获取更多信息)。"
 
 #: C/brasero.xml:284(title)
 msgid "Creating a New Project"
@@ -536,11 +536,10 @@ msgid "Split track manually"
 msgstr "手动分割音轨"
 
 #: C/brasero.xml:453(para)
-#, fuzzy
 msgid ""
 "Select this to select the time on the track where you wish to split it. A "
 "sliding bar is provided along with an audio preview."
-msgstr "选择这个来选择您想截断的音轨上的时间。提供一个滑动条以及音频预览。"
+msgstr "选择这个来选择您想截断的音轨上的时间点。提供一个滑动条以及音频预览。"
 
 #: C/brasero.xml:461(guilabel)
 msgid "Split tracks in parts with a fixed length"
@@ -642,14 +641,13 @@ msgid "Leave the disc open to add a data session later"
 msgstr "不写入结束标记，以便下次还可以追加数据"
 
 #: C/brasero.xml:554(para) C/brasero.xml:722(para)
-#, fuzzy
 msgid ""
 "Select this option to create a <emphasis>multisession</emphasis> disc, so "
 "that it will be possible to add files to the disc at a later date (without "
 "erasing it, if it is rewritable)."
 msgstr ""
-"选择这个选项，创建一个 <emphasis>multisession</emphasis> 光盘，这样使在以后向"
-"光盘中添加文件成为可能(如果是可复写的就不用擦除它)。"
+"选择这个选项，创建一个 <emphasis>multisession</emphasis> 光盘，这样以后可以向"
+"光盘中添加文件(如果是可复写的，也不用擦除它)。"
 
 #: C/brasero.xml:576(title)
 msgid "Data Project"
@@ -947,12 +945,12 @@ msgstr ""
 
 #: C/brasero.xml:1076(para)
 msgid ""
-"If you have more that one drive on your system, you can use one drive as the "
+"If you have more than one drive on your system, you can use one drive as the "
 "source drive and the other as the destination drive. If you do not, you will "
 "be prompted to remove the CD or DVD you are copying and insert a blank media."
 msgstr ""
 "如果您的系统上有多个驱动器，您可以使用一个作为源驱动器，另一个作为目标驱动"
-"器。如果您没有，您将被提示移除已复制的光盘并且插入一张空光盘。"
+"器。如果您没有，将提示您移除已复制的光盘然后插入一张空光盘。"
 
 #: C/brasero.xml:1090(title)
 msgid "Burn Image"
@@ -1193,9 +1191,8 @@ msgstr ""
 #: C/brasero.xml:1415(para)
 msgid ""
 "From the main window, click on the project you want to open under "
-"<guilabel>Choose a recently opened project</guilabel>."
-msgstr ""
-"从主窗口，点击 <guilabel>选择最近打开的项目</guilabel> 下方您希望打开的项目。"
+"<guilabel>Recent projects</guilabel>."
+msgstr "从主窗口，点击 <guilabel>最近项目</guilabel> 下方您希望打开的项目。"
 
 #: C/brasero.xml:1402(para)
 msgid ""
@@ -1346,8 +1343,8 @@ msgid ""
 "more information), <application>Brasero</application> adds a MD5 file to the "
 "disc in order to perform integrity checks at a later date."
 msgstr ""
-"完整性检验是使用 <quote>MD5 摘要</quote> 算法进行的，这种算法创建媒体上数据"
-"的一个 <quote>fingerprint</quote>。每当刻录时， <emphasis role=\"strong"
+"完整性检验是使用 <quote>MD5 摘要</quote> 算法进行的，这种算法创建媒体上数据的"
+"一个 <quote>fingerprint</quote>。每当刻录时， <emphasis role=\"strong"
 "\">Image checksum</emphasis> 插件就被激活( 更多信息参见 <xref linkend="
 "\"brasero-plugins\"/>)，<application>Brasero</application> 添加一个 MD5 文件"
 "到光盘中，以便以后检测光盘的完整性。"
@@ -1437,12 +1434,11 @@ msgstr ""
 
 # 光盘只有一面可以写字吧？
 #: C/brasero.xml:1616(para)
-#, fuzzy
 msgid ""
 "The cover editor lets you select the font, the alignment and the colors for "
 "all the texts and the background properties of front and the back cover."
 msgstr ""
-"封面编辑器使您可以选择所有文本的字体、对齐和颜色，以及正面和背面的背景属性。"
+"封面编辑器使您可以选择所有文本的字体、对齐和颜色，以及封面和正面盖的背景。"
 
 #: C/brasero.xml:1621(para)
 msgid ""
@@ -1549,7 +1545,8 @@ msgid ""
 "Enalbes <placeholder-1/> to burn files stored in the <placeholder-2/> folder "
 "of <placeholder-3/>."
 msgstr ""
-"启用 <placeholder-1/> 以允许刻录存储在 <placeholder-3/> 的 <placeholder-2/> 目录中的文件。"
+"启用 <placeholder-1/> 以允许刻录存储在 <placeholder-3/> 的 <placeholder-2/> "
+"目录中的文件。"
 
 #: C/brasero.xml:1707(guilabel)
 msgid "File Checksum"
@@ -1577,8 +1574,8 @@ msgid ""
 "have been burnt. Also enables the writing of a small file which holds the "
 "MD5 sum of all the files on the disc."
 msgstr ""
-"启用 <placeholder-1/> 以在刻录完成后来进行光盘的完整性检测。同是也允许写入光盘"
-"一个携带光盘上所有文件 MD5 校验值的小文件。"
+"启用 <placeholder-1/> 以在刻录完成后来进行光盘的完整性检测。同是也允许写入光"
+"盘一个携带光盘上所有文件 MD5 校验值的小文件。"
 
 #: C/brasero.xml:1728(guilabel)
 msgid "Normalize"
