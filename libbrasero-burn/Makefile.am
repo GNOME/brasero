@@ -18,7 +18,6 @@ INCLUDES = \
 	$(BRASERO_GIO_CFLAGS)						\
 	$(BRASERO_GTK_CFLAGS)						\
 	$(BRASERO_GSTREAMER_CFLAGS)					\
-	$(BRASERO_DBUS_CFLAGS)                                          \
 	$(BRASERO_CANBERRA_CFLAGS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
@@ -66,7 +65,6 @@ libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =					\
 	$(BRASERO_GIO_LIBS)					\
 	$(BRASERO_GTK_LIBS)					\
 	$(BRASERO_GSTREAMER_LIBS)				\
-	$(BRASERO_DBUS_LIBS)                                    \
 	$(BRASERO_CANBERRA_LIBS)
 
 libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_LDFLAGS =					\
