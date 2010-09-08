@@ -91,6 +91,7 @@ brasero_inhibit_suspend (const char *reason)
 	guint	         cookie;
 	GError		*error	= NULL;
 	GVariant 	*res;
+	GVariantType 	*type;
 
 	g_return_val_if_fail (reason != NULL, -1);
 
@@ -103,28 +104,32 @@ brasero_inhibit_suspend (const char *reason)
 		return -1;
 	}
 
+	type = g_variant_type_new ("(u)");
 	res = g_dbus_connection_call_sync (conn,
 					   GS_DBUS_SERVICE,
 					   GS_DBUS_INHIBIT_PATH, 
 					   GS_DBUS_INHIBIT_INTERFACE,
 					   "Inhibit",
-					   g_variant_new("(u^asms)",
+					   g_variant_new("(susu)",
 							 g_get_application_name (),
 							 0,
 							 reason,
-							 1 | 4,
-							 &cookie),
-					   NULL,
+							 1 | 4),
+					   type,
 					   G_DBUS_CALL_FLAGS_NONE, 
 					   -1,
 					   NULL,
 					   &error);
+	g_variant_type_free (type);
 
 	if (res == NULL) {
 		g_warning ("Failed to inhibit the system from suspending: %s",
 			    error->message);
 		g_error_free (error);
 		cookie = -1;
+	}
+	else {
+		g_variant_get (res, "(u)", &cookie);
 	}
 
 	g_variant_unref (res);
