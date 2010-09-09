@@ -258,7 +258,7 @@ brasero_pk_install_file_requirement (BraseroPK *package,
 
 	g_dbus_proxy_call (priv->proxy,
 				      "InstallProvideFiles",
-				      g_variant_new ("(u^asms)",
+				      g_variant_new ("(uass)",
 						     xid,
 						     package,
 						     "hide-confirm-search,hide-finished,hide-warning"),
