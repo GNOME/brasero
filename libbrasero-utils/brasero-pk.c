@@ -38,7 +38,6 @@
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include <dbus/dbus-glib.h>
 
 #include <gst/gst.h>
 #include <gst/pbutils/install-plugins.h>
@@ -52,10 +51,11 @@ static GSList *already_tested = NULL;
 typedef struct _BraseroPKPrivate BraseroPKPrivate;
 struct _BraseroPKPrivate
 {
-	DBusGConnection *connection;
-	DBusGProxy *proxy;
-	DBusGProxyCall *call;
+	GDBusConnection *connection;
+	GDBusProxy *proxy;
 
+	GVariant *values;
+	GAsyncResult *result;
 	GMainLoop *loop;
 	gboolean res;
 };
@@ -65,36 +65,42 @@ struct _BraseroPKPrivate
 G_DEFINE_TYPE (BraseroPK, brasero_pk, G_TYPE_OBJECT);
 
 static void
-brasero_pk_install_missing_files_result (DBusGProxy *proxy,
-                                         DBusGProxyCall *call,
+brasero_pk_install_missing_files_result (GObject *source_object,
+					 GAsyncResult *result,
                                          gpointer user_data)
 {
 	GError *error = NULL;
 	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (user_data);
 
-	priv->call = NULL;
-	priv->res = dbus_g_proxy_end_call (proxy,
-	                                   call,
-	                                   &error,
-	                                   G_TYPE_INVALID);
-	if (!priv->res) {
+	priv->proxy = G_DBUS_PROXY (source_object);
+
+	priv->values = g_dbus_proxy_call_finish (priv->proxy, 
+						 result, 
+						 &error);
+
+	if (priv->values == NULL) {
 		BRASERO_UTILS_LOG ("%s", error->message);
 		g_error_free (error);
 	}
 
-	g_main_loop_quit (priv->loop);
+	if (priv->values != NULL)
+		g_variant_unref (priv->values);
+	g_object_unref (priv->proxy);
 }
 
 static void
 brasero_pk_cancelled (GCancellable *cancel,
                       BraseroPK *package)
 {
+	GError *error = NULL;
 	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (package);
 
 	priv->res = FALSE;
 
-	if (priv->call)
-		dbus_g_proxy_cancel_call (priv->proxy, priv->call);
+	if (priv->proxy)
+		g_dbus_proxy_call_finish (priv->proxy, 
+					  priv->result,
+					  &error);
 
 	if (priv->loop)
 		g_main_loop_quit (priv->loop);
@@ -139,24 +145,28 @@ brasero_pk_connect (BraseroPK *package)
 	priv = BRASERO_PK_PRIVATE (package);
 
 	/* check dbus connections, exit if not valid */
-	priv->connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	priv->connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
 	if (priv->connection == NULL) {
 		BRASERO_UTILS_LOG ("%s", error->message);
 		return FALSE;
 	}
 
 	/* get a connection */
-	priv->proxy = dbus_g_proxy_new_for_name (priv->connection,
-	                                         "org.freedesktop.PackageKit",
-	                                         "/org/freedesktop/PackageKit",
-	                                         "org.freedesktop.PackageKit.Modify");
+	priv->proxy = g_dbus_proxy_new_sync (priv->connection,
+					     			  G_DBUS_PROXY_FLAGS_NONE,
+					                          NULL,
+	                                                          "org.freedesktop.PackageKit",
+	                                                          "/org/freedesktop/PackageKit",
+	                                                          "org.freedesktop.PackageKit.Modify",
+						                  NULL,
+						                 &error);
 	if (priv->proxy == NULL) {
 		BRASERO_UTILS_LOG ("Cannot connect to session service");
 		return FALSE;
 	}
 
 	/* don't timeout, as dbus-glib sets the timeout ~25 seconds */
-	dbus_g_proxy_set_default_timeout (priv->proxy, INT_MAX);
+	g_dbus_proxy_set_default_timeout (priv->proxy, INT_MAX);
 
 	return TRUE;
 }
@@ -199,7 +209,7 @@ gboolean
 brasero_pk_install_gstreamer_plugin (BraseroPK *package,
                                      const gchar *element_name,
                                      int xid,
-                                    GCancellable *cancel)
+				     GCancellable *cancel)
 {
 	GstInstallPluginsContext *context;
 	GPtrArray *gst_plugins = NULL;
@@ -237,7 +247,7 @@ static gboolean
 brasero_pk_install_file_requirement (BraseroPK *package,
                                      GPtrArray *missing_files,
                                      int xid,
-                                    GCancellable *cancel)
+				     GCancellable *cancel)
 {
 	BraseroPKPrivate *priv;
 
@@ -246,15 +256,17 @@ brasero_pk_install_file_requirement (BraseroPK *package,
 	if (!brasero_pk_connect (package))
 		return FALSE;
 
-	priv->call = dbus_g_proxy_begin_call_with_timeout (priv->proxy, "InstallProvideFiles",
-							   brasero_pk_install_missing_files_result,
-	                                                   package,
-							   NULL,
-							   INT_MAX,
-							   G_TYPE_UINT, xid,
-							   G_TYPE_STRV, missing_files->pdata,
-							   G_TYPE_STRING, "hide-finished,hide-warnings",
-							   G_TYPE_INVALID);
+	g_dbus_proxy_call (priv->proxy,
+				      "InstallProvideFiles",
+				      g_variant_new ("(u^asms)",
+						     xid,
+						     package,
+						     "hide-confirm-search,hide-finished,hide-warning"),
+				      G_DBUS_CALL_FLAGS_NONE,
+				      -1,
+				      NULL,
+				      brasero_pk_install_missing_files_result,
+				      package);
 
 	return brasero_pk_wait_for_call_end (package, cancel);
 }
@@ -358,7 +370,6 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
                                      int xid,
                                      GCancellable *cancel)
 {
-	gboolean res;
 	gchar *resource;
 	const gchar *name;
 	BraseroPKPrivate *priv;
@@ -392,15 +403,15 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
 	g_ptr_array_add (missing_files, resource);
 	g_ptr_array_add (missing_files, NULL);
 
-	res = brasero_pk_install_file_requirement (package, missing_files, xid, cancel);
+	priv->res = brasero_pk_install_file_requirement (package, missing_files, xid, cancel);
 
-	if (res)
-		 res = gst_update_registry ();
+	if (priv->res)
+		 priv->res = gst_update_registry ();
 
 	g_strfreev ((gchar **) missing_files->pdata);
 	g_ptr_array_free (missing_files, FALSE);
 
-	return res;
+	return priv->res;
 }
 
 static void
@@ -410,12 +421,13 @@ brasero_pk_init (BraseroPK *object)
 static void
 brasero_pk_finalize (GObject *object)
 {
+	GError *error = NULL;
 	BraseroPKPrivate *priv;
 
 	priv = BRASERO_PK_PRIVATE (object);
 
-	if (priv->call)
-		dbus_g_proxy_cancel_call (priv->proxy, priv->call);
+	if (priv->proxy)
+		g_dbus_proxy_call_finish (priv->proxy, priv->result, &error);
 
 	if (priv->loop)
 		g_main_loop_quit (priv->loop);
@@ -426,7 +438,7 @@ brasero_pk_finalize (GObject *object)
 	}
 
 	if (priv->connection) {
-		dbus_g_connection_unref (priv->connection);
+		g_object_unref (priv->connection);
 		priv->connection = NULL;
 	}
 
