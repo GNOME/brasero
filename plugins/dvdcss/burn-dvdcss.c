@@ -240,6 +240,7 @@ typedef struct _BraseroScrambledSectorRange BraseroScrambledSectorRange;
 
 static gboolean
 brasero_dvdcss_create_scrambled_sectors_map (BraseroDvdcss *self,
+					     BraseroDrive *drive,
                                              GQueue *map,
 					     dvdcss_handle *handle,
 					     BraseroVolFile *parent,
@@ -289,14 +290,17 @@ brasero_dvdcss_create_scrambled_sectors_map (BraseroDvdcss *self,
 						g_set_error (error,
 							     BRASERO_BURN_ERROR,
 							     BRASERO_BURN_ERROR_GENERAL,
-							     _("Error while reading video DVD (%s)"),
-							     dvdcss_error (handle));
+							     /* Translators: %s is the path to a drive. "regionset %s"
+							      * should be left as is just like "DVDCSS_METHOD=title
+							      * brasero --no-existing-session" */
+							     _("Error while retrieving a key used for encryption. You may solve such a problem with one of the following methods: in a terminal either set the proper DVD region code for your CD/DVD player with the \"regionset %s\" command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" command"),
+							     brasero_drive_get_device (drive));
 						return FALSE;
 					}
 				}
 			}
 		}
-		else if (!brasero_dvdcss_create_scrambled_sectors_map (self, map, handle, file, error))
+		else if (!brasero_dvdcss_create_scrambled_sectors_map (self, drive, map, handle, file, error))
 			return FALSE;
 	}
 
@@ -376,7 +380,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	/* look through the files to get the ranges of encrypted sectors
 	 * and cache the CSS keys while at it. */
 	map = g_queue_new ();
-	if (!brasero_dvdcss_create_scrambled_sectors_map (self, map, handle, files, &priv->error))
+	if (!brasero_dvdcss_create_scrambled_sectors_map (self, drive, map, handle, files, &priv->error))
 		goto end;
 
 	BRASERO_JOB_LOG (self, "DVD map created (keys retrieved)");
