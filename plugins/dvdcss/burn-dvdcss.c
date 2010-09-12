@@ -239,7 +239,8 @@ struct _BraseroScrambledSectorRange {
 typedef struct _BraseroScrambledSectorRange BraseroScrambledSectorRange;
 
 static gboolean
-brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
+brasero_dvdcss_create_scrambled_sectors_map (BraseroDvdcss *self,
+                                             GQueue *map,
 					     dvdcss_handle *handle,
 					     BraseroVolFile *parent,
 					     GError **error)
@@ -254,24 +255,37 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 		if (!file->isdir) {
 			if (!strncmp (file->name + strlen (file->name) - 6, ".VOB", 4)) {
 				BraseroScrambledSectorRange *range;
+				gsize current_extent;
 				GSList *extents;
 
+				BRASERO_JOB_LOG (self, "Retrieving keys for %s", file->name);
+
 				/* take the first address for each extent of the file */
-				if (!file->specific.file.extents)
+				if (!file->specific.file.extents) {
+					BRASERO_JOB_LOG (self, "Problem: file has no extents");
 					return FALSE;
+				}
 
 				range = g_new0 (BraseroScrambledSectorRange, 1);
-				
 				for (extents = file->specific.file.extents; extents; extents = extents->next) {
 					BraseroVolFileExtent *extent;
 
 					extent = extents->data;
+
 					range->start = extent->block;
 					range->end = extent->block + BRASERO_BYTES_TO_SECTORS (extent->size, DVDCSS_BLOCK_SIZE);
 
+					BRASERO_JOB_LOG (self, "From 0x%llx to 0x%llx", range->start, range->end);
 					g_queue_push_head (map, range);
 
-					if (dvdcss_seek (handle, range->start, DVDCSS_SEEK_KEY) != range->start) {
+					if (extent->size == 0) {
+						BRASERO_JOB_LOG (self, "0 size extent");
+						continue;
+					}
+
+					current_extent = dvdcss_seek (handle, range->start, DVDCSS_SEEK_KEY);
+					if (current_extent != range->start) {
+						BRASERO_JOB_LOG (self, "Problem: could not retrieve key");
 						g_set_error (error,
 							     BRASERO_BURN_ERROR,
 							     BRASERO_BURN_ERROR_GENERAL,
@@ -282,7 +296,7 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 				}
 			}
 		}
-		else if (!brasero_dvdcss_create_scrambled_sectors_map (map, handle, file, error))
+		else if (!brasero_dvdcss_create_scrambled_sectors_map (self, map, handle, file, error))
 			return FALSE;
 	}
 
@@ -362,8 +376,10 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	/* look through the files to get the ranges of encrypted sectors
 	 * and cache the CSS keys while at it. */
 	map = g_queue_new ();
-	if (!brasero_dvdcss_create_scrambled_sectors_map (map, handle, files, &priv->error))
+	if (!brasero_dvdcss_create_scrambled_sectors_map (self, map, handle, files, &priv->error))
 		goto end;
+
+	BRASERO_JOB_LOG (self, "DVD map created (keys retrieved)");
 
 	g_queue_sort (map, brasero_dvdcss_sort_ranges, NULL);
 
