@@ -39,6 +39,7 @@
 
 #include <gst/gst.h>
 
+#include <unique/unique.h>
 
 #include "eggsmclient.h"
 
@@ -63,7 +64,7 @@ brasero_app_get_default (void)
 int
 main (int argc, char **argv)
 {
-	GApplication *gapp = NULL;
+	UniqueApp *uapp = NULL;
 	GOptionContext *context;
 
 #ifdef ENABLE_NLS
@@ -101,16 +102,27 @@ main (int argc, char **argv)
 	g_option_context_free (context);
 
 	if (cmd_line_options.not_unique == FALSE) {
-		/* Create GApplication and check if there is a process running already */
-		gapp = g_application_new ("org.gnome.Brasero", argc, argv);
-		if (g_application_is_remote (gapp))
-			return 0;
+		/* Create UniqueApp and check if there is a process running already */
+		uapp = unique_app_new ("org.gnome.Brasero", NULL);
+		if (unique_app_is_running (uapp))
+		{
+			UniqueResponse response;
+
+			response = unique_app_send_message (uapp, UNIQUE_ACTIVATE, NULL);
+			g_object_unref (uapp);
+			uapp = NULL;
+
+			/* FIXME: we should tell the user why it did not work. Or is it
+			* handled by libunique? */
+			return (response == UNIQUE_RESPONSE_OK);
+		}
 	}
 
 	brasero_burn_library_start (&argc, &argv);
 	brasero_enable_multi_DND ();
 
-	current_app = brasero_app_new (gapp);
+	current_app = brasero_app_new (uapp);
+	g_object_unref (uapp);
 	if (current_app == NULL)
 		return 1;
 

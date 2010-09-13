@@ -67,7 +67,7 @@
 typedef struct _BraseroAppPrivate BraseroAppPrivate;
 struct _BraseroAppPrivate
 {
-	GApplication *gapp;
+	UniqueApp *gapp;
 
 	BraseroSetting *setting;
 
@@ -1999,21 +1999,24 @@ brasero_app_create_mainwin (BraseroApp *app)
 	brasero_app_load_window_state (app);
 }
 
-static void
-brasero_app_prepare_activation (GApplication *gapp,
-                                GVariant *arguments,
-                                GVariant *platform_data,
-                                BraseroApp *app)
+static UniqueResponse
+brasero_app_unique_message (UniqueApp *uapp,
+			    gint command,
+			    UniqueMessageData *message_data,
+			    BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	/* Except if we are supposed to quit show the window */
-	if (priv->mainwin_running) {
-		gtk_widget_show (priv->mainwin);
-		gtk_window_present (GTK_WINDOW (priv->mainwin));
-	}
+	if (command == UNIQUE_ACTIVATE) {
+	       if (priv->mainwin_running) {
+		       gtk_widget_show (priv->mainwin);
+		       gtk_window_present (GTK_WINDOW (priv->mainwin));
+	       }
+ 	}
+
+	return UNIQUE_RESPONSE_OK;
 }
 
 gboolean
@@ -2029,11 +2032,6 @@ brasero_app_run_mainwin (BraseroApp *app)
 	priv->mainwin_running = 1;
 	gtk_widget_show (GTK_WIDGET (priv->mainwin));
 
-	if (priv->gapp)
-		g_signal_connect (priv->gapp,
-				  "prepare-activation",
-				  G_CALLBACK (brasero_app_prepare_activation),
-				  app);
 	gtk_main ();
 	return TRUE;
 }
@@ -2104,16 +2102,17 @@ brasero_app_set_property (GObject *object,
                           const GValue *value,
                           GParamSpec *pspec)
 {
-	BraseroAppPrivate *priv;
-
-	g_return_if_fail (BRASERO_IS_APP (object));
-
-	priv = BRASERO_APP_PRIVATE (object);
+	BraseroApp *app = BRASERO_APP (object);
+	BraseroAppPrivate *priv = BRASERO_APP_PRIVATE (object);
 
 	switch (prop_id)
 	{
 	case PROP_GAPP:
 		priv->gapp = g_value_dup_object (value);
+		g_signal_connect (priv->gapp,
+				  "message-received",
+				  G_CALLBACK (brasero_app_unique_message),
+				  app);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2157,15 +2156,16 @@ brasero_app_class_init (BraseroAppClass *klass)
 
 	g_object_class_install_property (object_class,
 	                                 PROP_GAPP,
-	                                 g_param_spec_object("gapp",
-	                                                     "GApplication",
-	                                                     "The GApplication object",
-	                                                     G_TYPE_APPLICATION,
-	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+					 g_param_spec_object("gapp",
+	                                 "UniqueApplication",
+					 "The UniqueApp object",
+					 UNIQUE_TYPE_APP,
+					 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
 }
 
 BraseroApp *
-brasero_app_new (GApplication *gapp)
+brasero_app_new (UniqueApp *gapp)
 {
 	return g_object_new (BRASERO_TYPE_APP,
 	                     "gapp", gapp,
