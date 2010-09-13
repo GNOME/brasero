@@ -26,6 +26,8 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <unique/unique.h>
+
 #include "brasero-session-cfg.h"
 
 G_BEGIN_DECLS
@@ -53,7 +55,7 @@ struct _BraseroApp
 GType brasero_app_get_type (void) G_GNUC_CONST;
 
 BraseroApp *
-brasero_app_new (GApplication *gapp);
+brasero_app_new (UniqueApp *gapp);
 
 BraseroApp *
 brasero_app_get_default (void);
