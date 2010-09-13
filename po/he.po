@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-30 12:44+0300\n"
-"PO-Revision-Date: 2010-07-30 13:14+0200\n"
+"POT-Creation-Date: 2010-09-13 13:28+0200\n"
+"PO-Revision-Date: 2010-09-13 13:30+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "MIME-Version: 1.0\n"
@@ -1826,7 +1826,7 @@ msgstr ""
 "למיקום שנבחר לאחסון תמונת התקליטור הזמנית אין מספיק מקום פנוי עבור תמונת "
 "התקליטור (%ld ‏MiB נדרש)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:349
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:367
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "לא ניתן לאחזר את גודל הנפח"
@@ -4116,11 +4116,11 @@ msgstr "בחר תקליטור"
 msgid "Progress"
 msgstr "התקדמות"
 
-#: ../src/main.c:81
+#: ../src/main.c:85
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:93
+#: ../src/main.c:97
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Please type %s --help to see all available options\n"
@@ -4132,7 +4132,7 @@ msgid "Data could not be read (%s)"
 msgstr "לא ניתן לקרוא נתונים (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:241
-#: ../plugins/dvdcss/burn-dvdcss.c:218 ../plugins/dvdcss/burn-dvdcss.c:477
+#: ../plugins/dvdcss/burn-dvdcss.c:218 ../plugins/dvdcss/burn-dvdcss.c:497
 #: ../plugins/libburnia/burn-libisofs.c:163
 #: ../plugins/libburnia/burn-libisofs.c:266
 #: ../plugins/checksum/burn-checksum-files.c:196
@@ -4303,26 +4303,43 @@ msgstr "היחס המזערי למילוי חוצץ הכונן (ב־%%) (נית�
 msgid "This version of mkisofs is not supported"
 msgstr "גרסה זו של mkisofs אינה נתמכת"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:278 ../plugins/dvdcss/burn-dvdcss.c:377
-#: ../plugins/dvdcss/burn-dvdcss.c:442 ../plugins/dvdcss/burn-dvdcss.c:465
+#. Translators: %s is the path to a drive. "regionset %s"
+#. * should be left as is just like "DVDCSS_METHOD=title
+#. * brasero --no-existing-session"
+#: ../plugins/dvdcss/burn-dvdcss.c:296
 #, c-format
-msgid "Error while reading video DVD (%s)"
-msgstr "שגיאה במהלך קריאת תקליטור DVD וידאו (%s)"
+msgid ""
+"Error while retrieving a key used for encryption. You may solve such a "
+"problem with one of the following methods: in a terminal either set the "
+"proper DVD region code for your CD/DVD player with the \"regionset %s\" "
+"command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
+"command"
+msgstr ""
+"אירעה שגיאה בעת קבלת המפתח המשמש להצפנה. ניתן לפתור בעיה כזאת באחת השיטות "
+"הבאות: במסוף אפשר להגדיר את קוד אזור ה־DVD התקני בנגן תקליטורי ה־CD/DVD שלך "
+"באמצעות הפקודה \"regionset %s\" או להריץ את הפקודה \"DVDCSS_METHOD=title "
+"brasero --no-existing-session\""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:323
+#: ../plugins/dvdcss/burn-dvdcss.c:341
 msgid "Retrieving DVD keys"
 msgstr "מתקבלים מפתחות DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:358
+#: ../plugins/dvdcss/burn-dvdcss.c:376
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "לא ניתן לפתוח DVD וידאו"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:384
+#: ../plugins/dvdcss/burn-dvdcss.c:397 ../plugins/dvdcss/burn-dvdcss.c:462
+#: ../plugins/dvdcss/burn-dvdcss.c:485
+#, c-format
+msgid "Error while reading video DVD (%s)"
+msgstr "שגיאה במהלך קריאת תקליטור DVD וידאו (%s)"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:404
 msgid "Copying video DVD"
 msgstr "ה־DVD וידאו מועתק"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:677
+#: ../plugins/dvdcss/burn-dvdcss.c:697
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "העתקת וידאו DVD שהוצפן באמצעות CSS לתמונת דיסק"
 
@@ -4791,22 +4808,22 @@ msgid "Checks file integrities on a disc"
 msgstr "בדיקת רציפות הקבצים בתקליטור"
 
 #: ../plugins/checksum/burn-checksum-files.c:1518
-#: ../plugins/checksum/burn-checksum-image.c:855
+#: ../plugins/checksum/burn-checksum-image.c:856
 msgid "Hashing algorithm to be used:"
 msgstr "אלגוריתם הצפנה לשימוש:"
 
 #: ../plugins/checksum/burn-checksum-files.c:1521
-#: ../plugins/checksum/burn-checksum-image.c:858
+#: ../plugins/checksum/burn-checksum-image.c:859
 msgid "MD5"
 msgstr "MD5"
 
 #: ../plugins/checksum/burn-checksum-files.c:1523
-#: ../plugins/checksum/burn-checksum-image.c:860
+#: ../plugins/checksum/burn-checksum-image.c:861
 msgid "SHA1"
 msgstr "SHA1"
 
 #: ../plugins/checksum/burn-checksum-files.c:1525
-#: ../plugins/checksum/burn-checksum-image.c:862
+#: ../plugins/checksum/burn-checksum-image.c:863
 msgid "SHA256"
 msgstr "SHA256"
 
@@ -4818,11 +4835,11 @@ msgstr "נוצר סכום ביקורת לתמונת תקליטור"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/checksum/burn-checksum-image.c:830
+#: ../plugins/checksum/burn-checksum-image.c:831
 msgid "Image Checksum"
 msgstr "סכום ביקורת לתמונת תקליטור"
 
-#: ../plugins/checksum/burn-checksum-image.c:831
+#: ../plugins/checksum/burn-checksum-image.c:832
 msgid "Checks disc integrity after it is burnt"
 msgstr "מהימנות הדיסק תיבדק לאחר צריבתו"
 
