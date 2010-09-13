@@ -1,3 +1,36 @@
+13-09-2010: 2.31.92
+Bug Fixes:
+
+- Bump to 2.31.92 (Luis Medinas)
+- Revert to libunique from GApplication (Luis Medinas)
+- Remove dbus-glib requires from pkgconfig file (Luis Medinas)
+- Some more debugging to find out about problems with encrypted DVDs (Philippe
+  Rouquier)
+- Fix Bug #629190 - minor issues in gdbus conversion. (Luis Medinas)
+- Remove dbus-glib check from configure (Luis Medinas)
+- Replace last part of dbus-glib by GDBus (Luis Medinas)
+- Fix Inhibit() d-bus parameters (Robert Ancell)
+- Remove dbus libraries from the Makefile. (Luis Medinas)
+- Use --with-gtk switch for gtk 2/3 selection (Christian Persch)
+- Fix image checksuming that did not occur when GConf or GSetting returned 0 
+  as a value for the checksum type key (Philippe Rouquier)
+- Don't hardcode gconf gsettings backend (Robert Ancell)
+- Fix brasero plugin directory (Robert Ancell)
+
+Translations:
+- Updated Finnish translation from Launchpad from Ubuntu Finnish
+Translators. (Timo Jyrinki)
+- Updated Japanese translation. (Shushi Kurose)
+- Updated Portuguese translation (António Lima)
+- Update Simplified Chinese help translation. (YunQiang Su)
+- Updated Swedish translation (Daniel Nylander)
+- Updated Tamil translation (drtv)
+- [i18n] Updated German translation (Mario Blättermann)
+- Added initial Kazakh translation (Baurzhan Muftakhidinov)
+- Updated Indonesian translation (Dirgita)
+- Updated Czech translation (Adrian Guniš)
+
+
 30-08-2010: 2.31.91
 
 Bug Fixes:
