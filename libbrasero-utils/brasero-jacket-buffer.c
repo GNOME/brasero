@@ -76,16 +76,12 @@ _gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
 	guint left_margin_accumulative = 0;
 	guint right_margin_accumulative = 0;
 
-	g_return_if_fail (!dest->realized);
-
 	for (; tags; tags = tags->next) {
 		GtkTextTag *tag;
 		gboolean accumulative_margin;
 		gboolean background_set;
 		gboolean fg_color_set;
 		gboolean pg_bg_color_set;
-		gboolean bg_stipple_set;
-		gboolean fg_stipple_set;
 		gboolean scale_set;
 		gboolean left_margin_set;
 		gboolean justification_set;
@@ -113,8 +109,6 @@ _gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
 		              "background-set", &background_set,
 		              "foreground-set", &fg_color_set,
 		              "paragraph-background-set", &pg_bg_color_set,
-		              "background-stipple-set", &bg_stipple_set,
-		              "foreground-stipple-set", &fg_stipple_set,
 		              "scale-set", &scale_set,
 		              "left-margin-set", &left_margin_set,
 		              "justification-set", &justification_set,
@@ -161,20 +155,6 @@ _gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
 			g_object_get (tag, "paragraph-background-gdk", &dest->pg_bg_color, NULL);
 		}
 
-		if (bg_stipple_set) {
-			if (dest->appearance.bg_stipple)
-				g_object_unref (dest->appearance.bg_stipple);
-			g_object_get (tag, "background-stipple", &dest->appearance.bg_stipple, NULL);
-
-			dest->appearance.draw_bg = TRUE;
-		}
-
-		if (fg_stipple_set) {
-			if (dest->appearance.fg_stipple)
-				g_object_unref (dest->appearance.fg_stipple);
-			g_object_get (tag, "foreground-stipple", &dest->appearance.fg_stipple, NULL);
-		}
-
 		if (font_desc) {
 			if (dest->font) {
 				pango_font_description_merge (dest->font, font_desc, TRUE);
@@ -187,7 +167,7 @@ _gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
 		/* multiply all the scales together to get a composite */
 		if (scale_set) {
 			gdouble font_scale;
-			g_object_get (tag, "foreground-stipple", &font_scale, NULL);
+			g_object_get (tag, "font-scale", &font_scale, NULL);
 			dest->font_scale *= font_scale;
 		}
 

@@ -529,8 +529,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (obj);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-
 	/* upper part */
 	priv->upper_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (GTK_WIDGET (priv->upper_box));

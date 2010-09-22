@@ -2561,8 +2561,6 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 
 	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 0);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-
 	priv->tray = brasero_tray_icon_new ();
 	g_signal_connect (priv->tray,
 			  "cancel",

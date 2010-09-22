@@ -2243,9 +2243,9 @@ brasero_data_disc_key_released_cb (GtkTreeView *tree,
 	if (priv->editing)
 		return FALSE;
 
-	if (event->keyval == GDK_KP_Delete || event->keyval == GDK_Delete)
+	if (event->keyval == GDK_KEY_KP_Delete || event->keyval == GDK_KEY_Delete)
 		brasero_data_disc_delete_selected (BRASERO_DISC (self));
-	else if (event->keyval == GDK_F2)
+	else if (event->keyval == GDK_KEY_F2)
 		brasero_data_disc_rename_activated (self);
 
 	return FALSE;
