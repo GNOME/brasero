@@ -1496,7 +1496,6 @@ brasero_project_drive_properties (BraseroProject *project)
 	dialog = gtk_dialog_new_with_buttons (header,
 					      NULL,
 					      GTK_DIALOG_MODAL|
-					      GTK_DIALOG_NO_SEPARATOR|
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					      NULL);

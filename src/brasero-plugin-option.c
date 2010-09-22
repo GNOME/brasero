@@ -296,7 +296,6 @@ brasero_plugin_option_init (BraseroPluginOption *object)
 			    FALSE,
 			    0);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 	gtk_dialog_add_button (GTK_DIALOG (object),
 			       GTK_STOCK_CLOSE, GTK_RESPONSE_OK);
 

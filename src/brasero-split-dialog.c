@@ -1053,8 +1053,6 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_window_set_title (GTK_WINDOW (object), _("Split Track"));
 	gtk_window_set_default_size (GTK_WINDOW (object), 500, 600);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
-
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_OK, GTK_RESPONSE_OK);
 

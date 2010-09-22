@@ -156,7 +156,6 @@ brasero_eject_dialog_init (BraseroEjectDialog *obj)
 
 	priv = BRASERO_EJECT_DIALOG_PRIVATE (obj);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 	box = gtk_dialog_get_content_area (GTK_DIALOG (obj));
 
 	priv->selector = brasero_drive_selection_new ();

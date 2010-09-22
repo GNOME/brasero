@@ -97,7 +97,6 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 	dialog = gtk_dialog_new_with_buttons (header,
 					      GTK_WINDOW (toplevel),
 					      GTK_DIALOG_MODAL|
-					      GTK_DIALOG_NO_SEPARATOR|
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					      NULL);

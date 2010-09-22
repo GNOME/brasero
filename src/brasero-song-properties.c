@@ -153,7 +153,6 @@ brasero_song_props_init (BraseroSongProps *obj)
 	GtkWidget *content_area;
 
 	obj->priv = g_new0 (BraseroSongPropsPrivate, 1);
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (obj))), 0);
 	gtk_window_set_default_size (GTK_WINDOW (obj), 400, 300);
 

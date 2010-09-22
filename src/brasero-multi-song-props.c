@@ -201,7 +201,6 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 
 	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (object);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (object));
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), 0);
 	gtk_window_set_default_size (GTK_WINDOW (object), 400, 200);

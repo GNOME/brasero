@@ -474,8 +474,6 @@ brasero_image_properties_init (BraseroImageProperties *object)
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
 
 	gtk_window_set_title (GTK_WINDOW (object), _("Location for Image File"));
-	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
-
 	box = gtk_dialog_get_content_area (GTK_DIALOG (object));
 	gtk_container_set_border_width (GTK_CONTAINER (box), 10);
 

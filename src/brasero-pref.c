@@ -59,7 +59,6 @@ brasero_pref_init (BraseroPref *object)
 	priv = BRASERO_PREF_PRIVATE (object);
 
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
-	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 
 	gtk_window_set_default_size (GTK_WINDOW (object), 600, 400);
 	gtk_window_set_title (GTK_WINDOW (object), _("Brasero Plugins"));
