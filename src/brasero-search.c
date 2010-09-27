@@ -1070,7 +1070,7 @@ brasero_search_init (BraseroSearch *obj)
 }
 
 static void
-brasero_search_destroy (GtkObject *object)
+brasero_search_destroy (GtkWidget *object)
 {
 	BraseroSearch *search;
 
@@ -1099,8 +1099,8 @@ brasero_search_destroy (GtkObject *object)
 		search->priv->engine = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (brasero_search_parent_class)->destroy)
-		GTK_OBJECT_CLASS (brasero_search_parent_class)->destroy (object);
+	if (GTK_WIDGET_CLASS (brasero_search_parent_class)->destroy)
+		GTK_WIDGET_CLASS (brasero_search_parent_class)->destroy (object);
 }
 
 static void
@@ -1132,10 +1132,10 @@ static void
 brasero_search_class_init (BraseroSearchClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtkobject_class = GTK_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->finalize = brasero_search_finalize;
-	gtkobject_class->destroy = brasero_search_destroy;
+	widget_class->destroy = brasero_search_destroy;
 }
 
 GtkWidget *

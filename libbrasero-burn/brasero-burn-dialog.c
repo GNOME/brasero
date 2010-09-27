@@ -2614,7 +2614,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 }
 
 static void
-brasero_burn_dialog_destroy (GtkObject * object)
+brasero_burn_dialog_destroy (GtkWidget * object)
 {
 	BraseroBurnDialogPrivate *priv;
 
@@ -2625,8 +2625,8 @@ brasero_burn_dialog_destroy (GtkObject * object)
 		priv->burn = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (brasero_burn_dialog_parent_class)->destroy)
-		GTK_OBJECT_CLASS (brasero_burn_dialog_parent_class)->destroy (object);
+	if (GTK_WIDGET_CLASS (brasero_burn_dialog_parent_class)->destroy)
+		GTK_WIDGET_CLASS (brasero_burn_dialog_parent_class)->destroy (object);
 }
 
 static void
@@ -2689,13 +2689,12 @@ static void
 brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroBurnDialogPrivate));
 
 	object_class->finalize = brasero_burn_dialog_finalize;
-	gtk_object_class->destroy = brasero_burn_dialog_destroy;
+	widget_class->destroy = brasero_burn_dialog_destroy;
 	widget_class->delete_event = brasero_burn_dialog_delete;
 }
 

@@ -985,7 +985,7 @@ brasero_layout_foreach_item_cb (GtkTreeModel *model,
 }
 
 static void
-brasero_layout_combo_destroy_cb (GtkObject *object,
+brasero_layout_combo_destroy_cb (GtkWidget *object,
                                  gpointer NULL_data)
 {
 	GtkTreeModel *model;
@@ -996,12 +996,6 @@ brasero_layout_combo_destroy_cb (GtkObject *object,
 	gtk_tree_model_foreach (model,
 				brasero_layout_foreach_item_cb,
 				NULL);
-}
-
-static void
-brasero_layout_destroy (GtkObject *object)
-{
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -1019,7 +1013,6 @@ static void
 brasero_layout_class_init (BraseroLayoutClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
 	GtkWidgetClass *gtk_widget_class = GTK_WIDGET_CLASS (klass);
 
 	parent_class = g_type_class_peek_parent (klass);
@@ -1027,8 +1020,6 @@ brasero_layout_class_init (BraseroLayoutClass *klass)
 
 	gtk_widget_class->hide = brasero_layout_hide;
 	gtk_widget_class->show = brasero_layout_show;
-
-	gtk_object_class->destroy = brasero_layout_destroy;
 
 	brasero_layout_signals[SIDEPANE_SIGNAL] =
 	    g_signal_new ("sidepane", G_OBJECT_CLASS_TYPE (object_class),

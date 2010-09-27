@@ -681,7 +681,7 @@ brasero_player_state_changed_cb (BraseroPlayerBacon *bacon,
 }
 
 static void
-brasero_player_destroy (GtkObject *obj)
+brasero_player_destroy (GtkWidget *obj)
 {
 	BraseroPlayer *player;
 
@@ -716,8 +716,8 @@ brasero_player_destroy (GtkObject *obj)
 		player->priv->meta_task = 0;
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		GTK_OBJECT_CLASS (parent_class)->destroy (obj);
+	if (GTK_WIDGET_CLASS (parent_class)->destroy)
+		GTK_WIDGET_CLASS (parent_class)->destroy (obj);
 }
 
 static void
@@ -735,12 +735,12 @@ static void
 brasero_player_class_init (BraseroPlayerClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_player_finalize;
 
-	gtk_object_class->destroy = brasero_player_destroy;
+	widget_class->destroy = brasero_player_destroy;
 
 	brasero_player_signals [ERROR_SIGNAL] = 
 			g_signal_new ("error",
@@ -975,4 +975,5 @@ brasero_player_new ()
 	obj = BRASERO_PLAYER (g_object_new (BRASERO_TYPE_PLAYER, NULL));
 
 	return GTK_WIDGET (obj);
+
 }

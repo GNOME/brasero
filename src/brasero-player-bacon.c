@@ -613,7 +613,7 @@ brasero_player_bacon_init (BraseroPlayerBacon *obj)
 }
 
 static void
-brasero_player_bacon_destroy (GtkObject *obj)
+brasero_player_bacon_destroy (GtkWidget *obj)
 {
 	BraseroPlayerBacon *cobj;
 
@@ -646,8 +646,8 @@ brasero_player_bacon_destroy (GtkObject *obj)
 		cobj->priv->uri = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (brasero_player_bacon_parent_class)->destroy)
-		GTK_OBJECT_CLASS (brasero_player_bacon_parent_class)->destroy (obj);
+	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->destroy)
+		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->destroy (obj);
 }
 
 static void
@@ -665,14 +665,13 @@ static void
 brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
-	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->finalize = brasero_player_bacon_finalize;
 	object_class->set_property = brasero_player_bacon_set_property;
 	object_class->get_property = brasero_player_bacon_get_property;
-	gtk_object_class->destroy = brasero_player_bacon_destroy;
 
+	widget_class->destroy = brasero_player_bacon_destroy;
 	widget_class->expose_event = brasero_player_bacon_expose;
 	widget_class->realize = brasero_player_bacon_realize;
 	widget_class->unrealize = brasero_player_bacon_unrealize;

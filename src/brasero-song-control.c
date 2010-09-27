@@ -444,7 +444,7 @@ brasero_song_control_bus_messages (GstBus *bus,
 }
 
 static void
-brasero_song_control_destroy (GtkObject *obj)
+brasero_song_control_destroy (GtkWidget *obj)
 {
 	BraseroSongControlPrivate *priv;
 
@@ -475,7 +475,7 @@ brasero_song_control_destroy (GtkObject *obj)
 		priv->uri = NULL;
 	}
 
-	GTK_OBJECT_CLASS (brasero_song_control_parent_class)->destroy (obj);
+	GTK_WIDGET_CLASS (brasero_song_control_parent_class)->destroy (obj);
 }
 
 static void
@@ -638,12 +638,12 @@ static void
 brasero_song_control_class_init (BraseroSongControlClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass* gtk_object_class = GTK_OBJECT_CLASS (klass);
+	GtkWidgetClass* gtk_widget_class = GTK_WIDGET_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroSongControlPrivate));
 
 	object_class->finalize = brasero_song_control_finalize;
-	gtk_object_class->destroy = brasero_song_control_destroy;
+	gtk_widget_class->destroy = brasero_song_control_destroy;
 }
 
 GtkWidget *

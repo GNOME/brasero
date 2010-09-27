@@ -320,7 +320,7 @@ brasero_app_get_saved_contents (BraseroApp *app)
  **/
 
 static void
-brasero_app_toplevel_destroyed_cb (GtkObject *object,
+brasero_app_toplevel_destroyed_cb (GtkWidget *object,
 				   BraseroApp *app)
 {
 	BraseroAppPrivate *priv;

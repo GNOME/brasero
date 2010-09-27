@@ -43,7 +43,6 @@
 static void brasero_search_entry_class_init (BraseroSearchEntryClass *klass);
 static void brasero_search_entry_init (BraseroSearchEntry *sp);
 static void brasero_search_entry_finalize (GObject *object);
-static void brasero_search_entry_destroy (GtkObject *gtk_object);
 
 struct BraseroSearchEntryPrivate {
 	GtkWidget *button;
@@ -120,11 +119,9 @@ static void
 brasero_search_entry_class_init (BraseroSearchEntryClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_search_entry_finalize;
-	gtk_object_class->destroy = brasero_search_entry_destroy;
 
 	brasero_search_entry_signals[ACTIVATED_SIGNAL] =
 	    g_signal_new ("activated", G_OBJECT_CLASS_TYPE (object_class),
@@ -339,12 +336,6 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 
 	brasero_search_entry_set_history (obj, value);
 	g_strfreev (value);
-}
-
-static void
-brasero_search_entry_destroy (GtkObject *gtk_object)
-{
-	GTK_OBJECT_CLASS (parent_class)->destroy (gtk_object);
 }
 
 static void

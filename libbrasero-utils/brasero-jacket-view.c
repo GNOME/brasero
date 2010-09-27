@@ -757,8 +757,8 @@ brasero_jacket_view_set_side (BraseroJacketView *self,
 
 	if (priv->side == BRASERO_JACKET_BACK) {
 		GtkTextBuffer *sides_buffer;
-		GtkObject *vadj;
-		GtkObject *hadj;
+		GObject *vadj;
+		GObject *hadj;
 
 		sides_buffer = GTK_TEXT_BUFFER (brasero_jacket_buffer_new ());
 		g_signal_connect (sides_buffer,
@@ -1471,8 +1471,8 @@ brasero_jacket_view_init (BraseroJacketView *object)
 {
 	BraseroJacketViewPrivate *priv;
 	GtkTextBuffer *buffer;
-	GtkObject *vadj;
-	GtkObject *hadj;
+	GObject *vadj;
+	GObject *hadj;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (object);
 

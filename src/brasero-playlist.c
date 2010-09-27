@@ -840,7 +840,7 @@ brasero_playlist_init (BraseroPlaylist *obj)
 }
 
 static void
-brasero_playlist_destroy (GtkObject *object)
+brasero_playlist_destroy (GtkWidget *object)
 {
 	BraseroPlaylist *playlist = BRASERO_PLAYLIST (object);
 
@@ -863,8 +863,8 @@ brasero_playlist_destroy (GtkObject *object)
 		playlist->priv->parse_type = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (brasero_playlist_parent_class)->destroy)
-		GTK_OBJECT_CLASS (brasero_playlist_parent_class)->destroy (object);
+	if (GTK_WIDGET_CLASS (brasero_playlist_parent_class)->destroy)
+		GTK_WIDGET_CLASS (brasero_playlist_parent_class)->destroy (object);
 }
 
 static void
@@ -883,10 +883,10 @@ static void
 brasero_playlist_class_init (BraseroPlaylistClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkObjectClass *gtkobject_class = GTK_OBJECT_CLASS (klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->finalize = brasero_playlist_finalize;
-	gtkobject_class->destroy = brasero_playlist_destroy;
+	widget_class->destroy = brasero_playlist_destroy;
 }
 
 static void
