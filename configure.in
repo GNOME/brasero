@@ -206,8 +206,7 @@ PKG_CHECK_MODULES(BRASERO_GMODULE_EXPORT,		\
 AC_SUBST(BRASERO_GMODULE_EXPORT_CFLAGS)
 AC_SUBST(BRASERO_GMODULE_EXPORT_LIBS)
 
-PKG_CHECK_MODULES(BRASERO_SM,			\
-	sm)
+PKG_CHECK_MODULES(BRASERO_SM, sm)
 
 AC_SUBST(BRASERO_SM_CFLAGS)
 AC_SUBST(BRASERO_SM_LIBS)
@@ -216,26 +215,9 @@ AC_SUBST(BRASERO_SM_LIBS)
 # GTK+ stuff (taken and adapted from empathy)
 #
 
-AC_MSG_CHECKING([which gtk+ version to compile against])
-AC_ARG_WITH([gtk],
-  [AS_HELP_STRING([--with-gtk=2.0|3.0],[which gtk+ version to compile against (default: 2.0)])],
-  [case "$with_gtk" in
-     2.0|3.0) ;;
-     *) AC_MSG_ERROR([invalid gtk version specified]) ;;
-   esac],
-  [with_gtk=2.0])
-AC_MSG_RESULT([$with_gtk])
-
-case "$with_gtk" in
-  2.0) GTK_API_VERSION=2.0
-       GTK_REQUIRED=2.21.8
-       BRASERO_LIBRARY_SUFFIX=
-       ;;
-  3.0) GTK_API_VERSION=3.0
-       GTK_REQUIRED=2.90.7
-       BRASERO_LIBRARY_SUFFIX=3
-       ;;
-esac
+GTK_API_VERSION=3.0
+GTK_REQUIRED=2.91.0
+BRASERO_LIBRARY_SUFFIX=3
 
 PKG_CHECK_MODULES([BRASERO_GTK],[gtk+-$GTK_API_VERSION >= $GTK_REQUIRED])
 
@@ -251,14 +233,9 @@ AC_SUBST(BRASERO_GTK_LIBS)
 
 CANBERRA_REQUIRED=0.1
 
-case "$with_gtk" in
-  2.0) PKG_CHECK_MODULES(BRASERO_CANBERRA,
-         libcanberra >= $CANBERRA_REQUIRED
-         libcanberra-gtk >= $CANBERRA_REQUIRED) ;;
-  3.0) PKG_CHECK_MODULES(BRASERO_CANBERRA,
+PKG_CHECK_MODULES(BRASERO_CANBERRA,
 	      libcanberra >= $CANBERRA_REQUIRED
-	      libcanberra-gtk3 >= $CANBERRA_REQUIRED) ;;
-esac
+	      libcanberra-gtk3 >= $CANBERRA_REQUIRED)
 
 AC_SUBST(BRASERO_CANBERRA_CFLAGS)
 AC_SUBST(BRASERO_CANBERRA_LIBS)

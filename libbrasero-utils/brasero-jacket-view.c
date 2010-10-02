@@ -757,8 +757,8 @@ brasero_jacket_view_set_side (BraseroJacketView *self,
 
 	if (priv->side == BRASERO_JACKET_BACK) {
 		GtkTextBuffer *sides_buffer;
-		GObject *vadj;
-		GObject *hadj;
+		GtkAdjustment *vadj;
+		GtkAdjustment *hadj;
 
 		sides_buffer = GTK_TEXT_BUFFER (brasero_jacket_buffer_new ());
 		g_signal_connect (sides_buffer,
@@ -803,7 +803,7 @@ brasero_jacket_view_set_side (BraseroJacketView *self,
 				  G_CALLBACK (brasero_jacket_view_scrolled_cb),
 				  priv->sides);
 
-		gtk_widget_set_scroll_adjustments (priv->sides, GTK_ADJUSTMENT (hadj), GTK_ADJUSTMENT (vadj));
+		gtk_widget_set_scroll_adjustments (priv->sides, hadj, vadj);
 	}
 	else
 		brasero_jacket_buffer_set_default_text (BRASERO_JACKET_BUFFER (buffer), _("FRONT COVER"));
@@ -1471,8 +1471,8 @@ brasero_jacket_view_init (BraseroJacketView *object)
 {
 	BraseroJacketViewPrivate *priv;
 	GtkTextBuffer *buffer;
-	GObject *vadj;
-	GObject *hadj;
+	GtkAdjustment *vadj;
+	GtkAdjustment *hadj;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (object);
 
@@ -1521,9 +1521,7 @@ brasero_jacket_view_init (BraseroJacketView *object)
 			  priv->edit);
 
 	gtk_container_set_focus_child (GTK_CONTAINER (object), priv->edit);
-	gtk_widget_set_scroll_adjustments (priv->edit,
-					   GTK_ADJUSTMENT (hadj),
-					   GTK_ADJUSTMENT (vadj));
+	gtk_widget_set_scroll_adjustments (priv->edit, hadj, vadj);
 }
 
 static void
