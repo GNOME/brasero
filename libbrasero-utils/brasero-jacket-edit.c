@@ -598,7 +598,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
 	item = GTK_WIDGET (gtk_tool_button_new (NULL, _("Bac_kground Properties")));
-	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "background");
+	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "preferences-desktop-wallpaper");
 	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (item), TRUE);
 	gtk_widget_set_tooltip_text (item, _("Background properties"));
 	gtk_widget_show (item);
