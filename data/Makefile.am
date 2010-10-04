@@ -14,8 +14,6 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 @INTLTOOL_DESKTOP_RULE@
 
-IMAGES=	logo.png
-
 CLEANFILES =		$(desktop_DATA)		\
 			$(gsettings_SCHEMAS)
 

@@ -44,7 +44,7 @@
 
 #include "brasero-project-type-chooser.h"
 
-G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_EVENT_BOX);
+G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_HBOX);
 
 typedef enum {
 	LAST_SAVED_CLICKED_SIGNAL,
@@ -103,7 +103,6 @@ static ItemDescription items [] = {
 #define LABEL_KEY "LABEL_KEY"
 
 struct BraseroProjectTypeChooserPrivate {
-	GdkPixbuf *background;
 	GtkWidget *recent_box;
 };
 
@@ -443,7 +442,6 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	GtkRecentManager *recent;
 	GtkWidget *project_box;
 	GtkWidget *recent_box;
-	GError *error = NULL;
 	GtkWidget *separator;
 	GtkWidget *widget;
 	GtkWidget *table;
@@ -457,22 +455,10 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	obj->priv = g_new0 (BraseroProjectTypeChooserPrivate, 1);
 
-	obj->priv->background = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/logo.png", &error);
-	if (error) {
-		g_warning ("ERROR loading background pix : %s\n", error->message);
-		g_error_free (error);
-		error = NULL;
-	}
-
-	vbox = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
-	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (obj), vbox);
-
 	/* Project box */
 	project_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (project_box);
-	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (obj), project_box, FALSE, TRUE, 0);
 
 	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Create a new project:"));
 	label = gtk_label_new (string);
@@ -513,12 +499,12 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	separator = gtk_vseparator_new ();
 	gtk_widget_show (separator);
-	gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 8);
+	gtk_box_pack_start (GTK_BOX (obj), separator, FALSE, TRUE, 8);
 
 	/* The recent files part */
 	recent_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (recent_box);
-	gtk_box_pack_start (GTK_BOX (vbox), recent_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (obj), recent_box, TRUE, TRUE, 0);
 
 	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Recent projects:"));
 	label = gtk_label_new (string);
@@ -544,42 +530,12 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 			  obj);
 }
 
-/* Cut and Pasted from Gtk+ gtkeventbox.c but modified to display back image */
-static gboolean
-brasero_project_type_draw_event (GtkWidget *widget, cairo_t *cr)
-{
-	BraseroProjectTypeChooser *chooser;
-
-	chooser = BRASERO_PROJECT_TYPE_CHOOSER (widget);
-
-	if (gtk_widget_is_drawable (widget)) {
-		(* GTK_WIDGET_CLASS (parent_class)->draw) (widget, cr);
-
-		if (gtk_widget_get_has_window (widget)) {
-			if (!gtk_widget_get_app_paintable (widget)
-			&&  chooser->priv->background) {
-				gdk_cairo_set_source_pixbuf (cr,
-					                 chooser->priv->background,
-					                 0, 0);
-				cairo_paint (cr);
-			}
-		}
-	}
-
-	return TRUE;
-}
-
 static void
 brasero_project_type_chooser_finalize (GObject *object)
 {
 	BraseroProjectTypeChooser *cobj;
 
 	cobj = BRASERO_PROJECT_TYPE_CHOOSER (object);
-
-	if (cobj->priv->background) {
-		g_object_unref (G_OBJECT (cobj->priv->background));
-		cobj->priv->background = NULL;
-	}
 
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -589,11 +545,9 @@ static void
 brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_project_type_chooser_finalize;
-	widget_class->draw = brasero_project_type_draw_event;
 
 	brasero_project_type_chooser_signals[CHOSEN_SIGNAL] =
 	    g_signal_new ("chosen", G_OBJECT_CLASS_TYPE (object_class),
