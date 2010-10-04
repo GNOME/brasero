@@ -47,9 +47,9 @@ struct _BraseroSettingPrivate
 
 	gchar **search_entry_history;
 
-	guint win_maximized:1;
-	guint show_preview:1;
-	guint show_sidepane:1;
+	gboolean win_maximized;
+	gboolean show_preview;
+	gboolean show_sidepane;
 };
 
 #define BRASERO_SETTING_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SETTING, BraseroSettingPrivate))

@@ -655,8 +655,8 @@ brasero_search_get_proportion (BraseroLayoutObject *object,
 {
 	GtkRequisition requisition;
 
-	gtk_widget_size_request (BRASERO_SEARCH (object)->priv->filters,
-				 &requisition);
+	gtk_widget_get_preferred_size (BRASERO_SEARCH (object)->priv->filters,
+				 &requisition, NULL);
 	*footer = requisition.height + BRASERO_SEARCH_SPACING;
 }
 

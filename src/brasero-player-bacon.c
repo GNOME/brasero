@@ -157,12 +157,11 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	attributes.height = screen_height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.visual = gtk_widget_get_visual (widget);
-	attributes.colormap = gtk_widget_get_colormap (widget);
 	attributes.event_mask = gtk_widget_get_events (widget);
 	attributes.event_mask |= GDK_EXPOSURE_MASK|
 				 GDK_BUTTON_PRESS_MASK|
 				 GDK_BUTTON_RELEASE_MASK;
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
+	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
 	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
 						       &attributes,
@@ -177,15 +176,13 @@ brasero_player_bacon_realize (GtkWidget *widget)
 }
 
 static gboolean
-brasero_player_bacon_expose (GtkWidget *widget, GdkEventExpose *event)
+brasero_player_bacon_draw (GtkWidget *widget, cairo_t *cr)
 {
 	BraseroPlayerBacon *bacon;
 	GdkWindow *window;
 
-	if (event && event->count > 0)
-		return TRUE;
-
 	g_return_val_if_fail (widget != NULL, FALSE);
+
 	bacon = BRASERO_PLAYER_BACON (widget);
 
 	window = gtk_widget_get_window (widget);
@@ -197,7 +194,7 @@ brasero_player_bacon_expose (GtkWidget *widget, GdkEventExpose *event)
 	&&  bacon->priv->state >= GST_STATE_PAUSED)
 		gst_x_overlay_expose (bacon->priv->xoverlay);
 	else if (window)
-		gdk_window_clear (window);
+		gtk_widget_queue_draw (GTK_WIDGET (widget));
 
 	return TRUE;
 }
@@ -672,7 +669,7 @@ brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
 	object_class->get_property = brasero_player_bacon_get_property;
 
 	widget_class->destroy = brasero_player_bacon_destroy;
-	widget_class->expose_event = brasero_player_bacon_expose;
+	widget_class->draw = brasero_player_bacon_draw;
 	widget_class->realize = brasero_player_bacon_realize;
 	widget_class->unrealize = brasero_player_bacon_unrealize;
 	widget_class->size_request = brasero_player_bacon_size_request;

@@ -112,8 +112,8 @@ brasero_playlist_get_proportion (BraseroLayoutObject *object,
 {
 	GtkRequisition requisition;
 
-	gtk_widget_size_request (gtk_widget_get_parent (BRASERO_PLAYLIST (object)->priv->button_add),
-				 &requisition);
+	gtk_widget_get_preferred_size (gtk_widget_get_parent (BRASERO_PLAYLIST (object)->priv->button_add),
+				 &requisition, NULL);
 	(*footer) = requisition.height + BRASERO_PLAYLIST_SPACING;
 }
 

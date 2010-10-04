@@ -277,7 +277,7 @@ brasero_mime_filter_add_filter (BraseroMimeFilter *filter,
 			    BRASERO_MIME_FILTER_DISPLAY_COL, name,
 			    BRASERO_MIME_FILTER_FILTER_COL, item,
 			    -1);
-	g_object_ref_sink (GTK_OBJECT (item));
+	g_object_ref_sink (item);
 
 	g_hash_table_insert (filter->priv->table,
 			     g_strdup (name),

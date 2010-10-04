@@ -36,6 +36,8 @@
 
 #include <gtk/gtk.h>
 
+#include <cairo/cairo.h>
+
 #include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-session.h"
@@ -544,37 +546,27 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 /* Cut and Pasted from Gtk+ gtkeventbox.c but modified to display back image */
 static gboolean
-brasero_project_type_expose_event (GtkWidget *widget, GdkEventExpose *event)
+brasero_project_type_draw_event (GtkWidget *widget, cairo_t *cr)
 {
 	BraseroProjectTypeChooser *chooser;
 
 	chooser = BRASERO_PROJECT_TYPE_CHOOSER (widget);
 
-	if (gtk_widget_is_drawable (widget))
-	{
-		(* GTK_WIDGET_CLASS (parent_class)->expose_event) (widget, event);
+	if (gtk_widget_is_drawable (widget)) {
+		(* GTK_WIDGET_CLASS (parent_class)->draw) (widget, cr);
 
 		if (gtk_widget_get_has_window (widget)) {
 			if (!gtk_widget_get_app_paintable (widget)
 			&&  chooser->priv->background) {
-				int width, height, offset = 150;
-				cairo_t *ctx;
-
-				width = gdk_pixbuf_get_width (chooser->priv->background);
-				height = gdk_pixbuf_get_height (chooser->priv->background);
-				ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
-				cairo_rectangle (ctx, 0, 0, width - offset, height);
-				cairo_clip (ctx);
-				gdk_cairo_set_source_pixbuf (ctx,
-					                     chooser->priv->background,
-					                     0, 0);
-				cairo_paint (ctx);
-				cairo_destroy (ctx);
+				gdk_cairo_set_source_pixbuf (cr,
+					                 chooser->priv->background,
+					                 0, 0);
+				cairo_paint (cr);
 			}
 		}
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
 static void
@@ -601,7 +593,7 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_project_type_chooser_finalize;
-	widget_class->expose_event = brasero_project_type_expose_event;
+	widget_class->draw = brasero_project_type_draw_event;
 
 	brasero_project_type_chooser_signals[CHOSEN_SIGNAL] =
 	    g_signal_new ("chosen", G_OBJECT_CLASS_TYPE (object_class),

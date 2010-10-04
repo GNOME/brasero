@@ -284,7 +284,7 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 			parent = gtk_widget_get_parent (widget);
 			gtk_widget_get_requisition (parent, &request);
 			width = request.width;
-			gtk_widget_size_request (parent, &request);
+			gtk_widget_get_preferred_size (parent, &request, NULL);
 			if (request.width >= width)
 				gtk_widget_set_size_request (parent,
 							     request.width,
@@ -428,10 +428,10 @@ brasero_file_chooser_find_pane (GtkWidget *child,
 				if (packing == GTK_PACK_START) {
 					GtkRequisition total_request, footer_request;
 
-					gtk_widget_size_request (GTK_WIDGET (vbox),
-								 &total_request);
-					gtk_widget_size_request (GTK_WIDGET (iter_vbox->data),
-								 &footer_request);
+					gtk_widget_get_preferred_size (GTK_WIDGET (vbox),
+								 &total_request, NULL);
+					gtk_widget_get_preferred_size (GTK_WIDGET (iter_vbox->data),
+								 &footer_request, NULL);
 					*((gint *) footer) = total_request.height - footer_request.height;
 					break;
 				}

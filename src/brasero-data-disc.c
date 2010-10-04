@@ -1921,8 +1921,6 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						      _("_Rename"), GTK_RESPONSE_APPLY,
 						      NULL);
-		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-
 		rename = brasero_rename_new ();
 		brasero_rename_set_show_keep_default (BRASERO_RENAME (rename), FALSE);
 		gtk_widget_show (rename);
