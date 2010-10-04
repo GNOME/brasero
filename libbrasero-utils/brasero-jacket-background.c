@@ -42,6 +42,9 @@
 typedef struct _BraseroJacketBackgroundPrivate BraseroJacketBackgroundPrivate;
 struct _BraseroJacketBackgroundPrivate
 {
+	GtkWidget *color_radio;
+	GtkWidget *image_radio;
+
 	gchar *path;
 
 	GtkWidget *image;
@@ -54,8 +57,6 @@ struct _BraseroJacketBackgroundPrivate
 
 #define BRASERO_JACKET_BACKGROUND_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_BACKGROUND, BraseroJacketBackgroundPrivate))
 
-
-
 G_DEFINE_TYPE (BraseroJacketBackground, brasero_jacket_background, GTK_TYPE_DIALOG);
 
 BraseroJacketColorStyle
@@ -64,35 +65,10 @@ brasero_jacket_background_get_color_style (BraseroJacketBackground *self)
 	BraseroJacketBackgroundPrivate *priv;
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
-	return gtk_combo_box_get_active (GTK_COMBO_BOX (priv->color_style));
-}
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->color_radio)))
+		return BRASERO_JACKET_COLOR_NONE;
 
-BraseroJacketImageStyle
-brasero_jacket_background_get_image_style (BraseroJacketBackground *self)
-{
-	BraseroJacketBackgroundPrivate *priv;
-
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
-	return gtk_combo_box_get_active (GTK_COMBO_BOX (priv->image_style));
-}
-
-gchar *
-brasero_jacket_background_get_image_path (BraseroJacketBackground *self)
-{
-	BraseroJacketBackgroundPrivate *priv;
-
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
-	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->image));
-}
-
-void
-brasero_jacket_background_set_color_style (BraseroJacketBackground *self,
-					   BraseroJacketColorStyle style)
-{
-	BraseroJacketBackgroundPrivate *priv;
-
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
-	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->color_style), style);
+	return gtk_combo_box_get_active (GTK_COMBO_BOX (priv->color_style)) + 1;
 }
 
 void
@@ -103,8 +79,49 @@ brasero_jacket_background_get_color (BraseroJacketBackground *self,
 	BraseroJacketBackgroundPrivate *priv;
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->color_radio)))
+		return;
+
 	gtk_color_button_get_color (GTK_COLOR_BUTTON (priv->color), color);
 	gtk_color_button_get_color (GTK_COLOR_BUTTON (priv->color2), color2);
+}
+
+BraseroJacketImageStyle
+brasero_jacket_background_get_image_style (BraseroJacketBackground *self)
+{
+	BraseroJacketBackgroundPrivate *priv;
+
+	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->image_radio)))
+		return BRASERO_JACKET_IMAGE_NONE;
+
+	return gtk_combo_box_get_active (GTK_COMBO_BOX (priv->image_style)) + 1;
+}
+
+gchar *
+brasero_jacket_background_get_image_path (BraseroJacketBackground *self)
+{
+	BraseroJacketBackgroundPrivate *priv;
+
+	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->image_radio)))
+		return NULL;
+
+	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->image));
+}
+
+void
+brasero_jacket_background_set_color_style (BraseroJacketBackground *self,
+					   BraseroJacketColorStyle style)
+{
+	BraseroJacketBackgroundPrivate *priv;
+
+	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	if (style == BRASERO_JACKET_COLOR_NONE)
+		return;
+		
+	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->color_style), style - 1);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->color_radio), TRUE);
 }
 
 void
@@ -114,7 +131,11 @@ brasero_jacket_background_set_image_style (BraseroJacketBackground *self,
 	BraseroJacketBackgroundPrivate *priv;
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
-	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->image_style), style);
+	if (style == BRASERO_JACKET_IMAGE_NONE)
+		return;
+
+	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->image_style), style - 1);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->image_radio), TRUE);
 }
 
 void
@@ -122,11 +143,13 @@ brasero_jacket_background_set_image_path (BraseroJacketBackground *self,
 					  const gchar *path)
 {
 	BraseroJacketBackgroundPrivate *priv;
+	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->image_radio)))
+		return;
 
 	if (!path)
 		return;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
 	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->image), path);
 }
 
@@ -138,6 +161,9 @@ brasero_jacket_background_set_color (BraseroJacketBackground *self,
 	BraseroJacketBackgroundPrivate *priv;
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->color_radio)))
+		return;
+		
 	gtk_color_button_set_color (GTK_COLOR_BUTTON (priv->color), color);
 	gtk_color_button_set_color (GTK_COLOR_BUTTON (priv->color2), color2);
 }
@@ -150,7 +176,7 @@ brasero_jacket_background_color_type_changed_cb (GtkComboBox *combo,
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
 
-	if (gtk_combo_box_get_active (combo) == BRASERO_JACKET_COLOR_SOLID) {
+	if (gtk_combo_box_get_active (combo) + 1 == BRASERO_JACKET_COLOR_SOLID) {
 		gtk_widget_hide (priv->color2);
 		return;
 	}
@@ -175,17 +201,24 @@ brasero_jacket_background_add_filters (BraseroJacketBackground *self)
 }
 
 static void
+brasero_jacket_background_state_changed (GtkToggleButton *button,
+					 GtkWidget *widget)
+{
+	gtk_widget_set_sensitive (widget, gtk_toggle_button_get_active (button));
+}
+
+static void
 brasero_jacket_background_init (BraseroJacketBackground *object)
 {
 	BraseroJacketBackgroundPrivate *priv;
 	GtkWidget *table;
 	GtkWidget *combo;
+	GtkWidget *radio;
 	GtkWidget *hbox2;
 	GtkWidget *label;
 	GtkWidget *vbox2;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-	gchar *string;
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (object);
 
@@ -194,18 +227,20 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), vbox, TRUE, TRUE, 0);
 
-	string = g_strdup_printf ("<b>%s</b>", _("_Color"));
-	label = gtk_label_new_with_mnemonic (string);
-	g_free (string);
+	radio = gtk_radio_button_new_with_mnemonic_from_widget (NULL, _("_Color"));
+	priv->color_radio = radio;
 
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
+	gtk_widget_show (radio);
+	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, TRUE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
+
+	g_signal_connect (radio,
+			  "toggled",
+			  G_CALLBACK (brasero_jacket_background_state_changed),
+			  hbox);
 
 	label = gtk_label_new ("\t");
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
@@ -242,18 +277,21 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 
 	/* second part */
 	/* Translators: This is an image, a picture, not a "Disc Image" */
-	string = g_strdup_printf ("<b>%s</b>", _("_Image"));
-	label = gtk_label_new_with_mnemonic (string);
-	g_free (string);
+	radio = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (radio), _("_Image"));
+	priv->image_radio = radio;
 
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
+	gtk_widget_show (radio);
+	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, TRUE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
+	gtk_widget_set_sensitive (hbox, FALSE);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
+
+	g_signal_connect (radio,
+			  "toggled",
+			  G_CALLBACK (brasero_jacket_background_state_changed),
+			  hbox);
 
 	label = gtk_label_new ("\t");
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

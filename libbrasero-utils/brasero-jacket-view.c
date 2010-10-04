@@ -56,11 +56,8 @@ struct _BraseroJacketViewPrivate
 	GdkColor b_color2;
 	BraseroJacketColorStyle color_style;
 
-	cairo_pattern_t *pattern;
-
 	GdkPixbuf *image;
 	GdkPixbuf *scaled;
-
 	gchar *image_path;
 	BraseroJacketImageStyle image_style;
 };
@@ -368,49 +365,19 @@ brasero_jacket_view_render_body (BraseroJacketView *self,
 }
 
 static void
-brasero_jacket_view_render (BraseroJacketView *self,
-			    cairo_t *ctx,
-			    PangoLayout *layout,
-			    GdkPixbuf *scaled,
-			    gdouble resolution_x,
-			    gdouble resolution_y,
-			    guint x,
-			    guint y,
-			    GdkRectangle *area,
-			    gboolean render_if_empty)
+brasero_jacket_view_render_background (BraseroJacketView *self,
+				       cairo_t *ctx,
+				       GdkPixbuf *scaled,
+				       gint x,
+				       gint y,
+				       gint width,
+				       gint height)
 {
 	BraseroJacketViewPrivate *priv;
-	int height, width;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 
-	if (priv->side == BRASERO_JACKET_BACK) {
-		width = COVER_WIDTH_BACK_INCH * resolution_x;
-		height = COVER_HEIGHT_BACK_INCH * resolution_y;
-	}
-	else {
-		width = COVER_WIDTH_FRONT_INCH * resolution_x;
-		height = COVER_HEIGHT_FRONT_INCH * resolution_y;
-	}
-
-	/* set clip */
-	cairo_reset_clip (ctx);
-	cairo_rectangle (ctx, area->x, area->y, area->width, area->height);
-	cairo_clip (ctx);
-
-	/* draw white surroundings */
-	cairo_set_source_rgb (ctx, 1.0, 1.0, 1.0);
-	cairo_paint (ctx);
-
-	/* draw background */
-	cairo_rectangle (ctx, x, y, width + 2.0, height + 2.0);
-	cairo_clip (ctx);
-
-	if (priv->pattern) {
-		cairo_set_source (ctx, priv->pattern);
-		cairo_paint (ctx);
-	}
-
+	/* draw background when it is a pattern */
 	if (scaled) {
 		/* The problem is the resolution here. The one for the screen
 		 * may not be the one for the printer. So do not use our private
@@ -430,8 +397,77 @@ brasero_jacket_view_render (BraseroJacketView *self,
 			cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
 		}
 
-		cairo_paint (ctx);
+		cairo_rectangle (ctx, x, y, width, height);
+		cairo_fill (ctx);
 	}
+	else if (priv->color_style != BRASERO_JACKET_COLOR_NONE) {
+		cairo_pattern_t *pattern;
+
+		if (priv->color_style == BRASERO_JACKET_COLOR_SOLID) {
+			pattern = cairo_pattern_create_rgb (priv->b_color.red/G_MAXINT16,
+							    priv->b_color.green/G_MAXINT16,
+							    priv->b_color.blue/G_MAXINT16);
+		}
+		else {
+			if (priv->color_style == BRASERO_JACKET_COLOR_HGRADIENT)
+				pattern = cairo_pattern_create_linear (x,
+								       y,
+								       width + x,
+								       y);
+			else /* if (priv->color_style == BRASERO_JACKET_COLOR_VGRADIENT) */
+				pattern = cairo_pattern_create_linear (x,
+								       y,
+								       x,
+								       height + y);
+
+			cairo_pattern_add_color_stop_rgb (pattern,
+							  0.0,
+							  priv->b_color.red/G_MAXINT16,
+							  priv->b_color.green/G_MAXINT16,
+							  priv->b_color.blue/G_MAXINT16);
+
+			cairo_pattern_add_color_stop_rgb (pattern,
+							  1.0,
+							  priv->b_color2.red/G_MAXINT16,
+							  priv->b_color2.green/G_MAXINT16,
+							  priv->b_color2.blue/G_MAXINT16);
+		}
+
+		cairo_pattern_set_extend (pattern, CAIRO_EXTEND_NONE);
+		cairo_rectangle (ctx, x, y, width, height);
+		cairo_set_source (ctx, pattern);
+		cairo_fill (ctx);
+
+		cairo_pattern_destroy (pattern);
+	}
+}
+
+static void
+brasero_jacket_view_render (BraseroJacketView *self,
+			    cairo_t *ctx,
+			    PangoLayout *layout,
+			    GdkPixbuf *scaled,
+			    gdouble resolution_x,
+			    gdouble resolution_y,
+			    gint x,
+			    gint y,
+			    gboolean render_if_empty)
+{
+	BraseroJacketViewPrivate *priv;
+	int height, width;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+
+	if (priv->side == BRASERO_JACKET_BACK) {
+		width = COVER_WIDTH_BACK_INCH * resolution_x;
+		height = COVER_HEIGHT_BACK_INCH * resolution_y;
+	}
+	else {
+		width = COVER_WIDTH_FRONT_INCH * resolution_x;
+		height = COVER_HEIGHT_FRONT_INCH * resolution_y;
+	}
+
+	brasero_jacket_view_render_background (self, ctx, scaled, x, y, width, height);
 
 	if (priv->side == BRASERO_JACKET_BACK) {
 		gdouble line_x, line_y;
@@ -472,14 +508,12 @@ brasero_jacket_view_render (BraseroJacketView *self,
 						      resolution_y,
 						      x,
 						      y);
-
 		cairo_restore (ctx);
 	}
 
 	/* Draw the rectangle */
 	cairo_set_source_rgb (ctx, 0.0, 0.0, 0.0);
 	cairo_set_line_width (ctx, 1.0);
-
 	cairo_rectangle (ctx,
 			 x + 0.5,
 			 y + 0.5,
@@ -519,8 +553,8 @@ brasero_jacket_view_print (BraseroJacketView *self,
 			   gdouble x,
 			   gdouble y)
 {
+	guint height;
 	cairo_t *ctx;
-	GdkRectangle rect;
 	PangoLayout *layout;
 	gdouble resolution_x;
 	gdouble resolution_y;
@@ -534,17 +568,11 @@ brasero_jacket_view_print (BraseroJacketView *self,
 	/* set clip */
 	resolution_x = gtk_print_context_get_dpi_x (context);
 	resolution_y = gtk_print_context_get_dpi_y (context);
-	rect.x = x;
-	rect.y = y;
 
-	if (priv->side == BRASERO_JACKET_BACK) {
-		rect.width = (resolution_x * COVER_WIDTH_BACK_INCH) + 1.0;
-		rect.height = (resolution_y * COVER_HEIGHT_BACK_INCH) + 1.0;
-	}
-	else {
-		rect.width = (resolution_x * COVER_WIDTH_FRONT_INCH) + 1.0;
-		rect.height = (resolution_y * COVER_HEIGHT_FRONT_INCH) + 1.0;
-	}
+	if (priv->side == BRASERO_JACKET_BACK)
+		height = (resolution_y * COVER_HEIGHT_BACK_INCH) + 1.0;
+	else
+		height = (resolution_y * COVER_HEIGHT_FRONT_INCH) + 1.0;
 
 	/* Make sure we scale the image with the correct resolution */
 	if (priv->image_style == BRASERO_JACKET_IMAGE_STRETCH)
@@ -563,7 +591,6 @@ brasero_jacket_view_print (BraseroJacketView *self,
 				    resolution_y,
 				    x,
 				    y,
-				    &rect,
 				    FALSE);
 
 	/* Now let's render the text in main buffer */
@@ -581,7 +608,7 @@ brasero_jacket_view_print (BraseroJacketView *self,
 	if (scaled)
 		g_object_unref (scaled);
 
-	return rect.height;
+	return height;
 }
 
 static void
@@ -669,7 +696,11 @@ brasero_jacket_view_scrolled_cb (GtkAdjustment *adj,
 	gtk_text_buffer_get_end_iter (buffer, &end);
 
 	gtk_text_view_get_visible_rect (view, &rect);
-	gtk_text_view_get_iter_at_position (view, &start, &trailing, rect.x + rect.width, rect.y + rect.height - gtk_adjustment_get_value (adj));
+	gtk_text_view_get_iter_at_position (view,
+					    &start,
+					    &trailing,
+					    rect.x + rect.width,
+					    rect.y + rect.height - gtk_adjustment_get_value (adj));
 	gtk_text_buffer_delete (buffer, &start, &end);
 
 	gtk_adjustment_set_value (adj, 0.0);
@@ -690,26 +721,31 @@ brasero_jacket_view_configure_background (BraseroJacketView *self)
 
 	dialog = brasero_jacket_background_new ();
 
-	brasero_jacket_background_set_image_path (BRASERO_JACKET_BACKGROUND (dialog), priv->image_path);
-	brasero_jacket_background_set_image_style (BRASERO_JACKET_BACKGROUND (dialog), priv->image_style);
-	brasero_jacket_background_set_color (BRASERO_JACKET_BACKGROUND (dialog),
-					     &priv->b_color,
-					     &priv->b_color2);
-	brasero_jacket_background_set_color_style (BRASERO_JACKET_BACKGROUND (dialog), priv->color_style);
+	if (priv->image_style != BRASERO_JACKET_IMAGE_NONE) {
+		brasero_jacket_background_set_image_style (BRASERO_JACKET_BACKGROUND (dialog), priv->image_style);
+		brasero_jacket_background_set_image_path (BRASERO_JACKET_BACKGROUND (dialog), priv->image_path);
+	}
+	else if (priv->color_style != BRASERO_JACKET_COLOR_NONE) {
+		brasero_jacket_background_set_color_style (BRASERO_JACKET_BACKGROUND (dialog), priv->color_style);
+		brasero_jacket_background_set_color (BRASERO_JACKET_BACKGROUND (dialog),
+						     &priv->b_color,
+						     &priv->b_color2);
+	}
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 
 	image_style = brasero_jacket_background_get_image_style (BRASERO_JACKET_BACKGROUND (dialog));
-	path = brasero_jacket_background_get_image_path (BRASERO_JACKET_BACKGROUND (dialog));
-	brasero_jacket_view_set_image_style (self, image_style);
-	brasero_jacket_view_set_image (self, path);
-	g_free (path);
-
-	brasero_jacket_background_get_color (BRASERO_JACKET_BACKGROUND (dialog), &color, &color2);
-	brasero_jacket_view_set_color_background (self, &color, &color2);
+	if (image_style != BRASERO_JACKET_IMAGE_NONE) {
+		path = brasero_jacket_background_get_image_path (BRASERO_JACKET_BACKGROUND (dialog));
+		brasero_jacket_view_set_image (self, image_style, path);
+		g_free (path);
+	}
 
 	color_style = brasero_jacket_background_get_color_style (BRASERO_JACKET_BACKGROUND (dialog));
-	brasero_jacket_view_set_color_style (self, color_style);
+	if (color_style != BRASERO_JACKET_COLOR_NONE) {
+		brasero_jacket_background_get_color (BRASERO_JACKET_BACKGROUND (dialog), &color, &color2);
+		brasero_jacket_view_set_color (self, color_style, &color, &color2);
+	}
 
 	gtk_widget_destroy (dialog);
 }
@@ -810,84 +846,71 @@ brasero_jacket_view_set_side (BraseroJacketView *self,
 }
 
 static void
-brasero_jacket_view_update_edit_image (BraseroJacketView *self)
+brasero_jacket_view_set_textview_background (BraseroJacketView *self)
 {
-	cairo_t *ctx;
+	cairo_t *cr;
 	guint resolution;
 	GdkWindow *window;
-	GdkPixmap *pixmap;
 	GtkWidget *toplevel;
+	cairo_surface_t *surface;
 	GtkAllocation allocation;
-	gint width, height, x, y;
+	guint x, y, width, height;
+	cairo_surface_t *subsurface;
 	BraseroJacketViewPrivate *priv;
+	cairo_pattern_t *pattern = NULL;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 
-	if (!priv->pattern && !priv->scaled)
+	if (priv->image_style == BRASERO_JACKET_IMAGE_NONE
+	&&  priv->color_style == BRASERO_JACKET_COLOR_NONE)
 		return;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	if (!GTK_IS_WINDOW (toplevel))
 		return;
 
-	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
 	window = gtk_text_view_get_window (GTK_TEXT_VIEW (priv->edit), GTK_TEXT_WINDOW_TEXT);
-
 	if (!window)
 		return;
 
-	x = COVER_TEXT_MARGIN * resolution;
-	y = COVER_TEXT_MARGIN * resolution;
-	gtk_widget_get_allocation (priv->edit, &allocation);
-	width = allocation.width;
-	height = allocation.height;
-
-	if (priv->side == BRASERO_JACKET_BACK)
-		x += COVER_WIDTH_SIDE_INCH * resolution;
-
-	pixmap = gdk_pixmap_new (GDK_DRAWABLE (window),
-				 width,
-				 height,
-				 -1);
-
-	ctx = gdk_cairo_create (GDK_DRAWABLE (pixmap));
-
-	cairo_rectangle (ctx,
-			 0,
-			 0,
-			 width,
-			 height);
-
-	if (priv->pattern)
-		cairo_set_source (ctx, priv->pattern);
-
-	cairo_clip (ctx);
-	cairo_paint (ctx);
-
-	if (priv->scaled) {
-		if (priv->image_style == BRASERO_JACKET_IMAGE_CENTER) {
-			gdk_cairo_set_source_pixbuf (ctx,
-			                             priv->scaled,
-			                             (width - gdk_pixbuf_get_width (priv->scaled)) / 2,
-			                             (height - gdk_pixbuf_get_height (priv->scaled)) / 2);
-		}
-		else if (priv->image_style == BRASERO_JACKET_IMAGE_TILE) {
-			cairo_pattern_t *pattern;
-
-			gdk_cairo_set_source_pixbuf (ctx, priv->scaled, 0, 0);
-			pattern = cairo_get_source (ctx);
-			cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-		}
-		else
-			gdk_cairo_set_source_pixbuf (ctx, priv->scaled, x, y);
-
-		cairo_paint (ctx);
+	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
+	if (priv->side == BRASERO_JACKET_BACK) {
+		width = COVER_WIDTH_BACK_INCH * resolution;
+		height = COVER_HEIGHT_BACK_INCH * resolution;
+	}
+	else {
+		width = COVER_WIDTH_FRONT_INCH * resolution;
+		height = COVER_HEIGHT_FRONT_INCH * resolution;
 	}
 
-	cairo_destroy (ctx);
+	surface = gdk_window_create_similar_surface (window,
+						     CAIRO_CONTENT_COLOR_ALPHA,
+						     width,
+						     height);
+	cr = cairo_create (surface);
 
-	gdk_window_set_back_pixmap (window, pixmap, FALSE);
-	g_object_unref (pixmap);
+	cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+	cairo_paint (cr);
+
+	x = COVER_TEXT_MARGIN * resolution;
+       	y = COVER_TEXT_MARGIN * resolution;
+       	gtk_widget_get_allocation (priv->edit, &allocation);
+
+       	if (priv->side == BRASERO_JACKET_BACK)
+        	x += COVER_WIDTH_SIDE_INCH * resolution;
+
+	brasero_jacket_view_render_background (self, cr, priv->scaled, 0, 0, width, height);
+	subsurface = cairo_surface_create_for_rectangle (surface,
+							 x,
+							 y,
+							 allocation.width,
+							 allocation.height);
+	pattern = cairo_pattern_create_for_surface (subsurface);
+	gdk_window_set_background_pattern (window, pattern);
+	cairo_pattern_destroy (pattern);
+	cairo_surface_destroy (subsurface);
+	cairo_surface_destroy (surface);
+	cairo_destroy (cr);
 }
 
 static GdkPixbuf *
@@ -928,6 +951,11 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 
+	if (priv->scaled) {
+		g_object_unref (priv->scaled);
+		priv->scaled = NULL;
+	}
+
 	if (!priv->image)
 		return;
 
@@ -957,90 +985,8 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 	else if (priv->image_style == BRASERO_JACKET_IMAGE_TILE)
 		priv->scaled = g_object_ref (priv->image);
 
-	brasero_jacket_view_update_edit_image (self);
-	gtk_widget_queue_draw (GTK_WIDGET (self));
-}
-
-void
-brasero_jacket_view_set_image_style (BraseroJacketView *self,
-				     BraseroJacketImageStyle style)
-{
-	BraseroJacketViewPrivate *priv;
-
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
-
-	if (priv->scaled) {
-		g_object_unref (priv->scaled);
-		priv->scaled = NULL;
-	}
-
-	priv->image_style = style;
-	brasero_jacket_view_update_image (self);
-}
-
-static void
-brasero_jacket_view_update_color (BraseroJacketView *self)
-{
-	guint resolution;
-	GtkWidget *toplevel;
-	guint width, height;
-	cairo_pattern_t *pattern;
-	BraseroJacketViewPrivate *priv;
-
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
-
-	if (priv->pattern) {
-		cairo_pattern_destroy (priv->pattern);
-		priv->pattern = NULL;
-	}
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	if (!GTK_IS_WINDOW (toplevel))
-		return;
-
-	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
-	if (priv->side == BRASERO_JACKET_BACK) {
-		height = resolution * COVER_HEIGHT_BACK_INCH;
-		width = resolution * COVER_WIDTH_BACK_INCH;
-	}
-	else {
-		height = resolution * COVER_HEIGHT_FRONT_INCH;
-		width = resolution * COVER_WIDTH_FRONT_INCH;
-	}
-
-	if (priv->color_style == BRASERO_JACKET_COLOR_SOLID) {
-		pattern = cairo_pattern_create_rgb (priv->b_color.red/G_MAXINT16,
-						    priv->b_color.green/G_MAXINT16,
-						    priv->b_color.blue/G_MAXINT16);
-	}
-	else {
-		if (priv->color_style == BRASERO_JACKET_COLOR_HGRADIENT)
-			pattern = cairo_pattern_create_linear (0.0,
-							       0.0,
-							       width,
-							       0.0);
-		else /* if (priv->color_style == BRASERO_JACKET_COLOR_VGRADIENT) */
-			pattern = cairo_pattern_create_linear (0.0,
-							       0.0,
-							       0.0,
-							       height);
-
-		cairo_pattern_add_color_stop_rgb (pattern,
-						  0.0,
-						  priv->b_color.red/G_MAXINT16,
-						  priv->b_color.green/G_MAXINT16,
-						  priv->b_color.blue/G_MAXINT16);
-
-		cairo_pattern_add_color_stop_rgb (pattern,
-						  1.0,
-						  priv->b_color2.red/G_MAXINT16,
-						  priv->b_color2.green/G_MAXINT16,
-						  priv->b_color2.blue/G_MAXINT16);
-	}
-
-	priv->pattern = pattern;
-
-	brasero_jacket_view_update_edit_image (self);
+	/* Create a pattern out of the image */
+	brasero_jacket_view_set_textview_background (self);
 	gtk_widget_queue_draw (GTK_WIDGET (self));
 }
 
@@ -1055,10 +1001,10 @@ brasero_jacket_view_get_image (BraseroJacketView *self)
 
 const gchar *
 brasero_jacket_view_set_image (BraseroJacketView *self,
+			       BraseroJacketImageStyle style,
 			       const gchar *path)
 {
 	BraseroJacketViewPrivate *priv;
-	GdkPixbuf *image = NULL;
 	GError *error = NULL;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
@@ -1066,18 +1012,56 @@ brasero_jacket_view_set_image (BraseroJacketView *self,
 	if (!path)
 		return priv->image_path;
 
-	image = gdk_pixbuf_new_from_file (path, &error);
-	if (error) {
-		brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
-					      /* Translators: This is an image,
-					       * a picture, not a "Disc Image" */
-					      _("The image could not be loaded."),
-					      error->message,
-					      GTK_MESSAGE_ERROR);
-		g_error_free (error);
-		return priv->image_path;
+	priv->color_style = BRASERO_JACKET_COLOR_NONE;
+
+	if (g_strcmp0 (path, priv->image_path)) {
+		GdkPixbuf *image = NULL;
+	
+		image = gdk_pixbuf_new_from_file (path, &error);
+		if (error) {
+			brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+						      /* Translators: This is an image,
+						       * a picture, not a "Disc Image" */
+						      _("The image could not be loaded."),
+						      error->message,
+						      GTK_MESSAGE_ERROR);
+			g_error_free (error);
+			return priv->image_path;
+		}
+
+		if (priv->image_path) {
+			g_free (priv->image_path);
+			priv->image_path = NULL;
+		}
+		priv->image_path = g_strdup (path);
+
+		if (priv->image) {
+			g_object_unref (priv->image);
+			priv->image = NULL;
+		}
+		priv->image = image;
 	}
 
+	priv->image_style = style;
+	brasero_jacket_view_update_image (self);
+	return priv->image_path;
+}
+
+void
+brasero_jacket_view_set_color (BraseroJacketView *self,
+			       BraseroJacketColorStyle style,
+			       GdkColor *color,
+			       GdkColor *color2)
+{
+	BraseroJacketViewPrivate *priv;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+
+	priv->b_color = *color;
+	priv->b_color2 = *color2;
+	priv->color_style = style;
+
+	priv->image_style = BRASERO_JACKET_IMAGE_NONE;
 	if (priv->image_path) {
 		g_free (priv->image_path);
 		priv->image_path = NULL;
@@ -1093,35 +1077,8 @@ brasero_jacket_view_set_image (BraseroJacketView *self,
 		priv->image = NULL;
 	}
 
-	priv->image_path = g_strdup (path);
-	priv->image = image;
-
-	brasero_jacket_view_update_image (self);
-	return priv->image_path;
-}
-
-void
-brasero_jacket_view_set_color_background (BraseroJacketView *self,
-					  GdkColor *color,
-					  GdkColor *color2)
-{
-	BraseroJacketViewPrivate *priv;
-
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
-	priv->b_color = *color;
-	priv->b_color2 = *color2;
-	brasero_jacket_view_update_color (self);
-}
-
-void
-brasero_jacket_view_set_color_style (BraseroJacketView *self,
-				     BraseroJacketColorStyle style)
-{
-	BraseroJacketViewPrivate *priv;
-
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
-	priv->color_style = style;
-	brasero_jacket_view_update_color (self);
+	brasero_jacket_view_set_textview_background (self);
+	gtk_widget_queue_draw (GTK_WIDGET (self));
 }
 
 GtkTextAttributes *
@@ -1190,34 +1147,28 @@ brasero_jacket_view_get_side_buffer (BraseroJacketView *self)
 }
 
 static void
-brasero_jacket_expose_textview (GtkWidget *widget,
-                                GtkWidget *textview,
-                                GdkEventExpose *event)
+brasero_jacket_draw_textview (GtkWidget *widget,
+                              GtkWidget *textview)
 {
-	GdkRectangle child_area;
+	GdkWindow *window;
 
-	if (gtk_widget_intersect (textview, &event->area, &child_area)) {
-		GdkWindow *window;
+	window = gtk_text_view_get_window (GTK_TEXT_VIEW (textview), GTK_TEXT_WINDOW_WIDGET);
 
-		window = gtk_text_view_get_window (GTK_TEXT_VIEW (textview), GTK_TEXT_WINDOW_WIDGET);
+	g_object_ref (window);
+	gdk_window_invalidate_rect (window, NULL, TRUE);
+	gdk_window_process_updates (window, TRUE);
+	g_object_unref (window);
 
-		g_object_ref (window);
-		gdk_window_invalidate_rect (window, &child_area, TRUE);
-		gdk_window_process_updates (window, TRUE);
-		g_object_unref (window);
-
-		/* Reminder: the following would not work...
-		 * gtk_container_propagate_expose (GTK_CONTAINER (widget), textview, &child_event); */
-	}
+	/* Reminder: the following would not work...
+	 * gtk_container_propagate_expose (GTK_CONTAINER (widget), textview, &child_event); */
 }
 
 static gboolean
-brasero_jacket_view_expose (GtkWidget *widget,
-			    GdkEventExpose *event)
+brasero_jacket_view_draw (GtkWidget *widget,
+			  cairo_t *ctx)
 {
 	guint x;
 	guint y;
-	cairo_t *ctx;
 	gdouble resolution;
 	GtkWidget *toplevel;
 	PangoLayout *layout;
@@ -1226,10 +1177,13 @@ brasero_jacket_view_expose (GtkWidget *widget,
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
 
-	ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
 	toplevel = gtk_widget_get_toplevel (widget);
 	if (!GTK_IS_WINDOW (toplevel))
 		return FALSE;
+
+	/* draw white surroundings (for widget only) */
+	cairo_set_source_rgb (ctx, 1.0, 1.0, 1.0);
+	cairo_paint (ctx);
 
 	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
 	layout = gtk_widget_create_pango_layout (widget, NULL);
@@ -1246,16 +1200,9 @@ brasero_jacket_view_expose (GtkWidget *widget,
 					    resolution,
 					    x,
 					    y,
-					    &event->area,
 					    TRUE);
 
-		/* rectangle for side text */
-
-		/* set clip */
-		cairo_reset_clip (ctx);
-		cairo_rectangle (ctx, event->area.x, event->area.y, event->area.width, event->area.height);
-		cairo_clip (ctx);
-
+		/* top rectangle for side text */
 		cairo_move_to (ctx, 0., 0.);
 
 		cairo_set_antialias (ctx, CAIRO_ANTIALIAS_DEFAULT);
@@ -1283,18 +1230,15 @@ brasero_jacket_view_expose (GtkWidget *widget,
 					    resolution,
 					    x,
 					    y,
-					    &event->area,
 					    TRUE);
 	}
 
 	if (priv->sides)
-		brasero_jacket_expose_textview (widget, priv->sides, event);
+		brasero_jacket_draw_textview (widget, priv->sides);
 
-	brasero_jacket_expose_textview (widget, priv->edit, event);
+	brasero_jacket_draw_textview (widget, priv->edit);
 	
 	g_object_unref (layout);
-	cairo_destroy (ctx);
-
 	return FALSE;
 }
 
@@ -1317,10 +1261,9 @@ brasero_jacket_view_realize (GtkWidget *widget)
 	attributes.height = allocation.height;
 	attributes.wclass = GDK_INPUT_OUTPUT;
 	attributes.visual = gtk_widget_get_visual (widget);
-	attributes.colormap = gtk_widget_get_colormap (widget);
 	attributes.event_mask = gtk_widget_get_events (widget);
 	attributes.event_mask |= GDK_EXPOSURE_MASK|GDK_BUTTON_PRESS_MASK|GDK_LEAVE_NOTIFY_MASK;
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_COLORMAP;
+	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
 	gtk_widget_set_window (widget, gdk_window_new (gtk_widget_get_parent_window (widget),
 						       &attributes,
@@ -1424,7 +1367,7 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 		view_alloc.height = (gdouble) (COVER_HEIGHT_FRONT_INCH - COVER_TEXT_MARGIN * 2.0) * resolution;
 	}
 
-	brasero_jacket_view_update_edit_image (BRASERO_JACKET_VIEW (widget));
+	brasero_jacket_view_set_textview_background (BRASERO_JACKET_VIEW (widget));
 	gtk_widget_size_allocate (priv->edit, &view_alloc);
 
 	gtk_widget_set_allocation (widget, allocation);
@@ -1540,11 +1483,6 @@ brasero_jacket_view_finalize (GObject *object)
 		priv->scaled = NULL;
 	}
 
-	if (priv->pattern) {
-		cairo_pattern_destroy (priv->pattern);
-		priv->pattern = NULL;
-	}
-
 	if (priv->image_path) {
 		g_free (priv->image_path);
 		priv->image_path = NULL;
@@ -1564,7 +1502,7 @@ brasero_jacket_view_class_init (BraseroJacketViewClass *klass)
 
 	object_class->finalize = brasero_jacket_view_finalize;
 
-	widget_class->expose_event = brasero_jacket_view_expose;
+	widget_class->draw = brasero_jacket_view_draw;
 	widget_class->realize = brasero_jacket_view_realize;
 	widget_class->size_allocate = brasero_jacket_view_size_allocate;
 	widget_class->size_request = brasero_jacket_view_size_request;

@@ -95,22 +95,17 @@ brasero_jacket_view_set_side (BraseroJacketView *view,
 			      BraseroJacketSide side);
 
 void
-brasero_jacket_view_set_image_style (BraseroJacketView *view,
-				     BraseroJacketImageStyle style);
-
-void
-brasero_jacket_view_set_color_background (BraseroJacketView *view,
-					  GdkColor *color,
-					  GdkColor *color2);
-void
-brasero_jacket_view_set_color_style (BraseroJacketView *view,
-				     BraseroJacketColorStyle style);
+brasero_jacket_view_set_color (BraseroJacketView *view,
+			       BraseroJacketColorStyle style,
+			       GdkColor *color,
+			       GdkColor *color2);
 
 const gchar *
 brasero_jacket_view_get_image (BraseroJacketView *self);
 
 const gchar *
 brasero_jacket_view_set_image (BraseroJacketView *view,
+			       BraseroJacketImageStyle style,
 			       const gchar *path);
 
 void

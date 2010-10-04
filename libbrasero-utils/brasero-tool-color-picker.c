@@ -97,29 +97,26 @@ brasero_tool_color_picker_set_color (BraseroToolColorPicker *self,
 }
 
 static gboolean
-brasero_tool_color_picker_expose (GtkWidget *widget,
-				  GdkEventExpose *event,
-				  BraseroToolColorPicker *self)
+brasero_tool_color_picker_draw (GtkWidget *widget,
+				cairo_t *ctx,
+				BraseroToolColorPicker *self)
 {
 	BraseroToolColorPickerPrivate *priv;
 	GtkAllocation allocation;
-	cairo_t *ctx;
 
 	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
 
-	ctx = gdk_cairo_create (GDK_DRAWABLE (gtk_widget_get_window (widget)));
 	gdk_cairo_set_source_color (ctx, &priv->color);
 	gtk_widget_get_allocation (widget, &allocation);
 	cairo_rectangle (ctx,
-			 allocation.x,
-			 allocation.y,
+			 0,
+			 0,
 			 allocation.width,
 			 allocation.height);
 	cairo_fill (ctx);
 	cairo_stroke (ctx);
-	cairo_destroy (ctx);
 
-	return FALSE;
+	return TRUE;
 }
 
 static void
@@ -209,8 +206,8 @@ brasero_tool_color_picker_init (BraseroToolColorPicker *object)
 	priv->icon = gtk_image_new ();
 	gtk_widget_show (priv->icon);
 	g_signal_connect (priv->icon,
-			  "expose-event",
-			  G_CALLBACK (brasero_tool_color_picker_expose),
+			  "draw",
+			  G_CALLBACK (brasero_tool_color_picker_draw),
 			  object);
 
 	/* This function expects a GtkMisc object!! */

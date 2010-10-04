@@ -188,8 +188,7 @@ brasero_jacket_edit_set_audio_tracks_front (BraseroJacketView *front,
 		if (!path)
 			path = g_strdup (cover);
 
-		brasero_jacket_view_set_image_style (front, BRASERO_JACKET_IMAGE_STRETCH);
-		brasero_jacket_view_set_image (front, path);
+		brasero_jacket_view_set_image (front, BRASERO_JACKET_IMAGE_STRETCH, path);
 		g_free (path);
 	}
 
