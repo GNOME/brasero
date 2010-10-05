@@ -122,9 +122,6 @@ brasero_libisofs_thread_finished (gpointer data)
 		brasero_track_image_set_block_num (track, blocks);
 
 		brasero_job_add_track (BRASERO_JOB (self), BRASERO_TRACK (track));
-
-		/* It's good practice to unref the track afterwards as we don't
-		 * need it anymore. BraseroBurnSession refs it. */
 		g_object_unref (track);
 	}
 
@@ -185,6 +182,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	gint64 written_sectors = 0;
 	BraseroBurnResult result;
 	guchar buf [sector_size];
+	int read_bytes;
 	int fd = -1;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
@@ -200,6 +198,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	brasero_job_get_fd_out (BRASERO_JOB (self), &fd);
 
 	BRASERO_JOB_LOG (self, "Writing to pipe");
+	read_bytes = priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size);
 	while (priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size) == sector_size) {
 		if (priv->cancel)
 			break;
@@ -213,7 +212,14 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 
 		written_sectors ++;
 		brasero_job_set_written_track (BRASERO_JOB (self), written_sectors << 11);
+
+		read_bytes = priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size);
 	}
+
+	if (read_bytes == -1 && !priv->error)
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_GENERAL,
+					   _("Volume could not be created"));
 }
 
 static void
@@ -223,6 +229,7 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 	BraseroLibisofsPrivate *priv;
 	gint64 written_sectors = 0;
 	guchar buf [sector_size];
+	int read_bytes;
 	gchar *output;
 	FILE *file;
 
@@ -254,7 +261,8 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
-	while (priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size) == sector_size) {
+	read_bytes = priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size);
+	while (read_bytes == sector_size) {
 		if (priv->cancel)
 			break;
 
@@ -273,7 +281,14 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 
 		written_sectors ++;
 		brasero_job_set_written_track (BRASERO_JOB (self), written_sectors << 11);
+
+		read_bytes = priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size);
 	}
+
+	if (read_bytes == -1 && !priv->error)
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_GENERAL,
+					   _("Volume could not be created"));
 
 	fclose (file);
 	file = NULL;
@@ -294,18 +309,20 @@ brasero_libisofs_thread_started (gpointer data)
 	else
 		brasero_libisofs_write_image_to_file_thread (self);
 
-	if (!priv->cancel)
-		priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
-
 	BRASERO_JOB_LOG (self, "Getting out thread");
 
 	/* End thread */
 	g_mutex_lock (priv->mutex);
+
+	if (!priv->cancel)
+		priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
+
 	priv->thread = NULL;
 	g_cond_signal (priv->cond);
 	g_mutex_unlock (priv->mutex);
 
 	g_thread_exit (NULL);
+
 	return NULL;
 }
 
@@ -837,11 +854,19 @@ end:
 	if (image)
 		iso_image_unref (image);
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
+
+	/* It is important that the following is done inside the lock; indeed,
+	 * if the main loop is idle then that brasero_libisofs_stop_real () can
+	 * be called immediatly to stop the plugin while priv->thread is not
+	 * NULL.
+	 * As in this callback we check whether the thread is running (which
+	 * means that we were cancelled) in some cases it would mean that we
+	 * would cancel the libburn_src object and create crippled images. */
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_libisofs_create_volume_thread_finished, self);
 
-	/* End thread */
-	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
 	g_cond_signal (priv->cond);
 	g_mutex_unlock (priv->mutex);
@@ -899,6 +924,11 @@ brasero_libisofs_clean_output (BraseroLibisofs *self)
 		burn_source_free (priv->libburn_src);
 		priv->libburn_src = NULL;
 	}
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
 }
 
 static BraseroBurnResult
@@ -925,6 +955,11 @@ brasero_libisofs_start (BraseroJob *job,
 		return brasero_libisofs_create_volume (self, error);
 	}
 
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
+
 	/* we need the source before starting anything */
 	if (!priv->libburn_src)
 		return brasero_libisofs_create_volume (self, error);
@@ -939,17 +974,19 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
-	/* NOTE: this can only happen when we're preparing the volumes for a
-	 * multi session disc. At this point we're only running to get the size
-	 * of the future volume and we can't race with libburn plugin that isn't
-	 * operating at this stage. */
-	if (priv->ctx) {
-		brasero_libburn_common_ctx_free (priv->ctx);
-		priv->ctx = NULL;
-	}
-
+	/* Check whether we properly shut down or if we were cancelled */
 	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
+		/* NOTE: this can only happen when we're preparing the volumes
+		 * for a multi session disc. At this point we're only running
+		 * to get the size of the future volume and we can't race with
+		 * libburn plugin that isn't operating at this stage. */
+		if (priv->ctx) {
+			brasero_libburn_common_ctx_free (priv->ctx);
+			priv->ctx = NULL;
+		}
+
+		/* A thread is running. In this context we are probably cancelling */
 		if (priv->libburn_src)
 			priv->libburn_src->cancel (priv->libburn_src);
 
@@ -962,11 +999,6 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 	if (priv->thread_id) {
 		g_source_remove (priv->thread_id);
 		priv->thread_id = 0;
-	}
-
-	if (priv->error) {
-		g_error_free (priv->error);
-		priv->error = NULL;
 	}
 }
 
