@@ -134,19 +134,6 @@ brasero_track_data_get_grafts (BraseroTrackData *track);
 GSList *
 brasero_track_data_get_excluded_list (BraseroTrackData *track);
 
-G_GNUC_DEPRECATED GSList *
-brasero_track_data_get_excluded (BraseroTrackData *track,
-				 gboolean copy);
-
-G_GNUC_DEPRECATED BraseroBurnResult
-brasero_track_data_get_paths (BraseroTrackData *track,
-			      gboolean use_joliet,
-			      const gchar *grafts_path,
-			      const gchar *excluded_path,
-			      const gchar *emptydir,
-			      const gchar *videodir,
-			      GError **error);
-
 BraseroBurnResult
 brasero_track_data_write_to_paths (BraseroTrackData *track,
                                    const gchar *grafts_path,

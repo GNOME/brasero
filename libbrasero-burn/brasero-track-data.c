@@ -527,49 +527,6 @@ brasero_track_data_get_excluded_list (BraseroTrackData *track)
 	return klass->get_excluded (track);
 }
 
-/**
- * brasero_track_data_get_excluded:
- * @track: a #BraseroTrackData.
- * @copy: a #gboolean.
- *
- * Returns a list of URIs which must not be included in
- * the image to be created.
- * If @copy is %TRUE then the @list is a copy and must
- * be freed once it is not needed anymore. If %FALSE,
- * do not free after usage as @track retains ownership.
- *
- * Deprecated since 2.29.2
- *
- * Return value: a #GSList of #gchar * or %NULL if no
- * URI should be excluded.
- **/
-
-G_GNUC_DEPRECATED GSList *
-brasero_track_data_get_excluded (BraseroTrackData *track,
-				 gboolean copy)
-{
-	BraseroTrackDataClass *klass;
-	GSList *retval = NULL;
-	GSList *excluded;
-	GSList *iter;
-
-	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), NULL);
-
-	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
-	excluded = klass->get_excluded (track);
-	if (!copy)
-		return excluded;
-
-	for (iter = excluded; iter; iter = iter->next) {
-		gchar *uri;
-
-		uri = iter->data;
-		retval = g_slist_prepend (retval, g_strdup (uri));
-	}
-
-	return retval;
-}
-
 static GSList *
 brasero_track_data_get_excluded_real (BraseroTrackData *track)
 {
@@ -577,63 +534,6 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
 
 	priv = BRASERO_TRACK_DATA_PRIVATE (track);
 	return priv->excluded;
-}
-
-/**
- * brasero_track_data_get_paths:
- * @track: a #BraseroTrackData.
- * @use_joliet: a #gboolean.
- * @grafts_path: a #gchar.
- * @excluded_path: a #gchar.
- * @emptydir: a #gchar.
- * @videodir: (allow-none): a #gchar or %NULL.
- * @error: a #GError.
- *
- * Write in @grafts_path (a path to a file) the graft points,
- * in @excluded_path (a path to a file) the list of paths to
- * be excluded, @emptydir (a path to a file) an empty
- * directory to be used for created directories, @videodir
- * (a path to a file) for a directory to be used to build the
- * the video image.
- *
- * This is mostly for internal use by mkisofs and similar.
- *
- * This function takes care of mangling.
- *
- * Deprecated since 2.29.2
- *
- * Return value: a #BraseroBurnResult.
- **/
-
-G_GNUC_DEPRECATED BraseroBurnResult
-brasero_track_data_get_paths (BraseroTrackData *track,
-			      gboolean use_joliet,
-			      const gchar *grafts_path,
-			      const gchar *excluded_path,
-			      const gchar *emptydir,
-			      const gchar *videodir,
-			      GError **error)
-{
-	GSList *grafts;
-	GSList *excluded;
-	BraseroBurnResult result;
-	BraseroTrackDataClass *klass;
-
-	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
-
-	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
-	grafts = klass->get_grafts (track);
-	excluded = klass->get_excluded (track);
-
-	result = brasero_mkisofs_base_write_to_files (grafts,
-						      excluded,
-						      use_joliet,
-						      emptydir,
-						      videodir,
-						      grafts_path,
-						      excluded_path,
-						      error);
-	return result;
 }
 
 /**

@@ -70,9 +70,6 @@ typedef enum {
 	BRASERO_STATUS_INFORMATION
 } BraseroStatusType;
 
-G_GNUC_DEPRECATED void
-brasero_status_free (BraseroStatus *status);
-
 BraseroBurnResult
 brasero_status_get_result (BraseroStatus *status);
 

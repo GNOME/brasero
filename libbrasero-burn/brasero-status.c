@@ -65,22 +65,6 @@ brasero_status_new (void)
 }
 
 /**
- * brasero_status_free:
- * @status: a #BraseroStatus.
- *
- * Frees #BraseroStatus structure.
- *
- * Deprecated since 2.29.2.
- *
- **/
-
-G_GNUC_DEPRECATED void
-brasero_status_free (BraseroStatus *status)
-{
-	g_object_unref (status);
-}
-
-/**
  * brasero_status_get_result:
  * @status: a #BraseroStatus.
  *
