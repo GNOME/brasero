@@ -208,9 +208,9 @@ brasero_playlist_start_search (BraseroPlaylist *playlist)
 }
 
 static gboolean
-brasero_playlist_expose_event_cb (GtkWidget *widget,
-				  gpointer event,
-				  gpointer null_data)
+brasero_playlist_draw_cb (GtkWidget *widget,
+			  cairo_t *cr,
+			  gpointer null_data)
 {
 	BraseroPlaylist *playlist = BRASERO_PLAYLIST (widget);
 
@@ -910,8 +910,8 @@ brasero_playlist_new ()
 	obj = BRASERO_PLAYLIST (g_object_new (BRASERO_TYPE_PLAYLIST, NULL));
 
 	g_signal_connect (obj,
-			  "expose-event",
-			  G_CALLBACK (brasero_playlist_expose_event_cb),
+			  "draw",
+			  G_CALLBACK (brasero_playlist_draw_cb),
 			  NULL);
 
 	return GTK_WIDGET (obj);
