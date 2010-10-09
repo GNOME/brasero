@@ -120,7 +120,7 @@ brasero_session_cfg_tag_changed (BraseroBurnSession *session,
 
 /**
  * brasero_session_cfg_has_default_output_path:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  *
  * This function returns whether the path returned
  * by brasero_burn_session_get_output () is an 
@@ -388,7 +388,7 @@ brasero_session_cfg_get_output_format (BraseroBurnSession *session)
 
 /**
  * brasero_session_cfg_get_error:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  *
  * This function returns the current status and if
  * autoconfiguration is/was successful.
@@ -397,11 +397,11 @@ brasero_session_cfg_get_output_format (BraseroBurnSession *session)
  **/
 
 BraseroSessionError
-brasero_session_cfg_get_error (BraseroSessionCfg *self)
+brasero_session_cfg_get_error (BraseroSessionCfg *session)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 
 	if (priv->is_valid == BRASERO_SESSION_VALID
 	&&  priv->CD_TEXT_modified)
@@ -412,35 +412,35 @@ brasero_session_cfg_get_error (BraseroSessionCfg *self)
 
 /**
  * brasero_session_cfg_disable:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  *
  * This function disables autoconfiguration
  *
  **/
 
 void
-brasero_session_cfg_disable (BraseroSessionCfg *self)
+brasero_session_cfg_disable (BraseroSessionCfg *session)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 	priv->disabled = TRUE;
 }
 
 /**
  * brasero_session_cfg_enable:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  *
  * This function (re)-enables autoconfiguration
  *
  **/
 
 void
-brasero_session_cfg_enable (BraseroSessionCfg *self)
+brasero_session_cfg_enable (BraseroSessionCfg *session)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 	priv->disabled = FALSE;
 }
 
@@ -1307,7 +1307,7 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 
 /**
  * brasero_session_cfg_add_flags:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  * @flags: a #BraseroBurnFlag
  *
  * Adds all flags from @flags that are supported.
@@ -1315,28 +1315,28 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
  **/
 
 void
-brasero_session_cfg_add_flags (BraseroSessionCfg *self,
+brasero_session_cfg_add_flags (BraseroSessionCfg *session,
 			       BraseroBurnFlag flags)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 
 	if ((priv->supported & flags) != flags)
 		return;
 
-	if ((brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self)) & flags) == flags)
+	if ((brasero_burn_session_get_flags (BRASERO_BURN_SESSION (session)) & flags) == flags)
 		return;
 
-	brasero_session_cfg_add_drive_properties_flags (self, flags);
+	brasero_session_cfg_add_drive_properties_flags (session, flags);
 
-	if (brasero_session_cfg_can_update (self))
-		brasero_session_cfg_update (self);
+	if (brasero_session_cfg_can_update (session))
+		brasero_session_cfg_update (session);
 }
 
 /**
  * brasero_session_cfg_remove_flags:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  * @flags: a #BraseroBurnFlag
  *
  * Removes all flags that are not compulsory.
@@ -1344,28 +1344,28 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
  **/
 
 void
-brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
+brasero_session_cfg_remove_flags (BraseroSessionCfg *session,
 				  BraseroBurnFlag flags)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 
-	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
+	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (session), flags);
 
 	/* For this case reset all flags as some flags could
 	 * be made available after the removal of one flag
 	 * Example: After the removal of MULTI, FAST_BLANK
 	 * becomes available again for DVDRW sequential */
-	brasero_session_cfg_set_drive_properties_default_flags (self);
+	brasero_session_cfg_set_drive_properties_default_flags (session);
 
-	if (brasero_session_cfg_can_update (self))
-		brasero_session_cfg_update (self);
+	if (brasero_session_cfg_can_update (session))
+		brasero_session_cfg_update (session);
 }
 
 /**
  * brasero_session_cfg_is_supported:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  * @flag: a #BraseroBurnFlag
  *
  * Checks whether a particular flag is supported.
@@ -1375,18 +1375,18 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
  **/
 
 gboolean
-brasero_session_cfg_is_supported (BraseroSessionCfg *self,
+brasero_session_cfg_is_supported (BraseroSessionCfg *session,
 				  BraseroBurnFlag flag)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 	return (priv->supported & flag) == flag;
 }
 
 /**
  * brasero_session_cfg_is_compulsory:
- * @cfg: a #BraseroSessionCfg
+ * @session: a #BraseroSessionCfg
  * @flag: a #BraseroBurnFlag
  *
  * Checks whether a particular flag is compulsory.
@@ -1396,12 +1396,12 @@ brasero_session_cfg_is_supported (BraseroSessionCfg *self,
  **/
 
 gboolean
-brasero_session_cfg_is_compulsory (BraseroSessionCfg *self,
+brasero_session_cfg_is_compulsory (BraseroSessionCfg *session,
 				   BraseroBurnFlag flag)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
 	return (priv->compulsory & flag) == flag;
 }
 
