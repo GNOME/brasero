@@ -33,6 +33,7 @@
 #endif
 
 #include <string.h>
+#include <sys/resource.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -76,6 +77,7 @@ struct _BraseroSessionCfgPrivate
 
 	BraseroTrackType *source;
 	goffset disc_size;
+	goffset session_blocks;
 	goffset session_size;
 
 	BraseroSessionError is_valid;
@@ -83,6 +85,8 @@ struct _BraseroSessionCfgPrivate
 	guint CD_TEXT_modified:1;
 	guint configuring:1;
 	guint disabled:1;
+
+	guint output_msdos:1;
 };
 
 #define BRASERO_SESSION_CFG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SESSION_CFG, BraseroSessionCfgPrivate))
@@ -327,13 +331,11 @@ brasero_session_cfg_get_output_path (BraseroBurnSession *session,
 	if (result == BRASERO_BURN_OK)
 		return result;
 
-	/* Cache the path for later use */
 	if (priv->output_format == BRASERO_IMAGE_FORMAT_NONE)
-		priv->output_format = brasero_burn_session_get_output_format (session);
+		return BRASERO_BURN_ERR;
 
-	if (!priv->output)
-		priv->output = brasero_image_format_get_default_path (priv->output_format);
-
+	/* Note: path and format are determined earlier in fact, in the function
+	 * that check the free space on the hard drive. */
 	path = g_strdup (priv->output);
 	format = priv->output_format;
 
@@ -704,6 +706,102 @@ brasero_session_cfg_check_drive_settings (BraseroSessionCfg *self)
 }
 
 static BraseroSessionError
+brasero_session_cfg_check_volume_size (BraseroSessionCfg *self)
+{
+	struct rlimit limit;
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	if (!priv->disc_size) {
+		GFileInfo *info;
+		gchar *directory;
+		GFile *file = NULL;
+		const gchar *filesystem;
+
+		/* Cache the path for later use */
+		if (priv->output_format == BRASERO_IMAGE_FORMAT_NONE)
+			priv->output_format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (self));
+
+		if (!priv->output)
+			priv->output = brasero_image_format_get_default_path (priv->output_format);
+
+		directory = g_path_get_dirname (priv->output);
+		file = g_file_new_for_path (directory);
+		g_free (directory);
+
+		if (file == NULL)
+			goto error;
+
+		/* Check permissions first */
+		info = g_file_query_info (file,
+					  G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
+					  G_FILE_QUERY_INFO_NONE,
+					  NULL,
+					  NULL);
+		if (!info) {
+			g_object_unref (file);
+			goto error;
+		}
+
+		if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+			g_object_unref (info);
+			g_object_unref (file);
+			goto error;
+		}
+		g_object_unref (info);
+
+		/* Now size left */
+		info = g_file_query_filesystem_info (file,
+						     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
+						     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+						     NULL,
+						     NULL);
+		g_object_unref (file);
+
+		if (!info)
+			goto error;
+
+		/* Now check the filesystem type: the problem here is that some
+		 * filesystems have a maximum file size limit of 4 GiB and more than
+		 * often we need a temporary file size of 4 GiB or more. */
+		filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+		if (!g_strcmp0 (filesystem, "msdos"))
+			priv->output_msdos = TRUE;
+		else
+			priv->output_msdos = FALSE;
+
+		priv->disc_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+		g_object_unref (info);
+	}
+
+	BRASERO_BURN_LOG ("Session size %lli/Hard drive size %lli",
+			  priv->session_size,
+			  priv->disc_size);
+
+	if (priv->output_msdos && priv->session_size >= 2147483648ULL)
+		goto error;
+
+	if (priv->session_size > priv->disc_size)
+		goto error;
+
+	/* Last but not least, use getrlimit () to check that we are allowed to
+	 * write a file of such length and that quotas won't get in our way */
+	if (getrlimit (RLIMIT_FSIZE, &limit))
+		goto error;
+
+	if (limit.rlim_cur < priv->session_size)
+		goto error;
+
+	priv->is_valid = BRASERO_SESSION_VALID;
+	return BRASERO_SESSION_VALID;
+
+error:
+
+	priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
+	return BRASERO_SESSION_INSUFFICIENT_SPACE;
+}
+
+static BraseroSessionError
 brasero_session_cfg_check_size (BraseroSessionCfg *self)
 {
 	BraseroSessionCfgPrivate *priv;
@@ -716,17 +814,35 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
+	/* Get the session size if need be */
+	if (!priv->session_blocks) {
+		if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
+						     BRASERO_DATA_TRACK_SIZE_TAG,
+						     &value) == BRASERO_BURN_OK) {
+			priv->session_blocks = g_value_get_int64 (value);
+			priv->session_size = priv->session_blocks * 2048;
+		}
+		else if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
+							  BRASERO_STREAM_TRACK_SIZE_TAG,
+							  &value) == BRASERO_BURN_OK) {
+			priv->session_blocks = g_value_get_int64 (value);
+			priv->session_size = priv->session_blocks * 2352;
+		}
+		else
+			brasero_burn_session_get_size (BRASERO_BURN_SESSION (self),
+						       &priv->session_blocks,
+						       &priv->session_size);
+	}
+
+	/* Get the disc and its size if need be */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {
 		priv->is_valid = BRASERO_SESSION_NO_OUTPUT;
 		return BRASERO_SESSION_NO_OUTPUT;
 	}
 
-	/* FIXME: here we could check the hard drive space */
-	if (brasero_drive_is_fake (burner)) {
-		priv->is_valid = BRASERO_SESSION_VALID;
-		return BRASERO_SESSION_VALID;
-	}
+	if (brasero_drive_is_fake (burner))
+		return brasero_session_cfg_check_volume_size (self);
 
 	medium = brasero_drive_get_medium (burner);
 	if (!medium) {
@@ -741,28 +857,11 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 			priv->disc_size = 0;
 	}
 
-	if (!priv->session_size) {
-		if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
-						     BRASERO_DATA_TRACK_SIZE_TAG,
-						     &value) == BRASERO_BURN_OK) {
-			priv->session_size = g_value_get_int64 (value);
-		}
-		else if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
-							  BRASERO_STREAM_TRACK_SIZE_TAG,
-							  &value) == BRASERO_BURN_OK) {
-			priv->session_size = g_value_get_int64 (value);
-		}
-		else
-			brasero_burn_session_get_size (BRASERO_BURN_SESSION (self),
-						       &priv->session_size,
-						       NULL);
-	}
-
 	BRASERO_BURN_LOG ("Session size %lli/Disc size %lli",
-			  priv->session_size,
+			  priv->session_blocks,
 			  priv->disc_size);
 
-	if (priv->session_size < priv->disc_size) {
+	if (priv->session_blocks < priv->disc_size) {
 		priv->is_valid = BRASERO_SESSION_VALID;
 		return BRASERO_SESSION_VALID;
 	}
@@ -779,7 +878,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	 * us to determine how much data can be written to a particular disc
 	 * provided he has chosen a real disc. */
 	max_sectors = priv->disc_size * 103 / 100;
-	if (max_sectors < priv->session_size) {
+	if (max_sectors < priv->session_blocks) {
 		priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
 		return BRASERO_SESSION_INSUFFICIENT_SPACE;
 	}
@@ -1135,6 +1234,7 @@ brasero_session_cfg_session_loaded (BraseroTrackDataCfg *track,
 	if (priv->disabled)
 		return;
 	
+	priv->session_blocks = 0;
 	priv->session_size = 0;
 
 	session_flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (session));
@@ -1160,6 +1260,7 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 		return;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv->session_blocks = 0;
 	priv->session_size = 0;
 
 	if (BRASERO_IS_TRACK_DATA_CFG (track))
@@ -1187,6 +1288,7 @@ brasero_session_cfg_track_removed (BraseroBurnSession *session,
 		return;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv->session_blocks = 0;
 	priv->session_size = 0;
 
 	/* Just in case */
@@ -1211,6 +1313,7 @@ brasero_session_cfg_track_changed (BraseroBurnSession *session,
 		return;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv->session_blocks = 0;
 	priv->session_size = 0;
 
 	current = brasero_track_type_new ();
@@ -1295,6 +1398,7 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
  
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 	priv->disc_size = 0;
+	priv->session_blocks = 0;
 	priv->session_size = 0;
 
 	/* In this case we need to check if:
