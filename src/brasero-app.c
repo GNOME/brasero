@@ -1945,7 +1945,6 @@ brasero_app_create_mainwin (BraseroApp *app)
 	priv->statusbar2 = gtk_statusbar_new ();
 	gtk_widget_show (priv->statusbar2);
 	priv->tooltip_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (priv->statusbar2), "tooltip_info");
-	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (priv->statusbar2), FALSE);
 	gtk_box_pack_start (GTK_BOX (hbox), priv->statusbar2, FALSE, TRUE, 0);
 
 	priv->statusbar1 = gtk_statusbar_new ();
