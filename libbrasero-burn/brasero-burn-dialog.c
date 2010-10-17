@@ -49,7 +49,6 @@
 
 #include "brasero-burn-dialog.h"
 
-#include "brasero-tray.h"
 #include "brasero-session-cfg.h"
 #include "brasero-session-helper.h"
 
@@ -75,15 +74,6 @@ static void
 brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroBurnDialog *dialog);
 
-static void
-brasero_burn_dialog_tray_cancel_cb (BraseroTrayIcon *tray,
-				    BraseroBurnDialog *dialog);
-
-static void
-brasero_burn_dialog_tray_show_dialog_cb (BraseroTrayIcon *tray,
-					 gboolean show,
-					 GtkWidget *dialog);
-
 typedef struct BraseroBurnDialogPrivate BraseroBurnDialogPrivate;
 struct BraseroBurnDialogPrivate {
 	BraseroBurn *burn;
@@ -97,7 +87,6 @@ struct BraseroBurnDialogPrivate {
 	GtkWidget *header;
 	GtkWidget *cancel;
 	GtkWidget *image;
-	BraseroTrayIcon *tray;
 
 	/* for our final statistics */
 	GTimer *total_time;
@@ -1220,10 +1209,6 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 					  mb_written,
 					  rate);
 
-	brasero_tray_icon_set_progress (BRASERO_TRAYICON (priv->tray),
-					task_progress,
-					remaining);
-
 	if (rate > 0 && priv->is_writing)
 		priv->rates = g_slist_prepend (priv->rates, GINT_TO_POINTER ((gint) rate));
 }
@@ -1273,9 +1258,6 @@ brasero_burn_dialog_action_changed_real (BraseroBurnDialog *dialog,
 	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (priv->progress),
 					  action,
 					  string);
-	brasero_tray_icon_set_action (BRASERO_TRAYICON (priv->tray),
-				      action,
-				      string);
 }
 
 static void
@@ -1617,17 +1599,9 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 					  -1,
 					  -1);
 
-	brasero_tray_icon_set_progress (BRASERO_TRAYICON (priv->tray),
-					0.0,
-					-1);
-
 	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (priv->progress),
 					  BRASERO_BURN_ACTION_NONE,
 					  NULL);
-
-	brasero_tray_icon_set_action (BRASERO_TRAYICON (priv->tray),
-				      BRASERO_BURN_ACTION_NONE,
-				      NULL);
 
 	g_timer_continue (priv->total_time);
 
@@ -2496,57 +2470,12 @@ brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 	return TRUE;
 }
 
-static gboolean
-brasero_burn_dialog_delete (GtkWidget *widget, 
-			    GdkEventAny *event)
-{
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (widget);
-
-	brasero_tray_icon_set_show_dialog (BRASERO_TRAYICON (priv->tray), FALSE);
- 	return TRUE;
-}
-
 static void
 brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroBurnDialog *dialog)
 {
 	/* a burning is ongoing cancel it */
 	brasero_burn_dialog_cancel (dialog, FALSE);
-}
-
-static void
-brasero_burn_dialog_tray_cancel_cb (BraseroTrayIcon *tray,
-				    BraseroBurnDialog *dialog)
-{
-	brasero_burn_dialog_cancel (dialog, FALSE);
-}
-
-static void
-brasero_burn_dialog_tray_show_dialog_cb (BraseroTrayIcon *tray,
-					 gboolean show,
-					 GtkWidget *dialog)
-{
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
-
-	/* we prevent to show the burn dialog once the success dialog has been 
-	 * shown to avoid the following strange behavior:
-	 * Steps:
-	 * - start burning
-	 * - move to another workspace (ie, virtual desktop)
-	 * - when the burning finishes, double-click the notification icon
-	 * - you'll be unable to dismiss the dialogues normally and their behaviour will
-	 *   be generally strange */
-	if (!priv->burn)
-		return;
-
-	if (show)
-		gtk_widget_show (dialog);
-	else
-		gtk_widget_hide (dialog);
 }
 
 static void
@@ -2560,16 +2489,6 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 	priv = BRASERO_BURN_DIALOG_PRIVATE (obj);
 
 	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 0);
-
-	priv->tray = brasero_tray_icon_new ();
-	g_signal_connect (priv->tray,
-			  "cancel",
-			  G_CALLBACK (brasero_burn_dialog_tray_cancel_cb),
-			  obj);
-	g_signal_connect (priv->tray,
-			  "show-dialog",
-			  G_CALLBACK (brasero_burn_dialog_tray_show_dialog_cb),
-			  obj);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
 	gtk_widget_show (alignment);
@@ -2614,22 +2533,6 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 }
 
 static void
-brasero_burn_dialog_destroy (GtkWidget * object)
-{
-	BraseroBurnDialogPrivate *priv;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
-
-	if (priv->burn) {
-		g_object_unref (priv->burn);
-		priv->burn = NULL;
-	}
-
-	if (GTK_WIDGET_CLASS (brasero_burn_dialog_parent_class)->destroy)
-		GTK_WIDGET_CLASS (brasero_burn_dialog_parent_class)->destroy (object);
-}
-
-static void
 brasero_burn_dialog_finalize (GObject * object)
 {
 	BraseroBurnDialogPrivate *priv;
@@ -2662,11 +2565,6 @@ brasero_burn_dialog_finalize (GObject * object)
 		priv->burn = NULL;
 	}
 
-	if (priv->tray) {
-		g_object_unref (priv->tray);
-		priv->tray = NULL;
-	}
-
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
@@ -2689,13 +2587,10 @@ static void
 brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroBurnDialogPrivate));
 
 	object_class->finalize = brasero_burn_dialog_finalize;
-	widget_class->destroy = brasero_burn_dialog_destroy;
-	widget_class->delete_event = brasero_burn_dialog_delete;
 }
 
 /**

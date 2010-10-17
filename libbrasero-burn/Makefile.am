@@ -137,8 +137,6 @@ libbrasero_burn@BRASERO_LIBRARY_SUFFIX@_la_SOURCES = 		\
 	brasero-src-image.h                 \
 	brasero-src-selection.c                 \
 	brasero-src-selection.h                 \
-	brasero-tray.c                 \
-	brasero-tray.h                 \
 	brasero-burn-lib.h                 \
 	brasero-error.h                 \
 	brasero-enums.h                 \
