@@ -4,14 +4,15 @@
 # Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
 # Mișu Moldovan <dumol@gnome.ro>, 2008, 2009.
 # Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009, 2010.
+# Daniel Șerbănescu <cyber19rider@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2010-10-05 08:14+0000\n"
-"PO-Revision-Date: 2010-08-01 20:47+0300\n"
-"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
+"POT-Creation-Date: 2010-10-13 17:31+0000\n"
+"PO-Revision-Date: 2010-10-15 14:38+0100\n"
+"Last-Translator: Daniel Șerbănescu <cyber19rider@gmail.com>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -60,7 +61,7 @@ msgstr "Toate fișierele"
 
 #: ../src/brasero-search.c:1045
 msgid "Number of results displayed"
-msgstr "Număr de rezultate afișate"
+msgstr "Numărul rezultatelor afișate"
 
 #: ../src/brasero-cli.c:70
 msgid "Open the specified project"
@@ -97,7 +98,7 @@ msgstr "Deschide un proiect audio adăugând URI-ul furnizat în linia de comand
 #: ../src/brasero-cli.c:94
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
-"Deschide un proiect cu date adăugând URI-ul furnizat în linia de comandă"
+"Deschide un proiect de date adăugând URI-ul furnizat în linia de comandă"
 
 #: ../src/brasero-cli.c:98
 msgid "Copy a disc"
@@ -109,7 +110,7 @@ msgstr "CALE CĂTRE DISPOZITIV"
 
 #: ../src/brasero-cli.c:102
 msgid "Cover to use"
-msgstr "Copertă folosită"
+msgstr "Copertă de folosit"
 
 #: ../src/brasero-cli.c:103
 msgid "PATH TO COVER"
@@ -121,7 +122,7 @@ msgstr "Deschide un proiect video adăugând URI-ul furnizat în linia de comand
 
 #: ../src/brasero-cli.c:110
 msgid "URI of an image file to burn (autodetected)"
-msgstr "URI-ul fișierului imagine ce va fi scris (autodetectat)"
+msgstr "URI-ul fișierului imagine de scris (autodetectat)"
 
 #: ../src/brasero-cli.c:111
 msgid "PATH TO IMAGE"
@@ -195,7 +196,7 @@ msgstr "Opțiuni incompatibile folosite în linia de comandă."
 
 #: ../src/brasero-cli.c:298
 msgid "Only one option can be given at a time"
-msgstr "Se poate folosi doar o singură opțiune în același timp."
+msgstr "La un moment dat se poate folosi doar o singură opțiune"
 
 #: ../libbrasero-burn/burn-plugin.c:645
 #, c-format
@@ -228,7 +229,7 @@ msgstr "„%s” nu poate fi găsit."
 #: ../plugins/cdrtools/burn-cdda2wav.c:214
 #, c-format
 msgid "Copying audio track %02d"
-msgstr "Se copiază pista audio %02d"
+msgstr "Se copiază piesa audio %02d"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:265
 msgid "Preparing to copy audio disc"
@@ -236,7 +237,7 @@ msgstr "Se pregătește copierea discului audio"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:411
 msgid "Copy tracks from an audio CD with all associated information"
-msgstr "Copiază piesele de pe un CD audio și toate datele asociate"
+msgstr "Copiază piesele de pe un CD audio cu toate informațiile asociate"
 
 #: ../libbrasero-burn/brasero-video-options.c:451
 msgid "Video format:"
@@ -311,7 +312,7 @@ msgstr "„%s” a fost șters din sistemul de fișiere."
 #: ../src/brasero-audio-disc.c:753 ../src/brasero-video-disc.c:365
 #, c-format
 msgid "Directories cannot be added to video or audio discs"
-msgstr "Directoarele nu pot fi adăugate discurilor video sau audio"
+msgstr "Dosarele nu pot fi adăugate discurilor video sau audio"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:142
 #, c-format
@@ -359,7 +360,7 @@ msgstr "Fișier ce nu poate fi citit"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:59
 msgid "Broken symbolic link"
-msgstr "Legătură simbolică invalidă"
+msgstr "Legătură simbolică nevalidă"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
 #: ../libbrasero-utils/brasero-io.c:1186 ../libbrasero-utils/brasero-io.c:2057
@@ -495,13 +496,13 @@ msgstr "Elementul %s nu a putut fi creat"
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
 #, c-format
 msgid "An internal error occurred"
-msgstr "S-a produs o eroare internă"
+msgstr "A apărut o eroare internă"
 
 #: ../libbrasero-burn/brasero-caps-burn.c:868
 #: ../libbrasero-burn/brasero-burn.c:2582
 #, c-format
 msgid "Only one track at a time can be checked"
-msgstr "Doar o pistă poate fi verificată la un moment dat"
+msgstr "Doar o piesă poate fi verificată la un moment dat"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:430
 msgid "Retrieving image format and size"
@@ -525,7 +526,7 @@ msgstr "%s (%i%% finalizat)"
 #: ../libbrasero-burn/brasero-burn-dialog.c:206
 #: ../libbrasero-burn/brasero-burn-dialog.c:1135
 msgid "Creating Image"
-msgstr "Se creează imaginea"
+msgstr "Creare imagine"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:211
 #: ../libbrasero-burn/brasero-burn-dialog.c:1144
@@ -573,11 +574,11 @@ msgstr "Se scrie DVD-ul video"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:281
 msgid "Simulation of data DVD burning"
-msgstr "Simularea scrierii unui DVD cu date"
+msgstr "Simularea scrierii unui DVD de date"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:283
 msgid "Burning data DVD"
-msgstr "Se scrie DVD-ul cu date"
+msgstr "Se scrie DVD-ul de date"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:291
 msgid "Simulation of image to DVD burning"
@@ -593,7 +594,7 @@ msgstr "Simularea copierii datelor de pe DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:303
 msgid "Copying data DVD"
-msgstr "Se copiază DVD-ul cu date"
+msgstr "Se copiază DVD-ul de date"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:314
 msgid "Simulation of (S)VCD burning"
@@ -619,7 +620,7 @@ msgstr "Simularea scrierii datelor pe CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:336
 msgid "Burning data CD"
-msgstr "Se scrie CD-ul cu date"
+msgstr "Se scrie CD-ul de date"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:344
 msgid "Simulation of CD copying"
@@ -643,11 +644,11 @@ msgstr "Se scrie discul video"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:387
 msgid "Simulation of data disc burning"
-msgstr "Simularea scrierii unui disc cu date"
+msgstr "Simularea scrierii unui disc de date"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:389
 msgid "Burning data disc"
-msgstr "Se scrie discul cu date"
+msgstr "Se scrie discul de date"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:397
 msgid "Simulation of disc copying"
@@ -681,7 +682,7 @@ msgstr "Introduceți un disc reinscriptibil ce conține informații."
 #: ../libbrasero-burn/brasero-burn-dialog.c:522
 #: ../libbrasero-burn/brasero-burn-options.c:496
 msgid "Please insert a disc holding data."
-msgstr "Introduceți un disc cu date."
+msgstr "Introduceți un disc de date."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:537
 #, c-format
@@ -755,8 +756,9 @@ msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a writable disc is inserted."
 msgstr ""
-"O imagine a discului a fost creată pe hardisc.\n"
-"Scrierea va începe imediat ce va fi introdus un mediu inscriptibil."
+"O imagine a discului a fost creată pe hard disc.\n"
+"Scrierea va începe imediat ce va fi introdus un mediu de stocare "
+"inscriptibil."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:610
 msgid "A data integrity test will begin as soon as the disc is inserted."
@@ -782,7 +784,7 @@ msgstr "Asigurați-vă că nu este accesat de altă aplicație"
 #: ../libbrasero-burn/brasero-burn-dialog.c:619
 #, c-format
 msgid "There is no disc in \"%s\"."
-msgstr "Nu se află nici un disc în „%s”."
+msgstr "Nu se află niciun disc în „%s”."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:623
 #, c-format
@@ -816,7 +818,7 @@ msgstr "Discul din „%s” trebuie reintrodus."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:648
 msgid "Please eject the disc and reload it."
-msgstr "Scoateți discul și introduceți din nou."
+msgstr "Scoateți discul și introduceți-l din nou."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:693
 #: ../libbrasero-burn/brasero-sum-dialog.c:333
@@ -869,7 +871,7 @@ msgstr "Locația pentru fișierele temporare"
 #: ../libbrasero-burn/brasero-burn-dialog.c:854
 #: ../libbrasero-burn/brasero-burn-dialog.c:1103
 msgid "_Replace Disc"
-msgstr "Î_nlocuiește disc"
+msgstr "Î_nlocuiește discul"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:895
 msgid "Do you really want to blank the current disc?"
@@ -882,7 +884,7 @@ msgstr "Discul din unitatea optică conține date."
 #. Translators: Blank is a verb here
 #: ../libbrasero-burn/brasero-burn-dialog.c:898
 msgid "_Blank Disc"
-msgstr "_Golire disc"
+msgstr "_Golește discul"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:912
 msgid ""
@@ -907,7 +909,7 @@ msgstr "_Importă"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:919
 msgid "Only _Append"
-msgstr "Doar _apendează"
+msgstr "Doar _adaugă"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:932
 msgid ""
@@ -924,7 +926,7 @@ msgstr "Doriți să continuați oricum?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:936
 msgid "Appending audio tracks to a CD is not advised."
-msgstr "Nu este încurajată adăugarea pistelor audio la un CD."
+msgstr "Nu este încurajată adăugarea pieselor audio la un CD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:938
 #: ../libbrasero-burn/brasero-burn-dialog.c:960 ../src/brasero-data-disc.c:572
@@ -941,7 +943,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-dialog.c:958
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr ""
-"Înregistrarea de piste audio pe un disc reînscriptibil nu este recomandată."
+"Înregistrarea de piese audio pe un disc reinscriptibil nu este recomandată."
 
 #. Translators: %s is the name of a drive
 #: ../libbrasero-burn/brasero-burn-dialog.c:1005
@@ -961,7 +963,7 @@ msgstr "Doriți să înlocuiți discul și să continuați?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1102
 msgid "The currently inserted disc could not be blanked."
-msgstr "Discul inserat nu a putut fi șters."
+msgstr "Discul introdus nu a putut fi golit."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1111
 msgid "Do you want to continue with full Windows compatibility disabled?"
@@ -1005,7 +1007,7 @@ msgstr "Eroare la scriere."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1740
 msgid "_Save Log"
-msgstr "_Salvare înregistrare"
+msgstr "_Salvează înregistrarea"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1773
 msgid "Video DVD successfully burned"
@@ -1050,11 +1052,11 @@ msgstr "Imagine scrisă cu succes pe CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1808
 msgid "Data DVD successfully burned"
-msgstr "DVD cu date scris cu succes"
+msgstr "DVD de date scris cu succes"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1810
 msgid "Data CD successfully burned"
-msgstr "CD cu date scris cu succes"
+msgstr "CD de date scris cu succes"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1870
 #, c-format
@@ -1087,7 +1089,7 @@ msgstr "Au mai rămas fișiere video de scris"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2131
 msgid "There are some more songs left to burn"
-msgstr "Au mai rămas fișiere audio de scris"
+msgstr "Au mai rămas melodii de scris"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2172
 #: ../libbrasero-burn/brasero-burn.c:1629
@@ -1132,11 +1134,11 @@ msgstr "Creează _imaginea"
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:307
 msgid "_Copy"
-msgstr "_Copiere"
+msgstr "_Copiază"
 
 #: ../libbrasero-burn/brasero-burn-options.c:310
 msgid "Make _Several Copies"
-msgstr "Fă _alte copii"
+msgstr "Fă _mai multe copii"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1514
@@ -1173,7 +1175,7 @@ msgstr "Alegeți un alt CD sau DVD sau introduceți unul nou."
 #: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1002
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr ""
-"Nu va fi scris pe disc nici un detaliu despre piste (artist, titlu, ...)."
+"Nu va fi scris pe disc niciun detaliu despre piese (artist, titlu, ...)."
 
 #: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1003
 msgid "This is not supported by the current active burning backend."
@@ -1186,11 +1188,11 @@ msgstr "Adăugați fișiere."
 
 #: ../libbrasero-burn/brasero-burn-options.c:476
 msgid "Please add songs."
-msgstr "Adăugați piese."
+msgstr "Adăugați melodii."
 
 #: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1258
 msgid "There are no songs to write to disc"
-msgstr "Nu există fișiere audio de scris pe disc"
+msgstr "Nu există melodii de scris pe disc"
 
 #: ../libbrasero-burn/brasero-burn-options.c:482
 msgid "Please add videos."
@@ -1210,7 +1212,7 @@ msgstr "Alegeți o imagine de disc."
 
 #: ../libbrasero-burn/brasero-burn-options.c:509
 msgid "There is no selected disc image."
-msgstr "Nu există nici o imagine disc selectată."
+msgstr "Nu există nicio imagine disc selectată."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
@@ -1278,7 +1280,7 @@ msgid ""
 "copied."
 msgstr ""
 "Va fi nevoie de un nou disc inscriptibil după ce informațiile încărcate acum "
-"sunt copiate."
+"vor fi copiate."
 
 #: ../libbrasero-burn/brasero-burn-options.c:658
 msgid "Select a disc to write to"
@@ -1420,7 +1422,7 @@ msgstr "Combinarea datelor nu este posibilă pe acest disc"
 
 #: ../libbrasero-burn/brasero-burn.c:1757
 msgid "There is no track to burn"
-msgstr "Nu există piste de scris"
+msgstr "Nu există piese de scris"
 
 #: ../libbrasero-burn/brasero-burn.c:1864
 msgid ""
@@ -1435,7 +1437,7 @@ msgstr "Nu s-a putut găsi un format pentru imaginea temporară"
 
 #: ../libbrasero-burn/brasero-cover.c:119
 msgid "Unknown song"
-msgstr "Piesă necunoscută"
+msgstr "Melodie necunoscută"
 
 #. Reminder: if this string happens to be used
 #. * somewhere else in brasero we'll need a
@@ -1577,7 +1579,7 @@ msgid ""
 "Brasero will simulate the burning and, if it is successful, go on with "
 "actual burning after 10 seconds"
 msgstr ""
-"Brasero va simula scrierea și, dacă totul merge bine, după 10 secunde va "
+"Brasero va simula scrierea și, dacă totul va merge bine, după 10 secunde va "
 "continua cu scrierea efectivă."
 
 #: ../libbrasero-burn/brasero-drive-properties.c:733
@@ -1621,7 +1623,7 @@ msgstr "Tip imagine disc:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:97
 msgid "Autodetect"
-msgstr "Autodetectare"
+msgstr "Detectează automat"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "ISO9660 image"
@@ -1679,7 +1681,7 @@ msgstr "Timp total: %02i:%02i:%02i"
 
 #: ../libbrasero-burn/brasero-progress.c:209
 msgid "Average drive speed:"
-msgstr "Viteză medie unităte:"
+msgstr "Viteza medie a unității:"
 
 #. Translators: first %02i is hours, the second one is minutes
 #. * and the third one is seconds.
@@ -1691,7 +1693,7 @@ msgstr "Timp rămas estimat: %02i:%02i:%02i"
 #: ../libbrasero-burn/brasero-progress.c:478
 #, c-format
 msgid "%i MiB of %i MiB"
-msgstr "%i MiB din %i MiB"
+msgstr "%i MiO din %i MiO"
 
 #: ../libbrasero-burn/brasero-progress.c:504
 msgid "Estimated drive speed:"
@@ -1726,7 +1728,7 @@ msgstr "Clic aici pentru a alege o _imagine disc"
 
 #: ../libbrasero-burn/brasero-src-image.c:415
 msgid "Select Disc Image"
-msgstr "Alegere imagine disc"
+msgstr "Alege imaginea disc"
 
 #. Translators: this a disc image here
 #: ../libbrasero-burn/brasero-src-image.c:450
@@ -1774,7 +1776,7 @@ msgstr "%s, %d%% finalizat"
 
 #: ../libbrasero-burn/burn-basics.c:77
 msgid "Getting size"
-msgstr "Se obține mărimea"
+msgstr "Se obține dimensiunea"
 
 #: ../libbrasero-burn/burn-basics.c:79
 msgid "Writing"
@@ -1798,7 +1800,7 @@ msgstr "Se analizează fișierele audio"
 
 #: ../libbrasero-burn/burn-basics.c:85
 msgid "Transcoding song"
-msgstr "Se transcodează piesa"
+msgstr "Se transcodează melodia"
 
 #: ../libbrasero-burn/burn-basics.c:86
 msgid "Preparing to write"
@@ -1806,7 +1808,7 @@ msgstr "Se pregătește scrierea"
 
 #: ../libbrasero-burn/burn-basics.c:87
 msgid "Writing leadin"
-msgstr "Se scrie începutul"
+msgstr "Se scrie începutul sesiunii"
 
 #: ../libbrasero-burn/burn-basics.c:88
 msgid "Writing CD-Text information"
@@ -1818,7 +1820,7 @@ msgstr "Se finalizează"
 
 #: ../libbrasero-burn/burn-basics.c:90
 msgid "Writing leadout"
-msgstr "Se scrie sfârșitul"
+msgstr "Se scrie sfârșitul sesiunii"
 
 #: ../libbrasero-burn/burn-basics.c:91
 msgid "Starting to record"
@@ -1874,7 +1876,7 @@ msgstr "Nu s-a putut obține dimensiunea volumului"
 #: ../libbrasero-burn/burn-job.c:627
 #, c-format
 msgid "No path was specified for the image output"
-msgstr "Nu a fost specificată nici o cale pentru ieșirea imaginii"
+msgstr "Nu a fost specificată nicio cale pentru ieșirea imaginii"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
@@ -1897,13 +1899,13 @@ msgstr "Fișierul nu este stocal local"
 #: ../libbrasero-burn/burn-mkisofs-base.c:646
 #, c-format
 msgid "VIDEO_TS directory is missing or invalid"
-msgstr "directorul VIDEO_TS lipsește sau este invalid"
+msgstr "directorul VIDEO_TS lipsește sau este nevalid"
 
 #. Translators: %s is the name of the brasero element
 #: ../libbrasero-burn/burn-process.c:259
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
-msgstr "Process „%s” a fost terminat cu cod de eroare (%i)"
+msgstr "Procesul „%s” a fost terminat cu cod de eroare (%i)"
 
 #: ../libbrasero-utils/brasero-disc-message.c:133
 msgid "_Hide changes"
@@ -1998,7 +2000,7 @@ msgstr "Aliniază la stânga"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:652
 msgid "Underline"
-msgstr "Subliniază"
+msgstr "Subliniat"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:662
 msgid "Italic"
@@ -2084,7 +2086,7 @@ msgstr ""
 
 #: ../libbrasero-media/brasero-media.c:477
 msgid "Brasero optical media library"
-msgstr "Bibliotecă mediu optic Brasero"
+msgstr "Bibliotecă pentru medii optice Brasero"
 
 #: ../libbrasero-media/brasero-media.c:478
 msgid "Display options for Brasero media library"
@@ -2219,15 +2221,15 @@ msgstr "DVD+RW"
 
 #: ../libbrasero-media/brasero-medium.c:74
 msgid "DVD+R dual layer"
-msgstr "DVD+R dual layer"
+msgstr "DVD+R cu două straturi"
 
 #: ../libbrasero-media/brasero-medium.c:75
 msgid "DVD+RW dual layer"
-msgstr "DVD+RW dual layer"
+msgstr "DVD+RW cu două straruti"
 
 #: ../libbrasero-media/brasero-medium.c:76
 msgid "DVD-R dual layer"
-msgstr "DVD-R dual layer"
+msgstr "DVD-R cu două straturi"
 
 #: ../libbrasero-media/brasero-medium.c:77
 msgid "DVD-RAM"
@@ -2250,35 +2252,35 @@ msgstr "Disc Blu-ray reinscriptibil"
 #: ../libbrasero-media/brasero-medium.c:219
 #, c-format
 msgid "Blank %s in %s"
-msgstr "%s gol în %s"
+msgstr "%s gol din %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
 #: ../libbrasero-media/brasero-medium.c:226
 #, c-format
 msgid "Audio and data %s in %s"
-msgstr "%s audio și cu date în %s"
+msgstr "%s audio și de date din %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
 #: ../libbrasero-media/brasero-medium.c:233
 #, c-format
 msgid "Audio %s in %s"
-msgstr "%s audio în %s"
+msgstr "%s audio din %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
 #: ../libbrasero-media/brasero-medium.c:240
 #, c-format
 msgid "Data %s in %s"
-msgstr "%s cu date în %s"
+msgstr "%s de date din %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
 #: ../libbrasero-media/brasero-medium.c:247
 #, c-format
 msgid "%s in %s"
-msgstr "%s în %s"
+msgstr "%s din %s"
 
 #: ../libbrasero-media/brasero-volume.c:192
 #, c-format
@@ -2295,7 +2297,7 @@ msgstr "Disc gol (%s)"
 #: ../libbrasero-media/brasero-volume.c:422
 #, c-format
 msgid "Audio and data disc (%s)"
-msgstr "Disc audio cu date (%s)"
+msgstr "Disc audio și de date (%s)"
 
 #. NOTE for translators: the first %s is the disc type.
 #. NOTE to translators: the final string must not be over
@@ -2313,7 +2315,7 @@ msgstr "Disc audio (%s)"
 #: ../libbrasero-media/brasero-volume.c:430 ../src/brasero-project-name.c:258
 #, c-format
 msgid "Data disc (%s)"
-msgstr "Disc cu date (%s)"
+msgstr "Disc de date (%s)"
 
 #: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project-name.c:84
 msgid "Unknown error"
@@ -2361,7 +2363,7 @@ msgstr "Cheie nestabilită"
 
 #: ../libbrasero-media/scsi-error.c:55
 msgid "Invalid track mode"
-msgstr "Mod pistă nevalid"
+msgstr "Mod piesă nevalid"
 
 #: ../src/eggdesktopfile.c:165
 #, c-format
@@ -2426,7 +2428,7 @@ msgstr "Opțiune administrare sesiune:"
 
 #: ../src/eggsmclient.c:245
 msgid "Show session management options"
-msgstr "Afișează opțiunile administratorului de sesiune"
+msgstr "Arată opțiunile administratorului de sesiune"
 
 #: ../src/brasero-pref.c:64
 msgid "Brasero Plugins"
@@ -2562,7 +2564,7 @@ msgstr "_Editare"
 
 #: ../src/brasero-app.c:126
 msgid "_Tools"
-msgstr "_Unelte"
+msgstr "_Instrumente"
 
 #: ../src/brasero-app.c:128
 msgid "_Help"
@@ -2702,7 +2704,8 @@ msgstr ""
 "  \n"
 "Corecturi finale:\n"
 "  Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
-"  Mișu Moldovan <dumol@gnome.ro>"
+"  Mișu Moldovan <dumol@gnome.ro>\n"
+"  Daniel Șerbănescu <cyber19rider@gmail.com>"
 
 #: ../src/brasero-app.c:1452
 #, c-format
@@ -2777,7 +2780,7 @@ msgstr "Dosarul folosit pentru fișierele temporare"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid "Enable file preview"
-msgstr "Activare previzualizare fișier"
+msgstr "Activează previzualizarea fișierului"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
 msgid "Enable the \"-immed\" flag with cdrecord"
@@ -2789,7 +2792,7 @@ msgstr "Suport preferat"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:10
 msgid "Replace symbolic links by their targets"
-msgstr "Înlocuiește fișierele simbolice cu destinația lor"
+msgstr "Înlocuiește legăturile simbolice cu destinația lor"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:11
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
@@ -2806,8 +2809,8 @@ msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
 msgstr ""
-"Definit la „true” dacă modulul de extensie pentru Nautilus trebuie să "
-"afișeze mesaje de depanare."
+"Definiți „true” dacă modulul de extensie pentru Nautilus trebuie să afișeze "
+"mesaje de depanare."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
 msgid "Should brasero filter broken symbolic links"
@@ -2838,7 +2841,7 @@ msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
 msgstr ""
-"Dacă Brasero va înlocuii în proiect legăturile simbolice cu destinația lor. "
+"Dacă Brasero va înlocui în proiect legăturile simbolice cu destinația lor. "
 "Definit la „true”, Brasero va înlocuii legăturile simbolice."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:19
@@ -2901,7 +2904,7 @@ msgstr ""
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
-"Specifică dacă să fie afișată previzualizarea de fișiere. Definit ca „true”, "
+"Specifică dacă să fie afișată previzualizarea de fișiere. Definiți „true”, "
 "pentru a o utiliza."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:30
@@ -2957,7 +2960,7 @@ msgstr "_Editare informații…"
 
 #: ../src/brasero-audio-disc.c:158
 msgid "Edit the track information (start, end, author, etc.)"
-msgstr "Editați informațiile pistelor (început, sfârșit, autor, etc.)"
+msgstr "Editați informațiile pieselor (început, sfârșit, autor, etc.)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:200
@@ -2967,7 +2970,7 @@ msgstr "Elimină fișierele selectate din proiect"
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
 msgid "Paste files"
-msgstr "Inserează fișierele"
+msgstr "Introdu fișierele"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
@@ -2976,7 +2979,7 @@ msgstr "Adaugă fișierele stocate în clipboard"
 
 #: ../src/brasero-audio-disc.c:164
 msgid "I_nsert a Pause"
-msgstr "I_ntroduce o pauză"
+msgstr "I_ntrodu o pauză"
 
 #: ../src/brasero-audio-disc.c:164
 msgid "Add a 2 second pause after the track"
@@ -2984,7 +2987,7 @@ msgstr "Adaugă o pauză de 2 secunde după fiecare piesă"
 
 #: ../src/brasero-audio-disc.c:166
 msgid "_Split Track…"
-msgstr "Împărțire pi_stă…"
+msgstr "Împarte pie_sa…"
 
 #: ../src/brasero-audio-disc.c:166
 msgid "Split the selected track"
@@ -3000,7 +3003,7 @@ msgstr "Împarte"
 
 #: ../src/brasero-audio-disc.c:417
 msgid "Track"
-msgstr "Pistă"
+msgstr "Piesă"
 
 #: ../src/brasero-audio-disc.c:457 ../src/brasero-video-disc.c:1216
 msgid "Title"
@@ -3017,7 +3020,7 @@ msgstr "Durată"
 
 #: ../src/brasero-audio-disc.c:584
 msgid "The track will be padded at its end."
-msgstr "Pista va fi completată la sfărșit."
+msgstr "Piesa va fi completată la sfârșit."
 
 #: ../src/brasero-audio-disc.c:585
 msgid "The track is shorter than 6 seconds"
@@ -3072,18 +3075,19 @@ msgid ""
 "be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
-"Unele din cântecele selectate sunt potrivite pentru a crea piste DTS.\n"
-"Acest tip de pistă audio are o calitate a sunetului mai bună, dar poate fi "
+"Unele dintre melodiile selectate sunt potrivite pentru crearea pistelor "
+"DTS.\n"
+"Acest tip de piesă audio are o calitate a sunetului mai bună, dar poate fi "
 "redată doar pe anumite CD-playere digitale.\n"
 "Notă: dacă sunteți de acord, normalizarea nu va fi aplicată acestor piese."
 
 #: ../src/brasero-audio-disc.c:866
 msgid "Create _Regular Tracks"
-msgstr "C_rează piste obișnuite"
+msgstr "C_reează piese obișnuite"
 
 #: ../src/brasero-audio-disc.c:868
 msgid "Click here to burn all songs as regular tracks"
-msgstr "Apăsați aici pentru a scrie toate cântecele ca piste obișnuite"
+msgstr "Apăsați aici pentru a scrie toate melodiile ca piese obișnuite"
 
 #: ../src/brasero-audio-disc.c:871
 msgid "Create _DTS Tracks"
@@ -3091,15 +3095,15 @@ msgstr "Crează piste _DTS"
 
 #: ../src/brasero-audio-disc.c:873
 msgid "Click here to burn all suitable songs as DTS tracks"
-msgstr "Apăsați aici pentru a scrie toate piesele potrivite ca piste DTS"
+msgstr "Apăsați aici pentru a scrie toate melodiile potrivite ca piste DTS"
 
 #: ../src/brasero-audio-disc.c:1296
 msgid "Select one song only please."
-msgstr "Alegeți doar o piesă"
+msgstr "Alegeți doar o melodie."
 
 #: ../src/brasero-audio-disc.c:1297
 msgid "Impossible to split more than one song at a time"
-msgstr "Nu se poate împărți mai mult de o piesă odată"
+msgstr "Nu se poate împărți mai mult de o melodie la un moment dat"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -3156,9 +3160,9 @@ msgstr "S-a produs o eroare necunoscută"
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] "%d piesă"
-msgstr[1] "%d piese"
-msgstr[2] "%d de piese"
+msgstr[0] "o melodie"
+msgstr[1] "%d melodii"
+msgstr[2] "%d de melodii"
 
 #: ../src/brasero-playlist.c:584
 msgid "Select Playlist"
@@ -3170,7 +3174,7 @@ msgstr "Liste de redare"
 
 #: ../src/brasero-playlist.c:761
 msgid "Number of Songs"
-msgstr "Număr de piese"
+msgstr "Număr de melodii"
 
 #: ../src/brasero-playlist.c:781
 msgid "Genre"
@@ -3182,7 +3186,7 @@ msgstr "Modul"
 
 #: ../src/brasero-plugin-manager-ui.c:63
 msgid "Enabled"
-msgstr "Activare"
+msgstr "Activat"
 
 #: ../src/brasero-plugin-manager-ui.c:143
 #, c-format
@@ -3197,11 +3201,11 @@ msgstr "_Despre"
 #: ../src/brasero-plugin-manager-ui.c:595
 #: ../src/brasero-plugin-manager-ui.c:980
 msgid "C_onfigure"
-msgstr "_Opțiuni"
+msgstr "C_onfigurează"
 
 #: ../src/brasero-plugin-manager-ui.c:605
 msgid "A_ctivate"
-msgstr "A_ctivare"
+msgstr "A_ctivează"
 
 #: ../src/brasero-plugin-manager-ui.c:617
 msgid "Ac_tivate All"
@@ -3243,7 +3247,7 @@ msgstr "Scrieți cuvintele cheie sau alegeți din meniu „Toate fișierele”"
 
 #: ../src/brasero-search-entry.c:326
 msgid "Select if you want to search among image files only"
-msgstr "Alegeți dacă doriți să căutați doar printre fișierele de tip imagine"
+msgstr "Alegeți dacă doriți să căutați doar printre fișierele imagine"
 
 #: ../src/brasero-search-entry.c:328
 msgid "Select if you want to search among video files only"
@@ -3255,7 +3259,7 @@ msgstr "Alegeți dacă doriți să căutați doar printre fișierele audio"
 
 #: ../src/brasero-search-entry.c:332
 msgid "Select if you want to search among your text documents only"
-msgstr "Alegeți dacă doriți să căutați doar printre fișierele de tip text"
+msgstr "Alegeți dacă doriți să căutați doar printre fișierele text"
 
 #: ../src/brasero-search-entry.c:334
 msgid "Click to start the search"
@@ -3285,11 +3289,11 @@ msgstr "Compozitor:"
 
 #: ../src/brasero-song-properties.c:235
 msgid "Song start:"
-msgstr "Început piesă:"
+msgstr "Început melodie:"
 
 #: ../src/brasero-song-properties.c:241
 msgid "Song end:"
-msgstr "Sfârșit piesă:"
+msgstr "Sfârșit melodie:"
 
 #: ../src/brasero-song-properties.c:247 ../src/brasero-multi-song-props.c:317
 msgid "Pause length:"
@@ -3305,12 +3309,12 @@ msgstr "Durata piesei:"
 
 #: ../src/brasero-song-properties.c:287 ../src/brasero-multi-song-props.c:345
 msgid "Song Information"
-msgstr "Detalii piesă"
+msgstr "Detalii despre melodie"
 
 #: ../src/brasero-song-properties.c:372
 #, c-format
 msgid "Song information for track %02i"
-msgstr "Detaliile piesei de la pista %02i"
+msgstr "Detaliile melodiei pentru piesa %02i"
 
 #. *
 #. * Translators: this is the position being played in a stream. The
@@ -3324,7 +3328,7 @@ msgstr "%s / %s"
 
 #: ../src/brasero-song-control.c:531
 msgid "No file"
-msgstr "Nici un fișier"
+msgstr "Niciun fișier"
 
 #: ../src/brasero-song-control.c:566
 msgid "Start and stop playing"
@@ -3364,7 +3368,7 @@ msgstr "_Renunță"
 
 #: ../src/brasero-data-disc.c:574
 msgid "Continue with the current modified project"
-msgstr "Continuă proiectul modificat curent"
+msgstr "Continuă cu proiectul modificat curent"
 
 #. Translators: %s is the name of the image
 #: ../src/brasero-data-disc.c:622
@@ -3498,7 +3502,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-status-dialog.c:235
 #: ../libbrasero-burn/brasero-status-dialog.c:297
 msgid "Ne_ver Add Such File"
-msgstr "_Nu adaugă niciodată un astfel de fișier"
+msgstr "_Nu adăuga niciodată un astfel de fișier"
 
 #: ../src/brasero-data-disc.c:852 ../src/brasero-data-disc.c:896
 #: ../libbrasero-burn/brasero-status-dialog.c:236
@@ -3591,7 +3595,7 @@ msgstr "Mod de redenumire"
 
 #: ../src/brasero-data-disc.c:2366 ../src/brasero-video-disc.c:1234
 msgid "Size"
-msgstr "Mărime"
+msgstr "Dimensiune"
 
 #: ../src/brasero-data-disc.c:2396
 msgid "Space"
@@ -3654,7 +3658,7 @@ msgstr "Nicio previzualizare"
 
 #: ../src/brasero-project.c:194
 msgid "Save current project"
-msgstr "Salvare proiect curent"
+msgstr "Salvează proiectul curent"
 
 #: ../src/brasero-project.c:195
 msgid "Save _As…"
@@ -3706,19 +3710,19 @@ msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Pentru a adăuga fișiere acestui proiect apăsați pe butonul „Șterge” sau "
+"Pentru a elimina fișiere din acest proiect apăsați pe butonul „Elimină” sau "
 "apăsați tasta „Delete”"
 
 #: ../src/brasero-project.c:796
 #, c-format
 msgid "Estimated project size: %s"
-msgstr "Mărime estimată proiect: %s"
+msgstr "Dimensiunea estimată a proiectului: %s"
 
 #: ../src/brasero-project.c:942 ../src/brasero-project.c:958
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
-"Mărimea proiectului este prea mare pentru disc chiar și cu activarea "
-"opțiunii de sciere peste dimensiunea standard."
+"Dimensiunea proiectului este prea mare pentru disc chiar și cu activarea "
+"opțiunii de scriere peste dimensiunea standard."
 
 #: ../src/brasero-project.c:969
 msgid ""
@@ -3740,7 +3744,7 @@ msgstr "Pornește scrierea conținutului selecției"
 
 #: ../src/brasero-project.c:1257
 msgid "Please add songs to the project."
-msgstr "Adăugați piese la proiect."
+msgstr "Adăugați melodii la proiect."
 
 #: ../src/brasero-project.c:1894 ../src/brasero-project.c:1929
 msgid "Do you really want to create a new project and discard the current one?"
@@ -3815,7 +3819,7 @@ msgstr "_Elimină"
 #: ../src/brasero-project.c:2431
 #, c-format
 msgid "Brasero — %s (Data Disc)"
-msgstr "Brasero – %s (Disc cu date)"
+msgstr "Brasero – %s (Disc de date)"
 
 #. Translators: %s is the name of the project
 #: ../src/brasero-project.c:2434
@@ -3831,7 +3835,7 @@ msgstr "Brasero – %s (Disc video)"
 
 #: ../src/brasero-project.c:2607 ../src/brasero-project.c:2910
 msgid "Your project has not been saved."
-msgstr "Proiectul nu v-a fost salvat."
+msgstr "Proiectul nu a fost salvat."
 
 #: ../src/brasero-project.c:2621
 msgid "Save the changes of current project before closing?"
@@ -3912,7 +3916,7 @@ msgstr ""
 
 #: ../src/brasero-project-manager.c:107
 msgid "New _Data Project"
-msgstr "Proiect cu _date nou"
+msgstr "Proiect de _date nou"
 
 #: ../src/brasero-project-manager.c:108
 #: ../src/brasero-project-type-chooser.c:79
@@ -3930,7 +3934,7 @@ msgstr "Proiect _video nou"
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:84
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
-msgstr "Creează un DVD sau un SVCD video ce poate fi redat pe TV"
+msgstr "Creează un DVD sau un SVCD ce poate fi redat pe TV"
 
 #: ../src/brasero-project-manager.c:111
 msgid "Copy _Disc…"
@@ -3942,7 +3946,7 @@ msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
 "another CD/DVD"
 msgstr ""
-"Creați o copie identică a unui CD audio sau un CD/DVD de date pe hard-disk "
+"Creați o copie identică a unui CD audio sau un CD/DVD de date pe hard disc "
 "sau pe un alt CD/DVD"
 
 #: ../src/brasero-project-manager.c:113
@@ -3993,21 +3997,21 @@ msgstr[2] "%d de fișiere selectate pot fi adăugate (%s)"
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
-msgstr[0] "Nu poate fi adăugat nici un fișier (%i fișier selectat)"
-msgstr[1] "Nu poate fi adăugat nici un fișier (%i fișiere selectate)"
-msgstr[2] "Nu poate fi adăugat nici un fișier (%i de fișiere selecte)"
+msgstr[0] "Nu poate fi adăugat niciun fișier (un fișier selectat)"
+msgstr[1] "Nu poate fi adăugat niciun fișier (%i fișiere selectate)"
+msgstr[2] "Nu poate fi adăugat niciun fișier (%i de fișiere selecte)"
 
 #: ../src/brasero-project-manager.c:297
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
-msgstr[0] "Nici un fișier suportat (%i fișier selectat)"
-msgstr[1] "Nici un fișier suportat (%i fișiere selectate)"
-msgstr[2] "Nici un fișier suportat (%i de fișiere selectate)"
+msgstr[0] "Niciun fișier suportat (un fișier selectat)"
+msgstr[1] "Niciun fișier suportat (%i fișiere selectate)"
+msgstr[2] "Niciun fișier suportat (%i de fișiere selectate)"
 
 #: ../src/brasero-project-manager.c:303 ../src/brasero-project-manager.c:457
 msgid "No file selected"
-msgstr "Nici un fișier selectat"
+msgstr "Niciun fișier selectat"
 
 #: ../src/brasero-project-manager.c:594
 msgid "Brasero — New Audio Disc Project"
@@ -4015,7 +4019,7 @@ msgstr "Brasero – Proiect nou pentru un disc audio"
 
 #: ../src/brasero-project-manager.c:608
 msgid "Brasero — New Data Disc Project"
-msgstr "Brasero – Proiect pentru un nou disc cu date"
+msgstr "Brasero – Proiect pentru un nou disc de date"
 
 #: ../src/brasero-project-manager.c:622
 msgid "Brasero — New Video Disc Project"
@@ -4063,11 +4067,11 @@ msgstr "Creați un CD audio tradițional"
 
 #: ../src/brasero-project-type-chooser.c:77
 msgid "D_ata project"
-msgstr "Proiect cu _date"
+msgstr "Proiect de _date"
 
 #: ../src/brasero-project-type-chooser.c:78
 msgid "Create a data CD/DVD"
-msgstr "Creați un CD/DVD cu date"
+msgstr "Creați un CD/DVD de date"
 
 #: ../src/brasero-project-type-chooser.c:82
 msgid "_Video project"
@@ -4075,7 +4079,7 @@ msgstr "Proiect _video"
 
 #: ../src/brasero-project-type-chooser.c:83
 msgid "Create a video DVD or an SVCD"
-msgstr "Creați un DVD sau un SVCD video"
+msgstr "Creați un DVD sau un SVCD"
 
 #: ../src/brasero-project-type-chooser.c:87
 msgid "Disc _copy"
@@ -4087,7 +4091,7 @@ msgstr "Creați o copie 1:1 a unui CD/DVD"
 
 #: ../src/brasero-project-type-chooser.c:92
 msgid "Burn _image"
-msgstr "Scrieți o _imagine"
+msgstr "Scriere _imagine"
 
 #: ../src/brasero-project-type-chooser.c:291
 msgid "Last _Unsaved Project"
@@ -4146,7 +4150,7 @@ msgstr "„%s” nu este un URI valid"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:515
 msgid "No MD5 file was given."
-msgstr "Nu s-a furnizat nici un fișier MD5."
+msgstr "Nu s-a furnizat niciun fișier MD5."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:692
 msgid "Use an _MD5 file to check the disc"
@@ -4175,11 +4179,11 @@ msgstr "Mărime estimată: %s"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:569
 msgid "Size Estimation"
-msgstr "Estimare mărime"
+msgstr "Estimare dimensiune"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:571
 msgid "Please wait until the estimation of the size is completed."
-msgstr "Așteptați ca estimarea mărimii să fie finalizată."
+msgstr "Așteptați ca estimarea dimensiunii să fie finalizată."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:572
 msgid "All files need to be analysed to complete this operation."
@@ -4438,7 +4442,7 @@ msgstr "Golește și formatează DVD-uri și BD-uri reinscriptibile"
 
 #: ../plugins/growisofs/burn-growisofs.c:753
 msgid "Burns and blanks DVDs and BDs"
-msgstr "Golește și formatează DVD-uri și BD-uri"
+msgstr "Golește și scrie DVD-uri și BD-uri"
 
 #: ../plugins/growisofs/burn-growisofs.c:924
 msgid "Allow DAO use"
@@ -4497,7 +4501,7 @@ msgstr "Opțiunile de citire nu au putut fi create"
 #: ../plugins/libburnia/burn-libisofs.c:684
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
-msgstr "Nici un părinte nu a putut fi găsit în arbore pentru calea „%s”"
+msgstr "Niciun părinte nu a putut fi găsit în arbore pentru calea „%s”"
 
 #: ../plugins/libburnia/burn-libisofs.c:744
 #: ../plugins/libburnia/burn-libisofs.c:811
@@ -4599,18 +4603,18 @@ msgstr "Se transcodează „%s”"
 #: ../plugins/transcode/burn-transcode.c:1773
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr ""
-"Convertește orice fișier audio într-un format potrivit pentru CD-urile audio"
+"Convertește orice melodie într-un format potrivit pentru CD-urile audio"
 
 #: ../src/brasero-split-dialog.c:166
 msgid "Do you really want to split the track?"
-msgstr "Sigur doriți să împărțiți pista?"
+msgstr "Sigur doriți să împărțiți piesa?"
 
 #: ../src/brasero-split-dialog.c:169
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
 msgstr ""
-"Dacă împărțiți pista, dimensiunea pistei noi va fi mai scurtă de 6 secunde "
+"Dacă împărțiți piesa, dimensiunea piesei noi va fi mai scurtă de 6 secunde "
 "și fi completată automat."
 
 #: ../src/brasero-split-dialog.c:175 ../src/brasero-split-dialog.c:748
@@ -4619,11 +4623,11 @@ msgstr "Î_mparte"
 
 #: ../src/brasero-split-dialog.c:603
 msgid "The track wasn't split."
-msgstr "Pista nu a fost împărțită."
+msgstr "Piesa nu a fost împărțită."
 
 #: ../src/brasero-split-dialog.c:604
 msgid "No silence could be detected"
-msgstr "Nu a fost găsită nici o perioadă de liniște."
+msgstr "Nu a fost detectată nicio porțiune de liniște"
 
 #: ../src/brasero-split-dialog.c:627
 msgid "An error occurred while detecting silences."
@@ -4651,7 +4655,7 @@ msgstr "Elimină t_ot"
 
 #: ../src/brasero-split-dialog.c:1053
 msgid "Split Track"
-msgstr "Împărțire pistă"
+msgstr "Împărțire piesă"
 
 #: ../src/brasero-split-dialog.c:1070
 msgid "M_ethod:"
@@ -4659,23 +4663,23 @@ msgstr "M_etodă:"
 
 #: ../src/brasero-split-dialog.c:1076
 msgid "Method to be used to split the track"
-msgstr "Metodă folosită pentru împărțirea pistei"
+msgstr "Metodă folosită pentru împărțirea piesei"
 
 #: ../src/brasero-split-dialog.c:1079
 msgid "Split track manually"
-msgstr "Împarte pista manual"
+msgstr "Împarte piesa manual"
 
 #: ../src/brasero-split-dialog.c:1080
 msgid "Split track in parts with a fixed length"
-msgstr "Împarte pista în părți de dimensiune fixă"
+msgstr "Împarte piesa în părți de dimensiune fixă"
 
 #: ../src/brasero-split-dialog.c:1081
 msgid "Split track in a fixed number of parts"
-msgstr "Împarte pista într-un număr fix de părți"
+msgstr "Împarte piesa într-un număr fix de părți"
 
 #: ../src/brasero-split-dialog.c:1082
 msgid "Split track for each silence"
-msgstr "Taie pista la fiecare moment de liniște"
+msgstr "Taie piesa la fiecare moment de liniște"
 
 #: ../src/brasero-split-dialog.c:1088
 msgid "_Slice"
@@ -4688,7 +4692,7 @@ msgstr "Adăugă un punct de împărțire"
 #. Translators: this goes with the next (= "seconds")
 #: ../src/brasero-split-dialog.c:1116
 msgid "Split this track every"
-msgstr "Taie această pistă la fiecare"
+msgstr "Taie această piesă la fiecare"
 
 #. Translators: this goes with the previous (= "Split track every")
 #: ../src/brasero-split-dialog.c:1125
@@ -4698,7 +4702,7 @@ msgstr "secunde"
 #. Translators: this goes with the next (= "parts")
 #: ../src/brasero-split-dialog.c:1134
 msgid "Split this track in"
-msgstr "Împarte acestă pistă în"
+msgstr "Împarte acestă piesă în"
 
 #. Translators: this goes with the previous (= "Split this track in")
 #: ../src/brasero-split-dialog.c:1143
@@ -4784,19 +4788,19 @@ msgstr "Suita de scriere cdrtools"
 #: ../src/brasero-eject-dialog.c:95
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
-msgstr "Discul din „%s” nu poate fi ejectat"
+msgstr "Discul din „%s” nu poate fi scos"
 
 #: ../src/brasero-eject-dialog.c:190
 msgid "_Eject"
-msgstr "_Ejectare"
+msgstr "_Scoate"
 
 #: ../src/brasero-eject-dialog.c:205
 msgid "Eject Disc"
-msgstr "Ejectează discul"
+msgstr "Scoate discul"
 
 #: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
 msgid "No file filtered"
-msgstr "Nici un fișier filtrat"
+msgstr "Niciun fișier filtrat"
 
 #: ../src/brasero-file-filtered.c:77
 #, c-format
@@ -4877,7 +4881,7 @@ msgstr "Se creează suma de control pentru fișierele imagine"
 #: ../plugins/checksum/burn-checksum-files.c:859
 #, c-format
 msgid "No checksum file could be found on the disc"
-msgstr "Nici o sumă de control nu a fost găsită pe disc"
+msgstr "Nicio sumă de control nu a fost găsită pe disc"
 
 #: ../plugins/checksum/burn-checksum-files.c:893
 msgid "Checking file integrity"
@@ -4905,7 +4909,7 @@ msgstr "Sumă control fișier"
 
 #: ../plugins/checksum/burn-checksum-files.c:1480
 msgid "Checks file integrities on a disc"
-msgstr "Verifică integritatea fișierelor pe disc"
+msgstr "Verifică integritatea fișierelor de pe disc"
 
 #: ../plugins/checksum/burn-checksum-files.c:1518
 #: ../plugins/checksum/burn-checksum-image.c:856
@@ -4941,7 +4945,7 @@ msgstr "Sumă control imagine"
 
 #: ../plugins/checksum/burn-checksum-image.c:832
 msgid "Checks disc integrity after it is burnt"
-msgstr "Verifică integritatea datelor pe disc după scriere"
+msgstr "Verifică integritatea datelor de pe disc după scriere"
 
 #: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
 #: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
@@ -4958,15 +4962,15 @@ msgstr "Elimină pauzele"
 
 #: ../src/brasero-multi-song-props.c:213
 msgid "Song titles"
-msgstr "Titluri piese"
+msgstr "Titluri melodii"
 
 #: ../src/brasero-multi-song-props.c:230
 msgid "Additional song information"
-msgstr "Detalii suplimentare piesă"
+msgstr "Detalii suplimentare despre melodie"
 
 #: ../src/brasero-rename.c:320
 msgid "Insert text"
-msgstr "Inserează text"
+msgstr "Introdu text"
 
 #: ../src/brasero-rename.c:321
 msgid "Delete text"
@@ -4982,12 +4986,12 @@ msgstr "Numerotează fișierele conform unui șablon"
 
 #: ../src/brasero-rename.c:324
 msgid "Insert number sequence at beginning"
-msgstr "Inserează numărul de secvență la început"
+msgstr "Introdu numărul de secvență la început"
 
 #. Translators: This is a verb. This is completed later
 #: ../src/brasero-rename.c:339
 msgid "Insert"
-msgstr "Inserare"
+msgstr "Introdu"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
@@ -5035,11 +5039,11 @@ msgstr "Elimină fișierele video selectate din proiect"
 
 #: ../src/brasero-video-disc.c:359
 msgid "Do you want to search for video files inside the directory?"
-msgstr "Doriți să căutați fișiere video în interiorul directorului?"
+msgstr "Doriți să căutați fișiere video în interiorul dosarului?"
 
 #: ../src/brasero-video-disc.c:369
 msgid "_Search Directory"
-msgstr "_Caută în director"
+msgstr "_Caută în dosar"
 
 #: ../src/brasero-video-disc.c:412
 #, c-format
@@ -5057,7 +5061,7 @@ msgstr "Se generează dispunerea fișierelor"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:374
 msgid "Creates disc images suitable for video DVDs"
-msgstr "Creează imagini de disc potrivite cu DVD-uri video"
+msgstr "Creează imagini de disc potrivite pentru DVD-uri video"
 
 #: ../plugins/transcode/burn-vob.c:1273
 msgid "Converting video file to MPEG2"
@@ -5070,7 +5074,20 @@ msgstr ""
 
 #: ../plugins/vcdimager/burn-vcdimager.c:484
 msgid "Creates disc images suitable for SVCDs"
-msgstr "Creează imagini de disc potrivite cu SVCD-uri"
+msgstr "Creează imagini de disc potrivite pentru SVCD-uri"
+
+#~ msgid ""
+#~ "Error while retrieving a key used for encryption. You may solve such a "
+#~ "problem with one of the following methods: in a terminal either set the "
+#~ "proper DVD region code for your CD/DVD player with the \"regionset %s\" "
+#~ "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
+#~ "command"
+#~ msgstr ""
+#~ "Eroare în timpul preluării unei chei utilizată pentru criptare. Puteți "
+#~ "rezolva o astfel de problemă prin una dintre următoarele metode: "
+#~ "stabiliți într-un terminal codul de regiune DVD corespunzător pentru "
+#~ "playerul dumneavoastră CD/DVD , cu comanda „regionset %s” sau rulați "
+#~ "comanda „DVDCSS_METHOD=title brasero --no-existing-session”"
 
 #~ msgid "by"
 #~ msgstr "de"
