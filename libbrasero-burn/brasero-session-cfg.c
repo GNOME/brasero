@@ -39,6 +39,8 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
+#include "brasero-volume.h"
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-plugin-manager.h"
@@ -722,8 +724,21 @@ brasero_session_cfg_check_volume_size (BraseroSessionCfg *self)
 		if (priv->output_format == BRASERO_IMAGE_FORMAT_NONE)
 			priv->output_format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (self));
 
-		if (!priv->output)
-			priv->output = brasero_image_format_get_default_path (priv->output_format);
+		if (!priv->output) {
+			gchar *name = NULL;
+
+			/* If we try to copy a volume get (and use) its name */
+			if (brasero_track_type_get_has_medium (priv->source)) {
+				BraseroMedium *medium;
+
+				medium = brasero_burn_session_get_src_medium (BRASERO_BURN_SESSION (self));
+				if (medium)
+					name = brasero_volume_get_name (BRASERO_VOLUME (medium));
+			}
+
+			priv->output = brasero_image_format_get_default_path (priv->output_format, name);
+			g_free (name);
+		}
 
 		directory = g_path_get_dirname (priv->output);
 		file = g_file_new_for_path (directory);

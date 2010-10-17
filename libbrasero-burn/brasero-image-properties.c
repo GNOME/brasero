@@ -118,6 +118,38 @@ brasero_image_properties_set_path (BraseroImageProperties *self,
 						     g_get_home_dir ());
 }
 
+static gchar *
+brasero_image_properties_get_output_path (BraseroImageProperties *self)
+{
+	gchar *path = NULL;
+	BraseroImageFormat format;
+	BraseroImagePropertiesPrivate *priv;
+
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+
+	format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
+	switch (format) {
+	case BRASERO_IMAGE_FORMAT_BIN:
+		brasero_burn_session_get_output (BRASERO_BURN_SESSION (priv->session),
+						 &path,
+						 NULL);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CLONE:
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+	case BRASERO_IMAGE_FORMAT_CUE:
+		brasero_burn_session_get_output (BRASERO_BURN_SESSION (priv->session),
+						 NULL,
+						 &path);
+		break;
+
+	default:
+		break;
+	}
+
+	return path;
+}
+
 static void
 brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 					    BraseroImageProperties *self)
@@ -146,18 +178,14 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 	if (!priv->edited) {
 		/* not changed: get a new default path */
 		g_free (image_path);
-		image_path = brasero_image_format_get_default_path (format);
+		image_path = brasero_image_properties_get_output_path (self);
 	}
-	else if (image_path) {
+	else {
 		gchar *tmp;
 
 		tmp = image_path;
 		image_path = brasero_image_format_fix_path_extension (format, FALSE, image_path);
 		g_free (tmp);
-	}
-	else {
-		priv->edited = FALSE;
-		image_path = brasero_image_format_get_default_path (format);
 	}
 
 	brasero_image_properties_set_path (self, image_path);
@@ -340,38 +368,6 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 								  BRASERO_VCD_V2);
 		}
 	}
-}
-
-static gchar *
-brasero_image_properties_get_output_path (BraseroImageProperties *self)
-{
-	gchar *path = NULL;
-	BraseroImageFormat format;
-	BraseroImagePropertiesPrivate *priv;
-
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
-
-	format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
-	switch (format) {
-	case BRASERO_IMAGE_FORMAT_BIN:
-		brasero_burn_session_get_output (BRASERO_BURN_SESSION (priv->session),
-						 &path,
-						 NULL);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CLONE:
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-	case BRASERO_IMAGE_FORMAT_CUE:
-		brasero_burn_session_get_output (BRASERO_BURN_SESSION (priv->session),
-						 NULL,
-						 &path);
-		break;
-
-	default:
-		break;
-	}
-
-	return path;
 }
 
 static void

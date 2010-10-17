@@ -840,7 +840,8 @@ brasero_image_format_get_clone_size (gchar *uri,
 }
 
 gchar *
-brasero_image_format_get_default_path (BraseroImageFormat format)
+brasero_image_format_get_default_path (BraseroImageFormat format,
+				       const gchar *name)
 {
 	const gchar *suffixes [] = {".iso",
 				    ".toc",
@@ -860,15 +861,17 @@ brasero_image_format_get_default_path (BraseroImageFormat format)
 	else if (format & BRASERO_IMAGE_FORMAT_CDRDAO)
 		suffix = suffixes [3];
 
-	path = g_strdup_printf ("%s/brasero%s",
+	path = g_strdup_printf ("%s/%s%s",
 				g_get_home_dir (),
+				name? name:"brasero",
 				suffix);
 
 	while (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		g_free (path);
 
-		path = g_strdup_printf ("%s/brasero-%i%s",
+		path = g_strdup_printf ("%s/%s-%i%s",
 					g_get_home_dir (),
+					name? name:"brasero",
 					i,
 					suffix);
 		i ++;
