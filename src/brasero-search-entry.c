@@ -202,8 +202,11 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 				    G_TYPE_STRING,
 				    G_TYPE_STRING);
 
-	obj->priv->combo = gtk_combo_box_entry_new_with_model (GTK_TREE_MODEL (store),
-							       BRASERO_SEARCH_ENTRY_DISPLAY_COL);
+	obj->priv->combo = g_object_new (GTK_TYPE_COMBO_BOX,
+                                         "has-entry", TRUE,
+                                         "model", store,
+                                         "entry-text-column", BRASERO_SEARCH_ENTRY_DISPLAY_COL,
+                                         NULL);
 	g_object_unref (store);
 	g_signal_connect (G_OBJECT (obj->priv->combo),
 			  "changed",
