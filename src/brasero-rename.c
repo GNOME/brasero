@@ -73,7 +73,7 @@ brasero_rename_set_show_keep_default (BraseroRename *self,
 		if (!priv->show_default)
 			return;
 
-		gtk_combo_box_remove_text (GTK_COMBO_BOX (priv->combo), 0);
+		gtk_combo_box_text_remove (GTK_COMBO_BOX_TEXT (priv->combo), 0);
 
 		/* make sure there is one item active */
 		if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1) {
@@ -311,17 +311,17 @@ brasero_rename_init (BraseroRename *object)
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
 
-	priv->combo = gtk_combo_box_new_text ();
+	priv->combo = gtk_combo_box_text_new ();
 	gtk_widget_show (priv->combo);
 	gtk_box_pack_start (GTK_BOX (object), priv->combo, FALSE, FALSE, 0);
 
 	priv->show_default = 1;
-	gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->combo), _("<Keep current values>"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Insert text"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Delete text"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Substitute text"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Number files according to a pattern"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Insert number sequence at beginning"));
+	gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (priv->combo), _("<Keep current values>"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Insert text"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Delete text"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Substitute text"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Number files according to a pattern"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Insert number sequence at beginning"));
 
 	g_signal_connect (priv->combo,
 			  "changed",
@@ -345,16 +345,16 @@ brasero_rename_init (BraseroRename *object)
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	priv->insert_entry = entry;
 
-	combo = gtk_combo_box_new_text ();
+	combo = gtk_combo_box_text_new ();
 	gtk_widget_show (combo);
 
 	/* Translators: This finishes previous action "Insert". It goes like
 	 * this: "Insert" [Entry] "at the beginning". */
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("at the beginning"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("at the beginning"));
 
 	/* Translators: This finishes previous action "Insert". It goes like
 	 * this: "Insert" [Entry] "at the end". */
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("at the end"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("at the end"));
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);

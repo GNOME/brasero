@@ -1045,14 +1045,14 @@ brasero_search_init (BraseroSearch *obj)
 	label = gtk_label_new (_("Number of results displayed"));
 	gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
 
-	combo = gtk_combo_box_new_text ();
+	combo = gtk_combo_box_text_new ();
 	g_signal_connect (combo,
 			  "changed",
 			  G_CALLBACK (brasero_search_max_results_num_changed_cb),
 			  obj);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), "20");
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), "50");
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), "100");
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), "20");
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), "50");
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), "100");
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 1);
 	obj->priv->max_results = 50;

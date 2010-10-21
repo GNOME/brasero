@@ -2730,18 +2730,18 @@ brasero_project_save_project_ask_for_path (BraseroProject *project,
 	 * in plain text a list of the current displayed songs (only in save as
 	 * mode) */
 	if (type && BRASERO_IS_AUDIO_DISC (project->priv->current)) {
-		combo = gtk_combo_box_new_text ();
+		combo = gtk_combo_box_text_new ();
 		gtk_widget_show (combo);
 
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a Brasero audio project"));
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a plain text list"));
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Save project as a Brasero audio project"));
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Save project as a plain text list"));
 
 #ifdef BUILD_PLAYLIST
 
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a PLS playlist"));
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an M3U playlist"));
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an XSPF playlist"));
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an iriver playlist"));
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Save project as a PLS playlist"));
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Save project as an M3U playlist"));
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Save project as an XSPF playlist"));
+		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Save project as an iriver playlist"));
 
 #endif
 

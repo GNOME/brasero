@@ -255,7 +255,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
 
-	combo = gtk_combo_box_new_text ();
+	combo = gtk_combo_box_text ();
 	priv->color_style = combo;
 	gtk_widget_show (combo);
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Solid color"));
@@ -339,12 +339,12 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 			  GTK_FILL,
 			  0, 0);
 
-	combo = gtk_combo_box_new_text ();
+	combo = gtk_combo_box_text_new ();
 	priv->image_style = combo;
 	gtk_widget_show (combo);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Centered"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Tiled"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Scaled"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Centered"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Tiled"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Scaled"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	gtk_table_attach (GTK_TABLE (table),
 			  priv->image_style,

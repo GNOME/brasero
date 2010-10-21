@@ -1065,7 +1065,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
 
-	priv->combo = gtk_combo_box_new_text ();
+	priv->combo = gtk_combo_box_text_new ();
 
 	label = gtk_label_new_with_mnemonic (_("M_ethod:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -1076,10 +1076,10 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_set_tooltip_text (priv->combo, _("Method to be used to split the track"));
 	gtk_widget_show (priv->combo);
 	gtk_box_pack_start (GTK_BOX (hbox), priv->combo, TRUE, TRUE, 0);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track manually"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in parts with a fixed length"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in a fixed number of parts"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track for each silence"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Split track manually"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Split track in parts with a fixed length"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Split track in a fixed number of parts"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (priv->combo), _("Split track for each silence"));
 	g_signal_connect (priv->combo,
 			  "changed",
 			  G_CALLBACK (brasero_split_dialog_combo_changed_cb),
