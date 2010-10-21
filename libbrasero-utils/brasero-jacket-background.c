@@ -255,12 +255,12 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
 
-	combo = gtk_combo_box_text ();
+	combo = gtk_combo_box_text_new ();
 	priv->color_style = combo;
 	gtk_widget_show (combo);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Solid color"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Horizontal gradient"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Vertical gradient"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Solid color"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Horizontal gradient"));
+	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo), _("Vertical gradient"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox2), combo, FALSE, TRUE, 0);
 	g_signal_connect (combo,
