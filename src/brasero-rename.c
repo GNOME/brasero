@@ -86,8 +86,8 @@ brasero_rename_set_show_keep_default (BraseroRename *self,
 		if (priv->show_default)
 			return;
 
-		gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->combo),
-					     _("<Keep current values>"));
+		gtk_combo_box_text_prepend_text  (GTK_COMBO_BOX_TEXT (priv->combo),
+						  _("<Keep current values>"));
 	}
 
 	priv->show_default = show;
