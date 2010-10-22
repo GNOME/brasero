@@ -43,7 +43,7 @@
 
 static GDBusConnection *conn;
 
-void 
+void
 brasero_uninhibit_suspend (guint cookie)
 {
 	GError		*error = NULL;
@@ -80,9 +80,11 @@ brasero_uninhibit_suspend (guint cookie)
 		g_warning ("Failed to restore the system power manager: %s",
 			    error->message);
 		g_error_free (error);
-	}
+	} else {
+                g_variant_get (res, "(u)", &cookie);
+                g_variant_unref (res);
+        }
 
-	g_variant_unref (res);
 }
 
 gint
@@ -127,9 +129,8 @@ brasero_inhibit_suspend (const char *reason)
 	}
 	else {
 		g_variant_get (res, "(u)", &cookie);
+		g_variant_unref (res);
 	}
-
-	g_variant_unref (res);
 
 	return cookie;
 }
