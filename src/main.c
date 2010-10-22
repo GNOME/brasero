@@ -101,10 +101,20 @@ main (int argc, char **argv)
 	g_option_context_free (context);
 
 	if (cmd_line_options.not_unique == FALSE) {
+		GError *error = NULL;
 		/* Create GApplication and check if there is a process running already */
-		gapp = g_application_new ("org.gnome.Brasero", argc, argv);
-		if (g_application_is_remote (gapp))
+		gapp = g_application_new ("org.gnome.Brasero", G_APPLICATION_FLAGS_NONE);
+
+		if (!g_application_register (gapp, NULL, &error)) {
+			g_warning ("Brasero registered");
+			g_error_free (error);
+			return 1;
+		}
+
+		if (g_application_get_is_remote (gapp)) {
+			g_warning ("An instance of Brasero is already running, exiting");
 			return 0;
+		}
 	}
 
 	brasero_burn_library_start (&argc, &argv);
