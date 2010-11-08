@@ -1280,12 +1280,14 @@ brasero_jacket_view_realize (GtkWidget *widget)
 }
 
 static void
-brasero_jacket_view_size_request (GtkWidget *widget,
-				  GtkRequisition *request)
+brasero_jacket_view_get_preferred_width (GtkWidget *widget,
+                                         gint      *minimum,
+                                         gint      *natural)
 {
 	BraseroJacketViewPrivate *priv;
 	GtkWidget *toplevel;
 	gdouble resolution;
+        gint width;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
 
@@ -1299,16 +1301,47 @@ brasero_jacket_view_size_request (GtkWidget *widget,
 	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
 
 	if (priv->side == BRASERO_JACKET_FRONT) {
-		request->width = COVER_WIDTH_FRONT_INCH * resolution + BRASERO_JACKET_VIEW_MARGIN * 2.0;
-		request->height = COVER_HEIGHT_FRONT_INCH * resolution + BRASERO_JACKET_VIEW_MARGIN * 2.0;
+		width = COVER_WIDTH_FRONT_INCH * resolution + BRASERO_JACKET_VIEW_MARGIN * 2.0;
 	}
 	else if (priv->side == BRASERO_JACKET_BACK) {
-		request->width = COVER_WIDTH_BACK_INCH * resolution +
+		width = COVER_WIDTH_BACK_INCH * resolution +
 				 BRASERO_JACKET_VIEW_MARGIN * 2.0;
-		request->height = COVER_HEIGHT_BACK_INCH * resolution +
-				  COVER_WIDTH_SIDE_INCH * resolution +
-				  BRASERO_JACKET_VIEW_MARGIN * 3.0;
 	}
+
+        *minimum = *natural = width;
+}
+
+static void
+brasero_jacket_view_get_preferred_height (GtkWidget *widget,
+                                          gint      *minimum,
+                                          gint      *natural)
+{
+	BraseroJacketViewPrivate *priv;
+	GtkWidget *toplevel;
+	gdouble resolution;
+        gint height;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
+
+	if (!gtk_widget_get_parent (widget))
+		return;
+
+	toplevel = gtk_widget_get_toplevel (widget);
+	if (!GTK_IS_WINDOW (toplevel))
+		return;
+
+	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
+
+	if (priv->side == BRASERO_JACKET_FRONT) {
+		height = COVER_HEIGHT_FRONT_INCH * resolution + BRASERO_JACKET_VIEW_MARGIN * 2.0;
+	}
+	else if (priv->side == BRASERO_JACKET_BACK) {
+		height = COVER_HEIGHT_BACK_INCH * resolution +
+			 COVER_WIDTH_SIDE_INCH * resolution +
+			 BRASERO_JACKET_VIEW_MARGIN * 3.0;
+	}
+
+        *minimum = *natural = height;
 }
 
 static void
@@ -1507,7 +1540,8 @@ brasero_jacket_view_class_init (BraseroJacketViewClass *klass)
 	widget_class->draw = brasero_jacket_view_draw;
 	widget_class->realize = brasero_jacket_view_realize;
 	widget_class->size_allocate = brasero_jacket_view_size_allocate;
-	widget_class->size_request = brasero_jacket_view_size_request;
+	widget_class->get_preferred_width = brasero_jacket_view_get_preferred_width;
+	widget_class->get_preferred_height = brasero_jacket_view_get_preferred_height;
 
 	container_class->forall = brasero_jacket_view_container_forall;
 	container_class->remove = brasero_jacket_view_container_remove;

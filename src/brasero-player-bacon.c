@@ -200,19 +200,35 @@ brasero_player_bacon_draw (GtkWidget *widget, cairo_t *cr)
 }
 
 static void
-brasero_player_bacon_size_request (GtkWidget *widget,
-				   GtkRequisition *requisition)
+brasero_player_bacon_get_preferred_width (GtkWidget *widget,
+                                          gint      *minimum,
+                                          gint      *natural)
 {
 	BraseroPlayerBacon *bacon;
 
 	g_return_if_fail (widget != NULL);
 	bacon = BRASERO_PLAYER_BACON (widget);
 
-	requisition->width = PLAYER_BACON_WIDTH;
-	requisition->height = PLAYER_BACON_HEIGHT;
+	*minimum = *natural = PLAYER_BACON_WIDTH;
 
-	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->size_request)
-		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->size_request (widget, requisition);
+	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->get_preferred_width)
+		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->get_preferred_width (widget, minimum, natural);
+}
+
+static void
+brasero_player_bacon_get_preferred_height (GtkWidget *widget,
+                                           gint      *minimum,
+                                          gint      *natural)
+{
+	BraseroPlayerBacon *bacon;
+
+	g_return_if_fail (widget != NULL);
+	bacon = BRASERO_PLAYER_BACON (widget);
+
+	*minimum = *natural = PLAYER_BACON_WIDTH;
+
+	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->get_preferred_height)
+		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->get_preferred_height (widget, minimum, natural);
 }
 
 static void
@@ -672,7 +688,8 @@ brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
 	widget_class->draw = brasero_player_bacon_draw;
 	widget_class->realize = brasero_player_bacon_realize;
 	widget_class->unrealize = brasero_player_bacon_unrealize;
-	widget_class->size_request = brasero_player_bacon_size_request;
+        widget_class->get_preferred_width = brasero_player_bacon_get_preferred_width;
+        widget_class->get_preferred_height = brasero_player_bacon_get_preferred_height;
 	widget_class->size_allocate = brasero_player_bacon_size_allocate;
 
 	brasero_player_bacon_signals [STATE_CHANGED_SIGNAL] = 
