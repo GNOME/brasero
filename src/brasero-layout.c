@@ -843,12 +843,12 @@ brasero_layout_change_type (BraseroLayout *layout,
 	switch (layout_type) {
 		case BRASERO_LAYOUT_TOP:
 		case BRASERO_LAYOUT_BOTTOM:
-			layout->priv->pane = gtk_vpaned_new ();
+			layout->priv->pane = gtk_paned_new (GTK_ORIENTATION_VERTICAL);
 			break;
 
 		case BRASERO_LAYOUT_RIGHT:
 		case BRASERO_LAYOUT_LEFT:
-			layout->priv->pane = gtk_hpaned_new ();
+			layout->priv->pane = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
 			break;
 
 		default:
@@ -1068,12 +1068,12 @@ brasero_layout_init (BraseroLayout *obj)
 	switch (obj->priv->layout_type) {
 		case BRASERO_LAYOUT_TOP:
 		case BRASERO_LAYOUT_BOTTOM:
-			obj->priv->pane = gtk_vpaned_new ();
+			obj->priv->pane = gtk_paned_new (GTK_ORIENTATION_VERTICAL);
 			break;
 
 		case BRASERO_LAYOUT_RIGHT:
 		case BRASERO_LAYOUT_LEFT:
-			obj->priv->pane = gtk_hpaned_new ();
+			obj->priv->pane = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
 			break;
 
 		default:
