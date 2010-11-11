@@ -3412,59 +3412,12 @@ brasero_track_data_cfg_finalize (GObject *object)
 		 * so we better remove all signals.
 		 * When an image URI is detected it can happen
 		 * that we'll be destroyed. */
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_node_added,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_node_changed,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_node_removed,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_node_reordered,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_size_changed_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_session_available_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_session_loaded_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_project_loaded,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_activity_changed,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_deep_directory,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_2G_file,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_unreadable_uri_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_unknown_uri_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_recursive_uri_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_image_uri_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_virtual_sibling_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_name_collision_cb,
-		                                      object);
-		g_signal_handlers_disconnect_by_func (priv->tree,
-		                                      brasero_track_data_cfg_joliet_rename_cb,
+		g_signal_handlers_disconnect_matched (priv->tree,
+		                                      G_SIGNAL_MATCH_DATA,
+		                                      0,
+		                                      0,
+		                                      NULL,
+		                                      NULL,
 		                                      object);
 
 		g_object_unref (priv->tree);
