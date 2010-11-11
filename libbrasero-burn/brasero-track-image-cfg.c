@@ -418,6 +418,27 @@ brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 }
 
 static BraseroBurnResult
+brasero_track_image_cfg_get_size (BraseroTrack *track,
+                                  goffset *blocks,
+                                  goffset *block_size)
+{
+	BraseroTrackImageCfgPrivate *priv;
+
+	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
+
+	if (priv->cancel)
+		return BRASERO_BURN_NOT_READY;
+
+	if (priv->error)
+		return BRASERO_BURN_ERR;
+
+	if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE)
+		return BRASERO_BURN_ERR;
+
+	return BRASERO_TRACK_CLASS (brasero_track_image_cfg_parent_class)->get_size (track, blocks, block_size);
+}
+
+static BraseroBurnResult
 brasero_track_image_cfg_get_status (BraseroTrack *track,
 				    BraseroStatus *status)
 {
@@ -495,6 +516,7 @@ brasero_track_image_cfg_class_init (BraseroTrackImageCfgClass *klass)
 	object_class->finalize = brasero_track_image_cfg_finalize;
 
 	track_class->get_status = brasero_track_image_cfg_get_status;
+	track_class->get_size = brasero_track_image_cfg_get_size;
 }
 
 /**
