@@ -1999,16 +1999,14 @@ brasero_app_create_mainwin (BraseroApp *app)
 }
 
 static void
-brasero_app_prepare_activation (GApplication *gapp,
-                                GVariant *arguments,
-                                GVariant *platform_data,
-                                BraseroApp *app)
+brasero_app_activate (GApplication *gapp,
+                      BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	/* Except if we are supposed to quit show the window */
+	/* Except if we are supposed to quit, show the window */
 	if (priv->mainwin_running) {
 		gtk_widget_show (priv->mainwin);
 		gtk_window_present (GTK_WINDOW (priv->mainwin));
@@ -2030,8 +2028,8 @@ brasero_app_run_mainwin (BraseroApp *app)
 
 	if (priv->gapp)
 		g_signal_connect (priv->gapp,
-				  "prepare-activation",
-				  G_CALLBACK (brasero_app_prepare_activation),
+				  "activate",
+				  G_CALLBACK (brasero_app_activate),
 				  app);
 	gtk_main ();
 	return TRUE;
