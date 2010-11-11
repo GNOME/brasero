@@ -38,16 +38,17 @@ typedef struct NautilusDiscBurnBarPrivate NautilusDiscBurnBarPrivate;
 
 typedef struct
 {
-        GtkHBox                 box;
-
+        GtkHBox                     box;
         NautilusDiscBurnBarPrivate *priv;
 } NautilusDiscBurnBar;
 
 typedef struct
 {
-        GtkHBoxClass            parent_class;
+        GtkHBoxClass          parent_class;
 
-	void (* activate) (NautilusDiscBurnBar *bar);
+	void (* title_changed) (NautilusDiscBurnBar *bar);
+	void (* icon_changed)  (NautilusDiscBurnBar *bar);
+	void (* activate)      (NautilusDiscBurnBar *bar);
 
 } NautilusDiscBurnBarClass;
 
@@ -55,6 +56,20 @@ GType       nautilus_disc_burn_bar_get_type          (void);
 GtkWidget  *nautilus_disc_burn_bar_new               (void);
 
 GtkWidget  *nautilus_disc_burn_bar_get_button        (NautilusDiscBurnBar *bar);
+
+const gchar *
+nautilus_disc_burn_bar_get_icon (NautilusDiscBurnBar *bar);
+
+void
+nautilus_disc_burn_bar_set_icon (NautilusDiscBurnBar *bar,
+                                 const gchar *icon_path);
+
+void
+nautilus_disc_burn_bar_set_title (NautilusDiscBurnBar *bar,
+                                  const gchar *title);
+
+const gchar *
+nautilus_disc_burn_bar_get_title (NautilusDiscBurnBar *bar);
 
 G_END_DECLS
 

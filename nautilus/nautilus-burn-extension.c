@@ -55,15 +55,13 @@
 
 #include "nautilus-burn-bar.h"
 
-#include "brasero-project-name.h"
-
 #include "brasero-misc.h"
-#include "brasero-drive-settings.h"
 
 #include "brasero-media-private.h"
 #include "burn-debug.h"
 
-#define BURN_URI "burn:///"
+#define BURN_URI	"burn:///"
+#define WINDOW_KEY      "NautilusWindow"
 
 #define NAUTILUS_TYPE_DISC_BURN  (nautilus_disc_burn_get_type ())
 #define NAUTILUS_DISC_BURN(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_DISC_BURN, NautilusDiscBurn))
@@ -93,6 +91,9 @@ struct _NautilusDiscBurnPrivate
         guint         empty_update_id;
 
         GSList       *widget_list;
+
+	gchar        *title;
+	gchar        *icon;
 };
 
 static GType nautilus_disc_burn_get_type      (void);
@@ -141,12 +142,6 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	GtkResponseType		 result;
 	const gchar		*icon_name;
 	GtkWidget		*dialog;
-	BraseroDriveSettings	*settings;
-
-	/* Set saved temporary directory for the session.
-	 * NOTE: BraseroBurnSession can cope with NULL path */
-	settings = brasero_drive_settings_new ();
-	brasero_drive_settings_set_session (settings, BRASERO_BURN_SESSION (session));
 
 	/* Get the icon for the window */
 	if (window)
@@ -169,10 +164,8 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	gtk_widget_destroy (dialog);
 
 	if (result != GTK_RESPONSE_OK
-	&&  result != GTK_RESPONSE_ACCEPT) {
-		g_object_unref (settings);
+	&&  result != GTK_RESPONSE_ACCEPT)
 		return;
-	}
 
 	/* now run burn dialog */
 	dialog = brasero_burn_dialog_new ();
@@ -195,8 +188,6 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 		                                         BRASERO_BURN_SESSION (session));
 
 	gtk_widget_destroy (dialog);
-
-	g_object_unref (settings);
 }
 
 static gboolean
@@ -257,23 +248,11 @@ nautilus_disc_burn_is_empty (GtkWindow *toplevel)
 }
 
 static void
-brasero_session_name_changed (BraseroProjectName *project_name,
-                              BraseroBurnSession *session)
-{
-	const gchar *label;
-
-	label = gtk_entry_get_text (GTK_ENTRY (project_name));
-	brasero_burn_session_set_label (session, label);
-}
-
-static void
-write_activate (GtkWindow *toplevel)
+write_activate (NautilusDiscBurn *burn,
+                GtkWindow *toplevel)
 {
 	BraseroTrackDataCfg	*track;
 	BraseroSessionCfg	*session;
-	GtkWidget 		*name_options;
-	GtkWidget		*options;
-	gchar			*string;
 
 	if (nautilus_disc_burn_is_empty (toplevel))
 		return;
@@ -283,32 +262,25 @@ write_activate (GtkWindow *toplevel)
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
+	if (burn->priv->icon)
+		brasero_track_data_cfg_set_icon (BRASERO_TRACK_DATA_CFG (track),
+		                                 burn->priv->icon,
+		                                 NULL);
+
 	session = brasero_session_cfg_new ();
 	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
 					BRASERO_TRACK (track),
 					NULL);
 	g_object_unref (track);
 
-	/* add name widget here to set the label of the volume */
-	name_options = brasero_project_name_new (NULL);
-	brasero_project_name_set_session (BRASERO_PROJECT_NAME (name_options),
-					  BRASERO_BURN_SESSION (session));
-	g_signal_connect (name_options,
-	                  "name-changed",
-	                  G_CALLBACK (brasero_session_name_changed),
-	                  session);
-
-	string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
-	options = brasero_utils_pack_properties (string,
-						 name_options,
-						 NULL);
-	g_free (string);
-	gtk_widget_show_all (options);
+	if (burn->priv->title)
+		brasero_burn_session_set_label (BRASERO_BURN_SESSION (session),
+		                                burn->priv->title);
 
 	/* NOTE: set the disc we're handling */
 	launch_brasero_on_window_session (session,
 	                                  _("CD/DVD Creator"),
-	                                  options,
+	                                  NULL,
 	                                  toplevel);
 
 	/* cleanup */
@@ -319,7 +291,8 @@ static void
 write_activate_cb (NautilusMenuItem *item,
                    gpointer          user_data)
 {
-	write_activate (GTK_WINDOW (user_data));
+	write_activate (NAUTILUS_DISC_BURN (user_data),
+	                GTK_WINDOW (g_object_get_data (G_OBJECT (item), WINDOW_KEY)));
 }
 
 static void
@@ -742,9 +715,10 @@ nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
                                                _("_Write to Disc…"),
                                                _("Write contents to a CD or DVD"),
                                                "brasero");
+		g_object_set_data (G_OBJECT (item), WINDOW_KEY, window);
                 g_signal_connect (item, "activate",
                                   G_CALLBACK (write_activate_cb),
-                                  window);
+                                  NAUTILUS_DISC_BURN (provider));
                 items = g_list_append (items, item);
 
                 g_object_set (item, "sensitive", ! NAUTILUS_DISC_BURN (provider)->priv->empty, NULL);
@@ -779,7 +753,26 @@ static void
 bar_activated_cb (NautilusDiscBurnBar	*bar,
                   gpointer		 user_data)
 {
-	write_activate (GTK_WINDOW (user_data));
+	write_activate (NAUTILUS_DISC_BURN (user_data),
+	                GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
+}
+
+static void
+title_changed_cb (NautilusDiscBurnBar	*bar,
+                  NautilusDiscBurn	*burn)
+{
+	if (burn->priv->title)
+		g_free (burn->priv->title);
+	burn->priv->title = g_strdup (nautilus_disc_burn_bar_get_title (bar));
+}
+
+static void
+icon_changed_cb (NautilusDiscBurnBar	*bar,
+                 NautilusDiscBurn	*burn)
+{
+	if (burn->priv->icon)
+		g_free (burn->priv->icon);
+	burn->priv->icon = g_strdup (nautilus_disc_burn_bar_get_icon (bar));
 }
 
 static void
@@ -816,12 +809,21 @@ nautilus_disc_burn_get_location_widget (NautilusLocationWidgetProvider *iface,
                 burn = NAUTILUS_DISC_BURN (iface);
 
                 bar = nautilus_disc_burn_bar_new ();
-
+		nautilus_disc_burn_bar_set_title (NAUTILUS_DISC_BURN_BAR (bar),
+		                                  burn->priv->title);
+		nautilus_disc_burn_bar_set_icon (NAUTILUS_DISC_BURN_BAR (bar),
+		                                 burn->priv->icon);
                 sense_widget (burn, nautilus_disc_burn_bar_get_button (NAUTILUS_DISC_BURN_BAR (bar)));
 
                 g_signal_connect (bar, "activate",
                                   G_CALLBACK (bar_activated_cb),
-                                  window);
+                                  burn);
+		g_signal_connect (bar, "title-changed",
+		                  G_CALLBACK (title_changed_cb),
+		                  burn);
+		g_signal_connect (bar, "icon-changed",
+		                  G_CALLBACK (icon_changed_cb),
+		                  burn);
 
                 gtk_widget_show (bar);
 
@@ -957,6 +959,16 @@ nautilus_disc_burn_finalize (GObject *object)
         burn = NAUTILUS_DISC_BURN (object);
 
         g_return_if_fail (burn->priv != NULL);
+
+	if (burn->priv->icon) {
+		g_free (burn->priv->icon);
+		burn->priv->icon = NULL;
+	}
+
+	if (burn->priv->title) {
+		g_free (burn->priv->title);
+		burn->priv->title = NULL;
+	}
 
         if (burn->priv->empty_update_id > 0) {
                 g_source_remove (burn->priv->empty_update_id);
