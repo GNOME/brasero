@@ -3,12 +3,12 @@
 # This file is distributed under the same license as the brasero package.
 # Gheyret Kenji <gheyret@yahoo.com>, 2010.
 # Sahran <sahran@live.com>,2010
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2010-11-01 16:37+0000\n"
+"POT-Creation-Date: 2010-11-13 20:45+0000\n"
 "PO-Revision-Date: 2010-08-15 06:45+0000\n"
 "Last-Translator: Sahran <sahran@live.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -48,9 +48,10 @@ msgid "Description"
 msgstr "چۈشەندۈرۈش"
 
 #: ../src/brasero-search.c:1034 ../libbrasero-burn/brasero-src-image.c:444
-#: ../src/brasero-project-name.c:165 ../src/brasero-search-entry.c:503
-#: ../src/brasero-search-entry.c:563 ../src/brasero-search-entry.c:625
-#: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2213
+#: ../nautilus/nautilus-burn-bar.c:244 ../src/brasero-project-name.c:165
+#: ../src/brasero-search-entry.c:503 ../src/brasero-search-entry.c:563
+#: ../src/brasero-search-entry.c:625 ../src/brasero-file-chooser.c:350
+#: ../src/brasero-project.c:2213
 msgid "All files"
 msgstr "ھەممە ھۆججەتلەر"
 
@@ -400,7 +401,7 @@ msgstr "ھۆججەتلەرنى ئانالىز قىلىۋاتىدۇ"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2447
 #: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:250 ../src/brasero-project.c:1267
+#: ../nautilus/nautilus-burn-extension.c:241 ../src/brasero-project.c:1267
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-stream.c:405
 #, c-format
@@ -474,7 +475,7 @@ msgstr "%s دېگەن ئېلېمېنتنى قۇرغىلى بولمىدى"
 #: ../libbrasero-burn/brasero-burn.c:2852 ../libbrasero-burn/burn-job.c:1219
 #: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
-#: ../nautilus/nautilus-burn-extension.c:228 ../src/brasero-app.c:783
+#: ../nautilus/nautilus-burn-extension.c:219 ../src/brasero-app.c:783
 #: ../plugins/cdrkit/burn-genisoimage.c:370
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
 #: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:841
@@ -492,16 +493,16 @@ msgstr "ئىچكى خاتالىق كۆرۈلدى"
 msgid "Only one track at a time can be checked"
 msgstr "بىر قېتىمدا پەقەت بىرلا رېلىسنى تەكشۈرگىلى بولىدۇ"
 
-#: ../libbrasero-burn/brasero-track-image-cfg.c:430
+#: ../libbrasero-burn/brasero-track-image-cfg.c:451
 msgid "Retrieving image format and size"
 msgstr "سۈرەتنىڭ فورماتى ۋە چوڭلۇقىنى ئىگىلەۋاتىدۇ"
 
 #. Translators: This is a disc image
-#: ../libbrasero-burn/brasero-track-image-cfg.c:450
+#: ../libbrasero-burn/brasero-track-image-cfg.c:471
 msgid "The format of the disc image could not be identified"
 msgstr "سۈرەتنىڭ فورماتىنى بىلگىلى بولمىدى"
 
-#: ../libbrasero-burn/brasero-track-image-cfg.c:451
+#: ../libbrasero-burn/brasero-track-image-cfg.c:472
 msgid "Please set it manually"
 msgstr "قولدا تەڭشەڭ"
 
@@ -1145,7 +1146,7 @@ msgid "This is not supported by the current active burning backend."
 msgstr "بۇنى  ھازىرقى ئاكتىپ burning backend دا  ئىشلەتكىلى بولمايدۇ."
 
 #: ../libbrasero-burn/brasero-burn-options.c:470
-#: ../nautilus/nautilus-burn-extension.c:249
+#: ../nautilus/nautilus-burn-extension.c:240
 msgid "Please add files."
 msgstr "ھۆججەتلەرنى قوشۇڭ."
 
@@ -1945,13 +1946,13 @@ msgstr "SIDES"
 msgid "BACK COVER"
 msgstr "BACK COVER"
 
-#: ../libbrasero-utils/brasero-jacket-view.c:845
+#: ../libbrasero-utils/brasero-jacket-view.c:846
 msgid "FRONT COVER"
 msgstr "FRONT COVER"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1025
+#: ../libbrasero-utils/brasero-jacket-view.c:1026
 msgid "The image could not be loaded."
 msgstr "رەسىمنى ئوقۇغىلى بولمىدى:"
 
@@ -2217,7 +2218,8 @@ msgstr "ئۈن دىسكىسى (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:430 ../src/brasero-project-name.c:258
+#: ../libbrasero-media/brasero-volume.c:430
+#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:258
 #, c-format
 msgid "Data disc (%s)"
 msgstr "سانلىق-ئاساس دىسكىسى  (%s)"
@@ -2351,7 +2353,7 @@ msgstr "ھۆججەتنى يەرلىكتە كۆچۈرۈۋاتىدۇ"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../plugins/local-track/burn-uri.c:747 ../nautilus/nautilus-burn-bar.c:136
+#: ../plugins/local-track/burn-uri.c:747 ../nautilus/nautilus-burn-bar.c:364
 msgid "CD/DVD Creator Folder"
 msgstr "CD/DVD ياسىغۇ مۇندەرىجىسى"
 
@@ -2361,7 +2363,7 @@ msgid ""
 msgstr "Nautilus ئارقىلىق «CD/DVD ياسىغۇ مۇندەرىجىسى» نى قوشۇشقا يول قوي"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
-#: ../nautilus/nautilus-burn-extension.c:310
+#: ../nautilus/nautilus-burn-extension.c:282
 msgid "CD/DVD Creator"
 msgstr "CD/DVD ياسىغۇچ"
 
@@ -2369,60 +2371,72 @@ msgstr "CD/DVD ياسىغۇچ"
 msgid "Create CDs and DVDs"
 msgstr "CD ۋە DVD  ياساش"
 
+#: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-project-name.c:157
+msgid "Medium Icon"
+msgstr "كوپ ۋاسىتە سىنبەلگە"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../nautilus/nautilus-burn-bar.c:250 ../src/brasero-project-name.c:171
+#: ../src/brasero-file-chooser.c:375 ../src/brasero-project.c:2238
+msgctxt "picture"
+msgid "Image files"
+msgstr "سۈرەت ھۆججەتلەر"
+
+#: ../nautilus/nautilus-burn-bar.c:376
+#| msgid "Disc name"
+msgid "Disc Name:"
+msgstr ""
+
 #. Translators: be careful, anything longer than the English will likely
 #. * not fit on small Nautilus windows
-#: ../nautilus/nautilus-burn-bar.c:145
+#: ../nautilus/nautilus-burn-bar.c:415
 msgid "Drag or copy files below to write them to disc"
 msgstr "تۆۋەندىكى ھۆججەتلەرنى سۆرەپ ياكى كۆچۈرۈپ كېلىپ دىسكىغا يازىدۇ"
 
-#: ../nautilus/nautilus-burn-bar.c:153
-#: ../nautilus/nautilus-burn-extension.c:363
+#: ../nautilus/nautilus-burn-bar.c:431
+#: ../nautilus/nautilus-burn-extension.c:336
 msgid "Write to Disc"
 msgstr "دىسكىغا ياز"
 
-#: ../nautilus/nautilus-burn-bar.c:165
-#: ../nautilus/nautilus-burn-extension.c:743
+#: ../nautilus/nautilus-burn-bar.c:450
+#: ../nautilus/nautilus-burn-extension.c:716
 msgid "Write contents to a CD or DVD"
 msgstr "سانلىق-ئاساسلارنى CD/DVD دىسكىسىغا يازىدۇ"
 
-#: ../nautilus/nautilus-burn-extension.c:301
-msgid "Disc name"
-msgstr "دىسكا ئاتى"
-
-#: ../nautilus/nautilus-burn-extension.c:390
+#: ../nautilus/nautilus-burn-extension.c:363
 msgid "Copy Disc"
 msgstr "دىسكا كۆچۈرۈش"
 
-#: ../nautilus/nautilus-burn-extension.c:591
-#: ../nautilus/nautilus-burn-extension.c:742
+#: ../nautilus/nautilus-burn-extension.c:564
+#: ../nautilus/nautilus-burn-extension.c:715
 msgid "_Write to Disc…"
 msgstr "دىسكىغا ياز(_W)…"
 
-#: ../nautilus/nautilus-burn-extension.c:592
+#: ../nautilus/nautilus-burn-extension.c:565
 msgid "Write disc image to a CD or DVD"
 msgstr "دىسكا تەسۋىرىنى CD/DVD دىسكىسىغا يازىدۇ"
 
-#: ../nautilus/nautilus-burn-extension.c:665
+#: ../nautilus/nautilus-burn-extension.c:638
 msgid "_Copy Disc…"
 msgstr "دىسكا كۆچۈر(_C)…"
 
-#: ../nautilus/nautilus-burn-extension.c:666
+#: ../nautilus/nautilus-burn-extension.c:639
 msgid "Create a copy of this CD or DVD"
 msgstr "بۇ CD/DVD نىڭ كۆچۈرۈلمىسىنى ياسايدۇ"
 
-#: ../nautilus/nautilus-burn-extension.c:679
+#: ../nautilus/nautilus-burn-extension.c:652
 msgid "_Blank Disc…"
 msgstr "دىسكىنى قۇرۇقدا(_B)…"
 
-#: ../nautilus/nautilus-burn-extension.c:680
+#: ../nautilus/nautilus-burn-extension.c:653
 msgid "Blank this CD or DVD"
 msgstr "بۇ CD/DVD قۇرۇقدايدۇ"
 
-#: ../nautilus/nautilus-burn-extension.c:696
+#: ../nautilus/nautilus-burn-extension.c:669
 msgid "_Check Disc…"
 msgstr "دىسكىنى تەكشۈر(_C)…"
 
-#: ../nautilus/nautilus-burn-extension.c:697
+#: ../nautilus/nautilus-burn-extension.c:670
 msgid "Check the data integrity on this CD or DVD"
 msgstr "بۇ CD ياكى DVD دىكى سانلىق-ئاساسلارنى تەكشۈرىدۇ"
 
@@ -2432,17 +2446,6 @@ msgstr "بۇ CD ياكى DVD دىكى سانلىق-ئاساسلارنى تەكش
 msgctxt "picture"
 msgid "Please select another image."
 msgstr "باشقا رەسىم تاللاڭ."
-
-#: ../src/brasero-project-name.c:157
-msgid "Medium Icon"
-msgstr "كوپ ۋاسىتە سىنبەلگە"
-
-#. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-project-name.c:171 ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2238
-msgctxt "picture"
-msgid "Image files"
-msgstr "سۈرەت ھۆججەتلەر"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -2520,7 +2523,7 @@ msgstr "ياردەم ئۇچۇرلىرىنى كۆرسىتىدۇ"
 msgid "About"
 msgstr "ھەققىدە"
 
-#: ../src/brasero-app.c:420 ../src/brasero-app.c:2074
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2072
 msgid "Disc Burner"
 msgstr "دىسكىغا يازغۇ"
 
@@ -2837,7 +2840,7 @@ msgstr "تاللانغان رېلىسنى پارچىلايدۇ"
 
 #: ../src/brasero-audio-disc.c:343 ../src/brasero-video-tree-model.c:189
 msgid "Pause"
-msgstr "Pause"
+msgstr "ۋاقىتلىق توختاش"
 
 #: ../src/brasero-audio-disc.c:349
 msgid "Split"
@@ -3102,7 +3105,7 @@ msgstr "چېكىلسە ئىزدەشكە باشلايدۇ"
 
 #: ../src/brasero-song-properties.c:177
 msgid "Title:"
-msgstr ":ئىسمى"
+msgstr "ماۋزۇ"
 
 #: ../src/brasero-song-properties.c:187 ../src/brasero-song-properties.c:199
 #: ../src/brasero-song-properties.c:211 ../src/brasero-multi-song-props.c:211
@@ -3114,7 +3117,7 @@ msgstr "بۇ ئۇچۇرلار CD-TEXT تېخنىكىسى ئارقىلىق دىس
 
 #: ../src/brasero-song-properties.c:189 ../src/brasero-multi-song-props.c:242
 msgid "Artist:"
-msgstr ":سەنئەتچى"
+msgstr "ئورۇنلىغۇچى:"
 
 #: ../src/brasero-song-properties.c:201 ../src/brasero-multi-song-props.c:263
 msgid "Composer:"
@@ -3418,7 +3421,7 @@ msgstr "Space"
 
 #: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2218
 msgid "Audio files"
-msgstr "ئاۋاز ھۆججىتى"
+msgstr "ئۈن ھۆججەتلىرى"
 
 #: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2227
 msgid "Movies"
