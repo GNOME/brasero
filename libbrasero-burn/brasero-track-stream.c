@@ -243,6 +243,7 @@ brasero_track_stream_set_boundaries (BraseroTrackStream *track,
  * This function returns the path or the URI (if @uri is TRUE)
  * of the stream (song or video file).
  *
+ * Note: this function resets any length previously set to 0.
  * Return value: a #gchar.
  **/
 
@@ -347,7 +348,6 @@ brasero_track_stream_get_length (BraseroTrackStream *track,
 		return BRASERO_BURN_ERR;
 
 	*length = BRASERO_STREAM_LENGTH (priv->start, priv->end + priv->gap);
-
 	return BRASERO_BURN_OK;
 }
 
