@@ -1881,28 +1881,38 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 static BraseroBurnResult
 brasero_burn_check_data_loss (BraseroBurn *burn,
+                              BraseroTrackType *temp_output,
                               GError **error)
 {
 	BraseroMedia media;
 	BraseroBurnFlag flags;
 	BraseroTrackType *input;
 	BraseroBurnResult result;
-	BraseroTrackType *output;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
-	output = brasero_track_type_new ();
-	brasero_burn_session_get_output_type (priv->session, output);
-	if (!brasero_track_type_get_has_medium (output)) {
-		brasero_track_type_free (output);
-		return BRASERO_BURN_OK;
-	}
+	if (!temp_output) {
+		BraseroTrackType *output;
 
-	flags = brasero_burn_session_get_flags (priv->session);
-	media = brasero_track_type_get_medium_type (output);
-	brasero_track_type_free (output);
+		output = brasero_track_type_new ();
+		brasero_burn_session_get_output_type (priv->session, output);
+		if (!brasero_track_type_get_has_medium (output)) {
+			brasero_track_type_free (output);
+			return BRASERO_BURN_OK;
+		}
+
+		media = brasero_track_type_get_medium_type (output);
+		brasero_track_type_free (output);
+	}
+	else {
+		if (!brasero_track_type_get_has_medium (temp_output))
+			return BRASERO_BURN_OK;
+
+		media = brasero_track_type_get_medium_type (temp_output);
+	}
 
 	input = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, input);
+	flags = brasero_burn_session_get_flags (priv->session);
 
 	if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
 		if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
@@ -2056,7 +2066,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 	/* performed some additional tests that can only be performed at this
 	 * point. They are mere warnings. */
-	result = brasero_burn_check_data_loss (burn, error);
+	result = brasero_burn_check_data_loss (burn, temp_output, error);
 	if (result != BRASERO_BURN_OK) {
 		brasero_burn_session_pop_settings (priv->session);
 		return result;
