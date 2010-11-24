@@ -108,10 +108,6 @@ brasero_cdda2wav_post (BraseroJob *job)
 
 		brasero_medium_get_track_space (medium, i + 1, NULL, &block_num);
 		track_stream = brasero_track_stream_new ();
-		brasero_track_stream_set_boundaries (track_stream,
-		                                     0,
-		                                     BRASERO_BYTES_TO_DURATION (block_num * 2352),
-		                                     0);
 
 		brasero_track_stream_set_format (track_stream,
 		                                 BRASERO_AUDIO_FORMAT_RAW|
@@ -147,6 +143,12 @@ brasero_cdda2wav_post (BraseroJob *job)
 			g_free (filename);
 		}
 
+		/* Always set the boundaries after the source as
+		 * brasero_track_stream_set_source () resets the length */
+		brasero_track_stream_set_boundaries (track_stream,
+		                                     0,
+		                                     BRASERO_BYTES_TO_DURATION (block_num * 2352),
+		                                     0);
 		brasero_job_add_track (job, BRASERO_TRACK (track_stream));
 		g_object_unref (track_stream);
 	}
