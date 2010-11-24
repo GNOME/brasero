@@ -81,7 +81,6 @@ brasero_uninhibit_suspend (guint cookie)
 			    error->message);
 		g_error_free (error);
 	} else {
-                g_variant_get (res, "(u)", &cookie);
                 g_variant_unref (res);
         }
 
