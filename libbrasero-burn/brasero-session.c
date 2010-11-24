@@ -2059,7 +2059,7 @@ brasero_burn_session_get_src_medium (BraseroBurnSession *self)
 		return NULL;
 
 	track = priv->tracks->data;
-	if (!BRASERO_TRACK_DISC (track))
+	if (!BRASERO_IS_TRACK_DISC (track))
 		return NULL;
 
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
