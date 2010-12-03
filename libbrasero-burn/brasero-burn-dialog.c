@@ -1483,7 +1483,7 @@ brasero_burn_dialog_install_missing_cb (BraseroBurn *burn,
 
 	/* Get the xid */
 	window = gtk_widget_get_window (user_data);
-	xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (window));
+	xid = gdk_x11_window_get_xid (window);
 
 	package = brasero_pk_new ();
 	cancel = g_cancellable_new ();

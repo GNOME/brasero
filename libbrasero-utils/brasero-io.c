@@ -2353,7 +2353,7 @@ static int
 		GtkWindow *parent;
 
 		parent = priv->win_callback (priv->win_user_data);
-		xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (gtk_widget_get_window(GTK_WIDGET (parent))));
+		xid = gdk_x11_window_get_xid (gtk_widget_get_window(GTK_WIDGET (parent)));
 		return xid;
 	}
 

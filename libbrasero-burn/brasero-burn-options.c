@@ -1131,7 +1131,7 @@ brasero_burn_options_install_missing (BraseroPluginErrorType type,
 	int xid = 0;
 
 	/* Get the xid */
-	xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (gtk_widget_get_window (GTK_WIDGET (user_data))));
+	xid = gdk_x11_window_get_xid (gtk_widget_get_window (GTK_WIDGET (user_data)));
 
 	package = brasero_pk_new ();
 	cancel = g_cancellable_new ();

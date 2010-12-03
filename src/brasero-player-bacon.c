@@ -187,7 +187,7 @@ brasero_player_bacon_draw (GtkWidget *widget, cairo_t *cr)
 
 	window = gtk_widget_get_window (widget);
 	if (window)
-		bacon->priv->xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (window));
+		bacon->priv->xid = gdk_x11_window_get_xid (window);
 
 	if (bacon->priv->xoverlay
 	&&  GST_IS_X_OVERLAY (bacon->priv->xoverlay)
