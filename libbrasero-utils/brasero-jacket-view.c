@@ -1466,7 +1466,7 @@ brasero_jacket_view_init (BraseroJacketView *object)
 	priv->edit = gtk_text_view_new_with_buffer (buffer);
 	g_object_unref (buffer);
 
-	priv->b_color = gtk_widget_get_style (priv->edit)->bg [0];
+	gdk_color_parse ("white", &priv->b_color);
 	priv->color_style = BRASERO_JACKET_COLOR_SOLID;
 
 	gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (priv->edit), GTK_WRAP_CHAR);
