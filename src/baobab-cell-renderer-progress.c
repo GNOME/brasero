@@ -102,7 +102,7 @@ baobab_cell_renderer_progress_set_property (GObject *object,
 static void
 baobab_cell_renderer_progress_get_size (GtkCellRenderer *cell,
 					GtkWidget       *widget,
-					GdkRectangle    *cell_area,
+					const GdkRectangle    *cell_area,
 					gint            *x_offset,
 					gint            *y_offset,
 					gint            *width,
@@ -191,7 +191,6 @@ baobab_cell_renderer_progress_render (GtkCellRenderer *cell,
 				      GtkCellRendererState flags)
 {
   BaobabCellRendererProgress *cellprogress = BAOBAB_CELL_RENDERER_PROGRESS (cell);
-  GtkStyle *style;
   gint x, y, w, h, perc_w;
   gint xpad, ypad;
   gboolean is_rtl;
@@ -213,16 +212,6 @@ baobab_cell_renderer_progress_render (GtkCellRenderer *cell,
    */
 
   cairo_rectangle (cr, x, y, w, h);
-  cairo_set_source_rgb (cr, 0, 0, 0);
-  cairo_fill (cr);
-
-  style = gtk_widget_get_style (widget);
-  x += style->xthickness;
-  y += style->ythickness;
-  w -= style->xthickness * 2;
-  h -= style->ythickness * 2;
-  
-  cairo_rectangle (cr, x, y, w, h);
   cairo_set_source_rgb (cr, 1, 1, 1);
   cairo_fill (cr);
 
@@ -230,6 +219,10 @@ baobab_cell_renderer_progress_render (GtkCellRenderer *cell,
 
   cairo_rectangle (cr, is_rtl ? (x + w - perc_w) : x, y, perc_w, h);
   set_color_according_to_perc (cr, cellprogress->priv->perc);
+  cairo_fill (cr);
+
+  cairo_rectangle (cr, x, y, w, h);
+  cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_fill (cr);
 }
 

@@ -588,18 +588,24 @@ brasero_utils_disc_style_changed_cb (GtkWidget *widget,
 				     GtkStyle *previous,
 				     GtkWidget *event_box)
 {
+	GdkRGBA color;
+
 	/* The widget (a treeview here) needs to be realized to get proper style */
 	gtk_widget_realize (widget);
-	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &gtk_widget_get_style (widget)->base[GTK_STATE_NORMAL]);
+	gdk_rgba_parse (&color, "white");
+	gtk_widget_override_background_color (event_box, GTK_STATE_NORMAL, &color);
 }
 
 static void
 brasero_utils_disc_realized_cb (GtkWidget *event_box,
 				GtkWidget *textview)
 {
+	GdkRGBA color;
+
 	/* The widget (a treeview here) needs to be realized to get proper style */
 	gtk_widget_realize (textview);
-	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &gtk_widget_get_style (textview)->base[GTK_STATE_NORMAL]);
+	gdk_rgba_parse (&color, "white");
+	gtk_widget_override_background_color (event_box, GTK_STATE_NORMAL, &color);
 
 	g_signal_handlers_disconnect_by_func (textview,
 					      brasero_utils_disc_style_changed_cb,
