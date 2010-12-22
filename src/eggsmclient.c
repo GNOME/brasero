@@ -178,6 +178,7 @@ egg_sm_client_class_init (EggSMClientClass *klass)
 static gboolean sm_client_disable = FALSE;
 static char *sm_client_state_file = NULL;
 static char *sm_client_id = NULL;
+static char *sm_config_prefix = NULL;
 
 static gboolean
 sm_client_post_parse_func (GOptionContext  *context,
@@ -201,7 +202,8 @@ sm_client_post_parse_func (GOptionContext  *context,
    * use the same client id. */
   g_unsetenv ("DESKTOP_AUTOSTART_ID");
 
-  if (EGG_SM_CLIENT_GET_CLASS (client)->startup)
+  if (global_client_mode != EGG_SM_CLIENT_MODE_DISABLED &&
+      EGG_SM_CLIENT_GET_CLASS (client)->startup)
     EGG_SM_CLIENT_GET_CLASS (client)->startup (client, sm_client_id);
   return TRUE;
 }
@@ -228,9 +230,16 @@ egg_sm_client_get_option_group (void)
     { "sm-client-id", 0, 0,
       G_OPTION_ARG_STRING, &sm_client_id,
       N_("Specify session management ID"), N_("ID") },
-    /* Compatibility options */
+    /* GnomeClient compatibility option */
     { "sm-disable", 0, G_OPTION_FLAG_HIDDEN,
       G_OPTION_ARG_NONE, &sm_client_disable,
+      NULL, NULL },
+    /* GnomeClient compatibility option. This is a dummy option that only
+     * exists so that sessions saved by apps with GnomeClient can be restored
+     * later when they've switched to EggSMClient. See bug #575308.
+     */
+    { "sm-config-prefix", 0, G_OPTION_FLAG_HIDDEN,
+      G_OPTION_ARG_STRING, &sm_config_prefix,
       NULL, NULL },
     { NULL }
   };
@@ -257,9 +266,9 @@ egg_sm_client_get_option_group (void)
  * Sets the "mode" of #EggSMClient as follows:
  *
  *    %EGG_SM_CLIENT_MODE_DISABLED: Session management is completely
- *    disabled. The application will not even connect to the session
- *    manager. (egg_sm_client_get() will still return an #EggSMClient,
- *    but it will just be a dummy object.)
+ *    disabled, until the mode is changed again. The application will
+ *    not even connect to the session manager. (egg_sm_client_get()
+ *    will still return an #EggSMClient object.)
  *
  *    %EGG_SM_CLIENT_MODE_NO_RESTART: The application will connect to
  *    the session manager (and thus will receive notification when the
@@ -269,12 +278,27 @@ egg_sm_client_get_option_group (void)
  *    %EGG_SM_CLIENT_MODE_NORMAL: The default. #EggSMCLient will
  *    function normally.
  *
- * This must be called before the application's main loop begins.
+ * This must be called before the application's main loop begins and
+ * before any call to egg_sm_client_get(), unless the mode was set
+ * earlier to %EGG_SM_CLIENT_MODE_DISABLED and this call enables
+ * session management. Note that option parsing will call
+ * egg_sm_client_get().
  **/
 void
 egg_sm_client_set_mode (EggSMClientMode mode)
 {
+  EggSMClientMode old_mode = global_client_mode;
+
+  g_return_if_fail (global_client == NULL || global_client_mode == EGG_SM_CLIENT_MODE_DISABLED);
+  g_return_if_fail (!(global_client != NULL && mode == EGG_SM_CLIENT_MODE_DISABLED));
+
   global_client_mode = mode;
+
+  if (global_client != NULL && old_mode == EGG_SM_CLIENT_MODE_DISABLED)
+    {
+      if (EGG_SM_CLIENT_GET_CLASS (global_client)->startup)
+        EGG_SM_CLIENT_GET_CLASS (global_client)->startup (global_client, sm_client_id);
+    }
 }
 
 /**
@@ -309,8 +333,7 @@ egg_sm_client_get (void)
 {
   if (!global_client)
     {
-      if (global_client_mode != EGG_SM_CLIENT_MODE_DISABLED &&
-	  !sm_client_disable)
+      if (!sm_client_disable)
 	{
 #if defined (GDK_WINDOWING_WIN32)
 	  global_client = egg_sm_client_win32_new ();
