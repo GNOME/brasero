@@ -214,7 +214,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	cursor = gdk_cursor_new (GDK_WATCH);
 	window = gtk_widget_get_window (GTK_WIDGET (self));
 	gdk_window_set_cursor (window, cursor);
-	gdk_cursor_unref (cursor);
+	g_object_unref (cursor);
 
 	gtk_button_set_label (GTK_BUTTON (priv->cancel), GTK_STOCK_CANCEL);
 

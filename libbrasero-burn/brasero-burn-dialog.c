@@ -1395,7 +1395,7 @@ brasero_burn_dialog_activity_start (BraseroBurnDialog *dialog)
 	if (window) {
 		cursor = gdk_cursor_new (GDK_WATCH);
 		gdk_window_set_cursor (window, cursor);
-		gdk_cursor_unref (cursor);
+		g_object_unref (cursor);
 	}
 
 	gtk_button_set_use_stock (GTK_BUTTON (priv->cancel), TRUE);

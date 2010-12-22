@@ -215,7 +215,7 @@ brasero_search_increase_activity (BraseroSearch *search)
 
 	cursor = gdk_cursor_new (GDK_WATCH);
 	gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (search)), cursor);
-	gdk_cursor_unref (cursor);
+	g_object_unref (cursor);
 }
 
 static void

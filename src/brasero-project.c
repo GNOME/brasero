@@ -895,7 +895,7 @@ brasero_project_is_valid (BraseroSessionCfg *session,
 		||  brasero_status_get_result (status) == BRASERO_BURN_RUNNING) {
 			cursor = gdk_cursor_new (GDK_WATCH);
 			gdk_window_set_cursor (window, cursor);
-			gdk_cursor_unref (cursor);
+			g_object_unref (cursor);
 		}
 		else
 			gdk_window_set_cursor (window, NULL);
