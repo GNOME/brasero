@@ -512,7 +512,7 @@ brasero_app_set_parent (BraseroApp *app,
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
-	priv->parent = gdk_window_foreign_new (parent_xid);
+	priv->parent = gdk_x11_window_foreign_new_for_display (gdk_display_get_default (), parent_xid);
 }
 
 gboolean
