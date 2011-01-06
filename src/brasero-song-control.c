@@ -583,7 +583,6 @@ brasero_song_control_init (BraseroSongControl *object)
 	gtk_scale_set_digits (GTK_SCALE (priv->progress), 0);
 	gtk_scale_set_draw_value (GTK_SCALE (priv->progress), FALSE);
 	gtk_widget_set_size_request (priv->progress, 80, -1);
-	gtk_range_set_update_policy (GTK_RANGE (priv->progress), GTK_UPDATE_CONTINUOUS);
 	gtk_box_pack_start (GTK_BOX (hbox),
 	                    priv->progress,
 	                    TRUE,
