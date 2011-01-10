@@ -158,7 +158,7 @@ brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
 		notify_init (_("Brasero notification"));
 	}
 
-        notification = notify_notification_new (primary,
+        notification = notify_notification_new (message,
                                                 NULL,
                                                 GTK_STOCK_CDROM);
 
@@ -1910,9 +1910,10 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 	                        CA_PROP_EVENT_ID, "complete-media-burn",
 	                        CA_PROP_EVENT_DESCRIPTION, main_message,
 	                        NULL);
-	g_free (main_message);
 
 	brasero_burn_dialog_notify_daemon (dialog, main_message);
+	g_free (main_message);
+
 	response = gtk_dialog_run (GTK_DIALOG (message));
 
 	g_signal_handler_disconnect (drive, added_id);
@@ -1989,9 +1990,9 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 			       CA_PROP_EVENT_DESCRIPTION, primary,
 			       NULL);
 
+	brasero_burn_dialog_notify_daemon (dialog, primary);
 	g_free (primary);
 
-	brasero_burn_dialog_notify_daemon (dialog, primary);
 	res = brasero_burn_dialog_success_run (dialog);
 
 	if (make_another)
