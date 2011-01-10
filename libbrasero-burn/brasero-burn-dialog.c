@@ -46,6 +46,7 @@
 #include <gtk/gtk.h>
 
 #include <canberra-gtk.h>
+#include <libnotify/notify.h>
 
 #include "brasero-burn-dialog.h"
 
@@ -133,6 +134,52 @@ brasero_burn_dialog_update_media (BraseroBurnDialog *dialog)
 	}
 
 	priv->media = media;
+}
+
+static void
+brasero_burn_dialog_notify_daemon_close (NotifyNotification *notification,
+                                         BraseroBurnDialog *dialog)
+{
+	g_object_unref (notification);
+}
+
+static gboolean
+brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
+                                   const char *message)
+{
+	BraseroBurnDialogPrivate *priv;
+        NotifyNotification *notification;
+	GError *error = NULL;
+        gboolean result;
+
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	if (!notify_is_initted ()) {
+		notify_init (_("Brasero notification"));
+	}
+
+        notification = notify_notification_new (primary,
+                                                NULL,
+                                                GTK_STOCK_CDROM);
+
+	if (!notification)
+                return FALSE;
+
+	g_signal_connect (notification,
+                          "closed",
+                          G_CALLBACK (brasero_burn_dialog_notify_daemon_close),
+                          dialog);
+
+	notify_notification_set_timeout (notification, 10000);
+	notify_notification_set_urgency (notification, NOTIFY_URGENCY_NORMAL);
+
+	result = notify_notification_show (notification, &error);
+	if (error) {
+		g_warning ("Error showing notification");
+		g_error_free (error);
+	}
+
+	return result;
 }
 
 static GtkWidget *
@@ -1721,6 +1768,8 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 			       GTK_STOCK_CLOSE,
 			       GTK_RESPONSE_CLOSE);
 
+	brasero_burn_dialog_notify_daemon (dialog, _("Error while burning."));
+
 	response = gtk_dialog_run (GTK_DIALOG (message));
 	while (response == GTK_RESPONSE_OK) {
 		brasero_burn_dialog_save_log (dialog);
@@ -1751,7 +1800,6 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 			else
 				return g_strdup (_("Audio CD successfully burned"));
 		}
-
 		return g_strdup (_("Image successfully created"));
 	}
 	else if (brasero_track_type_get_has_medium (&priv->input)) {
@@ -1783,7 +1831,6 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 			else
 				return g_strdup (_("Data CD successfully burned"));
 		}
-
 		return g_strdup (_("Image successfully created"));
 	}
 
@@ -1865,6 +1912,7 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 	                        NULL);
 	g_free (main_message);
 
+	brasero_burn_dialog_notify_daemon (dialog, main_message);
 	response = gtk_dialog_run (GTK_DIALOG (message));
 
 	g_signal_handler_disconnect (drive, added_id);
@@ -1943,6 +1991,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 
 	g_free (primary);
 
+	brasero_burn_dialog_notify_daemon (dialog, primary);
 	res = brasero_burn_dialog_success_run (dialog);
 
 	if (make_another)
