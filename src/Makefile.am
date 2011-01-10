@@ -143,17 +143,6 @@ brasero_SOURCES += 				\
 		   brasero-search-beagle.c
 endif
 
-if BUILD_SEARCH
-
-brasero_SOURCES += \
-		   brasero-mime-filter.c         \
-		   brasero-mime-filter.h         \
-		   brasero-search-entry.c         \
-		   brasero-search-entry.h         \
-		   brasero-search.h		\
-		   brasero-search.c
-endif
-
 brasero_LDADD =						\
 	$(top_builddir)/libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la	\
 	$(top_builddir)/libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la	\

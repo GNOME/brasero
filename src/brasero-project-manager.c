@@ -52,10 +52,6 @@
 #include "brasero-uri-container.h"
 #include "brasero-project-type-chooser.h"
 
-#ifdef BUILD_SEARCH
-#include "brasero-search.h"
-#endif
-
 #ifdef BUILD_PLAYLIST
 #include "brasero-playlist.h"
 #endif
@@ -898,27 +894,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	brasero_layout_add_project (BRASERO_LAYOUT (obj->priv->layout),
 				    obj->priv->project);
 	gtk_widget_show (obj->priv->project);
-
-#ifdef BUILD_SEARCH
-	GtkWidget *search;
-
-	search = brasero_search_new ();
-    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, search);
-
-	gtk_widget_show_all (search);
-	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
-				   search,
-				   "Search",
-				   _("Search files using keywords"),
-				   GTK_STOCK_FIND,
-				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
-
-#ifdef BUILD_PREVIEW
-	brasero_preview_add_source (BRASERO_PREVIEW (preview),
-				    BRASERO_URI_CONTAINER (search));
-#endif
-
-#endif /* BUILD_SEARCH */
 
 #ifdef BUILD_PLAYLIST
 	GtkWidget *playlist;
