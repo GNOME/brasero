@@ -1,14 +1,14 @@
-# translation of eu.po to Basque
+# translation of brasero.master.po to Basque
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2008, 2009, 2010, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-10 22:47+0100\n"
-"PO-Revision-Date: 2011-01-10 23:17+0100\n"
+"Project-Id-Version: brasero.master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
+"POT-Creation-Date: 2011-01-10 22:09+0000\n"
+"PO-Revision-Date: 2011-01-15 18:27+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -1161,6 +1161,15 @@ msgstr "Hautatu disko-irudi bat."
 msgid "There is no selected disc image."
 msgstr "Ez da disko-irudirik hautatu."
 
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:521
+#: ../libbrasero-burn/brasero-src-image.c:167
+#| msgid "Please select a disc image."
+msgctxt "disc"
+msgid "Please select another image."
+msgstr "Hautatu beste disko-irudi bat."
+
 #: ../libbrasero-burn/brasero-burn-options.c:522
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Badirudi ez dagoela baliozko disko-irudirik edo baliozko cue fitxategirik."
@@ -1672,6 +1681,13 @@ msgstr "Hautatu disko-irudia"
 #: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2219
 msgid "All files"
 msgstr "Fitxategi guztiak"
+
+#. Translators: this a disc image here
+#: ../libbrasero-burn/brasero-src-image.c:450
+#| msgid "Image File"
+msgctxt "disc"
+msgid "Image files"
+msgstr "Disko-irudi fitxategiak"
 
 #: ../libbrasero-burn/brasero-src-image.c:467
 msgid "Image type:"
@@ -2373,6 +2389,14 @@ msgstr "Sortu CD eta DVDak"
 msgid "Medium Icon"
 msgstr "Euskarriaren ikonoa"
 
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../nautilus/nautilus-burn-bar.c:250 ../src/brasero-project-name.c:171
+#: ../src/brasero-file-chooser.c:375 ../src/brasero-project.c:2244
+#| msgid "Image File"
+msgctxt "picture"
+msgid "Image files"
+msgstr "Irudi fitxategiak"
+
 #: ../nautilus/nautilus-burn-bar.c:376
 msgid "Disc Name:"
 msgstr "Diskoaren izena:"
@@ -2429,6 +2453,14 @@ msgstr "_Egiaztatu diskoa..."
 #: ../nautilus/nautilus-burn-extension.c:670
 msgid "Check the data integrity on this CD or DVD"
 msgstr "CD edo DVD diskoko datuen osotasuna egiaztatzen du"
+
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:83
+#| msgid "Please select a disc image."
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "Hautatu beste irudi bat."
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -2614,8 +2646,8 @@ msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
 msgstr ""
-"Irudiak grabatzeko azken aldiz arakatu zen direktorioaren "
-"bide-izen absolutua dauka"
+"Irudiak grabatzeko azken aldiz arakatu zen direktorioaren bide-izen "
+"absolutua dauka"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
 msgid ""
@@ -2744,8 +2776,8 @@ msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
 msgstr ""
-"Halako testuinguruan azkenengoz erabilitako abiadura adierazten "
-"du balio honek."
+"Halako testuinguruan azkenengoz erabilitako abiadura adierazten du balio "
+"honek."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:26
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -2762,10 +2794,11 @@ msgid ""
 "priority is used. A positive value overrides the plugin's native priority. A "
 "negative value disables the plugin."
 msgstr ""
-"Ataza berdinarentzako hainbat plugin badaude erabilgarri, balio hau erabiliko da "
-"zer pluginari emango zaion lehentasuna zehazteko. 0 balioak pluginaren "
-"jatorrizko lehentasuna erabiliko dela adierazten du. Balio positiboak pluginaren jatorrizko "
-"lehentasuna gainidazten du. Balio negatibo batek berriz, plugina desgaitzen du."
+"Ataza berdinarentzako hainbat plugin badaude erabilgarri, balio hau "
+"erabiliko da zer pluginari emango zaion lehentasuna zehazteko. 0 balioak "
+"pluginaren jatorrizko lehentasuna erabiliko dela adierazten du. Balio "
+"positiboak pluginaren jatorrizko lehentasuna gainidazten du. Balio negatibo "
+"batek berriz, plugina desgaitzen du."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
@@ -3348,8 +3381,8 @@ msgid ""
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 "Direktorio honen umeek 7 direktorio guraso izango dituzte.\n"
-"Brasero-k horrelako fitxategi-hierarkia duen irudia sor eta grabatu dezake, baina "
-"euskarria ez da beste sistema eragileetan irakurriko.\n"
+"Brasero-k horrelako fitxategi-hierarkia duen irudia sor eta grabatu dezake, "
+"baina euskarria ez da beste sistema eragileetan irakurriko.\n"
 "Oharra: honelako fitxategi-hierarkia linux sisteman funtzionatzen duela "
 "jakina da."
 
@@ -4235,11 +4268,11 @@ msgid ""
 "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
 "command"
 msgstr ""
-"Errorea gertatu da enkriptatzeko erabili den gakoa eskuratzean. "
-"Irtenbide hauetariko bat erabil dezakezu: terminal batean "
-"DVDaren eskualdearen kode egokia ezarri CD/DVD erreproduzitzailearentzako "
-"\"regionset %s\" komandoarekin, edo exekutatu "
-" \"DVDCSS_METHOD=title brasero --no-existing-session\" komandoa"
+"Errorea gertatu da enkriptatzeko erabili den gakoa eskuratzean. Irtenbide "
+"hauetariko bat erabil dezakezu: terminal batean DVDaren eskualdearen kode "
+"egokia ezarri CD/DVD erreproduzitzailearentzako \"regionset %s\" "
+"komandoarekin, edo exekutatu  \"DVDCSS_METHOD=title brasero --no-existing-"
+"session\" komandoa"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:341
 msgid "Retrieving DVD keys"
