@@ -241,10 +241,7 @@ brasero_dest_selection_medium_added (GtkTreeModel *model,
 static void
 brasero_dest_selection_init (BraseroDestSelection *object)
 {
-	BraseroDestSelectionPrivate *priv;
 	GtkTreeModel *model;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (object));
 	g_signal_connect (model,
@@ -493,10 +490,7 @@ brasero_dest_selection_set_property (GObject *object,
 				     const GValue *value,
 				     GParamSpec *pspec)
 {
-	BraseroDestSelectionPrivate *priv;
 	BraseroBurnSession *session;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
 	switch (property_id) {
 	case PROP_SESSION: /* Readable and only writable at creation time */

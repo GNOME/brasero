@@ -1081,9 +1081,6 @@ brasero_plugin_get_description (BraseroPlugin *plugin)
 const gchar *
 brasero_plugin_get_icon_name (BraseroPlugin *plugin)
 {
-	BraseroPluginPrivate *priv;
-
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
 	return default_icon;
 }
 

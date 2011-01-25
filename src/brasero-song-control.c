@@ -81,13 +81,11 @@ static void
 brasero_song_control_update_position (BraseroSongControl *player)
 {
 	gdouble value;
-	GtkAdjustment *adjustment;
 	BraseroSongControlPrivate *priv;
 	gchar *pos_string, *len_string, *result;
 
 	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
 
-	adjustment = gtk_range_get_adjustment (GTK_RANGE (priv->progress));
 	len_string = brasero_units_get_time_string (priv->end - priv->start, FALSE, FALSE);
 
 	value = gtk_range_get_value (GTK_RANGE (priv->progress));
@@ -160,14 +158,13 @@ static gboolean
 brasero_song_control_update_progress_cb (BraseroSongControl *player)
 {
 	gint64 pos;
-	gboolean result;
 	BraseroSongControlPrivate *priv;
 	GstFormat format = GST_FORMAT_TIME;
 
 	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
-	result = gst_element_query_position (priv->pipe,
-					     &format,
-					     &pos);
+	gst_element_query_position (priv->pipe,
+	                            &format,
+	                            &pos);
 
 	if (pos >= 0) {
 		gtk_range_set_value (GTK_RANGE (priv->progress), (gsize) (pos - priv->start));

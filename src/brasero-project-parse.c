@@ -1114,7 +1114,7 @@ brasero_project_save_audio_project_playlist (BraseroBurnSession *session,
 
 	result = totem_pl_parser_save (parser, playlist, file,
 				       brasero_burn_session_get_label (session),
-				       type, NULL);
+				       pl_type, NULL);
 
 	g_object_unref (playlist);
 	g_object_unref (parser);

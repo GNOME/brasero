@@ -89,11 +89,8 @@ brasero_file_filtered_get_label_text (BraseroFileFiltered *self)
 static void
 brasero_file_filtered_update (BraseroFileFiltered *self)
 {
-	BraseroFileFilteredPrivate *priv;
 	GtkWidget *widget;
 	gchar *markup;
-
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
 
 	markup = brasero_file_filtered_get_label_text (self);
 

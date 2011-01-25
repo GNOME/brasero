@@ -168,16 +168,12 @@ static void
 configure_button_cb (GtkWidget          *button,
 		     BraseroPluginManagerUI *pm)
 {
-	GtkResponseType result;
 	BraseroPlugin *plugin;
-	GtkWindow *toplevel;
 	GtkWidget *dialog;
 
 	plugin = plugin_manager_ui_get_selected_plugin (pm);
 
 	g_return_if_fail (plugin != NULL);
-
-	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET(pm)));
 
 	dialog = brasero_plugin_option_new ();
 
@@ -188,7 +184,7 @@ configure_button_cb (GtkWidget          *button,
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 }
 
@@ -296,8 +292,7 @@ active_toggled_cb (GtkCellRendererToggle *cell,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	g_return_if_fail (model != NULL);
 
-	gtk_tree_model_get_iter (model, &iter, path);
-	if (&iter != NULL)
+	if (gtk_tree_model_get_iter (model, &iter, path))
 		plugin_manager_ui_toggle_active (&iter, model);
 
 	gtk_tree_path_free (path);
@@ -336,10 +331,7 @@ row_activated_cb (GtkTreeView       *tree_view,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 
 	g_return_if_fail (model != NULL);
-
-	gtk_tree_model_get_iter (model, &iter, path);
-
-	g_return_if_fail (&iter != NULL);
+	g_return_if_fail (gtk_tree_model_get_iter (model, &iter, path));
 
 	plugin_manager_ui_toggle_active (&iter, model);
 }

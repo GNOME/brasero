@@ -733,7 +733,6 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 			   GPtrArray *argv,
 			   GError **error)
 {
-	BraseroWodimPrivate *priv;
 	BraseroBurnResult result;
 	gchar *tmpdir = NULL;
 	GSList *tracks;
@@ -741,8 +740,6 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 	gchar *album;
 	gint index;
 	gint start;
-
-	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	brasero_job_get_audio_title (BRASERO_JOB (wodim), &album);
 	brasero_job_get_tracks (BRASERO_JOB (wodim), &tracks);
@@ -1114,16 +1111,14 @@ brasero_wodim_set_argv (BraseroProcess *process,
 			 GPtrArray *argv,
 			 GError **error)
 {
-	BraseroWodimPrivate *priv;
 	BraseroBurnResult result;
 	BraseroJobAction action;
-	BraseroWodim *wodim;
 	BraseroBurnFlag flags;
+	BraseroWodim *wodim;
 	gchar *dev_str;
 	gchar *device;
 
 	wodim = BRASERO_WODIM (process);
-	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	brasero_job_get_action (BRASERO_JOB (wodim), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE)

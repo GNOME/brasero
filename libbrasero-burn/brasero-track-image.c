@@ -100,15 +100,12 @@ brasero_track_image_set_source (BraseroTrackImage *track,
 				const gchar *toc,
 				BraseroImageFormat format)
 {
-	BraseroTrackImagePrivate *priv;
 	BraseroTrackImageClass *klass;
 	BraseroBurnResult res;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), BRASERO_BURN_ERR);
 
 	/* See if it has changed */
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
-
 	klass = BRASERO_TRACK_IMAGE_GET_CLASS (track);
 	if (!klass->set_source)
 		return BRASERO_BURN_ERR;

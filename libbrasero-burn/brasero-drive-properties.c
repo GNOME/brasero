@@ -204,9 +204,6 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 	GFileInfo *info;
 	GError *error = NULL;
 	const gchar *filesystem;
-	BraseroDrivePropertiesPrivate *priv;
-
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
 
 	file = g_file_new_for_commandline_arg (path);
 	if (!file)
@@ -399,10 +396,6 @@ static void
 brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 				     const gchar *path)
 {
-	BraseroDrivePropertiesPrivate *priv;
-
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
-
 	if (!path)
 		path = g_get_tmp_dir ();
 

@@ -488,52 +488,44 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 		return;		      
 	}
 	else if (valid == BRASERO_SESSION_NO_INPUT_MEDIUM) {
-		GtkWidget *message;
-
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (priv->message_input,
-							      _("Please insert a disc holding data."),
-							      _("There is no inserted disc to copy."),
-							      -1,
-							      BRASERO_NOTIFY_CONTEXT_SIZE);
+			brasero_notify_message_add (priv->message_input,
+			                            _("Please insert a disc holding data."),
+			                            _("There is no inserted disc to copy."),
+			                            -1,
+			                            BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
 	else if (valid == BRASERO_SESSION_NO_INPUT_IMAGE) {
-		GtkWidget *message;
-
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (priv->message_input,
-							      _("Please select a disc image."),
-							      _("There is no selected disc image."),
-							      -1,
-							      BRASERO_NOTIFY_CONTEXT_SIZE);
+			brasero_notify_message_add (priv->message_input,
+			                            _("Please select a disc image."),
+			                            _("There is no selected disc image."),
+			                            -1,
+			                            BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
 	else if (valid == BRASERO_SESSION_UNKNOWN_IMAGE) {
-		GtkWidget *message;
-
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (priv->message_input,
-							      /* Translators: this is a disc image not a picture */
-							      C_("disc", "Please select another image."),
-							      _("It doesn't appear to be a valid disc image or a valid cue file."),
-							      -1,
-							      BRASERO_NOTIFY_CONTEXT_SIZE);
+			brasero_notify_message_add (priv->message_input,
+			                            /* Translators: this is a disc image not a picture */
+			                            C_("disc", "Please select another image."),
+			                            _("It doesn't appear to be a valid disc image or a valid cue file."),
+			                            -1,
+			                            BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
 	else if (valid == BRASERO_SESSION_DISC_PROTECTED) {
-		GtkWidget *message;
-
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
-			message = brasero_notify_message_add (priv->message_input,
-							      _("Please insert a disc that is not copy protected."),
-							      _("All required applications and libraries are not installed."),
-							      -1,
-							      BRASERO_NOTIFY_CONTEXT_SIZE);
+			brasero_notify_message_add (priv->message_input,
+			                            _("Please insert a disc that is not copy protected."),
+			                            _("All required applications and libraries are not installed."),
+			                            -1,
+			                            BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
@@ -545,7 +537,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	}
 	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
 		GtkWidget *message;
-
+		
 		message = brasero_notify_message_add (priv->message_output,
 						      _("Would you like to burn beyond the disc's reported capacity?"),
 						      _("The data size is too large for the disc and you must remove files from the selection otherwise."

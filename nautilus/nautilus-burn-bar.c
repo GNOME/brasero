@@ -144,10 +144,6 @@ nautilus_disc_burn_bar_set_property (GObject            *object,
                                 const GValue       *value,
                                 GParamSpec         *pspec)
 {
-        NautilusDiscBurnBar *self;
-
-        self = NAUTILUS_DISC_BURN_BAR (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -161,10 +157,6 @@ nautilus_disc_burn_bar_get_property (GObject    *object,
                                 GValue     *value,
                                 GParamSpec *pspec)
 {
-        NautilusDiscBurnBar *self;
-
-        self = NAUTILUS_DISC_BURN_BAR (object);
-
         switch (prop_id) {
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

@@ -896,7 +896,7 @@ brasero_job_item_stop (BraseroTaskItem *item,
 	BraseroJobClass *klass;
 	BraseroJobPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
-
+	
 	self = BRASERO_JOB (item);
 	priv = BRASERO_JOB_PRIVATE (self);
 
@@ -917,7 +917,7 @@ brasero_job_item_stop (BraseroTaskItem *item,
 		priv->ctx = NULL;
 	}
 
-	return BRASERO_BURN_OK;
+	return result;
 }
 
 static void
@@ -1237,12 +1237,9 @@ brasero_job_set_nonblocking (BraseroJob *self,
 			     GError **error)
 {
 	BraseroBurnResult result;
-	BraseroJobPrivate *priv;
 	int fd;
 
 	BRASERO_JOB_DEBUG (self);
-
-	priv = BRASERO_JOB_PRIVATE (self);
 
 	fd = -1;
 	if (brasero_job_get_fd_in (self, &fd) == BRASERO_BURN_OK) {

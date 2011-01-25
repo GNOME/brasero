@@ -120,12 +120,9 @@ static gboolean
 brasero_medium_properties_wrong_extension (BraseroSessionCfg *session,
 					   BraseroMediumProperties *self)
 {
+	guint answer;
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
-	GtkResponseType answer;
-	BraseroMediumPropertiesPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
@@ -233,10 +230,6 @@ brasero_medium_properties_output_changed (BraseroBurnSession *session,
 static void
 brasero_medium_properties_init (BraseroMediumProperties *object)
 {
-	BraseroMediumPropertiesPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
-
 	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Configure recording options"));
 }
 

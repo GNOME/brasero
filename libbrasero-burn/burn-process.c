@@ -576,12 +576,10 @@ brasero_process_setup_channel (BraseroProcess *process,
 static void
 brasero_process_setup (gpointer data)
 {
-	BraseroProcessPrivate *priv;
 	BraseroProcess *process;
 	int fd;
 
 	process = BRASERO_PROCESS (data);
-	priv = BRASERO_PROCESS_PRIVATE (process);
 
 	fd = -1;
 	if (brasero_job_get_fd_in (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {

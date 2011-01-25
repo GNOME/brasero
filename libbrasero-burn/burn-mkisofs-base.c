@@ -564,7 +564,6 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 				     GError **error)
 {
 	gchar *uri;
-	GSList *grafts_excluded;
 	BraseroMkisofsBase base;
 	BraseroBurnResult result;
 
@@ -613,7 +612,6 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 	 * Once finished, for each excluded use the hash to see if there are not
 	 * other paths at which the excluded uri must appear. If so, create an
 	 * explicit graft point. */
-	grafts_excluded = NULL;
 	for (; grafts; grafts = grafts->next) {
 		BraseroGraftPt *graft;
 

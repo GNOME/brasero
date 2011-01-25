@@ -86,7 +86,6 @@ brasero_dvdcss_library_init (BraseroPlugin *plugin)
 {
 	gpointer address;
 	GModule *module;
-	gchar *dvdcss_interface_2 = NULL;
 
 	if (css_ready)
 		return TRUE;
@@ -98,7 +97,6 @@ brasero_dvdcss_library_init (BraseroPlugin *plugin)
 
 	if (!g_module_symbol (module, "dvdcss_interface_2", &address))
 		goto error_version;
-	dvdcss_interface_2 = address;
 
 	if (!g_module_symbol (module, "dvdcss_open", &address))
 		goto error_version;

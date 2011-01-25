@@ -424,17 +424,12 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 {
 	GSList *next;
 	GSList *tracks;
-	gboolean notready;
 	BraseroStatus *status;
-	BraseroVideoDiscPrivate *priv;
-
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
 	if (!gtk_widget_get_window (GTK_WIDGET (self)))
 		return;
 
 	/* make sure all tracks have video */
-	notready = FALSE;
 	status = brasero_status_new ();
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
 	for (; tracks; tracks = next) {
@@ -481,10 +476,8 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 			continue;
 		}
 
-		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING) {
-			notready = TRUE;
+		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING)
 			continue;
-		}
 
 		if (result != BRASERO_BURN_OK)
 			continue;
@@ -588,12 +581,12 @@ brasero_video_disc_selection_function (GtkTreeSelection *selection,
 				       gboolean path_currently_selected,
 				       gpointer NULL_data)
 {
-	BraseroTrack *track;
+/*	BraseroTrack *track;
 
 	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
 
-	/* FIXME: add a tag?? */
-/*	if (track)
+	FIXME: add a tag??
+	if (track)
 		file->editable = !path_currently_selected;
 */
 	return TRUE;
@@ -721,13 +714,8 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 	GtkWidget *props;
 	guint64 length = 0;
 	GtkWidget *toplevel;
-	GtkTreeModel *model;
 	GtkResponseType result;
-	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 
 	brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);

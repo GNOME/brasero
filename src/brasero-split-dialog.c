@@ -726,7 +726,6 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 				     BraseroSplitDialog *self)
 {
 	BraseroSplitDialogPrivate *priv;
-	GtkTreeModel *model;
 	guint page;
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
@@ -741,7 +740,6 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 		return;
 	}
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if (!brasero_split_dialog_clear_confirm_dialog (self,
 							_("Do you really want to carry on with automatic splitting?"),
 							_("_Don't split"),
@@ -958,7 +956,6 @@ brasero_split_dialog_reset_clicked_cb (GtkButton *button,
 				       BraseroSplitDialog *self)
 {
 	BraseroSplitDialogPrivate *priv;
-	GtkTreeModel *model;
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
 	if (!brasero_split_dialog_clear_confirm_dialog (self,
@@ -967,7 +964,6 @@ brasero_split_dialog_reset_clicked_cb (GtkButton *button,
 							_("Re_move All")))
 		return;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	gtk_list_store_clear (priv->model);
 }
 

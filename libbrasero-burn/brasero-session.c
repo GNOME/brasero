@@ -196,9 +196,6 @@ static void
 brasero_burn_session_start_track_monitoring (BraseroBurnSession *self,
 					     BraseroTrack *track)
 {
-	BraseroBurnSessionPrivate *priv;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	g_signal_connect (track,
 			  "changed",
 			  G_CALLBACK (brasero_burn_session_track_changed),
@@ -1382,9 +1379,6 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 					   const gchar *path)
 {
 	gchar *retval = NULL;
-	BraseroBurnSessionPrivate *priv;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	if (format == BRASERO_IMAGE_FORMAT_CLONE)
 		retval = g_strdup_printf ("%s.toc", path);
@@ -2177,11 +2171,8 @@ brasero_burn_session_log (BraseroBurnSession *self,
 			  ...)
 {
 	va_list args;
-	BraseroBurnSessionPrivate *priv;
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	va_start (args, format);
 	brasero_burn_session_logv (self, format, args);
@@ -2489,11 +2480,7 @@ brasero_burn_session_set_property (GObject *object,
                                    const GValue *value,
                                    GParamSpec *pspec)
 {
-	BraseroBurnSessionPrivate *priv;
-
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (object));
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (object);
 
 	switch (prop_id)
 	{

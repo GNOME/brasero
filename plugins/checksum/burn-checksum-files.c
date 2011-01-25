@@ -1351,19 +1351,6 @@ brasero_checksum_files_activate (BraseroJob *job,
 }
 
 static BraseroBurnResult
-brasero_checksum_files_clock_tick (BraseroJob *job)
-{
-	BraseroChecksumFilesPrivate *priv;
-
-	priv = BRASERO_CHECKSUM_FILES_PRIVATE (job);
-
-	/* we'll need that function later. For the moment, when generating a
-	 * file we can't know how many files there are. Just when checking it */
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
 brasero_checksum_files_stop (BraseroJob *job,
 			     GError **error)
 {
@@ -1462,7 +1449,6 @@ brasero_checksum_files_class_init (BraseroChecksumFilesClass *klass)
 	job_class->activate = brasero_checksum_files_activate;
 	job_class->start = brasero_checksum_files_start;
 	job_class->stop = brasero_checksum_files_stop;
-	job_class->clock_tick = brasero_checksum_files_clock_tick;
 }
 
 static void

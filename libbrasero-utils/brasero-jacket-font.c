@@ -232,10 +232,7 @@ static void
 brasero_jacket_fill_sizes (BraseroJacketFont *self,
                            GtkListStore *store)
 {
-	BraseroJacketFontPrivate *priv;
 	gint i;
-
-	priv = BRASERO_JACKET_FONT_PRIVATE (self);
 
 	for (i = 0; i < G_N_ELEMENTS (font_sizes); i ++) {
 		GtkTreeIter iter;
@@ -255,12 +252,9 @@ static void
 brasero_jacket_fill_families (BraseroJacketFont *self,
                               GtkListStore *store)
 {
-	BraseroJacketFontPrivate *priv;
 	PangoFontFamily **families;
 	gint num = 0;
 	gint i;
-
-	priv = BRASERO_JACKET_FONT_PRIVATE (self);
 
 	pango_context_list_families (gtk_widget_get_pango_context (GTK_WIDGET (self)),
 				     &families, &num);

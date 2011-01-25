@@ -100,10 +100,6 @@ static BraseroBurnResult
 brasero_vob_stop (BraseroJob *job,
 		  GError **error)
 {
-	BraseroVobPrivate *priv;
-
-	priv = BRASERO_VOB_PRIVATE (job);
-
 	brasero_vob_stop_pipeline (BRASERO_VOB (job));
 	return BRASERO_BURN_OK;
 }
@@ -113,10 +109,7 @@ brasero_vob_finished (BraseroVob *vob)
 {
 	BraseroTrackType *type = NULL;
 	BraseroTrackStream *track;
-	BraseroVobPrivate *priv;
 	gchar *output = NULL;
-
-	priv = BRASERO_VOB_PRIVATE (vob);
 
 	type = brasero_track_type_new ();
 	brasero_job_get_output_type (BRASERO_JOB (vob), type);
@@ -140,11 +133,9 @@ brasero_vob_bus_messages (GstBus *bus,
 			  GstMessage *msg,
 			  BraseroVob *vob)
 {
-	BraseroVobPrivate *priv;
 	GError *error = NULL;
 	gchar *debug;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_TAG:
 		return TRUE;

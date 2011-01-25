@@ -105,7 +105,6 @@ static void
 brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 				      BraseroJacketEdit *self)
 {
-	BraseroJacketEditPrivate *priv;
 	GtkPrintOperationResult res;
 	GtkPrintOperation *print;
 	GtkPrintSettings *settings;
@@ -113,7 +112,6 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 	GtkWidget *toplevel;
 	gchar *path;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 	print = gtk_print_operation_new ();
 	g_signal_connect (print,
 			  "draw-page",

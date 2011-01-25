@@ -89,9 +89,6 @@ brasero_image_properties_get_format (BraseroImageProperties *self)
 static gchar *
 brasero_image_properties_get_path (BraseroImageProperties *self)
 {
-	BraseroImagePropertiesPrivate *priv;
-
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
 }
 
@@ -99,9 +96,6 @@ static void
 brasero_image_properties_set_path (BraseroImageProperties *self,
 				   const gchar *path)
 {
-	BraseroImagePropertiesPrivate *priv;
-
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 	if (path) {
 		gchar *name;
 
@@ -426,10 +420,6 @@ brasero_image_properties_set_property (GObject *object,
 				       const GValue *value,
 				       GParamSpec *pspec)
 {
-	BraseroImagePropertiesPrivate *priv;
-
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
-
 	switch (property_id) {
 	case PROP_SESSION: /* Readable and only writable at creation time */
 		brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (object),
@@ -464,10 +454,7 @@ brasero_image_properties_get_property (GObject *object,
 static void
 brasero_image_properties_init (BraseroImageProperties *object)
 {
-	BraseroImagePropertiesPrivate *priv;
 	GtkWidget *box;
-
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
 
 	gtk_window_set_title (GTK_WINDOW (object), _("Location for Image File"));
 	box = gtk_dialog_get_content_area (GTK_DIALOG (object));

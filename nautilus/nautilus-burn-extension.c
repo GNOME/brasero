@@ -138,7 +138,6 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 				  GtkWidget		*options,
 				  GtkWindow		*window)
 {
-	gboolean		 success;
 	GtkResponseType		 result;
 	const gchar		*icon_name;
 	GtkWidget		*dialog;
@@ -181,10 +180,10 @@ launch_brasero_on_window_session (BraseroSessionCfg	*session,
 	gtk_window_present (GTK_WINDOW (dialog));
 
 	if (result == GTK_RESPONSE_OK)
-		success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
+		brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
 		                                   BRASERO_BURN_SESSION (session));
 	else
-		success = brasero_burn_dialog_run_multi (BRASERO_BURN_DIALOG (dialog),
+		brasero_burn_dialog_run_multi (BRASERO_BURN_DIALOG (dialog),
 		                                         BRASERO_BURN_SESSION (session));
 
 	gtk_widget_destroy (dialog);

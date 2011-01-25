@@ -305,13 +305,7 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 	if (success < 0)
 		goto error;
 
-	/* get all tracks */
-	brasero_job_get_tracks (BRASERO_JOB (process), &tracks);
-	for (i = 0, iter = tracks; iter; iter = iter->next, i++) {
-		BraseroTrack *track;
-
-		track = iter->data;
-
+	for (i = 0; i < priv->num_tracks; i++) {
 		sprintf (buffer, "playlist-%i", i);
 		success = xmlTextWriterStartElement (xml, (xmlChar *) "playlist");
 		if (success < 0)

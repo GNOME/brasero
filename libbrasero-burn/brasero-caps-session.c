@@ -373,7 +373,6 @@ brasero_caps_link_get_data_flags (BraseroCapsLink *link,
 
 	/* Go through all plugins the get the supported/... data flags for link */
 	for (iter = link->plugins; iter; iter = iter->next) {
-		gboolean result;
 		BraseroPlugin *plugin;
 		BraseroBurnFlag plugin_supported;
 		BraseroBurnFlag plugin_compulsory;
@@ -382,11 +381,11 @@ brasero_caps_link_get_data_flags (BraseroCapsLink *link,
 		if (!brasero_plugin_get_active (plugin, ignore_plugin_errors))
 			continue;
 
-		result = brasero_plugin_get_image_flags (plugin,
-							 media,
-							 session_flags,
-							 &plugin_supported,
-							 &plugin_compulsory);
+		brasero_plugin_get_image_flags (plugin,
+		                                media,
+		                                session_flags,
+		                                &plugin_supported,
+		                                &plugin_compulsory);
 		*supported |= plugin_supported;
 	}
 }

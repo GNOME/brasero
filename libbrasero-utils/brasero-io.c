@@ -602,16 +602,17 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 	GMount *mounted;
 	GtkWindow *parent;
 	BraseroIOPrivate *priv;
-	GMountOperation *operation;
 	BraseroIOMount mount = { NULL, };
+	GMountOperation *operation = NULL;
 
 	priv = BRASERO_IO_PRIVATE (self);
 
-	if (priv->win_callback)
+	if (priv->win_callback) {
 		parent = priv->win_callback (priv->win_user_data);
 
-	if (parent)
-		operation = gtk_mount_operation_new (parent);
+		if (parent)
+			operation = gtk_mount_operation_new (parent);
+	}
 
 	g_file_mount_enclosing_volume (file,
 				       G_MOUNT_MOUNT_NONE,
@@ -619,7 +620,8 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 				       cancel,
 				       brasero_io_mount_enclosing_volume_cb,
 				       &mount);
-	g_object_unref (operation);
+	if (operation)
+		g_object_unref (operation);
 
 	/* sleep and wait operation end */
 	while (!mount.finished && !g_cancellable_is_cancelled (cancel))

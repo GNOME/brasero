@@ -752,9 +752,6 @@ brasero_data_project_reverse_children (BraseroDataProject *self,
 {
 	gint *array;
 	BraseroDataProjectClass *klass;
-	BraseroDataProjectPrivate *priv;
-
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	array = brasero_file_node_reverse_children (parent);
 
@@ -1018,12 +1015,9 @@ static BraseroURINode *
 brasero_data_project_uri_graft_nodes (BraseroDataProject *self,
 				      const gchar *uri)
 {
-	BraseroDataProjectPrivate *priv;
 	BraseroURINode *graft;
 	GSList *nodes;
 	GSList *iter;
-
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	/* Find all the nodes that should be grafted.
 	 * NOTE: this must be done before asking for a new graft */
@@ -2883,8 +2877,7 @@ brasero_data_project_get_max_space (BraseroDataProject *self)
 		else
 			child_sectors = brasero_data_project_get_folder_sectors (self, children);
 
-		max_sectors = MAX (max_sectors, BRASERO_FILE_NODE_SECTORS (children));
-
+		max_sectors = MAX (max_sectors, child_sectors);
 		children = children->next;
 	}
 
@@ -3314,13 +3307,11 @@ brasero_data_project_add_path (BraseroDataProject *self,
 			       GSList *folders)
 {
 	BraseroDataProjectPrivate *priv;
-	BraseroDataProjectClass *klass;
 	BraseroFileNode *parent;
 	BraseroFileNode *node;
 	BraseroURINode *graft;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 
 	/* we don't create the last part (after the last separator) of
 	 * the node since we're only interested in the existence of the
@@ -4126,7 +4117,6 @@ brasero_data_project_file_renamed (BraseroFileMonitor *monitor,
 				   const gchar *old_name,
 				   const gchar *new_name)
 {
-	BraseroDataProjectPrivate *priv;
 	BraseroFileNode *sibling;
 	BraseroFileNode *node;
 
@@ -4139,8 +4129,6 @@ brasero_data_project_file_renamed (BraseroFileMonitor *monitor,
 
 	if (!node)
 		return;
-
-	priv = BRASERO_DATA_PROJECT_PRIVATE (monitor);
 
 	/* make sure there isn't the same name in the directory: if so, that's 
 	 * simply not possible to rename. So if node is grafted it keeps its
@@ -4357,11 +4345,8 @@ brasero_data_project_file_modified (BraseroFileMonitor *monitor,
 				    const gchar *name)
 {
 	BraseroFileNode *node = callback_data;
-	BraseroDataProjectPrivate *priv;
 	BraseroDataProjectClass *klass;
 	gchar *uri;
-
-	priv = BRASERO_DATA_PROJECT_PRIVATE (monitor);
 
 	if (node->is_loading)
 		return;

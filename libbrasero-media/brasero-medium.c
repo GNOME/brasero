@@ -189,7 +189,6 @@ static GObjectClass* parent_class = NULL;
 gchar *
 brasero_medium_get_tooltip (BraseroMedium *medium)
 {
-	BraseroMediumPrivate *priv;
 	BraseroDrive *drive;
 	BraseroMedia media;
 	const gchar *type;
@@ -198,8 +197,6 @@ brasero_medium_get_tooltip (BraseroMedium *medium)
 
 	g_return_val_if_fail (medium != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
-
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	media = brasero_medium_get_status (BRASERO_MEDIUM (medium));
 	if (media & BRASERO_MEDIUM_FILE) {
@@ -1525,16 +1522,13 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 				  BraseroMediumTrack *track,
 				  BraseroDeviceHandle *handle)
 {
-	BraseroMediumPrivate *priv;
-	gboolean res;
 	GError *error = NULL;
 	BraseroVolSrc *vol;
 	gint64 nb_blocks;
+	gboolean res;
 
 	if (!track)
 		return FALSE;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	/* This is a special case. For DVD+RW and DVD-RW in restricted
 	 * mode, there is only one session that takes the whole disc size
@@ -2253,7 +2247,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 			     BraseroScsiErrCode *code)
 {
 	int size;
-	gboolean res;
+	gboolean res = TRUE;
 	BraseroScsiResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiDiscInfoStd *info = NULL;
@@ -2782,7 +2776,6 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 	int num, size, i;
 	char buffer [256]; /* mmc specs advise no more than 160 */
 	gboolean find_block_info;
-	BraseroMediumPrivate *priv;
 	BraseroScsiCDTextData *cd_text;
 
 	BRASERO_MEDIA_LOG ("Getting CD-TEXT");
@@ -2804,8 +2797,6 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 		g_free (cd_text);
 		return;
 	}
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	off = 0;
 	track_num = 0;
@@ -2930,9 +2921,7 @@ brasero_medium_init_real (BraseroMedium *object,
 	if (priv->probe_cancelled)
 		return;
 
-	result = brasero_medium_get_contents (object, handle, &code);
-	if (result != TRUE)
-	if (result != TRUE)
+	if (!brasero_medium_get_contents (object, handle, &code))
 		return;
 
 	if (priv->probe_cancelled)

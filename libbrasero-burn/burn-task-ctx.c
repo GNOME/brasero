@@ -331,12 +331,9 @@ BraseroBurnResult
 brasero_task_ctx_next_track (BraseroTaskCtx *self)
 
 {
-	BraseroTaskCtxPrivate *priv;
 	BraseroBurnResult retval;
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
-
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	retval = brasero_task_ctx_set_next_track (self);
 	if (retval == BRASERO_BURN_RETRY) {
@@ -403,9 +400,7 @@ brasero_task_ctx_error (BraseroTaskCtx *self,
 			GError *error)
 {
 	BraseroTaskCtxClass *klass;
-	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
 	klass = BRASERO_TASK_CTX_GET_CLASS (self);
 	if (!klass->finished)
 		return BRASERO_BURN_NOT_SUPPORTED;

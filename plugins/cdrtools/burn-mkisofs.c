@@ -102,11 +102,8 @@ brasero_mkisofs_read_stderr (BraseroProcess *process, const gchar *line)
 {
 	gchar fraction_str [7] = { 0, };
 	BraseroMkisofs *mkisofs;
-	BraseroMkisofsPrivate *priv;
 
 	mkisofs = BRASERO_MKISOFS (process);
-	priv = BRASERO_MKISOFS_PRIVATE (process);
-
 	if (strstr (line, "estimate finish")
 	&&  sscanf (line, "%6c%% done, estimate finish", fraction_str) == 1) {
 		gdouble fraction;

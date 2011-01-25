@@ -550,7 +550,6 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 						BraseroBurnFlag flags)
 {
 	BraseroDrive *drive;
-	BraseroMedia media;
 	BraseroBurnFlag flag;
 	BraseroMedium *medium;
 	BraseroBurnResult result;
@@ -585,8 +584,6 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 		BRASERO_BURN_LOG ("No medium");
 		return;
 	}
-
-	media = brasero_medium_get_status (medium);
 
 	/* This prevents signals to be emitted while (re-) adding them one by one */
 	g_object_freeze_notify (G_OBJECT (self));
@@ -691,10 +688,7 @@ brasero_session_cfg_rm_drive_properties_flags (BraseroSessionCfg *self,
 static void
 brasero_session_cfg_check_drive_settings (BraseroSessionCfg *self)
 {
-	BraseroSessionCfgPrivate *priv;
 	BraseroBurnFlag flags;
-
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
 	/* Try to properly update the flags for the current drive */
 	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
@@ -1466,10 +1460,6 @@ void
 brasero_session_cfg_remove_flags (BraseroSessionCfg *session,
 				  BraseroBurnFlag flags)
 {
-	BraseroSessionCfgPrivate *priv;
-
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
-
 	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (session), flags);
 
 	/* For this case reset all flags as some flags could

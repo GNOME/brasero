@@ -336,10 +336,8 @@ brasero_cdda2wav_set_argv (BraseroProcess *process,
 	BraseroJobAction action;
 	BraseroBurnResult result;
 	BraseroCdda2wav *cdda2wav;
-	BraseroCdda2wavPrivate *priv;
 
 	cdda2wav = BRASERO_CDDA2WAV (process);
-	priv = BRASERO_CDDA2WAV_PRIVATE (process);
 
 	g_ptr_array_add (argv, g_strdup ("cdda2wav"));
 

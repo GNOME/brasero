@@ -608,9 +608,6 @@ brasero_data_disc_image_uri_cb (BraseroTrackDataCfg *vfs,
 	gchar *string;
 	GtkWidget *button;
 	GtkWidget *dialog;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 	                             _("Do you want to create a disc from the contents of the image or with the image file inside?"),
@@ -671,9 +668,6 @@ brasero_data_disc_unreadable_uri_cb (BraseroTrackDataCfg *vfs,
 {
 	gchar *name;
 	gchar *primary;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	name = brasero_utils_get_uri_name (uri);
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
@@ -692,9 +686,6 @@ brasero_data_disc_recursive_uri_cb (BraseroTrackDataCfg *vfs,
 {
 	gchar *name;
 	gchar *primary;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	name = brasero_utils_get_uri_name (uri);
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
@@ -713,9 +704,6 @@ brasero_data_disc_unknown_uri_cb (BraseroTrackDataCfg *vfs,
 {
 	gchar *name;
 	gchar *primary;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	name = brasero_utils_get_uri_name (uri);
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
@@ -1657,10 +1645,7 @@ brasero_data_disc_set_session_contents (BraseroDisc *self,
 					BraseroBurnSession *session)
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
-	BraseroDataDiscPrivate *priv;
 	GSList *tracks;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	brasero_data_disc_unset_track (BRASERO_DATA_DISC (self));
 

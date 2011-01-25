@@ -154,9 +154,6 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 static void
 brasero_status_dialog_session_ready (BraseroStatusDialog *dialog)
 {
-	BraseroStatusDialogPrivate *priv;
-
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
 	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 }
 

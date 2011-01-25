@@ -147,12 +147,9 @@ static gboolean
 brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
                                    const char *message)
 {
-	BraseroBurnDialogPrivate *priv;
         NotifyNotification *notification;
 	GError *error = NULL;
         gboolean result;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
 	if (!notify_is_initted ()) {
 		notify_init (_("Brasero notification"));
@@ -1020,21 +1017,18 @@ brasero_burn_dialog_eject_failure_cb (BraseroBurn *burn,
 	gchar *name;
 	gchar *string;
 	gint removal_id;
-	GtkWindow *window;
 	GtkWidget *message;
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
-
+	
 	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
 
 	g_timer_stop (priv->total_time);
-
-	window = GTK_WINDOW (dialog);
 
 	name = brasero_drive_get_display_name (drive);
 	/* Translators: %s is the name of a drive */
@@ -1155,15 +1149,9 @@ brasero_burn_dialog_update_title_writing_progress (BraseroBurnDialog *dialog,
 						   BraseroMedia media,
 						   guint percent)
 {
-	BraseroBurnDialogPrivate *priv;
-	BraseroBurnFlag flags;
 	gchar *title = NULL;
 	gchar *icon_name;
 	guint remains;
-
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
-
-	flags = brasero_burn_session_get_flags (priv->session);
 
 	/* This is used only when actually writing to a disc */
 	if (media == BRASERO_MEDIUM_FILE)

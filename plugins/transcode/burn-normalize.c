@@ -487,12 +487,10 @@ brasero_normalize_bus_messages (GstBus *bus,
 				GstMessage *msg,
 				BraseroNormalize *normalize)
 {
-	BraseroNormalizePrivate *priv;
 	GstTagList *tags = NULL;
 	GError *error = NULL;
 	gchar *debug;
 
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_TAG:
 		/* This is the information we've been waiting for.

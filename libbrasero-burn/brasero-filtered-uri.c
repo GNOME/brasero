@@ -106,11 +106,8 @@ brasero_filtered_uri_filter (BraseroFilteredUri *filtered,
 			     const gchar *uri,
 			     BraseroFilterStatus status)
 {
-	BraseroFilteredUriPrivate *priv;
 	GtkTreeIter iter;
 	gboolean fatal;
-
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
 
 	gtk_list_store_append (GTK_LIST_STORE (filtered), &iter);
 	fatal = (status != BRASERO_FILTER_HIDDEN && status != BRASERO_FILTER_BROKEN_SYM);

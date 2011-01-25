@@ -356,10 +356,7 @@ brasero_track_stream_get_size (BraseroTrack *track,
 			       goffset *blocks,
 			       goffset *block_size)
 {
-	BraseroTrackStreamPrivate *priv;
 	BraseroStreamFormat format;
-
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
 
 	format = brasero_track_stream_get_format (BRASERO_TRACK_STREAM (track));
 	if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (format)) {

@@ -342,10 +342,6 @@ brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 static void
 brasero_image_type_chooser_finalize (GObject *object)
 {
-	BraseroImageTypeChooserPrivate *priv;
-
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (object);
-
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

@@ -153,7 +153,6 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 				    GValue *value)
 {
 	BraseroVideoTreeModelPrivate *priv;
-	BraseroVideoTreeModel *self;
 	BraseroBurnResult result;
 	BraseroStatus *status;
 	BraseroTrack *track;
@@ -163,7 +162,6 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	GSList *tracks;
 	gchar *text;
 
-	self = BRASERO_VIDEO_TREE_MODEL (model);
 	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
 
 	/* make sure that iter comes from us */
@@ -885,8 +883,6 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 	else if (target == gdk_atom_intern ("text/uri-list", TRUE)) {
 		gint i;
 		gchar **uris = NULL;
-		gboolean success = FALSE;
-		const guchar *selection_data_raw;
 
 		/* NOTE: for some reason gdk_text_property_to_utf8_list_for_display ()
 		 * fails with banshee DND URIs list when calling gtk_selection_data_get_uris ().
@@ -894,7 +890,6 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 
 		/* NOTE: there can be many URIs at the same time. One
 		 * success is enough to return TRUE. */
-		selection_data_raw = gtk_selection_data_get_data (selection_data);
 		uris = gtk_selection_data_get_uris (selection_data);
 		if (!uris) {
 			const guchar *selection_data_raw;
@@ -906,7 +901,6 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 		if (!uris)
 			return TRUE;
 
-		success = FALSE;
 		for (i = 0; uris [i]; i ++) {
 			BraseroTrackStreamCfg *track;
 

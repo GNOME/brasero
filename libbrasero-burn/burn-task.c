@@ -368,9 +368,6 @@ BraseroBurnResult
 brasero_task_cancel (BraseroTask *task,
 		     gboolean protect)
 {
-	BraseroTaskPrivate *priv;
-
-	priv = BRASERO_TASK_PRIVATE (task);
 	if (protect && brasero_task_ctx_get_dangerous (BRASERO_TASK_CTX (task)))
 		return BRASERO_BURN_DANGEROUS;
 

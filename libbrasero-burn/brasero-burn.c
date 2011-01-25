@@ -617,10 +617,10 @@ again:
 	else
 		error_type = BRASERO_BURN_ERROR_NONE;
 
-	if (media & BRASERO_MEDIUM_BLANK) {
+	if (error_type != BRASERO_BURN_ERROR_NONE) {
 		result = brasero_burn_ask_for_src_media (burn,
 							 BRASERO_BURN_ERROR_MEDIUM_NO_DATA,
-							 BRASERO_MEDIUM_HAS_DATA,
+							 error_type,
 							 error);
 		if (result != BRASERO_BURN_OK)
 			return result;
@@ -1474,15 +1474,12 @@ brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 {
 	gint error_code;
 	BraseroDrive *src;
-	gboolean has_slept;
 	BraseroDrive *burner;
 	GError *ret_error = NULL;
 	BraseroBurnResult result;
 	BraseroMedium *src_medium;
 	BraseroMedium *burnt_medium;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
-
-	has_slept = FALSE;
 
 	src = brasero_burn_session_get_src_drive (priv->session);
 	src_medium = brasero_drive_get_medium (src);
@@ -1587,8 +1584,6 @@ start:
 		result = brasero_burn_sleep (burn, 2000);
 		if (result != BRASERO_BURN_OK)
 			return result;
-
-		has_slept = TRUE;
 
 		/* set speed at 8x max and even less if speed  */
 		rate = brasero_burn_session_get_rate (priv->session);
@@ -2280,20 +2275,12 @@ brasero_burn_check_real (BraseroBurn *self,
 			 BraseroTrack *track,
 			 GError **error)
 {
-	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
-	BraseroChecksumType checksum_type;
 
 	priv = BRASERO_BURN_PRIVATE (self);
-
+	
 	BRASERO_BURN_LOG ("Starting to check track integrity");
-
-	checksum_type = brasero_track_get_checksum_type (track);
-
-	/* if the input is a DISC and there isn't any checksum specified that 
-	 * means the checksum file is on the disc. */
-	medium = brasero_drive_get_medium (priv->dest);
 
 	/* get the task and run it skip it otherwise */
 	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
@@ -2386,7 +2373,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
-	BraseroMedium *medium;
 	GSList *tracks;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
@@ -2502,8 +2488,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 		brasero_burn_session_pop_tracks (priv->session);
 		return result;
 	}
-
-	medium = brasero_drive_get_medium (priv->dest);
 
 	/* Why do we do this?
 	 * Because for a lot of medium types the size

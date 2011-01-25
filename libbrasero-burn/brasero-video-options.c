@@ -385,11 +385,7 @@ brasero_video_options_set_property (GObject *object,
 				    const GValue *value,
 				    GParamSpec *pspec)
 {
-	BraseroVideoOptionsPrivate *priv;
-
 	g_return_if_fail (BRASERO_IS_VIDEO_OPTIONS (object));
-
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (object);
 
 	switch (prop_id)
 	{

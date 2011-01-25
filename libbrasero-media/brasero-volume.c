@@ -66,7 +66,6 @@ GVolume *
 brasero_volume_get_gvolume (BraseroVolume *volume)
 {
 	const gchar *volume_path = NULL;
-	BraseroVolumePrivate *priv;
 	GVolumeMonitor *monitor;
 	GVolume *gvolume = NULL;
 	BraseroDrive *drive;
@@ -75,8 +74,6 @@ brasero_volume_get_gvolume (BraseroVolume *volume)
 
 	g_return_val_if_fail (volume != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
-
-	priv = BRASERO_VOLUME_PRIVATE (volume);
 
 	drive = brasero_medium_get_drive (BRASERO_MEDIUM (volume));
 
@@ -161,7 +158,6 @@ gchar *
 brasero_volume_get_mount_point (BraseroVolume *volume,
 				GError **error)
 {
-	BraseroVolumePrivate *priv;
 	gchar *local_path = NULL;
 	GVolume *gvolume;
 	GMount *mount;
@@ -169,8 +165,6 @@ brasero_volume_get_mount_point (BraseroVolume *volume,
 
 	g_return_val_if_fail (volume != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
-
-	priv = BRASERO_VOLUME_PRIVATE (volume);
 
 	gvolume = brasero_volume_get_gvolume (volume);
 	if (!gvolume)
@@ -372,7 +366,6 @@ brasero_volume_get_icon (BraseroVolume *volume)
 gchar *
 brasero_volume_get_name (BraseroVolume *volume)
 {
-	BraseroVolumePrivate *priv;
 	BraseroMedia media;
 	const gchar *type;
 	GVolume *gvolume;
@@ -380,8 +373,6 @@ brasero_volume_get_name (BraseroVolume *volume)
 
 	g_return_val_if_fail (volume != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
-
-	priv = BRASERO_VOLUME_PRIVATE (volume);
 
 	media = brasero_medium_get_status (BRASERO_MEDIUM (volume));
 	if (media & BRASERO_MEDIUM_FILE) {

@@ -174,11 +174,11 @@ brasero_rename_sequence_string (BraseroRename *self,
                                 guint nb_items)
 {
 	BraseroRenamePrivate *priv;
-	gboolean is_at_end;
 
 	priv = BRASERO_RENAME_PRIVATE (self);
 
-	is_at_end = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->insert_combo)) != 0;
+	if (!gtk_combo_box_get_active (GTK_COMBO_BOX (priv->insert_combo)))
+		return NULL;
 
 	if (nb_items < 10){
 		return g_strdup_printf ("%i%s", item_num, name);

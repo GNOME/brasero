@@ -170,10 +170,7 @@ static GtkTreePath *
 brasero_track_data_cfg_node_to_path (BraseroTrackDataCfg *self,
 				     BraseroFileNode *node)
 {
-	BraseroTrackDataCfgPrivate *priv;
 	GtkTreePath *path;
-
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
 
 	path = gtk_tree_path_new ();
 	for (; node->parent && !node->is_root; node = node->parent) {
@@ -597,15 +594,13 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 
 static void
 brasero_track_data_cfg_get_value (GtkTreeModel *model,
-				   GtkTreeIter *iter,
-				   gint column,
-				   GValue *value)
+				  GtkTreeIter *iter,
+				  gint column,
+				  GValue *value)
 {
 	BraseroTrackDataCfgPrivate *priv;
-	BraseroTrackDataCfg *self;
 	BraseroFileNode *node;
 
-	self = BRASERO_TRACK_DATA_CFG (model);
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (model);
 
 	/* make sure that iter comes from us */
@@ -1120,10 +1115,10 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 					   GtkTreePath *dest_path,
 					   GtkSelectionData *selection_data)
 {
+	GdkAtom target;
 	BraseroFileNode *node;
 	BraseroFileNode *parent;
 	GtkTreePath *dest_parent;
-	GdkAtom target;
 	BraseroTrackDataCfgPrivate *priv;
 
 	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (drag_dest);
@@ -1175,11 +1170,9 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 	else if (target == gdk_atom_intern ("text/uri-list", TRUE)) {
 		gint i;
 		gchar **uris;
-		gboolean success = FALSE;
 
 		/* NOTE: there can be many URIs at the same time. One
 		 * success is enough to return TRUE. */
-		success = FALSE;
 		uris = gtk_selection_data_get_uris (selection_data);
 		if (!uris) {
 			const guchar *selection_data_raw;
@@ -1192,14 +1185,10 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 			return TRUE;
 
 		for (i = 0; uris [i]; i ++) {
-			BraseroFileNode *node;
-
 			/* Add the URIs to the project */
-			node = brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree),
-								      uris [i],
-								      parent);
-			if (node)
-				success = TRUE;
+			brasero_data_project_add_loading_node (BRASERO_DATA_PROJECT (priv->tree),
+			                                       uris [i],
+			                                       parent);
 		}
 		g_strfreev (uris);
 	}
@@ -2397,10 +2386,6 @@ static BraseroBurnResult
 brasero_track_data_cfg_get_track_type (BraseroTrack *track,
 				       BraseroTrackType *type)
 {
-	BraseroTrackDataCfgPrivate *priv;
-
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
-
 	brasero_track_type_set_has_data (type);
 	brasero_track_type_set_data_fs (type, brasero_track_data_cfg_get_fs (BRASERO_TRACK_DATA (track)));
 

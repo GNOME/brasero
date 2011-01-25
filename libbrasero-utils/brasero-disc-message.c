@@ -226,9 +226,6 @@ brasero_disc_message_destroy (BraseroDiscMessage *self)
 void
 brasero_disc_message_remove_buttons (BraseroDiscMessage *self)
 {
-	BraseroDiscMessagePrivate *priv;
-
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
 	gtk_container_foreach (GTK_CONTAINER (gtk_info_bar_get_action_area (GTK_INFO_BAR (self))),
 			       (GtkCallback) gtk_widget_destroy,
 			       NULL);

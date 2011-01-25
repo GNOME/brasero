@@ -101,10 +101,8 @@ brasero_genisoimage_read_stderr (BraseroProcess *process, const gchar *line)
 {
 	gchar fraction_str [7] = { 0, };
 	BraseroGenisoimage *genisoimage;
-	BraseroGenisoimagePrivate *priv;
 
 	genisoimage = BRASERO_GENISOIMAGE (process);
-	priv = BRASERO_GENISOIMAGE_PRIVATE (process);
 
 	if (strstr (line, "estimate finish")
 	&&  sscanf (line, "%6c%% done, estimate finish", fraction_str) == 1) {

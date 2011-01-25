@@ -283,12 +283,9 @@ brasero_dvd_author_set_argv (BraseroProcess *process,
 			     GPtrArray *argv,
 			     GError **error)
 {
-	BraseroDvdAuthorPrivate *priv;
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	gchar *output;
-
-	priv = BRASERO_DVD_AUTHOR_PRIVATE (process);
 
 	brasero_job_get_action (BRASERO_JOB (process), &action);
 	if (action != BRASERO_JOB_ACTION_IMAGE)

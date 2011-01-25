@@ -132,12 +132,10 @@ brasero_jacket_view_set_line_attributes (GtkTextView *view,
 	GtkTextAttributes *text_attr;
 	GSList *open_attr = NULL;
 	PangoAlignment alignment;
-	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 
 	attributes = pango_attr_list_new ();
 
-	buffer = gtk_text_view_get_buffer (view);
 	iter = *start;
 
 	text_attr = gtk_text_view_get_default_attributes (view);
@@ -616,9 +614,6 @@ brasero_jacket_view_cursor_position_changed_cb (GObject *buffer,
 						GParamSpec *spec,
 						BraseroJacketView *self)
 {
-	BraseroJacketViewPrivate *priv;
-
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 	g_signal_emit (self,
 		       jacket_view_signals [TAGS_CHANGED],
 		       0);
@@ -1246,13 +1241,10 @@ brasero_jacket_view_draw (GtkWidget *widget,
 static void
 brasero_jacket_view_realize (GtkWidget *widget)
 {
-	BraseroJacketViewPrivate *priv;
 	GtkAllocation allocation;
-	GdkWindow *window;
 	GdkWindowAttr attributes;
 	gint attributes_mask;
-
-	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
+	GdkWindow *window;
 
 	attributes.window_type = GDK_WINDOW_CHILD;
 	gtk_widget_get_allocation (widget, &allocation);
@@ -1303,7 +1295,7 @@ brasero_jacket_view_get_preferred_width (GtkWidget *widget,
 	if (priv->side == BRASERO_JACKET_FRONT) {
 		width = COVER_WIDTH_FRONT_INCH * resolution + BRASERO_JACKET_VIEW_MARGIN * 2.0;
 	}
-	else if (priv->side == BRASERO_JACKET_BACK) {
+	else {
 		width = COVER_WIDTH_BACK_INCH * resolution +
 				 BRASERO_JACKET_VIEW_MARGIN * 2.0;
 	}
@@ -1335,7 +1327,7 @@ brasero_jacket_view_get_preferred_height (GtkWidget *widget,
 	if (priv->side == BRASERO_JACKET_FRONT) {
 		height = COVER_HEIGHT_FRONT_INCH * resolution + BRASERO_JACKET_VIEW_MARGIN * 2.0;
 	}
-	else if (priv->side == BRASERO_JACKET_BACK) {
+	else {
 		height = COVER_HEIGHT_BACK_INCH * resolution +
 			 COVER_WIDTH_SIDE_INCH * resolution +
 			 BRASERO_JACKET_VIEW_MARGIN * 3.0;

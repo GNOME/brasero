@@ -368,12 +368,9 @@ static gboolean
 brasero_medium_monitor_is_drive (BraseroMediumMonitor *monitor,
                                  const gchar *device)
 {
-	BraseroMediumMonitorPrivate *priv;
 	BraseroDeviceHandle *handle;
 	BraseroScsiErrCode code;
 	gboolean result;
-
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
 	BRASERO_MEDIA_LOG ("Testing drive %s", device);
 

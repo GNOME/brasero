@@ -307,6 +307,8 @@ stat_end:
 		file = g_file_new_for_commandline_arg (img_uri);
 		g_free (img_uri);
 	}
+	else
+		return FALSE;
 
 	g_free (path);
 

@@ -29,6 +29,7 @@
 #include <glib/gi18n.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 
 #include "brasero-misc.h"
 #include "brasero-io.h"
@@ -1305,9 +1306,6 @@ brasero_app_open_project (BraseroApp *app,
                           gboolean burn)
 {
 	BraseroSessionCfg *session;
-	BraseroAppPrivate *priv;
-
-	priv = BRASERO_APP_PRIVATE (app);
 
 	session = brasero_session_cfg_new ();
 
@@ -1340,10 +1338,6 @@ brasero_app_open_by_mime (BraseroApp *app,
                           const gchar *mime,
                           gboolean warn_user)
 {
-	BraseroAppPrivate *priv;
-
-	priv = BRASERO_APP_PRIVATE (app);
-
 	if (!mime) {
 		/* that can happen when the URI could not be identified */
 		return FALSE;
@@ -1685,10 +1679,8 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 	gchar *uri;
     	const gchar *mime;
     	GtkRecentInfo *item;
-	BraseroAppPrivate *priv;
 	GtkRecentManager *manager;
 
-	priv = BRASERO_APP_PRIVATE (app);
 	/* This is a workaround since following code doesn't work */
 	/*
     	item = gtk_recent_chooser_get_current_item (GTK_RECENT_CHOOSER (chooser));

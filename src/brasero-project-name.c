@@ -139,7 +139,6 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 					  GdkEvent *event,
 					  gpointer NULL_data)
 {
-	BraseroProjectNamePrivate *priv;
 	BraseroTrackDataCfg *track;
 	GtkFileFilter *filter;
 	gchar *filename;
@@ -147,8 +146,6 @@ brasero_project_name_icon_button_clicked (BraseroProjectName *project,
 	GtkWidget *chooser;
 	gchar *path;
 	gint res;
-
-	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
 
 	track = brasero_project_name_get_track_data_cfg (project);
 	if (!track)
@@ -359,7 +356,6 @@ brasero_project_name_label_insert_text (GtkEditable *editable,
 				        gint *position,
 				        gpointer NULL_data)
 {
-	BraseroProjectNamePrivate *priv;
 	const gchar *label;
 	gchar *new_text;
 	gint new_length;
@@ -367,8 +363,6 @@ brasero_project_name_label_insert_text (GtkEditable *editable,
 	gint max_len;
 	gchar *prev;
 	gchar *next;
-
-	priv = BRASERO_PROJECT_NAME_PRIVATE (editable);	
 
 	/* check if this new text will fit in 32 _bytes_ long buffer */
 	label = gtk_entry_get_text (GTK_ENTRY (editable));
@@ -672,10 +666,6 @@ brasero_project_name_set_property (GObject *object,
 				   const GValue *value,
 				   GParamSpec *pspec)
 {
-	BraseroProjectNamePrivate *priv;
-
-	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
-
 	switch (property_id) {
 	case PROP_SESSION:
 		brasero_project_name_set_session (BRASERO_PROJECT_NAME (object),
@@ -710,10 +700,6 @@ brasero_project_name_get_property (GObject *object,
 static void
 brasero_project_name_finalize (GObject *object)
 {
-	BraseroProjectNamePrivate *priv;
-
-	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
-
 	brasero_project_name_unset_session (BRASERO_PROJECT_NAME (object));
 
 	G_OBJECT_CLASS (brasero_project_name_parent_class)->finalize (object);

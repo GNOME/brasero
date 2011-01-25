@@ -363,10 +363,10 @@ brasero_audio_disc_selection_function (GtkTreeSelection *selection,
 				       gboolean is_selected,
 				       gpointer NULL_data)
 {
-	BraseroTrack *track;
+/*	BraseroTrack *track;
 
 	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-/*	if (track)
+	if (track)
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 				    BRASERO_VIDEO_TREE_MODEL_EDITABLE, (is_selected == FALSE),
 				    -1);
@@ -884,7 +884,6 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 {
 	GSList *next;
 	GSList *tracks;
-	gboolean notready;
 	BraseroStatus *status;
 	gboolean should_use_dts;
 
@@ -892,7 +891,6 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 		return;
 
 	/* make sure all tracks have video */
-	notready = FALSE;
 	should_use_dts = FALSE;
 	status = brasero_status_new ();
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
@@ -950,10 +948,8 @@ brasero_audio_disc_session_changed (BraseroSessionCfg *session,
 			continue;
 		}
 
-		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING) {
-			notready = TRUE;
+		if (result == BRASERO_BURN_NOT_READY || result == BRASERO_BURN_RUNNING)
 			continue;
-		}
 
 		if (result != BRASERO_BURN_OK)
 			continue;
@@ -1137,12 +1133,10 @@ brasero_audio_disc_display_edited_cb (GtkCellRendererText *renderer,
 	GtkTreeModel *model;
 	BraseroTrack *track;
 	GtkTreePath *treepath;
-	BraseroSessionCfg *session;
 
 	tag = g_object_get_data (G_OBJECT (renderer), COL_KEY);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
 	treepath = gtk_tree_path_new_from_string (path_string);
 	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
 	brasero_track_tag_add_string (BRASERO_TRACK (track),
@@ -1273,7 +1267,6 @@ static void
 brasero_audio_disc_split (BraseroAudioDisc *disc)
 {
 	GtkTreeSelection *selection;
-	BraseroSessionCfg *session;
 	GtkTreePath *treepath;
 	GtkTreeModel *model;
 	BraseroTrack *track;
@@ -1306,7 +1299,6 @@ brasero_audio_disc_split (BraseroAudioDisc *disc)
 	g_list_free (selected);
 
 	/* NOTE: this is necessarily a song since otherwise button is grey */
-	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
 	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
 
 	dialog = brasero_split_dialog_new ();
@@ -1359,12 +1351,10 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	GtkAction *action_edit;
 	GtkAction *action_open;
 	guint selected_num = 0;
-	GtkTreeView *treeview;
 	GtkTreeModel *model;
 	GList *selected;
 	GList *iter;
 
-	treeview = gtk_tree_selection_get_tree_view (selection);
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	if (disc->priv->selected_path)
@@ -1470,12 +1460,9 @@ brasero_audio_disc_rename_songs (GtkTreeModel *model,
 				 const gchar *old_name,
 				 const gchar *new_name)
 {
-	BraseroSessionCfg *session;
 	BraseroTrack *track;
 
-	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
 	track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
-
 	brasero_track_tag_add_string (track,
 				      BRASERO_TRACK_STREAM_TITLE_TAG,
 				      new_name);
@@ -1594,7 +1581,6 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 	GtkTreeModel *model;
 	BraseroTrack *track;
 	GtkResponseType result;
-	BraseroSessionCfg *session;
 	guint64 length;
 	gchar *title;
 	gchar *artist;
@@ -1602,7 +1588,6 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 	GtkTreeIter iter;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-	session = brasero_video_tree_model_get_session (BRASERO_VIDEO_TREE_MODEL (model));
         track = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (model), treepath);
 	if (!track)
 		return;

@@ -52,11 +52,8 @@ brasero_pref_new (void)
 static void
 brasero_pref_init (BraseroPref *object)
 {
-	BraseroPrefPrivate *priv;
 	GtkWidget *notebook;
 	GtkWidget *plugins;
-
-	priv = BRASERO_PREF_PRIVATE (object);
 
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
 

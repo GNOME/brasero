@@ -196,11 +196,8 @@ brasero_medium_selection_update_used_space (BraseroMediumSelection *selector,
 					    BraseroMedium *medium_arg,
 					    guint used_space)
 {
-	BraseroMediumSelectionPrivate *priv;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
@@ -233,9 +230,6 @@ static void
 brasero_medium_selection_set_show_used_space (BraseroMediumSelection *selector)
 {
 	GtkCellRenderer *renderer;
-	BraseroMediumSelectionPrivate *priv;
-
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
 
 	gtk_cell_layout_clear (GTK_CELL_LAYOUT (selector));
 
@@ -269,9 +263,7 @@ brasero_medium_selection_update_media_string (BraseroMediumSelection *self)
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	gboolean valid;
 
-	valid = FALSE;
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return;
@@ -338,11 +330,8 @@ brasero_medium_selection_set_current_medium (BraseroMediumSelection *self,
 static void
 brasero_drive_selection_set_tooltip (BraseroMediumSelection *self)
 {
-	BraseroMediumSelectionPrivate *priv;
 	BraseroMedium *medium;
 	gchar *tooltip;
-
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
 
 	medium = brasero_medium_selection_get_active (self);
 	if (medium) {
@@ -359,10 +348,8 @@ brasero_drive_selection_set_tooltip (BraseroMediumSelection *self)
 static void
 brasero_medium_selection_changed (GtkComboBox *combo)
 {
-	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	model = gtk_combo_box_get_model (combo);
 	if (!gtk_combo_box_get_active_iter (combo, &iter))
 		return;
 
@@ -392,7 +379,6 @@ brasero_medium_selection_set_active (BraseroMediumSelection *selector,
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_SELECTION (selector), FALSE);
 
 	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
-
 	if (priv->active == medium)
 		return TRUE;
 
@@ -436,7 +422,7 @@ BraseroMedium *
 brasero_medium_selection_get_active (BraseroMediumSelection *selector)
 {
 	BraseroMediumSelectionPrivate *priv;
-
+	
 	g_return_val_if_fail (selector != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_SELECTION (selector), NULL);
 
@@ -487,9 +473,6 @@ brasero_medium_selection_add_no_disc_entry (BraseroMediumSelection *self)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	BraseroMediumSelectionPrivate *priv;
-
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
 
 	/* Nothing's available. Say it. Two cases here, either we're
 	 * still probing drives or there isn't actually any available
@@ -893,11 +876,7 @@ brasero_medium_selection_set_property (GObject *object,
 				       const GValue *value,
 				       GParamSpec *pspec)
 {
-	BraseroMediumSelectionPrivate *priv;
-
 	g_return_if_fail (BRASERO_IS_MEDIUM_SELECTION (object));
-
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (object);
 
 	switch (prop_id)
 	{

@@ -718,7 +718,6 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 			     GPtrArray *argv,
 			     GError **error)
 {
-	BraseroCDRecordPrivate *priv;
 	BraseroBurnResult result;
 	gchar *tmpdir = NULL;
 	GSList *tracks;
@@ -726,8 +725,6 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	GSList *iter;
 	gchar *album;
 	gint index;
-
-	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
 	brasero_job_get_audio_title (BRASERO_JOB (cdrecord), &album);
 	brasero_job_get_tracks (BRASERO_JOB (cdrecord), &tracks);
@@ -1049,7 +1046,6 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 			   GPtrArray *argv,
 			   GError **error)
 {
-	BraseroCDRecordPrivate *priv;
 	BraseroCDRecord *cdrecord;
 	BraseroBurnResult result;
 	BraseroJobAction action;
@@ -1058,7 +1054,6 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	gchar *dev_str;
 
 	cdrecord = BRASERO_CD_RECORD (process);
-	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
 	brasero_job_get_action (BRASERO_JOB (cdrecord), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE)

@@ -133,10 +133,7 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	gint attributes_mask;
 	GtkAllocation allocation;
 	GdkWindowAttr attributes;
-	BraseroPlayerBacon *bacon;
-	gfloat screen_width, screen_height, ratio;
-
-	bacon = BRASERO_PLAYER_BACON (widget);
+	gfloat screen_width, screen_height;
 
 	attributes.window_type = GDK_WINDOW_CHILD;
 
@@ -144,12 +141,6 @@ brasero_player_bacon_realize (GtkWidget *widget)
 
 	screen_width = allocation.width;
 	screen_height = allocation.height;
-	
-	if ((gfloat) screen_width / PLAYER_BACON_WIDTH > 
-	    (gfloat) screen_height / PLAYER_BACON_HEIGHT)
-		ratio = (gfloat) screen_height / PLAYER_BACON_HEIGHT;
-	else
-		ratio = (gfloat) screen_width / PLAYER_BACON_WIDTH;
 
 	attributes.x = allocation.x + (allocation.width - (gint) screen_width) / 2;
 	attributes.y = allocation.y + (allocation.height - (gint) screen_height) / 2;
@@ -204,10 +195,7 @@ brasero_player_bacon_get_preferred_width (GtkWidget *widget,
                                           gint      *minimum,
                                           gint      *natural)
 {
-	BraseroPlayerBacon *bacon;
-
 	g_return_if_fail (widget != NULL);
-	bacon = BRASERO_PLAYER_BACON (widget);
 
 	*minimum = *natural = PLAYER_BACON_WIDTH;
 
@@ -220,10 +208,7 @@ brasero_player_bacon_get_preferred_height (GtkWidget *widget,
                                            gint      *minimum,
                                           gint      *natural)
 {
-	BraseroPlayerBacon *bacon;
-
 	g_return_if_fail (widget != NULL);
-	bacon = BRASERO_PLAYER_BACON (widget);
 
 	*minimum = *natural = PLAYER_BACON_WIDTH;
 
@@ -233,18 +218,18 @@ brasero_player_bacon_get_preferred_height (GtkWidget *widget,
 
 static void
 brasero_player_bacon_size_allocate (GtkWidget *widget,
-				    GtkAllocation *allocation)
+                                    GtkAllocation *allocation)
 {
 	int screen_x, screen_y;
 	BraseroPlayerBacon *bacon;
 	gfloat screen_width, screen_height, ratio;
 
 	g_return_if_fail (widget != NULL);
-	bacon = BRASERO_PLAYER_BACON (widget);
 
 	if (!gtk_widget_get_realized (widget))
 		return;
 
+	bacon = BRASERO_PLAYER_BACON (widget);
 	if (bacon->priv->xoverlay) {
 		screen_width = allocation->width;
 		screen_height = allocation->height;

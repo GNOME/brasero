@@ -789,7 +789,6 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 	BraseroMetadataPrivate *priv;
 	GstElement *typefind;
 	GstCaps *caps = NULL;
-	GstElement *decode;
 	const gchar *mime;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
@@ -800,8 +799,6 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 	}
 
 	/* find the type of the file */
-	decode = gst_bin_get_by_name (GST_BIN (priv->pipeline),
-				      "decode");
 	typefind = gst_bin_get_by_name (GST_BIN (priv->decode),
 					"typefind");
 

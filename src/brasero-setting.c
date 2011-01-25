@@ -414,7 +414,6 @@ brasero_setting_save (BraseroSetting *setting)
 	gchar *contents = NULL;
 	gsize content_size = 0;
 	GKeyFile *key_file;
-	gboolean res;
 	gchar *path;
 
 	priv = BRASERO_SETTING_PRIVATE (setting);
@@ -426,10 +425,10 @@ brasero_setting_save (BraseroSetting *setting)
 	                     NULL);
 
 	key_file = g_key_file_new ();
-	res = g_key_file_load_from_file (key_file,
-	                                 path,
-	                                 G_KEY_FILE_KEEP_COMMENTS|G_KEY_FILE_KEEP_TRANSLATIONS,
-	                                 NULL);
+	g_key_file_load_from_file (key_file,
+	                           path,
+	                           G_KEY_FILE_KEEP_COMMENTS|G_KEY_FILE_KEEP_TRANSLATIONS,
+	                           NULL);
 
 	/* Don't worry if it does not work, it could be
 	 * that there isn't any at the moment. */
