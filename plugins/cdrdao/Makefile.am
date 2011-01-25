@@ -18,7 +18,7 @@ INCLUDES = \
 cdrdaodir = $(BRASERO_PLUGIN_DIRECTORY)
 cdrdao_LTLIBRARIES = libbrasero-cdrdao.la
 libbrasero_cdrdao_la_SOURCES = burn-cdrdao.c 
-libbrasero_cdrdao_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
+libbrasero_cdrdao_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-media/libbrasero-media3.la ../../libbrasero-burn/libbrasero-burn3.la
 libbrasero_cdrdao_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk

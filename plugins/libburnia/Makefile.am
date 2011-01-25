@@ -23,7 +23,7 @@ libbrasero_libburn_la_SOURCES = burn-libburn.c 		\
 				burn-libburn-common.c	\
 				burn-libburn-common.h  \
 				burn-libburnia.h 
-libbrasero_libburn_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
+libbrasero_libburn_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
 libbrasero_libburn_la_LDFLAGS = -module -avoid-version
 
 #libisofs (apparently libisofs needs one libburn function)
@@ -32,7 +32,7 @@ libisofs_LTLIBRARIES = libbrasero-libisofs.la
 libbrasero_libisofs_la_SOURCES = burn-libisofs.c                       \
 	burn-libburn-common.c burn-libburn-common.h			\
 	burn-libburnia.h 
-libbrasero_libisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS) ../../libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la
+libbrasero_libisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
 libbrasero_libisofs_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk

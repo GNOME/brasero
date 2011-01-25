@@ -144,9 +144,9 @@ brasero_SOURCES += 				\
 endif
 
 brasero_LDADD =						\
-	$(top_builddir)/libbrasero-media/libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la	\
-	$(top_builddir)/libbrasero-burn/libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.la	\
-	$(top_builddir)/libbrasero-utils/libbrasero-utils@BRASERO_LIBRARY_SUFFIX@.la	\
+	$(top_builddir)/libbrasero-media/libbrasero-media3.la	\
+	$(top_builddir)/libbrasero-burn/libbrasero-burn3.la	\
+	$(top_builddir)/libbrasero-utils/libbrasero-utils3.la	\
 	$(BRASERO_GLIB_LIBS)		\
 	$(BRASERO_GTHREAD_LIBS)				\
 	$(BRASERO_GIO_LIBS)		\

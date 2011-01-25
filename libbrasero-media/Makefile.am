@@ -22,7 +22,7 @@ libbrasero-marshal.h: libbrasero-marshal.list
 libbrasero-marshal.c: libbrasero-marshal.h
 	( $(GLIB_GENMARSHAL) --prefix=brasero_marshal $(srcdir)/libbrasero-marshal.list --body --header > libbrasero-marshal.c )
 
-headerdir=$(includedir)/brasero@BRASERO_LIBRARY_SUFFIX@
+headerdir=$(includedir)/brasero3
 header_HEADERS =	brasero-drive.h			\
 		brasero-medium-monitor.h		\
 		brasero-media.h			\
@@ -33,9 +33,9 @@ header_HEADERS =	brasero-drive.h			\
 		brasero-drive-selection.h
 
 lib_LTLIBRARIES = 				\
-	libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la
+	libbrasero-media3.la
 
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =                                     \
+libbrasero_media3_la_LIBADD =                                     \
 	$(BRASERO_GLIB_LIBS)                                     \
 	$(BRASERO_GMODULE_EXPORT_LIBS)                                     \
 	$(BRASERO_GTHREAD_LIBS)                                     \
@@ -43,13 +43,13 @@ libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =                            
 	$(BRASERO_GTK_LIBS)                                     \
 	$(BRASERO_SCSI_LIBS)
 
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_LDFLAGS =					\
+libbrasero_media3_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined
 	$(AM_LDFLAGS)
 #	-export-symbols ./libbrasero-media.symbols
 
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES =		\
+libbrasero_media3_la_SOURCES =		\
 	libbrasero-marshal.c		\
 	libbrasero-marshal.h		\
 	brasero-drive.h			\
@@ -132,22 +132,22 @@ libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES =		\
 
 # FreeBSD's SCSI CAM interface
 if HAVE_CAM_LIB_H
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-cam.c
+libbrasero_media3_la_SOURCES += scsi-cam.c
 endif
 
 # Linux's SCSI CAM interface
 if HAVE_SG_IO_HDR_T
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-sg.c
+libbrasero_media3_la_SOURCES += scsi-sg.c
 endif
 
 # NetBSD's scsi(4)
 if HAVE_SCSIIO_H
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-netbsd.c
+libbrasero_media3_la_SOURCES += scsi-netbsd.c
 endif
 
 # Solaris's USCSI interface
 if HAVE_USCSI_H
-libbrasero_media@BRASERO_LIBRARY_SUFFIX@_la_SOURCES += scsi-uscsi.c
+libbrasero_media3_la_SOURCES += scsi-uscsi.c
 endif
 
 if HAVE_INTROSPECTION
@@ -157,14 +157,14 @@ gir_DATA = BraseroMedia-@BRASERO_VERSION@.gir
 typelibsdir = $(INTROSPECTION_TYPELIBDIR)
 typelibs_DATA = BraseroMedia-@BRASERO_VERSION@.typelib
 
-BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la $(INTROSPECTION_SCANNER)
+BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media3.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroMedia --nsversion=1.0 \
-            --include=Gtk-@GTK_API_VERSION@ \
+            --include=Gtk-3.0 \
 	    -I$(top_srcdir)/libbrasero-media	\
-	    --library=brasero-media@BRASERO_LIBRARY_SUFFIX@ \
+	    --library=brasero-media3 \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
-            --pkg=gtk+-@GTK_API_VERSION@  \
+            --pkg=gtk+-3.0  \
 	    --strip-prefix=Brasero	\
             $(top_srcdir)/libbrasero-media/brasero-drive.h			\
 	    $(top_srcdir)/libbrasero-media/brasero-medium-monitor.h		\
@@ -177,7 +177,7 @@ BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media@BRASERO_LIBRARY_SUFFIX@.la 
             $(top_srcdir)/libbrasero-media/*.c	    
 
 BraseroMedia-@BRASERO_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
-	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media@BRASERO_LIBRARY_SUFFIX@ -o $(typelibs_DATA)
+	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media3 -o $(typelibs_DATA)
 endif
 
 EXTRA_DIST =			\

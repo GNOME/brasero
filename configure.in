@@ -217,16 +217,11 @@ AC_SUBST(BRASERO_SM_LIBS)
 # GTK+ stuff (taken and adapted from empathy)
 #
 
-GTK_API_VERSION=3.0
 GTK_REQUIRED=2.91.7
-BRASERO_LIBRARY_SUFFIX=3
 
 PKG_CHECK_MODULES([BRASERO_GTK],	\
 		  gtk+-3.0 >= $GTK_REQUIRED	\
 		  gdk-x11-3.0)
-
-AC_SUBST(GTK_API_VERSION)
-AC_SUBST(BRASERO_LIBRARY_SUFFIX)
 
 AC_SUBST(BRASERO_GTK_CFLAGS)
 AC_SUBST(BRASERO_GTK_LIBS)
@@ -297,7 +292,7 @@ AM_CONDITIONAL(BUILD_NAUTILUS, test x"$build_nautilus" = "xyes")
 # Installation path for plugins
 #
 
-BRASERO_PLUGIN_DIRECTORY=${libdir}/brasero${BRASERO_LIBRARY_SUFFIX}/plugins
+BRASERO_PLUGIN_DIRECTORY=${libdir}/brasero3/plugins
 AC_SUBST(BRASERO_PLUGIN_DIRECTORY)
 
 dnl ****************check for libburn (optional)**************
@@ -633,10 +628,9 @@ plugins/local-track/Makefile
 plugins/vcdimager/Makefile
 po/Makefile.in
 src/Makefile
+libbrasero-media3.pc
+libbrasero-burn3.pc
 ])
-
-AC_CONFIG_FILES([libbrasero-media${BRASERO_LIBRARY_SUFFIX}.pc:libbrasero-media.pc.in],[BRASERO_LIBRARY_SUFFIX=${BRASERO_LIBRARY_SUFFIX}])
-AC_CONFIG_FILES([libbrasero-burn${BRASERO_LIBRARY_SUFFIX}.pc:libbrasero-burn.pc.in],[BRASERO_LIBRARY_SUFFIX=${BRASERO_LIBRARY_SUFFIX}])
 
 AC_OUTPUT
 
@@ -648,7 +642,7 @@ echo "----------------------------------"
 dnl 	Build libnotify support : ${build_libnotify}
 
 echo "Version: $BRASERO_VERSION
-	Using GTK+ ${GTK_API_VERSION}
+	Using GTK+ 3
 	Update caches: ${enable_caches}
 	Build Nautilus extension : ${build_nautilus}
 	Build inotify: ${enable_inotify}

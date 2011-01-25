@@ -30,11 +30,11 @@ DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
 	intltool-update	\
-	libbrasero-media@BRASERO_LIBRARY_SUFFIX@.pc	\
-	libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.pc
+	libbrasero-media3.pc	\
+	libbrasero-burn3.pc
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libbrasero-media@BRASERO_LIBRARY_SUFFIX@.pc libbrasero-burn@BRASERO_LIBRARY_SUFFIX@.pc
+pkgconfig_DATA = libbrasero-media3.pc libbrasero-burn3.pc
 
 dist-hook:
 	@if test -d "$(srcdir)/.git"; \

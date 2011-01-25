@@ -18,9 +18,9 @@ INCLUDES = \
 
 
 lib_LTLIBRARIES = \
-	libbrasero-utils@BRASERO_LIBRARY_SUFFIX@.la
+	libbrasero-utils3.la
 
-libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =					\
+libbrasero_utils3_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
 	$(BRASERO_GIO_LIBS)		\
 	$(BRASERO_GSTREAMER_LIBS)	\
@@ -28,12 +28,12 @@ libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_LIBADD =					\
 	$(BRASERO_PL_PARSER_LIBS)	\
 	$(BRASERO_GTK_LIBS)
 
-libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_LDFLAGS =					\
+libbrasero_utils3_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined
 #	-export-symbols ./libbrasero-utils.symbols
 
-libbrasero_utils@BRASERO_LIBRARY_SUFFIX@_la_SOURCES =		\
+libbrasero_utils3_la_SOURCES =		\
 	brasero-disc-message.c        \
 	brasero-disc-message.h        \
 	brasero-misc.c        \
