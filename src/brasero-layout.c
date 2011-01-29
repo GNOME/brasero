@@ -992,10 +992,13 @@ brasero_layout_combo_destroy_cb (GtkWidget *object,
 
 	/* empty tree */
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (object));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
-	gtk_tree_model_foreach (model,
-				brasero_layout_foreach_item_cb,
-				NULL);
+	if (model)
+		model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
+
+	if (model)
+		gtk_tree_model_foreach (model,
+					brasero_layout_foreach_item_cb,
+					NULL);
 }
 
 static void

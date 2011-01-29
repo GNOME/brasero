@@ -89,7 +89,10 @@ brasero_medium_selection_buildable_init (GtkBuildableIface *iface)
 	parent_buildable_iface = g_type_interface_peek_parent (iface);
 } 
 
-G_DEFINE_TYPE_WITH_CODE (BraseroMediumSelection, brasero_medium_selection, GTK_TYPE_COMBO_BOX, G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_medium_selection_buildable_init));
+G_DEFINE_TYPE_WITH_CODE (BraseroMediumSelection,
+                         brasero_medium_selection,
+                         GTK_TYPE_COMBO_BOX,
+                         G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_medium_selection_buildable_init));
 
 void
 brasero_medium_selection_foreach (BraseroMediumSelection *selection,
@@ -816,6 +819,12 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 }
 
 static void
+brasero_medium_selection_constructed (GObject *object)
+{
+	brasero_medium_selection_set_show_used_space (object);
+}
+
+static void
 brasero_medium_selection_init (BraseroMediumSelection *object)
 {
 	GtkListStore *model;
@@ -846,8 +855,6 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (object), GTK_TREE_MODEL (model));
 	g_object_unref (model);
-
-	brasero_medium_selection_set_show_used_space (object);
 }
 
 static void
@@ -928,6 +935,7 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 
 	g_type_class_add_private (klass, sizeof (BraseroMediumSelectionPrivate));
 
+	object_class->constructed = brasero_medium_selection_constructed;
 	object_class->finalize = brasero_medium_selection_finalize;
 	object_class->set_property = brasero_medium_selection_set_property;
 	object_class->get_property = brasero_medium_selection_get_property;
