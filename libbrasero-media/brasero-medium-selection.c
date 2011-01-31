@@ -819,7 +819,7 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 }
 
 static void
-brasero_medium_selection_constructed (GObject *object)
+brasero_medium_selection_constructed (BraseroMediumSelection *object)
 {
 	brasero_medium_selection_set_show_used_space (object);
 }
