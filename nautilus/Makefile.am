@@ -9,7 +9,6 @@ INCLUDES =					\
 	-I$(top_builddir)/libbrasero-burn/	\
 	-I$(top_srcdir)/src/			\
 	-I$(top_builddir)/src/			\
-	$(NAUTILUS_EXTENSION_CFLAGS)		\
 	$(WARN_CFLAGS)							\
 	$(WERROR)				\
 	-D_FILE_OFFSET_BITS=64			\
@@ -22,6 +21,7 @@ INCLUDES =					\
 	-DLIBEXECDIR=\""$(libexecdir)"\"	\
 	-DSHAREDIR=\""$(datadir)"\"		\
 	-DDATADIR=\""$(datadir)/brasero"\"	\
+	$(NAUTILUS_EXTENSION_CFLAGS)		\
 	$(DISABLE_DEPRECATED)
 
 @INTLTOOL_DESKTOP_RULE@

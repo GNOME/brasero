@@ -19,7 +19,7 @@ dvdauthordir = $(BRASERO_PLUGIN_DIRECTORY)
 dvdauthor_LTLIBRARIES = libbrasero-dvdauthor.la
 
 libbrasero_dvdauthor_la_SOURCES = burn-dvdauthor.c 
-libbrasero_dvdauthor_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
+libbrasero_dvdauthor_la_LIBADD = ../../libbrasero-burn/libbrasero-burn3.la $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS)
 libbrasero_dvdauthor_la_LDFLAGS = -module -avoid-version
 
 

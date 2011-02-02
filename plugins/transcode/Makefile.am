@@ -19,21 +19,21 @@ transcodedir = $(BRASERO_PLUGIN_DIRECTORY)
 transcode_LTLIBRARIES = libbrasero-transcode.la
 
 libbrasero_transcode_la_SOURCES = burn-transcode.c burn-normalize.h 
-libbrasero_transcode_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
+libbrasero_transcode_la_LIBADD = ../../libbrasero-burn/libbrasero-burn3.la $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS)
 libbrasero_transcode_la_LDFLAGS = -module -avoid-version
 
 normalizedir = $(BRASERO_PLUGIN_DIRECTORY)
 normalize_LTLIBRARIES = libbrasero-normalize.la
 
 libbrasero_normalize_la_SOURCES = burn-normalize.c burn-normalize.h
-libbrasero_normalize_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
+libbrasero_normalize_la_LIBADD = ../../libbrasero-burn/libbrasero-burn3.la $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS)
 libbrasero_normalize_la_LDFLAGS = -module -avoid-version
 
 vobdir = $(BRASERO_PLUGIN_DIRECTORY)
 vob_LTLIBRARIES = libbrasero-vob.la
 
 libbrasero_vob_la_SOURCES = burn-vob.c 
-libbrasero_vob_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
+libbrasero_vob_la_LIBADD = ../../libbrasero-burn/libbrasero-burn3.la $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS)
 libbrasero_vob_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk

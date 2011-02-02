@@ -18,7 +18,7 @@ INCLUDES = \
 audio2cuedir = $(BRASERO_PLUGIN_DIRECTORY)
 audio2cue_LTLIBRARIES = libbrasero-audio2cue.la
 libbrasero_audio2cue_la_SOURCES = burn-audio2cue.c
-libbrasero_audio2cue_la_LIBADD = $(BRASERO_GLIB_LIBS) ../../libbrasero-burn/libbrasero-burn3.la
+libbrasero_audio2cue_la_LIBADD = ../../libbrasero-burn/libbrasero-burn3.la $(BRASERO_GLIB_LIBS)
 libbrasero_audio2cue_la_LDFLAGS = -module -avoid-version
 
 -include $(top_srcdir)/git.mk
