@@ -5,6 +5,9 @@ if BUILD_NAUTILUS
 SUBDIRS += nautilus
 endif
 
+# Automake 1.12 should make this unnecessary.
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+
 braserodocdir = ${prefix}/docs/brasero
 
 EXTRA_DIST = 			\
