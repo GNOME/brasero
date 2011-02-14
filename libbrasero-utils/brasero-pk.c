@@ -85,7 +85,11 @@ brasero_pk_install_missing_files_result (GObject *source_object,
 
 	if (priv->values != NULL)
 		g_variant_unref (priv->values);
+		priv->res = TRUE;
 	g_object_unref (priv->proxy);
+
+	if (priv->loop)
+		g_main_loop_quit (priv->loop);
 }
 
 static void
@@ -258,9 +262,9 @@ brasero_pk_install_file_requirement (BraseroPK *package,
 
 	g_dbus_proxy_call (priv->proxy,
 				      "InstallProvideFiles",
-				      g_variant_new ("(uass)",
+				      g_variant_new ("(u^ass)",
 						     xid,
-						     package,
+						     missing_files->pdata,
 						     "hide-confirm-search,hide-finished,hide-warning"),
 				      G_DBUS_CALL_FLAGS_NONE,
 				      -1,
