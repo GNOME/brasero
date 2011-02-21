@@ -728,24 +728,11 @@ nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
         return items;
 }
 
-static GList *
-nautilus_disc_burn_get_toolbar_items (NautilusMenuProvider *provider,
-                                      GtkWidget            *window,
-                                      NautilusFileInfo     *current_folder)
-{
-        GList *items;
-
-        items = NULL;
-
-        return items;
-}
-
 static void
 nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
 {
         iface->get_file_items = nautilus_disc_burn_get_file_items;
         iface->get_background_items = nautilus_disc_burn_get_background_items;
-        iface->get_toolbar_items = nautilus_disc_burn_get_toolbar_items;
 }
 
 static void
