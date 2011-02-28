@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: brasero.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-21 11:10+0530\n"
-"PO-Revision-Date: 2011-02-17 21:03+0530\n"
+"PO-Revision-Date: 2011-02-28 15:22+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: kn_IN <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -97,7 +97,7 @@ msgstr "ಆಡಿಯೊ ಡಿಸ್ಕನ್ನು ಕಾಪಿ ಮಾಡಲು
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:410
 msgid "Copy tracks from an audio CD with all associated information"
-msgstr ""
+msgstr "ಎಲ್ಲಾ ಮಾಹಿತಿಗಳೊಂದಿಗೆ ಒಂದು ಆಡಿಯೊ CD ಇಂದ ಟ್ರ್ಯಾಕ್‌ಗಳನ್ನು ಕಾಪಿ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../libbrasero-burn/brasero-video-options.c:451
 msgid "Video format:"
@@ -736,15 +736,17 @@ msgid ""
 "If you import them you will be able to see and use them once the current "
 "selection of files is burned."
 msgstr ""
+"ನೀವು ಆಮದು ಮಾಡಿಕೊಂಡಲ್ಲಿ, ಪ್ರಸಕ್ತ ಆಯ್ಕೆ ಮಾಡಲಾದ ಕಡತಗಳನ್ನು ಬರೆದ ನಂತರ ಅವುಗಳನ್ನು ನೋಡಬಹುದು "
+"ಹಾಗು ಬಳಸಬಹುದು."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:913
-#, fuzzy
 msgid "If you don't, they will be invisible (though still readable)."
-msgstr "ಈಗಾಗಲೆ ಬರೆಯಲಾದ ಕಡತಗಳು ಅಗೋಚರವಾಗಿರುತ್ತದೆ (ಆದರೂ ಸಹ ಓದಬಹುದಾಗಿರುತ್ತದೆ)."
+msgstr "ಹಾಗೆ ಮಾಡದೆ ಇದ್ದರೆ, ಅವುಗಳು ಅಗೋಚರವಾಗಿರುತ್ತದೆ (ಆದರೂ ಸಹ ಓದಬಹುದಾಗಿರುತ್ತದೆ)."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:916
 msgid "There are files already burned on this disc. Would you like to import them?"
 msgstr ""
+"ಈ ಡಿಸ್ಕಿನಲ್ಲಿ ಈಗಾಗಲೆ ಬರೆಯಲಾದ ಕಡತಗಳಿವೆ. ನೀವು ಅವುಗಳನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ಬಯಸುತ್ತೀರೆ?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:918
 msgid "_Import"
@@ -752,7 +754,7 @@ msgstr "ಆಮದು ಮಾಡಿಕೊ(_I)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:919
 msgid "Only _Append"
-msgstr ""
+msgstr "ಕೇವಲ ಸೇರಿಸು (_A)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:932
 msgid ""
@@ -788,15 +790,16 @@ msgstr "ಆಡಿಯೊ ಟ್ರಾಕ್‌ಗಳನ್ನು ಒಂದು ಮ
 
 #. Translators: %s is the name of a drive
 #: ../libbrasero-burn/brasero-burn-dialog.c:1005
-#, fuzzy, c-format
+#, c-format
 msgid "Please eject the disc from \"%s\" manually."
-msgstr "ದಯವಿಟ್ಟು ಡಿಸ್ಕನ್ನು ಹೊರತಳ್ಳಿ ಹಾಗು ಅದನ್ನು ಮರಳಿ ಲೋಡ್‌ ಮಾಡಿ."
+msgstr "ದಯವಿಟ್ಟು ಡಿಸ್ಕನ್ನು  ಕೈಯಾರೆ \"%s\" ಇಂದ ಹೊರತಳ್ಳಿ."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1014
 msgid ""
 "The disc could not be ejected though it needs to be removed for the current "
 "operation to continue."
 msgstr ""
+"ಡಿಸ್ಕನ್ನು ಹೊರತೆಗೆಯಲಾಗಲಿಲ್ಲ, ಪ್ರಸಕ್ತ ಆಯ್ಕೆಯನ್ನು ಮುಂದುವರೆಸಲು ಅದನ್ನು ಹೊರತೆಗೆಯಬೇಕಾಗುತ್ತದೆ."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1063
 msgid "Do you want to continue with full Windows compatibility disabled?"
@@ -889,18 +892,20 @@ msgstr "ದತ್ತಾಂಶ CD ಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1834
 #, c-format
 msgid "Copy #%i has been burned successfully."
-msgstr ""
+msgstr "#%i ಪ್ರತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಬರೆಯಲಾಗಿದೆ."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1842
 msgid ""
 "Another copy will start as soon as you insert a new writable disc. If you do "
 "not want to burn another copy, press \"Cancel\"."
 msgstr ""
+"ಒಂದು ಹೊಸತಾದ ಬರೆಯಬಹುದಾದ ಡಿಸ್ಕನ್ನು ನೀವು ತೂರಿಸುತ್ತಿದ್ದಂತೆಯೆ ಇನ್ನೊಂದು ಪ್ರತಿ ಮಾಡುವಿಕೆಯು "
+"ಆರಂಭಗೊಳ್ಳುತ್ತದೆ. ನೀವು ಇನ್ನೊಂದು ಪ್ರತಿಯನ್ನು ಮಾಡಲು ಬಯಸದೆ ಇದ್ದಲ್ಲಿ, \"ರದ್ದುಗೊಳಿಸು\" ಅನ್ನು "
+"ಕ್ಲಿಕ್ ಮಾಡಿ."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1914
-#, fuzzy
 msgid "Make _More Copies"
-msgstr "ಇನ್ನೊಂದು ಕಾಪಿಯನ್ನು ಮಾಡು(_A)"
+msgstr "ಇನ್ನಷ್ಟು ಕಾಪಿಯನ್ನು ಮಾಡು (_M)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1923
 msgid "_Create Cover"
