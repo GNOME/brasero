@@ -13,7 +13,7 @@ public_icons = \
 	hicolor_apps_24x24_brasero.png \
 	hicolor_apps_32x32_brasero.png \
 	hicolor_apps_48x48_brasero.png \
-	hicolor_apps_scalable_brasero.svg \
+	hicolor_apps_256x256_brasero.png \
 	$(NULL)
 
 private_icons = \
@@ -202,9 +202,7 @@ noinst_DATA = \
 	hicolor_actions_32x32_media-optical-copy.svg \
 	hicolor_actions_32x32_media-optical-data-new.svg \
 	hicolor_actions_32x32_transform-crop-and-resize.svg \
-	hicolor_apps_16x16_brasero.svg \
-	hicolor_apps_22x22_brasero.svg \
-	hicolor_apps_32x32_brasero.svg \
+	hicolor_apps_src_brasero.svg \
 	hicolor_status_16x16_brasero-disc-00.svg \
 	hicolor_status_16x16_brasero-disc-05.svg \
 	hicolor_status_16x16_brasero-disc-10.svg \
