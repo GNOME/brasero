@@ -1,5 +1,5 @@
 <schemalist>
-  <schema id="org.gnome.brasero" path="/apps/brasero/">
+  <schema id="org.gnome.brasero" path="/org/gnome/brasero/">
     <key name="nautilus-extension-debug" type="b">
       <default>false</default>
       <_summary>Should Nautilus extension output debug statements</_summary>
@@ -9,7 +9,7 @@
     <child name="display" schema="org.gnome.brasero.display"/>
     <child name="filter" schema="org.gnome.brasero.filter"/>
   </schema>
-  <schema id="org.gnome.brasero.config" path="/apps/brasero/config/">
+  <schema id="org.gnome.brasero.config" path="/org/gnome/brasero/config/">
     <key name="checksum-image" type="i">
       <default>0</default>
       <_summary>The type of checksum used for images</_summary>
@@ -56,7 +56,7 @@
       <_description>Whether to use the "--driver generic-mmc-raw" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups.</_description>
     </key>
   </schema>
-  <schema id="org.gnome.brasero.display" path="/apps/brasero/display/">
+  <schema id="org.gnome.brasero.display" path="/org/gnome/brasero/display/">
     <key name="iso-folder" type="s">
       <default>''</default>
       <_summary>The last browsed folder while looking for images to burn</_summary>
@@ -68,7 +68,7 @@
       <_description>Whether to display file preview. Set to true to use it.</_description>
     </key>
   </schema>
-  <schema id="org.gnome.brasero.filter" path="/apps/brasero/filter/">
+  <schema id="org.gnome.brasero.filter" path="/org/gnome/brasero/filter/">
     <key name="hidden" type="b">
       <default>true</default>
       <_summary>Should brasero filter hidden files</_summary>
