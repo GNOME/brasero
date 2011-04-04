@@ -577,6 +577,8 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 
 	/* Toolbar */
 	toolbar = gtk_toolbar_new ();
+	gtk_style_context_add_class (gtk_widget_get_style_context (toolbar),
+				     GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
 	gtk_widget_show (toolbar);
 	gtk_box_pack_start (GTK_BOX (object), toolbar, FALSE, TRUE, 0);
 

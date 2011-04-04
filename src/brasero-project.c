@@ -2334,6 +2334,7 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 {
 	GError *error = NULL;
 	GtkAction *action;
+	GtkWidget *toolbar;
 
 	/* menus */
 	project->priv->project_group = gtk_action_group_new ("ProjectActions1");
@@ -2351,7 +2352,11 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 		g_message ("building menus/toolbar failed: %s", error->message);
 		g_error_free (error);
 	}
-	
+
+	toolbar = gtk_ui_manager_get_widget (manager, "/Toolbar");
+	gtk_style_context_add_class (gtk_widget_get_style_context (toolbar),
+				     GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
 	g_object_set (action,
 		      "short-label", _("_Save"), /* for toolbar buttons */
