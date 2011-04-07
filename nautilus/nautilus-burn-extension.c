@@ -316,6 +316,17 @@ launch_brasero_on_window_track (BraseroTrack	*track,
 }
 
 static void
+brasero_nautilus_track_changed_cb (BraseroTrack *track,
+				   gpointer user_data)
+{
+	launch_brasero_on_window_track (track,
+	                                _("Write to Disc"),
+	                                NULL,
+	                                GTK_WINDOW (user_data));
+	g_object_unref (track);
+}
+
+static void
 write_iso_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
@@ -331,11 +342,8 @@ write_iso_activate_cb (NautilusMenuItem *item,
 	track = brasero_track_image_cfg_new ();
 	brasero_track_image_cfg_set_source (track, uri);
 
-	launch_brasero_on_window_track (BRASERO_TRACK (track),
-	                                _("Write to Disc"),
-	                                NULL,
-	                                GTK_WINDOW (user_data));
-	g_object_unref (track);
+	g_signal_connect (track, "changed",
+			  G_CALLBACK (brasero_nautilus_track_changed_cb), user_data);
 }
 
 static void
