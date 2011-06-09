@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero 2.31 x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-19 12:04+0100\n"
-"PO-Revision-Date: 2011-02-19 12:37+0100\n"
+"POT-Creation-Date: 2011-06-09 13:40+0200\n"
+"PO-Revision-Date: 2011-06-09 13:47+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -246,7 +246,7 @@ msgstr "Lag en VCD"
 
 #: ../libbrasero-burn/burn-debug.c:54
 msgid "Display debug statements on stdout for Brasero burn library"
-msgstr ""
+msgstr "Vis feilsøkingsinformasjon for Brasero brennebibliotek"
 
 #: ../libbrasero-burn/burn-debug.c:80
 msgid "Brasero media burning library"
@@ -254,7 +254,7 @@ msgstr "Brasero-bibliotek for brenning av media"
 
 #: ../libbrasero-burn/burn-debug.c:81
 msgid "Display options for Brasero-burn library"
-msgstr ""
+msgstr "Vis alternativer for Brasero brennebibliotek"
 
 #. Translators: %s is the name of the file that has just been deleted
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:90
@@ -1125,7 +1125,7 @@ msgstr "Vil du skrive filutvalget til over flere medier?"
 #: ../libbrasero-burn/brasero-burn-options.c:427
 #: ../libbrasero-burn/brasero-burn-options.c:444
 msgid "The data size is too large for the disc even with the overburn option."
-msgstr ""
+msgstr "Datastørrelsen er for stor for platen selv med alternativ for overbrenning."
 
 #: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:952
 msgid "_Burn Several Discs"
@@ -1219,10 +1219,13 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
+"Datastørrelsen er for stor for platen og du må fjerne filer fra utvalget.\n"
+"Du vil kanskje bruke dette alternativet hvis du bruker 90 eller 100 minutters CD-R(W) som ikke blir riktig gjenkjent og trenger alternativet for overbrenning.\n"
+"MERK: Dette valget kan forårsake feil."
 
 #: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:981
 msgid "_Overburn"
-msgstr "_Overskriv"
+msgstr "_Overbrenn"
 
 #: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:983
 msgid "Burn beyond the disc's reported capacity"
@@ -1269,7 +1272,7 @@ msgstr ""
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
-msgstr ""
+msgstr "Kun en fil er valgt («%s»). Denne er et platebilde og innholdet kan skrives."
 
 # disk
 #: ../libbrasero-burn/brasero-burn-options.c:802
@@ -1487,6 +1490,8 @@ msgid ""
 "GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
+"Filsystemet på dette volumet støtter ikke store filer (størrelse over 2 GiB).\n"
+"Dette kan være et problem når man skriver DVDer eller store platebilder."
 
 #. Translators %s.1f is the speed used to burn
 #: ../libbrasero-burn/brasero-drive-properties.c:524
@@ -1533,11 +1538,11 @@ msgstr "_Simuler før skriving"
 msgid ""
 "Brasero will simulate the burning and, if it is successful, go on with "
 "actual burning after 10 seconds"
-msgstr ""
+msgstr "Brasero vil simulere skriving og, hvis en ikke feiler, gå videre med faktisk skriving etter 10 sekunder"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:726
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr ""
+msgstr "Bruk burn_proof (minsker risiko for feil)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:728
 msgid "Burn the image directly _without saving it to disc"
@@ -1899,55 +1904,55 @@ msgstr "Skalert"
 msgid "Background Properties"
 msgstr "Egenskaper for bakgrunn"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:585
+#: ../libbrasero-utils/brasero-jacket-edit.c:587
 msgid "Print"
 msgstr "Skriv ut"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:597
+#: ../libbrasero-utils/brasero-jacket-edit.c:599
 msgid "Bac_kground Properties"
 msgstr "Egens_kaper for bakgrunn"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:600
+#: ../libbrasero-utils/brasero-jacket-edit.c:602
 msgid "Background properties"
 msgstr "Egenskaper for bakgrunn"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:615
+#: ../libbrasero-utils/brasero-jacket-edit.c:617
 msgid "Align right"
 msgstr "Juster til høyre"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:625
+#: ../libbrasero-utils/brasero-jacket-edit.c:627
 msgid "Center"
 msgstr "Sentrert"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:635
+#: ../libbrasero-utils/brasero-jacket-edit.c:637
 msgid "Align left"
 msgstr "Juster til venstre"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:649
+#: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "Underline"
 msgstr "Understreket"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:659
+#: ../libbrasero-utils/brasero-jacket-edit.c:661
 msgid "Italic"
 msgstr "Kursiv"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:669
+#: ../libbrasero-utils/brasero-jacket-edit.c:671
 msgid "Bold"
 msgstr "Uthevet"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:695
+#: ../libbrasero-utils/brasero-jacket-edit.c:697
 msgid "Font family and size"
 msgstr "Skriftfamilie og størrelse"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:702
+#: ../libbrasero-utils/brasero-jacket-edit.c:704
 msgid "_Text Color"
 msgstr "_Tekstfarge"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:703
+#: ../libbrasero-utils/brasero-jacket-edit.c:705
 msgid "Text color"
 msgstr "Tekstfarge"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:826
+#: ../libbrasero-utils/brasero-jacket-edit.c:828
 msgid "Cover Editor"
 msgstr "Redigering av omslag"
 
@@ -2317,7 +2322,8 @@ msgstr "Ikke gjenkjent oppstartsflagg: %d"
 #: ../src/eggdesktopfile.c:1383
 #, c-format
 msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr "Kan ikke sende dokument-URIer til en skrivebordsoppføring med «Type=Link»"
+msgstr ""
+"Kan ikke sende dokument-URIer til en skrivebordsoppføring med «Type=Link»"
 
 #: ../src/eggdesktopfile.c:1404
 #, c-format
@@ -3003,7 +3009,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "Feil ved lesing av spilleliste «%s»."
 
 #: ../src/brasero-playlist.c:393 ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2614 ../libbrasero-burn/brasero-sum-dialog.c:166
+#: ../src/brasero-project.c:2619 ../libbrasero-burn/brasero-sum-dialog.c:166
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
 msgstr "En ukjent feil oppsto"
@@ -3083,7 +3089,9 @@ msgstr "Tittel:"
 msgid ""
 "This information will be written to the disc using CD-Text technology. It "
 "can be read and displayed by some audio CD players."
-msgstr "Denne informasjonen vil bli skrevet til platen som CD-tekst. Den kan leses og vises av noen CD-spillere."
+msgstr ""
+"Denne informasjonen vil bli skrevet til platen som CD-tekst. Den kan leses "
+"og vises av noen CD-spillere."
 
 #: ../src/brasero-song-properties.c:189 ../src/brasero-multi-song-props.c:242
 msgid "Artist:"
@@ -3182,7 +3190,9 @@ msgstr "Fortsett med endret prosjekt"
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
-msgstr "Kun en fil er valgt («%s»). Den er et bilde av en plate og innholdet av denne kan skrives"
+msgstr ""
+"Kun en fil er valgt («%s»). Den er et bilde av en plate og innholdet av "
+"denne kan skrives"
 
 # disk
 #: ../src/brasero-data-disc.c:625
@@ -3238,7 +3248,9 @@ msgstr "Vil du erstatte «%s»?"
 msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its contents on the disc to be burnt."
-msgstr "En fil med dette navnet eksisterer i mappen allerede. Hvis du erstatter den vil du overskrive innholdet i den på platen som skal skrives."
+msgstr ""
+"En fil med dette navnet eksisterer i mappen allerede. Hvis du erstatter den "
+"vil du overskrive innholdet i den på platen som skal skrives."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3275,7 +3287,9 @@ msgstr "Alltid e_rstatt"
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of the ISO9660 standard to support it?"
-msgstr "Vil du virkelig legge til «%s» i utvalget og bruke tredje versjon av ISO9660-standarden for å støtte den?"
+msgstr ""
+"Vil du virkelig legge til «%s» i utvalget og bruke tredje versjon av ISO9660-"
+"standarden for å støtte den?"
 
 #: ../src/brasero-data-disc.c:835
 #: ../libbrasero-burn/brasero-status-dialog.c:290
@@ -3289,8 +3303,10 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"Størrelsen på filen er over 2 GiB. Filer større enn 2 GiB er ikke støttet av ISO9660-standarden i første og andre versjon (de mest utbredte versjonene).\n"
-"Det anbefales å bruke tredje versjon av ISO9660-standarden, som støttes av de fleste operativsystemer inklusive Linux og alle versjoner av Windows™.\n"
+"Størrelsen på filen er over 2 GiB. Filer større enn 2 GiB er ikke støttet av "
+"ISO9660-standarden i første og andre versjon (de mest utbredte versjonene).\n"
+"Det anbefales å bruke tredje versjon av ISO9660-standarden, som støttes av "
+"de fleste operativsystemer inklusive Linux og alle versjoner av Windows™.\n"
 "Mac OS X kan ikke lese CD-bilder skrevet med versjon 3 av ISO9660-standarden."
 
 #: ../src/brasero-data-disc.c:839 ../src/brasero-data-disc.c:883
@@ -3348,7 +3364,9 @@ msgstr "Vil du importere økten fra «%s»?"
 #: ../src/brasero-data-disc.c:1101
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
-msgstr "På denne måten vil gamle filer fra tidligere sesjoner kunne brukes etter skriving."
+msgstr ""
+"På denne måten vil gamle filer fra tidligere sesjoner kunne brukes etter "
+"skriving."
 
 #: ../src/brasero-data-disc.c:1109
 msgid "I_mport Session"
@@ -3582,80 +3600,83 @@ msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
-msgstr "Hvis du tømmer et prosjekt vil dette fjerne alle filer som allerede er lagt til. Alt arbeid vil gå tapt. Merk at filene ikke vil bli slettet fra opprinnelig lokasjon. De vil bare ikke vises her lenger."
+msgstr ""
+"Hvis du tømmer et prosjekt vil dette fjerne alle filer som allerede er lagt "
+"til. Alt arbeid vil gå tapt. Merk at filene ikke vil bli slettet fra "
+"opprinnelig lokasjon. De vil bare ikke vises her lenger."
 
-#: ../src/brasero-project.c:2357
+#: ../src/brasero-project.c:2362
 msgid "_Save"
 msgstr "_Lagre"
 
-#: ../src/brasero-project.c:2368
+#: ../src/brasero-project.c:2373
 msgid "_Add"
 msgstr "Le_gg til"
 
-#: ../src/brasero-project.c:2373 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2378 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "Fje_rn"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2437
+#: ../src/brasero-project.c:2442
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero - %s (dataplate)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2440
+#: ../src/brasero-project.c:2445
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero - %s (lydplate)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2443
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero - %s (videoplate)"
 
-#: ../src/brasero-project.c:2613 ../src/brasero-project.c:2916
+#: ../src/brasero-project.c:2618 ../src/brasero-project.c:2921
 msgid "Your project has not been saved."
 msgstr "Prosjektet er ikke lagret."
 
-#: ../src/brasero-project.c:2627
+#: ../src/brasero-project.c:2632
 msgid "Save the changes of current project before closing?"
 msgstr "Lagre endringene i dette prosjektet før det lukkes?"
 
-#: ../src/brasero-project.c:2632 ../src/brasero-project.c:2921
+#: ../src/brasero-project.c:2637 ../src/brasero-project.c:2926
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Hvis du ikke lagrer vil endringene gå tapt."
 
-#: ../src/brasero-project.c:2636 ../src/brasero-project.c:2642
-#: ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2641 ../src/brasero-project.c:2647
+#: ../src/brasero-project.c:2929
 msgid "Cl_ose Without Saving"
 msgstr "L_ukk uten å lagre"
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2729
 msgid "Save Current Project"
 msgstr "Lagre aktivt prosjekt"
 
-#: ../src/brasero-project.c:2742
+#: ../src/brasero-project.c:2747
 msgid "Save project as a Brasero audio project"
 msgstr "Lagre prosjekt som et Brasero-lydprosjekt"
 
-#: ../src/brasero-project.c:2743
+#: ../src/brasero-project.c:2748
 msgid "Save project as a plain text list"
 msgstr "Lagre prosjektet som en vanlig tekstliste"
 
-#: ../src/brasero-project.c:2747
+#: ../src/brasero-project.c:2752
 msgid "Save project as a PLS playlist"
 msgstr "Lagre prosjekt som en PLS-spilleliste"
 
-#: ../src/brasero-project.c:2748
+#: ../src/brasero-project.c:2753
 msgid "Save project as an M3U playlist"
 msgstr "Lagre prosjekt som en M3U-spilleliste"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2754
 msgid "Save project as an XSPF playlist"
 msgstr "Lagre prosjekt som en XSPF-spilleliste"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2755
 msgid "Save project as an iriver playlist"
 msgstr "Lagre prosjekt som en iriver-spilleliste"
 
@@ -3691,7 +3712,8 @@ msgstr "Nytt _lydprosjekt"
 #: ../src/brasero-project-type-chooser.c:76
 msgid ""
 "Create a traditional audio CD that will be playable on computers and stereos"
-msgstr "Lag en vanlig lyd-CD som kan spilles av på datamaskiner og stereoanlegg"
+msgstr ""
+"Lag en vanlig lyd-CD som kan spilles av på datamaskiner og stereoanlegg"
 
 #: ../src/brasero-project-manager.c:103
 msgid "New _Data Project"
@@ -3722,7 +3744,9 @@ msgstr "Ko_pier plate …"
 msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
 "another CD/DVD"
-msgstr "Lag en 1:1 kopi av en lyd-CD eller en data-CD/DVD på din harddisk eller på en annen CD/DVD"
+msgstr ""
+"Lag en 1:1 kopi av en lyd-CD eller en data-CD/DVD på din harddisk eller på "
+"en annen CD/DVD"
 
 #: ../src/brasero-project-manager.c:109
 msgid "_Burn Image…"
@@ -4378,7 +4402,7 @@ msgstr "Vil du virkelig dele sporet?"
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
-msgstr ""
+msgstr "Hvis du deler sporet vil størrelsen på det nye sporet bli kortere enn 6 sekunder og det vil bli fylt ut."
 
 #: ../src/brasero-split-dialog.c:175 ../src/brasero-split-dialog.c:746
 msgid "_Split"
