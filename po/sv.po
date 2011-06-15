@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-26 09:06+0100\n"
-"PO-Revision-Date: 2011-03-26 09:07+0100\n"
+"POT-Creation-Date: 2011-06-15 21:01+0200\n"
+"PO-Revision-Date: 2011-06-15 21:03+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -907,11 +907,11 @@ msgstr "Spela in ljudspår på en återinspelningsbar skiva rekommenderas inte."
 #: ../libbrasero-burn/brasero-burn-dialog.c:1035
 #, c-format
 msgid "Please eject the disc from \"%s\" manually."
-msgstr "Mata ut skivan från \"%s\" manuellt."
+msgstr "Mata ut skivan manuellt från \"%s\"."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1044
 msgid "The disc could not be ejected though it needs to be removed for the current operation to continue."
-msgstr "Skivan kunde inte matas ut även fast den måste tas bort för att den aktuella åtgärden ska fortsätta."
+msgstr "Skivan kunde inte matas ut. Den måste tas bort för att den aktuella åtgärden ska kunna fortsätta."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1131
 msgid "Do you want to replace the disc and continue?"
@@ -1883,55 +1883,55 @@ msgstr "Skalad"
 msgid "Background Properties"
 msgstr "Bakgrundsegenskaper"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:585
+#: ../libbrasero-utils/brasero-jacket-edit.c:587
 msgid "Print"
 msgstr "Skriv ut"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:597
+#: ../libbrasero-utils/brasero-jacket-edit.c:599
 msgid "Bac_kground Properties"
 msgstr "Ba_kgrundsegenskaper"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:600
+#: ../libbrasero-utils/brasero-jacket-edit.c:602
 msgid "Background properties"
 msgstr "Bakgrundsegenskaper"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:615
+#: ../libbrasero-utils/brasero-jacket-edit.c:617
 msgid "Align right"
 msgstr "Justera åt höger"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:625
+#: ../libbrasero-utils/brasero-jacket-edit.c:627
 msgid "Center"
 msgstr "Centrera"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:635
+#: ../libbrasero-utils/brasero-jacket-edit.c:637
 msgid "Align left"
 msgstr "Justera åt vänster"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:649
+#: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "Underline"
 msgstr "Understruken"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:659
+#: ../libbrasero-utils/brasero-jacket-edit.c:661
 msgid "Italic"
 msgstr "Kursiv"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:669
+#: ../libbrasero-utils/brasero-jacket-edit.c:671
 msgid "Bold"
 msgstr "Fet text"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:695
+#: ../libbrasero-utils/brasero-jacket-edit.c:697
 msgid "Font family and size"
 msgstr "Typsnittsfamilj och storlek"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:702
+#: ../libbrasero-utils/brasero-jacket-edit.c:704
 msgid "_Text Color"
 msgstr "_Textfärg"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:703
+#: ../libbrasero-utils/brasero-jacket-edit.c:705
 msgid "Text color"
 msgstr "Textfärg"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:826
+#: ../libbrasero-utils/brasero-jacket-edit.c:828
 msgid "Cover Editor"
 msgstr "Omslagsredigerare"
 
@@ -2976,7 +2976,7 @@ msgstr "Fel vid tolkning av spellistan \"%s\"."
 
 #: ../src/brasero-playlist.c:393
 #: ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2614
+#: ../src/brasero-project.c:2619
 #: ../libbrasero-burn/brasero-sum-dialog.c:166
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
@@ -3556,82 +3556,82 @@ msgstr "Vill du verkligen tömma det aktuella projektet?"
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Tömning av ett projekt kommer att ta bort alla filer som lagts till. Allt arbete kommer att gå förlorat. Observera att filerna inte kommer att tas bort fysiskt, de tas bara bort från listan här."
 
-#: ../src/brasero-project.c:2357
+#: ../src/brasero-project.c:2362
 msgid "_Save"
 msgstr "_Spara"
 
-#: ../src/brasero-project.c:2368
+#: ../src/brasero-project.c:2373
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: ../src/brasero-project.c:2373
+#: ../src/brasero-project.c:2378
 #: ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "_Ta bort"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2437
+#: ../src/brasero-project.c:2442
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero — %s (dataskiva)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2440
+#: ../src/brasero-project.c:2445
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero — %s (ljudskiva)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2443
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (videoskiva)"
 
-#: ../src/brasero-project.c:2613
-#: ../src/brasero-project.c:2916
+#: ../src/brasero-project.c:2618
+#: ../src/brasero-project.c:2921
 msgid "Your project has not been saved."
 msgstr "Ditt projekt har inte sparats."
 
-#: ../src/brasero-project.c:2627
+#: ../src/brasero-project.c:2632
 msgid "Save the changes of current project before closing?"
 msgstr "Spara ändringar i aktuellt projekt innan stängning?"
 
-#: ../src/brasero-project.c:2632
-#: ../src/brasero-project.c:2921
+#: ../src/brasero-project.c:2637
+#: ../src/brasero-project.c:2926
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Om du inte sparar kommer ändringarna att gå förlorade."
 
-#: ../src/brasero-project.c:2636
-#: ../src/brasero-project.c:2642
-#: ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2641
+#: ../src/brasero-project.c:2647
+#: ../src/brasero-project.c:2929
 msgid "Cl_ose Without Saving"
 msgstr "St_äng utan att spara"
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2729
 msgid "Save Current Project"
 msgstr "Spara aktuellt projekt"
 
-#: ../src/brasero-project.c:2742
+#: ../src/brasero-project.c:2747
 msgid "Save project as a Brasero audio project"
 msgstr "Spara projekt som ett Brasero-ljudprojekt"
 
-#: ../src/brasero-project.c:2743
+#: ../src/brasero-project.c:2748
 msgid "Save project as a plain text list"
 msgstr "Spara projekt som en vanlig textlista"
 
-#: ../src/brasero-project.c:2747
+#: ../src/brasero-project.c:2752
 msgid "Save project as a PLS playlist"
 msgstr "Spara projekt som en PLS-spellista"
 
-#: ../src/brasero-project.c:2748
+#: ../src/brasero-project.c:2753
 msgid "Save project as an M3U playlist"
 msgstr "Spara projekt som en M3U-spellista"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2754
 msgid "Save project as an XSPF playlist"
 msgstr "Spara projekt som en XSPF-spellista"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2755
 msgid "Save project as an iriver playlist"
 msgstr "Spara projekt som en iriver-spellista"
 
@@ -4820,277 +4820,389 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 
 #~ msgid "Copying `%s` locally"
 #~ msgstr "Kopierar \"%s\" lokalt"
+
 #~ msgid "Results %i–%i (out of %i)"
 #~ msgstr "Resultat %i–%i (av totalt %i)"
+
 #~ msgid "No results"
 #~ msgstr "Sök sökträffar"
+
 #~ msgid "Error querying for keywords."
 #~ msgstr "Fel vid fråga efter nyckelord."
+
 #~ msgid "Previous Results"
 #~ msgstr "Föregående resultat"
+
 #~ msgid "Next Results"
 #~ msgstr "Nästa resultat"
+
 #~ msgid "Number of results displayed"
 #~ msgstr "Antal visade resultat"
+
 #~ msgid "Search:"
 #~ msgstr "Sök:"
+
 #~ msgid "In _text documents"
 #~ msgstr "I _textdokument"
+
 #~ msgid "In _pictures"
 #~ msgstr "I _bilder"
+
 #~ msgid "In _music"
 #~ msgstr "I _musik"
+
 #~ msgid "In _videos"
 #~ msgstr "I _video"
+
 #~ msgid "Type your keywords or choose 'All files' from the menu"
 #~ msgstr "Skriv in dina nyckelord eller välj \"Alla filer\" från menyn"
+
 #~ msgid "Select if you want to search among image files only"
 #~ msgstr "Välj om du endast vill söka bland bildfiler"
+
 #~ msgid "Select if you want to search among video files only"
 #~ msgstr "Välj om du endast vill söka bland videofiler"
+
 #~ msgid "Select if you want to search among audio files only"
 #~ msgstr "Välj om du endast vill söka bland ljudfiler"
+
 #~ msgid "Select if you want to search among your text documents only"
 #~ msgstr "Välj om du endast vill söka bland dina textdokument"
+
 #~ msgid "Click to start the search"
 #~ msgstr "Klicka för att starta sökningen"
+
 #~ msgid "Search files using keywords"
 #~ msgstr "Sök filer efter nyckelord"
+
 #~ msgid "Cancel ongoing burning"
 #~ msgstr "Avbryt pågående bränning"
+
 #~ msgid "Show _Dialog"
 #~ msgstr "Visa _dialogruta"
+
 #~ msgid "Show dialog"
 #~ msgstr "Visa dialogruta"
+
 #~ msgid "%s, %d%% done, %s remaining"
 #~ msgstr "%s, %d%% färdigt, %s återstår"
+
 #~ msgid "%s, %d%% done"
 #~ msgstr "%s, %d%% färdigt"
+
 #~ msgid "by"
 #~ msgstr "av"
+
 #~ msgid "Directories cannot be added to an audio disc."
 #~ msgstr "Kataloger kan inte läggas till på en ljudskiva."
+
 #~ msgid "Name:"
 #~ msgstr "Namn:"
+
 #~ msgid ""
 #~ "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i × %i "
 #~ "pixels</span></i>"
 #~ msgstr ""
 #~ "<span weight=\"bold\">Storlek:</span>\t<i><span size=\"smaller\"> %i × %i "
 #~ "bildpunkter</span></i>"
+
 #~ msgid ""
 #~ "<span weight=\"bold\">%s</span>\n"
 #~ "by <span size=\"smaller\"><i>%s</i></span>"
 #~ msgstr ""
 #~ "<span weight=\"bold\">%s</span>\n"
 #~ "av <span size=\"smaller\"><i>%s</i></span>"
+
 #~ msgid ""
 #~ "<span weight=\"bold\">Loading information</span>\n"
 #~ "about <span size=\"smaller\"><i>%s</i></span>"
 #~ msgstr ""
 #~ "<span weight=\"bold\">Läser in information</span>\n"
 #~ "om <span size=\"smaller\"><i>%s</i></span>"
+
 #~ msgid ""
 #~ "Do you really want to create a new project and discard the changes to "
 #~ "current one?"
 #~ msgstr ""
 #~ "Vill du verkligen skapa ett nytt projekt och förkasta ändringarna i det "
 #~ "aktuella?"
+
 #~ msgid "An error occured while writing to disc"
 #~ msgstr "Ett fel inträffade vid skrivning till skiva"
+
 #~ msgid "Error reading video DVD (%s)"
 #~ msgstr "fel vid läsning av video-dvd (%s)"
+
 #~ msgid "Preview"
 #~ msgstr "Förhandsgranskning"
+
 #~ msgid "Directories cannot be added to video discs."
 #~ msgstr "Kataloger kan inte läggas till på videoskivor."
+
 #~ msgid "Brasero Disc Copier"
 #~ msgstr "Skivkopieraren Brasero"
+
 #~ msgid "Copy CDs and DVDs"
 #~ msgstr "Kopiera cd- och dvd-skivor"
+
 #~ msgid "Disc Copier"
 #~ msgstr "Skivkopierare"
+
 #~ msgid "Brasero - Creating Image"
 #~ msgstr "Brasero - Skapar avbildning"
+
 #~ msgid "Brasero - Burning DVD (Simulation)"
 #~ msgstr "Brasero - Bränner dvd (simulering)"
+
 #~ msgid "Brasero - Burning DVD"
 #~ msgstr "Brasero - Bränner dvd"
+
 #~ msgid "Burning DVD (Simulation)"
 #~ msgstr "Bränner dvd (simulering)"
+
 #~ msgid "Brasero - Copying DVD (Simulation)"
 #~ msgstr "Brasero - Kopierar dvd (simulering)"
+
 #~ msgid "Brasero - Copying DVD"
 #~ msgstr "Brasero - Kopierar dvd"
+
 #~ msgid "Brasero - Burning CD (Simulation)"
 #~ msgstr "Brasero - Bränner cd (simulering)"
+
 #~ msgid "Brasero - Burning CD"
 #~ msgstr "Brasero - Bränner cd"
+
 #~ msgid "Brasero - Copying CD (Simulation)"
 #~ msgstr "Brasero - Kopierar cd (simulering)"
+
 #~ msgid "Brasero - Copying CD"
 #~ msgstr "Brasero - Kopierar cd"
+
 #~ msgid "Brasero - Burning disc"
 #~ msgstr "Brasero - Bränner skiva"
+
 #~ msgid "Brasero - Burning Disc (Simulation)"
 #~ msgstr "Brasero - Bränner skiva (simulering)"
+
 #~ msgid "Brasero - Burning Disc"
 #~ msgstr "Brasero - Bränner skiva"
+
 #~ msgid "Brasero - Copying Disc (Simulation)"
 #~ msgstr "Brasero - Kopierar skiva (simulering)"
+
 #~ msgid "Brasero - Copying Disc"
 #~ msgstr "Brasero - Kopierar skiva"
+
 #~ msgid "Appending new files to a multisession disc is not advised."
 #~ msgstr "Lägga till nya filer till en multisessionsskiva rekommenderas inte."
+
 #~ msgid "Brasero - Creating Image (%i%% Done)"
 #~ msgstr "Brasero - Skapar avbildning (%i%% färdigt)"
+
 #~ msgid "Brasero - Copying DVD (%i%% Done)"
 #~ msgstr "Brasero - Kopierar dvd (%i%% färdigt)"
+
 #~ msgid "Brasero - Burning DVD (%i%% Done)"
 #~ msgstr "Brasero - Bränner dvd (%i%% färdigt)"
+
 #~ msgid "Brasero - Copying CD (%i%% Done)"
 #~ msgstr "Brasero - Kopierar cd (%i%% färdigt)"
+
 #~ msgid "Brasero - Burning CD (simulation)"
 #~ msgstr "Brasero - Bränner cd (simulering)"
+
 #~ msgid "Brasero - Burning CD (%i%% Done)"
 #~ msgstr "Brasero - Bränner cd (%i%% färdigt)"
+
 #~ msgid "Brasero - Copying Disc (%i%% Done)"
 #~ msgstr "Brasero - Kopierar skiva (%i%% färdigt)"
+
 #~ msgid "Brasero - Burning Disc (%i%% Done)"
 #~ msgstr "Brasero - Bränner skiva (%i%% färdigt)"
+
 #~ msgid "Session Log"
 #~ msgstr "Sessionslogg"
+
 #~ msgid "The session log cannot be displayed."
 #~ msgstr "Sessionsloggen kan inte visas."
+
 #~ msgid "The log file could not be found"
 #~ msgstr "Loggfilen kunde inte hittas"
+
 #~ msgid ""
 #~ "This is a excerpt from the session log (the last 10 MiB):\n"
 #~ "\n"
 #~ msgstr ""
 #~ "Det här är ett utdrag från sessionsloggen (de sista 10 MiB):\n"
 #~ "\n"
+
 #~ msgid "_View Log"
 #~ msgstr "_Visa logg"
+
 #~ msgid "There is no recordable disc inserted."
 #~ msgstr "Det finns inget inspelningsbart media inmatat."
+
 #~ msgid "Such a disc cannot be copied without the proper plugins."
 #~ msgstr "En sådan skiva kan inte kopieras utan lämpliga insticksmoduler."
+
 #~ msgid "It is not possible to write with the current set of plugins."
 #~ msgstr ""
 #~ "Det är inte möjligt att skriva med aktuell uppsättning insticksmoduler."
+
 #~ msgid "CD/DVD Copy Options"
 #~ msgstr "Kopieringsalternativ för cd/dvd"
+
 #~ msgid "The drive cannot burn or the disc cannot be burnt"
 #~ msgstr "Enheten kan inte bränna eller skivan kan inte brännas"
+
 #~ msgid "_Eject after burning"
 #~ msgstr "Mata _ut efter bränning"
+
 #~ msgid "_Show errors"
 #~ msgstr "_Visa fel"
+
 #~ msgid "Close this notification window"
 #~ msgstr "Stäng notifieringsfönstret"
+
 #~ msgid "_Write to Disc..."
 #~ msgstr "S_kriv till skiva..."
+
 #~ msgid "_Blank Disc..."
 #~ msgstr "_Radera skiva..."
+
 #~ msgid "_Blank..."
 #~ msgstr "_Radera..."
+
 #~ msgid "Default height for image preview."
 #~ msgstr "Standardhöjd för bildvisning."
+
 #~ msgid "Default height for video preview."
 #~ msgstr "Standardhöjd för videovisning."
+
 #~ msgid "Default width for image preview."
 #~ msgstr "Standardbredd för bildvisning."
+
 #~ msgid "Default width for video preview."
 #~ msgstr "Standardbredd för videovisning."
+
 #~ msgid "Enable side pane"
 #~ msgstr "Aktivera sidopanel"
+
 #~ msgid "Height for video preview"
 #~ msgstr "Höjd för videovisning"
+
 #~ msgid "Height of image preview"
 #~ msgstr "Höjd för bildvisning"
+
 #~ msgid "Layout of UI"
 #~ msgstr "Gränssnittslayout"
+
 #~ msgid "Pane to display audio projects"
 #~ msgstr "Panel för att visa ljudprojekt"
+
 #~ msgid "Pane to display data projects"
 #~ msgstr "Panel för att visa dataprojekt"
+
 #~ msgid "Pane to display video projects"
 #~ msgstr "Panel för att visa videoprojekt"
+
 #~ msgid "Should brasero notify when files are filtered"
 #~ msgstr "Ska brasero notifiera när filer blir filtrerade"
+
 #~ msgid ""
 #~ "Should brasero notify when files are filtered. Set to true, brasero will "
 #~ "display the notification."
 #~ msgstr ""
 #~ "Ska brasero notifiera när filer filtreras. Ställ in till sant, och "
 #~ "brasero kommer att visa notifieringen."
+
 #~ msgid ""
 #~ "The pane to display with audio projects. It should be one of the "
 #~ "following: \"Chooser\", \"Search\" or \"Playlist\"."
 #~ msgstr ""
 #~ "Panelen att visa med ljudprojekt. Den ska vara en av följande: \"Chooser"
 #~ "\", \"Search\" eller \"Playlist\"."
+
 #~ msgid ""
 #~ "The pane to display with data projects. It should be one of the "
 #~ "following: \"Chooser\" or \"Search\"."
 #~ msgstr ""
 #~ "Panelen att visa med dataprojekt. Den ska vara en av följande: \"Chooser"
 #~ "\" eller \"Search\"."
+
 #~ msgid ""
 #~ "The pane to display with video projects. It should be one of the "
 #~ "following: \"Chooser\", \"Search\" or \"Playlist\"."
 #~ msgstr ""
 #~ "Panelen att visa med videoprojekt. Den ska vara en av följande: \"Chooser"
 #~ "\", \"Search\" eller \"Playlist\"."
+
 #~ msgid ""
 #~ "This key sets where the project pane should be (0 = on the right, 1 = on "
 #~ "the left, 2 = at the top, 3 = at the bottom)"
 #~ msgstr ""
 #~ "Den här nyckeln ställer in var projektpanelen ska finnas (0 = till höger, "
 #~ "1 = till vänster, 2 = överst, 3 = nederst)"
+
 #~ msgid "Whether to display a side pane. Set to true to use it."
 #~ msgstr ""
 #~ "Huruvida en sidopanel ska visas. Ställ in till sant för att använda den."
+
 #~ msgid "Width for image preview"
 #~ msgstr "Bredd för förhandsvisning av avbildning"
+
 #~ msgid "Width for video preview"
 #~ msgstr "Bredd för videovisning"
+
 #~ msgid "_Split Track..."
 #~ msgstr "_Dela spår..."
+
 #~ msgid "R_ename..."
 #~ msgstr "B_yt namn..."
+
 #~ msgid "_Burn..."
 #~ msgstr "_Bränn..."
+
 #~ msgid "To add files to this project you can:"
 #~ msgstr "För att lägga till filer till det här projektet kan du:"
+
 #~ msgid "click the \"Add\" button to show a selection dialog"
 #~ msgstr "klicka på knappen \"Lägg till\" för att visa en väljarpanel"
+
 #~ msgid "select files in the selection pane and click the \"Add\" button"
 #~ msgstr "markera filer i väljarpanelen och klicka på knappen \"Lägg till\""
+
 #~ msgid ""
 #~ "drag files in this area from the selection pane or from the file manager"
 #~ msgstr ""
 #~ "dra filer i den här rutan från väljarpanelen eller från filhanteraren"
+
 #~ msgid "double click on files in the selection pane"
 #~ msgstr "dubbelklicka på filer i väljarpanelen"
+
 #~ msgid "copy files (from file manager for example) and paste in this area"
 #~ msgstr ""
 #~ "kopiera filer (från till exempel filhanteraren) och klistra in i den här "
 #~ "rutan"
+
 #~ msgid "To remove files from this project you can:"
 #~ msgstr "För att ta bort filer från det här projektet kan du:"
+
 #~ msgid "click on the \"Remove\" button to remove selected items in this area"
 #~ msgstr ""
 #~ "klicka på knappen \"Ta bort\" för att ta bort markerade objekt i den här "
 #~ "rutan"
+
 #~ msgid "select items in this area, and choose \"Remove\" from context menu"
 #~ msgstr ""
 #~ "markera objekt i den här rutan och välj \"Ta bort\" från sammanhangsmenyn"
+
 #~ msgid "select items in this area, and press \"Delete\" key"
 #~ msgstr "markera objekt i den här rutan och tryck på knappen \"Ta bort\""
+
 #~ msgid "Project estimated size: %s"
 #~ msgstr "Projektets beräknade storlek: %s"
+
 #~ msgid ""
 #~ "If you choose to create a new project, all files already added will be "
 #~ "discarded. Note that files will not be deleted from their own location, "
@@ -5099,159 +5211,226 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "Om du väljer att skapa ett nytt projekt kommer alla filer som lagts till "
 #~ "att förkastas. Observera att filerna inte kommer att tas bort fysiskt, de "
 #~ "tas bara bort från listan här."
+
 #~ msgid "Save project as an IRIVER playlist"
 #~ msgstr "Spara projekt som en IRIVER-spellista"
+
 #~ msgid "_Open..."
 #~ msgstr "_Öppna..."
+
 #~ msgid "PATH TO PLAYLIST"
 #~ msgstr "SÖKVÄG TILL SPELLISTA"
+
 #~ msgid "Your version of cdrdao does not seem to be supported by libbrasero"
 #~ msgstr "Det verkar inte finnas stöd för din version av cdrdao i libbrasero"
+
 #~ msgid "Use cdrdao to copy and burn CDs"
 #~ msgstr "Använd cdrdao för att kopiera och bränna cd-skivor"
+
 #~ msgid "Toc2cue converts .toc files into .cue files"
 #~ msgstr "Toc2cue konverterar .toc-filer till .cue-filer"
+
 #~ msgid "Use genisoimage to create images from a file selection"
 #~ msgstr "Använd genisoimage för att skapa avbildningar från filer"
+
 #~ msgid "Use readom to create disc images"
 #~ msgstr "Använd readom för att skapa skivavbildningar"
+
 #~ msgid "Use wodim to burn CDs and DVDs"
 #~ msgstr "Använd wodim för att bränna cd/dvd-skivor"
+
 #~ msgid "Use cdrecord to burn CDs and DVDs"
 #~ msgstr "Använd cdrecord för att bränna cd/dvd-skivor"
+
 #~ msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
 #~ msgstr "Krypterad dvd: installera libdvdcss version 1.2.x"
+
 #~ msgid ""
 #~ "Libdvdcss version %s is not supported.\n"
 #~ "Please install libdvdcss version 1.2.x"
 #~ msgstr ""
 #~ "Libdvdcss version %s stöds inte.\n"
 #~ "Installera libdvdcss version 1.2.x"
+
 #~ msgid "Libdvdcss could not be loaded properly"
 #~ msgstr "Libdvdcss kunde inte läsas in korrekt"
+
 #~ msgid "Dvdcss allows to read css encrypted video DVDs"
 #~ msgstr "Dvdcss tillåter att css-krypterade video-dvd-skivor kan läsas"
+
 #~ msgid "Dvd+rw-format blanks and formats DVD+/-R(W)"
 #~ msgstr "Dvd+rw-format raderar och formaterar dvd+/-r(w)"
+
 #~ msgid "Growisofs burns DVDs"
 #~ msgstr "Growisofs bränner dvd-skivor"
+
 #~ msgid "Libburn burns CD(RW), DVD+/-(RW)"
 #~ msgstr "Libburn bränner cd(rw), dvd+/-(rw)"
+
 #~ msgid "Libisofs creates disc images from files"
 #~ msgstr "Libisofs skapar skivavbildningar från filer"
+
 #~ msgid ""
 #~ "Transcode converts song files into a format proper to burn them on CDs"
 #~ msgstr ""
 #~ "Transcode konverterar låtfiler till ett format som är lämpligt att bränna "
 #~ "på cd-skivor"
+
 #~ msgid "_Options..."
 #~ msgstr "Alter_nativ..."
+
 #~ msgid "Use dvdauthor to create Video DVDs"
 #~ msgstr "Använd dvdauthor för att skapa video-dvd-skivor"
+
 #~ msgid "Use vcdimager to create SVCDs"
 #~ msgstr "Använd vcdimager för att skapa svcd-skivor"
+
 #~ msgid ""
 #~ "A file with the same name is about to be added into the same directory "
 #~ "and will replace it if you accept."
 #~ msgstr ""
 #~ "En fil med samma namn är på väg att läggas till i samma katalog och "
 #~ "kommer att ersätta den om du godkänner det."
+
 #~ msgid "Select an icon for the disc that will appear in file managers"
 #~ msgstr "Välj en ikon för skivan som ska visas i filhanterare"
+
 #~ msgid "_Erase Disc"
 #~ msgstr "_Radera skiva"
+
 #~ msgid ""
 #~ "This file is the image of a disc and can therefore be burnt to disc "
 #~ "without having to add it to a data project first."
 #~ msgstr ""
 #~ "Denna fil är avbildningen av en skiva och kan därför brännas till skiva "
 #~ "utan att först behöva läggas till i ett dataprojekt."
+
 #~ msgid "_Add to Project"
 #~ msgstr "_Lägg till i projekt"
+
 #~ msgid "Blank %s"
 #~ msgstr "Tom %s"
+
 #~ msgid "Audio %s"
 #~ msgstr "Ljud-%s"
+
 #~ msgid "Data %s"
 #~ msgstr "Data-%s"
+
 #~ msgid "It already exists in the directory."
 #~ msgstr "Den finns redan i katalogen."
+
 #~ msgid "_Disc:"
 #~ msgstr "S_kiva:"
+
 #~ msgid "_Name:"
 #~ msgstr "_Namn:"
+
 #~ msgid "Increase compatibility with _Windows systems"
 #~ msgstr "Öka kompatibiliteten med _Windows-system"
+
 #~ msgid ""
 #~ "Improve compatibility with Windows systems by allowing to display long "
 #~ "filenames (maximum 64 characters)"
 #~ msgstr ""
 #~ "Öka kompatibiliteten med Windows-system genom att tillåta visning av "
 #~ "långa filnamn (maximalt 64 tecken)"
+
 #~ msgid "Disc options"
 #~ msgstr "Skivalternativ"
+
 #~ msgid "You might not be able to listen to it with stereos."
 #~ msgstr "Du kanske inte kan lyssna på den i stereoapparater."
+
 #~ msgid "Unknown"
 #~ msgstr "Okänd"
+
 #~ msgid "It will be removed from the project"
 #~ msgstr "Den kommer att tas bort från projektet"
+
 #~ msgid "Please delete some files from the project."
 #~ msgstr "Ta bort några filer från projektet."
+
 #~ msgid "_Keep Project File"
 #~ msgstr "_Behåll projektfil"
+
 #~ msgid "_Replace Project File"
 #~ msgstr "_Ersätt projektfil"
+
 #~ msgid "Project estimated size: %s/%s"
 #~ msgstr "Projektets beräknade storlek: %s/%s"
+
 #~ msgid "drag and release items out from this area"
 #~ msgstr "dra och släpp objekt från den här rutan"
+
 #~ msgid " "
 #~ msgstr " "
+
 #~ msgid "_Temporary directory free space:"
 #~ msgstr "Ledigt utrymme i _temporär katalog:"
+
 #~ msgid "Let brasero choose (safest)"
 #~ msgstr "Låt brasero välja (säkrast)"
+
 #~ msgid "*.iso image"
 #~ msgstr "*.iso-avbildning"
+
 #~ msgid "*.raw image"
 #~ msgstr "*.raw-avbildning"
+
 #~ msgid "*.toc image (cdrdao)"
 #~ msgstr "*.toc-avbildning (cdrdao)"
 #~ msgctxt "disc"
+
 #~ msgid "Image files only"
 #~ msgstr "Endast avbildningsfiler"
+
 #~ msgid "Not enough space available on the disc (%"
 #~ msgstr "Inte tillräckligt med ledigt utrymme på skivan (%"
+
 #~ msgid "\"%s\" already exists"
 #~ msgstr "\"%s\" finns redan"
+
 #~ msgid "%"
 #~ msgstr "%"
+
 #~ msgid "%s only"
 #~ msgstr "%s endast"
 #~ msgctxt "picture"
+
 #~ msgid "Image files only"
 #~ msgstr "Endast bildfiler"
+
 #~ msgid "Drive"
 #~ msgstr "Enhet"
+
 #~ msgid "%lli min"
 #~ msgstr "%lli min"
+
 #~ msgid "%lli:%02lli min"
 #~ msgstr "%lli:%02lli min"
+
 #~ msgid "Unable to launch the cd burner application"
 #~ msgstr "Kunde inte starta cd-brännarprogrammet"
+
 #~ msgid "_Erase..."
 #~ msgstr "_Radera..."
+
 #~ msgid "Erase a disc"
 #~ msgstr "Radera en skiva"
+
 #~ msgid "Exit the program"
 #~ msgstr "Avsluta programmet"
+
 #~ msgid "Display debug statements on stdout"
 #~ msgstr "Visa felsökningsinformation på standard ut"
+
 #~ msgid "A directory could not be created (%s)"
 #~ msgstr "En katalog kunde inte skapas (%s)"
+
 #~ msgid "The size could not be retrieved (%s)"
 #~ msgstr "Storleken kunde inte läsas av (%s)"
+
 #~ msgid ""
 #~ "The size of the project is too large for the disc.\n"
 #~ "You may want to use this option if you are using 90 or 100 min CD-R(W) "
@@ -5263,84 +5442,114 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "lång CD-R(W)-skiva som inte kan kännas igen korrekt och därför behöver "
 #~ "överbränningsalternativet.\n"
 #~ "OBSERVERA: Det här alternativet kan orsaka felaktigheter."
+
 #~ msgid "<keep current values>"
 #~ msgstr "<behåll aktuella värden>"
+
 #~ msgid "1 item"
 #~ msgstr "1 objekt"
+
 #~ msgid "Substitute"
 #~ msgstr "Ersätt"
+
 #~ msgid "The disc could not be mounted (max attemps reached)"
 #~ msgstr "Skivan kunde inte monteras (maximalt antal försök nåddes)"
+
 #~ msgid "Cdrdao toc file"
 #~ msgstr "Toc-fil för cdrdao"
+
 #~ msgid "Do you want to continue or discard the old project layout?"
 #~ msgstr "Vill du fortsätta eller förkasta den gamla projektlayouten?"
+
 #~ msgid "Press if you want to cancel current project loading"
 #~ msgstr "Välj om du vill avbryta inläsning av aktuellt projekt"
+
 #~ msgid "CD/DVD burning"
 #~ msgstr "Cd/Dvd-bränning"
+
 #~ msgid "Native aspect _ratio"
 #~ msgstr "Ursprungligt _bildförhållande"
+
 #~ msgid "Add _AC3 audio stream"
 #~ msgstr "Lägg till _AC3-ljudström"
+
 #~ msgid "Add _MP2 audio stream"
 #~ msgstr "Lägg till _MP2-ljudström"
+
 #~ msgid "Audio Options"
 #~ msgstr "Ljudalternativ"
+
 #~ msgid "Number of copies"
 #~ msgstr "Antal kopior"
+
 #~ msgid "Contents"
 #~ msgstr "Innehåll"
+
 #~ msgid "Brasero projects"
 #~ msgstr "Brasero-projekt"
+
 #~ msgid "File \"%s\" can't be opened."
 #~ msgstr "Filen \"%s\" kan inte öppnas."
+
 #~ msgid "this format is not supported by gstreamer"
 #~ msgstr "det här formatet stöds inte av gstreamer"
+
 #~ msgid "Show"
 #~ msgstr "Visa"
+
 #~ msgid "Plugins"
 #~ msgstr "Insticksmoduler"
+
 #~ msgid "only in\t"
 #~ msgstr "endast i\t"
+
 #~ msgid "_Video"
 #~ msgstr "_Video"
+
 #~ msgid "Cancel"
 #~ msgstr "Avbryt"
 
 #, fuzzy
 #~ msgid "This file can't be opened."
 #~ msgstr "Den här filen kan inte öppnas:"
+
 #~ msgid ""
 #~ "A recording was successfully completed.\n"
 #~ "The next recording will begin as soon as a recordable medium is inserted."
 #~ msgstr ""
 #~ "En inspelning färdigställdes utan fel. Nästa inspelning\n"
 #~ "påbörjas så snart ett inspelningsbart media har matats in."
+
 #~ msgid "The disc in \"%s\" is a DVD."
 #~ msgstr "Skivan i \"%s\" är en dvd."
+
 #~ msgid "The disc in \"%s\" is a CD."
 #~ msgstr "Skivan i \"%s\" är en cd."
+
 #~ msgid "The disc in \"%s\" is not big enough."
 #~ msgstr "Skivan i \"%s\" är inte tillräckligt stor."
 
 #, fuzzy
 #~ msgid "An unknown error occured. Check your disc."
 #~ msgstr "Ett okänt fel inträffade. Kontrollera din skiva"
+
 #~ msgid "_Cancel"
 #~ msgstr "_Avbryt"
+
 #~ msgid "Leave the disc _open to add a data session later"
 #~ msgstr "Lämna skivan _öppen för att lägga till en datasession senare"
 
 #, fuzzy
 #~ msgid "Allow creating an enhanced CD or CD+"
 #~ msgstr "Tillåt att skapa vad som kallas en utökad cd eller cd+"
+
 #~ msgid "Image File Properties"
 #~ msgstr "Egenskaper för avbildningsfil"
 
 #, fuzzy
 #~ msgid "Some tasks are not completed yet."
 #~ msgstr "vissa åtgärder är inte färdigställda ännu."
+
 #~ msgid "Ongoing Tasks"
 #~ msgstr "Pågående åtgärder"
 
@@ -5355,46 +5564,61 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #, fuzzy
 #~ msgid "The drive is busy."
 #~ msgstr "skivan är upptagen."
+
 #~ msgid "the drive has no burning capabilities"
 #~ msgstr "enheten har inga brännfärdigheter"
+
 #~ msgid "ongoing burning process"
 #~ msgstr "pågående bränningsprocess"
+
 #~ msgid ""
 #~ "it's not possible to merge to this media because it hasn't got enough "
 #~ "space"
 #~ msgstr ""
 #~ "det är inte möjligt att sammanfoga till detta media på grund av att det "
 #~ "inte har tillräckligt mycket utrymme"
+
 #~ msgid "this operation is not supported"
 #~ msgstr "denna åtgärd stöds inte"
+
 #~ msgid "internal error in plugin system"
 #~ msgstr "internt fel i system för insticksmoduler"
+
 #~ msgid "it does not appear to be a primary volume descriptor"
 #~ msgstr "den verkar inte vara en primär volymidentifierare"
+
 #~ msgid "invalid directory record"
 #~ msgstr "ogiltig katalogpost"
+
 #~ msgid "file name is too long"
 #~ msgstr "filnamnet är för långt"
+
 #~ msgid "plugin %s did not want to work. Try to deactivate it"
 #~ msgstr "insticksmodulen %s ville inte fungera. Försök att inaktivera den"
+
 #~ msgid "Insufficient space on media (%lli available for %lli)"
 #~ msgstr "Otillräckligt utrymme på media (%lli tillgängligt för %lli)"
 
 #, fuzzy
 #~ msgid "The size of the volume can't be checked (Unknown error)."
 #~ msgstr "storleken på volymen kan inte kontrolleras (okänt fel)"
+
 #~ msgid "no path"
 #~ msgstr "ingen sökväg"
+
 #~ msgid "%s already exists"
 #~ msgstr "%s finns redan"
+
 #~ msgid "the pipe couldn't be created (%s)"
 #~ msgstr "röret kan inte skapas (%s)"
+
 #~ msgid ""
 #~ "plugin %s did not work properly.\n"
 #~ "Try to deactivate it"
 #~ msgstr ""
 #~ "insticksmodulen %s fungerade inte korrekt.\n"
 #~ "Försök att inaktivera den"
+
 #~ msgid ""
 #~ "plugin %s didn't work properly (it does not support operation).\n"
 #~ "Try to deactivate it"
@@ -5402,50 +5626,69 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "insticksmodulen %s fungerade inte korrekt (den saknar stöd för "
 #~ "åtgärden).\n"
 #~ "Försök att inaktivera den"
+
 #~ msgid "couldn't set non blocking mode"
 #~ msgstr "kunde inte ställa in icke-blockerande läge"
+
 #~ msgid "couldn't get pipe flags"
 #~ msgstr "kunde inte få rörflaggor"
+
 #~ msgid "file"
 #~ msgstr "fil"
+
 #~ msgid "null graft point"
 #~ msgstr "arbetspunkt är noll"
+
 #~ msgid "wrong path"
 #~ msgstr "felaktig sökväg"
+
 #~ msgid "impossible to retrieve information"
 #~ msgstr "omöjligt att hämta information"
+
 #~ msgid "no output specified"
 #~ msgstr "ingen utmatning angiven"
+
 #~ msgid "a temporary directory could not be created (%s)"
 #~ msgstr "en temporärkatalog kunde inte skapas (%s)"
+
 #~ msgid "a temporary file can't be created: %s"
 #~ msgstr "en temporärfil kan inte skapas: %s"
+
 #~ msgid "there isn't a valid volume descriptor"
 #~ msgstr "den finns ingen giltig volymidentifierare"
 
 #, fuzzy
 #~ msgid "The cue file (%s) seems to be invalid"
 #~ msgstr "cue-filen (%s) verkar vara ogiltig"
+
 #~ msgid "cdrdao could not be found in the path"
 #~ msgstr "cdrdao kunde inte hittas i sökvägen"
+
 #~ msgid "toc2cue could not be found in the path"
 #~ msgstr "toc2cue kunde inte hittas i sökvägen"
+
 #~ msgid "the old image couldn't be read"
 #~ msgstr "den gamla avbildningen kunde inte läsas"
+
 #~ msgid "the image can't be created"
 #~ msgstr "avbildningen kan inte skapas"
+
 #~ msgid "writing to file descriptor failed"
 #~ msgstr "skrivning till filidentifierare misslyckades"
+
 #~ msgid "Internal error: bad file descriptor"
 #~ msgstr "Internt fel: felaktig filidentifierare"
+
 #~ msgid "The file is too large for a CD"
 #~ msgstr "Filen är för stor för en cd-skiva"
+
 #~ msgid ""
 #~ "failed to get the start point of the track. Make sure the media allow to "
 #~ "add files (it is not closed)"
 #~ msgstr ""
 #~ "misslyckades att få startpunkten för spåret. Se till att mediet tillåter "
 #~ "att lägga till filer (att det inte är stängt)"
+
 #~ msgid "genisoimage could not be found in the path"
 #~ msgstr "genisoimage kunde inte hittas i sökvägen"
 
@@ -5453,54 +5696,74 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ msgid "You do not seem to have the required permissions to access the drive"
 #~ msgstr ""
 #~ "du verkar inte ha de nödvändiga rättigheterna för att komma åt enheten"
+
 #~ msgid "Internal error"
 #~ msgstr "Internt fel"
+
 #~ msgid "raw images cannot be created with DVDs"
 #~ msgstr "råa avbildningar kan inte skapas med dvd-skivor"
+
 #~ msgid "You don't seem to have the required permission to use this drive"
 #~ msgstr ""
 #~ "Du verkar inte ha de nödvändiga rättigheterna för att använda den här "
 #~ "enheten"
+
 #~ msgid "There doesn't seem to be a disc in the drive"
 #~ msgstr "Det verkar inte finnas någon skiva i enheten"
+
 #~ msgid "input buffer error"
 #~ msgstr "fel i inmatningsbuffert"
+
 #~ msgid "The CD has already been recorded"
 #~ msgstr "Cd-skivan har redan blivit inspelad"
+
 #~ msgid "The CD cannot be blanked"
 #~ msgstr "Cd-skivan kan inte raderas"
+
 #~ msgid "The files selected did not fit on the CD"
 #~ msgstr "De markerade filerna får inte plats på cd-skivan"
+
 #~ msgid "a write error occured which was likely due to overburning the disc"
 #~ msgstr ""
 #~ "ett skrivfel inträffade som antagligen berodde på överbränning av skivan"
+
 #~ msgid ""
 #~ "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 #~ msgstr ""
 #~ "Alla ljuderfiler måste vara i stereo, 16-bitars digitalt ljud med 44100Hz "
 #~ "samplingar"
+
 #~ msgid "The image does not seem to be a proper iso9660 file system"
 #~ msgstr "Avbildningen verkar inte innehålla ett korrekt iso9660-filsystem"
+
 #~ msgid ""
 #~ "The drive seems to be busy (maybe check you have proper permissions to "
 #~ "use it)"
 #~ msgstr ""
 #~ "Enheten verkar vara upptagen (du bör kanske kontrollera om du har "
 #~ "rättigheter att använda den)"
+
 #~ msgid "The drive seems to be busy (maybe you should reload the media)"
 #~ msgstr "Enheten verkar vara upptagen (du bör kanske mata in mediet igen)"
+
 #~ msgid "internal error"
 #~ msgstr "internt fel"
+
 #~ msgid "the cd information could not be written"
 #~ msgstr "cd-informationen kunde inte skrivas"
+
 #~ msgid "the disc could not be closed"
 #~ msgstr "skivan kunde inte stängas"
+
 #~ msgid "the audio tracks are too short or not a multiple of 2352"
 #~ msgstr "ljudspåren är för korta eller inte multiplicerbara med 2352"
+
 #~ msgid "the inf file can't be written : %s"
 #~ msgstr "inf-filen kan inte skrivas : %s"
+
 #~ msgid "imager doesn't seem to be ready"
 #~ msgstr "avbildaren verkar inte vara redo"
+
 #~ msgid "the size of the session cannot be retrieved"
 #~ msgstr "storleken på sessionen kunde inte läsas av"
 
@@ -5528,6 +5791,7 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #, fuzzy
 #~ msgid "The audio tracks are too short or not a multiple of 2352"
 #~ msgstr "ljudspåren är för korta eller inte multiplicerbara med 2352"
+
 #~ msgid "mkisofs could not be found in the path"
 #~ msgstr "mkisofs kunde inte hittas i sökvägen"
 
@@ -5535,345 +5799,505 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ msgid "You do not to have the required permissions to access the drive"
 #~ msgstr ""
 #~ "du verkar inte ha de nödvändiga rättigheterna för att komma åt enheten"
+
 #~ msgid "readcd could not be found in the path"
 #~ msgstr "readcd kunde inte hittas i sökvägen"
+
 #~ msgid "the data couldn't be written to the pipe (%i: %s)"
 #~ msgstr "data kunde inte skrivas till röret (%i: %s)"
+
 #~ msgid "the data couldn't be written to the file (%i: %s)"
 #~ msgstr "data kunde inte skrivas till filen (%i: %s)"
+
 #~ msgid "Unhandled error, aborting"
 #~ msgstr "Ohanterat fel, avbryter"
+
 #~ msgid "dvd+rw-format could not be found in the path"
 #~ msgstr "dvd+rw-format kunde inte hittas i sökvägen"
+
 #~ msgid "The disc is already burnt"
 #~ msgstr "Skivan är redan bränd"
+
 #~ msgid "The recorder could not be accessed"
 #~ msgstr "Inspelaren gick inte att komma åt"
+
 #~ msgid "the file /proc/self/fd/0 is missing"
 #~ msgstr "filen /proc/self/fd/0 saknas"
+
 #~ msgid "the image is not stored locally"
 #~ msgstr "avbildningen är inte lagrad lokalt"
+
 #~ msgid "growisofs could not be found in the path"
 #~ msgstr "growisofs kunde inte hittas i sökvägen"
+
 #~ msgid "unable to set the source"
 #~ msgstr "kunde inte ställa in källan"
+
 #~ msgid "unable to add the track to the session"
 #~ msgstr "kunde inte lägga till spåret till sessionen"
+
 #~ msgid "no profile available for the medium"
 #~ msgstr "ingen profil tillgänglig för mediet"
+
 #~ msgid "/dev/null can't be opened"
 #~ msgstr "/dev/null kan inte öppnas"
+
 #~ msgid "libburn can't burn: %s"
 #~ msgstr "libburn kan inte bränna: %s"
+
 #~ msgid "the drive couldn't be initialized"
 #~ msgstr "enheten kunde inte initieras"
+
 #~ msgid "a parent for the path (%s) could not be found in the tree"
 #~ msgstr "en förälder för sökvägen (%s) kunde inte hittas i trädet"
+
 #~ msgid "non local file %s"
 #~ msgstr "icke-lokala filen %s"
+
 #~ msgid "libisofs reported an error while adding directory %s (%x)"
 #~ msgstr "libisofs rapporterade ett fel när katalogen %s lades till (%x)"
+
 #~ msgid "source can't be created"
 #~ msgstr "source kan inte skapas"
+
 #~ msgid "decode can't be created"
 #~ msgstr "decode kan inte skapas"
+
 #~ msgid "audioconvert can't be created"
 #~ msgstr "audioconvert kan inte skapas"
+
 #~ msgid "audioresample can't be created"
 #~ msgstr "audioresample kan inte skapas"
+
 #~ msgid "rganalysis can't be created"
 #~ msgstr "rganalysis kan inte skapas"
+
 #~ msgid "sink can't be created"
 #~ msgstr "sink kan inte skapas"
+
 #~ msgid "GST plugin \"rgvolume\" could not be found"
 #~ msgstr "GST-insticksmodulen \"rgvolume\" kunde inte hittas"
+
 #~ msgid "GST plugin \"rganalysis\" could not be found"
 #~ msgstr "GST-insticksmodulen \"rganalysis\" kunde inte hittas"
+
 #~ msgid "filter can't be created"
 #~ msgstr "filter kan inte skapas"
+
 #~ msgid "error opening file for padding : %s"
 #~ msgstr "fel vid filöppning för utfyllning : %s"
+
 #~ msgid "size can't be retrieved for %s: %s"
 #~ msgstr "storlek kan inte hämtas för %s: %s"
+
 #~ msgid "unreadable file"
 #~ msgstr "oläslig fil"
+
 #~ msgid "recursive symlink"
 #~ msgstr "rekursiv symbolisk länk"
+
 #~ msgid "%s: %s of data"
 #~ msgstr "%s: %s data"
+
 #~ msgid "the file %s couldn't be read (%s)"
 #~ msgstr "filen %s kunde inte läsas (%s)"
+
 #~ msgid "data could not be read from the pipe (%i: %s)"
 #~ msgstr "data kunde inte läsas från röret (%i: %s)"
+
 #~ msgid "the image is not local"
 #~ msgstr "avbildningen är inte lokal"
+
 #~ msgid "by "
 #~ msgstr "av "
+
 #~ msgid "queue element can't be created"
 #~ msgstr "queue element kan inte skapas"
+
 #~ msgid "ffenc_mp2 can't be created"
 #~ msgstr "ffenc_mp2 kan inte skapas"
+
 #~ msgid "queue1 element can't be created"
 #~ msgstr "queue1 element kan inte skapas"
+
 #~ msgid "ffenc_ac3 can't be created"
 #~ msgstr "ffenc_ac3 kan inte skapas"
+
 #~ msgid "tee element can't be created"
 #~ msgstr "tee element kan inte skapas"
+
 #~ msgid "framerate can't be created"
 #~ msgstr "framerate kan inte skapas"
+
 #~ msgid "scale can't be created"
 #~ msgstr "scale kan inte skapas"
+
 #~ msgid "ffmpegcolorspace can't be created"
 #~ msgstr "ffmpegcolorspace kan inte skapas"
+
 #~ msgid "mpeg2enc can't be created"
 #~ msgstr "mpeg2enc kan inte skapas"
+
 #~ msgid "mplex can't be created"
 #~ msgstr "mplex kan inte skapas"
+
 #~ msgid "Image Extension"
 #~ msgstr "Avbildningsfiländelse"
+
 #~ msgid "_Don't change extension"
 #~ msgstr "Ändra _inte filändelse"
+
 #~ msgid "Configure some options for the recording"
 #~ msgstr "Konfigurera alternativ för bränningen"
+
 #~ msgid "_Disc Info"
 #~ msgstr "_Skivinfo"
+
 #~ msgid "Display information on blank discs currently inserted"
 #~ msgstr "Visa information om tomma skivor som matats in"
+
 #~ msgid "Should brasero ask to be set as the default app to burn"
 #~ msgstr ""
 #~ "Ska brasero fråga om att bli inställt som standardprogram för bränning"
+
 #~ msgid ""
 #~ "Should brasero ask to be set as the default app to burn audio or data. "
 #~ "Set to true, brasero won't ask."
 #~ msgstr ""
 #~ "Ska brasero fråga om att bli inställt som standardprogram för att bränna "
 #~ "ljud eller data. Ställ in till sant och brasero kommer inte att fråga."
+
 #~ msgid "_Add video"
 #~ msgstr "_Lägg till video"
+
 #~ msgid "Directory Search"
 #~ msgstr "Katalogsökning"
+
 #~ msgid "Error Blanking:"
 #~ msgstr "Fel vid radering:"
+
 #~ msgid "Blanking Finished"
 #~ msgstr "Radering färdig"
+
 #~ msgid "Unexpected error"
 #~ msgstr "Oväntat fel"
+
 #~ msgid "Total time:"
 #~ msgstr "Total tid:"
+
 #~ msgid "waiting"
 #~ msgstr "väntar"
+
 #~ msgid "Possible Data Loss"
 #~ msgstr "Möjlig dataförlust"
+
 #~ msgid "Multisession Disc"
 #~ msgstr "Multisessionsskiva"
+
 #~ msgid "Rewritable Disc"
 #~ msgstr "Återskrivningsbar skiva"
+
 #~ msgid "Successful Simulation"
 #~ msgstr "Simulering lyckades"
+
 #~ msgid "Burning Error"
 #~ msgstr "Brännfel"
+
 #~ msgid "Confirm"
 #~ msgstr "Bekräfta"
+
 #~ msgid "unknown error"
 #~ msgstr "okänt fel"
+
 #~ msgid "Already Existing File"
 #~ msgstr "Redan befintlig fil"
+
 #~ msgid "_Don't replace"
 #~ msgstr "Ersätt _inte"
+
 #~ msgid "File Over 2 GiB"
 #~ msgstr "Fil över 2 GiB"
+
 #~ msgid "_Don't add"
 #~ msgstr "Lägg _inte till"
+
 #~ msgid "Deep Directory"
 #~ msgstr "Djup katalog"
+
 #~ msgid "_Import Session"
 #~ msgstr "_Importera session"
+
 #~ msgid "_Don't rename"
 #~ msgstr "Byt _inte namn"
+
 #~ msgid ""
 #~ "Some files don't have a suitable name for a Windows-compatible CD. Those "
 #~ "names will be changed and truncated to 64 characters."
 #~ msgstr ""
 #~ "Vissa filer har inte lämpliga namn för en Windows-kompatibel cd. Dessa "
 #~ "namn kommer att ändras och kapas av till maximalt 64 tecken."
+
 #~ msgid "<b>Burning speed</b>"
 #~ msgstr "<b>Brännhastighet</b>"
+
 #~ msgid "Please Wait"
 #~ msgstr "Vänta"
+
 #~ msgid "New Project"
 #~ msgstr "Nytt projekt"
+
 #~ msgid "Empty Project"
 #~ msgstr "Tomt projekt"
+
 #~ msgid "Add"
 #~ msgstr "Lägg till"
+
 #~ msgid "Remove"
 #~ msgstr "Ta bort"
+
 #~ msgid "Modified Project"
 #~ msgstr "Ändrat projekt"
+
 #~ msgid "Create a new audio project"
 #~ msgstr "Skapa ett nytt ljudprojekt"
+
 #~ msgid "Create a new data project"
 #~ msgstr "Skapa ett nytt dataprojekt"
+
 #~ msgid "Create a new video project"
 #~ msgstr "Skapa ett nytt videoprojekt"
+
 #~ msgid "Display File Browser"
 #~ msgstr "Visa filbläddrare"
+
 #~ msgid "Display Playlists"
 #~ msgstr "Visa spellistor"
+
 #~ msgid "<big>Audi_o project</big>"
 #~ msgstr "<big>_Ljudprojekt</big>"
+
 #~ msgid "<big>D_ata project</big>"
 #~ msgstr "<big>_Dataprojekt</big>"
+
 #~ msgid "<big>_Video project</big>"
 #~ msgstr "<big>_Videoprojekt</big>"
+
 #~ msgid "<big>Disc _copy</big>"
 #~ msgstr "<big>Skiv_kopiering</big>"
+
 #~ msgid "<big>Burn _image</big>"
 #~ msgstr "<big>Bränn a_vbildning</big>"
+
 #~ msgid "File Integrity Check Error"
 #~ msgstr "Fel vid filintegritetskontroll"
+
 #~ msgid "File Integrity Check Success"
 #~ msgstr "Filintegritetskontroll lyckades"
+
 #~ msgid "the inserted media is busy."
 #~ msgstr "det inmatade mediet är upptaget."
+
 #~ msgid "Choose a media"
 #~ msgstr "Välj ett media"
+
 #~ msgid "no drive specified as source"
 #~ msgstr "ingen enhet angiven som källa"
+
 #~ msgid "there is no drive to burn to"
 #~ msgstr "det finns ingen enhet att bränna till"
+
 #~ msgid ""
 #~ "the selected location does not have enough free space to store the disc "
 #~ "image (%ld MiB needed)"
 #~ msgstr ""
 #~ "den valda platsen har inte tillräckligt ledigt utrymme för att lagra "
 #~ "skivavbildningen (%ld MiB behövs)"
+
 #~ msgid "the drive is not ready"
 #~ msgstr "enheten är inte redo"
+
 #~ msgid "the device is not ready"
 #~ msgstr "enheten är inte redo"
+
 #~ msgid "Size Error"
 #~ msgstr "Storleksfel"
+
 #~ msgid "Automatic Split"
 #~ msgstr "Automatisk delning"
+
 #~ msgid "use vcdimager to convert a set of files to burn to SVCDs"
 #~ msgstr ""
 #~ "använd vcdimager för att konvertera en uppsättning filer att bränna till "
 #~ "SVCD-skivor"
+
 #~ msgid "Brasero Disc Burning"
 #~ msgstr "Skivbrännaren Brasero"
+
 #~ msgid ""
 #~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
 #~ msgstr ""
 #~ "Används endast tillsammans med flaggan -immed med cdrecord. Se immed_flag."
+
 #~ msgid "Track Length"
 #~ msgstr "Spårlängd"
+
 #~ msgid "Unhandled Song"
 #~ msgstr "Ohanterad låt"
+
 #~ msgid "Unreadable File"
 #~ msgstr "Oläslig fil"
+
 #~ msgid "Error"
 #~ msgstr "Fel"
+
 #~ msgid "Playlist Loading Error"
 #~ msgstr "Inläsningsfel av spellista"
+
 #~ msgid "Loading ..."
 #~ msgstr "Läser in ..."
+
 #~ msgid "%i MiB"
 #~ msgstr "%i MiB"
+
 #~ msgid "%i KiB"
 #~ msgstr "%i KiB"
+
 #~ msgid "%i bytes"
 #~ msgstr "%i byte"
+
 #~ msgid "Search Error"
 #~ msgstr "Sökfel"
+
 #~ msgid "KiB"
 #~ msgstr "KiB"
+
 #~ msgid "MiB"
 #~ msgstr "MiB"
+
 #~ msgid "GiB"
 #~ msgstr "GiB"
+
 #~ msgid "File Error"
 #~ msgstr "Filfel"
+
 #~ msgid "Session Log Error"
 #~ msgstr "Sessionsloggsfel"
+
 #~ msgid "Session Import Error"
 #~ msgstr "Sessionsloggsfel"
+
 #~ msgid "Recursive Symlink"
 #~ msgstr "Rekursiv symbolisk länk"
+
 #~ msgid "File Not Found"
 #~ msgstr "Filen hittades inte"
+
 #~ msgid "Project Loading Error"
 #~ msgstr "Inläsningsfel av projekt"
+
 #~ msgid "Media Busy"
 #~ msgstr "Mediet är upptaget"
+
 #~ msgid "Media Error"
 #~ msgstr "Fel på media"
+
 #~ msgid "the disc could not be reloaded (max attemps reached)"
 #~ msgstr "skivan kunde inte läsas om (maximalt antal försök nåddes)"
+
 #~ msgid "Open a data project with the contents of nautilus-cd-burner"
 #~ msgstr "Öppna ett dataprojekt med innehållet av nautilus-cd-burner"
+
 #~ msgid "Incompatible Options"
 #~ msgstr "Inkompatibla flaggor"
+
 #~ msgid "no disc could be found"
 #~ msgstr "ingen skiva kunde hittas"
+
 #~ msgid "No Silence"
 #~ msgstr "Ingen tystnad"
+
 #~ msgid "Unhandled file"
 #~ msgstr "Ohanterad fil"
+
 #~ msgid "Choose from the following options"
 #~ msgstr "Välj från följande alternativ"
+
 #~ msgid "Choose a recently opened project:"
 #~ msgstr "Välj ett tidigare öppnat projekt:"
+
 #~ msgid "Hide the _filtered file list (no file)"
 #~ msgstr "Dölj den _filtrerade fillistan (ingen fil)"
+
 #~ msgid "Show the _filtered file list (no file)"
 #~ msgstr "Visa den _filtrerade fillistan (ingen fil)"
+
 #~ msgid "no medium"
 #~ msgstr "inget media"
+
 #~ msgid "no supported medium"
 #~ msgstr "inget media som stöds"
+
 #~ msgid "medium busy"
 #~ msgstr "mediet är upptaget"
+
 #~ msgid "0"
 #~ msgstr "0"
+
 #~ msgid "Size:"
 #~ msgstr "Storlek:"
+
 #~ msgid "Choose the disc to write to"
 #~ msgstr "Välj skivan att skriva till"
+
 #~ msgid "the medium is not writable"
 #~ msgstr "mediet är inte skrivbart"
+
 #~ msgid "the medium can be recorded (automatic blanking required)"
 #~ msgstr "mediet kan användas för inspelning (automatisk radering krävs)"
+
 #~ msgid "the medium can be recorded"
 #~ msgstr "mediet kan brännas"
+
 #~ msgid "data can be written or appended to the medium"
 #~ msgstr "data kan skrivas eller läggas till på mediet"
+
 #~ msgid "data can be appended to the medium"
 #~ msgstr "data kan läggas till på mediet"
+
 #~ msgid ""
 #~ "The image will be saved to\n"
 #~ "%s"
 #~ msgstr ""
 #~ "Avbildningen kommer att sparas till\n"
 #~ "%s"
+
 #~ msgid "Status:"
 #~ msgstr "Status:"
+
 #~ msgid "This image can't be burnt:"
 #~ msgstr "Den här avbildningen kan inte brännas:"
+
 #~ msgid "Invalid Image"
 #~ msgstr "Ogiltig avbildning"
+
 #~ msgid "There is no specified image:"
 #~ msgstr "Det finns ingen angiven avbildning:"
+
 #~ msgid "No Image"
 #~ msgstr "Ingen avbildning"
+
 #~ msgid "Please, choose an image and retry."
 #~ msgstr "Välj en avbildning och försök igen."
+
 #~ msgid "Path:"
 #~ msgstr "Sökväg:"
+
 #~ msgid "Open an image"
 #~ msgstr "Öppna en avbildning"
+
 #~ msgid "Image"
 #~ msgstr "Avbildning"
+
 #~ msgid ""
 #~ "This is a first time running dialog that won't be shown again. If you "
 #~ "change your mind, you can change your choice later in the Removable "
@@ -5882,125 +6306,182 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "Detta är en förstagångsdialog som inte kommer att visas igen. Om du "
 #~ "ändrar dig kan du ändra ditt val senare under Inställningar för flyttbara "
 #~ "enheter och media huruvida du väljer Brasero eller inte."
+
 #~ msgid "_Keep using \"%s\""
 #~ msgstr "_Fortsätt använda \"%s\""
+
 #~ msgid "_Use Brasero next time"
 #~ msgstr "_Använd Brasero nästa gång"
+
 #~ msgid "Would you like to use Brasero in the future to burn audio discs?"
 #~ msgstr ""
 #~ "Vill du göra Brasero till standardprogrammet för att bränna ljudskivor?"
+
 #~ msgid "Would you like to use Brasero in the future to burn data discs?"
 #~ msgstr ""
 #~ "Vill du göra Brasero till standardprogrammet för att bränna dataskivor?"
+
 #~ msgid "Choose the disc to read from"
 #~ msgstr "Välj skivan att läsa från"
+
 #~ msgid "there isn't any available session on the disc"
 #~ msgstr "det finns ingen tillgänglig session på skivan"
+
 #~ msgid "There is no available medium. Please insert one."
 #~ msgstr "Det finns inget tillgänglig media. Mata in ett media."
+
 #~ msgid "<b>Data %s</b>: \"%s\""
 #~ msgstr "<b>Data %s</b>: \"%s\""
+
 #~ msgid "<b>Blank %s</b> in %s"
 #~ msgstr "<b>Radera %s</b> i %s"
+
 #~ msgid "<b>Audio and data %s</b> in %s"
 #~ msgstr "<b>Ljud och data %s</b> i %s"
+
 #~ msgid "<b>Audio %s</b> in %s"
 #~ msgstr "<b>Ljud %s</b> i %s"
+
 #~ msgid "<b>Data %s</b> in %s"
 #~ msgstr "<b>Data %s</b> in %s"
+
 #~ msgid "<b>%s</b> in %s"
 #~ msgstr "<b>%s</b> i %s"
+
 #~ msgid "Import session"
 #~ msgstr "Importera session"
+
 #~ msgid "A multisession disc is inserted:"
 #~ msgstr "En multisessionsskiva är inmatad:"
+
 #~ msgid "Label of the disc"
 #~ msgstr "Etikett på skivan"
+
 #~ msgid "Would you like to activate overburn?"
 #~ msgstr "Vill du aktivera överbränning?"
+
 #~ msgid "_Don't use overburn"
 #~ msgstr "Använd _inte överbränning"
+
 #~ msgid "Show the available media to be burnt"
 #~ msgstr "Visa det tillgängliga mediet som ska brännas"
+
 #~ msgid "<i>%s</i> is busy"
 #~ msgstr "<i>%s</i> är upptagen"
+
 #~ msgid "<i>%s</i> not properly supported"
 #~ msgstr "<i>%s</i> stöds inte fullt ut"
+
 #~ msgid "The disc in <i>%s</i> is not supported"
 #~ msgstr "Skivan i <i>%s</i> stöds inte"
+
 #~ msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
 #~ msgstr "<b>Storleken överstiger gränsen</b> (%s / %s i <i>%s</i>)"
+
 #~ msgid "<b>Oversized</b> (%s / %s)"
 #~ msgstr "<b>Storleken överstiger gränsen</b> (%s / %s)"
+
 #~ msgid "<b>Empty</b> (%s free for <i>%s</i>)"
 #~ msgstr "<b>Tom</b> (%s ledigt för <i>%s</i>)"
+
 #~ msgid "<b>Empty</b> (%s free)"
 #~ msgstr "<b>Tom</b> (%s ledigt)"
+
 #~ msgid "%s / %s (for <i>%s</i>)"
 #~ msgstr "%s / %s (för <i>%s</i>)"
+
 #~ msgid "%s (DVD-R Dual Layer)"
 #~ msgstr "%s (dvd-r dubbellagrad)"
+
 #~ msgid "%s (DVD-R)"
 #~ msgstr "%s (dvd-r)"
+
 #~ msgid "%s (CD-R)"
 #~ msgstr "%s (cd-r)"
+
 #~ msgid "<b>Size:</b>"
 #~ msgstr "<b>Storlek:</b>"
+
 #~ msgid "<i><b>Pause</b></i>"
 #~ msgstr "<i><b>Paus</b></i>"
+
 #~ msgid "<b>No results</b>"
 #~ msgstr "<b>Inga resultat</b>"
+
 #~ msgid "<b>Options</b>"
 #~ msgstr "<b>Alternativ</b>"
+
 #~ msgid "<big><b>Creating image</b></big>"
 #~ msgstr "<big><b>Skapar avbildning</b></big>"
+
 #~ msgid "<big><b>Burning video DVD</b></big>"
 #~ msgstr "<big><b>Bränner video-dvd</b></big>"
+
 #~ msgid "<big><b>Burning data DVD</b></big>"
 #~ msgstr "<big><b>Bränner data-dvd</b></big>"
+
 #~ msgid "<big><b>Burning image to DVD</b></big>"
 #~ msgstr "<big><b>Bränner avbildning till dvd</b></big>"
+
 #~ msgid "<big><b>Copying data DVD</b></big>"
 #~ msgstr "<big><b>Kopierar data-dvd</b></big>"
+
 #~ msgid "<big><b>Burning (S)VCD</b></big>"
 #~ msgstr "<big><b>Bränner (S)VCD</b></big>"
+
 #~ msgid "<big><b>Burning audio CD</b></big>"
 #~ msgstr "<big><b>Bränner ljud-cd</b></big>"
+
 #~ msgid "<big><b>Burning data CD</b></big>"
 #~ msgstr "<big><b>Bränner data-cd</b></big>"
+
 #~ msgid "<big><b>Copying CD</b></big>"
 #~ msgstr "<big><b>Kopierar cd</b></big>"
+
 #~ msgid "<big><b>Burning image to CD</b></big>"
 #~ msgstr "<big><b>Bränner avbildning till cd</b></big>"
+
 #~ msgid "<big><b>Burning video disc</b></big>"
 #~ msgstr "<big><b>Bränner videoskiva</b></big>"
+
 #~ msgid "<big><b>Burning data disc</b></big>"
 #~ msgstr "<big><b>Bränner dataskiva</b></big>"
+
 #~ msgid "<big><b>Copying disc</b></big>"
 #~ msgstr "<big><b>Kopierar skiva</b></big>"
+
 #~ msgid "<big><b>Burning image to disc</b></big>"
 #~ msgstr "<big><b>Bränner avbildning till skiva</b></big>"
+
 #~ msgid "<b>Title</b>"
 #~ msgstr "<b>Titel</b>"
+
 #~ msgid "<b>Image</b>"
 #~ msgstr "<b>Avbildning</b>"
+
 #~ msgid "<span size='x-large'><b>Create a new project:</b></span>"
 #~ msgstr "<span size='x-large'><b>Skapa ett nytt projekt:</b></span>"
+
 #~ msgid ""
 #~ "<span foreground='grey50'><b><i>Choose from the following options</i></"
 #~ "b></span>"
 #~ msgstr ""
 #~ "<span foreground='grey50'><b><i>Välj från följande alternativ</i></b></"
 #~ "span>"
+
 #~ msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
 #~ msgstr ""
 #~ "<span size='x-large'><b>Välj ett tidigare öppnat projekt:</b></span>"
+
 #~ msgid "<b>Options:</b>"
 #~ msgstr "<b>Alternativ:</b>"
+
 #~ msgid "<b>Filtering options</b>"
 #~ msgstr "<b>Filteralternativ</b>"
+
 #~ msgid "<b>_Image</b>"
 #~ msgstr "<b>_Avbildning</b>"
+
 #~ msgid ""
 #~ "<b>%s</b>\n"
 #~ "%s\n"
@@ -6009,183 +6490,268 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b>\n"
 #~ "%s\n"
 #~ "<i>%s</i>"
+
 #~ msgid "%i kiB"
 #~ msgstr "%i kiB"
+
 #~ msgid "<span weight=\"bold\">Name:</span>\t %s"
 #~ msgstr "<span weight=\"bold\">Namn:</span>\t %s"
+
 #~ msgid "<span weight=\"bold\">%s</span>\n"
 #~ msgstr "<span weight=\"bold\">%s</span>\n"
+
 #~ msgid "Default Burning Application"
 #~ msgstr "Standardbränningsprogram"
+
 #~ msgid "Open project"
 #~ msgstr "Öppna projekt"
+
 #~ msgid "A data integrity test is about to begin:"
 #~ msgstr "Ett dataintegritetstest är på väg att starta:"
+
 #~ msgid "_Hide errors"
 #~ msgstr "_Dölj fel"
+
 #~ msgid "%d:%02i hour"
+
 #~ msgid_plural "%i:%02i hours"
 #~ msgstr[0] "%d.%02i timme"
 #~ msgstr[1] "%i.%02i timmar"
+
 #~ msgid "Find all available music"
 #~ msgstr "Hitta all tillgänglig musik"
+
 #~ msgid "Find all available videos"
 #~ msgstr "Hitta alla tillgängliga videoklipp"
+
 #~ msgid "Find all available documents"
 #~ msgstr "Hitta alla tillgängliga dokument"
+
 #~ msgid "Find all available spreadsheets"
 #~ msgstr "Hitta alla tillgängliga kalkylblad"
+
 #~ msgid "Find all available presentations"
 #~ msgstr "Hitta alla tillgängliga presentationer"
+
 #~ msgid "Find all available Pdf / Postscripts"
 #~ msgstr "Hitta alla tillgängliga PDF-/Postscript-dokument"
+
 #~ msgid "Text File"
 #~ msgstr "Textfil"
+
 #~ msgid "Disc Insertion"
 #~ msgstr "Skivinmatning"
+
 #~ msgid "Disc Replacement"
 #~ msgstr "Skivbyte"
+
 #~ msgid "(%s) libburn tried to say something"
 #~ msgstr "(%s) libburn försökte säga någonting"
+
 #~ msgid "No title"
 #~ msgstr "Ingen titel"
+
 #~ msgid "Waiting for disc insertion"
 #~ msgstr "Väntar på skivinmatning"
+
 #~ msgid "Import session error"
 #~ msgstr "Fel vid sessionsimportering"
+
 #~ msgid "Waiting for ongoing tasks"
 #~ msgstr "Väntar på pågående uppgifter"
+
 #~ msgid "Cover editor"
 #~ msgstr "Omslagsredigerare"
+
 #~ msgid "Empty project"
 #~ msgstr "Töm projekt"
+
 #~ msgid "New project"
 #~ msgstr "Nytt projekt"
+
 #~ msgid "<big><b>Options</b></big>"
 #~ msgstr "<big><b>Alternativ</b></big>"
+
 #~ msgid "Close if successful"
 #~ msgstr "Stäng om allt lyckas"
+
 #~ msgid "Display file chooser"
 #~ msgstr "Visa filväljare"
+
 #~ msgid ""
 #~ "Do you want to erase the current disc?\n"
 #~ "Or replace the current disc with a new disc?"
 #~ msgstr ""
 #~ "Vill du radera den aktuella skivan?\n"
 #~ "Eller ersätt den aktuella skivan med en ny skiva?"
+
 #~ msgid "_Close the application if the burn process is successful"
 #~ msgstr "_Stäng programmet om brännprocessen lyckas"
+
 #~ msgid "\"%s\" is now ready for use"
 #~ msgstr "\"%s\" är nu redo för användning"
+
 #~ msgid "DVD is now ready for use"
 #~ msgstr "Dvd är nu redo för användning"
+
 #~ msgid "CD is now ready for use"
 #~ msgstr "Cd är nu redo för användning"
+
 #~ msgid "you must delete some files."
 #~ msgstr "Du måste ta bort några filer."
+
 #~ msgid "The size of the project is too large for the disc:"
 #~ msgstr "Projektet är för stort för skivan:"
+
 #~ msgid "No song in the project:"
 #~ msgstr "Ingen låt i projektet:"
+
 #~ msgid "don't _show this dialog again"
 #~ msgstr "visa inte den här _dialogrutan igen"
+
 #~ msgid "Brasero is not the default application to burn audio CDs:"
 #~ msgstr "Brasero är inte standardprogrammet för att bränna ljudskivor:"
+
 #~ msgid "Brasero is not the default application to burn data discs:"
 #~ msgstr "Brasero är inte standardprogrammet för att bränna dataskivor:"
+
 #~ msgid "%s can't be removed"
 #~ msgstr "%s kan inte tas bort"
+
 #~ msgid "One file is not a directory or a regular file"
 #~ msgstr "En fil är inte en katalog eller en vanlig fil"
+
 #~ msgid "the file can't be read"
 #~ msgstr "filen kan inte läsas"
+
 #~ msgid "%s can't be removed and is not a directory (%s)"
 #~ msgstr "%s kan inte tas bort och är inte en katalog (%s)"
+
 #~ msgid "%s can't be created (%s)"
 #~ msgstr "%s kan inte skapas (%s)"
+
 #~ msgid "directory \"%s\" can't be created (%s)"
 #~ msgstr "katalogen \"%s\" kan inte skapas (%s)"
+
 #~ msgid "Sorry, no documentation for Brasero."
 #~ msgstr "Tyvärr, det finns ingen dokumentation för Brasero."
+
 #~ msgid "wodim could not be found in the path"
 #~ msgstr "wodim kunde inte hittas i sökvägen"
+
 #~ msgid "cdrecord could not be found in the path"
 #~ msgstr "cdrecord kunde inte hittas i sökvägen"
+
 #~ msgid "unsupported type of file (at %s)"
 #~ msgstr "filtypen stöds inte (vid %s)"
+
 #~ msgid "File Image"
 #~ msgstr "Filavbildning"
+
 #~ msgid "Removed files"
 #~ msgstr "Borttagna filer"
+
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"larger\">The following files were removed "
 #~ "automatically from the project.</span>"
 #~ msgstr ""
 #~ "<span weight=\"bold\" size=\"larger\">Följande filer blev automatiskt "
 #~ "borttagna från projektet.</span>"
+
 #~ msgid "_Notify when files are filtered"
 #~ msgstr "_Notifiera när filer blir filtrerade"
+
 #~ msgid "there is no application defined for this file."
 #~ msgstr "det finns inget program definierat för den här filen."
+
 #~ msgid "application %s can't be started."
 #~ msgstr "programmet %s kan inte startas."
+
 #~ msgid "Removed Files"
 #~ msgstr "Borttagna filer"
+
 #~ msgid "Display the files filtered from the project"
 #~ msgstr "Visa filerna som filtreras från projektet"
+
 #~ msgid "Filtered Files"
 #~ msgstr "Filtrerade filer"
+
 #~ msgid "(empty)"
 #~ msgstr "(tom)"
+
 #~ msgid "Some files were filtered:"
 #~ msgstr "Vissa filer blev filtrerade:"
+
 #~ msgid "click here to see the list."
 #~ msgstr "klicka här för att se listan."
+
 #~ msgid "The file \"%s\" is unreadable:"
 #~ msgstr "Filen \"%s\" är inte läsbar:"
+
 #~ msgid "The directory \"%s\" is unreadable:"
 #~ msgstr "Katalogen \"%s\" är inte läsbar:"
+
 #~ msgid "Some files couldn't be restored."
 #~ msgstr "Vissa filer kunde inte återskapas."
+
 #~ msgid "File restoration failure"
 #~ msgstr "Fel vid filåterskapning"
+
 #~ msgid "loading project"
 #~ msgstr "läser in projekt"
+
 #~ msgid "Project couldn't be loaded:"
 #~ msgstr "Projektet kunde inte läsas:"
+
 #~ msgid "Project loading failure"
 #~ msgstr "Inläsning av projekt misslyckades"
+
 #~ msgid "<i>no disc</i>"
 #~ msgstr "<i>ingen skiva</i>"
+
 #~ msgid "<i>unknown type</i>"
 #~ msgstr "<i>okänd typ</i>"
+
 #~ msgid "<i>busy disc</i>"
 #~ msgstr "<i>upptagen skiva</i>"
+
 #~ msgid "audio tracks"
 #~ msgstr "ljudspår"
+
 #~ msgid "data tracks"
 #~ msgstr "dataspår"
+
 #~ msgid "<b>Type:</b>"
 #~ msgstr "<b>Typ:</b>"
+
 #~ msgid "(u)mount command could not be found in the path"
 #~ msgstr "kommandot (u)mount kunde inte hittas i sökvägen"
+
 #~ msgid "Burn..."
 #~ msgstr "Bränn..."
+
 #~ msgid "%s (%s) inserted in %s"
 #~ msgstr "%s (%s) inmatad i %s"
+
 #~ msgid "Choose the drive that holds the media"
 #~ msgstr "Välj enheten som innehåller mediat"
+
 #~ msgid "the file %s couldn't be seeked (%s)"
 #~ msgstr "filen %s kunde inte genomsökas (%s)"
+
 #~ msgid "Creating local image checksum"
 #~ msgstr "Skapar kontrollsumma för lokal avbildning"
+
 #~ msgid "this operation is not supported. Try to activate proper plugins"
 #~ msgstr ""
 #~ "den här åtgärden stöds inte. Prova att aktivera lämpliga insticksmoduler"
+
 #~ msgid "Enable use of cdrdao"
 #~ msgstr "Aktivera användning av cdrdao"
+
 #~ msgid "Should brasero generate activate the \"generate checksum\" button"
 #~ msgstr "Ska brasero generera aktivera \"generera kontrollsumma\"-knappen"
+
 #~ msgid ""
 #~ "Should brasero generate activate the \"generate checksum\" button by "
 #~ "default. Set to true, brasero will check the option by default."
@@ -6193,189 +6759,267 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "Ska brasero generera aktivera \"generera kontrollsumma\"-knappen som "
 #~ "standard. Ställ in till sant, och brasero kommer att kryssa i "
 #~ "alternativet som standard."
+
 #~ msgid "Use libburn to burn CDs"
 #~ msgstr "Använd libburn för att bränna cd"
+
 #~ msgid "Use libisofs to generate images"
 #~ msgstr "Använd libisofs för att generera avbilder"
+
 #~ msgid "Whether to use cdrdao for burning or not. Set to true to use it."
 #~ msgstr ""
 #~ "Huruvida cdrdao ska användas för bränning eller inte. Ställ in till sant "
 #~ "för att använda det."
+
 #~ msgid "Whether to use libburn to burn CDs. Set to true to use it."
 #~ msgstr ""
 #~ "Huruvida libburn ska användas för att bränna cd-skivor. Ställ in till "
 #~ "sant för att använda det."
+
 #~ msgid "Whether to use libburn to read CDs. Set to true to use it."
 #~ msgstr ""
 #~ "Huruvida libburn ska användas för att läsa cd-skivor. Ställ in till sant "
 #~ "för att använda det."
+
 #~ msgid "Whether to use libisofs to generate images. Set to true to use it."
 #~ msgstr ""
 #~ "Huruvida libisofs ska användas för att generera avbilder. Ställ in till "
 #~ "sant för att använda det."
+
 #~ msgid "<i>The following plugins had errors on loading.</i>"
 #~ msgstr "<i>Följande insticksmoduler fick problem vid inläsning.</i>"
+
 #~ msgid ""
 #~ "<i>Includes plugins that can burn, blank or format discs (CDs and DVDs).</"
 #~ "i>"
 #~ msgstr ""
 #~ "<i>Inkluderar insticksmoduler som kan bränna, radera eller formatera "
 #~ "skivor (cd och dvd).</i>"
+
 #~ msgid ""
 #~ "The list is sorted according to the use order. Move them up and down if "
 #~ "you want to set another order of priority."
 #~ msgstr ""
 #~ "Listan är sorterad enligt användningsområden. Flytta dem upp och ned om "
 #~ "du vill ställa in en annan prioritetsordning."
+
 #~ msgid ""
 #~ "<i>Includes plugins that can create images suitable to be burnt on discs."
 #~ "</i>"
 #~ msgstr ""
 #~ "<i>Inkluderar insticksmoduler som kan skapa avbilder lämpliga för att "
 #~ "brännas på skivor.</i>"
+
 #~ msgid ""
 #~ "<i>Includes plugins that can convert image formats into other formats.</i>"
 #~ msgstr ""
 #~ "<i>Inkluderar insticksmoduler som kan konvertera avbildsformat till andra "
 #~ "format.</i>"
+
 #~ msgid "<i>Includes plugins that provide additional functionalities.</i>"
 #~ msgstr ""
 #~ "<i>Inkluderar insticksmoduler som tillhandahåller ytterligare "
 #~ "funktionalitet.</i>"
+
 #~ msgid "Category:"
 #~ msgstr "Kategori:"
+
 #~ msgid "Imaging engines"
 #~ msgstr "Avbildsmotorer"
+
 #~ msgid "Image type conversion engines"
 #~ msgstr "Motorer för avbildskonvertering"
+
 #~ msgid "Miscellaneous engines"
 #~ msgstr "Diverse motorer"
+
 #~ msgid "Engines with errors on loading"
 #~ msgstr "Motorer med fel vid inläsning"
+
 #~ msgid "Move _Up"
 #~ msgstr "Flytta _uppåt"
+
 #~ msgid "Move _Down"
 #~ msgstr "Flytta _nedåt"
+
 #~ msgid "Creating disc checksum"
 #~ msgstr "Skapar kontrollsumma för skiva"
+
 #~ msgid "md5 checksum allows to verify disc/data integrity"
 #~ msgstr ""
 #~ "md5-kontrollsummor tillåter att integriteten för skivan och dess data kan "
 #~ "kontrolleras"
+
 #~ msgid "don't add a md5sum file to all data projects"
 #~ msgstr "lägg inte till en md5sum-fil till alla dataprojekt"
+
 #~ msgid "Add a pause"
 #~ msgstr "Lägg till en paus"
+
 #~ msgid "Unneeded operation"
 #~ msgstr "Onödig åtgärd"
+
 #~ msgid "Pre_ferences"
 #~ msgstr "Ins_tällningar"
+
 #~ msgid "E_xit"
 #~ msgstr "A_vsluta"
+
 #~ msgid "Active plugins"
 #~ msgstr "Aktiva insticksmoduler"
+
 #~ msgid "_About Plugin"
 #~ msgstr "_Om insticksmodul"
+
 #~ msgid "C_onfigure Plugin"
 #~ msgstr "K_onfigurera insticksmodul"
+
 #~ msgid "None"
 #~ msgstr "Ingen"
+
 #~ msgid "Show the project only"
 #~ msgstr "Visa endast projektet"
+
 #~ msgid "<big><b>Audio project</b></big>"
 #~ msgstr "<big><b>Ljudprojekt</b></big>"
+
 #~ msgid "<i>No track</i>"
 #~ msgstr "<i>Inget spår</i>"
+
 #~ msgid "<big><b>Data project</b></big>"
 #~ msgstr "<big><b>Dataprojekt</b></big>"
+
 #~ msgid "<i>Contents of your data project</i>"
 #~ msgstr "<i>Innehållet i ditt dataprojekt</i>"
+
 #~ msgid "<i>%d track</i>"
+
 #~ msgid_plural "<i>%d tracks</i>"
 #~ msgstr[0] "<i>%d spår</i>"
 #~ msgstr[1] "<i>%d spår</i>"
+
 #~ msgid "<big><b>File Browser</b></big>"
 #~ msgstr "<big><b>Filbläddrare</b></big>"
+
 #~ msgid "<big><b>Search Files</b></big>"
 #~ msgstr "<big><b>Sök filer</b></big>"
+
 #~ msgid "<big><b>Playlists</b></big>"
 #~ msgstr "<big><b>Spellistor</b></big>"
+
 #~ msgid "(mounted drive) <i>%s</i>"
 #~ msgstr "(monterad enhet) <i>%s</i>"
+
 #~ msgid "replace the disc with the media to check its integrity"
 #~ msgstr "ersätt skivan med mediat för att kontrollera dess integritet"
+
 #~ msgid "insert the media to check its integrity"
 #~ msgstr "mata in ett media för att kontrollera dess integritet"
+
 #~ msgid "<b>Multisession</b>"
 #~ msgstr "<b>Multisession</b>"
+
 #~ msgid "DVD"
 #~ msgstr "Dvd"
+
 #~ msgid "CD"
 #~ msgstr "Cd"
+
 #~ msgid "Choose a location for the disc image"
 #~ msgstr "Välj en plats för skivavbilden"
+
 #~ msgid "Check data integrity"
 #~ msgstr "Kontrollera dataintegritet"
+
 #~ msgid "*.iso (joliet) image"
 #~ msgstr "*.iso-avbild (joliet)"
+
 #~ msgid "Disc data corrupted"
 #~ msgstr "Skivdata skadat"
+
 #~ msgid "The file integrity check showed errors:"
 #~ msgstr "Filintegritetskontrollen hittade felaktigheter:"
+
 #~ msgid "the drive cannot rewrite CDs or DVDs"
 #~ msgstr "enheten kan inte återskriva cd- eller dvd-skivor"
+
 #~ msgid "Data integrity check"
 #~ msgstr "Dataintegritetskontroll"
+
 #~ msgid "The file integrity check succeeded:"
 #~ msgstr "Kontrollen av filintegriteten lyckades:"
+
 #~ msgid "The data integrity check could not be performed:"
 #~ msgstr "Dataintegritetskontrollen kunde inte genomföras:"
+
 #~ msgid "unknown error."
 #~ msgstr "okänt fel."
+
 #~ msgid "The file integrity check failed:"
 #~ msgstr "Filintegritetskontrollen misslyckades:"
+
 #~ msgid "The source media needs to be inserted:"
 #~ msgstr "Källmediet behöver matas in:"
+
 #~ msgid "Please insert it again in \"%s\"."
 #~ msgstr "Mata in det igen i \"%s\"."
+
 #~ msgid "The source media needs to be reloaded:"
 #~ msgstr "Källmediet behöver matas in igen:"
+
 #~ msgid "The burnt media needs to be reloaded to perform integrity check:"
 #~ msgstr ""
 #~ "Det brända mediet behöver matas in igen för att genomföra "
 #~ "integritetskontroll:"
+
 #~ msgid "<b><big>Performing integrity check</big></b>"
 #~ msgstr "<b><big>Genomför integritetskontroll</big></b>"
+
 #~ msgid "Check integrity"
 #~ msgstr "Kontrollera integritet"
+
 #~ msgid "imager can't create iso9660 images"
 #~ msgstr "avbildaren kan inte skapa iso9660-avbilder"
+
 #~ msgid "a slave tried to get connected"
 #~ msgstr "en slav försökte ansluta"
+
 #~ msgid "a temporary directory couldn't be created : %s"
 #~ msgstr "en temporärkatalog kunde inte skapas : %s"
+
 #~ msgid "a temporary file couldn't be created: %s"
 #~ msgstr "en temporärfil kunde inte skapas : %s"
+
 #~ msgid "The label for the image is too long."
 #~ msgstr "Etiketten för avbilden är för lång."
+
 #~ msgid "%s is not a directory"
 #~ msgstr "%s är inte en katalog"
+
 #~ msgid "%s already exist (can't overwrite)"
 #~ msgstr "%s finns redan (kan inte skriva över)"
+
 #~ msgid "%s already exist"
 #~ msgstr "%s finns redan"
+
 #~ msgid "a temporary directory could not be created"
 #~ msgstr "en temporärkatalog kunde inte skapas"
+
 #~ msgid "the file %s can't be opened (%s)"
 #~ msgstr "filen %s kan inte öppnas (%s)"
+
 #~ msgid "<i>There is no disc in the drive.</i>"
 #~ msgstr "<i>Det finns ingen skiva i enheten.</i>"
+
 #~ msgid "<i>Unknown type of disc.</i>"
 #~ msgstr "<i>Okänd skivtyp.</i>"
+
 #~ msgid "<i>The disc is busy.</i>"
 #~ msgstr "<i>Skivan är upptagen.</i>"
+
 #~ msgid "The <b>%s</b> is not writable."
 #~ msgstr "<b>%s</b> är inte skrivbar."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready (%s).\n"
 #~ "It contains audio and data.\n"
@@ -6384,6 +7028,7 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo (%s).\n"
 #~ "Den innehåller ljud och data.\n"
 #~ "Mer data kan läggas till (%s ledigt)."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready.\n"
 #~ "It contains audio and data tracks.\n"
@@ -6392,12 +7037,14 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo.\n"
 #~ "Den innehåller ljud- och dataspår.\n"
 #~ "En datasession kan läggas till (%s ledigt)."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready (%s).\n"
 #~ "It contains audio and data tracks."
 #~ msgstr ""
 #~ "<b>%s</b> är redo (%s).\n"
 #~ "Den innehåller ljud- och dataspår."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready (%s).\n"
 #~ "It contains audio.\n"
@@ -6406,6 +7053,7 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo (%s).\n"
 #~ "Den innehåller ljud.\n"
 #~ "Mer data kan läggas till (%s ledigt)."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready.\n"
 #~ "It contains audio tracks.\n"
@@ -6414,12 +7062,14 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo.\n"
 #~ "Den innehåller ljudspår.\n"
 #~ "En datasession kan läggas till (%s ledigt)."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready (%s).\n"
 #~ "It contains audio tracks."
 #~ msgstr ""
 #~ "<b>%s</b> är redo (%s).\n"
 #~ "Den innehåller ljudspår."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready (%s).\n"
 #~ "It contains data.\n"
@@ -6428,6 +7078,7 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo (%s).\n"
 #~ "Den innehåller data.\n"
 #~ "Mer data kan läggas till (%s ledigt)."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready.\n"
 #~ "It contains data.\n"
@@ -6436,12 +7087,14 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo.\n"
 #~ "Den innehåller data.\n"
 #~ "Mer data kan läggas till (%s ledigt)."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready (%s).\n"
 #~ "It contains data."
 #~ msgstr ""
 #~ "<b>%s</b> är redo (%s).\n"
 #~ "Den innehåller data."
+
 #~ msgid ""
 #~ "The <b>%s</b> is ready.\n"
 #~ "It is empty.\n"
@@ -6450,37 +7103,49 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "<b>%s</b> är redo.\n"
 #~ "Den är tom.\n"
 #~ " (%s ledigt)"
+
 #~ msgid "Replace the disc"
 #~ msgstr "Ersätt skivan"
+
 #~ msgid ""
 #~ "Add these data to those already on the disc instead of replacing them"
 #~ msgstr ""
 #~ "Lägg till detta data till det som redan finns på skivan istället för att "
 #~ "ersätta det"
+
 #~ msgid "an unknown error occured with libburn"
 #~ msgstr "ett okänt fel inträffade med libburn"
+
 #~ msgid ""
 #~ "You can use this type of DVD without prior blanking.\n"
 #~ "NOTE: it doesn't support simulation."
 #~ msgstr ""
 #~ "Du kan använda den här dvd-typen utan att tömma först.\n"
 #~ "OBSERVERA: den stöder inte simulering."
+
 #~ msgid "You can nevertheless blank it with the slow option if you want to."
 #~ msgstr ""
 #~ "Du kan trots det tömma den med det långsamma alternativet om du vill."
+
 #~ msgid "Some files were removed from the project. Clik here to see them."
 #~ msgstr ""
 #~ "Vissa filer blev borttagna från projektet. Klicka här för att se vilka."
+
 #~ msgid "it won't be added."
 #~ msgstr "den kommer inte läggas till."
+
 #~ msgid "the playlist is empty."
 #~ msgstr "spellistan är tom."
+
 #~ msgid "Restore broken symlink"
 #~ msgstr "Återställ trasig symbolisk länk"
+
 #~ msgid "Exclude hidden files"
 #~ msgstr "Undanta dolda filer"
+
 #~ msgid "Restore broken symlinks"
 #~ msgstr "Återställ trasiga symboliska länkar"
+
 #~ msgid ""
 #~ "<span foreground='grey50'><big>To add files to this project you can:\n"
 #~ "</big>copy them (from nautilus for example) and paste them here\n"
@@ -6512,8 +7177,9 @@ msgstr "Skapar skivavbildningar lämpliga för svcd"
 #~ "markera dem och klicka på Ta bort-knappen\n"
 #~ "markera dem och tryck på \"Delete\"-tangenten\n"
 #~ "</span>"
+
 #~ msgid "DVDRW discs don't support simulated blanking."
 #~ msgstr "DVDRW-skivor saknar stöd för simulerad tömning."
+
 #~ msgid "You can nevertheless blank it."
 #~ msgstr "Du kan trots det tömma den."
-
