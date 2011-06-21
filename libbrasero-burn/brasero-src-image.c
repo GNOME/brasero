@@ -456,7 +456,7 @@ brasero_src_image_clicked (GtkButton *button)
 	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->file), filter);
 
 	/* add the type chooser to the dialog */
-	box = gtk_hbox_new (FALSE, 6);
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (box);
 	gtk_box_pack_end (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (priv->file))),
 			  box,
@@ -564,7 +564,7 @@ brasero_src_image_init (BraseroSrcImage *object)
 	image = gtk_image_new_from_icon_name ("iso-image-new", GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (image);
 
-	box = gtk_hbox_new (FALSE, 6);
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (box);
 	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);

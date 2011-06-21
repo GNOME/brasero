@@ -53,12 +53,12 @@ G_BEGIN_DECLS
 typedef struct BraseroProjectPrivate BraseroProjectPrivate;
 
 typedef struct {
-	GtkVBox parent;
+	GtkBox parent;
 	BraseroProjectPrivate *priv;
 } BraseroProject;
 
 typedef struct {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 
 	void	(*add_pressed)	(BraseroProject *project);
 } BraseroProjectClass;

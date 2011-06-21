@@ -43,7 +43,7 @@ struct _BraseroFilterOptionPrivate
 
 #define BRASERO_FILTER_OPTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_FILTER_OPTION, BraseroFilterOptionPrivate))
 
-G_DEFINE_TYPE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_VBOX);
+G_DEFINE_TYPE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_BOX);
 
 static void
 brasero_filter_option_init (BraseroFilterOption *object)

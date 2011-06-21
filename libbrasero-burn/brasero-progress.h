@@ -51,12 +51,12 @@ G_BEGIN_DECLS
 typedef struct BraseroBurnProgressPrivate BraseroBurnProgressPrivate;
 
 typedef struct {
-	GtkVBox parent;
+	GtkBox parent;
 	BraseroBurnProgressPrivate *priv;
 } BraseroBurnProgress;
 
 typedef struct {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 } BraseroBurnProgressClass;
 
 GType brasero_burn_progress_get_type (void);

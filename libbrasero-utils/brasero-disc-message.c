@@ -346,7 +346,7 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 
 	main_box = gtk_info_bar_get_content_area (GTK_INFO_BAR (object));
 
-	priv->text_box = gtk_vbox_new (FALSE, 6);
+	priv->text_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (priv->text_box);
 	gtk_box_pack_start (GTK_BOX (main_box), priv->text_box, FALSE, FALSE, 0);
 

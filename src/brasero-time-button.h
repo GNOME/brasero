@@ -41,14 +41,14 @@ typedef struct _BraseroTimeButton BraseroTimeButton;
 
 struct _BraseroTimeButtonClass
 {
-	GtkHBoxClass parent_class;
+	GtkBoxClass parent_class;
 
 	void		(*value_changed)	(BraseroTimeButton *self);
 };
 
 struct _BraseroTimeButton
 {
-	GtkHBox parent_instance;
+	GtkBox parent_instance;
 };
 
 GType brasero_time_button_get_type (void) G_GNUC_CONST;

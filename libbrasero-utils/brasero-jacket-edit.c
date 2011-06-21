@@ -76,7 +76,7 @@ enum {
 	SNAP_NUM_COL
 };
 
-G_DEFINE_TYPE (BraseroJacketEdit, brasero_jacket_edit, GTK_TYPE_VBOX);
+G_DEFINE_TYPE (BraseroJacketEdit, brasero_jacket_edit, GTK_TYPE_BOX);
 
 static void
 brasero_jacket_edit_print_page (GtkPrintOperation *operation,
@@ -712,7 +712,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (priv->colours), 1);
 
 	/* contents */
-	vbox = gtk_vbox_new (FALSE, 4);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (object), vbox, TRUE, TRUE, 0);
@@ -724,7 +724,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_widget_show (scroll);
 	gtk_box_pack_start (GTK_BOX (vbox), scroll, TRUE, TRUE, 0);
 
-	main_box = gtk_vbox_new (FALSE, 0);
+	main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (main_box);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroll), main_box);
 

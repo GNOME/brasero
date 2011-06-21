@@ -46,12 +46,12 @@ G_BEGIN_DECLS
 typedef struct BraseroProjectTypeChooserPrivate BraseroProjectTypeChooserPrivate;
 
 typedef struct {
-	GtkHBox parent;
+	GtkBox parent;
 	BraseroProjectTypeChooserPrivate *priv;
 } BraseroProjectTypeChooser;
 
 typedef struct {
-	GtkHBoxClass parent_class;
+	GtkBoxClass parent_class;
 
 	void	(*last_saved_clicked)	(BraseroProjectTypeChooser *chooser,
 					 const gchar *path);

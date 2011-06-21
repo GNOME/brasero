@@ -55,7 +55,7 @@ enum
 };
 static guint time_button_signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroTimeButton, brasero_time_button, GTK_TYPE_HBOX);
+G_DEFINE_TYPE (BraseroTimeButton, brasero_time_button, GTK_TYPE_BOX);
 
 static void
 brasero_time_button_hrs_changed (GtkSpinButton *button,

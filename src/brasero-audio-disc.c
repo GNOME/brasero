@@ -229,7 +229,7 @@ static void brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroAudioDisc,
 			 brasero_audio_disc,
-			 GTK_TYPE_VBOX,
+			 GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_audio_disc_iface_disc_init));
 static gboolean

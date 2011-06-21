@@ -80,7 +80,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 					     &description,
 					     &type);
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (container, hbox, FALSE, FALSE, 0);
 
@@ -100,7 +100,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 
 		suboptions = brasero_plugin_conf_option_bool_get_suboptions (option);
 		if (suboptions) {
-			box = gtk_vbox_new (FALSE, 0);
+			box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 			gtk_widget_show (box);
 
 			gtk_box_pack_start (GTK_BOX (box),
@@ -136,7 +136,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 		break;
 
 	case BRASERO_PLUGIN_OPTION_INT:
-		box = gtk_hbox_new (FALSE, 6);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 
 		label = gtk_label_new (description);
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
@@ -160,7 +160,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 		break;
 
 	case BRASERO_PLUGIN_OPTION_STRING:
-		box = gtk_hbox_new (FALSE, 6);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 
 		label = gtk_label_new (description);
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
@@ -182,7 +182,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 		break;
 
 	case BRASERO_PLUGIN_OPTION_CHOICE:
-		box = gtk_hbox_new (FALSE, 6);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 
 		label = gtk_label_new (description);
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
@@ -285,7 +285,7 @@ brasero_plugin_option_init (BraseroPluginOption *object)
 	priv->title = gtk_frame_get_label_widget (GTK_FRAME (frame));
 	gtk_label_set_use_markup (GTK_LABEL (priv->title), TRUE);
 
-	priv->vbox = gtk_vbox_new (FALSE, 0);
+	priv->vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (priv->vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (priv->vbox), 8);
 	gtk_container_add (GTK_CONTAINER (frame), priv->vbox);

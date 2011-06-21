@@ -44,12 +44,12 @@ G_BEGIN_DECLS
 typedef struct _BraseroAudioDiscPrivate BraseroAudioDiscPrivate;
 
 typedef struct {
-	GtkVBox parent;
+	GtkBox parent;
 	BraseroAudioDiscPrivate *priv;
 } BraseroAudioDisc;
 
 typedef struct {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 } BraseroAudioDiscClass;
 
 GType brasero_audio_disc_get_type (void);

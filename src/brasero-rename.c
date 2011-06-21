@@ -59,7 +59,7 @@ struct _BraseroRenamePrivate
 
 
 
-G_DEFINE_TYPE (BraseroRename, brasero_rename, GTK_TYPE_VBOX);
+G_DEFINE_TYPE (BraseroRename, brasero_rename, GTK_TYPE_BOX);
 
 void
 brasero_rename_set_show_keep_default (BraseroRename *self,
@@ -331,7 +331,7 @@ brasero_rename_init (BraseroRename *object)
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
 
 	/* Insert */
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (hbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 
@@ -361,7 +361,7 @@ brasero_rename_init (BraseroRename *object)
 	priv->insert_combo = combo;
 
 	/* Delete */
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (hbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 
@@ -375,7 +375,7 @@ brasero_rename_init (BraseroRename *object)
 	priv->delete_entry = entry;
 
 	/* Substitution */
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (hbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 
@@ -405,7 +405,7 @@ brasero_rename_init (BraseroRename *object)
 	priv->joker_entry = entry;
 
 	/* Pattern */
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (hbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 

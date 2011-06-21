@@ -295,7 +295,7 @@ brasero_project_get_type ()
 			NULL
 		};
 
-		type = g_type_register_static (GTK_TYPE_VBOX, 
+		type = g_type_register_static (GTK_TYPE_BOX, 
 					       "BraseroProject",
 					       &our_info, 0);
 
