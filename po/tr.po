@@ -11,13 +11,13 @@ msgstr ""
 "Project-Id-Version: brasero 0.5.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-03-12 14:17+0000\n"
-"PO-Revision-Date: 2011-04-30 03:07+0300\n"
+"POT-Creation-Date: 2011-05-01 17:53+0000\n"
+"PO-Revision-Date: 2011-06-26 02:10+0300\n"
 "Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bits\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/brasero-cli.c:70
@@ -85,7 +85,6 @@ msgid "PATH TO IMAGE"
 msgstr "KALIP YOLU"
 
 #: ../src/brasero-cli.c:114
-#| msgid "Force brasero to display the project selection page"
 msgid "Force Brasero to display the project selection page"
 msgstr "Brasero'yu proje seçim ekranını göstermeye zorla"
 
@@ -98,7 +97,6 @@ msgid "Open the check disc dialog"
 msgstr "Disk kontrol diyaloğunu aç"
 
 #: ../src/brasero-cli.c:126
-#| msgid "Burn the contents of burn:// URI"
 msgid "Burn the contents of the burn:// URI"
 msgstr "burn:// adresi içindekileri yaz"
 
@@ -473,7 +471,6 @@ msgid "Please set it manually"
 msgstr "Lütfen elle ayarlayın"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:155
-#| msgid "Brasero project file"
 msgid "Brasero notification"
 msgstr "Brasero bildirimi"
 
@@ -851,6 +848,8 @@ msgid ""
 "If you import them you will be able to see and use them once the current "
 "selection of files is burned."
 msgstr ""
+"Eğer içe aktarırsanız, geçerli dosya seçimi yazıldıktan sonra bunları "
+"görebilir ve kullanabilirsiniz."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:946
 msgid "If you don't, they will be invisible (though still readable)."
@@ -915,6 +914,8 @@ msgid ""
 "The disc could not be ejected though it needs to be removed for the current "
 "operation to continue."
 msgstr ""
+"Disk, mevcut işlemin devam edebilmesi için çıkarılması gerekmesine rağmen "
+"çıkarılamadı."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1131
 msgid "Do you want to replace the disc and continue?"
@@ -938,7 +939,6 @@ msgstr ""
 "CD'deki bazı dosyalar tam Windows uyumluluğuna uygun olan isimler içermiyor."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1143
-#| msgid "_Continue"
 msgid "C_ontinue"
 msgstr "De_vam et"
 
@@ -1031,6 +1031,9 @@ msgid ""
 "Another copy will start as soon as you insert a new writable disc. If you do "
 "not want to burn another copy, press \"Cancel\"."
 msgstr ""
+"Siz yeni bir yazılabilir disk takar takmaz başka bir kopyalama işlemi "
+"başlayacak. Eğer başka bir kopya daha yazmak istemiyorsanız, \"Vazgeç\"e "
+"basın."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1961
 msgid "Make _More Copies"
@@ -1408,7 +1411,7 @@ msgstr "Bilinmeyen şarkı"
 #. Translators: %s is the name of the artist
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-song-control.c:271
 #: ../src/brasero-player.c:419
-#, fuzzy, c-format
+#, c-format
 msgid "by %s"
 msgstr "%s tarafından"
 
@@ -2412,7 +2415,6 @@ msgid "Image files"
 msgstr "Resim dosyaları"
 
 #: ../nautilus/nautilus-burn-bar.c:368
-#| msgid "Disc name"
 msgid "Disc Name:"
 msgstr "Disk Adı:"
 
@@ -2655,7 +2657,6 @@ msgid "Disc Burner and Copier"
 msgstr "Disk Yazıcı ve Kopyalayıcı"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-#| msgid "Burning image to disc"
 msgid "Burning flags to be used"
 msgstr "Kullanılacak yazma bayrakları"
 
@@ -2664,6 +2665,7 @@ msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
 msgstr ""
+"Diske yazılacak görüntüler için son göz atılan dizinin tam yolunu içerir"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
 msgid ""
@@ -2685,9 +2687,10 @@ msgid ""
 "files. If that value is empty, the default directory set for glib will be "
 "used."
 msgstr ""
+"Brasero'nun geçici dosyaları saklayacağı dizine giden yolu içerir. Eğer bu "
+"değer boşsa, glib için ayarlanmış öntanımlı dizin kullanılacaktır."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
-#| msgid "Set the directory where to store temporary files"
 msgid "Directory to use for temporary files"
 msgstr "Geçici dosyalar için kullanılacak dizin"
 
@@ -2713,13 +2716,15 @@ msgstr "MD5 için 0, SHA1 için 1 ve SHA256 için 2 olarak ayarlayın"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:12
 msgid "Should Nautilus extension output debug statements"
-msgstr ""
+msgstr "Nautilus uzantısı hata ayıklama ifadelerini çıktı vermeli mi"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
 msgstr ""
+"Nautilus uzantısı hata ayıklama ifadelerini çıktı vermeli mi. Eğer "
+"vermeliyse bu değer doğru (true) olarak ayarlanmalıdır."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
 msgid "Should brasero filter broken symbolic links"
@@ -2755,23 +2760,21 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:19
 msgid "The last browsed folder while looking for images to burn"
-msgstr ""
+msgstr "Diske yazılacak görüntüler aranırken son gözatılan klasör"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
 msgid "The priority value for the plugin"
-msgstr ""
+msgstr "Eklentinin öncelik değeri"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:21
 msgid "The speed to be used"
 msgstr "Kullanılacak hız"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for files"
 msgstr "Dosyalar için kullanılan bütünlük kontrolü (checksum) türü"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:23
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for images"
 msgstr "Kalıplar için kullanılan bütünlük kontrolü (checksum) türü"
 
@@ -2780,12 +2783,13 @@ msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
 msgstr ""
+"Bu değer, benzer bir bağlamda son kullanılan yazım bayraklarını temsil eder."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
-msgstr ""
+msgstr "Bu değer, benzer bir bağlamda son kullanılan hızı temsil eder."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:26
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -2802,6 +2806,11 @@ msgid ""
 "priority is used. A positive value overrides the plugin's native priority. A "
 "negative value disables the plugin."
 msgstr ""
+"Aynı görev için birden fazla eklenti kullanılabilir olduğunda, hangi "
+"eklentiye öncelik verilmesi gerektiği belirlenirken bu değer kullanılır. "
+"Eğer 0 ise, eklentinin doğal önceliğinin kullanılacağı anlamına gelir. "
+"Sıfırdan büyük bir değer, eklentinin doğal önceliğini geçersiz kılar. "
+"Sıfırdan küçük bir değer, eklentiyi etkisizleştirir."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
@@ -2988,6 +2997,10 @@ msgid ""
 "be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
+"Seçilen şarkılardan bazıları DTS parçaları oluşturmaya elverişli.\n"
+"Bu türden ses CD parçaları daha yüksek kalitede ses sağlar fakat sadece "
+"belirli türde sayısal oynatıcılar tarafından çalınabilir.\n"
+"Not: eğer onaylarsanız, bu izlere normalizasyon uygulanmayacaktır."
 
 #: ../src/brasero-audio-disc.c:866
 msgid "Create _Regular Tracks"
@@ -3293,9 +3306,6 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "\"%s\" yer değiştirmesini istiyor musunuz?"
 
 #: ../src/brasero-data-disc.c:779
-#| msgid ""
-#| "A file with this name already exists in the folder.  Replacing it will "
-#| "overwrite its content on the disc to be burnt."
 msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its contents on the disc to be burnt."
@@ -3344,15 +3354,6 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:835
 #: ../libbrasero-burn/brasero-status-dialog.c:290
-#| msgid ""
-#| "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
-#| "supported by the ISO9660 standard in its first and second versions (the "
-#| "most widespread ones).\n"
-#| "It is recommended to use the third version of the ISO9660 standard, which "
-#| "is supported by most operating systems, including Linux and all versions "
-#| "of Windows ©.\n"
-#| "However, Mac OS X cannot read images created with version 3 of the "
-#| "ISO9660 standard."
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by the ISO9660 standard in its first and second versions (the most "
@@ -3390,11 +3391,6 @@ msgstr "Gerçekten \"%s\" seçime eklensin mi?"
 
 #: ../src/brasero-data-disc.c:879
 #: ../libbrasero-burn/brasero-status-dialog.c:228
-#| msgid ""
-#| "The children of this directory will have 7 parent directories.\n"
-#| "Brasero can create an image of such a file hierarchy and burn it; but the "
-#| "disc may not be readable on all operating systems.\n"
-#| "Note: Such a file hierarchy is known to work on Linux."
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it but the "
@@ -3540,7 +3536,6 @@ msgstr "%i × %i noktacık"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
-#| msgid "Preview"
 msgid "No preview"
 msgstr "Önizleme yok"
 
@@ -3819,7 +3814,6 @@ msgstr "Yeni _Video Projesi"
 
 #: ../src/brasero-project-manager.c:106
 #: ../src/brasero-project-type-chooser.c:86
-#| msgid "Create a video DVD or an SVCD that are readable on TV readers"
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
 msgstr ""
 "TV'ye bağlı okuyucularda oynatılabilecek bir video DVD ya da SVCD oluşturun"
@@ -3998,7 +3992,6 @@ msgid "The file integrity check could not be performed."
 msgstr "Dosya bütünlük kontrolü gerçekleştirilemedi."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
-#| msgid "The file integrity was performed successfully."
 msgid "The file integrity check was performed successfully."
 msgstr "Bütünlük kontrolü başarılı şekilde gerçekleştirildi."
 
@@ -4121,7 +4114,7 @@ msgstr "Veri yazılamadı (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:723
 msgid "Generates .cue files from audio"
-msgstr ""
+msgstr "Ses dosyalarından .cue dosyaları oluşturur"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:55
 msgid "cdrdao burning suite"
@@ -4299,6 +4292,10 @@ msgid ""
 "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
 "command"
 msgstr ""
+"Şifreleme için kullanılan bir anahtar alınırken hata oluştu. Böyle bir "
+"sorunu şu yöntemlerden biriyle çözebilirsiniz: ya bir uçbirimde \"regionset "
+"%s\" komutuyla CD/DVD oynatıcınız için uygun DVD bölge kodunu ayarlayın ya "
+"da \"DVDCSS_METHOD=title brasero --no-existing-session\" komutunu çalıştırın"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -4316,12 +4313,10 @@ msgid "Error while reading video DVD (%s)"
 msgstr "Video DVD'si okunurken hata (%s)"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:402
-#| msgid "Copying Video DVD"
 msgid "Copying video DVD"
 msgstr "Video DVD'si kopyalanıyor"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:695
-#| msgid "Copies any disc to a disc image"
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "CSS ile şifrelenmiş vide DVD'lerini disk kalıbına kopyalar"
 
@@ -4453,7 +4448,6 @@ msgid "Normalizing tracks"
 msgstr "Parçalar normalleştiriliyor"
 
 #: ../plugins/transcode/burn-normalize.c:644
-#| msgid "Normalize"
 msgid "Normalization"
 msgstr "Normalleştirme"
 
@@ -4940,7 +4934,6 @@ msgid "Creating file layout"
 msgstr "Dosya yerleşimi oluşturuluyor"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:371
-#| msgid "Creates disc images suitable for Video DVDs"
 msgid "Creates disc images suitable for video DVDs"
 msgstr "Video DVD'lere uyumlu disk kalıpları oluşturur"
 
@@ -4949,7 +4942,6 @@ msgid "Converting video file to MPEG2"
 msgstr "Video dosyası MPEG2'ye çevriliyor"
 
 #: ../plugins/transcode/burn-vob.c:1367
-#| msgid "Converts any video file into a format suitable for Video DVDs"
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "Herhangi bir video dosyasını Video DVD'lere uygun biçime dönüştürür"
 
