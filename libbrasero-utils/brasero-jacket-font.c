@@ -73,7 +73,7 @@ static const guint16 font_sizes[] = {
 
 static guint jacket_font_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroJacketFont, brasero_jacket_font, GTK_TYPE_BOX);
+G_DEFINE_TYPE (BraseroJacketFont, brasero_jacket_font, GTK_TYPE_HBOX);
 
 static void
 brasero_jacket_font_family_changed_cb (GtkComboBox *combo,

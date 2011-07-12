@@ -78,7 +78,7 @@ struct _BraseroPluginManagerUIPrivate
 	GSList		*plugins;
 };
 
-G_DEFINE_TYPE (BraseroPluginManagerUI, brasero_plugin_manager_ui, GTK_TYPE_BOX)
+G_DEFINE_TYPE (BraseroPluginManagerUI, brasero_plugin_manager_ui, GTK_TYPE_VBOX)
 
 static void plugin_manager_ui_toggle_active (GtkTreeIter *iter, GtkTreeModel *model); 
 static void brasero_plugin_manager_ui_finalize (GObject *object);
@@ -937,12 +937,12 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 	gtk_box_pack_start (GTK_BOX (pm), alignment, TRUE, TRUE, 0);
  	
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox);
 
 	/* bottom part: tree, buttons */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 6);
 
@@ -958,7 +958,7 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	priv->tree = gtk_tree_view_new ();
 	gtk_container_add (GTK_CONTAINER (viewport), priv->tree);
 
-	vbuttonbox = gtk_button_box_new (GTK_ORIENTATION_VERTICAL);
+	vbuttonbox = gtk_vbutton_box_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), vbuttonbox, FALSE, FALSE, 0);
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (vbuttonbox), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing (GTK_BOX (vbuttonbox), 8);

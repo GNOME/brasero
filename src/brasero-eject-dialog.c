@@ -167,7 +167,7 @@ brasero_eject_dialog_init (BraseroEjectDialog *obj)
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_widget_show (label);
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (box), hbox, FALSE, TRUE, 0);

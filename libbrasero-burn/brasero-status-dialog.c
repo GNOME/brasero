@@ -427,7 +427,7 @@ brasero_status_dialog_init (BraseroStatusDialog *object)
 			       GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);
 
-	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+	box = gtk_vbox_new (FALSE, 4);
 	gtk_widget_show (box);
 	main_box = gtk_dialog_get_content_area (GTK_DIALOG (object));
 	gtk_box_pack_end (GTK_BOX (main_box),

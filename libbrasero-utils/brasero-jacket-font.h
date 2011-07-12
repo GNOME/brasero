@@ -49,12 +49,12 @@ typedef struct _BraseroJacketFont BraseroJacketFont;
 
 struct _BraseroJacketFontClass
 {
-	GtkBoxClass parent_class;
+	GtkHBoxClass parent_class;
 };
 
 struct _BraseroJacketFont
 {
-	GtkBox parent_instance;
+	GtkHBox parent_instance;
 };
 
 GType brasero_jacket_font_get_type (void) G_GNUC_CONST;

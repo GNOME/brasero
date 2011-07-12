@@ -2537,11 +2537,11 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			    TRUE,
 			    0);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox);
 
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (box);
 	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, TRUE, 0);
 

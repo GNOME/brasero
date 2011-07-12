@@ -1058,7 +1058,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
 	/* Slicing method */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
 
 	priv->combo = gtk_combo_box_text_new ();
@@ -1104,7 +1104,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (priv->player);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->player, NULL);
 
-	hbox2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox2 = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox2);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
 
@@ -1122,7 +1122,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
 
-	hbox2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox2 = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox2);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
 
@@ -1156,7 +1156,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	g_free (title);
 
 	/* slices preview */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
 
 	priv->model = gtk_list_store_new (COLUMN_NUM,
@@ -1228,7 +1228,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 			  object);
 
 	/* buttons */
-	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	vbox2 = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
 
@@ -1278,7 +1278,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_set_sensitive (priv->merge_button, FALSE);
 	gtk_widget_set_sensitive (priv->remove_button, FALSE);
 
-	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	vbox2 = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox2);
 
 	label = gtk_label_new_with_mnemonic (_("_List of slices that are to be created:"));

@@ -123,5 +123,5 @@ brasero_notify_message_add (GtkWidget *self,
 GtkWidget *
 brasero_notify_new (void)
 {
-	return gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	return gtk_vbox_new (TRUE, 0);
 }

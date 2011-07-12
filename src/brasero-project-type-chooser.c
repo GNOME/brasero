@@ -44,7 +44,7 @@
 
 #include "brasero-project-type-chooser.h"
 
-G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_BOX);
+G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_HBOX);
 
 typedef enum {
 	LAST_SAVED_CLICKED_SIGNAL,
@@ -149,18 +149,18 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 			   DESCRIPTION_KEY,
 			   description);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
 	gtk_container_add (GTK_CONTAINER (eventbox), vbox);
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox = gtk_hbox_new (FALSE, 4);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, FALSE, 0);
 
 	image = gtk_image_new_from_icon_name (description->image, GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 1.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+	vbox = gtk_vbox_new (TRUE, 4);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new (NULL);
@@ -456,7 +456,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	obj->priv = g_new0 (BraseroProjectTypeChooserPrivate, 1);
 
 	/* Project box */
-	project_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	project_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (project_box);
 	gtk_box_pack_start (GTK_BOX (obj), project_box, FALSE, TRUE, 0);
 
@@ -497,12 +497,12 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	}
 	gtk_widget_show_all (table);
 
-	separator = gtk_separator_new (GTK_ORIENTATION_VERTICAL);
+	separator = gtk_vseparator_new ();
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (obj), separator, FALSE, TRUE, 8);
 
 	/* The recent files part */
-	recent_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	recent_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (recent_box);
 	gtk_box_pack_start (GTK_BOX (obj), recent_box, TRUE, TRUE, 0);
 
@@ -515,7 +515,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, TRUE, 0);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);

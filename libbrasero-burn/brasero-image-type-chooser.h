@@ -50,11 +50,11 @@ typedef struct _BraseroImageTypeChooserPrivate BraseroImageTypeChooserPrivate;
 typedef struct _BraseroImageTypeChooserClass BraseroImageTypeChooserClass;
 
 struct _BraseroImageTypeChooser {
-	GtkBox parent;
+	GtkHBox parent;
 };
 
 struct _BraseroImageTypeChooserClass {
-	GtkBoxClass parent_class;
+	GtkHBoxClass parent_class;
 };
 
 GType brasero_image_type_chooser_get_type (void);

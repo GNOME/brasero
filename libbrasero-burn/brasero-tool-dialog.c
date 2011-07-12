@@ -530,7 +530,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (obj);
 
 	/* upper part */
-	priv->upper_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	priv->upper_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (GTK_WIDGET (priv->upper_box));
 
 	priv->selector = brasero_medium_selection_new ();
@@ -558,7 +558,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 			    0);
 
 	/* lower part */
-	priv->lower_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	priv->lower_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (priv->lower_box), 12);
 	gtk_widget_set_sensitive (priv->lower_box, FALSE);
 	gtk_widget_show (priv->lower_box);

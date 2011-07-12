@@ -415,7 +415,7 @@ brasero_file_chooser_find_pane (GtkWidget *child,
 		vbox = gtk_paned_get_child2 (GTK_PANED (child));
 		children_vbox = gtk_container_get_children (GTK_CONTAINER (vbox));
 		for (iter_vbox = children_vbox; iter_vbox; iter_vbox = iter_vbox->next) {
-			if (GTK_IS_BOX (iter_vbox->data)) {
+			if (GTK_IS_HBOX (iter_vbox->data)) {
 				GtkPackType packing;
 
 				gtk_box_query_child_packing (GTK_BOX (vbox),

@@ -217,11 +217,11 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 
 	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Select the files you want to restore and click on the \"Restore\" button"));
 
-	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
+	mainbox = gtk_vbox_new (FALSE, 10);
 	gtk_widget_show (mainbox);
 	gtk_container_add (GTK_CONTAINER (object), mainbox);
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
 
 	priv->tree = gtk_tree_view_new ();
@@ -285,7 +285,7 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 			    TRUE,
 			    0);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
 

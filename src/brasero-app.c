@@ -1888,7 +1888,7 @@ brasero_app_create_mainwin (BraseroApp *app)
 			  app);
 
 	/* contents */
-	priv->contents = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	priv->contents = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (priv->contents);
 
 	gtk_container_add (GTK_CONTAINER (priv->mainwin), priv->contents);
@@ -1930,7 +1930,7 @@ brasero_app_create_mainwin (BraseroApp *app)
 	gtk_box_pack_start (GTK_BOX (priv->contents), priv->projects, TRUE, TRUE, 0);
 
 	/* status bar to display the size of selected files */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	hbox = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_end (GTK_BOX (priv->contents), hbox, FALSE, TRUE, 0);
 

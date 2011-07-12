@@ -43,7 +43,7 @@
 
 #define BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_TYPE_CHOOSER, BraseroImageTypeChooserPrivate))
 
-G_DEFINE_TYPE (BraseroImageTypeChooser, brasero_image_type_chooser, GTK_TYPE_BOX);
+G_DEFINE_TYPE (BraseroImageTypeChooser, brasero_image_type_chooser, GTK_TYPE_HBOX);
 
 enum {
 	FORMAT_TEXT,
@@ -67,7 +67,7 @@ struct _BraseroImageTypeChooserPrivate {
 	guint updating:1;
 };
 
-static GtkBoxClass *parent_class = NULL;
+static GtkHBoxClass *parent_class = NULL;
 
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,

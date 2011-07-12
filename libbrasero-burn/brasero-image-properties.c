@@ -230,7 +230,7 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 		GtkWidget *label;
 		GtkWidget *dialog_box;
 
-		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+		box = gtk_hbox_new (FALSE, 6);
 		gtk_container_set_border_width (GTK_CONTAINER (box), 4);
 
 		dialog_box = gtk_dialog_get_content_area (GTK_DIALOG (self));

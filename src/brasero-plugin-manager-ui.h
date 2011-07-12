@@ -52,7 +52,7 @@ typedef struct _BraseroPluginManagerUI BraseroPluginManagerUI;
 
 struct _BraseroPluginManagerUI 
 {
-	GtkBox vbox;
+	GtkVBox vbox;
 };
 
 /*
@@ -62,7 +62,7 @@ typedef struct _BraseroPluginManagerUIClass BraseroPluginManagerUIClass;
 
 struct _BraseroPluginManagerUIClass 
 {
-	GtkBoxClass parent_class;
+	GtkVBoxClass parent_class;
 };
 
 /*

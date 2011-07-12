@@ -687,7 +687,7 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 
 	priv->session = brasero_burn_session_new ();
 
-	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+	box = gtk_vbox_new (FALSE, 6);
 
 	priv->md5_check = gtk_check_button_new_with_mnemonic (_("Use an _MD5 file to check the disc"));
 	gtk_widget_set_tooltip_text (priv->md5_check, _("Use an external .md5 file that stores the checksum of a disc"));

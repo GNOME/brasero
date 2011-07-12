@@ -41,12 +41,12 @@ typedef struct _BraseroVideoDisc BraseroVideoDisc;
 
 struct _BraseroVideoDiscClass
 {
-	GtkBoxClass parent_class;
+	GtkVBoxClass parent_class;
 };
 
 struct _BraseroVideoDisc
 {
-	GtkBox parent_instance;
+	GtkVBox parent_instance;
 };
 
 GType brasero_video_disc_get_type (void) G_GNUC_CONST;

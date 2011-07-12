@@ -43,12 +43,12 @@ typedef struct _BraseroDataDisc BraseroDataDisc;
 
 struct _BraseroDataDiscClass
 {
-	GtkBoxClass parent_class;
+	GtkVBoxClass parent_class;
 };
 
 struct _BraseroDataDisc
 {
-	GtkBox parent_instance;
+	GtkVBox parent_instance;
 };
 
 GType brasero_data_disc_get_type (void) G_GNUC_CONST;

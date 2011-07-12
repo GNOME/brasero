@@ -785,7 +785,7 @@ brasero_player_init (BraseroPlayer *obj)
 
 	gtk_alignment_set (GTK_ALIGNMENT (obj), 0.5, 0.5, 0.0, 0.0);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
+	vbox = gtk_vbox_new (FALSE, 2);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (obj), vbox);
 	
@@ -910,7 +910,7 @@ brasero_player_init (BraseroPlayer *obj)
 				     obj->priv->video_height);
 
 	/* A few controls */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 

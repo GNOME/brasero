@@ -98,7 +98,7 @@ brasero_burn_progress_get_type ()
 			(GInstanceInitFunc)brasero_burn_progress_init,
 		};
 
-		type = g_type_register_static(GTK_TYPE_BOX, 
+		type = g_type_register_static(GTK_TYPE_VBOX, 
 					      "BraseroBurnProgress",
 					      &our_info,
 					      0);
@@ -308,13 +308,13 @@ brasero_burn_progress_init (BraseroBurnProgress *obj)
 	obj->priv = g_new0 (BraseroBurnProgressPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 2);
 
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	box = gtk_hbox_new (FALSE, 0);
 	obj->priv->progress = gtk_progress_bar_new ();
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (obj->priv->progress), " ");
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->progress, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (obj), box, TRUE, TRUE, 2);
 
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 24);
+	box = gtk_hbox_new (FALSE, 24);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	obj->priv->action = gtk_label_new (NULL);

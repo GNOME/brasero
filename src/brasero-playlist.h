@@ -47,12 +47,12 @@ G_BEGIN_DECLS
 typedef struct BraseroPlaylistPrivate BraseroPlaylistPrivate;
 
 typedef struct {
-	GtkBox parent;
+	GtkVBox parent;
 	BraseroPlaylistPrivate *priv;
 } BraseroPlaylist;
 
 typedef struct {
-	GtkBoxClass parent_class;
+	GtkVBoxClass parent_class;
 } BraseroPlaylistClass;
 
 GType brasero_playlist_get_type (void);

@@ -302,7 +302,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 			  NULL);
 
 	/* second part of the dialog */
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
 	title = g_strdup_printf ("<b>%s</b>", _("Options"));

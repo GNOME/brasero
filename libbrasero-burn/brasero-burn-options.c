@@ -127,7 +127,7 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 		GtkWidget *hbox;
 		GtkWidget *alignment;
 
-		hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+		hbox = gtk_hbox_new (FALSE, 12);
 		gtk_widget_show (hbox);
 
 		gtk_box_pack_start (GTK_BOX (hbox), child, TRUE, TRUE, 0);
@@ -619,7 +619,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 			    0);
 
 	/* Medium selection box */
-	selection = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
+	selection = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (selection);
 
 	alignment = gtk_alignment_new (0.0, 0.5, 1.0, 1.0);
@@ -671,7 +671,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 			    0);
 	priv->options_placeholder = alignment;
 
-	priv->options = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	priv->options = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), priv->options);
 
 	g_signal_connect (priv->session,
@@ -706,7 +706,7 @@ brasero_burn_options_reset (BraseroBurnOptions *self)
 		priv->options = NULL;
 	}
 
-	priv->options = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	priv->options = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (priv->options_placeholder), priv->options);
 
 	if (priv->source) {

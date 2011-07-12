@@ -44,7 +44,7 @@
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
 
-G_DEFINE_TYPE (BraseroLayout, brasero_layout, GTK_TYPE_BOX);
+G_DEFINE_TYPE (BraseroLayout, brasero_layout, GTK_TYPE_VBOX);
 
 enum {
 	TEXT_COL,
@@ -514,7 +514,7 @@ brasero_layout_add_source (BraseroLayout *layout,
 	GtkTreeModel *model;
 	BraseroLayoutItem *item;
 
-	pane = gtk_box_new (GTK_ORIENTATION_VERTICAL, 1);
+	pane = gtk_vbox_new (FALSE, 1);
 	gtk_widget_hide (pane);
 	gtk_box_pack_end (GTK_BOX (pane), source, TRUE, TRUE, 0);
 	g_signal_connect (pane,
@@ -1096,12 +1096,12 @@ brasero_layout_init (BraseroLayout *obj)
 	gtk_action_group_add_radio_actions (obj->priv->action_group,
 					    radio_entries,
 					    sizeof (radio_entries) / sizeof (GtkRadioActionEntry),
-					    GTK_IS_PANED (obj->priv->pane),
+					    GTK_IS_VPANED (obj->priv->pane),
 					    G_CALLBACK (brasero_layout_HV_radio_button_toggled_cb),
 					    obj);
 
 	/* set up pane for project */
-	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (box);
 
 	if (obj->priv->layout_type == BRASERO_LAYOUT_TOP
@@ -1120,12 +1120,12 @@ brasero_layout_init (BraseroLayout *obj)
 	else
 		gtk_paned_pack1 (GTK_PANED (obj->priv->pane), alignment, TRUE, TRUE);
 
-	obj->priv->main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	obj->priv->main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->main_box);
 	gtk_widget_show (obj->priv->main_box);
 
 	/* close button and combo. Don't show it now. */
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	box = gtk_hbox_new (FALSE, 6);
 	obj->priv->top_box = box;
 	gtk_box_pack_start (GTK_BOX (obj->priv->main_box),
 			    box,
