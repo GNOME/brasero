@@ -43,7 +43,7 @@ struct _BraseroFilterOptionPrivate
 
 #define BRASERO_FILTER_OPTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_FILTER_OPTION, BraseroFilterOptionPrivate))
 
-G_DEFINE_TYPE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_VBOX);
+G_DEFINE_TYPE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_BOX);
 
 static void
 brasero_filter_option_init (BraseroFilterOption *object)
@@ -58,6 +58,8 @@ brasero_filter_option_init (BraseroFilterOption *object)
 	priv = BRASERO_FILTER_OPTION_PRIVATE (object);
 
 	priv->settings = g_settings_new (BRASERO_SCHEMA_FILTER);
+
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (object), GTK_ORIENTATION_VERTICAL);
 
 	/* filter hidden files */
 	button_hidden = gtk_check_button_new_with_mnemonic (_("Filter _hidden files"));

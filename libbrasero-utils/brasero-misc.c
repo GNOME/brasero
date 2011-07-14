@@ -298,10 +298,10 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 	GtkWidget *label;
 	GSList *iter;
 
-	vbox_main = gtk_vbox_new (FALSE, 0);
+	vbox_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox_main);
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_end (GTK_BOX (vbox_main),
 			  hbox,
@@ -317,7 +317,7 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 			    TRUE,
 			    0);
 
-	vbox_prop = gtk_vbox_new (FALSE, 6);
+	vbox_prop = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (vbox_prop);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    vbox_prop,
@@ -336,7 +336,7 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 		GtkWidget *vbox;
 		GtkWidget *label;
 
-		vbox = gtk_vbox_new (FALSE, 0);
+		vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 
 		label = gtk_label_new (title);
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

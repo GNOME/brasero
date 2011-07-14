@@ -41,12 +41,12 @@ typedef struct _BraseroFilterOption BraseroFilterOption;
 
 struct _BraseroFilterOptionClass
 {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 struct _BraseroFilterOption
 {
-	GtkVBox parent_instance;
+	GtkBox parent_instance;
 };
 
 GType brasero_filter_option_get_type (void) G_GNUC_CONST;

@@ -511,13 +511,13 @@ brasero_song_control_init (BraseroSongControl *object)
 	gst_object_unref (bus);
 
 	/* Widget itself */
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 0);
 	gtk_container_add (GTK_CONTAINER (object), vbox);
 
 	/* first line title */
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    hbox,
@@ -547,7 +547,7 @@ brasero_song_control_init (BraseroSongControl *object)
 	                  0);
 	
 	/* second line : play, progress, volume button */
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    hbox,
@@ -575,7 +575,7 @@ brasero_song_control_init (BraseroSongControl *object)
 			  G_CALLBACK (brasero_song_control_button_clicked_cb),
 			  object);
 
-	priv->progress = gtk_hscale_new_with_range (0, 1, 500000000);
+	priv->progress = gtk_scale_new_with_range (GTK_ORIENTATION_HORIZONTAL, 0, 1, 500000000);
 	gtk_widget_show (priv->progress);
 	gtk_scale_set_digits (GTK_SCALE (priv->progress), 0);
 	gtk_scale_set_draw_value (GTK_SCALE (priv->progress), FALSE);

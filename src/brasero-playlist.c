@@ -96,7 +96,7 @@ static void brasero_playlist_iface_layout_object_init (BraseroLayoutObjectIFace 
 
 G_DEFINE_TYPE_WITH_CODE (BraseroPlaylist,
 			 brasero_playlist,
-			 GTK_TYPE_VBOX,
+			 GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_URI_CONTAINER,
 					        brasero_playlist_iface_uri_container_init)
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_LAYOUT_OBJECT,
@@ -697,8 +697,9 @@ brasero_playlist_init (BraseroPlaylist *obj)
 
 	obj->priv = g_new0 (BraseroPlaylistPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PLAYLIST_SPACING);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (obj), GTK_ORIENTATION_VERTICAL);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 
 	obj->priv->button_add = gtk_button_new_from_stock (GTK_STOCK_ADD);

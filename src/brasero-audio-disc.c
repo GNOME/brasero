@@ -229,7 +229,7 @@ static void brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroAudioDisc,
 			 brasero_audio_disc,
-			 GTK_TYPE_VBOX,
+			 GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_audio_disc_iface_disc_init));
 static gboolean
@@ -384,6 +384,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 
 	obj->priv = g_new0 (BraseroAudioDiscPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 0);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (obj), GTK_ORIENTATION_VERTICAL);
 
 	/* Tree */
 	obj->priv->tree = gtk_tree_view_new ();

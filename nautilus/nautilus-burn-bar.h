@@ -38,13 +38,13 @@ typedef struct NautilusDiscBurnBarPrivate NautilusDiscBurnBarPrivate;
 
 typedef struct
 {
-        GtkHBox                     box;
+        GtkBox                     box;
         NautilusDiscBurnBarPrivate *priv;
 } NautilusDiscBurnBar;
 
 typedef struct
 {
-        GtkHBoxClass          parent_class;
+        GtkBoxClass          parent_class;
 
 	void (* title_changed) (NautilusDiscBurnBar *bar);
 	void (* icon_changed)  (NautilusDiscBurnBar *bar);

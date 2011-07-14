@@ -55,12 +55,12 @@ typedef enum {
 } BraseroLayoutType;
 
 typedef struct {
-	GtkHPaned parent;
+	GtkPaned parent;
 	BraseroLayoutPrivate *priv;
 } BraseroLayout;
 
 typedef struct {
-	GtkHPanedClass parent_class;
+	GtkPanedClass parent_class;
 } BraseroLayoutClass;
 
 GType brasero_layout_get_type (void);

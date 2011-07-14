@@ -51,12 +51,12 @@ typedef struct _BraseroJacketEdit BraseroJacketEdit;
 
 struct _BraseroJacketEditClass
 {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 struct _BraseroJacketEdit
 {
-	GtkVBox parent_instance;
+	GtkBox parent_instance;
 };
 
 GType brasero_jacket_edit_get_type (void) G_GNUC_CONST;

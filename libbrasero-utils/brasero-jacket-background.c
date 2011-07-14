@@ -222,7 +222,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (object);
 
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), vbox, TRUE, TRUE, 0);
@@ -233,7 +233,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
 
@@ -247,11 +247,11 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, 6);
+	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
 
-	hbox2 = gtk_hbox_new (FALSE, 12);
+	hbox2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
 
@@ -283,7 +283,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_widget_set_sensitive (hbox, FALSE);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);

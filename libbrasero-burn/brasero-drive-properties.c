@@ -697,7 +697,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (object), vbox);
 
@@ -772,7 +772,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	image = gtk_image_new_from_icon_name ("folder", GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (image);
 
-	box = gtk_hbox_new (FALSE, 6);
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (box);
 	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
@@ -782,7 +782,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	gtk_container_add (GTK_CONTAINER (button), box);
 	gtk_widget_set_tooltip_text (button, _("Set the directory where to store temporary files"));
 
-	box = gtk_hbox_new (FALSE, 6);
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_widget_show (box);
 
 	string = g_strdup_printf ("<b>%s</b>", _("Temporary files"));

@@ -47,12 +47,12 @@ typedef struct _BraseroRename BraseroRename;
 
 struct _BraseroRenameClass
 {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 struct _BraseroRename
 {
-	GtkVBox parent_instance;
+	GtkBox parent_instance;
 };
 
 GType brasero_rename_get_type (void) G_GNUC_CONST;

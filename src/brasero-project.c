@@ -295,7 +295,7 @@ brasero_project_get_type ()
 			NULL
 		};
 
-		type = g_type_register_static (GTK_TYPE_VBOX, 
+		type = g_type_register_static (GTK_TYPE_BOX, 
 					       "BraseroProject",
 					       &our_info, 0);
 
@@ -1043,6 +1043,8 @@ brasero_project_init (BraseroProject *obj)
 	GtkWidget *table;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
+
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (obj), GTK_ORIENTATION_VERTICAL);
 
 	g_signal_connect (G_OBJECT (obj),
 			  "set-focus-child",

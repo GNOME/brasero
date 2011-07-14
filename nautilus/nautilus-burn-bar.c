@@ -50,7 +50,7 @@ enum {
 
 static guint           signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (NautilusDiscBurnBar, nautilus_disc_burn_bar, GTK_TYPE_HBOX)
+G_DEFINE_TYPE (NautilusDiscBurnBar, nautilus_disc_burn_bar, GTK_TYPE_BOX)
 
 const gchar *
 nautilus_disc_burn_bar_get_icon (NautilusDiscBurnBar *bar)

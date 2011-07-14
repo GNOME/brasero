@@ -185,7 +185,7 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 			 brasero_data_disc,
-			 GTK_TYPE_VBOX,
+			 GTK_TYPE_BOX,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_data_disc_iface_disc_init));
 
@@ -2264,8 +2264,9 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	priv = BRASERO_DATA_DISC_PRIVATE (object);
 
 	gtk_box_set_spacing (GTK_BOX (object), 8);
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (object), GTK_ORIENTATION_VERTICAL);
 
-	mainbox = gtk_vbox_new (FALSE, 0);
+	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (mainbox);
 	gtk_box_pack_start (GTK_BOX (object), mainbox, TRUE, TRUE, 0);
 
