@@ -1159,12 +1159,13 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 {
 	const gchar *authors[] = {
 		"Philippe Rouquier <bonfire-app@wanadoo.fr>",
+		"Luis Medinas <lmedinas@gmail.com>",
 		NULL
 	};
 
 	const gchar *documenters[] = {
-		"Phil Bull <philbull@gmail.com>\n"
-		"Milo Casagrande <milo_casagrande@yahoo.it>\n"
+		"Phil Bull <philbull@gmail.com>",
+		"Milo Casagrande <milo_casagrande@yahoo.it>",
 		"Andrew Stabeno <stabeno@gmail.com>",
 		NULL
 	};
