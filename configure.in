@@ -373,7 +373,7 @@ fi
 AM_CONDITIONAL(BUILD_GROWISOFS, test x"$build_growisofs" = "xyes")
 
 BEAGLE_REQUIRED=0.3.0
-TRACKER_REQUIRED=0.8.0
+TRACKER_REQUIRED=0.10.0
 
 AC_ARG_ENABLE(search,
 			AS_HELP_STRING([--enable-search],[Build search pane (if a search backend is available) [[default=auto]]]),
@@ -388,7 +388,7 @@ AC_ARG_ENABLE(search,
 			[enable_search="yes"])
 
 if test x"$enable_search" = "xtracker"; then
-	PKG_CHECK_MODULES(BRASERO_SEARCH, tracker-client-0.8 >= $TRACKER_REQUIRED)
+	PKG_CHECK_MODULES(BRASERO_SEARCH, tracker-client-0.10 >= $TRACKER_REQUIRED)
 	AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
 	AC_DEFINE(BUILD_TRACKER, 1, [define if you  want to use search pane])
 	AC_SUBST(BRASERO_SEARCH_CFLAGS)
@@ -406,7 +406,7 @@ elif test x"$enable_search" = "xbeagle"; then
 	build_tracker="no"
 	build_search="yes"
 elif test x"$enable_search" = "xyes"; then
-	PKG_CHECK_MODULES(BRASERO_SEARCH, tracker-client-0.8 >= $TRACKER_REQUIRED, build_search=yes, build_search=no)
+	PKG_CHECK_MODULES(BRASERO_SEARCH, tracker-client-0.10 >= $TRACKER_REQUIRED, build_search=yes, build_search=no)
 	if test x"$build_search" = "xyes"; then
 		AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
 		AC_DEFINE(BUILD_TRACKER, 1, [define if you  want to use search pane])
