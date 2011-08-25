@@ -23,8 +23,7 @@ INCLUDES = \
 	$(BRASERO_LIBXML_CFLAGS)					\
 	$(BRASERO_SEARCH_CFLAGS)					\
 	$(BRASERO_PL_PARSER_CFLAGS)					\
-	$(BRASERO_SM_CFLAGS)						\
-	$(BRASERO_BEAGLE_CFLAGS)
+	$(BRASERO_SM_CFLAGS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = brasero-marshal.h brasero-marshal.c
@@ -159,8 +158,7 @@ brasero_LDADD =						\
 	$(BRASERO_LIBXML_LIBS)		\
 	$(BRASERO_SEARCH_LIBS)		\
 	$(BRASERO_PL_PARSER_LIBS)	\
-	$(BRASERO_SM_LIBS)		\
-	$(BRASERO_BEAGLE_LIBS)
+	$(BRASERO_SM_LIBS)
 
 EXTRA_DIST =			\
 	brasero-marshal.list
