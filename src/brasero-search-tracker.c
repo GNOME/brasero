@@ -19,7 +19,8 @@
 
 #include <stdlib.h>
 
-#include <libtracker-client/tracker-client.h>
+#include <libtracker-sparql/tracker-sparql.h>
+#include <gio/gio.h>
 
 #include "brasero-search-tracker.h"
 #include "brasero-search-engine.h"
@@ -27,7 +28,8 @@
 typedef struct _BraseroSearchTrackerPrivate BraseroSearchTrackerPrivate;
 struct _BraseroSearchTrackerPrivate
 {
-	TrackerClient *client;
+	TrackerSparqlConnection *connection;
+	GCancellable *cancellable;
 	GPtrArray *results;
 
 	BraseroSearchScope scope;
@@ -54,11 +56,13 @@ brasero_search_tracker_is_available (BraseroSearchEngine *engine)
 	BraseroSearchTrackerPrivate *priv;
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (engine);
-	if (priv->client)
+	GError *error = NULL;
+	if (priv->connection)
 		return TRUE;
-
-	priv->client = tracker_client_new (1, 30000);
-	return (priv->client != NULL);
+	
+	priv->cancellable = g_cancellable_new ();
+ 	priv->connection = tracker_sparql_connection_get (priv->cancellable, &error);
+	return (priv->connection != NULL);
 }
 
 static gint
@@ -124,30 +128,104 @@ brasero_search_tracker_score_from_hit (BraseroSearchEngine *engine,
 	return 0;
 }
 
+static void brasero_search_tracker_cursor_callback (GObject      *object,
+						    GAsyncResult *result,
+						    gpointer      user_data);
+
 static void
-brasero_search_tracker_reply (GPtrArray *results,
-			      GError *error,
+brasero_search_tracker_cursor_next (BraseroSearchEngine *search,
+				    TrackerSparqlCursor    *cursor)
+{
+	BraseroSearchTrackerPrivate *priv;
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	
+	tracker_sparql_cursor_next_async (cursor,
+					  priv->cancellable,
+					  brasero_search_tracker_cursor_callback,
+					  search);
+}
+
+static void
+brasero_search_tracker_cursor_callback (GObject      *object,
+					GAsyncResult *result,
+					gpointer      user_data)
+{
+	BraseroSearchEngine *search;
+	GError *error = NULL;
+	TrackerSparqlCursor *cursor;
+	GList *hits;
+	gboolean success;
+
+	cursor = TRACKER_SPARQL_CURSOR (object);
+	success = tracker_sparql_cursor_next_finish (cursor, result, &error);
+
+	if (error) {
+		brasero_search_engine_query_error (search, error);
+		g_error_free (error);
+
+		if (cursor) {
+			g_object_unref (cursor);
+		}
+
+		return;
+	}
+
+	if (!success) {
+		brasero_search_engine_query_finished (search);
+
+		if (cursor) {
+			g_object_unref (cursor);
+		}
+
+		return;
+	}
+
+	/* We iterate result by result, not n at a time. */
+	hits = g_list_append (NULL, (gchar*) tracker_sparql_cursor_get_string (cursor, 0, NULL));
+	brasero_search_engine_hit_added (search, hits);
+	g_list_free (hits);
+
+	/* Get next */
+	brasero_search_tracker_cursor_next (search, cursor);
+}
+
+static void
+brasero_search_tracker_reply (GObject      *object,
+			      GAsyncResult *result,
 			      gpointer user_data)
 {
 	BraseroSearchEngine *search = BRASERO_SEARCH_ENGINE (user_data);
-	BraseroSearchTrackerPrivate *priv;
-	int i;
+	GError *error = NULL;
+	
+	TrackerSparqlCursor *cursor;
+	GList *hits;
+	gboolean success;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	cursor = TRACKER_SPARQL_CURSOR (object);
+	success = tracker_sparql_cursor_next_finish (cursor, result, &error);
+
+	if (cursor) {
+		g_object_unref (cursor);
+	}
 
 	if (error) {
 		brasero_search_engine_query_error (search, error);
 		return;
 	}
 
-	if (!results) {
+	if (!success) {
 		brasero_search_engine_query_finished (search);
+		
+		if (cursor) {
+			g_object_unref (cursor);
+		}
 		return;
+    
 	}
 
-	priv->results = results;
-	for (i = 0; i < results->len; i ++)
-		brasero_search_engine_hit_added (search, g_ptr_array_index (results, i));
+	hits = g_list_append (NULL, (gchar*) tracker_sparql_cursor_get_string (cursor, 0, NULL));
+	brasero_search_engine_hit_added (search, result);
+	g_list_free (hits);
 
 	brasero_search_engine_query_finished (search);
 }
@@ -232,10 +310,16 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 			 "OFFSET 0 "
 			 "LIMIT 10000");
 
-	priv->current_call_id = tracker_resources_sparql_query_async (priv->client,
-								      query->str,
-	                                                              brasero_search_tracker_reply,
-	                                                              search);
+	g_string_append (query, ")");
+
+	g_string_append (query,
+			 "} ORDER BY DESC(nie:url(?urn)) DESC(nfo:fileName(?urn))");
+
+	tracker_sparql_connection_query_async (priv->connection,
+					       query->str,
+					       priv->cancellable,
+					       brasero_search_tracker_reply,
+					       search);
 	g_string_free (query, TRUE);
 
 	return res;
@@ -310,7 +394,7 @@ brasero_search_tracker_clean (BraseroSearchTracker *search)
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
 
 	if (priv->current_call_id)
-		tracker_cancel_call (priv->client, priv->current_call_id);
+		g_cancellable_cancel (priv->cancellable);
 
 	if (priv->results) {
 		g_ptr_array_foreach (priv->results, (GFunc) g_strfreev, NULL);
@@ -364,9 +448,24 @@ static void
 brasero_search_tracker_init (BraseroSearchTracker *object)
 {
 	BraseroSearchTrackerPrivate *priv;
+	GError *error = NULL;
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (object);
-	priv->client = tracker_client_new (1, 30000);
+	priv->cancellable = g_cancellable_new ();
+	priv->connection = tracker_sparql_connection_get (priv->cancellable, &error);
+
+	if (error) {
+		g_warning ("Could not establish a connection to Tracker: %s", error->message);
+		g_error_free (error);
+		g_object_unref (priv->cancellable);
+		
+		return;
+	} else if (!priv->connection) {
+		g_warning ("Could not establish a connection to Tracker, no TrackerSparqlConnection was returned");
+		g_object_unref (priv->cancellable);
+		
+		return;
+	}
 }
 
 static void
@@ -378,9 +477,9 @@ brasero_search_tracker_finalize (GObject *object)
 
 	brasero_search_tracker_clean (BRASERO_SEARCH_TRACKER (object));
 
-	if (priv->client) {
-		g_object_unref (priv->client);
-		priv->client = NULL;
+	if (priv->connection) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_search_tracker_parent_class)->finalize (object);
