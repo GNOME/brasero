@@ -13,14 +13,14 @@ msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-04-03 01:10+0000\n"
-"PO-Revision-Date: 2011-04-04 01:18+0900\n"
-"Last-Translator: Jiro Matsuzawa <matsuzawa.jr@gmail.com>\n"
+"POT-Creation-Date: 2011-08-27 02:30+0000\n"
+"PO-Revision-Date: 2011-08-28 02:56+0900\n"
+"Last-Translator: OKANO Takayoshi <kano@na.rim.or.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/brasero-cli.c:70
@@ -265,7 +265,7 @@ msgid "\"%s\" was removed from the file system."
 msgstr "\"%s\" というファイルが削除されました。"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:129
-#: ../src/brasero-audio-disc.c:753 ../src/brasero-video-disc.c:365
+#: ../src/brasero-audio-disc.c:754 ../src/brasero-video-disc.c:365
 #, c-format
 msgid "Directories cannot be added to video or audio discs"
 msgstr "フォルダを映像用ディスクや音楽用ディスクには追加できません"
@@ -366,7 +366,7 @@ msgstr "ファイルの解析中"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1273
+#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1275
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-stream.c:402
 #, c-format
@@ -383,7 +383,7 @@ msgstr "\"%s\" は再帰的なシンボリックリンクです。"
 msgid "The file does not appear to be a playlist"
 msgstr "そのファイルはプレイリストではないようです"
 
-#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:642
+#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "\"%s\" を GStreamer で扱うことができませんでした。"
@@ -1088,7 +1088,7 @@ msgstr ""
 "イメージファイルに書き込みたくない場合は、書き込み可能な CD または DVD のメ"
 "ディアを挿入してください。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1591
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1593
 msgid "Create _Image"
 msgstr "イメージの作成(_I)"
 
@@ -1102,11 +1102,11 @@ msgid "Make _Several Copies"
 msgstr "複数のディスクの作成(_S)"
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1520
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1522
 msgid "_Burn"
 msgstr "書き込む(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1517
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1519
 msgid "Burn _Several Copies"
 msgstr "複数のディスクの書き込み(_S)"
 
@@ -1153,7 +1153,7 @@ msgstr "ファイルを追加してください。"
 msgid "Please add songs."
 msgstr "楽曲を追加してください。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1264
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1266
 msgid "There are no songs to write to disc"
 msgstr "ディスクに書き込む楽曲がありません"
 
@@ -1195,7 +1195,7 @@ msgstr "コピー防止機能付きでないディスクを挿入してくださ
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1441
+#: ../src/brasero-project.c:1443
 msgid "All required applications and libraries are not installed."
 msgstr ""
 "必要なアプリケーションやライブラリがすべてインストールされているわけでないよ"
@@ -1255,7 +1255,7 @@ msgstr "書き込み先のディスクの選択"
 msgid "Disc Burning Setup"
 msgstr "書き込みの設定"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1540
+#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1542
 msgid "Video Options"
 msgstr "映像のオプション"
 
@@ -1305,27 +1305,27 @@ msgstr "コピー元のディスクの選択"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn-options.c:1180
-#: ../libbrasero-burn/brasero-burn.c:1708 ../src/brasero-project.c:1381
+#: ../libbrasero-burn/brasero-burn.c:1708 ../src/brasero-project.c:1383
 #, c-format
 msgid "%s (application)"
 msgstr "%s (アプリケーション)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn-options.c:1186
-#: ../libbrasero-burn/brasero-burn.c:1714 ../src/brasero-project.c:1387
+#: ../libbrasero-burn/brasero-burn.c:1714 ../src/brasero-project.c:1389
 #, c-format
 msgid "%s (library)"
 msgstr "%s (ライブラリ)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn-options.c:1191
-#: ../libbrasero-burn/brasero-burn.c:1719 ../src/brasero-project.c:1392
+#: ../libbrasero-burn/brasero-burn.c:1719 ../src/brasero-project.c:1394
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer プラグイン)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1435
+#: ../src/brasero-project.c:1437
 msgid "Please install the following manually and try again:"
 msgstr "以下を手動でインストールして再試行してください:"
 
@@ -1608,7 +1608,7 @@ msgid "Cdrdao image"
 msgstr "cdrdao イメージ"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1499
+#: ../src/brasero-project.c:1501
 #, c-format
 msgid "Properties of %s"
 msgstr "%s のプロパティ"
@@ -1650,17 +1650,17 @@ msgstr "ドライブの書き込み速度 (平均):"
 
 #. Translators: first %02i is hours, the second one is minutes
 #. * and the third one is seconds.
-#: ../libbrasero-burn/brasero-progress.c:436
+#: ../libbrasero-burn/brasero-progress.c:437
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr "おおよその残り時間: %02i:%02i:%02i"
 
-#: ../libbrasero-burn/brasero-progress.c:478
+#: ../libbrasero-burn/brasero-progress.c:479
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB / %i MiB"
 
-#: ../libbrasero-burn/brasero-progress.c:504
+#: ../libbrasero-burn/brasero-progress.c:505
 msgid "Estimated drive speed:"
 msgstr "ドライブの書き込み速度:"
 
@@ -1697,7 +1697,7 @@ msgstr "ディスクイメージの選択"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-project-name.c:162
-#: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2219
+#: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2221
 msgid "All files"
 msgstr "すべてのファイル"
 
@@ -1911,55 +1911,55 @@ msgstr "サイズに合わせて拡大縮小"
 msgid "Background Properties"
 msgstr "背景のプロパティ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:585
+#: ../libbrasero-utils/brasero-jacket-edit.c:589
 msgid "Print"
 msgstr "印刷"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:597
+#: ../libbrasero-utils/brasero-jacket-edit.c:601
 msgid "Bac_kground Properties"
 msgstr "背景のプロパティ(_K)"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:600
+#: ../libbrasero-utils/brasero-jacket-edit.c:604
 msgid "Background properties"
 msgstr "背景のプロパティ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:615
+#: ../libbrasero-utils/brasero-jacket-edit.c:619
 msgid "Align right"
 msgstr "右寄せ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:625
+#: ../libbrasero-utils/brasero-jacket-edit.c:629
 msgid "Center"
 msgstr "中央"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:635
+#: ../libbrasero-utils/brasero-jacket-edit.c:639
 msgid "Align left"
 msgstr "左寄せ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:649
+#: ../libbrasero-utils/brasero-jacket-edit.c:653
 msgid "Underline"
 msgstr "下線"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:659
+#: ../libbrasero-utils/brasero-jacket-edit.c:663
 msgid "Italic"
 msgstr "イタリック体"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:669
+#: ../libbrasero-utils/brasero-jacket-edit.c:673
 msgid "Bold"
 msgstr "太字"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:695
+#: ../libbrasero-utils/brasero-jacket-edit.c:699
 msgid "Font family and size"
 msgstr "フォントの種類とサイズ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:702
+#: ../libbrasero-utils/brasero-jacket-edit.c:706
 msgid "_Text Color"
 msgstr "文字の色(_T)"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:703
+#: ../libbrasero-utils/brasero-jacket-edit.c:707
 msgid "Text color"
 msgstr "文字の色"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:826
+#: ../libbrasero-utils/brasero-jacket-edit.c:830
 msgid "Cover Editor"
 msgstr "ジャケットの編集"
 
@@ -2407,7 +2407,7 @@ msgstr "メディアのアイコン"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-project-name.c:168
-#: ../src/brasero-file-chooser.c:375 ../src/brasero-project.c:2244
+#: ../src/brasero-file-chooser.c:375 ../src/brasero-project.c:2246
 msgctxt "picture"
 msgid "Image files"
 msgstr "画像ファイル"
@@ -2423,49 +2423,49 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "ディスクに書き込むファイルをドラッグするかコピーしてください"
 
 #: ../nautilus/nautilus-burn-bar.c:423
-#: ../nautilus/nautilus-burn-extension.c:335
+#: ../nautilus/nautilus-burn-extension.c:323
 msgid "Write to Disc"
 msgstr "ディスクに書き込む"
 
 #: ../nautilus/nautilus-burn-bar.c:442
-#: ../nautilus/nautilus-burn-extension.c:715
+#: ../nautilus/nautilus-burn-extension.c:723
 msgid "Write contents to a CD or DVD"
 msgstr "CD/DVD に内容を書き込みます"
 
-#: ../nautilus/nautilus-burn-extension.c:362
+#: ../nautilus/nautilus-burn-extension.c:370
 msgid "Copy Disc"
 msgstr "ディスクのコピー"
 
-#: ../nautilus/nautilus-burn-extension.c:563
-#: ../nautilus/nautilus-burn-extension.c:714
+#: ../nautilus/nautilus-burn-extension.c:571
+#: ../nautilus/nautilus-burn-extension.c:722
 msgid "_Write to Disc…"
 msgstr "書き込む(_W)…"
 
-#: ../nautilus/nautilus-burn-extension.c:564
+#: ../nautilus/nautilus-burn-extension.c:572
 msgid "Write disc image to a CD or DVD"
 msgstr "ディスクイメージを CD/DVD ディスクに書き込みます"
 
-#: ../nautilus/nautilus-burn-extension.c:637
+#: ../nautilus/nautilus-burn-extension.c:645
 msgid "_Copy Disc…"
 msgstr "ディスクのコピー(_C)…"
 
-#: ../nautilus/nautilus-burn-extension.c:638
+#: ../nautilus/nautilus-burn-extension.c:646
 msgid "Create a copy of this CD or DVD"
 msgstr "この CD/DVD のコピーを作成します"
 
-#: ../nautilus/nautilus-burn-extension.c:651
+#: ../nautilus/nautilus-burn-extension.c:659
 msgid "_Blank Disc…"
 msgstr "ディスクを消去(_B)…"
 
-#: ../nautilus/nautilus-burn-extension.c:652
+#: ../nautilus/nautilus-burn-extension.c:660
 msgid "Blank this CD or DVD"
 msgstr "この CD/DVD を消去します"
 
-#: ../nautilus/nautilus-burn-extension.c:668
+#: ../nautilus/nautilus-burn-extension.c:676
 msgid "_Check Disc…"
 msgstr "ディスクのチェック(_C)…"
 
-#: ../nautilus/nautilus-burn-extension.c:669
+#: ../nautilus/nautilus-burn-extension.c:677
 msgid "Check the data integrity on this CD or DVD"
 msgstr "この CD または DVD のデータの整合性をチェックします"
 
@@ -2552,16 +2552,16 @@ msgstr "ヘルプを表示します"
 msgid "About"
 msgstr "このアプリの情報を表示します"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2064
+#: ../src/brasero-app.c:421 ../src/brasero-app.c:2065
 msgid "Disc Burner"
 msgstr "ディスクの書き込み"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1448
+#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
 msgid "Error while loading the project"
 msgstr "プロジェクトの読み込み中にエラー"
 
 #: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1272
+#: ../src/brasero-project.c:1274
 msgid "Please add files to the project."
 msgstr "プロジェクトにファイルを追加してください。"
 
@@ -2569,7 +2569,7 @@ msgstr "プロジェクトにファイルを追加してください。"
 msgid "The project is empty"
 msgstr "プロジェクトが空です"
 
-#: ../src/brasero-app.c:1173
+#: ../src/brasero-app.c:1174
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -2580,7 +2580,7 @@ msgstr ""
 "衆利用許諾契約書の第二版、あるいはそれ以降の版が定める条項の下で本プログラム"
 "を再頒布または変更することができます。"
 
-#: ../src/brasero-app.c:1178
+#: ../src/brasero-app.c:1179
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -2591,7 +2591,7 @@ msgstr ""
 "対する適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細は "
 "GNU 一般公衆利用許諾契約書を参照してください。"
 
-#: ../src/brasero-app.c:1183
+#: ../src/brasero-app.c:1184
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -2601,11 +2601,11 @@ msgstr ""
 "はずです。そうでない場合は、Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA まで連絡してください。"
 
-#: ../src/brasero-app.c:1195
+#: ../src/brasero-app.c:1196
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "GNOME 向けの CD/DVD 作成アプリケーションです。"
 
-#: ../src/brasero-app.c:1212
+#: ../src/brasero-app.c:1213
 msgid "Brasero Homepage"
 msgstr "Brasero のホームページ"
 
@@ -2617,7 +2617,7 @@ msgstr "Brasero のホームページ"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1224
+#: ../src/brasero-app.c:1225
 msgid "translator-credits"
 msgstr ""
 "相花 毅 <takeshi.aihana@gmail.com>\n"
@@ -2628,16 +2628,16 @@ msgstr ""
 "Jiro Matsuzawa <matsuzawa.jr@gmail.com>\n"
 "日本GNOMEユーザー会 <http://www.gnome.gr.jp/>"
 
-#: ../src/brasero-app.c:1446
+#: ../src/brasero-app.c:1447
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "\"%s\" というプロジェクトは存在しません"
 
-#: ../src/brasero-app.c:1730 ../src/brasero-app.c:1736
+#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
 msgid "_Recent Projects"
 msgstr "最近開いたプロジェクト(_R)"
 
-#: ../src/brasero-app.c:1731
+#: ../src/brasero-app.c:1732
 msgid "Display the projects recently opened"
 msgstr "最近開いたプロジェクトを表示します"
 
@@ -2762,7 +2762,7 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:19
 msgid "The last browsed folder while looking for images to burn"
-msgstr "書き込むイメージを検索したときに最後に閲覧していたたフォルダ"
+msgstr "書き込むイメージを検索したときに最後に閲覧していたフォルダ"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
 msgid "The priority value for the plugin"
@@ -2914,105 +2914,105 @@ msgstr "ポーズ"
 msgid "Split"
 msgstr "分割"
 
-#: ../src/brasero-audio-disc.c:417
+#: ../src/brasero-audio-disc.c:418
 msgid "Track"
 msgstr "#"
 
-#: ../src/brasero-audio-disc.c:457 ../src/brasero-video-disc.c:1204
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
 msgid "Title"
 msgstr "タイトル"
 
-#: ../src/brasero-audio-disc.c:479
+#: ../src/brasero-audio-disc.c:480
 msgid "Artist"
 msgstr "演奏者"
 
-#: ../src/brasero-audio-disc.c:487 ../src/brasero-playlist.c:771
+#: ../src/brasero-audio-disc.c:488 ../src/brasero-playlist.c:772
 #: ../src/brasero-split-dialog.c:1219
 msgid "Length"
 msgstr "演奏時間"
 
-#: ../src/brasero-audio-disc.c:584
+#: ../src/brasero-audio-disc.c:585
 msgid "The track will be padded at its end."
 msgstr "そのトラックの最後にデータを追加します。"
 
-#: ../src/brasero-audio-disc.c:585
+#: ../src/brasero-audio-disc.c:586
 msgid "The track is shorter than 6 seconds"
 msgstr "演奏時間が6秒に満たないトラックがあります。"
 
-#: ../src/brasero-audio-disc.c:645
+#: ../src/brasero-audio-disc.c:646
 msgid "Make sure the appropriate codec is installed"
 msgstr "適合するコーデックがインストールされているか確認してください"
 
-#: ../src/brasero-audio-disc.c:661
+#: ../src/brasero-audio-disc.c:662
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
 msgstr "動画ファイル \"%s\" を追加しますか?"
 
-#: ../src/brasero-audio-disc.c:670
+#: ../src/brasero-audio-disc.c:671
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
 msgstr "これは動画ファイルなので音声のみディスクに書き込むことが可能です。"
 
-#: ../src/brasero-audio-disc.c:673
+#: ../src/brasero-audio-disc.c:674
 msgid "_Discard File"
 msgstr "破棄する(_D)"
 
-#: ../src/brasero-audio-disc.c:676
+#: ../src/brasero-audio-disc.c:677
 msgid "_Add File"
 msgstr "追加する(_A)"
 
-#: ../src/brasero-audio-disc.c:747
+#: ../src/brasero-audio-disc.c:748
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "ディレクトリの中に音楽ファイルがあるか調べますか?"
 
-#: ../src/brasero-audio-disc.c:757
+#: ../src/brasero-audio-disc.c:758
 msgid "Search _Directory"
 msgstr "検索する(_D)"
 
-#: ../src/brasero-audio-disc.c:811 ../src/brasero-video-disc.c:395
+#: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "\"%s\" を開けませんでした。"
 
-#: ../src/brasero-audio-disc.c:856
+#: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
 msgstr "DTS トラック付きの音楽 CD を作成しますか?"
 
-#: ../src/brasero-audio-disc.c:857
+#: ../src/brasero-audio-disc.c:858
 msgid ""
 "Some of the selected songs are suitable for creating DTS tracks.\n"
 "This type of audio CD track provides a higher quality of sound but can only "
 "be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
-"選択された音楽はは DTS トラックの作成に適しています。\n"
+"選択された音楽は DTS トラックの作成に適しています。\n"
 "この種の音楽CDトラックは高音質の音を提供しますが、特定のデジタルプレイヤーで"
 "しか再生できません。\n"
 "注意: 同意したならば、正規化がこれらのトラックでは実行されません。"
 
-#: ../src/brasero-audio-disc.c:866
+#: ../src/brasero-audio-disc.c:867
 msgid "Create _Regular Tracks"
 msgstr "標準トラックを作成(_R)"
 
-#: ../src/brasero-audio-disc.c:868
+#: ../src/brasero-audio-disc.c:869
 msgid "Click here to burn all songs as regular tracks"
 msgstr "ここをクリックすると標準トラックとしてすべての楽曲を書き込みます"
 
-#: ../src/brasero-audio-disc.c:871
+#: ../src/brasero-audio-disc.c:872
 msgid "Create _DTS Tracks"
 msgstr "DTS トラックを作成(_D)"
 
-#: ../src/brasero-audio-disc.c:873
+#: ../src/brasero-audio-disc.c:874
 msgid "Click here to burn all suitable songs as DTS tracks"
 msgstr ""
 "ここをクリックすると DTS トラックとして適合するすべての楽曲を書き込みます"
 
-#: ../src/brasero-audio-disc.c:1289
+#: ../src/brasero-audio-disc.c:1290
 msgid "Select one song only please."
 msgstr "1曲だけ選択してください。"
 
-#: ../src/brasero-audio-disc.c:1290
+#: ../src/brasero-audio-disc.c:1291
 msgid "Impossible to split more than one song at a time"
 msgstr "その演奏時間では1曲以上に分割することはできません"
 
@@ -3061,7 +3061,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "プレイリスト (\"%s\") の解析エラー。"
 
 #: ../src/brasero-playlist.c:393 ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2614 ../libbrasero-burn/brasero-sum-dialog.c:166
+#: ../src/brasero-project.c:2621 ../libbrasero-burn/brasero-sum-dialog.c:166
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
 msgstr "原因不明のエラーが発生しました"
@@ -3077,15 +3077,15 @@ msgstr[0] "%d 曲"
 msgid "Select Playlist"
 msgstr "プレイリストの選択"
 
-#: ../src/brasero-playlist.c:750
+#: ../src/brasero-playlist.c:751
 msgid "Playlists"
 msgstr "プレイリスト"
 
-#: ../src/brasero-playlist.c:761
+#: ../src/brasero-playlist.c:762
 msgid "Number of Songs"
 msgstr "楽曲の総数"
 
-#: ../src/brasero-playlist.c:781
+#: ../src/brasero-playlist.c:782
 msgid "Genre"
 msgstr "ジャンル"
 
@@ -3103,12 +3103,12 @@ msgid "Copyright %s"
 msgstr "Copyright %s"
 
 #: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:966
+#: ../src/brasero-plugin-manager-ui.c:967
 msgid "_About"
 msgstr "情報(_A)"
 
 #: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:972
+#: ../src/brasero-plugin-manager-ui.c:973
 msgid "C_onfigure"
 msgstr "設定(_O)"
 
@@ -3319,7 +3319,7 @@ msgstr "元のままにする(_K)"
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
 #. Translators: this is a verb
-#: ../src/brasero-data-disc.c:792 ../src/brasero-rename.c:383
+#: ../src/brasero-data-disc.c:792 ../src/brasero-rename.c:385
 msgid "_Replace"
 msgstr "次で置き換える(_R)"
 
@@ -3453,27 +3453,27 @@ msgstr "変更する(_R)"
 msgid "Renaming mode"
 msgstr "名前の変更"
 
-#: ../src/brasero-data-disc.c:2335 ../src/brasero-file-filtered.c:256
+#: ../src/brasero-data-disc.c:2336 ../src/brasero-file-filtered.c:256
 msgid "Files"
 msgstr "ファイル"
 
-#: ../src/brasero-data-disc.c:2349 ../src/brasero-video-disc.c:1222
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
 msgid "Size"
 msgstr "サイズ"
 
-#: ../src/brasero-data-disc.c:2363
+#: ../src/brasero-data-disc.c:2364
 msgid "Description"
 msgstr "説明"
 
-#: ../src/brasero-data-disc.c:2379
+#: ../src/brasero-data-disc.c:2380
 msgid "Space"
 msgstr "サイズ (容量)"
 
-#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2224
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2226
 msgid "Audio files"
 msgstr "音楽ファイル"
 
-#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2233
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2235
 msgid "Movies"
 msgstr "動画ファイル"
 
@@ -3510,7 +3510,7 @@ msgstr "縦向きにする(_V)"
 msgid "Set a vertical layout"
 msgstr "縦向きのレイアウトにします"
 
-#: ../src/brasero-layout.c:1180
+#: ../src/brasero-layout.c:1183
 msgid "Click to close the side pane"
 msgstr "サイド・ペインを閉じます"
 
@@ -3549,7 +3549,7 @@ msgid "_Remove Files"
 msgstr "ファイルの削除(_R)"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202 ../src/brasero-project.c:2306
+#: ../src/brasero-project.c:202 ../src/brasero-project.c:2308
 msgid "E_mpty Project"
 msgstr "プロジェクトのクリア(_M)"
 
@@ -3557,7 +3557,7 @@ msgstr "プロジェクトのクリア(_M)"
 msgid "Remove all files from the project"
 msgstr "プロジェクトからすべてのファイルを削除します"
 
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1082
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:1084
 msgid "_Burn…"
 msgstr "書き込む(_B)…"
 
@@ -3579,7 +3579,7 @@ msgid ""
 "\"Delete\" key"
 msgstr ""
 "ファイルを削除するには、ファイルを選択して \"削除\" ボタンをクリックするか "
-"\"Delete\" キーを推してください"
+"\"Delete\" キーを押してください"
 
 #: ../src/brasero-project.c:802
 #, c-format
@@ -3606,57 +3606,57 @@ msgstr ""
 "う。\n"
 "注意: このオプションが使えない場合もあります。"
 
-#: ../src/brasero-project.c:1094
+#: ../src/brasero-project.c:1096
 msgid "Start to burn the contents of the selection"
 msgstr "選択したデータの書き込みを開始します"
 
-#: ../src/brasero-project.c:1263
+#: ../src/brasero-project.c:1265
 msgid "Please add songs to the project."
 msgstr "プロジェクトに楽曲を追加してください。"
 
-#: ../src/brasero-project.c:1900 ../src/brasero-project.c:1935
+#: ../src/brasero-project.c:1902 ../src/brasero-project.c:1937
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "本当に現在のプロジェクトを破棄して新しいプロジェクトを作成しますか?"
 
-#: ../src/brasero-project.c:1905
+#: ../src/brasero-project.c:1907
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr "新しくプロジェクトを作成するとすべての変更点が失われます。"
 
-#: ../src/brasero-project.c:1908
+#: ../src/brasero-project.c:1910
 msgid "_Discard Changes"
 msgstr "変更を破棄する(_D)"
 
-#: ../src/brasero-project.c:1916
+#: ../src/brasero-project.c:1918
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "\"%s\" をディスクに書き込むか、またはデータプロジェクトに追加しますか?"
 
-#: ../src/brasero-project.c:1921 ../src/brasero-project.c:1940
+#: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr "新しくプロジェクトを作成するとファイル選択がクリアされます。"
 
-#: ../src/brasero-project.c:1923
+#: ../src/brasero-project.c:1925
 msgid "_Discard File Selection"
 msgstr "ファイル選択を破棄(_D)"
 
-#: ../src/brasero-project.c:1927
+#: ../src/brasero-project.c:1929
 msgid "_Keep File Selection"
 msgstr "ファイル選択を保持(_K)"
 
-#: ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1944
 msgid "_Discard Project"
 msgstr "破棄する(_D)"
 
-#: ../src/brasero-project.c:2182
+#: ../src/brasero-project.c:2184
 msgid "Select Files"
 msgstr "ファイルの選択"
 
-#: ../src/brasero-project.c:2295
+#: ../src/brasero-project.c:2297
 msgid "Do you really want to empty the current project?"
 msgstr "本当にこのプロジェクトを空にしますか?"
 
-#: ../src/brasero-project.c:2300
+#: ../src/brasero-project.c:2302
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -3666,78 +3666,78 @@ msgstr ""
 "の作業結果が完全に失われてしまいます (但し、実際にファイルシステムから削除す"
 "るというわけではなく、プロジェクトの一覧から無くなるということです)。"
 
-#: ../src/brasero-project.c:2357
+#: ../src/brasero-project.c:2364
 msgid "_Save"
 msgstr "保存(_S)"
 
-#: ../src/brasero-project.c:2368
+#: ../src/brasero-project.c:2375
 msgid "_Add"
 msgstr "追加する(_A)"
 
-#: ../src/brasero-project.c:2373 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2380 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "削除(_R)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2437
+#: ../src/brasero-project.c:2444
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero - %s (データディスク)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2440
+#: ../src/brasero-project.c:2447
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero - %s (音楽用ディスク)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2443
+#: ../src/brasero-project.c:2450
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero - %s (映像用ディスク)"
 
-#: ../src/brasero-project.c:2613 ../src/brasero-project.c:2916
+#: ../src/brasero-project.c:2620 ../src/brasero-project.c:2923
 msgid "Your project has not been saved."
 msgstr "プロジェクトを保存していません。"
 
-#: ../src/brasero-project.c:2627
+#: ../src/brasero-project.c:2634
 msgid "Save the changes of current project before closing?"
 msgstr "閉じる前に現在のプロジェクトの変更点を保存しますか?"
 
-#: ../src/brasero-project.c:2632 ../src/brasero-project.c:2921
+#: ../src/brasero-project.c:2639 ../src/brasero-project.c:2928
 msgid "If you don't save, changes will be permanently lost."
 msgstr "保存しない場合、変更点はすべて失われます。"
 
-#: ../src/brasero-project.c:2636 ../src/brasero-project.c:2642
-#: ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2649
+#: ../src/brasero-project.c:2931
 msgid "Cl_ose Without Saving"
 msgstr "保存せずに閉じる(_O)"
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2731
 msgid "Save Current Project"
 msgstr "プロジェクトの保存"
 
-#: ../src/brasero-project.c:2742
+#: ../src/brasero-project.c:2749
 msgid "Save project as a Brasero audio project"
 msgstr "Brasero 音楽プロジェクトとして保存"
 
-#: ../src/brasero-project.c:2743
+#: ../src/brasero-project.c:2750
 msgid "Save project as a plain text list"
 msgstr "通常のファイルとして保存"
 
-#: ../src/brasero-project.c:2747
+#: ../src/brasero-project.c:2754
 msgid "Save project as a PLS playlist"
 msgstr "PLS プレイリストとして保存"
 
-#: ../src/brasero-project.c:2748
+#: ../src/brasero-project.c:2755
 msgid "Save project as an M3U playlist"
 msgstr "M3U プレイリストとして保存"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2756
 msgid "Save project as an XSPF playlist"
 msgstr "XSPF プレイリストとしてプロジェクトを保存"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2757
 msgid "Save project as an iriver playlist"
 msgstr "iriver プレイリストとしてプロジェクトを保存"
 
@@ -4697,21 +4697,21 @@ msgid "Set the options for file filtering"
 msgstr "フィルタリングする際のオプションを指定します"
 
 #. filter hidden files
-#: ../src/brasero-filter-option.c:63
+#: ../src/brasero-filter-option.c:65
 msgid "Filter _hidden files"
 msgstr "隠しファイルを除く(_H)"
 
 #. replace symlink
-#: ../src/brasero-filter-option.c:70
+#: ../src/brasero-filter-option.c:72
 msgid "Re_place symbolic links"
 msgstr "シンボリックリンクを置き換える(_P)"
 
 #. filter broken symlink button
-#: ../src/brasero-filter-option.c:77
+#: ../src/brasero-filter-option.c:79
 msgid "Filter _broken symbolic links"
 msgstr "リンク切れのシンボリックリンクを除く(_B)"
 
-#: ../src/brasero-filter-option.c:83
+#: ../src/brasero-filter-option.c:85
 msgid "Filtering options"
 msgstr "フィルタリングのオプション"
 
@@ -4799,7 +4799,7 @@ msgstr "書き込み後にディスクの整合性をチェックする"
 #: ../src/brasero-multi-song-props.c:139 ../src/brasero-multi-song-props.c:160
 #: ../src/brasero-multi-song-props.c:173 ../src/brasero-multi-song-props.c:249
 #: ../src/brasero-multi-song-props.c:270 ../src/brasero-multi-song-props.c:291
-#: ../src/brasero-rename.c:90 ../src/brasero-rename.c:319
+#: ../src/brasero-rename.c:90 ../src/brasero-rename.c:321
 msgid "<Keep current values>"
 msgstr "<この値を保持する>"
 
@@ -4815,44 +4815,44 @@ msgstr "タイトル"
 msgid "Additional song information"
 msgstr "追加の音楽情報"
 
-#: ../src/brasero-rename.c:320
+#: ../src/brasero-rename.c:322
 msgid "Insert text"
 msgstr "文字を挿入する"
 
-#: ../src/brasero-rename.c:321
+#: ../src/brasero-rename.c:323
 msgid "Delete text"
 msgstr "文字を削除する"
 
-#: ../src/brasero-rename.c:322
+#: ../src/brasero-rename.c:324
 msgid "Substitute text"
 msgstr "文字を置き換える"
 
-#: ../src/brasero-rename.c:323
+#: ../src/brasero-rename.c:325
 msgid "Number files according to a pattern"
 msgstr "パターンを指定して通番を付与する"
 
-#: ../src/brasero-rename.c:324
+#: ../src/brasero-rename.c:326
 msgid "Insert number sequence at beginning"
 msgstr "先頭に番号を挿入する"
 
 #. Translators: This is a verb. This is completed later
-#: ../src/brasero-rename.c:339
+#: ../src/brasero-rename.c:341
 msgid "Insert"
 msgstr "次の文字を"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
-#: ../src/brasero-rename.c:353
+#: ../src/brasero-rename.c:355
 msgid "at the beginning"
 msgstr "先頭に挿入する"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the end".
-#: ../src/brasero-rename.c:357
+#: ../src/brasero-rename.c:359
 msgid "at the end"
 msgstr "最後に挿入する"
 
-#: ../src/brasero-rename.c:368
+#: ../src/brasero-rename.c:370
 msgid "Delete every occurrence of"
 msgstr "次の文字をすべて削除する"
 
@@ -4860,15 +4860,15 @@ msgstr "次の文字をすべて削除する"
 #. * we'll need a context with C_() macro
 #. Translators: this goes with above verb to say "_Replace" [Entry]
 #. * "with" [Entry].
-#: ../src/brasero-rename.c:398
+#: ../src/brasero-rename.c:400
 msgid "with"
 msgstr ":"
 
-#: ../src/brasero-rename.c:412
+#: ../src/brasero-rename.c:414
 msgid "Rename to"
 msgstr "次のパターンにする:"
 
-#: ../src/brasero-rename.c:421
+#: ../src/brasero-rename.c:423
 msgid "{number}"
 msgstr "{number}"
 
