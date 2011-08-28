@@ -372,7 +372,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_GROWISOFS, test x"$build_growisofs" = "xyes")
 
-BEAGLE_REQUIRED=0.3.0
 TRACKER_REQUIRED=0.10.0
 
 AC_ARG_ENABLE(search,
@@ -382,7 +381,6 @@ AC_ARG_ENABLE(search,
 				"yes")     enable_search="yes" ;;
 				"no")      enable_search="no" ;;
 				"tracker") enable_search="tracker" ;;
-				"beagle")  enable_search="beagle" ;;
 				*)         echo "Unknown option"; exit 2 ;;
 			esac],
 			[enable_search="yes"])
@@ -393,17 +391,7 @@ if test x"$enable_search" = "xtracker"; then
 	AC_DEFINE(BUILD_TRACKER, 1, [define if you  want to use search pane])
 	AC_SUBST(BRASERO_SEARCH_CFLAGS)
 	AC_SUBST(BRASERO_SEARCH_LIBS)
-	build_beagle="no"
 	build_tracker="yes"
-	build_search="yes"
-elif test x"$enable_search" = "xbeagle"; then
-	PKG_CHECK_MODULES(BRASERO_SEARCH, libbeagle-1.0 >= $BEAGLE_REQUIRED)
-	AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
-	AC_DEFINE(BUILD_BEAGLE, 1, [define if you  want to use search pane])
-	AC_SUBST(BRASERO_SEARCH_CFLAGS)
-	AC_SUBST(BRASERO_SEARCH_LIBS)
-	build_beagle="yes"
-	build_tracker="no"
 	build_search="yes"
 elif test x"$enable_search" = "xyes"; then
 	PKG_CHECK_MODULES(BRASERO_SEARCH, tracker-client-0.10 >= $TRACKER_REQUIRED, build_search=yes, build_search=no)
@@ -414,27 +402,13 @@ elif test x"$enable_search" = "xyes"; then
 		AC_SUBST(BRASERO_SEARCH_CFLAGS)
 		AC_SUBST(BRASERO_SEARCH_LIBS)
 
-		build_beagle="no"
 		build_tracker="yes"
-	else 
-		PKG_CHECK_MODULES(BRASERO_SEARCH, libbeagle-1.0 >= $BEAGLE_REQUIRED, build_search=yes, build_search=no)
-		if test x"$build_search" = "xyes"; then
-			AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
-			AC_DEFINE(BUILD_BEAGLE, 1, [define if you  want to use search pane])
-
-			AC_SUBST(BRASERO_SEARCH_CFLAGS)
-			AC_SUBST(BRASERO_SEARCH_LIBS)
-
-			build_beagle="yes"
-			build_tracker="no"
-		fi
 	fi
 else
 	build_search="no"
 fi
 
 AM_CONDITIONAL(BUILD_SEARCH, test x"$build_search" = "xyes")
-AM_CONDITIONAL(BUILD_BEAGLE, test x"$build_beagle" = "xyes")
 AM_CONDITIONAL(BUILD_TRACKER, test x"$build_tracker" = "xyes")
 
 dnl ****************check for playlist (optional)**************

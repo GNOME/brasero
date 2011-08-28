@@ -334,18 +334,6 @@ brasero_search_engine_new_default (void)
 
 #endif
 
-#ifdef BUILD_BEAGLE
-
-#include "brasero-search-beagle.h"
-
-BraseroSearchEngine *
-brasero_search_engine_new_default (void)
-{
-	return g_object_new (BRASERO_TYPE_SEARCH_BEAGLE, NULL);
-}
-
-#endif
-
 #else
 
 BraseroSearchEngine *

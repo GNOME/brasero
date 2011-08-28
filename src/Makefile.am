@@ -137,12 +137,6 @@ brasero_SOURCES += \
 		   brasero-search-tracker.c
 endif
 
-if BUILD_BEAGLE
-brasero_SOURCES += 				\
-		   brasero-search-beagle.h	\
-		   brasero-search-beagle.c
-endif
-
 brasero_LDADD =						\
 	$(top_builddir)/libbrasero-media/libbrasero-media3.la	\
 	$(top_builddir)/libbrasero-burn/libbrasero-burn3.la	\
@@ -165,6 +159,5 @@ EXTRA_DIST =			\
 
 CLEANFILES =			\
 	$(RECMARSHALFILES)
-	
 
 -include $(top_srcdir)/git.mk
