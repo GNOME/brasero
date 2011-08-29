@@ -1,0 +1,55 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="split-track">
+
+  <info>
+    <link type="guide" xref="index#tools"/>
+    <link type="seealso" xref="project-audio"/>
+    <desc>Split an audio project track into multiple tracks</desc>
+    <credit type="author">
+      <name>Ekaterina Gerasimova</name>
+      <email>kittykat3756@googlemail.com</email>
+    </credit>
+    <license>
+      <p>Creative Commons Share Alike 3.0</p>
+    </license>
+  </info>
+
+  <title>Split an audio track</title>
+
+  <p>You can split a single audio track into multiple tracks when you put
+  together an audio project.</p>
+
+  <steps>
+    <item>
+      <p>Start an audio project and add the tracks you wish to use.</p>
+    </item>
+    <item>
+      <p>Select the track you wish to split by clicking on it, then click either
+      <guiseq><gui>Edit</gui><gui>Split Track…</gui></guiseq> or right click on
+      the track and select <gui>Split Track…</gui> from the menu.</p>
+    </item>
+    <item>
+      <p>Select your preferred method of splitting the tracks, and split at the
+      points where you want one to end and the next one to begin.</p>
+      <note>
+        <p>If you try to split a track into a section less than six seconds
+        long, the new section will be padded to make it 6 seconds long. <!--If
+        you try to split a track which is under six seconds long in
+        <app>Brasero</app> version 3.0.0, the track spliter will not work.--></p>
+      </note>
+    </item>
+    <item>
+      <p>Click <gui>OK</gui> to confirm your track splits and apply the changes.</p>
+      <note>
+        <p>You can split and merge the same track as many times as you like,
+        while you are viewing the split track dialog. Once you confirm your
+        track splitting by clicking <gui>OK</gui>, you will no longer be able to
+        merge the sections you have already split off. To revert the changes,
+        remove the split sections of the track from your project and re-add the
+        track.</p>
+      </note>
+    </item>
+  </steps>
+
+</page>
