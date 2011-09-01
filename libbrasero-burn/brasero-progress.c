@@ -244,7 +244,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 		gtk_widget_show_all (table);
 	}
 
-	text = g_format_size_for_display (written);
+	text = g_format_size (written);
 	markup = g_strconcat ("<i>", text, "</i>", NULL);
 	g_free (text);
 

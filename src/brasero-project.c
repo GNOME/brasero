@@ -768,7 +768,7 @@ brasero_project_get_sectors_string (gint64 sectors,
 	}
 	else {
 		size_bytes = sectors * 2048LL;
-		return g_format_size_for_display (size_bytes);
+		return g_format_size (size_bytes);
 	}
 }
 

@@ -186,7 +186,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	vol_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 	g_object_unref (info);
 
-	string_size = g_format_size_for_display (vol_size);
+	string_size = g_format_size (vol_size);
 	/* Translators: the first %s is the path of the directory where brasero
 	 * will store its temporary files; the second one is the size available */
 	string = g_strdup_printf (_("%s: %s free"), path, string_size);

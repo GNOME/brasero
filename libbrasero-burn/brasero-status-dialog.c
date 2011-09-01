@@ -140,7 +140,7 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 	else if (brasero_track_type_get_medium_type (type) & BRASERO_MEDIUM_HAS_AUDIO)
 		size_str = brasero_units_get_time_string (session_bytes, TRUE, FALSE);
 	else
-		size_str = g_format_size_for_display (session_bytes);
+		size_str = g_format_size (session_bytes);
 
 	brasero_track_type_free (type);
 

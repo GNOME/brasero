@@ -250,7 +250,7 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 		||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO)
 			size_string = brasero_units_get_time_string (files_size, TRUE, FALSE);
 		else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
-			size_string = g_format_size_for_display (files_size);
+			size_string = g_format_size (files_size);
 		else
 			return;
 
@@ -272,7 +272,7 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 							 size_string);
 		}
 		else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA) {
-			size_string = g_format_size_for_display (files_size);
+			size_string = g_format_size (files_size);
 			status_string = g_strdup_printf (ngettext ("%d file can be added (%s)", "%d selected files can be added (%s)", valid_num),
 							 valid_num,
 							 size_string);

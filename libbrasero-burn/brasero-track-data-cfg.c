@@ -808,7 +808,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 		else {
 			gchar *text;
 
-			text = g_format_size_for_display (BRASERO_FILE_NODE_SECTORS (node) * 2048);
+			text = g_format_size (BRASERO_FILE_NODE_SECTORS (node) * 2048);
 			g_value_set_string (value, text);
 			g_free (text);
 		}

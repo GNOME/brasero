@@ -712,7 +712,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 							     TRUE,
 							     TRUE);
 	else
-		size_string = g_format_size_for_display (size_bytes - session_bytes);
+		size_string = g_format_size (size_bytes - session_bytes);
 
 	brasero_track_type_free (input);
 

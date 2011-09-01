@@ -251,7 +251,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 
 	/* Deal with size */
 	brasero_track_get_size (BRASERO_TRACK (priv->track), NULL, &bytes);
-	size_string = g_format_size_for_display (bytes);
+	size_string = g_format_size (bytes);
 
 	/* NOTE to translators, the first %s is the path of the image
 	 * file and the second its size. */

@@ -167,7 +167,7 @@ brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
 
 	/* format the size */
 	if (media & BRASERO_MEDIUM_HAS_DATA) {
-		size_string = g_format_size_for_display (size);
+		size_string = g_format_size (size);
 		/* NOTE for translators: the first %s is the medium name, the
 		 * second %s is the space (kio, gio) used by data on the disc.
 		 */
