@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.HEAD.es(3)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-06 18:22+0000\n"
-"PO-Revision-Date: 2011-09-10 12:57+0200\n"
+"POT-Creation-Date: 2011-09-10 10:58+0000\n"
+"PO-Revision-Date: 2011-09-10 13:02+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -530,9 +530,12 @@ msgid "Problem creating a DVD"
 msgstr "Problema al crear un DVD"
 
 #: C/prob-dvd.page:21(p)
+#| msgid ""
+#| "Some types of DVD-Rs and DVD-RWs are not compatible with all burners. "
+#| "Check the following to find out if yours can be used with your burner."
 msgid ""
 "Some types of DVD-Rs and DVD-RWs are not compatible with all burners. Check "
-"the following to find out if yours can be used with your burner."
+"the following to find out if those can be used with your burner."
 msgstr ""
 "Algunos tipos de DVD-R y DVD-RW no son compatibles con todas las grabadoras. "
 "Para saber si éstos son compatibles con su grabadora compruebe lo siguiente."
@@ -558,6 +561,8 @@ msgid ""
 "before. If you are using a DVD-RW, try blanking it before you attempt to "
 "write to it."
 msgstr ""
+"Si está intentando usar un DVD-R, compruebe si ya se ha grabado antes. Si "
+"está usando un DVD-RW, pruebe a borrarlo antes de grabar de nuevo."
 
 #: C/prob-cd.page:9(desc)
 msgid "My MP3s won't play in a DVD or CD player."
@@ -678,7 +683,7 @@ msgstr "Otras herramientas"
 
 #: C/create-cover.page:7(desc)
 msgid "Create an inlay for a jewel case"
-msgstr ""
+msgstr "Crear una carátura para una caja de CD o DVD"
 
 #: C/create-cover.page:17(title)
 msgid "Create a cover"
@@ -690,6 +695,9 @@ msgid ""
 "the creator by clicking <guiseq><gui>Tools</gui><gui>Cover Editor</gui></"
 "guiseq>."
 msgstr ""
+"Puede usar <app>Brasero</app> para crear carátulas para sus cajas de CD o "
+"DVD. Acceda al creador pulsando <guiseq><gui>Herramientas</gui><gui>Editor "
+"de carátulas</gui></guiseq>."
 
 #: C/create-cover.page:24(p)
 msgid ""
@@ -705,20 +713,27 @@ msgid ""
 "<gui>Cover Editor</gui>. If you close the dialog, your changes will be lost, "
 "or you can print the inlay when you are finished."
 msgstr ""
+"No es posible guardar sus cambios una vez que comeinza a trabajar con el "
+"<gui>Editor de carátulas</gui>. Si cierra el diálogo perderá sus cambios, o "
+"puede imprimir la carátula cuando haya acabado."
 
 #: C/create-cover.page:38(p)
 msgid "Open the <gui>Cover Editor</gui>."
 msgstr "Abra el <gui>Editor de carátulas</gui>."
 
 #: C/create-cover.page:41(p)
+#| msgid ""
+#| "Choose the formatting you wish to use for the text and add the text you "
+#| "wish to use, scrolling down to see the side and back inlay for the jewel "
+#| "case."
 msgid ""
-"Choose the formatting you wish to use for the text and add the text you wish "
-"to use, scrolling down to see the side and back inlay for the jewel case."
+"Choose the formatting you wish to use for the text and type the text, "
+"scrolling down to see the side and back inlay for the jewel case."
 msgstr ""
 "Elija el formato que quiere usar para el texto y escríbalo, desplazándose "
 "hacia abajo para ver el lateral y la parte trasera de la caja."
 
-#: C/create-cover.page:45(p)
+#: C/create-cover.page:44(p)
 msgid ""
 "When you first see the <gui>Cover Editor</gui> dialog, you will not be able "
 "to click on any of the text formatting options. Click on the cover you want "
@@ -728,23 +743,20 @@ msgstr ""
 "podrá pulsar en ninguna opción de formateo de texto. Pulse sobre la carátula "
 "en la que quiere trabajar para poder usar las opciones."
 
-#: C/create-cover.page:51(p)
-msgid ""
-"Choose the formatting you with to use for the text and add the text you wish "
-"to use, scrolling down to see the side and back inlay for the jewel case."
-msgstr ""
-"Elija el formato que quiere usar para el texto y escríbalo, desplazándose "
-"hacia abajo para ver el lateral y la parte trasera de la caja."
-
-#: C/create-cover.page:56(p)
+#: C/create-cover.page:50(p)
 msgid ""
 "Click the <gui>Background properties</gui> toolbar icon to add a background "
 "for the current cover, or right click on the cover you wish to edit and "
 "select <gui>Set Background Properties</gui>. You can choose to use a colored "
 "background or to select a background image."
 msgstr ""
+"Para añadir un fondo a la carátula actual, pulse en el icono de "
+"<gui>Propiedades del fondo</gui> en la barra de herramientas, o pulse con el "
+"botón derecho del ratón sobre la carátula que quiere editar y seleccione "
+"<gui>Establecer las propiedades del fondo</gui>. Puede elegir usar un fondo "
+"coloreado o una imagen de fondo."
 
-#: C/create-cover.page:61(p)
+#: C/create-cover.page:55(p)
 msgid ""
 "If you select a centred background image, <app>Brasero</app> sometimes "
 "crashes when you click the <gui>Close</gui> button."
@@ -752,7 +764,7 @@ msgstr ""
 "A veces, <app>Brasero</app> se cuelga al pulsar el botón <gui>Cerrar</gui> "
 "si selecciona una imagen de fondo centrada."
 
-#: C/create-cover.page:64(p)
+#: C/create-cover.page:58(p)
 msgid ""
 "Click the <gui>Close</gui> button to apply the changes and close the "
 "<gui>Background Properties</gui> dialog."
@@ -760,7 +772,7 @@ msgstr ""
 "Pulse el botón <gui>Cerrar</gui> para aplicar los cambios y cerrar el "
 "diálogo <gui>Propiedades del fondo</gui>."
 
-#: C/create-cover.page:68(p)
+#: C/create-cover.page:62(p)
 msgid ""
 "Print the cover using the <gui>Print</gui> button, which is located in the "
 "top-right corner of the dialog."
@@ -774,6 +786,14 @@ msgid "translator-credits"
 msgstr ""
 "Daniel Mustieles <daniel.mustieles@gmail.com>, 2011\n"
 "Jorge González <jorgegonz@svn.gnome.org>, 2011"
+
+#~ msgid ""
+#~ "Choose the formatting you with to use for the text and add the text you "
+#~ "wish to use, scrolling down to see the side and back inlay for the jewel "
+#~ "case."
+#~ msgstr ""
+#~ "Elija el formato que quiere usar para el texto y escríbalo, desplazándose "
+#~ "hacia abajo para ver el lateral y la parte trasera de la caja."
 
 #~ msgid "<application>Brasero</application> Manual V2.2"
 #~ msgstr "Manual de <application>Brasero</application> V2.2"
