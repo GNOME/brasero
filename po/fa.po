@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2011-02-05 16:56+0000\n"
-"PO-Revision-Date: 2011-06-03 05:07+0330\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-07-20 16:43+0000\n"
+"PO-Revision-Date: 2011-09-09 03:09+0330\n"
 "Last-Translator: Arash Mousavi <mousavi.arash@gmail.com>\n"
 "Language-Team: Persian <fa@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -262,7 +262,7 @@ msgid "\"%s\" was removed from the file system."
 msgstr ""
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:129
-#: ../src/brasero-audio-disc.c:753
+#: ../src/brasero-audio-disc.c:754
 #: ../src/brasero-video-disc.c:365
 #, c-format
 msgid "Directories cannot be added to video or audio discs"
@@ -370,7 +370,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-burn-options.c:471
 #: ../nautilus/nautilus-burn-extension.c:240
-#: ../src/brasero-project.c:1273
+#: ../src/brasero-project.c:1275
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-stream.c:402
 #, c-format
@@ -388,7 +388,7 @@ msgid "The file does not appear to be a playlist"
 msgstr "پرونده به‌نظر نمیرسد یک فهرست‌پخش باشد"
 
 #: ../libbrasero-utils/brasero-metadata.c:1135
-#: ../src/brasero-audio-disc.c:642
+#: ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr ""
@@ -498,18 +498,18 @@ msgstr "لطفا به صورت دستی تنظیم کنید"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:155
 msgid "Brasero notification"
-msgstr ""
+msgstr "اعلان برازرو"
 
 #. Translators: This string is used in the title bar %s is the action currently performed
 #: ../libbrasero-burn/brasero-burn-dialog.c:217
 #, c-format
 msgid "%s (%i%% Done)"
-msgstr ""
+msgstr "%s (٪%Ii انجام شده)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:239
 #: ../libbrasero-burn/brasero-burn-dialog.c:1159
 msgid "Creating Image"
-msgstr ""
+msgstr "در حال ساختن تصویر"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:244
 #: ../libbrasero-burn/brasero-burn-dialog.c:1168
@@ -545,7 +545,7 @@ msgstr "درحال رونوشت از دیسک"
 #: ../libbrasero-burn/brasero-burn-dialog.c:298
 #: ../libbrasero-burn/burn-basics.c:78
 msgid "Creating image"
-msgstr ""
+msgstr "در حال ساختن تصویر"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:304
 msgid "Simulation of video DVD burning"
@@ -737,7 +737,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:644
 msgid "Please re-insert the disc in the CD/DVD burner."
-msgstr ""
+msgstr "لطفا دیسک را مجددا وارد سوزاننده‌ی سی‌دی/دی‌وی‌دی کنید."
 
 #. Translators: %s is the name of a drive
 #: ../libbrasero-burn/brasero-burn-dialog.c:648
@@ -754,41 +754,41 @@ msgstr "مطمئن شوید که یک برنامه‌ی دیگر از آن اس�
 #: ../libbrasero-burn/brasero-burn-dialog.c:652
 #, c-format
 msgid "There is no disc in \"%s\"."
-msgstr ""
+msgstr "هیچ دیسکی درون «%s» وجود ندارد."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:656
 #, c-format
 msgid "The disc in \"%s\" is not supported."
-msgstr ""
+msgstr "دیسک درون «%s» پشتیبانی نمی‌شود."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:660
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
-msgstr ""
+msgstr "دیسک درون «%s» قابل بازنویسی نیست."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:664
 #, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr ""
+msgstr "دیسک درون «%s» خالی است."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:668
 #, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr ""
+msgstr "دیسک درون «%s» قابل نوشتن نیست."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:672
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
-msgstr ""
+msgstr "فضای کافی بر روی دیسک درون «%s» وجود ندارد."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:680
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr ""
+msgstr "دیسک درون «%s» لازم است دوباره بار شود."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:681
 msgid "Please eject the disc and reload it."
-msgstr ""
+msgstr "لطفا دیسک را خارج و دوباره بار کنید."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:726
 #: ../libbrasero-burn/brasero-sum-dialog.c:333
@@ -824,12 +824,12 @@ msgstr "_تغییر محل"
 #: ../libbrasero-burn/brasero-burn-dialog.c:771
 #: ../libbrasero-burn/brasero-image-properties.c:459
 msgid "Location for Image File"
-msgstr ""
+msgstr "محل پرونده تصویر"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:779
 #: ../libbrasero-burn/brasero-drive-properties.c:366
 msgid "Location for Temporary Files"
-msgstr ""
+msgstr "محل پرونده‌های موقت"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:887
 #: ../libbrasero-burn/brasero-burn-dialog.c:1133
@@ -863,7 +863,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:951
 msgid "_Import"
-msgstr ""
+msgstr "_وارد کردن"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:952
 msgid "Only _Append"
@@ -940,7 +940,7 @@ msgstr "سوزاندن واقعی دیسک در 10 ثانیه انجام می‌
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1369
 msgid "Burn _Now"
-msgstr ""
+msgstr "هم‌اکنون _بسوزان"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1658
 msgid "Save Current Session"
@@ -958,65 +958,65 @@ msgstr "خطا در هنگام سوزاندن."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1749
 msgid "_Save Log"
-msgstr ""
+msgstr "_ذخیره وقایع"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1784
 msgid "Video DVD successfully burned"
-msgstr ""
+msgstr "دی‌وی‌دی ویدئو با موفقیت سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "(S)VCD successfully burned"
-msgstr ""
+msgstr "(اس)‌وی‌سی‌دی با موفقیت سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1789
 msgid "Audio CD successfully burned"
-msgstr ""
+msgstr "سی‌دی صوتی با موفقیت سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1791
 #: ../libbrasero-burn/brasero-burn-dialog.c:1822
 msgid "Image successfully created"
-msgstr ""
+msgstr "تصویر با موفقیت ساخته شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1796
 msgid "DVD successfully copied"
-msgstr ""
+msgstr "دی‌وی‌دی با موفقیت رونوشت شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1798
 msgid "CD successfully copied"
-msgstr ""
+msgstr "سی‌دی با موفقیت رونوشت شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1802
 msgid "Image of DVD successfully created"
-msgstr ""
+msgstr "تصویر دی‌وی‌دی با موفقیت ساخته شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1804
 msgid "Image of CD successfully created"
-msgstr ""
+msgstr "تصویر سی‌دی با موفقیت ساخته شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1810
 msgid "Image successfully burned to DVD"
-msgstr ""
+msgstr "تصویر با موفقیت در دی‌وی‌دی سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1812
 msgid "Image successfully burned to CD"
-msgstr ""
+msgstr "تصویر با موفقیت در سی‌دی سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1818
 msgid "Data DVD successfully burned"
-msgstr ""
+msgstr "دی‌وی‌دی اطلاعات با موفقیت سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1820
 msgid "Data CD successfully burned"
-msgstr ""
+msgstr "سی‌دی اطلاعات با موفقیت سوزانده شد"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1879
 #, c-format
 msgid "Copy #%i has been burned successfully."
-msgstr ""
+msgstr "رونوشت #Ii با موفقیت سوزانده شده است."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1887
 msgid "Another copy will start as soon as you insert a new writable disc. If you do not want to burn another copy, press \"Cancel\"."
-msgstr ""
+msgstr "رونوشت دیگر به محض اینکه یک دیسک قابل نوشتن را وارد کنید شروع می‌شود. اگر نمی‌خواهید رونوشت دیگری تهیه کنید، دکمه «لغو» را فشار دهید."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1961
 msgid "Make _More Copies"
@@ -1070,12 +1070,12 @@ msgstr "_لغو سوزاندن"
 #: ../libbrasero-burn/brasero-burn-options.c:228
 #: ../src/brasero-project.c:1018
 msgid "Please insert a writable CD or DVD if you don't want to write to an image file."
-msgstr ""
+msgstr "لطفا یک سی‌دی یا دی‌وی‌دی قابل نوشتن را در صورتی که می‌خواهید پرونده تصویر بسازید، وارد کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302
-#: ../src/brasero-project.c:1591
+#: ../src/brasero-project.c:1593
 msgid "Create _Image"
-msgstr ""
+msgstr "ساخت _تصویر"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:307
@@ -1088,14 +1088,14 @@ msgstr "تهیه _تعدادی رونوشت"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:314
-#: ../src/brasero-project.c:1520
+#: ../src/brasero-project.c:1522
 msgid "_Burn"
 msgstr "_سوزاندن"
 
 #: ../libbrasero-burn/brasero-burn-options.c:317
-#: ../src/brasero-project.c:1517
+#: ../src/brasero-project.c:1519
 msgid "Burn _Several Copies"
-msgstr ""
+msgstr "سوزندان _تعدادی رونوشت"
 
 #: ../libbrasero-burn/brasero-burn-options.c:426
 #: ../src/brasero-project.c:947
@@ -1110,17 +1110,17 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-options.c:432
 #: ../src/brasero-project.c:952
 msgid "_Burn Several Discs"
-msgstr ""
+msgstr "_سوزاندن تعدادی دیسک"
 
 #: ../libbrasero-burn/brasero-burn-options.c:434
 #: ../src/brasero-project.c:954
 msgid "Burn the selection of files across several media"
-msgstr ""
+msgstr "سوزاندن پرونده‌های انتخاب شده در تعدادی رسانه"
 
 #: ../libbrasero-burn/brasero-burn-options.c:443
 #: ../src/brasero-project.c:963
 msgid "Please choose another CD or DVD or insert a new one."
-msgstr ""
+msgstr "لطفا یک سی‌دی یا دی‌وی‌دی دیگر انتخاب، یا یک مورد جدید وارد کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:457
 #: ../src/brasero-project.c:1008
@@ -1135,36 +1135,36 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-options.c:470
 #: ../nautilus/nautilus-burn-extension.c:239
 msgid "Please add files."
-msgstr ""
+msgstr "لطفا پرونده‌هایی اضافه کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:476
 msgid "Please add songs."
-msgstr ""
+msgstr "لطفا آهنگ‌هایی اضافه کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:477
-#: ../src/brasero-project.c:1264
+#: ../src/brasero-project.c:1266
 msgid "There are no songs to write to disc"
-msgstr ""
+msgstr "هیچ آهنگی برای نوشتن درون دیسک وجود ندارد"
 
 #: ../libbrasero-burn/brasero-burn-options.c:482
 msgid "Please add videos."
-msgstr ""
+msgstr "لطفا ویدئوهایی اضافه کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:483
 msgid "There are no videos to write to disc"
-msgstr ""
+msgstr "هیچ ویدئویی برای نوشتن در دیسک وجود ندارد"
 
 #: ../libbrasero-burn/brasero-burn-options.c:495
 msgid "There is no inserted disc to copy."
-msgstr ""
+msgstr "هیچ دیسک برای رونوشت وارد نشده."
 
 #: ../libbrasero-burn/brasero-burn-options.c:504
 msgid "Please select a disc image."
-msgstr ""
+msgstr "لطفا یک تصویر دیسک انتخاب کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:505
 msgid "There is no selected disc image."
-msgstr ""
+msgstr "هیچ تصویر دیسک انتخاب شده‌ای وجود ندارد."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
@@ -1172,26 +1172,26 @@ msgstr ""
 #: ../libbrasero-burn/brasero-src-image.c:167
 msgctxt "disc"
 msgid "Please select another image."
-msgstr ""
+msgstr "لطفا یک تصویر دیگر انتخاب کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:516
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
-msgstr ""
+msgstr "این یک تصویر دیسک معتبر یا یک پرونده راهنما بنظر نمی‌رسد."
 
 #: ../libbrasero-burn/brasero-burn-options.c:525
 msgid "Please insert a disc that is not copy protected."
-msgstr ""
+msgstr "لطفا یک دیسک که در برابر رونوشت محافظت نشده را وارد کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1441
+#: ../src/brasero-project.c:1443
 msgid "All required applications and libraries are not installed."
-msgstr ""
+msgstr "تمام برنامه‌ها و کتابخانه‌های لازم نصب نشده‌اند."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
 #: ../src/brasero-project.c:1001
 msgid "Please replace the disc with a supported CD or DVD."
-msgstr ""
+msgstr "لطفا دیسک را با یک سی‌دی یا دی‌وی‌دی پشتیبانی شده تعویض کنید."
 
 #: ../libbrasero-burn/brasero-burn-options.c:542
 #: ../src/brasero-project.c:974
@@ -1225,18 +1225,18 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-options.c:650
 msgid "Select a disc to write to"
-msgstr ""
+msgstr "یک دیسک برای نوشتن در آن انتخاب کنید"
 
 #: ../libbrasero-burn/brasero-burn-options.c:730
 #: ../libbrasero-burn/brasero-burn-options.c:748
 #: ../libbrasero-burn/brasero-burn-options.c:868
 msgid "Disc Burning Setup"
-msgstr ""
+msgstr "برپاسازی سوزاندن دیسک"
 
 #: ../libbrasero-burn/brasero-burn-options.c:757
-#: ../src/brasero-project.c:1540
+#: ../src/brasero-project.c:1542
 msgid "Video Options"
-msgstr ""
+msgstr "گزینه‌های ویدئو"
 
 #: ../libbrasero-burn/brasero-burn-options.c:788
 #: ../src/brasero-data-disc.c:613
@@ -1251,80 +1251,80 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-options.c:802
 msgid "Burn as _File"
-msgstr ""
+msgstr "سوزاندن به عنوان _پرونده"
 
 #: ../libbrasero-burn/brasero-burn-options.c:804
 msgid "Burn _Contents…"
-msgstr ""
+msgstr "سوزندان _محتویات..."
 
 #: ../libbrasero-burn/brasero-burn-options.c:886
 msgid "Image Burning Setup"
-msgstr ""
+msgstr "برپاسازی سوزاندن تصویر"
 
 #. pack everything
 #: ../libbrasero-burn/brasero-burn-options.c:894
 msgid "Select a disc image to write"
-msgstr ""
+msgstr "یک تصویر دیسک برای نوشتن انتخاب کنید"
 
 #: ../libbrasero-burn/brasero-burn-options.c:914
 msgid "Copy CD/DVD"
-msgstr ""
+msgstr "رونوشت سی‌دی/‌دی‌وی‌دی"
 
 #: ../libbrasero-burn/brasero-burn-options.c:920
 msgid "Select disc to copy"
-msgstr ""
+msgstr "انتخاب دیسک برای رونشت"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn-options.c:1180
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../src/brasero-project.c:1381
+#: ../src/brasero-project.c:1383
 #, c-format
 msgid "%s (application)"
-msgstr ""
+msgstr "%s (برنامه)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn-options.c:1186
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../src/brasero-project.c:1387
+#: ../src/brasero-project.c:1389
 #, c-format
 msgid "%s (library)"
-msgstr ""
+msgstr "%s (کتابخانه)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn-options.c:1191
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../src/brasero-project.c:1392
+#: ../src/brasero-project.c:1394
 #, c-format
 msgid "%s (GStreamer plugin)"
-msgstr ""
+msgstr "%s (افزونه‌ی GStreamer)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1435
+#: ../src/brasero-project.c:1437
 msgid "Please install the following manually and try again:"
-msgstr ""
+msgstr "لطفا مورد مقابل را بصورت دستی نصب و مجددا تلاش کنید:"
 
 #: ../libbrasero-burn/brasero-burn.c:162
 msgid "Burning CD/DVD"
-msgstr ""
+msgstr "در حال سوزاندن سی‌دی/دی‌وی‌دی"
 
 #: ../libbrasero-burn/brasero-burn.c:409
 #, c-format
 msgid "\"%s\" cannot be unlocked"
-msgstr ""
+msgstr "قفل «%s» نمی‌تواند باز باشد"
 
 #: ../libbrasero-burn/brasero-burn.c:546
 #: ../libbrasero-burn/brasero-burn.c:678
 #: ../libbrasero-burn/brasero-burn.c:761
 msgid "No burner specified"
-msgstr ""
+msgstr "هیچ سوزاننده‌ای مشخص نشده"
 
 #: ../libbrasero-burn/brasero-burn.c:586
 msgid "No source drive specified"
-msgstr ""
+msgstr "هیچ دیسک‌گردان مرجعی مشخص نشده"
 
 #: ../libbrasero-burn/brasero-burn.c:632
 msgid "Ongoing copying process"
-msgstr ""
+msgstr "فرآیند رونوشت در حال پیشرفت"
 
 #: ../libbrasero-burn/brasero-burn.c:636
 #: ../libbrasero-burn/brasero-burn.c:735
@@ -1574,7 +1574,7 @@ msgid "Cdrdao image"
 msgstr ""
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1499
+#: ../src/brasero-project.c:1501
 #, c-format
 msgid "Properties of %s"
 msgstr ""
@@ -1612,17 +1612,17 @@ msgstr ""
 
 #. Translators: first %02i is hours, the second one is minutes
 #. * and the third one is seconds.
-#: ../libbrasero-burn/brasero-progress.c:436
+#: ../libbrasero-burn/brasero-progress.c:437
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr ""
 
-#: ../libbrasero-burn/brasero-progress.c:478
+#: ../libbrasero-burn/brasero-progress.c:479
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr ""
 
-#: ../libbrasero-burn/brasero-progress.c:504
+#: ../libbrasero-burn/brasero-progress.c:505
 msgid "Estimated drive speed:"
 msgstr ""
 
@@ -1661,7 +1661,7 @@ msgstr ""
 #: ../nautilus/nautilus-burn-bar.c:236
 #: ../src/brasero-project-name.c:162
 #: ../src/brasero-file-chooser.c:350
-#: ../src/brasero-project.c:2219
+#: ../src/brasero-project.c:2221
 msgid "All files"
 msgstr ""
 
@@ -1872,55 +1872,55 @@ msgstr ""
 msgid "Background Properties"
 msgstr ""
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:585
+#: ../libbrasero-utils/brasero-jacket-edit.c:589
 msgid "Print"
 msgstr "چاپ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:597
+#: ../libbrasero-utils/brasero-jacket-edit.c:601
 msgid "Bac_kground Properties"
 msgstr ""
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:600
+#: ../libbrasero-utils/brasero-jacket-edit.c:604
 msgid "Background properties"
 msgstr ""
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:615
+#: ../libbrasero-utils/brasero-jacket-edit.c:619
 msgid "Align right"
 msgstr "تراز به راست"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:625
+#: ../libbrasero-utils/brasero-jacket-edit.c:629
 msgid "Center"
 msgstr "وسط"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:635
+#: ../libbrasero-utils/brasero-jacket-edit.c:639
 msgid "Align left"
 msgstr "تراز به چپ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:649
+#: ../libbrasero-utils/brasero-jacket-edit.c:653
 msgid "Underline"
 msgstr "زیرخط دار"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:659
+#: ../libbrasero-utils/brasero-jacket-edit.c:663
 msgid "Italic"
 msgstr "کج"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:669
+#: ../libbrasero-utils/brasero-jacket-edit.c:673
 msgid "Bold"
 msgstr "پُر رنگ"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:695
+#: ../libbrasero-utils/brasero-jacket-edit.c:699
 msgid "Font family and size"
 msgstr "خانواده قلم و اندازه"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:702
+#: ../libbrasero-utils/brasero-jacket-edit.c:706
 msgid "_Text Color"
 msgstr "_رنگ متن"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:703
+#: ../libbrasero-utils/brasero-jacket-edit.c:707
 msgid "Text color"
 msgstr "رنگ متن"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:826
+#: ../libbrasero-utils/brasero-jacket-edit.c:830
 msgid "Cover Editor"
 msgstr ""
 
@@ -2079,7 +2079,7 @@ msgstr "پرونده تصویر"
 #: ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
-msgstr ""
+msgstr "این بنظر یک تصویر ISO معتبر به نظر نمی‌رسد"
 
 #: ../libbrasero-media/brasero-medium.c:65
 msgid "File"
@@ -2376,7 +2376,7 @@ msgstr ""
 #: ../nautilus/nautilus-burn-bar.c:242
 #: ../src/brasero-project-name.c:168
 #: ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2244
+#: ../src/brasero-project.c:2246
 msgctxt "picture"
 msgid "Image files"
 msgstr "پرونده‌های تصویر"
@@ -2535,7 +2535,7 @@ msgstr ""
 #: ../src/brasero-app.c:829
 #: ../src/brasero-app.c:858
 #: ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1272
+#: ../src/brasero-project.c:1274
 msgid "Please add files to the project."
 msgstr ""
 
@@ -2814,100 +2814,100 @@ msgstr ""
 msgid "Split"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:417
+#: ../src/brasero-audio-disc.c:418
 msgid "Track"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:457
-#: ../src/brasero-video-disc.c:1204
+#: ../src/brasero-audio-disc.c:458
+#: ../src/brasero-video-disc.c:1206
 msgid "Title"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:479
+#: ../src/brasero-audio-disc.c:480
 msgid "Artist"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:487
-#: ../src/brasero-playlist.c:771
+#: ../src/brasero-audio-disc.c:488
+#: ../src/brasero-playlist.c:772
 #: ../src/brasero-split-dialog.c:1219
 msgid "Length"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:584
+#: ../src/brasero-audio-disc.c:585
 msgid "The track will be padded at its end."
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:585
+#: ../src/brasero-audio-disc.c:586
 msgid "The track is shorter than 6 seconds"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:645
+#: ../src/brasero-audio-disc.c:646
 msgid "Make sure the appropriate codec is installed"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:661
+#: ../src/brasero-audio-disc.c:662
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:670
+#: ../src/brasero-audio-disc.c:671
 msgid "This file is a video and therefore only the audio part can be written to the disc."
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:673
+#: ../src/brasero-audio-disc.c:674
 msgid "_Discard File"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:676
+#: ../src/brasero-audio-disc.c:677
 msgid "_Add File"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:747
+#: ../src/brasero-audio-disc.c:748
 msgid "Do you want to search for audio files inside the directory?"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:757
+#: ../src/brasero-audio-disc.c:758
 msgid "Search _Directory"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:811
+#: ../src/brasero-audio-disc.c:812
 #: ../src/brasero-video-disc.c:395
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:856
+#: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:857
+#: ../src/brasero-audio-disc.c:858
 msgid ""
 "Some of the selected songs are suitable for creating DTS tracks.\n"
 "This type of audio CD track provides a higher quality of sound but can only be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:866
+#: ../src/brasero-audio-disc.c:867
 msgid "Create _Regular Tracks"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:868
+#: ../src/brasero-audio-disc.c:869
 msgid "Click here to burn all songs as regular tracks"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:871
+#: ../src/brasero-audio-disc.c:872
 msgid "Create _DTS Tracks"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:873
+#: ../src/brasero-audio-disc.c:874
 msgid "Click here to burn all suitable songs as DTS tracks"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:1289
+#: ../src/brasero-audio-disc.c:1290
 msgid "Select one song only please."
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:1290
+#: ../src/brasero-audio-disc.c:1291
 msgid "Impossible to split more than one song at a time"
 msgstr ""
 
@@ -2957,7 +2957,7 @@ msgstr ""
 
 #: ../src/brasero-playlist.c:393
 #: ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2614
+#: ../src/brasero-project.c:2621
 #: ../libbrasero-burn/brasero-sum-dialog.c:166
 #: ../src/brasero-eject-dialog.c:100
 msgid "An unknown error occurred"
@@ -2974,15 +2974,15 @@ msgstr[0] "%Id آهنگ"
 msgid "Select Playlist"
 msgstr "انتخاب فهرست پخش"
 
-#: ../src/brasero-playlist.c:750
+#: ../src/brasero-playlist.c:751
 msgid "Playlists"
 msgstr "فهرست‌های پخش"
 
-#: ../src/brasero-playlist.c:761
+#: ../src/brasero-playlist.c:762
 msgid "Number of Songs"
 msgstr "تعداد آهنگ‌ها"
 
-#: ../src/brasero-playlist.c:781
+#: ../src/brasero-playlist.c:782
 msgid "Genre"
 msgstr ""
 
@@ -3000,12 +3000,12 @@ msgid "Copyright %s"
 msgstr "حق رونوشت %s"
 
 #: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:966
+#: ../src/brasero-plugin-manager-ui.c:967
 msgid "_About"
 msgstr "_راهنما"
 
 #: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:972
+#: ../src/brasero-plugin-manager-ui.c:973
 msgid "C_onfigure"
 msgstr "_پیکربندی"
 
@@ -3216,7 +3216,7 @@ msgstr ""
 #. * Replace is a verb
 #. Translators: this is a verb
 #: ../src/brasero-data-disc.c:792
-#: ../src/brasero-rename.c:383
+#: ../src/brasero-rename.c:385
 msgid "_Replace"
 msgstr ""
 
@@ -3330,31 +3330,31 @@ msgstr "_تغییر نام"
 msgid "Renaming mode"
 msgstr ""
 
-#: ../src/brasero-data-disc.c:2335
+#: ../src/brasero-data-disc.c:2336
 #: ../src/brasero-file-filtered.c:256
 msgid "Files"
 msgstr "پرونده‌ها"
 
-#: ../src/brasero-data-disc.c:2349
-#: ../src/brasero-video-disc.c:1222
+#: ../src/brasero-data-disc.c:2350
+#: ../src/brasero-video-disc.c:1224
 msgid "Size"
 msgstr "اندازه"
 
-#: ../src/brasero-data-disc.c:2363
+#: ../src/brasero-data-disc.c:2364
 msgid "Description"
 msgstr "توضیحات"
 
-#: ../src/brasero-data-disc.c:2379
+#: ../src/brasero-data-disc.c:2380
 msgid "Space"
 msgstr "فضا"
 
 #: ../src/brasero-file-chooser.c:357
-#: ../src/brasero-project.c:2224
+#: ../src/brasero-project.c:2226
 msgid "Audio files"
 msgstr "پرونده‌های صوتی"
 
 #: ../src/brasero-file-chooser.c:365
-#: ../src/brasero-project.c:2233
+#: ../src/brasero-project.c:2235
 msgid "Movies"
 msgstr "فیلم‌ها"
 
@@ -3391,7 +3391,7 @@ msgstr ""
 msgid "Set a vertical layout"
 msgstr ""
 
-#: ../src/brasero-layout.c:1180
+#: ../src/brasero-layout.c:1183
 msgid "Click to close the side pane"
 msgstr ""
 
@@ -3431,7 +3431,7 @@ msgstr ""
 
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:202
-#: ../src/brasero-project.c:2306
+#: ../src/brasero-project.c:2308
 msgid "E_mpty Project"
 msgstr ""
 
@@ -3440,7 +3440,7 @@ msgid "Remove all files from the project"
 msgstr ""
 
 #: ../src/brasero-project.c:204
-#: ../src/brasero-project.c:1082
+#: ../src/brasero-project.c:1084
 msgid "_Burn…"
 msgstr ""
 
@@ -3473,136 +3473,136 @@ msgid ""
 "Note: This option might cause failure."
 msgstr ""
 
-#: ../src/brasero-project.c:1094
+#: ../src/brasero-project.c:1096
 msgid "Start to burn the contents of the selection"
 msgstr ""
 
-#: ../src/brasero-project.c:1263
+#: ../src/brasero-project.c:1265
 msgid "Please add songs to the project."
 msgstr ""
 
-#: ../src/brasero-project.c:1900
-#: ../src/brasero-project.c:1935
+#: ../src/brasero-project.c:1902
+#: ../src/brasero-project.c:1937
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr ""
 
-#: ../src/brasero-project.c:1905
+#: ../src/brasero-project.c:1907
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr ""
 
-#: ../src/brasero-project.c:1908
+#: ../src/brasero-project.c:1910
 msgid "_Discard Changes"
 msgstr ""
 
-#: ../src/brasero-project.c:1916
+#: ../src/brasero-project.c:1918
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
 
-#: ../src/brasero-project.c:1921
-#: ../src/brasero-project.c:1940
+#: ../src/brasero-project.c:1923
+#: ../src/brasero-project.c:1942
 msgid "If you choose to create a new empty project, the file selection will be discarded."
 msgstr ""
 
-#: ../src/brasero-project.c:1923
+#: ../src/brasero-project.c:1925
 msgid "_Discard File Selection"
 msgstr ""
 
-#: ../src/brasero-project.c:1927
+#: ../src/brasero-project.c:1929
 msgid "_Keep File Selection"
 msgstr ""
 
-#: ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1944
 msgid "_Discard Project"
 msgstr ""
 
-#: ../src/brasero-project.c:2182
+#: ../src/brasero-project.c:2184
 msgid "Select Files"
 msgstr ""
 
-#: ../src/brasero-project.c:2295
+#: ../src/brasero-project.c:2297
 msgid "Do you really want to empty the current project?"
 msgstr ""
 
-#: ../src/brasero-project.c:2300
+#: ../src/brasero-project.c:2302
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr ""
 
-#: ../src/brasero-project.c:2357
+#: ../src/brasero-project.c:2364
 msgid "_Save"
 msgstr ""
 
-#: ../src/brasero-project.c:2368
+#: ../src/brasero-project.c:2375
 msgid "_Add"
 msgstr ""
 
-#: ../src/brasero-project.c:2373
+#: ../src/brasero-project.c:2380
 #: ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr ""
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2437
+#: ../src/brasero-project.c:2444
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr ""
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2440
+#: ../src/brasero-project.c:2447
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr ""
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2443
+#: ../src/brasero-project.c:2450
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr ""
 
-#: ../src/brasero-project.c:2613
-#: ../src/brasero-project.c:2916
+#: ../src/brasero-project.c:2620
+#: ../src/brasero-project.c:2923
 msgid "Your project has not been saved."
 msgstr ""
 
-#: ../src/brasero-project.c:2627
+#: ../src/brasero-project.c:2634
 msgid "Save the changes of current project before closing?"
 msgstr ""
 
-#: ../src/brasero-project.c:2632
-#: ../src/brasero-project.c:2921
+#: ../src/brasero-project.c:2639
+#: ../src/brasero-project.c:2928
 msgid "If you don't save, changes will be permanently lost."
 msgstr ""
 
-#: ../src/brasero-project.c:2636
-#: ../src/brasero-project.c:2642
-#: ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2643
+#: ../src/brasero-project.c:2649
+#: ../src/brasero-project.c:2931
 msgid "Cl_ose Without Saving"
 msgstr ""
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2731
 msgid "Save Current Project"
 msgstr ""
 
-#: ../src/brasero-project.c:2742
+#: ../src/brasero-project.c:2749
 msgid "Save project as a Brasero audio project"
 msgstr ""
 
-#: ../src/brasero-project.c:2743
+#: ../src/brasero-project.c:2750
 msgid "Save project as a plain text list"
 msgstr ""
 
-#: ../src/brasero-project.c:2747
+#: ../src/brasero-project.c:2754
 msgid "Save project as a PLS playlist"
 msgstr ""
 
-#: ../src/brasero-project.c:2748
+#: ../src/brasero-project.c:2755
 msgid "Save project as an M3U playlist"
 msgstr ""
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2756
 msgid "Save project as an XSPF playlist"
 msgstr ""
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2757
 msgid "Save project as an iriver playlist"
 msgstr ""
 
@@ -3641,12 +3641,12 @@ msgstr ""
 
 #: ../src/brasero-project-manager.c:103
 msgid "New _Data Project"
-msgstr ""
+msgstr "پروژه _اطلاعات جدید"
 
 #: ../src/brasero-project-manager.c:104
 #: ../src/brasero-project-type-chooser.c:81
 msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
-msgstr ""
+msgstr "ساخت یک سی‌دی/دی‌وی‌دی حاوی هر نوع اطلاعاتی که فقط از طریق رایانه قابل خواندن باشد"
 
 #: ../src/brasero-project-manager.c:105
 msgid "New _Video Project"
@@ -3659,7 +3659,7 @@ msgstr ""
 
 #: ../src/brasero-project-manager.c:107
 msgid "Copy _Disc…"
-msgstr ""
+msgstr "رونوشت _دیسک..."
 
 #: ../src/brasero-project-manager.c:108
 #: ../src/brasero-project-type-chooser.c:91
@@ -4556,21 +4556,21 @@ msgid "Set the options for file filtering"
 msgstr ""
 
 #. filter hidden files
-#: ../src/brasero-filter-option.c:63
+#: ../src/brasero-filter-option.c:65
 msgid "Filter _hidden files"
 msgstr ""
 
 #. replace symlink
-#: ../src/brasero-filter-option.c:70
+#: ../src/brasero-filter-option.c:72
 msgid "Re_place symbolic links"
 msgstr ""
 
 #. filter broken symlink button
-#: ../src/brasero-filter-option.c:77
+#: ../src/brasero-filter-option.c:79
 msgid "Filter _broken symbolic links"
 msgstr ""
 
-#: ../src/brasero-filter-option.c:83
+#: ../src/brasero-filter-option.c:85
 msgid "Filtering options"
 msgstr ""
 
@@ -4664,7 +4664,7 @@ msgstr ""
 #: ../src/brasero-multi-song-props.c:270
 #: ../src/brasero-multi-song-props.c:291
 #: ../src/brasero-rename.c:90
-#: ../src/brasero-rename.c:319
+#: ../src/brasero-rename.c:321
 msgid "<Keep current values>"
 msgstr ""
 
@@ -4675,50 +4675,50 @@ msgstr ""
 
 #: ../src/brasero-multi-song-props.c:213
 msgid "Song titles"
-msgstr ""
+msgstr "عناوین آهنگ"
 
 #: ../src/brasero-multi-song-props.c:230
 msgid "Additional song information"
 msgstr ""
 
-#: ../src/brasero-rename.c:320
+#: ../src/brasero-rename.c:322
 msgid "Insert text"
 msgstr "وارد کردن متن"
 
-#: ../src/brasero-rename.c:321
+#: ../src/brasero-rename.c:323
 msgid "Delete text"
 msgstr "پاک‌کردن متن"
 
-#: ../src/brasero-rename.c:322
+#: ../src/brasero-rename.c:324
 msgid "Substitute text"
 msgstr ""
 
-#: ../src/brasero-rename.c:323
+#: ../src/brasero-rename.c:325
 msgid "Number files according to a pattern"
 msgstr ""
 
-#: ../src/brasero-rename.c:324
+#: ../src/brasero-rename.c:326
 msgid "Insert number sequence at beginning"
 msgstr ""
 
 #. Translators: This is a verb. This is completed later
-#: ../src/brasero-rename.c:339
+#: ../src/brasero-rename.c:341
 msgid "Insert"
 msgstr "وارد کردن"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
-#: ../src/brasero-rename.c:353
+#: ../src/brasero-rename.c:355
 msgid "at the beginning"
 msgstr "در زمان شروع"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the end".
-#: ../src/brasero-rename.c:357
+#: ../src/brasero-rename.c:359
 msgid "at the end"
 msgstr "در زمان پایان"
 
-#: ../src/brasero-rename.c:368
+#: ../src/brasero-rename.c:370
 msgid "Delete every occurrence of"
 msgstr "پاک‌کردن هر گونه رخ داد"
 
@@ -4726,15 +4726,15 @@ msgstr "پاک‌کردن هر گونه رخ داد"
 #. * we'll need a context with C_() macro
 #. Translators: this goes with above verb to say "_Replace" [Entry]
 #. * "with" [Entry].
-#: ../src/brasero-rename.c:398
+#: ../src/brasero-rename.c:400
 msgid "with"
 msgstr "با"
 
-#: ../src/brasero-rename.c:412
+#: ../src/brasero-rename.c:414
 msgid "Rename to"
 msgstr "تغییرنام به"
 
-#: ../src/brasero-rename.c:421
+#: ../src/brasero-rename.c:423
 msgid "{number}"
 msgstr ""
 
