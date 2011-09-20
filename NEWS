@@ -1,205 +1,49 @@
-04/04/2011
-
-Stable release (3.0.0)
-
-- Bump to 3.0.0 (Luis Medinas)
-- Updated Japanese translation. (Jiro Matsuzawa)
-- Updated Esperanto translation (Kristjan SCHMIDT)
-- [l10n]Fixes on Catalan translation (Jordi Serratosa)
-- Updated Japanese translation. (Takayuki KUSANO)
-- Updated kn translations (Shankar Prasad)
-- Updated Gujarati Translations (Sweta Kothari)
-- hindi updated (Rajesh Ranjan)
-- Updated Danish translation (Kris Thomsen)
-- Added UG translation (Abduxukur Abdurixit)
-- Updated Tamil translation (Dr.T.Vasudevan)
-- Updated Tamil translation (Dr.T.Vasudevan)
-- update tranlation for Punjabi by A S Alam (A S Alam)
-- Updated Hebrew translation. (Yaron Shahrabani)
-- Updated Swedish translation (Daniel Nylander)
-
-25/03/2011
-
-Development release (2.91.93)
-
-- Use /opt/gnome for schemas instead of /apps (Luis Medinas)
-- Updated Assamese translations (Amitakhya Phukan)
-- Updated Brazilian Portuguese translation (Rodrigo Padula de Oliveira)
-- Updated Marathi Translations (Sandeep Shedmake)
-- [l10n] Updated Italian translation (Milo Casagrande)
-- Add new app icons (William Jon McCann)
-- Updated Slovak translation (Marián Bača)
-- Updated Serbian translation (Милош Поповић)
-- Updated Bengali India Translation (Runa Bhattacharjee)
-- Updated Arabic translation (Khaled Hosny)
-- Updated British English translation (Bruce Cowan)
-- Updated Romanian translation (Lucian Adrian Grijincu)
-- Updated Portuguese translation (António Lima)
-- Really remove Brasero nautilus extension from application list. (Luis Medinas)
-- Don't add CD/DVD creator to Applications list fixes bgo #643984 (Luis Medinas)
-- Updated Polish translation (Piotr Drąg)
-- DOAP: fix download location (Olav Vitters)
-
-8/03/2011
-
-Development release (2.91.91)
-
-Rudolfs Mazurs <rudolfs.mazurs@gmail.com>: Updated Latvian translation.
-Manoj Kumar Giri <mgiri@redhat.com>: Updated Oriya Translation
-Shankar Prasad <svenkate@redhat.com>: updated kn translations
-Sweta Kothari <swkothar@redhat.com>: Updated Gujarati Translations
-Joan Duran <jodufi@gmail.com>: [l10n] Updated Catalan translation
-Changwoo Ryu <cwryu@debian.org>: Updated Korean translation
-Daniel Korostil <ted.korostiled@gmail.com>: Uploaded Ukranian
-Aron Xu <aronxu@gnome.org> : Update Simplified Chinese translation.
-Bruno Brouard <annoa.b@gmail.com>: Updated French translation
-
-
-21/02/2011
-
-Development release (2.91.90)
-
-- Fix packagekit integration (Marc Deslauriers)
-- Fix Bug 642913 - ‘NautilusMenuProviderIface’ has no member named 
-‘get_toolbar_items’ (Luis Medinas)
-- Update configure to match GTK+ 3.0.0 GLIB 2.18 and Nautilus 3.0 (Luis Medinas)
-- Updated Slovenian translation (Matej Urbančič)
-- Updated Norwegian bokmål translation. (Kjartan Maraas)
-- Updated Dutch translation by Wouter Bolsterlee (Wouter Bolsterlee)
-- update kn translation (Shankar Prasad)
-- Updated Asturian translation (Xandru Armesto)
-- Updated Gujarati Translations (Sweta Kothari)
-- Updated Indonesian translation (Dirgita)
-- Fix Bug 641407 - libbrasero-media3.pc doesn't work (Luis Medinas)
-- Fixed a small warning (Philippe Rouquier)
-
-10/01/2011
-
-Development release (2.91.6)
-
-Some more changes to make a better use of GTK+3 (Philippe Rouquier)
-Brasero has been added to the utility and core categories. (Philippe Rouquier)
-Warnings appearing with gcc 3.4.6 have been fixed. (Philippe Rouquier)
-The search pane was removed as it has been made useless by the fact the stock GtkFileChooser widget already integrates with tracker. (Philippe Rouquier)
-Fix build and require ICE in configure (Cosimo Cecchi <cosimoc@gnome.org>)
-
-Translations:
-Fran Diéguez <fran.dieguez@mabishu.com>: QA of Galician translations
-Kjartan Maraas <kmaraas@gnome.org>: Updated Norwegian bokmål translation
-Daniel Nylander <po@danielnylander.se>: Updated Swedish translation
-Yuri Myasoedov <omerta13@yandex.ru>: Updated Russian translation
-Khaled Hosny <khaledhosny@eglug.org>: Updated Arabic translation
-Alexander Shopov <ash@kambanaria.org>: Updated Bulgarian translation
-Yaron Shahrabani <sh.yaron@gmail.com>: Updated Hebrew translation.
-Inaki Larranaga Murgoitio <dooteo@zundan.com>: Updated Basque language
-Christian Kirbach <Christian.Kirbach@googlemail.com>: [l10n] Updated German translation
-Ivar Smolin <okul@linux.ee>: [l10n] Updated Estonian translation
-Matej Urbančič <mateju@svn.gnome.org>: Updated Slovenian translation
-Marek Černocký <marek@manet.cz>: Updated Czech translation
-Fran Diéguez <fran.dieguez@mabishu.com>: Updated Galician translations
-Gabor Kelemen <kelemeng@gnome.hu>: Updated Hungarian translation
-Daniel Mustieles <daniel.mustieles@gmail.com>: Updated Spanish translation
-George Stefanakis <george.stefanakis@gmail.com>: Updated Greek translation
-
-
-10/01/2011
-
-Development release (2.91.5)
-
-Brasero now relies on libnotify to fit better in gnome-shell. Fixes #6319957
-Some more GTK+ 3 related changes (#638773)
-
-Translations: 
-Daniel Nylander <po@danielnylander.se>: Updated Swedish translation
-Wouter Bolsterlee <wbolster@gnome.org>: Updated Dutch translation by Wouter Bolsterlee
-Andrej Žnidaršič <andrej.znidarsic@gmail.com>: Updated Slovenian translation
-Kjartan Maraas <kmaraas@gnome.org>: Updated Norwegian bokmål translation from Torstein Adolf Winterseth
-Marek Černocký <marek@manet.cz>: Updated Czech translation
-Nguyễn Thái Ngọc Duy <pclouds@gmail.com>: Added Vietnamese translation
-Gheyret T.Kenji <gheyret@gmail.com>: Added UG translation
-
-23/12/2010
-
-Development release (2.91.4)
-
-Some more changes to port brasero to the new GTK+3 API (Matthias Clasen, Philippe Rouquier)
-
-Translations:
-Ivar Smolin <okul@linux.ee>: [l10n] Updated Estonian translation
-Torstein Adolf Winterseth <kvikende@fsfe.org>: Updated Norwegian Nynorsk translation
-Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>: Updated Traditional Chinese translation(Hong Kong and Taiwan)
-
-29/11/2010
-
-Development release
-
-Some changes to improve the nautilus plugin (more to come later) and various bug fixes (including some to catch up with GTK+ 3 changes).
-
-Move the disc name entry into the nautilus bar (Philippe Rouquier) 
-Use gtk_paned_new() instead gtk_[h|v]paned_new() (Javier Jardón <jjardon@gnome.org>)
-Various fixes (Philippe Rouquier)
-
-Translations:
-
-Updated Indonesian translation: Andika Triwidada <andika@gmail.com>
-Updated Romanian translation: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>
-[l10n] Updated Estonian translation: Ivar Smolin <okul@linux.ee>
-Updated Slovenian translation: Matej Urbančič <mateju@svn.gnome.org>
-Added UG translation: Gheyret T.Kenji <gheyret@gmail.com>
-Updated Galician translations: Fran Diéguez <fran.dieguez@mabishu.com>
-Updated Hebrew translation.Yaron Shahrabani <sh.yaron@gmail.com>
-Updated Spanish translation: Jorge González <jorgegonz@svn.gnome.org>
-
-
-8/11/2010 : 2.91.2
-Development release
-
-More changes to move to the new GTK+ 3.0 API
-
-#633375 - prepare for the demise of size_request (Matthias Clasen)
-#634176 - Fails to Build against GTK+ 3 (James M Cape)
-#632576 - Brasero segfaults just before it should start (Luis Medinas)
-#632607 - handle combo box text api going away (Matthias Clasen)
-#632599 - handle GtkComboBoxEntry going away (Matthias Clasen)
-
-
-Translations:
-
-Added UG translation Gheyret T.Kenji <gheyret@gmail.com>
-Updated Catalan (Valencian) translation Carles Ferrando <carles.ferrando@gmail.com>
-Updated Romanian translation Daniel Șerbănescu <cyber19rider@gmail.com> Lucian Adrian Grijincu <lucian.grijincu@gmail.com>
-Update Simplified Chinese translation Xhacker Liu <liu.dongyuan@gmail.com>
-Updated Spanish translation Jorge González <jorgegonz@svn.gnome.org>
-Fix error in Japanese translation Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>
-Updated Hebrew translation Yaron Shahrabani <sh.yaron@gmail.com>
-
+* Brasero 3.1.92
+	- Bump to 3.1.92 (Luis Medinas)
+        - build: Support tracker 0.11/0.12 (Vincent Untz)
+        - Updated Belarusian translation (some fixes after manual testing). (Ihar Hrachyshka)
+        - Updated Japanese translation (Jiro Matsuzawa)
+        - Updated Spanish translation (dmustieles)
+        - Updated Spanish translation (Daniel Mustieles)
+        - Updated galician translations (Fran Dieguez)
+        - Updated Persian translation (Arash Mousavi)
+        - Updated Persian translation (Arash Mousavi)
+        - Updated Spanish translation (Jorge González)
+        - Updated Spanish translation (Jorge González)
+        - Fixed one string (Jorge González)
+        - Updated Spanish translation (Jorge González)
+        - Updated Spanish translation (Jorge González)
+        - String was not necessary (Jorge González)
+        - Fixed two strings (Jorge González)
+        - Make maintiner mode enabled by default (Javier Jardón)
+        - Updated Spanish translation (Jorge González)
+        - [l10n] Updated German doc translation (Mario Blättermann)
+        - Updated Spanish translation (dmustieles)
+        - configure.in: Remove gconf dependency (Javier Jardón)
+        - Updated Spanish translation (Jorge González)
+        - Updated Spanish translation (Jorge González)
+        - Updated Spanish translation (dmustieles)
+        - Updated Spanish translation (Jorge González)
+        - Updated Spanish translation (Jorge González)
+        - Rewrote help in Mallard (Ekaterina Gerasimova)
+        - Updated Lithuanian translation (Aurimas Černius)
+        - Updated Belarusian translation. (Ihar Hrachyshka)
+        - build: fix a build warning (Cosimo Cecchi)
+        - all: switch to g_format_size() (Cosimo Cecchi)
+        - Updated POTFILES.in (Piotr Drąg)
+        - Adapt configure for tracker-sparql. (Luis Medinas)
+        - Use libtracker-sparql instead of libtracker-client since it's deprecated. Fixes bgo #651630. (Luis Medinas)
+        - Updated Belarusian translation. (Ihar Hrachyshka)
+        - Remove beagle from Brasero. Fixes bgo #657313 and #639257. (Luis Medinas)
+        - Updated Japanese translation (OKANO Takayoshi) 
+	- Updated Norwegian bokmål translation (Kjartan Maraas)
+        - Revert "build: add checks for beagle libraryies to configure as it is used in the code" (Stefan Sauer)
+        - build: add checks for beagle libraryies to configure as it is used in the code (Stefan Sauer)
+        - Make Brasero build with tracker 0.10. 0.8 is older enough and shouldn't be available in any system with GNOME 3.2. 
+	  This is a tempory fix.
+        - Fix bgo #649178 - Wrong semi-colon in brasero-nautilus.desktop. (Luis Medinas)
+        - Fix Documenters list in the About Dialog. Fixes bgo #646112. Added myself to Application authors (Luis Medinas)
  
-
-17/10/2010 : 2.91.1
-Development release
-
-More changes towards GNOME3 and adapting to the new GTK+ 3.0 API
-
-- #612980 - Copy disc to ISO image always uses brasero.iso by default (Philippe Rouquier)
-- #631957 - drop status icon use and removed the icon tray (Philippe Rouquier)
-- Removal of statusbar resize grip (Andreas Henriksson)
-- Check the destination volume free space when creating an image earlier (Philippe Rouquier)
-- Speed up autoconfiguration of sessions (Philippe Rouquier)
-- Remove remaining expose-event signal use (Philippe Rouquier)
-- #630651 - Basero creating incomplete image (.ISO) files (Philippe Rouquier)
-
-Translations:
-
-Changwoo Ryu <cwryu@debian.org>: Updated Korean translation
-Jorge González <jorgegonz@svn.gnome.org>: Updated Spanish translation
-Mattias Põldaru <mahfiaz gmail com>: [l10n] Updated Estonian translation
-Matej Urbančič <mateju@svn.gnome.org>: Updated Slovenian translation
-Yaron Shahrabani <sh.yaron@gmail.com>: Updated Hebrew translation.
-Fran Diéguez <fran.dieguez@mabishu.com>: Updated Galician translations
-Kjartan Maraas <kmaraas@gnome.org>: Updated Norwegian bokmål translation
-Christian Kirbach <Christian.Kirbach@googlemail.com>: [l10n] Updated German translation
-YunQiang Su <wzssyqa@gmail.com>: Fix two problems in Simplified Chinese translation.
-Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, Daniel Șerbănescu <cyber19rider@gmail.com>: Updated Romanian translation
 
 Homepage: http://www.gnome.org/projects/brasero
 
