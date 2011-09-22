@@ -23,6 +23,6 @@ DOC_PAGES = \
 	tools-blank.page
 
 # List of translations
-DOC_LINGUAS = bg ca cs de el en_GB es eu fi fr gl it pl ro ru sl sv zh_CN zh_HK zh_TW
+DOC_LINGUAS = bg ca cs de el en_GB es eu fi fr gl it ko pl ro ru sl sv zh_CN zh_HK zh_TW
 
 -include $(top_srcdir)/git.mk
