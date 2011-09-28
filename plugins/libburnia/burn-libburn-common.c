@@ -222,6 +222,7 @@ brasero_libburn_common_process_message (BraseroJob *self)
 	BRASERO_JOB_LOG (self, "Libburn reported an error %s", err_txt);
 	error = g_error_new (BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
 			     err_txt);
 	brasero_job_error (BRASERO_JOB (self), error);
 	return FALSE;

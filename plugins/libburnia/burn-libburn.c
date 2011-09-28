@@ -564,6 +564,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
 			     reason);
 		return BRASERO_BURN_ERR;
 	}
