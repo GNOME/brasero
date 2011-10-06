@@ -1,0 +1,78 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="project-image-burn">
+
+  <info>
+    <link type="guide" xref="index#new-project"/>
+    <link type="seealso" xref="project-audio"/>
+    <link type="seealso" xref="project-disc-copy"/>
+    <link type="seealso" xref="project-video"/>
+    <revision version="3.3" date="2011-10-14" status="review"/>
+    <desc>Burn an existing disc image to a CD or DVD.</desc>
+    <credit type="author">
+      <name>Marta Bogdanowicz</name>
+      <email>majus85@gmail.com</email>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email>kittykat3756@gmail.com</email>
+    </credit>
+    <license>
+      <p>Creative Commons Share Alike 3.0</p>
+    </license>
+  </info>
+
+  <title>Burn image</title>
+
+  <p><app>Brasero</app> allows you to burn disc images to a CD or DVD. It
+  supports the following extensions of optical disc images: <file>.iso</file>,
+  <file>.toc</file> and <file>.cue</file>.</p>
+
+  <note style="advanced">
+    <p>Disc images are archive files which contain all the data that is on a CD
+    or DVD. Only one disc image can be on a CD at a time, but each archive can
+    contain as little or as much data as you want, so long as it fits on the
+    disc.</p>
+  </note>
+
+  <p>To burn a disc image to a CD or DVD, follow these steps:</p>
+  <steps>
+    <item>
+      <p>Click <gui>Burn image</gui> on the start page or select
+      <guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui>
+      </guiseq>.</p>
+    </item>
+    <item>
+      <p>Select a disc image to write by clicking <gui>Click here to select
+      a disc image</gui>.</p>
+    </item>
+    <item>
+      <p>Select the disc that you want to use from drop down list below
+      <gui>Select a disc to write to</gui>. If you have more than one disc
+      drive, all discs which are currently in them should be listed.</p>
+        <note><p>After choosing the disc <app>Brasero</app> shows how much free
+        space will remain on the disc after burning.</p></note>
+    </item>
+    <item>
+      <p>Click the <gui>Properties</gui> button to select burning speed and
+      other custom options.</p>
+    </item>
+    <item>
+      <p>Click <gui>Burn</gui> to start burning the image. After this operation
+      you can either finish burning or make the other copy of the image.</p>
+        <note>
+          <p>If you are using a re-writable disc, which already contains data,
+          you will be asked if you want to blank it or insert a different
+          disc.</p>
+        </note>
+    </item>
+    <!-- There are some problems with multiple burn. After burning one copy,
+    Brasero asks for manual ejecting and then often doesn't detect it. The same
+    problem appears by putting inside new CD or DVD - Brasero doesn't always
+    detect it. Besides the multiple burn option has the same functionality as
+    Burn - they both allow to burn one or several copies, so one option would be
+    enough.-->
+
+  </steps>
+
+</page>

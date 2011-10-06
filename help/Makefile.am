@@ -17,6 +17,7 @@ DOC_PAGES = \
 	project-audio.page \
 	project-data.page \
 	project-disc-copy.page \
+	project-image-burn.page \
 	project-save.page \
 	project-video.page \
 	split-track.page \
