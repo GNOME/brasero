@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.HEAD.es(3)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-06 12:08+0000\n"
-"PO-Revision-Date: 2011-10-06 23:38+0200\n"
+"POT-Creation-Date: 2011-10-14 12:06+0000\n"
+"PO-Revision-Date: 2011-10-16 13:01+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,10 +22,10 @@ msgstr "Borrar un CD o DVD regrabable."
 
 #: C/tools-blank.page:9(name) C/split-track.page:10(name)
 #: C/project-video.page:12(name) C/project-save.page:12(name)
-#: C/project-disc-copy.page:9(name) C/project-data.page:9(name)
-#: C/project-audio.page:9(name) C/prob-dvd.page:11(name)
-#: C/prob-cd.page:11(name) C/introduction.page:9(name)
-#: C/create-cover.page:9(name)
+#: C/project-image-burn.page:17(name) C/project-disc-copy.page:9(name)
+#: C/project-data.page:9(name) C/project-audio.page:9(name)
+#: C/prob-dvd.page:11(name) C/prob-cd.page:11(name)
+#: C/introduction.page:9(name) C/create-cover.page:9(name)
 msgid "Ekaterina Gerasimova"
 msgstr "Ekaterina Gerasimova"
 
@@ -40,9 +40,9 @@ msgstr "kittykat3756@googlemail.com"
 
 #: C/tools-blank.page:13(p) C/split-track.page:14(p)
 #: C/project-video.page:16(p) C/project-save.page:16(p)
-#: C/project-disc-copy.page:13(p) C/project-data.page:13(p)
-#: C/project-audio.page:13(p) C/prob-dvd.page:15(p) C/prob-cd.page:15(p)
-#: C/introduction.page:13(p) C/create-cover.page:13(p)
+#: C/project-image-burn.page:21(p) C/project-disc-copy.page:13(p)
+#: C/project-data.page:13(p) C/project-audio.page:13(p) C/prob-dvd.page:15(p)
+#: C/prob-cd.page:15(p) C/introduction.page:13(p) C/create-cover.page:13(p)
 msgid "Creative Commons Share Alike 3.0"
 msgstr "Creative Commons Compartir Igual 3.0"
 
@@ -94,7 +94,6 @@ msgid "The disc may be ejected when the blanking is complete."
 msgstr "Se puede expulsar el disco al terminar el borrado."
 
 #: C/split-track.page:8(desc)
-#| msgid "Split an audio project track into multiple tracks"
 msgid "Split an audio project track into multiple tracks."
 msgstr "Partir una pista de un proyecto de sonido en varias pistas."
 
@@ -327,6 +326,132 @@ msgstr ""
 "anterior o guardarlo como un proyecto nuevo introduciendo un nombre "
 "diferente."
 
+#: C/project-image-burn.page:11(desc)
+#| msgid "Write data to a CD or DVD."
+msgid "Burn an existing disc image to a CD or DVD."
+msgstr "Grabar una imagen de diso existente a un CD o DVD."
+
+#: C/project-image-burn.page:13(name)
+msgid "Marta Bogdanowicz"
+msgstr "Marta Bogdanowicz"
+
+#: C/project-image-burn.page:14(email)
+#| msgid "stabeno@gmail.com"
+msgid "majus85@gmail.com"
+msgstr "majus85@gmail.com"
+
+#: C/project-image-burn.page:18(email)
+#| msgid "kittykat3756@googlemail.com"
+msgid "kittykat3756@gmail.com"
+msgstr "kittykat3756@gmail.com"
+
+#: C/project-image-burn.page:25(title)
+#| msgid "Burn Image"
+msgid "Burn image"
+msgstr "Grabar una imagen"
+
+#: C/project-image-burn.page:27(p)
+msgid ""
+"<app>Brasero</app> allows you to burn disc images to a CD or DVD. It "
+"supports the following extensions of optical disc images: <file>.iso</file>, "
+"<file>.toc</file> and <file>.cue</file>."
+msgstr ""
+"<app>Brasero</app> le permite grabar imágenes de discos a CD y DVD. Soporta "
+"las siguientes extensiones de imágenes de discos ópticos: <file>.iso</file>, "
+"<file>.toc</file> y <file>.cue</file>."
+
+#: C/project-image-burn.page:32(p)
+msgid ""
+"Disc images are archive files which contain all the data that is on a CD or "
+"DVD. Only one disc image can be on a CD at a time, but each archive can "
+"contain as little or as much data as you want, so long as it fits on the "
+"disc."
+msgstr ""
+"Las imágenes de discos son archivadores que contienen todos los datos en un "
+"CD o DVD. Sólo puede haber una imagen en un CD al mismo tiempo, pero cada "
+"archivo puede contener tanta información como quiera, siempre que quepa en "
+"el disco."
+
+#: C/project-image-burn.page:38(p)
+msgid "To burn a disc image to a CD or DVD, follow these steps:"
+msgstr ""
+"Para grabar una imagen de un disco a un CD o DVD realice los siguientes "
+"pasos:"
+
+#: C/project-image-burn.page:41(p)
+#| msgid ""
+#| "Click <gui>Disc copy</gui> on the start page, or select "
+#| "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Copy Disc... </gui></"
+#| "guiseq>."
+msgid ""
+"Click <gui>Burn image</gui> on the start page or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></"
+"guiseq>."
+msgstr ""
+"Pulse <gui>Grabar imagen</gui> en la ventana principal o seleccione "
+"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Grabar una imagen..."
+"</gui></guiseq>."
+
+#: C/project-image-burn.page:46(p)
+msgid ""
+"Select a disc image to write by clicking <gui>Click here to select a disc "
+"image</gui>."
+msgstr ""
+"Seleccione una imagen de disco en la que grabar pulsando <gui>Pulsar aquí "
+"para seleccionar una imagen de disco</gui>."
+
+#: C/project-image-burn.page:50(p)
+#| msgid ""
+#| "Select the disc you would like to copy from the drop down list below "
+#| "<gui>Select disc to copy</gui>. If you have more than one disc drive, all "
+#| "discs which are currently in them should be listed."
+msgid ""
+"Select the disc that you want to use from drop down list below <gui>Select a "
+"disc to write to</gui>. If you have more than one disc drive, all discs "
+"which are currently in them should be listed."
+msgstr ""
+"Seleccione de la lista desplegable bajo <gui>Seleccionar un disco en el que "
+"grabar</gui> el disco que quiere usar. Se listarán todos los discos "
+"actualmente en las unidades en caso de que tenga más de una unidad de discos."
+
+#: C/project-image-burn.page:53(p)
+msgid ""
+"After choosing the disc <app>Brasero</app> shows how much free space will "
+"remain on the disc after burning."
+msgstr ""
+"Después de seleccionar el disco <app>Brasero</app> muestra cuánto espacio "
+"libre quedará en el disco después de grabarlo."
+
+#: C/project-image-burn.page:57(p) C/project-disc-copy.page:35(p)
+msgid ""
+"Click the <gui>Properties</gui> button to select burning speed and other "
+"custom options."
+msgstr ""
+"Pulse el botón <gui>Propiedades</gui> para seleccionar la velocidad de "
+"grabación y otras opciones."
+
+#: C/project-image-burn.page:61(p)
+#| msgid ""
+#| "Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several "
+#| "Copies</gui>, if you plan to make more than one copy of the disc."
+msgid ""
+"Click <gui>Burn</gui> to start burning the image. After this operation you "
+"can either finish burning or make the other copy of the image."
+msgstr ""
+"Pulse <gui>Grabar</gui> para comenzar a grabar la imagen. Después de esta "
+"operación puede finalizar la grabación o realizar otra copia de la imagen."
+
+#: C/project-image-burn.page:64(p)
+#| msgid ""
+#| "If you are using a rewritable disc, which already contains data, you will "
+#| "be asked if you want to blank it or insert a different disc."
+msgid ""
+"If you are using a re-writable disc, which already contains data, you will "
+"be asked if you want to blank it or insert a different disc."
+msgstr ""
+"Si está usando un disco regrabable que ya contiene datos, se le preguntará "
+"si quiere borrarlo o insertar un disco diferente."
+
 #: C/project-disc-copy.page:7(desc)
 msgid "Create an identical copy of a disc."
 msgstr "Crear una copia idéntica de un disco."
@@ -362,14 +487,6 @@ msgid ""
 msgstr ""
 "Elija si quiere crear una copia en otro disco o si quiere crear una imagen "
 "para usarla más tarde."
-
-#: C/project-disc-copy.page:35(p)
-msgid ""
-"Click the <gui>Properties</gui> button to select burning speed and other "
-"custom options."
-msgstr ""
-"Pulse el botón <gui>Propiedades</gui> para seleccionar la velocidad de "
-"grabación y otras opciones."
 
 #: C/project-disc-copy.page:39(p)
 msgid ""
@@ -532,7 +649,6 @@ msgstr ""
 "una pista, usando el botón <gui>Pausa</gui>."
 
 #: C/prob-dvd.page:9(desc)
-#| msgid "I can't write to a DVD-R or a DVD-RW."
 msgid "I cannot write to a DVD-R or a DVD-RW."
 msgstr "No puedo grabar en un DVD-R o DVD-RW."
 
@@ -576,12 +692,10 @@ msgstr ""
 "está usando un DVD-RW, pruebe a borrarlo antes de grabar de nuevo."
 
 #: C/prob-cd.page:9(desc)
-#| msgid "My MP3s won't play in a DVD or CD player."
 msgid "My MP3s will not play in a DVD or CD player."
 msgstr "Mis MP3 no se reproducen en un reproductor de DVD o CD."
 
 #: C/prob-cd.page:19(title)
-#| msgid "CD won't play in a CD player"
 msgid "CD will not play in a CD player"
 msgstr "El CD no se reproduce en un reproductor de CD"
 
@@ -699,7 +813,6 @@ msgid "Other tools"
 msgstr "Otras herramientas"
 
 #: C/create-cover.page:7(desc)
-#| msgid "Create an inlay for a jewel case"
 msgid "Create an inlay for a jewel case."
 msgstr "Crear una carátura para una caja de CD o DVD."
 
@@ -944,9 +1057,6 @@ msgstr ""
 
 #~ msgid "Stabeno"
 #~ msgstr "Stabeno"
-
-#~ msgid "stabeno@gmail.com"
-#~ msgstr "stabeno@gmail.com"
 
 #~ msgid "Phil"
 #~ msgstr "Phil"
@@ -1607,9 +1717,6 @@ msgstr ""
 #~ "unidad de origen y la otra como la unidad de destino. De lo contrario se "
 #~ "le preguntará para que quite el CD o DVD que está copiando e inserte un "
 #~ "soporte virgen."
-
-#~ msgid "Burn Image"
-#~ msgstr "Grabar una imagen"
 
 #~ msgid ".iso"
 #~ msgstr ".iso"
