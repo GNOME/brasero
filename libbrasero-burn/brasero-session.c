@@ -1268,7 +1268,7 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 			    BRASERO_BURN_TMP_FILE_NAME,
 			    NULL);
 
-	*path = mkdtemp (tmp);
+	*path = g_mkdtemp (tmp);
 	if (*path == NULL) {
                 int errsv = errno;
 
