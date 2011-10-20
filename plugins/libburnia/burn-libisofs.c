@@ -219,7 +219,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	if (read_bytes == -1 && !priv->error)
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
-					   _("Volume could not be created"));
+					   "%s", _("Volume could not be created"));
 }
 
 static void
@@ -567,7 +567,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	brasero_job_get_data_label (BRASERO_JOB (self), &label);
 	if (!iso_image_new (label, &image)) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
-					   BRASERO_BURN_ERROR_GENERAL,
+					   BRASERO_BURN_ERROR_GENERAL, "%s",
 					   _("Volume could not be created"));
 		g_free (label);
 		goto end;

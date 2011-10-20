@@ -1346,7 +1346,7 @@ brasero_transcode_get_duration (BraseroTranscode *transcode)
 	if (duration == -1 || duration == 0)	
 	    brasero_job_error (BRASERO_JOB (transcode),
 			       g_error_new (BRASERO_BURN_ERROR,
-					    BRASERO_BURN_ERROR_GENERAL,
+					    BRASERO_BURN_ERROR_GENERAL, "%s",
 					    _("Error while getting duration")));
 	return duration;
 }
