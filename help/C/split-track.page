@@ -5,6 +5,7 @@
   <info>
     <link type="guide" xref="index#tools"/>
     <link type="seealso" xref="project-audio"/>
+    <revision version="3.2" date="2011-10-20" status="review"/>
     <desc>Split an audio project track into multiple tracks.</desc>
     <credit type="author">
       <name>Ekaterina Gerasimova</name>
@@ -30,19 +31,43 @@
       the track and select <gui>Split Track…</gui> from the menu.</p>
     </item>
     <item>
-      <p>Select your preferred method of splitting the tracks, and split at the
-      points where you want one to end and the next one to begin.</p>
+      <p>Select your preferred method of splitting the tracks:</p>
+      <terms>
+        <item>
+          <title>Split track manually</title>
+          <p>This option allows you to sellect the exact length of each new
+	  section of the track manually.</p>
+       </item>
+       <item>
+          <title>Split track in parts with a fixed length</title>
+          <p>Use this method to split the track into multiple sections of equal
+	  length.</p>
+        </item>
+        <item>
+          <title>Split track in a fixed number of parts</title>
+          <p>This method allows you to split the track into a set number of
+	  sections, all of which will be of the same length.</p>
+        </item>
+        <item>
+          <title>Split track for each silence</title>
+          <p>Select this method for <app>Brasero</app> to auto-detect silences
+	  in the recording and to split the track at those points.</p>
+        </item>
+      </terms>
+    </item>
+    <item>
+      <p>Proceed to split the track by clicking <gui>Slice</gui>.</p>
       <note>
         <p>If you try to split a track into a section less than six seconds
         long, the new section will be padded to make it 6 seconds long. <!--If
         you try to split a track which is under six seconds long in
-        <app>Brasero</app> version 3.0.0, the track spliter will not work.--></p>
+        <app>Brasero</app> version 3.0.0, the track splitter will not work.--></p>
       </note>
     </item>
     <item>
       <p>Click <gui>OK</gui> to confirm your track splits and apply the changes.</p>
       <note>
-        <p>You can split and merge the same track as many times as you like,
+        <p>You can split and merge the same track as many times as you like
         while you are viewing the split track dialog. Once you confirm your
         track splitting by clicking <gui>OK</gui>, you will no longer be able to
         merge the sections you have already split off. To revert the changes,
