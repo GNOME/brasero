@@ -115,7 +115,7 @@ brasero_filtered_uri_filter (BraseroFilteredUri *filtered,
 	gtk_list_store_set (GTK_LIST_STORE (filtered), &iter,
 			    BRASERO_FILTERED_STOCK_ID_COL, fatal ? GTK_STOCK_CANCEL:NULL,
 			    BRASERO_FILTERED_URI_COL, uri,
-			    BRASERO_FILTERED_STATUS_COL, labels [status - 1],
+			    BRASERO_FILTERED_STATUS_COL, _(labels [status - 1]),
 			    BRASERO_FILTERED_FATAL_ERROR_COL, fatal == FALSE,
 			    -1);
 }
