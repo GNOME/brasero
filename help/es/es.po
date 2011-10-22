@@ -1,4 +1,4 @@
-# translation of help.HEAD.es(3).po to Español
+# translation of brasero-help.master.es.po to Español
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010, 2011.
 #
@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.HEAD.es(3)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-14 12:06+0000\n"
-"PO-Revision-Date: 2011-10-22 11:57+0200\n"
+"POT-Creation-Date: 2011-10-22 10:01+0000\n"
+"PO-Revision-Date: 2011-10-22 12:09+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Erase a rewritable CD or DVD by blanking it."
 msgstr "Borrar un CD o DVD regrabable."
 
-#: C/tools-blank.page:9(name) C/split-track.page:10(name)
+#: C/tools-blank.page:9(name) C/split-track.page:11(name)
 #: C/project-video.page:12(name) C/project-save.page:12(name)
 #: C/project-image-burn.page:17(name) C/project-disc-copy.page:9(name)
 #: C/project-data.page:9(name) C/project-audio.page:9(name)
@@ -29,7 +29,7 @@ msgstr "Borrar un CD o DVD regrabable."
 msgid "Ekaterina Gerasimova"
 msgstr "Ekaterina Gerasimova"
 
-#: C/tools-blank.page:10(email) C/split-track.page:11(email)
+#: C/tools-blank.page:10(email) C/split-track.page:12(email)
 #: C/project-video.page:13(email) C/project-save.page:13(email)
 #: C/project-disc-copy.page:10(email) C/project-data.page:10(email)
 #: C/project-audio.page:10(email) C/prob-dvd.page:12(email)
@@ -38,7 +38,7 @@ msgstr "Ekaterina Gerasimova"
 msgid "kittykat3756@googlemail.com"
 msgstr "kittykat3756@googlemail.com"
 
-#: C/tools-blank.page:13(p) C/split-track.page:14(p)
+#: C/tools-blank.page:13(p) C/split-track.page:15(p)
 #: C/project-video.page:16(p) C/project-save.page:16(p)
 #: C/project-image-burn.page:21(p) C/project-disc-copy.page:13(p)
 #: C/project-data.page:13(p) C/project-audio.page:13(p) C/prob-dvd.page:15(p)
@@ -51,12 +51,13 @@ msgid "Blank a disc"
 msgstr "Borrar un disco"
 
 #: C/tools-blank.page:19(p)
+#| msgid ""
+#| "You can prepare a rewritable disc, with existing data on it, for writing "
+#| "by blanking if."
 msgid ""
 "You can prepare a rewritable disc, with existing data on it, for writing by "
-"blanking if."
-msgstr ""
-"Puede preparar para su escritura un disco regrabable, que contenga datos, "
-"borrándolo."
+"blanking it."
+msgstr "Puede preparar un disco regrabable que contenga datos borrándolo."
 
 #: C/tools-blank.page:24(p)
 msgid "Select <guiseq><gui>Tools</gui><gui>Blank...</gui></guiseq>."
@@ -93,15 +94,15 @@ msgstr "Pulse <gui>Borrar</gui> para continuar."
 msgid "The disc may be ejected when the blanking is complete."
 msgstr "Se puede expulsar el disco al terminar el borrado."
 
-#: C/split-track.page:8(desc)
+#: C/split-track.page:9(desc)
 msgid "Split an audio project track into multiple tracks."
 msgstr "Partir una pista de un proyecto de sonido en varias pistas."
 
-#: C/split-track.page:18(title)
+#: C/split-track.page:19(title)
 msgid "Split an audio track"
 msgstr "Partir una pista de sonido"
 
-#: C/split-track.page:20(p)
+#: C/split-track.page:21(p)
 msgid ""
 "You can split a single audio track into multiple tracks when you put "
 "together an audio project."
@@ -109,11 +110,11 @@ msgstr ""
 "Puede partir una sola pista de sonido en varias pistas que puede añadir de "
 "forma conjunta en un proyecto de sonido."
 
-#: C/split-track.page:25(p)
+#: C/split-track.page:26(p)
 msgid "Start an audio project and add the tracks you wish to use."
 msgstr "Inicie un proyecto de sonido y añada las pistas que quiere usar."
 
-#: C/split-track.page:28(p)
+#: C/split-track.page:29(p)
 msgid ""
 "Select the track you wish to split by clicking on it, then click either "
 "<guiseq><gui>Edit</gui><gui>Split Track…</gui></guiseq> or right click on "
@@ -124,15 +125,63 @@ msgstr ""
 "botón derecho del ratón sobre la pista y seleccione <gui>Partir pista...</"
 "gui> del menú."
 
-#: C/split-track.page:33(p)
-msgid ""
-"Select your preferred method of splitting the tracks, and split at the "
-"points where you want one to end and the next one to begin."
-msgstr ""
-"Seleccione el método que prefiera para partir las pistas y los puntos donde "
-"quiere que una pista termine y comience la siguiente."
+#: C/split-track.page:34(p)
+msgid "Select your preferred method of splitting the tracks:"
+msgstr "Seleccione su método preferido para partir las pistas:"
 
-#: C/split-track.page:36(p)
+#: C/split-track.page:37(title)
+msgid "Split track manually"
+msgstr "Partir la pista manualmente"
+
+#: C/split-track.page:38(p)
+msgid ""
+"This option allows you to sellect the exact length of each new section of "
+"the track manually."
+msgstr ""
+"Esta opción le permite seleccionar manualmente la duración exacta de cada "
+"nueva sección de la pista."
+
+#: C/split-track.page:42(title)
+#| msgid "Split tracks in parts with a fixed length"
+msgid "Split track in parts with a fixed length"
+msgstr "Partir pista en partes con una longitud fija"
+
+#: C/split-track.page:43(p)
+msgid ""
+"Use this method to split the track into multiple sections of equal length."
+msgstr ""
+"Use este método para partir una pista en varias secciones de igual duración."
+
+#: C/split-track.page:47(title)
+#| msgid "Split track in fixed number of parts"
+msgid "Split track in a fixed number of parts"
+msgstr "Partir la pista en un número fijo de partes"
+
+#: C/split-track.page:48(p)
+msgid ""
+"This method allows you to split the track into a set number of sections, all "
+"of which will be of the same length."
+msgstr ""
+"Este método le permite partir la pista en un número fijo de secciones, las "
+"cuales tendrán todas la misma duración."
+
+#: C/split-track.page:52(title)
+msgid "Split track for each silence"
+msgstr "Partir la pista para cada silencio"
+
+#: C/split-track.page:53(p)
+msgid ""
+"Select this method for <app>Brasero</app> to auto-detect silences in the "
+"recording and to split the track at those points."
+msgstr ""
+"Seleccione este método para que <app>Brasero</app> detecte automáticamente "
+"los silencios en la grabación y divida la pista en esos puntos."
+
+#: C/split-track.page:59(p)
+msgid "Proceed to split the track by clicking <gui>Slice</gui>."
+msgstr "Proceda a partir la pilsta pulsando <gui>Partir</gui>."
+
+#: C/split-track.page:61(p)
 msgid ""
 "If you try to split a track into a section less than six seconds long, the "
 "new section will be padded to make it 6 seconds long."
@@ -140,15 +189,21 @@ msgstr ""
 "Si intenta partir una pista en una selección de menos de seis segundos, la "
 "nueva selección se rellenará para llegar a los 6 segundos de duración."
 
-#: C/split-track.page:43(p)
+#: C/split-track.page:68(p)
 msgid "Click <gui>OK</gui> to confirm your track splits and apply the changes."
 msgstr ""
 "Pulse <gui>Aceptar</gui> para confirmar las particiones de pistas y aplicar "
 "los cambios."
 
-#: C/split-track.page:45(p)
+#: C/split-track.page:70(p)
+#| msgid ""
+#| "You can split and merge the same track as many times as you like, while "
+#| "you are viewing the split track dialog. Once you confirm your track "
+#| "splitting by clicking <gui>OK</gui>, you will no longer be able to merge "
+#| "the sections you have already split off. To revert the changes, remove "
+#| "the split sections of the track from your project and re-add the track."
 msgid ""
-"You can split and merge the same track as many times as you like, while you "
+"You can split and merge the same track as many times as you like while you "
 "are viewing the split track dialog. Once you confirm your track splitting by "
 "clicking <gui>OK</gui>, you will no longer be able to merge the sections you "
 "have already split off. To revert the changes, remove the split sections of "
@@ -307,13 +362,17 @@ msgstr "abriendo el proyecto desde un gestor de archivos"
 #: C/project-save.page:57(p)
 msgid ""
 "If <app>Brasero</app> is already running, opening the project from a file "
-"browser will make <app>Brasero</app> vanish in a puff of logic."
+"browser will cause a second instance of <app>Brasero</app> to start and will "
+"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
+"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
 msgstr ""
-"Si <app>Brasero</app> ya se está ejecutando, abrir el proyecto desde el "
-"examinador de archivos hará que <app>Brasero</app> se desvanezca de acuerdo "
-"con toda lógica."
+"Si <app>Brasero</app> ya se está ejecutando, abra el proyecto desde un "
+"archivo hará que se inicie una segunda instancia de <app>Brasero</app> y se "
+"colgarán ambas instancias. Para obtener más información consulte el <link "
+"href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">error 644011 de "
+"GNOME</link>."
 
-#: C/project-save.page:64(p)
+#: C/project-save.page:67(p)
 msgid ""
 "If you open a saved project, <app>Brasero</app> will treat it as a new "
 "project: if you want to save an updated version of the project, it will ask "
@@ -327,7 +386,6 @@ msgstr ""
 "diferente."
 
 #: C/project-image-burn.page:11(desc)
-#| msgid "Write data to a CD or DVD."
 msgid "Burn an existing disc image to a CD or DVD."
 msgstr "Grabar una imagen de disco existente a un CD o DVD."
 
@@ -336,17 +394,14 @@ msgid "Marta Bogdanowicz"
 msgstr "Marta Bogdanowicz"
 
 #: C/project-image-burn.page:14(email)
-#| msgid "stabeno@gmail.com"
 msgid "majus85@gmail.com"
 msgstr "majus85@gmail.com"
 
 #: C/project-image-burn.page:18(email)
-#| msgid "kittykat3756@googlemail.com"
 msgid "kittykat3756@gmail.com"
 msgstr "kittykat3756@gmail.com"
 
 #: C/project-image-burn.page:25(title)
-#| msgid "Burn Image"
 msgid "Burn image"
 msgstr "Burn image"
 
@@ -361,10 +416,15 @@ msgstr ""
 "<file>.toc</file> y <file>.cue</file>."
 
 #: C/project-image-burn.page:32(p)
+#| msgid ""
+#| "Disc images are archive files which contain all the data that is on a CD "
+#| "or DVD. Only one disc image can be on a CD at a time, but each archive "
+#| "can contain as little or as much data as you want, so long as it fits on "
+#| "the disc."
 msgid ""
 "Disc images are archive files which contain all the data that is on a CD or "
 "DVD. Only one disc image can be on a CD at a time, but each archive can "
-"contain as little or as much data as you want, so long as it fits on the "
+"contain as little or as much data as you want, as long as it fits on the "
 "disc."
 msgstr ""
 "Los archivos de imagen son archivadores que contienen todos los datos en un "
@@ -378,10 +438,6 @@ msgstr ""
 "Para grabar una imagen de disco a un CD o DVD realice los siguientes pasos:"
 
 #: C/project-image-burn.page:41(p)
-#| msgid ""
-#| "Click <gui>Disc copy</gui> on the start page, or select "
-#| "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Copy Disc... </gui></"
-#| "guiseq>."
 msgid ""
 "Click <gui>Burn image</gui> on the start page or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></"
@@ -400,10 +456,6 @@ msgstr ""
 "para seleccionar una imagen de disco</gui>."
 
 #: C/project-image-burn.page:50(p)
-#| msgid ""
-#| "Select the disc you would like to copy from the drop down list below "
-#| "<gui>Select disc to copy</gui>. If you have more than one disc drive, all "
-#| "discs which are currently in them should be listed."
 msgid ""
 "Select the disc that you want to use from drop down list below <gui>Select a "
 "disc to write to</gui>. If you have more than one disc drive, all discs "
@@ -430,9 +482,6 @@ msgstr ""
 "grabación y otras opciones."
 
 #: C/project-image-burn.page:61(p)
-#| msgid ""
-#| "Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several "
-#| "Copies</gui>, if you plan to make more than one copy of the disc."
 msgid ""
 "Click <gui>Burn</gui> to start burning the image. After this operation you "
 "can either finish burning or make the other copy of the image."
@@ -441,9 +490,6 @@ msgstr ""
 "operación puede finalizar la grabación o grabar otra copia de la imagen."
 
 #: C/project-image-burn.page:64(p)
-#| msgid ""
-#| "If you are using a rewritable disc, which already contains data, you will "
-#| "be asked if you want to blank it or insert a different disc."
 msgid ""
 "If you are using a re-writable disc, which already contains data, you will "
 "be asked if you want to blank it or insert a different disc."
@@ -496,14 +542,18 @@ msgstr ""
 "copias</gui> si tiene intención de grabar más de una copia del disco."
 
 #: C/project-disc-copy.page:42(p)
+#| msgid ""
+#| "If you are copying the disc and have only one disc drive, you will be "
+#| "asked to replace the disc you are copying with a writeable one after the "
+#| "contents are copied temporarily to your hard disk."
 msgid ""
 "If you are copying the disc and have only one disc drive, you will be asked "
-"to replace the disc you are copying with a writeable one after the contents "
+"to replace the disc you are copying with a writable one after the contents "
 "are copied temporarily to your hard disk."
 msgstr ""
-"Si está copiando un disco y sólo tiene una unidad de discos, se le "
-"preguntará para que reemplace el disco que está copiando con uno grabable "
-"después de copiar temporalmente el contenido a su disco duro."
+"Si está copiando un disco y sólo tiene una unidad de discos, se le pedirá "
+"que reemplace el disco que está copiando con uno grabable después de copiar "
+"temporalmente el contenido a su disco duro."
 
 #: C/project-data.page:7(desc)
 msgid "Write data to a CD or DVD."
@@ -842,20 +892,14 @@ msgstr ""
 "pistas en la carátula posterior."
 
 #: C/create-cover.page:31(p)
-msgid ""
-"It is not possible to save your progress once you start working with the "
-"<gui>Cover Editor</gui>. If you close the dialog, your changes will be lost, "
-"or you can print the inlay when you are finished."
-msgstr ""
-"No es posible guardar sus cambios una vez que comeinza a trabajar con el "
-"<gui>Editor de carátulas</gui>. Si cierra el diálogo perderá sus cambios, o "
-"puede imprimir la carátula cuando haya acabado."
+msgid "If you close the <gui>Cover Editor</gui>, your changes will be lost."
+msgstr "Se perderán sus cambios si cierra el <gui>Editor de carátulas</gui>."
 
-#: C/create-cover.page:38(p)
+#: C/create-cover.page:36(p)
 msgid "Open the <gui>Cover Editor</gui>."
 msgstr "Abra el <gui>Editor de carátulas</gui>."
 
-#: C/create-cover.page:41(p)
+#: C/create-cover.page:39(p)
 msgid ""
 "Choose the formatting you wish to use for the text and type the text, "
 "scrolling down to see the side and back inlay for the jewel case."
@@ -863,7 +907,7 @@ msgstr ""
 "Elija el formato que quiere usar para el texto y escríbalo, desplazándose "
 "hacia abajo para ver el lateral y la parte trasera de la caja."
 
-#: C/create-cover.page:44(p)
+#: C/create-cover.page:42(p)
 msgid ""
 "When you first see the <gui>Cover Editor</gui> dialog, you will not be able "
 "to click on any of the text formatting options. Click on the cover you want "
@@ -873,7 +917,7 @@ msgstr ""
 "podrá pulsar en ninguna opción de formateo de texto. Pulse sobre la carátula "
 "en la que quiere trabajar para poder usar las opciones."
 
-#: C/create-cover.page:50(p)
+#: C/create-cover.page:48(p)
 msgid ""
 "Click the <gui>Background properties</gui> toolbar icon to add a background "
 "for the current cover, or right click on the cover you wish to edit and "
@@ -886,15 +930,18 @@ msgstr ""
 "<gui>Establecer las propiedades del fondo</gui>. Puede elegir usar un fondo "
 "coloreado o una imagen de fondo."
 
-#: C/create-cover.page:55(p)
+#: C/create-cover.page:53(p)
+#| msgid ""
+#| "If you select a centred background image, <app>Brasero</app> sometimes "
+#| "crashes when you click the <gui>Close</gui> button."
 msgid ""
-"If you select a centred background image, <app>Brasero</app> sometimes "
+"If you select a centered background image, <app>Brasero</app> sometimes "
 "crashes when you click the <gui>Close</gui> button."
 msgstr ""
 "A veces, <app>Brasero</app> se cuelga al pulsar el botón <gui>Cerrar</gui> "
 "si selecciona una imagen de fondo centrada."
 
-#: C/create-cover.page:58(p)
+#: C/create-cover.page:56(p)
 msgid ""
 "Click the <gui>Close</gui> button to apply the changes and close the "
 "<gui>Background Properties</gui> dialog."
@@ -902,7 +949,7 @@ msgstr ""
 "Pulse el botón <gui>Cerrar</gui> para aplicar los cambios y cerrar el "
 "diálogo <gui>Propiedades del fondo</gui>."
 
-#: C/create-cover.page:62(p)
+#: C/create-cover.page:60(p)
 msgid ""
 "Print the cover using the <gui>Print</gui> button, which is located in the "
 "top-right corner of the dialog."
@@ -916,6 +963,30 @@ msgid "translator-credits"
 msgstr ""
 "Daniel Mustieles <daniel.mustieles@gmail.com>, 2011\n"
 "Jorge González <jorgegonz@svn.gnome.org>, 2011"
+
+#~ msgid ""
+#~ "Select your preferred method of splitting the tracks, and split at the "
+#~ "points where you want one to end and the next one to begin."
+#~ msgstr ""
+#~ "Seleccione el método que prefiera para partir las pistas y los puntos "
+#~ "donde quiere que una pista termine y comience la siguiente."
+
+#~ msgid ""
+#~ "If <app>Brasero</app> is already running, opening the project from a file "
+#~ "browser will make <app>Brasero</app> vanish in a puff of logic."
+#~ msgstr ""
+#~ "Si <app>Brasero</app> ya se está ejecutando, abrir el proyecto desde el "
+#~ "examinador de archivos hará que <app>Brasero</app> se desvanezca de "
+#~ "acuerdo con toda lógica."
+
+#~ msgid ""
+#~ "It is not possible to save your progress once you start working with the "
+#~ "<gui>Cover Editor</gui>. If you close the dialog, your changes will be "
+#~ "lost, or you can print the inlay when you are finished."
+#~ msgstr ""
+#~ "No es posible guardar sus cambios una vez que comeinza a trabajar con el "
+#~ "<gui>Editor de carátulas</gui>. Si cierra el diálogo perderá sus cambios, "
+#~ "o puede imprimir la carátula cuando haya acabado."
 
 #~ msgid ""
 #~ "Choose the formatting you with to use for the text and add the text you "
@@ -1345,9 +1416,6 @@ msgstr ""
 #~ "guimenuitem></menuchoice>. Se mostrará el diálogo <guilabel>Partir pista</"
 #~ "guilabel>."
 
-#~ msgid "Split track manually"
-#~ msgstr "Partir la pista manualmente"
-
 #~ msgid ""
 #~ "Select this to select the time on the track where you wish to split it. A "
 #~ "sliding bar is provided along with an audio preview."
@@ -1356,18 +1424,12 @@ msgstr ""
 #~ "Se proporciona una barra de desplazamiento junto con un previsualizador "
 #~ "de sonido."
 
-#~ msgid "Split tracks in parts with a fixed length"
-#~ msgstr "Partir pista en partes con una longitud fija"
-
 #~ msgid ""
 #~ "Select this to split the track into fixed-length parts with a duration "
 #~ "that you specify."
 #~ msgstr ""
 #~ "Seleccione esto para partir las pistas en partes de longitud fija con una "
 #~ "duración que especifique."
-
-#~ msgid "Split track in fixed number of parts"
-#~ msgstr "Partir la pista en un número fijo de partes"
 
 #~ msgid ""
 #~ "Select this to decide the number of parts that you want your track to be "
@@ -1377,9 +1439,6 @@ msgstr ""
 #~ "Seleccione esto para decidir el número de partes en las que desea partir "
 #~ "la pista. Puede usar la caja incrementable proporcionada para seleccionar "
 #~ "el número de partes."
-
-#~ msgid "Split track for each silence"
-#~ msgstr "Partir la pista para cada silencio"
 
 #~ msgid "Select this to split the track where a silence is present."
 #~ msgstr "Seleccione esto para partir la pista donde haya silencios."
