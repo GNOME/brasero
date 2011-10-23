@@ -562,6 +562,8 @@ brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
 			                                   MEDIUM_COL, medium,
 			                                   -1);
 
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selector), &iter);
+
 			medium_name = brasero_medium_selection_get_medium_string (selector, medium);
 			medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
 			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
