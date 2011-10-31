@@ -21,7 +21,8 @@ DOC_PAGES = \
 	project-save.page \
 	project-video.page \
 	split-track.page \
-	tools-blank.page
+	tools-blank.page \
+	tools-check-integrity.page
 
 # List of translations
 DOC_LINGUAS = bg ca cs de el en_GB es eu fi fr gl hu it ko pl ro ru sl sv zh_CN zh_HK zh_TW

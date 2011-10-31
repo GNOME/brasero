@@ -1,0 +1,46 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="tools-check-integrity">
+
+  <info>
+    <link type="guide" xref="index#tools"/>
+    <desc>You can test out a disc integrity after burning it.</desc>
+    <credit type="author">
+      <name>Paulina Gonzalez</name>
+      <email>pau.gonzalezbr@gmail.com</email>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email>kittykat3756@gmail.com</email>
+    </credit>
+    <license>
+      <p>Creative Commons Share Alike 3.0</p>
+    </license>
+  </info>
+
+  <title>Check disc integrity</title>
+
+  <p>After burning a CD/DVD by using <app>Brasero</app>, you can check its integrity to make sure that the files in the disc are not corrupted.</p>
+
+  <steps>
+    <item>
+      <p>Select <guiseq><gui>Tools</gui><gui>Check Integrity...</gui></guiseq>.</p>
+    </item>
+    <item>
+      <p>You can select the option <gui>Use an MD5 file to check the disk.</gui> if you prefer it.</p>
+	<note style="advanced">
+	<list>
+	<item><p>An MD5 (Message-Digest Algorithm 5) is a cryptographic hash function widely used for checking data integrity. </p></item>
+	<item><p>If you choose this option, you will have to find the MD5 file by clicking in the folder icon placed below.</p></item>
+	</list>
+	</note>
+    </item>
+    <item>
+      <p>Press <gui>Check</gui> to continue or <gui>Close</gui> to cancel it.</p>
+    </item>
+    <item>
+      <p>When the checking is finished you can either choose to <gui>Check Again</gui> or just <gui>Close</gui>.</p>
+    </item>
+  </steps>
+
+</page>
