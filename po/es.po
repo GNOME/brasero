@@ -8,22 +8,22 @@
 # Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2006.
 # Miguel Angel Ruiz Manzano <mruiz@openminds.cl>, 2009.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-14 14:57+0000\n"
-"PO-Revision-Date: 2011-10-16 12:53+0200\n"
-"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2011-10-16 10:54+0000\n"
+"PO-Revision-Date: 2011-11-02 16:09+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../data/brasero.desktop.in.in.h:1
@@ -1758,7 +1758,7 @@ msgstr "No se especificó ningún archivo MD5."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:692
 msgid "Use an _MD5 file to check the disc"
-msgstr "Use un archivo _MD5 para verificar el disco"
+msgstr "Usar un archivo _MD5 para verificar el disco"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:693
 msgid "Use an external .md5 file that stores the checksum of a disc"
@@ -1788,7 +1788,7 @@ msgstr "No se puede realizar la operación."
 #: ../plugins/cdrtools/burn-cdrecord.c:151
 #: ../plugins/cdrtools/burn-cdrecord.c:407
 #: ../plugins/growisofs/burn-dvd-rw-format.c:77
-#: ../plugins/libburnia/burn-libburn.c:609
+#: ../plugins/libburnia/burn-libburn.c:610
 #, c-format
 msgid "The disc is not supported"
 msgstr "El disco no está soportado"
@@ -2076,7 +2076,7 @@ msgstr "No se especificó ninguna ruta para la salida de la imagen"
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
-#: ../plugins/libburnia/burn-libburn.c:716
+#: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:826
 #, c-format
 msgid "An internal error occurred (%s)"
@@ -2826,8 +2826,8 @@ msgid "Copies any disc to a disc image"
 msgstr "Copia cualquier disco a una imagen de disco"
 
 #: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
-#: ../plugins/libburnia/burn-libburn.c:855
-#: ../plugins/libburnia/burn-libburn.c:886
+#: ../plugins/libburnia/burn-libburn.c:856
+#: ../plugins/libburnia/burn-libburn.c:887
 #, c-format
 msgid "An error occurred while writing to disc"
 msgstr "Ocurrió un error al grabar al disco"
@@ -2888,7 +2888,7 @@ msgid "Copy tracks from an audio CD with all associated information"
 msgstr "Copiar pistas de un CD de sonido con toda la información asociada"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1204
-#: ../plugins/libburnia/burn-libburn.c:974
+#: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "Graba, borra y formatea CD, DVD y BD"
 
@@ -2979,7 +2979,7 @@ msgstr "SHA256"
 #. Translators: first %s is the filename, second %s is the error
 #. * generated from errno
 #: ../plugins/checksum/burn-checksum-image.c:313
-#: ../plugins/libburnia/burn-libburn.c:678
+#: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "No se pudo abrir el «%s» (%s)"
@@ -3023,8 +3023,8 @@ msgid ""
 msgstr ""
 "Error al obtener una clave usada para cifrado. Debe resolver tal problema "
 "con uno de los siguientes métodos: en una terminal, establezca el código de "
-"región DVD apropiado para su reproductor de CD/DVD con el comando «regionset "
-"%s» o ejecute el comando «DVDCSS_METHOD=title brasero --no-existing-session»"
+"región DVD apropiado para su reproductor de CD/DVD con el comando «regionset %"
+"s» o ejecute el comando «DVDCSS_METHOD=title brasero --no-existing-session»"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3081,7 +3081,7 @@ msgstr "No se pudo inicializar la biblioteca libburn"
 msgid "The drive address could not be retrieved"
 msgstr "No se pudo obtener la dirección de la unidad"
 
-#: ../plugins/libburnia/burn-libburn-common.c:417
+#: ../plugins/libburnia/burn-libburn-common.c:418
 #, c-format
 msgid "Writing track %02i"
 msgstr "Escribiendo pista %02i"
@@ -4194,8 +4194,8 @@ msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Para quitar archivos selecciónelos y pulse el botón «Quitar» o pulse la "
-"tecla «Suprimir»"
+"Para quitar archivos selecciónelos y pulse el botón «Quitar» o pulse la tecla "
+"«Suprimir»"
 
 #: ../src/brasero-project.c:802
 #, c-format
@@ -5166,8 +5166,8 @@ msgstr "Escriba «%s --help» para ver todas las opciones disponibles\n"
 
 #~ msgid "click on the \"Remove\" button to remove selected items in this area"
 #~ msgstr ""
-#~ "pulsar en el botón «Quitar» para quitar los archivos seleccionados en "
-#~ "este área"
+#~ "pulsar en el botón «Quitar» para quitar los archivos seleccionados en este "
+#~ "área"
 
 #~ msgid "select items in this area, and choose \"Remove\" from context menu"
 #~ msgstr ""
