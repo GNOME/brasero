@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero help master\n"
-"POT-Creation-Date: 2011-10-06 21:39+0000\n"
+"POT-Creation-Date: 2011-12-27 10:38+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -19,14 +19,24 @@ msgstr ""
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: C/tools-blank.page:7(desc)
-msgid "Erase a rewritable CD or DVD by blanking it."
-msgstr "Izbris prepisljivega CD-ja ali DVD-ja s praznjenjem"
+#: C/tools-check-integrity.page:7(desc)
+msgid "You can test out a disc integrity after burning it."
+msgstr "Po zapisu diska lahko preverite njegovo celovitost."
 
+#: C/tools-check-integrity.page:9(name)
+msgid "Paulina Gonzalez"
+msgstr "Paulina Gonzalez"
+
+#: C/tools-check-integrity.page:10(email)
+msgid "pau.gonzalezbr@gmail.com"
+msgstr "pau.gonzalezbr@gmail.com"
+
+#: C/tools-check-integrity.page:13(name)
 #: C/tools-blank.page:9(name)
-#: C/split-track.page:10(name)
+#: C/split-track.page:11(name)
 #: C/project-video.page:12(name)
 #: C/project-save.page:12(name)
+#: C/project-image-burn.page:17(name)
 #: C/project-disc-copy.page:9(name)
 #: C/project-data.page:9(name)
 #: C/project-audio.page:9(name)
@@ -37,8 +47,65 @@ msgstr "Izbris prepisljivega CD-ja ali DVD-ja s praznjenjem"
 msgid "Ekaterina Gerasimova"
 msgstr "Ekaterina Gerasimova"
 
+#: C/tools-check-integrity.page:14(email)
+#: C/project-image-burn.page:18(email)
+msgid "kittykat3756@gmail.com"
+msgstr "kittykat3756@gmail.com"
+
+#: C/tools-check-integrity.page:17(p)
+#: C/tools-blank.page:13(p)
+#: C/split-track.page:15(p)
+#: C/project-video.page:16(p)
+#: C/project-save.page:16(p)
+#: C/project-image-burn.page:21(p)
+#: C/project-disc-copy.page:13(p)
+#: C/project-data.page:13(p)
+#: C/project-audio.page:13(p)
+#: C/prob-dvd.page:15(p)
+#: C/prob-cd.page:15(p)
+#: C/introduction.page:13(p)
+#: C/create-cover.page:13(p)
+msgid "Creative Commons Share Alike 3.0"
+msgstr "Creative Commons - deljenje pod enakimi pogoji 3.0"
+
+#: C/tools-check-integrity.page:21(title)
+msgid "Check disc integrity"
+msgstr "Preverjanje celovitosti podatkov na disku"
+
+#: C/tools-check-integrity.page:23(p)
+msgid "After burning a CD/DVD by using <app>Brasero</app>, you can check its integrity to make sure that the files in the disc are not corrupted."
+msgstr "Po zapisu CD-ja/DVD-ja z <app>Braserom</app> lahko preverite njegovo celovitost, da se prepričate, da datoteke na disku niso pokvarjene."
+
+#: C/tools-check-integrity.page:27(p)
+msgid "Select <guiseq><gui>Tools</gui><gui>Check Integrity...</gui></guiseq>."
+msgstr "Izberite <guiseq><gui>Orodja</gui><gui>Preveri celovitost  ...</gui></guiseq>."
+
+#: C/tools-check-integrity.page:30(p)
+msgid "You can select the option <gui>Use an MD5 file to check the disk.</gui> if you prefer it."
+msgstr "Če vam je ljubša možnost <gui>Uporabi datoteko MD5 za preverjanje diska</gui>, če vam je ljubša."
+
+#: C/tools-check-integrity.page:33(p)
+msgid "An MD5 (Message-Digest Algorithm 5) is a cryptographic hash function widely used for checking data integrity."
+msgstr "MD5 (Message-Digest algoritem 5) je funkcija kriptografskega razprševanja, ki se pogosto uporablja za preverjanje celovitosti podatkov."
+
+#: C/tools-check-integrity.page:34(p)
+msgid "If you choose this option, you will have to find the MD5 file by clicking in the folder icon placed below."
+msgstr "Če izberete to možnost, boste morali najti datoteko MD5 s klikom na ikono mape postavljeno spodaj."
+
+#: C/tools-check-integrity.page:39(p)
+msgid "Press <gui>Check</gui> to continue or <gui>Close</gui> to cancel it."
+msgstr "Pritisnite <gui>Preveri</gui> za nadaljevanje ali <gui>Zapri</gui> za preklic."
+
+#: C/tools-check-integrity.page:42(p)
+msgid "When the checking is finished you can either choose to <gui>Check Again</gui> or just <gui>Close</gui>."
+msgstr "Ko je preverjanje končano, lahko izberete <gui>Preveri ponovno</gui> ali enostavno kliknite <gui>Zapri</gui>."
+
+#: C/tools-blank.page:7(desc)
+msgid "Erase a rewritable CD or DVD by blanking it."
+msgstr "Izbris prepisljivega CD-ja ali DVD-ja s praznjenjem"
+
 #: C/tools-blank.page:10(email)
-#: C/split-track.page:11(email)
+#: C/split-track.page:12(email)
 #: C/project-video.page:13(email)
 #: C/project-save.page:13(email)
 #: C/project-disc-copy.page:10(email)
@@ -51,26 +118,12 @@ msgstr "Ekaterina Gerasimova"
 msgid "kittykat3756@googlemail.com"
 msgstr "kittykat3756@googlemail.com"
 
-#: C/tools-blank.page:13(p)
-#: C/split-track.page:14(p)
-#: C/project-video.page:16(p)
-#: C/project-save.page:16(p)
-#: C/project-disc-copy.page:13(p)
-#: C/project-data.page:13(p)
-#: C/project-audio.page:13(p)
-#: C/prob-dvd.page:15(p)
-#: C/prob-cd.page:15(p)
-#: C/introduction.page:13(p)
-#: C/create-cover.page:13(p)
-msgid "Creative Commons Share Alike 3.0"
-msgstr "Creative Commons - deljenje pod enakimi pogoji 3.0"
-
 #: C/tools-blank.page:17(title)
 msgid "Blank a disc"
 msgstr "Praznjenje diska"
 
 #: C/tools-blank.page:19(p)
-msgid "You can prepare a rewritable disc, with existing data on it, for writing by blanking if."
+msgid "You can prepare a rewritable disc, with existing data on it, for writing by blanking it."
 msgstr "Prepisljiv disk z obstoječimi podatki lahko pripravite na pisanje s praznjenjem."
 
 #: C/tools-blank.page:24(p)
@@ -97,40 +150,76 @@ msgstr "Za nadaljevanje kliknite <gui>Prazno</gui>."
 msgid "The disc may be ejected when the blanking is complete."
 msgstr "Disk bo morda ob končanju praznjenja izvržen."
 
-#: C/split-track.page:8(desc)
+#: C/split-track.page:9(desc)
 msgid "Split an audio project track into multiple tracks."
 msgstr "Razdelitev skladbe zvočnega projekta v več skladb."
 
-#: C/split-track.page:18(title)
+#: C/split-track.page:19(title)
 msgid "Split an audio track"
 msgstr "Razdelitev skladbe"
 
-#: C/split-track.page:20(p)
+#: C/split-track.page:21(p)
 msgid "You can split a single audio track into multiple tracks when you put together an audio project."
 msgstr "Med sestavljanjem zvočnega projekta lahko eno skladbo razdelite v več skladb."
 
-#: C/split-track.page:25(p)
+#: C/split-track.page:26(p)
 msgid "Start an audio project and add the tracks you wish to use."
 msgstr "Začnite zvočni projekt in dodajte skladbe, ki jih želite uporabiti."
 
-#: C/split-track.page:28(p)
+#: C/split-track.page:29(p)
 msgid "Select the track you wish to split by clicking on it, then click either <guiseq><gui>Edit</gui><gui>Split Track…</gui></guiseq> or right click on the track and select <gui>Split Track…</gui> from the menu."
 msgstr "S klikom izberite skladbo, ki jo želite razdeliti, ter nato kliknite <guiseq><gui>Uredi</gui><gui>Razdeli skladbo …</gui></guiseq> ali desno kliknite na skladbo in v meniju izberite <gui>Razdeli skladbo …</gui>"
 
-#: C/split-track.page:33(p)
-msgid "Select your preferred method of splitting the tracks, and split at the points where you want one to end and the next one to begin."
-msgstr "Izberite želeni način razdelitve skladbe in izberite točke, kjer naj se ena skladba konča in druga začne."
+#: C/split-track.page:34(p)
+msgid "Select your preferred method of splitting the tracks:"
+msgstr "Izberite način razdeljevanja skladb:"
 
-#: C/split-track.page:36(p)
+#: C/split-track.page:37(title)
+msgid "Split track manually"
+msgstr "Razdeli skladbo ročno"
+
+#: C/split-track.page:38(p)
+msgid "This option allows you to select the exact length of each new section of the track manually."
+msgstr "Ta možnost vam omogoča ročno izbiro natančne dolžine za vsak nov odsek skladbe. "
+
+#: C/split-track.page:42(title)
+msgid "Split track in parts with a fixed length"
+msgstr "Razdelitev skladb na dele z določeno dolžino"
+
+#: C/split-track.page:43(p)
+msgid "Use this method to split the track into multiple sections of equal length."
+msgstr "Uporabite ta način za razdelitev skladbe v več odsekov enake dolžine."
+
+#: C/split-track.page:47(title)
+msgid "Split track in a fixed number of parts"
+msgstr "Razdelitev skladbe na določeno število delov"
+
+#: C/split-track.page:48(p)
+msgid "This method allows you to split the track into a set number of sections, all of which will be of the same length."
+msgstr "Ta način vam omogoča razdelitev skladbe v številne odseke, ki bodo vsi enake dolžine."
+
+#: C/split-track.page:52(title)
+msgid "Split track for each silence"
+msgstr "Razdeli skladbo za vsako tišino"
+
+#: C/split-track.page:53(p)
+msgid "Select this method for <app>Brasero</app> to auto-detect silences in the recording and to split the track at those points."
+msgstr "Izberite ta način, da bo <app>Brasero</app> samodejno zaznal tišino pri snemanju in razdelil skladbe na teh točkah."
+
+#: C/split-track.page:59(p)
+msgid "Proceed to split the track by clicking <gui>Slice</gui>."
+msgstr "Nadaljujte z razdeljevanjem skladb s klikom <gui>Razreži</gui>."
+
+#: C/split-track.page:61(p)
 msgid "If you try to split a track into a section less than six seconds long, the new section will be padded to make it 6 seconds long."
 msgstr "Če skladbo poskusite razdeliti na odsek, ki je krajši od šestih sekund, mu bo pripet nov posnetek, tako da bo posnetek dolg 6 sekund."
 
-#: C/split-track.page:43(p)
+#: C/split-track.page:68(p)
 msgid "Click <gui>OK</gui> to confirm your track splits and apply the changes."
 msgstr "Kliknite <gui>V redu</gui> za potrditev razdelitve skladb in uveljavitev sprememb."
 
-#: C/split-track.page:45(p)
-msgid "You can split and merge the same track as many times as you like, while you are viewing the split track dialog. Once you confirm your track splitting by clicking <gui>OK</gui>, you will no longer be able to merge the sections you have already split off. To revert the changes, remove the split sections of the track from your project and re-add the track."
+#: C/split-track.page:70(p)
+msgid "You can split and merge the same track as many times as you like while you are viewing the split track dialog. Once you confirm your track splitting by clicking <gui>OK</gui>, you will no longer be able to merge the sections you have already split off. To revert the changes, remove the split sections of the track from your project and re-add the track."
 msgstr "Medtem ko ste v pogovornem oknu razdeljevanja skladb, lahko skladbo razdelite in združite kolikokrat hočete. Ko s klikom na <gui>V redu</gui> potrdite razdelitev skladb, razdeljenih odsekov ne boste mogli več združiti. Za povrnitev sprememb odstranite vse odseke skladbe iz projekta in skladbo ponovno dodajte."
 
 #: C/project-video.page:9(title)
@@ -229,12 +318,69 @@ msgid "opening the project from a file browser"
 msgstr "Odpiranje projekta iz brskalnika datotek"
 
 #: C/project-save.page:57(p)
-msgid "If <app>Brasero</app> is already running, opening the project from a file browser will make <app>Brasero</app> vanish in a puff of logic."
-msgstr "Če se <app>Brasero</app> že izvaja, bo odpiranje projekta iz brskalnika datotek povzročilo, da <app>Brasero</app> izgine."
+msgid "If <app>Brasero</app> is already running, opening the project from a file browser will cause a second instance of <app>Brasero</app> to start and will cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
+msgstr "Če se <app>Brasero</app> že izvaja, bo odpiranje projekta iz brskalnika datotek povzročilo zagon druge različice programa <app>Brasero</app> in bo povzročilo, da se bosta oba primerka sesula. Za več podrobnosti si oglejte <link href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">GNOME hrošč 644011</link>."
 
-#: C/project-save.page:64(p)
+#: C/project-save.page:67(p)
 msgid "If you open a saved project, <app>Brasero</app> will treat it as a new project: if you want to save an updated version of the project, it will ask you to enter a name for it, at this point you can overwrite the old version or save it as a new project by entering a different file name."
 msgstr "Ko odprete shranjen projekt, ga bo <app>Brasero</app> obravnaval kot nov projekt. Če želite shraniti posodobljeno različico vas bo vprašal za njegovo ime. Izberete lahko isto ime in staro različico prepišete ali pa izberete drugo ime in staro različico obdržite."
+
+#: C/project-image-burn.page:11(desc)
+msgid "Burn an existing disc image to a CD or DVD."
+msgstr "Zapis obstoječega odtisa diska na CD ali DVD."
+
+#: C/project-image-burn.page:13(name)
+msgid "Marta Bogdanowicz"
+msgstr "Marta Bogdanowicz"
+
+#: C/project-image-burn.page:14(email)
+msgid "majus85@gmail.com"
+msgstr "majus85@gmail.com"
+
+#: C/project-image-burn.page:25(title)
+msgid "Burn image"
+msgstr "Zapis odtisa"
+
+#: C/project-image-burn.page:27(p)
+msgid "<app>Brasero</app> allows you to burn disc images to a CD or DVD. It supports the following extensions of optical disc images: <file>.iso</file>, <file>.toc</file> and <file>.cue</file>."
+msgstr "<app>Brasero</app> vam omogoča zapis odtisov na CD ali DVD. Podpira naslednje pripone za odtise optičnih diskov: <file>.iso</file>, <file>.toc</file> and <file>.cue</file>."
+
+#: C/project-image-burn.page:32(p)
+msgid "Disc images are archive files which contain all the data that is on a CD or DVD. Only one disc image can be on a CD at a time, but each archive can contain as little or as much data as you want, as long as it fits on the disc."
+msgstr "Odtisi diska so datoteke arhivov, ki vsebujejo vse podatke na CD-ju ali DVD-ju. Hkrati je lahko na CD-ju le en odtis diska, vendar lahko vsak arhiv vsebuje kolikor malo ali kolikor veliko podatkov želite, dokler se prilega na disk."
+
+#: C/project-image-burn.page:38(p)
+msgid "To burn a disc image to a CD or DVD, follow these steps:"
+msgstr "Za zapis odtisa diska na CD ali DVD sledite tem korakom:"
+
+#: C/project-image-burn.page:41(p)
+msgid "Click <gui>Burn image</gui> on the start page or select <guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></guiseq>."
+msgstr "Na začetni strani kliknite na <gui>Zapiši odtis</gui> ali izberite <guiseq><gui>Projekt</gui><gui>Nov Projekt</gui><gui>Zapiši odtis ...</gui></guiseq>."
+
+#: C/project-image-burn.page:46(p)
+msgid "Select a disc image to write by clicking <gui>Click here to select a disc image</gui>."
+msgstr "Izberite odtis diska za zapisovanje s klikom na <gui>Kliknite tukaj za zapis odtisa na disku</gui>."
+
+#: C/project-image-burn.page:50(p)
+msgid "Select the disc that you want to use from drop down list below <gui>Select a disc to write to</gui>. If you have more than one disc drive, all discs which are currently in them should be listed."
+msgstr "Izberite disk, na katerega bi radi zapisovali v spustnem meniju <gui>Izbor diska za pisanje</gui>. Če imate več kot en diskovni pogon, bodo izpisani vsi pogoni v katerih je disk."
+
+#: C/project-image-burn.page:53(p)
+msgid "After choosing the disc <app>Brasero</app> shows how much free space will remain on the disc after burning."
+msgstr "Po izbiri diska <app>Brasero</app> pokaže koliko praznega prostora bo ostalo na disku po zapisovanju."
+
+#: C/project-image-burn.page:57(p)
+#: C/project-disc-copy.page:35(p)
+msgid "Click the <gui>Properties</gui> button to select burning speed and other custom options."
+msgstr "Kliknite na gumb <gui>Lastnosti</gui> za izbiro hitrosti zapisovanja in drugih možnosti po meri.button to select burning speed and other custom options."
+
+#: C/project-image-burn.page:61(p)
+msgid "Click <gui>Burn</gui> to start burning the image. After this operation you can either finish burning or make the other copy of the image."
+msgstr "Kliknite <gui>Zapiši</gui> za začetek zapisovanja odtisa. Po tem opravilu lahko končate z zapisovanjem ali naredite še eno kopijo odtisa."
+
+#: C/project-image-burn.page:64(p)
+msgid "If you are using a re-writable disc, which already contains data, you will be asked if you want to blank it or insert a different disc."
+msgstr "Če uporabljate prepisljiv disk, ki že vsebuje podatke, boste vprašani, če ga želite izprazniti ali vstaviti drug disk. "
 
 #: C/project-disc-copy.page:7(desc)
 msgid "Create an identical copy of a disc."
@@ -256,16 +402,12 @@ msgstr "Izberite disk s katerega bi radi kopirali v spustnem meniju pod <gui>Izb
 msgid "Choose whether you want to make a copy to another disc or create an image for later use."
 msgstr "Izberite ali želite narediti kopijo na drug disk ali ustvariti odtis za kasnejšo uporabo."
 
-#: C/project-disc-copy.page:35(p)
-msgid "Click the <gui>Properties</gui> button to select burning speed and other custom options."
-msgstr "Kliknite na gumb <gui>Lastnosti</gui> za izbiro hitrosti zapisovanja in drugih možnosti po meri.button to select burning speed and other custom options."
-
 #: C/project-disc-copy.page:39(p)
 msgid "Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several Copies</gui>, if you plan to make more than one copy of the disc."
 msgstr "Kliknite <gui>Kopiraj</gui> za začetek kopiranja diska ali <gui>Naredi več kopij</gui>, če nameravate narediti več kot eno kopijo diska."
 
 #: C/project-disc-copy.page:42(p)
-msgid "If you are copying the disc and have only one disc drive, you will be asked to replace the disc you are copying with a writeable one after the contents are copied temporarily to your hard disk."
+msgid "If you are copying the disc and have only one disc drive, you will be asked to replace the disc you are copying with a writable one after the contents are copied temporarily to your hard disk."
 msgstr "Če disk kopirate in imate le en diskovni pogon, boste morali disk, ki ga kopirate, zamenjati z zapisljivim diskom potem ko bo bila vsebina začasno prekopirana na trdi disk."
 
 #: C/project-data.page:7(desc)
@@ -475,34 +617,34 @@ msgid "If you are creating an audio project and finish putting together the proj
 msgstr "Če končate z ustvarjanjem zvočnega projekta, bodo ob dostopu do vmesnika <gui>Urejevalnika ovitkov</gui> iz okna zvočnega projekta skladbe samodejno izpisane na zadnji strani."
 
 #: C/create-cover.page:31(p)
-msgid "It is not possible to save your progress once you start working with the <gui>Cover Editor</gui>. If you close the dialog, your changes will be lost, or you can print the inlay when you are finished."
-msgstr "Ko enkrat začnete delati z <gui>Urejevalnikom ovitkov</gui>, napredka ne morete več shraniti. Če pogovorno okno zaprete, bodo vaše spremembe izgubljene ali pa lahko ovitek natisnete, ko končate."
+msgid "If you close the <gui>Cover Editor</gui>, your changes will be lost."
+msgstr "Če <gui>Urejevalnik naslovnic</gui> zaprete, bodo vaše spremembe izgubljene."
 
-#: C/create-cover.page:38(p)
+#: C/create-cover.page:36(p)
 msgid "Open the <gui>Cover Editor</gui>."
 msgstr "Odprite <gui>Urejevalnik ovitkov</gui>."
 
-#: C/create-cover.page:41(p)
+#: C/create-cover.page:39(p)
 msgid "Choose the formatting you wish to use for the text and type the text, scrolling down to see the side and back inlay for the jewel case."
 msgstr "Izberite oblikovanje, ki ga želite uporabiti za besedilo, in vnesite za besedilo. Drsajte navzdol za ogled stranskega dela in nazaj za ogled plasti."
 
-#: C/create-cover.page:44(p)
+#: C/create-cover.page:42(p)
 msgid "When you first see the <gui>Cover Editor</gui> dialog, you will not be able to click on any of the text formatting options. Click on the cover you want to work on to be able to use those."
 msgstr "Ko pogovorno okno <gui>Urejevalnik ovitkov</gui> vidite prvič, ne boste mogli kliknite na nobeno od možnosti oblikovanja besedila. Kliknite na "
 
-#: C/create-cover.page:50(p)
+#: C/create-cover.page:48(p)
 msgid "Click the <gui>Background properties</gui> toolbar icon to add a background for the current cover, or right click on the cover you wish to edit and select <gui>Set Background Properties</gui>. You can choose to use a colored background or to select a background image."
 msgstr "Za dodajanje ozadja trenutnemu ovitku kliknite na ikono orodne vrstice <gui>Lastnosti ozadja</gui>  ali desno kliknite na ovite, ki ga želite urejati in izberite <gui>Nastavi lastnosti ozadja</gui>. Izberete lahko obarvano ozadje ali sliko ozadja."
 
-#: C/create-cover.page:55(p)
-msgid "If you select a centred background image, <app>Brasero</app> sometimes crashes when you click the <gui>Close</gui> button."
+#: C/create-cover.page:53(p)
+msgid "If you select a centered background image, <app>Brasero</app> sometimes crashes when you click the <gui>Close</gui> button."
 msgstr "Če izberete sredinjeno sliko ozadja, se <app>Brasero</app> včasih sesuje, ko kliknite na gumb <gui>Zapri</gui>."
 
-#: C/create-cover.page:58(p)
+#: C/create-cover.page:56(p)
 msgid "Click the <gui>Close</gui> button to apply the changes and close the <gui>Background Properties</gui> dialog."
 msgstr "Kliknite na gumb <gui>Zapri</gui> za uveljavitev sprememb in zaprite pogovorno okno <gui>Lastnosti ozadja</gui>."
 
-#: C/create-cover.page:62(p)
+#: C/create-cover.page:60(p)
 msgid "Print the cover using the <gui>Print</gui> button, which is located in the top-right corner of the dialog."
 msgstr "Natisnite ovitek s klikom na gumb <gui>Natisni</gui>, ki je v zgornjem desnem kotu pogovornega okna."
 
@@ -510,6 +652,29 @@ msgstr "Natisnite ovitek s klikom na gumb <gui>Natisni</gui>, ki je v zgornjem d
 #: C/index.page:0(None)
 msgid "translator-credits"
 msgstr "Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2010"
+
+#~ msgid ""
+#~ "Select your preferred method of splitting the tracks, and split at the "
+#~ "points where you want one to end and the next one to begin."
+#~ msgstr ""
+#~ "Izberite želeni način razdelitve skladbe in izberite točke, kjer naj se "
+#~ "ena skladba konča in druga začne."
+
+#~ msgid ""
+#~ "If <app>Brasero</app> is already running, opening the project from a file "
+#~ "browser will make <app>Brasero</app> vanish in a puff of logic."
+#~ msgstr ""
+#~ "Če se <app>Brasero</app> že izvaja, bo odpiranje projekta iz brskalnika "
+#~ "datotek povzročilo, da <app>Brasero</app> izgine."
+
+#~ msgid ""
+#~ "It is not possible to save your progress once you start working with the "
+#~ "<gui>Cover Editor</gui>. If you close the dialog, your changes will be "
+#~ "lost, or you can print the inlay when you are finished."
+#~ msgstr ""
+#~ "Ko enkrat začnete delati z <gui>Urejevalnikom ovitkov</gui>, napredka ne "
+#~ "morete več shraniti. Če pogovorno okno zaprete, bodo vaše spremembe "
+#~ "izgubljene ali pa lahko ovitek natisnete, ko končate."
 
 #~ msgid "<application>Brasero</application> Manual V2.2"
 #~ msgstr "<application>Brasero</application> priročnik različica 2.2"
@@ -589,17 +754,11 @@ msgstr "Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2010"
 #~ msgid "Stabeno"
 #~ msgstr "Stabeno"
 
-#~ msgid "stabeno@gmail.com"
-#~ msgstr "stabeno@gmail.com"
-
 #~ msgid "Phil"
 #~ msgstr "Phil"
 
 #~ msgid "Bull"
 #~ msgstr "Bull"
-
-#~ msgid "philbull@gmail.com"
-#~ msgstr "philbull@gmail.com"
 
 #~ msgid "Brasero Manual V2.2"
 #~ msgstr "Brasero priročnik različica 2.2"
@@ -869,18 +1028,12 @@ msgstr "Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2010"
 #~ "<menuchoice><guimenu>Uredi</guimenu><guimenuitem>Razdeli skladbo ...</"
 #~ "guimenuitem></menuchoice>. "
 
-#~ msgid "Split track manually"
-#~ msgstr "Razdeli skladbo ročno"
-
 #~ msgid ""
 #~ "Select this to select the time on the track where you wish to split it. A "
 #~ "sliding bar is provided along with an audio preview."
 #~ msgstr ""
 #~ "Izberite za izbiro časa, kjer želite razdeliti skladbo. Skupaj z zvočnim "
 #~ "predogledom je zagotovljena drsna vrstica."
-
-#~ msgid "Split tracks in parts with a fixed length"
-#~ msgstr "Razdeli sledi na dele z nespremenljivo dolžino"
 
 #~ msgid ""
 #~ "Select this to split the track into fixed-length parts with a duration "
@@ -889,9 +1042,6 @@ msgstr "Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2010"
 #~ "Izberite za razdelitev skladbe v dele nespremenljive dolžine s trajanjem, "
 #~ "ki ga navedete."
 
-#~ msgid "Split track in fixed number of parts"
-#~ msgstr "Razdeli skladbo na nespremenljivo število delov"
-
 #~ msgid ""
 #~ "Select this to decide the number of parts that you want your track to be "
 #~ "split into. You can use the provided spin box to select the number of "
@@ -899,9 +1049,6 @@ msgstr "Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2010"
 #~ msgstr ""
 #~ "Izberite za določanje števila delov, v katere želite razdeliti skladbo. "
 #~ "Uporabite lahko vrteče polje za izbiro števila delov."
-
-#~ msgid "Split track for each silence"
-#~ msgstr "Razdeli skladbo za vsako tišino"
 
 #~ msgid "Select this to split the track where a silence is present."
 #~ msgstr "Izberite za razdelitev skladbe, kjer je prisotna tišina."
@@ -1231,9 +1378,6 @@ msgstr "Andrej Žnidaršič <andrej.znidarsic@gmail.com>, 2010"
 #~ "en pogon kot izvorni pogon in drugi kot ciljni pogon. V primeru da tega "
 #~ "ne storite, boste pozvani za odstranitev CD-ja ali DVD-ja, ki ga "
 #~ "kopirate, in vstavitev praznega medija. "
-
-#~ msgid "Burn Image"
-#~ msgstr "Zapisovanje odtisa"
 
 #~ msgid ".iso"
 #~ msgstr ".iso"
