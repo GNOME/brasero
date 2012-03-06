@@ -14,3 +14,29 @@ X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=brasero
 X-GNOME-Bugzilla-Component=general
 X-GNOME-Bugzilla-Version=@VERSION@
+Actions=Window;Image;Disc;Audio;Video;
+
+[Desktop Action Window]
+_Name=Open a New Window
+Exec=brasero --no-existing-session
+OnlyShowIn=Unity;
+
+[Desktop Action Image]
+_Name=Burn an Image File
+Exec=brasero --image
+OnlyShowIn=Unity;
+
+[Desktop Action Disc]
+Name=Copy a Disc
+Exec=brasero --copy
+OnlyShowIn=Unity;
+
+[Desktop Action Audio]
+_Name=Create an Audio Project
+Exec=brasero --audio
+OnlyShowIn=Unity;
+
+[Desktop Action Video]
+_Name=Create a Video Project
+Exec=brasero --video
+OnlyShowIn=Unity;
