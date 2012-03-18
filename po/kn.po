@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-12-15 14:20+0000\n"
-"PO-Revision-Date: 2012-03-18 16:04+0530\n"
+"PO-Revision-Date: 2012-03-18 16:31+0530\n"
 "Last-Translator: s\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -74,6 +74,9 @@ msgid ""
 "files. If that value is empty, the default directory set for glib will be "
 "used."
 msgstr ""
+"brasero ಎಲ್ಲಿ ತಾತ್ಕಾಲಿಕ ಕಡತಗಳನ್ನು ಶೇಖರಿಸಿ ಇರಿಸಬೇಕೊ ಅದರ ಮಾರ್ಗವನ್ನು "
+"ಹೊಂದಿರುತ್ತದೆ. ಆ ಮೌಲ್ಯವು ಖಾಲಿ ಇದ್ದಲ್ಲಿ, glib ಗಾಗಿ ಹೊಂದಿಸಲಾದ ಪೂರ್ವನಿಯೋಜಿತ "
+"ಕೋಶವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
 msgid "Directory to use for temporary files"
@@ -171,12 +174,14 @@ msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
 msgstr ""
+"ಈ ಮೌಲ್ಯವನ್ನು ಈ ಹಿಂದೆ ಬಳಸಲಾದಂತಹ ಸನ್ನಿವೇಶದಲ್ಲಿನ ಬರೆಯುವ ಫ್ಲಾಗ್‌ಗಳನ್ನು "
+"ಸೂಚಿಸುತ್ತದೆ."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
-msgstr ""
+msgstr "ಈ ಮೌಲ್ಯವನ್ನು ಈ ಹಿಂದೆ ಬಳಸಲಾದಂತಹ ಸನ್ನಿವೇಶದಲ್ಲಿನ ವೇಗವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:26
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -193,6 +198,10 @@ msgid ""
 "priority is used. A positive value overrides the plugin's native priority. A "
 "negative value disables the plugin."
 msgstr ""
+"ಒಂದೇ ಕೆಲಸಕ್ಕಾಗಿ ಹಲವಾರು ಪ್ಲಗ್‌ಇನ್‌ಗಳು ಲಭ್ಯವಿದ್ದಾಗ, ಈ ಮೌಲ್ಯವು ಯಾವ ಪ್ಲಗ್‌ಇನ್‌ಗೆ "
+"ಹೆಚ್ಚಿನ ಆದ್ಯತೆಯನ್ನು ನೀಡಬೇಕು ಎನ್ನುವುದನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ. 0 ಎಂದರೆ ಪ್ಲಗ್‌ಇನ್‌ನ "
+"ಮೂಲ ಆದ್ಯತೆಯನ್ನು ಬಳಸಬೇಕು ಎಂದರ್ಥ. ಧನಾತ್ಮಕ ಮೌಲ್ಯವು ಪ್ಲಗ್‌ಇನ್‌ನ ಮೂಲ ಆದ್ಯತೆಯನ್ನು "
+"ಬದಲಾಯಿಸುತ್ತದೆ. ಒಂದು ಋಣ ಮೌಲ್ಯವು ಪ್ಲಗ್‌ಇನ್‌ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:29
 msgid "Whether to display file preview. Set to true to use it."
@@ -3020,6 +3029,12 @@ msgid ""
 "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
 "command"
 msgstr ""
+"ಗೂಢಲಿಪೀಕರಣಕ್ಕಾಗಿ ಬಳಸಲಾದ ಕೀಲಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ. ಈ ಕೆಳಗಿನ "
+"ವಿಧಾನದ ಮೂಲಕ ಅಂತಹ ತೊಂದರೆಯನ್ನು ನೀವು ಸರಿಪಡಿಸಲು ಸಾಧ್ಯವಿರುತ್ತದೆ: ಟರ್ಮಿನಲ್‌ನಲ್ಲಿ "
+"\"regionset %s\" ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಸೂಕ್ತವಾದ DVD ಪ್ರದೇಶ ಸಂಕೇತವನ್ನು ನಿಮ್ಮ "
+"CD/DVD ಚಾಲಕಕ್ಕೆ ಹೊಂದಿಸಿ ಅಥವ \"DVDCSS_METHOD=title brasero "
+"--no-existing-session\" "
+"ಆಜ್ಞೆಯನ್ನು ಚಲಾಯಿಸಿ"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3639,7 +3654,7 @@ msgstr "ತಕ್ಷಣ ಬರೆಯಲು ಆರಂಭಿಸು."
 
 #: ../src/brasero-cli.c:134
 msgid "Don't connect to an already-running instance"
-msgstr ""
+msgstr "ಈಗಾಗಲೆ ಚಾಲನೆಯಲ್ಲಿರುವ ಸನ್ನಿವೇಶಕ್ಕೆ ಸಂಪರ್ಕ ಜೋಡಿಸಬೇಡ"
 
 #: ../src/brasero-cli.c:138
 msgid ""
