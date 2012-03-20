@@ -1,0 +1,4979 @@
+# translation of brasero.master.po to Khmer
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Khoem Sokhem <khoemsokhem@khmeros.info>, 2012.
+# Morn Met <mornmet@khmeros.info>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: brasero.master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-12-27 10:38+0000\n"
+"PO-Revision-Date: 2012-03-09 11:48+0700\n"
+"Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
+"Language-Team: Khmer <support@khmeros.info>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 1.2\n"
+"X-Language: km-KH\n"
+"Language: km\n"
+
+#: ../data/brasero.desktop.in.in.h:1
+msgid "Brasero"
+msgstr "Brasero"
+
+#: ../data/brasero.desktop.in.in.h:2
+msgid "Brasero Disc Burner"
+msgstr "កម្មវិធី​ដុត​ថាស Brasero"
+
+#: ../data/brasero.desktop.in.in.h:3
+msgid "Create and copy CDs and DVDs"
+msgstr "បង្កើត និង​ចម្លង​ស៊ីឌី និង​ឌីវីឌី"
+
+#: ../data/brasero.desktop.in.in.h:4
+msgid "Disc Burner and Copier"
+msgstr "កម្មវិធី​ចម្លង និង​កម្មវិធី​ដុត​ថាស"
+
+#: ../data/mime/brasero.xml.in.h:1
+msgid "Brasero project file"
+msgstr "ឯកសារ​គម្រោង Brasero"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+msgid "Burning flags to be used"
+msgstr "ទង់ជាតិ​​ដុត​ដែល​ត្រូវ​ប្រើ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:2
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr ""
+"មាន​ផ្លូវ​ពេញលេញ​នៃ​ថត​ដែល​ត្រូវ​បាន​រកមើល​ជា​លើក​ចុងក្រោយ​សម្រាប់​រូបភាព​ដែ"
+"ល​ត្រូវ​ដុត"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"មាន​បញ្ជី​កម្មវិធី​ជំនួយ​បន្ថែម Brasero នឹង​ប្រើ​ពួកវា​សម្រាប់​ដុត​ថាស ។ "
+"ប្រសិនបើ​កំណត់​ទៅជា​គ្មានសោះ Brasero នឹង​ផ្ទុក​ពួកវា​ទាំងអស់ ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"មាន​ឈ្មោះ​នៃ​ឈុត​ម៉ាស៊ីន​ដុត​សំណព្វ​ដែល​ត្រូវ​បាន​ដំឡើង ។ "
+"វា​នឹង​ត្រូវ​បាន​ប្រើ ប្រសិនបើ​អាច​ធ្វើបាន ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid ""
+"Contains the path to the directory where brasero should store temporary "
+"files. If that value is empty, the default directory set for glib will be "
+"used."
+msgstr ""
+"មាន​ផ្លូវ​ទៅកាន់​ថត​ដែល brasero នឹង​រក្សាទុក​ឯកសារ​បណ្ដោះអាសន្ន ។ "
+"ប្រសិនបើ​តម្លៃ​នោះ​ទទេ ការ​កំណត់​ថត​លំនាំដើម​សម្រាប់ glib នឹង​ត្រូវ​បាន​ប្រើ "
+"។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "ថត​ត្រូវ​ប្រើ​សម្រាប់​ឯកសារ​បណ្ដោះ​អាសន្ន"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+msgid "Enable file preview"
+msgstr "បើក​ការ​មើល​ឯកសារ​ជាមុន"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "បើក​ទង់​ជាតិ \"-immed\" ដែលមាន cdrecord"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid "Favourite burn engine"
+msgstr "ម៉ាស៊ីន​ដុត​សំណព្វ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+msgid "Replace symbolic links by their targets"
+msgstr "ជំនួស​តំណ​និមិត្តសញ្ញា​ដោយ​ឯកសារ​គោលដៅ​របស់​ពួកវា"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "កំណត់​ត្រឹម ០ សម្រាប់ MD5 ១ សម្រាប់ SHA1 និង ២ សម្រាប់ SHA256"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+msgid "Should Nautilus extension output debug statements"
+msgstr "ប្រសិនបើ​ផ្នែក​បន្ថែម​ Nautilus បង្ហាញ​ឃ្លា​បំបាត់​កំហុស"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+msgid ""
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
+msgstr ""
+"ប្រសិនបើ​ផ្នែក​បន្ថែម Nautilus បង្ហាញ​ឃ្លា​បំបាត់​កំហុស ។ "
+"តម្លៃ​គួរតែ​កំណត់​ជា ពិត ប្រសិនបើ​វា​ដូច្នោះ​មែន ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+msgid "Should brasero filter broken symbolic links"
+msgstr "ប្រសិនបើ brasero ត្រង​តំណ​និមិត្តសញ្ញា​ដែល​ខូច"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"ប្រសិនបើ brasero ត្រង​តំណ​និមិត្តសញ្ញា​ដែល​ខូច ។ កំណត់​ទៅជា​ ពិត brasero "
+"នឹង​ត្រង​តំណ​និមិត្តសញ្ញា​ដែល​ខូច ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Should brasero filter hidden files"
+msgstr "ប្រសិនបើ brasero ត្រង​ឯកសារ​ដែលលាក់"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr ""
+"ប្រសិនបើ brasero ត្រង​ឯកសារ​ដែល​លាក់ ។ កំណត់​ទៅជា ពិត  brasero "
+"នឹង​ត្រង់​ឯកសារ​ដែល​លាក់ ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"ប្រសិនបើ brasero "
+"ជំនួស​តំណ​និមិត្តសញ្ញា​ដោយ​ឯកសារ​គោលដៅ​របស់​ពួកវា​នៅ​ក្នុង​គម្រោង ។ កំណត់​ជា "
+"ពិត brasero នឹង​ជំនួស​តំណ​និមិត្តសញ្ញា ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid "The last browsed folder while looking for images to burn"
+msgstr "ថត​ដែល​បាន​រកមើលចុងក្រោយ ខណៈ​ដែល​ស្វែងរក​រូបភាព​ត្រូវ​ដុត"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The priority value for the plugin"
+msgstr "តម្លៃ​អាទិភាព​សម្រាប់​កម្មវិធី​ជំនួយ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid "The speed to be used"
+msgstr "ល្បឿន​ត្រូវ​ប្រើ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "The type of checksum used for files"
+msgstr "ប្រភេទ​ឆេកសាំ​ត្រូវ​ប្រើ​សម្រាប់​ឯកសារ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "The type of checksum used for images"
+msgstr "ប្រភេទ​ឆេកសាំ​ត្រូវ​ប្រើ​សម្រាប់​រូបភាព"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
+msgstr ""
+"តម្លៃ​នេះ​តំណាង​ឲ្យ​ទង់ជាតិដុត​ដែល​ត្រូវ​បាន​ប្រើ​នៅ​ក្នុង​បរិបទ​នេះ​​លើក​ចុ"
+"ងក្រោយ ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr ""
+"តម្លៃ​នេះ​តំណាង​ឲ្យ​ល្បឿន​ដែល​ត្រូវ​បាន​ប្រើ​នៅ​ក្នុង​បរិបទ​នេះ​លើក​ចុងក្រោយ "
+"។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "ត្រូវ​ប្រើ​រួមគ្នា​ជាមួយ​ទង់ជាតិ \"-immed\" ដែល​មាន cdrecord"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "ត្រូវ​ប្រើ​រួមគ្នា​ជាមួយ​ទង់ជាតិ \"-immed\" ដែល​មាន cdrecord ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid ""
+"When several plugins are available for the same task, this value is used to "
+"determine which plugin should be given priority. 0 means the plugin's native "
+"priority is used. A positive value overrides the plugin's native priority. A "
+"negative value disables the plugin."
+msgstr ""
+"នៅ​ពេល​កម្មវិធី​ជំនួយ​មួយ​ចំនួន​អាច​ប្រើ​សម្រាប់​ភារកិច្ច​តែមួយ "
+"តម្លៃ​នេះ​ត្រូវ​បាន​ប្រើ "
+"ដើម្បី​កំណត់​កម្មវិធី​ជំនួយ​ណាមួយ​ដែល​នឹង​ត្រូវ​បាន​ផ្ដល់​អាទិភាព ។ តម្លៃ ០ "
+"មាន​ន័យ​ថា អាទិភាព​ដើម​របស់​កម្មវិធី​ជំនួយ​នឹង​ត្រូវ​ប្រើ ។ "
+"តម្លៃ​វិជ្ជមាន​បដិសេធ​អាទិភាព​ដើម​របស់​កម្មវិធី​ជំនួយ ។ "
+"តម្លៃ​អវិជ្ជមាន​បិទ​កម្មវិធី​ជំនួយ ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid "Whether to display file preview. Set to true to use it."
+msgstr ""
+"ថា​តើ​ត្រូវ​បង្ហាញ​ការ​មើល​ឯកសារ​ជាមុន​ដែរ​ឬទេ ។ កំណត់​ទៅជា ពិត "
+"ដើម្បី​ប្រើ​វា ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr ""
+"ថា​តើ​ត្រូវ​ប្រើ​ទង់ជាតិ \"--driver generic-mmc-raw\" ដែល​មាន cdrdao ដែរ​ឬ​ទេ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"ថា​តើ​ត្រូវ​ប្រើ​ទង់ជាតិ \"--driver generic-mmc-raw\" ដែល​មាន cdrdao ដែរ​ឬ​ទេ "
+"។ កំណត់​ទៅជា ពិត brasero នឹង​ប្រើ​វា "
+"វា​អាច​នឹង​ជា​វិធីសាស្ត្រ​សាកល្បង​សម្រាប់​ដ្រាយ/ការ​រៀបចំ​មួយ​ចំនួន ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+msgid ""
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
+msgstr ""
+"​ថា​តើ​ត្រូវ​ប្រើ​ទង់ជាតិ \"-immed\" ដែល​មាន cdrecord ដែរ​ឬ​ទេ ។ "
+"ប្រើ​ដោយ​ប្រុងប្រយ័ត្ន (កំណត់​ទៅជា​ពិត) ដោយសារតែ​វា​ជា​វិធីសាស្ត្រ​​សាកល្បង​"
+"តែ​មួយ​គត់​សម្រាប់​ដ្រាយ/ការ​រៀបចំ​មួយ​ចំនួន ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr ""
+"ថា​តើ​ត្រូវ​ប្រើ​ទង់ជាតិ \"-use-the-force-luke=dao\" ដែល​មាន growisofs "
+"ដែរ​ឬ​ទេ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+msgid ""
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr ""
+"ថា​តើ​ត្រូវ​ប្រើ​ទង់ជាតិ \"-use-the-force-luke=dao\" ដែល​មាន growisofs "
+"ដែរ​ឬ​ទេ ។ កំណត់​ទៅជា​ មិន​ពិត brasero នឹង​មិន​ប្រើ​វា​ទេ "
+"វា​អាច​ជា​វិធីសាស្ត្រ​សាកល្បង​សម្រាប់​ដ្រាយ/ការ​រៀប​ចំ​មួយ​ចំនួន ។"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+msgid "White list of additional plugins to use"
+msgstr "បញ្ជី​កម្មវិធី​ជំនួយ​បន្ថែម​ដែល​ត្រូវ​ប្រើ"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:222
+msgid "Error while blanking."
+msgstr "មាន​កំហុស ខណៈ​ពេល​ធ្វើឲ្យ​ទទេ ។"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:227
+#: ../libbrasero-burn/brasero-blank-dialog.c:272
+msgid "Blank _Again"
+msgstr "ធ្វើឲ្យ​ទទេ​ម្ដងទៀត"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:244
+msgid "Unknown error."
+msgstr "មិន​ស្គាល់​កំហុស ។"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:264
+#: ../libbrasero-burn/brasero-blank-dialog.c:288
+msgid "The disc was successfully blanked."
+msgstr "ថាស​ត្រូវ​បាន​ធ្វើឲ្យ​ទទេ​ដោយ​ជោគជ័យ ។"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:270
+msgid "The disc is ready for use."
+msgstr "ថាស​រួចរាល់​សម្រាប់​ការ​ប្រើ ។"
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-blank-dialog.c:371
+msgid "_Blank"
+msgstr "ទទេ"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:402
+msgid "_Fast blanking"
+msgstr "ធ្វើឲ្យ​ទទេ​យ៉ាង​រហ័ស"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:403
+msgid "Activate fast blanking, as opposed to a longer, thorough blanking"
+msgstr "ធ្វើឲ្យ​ថាស​ទទេ​យ៉ាង​រហ័ស"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:433
+msgid "Disc Blanking"
+msgstr "ការ​ធ្វើឲ្យ​ថាស​ទទេ"
+
+#: ../libbrasero-burn/brasero-burn.c:162
+msgid "Burning CD/DVD"
+msgstr "ដុត​ស៊ីឌី/ឌីវីឌី"
+
+#: ../libbrasero-burn/brasero-burn.c:331
+#: ../libbrasero-burn/brasero-data-session.c:123
+#: ../libbrasero-burn/brasero-tool-dialog.c:89
+#: ../libbrasero-media/scsi-error.c:47 ../plugins/cdrdao/burn-cdrdao.c:243
+#: ../plugins/cdrkit/burn-readom.c:110 ../plugins/cdrkit/burn-wodim.c:135
+#: ../plugins/cdrkit/burn-wodim.c:144 ../plugins/cdrtools/burn-cdrecord.c:135
+#: ../plugins/cdrtools/burn-cdrecord.c:144
+#: ../plugins/cdrtools/burn-readcd.c:111
+#: ../plugins/growisofs/burn-dvd-rw-format.c:84
+#: ../plugins/growisofs/burn-growisofs.c:190
+#: ../plugins/libburnia/burn-libburn-common.c:186
+#, c-format
+msgid "The drive is busy"
+msgstr "ដ្រាយ​កំពុង​រវល់"
+
+#: ../libbrasero-burn/brasero-burn.c:332
+#: ../libbrasero-burn/brasero-burn-dialog.c:649
+#: ../libbrasero-burn/brasero-tool-dialog.c:90
+msgid "Make sure another application is not using it"
+msgstr "សូម​ប្រាកដ​ថា មិន​មាន​កម្មវិធី​ផ្សេង​ទៀត​កំពុង​តែ​ប្រើ​វា ។"
+
+#: ../libbrasero-burn/brasero-burn.c:409
+#, c-format
+msgid "\"%s\" cannot be unlocked"
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​ដោះសោ"
+
+#: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
+#: ../libbrasero-burn/brasero-burn.c:761
+msgid "No burner specified"
+msgstr "គ្មាន​កម្មវិធី​ដុត​ត្រូវ​បានបញ្ជាក់"
+
+#: ../libbrasero-burn/brasero-burn.c:586
+msgid "No source drive specified"
+msgstr "គ្មាន​ដ្រាយ​ប្រភព​ត្រូវ​បាន​បញ្ជាក់"
+
+#: ../libbrasero-burn/brasero-burn.c:632
+msgid "Ongoing copying process"
+msgstr "បន្ត​ដំណើរការ​ចម្លង"
+
+#: ../libbrasero-burn/brasero-burn.c:636 ../libbrasero-burn/brasero-burn.c:735
+#: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
+#, c-format
+msgid "The drive cannot be locked (%s)"
+msgstr "មិន​អាច​ចាក់សោ​ដ្រាយ (%s)"
+
+#: ../libbrasero-burn/brasero-burn.c:695
+msgid "The drive has no rewriting capabilities"
+msgstr "ដ្រាយ​មិន​មាន​សមត្ថភាព​ក្នុង​ការ​សរសេរ​ឡើងវិញ​ទេ"
+
+#: ../libbrasero-burn/brasero-burn.c:731
+msgid "Ongoing blanking process"
+msgstr "បន្ត​ដំណើរការ​ធ្វើឲ្យ​ទទេ"
+
+#: ../libbrasero-burn/brasero-burn.c:770
+msgid "The drive cannot burn"
+msgstr "ដ្រាយ​មិន​អាច​ដុត"
+
+#: ../libbrasero-burn/brasero-burn.c:866
+#: ../libbrasero-burn/brasero-dest-selection.c:108
+msgid "Ongoing burning process"
+msgstr "បន្ត​ដំណើរការ​ដុត"
+
+#: ../libbrasero-burn/brasero-burn.c:983
+msgid "Ongoing checksumming operation"
+msgstr "បន្ត​ប្រតិបត្តិការ​ឆេកសាំ"
+
+#: ../libbrasero-burn/brasero-burn.c:1623
+#: ../libbrasero-burn/brasero-burn.c:1817
+msgid "Merging data is impossible with this disc"
+msgstr "ការ​បញ្ចូល​ទិន្នន័យ​ចូល​គ្នា​ជាមួយ​ថាស​នេះ​មិន​អាច​ធ្វើ​បានទេ"
+
+#: ../libbrasero-burn/brasero-burn.c:1624
+#: ../libbrasero-burn/brasero-burn-dialog.c:2184
+#: ../plugins/cdrkit/burn-genisoimage.c:206 ../plugins/cdrkit/burn-wodim.c:114
+#: ../plugins/cdrtools/burn-cdrecord.c:114
+#: ../plugins/cdrtools/burn-mkisofs.c:206
+#: ../plugins/growisofs/burn-growisofs.c:198
+#, c-format
+msgid "Not enough space available on the disc"
+msgstr "មិន​មាន​ទំហំ​ថាស​គ្រប់គ្រាន់"
+
+#. Translators: %s is the name of a missing application
+#: ../libbrasero-burn/brasero-burn.c:1708
+#: ../libbrasero-burn/brasero-burn-options.c:1180
+#: ../src/brasero-project.c:1383
+#, c-format
+msgid "%s (application)"
+msgstr "%s (កម្មវិធី)"
+
+#. Translators: %s is the name of a missing library
+#: ../libbrasero-burn/brasero-burn.c:1714
+#: ../libbrasero-burn/brasero-burn-options.c:1186
+#: ../src/brasero-project.c:1389
+#, c-format
+msgid "%s (library)"
+msgstr "%s (បណ្ណាល័យ)"
+
+#. Translators: %s is the name of a missing GStreamer plugin
+#: ../libbrasero-burn/brasero-burn.c:1719
+#: ../libbrasero-burn/brasero-burn-options.c:1191
+#: ../src/brasero-project.c:1394
+#, c-format
+msgid "%s (GStreamer plugin)"
+msgstr "%s (កម្មវិធី​ជំនួយ GStreamer)"
+
+#: ../libbrasero-burn/brasero-burn.c:1752
+msgid "There is no track to burn"
+msgstr "គ្មាន​បទ​ត្រូវ​ដុត"
+
+#: ../libbrasero-burn/brasero-burn.c:1859
+msgid ""
+"Please install the following required applications and libraries manually "
+"and try again:"
+msgstr ""
+"សូម​បញ្ចូល​កម្មវិធី​ និង​បណ្ណាល័យ​ដែល​បាន​ទាមទារ​ដូច​ខាងក្រោម​ដោយ​ដៃ "
+"រួច​ព្យាយាម​ម្ដងទៀត ៖"
+
+#: ../libbrasero-burn/brasero-burn.c:2576
+#: ../libbrasero-burn/brasero-caps-burn.c:868
+#, c-format
+msgid "Only one track at a time can be checked"
+msgstr "អ្នក​អាច​គូស​ធីក​បទ​បានតែ​មួយ​ប៉ុណ្ណោះ​ក្នុង​ពេល​ម្ដង"
+
+#: ../libbrasero-burn/brasero-burn.c:2635
+msgid "No format for the temporary image could be found"
+msgstr "រក​មិន​ឃើញ​ទ្រង់ទ្រាយ​សម្រាប់​រូបភាព​បណ្ដោះអាសន្ន​ទេ"
+
+#. Translators: Error message saying no graft point
+#. * is specified. A graft point is the path (on the
+#. * disc) where a file from any source will be added
+#. * ("grafted")
+#: ../libbrasero-burn/brasero-burn.c:2846
+#: ../libbrasero-burn/brasero-caps-burn.c:66
+#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/burn-mkisofs-base.c:302
+#: ../nautilus/nautilus-burn-extension.c:218
+#: ../plugins/cdrkit/burn-genisoimage.c:368
+#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
+#: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
+#: ../plugins/cdrkit/burn-wodim.c:853 ../plugins/cdrtools/burn-cdrecord.c:836
+#: ../plugins/cdrtools/burn-cdrecord.c:851
+#: ../plugins/cdrtools/burn-mkisofs.c:368
+#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
+#: ../src/brasero-app.c:784
+#, c-format
+msgid "An internal error occurred"
+msgstr "កំហុស​ខាងក្នុង​បាន​កើតឡើង"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:155
+msgid "Brasero notification"
+msgstr "ការ​ជូនដំណឹង Brasero"
+
+#. Translators: This string is used in the title bar %s is the action currently performed
+#: ../libbrasero-burn/brasero-burn-dialog.c:217
+#, c-format
+msgid "%s (%i%% Done)"
+msgstr "%s (%i%% ធ្វើរួច)"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:239
+#: ../libbrasero-burn/brasero-burn-dialog.c:1159
+msgid "Creating Image"
+msgstr "បង្កើត​រូបភាព"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:244
+#: ../libbrasero-burn/brasero-burn-dialog.c:1168
+msgid "Burning DVD"
+msgstr "ដុត​ឌីវីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:248
+#: ../libbrasero-burn/brasero-burn-dialog.c:1164
+msgid "Copying DVD"
+msgstr "ចម្លង​ឌីវីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:254
+#: ../libbrasero-burn/brasero-burn-dialog.c:1178
+msgid "Burning CD"
+msgstr "ដុត​ស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:258
+#: ../libbrasero-burn/brasero-burn-dialog.c:379
+#: ../libbrasero-burn/brasero-burn-dialog.c:1174
+msgid "Copying CD"
+msgstr "ចម្លង​ស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:264
+#: ../libbrasero-burn/brasero-burn-dialog.c:1188
+msgid "Burning Disc"
+msgstr "ដុត​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:268
+#: ../libbrasero-burn/brasero-burn-dialog.c:1184
+msgid "Copying Disc"
+msgstr "ចម្លង​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:298
+#: ../libbrasero-burn/burn-basics.c:78
+msgid "Creating image"
+msgstr "បង្កើត​រូបភាព"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:304
+msgid "Simulation of video DVD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​​ដុត​ឌីវីឌី​វីដេអូ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:306
+msgid "Burning video DVD"
+msgstr "ដុត​ឌីវីឌី​វីដេអូ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:314
+msgid "Simulation of data DVD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​ឌីវីឌី​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:316
+msgid "Burning data DVD"
+msgstr "ដុត​ឌីវីឌី​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:324
+msgid "Simulation of image to DVD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​រូបភាព​ចូល​ឌីវីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:326
+msgid "Burning image to DVD"
+msgstr "ដុត​រូបភាព​ចូល​ឌីវីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:334
+msgid "Simulation of data DVD copying"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​​ចម្លង​ឌីវីឌី​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:336
+msgid "Copying data DVD"
+msgstr "ចម្លង​ឌីវីឌី​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:347
+msgid "Simulation of (S)VCD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​ (S)VCD "
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:349
+msgid "Burning (S)VCD"
+msgstr "ដុត (S)VCD"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:357
+#: ../libbrasero-burn/brasero-burn-dialog.c:410
+msgid "Simulation of audio CD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​ស៊ីឌីអូឌីយ៉ូ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:359
+#: ../libbrasero-burn/brasero-burn-dialog.c:412
+msgid "Burning audio CD"
+msgstr "ដុត​ស៊ីឌី​អូឌីយ៉ូ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:367
+msgid "Simulation of data CD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​ស៊ីឌី​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:369
+msgid "Burning data CD"
+msgstr "ដុត​ស៊ីឌី​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:377
+msgid "Simulation of CD copying"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ចម្លង​ស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:387
+msgid "Simulation of image to CD burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​រូបភាព​ចូល​ស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:389
+msgid "Burning image to CD"
+msgstr "ការ​ដុត​រូបភាព​ចូល​ស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:400
+msgid "Simulation of video disc burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​ថាស​វីដេអូ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:402
+msgid "Burning video disc"
+msgstr "ដុត​ថាស​វីដេអូ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:420
+msgid "Simulation of data disc burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​ថាស​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:422
+msgid "Burning data disc"
+msgstr "ដុត​ថាស​ទិន្នន័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:430
+msgid "Simulation of disc copying"
+msgstr "ការ​ក្លែង​ធ្វើការ​ចម្លងថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:432
+#: ../libbrasero-burn/burn-basics.c:82
+msgid "Copying disc"
+msgstr "ចម្លង​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:440
+msgid "Simulation of image to disc burning"
+msgstr "ការ​ក្លែង​ធ្វើ​ការ​ដុត​រូបភាព​ចូល​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:442
+msgid "Burning image to disc"
+msgstr "ដុត​រូបភាព​ចូល​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:547
+msgid "Please replace the disc with a rewritable disc holding data."
+msgstr "សូម​ជំនួស​ថាសដោយ​ថាស​មាន​ទិន្នន័យ​ដែល​អាច​សរសេរ​ឡើងវិញ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:549
+msgid "Please replace the disc with a disc holding data."
+msgstr "សូម​ជំនួស​ថាស​ដោយ​ថាស​ដែល​មាន​ទិន្នន័យ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:553
+msgid "Please insert a rewritable disc holding data."
+msgstr "សូម​បញ្ចូល​ថាស​មាន​ទិន្នន័យ​ដែល​អាច​សរសេរ​ឡើងវិញ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:555
+#: ../libbrasero-burn/brasero-burn-options.c:494
+msgid "Please insert a disc holding data."
+msgstr "សូម​បញ្ចូល​ថា​ស​ដែល​មាន​ទិន្នន័យ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:570
+#, c-format
+msgid ""
+"Please replace the disc with a writable CD with at least %i MiB of free "
+"space."
+msgstr ""
+"សូម​ជំនួស​ថាស​ដោយ​ស៊ីឌី​ដែល​អាច​សរសេរ​បាន ដោយ​មាន​ទំហំ​ទំនេរ​យ៉ាងហោចណាស់ %i "
+"MiB ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:573
+msgid "Please replace the disc with a writable CD."
+msgstr "សូម​ជំនួស​ថាស​ដោយ​ស៊ីឌី​ដែល​អាច​សរសេរ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:577
+#, c-format
+msgid "Please insert a writable CD with at least %i MiB of free space."
+msgstr ""
+"សូម​បញ្ចូល​ស៊ីឌី​ដែល​អាច​សរសេរ​បាន ដោយ​​មាន​ទំហំ​ទំនេរ​យ៉ាងហោចណាស់ %i MiB ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:580
+msgid "Please insert a writable CD."
+msgstr "សូម​បញ្ចូល​ស៊ីឌី​ដែល​អាច​សរសេរ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:586
+#, c-format
+msgid ""
+"Please replace the disc with a writable DVD with at least %i MiB of free "
+"space."
+msgstr ""
+"សូម​ជំនួស​ថាស​ដោយ​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន ដោយ​​មាន​ទំហំ​ទំនេរ​យ៉ាងហោចណាស់ %"
+"i MiB ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:589
+msgid "Please replace the disc with a writable DVD."
+msgstr "សូម​ជំនួស​ថាស​ដោយ​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:593
+#, c-format
+msgid "Please insert a writable DVD with at least %i MiB of free space."
+msgstr ""
+"សូម​បញ្ចូល​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន ដោយមាន​ទំហំ​ទំនេរ​យ៉ាងហោចណាស់ %i MiB ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:596
+msgid "Please insert a writable DVD."
+msgstr "សូម​បញ្ចូល​ឌីវីឌី​ដែល​អាច​សរសេរបាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:601
+#, c-format
+msgid ""
+"Please replace the disc with a writable CD or DVD with at least %i MiB of "
+"free space."
+msgstr ""
+"សូម​ជំនួស​ថាស​ដោយ​ស៊ីឌី ឬ​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន "
+"ដោយ​មាន​ទំហំ​ទំនេរ​យ៉ាងហោចណាស់ %i MiB ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:604
+msgid "Please replace the disc with a writable CD or DVD."
+msgstr "សូម​ជំនួស​ថាស​ដោយ​ស៊ីឌី ឬ​ឌីវីឌី​ដែល​អាច​សរសេរបាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:608
+#, c-format
+msgid "Please insert a writable CD or DVD with at least %i MiB of free space."
+msgstr ""
+"សូម​បញ្ចូល​ស៊ីឌី ឬ​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន​ ដោយ​មាន​ទំហំ​ទំនេរ​យ៉ាងហោចណាស់ "
+"%i MiB ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:611
+#: ../libbrasero-burn/brasero-burn-dialog.c:2169
+#: ../libbrasero-burn/brasero-burn-dialog.c:2183
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:993
+msgid "Please insert a writable CD or DVD."
+msgstr "សូម​បញ្ចូល​ស៊ីឌី ឬ​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:638
+msgid ""
+"An image of the disc has been created on your hard drive.\n"
+"Burning will begin as soon as a writable disc is inserted."
+msgstr ""
+"រូបភាព​ថាស​ត្រូវ​បាន​បង្កើត​នៅ​លើ​ដ្រាយ​ថាស​រឹង​របស់​អ្នក "
+"។\nការ​ដុត​នឹង​ចាប់ផ្ដើម​ភ្លាមៗ "
+"នៅ​ពេល​ដែល​ថាស​ដែល​អាច​សរសេរ​បាន​ត្រូវ​បាន​បញ្ចូល"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:643
+msgid "A data integrity test will begin as soon as the disc is inserted."
+msgstr ""
+"ការ​សាកល្បង​ភាព​ត្រឹមត្រូវ​របស់​​ទិន្នន័យ​នឹង​ចាប់ផ្ដើម​ភ្លាមៗ "
+"នៅ​ពេល​ដែល​ថាស​ត្រូវ​បាន​បញ្ចូល ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:644
+msgid "Please re-insert the disc in the CD/DVD burner."
+msgstr "សូម​បញ្ចូល​ថាស​ម្ដងទៀត​ទៅ​ក្នុង​កម្មវិធី​ដុត​ស៊ីឌី/ឌីវីឌី ។"
+
+#. Translators: %s is the name of a drive
+#: ../libbrasero-burn/brasero-burn-dialog.c:648
+#, c-format
+msgid "\"%s\" is busy."
+msgstr "\"%s\" កំពុង​រវល់ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:652
+#, c-format
+msgid "There is no disc in \"%s\"."
+msgstr "គ្មាន​ថាស​នៅ​ក្នុង \"%s\" ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:656
+#, c-format
+msgid "The disc in \"%s\" is not supported."
+msgstr "ថាស​នៅ​ក្នុង \"%s\" មិន​ត្រូវ​បាន​គាំទ្រ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:660
+#, c-format
+msgid "The disc in \"%s\" is not rewritable."
+msgstr "ថាស​នៅ​ក្នុង \"%s\" មិន​អាច​សរសេរ​ឡើងវិញ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:664
+#, c-format
+msgid "The disc in \"%s\" is empty."
+msgstr "ថាស​នៅ​ក្នុង \"%s\" ទទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:668
+#, c-format
+msgid "The disc in \"%s\" is not writable."
+msgstr "ថាស​នៅ​ក្នុង \"%s\" មិន​អាច​សរសេរ​បាន ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:672
+#, c-format
+msgid "Not enough space available on the disc in \"%s\"."
+msgstr "មិន​មាន​ទំហំ​គ្រប់គ្រាន់​នៅ​លើ​ថាស​ក្នុង \"%s\" ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:680
+#, c-format
+msgid "The disc in \"%s\" needs to be reloaded."
+msgstr "ថាស​នៅ​ក្នុង \"%s\" ត្រូវការ​ឲ្យ​បញ្ចូល​ឡើងវិញ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:681
+msgid "Please eject the disc and reload it."
+msgstr "សូម​ច្រាន​ថាស​ចេញ រួច​បញ្ចូល​វា​ឡើងវិញ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:726
+#: ../libbrasero-burn/brasero-sum-dialog.c:333
+msgid ""
+"A file could not be created at the location specified for temporary files"
+msgstr ""
+"មិន​អាច​បង្កើត​ឯកសារ​នៅ​ត្រង់​ទីតាំង​ដែល​បាន​បញ្ជាក់​សម្រាប់​ឯកសារ​បណ្ដោះអាស"
+"ន្ន​ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:727
+msgid "The image could not be created at the specified location"
+msgstr "មិន​អាច​បង្កើត​រូបភាព​នៅត្រង់​ទីតាំង​ដែល​បាន​បញ្ជាក់​ទេ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:728
+msgid ""
+"Do you want to specify another location for this session or retry with the "
+"current location?"
+msgstr ""
+"តើ​អ្នក​ចង់​បញ្ជាក់​ទីតាំង​ផ្សេងទៀត​សម្រាប់​សម័យ​នេះ "
+"ឬ​ក៏​ចង់​ព្យាយាម​ម្ដងទៀត​ជាមួយ​នឹង​ទីតាំង​បច្ចុប្បន្ន ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:740
+msgid "You may want to free some space on the disc and retry"
+msgstr "អ្នក​អាច​នឹង​ត្រូវការ​ធ្វើឲ្យ​មាន​ទំហំ​ថាស​ទំនេរ រួច​ព្យាយាម​ម្ដងទៀត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:747
+#: ../libbrasero-burn/brasero-drive-properties.c:244
+#: ../libbrasero-burn/brasero-drive-properties.c:282
+#: ../libbrasero-burn/brasero-drive-properties.c:334
+msgid "_Keep Current Location"
+msgstr "រក្សាទុក​ទីតាំង​បច្ចុប្បន្ន"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:749
+#: ../libbrasero-burn/brasero-drive-properties.c:245
+#: ../libbrasero-burn/brasero-drive-properties.c:283
+#: ../libbrasero-burn/brasero-drive-properties.c:335
+msgid "_Change Location"
+msgstr "ផ្លាស់ប្ដូរ​ទីតាំង"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:771
+#: ../libbrasero-burn/brasero-image-properties.c:459
+msgid "Location for Image File"
+msgstr "ទីតាំង​សម្រាប់​ឯកសារ​រូបភាព"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:779
+#: ../libbrasero-burn/brasero-drive-properties.c:366
+msgid "Location for Temporary Files"
+msgstr "ទីតាំង​សម្រាប់​ឯកសារ​បណ្ដោះអាសន្ន"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:887
+#: ../libbrasero-burn/brasero-burn-dialog.c:1133
+msgid "_Replace Disc"
+msgstr "ជំនួស​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:928
+msgid "Do you really want to blank the current disc?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​ធ្វើឲ្យ​ថាស​បច្ចុប្បន្ន​ទទេ​ឬ ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:929
+msgid "The disc in the drive holds data."
+msgstr "ថាស​នៅ​ក្នុង​ដ្រាយ​មាន​ទិន្នន័យ ។"
+
+#. Translators: Blank is a verb here
+#: ../libbrasero-burn/brasero-burn-dialog.c:931
+msgid "_Blank Disc"
+msgstr "ថាស​ទទេ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:945
+msgid ""
+"If you import them you will be able to see and use them once the current "
+"selection of files is burned."
+msgstr ""
+"ប្រសិនបើ​អ្នក​នាំចូល​ពួកវា អ្នក​នឹង​អាច​មើល​ឃើញ និង​ប្រើ​ពួកវា "
+"នៅ​ពេល​ដែល​ជម្រើស​ឯកសារ​បច្ចុប្បន្ន​ត្រូវ​បាន​ដុត ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:946
+msgid "If you don't, they will be invisible (though still readable)."
+msgstr ""
+"ប្រសិនបើ​អ្នក​មិន​នាំចូល​ទេ អ្នក​នឹង​មិន​អាច​មើល​ពួកវា​ឃើញ​ទេ "
+"(ប៉ុន្តែ​នៅតែ​អាច​អាន​បាន​ដដែល) ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:949
+msgid ""
+"There are files already burned on this disc. Would you like to import them?"
+msgstr ""
+"មាន​ឯកសារ​ដែល​បាន​ដុត​នៅ​លើ​ថាស​នេះ​រួចហើយ ។ តើ​អ្នក​ចង់​នាំចូល​ពួកវា​ទេ ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:951
+msgid "_Import"
+msgstr "នាំចូល"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:952
+msgid "Only _Append"
+msgstr "បន្ថែម​ខាងចុង​តែប៉ុណ្ណោះ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:965
+msgid ""
+"CD-RW audio discs may not play correctly in older CD players and CD-Text "
+"won't be written."
+msgstr ""
+"ថាស​អូឌីយ៉ូ CD-RW ប្រហែលជា​មិន​អាច​ចាក់​កម្មវិធី​ស៊ីឌី​តាម​លំដាប់​ត្រឹមត្រូវ "
+"ព្រមទាំង​នឹង​មិន​អាច​សរសេរ​អត្ថបទ​ស៊ីឌី​បាន​ផង​ដែរ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:966
+#: ../libbrasero-burn/brasero-burn-dialog.c:988
+msgid "Do you want to continue anyway?"
+msgstr "ដូច្នេះ អ្នក​ចង់​បន្ត​ដែរ​ឬ​ទេ ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:969
+msgid "Appending audio tracks to a CD is not advised."
+msgstr ""
+"ការ​បន្ថែម​បទ​អូឌីយ៉ូ​ខាងចុង​ទៅ​ក្នុង​ស៊ីឌី​មិន​ត្រូវ​បាន​ផ្ដល់​អនុសាសន៍ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:971
+#: ../libbrasero-burn/brasero-burn-dialog.c:993
+#: ../libbrasero-burn/brasero-tool-dialog.c:422 ../src/brasero-data-disc.c:572
+msgid "_Continue"
+msgstr "បន្ត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:987
+msgid "CD-RW audio discs may not play correctly in older CD players."
+msgstr ""
+"ថាស​អូឌីយ៉ូ CD-RW អាច​នឹង​ចាក់​កម្មវិធី​ចាក់​ស៊ីឌី​តាម​លំដាប់​មិន​ត្រឹមត្រូវ "
+"។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:991
+msgid "Recording audio tracks on a rewritable disc is not advised."
+msgstr ""
+"ការ​ថតចម្លង​បទ​អូឌីយ៉ូ​នៅ​លើ​ថាស​ដែល​អាច​សរសេរ​បាន​មិន​ត្រូវ​បាន​ផ្ដល់​អនុសា"
+"សន៍ ។"
+
+#. Translators: %s is the name of a drive
+#: ../libbrasero-burn/brasero-burn-dialog.c:1035
+#, c-format
+msgid "Please eject the disc from \"%s\" manually."
+msgstr "សូម​ច្រាន​ថាស​ចេញ​ពី \"%s\" ដោយដៃ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1044
+msgid ""
+"The disc could not be ejected though it needs to be removed for the current "
+"operation to continue."
+msgstr ""
+"មិន​អាច​ច្រាន​ថាស​ចេញ​បាន​ទេ ទោះបី​យ៉ាងណា "
+"វា​ទាមទារ​ឲ្យ​យក​ចេញសម្រាប់​ប្រតិបត្តិការ​បច្ចុប្បន្ន​ដើម្បី​បន្ត ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1131
+msgid "Do you want to replace the disc and continue?"
+msgstr "តើ​អ្នក​ចង់​ជំនួស​ថាស និង​បន្ត​ដែរ​ឬទេ ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1132
+msgid "The currently inserted disc could not be blanked."
+msgstr "ថាស​ដែល​បាន​បញ្ចូល​បច្ចុប្បន្ន​មិន​អាច​ទទេ​បាន​ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1141
+msgid "Do you want to continue with full Windows compatibility disabled?"
+msgstr ""
+"តើ​អ្នក​ចង់​បន្ត​ជាមួយ​ភាព​ឆបគ្នា​ពេញលេញ​នឹង​វីនដូ​ដែល​ត្រូវ​បាន​បិទ​ដែរ​ឬ​ទ"
+"េ ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1142
+#: ../libbrasero-burn/brasero-status-dialog.c:340
+#: ../src/brasero-data-disc.c:734
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
+msgstr ""
+"ឯកសារ​មួយ​ចំនួន​មិន​មាន​ឈ្មោះ​សមស្រប​សម្រាប់​ស៊ីឌី​ឆប​គ្នា​ពេញលេញ​ជាមួយវីនដូ"
+"ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1143
+msgid "C_ontinue"
+msgstr "បន្ត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1363
+#: ../libbrasero-burn/brasero-burn-dialog.c:1384
+msgid "The simulation was successful."
+msgstr "ការ​ក្លែង​ធ្វើ​បាន​ទទួល​ជោគជ័យ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1366
+msgid "Real disc burning will take place in 10 seconds."
+msgstr "ការ​ដុត​ថាស​ពិត​នឹង​កើតឡើង​ក្នុង​រយៈ​ពេល ១០ នាទី ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1369
+msgid "Burn _Now"
+msgstr "ដុត​ឥឡូវនេះ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1658
+msgid "Save Current Session"
+msgstr "រក្សាទុក​សម័យ​បច្ចុប្បន្ន"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1733
+msgid "An unknown error occurred."
+msgstr "កំហុស​មិន​ស្គាល់​បាន​កើតឡើង ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1741
+#: ../libbrasero-burn/brasero-burn-dialog.c:1759 ../src/brasero-app.c:618
+msgid "Error while burning."
+msgstr "មាន​កំហុស ខណៈ​កំពុង​ដុត ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1749
+msgid "_Save Log"
+msgstr "រក្សាទុក​កំណត់ហេតុ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1784
+msgid "Video DVD successfully burned"
+msgstr "ឌីវីឌី​វីដេអូ​ត្រូវ​បាន​ដុត​ដោយជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1786
+msgid "(S)VCD successfully burned"
+msgstr "(S)VCD ត្រូវ​បាន​ដុត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1789
+msgid "Audio CD successfully burned"
+msgstr "ស៊ីឌី​អូឌីយ៉ូ​ត្រូវ​បាន​ដុត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1791
+#: ../libbrasero-burn/brasero-burn-dialog.c:1822
+msgid "Image successfully created"
+msgstr "រូបភាព​ត្រូវ​បាន​បង្កើត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1796
+msgid "DVD successfully copied"
+msgstr "ឌីវីឌី​ត្រូវ​បាន​ចម្លង​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1798
+msgid "CD successfully copied"
+msgstr "ស៊ីឌី​ត្រូវ​បាន​ចម្លង​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1802
+msgid "Image of DVD successfully created"
+msgstr "រូបភាព​ឌីវីឌី​ត្រូវ​បាន​បង្កើត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1804
+msgid "Image of CD successfully created"
+msgstr "រូបភាព​ស៊ីឌី​ត្រូវ​បាន​បង្កើត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1810
+msgid "Image successfully burned to DVD"
+msgstr "រូបភាព​ត្រូវ​បាន​ដុត​ចូល​ឌីវីឌី​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1812
+msgid "Image successfully burned to CD"
+msgstr "រូបភាព​ត្រូវ​បាន​ដុត​ចូល​ស៊ីឌី​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1818
+msgid "Data DVD successfully burned"
+msgstr "ឌីវីឌី​ទិន្នន័យ​ត្រូវ​បាន​ដុត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1820
+msgid "Data CD successfully burned"
+msgstr "ស៊ីឌី​ទិន្នន័យ​ត្រូវ​បាន​ដុត​ដោយ​ជោគជ័យ"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1879
+#, c-format
+msgid "Copy #%i has been burned successfully."
+msgstr "ច្បាប់​ចម្លង #%i ត្រូវ​បាន​ដុត​ដោយ​ជោគជ័យ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1887
+msgid ""
+"Another copy will start as soon as you insert a new writable disc. If you do "
+"not want to burn another copy, press \"Cancel\"."
+msgstr ""
+"ច្បាប់​ចម្លង​ផ្សេងទៀត​នឹង​ចាប់ផ្ដើម​ភ្លាមៗ "
+"បន្ទាប់​ពី​អ្នក​បាន​បញ្ចូល​ថាស​ថ្មី​ដែល​អាច​សរសេរ​បាន ។ "
+"ប្រសិនបើ​អ្នក​មិន​ចង់​ដុត​ច្បាប់​ចម្លង​មួយ​ផ្សេងទៀត​ទេ ចុច \"បោះបង់\" ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1961
+msgid "Make _More Copies"
+msgstr "បង្កើត​ច្បាប់​ចម្លង​ជាច្រើន​ទៀត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:1970
+msgid "_Create Cover"
+msgstr "បង្កើត​គម្រប"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2132
+msgid "There are some files left to burn"
+msgstr "នៅ​សល់​ឯកសារ​ត្រូវ​ដុត​មួយ​ចំនួន​ទៀត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2139
+msgid "There are some more videos left to burn"
+msgstr "នៅ​សល់​វីដេអូ​ត្រូវ​ដុត​មួយ​ចំនួន​ទៀត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2143
+msgid "There are some more songs left to burn"
+msgstr "នៅ​សល់​បទ​ចម្រៀង​ត្រូវ​ដុត​មួយ​ចំនួន​ទៀត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2449
+#: ../libbrasero-burn/brasero-tool-dialog.c:411
+msgid "Do you really want to quit?"
+msgstr "តើ​អ្នក​ពិត​ជា​ចង់​ចេញ​ឬ ?"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2453
+#: ../libbrasero-burn/brasero-tool-dialog.c:417
+msgid "Interrupting the process may make disc unusable."
+msgstr "ការ​រំខាន​ដំណើរការ​អាច​ធ្វើឲ្យ​ថាស​មិន​អាច​ប្រើ​បាន​ ។"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2456
+msgid "C_ontinue Burning"
+msgstr "បន្ត​ដុត"
+
+#: ../libbrasero-burn/brasero-burn-dialog.c:2463
+msgid "_Cancel Burning"
+msgstr "បោះបង់​ការ​ដុត"
+
+#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1018
+msgid ""
+"Please insert a writable CD or DVD if you don't want to write to an image "
+"file."
+msgstr ""
+"សូម​បញ្ចូល​ស៊ីឌី ឬ​ឌីវីឌី​ដែល​អាច​សរសេរ​បាន "
+"ប្រសិនបើ​អ្នក​មិន​ចង់​សរសេរ​ទៅកាន់​ឯកសារ​រូបភាព ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1593
+msgid "Create _Image"
+msgstr "បង្កើត​រូបភាព"
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-burn-options.c:307
+msgid "_Copy"
+msgstr "ចម្លង"
+
+#: ../libbrasero-burn/brasero-burn-options.c:310
+msgid "Make _Several Copies"
+msgstr "បង្កើត​ច្បាប់​ចម្លង​មួយចំនួន"
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1522
+msgid "_Burn"
+msgstr "ដុត"
+
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1519
+msgid "Burn _Several Copies"
+msgstr "ដុត​ច្បាប់​ចម្លង​មួយចំនួន"
+
+#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:947
+msgid "Would you like to burn the selection of files across several media?"
+msgstr "តើ​អ្នក​ចង់​ដុត​ជម្រើស​ឯកសារ​តាម​រយៈ​មេឌៀ​មួយ​ចំនួន​ដែរ​ឬ​ទេ ?"
+
+#: ../libbrasero-burn/brasero-burn-options.c:427
+#: ../libbrasero-burn/brasero-burn-options.c:444
+msgid "The data size is too large for the disc even with the overburn option."
+msgstr "ទំហំ​ទិន្នន័យ​ធំ​ពេក​សម្រាប់​ថាស សូម្បីតែ​ជាមួយ​ជម្រើស​ដុត​លើស ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:952
+msgid "_Burn Several Discs"
+msgstr " ដុត​ថាស​មួយចំនួន"
+
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:954
+msgid "Burn the selection of files across several media"
+msgstr "ដុត​ជម្រើស​ឯកសារ​តាម​រយៈ​មេឌៀ​មួយចំនួន"
+
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:963
+msgid "Please choose another CD or DVD or insert a new one."
+msgstr "សូម​ជ្រើស​ស៊ីឌី ឬ​ឌីវីឌី​ផ្សេងទៀត ឬ​បញ្ចូល​ថ្មី ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1008
+msgid "No track information (artist, title, ...) will be written to the disc."
+msgstr ""
+"គ្មាន​ព័ត៌មាន​អំពី​បទ (សិល្បករ ចំណងជើង ...) នឹង​ត្រូវ​បាន​សរសេរ​ចូល​ថាស​ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1009
+msgid "This is not supported by the current active burning backend."
+msgstr ""
+"វា​មិន​ត្រូវ​បាន​គាំទ្រ​ដោយ​កម្មវិធី​ដុត​ខាងក្រោយ​ដែល​កំពុង​តែ​សកម្ម​នោះ​ទេ "
+"។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:470
+#: ../nautilus/nautilus-burn-extension.c:239
+msgid "Please add files."
+msgstr "សូម​បន្ថែម​ឯកសារ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:471
+#: ../libbrasero-burn/brasero-track-data.c:672
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2432
+#: ../libbrasero-burn/brasero-track-stream.c:402
+#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1275
+#, c-format
+msgid "There are no files to write to disc"
+msgstr "មិន​មាន​ឯកសារ​ត្រូវ​សរសេរ​ចូល​ថាស​ទេ"
+
+#: ../libbrasero-burn/brasero-burn-options.c:476
+msgid "Please add songs."
+msgstr "សូម​បន្ថែម​ចម្រៀង ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1266
+msgid "There are no songs to write to disc"
+msgstr "គ្មាន​ចម្រៀង​​ត្រូវ​សរសេរ​ចូល​ថាស​ទេ"
+
+#: ../libbrasero-burn/brasero-burn-options.c:482
+msgid "Please add videos."
+msgstr "សូម​បន្ថែម​វីដេអូ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:483
+msgid "There are no videos to write to disc"
+msgstr "គ្មាន​វីដេអូ​ត្រូវ​សរសេរ​ចូល​ថាស​ទេ"
+
+#: ../libbrasero-burn/brasero-burn-options.c:495
+msgid "There is no inserted disc to copy."
+msgstr "គ្មាន​ថាស​ដែល​បាន​បញ្ចូល​ត្រូវ​ចម្លង​ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:504
+msgid "Please select a disc image."
+msgstr "សូម​ជ្រើស​រូបភាព​ថាស ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:505
+msgid "There is no selected disc image."
+msgstr "គ្មាន​រូបភាព​ថាស​ដែល​បាន​ជ្រើស​ទេ ។"
+
+#. Translators: this is a disc image not a picture
+#. Translators: this is a disc image, not a picture
+#: ../libbrasero-burn/brasero-burn-options.c:515
+#: ../libbrasero-burn/brasero-src-image.c:167
+msgctxt "disc"
+msgid "Please select another image."
+msgstr "សូម​ជ្រើស​រូបភាព​មួយ​ផ្សេងទៀត ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:516
+msgid "It doesn't appear to be a valid disc image or a valid cue file."
+msgstr "វា​មិន​ទំនងជា​ឯកសារ​ថាស ឬ​ឯកសារ​គន្លឹះ​ដែល​ត្រឹមត្រូវ​ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:525
+msgid "Please insert a disc that is not copy protected."
+msgstr "សូម​បញ្ចូល​ថាស​ដែល​មិន​ត្រូវ​បាន​ការពារ​ដោយ​ច្បាប់ចម្លង ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:526
+#: ../libbrasero-burn/brasero-burn-options.c:1228
+#: ../src/brasero-project.c:1443
+msgid "All required applications and libraries are not installed."
+msgstr ""
+"កម្មវិធី និង​បណ្ណាល័យ​ដែល​បាន​ទាមទារ​ទាំងអស់​មិន​ទាន់​ត្រូវ​បាន​ដំឡើង​ទេ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1001
+msgid "Please replace the disc with a supported CD or DVD."
+msgstr "សូម​ជំនួស​ថាស​ដោយ​ស៊ីឌី ឬ​ឌីវីឌី​ដែល​បាន​គាំទ្រ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:974
+msgid "Would you like to burn beyond the disc's reported capacity?"
+msgstr "តើ​អ្នក​ចង់​ដុត​ឲ្យ​ហួសពី​សមត្ថភាព​ដែល​បាន​រាយការណ៍​របស់​ថាស​ឬ ?"
+
+#: ../libbrasero-burn/brasero-burn-options.c:543
+msgid ""
+"The data size is too large for the disc and you must remove files from the "
+"selection otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
+"cannot be properly recognised and therefore need overburn option.\n"
+"NOTE: This option might cause failure."
+msgstr ""
+"ទំហំ​ទិន្នន័យ​ធំ​ពេក​សម្រាប់​ថាស ដូច្នេះ​អ្នក​ត្រូវតែ​យក​ឯកសារ​ចេញ​ពីជម្រើស "
+"។\nអ្នក​ប្រហែល​ជា​ចង់​ប្រើ​ជម្រើស​នេះ ប្រសិនបើ​អ្នក​កំពុងតែ​ប្រើ CD-R(W) ៩០ "
+"ឬ ១០០ នាទី ដែល​មិន​អាច​ត្រូវ​បាន​ទទួលស្គាល់​យ៉ាង​ត្រឹមត្រូវ "
+"ដូច្នេះ​ត្រូវប្រើ​​ជម្រើស ដុត​លើស ។\nចំណាំ ៖ "
+"ជម្រើស​នេះ​អាច​បណ្ដាលឲ្យ​មាន​ភាព​បរាជ័យ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:981
+msgid "_Overburn"
+msgstr "ដុត​លើស"
+
+#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:983
+msgid "Burn beyond the disc's reported capacity"
+msgstr "ដុត​ហួសពី​សមត្ថភាព​ដែល​បាន​រាយការណ៍​របស់​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-options.c:562
+msgid ""
+"The drive that holds the source disc will also be the one used to record."
+msgstr ""
+"ដ្រាយ​ដែល​ផ្ទុក​ថាស​ប្រភព​នឹង​ជា​ដ្រាយ​មួយ​ដែល​ត្រូវ​ប្រើ​ដើម្បី​ថត​ចម្លង​ផង"
+"ដែរ ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:563
+msgid ""
+"A new writable disc will be required once the currently loaded one has been "
+"copied."
+msgstr ""
+"ថាស​អាច​សរសេរ​បាន​ថ្មី​មួយ​នឹង​ត្រូវ​បាន​ទាមទារ "
+"នៅ​ពេល​ថាស​ដែល​បាន​ផ្ទុក​បច្ចុប្បន្ន​ត្រូវ​បាន​ចម្លង ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:650
+msgid "Select a disc to write to"
+msgstr "ជ្រើស​ថាស​ដើម្បី​សរសេរ​"
+
+#: ../libbrasero-burn/brasero-burn-options.c:730
+#: ../libbrasero-burn/brasero-burn-options.c:748
+#: ../libbrasero-burn/brasero-burn-options.c:868
+msgid "Disc Burning Setup"
+msgstr "ការ​រៀបចំ​ដុត​ថាស"
+
+#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1542
+msgid "Video Options"
+msgstr "ជម្រើស​វីដេអូ"
+
+#: ../libbrasero-burn/brasero-burn-options.c:788
+#: ../src/brasero-data-disc.c:613
+msgid ""
+"Do you want to create a disc from the contents of the image or with the "
+"image file inside?"
+msgstr ""
+"តើ​អ្នក​ចង់​បង្កើត​ថាស​ពី​មាតិកា​រូបភាព​ "
+"ឬ​ក៏​ចង់​បង្កើត​ជាមួយ​ឯកសារ​រូបភាព​នៅ​ខាងក្នុង ?"
+
+#. Translators: %s is the name of the image
+#: ../libbrasero-burn/brasero-burn-options.c:797
+#, c-format
+msgid ""
+"There is only one selected file (\"%s\"). It is the image of a disc and its "
+"contents can be burned."
+msgstr ""
+"មាន​ឯកសារ​ដែល​បាន​ជ្រើស​តែមួយ​គត់ (\"%s\") ។ វា​គឺជា​រូបភាព​ថាស​ "
+"ហើយ​មាតិកា​របស់​វា​អាច​នឹង​ត្រូវ​បាន​ដុត ។"
+
+#: ../libbrasero-burn/brasero-burn-options.c:802
+msgid "Burn as _File"
+msgstr "ដុត​ជា​ឯកសារ"
+
+#: ../libbrasero-burn/brasero-burn-options.c:804
+msgid "Burn _Contents…"
+msgstr "ដុត​មាតិកា…"
+
+#: ../libbrasero-burn/brasero-burn-options.c:886
+msgid "Image Burning Setup"
+msgstr "រៀបចំ​ដុត​រូបភាព"
+
+#. pack everything
+#: ../libbrasero-burn/brasero-burn-options.c:894
+msgid "Select a disc image to write"
+msgstr "ជ្រើស​រូបភាព​ថាស​ដើម្បី​សរសេរ"
+
+#: ../libbrasero-burn/brasero-burn-options.c:914
+msgid "Copy CD/DVD"
+msgstr "ចម្លង​ស៊ីឌី/ឌីវីឌី"
+
+#: ../libbrasero-burn/brasero-burn-options.c:920
+msgid "Select disc to copy"
+msgstr "ជ្រើស​ថាស​ដើម្បី​ចម្លង"
+
+#: ../libbrasero-burn/brasero-burn-options.c:1222
+#: ../src/brasero-project.c:1437
+msgid "Please install the following manually and try again:"
+msgstr "សូម​ដំឡើង​ខាងក្រោម​នេះ​ដោយ​ដៃ រួច​ព្យាយាម​ម្ដងទៀត ៖"
+
+#: ../libbrasero-burn/brasero-cover.c:119
+msgid "Unknown song"
+msgstr "ចម្រៀង​មិន​ស្គាល់"
+
+#. Reminder: if this string happens to be used
+#. * somewhere else in brasero we'll need a
+#. * context with C_() macro
+#. Translators: %s is the name of the artist.
+#. * This text is the one written on the cover of a disc.
+#. * Before it there is the name of the song.
+#. * I had to break it because it is in a GtkTextBuffer
+#. * and every word has a different tag.
+#. Translators: %s is the name of the artist
+#. Translators: %s is the name of an artist.
+#: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419
+#: ../src/brasero-song-control.c:271
+#, c-format
+msgid "by %s"
+msgstr "ដោយ %s"
+
+#: ../libbrasero-burn/brasero-data-vfs.c:218
+#, c-format
+msgid "\"%s\" cannot be read"
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​អាន"
+
+#: ../libbrasero-burn/brasero-dest-selection.c:599
+#: ../libbrasero-burn/brasero-image-type-chooser.c:133
+msgid "SVCD image"
+msgstr "រូបភាព SVCD"
+
+#: ../libbrasero-burn/brasero-dest-selection.c:601
+#: ../libbrasero-burn/brasero-image-type-chooser.c:127
+msgid "VCD image"
+msgstr "រូបភាព​វីស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-dest-selection.c:605
+#: ../libbrasero-burn/brasero-image-type-chooser.c:106
+msgid "Video DVD image"
+msgstr "រូបភាព​ឌីវីឌី​វីដេអូ"
+
+#. NOTE for translators: the first %s is medium_name ("File
+#. * Image") and the second the path for the image file
+#: ../libbrasero-burn/brasero-dest-selection.c:617
+#, c-format
+msgid "%s: \"%s\""
+msgstr "%s ៖ \"%s\""
+
+#. Translators: this string is only used when the user
+#. * wants to copy a disc using the same destination and
+#. * source drive. It tells him that brasero will use as
+#. * destination disc a new one (once the source has been
+#. * copied) which is to be inserted in the drive currently
+#. * holding the source disc
+#: ../libbrasero-burn/brasero-dest-selection.c:649
+#, c-format
+msgid "New disc in the burner holding the source disc"
+msgstr "ថាស​ថ្មី​នៅ​ក្នុង​កម្មវិធី​ដុត​មាន​ផ្ទុក​ថាស​ប្រភព"
+
+#. NOTE for translators, the first %s is the medium name
+#: ../libbrasero-burn/brasero-dest-selection.c:690
+#, c-format
+msgid "%s: not enough free space"
+msgstr "%s ៖ មិន​មាន​ទំហំ​គ្រប់គ្រាន់"
+
+#. NOTE for translators: the first %s is the medium name, the second %s
+#. * is its available free space. "Free" here is the free space available.
+#: ../libbrasero-burn/brasero-dest-selection.c:721
+#, c-format
+msgid "%s: %s of free space"
+msgstr "%s ៖ ទំហំ​ទំនេរ %s"
+
+#. Translators: the first %s is the path of the directory where brasero
+#. * will store its temporary files; the second one is the size available
+#: ../libbrasero-burn/brasero-drive-properties.c:192
+#, c-format
+msgid "%s: %s free"
+msgstr "%s ៖ ទំនេរ %s"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:233
+#: ../libbrasero-burn/brasero-drive-properties.c:272
+#: ../libbrasero-burn/brasero-drive-properties.c:324
+msgid "Do you really want to choose this location?"
+msgstr "តើ​ពិត​ជា​ចង់​ជ្រើស​ទីតាំង​នេះ​ឬ ?"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:277
+#: ../libbrasero-burn/brasero-session.c:1287
+#: ../libbrasero-burn/brasero-session.c:1362 ../libbrasero-burn/burn-job.c:490
+#: ../plugins/cdrkit/burn-genisoimage.c:199
+#: ../plugins/cdrtools/burn-mkisofs.c:199
+#: ../plugins/libburnia/burn-libisofs.c:246
+#, c-format
+msgid "You do not have the required permission to write at this location"
+msgstr ""
+"អ្នក​មិន​មាន​សិទ្ធិ​ដែល​បាន​ទាមទារ​សម្រាប់​ការ​សរសេរ​នៅ​ត្រង់​ទីតាំង​នេះ​ទេ"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:330
+msgid ""
+"The filesystem on this volume does not support large files (size over 2 "
+"GiB).\n"
+"This can be a problem when writing DVDs or large images."
+msgstr ""
+"ប្រព័ន្ធ​ឯកសារ​នៅ​លើ​ភាគ​នេះ​មិន​គាំទ្រ​ឯកសារ​ទំហំ​ធំ​ៗ​ (ទំហំ​លើស​ពី​ ២ "
+"ជីកាបៃ) ទេ ។\nវា​អាច​នឹង​ជា​បញ្ហា នៅ​ពេល​សរសេរ​ឌីវីឌី ឬ​រូបភាព​ធំ​ៗ ។"
+
+#. Translators %s.1f is the speed used to burn
+#: ../libbrasero-burn/brasero-drive-properties.c:524
+#, c-format
+msgid "%.1f× (DVD)"
+msgstr "%.1f× (DVD)"
+
+#. Translators %s.1f is the speed used to burn
+#: ../libbrasero-burn/brasero-drive-properties.c:528
+#, c-format
+msgid "%.1f× (CD)"
+msgstr "%.1f× (CD)"
+
+#. Translators %s.1f is the speed used to burn. BD = Blu Ray
+#: ../libbrasero-burn/brasero-drive-properties.c:532
+#, c-format
+msgid "%.1f× (BD)"
+msgstr "%.1f× (BD)"
+
+#. Translators %s.1f is the speed used to burn for every medium
+#. * type. BD = Blu Ray
+#: ../libbrasero-burn/brasero-drive-properties.c:537
+#, c-format
+msgid "%.1f× (BD) %.1f× (DVD) %.1f× (CD)"
+msgstr "%.1f× (BD) %.1f× (DVD) %.1f× (CD)"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:575
+msgid "Impossible to retrieve speeds"
+msgstr "មិន​អាច​ទៅ​យក​ល្បឿន​បាន​ទេ"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:584
+msgid "Maximum speed"
+msgstr "ល្បឿន​អតិបរមា"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:710
+msgid "Burning speed"
+msgstr "ល្បឿន​ដុត"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:723
+msgid "_Simulate before burning"
+msgstr "ក្លែង​ធ្វើ​មុន​ពេល​ដុត"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:724
+msgid ""
+"Brasero will simulate the burning and, if it is successful, go on with "
+"actual burning after 10 seconds"
+msgstr ""
+"Brasero នឹង​ក្លែង​ធ្វើ​ការ​ដុត ហើយ​ប្រសិនបើ​បាន​ទទួល​ជោគជ័យ "
+"នឹង​បន្ត​ជាមួយ​ការ​ដុត​ជាក់ស្ដែង​បន្ទាប់ពី ១០ វិនាទី ក្រោយមក"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:726
+msgid "Use burn_proof (decrease the risk of failures)"
+msgstr "ប្រើការ​បញ្ជាក់​ក្នុង​ការ​ដុត (បន្ថយ​ភាព​បរាជ័យ)"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:728
+msgid "Burn the image directly _without saving it to disc"
+msgstr "ដុត​រូបភាព​ដោយ​ផ្ទាល់​ដោយ​មិន​រក្សាទុក​វា​នៅ​ក្នុង​ថាស"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:730
+msgid "Leave the disc _open to add other files later"
+msgstr "ទុកឲ្យ​ថាស​បើក ដើម្បី​បន្ថែម​ឯកសារ​ផ្សេងទៀត​នៅ​ពេល​ក្រោយ"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:731
+msgid "Allow to add more data to the disc later"
+msgstr "អនុញ្ញាត​ឲ្យ​បន្ថែម​ទិន្នន័យ​ច្រើន​ទៀត​ទៅ​ក្នុង​ថាស​ពេលក្រោយ"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:751
+#: ../libbrasero-burn/brasero-tool-dialog.c:284
+#: ../src/brasero-multi-song-props.c:308 ../src/brasero-song-properties.c:226
+msgid "Options"
+msgstr "ជម្រើស"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:763
+msgid "Location for _Temporary Files"
+msgstr "ទីតាំង​សម្រាប់​ឯកសារ​បណ្ដោះអាសន្ន"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:783
+msgid "Set the directory where to store temporary files"
+msgstr "កំណត់​ថត​ដែល​ផ្ទុក​ឯកសារ​បណ្ដោះអាសន្ន"
+
+#: ../libbrasero-burn/brasero-drive-properties.c:788
+msgid "Temporary files"
+msgstr "ឯកសារ​បណ្ដោះអាសន្ន"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:57
+msgid "Hidden file"
+msgstr "ឯកសារ​លាក់"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:58
+msgid "Unreadable file"
+msgstr "ឯកសារ​មិន​អាច​អាន​បាន"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:59
+msgid "Broken symbolic link"
+msgstr "តំណ​និមិត្តសញ្ញា​ខូច"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:60
+#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#, c-format
+msgid "Recursive symbolic link"
+msgstr "តំណ​និមិត្តសញ្ញា​ហៅ​ខ្លួនឯង"
+
+#: ../libbrasero-burn/brasero-image-properties.c:243
+msgid "Disc image type:"
+msgstr "ប្រភេទ​រូបភាព​ថាស ៖"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:97
+msgid "Autodetect"
+msgstr "កែ​ស្វ័យប្រវត្តិ"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:106
+msgid "ISO9660 image"
+msgstr "រូបភាព ISO9660"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:115
+msgid "Readcd/Readom image"
+msgstr "រូបភាព Readcd/Readom"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:141
+msgid "Cue image"
+msgstr "រូបភាព Cue"
+
+#: ../libbrasero-burn/brasero-image-type-chooser.c:151
+msgid "Cdrdao image"
+msgstr "រូបភាព Cdrdao"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:93
+#: ../src/brasero-project.c:1501
+#, c-format
+msgid "Properties of %s"
+msgstr "លក្ខណសម្បត្តិ​នៃ %s"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:133
+msgid ""
+"Do you really want to keep the current extension for the disc image name?"
+msgstr ""
+"តើ​អ្នក​ពិតជា​ចង់​រក្សាទុក​ផ្នែក​បន្ថែម​បច្ចុប្បន្ន​សម្រាប់​ឈ្មោះ​រូបភាព​ថាស"
+"​ឬ ?"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:139
+msgid ""
+"If you choose to keep it, programs may not be able to recognize the file "
+"type properly."
+msgstr ""
+"ប្រសិនបើ អ្នក​ចង់​រក្សាទុក​វា "
+"កម្មវិធី​នឹង​មិន​អាច​ទទួលស្គាល់​ប្រភេទ​ឯកសារ​បាន​ត្រឹមត្រូវ​ទេ ។"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:142
+msgid "_Keep Current Extension"
+msgstr "រក្សាទុក​ផ្នែក​បន្ថែម​បច្ចុប្បន្ន"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:145
+msgid "Change _Extension"
+msgstr "ផ្លាស់ប្ដូរ​ផ្នែក​បន្ថែម"
+
+#: ../libbrasero-burn/brasero-medium-properties.c:233
+msgid "Configure recording options"
+msgstr "កំណត់​រចនាសម្ព័ន្ធ​ជម្រើស​ថតចម្លង"
+
+#. Translators: first %02i is hours, the second one is minutes and the
+#. * third one is seconds.
+#: ../libbrasero-burn/brasero-progress.c:198
+#, c-format
+msgid "Total time: %02i:%02i:%02i"
+msgstr "ពេលវេលា​សរុប ៖ %02i:%02i:%02i"
+
+#: ../libbrasero-burn/brasero-progress.c:209
+msgid "Average drive speed:"
+msgstr "ល្បឿន​ដ្រាយ​មធ្យម ៖"
+
+#. Translators: first %02i is hours, the second one is minutes
+#. * and the third one is seconds.
+#: ../libbrasero-burn/brasero-progress.c:437
+#, c-format
+msgid "Estimated remaining time: %02i:%02i:%02i"
+msgstr "ពេលវេលា​នៅសល់​ប្រហែល ៖ %02i:%02i:%02i"
+
+#: ../libbrasero-burn/brasero-progress.c:479
+#, c-format
+msgid "%i MiB of %i MiB"
+msgstr "%i MiB នៃ %i MiB"
+
+#: ../libbrasero-burn/brasero-progress.c:505
+msgid "Estimated drive speed:"
+msgstr "ល្បឿន​ដ្រាយ​ប្រហែល ៖"
+
+#. Translators: %s is a path
+#: ../libbrasero-burn/brasero-src-image.c:229
+#, c-format
+msgid "\"%s\": loading"
+msgstr "\"%s\" ៖ ផ្ទុក"
+
+#. Translators: %s is a path and image refers to a disc image
+#: ../libbrasero-burn/brasero-src-image.c:236
+#, c-format
+msgid "\"%s\": unknown disc image type"
+msgstr "\"%s\" ៖ ប្រភេទ​រូបភាព​ថាស​មិន​ស្គាល់"
+
+#. NOTE to translators, the first %s is the path of the image
+#. * file and the second its size.
+#: ../libbrasero-burn/brasero-src-image.c:258
+#, c-format
+msgid "\"%s\": %s"
+msgstr "\"%s\" ៖ %s"
+
+#. This is hackish and meant to avoid ellipsization to make the
+#. * label too small.
+#. Translators: this is a disc image
+#: ../libbrasero-burn/brasero-src-image.c:271
+#: ../libbrasero-burn/brasero-src-image.c:554
+msgid "Click here to select a disc _image"
+msgstr "ចុច​ទីនេះ ដើម្បី​ជ្រើស​រូបភាព​ថាស"
+
+#: ../libbrasero-burn/brasero-src-image.c:415
+msgid "Select Disc Image"
+msgstr "ជ្រើស​រូបភាព​ថាស"
+
+#: ../libbrasero-burn/brasero-src-image.c:444
+#: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
+#: ../src/brasero-project.c:2221 ../src/brasero-project-name.c:162
+msgid "All files"
+msgstr "ឯកសារ​ទាំងអស់"
+
+#. Translators: this a disc image here
+#: ../libbrasero-burn/brasero-src-image.c:450
+msgctxt "disc"
+msgid "Image files"
+msgstr "ឯកសារ​រូបភាព"
+
+#: ../libbrasero-burn/brasero-src-image.c:467
+msgid "Image type:"
+msgstr "ប្រភេទ​រូបភាព ៖"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:147
+#, c-format
+msgid "Estimated size: %s"
+msgstr "ទំហំ​ប្រហែល ៖ %s"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:209
+#: ../src/brasero-data-disc.c:870
+#, c-format
+msgid "Do you really want to add \"%s\" to the selection?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​បន្ថែម \"%s\" ទៅកាន់​ជម្រើស​ឬ ?"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:228
+#: ../src/brasero-data-disc.c:879
+msgid ""
+"The children of this directory will have 7 parent directories.\n"
+"Brasero can create an image of such a file hierarchy and burn it but the "
+"disc may not be readable on all operating systems.\n"
+"Note: Such a file hierarchy is known to work on Linux."
+msgstr ""
+"កូន​ថត​នេះ​នឹង​មាន​ថត​មេ​ចំនួន ៧ ។\nBrasero "
+"អាច​បង្កើត​រូបភាព​នៃ​​ឋានានុក្រម​ឯកសារ​នេះ​ និង​ដុត​វា​បាន ប៉ុន្តែ​ថាស​ប្រហែ"
+"ល​ជា​មិន​អាច​អាន​នៅ​លើ​ប្រព័ន្ធ​ប្រតិបត្តិការ​ទាំងអស់​បាន​ទេ ។\nចំណាំ ៖ "
+"ឋានានុក្រម​ឯកសារ​នេះ​ត្រូវ​បាន​គេ​ដឹង​ថា​ វា​ដំណើរការ​នៅលើ​លីនុច ។"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:232
+#: ../libbrasero-burn/brasero-status-dialog.c:294
+#: ../src/brasero-data-disc.c:839 ../src/brasero-data-disc.c:883
+msgid "Ne_ver Add Such File"
+msgstr "កុំ​បន្ថែម​ឯកសារ​នេះ"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:233
+#: ../libbrasero-burn/brasero-status-dialog.c:295
+#: ../src/brasero-data-disc.c:840 ../src/brasero-data-disc.c:884
+msgid "Al_ways Add Such File"
+msgstr "បន្ថែម​ឯកសារ​នេះ​ជានិច្ច"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:271
+#: ../src/brasero-data-disc.c:826
+#, c-format
+msgid ""
+"Do you really want to add \"%s\" to the selection and use the third version "
+"of the ISO9660 standard to support it?"
+msgstr ""
+"តើ​អ្នក​ពិតជា​ចង់​បន្ថែម \"%s\" ទៅកាន់​ជម្រើស និង​ប្រើ​កំណែ​ទីបី​នៃ ISO9660 "
+"ស្តង់ដារ ដើម្បី​គាំទ្រ​វា​ឬ ?"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:290
+#: ../src/brasero-data-disc.c:835
+msgid ""
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
+"supported by the ISO9660 standard in its first and second versions (the most "
+"widespread ones).\n"
+"It is recommended to use the third version of the ISO9660 standard, which is "
+"supported by most operating systems, including Linux and all versions of "
+"Windows™.\n"
+"However, Mac OS X cannot read images created with version 3 of the ISO9660 "
+"standard."
+msgstr ""
+"ទំហំ​ឯកសារ​លើស​ពី​ ២ ជីកាបៃ ។ ឯកសារ​ធំជាង ២ "
+"ជីកាបៃ​នឹង​មិន​ត្រូវ​បាន​គាំទ្រ​ដោយ ISO9660 ស្តង់ដារ​នៅ​ក្នុង​​កំណែ​ទី​មួយ "
+"និង​ទីពីរ​ទេ (កំណែ​ដែល​ប្រើប្រាស់​ទូទៅ​បំផុត) "
+"។\nអ្នក​ត្រូវ​បាន​ផ្ដល់​អនុសាសន៍​ឲ្យ​ប្រើ​កំណែ​ទី​បី​នៃ ISO9660 ស្តង់ដារ "
+"ដែល​ត្រូវ​បាន​គាំទ្រ​ដោយ​ប្រព័ន្ធ​ប្រតិបត្តិការ​ភាគច្រើន ដោយរួមទាំង​លីនុច "
+"និង​កំណែ​ទាំងអស់​របស់​ Windows™ ផង​ដែរ ។\nទោះជា​យ៉ាងណា Mac OS X "
+"មិន​អាច​អាន​រូបភាព​ដែល​បាន​បង្កើត​ជាមួយ​កំណែ ៣ នៃ ISO9660 ស្តង់ដារ​ទេ ។"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:330
+#: ../src/brasero-data-disc.c:729
+msgid "Should files be renamed to be fully Windows-compatible?"
+msgstr ""
+"តើ​ឯកសារ​គួរតែ​ត្រូវ​បាន​ប្ដូរ​ឈ្មោះ​ទៅជា​ភាព​ឆប​គ្នា​ពេញ​លេញ​ជាមួយវីនដូឬ ?"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:341
+#: ../src/brasero-data-disc.c:735
+msgid "Those names should be changed and truncated to 64 characters."
+msgstr ""
+"ឈ្មោះ​ទាំងនោះ​គួរតែ​ត្រូវ​បាន​ផ្លាស់ប្ដូរ និង​បង្រួញ​ត្រឹម ៦៤ តួអក្សរ ។"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:346
+#: ../src/brasero-data-disc.c:738
+msgid "_Disable Full Windows Compatibility"
+msgstr "បិទ​ភាព​ឆបគ្នា​ពេញលេញ​ជាមួយ​នឹង​វីនដូ"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:349
+#: ../src/brasero-data-disc.c:737
+msgid "_Rename for Full Windows Compatibility"
+msgstr "ប្ដូរ​ឈ្មោះ​សម្រាប់​ភាព​ឆប​គ្នា​ពេល​លេញ​ជាមួយ​វីនដូ"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:566
+msgid "Size Estimation"
+msgstr "ការ​ប៉ាន់ស្មាន​ទំហំ"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:568
+msgid "Please wait until the estimation of the size is completed."
+msgstr "សូម​មេត្តា​រង់ចាំ​រហូតដល់​ការ​វាយតម្លៃ​អំពី​ទំហំ​បាន​បញ្ចប់ ។"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:569
+msgid "All files need to be analysed to complete this operation."
+msgstr "ត្រូវការ​ឲ្យ​វិភាគ​ឯកសារ​ទាំងអស់​ដើម្បី​បញ្ចប់​ប្រតិបត្តិការ​នេះ ។"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:134
+#: ../libbrasero-burn/brasero-sum-dialog.c:215
+msgid "Check _Again"
+msgstr "ពិនិត្យមើល​ម្ដងទៀត"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:165
+#: ../libbrasero-burn/brasero-sum-dialog.c:514
+msgid "The file integrity check could not be performed."
+msgstr "មិន​អាច​អនុវត្ត​ការ​​ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ឯកសារ​បាន​ទេ ។"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
+#: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
+#: ../src/brasero-project.c:2621
+msgid "An unknown error occurred"
+msgstr "កំហុស​មិន​ស្គាល់​បាន​កើតឡើង"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:178
+msgid "The file integrity check was performed successfully."
+msgstr ""
+"ការ​ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ឯកសារ​ត្រូវ​បាន​អនុវត្ត​ដោយ​ជោគជ័យ ។"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:179
+msgid "There seem to be no corrupted files on the disc"
+msgstr "ហាក់​ដូចជា​មិន​មាន​ឯកសារ​ខូច​នៅ​លើ​ថាស​ទេ"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:207
+msgid "The following files appear to be corrupted:"
+msgstr "ឯកសារ​ដូច​ខាងក្រោម​នេះ​ទំនងជា​ខូច ។"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:250
+msgid "Corrupted Files"
+msgstr "ឯកសារ​ខូច"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:342
+msgid "Downloading MD5 file"
+msgstr "ទាញ​យក​ឯកសារ MD5"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:397
+#, c-format
+msgid "\"%s\" is not a valid URI"
+msgstr "\"%s\" មិនមែន​ជា URI ត្រឹមត្រូវ​ទេ"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:515
+msgid "No MD5 file was given."
+msgstr "គ្មាន​ឯកសារ MD5 ត្រូវ​បាន​ផ្ដល់ ។"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:692
+msgid "Use an _MD5 file to check the disc"
+msgstr "ប្រើ​ឯកសារ MD5 ដើម្បី​ពិនិត្យមើល​ថាស"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:693
+msgid "Use an external .md5 file that stores the checksum of a disc"
+msgstr "ប្រើ​ឯកសារ .md5 ខាងក្រៅ​ដែល​ផ្ទុក​ឆេកសាំ​របស់​ថាស"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:706
+msgid "Open an MD5 file"
+msgstr "បើក​ឯកសារ MD5"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:721
+msgid "_Check"
+msgstr "ពិនិត្យមើល"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:752
+msgid "Disc Checking"
+msgstr "ពិនិត្យមើល​ថាស"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:78
+#: ../libbrasero-burn/brasero-tool-dialog.c:92
+#: ../libbrasero-burn/brasero-tool-dialog.c:102
+msgid "The operation cannot be performed."
+msgstr "មិន​អាច​អនុវត្ត​ប្រតិបត្តិការ​នេះ​បាន​ឡើយ ។"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:79
+#: ../plugins/cdrkit/burn-wodim.c:151 ../plugins/cdrkit/burn-wodim.c:421
+#: ../plugins/cdrtools/burn-cdrecord.c:151
+#: ../plugins/cdrtools/burn-cdrecord.c:407
+#: ../plugins/growisofs/burn-dvd-rw-format.c:77
+#: ../plugins/libburnia/burn-libburn.c:610
+#, c-format
+msgid "The disc is not supported"
+msgstr "ថាស​មិន​ត្រូវ​បាន​គាំទ្រ"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:103
+msgid "The drive is empty"
+msgstr "ដ្រាយ​ទទេ"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../src/brasero-eject-dialog.c:164
+msgid "Select a disc"
+msgstr "ជ្រើស​ថាស"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:572
+msgid "Progress"
+msgstr "វឌ្ឍនភាព"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:617
+#: ../libbrasero-burn/brasero-track-data-cfg.c:716
+#: ../libbrasero-burn/brasero-track-data-cfg.c:727
+#: ../libbrasero-burn/brasero-track-data-cfg.c:788
+#: ../libbrasero-burn/brasero-track-data-cfg.c:793
+#: ../src/brasero-playlist.c:536 ../src/brasero-video-tree-model.c:342
+msgid "(loading…)"
+msgstr "(កំពុង​ផ្ទុក…)"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:619
+#: ../libbrasero-burn/brasero-track-data-cfg.c:799
+#: ../src/brasero-playlist.c:497
+msgid "Empty"
+msgstr "ទទេ"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:725
+msgid "Disc file"
+msgstr "ឯកសារ​ថាស"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:803
+#, c-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "ធាតុ %d"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1916
+#, c-format
+msgid "New folder"
+msgstr "ថត​ថ្មី"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1919
+#, c-format
+msgid "New folder %i"
+msgstr "ថត​ថ្មី %i"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2406
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2416
+msgid "Analysing files"
+msgstr "វិភាគ​ឯកសារ"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2552
+#, c-format
+msgid "\"%s\" is a recursive symbolic link."
+msgstr "\"%s\" គឺជា​តំណ​និមិត្តសញ្ញា​ហៅ​ខ្លួនឯង ។"
+
+#. Translators: %s is the path of a drive
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2578 ../src/brasero-cli.c:218
+#, c-format
+msgid "\"%s\" cannot be found."
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​រកឃើញ ។"
+
+#: ../libbrasero-burn/brasero-track-image-cfg.c:451
+msgid "Retrieving image format and size"
+msgstr "ទៅ​យក​ទំហំ និង​ទ្រង់ទ្រាយ​រូបភាព"
+
+#. Translators: This is a disc image
+#: ../libbrasero-burn/brasero-track-image-cfg.c:471
+msgid "The format of the disc image could not be identified"
+msgstr "មិន​អាច​កំណត់​អត្តសញ្ញាណ​ទ្រង់ទ្រាយ​របស់​រូបភាព​ថាស​បាន​ឡើយ"
+
+#: ../libbrasero-burn/brasero-track-image-cfg.c:472
+msgid "Please set it manually"
+msgstr "សូម​កំណត់​វា​ដោយដៃ"
+
+#. Translators: %s is the name of the file that has just been deleted
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:90
+#, c-format
+msgid "\"%s\" was removed from the file system."
+msgstr "\"%s\" ត្រូវ​បាន​ផ្លាស់ទី​ចេញពី​ប្រព័ន្ធ​ឯកសារ ។"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:129
+#: ../src/brasero-audio-disc.c:754 ../src/brasero-video-disc.c:365
+#, c-format
+msgid "Directories cannot be added to video or audio discs"
+msgstr "មិន​អាច​បន្ថែម​ថត​ទៅ​កាន់​វីដេអូ ឬ​ថាស​អូឌីយ៉ូ​បាន​ឡើយ"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:142
+#, c-format
+msgid "Playlists cannot be added to video or audio discs"
+msgstr "មិន​អាច​បន្ថែម​បញ្ជី​ចាក់​ទៅកាន់​វីដេអូ ឬ​ថាស​អូឌីយ៉ូ​បាន​ឡើយ"
+
+#. Translators: %s is the name of the file
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:157
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:174
+#, c-format
+msgid "\"%s\" is not suitable for audio or video media"
+msgstr "\"%s\" មិន​សមស្រប​សម្រាប់​អូឌីយ៉ូ ឬ​មេឌៀ​វីដេអូ​ទេ"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:401
+msgid "Analysing video files"
+msgstr "វិភាគ​ឯកសារ​វីដេអូ"
+
+#: ../libbrasero-burn/brasero-video-options.c:447
+msgid "Video format:"
+msgstr "ទ្រង់ទ្រាយវីដេអូ ៖"
+
+#: ../libbrasero-burn/brasero-video-options.c:458
+msgid "_NTSC"
+msgstr "NTSC"
+
+#: ../libbrasero-burn/brasero-video-options.c:460
+msgid "Format used mostly on the North American continent"
+msgstr "ទ្រង់ទ្រាយ​ដែល​ត្រូវ​បាន​ប្រើ​ភាគច្រើន​នៅ​ទ្វីប​អាមេរិក​ខាងជើង"
+
+#: ../libbrasero-burn/brasero-video-options.c:473
+msgid "_PAL/SECAM"
+msgstr " PAL/SECAM"
+
+#: ../libbrasero-burn/brasero-video-options.c:475
+msgid "Format used mostly in Europe"
+msgstr "ទ្រង់ទ្រាយ​ដែល​ត្រូវ​បាន​ប្រើ​ភាគច្រើន​នៅ​ទ្វីប​អឺរ៉ុប"
+
+#: ../libbrasero-burn/brasero-video-options.c:489
+msgid "Native _format"
+msgstr "ទ្រង់ទ្រាយ​ដើម"
+
+#: ../libbrasero-burn/brasero-video-options.c:504
+msgid "Aspect ratio:"
+msgstr "សមាមាត្រ ៖"
+
+#: ../libbrasero-burn/brasero-video-options.c:515
+msgid "_4:3"
+msgstr "៤:៣"
+
+#: ../libbrasero-burn/brasero-video-options.c:530
+msgid "_16:9"
+msgstr "១៦:៩"
+
+#. Video options for (S)VCD
+#: ../libbrasero-burn/brasero-video-options.c:545
+msgid "VCD type:"
+msgstr "ប្រភេទ​វីស៊ីឌី ៖"
+
+#: ../libbrasero-burn/brasero-video-options.c:558
+msgid "Create an SVCD"
+msgstr "បង្កើត SVCD"
+
+#: ../libbrasero-burn/brasero-video-options.c:573
+msgid "Create a VCD"
+msgstr "បង្កើត​វីស៊ីឌី"
+
+#: ../libbrasero-burn/brasero-xfer.c:130 ../libbrasero-burn/brasero-xfer.c:266
+#, c-format
+msgid "Directory could not be created (%s)"
+msgstr "មិន​អាច​បង្កើត​ថត (%s)"
+
+#: ../libbrasero-burn/burn-basics.c:77
+msgid "Getting size"
+msgstr "ទទួល​យក​ទំហំ"
+
+#: ../libbrasero-burn/burn-basics.c:79
+msgid "Writing"
+msgstr "សរសេរ"
+
+#: ../libbrasero-burn/burn-basics.c:80
+msgid "Blanking"
+msgstr "ធ្វើ​ឲ្យ​ទទេ"
+
+#: ../libbrasero-burn/burn-basics.c:81
+msgid "Creating checksum"
+msgstr "បង្កើត​ឆេកសាំ"
+
+#: ../libbrasero-burn/burn-basics.c:83
+msgid "Copying file"
+msgstr "ចម្លង​ឯកសារ"
+
+#: ../libbrasero-burn/burn-basics.c:84
+msgid "Analysing audio files"
+msgstr "វិភាគ​ឯកសារ​អូឌីយ៉ូ"
+
+#: ../libbrasero-burn/burn-basics.c:85
+msgid "Transcoding song"
+msgstr "បម្លែង​ត្រឡប់​បទ​ចម្រៀង"
+
+#: ../libbrasero-burn/burn-basics.c:86
+msgid "Preparing to write"
+msgstr "ត្រៀម​សរសេរ"
+
+#: ../libbrasero-burn/burn-basics.c:87
+#, fuzzy
+msgid "Writing leadin"
+msgstr "សរសេរ leadin"
+
+#: ../libbrasero-burn/burn-basics.c:88
+msgid "Writing CD-Text information"
+msgstr "សរសេរ​ព័ត៌មាន​អំពី​អត្ថបទ​ស៊ីឌី"
+
+#: ../libbrasero-burn/burn-basics.c:89
+msgid "Finalizing"
+msgstr "បញ្ចប់"
+
+#: ../libbrasero-burn/burn-basics.c:90
+#, fuzzy
+msgid "Writing leadout"
+msgstr "សរសេរ leadout"
+
+#: ../libbrasero-burn/burn-basics.c:91
+msgid "Starting to record"
+msgstr "ចាប់ផ្ដើម​ថ​​​ត​​ចម្លង"
+
+#: ../libbrasero-burn/burn-basics.c:92
+msgid "Success"
+msgstr "ជោគជ័យ"
+
+#: ../libbrasero-burn/burn-basics.c:93
+msgid "Ejecting medium"
+msgstr "ច្រាន​ចេញ​ឧបករណ៍​ផ្ទុក"
+
+#: ../libbrasero-burn/burn-debug.c:54
+msgid "Display debug statements on stdout for Brasero burn library"
+msgstr ""
+"បង្ហាញ​ឃ្លា​បំបាត់​កំហុស​នៅ​លើ stdout សម្រាប់​បណ្ណាល័យ​ដុត​របស់ Brasero"
+
+#: ../libbrasero-burn/burn-debug.c:80
+msgid "Brasero media burning library"
+msgstr "បណ្ណាល័យ​ដុត​មេឌៀ Brasero"
+
+#: ../libbrasero-burn/burn-debug.c:81
+msgid "Display options for Brasero-burn library"
+msgstr "បង្ហាញ​ជម្រើស​សម្រាប់​បណ្ណាល័យ​ដុត Brasero"
+
+#. Translators: %s is the plugin name
+#: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:797
+#: ../libbrasero-burn/burn-job.c:810 ../libbrasero-burn/burn-job.c:1029
+#: ../libbrasero-burn/burn-job.c:1119
+#, c-format
+msgid "\"%s\" did not behave properly"
+msgstr "\"%s\" មិន​បាន​អនុវត្ត​ត្រឹមត្រូវ​ទេ"
+
+#. Translators: the first %s is the size of the free space on the medium
+#. * and the second %s is the size of the space required by the data to be
+#. * burnt.
+#: ../libbrasero-burn/burn-job.c:430
+#, c-format
+msgid "Not enough space available on the disc (%s available for %s)"
+msgstr "មិន​មាន​ទំហំ​ថាស​គ្រប់គ្រាន់ (%s អាចប្រើ​​សម្រាប់ %s)"
+
+#: ../libbrasero-burn/burn-job.c:522
+#, c-format
+msgid ""
+"The filesystem you chose to store the temporary image on cannot hold files "
+"with a size over 2 GiB"
+msgstr ""
+"ប្រព័ន្ធ​ឯកសារ​ដែល​អ្នក​បាន​ជ្រើស​រក្សាទុក​រូបភាព​បណ្ដោះអាសន្ន​មិន​អាច​ផ្ទុក"
+"​ឯកសារ​ដែល​មាន​ទំហំ​លើស​ពី ២ ជីកាបៃ​បាន​ទេ"
+
+#: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
+#, c-format
+msgid ""
+"The location you chose to store the temporary image on does not have enough "
+"free space for the disc image (%ld MiB needed)"
+msgstr ""
+"ទីតាំង​ដែល​អ្នក​បាន​ជ្រើស​រក្សាទុក​រូបភាព​បណ្ដោះអាសន្ន​មិន​មាន​ទំហំ​ថាស​គ្រប"
+"់គ្រាន់​សម្រាប់​រូបភាព​ថាស​ទេ (ត្រូវការ %ld MiB )"
+
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#, c-format
+msgid "The size of the volume could not be retrieved"
+msgstr "មិន​អាច​ទៅ​យក​ទំហំ​ភាគ​ថាស​បាន​ឡើយ"
+
+#: ../libbrasero-burn/burn-job.c:627
+#, c-format
+msgid "No path was specified for the image output"
+msgstr "គ្មាន​ផ្លូវ​ត្រូវ​បាន​បញ្ជាក់​សម្រាប់​ទិន្នន័យ​រូបភាព​ទេ"
+
+#. Translators: %s is the error returned by libburn
+#. Translators: the %s is the error message from errno
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
+#: ../plugins/libburnia/burn-libburn.c:717
+#: ../plugins/transcode/burn-transcode.c:826
+#, c-format
+msgid "An internal error occurred (%s)"
+msgstr "កំហុស​ខាងក្នុង​បាន​កើតឡើង (%s)"
+
+#: ../libbrasero-burn/burn-mkisofs-base.c:153
+#: ../libbrasero-burn/burn-mkisofs-base.c:494
+#: ../plugins/checksum/burn-checksum-image.c:287
+#: ../plugins/growisofs/burn-growisofs.c:527
+#: ../plugins/libburnia/burn-libisofs.c:707
+#, c-format
+msgid "The file is not stored locally"
+msgstr "ឯកសារ​ត្រូវ​បាន​រក្សាទុក​ក្នុង​មូលដ្ឋាន"
+
+#: ../libbrasero-burn/burn-mkisofs-base.c:644
+#, c-format
+msgid "VIDEO_TS directory is missing or invalid"
+msgstr "ថត VIDEO_TS បាន​បាត់ ឬ​មិន​ត្រឹមត្រូវ"
+
+#: ../libbrasero-burn/burn-plugin.c:645
+#, c-format
+msgid "\"%s\" could not be found in the path"
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​​រក​ឃើញ​នៅ​ក្នុង​ផ្លូវ"
+
+#: ../libbrasero-burn/burn-plugin.c:649
+#, c-format
+msgid "\"%s\" GStreamer plugin could not be found"
+msgstr "\"%s\" កម្មវិធី​ជំនួយ GStreamer ​មិន​អាច​ត្រូវ​បាន​រក​ឃើញ"
+
+#: ../libbrasero-burn/burn-plugin.c:653 ../libbrasero-burn/burn-plugin.c:665
+#, c-format
+msgid "The version of \"%s\" is too old"
+msgstr "កំណែ​របស់ \"%s\" ចាស់​ពេក"
+
+#: ../libbrasero-burn/burn-plugin.c:657
+#, c-format
+msgid "\"%s\" is a symbolic link pointing to another program"
+msgstr "\"%s\" គឺជា​តំណ​និមិត្តសញ្ញា​ដែល​ចង្អុល​ទៅកាន់​កម្មវិធី​ផ្សេងទៀត"
+
+#. Translators: %s is a filename
+#: ../libbrasero-burn/burn-plugin.c:661 ../plugins/cdrdao/burn-cdrdao.c:211
+#: ../plugins/growisofs/burn-growisofs.c:509
+#, c-format
+msgid "\"%s\" could not be found"
+msgstr "\"%s\" មិន​អាចត្រូវ​បាន​រក​ឃើញ"
+
+#. Translators: %s is the name of the brasero element
+#: ../libbrasero-burn/burn-process.c:259
+#, c-format
+msgid "Process \"%s\" ended with an error code (%i)"
+msgstr "ដំណើរការ \"%s\" ត្រូវ​បាន​បញ្ចប់​ដោយ​កូដ​កំហុស (%i)"
+
+#. Translators: This is a fake drive, a file, and means that
+#. * when we're writing, we're writing to a file and create an
+#. * image on the hard drive.
+#: ../libbrasero-media/brasero-drive.c:607
+#: ../libbrasero-media/brasero-medium.c:206
+#: ../libbrasero-media/brasero-volume.c:382
+msgid "Image File"
+msgstr "ឯកសារ​រូបភាព"
+
+#: ../libbrasero-media/brasero-drive-selection.c:341
+#: ../libbrasero-media/brasero-drive-selection.c:436
+msgid "Unnamed CD/DVD Drive"
+msgstr "ដ្រាយ​ស៊ីឌី/ឌីវីឌី​គ្មាន​ឈ្មោះ"
+
+#: ../libbrasero-media/brasero-media.c:54
+msgid "Display debug statements on stdout for Brasero media library"
+msgstr "បង្ហាញ​ឃ្លា​បំបាត់​កំហុស​នៅ​លើ stdout សម្រាប់​បណ្ណាល័យ​មេឌៀ Brasero"
+
+#: ../libbrasero-media/brasero-media.c:477
+msgid "Brasero optical media library"
+msgstr "បណ្ណាល័យ​មេឌៀ​អុបទិក Brasero"
+
+#: ../libbrasero-media/brasero-media.c:478
+msgid "Display options for Brasero media library"
+msgstr "បង្ហាញ​ជម្រើស​សម្រាប់​បណ្ណាល័យ​មេឌៀ Brasero"
+
+#: ../libbrasero-media/brasero-medium.c:65
+msgid "File"
+msgstr "ឯកសារ"
+
+#: ../libbrasero-media/brasero-medium.c:66
+msgid "CD-ROM"
+msgstr "ស៊ីឌី-រ៉ូម"
+
+#: ../libbrasero-media/brasero-medium.c:67
+msgid "CD-R"
+msgstr "ស៊ីឌី-អាន"
+
+#: ../libbrasero-media/brasero-medium.c:68
+msgid "CD-RW"
+msgstr "ស៊ីឌី-អាន​សរសេរ"
+
+#: ../libbrasero-media/brasero-medium.c:69
+msgid "DVD-ROM"
+msgstr "ឌីវីឌី-រ៉ូម"
+
+#: ../libbrasero-media/brasero-medium.c:70
+msgid "DVD-R"
+msgstr "ឌីវីឌី-អាន"
+
+#: ../libbrasero-media/brasero-medium.c:71
+msgid "DVD-RW"
+msgstr "ឌីវីឌី-អាន​សរសេរ"
+
+#: ../libbrasero-media/brasero-medium.c:72
+msgid "DVD+R"
+msgstr "ឌីវីឌី+អាន"
+
+#: ../libbrasero-media/brasero-medium.c:73
+msgid "DVD+RW"
+msgstr "ឌីវីឌី+អាន​សរសេរ"
+
+#: ../libbrasero-media/brasero-medium.c:74
+msgid "DVD+R dual layer"
+msgstr "ឌីវីឌី+អាន​មាន​ពីរស្រទាប់"
+
+#: ../libbrasero-media/brasero-medium.c:75
+msgid "DVD+RW dual layer"
+msgstr "ឌីវីឌី+អាន​សរសេរ​មាន​ពីរ​ស្រទាប់"
+
+#: ../libbrasero-media/brasero-medium.c:76
+msgid "DVD-R dual layer"
+msgstr "ឌីវីឌី-អាន​មាន​ពីរ​ស្រទាប់"
+
+#: ../libbrasero-media/brasero-medium.c:77
+msgid "DVD-RAM"
+msgstr "ឌីវីឌី-រ៉េម"
+
+#: ../libbrasero-media/brasero-medium.c:78
+msgid "Blu-ray disc"
+msgstr "ថាស​ប៊្លូរ៉េយ៍"
+
+#: ../libbrasero-media/brasero-medium.c:79
+msgid "Writable Blu-ray disc"
+msgstr "ថាស​ប៊្លូរ៉េយ៍​ដែល​អាច​​សរសេរ​បាន"
+
+#: ../libbrasero-media/brasero-medium.c:80
+msgid "Rewritable Blu-ray disc"
+msgstr "ថាស​ប៊្លូរ៉េយ៍​ដែល​អាច​សរសេរ​ឡើងវិញ​បាន"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:216
+#, c-format
+msgid "Blank %s in %s"
+msgstr "ទទេ %s ក្នុង %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:223
+#, c-format
+msgid "Audio and data %s in %s"
+msgstr "អូឌីយ៉ូ និង​ទិន្នន័យ %s ក្នុង %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:230
+#, c-format
+msgid "Audio %s in %s"
+msgstr "អូឌីយ៉ូ %s ក្នុង %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:237
+#, c-format
+msgid "Data %s in %s"
+msgstr "ទិន្នន័យ %s ក្នុង %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:244
+#, c-format
+msgid "%s in %s"
+msgstr "%s ក្នុង %s"
+
+#. NOTE for translators, the first %s is the medium name
+#: ../libbrasero-media/brasero-medium-selection.c:158
+#, c-format
+msgid "%s: empty"
+msgstr "%s ៖ ទទេ"
+
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (kio, gio) used by data on the disc.
+#.
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (time) used by data on the disc.
+#. * I really don't know if I should set this string as
+#. * translatable.
+#: ../libbrasero-media/brasero-medium-selection.c:174
+#: ../libbrasero-media/brasero-medium-selection.c:186
+#, c-format
+msgid "%s: %s"
+msgstr "%s ៖ %s"
+
+#: ../libbrasero-media/brasero-medium-selection.c:451
+msgid "Searching for available discs"
+msgstr "ស្វែងរក​ថាស​ដែល​អាច​ប្រើ​បាន"
+
+#: ../libbrasero-media/brasero-medium-selection.c:460
+msgid "No disc available"
+msgstr "គ្មាន​ថាស​ដែល​អាច​ប្រើ​បាន"
+
+#. Translators: this is hour minute second like '2 h 14 min 25'
+#: ../libbrasero-media/brasero-units.c:71
+#, c-format
+msgid "%s h %s min %s"
+msgstr "%s ម៉ %s នាទី %s"
+
+#. Translators: this is hour minute like '2 h 14'
+#: ../libbrasero-media/brasero-units.c:77
+#, c-format
+msgid "%s h %s"
+msgstr "%s ម៉ %s"
+
+#. Translators: this is hour like '2 h'
+#: ../libbrasero-media/brasero-units.c:82
+#, c-format
+msgid "%s h"
+msgstr "%s ម៉"
+
+#. Translators: this is 'hour:minute:second' like '2:14:25'
+#: ../libbrasero-media/brasero-units.c:86
+#, c-format
+msgid "%s:%s:%s"
+msgstr "%s:%s:%s"
+
+#. Translators: this is 'hour:minute' or 'minute:second'
+#: ../libbrasero-media/brasero-units.c:92
+#: ../libbrasero-media/brasero-units.c:107
+#, c-format
+msgid "%s:%s"
+msgstr "%s:%s"
+
+#. Translators: %s is a duration expressed in minutes
+#: ../libbrasero-media/brasero-units.c:99
+#, c-format
+msgid "%s min"
+msgstr "%s នាទី"
+
+#. Translators: the first %s is the number of minutes
+#. * and the second one is the number of seconds.
+#. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:104
+#, c-format
+msgid "%s:%s min"
+msgstr "%s:%s នាទី"
+
+#: ../libbrasero-media/brasero-volume.c:186
+#, c-format
+msgid "The disc mount point could not be retrieved"
+msgstr "មិន​អាច​ទៅ​យក​ចំណុច​ម៉ោន​ថាស​បាន​ឡើយ"
+
+#. NOTE for translators: the first %s is the disc type and Blank is an adjective.
+#: ../libbrasero-media/brasero-volume.c:409
+#, c-format
+msgid "Blank disc (%s)"
+msgstr "ថាស​ទទេ (%s)"
+
+#. NOTE for translators: the first %s is the disc type.
+#: ../libbrasero-media/brasero-volume.c:413
+#, c-format
+msgid "Audio and data disc (%s)"
+msgstr "អូឌីយ៉ូ និង​ថាស​ទិន្នន័យ (%s)"
+
+#. NOTE for translators: the first %s is the disc type.
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_ .
+#. * The %s is the date
+#: ../libbrasero-media/brasero-volume.c:417 ../src/brasero-project-name.c:322
+#, c-format
+msgid "Audio disc (%s)"
+msgstr "ថាស​អូឌីយ៉ូ (%s)"
+
+#. NOTE for translators: the first %s is the disc type.
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_ otherwise it gets truncated.
+#. * The %s is the date
+#: ../libbrasero-media/brasero-volume.c:421
+#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#, c-format
+msgid "Data disc (%s)"
+msgstr "ថាស​ទិន្នន័យ (%s)"
+
+#: ../libbrasero-media/burn-iso9660.c:158
+#: ../libbrasero-media/burn-iso9660.c:167
+#: ../libbrasero-media/burn-iso9660.c:402
+#: ../libbrasero-media/burn-iso9660.c:439
+#: ../libbrasero-media/burn-iso9660.c:488
+#: ../libbrasero-media/burn-volume.c:128
+#, c-format
+msgid "It does not appear to be a valid ISO image"
+msgstr "វា​ទំនង​មិនមែន​ជា​រូបភាព ISO ត្រឹមត្រូវ​ទេ"
+
+#: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project-name.c:84
+msgid "Unknown error"
+msgstr "កំហុស​មិន​ស្គាល់"
+
+#: ../libbrasero-media/scsi-error.c:44
+msgid "Size mismatch"
+msgstr "ទំហំ​មិន​ផ្គូផ្គង"
+
+#: ../libbrasero-media/scsi-error.c:45
+msgid "Type mismatch"
+msgstr "ប្រភេទ​មិន​ផ្គូផ្គង"
+
+#: ../libbrasero-media/scsi-error.c:46
+msgid "Bad argument"
+msgstr "អាគុយម៉ង់​ខូច"
+
+#: ../libbrasero-media/scsi-error.c:48
+msgid "Outrange address"
+msgstr "អាសយដ្ឋាន​វែងពេក"
+
+#: ../libbrasero-media/scsi-error.c:49
+msgid "Invalid address"
+msgstr "អាសយដ្ឋាន​មិន​ត្រឹមត្រូវ"
+
+#: ../libbrasero-media/scsi-error.c:50
+msgid "Invalid command"
+msgstr "ពាក្យបញ្ជា​មិន​ត្រឹមត្រូវ"
+
+#: ../libbrasero-media/scsi-error.c:51
+msgid "Invalid parameter in command"
+msgstr "ប៉ារ៉ាម៉ែត្រ​មិន​ត្រឹមត្រូវ​ក្នុង​ពាក្យបញ្ជា"
+
+#: ../libbrasero-media/scsi-error.c:52
+msgid "Invalid field in command"
+msgstr "វាល​មិន​ត្រឹមត្រូវ​ក្នុង​ពាក្យបញ្ជា"
+
+#: ../libbrasero-media/scsi-error.c:53
+msgid "The device timed out"
+msgstr "ឧបករណ៍​អស់​ពេល"
+
+#: ../libbrasero-media/scsi-error.c:54
+msgid "Key not established"
+msgstr "ពាក្យគន្លឹះមិន​ទាន់​ត្រូវ​បាន​ស្ថាបនា"
+
+#: ../libbrasero-media/scsi-error.c:55
+msgid "Invalid track mode"
+msgstr "របៀប​បទ​មិន​ត្រឹមត្រូវ"
+
+#: ../libbrasero-utils/brasero-disc-message.c:133
+msgid "_Hide changes"
+msgstr "លាក់​ការ​ផ្លាស់ប្ដូរ"
+
+#: ../libbrasero-utils/brasero-disc-message.c:135
+#: ../libbrasero-utils/brasero-disc-message.c:154
+msgid "_Show changes"
+msgstr "បង្ហាញ​ការ​ផ្លាស់ប្ដូរ"
+
+#: ../libbrasero-utils/brasero-io.c:1416
+#, c-format
+msgid "The file does not appear to be a playlist"
+msgstr "ឯកសារ​ទំនង​មិនមែន​ជា​បញ្ជី​ចាក់"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:199
+msgid "Images"
+msgstr "រូបភាព"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:230
+msgid "_Color"
+msgstr "ពណ៌"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:261
+msgid "Solid color"
+msgstr "ពណ៌​តាន់"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:262
+msgid "Horizontal gradient"
+msgstr "ជម្រាល​ផ្ដេក"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:263
+msgid "Vertical gradient"
+msgstr "ជម្រាល​បញ្ឈរ"
+
+#. second part
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:280
+msgid "_Image"
+msgstr "រូបភាព"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:308
+msgid "Image path:"
+msgstr "ផ្លូវ​រូបភាព ៖"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:320
+msgid "Choose an image"
+msgstr "ជ្រើស​រូបភាព"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:331
+msgid "Image style:"
+msgstr "រចនាប័ទ្ម​រូបភាព ៖"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:345
+msgid "Centered"
+msgstr "កណ្ដាល"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:346
+msgid "Tiled"
+msgstr "ជា​ក្រឡា​ក្បឿង"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:347
+msgid "Scaled"
+msgstr "បាន​ធ្វើ​មាត្រដ្ឋាន"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:384
+msgid "Background Properties"
+msgstr "លក្ខណសម្បត្តិ​ផ្ទៃ​ខាងក្រោយ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:589
+msgid "Print"
+msgstr "បោះពុម្ព"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:601
+msgid "Bac_kground Properties"
+msgstr "លក្ខណសម្បត្តិ​ផ្ទៃខាងក្រោយ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:604
+msgid "Background properties"
+msgstr "លក្ខណសម្បត្តិ​ផ្ទៃ​ខាងក្រោយ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:619
+msgid "Align right"
+msgstr "តម្រឹម​ស្ដាំ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:629
+msgid "Center"
+msgstr "កណ្ដាល"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:639
+msgid "Align left"
+msgstr "តម្រឹម​ឆ្វេង"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:653
+msgid "Underline"
+msgstr "គូស​បន្ទាត់​ពី​ក្រោម"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:663
+msgid "Italic"
+msgstr "ទ្រេត"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:673
+msgid "Bold"
+msgstr "ដិត"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:699
+msgid "Font family and size"
+msgstr "ទំហំ និង​ក្រុម​ពុម្ពអក្សរ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:706
+msgid "_Text Color"
+msgstr "ពណ៌​អត្ថបទ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:707
+msgid "Text color"
+msgstr "​ពណ៌​អត្ថបទ"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:830
+msgid "Cover Editor"
+msgstr "កម្មវិធី​បង្កើត​គម្រប"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:766
+msgid "Set Bac_kground Properties"
+msgstr "កំណត់​លក្ខណសម្បត្តិ​ផ្ទៃខាងក្រោយ"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:807
+msgid "SIDES"
+msgstr "ចំហៀង"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:823
+msgid "BACK COVER"
+msgstr "គម្រប​ក្រោយ"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:841
+msgid "FRONT COVER"
+msgstr "គម្រប​មុខ"
+
+#. Translators: This is an image,
+#. * a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-view.c:1021
+msgid "The image could not be loaded."
+msgstr "មិន​អាច​ផ្ទុក​រូបភាព​បាន​ឡើយ ។"
+
+#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
+#, c-format
+msgid "\"%s\" could not be handled by GStreamer."
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​គ្រប់គ្រង​ដោយ GStreamer ។"
+
+#. Translators: %s is the name of the object (as in
+#. * GObject) from the Gstreamer library that could
+#. * not be created
+#: ../libbrasero-utils/brasero-metadata.c:1207
+#: ../libbrasero-utils/brasero-metadata.c:1220
+#: ../libbrasero-utils/brasero-metadata.c:1233
+#: ../libbrasero-utils/brasero-metadata.c:1375
+#: ../libbrasero-utils/brasero-metadata.c:1746
+#: ../libbrasero-utils/brasero-metadata.c:1761
+#: ../libbrasero-utils/brasero-metadata.c:1770
+#: ../plugins/transcode/burn-normalize.c:172
+#: ../plugins/transcode/burn-normalize.c:187
+#: ../plugins/transcode/burn-normalize.c:209
+#: ../plugins/transcode/burn-normalize.c:221
+#: ../plugins/transcode/burn-normalize.c:238
+#: ../plugins/transcode/burn-normalize.c:335
+#: ../plugins/transcode/burn-transcode.c:294
+#: ../plugins/transcode/burn-transcode.c:306
+#: ../plugins/transcode/burn-transcode.c:456
+#: ../plugins/transcode/burn-transcode.c:509
+#: ../plugins/transcode/burn-transcode.c:543
+#: ../plugins/transcode/burn-transcode.c:590
+#: ../plugins/transcode/burn-transcode.c:611
+#: ../plugins/transcode/burn-transcode.c:623
+#: ../plugins/transcode/burn-transcode.c:648
+#: ../plugins/transcode/burn-vob.c:309 ../plugins/transcode/burn-vob.c:329
+#: ../plugins/transcode/burn-vob.c:344 ../plugins/transcode/burn-vob.c:356
+#: ../plugins/transcode/burn-vob.c:373 ../plugins/transcode/burn-vob.c:431
+#: ../plugins/transcode/burn-vob.c:448 ../plugins/transcode/burn-vob.c:460
+#: ../plugins/transcode/burn-vob.c:472 ../plugins/transcode/burn-vob.c:484
+#: ../plugins/transcode/burn-vob.c:501 ../plugins/transcode/burn-vob.c:592
+#: ../plugins/transcode/burn-vob.c:609 ../plugins/transcode/burn-vob.c:621
+#: ../plugins/transcode/burn-vob.c:633 ../plugins/transcode/burn-vob.c:655
+#: ../plugins/transcode/burn-vob.c:672 ../plugins/transcode/burn-vob.c:718
+#: ../plugins/transcode/burn-vob.c:795 ../plugins/transcode/burn-vob.c:812
+#: ../plugins/transcode/burn-vob.c:827 ../plugins/transcode/burn-vob.c:839
+#: ../plugins/transcode/burn-vob.c:850 ../plugins/transcode/burn-vob.c:861
+#: ../plugins/transcode/burn-vob.c:1036 ../plugins/transcode/burn-vob.c:1100
+#: ../plugins/transcode/burn-vob.c:1117 ../plugins/transcode/burn-vob.c:1138
+#: ../plugins/transcode/burn-vob.c:1165
+#, c-format
+msgid "%s element could not be created"
+msgstr "%s ធាតុ​មិន​អាច​ត្រូវ​បាន​បង្កើត"
+
+#: ../libbrasero-utils/brasero-tool-color-picker.c:166
+msgid "Pick a Color"
+msgstr "ជ្រើស​ពណ៌"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+#: ../nautilus/nautilus-burn-extension.c:281
+msgid "CD/DVD Creator"
+msgstr "កម្មវិធី​បង្កើត​ស៊ីឌី/ឌីវីឌី"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
+msgid "Create CDs and DVDs"
+msgstr "បង្កើត​ស៊ីឌី និង​ឌីវីឌី"
+
+#: ../nautilus/nautilus-burn-bar.c:228 ../src/brasero-project-name.c:154
+msgid "Medium Icon"
+msgstr "រូបតំណាង​ឧបករណ៍​ផ្ទុក"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-file-chooser.c:375
+#: ../src/brasero-project.c:2246 ../src/brasero-project-name.c:168
+msgctxt "picture"
+msgid "Image files"
+msgstr "ឯកសារ​រូបភាព"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../nautilus/nautilus-burn-bar.c:356 ../plugins/local-track/burn-uri.c:747
+msgid "CD/DVD Creator Folder"
+msgstr "ថត​កម្មវិធី​បង្កើត​ស៊ីឌី/ឌីវីឌី"
+
+#: ../nautilus/nautilus-burn-bar.c:368
+msgid "Disc Name:"
+msgstr "ឈ្មោះ​ថាស ៖"
+
+#. Translators: be careful, anything longer than the English will likely
+#. * not fit on small Nautilus windows
+#: ../nautilus/nautilus-burn-bar.c:407
+msgid "Drag or copy files below to write them to disc"
+msgstr "អូស ឬ​ចម្លង​ឯកសារ​ខាងក្រោម​ដើម្បី​សរសេរ​ពួកវា​ចូល​ថាស"
+
+#: ../nautilus/nautilus-burn-bar.c:423
+#: ../nautilus/nautilus-burn-extension.c:323
+msgid "Write to Disc"
+msgstr "សរសេរ​ចូល​ថាស"
+
+#: ../nautilus/nautilus-burn-bar.c:442
+#: ../nautilus/nautilus-burn-extension.c:723
+#, fuzzy
+msgid "Write contents to a CD or DVD"
+msgstr "សរសេរ​មាតិកា​ចូល​ស៊ីឌី ឬ​ឌីវីឌី"
+
+#: ../nautilus/nautilus-burn-extension.c:370
+msgid "Copy Disc"
+msgstr "ចម្លង​ថាស"
+
+#: ../nautilus/nautilus-burn-extension.c:571
+#: ../nautilus/nautilus-burn-extension.c:722
+msgid "_Write to Disc…"
+msgstr "សរសេរ​ចូល​ថាស…"
+
+#: ../nautilus/nautilus-burn-extension.c:572
+msgid "Write disc image to a CD or DVD"
+msgstr "សរសេរ​រូបភាព​ថាស​ចូល​ស៊ីឌី ឬ​ឌីវីឌី"
+
+#: ../nautilus/nautilus-burn-extension.c:645
+msgid "_Copy Disc…"
+msgstr "ចម្លង​ថាស…"
+
+#: ../nautilus/nautilus-burn-extension.c:646
+msgid "Create a copy of this CD or DVD"
+msgstr "បង្កើត​ច្បាប់​ចម្លង​ស៊ីឌី ឬ​ឌីវីឌី"
+
+#: ../nautilus/nautilus-burn-extension.c:659
+msgid "_Blank Disc…"
+msgstr "ថាស​ទទេ…"
+
+#: ../nautilus/nautilus-burn-extension.c:660
+msgid "Blank this CD or DVD"
+msgstr "ធ្វើឲ្យ​ស៊ីឌី ឬ​ឌីវីឌី​នេះ​ទទេ"
+
+#: ../nautilus/nautilus-burn-extension.c:676
+msgid "_Check Disc…"
+msgstr "ពិនិត្យមើល​ថាស…"
+
+#: ../nautilus/nautilus-burn-extension.c:677
+msgid "Check the data integrity on this CD or DVD"
+msgstr "ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ទិន្នន័យ​នៅ​លើ​ស៊ីឌី ឬ​ឌីវីឌី​នេះ"
+
+#: ../plugins/audio2cue/burn-audio2cue.c:191
+#: ../plugins/checksum/burn-checksum-image.c:124
+#, c-format
+msgid "Data could not be read (%s)"
+msgstr "មិន​អាច​អាន​ទិន្នន័យ (%s)"
+
+#: ../plugins/audio2cue/burn-audio2cue.c:241
+#: ../plugins/checksum/burn-checksum-files.c:196
+#: ../plugins/checksum/burn-checksum-files.c:219
+#: ../plugins/checksum/burn-checksum-image.c:174
+#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/libburnia/burn-libisofs.c:160
+#: ../plugins/libburnia/burn-libisofs.c:274
+#, c-format
+msgid "Data could not be written (%s)"
+msgstr "មិន​អាច​សរសេរ​ទិន្នន័យ (%s)"
+
+#: ../plugins/audio2cue/burn-audio2cue.c:723
+msgid "Generates .cue files from audio"
+msgstr "បង្កើត​ឯកសារ .cue ពី​អូឌីយ៉ូ"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:55
+msgid "cdrdao burning suite"
+msgstr "ឈុត​ដុត cdrdao"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:103
+msgid "Copying audio track"
+msgstr "​ចម្លង​បទ​អូឌីយ៉ូ"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:109
+msgid "Copying data track"
+msgstr "ចម្លង​បទ​ទិន្នន័យ"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:145
+#, c-format
+msgid "Analysing track %02i"
+msgstr "វិភាគ​រក​បទ %02i"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:249 ../plugins/cdrkit/burn-readom.c:116
+#: ../plugins/cdrkit/burn-readom.c:122 ../plugins/cdrkit/burn-wodim.c:106
+#: ../plugins/cdrtools/burn-cdrecord.c:106
+#: ../plugins/cdrtools/burn-readcd.c:117 ../plugins/cdrtools/burn-readcd.c:123
+#, c-format
+msgid "You do not have the required permissions to use this drive"
+msgstr "អ្នក​មិន​មាន​សិទ្ធិ​ដែល​ចាំបាច់​ក្នុង​ការ​ប្រើ​ដ្រាយ​នេះ​ទេ"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:480
+msgid "Converting toc file"
+msgstr "បម្លែង​ឯកសារ toc"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:697
+msgid "Copies, burns and blanks CDs"
+msgstr "ចម្លង ដុត និង​ធ្វើឲ្យ​ស៊ីឌី​ទទេ"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:762
+msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
+msgstr "បើក​ទង់ជាតិ \"--driver generic-mmc-raw\"  (សូម​មើល​សៀវភៅ​ដៃ cdrdao)"
+
+#: ../plugins/cdrkit/burn-cdrkit.h:38
+msgid "cdrkit burning suite"
+msgstr "ឈុត​ដុត cdrkit"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:119
+#: ../plugins/cdrtools/burn-mkisofs.c:119
+#: ../plugins/growisofs/burn-growisofs.c:204
+#: ../plugins/libburnia/burn-libisofs.c:518
+#, c-format
+msgid "Last session import failed"
+msgstr "បាន​បរាជ័យ​ក្នុង​ការ​នាំចូល​សម័យ​ចុងក្រោយ"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:125
+#: ../plugins/cdrkit/burn-genisoimage.c:132
+#: ../plugins/cdrtools/burn-mkisofs.c:125
+#: ../plugins/cdrtools/burn-mkisofs.c:132
+#: ../plugins/growisofs/burn-growisofs.c:210
+#: ../plugins/growisofs/burn-growisofs.c:217
+msgid "An image could not be created"
+msgstr "មិន​អាច​បង្កើត​រូបភាព​បាន​ឡើយ"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:138
+msgid "This version of genisoimage is not supported"
+msgstr "កំណែ genisoimage នេះ​មិន​ត្រូវ​បាន​គាំទ្រ"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:180
+#: ../plugins/cdrtools/burn-mkisofs.c:180
+#: ../plugins/growisofs/burn-growisofs.c:223
+msgid "Some files have invalid filenames"
+msgstr "ឯកសារ​ខ្លះ​មាន​ឈ្មោះ​ឯកសារ​មិន​ត្រឹមត្រូវ"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:186
+#: ../plugins/cdrtools/burn-mkisofs.c:186
+#: ../plugins/growisofs/burn-growisofs.c:229
+msgid "Unknown character encoding"
+msgstr "មិន​ស្គាល់​ការ​អ៊ិនកូដ​តួអក្សរ"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:192
+#: ../plugins/cdrtools/burn-mkisofs.c:192
+msgid "There is no space left on the device"
+msgstr "មិន​មាន​ទំហំ​ថាស​ទំនេរ​នៅ​លើ​ដ្រាយ​នេះ​ទេ"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:527
+#: ../plugins/cdrtools/burn-mkisofs.c:531
+#: ../plugins/libburnia/burn-libisofs.c:1078
+msgid "Creates disc images from a file selection"
+msgstr "បង្កើត​រូបភាព​ថាស​ពី​ជម្រើស​ឯកសារ"
+
+#: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
+#, c-format
+msgid ""
+"The location you chose to store the image on does not have enough free space "
+"for the disc image"
+msgstr ""
+"ទីតាំង​ដែល​អ្នក​ជ្រើស​រក្សាទុក​រូបភាព​មិន​មាន​ទំហំ​គ្រប់គ្រាន់​សម្រាប់​រូបភា"
+"ព​ថាស​ទេ"
+
+#: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
+msgid "Copies any disc to a disc image"
+msgstr "ចម្លង​ថាស​ណាមួយ​ទៅ​រូបភាព​ថាស"
+
+#: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
+#: ../plugins/libburnia/burn-libburn.c:856
+#: ../plugins/libburnia/burn-libburn.c:887
+#, c-format
+msgid "An error occurred while writing to disc"
+msgstr "កំហុស​បាន​កើតឡើង ខណៈ​សរសេរ​ចូល​ថាស"
+
+#: ../plugins/cdrkit/burn-wodim.c:128 ../plugins/cdrtools/burn-cdrecord.c:128
+#, c-format
+msgid ""
+"The system is too slow to write the disc at this speed. Try a lower speed"
+msgstr ""
+"ប្រព័ន្ធ​យឺត​ពេក​ក្នុង​ការ​សរសេរ​ថាស​ត្រឹម​ល្បឿន​នេះ ។ "
+"សាកល្បង​ប្រើ​ល្បឿន​ដែល​យឺត​ជាង​នេះ"
+
+#. Translators: %s is the number of the track
+#: ../plugins/cdrkit/burn-wodim.c:255 ../plugins/cdrtools/burn-cdrecord.c:252
+#, c-format
+msgid "Writing track %s"
+msgstr "សរសេរ​បទ %s"
+
+#: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
+msgid "Formatting disc"
+msgstr "​ធ្វើ​​ទ្រង់ទ្រាយ​ថាស"
+
+#: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
+msgid "Writing cue sheet"
+msgstr "សរសេរ​សន្លឹក​ cue"
+
+#: ../plugins/cdrkit/burn-wodim.c:394 ../plugins/cdrtools/burn-cdrecord.c:380
+#, c-format
+msgid "The disc needs to be reloaded before being recorded"
+msgstr "ទាមទារ​ឲ្យ​ផ្ទុក​ថាសឡើងវិញ មុន​នឹង​ត្រូវ​បាន​ថតចម្លង"
+
+#: ../plugins/cdrkit/burn-wodim.c:1270
+msgid "Burns, blanks and formats CDs and DVDs"
+msgstr "ដុត ធ្វើឲ្យ​ទទេ និង​ធ្វើ​ទ្រង់ទ្រាយ​ស៊ីឌី និង​ឌីវីឌី"
+
+#: ../plugins/cdrkit/burn-wodim.c:1414
+msgid "Enable the \"-immed\" flag (see wodim manual)"
+msgstr "បើក​ទង់ជាតិ \"-immed\"  (មើល​សៀវភៅ​ដៃ wodim)"
+
+#: ../plugins/cdrkit/burn-wodim.c:1417
+msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
+msgstr ""
+"អង្គ​ចងចាំ​ដ្រាយ​អប្បបរមា​បំពេញ​សមាមាត្រ (គិតជា %) (មើល​សៀវភៅ​ដៃ wodim) ៖"
+
+#: ../plugins/cdrtools/burn-cdda2wav.c:206
+#: ../plugins/cdrtools/burn-cdda2wav.c:216
+#, c-format
+msgid "Copying audio track %02d"
+msgstr "ចម្លង​បទ​អូឌីយ៉ូ %02d"
+
+#: ../plugins/cdrtools/burn-cdda2wav.c:267
+msgid "Preparing to copy audio disc"
+msgstr "ត្រៀម​ចម្លង​ថាស​អូឌីយ៉ូ"
+
+#: ../plugins/cdrtools/burn-cdda2wav.c:411
+msgid "Copy tracks from an audio CD with all associated information"
+msgstr "ចម្លង​បទ​ពី​ស៊ីឌី​អូឌីយ៉ូ​ដែល​មាន​ព័ត៌មាន​ទាក់ទង​ទាំងអស់"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/libburnia/burn-libburn.c:975
+msgid "Burns, blanks and formats CDs, DVDs and BDs"
+msgstr "ដុត ធ្វើឲ្យ​ទទេ និង​ធ្វើ​ទ្រង់ទ្រាយ​ស៊ីឌី ឌីវីឌី និង BDs"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1417
+msgid "Enable the \"-immed\" flag (see cdrecord manual)"
+msgstr "បើក​ទង់ជាតិ \"-immed\"  (មើល​សៀវភៅ​ដៃ cdrecord )"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#, c-format
+msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
+msgstr ""
+"អង្គ​ចងចាំ​បណ្ដោះ​អាសន្ន​អប្បបរមា​របស់​ដ្រាយ​បំពេញ​សមាមាត្រ (គិតជា %%) "
+"(មើល​សៀវភៅ​ដៃ cdrecord) ៖"
+
+#: ../plugins/cdrtools/burn-cdrtools.h:38
+msgid "cdrtools burning suite"
+msgstr "ឈុត​ដុត cdrtools"
+
+#: ../plugins/cdrtools/burn-mkisofs.c:138
+msgid "This version of mkisofs is not supported"
+msgstr "កំណែ mkisofs នេះ​មិន​ត្រូវ​បាន​គាំទ្រ​ឡើយ"
+
+#: ../plugins/checksum/burn-checksum-files.c:131
+#: ../plugins/checksum/burn-checksum-files.c:589
+#, c-format
+msgid "File \"%s\" could not be opened (%s)"
+msgstr "ឯកសារ \"%s\" មិន​អាច​ត្រូវ​បាន​បើក (%s)"
+
+#: ../plugins/checksum/burn-checksum-files.c:617
+msgid "Creating checksum for image files"
+msgstr "បង្កើត​ឆេកសាំ​សម្រាប់​រូបភាព​ឯកសារ"
+
+#: ../plugins/checksum/burn-checksum-files.c:859
+#, c-format
+msgid "No checksum file could be found on the disc"
+msgstr "រក​មិន​ឃើញ​ឯកសារ​ឆេកសាំ​នៅ​លើ​ថាស"
+
+#: ../plugins/checksum/burn-checksum-files.c:893
+msgid "Checking file integrity"
+msgstr "ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ឯកសារ"
+
+#: ../plugins/checksum/burn-checksum-files.c:987
+#: ../plugins/checksum/burn-checksum-files.c:1012
+#, c-format
+msgid "File \"%s\" could not be opened"
+msgstr "មិន​អាច​បើក​ឯកសារ \"%s\" បាន​ឡើយ"
+
+#: ../plugins/checksum/burn-checksum-files.c:1085
+#: ../plugins/checksum/burn-checksum-files.c:1206
+#: ../plugins/checksum/burn-checksum-image.c:550
+#, c-format
+msgid "Some files may be corrupted on the disc"
+msgstr "ឯកសារ​ខ្លះ​ប្រហែល​ជា​ខូច​នៅ​លើ​ថាស"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/checksum/burn-checksum-files.c:1465
+msgid "File Checksum"
+msgstr "ឆេកសាំ​ឯកសារ"
+
+#: ../plugins/checksum/burn-checksum-files.c:1466
+msgid "Checks file integrities on a disc"
+msgstr "ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ឯកសារ​នៅ​លើ​ថាស"
+
+#: ../plugins/checksum/burn-checksum-files.c:1504
+#: ../plugins/checksum/burn-checksum-image.c:856
+msgid "Hashing algorithm to be used:"
+msgstr "ក្បួន​ដោះស្រាយ Hashing ដែល​នឹង​ត្រូវ​ប្រើ ៖"
+
+#: ../plugins/checksum/burn-checksum-files.c:1507
+#: ../plugins/checksum/burn-checksum-image.c:859
+msgid "MD5"
+msgstr "MD5"
+
+#: ../plugins/checksum/burn-checksum-files.c:1509
+#: ../plugins/checksum/burn-checksum-image.c:861
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../plugins/checksum/burn-checksum-files.c:1511
+#: ../plugins/checksum/burn-checksum-image.c:863
+msgid "SHA256"
+msgstr "SHA256"
+
+#. Translators: first %s is the filename, second %s
+#. * is the error generated from errno
+#. Translators: first %s is the filename, second %s is the error
+#. * generated from errno
+#: ../plugins/checksum/burn-checksum-image.c:313
+#: ../plugins/libburnia/burn-libburn.c:679
+#, c-format
+msgid "\"%s\" could not be opened (%s)"
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​បើក (%s)"
+
+#: ../plugins/checksum/burn-checksum-image.c:359
+#: ../plugins/checksum/burn-checksum-image.c:456
+msgid "Creating image checksum"
+msgstr "បង្កើត​ឆេកសាំ​រូបភាព"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/checksum/burn-checksum-image.c:831
+msgid "Image Checksum"
+msgstr "ឆេកសាំ​រូបភាព"
+
+#: ../plugins/checksum/burn-checksum-image.c:832
+msgid "Checks disc integrity after it is burnt"
+msgstr "ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ថាស បន្ទាប់​ពី​វា​ត្រូវ​បាន​ដុត"
+
+#: ../plugins/dvdauthor/burn-dvdauthor.c:313
+#: ../plugins/vcdimager/burn-vcdimager.c:438
+msgid "Creating file layout"
+msgstr "បង្កើត​ប្លង់​ឯកសារ"
+
+#: ../plugins/dvdauthor/burn-dvdauthor.c:371
+msgid "Creates disc images suitable for video DVDs"
+msgstr "បង្កើត​រូបភាព​ថាស​ដែល​សមស្រប​សម្រាប់​ឌីវីឌី​វីដេអូ"
+
+#. Translators: %s is the path to a drive. "regionset %s"
+#. * should be left as is just like "DVDCSS_METHOD=title
+#. * brasero --no-existing-session"
+#: ../plugins/dvdcss/burn-dvdcss.c:294
+#, c-format
+msgid ""
+"Error while retrieving a key used for encryption. You may solve such a "
+"problem with one of the following methods: in a terminal either set the "
+"proper DVD region code for your CD/DVD player with the \"regionset %s\" "
+"command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
+"command"
+msgstr ""
+"មាន​កំហុស​ខណៈ​ពេល​ទៅ​យក​សោ​ដែល​ត្រូវ​ប្រើ​សម្រាប់​ការ​អ៊ិនគ្រីប ។ "
+"អ្នក​អាច​នឹង​ដោះស្រាយ​បញ្ហា​នេះ​បាន​ដោយ​ប្រើ​វិធីសាស្ត្រ​ណាមួយ​ដូច​ខាងក្រោម "
+"៖ ក្នុង​ស្ថានីយ​កំណត់​កូដ​តំបន់​ឌីវីឌី​ឲ្យ​បាន​ត្រឹមត្រូវ​សម្រាប់​កម្មវិធី​ច"
+"ាក់​ស៊ីឌី/ឌីវីឌី​ដោយ​ប្រើ​ពាក្យ​បញ្ជា \"regionset %s\" ឬ​ដំណើរការ​ពាក្យ​បញ្ជា "
+"\"DVDCSS_METHOD=title brasero --no-existing-session\""
+
+#: ../plugins/dvdcss/burn-dvdcss.c:339
+#, fuzzy
+msgid "Retrieving DVD keys"
+msgstr "ទៅ​យក​សោ​ឌីវីឌី"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:374
+#, c-format
+msgid "Video DVD could not be opened"
+msgstr "មិន​អាច​បើក​ឌីវីឌី​វីដេអូ​បាន​ទេ"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
+#: ../plugins/dvdcss/burn-dvdcss.c:483
+#, c-format
+msgid "Error while reading video DVD (%s)"
+msgstr "មាន​កំហុស​ខណៈ​អាន​ឌីវីឌី​វីដេអូ (%s)"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:402
+msgid "Copying video DVD"
+msgstr "ចម្លង​ឌីវីឌី​វីដេអូ"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:695
+msgid "Copies CSS encrypted video DVDs to a disc image"
+msgstr "ចម្លង CSS ដែល​បាន​អ៊ិនគ្រីប​ឌីវីឌី​វីដេអូ​ទៅជា​រូបភាព​ថាស"
+
+#: ../plugins/growisofs/burn-dvd-rw-format.c:190
+msgid "Blanks and formats rewritable DVDs and BDs"
+msgstr "ធ្វើឲ្យ​ទទេ និង​ធ្វើ​ទ្រង់ទ្រាយ​ឌីវីឌីនិង BDs ដែល​អាច​សរសេរ​ឡើងវិញ​បាន"
+
+#: ../plugins/growisofs/burn-growisofs.c:753
+msgid "Burns and blanks DVDs and BDs"
+msgstr "ដុត និង​ធ្វើឲ្យ​ឌីវីឌី និង BDs ទទេ"
+
+#: ../plugins/growisofs/burn-growisofs.c:924
+msgid "Allow DAO use"
+msgstr "អនុញ្ញាត​ឲ្យ​ប្រើ DAO"
+
+#: ../plugins/growisofs/burn-growisofs-common.h:38
+msgid "growisofs burning suite"
+msgstr "ឈុត​ដុត growisofs"
+
+#: ../plugins/libburnia/burn-libburn.c:242
+#: ../plugins/libburnia/burn-libburn.c:250
+#, c-format
+msgid "libburn track could not be created"
+msgstr "មិន​អាច​បង្កើត​បទ libburn"
+
+#: ../plugins/libburnia/burn-libburn-common.c:158
+#, c-format
+msgid "libburn library could not be initialized"
+msgstr "មិន​អាច​ចាប់ផ្ដើម​បណ្ណាល័យ libburn"
+
+#: ../plugins/libburnia/burn-libburn-common.c:173
+#, c-format
+msgid "The drive address could not be retrieved"
+msgstr "មិន​អាច​ទៅ​យក​អាសយដ្ឋាន​ដ្រាយ"
+
+#: ../plugins/libburnia/burn-libburn-common.c:418
+#, c-format
+msgid "Writing track %02i"
+msgstr "សរសេរ​បទ %02i"
+
+#: ../plugins/libburnia/burn-libburnia.h:38
+msgid "libburnia burning suite"
+msgstr "ឈុត​ដុត libburnia"
+
+#: ../plugins/libburnia/burn-libisofs.c:222
+#: ../plugins/libburnia/burn-libisofs.c:291
+#: ../plugins/libburnia/burn-libisofs.c:571
+#, c-format
+#, fuzzy
+msgid "Volume could not be created"
+msgstr "មិន​អាច​បង្កើត​ភាគ"
+
+#: ../plugins/libburnia/burn-libisofs.c:345
+#: ../plugins/libburnia/burn-libisofs.c:893
+#, c-format
+msgid "libisofs could not be initialized."
+msgstr "មិន​អាច​ចាប់ផ្ដើម libisofs ។"
+
+#: ../plugins/libburnia/burn-libisofs.c:485
+#, c-format
+msgid "Read options could not be created"
+msgstr "មិន​អាច​បង្កើត​ជម្រើស​អាន"
+
+#. Translators: %s is the path
+#: ../plugins/libburnia/burn-libisofs.c:684
+#, c-format
+msgid "No parent could be found in the tree for the path \"%s\""
+msgstr "រក​មិន​ឃើញ​ថតមេ​នៅ​ក្នុង​មែកធាង​សម្រាប់​ផ្លូវ \"%s\""
+
+#: ../plugins/libburnia/burn-libisofs.c:744
+#: ../plugins/libburnia/burn-libisofs.c:811
+#, c-format
+msgid "libisofs reported an error while creating directory \"%s\""
+msgstr "libisofs បាន​រាយការណ៍​កំហុស ខណៈ​ពេល​បង្កើត​ថត \"%s\""
+
+#: ../plugins/libburnia/burn-libisofs.c:759
+#, c-format
+msgid ""
+"libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgstr "libisofs បាន​រាយការណ៍​កំហុស ខណៈ​ពេល​បន្ថែម​មាតិកា​ទៅ​ថត \"%s\" (%x)"
+
+#: ../plugins/libburnia/burn-libisofs.c:782
+#: ../plugins/libburnia/burn-libisofs.c:798
+#, c-format
+msgid "libisofs reported an error while adding file at path \"%s\""
+msgstr "libisofs បាន​រាយការណ៍​កំហុស ខណៈ​ពេល​បន្ថែម​ឯកសារ​នៅត្រង់​ផ្លូវ \"%s\""
+
+#: ../plugins/local-track/burn-local-image.c:260
+msgid "Copying checksum file"
+msgstr "ចម្លង​ឯកសារ​ឆេកសាំ"
+
+#: ../plugins/local-track/burn-local-image.c:527
+#: ../plugins/local-track/burn-uri.c:326
+msgid "Copying files locally"
+msgstr "ចម្លង​ឯកសារ​មូលដ្ឋាន"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/local-track/burn-local-image.c:909
+msgid "File Downloader"
+msgstr "កម្មវិធី​ទាញ​យក​ឯកសារ"
+
+#: ../plugins/local-track/burn-local-image.c:910
+msgid "Allows files not stored locally to be burned"
+msgstr "មិន​អនុញ្ញាត​ឲ្យ​ដុត​ឯកសារ​ដែល​បាន​រក្សាទុក​ក្នុង​មូលដ្ឋាន​ទេ"
+
+#: ../plugins/local-track/burn-uri.c:207 ../plugins/local-track/burn-uri.c:297
+#: ../plugins/local-track/burn-uri.c:472
+#, c-format
+msgid "Impossible to retrieve local file path"
+msgstr "មិន​អាច​ទៅ​យក​ផ្លូវ​ឯកសារ​មូលដ្ឋាន​បាន​ទេ"
+
+#: ../plugins/local-track/burn-uri.c:748
+msgid ""
+"Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
+msgstr ""
+"អនុញ្ញាត​ឲ្យ​បន្ថែម​ឯកសារ​ទៅ \"ថត​កម្មវិធី​បង្កើត​ស៊ីឌី/ឌីវីឌី\" ក្នុង "
+"Nautilus ដើម្បី​ដុត"
+
+#. Translators: This message is sent
+#. * when brasero could not link together
+#. * two gstreamer plugins so that one
+#. * sends its data to the second for further
+#. * processing. This data transmission is
+#. * done through a pad. Maybe this is a bit
+#. * too technical and should be removed?
+#: ../plugins/transcode/burn-normalize.c:199
+#: ../plugins/transcode/burn-normalize.c:260
+#: ../plugins/transcode/burn-transcode.c:318
+#: ../plugins/transcode/burn-transcode.c:356
+#: ../plugins/transcode/burn-transcode.c:553
+#: ../plugins/transcode/burn-transcode.c:663
+#: ../plugins/transcode/burn-transcode.c:694
+#: ../plugins/transcode/burn-transcode.c:715
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:395
+#: ../plugins/transcode/burn-vob.c:555 ../plugins/transcode/burn-vob.c:688
+#: ../plugins/transcode/burn-vob.c:1052 ../plugins/transcode/burn-vob.c:1128
+#: ../plugins/transcode/burn-vob.c:1179
+#, c-format
+msgid "Impossible to link plugin pads"
+msgstr "មិន​អាច​ភ្ជាប់​​កម្មវិធី​ជំនួយ​បាន​ទេ"
+
+#: ../plugins/transcode/burn-normalize.c:554
+msgid "Normalizing tracks"
+msgstr "ធ្វើឲ្យ​បទ​ទៅជា​ធម្មតា"
+
+#: ../plugins/transcode/burn-normalize.c:644
+msgid "Normalization"
+msgstr "ការ​ធ្វើឲ្យ​ទៅ​ជា​ធម្មតា"
+
+#: ../plugins/transcode/burn-normalize.c:645
+msgid "Sets consistent sound levels between tracks"
+msgstr "កំណត់​កម្រិត​សំឡេង​ថេរ​រវាង​បទ"
+
+#. Translators: %s is the string error from errno
+#: ../plugins/transcode/burn-transcode.c:1086
+#: ../plugins/transcode/burn-transcode.c:1274
+#, c-format
+msgid "Error while padding file (%s)"
+msgstr "មាន​កំហុស​ខណៈ​បន្ថែម​ចន្លោះ​ឯកសារ (%s)"
+
+#: ../plugins/transcode/burn-transcode.c:1350
+msgid "Error while getting duration"
+msgstr "មាន​កំហុស ខណៈ​ទទួល​យក​ថិរវេលា"
+
+#: ../plugins/transcode/burn-transcode.c:1499
+#, c-format
+msgid "Analysing \"%s\""
+msgstr "វិភាគ \"%s\""
+
+#: ../plugins/transcode/burn-transcode.c:1536
+#, c-format
+msgid "Transcoding \"%s\""
+msgstr "បម្លែង​ត្រឡប់ \"%s\""
+
+#: ../plugins/transcode/burn-transcode.c:1773
+msgid "Converts any song file into a format suitable for audio CDs"
+msgstr ""
+"បម្លែង​ឯកសារ​បទ​ចម្រៀង​ណាមួយ​ទៅជា​ទ្រង់ទ្រាយ​ដែល​សមស្រប​សម្រាប់​​ស៊ីឌី​អូឌីយ"
+"៉ូ"
+
+#: ../plugins/transcode/burn-vob.c:1264
+msgid "Converting video file to MPEG2"
+msgstr "បម្លែង​ឯកសារ​វីដេអូ​ទៅជា MPEG2"
+
+#: ../plugins/transcode/burn-vob.c:1367
+msgid "Converts any video file into a format suitable for video DVDs"
+msgstr "បម្លែង​ឯកសារ​វីដេអូ​ណាមួយ​ទៅ​ជា​ទ្រង់ទ្រាយ​សមស្រប​សម្រាប់ឌីវីឌី​វីដេអូ"
+
+#: ../plugins/vcdimager/burn-vcdimager.c:478
+msgid "Creates disc images suitable for SVCDs"
+msgstr "បង្កើត​រូបភាព​ថាស​ដែល​សមស្រប​សម្រាប់ SVCDs"
+
+#: ../src/brasero-app.c:124
+msgid "_Project"
+msgstr "គម្រោង"
+
+#: ../src/brasero-app.c:125
+msgid "_View"
+msgstr "មើល"
+
+#: ../src/brasero-app.c:126
+msgid "_Edit"
+msgstr "កែសម្រួល"
+
+#: ../src/brasero-app.c:127
+msgid "_Tools"
+msgstr "ឧបករណ៍"
+
+#: ../src/brasero-app.c:129
+msgid "_Help"
+msgstr "ជំនួយ"
+
+#: ../src/brasero-app.c:131
+msgid "P_lugins"
+msgstr "កម្មវិធី​ជំនួយ"
+
+#: ../src/brasero-app.c:132
+msgid "Choose plugins for Brasero"
+msgstr "ជ្រើស​កម្មវិធី​ជំនួយ​សម្រាប់ Brasero"
+
+#: ../src/brasero-app.c:134
+msgid "E_ject"
+msgstr "ច្រានចេញ"
+
+#: ../src/brasero-app.c:135
+msgid "Eject a disc"
+msgstr "ច្រាន​ថាស​ចេញ"
+
+#: ../src/brasero-app.c:137
+msgid "_Blank…"
+msgstr "ធ្វើឲ្យ​ទទេ…"
+
+#: ../src/brasero-app.c:138
+msgid "Blank a disc"
+msgstr "ធ្វើឲ្យ​ថាស​ទទេ"
+
+#: ../src/brasero-app.c:140
+msgid "_Check Integrity…"
+msgstr "ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ…"
+
+#: ../src/brasero-app.c:141
+msgid "Check data integrity of disc"
+msgstr "ពិនិត្យមើល​ភាព​ត្រឹមត្រូវ​របស់​ទិន្នន័យ​ថាស"
+
+#: ../src/brasero-app.c:144
+msgid "Quit Brasero"
+msgstr "បិទ Brasero"
+
+#: ../src/brasero-app.c:146
+msgid "_Contents"
+msgstr "មាតិកា"
+
+#: ../src/brasero-app.c:146
+msgid "Display help"
+msgstr "បង្ហាញ​ជំនួយ"
+
+#: ../src/brasero-app.c:149
+msgid "About"
+msgstr "អំពី"
+
+#: ../src/brasero-app.c:421 ../src/brasero-app.c:2065
+msgid "Disc Burner"
+msgstr "កម្មវិធី​ដុត​ថា​ស"
+
+#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
+msgid "Error while loading the project"
+msgstr "មាន​កំហុស ខណៈ​កំពុង​ផ្ទុក​គម្រោង"
+
+#: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
+#: ../src/brasero-project.c:1274
+msgid "Please add files to the project."
+msgstr "សូម​បន្ថែម​ឯកសារ​ទៅ​គម្រោង ។"
+
+#: ../src/brasero-app.c:830 ../src/brasero-app.c:859 ../src/brasero-app.c:919
+msgid "The project is empty"
+msgstr "គម្រោង​គឺ​ទទេ"
+
+#: ../src/brasero-app.c:1174
+msgid ""
+"Brasero is free software; you can redistribute it and/or modify it under the "
+"terms of the GNU General Public License as published by the Free Software "
+"Foundation; either version 2 of the License, or (at your option) any later "
+"version."
+msgstr ""
+"Brasero គឺជា​កម្មវិធី​ឥត​គិត​ថ្លៃ ដែល​អ្នក​អាច​ធ្វើ​ការ​ចែកចាយ​និង/ឬ​កែប្រែ​"
+"វា​បាន​ដោយ​ស្ថិត​នៅ​ក្រោម​លក្ខខណ្ឌ​របស់ GNU General Public License "
+"ដូចដែល​បាន​បោះពុម្ពផ្សាយ​ដោយ​មូលនិធិ​កម្មវិធី​ឥតគិតថ្លៃ ទាំង​កំណែ ២ "
+"នៃ​អាជ្ញាប័ណ្ណ ឬ (តាម​ជម្រើស​របស់​អ្នក) កំណែ​ក្រោយ​ណាមួយ ។"
+
+#: ../src/brasero-app.c:1179
+msgid ""
+"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
+msgstr ""
+"Brasero ត្រូវ​បាន​ធ្វើការ​ចែកចាយ​ដោយ​សង្ឃឹមថា នឹង​មាន​សារប្រយោជន៍ "
+"ប៉ុន្តែ​មិន​មាន​ការ​ធានា ព្រមទាំង​មិន​មាន​ការ​ធានា​នូវ​ភាព​ដែល​អាច​លក់​បាន "
+"ឬ​សម្រាប់​គោលបំណង​ពិសេស​ណាមួយ​ឡើយ ។  សម្រាប់​ព័ត៌មាន​លម្អិត សូម​មើល GNU "
+"General Public License ។"
+
+#: ../src/brasero-app.c:1184
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr ""
+"អ្នក​គួរតែ​បានទទួល​ច្បាប់​ចម្លង​នៃ GNU General Public License ព្រមទាំង "
+"Brasero ផង​ដែរ ប្រសិនបើ​មិន​បាន​ទទួល​ទេ "
+"សូម​សរសេរ​មក​កាន់​មូលនិធិ​កម្មវិធី​ឥត​គិត​ថ្លៃ​តាម​អាសយដ្ឋាន Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+
+#: ../src/brasero-app.c:1196
+msgid "A simple to use CD/DVD burning application for GNOME"
+msgstr ""
+"លក្ខណ​សាមញ្ញ​ក្នុង​ការប្រើប្រាស់​កម្មវិធី​ដុត​ស៊ីឌី/ឌីវីឌី​សម្រាប់ GNOME"
+
+#: ../src/brasero-app.c:1213
+msgid "Brasero Homepage"
+msgstr "គេហទំព័រ​របស់ Brasero"
+
+#. Translators: This is a special message that shouldn't be translated
+#. * literally. It is used in the about box to give credits to
+#. * the translators.
+#. * Thus, you should translate it to your name and email address.
+#. * You should also include other translators who have contributed to
+#. * this translation; in that case, please write each of them on a separate
+#. * line seperated by newlines (\n).
+#.
+#: ../src/brasero-app.c:1225
+msgid "translator-credits"
+msgstr "ខឹម សុខែម, ម៉ន ម៉េត, សេង សុត្ថា, ចាន់ សម្បត្តិរតនៈ, សុខ សុភា"
+
+#: ../src/brasero-app.c:1447
+#, c-format
+msgid "The project \"%s\" does not exist"
+msgstr "មិន​មាន \"%s\" គម្រោង"
+
+#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
+msgid "_Recent Projects"
+msgstr "គម្រោង​បច្ចុប្បន្ន"
+
+#: ../src/brasero-app.c:1732
+msgid "Display the projects recently opened"
+msgstr "បង្ហាញ​គម្រោង​ដែល​បាន​បើក​ថ្មីៗ"
+
+#: ../src/brasero-audio-disc.c:155 ../src/brasero-data-disc.c:122
+#: ../src/brasero-video-disc.c:100
+msgid "Menu"
+msgstr "ម៉ឺនុយ"
+
+#: ../src/brasero-audio-disc.c:156 ../src/brasero-data-disc.c:123
+msgid "Open the selected files"
+msgstr "បើក​ឯកសារ​ដែល​បាន​ជ្រើស"
+
+#: ../src/brasero-audio-disc.c:158 ../src/brasero-video-disc.c:103
+msgid "_Edit Information…"
+msgstr "កែសម្រួល​ព័ត៌មាន…"
+
+#: ../src/brasero-audio-disc.c:158
+msgid "Edit the track information (start, end, author, etc.)"
+msgstr "កែសម្រួល​ព័ត៌មាន​អំពី​បទ (ចាប់ផ្ដើម បញ្ចប់ អ្នក​និពន្ធ ។ល។)"
+
+#: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
+#: ../src/brasero-project.c:200
+msgid "Remove the selected files from the project"
+msgstr "យក​ឯកសារ​ដែល​បាន​ជ្រើស​ចេញ​ពី​គម្រោង"
+
+#: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
+#: ../src/brasero-video-disc.c:107
+msgid "Paste files"
+msgstr "បិទភ្ជាប់​ឯកសារ"
+
+#: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
+#: ../src/brasero-video-disc.c:107
+msgid "Add the files stored in the clipboard"
+msgstr "បន្ថែម​ឯកសារ​ដែល​បាន​រក្សាទុក​ក្នុង​ក្ដារ​តម្បៀត​ខ្ទាស់"
+
+#: ../src/brasero-audio-disc.c:164
+msgid "I_nsert a Pause"
+msgstr "បញ្ចូល ផ្អាក"
+
+#: ../src/brasero-audio-disc.c:164
+msgid "Add a 2 second pause after the track"
+msgstr "បន្ថែម​ការ​ផ្អាក ២ វិនាទី ក្រោយ​បទ​នីមួយៗ"
+
+#: ../src/brasero-audio-disc.c:166
+msgid "_Split Track…"
+msgstr "ពុះ​បទ…"
+
+#: ../src/brasero-audio-disc.c:166
+msgid "Split the selected track"
+msgstr "ពុះ​បទ​ដែល​បាន​ជ្រើស"
+
+#: ../src/brasero-audio-disc.c:343 ../src/brasero-video-tree-model.c:187
+msgid "Pause"
+msgstr "ផ្អាក"
+
+#: ../src/brasero-audio-disc.c:349
+msgid "Split"
+msgstr "ពុះ"
+
+#: ../src/brasero-audio-disc.c:418
+msgid "Track"
+msgstr "បទ"
+
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
+msgid "Title"
+msgstr "ចំណង​ជើង"
+
+#: ../src/brasero-audio-disc.c:480
+msgid "Artist"
+msgstr "សិល្បករ"
+
+#: ../src/brasero-audio-disc.c:488 ../src/brasero-playlist.c:772
+#: ../src/brasero-split-dialog.c:1219
+msgid "Length"
+msgstr "រយៈពេល"
+
+#: ../src/brasero-audio-disc.c:585
+msgid "The track will be padded at its end."
+msgstr "បទ​នឹង​ត្រូវ​បាន​បន្ថែម​ចន្លោះ​ពេលនៅ​ខាងចុង​របស់វា ។"
+
+#: ../src/brasero-audio-disc.c:586
+msgid "The track is shorter than 6 seconds"
+msgstr "បទ​ខ្លី​ជាង ៦ វិនាទី"
+
+#: ../src/brasero-audio-disc.c:646
+msgid "Make sure the appropriate codec is installed"
+msgstr "សូម​ប្រាកដ​ថា​កូដិក​សមស្រប​ត្រូវ​បាន​ដំឡើង"
+
+#: ../src/brasero-audio-disc.c:662
+#, c-format
+msgid "Do you want to add \"%s\", which is a video file?"
+msgstr "តើ​អ្នក​ចង់​បន្ថែម \"%s\" ដែល​ជា​ឯកសារ​វីដេអូ​ឬ ?"
+
+#: ../src/brasero-audio-disc.c:671
+msgid ""
+"This file is a video and therefore only the audio part can be written to the "
+"disc."
+msgstr ""
+"ឯកសារ​នេះ​គឺជា​វីដេអូ "
+"ដូច្នេះ​មាន​តែ​ផ្នែក​អូឌីយ៉ូ​ប៉ុណ្ណោះ​ដែល​នឹង​អាច​ត្រូវ​បាន​សរសេរ​ចូល​ថាស ។"
+
+#: ../src/brasero-audio-disc.c:674
+msgid "_Discard File"
+msgstr "បោះបង់​ឯកសារ"
+
+#: ../src/brasero-audio-disc.c:677
+msgid "_Add File"
+msgstr "បន្ថែម​ឯកសារ"
+
+#: ../src/brasero-audio-disc.c:748
+msgid "Do you want to search for audio files inside the directory?"
+msgstr "តើ​អ្នក​ចង់​ស្វែងរក​ឯកសារ​អូឌីយ៉ូ​នៅ​ក្នុង​ថត​ដែរ​ឬ​ទេ ?"
+
+#: ../src/brasero-audio-disc.c:758
+msgid "Search _Directory"
+msgstr "ស្វែងរក​ថត"
+
+#: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
+#, c-format
+msgid "\"%s\" could not be opened."
+msgstr "មិន​អាច​បើក \"%s\" បាន​ឡើយ ។"
+
+#: ../src/brasero-audio-disc.c:857
+msgid "Do you want to create an audio CD with DTS tracks?"
+msgstr "តើ​អ្នក​ចង់​បង្កើត​ស៊ីឌី​អូឌីយ៉ូ​ដែល​មាន​បទ DTS ដែរ​ឬ​ទេ ?"
+
+#: ../src/brasero-audio-disc.c:858
+msgid ""
+"Some of the selected songs are suitable for creating DTS tracks.\n"
+"This type of audio CD track provides a higher quality of sound but can only "
+"be played by specific digital players.\n"
+"Note: if you agree, normalization will not be applied to these tracks."
+msgstr ""
+"បទចម្រៀង​ដែល​បាន​ជ្រើសរើស​មួយ​ចំនួន​គឺ​មាន​លក្ខណៈ​សមស្រប​សម្រាប់​ការ​បង្កើត​"
+"បទ DTS ។\nប្រភេទ​នៃ​បទ​ស៊ីឌី​អូឌីយ៉ូ​នេះ​ផ្ដល់​នូវ​គុណភាព​សំឡេង​ខ្ពស់​ជាង "
+"ប៉ុន្តែ​អាច​ត្រូវ​បាន​ចាក់​ដោយ​កម្មវិធី​ចាក់​ឌីជីថល​ជាក់លាក់​តែប៉ុណ្ណោះ "
+"។\nចំណាំ ៖ ប្រសិនបើ​អ្នក​យល់ព្រម ការ​ធ្វើឲ្យ​ទៅជា​ធម្មតា "
+"នឹង​ត្រូវ​បាន​អនុវត្ត​ទៅ​លើ​បទ​ទាំងនេះ ។"
+
+#: ../src/brasero-audio-disc.c:867
+msgid "Create _Regular Tracks"
+msgstr "បង្កើត​បទ​ធម្មតា"
+
+#: ../src/brasero-audio-disc.c:869
+msgid "Click here to burn all songs as regular tracks"
+msgstr "ចុច​ទីនេះ ដើម្បី​ដុត​ចម្រៀង​ទាំងអស់​ជា​បទ​ធម្មតា"
+
+#: ../src/brasero-audio-disc.c:872
+msgid "Create _DTS Tracks"
+msgstr "បង្កើត​បទ DTS"
+
+#: ../src/brasero-audio-disc.c:874
+msgid "Click here to burn all suitable songs as DTS tracks"
+msgstr "ចុច​ទីនេះ ដើម្បី​ដុត​ចម្រៀង​សមស្រប​ទាំងអស់​ជា​បទ DTS"
+
+#: ../src/brasero-audio-disc.c:1290
+msgid "Select one song only please."
+msgstr "ជ្រើស​ចម្រៀង​តែមួយ​បទ​គត់​ដែល​អ្នក​ពេញចិត្ត ។"
+
+#: ../src/brasero-audio-disc.c:1291
+msgid "Impossible to split more than one song at a time"
+msgstr "មិន​អាច​ពុះ​ចម្រៀង​ច្រើន​ជាង​មួយបទ​ក្នុង​ពេល​តែមួយ​បាន​ទេ"
+
+#: ../src/brasero-cli.c:70
+msgid "Open the specified project"
+msgstr "បើក​គម្រោង​ដែល​បាន​បញ្ជាក់"
+
+#: ../src/brasero-cli.c:71
+msgid "PROJECT"
+msgstr "គម្រោង"
+
+#: ../src/brasero-cli.c:76
+msgid "Open the specified playlist as an audio project"
+msgstr "បើក​បញ្ជី​ដែល​បាន​បញ្ជាក់​ជា​គម្រោង​អូឌីយ៉ូ"
+
+#: ../src/brasero-cli.c:77
+msgid "PLAYLIST"
+msgstr "បញ្ជី​ចាក់"
+
+#: ../src/brasero-cli.c:82
+msgid "Set the drive to be used for burning"
+msgstr "កំណត់​ដ្រាយ​ដែល​ត្រូវ​ប្រើ​សម្រាប់​ការ​ដុត"
+
+#: ../src/brasero-cli.c:83
+msgid "DEVICE PATH"
+msgstr "ផ្លូវ​ឧបករណ៍"
+
+#: ../src/brasero-cli.c:86
+msgid "Create an image file instead of burning"
+msgstr "បង្កើត​ឯកសារ​រូបភាព​ជំនួស​ការ​ដុត"
+
+#: ../src/brasero-cli.c:90
+msgid "Open an audio project adding the URIs given on the command line"
+msgstr ""
+"បើក​គម្រោង​អូឌីយ៉ូ​ដោយ​បន្ថែម​ URIs ដែល​បាន​ផ្ដល់​នៅ​លើ​បន្ទាត់​ពាក្យ​បញ្ជា"
+
+#: ../src/brasero-cli.c:94
+msgid "Open a data project adding the URIs given on the command line"
+msgstr ""
+"បើក​គម្រោង​ទិន្នន័យ​ដោយ​បន្ថែម URIs ដែល​បាន​ផ្ដល់​នៅ​លើ​បន្ទាត់​ពាក្យបញ្ជា"
+
+#: ../src/brasero-cli.c:98
+msgid "Copy a disc"
+msgstr "ចម្លង​ថាស"
+
+#: ../src/brasero-cli.c:99 ../src/brasero-cli.c:119 ../src/brasero-cli.c:123
+msgid "PATH TO DEVICE"
+msgstr "ផ្លូវ​ទៅ​ឧបករណ៍"
+
+#: ../src/brasero-cli.c:102
+msgid "Cover to use"
+msgstr "គម្រប​ត្រូវ​ប្រើ"
+
+#: ../src/brasero-cli.c:103
+msgid "PATH TO COVER"
+msgstr "ផ្លូវ​ទៅគម្រប"
+
+#: ../src/brasero-cli.c:106
+msgid "Open a video project adding the URIs given on the command line"
+msgstr ""
+"បើក​គម្រោង​វីដេអូ​ដោយ​បន្ថែម URIs ដែល​បាន​ផ្ដល់​នៅ​លើ​បន្ទាត់​ពាក្យ​បញ្ជា"
+
+#: ../src/brasero-cli.c:110
+msgid "URI of an image file to burn (autodetected)"
+msgstr "URI នៃ​ឯកសារ​រូបភាព​ដែល​ត្រូវ​ដុត (បាន​រកឃើញ​ស្វ័យប្រវត្តិ)"
+
+#: ../src/brasero-cli.c:111
+msgid "PATH TO IMAGE"
+msgstr "ផ្លូវ​ទៅ​រូបភាព"
+
+#: ../src/brasero-cli.c:114
+msgid "Force Brasero to display the project selection page"
+msgstr "បង្ខំ Brasero ឲ្យ​បង្ហាញ​ទំព័រ​ជម្រើស​គម្រោង"
+
+#: ../src/brasero-cli.c:118
+msgid "Open the blank disc dialog"
+msgstr "បើក​ប្រអប់​ថាស​ទទេ"
+
+#: ../src/brasero-cli.c:122
+msgid "Open the check disc dialog"
+msgstr "បើក​ប្រអប់ ពិនិត្យមើល​ថាស"
+
+#: ../src/brasero-cli.c:126
+msgid "Burn the contents of the burn:// URI"
+msgstr "ដុត​មាតិកា​នៃ burn:// URI"
+
+#: ../src/brasero-cli.c:130
+msgid "Start burning immediately."
+msgstr "ចាប់ផ្ដើម​ដុត​ភ្លាមៗ ។"
+
+#: ../src/brasero-cli.c:134
+msgid "Don't connect to an already-running instance"
+msgstr "កុំ​តភ្ជាប់​ទៅ​វត្ថុ​ដែល​កំពុងតែ​ដំណើរការ​ហើយ"
+
+#: ../src/brasero-cli.c:138
+msgid ""
+"Burn the specified project and remove it.\n"
+"This option is mainly useful for integration with other applications."
+msgstr ""
+"ដុត​គម្រោង​ដែល​បាន​បញ្ជាក់ រួច​យក​វាចេញ ។\nជម្រើស​នេះ​មាន​ប្រយោជន៍​បំផុត​សម្"
+"រាប់​ការ​រួមបញ្ចូល​ជាមួយ​កម្មវិធី​ផ្សេងទៀត ។"
+
+#: ../src/brasero-cli.c:139
+msgid "PATH"
+msgstr "ផ្លូវ"
+
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other words, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/brasero-cli.c:147
+msgid "The XID of the parent window"
+msgstr "XID នៃ​បង្អួច​មេ"
+
+#. Translators: %s is the path of drive
+#: ../src/brasero-cli.c:204
+#, c-format
+msgid "\"%s\" cannot write."
+msgstr "\"%s\" មិន​អាច​សរសេរ ។"
+
+#: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
+msgid "Wrong command line option."
+msgstr "ជម្រើស​បន្ទាត់​ពាក្យ​បញ្ជា​មិន​ត្រឹមត្រូវ ។"
+
+#: ../src/brasero-cli.c:297
+msgid "Incompatible command line options used."
+msgstr "ជម្រើស​បន្ទាត់​ពាក្យ​បញ្ជា​ដែល​មិន​ឆប​គ្នា​ត្រូវ​បាន​ប្រើ ។"
+
+#: ../src/brasero-cli.c:298
+msgid "Only one option can be given at a time"
+msgstr "អាច​ផ្ដល់​ជម្រើស​តែមួយ​ប៉ុណ្ណោះ​ក្នុង​ពេល​ម្ដង"
+
+#: ../src/brasero-data-disc.c:125
+msgid "R_ename…"
+msgstr "ប្ដូរឈ្មោះ…"
+
+#: ../src/brasero-data-disc.c:125
+msgid "Rename the selected file"
+msgstr "ប្ដូរ​ឈ្មោះ​ឯកសារ​ដែល​បាន​ជ្រើស"
+
+#: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:1758
+msgid "New _Folder"
+msgstr "ថត​ថ្មី"
+
+#: ../src/brasero-data-disc.c:131
+msgid "Create a new empty folder"
+msgstr "បង្កើត​ថត​ទទេ​ថ្មី"
+
+#: ../src/brasero-data-disc.c:213
+msgid "The session could not be imported."
+msgstr "មិន​អាច​នាំចូល​សម័យ​បាន​ឡើយ ។"
+
+#: ../src/brasero-data-disc.c:559
+msgid "The contents of the project changed since it was saved."
+msgstr "មាតិកា​នៃ​គម្រោង​នេះ​បាន​ផ្លាស់ប្ដូរ​តាំងពី​វា​ត្រូវ​បាន​រក្សាទុក ។"
+
+#: ../src/brasero-data-disc.c:561 ../src/brasero-data-disc.c:569
+msgid "Discard the current modified project"
+msgstr "បោះបង់​គម្រោង​ដែល​បាន​កែប្រែ​បច្ចុប្បន្ន"
+
+#: ../src/brasero-data-disc.c:567
+msgid "_Discard"
+msgstr "បោះបង់"
+
+#: ../src/brasero-data-disc.c:574
+msgid "Continue with the current modified project"
+msgstr "បន្ត​ជាមួយ​គម្រោង​ដែល​បាន​កែប្រែ​បច្ចុប្បន្ន"
+
+#. Translators: %s is the name of the image
+#: ../src/brasero-data-disc.c:619
+#, c-format
+msgid ""
+"There is only one selected file (\"%s\"). It is the image of a disc and its "
+"contents can be burned"
+msgstr ""
+"មាន​ឯកសារ​ដែល​បាន​ជ្រើស​តែមួយ​គត់ (\"%s\") ។ វា​គឺជា​រូបភាព​នៃ​ថាស "
+"និង​មាតិកា​របស់​វា​ដែល​អាច​នឹង​ត្រូវ​បាន​ដុត"
+
+#: ../src/brasero-data-disc.c:625
+msgid "Burn as _Data"
+msgstr "ដុត​ជា​ទិន្នន័យ"
+
+#: ../src/brasero-data-disc.c:627
+msgid "Burn as _Image"
+msgstr "ដុត​ជា​រូបភាព"
+
+#: ../src/brasero-data-disc.c:673 ../src/brasero-data-disc.c:691
+#: ../src/brasero-data-disc.c:709
+#, c-format
+msgid "\"%s\" cannot be added to the selection."
+msgstr "\"%s\" មិន​អាច​ត្រូវ​បាន​បន្ថែម​ទៅ​កាន់​ជម្រើស​ឡើយ ។"
+
+#: ../src/brasero-data-disc.c:694
+msgid "It is a recursive symlink"
+msgstr "វា​គឺជា​តំណ​និមិត្តសញ្ញា​ហៅ​ខ្លួនឯង"
+
+#: ../src/brasero-data-disc.c:712
+msgid "It does not exist at the specified location"
+msgstr "វា​មិន​មាន​នៅត្រង់​ទីតាំង​ដែល​បាន​បញ្ជាក់​ទេ"
+
+#. Translators: %s is the name of the file
+#: ../src/brasero-data-disc.c:771
+#, c-format
+msgid "Do you want to replace \"%s\"?"
+msgstr "តើ​អ្នក​ចង់​ជំនួស \"%s\" ដែរ​ឬទេ ?"
+
+#: ../src/brasero-data-disc.c:779
+msgid ""
+"A file with this name already exists in the folder.  Replacing it will "
+"overwrite its contents on the disc to be burnt."
+msgstr ""
+"មាន​ឯកសារ​ដែល​មាន​ឈ្មោះ​នេះ​នៅ​ក្នុង​ថត​រួចហើយ ។  "
+"ការ​ជំនួស​វា​នឹង​សរសេរ​ជាន់​លើ​មាតិកា​របស់វា​នៅ​លើ​ថាស​ដែល​ត្រូវ​ដុត ។"
+
+#. Translators: Keep means we're keeping the files that already existed
+#. * in the project.
+#. * Keep is a verb
+#: ../src/brasero-data-disc.c:784
+msgid "Always K_eep"
+msgstr "រក្សាទុក​ជានិច្ច"
+
+#. Translators: Keep means we're keeping the files that already existed
+#. * in the project.
+#. * Keep is a verb
+#: ../src/brasero-data-disc.c:788
+msgid "_Keep"
+msgstr "រក្សាទុក"
+
+#. Translators: Replace means we're replacing the file that already
+#. * existed in the project with a new one with the same name.
+#. * Replace is a verb
+#. Translators: this is a verb
+#: ../src/brasero-data-disc.c:792 ../src/brasero-rename.c:385
+msgid "_Replace"
+msgstr "ជំនួស"
+
+#. Translators: Replace means we're replacing the file that already
+#. * existed in the project with a new one with the same name.
+#. * Replace is a verb
+#: ../src/brasero-data-disc.c:796
+msgid "Al_ways Replace"
+msgstr "ជំនួស​ជានិច្ច"
+
+#. Translators: %s is a string describing the type of medium and the
+#. * drive it is in. It's a tooltip.
+#: ../src/brasero-data-disc.c:979
+#, c-format
+msgid "Import %s"
+msgstr "នាំចូល %s"
+
+#. Translators: %s is the name of the volume to import. It's a menu
+#. * entry and toolbar button (text added later).
+#: ../src/brasero-data-disc.c:986
+#, c-format
+msgid "I_mport %s"
+msgstr "នាំចូល %s"
+
+#. Translators: This is a verb. It's a toolbar button.
+#: ../src/brasero-data-disc.c:1016
+msgid "I_mport"
+msgstr "នាំចូល"
+
+#. Translators: %s is the name of the volume to import
+#: ../src/brasero-data-disc.c:1098
+#, c-format
+msgid "Do you want to import the session from \"%s\"?"
+msgstr "តើ​អ្នក​ចង់​នាំចូល​សម័យ​ពី \"%s\" ឬ ?"
+
+#: ../src/brasero-data-disc.c:1101
+msgid ""
+"That way, old files from previous sessions will be usable after burning."
+msgstr ""
+"តាម​មធ្យោបាយ​នោះ ឯកសារ​ចាស់​ៗ​ពី​សម័យ​មុន​នឹង​អាច​ប្រើប្រាស់​បាន "
+"បន្ទាប់​ពី​បាន​ដុត​​រួច ។"
+
+#: ../src/brasero-data-disc.c:1109
+msgid "I_mport Session"
+msgstr "សម័យ​នាំចូល"
+
+#: ../src/brasero-data-disc.c:1111
+msgid "Click here to import its contents"
+msgstr "ចុច​ទីនេះ ដើម្បី​នាំចូល​មាតិកា​របស់​វា"
+
+#: ../src/brasero-data-disc.c:1490
+msgid "Please wait while the project is loading."
+msgstr "សូម​រង់ចាំ ខណៈ​ដែល​គម្រោង​កំពុង​ផ្ទុក ។"
+
+#: ../src/brasero-data-disc.c:1500
+msgid "_Cancel Loading"
+msgstr "បោះបង់​ការ​ផ្ទុក"
+
+#: ../src/brasero-data-disc.c:1502
+msgid "Cancel loading current project"
+msgstr "បោះបង់​ការ​ផ្ទុក​គម្រោង​បច្ចុប្បន្ន"
+
+#: ../src/brasero-data-disc.c:1903
+msgid "File Renaming"
+msgstr "ប្ដូរ​ឈ្មោះ​ឯកសារ"
+
+#: ../src/brasero-data-disc.c:1907
+msgid "_Rename"
+msgstr "ប្ដូរ​ឈ្មោះ"
+
+#: ../src/brasero-data-disc.c:1913
+msgid "Renaming mode"
+msgstr "របៀប​ប្ដូរ​ឈ្មោះ"
+
+#: ../src/brasero-data-disc.c:2336 ../src/brasero-file-filtered.c:256
+msgid "Files"
+msgstr "ឯកសារ"
+
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
+msgid "Size"
+msgstr "ទំហំ"
+
+#: ../src/brasero-data-disc.c:2364
+msgid "Description"
+msgstr "សេចក្ដី​ពិពណ៌នា"
+
+#: ../src/brasero-data-disc.c:2380
+msgid "Space"
+msgstr "ទំហំ​ថាស"
+
+#: ../src/brasero-eject-dialog.c:95
+#, c-format
+msgid "The disc in \"%s\" cannot be ejected"
+msgstr "មិន​អាច​ច្រាន​ថាស​នៅ​ក្នុង \"%s\" ចេញ​បាន​ឡើយ"
+
+#: ../src/brasero-eject-dialog.c:190
+msgid "_Eject"
+msgstr "ច្រានចេញ"
+
+#: ../src/brasero-eject-dialog.c:205
+msgid "Eject Disc"
+msgstr "ច្រាន​ថាស​ចេញ"
+
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2226
+msgid "Audio files"
+msgstr "ឯកសារ​អូឌីយ៉ូ"
+
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2235
+msgid "Movies"
+msgstr "ភាពយន្ដ"
+
+#: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
+msgid "No file filtered"
+msgstr "គ្មាន​ឯកសារ​ដែល​បាន​ត្រង"
+
+#: ../src/brasero-file-filtered.c:77
+#, c-format
+msgid "Hide the _filtered file list (%d file)"
+msgid_plural "Hide the _filtered file list (%d files)"
+msgstr[0] "លាក់​បញ្ជី​ឯកសារ​ដែល​បាន​ត្រង (ឯកសារ %d)"
+
+#: ../src/brasero-file-filtered.c:83
+#, c-format
+msgid "Show the _filtered file list (%d file)"
+msgid_plural "Show the _filtered file list (%d files)"
+msgstr[0] "បង្ហាញ​បញ្ជី​ឯកសារ​ដែល​បាន​ត្រង (ឯកសារ %d)"
+
+#: ../src/brasero-file-filtered.c:135
+msgid "Filter Options"
+msgstr "ជម្រើស​តម្រង"
+
+#: ../src/brasero-file-filtered.c:218
+msgid ""
+"Select the files you want to restore and click on the \"Restore\" button"
+msgstr "ជ្រើស​ឯកសារ​ដែល​អ្នក​ចង់​ស្ដារ រួច​ចុច​ប៊ូតុង \"ស្ដារ\""
+
+#: ../src/brasero-file-filtered.c:265
+msgid "Type"
+msgstr "ប្រភេទ"
+
+#: ../src/brasero-file-filtered.c:292
+msgid "_Restore"
+msgstr "ស្ដារ"
+
+#: ../src/brasero-file-filtered.c:301
+msgid "Restore the selected files"
+msgstr "ស្ដារ​ឯកសារ​ដែល​បាន​ជ្រើស"
+
+#: ../src/brasero-file-filtered.c:303
+msgid "_Options…"
+msgstr "ជម្រើស…"
+
+#: ../src/brasero-file-filtered.c:311
+msgid "Set the options for file filtering"
+msgstr "កំណត់​ជម្រើស​សម្រាប់​ត្រង​ឯកសារ"
+
+#. filter hidden files
+#: ../src/brasero-filter-option.c:65
+msgid "Filter _hidden files"
+msgstr "ត្រង​ឯកសារ​ដែល​លាក់"
+
+#. replace symlink
+#: ../src/brasero-filter-option.c:72
+msgid "Re_place symbolic links"
+msgstr "ជំនួស​តំណ​និមិត្តសញ្ញា"
+
+#. filter broken symlink button
+#: ../src/brasero-filter-option.c:79
+msgid "Filter _broken symbolic links"
+msgstr "ត្រង​តំណ​និមិត្តសញ្ញា​ដែល​ខូច"
+
+#: ../src/brasero-filter-option.c:85
+msgid "Filtering options"
+msgstr "ជម្រើស​ត្រង"
+
+#: ../src/brasero-layout.c:100
+msgid "P_review"
+msgstr "មើល​ជាមុន"
+
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-layout.c:102
+msgid "Display video, audio and image preview"
+msgstr "បង្ហាញ​វីដេអូ អូឌីយ៉ូ និង​មើល​រូបភាព​ជាមុន"
+
+#: ../src/brasero-layout.c:106
+msgid "_Show Side Panel"
+msgstr "បង្ហាញ​បន្ទះ​ចំហៀង"
+
+#: ../src/brasero-layout.c:107
+msgid "Show a side pane along the project"
+msgstr "បង្ហាញ​បន្ទះ​ចំហៀង​តាម​គម្រោង"
+
+#: ../src/brasero-layout.c:121
+msgid "_Horizontal Layout"
+msgstr "ប្លង់​ផ្ដេក"
+
+#: ../src/brasero-layout.c:122
+msgid "Set a horizontal layout"
+msgstr "កំណត់​ប្លង់​ផ្ដេក"
+
+#: ../src/brasero-layout.c:124
+msgid "_Vertical Layout"
+msgstr "ប្លង់​បញ្ឈរ"
+
+#: ../src/brasero-layout.c:125
+msgid "Set a vertical layout"
+msgstr "កំណត់​ប្លង់​បញ្ឈរ"
+
+#: ../src/brasero-layout.c:1183
+msgid "Click to close the side pane"
+msgstr "ចុច ដើម្បី​បិទ​បន្ទះ​ចំហៀង"
+
+#: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
+#: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
+#: ../src/brasero-multi-song-props.c:139 ../src/brasero-multi-song-props.c:160
+#: ../src/brasero-multi-song-props.c:173 ../src/brasero-multi-song-props.c:249
+#: ../src/brasero-multi-song-props.c:270 ../src/brasero-multi-song-props.c:291
+#: ../src/brasero-rename.c:90 ../src/brasero-rename.c:321
+msgid "<Keep current values>"
+msgstr "<រក្សាទុក​តម្លៃ​បច្ចុប្បន្ន>"
+
+#: ../src/brasero-multi-song-props.c:126 ../src/brasero-multi-song-props.c:143
+msgid "Remove silences"
+msgstr "យក​ភាព​ស្ងាត់ចេញ"
+
+#: ../src/brasero-multi-song-props.c:211 ../src/brasero-multi-song-props.c:252
+#: ../src/brasero-multi-song-props.c:273 ../src/brasero-song-properties.c:187
+#: ../src/brasero-song-properties.c:199 ../src/brasero-song-properties.c:211
+msgid ""
+"This information will be written to the disc using CD-Text technology. It "
+"can be read and displayed by some audio CD players."
+msgstr ""
+"ព័ត៌មាន​នេះ​នឹង​ត្រូវ​បាន​សរសេរ​ចូល​ថាស​ដោយ​ប្រើ​បច្ចេកវិទ្យា​អត្ថបទ​ស៊ីឌី ។ "
+"វា​អាច​ត្រូវ​បាន​អាន និង​បង្ហាញ​ដោយ​កម្មវិធី​ចាក់​ស៊ីឌី​អូឌីយ៉ូមួយ​ចំនួន ។"
+
+#: ../src/brasero-multi-song-props.c:213
+msgid "Song titles"
+msgstr "ចំណងជើង​ចម្រៀង"
+
+#: ../src/brasero-multi-song-props.c:230
+msgid "Additional song information"
+msgstr "ព័ត៌មាន​បន្ថែម​អំពី​ចម្រៀង"
+
+#: ../src/brasero-multi-song-props.c:242 ../src/brasero-song-properties.c:189
+msgid "Artist:"
+msgstr "សិល្បករ ៖"
+
+#: ../src/brasero-multi-song-props.c:263 ../src/brasero-song-properties.c:201
+msgid "Composer:"
+msgstr "អ្នក​និពន្ធ ៖"
+
+#: ../src/brasero-multi-song-props.c:317 ../src/brasero-song-properties.c:247
+msgid "Pause length:"
+msgstr "រយៈពេល​ផ្អាក ៖"
+
+#: ../src/brasero-multi-song-props.c:328 ../src/brasero-song-properties.c:256
+msgid "Gives the length of the pause that should follow the track"
+msgstr "ផ្ដល់​នូវ​រយៈពេល​ផ្អាក​ដែល​នឹង​អនុវត្ត​តាម​បទ"
+
+#: ../src/brasero-multi-song-props.c:345 ../src/brasero-song-properties.c:287
+msgid "Song Information"
+msgstr "ព័ត៌មាន​អំពី​ចម្រៀង"
+
+#: ../src/brasero-player.c:540
+#, c-format
+msgid "%i × %i pixels"
+msgstr "%i × %i ភីកសែល"
+
+#. No Preview view
+#: ../src/brasero-player.c:845
+msgid "No preview"
+msgstr "គ្មាន​ការ​មើលជាមុន"
+
+#: ../src/brasero-playlist.c:390
+#, c-format
+msgid "Error parsing playlist \"%s\"."
+msgstr "មាន​កំហុស​ក្នុង​ពេល​ញែក​បញ្ជី​ចាក់ \"%s\" ។"
+
+#. Translators: %d is the number of songs
+#: ../src/brasero-playlist.c:499
+#, c-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "ចម្រៀង %d"
+
+#: ../src/brasero-playlist.c:584
+msgid "Select Playlist"
+msgstr "ជ្រើស​បញ្ជី​ចាក់"
+
+#: ../src/brasero-playlist.c:751
+msgid "Playlists"
+msgstr "បញ្ជី​ចាក់"
+
+#: ../src/brasero-playlist.c:762
+msgid "Number of Songs"
+msgstr "ចំនួន​បទ​ចម្រៀង"
+
+#: ../src/brasero-playlist.c:782
+msgid "Genre"
+msgstr "ចង្វាក់"
+
+#: ../src/brasero-plugin-manager-ui.c:62
+msgid "Plugin"
+msgstr "កម្មវិធី​ជំនួយ"
+
+#: ../src/brasero-plugin-manager-ui.c:63
+msgid "Enabled"
+msgstr "បាន​បើក"
+
+#: ../src/brasero-plugin-manager-ui.c:143
+#, c-format
+msgid "Copyright %s"
+msgstr "រក្សាសិទ្ធិ %s"
+
+#: ../src/brasero-plugin-manager-ui.c:579
+#: ../src/brasero-plugin-manager-ui.c:967
+msgid "_About"
+msgstr "អំពី"
+
+#: ../src/brasero-plugin-manager-ui.c:587
+#: ../src/brasero-plugin-manager-ui.c:973
+msgid "C_onfigure"
+msgstr "កំណត់​រចនាសម្ព័ន្ធ"
+
+#: ../src/brasero-plugin-manager-ui.c:597
+msgid "A_ctivate"
+msgstr "ធ្វើឲ្យ​សកម្ម"
+
+#: ../src/brasero-plugin-manager-ui.c:609
+msgid "Ac_tivate All"
+msgstr "ធ្វើឲ្យ​សកម្ម​ទាំងអស់"
+
+#: ../src/brasero-plugin-manager-ui.c:614
+msgid "_Deactivate All"
+msgstr "ធ្វើឲ្យ​អសកម្ម​ទាំងអស់"
+
+#. Use the translated name for the plugin.
+#: ../src/brasero-plugin-option.c:258
+#, c-format
+msgid "Options for plugin %s"
+msgstr "ជម្រើស​សម្រាប់​កម្មវិធី​ជំនួយ %s"
+
+#: ../src/brasero-pref.c:61
+msgid "Brasero Plugins"
+msgstr "កម្មវិធី​ជំនួយ Brasero"
+
+#: ../src/brasero-project.c:194
+msgid "Save current project"
+msgstr "រក្សាទុក​គម្រោង​បច្ចុប្បន្ន"
+
+#: ../src/brasero-project.c:195
+msgid "Save _As…"
+msgstr "រក្សាទុក​ជា…"
+
+#: ../src/brasero-project.c:196
+msgid "Save current project to a different location"
+msgstr "រក្សាទុក​គម្រោង​បច្ចុប្បន្ន​ទៅកាន់​ទីតាំង​ផ្សេងគ្នា"
+
+#: ../src/brasero-project.c:197
+msgid "_Add Files"
+msgstr "បន្ថែម​ឯកសារ"
+
+#: ../src/brasero-project.c:198
+msgid "Add files to the project"
+msgstr "បន្ថែម​ឯកសារ​ទៅ​គម្រោង"
+
+#: ../src/brasero-project.c:199
+msgid "_Remove Files"
+msgstr "យក​ឯកសារ​ចេញ"
+
+#. Translators: "empty" is a verb here
+#: ../src/brasero-project.c:202 ../src/brasero-project.c:2308
+msgid "E_mpty Project"
+msgstr "សម្អាត​គម្រោង"
+
+#: ../src/brasero-project.c:203
+msgid "Remove all files from the project"
+msgstr "យក​ឯកសារ​ទាំងអស់​ចេញពី​គម្រោង"
+
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:1084
+msgid "_Burn…"
+msgstr "ដុត…"
+
+#: ../src/brasero-project.c:205
+msgid "Burn the disc"
+msgstr "ដុត​ថាស"
+
+#: ../src/brasero-project.c:693
+msgid ""
+"To add files to this project click the \"Add\" button or drag files to this "
+"area"
+msgstr ""
+"ដើម្បី​បន្ថែម​ឯកសារ​ទៅ​គម្រោង​នេះ ចុច​ប៊ូតុង \"បន្ថែម\" "
+"ឬ​អូស​ឯកសារ​ទៅកាន់​តំបន់​នេះ"
+
+#: ../src/brasero-project.c:695
+msgid ""
+"To remove files select them then click on the \"Remove\" button or press "
+"\"Delete\" key"
+msgstr ""
+"ដើម្បី​យក​ឯកសារ​ចេញ ជ្រើស​ពួកវា រួច​ចុច​ប៊ូតុង \"យក​ចេញ\" ឬ​ចុច​គ្រាប់ចុច "
+"\"លុប\""
+
+#: ../src/brasero-project.c:802
+#, c-format
+msgid "Estimated project size: %s"
+msgstr "ទំហំ​គម្រោង​ប្រហែល ៖ %s"
+
+#: ../src/brasero-project.c:948 ../src/brasero-project.c:964
+msgid "The project is too large for the disc even with the overburn option."
+msgstr "គម្រោង​ធំ​ពេក​សម្រាប់​ថាស សូម្បី​តែមួយ​ជម្រើស​ដុត​លើស ។"
+
+#: ../src/brasero-project.c:975
+msgid ""
+"The project is too large for the disc and you must remove files from it.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
+"cannot be properly recognized and therefore needs the overburn option.\n"
+"Note: This option might cause failure."
+msgstr ""
+"គម្រោង​ធំ​ពេក​សម្រាប់​ថាស ហើយ​អ្នក​ត្រូវតែ​យក​ឯកសារ​ចេញ​ពី​វា "
+"។\nអ្នក​ប្រហែល​ជា​ចង់​ប្រើ​ជម្រើស​នេះ "
+"ប្រសិនបើ​អ្នក​កំពុងតែ​ប្រើ​ស៊ីឌី​-អាន(សរសេរ) ៩០ ឬ ១០០ នាទី "
+"ដែល​មិន​អាច​ត្រូវ​បាន​ទទួលស្គាល់​យ៉ាង​ត្រឹមត្រូវ "
+"ដូច្នេះ​វា​នឹង​ត្រូវ​ការ​ជម្រើស ដុត​លើស ។\nចំណាំ ៖ "
+"ជម្រើស​នេះ​អាច​បង្ក​ឲ្យ​មាន​ភាព​បរាជ័យ ។"
+
+#: ../src/brasero-project.c:1096
+msgid "Start to burn the contents of the selection"
+msgstr "ចាប់ផ្ដើម​ដុត​មាតិកា​ជម្រើស"
+
+#: ../src/brasero-project.c:1265
+msgid "Please add songs to the project."
+msgstr "សូម​បន្ថែម​ចម្រៀង​ទៅ​គម្រោង ។"
+
+#: ../src/brasero-project.c:1902 ../src/brasero-project.c:1937
+msgid "Do you really want to create a new project and discard the current one?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​បង្កើត​គម្រោង​ថ្មី និង​បោះបង់​គម្រោង​បច្ចុប្បន្ន​ឬ ?"
+
+#: ../src/brasero-project.c:1907
+msgid "If you choose to create a new empty project, all changes will be lost."
+msgstr ""
+"ប្រសិនបើ​ជ្រើស​បង្កើត​គម្រោង​ទទេ​ថ្មី "
+"ការ​ផ្លាស់ប្ដូរ​ទាំងអស់​នឹង​ត្រូវ​បាត់បង់ ។"
+
+#: ../src/brasero-project.c:1910
+msgid "_Discard Changes"
+msgstr "បោះបង់​ការ​ផ្លាស់ប្ដូរ"
+
+#: ../src/brasero-project.c:1918
+msgid "Do you want to discard the file selection or add it to the new project?"
+msgstr ""
+"តើ​អ្នក​ពិតជា​ចង់​បោះបង់​ជម្រើស​ឯកសារ ឬ​បន្ថែម​វា​ទៅកាន់​គម្រោង​ថ្មី​ឬ ?"
+
+#: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
+msgid ""
+"If you choose to create a new empty project, the file selection will be "
+"discarded."
+msgstr ""
+"ប្រសិនបើ​អ្នក​ជ្រើស​បង្កើត​គម្រោង​ទទេ​ថ្មី ជម្រើស​ឯកសារ​នឹង​ត្រូវ​បាន​បោះបង់ "
+"។"
+
+#: ../src/brasero-project.c:1925
+msgid "_Discard File Selection"
+msgstr "បោះបង់​ជម្រើស​ឯកសារ"
+
+#: ../src/brasero-project.c:1929
+msgid "_Keep File Selection"
+msgstr "រក្សាទុក​ជម្រើស​ឯកសារ"
+
+#: ../src/brasero-project.c:1944
+msgid "_Discard Project"
+msgstr "បោះបង់​គម្រោង"
+
+#: ../src/brasero-project.c:2184
+msgid "Select Files"
+msgstr "ជ្រើស​ឯកសារ"
+
+#: ../src/brasero-project.c:2297
+msgid "Do you really want to empty the current project?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​សម្អាត​គម្រោង​បច្ចុប្បន្ន​ឬ ?"
+
+#: ../src/brasero-project.c:2302
+msgid ""
+"Emptying a project will remove all files already added. All the work will be "
+"lost. Note that files will not be deleted from their own location, just no "
+"longer listed here."
+msgstr ""
+"ការ​សម្អាត​គម្រោង​នឹង​យក​ចេញ​ឯកសារ​ទាំងអស់​ដែល​បាន​បន្ថែម​រួច​ហើយ ។ "
+"ការងារ​ទាំងអស់​នឹង​ត្រូវ​បាត់បង់ ។ ចំណាំ​ថា "
+"ឯកសារ​នឹង​មិន​ត្រូវ​បាន​លុប​ពី​ទីតាំង​ផ្ទាល់​របស់​ពួកវា​ទេ "
+"វា​គ្រាន់តែ​មិន​រាយ​ទៀត​តែ​ប៉ុណ្ណោះ ។"
+
+#: ../src/brasero-project.c:2364
+msgid "_Save"
+msgstr "រក្សាទុក"
+
+#: ../src/brasero-project.c:2375
+msgid "_Add"
+msgstr "បន្ថែម"
+
+#: ../src/brasero-project.c:2380 ../src/brasero-split-dialog.c:1249
+msgid "_Remove"
+msgstr "យក​ចេញ"
+
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:2444
+#, c-format
+msgid "Brasero — %s (Data Disc)"
+msgstr "Brasero — %s (ថាស​ទិន្នន័យ)"
+
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:2447
+#, c-format
+msgid "Brasero — %s (Audio Disc)"
+msgstr "Brasero — %s (ថាស​អូឌីយ៉ូ)"
+
+#. Translators: %s is the name of the project
+#: ../src/brasero-project.c:2450
+#, c-format
+msgid "Brasero — %s (Video Disc)"
+msgstr "Brasero — %s (ថាស​វីដេអូ)"
+
+#: ../src/brasero-project.c:2620 ../src/brasero-project.c:2923
+msgid "Your project has not been saved."
+msgstr "គម្រោង​របស់​អ្នក​ត្រូវ​បាន​រក្សាទុក ។"
+
+#: ../src/brasero-project.c:2634
+msgid "Save the changes of current project before closing?"
+msgstr "រក្សាទុក​ការ​ផ្លាស់ប្ដូរ​នៃ​គម្រោង​បច្ចុប្បន្ន​ មុន​នឹង​បិទ​ឬ ?"
+
+#: ../src/brasero-project.c:2639 ../src/brasero-project.c:2928
+msgid "If you don't save, changes will be permanently lost."
+msgstr ""
+"ប្រសិនបើ​អ្នក​មិន​រក្សាទុក ការ​ផ្លាស់ប្ដូរ​នឹង​ត្រូវ​បាត់បង់​ជា​អចិន្ត្រៃយ៍ "
+"។"
+
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2649
+#: ../src/brasero-project.c:2931
+msgid "Cl_ose Without Saving"
+msgstr "បិទ​ដោយ​មិន​រក្សាទុក"
+
+#: ../src/brasero-project.c:2731
+msgid "Save Current Project"
+msgstr "រក្សាទុក​គម្រោង​បច្ចុប្បន្ន"
+
+#: ../src/brasero-project.c:2749
+msgid "Save project as a Brasero audio project"
+msgstr "រក្សាទុក​គម្រោង​ជា​គម្រោង​អូឌីយ៉ូ Brasero"
+
+#: ../src/brasero-project.c:2750
+msgid "Save project as a plain text list"
+msgstr "រក្សាទុក​គម្រោង​ជា​បញ្ជី​អត្ថបទ​ធម្មតា"
+
+#: ../src/brasero-project.c:2754
+msgid "Save project as a PLS playlist"
+msgstr "រក្សាទុក​គម្រោង​ជា​បញ្ជី​ចាក់ PLS"
+
+#: ../src/brasero-project.c:2755
+msgid "Save project as an M3U playlist"
+msgstr "រក្សាទុក​គម្រោង​ជា​បញ្ជី​ចាក់ M3U"
+
+#: ../src/brasero-project.c:2756
+msgid "Save project as an XSPF playlist"
+msgstr "រក្សាទុក​គម្រោង​ជា​បញ្ជី​ចាក់ XSPF"
+
+#: ../src/brasero-project.c:2757
+msgid "Save project as an iriver playlist"
+msgstr "រក្សាទុក​គម្រោង​ជា​បញ្ជី​ចាក់ iriver"
+
+#: ../src/brasero-project-manager.c:95
+msgid "_Cover Editor"
+msgstr "កម្មវិធី​កែសម្រួល​គម្រប"
+
+#: ../src/brasero-project-manager.c:96
+msgid "Design and print covers for CDs"
+msgstr "រចនា និង​បោះពុម្ព​គម្រប​សម្រាប់​ស៊ីឌី"
+
+#: ../src/brasero-project-manager.c:97
+msgid "_New Project"
+msgstr "គម្រោង​ថ្មី"
+
+#: ../src/brasero-project-manager.c:98
+msgid "Create a new project"
+msgstr "បង្កើត​គម្រោង​ថ្មី"
+
+#: ../src/brasero-project-manager.c:99
+msgid "_Empty Project"
+msgstr "សម្អាត​គម្រោង"
+
+#: ../src/brasero-project-manager.c:100
+msgid "Let you choose your new project"
+msgstr "អនុញ្ញាត​ឲ្យ​អ្នក​ជ្រើស​គម្រោង​ថ្មី"
+
+#: ../src/brasero-project-manager.c:101
+msgid "New _Audio Project"
+msgstr "គម្រោង​អូឌីយ៉ូ​ថ្មី"
+
+#: ../src/brasero-project-manager.c:102
+#: ../src/brasero-project-type-chooser.c:76
+msgid ""
+"Create a traditional audio CD that will be playable on computers and stereos"
+msgstr ""
+"បង្កើត​ស៊ីឌី​អូឌីយ៉ូ​បុរាណ​ដែល​នឹង​អាច​ចាក់​នៅ​លើ​កុំព្យូទ័រ "
+"និង​ស្តេរ៉េអូ​បាន"
+
+#: ../src/brasero-project-manager.c:103
+msgid "New _Data Project"
+msgstr "គម្រោង​ទិន្នន័យ​ថ្មី"
+
+#: ../src/brasero-project-manager.c:104
+#: ../src/brasero-project-type-chooser.c:81
+msgid ""
+"Create a CD/DVD containing any type of data that can only be read on a "
+"computer"
+msgstr ""
+"បង្កើត​ស៊ីឌី/ឌីវីឌី​ដែល​មាន​ប្រភេទ​ទិន្នន័យ​ណាមួយ​ដែល​អាច​អានបាន​​តែ​នៅ​លើ​ក"
+"ុំព្យូទ័រ​ប៉ុណ្ណោះ"
+
+#: ../src/brasero-project-manager.c:105
+msgid "New _Video Project"
+msgstr "គម្រោង​វីដេអូ​ថ្មី"
+
+#: ../src/brasero-project-manager.c:106
+#: ../src/brasero-project-type-chooser.c:86
+msgid "Create a video DVD or an SVCD that is readable on TV readers"
+msgstr "បង្កើត​ឌីវីឌី​វីដេអូ ឬ SVCD ដែល​អាច​អាន​នៅ​លើ​កម្មវិធី​អាន​ទូរទស្សន៍"
+
+#: ../src/brasero-project-manager.c:107
+msgid "Copy _Disc…"
+msgstr "ចម្លង​ថាស…"
+
+#: ../src/brasero-project-manager.c:108
+#: ../src/brasero-project-type-chooser.c:91
+msgid ""
+"Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
+"another CD/DVD"
+msgstr ""
+"បង្កើត​ច្បាប់​ចម្លង 1:1 នៃ​ស៊ីឌី​អូឌីយ៉ូ "
+"ឬ​ស៊ីឌី/ឌីវីឌី​ទិន្នន័យ​នៅ​លើ​ថាស​រឹង ឬ​ស៊ីឌី/ឌីវីឌី​ផ្សេងទៀត"
+
+#: ../src/brasero-project-manager.c:109
+msgid "_Burn Image…"
+msgstr "ដុត​រូបភាព…"
+
+#: ../src/brasero-project-manager.c:110
+#: ../src/brasero-project-type-chooser.c:95
+#: ../src/brasero-project-type-chooser.c:96
+msgid "Burn an existing CD/DVD image to disc"
+msgstr "ដុត​ស៊ីឌី/ឌីវីឌី​ដែល​មាន​ស្រាប់​ចូល​ថាស"
+
+#: ../src/brasero-project-manager.c:112
+msgid "_Open…"
+msgstr "បើក…"
+
+#: ../src/brasero-project-manager.c:113
+msgid "Open a project"
+msgstr "បើក​គម្រោង"
+
+#. Translators: the %s is a string representing the total size
+#. * of the file selection
+#: ../src/brasero-project-manager.c:259
+#, c-format
+msgid "%d file selected (%s)"
+msgid_plural "%d files selected (%s)"
+msgstr[0] "%d ឯកសារ​ដែល​បាន​ជ្រើស (%s)"
+
+#: ../src/brasero-project-manager.c:270
+#, c-format
+msgid "%d file is supported (%s)"
+msgid_plural "%d files are supported (%s)"
+msgstr[0] "%d ឯកសារ​ត្រូវ​បាន​គាំទ្រ (%s)"
+
+#: ../src/brasero-project-manager.c:276
+#, c-format
+msgid "%d file can be added (%s)"
+msgid_plural "%d selected files can be added (%s)"
+msgstr[0] "%d ឯកសារ​អាច​ត្រូវ​បាន​បន្ថែម (%s)"
+
+#: ../src/brasero-project-manager.c:287
+#, c-format
+msgid "No file can be added (%i selected file)"
+msgid_plural "No file can be added (%i selected files)"
+msgstr[0] "គ្មាន​ឯកសារ​អាចត្រូវ​បាន​បន្ថែម​ទេ (%i ឯកសារ​ដែល​បាន​ជ្រើស)"
+
+#: ../src/brasero-project-manager.c:293
+#, c-format
+msgid "No file is supported (%i selected file)"
+msgid_plural "No file is supported (%i selected files)"
+msgstr[0] "គ្មាន​ឯកសារ​ត្រូវ​បាន​គាំទ្រ (%i ឯកសារ​ដែល​បាន​ជ្រើស)"
+
+#: ../src/brasero-project-manager.c:299 ../src/brasero-project-manager.c:453
+msgid "No file selected"
+msgstr "គ្មាន​ឯកសារ​ត្រូវ​បាន​ជ្រើស"
+
+#: ../src/brasero-project-manager.c:590
+msgid "Brasero — New Audio Disc Project"
+msgstr "Brasero — គម្រោង​ថាស​អូឌីយ៉ូ​ថ្មី"
+
+#: ../src/brasero-project-manager.c:604
+msgid "Brasero — New Data Disc Project"
+msgstr "Brasero — គម្រោង​ថាស​ទិន្នន័យ​ថ្មី"
+
+#: ../src/brasero-project-manager.c:618
+msgid "Brasero — New Video Disc Project"
+msgstr "Brasero — គម្រោង​ថាស​វីដេអូ​ថ្មី"
+
+#: ../src/brasero-project-manager.c:628
+msgid "Brasero — New Image File"
+msgstr "Brasero — ឯកសារ​រូបភាព​ថ្មី"
+
+#: ../src/brasero-project-manager.c:643
+msgid "Brasero — Disc Copy"
+msgstr "Brasero — ច្បាប់​ចម្លង​ថាស"
+
+#: ../src/brasero-project-manager.c:727
+msgid "Open Project"
+msgstr "បើក​គម្រោង"
+
+#: ../src/brasero-project-manager.c:830
+msgid "_New"
+msgstr "ថ្មី"
+
+#: ../src/brasero-project-manager.c:834
+msgid "_Open"
+msgstr "បើក"
+
+#: ../src/brasero-project-manager.c:885
+msgid "Browse the file system"
+msgstr "រកមើល​ប្រព័ន្ធ​ឯកសារ"
+
+#: ../src/brasero-project-manager.c:907
+msgid "Display playlists and their contents"
+msgstr "បង្ហាញ​បញ្ជី​ចាក់ និង​មាតិកា​របស់​ពួកវា"
+
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:83
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "សូម​ជ្រើស​រូបភាព​ផ្សេងទៀត ។"
+
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_.
+#. * The %s is the date
+#: ../src/brasero-project-name.c:269
+#, c-format
+msgid "Video disc (%s)"
+msgstr "ថាស​វីដេអូ (%s)"
+
+#: ../src/brasero-project-parse.c:62
+msgid "Error while loading the project."
+msgstr "មាន​កំហុស ខណៈ​ពេល​កំពុង​ផ្ទុក​គម្រោង ។"
+
+#: ../src/brasero-project-parse.c:454
+msgid "The project could not be opened"
+msgstr "មិន​អាច​បើក​គម្រោង​បាន​ឡើយ"
+
+#: ../src/brasero-project-parse.c:463
+msgid "The file is empty"
+msgstr "ឯកសារ​គឺ​ទទេ"
+
+#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+msgid "It does not seem to be a valid Brasero project"
+msgstr "វា​ហាក់​ដូច​មិនមែន​ជា​គម្រោង Brasero ដែល​ត្រឹមត្រូវ​ទេ"
+
+#: ../src/brasero-project-type-chooser.c:74
+msgid "Audi_o project"
+msgstr "គម្រោង​អូឌីយ៉ូ"
+
+#: ../src/brasero-project-type-chooser.c:75
+msgid "Create a traditional audio CD"
+msgstr "បង្កើត​ស៊ីឌី​អូឌីយ៉ូ​បុរាណ"
+
+#: ../src/brasero-project-type-chooser.c:79
+msgid "D_ata project"
+msgstr "គម្រោង​ទិន្នន័យ"
+
+#: ../src/brasero-project-type-chooser.c:80
+msgid "Create a data CD/DVD"
+msgstr "បង្កើត​ស៊ីឌី/ឌីវីឌី​ទិន្នន័យ"
+
+#: ../src/brasero-project-type-chooser.c:84
+msgid "_Video project"
+msgstr "គម្រោង​វីដេអូ"
+
+#: ../src/brasero-project-type-chooser.c:85
+msgid "Create a video DVD or an SVCD"
+msgstr "បង្កើត​ឌីវីឌី​វីដេអូ ឬ SVCD"
+
+#: ../src/brasero-project-type-chooser.c:89
+msgid "Disc _copy"
+msgstr "ច្បាប់​ចម្លង​ថាស"
+
+#: ../src/brasero-project-type-chooser.c:90
+msgid "Create 1:1 copy of a CD/DVD"
+msgstr "បង្កើត​ច្បាប់​ចម្លង 1:1 នៃ​ស៊ីឌី/ឌីវីឌី"
+
+#: ../src/brasero-project-type-chooser.c:94
+msgid "Burn _image"
+msgstr "ដុត​រូបភាព"
+
+#: ../src/brasero-project-type-chooser.c:292
+msgid "Last _Unsaved Project"
+msgstr "គម្រោង​ដែល​មិន​បាន​រក្សាទុក​លើក​ចុងក្រោយ"
+
+#: ../src/brasero-project-type-chooser.c:308
+msgid "Load the last project that was not burned and not saved"
+msgstr "ផ្ទុក​គម្រោង​ចុងក្រោយ​ដែល​មិន​ទាន់​ត្រូវ​បាន​ដុត និង​រក្សាទុក"
+
+#: ../src/brasero-project-type-chooser.c:414
+msgid "No recently used project"
+msgstr "គ្មាន​គម្រោង​ដែល​ត្រូវ​បាន​ប្រើ​បច្ចុប្បន្ន​នេះ​ទេ"
+
+#: ../src/brasero-project-type-chooser.c:463
+msgid "Create a new project:"
+msgstr "បង្កើត​គម្រោង​ថ្មី ៖"
+
+#: ../src/brasero-project-type-chooser.c:509
+msgid "Recent projects:"
+msgstr "គម្រោង​បច្ចុប្បន្ន ៖"
+
+#: ../src/brasero-rename.c:322
+msgid "Insert text"
+msgstr "បញ្ចូល​អត្ថបទ"
+
+#: ../src/brasero-rename.c:323
+msgid "Delete text"
+msgstr "លុប​អត្ថបទ"
+
+#: ../src/brasero-rename.c:324
+msgid "Substitute text"
+msgstr "ជំនួស​អត្ថបទ"
+
+#: ../src/brasero-rename.c:325
+msgid "Number files according to a pattern"
+msgstr "ឯកសារ​លេខ​ស្របតាម​លំនាំ"
+
+#: ../src/brasero-rename.c:326
+msgid "Insert number sequence at beginning"
+msgstr "បញ្ចូល​លំដាប់​លេខ​នៅ​ខាងដើម"
+
+#. Translators: This is a verb. This is completed later
+#: ../src/brasero-rename.c:341
+msgid "Insert"
+msgstr "បញ្ចូល"
+
+#. Translators: This finishes previous action "Insert". It goes like
+#. * this: "Insert" [Entry] "at the beginning".
+#: ../src/brasero-rename.c:355
+msgid "at the beginning"
+msgstr "ខាង​ដើម"
+
+#. Translators: This finishes previous action "Insert". It goes like
+#. * this: "Insert" [Entry] "at the end".
+#: ../src/brasero-rename.c:359
+msgid "at the end"
+msgstr "ខាង​ចុង"
+
+#: ../src/brasero-rename.c:370
+msgid "Delete every occurrence of"
+msgstr "លុប​រាល់​ការ​កើតឡើង​វិញ​នៃ"
+
+#. Reminder: if this string happens to be used somewhere else in brasero
+#. * we'll need a context with C_() macro
+#. Translators: this goes with above verb to say "_Replace" [Entry]
+#. * "with" [Entry].
+#: ../src/brasero-rename.c:400
+msgid "with"
+msgstr "ជាមួយ"
+
+#: ../src/brasero-rename.c:414
+msgid "Rename to"
+msgstr "ប្ដូរ​ឈ្មោះ​ទៅជា"
+
+#: ../src/brasero-rename.c:423
+msgid "{number}"
+msgstr "{លេខ}"
+
+#. *
+#. * Translators: this is the position being played in a stream. The
+#. * first %s is the position and the second %s is the whole length of
+#. * the stream. I chose to make that translatable in case some languages
+#. * don't allow the "/"
+#: ../src/brasero-song-control.c:99
+#, c-format
+msgid "%s / %s"
+msgstr "%s / %s"
+
+#: ../src/brasero-song-control.c:528
+msgid "No file"
+msgstr "គ្មាន​ឯកសារ"
+
+#: ../src/brasero-song-control.c:563
+msgid "Start and stop playing"
+msgstr "ចាប់ផ្ដើម និង​បញ្ឈប់​ការ​ចាក់"
+
+#: ../src/brasero-song-properties.c:177
+msgid "Title:"
+msgstr "ចំណង​ជើង ៖"
+
+#: ../src/brasero-song-properties.c:235
+msgid "Song start:"
+msgstr "ចម្រៀង​ចាប់ផ្ដើម ៖"
+
+#: ../src/brasero-song-properties.c:241
+msgid "Song end:"
+msgstr "ចម្រៀង​បញ្ចប់ ៖"
+
+#: ../src/brasero-song-properties.c:258
+msgid "Track length:"
+msgstr "រយៈ​ពេល​របស់​បទ ៖"
+
+#: ../src/brasero-song-properties.c:372
+#, c-format
+msgid "Song information for track %02i"
+msgstr "ព័ត៌មាន​អំពី​ចម្រៀង​សម្រាប់​បទ %02i"
+
+#: ../src/brasero-split-dialog.c:166
+msgid "Do you really want to split the track?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​ពុះ​បទ​ឬ ?"
+
+#: ../src/brasero-split-dialog.c:169
+msgid ""
+"If you split the track, the size of the new track will be shorter than 6 "
+"seconds and will be padded."
+msgstr ""
+"ប្រសិនបើ​អ្នក​ពុះ​បទ ទំហំ​នៃ​បទ​ថ្មី​នឹង​មិន​ខ្លី​ជាង ៦ វិនាទី "
+"ហើយ​នឹង​​ត្រូវ​បាន​បន្ថែម​ចន្លោះ​ពេល ។"
+
+#: ../src/brasero-split-dialog.c:175 ../src/brasero-split-dialog.c:746
+msgid "_Split"
+msgstr "ពុះ"
+
+#: ../src/brasero-split-dialog.c:603
+msgid "The track wasn't split."
+msgstr "បទ​មិន​ត្រូវ​បាន​ពុះ ។"
+
+#: ../src/brasero-split-dialog.c:604
+msgid "No silence could be detected"
+msgstr "រក​មិន​ឃើញ​ភាព​ស្ងាត់​ទេ"
+
+#: ../src/brasero-split-dialog.c:627
+msgid "An error occurred while detecting silences."
+msgstr "កំហុស​បាន​កើតឡើង ខណៈ​ពេល​កំពុង​រក​ភាព​ស្ងាត់ ។"
+
+#: ../src/brasero-split-dialog.c:706
+msgid "This will remove all previous results."
+msgstr "វា​នឹង​យក​លទ្ធផល​មុន​ទាំងអស់​ចេញ ។"
+
+#: ../src/brasero-split-dialog.c:744
+msgid "Do you really want to carry on with automatic splitting?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​បន្ត​ជា​មួយ​នឹង​ការ​ពុះ​ស្វ័យប្រវត្តិ​ឬ ?"
+
+#: ../src/brasero-split-dialog.c:745
+msgid "_Don't split"
+msgstr "កុំ​ពុះ"
+
+#: ../src/brasero-split-dialog.c:962
+msgid "Do you really want to empty the slices preview?"
+msgstr "តើ​អ្នក​ពិតជា​ចង់​សម្អាត​ការ​មើល​ចំណិត​ជាមុន​ឬ ?"
+
+#: ../src/brasero-split-dialog.c:964 ../src/brasero-split-dialog.c:1263
+msgid "Re_move All"
+msgstr "យក​ចេញ​ទាំងអស់"
+
+#: ../src/brasero-split-dialog.c:1049
+msgid "Split Track"
+msgstr "ពុះ​បទ"
+
+#: ../src/brasero-split-dialog.c:1066
+msgid "M_ethod:"
+msgstr "វិធីសាស្ត្រ ៖"
+
+#: ../src/brasero-split-dialog.c:1072
+msgid "Method to be used to split the track"
+msgstr "វិធីសាស្ត្រដែល​ត្រូវ​ប្រើ ដើម្បី​ពុះ​បទ"
+
+#: ../src/brasero-split-dialog.c:1075
+msgid "Split track manually"
+msgstr "ពុះ​បទ​ដោយ​ដៃ"
+
+#: ../src/brasero-split-dialog.c:1076
+msgid "Split track in parts with a fixed length"
+msgstr "ពុះ​បទ​ជា​ផ្នែក​ៗ​ជាមួយ​ប្រវែង​ថេរ"
+
+#: ../src/brasero-split-dialog.c:1077
+msgid "Split track in a fixed number of parts"
+msgstr "ពុះ​បទ​ជា​ចំនួន​ផ្នែក​ថេរ"
+
+#: ../src/brasero-split-dialog.c:1078
+msgid "Split track for each silence"
+msgstr "ពុះ​បទ​សម្រាប់​ភាព​ស្ងាត់​​នីមួយៗ"
+
+#: ../src/brasero-split-dialog.c:1084
+msgid "_Slice"
+msgstr "ចំណិត"
+
+#: ../src/brasero-split-dialog.c:1095
+msgid "Add a splitting point"
+msgstr "បន្ថែម​ចំណុច​ពុះ"
+
+#. Translators: this goes with the next (= "seconds")
+#: ../src/brasero-split-dialog.c:1112
+msgid "Split this track every"
+msgstr "ពុះ​បទ​នេះ​រៀង​រាល់"
+
+#. Translators: this goes with the previous (= "Split track every")
+#: ../src/brasero-split-dialog.c:1121
+msgid "seconds"
+msgstr "វិនាទី"
+
+#. Translators: this goes with the next (= "parts")
+#: ../src/brasero-split-dialog.c:1130
+msgid "Split this track in"
+msgstr "ពុះ​បទ​នេះ​ជា"
+
+#. Translators: this goes with the previous (= "Split this track in")
+#: ../src/brasero-split-dialog.c:1139
+msgid "parts"
+msgstr "ផ្នែក"
+
+#: ../src/brasero-split-dialog.c:1147
+msgid "Slicing Method"
+msgstr "វិធីសាស្ត្រ​ចិត"
+
+#: ../src/brasero-split-dialog.c:1205
+msgid "Start"
+msgstr "ចាប់ផ្ដើម"
+
+#: ../src/brasero-split-dialog.c:1212
+msgid "End"
+msgstr "បញ្ចប់"
+
+#: ../src/brasero-split-dialog.c:1235
+msgid "Mer_ge"
+msgstr "បញ្ចូល​ចូលគ្នា"
+
+#: ../src/brasero-split-dialog.c:1246
+msgid "Merge a selected slice with the next selected one"
+msgstr "បញ្ចូល​ចំណិត​ដែល​បាន​ជ្រើស​ជាមួយ​ចំណិត​ដែល​បាន​ជ្រើស​រើស​បន្ទាប់"
+
+#: ../src/brasero-split-dialog.c:1260
+msgid "Remove the selected slices"
+msgstr "យក​ចំណិត​ដែល​បាន​ជ្រើស​ចេញ"
+
+#: ../src/brasero-split-dialog.c:1274
+msgid "Clear the slices preview"
+msgstr "សម្អាត​ការ​មើល​ចំណិត​ជាមុន"
+
+#: ../src/brasero-split-dialog.c:1284
+msgid "_List of slices that are to be created:"
+msgstr "បញ្ជី​ចំណិត​ដែល​ត្រូវ​បង្កើត ៖"
+
+#: ../src/brasero-split-dialog.c:1292
+msgid "Slices Preview"
+msgstr "មើល​ចំណិត​ជាមុន"
+
+#: ../src/brasero-time-button.c:287
+msgid "Hours"
+msgstr "ម៉ោង"
+
+#. Translators: separating hours and minutes
+#. Translators: separating minutes and seconds
+#. Translators: separating seconds and frames
+#: ../src/brasero-time-button.c:292 ../src/brasero-time-button.c:302
+#: ../src/brasero-time-button.c:312
+msgid ":"
+msgstr ":"
+
+#: ../src/brasero-time-button.c:297
+msgid "Minutes"
+msgstr "នាទី"
+
+#: ../src/brasero-time-button.c:307
+msgid "Seconds"
+msgstr "វិនាទី"
+
+#: ../src/brasero-time-button.c:317
+msgid "Frames (1 second = 75 frames)"
+msgstr "ស៊ុម (១ វិនាទី = ៧៥ ស៊ុម)"
+
+#: ../src/brasero-video-disc.c:101
+msgid "Open the selected video"
+msgstr "បើក​វីដេអូ​ដែល​បាន​ជ្រើស"
+
+#: ../src/brasero-video-disc.c:103
+msgid "Edit the video information (start, end, author, etc.)"
+msgstr "កែសម្រួល​ព័ត៌មាន​អំពី​វីដេអូ (ចាប់ផ្ដើម បញ្ចប់ អ្នក​និពន្ធ ។ល។)"
+
+#: ../src/brasero-video-disc.c:105
+msgid "Remove the selected videos from the project"
+msgstr "យក​វីដេអូ​ដែល​បាន​ជ្រើស​ចេញ​ពី​គម្រោង"
+
+#: ../src/brasero-video-disc.c:359
+msgid "Do you want to search for video files inside the directory?"
+msgstr "តើ​អ្នក​ចង់​ស្វែងរក​ឯកសារ​វីដេអូ​នៅ​ក្នុង​ថត​ឬ ?"
+
+#: ../src/brasero-video-disc.c:369
+msgid "_Search Directory"
+msgstr "ថត​ស្វែងរក"
+
+#: ../src/brasero-video-disc.c:412
+#, c-format
+msgid "\"%s\" does not have a suitable type for video projects."
+msgstr "\"%s\" មិន​មាន​ប្រភេទ​សមស្រប​សម្រាប់​គម្រោង​វីដេអូ​ទេ ។"
+
+#: ../src/brasero-video-disc.c:415
+msgid "Please only add files with video content"
+msgstr "សូម​បន្ថែម​តែ​ឯកសារ​ដែល​មាន​មាតិកា​វីដេអូ​ប៉ុណ្ណោះ"
+
+#: ../src/eggdesktopfile.c:165
+#, c-format
+msgid "File is not a valid .desktop file"
+msgstr "ឯកសារ​មិនមែន​ជា​ឯកសារ .desktop ត្រឹមត្រូវ​ទេ"
+
+#: ../src/eggdesktopfile.c:188
+#, c-format
+msgid "Unrecognized desktop file Version '%s'"
+msgstr "មិន​ស្គាល់​កំណែ​ឯកសារ​ផ្ទៃតុ '%s'"
+
+#: ../src/eggdesktopfile.c:968
+#, c-format
+msgid "Starting %s"
+msgstr "ចាប់ផ្ដើម %s"
+
+#: ../src/eggdesktopfile.c:1110
+#, c-format
+msgid "Application does not accept documents on command line"
+msgstr "កម្មវិធី​មិន​ទទួលយក​ឯកសារ​នៅ​លើ​បន្ទាត់​ពាក្យ​បញ្ជា​ទេ"
+
+#: ../src/eggdesktopfile.c:1178
+#, c-format
+msgid "Unrecognized launch option: %d"
+msgstr "មិន​ស្គាល់​ជម្រើស​បើកដំណើរការ ៖ %d"
+
+#: ../src/eggdesktopfile.c:1383
+#, c-format
+msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+msgstr "មិន​អាច​ហុច​ URIs ឯកសារ​ទៅកាន់​ធាតុ​ផ្ទៃតុ​ 'Type=Link' បាន​ឡើយ"
+
+#: ../src/eggdesktopfile.c:1404
+#, c-format
+msgid "Not a launchable item"
+msgstr "មិន​មែន​ជា​ធាតុ​ដែល​អាច​បើក​ដំណើរការ​បាន"
+
+#: ../src/eggsmclient.c:226
+msgid "Disable connection to session manager"
+msgstr "បិទ​ការ​តភ្ជាប់​ទៅកាន់​កម្មវិធី​គ្រប់គ្រង​សម័យ"
+
+#: ../src/eggsmclient.c:229
+msgid "Specify file containing saved configuration"
+msgstr "បញ្ជាក់​ឯកសារ​ដែល​មាន​ការ​កំណត់​រចនាសម្ព័ន្ធ​ដែល​បាន​រក្សាទុក"
+
+#: ../src/eggsmclient.c:229
+msgid "FILE"
+msgstr "ឯកសារ"
+
+#: ../src/eggsmclient.c:232
+msgid "Specify session management ID"
+msgstr "បញ្ជាក់​លេខ​សម្គាល់​ការ​គ្រប់គ្រង​សម័យ"
+
+#: ../src/eggsmclient.c:232
+msgid "ID"
+msgstr "លេខ​សម្គាល់"
+
+#: ../src/eggsmclient.c:253
+msgid "Session management options:"
+msgstr "ជម្រើស​គ្រប់គ្រង​សម័យ ៖"
+
+#: ../src/eggsmclient.c:254
+msgid "Show session management options"
+msgstr "បង្ហាញ​ជម្រើស​គ្រប់គ្រង​សម័យ"
+
+#: ../src/main.c:85
+msgid "[URI] [URI] …"
+msgstr "[URI] [URI] …"
+
+#: ../src/main.c:97
+#, c-format
+msgid "Please type \"%s --help\" to see all available options\n"
+msgstr "សូម​វាយ \"%s --help\" ដើម្បី​ជម្រើស​ដែល​មាន​ទាំងអស់\n"
