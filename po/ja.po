@@ -1,20 +1,20 @@
 # brasero ja.po.
-# Copyright (C) 2005-2011 brasero's COPYRIGHT HOLDER
+# Copyright (C) 2005-2012 brasero's COPYRIGHT HOLDER
 # This file is distributed under the same license as the brasero package.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2005-2009.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2011.
 # Hajime Taira <htaira@redhat.com>, 2010.
 # Shushi Kurose <md81bird@hitaki.net>, 2010.
 # Takayoshi OKANO <kano@na.rim.or.jp>, 2011.
-# Jiro Matsuzawa <jmatsuzawa@src.gnome.org>, 2011.
+# Jiro Matsuzawa <jmatsuzawa@src.gnome.org>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-10 12:27+0000\n"
-"PO-Revision-Date: 2011-09-11 00:27+0900\n"
+"POT-Creation-Date: 2012-03-02 19:31+0000\n"
+"PO-Revision-Date: 2012-03-05 11:41+0900\n"
 "Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -28,48 +28,50 @@ msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Brasero ディスク作成ツール"
+msgid "Disc Burner and Copier"
+msgstr "ディスクの書き込みとコピー"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "CD や DVD の作成やコピーができます"
 
 #: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "ディスクの書き込みとコピー"
+msgid "Brasero Disc Burner"
+msgstr "Brasero ディスク作成ツール"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "Brasero プロジェクトファイル"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "利用する書き込みフラグ"
+msgid "Should Nautilus extension output debug statements"
+msgstr "Nautilus 拡張はデバッグステートメントを出力しなければなりません"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
-msgstr "書き込むイメージを最後に閲覧したディレクトリの絶対パスを指定します"
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
+msgstr ""
+"Nautilus 拡張はデバッグステートメントを出力しなければなりません。出力する場合"
+"は、値を TRUE に設定してください。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"ディスクの書き込みで使用する追加のプラグインをリスト形式で指定します。何も指"
-"定しないと、すべてのプラグインを読み込みます。"
+msgid "The type of checksum used for images"
+msgstr "画像ファイルに使用するチェックサムの種類"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"インストールされているお気に入りの書き込みエンジンの名前をリスト形式で指定し"
-"ます。"
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "0 の場合 MD5、1 の場合 SHA1、2 の場合 SHA256 に設定します"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr "ファイルに使用するチェックサムの種類"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "作業ファイルで利用するディレクトリ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -78,59 +80,99 @@ msgstr ""
 "Brasero が一時ファイルを保存するためのディレクトリのパスを指定します。値が空"
 "の場合は、glib が設定するデフォルトのディレクトリを使用します。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-msgid "Directory to use for temporary files"
-msgstr "作業ファイルで利用するディレクトリ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "ファイルのプレビューを有効にするかどうか"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
-msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "cdrecord コマンドの \"-immed\" フラグを有効にするかどうか"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
 msgid "Favourite burn engine"
 msgstr "お気に入りの書き込みエンジン"
 
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"インストールされているお気に入りの書き込みエンジンの名前をリスト形式で指定し"
+"ます。"
+
 #: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "シンボリックリンクを実体に置き換える"
+msgid "White list of additional plugins to use"
+msgstr "使用する追加プラグインのリスト"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "0 の場合 MD5、1 の場合 SHA1、2 の場合 SHA256 に設定します"
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"ディスクの書き込みで使用する追加のプラグインをリスト形式で指定します。何も指"
+"定しないと、すべてのプラグインを読み込みます。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:12
-msgid "Should Nautilus extension output debug statements"
-msgstr "Nautilus 拡張はデバッグステートメントを出力しなければなりません"
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "cdrecord コマンドの \"-immed\" フラグを有効にするかどうか"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
 msgstr ""
-"Nautilus 拡張はデバッグステートメントを出力しなければなりません。出力する場合"
-"は、値を TRUE に設定してください。"
+"cdrecord コマンドで \"-immed\" フラグを使用するかどうかです。有効にする場合"
+"は、一部のドライブ/設定の問題を回避するためだけに注意して使用してください。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "Brasero がリンク切れのシンボリックリンクを無視する"
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr ""
+"growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうか"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Brasero がリンク切れのシンボリックリンクを無視するかどうか。TRUE にするとリン"
-"ク切れのシンボリックリンクを無視します。"
+"growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうかで"
+"す。一部のドライブ/設定の問題を回避するためだけに有効にするようにしてくださ"
+"い。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうか"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうかです。一部のド"
+"ライブ/設定の問題を回避するときのみ有効にするようにしてください。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr "書き込むイメージを検索したときに最後に閲覧していたフォルダー"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr "書き込むイメージを最後に閲覧したディレクトリの絶対パスを指定します"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "ファイルのプレビューを有効にするかどうか"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "ファイルをプレビューするかどうかです。TRUE にするとプレビューします。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
 msgid "Should brasero filter hidden files"
 msgstr "隠しファイルをフィルターするかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
@@ -138,7 +180,11 @@ msgstr ""
 "隠しファイルを Brasero でフィルターするかどうかです。TRUE にすると隠しファイ"
 "ルを無視します。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "シンボリックリンクを実体に置き換える"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -146,47 +192,23 @@ msgstr ""
 "シンボリックリンクをリンクが指す先のファイルで置き換えるかどうか。TRUE にする"
 "とシンボリックリンクをリンクが指す先のファイルで置き換えます。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr "書き込むイメージを検索したときに最後に閲覧していたフォルダー"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "Brasero がリンク切れのシンボリックリンクを無視する"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"Brasero がリンク切れのシンボリックリンクを無視するかどうか。TRUE にするとリン"
+"ク切れのシンボリックリンクを無視します。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
 msgid "The priority value for the plugin"
 msgstr "プラグインで優先する値"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "利用する速度"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr "ファイルに使用するチェックサムの種類"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-msgid "The type of checksum used for images"
-msgstr "画像ファイルに使用するチェックサムの種類"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
-msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
-msgstr "この値は、最後にそういった状況で使われた書き込みフラグを表しています。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
-msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr "この値は、最後にそういった状況で使われた速度を表しています。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -198,47 +220,25 @@ msgstr ""
 "利用します。正の値の場合はプラグインのネイティブな優先度を上書きします。負の"
 "値の場合はプラグインを無効にします。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "ファイルをプレビューするかどうかです。TRUE にするとプレビューします。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうか"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうかです。一部のド"
-"ライブ/設定の問題を回避するときのみ有効にするようにしてください。"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:32
-msgid ""
-"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
-"true) as it's only a workaround for some drives/setups."
-msgstr ""
-"cdrecord コマンドで \"-immed\" フラグを使用するかどうかです。有効にする場合"
-"は、一部のドライブ/設定の問題を回避するためだけに注意して使用してください。"
+msgid "Burning flags to be used"
+msgstr "利用する書き込みフラグ"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:33
-msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr ""
-"growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうか"
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
+msgstr "この値は、最後にそういった状況で使われた書き込みフラグを表しています。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:34
-msgid ""
-"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-"false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr ""
-"growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうかで"
-"す。一部のドライブ/設定の問題を回避するためだけに有効にするようにしてくださ"
-"い。"
+msgid "The speed to be used"
+msgstr "利用する速度"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "使用する追加プラグインのリスト"
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr "この値は、最後にそういった状況で使われた速度を表しています。"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -1767,7 +1767,7 @@ msgstr "処理を実行できません。"
 #: ../plugins/cdrtools/burn-cdrecord.c:151
 #: ../plugins/cdrtools/burn-cdrecord.c:407
 #: ../plugins/growisofs/burn-dvd-rw-format.c:77
-#: ../plugins/libburnia/burn-libburn.c:609
+#: ../plugins/libburnia/burn-libburn.c:610
 #, c-format
 msgid "The disc is not supported"
 msgstr "ディスクをサポートしていません"
@@ -2050,7 +2050,7 @@ msgstr "イメージを出力する先のパスが指定されていません"
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
-#: ../plugins/libburnia/burn-libburn.c:716
+#: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:826
 #, c-format
 msgid "An internal error occurred (%s)"
@@ -2596,7 +2596,7 @@ msgstr "色の取得"
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 #: ../nautilus/nautilus-burn-extension.c:281
 msgid "CD/DVD Creator"
-msgstr "CD/DVD の作成"
+msgstr "CD/DVD クリエーター"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:2
 msgid "Create CDs and DVDs"
@@ -2618,7 +2618,7 @@ msgstr "画像ファイル"
 #. * displaying.
 #: ../nautilus/nautilus-burn-bar.c:356 ../plugins/local-track/burn-uri.c:747
 msgid "CD/DVD Creator Folder"
-msgstr "CD/DVD 作成フォルダー"
+msgstr "CD/DVD クリエーターフォルダー"
 
 #: ../nautilus/nautilus-burn-bar.c:368
 msgid "Disc Name:"
@@ -2798,8 +2798,8 @@ msgid "Copies any disc to a disc image"
 msgstr "任意のディスクをディスクイメージにコピーします"
 
 #: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
-#: ../plugins/libburnia/burn-libburn.c:855
-#: ../plugins/libburnia/burn-libburn.c:886
+#: ../plugins/libburnia/burn-libburn.c:856
+#: ../plugins/libburnia/burn-libburn.c:887
 #, c-format
 msgid "An error occurred while writing to disc"
 msgstr "ディスクに書き込む際にエラーが発生しました"
@@ -2860,7 +2860,7 @@ msgid "Copy tracks from an audio CD with all associated information"
 msgstr "音楽 CD から関連するすべての情報とともにトラックをコピーする"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1204
-#: ../plugins/libburnia/burn-libburn.c:974
+#: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "CD/DVD/BD の書き込み/消去/フォーマット"
 
@@ -2951,7 +2951,7 @@ msgstr "SHA256"
 #. Translators: first %s is the filename, second %s is the error
 #. * generated from errno
 #: ../plugins/checksum/burn-checksum-image.c:313
-#: ../plugins/libburnia/burn-libburn.c:678
+#: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "\"%s\" をオープンできませんでした: %s"
@@ -3053,7 +3053,7 @@ msgstr "libburn ライブラリを初期化できませんでした"
 msgid "The drive address could not be retrieved"
 msgstr "ドライブのアドレスを取得できませんでした"
 
-#: ../plugins/libburnia/burn-libburn-common.c:417
+#: ../plugins/libburnia/burn-libburn-common.c:418
 #, c-format
 msgid "Writing track %02i"
 msgstr "トラック %02i の書き込み中"
@@ -3135,8 +3135,8 @@ msgstr "ローカルファイルのパスは取得できません"
 msgid ""
 "Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
 msgstr ""
-"Nautilus の \"CD/DVD 作成フォルダー\" に追加したファイルを書き込めるようにす"
-"る"
+"Nautilus の \"CD/DVD クリエーターフォルダー\" に追加したファイルを書き込める"
+"ようにする"
 
 #. Translators: This message is sent
 #. * when brasero could not link together
@@ -3181,7 +3181,6 @@ msgid "Error while padding file (%s)"
 msgstr "ファイルの空きをなくす処理でエラーが発生しました (%s)"
 
 #: ../plugins/transcode/burn-transcode.c:1350
-#, c-format
 msgid "Error while getting duration"
 msgstr "演奏時間を取得する際にエラーが発生しました"
 
@@ -3353,7 +3352,7 @@ msgstr ""
 "Hajime Taira <htaira@redhat.com>\n"
 "Shushi Kurose <md81bird@hitaki.net>\n"
 "Takayoshi OKANO <kano@na.rim.or.jp>\n"
-"Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
+"松澤 二郎 <jmatsuzawa@src.gnome.org>\n"
 "日本GNOMEユーザー会 <http://www.gnome.gr.jp/>"
 
 #: ../src/brasero-app.c:1447
