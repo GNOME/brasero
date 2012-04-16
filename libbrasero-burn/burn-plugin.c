@@ -1271,7 +1271,7 @@ brasero_plugin_init_real (BraseroPlugin *object)
 	}
 
 	/* now see if we need to override the hardcoded priority of the plugin */
-	settings_path = g_strconcat ("/apps/brasero/plugins/",
+	settings_path = g_strconcat ("/org/gnome/brasero/plugins/",
 	                             priv->name,
 	                             G_DIR_SEPARATOR_S,
 	                             NULL);

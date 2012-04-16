@@ -46,7 +46,7 @@ struct _BraseroDriveSettingsPrivate
 #define BRASERO_DRIVE_SETTINGS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_SETTINGS, BraseroDriveSettingsPrivate))
 
 #define BRASERO_SCHEMA_DRIVES			"org.gnome.brasero.drives"
-#define BRASERO_DRIVE_PROPERTIES_PATH		"/apps/brasero/drives/"
+#define BRASERO_DRIVE_PROPERTIES_PATH		"/org/gnome/brasero/drives/"
 #define BRASERO_PROPS_FLAGS			"flags"
 #define BRASERO_PROPS_SPEED			"speed"
 
