@@ -152,12 +152,12 @@ endif
 
 if HAVE_INTROSPECTION
 girdir = $(INTROSPECTION_GIRDIR)
-gir_DATA = BraseroMedia-@BRASERO_VERSION@.gir
+gir_DATA = BraseroMedia-@TYPELIB_VERSION@.gir
 
 typelibsdir = $(INTROSPECTION_TYPELIBDIR)
-typelibs_DATA = BraseroMedia-@BRASERO_VERSION@.typelib
+typelibs_DATA = BraseroMedia-@TYPELIB_VERSION@.typelib
 
-BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media3.la $(INTROSPECTION_SCANNER)
+BraseroMedia-@TYPELIB_VERSION@.gir: libbrasero-media3.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroMedia --nsversion=1.0 \
             --include=Gtk-3.0 \
 	    -I$(top_srcdir)/libbrasero-media	\
@@ -176,7 +176,7 @@ BraseroMedia-@BRASERO_VERSION@.gir: libbrasero-media3.la $(INTROSPECTION_SCANNER
 	    $(top_srcdir)/libbrasero-media/brasero-drive-selection.h	\
             $(top_srcdir)/libbrasero-media/*.c	    
 
-BraseroMedia-@BRASERO_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
+BraseroMedia-@TYPELIB_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
 	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-media/$(gir_DATA) --shared-library=libbrasero-media3 -o $(typelibs_DATA)
 endif
 

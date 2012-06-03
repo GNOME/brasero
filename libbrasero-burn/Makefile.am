@@ -204,12 +204,12 @@ EXTRA_DIST =			\
 
 if HAVE_INTROSPECTION
 girdir = $(INTROSPECTION_GIRDIR)
-gir_DATA = BraseroBurn-@BRASERO_VERSION@.gir
+gir_DATA = BraseroBurn-@TYPELIB_VERSION@.gir
 
 typelibsdir = $(INTROSPECTION_TYPELIBDIR)
-typelibs_DATA = BraseroBurn-@BRASERO_VERSION@.typelib
+typelibs_DATA = BraseroBurn-@TYPELIB_VERSION@.typelib
 
-BraseroBurn-@BRASERO_VERSION@.gir: libbrasero-burn3.la $(INTROSPECTION_SCANNER)
+BraseroBurn-@TYPELIB_VERSION@.gir: libbrasero-burn3.la $(INTROSPECTION_SCANNER)
 	$(INTROSPECTION_SCANNER) -v --namespace=BraseroBurn --nsversion=1.0 \
 	    -I$(top_srcdir)/libbrasero-media	\
 	    -I$(top_builddir)/libbrasero-media	\
@@ -217,7 +217,7 @@ BraseroBurn-@BRASERO_VERSION@.gir: libbrasero-burn3.la $(INTROSPECTION_SCANNER)
 	    -I$(top_builddir)/libbrasero-burn	\
             --include=Gtk-3.0 \
             --add-include-path=$(top_builddir)/libbrasero-media	\
-	    --include=BraseroMedia-@BRASERO_VERSION@ \
+	    --include=BraseroMedia-@TYPELIB_VERSION@ \
 	    --library=brasero-burn3 \
 	    --libtool="$(LIBTOOL)" \
             --output $@ \
@@ -247,7 +247,7 @@ BraseroBurn-@BRASERO_VERSION@.gir: libbrasero-burn3.la $(INTROSPECTION_SCANNER)
 	    $(top_srcdir)/libbrasero-burn/brasero-sum-dialog.h					\
 	    $(top_srcdir)/libbrasero-burn/*.c	    
 
-BraseroBurn-@BRASERO_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
+BraseroBurn-@TYPELIB_VERSION@.typelib: $(gir_DATA) $(INTROSPECTION_COMPILER)
 	$(INTROSPECTION_COMPILER) $(top_builddir)/libbrasero-burn/$(gir_DATA) --shared-library=libbrasero-burn3 -o $(typelibs_DATA) --includedir=$(top_builddir)/libbrasero-media
 endif
 
