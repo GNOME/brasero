@@ -3,67 +3,82 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-24 01:37+0300\n"
-"PO-Revision-Date: 2012-02-14 21:43+0300\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-04-17 03:52+0000\n"
+"PO-Revision-Date: 2012-07-15 14:40+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
-"Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: be\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Праграма для запісу дыскаў Brasero"
+msgid "Disc Burner and Copier"
+msgstr "Праграма для запісу і капіравання дыскаў"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "Стварэнне і капіраванне CD- і DVD-дыскаў"
 
 #: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "Праграма для запісу і капіравання дыскаў"
+msgid "Brasero Disc Burner"
+msgstr "Праграма для запісу дыскаў Brasero"
+
+#: ../data/brasero.desktop.in.in.h:5
+msgid "Open a New Window"
+msgstr "Адкрыць у новым акне"
+
+#: ../data/brasero.desktop.in.in.h:6
+msgid "Burn an Image File"
+msgstr "Запісаць дыскавы вобраз"
+
+#: ../data/brasero.desktop.in.in.h:7
+msgid "Create an Audio Project"
+msgstr "Стварыць аўдыяпраект"
+
+#: ../data/brasero.desktop.in.in.h:8
+msgid "Create a Video Project"
+msgstr "Стварыць відэапраект"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "Праектны файл Brasero"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "Сцяжкі для запісу дыска"
+msgid "Should Nautilus extension output debug statements"
+msgstr "Ці мусіць пашырэнне Наўтылуса выводзіць адладачныя паведамленні"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
-msgstr ""
-"Абсалютны адрас апошняга каталога, агледжанага ў часе пошуку дыскавага "
-"вобразу для запісу"
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
+msgstr "Ці мусіць пашырэнне Наўтылуса выводзіць адладачныя паведамленні."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"Спіс дадатковых плугінаў Brasero, патрэбных для запісу дыскаў. Калі ключ мае "
-"значэнне NULL, Brasero загрузіць усе наяўныя плугіны."
+msgid "The type of checksum used for images"
+msgstr "Тып праверачнай сумы для дыскавых вобразаў"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"Назва ўпадабанага рухавіка для запісу дыскаў. Па магчымасці, ён будзе ўжыты "
-"праграмай."
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "0 = MD5, 1 = SHA1, 2 = SHA256"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr "Тып праверачнай сумы для файлаў"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "Каталог часовых файлаў"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -73,61 +88,111 @@ msgstr ""
 "мае пэўнага значэння, будзе выкарыстаны прадвызначаны каталог для часовых "
 "файлаў бібліятэкі glib."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-msgid "Directory to use for temporary files"
-msgstr "Каталог часовых файлаў"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "Уключыць папярэдні агляд файлаў"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
-msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "Уключыць сцяжок \"-immed\" для cdrecord"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
 msgid "Favourite burn engine"
 msgstr "Упадабаны рухавік для запісу дыскаў"
 
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"Назва ўпадабанага рухавіка для запісу дыскаў. Па магчымасці, ён будзе ўжыты "
+"праграмай."
+
 #: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "Замяняць сімвальныя спасылкі файламі, на якія яны ўказваюць"
+msgid "White list of additional plugins to use"
+msgstr "\"Белы спіс\" дадатковых плугінаў"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "0 = MD5, 1 = SHA1, 2 = SHA256"
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"Спіс дадатковых плугінаў Brasero, патрэбных для запісу дыскаў. Калі ключ мае "
+"значэнне NULL, Brasero загрузіць усе наяўныя плугіны."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:12
-msgid "Should Nautilus extension output debug statements"
-msgstr "Ці мусіць пашырэнне Наўтылуса выводзіць адладачныя паведамленні"
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "Уключыць сцяжок \"-immed\" для cdrecord"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
-msgstr "Ці мусіць пашырэнне Наўтылуса выводзіць адладачныя паведамленні."
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
+msgstr ""
+"Ці трэба выкарыстоўваць сцяжок \"-immed\" для cdrecord. Карыстайцеся гэтай "
+"магчымасцю з асцярожнасцю, бо яна патрэбна толькі для некаторых праблемных "
+"прыводаў і канфігурацый."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "Ці трэба адфільтроўваць зламаныя сімвальныя спасылкі"
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr ""
+"Ці трэба выкарыстоўваць сцяжок \"-use-the-force-luke=dao\" для growisofs"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
-msgstr "Ці трэба адфільтроўваць зламаныя сімвальныя спасылкі."
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr ""
+"Ці трэба выкарыстоўваць сцяжок \"-use-the-force-luke=dao\" для growisofs. "
+"Гэта можа дапамагчы ў выпадку праблемных прыводаў ці канфігурацыі."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "Выкарыстоўваецца для cdrecord разам са сцяжком \"-immed\""
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "Выкарыстоўваецца для cdrecord разам са сцяжком \"-immed\"."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "Ці трэба выкарыстоўваць сцяжок \"--driver generic-mmc-raw\" для cdrdao"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"Ці трэба выкарыстоўваць сцяжок \"--driver generic-mmc-raw\" для cdrdao. Гэта "
+"можа дапамагчы ў выпадку праблемных прыводаў ці канфігурацыі."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr "Апошняя папка, агледжаная ў часе пошуку дыскавага вобразу для запісу"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr ""
+"Абсалютны адрас апошняга каталога, агледжанага ў часе пошуку дыскавага "
+"вобразу для запісу"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "Уключыць папярэдні агляд файлаў"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "Ці патрэбны папярэдні агляд файлаў."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
 msgid "Should brasero filter hidden files"
 msgstr "Ці трэба адфільтроўваць схаваныя файлы"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr "Ці трэба адфільтроўваць схаваныя файлы."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "Замяняць сімвальныя спасылкі файламі, на якія яны ўказваюць"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -135,50 +200,21 @@ msgstr ""
 "Ці трэба ў праекце замяняць сімвальныя спасылкі файламі, на якія яны "
 "ўказваюць."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr "Апошняя папка, агледжаная ў часе пошуку дыскавага вобразу для запісу"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "Ці трэба адфільтроўваць зламаныя сімвальныя спасылкі"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr "Ці трэба адфільтроўваць зламаныя сімвальныя спасылкі."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
 msgid "The priority value for the plugin"
 msgstr "Прыярытэт плугіна"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "Скорасць запісу"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr "Тып праверачнай сумы для файлаў"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-msgid "The type of checksum used for images"
-msgstr "Тып праверачнай сумы для дыскавых вобразаў"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
-msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
-msgstr ""
-"Значэнне ключа ўяўляе сцяжкі запісу дыска, ужытыя ў такім кантэксце ў апошні "
-"раз."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
-msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr ""
-"Значэнне ключа ўяўляе скорасць запісу, ужытую ў такім кантэксце ў апошні раз."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "Выкарыстоўваецца для cdrecord разам са сцяжком \"-immed\""
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "Выкарыстоўваецца для cdrecord разам са сцяжком \"-immed\"."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -190,47 +226,28 @@ msgstr ""
 "выкарыстоўваць уласны прыярытэт плугіна. Дадатныя значэнні засланяюць яго, "
 "адмоўныя - выключаюць плугін."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "Ці патрэбны папярэдні агляд файлаў."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "Ці трэба выкарыстоўваць сцяжок \"--driver generic-mmc-raw\" для cdrdao"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Ці трэба выкарыстоўваць сцяжок \"--driver generic-mmc-raw\" для cdrdao. Гэта "
-"можа дапамагчы ў выпадку праблемных прыводаў ці канфігурацыі."
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:32
-msgid ""
-"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
-"true) as it's only a workaround for some drives/setups."
-msgstr ""
-"Ці трэба выкарыстоўваць сцяжок \"-immed\" для cdrecord. Карыстайцеся гэтай "
-"магчымасцю з асцярожнасцю, бо яна патрэбна толькі для некаторых праблемных "
-"прыводаў і канфігурацый."
+msgid "Burning flags to be used"
+msgstr "Сцяжкі для запісу дыска"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:33
-msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
 msgstr ""
-"Ці трэба выкарыстоўваць сцяжок \"-use-the-force-luke=dao\" для growisofs"
+"Значэнне ключа ўяўляе сцяжкі запісу дыска, ужытыя ў такім кантэксце ў апошні "
+"раз."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:34
-msgid ""
-"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-"false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Ці трэба выкарыстоўваць сцяжок \"-use-the-force-luke=dao\" для growisofs. "
-"Гэта можа дапамагчы ў выпадку праблемных прыводаў ці канфігурацыі."
+msgid "The speed to be used"
+msgstr "Скорасць запісу"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "\"Белы спіс\" дадатковых плугінаў"
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr ""
+"Значэнне ключа ўяўляе скорасць запісу, ужытую ў такім кантэксце ў апошні раз."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
