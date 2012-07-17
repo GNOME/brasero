@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero 3.1.92\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-25 15:12+0800\n"
-"PO-Revision-Date: 2011-09-25 15:12+0800\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"POT-Creation-Date: 2012-07-17 14:39+0800\n"
+"PO-Revision-Date: 2012-07-17 14:39+0800\n"
+"Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -25,151 +25,181 @@ msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Brasero 光碟燒錄程式"
+msgid "Disc Burner and Copier"
+msgstr "光碟燒錄與複製程式"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "建立與複製 CD 和 DVD"
 
 #: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "光碟燒錄與複製程式"
+msgid "Brasero Disc Burner"
+msgstr "Brasero 光碟燒錄程式"
+
+#: ../data/brasero.desktop.in.in.h:5
+msgid "Open a New Window"
+msgstr "開啟新的視窗"
+
+#: ../data/brasero.desktop.in.in.h:6
+msgid "Burn an Image File"
+msgstr "燒錄映像檔"
+
+#: ../data/brasero.desktop.in.in.h:7
+msgid "Create an Audio Project"
+msgstr "建立音樂光碟專案"
+
+#: ../data/brasero.desktop.in.in.h:8
+msgid "Create a Video Project"
+msgstr "建立影片光碟專案"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "Brasero 專案檔案"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "要使用的燒錄旗標"
+msgid "Should Nautilus extension output debug statements"
+msgstr "Nautilus 延伸功能是否應輸出除錯陳述"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
-msgstr "包含上次瀏覽要燒錄映像檔的目錄絕對路徑"
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
+msgstr "Nautilus 延伸功能是否應輸出除錯陳述。此數值應在必要時設為 true。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr "包含 Brasero 用來燒錄光碟的其他外掛清單。如設定為 NULL，Brasero 將會載入所有的外掛程式。"
+msgid "The type of checksum used for images"
+msgstr "用於圖片的總和檢查碼 (checksum) 類型"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr "包含已安裝的慣用燒錄引擎套件清單，如果可能的話會使用。"
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "設定 0 為 MD5，1 為 SHA1 而 2 為 SHA256"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:5
-msgid ""
-"Contains the path to the directory where brasero should store temporary "
-"files. If that value is empty, the default directory set for glib will be "
-"used."
-msgstr "包含 brasero 儲存暫存檔案的目錄路徑。如果這個數值是空的，就會使用 glib 設定的預設目錄。"
+msgid "The type of checksum used for files"
+msgstr "用於檔案的總和檢查碼(checksum)類型"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
 msgid "Directory to use for temporary files"
 msgstr "暫存檔案使用的目錄"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "啟用檔案預覽"
+msgid ""
+"Contains the path to the directory where brasero should store temporary "
+"files. If that value is empty, the default directory set for glib will be "
+"used."
+msgstr "包含 brasero 儲存暫存檔案的目錄路徑。如果這個數值是空的，就會使用 glib 設定的預設目錄。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
-msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "在 cdrecord 中啟用「-immed」旗標"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
 msgid "Favourite burn engine"
 msgstr "偏好燒錄引擎"
 
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr "包含已安裝的慣用燒錄引擎套件清單，如果可能的話會使用。"
+
 #: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "將符號連結置換為它們的目標"
+msgid "White list of additional plugins to use"
+msgstr "額外使用的外掛程式白名單"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "設定 0 為 MD5，1 為 SHA1 而 2 為 SHA256"
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr "包含 Brasero 用來燒錄光碟的其他外掛清單。如設定為 NULL，Brasero 將會載入所有的外掛程式。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:12
-msgid "Should Nautilus extension output debug statements"
-msgstr "Nautilus 延伸功能是否應輸出除錯陳述"
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "在 cdrecord 中啟用「-immed」旗標"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
-msgstr "Nautilus 延伸功能是否應輸出除錯陳述。此數值應在必要時設為 true。"
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
+msgstr "是否使用 cdrecord 的「-immed」旗標。小心使用（設為 true） ，因為它只是一些光碟機/設定的權宜措施。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "brasero 是否要過濾損壞的符號連結檔案"
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr "是否使用 growisofs 的「-use-the-force-luke=dao」旗標"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
-msgstr "是否要讓 Brasero 過濾損壞的符號連結。若設為 true，Brasero 將過濾損壞的符號連結。"
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr "是否使用 growisofs 的「-use-the-force-luke=dao」旗標。若設為 false，brasero 不會使用它；但它只是一些光碟機/設定的權宜措施。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "和 cdrecord 的「-immed」旗標一起使用"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "和 cdrecord 的「-immed」旗標一起使用。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "是否使用 cdrdao 的「--driver generic-mmc-raw」旗標"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr "是否使用 cdrdao 的「--driver generic-mmc-raw」旗標。若設為 True，brasero 會使用它；但它只是一些光碟機/設定的權宜措施。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr "上次尋找要燒錄映像檔時瀏覽的目錄"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr "包含上次瀏覽要燒錄映像檔的目錄絕對路徑"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "啟用檔案預覽"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "是否顯示檔案預覽。若設為 true 則啟用。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
 msgid "Should brasero filter hidden files"
 msgstr "brasero 是否過濾隱藏檔案"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr "是否要讓brasero過濾隱藏檔案。如此設定，brasero將過濾隱藏檔案。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "將符號連結置換為它們的目標"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
 msgstr "是否要讓 Brasero 將專案中的符號連結替換為它們的目標檔案。若設為 true，Brasero 會替換符號連結。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr "上次尋找要燒錄映像檔時瀏覽的目錄"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "brasero 是否要過濾損壞的符號連結檔案"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr "是否要讓 Brasero 過濾損壞的符號連結。若設為 true，Brasero 將過濾損壞的符號連結。"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
 msgid "The priority value for the plugin"
 msgstr "外掛程式的優先權數值"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "要使用的速度"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr "用於檔案的總和檢查碼(checksum)類型"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-msgid "The type of checksum used for images"
-msgstr "用於圖片的總和檢查碼 (checksum) 類型"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
-msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
-msgstr "這個數值代表上次用於這類情況的燒錄旗標。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
-msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr "這個數值代表上次用於這類情況的速度。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "和 cdrecord 的「-immed」旗標一起使用"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "和 cdrecord 的「-immed」旗標一起使用。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -177,39 +207,25 @@ msgid ""
 "negative value disables the plugin."
 msgstr "當許多外掛程式都可以用於同一工作時，這個數值會用來決定外掛程式的優先權。0 表示使用外掛程式原始的優先權。給予正數值會覆蓋外掛程式原始的優先權。負數值則會停用這個外掛程式。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "是否顯示檔案預覽。若設為 true 則啟用。"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "是否使用 cdrdao 的「--driver generic-mmc-raw」旗標"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr "是否使用 cdrdao 的「--driver generic-mmc-raw」旗標。若設為 True，brasero 會使用它；但它只是一些光碟機/設定的權宜措施。"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:32
-msgid ""
-"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
-"true) as it's only a workaround for some drives/setups."
-msgstr "是否使用 cdrecord 的「-immed」旗標。小心使用（設為 true） ，因為它只是一些光碟機/設定的權宜措施。"
+msgid "Burning flags to be used"
+msgstr "要使用的燒錄旗標"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:33
-msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr "是否使用 growisofs 的「-use-the-force-luke=dao」旗標"
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
+msgstr "這個數值代表上次用於這類情況的燒錄旗標。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:34
-msgid ""
-"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-"false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr "是否使用 growisofs 的「-use-the-force-luke=dao」旗標。若設為 false，brasero 不會使用它；但它只是一些光碟機/設定的權宜措施。"
+msgid "The speed to be used"
+msgstr "要使用的速度"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "額外使用的外掛程式白名單"
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr "這個數值代表上次用於這類情況的速度。"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -1687,7 +1703,7 @@ msgstr "不能進行此操作。"
 #: ../plugins/cdrtools/burn-cdrecord.c:151
 #: ../plugins/cdrtools/burn-cdrecord.c:407
 #: ../plugins/growisofs/burn-dvd-rw-format.c:77
-#: ../plugins/libburnia/burn-libburn.c:609
+#: ../plugins/libburnia/burn-libburn.c:610
 #, c-format
 msgid "The disc is not supported"
 msgstr "不支援此光碟"
@@ -1966,7 +1982,7 @@ msgstr "沒有指定映像檔輸出的路徑"
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
-#: ../plugins/libburnia/burn-libburn.c:716
+#: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:826
 #, c-format
 msgid "An internal error occurred (%s)"
@@ -2327,7 +2343,7 @@ msgstr "此檔案似乎不是播放清單"
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:199
 msgid "Images"
-msgstr "圖像"
+msgstr "影像"
 
 #: ../libbrasero-utils/brasero-jacket-background.c:230
 msgid "_Color"
@@ -2349,22 +2365,22 @@ msgstr "垂直漸變色"
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:280
 msgid "_Image"
-msgstr "圖像(_I)"
+msgstr "影像(_I)"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:308
 msgid "Image path:"
-msgstr "圖像路徑:"
+msgstr "影像路徑:"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:320
 msgid "Choose an image"
-msgstr "選擇一個圖像"
+msgstr "選擇一個影像"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:331
 msgid "Image style:"
-msgstr "圖像樣式："
+msgstr "影像樣式："
 
 #: ../libbrasero-utils/brasero-jacket-background.c:345
 msgid "Centered"
@@ -2384,7 +2400,7 @@ msgstr "背景屬性"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:589
 msgid "Print"
-msgstr "打印"
+msgstr "列印"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:601
 msgid "Bac_kground Properties"
@@ -2454,7 +2470,7 @@ msgstr "封面"
 #. * a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-view.c:1021
 msgid "The image could not be loaded."
-msgstr "無法載入圖像。"
+msgstr "無法載入影像。"
 
 #: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
 #, c-format
@@ -2527,7 +2543,7 @@ msgstr "中等圖示"
 #: ../src/brasero-project.c:2246 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
-msgstr "圖像檔"
+msgstr "影像檔"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -2711,8 +2727,8 @@ msgid "Copies any disc to a disc image"
 msgstr "將任何光碟複製為光碟映像檔"
 
 #: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
-#: ../plugins/libburnia/burn-libburn.c:855
-#: ../plugins/libburnia/burn-libburn.c:886
+#: ../plugins/libburnia/burn-libburn.c:856
+#: ../plugins/libburnia/burn-libburn.c:887
 #, c-format
 msgid "An error occurred while writing to disc"
 msgstr "在寫入光碟時發生錯誤"
@@ -2769,7 +2785,7 @@ msgid "Copy tracks from an audio CD with all associated information"
 msgstr "從音樂 CD 複製軌道和所有相關的資訊"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1204
-#: ../plugins/libburnia/burn-libburn.c:974
+#: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "燒錄、抹除和格式化 CD、DVD 和 BD"
 
@@ -2858,7 +2874,7 @@ msgstr "SHA256"
 #. Translators: first %s is the filename, second %s is the error
 #. * generated from errno
 #: ../plugins/checksum/burn-checksum-image.c:313
-#: ../plugins/libburnia/burn-libburn.c:678
+#: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "無法開啟「%s」 (%s)"
@@ -2956,7 +2972,7 @@ msgstr "無法初始化 libburn 程式庫"
 msgid "The drive address could not be retrieved"
 msgstr "無法取回裝置位址"
 
-#: ../plugins/libburnia/burn-libburn-common.c:417
+#: ../plugins/libburnia/burn-libburn-common.c:418
 #, c-format
 msgid "Writing track %02i"
 msgstr "正在寫入軌道 %02i"
@@ -3081,7 +3097,6 @@ msgid "Error while padding file (%s)"
 msgstr "在墊充檔案時發生錯誤 (%s)"
 
 #: ../plugins/transcode/burn-transcode.c:1350
-#, c-format
 msgid "Error while getting duration"
 msgstr "取得所需時間時發生錯誤"
 
@@ -3821,7 +3836,7 @@ msgstr "預覽(_R)"
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-layout.c:102
 msgid "Display video, audio and image preview"
-msgstr "顯示影片，音樂和圖像預覽"
+msgstr "顯示影片，音樂和影像預覽"
 
 #: ../src/brasero-layout.c:106
 msgid "_Show Side Panel"
@@ -4194,7 +4209,7 @@ msgstr "封套編輯器(_C)"
 
 #: ../src/brasero-project-manager.c:96
 msgid "Design and print covers for CDs"
-msgstr "設計並打印光碟的封套"
+msgstr "設計並列印光碟的封套"
 
 #: ../src/brasero-project-manager.c:97
 msgid "_New Project"
@@ -4352,7 +4367,7 @@ msgstr "顯示撥放清單及其內容"
 #: ../src/brasero-project-name.c:83
 msgctxt "picture"
 msgid "Please select another image."
-msgstr "請選擇別的圖像。"
+msgstr "請選擇別的影像。"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -5690,14 +5705,8 @@ msgstr "請輸入「%s --help」來查看所有可用的選項\n"
 #~ msgid "Modified Project"
 #~ msgstr "已修改過的專案"
 
-#~ msgid "Create a new audio project"
-#~ msgstr "新增一個音樂光碟專案"
-
 #~ msgid "Create a new data project"
 #~ msgstr "新增一個資料光碟專案"
-
-#~ msgid "Create a new video project"
-#~ msgstr "新增一個影片光碟專案"
 
 #~ msgid "Display File Browser"
 #~ msgstr "顯示檔案瀏覽器"
