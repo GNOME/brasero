@@ -43,6 +43,8 @@
 
 #include <gst/gst.h>
 
+#include <libxml/xmlerror.h>
+
 #include "brasero-units.h"
 
 #include "brasero-misc.h"
