@@ -103,7 +103,6 @@ brasero_normalize_stop_pipeline (BraseroNormalize *normalize)
 static void
 brasero_normalize_new_decoded_pad_cb (GstElement *decode,
 				      GstPad *pad,
-				      gboolean arg2,
 				      BraseroNormalize *normalize)
 {
 	GstPad *sink;
@@ -113,14 +112,15 @@ brasero_normalize_new_decoded_pad_cb (GstElement *decode,
 
 	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
 
-	sink = gst_element_get_pad (priv->resample, "sink");
+	sink = gst_element_get_static_pad (priv->resample, "sink");
 	if (GST_PAD_IS_LINKED (sink)) {
 		BRASERO_JOB_LOG (normalize, "New decoded pad already linked");
 		return;
 	}
 
 	/* make sure we only have audio */
-	caps = gst_pad_get_caps (pad);
+	/* FIXME: get_current_caps() doesn't always seem to work yet here */
+	caps = gst_pad_query_caps (pad, NULL);
 	if (!caps)
 		return;
 
@@ -164,7 +164,7 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 	priv->pipeline = pipeline;
 
 	/* a new source is created */
-	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL, NULL);
 	if (source == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -246,7 +246,7 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 
 	/* link everything */
 	g_signal_connect (G_OBJECT (decode),
-	                  "new-decoded-pad",
+	                  "pad-added",
 	                  G_CALLBACK (brasero_normalize_new_decoded_pad_cb),
 	                  normalize);
 	if (!gst_element_link_many (resample,
@@ -582,12 +582,11 @@ brasero_normalize_clock_tick (BraseroJob *job)
 	gint64 position = 0.0;
 	gint64 duration = 0.0;
 	BraseroNormalizePrivate *priv;
-	GstFormat format = GST_FORMAT_TIME;
 
 	priv = BRASERO_NORMALIZE_PRIVATE (job);
 
-	gst_element_query_duration (priv->pipeline, &format, &duration);
-	gst_element_query_position (priv->pipeline, &format, &position);
+	gst_element_query_duration (priv->pipeline, GST_FORMAT_TIME, &duration);
+	gst_element_query_position (priv->pipeline, GST_FORMAT_TIME, &position);
 
 	if (duration > 0) {
 		GSList *tracks;

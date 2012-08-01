@@ -197,7 +197,6 @@ brasero_vob_error_on_pad_linking (BraseroVob *self,
 static void
 brasero_vob_new_decoded_pad_cb (GstElement *decode,
 				GstPad *pad,
-				gboolean arg2,
 				BraseroVob *vob)
 {
 	GstPad *sink;
@@ -208,7 +207,7 @@ brasero_vob_new_decoded_pad_cb (GstElement *decode,
 	priv = BRASERO_VOB_PRIVATE (vob);
 
 	/* make sure we only have audio */
-	caps = gst_pad_get_caps (pad);
+	caps = gst_pad_query_caps (pad, NULL);
 	if (!caps)
 		return;
 
@@ -217,7 +216,7 @@ brasero_vob_new_decoded_pad_cb (GstElement *decode,
 		if (g_strrstr (gst_structure_get_name (structure), "video")) {
 			GstPadLinkReturn res;
 
-			sink = gst_element_get_pad (priv->video, "sink");
+			sink = gst_element_get_static_pad (priv->video, "sink");
 			res = gst_pad_link (pad, sink);
 			gst_object_unref (sink);
 
@@ -230,7 +229,7 @@ brasero_vob_new_decoded_pad_cb (GstElement *decode,
 		if (g_strrstr (gst_structure_get_name (structure), "audio")) {
 			GstPadLinkReturn res;
 
-			sink = gst_element_get_pad (priv->audio, "sink");
+			sink = gst_element_get_static_pad (priv->audio, "sink");
 			res = gst_pad_link (pad, sink);
 			gst_object_unref (sink);
 
@@ -255,7 +254,7 @@ brasero_vob_link_audio (BraseroVob *vob,
 	GstPad *sinkpad;
 	GstPadLinkReturn res;
 
-	srcpad = gst_element_get_request_pad (tee, "src%d");
+	srcpad = gst_element_get_request_pad (tee, "src_%u");
 	sinkpad = gst_element_get_static_pad (start, "sink");
 	res = gst_pad_link (srcpad, sinkpad);
 	gst_object_unref (sinkpad);
@@ -265,7 +264,7 @@ brasero_vob_link_audio (BraseroVob *vob,
 	if (res != GST_PAD_LINK_OK)
 		return FALSE;
 
-	sinkpad = gst_element_get_request_pad (muxer, "audio_%d");
+	sinkpad = gst_element_get_request_pad (muxer, "audio_%u");
 	srcpad = gst_element_get_static_pad (end, "src");
 	res = gst_pad_link (srcpad, sinkpad);
 	gst_object_unref (sinkpad);
@@ -377,12 +376,10 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	gst_bin_add (GST_BIN (priv->pipeline), filter);
 
 	/* NOTE: what about the number of channels (up to 6) ? */
-	filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-							   "width", G_TYPE_INT, 16,
-							   "depth", G_TYPE_INT, 16,
-							   "rate", G_TYPE_INT, 48000,
-							   NULL),
-					NULL);
+	filtercaps = gst_caps_new_simple ("audio/x-raw",
+					  "format", G_TYPE_STRING, "S16BE",
+					  "rate", G_TYPE_INT, 48000,
+					  NULL);
 
 	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
 	gst_caps_unref (filtercaps);
@@ -464,13 +461,13 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	gst_bin_add (GST_BIN (priv->pipeline), resample);
 
 	/* encoder */
-	encode = gst_element_factory_make ("ffenc_mp2", NULL);
+	encode = gst_element_factory_make ("avenc_mp2", NULL);
 	if (encode == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
-			     "\"ffenc_mp2\"");
+			     "\"avenc_mp2\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
@@ -511,10 +508,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 			      NULL);
 
 		/* NOTE: what about the number of channels (up to 7.1) ? */
-		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-								   "rate", G_TYPE_INT, 48000,
-								   NULL),
-						NULL);
+		filtercaps = gst_caps_new_simple ("audio/x-raw", "rate", G_TYPE_INT, 48000, NULL);
 	}
 	else if (!priv->svcd) {
 		/* VCD */
@@ -524,11 +518,10 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 			      NULL);
 
 		/* 2 channels tops */
-		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-								   "channels", G_TYPE_INT, 2,
-								   "rate", G_TYPE_INT, 44100,
-								   NULL),
-						NULL);
+		filtercaps = gst_caps_new_simple ("audio/x-raw",
+						  "channels", G_TYPE_INT, 2,
+						  "rate", G_TYPE_INT, 44100,
+						  NULL);
 	}
 	else {
 		/* SVCDs */
@@ -538,10 +531,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 			      NULL);
 
 		/* NOTE: channels up to 5.1 or dual */
-		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-								   "rate", G_TYPE_INT, 44100,
-								   NULL),
-						NULL);
+		filtercaps = gst_caps_new_simple ("audio/x-raw", "rate", G_TYPE_INT, 44100, NULL);
 	}
 
 	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
@@ -638,22 +628,19 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 
 	BRASERO_JOB_LOG (vob, "Setting AC3 rate to 48000");
 	/* NOTE: we may want to limit the number of channels. */
-	filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-							   "rate", G_TYPE_INT, 48000,
-							   NULL),
-					NULL);
+	filtercaps = gst_caps_new_simple ("audio/x-raw", "rate", G_TYPE_INT, 48000, NULL);
 
 	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
 	gst_caps_unref (filtercaps);
 
 	/* encoder */
-	encode = gst_element_factory_make ("ffenc_ac3", NULL);
+	encode = gst_element_factory_make ("avenc_ac3", NULL);
 	if (encode == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
-			     "\"Ffenc_ac3\"");
+			     "\"avenc_ac3\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
@@ -842,13 +829,13 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), filter);
 
-	colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
+	colorspace = gst_element_factory_make ("videoconvert", NULL);
 	if (colorspace == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
-			     "\"Ffmepgcolorspace\"");
+			     "\"videoconvert\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), colorspace);
@@ -1054,7 +1041,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 
 	srcpad = gst_element_get_static_pad (queue1, "src");
-	sinkpad = gst_element_get_request_pad (muxer, "video_%d");
+	sinkpad = gst_element_get_request_pad (muxer, "video_%u");
 	res = gst_pad_link (srcpad, sinkpad);
 	BRASERO_JOB_LOG (vob, "Linked video bin to muxer == %d", res)
 	gst_object_unref (sinkpad);
@@ -1092,7 +1079,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 	/* source */
 	brasero_job_get_current_track (BRASERO_JOB (vob), &track);
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
-	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL, NULL);
 	if (!source) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -1192,7 +1179,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 
 	/* to be able to link everything */
 	g_signal_connect (G_OBJECT (decode),
-			  "new-decoded-pad",
+			  "pad-added",
 			  G_CALLBACK (brasero_vob_new_decoded_pad_cb),
 			  vob);
 
@@ -1276,17 +1263,16 @@ brasero_vob_get_progress_from_element (BraseroJob *job,
 {
 	gint64 position = 0;
 	gint64 duration = 0;
-	GstFormat format = GST_FORMAT_TIME;
 
-	gst_element_query_duration (element, &format, &duration);
-	gst_element_query_position (element, &format, &position);
+	gst_element_query_duration (element, GST_FORMAT_TIME, &duration);
+	gst_element_query_position (element, GST_FORMAT_TIME, &position);
 
+	/* FIXME: could also try GST_FORMAT_PERCENT position query */
 	if (duration <= 0 || position < 0) {
-		format = GST_FORMAT_BYTES;
 		duration = 0;
 		position = 0;
-		gst_element_query_duration (element, &format, &duration);
-		gst_element_query_position (element, &format, &position);
+		gst_element_query_duration (element, GST_FORMAT_BYTES, &duration);
+		gst_element_query_position (element, GST_FORMAT_BYTES, &position);
 	}
 
 	if (duration > 0 && position >= 0) {
@@ -1412,8 +1398,8 @@ G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
 	/* Let's see if we've got the plugins we need */
-	brasero_plugin_test_gstreamer_plugin (plugin, "ffenc_mpeg2video");
-	brasero_plugin_test_gstreamer_plugin (plugin, "ffenc_ac3");
-	brasero_plugin_test_gstreamer_plugin (plugin, "ffenc_mp2");
+	brasero_plugin_test_gstreamer_plugin (plugin, "avenc_mpeg2video");
+	brasero_plugin_test_gstreamer_plugin (plugin, "avenc_ac3");
+	brasero_plugin_test_gstreamer_plugin (plugin, "avenc_mp2");
 	brasero_plugin_test_gstreamer_plugin (plugin, "mplex");
 }

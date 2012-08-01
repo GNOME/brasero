@@ -38,7 +38,7 @@
 #include <gtk/gtk.h>
 
 #include <gst/gst.h>
-#include <gst/interfaces/xoverlay.h>
+#include <gst/video/videooverlay.h>
 
 #include "brasero-player-bacon.h"
 #include "brasero-setting.h"
@@ -48,7 +48,7 @@ struct BraseroPlayerBaconPrivate {
 	GstElement *pipe;
 	GstState state;
 
-	GstXOverlay *xoverlay;
+	GstVideoOverlay *xoverlay;
 	XID xid;
 
 	gchar *uri;
@@ -178,9 +178,9 @@ brasero_player_bacon_draw (GtkWidget *widget, cairo_t *cr)
 		bacon->priv->xid = gdk_x11_window_get_xid (window);
 
 	if (bacon->priv->xoverlay
-	&&  GST_IS_X_OVERLAY (bacon->priv->xoverlay)
+	&&  GST_IS_VIDEO_OVERLAY (bacon->priv->xoverlay)
 	&&  bacon->priv->state >= GST_STATE_PAUSED)
-		gst_x_overlay_expose (bacon->priv->xoverlay);
+		gst_video_overlay_expose (bacon->priv->xoverlay);
 	else if (window)
 		gtk_widget_queue_draw (GTK_WIDGET (widget));
 
@@ -253,28 +253,26 @@ brasero_player_bacon_size_allocate (GtkWidget *widget,
 		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->size_allocate (widget, allocation);
 }
 
+/* FIXME: we could get rid of this by setting the XID directly on playbin
+ * right after creation, since it proxies the video overlay interface now */
 static GstBusSyncReply
 brasero_player_bacon_bus_messages_handler (GstBus *bus,
 					   GstMessage *message,
 					   BraseroPlayerBacon *bacon)
 {
-	const GstStructure *structure;
-
-	structure = gst_message_get_structure (message);
-	if (!structure)
-		return GST_BUS_PASS;
-
-	if (!gst_structure_has_name (structure, "prepare-xwindow-id"))
+	if (!gst_is_video_overlay_prepare_window_handle_message (message))
 		return GST_BUS_PASS;
 
 	/* NOTE: apparently GDK does not like to be asked to retrieve the XID
 	 * in a thread so we do it in the callback of the expose event. */
-	bacon->priv->xoverlay = GST_X_OVERLAY (GST_MESSAGE_SRC (message));
-	gst_x_overlay_set_xwindow_id (bacon->priv->xoverlay, bacon->priv->xid);
+	bacon->priv->xoverlay = GST_VIDEO_OVERLAY (GST_MESSAGE_SRC (message));
+	gst_video_overlay_set_window_handle (bacon->priv->xoverlay,
+	                                     bacon->priv->xid);
 
 	return GST_BUS_DROP;
 }
 
+#if 0
 static void
 brasero_player_bacon_clear_pipe (BraseroPlayerBacon *bacon)
 {
@@ -299,6 +297,7 @@ brasero_player_bacon_clear_pipe (BraseroPlayerBacon *bacon)
 		bacon->priv->uri = NULL;
 	}
 }
+#endif
 
 void
 brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
@@ -460,34 +459,36 @@ gboolean
 brasero_player_bacon_forward (BraseroPlayerBacon *bacon,
                               gint64 pos)
 {
+	gint64 cur;
+
 	if (!bacon->priv->pipe)
 		return FALSE;
 
-	return gst_element_seek (bacon->priv->pipe,
-				 1.0,
+	if (!gst_element_query_position (bacon->priv->pipe, GST_FORMAT_TIME, &cur))
+		return FALSE;
+
+	return gst_element_seek_simple (bacon->priv->pipe,
 				 GST_FORMAT_TIME,
 				 GST_SEEK_FLAG_FLUSH,
-				 GST_SEEK_TYPE_CUR,
-				 pos,
-				 GST_SEEK_TYPE_NONE,
-				 0);
+				 cur + pos);
 }
 
 gboolean
 brasero_player_bacon_backward (BraseroPlayerBacon *bacon,
                                gint64 pos)
 {
+	gint64 cur;
+
 	if (!bacon->priv->pipe)
 		return FALSE;
 
-	return gst_element_seek (bacon->priv->pipe,
-				 1.0,
+	if (!gst_element_query_position (bacon->priv->pipe, GST_FORMAT_TIME, &cur))
+		return FALSE;
+
+	return gst_element_seek_simple (bacon->priv->pipe,
 				 GST_FORMAT_TIME,
 				 GST_SEEK_FLAG_FLUSH,
-				 GST_SEEK_TYPE_SET,
-				 - pos,
-				 GST_SEEK_TYPE_NONE,
-				 0);
+				 MAX (0, cur - pos));
 }
 
 gboolean
@@ -511,7 +512,6 @@ gboolean
 brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon,
 			      gint64 *pos)
 {
-	GstFormat format = GST_FORMAT_TIME;
 	gboolean result;
 	gint64 value;
 
@@ -520,7 +520,7 @@ brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon,
 
 	if (pos) {
 		result = gst_element_query_position (bacon->priv->pipe,
-						     &format,
+						     GST_FORMAT_TIME,
 						     &value);
 		if (!result)
 			return FALSE;
@@ -545,15 +545,19 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 		return;
 	}
 
-	audio_sink = gst_element_factory_make ("gconfaudiosink", NULL);
+	audio_sink = gst_element_factory_make ("gsettingsaudiosink", NULL);
 	if (audio_sink)
 		g_object_set (G_OBJECT (bacon->priv->pipe),
 			      "audio-sink", audio_sink,
 			      NULL);
+/* FIXME: fall back on autoaudiosink for now, since gsettings plugin is
+ * not ported yet */
+#if 0
 	else
 		goto error;
+#endif
 
-	video_sink = gst_element_factory_make ("gconfvideosink", NULL);
+	video_sink = gst_element_factory_make ("gsettingsvideosink", NULL);
 	if (video_sink) {
 		GstElement *element;
 
@@ -562,15 +566,18 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 			      NULL);
 
 		element = gst_bin_get_by_interface (GST_BIN (video_sink),
-						    GST_TYPE_X_OVERLAY);
-		if (element && GST_IS_X_OVERLAY (element))
-			bacon->priv->xoverlay = GST_X_OVERLAY (element);
+						    GST_TYPE_VIDEO_OVERLAY);
+		if (element && GST_IS_VIDEO_OVERLAY (element))
+			bacon->priv->xoverlay = GST_VIDEO_OVERLAY (element);
 	}
 
 	bus = gst_pipeline_get_bus (GST_PIPELINE (bacon->priv->pipe));
+	/* FIXME: we should just set the XID directly on playbin right after
+	 * creation, since it proxies the video overlay interface now, and get
+	 * rid of the sync message handler and the stuff above */
 	gst_bus_set_sync_handler (bus,
 				  (GstBusSyncHandler) brasero_player_bacon_bus_messages_handler,
-				  bacon);
+				  bacon, NULL);
 	gst_bus_add_watch (bus,
 			   (GstBusFunc) brasero_player_bacon_bus_messages,
 			   bacon);
@@ -588,6 +595,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 
 	return;
 
+#if 0
 error:
 	g_message ("player creation error");
 	brasero_player_bacon_clear_pipe (bacon);
@@ -596,6 +604,7 @@ error:
 		       0,
 		       BACON_STATE_ERROR);
 	gtk_widget_queue_resize (GTK_WIDGET (bacon));
+#endif
 }
 
 static void
@@ -627,7 +636,7 @@ brasero_player_bacon_destroy (GtkWidget *obj)
 	}
 
 	if (cobj->priv->xoverlay
-	&&  GST_IS_X_OVERLAY (cobj->priv->xoverlay))
+	&&  GST_IS_VIDEO_OVERLAY (cobj->priv->xoverlay))
 		cobj->priv->xoverlay = NULL;
 
 	if (cobj->priv->pipe) {

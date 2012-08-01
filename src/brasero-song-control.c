@@ -159,11 +159,10 @@ brasero_song_control_update_progress_cb (BraseroSongControl *player)
 {
 	gint64 pos;
 	BraseroSongControlPrivate *priv;
-	GstFormat format = GST_FORMAT_TIME;
 
 	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
 	gst_element_query_position (priv->pipe,
-	                            &format,
+	                            GST_FORMAT_TIME,
 	                            &pos);
 
 	if (pos >= 0) {
@@ -491,11 +490,11 @@ brasero_song_control_init (BraseroSongControl *object)
 	priv = BRASERO_SONG_CONTROL_PRIVATE (object);
 
 	/* Pipeline */
-	priv->pipe = gst_element_factory_make ("playbin2", NULL);
+	priv->pipe = gst_element_factory_make ("playbin", NULL);
 	if (priv->pipe) {
 		GstElement *audio_sink;
 
-		audio_sink = gst_element_factory_make ("gconfaudiosink", NULL);
+		audio_sink = gst_element_factory_make ("gsettingsaudiosink", NULL);
 		if (audio_sink)
 			g_object_set (G_OBJECT (priv->pipe),
 				      "audio-sink", audio_sink,

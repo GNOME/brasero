@@ -783,6 +783,7 @@ end:
 	gst_query_unref (query);
 }
 
+/* FIXME: use GstDiscoverer ? */
 static gboolean
 brasero_metadata_get_mime_type (BraseroMetadata *self)
 {
@@ -825,72 +826,56 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 		priv->info->type = g_strdup ("audio/mpeg");
 	else if (!strcmp (mime, "audio/x-wav")) {
 		GstElement *wavparse = NULL;
-		gpointer element = NULL;
 		GstIteratorResult res;
 		GstIterator *iter;
+		GValue value = { 0, };
 
 		priv->info->type = g_strdup (mime);
 
 		/* make sure it doesn't have dts inside */
 		iter = gst_bin_iterate_recurse (GST_BIN (priv->decode));
 
-		res = gst_iterator_next (iter, &element);
+		res = gst_iterator_next (iter, &value);
 		while (res == GST_ITERATOR_OK) {
+			GstElement *element;
 			gchar *name;
 
+			element = GST_ELEMENT (g_value_get_object (&value));
 			name = gst_object_get_name (GST_OBJECT (element));
 			if (name) {
 				if (!strncmp (name, "wavparse", 8)) {
-					wavparse = element;
+					wavparse = gst_object_ref (element);
+					g_value_unset (&value);
 					g_free (name);
 					break;
 				}
 				g_free (name);
 			}
 
-			gst_object_unref (element);
+			g_value_unset (&value);
 			element = NULL;
 
-			res = gst_iterator_next (iter, &element);
+			res = gst_iterator_next (iter, &value);
 		}
 		gst_iterator_free (iter);
 
 		if (wavparse) {
+			GstCaps *src_caps;
 			GstPad *src_pad;
 
-			iter = gst_element_iterate_src_pads (wavparse);
+			src_pad = gst_element_get_static_pad (wavparse, "src");
+			src_caps = gst_pad_get_current_caps (src_pad);
+			gst_object_unref (src_pad);
+			src_pad = NULL;
 
-			res = gst_iterator_next (iter, (gpointer *) &src_pad);
-			while (res == GST_ITERATOR_OK) {
-				GstCaps *src_caps;
+			if (src_caps) {
+				GstStructure *structure;
 
-				src_caps = gst_pad_get_caps (src_pad);
-				if (src_caps) {
-					GstStructure *structure;
-
-					structure = gst_caps_get_structure (src_caps, 0);
-					if (structure) {
-						const gchar *name;
-
-						name = gst_structure_get_name (structure);
-						priv->info->has_dts = (g_strrstr (name, "audio/x-dts") != NULL);
-						if (priv->info->has_dts) {
-							gst_object_unref (src_pad);
-							gst_caps_unref (src_caps);
-							src_pad = NULL;
-							break;
-						}
-					}
-					gst_caps_unref (src_caps);
-				}
-
-				gst_object_unref (src_pad);
-				src_pad = NULL;
-
-				res = gst_iterator_next (iter,  (gpointer *) &src_pad);
+				/* negotiated caps will always have one structure */
+				structure = gst_caps_get_structure (src_caps, 0);
+				priv->info->has_dts = gst_structure_has_name (structure, "audio/x-dts");
+				gst_caps_unref (src_caps);
 			}
-
-			gst_iterator_free (iter);
 			gst_object_unref (wavparse);
 		}
 
@@ -974,15 +959,18 @@ brasero_metadata_process_element_messages (BraseroMetadata *self,
 					   GstMessage *msg)
 {
 	BraseroMetadataPrivate *priv;
+	const GstStructure *s;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
+	s = gst_message_get_structure (msg);
+
 	/* This is for snapshot function */
-	if (!strcmp (gst_structure_get_name (msg->structure), "preroll-pixbuf")
-	||  !strcmp (gst_structure_get_name (msg->structure), "pixbuf")) {
+	if (gst_message_has_name (msg, "preroll-pixbuf")
+	||  gst_message_has_name (msg, "pixbuf")) {
 		const GValue *value;
 
-		value = gst_structure_get_value (msg->structure, "pixbuf");
+		value = gst_structure_get_value (s, "pixbuf");
 		priv->info->snapshot = g_value_get_object (value);
 		g_object_ref (priv->info->snapshot);
 
@@ -997,25 +985,25 @@ brasero_metadata_process_element_messages (BraseroMetadata *self,
 	&&   gst_is_missing_plugin_message (msg)) {
 		priv->missing_plugins = g_slist_prepend (priv->missing_plugins, gst_message_ref (msg));
 	}
-	else if (!strcmp (gst_structure_get_name (msg->structure), "level")
-	&&   gst_structure_has_field (msg->structure, "peak")) {
+	else if (gst_message_has_name (msg, "level")
+	&&   gst_structure_has_field (s, "peak")) {
 		const GValue *value;
 		const GValue *list;
 		gdouble peak;
 
-		list = gst_structure_get_value (msg->structure, "peak");
+		/* FIXME: this might still be changed to GValueArray before 1.0 release */
+		list = gst_structure_get_value (s, "peak");
 		value = gst_value_list_get_value (list, 0);
 		peak = g_value_get_double (value);
 
 		/* detection of silence */
 		if (peak < -50.0) {
 			gint64 pos = -1;
-			GstFormat format = GST_FORMAT_TIME;
 
 			/* was there a silence last time we check ?
 			 * NOTE: if that's the first signal we receive
 			 * then consider that silence started from 0 */
-			gst_element_query_position (priv->pipeline, &format, &pos);
+			gst_element_query_position (priv->pipeline, GST_FORMAT_TIME, &pos);
 			if (pos == -1) {
 				BRASERO_UTILS_LOG ("impossible to retrieve position");
 				return TRUE;
@@ -1110,7 +1098,6 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 			       GstElement *pipeline,
 			       gboolean use_duration)
 {
-	GstFormat format = GST_FORMAT_TIME;
 	BraseroMetadataPrivate *priv;
 	gint64 duration = -1;
 
@@ -1118,11 +1105,11 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 
 	if (!use_duration)
 		gst_element_query_position (GST_ELEMENT (pipeline),
-					    &format,
+					    GST_FORMAT_TIME,
 					    &duration);
 	else
 		gst_element_query_duration (GST_ELEMENT (pipeline),
-					    &format,
+					    GST_FORMAT_TIME,
 					    &duration);
 
 	if (duration == -1) {
@@ -1200,7 +1187,7 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 
 	source = gst_element_make_from_uri (GST_URI_SRC,
 					    priv->info->uri,
-					    NULL);
+					    NULL, NULL);
 	if (!source) {
 		priv->error = g_error_new (BRASERO_UTILS_ERROR,
 					   BRASERO_UTILS_ERROR_GENERAL,
@@ -1485,12 +1472,12 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 		      "max-lateness", (gint64) - 1,
 		      NULL);
 
-	colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
+	colorspace = gst_element_factory_make ("videoconvert", NULL);
 	if (!colorspace) {
 		gst_object_unref (priv->video);
 		priv->video = NULL;
 
-		BRASERO_UTILS_LOG ("ffmpegcolorspace is not installed");
+		BRASERO_UTILS_LOG ("videoconvert is not installed");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (priv->video), colorspace);
@@ -1642,7 +1629,6 @@ brasero_metadata_audio_caps (BraseroMetadata *self,
 static void
 brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 				     GstPad *pad,
-				     gboolean is_lastpad, /* deprecated */
 				     BraseroMetadata *self)
 {
 	GstPad *sink;
@@ -1661,11 +1647,13 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	BRASERO_UTILS_LOG ("New pad for %s", priv->info->uri);
 
 	/* make sure that this is audio / video */
-	caps = gst_pad_get_caps (pad);
-	structure = gst_caps_get_structure (caps, 0);
-	if (!structure)
+	/* FIXME: get_current_caps() doesn't always seem to work yet here */
+	caps = gst_pad_query_caps (pad, NULL);
+	if (!caps) {
+		g_warning ("Expected caps on decodebin pad %s", GST_PAD_NAME (pad));
 		return;
-
+	}
+	structure = gst_caps_get_structure (caps, 0);
 	name = gst_structure_get_name (structure);
 
 	has_audio = (g_strrstr (name, "audio") != NULL);
@@ -1687,7 +1675,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 		}
 	}
 
-	if (g_strrstr (name, "video/x-raw-") && !priv->video_linked) {
+	if (!strcmp (name, "video/x-raw") && !priv->video_linked) {
 		BRASERO_UTILS_LOG ("RAW video stream found");
 
 		if (!priv->video && (priv->flags & BRASERO_METADATA_FLAG_THUMBNAIL)) {
@@ -1747,7 +1735,7 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 					   "\"Decodebin\"");
 		return FALSE;
 	}
-	g_signal_connect (G_OBJECT (priv->decode), "new-decoded-pad",
+	g_signal_connect (G_OBJECT (priv->decode), "pad-added",
 			  G_CALLBACK (brasero_metadata_new_decoded_pad_cb),
 			  self);
 
@@ -1833,7 +1821,7 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 	/* create a necessary source */
 	priv->source = gst_element_make_from_uri (GST_URI_SRC,
 						  uri,
-						  NULL);
+						  NULL, NULL);
 	if (!priv->source) {
 		priv->error = g_error_new (BRASERO_UTILS_ERROR,
 					   BRASERO_UTILS_ERROR_GENERAL,

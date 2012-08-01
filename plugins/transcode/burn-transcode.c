@@ -66,7 +66,6 @@ static gboolean brasero_transcode_bus_messages (GstBus *bus,
 						BraseroTranscode *transcode);
 static void brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 						  GstPad *pad,
-						  gboolean arg2,
 						  BraseroTranscode *transcode);
 
 struct BraseroTranscodePrivate {
@@ -99,21 +98,25 @@ typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
 
 static GObjectClass *parent_class = NULL;
 
-static gboolean
+/* FIXME: this entire function looks completely wrong, if there is or
+ * was a bug in GStreamer it should be fixed there (tpm) */
+static GstPadProbeReturn
 brasero_transcode_buffer_handler (GstPad *pad,
-				  GstBuffer *buffer,
-				  BraseroTranscode *self)
+                                  GstPadProbeInfo *info,
+                                  gpointer user_data)
 {
 	BraseroTranscodePrivate *priv;
+	BraseroTranscode *self = user_data;
+	GstBuffer *buffer = GST_PAD_PROBE_INFO_BUFFER (info);
 	GstPad *peer;
 	gint64 size;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (self);
 
-	size = GST_BUFFER_SIZE (buffer);
+	size = gst_buffer_get_size (buffer);
 
 	if (priv->segment_start <= 0 && priv->segment_end <= 0)
-		return TRUE;
+		return GST_PAD_PROBE_OK;
 
 	/* what we do here is more or less what gstreamer does when seeking:
 	 * it reads and process from 0 to the seek position (I tried).
@@ -121,7 +124,7 @@ brasero_transcode_buffer_handler (GstPad *pad,
 	 * is a problem in our case as it would be written) */
 	if (priv->size > priv->segment_end) {
 		priv->size += size;
-		return FALSE;
+		return GST_PAD_PROBE_DROP;
 	}
 
 	if (priv->size + size > priv->segment_end) {
@@ -132,9 +135,9 @@ brasero_transcode_buffer_handler (GstPad *pad,
 		/* create a new buffer and push it on the pad:
 		 * NOTE: we're going to receive it ... */
 		data_size = priv->segment_end - priv->size;
-		new_buffer = gst_buffer_new_and_alloc (data_size);
-		memcpy (GST_BUFFER_DATA (new_buffer), GST_BUFFER_DATA (buffer), data_size);
+		new_buffer = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_METADATA, 0, data_size);
 
+		/* FIXME: we can now modify the probe buffer in 0.11 */
 		/* Recursive: the following calls ourselves BEFORE we finish */
 		peer = gst_pad_get_peer (pad);
 		gst_pad_push (peer, new_buffer);
@@ -144,7 +147,7 @@ brasero_transcode_buffer_handler (GstPad *pad,
 		/* post an EOS event to stop pipeline */
 		gst_pad_push_event (peer, gst_event_new_eos ());
 		gst_object_unref (peer);
-		return FALSE;
+		return GST_PAD_PROBE_DROP;
 	}
 
 	/* see if the buffer is in the segment */
@@ -155,36 +158,33 @@ brasero_transcode_buffer_handler (GstPad *pad,
 		/* see if all the buffer is interesting for us */
 		if (priv->size + size < priv->segment_start) {
 			priv->size += size;
-			return FALSE;
+			return GST_PAD_PROBE_DROP;
 		}
 
 		/* create a new buffer and push it on the pad:
 		 * NOTE: we're going to receive it ... */
 		data_size = priv->size + size - priv->segment_start;
-		new_buffer = gst_buffer_new_and_alloc (data_size);
-		memcpy (GST_BUFFER_DATA (new_buffer),
-			GST_BUFFER_DATA (buffer) +
-			GST_BUFFER_SIZE (buffer) -
-			data_size,
-			data_size);
+		new_buffer = gst_buffer_copy_region (buffer, GST_BUFFER_COPY_METADATA, size - data_size, data_size);
+		/* FIXME: this looks dodgy (tpm) */
 		GST_BUFFER_TIMESTAMP (new_buffer) = GST_BUFFER_TIMESTAMP (buffer) + data_size;
 
 		/* move forward by the size of bytes we dropped */
 		priv->size += size - data_size;
 
+		/* FIXME: we can now modify the probe buffer in 0.11 */
 		/* this is recursive the following calls ourselves 
 		 * BEFORE we finish */
 		peer = gst_pad_get_peer (pad);
 		gst_pad_push (peer, new_buffer);
 		gst_object_unref (peer);
 
-		return FALSE;
+		return GST_PAD_PROBE_DROP;
 	}
 
 	priv->size += size;
 	priv->pos += size;
 
-	return TRUE;
+	return GST_PAD_PROBE_OK;
 }
 
 static BraseroBurnResult
@@ -236,11 +236,9 @@ brasero_transcode_send_volume_event (BraseroTranscode *transcode)
 		track_gain = g_value_get_double (value);
 
 	/* it's possible we fail */
-	tag_list = gst_tag_list_new ();
-	gst_tag_list_add (tag_list, GST_TAG_MERGE_REPLACE,
-			  GST_TAG_TRACK_GAIN, track_gain,
-			  GST_TAG_TRACK_PEAK, track_peak,
-			  NULL);
+	tag_list = gst_tag_list_new (GST_TAG_TRACK_GAIN, track_gain,
+				     GST_TAG_TRACK_PEAK, track_peak,
+				     NULL);
 
 	/* NOTE: that event is goind downstream */
 	event = gst_event_new_tag (tag_list);
@@ -361,34 +359,6 @@ brasero_transcode_error_on_pad_linking (BraseroTranscode *self,
 	g_object_unref (bus);
 }
 
-static void
-brasero_transcode_wavparse_pad_added_cb (GstElement *wavparse,
-                                         GstPad *new_pad,
-                                         gpointer user_data)
-{
-	GstPad *pad = NULL;
-	BraseroTranscodePrivate *priv;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (user_data);
-
-	pad = gst_element_get_static_pad (priv->sink, "sink");
-	if (!pad) 
-		goto error;
-
-	if (gst_pad_link (new_pad, pad) != GST_PAD_LINK_OK)
-		goto error;
-
-	gst_element_set_state (priv->sink, GST_STATE_PLAYING);
-	return;
-
-error:
-
-	if (pad)
-		gst_object_unref (pad);
-
-	brasero_transcode_error_on_pad_linking (BRASERO_TRANSCODE (user_data), "Sent by brasero_transcode_wavparse_pad_added_cb");
-}
-
 static gboolean
 brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 				   GError **error)
@@ -429,8 +399,8 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 
 	/* create three types of pipeline according to the needs: (possibly adding grvolume)
 	 * - filesrc ! decodebin ! audioconvert ! fakesink (find size) and filesrc!mp3parse!fakesink for mp3s
-	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw-int,rate=44100,width=16,depth=16,endianness=4321,signed ! filesink
-	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw-int,rate=44100,width=16,depth=16,endianness=4321,signed ! fdsink
+	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw,format=S16BE,rate=44100 ! filesink
+	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw,format=S16BE,rate=44100 ! fdsink
 	 */
 	pipeline = gst_pipeline_new (NULL);
 
@@ -443,7 +413,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	/* source */
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
-	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL, NULL);
 	g_free (uri);
 
 	if (source == NULL) {
@@ -546,7 +516,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		}
 		gst_bin_add (GST_BIN (pipeline), wavparse);
 
-		if (!gst_element_link (source, wavparse)) {
+		if (!gst_element_link_many (source, wavparse, sink, NULL)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -554,19 +524,15 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 			goto error;
 		}
 
-		g_signal_connect (wavparse,
-		                  "pad-added",
-		                  G_CALLBACK (brasero_transcode_wavparse_pad_added_cb),
-		                  transcode);
-
 		/* This is an ugly workaround for the lack of accuracy with
 		 * gstreamer. Yet this is unfortunately a necessary evil. */
+		/* FIXME: this does not look like it makes sense... (tpm) */
 		priv->pos = 0;
 		priv->size = 0;
-		sinkpad = gst_element_get_pad (sink, "sink");
-		priv->probe = gst_pad_add_buffer_probe (sinkpad,
-							G_CALLBACK (brasero_transcode_buffer_handler),
-							transcode);
+		sinkpad = gst_element_get_static_pad (sink, "sink");
+		priv->probe = gst_pad_add_probe (sinkpad, GST_PAD_PROBE_TYPE_BUFFER,
+		                                 brasero_transcode_buffer_handler,
+		                                 transcode, NULL);
 		gst_object_unref (sinkpad);
 
 
@@ -625,14 +591,11 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 			goto error;
 		}
 		gst_bin_add (GST_BIN (pipeline), filter);
-		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-								   "channels", G_TYPE_INT, 2,
-								   "width", G_TYPE_INT, 16,
-								   "depth", G_TYPE_INT, 16,
+		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw",
 								   /* NOTE: we use little endianness only for libburn which requires little */
-								   "endianness", G_TYPE_INT, (session_format & BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN) != 0 ? 1234:4321,
+								   "format", G_TYPE_STRING, (session_format & BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN) != 0 ? "S16LE" : "S16BE",
+								   "channels", G_TYPE_INT, 2,
 								   "rate", G_TYPE_INT, 44100,
-								   "signed", G_TYPE_BOOLEAN, TRUE,
 								   NULL),
 						NULL);
 		g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
@@ -666,7 +629,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 
 		priv->link = resample;
 		g_signal_connect (G_OBJECT (decode),
-				  "new-decoded-pad",
+				  "pad-added",
 				  G_CALLBACK (brasero_transcode_new_decoded_pad_cb),
 				  transcode);
 
@@ -697,12 +660,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 
 		/* This is an ugly workaround for the lack of accuracy with
 		 * gstreamer. Yet this is unfortunately a necessary evil. */
+		/* FIXME: this does not look like it makes sense... (tpm) */
 		priv->pos = 0;
 		priv->size = 0;
-		sinkpad = gst_element_get_pad (sink, "sink");
-		priv->probe = gst_pad_add_buffer_probe (sinkpad,
-							G_CALLBACK (brasero_transcode_buffer_handler),
-							transcode);
+		sinkpad = gst_element_get_static_pad (sink, "sink");
+		priv->probe = gst_pad_add_probe (sinkpad, GST_PAD_PROBE_TYPE_BUFFER,
+		                                 brasero_transcode_buffer_handler,
+		                                 transcode, NULL);
 		gst_object_unref (sinkpad);
 	}
 	else {
@@ -718,7 +682,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 
 		priv->link = convert;
 		g_signal_connect (G_OBJECT (decode),
-				  "new-decoded-pad",
+				  "pad-added",
 				  G_CALLBACK (brasero_transcode_new_decoded_pad_cb),
 				  transcode);
 	}
@@ -1005,9 +969,9 @@ brasero_transcode_stop_pipeline (BraseroTranscode *transcode)
 	if (!priv->pipeline)
 		return;
 
-	sinkpad = gst_element_get_pad (priv->sink, "sink");
+	sinkpad = gst_element_get_static_pad (priv->sink, "sink");
 	if (priv->probe)
-		gst_pad_remove_buffer_probe (sinkpad, priv->probe);
+		gst_pad_remove_probe (sinkpad, priv->probe);
 
 	gst_object_unref (sinkpad);
 
@@ -1322,7 +1286,6 @@ brasero_transcode_get_duration (BraseroTranscode *transcode)
 {
 	gint64 duration = -1;
 	BraseroTranscodePrivate *priv;
-	GstFormat format = GST_FORMAT_TIME;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
@@ -1331,17 +1294,17 @@ brasero_transcode_get_duration (BraseroTranscode *transcode)
 		/* This is the most reliable way to get the duration for mp3
 		 * read them till the end and get the position. */
 		gst_element_query_position (priv->pipeline,
-					    &format,
+					    GST_FORMAT_TIME,
 					    &duration);
 	}
 
 	/* This is for any sort of files */
 	if (duration == -1 || duration == 0)
 		gst_element_query_duration (priv->pipeline,
-					    &format,
+					    GST_FORMAT_TIME,
 					    &duration);
 
-	BRASERO_JOB_LOG (transcode, "got duration %"G_GINT64_FORMAT, duration);
+	BRASERO_JOB_LOG (transcode, "got duration %" GST_TIME_FORMAT, GST_TIME_ARGS (duration));
 
 	if (duration == -1 || duration == 0)	
 	    brasero_job_error (BRASERO_JOB (transcode),
@@ -1623,7 +1586,6 @@ brasero_transcode_bus_messages (GstBus *bus,
 static void
 brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				      GstPad *pad,
-				      gboolean arg2,
 				      BraseroTranscode *transcode)
 {
 	GstCaps *caps;
@@ -1635,7 +1597,8 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 	BRASERO_JOB_LOG (transcode, "New pad");
 
 	/* make sure we only have audio */
-	caps = gst_pad_get_caps (pad);
+	/* FIXME: get_current_caps() doesn't always seem to work yet here */
+	caps = gst_pad_query_caps (pad, NULL);
 	if (!caps)
 		return;
 
@@ -1659,7 +1622,7 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				goto end;
 			}
 
-			sink = gst_element_get_pad (queue, "sink");
+			sink = gst_element_get_static_pad (queue, "sink");
 			if (GST_PAD_IS_LINKED (sink)) {
 				brasero_transcode_error_on_pad_linking (transcode, "Sent by brasero_transcode_new_decoded_pad_cb");
 				goto end;
