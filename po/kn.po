@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: brasero.master.kn\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-15 14:20+0000\n"
-"PO-Revision-Date: 2012-03-18 16:31+0530\n"
-"Last-Translator: s\n"
+"POT-Creation-Date: 2012-04-17 03:52+0000\n"
+"PO-Revision-Date: 2012-08-10 16:22+0530\n"
+"Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,89 +24,45 @@ msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Brasero ಡಿಸ್ಕ್ ಬರಹಗಾರ"
+msgid "Disc Burner and Copier"
+msgstr "ಡಿಸ್ಕ್ ಬರಹಗಾರ ಹಾಗು ಕಾಪಿ ಮಾಡುವವ"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "CD ಮತ್ತು DVDಗಳನ್ನು ಸೃಷ್ಟಿಸಿ ಮತ್ತು ಬರೆಯಿರಿ"
 
 #: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "ಡಿಸ್ಕ್ ಬರಹಗಾರ ಹಾಗು ಕಾಪಿ ಮಾಡುವವ"
+msgid "Brasero Disc Burner"
+msgstr "Brasero ಡಿಸ್ಕ್ ಬರಹಗಾರ"
+
+#: ../data/brasero.desktop.in.in.h:5
+msgid "Open a New Window"
+msgstr "ಹೊಸ ಕಿಟಕಿಯನ್ನು ತೆರೆ"
+
+#: ../data/brasero.desktop.in.in.h:6
+#| msgid "Burn as _Image"
+msgid "Burn an Image File"
+msgstr "ಪ್ರತಿರೂಪ ಕಡತವಾಗಿ ಬರೆ"
+
+#: ../data/brasero.desktop.in.in.h:7
+#| msgid "Create a new project"
+msgid "Create an Audio Project"
+msgstr "ಒಂದು ಆಡಿಯೊ ಪರಿಯೋಜನೆಯನ್ನು ರಚಿಸಿ"
+
+#: ../data/brasero.desktop.in.in.h:8
+#| msgid "Create a new project"
+msgid "Create a Video Project"
+msgstr "ಒಂದು ವೀಡಿಯೊ ಪರಿಯೋಜನೆಯನ್ನು ರಚಿಸಿ"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "Brasero ಪರಿಯೋಜನೆ ಕಡತ"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "ಬಳಸಬೇಕಿರುವ ಬರೆಯುವ ಫ್ಲ್ಯಾಗ್"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
-msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
-msgstr ""
-"ಚಿತ್ರಗಳನ್ನು ಈ ಹಿಂದೆ ಬರೆಯಲು ವೀಕ್ಷಿಸಲಾದ ಕೋಶದ ನಿಖರವಾದ ಮಾರ್ಗವನ್ನು ಹೊಂದಿರುತ್ತದೆ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"Brasero ಡಿಸ್ಕುಗಳನ್ನು ಬರೆಯಲು ಬಳಸುವ ಹೆಚ್ಚುವರಿ ಪ್ಲಗ್‌ಇನ್‌ಗಳನ್ನು ಇದು ಹೊಂದಿದೆ. "
-"NULL ಗೆ "
-"ಹೊಂದಿಸಿದಲ್ಲಿ, Brasero ಅವೆಲ್ಲವನ್ನೂ ಲೋಡ್ ಮಾಡುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"ಅನುಸ್ಥಾಪಿಸಲಾದ ಅಚ್ಚುಮೆಚ್ಚಿನ ಬರೆಯುವ ಎಂಜಿನ್ ಸೂಟ್ ಅನ್ನು ಹೊಂದಿದೆ. ಸಾಧ್ಯವಾದಲ್ಲಿ "
-"ಅದನ್ನು "
-"ಬಳಸಲಾಗುವುದು."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
-msgid ""
-"Contains the path to the directory where brasero should store temporary "
-"files. If that value is empty, the default directory set for glib will be "
-"used."
-msgstr ""
-"brasero ಎಲ್ಲಿ ತಾತ್ಕಾಲಿಕ ಕಡತಗಳನ್ನು ಶೇಖರಿಸಿ ಇರಿಸಬೇಕೊ ಅದರ ಮಾರ್ಗವನ್ನು "
-"ಹೊಂದಿರುತ್ತದೆ. ಆ ಮೌಲ್ಯವು ಖಾಲಿ ಇದ್ದಲ್ಲಿ, glib ಗಾಗಿ ಹೊಂದಿಸಲಾದ ಪೂರ್ವನಿಯೋಜಿತ "
-"ಕೋಶವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-msgid "Directory to use for temporary files"
-msgstr "ತಾತ್ಕಾಲಿಕ ಕಡತಗಳನ್ನು ಶೇಖರಿಸಿಡಬೇಕಿರುವ ಕೋಶ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "ಕಡತ ಮುನ್ನೋಟವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
-msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "\"-immed\" ಫ್ಲಾಗ್‌ ಅನ್ನು cdrecordನೊಂದಿಗೆ ಶಕ್ತಗೊಳಿಸಿ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
-msgid "Favourite burn engine"
-msgstr "ಅಚ್ಚುಮೆಚ್ಚಿನ ಬರೆಯುವ ಎಂಜಿನ್"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "ಸಾಂಕೇತಿಕಕೊಂಡಿಗಳನ್ನು ಅವುಗಳ ಗುರಿಯಿಂದ ಬದಲಾಯಿಸು"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "MD5 ಗಾಗಿ 0 ಅನ್ನು, SHA1 ಗಾಗಿ 1 ಅನ್ನು ಮತ್ತು SHA256 ಗಾಗಿ 2 ಅನ್ನು ಹೊಂದಿಸಿ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
 msgid "Should Nautilus extension output debug statements"
 msgstr "Nautilus ವಿಸ್ತರಣೆಯು ದೋಷ ನಿವಾರಣಾ ಹೇಳಿಕೆಗಳನ್ನು ಉತ್ಪಾದಿಸಬೇಕೆ"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+#: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
@@ -115,113 +71,63 @@ msgstr ""
 "ಇದನ್ನು "
 "true ಗೆ ಹೊಂದಿಸಬೇಕು."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "brasero ತುಂಡಾದ ಸಾಂಕೇತಿಕ ಕಡತಗಳನ್ನು ಸೋಸಬೇಕೆ(ಫಿಲ್ಟರ್)"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
-msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
-msgstr ""
-"brasero ತುಂಡಾದ ಸಾಂಕೇತಿಕ ಕಡತಗಳನ್ನು ಸೋಸಬೇಕೆ(ಫಿಲ್ಟರ್). true ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ "
-"ತುಂಡಾದ "
-"ಕೊಂಡಿಗಳನ್ನು brasero ಸೋಸುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
-msgid "Should brasero filter hidden files"
-msgstr "ಅಡಗಿಸಲಾದ ಕಡತಗಳನ್ನು brasero ಸೋಸಬೇಕೆ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr ""
-"ಅಡಗಿಸಲಾದ ಕಡತಗಳನ್ನು brasero ಸೋಸಬೇಕೆ. true ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ ಅಡಗಿಸದ ಕಡತಗಳನ್ನು "
-"brasero ಸೋಸುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
-msgid ""
-"Should brasero replace symbolic links by their target files in the project. "
-"Set to true, brasero will replace symbolic links."
-msgstr ""
-"brasero ಪರಿಯೋಜನೆಯಲ್ಲಿನ ಸಾಂಕೇತಿಕಕೊಂಡಿಗಳನ್ನು ಅವುಗಳ ಗುರಿಯ ಕಡತಗಳ ಬದಲಾಯಿಸಬೇಕೆ. "
-"true "
-"ಗೆ ಬದಲಾಯಿಸಿದಲ್ಲಿ, brasero ಸಾಂಕೇತಿಕಕೊಂಡಿಗಳನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr "ಚಿತ್ರಗಳನ್ನು ಬರೆಯಲು ಈ ಹಿಂದೆ ವೀಕ್ಷಿಸಿಲಾದ ಕಡತಕೋ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
-msgid "The priority value for the plugin"
-msgstr "ಪ್ಲಗ್‌ಇನ್‌ನ ಆದ್ಯತೆಯ ಮೌಲ್ಯ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "ಬಳಸಬೇಕಿರುವ ವೇಗ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr "ಚಿತ್ರಿಕೆ ಕಡತಗಳಿಗಾಗಿ ಬಳಸಲಾದ checksum ನ ಬಗೆ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#: ../data/org.gnome.brasero.gschema.xml.in.h:3
 msgid "The type of checksum used for images"
 msgstr "ಚಿತ್ರಿಕೆ ಕಡತಗಳಿಗಾಗಿ ಬಳಸಲಾದ checksum"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "MD5 ಗಾಗಿ 0 ಅನ್ನು, SHA1 ಗಾಗಿ 1 ಅನ್ನು ಮತ್ತು SHA256 ಗಾಗಿ 2 ಅನ್ನು ಹೊಂದಿಸಿ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr "ಚಿತ್ರಿಕೆ ಕಡತಗಳಿಗಾಗಿ ಬಳಸಲಾದ checksum ನ ಬಗೆ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "ತಾತ್ಕಾಲಿಕ ಕಡತಗಳನ್ನು ಶೇಖರಿಸಿಡಬೇಕಿರುವ ಕೋಶ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
+"Contains the path to the directory where brasero should store temporary "
+"files. If that value is empty, the default directory set for glib will be "
+"used."
 msgstr ""
-"ಈ ಮೌಲ್ಯವನ್ನು ಈ ಹಿಂದೆ ಬಳಸಲಾದಂತಹ ಸನ್ನಿವೇಶದಲ್ಲಿನ ಬರೆಯುವ ಫ್ಲಾಗ್‌ಗಳನ್ನು "
-"ಸೂಚಿಸುತ್ತದೆ."
+"brasero ಎಲ್ಲಿ ತಾತ್ಕಾಲಿಕ ಕಡತಗಳನ್ನು ಶೇಖರಿಸಿ ಇರಿಸಬೇಕೊ ಅದರ ಮಾರ್ಗವನ್ನು "
+"ಹೊಂದಿರುತ್ತದೆ. ಆ "
+"ಮೌಲ್ಯವು ಖಾಲಿ ಇದ್ದಲ್ಲಿ, glib ಗಾಗಿ ಹೊಂದಿಸಲಾದ ಪೂರ್ವನಿಯೋಜಿತ ಕೋಶವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+msgid "Favourite burn engine"
+msgstr "ಅಚ್ಚುಮೆಚ್ಚಿನ ಬರೆಯುವ ಎಂಜಿನ್"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
 msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr "ಈ ಮೌಲ್ಯವನ್ನು ಈ ಹಿಂದೆ ಬಳಸಲಾದಂತಹ ಸನ್ನಿವೇಶದಲ್ಲಿನ ವೇಗವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "cdrecord ನಲ್ಲಿ \"-immed\" ಫ್ಲಾಗಿನೊಂದಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "cdrecord ನಲ್ಲಿ \"-immed\" ಫ್ಲಾಗಿನೊಂದಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
-msgid ""
-"When several plugins are available for the same task, this value is used to "
-"determine which plugin should be given priority. 0 means the plugin's native "
-"priority is used. A positive value overrides the plugin's native priority. A "
-"negative value disables the plugin."
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
 msgstr ""
-"ಒಂದೇ ಕೆಲಸಕ್ಕಾಗಿ ಹಲವಾರು ಪ್ಲಗ್‌ಇನ್‌ಗಳು ಲಭ್ಯವಿದ್ದಾಗ, ಈ ಮೌಲ್ಯವು ಯಾವ ಪ್ಲಗ್‌ಇನ್‌ಗೆ "
-"ಹೆಚ್ಚಿನ ಆದ್ಯತೆಯನ್ನು ನೀಡಬೇಕು ಎನ್ನುವುದನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ. 0 ಎಂದರೆ ಪ್ಲಗ್‌ಇನ್‌ನ "
-"ಮೂಲ ಆದ್ಯತೆಯನ್ನು ಬಳಸಬೇಕು ಎಂದರ್ಥ. ಧನಾತ್ಮಕ ಮೌಲ್ಯವು ಪ್ಲಗ್‌ಇನ್‌ನ ಮೂಲ ಆದ್ಯತೆಯನ್ನು "
-"ಬದಲಾಯಿಸುತ್ತದೆ. ಒಂದು ಋಣ ಮೌಲ್ಯವು ಪ್ಲಗ್‌ಇನ್‌ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ."
+"ಅನುಸ್ಥಾಪಿಸಲಾದ ಅಚ್ಚುಮೆಚ್ಚಿನ ಬರೆಯುವ ಎಂಜಿನ್ ಸೂಟ್ ಅನ್ನು ಹೊಂದಿದೆ. ಸಾಧ್ಯವಾದಲ್ಲಿ "
+"ಅದನ್ನು "
+"ಬಳಸಲಾಗುವುದು."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "ಕಡತಮುನ್ನೋಟ ತೋರಿಸಬೇಕೆ ? ಅದನ್ನು ಬಳಸಲು ಅದನ್ನು 'true' ಎಂದಿಡಿ."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+msgid "White list of additional plugins to use"
+msgstr "ಬಳಸಲು ಹೆಚ್ಚುವರಿ ಪ್ಲಗ್‌ಇನ್‌ಗಳ ಶ್ವೇತ ಪಟ್ಟಿ"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "cdrdao ನೊಂದಿಗೆ \"--driver generic-mmc-raw\" ಫ್ಲಾಗನ್ನು ಬಳಸಬೇಕೆ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+#: ../data/org.gnome.brasero.gschema.xml.in.h:11
 msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
 msgstr ""
-"cdrdao ನೊಂದಿಗೆ \"--driver generic-mmc-raw\" ಫ್ಲಾಗಿನೊಂದಿಗೆ ಬಳಸಬೇಕೆ. True ಗೆ "
-"ಹೊಂದಿಸಿದಲ್ಲಿ, brasero ಇದನ್ನು ಬಳಸುತ್ತದೆ; ಕೆಲವು ಡ್ರೈವ್‌ಗಳು/ಸಿದ್ಧತೆಗಳಿಗೆ ಇದು "
-"ಒಂದು "
-"ಪರ್ಯಾಯಮಾರ್ಗವಾಗಿರಬಹುದು."
+"Brasero ಡಿಸ್ಕುಗಳನ್ನು ಬರೆಯಲು ಬಳಸುವ ಹೆಚ್ಚುವರಿ ಪ್ಲಗ್‌ಇನ್‌ಗಳನ್ನು ಇದು ಹೊಂದಿದೆ. "
+"NULL ಗೆ "
+"ಹೊಂದಿಸಿದಲ್ಲಿ, Brasero ಅವೆಲ್ಲವನ್ನೂ ಲೋಡ್ ಮಾಡುತ್ತದೆ."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "\"-immed\" ಫ್ಲಾಗ್‌ ಅನ್ನು cdrecordನೊಂದಿಗೆ ಶಕ್ತಗೊಳಿಸಿ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -231,11 +137,11 @@ msgstr ""
 "ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ) ಏಕೆಂದರೆ ಕೆಲವು ಡ್ರೈವ್‌ಗಳು/ಸಿದ್ಧತೆಗಳಿಗೆ ಮಾತ್ರ ಇದು ಒಂದು ಪರ್ಯಾಯ "
 "ಮಾರ್ಗವಾಗಿರುತ್ತದೆ."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.in.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr "growisofs ನೊಂದಿಗೆ \"-use-the-force-luke=dao\" ಫ್ಲಾಗ್‌ ಅನ್ನು ಬಳಸಬೇಕೆ"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -245,9 +151,125 @@ msgstr ""
 "ಒಂದು "
 "ಪರ್ಯಾಯ ಮಾರ್ಗವಾಗಿರಬಹುದು."
 
+#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "cdrecord ನಲ್ಲಿ \"-immed\" ಫ್ಲಾಗಿನೊಂದಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "cdrecord ನಲ್ಲಿ \"-immed\" ಫ್ಲಾಗಿನೊಂದಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "cdrdao ನೊಂದಿಗೆ \"--driver generic-mmc-raw\" ಫ್ಲಾಗನ್ನು ಬಳಸಬೇಕೆ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"cdrdao ನೊಂದಿಗೆ \"--driver generic-mmc-raw\" ಫ್ಲಾಗಿನೊಂದಿಗೆ ಬಳಸಬೇಕೆ. True ಗೆ "
+"ಹೊಂದಿಸಿದಲ್ಲಿ, brasero ಇದನ್ನು ಬಳಸುತ್ತದೆ; ಕೆಲವು ಡ್ರೈವ್‌ಗಳು/ಸಿದ್ಧತೆಗಳಿಗೆ ಇದು "
+"ಒಂದು "
+"ಪರ್ಯಾಯಮಾರ್ಗವಾಗಿರಬಹುದು."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr "ಚಿತ್ರಗಳನ್ನು ಬರೆಯಲು ಈ ಹಿಂದೆ ವೀಕ್ಷಿಸಿಲಾದ ಕಡತಕೋಶ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr ""
+"ಚಿತ್ರಗಳನ್ನು ಈ ಹಿಂದೆ ಬರೆಯಲು ವೀಕ್ಷಿಸಲಾದ ಕೋಶದ ನಿಖರವಾದ ಮಾರ್ಗವನ್ನು ಹೊಂದಿರುತ್ತದೆ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "ಕಡತ ಮುನ್ನೋಟವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "ಕಡತಮುನ್ನೋಟ ತೋರಿಸಬೇಕೆ ? ಅದನ್ನು ಬಳಸಲು ಅದನ್ನು 'true' ಎಂದಿಡಿ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+msgid "Should brasero filter hidden files"
+msgstr "ಅಡಗಿಸಲಾದ ಕಡತಗಳನ್ನು brasero ಸೋಸಬೇಕೆ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr ""
+"ಅಡಗಿಸಲಾದ ಕಡತಗಳನ್ನು brasero ಸೋಸಬೇಕೆ. true ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ ಅಡಗಿಸದ ಕಡತಗಳನ್ನು "
+"brasero ಸೋಸುತ್ತದೆ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "ಸಾಂಕೇತಿಕಕೊಂಡಿಗಳನ್ನು ಅವುಗಳ ಗುರಿಯಿಂದ ಬದಲಾಯಿಸು"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"brasero ಪರಿಯೋಜನೆಯಲ್ಲಿನ ಸಾಂಕೇತಿಕಕೊಂಡಿಗಳನ್ನು ಅವುಗಳ ಗುರಿಯ ಕಡತಗಳ ಬದಲಾಯಿಸಬೇಕೆ. "
+"true "
+"ಗೆ ಬದಲಾಯಿಸಿದಲ್ಲಿ, brasero ಸಾಂಕೇತಿಕಕೊಂಡಿಗಳನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "brasero ತುಂಡಾದ ಸಾಂಕೇತಿಕ ಕಡತಗಳನ್ನು ಸೋಸಬೇಕೆ(ಫಿಲ್ಟರ್)"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"brasero ತುಂಡಾದ ಸಾಂಕೇತಿಕ ಕಡತಗಳನ್ನು ಸೋಸಬೇಕೆ(ಫಿಲ್ಟರ್). true ಗೆ ಹೊಂದಿಸಿದಲ್ಲಿ "
+"ತುಂಡಾದ "
+"ಕೊಂಡಿಗಳನ್ನು brasero ಸೋಸುತ್ತದೆ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+msgid "The priority value for the plugin"
+msgstr "ಪ್ಲಗ್‌ಇನ್‌ನ ಆದ್ಯತೆಯ ಮೌಲ್ಯ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+msgid ""
+"When several plugins are available for the same task, this value is used to "
+"determine which plugin should be given priority. 0 means the plugin's native "
+"priority is used. A positive value overrides the plugin's native priority. A "
+"negative value disables the plugin."
+msgstr ""
+"ಒಂದೇ ಕೆಲಸಕ್ಕಾಗಿ ಹಲವಾರು ಪ್ಲಗ್‌ಇನ್‌ಗಳು ಲಭ್ಯವಿದ್ದಾಗ, ಈ ಮೌಲ್ಯವು ಯಾವ ಪ್ಲಗ್‌ಇನ್‌ಗೆ "
+"ಹೆಚ್ಚಿನ "
+"ಆದ್ಯತೆಯನ್ನು ನೀಡಬೇಕು ಎನ್ನುವುದನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ. 0 ಎಂದರೆ ಪ್ಲಗ್‌ಇನ್‌ನ ಮೂಲ "
+"ಆದ್ಯತೆಯನ್ನು "
+"ಬಳಸಬೇಕು ಎಂದರ್ಥ. ಧನಾತ್ಮಕ ಮೌಲ್ಯವು ಪ್ಲಗ್‌ಇನ್‌ನ ಮೂಲ ಆದ್ಯತೆಯನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ. "
+"ಒಂದು ಋಣ ಮೌಲ್ಯವು "
+"ಪ್ಲಗ್‌ಇನ್‌ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+msgid "Burning flags to be used"
+msgstr "ಬಳಸಬೇಕಿರುವ ಬರೆಯುವ ಫ್ಲ್ಯಾಗ್"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
+msgstr ""
+"ಈ ಮೌಲ್ಯವನ್ನು ಈ ಹಿಂದೆ ಬಳಸಲಾದಂತಹ ಸನ್ನಿವೇಶದಲ್ಲಿನ ಬರೆಯುವ ಫ್ಲಾಗ್‌ಗಳನ್ನು "
+"ಸೂಚಿಸುತ್ತದೆ."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+msgid "The speed to be used"
+msgstr "ಬಳಸಬೇಕಿರುವ ವೇಗ"
+
 #: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "ಬಳಸಲು ಹೆಚ್ಚುವರಿ ಪ್ಲಗ್‌ಇನ್‌ಗಳ ಶ್ವೇತ ಪಟ್ಟಿ"
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr "ಈ ಮೌಲ್ಯವನ್ನು ಈ ಹಿಂದೆ ಬಳಸಲಾದಂತಹ ಸನ್ನಿವೇಶದಲ್ಲಿನ ವೇಗವನ್ನು ಸೂಚಿಸುತ್ತದೆ."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -3030,11 +3052,12 @@ msgid ""
 "command"
 msgstr ""
 "ಗೂಢಲಿಪೀಕರಣಕ್ಕಾಗಿ ಬಳಸಲಾದ ಕೀಲಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ. ಈ ಕೆಳಗಿನ "
-"ವಿಧಾನದ ಮೂಲಕ ಅಂತಹ ತೊಂದರೆಯನ್ನು ನೀವು ಸರಿಪಡಿಸಲು ಸಾಧ್ಯವಿರುತ್ತದೆ: ಟರ್ಮಿನಲ್‌ನಲ್ಲಿ "
-"\"regionset %s\" ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಸೂಕ್ತವಾದ DVD ಪ್ರದೇಶ ಸಂಕೇತವನ್ನು ನಿಮ್ಮ "
-"CD/DVD ಚಾಲಕಕ್ಕೆ ಹೊಂದಿಸಿ ಅಥವ \"DVDCSS_METHOD=title brasero "
-"--no-existing-session\" "
-"ಆಜ್ಞೆಯನ್ನು ಚಲಾಯಿಸಿ"
+"ವಿಧಾನದ "
+"ಮೂಲಕ ಅಂತಹ ತೊಂದರೆಯನ್ನು ನೀವು ಸರಿಪಡಿಸಲು ಸಾಧ್ಯವಿರುತ್ತದೆ: ಟರ್ಮಿನಲ್‌ನಲ್ಲಿ "
+"\"regionset %s"
+"\" ಆಜ್ಞೆಯನ್ನು ಬಳಸಿಕೊಂಡು ಸೂಕ್ತವಾದ DVD ಪ್ರದೇಶ ಸಂಕೇತವನ್ನು ನಿಮ್ಮ CD/DVD ಚಾಲಕಕ್ಕೆ "
+"ಹೊಂದಿಸಿ ಅಥವ \"DVDCSS_METHOD=title brasero --no-existing-session\" ಆಜ್ಞೆಯನ್ನು "
+"ಚಲಾಯಿಸಿ"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3675,7 +3698,7 @@ msgstr "PATH"
 #. * parent as if brasero was a dialog for the parent application
 #: ../src/brasero-cli.c:147
 msgid "The XID of the parent window"
-msgstr "ಮೂಲ ವಿಂಡೋದ XID"
+msgstr "ಮೂಲ ಕಿಟಕಿಯ XID"
 
 #. Translators: %s is the path of drive
 #: ../src/brasero-cli.c:204
