@@ -1237,7 +1237,7 @@ on_help_cb (GtkAction *action, BraseroApp *app)
 
 	priv = BRASERO_APP_PRIVATE (app);
 
- 	gtk_show_uri (NULL, "ghelp:brasero", gtk_get_current_event_time (), &error);
+	gtk_show_uri (NULL, "help:brasero", gtk_get_current_event_time (), &error);
    	if (error) {
 		GtkWidget *d;
         

@@ -17,8 +17,7 @@ EXTRA_DIST = 			\
 	README			\
 	intltool-extract.in	\
 	intltool-merge.in	\
-	intltool-update.in	\
-	gnome-doc-utils.make
+	intltool-update.in
 
 noinst_PROGRAMS =
 

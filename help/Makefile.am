@@ -1,14 +1,13 @@
-include $(top_srcdir)/gnome-doc-utils.make
-dist-hook: doc-dist-hook
+@YELP_HELP_RULES@
 
 # Module name
-DOC_ID = brasero
+HELP_ID = brasero
 
 # List of figures to be included
-DOC_FIGURES = figures/brasero-main-window.png
+HELP_MEDIA = figures/brasero-main-window.png
 
 # List of pages
-DOC_PAGES = \
+HELP_FILES = \
 	create-cover.page \
 	index.page \
 	introduction.page \
@@ -25,6 +24,6 @@ DOC_PAGES = \
 	tools-check-integrity.page
 
 # List of translations
-DOC_LINGUAS = bg ca cs de el en_GB es eu fi fr gl hu it ko lv pl ro ru sl te sv zh_CN zh_HK zh_TW
+HELP_LINGUAS = bg ca cs de el en_GB es eu fi fr gl hu it ko lv pl ro ru sl te sv zh_CN zh_HK zh_TW
 
 -include $(top_srcdir)/git.mk
