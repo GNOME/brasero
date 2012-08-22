@@ -9,68 +9,112 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-02 12:46+0300\n"
-"PO-Revision-Date: 2012-04-23 12:05+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-06-13 10:08+0000\n"
+"PO-Revision-Date: 2012-08-22 10:45+0200\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
-"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: el\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
-"X-Poedit-Language: Greek\n"
-"X-Poedit-Country: Greece\n"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Εγγραφή δίσκων CD/DVD"
-
-#: ../data/brasero.desktop.in.in.h:3
-msgid "Burn an Image File"
-msgstr "Εγγραφή αρχείου εικό_νας"
-
-#: ../data/brasero.desktop.in.in.h:4
-msgid "Create a Video Project"
-msgstr "Δημιουργία εργασίας βίντεο"
-
-#: ../data/brasero.desktop.in.in.h:5
-msgid "Create an Audio Project"
-msgstr "Δημιουργία εργασίας ήχου"
-
-#: ../data/brasero.desktop.in.in.h:6
-msgid "Create and copy CDs and DVDs"
-msgstr "Εγγραφή και αντιγραφή CD και DVD"
-
-#: ../data/brasero.desktop.in.in.h:7
 msgid "Disc Burner and Copier"
 msgstr "Εγγραφή και αντιγραφή δίσκων"
 
-#: ../data/brasero.desktop.in.in.h:8
+#: ../data/brasero.desktop.in.in.h:3
+msgid "Create and copy CDs and DVDs"
+msgstr "Εγγραφή και αντιγραφή CD και DVD"
+
+#: ../data/brasero.desktop.in.in.h:4
+msgid "Brasero Disc Burner"
+msgstr "Εγγραφή δίσκων CD/DVD"
+
+#: ../data/brasero.desktop.in.in.h:5
 msgid "Open a New Window"
 msgstr "Άνοιγμα ενός νέου παραθύρου"
+
+#: ../data/brasero.desktop.in.in.h:6
+msgid "Burn an Image File"
+msgstr "Εγγραφή αρχείου εικό_νας"
+
+#: ../data/brasero.desktop.in.in.h:7
+msgid "Create an Audio Project"
+msgstr "Δημιουργία εργασίας ήχου"
+
+#: ../data/brasero.desktop.in.in.h:8
+msgid "Create a Video Project"
+msgstr "Δημιουργία εργασίας βίντεο"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "Αρχείο εργασίας του brasero"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "Επιλογές για την εγγραφή που θα χρησιμοποιηθούν"
+msgid "Should Nautilus extension output debug statements"
+msgstr "Should Nautilus extension output debug statements"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
 msgstr ""
-"Περιέχει την απόλυτη διαδρομή του φακέλου στον οποίο έγινε η πιο πρόσφατη "
-"περιήγηση για αρχεία προς εγγραφή."
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
+msgid "The type of checksum used for images"
+msgstr ""
+"Ο τύπος αθροίσματος ελέγχου (checksum) που θα χρησιμοποιηθεί για τα αρχεία "
+"εικόνας"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "Ορίστε σε 0 για MD5, 1για SHA1 και 2 για SHA256"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr ""
+"Ο τύπος αθροίσματος ελέγχου (checksum) που θα χρησιμοποιηθεί για τα αρχεία"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "Κατάλογος αποθήκευσης για τα προσωρινά αρχεία"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+msgid ""
+"Contains the path to the directory where brasero should store temporary "
+"files. If that value is empty, the default directory set for glib will be "
+"used."
+msgstr ""
+"Περιέχει τη διαδρομή για το φάκελο όπου το brasero θα πρέπει να αποθηκεύει "
+"τα προσωρινά αρχεία. Αν η τιμή αυτή είναι κενή, θα χρησιμοποιηθεί ο "
+"προεπιλεγμένος φάκελος για τη glib."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+msgid "Favourite burn engine"
+msgstr "Αγαπημένη μηχανή εγγραφής δίσκων"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"Περιέχει το όνομα της αγαπημένης σουίτας της συσκευής εγγραφής δίσκων. Αν "
+"είναι δυνατόν, θα χρησιμοποιηθεί."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+msgid "White list of additional plugins to use"
+msgstr "Λευκή λίστα με επιπλέον πρόσθετα για χρήση"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:11
 msgid ""
 "Contains the list of additional plugins Brasero will use to burn discs. If "
 "set to NULL, Brasero will load them all."
@@ -79,177 +123,11 @@ msgstr ""
 "για να εγγράψει δίσκους. Αν είναι καθορισμένη σε NULL, το brasero θα τα "
 "φορτώσει όλα."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"Περιέχει το όνομα της αγαπημένης σουίτας της συσκευής εγγραφής δίσκων. Αν "
-"είναι δυνατόν, θα χρησιμοποιηθεί."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
-msgid ""
-"Contains the path to the directory where brasero should store temporary "
-"files. If that value is empty, the default directory set for glib will be "
-"used."
-msgstr ""
-"Περιέχει τη διαδρομή για το φάκελο όπου το brasero θα πρέπει να αποθηκεύει "
-"τα προσωρινά αρχεία. Αν η τιμή αυτή είναι κενή, θα χρησιμοποιθεί ο "
-"προεπιλεγμένος φάκελος για τη glib."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-msgid "Directory to use for temporary files"
-msgstr "Κατάλογος αποθήκευσης για τα προσωρινά αρχεία"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "Ενεργοποίηση προεπισκόπησης αρχείων"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+#: ../data/org.gnome.brasero.gschema.xml.in.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "Ενεργοποίηση σημαίας \"-immed\" με το cdrecord"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
-msgid "Favourite burn engine"
-msgstr "Αγαπημένη μηχανή εγγραφής δίσκων"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "Αντικατάσταση συμβολικών συνδέσμων με τους προορισμούς τους"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "Ορίστε σε 0 για MD5, 1για SHA1 και 2 για SHA256"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
-msgid "Should Nautilus extension output debug statements"
-msgstr "Should Nautilus extension output debug statements"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:13
-msgid ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
-msgstr ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
-msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
-msgstr ""
-"Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών. Αν "
-"καθοριστεί ως αληθής, ο brasero θα φιλτράρει τους κατεστραμμένους "
-"συμβολικούς δεσμούς."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
-msgid "Should brasero filter hidden files"
-msgstr "Αν θα φιλτράρει ο brasero κρυφά αρχεία"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr ""
-"Αν θα φιλτράρει ο brasero κρυφά αρχεία. Αν καθοριστεί ως αληθής, ο brasero "
-"θα φιλτράρει κρυφά αρχεία."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
-msgid ""
-"Should brasero replace symbolic links by their target files in the project. "
-"Set to true, brasero will replace symbolic links."
-msgstr ""
-"Αν θα αντικαθιστά ο brasero τους συμβολικούς συνδέσμους με τα  αρχεία "
-"προορισμού τους στην εργασία. Αν καθοριστεί ως αληθής, ο brasero αντικαθιστά "
-"τους συμβολικούς σύνδεσμους."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr ""
-"Ο πιο πρόσφατος φάκελος όπου έγινε περιήγηση κατά την ανζήτηση εικόνων για "
-"εγγραφή."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
-msgid "The priority value for the plugin"
-msgstr "Η τιμή προτεραιότητας για το πρόσθετο"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "Η ταχύτητα που θα χρησιμοποιηθεί"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr ""
-"Ο τύπος αθροίσματος ελέγχου (checksum) που θα χρησιμοποιηθεί για τα αρχεία"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-msgid "The type of checksum used for images"
-msgstr ""
-"Ο τύπος αθροίσματος ελέγχου (checksum) που θα χρησιμοποιηθεί για τα αρχεία "
-"εικόνας"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
-msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
-msgstr ""
-"Αυτή η τιμή αντιπροσωπεύει τις επιλογές εγγραφής που χρησιμοποιήθηκαν στην "
-"ίδια μορφή εργασίας την τελευταία φορά."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
-msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr ""
-"Αυτή η τιμή αντιπροσωπεύει την ταχύτητα που χρησιμοποιήθηκε στην ίδια μορφή "
-"εργασίας την τελευταία φορά."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "Χρησιμοποιείται σε συνδυασμό με τη σημαία \"-immed\" με το cdrecord"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "Χρησιμοποιείται σε συνδυασμό με τη σημαία \"-immed\" με το cdrecord"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
-msgid ""
-"When several plugins are available for the same task, this value is used to "
-"determine which plugin should be given priority. 0 means the plugin's native "
-"priority is used. A positive value overrides the plugin's native priority. A "
-"negative value disables the plugin."
-msgstr ""
-"Όταν είναι διαθέσιμα πολλά πρόσθετα για την ίδια εργασία, χρησιμοποιείται "
-"αυτή η τιμή για να καθορίσει σε ποιο πρόσθετο θα δοθεί προτεραιότητα. Τιμή 0 "
-"σημαίνει ότι χρησιμποιείται η εγγενής προτεραιότητα του προσθέτου. Μια "
-"θετική τιμή υπερισχύει της εγγενούς προτεραιότητας. Μια αρνητική τιμή "
-"απενεργοποιεί το πρόσθετο."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr ""
-"Αν θα εμφανίζεται η προεπισκόπηση αρχείων. Καθορίστε το ως αληθές για να το "
-"χρησιμοποιήσετε."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr ""
-"Αν θα χρησιμοποιείται η επιλογή \"--driver generic-mmc-raw\" με το cdrdao"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Αν θα χρησιμοποιείται η σημαία \"--driver generic-mmc-raw\" με το cdrdao. Αν "
-"οριστεί ως αληθές το brasero θα το χρησιμοποιεί. Μπορεί να λύσει μερικά "
-"προβλήματα μερικών οδηγών/εγκαταστάσεων."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -258,12 +136,12 @@ msgstr ""
 "με προσοχή (καθορίστε το ως αληθές) επειδή είναι μια παράκαμψη για μερικούς "
 "οδηγούς/ρυθμίσεις."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.in.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
 "Αν θα χρησιμοποιείται η επιλογή \"-use-the-force-luke=dao\" με το growisofs"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -272,9 +150,130 @@ msgstr ""
 "Αν δεν οριστεί ως αληθές ο brasero δε θα το χρησιμοποιήσει. Μπορεί να λύσει "
 "μερικά προβλήματα για μερικούς οδηγούς ή εγκαταστάσεις."
 
+#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "Χρησιμοποιείται σε συνδυασμό με τη σημαία \"-immed\" με το cdrecord"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "Χρησιμοποιείται σε συνδυασμό με τη σημαία \"-immed\" με το cdrecord"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr ""
+"Αν θα χρησιμοποιείται η επιλογή \"--driver generic-mmc-raw\" με το cdrdao"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"Αν θα χρησιμοποιείται η σημαία \"--driver generic-mmc-raw\" με το cdrdao. Αν "
+"οριστεί ως αληθές το brasero θα το χρησιμοποιεί. Μπορεί να λύσει μερικά "
+"προβλήματα μερικών οδηγών/εγκαταστάσεων."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr ""
+"Ο πιο πρόσφατος φάκελος όπου έγινε περιήγηση κατά την αναζήτηση εικόνων για "
+"εγγραφή."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr ""
+"Περιέχει την απόλυτη διαδρομή του φακέλου στον οποίο έγινε η πιο πρόσφατη "
+"περιήγηση για αρχεία προς εγγραφή."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "Ενεργοποίηση προεπισκόπησης αρχείων"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr ""
+"Αν θα εμφανίζεται η προεπισκόπηση αρχείων. Καθορίστε το ως αληθές για να το "
+"χρησιμοποιήσετε."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+msgid "Should brasero filter hidden files"
+msgstr "Αν θα φιλτράρει ο brasero κρυφά αρχεία"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr ""
+"Αν θα φιλτράρει ο brasero κρυφά αρχεία. Αν καθοριστεί ως αληθής, ο brasero "
+"θα φιλτράρει κρυφά αρχεία."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "Αντικατάσταση συμβολικών συνδέσμων με τους προορισμούς τους"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"Αν θα αντικαθιστά ο brasero τους συμβολικούς συνδέσμους με τα  αρχεία "
+"προορισμού τους στην εργασία. Αν καθοριστεί ως αληθής, ο brasero αντικαθιστά "
+"τους συμβολικούς συνδέσμους."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"Αν θα φιλτράρει ο brasero κατεστραμμένα αρχεία συμβολικών δεσμών. Αν "
+"καθοριστεί ως αληθής, ο brasero θα φιλτράρει τους κατεστραμμένους "
+"συμβολικούς δεσμούς."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+msgid "The priority value for the plugin"
+msgstr "Η τιμή προτεραιότητας για το πρόσθετο"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+msgid ""
+"When several plugins are available for the same task, this value is used to "
+"determine which plugin should be given priority. 0 means the plugin's native "
+"priority is used. A positive value overrides the plugin's native priority. A "
+"negative value disables the plugin."
+msgstr ""
+"Όταν είναι διαθέσιμα πολλά πρόσθετα για την ίδια εργασία, χρησιμοποιείται "
+"αυτή η τιμή για να καθορίσει σε ποιο πρόσθετο θα δοθεί προτεραιότητα. Τιμή 0 "
+"σημαίνει ότι χρησιμοποιείται η εγγενής προτεραιότητα του προσθέτου. Μια "
+"θετική τιμή υπερισχύει της εγγενούς προτεραιότητας. Μια αρνητική τιμή "
+"απενεργοποιεί το πρόσθετο."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+msgid "Burning flags to be used"
+msgstr "Επιλογές για την εγγραφή που θα χρησιμοποιηθούν"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
+msgstr ""
+"Αυτή η τιμή αντιπροσωπεύει τις επιλογές εγγραφής που χρησιμοποιήθηκαν στην "
+"ίδια μορφή εργασίας την τελευταία φορά."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+msgid "The speed to be used"
+msgstr "Η ταχύτητα που θα χρησιμοποιηθεί"
+
 #: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "Λευκή λίστα με επιπλεον πρόσθετα για χρήση"
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr ""
+"Αυτή η τιμή αντιπροσωπεύει την ταχύτητα που χρησιμοποιήθηκε στην ίδια μορφή "
+"εργασίας την τελευταία φορά."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -874,8 +873,8 @@ msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-Text "
 "won't be written."
 msgstr ""
-"Οι δίσκοι ήχου CD-RW ίσως να μην αναπαράγονται σωστά σε παλαιότερα CD "
-"players και το CD-TEXT δεν θα εγγραφεί."
+"Οι δίσκοι ήχου CD-RW ίσως να μην αναπαράγονται σωστά σε παλαιότερους "
+"αναπαραγωγείς CD και το CD-TEXT δεν θα εγγραφεί."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:966
 #: ../libbrasero-burn/brasero-burn-dialog.c:988
@@ -895,8 +894,8 @@ msgstr "_Συνέχεια"
 #: ../libbrasero-burn/brasero-burn-dialog.c:987
 msgid "CD-RW audio discs may not play correctly in older CD players."
 msgstr ""
-"Οι δίσκοι ήχου CD-RW ίσως να μην αναπαράγονται σωστά σε παλαιότερα CD "
-"players."
+"Οι δίσκοι ήχου CD-RW ίσως να μην αναπαράγονται σωστά σε παλαιότερους "
+"αναπαραγωγείς CD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:991
 msgid "Recording audio tracks on a rewritable disc is not advised."
@@ -2410,7 +2409,7 @@ msgstr "Άγνωστο σφάλμα"
 
 #: ../libbrasero-media/scsi-error.c:44
 msgid "Size mismatch"
-msgstr "Δεν ταιρίαζει το μέγεθος"
+msgstr "Δεν ταιριάζει το μέγεθος"
 
 #: ../libbrasero-media/scsi-error.c:45
 msgid "Type mismatch"
@@ -2806,7 +2805,7 @@ msgstr "Σουίτα εγγραφής δίσκων cdrkit"
 #: ../plugins/libburnia/burn-libisofs.c:518
 #, c-format
 msgid "Last session import failed"
-msgstr "Απέτυχη η εισαγωγή της τελευταίας συνεδρίας"
+msgstr "Απέτυχε η εισαγωγή της τελευταίας συνεδρίας"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:125
 #: ../plugins/cdrkit/burn-genisoimage.c:132
@@ -3015,7 +3014,7 @@ msgstr "SHA256"
 #: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
-msgstr "Το \"%s\" δε μπόρεσε να ανοικτεί (%s)"
+msgstr "Το \"%s\" δε μπόρεσε να ανοιχτεί (%s)"
 
 #: ../plugins/checksum/burn-checksum-image.c:359
 #: ../plugins/checksum/burn-checksum-image.c:456
@@ -3054,7 +3053,7 @@ msgid ""
 "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
 "command"
 msgstr ""
-"Σφάλμα κατά την ανάκτηση του κλειδίου που χρησιμοποιήθηκε για την "
+"Σφάλμα κατά την ανάκτηση του κλειδιού που χρησιμοποιήθηκε για την "
 "κρυπτογράφηση. Μπορείτε να λύσετε το συγκεκριμένο πρόβλημα ακολουθώντας μια "
 "από τις παρακάτω μεθόδους: σε ένα τερματικό, είτε θέστε τον κατάλληλο κωδικό "
 "για την περιοχή του DVD σας με την εντολή \"regionset %s\" ή εκτελέστε την "
@@ -3561,7 +3560,7 @@ msgstr "Δεν ήταν δυνατό το άνοιγμα του \"%s\"."
 
 #: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
-msgstr "Θέλετε να δημιουργήσετε ενα CD ήχου με κομμάτια DTS;"
+msgstr "Θέλετε να δημιουργήσετε ένα CD ήχου με κομμάτια DTS;"
 
 #: ../src/brasero-audio-disc.c:858
 msgid ""
@@ -4072,7 +4071,7 @@ msgid ""
 "can be read and displayed by some audio CD players."
 msgstr ""
 "Οι πληροφορίες θα εγγραφούν στο δίσκο χρησιμοποιώντας την τεχνολογία CD-"
-"TEXT. Μπορούν να αναγνωστούν και να εμφανιστούν σε μερικούς αναπαραγωγείς cd."
+"TEXT. Μπορούν να αναγνωστούν και να εμφανιστούν σε μερικούς αναπαραγωγείς CD."
 
 #: ../src/brasero-multi-song-props.c:213
 msgid "Song titles"
@@ -4106,7 +4105,7 @@ msgstr "Πληροφορίες τραγουδιού"
 #: ../src/brasero-player.c:540
 #, c-format
 msgid "%i × %i pixels"
-msgstr "%i × %i pixel"
+msgstr "%i × %i εικονοστοιχεία"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
@@ -4296,8 +4295,7 @@ msgstr "Α_πόρριψη αλλαγών"
 #: ../src/brasero-project.c:1918
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
-"Θέλετε να απορρίψετε τις επιλογλες αρχείων ή θέλετε να προστεθούν σε νέο "
-"έργο;"
+"Θέλετε να απορρίψετε τις επιλογές αρχείων ή θέλετε να προστεθούν σε νέο έργο;"
 
 #: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
 msgid ""
@@ -4418,7 +4416,7 @@ msgstr "Ε_πεξεργαστής εξωφύλλου"
 
 #: ../src/brasero-project-manager.c:96
 msgid "Design and print covers for CDs"
-msgstr "Σχεδίαση και εκτύπωση εξωφύλλων για CD"
+msgstr "Σχεδίαση και εκτύπωση εξώφυλλων για CD"
 
 #: ../src/brasero-project-manager.c:97
 msgid "_New Project"
