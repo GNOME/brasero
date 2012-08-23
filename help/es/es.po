@@ -1,183 +1,798 @@
 # translation of brasero-help.master.es.po to Español
 # Jorge González <jorgegonz@svn.gnome.org>, 2008, 2009, 2010, 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: help.HEAD.es(3)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-31 19:52+0000\n"
-"PO-Revision-Date: 2011-11-02 16:07+0100\n"
+"POT-Creation-Date: 2012-08-22 02:56+0000\n"
+"PO-Revision-Date: 2012-08-23 17:42+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Gtranslator 2.91.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: C/tools-check-integrity.page:7(desc)
-msgid "You can test out a disc integrity after burning it."
-msgstr "Puede comprobar la integridad de un disco después de grabarlo."
+#: C/index.page:5(page/title)
+msgid "Brasero Help"
+msgstr "Ayuda de Brasero"
 
-#: C/tools-check-integrity.page:9(name)
-msgid "Paulina Gonzalez"
-msgstr "Paulina Gonzalez"
+#: C/index.page:8(section/title)
+msgid "Create a new project"
+msgstr "Crear un proyecto nuevo"
 
-#: C/tools-check-integrity.page:10(email)
-#| msgid "philbull@gmail.com"
-msgid "pau.gonzalezbr@gmail.com"
-msgstr "pau.gonzalezbr@gmail.com"
+#: C/index.page:12(section/title)
+msgid "Troubleshooting"
+msgstr "Solución de problemas"
 
-#: C/tools-check-integrity.page:13(name) C/tools-blank.page:9(name)
-#: C/split-track.page:11(name) C/project-video.page:12(name)
-#: C/project-save.page:12(name) C/project-image-burn.page:17(name)
-#: C/project-disc-copy.page:9(name) C/project-data.page:9(name)
-#: C/project-audio.page:9(name) C/prob-dvd.page:11(name)
-#: C/prob-cd.page:11(name) C/introduction.page:9(name)
-#: C/create-cover.page:9(name)
+#: C/index.page:16(section/title)
+msgid "Other tools"
+msgstr "Otras herramientas"
+
+#. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
+#| msgid "translator-credits"
+msgctxt "_"
+msgid "translator-credits"
+msgstr ""
+"Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012\n"
+"Jorge González <jorgegonz@svn.gnome.org>, 2011"
+
+#: C/create-cover.page:7(info/desc)
+msgid "Create an inlay for a jewel case."
+msgstr "Crear una carátura para una caja de CD o DVD."
+
+#: C/create-cover.page:9(credit/name) C/introduction.page:9(credit/name)
+#: C/prob-cd.page:11(credit/name) C/prob-dvd.page:11(credit/name)
+#: C/project-audio.page:9(credit/name) C/project-data.page:9(credit/name)
+#: C/project-disc-copy.page:9(credit/name)
+#: C/project-image-burn.page:17(credit/name)
+#: C/project-save.page:12(credit/name) C/project-video.page:12(credit/name)
+#: C/split-track.page:11(credit/name) C/tools-blank.page:9(credit/name)
+#: C/tools-check-integrity.page:13(credit/name)
 msgid "Ekaterina Gerasimova"
 msgstr "Ekaterina Gerasimova"
 
-#: C/tools-check-integrity.page:14(email) C/project-image-burn.page:18(email)
-msgid "kittykat3756@gmail.com"
-msgstr "kittykat3756@gmail.com"
-
-#: C/tools-check-integrity.page:17(p) C/tools-blank.page:13(p)
-#: C/split-track.page:15(p) C/project-video.page:16(p)
-#: C/project-save.page:16(p) C/project-image-burn.page:21(p)
-#: C/project-disc-copy.page:13(p) C/project-data.page:13(p)
-#: C/project-audio.page:13(p) C/prob-dvd.page:15(p) C/prob-cd.page:15(p)
-#: C/introduction.page:13(p) C/create-cover.page:13(p)
+#: C/create-cover.page:13(license/p) C/introduction.page:13(license/p)
+#: C/prob-cd.page:15(license/p) C/prob-dvd.page:15(license/p)
+#: C/project-audio.page:13(license/p) C/project-data.page:13(license/p)
+#: C/project-disc-copy.page:13(license/p)
+#: C/project-image-burn.page:21(license/p) C/project-save.page:16(license/p)
+#: C/project-video.page:16(license/p) C/split-track.page:15(license/p)
+#: C/tools-blank.page:13(license/p) C/tools-check-integrity.page:17(license/p)
 msgid "Creative Commons Share Alike 3.0"
 msgstr "Creative Commons Compartir Igual 3.0"
 
-#: C/tools-check-integrity.page:21(title)
-msgid "Check disc integrity"
-msgstr "Comprobar la integridad del disco"
+#: C/create-cover.page:17(page/title)
+msgid "Create a cover"
+msgstr "Crear una carátula"
 
-#: C/tools-check-integrity.page:23(p)
+#: C/create-cover.page:19(page/p)
+#| msgid ""
+#| "You can use <app>Brasero</app> to create inlays for your jewel cases. "
+#| "Access the creator by clicking <guiseq><gui>Tools</gui><gui>Cover Editor</"
+#| "gui></guiseq>."
 msgid ""
-"After burning a CD/DVD by using <app>Brasero</app>, you can check its "
-"integrity to make sure that the files in the disc are not corrupted."
+"You can use <app>Brasero</app> to create inlays for your jewel cases. Access "
+"the creator by clicking <guiseq><gui>Tools</gui> <gui>Cover Editor</gui></"
+"guiseq>."
 msgstr ""
-"Después de grabar un CD/DVD usando <app>Brasero</app>, puede comprobar su "
-"integridad para asegurarse de que los archivos del disco no están corruptos."
+"Puede usar <app>Brasero</app> para crear carátulas para sus cajas de CD o "
+"DVD. Acceda al creador pulsando <guiseq><gui>Herramientas</gui><gui>Editor "
+"de carátulas</gui></guiseq>."
 
-#: C/tools-check-integrity.page:27(p)
-#| msgid "Select <guiseq><gui>Tools</gui><gui>Blank...</gui></guiseq>."
-msgid "Select <guiseq><gui>Tools</gui><gui>Check Integrity...</gui></guiseq>."
+#: C/create-cover.page:24(note/p)
+msgid ""
+"If you are creating an audio project and finish putting together the project "
+"before creating an inlay, then when you access the <gui>Cover Editor</gui> "
+"interface from the audio project window, the tracks will automatically be "
+"listed on the back cover."
 msgstr ""
-"Seleccione <guiseq><gui>Herramientas</gui><gui>Comprobar integridad...</"
+"Si está creando un proyecto de sonido y está termina el proyecto antes de "
+"crear la carátula, al acceder al <gui>Editor de carátulas</gui> desde la "
+"ventana del proyecto de sonido, se añadirá automáticamente una lista de las "
+"pistas en la carátula posterior."
+
+#: C/create-cover.page:31(note/p)
+msgid "If you close the <gui>Cover Editor</gui>, your changes will be lost."
+msgstr "Se perderán sus cambios si cierra el <gui>Editor de carátulas</gui>."
+
+#: C/create-cover.page:36(item/p)
+msgid "Open the <gui>Cover Editor</gui>."
+msgstr "Abra el <gui>Editor de carátulas</gui>."
+
+#: C/create-cover.page:39(item/p)
+msgid ""
+"Choose the formatting you wish to use for the text and type the text, "
+"scrolling down to see the side and back inlay for the jewel case."
+msgstr ""
+"Elija el formato que quiere usar para el texto y escríbalo, desplazándose "
+"hacia abajo para ver el lateral y la parte trasera de la caja."
+
+#: C/create-cover.page:42(note/p)
+msgid ""
+"When you first see the <gui>Cover Editor</gui> dialog, you will not be able "
+"to click on any of the text formatting options. Click on the cover you want "
+"to work on to be able to use those."
+msgstr ""
+"La primera vez que vea el diálogo del <gui>Editor de carátulas</gui> no "
+"podrá pulsar en ninguna opción de formateo de texto. Pulse sobre la carátula "
+"en la que quiere trabajar para poder usar las opciones."
+
+#: C/create-cover.page:48(item/p)
+msgid ""
+"Click the <gui>Background properties</gui> toolbar icon to add a background "
+"for the current cover, or right click on the cover you wish to edit and "
+"select <gui>Set Background Properties</gui>. You can choose to use a colored "
+"background or to select a background image."
+msgstr ""
+"Para añadir un fondo a la carátula actual, pulse en el icono de "
+"<gui>Propiedades del fondo</gui> en la barra de herramientas, o pulse con el "
+"botón derecho del ratón sobre la carátula que quiere editar y seleccione "
+"<gui>Establecer las propiedades del fondo</gui>. Puede elegir usar un fondo "
+"coloreado o una imagen de fondo."
+
+#: C/create-cover.page:53(note/p)
+msgid ""
+"If you select a centered background image, <app>Brasero</app> sometimes "
+"crashes when you click the <gui>Close</gui> button."
+msgstr ""
+"A veces, <app>Brasero</app> se cuelga al pulsar el botón <gui>Cerrar</gui> "
+"si selecciona una imagen de fondo centrada."
+
+#: C/create-cover.page:56(item/p)
+msgid ""
+"Click the <gui>Close</gui> button to apply the changes and close the "
+"<gui>Background Properties</gui> dialog."
+msgstr ""
+"Pulse el botón <gui>Cerrar</gui> para aplicar los cambios y cerrar el "
+"diálogo <gui>Propiedades del fondo</gui>."
+
+#: C/create-cover.page:60(item/p)
+msgid ""
+"Print the cover using the <gui>Print</gui> button, which is located in the "
+"top-right corner of the dialog."
+msgstr ""
+"Imprima la carátula usando el botón <gui>Imprimir</gui>, ubicado en la "
+"esquina superior derecha del diálogo."
+
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/introduction.page:36(media)
+#| msgid ""
+#| "@@image: 'figures/brasero-main-window.png'; "
+#| "md5=11e5cc148d7c8c8dc0c63e68b2f611f3"
+msgctxt "_"
+msgid ""
+"external ref='figures/brasero-main-window.png' "
+"md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
+msgstr ""
+"external ref='figures/brasero-main-window.png' "
+"md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
+
+#: C/introduction.page:7(info/desc)
+msgid "Introduction to the <app>Brasero</app> disc burning application."
+msgstr ""
+"Introducción a la aplicación de grabación de discos <app>Brasero</app>."
+
+#: C/introduction.page:17(page/title)
+msgid "Introduction"
+msgstr "Introducción"
+
+#: C/introduction.page:19(page/p)
+msgid ""
+"<app>Brasero</app> is an application for burning CDs and DVDs, designed to "
+"be easy to use, while providing all the tools necessary for burning."
+msgstr ""
+"<app>Brasero</app> es una aplicación para grabar CD y DVD diseñada para ser "
+"fácil de usar, a la vez que proporciona las herramientas necesarias para la "
+"grabación."
+
+#: C/introduction.page:22(page/p)
+msgid "With <app>Brasero</app> you can:"
+msgstr "Con <application>Brasero</application> puede:"
+
+#: C/introduction.page:24(item/p)
+msgid "Burn data to CDs and DVDs"
+msgstr "Grabar datos a CD y DVD"
+
+#: C/introduction.page:25(item/p)
+msgid "Burn audio CDs from digital audio files (such as OGG, FLAC and MP3)"
+msgstr ""
+"Grabar CD de sonido desde archivos de sonido digital (tales como OGG, FLAC y "
+"MP3)"
+
+#: C/introduction.page:27(item/p)
+msgid "Copy CDs and DVDs"
+msgstr "Copiar CD y DVD"
+
+#: C/introduction.page:28(item/p)
+msgid "Create video DVDs or SVCDs"
+msgstr "Crear DVD de vídeo o SVCD"
+
+#: C/introduction.page:29(item/p)
+msgid "Create image files and burn existing image files"
+msgstr "Crear archivos de imagen y grabar desde archivos de imagen existentes"
+
+#: C/introduction.page:30(item/p)
+msgid "Erase CD-RWs and DVD-RWs"
+msgstr "Borrar CD-RW y DVD-RW"
+
+#: C/introduction.page:31(item/p)
+msgid "Check the integrity of discs and disc images"
+msgstr "Comprobar la integridad de discos e imágenes de discos"
+
+#: C/introduction.page:35(figure/title)
+msgid "The <gui>Brasero</gui> main window"
+msgstr "La ventana principal de <gui>Brasero</gui>"
+
+#: C/prob-cd.page:9(info/desc)
+msgid "My MP3s will not play in a DVD or CD player."
+msgstr "Mis MP3 no se reproducen en un reproductor de DVD o CD."
+
+#: C/prob-cd.page:19(page/title)
+msgid "CD will not play in a CD player"
+msgstr "El CD no se reproduce en un reproductor de CD"
+
+#: C/prob-cd.page:21(page/p)
+msgid ""
+"If your CD is not playing in your CD player or stereo, it is probably "
+"because the music was not correctly written to the disc or because you used "
+"a data project to write the music to the CD instead of an audio project."
+msgstr ""
+"Si su CD no se puede reproducir en su reproductor de CD o cadena musical "
+"probablemente sea porque la música no se grabó correctamente o porque usó un "
+"proyecto de datos para grabar la música en el CD, en lugar de un proyecto de "
+"sonido."
+
+#: C/prob-cd.page:26(note/p)
+msgid ""
+"Many new CD and DVD players will play music CDs which were created using a "
+"data project, but most older players will not."
+msgstr ""
+"Muchos reproductores de CD y DVD nuevos reproducirán CD de música creados "
+"usando un proyecto de datos, pero los antiguos no lo harán."
+
+#: C/prob-cd.page:31(note/p)
+msgid "Older CD players might not be able to play CD-RWs."
+msgstr "Puede que reproductores de CD antiguos no puedan reproducor CD-RW."
+
+#: C/prob-cd.page:36(item/p)
+msgid "If you are using a CD-RW, blank the CD."
+msgstr "Si está usando un CD-RW, bórre el CD."
+
+#: C/prob-cd.page:39(item/p)
+msgid "Rewrite the CD as an audio project."
+msgstr "Regrabar un CD como un proyecto de sonido."
+
+#: C/prob-dvd.page:9(info/desc)
+msgid "I cannot write to a DVD-R or a DVD-RW."
+msgstr "No puedo grabar en un DVD-R o DVD-RW."
+
+#: C/prob-dvd.page:19(page/title)
+msgid "Problem creating a DVD"
+msgstr "Problema al crear un DVD"
+
+#: C/prob-dvd.page:21(page/p)
+msgid ""
+"Some types of DVD-Rs and DVD-RWs are not compatible with all burners. Check "
+"the following to find out if those can be used with your burner."
+msgstr ""
+"Algunos tipos de DVD-R y DVD-RW no son compatibles con todas las grabadoras. "
+"Para saber si éstos son compatibles con su grabadora compruebe lo siguiente."
+
+#: C/prob-dvd.page:26(item/p)
+msgid ""
+"Check if your DVD drive accepts DVD+ or DVD- discs; if it is labelled with "
+"\"multi\", that usually indicates that it accepts both. Check your disc to "
+"see if it is the same as the DVD drive."
+msgstr ""
+"Compruebe si su unidad de DVD acepta discos DVD+ o DVD-; si está estiquetada "
+"como «multi» generalmente indica que acepta ambos. Compruebe su disco para "
+"ver si es el mismo tipo que soporta su unidad de DVD."
+
+#: C/prob-dvd.page:31(item/p)
+msgid ""
+"Check if your disc is dual layer or single layer: some DVD drives can not "
+"write to a dual layer disc."
+msgstr ""
+"Compruebe si su disco es de doble capa o no; algunas unidades de DVD no "
+"puede escribir en disco de doble capa."
+
+#: C/prob-dvd.page:35(item/p)
+msgid ""
+"If you are trying to use a DVD-R, check if it has already been written to "
+"before. If you are using a DVD-RW, try blanking it before you attempt to "
+"write to it."
+msgstr ""
+"Si está intentando usar un DVD-R, compruebe si ya se ha grabado antes. Si "
+"está usando un DVD-RW, pruebe a borrarlo antes de grabar de nuevo."
+
+#: C/project-audio.page:7(info/desc)
+msgid "Create an audio project."
+msgstr "Crear un proyecto de sonido."
+
+#: C/project-audio.page:17(page/title)
+msgid "Write a music CD"
+msgstr "Grabar un CD de música"
+
+#: C/project-audio.page:19(page/p)
+msgid ""
+"<app>Brasero</app> can write audio files to a CD, which you can then use for "
+"playing in CD players and so on. It is usually best to use a non-rewritable "
+"CD because not all CD players will play rewritable CDs."
+msgstr ""
+"<app>Brasero</app> puede grabar archivos de sonido a un CD, que se puede "
+"reproducir en reproductores de CD y similares. Generalmente, es preferible "
+"usar un disco no regrabable, ya que no todos los reproductores de CD "
+"reproducen CD regrabables."
+
+#: C/project-audio.page:26(item/p)
+msgid ""
+"Click <gui>Audio project</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Audio Project</"
+"gui></guiseq>."
+msgstr ""
+"Pulse en <gui>Proyecto de sonido</gui> en la ventana principal o seleccione "
+"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Proyecto de sonido "
+"nuevo</gui></guiseq>."
+
+#: C/project-audio.page:31(item/p)
+msgid ""
+"Add audio files to the project by clicking <gui>Add</gui> in the toolbar and "
+"selecting the desired files. You can also add files by dragging and dropping "
+"them onto the project area or by clicking <guiseq><gui>Edit</gui><gui>Add "
+"Files</gui></guiseq>."
+msgstr ""
+"Añada archivos de sonido al proyecto pulsando <gui>Añadir</gui> en la barra "
+"de herramientas y seleccionando los archivos que quiera. También puede "
+"añadir archivos arrastrándolos y soltándolos en el área de proyecto o "
+"pulsando <guiseq><gui>Editar</gui><gui>Añadir archivos</gui></guiseq>."
+
+#: C/project-audio.page:37(item/p)
+msgid ""
+"You can add a title for the CD in the text entry field below the project "
+"area."
+msgstr ""
+"Puede añadir un título para el CD en la caja de texto de debajo del área del "
+"proyecto."
+
+#: C/project-audio.page:41(item/p)
+msgid "Select the blank CD in the drop down list."
+msgstr "Seleccione el CD vírgen de la lista desplegable."
+
+#: C/project-audio.page:44(item/p) C/project-data.page:50(item/p)
+#: C/project-video.page:45(item/p)
+msgid "Click <gui>Burn...</gui> to continue."
+msgstr "Pulse <gui>Grabar...</gui> para continuar."
+
+#: C/project-audio.page:47(item/p) C/project-data.page:53(item/p)
+#: C/project-video.page:48(item/p)
+msgid ""
+"Select the <gui>Burning speed</gui> from the drop down list, and any other "
+"options you may want."
+msgstr ""
+"Seleccione la <gui>Velocidad de grabación</gui> de la lista desplegable y "
+"cualquier otra opción que quiera."
+
+#: C/project-audio.page:51(item/p) C/project-video.page:52(item/p)
+msgid ""
+"Click <gui>Burn</gui> to burn a single disc of the project or <gui>Burn "
+"Several Copies</gui> to burn your project to multiple discs."
+msgstr ""
+"Pulse <gui>Grabar</gui> para grabar un solo disco del proyecto o <gui>Grabar "
+"varios discos</gui> para grabar su proyecto a varios discos."
+
+#: C/project-audio.page:57(note/p)
+msgid ""
+"You can also split individual tracks into multiple tracks using the "
+"<gui>Split</gui> tool and add a two second break after a track using the "
+"<gui>Pause</gui> button."
+msgstr ""
+"También puede partir pistas individuales en varias pistas usando la "
+"herramienta <gui>Partir</gui> y añadir una pausa de dos segundos después de "
+"una pista, usando el botón <gui>Pausa</gui>."
+
+#: C/project-data.page:7(info/desc)
+msgid "Write data to a CD or DVD."
+msgstr "Grabar un CD o DVD de datos."
+
+#: C/project-data.page:17(page/title)
+msgid "Create a data project"
+msgstr "Crear un proyecto de datos"
+
+#: C/project-data.page:19(page/p)
+msgid ""
+"A data project is used for writing data (for example, files, photos or "
+"music) to a disc, without changing those files in any way. This can be "
+"useful for transferring files between computers."
+msgstr ""
+"Un proyecto de datos se usa para grabar datos (por ejemplo, archivos, fotos "
+"o música) a un disco, sin cambiaro esos archivos en alguna forma. Es útil "
+"para transferir archivos entre equipos."
+
+#: C/project-data.page:25(item/p)
+msgid ""
+"Click <gui>Data project</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Data Project</gui></"
+"guiseq>."
+msgstr ""
+"Pulse en <gui>Proyecto de datos</gui> en la ventana principal o seleccione "
+"<guiseq><gui>Proyecto</gui><gui>>Proyecto nuevo</gui><gui>Proyecto de datos "
+"nuevo</gui></guiseq>."
+
+#: C/project-data.page:30(item/p)
+msgid ""
+"Add the desired files to the project by clicking <gui>Add</gui> in the "
+"toolbar and selecting the files. You can also add files by dragging and "
+"dropping them onto the project area or by clicking <guiseq><gui>Edit</"
+"gui><gui>Add Files</gui></guiseq>."
+msgstr ""
+"Añada los archivos que quiera al proyecto pulsando <gui>Añadir</gui> en la "
+"barra de herramientas y seleccione los archivos. También puede añadir "
+"archivos arrastrándolos y soltándolos dentro del área de proyecto o pulsando "
+"<guiseq><gui>Editar</gui><gui>Añadir archivos</gui></guiseq>."
+
+#: C/project-data.page:35(note/p)
+msgid ""
+"You can create folders on the CD to store your data in a more structured "
+"manner. To create a folder, click <gui>New Folder</gui> in the toolbar or "
+"select <guiseq><gui>Edit</gui><gui>New Folder</gui></guiseq> from the menu "
+"bar. You can also create folders inside other folders."
+msgstr ""
+"Puede crear carpetas en el CD para almacenar sus datos de una forma "
+"estructurada. Para crear una carpeta, pulse <gui>Carpeta nueva</gui> en la "
+"barra de herramientas o seleccione <guiseq><gui>Editar</gui><gui>Carpeta "
+"nueva</gui></guiseq> de la barra de menú. También puede crear carpetas "
+"dentro de otras carpetas."
+
+#: C/project-data.page:43(item/p) C/project-video.page:38(item/p)
+msgid ""
+"You can add a title for the disc in the text entry field below the project "
+"area."
+msgstr ""
+"Puede añadir un título para el disco en la entrada de texto bajo el área de "
+"proyecto."
+
+#: C/project-data.page:47(item/p) C/project-video.page:42(item/p)
+msgid "Select the blank disc in the drop down list."
+msgstr "Seleccione el disco vírgen en la lista desplegable."
+
+#: C/project-data.page:57(item/p)
+msgid ""
+"Click <gui>Burn</gui> to burn a single CD of the project or <gui>Burn "
+"Several Copies</gui> to burn your project to multiple CDs"
+msgstr ""
+"Pulse <gui>Grabar</gui> para grabar un solo CD del proyecto o <gui>Grabar "
+"varias copias</gui> para grabar su proyecto en varios CD."
+
+#: C/project-data.page:60(note/p)
+msgid ""
+"If you are using a rewritable disc, which already contains data, you will be "
+"asked if you want to blank it or insert a different disc."
+msgstr ""
+"Si está usando un disco regrabable que ya contenga datos, se le preguntará "
+"si quiere borrarlo o insertar un disco diferente."
+
+#: C/project-data.page:66(page/p)
+msgid ""
+"If you are using a rewritable disc and the data is not burned correctly onto "
+"it, you may need to do a full (non-fast) blank of the disc before trying "
+"again."
+msgstr ""
+"Si está usando un disco regrabable y los datos se han grabado correctamente, "
+"puede querer hacer un borrado completo (no rápido) del disco antes de volver "
+"a intentarlo."
+
+#: C/project-disc-copy.page:7(info/desc)
+msgid "Create an identical copy of a disc."
+msgstr "Crear una copia idéntica de un disco."
+
+#: C/project-disc-copy.page:17(page/title)
+msgid "Copy disc"
+msgstr "Copiar un disco"
+
+#: C/project-disc-copy.page:21(item/p)
+msgid ""
+"Click <gui>Disc copy</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Copy Disc... </gui></"
+"guiseq>."
+msgstr ""
+"Pulse en <gui>Copia de disco</gui> en la ventana principal o seleccione "
+"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Copiar disco...</"
 "gui></guiseq>."
 
-#: C/tools-check-integrity.page:30(p)
+#: C/project-disc-copy.page:26(item/p)
+msgid ""
+"Select the disc you would like to copy from the drop down list below "
+"<gui>Select disc to copy</gui>. If you have more than one disc drive, all "
+"discs which are currently in them should be listed."
+msgstr ""
+"Seleccione de la lista desplegable bajo <gui>Seleccionar el disco para "
+"copiar</gui> el disco que quiere copiar. Se listarán todos los discos "
+"actualmente en las unidades en caso de que tenga más de una unidad de discos."
+
+#: C/project-disc-copy.page:31(item/p)
+msgid ""
+"Choose whether you want to make a copy to another disc or create an image "
+"for later use."
+msgstr ""
+"Elija si quiere crear una copia en otro disco o si quiere crear una imagen "
+"para usarla más tarde."
+
+#: C/project-disc-copy.page:35(item/p) C/project-image-burn.page:57(item/p)
+msgid ""
+"Click the <gui>Properties</gui> button to select burning speed and other "
+"custom options."
+msgstr ""
+"Pulse el botón <gui>Propiedades</gui> para seleccionar la velocidad de "
+"grabación y otras opciones."
+
+#: C/project-disc-copy.page:39(item/p)
+msgid ""
+"Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several "
+"Copies</gui>, if you plan to make more than one copy of the disc."
+msgstr ""
+"Pulse <gui>Copiar</gui> para comenzar a copiar el disco o <gui>Hacer varias "
+"copias</gui> si tiene intención de grabar más de una copia del disco."
+
+#: C/project-disc-copy.page:42(note/p)
+msgid ""
+"If you are copying the disc and have only one disc drive, you will be asked "
+"to replace the disc you are copying with a writable one after the contents "
+"are copied temporarily to your hard disk."
+msgstr ""
+"Si está copiando un disco y sólo tiene una unidad de discos, se le pedirá "
+"que reemplace el disco que está copiando con uno grabable después de copiar "
+"temporalmente el contenido a su disco duro."
+
+#: C/project-image-burn.page:11(info/desc)
+msgid "Burn an existing disc image to a CD or DVD."
+msgstr "Grabar una imagen de disco existente a un CD o DVD."
+
+#: C/project-image-burn.page:13(credit/name)
+msgid "Marta Bogdanowicz"
+msgstr "Marta Bogdanowicz"
+
+#: C/project-image-burn.page:25(page/title)
+msgid "Burn image"
+msgstr "Burn image"
+
+#: C/project-image-burn.page:27(page/p)
+msgid ""
+"<app>Brasero</app> allows you to burn disc images to a CD or DVD. It "
+"supports the following extensions of optical disc images: <file>.iso</file>, "
+"<file>.toc</file> and <file>.cue</file>."
+msgstr ""
+"<app>Brasero</app> le permite grabar imagenes de discos a CD o DVD. Soporta "
+"las siguientes extensiones de imágenes de discos ópticos: <file>.iso</file>, "
+"<file>.toc</file> y <file>.cue</file>."
+
+#: C/project-image-burn.page:32(note/p)
+msgid ""
+"Disc images are archive files which contain all the data that is on a CD or "
+"DVD. Only one disc image can be on a CD at a time, but each archive can "
+"contain as little or as much data as you want, as long as it fits on the "
+"disc."
+msgstr ""
+"Los archivos de imagen son archivadores que contienen todos los datos en un "
+"CD o DVD. Solo una imagen de disco puede estar en un CD a la vez, pero cada "
+"archivador puede contener tantos datos como quiera, siempre que quepa en el "
+"disco."
+
+#: C/project-image-burn.page:38(page/p)
+msgid "To burn a disc image to a CD or DVD, follow these steps:"
+msgstr ""
+"Para grabar una imagen de disco a un CD o DVD realice los siguientes pasos:"
+
+#: C/project-image-burn.page:41(item/p)
 #| msgid ""
-#| "Select the <guilabel>Use a md5 file to check the disc</guilabel> option "
-#| "to use an MD5 file."
+#| "Click <gui>Burn image</gui> on the start page or select "
+#| "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></"
+#| "guiseq>."
 msgid ""
-"You can select the option <gui>Use an MD5 file to check the disk.</gui> if "
-"you prefer it."
+"Click <gui>Burn image</gui> on the start page or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui> </"
+"guiseq>."
 msgstr ""
-"Puede seleccionar la opción <guilabel>Usar un archivo md5 para verificar el "
-"disco</guilabel> si lo prefiere."
+"Pulse en <gui>Grabar una imagen</gui> en la ventana principal o seleccione "
+"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Grabar imagen…</"
+"gui></guiseq>."
 
-#: C/tools-check-integrity.page:33(p)
+#: C/project-image-burn.page:46(item/p)
 msgid ""
-"An MD5 (Message-Digest Algorithm 5) is a cryptographic hash function widely "
-"used for checking data integrity."
+"Select a disc image to write by clicking <gui>Click here to select a disc "
+"image</gui>."
 msgstr ""
-"Un MD5 (Message-Digest Algorithm 5) es una función hash criptográfica usada "
-"ampliamente para comprobar integridad de datos."
+"Seleccione una imagen de disco en la que grabar pulsando <gui>Pulsar aquí "
+"para seleccionar una imagen de disco</gui>."
 
-#: C/tools-check-integrity.page:34(p)
+#: C/project-image-burn.page:50(item/p)
 msgid ""
-"If you choose this option, you will have to find the MD5 file by clicking in "
-"the folder icon placed below."
+"Select the disc that you want to use from drop down list below <gui>Select a "
+"disc to write to</gui>. If you have more than one disc drive, all discs "
+"which are currently in them should be listed."
 msgstr ""
-"Si elije esta opción, deberá buscar el archivo MD5 pulsando en el icono de "
-"carpeta situado debajo."
+"Seleccione de la lista desplegable bajo <gui>Seleccionar un disco en el que "
+"grabar</gui> el disco en el que quiere grabar. Se listarán todos los discos "
+"actualmente en las unidades en caso de que tenga más de una unidad de discos."
 
-#: C/tools-check-integrity.page:39(p)
-msgid "Press <gui>Check</gui> to continue or <gui>Close</gui> to cancel it."
-msgstr ""
-"Pulse <gui>Comprobar</gui> para continuar o  <gui>Cerrar</gui> para cancelar."
-
-#: C/tools-check-integrity.page:42(p)
+#: C/project-image-burn.page:53(note/p)
 msgid ""
-"When the checking is finished you can either choose to <gui>Check Again</"
-"gui> or just <gui>Close</gui>."
+"After choosing the disc <app>Brasero</app> shows how much free space will "
+"remain on the disc after burning."
 msgstr ""
-"Cuando la comprobación haya terminado, puede elegir <gui>Volver a comprobar</"
-"gui> o simplemente <gui>Cerrar</gui>."
+"Después de elegir el disco, <app>Brasero</app> muestra cuánto espacio libre "
+"quedará en el disco después de grabarlo."
 
-#: C/tools-blank.page:7(desc)
-msgid "Erase a rewritable CD or DVD by blanking it."
-msgstr "Borrar un CD o DVD regrabable."
-
-#: C/tools-blank.page:10(email) C/split-track.page:12(email)
-#: C/project-video.page:13(email) C/project-save.page:13(email)
-#: C/project-disc-copy.page:10(email) C/project-data.page:10(email)
-#: C/project-audio.page:10(email) C/prob-dvd.page:12(email)
-#: C/prob-cd.page:12(email) C/introduction.page:10(email)
-#: C/create-cover.page:10(email)
-msgid "kittykat3756@googlemail.com"
-msgstr "kittykat3756@googlemail.com"
-
-#: C/tools-blank.page:17(title)
-msgid "Blank a disc"
-msgstr "Borrar un disco"
-
-#: C/tools-blank.page:19(p)
+#: C/project-image-burn.page:61(item/p)
 msgid ""
-"You can prepare a rewritable disc, with existing data on it, for writing by "
-"blanking it."
-msgstr "Puede preparar un disco regrabable que contenga datos borrándolo."
-
-#: C/tools-blank.page:24(p)
-msgid "Select <guiseq><gui>Tools</gui><gui>Blank...</gui></guiseq>."
+"Click <gui>Burn</gui> to start burning the image. After this operation you "
+"can either finish burning or make the other copy of the image."
 msgstr ""
-"Seleccione <guiseq><gui>Herramientas</gui><gui>Borrar...</gui></guiseq>."
+"Pulse <gui>Grabar</gui> para comenzar a grabar la imagen. Después de esta "
+"operación puede finalizar la grabación o grabar otra copia de la imagen."
 
-#: C/tools-blank.page:27(p)
+#: C/project-image-burn.page:64(note/p)
 msgid ""
-"If you have more than one disc drive with a rewritable disc in it, you can "
-"select which disc to rewrite under <gui>Select a disc</gui>."
+"If you are using a re-writable disc, which already contains data, you will "
+"be asked if you want to blank it or insert a different disc."
 msgstr ""
-"Si tiene mas de una unidad de discos con un disco regrabable en ellas, puede "
-"seleccionar qué disco grrabar bajo <gui>Seleccionar un disco</gui>."
+"Si está usando un disco regrabable que ya contenga datos, se le preguntará "
+"si quiere borrarlo o insertar un disco diferente."
 
-#: C/tools-blank.page:31(p)
-msgid "You can select <gui>Fast blanking</gui> to blank the CD quicker."
-msgstr ""
-"Puede seleccionar <gui>Borrado rápido</gui> para borrar el CD más "
-"rápidamente."
+#: C/project-save.page:10(info/desc)
+msgid "Save a project for editing or burning later."
+msgstr "Guardar un proyecto para editarlo o grabarlo posteriormente."
 
-#: C/tools-blank.page:33(p)
+#: C/project-save.page:20(page/title)
+msgid "Save a project"
+msgstr "Guardar un proyecto"
+
+#: C/project-save.page:22(page/p)
 msgid ""
-"If you have problems writing to a disc which you fast blanked, try disabling "
-"fast blanking and blank it again."
+"You can save an audio, a data or a video project in <app>Brasero</app> for "
+"editing or burning later."
 msgstr ""
-"Si tiene problemas escribiendo un disco que ha borrado rápidamente, pruebe a "
-"desactivar el borrado rápido e inténtelo de nuevo."
+"Puede guardar un proyecto de sonido, datos o vídeo en <app>Brasero</app> "
+"para editarlo o grabarlo más tarde."
 
-#: C/tools-blank.page:38(p)
-msgid "Click <gui>Blank</gui> to continue."
-msgstr "Pulse <gui>Borrar</gui> para continuar."
+#: C/project-save.page:27(item/p)
+msgid "Create the project and add the files you wish to use to the project."
+msgstr "Crear el proyecto y añadir los archivos que quiere usar al proyecto."
 
-#: C/tools-blank.page:41(p)
-msgid "The disc may be ejected when the blanking is complete."
-msgstr "Se puede expulsar el disco al terminar el borrado."
+#: C/project-save.page:30(item/p)
+msgid ""
+"Click <guiseq><gui>Project</gui><gui>Save</gui></guiseq> to save the project."
+msgstr ""
+"Pulse <guiseq><gui>Proyecto</gui><gui>Guardar</gui></guiseq> para guardar el "
+"proyecto."
 
-#: C/split-track.page:9(desc)
+#: C/project-save.page:34(item/p)
+msgid ""
+"Enter the name you wish to save the project under, then click <gui>Save</"
+"gui> to save the project."
+msgstr ""
+"Introduzca el nombre con el que quiere guardar el proyecto, después pulse "
+"<gui>Guardar</gui> para guardarlo."
+
+#: C/project-save.page:39(page/p)
+msgid ""
+"There are a number of ways which can be used for opening a saved "
+"<app>Brasero</app> project by:"
+msgstr ""
+"Existe cierto número de formas para obrir un proyecto de <app>Brasero</app> "
+"guardado:"
+
+#: C/project-save.page:44(item/p)
+msgid ""
+"selecting it from the list on the start page, under <gui>Recent projects</"
+"gui>"
+msgstr ""
+"seleccionándolo deesde la lista en la ventana principal, bajo <gui>Proyectos "
+"recientes</gui>"
+
+#: C/project-save.page:48(item/p)
+msgid "clicking <guiseq><gui>Project</gui><gui>Recent Projects</gui></guiseq>"
+msgstr ""
+"pulsando <guiseq><gui>Proyecto</gui><gui>Proyectos recientes</gui></guiseq>"
+
+#: C/project-save.page:51(item/p)
+msgid ""
+"clicking <guiseq><gui>Project</gui><gui>Open</gui></guiseq> and selecting "
+"the project"
+msgstr ""
+"pulsando <guiseq><gui>Proyecto</gui><gui>Abrir</gui></guiseq> y eligiendo el "
+"proyecto"
+
+#: C/project-save.page:55(item/p)
+msgid "opening the project from a file browser"
+msgstr "abriendo el proyecto desde un gestor de archivos"
+
+#: C/project-save.page:57(note/p)
+msgid ""
+"If <app>Brasero</app> is already running, opening the project from a file "
+"browser will cause a second instance of <app>Brasero</app> to start and will "
+"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
+"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
+msgstr ""
+"Si <app>Brasero</app> ya se está ejecutando, abra el proyecto desde un "
+"archivo hará que se inicie una segunda instancia de <app>Brasero</app> y se "
+"colgarán ambas instancias. Para obtener más información consulte el <link "
+"href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">error 644011 de "
+"GNOME</link>."
+
+#: C/project-save.page:67(note/p)
+msgid ""
+"If you open a saved project, <app>Brasero</app> will treat it as a new "
+"project: if you want to save an updated version of the project, it will ask "
+"you to enter a name for it, at this point you can overwrite the old version "
+"or save it as a new project by entering a different file name."
+msgstr ""
+"Si abre un proyecto guardado, <app>Brasero</app> lo tratará como un proyecto "
+"nuevo: si quiere guardar una versión actualizada del proyecto, se le "
+"preguntará un nombre para él, en este punto puede sobreescribir la versión "
+"anterior o guardarlo como un proyecto nuevo introduciendo un nombre "
+"diferente."
+
+#: C/project-video.page:9(info/title)
+#| msgid "3"
+msgctxt "sort"
+msgid "3"
+msgstr "3"
+
+#: C/project-video.page:10(info/desc)
+msgid "Write a video to a DVD or SVCD."
+msgstr "Grabar un vídeo a un DVD o SVCD."
+
+#: C/project-video.page:20(page/title)
+msgid "Create a video project"
+msgstr "Crear un proyecto de vídeo"
+
+#: C/project-video.page:22(page/p)
+msgid ""
+"<app>Brasero</app> can be used to create video discs for playing in a DVD "
+"player or laptop."
+msgstr ""
+"<app>Brasero</app> se puede usar para crear díscos de vídeo reproducibles en "
+"un reproductor de DVD o un portátil."
+
+#: C/project-video.page:27(item/p)
+msgid ""
+"Click <gui>Video project</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Video Project</"
+"gui></guiseq>."
+msgstr ""
+"Pulse en <gui>Proyecto de vídeo</gui> en la ventana principal o seleccione "
+"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Proyecto de vídeo "
+"nuevo</gui></guiseq>."
+
+#: C/project-video.page:32(item/p)
+msgid ""
+"Add the videos to the project by clicking <gui>Add</gui> in the toolbar and "
+"selecting the files. You can also add files by dragging and dropping them "
+"onto the project area or by clicking <guiseq><gui>Edit</gui><gui>Add Files</"
+"gui></guiseq>."
+msgstr ""
+"Añada los vídeos al proyecto pulsando <gui>Añadir</gui> en la barra de "
+"herramientas y seleccionando los archivos. También puede añadir archivos "
+"arrastrando y soltándolos en el área de proyecto o pulsando "
+"<guiseq><gui>Editar</gui><gui>Añadir archivos</gui></guiseq>."
+
+#: C/split-track.page:9(info/desc)
 msgid "Split an audio project track into multiple tracks."
 msgstr "Partir una pista de un proyecto de sonido en varias pistas."
 
-#: C/split-track.page:19(title)
+#: C/split-track.page:19(page/title)
 msgid "Split an audio track"
 msgstr "Partir una pista de sonido"
 
-#: C/split-track.page:21(p)
+#: C/split-track.page:21(page/p)
 msgid ""
 "You can split a single audio track into multiple tracks when you put "
 "together an audio project."
@@ -185,11 +800,11 @@ msgstr ""
 "Puede partir una sola pista de sonido en varias pistas que puede añadir de "
 "forma conjunta en un proyecto de sonido."
 
-#: C/split-track.page:26(p)
+#: C/split-track.page:26(item/p)
 msgid "Start an audio project and add the tracks you wish to use."
 msgstr "Inicie un proyecto de sonido y añada las pistas que quiere usar."
 
-#: C/split-track.page:29(p)
+#: C/split-track.page:29(item/p)
 msgid ""
 "Select the track you wish to split by clicking on it, then click either "
 "<guiseq><gui>Edit</gui><gui>Split Track…</gui></guiseq> or right click on "
@@ -200,15 +815,15 @@ msgstr ""
 "botón derecho del ratón sobre la pista y seleccione <gui>Partir pista...</"
 "gui> del menú."
 
-#: C/split-track.page:34(p)
+#: C/split-track.page:34(item/p)
 msgid "Select your preferred method of splitting the tracks:"
 msgstr "Seleccione su método preferido para partir las pistas:"
 
-#: C/split-track.page:37(title)
+#: C/split-track.page:37(item/title)
 msgid "Split track manually"
 msgstr "Partir la pista manualmente"
 
-#: C/split-track.page:38(p)
+#: C/split-track.page:38(item/p)
 msgid ""
 "This option allows you to select the exact length of each new section of the "
 "track manually."
@@ -216,21 +831,21 @@ msgstr ""
 "Esta opción le permite seleccionar manualmente la duración exacta de cada "
 "nueva sección de la pista."
 
-#: C/split-track.page:42(title)
+#: C/split-track.page:42(item/title)
 msgid "Split track in parts with a fixed length"
 msgstr "Partir pista en partes con una longitud fija"
 
-#: C/split-track.page:43(p)
+#: C/split-track.page:43(item/p)
 msgid ""
 "Use this method to split the track into multiple sections of equal length."
 msgstr ""
 "Use este método para partir una pista en varias secciones de igual duración."
 
-#: C/split-track.page:47(title)
+#: C/split-track.page:47(item/title)
 msgid "Split track in a fixed number of parts"
 msgstr "Partir la pista en un número fijo de partes"
 
-#: C/split-track.page:48(p)
+#: C/split-track.page:48(item/p)
 msgid ""
 "This method allows you to split the track into a set number of sections, all "
 "of which will be of the same length."
@@ -238,11 +853,11 @@ msgstr ""
 "Este método le permite partir la pista en un número fijo de secciones, las "
 "cuales tendrán todas la misma duración."
 
-#: C/split-track.page:52(title)
+#: C/split-track.page:52(item/title)
 msgid "Split track for each silence"
 msgstr "Partir la pista para cada silencio"
 
-#: C/split-track.page:53(p)
+#: C/split-track.page:53(item/p)
 msgid ""
 "Select this method for <app>Brasero</app> to auto-detect silences in the "
 "recording and to split the track at those points."
@@ -250,11 +865,11 @@ msgstr ""
 "Seleccione este método para que <app>Brasero</app> detecte automáticamente "
 "los silencios en la grabación y divida la pista en esos puntos."
 
-#: C/split-track.page:59(p)
+#: C/split-track.page:59(item/p)
 msgid "Proceed to split the track by clicking <gui>Slice</gui>."
 msgstr "Proceda a partir la pilsta pulsando <gui>Partir</gui>."
 
-#: C/split-track.page:61(p)
+#: C/split-track.page:61(note/p)
 msgid ""
 "If you try to split a track into a section less than six seconds long, the "
 "new section will be padded to make it 6 seconds long."
@@ -262,13 +877,13 @@ msgstr ""
 "Si intenta partir una pista en una selección de menos de seis segundos, la "
 "nueva selección se rellenará para llegar a los 6 segundos de duración."
 
-#: C/split-track.page:68(p)
+#: C/split-track.page:68(item/p)
 msgid "Click <gui>OK</gui> to confirm your track splits and apply the changes."
 msgstr ""
 "Pulse <gui>Aceptar</gui> para confirmar las particiones de pistas y aplicar "
 "los cambios."
 
-#: C/split-track.page:70(p)
+#: C/split-track.page:70(note/p)
 msgid ""
 "You can split and merge the same track as many times as you like while you "
 "are viewing the split track dialog. Once you confirm your track splitting by "
@@ -282,738 +897,130 @@ msgstr ""
 "que ya partió. Para revertir los cambios, quite las selecciones de "
 "particiones de la pista desde el proyecto y vuelva a añadir la pista."
 
-#: C/project-video.page:9(title)
-msgid "3"
-msgstr "3"
+#: C/tools-blank.page:7(info/desc)
+msgid "Erase a rewritable CD or DVD by blanking it."
+msgstr "Borrar un CD o DVD regrabable."
 
-#: C/project-video.page:10(desc)
-msgid "Write a video to a DVD or SVCD."
-msgstr "Grabar un vídeo a un DVD o SVCD."
+#: C/tools-blank.page:17(page/title)
+msgid "Blank a disc"
+msgstr "Borrar un disco"
 
-#: C/project-video.page:20(title)
-msgid "Create a video project"
-msgstr "Crear un proyecto de vídeo"
-
-#: C/project-video.page:22(p)
+#: C/tools-blank.page:19(page/p)
 msgid ""
-"<app>Brasero</app> can be used to create video discs for playing in a DVD "
-"player or laptop."
-msgstr ""
-"<app>Brasero</app> se puede usar para crear díscos de vídeo reproducibles en "
-"un reproductor de DVD o un portátil."
+"You can prepare a rewritable disc, with existing data on it, for writing by "
+"blanking it."
+msgstr "Puede preparar un disco regrabable que contenga datos borrándolo."
 
-#: C/project-video.page:27(p)
+#: C/tools-blank.page:24(item/p)
+msgid "Select <guiseq><gui>Tools</gui><gui>Blank...</gui></guiseq>."
+msgstr ""
+"Seleccione <guiseq><gui>Herramientas</gui><gui>Borrar...</gui></guiseq>."
+
+#: C/tools-blank.page:27(item/p)
 msgid ""
-"Click <gui>Video project</gui> on the start page, or select "
-"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Video Project</"
-"gui></guiseq>."
+"If you have more than one disc drive with a rewritable disc in it, you can "
+"select which disc to rewrite under <gui>Select a disc</gui>."
 msgstr ""
-"Pulse en <gui>Proyecto de vídeo</gui> en la ventana principal o seleccione "
-"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Proyecto de vídeo "
-"nuevo</gui></guiseq>."
+"Si tiene mas de una unidad de discos con un disco regrabable en ellas, puede "
+"seleccionar qué disco grrabar bajo <gui>Seleccionar un disco</gui>."
 
-#: C/project-video.page:32(p)
+#: C/tools-blank.page:31(item/p)
+msgid "You can select <gui>Fast blanking</gui> to blank the CD quicker."
+msgstr ""
+"Puede seleccionar <gui>Borrado rápido</gui> para borrar el CD más "
+"rápidamente."
+
+#: C/tools-blank.page:33(note/p)
 msgid ""
-"Add the videos to the project by clicking <gui>Add</gui> in the toolbar and "
-"selecting the files. You can also add files by dragging and dropping them "
-"onto the project area or by clicking <guiseq><gui>Edit</gui><gui>Add Files</"
-"gui></guiseq>."
+"If you have problems writing to a disc which you fast blanked, try disabling "
+"fast blanking and blank it again."
 msgstr ""
-"Añada los vídeos al proyecto pulsando <gui>Añadir</gui> en la barra de "
-"herramientas y seleccionando los archivos. También puede añadir archivos "
-"arrastrando y soltándolos en el área de proyecto o pulsando "
-"<guiseq><gui>Editar</gui><gui>Añadir archivos</gui></guiseq>."
+"Si tiene problemas escribiendo un disco que ha borrado rápidamente, pruebe a "
+"desactivar el borrado rápido e inténtelo de nuevo."
 
-#: C/project-video.page:38(p) C/project-data.page:43(p)
+#: C/tools-blank.page:38(item/p)
+msgid "Click <gui>Blank</gui> to continue."
+msgstr "Pulse <gui>Borrar</gui> para continuar."
+
+#: C/tools-blank.page:41(item/p)
+msgid "The disc may be ejected when the blanking is complete."
+msgstr "Se puede expulsar el disco al terminar el borrado."
+
+#: C/tools-check-integrity.page:7(info/desc)
+msgid "You can test out a disc integrity after burning it."
+msgstr "Puede comprobar la integridad de un disco después de grabarlo."
+
+#: C/tools-check-integrity.page:9(credit/name)
+msgid "Paulina Gonzalez"
+msgstr "Paulina Gonzalez"
+
+#: C/tools-check-integrity.page:21(page/title)
+msgid "Check disc integrity"
+msgstr "Comprobar la integridad del disco"
+
+#: C/tools-check-integrity.page:23(page/p)
 msgid ""
-"You can add a title for the disc in the text entry field below the project "
-"area."
+"After burning a CD/DVD by using <app>Brasero</app>, you can check its "
+"integrity to make sure that the files in the disc are not corrupted."
 msgstr ""
-"Puede añadir un título para el disco en la entrada de texto bajo el área de "
-"proyecto."
+"Después de grabar un CD/DVD usando <app>Brasero</app>, puede comprobar su "
+"integridad para asegurarse de que los archivos del disco no están corruptos."
 
-#: C/project-video.page:42(p) C/project-data.page:47(p)
-msgid "Select the blank disc in the drop down list."
-msgstr "Seleccione el disco vírgen en la lista desplegable."
-
-#: C/project-video.page:45(p) C/project-data.page:50(p)
-#: C/project-audio.page:44(p)
-msgid "Click <gui>Burn...</gui> to continue."
-msgstr "Pulse <gui>Grabar...</gui> para continuar."
-
-#: C/project-video.page:48(p) C/project-data.page:53(p)
-#: C/project-audio.page:47(p)
-msgid ""
-"Select the <gui>Burning speed</gui> from the drop down list, and any other "
-"options you may want."
+#: C/tools-check-integrity.page:27(item/p)
+msgid "Select <guiseq><gui>Tools</gui><gui>Check Integrity...</gui></guiseq>."
 msgstr ""
-"Seleccione la <gui>Velocidad de grabación</gui> de la lista desplegable y "
-"cualquier otra opción que quiera."
-
-#: C/project-video.page:52(p) C/project-audio.page:51(p)
-msgid ""
-"Click <gui>Burn</gui> to burn a single disc of the project or <gui>Burn "
-"Several Copies</gui> to burn your project to multiple discs."
-msgstr ""
-"Pulse <gui>Grabar</gui> para grabar un solo disco del proyecto o <gui>Grabar "
-"varios discos</gui> para grabar su proyecto a varios discos."
-
-#: C/project-save.page:10(desc)
-msgid "Save a project for editing or burning later."
-msgstr "Guardar un proyecto para editarlo o grabarlo posteriormente."
-
-#: C/project-save.page:20(title)
-msgid "Save a project"
-msgstr "Guardar un proyecto"
-
-#: C/project-save.page:22(p)
-msgid ""
-"You can save an audio, a data or a video project in <app>Brasero</app> for "
-"editing or burning later."
-msgstr ""
-"Puede guardar un proyecto de sonido, datos o vídeo en <app>Brasero</app> "
-"para editarlo o grabarlo más tarde."
-
-#: C/project-save.page:27(p)
-msgid "Create the project and add the files you wish to use to the project."
-msgstr "Crear el proyecto y añadir los archivos que quiere usar al proyecto."
-
-#: C/project-save.page:30(p)
-msgid ""
-"Click <guiseq><gui>Project</gui><gui>Save</gui></guiseq> to save the project."
-msgstr ""
-"Pulse <guiseq><gui>Proyecto</gui><gui>Guardar</gui></guiseq> para guardar el "
-"proyecto."
-
-#: C/project-save.page:34(p)
-msgid ""
-"Enter the name you wish to save the project under, then click <gui>Save</"
-"gui> to save the project."
-msgstr ""
-"Introduzca el nombre con el que quiere guardar el proyecto, después pulse "
-"<gui>Guardar</gui> para guardarlo."
-
-#: C/project-save.page:39(p)
-msgid ""
-"There are a number of ways which can be used for opening a saved "
-"<app>Brasero</app> project by:"
-msgstr ""
-"Existe cierto número de formas para obrir un proyecto de <app>Brasero</app> "
-"guardado:"
-
-#: C/project-save.page:44(p)
-msgid ""
-"selecting it from the list on the start page, under <gui>Recent projects</"
-"gui>"
-msgstr ""
-"seleccionándolo deesde la lista en la ventana principal, bajo <gui>Proyectos "
-"recientes</gui>"
-
-#: C/project-save.page:48(p)
-msgid "clicking <guiseq><gui>Project</gui><gui>Recent Projects</gui></guiseq>"
-msgstr ""
-"pulsando <guiseq><gui>Proyecto</gui><gui>Proyectos recientes</gui></guiseq>"
-
-#: C/project-save.page:51(p)
-msgid ""
-"clicking <guiseq><gui>Project</gui><gui>Open</gui></guiseq> and selecting "
-"the project"
-msgstr ""
-"pulsando <guiseq><gui>Proyecto</gui><gui>Abrir</gui></guiseq> y eligiendo el "
-"proyecto"
-
-#: C/project-save.page:55(p)
-msgid "opening the project from a file browser"
-msgstr "abriendo el proyecto desde un gestor de archivos"
-
-#: C/project-save.page:57(p)
-msgid ""
-"If <app>Brasero</app> is already running, opening the project from a file "
-"browser will cause a second instance of <app>Brasero</app> to start and will "
-"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
-"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
-msgstr ""
-"Si <app>Brasero</app> ya se está ejecutando, abra el proyecto desde un "
-"archivo hará que se inicie una segunda instancia de <app>Brasero</app> y se "
-"colgarán ambas instancias. Para obtener más información consulte el <link "
-"href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">error 644011 de "
-"GNOME</link>."
-
-#: C/project-save.page:67(p)
-msgid ""
-"If you open a saved project, <app>Brasero</app> will treat it as a new "
-"project: if you want to save an updated version of the project, it will ask "
-"you to enter a name for it, at this point you can overwrite the old version "
-"or save it as a new project by entering a different file name."
-msgstr ""
-"Si abre un proyecto guardado, <app>Brasero</app> lo tratará como un proyecto "
-"nuevo: si quiere guardar una versión actualizada del proyecto, se le "
-"preguntará un nombre para él, en este punto puede sobreescribir la versión "
-"anterior o guardarlo como un proyecto nuevo introduciendo un nombre "
-"diferente."
-
-#: C/project-image-burn.page:11(desc)
-msgid "Burn an existing disc image to a CD or DVD."
-msgstr "Grabar una imagen de disco existente a un CD o DVD."
-
-#: C/project-image-burn.page:13(name)
-msgid "Marta Bogdanowicz"
-msgstr "Marta Bogdanowicz"
-
-#: C/project-image-burn.page:14(email)
-msgid "majus85@gmail.com"
-msgstr "majus85@gmail.com"
-
-#: C/project-image-burn.page:25(title)
-msgid "Burn image"
-msgstr "Burn image"
-
-#: C/project-image-burn.page:27(p)
-msgid ""
-"<app>Brasero</app> allows you to burn disc images to a CD or DVD. It "
-"supports the following extensions of optical disc images: <file>.iso</file>, "
-"<file>.toc</file> and <file>.cue</file>."
-msgstr ""
-"<app>Brasero</app> le permite grabar imagenes de discos a CD o DVD. Soporta "
-"las siguientes extensiones de imágenes de discos ópticos: <file>.iso</file>, "
-"<file>.toc</file> y <file>.cue</file>."
-
-#: C/project-image-burn.page:32(p)
-msgid ""
-"Disc images are archive files which contain all the data that is on a CD or "
-"DVD. Only one disc image can be on a CD at a time, but each archive can "
-"contain as little or as much data as you want, as long as it fits on the "
-"disc."
-msgstr ""
-"Los archivos de imagen son archivadores que contienen todos los datos en un "
-"CD o DVD. Solo una imagen de disco puede estar en un CD a la vez, pero cada "
-"archivador puede contener tantos datos como quiera, siempre que quepa en el "
-"disco."
-
-#: C/project-image-burn.page:38(p)
-msgid "To burn a disc image to a CD or DVD, follow these steps:"
-msgstr ""
-"Para grabar una imagen de disco a un CD o DVD realice los siguientes pasos:"
-
-#: C/project-image-burn.page:41(p)
-msgid ""
-"Click <gui>Burn image</gui> on the start page or select "
-"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></"
-"guiseq>."
-msgstr ""
-"Pulse en <gui>Grabar una imagen</gui> en la ventana principal o seleccione "
-"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Grabar imagen...</"
+"Seleccione <guiseq><gui>Herramientas</gui><gui>Comprobar integridad...</"
 "gui></guiseq>."
 
-#: C/project-image-burn.page:46(p)
+#: C/tools-check-integrity.page:30(item/p)
 msgid ""
-"Select a disc image to write by clicking <gui>Click here to select a disc "
-"image</gui>."
+"You can select the option <gui>Use an MD5 file to check the disk.</gui> if "
+"you prefer it."
 msgstr ""
-"Seleccione una imagen de disco en la que grabar pulsando <gui>Pulsar aquí "
-"para seleccionar una imagen de disco</gui>."
+"Puede seleccionar la opción <guilabel>Usar un archivo md5 para verificar el "
+"disco</guilabel> si lo prefiere."
 
-#: C/project-image-burn.page:50(p)
+#: C/tools-check-integrity.page:33(item/p)
 msgid ""
-"Select the disc that you want to use from drop down list below <gui>Select a "
-"disc to write to</gui>. If you have more than one disc drive, all discs "
-"which are currently in them should be listed."
+"An MD5 (Message-Digest Algorithm 5) is a cryptographic hash function widely "
+"used for checking data integrity."
 msgstr ""
-"Seleccione de la lista desplegable bajo <gui>Seleccionar un disco en el que "
-"grabar</gui> el disco en el que quiere grabar. Se listarán todos los discos "
-"actualmente en las unidades en caso de que tenga más de una unidad de discos."
+"Un MD5 (Message-Digest Algorithm 5) es una función hash criptográfica usada "
+"ampliamente para comprobar integridad de datos."
 
-#: C/project-image-burn.page:53(p)
+#: C/tools-check-integrity.page:34(item/p)
 msgid ""
-"After choosing the disc <app>Brasero</app> shows how much free space will "
-"remain on the disc after burning."
+"If you choose this option, you will have to find the MD5 file by clicking in "
+"the folder icon placed below."
 msgstr ""
-"Después de elegir el disco, <app>Brasero</app> muestra cuánto espacio libre "
-"quedará en el disco después de grabarlo."
+"Si elije esta opción, deberá buscar el archivo MD5 pulsando en el icono de "
+"carpeta situado debajo."
 
-#: C/project-image-burn.page:57(p) C/project-disc-copy.page:35(p)
+#: C/tools-check-integrity.page:39(item/p)
+msgid "Press <gui>Check</gui> to continue or <gui>Close</gui> to cancel it."
+msgstr ""
+"Pulse <gui>Comprobar</gui> para continuar o  <gui>Cerrar</gui> para cancelar."
+
+#: C/tools-check-integrity.page:42(item/p)
 msgid ""
-"Click the <gui>Properties</gui> button to select burning speed and other "
-"custom options."
+"When the checking is finished you can either choose to <gui>Check Again</"
+"gui> or just <gui>Close</gui>."
 msgstr ""
-"Pulse el botón <gui>Propiedades</gui> para seleccionar la velocidad de "
-"grabación y otras opciones."
+"Cuando la comprobación haya terminado, puede elegir <gui>Volver a comprobar</"
+"gui> o simplemente <gui>Cerrar</gui>."
 
-#: C/project-image-burn.page:61(p)
-msgid ""
-"Click <gui>Burn</gui> to start burning the image. After this operation you "
-"can either finish burning or make the other copy of the image."
-msgstr ""
-"Pulse <gui>Grabar</gui> para comenzar a grabar la imagen. Después de esta "
-"operación puede finalizar la grabación o grabar otra copia de la imagen."
+#~| msgid "philbull@gmail.com"
+#~ msgid "pau.gonzalezbr@gmail.com"
+#~ msgstr "pau.gonzalezbr@gmail.com"
 
-#: C/project-image-burn.page:64(p)
-msgid ""
-"If you are using a re-writable disc, which already contains data, you will "
-"be asked if you want to blank it or insert a different disc."
-msgstr ""
-"Si está usando un disco regrabable que ya contenga datos, se le preguntará "
-"si quiere borrarlo o insertar un disco diferente."
+#~ msgid "kittykat3756@gmail.com"
+#~ msgstr "kittykat3756@gmail.com"
 
-#: C/project-disc-copy.page:7(desc)
-msgid "Create an identical copy of a disc."
-msgstr "Crear una copia idéntica de un disco."
+#~ msgid "kittykat3756@googlemail.com"
+#~ msgstr "kittykat3756@googlemail.com"
 
-#: C/project-disc-copy.page:17(title)
-msgid "Copy disc"
-msgstr "Copiar un disco"
-
-#: C/project-disc-copy.page:21(p)
-msgid ""
-"Click <gui>Disc copy</gui> on the start page, or select "
-"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Copy Disc... </gui></"
-"guiseq>."
-msgstr ""
-"Pulse en <gui>Copia de disco</gui> en la ventana principal o seleccione "
-"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Copiar disco...</"
-"gui></guiseq>."
-
-#: C/project-disc-copy.page:26(p)
-msgid ""
-"Select the disc you would like to copy from the drop down list below "
-"<gui>Select disc to copy</gui>. If you have more than one disc drive, all "
-"discs which are currently in them should be listed."
-msgstr ""
-"Seleccione de la lista desplegable bajo <gui>Seleccionar el disco para "
-"copiar</gui> el disco que quiere copiar. Se listarán todos los discos "
-"actualmente en las unidades en caso de que tenga más de una unidad de discos."
-
-#: C/project-disc-copy.page:31(p)
-msgid ""
-"Choose whether you want to make a copy to another disc or create an image "
-"for later use."
-msgstr ""
-"Elija si quiere crear una copia en otro disco o si quiere crear una imagen "
-"para usarla más tarde."
-
-#: C/project-disc-copy.page:39(p)
-msgid ""
-"Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several "
-"Copies</gui>, if you plan to make more than one copy of the disc."
-msgstr ""
-"Pulse <gui>Copiar</gui> para comenzar a copiar el disco o <gui>Hacer varias "
-"copias</gui> si tiene intención de grabar más de una copia del disco."
-
-#: C/project-disc-copy.page:42(p)
-msgid ""
-"If you are copying the disc and have only one disc drive, you will be asked "
-"to replace the disc you are copying with a writable one after the contents "
-"are copied temporarily to your hard disk."
-msgstr ""
-"Si está copiando un disco y sólo tiene una unidad de discos, se le pedirá "
-"que reemplace el disco que está copiando con uno grabable después de copiar "
-"temporalmente el contenido a su disco duro."
-
-#: C/project-data.page:7(desc)
-msgid "Write data to a CD or DVD."
-msgstr "Grabar un CD o DVD de datos."
-
-#: C/project-data.page:17(title)
-msgid "Create a data project"
-msgstr "Crear un proyecto de datos"
-
-#: C/project-data.page:19(p)
-msgid ""
-"A data project is used for writing data (for example, files, photos or "
-"music) to a disc, without changing those files in any way. This can be "
-"useful for transferring files between computers."
-msgstr ""
-"Un proyecto de datos se usa para grabar datos (por ejemplo, archivos, fotos "
-"o música) a un disco, sin cambiaro esos archivos en alguna forma. Es útil "
-"para transferir archivos entre equipos."
-
-#: C/project-data.page:25(p)
-msgid ""
-"Click <gui>Data project</gui> on the start page, or select "
-"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Data Project</gui></"
-"guiseq>."
-msgstr ""
-"Pulse en <gui>Proyecto de datos</gui> en la ventana principal o seleccione "
-"<guiseq><gui>Proyecto</gui><gui>>Proyecto nuevo</gui><gui>Proyecto de datos "
-"nuevo</gui></guiseq>."
-
-#: C/project-data.page:30(p)
-msgid ""
-"Add the desired files to the project by clicking <gui>Add</gui> in the "
-"toolbar and selecting the files. You can also add files by dragging and "
-"dropping them onto the project area or by clicking <guiseq><gui>Edit</"
-"gui><gui>Add Files</gui></guiseq>."
-msgstr ""
-"Añada los archivos que quiera al proyecto pulsando <gui>Añadir</gui> en la "
-"barra de herramientas y seleccione los archivos. También puede añadir "
-"archivos arrastrándolos y soltándolos dentro del área de proyecto o pulsando "
-"<guiseq><gui>Editar</gui><gui>Añadir archivos</gui></guiseq>."
-
-#: C/project-data.page:35(p)
-msgid ""
-"You can create folders on the CD to store your data in a more structured "
-"manner. To create a folder, click <gui>New Folder</gui> in the toolbar or "
-"select <guiseq><gui>Edit</gui><gui>New Folder</gui></guiseq> from the menu "
-"bar. You can also create folders inside other folders."
-msgstr ""
-"Puede crear carpetas en el CD para almacenar sus datos de una forma "
-"estructurada. Para crear una carpeta, pulse <gui>Carpeta nueva</gui> en la "
-"barra de herramientas o seleccione <guiseq><gui>Editar</gui><gui>Carpeta "
-"nueva</gui></guiseq> de la barra de menú. También puede crear carpetas "
-"dentro de otras carpetas."
-
-#: C/project-data.page:57(p)
-msgid ""
-"Click <gui>Burn</gui> to burn a single CD of the project or <gui>Burn "
-"Several Copies</gui> to burn your project to multiple CDs"
-msgstr ""
-"Pulse <gui>Grabar</gui> para grabar un solo CD del proyecto o <gui>Grabar "
-"varias copias</gui> para grabar su proyecto en varios CD."
-
-#: C/project-data.page:60(p)
-msgid ""
-"If you are using a rewritable disc, which already contains data, you will be "
-"asked if you want to blank it or insert a different disc."
-msgstr ""
-"Si está usando un disco regrabable que ya contenga datos, se le preguntará "
-"si quiere borrarlo o insertar un disco diferente."
-
-#: C/project-data.page:66(p)
-msgid ""
-"If you are using a rewritable disc and the data is not burned correctly onto "
-"it, you may need to do a full (non-fast) blank of the disc before trying "
-"again."
-msgstr ""
-"Si está usando un disco regrabable y los datos se han grabado correctamente, "
-"puede querer hacer un borrado completo (no rápido) del disco antes de volver "
-"a intentarlo."
-
-#: C/project-audio.page:7(desc)
-msgid "Create an audio project."
-msgstr "Crear un proyecto de sonido."
-
-#: C/project-audio.page:17(title)
-msgid "Write a music CD"
-msgstr "Grabar un CD de música"
-
-#: C/project-audio.page:19(p)
-msgid ""
-"<app>Brasero</app> can write audio files to a CD, which you can then use for "
-"playing in CD players and so on. It is usually best to use a non-rewritable "
-"CD because not all CD players will play rewritable CDs."
-msgstr ""
-"<app>Brasero</app> puede grabar archivos de sonido a un CD, que se puede "
-"reproducir en reproductores de CD y similares. Generalmente, es preferible "
-"usar un disco no regrabable, ya que no todos los reproductores de CD "
-"reproducen CD regrabables."
-
-#: C/project-audio.page:26(p)
-msgid ""
-"Click <gui>Audio project</gui> on the start page, or select "
-"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Audio Project</"
-"gui></guiseq>."
-msgstr ""
-"Pulse en <gui>Proyecto de sonido</gui> en la ventana principal o seleccione "
-"<guiseq><gui>Proyecto</gui><gui>Proyecto nuevo</gui><gui>Proyecto de sonido "
-"nuevo</gui></guiseq>."
-
-#: C/project-audio.page:31(p)
-msgid ""
-"Add audio files to the project by clicking <gui>Add</gui> in the toolbar and "
-"selecting the desired files. You can also add files by dragging and dropping "
-"them onto the project area or by clicking <guiseq><gui>Edit</gui><gui>Add "
-"Files</gui></guiseq>."
-msgstr ""
-"Añada archivos de sonido al proyecto pulsando <gui>Añadir</gui> en la barra "
-"de herramientas y seleccionando los archivos que quiera. También puede "
-"añadir archivos arrastrándolos y soltándolos en el área de proyecto o "
-"pulsando <guiseq><gui>Editar</gui><gui>Añadir archivos</gui></guiseq>."
-
-#: C/project-audio.page:37(p)
-msgid ""
-"You can add a title for the CD in the text entry field below the project "
-"area."
-msgstr ""
-"Puede añadir un título para el CD en la caja de texto de debajo del área del "
-"proyecto."
-
-#: C/project-audio.page:41(p)
-msgid "Select the blank CD in the drop down list."
-msgstr "Seleccione el CD vírgen de la lista desplegable."
-
-#: C/project-audio.page:57(p)
-msgid ""
-"You can also split individual tracks into multiple tracks using the "
-"<gui>Split</gui> tool and add a two second break after a track using the "
-"<gui>Pause</gui> button."
-msgstr ""
-"También puede partir pistas individuales en varias pistas usando la "
-"herramienta <gui>Partir</gui> y añadir una pausa de dos segundos después de "
-"una pista, usando el botón <gui>Pausa</gui>."
-
-#: C/prob-dvd.page:9(desc)
-msgid "I cannot write to a DVD-R or a DVD-RW."
-msgstr "No puedo grabar en un DVD-R o DVD-RW."
-
-#: C/prob-dvd.page:19(title)
-msgid "Problem creating a DVD"
-msgstr "Problema al crear un DVD"
-
-#: C/prob-dvd.page:21(p)
-msgid ""
-"Some types of DVD-Rs and DVD-RWs are not compatible with all burners. Check "
-"the following to find out if those can be used with your burner."
-msgstr ""
-"Algunos tipos de DVD-R y DVD-RW no son compatibles con todas las grabadoras. "
-"Para saber si éstos son compatibles con su grabadora compruebe lo siguiente."
-
-#: C/prob-dvd.page:26(p)
-msgid ""
-"Check if your DVD drive accepts DVD+ or DVD- discs; if it is labelled with "
-"\"multi\", that usually indicates that it accepts both. Check your disc to "
-"see if it is the same as the DVD drive."
-msgstr ""
-"Compruebe si su unidad de DVD acepta discos DVD+ o DVD-; si está estiquetada "
-"como «multi» generalmente indica que acepta ambos. Compruebe su disco para "
-"ver si es el mismo tipo que soporta su unidad de DVD."
-
-#: C/prob-dvd.page:31(p)
-msgid ""
-"Check if your disc is dual layer or single layer: some DVD drives can not "
-"write to a dual layer disc."
-msgstr ""
-"Compruebe si su disco es de doble capa o no; algunas unidades de DVD no "
-"puede escribir en disco de doble capa."
-
-#: C/prob-dvd.page:35(p)
-msgid ""
-"If you are trying to use a DVD-R, check if it has already been written to "
-"before. If you are using a DVD-RW, try blanking it before you attempt to "
-"write to it."
-msgstr ""
-"Si está intentando usar un DVD-R, compruebe si ya se ha grabado antes. Si "
-"está usando un DVD-RW, pruebe a borrarlo antes de grabar de nuevo."
-
-#: C/prob-cd.page:9(desc)
-msgid "My MP3s will not play in a DVD or CD player."
-msgstr "Mis MP3 no se reproducen en un reproductor de DVD o CD."
-
-#: C/prob-cd.page:19(title)
-msgid "CD will not play in a CD player"
-msgstr "El CD no se reproduce en un reproductor de CD"
-
-#: C/prob-cd.page:21(p)
-msgid ""
-"If your CD is not playing in your CD player or stereo, it is probably "
-"because the music was not correctly written to the disc or because you used "
-"a data project to write the music to the CD instead of an audio project."
-msgstr ""
-"Si su CD no se puede reproducir en su reproductor de CD o cadena musical "
-"probablemente sea porque la música no se grabó correctamente o porque usó un "
-"proyecto de datos para grabar la música en el CD, en lugar de un proyecto de "
-"sonido."
-
-#: C/prob-cd.page:26(p)
-msgid ""
-"Many new CD and DVD players will play music CDs which were created using a "
-"data project, but most older players will not."
-msgstr ""
-"Muchos reproductores de CD y DVD nuevos reproducirán CD de música creados "
-"usando un proyecto de datos, pero los antiguos no lo harán."
-
-#: C/prob-cd.page:31(p)
-msgid "Older CD players might not be able to play CD-RWs."
-msgstr "Puede que reproductores de CD antiguos no puedan reproducor CD-RW."
-
-#: C/prob-cd.page:36(p)
-msgid "If you are using a CD-RW, blank the CD."
-msgstr "Si está usando un CD-RW, bórre el CD."
-
-#: C/prob-cd.page:39(p)
-msgid "Rewrite the CD as an audio project."
-msgstr "Regrabar un CD como un proyecto de sonido."
-
-#. When image changes, this message will be marked fuzzy or untranslated for you.
-#. It doesn't matter what you translate it to: it's not used at all.
-#: C/introduction.page:36(None)
-msgid ""
-"@@image: 'figures/brasero-main-window.png'; "
-"md5=11e5cc148d7c8c8dc0c63e68b2f611f3"
-msgstr ""
-"@@image: 'figures/brasero-main-window.png'; "
-"md5=11e5cc148d7c8c8dc0c63e68b2f611f3"
-
-#: C/introduction.page:7(desc)
-msgid "Introduction to the <app>Brasero</app> disc burning application."
-msgstr ""
-"Introducción a la aplicación de grabación de discos <app>Brasero</app>."
-
-#: C/introduction.page:17(title)
-msgid "Introduction"
-msgstr "Introducción"
-
-#: C/introduction.page:19(p)
-msgid ""
-"<app>Brasero</app> is an application for burning CDs and DVDs, designed to "
-"be easy to use, while providing all the tools necessary for burning."
-msgstr ""
-"<app>Brasero</app> es una aplicación para grabar CD y DVD diseñada para ser "
-"fácil de usar, a la vez que proporciona las herramientas necesarias para la "
-"grabación."
-
-#: C/introduction.page:22(p)
-msgid "With <app>Brasero</app> you can:"
-msgstr "Con <application>Brasero</application> puede:"
-
-#: C/introduction.page:24(p)
-msgid "Burn data to CDs and DVDs"
-msgstr "Grabar datos a CD y DVD"
-
-#: C/introduction.page:25(p)
-msgid "Burn audio CDs from digital audio files (such as OGG, FLAC and MP3)"
-msgstr ""
-"Grabar CD de sonido desde archivos de sonido digital (tales como OGG, FLAC y "
-"MP3)"
-
-#: C/introduction.page:27(p)
-msgid "Copy CDs and DVDs"
-msgstr "Copiar CD y DVD"
-
-#: C/introduction.page:28(p)
-msgid "Create video DVDs or SVCDs"
-msgstr "Crear DVD de vídeo o SVCD"
-
-#: C/introduction.page:29(p)
-msgid "Create image files and burn existing image files"
-msgstr "Crear archivos de imagen y grabar desde archivos de imagen existentes"
-
-#: C/introduction.page:30(p)
-msgid "Erase CD-RWs and DVD-RWs"
-msgstr "Borrar CD-RW y DVD-RW"
-
-#: C/introduction.page:31(p)
-msgid "Check the integrity of discs and disc images"
-msgstr "Comprobar la integridad de discos e imágenes de discos"
-
-#: C/introduction.page:35(title)
-msgid "The <gui>Brasero</gui> main window"
-msgstr "La ventana principal de <gui>Brasero</gui>"
-
-#: C/index.page:5(title)
-msgid "Brasero Help"
-msgstr "Ayuda de Brasero"
-
-#: C/index.page:8(title)
-msgid "Create a new project"
-msgstr "Crear un proyecto nuevo"
-
-#: C/index.page:12(title)
-msgid "Troubleshooting"
-msgstr "Solución de problemas"
-
-#: C/index.page:16(title)
-msgid "Other tools"
-msgstr "Otras herramientas"
-
-#: C/create-cover.page:7(desc)
-msgid "Create an inlay for a jewel case."
-msgstr "Crear una carátura para una caja de CD o DVD."
-
-#: C/create-cover.page:17(title)
-msgid "Create a cover"
-msgstr "Crear una carátula"
-
-#: C/create-cover.page:19(p)
-msgid ""
-"You can use <app>Brasero</app> to create inlays for your jewel cases. Access "
-"the creator by clicking <guiseq><gui>Tools</gui><gui>Cover Editor</gui></"
-"guiseq>."
-msgstr ""
-"Puede usar <app>Brasero</app> para crear carátulas para sus cajas de CD o "
-"DVD. Acceda al creador pulsando <guiseq><gui>Herramientas</gui><gui>Editor "
-"de carátulas</gui></guiseq>."
-
-#: C/create-cover.page:24(p)
-msgid ""
-"If you are creating an audio project and finish putting together the project "
-"before creating an inlay, then when you access the <gui>Cover Editor</gui> "
-"interface from the audio project window, the tracks will automatically be "
-"listed on the back cover."
-msgstr ""
-"Si está creando un proyecto de sonido y está termina el proyecto antes de "
-"crear la carátula, al acceder al <gui>Editor de carátulas</gui> desde la "
-"ventana del proyecto de sonido, se añadirá automáticamente una lista de las "
-"pistas en la carátula posterior."
-
-#: C/create-cover.page:31(p)
-msgid "If you close the <gui>Cover Editor</gui>, your changes will be lost."
-msgstr "Se perderán sus cambios si cierra el <gui>Editor de carátulas</gui>."
-
-#: C/create-cover.page:36(p)
-msgid "Open the <gui>Cover Editor</gui>."
-msgstr "Abra el <gui>Editor de carátulas</gui>."
-
-#: C/create-cover.page:39(p)
-msgid ""
-"Choose the formatting you wish to use for the text and type the text, "
-"scrolling down to see the side and back inlay for the jewel case."
-msgstr ""
-"Elija el formato que quiere usar para el texto y escríbalo, desplazándose "
-"hacia abajo para ver el lateral y la parte trasera de la caja."
-
-#: C/create-cover.page:42(p)
-msgid ""
-"When you first see the <gui>Cover Editor</gui> dialog, you will not be able "
-"to click on any of the text formatting options. Click on the cover you want "
-"to work on to be able to use those."
-msgstr ""
-"La primera vez que vea el diálogo del <gui>Editor de carátulas</gui> no "
-"podrá pulsar en ninguna opción de formateo de texto. Pulse sobre la carátula "
-"en la que quiere trabajar para poder usar las opciones."
-
-#: C/create-cover.page:48(p)
-msgid ""
-"Click the <gui>Background properties</gui> toolbar icon to add a background "
-"for the current cover, or right click on the cover you wish to edit and "
-"select <gui>Set Background Properties</gui>. You can choose to use a colored "
-"background or to select a background image."
-msgstr ""
-"Para añadir un fondo a la carátula actual, pulse en el icono de "
-"<gui>Propiedades del fondo</gui> en la barra de herramientas, o pulse con el "
-"botón derecho del ratón sobre la carátula que quiere editar y seleccione "
-"<gui>Establecer las propiedades del fondo</gui>. Puede elegir usar un fondo "
-"coloreado o una imagen de fondo."
-
-#: C/create-cover.page:53(p)
-msgid ""
-"If you select a centered background image, <app>Brasero</app> sometimes "
-"crashes when you click the <gui>Close</gui> button."
-msgstr ""
-"A veces, <app>Brasero</app> se cuelga al pulsar el botón <gui>Cerrar</gui> "
-"si selecciona una imagen de fondo centrada."
-
-#: C/create-cover.page:56(p)
-msgid ""
-"Click the <gui>Close</gui> button to apply the changes and close the "
-"<gui>Background Properties</gui> dialog."
-msgstr ""
-"Pulse el botón <gui>Cerrar</gui> para aplicar los cambios y cerrar el "
-"diálogo <gui>Propiedades del fondo</gui>."
-
-#: C/create-cover.page:60(p)
-msgid ""
-"Print the cover using the <gui>Print</gui> button, which is located in the "
-"top-right corner of the dialog."
-msgstr ""
-"Imprima la carátula usando el botón <gui>Imprimir</gui>, ubicado en la "
-"esquina superior derecha del diálogo."
-
-#. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2
-#: C/index.page:0(None)
-msgid "translator-credits"
-msgstr ""
-"Daniel Mustieles <daniel.mustieles@gmail.com>, 2011\n"
-"Jorge González <jorgegonz@svn.gnome.org>, 2011"
+#~ msgid "majus85@gmail.com"
+#~ msgstr "majus85@gmail.com"
 
 #~ msgid ""
 #~ "Select your preferred method of splitting the tracks, and split at the "
@@ -1714,8 +1721,8 @@ msgstr ""
 #~ msgstr "Sección <guilabel>Opciones de sonido</guilabel>:"
 
 #~ msgid ""
-#~ "Choose <guilabel>Add MP2 audio stream</guilabel> to add a <emphasis>MPEG-"
-#~ "1 Audio Layer 2</emphasis> stream to the disc."
+#~ "Choose <guilabel>Add MP2 audio stream</guilabel> to add a "
+#~ "<emphasis>MPEG-1 Audio Layer 2</emphasis> stream to the disc."
 #~ msgstr ""
 #~ "Elija <guilabel>Añadir un flujo de sonido MP2</guilabel> para añadir un "
 #~ "flujo <emphasis>MPEG-1 Audio Layer 2</emphasis> al disco."
