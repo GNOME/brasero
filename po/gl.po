@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero-master-po-gl-6740\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-17 23:24+0200\n"
-"PO-Revision-Date: 2012-08-17 15:46+0200\n"
+"POT-Creation-Date: 2012-09-04 23:16+0200\n"
+"PO-Revision-Date: 2012-09-02 13:14+0200\n"
 "Last-Translator: Leandro Regueiro <leandro.regueiro@gmail.com>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -175,14 +175,14 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
 msgid "The last browsed folder while looking for images to burn"
-msgstr "O último cartafol navegado ao buscar polas imaxes para gravar"
+msgstr "O último cartafol examinado ao buscar imaxes para gravar"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:21
 msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
 msgstr ""
-"Contén a ruta absoluta ao cartafol que foi navegado por última vez para "
+"Contén a ruta absoluta ao cartafol que se examinou por última vez para "
 "buscar imaxes para gravar"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
@@ -216,8 +216,8 @@ msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
 msgstr ""
-"Debería o Brasero substituír as ligazóns simbólicas polos seus destinos? Se "
-"o define como true, o Brasero substituirá as ligazóns simbólicas."
+"Debería o Brasero substituír as ligazóns simbólicas polos seus ficheiros "
+"destino? Se o define como true, o Brasero substituirá as ligazóns simbólicas."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:28
 msgid "Should brasero filter broken symbolic links"
@@ -434,7 +434,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-caps-burn.c:868
 #, c-format
 msgid "Only one track at a time can be checked"
-msgstr "Só se pode verificar unha pista de cada vez"
+msgstr "Só se pode comprobar unha pista de cada vez"
 
 #: ../libbrasero-burn/brasero-burn.c:2635
 msgid "No format for the temporary image could be found"
@@ -1093,7 +1093,7 @@ msgstr "Quere gravar a selección de ficheiros en varios soportes?"
 #: ../libbrasero-burn/brasero-burn-options.c:444
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
-"O tamaño do proxecto é longo de máis para o disco, aínda coa opción de "
+"O tamaño dos datos é demasiado grande para o disco, aínda coa opción de "
 "gravar superando o límite (overburn)."
 
 #: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:954
@@ -1648,7 +1648,7 @@ msgstr ""
 "Os fillos deste directorio terán máis de 7 cartafoles pai.\n"
 "O Brasero pode crear unha imaxe con esta xerarquía e gravala, mais o disco "
 "pode non ser lexíbel en todos os sistemas operativos.\n"
-"NOTA: Sábese que esta xerarquía funciona en Linux."
+"NOTA: Sábese que esta xerarquía de ficheiros funciona en Linux."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:232
 #: ../libbrasero-burn/brasero-status-dialog.c:294
@@ -1729,12 +1729,12 @@ msgstr ""
 #: ../libbrasero-burn/brasero-sum-dialog.c:134
 #: ../libbrasero-burn/brasero-sum-dialog.c:215
 msgid "Check _Again"
-msgstr "Verific_ar de novo"
+msgstr "Comprob_ar de novo"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:165
 #: ../libbrasero-burn/brasero-sum-dialog.c:514
 msgid "The file integrity check could not be performed."
-msgstr "Non foi posíbel efectuar a verificación de integridade do ficheiro."
+msgstr "Non foi posíbel realizar a comprobación de integridade do ficheiro."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
@@ -1744,7 +1744,7 @@ msgstr "Produciuse un erro descoñecido"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
 msgid "The file integrity check was performed successfully."
-msgstr "A verificación de integridade do ficheiro foi correctamente efectuada."
+msgstr "A comprobación de integridade do ficheiro realizouse correctamente."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:179
 msgid "There seem to be no corrupted files on the disc"
@@ -1773,7 +1773,7 @@ msgstr "Non se especificou ningún ficheiro md5."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:692
 msgid "Use an _MD5 file to check the disc"
-msgstr "Usar un ficheiro _MD5 para verificar o disco"
+msgstr "Usar un ficheiro _MD5 para comprobar o disco"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:693
 msgid "Use an external .md5 file that stores the checksum of a disc"
@@ -1786,11 +1786,11 @@ msgstr "Abrir un ficheiro MD5"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:721
 msgid "_Check"
-msgstr "_Verificar"
+msgstr "_Comprobar"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:752
 msgid "Disc Checking"
-msgstr "Verificación de disco"
+msgstr "Comprobación de disco"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:78
 #: ../libbrasero-burn/brasero-tool-dialog.c:92
@@ -2022,7 +2022,7 @@ msgstr "Iniciando a gravación"
 
 #: ../libbrasero-burn/burn-basics.c:92
 msgid "Success"
-msgstr "Correcto"
+msgstr "Éxito"
 
 #: ../libbrasero-burn/burn-basics.c:93
 msgid "Ejecting medium"
@@ -2149,7 +2149,7 @@ msgstr "O proceso \"%s\" rematou co código de erro (%i)"
 #: ../libbrasero-media/brasero-medium.c:206
 #: ../libbrasero-media/brasero-volume.c:382
 msgid "Image File"
-msgstr "Dispositivo virtual (imaxe)"
+msgstr "Ficheiro de imaxe"
 
 #: ../libbrasero-media/brasero-drive-selection.c:341
 #: ../libbrasero-media/brasero-drive-selection.c:436
@@ -2545,7 +2545,7 @@ msgstr "Negriña"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:699
 msgid "Font family and size"
-msgstr "Tipo de fonte e tamaño"
+msgstr "Familia e tamaño de tipo de letra"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:706
 msgid "_Text Color"
@@ -2716,7 +2716,7 @@ msgstr "_Comprobar o disco…"
 
 #: ../nautilus/nautilus-burn-extension.c:677
 msgid "Check the data integrity on this CD or DVD"
-msgstr "Verifica a integridade dos datos deste disco de CD ou DVD"
+msgstr "Comproba a integridade dos datos deste disco de CD ou DVD"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:191
 #: ../plugins/checksum/burn-checksum-image.c:124
@@ -2940,7 +2940,7 @@ msgstr "Non foi posíbel atopar un ficheiro de suma de comprobación no disco"
 
 #: ../plugins/checksum/burn-checksum-files.c:893
 msgid "Checking file integrity"
-msgstr "Verificando a integridade do ficheiro"
+msgstr "Comprobando a integridade do ficheiro"
 
 #: ../plugins/checksum/burn-checksum-files.c:987
 #: ../plugins/checksum/burn-checksum-files.c:1012
@@ -2964,7 +2964,7 @@ msgstr "Suma de comprobación de ficheiro"
 
 #: ../plugins/checksum/burn-checksum-files.c:1466
 msgid "Checks file integrities on a disc"
-msgstr "Verifica a integridade nun disco"
+msgstr "Comproba a integridade dos ficheiros dun disco"
 
 #: ../plugins/checksum/burn-checksum-files.c:1504
 #: ../plugins/checksum/burn-checksum-image.c:856
@@ -3010,7 +3010,7 @@ msgstr "Suma de comprobación de imaxe"
 
 #: ../plugins/checksum/burn-checksum-image.c:832
 msgid "Checks disc integrity after it is burnt"
-msgstr "Verifica a integridade do disco despois da gravación"
+msgstr "Comproba a integridade do disco despois da gravación"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:313
 #: ../plugins/vcdimager/burn-vcdimager.c:438
@@ -3245,7 +3245,8 @@ msgstr "Convertendo o ficheiro de vídeo a MPEG2"
 
 #: ../plugins/transcode/burn-vob.c:1367
 msgid "Converts any video file into a format suitable for video DVDs"
-msgstr "Converte calquera vídeo a un formato axeitado para DVD de vídeo"
+msgstr ""
+"Converte calquera ficheiro de vídeo a un formato axeitado para DVD de vídeo"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:478
 msgid "Creates disc images suitable for SVCDs"
@@ -3293,15 +3294,15 @@ msgstr "_Baleirar…"
 
 #: ../src/brasero-app.c:138
 msgid "Blank a disc"
-msgstr "Borrar un disco"
+msgstr "Baleirar un disco"
 
 #: ../src/brasero-app.c:140
 msgid "_Check Integrity…"
-msgstr "_Verificación de integridade…"
+msgstr "_Comprobación de integridade…"
 
 #: ../src/brasero-app.c:141
 msgid "Check data integrity of disc"
-msgstr "Verificar a integridade dos datos do disco"
+msgstr "Comprobar a integridade dos datos do disco"
 
 #: ../src/brasero-app.c:144
 msgid "Quit Brasero"
@@ -3648,7 +3649,7 @@ msgstr "Abrir o diálogo de disco en branco"
 
 #: ../src/brasero-cli.c:122
 msgid "Open the check disc dialog"
-msgstr "Abrir o diálogo de verificación de disco"
+msgstr "Abrir o diálogo de comprobación de disco"
 
 #: ../src/brasero-cli.c:126
 msgid "Burn the contents of the burn:// URI"
@@ -4206,8 +4207,8 @@ msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Para retirar ficheiros, seleccióneos e logo prema no botón \"Eliminar\" ou "
-"prema a tecla \"Suprimir\" do teclado."
+"Para retirar ficheiros, seleccióneos e logo prema no botón «Eliminar» ou "
+"prema a tecla «Suprimir»."
 
 #: ../src/brasero-project.c:804
 #, c-format
@@ -4257,8 +4258,7 @@ msgstr "_Rexeitar os cambios"
 
 #: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
-msgstr ""
-"Desexa buscar rexeitar a selección de ficheiros e engadilos ao novo proxecto?"
+msgstr "Desexa desbotar a selección de ficheiros e engadilos ao novo proxecto?"
 
 #: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid ""
