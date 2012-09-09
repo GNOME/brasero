@@ -1,5 +1,5 @@
 # This file is distributed under the same license as the brasero package.
-# Changwoo Ryu <cwryu@debian.org>, 2009, 2010, 2011.
+# Changwoo Ryu <cwryu@debian.org>, 2009-2012.
 #
 # 새로 번역하시는 분은 아래 "translator-credits"에 추가하세요.
 #
@@ -9,292 +9,294 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2011-02-27 17:26+0900\n"
-"PO-Revision-Date: 2011-02-27 17:26+0900\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-04-17 03:52+0000\n"
+"PO-Revision-Date: 2012-09-09 18:24+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
-"Language: Korean\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: Korean\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/brasero-cli.c:70
-msgid "Open the specified project"
-msgstr "지정한 프로젝트를 엽니다"
+#: ../data/brasero.desktop.in.in.h:1
+msgid "Brasero"
+msgstr "브라세로"
 
-#: ../src/brasero-cli.c:71
-msgid "PROJECT"
-msgstr "<프로젝트>"
+#: ../data/brasero.desktop.in.in.h:2
+msgid "Disc Burner and Copier"
+msgstr "디스크 굽기 및 복사 프로그램"
 
-#: ../src/brasero-cli.c:76
-msgid "Open the specified playlist as an audio project"
-msgstr "지정한 재생 목록을 오디오 프로젝트로 엽니다"
+#: ../data/brasero.desktop.in.in.h:3
+msgid "Create and copy CDs and DVDs"
+msgstr "CD나 DVD를 만들고 복사합니다"
 
-#: ../src/brasero-cli.c:77
-msgid "PLAYLIST"
-msgstr "<재생목록>"
+#: ../data/brasero.desktop.in.in.h:4
+msgid "Brasero Disc Burner"
+msgstr "브라세로 디스크 굽기 프로그램"
 
-#: ../src/brasero-cli.c:82
-msgid "Set the drive to be used for burning"
-msgstr "구울 때 사용할 드라이브를 지정합니다"
+#: ../data/brasero.desktop.in.in.h:5
+msgid "Open a New Window"
+msgstr "새 창 열기"
 
-#: ../src/brasero-cli.c:83
-msgid "DEVICE PATH"
-msgstr "<장치경로>"
+#: ../data/brasero.desktop.in.in.h:6
+msgid "Burn an Image File"
+msgstr "이미지 파일 굽기"
 
-#: ../src/brasero-cli.c:86
-msgid "Create an image file instead of burning"
-msgstr "굽지 않고 이미지 파일을 만듭니다"
+#: ../data/brasero.desktop.in.in.h:7
+msgid "Create an Audio Project"
+msgstr "오디오 프로젝트 만들기"
 
-#: ../src/brasero-cli.c:90
-msgid "Open an audio project adding the URIs given on the command line"
-msgstr "명령행에서 지정한 URI를 추가해 오디오 프로젝트를 엽니다"
+#: ../data/brasero.desktop.in.in.h:8
+msgid "Create a Video Project"
+msgstr "비디오 프로젝트 만들기"
 
-#: ../src/brasero-cli.c:94
-msgid "Open a data project adding the URIs given on the command line"
-msgstr "명령행에서 지정한 URI를 추가해 데이터 프로젝트를 엽니다"
+#: ../data/mime/brasero.xml.in.h:1
+msgid "Brasero project file"
+msgstr "브라세로 프로젝트 파일"
 
-#: ../src/brasero-cli.c:98
-msgid "Copy a disc"
-msgstr "디스크를 복사합니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+msgid "Should Nautilus extension output debug statements"
+msgstr "노틸러스 확장 기능에서 디버깅 정보를 출력"
 
-#: ../src/brasero-cli.c:99 ../src/brasero-cli.c:119 ../src/brasero-cli.c:123
-msgid "PATH TO DEVICE"
-msgstr "<장치의경로>"
-
-#: ../src/brasero-cli.c:102
-msgid "Cover to use"
-msgstr "사용할 표지"
-
-#: ../src/brasero-cli.c:103
-msgid "PATH TO COVER"
-msgstr "<표지의경로>"
-
-#: ../src/brasero-cli.c:106
-msgid "Open a video project adding the URIs given on the command line"
-msgstr "명령행에서 지정한 URI를 추가해 비디오 프로젝트를 엽니다"
-
-#: ../src/brasero-cli.c:110
-msgid "URI of an image file to burn (autodetected)"
-msgstr "구울 이미지 파일의 URI (자동 검사)"
-
-# disc image
-#: ../src/brasero-cli.c:111
-msgid "PATH TO IMAGE"
-msgstr "<이미지경로>"
-
-#: ../src/brasero-cli.c:114
-msgid "Force Brasero to display the project selection page"
-msgstr "시작할 때 프로젝트 선택 페이지를 표시합니다"
-
-#: ../src/brasero-cli.c:118
-msgid "Open the blank disc dialog"
-msgstr "디스크 비우기 대화 창을 엽니다"
-
-#: ../src/brasero-cli.c:122
-msgid "Open the check disc dialog"
-msgstr "디스크 검사 대화 창을 엽니다"
-
-#: ../src/brasero-cli.c:126
-msgid "Burn the contents of the burn:// URI"
-msgstr "burn:// URI의 내용을 굽습니다"
-
-#: ../src/brasero-cli.c:130
-msgid "Start burning immediately."
-msgstr "즉시 굽기를 시작합니다."
-
-#: ../src/brasero-cli.c:134
-msgid "Don't connect to an already-running instance"
-msgstr "이미 실행 중인 프로세스에 연결하지 않습니다"
-
-#: ../src/brasero-cli.c:138
+#: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
-"Burn the specified project and remove it.\n"
-"This option is mainly useful for integration with other applications."
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
 msgstr ""
-"지정한 프로젝트를 굽고 지웁니다.\n"
-"이 옵션은 다른 프로그램과 연동하는 경우에만 쓸모가 있습니다."
+"노틸러스 확장 기능에서 디버깅 정보를 출력할지 여부. 참이면 디버깅 정보를 출력"
+"합니다."
 
-#: ../src/brasero-cli.c:139
-msgid "PATH"
-msgstr "<경로>"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+msgid "The type of checksum used for images"
+msgstr "이미지에 사용할 체크섬의 종류"
 
-#. Translators: the xid is a number identifying each window in the X11
-#. * world (not Windows, MacOS X). The following sentence says that
-#. * brasero will be set to be always on top of the window identified by
-#. * xid. In other words, the window with the given xid will become brasero
-#. * parent as if brasero was a dialog for the parent application
-#: ../src/brasero-cli.c:147
-msgid "The XID of the parent window"
-msgstr "상위 창의 XID"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "0이면 MD5, 1이면 SHA1, 2이면 SHA256"
 
-#. Translators: %s is the path of drive
-#: ../src/brasero-cli.c:204
-#, c-format
-msgid "\"%s\" cannot write."
-msgstr "\"%s\" 쓸 수 없습니다."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr "파일에 사용할 체크섬의 종류"
 
-#: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
-msgid "Wrong command line option."
-msgstr "명령행 옵션이 올바르지 않습니다."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "임시 파일을 저장할 디렉터리"
 
-#. Translators: %s is the path of a drive
-#: ../src/brasero-cli.c:218 ../libbrasero-burn/brasero-track-data-cfg.c:2578
-#, c-format
-msgid "\"%s\" cannot be found."
-msgstr "\"%s\" 파일을 찾을 수 없습니다."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+msgid ""
+"Contains the path to the directory where brasero should store temporary "
+"files. If that value is empty, the default directory set for glib will be "
+"used."
+msgstr ""
+"임시 파일을 저장할 디렉터리의 경로가 들어 있습니다. 비어 있으면 glib의 기본"
+"값 디렉터리를 사용합니다."
 
-#: ../src/brasero-cli.c:297
-msgid "Incompatible command line options used."
-msgstr "서로 호환되지 않는 옵션을 사용했습니다."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+msgid "Favourite burn engine"
+msgstr "선호하는 굽기 엔진"
 
-#: ../src/brasero-cli.c:298
-msgid "Only one option can be given at a time"
-msgstr "한 번에 한 옵션만 사용할 수 있습니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr "선호하는 굽기 엔진의 이름입니다. 가능하면 이 플러그인을 사용합니다."
 
-#: ../libbrasero-burn/burn-plugin.c:645
-#, c-format
-msgid "\"%s\" could not be found in the path"
-msgstr "실행 경로에 \"%s\" 프로그램이 없습니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+msgid "White list of additional plugins to use"
+msgstr "사용할 추가 플러그인 목록"
 
-#: ../libbrasero-burn/burn-plugin.c:649
-#, c-format
-msgid "\"%s\" GStreamer plugin could not be found"
-msgstr "\"%s\" GStreamer 플러그인이 없습니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"브라세로에서 디스크를 굽는 데 사용할 추가 플러그인 목록이 들어 있습니다. NULL"
+"로 설정하면 모두 읽어들입니다."
 
-#: ../libbrasero-burn/burn-plugin.c:653 ../libbrasero-burn/burn-plugin.c:665
-#, c-format
-msgid "The version of \"%s\" is too old"
-msgstr "이 버전의 \"%s\"은(는) 너무 오래 전 버전입니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "cdrecord에 \"-immed\" 플래그 사용"
 
-#: ../libbrasero-burn/burn-plugin.c:657
-#, c-format
-msgid "\"%s\" is a symbolic link pointing to another program"
-msgstr "\"%s\" 파일은 다른 프로그램을 가리키는 심볼릭 링크입니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+msgid ""
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
+msgstr ""
+"cdrecord에 \"-immed\" 플래그를 사용할 지 여부. 참으로 설정한다면 주의하십시"
+"오. 이 옵션은 일부 드라이브와 일부 환경의 문제를 피해가는 용도일 뿐입니다."
 
-#. Translators: %s is a filename
-#: ../libbrasero-burn/burn-plugin.c:661 ../plugins/cdrdao/burn-cdrdao.c:211
-#: ../plugins/growisofs/burn-growisofs.c:509
-#, c-format
-msgid "\"%s\" could not be found"
-msgstr "\"%s\" 파일이 없습니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr "growisofs에 \"-use-the-force-luke=dao\" 플래그를 사용할 지 여부"
 
-#: ../plugins/cdrtools/burn-cdda2wav.c:206
-#: ../plugins/cdrtools/burn-cdda2wav.c:216
-#, c-format
-msgid "Copying audio track %02d"
-msgstr "오디오 트랙 %02d번 복사하는 중"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+msgid ""
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr ""
+"growisofs에 \"-use-the-force-luke=dao\" 플래그를 사용할 지 여부. 거짓으로 설"
+"정하면 이 플래그를 사용하지 않습니다. 이 옵션을 사용하면 일부 드라이브 혹은 "
+"일부 환경에서 발생하는 문제를 피해갈 수 있습니다."
 
-#: ../plugins/cdrtools/burn-cdda2wav.c:267
-msgid "Preparing to copy audio disc"
-msgstr "오디오 디스크 복사를 준비하는 중"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "cdrecord의 \"-immed\" 플래그와 같이 사용합니다"
 
-#: ../plugins/cdrtools/burn-cdda2wav.c:411
-msgid "Copy tracks from an audio CD with all associated information"
-msgstr "오디오 CD 트랙을 관련 정보와 함께 복사합니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "cdrecord의 \"-immed\" 플래그와 같이 사용합니다."
 
-#: ../libbrasero-burn/brasero-video-options.c:447
-msgid "Video format:"
-msgstr "비디오 형식:"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "cdrdao에 \"--driver generic-mmc-raw\" 플래그를 사용할 지 여부"
 
-#: ../libbrasero-burn/brasero-video-options.c:458
-msgid "_NTSC"
-msgstr "_NTSC"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"cdrdao에 \"--driver generic-mmc-raw\" 플래그를 사용할 지 여부. 참으로 설정한"
+"다면 이 플래그를 사용합니다. 이 옵션을 사용하면 일부 드라이브 혹은 일부 환경"
+"에서 발생하는 문제를 피해갈 수 있습니다."
 
-#: ../libbrasero-burn/brasero-video-options.c:460
-msgid "Format used mostly on the North American continent"
-msgstr "북미에서 주로 사용하는 형식"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr "구울 이미지를 최근에 찾아 본 디렉터리"
 
-#: ../libbrasero-burn/brasero-video-options.c:473
-msgid "_PAL/SECAM"
-msgstr "_PAL/SECAM"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr "구울 이미지를 최근에 찾아 본 디렉터리의 절대 경로가 들어 있습니다"
 
-#: ../libbrasero-burn/brasero-video-options.c:475
-msgid "Format used mostly in Europe"
-msgstr "유럽에서 주로 사용하는 형식"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "파일 미리 보기 사용"
 
-#: ../libbrasero-burn/brasero-video-options.c:489
-msgid "Native _format"
-msgstr "고유 형식(_F)"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "파일 미리 보기를 표시할 지 여부. 참이면 사용합니다."
 
-#: ../libbrasero-burn/brasero-video-options.c:504
-msgid "Aspect ratio:"
-msgstr "화면 비율:"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+msgid "Should brasero filter hidden files"
+msgstr "숨김 파일 필터링"
 
-#: ../libbrasero-burn/brasero-video-options.c:515
-msgid "_4:3"
-msgstr "_4:3"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr "숨김 파일을 필터링할지 여부. 참이면 숨김 파일을 필터링합니다."
 
-#: ../libbrasero-burn/brasero-video-options.c:530
-msgid "_16:9"
-msgstr "_16:9"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "심볼릭 링크를 가리키는 대상으로 바꾸기"
 
-#. Video options for (S)VCD
-#: ../libbrasero-burn/brasero-video-options.c:545
-msgid "VCD type:"
-msgstr "VCD 종류:"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"프로젝트에서 심볼릭 링크를 그 대상 파일로 바꿀 지 여부. 참이면 심볼릭 링크를 "
+"바꿉니다."
 
-#: ../libbrasero-burn/brasero-video-options.c:558
-msgid "Create an SVCD"
-msgstr "SVCD 만들기"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "깨진 심볼릭 링크 필터링"
 
-#: ../libbrasero-burn/brasero-video-options.c:573
-msgid "Create a VCD"
-msgstr "VCD 만들기"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr "깨진 심볼릭 링크를 필터링할지 여부. 참이면 심볼릭 링크를 필터링합니다."
 
-#: ../libbrasero-burn/burn-debug.c:54
-msgid "Display debug statements on stdout for Brasero burn library"
-msgstr "브라세로 굽기 라이브러리의 디버깅 출력을 표준 출력에 표시합니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+msgid "The priority value for the plugin"
+msgstr "플러그인의 우선 순위 값"
 
-#: ../libbrasero-burn/burn-debug.c:80
-msgid "Brasero media burning library"
-msgstr "브라세로 미디어 굽기 라이브러리"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+msgid ""
+"When several plugins are available for the same task, this value is used to "
+"determine which plugin should be given priority. 0 means the plugin's native "
+"priority is used. A positive value overrides the plugin's native priority. A "
+"negative value disables the plugin."
+msgstr ""
+"같은 작업에 대해 플러그인이 여러 개 있을 경우, 이 값을 사용해 플러그인의 우"
+"선 순위를 결정합니다. 값이 0이면 플러그인의 내장 우선순위를 사용합니다. 0보"
+"다 큰 값이면 플러그인의 내장 우선 순위를 무시하고 그 값을 사용합니다. 0보다 "
+"작은 값이면 이 플러그인을 사용하지 않습니다."
 
-#: ../libbrasero-burn/burn-debug.c:81
-msgid "Display options for Brasero-burn library"
-msgstr "브라세로 굽기 라이브러리의 옵션을 표시합니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+msgid "Burning flags to be used"
+msgstr "사용할 디스크 굽기 플래그"
 
-#. Translators: %s is the name of the file that has just been deleted
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:90
-#, c-format
-msgid "\"%s\" was removed from the file system."
-msgstr "\"%s\" 파일을 프로젝트에서 지웁니다."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
+msgstr "최근에 같은 상황에서 사용한 굽기 플래그를 나타내는 값입니다."
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:129
-#: ../src/brasero-audio-disc.c:753 ../src/brasero-video-disc.c:365
-#, c-format
-msgid "Directories cannot be added to video or audio discs"
-msgstr "비디오나 오디오 디스크에는 디렉터리를 추가할 수 없습니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+msgid "The speed to be used"
+msgstr "사용할 굽기 속도"
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:142
-#, c-format
-msgid "Playlists cannot be added to video or audio discs"
-msgstr "비디오나 오디오 디스크에는 재생 목록을 추가할 수 없습니다"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr "최근에 같은 상황에서 사용한 굽기 속도를 나타내는 값입니다."
 
-#. Translators: %s is the name of the file
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:157
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:174
-#, c-format
-msgid "\"%s\" is not suitable for audio or video media"
-msgstr "\"%s\" 파일은 오디오나 비디오 미디어에 쓸 수 있는 형식이 아닙니다."
+#: ../libbrasero-burn/brasero-blank-dialog.c:222
+msgid "Error while blanking."
+msgstr "비우는 중 오류가 발생했습니다."
 
-#: ../libbrasero-burn/brasero-track-stream-cfg.c:401
-msgid "Analysing video files"
-msgstr "비디오 파일을 분석하는 중입니다"
+#: ../libbrasero-burn/brasero-blank-dialog.c:227
+#: ../libbrasero-burn/brasero-blank-dialog.c:272
+msgid "Blank _Again"
+msgstr "다시 비우기(_A)"
 
-#: ../libbrasero-burn/brasero-data-vfs.c:218
-#, c-format
-msgid "\"%s\" cannot be read"
-msgstr "\"%s\" 파일을 읽을 수 없습니다"
+#: ../libbrasero-burn/brasero-blank-dialog.c:244
+msgid "Unknown error."
+msgstr "알 수 없는 오류."
 
+#: ../libbrasero-burn/brasero-blank-dialog.c:264
+#: ../libbrasero-burn/brasero-blank-dialog.c:288
+msgid "The disc was successfully blanked."
+msgstr "디스크를 성공적으로 비웠습니다."
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:270
+msgid "The disc is ready for use."
+msgstr "디스크가 사용할 준비 되었습니다."
+
+#. Translators: This is a verb, an action
+#: ../libbrasero-burn/brasero-blank-dialog.c:371
+msgid "_Blank"
+msgstr "비우기(_B)"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:402
+msgid "_Fast blanking"
+msgstr "빠르게 비우기(_F)"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:403
+msgid "Activate fast blanking, as opposed to a longer, thorough blanking"
+msgstr "빠르게 비우기를 사용합니다(느린 전체 비우기를 하지 않음)"
+
+#: ../libbrasero-burn/brasero-blank-dialog.c:433
+msgid "Disc Blanking"
+msgstr "디스크 비우기"
+
+#: ../libbrasero-burn/brasero-burn.c:162
+msgid "Burning CD/DVD"
+msgstr "CD/DVD 굽는 중"
+
+#: ../libbrasero-burn/brasero-burn.c:331
 #: ../libbrasero-burn/brasero-data-session.c:123
-#: ../libbrasero-burn/brasero-burn.c:331 ../libbrasero-media/scsi-error.c:47
 #: ../libbrasero-burn/brasero-tool-dialog.c:89
-#: ../plugins/cdrdao/burn-cdrdao.c:243 ../plugins/cdrkit/burn-readom.c:110
-#: ../plugins/cdrkit/burn-wodim.c:135 ../plugins/cdrkit/burn-wodim.c:144
-#: ../plugins/cdrtools/burn-cdrecord.c:135
+#: ../libbrasero-media/scsi-error.c:47 ../plugins/cdrdao/burn-cdrdao.c:243
+#: ../plugins/cdrkit/burn-readom.c:110 ../plugins/cdrkit/burn-wodim.c:135
+#: ../plugins/cdrkit/burn-wodim.c:144 ../plugins/cdrtools/burn-cdrecord.c:135
 #: ../plugins/cdrtools/burn-cdrecord.c:144
 #: ../plugins/cdrtools/burn-readcd.c:111
 #: ../plugins/growisofs/burn-dvd-rw-format.c:84
@@ -304,141 +306,125 @@ msgstr "\"%s\" 파일을 읽을 수 없습니다"
 msgid "The drive is busy"
 msgstr "드라이브를 사용 중입니다"
 
-#: ../libbrasero-burn/brasero-filtered-uri.c:57
-msgid "Hidden file"
-msgstr "숨김 파일"
+#: ../libbrasero-burn/brasero-burn.c:332
+#: ../libbrasero-burn/brasero-burn-dialog.c:649
+#: ../libbrasero-burn/brasero-tool-dialog.c:90
+msgid "Make sure another application is not using it"
+msgstr "다른 프로그램이 사용하지 않도록 하십시오."
 
-#: ../libbrasero-burn/brasero-filtered-uri.c:58
-msgid "Unreadable file"
-msgstr "읽지 못하는 파일"
-
-#: ../libbrasero-burn/brasero-filtered-uri.c:59
-msgid "Broken symbolic link"
-msgstr "깨진 심볼릭 링크"
-
-#: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#: ../libbrasero-burn/brasero-burn.c:409
 #, c-format
-msgid "Recursive symbolic link"
-msgstr "자신을 가리키는 심볼릭 링크"
+msgid "\"%s\" cannot be unlocked"
+msgstr "\"%s\" 드라이브를 잠글 수 없습니다"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:617
-#: ../libbrasero-burn/brasero-track-data-cfg.c:716
-#: ../libbrasero-burn/brasero-track-data-cfg.c:727
-#: ../libbrasero-burn/brasero-track-data-cfg.c:788
-#: ../libbrasero-burn/brasero-track-data-cfg.c:793
-#: ../src/brasero-playlist.c:536 ../src/brasero-video-tree-model.c:342
-msgid "(loading…)"
-msgstr "(읽어들이는 중…)"
+#: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
+#: ../libbrasero-burn/brasero-burn.c:761
+msgid "No burner specified"
+msgstr "굽기 장치를 지정하지 않았습니다"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:619
-#: ../libbrasero-burn/brasero-track-data-cfg.c:799
-#: ../src/brasero-playlist.c:497
-msgid "Empty"
-msgstr "비었음"
+#: ../libbrasero-burn/brasero-burn.c:586
+msgid "No source drive specified"
+msgstr "원본 드라이브를 지정하지 않았습니다"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:725
-msgid "Disc file"
-msgstr "디스크 파일"
+#: ../libbrasero-burn/brasero-burn.c:632
+msgid "Ongoing copying process"
+msgstr "진행 중인 복사 작업"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:803
+#: ../libbrasero-burn/brasero-burn.c:636 ../libbrasero-burn/brasero-burn.c:735
+#: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
 #, c-format
-msgid "%d item"
-msgid_plural "%d items"
-msgstr[0] "항목 %d개"
+msgid "The drive cannot be locked (%s)"
+msgstr "드라이브를 잠글 수 없습니다 (%s)"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1916
+#: ../libbrasero-burn/brasero-burn.c:695
+msgid "The drive has no rewriting capabilities"
+msgstr "드라이브에 다시 쓸 수 있는 기능이 없습니다"
+
+#: ../libbrasero-burn/brasero-burn.c:731
+msgid "Ongoing blanking process"
+msgstr "진행 중인 지우기 작업"
+
+#: ../libbrasero-burn/brasero-burn.c:770
+msgid "The drive cannot burn"
+msgstr "이 드라이브에서 구울 수 없습니다"
+
+#: ../libbrasero-burn/brasero-burn.c:866
+#: ../libbrasero-burn/brasero-dest-selection.c:108
+msgid "Ongoing burning process"
+msgstr "진행 중인 굽기 작업"
+
+#: ../libbrasero-burn/brasero-burn.c:983
+msgid "Ongoing checksumming operation"
+msgstr "진행 중인 체크섬 작업"
+
+#: ../libbrasero-burn/brasero-burn.c:1623
+#: ../libbrasero-burn/brasero-burn.c:1817
+msgid "Merging data is impossible with this disc"
+msgstr "데이터 합치기는 이 디스크에서 불가능합니다"
+
+#: ../libbrasero-burn/brasero-burn.c:1624
+#: ../libbrasero-burn/brasero-burn-dialog.c:2184
+#: ../plugins/cdrkit/burn-genisoimage.c:206 ../plugins/cdrkit/burn-wodim.c:114
+#: ../plugins/cdrtools/burn-cdrecord.c:114
+#: ../plugins/cdrtools/burn-mkisofs.c:206
+#: ../plugins/growisofs/burn-growisofs.c:198
 #, c-format
-msgid "New folder"
-msgstr "새 폴더"
+msgid "Not enough space available on the disc"
+msgstr "디스크에 남은 충분한 공간이 없습니다"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:1919
+#. Translators: %s is the name of a missing application
+#: ../libbrasero-burn/brasero-burn.c:1708
+#: ../libbrasero-burn/brasero-burn-options.c:1180
+#: ../src/brasero-project.c:1383
 #, c-format
-msgid "New folder %i"
-msgstr "새 폴더 %i"
+msgid "%s (application)"
+msgstr "%s (프로그램)"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2406
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2416
-msgid "Analysing files"
-msgstr "파일을 분석하는 중입니다"
-
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2432
-#: ../libbrasero-burn/brasero-burn-options.c:471
-#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1273
-#: ../libbrasero-burn/brasero-track-data.c:672
-#: ../libbrasero-burn/brasero-track-stream.c:402
+#. Translators: %s is the name of a missing library
+#: ../libbrasero-burn/brasero-burn.c:1714
+#: ../libbrasero-burn/brasero-burn-options.c:1186
+#: ../src/brasero-project.c:1389
 #, c-format
-msgid "There are no files to write to disc"
-msgstr "디스크에 쓸 파일이 없습니다"
+msgid "%s (library)"
+msgstr "%s (라이브러리)"
 
-#: ../libbrasero-burn/brasero-track-data-cfg.c:2552
+#. Translators: %s is the name of a missing GStreamer plugin
+#: ../libbrasero-burn/brasero-burn.c:1719
+#: ../libbrasero-burn/brasero-burn-options.c:1191
+#: ../src/brasero-project.c:1394
 #, c-format
-msgid "\"%s\" is a recursive symbolic link."
-msgstr "\"%s\" 파일은 자기 자신을 가리키는 심볼릭 링크입니다."
+msgid "%s (GStreamer plugin)"
+msgstr "%s (GStreamer 플러그인)"
 
-#: ../libbrasero-utils/brasero-io.c:1416
-#, c-format
-msgid "The file does not appear to be a playlist"
-msgstr "파일이 재생 목록이 아닌 것 같습니다"
+#: ../libbrasero-burn/brasero-burn.c:1752
+msgid "There is no track to burn"
+msgstr "구울 트랙이 없습니다"
 
-#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:642
-#, c-format
-msgid "\"%s\" could not be handled by GStreamer."
-msgstr "\"%s\" 파일을 GStreamer에서 처리할 수 없습니다."
+#: ../libbrasero-burn/brasero-burn.c:1859
+msgid ""
+"Please install the following required applications and libraries manually "
+"and try again:"
+msgstr "다음 프로그램과 라이브러리를 수동으로 설치하고 다시 시도하십시오:"
 
-#. Translators: %s is the name of the object (as in
-#. * GObject) from the Gstreamer library that could
-#. * not be created
-#: ../libbrasero-utils/brasero-metadata.c:1207
-#: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1233
-#: ../libbrasero-utils/brasero-metadata.c:1375
-#: ../libbrasero-utils/brasero-metadata.c:1746
-#: ../libbrasero-utils/brasero-metadata.c:1761
-#: ../libbrasero-utils/brasero-metadata.c:1770
-#: ../plugins/transcode/burn-normalize.c:172
-#: ../plugins/transcode/burn-normalize.c:187
-#: ../plugins/transcode/burn-normalize.c:209
-#: ../plugins/transcode/burn-normalize.c:221
-#: ../plugins/transcode/burn-normalize.c:238
-#: ../plugins/transcode/burn-normalize.c:335
-#: ../plugins/transcode/burn-transcode.c:294
-#: ../plugins/transcode/burn-transcode.c:306
-#: ../plugins/transcode/burn-transcode.c:456
-#: ../plugins/transcode/burn-transcode.c:509
-#: ../plugins/transcode/burn-transcode.c:543
-#: ../plugins/transcode/burn-transcode.c:590
-#: ../plugins/transcode/burn-transcode.c:611
-#: ../plugins/transcode/burn-transcode.c:623
-#: ../plugins/transcode/burn-transcode.c:648
-#: ../plugins/transcode/burn-vob.c:309 ../plugins/transcode/burn-vob.c:329
-#: ../plugins/transcode/burn-vob.c:344 ../plugins/transcode/burn-vob.c:356
-#: ../plugins/transcode/burn-vob.c:373 ../plugins/transcode/burn-vob.c:431
-#: ../plugins/transcode/burn-vob.c:448 ../plugins/transcode/burn-vob.c:460
-#: ../plugins/transcode/burn-vob.c:472 ../plugins/transcode/burn-vob.c:484
-#: ../plugins/transcode/burn-vob.c:501 ../plugins/transcode/burn-vob.c:592
-#: ../plugins/transcode/burn-vob.c:609 ../plugins/transcode/burn-vob.c:621
-#: ../plugins/transcode/burn-vob.c:633 ../plugins/transcode/burn-vob.c:655
-#: ../plugins/transcode/burn-vob.c:672 ../plugins/transcode/burn-vob.c:718
-#: ../plugins/transcode/burn-vob.c:795 ../plugins/transcode/burn-vob.c:812
-#: ../plugins/transcode/burn-vob.c:827 ../plugins/transcode/burn-vob.c:839
-#: ../plugins/transcode/burn-vob.c:850 ../plugins/transcode/burn-vob.c:861
-#: ../plugins/transcode/burn-vob.c:1036 ../plugins/transcode/burn-vob.c:1100
-#: ../plugins/transcode/burn-vob.c:1117 ../plugins/transcode/burn-vob.c:1138
-#: ../plugins/transcode/burn-vob.c:1165
+#: ../libbrasero-burn/brasero-burn.c:2576
+#: ../libbrasero-burn/brasero-caps-burn.c:868
 #, c-format
-msgid "%s element could not be created"
-msgstr "%s 요소를 만들 수 없습니다"
+msgid "Only one track at a time can be checked"
+msgstr "한 번에 한 트랙만 검사할 수 있습니다"
+
+#: ../libbrasero-burn/brasero-burn.c:2635
+msgid "No format for the temporary image could be found"
+msgstr "임시 이미지에 사용할 형식이 없습니다"
 
 #. Translators: Error message saying no graft point
 #. * is specified. A graft point is the path (on the
 #. * disc) where a file from any source will be added
 #. * ("grafted")
+#: ../libbrasero-burn/brasero-burn.c:2846
 #: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/brasero-burn.c:2846 ../libbrasero-burn/burn-job.c:1219
-#: ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
-#: ../nautilus/nautilus-burn-extension.c:218 ../src/brasero-app.c:784
+#: ../nautilus/nautilus-burn-extension.c:218
 #: ../plugins/cdrkit/burn-genisoimage.c:368
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
 #: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
@@ -446,28 +432,10 @@ msgstr "%s 요소를 만들 수 없습니다"
 #: ../plugins/cdrtools/burn-cdrecord.c:851
 #: ../plugins/cdrtools/burn-mkisofs.c:368
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
+#: ../src/brasero-app.c:784
 #, c-format
 msgid "An internal error occurred"
 msgstr "내부 오류가 발생했습니다"
-
-#: ../libbrasero-burn/brasero-caps-burn.c:868
-#: ../libbrasero-burn/brasero-burn.c:2576
-#, c-format
-msgid "Only one track at a time can be checked"
-msgstr "한 번에 한 트랙만 검사할 수 있습니다"
-
-#: ../libbrasero-burn/brasero-track-image-cfg.c:451
-msgid "Retrieving image format and size"
-msgstr "이미지 형식과 크기를 알아내는 중입니다"
-
-#. Translators: This is a disc image
-#: ../libbrasero-burn/brasero-track-image-cfg.c:471
-msgid "The format of the disc image could not be identified"
-msgstr "디스크 이미지의 형식을 알아낼 수 없습니다"
-
-#: ../libbrasero-burn/brasero-track-image-cfg.c:472
-msgid "Please set it manually"
-msgstr "수동으로 설정하십시오"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:155
 msgid "Brasero notification"
@@ -726,12 +694,6 @@ msgstr "CD/DVD를 구울 드라이브에 디스크를 다시 넣으십시오."
 msgid "\"%s\" is busy."
 msgstr "\"%s\" 드라이브가 사용 중입니다."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:649
-#: ../libbrasero-burn/brasero-burn.c:332
-#: ../libbrasero-burn/brasero-tool-dialog.c:90
-msgid "Make sure another application is not using it"
-msgstr "다른 프로그램이 사용하지 않도록 하십시오."
-
 #: ../libbrasero-burn/brasero-burn-dialog.c:652
 #, c-format
 msgid "There is no disc in \"%s\"."
@@ -879,8 +841,8 @@ msgid "Appending audio tracks to a CD is not advised."
 msgstr "CD에 오디오 트랙을 추가하는 일은 권하지 않습니다."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:971
-#: ../libbrasero-burn/brasero-burn-dialog.c:993 ../src/brasero-data-disc.c:572
-#: ../libbrasero-burn/brasero-tool-dialog.c:422
+#: ../libbrasero-burn/brasero-burn-dialog.c:993
+#: ../libbrasero-burn/brasero-tool-dialog.c:422 ../src/brasero-data-disc.c:572
 msgid "_Continue"
 msgstr "계속(_C)"
 
@@ -916,14 +878,14 @@ msgstr "현재 들어 있는 디스크는 비울 수 없습니다."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1141
 msgid "Do you want to continue with full Windows compatibility disabled?"
-msgstr "윈도우즈 호환성을 끄고 계속 하시겠습니까?"
+msgstr "윈도우 호환성을 끄고 계속 하시겠습니까?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1142
-#: ../src/brasero-data-disc.c:734
 #: ../libbrasero-burn/brasero-status-dialog.c:340
+#: ../src/brasero-data-disc.c:734
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
-msgstr "일부 파일의 이름이 윈도우즈 호환 CD에 적합한 파일 이름이 아닙니다."
+msgstr "일부 파일의 이름이 윈도우 호환 CD에 적합한 파일 이름이 아닙니다."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1143
 msgid "C_ontinue"
@@ -1041,16 +1003,6 @@ msgstr "구울 비디오가 더 있습니다"
 msgid "There are some more songs left to burn"
 msgstr "구울 노래가 더 있습니다"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2184
-#: ../libbrasero-burn/brasero-burn.c:1624
-#: ../plugins/cdrkit/burn-genisoimage.c:206 ../plugins/cdrkit/burn-wodim.c:114
-#: ../plugins/cdrtools/burn-cdrecord.c:114
-#: ../plugins/cdrtools/burn-mkisofs.c:206
-#: ../plugins/growisofs/burn-growisofs.c:198
-#, c-format
-msgid "Not enough space available on the disc"
-msgstr "디스크에 남은 충분한 공간이 없습니다"
-
 #: ../libbrasero-burn/brasero-burn-dialog.c:2449
 #: ../libbrasero-burn/brasero-tool-dialog.c:411
 msgid "Do you really want to quit?"
@@ -1073,10 +1025,9 @@ msgstr "굽기 취소(_C)"
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
-msgstr ""
-"쓰기 가능한 CD나 DVD를 (이미지 파일에 쓰는 경우가 아니라면) 넣으십시오."
+msgstr "쓰기 가능한 CD나 DVD를(이미지 파일에 쓰는 경우가 아니라면) 넣으십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1591
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1593
 msgid "Create _Image"
 msgstr "이미지 만들기(_I)"
 
@@ -1090,11 +1041,11 @@ msgid "Make _Several Copies"
 msgstr "여러 복사물 만들기(_S)"
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1520
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1522
 msgid "_Burn"
 msgstr "굽기(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1517
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1519
 msgid "Burn _Several Copies"
 msgstr "여러 복사물 굽기(_S)"
 
@@ -1105,7 +1056,7 @@ msgstr "선택한 파일을 여러 미디어에 걸쳐서 구우시겠습니까?
 #: ../libbrasero-burn/brasero-burn-options.c:427
 #: ../libbrasero-burn/brasero-burn-options.c:444
 msgid "The data size is too large for the disc even with the overburn option."
-msgstr "데이터 크기가 디스크 용량보다 (오버버닝 옵션을 사용하더라도) 큽니다."
+msgstr "데이터 크기가 디스크 용량보다(오버버닝 옵션을 사용하더라도) 큽니다."
 
 #: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:952
 msgid "_Burn Several Discs"
@@ -1121,7 +1072,7 @@ msgstr "다른 CD나 DVD를 선택하거나 새 CD나 DVD를 넣으십시오."
 
 #: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1008
 msgid "No track information (artist, title, ...) will be written to the disc."
-msgstr "트랙 정보를 (아티스트, 제목, ...) 디스크에 쓰지 않습니다."
+msgstr "트랙 정보를(아티스트, 제목, ...) 디스크에 쓰지 않습니다."
 
 #: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1009
 msgid "This is not supported by the current active burning backend."
@@ -1132,11 +1083,20 @@ msgstr "현재 사용 중인 굽기 백엔드에서는 지원하지 않습니다
 msgid "Please add files."
 msgstr "파일을 추가하십시오."
 
+#: ../libbrasero-burn/brasero-burn-options.c:471
+#: ../libbrasero-burn/brasero-track-data.c:672
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2432
+#: ../libbrasero-burn/brasero-track-stream.c:402
+#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1275
+#, c-format
+msgid "There are no files to write to disc"
+msgstr "디스크에 쓸 파일이 없습니다"
+
 #: ../libbrasero-burn/brasero-burn-options.c:476
 msgid "Please add songs."
 msgstr "노래를 추가하십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1264
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1266
 msgid "There are no songs to write to disc"
 msgstr "디스크에 쓸 노래가 없습니다"
 
@@ -1178,7 +1138,7 @@ msgstr "복사 방지를 하지 않은 디스크를 넣으십시오."
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1441
+#: ../src/brasero-project.c:1443
 msgid "All required applications and libraries are not installed."
 msgstr "필요한 프로그램과 라이브러리 중 설치되지 않은 사항이 있습니다."
 
@@ -1198,11 +1158,8 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"데이터 크기가 이 디스크에 들어가기에는 크기 때문에 파일을 선택에서 제거해야 "
-"합니다.\n"
-"이 옵션을 사용하면 해결될 수도 있습니다. 90분이나 100분짜리 CD-R이나 CD-RW를 "
-"(프로그램에서 자동 인식할 수 없습니다) 사용한다면 오버버닝 옵션이 필요합니"
-"다.\n"
+"데이터 크기가 이 디스크에 들어가기에는 크기 때문에 파일을 선택에서 제거해야 합니다.\n"
+"이 옵션을 사용하면 해결될 수도 있습니다. 90분이나 100분짜리 CD-R이나 CD-RW를(프로그램에서 자동 인식할 수 없습니다) 사용한다면 오버버닝 옵션이 필요합니다.\n"
 "주의: 이 옵션을 사용하면 실패할 수도 있습니다."
 
 #: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:981
@@ -1236,7 +1193,7 @@ msgstr "기록할 디스크를 선택하십시오"
 msgid "Disc Burning Setup"
 msgstr "디스크 굽기 준비"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1540
+#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1542
 msgid "Video Options"
 msgstr "비디오 옵션"
 
@@ -1284,99 +1241,10 @@ msgstr "CD/DVD 복사"
 msgid "Select disc to copy"
 msgstr "복사할 디스크를 선택하십시오"
 
-#. Translators: %s is the name of a missing application
-#: ../libbrasero-burn/brasero-burn-options.c:1180
-#: ../libbrasero-burn/brasero-burn.c:1708 ../src/brasero-project.c:1381
-#, c-format
-msgid "%s (application)"
-msgstr "%s (프로그램)"
-
-#. Translators: %s is the name of a missing library
-#: ../libbrasero-burn/brasero-burn-options.c:1186
-#: ../libbrasero-burn/brasero-burn.c:1714 ../src/brasero-project.c:1387
-#, c-format
-msgid "%s (library)"
-msgstr "%s (라이브러리)"
-
-#. Translators: %s is the name of a missing GStreamer plugin
-#: ../libbrasero-burn/brasero-burn-options.c:1191
-#: ../libbrasero-burn/brasero-burn.c:1719 ../src/brasero-project.c:1392
-#, c-format
-msgid "%s (GStreamer plugin)"
-msgstr "%s (GStreamer 플러그인)"
-
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1435
+#: ../src/brasero-project.c:1437
 msgid "Please install the following manually and try again:"
 msgstr "다음을 수동으로 설치하고 다시 시도하십시오:"
-
-#: ../libbrasero-burn/brasero-burn.c:162
-msgid "Burning CD/DVD"
-msgstr "CD/DVD 굽는 중"
-
-#: ../libbrasero-burn/brasero-burn.c:409
-#, c-format
-msgid "\"%s\" cannot be unlocked"
-msgstr "\"%s\" 드라이브를 잠글 수 없습니다"
-
-#: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
-#: ../libbrasero-burn/brasero-burn.c:761
-msgid "No burner specified"
-msgstr "굽기 장치를 지정하지 않았습니다"
-
-#: ../libbrasero-burn/brasero-burn.c:586
-msgid "No source drive specified"
-msgstr "원본 드라이브를 지정하지 않았습니다"
-
-#: ../libbrasero-burn/brasero-burn.c:632
-msgid "Ongoing copying process"
-msgstr "진행 중인 복사 작업"
-
-#: ../libbrasero-burn/brasero-burn.c:636 ../libbrasero-burn/brasero-burn.c:735
-#: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
-#, c-format
-msgid "The drive cannot be locked (%s)"
-msgstr "드라이브를 잠글 수 없습니다 (%s)"
-
-#: ../libbrasero-burn/brasero-burn.c:695
-msgid "The drive has no rewriting capabilities"
-msgstr "드라이브에 다시 쓸 수 있는 기능이 없습니다"
-
-#: ../libbrasero-burn/brasero-burn.c:731
-msgid "Ongoing blanking process"
-msgstr "진행 중인 지우기 작업"
-
-#: ../libbrasero-burn/brasero-burn.c:770
-msgid "The drive cannot burn"
-msgstr "이 드라이브에서 구울 수 없습니다"
-
-#: ../libbrasero-burn/brasero-burn.c:866
-#: ../libbrasero-burn/brasero-dest-selection.c:108
-msgid "Ongoing burning process"
-msgstr "진행 중인 굽기 작업"
-
-#: ../libbrasero-burn/brasero-burn.c:983
-msgid "Ongoing checksumming operation"
-msgstr "진행 중인 체크섬 작업"
-
-#: ../libbrasero-burn/brasero-burn.c:1623
-#: ../libbrasero-burn/brasero-burn.c:1817
-msgid "Merging data is impossible with this disc"
-msgstr "데이터 합치기는 이 디스크에서 불가능합니다"
-
-#: ../libbrasero-burn/brasero-burn.c:1752
-msgid "There is no track to burn"
-msgstr "구울 트랙이 없습니다"
-
-#: ../libbrasero-burn/brasero-burn.c:1859
-msgid ""
-"Please install the following required applications and libraries manually "
-"and try again:"
-msgstr "다음 프로그램과 라이브러리를 수동으로 설치하고 다시 시도하십시오:"
-
-#: ../libbrasero-burn/brasero-burn.c:2635
-msgid "No format for the temporary image could be found"
-msgstr "임시 이미지에 사용할 형식이 없습니다"
 
 #: ../libbrasero-burn/brasero-cover.c:119
 msgid "Unknown song"
@@ -1390,13 +1258,18 @@ msgstr "알 수 없는 노래"
 #. * Before it there is the name of the song.
 #. * I had to break it because it is in a GtkTextBuffer
 #. * and every word has a different tag.
-#. Translators: %s is the name of an artist.
 #. Translators: %s is the name of the artist
-#: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-song-control.c:271
-#: ../src/brasero-player.c:419
+#. Translators: %s is the name of an artist.
+#: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419
+#: ../src/brasero-song-control.c:271
 #, c-format
 msgid "by %s"
 msgstr "%s"
+
+#: ../libbrasero-burn/brasero-data-vfs.c:218
+#, c-format
+msgid "\"%s\" cannot be read"
+msgstr "\"%s\" 파일을 읽을 수 없습니다"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:599
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
@@ -1527,7 +1400,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-drive-properties.c:726
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr "Burn-Proof 사용 (실패 위험을 줄입니다)(_P)"
+msgstr "Burn-Proof 사용(실패 위험을 줄입니다)(_P)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:728
 msgid "Burn the image directly _without saving it to disc"
@@ -1542,9 +1415,8 @@ msgid "Allow to add more data to the disc later"
 msgstr "나중에 데이터를 더 추가할 수 있도록 허용합니다"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:751
-#: ../src/brasero-song-properties.c:226
 #: ../libbrasero-burn/brasero-tool-dialog.c:284
-#: ../src/brasero-multi-song-props.c:308
+#: ../src/brasero-multi-song-props.c:308 ../src/brasero-song-properties.c:226
 msgid "Options"
 msgstr "옵션"
 
@@ -1559,6 +1431,24 @@ msgstr "임시 파일을 저장할 디렉터리를 설정하십시오"
 #: ../libbrasero-burn/brasero-drive-properties.c:788
 msgid "Temporary files"
 msgstr "임시 파일"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:57
+msgid "Hidden file"
+msgstr "숨김 파일"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:58
+msgid "Unreadable file"
+msgstr "읽지 못하는 파일"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:59
+msgid "Broken symbolic link"
+msgstr "깨진 심볼릭 링크"
+
+#: ../libbrasero-burn/brasero-filtered-uri.c:60
+#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#, c-format
+msgid "Recursive symbolic link"
+msgstr "자신을 가리키는 심볼릭 링크"
 
 #: ../libbrasero-burn/brasero-image-properties.c:243
 msgid "Disc image type:"
@@ -1585,7 +1475,7 @@ msgid "Cdrdao image"
 msgstr "CDRDAO 이미지"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1499
+#: ../src/brasero-project.c:1501
 #, c-format
 msgid "Properties of %s"
 msgstr "%s의 속성"
@@ -1627,17 +1517,17 @@ msgstr "평균 드라이브 속도:"
 
 #. Translators: first %02i is hours, the second one is minutes
 #. * and the third one is seconds.
-#: ../libbrasero-burn/brasero-progress.c:436
+#: ../libbrasero-burn/brasero-progress.c:437
 #, c-format
 msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr "남은 시간 예상: %02i:%02i:%02i"
 
-#: ../libbrasero-burn/brasero-progress.c:478
+#: ../libbrasero-burn/brasero-progress.c:479
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB, 전체 %i MiB"
 
-#: ../libbrasero-burn/brasero-progress.c:504
+#: ../libbrasero-burn/brasero-progress.c:505
 msgid "Estimated drive speed:"
 msgstr "드라이브 속도 예상:"
 
@@ -1673,8 +1563,8 @@ msgid "Select Disc Image"
 msgstr "디스크 이미지 선택"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
-#: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-project-name.c:162
-#: ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2219
+#: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
+#: ../src/brasero-project.c:2221 ../src/brasero-project-name.c:162
 msgid "All files"
 msgstr "모든 파일"
 
@@ -1687,6 +1577,340 @@ msgstr "이미지 파일"
 #: ../libbrasero-burn/brasero-src-image.c:467
 msgid "Image type:"
 msgstr "이미지 종류:"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:147
+#, c-format
+msgid "Estimated size: %s"
+msgstr "예상 크기: %s"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:209
+#: ../src/brasero-data-disc.c:870
+#, c-format
+msgid "Do you really want to add \"%s\" to the selection?"
+msgstr "정말로 \"%s\" 파일을 선택하시겠습니까?"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:228
+#: ../src/brasero-data-disc.c:879
+msgid ""
+"The children of this directory will have 7 parent directories.\n"
+"Brasero can create an image of such a file hierarchy and burn it but the "
+"disc may not be readable on all operating systems.\n"
+"Note: Such a file hierarchy is known to work on Linux."
+msgstr ""
+"이 디렉터리 아래의 파일은 상위 디렉토리가 모두 7개가 있습니다.\n"
+"브라세로는 그러한 파일 구조의 이미지를 만들 수 있고 구울 수도 있습니다. 하지"
+"만 그러한 디스크를 읽지 못하는 운영체제도 있습니다.\n"
+"참고로 이러한 파일 구조는 리눅스에서는 동작합니다."
+
+#: ../libbrasero-burn/brasero-status-dialog.c:232
+#: ../libbrasero-burn/brasero-status-dialog.c:294
+#: ../src/brasero-data-disc.c:839 ../src/brasero-data-disc.c:883
+msgid "Ne_ver Add Such File"
+msgstr "파일 추가하지 않음(_V)"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:233
+#: ../libbrasero-burn/brasero-status-dialog.c:295
+#: ../src/brasero-data-disc.c:840 ../src/brasero-data-disc.c:884
+msgid "Al_ways Add Such File"
+msgstr "항상 파일 추가(_W)"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:271
+#: ../src/brasero-data-disc.c:826
+#, c-format
+msgid ""
+"Do you really want to add \"%s\" to the selection and use the third version "
+"of the ISO9660 standard to support it?"
+msgstr ""
+"정말로 \"%s\" 파일을 선택하시겠습니까? 이 파일을 지원하려면 ISO9660 표준의 버"
+"전 3이 필요합니다."
+
+#: ../libbrasero-burn/brasero-status-dialog.c:290
+#: ../src/brasero-data-disc.c:835
+msgid ""
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
+"supported by the ISO9660 standard in its first and second versions (the most "
+"widespread ones).\n"
+"It is recommended to use the third version of the ISO9660 standard, which is "
+"supported by most operating systems, including Linux and all versions of "
+"Windows™.\n"
+"However, Mac OS X cannot read images created with version 3 of the ISO9660 "
+"standard."
+msgstr ""
+"파일의 크기가 2GiB를 넘어갑니다. 2GiB보다 큰 파일은 ISO9660 표준의 첫번째와 두번째 버전에서 지원하지 않습니다. 첫번째와 두번째 버전이 가장 많이 사용하는 표준 버전입니다.\n"
+"ISO9660의 버전 3을 사용하면 리눅스 및 모든 윈도우 버전을 포함해 대부분 운영체제에서 지원합니다.\n"
+"하지만 맥 오에스 텐은 ISO9660 버전 3으로 만든 이미지를 읽지 못합니다."
+
+#: ../libbrasero-burn/brasero-status-dialog.c:330
+#: ../src/brasero-data-disc.c:729
+msgid "Should files be renamed to be fully Windows-compatible?"
+msgstr "윈도우와 호환되도록 파일 이름을 바꾸시겠습니까?"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:341
+#: ../src/brasero-data-disc.c:735
+msgid "Those names should be changed and truncated to 64 characters."
+msgstr "다음 파일 이름을 바꿔야 하고 64글자로 잘려집니다."
+
+#: ../libbrasero-burn/brasero-status-dialog.c:346
+#: ../src/brasero-data-disc.c:738
+msgid "_Disable Full Windows Compatibility"
+msgstr "윈도우 호환성 사용하지 않기(_D)"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:349
+#: ../src/brasero-data-disc.c:737
+msgid "_Rename for Full Windows Compatibility"
+msgstr "윈도우 호환성 파일 이름 바꾸기(_R)"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:566
+msgid "Size Estimation"
+msgstr "크기 예상"
+
+#: ../libbrasero-burn/brasero-status-dialog.c:568
+msgid "Please wait until the estimation of the size is completed."
+msgstr "크기를 측정할 때까지 잠시 기다리십시오."
+
+#: ../libbrasero-burn/brasero-status-dialog.c:569
+msgid "All files need to be analysed to complete this operation."
+msgstr "이 작업을 끝마치려면 모든 파일을 분석해야 합니다."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:134
+#: ../libbrasero-burn/brasero-sum-dialog.c:215
+msgid "Check _Again"
+msgstr "다시 검사(_A)"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:165
+#: ../libbrasero-burn/brasero-sum-dialog.c:514
+msgid "The file integrity check could not be performed."
+msgstr "파일이 올바른지 검사할 수 없습니다."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
+#: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
+#: ../src/brasero-project.c:2621
+msgid "An unknown error occurred"
+msgstr "알 수 없는 오류가 발생했습니다"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:178
+msgid "The file integrity check was performed successfully."
+msgstr "파일이 올바르다고 확인되었습니다."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:179
+msgid "There seem to be no corrupted files on the disc"
+msgstr "디스크에 손상된 파일이 없어 보입니다"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:207
+msgid "The following files appear to be corrupted:"
+msgstr "다음 파일이 손상된 파일로 보입니다:"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:250
+msgid "Corrupted Files"
+msgstr "손상된 파일"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:342
+msgid "Downloading MD5 file"
+msgstr "MD5 파일을 다운로드하는 중"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:397
+#, c-format
+msgid "\"%s\" is not a valid URI"
+msgstr "\"%s\" URI가 올바르지 않습니다"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:515
+msgid "No MD5 file was given."
+msgstr "MD5 파일이 없습니다."
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:692
+msgid "Use an _MD5 file to check the disc"
+msgstr "MD5 파일을 사용해 디스크 검사(_M)"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:693
+msgid "Use an external .md5 file that stores the checksum of a disc"
+msgstr "디스크의 체크섬이 들어 있는 외부의 .md5 파일을 사용합니다"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:706
+msgid "Open an MD5 file"
+msgstr "MD5 파일 열기"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:721
+msgid "_Check"
+msgstr "검사(_C)"
+
+#: ../libbrasero-burn/brasero-sum-dialog.c:752
+msgid "Disc Checking"
+msgstr "디스크 검사"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:78
+#: ../libbrasero-burn/brasero-tool-dialog.c:92
+#: ../libbrasero-burn/brasero-tool-dialog.c:102
+msgid "The operation cannot be performed."
+msgstr "작업을 수행할 수 없습니다."
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:79
+#: ../plugins/cdrkit/burn-wodim.c:151 ../plugins/cdrkit/burn-wodim.c:421
+#: ../plugins/cdrtools/burn-cdrecord.c:151
+#: ../plugins/cdrtools/burn-cdrecord.c:407
+#: ../plugins/growisofs/burn-dvd-rw-format.c:77
+#: ../plugins/libburnia/burn-libburn.c:610
+#, c-format
+msgid "The disc is not supported"
+msgstr "디스크를 지원하지 않습니다"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:103
+msgid "The drive is empty"
+msgstr "드라이브가 비어 있습니다"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../src/brasero-eject-dialog.c:164
+msgid "Select a disc"
+msgstr "디스크 선택"
+
+#: ../libbrasero-burn/brasero-tool-dialog.c:572
+msgid "Progress"
+msgstr "진행"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:617
+#: ../libbrasero-burn/brasero-track-data-cfg.c:716
+#: ../libbrasero-burn/brasero-track-data-cfg.c:727
+#: ../libbrasero-burn/brasero-track-data-cfg.c:788
+#: ../libbrasero-burn/brasero-track-data-cfg.c:793
+#: ../src/brasero-playlist.c:536 ../src/brasero-video-tree-model.c:342
+msgid "(loading…)"
+msgstr "(읽어들이는 중…)"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:619
+#: ../libbrasero-burn/brasero-track-data-cfg.c:799
+#: ../src/brasero-playlist.c:497
+msgid "Empty"
+msgstr "비었음"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:725
+msgid "Disc file"
+msgstr "디스크 파일"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:803
+#, c-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "항목 %d개"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1916
+#, c-format
+msgid "New folder"
+msgstr "새 폴더"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:1919
+#, c-format
+msgid "New folder %i"
+msgstr "새 폴더 %i"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2406
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2416
+msgid "Analysing files"
+msgstr "파일을 분석하는 중입니다"
+
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2552
+#, c-format
+msgid "\"%s\" is a recursive symbolic link."
+msgstr "\"%s\" 파일은 자기 자신을 가리키는 심볼릭 링크입니다."
+
+#. Translators: %s is the path of a drive
+#: ../libbrasero-burn/brasero-track-data-cfg.c:2578 ../src/brasero-cli.c:218
+#, c-format
+msgid "\"%s\" cannot be found."
+msgstr "\"%s\" 파일을 찾을 수 없습니다."
+
+#: ../libbrasero-burn/brasero-track-image-cfg.c:451
+msgid "Retrieving image format and size"
+msgstr "이미지 형식과 크기를 알아내는 중입니다"
+
+#. Translators: This is a disc image
+#: ../libbrasero-burn/brasero-track-image-cfg.c:471
+msgid "The format of the disc image could not be identified"
+msgstr "디스크 이미지의 형식을 알아낼 수 없습니다"
+
+#: ../libbrasero-burn/brasero-track-image-cfg.c:472
+msgid "Please set it manually"
+msgstr "수동으로 설정하십시오"
+
+#. Translators: %s is the name of the file that has just been deleted
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:90
+#, c-format
+msgid "\"%s\" was removed from the file system."
+msgstr "\"%s\" 파일을 프로젝트에서 지웁니다."
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:129
+#: ../src/brasero-audio-disc.c:754 ../src/brasero-video-disc.c:365
+#, c-format
+msgid "Directories cannot be added to video or audio discs"
+msgstr "비디오나 오디오 디스크에는 디렉터리를 추가할 수 없습니다"
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:142
+#, c-format
+msgid "Playlists cannot be added to video or audio discs"
+msgstr "비디오나 오디오 디스크에는 재생 목록을 추가할 수 없습니다"
+
+#. Translators: %s is the name of the file
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:157
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:174
+#, c-format
+msgid "\"%s\" is not suitable for audio or video media"
+msgstr "\"%s\" 파일은 오디오나 비디오 미디어에 쓸 수 있는 형식이 아닙니다."
+
+#: ../libbrasero-burn/brasero-track-stream-cfg.c:401
+msgid "Analysing video files"
+msgstr "비디오 파일을 분석하는 중입니다"
+
+#: ../libbrasero-burn/brasero-video-options.c:447
+msgid "Video format:"
+msgstr "비디오 형식:"
+
+#: ../libbrasero-burn/brasero-video-options.c:458
+msgid "_NTSC"
+msgstr "_NTSC"
+
+#: ../libbrasero-burn/brasero-video-options.c:460
+msgid "Format used mostly on the North American continent"
+msgstr "북미에서 주로 사용하는 형식"
+
+#: ../libbrasero-burn/brasero-video-options.c:473
+msgid "_PAL/SECAM"
+msgstr "_PAL/SECAM"
+
+#: ../libbrasero-burn/brasero-video-options.c:475
+msgid "Format used mostly in Europe"
+msgstr "유럽에서 주로 사용하는 형식"
+
+#: ../libbrasero-burn/brasero-video-options.c:489
+msgid "Native _format"
+msgstr "고유 형식(_F)"
+
+#: ../libbrasero-burn/brasero-video-options.c:504
+msgid "Aspect ratio:"
+msgstr "화면 비율:"
+
+#: ../libbrasero-burn/brasero-video-options.c:515
+msgid "_4:3"
+msgstr "_4:3"
+
+#: ../libbrasero-burn/brasero-video-options.c:530
+msgid "_16:9"
+msgstr "_16:9"
+
+#. Video options for (S)VCD
+#: ../libbrasero-burn/brasero-video-options.c:545
+msgid "VCD type:"
+msgstr "VCD 종류:"
+
+#: ../libbrasero-burn/brasero-video-options.c:558
+msgid "Create an SVCD"
+msgstr "SVCD 만들기"
+
+#: ../libbrasero-burn/brasero-video-options.c:573
+msgid "Create a VCD"
+msgstr "VCD 만들기"
+
+#: ../libbrasero-burn/brasero-xfer.c:130 ../libbrasero-burn/brasero-xfer.c:266
+#, c-format
+msgid "Directory could not be created (%s)"
+msgstr "디렉터리를 만들 수 없습니다 (%s)"
 
 #: ../libbrasero-burn/burn-basics.c:77
 msgid "Getting size"
@@ -1750,6 +1974,18 @@ msgstr "성공"
 msgid "Ejecting medium"
 msgstr "미디어 꺼내는 중"
 
+#: ../libbrasero-burn/burn-debug.c:54
+msgid "Display debug statements on stdout for Brasero burn library"
+msgstr "브라세로 굽기 라이브러리의 디버깅 출력을 표준 출력에 표시합니다"
+
+#: ../libbrasero-burn/burn-debug.c:80
+msgid "Brasero media burning library"
+msgstr "브라세로 미디어 굽기 라이브러리"
+
+#: ../libbrasero-burn/burn-debug.c:81
+msgid "Display options for Brasero-burn library"
+msgstr "브라세로 굽기 라이브러리의 옵션을 표시합니다"
+
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:797
 #: ../libbrasero-burn/burn-job.c:810 ../libbrasero-burn/burn-job.c:1029
@@ -1764,7 +2000,7 @@ msgstr "\"%s\" 플러그인이 올바르게 동작하지 않습니다"
 #: ../libbrasero-burn/burn-job.c:430
 #, c-format
 msgid "Not enough space available on the disc (%s available for %s)"
-msgstr "디스크에 공간이 부족합니다 (빈 공간 %s, 필요한 공간 %s)"
+msgstr "디스크에 공간이 부족합니다(빈 공간 %s, 필요한 공간 %s)"
 
 #: ../libbrasero-burn/burn-job.c:522
 #, c-format
@@ -1796,7 +2032,7 @@ msgstr "이미지 출력의 경로를 지정하지 않았습니다"
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
-#: ../plugins/libburnia/burn-libburn.c:716
+#: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:826
 #, c-format
 msgid "An internal error occurred (%s)"
@@ -1804,9 +2040,9 @@ msgstr "내부 오류 발생 (%s)"
 
 #: ../libbrasero-burn/burn-mkisofs-base.c:153
 #: ../libbrasero-burn/burn-mkisofs-base.c:494
+#: ../plugins/checksum/burn-checksum-image.c:287
 #: ../plugins/growisofs/burn-growisofs.c:527
 #: ../plugins/libburnia/burn-libisofs.c:707
-#: ../plugins/checksum/burn-checksum-image.c:287
 #, c-format
 msgid "The file is not stored locally"
 msgstr "파일이 로컬 파일이 아닙니다"
@@ -1816,177 +2052,47 @@ msgstr "파일이 로컬 파일이 아닙니다"
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "VIDEO_TS 디렉터리가 없거나 잘못되었습니다"
 
+#: ../libbrasero-burn/burn-plugin.c:645
+#, c-format
+msgid "\"%s\" could not be found in the path"
+msgstr "실행 경로에 \"%s\" 프로그램이 없습니다"
+
+#: ../libbrasero-burn/burn-plugin.c:649
+#, c-format
+msgid "\"%s\" GStreamer plugin could not be found"
+msgstr "\"%s\" GStreamer 플러그인이 없습니다"
+
+#: ../libbrasero-burn/burn-plugin.c:653 ../libbrasero-burn/burn-plugin.c:665
+#, c-format
+msgid "The version of \"%s\" is too old"
+msgstr "이 버전의 \"%s\"은(는) 너무 오래 전 버전입니다"
+
+#: ../libbrasero-burn/burn-plugin.c:657
+#, c-format
+msgid "\"%s\" is a symbolic link pointing to another program"
+msgstr "\"%s\" 파일은 다른 프로그램을 가리키는 심볼릭 링크입니다"
+
+#. Translators: %s is a filename
+#: ../libbrasero-burn/burn-plugin.c:661 ../plugins/cdrdao/burn-cdrdao.c:211
+#: ../plugins/growisofs/burn-growisofs.c:509
+#, c-format
+msgid "\"%s\" could not be found"
+msgstr "\"%s\" 파일이 없습니다"
+
 #. Translators: %s is the name of the brasero element
 #: ../libbrasero-burn/burn-process.c:259
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
 msgstr "\"%s\" 과정이 오류 코드를 리턴하며 끝났습니다 (%i)"
 
-#: ../libbrasero-utils/brasero-disc-message.c:133
-msgid "_Hide changes"
-msgstr "바뀐 사항 숨기기(_H)"
-
-#: ../libbrasero-utils/brasero-disc-message.c:135
-#: ../libbrasero-utils/brasero-disc-message.c:154
-msgid "_Show changes"
-msgstr "바뀐 사항 표시(_S)"
-
-#. Translators: This is an image, a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-background.c:199
-msgid "Images"
-msgstr "그림"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:230
-msgid "_Color"
-msgstr "색(_C)"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:261
-msgid "Solid color"
-msgstr "단색"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:262
-msgid "Horizontal gradient"
-msgstr "가로 그라데이션"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:263
-msgid "Vertical gradient"
-msgstr "세로 그라데이션"
-
-#. second part
-#. Translators: This is an image, a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-background.c:280
-msgid "_Image"
-msgstr "그림(_I)"
-
-#. Translators: This is an image, a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-background.c:308
-msgid "Image path:"
-msgstr "그림 경로:"
-
-#. Translators: This is an image, a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-background.c:320
-msgid "Choose an image"
-msgstr "그림을 고르십시오"
-
-#. Translators: This is an image, a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-background.c:331
-msgid "Image style:"
-msgstr "그림 스타일:"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:345
-msgid "Centered"
-msgstr "가운데"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:346
-msgid "Tiled"
-msgstr "타일"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:347
-msgid "Scaled"
-msgstr "크기 조정"
-
-#: ../libbrasero-utils/brasero-jacket-background.c:384
-msgid "Background Properties"
-msgstr "배경 속성"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:585
-msgid "Print"
-msgstr "인쇄"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:597
-msgid "Bac_kground Properties"
-msgstr "배경 속성(_K)"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:600
-msgid "Background properties"
-msgstr "배경 속성"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:615
-msgid "Align right"
-msgstr "오른쪽 맞추기"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:625
-msgid "Center"
-msgstr "가운데"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:635
-msgid "Align left"
-msgstr "왼쪽 맞추기"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:649
-msgid "Underline"
-msgstr "밑줄"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:659
-msgid "Italic"
-msgstr "기울임"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:669
-msgid "Bold"
-msgstr "굵게"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:695
-msgid "Font family and size"
-msgstr "글꼴 종류 및 크기"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:702
-msgid "_Text Color"
-msgstr "글자 색(_T)"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:703
-msgid "Text color"
-msgstr "글자 색"
-
-#: ../libbrasero-utils/brasero-jacket-edit.c:826
-msgid "Cover Editor"
-msgstr "표지 편집기"
-
-#: ../libbrasero-utils/brasero-jacket-view.c:766
-msgid "Set Bac_kground Properties"
-msgstr "배경 속성 설정(_K)"
-
-#: ../libbrasero-utils/brasero-jacket-view.c:807
-msgid "SIDES"
-msgstr "옆면"
-
-#: ../libbrasero-utils/brasero-jacket-view.c:823
-msgid "BACK COVER"
-msgstr "뒤 표지"
-
-#: ../libbrasero-utils/brasero-jacket-view.c:841
-msgid "FRONT COVER"
-msgstr "앞 표지"
-
-#. Translators: This is an image,
-#. * a picture, not a "Disc Image"
-#: ../libbrasero-utils/brasero-jacket-view.c:1021
-msgid "The image could not be loaded."
-msgstr "그림을 읽어들일 수 없습니다."
-
-#: ../libbrasero-utils/brasero-tool-color-picker.c:166
-msgid "Pick a Color"
-msgstr "색을 고르십시오"
-
-#: ../libbrasero-burn/brasero-xfer.c:130 ../libbrasero-burn/brasero-xfer.c:266
-#, c-format
-msgid "Directory could not be created (%s)"
-msgstr "디렉터리를 만들 수 없습니다 (%s)"
-
-#: ../src/brasero-project-parse.c:62
-msgid "Error while loading the project."
-msgstr "프로젝트를 읽어들이는 중 오류가 발생했습니다."
-
-#: ../src/brasero-project-parse.c:454
-msgid "The project could not be opened"
-msgstr "프로젝트를 열 수 없습니다"
-
-#: ../src/brasero-project-parse.c:463
-msgid "The file is empty"
-msgstr "빈 파일입니다"
-
-#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
-msgid "It does not seem to be a valid Brasero project"
-msgstr "올바른 브라세로 프로젝트가 아닌 것으로 보입니다"
+#. Translators: This is a fake drive, a file, and means that
+#. * when we're writing, we're writing to a file and create an
+#. * image on the hard drive.
+#: ../libbrasero-media/brasero-drive.c:607
+#: ../libbrasero-media/brasero-medium.c:206
+#: ../libbrasero-media/brasero-volume.c:382
+msgid "Image File"
+msgstr "이미지 파일"
 
 #: ../libbrasero-media/brasero-drive-selection.c:341
 #: ../libbrasero-media/brasero-drive-selection.c:436
@@ -2004,97 +2110,6 @@ msgstr "브라세로 광학 미디어 라이브러리"
 #: ../libbrasero-media/brasero-media.c:478
 msgid "Display options for Brasero media library"
 msgstr "브라세로 미디어 라이브러리의 옵션을 표시합니다"
-
-#. Translators: this is hour minute second like '2 h 14 min 25'
-#: ../libbrasero-media/brasero-units.c:71
-#, c-format
-msgid "%s h %s min %s"
-msgstr "%s시간 %s분 %s초"
-
-#. Translators: this is hour minute like '2 h 14'
-#: ../libbrasero-media/brasero-units.c:77
-#, c-format
-msgid "%s h %s"
-msgstr "%s시간 %s분"
-
-#. Translators: this is hour like '2 h'
-#: ../libbrasero-media/brasero-units.c:82
-#, c-format
-msgid "%s h"
-msgstr "%s시간"
-
-#. Translators: this is 'hour:minute:second' like '2:14:25'
-#: ../libbrasero-media/brasero-units.c:86
-#, c-format
-msgid "%s:%s:%s"
-msgstr "%s:%s:%s"
-
-#. Translators: this is 'hour:minute' or 'minute:second'
-#: ../libbrasero-media/brasero-units.c:92
-#: ../libbrasero-media/brasero-units.c:107
-#, c-format
-msgid "%s:%s"
-msgstr "%s:%s"
-
-#. Translators: %s is a duration expressed in minutes
-#: ../libbrasero-media/brasero-units.c:99
-#, c-format
-msgid "%s min"
-msgstr "%s분"
-
-#. Translators: the first %s is the number of minutes
-#. * and the second one is the number of seconds.
-#. * The whole string expresses a duration
-#: ../libbrasero-media/brasero-units.c:104
-#, c-format
-msgid "%s:%s min"
-msgstr "%s:%s분"
-
-#. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-media/brasero-medium-selection.c:158
-#, c-format
-msgid "%s: empty"
-msgstr "%s: 미디어 없음"
-
-#. NOTE for translators: the first %s is the medium name, the
-#. * second %s is the space (kio, gio) used by data on the disc.
-#.
-#. NOTE for translators: the first %s is the medium name, the
-#. * second %s is the space (time) used by data on the disc.
-#. * I really don't know if I should set this string as
-#. * translatable.
-#: ../libbrasero-media/brasero-medium-selection.c:174
-#: ../libbrasero-media/brasero-medium-selection.c:186
-#, c-format
-msgid "%s: %s"
-msgstr "%s: %s"
-
-#: ../libbrasero-media/brasero-medium-selection.c:451
-msgid "Searching for available discs"
-msgstr "사용 가능한 디스크를 찾는 중"
-
-#: ../libbrasero-media/brasero-medium-selection.c:460
-msgid "No disc available"
-msgstr "사용 가능한 디스크가 없습니다"
-
-#. Translators: This is a fake drive, a file, and means that
-#. * when we're writing, we're writing to a file and create an
-#. * image on the hard drive.
-#: ../libbrasero-media/brasero-drive.c:607
-#: ../libbrasero-media/brasero-medium.c:206
-#: ../libbrasero-media/brasero-volume.c:382
-msgid "Image File"
-msgstr "이미지 파일"
-
-#: ../libbrasero-media/burn-iso9660.c:158
-#: ../libbrasero-media/burn-iso9660.c:167
-#: ../libbrasero-media/burn-iso9660.c:402
-#: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
-#, c-format
-msgid "It does not appear to be a valid ISO image"
-msgstr "올바른 ISO 이미지 파일이 아닙니다"
 
 #: ../libbrasero-media/brasero-medium.c:65
 msgid "File"
@@ -2195,6 +2210,78 @@ msgstr "데이터 %s, 드라이브 %s"
 msgid "%s in %s"
 msgstr "%s, 드라이브 %s"
 
+#. NOTE for translators, the first %s is the medium name
+#: ../libbrasero-media/brasero-medium-selection.c:158
+#, c-format
+msgid "%s: empty"
+msgstr "%s: 미디어 없음"
+
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (kio, gio) used by data on the disc.
+#.
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (time) used by data on the disc.
+#. * I really don't know if I should set this string as
+#. * translatable.
+#: ../libbrasero-media/brasero-medium-selection.c:174
+#: ../libbrasero-media/brasero-medium-selection.c:186
+#, c-format
+msgid "%s: %s"
+msgstr "%s: %s"
+
+#: ../libbrasero-media/brasero-medium-selection.c:451
+msgid "Searching for available discs"
+msgstr "사용 가능한 디스크를 찾는 중"
+
+#: ../libbrasero-media/brasero-medium-selection.c:460
+msgid "No disc available"
+msgstr "사용 가능한 디스크가 없습니다"
+
+#. Translators: this is hour minute second like '2 h 14 min 25'
+#: ../libbrasero-media/brasero-units.c:71
+#, c-format
+msgid "%s h %s min %s"
+msgstr "%s시간 %s분 %s초"
+
+#. Translators: this is hour minute like '2 h 14'
+#: ../libbrasero-media/brasero-units.c:77
+#, c-format
+msgid "%s h %s"
+msgstr "%s시간 %s분"
+
+#. Translators: this is hour like '2 h'
+#: ../libbrasero-media/brasero-units.c:82
+#, c-format
+msgid "%s h"
+msgstr "%s시간"
+
+#. Translators: this is 'hour:minute:second' like '2:14:25'
+#: ../libbrasero-media/brasero-units.c:86
+#, c-format
+msgid "%s:%s:%s"
+msgstr "%s:%s:%s"
+
+#. Translators: this is 'hour:minute' or 'minute:second'
+#: ../libbrasero-media/brasero-units.c:92
+#: ../libbrasero-media/brasero-units.c:107
+#, c-format
+msgid "%s:%s"
+msgstr "%s:%s"
+
+#. Translators: %s is a duration expressed in minutes
+#: ../libbrasero-media/brasero-units.c:99
+#, c-format
+msgid "%s min"
+msgstr "%s분"
+
+#. Translators: the first %s is the number of minutes
+#. * and the second one is the number of seconds.
+#. * The whole string expresses a duration
+#: ../libbrasero-media/brasero-units.c:104
+#, c-format
+msgid "%s:%s min"
+msgstr "%s:%s분"
+
 #: ../libbrasero-media/brasero-volume.c:186
 #, c-format
 msgid "The disc mount point could not be retrieved"
@@ -2230,6 +2317,16 @@ msgstr "오디오 디스크 (%s)"
 #, c-format
 msgid "Data disc (%s)"
 msgstr "데이터 디스크 (%s)"
+
+#: ../libbrasero-media/burn-iso9660.c:158
+#: ../libbrasero-media/burn-iso9660.c:167
+#: ../libbrasero-media/burn-iso9660.c:402
+#: ../libbrasero-media/burn-iso9660.c:439
+#: ../libbrasero-media/burn-iso9660.c:488
+#: ../libbrasero-media/burn-volume.c:128
+#, c-format
+msgid "It does not appear to be a valid ISO image"
+msgstr "올바른 ISO 이미지 파일이 아닙니다"
 
 #: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project-name.c:84
 msgid "Unknown error"
@@ -2280,95 +2377,204 @@ msgstr "키를 만들지 못했습니다"
 msgid "Invalid track mode"
 msgstr "트랙 모드가 잘못되었습니다"
 
-#: ../src/eggdesktopfile.c:165
+#: ../libbrasero-utils/brasero-disc-message.c:133
+msgid "_Hide changes"
+msgstr "바뀐 사항 숨기기(_H)"
+
+#: ../libbrasero-utils/brasero-disc-message.c:135
+#: ../libbrasero-utils/brasero-disc-message.c:154
+msgid "_Show changes"
+msgstr "바뀐 사항 표시(_S)"
+
+#: ../libbrasero-utils/brasero-io.c:1416
 #, c-format
-msgid "File is not a valid .desktop file"
-msgstr "올바른 .desktop 파일이 아닙니다"
+msgid "The file does not appear to be a playlist"
+msgstr "파일이 재생 목록이 아닌 것 같습니다"
 
-#: ../src/eggdesktopfile.c:188
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:199
+msgid "Images"
+msgstr "그림"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:230
+msgid "_Color"
+msgstr "색(_C)"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:261
+msgid "Solid color"
+msgstr "단색"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:262
+msgid "Horizontal gradient"
+msgstr "가로 그라데이션"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:263
+msgid "Vertical gradient"
+msgstr "세로 그라데이션"
+
+#. second part
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:280
+msgid "_Image"
+msgstr "그림(_I)"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:308
+msgid "Image path:"
+msgstr "그림 경로:"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:320
+msgid "Choose an image"
+msgstr "그림을 고르십시오"
+
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-background.c:331
+msgid "Image style:"
+msgstr "그림 스타일:"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:345
+msgid "Centered"
+msgstr "가운데"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:346
+msgid "Tiled"
+msgstr "타일"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:347
+msgid "Scaled"
+msgstr "크기 조정"
+
+#: ../libbrasero-utils/brasero-jacket-background.c:384
+msgid "Background Properties"
+msgstr "배경 속성"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:589
+msgid "Print"
+msgstr "인쇄"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:601
+msgid "Bac_kground Properties"
+msgstr "배경 속성(_K)"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:604
+msgid "Background properties"
+msgstr "배경 속성"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:619
+msgid "Align right"
+msgstr "오른쪽 맞추기"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:629
+msgid "Center"
+msgstr "가운데"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:639
+msgid "Align left"
+msgstr "왼쪽 맞추기"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:653
+msgid "Underline"
+msgstr "밑줄"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:663
+msgid "Italic"
+msgstr "기울임"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:673
+msgid "Bold"
+msgstr "굵게"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:699
+msgid "Font family and size"
+msgstr "글꼴 종류 및 크기"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:706
+msgid "_Text Color"
+msgstr "글자 색(_T)"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:707
+msgid "Text color"
+msgstr "글자 색"
+
+#: ../libbrasero-utils/brasero-jacket-edit.c:830
+msgid "Cover Editor"
+msgstr "표지 편집기"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:766
+msgid "Set Bac_kground Properties"
+msgstr "배경 속성 설정(_K)"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:807
+msgid "SIDES"
+msgstr "옆면"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:823
+msgid "BACK COVER"
+msgstr "뒤 표지"
+
+#: ../libbrasero-utils/brasero-jacket-view.c:841
+msgid "FRONT COVER"
+msgstr "앞 표지"
+
+#. Translators: This is an image,
+#. * a picture, not a "Disc Image"
+#: ../libbrasero-utils/brasero-jacket-view.c:1021
+msgid "The image could not be loaded."
+msgstr "그림을 읽어들일 수 없습니다."
+
+#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
 #, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "desktop 파일 버전을 ('%s') 인식할 수 없습니다"
+msgid "\"%s\" could not be handled by GStreamer."
+msgstr "\"%s\" 파일을 GStreamer에서 처리할 수 없습니다."
 
-#: ../src/eggdesktopfile.c:968
+#. Translators: %s is the name of the object (as in
+#. * GObject) from the Gstreamer library that could
+#. * not be created
+#: ../libbrasero-utils/brasero-metadata.c:1207
+#: ../libbrasero-utils/brasero-metadata.c:1220
+#: ../libbrasero-utils/brasero-metadata.c:1233
+#: ../libbrasero-utils/brasero-metadata.c:1375
+#: ../libbrasero-utils/brasero-metadata.c:1746
+#: ../libbrasero-utils/brasero-metadata.c:1761
+#: ../libbrasero-utils/brasero-metadata.c:1770
+#: ../plugins/transcode/burn-normalize.c:172
+#: ../plugins/transcode/burn-normalize.c:187
+#: ../plugins/transcode/burn-normalize.c:209
+#: ../plugins/transcode/burn-normalize.c:221
+#: ../plugins/transcode/burn-normalize.c:238
+#: ../plugins/transcode/burn-normalize.c:335
+#: ../plugins/transcode/burn-transcode.c:294
+#: ../plugins/transcode/burn-transcode.c:306
+#: ../plugins/transcode/burn-transcode.c:456
+#: ../plugins/transcode/burn-transcode.c:509
+#: ../plugins/transcode/burn-transcode.c:543
+#: ../plugins/transcode/burn-transcode.c:590
+#: ../plugins/transcode/burn-transcode.c:611
+#: ../plugins/transcode/burn-transcode.c:623
+#: ../plugins/transcode/burn-transcode.c:648
+#: ../plugins/transcode/burn-vob.c:309 ../plugins/transcode/burn-vob.c:329
+#: ../plugins/transcode/burn-vob.c:344 ../plugins/transcode/burn-vob.c:356
+#: ../plugins/transcode/burn-vob.c:373 ../plugins/transcode/burn-vob.c:431
+#: ../plugins/transcode/burn-vob.c:448 ../plugins/transcode/burn-vob.c:460
+#: ../plugins/transcode/burn-vob.c:472 ../plugins/transcode/burn-vob.c:484
+#: ../plugins/transcode/burn-vob.c:501 ../plugins/transcode/burn-vob.c:592
+#: ../plugins/transcode/burn-vob.c:609 ../plugins/transcode/burn-vob.c:621
+#: ../plugins/transcode/burn-vob.c:633 ../plugins/transcode/burn-vob.c:655
+#: ../plugins/transcode/burn-vob.c:672 ../plugins/transcode/burn-vob.c:718
+#: ../plugins/transcode/burn-vob.c:795 ../plugins/transcode/burn-vob.c:812
+#: ../plugins/transcode/burn-vob.c:827 ../plugins/transcode/burn-vob.c:839
+#: ../plugins/transcode/burn-vob.c:850 ../plugins/transcode/burn-vob.c:861
+#: ../plugins/transcode/burn-vob.c:1036 ../plugins/transcode/burn-vob.c:1100
+#: ../plugins/transcode/burn-vob.c:1117 ../plugins/transcode/burn-vob.c:1138
+#: ../plugins/transcode/burn-vob.c:1165
 #, c-format
-msgid "Starting %s"
-msgstr "%s 시작"
+msgid "%s element could not be created"
+msgstr "%s 요소를 만들 수 없습니다"
 
-#: ../src/eggdesktopfile.c:1110
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "명령행에서 문서를 지정할 수 없는 프로그램입니다"
-
-#: ../src/eggdesktopfile.c:1178
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "알 수 없는 실행 옵션: %d"
-
-#: ../src/eggdesktopfile.c:1383
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr "문서 URI는 'Type=Link' desktop 항목에 넘길 수 없습니다"
-
-#: ../src/eggdesktopfile.c:1404
-#, c-format
-msgid "Not a launchable item"
-msgstr "실행할 수 있는 항목이 없습니다"
-
-#: ../src/eggsmclient.c:226
-msgid "Disable connection to session manager"
-msgstr "세션 관리자에 연결하지 않습니다"
-
-#: ../src/eggsmclient.c:229
-msgid "Specify file containing saved configuration"
-msgstr "설정을 저장할 파일을 지정합니다"
-
-#: ../src/eggsmclient.c:229
-msgid "FILE"
-msgstr "<파일>"
-
-#: ../src/eggsmclient.c:232
-msgid "Specify session management ID"
-msgstr "세션 관리 ID를 지정합니다"
-
-#: ../src/eggsmclient.c:232
-msgid "ID"
-msgstr "<ID>"
-
-#: ../src/eggsmclient.c:253
-msgid "Session management options:"
-msgstr "세션 관리 옵션:"
-
-#: ../src/eggsmclient.c:254
-msgid "Show session management options"
-msgstr "세션 관리 옵션을 표시합니다"
-
-#: ../src/brasero-pref.c:61
-msgid "Brasero Plugins"
-msgstr "브라세로 플러그인"
-
-#: ../plugins/local-track/burn-uri.c:207 ../plugins/local-track/burn-uri.c:297
-#: ../plugins/local-track/burn-uri.c:472
-#, c-format
-msgid "Impossible to retrieve local file path"
-msgstr "로컬 파일 경로를 알아낼 수 없습니다"
-
-#: ../plugins/local-track/burn-uri.c:326
-#: ../plugins/local-track/burn-local-image.c:527
-msgid "Copying files locally"
-msgstr "파일을 로컬에서 복사하는 중"
-
-#. Translators: this is the name of the plugin
-#. * which will be translated only when it needs
-#. * displaying.
-#: ../plugins/local-track/burn-uri.c:747 ../nautilus/nautilus-burn-bar.c:356
-msgid "CD/DVD Creator Folder"
-msgstr "CD/DVD 만들기 폴더"
-
-#: ../plugins/local-track/burn-uri.c:748
-msgid ""
-"Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
-msgstr "노틸러스의 \"CD/DVD 만들기 폴더\"에 추가한 파일 굽기를 허용합니다"
+#: ../libbrasero-utils/brasero-tool-color-picker.c:166
+msgid "Pick a Color"
+msgstr "색을 고르십시오"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 #: ../nautilus/nautilus-burn-extension.c:281
@@ -2384,11 +2590,18 @@ msgid "Medium Icon"
 msgstr "미디어 아이콘"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-project-name.c:168
-#: ../src/brasero-file-chooser.c:375 ../src/brasero-project.c:2244
+#: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-file-chooser.c:375
+#: ../src/brasero-project.c:2246 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
 msgstr "그림 파일"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../nautilus/nautilus-burn-bar.c:356 ../plugins/local-track/burn-uri.c:747
+msgid "CD/DVD Creator Folder"
+msgstr "CD/DVD 만들기 폴더"
 
 #: ../nautilus/nautilus-burn-bar.c:368
 msgid "Disc Name:"
@@ -2401,66 +2614,575 @@ msgid "Drag or copy files below to write them to disc"
 msgstr "파일을 디스크에 쓰려면 끌어 놓거나 복사하십시오"
 
 #: ../nautilus/nautilus-burn-bar.c:423
-#: ../nautilus/nautilus-burn-extension.c:335
+#: ../nautilus/nautilus-burn-extension.c:323
 msgid "Write to Disc"
 msgstr "디스크에 쓰기"
 
 #: ../nautilus/nautilus-burn-bar.c:442
-#: ../nautilus/nautilus-burn-extension.c:715
+#: ../nautilus/nautilus-burn-extension.c:723
 msgid "Write contents to a CD or DVD"
 msgstr "내용을 CD나 DVD에 씁니다"
 
-#: ../nautilus/nautilus-burn-extension.c:362
+#: ../nautilus/nautilus-burn-extension.c:370
 msgid "Copy Disc"
 msgstr "디스크 복사"
 
-#: ../nautilus/nautilus-burn-extension.c:563
-#: ../nautilus/nautilus-burn-extension.c:714
+#: ../nautilus/nautilus-burn-extension.c:571
+#: ../nautilus/nautilus-burn-extension.c:722
 msgid "_Write to Disc…"
 msgstr "디스크에 쓰기(_W)…"
 
-#: ../nautilus/nautilus-burn-extension.c:564
+#: ../nautilus/nautilus-burn-extension.c:572
 msgid "Write disc image to a CD or DVD"
 msgstr "디스크 이미지를 CD나 DVD에 씁니다"
 
-#: ../nautilus/nautilus-burn-extension.c:637
+#: ../nautilus/nautilus-burn-extension.c:645
 msgid "_Copy Disc…"
 msgstr "디스크 복사(_C)…"
 
-#: ../nautilus/nautilus-burn-extension.c:638
+#: ../nautilus/nautilus-burn-extension.c:646
 msgid "Create a copy of this CD or DVD"
 msgstr "이 CD나 DVD를 복사합니다"
 
-#: ../nautilus/nautilus-burn-extension.c:651
+#: ../nautilus/nautilus-burn-extension.c:659
 msgid "_Blank Disc…"
 msgstr "디스크 비우기(_B)…"
 
-#: ../nautilus/nautilus-burn-extension.c:652
+#: ../nautilus/nautilus-burn-extension.c:660
 msgid "Blank this CD or DVD"
 msgstr "이 CD나 DVD를 비웁니다"
 
-#: ../nautilus/nautilus-burn-extension.c:668
+#: ../nautilus/nautilus-burn-extension.c:676
 msgid "_Check Disc…"
 msgstr "디스크 검사(_C)…"
 
-#: ../nautilus/nautilus-burn-extension.c:669
+#: ../nautilus/nautilus-burn-extension.c:677
 msgid "Check the data integrity on this CD or DVD"
 msgstr "이 CD나 DVD의 데이터가 올바른지 검사합니다"
 
-#. Translators: this is a picture not
-#. * a disc image
-#: ../src/brasero-project-name.c:83
-msgctxt "picture"
-msgid "Please select another image."
-msgstr "다른 그림을 선택하십시오."
-
-#. NOTE to translators: the final string must not be over
-#. * 32 _bytes_.
-#. * The %s is the date
-#: ../src/brasero-project-name.c:269
+#: ../plugins/audio2cue/burn-audio2cue.c:191
+#: ../plugins/checksum/burn-checksum-image.c:124
 #, c-format
-msgid "Video disc (%s)"
-msgstr "비디오 디스크 (%s)"
+msgid "Data could not be read (%s)"
+msgstr "데이터를 읽을 수 없습니다 (%s)"
+
+#: ../plugins/audio2cue/burn-audio2cue.c:241
+#: ../plugins/checksum/burn-checksum-files.c:196
+#: ../plugins/checksum/burn-checksum-files.c:219
+#: ../plugins/checksum/burn-checksum-image.c:174
+#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/libburnia/burn-libisofs.c:160
+#: ../plugins/libburnia/burn-libisofs.c:274
+#, c-format
+msgid "Data could not be written (%s)"
+msgstr "데이터를 쓸 수 없습니다 (%s)"
+
+#: ../plugins/audio2cue/burn-audio2cue.c:723
+msgid "Generates .cue files from audio"
+msgstr "오디오에서 .cue 파일을 만들어 냅니다"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:55
+msgid "cdrdao burning suite"
+msgstr "cdrdao 굽기 기능 모음"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:103
+msgid "Copying audio track"
+msgstr "오디오 트랙을 복사하는 중"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:109
+msgid "Copying data track"
+msgstr "데이터 트랙을 복사하는 중"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:145
+#, c-format
+msgid "Analysing track %02i"
+msgstr "트랙 %02i번을 분석하는 중"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:249 ../plugins/cdrkit/burn-readom.c:116
+#: ../plugins/cdrkit/burn-readom.c:122 ../plugins/cdrkit/burn-wodim.c:106
+#: ../plugins/cdrtools/burn-cdrecord.c:106
+#: ../plugins/cdrtools/burn-readcd.c:117 ../plugins/cdrtools/burn-readcd.c:123
+#, c-format
+msgid "You do not have the required permissions to use this drive"
+msgstr "이 드라이브를 사용할 권한이 없습니다"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:480
+msgid "Converting toc file"
+msgstr "toc 파일 변환"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:697
+msgid "Copies, burns and blanks CDs"
+msgstr "CD를 복사하고, 굽고, 지웁니다"
+
+#: ../plugins/cdrdao/burn-cdrdao.c:762
+msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
+msgstr "\"--driver generic-mmc-raw\" 플래그 사용(cdrdao 설명서 참고)"
+
+#: ../plugins/cdrkit/burn-cdrkit.h:38
+msgid "cdrkit burning suite"
+msgstr "cdrkit 굽기 기능 모음"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:119
+#: ../plugins/cdrtools/burn-mkisofs.c:119
+#: ../plugins/growisofs/burn-growisofs.c:204
+#: ../plugins/libburnia/burn-libisofs.c:518
+#, c-format
+msgid "Last session import failed"
+msgstr "마지막 세션 가져오기가 실패했습니다"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:125
+#: ../plugins/cdrkit/burn-genisoimage.c:132
+#: ../plugins/cdrtools/burn-mkisofs.c:125
+#: ../plugins/cdrtools/burn-mkisofs.c:132
+#: ../plugins/growisofs/burn-growisofs.c:210
+#: ../plugins/growisofs/burn-growisofs.c:217
+msgid "An image could not be created"
+msgstr "이미지를 만들 수 없습니다"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:138
+msgid "This version of genisoimage is not supported"
+msgstr "이 genisoimage 버전은 지원하지 않습니다"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:180
+#: ../plugins/cdrtools/burn-mkisofs.c:180
+#: ../plugins/growisofs/burn-growisofs.c:223
+msgid "Some files have invalid filenames"
+msgstr "몇몇 파일 이름이 올바르지 않습니다"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:186
+#: ../plugins/cdrtools/burn-mkisofs.c:186
+#: ../plugins/growisofs/burn-growisofs.c:229
+msgid "Unknown character encoding"
+msgstr "문자 인코딩을 알 수 없습니다"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:192
+#: ../plugins/cdrtools/burn-mkisofs.c:192
+msgid "There is no space left on the device"
+msgstr "장치에 남은 공간이 없습니다"
+
+#: ../plugins/cdrkit/burn-genisoimage.c:527
+#: ../plugins/cdrtools/burn-mkisofs.c:531
+#: ../plugins/libburnia/burn-libisofs.c:1078
+msgid "Creates disc images from a file selection"
+msgstr "선택한 파일에서 디스크 이미지를 만듭니다"
+
+#: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
+#, c-format
+msgid ""
+"The location you chose to store the image on does not have enough free space "
+"for the disc image"
+msgstr "지정한 위치에 이미지를 저장할 만큼 빈 공간이 충분하지 않습니다"
+
+#: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
+msgid "Copies any disc to a disc image"
+msgstr "디스크를 이미지로 복사합니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
+#: ../plugins/libburnia/burn-libburn.c:856
+#: ../plugins/libburnia/burn-libburn.c:887
+#, c-format
+msgid "An error occurred while writing to disc"
+msgstr "디스크에 쓰는 중 오류가 발생했습니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:128 ../plugins/cdrtools/burn-cdrecord.c:128
+#, c-format
+msgid ""
+"The system is too slow to write the disc at this speed. Try a lower speed"
+msgstr ""
+"이 속도로 디스크에 쓰기에는 시스템 속도가 너무 느립니다. 낮은 속도로 시도해 "
+"보십시오."
+
+#. Translators: %s is the number of the track
+#: ../plugins/cdrkit/burn-wodim.c:255 ../plugins/cdrtools/burn-cdrecord.c:252
+#, c-format
+msgid "Writing track %s"
+msgstr "트랙 %s 기록하는 중입니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
+msgid "Formatting disc"
+msgstr "디스크를 포맷하는 중입니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
+msgid "Writing cue sheet"
+msgstr "CUE 시트를 작성하는 중입니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:394 ../plugins/cdrtools/burn-cdrecord.c:380
+#, c-format
+msgid "The disc needs to be reloaded before being recorded"
+msgstr "디스크에 기록하려면 다시 읽어들여야 합니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:1270
+msgid "Burns, blanks and formats CDs and DVDs"
+msgstr "CD와 DVD를 굽고, 지우고, 포맷합니다"
+
+#: ../plugins/cdrkit/burn-wodim.c:1414
+msgid "Enable the \"-immed\" flag (see wodim manual)"
+msgstr "\"-immed\" 플래그를 사용합니다(wodim 설명서 참고)"
+
+#: ../plugins/cdrkit/burn-wodim.c:1417
+msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
+msgstr "최소한 채워 둘 드라이브 버퍼 비율 (% 단위) (wodim 설명서 참고):"
+
+#: ../plugins/cdrtools/burn-cdda2wav.c:206
+#: ../plugins/cdrtools/burn-cdda2wav.c:216
+#, c-format
+msgid "Copying audio track %02d"
+msgstr "오디오 트랙 %02d번 복사하는 중"
+
+#: ../plugins/cdrtools/burn-cdda2wav.c:267
+msgid "Preparing to copy audio disc"
+msgstr "오디오 디스크 복사를 준비하는 중"
+
+#: ../plugins/cdrtools/burn-cdda2wav.c:411
+msgid "Copy tracks from an audio CD with all associated information"
+msgstr "오디오 CD 트랙을 관련 정보와 함께 복사합니다"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/libburnia/burn-libburn.c:975
+msgid "Burns, blanks and formats CDs, DVDs and BDs"
+msgstr "CD, DVD, BD를 굽고, 지우고, 포맷합니다"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1417
+msgid "Enable the \"-immed\" flag (see cdrecord manual)"
+msgstr "\"-immed\" 플래그를 사용합니다(cdrecord 설명서 참고)"
+
+#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#, c-format
+msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
+msgstr "최소한 채워 둘 드라이브 버퍼 비율 (%% 단위) (cdrecord 설명서 참고):"
+
+#: ../plugins/cdrtools/burn-cdrtools.h:38
+msgid "cdrtools burning suite"
+msgstr "cdrtools 굽기 기능 모음"
+
+#: ../plugins/cdrtools/burn-mkisofs.c:138
+msgid "This version of mkisofs is not supported"
+msgstr "이 mkisofs 버전은 지원하지 않습니다"
+
+#: ../plugins/checksum/burn-checksum-files.c:131
+#: ../plugins/checksum/burn-checksum-files.c:589
+#, c-format
+msgid "File \"%s\" could not be opened (%s)"
+msgstr "\"%s\" 파일을 열 수 없습니다 (%s)"
+
+#: ../plugins/checksum/burn-checksum-files.c:617
+msgid "Creating checksum for image files"
+msgstr "이미지 파일의 체크섬을 만드는 중입니다"
+
+#: ../plugins/checksum/burn-checksum-files.c:859
+#, c-format
+msgid "No checksum file could be found on the disc"
+msgstr "디스크에 체크섬 파일이 없습니다"
+
+#: ../plugins/checksum/burn-checksum-files.c:893
+msgid "Checking file integrity"
+msgstr "파일이 올바른지 검사하는 중입니다"
+
+#: ../plugins/checksum/burn-checksum-files.c:987
+#: ../plugins/checksum/burn-checksum-files.c:1012
+#, c-format
+msgid "File \"%s\" could not be opened"
+msgstr "\"%s\" 파일을 열 수 없습니다"
+
+#: ../plugins/checksum/burn-checksum-files.c:1085
+#: ../plugins/checksum/burn-checksum-files.c:1206
+#: ../plugins/checksum/burn-checksum-image.c:550
+#, c-format
+msgid "Some files may be corrupted on the disc"
+msgstr "디스크의 파일이 손상된 것 같습니다"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/checksum/burn-checksum-files.c:1465
+msgid "File Checksum"
+msgstr "파일 체크섬"
+
+#: ../plugins/checksum/burn-checksum-files.c:1466
+msgid "Checks file integrities on a disc"
+msgstr "디스크의 파일이 올바른지 확인합니다"
+
+#: ../plugins/checksum/burn-checksum-files.c:1504
+#: ../plugins/checksum/burn-checksum-image.c:856
+msgid "Hashing algorithm to be used:"
+msgstr "사용할 해시 알고리즘:"
+
+#: ../plugins/checksum/burn-checksum-files.c:1507
+#: ../plugins/checksum/burn-checksum-image.c:859
+msgid "MD5"
+msgstr "MD5"
+
+#: ../plugins/checksum/burn-checksum-files.c:1509
+#: ../plugins/checksum/burn-checksum-image.c:861
+msgid "SHA1"
+msgstr "SHA1"
+
+#: ../plugins/checksum/burn-checksum-files.c:1511
+#: ../plugins/checksum/burn-checksum-image.c:863
+msgid "SHA256"
+msgstr "SHA256"
+
+#. Translators: first %s is the filename, second %s
+#. * is the error generated from errno
+#. Translators: first %s is the filename, second %s is the error
+#. * generated from errno
+#: ../plugins/checksum/burn-checksum-image.c:313
+#: ../plugins/libburnia/burn-libburn.c:679
+#, c-format
+msgid "\"%s\" could not be opened (%s)"
+msgstr "\"%s\" 파일을 열 수 없습니다 (%s)"
+
+#: ../plugins/checksum/burn-checksum-image.c:359
+#: ../plugins/checksum/burn-checksum-image.c:456
+msgid "Creating image checksum"
+msgstr "이미지 체크섬을 만드는 중입니다"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/checksum/burn-checksum-image.c:831
+msgid "Image Checksum"
+msgstr "이미지 체크섬"
+
+#: ../plugins/checksum/burn-checksum-image.c:832
+msgid "Checks disc integrity after it is burnt"
+msgstr "디스크를 구운 다음 데이터가 올바른지 확인합니다"
+
+#: ../plugins/dvdauthor/burn-dvdauthor.c:313
+#: ../plugins/vcdimager/burn-vcdimager.c:438
+msgid "Creating file layout"
+msgstr "파일 레이아웃을 만드는 중입니다"
+
+#: ../plugins/dvdauthor/burn-dvdauthor.c:371
+msgid "Creates disc images suitable for video DVDs"
+msgstr "비디오 DVD에 적합한 디스크 이미지를 만듭니다"
+
+#. Translators: %s is the path to a drive. "regionset %s"
+#. * should be left as is just like "DVDCSS_METHOD=title
+#. * brasero --no-existing-session"
+#: ../plugins/dvdcss/burn-dvdcss.c:294
+#, c-format
+msgid ""
+"Error while retrieving a key used for encryption. You may solve such a "
+"problem with one of the following methods: in a terminal either set the "
+"proper DVD region code for your CD/DVD player with the \"regionset %s\" "
+"command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
+"command"
+msgstr ""
+"암호화에 사용한 키를 가져오는데 오류가 발생했습니다. 다음 중 한 가지 방법으"
+"로 이 문제를 해결할 수 있습니다: 터미널에서 \"regionset %s\" 명령으로 CD/DVD "
+"플레이어의 DVD 지역 코드를 올바르게 설정하거나, 아니면 \"DVDCSS_METHOD=title "
+"brasero --no-existing-session\" 명령을 실행합니다."
+
+#: ../plugins/dvdcss/burn-dvdcss.c:339
+msgid "Retrieving DVD keys"
+msgstr "DVD 키를 가져오는 중입니다"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:374
+#, c-format
+msgid "Video DVD could not be opened"
+msgstr "비디오 DVD를 열 수 없습니다"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
+#: ../plugins/dvdcss/burn-dvdcss.c:483
+#, c-format
+msgid "Error while reading video DVD (%s)"
+msgstr "비디오 DVD를 읽는 중 오류가 발생했습니다 (%s)"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:402
+msgid "Copying video DVD"
+msgstr "비디오 DVD를 복사하는 중"
+
+#: ../plugins/dvdcss/burn-dvdcss.c:695
+msgid "Copies CSS encrypted video DVDs to a disc image"
+msgstr "CSS 암호화된 비디오 DVD를 디스크 이미지로 복사합니다"
+
+#: ../plugins/growisofs/burn-dvd-rw-format.c:190
+msgid "Blanks and formats rewritable DVDs and BDs"
+msgstr "다시 쓰기 가능한 DVD와 BD를 지우고 포맷합니다"
+
+#: ../plugins/growisofs/burn-growisofs.c:753
+msgid "Burns and blanks DVDs and BDs"
+msgstr "DVD와 BD를 굽고 지웁니다"
+
+#: ../plugins/growisofs/burn-growisofs.c:924
+msgid "Allow DAO use"
+msgstr "DAO 사용을 허용"
+
+#: ../plugins/growisofs/burn-growisofs-common.h:38
+msgid "growisofs burning suite"
+msgstr "growisofs 굽기 기능 모음"
+
+#: ../plugins/libburnia/burn-libburn.c:242
+#: ../plugins/libburnia/burn-libburn.c:250
+#, c-format
+msgid "libburn track could not be created"
+msgstr "libburn 트랙을 만들 수 없습니다"
+
+#: ../plugins/libburnia/burn-libburn-common.c:158
+#, c-format
+msgid "libburn library could not be initialized"
+msgstr "libburn 라이브러리를 초기화할 수 없습니다"
+
+#: ../plugins/libburnia/burn-libburn-common.c:173
+#, c-format
+msgid "The drive address could not be retrieved"
+msgstr "드라이브 주소를 알아낼 수 없습니다"
+
+#: ../plugins/libburnia/burn-libburn-common.c:418
+#, c-format
+msgid "Writing track %02i"
+msgstr "트랙 %02i번을 기록하는 중입니다"
+
+#: ../plugins/libburnia/burn-libburnia.h:38
+msgid "libburnia burning suite"
+msgstr "libburnia 굽기 기능 모음"
+
+#: ../plugins/libburnia/burn-libisofs.c:222
+#: ../plugins/libburnia/burn-libisofs.c:291
+#: ../plugins/libburnia/burn-libisofs.c:571
+#, c-format
+msgid "Volume could not be created"
+msgstr "볼륨을 만들 수 없습니다"
+
+#: ../plugins/libburnia/burn-libisofs.c:345
+#: ../plugins/libburnia/burn-libisofs.c:893
+#, c-format
+msgid "libisofs could not be initialized."
+msgstr "libisofs를 초기화할 수 없습니다."
+
+#: ../plugins/libburnia/burn-libisofs.c:485
+#, c-format
+msgid "Read options could not be created"
+msgstr "읽기 옵션을 만들 수 없습니다"
+
+#. Translators: %s is the path
+#: ../plugins/libburnia/burn-libisofs.c:684
+#, c-format
+msgid "No parent could be found in the tree for the path \"%s\""
+msgstr "\"%s\" 경로에 대해 상위 폴더를 찾지 못했습니다."
+
+#: ../plugins/libburnia/burn-libisofs.c:744
+#: ../plugins/libburnia/burn-libisofs.c:811
+#, c-format
+msgid "libisofs reported an error while creating directory \"%s\""
+msgstr "\"%s\" 디렉터리를 만드는 데 libisofs에서 오류를 보고했습니다"
+
+#: ../plugins/libburnia/burn-libisofs.c:759
+#, c-format
+msgid ""
+"libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgstr ""
+"\"%s\" 디렉터리에 내용물을 추가하는 데 libisofs에서 오류를 보고했습니다 (%x)"
+
+#: ../plugins/libburnia/burn-libisofs.c:782
+#: ../plugins/libburnia/burn-libisofs.c:798
+#, c-format
+msgid "libisofs reported an error while adding file at path \"%s\""
+msgstr "\"%s\" 경로에 파일을 추가하는 데 libisofs에서 오류를 보고했습니다"
+
+#: ../plugins/local-track/burn-local-image.c:260
+msgid "Copying checksum file"
+msgstr "체크섬 파일을 복사하는 중"
+
+#: ../plugins/local-track/burn-local-image.c:527
+#: ../plugins/local-track/burn-uri.c:326
+msgid "Copying files locally"
+msgstr "파일을 로컬에서 복사하는 중"
+
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../plugins/local-track/burn-local-image.c:909
+msgid "File Downloader"
+msgstr "파일 다운로드"
+
+#: ../plugins/local-track/burn-local-image.c:910
+msgid "Allows files not stored locally to be burned"
+msgstr "로컬에 저장되지 않은 파일을 굽도록 만듭니다"
+
+#: ../plugins/local-track/burn-uri.c:207 ../plugins/local-track/burn-uri.c:297
+#: ../plugins/local-track/burn-uri.c:472
+#, c-format
+msgid "Impossible to retrieve local file path"
+msgstr "로컬 파일 경로를 알아낼 수 없습니다"
+
+#: ../plugins/local-track/burn-uri.c:748
+msgid ""
+"Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
+msgstr "노틸러스의 \"CD/DVD 만들기 폴더\"에 추가한 파일 굽기를 허용합니다"
+
+#. Translators: This message is sent
+#. * when brasero could not link together
+#. * two gstreamer plugins so that one
+#. * sends its data to the second for further
+#. * processing. This data transmission is
+#. * done through a pad. Maybe this is a bit
+#. * too technical and should be removed?
+#: ../plugins/transcode/burn-normalize.c:199
+#: ../plugins/transcode/burn-normalize.c:260
+#: ../plugins/transcode/burn-transcode.c:318
+#: ../plugins/transcode/burn-transcode.c:356
+#: ../plugins/transcode/burn-transcode.c:553
+#: ../plugins/transcode/burn-transcode.c:663
+#: ../plugins/transcode/burn-transcode.c:694
+#: ../plugins/transcode/burn-transcode.c:715
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:395
+#: ../plugins/transcode/burn-vob.c:555 ../plugins/transcode/burn-vob.c:688
+#: ../plugins/transcode/burn-vob.c:1052 ../plugins/transcode/burn-vob.c:1128
+#: ../plugins/transcode/burn-vob.c:1179
+#, c-format
+msgid "Impossible to link plugin pads"
+msgstr "플러그인 패드를 연결하는 데 실패했습니다"
+
+#: ../plugins/transcode/burn-normalize.c:554
+msgid "Normalizing tracks"
+msgstr "트랙 정규화"
+
+#: ../plugins/transcode/burn-normalize.c:644
+msgid "Normalization"
+msgstr "정규화"
+
+#: ../plugins/transcode/burn-normalize.c:645
+msgid "Sets consistent sound levels between tracks"
+msgstr "오디오 트랙의 음 높이를 일정하게 맞춥니다"
+
+#. Translators: %s is the string error from errno
+#: ../plugins/transcode/burn-transcode.c:1086
+#: ../plugins/transcode/burn-transcode.c:1274
+#, c-format
+msgid "Error while padding file (%s)"
+msgstr "파일을 채우는 데 오류가 발생했습니다 (%s)"
+
+#: ../plugins/transcode/burn-transcode.c:1350
+msgid "Error while getting duration"
+msgstr "재생 시간을 알아내는 데 오류가 발생했습니다"
+
+#: ../plugins/transcode/burn-transcode.c:1499
+#, c-format
+msgid "Analysing \"%s\""
+msgstr "\"%s\" 분석하는 중입니다"
+
+#: ../plugins/transcode/burn-transcode.c:1536
+#, c-format
+msgid "Transcoding \"%s\""
+msgstr "\"%s\" 변환하는 중"
+
+#: ../plugins/transcode/burn-transcode.c:1773
+msgid "Converts any song file into a format suitable for audio CDs"
+msgstr "음악 파일을 오디오 CD에 적합한 형식으로 변환합니다"
+
+#: ../plugins/transcode/burn-vob.c:1264
+msgid "Converting video file to MPEG2"
+msgstr "비디오 파일을 MPEG2로 변환하는 중입니다"
+
+#: ../plugins/transcode/burn-vob.c:1367
+msgid "Converts any video file into a format suitable for video DVDs"
+msgstr "비디오 파일을 비디오 DVD에 적합한 형식으로 변환합니다"
+
+#: ../plugins/vcdimager/burn-vcdimager.c:478
+msgid "Creates disc images suitable for SVCDs"
+msgstr "SVCD에 적합한 디스크 이미지를 만듭니다"
 
 #: ../src/brasero-app.c:124
 msgid "_Project"
@@ -2530,16 +3252,16 @@ msgstr "도움말을 표시합니다"
 msgid "About"
 msgstr "정보"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2064
+#: ../src/brasero-app.c:421 ../src/brasero-app.c:2065
 msgid "Disc Burner"
 msgstr "디스크 굽기 프로그램"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1448
+#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
 msgid "Error while loading the project"
 msgstr "프로젝트를 읽어들이는 중 오류가 발생했습니다"
 
 #: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1272
+#: ../src/brasero-project.c:1274
 msgid "Please add files to the project."
 msgstr "파일을 프로젝트에 추가하십시오."
 
@@ -2547,7 +3269,7 @@ msgstr "파일을 프로젝트에 추가하십시오."
 msgid "The project is empty"
 msgstr "빈 프로젝트입니다"
 
-#: ../src/brasero-app.c:1173
+#: ../src/brasero-app.c:1174
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -2559,7 +3281,7 @@ msgstr ""
 "Foundation; either version 2 of the License, or (at your option) any later "
 "version."
 
-#: ../src/brasero-app.c:1178
+#: ../src/brasero-app.c:1179
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -2571,7 +3293,7 @@ msgstr ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 
-#: ../src/brasero-app.c:1183
+#: ../src/brasero-app.c:1184
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -2581,11 +3303,11 @@ msgstr ""
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1195
+#: ../src/brasero-app.c:1196
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "간단히 사용하는 그놈 데스크탑 CD/DVD 굽기 프로그램"
 
-#: ../src/brasero-app.c:1212
+#: ../src/brasero-app.c:1213
 msgid "Brasero Homepage"
 msgstr "브라세로 홈페이지"
 
@@ -2597,233 +3319,22 @@ msgstr "브라세로 홈페이지"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1224
+#: ../src/brasero-app.c:1225
 msgid "translator-credits"
 msgstr "류창우 <cwryu@debian.org>"
 
-#: ../src/brasero-app.c:1446
+#: ../src/brasero-app.c:1447
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "\"%s\" 프로젝트가 없습니다"
 
-#: ../src/brasero-app.c:1730 ../src/brasero-app.c:1736
+#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
 msgid "_Recent Projects"
 msgstr "최근 프로젝트(_R)"
 
-#: ../src/brasero-app.c:1731
+#: ../src/brasero-app.c:1732
 msgid "Display the projects recently opened"
 msgstr "최근에 연 프로젝트를 표시합니다"
-
-#: ../data/brasero.desktop.in.in.h:1
-msgid "Brasero"
-msgstr "브라세로"
-
-#: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "브라세로 디스크 굽기 프로그램"
-
-#: ../data/brasero.desktop.in.in.h:3
-msgid "Create and copy CDs and DVDs"
-msgstr "CD나 DVD를 만들고 복사합니다"
-
-#: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "디스크 굽기 및 복사 프로그램"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "사용할 디스크 굽기 플래그"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
-msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
-msgstr "구울 이미지를 최근에 찾아 본 디렉터리의 절대 경로가 들어 있습니다"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"브라세로에서 디스크를 굽는 데 사용할 추가 플러그인 목록이 들어 있습니다. NULL"
-"로 설정하면 모두 읽어들입니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr "선호하는 굽기 엔진의 이름입니다. 가능하면 이 플러그인을 사용합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
-msgid ""
-"Contains the path to the directory where brasero should store temporary "
-"files. If that value is empty, the default directory set for glib will be "
-"used."
-msgstr ""
-"임시 파일을 저장할 디렉터리의 경로가 들어 있습니다. 비어 있으면 glib의 기본"
-"값 디렉터리를 사용합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-msgid "Directory to use for temporary files"
-msgstr "임시 파일을 저장할 디렉터리"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "파일 미리 보기 사용"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
-msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "cdrecord에 \"-immed\" 플래그 사용"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
-msgid "Favourite burn engine"
-msgstr "선호하는 굽기 엔진"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "심볼릭 링크를 가리키는 대상으로 바꾸기"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "0이면 MD5, 1이면 SHA1, 2이면 SHA256"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
-msgid "Should Nautilus extension output debug statements"
-msgstr "노틸러스 확장 기능에서 디버깅 정보를 출력"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
-msgid ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
-msgstr ""
-"노틸러스 확장 기능에서 디버깅 정보를 출력할지 여부. 참이면 디버깅 정보를 출력"
-"합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "깨진 심볼릭 링크 필터링"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
-msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
-msgstr "깨진 심볼릭 링크를 필터링할지 여부. 참이면 심볼릭 링크를 필터링합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
-msgid "Should brasero filter hidden files"
-msgstr "숨김 파일 필터링"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr "숨김 파일을 필터링할지 여부. 참이면 숨김 파일을 필터링합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
-msgid ""
-"Should brasero replace symbolic links by their target files in the project. "
-"Set to true, brasero will replace symbolic links."
-msgstr ""
-"프로젝트에서 심볼릭 링크를 그 대상 파일로 바꿀 지 여부. 참이면 심볼릭 링크를 "
-"바꿉니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr "구울 이미지를 최근에 찾아 본 디렉터리"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
-msgid "The priority value for the plugin"
-msgstr "플러그인의 우선 순위 값"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "사용할 굽기 속도"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr "파일에 사용할 체크섬의 종류"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-msgid "The type of checksum used for images"
-msgstr "이미지에 사용할 체크섬의 종류"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
-msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
-msgstr "최근에 같은 상황에서 사용한 굽기 플래그를 나타내는 값입니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
-msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr "최근에 같은 상황에서 사용한 굽기 속도를 나타내는 값입니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "cdrecord의 \"-immed\" 플래그와 같이 사용합니다"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "cdrecord의 \"-immed\" 플래그와 같이 사용합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
-msgid ""
-"When several plugins are available for the same task, this value is used to "
-"determine which plugin should be given priority. 0 means the plugin's native "
-"priority is used. A positive value overrides the plugin's native priority. A "
-"negative value disables the plugin."
-msgstr ""
-"같은 작업에 대해 플러그인이 여러 개 있을 경우, 이 값을 사용해 플러그인의 우"
-"선 순위를 결정합니다. 값이 0이면 플러그인의 내장 우선순위를 사용합니다. 0보"
-"다 큰 값이면 플러그인의 내장 우선 순위를 무시하고 그 값을 사용합니다. 0보다 "
-"작은 값이면 이 플러그인을 사용하지 않습니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "파일 미리 보기를 표시할 지 여부. 참이면 사용합니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "cdrdao에 \"--driver generic-mmc-raw\" 플래그를 사용할 지 여부"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"cdrdao에 \"--driver generic-mmc-raw\" 플래그를 사용할 지 여부. 참으로 설정한"
-"다면 이 플래그를 사용합니다. 이 옵션을 사용하면 일부 드라이브 혹은 일부 환경"
-"에서 발생하는 문제를 피해갈 수 있습니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
-msgid ""
-"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
-"true) as it's only a workaround for some drives/setups."
-msgstr ""
-"cdrecord에 \"-immed\" 플래그를 사용할 지 여부. 참으로 설정한다면 주의하십시"
-"오. 이 옵션은 일부 드라이브와 일부 환경의 문제를 피해가는 용도일 뿐입니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
-msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr "growisofs에 \"-use-the-force-luke=dao\" 플래그를 사용할 지 여부"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
-msgid ""
-"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-"false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr ""
-"growisofs에 \"-use-the-force-luke=dao\" 플래그를 사용할 지 여부. 거짓으로 설"
-"정하면 이 플래그를 사용하지 않습니다. 이 옵션을 사용하면 일부 드라이브 혹은 "
-"일부 환경에서 발생하는 문제를 피해갈 수 있습니다."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "사용할 추가 플러그인 목록"
-
-#: ../data/mime/brasero.xml.in.h:1
-msgid "Brasero project file"
-msgstr "브라세로 프로젝트 파일"
 
 #: ../src/brasero-audio-disc.c:155 ../src/brasero-data-disc.c:122
 #: ../src/brasero-video-disc.c:100
@@ -2840,7 +3351,7 @@ msgstr "정보 편집(_E)…"
 
 #: ../src/brasero-audio-disc.c:158
 msgid "Edit the track information (start, end, author, etc.)"
-msgstr "트랙 정보를 편집합니다 (시작, 끝, 만든 사람 등)"
+msgstr "트랙 정보를 편집합니다(시작, 끝, 만든 사람 등)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:200
@@ -2881,72 +3392,72 @@ msgstr "일시 중지"
 msgid "Split"
 msgstr "쪼개기"
 
-#: ../src/brasero-audio-disc.c:417
+#: ../src/brasero-audio-disc.c:418
 msgid "Track"
 msgstr "트랙"
 
-#: ../src/brasero-audio-disc.c:457 ../src/brasero-video-disc.c:1204
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
 msgid "Title"
 msgstr "제목"
 
-#: ../src/brasero-audio-disc.c:479
+#: ../src/brasero-audio-disc.c:480
 msgid "Artist"
 msgstr "아티스트"
 
-#: ../src/brasero-audio-disc.c:487 ../src/brasero-playlist.c:771
+#: ../src/brasero-audio-disc.c:488 ../src/brasero-playlist.c:772
 #: ../src/brasero-split-dialog.c:1219
 msgid "Length"
 msgstr "길이"
 
-#: ../src/brasero-audio-disc.c:584
+#: ../src/brasero-audio-disc.c:585
 msgid "The track will be padded at its end."
 msgstr "트랙 끝을 채워 넣습니다."
 
-#: ../src/brasero-audio-disc.c:585
+#: ../src/brasero-audio-disc.c:586
 msgid "The track is shorter than 6 seconds"
 msgstr "트랙이 6초보다 짧습니다"
 
-#: ../src/brasero-audio-disc.c:645
+#: ../src/brasero-audio-disc.c:646
 msgid "Make sure the appropriate codec is installed"
 msgstr "해당 코덱을 설치했는지 확인하십시오"
 
-#: ../src/brasero-audio-disc.c:661
+#: ../src/brasero-audio-disc.c:662
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
 msgstr "비디오 파일인 \"%s\" 파일을 추가하시겠습니까?"
 
-#: ../src/brasero-audio-disc.c:670
+#: ../src/brasero-audio-disc.c:671
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
 msgstr "비디오 파일이고 오디오 부분만 디스크에 쓸 수 있습니다."
 
-#: ../src/brasero-audio-disc.c:673
+#: ../src/brasero-audio-disc.c:674
 msgid "_Discard File"
 msgstr "파일 버리기(_D)"
 
-#: ../src/brasero-audio-disc.c:676
+#: ../src/brasero-audio-disc.c:677
 msgid "_Add File"
 msgstr "파일 추가(_A)"
 
-#: ../src/brasero-audio-disc.c:747
+#: ../src/brasero-audio-disc.c:748
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "디렉터리 안의 오디오 파일을 찾으시겠습니까?"
 
-#: ../src/brasero-audio-disc.c:757
+#: ../src/brasero-audio-disc.c:758
 msgid "Search _Directory"
 msgstr "디렉터리 검색(_D)"
 
-#: ../src/brasero-audio-disc.c:811 ../src/brasero-video-disc.c:395
+#: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "\"%s\" 파일을 열 수 없습니다."
 
-#: ../src/brasero-audio-disc.c:856
+#: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
 msgstr "오디오 CD를 DTS 트랙을 포함해 만드시겠습니까?"
 
-#: ../src/brasero-audio-disc.c:857
+#: ../src/brasero-audio-disc.c:858
 msgid ""
 "Some of the selected songs are suitable for creating DTS tracks.\n"
 "This type of audio CD track provides a higher quality of sound but can only "
@@ -2957,212 +3468,157 @@ msgstr ""
 "랙은 음질이 좋지만 몇몇 디지털 플레이어에서만 재생할 수 있습니다.\n"
 "여기에 동의하면, 이 트랙에 대해서는 정규화를 적용하지 않습니다."
 
-#: ../src/brasero-audio-disc.c:866
+#: ../src/brasero-audio-disc.c:867
 msgid "Create _Regular Tracks"
 msgstr "일반 트랙 만들기(_R)"
 
-#: ../src/brasero-audio-disc.c:868
+#: ../src/brasero-audio-disc.c:869
 msgid "Click here to burn all songs as regular tracks"
 msgstr "여기를 누르면 모든 음악을 일반 트랙으로 굽습니다"
 
-#: ../src/brasero-audio-disc.c:871
+#: ../src/brasero-audio-disc.c:872
 msgid "Create _DTS Tracks"
 msgstr "DTS 트랙 만들기(_D)"
 
-#: ../src/brasero-audio-disc.c:873
+#: ../src/brasero-audio-disc.c:874
 msgid "Click here to burn all suitable songs as DTS tracks"
 msgstr "여기를 누르면 모든 적합한 음악을 DTS 트랙으로 굽습니다"
 
-#: ../src/brasero-audio-disc.c:1289
+#: ../src/brasero-audio-disc.c:1290
 msgid "Select one song only please."
 msgstr "노래 1개만 선택하십시오."
 
-#: ../src/brasero-audio-disc.c:1290
+#: ../src/brasero-audio-disc.c:1291
 msgid "Impossible to split more than one song at a time"
 msgstr "동시에 여러 개의 노래를 쪼갤 수 없습니다"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:222
-msgid "Error while blanking."
-msgstr "비우는 중 오류가 발생했습니다."
+#: ../src/brasero-cli.c:70
+msgid "Open the specified project"
+msgstr "지정한 프로젝트를 엽니다"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:227
-#: ../libbrasero-burn/brasero-blank-dialog.c:272
-msgid "Blank _Again"
-msgstr "다시 비우기(_A)"
+#: ../src/brasero-cli.c:71
+msgid "PROJECT"
+msgstr "<프로젝트>"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:244
-msgid "Unknown error."
-msgstr "알 수 없는 오류."
+#: ../src/brasero-cli.c:76
+msgid "Open the specified playlist as an audio project"
+msgstr "지정한 재생 목록을 오디오 프로젝트로 엽니다"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:264
-#: ../libbrasero-burn/brasero-blank-dialog.c:288
-msgid "The disc was successfully blanked."
-msgstr "디스크를 성공적으로 비웠습니다."
+#: ../src/brasero-cli.c:77
+msgid "PLAYLIST"
+msgstr "<재생목록>"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:270
-msgid "The disc is ready for use."
-msgstr "디스크가 사용할 준비 되었습니다."
+#: ../src/brasero-cli.c:82
+msgid "Set the drive to be used for burning"
+msgstr "구울 때 사용할 드라이브를 지정합니다"
 
-#. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-blank-dialog.c:371
-msgid "_Blank"
-msgstr "비우기(_B)"
+#: ../src/brasero-cli.c:83
+msgid "DEVICE PATH"
+msgstr "<장치경로>"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:402
-msgid "_Fast blanking"
-msgstr "빠르게 비우기(_F)"
+#: ../src/brasero-cli.c:86
+msgid "Create an image file instead of burning"
+msgstr "굽지 않고 이미지 파일을 만듭니다"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:403
-msgid "Activate fast blanking, as opposed to a longer, thorough blanking"
-msgstr "빠르게 비우기를 사용합니다 (느린 전체 비우기를 하지 않음)"
+#: ../src/brasero-cli.c:90
+msgid "Open an audio project adding the URIs given on the command line"
+msgstr "명령행에서 지정한 URI를 추가해 오디오 프로젝트를 엽니다"
 
-#: ../libbrasero-burn/brasero-blank-dialog.c:433
-msgid "Disc Blanking"
-msgstr "디스크 비우기"
+#: ../src/brasero-cli.c:94
+msgid "Open a data project adding the URIs given on the command line"
+msgstr "명령행에서 지정한 URI를 추가해 데이터 프로젝트를 엽니다"
 
-#: ../src/brasero-playlist.c:390
-#, c-format
-msgid "Error parsing playlist \"%s\"."
-msgstr "재생 목록 \"%s\" 파싱에 오류가 발생했습니다."
+#: ../src/brasero-cli.c:98
+msgid "Copy a disc"
+msgstr "디스크를 복사합니다"
 
-#: ../src/brasero-playlist.c:393 ../src/brasero-data-disc.c:214
-#: ../src/brasero-project.c:2614 ../libbrasero-burn/brasero-sum-dialog.c:166
-#: ../src/brasero-eject-dialog.c:100
-msgid "An unknown error occurred"
-msgstr "알 수 없는 오류가 발생했습니다"
+#: ../src/brasero-cli.c:99 ../src/brasero-cli.c:119 ../src/brasero-cli.c:123
+msgid "PATH TO DEVICE"
+msgstr "<장치의경로>"
 
-#. Translators: %d is the number of songs
-#: ../src/brasero-playlist.c:499
-#, c-format
-msgid "%d song"
-msgid_plural "%d songs"
-msgstr[0] "음악 %d개"
+#: ../src/brasero-cli.c:102
+msgid "Cover to use"
+msgstr "사용할 표지"
 
-#: ../src/brasero-playlist.c:584
-msgid "Select Playlist"
-msgstr "재생 목록 선택"
+#: ../src/brasero-cli.c:103
+msgid "PATH TO COVER"
+msgstr "<표지의경로>"
 
-#: ../src/brasero-playlist.c:750
-msgid "Playlists"
-msgstr "재생 목록"
+#: ../src/brasero-cli.c:106
+msgid "Open a video project adding the URIs given on the command line"
+msgstr "명령행에서 지정한 URI를 추가해 비디오 프로젝트를 엽니다"
 
-#: ../src/brasero-playlist.c:761
-msgid "Number of Songs"
-msgstr "노래 수"
+#: ../src/brasero-cli.c:110
+msgid "URI of an image file to burn (autodetected)"
+msgstr "구울 이미지 파일의 URI (자동 검사)"
 
-#: ../src/brasero-playlist.c:781
-msgid "Genre"
-msgstr "장르"
+# disc image
+#: ../src/brasero-cli.c:111
+msgid "PATH TO IMAGE"
+msgstr "<이미지경로>"
 
-#: ../src/brasero-plugin-manager-ui.c:62
-msgid "Plugin"
-msgstr "플러그인"
+#: ../src/brasero-cli.c:114
+msgid "Force Brasero to display the project selection page"
+msgstr "시작할 때 프로젝트 선택 페이지를 표시합니다"
 
-#: ../src/brasero-plugin-manager-ui.c:63
-msgid "Enabled"
-msgstr "사용"
+#: ../src/brasero-cli.c:118
+msgid "Open the blank disc dialog"
+msgstr "디스크 비우기 대화 창을 엽니다"
 
-#: ../src/brasero-plugin-manager-ui.c:143
-#, c-format
-msgid "Copyright %s"
-msgstr "Copyright %s"
+#: ../src/brasero-cli.c:122
+msgid "Open the check disc dialog"
+msgstr "디스크 검사 대화 창을 엽니다"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:966
-msgid "_About"
-msgstr "정보(_A)"
+#: ../src/brasero-cli.c:126
+msgid "Burn the contents of the burn:// URI"
+msgstr "burn:// URI의 내용을 굽습니다"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:972
-msgid "C_onfigure"
-msgstr "설정(_O)"
+#: ../src/brasero-cli.c:130
+msgid "Start burning immediately."
+msgstr "즉시 굽기를 시작합니다."
 
-#: ../src/brasero-plugin-manager-ui.c:597
-msgid "A_ctivate"
-msgstr "활성화(_C)"
+#: ../src/brasero-cli.c:134
+msgid "Don't connect to an already-running instance"
+msgstr "이미 실행 중인 프로세스에 연결하지 않습니다"
 
-#: ../src/brasero-plugin-manager-ui.c:609
-msgid "Ac_tivate All"
-msgstr "모두 활성화(_T)"
-
-#: ../src/brasero-plugin-manager-ui.c:614
-msgid "_Deactivate All"
-msgstr "모두 비활성화(_D)"
-
-#. Use the translated name for the plugin.
-#: ../src/brasero-plugin-option.c:258
-#, c-format
-msgid "Options for plugin %s"
-msgstr "%s 플러그인에 대한 옵션"
-
-#: ../src/brasero-song-properties.c:177
-msgid "Title:"
-msgstr "제목:"
-
-#: ../src/brasero-song-properties.c:187 ../src/brasero-song-properties.c:199
-#: ../src/brasero-song-properties.c:211 ../src/brasero-multi-song-props.c:211
-#: ../src/brasero-multi-song-props.c:252 ../src/brasero-multi-song-props.c:273
+#: ../src/brasero-cli.c:138
 msgid ""
-"This information will be written to the disc using CD-Text technology. It "
-"can be read and displayed by some audio CD players."
+"Burn the specified project and remove it.\n"
+"This option is mainly useful for integration with other applications."
 msgstr ""
-"CD-Text 기술을 이용해 디스크에 정보를 기록합니다. 일부 오디오 CD 플레이어가 "
-"이 정보를 읽어들여서 표시할 수 있습니다."
+"지정한 프로젝트를 굽고 지웁니다.\n"
+"이 옵션은 다른 프로그램과 연동하는 경우에만 쓸모가 있습니다."
 
-#: ../src/brasero-song-properties.c:189 ../src/brasero-multi-song-props.c:242
-msgid "Artist:"
-msgstr "아티스트:"
+#: ../src/brasero-cli.c:139
+msgid "PATH"
+msgstr "<경로>"
 
-#: ../src/brasero-song-properties.c:201 ../src/brasero-multi-song-props.c:263
-msgid "Composer:"
-msgstr "작곡:"
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other words, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/brasero-cli.c:147
+msgid "The XID of the parent window"
+msgstr "상위 창의 XID"
 
-#: ../src/brasero-song-properties.c:235
-msgid "Song start:"
-msgstr "노래 시작:"
-
-#: ../src/brasero-song-properties.c:241
-msgid "Song end:"
-msgstr "노래 끝:"
-
-#: ../src/brasero-song-properties.c:247 ../src/brasero-multi-song-props.c:317
-msgid "Pause length:"
-msgstr "일시 중지 길이:"
-
-#: ../src/brasero-song-properties.c:256 ../src/brasero-multi-song-props.c:328
-msgid "Gives the length of the pause that should follow the track"
-msgstr "트랙 뒤에 붙는 일시 중지의 길이를 지정합니다"
-
-#: ../src/brasero-song-properties.c:258
-msgid "Track length:"
-msgstr "트랙 길이:"
-
-#: ../src/brasero-song-properties.c:287 ../src/brasero-multi-song-props.c:345
-msgid "Song Information"
-msgstr "노래 정보"
-
-#: ../src/brasero-song-properties.c:372
+#. Translators: %s is the path of drive
+#: ../src/brasero-cli.c:204
 #, c-format
-msgid "Song information for track %02i"
-msgstr "트랙 %02i번의 노래 정보"
+msgid "\"%s\" cannot write."
+msgstr "\"%s\" 쓸 수 없습니다."
 
-#. *
-#. * Translators: this is the position being played in a stream. The
-#. * first %s is the position and the second %s is the whole length of
-#. * the stream. I chose to make that translatable in case some languages
-#. * don't allow the "/"
-#: ../src/brasero-song-control.c:99
-#, c-format
-msgid "%s / %s"
-msgstr "%s / %s"
+#: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
+msgid "Wrong command line option."
+msgstr "명령행 옵션이 올바르지 않습니다."
 
-#: ../src/brasero-song-control.c:528
-msgid "No file"
-msgstr "파일 없음"
+#: ../src/brasero-cli.c:297
+msgid "Incompatible command line options used."
+msgstr "서로 호환되지 않는 옵션을 사용했습니다."
 
-#: ../src/brasero-song-control.c:563
-msgid "Start and stop playing"
-msgstr "재생을 시작하고 중지합니다"
+#: ../src/brasero-cli.c:298
+msgid "Only one option can be given at a time"
+msgstr "한 번에 한 옵션만 사용할 수 있습니다"
 
 #: ../src/brasero-data-disc.c:125
 msgid "R_ename…"
@@ -3232,26 +3688,6 @@ msgstr "자기 자신을 가리키는 심볼릭 링크입니다"
 msgid "It does not exist at the specified location"
 msgstr "지정한 위치에 없습니다"
 
-#: ../src/brasero-data-disc.c:729
-#: ../libbrasero-burn/brasero-status-dialog.c:330
-msgid "Should files be renamed to be fully Windows-compatible?"
-msgstr "윈도우즈와 호환되도록 파일 이름을 바꾸시겠습니까?"
-
-#: ../src/brasero-data-disc.c:735
-#: ../libbrasero-burn/brasero-status-dialog.c:341
-msgid "Those names should be changed and truncated to 64 characters."
-msgstr "다음 파일 이름을 바꿔야 하고 64글자로 잘려집니다."
-
-#: ../src/brasero-data-disc.c:737
-#: ../libbrasero-burn/brasero-status-dialog.c:349
-msgid "_Rename for Full Windows Compatibility"
-msgstr "윈도우즈 호환성 파일 이름 바꾸기(_R)"
-
-#: ../src/brasero-data-disc.c:738
-#: ../libbrasero-burn/brasero-status-dialog.c:346
-msgid "_Disable Full Windows Compatibility"
-msgstr "윈도우즈 호환성 사용하지 않기(_D)"
-
 #. Translators: %s is the name of the file
 #: ../src/brasero-data-disc.c:771
 #, c-format
@@ -3284,7 +3720,7 @@ msgstr "유지(_K)"
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
 #. Translators: this is a verb
-#: ../src/brasero-data-disc.c:792 ../src/brasero-rename.c:383
+#: ../src/brasero-data-disc.c:792 ../src/brasero-rename.c:385
 msgid "_Replace"
 msgstr "바꾸기(_R)"
 
@@ -3294,66 +3730,6 @@ msgstr "바꾸기(_R)"
 #: ../src/brasero-data-disc.c:796
 msgid "Al_ways Replace"
 msgstr "항상 바꾸기(_W)"
-
-#: ../src/brasero-data-disc.c:826
-#: ../libbrasero-burn/brasero-status-dialog.c:271
-#, c-format
-msgid ""
-"Do you really want to add \"%s\" to the selection and use the third version "
-"of the ISO9660 standard to support it?"
-msgstr ""
-"정말로 \"%s\" 파일을 선택하시겠습니까? 이 파일을 지원하려면 ISO9660 표준의 버"
-"전 3이 필요합니다."
-
-#: ../src/brasero-data-disc.c:835
-#: ../libbrasero-burn/brasero-status-dialog.c:290
-msgid ""
-"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
-"supported by the ISO9660 standard in its first and second versions (the most "
-"widespread ones).\n"
-"It is recommended to use the third version of the ISO9660 standard, which is "
-"supported by most operating systems, including Linux and all versions of "
-"Windows™.\n"
-"However, Mac OS X cannot read images created with version 3 of the ISO9660 "
-"standard."
-msgstr ""
-"파일의 크기가 2GiB를 넘어갑니다. 2GiB보다 큰 파일은 ISO9660 표준의 첫번째와 "
-"두번째 버전에서 지원하지 않습니다. 첫번째와 두번째 버전이 가장 많이 사용하는 "
-"표준 버전입니다.\n"
-"ISO9660의 버전 3을 사용하면 리눅스 및 모든 윈도우즈 버전을 포함해 대부분 운영"
-"체제에서 지원합니다.\n"
-"하지만 맥 오에스 텐은 ISO9660 버전 3으로 만든 이미지를 읽지 못합니다."
-
-#: ../src/brasero-data-disc.c:839 ../src/brasero-data-disc.c:883
-#: ../libbrasero-burn/brasero-status-dialog.c:232
-#: ../libbrasero-burn/brasero-status-dialog.c:294
-msgid "Ne_ver Add Such File"
-msgstr "파일 추가하지 않음(_V)"
-
-#: ../src/brasero-data-disc.c:840 ../src/brasero-data-disc.c:884
-#: ../libbrasero-burn/brasero-status-dialog.c:233
-#: ../libbrasero-burn/brasero-status-dialog.c:295
-msgid "Al_ways Add Such File"
-msgstr "항상 파일 추가(_W)"
-
-#: ../src/brasero-data-disc.c:870
-#: ../libbrasero-burn/brasero-status-dialog.c:209
-#, c-format
-msgid "Do you really want to add \"%s\" to the selection?"
-msgstr "정말로 \"%s\" 파일을 선택하시겠습니까?"
-
-#: ../src/brasero-data-disc.c:879
-#: ../libbrasero-burn/brasero-status-dialog.c:228
-msgid ""
-"The children of this directory will have 7 parent directories.\n"
-"Brasero can create an image of such a file hierarchy and burn it but the "
-"disc may not be readable on all operating systems.\n"
-"Note: Such a file hierarchy is known to work on Linux."
-msgstr ""
-"이 디렉터리 아래의 파일은 상위 디렉토리가 모두 7개가 있습니다.\n"
-"브라세로는 그러한 파일 구조의 이미지를 만들 수 있고 구울 수도 있습니다. 하지"
-"만 그러한 디스크를 읽지 못하는 운영체제도 있습니다.\n"
-"참고로 이러한 파일 구조는 리눅스에서는 동작합니다."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -3418,29 +3794,106 @@ msgstr "이름 바꾸기(_R)"
 msgid "Renaming mode"
 msgstr "이름 바꾸기 모드"
 
-#: ../src/brasero-data-disc.c:2335 ../src/brasero-file-filtered.c:256
+#: ../src/brasero-data-disc.c:2336 ../src/brasero-file-filtered.c:256
 msgid "Files"
 msgstr "파일"
 
-#: ../src/brasero-data-disc.c:2349 ../src/brasero-video-disc.c:1222
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
 msgid "Size"
 msgstr "크기"
 
-#: ../src/brasero-data-disc.c:2363
+#: ../src/brasero-data-disc.c:2364
 msgid "Description"
 msgstr "설명"
 
-#: ../src/brasero-data-disc.c:2379
+#: ../src/brasero-data-disc.c:2380
 msgid "Space"
 msgstr "공간"
 
-#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2224
+#: ../src/brasero-eject-dialog.c:95
+#, c-format
+msgid "The disc in \"%s\" cannot be ejected"
+msgstr "\"%s\" 안의 디스크를 뺄 수 없습니다"
+
+#: ../src/brasero-eject-dialog.c:190
+msgid "_Eject"
+msgstr "빼기(_E)"
+
+#: ../src/brasero-eject-dialog.c:205
+msgid "Eject Disc"
+msgstr "디스크를 뺍니다"
+
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2226
 msgid "Audio files"
 msgstr "오디오 파일"
 
-#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2233
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2235
 msgid "Movies"
 msgstr "동영상"
+
+#: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
+msgid "No file filtered"
+msgstr "필터링한 파일이 없습니다"
+
+#: ../src/brasero-file-filtered.c:77
+#, c-format
+msgid "Hide the _filtered file list (%d file)"
+msgid_plural "Hide the _filtered file list (%d files)"
+msgstr[0] "필터링한 파일 목록 숨기기 (%d개 파일)(_F)"
+
+#: ../src/brasero-file-filtered.c:83
+#, c-format
+msgid "Show the _filtered file list (%d file)"
+msgid_plural "Show the _filtered file list (%d files)"
+msgstr[0] "필터링한 파일 목록 보이기 (%d개 파일)(_F)"
+
+#: ../src/brasero-file-filtered.c:135
+msgid "Filter Options"
+msgstr "필터 옵션"
+
+#: ../src/brasero-file-filtered.c:218
+msgid ""
+"Select the files you want to restore and click on the \"Restore\" button"
+msgstr "복구하려는 파일을 선택하고 \"복구\" 단추를 누르십시오"
+
+#: ../src/brasero-file-filtered.c:265
+msgid "Type"
+msgstr "종류"
+
+#: ../src/brasero-file-filtered.c:292
+msgid "_Restore"
+msgstr "복구(_R)"
+
+#: ../src/brasero-file-filtered.c:301
+msgid "Restore the selected files"
+msgstr "선택한 파일을 복구합니다"
+
+#: ../src/brasero-file-filtered.c:303
+msgid "_Options…"
+msgstr "옵션(_O)…"
+
+#: ../src/brasero-file-filtered.c:311
+msgid "Set the options for file filtering"
+msgstr "파일 필터링 옵션을 설정합니다"
+
+#. filter hidden files
+#: ../src/brasero-filter-option.c:65
+msgid "Filter _hidden files"
+msgstr "숨김 파일 필터링(_H)"
+
+#. replace symlink
+#: ../src/brasero-filter-option.c:72
+msgid "Re_place symbolic links"
+msgstr "심볼릭 링크 바꾸기(_P)"
+
+#. filter broken symlink button
+#: ../src/brasero-filter-option.c:79
+msgid "Filter _broken symbolic links"
+msgstr "깨진 심볼릭 링크 필터링(_B)"
+
+#: ../src/brasero-filter-option.c:85
+msgid "Filtering options"
+msgstr "필터링 옵션"
 
 #: ../src/brasero-layout.c:100
 msgid "P_review"
@@ -3475,9 +3928,60 @@ msgstr "세로 레이아웃(_V)"
 msgid "Set a vertical layout"
 msgstr "세로 레이아웃을 사용합니다"
 
-#: ../src/brasero-layout.c:1180
+#: ../src/brasero-layout.c:1183
 msgid "Click to close the side pane"
 msgstr "가장자리 창을 닫으려면 누르십시오"
+
+#: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
+#: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
+#: ../src/brasero-multi-song-props.c:139 ../src/brasero-multi-song-props.c:160
+#: ../src/brasero-multi-song-props.c:173 ../src/brasero-multi-song-props.c:249
+#: ../src/brasero-multi-song-props.c:270 ../src/brasero-multi-song-props.c:291
+#: ../src/brasero-rename.c:90 ../src/brasero-rename.c:321
+msgid "<Keep current values>"
+msgstr "<현재 값 유지>"
+
+#: ../src/brasero-multi-song-props.c:126 ../src/brasero-multi-song-props.c:143
+msgid "Remove silences"
+msgstr "묵음 제거"
+
+#: ../src/brasero-multi-song-props.c:211 ../src/brasero-multi-song-props.c:252
+#: ../src/brasero-multi-song-props.c:273 ../src/brasero-song-properties.c:187
+#: ../src/brasero-song-properties.c:199 ../src/brasero-song-properties.c:211
+msgid ""
+"This information will be written to the disc using CD-Text technology. It "
+"can be read and displayed by some audio CD players."
+msgstr ""
+"CD-Text 기술을 이용해 디스크에 정보를 기록합니다. 일부 오디오 CD 플레이어가 "
+"이 정보를 읽어들여서 표시할 수 있습니다."
+
+#: ../src/brasero-multi-song-props.c:213
+msgid "Song titles"
+msgstr "노래 제목"
+
+#: ../src/brasero-multi-song-props.c:230
+msgid "Additional song information"
+msgstr "노래 추가 정보"
+
+#: ../src/brasero-multi-song-props.c:242 ../src/brasero-song-properties.c:189
+msgid "Artist:"
+msgstr "아티스트:"
+
+#: ../src/brasero-multi-song-props.c:263 ../src/brasero-song-properties.c:201
+msgid "Composer:"
+msgstr "작곡:"
+
+#: ../src/brasero-multi-song-props.c:317 ../src/brasero-song-properties.c:247
+msgid "Pause length:"
+msgstr "일시 중지 길이:"
+
+#: ../src/brasero-multi-song-props.c:328 ../src/brasero-song-properties.c:256
+msgid "Gives the length of the pause that should follow the track"
+msgstr "트랙 뒤에 붙는 일시 중지의 길이를 지정합니다"
+
+#: ../src/brasero-multi-song-props.c:345 ../src/brasero-song-properties.c:287
+msgid "Song Information"
+msgstr "노래 정보"
 
 #: ../src/brasero-player.c:540
 #, c-format
@@ -3488,6 +3992,79 @@ msgstr "%i × %i 픽셀"
 #: ../src/brasero-player.c:845
 msgid "No preview"
 msgstr "미리 보기 없음"
+
+#: ../src/brasero-playlist.c:390
+#, c-format
+msgid "Error parsing playlist \"%s\"."
+msgstr "재생 목록 \"%s\" 파싱에 오류가 발생했습니다."
+
+#. Translators: %d is the number of songs
+#: ../src/brasero-playlist.c:499
+#, c-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "음악 %d개"
+
+#: ../src/brasero-playlist.c:584
+msgid "Select Playlist"
+msgstr "재생 목록 선택"
+
+#: ../src/brasero-playlist.c:751
+msgid "Playlists"
+msgstr "재생 목록"
+
+#: ../src/brasero-playlist.c:762
+msgid "Number of Songs"
+msgstr "노래 수"
+
+#: ../src/brasero-playlist.c:782
+msgid "Genre"
+msgstr "장르"
+
+#: ../src/brasero-plugin-manager-ui.c:62
+msgid "Plugin"
+msgstr "플러그인"
+
+#: ../src/brasero-plugin-manager-ui.c:63
+msgid "Enabled"
+msgstr "사용"
+
+#: ../src/brasero-plugin-manager-ui.c:143
+#, c-format
+msgid "Copyright %s"
+msgstr "Copyright %s"
+
+#: ../src/brasero-plugin-manager-ui.c:579
+#: ../src/brasero-plugin-manager-ui.c:967
+msgid "_About"
+msgstr "정보(_A)"
+
+#: ../src/brasero-plugin-manager-ui.c:587
+#: ../src/brasero-plugin-manager-ui.c:973
+msgid "C_onfigure"
+msgstr "설정(_O)"
+
+#: ../src/brasero-plugin-manager-ui.c:597
+msgid "A_ctivate"
+msgstr "활성화(_C)"
+
+#: ../src/brasero-plugin-manager-ui.c:609
+msgid "Ac_tivate All"
+msgstr "모두 활성화(_T)"
+
+#: ../src/brasero-plugin-manager-ui.c:614
+msgid "_Deactivate All"
+msgstr "모두 비활성화(_D)"
+
+#. Use the translated name for the plugin.
+#: ../src/brasero-plugin-option.c:258
+#, c-format
+msgid "Options for plugin %s"
+msgstr "%s 플러그인에 대한 옵션"
+
+#: ../src/brasero-pref.c:61
+msgid "Brasero Plugins"
+msgstr "브라세로 플러그인"
 
 #: ../src/brasero-project.c:194
 msgid "Save current project"
@@ -3514,7 +4091,7 @@ msgid "_Remove Files"
 msgstr "파일 제거(_R)"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202 ../src/brasero-project.c:2306
+#: ../src/brasero-project.c:202 ../src/brasero-project.c:2308
 msgid "E_mpty Project"
 msgstr "프로젝트 비우기(_M)"
 
@@ -3522,7 +4099,7 @@ msgstr "프로젝트 비우기(_M)"
 msgid "Remove all files from the project"
 msgstr "프로젝트의 모든 파일을 지웁니다"
 
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1082
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:1084
 msgid "_Burn…"
 msgstr "굽기(_B)…"
 
@@ -3553,7 +4130,7 @@ msgstr "프로젝트 예상 크기: %s"
 
 #: ../src/brasero-project.c:948 ../src/brasero-project.c:964
 msgid "The project is too large for the disc even with the overburn option."
-msgstr "프로젝트가 디스크 용량보다 (오버버닝 옵션을 사용하더라도) 큽니다."
+msgstr "프로젝트가 디스크 용량보다(오버버닝 옵션을 사용하더라도) 큽니다."
 
 #: ../src/brasero-project.c:975
 msgid ""
@@ -3562,64 +4139,61 @@ msgid ""
 "cannot be properly recognized and therefore needs the overburn option.\n"
 "Note: This option might cause failure."
 msgstr ""
-"프로젝트가 이 디스크에 들어가기에는 크기 때문에 프로젝트에서 파일을 지워야 합"
-"니다.\n"
-"이 옵션을 사용하면 해결될 수도 있습니다. 90분이나 100분짜리 CD-R이나 CD-RW를 "
-"(프로그램에서 자동 인식할 수 없습니다) 사용한다면 오버버닝 옵션이 필요합니"
-"다.\n"
+"프로젝트가 이 디스크에 들어가기에는 크기 때문에 프로젝트에서 파일을 지워야 합니다.\n"
+"이 옵션을 사용하면 해결될 수도 있습니다. 90분이나 100분짜리 CD-R이나 CD-RW를(프로그램에서 자동 인식할 수 없습니다) 사용한다면 오버버닝 옵션이 필요합니다.\n"
 "주의: 이 옵션을 사용하면 실패할 수도 있습니다."
 
-#: ../src/brasero-project.c:1094
+#: ../src/brasero-project.c:1096
 msgid "Start to burn the contents of the selection"
 msgstr "선택한 내용을 굽기 시작합니다"
 
-#: ../src/brasero-project.c:1263
+#: ../src/brasero-project.c:1265
 msgid "Please add songs to the project."
 msgstr "프로젝트에 노래를 추가하십시오."
 
-#: ../src/brasero-project.c:1900 ../src/brasero-project.c:1935
+#: ../src/brasero-project.c:1902 ../src/brasero-project.c:1937
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "정말로 새 프로젝트를 만들고 현재 프로젝트를 버리시겠습니까?"
 
-#: ../src/brasero-project.c:1905
+#: ../src/brasero-project.c:1907
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr "빈 프로젝트를 새로 만들면, 모든 바뀐 사항을 잃어버리게 됩니다."
 
-#: ../src/brasero-project.c:1908
+#: ../src/brasero-project.c:1910
 msgid "_Discard Changes"
 msgstr "바뀐 사항 버리기(_D)"
 
-#: ../src/brasero-project.c:1916
+#: ../src/brasero-project.c:1918
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "파일 선택을 취소하고 새 프로젝트에 추가하시겠습니까?"
 
-#: ../src/brasero-project.c:1921 ../src/brasero-project.c:1940
+#: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr "새 프로젝트를 만들면, 파일 선택을 버립니다."
 
-#: ../src/brasero-project.c:1923
+#: ../src/brasero-project.c:1925
 msgid "_Discard File Selection"
 msgstr "파일 선택 버리기(_D)"
 
-#: ../src/brasero-project.c:1927
+#: ../src/brasero-project.c:1929
 msgid "_Keep File Selection"
 msgstr "파일 선택 유지(_K)"
 
-#: ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1944
 msgid "_Discard Project"
 msgstr "프로젝트 버리기(_D)"
 
-#: ../src/brasero-project.c:2182
+#: ../src/brasero-project.c:2184
 msgid "Select Files"
 msgstr "파일 선택"
 
-#: ../src/brasero-project.c:2295
+#: ../src/brasero-project.c:2297
 msgid "Do you really want to empty the current project?"
 msgstr "정말로 현재 프로젝트를 비우시겠습니까?"
 
-#: ../src/brasero-project.c:2300
+#: ../src/brasero-project.c:2302
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -3628,78 +4202,78 @@ msgstr ""
 "프로젝트를 비우면 프로젝트에 추가한 파일을 제거합니다. 작업한 내용을 모두 잃"
 "어버립니다. 파일을 직접 삭제하지는 않고, 목록만 사라집니다."
 
-#: ../src/brasero-project.c:2357
+#: ../src/brasero-project.c:2364
 msgid "_Save"
 msgstr "저장(_S)"
 
-#: ../src/brasero-project.c:2368
+#: ../src/brasero-project.c:2375
 msgid "_Add"
 msgstr "추가(_A)"
 
-#: ../src/brasero-project.c:2373 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2380 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "제거(_R)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2437
+#: ../src/brasero-project.c:2444
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "브라세로 — %s (데이터 디스크)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2440
+#: ../src/brasero-project.c:2447
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "브라세로 — %s (오디오 디스크)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2443
+#: ../src/brasero-project.c:2450
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "브라세로 — %s (비디오 디스크)"
 
-#: ../src/brasero-project.c:2613 ../src/brasero-project.c:2916
+#: ../src/brasero-project.c:2620 ../src/brasero-project.c:2923
 msgid "Your project has not been saved."
 msgstr "프로젝트를 저장하지 않았습니다."
 
-#: ../src/brasero-project.c:2627
+#: ../src/brasero-project.c:2634
 msgid "Save the changes of current project before closing?"
 msgstr "닫기 전에 현재 프로젝트의 바뀐 사항을 저장하시겠습니까?"
 
-#: ../src/brasero-project.c:2632 ../src/brasero-project.c:2921
+#: ../src/brasero-project.c:2639 ../src/brasero-project.c:2928
 msgid "If you don't save, changes will be permanently lost."
 msgstr "저장하지 않으면 바뀐 사항을 영영 잃어버립니다."
 
-#: ../src/brasero-project.c:2636 ../src/brasero-project.c:2642
-#: ../src/brasero-project.c:2924
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2649
+#: ../src/brasero-project.c:2931
 msgid "Cl_ose Without Saving"
 msgstr "저장하지 않고 닫기(_O)"
 
-#: ../src/brasero-project.c:2724
+#: ../src/brasero-project.c:2731
 msgid "Save Current Project"
 msgstr "현재 프로젝트 저장"
 
-#: ../src/brasero-project.c:2742
+#: ../src/brasero-project.c:2749
 msgid "Save project as a Brasero audio project"
 msgstr "프로젝트를 브라세로 오디오 프로젝트로 저장"
 
-#: ../src/brasero-project.c:2743
+#: ../src/brasero-project.c:2750
 msgid "Save project as a plain text list"
 msgstr "프로젝트를 일반 텍스트 목록으로 저장"
 
-#: ../src/brasero-project.c:2747
+#: ../src/brasero-project.c:2754
 msgid "Save project as a PLS playlist"
 msgstr "프로젝트를 PLS 재생 목록으로 저장"
 
-#: ../src/brasero-project.c:2748
+#: ../src/brasero-project.c:2755
 msgid "Save project as an M3U playlist"
 msgstr "프로젝트를 M3U 재생 목록으로 저장"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2756
 msgid "Save project as an XSPF playlist"
 msgstr "프로젝트를 XSPF 재생 목록으로 저장"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2757
 msgid "Save project as an iriver playlist"
 msgstr "프로젝트를 아이리버 재생 목록으로 저장"
 
@@ -3812,13 +4386,13 @@ msgstr[0] "파일 %d개 추가할 수 있음 (%s)"
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
-msgstr[0] "추가할 수 있는 파일 없음 (파일 %i개 선택)"
+msgstr[0] "추가할 수 있는 파일 없음(파일 %i개 선택)"
 
 #: ../src/brasero-project-manager.c:293
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
-msgstr[0] "지원하는 파일 없음 (파일 %i개 선택)"
+msgstr[0] "지원하는 파일 없음(파일 %i개 선택)"
 
 #: ../src/brasero-project-manager.c:299 ../src/brasero-project-manager.c:453
 msgid "No file selected"
@@ -3863,6 +4437,37 @@ msgstr "파일 시스템 찾아보기"
 #: ../src/brasero-project-manager.c:907
 msgid "Display playlists and their contents"
 msgstr "재생 목록과 그 내용을 표시합니다"
+
+#. Translators: this is a picture not
+#. * a disc image
+#: ../src/brasero-project-name.c:83
+msgctxt "picture"
+msgid "Please select another image."
+msgstr "다른 그림을 선택하십시오."
+
+#. NOTE to translators: the final string must not be over
+#. * 32 _bytes_.
+#. * The %s is the date
+#: ../src/brasero-project-name.c:269
+#, c-format
+msgid "Video disc (%s)"
+msgstr "비디오 디스크 (%s)"
+
+#: ../src/brasero-project-parse.c:62
+msgid "Error while loading the project."
+msgstr "프로젝트를 읽어들이는 중 오류가 발생했습니다."
+
+#: ../src/brasero-project-parse.c:454
+msgid "The project could not be opened"
+msgstr "프로젝트를 열 수 없습니다"
+
+#: ../src/brasero-project-parse.c:463
+msgid "The file is empty"
+msgstr "빈 파일입니다"
+
+#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+msgid "It does not seem to be a valid Brasero project"
+msgstr "올바른 브라세로 프로젝트가 아닌 것으로 보입니다"
 
 #: ../src/brasero-project-type-chooser.c:74
 msgid "Audi_o project"
@@ -3920,498 +4525,101 @@ msgstr "새 프로젝트 만들기:"
 msgid "Recent projects:"
 msgstr "최근 프로젝트:"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:134
-#: ../libbrasero-burn/brasero-sum-dialog.c:215
-msgid "Check _Again"
-msgstr "다시 검사(_A)"
+#: ../src/brasero-rename.c:322
+msgid "Insert text"
+msgstr "텍스트 넣기"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:165
-#: ../libbrasero-burn/brasero-sum-dialog.c:514
-msgid "The file integrity check could not be performed."
-msgstr "파일이 올바른지 검사할 수 없습니다."
+#: ../src/brasero-rename.c:323
+msgid "Delete text"
+msgstr "텍스트 삭제"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:178
-msgid "The file integrity check was performed successfully."
-msgstr "파일이 올바르다고 확인되었습니다."
+#: ../src/brasero-rename.c:324
+msgid "Substitute text"
+msgstr "텍스트 대체"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:179
-msgid "There seem to be no corrupted files on the disc"
-msgstr "디스크에 손상된 파일이 없어 보입니다"
+#: ../src/brasero-rename.c:325
+msgid "Number files according to a pattern"
+msgstr "패턴에 따라 파일에 번호 붙이기"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:207
-msgid "The following files appear to be corrupted:"
-msgstr "다음 파일이 손상된 파일로 보입니다:"
+#: ../src/brasero-rename.c:326
+msgid "Insert number sequence at beginning"
+msgstr "시작할 때 일련번호 넣기"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:250
-msgid "Corrupted Files"
-msgstr "손상된 파일"
+#. Translators: This is a verb. This is completed later
+#: ../src/brasero-rename.c:341
+msgid "Insert"
+msgstr "넣기:"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:342
-msgid "Downloading MD5 file"
-msgstr "MD5 파일을 다운로드하는 중"
+#. Translators: This finishes previous action "Insert". It goes like
+#. * this: "Insert" [Entry] "at the beginning".
+#: ../src/brasero-rename.c:355
+msgid "at the beginning"
+msgstr "(처음에)"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:397
+#. Translators: This finishes previous action "Insert". It goes like
+#. * this: "Insert" [Entry] "at the end".
+#: ../src/brasero-rename.c:359
+msgid "at the end"
+msgstr "(마지막에)"
+
+#: ../src/brasero-rename.c:370
+msgid "Delete every occurrence of"
+msgstr "다음 문구를 삭제:"
+
+#. Reminder: if this string happens to be used somewhere else in brasero
+#. * we'll need a context with C_() macro
+#. Translators: this goes with above verb to say "_Replace" [Entry]
+#. * "with" [Entry].
+#: ../src/brasero-rename.c:400
+msgid "with"
+msgstr "대치어:"
+
+#: ../src/brasero-rename.c:414
+msgid "Rename to"
+msgstr "다음으로 이름 바꾸기:"
+
+#: ../src/brasero-rename.c:423
+msgid "{number}"
+msgstr "{숫자}"
+
+#. *
+#. * Translators: this is the position being played in a stream. The
+#. * first %s is the position and the second %s is the whole length of
+#. * the stream. I chose to make that translatable in case some languages
+#. * don't allow the "/"
+#: ../src/brasero-song-control.c:99
 #, c-format
-msgid "\"%s\" is not a valid URI"
-msgstr "\"%s\" URI가 올바르지 않습니다"
+msgid "%s / %s"
+msgstr "%s / %s"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:515
-msgid "No MD5 file was given."
-msgstr "MD5 파일이 없습니다."
+#: ../src/brasero-song-control.c:528
+msgid "No file"
+msgstr "파일 없음"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:692
-msgid "Use an _MD5 file to check the disc"
-msgstr "MD5 파일을 사용해 디스크 검사(_M)"
+#: ../src/brasero-song-control.c:563
+msgid "Start and stop playing"
+msgstr "재생을 시작하고 중지합니다"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:693
-msgid "Use an external .md5 file that stores the checksum of a disc"
-msgstr "디스크의 체크섬이 들어 있는 외부의 .md5 파일을 사용합니다"
+#: ../src/brasero-song-properties.c:177
+msgid "Title:"
+msgstr "제목:"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:706
-msgid "Open an MD5 file"
-msgstr "MD5 파일 열기"
+#: ../src/brasero-song-properties.c:235
+msgid "Song start:"
+msgstr "노래 시작:"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:721
-msgid "_Check"
-msgstr "검사(_C)"
+#: ../src/brasero-song-properties.c:241
+msgid "Song end:"
+msgstr "노래 끝:"
 
-#: ../libbrasero-burn/brasero-sum-dialog.c:752
-msgid "Disc Checking"
-msgstr "디스크 검사"
+#: ../src/brasero-song-properties.c:258
+msgid "Track length:"
+msgstr "트랙 길이:"
 
-#: ../libbrasero-burn/brasero-status-dialog.c:147
+#: ../src/brasero-song-properties.c:372
 #, c-format
-msgid "Estimated size: %s"
-msgstr "예상 크기: %s"
-
-#: ../libbrasero-burn/brasero-status-dialog.c:566
-msgid "Size Estimation"
-msgstr "크기 예상"
-
-#: ../libbrasero-burn/brasero-status-dialog.c:568
-msgid "Please wait until the estimation of the size is completed."
-msgstr "크기를 측정할 때까지 잠시 기다리십시오."
-
-#: ../libbrasero-burn/brasero-status-dialog.c:569
-msgid "All files need to be analysed to complete this operation."
-msgstr "이 작업을 끝마치려면 모든 파일을 분석해야 합니다."
-
-#: ../libbrasero-burn/brasero-tool-dialog.c:78
-#: ../libbrasero-burn/brasero-tool-dialog.c:92
-#: ../libbrasero-burn/brasero-tool-dialog.c:102
-msgid "The operation cannot be performed."
-msgstr "작업을 수행할 수 없습니다."
-
-#: ../libbrasero-burn/brasero-tool-dialog.c:79
-#: ../plugins/cdrkit/burn-wodim.c:151 ../plugins/cdrkit/burn-wodim.c:421
-#: ../plugins/cdrtools/burn-cdrecord.c:151
-#: ../plugins/cdrtools/burn-cdrecord.c:407
-#: ../plugins/growisofs/burn-dvd-rw-format.c:77
-#: ../plugins/libburnia/burn-libburn.c:609
-#, c-format
-msgid "The disc is not supported"
-msgstr "디스크를 지원하지 않습니다"
-
-#: ../libbrasero-burn/brasero-tool-dialog.c:103
-msgid "The drive is empty"
-msgstr "드라이브가 비어 있습니다"
-
-#: ../libbrasero-burn/brasero-tool-dialog.c:539
-#: ../src/brasero-eject-dialog.c:164
-msgid "Select a disc"
-msgstr "디스크 선택"
-
-#: ../libbrasero-burn/brasero-tool-dialog.c:572
-msgid "Progress"
-msgstr "진행"
-
-#: ../src/main.c:85
-msgid "[URI] [URI] …"
-msgstr "[URI] [URI] …"
-
-#: ../src/main.c:97
-#, c-format
-msgid "Please type \"%s --help\" to see all available options\n"
-msgstr "옵션을 모두 보려면 \"%s --help\" 명령어를 실행하십시오\n"
-
-#: ../plugins/audio2cue/burn-audio2cue.c:191
-#: ../plugins/checksum/burn-checksum-image.c:124
-#, c-format
-msgid "Data could not be read (%s)"
-msgstr "데이터를 읽을 수 없습니다 (%s)"
-
-#: ../plugins/audio2cue/burn-audio2cue.c:241
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
-#: ../plugins/libburnia/burn-libisofs.c:160
-#: ../plugins/libburnia/burn-libisofs.c:274
-#: ../plugins/checksum/burn-checksum-files.c:196
-#: ../plugins/checksum/burn-checksum-files.c:219
-#: ../plugins/checksum/burn-checksum-image.c:174
-#, c-format
-msgid "Data could not be written (%s)"
-msgstr "데이터를 쓸 수 없습니다 (%s)"
-
-#: ../plugins/audio2cue/burn-audio2cue.c:723
-msgid "Generates .cue files from audio"
-msgstr "오디오에서 .cue 파일을 만들어 냅니다"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:55
-msgid "cdrdao burning suite"
-msgstr "cdrdao 굽기 기능 모음"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:103
-msgid "Copying audio track"
-msgstr "오디오 트랙을 복사하는 중"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:109
-msgid "Copying data track"
-msgstr "데이터 트랙을 복사하는 중"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:145
-#, c-format
-msgid "Analysing track %02i"
-msgstr "트랙 %02i번을 분석하는 중"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:249 ../plugins/cdrkit/burn-readom.c:116
-#: ../plugins/cdrkit/burn-readom.c:122 ../plugins/cdrkit/burn-wodim.c:106
-#: ../plugins/cdrtools/burn-cdrecord.c:106
-#: ../plugins/cdrtools/burn-readcd.c:117 ../plugins/cdrtools/burn-readcd.c:123
-#, c-format
-msgid "You do not have the required permissions to use this drive"
-msgstr "이 드라이브를 사용할 권한이 없습니다"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:480
-msgid "Converting toc file"
-msgstr "toc 파일 변환"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:697
-msgid "Copies, burns and blanks CDs"
-msgstr "CD를 복사하고, 굽고, 지웁니다"
-
-#: ../plugins/cdrdao/burn-cdrdao.c:762
-msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
-msgstr "\"--driver generic-mmc-raw\" 플래그 사용 (cdrdao 설명서 참고)"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:119
-#: ../plugins/cdrtools/burn-mkisofs.c:119
-#: ../plugins/growisofs/burn-growisofs.c:204
-#: ../plugins/libburnia/burn-libisofs.c:518
-#, c-format
-msgid "Last session import failed"
-msgstr "마지막 세션 가져오기가 실패했습니다"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:125
-#: ../plugins/cdrkit/burn-genisoimage.c:132
-#: ../plugins/cdrtools/burn-mkisofs.c:125
-#: ../plugins/cdrtools/burn-mkisofs.c:132
-#: ../plugins/growisofs/burn-growisofs.c:210
-#: ../plugins/growisofs/burn-growisofs.c:217
-msgid "An image could not be created"
-msgstr "이미지를 만들 수 없습니다"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:138
-msgid "This version of genisoimage is not supported"
-msgstr "이 genisoimage 버전은 지원하지 않습니다"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:180
-#: ../plugins/cdrtools/burn-mkisofs.c:180
-#: ../plugins/growisofs/burn-growisofs.c:223
-msgid "Some files have invalid filenames"
-msgstr "몇몇 파일 이름이 올바르지 않습니다"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:186
-#: ../plugins/cdrtools/burn-mkisofs.c:186
-#: ../plugins/growisofs/burn-growisofs.c:229
-msgid "Unknown character encoding"
-msgstr "문자 인코딩을 알 수 없습니다"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:192
-#: ../plugins/cdrtools/burn-mkisofs.c:192
-msgid "There is no space left on the device"
-msgstr "장치에 남은 공간이 없습니다"
-
-#: ../plugins/cdrkit/burn-genisoimage.c:527
-#: ../plugins/cdrtools/burn-mkisofs.c:531
-#: ../plugins/libburnia/burn-libisofs.c:1078
-msgid "Creates disc images from a file selection"
-msgstr "선택한 파일에서 디스크 이미지를 만듭니다"
-
-#: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
-#, c-format
-msgid ""
-"The location you chose to store the image on does not have enough free space "
-"for the disc image"
-msgstr "지정한 위치에 이미지를 저장할 만큼 빈 공간이 충분하지 않습니다"
-
-#: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
-msgid "Copies any disc to a disc image"
-msgstr "디스크를 이미지로 복사합니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
-#: ../plugins/libburnia/burn-libburn.c:855
-#: ../plugins/libburnia/burn-libburn.c:886
-#, c-format
-msgid "An error occurred while writing to disc"
-msgstr "디스크에 쓰는 중 오류가 발생했습니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:128 ../plugins/cdrtools/burn-cdrecord.c:128
-#, c-format
-msgid ""
-"The system is too slow to write the disc at this speed. Try a lower speed"
-msgstr ""
-"이 속도로 디스크에 쓰기에는 시스템 속도가 너무 느립니다. 낮은 속도로 시도해 "
-"보십시오."
-
-#. Translators: %s is the number of the track
-#: ../plugins/cdrkit/burn-wodim.c:255 ../plugins/cdrtools/burn-cdrecord.c:252
-#, c-format
-msgid "Writing track %s"
-msgstr "트랙 %s 기록하는 중입니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
-msgid "Formatting disc"
-msgstr "디스크를 포맷하는 중입니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
-msgid "Writing cue sheet"
-msgstr "CUE 시트를 작성하는 중입니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:394 ../plugins/cdrtools/burn-cdrecord.c:380
-#, c-format
-msgid "The disc needs to be reloaded before being recorded"
-msgstr "디스크에 기록하려면 다시 읽어들여야 합니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:1270
-msgid "Burns, blanks and formats CDs and DVDs"
-msgstr "CD와 DVD를 굽고, 지우고, 포맷합니다"
-
-#: ../plugins/cdrkit/burn-wodim.c:1414
-msgid "Enable the \"-immed\" flag (see wodim manual)"
-msgstr "\"-immed\" 플래그를 사용합니다 (wodim 설명서 참고)"
-
-#: ../plugins/cdrkit/burn-wodim.c:1417
-msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
-msgstr "최소한 채워 둘 드라이브 버퍼 비율 (% 단위) (wodim 설명서 참고):"
-
-#: ../plugins/cdrtools/burn-cdrecord.c:1204
-#: ../plugins/libburnia/burn-libburn.c:974
-msgid "Burns, blanks and formats CDs, DVDs and BDs"
-msgstr "CD, DVD, BD를 굽고, 지우고, 포맷합니다"
-
-#: ../plugins/cdrtools/burn-cdrecord.c:1417
-msgid "Enable the \"-immed\" flag (see cdrecord manual)"
-msgstr "\"-immed\" 플래그를 사용합니다 (cdrecord 설명서 참고)"
-
-#: ../plugins/cdrtools/burn-cdrecord.c:1420
-#, c-format
-msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
-msgstr "최소한 채워 둘 드라이브 버퍼 비율 (%% 단위) (cdrecord 설명서 참고):"
-
-#: ../plugins/cdrtools/burn-mkisofs.c:138
-msgid "This version of mkisofs is not supported"
-msgstr "이 mkisofs 버전은 지원하지 않습니다"
-
-#. Translators: %s is the path to a drive. "regionset %s"
-#. * should be left as is just like "DVDCSS_METHOD=title
-#. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
-#, c-format
-msgid ""
-"Error while retrieving a key used for encryption. You may solve such a "
-"problem with one of the following methods: in a terminal either set the "
-"proper DVD region code for your CD/DVD player with the \"regionset %s\" "
-"command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
-"command"
-msgstr ""
-"암호화에 사용한 키를 가져오는데 오류가 발생했습니다. 다음 중 한 가지 방법으"
-"로 이 문제를 해결할 수 있습니다: 터미널에서 \"regionset %s\" 명령으로 CD/DVD "
-"플레이어의 DVD 지역 코드를 올바르게 설정하거나, 아니면 \"DVDCSS_METHOD=title "
-"brasero --no-existing-session\" 명령을 실행합니다."
-
-#: ../plugins/dvdcss/burn-dvdcss.c:339
-msgid "Retrieving DVD keys"
-msgstr "DVD 키를 가져오는 중입니다"
-
-#: ../plugins/dvdcss/burn-dvdcss.c:374
-#, c-format
-msgid "Video DVD could not be opened"
-msgstr "비디오 DVD를 열 수 없습니다"
-
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
-#, c-format
-msgid "Error while reading video DVD (%s)"
-msgstr "비디오 DVD를 읽는 중 오류가 발생했습니다 (%s)"
-
-#: ../plugins/dvdcss/burn-dvdcss.c:402
-msgid "Copying video DVD"
-msgstr "비디오 DVD를 복사하는 중"
-
-#: ../plugins/dvdcss/burn-dvdcss.c:695
-msgid "Copies CSS encrypted video DVDs to a disc image"
-msgstr "CSS 암호화된 비디오 DVD를 디스크 이미지로 복사합니다"
-
-#: ../plugins/growisofs/burn-dvd-rw-format.c:190
-msgid "Blanks and formats rewritable DVDs and BDs"
-msgstr "다시 쓰기 가능한 DVD와 BD를 지우고 포맷합니다"
-
-#: ../plugins/growisofs/burn-growisofs.c:753
-msgid "Burns and blanks DVDs and BDs"
-msgstr "DVD와 BD를 굽고 지웁니다"
-
-#: ../plugins/growisofs/burn-growisofs.c:924
-msgid "Allow DAO use"
-msgstr "DAO 사용을 허용"
-
-#: ../plugins/libburnia/burn-libburn.c:242
-#: ../plugins/libburnia/burn-libburn.c:250
-#, c-format
-msgid "libburn track could not be created"
-msgstr "libburn 트랙을 만들 수 없습니다"
-
-#. Translators: first %s is the filename, second %s is the error
-#. * generated from errno
-#. Translators: first %s is the filename, second %s
-#. * is the error generated from errno
-#: ../plugins/libburnia/burn-libburn.c:678
-#: ../plugins/checksum/burn-checksum-image.c:313
-#, c-format
-msgid "\"%s\" could not be opened (%s)"
-msgstr "\"%s\" 파일을 열 수 없습니다 (%s)"
-
-#: ../plugins/libburnia/burn-libburn-common.c:158
-#, c-format
-msgid "libburn library could not be initialized"
-msgstr "libburn 라이브러리를 초기화할 수 없습니다"
-
-#: ../plugins/libburnia/burn-libburn-common.c:173
-#, c-format
-msgid "The drive address could not be retrieved"
-msgstr "드라이브 주소를 알아낼 수 없습니다"
-
-#: ../plugins/libburnia/burn-libburn-common.c:417
-#, c-format
-msgid "Writing track %02i"
-msgstr "트랙 %02i번을 기록하는 중입니다"
-
-#: ../plugins/libburnia/burn-libisofs.c:222
-#: ../plugins/libburnia/burn-libisofs.c:291
-#: ../plugins/libburnia/burn-libisofs.c:571
-#, c-format
-msgid "Volume could not be created"
-msgstr "볼륨을 만들 수 없습니다"
-
-#: ../plugins/libburnia/burn-libisofs.c:345
-#: ../plugins/libburnia/burn-libisofs.c:893
-#, c-format
-msgid "libisofs could not be initialized."
-msgstr "libisofs를 초기화할 수 없습니다."
-
-#: ../plugins/libburnia/burn-libisofs.c:485
-#, c-format
-msgid "Read options could not be created"
-msgstr "읽기 옵션을 만들 수 없습니다"
-
-#. Translators: %s is the path
-#: ../plugins/libburnia/burn-libisofs.c:684
-#, c-format
-msgid "No parent could be found in the tree for the path \"%s\""
-msgstr "\"%s\" 경로에 대해 상위 폴더를 찾지 못했습니다."
-
-#: ../plugins/libburnia/burn-libisofs.c:744
-#: ../plugins/libburnia/burn-libisofs.c:811
-#, c-format
-msgid "libisofs reported an error while creating directory \"%s\""
-msgstr "\"%s\" 디렉터리를 만드는 데 libisofs에서 오류를 보고했습니다"
-
-#: ../plugins/libburnia/burn-libisofs.c:759
-#, c-format
-msgid ""
-"libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr ""
-"\"%s\" 디렉터리에 내용물을 추가하는 데 libisofs에서 오류를 보고했습니다 (%x)"
-
-#: ../plugins/libburnia/burn-libisofs.c:782
-#: ../plugins/libburnia/burn-libisofs.c:798
-#, c-format
-msgid "libisofs reported an error while adding file at path \"%s\""
-msgstr "\"%s\" 경로에 파일을 추가하는 데 libisofs에서 오류를 보고했습니다"
-
-#: ../plugins/local-track/burn-local-image.c:260
-msgid "Copying checksum file"
-msgstr "체크섬 파일을 복사하는 중"
-
-#. Translators: this is the name of the plugin
-#. * which will be translated only when it needs
-#. * displaying.
-#: ../plugins/local-track/burn-local-image.c:909
-msgid "File Downloader"
-msgstr "파일 다운로드"
-
-#: ../plugins/local-track/burn-local-image.c:910
-msgid "Allows files not stored locally to be burned"
-msgstr "로컬에 저장되지 않은 파일을 굽도록 만듭니다"
-
-#. Translators: This message is sent
-#. * when brasero could not link together
-#. * two gstreamer plugins so that one
-#. * sends its data to the second for further
-#. * processing. This data transmission is
-#. * done through a pad. Maybe this is a bit
-#. * too technical and should be removed?
-#: ../plugins/transcode/burn-normalize.c:199
-#: ../plugins/transcode/burn-normalize.c:260
-#: ../plugins/transcode/burn-transcode.c:318
-#: ../plugins/transcode/burn-transcode.c:356
-#: ../plugins/transcode/burn-transcode.c:553
-#: ../plugins/transcode/burn-transcode.c:663
-#: ../plugins/transcode/burn-transcode.c:694
-#: ../plugins/transcode/burn-transcode.c:715
-#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:395
-#: ../plugins/transcode/burn-vob.c:555 ../plugins/transcode/burn-vob.c:688
-#: ../plugins/transcode/burn-vob.c:1052 ../plugins/transcode/burn-vob.c:1128
-#: ../plugins/transcode/burn-vob.c:1179
-#, c-format
-msgid "Impossible to link plugin pads"
-msgstr "플러그인 패드를 연결하는 데 실패했습니다"
-
-#: ../plugins/transcode/burn-normalize.c:554
-msgid "Normalizing tracks"
-msgstr "트랙 정규화"
-
-#: ../plugins/transcode/burn-normalize.c:644
-msgid "Normalization"
-msgstr "정규화"
-
-#: ../plugins/transcode/burn-normalize.c:645
-msgid "Sets consistent sound levels between tracks"
-msgstr "오디오 트랙의 음 높이를 일정하게 맞춥니다"
-
-#. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:1086
-#: ../plugins/transcode/burn-transcode.c:1274
-#, c-format
-msgid "Error while padding file (%s)"
-msgstr "파일을 채우는 데 오류가 발생했습니다 (%s)"
-
-#: ../plugins/transcode/burn-transcode.c:1350
-#, c-format
-msgid "Error while getting duration"
-msgstr "재생 시간을 알아내는 데 오류가 발생했습니다"
-
-#: ../plugins/transcode/burn-transcode.c:1499
-#, c-format
-msgid "Analysing \"%s\""
-msgstr "\"%s\" 분석하는 중입니다"
-
-#: ../plugins/transcode/burn-transcode.c:1536
-#, c-format
-msgid "Transcoding \"%s\""
-msgstr "\"%s\" 변환하는 중"
-
-#: ../plugins/transcode/burn-transcode.c:1773
-msgid "Converts any song file into a format suitable for audio CDs"
-msgstr "음악 파일을 오디오 CD에 적합한 형식으로 변환합니다"
+msgid "Song information for track %02i"
+msgstr "트랙 %02i번의 노래 정보"
 
 #: ../src/brasero-split-dialog.c:166
 msgid "Do you really want to split the track?"
@@ -4574,257 +4782,7 @@ msgstr "초"
 
 #: ../src/brasero-time-button.c:317
 msgid "Frames (1 second = 75 frames)"
-msgstr "프레임 수 (1초 = 75프레임)"
-
-#: ../plugins/cdrkit/burn-cdrkit.h:38
-msgid "cdrkit burning suite"
-msgstr "cdrkit 굽기 기능 모음"
-
-#: ../plugins/libburnia/burn-libburnia.h:38
-msgid "libburnia burning suite"
-msgstr "libburnia 굽기 기능 모음"
-
-#: ../plugins/growisofs/burn-growisofs-common.h:38
-msgid "growisofs burning suite"
-msgstr "growisofs 굽기 기능 모음"
-
-#: ../plugins/cdrtools/burn-cdrtools.h:38
-msgid "cdrtools burning suite"
-msgstr "cdrtools 굽기 기능 모음"
-
-#: ../src/brasero-eject-dialog.c:95
-#, c-format
-msgid "The disc in \"%s\" cannot be ejected"
-msgstr "\"%s\" 안의 디스크를 뺄 수 없습니다"
-
-#: ../src/brasero-eject-dialog.c:190
-msgid "_Eject"
-msgstr "빼기(_E)"
-
-#: ../src/brasero-eject-dialog.c:205
-msgid "Eject Disc"
-msgstr "디스크를 뺍니다"
-
-#: ../src/brasero-file-filtered.c:75 ../src/brasero-file-filtered.c:81
-msgid "No file filtered"
-msgstr "필터링한 파일이 없습니다"
-
-#: ../src/brasero-file-filtered.c:77
-#, c-format
-msgid "Hide the _filtered file list (%d file)"
-msgid_plural "Hide the _filtered file list (%d files)"
-msgstr[0] "필터링한 파일 목록 숨기기 (%d개 파일)(_F)"
-
-#: ../src/brasero-file-filtered.c:83
-#, c-format
-msgid "Show the _filtered file list (%d file)"
-msgid_plural "Show the _filtered file list (%d files)"
-msgstr[0] "필터링한 파일 목록 보이기 (%d개 파일)(_F)"
-
-#: ../src/brasero-file-filtered.c:135
-msgid "Filter Options"
-msgstr "필터 옵션"
-
-#: ../src/brasero-file-filtered.c:218
-msgid ""
-"Select the files you want to restore and click on the \"Restore\" button"
-msgstr "복구하려는 파일을 선택하고 \"복구\" 단추를 누르십시오"
-
-#: ../src/brasero-file-filtered.c:265
-msgid "Type"
-msgstr "종류"
-
-#: ../src/brasero-file-filtered.c:292
-msgid "_Restore"
-msgstr "복구(_R)"
-
-#: ../src/brasero-file-filtered.c:301
-msgid "Restore the selected files"
-msgstr "선택한 파일을 복구합니다"
-
-#: ../src/brasero-file-filtered.c:303
-msgid "_Options…"
-msgstr "옵션(_O)…"
-
-#: ../src/brasero-file-filtered.c:311
-msgid "Set the options for file filtering"
-msgstr "파일 필터링 옵션을 설정합니다"
-
-#. filter hidden files
-#: ../src/brasero-filter-option.c:63
-msgid "Filter _hidden files"
-msgstr "숨김 파일 필터링(_H)"
-
-#. replace symlink
-#: ../src/brasero-filter-option.c:70
-msgid "Re_place symbolic links"
-msgstr "심볼릭 링크 바꾸기(_P)"
-
-#. filter broken symlink button
-#: ../src/brasero-filter-option.c:77
-msgid "Filter _broken symbolic links"
-msgstr "깨진 심볼릭 링크 필터링(_B)"
-
-#: ../src/brasero-filter-option.c:83
-msgid "Filtering options"
-msgstr "필터링 옵션"
-
-#: ../plugins/checksum/burn-checksum-files.c:131
-#: ../plugins/checksum/burn-checksum-files.c:589
-#, c-format
-msgid "File \"%s\" could not be opened (%s)"
-msgstr "\"%s\" 파일을 열 수 없습니다 (%s)"
-
-#: ../plugins/checksum/burn-checksum-files.c:617
-msgid "Creating checksum for image files"
-msgstr "이미지 파일의 체크섬을 만드는 중입니다"
-
-#: ../plugins/checksum/burn-checksum-files.c:859
-#, c-format
-msgid "No checksum file could be found on the disc"
-msgstr "디스크에 체크섬 파일이 없습니다"
-
-#: ../plugins/checksum/burn-checksum-files.c:893
-msgid "Checking file integrity"
-msgstr "파일이 올바른지 검사하는 중입니다"
-
-#: ../plugins/checksum/burn-checksum-files.c:987
-#: ../plugins/checksum/burn-checksum-files.c:1012
-#, c-format
-msgid "File \"%s\" could not be opened"
-msgstr "\"%s\" 파일을 열 수 없습니다"
-
-#: ../plugins/checksum/burn-checksum-files.c:1085
-#: ../plugins/checksum/burn-checksum-files.c:1206
-#: ../plugins/checksum/burn-checksum-image.c:550
-#, c-format
-msgid "Some files may be corrupted on the disc"
-msgstr "디스크의 파일이 손상된 것 같습니다"
-
-#. Translators: this is the name of the plugin
-#. * which will be translated only when it needs
-#. * displaying.
-#: ../plugins/checksum/burn-checksum-files.c:1465
-msgid "File Checksum"
-msgstr "파일 체크섬"
-
-#: ../plugins/checksum/burn-checksum-files.c:1466
-msgid "Checks file integrities on a disc"
-msgstr "디스크의 파일이 올바른지 확인합니다"
-
-#: ../plugins/checksum/burn-checksum-files.c:1504
-#: ../plugins/checksum/burn-checksum-image.c:856
-msgid "Hashing algorithm to be used:"
-msgstr "사용할 해시 알고리즘:"
-
-#: ../plugins/checksum/burn-checksum-files.c:1507
-#: ../plugins/checksum/burn-checksum-image.c:859
-msgid "MD5"
-msgstr "MD5"
-
-#: ../plugins/checksum/burn-checksum-files.c:1509
-#: ../plugins/checksum/burn-checksum-image.c:861
-msgid "SHA1"
-msgstr "SHA1"
-
-#: ../plugins/checksum/burn-checksum-files.c:1511
-#: ../plugins/checksum/burn-checksum-image.c:863
-msgid "SHA256"
-msgstr "SHA256"
-
-#: ../plugins/checksum/burn-checksum-image.c:359
-#: ../plugins/checksum/burn-checksum-image.c:456
-msgid "Creating image checksum"
-msgstr "이미지 체크섬을 만드는 중입니다"
-
-#. Translators: this is the name of the plugin
-#. * which will be translated only when it needs
-#. * displaying.
-#: ../plugins/checksum/burn-checksum-image.c:831
-msgid "Image Checksum"
-msgstr "이미지 체크섬"
-
-#: ../plugins/checksum/burn-checksum-image.c:832
-msgid "Checks disc integrity after it is burnt"
-msgstr "디스크를 구운 다음 데이터가 올바른지 확인합니다"
-
-#: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
-#: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
-#: ../src/brasero-multi-song-props.c:139 ../src/brasero-multi-song-props.c:160
-#: ../src/brasero-multi-song-props.c:173 ../src/brasero-multi-song-props.c:249
-#: ../src/brasero-multi-song-props.c:270 ../src/brasero-multi-song-props.c:291
-#: ../src/brasero-rename.c:90 ../src/brasero-rename.c:319
-msgid "<Keep current values>"
-msgstr "<현재 값 유지>"
-
-#: ../src/brasero-multi-song-props.c:126 ../src/brasero-multi-song-props.c:143
-msgid "Remove silences"
-msgstr "묵음 제거"
-
-#: ../src/brasero-multi-song-props.c:213
-msgid "Song titles"
-msgstr "노래 제목"
-
-#: ../src/brasero-multi-song-props.c:230
-msgid "Additional song information"
-msgstr "노래 추가 정보"
-
-#: ../src/brasero-rename.c:320
-msgid "Insert text"
-msgstr "텍스트 넣기"
-
-#: ../src/brasero-rename.c:321
-msgid "Delete text"
-msgstr "텍스트 삭제"
-
-#: ../src/brasero-rename.c:322
-msgid "Substitute text"
-msgstr "텍스트 대체"
-
-#: ../src/brasero-rename.c:323
-msgid "Number files according to a pattern"
-msgstr "패턴에 따라 파일에 번호 붙이기"
-
-#: ../src/brasero-rename.c:324
-msgid "Insert number sequence at beginning"
-msgstr "시작할 때 일련번호 넣기"
-
-#. Translators: This is a verb. This is completed later
-#: ../src/brasero-rename.c:339
-msgid "Insert"
-msgstr "넣기:"
-
-#. Translators: This finishes previous action "Insert". It goes like
-#. * this: "Insert" [Entry] "at the beginning".
-#: ../src/brasero-rename.c:353
-msgid "at the beginning"
-msgstr "(처음에)"
-
-#. Translators: This finishes previous action "Insert". It goes like
-#. * this: "Insert" [Entry] "at the end".
-#: ../src/brasero-rename.c:357
-msgid "at the end"
-msgstr "(마지막에)"
-
-#: ../src/brasero-rename.c:368
-msgid "Delete every occurrence of"
-msgstr "다음 문구를 삭제:"
-
-#. Reminder: if this string happens to be used somewhere else in brasero
-#. * we'll need a context with C_() macro
-#. Translators: this goes with above verb to say "_Replace" [Entry]
-#. * "with" [Entry].
-#: ../src/brasero-rename.c:398
-msgid "with"
-msgstr "대치어:"
-
-#: ../src/brasero-rename.c:412
-msgid "Rename to"
-msgstr "다음으로 이름 바꾸기:"
-
-#: ../src/brasero-rename.c:421
-msgid "{number}"
-msgstr "{숫자}"
+msgstr "프레임 수(1초 = 75프레임)"
 
 #: ../src/brasero-video-disc.c:101
 msgid "Open the selected video"
@@ -4832,7 +4790,7 @@ msgstr "선택한 비디오를 엽니다"
 
 #: ../src/brasero-video-disc.c:103
 msgid "Edit the video information (start, end, author, etc.)"
-msgstr "비디오 정보를 편집합니다 (시작, 끝, 만든 사람 등)"
+msgstr "비디오 정보를 편집합니다(시작, 끝, 만든 사람 등)"
 
 #: ../src/brasero-video-disc.c:105
 msgid "Remove the selected videos from the project"
@@ -4855,95 +4813,74 @@ msgstr "\"%s\" 파일은 비디오 프로젝트에 쓸 수 있는 형식이 아�
 msgid "Please only add files with video content"
 msgstr "비디오가 들어 있는 파일을 추가하십시오"
 
-#: ../plugins/dvdauthor/burn-dvdauthor.c:313
-#: ../plugins/vcdimager/burn-vcdimager.c:438
-msgid "Creating file layout"
-msgstr "파일 레이아웃을 만드는 중입니다"
+#: ../src/eggdesktopfile.c:165
+#, c-format
+msgid "File is not a valid .desktop file"
+msgstr "올바른 .desktop 파일이 아닙니다"
 
-#: ../plugins/dvdauthor/burn-dvdauthor.c:371
-msgid "Creates disc images suitable for video DVDs"
-msgstr "비디오 DVD에 적합한 디스크 이미지를 만듭니다"
+#: ../src/eggdesktopfile.c:188
+#, c-format
+msgid "Unrecognized desktop file Version '%s'"
+msgstr "desktop 파일 버전을 ('%s') 인식할 수 없습니다"
 
-#: ../plugins/transcode/burn-vob.c:1264
-msgid "Converting video file to MPEG2"
-msgstr "비디오 파일을 MPEG2로 변환하는 중입니다"
+#: ../src/eggdesktopfile.c:968
+#, c-format
+msgid "Starting %s"
+msgstr "%s 시작"
 
-#: ../plugins/transcode/burn-vob.c:1367
-msgid "Converts any video file into a format suitable for video DVDs"
-msgstr "비디오 파일을 비디오 DVD에 적합한 형식으로 변환합니다"
+#: ../src/eggdesktopfile.c:1110
+#, c-format
+msgid "Application does not accept documents on command line"
+msgstr "명령행에서 문서를 지정할 수 없는 프로그램입니다"
 
-#: ../plugins/vcdimager/burn-vcdimager.c:478
-msgid "Creates disc images suitable for SVCDs"
-msgstr "SVCD에 적합한 디스크 이미지를 만듭니다"
+#: ../src/eggdesktopfile.c:1178
+#, c-format
+msgid "Unrecognized launch option: %d"
+msgstr "알 수 없는 실행 옵션: %d"
 
-#~ msgid "Results %i–%i (out of %i)"
-#~ msgstr "결과 %i–%i (전체 %i)"
+#: ../src/eggdesktopfile.c:1383
+#, c-format
+msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+msgstr "문서 URI는 'Type=Link' desktop 항목에 넘길 수 없습니다"
 
-#~ msgid "No results"
-#~ msgstr "결과 없음"
+#: ../src/eggdesktopfile.c:1404
+#, c-format
+msgid "Not a launchable item"
+msgstr "실행할 수 있는 항목이 없습니다"
 
-#~ msgid "Error querying for keywords."
-#~ msgstr "키워드를 질의하는데 오류가 발생했습니다."
+#: ../src/eggsmclient.c:226
+msgid "Disable connection to session manager"
+msgstr "세션 관리자에 연결하지 않습니다"
 
-#~ msgid "Previous Results"
-#~ msgstr "이전 결과"
+#: ../src/eggsmclient.c:229
+msgid "Specify file containing saved configuration"
+msgstr "설정을 저장할 파일을 지정합니다"
 
-#~ msgid "Next Results"
-#~ msgstr "다음 결과"
+#: ../src/eggsmclient.c:229
+msgid "FILE"
+msgstr "<파일>"
 
-#~ msgid "Number of results displayed"
-#~ msgstr "표시할 결과 개수"
+#: ../src/eggsmclient.c:232
+msgid "Specify session management ID"
+msgstr "세션 관리 ID를 지정합니다"
 
-#~ msgid "Cancel ongoing burning"
-#~ msgstr "진행 중인 굽기 취소"
+#: ../src/eggsmclient.c:232
+msgid "ID"
+msgstr "<ID>"
 
-#~ msgid "Show _Dialog"
-#~ msgstr "대화 상자 표시(_D)"
+#: ../src/eggsmclient.c:253
+msgid "Session management options:"
+msgstr "세션 관리 옵션:"
 
-#~ msgid "Show dialog"
-#~ msgstr "대화 상자 표시"
+#: ../src/eggsmclient.c:254
+msgid "Show session management options"
+msgstr "세션 관리 옵션을 표시합니다"
 
-#~ msgid "%s, %d%% done, %s remaining"
-#~ msgstr "%s, %d%% 완료, %s 남음"
+#: ../src/main.c:85
+msgid "[URI] [URI] …"
+msgstr "[URI] [URI] …"
 
-#~ msgid "%s, %d%% done"
-#~ msgstr "%s, %d%% 완료"
-
-#~ msgid "Search:"
-#~ msgstr "검색:"
-
-#~ msgid "In _text documents"
-#~ msgstr "텍스트 문서 중에(_T)"
-
-#~ msgid "In _pictures"
-#~ msgstr "그림 중에(_P)"
-
-#~ msgid "In _music"
-#~ msgstr "음악 중에(_M)"
-
-#~ msgid "In _videos"
-#~ msgstr "비디오 중에(_V)"
-
-#~ msgid "Type your keywords or choose 'All files' from the menu"
-#~ msgstr "찾을 말을 입력하거나 메뉴에서 '모든 파일'을 선택하십시오"
-
-#~ msgid "Select if you want to search among image files only"
-#~ msgstr "그림 파일에서만 찾으려면 선택하십시오"
-
-#~ msgid "Select if you want to search among video files only"
-#~ msgstr "비디오 파일에서만 찾으려면 선택하십시오"
-
-#~ msgid "Select if you want to search among audio files only"
-#~ msgstr "오디오 파일에서만 찾으려면 선택하십시오"
-
-#~ msgid "Select if you want to search among your text documents only"
-#~ msgstr "텍스트 문서에서만 찾으려면 선택하십시오"
-
-#~ msgid "Click to start the search"
-#~ msgstr "검색을 시작하려면 누르십시오"
-
-#~ msgid "Search files using keywords"
-#~ msgstr "파일에서 주어진 말을 찾습니다"
-
-#~ msgid "Copying `%s` locally"
-#~ msgstr "`%s` 파일을 로컬에서 복사하는 중"
+#: ../src/main.c:97
+#, c-format
+msgid "Please type \"%s --help\" to see all available options\n"
+msgstr "옵션을 모두 보려면 \"%s --help\" 명령어를 실행하십시오\n"
