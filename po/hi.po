@@ -5,58 +5,80 @@
 # Rajesh Ranjan <rranjan@redhat.com>, 2009.
 # Rajesh Ranjan <rajesh672@gmail.com>, 2009.
 # chandankumar(ciypro) <chandankumar.093047@gmail.com>, 2012.
+# rajesh <rajeshkajha@yahoo.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.master.hi\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=braser"
 "o&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-15 14:20+0000\n"
-"PO-Revision-Date: 2012-03-18 02:00+0530\n"
-"Last-Translator: chandankumar(ciypro) <chandankumar.093047@gmail.com>\n"
+"POT-Creation-Date: 2012-04-17 03:52+0000\n"
+"PO-Revision-Date: 2012-09-17 15:19+0530\n"
+"Last-Translator: rajesh <rajeshkajha@yahoo.com>\n"
 "Language-Team: Hindi <kde-i18n-doc@kde.org>\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-DamnedLies-Scope: partial\n"
 "X-Generator: Lokalize 1.2\n"
-"Language: hi\n"
+"X-DamnedLies-Scope: partial\n"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "ब्रैसेरो"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "ब्रेसेरो डिस्क बर्नर"
+msgid "Disc Burner and Copier"
+msgstr "डिस्क बर्नर और कापियर"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "सीडी और डीवीडी बनाएँ और नक़ल लें"
 
 #: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "डिस्क बर्नर और कापियर"
+msgid "Brasero Disc Burner"
+msgstr "ब्रेसेरो डिस्क बर्नर"
+
+#: ../data/brasero.desktop.in.in.h:5
+msgid "Open a New Window"
+msgstr "एक नया विंडो खोलें"
+
+#: ../data/brasero.desktop.in.in.h:6
+#| msgid "Burn as _Image"
+msgid "Burn an Image File"
+msgstr "एक छवि फ़ाइल लिखें"
+
+#: ../data/brasero.desktop.in.in.h:7
+#| msgid "Create a new project"
+msgid "Create an Audio Project"
+msgstr "एक ऑडियो प्रोजेक्ट बनाएँ"
+
+#: ../data/brasero.desktop.in.in.h:8
+#| msgid "Create a new project"
+msgid "Create a Video Project"
+msgstr "एक वीडियो प्रोजेक्ट बनाएँ"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "ब्रैसेरो परियोजना फाइल"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
-#| msgid "Burning image to disc"
-msgid "Burning flags to be used"
-msgstr "बर्निंग फ्लैग्स जिसे प्रयोग करना है"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"अतिरिक्त प्लगइन की सूची समाहित करता है जो ब्रैसेरो डिस्क को लिखने के लिए "
-"प्रयोग करेगा. "
-"यदि रिक्त पर सेट है , ब्रैसेरो उसे लोड करेगा."
+msgid "The type of checksum used for images"
+msgstr "छवि के लिए प्रयुक्त checksum का प्रकार"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr "फ़ाइलों के लिए प्रयुक्त checksum का प्रकार"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "निर्देशिका का उपयोग जहाँ अस्थायी फाइल जमा करना है"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+msgid "Favourite burn engine"
+msgstr "पसंदीदा बर्न इंजन"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
@@ -65,108 +87,24 @@ msgstr ""
 "यदि संभव "
 "है."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-#| msgid "Set the directory where to store temporary files"
-msgid "Directory to use for temporary files"
-msgstr "निर्देशिका का उपयोग जहाँ अस्थायी फाइल जमा करना है"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+msgid "White list of additional plugins to use"
+msgstr "प्रयोग के लिए अतिरिक्त प्लगइन की श्वेत सूची"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "फ़ाइल पूर्वावलोकन सक्रिय करें"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"अतिरिक्त प्लगइन की सूची समाहित करता है जो ब्रैसेरो डिस्क को लिखने के लिए "
+"प्रयोग करेगा. "
+"यदि रिक्त पर सेट है , ब्रैसेरो उसे लोड करेगा."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
-#| msgid "Enable \"-immed\" flag with cdrecord"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "\"-immed\" फ्लैग सक्रिय करें cdrecord के साथ "
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
-msgid "Favourite burn engine"
-msgstr "पसंदीदा बर्न इंजन"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "उनके लक्ष्य मुताबिक सांकेतिक कड़ी बदलें"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "क्या ब्रैसेरो टूटी सांकेतिक कड़ी फिल्टर करता है"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
-msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
-msgstr ""
-"क्या ब्रैसेरो को टूटी सांकेतिक कड़ी को फिल्टर करना चाहिए. सही पर सेट करें, "
-"ब्रैसेरो टूटी "
-"सांकेतिक कड़ी को फिल्टर करेगा."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
-msgid "Should brasero filter hidden files"
-msgstr "क्या ब्रैसेरो को छुपी फ़ाइलों को फिल्टर करना चाहिए."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr ""
-"क्या ब्रैसेरो को छुपी फ़ाइलों को फिल्टर करना चाहिए. सही पर सेट करें, ब्रैसेरो "
-"को छुपी फ़ाइलों "
-"को फिल्टर करेगा."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
-msgid ""
-"Should brasero replace symbolic links by their target files in the project. "
-"Set to true, brasero will replace symbolic links."
-msgstr ""
-"क्या ब्रैसेरो को परियोजना में लक्षित फाइलों के द्वारा सांकेतिक कड़ी से बदला "
-"जाना चाहिए. "
-"सही पर सेट करें, ब्रैसेरो सांकेतिक कड़ी को बदलेगा."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-#| msgid "Creating checksum for image files"
-msgid "The type of checksum used for files"
-msgstr "फ़ाइलों के लिए प्रयुक्त checksum का प्रकार"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-#| msgid "Creating checksum for image files"
-msgid "The type of checksum used for images"
-msgstr "छवि के लिए प्रयुक्त checksum का प्रकार"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-#| msgid "Used in conjunction with \"-immed\" flag with cdrecord"
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "\"-immed\" फ्लैग के साथ संयोजन के रूप में प्रयुक्त cdrecord के साथ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-#| msgid "Used in conjunction with \"-immed\" flag with cdrecord"
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "\"-immed\" फ्लैग के साथ संयोजन के रूप में प्रयुक्त cdrecord के साथ"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "क्या फ़ाइल पूर्वालोकन को दिखाना है. इसे प्रयोग के लिए सही पर सेट करें."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-#| msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "क्या \"--driver generic-mmc-raw\" का प्रयोग cdrdao के साथ करना है"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-#| msgid ""
-#| "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-#| "True, brasero will use it; it may be a workaround for some drives/setups."
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"क्या \"--driver generic-mmc-raw\" का प्रयोग cdrdao के साथ करना है. सही पर "
-"सेट करें, ब्रैसेरो इसे प्रयोग करेगा; यह कुछ ड्राइव/सेटअप के लिए समाधान का "
-"कार्य करेगा."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
-#| msgid ""
-#| "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to "
-#| "true) as it's only a workaround for some drives/setups."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -175,17 +113,12 @@ msgstr ""
 "करें (सही "
 "पर सेट करें) क्योंकि यह कुछ ड्राइव/सेटअप के लिए समाधान का कार्य करता है."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
-#| msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
 "क्या \"-use-the-force-luke=dao\" फ्लैग को growisofs के साथ प्रयोग करना है"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
-#| msgid ""
-#| "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-#| "false, brasero won't use it; it may be a workaround for some drives/"
-#| "setups."
+#: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -193,11 +126,80 @@ msgstr ""
 "क्या \"-use-the-force-luke=dao\" फ्लैग को growisofs के साथ प्रयोग करना है. "
 "इसे गलत "
 "पर सेट करें, ब्रैसेरो इसे प्रयोग नहीं करेगा; यह कुछ ड्राइव/सेटअप के साथ "
-"समाधान के रूप में होता है."
+"समाधान के रूप में होता "
+"है."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "प्रयोग के लिए अतिरिक्त प्लगइन की श्वेत सूची"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "\"-immed\" फ्लैग के साथ संयोजन के रूप में प्रयुक्त cdrecord के साथ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "\"-immed\" फ्लैग के साथ संयोजन के रूप में प्रयुक्त cdrecord के साथ"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "क्या \"--driver generic-mmc-raw\" का प्रयोग cdrdao के साथ करना है"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"क्या \"--driver generic-mmc-raw\" का प्रयोग cdrdao के साथ करना है. सही पर सेट "
+"करें, "
+"ब्रैसेरो इसे प्रयोग करेगा; यह कुछ ड्राइव/सेटअप के लिए समाधान का कार्य करेगा."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "फ़ाइल पूर्वावलोकन सक्रिय करें"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "क्या फ़ाइल पूर्वालोकन को दिखाना है. इसे प्रयोग के लिए सही पर सेट करें."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+msgid "Should brasero filter hidden files"
+msgstr "क्या ब्रैसेरो को छुपी फ़ाइलों को फिल्टर करना चाहिए."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr ""
+"क्या ब्रैसेरो को छुपी फ़ाइलों को फिल्टर करना चाहिए. सही पर सेट करें, ब्रैसेरो "
+"को छुपी फ़ाइलों "
+"को फिल्टर करेगा."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "उनके लक्ष्य मुताबिक सांकेतिक कड़ी बदलें"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"क्या ब्रैसेरो को परियोजना में लक्षित फाइलों के द्वारा सांकेतिक कड़ी से बदला "
+"जाना चाहिए. "
+"सही पर सेट करें, ब्रैसेरो सांकेतिक कड़ी को बदलेगा."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "क्या ब्रैसेरो टूटी सांकेतिक कड़ी फिल्टर करता है"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"क्या ब्रैसेरो को टूटी सांकेतिक कड़ी को फिल्टर करना चाहिए. सही पर सेट करें, "
+"ब्रैसेरो टूटी "
+"सांकेतिक कड़ी को फिल्टर करेगा."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+msgid "Burning flags to be used"
+msgstr "बर्निंग फ्लैग्स जिसे प्रयोग करना है"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -231,7 +233,6 @@ msgid "_Fast blanking"
 msgstr "तेज रिक्तिकरण (_F)"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:403
-#| msgid "Activate fast blanking by opposition to a longer thorough blanking"
 msgid "Activate fast blanking, as opposed to a longer, thorough blanking"
 msgstr "तेज रिक्तिकरण सक्रिय करें, लंबे समग्र, रिक्तिकरण के बजाए"
 
@@ -357,8 +358,8 @@ msgid ""
 "Please install the following required applications and libraries manually "
 "and try again:"
 msgstr ""
-"कृपया निम्न आवश्यक अनुप्रयोगों और लायब्रेरीज़ को दस्ती रूप से अधिष्ठापित "
-"और फिर कोशिश करें:"
+"कृपया निम्न आवश्यक अनुप्रयोगों और लायब्रेरीज़ को दस्ती रूप से अधिष्ठापित और "
+"फिर कोशिश करें:"
 
 #: ../libbrasero-burn/brasero-burn.c:2576
 #: ../libbrasero-burn/brasero-caps-burn.c:868
@@ -564,15 +565,12 @@ msgstr "कृपया डिस्क डालें जो आँकड़�
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:570
 #, c-format
-#| msgid ""
-#| "Please replace the disc with a recordable CD with at least %i MiB of free "
-#| "space."
 msgid ""
 "Please replace the disc with a writable CD with at least %i MiB of free "
 "space."
 msgstr ""
-"कृपया डिस्क को किसी लिखने योग्य सीडी के साथ कम से कम %i MiB खाली स्थान के "
-"साथ बदलें."
+"कृपया डिस्क को किसी लिखने योग्य सीडी के साथ कम से कम %i MiB खाली स्थान के साथ "
+"बदलें."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:573
 msgid "Please replace the disc with a writable CD."
@@ -624,7 +622,6 @@ msgstr ""
 "साथ बदलें."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:604
-#| msgid "Please replace the disc with a recordable CD or DVD."
 msgid "Please replace the disc with a writable CD or DVD."
 msgstr "कृपया डिस्क को किसी लिखने योग्य सीडी या डीवीडी के साथ बदलें."
 
@@ -776,11 +773,10 @@ msgid ""
 "selection of files is burned."
 msgstr ""
 "यदि आप उन्हें आयात करते हैं तो आप एक बार लिखे हुए फाइल के मौजूदा चयन को देख "
-"और "
-"उन्हें उपयोग कर सकेगे."
+"और उन्हें "
+"उपयोग कर सकेगे."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:946
-#| msgid "Already burnt files will be invisible (though still readable)."
 msgid "If you don't, they will be invisible (though still readable)."
 msgstr ""
 "यदि आप नहीं करते हैं, वे अदृश्य हो सकते है (हालांकि अभी भी पढ़ने योग्य है)."
@@ -801,15 +797,13 @@ msgid "Only _Append"
 msgstr "केवल जोड़ें (_A)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:965
-#| msgid ""
-#| "CD-RW audio discs may not play correctly in older CD players and CD-TEXT "
-#| "won't be written."
 msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-Text "
 "won't be written."
 msgstr ""
-"CD-RW ऑडियो डिस्क पुराने CD प्लेयर में ठीक से बज नहीं सकता है और CD-Text "
-"नहीं लिखा जाएगा."
+"CD-RW ऑडियो डिस्क पुराने CD प्लेयर में ठीक से बज नहीं सकता है और CD-Text नहीं "
+"लिखा "
+"जाएगा."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:966
 #: ../libbrasero-burn/brasero-burn-dialog.c:988
@@ -837,7 +831,6 @@ msgstr "फिर लिखने योग्य डिस्क में ऑ�
 #. Translators: %s is the name of a drive
 #: ../libbrasero-burn/brasero-burn-dialog.c:1035
 #, c-format
-#| msgid "Please eject the disc and reload it."
 msgid "Please eject the disc from \"%s\" manually."
 msgstr "कृपया डिस्क बाहर करें \"%s\" से दस्ती रूप से."
 
@@ -846,16 +839,15 @@ msgid ""
 "The disc could not be ejected though it needs to be removed for the current "
 "operation to continue."
 msgstr ""
-"डिस्क बाहर निकाला नहीं जा सकता हालांकि इसे हटाना जरुरी है मौजूदा "
-"प्रक्रिया को जारी रखने के लिए."
+"डिस्क बाहर निकाला नहीं जा सकता हालांकि इसे हटाना जरुरी है मौजूदा प्रक्रिया को "
+"जारी "
+"रखने के लिए."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1131
-#| msgid "Do you want to replace \"%s\"?"
 msgid "Do you want to replace the disc and continue?"
 msgstr "क्या आप डिस्क को प्रतिस्थापित और जारी रखना चाहते है?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1132
-#| msgid "The image could not be loaded."
 msgid "The currently inserted disc could not be blanked."
 msgstr "मौजूदा सम्मिलित डिस्क खाली नहीं किया जा सका."
 
@@ -965,8 +957,8 @@ msgid ""
 "not want to burn another copy, press \"Cancel\"."
 msgstr ""
 "दूसरी प्रतिलिपि को जल्दी शुरू करने के लिए आप एक नया लिखने योग्य डिस्क "
-"सम्मिलित करे. अगर आप "
-"दुसरे प्रतिलिपि को नहीं लिखना नहीं चाहते है, \"रद्द करे\" दबाये."
+"सम्मिलित करे. अगर "
+"आप दुसरे प्रतिलिपि को नहीं लिखना नहीं चाहते है, \"रद्द करे\" दबाये."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1961
 msgid "Make _More Copies"
@@ -1135,7 +1127,6 @@ msgid "Please replace the disc with a supported CD or DVD."
 msgstr "कृपया डिस्क को समर्थित सीडी या डीवीडी से बदलें."
 
 #: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:974
-#| msgid "Would you like to burn beyond the disc reported capacity?"
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "क्या आप डिस्क के रिपोर्ट की गई क्षमता के बाहर लिखना चाहेंगे?"
 
@@ -1159,7 +1150,6 @@ msgid "_Overburn"
 msgstr "ओवरबर्न करें (_O)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:983
-#| msgid "Burn beyond the disc reported capacity"
 msgid "Burn beyond the disc's reported capacity"
 msgstr "डिस्क के रिपोर्ट की गई क्षमता के बाहर लिखें"
 
@@ -1169,15 +1159,11 @@ msgid ""
 msgstr "ड्राइव जो कि स्रोत डिस्क रखता है एक होगा जो रिकार्ड किया जाना है."
 
 #: ../libbrasero-burn/brasero-burn-options.c:563
-#| msgid ""
-#| "A new recordable disc will be required once the one currently loaded has "
-#| "been copied."
 msgid ""
 "A new writable disc will be required once the currently loaded one has been "
 "copied."
 msgstr ""
-"नया लिखने योग्य डिस्क की जरुरत होगी एक बार मौजूदा लोड की गयी की "
-"नक़ल करे."
+"नया लिखने योग्य डिस्क की जरुरत होगी एक बार मौजूदा लोड की गयी की नक़ल करे."
 
 #: ../libbrasero-burn/brasero-burn-options.c:650
 msgid "Select a disc to write to"
@@ -1204,15 +1190,12 @@ msgstr ""
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:797
 #, c-format
-#| msgid ""
-#| "There is only one selected file (\"%s\"). It is the image of a disc and "
-#| "its contents can be burnt."
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
 msgstr ""
-"केवल एक चयनित फ़ाइल (\"%s\") है. यह डिस्क की छवि है और इसकी "
-"सामग्री लिखी जा सकती है."
+"केवल एक चयनित फ़ाइल (\"%s\") है. यह डिस्क की छवि है और इसकी सामग्री लिखी जा "
+"सकती है."
 
 #: ../libbrasero-burn/brasero-burn-options.c:802
 msgid "Burn as _File"
@@ -1299,7 +1282,6 @@ msgstr "%s: \"%s\""
 #. * holding the source disc
 #: ../libbrasero-burn/brasero-dest-selection.c:649
 #, c-format
-#| msgid "New disc in the burner holding source disc"
 msgid "New disc in the burner holding the source disc"
 msgstr "नया डिस्क स्रोत डिस्क रखने वाले बर्नर में "
 
@@ -1592,11 +1574,6 @@ msgstr "क्या आप \"%s\" चयन में जोड़ना चा
 
 #: ../libbrasero-burn/brasero-status-dialog.c:228
 #: ../src/brasero-data-disc.c:879
-#| msgid ""
-#| "The children of this directory will have 7 parent directories.\n"
-#| "Brasero can create an image of such a file hierarchy and burn it; but the "
-#| "disc may not be readable on all operating systems.\n"
-#| "NOTE: Such a file hierarchy is known to work on linux."
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it but the "
@@ -1604,8 +1581,9 @@ msgid ""
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 "इस निर्देशिका की संतति के पास 7 जनक निर्देशिका रहेगी.\n"
-"ब्रैसेरो ऐसी फ़ाइल पदक्रम की एक छवि बनाएगी और इसे लिखेगी लेकिन "
-"डिस्क सभी ऑपरेटिंग तंत्र पर पठनीय नहीं होगी.\n"
+"ब्रैसेरो ऐसी फ़ाइल पदक्रम की एक छवि बनाएगी और इसे लिखेगी लेकिन डिस्क सभी "
+"ऑपरेटिंग तंत्र "
+"पर पठनीय नहीं होगी.\n"
 "नोट: ऐसा फाइल पदक्रम लिनक्स पर काम करने वाला माना जाता है."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:232
@@ -1623,27 +1601,16 @@ msgstr "ऐसी फाइलें हमेशा जोड़े (_w)"
 #: ../libbrasero-burn/brasero-status-dialog.c:271
 #: ../src/brasero-data-disc.c:826
 #, c-format
-#| msgid ""
-#| "Do you really want to add \"%s\" to the selection and use the third "
-#| "version of ISO9660 standard to support it?"
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of the ISO9660 standard to support it?"
 msgstr ""
 "क्या आप वाकई चयन में \"%s\" को जोड़ना चाहते हैं और इसे समर्थन देने के लिए "
-"ISO9660 मानक के तीसरे संस्करण को प्रयोग करना चाहते हैं?"
+"ISO9660 मानक के "
+"तीसरे संस्करण को प्रयोग करना चाहते हैं?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:290
 #: ../src/brasero-data-disc.c:835
-#| msgid ""
-#| "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
-#| "supported by ISO9660 standard in its first and second versions (the most "
-#| "widespread ones).\n"
-#| "It is recommended to use the third version of ISO9660 standard which is "
-#| "supported by most of the operating systems including Linux and all "
-#| "versions of Windows ©.\n"
-#| "However MacOS X cannot read images created with version 3 of ISO9660 "
-#| "standard."
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by the ISO9660 standard in its first and second versions (the most "
@@ -1654,14 +1621,14 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"फाइल का आकार 2 GiB  से अधिक है. 2 GiB से अधिक फ़ाइल को "
-"ISO9660 मानक के आधार पर समर्थित नहीं है इसके पहले और दूसरे संस्करण में (जो "
-"अधिक लोकप्रिय है).\n"
+"फाइल का आकार 2 GiB  से अधिक है. 2 GiB से अधिक फ़ाइल को ISO9660 मानक के आधार "
+"पर "
+"समर्थित नहीं है इसके पहले और दूसरे संस्करण में (जो अधिक लोकप्रिय है).\n"
 "इसकी सलाह दी जाती है कि ISO9660 मानक के तीसरे संस्करण का प्रयोग करें जो "
-"अधिकतर ऑपरेटिंग तंत्र के द्वारा समर्थित है, लिनक्स और "
-"Windows™ के सभी संस्करण में.\n"
-"हालांकि Mac OS X ISO9660 मानक के तीसरे संस्करण से बनाई गई छवि नहीं पढ़ "
-"सकता है."
+"अधिकतर "
+"ऑपरेटिंग तंत्र के द्वारा समर्थित है, लिनक्स और Windows™ के सभी संस्करण में.\n"
+"हालांकि Mac OS X ISO9660 मानक के तीसरे संस्करण से बनाई गई छवि नहीं पढ़ सकता "
+"है."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:330
 #: ../src/brasero-data-disc.c:729
@@ -1709,7 +1676,6 @@ msgstr "फाइल अखंडता जाँच नहीं की जा 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
 #: ../src/brasero-project.c:2621
-#| msgid "An unknown error occured"
 msgid "An unknown error occurred"
 msgstr "एक अज्ञात त्रुटि उत्पन्न हुई"
 
@@ -1718,7 +1684,6 @@ msgid "The file integrity check was performed successfully."
 msgstr "फाइल अखंडता जाँच सफलतापूर्वक की जा सकी."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:179
-#| msgid "There seems to be no corrupted file on the disc"
 msgid "There seem to be no corrupted files on the disc"
 msgstr "डिस्क पर कोई खराब फाइल नहीं हो सकती है"
 
@@ -1895,7 +1860,6 @@ msgid "_NTSC"
 msgstr "_NTSC"
 
 #: ../libbrasero-burn/brasero-video-options.c:460
-#| msgid "Format used mostly on the North American Continent"
 msgid "Format used mostly on the North American continent"
 msgstr "प्रारूप अधिकतर उत्तर अमेरिकी महाद्वीप पर प्रयुक्त होता है"
 
@@ -2089,21 +2053,16 @@ msgstr "\"%s\" को पथ में नहीं पाया जा सक�
 
 #: ../libbrasero-burn/burn-plugin.c:649
 #, c-format
-#| msgid "\"%s\" could not be found"
 msgid "\"%s\" GStreamer plugin could not be found"
 msgstr "\"%s\" GStreamer प्लगिन नहीं मिला"
 
 #: ../libbrasero-burn/burn-plugin.c:653 ../libbrasero-burn/burn-plugin.c:665
 #, c-format
-#| msgid "This version of mkisofs is not supported"
 msgid "The version of \"%s\" is too old"
 msgstr "\"%s\" के संस्करण बहुत पुरानी है"
 
 #: ../libbrasero-burn/burn-plugin.c:657
 #, c-format
-#| msgid ""
-#| "\"%s\" is a symbolic link pointing to another program. Use the target "
-#| "program instead"
 msgid "\"%s\" is a symbolic link pointing to another program"
 msgstr "\"%s\" एक सांकेतिक कड़ी है जो दूसरे प्रोग्राम को इंगित करती है"
 
@@ -2667,7 +2626,6 @@ msgid "_Write to Disc…"
 msgstr "डिस्क पर लिखें"
 
 #: ../nautilus/nautilus-burn-extension.c:572
-#| msgid "Write disc image to a CD or DVD disc"
 msgid "Write disc image to a CD or DVD"
 msgstr "डिस्क इमेज़ सीडी या डीवीडी पर लिखें"
 
@@ -2750,7 +2708,6 @@ msgid "Copies, burns and blanks CDs"
 msgstr "नक़ल लें, लिखे और सीडी रिक्त करें"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:762
-#| msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
 msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
 msgstr "सक्रिय करें \"--driver generic-mmc-raw\" फ्लैग (देखें cdrdao दस्ती)"
 
@@ -2799,7 +2756,6 @@ msgstr "युक्ति पर कोई स्थान बचा नही�
 #: ../plugins/cdrkit/burn-genisoimage.c:527
 #: ../plugins/cdrtools/burn-mkisofs.c:531
 #: ../plugins/libburnia/burn-libisofs.c:1078
-#| msgid "Use mkisofs to create image from a file selection"
 msgid "Creates disc images from a file selection"
 msgstr "फ़ाइल चयन से डिस्क छवि बनाएँ"
 
@@ -2814,7 +2770,6 @@ msgstr ""
 "नहीं रखता है"
 
 #: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
-#| msgid "Use readcd to create disc images"
 msgid "Copies any disc to a disc image"
 msgstr "कोई डिस्क डिस्क छवि को नक़ल बनाता है"
 
@@ -2822,7 +2777,6 @@ msgstr "कोई डिस्क डिस्क छवि को नक़ल ब
 #: ../plugins/libburnia/burn-libburn.c:856
 #: ../plugins/libburnia/burn-libburn.c:887
 #, c-format
-#| msgid "An error occured while writing to disc"
 msgid "An error occurred while writing to disc"
 msgstr "डिस्क में लिखने के दौरान त्रुटि आई"
 
@@ -2853,7 +2807,6 @@ msgid "The disc needs to be reloaded before being recorded"
 msgstr "डिस्क रिकार्ड किए जाने के पहले फिर लोड किए जाने की जरूरत है"
 
 #: ../plugins/cdrkit/burn-wodim.c:1270
-#| msgid "Create and copy CDs and DVDs"
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "लिखे, रिक्त करे और सीडी और डीवीडी फार्मेट करे "
 
@@ -2868,12 +2821,10 @@ msgstr "न्यूनतम ड्राइव बफर भरण अनु�
 #: ../plugins/cdrtools/burn-cdda2wav.c:206
 #: ../plugins/cdrtools/burn-cdda2wav.c:216
 #, c-format
-#| msgid "Copying audio track"
 msgid "Copying audio track %02d"
 msgstr "ऑडियो ट्रैक %02d की नक़ल कर रहा है"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:267
-#| msgid "Preparing to write"
 msgid "Preparing to copy audio disc"
 msgstr "ऑडियो डिस्क की नक़ल लेने की तैयारी कर रहा है"
 
@@ -2892,7 +2843,6 @@ msgstr "\"-immed\" फ्लैग सक्रिय करें (देखे
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1420
 #, c-format
-#| msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr "न्यूनतम ड्राइव बफर भरण अनुपात (%% में) (देखें cdrecord manual):"
 
@@ -2990,7 +2940,6 @@ msgid "Image Checksum"
 msgstr "छवि चेकसम"
 
 #: ../plugins/checksum/burn-checksum-image.c:832
-#| msgid "Allows to check data integrity on disc after it is burnt"
 msgid "Checks disc integrity after it is burnt"
 msgstr "इसके लिखे जाने के बाद डिस्क पर आँकड़ा अखंडता की जाँच करता है"
 
@@ -3000,7 +2949,6 @@ msgid "Creating file layout"
 msgstr "फ़ाइल ख़ाका का निर्माण"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:371
-#| msgid "Write disc image to a CD or DVD disc"
 msgid "Creates disc images suitable for video DVDs"
 msgstr "वीडियो डीवीडी के लिए उपयुक्त डिस्क छवियों बनाएँ"
 
@@ -3017,12 +2965,12 @@ msgid ""
 "command"
 msgstr ""
 "कूटलेखन के लिए उपयोग में कुंजी को पुन: प्राप्त करने में त्रुटि. आप निम्न "
-"तरीकों "
-"में से किसी  एक के साथ एक ऐसी समस्या को हल कर सकते हैं:  टर्मिनल में या तो "
-"उचित डीवीडी क्षेत्र कोड निर्धारित अपने सीडी / डीवीडी प्लेयर के लिए "
-"\"regionset %s\" "
-"कमांड या चालू करें \"DVDCSS_METHOD=title brasero --no-existing-session\" "
-"कमांड"
+"तरीकों में से किसी  एक "
+"के साथ एक ऐसी समस्या को हल कर सकते हैं:  टर्मिनल में या तो उचित डीवीडी "
+"क्षेत्र कोड "
+"निर्धारित अपने सीडी / डीवीडी प्लेयर के लिए \"regionset %s\" कमांड या चालू "
+"करें "
+"\"DVDCSS_METHOD=title brasero --no-existing-session\" कमांड"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3148,7 +3096,6 @@ msgid "File Downloader"
 msgstr "फ़ाइल डाउनलोडकर्ता"
 
 #: ../plugins/local-track/burn-local-image.c:910
-#| msgid "Allows to burn files not stored locally"
 msgid "Allows files not stored locally to be burned"
 msgstr "उन फाइलों जो स्थानीय रूप से जमा नहीं है को लिखने देता है"
 
@@ -3159,7 +3106,6 @@ msgid "Impossible to retrieve local file path"
 msgstr "स्थानीय फाइल पथ पाना असंभव"
 
 #: ../plugins/local-track/burn-uri.c:748
-#| msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
 msgid ""
 "Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
 msgstr ""
@@ -3198,7 +3144,6 @@ msgid "Normalization"
 msgstr "सामान्य करें"
 
 #: ../plugins/transcode/burn-normalize.c:645
-#| msgid "Normalize allows to set consistent sound levels between tracks"
 msgid "Sets consistent sound levels between tracks"
 msgstr "ट्रैक्स के बीच सतत ध्वनि स्तर सेट करें"
 
@@ -3224,8 +3169,6 @@ msgid "Transcoding \"%s\""
 msgstr "पारकोडिंग \"%s\""
 
 #: ../plugins/transcode/burn-transcode.c:1773
-#| msgid ""
-#| "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr "ऑडियो सीडी के लिए उपयुक्त प्रारूप में किसी भी गीत फ़ाइल में बदलें"
 
@@ -3234,14 +3177,11 @@ msgid "Converting video file to MPEG2"
 msgstr "विडियो फाइल को MPEG2 में बदल रहा है"
 
 #: ../plugins/transcode/burn-vob.c:1367
-#| msgid ""
-#| "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr ""
 "वीडियो डीवीडी के लिए उपयुक्त प्रारूप में किसी भी वीडियो फ़ाइल में बदलें"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:478
-#| msgid "Write disc image to a CD or DVD disc"
 msgid "Creates disc images suitable for SVCDs"
 msgstr "SVCDs के लिए उपयुक्त डिस्क छवि बनाता है"
 
@@ -3411,7 +3351,6 @@ msgid "_Edit Information…"
 msgstr "सूचना संपादित करें (_E)..."
 
 #: ../src/brasero-audio-disc.c:158
-#| msgid "Edit the track information (start, end, author, ...)"
 msgid "Edit the track information (start, end, author, etc.)"
 msgstr "ट्रैक सूचना संपादित करें (प्रारंभ, अंत, लेखक, आदि.)"
 
@@ -3485,7 +3424,6 @@ msgstr "सुनिश्चित करें कि codec संस्था
 
 #: ../src/brasero-audio-disc.c:662
 #, c-format
-#| msgid "Do you want to add \"%s\" which is a video file?"
 msgid "Do you want to add \"%s\", which is a video file?"
 msgstr "क्या आप जोड़ना चाहते हैं \"%s\" को, जो कि एक वीडियो फ़ाइल है?"
 
@@ -3517,7 +3455,6 @@ msgid "\"%s\" could not be opened."
 msgstr "\"%s\" खोली नहीं जा सकी."
 
 #: ../src/brasero-audio-disc.c:857
-#| msgid "Do you want to search for audio files inside the directory?"
 msgid "Do you want to create an audio CD with DTS tracks?"
 msgstr "क्या आप डीटीएस ट्रैकस के साथ ऑडियो सीडी बनाना चाहते है?"
 
@@ -3530,7 +3467,8 @@ msgid ""
 msgstr ""
 "चयनित गीतोँ में से कुछ डीटीएस ट्रैकस बनाने के लिए उपयुक्त हैं.\n"
 "इस प्रकार का ऑडियो ट्रैक उच्च गुणवत्ता ध्वनि प्रदान करता है लेकिन केवल "
-"विशिष्ट डिजिटल प्लेयर्स में बजाया जायेगा\n"
+"विशिष्ट डिजिटल "
+"प्लेयर्स में बजाया जायेगा\n"
 "नोट: अगर आप सहमत हैं, इन ट्रैकस पर सामान्यकरण नहीं लागू होगा."
 
 #: ../src/brasero-audio-disc.c:867
@@ -3615,17 +3553,14 @@ msgid "Open a video project adding the URIs given on the command line"
 msgstr "URI जोड़ता हुआ वीडियो परियोजना खोलें कमांड लाइन पर"
 
 #: ../src/brasero-cli.c:110
-#| msgid "Uri of an image file to be burnt (autodetected)"
 msgid "URI of an image file to burn (autodetected)"
 msgstr "छवि फ़ाइल की URI जिसे लिखा जाना है (autodetected)"
 
 #: ../src/brasero-cli.c:111
-#| msgid "PATH TO DEVICE"
 msgid "PATH TO IMAGE"
 msgstr "छवि का पथ"
 
 #: ../src/brasero-cli.c:114
-#| msgid "Force brasero to display the project selection page"
 msgid "Force Brasero to display the project selection page"
 msgstr "ब्रैसेरो को बाध्य करें परियोजना चयन पृष्ठ दिखाने के लिए"
 
@@ -3638,12 +3573,10 @@ msgid "Open the check disc dialog"
 msgstr "जाँच डिस्क संवाद खोलें"
 
 #: ../src/brasero-cli.c:126
-#| msgid "Burn the contents of burn:// URI"
 msgid "Burn the contents of the burn:// URI"
 msgstr "बर्न की अंतर्वस्तु लिखें:// URI"
 
 #: ../src/brasero-cli.c:130
-#| msgid "Cdrkit burning suite"
 msgid "Start burning immediately."
 msgstr "तत्काल लिखना शुरू करे"
 
@@ -3652,9 +3585,6 @@ msgid "Don't connect to an already-running instance"
 msgstr "पहले से चलते उदाहरण में कनेक्ट मत करें"
 
 #: ../src/brasero-cli.c:138
-#| msgid ""
-#| "Burn the specified project and REMOVE it.\n"
-#| "This option is mainly useful for integration use with other applications."
 msgid ""
 "Burn the specified project and remove it.\n"
 "This option is mainly useful for integration with other applications."
@@ -3678,12 +3608,10 @@ msgstr "जनक विंडो का XID"
 #. Translators: %s is the path of drive
 #: ../src/brasero-cli.c:204
 #, c-format
-#| msgid "\"%s\" cannot be read"
 msgid "\"%s\" cannot write."
 msgstr "\"%s\" पढ़ा नहीं जा सका."
 
 #: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
-#| msgid "Incompatible command line options used."
 msgid "Wrong command line option."
 msgstr "गलत कमांड लाइन विकल्प."
 
@@ -3734,22 +3662,18 @@ msgstr "मौजूदा परिवर्तित परियोजना 
 #. Translators: %s is the name of the image
 #: ../src/brasero-data-disc.c:619
 #, c-format
-#| msgid ""
-#| "There is only one selected file (\"%s\"). It is the image of a disc and "
-#| "its contents can be burnt."
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
 msgstr ""
-"केवल एक चयनित फ़ाइल (\"%s\") है. यह डिस्क की छवि है और इसकी "
-"सामग्री लिखी जा सकती है"
+"केवल एक चयनित फ़ाइल (\"%s\") है. यह डिस्क की छवि है और इसकी सामग्री लिखी जा "
+"सकती है"
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
 msgstr "बतौर आँकड़ा लिखें (_F)"
 
 #: ../src/brasero-data-disc.c:627
-#| msgid "Burn _image"
 msgid "Burn as _Image"
 msgstr "बतौर छवि लिखें (_I)"
 
@@ -3774,16 +3698,13 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "क्या आप \"%s\" को बदलना चाहते हैं?"
 
 #: ../src/brasero-data-disc.c:779
-#| msgid ""
-#| "A file with this name already exists in the folder.  Replacing it will "
-#| "overwrite its content (on the disc only)."
 msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its contents on the disc to be burnt."
 msgstr ""
-"इस नाम के साथ फ़ाइल पहले से फोल्डर में मौजूद है.  इसे बदलना "
-"डिस्क पर इसकी सामग्री के ऊपर लिख देगा. "
-"."
+"इस नाम के साथ फ़ाइल पहले से फोल्डर में मौजूद है.  इसे बदलना डिस्क पर इसकी "
+"सामग्री के ऊपर "
+"लिख देगा. ."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3836,7 +3757,6 @@ msgstr "आयात करें (_m)"
 #. Translators: %s is the name of the volume to import
 #: ../src/brasero-data-disc.c:1098
 #, c-format
-#| msgid "Do you want to import the session from '%s'?"
 msgid "Do you want to import the session from \"%s\"?"
 msgstr "क्या आप सत्र आयात करना चाहते हैं \"%s\" से?"
 
@@ -4004,7 +3924,6 @@ msgid "_Horizontal Layout"
 msgstr "क्षैतिज खाका (_H)"
 
 #: ../src/brasero-layout.c:122
-#| msgid "Set an horizontal layout"
 msgid "Set a horizontal layout"
 msgstr "क्षैतिज लेआउट सेट करें"
 
@@ -4036,15 +3955,13 @@ msgstr "मौन हटाएँ"
 #: ../src/brasero-multi-song-props.c:211 ../src/brasero-multi-song-props.c:252
 #: ../src/brasero-multi-song-props.c:273 ../src/brasero-song-properties.c:187
 #: ../src/brasero-song-properties.c:199 ../src/brasero-song-properties.c:211
-#| msgid ""
-#| "This information will be written to the disc using CD-TEXT technology. It "
-#| "can be read and displayed by some audio CD players."
 msgid ""
 "This information will be written to the disc using CD-Text technology. It "
 "can be read and displayed by some audio CD players."
 msgstr ""
-"यह सूचना को डिस्क में CD-Text तकनीक के प्रयोग से लिखा जाएगा. इसे "
-"कुछ ध्वनि सीडी प्लेयर के द्वारा पढ़ा और दिखाया जा सकता है."
+"यह सूचना को डिस्क में CD-Text तकनीक के प्रयोग से लिखा जाएगा. इसे कुछ ध्वनि "
+"सीडी प्लेयर के "
+"द्वारा पढ़ा और दिखाया जा सकता है."
 
 #: ../src/brasero-multi-song-props.c:213
 msgid "Song titles"
@@ -4205,8 +4122,8 @@ msgid ""
 "area"
 msgstr ""
 "इस परियोजना में फ़ाइलें जोड़ने के लिए \"जोड़ें\" बटन पर क्लिक करें या इस "
-"एरिया में फ़ाइलें "
-"को खींचें"
+"एरिया में फ़ाइलें को "
+"खींचें"
 
 #: ../src/brasero-project.c:695
 msgid ""
@@ -4215,8 +4132,7 @@ msgid ""
 msgstr ""
 "फाइलो को हटाने के लिए उन्हें चयनित करे उसके बाद \"हटायें\" बटन पर क्लिक करे "
 "या दबाएँ "
-"\"मिटाए\" कुंजी "
-" "
+"\"मिटाए\" कुंजी  "
 
 #: ../src/brasero-project.c:802
 #, c-format
@@ -4224,21 +4140,12 @@ msgid "Estimated project size: %s"
 msgstr "अनुमानित परियोजना आकार: %s"
 
 #: ../src/brasero-project.c:948 ../src/brasero-project.c:964
-#| msgid ""
-#| "The size of the project is too large for the disc even with the overburn "
-#| "option."
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
 "इस परियोजना का आकार काफी बड़ा है डिस्क के लिए यहाँ तक कि अतिलेखन विकल्प के "
 "साथ."
 
 #: ../src/brasero-project.c:975
-#| msgid ""
-#| "The size of the project is too large for the disc and you must remove "
-#| "files from the project otherwise.\n"
-#| "You may want to use this option if you're using 90 or 100 min CD-R(W) "
-#| "which cannot be properly recognised and therefore need overburn option.\n"
-#| "NOTE: This option might cause failure."
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -4246,10 +4153,11 @@ msgid ""
 "Note: This option might cause failure."
 msgstr ""
 "इस परियोजना का आकार काफी बड़ा है डिस्क के लिए आप फाइलों को अन्यथा परियोजना से "
-"जरूर हटाएँ.\n"
+"जरूर "
+"हटाएँ.\n"
 "आप इस विकल्प का प्रयोग कर सकते हैं यदि आर 90 या 100 मिनट CD-R(W) का प्रयोग कर "
-"रहे हैं जो कि "
-"ठीक से पहचाना नहीं जा सकता है और इसलिए अतिलेखन विकल्प की जरूरत है.\n"
+"रहे हैं "
+"जो कि ठीक से पहचाना नहीं जा सकता है और इसलिए अतिलेखन विकल्प की जरूरत है.\n"
 "नोट: यह विकल्प विफलता का कारण बन सकती है."
 
 #: ../src/brasero-project.c:1096
@@ -4266,8 +4174,6 @@ msgstr ""
 "क्या आप वाकई नई परियोजना बनाना चाहते हैं और मौजूदा को छोड़ना चाहते हैं?"
 
 #: ../src/brasero-project.c:1907
-#| msgid ""
-#| "If you choose to create a new project, all changes made will be lost."
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr ""
 "यदि आप नई रिक्त परियोजना बनाने के लिए चुनते हैं, सभी परिवर्तन नष्ट हो जाएंगे."
@@ -4277,13 +4183,10 @@ msgid "_Discard Changes"
 msgstr "बदलावों को छोड़ें (_D)"
 
 #: ../src/brasero-project.c:1918
-#| msgid "Do you want to search for audio files inside the directory?"
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "क्या आप फ़ाइल चयन को त्यागना या इसे नयी परियोजना में जोड़ना चाहते है?"
 
 #: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
-#| msgid ""
-#| "If you choose to create a new project, all changes made will be lost."
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
@@ -4291,12 +4194,10 @@ msgstr ""
 "यदि आप नई रिक्त परियोजना बनाने के लिए चुनते हैं, सभी फ़ाइल चयन नष्ट हो जाएंगे."
 
 #: ../src/brasero-project.c:1925
-#| msgid "_Discard File"
 msgid "_Discard File Selection"
 msgstr "फाइल चयन छोड़ें (_D)"
 
 #: ../src/brasero-project.c:1929
-#| msgid "_Keep Current Location"
 msgid "_Keep File Selection"
 msgstr " फ़ाइल चयन बनाए रखें (_K)"
 
@@ -4396,7 +4297,6 @@ msgid "Save project as an XSPF playlist"
 msgstr "बतौर XSPF गीतसूची परियोजना सहेजें"
 
 #: ../src/brasero-project.c:2757
-#| msgid "Save project as an M3U playlist"
 msgid "Save project as an iriver playlist"
 msgstr "बतौर iriver प्लेलिस्ट परियोजना सहेजें"
 
@@ -4455,7 +4355,6 @@ msgstr "नया वीडियो परियोजना (_V)"
 
 #: ../src/brasero-project-manager.c:106
 #: ../src/brasero-project-type-chooser.c:86
-#| msgid "Create a video DVD or a SVCD that are readable on TV readers"
 msgid "Create a video DVD or an SVCD that is readable on TV readers"
 msgstr "विडियो डीवीडी या एसवीसीडी बनाएँ जो कि टीवी रीडर पर पढ़ने योग्य हो"
 
@@ -4644,7 +4543,6 @@ msgid "Last _Unsaved Project"
 msgstr "अंतिम बिना सहेजी परियोजना (_U)"
 
 #: ../src/brasero-project-type-chooser.c:308
-#| msgid "Load the last project that was not burnt and not saved"
 msgid "Load the last project that was not burned and not saved"
 msgstr "अंतिम परियोजना लोड करें जो नहीं लिखी और नहीं सहेजी गई थी"
 
@@ -4688,7 +4586,6 @@ msgstr "प्रविष्ट"
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
 #: ../src/brasero-rename.c:355
-#| msgid "at the begining"
 msgid "at the beginning"
 msgstr "प्रारंभ में"
 
@@ -4699,7 +4596,6 @@ msgid "at the end"
 msgstr "अंत में"
 
 #: ../src/brasero-rename.c:370
-#| msgid "Delete every occurence of"
 msgid "Delete every occurrence of"
 msgstr "हर आवृत्ति को मिटाएँ"
 
@@ -4927,7 +4823,6 @@ msgid "Open the selected video"
 msgstr "चुने वीडियो खोलें"
 
 #: ../src/brasero-video-disc.c:103
-#| msgid "Edit the video information (start, end, author, ...)"
 msgid "Edit the video information (start, end, author, etc.)"
 msgstr "विडियो सूचना संपादित करें (प्रारंभ, अंत, लेखक, आदि.)"
 
@@ -5021,8 +4916,6 @@ msgstr "[URI] [URI] …"
 
 #: ../src/main.c:97
 #, c-format
-#| msgid "Please type %s --help to see all available options\n"
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "कृपया टाइप करें \"%s --help\" सभी उपलब्ध विकल्प को दिखाने के लिए\n"
-
 
