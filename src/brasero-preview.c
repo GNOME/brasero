@@ -216,4 +216,4 @@ brasero_preview_new (void)
 	return g_object_new (BRASERO_TYPE_PREVIEW, NULL);
 }
 
-#endif
+#endif /* BUILD_PREVIEW */

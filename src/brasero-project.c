@@ -2145,6 +2145,7 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	g_slist_free (uris);
 }
 
+#ifdef BUILD_PREVIEW
 static void
 brasero_project_preview_ready (BraseroPlayer *player,
 			       GtkFileChooser *chooser)
@@ -2164,6 +2165,7 @@ brasero_project_update_preview (GtkFileChooser *chooser,
 	brasero_player_set_uri (player, uri);
 	g_free (uri);
 }
+#endif
 
 static void
 brasero_project_add_uris_cb (GtkAction *action,

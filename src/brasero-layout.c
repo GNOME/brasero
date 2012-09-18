@@ -39,7 +39,11 @@
 
 #include "brasero-setting.h"
 #include "brasero-layout.h"
+
+#ifdef BUILD_PREVIEW
 #include "brasero-preview.h"
+#endif
+
 #include "brasero-project.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
@@ -318,6 +322,7 @@ brasero_layout_add_project (BraseroLayout *layout,
 	layout->priv->project = project;
 }
 
+#ifdef BUILD_PREVIEW
 static void
 brasero_layout_preview_toggled_cb (GtkToggleAction *action, BraseroLayout *layout)
 {
@@ -334,11 +339,13 @@ brasero_layout_preview_toggled_cb (GtkToggleAction *action, BraseroLayout *layou
 	                           BRASERO_SETTING_SHOW_PREVIEW,
 	                           GINT_TO_POINTER (active));
 }
+#endif
 
 void
 brasero_layout_add_preview (BraseroLayout *layout,
 			    GtkWidget *preview)
 {
+#ifdef BUILD_PREVIEW
 	gpointer value;
 	gboolean active;
 	gchar *accelerator;
@@ -376,6 +383,7 @@ brasero_layout_add_preview (BraseroLayout *layout,
 		gtk_widget_hide (layout->priv->preview_pane);
 
 	brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), active);
+#endif
 }
 
 /**************************** for the source panes *****************************/
@@ -660,8 +668,10 @@ brasero_layout_load (BraseroLayout *layout,
 	GtkTreeIter iter;
 	gpointer value;
 
+#ifdef BUILD_PREVIEW
 	if (layout->priv->preview_pane)
 		brasero_preview_hide (BRASERO_PREVIEW (layout->priv->preview_pane));
+#endif
 
 	if (type == BRASERO_LAYOUT_NONE) {
 		gtk_widget_hide (GTK_WIDGET (layout));

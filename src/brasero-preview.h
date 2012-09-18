@@ -72,6 +72,6 @@ brasero_preview_set_enabled (BraseroPreview *self,
 
 G_END_DECLS
 
-#endif				/* PLAYER_H */
-
 #endif /* _BRASERO_PREVIEW_H_ */
+
+#endif /* BUILD_PREVIEW */
