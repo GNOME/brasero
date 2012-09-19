@@ -138,6 +138,7 @@ dnl ***************** LARGE FILE SUPPORT ***********************
 AC_SYS_LARGEFILE
 
 dnl ********** Required libraries **********************
+
 GLIB_REQUIRED=2.29.14
 GTHREAD_REQUIRED=2.6.0
 GMODULE_REQUIRED=2.6.0
@@ -208,6 +209,9 @@ PKG_CHECK_MODULES(BRASERO_SM,
 
 AC_SUBST(BRASERO_SM_CFLAGS)
 AC_SUBST(BRASERO_SM_LIBS)
+
+AC_CHECK_LIBM
+AC_SUBST(LIBM)
 
 #
 # GTK+ stuff (taken and adapted from empathy)

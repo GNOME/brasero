@@ -67,7 +67,8 @@ libbrasero_burn3_la_LIBADD =					\
 	$(BRASERO_GTK_LIBS)					\
 	$(BRASERO_GSTREAMER_LIBS)				\
 	$(BRASERO_LIBNOTIFY_LIBS)					\
-	$(BRASERO_CANBERRA_LIBS)
+	$(BRASERO_CANBERRA_LIBS)				\
+	$(LIBM)
 
 libbrasero_burn3_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
