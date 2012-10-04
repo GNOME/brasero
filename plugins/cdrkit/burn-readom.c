@@ -476,6 +476,7 @@ brasero_readom_export_caps (BraseroPlugin *plugin)
 
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
 				       BRASERO_MEDIUM_DVD|
+				       BRASERO_MEDIUM_BD|
 				       BRASERO_MEDIUM_DUAL_L|
 				       BRASERO_MEDIUM_PLUS|
 				       BRASERO_MEDIUM_SEQUENTIAL|
