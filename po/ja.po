@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-09-17 12:18+0000\n"
-"PO-Revision-Date: 2012-09-18 06:40+0900\n"
+"POT-Creation-Date: 2012-09-28 21:49+0000\n"
+"PO-Revision-Date: 2012-10-06 14:23+0900\n"
 "Last-Translator: OKANO Takayoshi <kano@na.rim.or.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -1461,7 +1461,7 @@ msgstr "ディスクイメージの選択"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
-#: ../src/brasero-project.c:2223 ../src/brasero-project-name.c:162
+#: ../src/brasero-project.c:2225 ../src/brasero-project-name.c:162
 msgid "All files"
 msgstr "すべてのファイル"
 
@@ -1570,7 +1570,7 @@ msgstr "ファイルの整合性をチェックできませんでした。"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
-#: ../src/brasero-project.c:2623
+#: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "原因不明のエラーが発生しました"
 
@@ -2467,7 +2467,7 @@ msgstr "メディアのアイコン"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2248 ../src/brasero-project-name.c:168
+#: ../src/brasero-project.c:2250 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
 msgstr "画像ファイル"
@@ -3653,11 +3653,11 @@ msgstr "取り出す(_E)"
 msgid "Eject Disc"
 msgstr "ディスクの取り出し"
 
-#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2228
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2230
 msgid "Audio files"
 msgstr "音楽ファイル"
 
-#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2237
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2239
 msgid "Movies"
 msgstr "動画ファイル"
 
@@ -3724,40 +3724,40 @@ msgstr "リンク切れのシンボリックリンクを除く(_B)"
 msgid "Filtering options"
 msgstr "フィルターリングのオプション"
 
-#: ../src/brasero-layout.c:100
+#: ../src/brasero-layout.c:104
 msgid "P_review"
 msgstr "プレビュー(_R)"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
 msgstr "動画や音楽や画像をプレビュー表示します"
 
-#: ../src/brasero-layout.c:106
+#: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
 msgstr "サイド・ペイン(_S)"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:111
 msgid "Show a side pane along the project"
 msgstr "プロジェクトに対応したサイド・ペインを表示します"
 
-#: ../src/brasero-layout.c:121
+#: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
 msgstr "横向きにする(_H)"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:126
 msgid "Set a horizontal layout"
 msgstr "横向きのレイアウトにします"
 
-#: ../src/brasero-layout.c:124
+#: ../src/brasero-layout.c:128
 msgid "_Vertical Layout"
 msgstr "縦向きにする(_V)"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:129
 msgid "Set a vertical layout"
 msgstr "縦向きのレイアウトにします"
 
-#: ../src/brasero-layout.c:1183
+#: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
 msgstr "サイド・ペインを閉じます"
 
@@ -3916,7 +3916,7 @@ msgid "_Remove Files"
 msgstr "ファイルの削除(_R)"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:2310
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:2312
 msgid "E_mpty Project"
 msgstr "プロジェクトのクリア(_M)"
 
@@ -3981,7 +3981,7 @@ msgstr "変更を破棄する(_D)"
 
 #: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
-msgstr "\"%s\" をディスクに書き込むか、またはデータプロジェクトに追加しますか?"
+msgstr "ファイル選択をクリアするか、または新しいプロジェクトに追加しますか?"
 
 #: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid "If you choose to create a new empty project, the file selection will be discarded."
@@ -3999,90 +3999,90 @@ msgstr "ファイル選択を保持(_K)"
 msgid "_Discard Project"
 msgstr "破棄する(_D)"
 
-#: ../src/brasero-project.c:2186
+#: ../src/brasero-project.c:2188
 msgid "Select Files"
 msgstr "ファイルの選択"
 
-#: ../src/brasero-project.c:2299
+#: ../src/brasero-project.c:2301
 msgid "Do you really want to empty the current project?"
 msgstr "本当にこのプロジェクトを空にしますか?"
 
-#: ../src/brasero-project.c:2304
+#: ../src/brasero-project.c:2306
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "プロジェクトを空にすると、ここで追加したファイルを削除することになり、今までの作業結果が完全に失われてしまいます (ただし、実際にファイルシステムから削除するというわけではなく、プロジェクトの一覧から無くなるということです)。"
 
-#: ../src/brasero-project.c:2366
+#: ../src/brasero-project.c:2368
 msgid "_Save"
 msgstr "保存(_S)"
 
-#: ../src/brasero-project.c:2377
+#: ../src/brasero-project.c:2379
 msgid "_Add"
 msgstr "追加する(_A)"
 
-#: ../src/brasero-project.c:2382 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "削除(_R)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2446
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero - %s (データディスク)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2449
+#: ../src/brasero-project.c:2451
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero - %s (音楽用ディスク)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2452
+#: ../src/brasero-project.c:2454
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero - %s (映像用ディスク)"
 
-#: ../src/brasero-project.c:2622 ../src/brasero-project.c:2925
+#: ../src/brasero-project.c:2624 ../src/brasero-project.c:2927
 msgid "Your project has not been saved."
 msgstr "プロジェクトを保存していません。"
 
-#: ../src/brasero-project.c:2636
+#: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
 msgstr "閉じる前に現在のプロジェクトの変更点を保存しますか?"
 
-#: ../src/brasero-project.c:2641 ../src/brasero-project.c:2930
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
 msgstr "保存しない場合、変更点はすべて失われます。"
 
-#: ../src/brasero-project.c:2645 ../src/brasero-project.c:2651
-#: ../src/brasero-project.c:2933
+#: ../src/brasero-project.c:2647 ../src/brasero-project.c:2653
+#: ../src/brasero-project.c:2935
 msgid "Cl_ose Without Saving"
 msgstr "保存せずに閉じる(_O)"
 
-#: ../src/brasero-project.c:2733
+#: ../src/brasero-project.c:2735
 msgid "Save Current Project"
 msgstr "プロジェクトの保存"
 
-#: ../src/brasero-project.c:2751
+#: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
 msgstr "Brasero 音楽プロジェクトとして保存"
 
-#: ../src/brasero-project.c:2752
+#: ../src/brasero-project.c:2754
 msgid "Save project as a plain text list"
 msgstr "通常のファイルとして保存"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2758
 msgid "Save project as a PLS playlist"
 msgstr "PLS プレイリストとして保存"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2759
 msgid "Save project as an M3U playlist"
 msgstr "M3U プレイリストとして保存"
 
-#: ../src/brasero-project.c:2758
+#: ../src/brasero-project.c:2760
 msgid "Save project as an XSPF playlist"
 msgstr "XSPF プレイリストとしてプロジェクトを保存"
 
-#: ../src/brasero-project.c:2759
+#: ../src/brasero-project.c:2761
 msgid "Save project as an iriver playlist"
 msgstr "iriver プレイリストとしてプロジェクトを保存"
 
