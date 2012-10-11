@@ -199,7 +199,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 
 	BRASERO_JOB_LOG (self, "Writing to pipe");
 	read_bytes = priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size);
-	while (priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size) == sector_size) {
+	while (read_bytes == sector_size) {
 		if (priv->cancel)
 			break;
 
