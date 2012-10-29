@@ -1967,7 +1967,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	&& (brasero_track_type_get_medium_type (&priv->input) & BRASERO_MEDIUM_HAS_AUDIO))) {
 		/* since we succeed offer the possibility to create cover if that's an audio disc */
 		create_cover = gtk_dialog_add_button (GTK_DIALOG (dialog),
-						      _("_Create Cover"),
+						      _("Create Co_ver"),
 						      GTK_RESPONSE_CLOSE);
 	}
 
