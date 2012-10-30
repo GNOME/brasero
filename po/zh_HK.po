@@ -8,8 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero 3.1.92\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-17 14:39+0800\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-10-24 09:52+0000\n"
 "PO-Revision-Date: 2012-07-17 14:39+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
@@ -87,7 +88,9 @@ msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
 "used."
-msgstr "包含 brasero 儲存暫存檔案的目錄路徑。如果這個數值是空的，就會使用 glib 設定的預設目錄。"
+msgstr ""
+"包含 brasero 儲存暫存檔案的目錄路徑。如果這個數值是空的，就會使用 glib 設定的"
+"預設目錄。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
 msgid "Favourite burn engine"
@@ -107,7 +110,9 @@ msgstr "額外使用的外掛程式白名單"
 msgid ""
 "Contains the list of additional plugins Brasero will use to burn discs. If "
 "set to NULL, Brasero will load them all."
-msgstr "包含 Brasero 用來燒錄光碟的其他外掛清單。如設定為 NULL，Brasero 將會載入所有的外掛程式。"
+msgstr ""
+"包含 Brasero 用來燒錄光碟的其他外掛清單。如設定為 NULL，Brasero 將會載入所有"
+"的外掛程式。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
@@ -117,7 +122,9 @@ msgstr "在 cdrecord 中啟用「-immed」旗標"
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
-msgstr "是否使用 cdrecord 的「-immed」旗標。小心使用（設為 true） ，因為它只是一些光碟機/設定的權宜措施。"
+msgstr ""
+"是否使用 cdrecord 的「-immed」旗標。小心使用（設為 true） ，因為它只是一些光"
+"碟機/設定的權宜措施。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
@@ -127,7 +134,9 @@ msgstr "是否使用 growisofs 的「-use-the-force-luke=dao」旗標"
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr "是否使用 growisofs 的「-use-the-force-luke=dao」旗標。若設為 false，brasero 不會使用它；但它只是一些光碟機/設定的權宜措施。"
+msgstr ""
+"是否使用 growisofs 的「-use-the-force-luke=dao」旗標。若設為 false，brasero "
+"不會使用它；但它只是一些光碟機/設定的權宜措施。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -145,7 +154,9 @@ msgstr "是否使用 cdrdao 的「--driver generic-mmc-raw」旗標"
 msgid ""
 "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
 "True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr "是否使用 cdrdao 的「--driver generic-mmc-raw」旗標。若設為 True，brasero 會使用它；但它只是一些光碟機/設定的權宜措施。"
+msgstr ""
+"是否使用 cdrdao 的「--driver generic-mmc-raw」旗標。若設為 True，brasero 會使"
+"用它；但它只是一些光碟機/設定的權宜措施。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:20
 msgid "The last browsed folder while looking for images to burn"
@@ -183,7 +194,9 @@ msgstr "將符號連結置換為它們的目標"
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
-msgstr "是否要讓 Brasero 將專案中的符號連結替換為它們的目標檔案。若設為 true，Brasero 會替換符號連結。"
+msgstr ""
+"是否要讓 Brasero 將專案中的符號連結替換為它們的目標檔案。若設為 true，"
+"Brasero 會替換符號連結。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:28
 msgid "Should brasero filter broken symbolic links"
@@ -193,7 +206,9 @@ msgstr "brasero 是否要過濾損壞的符號連結檔案"
 msgid ""
 "Should brasero filter broken symbolic links. Set to true, brasero will "
 "filter broken symbolic links."
-msgstr "是否要讓 Brasero 過濾損壞的符號連結。若設為 true，Brasero 將過濾損壞的符號連結。"
+msgstr ""
+"是否要讓 Brasero 過濾損壞的符號連結。若設為 true，Brasero 將過濾損壞的符號連"
+"結。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:30
 msgid "The priority value for the plugin"
@@ -205,7 +220,10 @@ msgid ""
 "determine which plugin should be given priority. 0 means the plugin's native "
 "priority is used. A positive value overrides the plugin's native priority. A "
 "negative value disables the plugin."
-msgstr "當許多外掛程式都可以用於同一工作時，這個數值會用來決定外掛程式的優先權。0 表示使用外掛程式原始的優先權。給予正數值會覆蓋外掛程式原始的優先權。負數值則會停用這個外掛程式。"
+msgstr ""
+"當許多外掛程式都可以用於同一工作時，這個數值會用來決定外掛程式的優先權。0 表"
+"示使用外掛程式原始的優先權。給予正數值會覆蓋外掛程式原始的優先權。負數值則會"
+"停用這個外掛程式。"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:32
 msgid "Burning flags to be used"
@@ -354,7 +372,7 @@ msgstr "光碟上沒有足夠的空間"
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
 #: ../libbrasero-burn/brasero-burn-options.c:1180
-#: ../src/brasero-project.c:1383
+#: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (應用程式)"
@@ -362,7 +380,7 @@ msgstr "%s (應用程式)"
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
 #: ../libbrasero-burn/brasero-burn-options.c:1186
-#: ../src/brasero-project.c:1389
+#: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (程式庫)"
@@ -370,7 +388,7 @@ msgstr "%s (程式庫)"
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
 #: ../libbrasero-burn/brasero-burn-options.c:1191
-#: ../src/brasero-project.c:1394
+#: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer 外掛程式)"
@@ -646,7 +664,7 @@ msgstr "請插入至少有 %i MiB 可用空間的可燒錄 CD 或 DVD 片。"
 #: ../libbrasero-burn/brasero-burn-dialog.c:611
 #: ../libbrasero-burn/brasero-burn-dialog.c:2169
 #: ../libbrasero-burn/brasero-burn-dialog.c:2183
-#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:993
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "請插入可燒錄的 CD 或 DVD 片。"
 
@@ -800,7 +818,8 @@ msgstr "只加入(_A)"
 msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-Text "
 "won't be written."
-msgstr "CD-RW 音樂光碟可能無法在較舊的 CD 播放機正常播放且 CD-Text 將不會寫入。"
+msgstr ""
+"CD-RW 音樂光碟可能無法在較舊的 CD 播放機正常播放且 CD-Text 將不會寫入。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:966
 #: ../libbrasero-burn/brasero-burn-dialog.c:988
@@ -948,7 +967,9 @@ msgstr "複本 #%i 已經成功的燒錄。"
 msgid ""
 "Another copy will start as soon as you insert a new writable disc. If you do "
 "not want to burn another copy, press \"Cancel\"."
-msgstr "當你放入新的可燒錄光碟後會進行另一次燒錄。如果你不想要燒錄另一片複本，請按「取消」。"
+msgstr ""
+"當你放入新的可燒錄光碟後會進行另一次燒錄。如果你不想要燒錄另一片複本，請按"
+"「取消」。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1961
 msgid "Make _More Copies"
@@ -988,13 +1009,13 @@ msgstr "繼續燒錄(_O)"
 msgid "_Cancel Burning"
 msgstr "取消燒錄(_C)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1018
+#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1020
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
 msgstr "如果你不想寫入至映像檔，請插入可燒錄 CD 或 DVD 片。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1593
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1595
 msgid "Create _Image"
 msgstr "建立映像檔(_I)"
 
@@ -1008,15 +1029,15 @@ msgid "Make _Several Copies"
 msgstr "製作多個複本(_S)"
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1522
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1524
 msgid "_Burn"
 msgstr "燒錄(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1519
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1521
 msgid "Burn _Several Copies"
 msgstr "燒錄多個複本(_S)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:947
+#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "你想要燒錄跨越多個媒體的檔案嗎？"
 
@@ -1025,23 +1046,23 @@ msgstr "你想要燒錄跨越多個媒體的檔案嗎？"
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr "即使開啟超燒功能此資料的大小還是太大。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:952
+#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
 msgstr "燒錄多個光碟(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:954
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
 msgstr "燒錄跨越多種媒體的檔案"
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:963
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "請選擇另一片 CD 或 DVD 或插入一片新的光碟。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1008
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1010
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "將不會寫入軌道資訊（演出者、標題、…）到光碟。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1009
+#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1011
 msgid "This is not supported by the current active burning backend."
 msgstr "這不被目前使用的燒錄後端程式所支援。"
 
@@ -1054,7 +1075,7 @@ msgstr "請加入檔案。"
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-track-stream.c:402
-#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1275
+#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1277
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "沒有檔案可以寫入光碟"
@@ -1063,7 +1084,7 @@ msgstr "沒有檔案可以寫入光碟"
 msgid "Please add songs."
 msgstr "請加入歌曲。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1266
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
 msgstr "沒有歌曲可以寫入光碟"
 
@@ -1105,15 +1126,15 @@ msgstr "請插入沒有防拷的光碟片。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1443
+#: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "所有需要的應用程式和程式庫尚未安裝。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1001
+#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "請將此光碟更換為支援的 CD 或 DVD 片。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:974
+#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "你想要燒錄超過光碟回報的容量嗎？"
 
@@ -1126,14 +1147,15 @@ msgid ""
 "NOTE: This option might cause failure."
 msgstr ""
 "此專案的大小對這個光碟而言太大了，你必須從專案中移除部分檔案。\n"
-"如果你使用不能被正確辨認的 90 或 100 分鐘 CD-R(W) 因而需要超燒選項時，你可能會想使用這個選項。\n"
+"如果你使用不能被正確辨認的 90 或 100 分鐘 CD-R(W) 因而需要超燒選項時，你可能"
+"會想使用這個選項。\n"
 "注意：這個選項可能造成燒錄失敗。"
 
-#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:981
+#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:983
 msgid "_Overburn"
 msgstr "使用超燒(_O)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:983
+#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
 msgstr "燒錄超過光碟回報的容量"
 
@@ -1158,7 +1180,7 @@ msgstr "選擇要寫入的目標光碟"
 msgid "Disc Burning Setup"
 msgstr "光碟燒錄設定"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1542
+#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1544
 msgid "Video Options"
 msgstr "影片選項"
 
@@ -1203,7 +1225,7 @@ msgid "Select disc to copy"
 msgstr "選擇要複製的來源光碟"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "請手動安裝下列項目後再試一次："
 
@@ -1222,7 +1244,7 @@ msgstr "不明的歌曲"
 #. Translators: %s is the name of the artist
 #. Translators: %s is the name of an artist.
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419
-#: ../src/brasero-song-control.c:271
+#: ../src/brasero-song-control.c:270
 #, c-format
 msgid "by %s"
 msgstr "演出者 %s"
@@ -1367,7 +1389,7 @@ msgstr "直接燒錄映像而不保存到光碟(_W)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:730
 msgid "Leave the disc _open to add other files later"
-msgstr "讓光碟離開以便稍候增加其它檔案(_O)"
+msgstr "不關閉光碟，以後可以寫入其他新檔案(_O)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:731
 msgid "Allow to add more data to the disc later"
@@ -1434,7 +1456,7 @@ msgid "Cdrdao image"
 msgstr "Cdrdao 映像檔"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1501
+#: ../src/brasero-project.c:1503
 #, c-format
 msgid "Properties of %s"
 msgstr "%s 的屬性"
@@ -1522,7 +1544,7 @@ msgstr "選擇光碟映像檔"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
-#: ../src/brasero-project.c:2221 ../src/brasero-project-name.c:162
+#: ../src/brasero-project.c:2225 ../src/brasero-project-name.c:162
 msgid "All files"
 msgstr "所有檔案"
 
@@ -1556,7 +1578,8 @@ msgid ""
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 "這個目錄的子目錄會有 7 層的上層目錄。\n"
-"Brasero 可以建立這種檔案階層的映像檔並燒錄它，但是這個光碟可能就不是所有的作業系統都可以讀取的。\n"
+"Brasero 可以建立這種檔案階層的映像檔並燒錄它，但是這個光碟可能就不是所有的作"
+"業系統都可以讀取的。\n"
 "注意：這種檔案階層已知可在 Linux 讀取。"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:232
@@ -1591,8 +1614,10 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"此檔案的大小超過 2 GiB。大於 2 GiB 的檔案在 ISO9660 標準的第一、第二版（最常見的版本）中並不支援。\n"
-"我們建議使用第三版 ISO9660 的標準，它被大多數作業系統支援，包含 Linux 和所有版本的 Windows™。\n"
+"此檔案的大小超過 2 GiB。大於 2 GiB 的檔案在 ISO9660 標準的第一、第二版（最常"
+"見的版本）中並不支援。\n"
+"我們建議使用第三版 ISO9660 的標準，它被大多數作業系統支援，包含 Linux 和所有"
+"版本的 Windows™。\n"
 "然而，Mac OS X 無法讀取以 ISO9660 第三版標準建立的映像檔。"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:330
@@ -1639,7 +1664,7 @@ msgstr "無法進行檔案完整性檢測。"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
-#: ../src/brasero-project.c:2621
+#: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "發生不明的錯誤"
 
@@ -1983,7 +2008,7 @@ msgstr "沒有指定映像檔輸出的路徑"
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
 #: ../plugins/libburnia/burn-libburn.c:717
-#: ../plugins/transcode/burn-transcode.c:826
+#: ../plugins/transcode/burn-transcode.c:790
 #, c-format
 msgid "An internal error occurred (%s)"
 msgstr "發生內部的錯誤 (%s)"
@@ -2472,7 +2497,7 @@ msgstr "封面"
 msgid "The image could not be loaded."
 msgstr "無法載入影像。"
 
-#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "Gstreamer 無法處理「%s」 。"
@@ -2480,43 +2505,43 @@ msgstr "Gstreamer 無法處理「%s」 。"
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
+#: ../libbrasero-utils/brasero-metadata.c:1194
 #: ../libbrasero-utils/brasero-metadata.c:1207
 #: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1233
-#: ../libbrasero-utils/brasero-metadata.c:1375
-#: ../libbrasero-utils/brasero-metadata.c:1746
-#: ../libbrasero-utils/brasero-metadata.c:1761
-#: ../libbrasero-utils/brasero-metadata.c:1770
+#: ../libbrasero-utils/brasero-metadata.c:1362
+#: ../libbrasero-utils/brasero-metadata.c:1734
+#: ../libbrasero-utils/brasero-metadata.c:1749
+#: ../libbrasero-utils/brasero-metadata.c:1758
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
 #: ../plugins/transcode/burn-normalize.c:221
 #: ../plugins/transcode/burn-normalize.c:238
 #: ../plugins/transcode/burn-normalize.c:335
-#: ../plugins/transcode/burn-transcode.c:294
-#: ../plugins/transcode/burn-transcode.c:306
-#: ../plugins/transcode/burn-transcode.c:456
-#: ../plugins/transcode/burn-transcode.c:509
-#: ../plugins/transcode/burn-transcode.c:543
-#: ../plugins/transcode/burn-transcode.c:590
+#: ../plugins/transcode/burn-transcode.c:292
+#: ../plugins/transcode/burn-transcode.c:304
+#: ../plugins/transcode/burn-transcode.c:426
+#: ../plugins/transcode/burn-transcode.c:479
+#: ../plugins/transcode/burn-transcode.c:513
+#: ../plugins/transcode/burn-transcode.c:556
+#: ../plugins/transcode/burn-transcode.c:577
+#: ../plugins/transcode/burn-transcode.c:589
 #: ../plugins/transcode/burn-transcode.c:611
-#: ../plugins/transcode/burn-transcode.c:623
-#: ../plugins/transcode/burn-transcode.c:648
-#: ../plugins/transcode/burn-vob.c:309 ../plugins/transcode/burn-vob.c:329
-#: ../plugins/transcode/burn-vob.c:344 ../plugins/transcode/burn-vob.c:356
-#: ../plugins/transcode/burn-vob.c:373 ../plugins/transcode/burn-vob.c:431
-#: ../plugins/transcode/burn-vob.c:448 ../plugins/transcode/burn-vob.c:460
-#: ../plugins/transcode/burn-vob.c:472 ../plugins/transcode/burn-vob.c:484
-#: ../plugins/transcode/burn-vob.c:501 ../plugins/transcode/burn-vob.c:592
-#: ../plugins/transcode/burn-vob.c:609 ../plugins/transcode/burn-vob.c:621
-#: ../plugins/transcode/burn-vob.c:633 ../plugins/transcode/burn-vob.c:655
-#: ../plugins/transcode/burn-vob.c:672 ../plugins/transcode/burn-vob.c:718
-#: ../plugins/transcode/burn-vob.c:795 ../plugins/transcode/burn-vob.c:812
-#: ../plugins/transcode/burn-vob.c:827 ../plugins/transcode/burn-vob.c:839
-#: ../plugins/transcode/burn-vob.c:850 ../plugins/transcode/burn-vob.c:861
-#: ../plugins/transcode/burn-vob.c:1036 ../plugins/transcode/burn-vob.c:1100
-#: ../plugins/transcode/burn-vob.c:1117 ../plugins/transcode/burn-vob.c:1138
-#: ../plugins/transcode/burn-vob.c:1165
+#: ../plugins/transcode/burn-vob.c:308 ../plugins/transcode/burn-vob.c:328
+#: ../plugins/transcode/burn-vob.c:343 ../plugins/transcode/burn-vob.c:355
+#: ../plugins/transcode/burn-vob.c:372 ../plugins/transcode/burn-vob.c:428
+#: ../plugins/transcode/burn-vob.c:445 ../plugins/transcode/burn-vob.c:457
+#: ../plugins/transcode/burn-vob.c:469 ../plugins/transcode/burn-vob.c:481
+#: ../plugins/transcode/burn-vob.c:498 ../plugins/transcode/burn-vob.c:582
+#: ../plugins/transcode/burn-vob.c:599 ../plugins/transcode/burn-vob.c:611
+#: ../plugins/transcode/burn-vob.c:623 ../plugins/transcode/burn-vob.c:642
+#: ../plugins/transcode/burn-vob.c:659 ../plugins/transcode/burn-vob.c:705
+#: ../plugins/transcode/burn-vob.c:782 ../plugins/transcode/burn-vob.c:799
+#: ../plugins/transcode/burn-vob.c:814 ../plugins/transcode/burn-vob.c:826
+#: ../plugins/transcode/burn-vob.c:837 ../plugins/transcode/burn-vob.c:848
+#: ../plugins/transcode/burn-vob.c:1023 ../plugins/transcode/burn-vob.c:1087
+#: ../plugins/transcode/burn-vob.c:1104 ../plugins/transcode/burn-vob.c:1125
+#: ../plugins/transcode/burn-vob.c:1152
 #, c-format
 msgid "%s element could not be created"
 msgstr "無法建立 %s 元件"
@@ -2540,7 +2565,7 @@ msgstr "中等圖示"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2246 ../src/brasero-project-name.c:168
+#: ../src/brasero-project.c:2250 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
 msgstr "影像檔"
@@ -2915,7 +2940,10 @@ msgid ""
 "proper DVD region code for your CD/DVD player with the \"regionset %s\" "
 "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
 "command"
-msgstr "在取得用來加密的密碼匙時發生錯誤。你可以嘗試使用下列方法解決這類問題：在終端機裏以「regionset %s」指令設定你的 CD/DVD 播放器的正確 DVD 地區碼，或執行「DVDCSS_METHOD=title brasero --no-existing-session」指令"
+msgstr ""
+"在取得用來加密的密碼匙時發生錯誤。你可以嘗試使用下列方法解決這類問題：在終端"
+"機裏以「regionset %s」指令設定你的 CD/DVD 播放器的正確 DVD 地區碼，或執行"
+"「DVDCSS_METHOD=title brasero --no-existing-session」指令"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3063,16 +3091,16 @@ msgstr "允許燒錄在 Nautilus 中加入「CD/DVD 製作程式資料夾」的�
 #. * too technical and should be removed?
 #: ../plugins/transcode/burn-normalize.c:199
 #: ../plugins/transcode/burn-normalize.c:260
-#: ../plugins/transcode/burn-transcode.c:318
-#: ../plugins/transcode/burn-transcode.c:356
-#: ../plugins/transcode/burn-transcode.c:553
-#: ../plugins/transcode/burn-transcode.c:663
-#: ../plugins/transcode/burn-transcode.c:694
-#: ../plugins/transcode/burn-transcode.c:715
-#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:395
-#: ../plugins/transcode/burn-vob.c:555 ../plugins/transcode/burn-vob.c:688
-#: ../plugins/transcode/burn-vob.c:1052 ../plugins/transcode/burn-vob.c:1128
-#: ../plugins/transcode/burn-vob.c:1179
+#: ../plugins/transcode/burn-transcode.c:316
+#: ../plugins/transcode/burn-transcode.c:354
+#: ../plugins/transcode/burn-transcode.c:523
+#: ../plugins/transcode/burn-transcode.c:626
+#: ../plugins/transcode/burn-transcode.c:657
+#: ../plugins/transcode/burn-transcode.c:679
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:392
+#: ../plugins/transcode/burn-vob.c:545 ../plugins/transcode/burn-vob.c:675
+#: ../plugins/transcode/burn-vob.c:1039 ../plugins/transcode/burn-vob.c:1115
+#: ../plugins/transcode/burn-vob.c:1166
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "無法連結外掛程式間的資料"
@@ -3081,44 +3109,44 @@ msgstr "無法連結外掛程式間的資料"
 msgid "Normalizing tracks"
 msgstr "正規化軌道"
 
-#: ../plugins/transcode/burn-normalize.c:644
+#: ../plugins/transcode/burn-normalize.c:643
 msgid "Normalization"
 msgstr "正規化"
 
-#: ../plugins/transcode/burn-normalize.c:645
+#: ../plugins/transcode/burn-normalize.c:644
 msgid "Sets consistent sound levels between tracks"
 msgstr "讓每首歌曲的音量一致"
 
 #. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:1086
-#: ../plugins/transcode/burn-transcode.c:1274
+#: ../plugins/transcode/burn-transcode.c:1050
+#: ../plugins/transcode/burn-transcode.c:1238
 #, c-format
 msgid "Error while padding file (%s)"
 msgstr "在墊充檔案時發生錯誤 (%s)"
 
-#: ../plugins/transcode/burn-transcode.c:1350
+#: ../plugins/transcode/burn-transcode.c:1313
 msgid "Error while getting duration"
 msgstr "取得所需時間時發生錯誤"
 
-#: ../plugins/transcode/burn-transcode.c:1499
+#: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
 msgstr "正在解析「%s」"
 
-#: ../plugins/transcode/burn-transcode.c:1536
+#: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr "正在轉碼「%s」"
 
-#: ../plugins/transcode/burn-transcode.c:1773
+#: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr "將任何歌曲檔案轉碼為適合音樂 CD 的格式"
 
-#: ../plugins/transcode/burn-vob.c:1264
+#: ../plugins/transcode/burn-vob.c:1251
 msgid "Converting video file to MPEG2"
 msgstr "正將影片檔案轉換為 MPEG2"
 
-#: ../plugins/transcode/burn-vob.c:1367
+#: ../plugins/transcode/burn-vob.c:1353
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "將任何影片檔案轉碼為適合影片 DVD 的格式"
 
@@ -3203,7 +3231,7 @@ msgid "Error while loading the project"
 msgstr "載入專案時發生錯誤"
 
 #: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1274
+#: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "請將檔案加入專案中。"
 
@@ -3217,7 +3245,10 @@ msgid ""
 "terms of the GNU General Public License as published by the Free Software "
 "Foundation; either version 2 of the License, or (at your option) any later "
 "version."
-msgstr "Brasero 是自由軟件，你可以遵照自由軟件基金會 (Free Software Foundation) 出版的 GNU 通用公共許可證條款 (GNU General Public License) 第二版來修改和重新發布這一程式，或者自由選擇使用任何更新的版本。 "
+msgstr ""
+"Brasero 是自由軟件，你可以遵照自由軟件基金會 (Free Software Foundation) 出版"
+"的 GNU 通用公共許可證條款 (GNU General Public License) 第二版來修改和重新發布"
+"這一程式，或者自由選擇使用任何更新的版本。 "
 
 #: ../src/brasero-app.c:1179
 msgid ""
@@ -3225,14 +3256,19 @@ msgid ""
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
-msgstr "發布 Brasero 的目的是希望它有用，但沒有任何擔保。甚至沒有適合特定目的而隱含的擔保。更詳細的情況請參閱 GNU 通用公共許可證。 "
+msgstr ""
+"發布 Brasero 的目的是希望它有用，但沒有任何擔保。甚至沒有適合特定目的而隱含的"
+"擔保。更詳細的情況請參閱 GNU 通用公共許可證。 "
 
 #: ../src/brasero-app.c:1184
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
-msgstr "你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給：the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr ""
+"你應該已經和程式一起收到一份 GNU 通用公共許可證的副本。如果還沒有，寫信給："
+"the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, "
+"MA 02110-1301, USA"
 
 #: ../src/brasero-app.c:1196
 msgid "A simple to use CD/DVD burning application for GNOME"
@@ -3294,7 +3330,7 @@ msgid "Edit the track information (start, end, author, etc.)"
 msgstr "編輯軌道的資訊（開始、結束或作者等…）"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Remove the selected files from the project"
 msgstr "從專案中移除選取的檔案"
 
@@ -3601,7 +3637,8 @@ msgstr "繼續目前修改過的專案"
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
-msgstr "映像檔目前只選取了一個檔案(「%s」)。它是光碟的映像檔而且它的內容可以被燒錄。"
+msgstr ""
+"映像檔目前只選取了一個檔案(「%s」)。它是光碟的映像檔而且它的內容可以被燒錄。"
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
@@ -3757,11 +3794,11 @@ msgstr "退出(_E)"
 msgid "Eject Disc"
 msgstr "退出光碟"
 
-#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2226
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2230
 msgid "Audio files"
 msgstr "音效檔案"
 
-#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2235
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2239
 msgid "Movies"
 msgstr "影片"
 
@@ -3829,40 +3866,40 @@ msgstr "過濾損壞的符號連結(_B)"
 msgid "Filtering options"
 msgstr "過濾選項"
 
-#: ../src/brasero-layout.c:100
+#: ../src/brasero-layout.c:104
 msgid "P_review"
 msgstr "預覽(_R)"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
 msgstr "顯示影片，音樂和影像預覽"
 
-#: ../src/brasero-layout.c:106
+#: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
 msgstr "顯示側邊窗格(_S)"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:111
 msgid "Show a side pane along the project"
 msgstr "在這個專案中顯示一個側邊欄"
 
-#: ../src/brasero-layout.c:121
+#: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
 msgstr "水平配置(_H)"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:126
 msgid "Set a horizontal layout"
 msgstr "設定水平配置"
 
-#: ../src/brasero-layout.c:124
+#: ../src/brasero-layout.c:128
 msgid "_Vertical Layout"
 msgstr "垂直配置(_V)"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:129
 msgid "Set a vertical layout"
 msgstr "設定垂直配置"
 
-#: ../src/brasero-layout.c:1183
+#: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
 msgstr "點擊這裏來關閉側邊欄"
 
@@ -3998,69 +4035,69 @@ msgstr "外掛程式 %s 的選項"
 msgid "Brasero Plugins"
 msgstr "Brasero 外掛程式"
 
-#: ../src/brasero-project.c:194
+#: ../src/brasero-project.c:196
 msgid "Save current project"
 msgstr "儲存目前專案"
 
-#: ../src/brasero-project.c:195
+#: ../src/brasero-project.c:197
 msgid "Save _As…"
 msgstr "另存連結(_A)…"
 
-#: ../src/brasero-project.c:196
+#: ../src/brasero-project.c:198
 msgid "Save current project to a different location"
 msgstr "將幕前專案另存至不同位置"
 
-#: ../src/brasero-project.c:197
+#: ../src/brasero-project.c:199
 msgid "_Add Files"
 msgstr "新增檔案(_A)"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Add files to the project"
 msgstr "新增檔案至專案"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "_Remove Files"
 msgstr "移除檔案(_R)"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202 ../src/brasero-project.c:2308
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:2312
 msgid "E_mpty Project"
 msgstr "空白專案(_M)"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "Remove all files from the project"
 msgstr "自專案中移除所有資料"
 
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1084
+#: ../src/brasero-project.c:206 ../src/brasero-project.c:1086
 msgid "_Burn…"
 msgstr "燒錄(_B)…"
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:207
 msgid "Burn the disc"
 msgstr "燒錄光碟"
 
-#: ../src/brasero-project.c:693
+#: ../src/brasero-project.c:695
 msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
 msgstr "要將檔案加入這個專案請按「加入」按鈕或將檔案拖放到這個區域中"
 
-#: ../src/brasero-project.c:695
+#: ../src/brasero-project.c:697
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr "要移除檔案請選擇它們然後按「移除」按鈕或按「Delete」按鍵"
 
-#: ../src/brasero-project.c:802
+#: ../src/brasero-project.c:804
 #, c-format
 msgid "Estimated project size: %s"
 msgstr "專案預估容量：%s"
 
-#: ../src/brasero-project.c:948 ../src/brasero-project.c:964
+#: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr "專案的容量對此光碟而言太大，即使開啟超燒功能還是無法容納。"
 
-#: ../src/brasero-project.c:975
+#: ../src/brasero-project.c:977
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -4068,138 +4105,141 @@ msgid ""
 "Note: This option might cause failure."
 msgstr ""
 "此專案的容量對這個光碟而言太大了，你必須從專案中移除部份檔案。\n"
-"如果你使用不能被正確辨認的 90 或 100 分鐘 CD-R(W) 因而需要超燒選項時，你可能會想使用這個選項。\n"
+"如果你使用不能被正確辨認的 90 或 100 分鐘 CD-R(W) 因而需要超燒選項時，你可能"
+"會想使用這個選項。\n"
 "注意：這個選項可能造成燒錄失敗。"
 
-#: ../src/brasero-project.c:1096
+#: ../src/brasero-project.c:1098
 msgid "Start to burn the contents of the selection"
 msgstr "開始燒錄已選擇的內容"
 
-#: ../src/brasero-project.c:1265
+#: ../src/brasero-project.c:1267
 msgid "Please add songs to the project."
 msgstr "請將歌曲加入專案。"
 
-#: ../src/brasero-project.c:1902 ../src/brasero-project.c:1937
+#: ../src/brasero-project.c:1904 ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "你確定要新增一個專案並放棄目前的專案嗎?"
 
-#: ../src/brasero-project.c:1907
+#: ../src/brasero-project.c:1909
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr "如果你選擇新增一個空白專案，所有的更改將會消失。"
 
-#: ../src/brasero-project.c:1910
+#: ../src/brasero-project.c:1912
 msgid "_Discard Changes"
 msgstr "放棄更改(_D)"
 
-#: ../src/brasero-project.c:1918
+#: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "你要放棄己選取的檔案或把它加入到新的專案？"
 
-#: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr "如果你選擇新增一個空白專案，舊的檔案選取將會消失。"
 
-#: ../src/brasero-project.c:1925
+#: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
 msgstr "放棄已選取的檔案(_D)"
 
-#: ../src/brasero-project.c:1929
+#: ../src/brasero-project.c:1931
 msgid "_Keep File Selection"
 msgstr "保留已選取的檔案(_K)"
 
-#: ../src/brasero-project.c:1944
+#: ../src/brasero-project.c:1946
 msgid "_Discard Project"
 msgstr "放棄專案(_D)"
 
-#: ../src/brasero-project.c:2184
+#: ../src/brasero-project.c:2188
 msgid "Select Files"
 msgstr "選擇檔案"
 
-#: ../src/brasero-project.c:2297
+#: ../src/brasero-project.c:2301
 msgid "Do you really want to empty the current project?"
 msgstr "你確定要清空這個專案?"
 
-#: ../src/brasero-project.c:2302
+#: ../src/brasero-project.c:2306
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
-msgstr "清空專案會移除已經增加的所有檔案。所有的工作將會遺失。注意：這些檔案並不會從他們自己所在位置被刪除，而僅僅是不再在這裏列出。"
+msgstr ""
+"清空專案會移除已經增加的所有檔案。所有的工作將會遺失。注意：這些檔案並不會從"
+"他們自己所在位置被刪除，而僅僅是不再在這裏列出。"
 
-#: ../src/brasero-project.c:2364
+#: ../src/brasero-project.c:2368
 msgid "_Save"
 msgstr "儲存(_S)"
 
-#: ../src/brasero-project.c:2375
+#: ../src/brasero-project.c:2379
 msgid "_Add"
 msgstr "加入(_A)"
 
-#: ../src/brasero-project.c:2380 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "移除(_R)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2444
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero — %s （資料光碟）"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2447
+#: ../src/brasero-project.c:2451
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero — %s （音樂光碟）"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2450
+#: ../src/brasero-project.c:2454
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s （影片光碟）"
 
-#: ../src/brasero-project.c:2620 ../src/brasero-project.c:2923
+#: ../src/brasero-project.c:2624 ../src/brasero-project.c:2927
 msgid "Your project has not been saved."
 msgstr "你的專案尚未儲存。"
 
-#: ../src/brasero-project.c:2634
+#: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
 msgstr "關閉前儲存目前專案?"
 
-#: ../src/brasero-project.c:2639 ../src/brasero-project.c:2928
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
 msgstr "如果你不儲存，更改將會永久消失。"
 
-#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2649
-#: ../src/brasero-project.c:2931
+#: ../src/brasero-project.c:2647 ../src/brasero-project.c:2653
+#: ../src/brasero-project.c:2935
 msgid "Cl_ose Without Saving"
 msgstr "關閉且不儲存(_O)"
 
-#: ../src/brasero-project.c:2731
+#: ../src/brasero-project.c:2735
 msgid "Save Current Project"
 msgstr "儲存目前專案"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
 msgstr "將專案儲存為 Brasero 音樂光碟專案"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2754
 msgid "Save project as a plain text list"
 msgstr "將專案儲存為純文字清單"
 
-#: ../src/brasero-project.c:2754
+#: ../src/brasero-project.c:2758
 msgid "Save project as a PLS playlist"
 msgstr "將專案儲存為 PLS 播放清單"
 
-#: ../src/brasero-project.c:2755
+#: ../src/brasero-project.c:2759
 msgid "Save project as an M3U playlist"
 msgstr "將專案儲存為 M3U 播放清單"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2760
 msgid "Save project as an XSPF playlist"
 msgstr "將專案儲存為 XSPF 播放清單"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2761
 msgid "Save project as an iriver playlist"
 msgstr "將專案儲存為 iriver 播放清單"
 
@@ -4266,7 +4306,9 @@ msgstr "複製光碟(_D)…"
 msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
 "another CD/DVD"
-msgstr "建立一個在你硬碟上或另一張的 CD / DVD 上的一張音樂光碟或資料 CD/DVD 的 1:1 拷貝"
+msgstr ""
+"建立一個在你硬碟上或另一張的 CD / DVD 上的一張音樂光碟或資料 CD/DVD 的 1:1 拷"
+"貝"
 
 #: ../src/brasero-project-manager.c:109
 msgid "_Burn Image…"
@@ -4516,11 +4558,11 @@ msgstr "{編號}"
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-song-control.c:528
+#: ../src/brasero-song-control.c:527
 msgid "No file"
 msgstr "沒有檔案"
 
-#: ../src/brasero-song-control.c:563
+#: ../src/brasero-song-control.c:562
 msgid "Start and stop playing"
 msgstr "開始/停止播放"
 
