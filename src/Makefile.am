@@ -12,6 +12,7 @@ INCLUDES = \
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   			\
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    		\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
+	-DEGG_SM_CLIENT_BACKEND_XSMP					\
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\

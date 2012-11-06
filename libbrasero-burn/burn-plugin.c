@@ -41,6 +41,8 @@
 
 #include <gst/gst.h>
 
+#include <stdio.h>
+
 #include "brasero-media-private.h"
 
 #include "brasero-media.h"
