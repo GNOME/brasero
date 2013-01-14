@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Brasero HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-04-17 03:52+0000\n"
-"PO-Revision-Date: 2012-08-28 22:52+0300\n"
+"POT-Creation-Date: 2012-10-29 12:33+0000\n"
+"PO-Revision-Date: 2013-01-14 22:34+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Virtaal 0.6.1\n"
 
@@ -33,25 +33,26 @@ msgid "Create and copy CDs and DVDs"
 msgstr "Įrašyti ir kopijuoti CD bei DVD diskus"
 
 #: ../data/brasero.desktop.in.in.h:4
+msgid "disc;cdrom;dvd;burn;audio;video;"
+msgstr "diskas;cdrom;dvd;įrašyti;graso;vaizdo;"
+
+#: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
 msgstr "CD/DVD rašymas bei kopijavimas"
 
-#: ../data/brasero.desktop.in.in.h:5
+#: ../data/brasero.desktop.in.in.h:6
 msgid "Open a New Window"
 msgstr "Atverti naują langą"
 
-#: ../data/brasero.desktop.in.in.h:6
-#| msgid "Burn as _Image"
+#: ../data/brasero.desktop.in.in.h:7
 msgid "Burn an Image File"
 msgstr "Įrašyti atvaizdžio failą"
 
-#: ../data/brasero.desktop.in.in.h:7
-#| msgid "Create a new project"
+#: ../data/brasero.desktop.in.in.h:8
 msgid "Create an Audio Project"
 msgstr "Sukurti garso projektą"
 
-#: ../data/brasero.desktop.in.in.h:8
-#| msgid "Create a new project"
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create a Video Project"
 msgstr "Sukurti vaizdo projektą"
 
@@ -333,7 +334,7 @@ msgstr "Diske nepakanka vietos"
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
 #: ../libbrasero-burn/brasero-burn-options.c:1180
-#: ../src/brasero-project.c:1383
+#: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (programa)"
@@ -341,7 +342,7 @@ msgstr "%s (programa)"
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
 #: ../libbrasero-burn/brasero-burn-options.c:1186
-#: ../src/brasero-project.c:1389
+#: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (biblioteka)"
@@ -349,7 +350,7 @@ msgstr "%s (biblioteka)"
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
 #: ../libbrasero-burn/brasero-burn-options.c:1191
-#: ../src/brasero-project.c:1394
+#: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer įskiepis)"
@@ -623,7 +624,7 @@ msgstr "Įdėkite įrašomą CD ar DVD, kuriame yra bent %i MiB laisvos vietos."
 #: ../libbrasero-burn/brasero-burn-dialog.c:2169
 #: ../libbrasero-burn/brasero-burn-dialog.c:2183
 #: ../libbrasero-burn/brasero-burn-options.c:450
-#: ../src/brasero-project.c:993
+#: ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "Įdėkite įrašomą CD ar DVD."
 
@@ -921,8 +922,9 @@ msgid "Make _More Copies"
 msgstr "_Padaryti dar vieną kopiją"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1970
-msgid "_Create Cover"
-msgstr "_Sukurti viršelį"
+#| msgid "_Create Cover"
+msgid "Create Co_ver"
+msgstr "Sukurti _viršelį"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2132
 msgid "There are some files left to burn"
@@ -955,12 +957,12 @@ msgid "_Cancel Burning"
 msgstr "_Nutraukti rašymą"
 
 #: ../libbrasero-burn/brasero-burn-options.c:228
-#: ../src/brasero-project.c:1018
+#: ../src/brasero-project.c:1020
 msgid "Please insert a writable CD or DVD if you don't want to write to an image file."
 msgstr "Įdėkite įrašomą CD ar DVD, jei nenorite rašyti į atvaizdžio failą."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302
-#: ../src/brasero-project.c:1593
+#: ../src/brasero-project.c:1595
 msgid "Create _Image"
 msgstr "Sukurti _atvaizdį"
 
@@ -975,17 +977,17 @@ msgstr "_Padaryti keletą kopijų"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:314
-#: ../src/brasero-project.c:1522
+#: ../src/brasero-project.c:1524
 msgid "_Burn"
 msgstr "Įr_ašyti"
 
 #: ../libbrasero-burn/brasero-burn-options.c:317
-#: ../src/brasero-project.c:1519
+#: ../src/brasero-project.c:1521
 msgid "Burn _Several Copies"
 msgstr "Įrašyti _kelias kopijas"
 
 #: ../libbrasero-burn/brasero-burn-options.c:426
-#: ../src/brasero-project.c:947
+#: ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "Ar norite rašyti pasirinktus duomenis per kelias laikmenas?"
 
@@ -995,27 +997,27 @@ msgid "The data size is too large for the disc even with the overburn option."
 msgstr "Duomenų per daug šiam diskui netgi naudojant „overburn“ nustatymą."
 
 #: ../libbrasero-burn/brasero-burn-options.c:432
-#: ../src/brasero-project.c:952
+#: ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
 msgstr "Įrašyti _keletą diskų"
 
 #: ../libbrasero-burn/brasero-burn-options.c:434
-#: ../src/brasero-project.c:954
+#: ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
 msgstr "Įrašyti pažymėtus failus į keletą laikmenų"
 
 #: ../libbrasero-burn/brasero-burn-options.c:443
-#: ../src/brasero-project.c:963
+#: ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Pasirinkite kitą CD ar DVD arba įdėkite kitą."
 
 #: ../libbrasero-burn/brasero-burn-options.c:457
-#: ../src/brasero-project.c:1008
+#: ../src/brasero-project.c:1010
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "Informacija apie kūrinį (atlikėjas, pavadinimas, …) nebus įrašyta į diską."
 
 #: ../libbrasero-burn/brasero-burn-options.c:458
-#: ../src/brasero-project.c:1009
+#: ../src/brasero-project.c:1011
 msgid "This is not supported by the current active burning backend."
 msgstr "Ši funkcija nepalaikoma pasirinktos rašymo posistemės."
 
@@ -1029,7 +1031,7 @@ msgstr "Pridėkite failų."
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-track-stream.c:402
 #: ../nautilus/nautilus-burn-extension.c:240
-#: ../src/brasero-project.c:1275
+#: ../src/brasero-project.c:1277
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "Nėra į diską įrašytinų failų"
@@ -1039,7 +1041,7 @@ msgid "Please add songs."
 msgstr "Pridėkite dainų."
 
 #: ../libbrasero-burn/brasero-burn-options.c:477
-#: ../src/brasero-project.c:1266
+#: ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
 msgstr "Nėra kūrinių, įrašytinų į diską"
 
@@ -1081,17 +1083,17 @@ msgstr "Įdėkite diską, kuris nėra apsaugotas nuo kopijavimo."
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1443
+#: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Įdiegtos ne visos reikiamos programos ir bibliotekos"
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../src/brasero-project.c:1001
+#: ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Pakeiskite įdėtą diską tinkamu CD ar DVD disku."
 
 #: ../libbrasero-burn/brasero-burn-options.c:542
-#: ../src/brasero-project.c:974
+#: ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "Ar norite rašyti viršijant nurodytą disko talpą?"
 
@@ -1106,12 +1108,12 @@ msgstr ""
 "PASTABA: įjungus šią parinktį galimas nesėkmingas įrašymas."
 
 #: ../libbrasero-burn/brasero-burn-options.c:550
-#: ../src/brasero-project.c:981
+#: ../src/brasero-project.c:983
 msgid "_Overburn"
 msgstr "Naudoti „_overburn“"
 
 #: ../libbrasero-burn/brasero-burn-options.c:552
-#: ../src/brasero-project.c:983
+#: ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
 msgstr "Rašyti viršijant nurodytą disko talpą"
 
@@ -1134,7 +1136,7 @@ msgid "Disc Burning Setup"
 msgstr "Disko įrašymo sąranka"
 
 #: ../libbrasero-burn/brasero-burn-options.c:757
-#: ../src/brasero-project.c:1542
+#: ../src/brasero-project.c:1544
 msgid "Video Options"
 msgstr "Video parinktys"
 
@@ -1175,7 +1177,7 @@ msgid "Select disc to copy"
 msgstr "Pasirinkite kopijuotiną diską"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Įdiekite šiuos komponentus ir bandykite vėl:"
 
@@ -1195,7 +1197,7 @@ msgstr "Nežinoma daina"
 #. Translators: %s is the name of an artist.
 #: ../libbrasero-burn/brasero-cover.c:146
 #: ../src/brasero-player.c:419
-#: ../src/brasero-song-control.c:271
+#: ../src/brasero-song-control.c:270
 #, c-format
 msgid "by %s"
 msgstr "atlieka %s"
@@ -1407,7 +1409,7 @@ msgid "Cdrdao image"
 msgstr "Cdrdao atvaizdis"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1501
+#: ../src/brasero-project.c:1503
 #, c-format
 msgid "Properties of %s"
 msgstr "%s savybės"
@@ -1493,7 +1495,7 @@ msgstr "Pasirinkite atvaizdžio failą"
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236
 #: ../src/brasero-file-chooser.c:350
-#: ../src/brasero-project.c:2221
+#: ../src/brasero-project.c:2225
 #: ../src/brasero-project-name.c:162
 msgid "All files"
 msgstr "Visi failai"
@@ -1607,7 +1609,7 @@ msgstr "Nepavyko patikrinti failų identiškumo."
 #: ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100
 #: ../src/brasero-playlist.c:393
-#: ../src/brasero-project.c:2621
+#: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "Įvyko nežinoma klaida"
 
@@ -1959,7 +1961,7 @@ msgstr "Nenurodytas išvestino atvaizdžio kelias"
 #: ../libbrasero-burn/burn-job.c:768
 #: ../plugins/cdrtools/burn-cdrecord.c:710
 #: ../plugins/libburnia/burn-libburn.c:717
-#: ../plugins/transcode/burn-transcode.c:826
+#: ../plugins/transcode/burn-transcode.c:790
 #, c-format
 msgid "An internal error occurred (%s)"
 msgstr "Įvyko vidinė klaida (%s)"
@@ -2453,7 +2455,7 @@ msgstr "PRIEKINIS VIRŠELIS"
 msgid "The image could not be loaded."
 msgstr "Nepavyko įkelti paveikslėlio."
 
-#: ../libbrasero-utils/brasero-metadata.c:1135
+#: ../libbrasero-utils/brasero-metadata.c:1122
 #: ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
@@ -2462,57 +2464,57 @@ msgstr "GStreamer negali apdoroti „%s“."
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
+#: ../libbrasero-utils/brasero-metadata.c:1194
 #: ../libbrasero-utils/brasero-metadata.c:1207
 #: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1233
-#: ../libbrasero-utils/brasero-metadata.c:1375
-#: ../libbrasero-utils/brasero-metadata.c:1746
-#: ../libbrasero-utils/brasero-metadata.c:1761
-#: ../libbrasero-utils/brasero-metadata.c:1770
+#: ../libbrasero-utils/brasero-metadata.c:1362
+#: ../libbrasero-utils/brasero-metadata.c:1734
+#: ../libbrasero-utils/brasero-metadata.c:1749
+#: ../libbrasero-utils/brasero-metadata.c:1758
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
 #: ../plugins/transcode/burn-normalize.c:221
 #: ../plugins/transcode/burn-normalize.c:238
 #: ../plugins/transcode/burn-normalize.c:335
-#: ../plugins/transcode/burn-transcode.c:294
-#: ../plugins/transcode/burn-transcode.c:306
-#: ../plugins/transcode/burn-transcode.c:456
-#: ../plugins/transcode/burn-transcode.c:509
-#: ../plugins/transcode/burn-transcode.c:543
-#: ../plugins/transcode/burn-transcode.c:590
+#: ../plugins/transcode/burn-transcode.c:292
+#: ../plugins/transcode/burn-transcode.c:304
+#: ../plugins/transcode/burn-transcode.c:426
+#: ../plugins/transcode/burn-transcode.c:479
+#: ../plugins/transcode/burn-transcode.c:513
+#: ../plugins/transcode/burn-transcode.c:556
+#: ../plugins/transcode/burn-transcode.c:577
+#: ../plugins/transcode/burn-transcode.c:589
 #: ../plugins/transcode/burn-transcode.c:611
-#: ../plugins/transcode/burn-transcode.c:623
-#: ../plugins/transcode/burn-transcode.c:648
-#: ../plugins/transcode/burn-vob.c:309
-#: ../plugins/transcode/burn-vob.c:329
-#: ../plugins/transcode/burn-vob.c:344
-#: ../plugins/transcode/burn-vob.c:356
-#: ../plugins/transcode/burn-vob.c:373
-#: ../plugins/transcode/burn-vob.c:431
-#: ../plugins/transcode/burn-vob.c:448
-#: ../plugins/transcode/burn-vob.c:460
-#: ../plugins/transcode/burn-vob.c:472
-#: ../plugins/transcode/burn-vob.c:484
-#: ../plugins/transcode/burn-vob.c:501
-#: ../plugins/transcode/burn-vob.c:592
-#: ../plugins/transcode/burn-vob.c:609
-#: ../plugins/transcode/burn-vob.c:621
-#: ../plugins/transcode/burn-vob.c:633
-#: ../plugins/transcode/burn-vob.c:655
-#: ../plugins/transcode/burn-vob.c:672
-#: ../plugins/transcode/burn-vob.c:718
-#: ../plugins/transcode/burn-vob.c:795
-#: ../plugins/transcode/burn-vob.c:812
-#: ../plugins/transcode/burn-vob.c:827
-#: ../plugins/transcode/burn-vob.c:839
-#: ../plugins/transcode/burn-vob.c:850
-#: ../plugins/transcode/burn-vob.c:861
-#: ../plugins/transcode/burn-vob.c:1036
-#: ../plugins/transcode/burn-vob.c:1100
-#: ../plugins/transcode/burn-vob.c:1117
-#: ../plugins/transcode/burn-vob.c:1138
-#: ../plugins/transcode/burn-vob.c:1165
+#: ../plugins/transcode/burn-vob.c:308
+#: ../plugins/transcode/burn-vob.c:328
+#: ../plugins/transcode/burn-vob.c:343
+#: ../plugins/transcode/burn-vob.c:355
+#: ../plugins/transcode/burn-vob.c:372
+#: ../plugins/transcode/burn-vob.c:428
+#: ../plugins/transcode/burn-vob.c:445
+#: ../plugins/transcode/burn-vob.c:457
+#: ../plugins/transcode/burn-vob.c:469
+#: ../plugins/transcode/burn-vob.c:481
+#: ../plugins/transcode/burn-vob.c:498
+#: ../plugins/transcode/burn-vob.c:582
+#: ../plugins/transcode/burn-vob.c:599
+#: ../plugins/transcode/burn-vob.c:611
+#: ../plugins/transcode/burn-vob.c:623
+#: ../plugins/transcode/burn-vob.c:642
+#: ../plugins/transcode/burn-vob.c:659
+#: ../plugins/transcode/burn-vob.c:705
+#: ../plugins/transcode/burn-vob.c:782
+#: ../plugins/transcode/burn-vob.c:799
+#: ../plugins/transcode/burn-vob.c:814
+#: ../plugins/transcode/burn-vob.c:826
+#: ../plugins/transcode/burn-vob.c:837
+#: ../plugins/transcode/burn-vob.c:848
+#: ../plugins/transcode/burn-vob.c:1023
+#: ../plugins/transcode/burn-vob.c:1087
+#: ../plugins/transcode/burn-vob.c:1104
+#: ../plugins/transcode/burn-vob.c:1125
+#: ../plugins/transcode/burn-vob.c:1152
 #, c-format
 msgid "%s element could not be created"
 msgstr "Nepavyko sukurti %s elemento"
@@ -2538,7 +2540,7 @@ msgstr "Laikmenos piktograma"
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../nautilus/nautilus-burn-bar.c:242
 #: ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2246
+#: ../src/brasero-project.c:2250
 #: ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
@@ -3067,19 +3069,19 @@ msgstr "Leidžia rašyti failus, įdėtus į Nautilus „CD/DVD rašymo aplanką
 #. * too technical and should be removed?
 #: ../plugins/transcode/burn-normalize.c:199
 #: ../plugins/transcode/burn-normalize.c:260
-#: ../plugins/transcode/burn-transcode.c:318
-#: ../plugins/transcode/burn-transcode.c:356
-#: ../plugins/transcode/burn-transcode.c:553
-#: ../plugins/transcode/burn-transcode.c:663
-#: ../plugins/transcode/burn-transcode.c:694
-#: ../plugins/transcode/burn-transcode.c:715
+#: ../plugins/transcode/burn-transcode.c:316
+#: ../plugins/transcode/burn-transcode.c:354
+#: ../plugins/transcode/burn-transcode.c:523
+#: ../plugins/transcode/burn-transcode.c:626
+#: ../plugins/transcode/burn-transcode.c:657
+#: ../plugins/transcode/burn-transcode.c:679
 #: ../plugins/transcode/burn-vob.c:189
-#: ../plugins/transcode/burn-vob.c:395
-#: ../plugins/transcode/burn-vob.c:555
-#: ../plugins/transcode/burn-vob.c:688
-#: ../plugins/transcode/burn-vob.c:1052
-#: ../plugins/transcode/burn-vob.c:1128
-#: ../plugins/transcode/burn-vob.c:1179
+#: ../plugins/transcode/burn-vob.c:392
+#: ../plugins/transcode/burn-vob.c:545
+#: ../plugins/transcode/burn-vob.c:675
+#: ../plugins/transcode/burn-vob.c:1039
+#: ../plugins/transcode/burn-vob.c:1115
+#: ../plugins/transcode/burn-vob.c:1166
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "Nepavyko susieti įskiepių"
@@ -3088,44 +3090,44 @@ msgstr "Nepavyko susieti įskiepių"
 msgid "Normalizing tracks"
 msgstr "Normalizuojami takeliai"
 
-#: ../plugins/transcode/burn-normalize.c:644
+#: ../plugins/transcode/burn-normalize.c:643
 msgid "Normalization"
 msgstr "Normalizavimas"
 
-#: ../plugins/transcode/burn-normalize.c:645
+#: ../plugins/transcode/burn-normalize.c:644
 msgid "Sets consistent sound levels between tracks"
 msgstr "Normalizavimas įgalina nustatyti vienodą takelių garsumą"
 
 #. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:1086
-#: ../plugins/transcode/burn-transcode.c:1274
+#: ../plugins/transcode/burn-transcode.c:1050
+#: ../plugins/transcode/burn-transcode.c:1238
 #, c-format
 msgid "Error while padding file (%s)"
 msgstr "Klaida papildant failą (%s)"
 
-#: ../plugins/transcode/burn-transcode.c:1350
+#: ../plugins/transcode/burn-transcode.c:1313
 msgid "Error while getting duration"
 msgstr "Klaida gaunant trukmę"
 
-#: ../plugins/transcode/burn-transcode.c:1499
+#: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
 msgstr "Analizuojama „%s“"
 
-#: ../plugins/transcode/burn-transcode.c:1536
+#: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr "Perkoduojama „%s“"
 
-#: ../plugins/transcode/burn-transcode.c:1773
+#: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr "Perkoduoja bet kokį garso failą į formatą, tinkamą garso CD"
 
-#: ../plugins/transcode/burn-vob.c:1264
+#: ../plugins/transcode/burn-vob.c:1251
 msgid "Converting video file to MPEG2"
 msgstr "Konvertuojamas vaizdo įrašas į MPEG2"
 
-#: ../plugins/transcode/burn-vob.c:1367
+#: ../plugins/transcode/burn-vob.c:1353
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "Konvertuoja bet kokį vaizdo įrašą į formatą, tinkamą vaizdo DVD"
 
@@ -3215,7 +3217,7 @@ msgstr "Klaida įkeliant projektą"
 #: ../src/brasero-app.c:829
 #: ../src/brasero-app.c:858
 #: ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1274
+#: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "Įdėkite failų į projektą."
 
@@ -3296,7 +3298,7 @@ msgstr "Keisti takelių informaciją (pradžią, pabaiga, autorius, …)"
 
 #: ../src/brasero-audio-disc.c:160
 #: ../src/brasero-data-disc.c:127
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Remove the selected files from the project"
 msgstr "Pašalinti pasirinktus failus iš projekto"
 
@@ -3767,12 +3769,12 @@ msgid "Eject Disc"
 msgstr "Išimti diską"
 
 #: ../src/brasero-file-chooser.c:357
-#: ../src/brasero-project.c:2226
+#: ../src/brasero-project.c:2230
 msgid "Audio files"
 msgstr "Garso failai"
 
 #: ../src/brasero-file-chooser.c:365
-#: ../src/brasero-project.c:2235
+#: ../src/brasero-project.c:2239
 msgid "Movies"
 msgstr "Vaizdo failai"
 
@@ -3844,40 +3846,40 @@ msgstr "Filtruoti _sugadintas simbolines nuorodas"
 msgid "Filtering options"
 msgstr "Filtravimo parinktys"
 
-#: ../src/brasero-layout.c:100
+#: ../src/brasero-layout.c:104
 msgid "P_review"
 msgstr "Pe_ržiūra"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
 msgstr "Rodyti vaizdo, garso įrašų ir paveikslėlių peržiūrą"
 
-#: ../src/brasero-layout.c:106
+#: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
 msgstr "_Rodyti šoninį polangį"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:111
 msgid "Show a side pane along the project"
 msgstr "Šalia projekto rodyti šoninį polangį"
 
-#: ../src/brasero-layout.c:121
+#: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
 msgstr "_Horizontalus išdėstymas"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:126
 msgid "Set a horizontal layout"
 msgstr "Nustatyti horizontalų išdėstymą"
 
-#: ../src/brasero-layout.c:124
+#: ../src/brasero-layout.c:128
 msgid "_Vertical Layout"
 msgstr "_Vertikalus išdėstymas"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:129
 msgid "Set a vertical layout"
 msgstr "Nustatyti vertikalų išdėstymą"
 
-#: ../src/brasero-layout.c:1183
+#: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
 msgstr "Spustelėkite norėdami užverti šoninį polangį"
 
@@ -4028,68 +4030,68 @@ msgstr "Įskiepio %s nustatymai"
 msgid "Brasero Plugins"
 msgstr "Brasero papildiniai"
 
-#: ../src/brasero-project.c:194
+#: ../src/brasero-project.c:196
 msgid "Save current project"
 msgstr "Išsaugoti šį projektą"
 
-#: ../src/brasero-project.c:195
+#: ../src/brasero-project.c:197
 msgid "Save _As…"
 msgstr "Išsaugoti k_aip…"
 
-#: ../src/brasero-project.c:196
+#: ../src/brasero-project.c:198
 msgid "Save current project to a different location"
 msgstr "Išsaugoti šį projektą kitoje vietoje"
 
-#: ../src/brasero-project.c:197
+#: ../src/brasero-project.c:199
 msgid "_Add Files"
 msgstr "_Pridėti failus"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Add files to the project"
 msgstr "Įdėti failus į projektą"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "_Remove Files"
 msgstr "P_ašalinti failus"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202
-#: ../src/brasero-project.c:2308
+#: ../src/brasero-project.c:204
+#: ../src/brasero-project.c:2312
 msgid "E_mpty Project"
 msgstr "Iš_valyti projektą"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "Remove all files from the project"
 msgstr "Pašalinti visus failus iš projekto"
 
-#: ../src/brasero-project.c:204
-#: ../src/brasero-project.c:1084
+#: ../src/brasero-project.c:206
+#: ../src/brasero-project.c:1086
 msgid "_Burn…"
 msgstr "Įr_ašyti…"
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:207
 msgid "Burn the disc"
 msgstr "Įrašyti diską"
 
-#: ../src/brasero-project.c:693
+#: ../src/brasero-project.c:695
 msgid "To add files to this project click the \"Add\" button or drag files to this area"
 msgstr "Norėdami pridėti failų, spauskite „Pridėti“ arba tempkite failus į šį plotą"
 
-#: ../src/brasero-project.c:695
+#: ../src/brasero-project.c:697
 msgid "To remove files select them then click on the \"Remove\" button or press \"Delete\" key"
 msgstr "Norėdami pašalinti failus, pažymėkite juos ir spauskite „Šalinti“ arba spauskite „Delete“ klavišą"
 
-#: ../src/brasero-project.c:802
+#: ../src/brasero-project.c:804
 #, c-format
 msgid "Estimated project size: %s"
 msgstr "Apskaičiuotas dydis: %s"
 
-#: ../src/brasero-project.c:948
-#: ../src/brasero-project.c:964
+#: ../src/brasero-project.c:950
+#: ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr "Projektas per didelis šiam diskui netgi naudojant „overburn“ nustatymą."
 
-#: ../src/brasero-project.c:975
+#: ../src/brasero-project.c:977
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognized and therefore needs the overburn option.\n"
@@ -4099,136 +4101,136 @@ msgstr ""
 "Galbūt norėsite pasinaudoti šia parinktimi, jei naudojate 90 ar 100 min CD-R(W), kuris nėra teisingai atpažįstamas ir reikalauja overburn parinkties.\n"
 "Pastaba: įjungus šią parinktį galimas nesėkmingas įrašymas."
 
-#: ../src/brasero-project.c:1096
+#: ../src/brasero-project.c:1098
 msgid "Start to burn the contents of the selection"
 msgstr "Pradėti pasirinkto turinio įrašymą"
 
-#: ../src/brasero-project.c:1265
+#: ../src/brasero-project.c:1267
 msgid "Please add songs to the project."
 msgstr "Įdėkite į projektą dainų."
 
-#: ../src/brasero-project.c:1902
-#: ../src/brasero-project.c:1937
+#: ../src/brasero-project.c:1904
+#: ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Ar tikrai norite sukurti naują projektą ir atsisakyti dabartinio?"
 
-#: ../src/brasero-project.c:1907
+#: ../src/brasero-project.c:1909
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr "Jeigu pasirinksite sukurti naują projektą, visi atlikti pakeitimai bus prarasti."
 
-#: ../src/brasero-project.c:1910
+#: ../src/brasero-project.c:1912
 msgid "_Discard Changes"
 msgstr "_Atsisakyti pakeitimų"
 
-#: ../src/brasero-project.c:1918
+#: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "Ar norite pašalinti pažymėtus failų, ar pridėti juos į naują projektą?"
 
-#: ../src/brasero-project.c:1923
-#: ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1925
+#: ../src/brasero-project.c:1944
 msgid "If you choose to create a new empty project, the file selection will be discarded."
 msgstr "Jeigu pasirinksite sukurti naują projektą, visi pasirinkti failai bus atmesti."
 
-#: ../src/brasero-project.c:1925
+#: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
 msgstr "_Atmesti failus"
 
-#: ../src/brasero-project.c:1929
+#: ../src/brasero-project.c:1931
 msgid "_Keep File Selection"
 msgstr "_Palikti pasirinktus failus"
 
-#: ../src/brasero-project.c:1944
+#: ../src/brasero-project.c:1946
 msgid "_Discard Project"
 msgstr "_Atsisakyti projekto"
 
-#: ../src/brasero-project.c:2184
+#: ../src/brasero-project.c:2188
 msgid "Select Files"
 msgstr "Pasirinkite failus"
 
-#: ../src/brasero-project.c:2297
+#: ../src/brasero-project.c:2301
 msgid "Do you really want to empty the current project?"
 msgstr "Ar tikrai norite išvalyti dabartinį projektą?"
 
-#: ../src/brasero-project.c:2302
+#: ../src/brasero-project.c:2306
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Išvalius projektą bus pašalinti visi jau pridėti failai. Visas darbas bus prarastas. Atminkite, kad failai nebus ištrinti iš disko, tiesiog jie nebebus rodomi čia."
 
-#: ../src/brasero-project.c:2364
+#: ../src/brasero-project.c:2368
 msgid "_Save"
 msgstr "_Išsaugoti"
 
-#: ../src/brasero-project.c:2375
+#: ../src/brasero-project.c:2379
 msgid "_Add"
 msgstr "_Pridėti"
 
-#: ../src/brasero-project.c:2380
+#: ../src/brasero-project.c:2384
 #: ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "_Pašalinti"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2444
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero — %s (duomenų diskas)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2447
+#: ../src/brasero-project.c:2451
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero — %s (garso diskas)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2450
+#: ../src/brasero-project.c:2454
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (vaizdo diskas)"
 
-#: ../src/brasero-project.c:2620
-#: ../src/brasero-project.c:2923
+#: ../src/brasero-project.c:2624
+#: ../src/brasero-project.c:2927
 msgid "Your project has not been saved."
 msgstr "Projektas neįrašytas."
 
-#: ../src/brasero-project.c:2634
+#: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
 msgstr "Išsaugoti dabartinio projekto pakeitimus prieš užveriant?"
 
-#: ../src/brasero-project.c:2639
-#: ../src/brasero-project.c:2928
+#: ../src/brasero-project.c:2643
+#: ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Jeigu neišsaugosite, pakeitimai bus nesugrąžinamai prarasti."
 
-#: ../src/brasero-project.c:2643
-#: ../src/brasero-project.c:2649
-#: ../src/brasero-project.c:2931
+#: ../src/brasero-project.c:2647
+#: ../src/brasero-project.c:2653
+#: ../src/brasero-project.c:2935
 msgid "Cl_ose Without Saving"
 msgstr "_Užverti neišsaugant"
 
-#: ../src/brasero-project.c:2731
+#: ../src/brasero-project.c:2735
 msgid "Save Current Project"
 msgstr "Išsaugoti šį projektą"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
 msgstr "Išsaugoti projektą kaip brasero garso projektą"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2754
 msgid "Save project as a plain text list"
 msgstr "Išsaugoti projektą kaip paprasto teksto sąrašą"
 
-#: ../src/brasero-project.c:2754
+#: ../src/brasero-project.c:2758
 msgid "Save project as a PLS playlist"
 msgstr "Išsaugoti projektą kaip PLS grojaraštį"
 
-#: ../src/brasero-project.c:2755
+#: ../src/brasero-project.c:2759
 msgid "Save project as an M3U playlist"
 msgstr "Išsaugoti projektą kaip M3U grojaraštį"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2760
 msgid "Save project as an XSPF playlist"
 msgstr "Išsaugoti projektą kaip XSPF grojaraštį"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2761
 msgid "Save project as an iriver playlist"
 msgstr "Išsaugoti projektą kaip iriver grojaraštį"
 
@@ -4552,11 +4554,11 @@ msgstr "{skaičius}"
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-song-control.c:528
+#: ../src/brasero-song-control.c:527
 msgid "No file"
 msgstr "Nėra failo"
 
-#: ../src/brasero-song-control.c:563
+#: ../src/brasero-song-control.c:562
 msgid "Start and stop playing"
 msgstr "Pradėti ir stabdyti atkūrimą"
 
