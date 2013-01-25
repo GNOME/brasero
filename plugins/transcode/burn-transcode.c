@@ -284,13 +284,13 @@ brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
 
 	BRASERO_JOB_LOG (transcode, "Creating specific pipeline for MP3s");
 
-	parse = gst_element_factory_make ("mp3parse", NULL);
+	parse = gst_element_factory_make ("mpegaudioparse", NULL);
 	if (!parse) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
-			     "\"Mp3parse\"");
+			     "\"mpegaudioparse\"");
 		g_object_unref (pipeline);
 		return FALSE;
 	}
