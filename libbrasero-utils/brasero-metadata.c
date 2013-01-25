@@ -1200,12 +1200,12 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 	}
 	gst_bin_add (GST_BIN (priv->pipeline_mp3), source);
 
-	parse = gst_element_factory_make ("mp3parse", NULL);
+	parse = gst_element_factory_make ("mpegaudioparse", NULL);
 	if (!parse) {
 		priv->error = g_error_new (BRASERO_UTILS_ERROR,
 					   BRASERO_UTILS_ERROR_GENERAL,
 					   _("%s element could not be created"),
-					   "\"mp3parse\"");
+					   "\"mpegaudioparse\"");
 
 		g_object_unref (priv->pipeline_mp3);
 		priv->pipeline_mp3 = NULL;
