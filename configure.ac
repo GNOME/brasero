@@ -382,21 +382,22 @@ AC_ARG_ENABLE(search,
 			esac],
 			[enable_search="auto"])
 
+if test x"$enable_search" != "xno"; then
+        # Try to figure out the tracker API version to use
+        tracker_api="0.10"
+        m4_foreach([VERSION], [[0.10], [0.12], [0.14], [0.16]],
+                              [PKG_CHECK_EXISTS([tracker-sparql-VERSION >= $TRACKER_REQUIRED],
+                                                [tracker_api="VERSION"])
+                              ])
+fi
+
 if test x"$enable_search" = "xauto"; then
-        PKG_CHECK_EXISTS([tracker-sparql-0.14 >= $TRACKER_REQUIRED],
-                          [enable_search=yes],
-                          [PKG_CHECK_EXISTS([tracker-sparql-0.12 >= $TRACKER_REQUIRED],
-                                            [enable_search=yes],
-                                            [PKG_CHECK_EXISTS([tracker-sparql-0.10 >= $TRACKER_REQUIRED],
-                                                              [enable_search=yes],
-                                                              [enable_search=no])])])
+        PKG_CHECK_EXISTS([tracker-sparql-$tracker_api >= $TRACKER_REQUIRED],
+                         [enable_search=yes],
+                         [enable_search=no])
 fi
 
 if test x"$enable_search" = "xyes"; then
-        PKG_CHECK_EXISTS([tracker-sparql-0.14 >= $TRACKER_REQUIRED],
-                         [tracker_api=0.14],
-                         [PKG_CHECK_EXISTS([tracker-sparql-0.12 >= $TRACKER_REQUIRED],
-                                           [tracker_api=0.12], [tracker_api=0.10])])
 	PKG_CHECK_MODULES(BRASERO_SEARCH, tracker-sparql-$tracker_api >= $TRACKER_REQUIRED)
 	AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
 	AC_DEFINE(BUILD_TRACKER, 1, [define if you  want to use search pane])
