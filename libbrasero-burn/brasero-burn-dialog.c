@@ -169,6 +169,8 @@ brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
 
 	notify_notification_set_timeout (notification, 10000);
 	notify_notification_set_urgency (notification, NOTIFY_URGENCY_NORMAL);
+	notify_notification_set_hint_string (notification, "desktop-entry",
+                                             "brasero");
 
 	result = notify_notification_show (notification, &error);
 	if (error) {
