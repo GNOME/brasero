@@ -3,22 +3,22 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # A S Alam <aalam@users.sf.net>, 2007, 2009, 2010, 2011.
-# Amanpreet Singh Alam <aalam@users.sf.net>, 2009, 2012.
+# Amanpreet Singh Alam <aalam@users.sf.net>, 2009, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-04-17 03:52+0000\n"
-"PO-Revision-Date: 2012-09-19 20:09+0530\n"
+"POT-Creation-Date: 2012-10-29 12:33+0000\n"
+"PO-Revision-Date: 2013-02-22 01:27+0000\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"Language: pa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 1.4\n"
-"Language: pa\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -33,25 +33,26 @@ msgid "Create and copy CDs and DVDs"
 msgstr "CD ਅਤੇ DVD ਬਣਾਓ ਅਤੇ ਕਾਪੀ ਕਰੋ"
 
 #: ../data/brasero.desktop.in.in.h:4
+msgid "disc;cdrom;dvd;burn;audio;video;"
+msgstr "ਡਿਸਕ;ਸੀਡੀ;ਡੀਵੀਡੀ;ਲਿਖੋ;ਬਰਨ;ਆਡੀਓ;ਵਿਡੀਓ;disc;cdrom;dvd;burn;audio;video;"
+
+#: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
 msgstr "ਬਰਾਸੀਰੋ ਡਿਸਕ ਬਰਨਰ"
 
-#: ../data/brasero.desktop.in.in.h:5
+#: ../data/brasero.desktop.in.in.h:6
 msgid "Open a New Window"
 msgstr "ਨਵੀਂ ਵਿੰਡੋ ਖੋਲ੍ਹੋ"
 
-#: ../data/brasero.desktop.in.in.h:6
-#| msgid "Burn as _Image"
+#: ../data/brasero.desktop.in.in.h:7
 msgid "Burn an Image File"
 msgstr "ਈਮੇਜ਼ ਫਾਇਲ ਲਿਖੋ"
 
-#: ../data/brasero.desktop.in.in.h:7
-#| msgid "Create a new project"
+#: ../data/brasero.desktop.in.in.h:8
 msgid "Create an Audio Project"
 msgstr "ਆਡੀਓ ਪਰੋਜੈਕਟ ਬਣਾਓ"
 
-#: ../data/brasero.desktop.in.in.h:8
-#| msgid "Create a new project"
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create a Video Project"
 msgstr "ਵਿਡੀਓ ਪਰੋਜੈਕਟ ਬਣਾਓ"
 
@@ -393,7 +394,7 @@ msgstr "ਡਿਸਕ ਉੱਤੇ ਲੋੜੀਦੀ ਥਾਂ ਨਹੀਂ ਹ�
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
 #: ../libbrasero-burn/brasero-burn-options.c:1180
-#: ../src/brasero-project.c:1383
+#: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (ਐਪਲੀਕੇਸ਼ਨ)"
@@ -401,7 +402,7 @@ msgstr "%s (ਐਪਲੀਕੇਸ਼ਨ)"
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
 #: ../libbrasero-burn/brasero-burn-options.c:1186
-#: ../src/brasero-project.c:1389
+#: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (ਲਾਇਬਰੇਰੀ)"
@@ -409,7 +410,7 @@ msgstr "%s (ਲਾਇਬਰੇਰੀ)"
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
 #: ../libbrasero-burn/brasero-burn-options.c:1191
-#: ../src/brasero-project.c:1394
+#: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (ਜੀਸਟਰੀਮਰ ਪਲੱਗਇਨ)"
@@ -687,7 +688,7 @@ msgstr "%i MiB ਖਾਲੀ ਥਾਂ ਵਾਲੀ ਇੱਕ ਲਿਖਣਯੋ�
 #: ../libbrasero-burn/brasero-burn-dialog.c:611
 #: ../libbrasero-burn/brasero-burn-dialog.c:2169
 #: ../libbrasero-burn/brasero-burn-dialog.c:2183
-#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:993
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "ਇੱਕ ਲਿਖਣਯੋਗ CD ਜਾਂ DVD ਪਾਉ ਜੀ।"
 
@@ -1012,8 +1013,9 @@ msgid "Make _More Copies"
 msgstr "ਹੋਰ ਕਾਪੀਆਂ ਬਣਾਓ(_M)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1970
-msgid "_Create Cover"
-msgstr "ਕਵਰ ਬਣਾਓ(_C)"
+#| msgid "_Create Cover"
+msgid "Create Co_ver"
+msgstr "ਕਵਰ ਬਣਾਓ(_v)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2132
 msgid "There are some files left to burn"
@@ -1045,7 +1047,7 @@ msgstr "ਲਿਖਣਾ ਜਾਰੀ ਰੱਖੋ(_C)"
 msgid "_Cancel Burning"
 msgstr "ਲਿਖਣਾ ਰੱਦ ਕਰੋ(_C)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1018
+#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1020
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
@@ -1053,7 +1055,7 @@ msgstr ""
 "ਜੇ ਤੁਸੀਂ ਇੱਕ ਈਮੇਜ਼ ਫਾਇਲ ਨਹੀਂ ਲਿਖਣੀ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਇੱਕ ਲਿਖਣਯੋਗ CD ਜਾਂ DVD ਪਾਉ "
 "ਜੀ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1593
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1595
 msgid "Create _Image"
 msgstr "ਈਮੇਜ਼ ਬਣਾਓ(_I)"
 
@@ -1067,15 +1069,15 @@ msgid "Make _Several Copies"
 msgstr "ਕਈ ਕਾਪੀਆਂ ਬਣਾਓ(_S)"
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1522
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1524
 msgid "_Burn"
 msgstr "ਲਿਖੋ(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1519
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1521
 msgid "Burn _Several Copies"
 msgstr "ਕਈ ਕਾਪੀਆਂ ਲਿਖੋ(_S)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:947
+#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "ਕੀ ਤੁਸੀਂ ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਨੂੰ ਕਈ ਮੀਡਿਆ ਉੱਤੇ ਲਿਖਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
@@ -1086,23 +1088,23 @@ msgstr ""
 "ਡਾਟਾ ਸਾਈਜ਼ ਡਿਸਕ ਨਾਲ ਵੱਧ ਇੰਨ੍ਹਾਂ ਹੈ, ਭਾਵੇਂ ਕਿ ਵੱਧ ਲਿਖਣ (ਓਵਰਬਰਨ) ਚੋਣ ਚਾਲੂ ਕੀਤੀ "
 "ਹੋਵੇ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:952
+#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
 msgstr "ਕਈ ਡਿਸਕਾਂ ਲਿਖੋ(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:954
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਕਈ ਮੀਡਿਆ ਉੱਤੇ ਬਰਨ ਕਰੋ"
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:963
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "ਇੱਕ ਹੋਰ CD ਜਾਂ DVD ਚੁਣੋ ਜਾਂ ਨਵੀਂ ਪਾਉ ਜੀ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1008
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1010
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "ਕੋਈ ਟਰੈਕ ਜਾਣਕਾਰੀ ਨਹੀਂ (ਕਲਾਕਾਰ, ਟਾਈਟਲ, ...) ਡਿਸਕ ਉੱਤੇ ਲਿਖੀ ਜਾਵੇਗੀ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1009
+#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1011
 msgid "This is not supported by the current active burning backend."
 msgstr "ਇਹ ਮੌਜੂਦਾ ਚਾਲੂ ਲਿਖਣ ਬੈਕਐਂਡ ਵਲੋਂ ਸਹਾਇਕ ਨਹੀਂ ਹੈ।"
 
@@ -1115,7 +1117,7 @@ msgstr "ਫਾਇਲਾਂ ਸ਼ਾਮਲ ਕਰੋ।"
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-track-stream.c:402
-#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1275
+#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1277
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "ਡਿਸਕ ਉੱਤੇ ਲਿਖਣ ਲਈ ਕੋਈ ਫਾਇਲਾਂ ਨਹੀਂ ਹਨ"
@@ -1124,7 +1126,7 @@ msgstr "ਡਿਸਕ ਉੱਤੇ ਲਿਖਣ ਲਈ ਕੋਈ ਫਾਇਲਾ�
 msgid "Please add songs."
 msgstr "ਗੀਤ ਸ਼ਾਮਲ ਕਰੋ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1266
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
 msgstr "ਡਿਸਕ ਉੱਤੇ ਲਿਖਣ ਲਈ ਕੋਈ ਗੀਤ ਨਹੀਂ ਹੈ"
 
@@ -1166,15 +1168,15 @@ msgstr "ਇੱਕ ਡਿਸਕ ਪਾਉ, ਜੋ ਕਿ ਕਾਪੀ ਲਈ ਸ�
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1443
+#: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "ਸਭ ਲੋੜੀਦੀਆਂ ਐਪਲੀਕੇਸ਼ਨ ਅਤੇ ਲਾਇਬਰੇਰੀਆਂ ਇੰਸਟਾਲ ਨਹੀਂ ਹਨ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1001
+#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "ਡਿਸਕ ਨੂੰ ਸਹਾਇਕ CD ਜਾਂ DVD ਨਾਲ ਬਦਲੋ ਜੀ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:974
+#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "ਕੀ ਤੁਸੀਂ ਡਿਸਕ ਦੀ ਦਿੱਤੀ ਸਮਰੱਥਾ ਤੋਂ ਵੱਧ ਲਿਖਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
@@ -1193,11 +1195,11 @@ msgstr ""
 "ਠੀਕ ਤਰ੍ਹਾਂ ਨਾ ਪਛਾਣੀ ਗਈ ਹੋਵੇ ਅਤੇ ਇਸਕਰਕੇ ਵਾਧੂ-ਲਿਖਣ (ਓਵਰਬਰਨ) ਚੋਣ ਦੀ ਲੋੜ ਹੋਵੇ।\n"
 "ਨੋਟ: ਇਹ ਚੋਣ ਫੇਲ੍ਹ ਹੋ ਸਕਦੀ ਹੈ।"
 
-#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:981
+#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:983
 msgid "_Overburn"
 msgstr "ਓਵਰ-ਬਰਨ(_O)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:983
+#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
 msgstr "ਡਿਸਕ ਵਲੋਂ ਦਿੱਤੀ ਕਪੈਸਟੀ ਤੋਂ ਵੱਧ ਲਿਖੋ"
 
@@ -1223,7 +1225,7 @@ msgstr "ਲਿਖਣ ਲਈ ਡਰਾਇਵ ਚੁਣੋ"
 msgid "Disc Burning Setup"
 msgstr "ਡਿਸਕ ਲਿਖਣ ਸੈੱਟਅੱਪ"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1542
+#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1544
 msgid "Video Options"
 msgstr "ਵਿਡੀਓ ਚੋਣਾਂ"
 
@@ -1273,7 +1275,7 @@ msgid "Select disc to copy"
 msgstr "ਕਾਪੀ ਕਰਨ ਲਈ ਡਿਸਕ ਚੁਣੋ"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "ਹੇਠ ਦਿੱਤੇ ਖੁਦ ਇੰਸਟਾਲ ਕਰਕੇ ਮੁੜ-ਕੋਸ਼ਿਸ਼ ਕਰੋ:"
 
@@ -1292,7 +1294,7 @@ msgstr "ਅਣਜਾਣ ਗੀਤ"
 #. Translators: %s is the name of the artist
 #. Translators: %s is the name of an artist.
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419
-#: ../src/brasero-song-control.c:271
+#: ../src/brasero-song-control.c:270
 #, c-format
 msgid "by %s"
 msgstr "%s ਵਲੋਂ"
@@ -1507,7 +1509,7 @@ msgid "Cdrdao image"
 msgstr "Cdrdao ਈਮੇਜ਼"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1501
+#: ../src/brasero-project.c:1503
 #, c-format
 msgid "Properties of %s"
 msgstr "%s ਦੀ ਵਿਸ਼ੇਸ਼ਤਾ"
@@ -1597,7 +1599,7 @@ msgstr "ਡਿਸਕ ਈਮੇਜ਼ ਚੁਣੋ"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
-#: ../src/brasero-project.c:2221 ../src/brasero-project-name.c:162
+#: ../src/brasero-project.c:2225 ../src/brasero-project-name.c:162
 msgid "All files"
 msgstr "ਸਭ ਫਾਇਲਾਂ"
 
@@ -1724,7 +1726,7 @@ msgstr "ਫਾਇਲ ਇਕਸਾਰਤਾ ਚੈੱਕ ਨਹੀਂ ਕੀਤ�
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
-#: ../src/brasero-project.c:2621
+#: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "ਇੱਕ ਅਣਜਾਣੀ ਗਲਤੀ ਆਈ ਹੈ।"
 
@@ -2076,7 +2078,7 @@ msgstr "ਈਮੇਜ਼ ਆਉਟਪੁੱਟ ਲਈ ਕੋਈ ਪਾਥ ਨਹ�
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
 #: ../plugins/libburnia/burn-libburn.c:717
-#: ../plugins/transcode/burn-transcode.c:826
+#: ../plugins/transcode/burn-transcode.c:790
 #, c-format
 msgid "An internal error occurred (%s)"
 msgstr "ਅੰਦਰੂਨੀ ਗਲਤੀ ਆਈ (%s)"
@@ -2565,7 +2567,7 @@ msgstr "FRONT COVER"
 msgid "The image could not be loaded."
 msgstr "ਈਮੇਜ਼ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।"
 
-#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "\"%s\" ਨੂੰ ਜੀਸਟਰੀਮਰ ਵਲੋਂ ਹੈਂਡਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।"
@@ -2573,43 +2575,43 @@ msgstr "\"%s\" ਨੂੰ ਜੀਸਟਰੀਮਰ ਵਲੋਂ ਹੈਂਡਲ �
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
+#: ../libbrasero-utils/brasero-metadata.c:1194
 #: ../libbrasero-utils/brasero-metadata.c:1207
 #: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1233
-#: ../libbrasero-utils/brasero-metadata.c:1375
-#: ../libbrasero-utils/brasero-metadata.c:1746
-#: ../libbrasero-utils/brasero-metadata.c:1761
-#: ../libbrasero-utils/brasero-metadata.c:1770
+#: ../libbrasero-utils/brasero-metadata.c:1362
+#: ../libbrasero-utils/brasero-metadata.c:1734
+#: ../libbrasero-utils/brasero-metadata.c:1749
+#: ../libbrasero-utils/brasero-metadata.c:1758
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
 #: ../plugins/transcode/burn-normalize.c:221
 #: ../plugins/transcode/burn-normalize.c:238
 #: ../plugins/transcode/burn-normalize.c:335
-#: ../plugins/transcode/burn-transcode.c:294
-#: ../plugins/transcode/burn-transcode.c:306
-#: ../plugins/transcode/burn-transcode.c:456
-#: ../plugins/transcode/burn-transcode.c:509
-#: ../plugins/transcode/burn-transcode.c:543
-#: ../plugins/transcode/burn-transcode.c:590
+#: ../plugins/transcode/burn-transcode.c:292
+#: ../plugins/transcode/burn-transcode.c:304
+#: ../plugins/transcode/burn-transcode.c:426
+#: ../plugins/transcode/burn-transcode.c:479
+#: ../plugins/transcode/burn-transcode.c:513
+#: ../plugins/transcode/burn-transcode.c:556
+#: ../plugins/transcode/burn-transcode.c:577
+#: ../plugins/transcode/burn-transcode.c:589
 #: ../plugins/transcode/burn-transcode.c:611
-#: ../plugins/transcode/burn-transcode.c:623
-#: ../plugins/transcode/burn-transcode.c:648
-#: ../plugins/transcode/burn-vob.c:309 ../plugins/transcode/burn-vob.c:329
-#: ../plugins/transcode/burn-vob.c:344 ../plugins/transcode/burn-vob.c:356
-#: ../plugins/transcode/burn-vob.c:373 ../plugins/transcode/burn-vob.c:431
-#: ../plugins/transcode/burn-vob.c:448 ../plugins/transcode/burn-vob.c:460
-#: ../plugins/transcode/burn-vob.c:472 ../plugins/transcode/burn-vob.c:484
-#: ../plugins/transcode/burn-vob.c:501 ../plugins/transcode/burn-vob.c:592
-#: ../plugins/transcode/burn-vob.c:609 ../plugins/transcode/burn-vob.c:621
-#: ../plugins/transcode/burn-vob.c:633 ../plugins/transcode/burn-vob.c:655
-#: ../plugins/transcode/burn-vob.c:672 ../plugins/transcode/burn-vob.c:718
-#: ../plugins/transcode/burn-vob.c:795 ../plugins/transcode/burn-vob.c:812
-#: ../plugins/transcode/burn-vob.c:827 ../plugins/transcode/burn-vob.c:839
-#: ../plugins/transcode/burn-vob.c:850 ../plugins/transcode/burn-vob.c:861
-#: ../plugins/transcode/burn-vob.c:1036 ../plugins/transcode/burn-vob.c:1100
-#: ../plugins/transcode/burn-vob.c:1117 ../plugins/transcode/burn-vob.c:1138
-#: ../plugins/transcode/burn-vob.c:1165
+#: ../plugins/transcode/burn-vob.c:308 ../plugins/transcode/burn-vob.c:328
+#: ../plugins/transcode/burn-vob.c:343 ../plugins/transcode/burn-vob.c:355
+#: ../plugins/transcode/burn-vob.c:372 ../plugins/transcode/burn-vob.c:428
+#: ../plugins/transcode/burn-vob.c:445 ../plugins/transcode/burn-vob.c:457
+#: ../plugins/transcode/burn-vob.c:469 ../plugins/transcode/burn-vob.c:481
+#: ../plugins/transcode/burn-vob.c:498 ../plugins/transcode/burn-vob.c:582
+#: ../plugins/transcode/burn-vob.c:599 ../plugins/transcode/burn-vob.c:611
+#: ../plugins/transcode/burn-vob.c:623 ../plugins/transcode/burn-vob.c:642
+#: ../plugins/transcode/burn-vob.c:659 ../plugins/transcode/burn-vob.c:705
+#: ../plugins/transcode/burn-vob.c:782 ../plugins/transcode/burn-vob.c:799
+#: ../plugins/transcode/burn-vob.c:814 ../plugins/transcode/burn-vob.c:826
+#: ../plugins/transcode/burn-vob.c:837 ../plugins/transcode/burn-vob.c:848
+#: ../plugins/transcode/burn-vob.c:1023 ../plugins/transcode/burn-vob.c:1087
+#: ../plugins/transcode/burn-vob.c:1104 ../plugins/transcode/burn-vob.c:1125
+#: ../plugins/transcode/burn-vob.c:1152
 #, c-format
 msgid "%s element could not be created"
 msgstr "%s ਐਲੀਮੈਂਟ ਬਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
@@ -2633,7 +2635,7 @@ msgstr "ਮੀਡਿਅਮ ਆਈਕਾਨ"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2246 ../src/brasero-project-name.c:168
+#: ../src/brasero-project.c:2250 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
 msgstr "ਈਮੇਜ਼ ਫਾਇਲਾਂ"
@@ -3169,16 +3171,16 @@ msgstr ""
 #. * too technical and should be removed?
 #: ../plugins/transcode/burn-normalize.c:199
 #: ../plugins/transcode/burn-normalize.c:260
-#: ../plugins/transcode/burn-transcode.c:318
-#: ../plugins/transcode/burn-transcode.c:356
-#: ../plugins/transcode/burn-transcode.c:553
-#: ../plugins/transcode/burn-transcode.c:663
-#: ../plugins/transcode/burn-transcode.c:694
-#: ../plugins/transcode/burn-transcode.c:715
-#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:395
-#: ../plugins/transcode/burn-vob.c:555 ../plugins/transcode/burn-vob.c:688
-#: ../plugins/transcode/burn-vob.c:1052 ../plugins/transcode/burn-vob.c:1128
-#: ../plugins/transcode/burn-vob.c:1179
+#: ../plugins/transcode/burn-transcode.c:316
+#: ../plugins/transcode/burn-transcode.c:354
+#: ../plugins/transcode/burn-transcode.c:523
+#: ../plugins/transcode/burn-transcode.c:626
+#: ../plugins/transcode/burn-transcode.c:657
+#: ../plugins/transcode/burn-transcode.c:679
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:392
+#: ../plugins/transcode/burn-vob.c:545 ../plugins/transcode/burn-vob.c:675
+#: ../plugins/transcode/burn-vob.c:1039 ../plugins/transcode/burn-vob.c:1115
+#: ../plugins/transcode/burn-vob.c:1166
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "ਪਲੱਗਇਨ ਪੈਡ ਲਿੰਕ ਕਰਨਾ ਅਸੰਭਵ"
@@ -3187,44 +3189,44 @@ msgstr "ਪਲੱਗਇਨ ਪੈਡ ਲਿੰਕ ਕਰਨਾ ਅਸੰਭਵ"
 msgid "Normalizing tracks"
 msgstr "ਟਰੈਕ ਨਾਰਮੇਲਾਈਜ਼ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ"
 
-#: ../plugins/transcode/burn-normalize.c:644
+#: ../plugins/transcode/burn-normalize.c:643
 msgid "Normalization"
 msgstr "ਨਾਰਮੇਲਾਈਜ਼"
 
-#: ../plugins/transcode/burn-normalize.c:645
+#: ../plugins/transcode/burn-normalize.c:644
 msgid "Sets consistent sound levels between tracks"
 msgstr "ਟਰੈਕਾਂ ਵਿੱਚ ਇਕਸਾਰ ਸਾਊਂਡ ਲੈਵਲ ਸੈੱਟ ਕਰੋ"
 
 #. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:1086
-#: ../plugins/transcode/burn-transcode.c:1274
+#: ../plugins/transcode/burn-transcode.c:1050
+#: ../plugins/transcode/burn-transcode.c:1238
 #, c-format
 msgid "Error while padding file (%s)"
 msgstr "ਫਾਇਲ (%s) ਪੈਡ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ"
 
-#: ../plugins/transcode/burn-transcode.c:1350
+#: ../plugins/transcode/burn-transcode.c:1313
 msgid "Error while getting duration"
 msgstr "ਅੰਤਰਾਲ ਲੈਣ ਦੌਰਾਨ ਗਲਤੀ"
 
-#: ../plugins/transcode/burn-transcode.c:1499
+#: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
 msgstr "\"%s\" ਪੜਤਾਲ ਜਾਰੀ"
 
-#: ../plugins/transcode/burn-transcode.c:1536
+#: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr "\"%s\" ਟਰਾਂਸਕੋਡ ਜਾਰੀ"
 
-#: ../plugins/transcode/burn-transcode.c:1773
+#: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr "ਕਿਸੇ ਵੀ ਗੀਤ ਨੂੰ ਆਡੀਓ CD ਲਈ ਢੁੱਕਵੇਂ ਫਾਰਮੈਟ ਵਿੱਚ ਬਦਲਦਾ ਹੈ"
 
-#: ../plugins/transcode/burn-vob.c:1264
+#: ../plugins/transcode/burn-vob.c:1251
 msgid "Converting video file to MPEG2"
 msgstr "ਵਿਡੀਓ ਫਾਇਲ MPEG2 ਲਈ ਬਦਲੀ ਜਾ ਰਹੀ ਹੈ"
 
-#: ../plugins/transcode/burn-vob.c:1367
+#: ../plugins/transcode/burn-vob.c:1353
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "ਕਿਸੇ ਵੀ ਵਿਡੀਓ ਫਾਇਲ ਨੂੰ ਵਿਡੀਓ DVD ਲਈ ਢੁੱਕਵੇਂ ਫਾਰਮੈਟ ਵਿੱਚ ਬਦਲਦਾ ਹੈ"
 
@@ -3309,7 +3311,7 @@ msgid "Error while loading the project"
 msgstr "ਪਰੋਜੈਕਟ ਲੋਡ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ ਹੈ।"
 
 #: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1274
+#: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "ਪਰੋਜੈਕਟ ਵਿੱਚ ਫਾਇਲਾਂ ਸ਼ਾਮਲ ਕਰੋ ਜੀ।"
 
@@ -3409,7 +3411,7 @@ msgid "Edit the track information (start, end, author, etc.)"
 msgstr "ਟਰੈਕ ਜਾਣਕਾਰੀ ਸੋਧੋ (ਸ਼ੁਰੂ, ਅੰਤ, ਲੇਖਕ ਆਦਿ)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Remove the selected files from the project"
 msgstr "ਪਰੋਜੈੱਕਟ ਤੋਂ ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਹਟਾਓ"
 
@@ -3881,11 +3883,11 @@ msgstr "ਬਾਹਰ ਕੱਢੋ(_E)"
 msgid "Eject Disc"
 msgstr "ਡਿਸਕ ਬਾਹਰ ਕੱਢੋ"
 
-#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2226
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2230
 msgid "Audio files"
 msgstr "ਆਡੀਓ ਫਾਇਲਾਂ"
 
-#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2235
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2239
 msgid "Movies"
 msgstr "ਮੂਵੀ"
 
@@ -3956,40 +3958,40 @@ msgstr "ਟੁੱਟੇ ਸਿੰਬੋਲਿਕ ਲਿੰਕ ਫਿਲਟਰ �
 msgid "Filtering options"
 msgstr "ਫਿਲਟਰ ਚੋਣਾਂ"
 
-#: ../src/brasero-layout.c:100
+#: ../src/brasero-layout.c:104
 msgid "P_review"
 msgstr "ਝਲਕ(_r)"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
 msgstr "ਵਿਡੀਓ, ਆਡੀਓ ਅਤੇ ਚਿੱਤਰ ਝਲਕ ਵੇਖੋ"
 
-#: ../src/brasero-layout.c:106
+#: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
 msgstr "ਸਾਈਡ ਪੈਨਲ ਵੇਖੋ(_S)"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:111
 msgid "Show a side pane along the project"
 msgstr "ਪਰੋਜੈਕਟ ਨਾਲ ਸਾਈਡ ਪੈਨਲ ਵੇਖੋ"
 
-#: ../src/brasero-layout.c:121
+#: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
 msgstr "ਹਰੀਜੱਟਲ ਲੇਆਉਟ(_H)"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:126
 msgid "Set a horizontal layout"
 msgstr "ਹਰੀਜੱਟਲ ਲੇਆਉਟ ਸੈੱਟ ਕਰੋ"
 
-#: ../src/brasero-layout.c:124
+#: ../src/brasero-layout.c:128
 msgid "_Vertical Layout"
 msgstr "ਵਰਟੀਕਲ ਲੇਆਉਟ(_V)"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:129
 msgid "Set a vertical layout"
 msgstr "ਵਰਟੀਕਲ ਲੇਆਉਟ ਸੈੱਟ ਕਰੋ"
 
-#: ../src/brasero-layout.c:1183
+#: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
 msgstr "ਬਾਹੀ ਬੰਦ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ"
 
@@ -4129,48 +4131,48 @@ msgstr "%s ਪਲੱਗਇਨ ਲਈ ਚੋਣਾਂ"
 msgid "Brasero Plugins"
 msgstr "ਬਰਾਸੀਰੋ ਪਲੱਗਇਨ"
 
-#: ../src/brasero-project.c:194
+#: ../src/brasero-project.c:196
 msgid "Save current project"
 msgstr "ਮੌਜੂਦਾ ਪਰੋਜੈਕਟ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:195
+#: ../src/brasero-project.c:197
 msgid "Save _As…"
 msgstr "ਇੰਝ ਸੰਭਾਲੋ(_A)…"
 
-#: ../src/brasero-project.c:196
+#: ../src/brasero-project.c:198
 msgid "Save current project to a different location"
 msgstr "ਮੌਜੂਦਾ ਪਰੋਜੈਕਟ ਨੂੰ ਵੱਖਰੇ ਟਿਕਾਣੇ ਉੱਤੇ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:197
+#: ../src/brasero-project.c:199
 msgid "_Add Files"
 msgstr "ਫਾਇਲਾਂ ਸ਼ਾਮਲ(_A)"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Add files to the project"
 msgstr "ਫਾਇਲਾਂ ਪਰੋਜੈਕਟ ਵਿੱਚ ਸ਼ਾਮਲ"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "_Remove Files"
 msgstr "ਫਾਇਲਾਂ ਹਟਾਓ(_R)"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202 ../src/brasero-project.c:2308
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:2312
 msgid "E_mpty Project"
 msgstr "ਖਾਲੀ ਪਰੋਜੈਕਟ(_m)"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "Remove all files from the project"
 msgstr "ਪਰੋਜੈਕਟ ਤੋਂ ਸਭ ਫਾਇਲਾਂ ਹਟਾਓ"
 
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1084
+#: ../src/brasero-project.c:206 ../src/brasero-project.c:1086
 msgid "_Burn…"
 msgstr "ਲਿਖੋ(_B)…"
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:207
 msgid "Burn the disc"
 msgstr "ਡਿਸਕ ਲਿਖੋ"
 
-#: ../src/brasero-project.c:693
+#: ../src/brasero-project.c:695
 msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
@@ -4179,7 +4181,7 @@ msgstr ""
 "ਖੇਤਰ ਵਿੱਚ ਫਾਇਲਾਂ "
 "ਸੁੱਟੋ।"
 
-#: ../src/brasero-project.c:695
+#: ../src/brasero-project.c:697
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
@@ -4188,18 +4190,18 @@ msgstr ""
 "ਕਰੋ ਜਾਂ \"Delete\" "
 "ਸਵਿੱਚ ਦੱਬੋ।"
 
-#: ../src/brasero-project.c:802
+#: ../src/brasero-project.c:804
 #, c-format
 msgid "Estimated project size: %s"
 msgstr "ਅਨੁਮਾਨਿਤ ਪਰੋਜੈਕਟ ਸਾਈਜ਼: %s"
 
-#: ../src/brasero-project.c:948 ../src/brasero-project.c:964
+#: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
 "ਪਰੋਜੈਕਟ ਦਾ ਸਾਈਜ਼ ਡਿਸਕ ਨਾਲ ਵੱਧ ਇੰਨ੍ਹਾਂ ਹੈ, ਭਾਵੇਂ ਕਿ ਵੱਧ ਲਿਖਣ (ਓਵਰਬਰਨ) ਚੋਣ ਚਾਲੂ "
 "ਕੀਤੀ ਹੋਵੇ।"
 
-#: ../src/brasero-project.c:975
+#: ../src/brasero-project.c:977
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -4212,61 +4214,61 @@ msgstr ""
 "ਠੀਕ ਤਰ੍ਹਾਂ ਪਛਾਣੀ ਨਹੀਂ ਜਾ ਸਕਦੀ ਅਤੇ ਇਸਕਰਕੇ ਓਵਰਬਰਨ ਚੋਣ ਦੇਣੀ ਲਾਜ਼ਮੀ ਹੈ।\n"
 "ਨੋਟ: ਇਹ ਚੋਣ ਨਾਲ ਫੇਲ੍ਹ ਹੋਣ ਦਾ ਖਦਸ਼ਾ ਹੈ।"
 
-#: ../src/brasero-project.c:1096
+#: ../src/brasero-project.c:1098
 msgid "Start to burn the contents of the selection"
 msgstr "ਚੋਣ ਦੀ ਸਮੱਗਰੀ ਲਿਖਣੀ ਸ਼ੁਰੂ ਕਰੋ"
 
-#: ../src/brasero-project.c:1265
+#: ../src/brasero-project.c:1267
 msgid "Please add songs to the project."
 msgstr "ਪਰੋਜੈਕਟ ਵਿੱਚ ਗੀਤ ਸ਼ਾਮਲ ਕਰੋ ਜੀ।"
 
-#: ../src/brasero-project.c:1902 ../src/brasero-project.c:1937
+#: ../src/brasero-project.c:1904 ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr ""
 "ਕੀ ਤੁਸੀਂ ਮੌਜੂਦਾ ਪਰੋਜੈਕਟ ਨੂੰ ਅਣਡਿੱਠਾ ਕਰਕੇ ਨਵਾਂ ਪਰੋਜੈਕਟ ਬਣਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: ../src/brasero-project.c:1907
+#: ../src/brasero-project.c:1909
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr ""
 "ਜੇ ਤੁਸੀਂ ਨਵਾਂ ਖਾਲੀ ਪਰੋਜੈਕਟ ਬਣਾਉਣ ਦੀ ਚੋਣ ਕੀਤੀ ਤਾਂ ਕੀਤੇ ਬਦਲਾਅ ਖਤਮ ਹੋ ਜਾਣਗੇ।"
 
-#: ../src/brasero-project.c:1910
+#: ../src/brasero-project.c:1912
 msgid "_Discard Changes"
 msgstr "ਬਦਲਾਅ ਅਣਡਿੱਠੇ(_D)"
 
-#: ../src/brasero-project.c:1918
+#: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
 "ਕੀ ਤੁਸੀਂ ਫਾਇਲ ਚੋਣ ਅਣਡਿੱਠੀ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ ਜਾਂ ਇਸ ਨੂੰ ਨਵੇਂ ਪਰੋਜੈਕਟ ਵਿੱਚ ਸ਼ਾਮਲ "
 "ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr "ਜੇ ਤੁਸੀਂ ਨਵਾਂ ਪਰੋਜੈਕਟ ਬਣਾਇਆ ਤਾਂ ਫਾਇਲ ਚੋਣ ਅਣਡਿੱਠੀ ਕੀਤੀ ਜਾਵੇਗੀ।"
 
-#: ../src/brasero-project.c:1925
+#: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
 msgstr "ਫਾਇਲ ਚੋਣ ਅਣਡਿੱਠੀ(_D)"
 
-#: ../src/brasero-project.c:1929
+#: ../src/brasero-project.c:1931
 msgid "_Keep File Selection"
 msgstr "ਫਾਇਲ ਚੋਣ ਰੱਖੋ(_K)"
 
-#: ../src/brasero-project.c:1944
+#: ../src/brasero-project.c:1946
 msgid "_Discard Project"
 msgstr "ਪਰੋਜੈਕਟ ਅਣਡਿੱਠਾ(_D)"
 
-#: ../src/brasero-project.c:2184
+#: ../src/brasero-project.c:2188
 msgid "Select Files"
 msgstr "ਫਾਇਲਾਂ ਚੁਣੋ"
 
-#: ../src/brasero-project.c:2297
+#: ../src/brasero-project.c:2301
 msgid "Do you really want to empty the current project?"
 msgstr "ਕੀ ਤੁਸੀਂ ਮੌਜੂਦਾ ਪਰੋਜੈਕਟ ਨੂੰ ਖਾਲੀ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: ../src/brasero-project.c:2302
+#: ../src/brasero-project.c:2306
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -4278,78 +4280,78 @@ msgstr ""
 "ਇੱਥੇ ਹੀ ਨਹੀਂ "
 "ਵੇਖਾਈਆਂ ਜਾਣਗੀਆਂ।"
 
-#: ../src/brasero-project.c:2364
+#: ../src/brasero-project.c:2368
 msgid "_Save"
 msgstr "ਸੰਭਾਲੋ(_S)"
 
-#: ../src/brasero-project.c:2375
+#: ../src/brasero-project.c:2379
 msgid "_Add"
 msgstr "ਸ਼ਾਮਲ(_A)"
 
-#: ../src/brasero-project.c:2380 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "ਹਟਾਓ(_R)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2444
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "ਬਰਾਸੀਰੋ — %s (ਡਾਟਾ ਡਿਸਕ)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2447
+#: ../src/brasero-project.c:2451
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "ਬਰਾਸੀਰੋ — %s (ਆਡੀਓ ਡਿਸਕ)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2450
+#: ../src/brasero-project.c:2454
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "ਬਰਾਸੀਰੋ — %s (ਵਿਡੀਓ ਡਿਸਕ)"
 
-#: ../src/brasero-project.c:2620 ../src/brasero-project.c:2923
+#: ../src/brasero-project.c:2624 ../src/brasero-project.c:2927
 msgid "Your project has not been saved."
 msgstr "ਤੁਹਾਡਾ ਪਰੋਜੈਕਟ ਹਾਲੇ ਸੰਭਾਲਿਆ ਨਹੀਂ ਗਿਆ:"
 
-#: ../src/brasero-project.c:2634
+#: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
 msgstr "ਕੀ ਮੌਜੂਦਾ ਪਰੋਜੈਕਟ ਨੂੰ ਬੰਦ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਸੰਭਾਲਣਾ ਹੈ?"
 
-#: ../src/brasero-project.c:2639 ../src/brasero-project.c:2928
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
 msgstr "ਜੇ ਤੁਸੀਂ ਨਾ ਸੰਭਾਲਿਆ ਤਾਂ ਸਭ ਬਦਲਾਅ ਖਤਮ ਹੋ ਜਾਣਗੇ।"
 
-#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2649
-#: ../src/brasero-project.c:2931
+#: ../src/brasero-project.c:2647 ../src/brasero-project.c:2653
+#: ../src/brasero-project.c:2935
 msgid "Cl_ose Without Saving"
 msgstr "ਬਿਨਾਂ ਸੰਭਾਲੇ ਬੰਦ ਕਰੋ(_o)"
 
-#: ../src/brasero-project.c:2731
+#: ../src/brasero-project.c:2735
 msgid "Save Current Project"
 msgstr "ਮੌਜੂਦਾ ਪਰੋਜੈਕਟ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
 msgstr "ਪਰੋਜੈਕਟ ਨੂੰ ਬਰਾਸੀਰੋ ਆਡੀਓ ਪਰੋਜੈਕਟ ਵਾਂਗ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2754
 msgid "Save project as a plain text list"
 msgstr "ਪਰੋਜੈਕਟ ਨੂੰ ਪਲੇਨ ਟੈਕਸਟ ਲਿਸਟ ਵਾਂਗ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:2754
+#: ../src/brasero-project.c:2758
 msgid "Save project as a PLS playlist"
 msgstr "ਪਰੋਜੈਕਟ ਨੂੰ PLS ਪਲੇਅਲਿਸਟ ਵਾਂਗ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:2755
+#: ../src/brasero-project.c:2759
 msgid "Save project as an M3U playlist"
 msgstr "ਪਰੋਜੈਕਟ ਨੂੰ M3U ਪਲੇਅਲਿਸਟ ਵਾਂਗ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2760
 msgid "Save project as an XSPF playlist"
 msgstr "ਪਰੋਜੈਕਟ ਨੂੰ XSPF ਪਲੇਅਲਿਸਟ ਵਾਂਗ ਸੰਭਾਲੋ"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2761
 msgid "Save project as an iriver playlist"
 msgstr "ਪਰੋਜੈਕਟ ਨੂੰ iriver ਪਲੇਅਲਿਸਟ ਵਾਂਗ ਸੰਭਾਲੋ"
 
@@ -4675,11 +4677,11 @@ msgstr "{number}"
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-song-control.c:528
+#: ../src/brasero-song-control.c:527
 msgid "No file"
 msgstr "ਫਾਇਲ ਨਹੀਂ"
 
-#: ../src/brasero-song-control.c:563
+#: ../src/brasero-song-control.c:562
 msgid "Start and stop playing"
 msgstr "ਚਲਾਉਣਾ ਸ਼ੁਰੂ ਅਤੇ ਬੰਦ ਕਰੋ"
 
