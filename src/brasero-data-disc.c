@@ -558,7 +558,7 @@ brasero_data_disc_project_loaded_cb (BraseroTrackDataCfg *project,
 		brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message),
 						  _("The contents of the project changed since it was saved."));
 		brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message),
-						    _("Discard the current modified project"));
+						    _("Discard the current modified project ?"));
 
 		gtk_info_bar_set_message_type (GTK_INFO_BAR (message), GTK_MESSAGE_WARNING);
 
