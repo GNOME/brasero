@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-03-03 19:15+0000\n"
-"PO-Revision-Date: 2013-03-06 13:42+0000\n"
+"POT-Creation-Date: 2013-03-17 11:21+0000\n"
+"PO-Revision-Date: 2013-03-17 13:35+0100\n"
 "Last-Translator: Pavol Klačanský <pavol@klacansky.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -4051,16 +4051,21 @@ msgstr "Nepodarilo sa importovať reláciu."
 msgid "The contents of the project changed since it was saved."
 msgstr "Obsah projektu sa od posledného uloženia zmenil."
 
-# PM: mám pocit, že v prom prípade tu chýba otáznik, v druhom prípade je to tooltip k nasledujúcemu tlačidlu nahlás bug
-# * https://bugzilla.gnome.org/show_bug.cgi?id=694897
-#: ../src/brasero-data-disc.c:561 ../src/brasero-data-disc.c:569
-msgid "Discard the current modified project"
-msgstr "Zahodiť práve upravovaný projekt"
+#: ../src/brasero-data-disc.c:561
+msgid "Discard the current modified project ?"
+msgstr "Zahodiť práve upravovaný projekt?"
 
 # button
 #: ../src/brasero-data-disc.c:567
 msgid "_Discard"
 msgstr "Zaho_diť"
+
+# PM: mám pocit, že v prom prípade tu chýba otáznik, v druhom prípade je to tooltip k nasledujúcemu tlačidlu nahlás bug
+# * https://bugzilla.gnome.org/show_bug.cgi?id=694897
+# tooltip
+#: ../src/brasero-data-disc.c:569
+msgid "Discard the current modified project"
+msgstr "Zahodí práve upravovaný projekt"
 
 #  tooltip
 #: ../src/brasero-data-disc.c:574
