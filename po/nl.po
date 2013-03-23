@@ -25,13 +25,13 @@
 # Frederik Himpe <fhimpe@telenet.be>, 2008.
 # Wouter Bolsterlee <wbolster@gnome.org>, 2009, 2011.
 # Sander Pientka <cumulus0007@gmail.com>, 2009–2010.
-# Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2012.
+# Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-06 19:42+0100\n"
-"PO-Revision-Date: 2012-02-05 16:44+0100\n"
+"POT-Creation-Date: 2013-03-23 23:16+0100\n"
+"PO-Revision-Date: 2013-03-18 10:16+0100\n"
 "Last-Translator: Hannie Dumoleyn <hannie@ubuntu-nl.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
@@ -40,57 +40,73 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2010-09-28 15:48+0000\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-msgid "Brasero Disc Burner"
-msgstr "Brasero cd's branden"
+msgid "Disc Burner and Copier"
+msgstr "Cd's en dvd's maken en kopiëren"
 
 #: ../data/brasero.desktop.in.in.h:3
 msgid "Create and copy CDs and DVDs"
 msgstr "Cd's en dvd's maken en kopiëren"
 
 #: ../data/brasero.desktop.in.in.h:4
-msgid "Disc Burner and Copier"
-msgstr "Cd's en dvd's maken en kopiëren"
+msgid "Brasero Disc Burner"
+msgstr "Brasero cd's branden"
+
+#: ../data/brasero.desktop.in.in.h:5
+msgid "Open a New Window"
+msgstr "Een nieuw venster openen"
+
+#: ../data/brasero.desktop.in.in.h:6
+msgid "Burn an Image File"
+msgstr "Als imagebestand branden"
+
+#: ../data/brasero.desktop.in.in.h:7
+msgid "Create an Audio Project"
+msgstr "Een audioproject aanmaken"
+
+#: ../data/brasero.desktop.in.in.h:8
+msgid "Create a Video Project"
+msgstr "Een videoproject aanmaken"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
 msgstr "Brasero-projectbestand"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:1
-msgid "Burning flags to be used"
-msgstr "Branden van de te gebruiken vlaggen"
+msgid "Should Nautilus extension output debug statements"
+msgstr "Moeten Nautilus-uitbreidingen debug-berichten weergeven"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:2
 msgid ""
-"Contains the absolute path of the directory that was last browsed for images "
-"to burn"
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
 msgstr ""
-"Bevat het absolute pad naar de map die het laatst doorgebladerd was voor "
-"imagebestanden om te branden"
+"Moeten Nautilus-uitbreidingen debug-berichten weergeven. Dit zou op waar "
+"gezet moeten worden als dit gedaan moet worden."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:3
-msgid ""
-"Contains the list of additional plugins Brasero will use to burn discs. If "
-"set to NULL, Brasero will load them all."
-msgstr ""
-"Bevat de lijst van extra plug-ins die Brasero zal gebruiken om schijven te "
-"branden. Indien ingesteld op NULL, zal Brasero alle plugins laden."
+msgid "The type of checksum used for images"
+msgstr "Het type controlesom dat gebruikt wordt voor imagebestanden"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:4
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"Bevat de naam van het favoriete brandprogramma dat geïnstalleerd is. Indien "
-"mogelijk zal deze gebruikt worden."
+msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
+msgstr "Instellen op 0 voor MD5, 1 voor SHA1 en 2 voor SHA256"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:5
+msgid "The type of checksum used for files"
+msgstr "Het type controlesom dat gebruikt wordt voor bestanden"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+msgid "Directory to use for temporary files"
+msgstr "Map om tijdelijke bestanden in te bewaren"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -100,59 +116,108 @@ msgstr ""
 "Wanneer dit leeggelaten wordt, zal de standaard aangegeven map voor glib "
 "gebruikt worden."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
-msgid "Directory to use for temporary files"
-msgstr "Map om tijdelijke bestanden in te bewaren"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
-msgid "Enable file preview"
-msgstr "Bestandsvoorbeeld inschakelen"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
-msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "Activeer de ‘-immed’ vlag met cdrecord"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
 msgid "Favourite burn engine"
 msgstr "Voorkeurs-engine voor branden"
 
+#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"Bevat de naam van het favoriete brandprogramma dat geïnstalleerd is. Indien "
+"mogelijk zal deze gebruikt worden."
+
 #: ../data/org.gnome.brasero.gschema.xml.in.h:10
-msgid "Replace symbolic links by their targets"
-msgstr "Het doel van verwijzingen gebruiken in plaats van de verwijzing zelf."
+msgid "White list of additional plugins to use"
+msgstr "Lijst van te gebruiken aanvullende plug-ins"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:11
-msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr "Instellen op 0 voor MD5, 1 voor SHA1 en 2 voor SHA256"
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"Bevat de lijst van extra plug-ins die Brasero zal gebruiken om schijven te "
+"branden. Indien ingesteld op NULL, zal Brasero alle plugins laden."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:12
-msgid "Should Nautilus extension output debug statements"
-msgstr "Moeten Nautilus uitbreidingen debug-berichten weergeven"
+msgid "Enable the \"-immed\" flag with cdrecord"
+msgstr "Activeer de ‘-immed’ vlag met cdrecord"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:13
 msgid ""
-"Should Nautilus extension output debug statements. The value should be set "
-"to true if it should."
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
 msgstr ""
-"Moeten Nautilus uitbreidingen debug-berichten weergeven. Dit zou op waar "
-"gezet moeten worden als dit gedaan moet worden."
+"Geef aan of de \"-immed\"-vlag met cdrecord gebruikt moet worden. Wees "
+"voorzichtig bij gebruik (zet op waar) omdat het slechts een tijdelijke "
+"oplossing is voor sommige drives/instellingen."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:14
-msgid "Should brasero filter broken symbolic links"
-msgstr "Of Brasero verbroken verwijzingen moet filteren"
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr ""
+"Geef aan of de \"-use-the-force-luke=dao\"-vlag met growisofs gebruikt moet "
+"worden"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:15
 msgid ""
-"Should brasero filter broken symbolic links. Set to true, brasero will "
-"filter broken symbolic links."
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Of Brasero verbroken verwijzingen moet filteren. Indien ingeschakeld, worden "
-"deze gefilterd."
+"Geef aan of de \"-use-the-force-luke=dao\"-vlag met growisofs gebruikt moet "
+"worden. Wanneer dit op onwaar staat zal brasero het niet gebruiken. Dit is "
+"mogelijk een tijdelijke oplossing voor sommige drives/instellingen."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:16
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
+msgstr "Samen met de ‘-immed’ vlag met cdrecord gebruikt"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
+msgstr "Samen met de \"-immed\" vlag met cdrecord gebruikt."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr ""
+"Geeft aan of de \"--driver generic-mmc-raw\"-vlag met cdrdao gebruikt moet "
+"worden."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"Geeft aan of de \"--driver generic-mmc-raw\"-vlag met cdrdao gebruikt moet "
+"worden. Wanneer dit op Waar staat zal brasero het gebruiken, dit kan een "
+"tijdelijke oplossing zijn voor sommige drives/instellingen"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+msgid "The last browsed folder while looking for images to burn"
+msgstr ""
+"De map die het laatst doorgebladerd werd op zoek naar te branden "
+"imagebestanden"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
+msgstr ""
+"Bevat het absolute pad naar de map die het laatst doorgebladerd was voor "
+"imagebestanden om te branden"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+msgid "Enable file preview"
+msgstr "Bestandsvoorbeeld inschakelen"
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "Geeft aan of bestandsvoorbeelden getoond moeten worden."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:24
 msgid "Should brasero filter hidden files"
 msgstr "Of Brasero verborgen bestanden dient te filteren"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.in.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
@@ -160,7 +225,11 @@ msgstr ""
 "Of Brasero verborgen bestanden dient te filteren. Indien ingeschakeld worden "
 "deze gefilterd."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+msgid "Replace symbolic links by their targets"
+msgstr "Het doel van verwijzingen gebruiken in plaats van de verwijzing zelf."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -168,53 +237,23 @@ msgstr ""
 "Geeft aan of Brasero het doel van verwijzingen moet gebruiken in plaats van "
 "de verwijzing zelf. Indien ingeschakeld, zal Brasero verwijzingen vervangen."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
-msgid "The last browsed folder while looking for images to burn"
-msgstr ""
-"De map die het laatst doorgebladerd werd op zoek naar te branden "
-"imagebestanden"
+#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+msgid "Should brasero filter broken symbolic links"
+msgstr "Of Brasero verbroken verwijzingen moet filteren"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"Of Brasero verbroken verwijzingen moet filteren. Indien ingeschakeld, worden "
+"deze gefilterd."
+
+#: ../data/org.gnome.brasero.gschema.xml.in.h:30
 msgid "The priority value for the plugin"
 msgstr "Prioriteitswaarde voor de plug-in"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
-msgid "The speed to be used"
-msgstr "Te gebruiken snelheid"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
-msgid "The type of checksum used for files"
-msgstr "Het type controlesom dat gebruikt wordt voor bestanden"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
-msgid "The type of checksum used for images"
-msgstr "Het type controlesom dat gebruikt wordt voor imagebestanden"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
-msgid ""
-"This value represents the burning flags that were used in such a context the "
-"last time."
-msgstr ""
-"Dit zijn de gebrande vlaggen die de laatste keer gebruikt werden voor "
-"soortgelijke omstandigheden"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
-msgid ""
-"This value represents the speed that was used in such a context the last "
-"time."
-msgstr ""
-"Dit is de snelheid die de laatste keer gebruikt werd voor soortgelijke "
-"omstandigheden."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "Samen met de ‘-immed’ vlag met cdrecord gebruikt"
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
-msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "Samen met de \"-immed\" vlag met cdrecord gebruikt."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.in.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -227,52 +266,29 @@ msgstr ""
 "boven de standaardprioriteit van de plug-in. Een negatieve waarde schakelt "
 "de plug-in uit."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
-msgid "Whether to display file preview. Set to true to use it."
-msgstr "Geeft aan of bestandsvoorbeelden getoond moeten worden."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr ""
-"Geeft aan of de \"--driver generic-mmc-raw\"-vlag met cdrdao gebruikt moet "
-"worden."
-
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
-msgid ""
-"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
-"True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Geeft aan of de \"--driver generic-mmc-raw\"-vlag met cdrdao gebruikt moet "
-"worden. Wanneer dit op Waar staat zal brasero het gebruiken, dit kan een "
-"tijdelijke oplossing zijn voor sommige drives/instellingen"
-
 #: ../data/org.gnome.brasero.gschema.xml.in.h:32
-msgid ""
-"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
-"true) as it's only a workaround for some drives/setups."
-msgstr ""
-"Geef aan of de \"-immed\"-vlag met cdrecord gebruikt moet worden. Wees "
-"voorzichtig bij gebruik (zet op waar) omdat het slechts een tijdelijke "
-"oplossing is voor sommige drives/instellingen."
+msgid "Burning flags to be used"
+msgstr "Branden van de te gebruiken vlaggen"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:33
-msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
 msgstr ""
-"Geef aan of de \"-use-the-force-luke=dao\"-vlag met growisofs gebruikt moet "
-"worden"
+"Dit zijn de gebrande vlaggen die de laatste keer gebruikt werden voor "
+"soortgelijke omstandigheden"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:34
-msgid ""
-"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
-"false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr ""
-"Geef aan of de \"-use-the-force-luke=dao\"-vlag met growisofs gebruikt moet "
-"worden. Wanneer dit op onwaar staat zal brasero het niet gebruiken. Dit is "
-"mogelijk een tijdelijke oplossing voor sommige drives/instellingen."
+msgid "The speed to be used"
+msgstr "Te gebruiken snelheid"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:35
-msgid "White list of additional plugins to use"
-msgstr "Lijst van te gebruiken aanvullende plug-ins"
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
+msgstr ""
+"Dit is de snelheid die de laatste keer gebruikt werd voor soortgelijke "
+"omstandigheden."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -401,7 +417,7 @@ msgstr "Niet genoeg ruimte beschikbaar op de schijf"
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
 #: ../libbrasero-burn/brasero-burn-options.c:1180
-#: ../src/brasero-project.c:1383
+#: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (programma)"
@@ -409,7 +425,7 @@ msgstr "%s (programma)"
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
 #: ../libbrasero-burn/brasero-burn-options.c:1186
-#: ../src/brasero-project.c:1389
+#: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (bibliotheek)"
@@ -417,7 +433,7 @@ msgstr "%s (bibliotheek)"
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
 #: ../libbrasero-burn/brasero-burn-options.c:1191
-#: ../src/brasero-project.c:1394
+#: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer plug-in)"
@@ -700,7 +716,7 @@ msgstr "Plaats een beschrijfbare cd of dvd met minstens %i MiB vrije ruimte."
 #: ../libbrasero-burn/brasero-burn-dialog.c:611
 #: ../libbrasero-burn/brasero-burn-dialog.c:2169
 #: ../libbrasero-burn/brasero-burn-dialog.c:2183
-#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:993
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "Plaats een beschrijfbare cd of dvd."
 
@@ -1059,14 +1075,14 @@ msgstr "Branden v_oortzetten"
 msgid "_Cancel Burning"
 msgstr "Brandpro_ces annuleren"
 
-#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1018
+#: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1020
 msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
 msgstr ""
 "Plaats een beschrijfbare cd of dvd als u geen imagebestand wilt schrijven"
 
-#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1593
+#: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1595
 msgid "Create _Image"
 msgstr "_Imagebestand maken"
 
@@ -1080,15 +1096,15 @@ msgid "Make _Several Copies"
 msgstr "Meerdere _kopieën maken"
 
 #. Translators: This is a verb, an action
-#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1522
+#: ../libbrasero-burn/brasero-burn-options.c:314 ../src/brasero-project.c:1524
 msgid "_Burn"
 msgstr "_Branden"
 
-#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1519
+#: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1521
 msgid "Burn _Several Copies"
 msgstr "Meer ko_pieën branden"
 
-#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:947
+#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr ""
 "Wilt u de geselecteerde bestanden verdeeld branden op verschillende media?"
@@ -1098,25 +1114,25 @@ msgstr ""
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr "Het project is zelfs met de overburn-optie te groot voor deze schijf."
 
-#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:952
+#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
 msgstr "Meerdere schijven _branden"
 
-#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:954
+#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
 msgstr "De geselecteerde bestanden verdeeld branden over meerdere media"
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:963
+#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Kies een andere cd of dvd of voer een nieuwe in."
 
-#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1008
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1010
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr ""
 "Er zal geen track-informatie (artiest, titel, etc.) naar de schijf "
 "geschreven worden."
 
-#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1009
+#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1011
 msgid "This is not supported by the current active burning backend."
 msgstr "Dit wordt niet ondersteund door de momenteel gebruikte brand-backend."
 
@@ -1129,7 +1145,7 @@ msgstr "Voeg bestanden toe."
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-track-stream.c:402
-#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1275
+#: ../nautilus/nautilus-burn-extension.c:240 ../src/brasero-project.c:1277
 #, c-format
 msgid "There are no files to write to disc"
 msgstr "Er zijn geen weg te schrijven bestanden"
@@ -1138,7 +1154,7 @@ msgstr "Er zijn geen weg te schrijven bestanden"
 msgid "Please add songs."
 msgstr "Voeg nummers toe."
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1266
+#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
 msgstr "Er zijn geen nummers om naar een schijf te schrijven"
 
@@ -1180,15 +1196,15 @@ msgstr "Voer een niet schijf zonder kopieerbeveiliging in."
 
 #: ../libbrasero-burn/brasero-burn-options.c:526
 #: ../libbrasero-burn/brasero-burn-options.c:1228
-#: ../src/brasero-project.c:1443
+#: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Niet alle vereiste programma's en bibliotheken zijn geïnstalleerd"
 
-#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1001
+#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Vervang de schijf door een ondersteunde cd of dvd."
 
-#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:974
+#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "Wilt u voorbij de opgegeven capaciteit van de schijf branden?"
 
@@ -1207,11 +1223,11 @@ msgstr ""
 "nodig heeft.\n"
 "Let op: dit kan tot fouten leiden."
 
-#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:981
+#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:983
 msgid "_Overburn"
 msgstr "_Overburn"
 
-#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:983
+#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
 msgstr "Brandt voorbij de opgegeven capaciteit van de schijf"
 
@@ -1240,7 +1256,7 @@ msgstr "Selecteer een schijf om naar te schrijven"
 msgid "Disc Burning Setup"
 msgstr "Instellingen voor branden"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1542
+#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1544
 msgid "Video Options"
 msgstr "Video-opties"
 
@@ -1289,7 +1305,7 @@ msgid "Select disc to copy"
 msgstr "Selecteer schijf om te kopiëren"
 
 #: ../libbrasero-burn/brasero-burn-options.c:1222
-#: ../src/brasero-project.c:1437
+#: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Installeer het volgende handmatig en probeer dan opnieuw:"
 
@@ -1308,7 +1324,7 @@ msgstr "Onbekend nummer"
 #. Translators: %s is the name of the artist
 #. Translators: %s is the name of an artist.
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419
-#: ../src/brasero-song-control.c:271
+#: ../src/brasero-song-control.c:270
 #, c-format
 msgid "by %s"
 msgstr "door %s"
@@ -1525,7 +1541,7 @@ msgid "Cdrdao image"
 msgstr "Cdrdao-imagebestand"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
-#: ../src/brasero-project.c:1501
+#: ../src/brasero-project.c:1503
 #, c-format
 msgid "Properties of %s"
 msgstr "Eigenschappen van %s"
@@ -1617,7 +1633,7 @@ msgstr "Imagebestand selecteren"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
-#: ../src/brasero-project.c:2221 ../src/brasero-project-name.c:162
+#: ../src/brasero-project.c:2225 ../src/brasero-project-name.c:162
 msgid "All files"
 msgstr "Alle bestanden"
 
@@ -1744,7 +1760,7 @@ msgstr "De integriteitscontrole kon niet uitgevoerd worden."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
 #: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
-#: ../src/brasero-project.c:2621
+#: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "Er is een onbekende fout opgetreden"
 
@@ -2098,7 +2114,7 @@ msgstr "Er is geen pad opgegeven voor de uitvoer van het imagebestand"
 #. Translators: the %s is the error message from errno
 #: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
 #: ../plugins/libburnia/burn-libburn.c:717
-#: ../plugins/transcode/burn-transcode.c:826
+#: ../plugins/transcode/burn-transcode.c:790
 #, c-format
 msgid "An internal error occurred (%s)"
 msgstr "Er is een interne fout opgetreden (%s)"
@@ -2587,7 +2603,7 @@ msgstr "VOORKANT"
 msgid "The image could not be loaded."
 msgstr "Het imagebestand kon niet geladen worden."
 
-#: ../libbrasero-utils/brasero-metadata.c:1135 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "‘%s’ kon niet door GStreamer gebruikt worden"
@@ -2595,43 +2611,43 @@ msgstr "‘%s’ kon niet door GStreamer gebruikt worden"
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
+#: ../libbrasero-utils/brasero-metadata.c:1194
 #: ../libbrasero-utils/brasero-metadata.c:1207
 #: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1233
-#: ../libbrasero-utils/brasero-metadata.c:1375
-#: ../libbrasero-utils/brasero-metadata.c:1746
-#: ../libbrasero-utils/brasero-metadata.c:1761
-#: ../libbrasero-utils/brasero-metadata.c:1770
+#: ../libbrasero-utils/brasero-metadata.c:1362
+#: ../libbrasero-utils/brasero-metadata.c:1734
+#: ../libbrasero-utils/brasero-metadata.c:1749
+#: ../libbrasero-utils/brasero-metadata.c:1758
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
 #: ../plugins/transcode/burn-normalize.c:221
 #: ../plugins/transcode/burn-normalize.c:238
 #: ../plugins/transcode/burn-normalize.c:335
-#: ../plugins/transcode/burn-transcode.c:294
-#: ../plugins/transcode/burn-transcode.c:306
-#: ../plugins/transcode/burn-transcode.c:456
-#: ../plugins/transcode/burn-transcode.c:509
-#: ../plugins/transcode/burn-transcode.c:543
-#: ../plugins/transcode/burn-transcode.c:590
+#: ../plugins/transcode/burn-transcode.c:292
+#: ../plugins/transcode/burn-transcode.c:304
+#: ../plugins/transcode/burn-transcode.c:426
+#: ../plugins/transcode/burn-transcode.c:479
+#: ../plugins/transcode/burn-transcode.c:513
+#: ../plugins/transcode/burn-transcode.c:556
+#: ../plugins/transcode/burn-transcode.c:577
+#: ../plugins/transcode/burn-transcode.c:589
 #: ../plugins/transcode/burn-transcode.c:611
-#: ../plugins/transcode/burn-transcode.c:623
-#: ../plugins/transcode/burn-transcode.c:648
-#: ../plugins/transcode/burn-vob.c:309 ../plugins/transcode/burn-vob.c:329
-#: ../plugins/transcode/burn-vob.c:344 ../plugins/transcode/burn-vob.c:356
-#: ../plugins/transcode/burn-vob.c:373 ../plugins/transcode/burn-vob.c:431
-#: ../plugins/transcode/burn-vob.c:448 ../plugins/transcode/burn-vob.c:460
-#: ../plugins/transcode/burn-vob.c:472 ../plugins/transcode/burn-vob.c:484
-#: ../plugins/transcode/burn-vob.c:501 ../plugins/transcode/burn-vob.c:592
-#: ../plugins/transcode/burn-vob.c:609 ../plugins/transcode/burn-vob.c:621
-#: ../plugins/transcode/burn-vob.c:633 ../plugins/transcode/burn-vob.c:655
-#: ../plugins/transcode/burn-vob.c:672 ../plugins/transcode/burn-vob.c:718
-#: ../plugins/transcode/burn-vob.c:795 ../plugins/transcode/burn-vob.c:812
-#: ../plugins/transcode/burn-vob.c:827 ../plugins/transcode/burn-vob.c:839
-#: ../plugins/transcode/burn-vob.c:850 ../plugins/transcode/burn-vob.c:861
-#: ../plugins/transcode/burn-vob.c:1036 ../plugins/transcode/burn-vob.c:1100
-#: ../plugins/transcode/burn-vob.c:1117 ../plugins/transcode/burn-vob.c:1138
-#: ../plugins/transcode/burn-vob.c:1165
+#: ../plugins/transcode/burn-vob.c:308 ../plugins/transcode/burn-vob.c:328
+#: ../plugins/transcode/burn-vob.c:343 ../plugins/transcode/burn-vob.c:355
+#: ../plugins/transcode/burn-vob.c:372 ../plugins/transcode/burn-vob.c:428
+#: ../plugins/transcode/burn-vob.c:445 ../plugins/transcode/burn-vob.c:457
+#: ../plugins/transcode/burn-vob.c:469 ../plugins/transcode/burn-vob.c:481
+#: ../plugins/transcode/burn-vob.c:498 ../plugins/transcode/burn-vob.c:582
+#: ../plugins/transcode/burn-vob.c:599 ../plugins/transcode/burn-vob.c:611
+#: ../plugins/transcode/burn-vob.c:623 ../plugins/transcode/burn-vob.c:642
+#: ../plugins/transcode/burn-vob.c:659 ../plugins/transcode/burn-vob.c:705
+#: ../plugins/transcode/burn-vob.c:782 ../plugins/transcode/burn-vob.c:799
+#: ../plugins/transcode/burn-vob.c:814 ../plugins/transcode/burn-vob.c:826
+#: ../plugins/transcode/burn-vob.c:837 ../plugins/transcode/burn-vob.c:848
+#: ../plugins/transcode/burn-vob.c:1023 ../plugins/transcode/burn-vob.c:1087
+#: ../plugins/transcode/burn-vob.c:1104 ../plugins/transcode/burn-vob.c:1125
+#: ../plugins/transcode/burn-vob.c:1152
 #, c-format
 msgid "%s element could not be created"
 msgstr "%s-element kon niet aangemaakt worden"
@@ -2655,7 +2671,7 @@ msgstr "Gemiddeld pictogram"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../nautilus/nautilus-burn-bar.c:242 ../src/brasero-file-chooser.c:375
-#: ../src/brasero-project.c:2246 ../src/brasero-project-name.c:168
+#: ../src/brasero-project.c:2250 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
 msgstr "Imagebestanden"
@@ -3192,16 +3208,16 @@ msgstr ""
 #. * too technical and should be removed?
 #: ../plugins/transcode/burn-normalize.c:199
 #: ../plugins/transcode/burn-normalize.c:260
-#: ../plugins/transcode/burn-transcode.c:318
-#: ../plugins/transcode/burn-transcode.c:356
-#: ../plugins/transcode/burn-transcode.c:553
-#: ../plugins/transcode/burn-transcode.c:663
-#: ../plugins/transcode/burn-transcode.c:694
-#: ../plugins/transcode/burn-transcode.c:715
-#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:395
-#: ../plugins/transcode/burn-vob.c:555 ../plugins/transcode/burn-vob.c:688
-#: ../plugins/transcode/burn-vob.c:1052 ../plugins/transcode/burn-vob.c:1128
-#: ../plugins/transcode/burn-vob.c:1179
+#: ../plugins/transcode/burn-transcode.c:316
+#: ../plugins/transcode/burn-transcode.c:354
+#: ../plugins/transcode/burn-transcode.c:523
+#: ../plugins/transcode/burn-transcode.c:626
+#: ../plugins/transcode/burn-transcode.c:657
+#: ../plugins/transcode/burn-transcode.c:679
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:392
+#: ../plugins/transcode/burn-vob.c:545 ../plugins/transcode/burn-vob.c:675
+#: ../plugins/transcode/burn-vob.c:1039 ../plugins/transcode/burn-vob.c:1115
+#: ../plugins/transcode/burn-vob.c:1166
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "Kon plug-in datapaden niet verbinden"
@@ -3210,45 +3226,45 @@ msgstr "Kon plug-in datapaden niet verbinden"
 msgid "Normalizing tracks"
 msgstr "Tracks normaliseren"
 
-#: ../plugins/transcode/burn-normalize.c:644
+#: ../plugins/transcode/burn-normalize.c:643
 msgid "Normalization"
 msgstr "Normaliseren"
 
-#: ../plugins/transcode/burn-normalize.c:645
+#: ../plugins/transcode/burn-normalize.c:644
 msgid "Sets consistent sound levels between tracks"
 msgstr "Stelt consistent geluidsniveau tussen nummers in"
 
 #. Translators: %s is the string error from errno
-#: ../plugins/transcode/burn-transcode.c:1086
-#: ../plugins/transcode/burn-transcode.c:1274
+#: ../plugins/transcode/burn-transcode.c:1050
+#: ../plugins/transcode/burn-transcode.c:1238
 #, c-format
 msgid "Error while padding file (%s)"
 msgstr "Fout bij het verlengen van bestand (%s)"
 
-#: ../plugins/transcode/burn-transcode.c:1350
+#: ../plugins/transcode/burn-transcode.c:1313
 msgid "Error while getting duration"
 msgstr "Fout bij het opvragen van de lengte"
 
-#: ../plugins/transcode/burn-transcode.c:1499
+#: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
 msgstr "Analyseren van ‘%s’"
 
-#: ../plugins/transcode/burn-transcode.c:1536
+#: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr "Transcoderen van ‘%s’"
 
-#: ../plugins/transcode/burn-transcode.c:1773
+#: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr ""
 "Converteert elk muziekbestand naar een formaat geschikt voor audio-cd's"
 
-#: ../plugins/transcode/burn-vob.c:1264
+#: ../plugins/transcode/burn-vob.c:1251
 msgid "Converting video file to MPEG2"
 msgstr "Videobestand omzetten naar MPEG2"
 
-#: ../plugins/transcode/burn-vob.c:1367
+#: ../plugins/transcode/burn-vob.c:1353
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "Zet elk videobestand om naar een geschikt formaat voor video-dvd's"
 
@@ -3334,7 +3350,7 @@ msgid "Error while loading the project"
 msgstr "Fout bij laden van project"
 
 #: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
-#: ../src/brasero-project.c:1274
+#: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "U kunt nu bestanden aan het project toevoegen."
 
@@ -3449,7 +3465,7 @@ msgid "Edit the track information (start, end, author, etc.)"
 msgstr "Bewerk de nummerinformatie (begin, einde, auteur, etc.)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Remove the selected files from the project"
 msgstr "Geselecteerde bestanden uit het project verwijderen"
 
@@ -3924,12 +3940,12 @@ msgstr "Uitw_erpen"
 msgid "Eject Disc"
 msgstr "Schijf uitwerpen"
 
-#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2226
+#: ../src/brasero-file-chooser.c:357 ../src/brasero-project.c:2230
 msgid "Audio files"
 msgstr "Audiobestanden"
 
 # Letterlijk vertaald 'films', maar naar analogie met 'audio files' en 'image files' is 'videobestanden' beter
-#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2235
+#: ../src/brasero-file-chooser.c:365 ../src/brasero-project.c:2239
 msgid "Movies"
 msgstr "Films"
 
@@ -4001,40 +4017,40 @@ msgstr "Ver_broken verwijzingen filteren"
 msgid "Filtering options"
 msgstr "Filteringsopties"
 
-#: ../src/brasero-layout.c:100
+#: ../src/brasero-layout.c:104
 msgid "P_review"
 msgstr "_Voorbeeldweergave"
 
 #. Translators: this is an image, a picture, not a "Disc Image"
-#: ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
 msgstr "Voorbeeld van video, audio en imagebestanden tonen"
 
-#: ../src/brasero-layout.c:106
+#: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
 msgstr "_Zijpaneel tonen"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:111
 msgid "Show a side pane along the project"
 msgstr "Zijpaneel naast het project tonen"
 
-#: ../src/brasero-layout.c:121
+#: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
 msgstr "_Horizontale opmaak"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:126
 msgid "Set a horizontal layout"
 msgstr "Een horizontale opmaak instellen"
 
-#: ../src/brasero-layout.c:124
+#: ../src/brasero-layout.c:128
 msgid "_Vertical Layout"
 msgstr "_Verticale opmaak"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:129
 msgid "Set a vertical layout"
 msgstr "Een verticale opmaak instellen"
 
-#: ../src/brasero-layout.c:1183
+#: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
 msgstr "Klik om het zijpaneel te sluiten"
 
@@ -4173,48 +4189,48 @@ msgstr "Opties voor plug-in %s"
 msgid "Brasero Plugins"
 msgstr "Brasero-plugins"
 
-#: ../src/brasero-project.c:194
+#: ../src/brasero-project.c:196
 msgid "Save current project"
 msgstr "Huidige project opslaan"
 
-#: ../src/brasero-project.c:195
+#: ../src/brasero-project.c:197
 msgid "Save _As…"
 msgstr "Opslaan _als…"
 
-#: ../src/brasero-project.c:196
+#: ../src/brasero-project.c:198
 msgid "Save current project to a different location"
 msgstr "Het huidige project op een andere locatie opslaan"
 
-#: ../src/brasero-project.c:197
+#: ../src/brasero-project.c:199
 msgid "_Add Files"
 msgstr "Bestanden _toevoegen"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Add files to the project"
 msgstr "Bestanden aan het project toevoegen"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "_Remove Files"
 msgstr "Bestanden _verwijderen"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:202 ../src/brasero-project.c:2308
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:2312
 msgid "E_mpty Project"
 msgstr "Project _leegmaken"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:205
 msgid "Remove all files from the project"
 msgstr "Alle bestanden van het project verwijderen"
 
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1084
+#: ../src/brasero-project.c:206 ../src/brasero-project.c:1086
 msgid "_Burn…"
 msgstr "_Branden..."
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:207
 msgid "Burn the disc"
 msgstr "De schijf branden"
 
-#: ../src/brasero-project.c:693
+#: ../src/brasero-project.c:695
 msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
@@ -4222,7 +4238,7 @@ msgstr ""
 "Druk op de \"Toevoegen\"-knop om bestanden toe te voegen of sleep ze naar "
 "dit gebied"
 
-#: ../src/brasero-project.c:695
+#: ../src/brasero-project.c:697
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
@@ -4230,16 +4246,16 @@ msgstr ""
 "Verwijder bestanden door ze te selecteren en vervolgens op de \"Verwijder\"-"
 "knop te drukken of de \"Delete\"-toets in te drukken"
 
-#: ../src/brasero-project.c:802
+#: ../src/brasero-project.c:804
 #, c-format
 msgid "Estimated project size: %s"
 msgstr "Geschatte projectgrootte: %s"
 
-#: ../src/brasero-project.c:948 ../src/brasero-project.c:964
+#: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr "Het project is te groot voor de schijf, zelfs met de overburn-optie."
 
-#: ../src/brasero-project.c:975
+#: ../src/brasero-project.c:977
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
 "You may want to use this option if you're using 90 or 100 min CD-R(W) which "
@@ -4253,37 +4269,37 @@ msgstr ""
 "hebben.\n"
 "Let op: Deze optie kan fouten veroorzaken"
 
-#: ../src/brasero-project.c:1096
+#: ../src/brasero-project.c:1098
 msgid "Start to burn the contents of the selection"
 msgstr "Beginnen met branden van de selectie"
 
-#: ../src/brasero-project.c:1265
+#: ../src/brasero-project.c:1267
 msgid "Please add songs to the project."
 msgstr "U kunt nu nummers aan het project toevoegen."
 
-#: ../src/brasero-project.c:1902 ../src/brasero-project.c:1937
+#: ../src/brasero-project.c:1904 ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr ""
 "Weet u zeker dat u een nieuw project wilt maken en het huidige project wilt "
 "weggooien?"
 
-#: ../src/brasero-project.c:1907
+#: ../src/brasero-project.c:1909
 msgid "If you choose to create a new empty project, all changes will be lost."
 msgstr ""
 "Als u ervoor kiest een nieuw leeg project te starten zullen alle "
 "veranderingen verloren gaan."
 
-#: ../src/brasero-project.c:1910
+#: ../src/brasero-project.c:1912
 msgid "_Discard Changes"
 msgstr "Wijzigingen _verwerpen"
 
-#: ../src/brasero-project.c:1918
+#: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
 "Wilt u de bestandsselectie verwerpen of deze aan het nieuwe project "
 "toevoegen?"
 
-#: ../src/brasero-project.c:1923 ../src/brasero-project.c:1942
+#: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
@@ -4291,27 +4307,27 @@ msgstr ""
 "Als u ervoor kies een nieuw leeg project te starten zal de bestandsselectie "
 "verworpen worden."
 
-#: ../src/brasero-project.c:1925
+#: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
 msgstr "Bestandsselectie ve_rwerpen"
 
-#: ../src/brasero-project.c:1929
+#: ../src/brasero-project.c:1931
 msgid "_Keep File Selection"
 msgstr "Bestandsselectie _behouden"
 
-#: ../src/brasero-project.c:1944
+#: ../src/brasero-project.c:1946
 msgid "_Discard Project"
 msgstr "Project _verwerpen"
 
-#: ../src/brasero-project.c:2184
+#: ../src/brasero-project.c:2188
 msgid "Select Files"
 msgstr "Bestanden selecteren"
 
-#: ../src/brasero-project.c:2297
+#: ../src/brasero-project.c:2301
 msgid "Do you really want to empty the current project?"
 msgstr "Weet u zeker dat u het huidige project wilt leegmaken?"
 
-#: ../src/brasero-project.c:2302
+#: ../src/brasero-project.c:2306
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -4322,78 +4338,78 @@ msgstr ""
 "daadwerkelijk van de computer verwijderd worden: ze zullen hier alleen niet "
 "meer getoond worden."
 
-#: ../src/brasero-project.c:2364
+#: ../src/brasero-project.c:2368
 msgid "_Save"
 msgstr "Op_slaan"
 
-#: ../src/brasero-project.c:2375
+#: ../src/brasero-project.c:2379
 msgid "_Add"
 msgstr "_Toevoegen"
 
-#: ../src/brasero-project.c:2380 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1249
 msgid "_Remove"
 msgstr "Ve_rwijderen"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2444
+#: ../src/brasero-project.c:2448
 #, c-format
 msgid "Brasero — %s (Data Disc)"
 msgstr "Brasero — %s (Gegevensschijf)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2447
+#: ../src/brasero-project.c:2451
 #, c-format
 msgid "Brasero — %s (Audio Disc)"
 msgstr "Brasero — %s (Audioschijf)"
 
 #. Translators: %s is the name of the project
-#: ../src/brasero-project.c:2450
+#: ../src/brasero-project.c:2454
 #, c-format
 msgid "Brasero — %s (Video Disc)"
 msgstr "Brasero — %s (Videoschijf)"
 
-#: ../src/brasero-project.c:2620 ../src/brasero-project.c:2923
+#: ../src/brasero-project.c:2624 ../src/brasero-project.c:2927
 msgid "Your project has not been saved."
 msgstr "Uw project is niet opgeslagen."
 
-#: ../src/brasero-project.c:2634
+#: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
 msgstr "Wilt u het huidige project opslaan alvorens af te sluiten?"
 
-#: ../src/brasero-project.c:2639 ../src/brasero-project.c:2928
+#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Als u niet opslaat, zullen wijzigingen permanent verloren gaan."
 
-#: ../src/brasero-project.c:2643 ../src/brasero-project.c:2649
-#: ../src/brasero-project.c:2931
+#: ../src/brasero-project.c:2647 ../src/brasero-project.c:2653
+#: ../src/brasero-project.c:2935
 msgid "Cl_ose Without Saving"
 msgstr "Afs_luiten zonder opslaan"
 
-#: ../src/brasero-project.c:2731
+#: ../src/brasero-project.c:2735
 msgid "Save Current Project"
 msgstr "Huidige project opslaan"
 
-#: ../src/brasero-project.c:2749
+#: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
 msgstr "Project als Brasero-audio-project opslaan"
 
-#: ../src/brasero-project.c:2750
+#: ../src/brasero-project.c:2754
 msgid "Save project as a plain text list"
 msgstr "Project opslaan als platte tekst"
 
-#: ../src/brasero-project.c:2754
+#: ../src/brasero-project.c:2758
 msgid "Save project as a PLS playlist"
 msgstr "Project opslaan als PLS-afspeellijst"
 
-#: ../src/brasero-project.c:2755
+#: ../src/brasero-project.c:2759
 msgid "Save project as an M3U playlist"
 msgstr "Project opslaan als M3U-afspeellijst"
 
-#: ../src/brasero-project.c:2756
+#: ../src/brasero-project.c:2760
 msgid "Save project as an XSPF playlist"
 msgstr "Project als een XSPF-afspeellijst opslaan"
 
-#: ../src/brasero-project.c:2757
+#: ../src/brasero-project.c:2761
 msgid "Save project as an iriver playlist"
 msgstr "Project als een iriver-afspeellijst opslaan"
 
@@ -4722,11 +4738,11 @@ msgstr "{nummer}"
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-song-control.c:528
+#: ../src/brasero-song-control.c:527
 msgid "No file"
 msgstr "Geen bestand"
 
-#: ../src/brasero-song-control.c:563
+#: ../src/brasero-song-control.c:562
 msgid "Start and stop playing"
 msgstr "Afspelen starten en stoppen"
 
