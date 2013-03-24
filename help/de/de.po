@@ -1,12 +1,12 @@
 # German translation of the Brasero documentation.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2008-2012.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2008-2013.
 # Gabor Karsay <gabor.karsay@gmx.at>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero doc master\n"
-"POT-Creation-Date: 2012-08-22 02:56+0000\n"
-"PO-Revision-Date: 2012-09-02 19:31+0100\n"
+"POT-Creation-Date: 2013-03-24 11:32+0000\n"
+"PO-Revision-Date: 2013-03-24 13:08+0100\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: \n"
@@ -713,18 +713,25 @@ msgstr "durch Öffnen des Projekts in einer Dateiverwaltung"
 
 #: C/project-save.page:57(note/p)
 msgid ""
-"If <app>Brasero</app> is already running, opening the project from a file "
-"browser will cause a second instance of <app>Brasero</app> to start and will "
-"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
-"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
+"Only one instance of <app>Brasero</app> can be opened at any time. If you try "
+"to open a second instance, the currently open <app>Brasero</app> window will "
+"be focused."
 msgstr ""
-"Falls <app>Brasero</app> bereits läuft, wird beim Öffnen des Projekts aus "
-"einer Dateiverwaltung heraus eine zweite Instanz von <app>Brasero</app> "
-"gestartet, wodurch beide Instanzen abstürzen. Siehe <link href=\"https://"
-"bugzilla.gnome.org/show_bug.cgi?id=644011\">GNOME-Fehlerbericht 644011</link> "
-"für weitere Informationen."
+"Es können nicht mehrere Instanzen von <app>Brasero</app> gleichzeitig "
+"geöffnet werden. Wenn Sie versuchen, eine zweite Instanz zu öffnen, wird das "
+"aktuell geöffnete <app>Brasero</app>-Fenster fokussiert."
 
-#: C/project-save.page:67(note/p)
+#: C/project-save.page:60(note/p)
+msgid ""
+"If <app>Brasero</app> is already running and you try to open some files with "
+"it from <app>Files</app>, the files will be added to the project that you are "
+"currently working on."
+msgstr ""
+"Falls <app>Brasero</app> bereits läuft und Sie versuchen, einige Dateien "
+"damit in <app>Files</app> zu öffnen, werden die Dateien zu dem Projekt "
+"hinzugefügt, an dem Sie gegenwärtig arbeiten."
+
+#: C/project-save.page:68(note/p)
 msgid ""
 "If you open a saved project, <app>Brasero</app> will treat it as a new "
 "project: if you want to save an updated version of the project, it will ask "
@@ -1017,3 +1024,16 @@ msgid ""
 msgstr ""
 "Wenn die Überprüfung beendet ist, können Sie entweder <gui>Erneut prüfen</"
 "gui> oder <gui>Schließen</gui>."
+
+#~ msgid ""
+#~ "If <app>Brasero</app> is already running, opening the project from a file "
+#~ "browser will cause a second instance of <app>Brasero</app> to start and "
+#~ "will cause both instances to crash. See <link href=\"https://bugzilla."
+#~ "gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</link> for more "
+#~ "information."
+#~ msgstr ""
+#~ "Falls <app>Brasero</app> bereits läuft, wird beim Öffnen des Projekts aus "
+#~ "einer Dateiverwaltung heraus eine zweite Instanz von <app>Brasero</app> "
+#~ "gestartet, wodurch beide Instanzen abstürzen. Siehe <link href=\"https://"
+#~ "bugzilla.gnome.org/show_bug.cgi?id=644011\">GNOME-Fehlerbericht 644011</"
+#~ "link> für weitere Informationen."
