@@ -7,13 +7,14 @@
 # Claude Paroz <claude@2xlibre.net>, 2008-2009.
 # Nicolas Repentin <nicolas.repentin@gmail.com>, 2009.
 # Æzaerth <aezaerth@gmx.com>, 2011.
+# Mickael Albertus <mickael.albertus@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero help fr\n"
-"POT-Creation-Date: 2012-08-22 02:56+0000\n"
-"PO-Revision-Date: 2012-09-10 11:59+0200\n"
-"Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
+"POT-Creation-Date: 2013-03-25 17:40+0000\n"
+"PO-Revision-Date: 2013-03-24 17:21+0100\n"
+"Last-Translator: Mickael Albertus <mickael.albertus@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -43,7 +44,8 @@ msgid "translator-credits"
 msgstr ""
 "Bruno Brouard <annoa.b@gmail.com>, 2008-2009,2011\n"
 "Claude Paroz <claude@2xlibre.net>, 2008-2009\n"
-"Æzaerth <aezaerth@gmx.com>, 2011"
+"Æzaerth <aezaerth@gmx.com>, 2011\n"
+"Mickael Albertus <mickael.albertus@gmail.com>"
 
 #: C/create-cover.page:7(info/desc)
 msgid "Create an inlay for a jewel case."
@@ -81,8 +83,8 @@ msgid ""
 "guiseq>."
 msgstr ""
 "Vous pouvez utiliser <app>Brasero</app> pour créer la jaquette de votre "
-"boîtier. Accédez au créateur depuis <guiseq><gui>Outils</gui> <gui>Éditeur de "
-"pochette</gui></guiseq>."
+"boîtier. Accédez au créateur depuis <guiseq><gui>Outils</gui> <gui>Éditeur "
+"de pochette</gui></guiseq>."
 
 #: C/create-cover.page:24(note/p)
 msgid ""
@@ -722,18 +724,26 @@ msgstr "ouvrez le projet depuis le navigateur de fichiers."
 
 #: C/project-save.page:57(note/p)
 msgid ""
-"If <app>Brasero</app> is already running, opening the project from a file "
-"browser will cause a second instance of <app>Brasero</app> to start and will "
-"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
-"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
+"Only one instance of <app>Brasero</app> can be opened at any time. If you "
+"try to open a second instance, the currently open <app>Brasero</app> window "
+"will be focused."
 msgstr ""
-"Si <app>Brasero</app> est déjà lancé, l'ouverture du projet à partir du "
-"navigateur de fichiers lance une deuxième instance de <app>Brasero</app> ce "
-"qui fait s'arrêter brutalement les deux instances. Consultez le <link href="
-"\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">bogue GNOME 644011</"
-"link> pour plus d'informations."
+"Une seule instance de <app>Brasero</app> peut être ouverte à la fois. Si "
+"vous essayez d'ouvrir une seconde instance, la fenêtre actuellement ouverte "
+"de <app>Brasero</app> aura le focus."
 
-#: C/project-save.page:67(note/p)
+#: C/project-save.page:60(note/p)
+msgid ""
+"If <app>Brasero</app> is already running and you try to open some files with "
+"it from <app>Files</app>, the files will be added to the project that you "
+"are currently working on."
+msgstr ""
+"Si <app>Brasero</app> est déjà en cours d'exécution et que vous essayez "
+"d'ouvrir certains fichiers avec ce logiciel à partir de l'application "
+"<app>Fichiers</app>, ceux-ci seront ajoutés au projet sur lequel vous "
+"travaillez actuellement."
+
+#: C/project-save.page:68(note/p)
 msgid ""
 "If you open a saved project, <app>Brasero</app> will treat it as a new "
 "project: if you want to save an updated version of the project, it will ask "
@@ -1023,6 +1033,19 @@ msgid ""
 msgstr ""
 "Lorsque la vérification est terminée, vous pouvez soit choisir de "
 "<gui>Vérifier à nouveau</gui> ou tout simplement de <gui>Fermer</gui>."
+
+#~ msgid ""
+#~ "If <app>Brasero</app> is already running, opening the project from a file "
+#~ "browser will cause a second instance of <app>Brasero</app> to start and "
+#~ "will cause both instances to crash. See <link href=\"https://bugzilla."
+#~ "gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</link> for more "
+#~ "information."
+#~ msgstr ""
+#~ "Si <app>Brasero</app> est déjà lancé, l'ouverture du projet à partir du "
+#~ "navigateur de fichiers lance une deuxième instance de <app>Brasero</app> "
+#~ "ce qui fait s'arrêter brutalement les deux instances. Consultez le <link "
+#~ "href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">bogue GNOME "
+#~ "644011</link> pour plus d'informations."
 
 #~ msgid "pau.gonzalezbr@gmail.com"
 #~ msgstr "pau.gonzalezbr@gmail.com"
