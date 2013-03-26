@@ -5,13 +5,14 @@
 # wanderlust <wanderlust@ukr.net>, 2009.
 # Korostil Daniel <ted.korostiled@gmail.com>, 2011.
 # Re. <ted.korostiled@gmail.com>, 2012.
+# Daniel Korostil <ted.korostiled@gmail.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-21 10:35+0300\n"
-"PO-Revision-Date: 2012-09-21 10:36+0300\n"
-"Last-Translator: Re. <ted.korostiled@gmail.com>\n"
+"POT-Creation-Date: 2013-03-26 18:23+0200\n"
+"PO-Revision-Date: 2013-03-26 18:24+0300\n"
+"Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
 "Language-Team: linux.org.ua\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -34,22 +35,26 @@ msgid "Create and copy CDs and DVDs"
 msgstr "Запис та копіювання CD чи DVD"
 
 #: ../data/brasero.desktop.in.in.h:4
+msgid "disc;cdrom;dvd;burn;audio;video;"
+msgstr "диск;cdrom;dvd;запис;аудіо;відео;"
+
+#: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
 msgstr "Програма для запису дисків Brasero"
 
-#: ../data/brasero.desktop.in.in.h:5
+#: ../data/brasero.desktop.in.in.h:6
 msgid "Open a New Window"
 msgstr "Відкрити нове вікно"
 
-#: ../data/brasero.desktop.in.in.h:6
+#: ../data/brasero.desktop.in.in.h:7
 msgid "Burn an Image File"
 msgstr "Записати файл _образу"
 
-#: ../data/brasero.desktop.in.in.h:7
+#: ../data/brasero.desktop.in.in.h:8
 msgid "Create an Audio Project"
 msgstr "Створити звуковий проект"
 
-#: ../data/brasero.desktop.in.in.h:8
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create a Video Project"
 msgstr "Створити відеопроект"
 
@@ -319,7 +324,7 @@ msgid "The drive is busy"
 msgstr "Пристрій зайнятий"
 
 #: ../libbrasero-burn/brasero-burn.c:332
-#: ../libbrasero-burn/brasero-burn-dialog.c:649
+#: ../libbrasero-burn/brasero-burn-dialog.c:651
 #: ../libbrasero-burn/brasero-tool-dialog.c:90
 msgid "Make sure another application is not using it"
 msgstr "Перевірте, що інша програма не використовує диск"
@@ -375,7 +380,7 @@ msgid "Merging data is impossible with this disc"
 msgstr "Об'єднання даних на цьому диску неможливе"
 
 #: ../libbrasero-burn/brasero-burn.c:1624
-#: ../libbrasero-burn/brasero-burn-dialog.c:2184
+#: ../libbrasero-burn/brasero-burn-dialog.c:2186
 #: ../plugins/cdrkit/burn-genisoimage.c:206 ../plugins/cdrkit/burn-wodim.c:114
 #: ../plugins/cdrtools/burn-cdrecord.c:114
 #: ../plugins/cdrtools/burn-mkisofs.c:206
@@ -454,194 +459,194 @@ msgid "Brasero notification"
 msgstr "Сповіщення Brasero"
 
 #. Translators: This string is used in the title bar %s is the action currently performed
-#: ../libbrasero-burn/brasero-burn-dialog.c:217
+#: ../libbrasero-burn/brasero-burn-dialog.c:219
 #, c-format
 msgid "%s (%i%% Done)"
 msgstr "%s, %i%% виконано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:239
-#: ../libbrasero-burn/brasero-burn-dialog.c:1159
+#: ../libbrasero-burn/brasero-burn-dialog.c:241
+#: ../libbrasero-burn/brasero-burn-dialog.c:1161
 msgid "Creating Image"
 msgstr "Створення образу"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:244
-#: ../libbrasero-burn/brasero-burn-dialog.c:1168
+#: ../libbrasero-burn/brasero-burn-dialog.c:246
+#: ../libbrasero-burn/brasero-burn-dialog.c:1170
 msgid "Burning DVD"
 msgstr "Запис DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:248
-#: ../libbrasero-burn/brasero-burn-dialog.c:1164
+#: ../libbrasero-burn/brasero-burn-dialog.c:250
+#: ../libbrasero-burn/brasero-burn-dialog.c:1166
 msgid "Copying DVD"
 msgstr "Копіювання DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:254
-#: ../libbrasero-burn/brasero-burn-dialog.c:1178
+#: ../libbrasero-burn/brasero-burn-dialog.c:256
+#: ../libbrasero-burn/brasero-burn-dialog.c:1180
 msgid "Burning CD"
 msgstr "Запис CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:258
-#: ../libbrasero-burn/brasero-burn-dialog.c:379
-#: ../libbrasero-burn/brasero-burn-dialog.c:1174
+#: ../libbrasero-burn/brasero-burn-dialog.c:260
+#: ../libbrasero-burn/brasero-burn-dialog.c:381
+#: ../libbrasero-burn/brasero-burn-dialog.c:1176
 msgid "Copying CD"
 msgstr "Копіювання CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:264
-#: ../libbrasero-burn/brasero-burn-dialog.c:1188
+#: ../libbrasero-burn/brasero-burn-dialog.c:266
+#: ../libbrasero-burn/brasero-burn-dialog.c:1190
 msgid "Burning Disc"
 msgstr "Записується диск"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:268
-#: ../libbrasero-burn/brasero-burn-dialog.c:1184
+#: ../libbrasero-burn/brasero-burn-dialog.c:270
+#: ../libbrasero-burn/brasero-burn-dialog.c:1186
 msgid "Copying Disc"
 msgstr "Копіювання диску"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:298
+#: ../libbrasero-burn/brasero-burn-dialog.c:300
 #: ../libbrasero-burn/burn-basics.c:78
 msgid "Creating image"
 msgstr "Створення образу"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:304
+#: ../libbrasero-burn/brasero-burn-dialog.c:306
 msgid "Simulation of video DVD burning"
 msgstr "Симуляція запису відео DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:306
+#: ../libbrasero-burn/brasero-burn-dialog.c:308
 msgid "Burning video DVD"
 msgstr "Запис відео DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:314
+#: ../libbrasero-burn/brasero-burn-dialog.c:316
 msgid "Simulation of data DVD burning"
 msgstr "Симуляція запису DVD з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:316
+#: ../libbrasero-burn/brasero-burn-dialog.c:318
 msgid "Burning data DVD"
 msgstr "Запис DVD з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:324
+#: ../libbrasero-burn/brasero-burn-dialog.c:326
 msgid "Simulation of image to DVD burning"
 msgstr "Симуляція запису образу DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:326
+#: ../libbrasero-burn/brasero-burn-dialog.c:328
 msgid "Burning image to DVD"
 msgstr "Запис образу DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:334
+#: ../libbrasero-burn/brasero-burn-dialog.c:336
 msgid "Simulation of data DVD copying"
 msgstr "Симуляція копіювання DVD з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:336
+#: ../libbrasero-burn/brasero-burn-dialog.c:338
 msgid "Copying data DVD"
 msgstr "Копіювання DVD з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:347
+#: ../libbrasero-burn/brasero-burn-dialog.c:349
 msgid "Simulation of (S)VCD burning"
 msgstr "Симуляція запису (S)VCD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:349
+#: ../libbrasero-burn/brasero-burn-dialog.c:351
 msgid "Burning (S)VCD"
 msgstr "Запис (S)VCD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:357
-#: ../libbrasero-burn/brasero-burn-dialog.c:410
+#: ../libbrasero-burn/brasero-burn-dialog.c:359
+#: ../libbrasero-burn/brasero-burn-dialog.c:412
 msgid "Simulation of audio CD burning"
 msgstr "Симуляція запису звукового CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:359
-#: ../libbrasero-burn/brasero-burn-dialog.c:412
+#: ../libbrasero-burn/brasero-burn-dialog.c:361
+#: ../libbrasero-burn/brasero-burn-dialog.c:414
 msgid "Burning audio CD"
 msgstr "Запис звукового CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:367
+#: ../libbrasero-burn/brasero-burn-dialog.c:369
 msgid "Simulation of data CD burning"
 msgstr "Симуляція запису CD з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:369
+#: ../libbrasero-burn/brasero-burn-dialog.c:371
 msgid "Burning data CD"
 msgstr "Запис CD з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:377
+#: ../libbrasero-burn/brasero-burn-dialog.c:379
 msgid "Simulation of CD copying"
 msgstr "Симуляція копіювання CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:387
+#: ../libbrasero-burn/brasero-burn-dialog.c:389
 msgid "Simulation of image to CD burning"
 msgstr "Симуляція запису образу CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:389
+#: ../libbrasero-burn/brasero-burn-dialog.c:391
 msgid "Burning image to CD"
 msgstr "Запис образу CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:400
+#: ../libbrasero-burn/brasero-burn-dialog.c:402
 msgid "Simulation of video disc burning"
 msgstr "Симуляція запису відеодиску"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:402
+#: ../libbrasero-burn/brasero-burn-dialog.c:404
 msgid "Burning video disc"
 msgstr "Запис відеодиска"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:420
+#: ../libbrasero-burn/brasero-burn-dialog.c:422
 msgid "Simulation of data disc burning"
 msgstr "Симуляція запису диска з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:422
+#: ../libbrasero-burn/brasero-burn-dialog.c:424
 msgid "Burning data disc"
 msgstr "Запис диску з даними"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:430
+#: ../libbrasero-burn/brasero-burn-dialog.c:432
 msgid "Simulation of disc copying"
 msgstr "Симуляція копіювання диску"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:432
+#: ../libbrasero-burn/brasero-burn-dialog.c:434
 #: ../libbrasero-burn/burn-basics.c:82
 msgid "Copying disc"
 msgstr "Копіювання диску"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:440
+#: ../libbrasero-burn/brasero-burn-dialog.c:442
 msgid "Simulation of image to disc burning"
 msgstr "Симуляція запису образу диска"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:442
+#: ../libbrasero-burn/brasero-burn-dialog.c:444
 msgid "Burning image to disc"
 msgstr "Запис образу диску"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:547
+#: ../libbrasero-burn/brasero-burn-dialog.c:549
 msgid "Please replace the disc with a rewritable disc holding data."
 msgstr "Замініть диск диском з можливістю перезапису, що містить дані."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:549
+#: ../libbrasero-burn/brasero-burn-dialog.c:551
 msgid "Please replace the disc with a disc holding data."
 msgstr "Замініть диск диском з даними."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:553
+#: ../libbrasero-burn/brasero-burn-dialog.c:555
 msgid "Please insert a rewritable disc holding data."
 msgstr "Вставте диск з можливістю перезапису, що містить дані."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:555
+#: ../libbrasero-burn/brasero-burn-dialog.c:557
 #: ../libbrasero-burn/brasero-burn-options.c:494
 msgid "Please insert a disc holding data."
 msgstr "Вставте диск з даними."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:570
+#: ../libbrasero-burn/brasero-burn-dialog.c:572
 #, c-format
 msgid ""
 "Please replace the disc with a writable CD with at least %i MiB of free "
 "space."
 msgstr "Замініть диск на записуваний CD, що має не менше %i МБ вільного місця."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:573
+#: ../libbrasero-burn/brasero-burn-dialog.c:575
 msgid "Please replace the disc with a writable CD."
 msgstr "Замініть диск на CD, з можливістю запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:577
+#: ../libbrasero-burn/brasero-burn-dialog.c:579
 #, c-format
 msgid "Please insert a writable CD with at least %i MiB of free space."
 msgstr ""
 "Вставте CD з підтримкою запису, що має не менше %i МБ вільного простору."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:580
+#: ../libbrasero-burn/brasero-burn-dialog.c:582
 msgid "Please insert a writable CD."
 msgstr "Вставте записуваний CD."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:586
+#: ../libbrasero-burn/brasero-burn-dialog.c:588
 #, c-format
 msgid ""
 "Please replace the disc with a writable DVD with at least %i MiB of free "
@@ -650,20 +655,20 @@ msgstr ""
 "Замініть диск на DVD з підтримкою запису, що має не менш %i МБ вільного "
 "місця."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:589
+#: ../libbrasero-burn/brasero-burn-dialog.c:591
 msgid "Please replace the disc with a writable DVD."
 msgstr "Замініть диск на DVD з підтримкою запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:593
+#: ../libbrasero-burn/brasero-burn-dialog.c:595
 #, c-format
 msgid "Please insert a writable DVD with at least %i MiB of free space."
 msgstr "Вставте DVD з підтримкою запису, що має не менше %i МБ вільного місця."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:596
+#: ../libbrasero-burn/brasero-burn-dialog.c:598
 msgid "Please insert a writable DVD."
 msgstr "Вставте DVD з підтримкою запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:601
+#: ../libbrasero-burn/brasero-burn-dialog.c:603
 #, c-format
 msgid ""
 "Please replace the disc with a writable CD or DVD with at least %i MiB of "
@@ -672,24 +677,24 @@ msgstr ""
 "Замініть диск на CD чи DVD з підтримкою запису, що містить не менше %i МБ "
 "вільного місця."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:604
+#: ../libbrasero-burn/brasero-burn-dialog.c:606
 msgid "Please replace the disc with a writable CD or DVD."
 msgstr "Замініть диск на CD чи DVD з можливістю запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:608
+#: ../libbrasero-burn/brasero-burn-dialog.c:610
 #, c-format
 msgid "Please insert a writable CD or DVD with at least %i MiB of free space."
 msgstr ""
 "Вставте CD чи DVD з можливістю запису, що має не менше %i МБ вільного місця."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:611
-#: ../libbrasero-burn/brasero-burn-dialog.c:2169
-#: ../libbrasero-burn/brasero-burn-dialog.c:2183
+#: ../libbrasero-burn/brasero-burn-dialog.c:613
+#: ../libbrasero-burn/brasero-burn-dialog.c:2171
+#: ../libbrasero-burn/brasero-burn-dialog.c:2185
 #: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "Вставте диск CD чи DVD для запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:638
+#: ../libbrasero-burn/brasero-burn-dialog.c:640
 msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a writable disc is inserted."
@@ -697,124 +702,124 @@ msgstr ""
 "На жорсткому диску створено образ диску.\n"
 "Запис почнеться одразу після вставки носія для запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:643
+#: ../libbrasero-burn/brasero-burn-dialog.c:645
 msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr ""
 "Перевірка цілісності даних почнеться одразу після того, як носій буде "
 "вставлено."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:644
+#: ../libbrasero-burn/brasero-burn-dialog.c:646
 msgid "Please re-insert the disc in the CD/DVD burner."
 msgstr "Вставте диск у пристрій CD/DVD ще раз."
 
 #. Translators: %s is the name of a drive
-#: ../libbrasero-burn/brasero-burn-dialog.c:648
+#: ../libbrasero-burn/brasero-burn-dialog.c:650
 #, c-format
 msgid "\"%s\" is busy."
 msgstr "Пристрій «%s» зайнятий."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:652
+#: ../libbrasero-burn/brasero-burn-dialog.c:654
 #, c-format
 msgid "There is no disc in \"%s\"."
 msgstr "У пристрої «%s» відсутній диск."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:656
+#: ../libbrasero-burn/brasero-burn-dialog.c:658
 #, c-format
 msgid "The disc in \"%s\" is not supported."
 msgstr "Диск у пристрої «%s» не підтримується."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:660
+#: ../libbrasero-burn/brasero-burn-dialog.c:662
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
 msgstr "Диск у пристрої «%s» не підтримує перезапис."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:664
+#: ../libbrasero-burn/brasero-burn-dialog.c:666
 #, c-format
 msgid "The disc in \"%s\" is empty."
 msgstr "Диск у пристрої «%s» порожній."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:668
+#: ../libbrasero-burn/brasero-burn-dialog.c:670
 #, c-format
 msgid "The disc in \"%s\" is not writable."
 msgstr "Диск у пристрої «%s» не підтримує запис."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:672
+#: ../libbrasero-burn/brasero-burn-dialog.c:674
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
 msgstr "Недостатньо вільного місця на диску у пристрої «%s»."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:680
+#: ../libbrasero-burn/brasero-burn-dialog.c:682
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
 msgstr "Диск у пристрої «%s» має бути перезавантажений."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:681
+#: ../libbrasero-burn/brasero-burn-dialog.c:683
 msgid "Please eject the disc and reload it."
 msgstr "Витягніть диск та вставте його заново."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:726
+#: ../libbrasero-burn/brasero-burn-dialog.c:728
 #: ../libbrasero-burn/brasero-sum-dialog.c:333
 msgid ""
 "A file could not be created at the location specified for temporary files"
 msgstr "Не вдається створити файл у вказаному каталозі тимчасових файлів"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:727
+#: ../libbrasero-burn/brasero-burn-dialog.c:729
 msgid "The image could not be created at the specified location"
 msgstr "Не вдається створити образ диску у заданому каталозі"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:728
+#: ../libbrasero-burn/brasero-burn-dialog.c:730
 msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
 msgstr "Задати інший каталог для цього сеансу або спробувати ще раз?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:740
+#: ../libbrasero-burn/brasero-burn-dialog.c:742
 msgid "You may want to free some space on the disc and retry"
 msgstr "Звільніть місце на диску та спробувати ще раз"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:747
+#: ../libbrasero-burn/brasero-burn-dialog.c:749
 #: ../libbrasero-burn/brasero-drive-properties.c:244
 #: ../libbrasero-burn/brasero-drive-properties.c:282
 #: ../libbrasero-burn/brasero-drive-properties.c:334
 msgid "_Keep Current Location"
 msgstr "З_берегти теперішню адресу"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:749
+#: ../libbrasero-burn/brasero-burn-dialog.c:751
 #: ../libbrasero-burn/brasero-drive-properties.c:245
 #: ../libbrasero-burn/brasero-drive-properties.c:283
 #: ../libbrasero-burn/brasero-drive-properties.c:335
 msgid "_Change Location"
 msgstr "_Змінити теку"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:771
+#: ../libbrasero-burn/brasero-burn-dialog.c:773
 #: ../libbrasero-burn/brasero-image-properties.c:459
 msgid "Location for Image File"
 msgstr "Каталог для файлу образу"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:779
+#: ../libbrasero-burn/brasero-burn-dialog.c:781
 #: ../libbrasero-burn/brasero-drive-properties.c:366
 msgid "Location for Temporary Files"
 msgstr "Каталог для тимчасових файлів"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:887
-#: ../libbrasero-burn/brasero-burn-dialog.c:1133
+#: ../libbrasero-burn/brasero-burn-dialog.c:889
+#: ../libbrasero-burn/brasero-burn-dialog.c:1135
 msgid "_Replace Disc"
 msgstr "_Змінити диск"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:928
+#: ../libbrasero-burn/brasero-burn-dialog.c:930
 msgid "Do you really want to blank the current disc?"
 msgstr "Дійсно очистити поточний диск?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:929
+#: ../libbrasero-burn/brasero-burn-dialog.c:931
 msgid "The disc in the drive holds data."
 msgstr "Диск у пристрої містить дані."
 
 #. Translators: Blank is a verb here
-#: ../libbrasero-burn/brasero-burn-dialog.c:931
+#: ../libbrasero-burn/brasero-burn-dialog.c:933
 msgid "_Blank Disc"
 msgstr "О_чистити диск"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:945
+#: ../libbrasero-burn/brasero-burn-dialog.c:947
 msgid ""
 "If you import them you will be able to see and use them once the current "
 "selection of files is burned."
@@ -822,26 +827,26 @@ msgstr ""
 "Якщо ви імпортуєте їх, ви зможете бачити та використовувати їх, коли поточні "
 "виділені файли будуть записані на диск."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:946
+#: ../libbrasero-burn/brasero-burn-dialog.c:948
 msgid "If you don't, they will be invisible (though still readable)."
 msgstr ""
 "У іншому випадку, вони будуть невидимими (хоча досі залишаться доступними "
 "для читання)."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:949
+#: ../libbrasero-burn/brasero-burn-dialog.c:951
 msgid ""
 "There are files already burned on this disc. Would you like to import them?"
 msgstr "Є вже записані на диск файли. Імпортувати їх?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:951
+#: ../libbrasero-burn/brasero-burn-dialog.c:953
 msgid "_Import"
 msgstr "_Імпортувати"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:952
+#: ../libbrasero-burn/brasero-burn-dialog.c:954
 msgid "Only _Append"
 msgstr "Лише _додати"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:965
+#: ../libbrasero-burn/brasero-burn-dialog.c:967
 msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-Text "
 "won't be written."
@@ -849,37 +854,37 @@ msgstr ""
 "Існує ймовірність, що CD-RW аудіо диски можуть неправильно відтворюватися на "
 "старих програвачах CD, а CD-TEXT не буде записуватися та старих програвачах."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:966
-#: ../libbrasero-burn/brasero-burn-dialog.c:988
+#: ../libbrasero-burn/brasero-burn-dialog.c:968
+#: ../libbrasero-burn/brasero-burn-dialog.c:990
 msgid "Do you want to continue anyway?"
 msgstr "Продовжити попри все?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:969
+#: ../libbrasero-burn/brasero-burn-dialog.c:971
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "Не рекомендовано додавати звукові доріжки на диск."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:971
-#: ../libbrasero-burn/brasero-burn-dialog.c:993
+#: ../libbrasero-burn/brasero-burn-dialog.c:973
+#: ../libbrasero-burn/brasero-burn-dialog.c:995
 #: ../libbrasero-burn/brasero-tool-dialog.c:422 ../src/brasero-data-disc.c:572
 msgid "_Continue"
 msgstr "Пр_одовжити"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:987
+#: ../libbrasero-burn/brasero-burn-dialog.c:989
 msgid "CD-RW audio discs may not play correctly in older CD players."
 msgstr ""
 "CD-RW аудіо диски можуть неправильно відтворюватися на старих програвачах."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:991
+#: ../libbrasero-burn/brasero-burn-dialog.c:993
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr "Не рекомендовано записувати звукові доріжки на диск із перезаписом."
 
 #. Translators: %s is the name of a drive
-#: ../libbrasero-burn/brasero-burn-dialog.c:1035
+#: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Please eject the disc from \"%s\" manually."
 msgstr "Витягніть диск з \"%s\" вручну."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1044
+#: ../libbrasero-burn/brasero-burn-dialog.c:1046
 msgid ""
 "The disc could not be ejected though it needs to be removed for the current "
 "operation to continue."
@@ -887,114 +892,114 @@ msgstr ""
 "Неможливо витягнути диск, хоча він має бути вилучений для продовження "
 "поточної операції."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1131
+#: ../libbrasero-burn/brasero-burn-dialog.c:1133
 msgid "Do you want to replace the disc and continue?"
 msgstr "Перезаписати диск і продовжити?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1132
+#: ../libbrasero-burn/brasero-burn-dialog.c:1134
 msgid "The currently inserted disc could not be blanked."
 msgstr "Вставлений диск неможливо очистити."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1141
+#: ../libbrasero-burn/brasero-burn-dialog.c:1143
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Продовжити, вимкнувши повну сумісність з Windows?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1142
+#: ../libbrasero-burn/brasero-burn-dialog.c:1144
 #: ../libbrasero-burn/brasero-status-dialog.c:340
 #: ../src/brasero-data-disc.c:734
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Імена деяких файлів не підходять для CD сумісного з Windows."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1143
+#: ../libbrasero-burn/brasero-burn-dialog.c:1145
 msgid "C_ontinue"
 msgstr "Пр_одовжити"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1363
-#: ../libbrasero-burn/brasero-burn-dialog.c:1384
+#: ../libbrasero-burn/brasero-burn-dialog.c:1365
+#: ../libbrasero-burn/brasero-burn-dialog.c:1386
 msgid "The simulation was successful."
 msgstr "Симуляція завершилась успішно."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1366
+#: ../libbrasero-burn/brasero-burn-dialog.c:1368
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "Запис диску почнеться через 10 секунд."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1369
+#: ../libbrasero-burn/brasero-burn-dialog.c:1371
 msgid "Burn _Now"
 msgstr "Записати _зараз"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1658
+#: ../libbrasero-burn/brasero-burn-dialog.c:1660
 msgid "Save Current Session"
 msgstr "Зберегти поточний сеанс"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1733
+#: ../libbrasero-burn/brasero-burn-dialog.c:1735
 msgid "An unknown error occurred."
 msgstr "Невідома помилка."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1741
-#: ../libbrasero-burn/brasero-burn-dialog.c:1759 ../src/brasero-app.c:618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1743
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:618
 msgid "Error while burning."
 msgstr "Помилка під час запису."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1749
+#: ../libbrasero-burn/brasero-burn-dialog.c:1751
 msgid "_Save Log"
 msgstr "З_берегти журнал"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1784
+#: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "Video DVD successfully burned"
 msgstr "Відео DVD успішно записано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1786
+#: ../libbrasero-burn/brasero-burn-dialog.c:1788
 msgid "(S)VCD successfully burned"
 msgstr "(S)VCD успішно записано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1789
+#: ../libbrasero-burn/brasero-burn-dialog.c:1791
 msgid "Audio CD successfully burned"
 msgstr "Звуковий компакт-диск успішно записано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1791
-#: ../libbrasero-burn/brasero-burn-dialog.c:1822
+#: ../libbrasero-burn/brasero-burn-dialog.c:1793
+#: ../libbrasero-burn/brasero-burn-dialog.c:1824
 msgid "Image successfully created"
 msgstr "Образ успішно створено"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1796
+#: ../libbrasero-burn/brasero-burn-dialog.c:1798
 msgid "DVD successfully copied"
 msgstr "DVD успішно скопійовано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1798
+#: ../libbrasero-burn/brasero-burn-dialog.c:1800
 msgid "CD successfully copied"
 msgstr "CD успішно скопійовано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1802
+#: ../libbrasero-burn/brasero-burn-dialog.c:1804
 msgid "Image of DVD successfully created"
 msgstr "Образ DVD успішно створено."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1804
+#: ../libbrasero-burn/brasero-burn-dialog.c:1806
 msgid "Image of CD successfully created"
 msgstr "Образ CD успішно створено"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1810
+#: ../libbrasero-burn/brasero-burn-dialog.c:1812
 msgid "Image successfully burned to DVD"
 msgstr "Образ успішно записано на DVD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1812
+#: ../libbrasero-burn/brasero-burn-dialog.c:1814
 msgid "Image successfully burned to CD"
 msgstr "Образ успішно записано на CD"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1818
+#: ../libbrasero-burn/brasero-burn-dialog.c:1820
 msgid "Data DVD successfully burned"
 msgstr "DVD з даними успішно записано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1820
+#: ../libbrasero-burn/brasero-burn-dialog.c:1822
 msgid "Data CD successfully burned"
 msgstr "CD з даними успішно записано"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1879
+#: ../libbrasero-burn/brasero-burn-dialog.c:1881
 #, c-format
 msgid "Copy #%i has been burned successfully."
 msgstr "Копію #%i успішно записано."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1887
+#: ../libbrasero-burn/brasero-burn-dialog.c:1889
 msgid ""
 "Another copy will start as soon as you insert a new writable disc. If you do "
 "not want to burn another copy, press \"Cancel\"."
@@ -1002,41 +1007,41 @@ msgstr ""
 "Запис іншої копії почнеться одразу, коли буде вставлено новий диск для "
 "запису. Якщо не потрібно створювати ще одну копію, натисніть «Скасувати»."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1961
+#: ../libbrasero-burn/brasero-burn-dialog.c:1963
 msgid "Make _More Copies"
 msgstr "Створити _ще копії"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:1970
-msgid "_Create Cover"
+#: ../libbrasero-burn/brasero-burn-dialog.c:1972
+msgid "Create Co_ver"
 msgstr "Створити об_кладинку"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2132
+#: ../libbrasero-burn/brasero-burn-dialog.c:2134
 msgid "There are some files left to burn"
 msgstr "Залишилося записати декілька файлів"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2139
+#: ../libbrasero-burn/brasero-burn-dialog.c:2141
 msgid "There are some more videos left to burn"
 msgstr "Залишилося записати декілька відео"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2143
+#: ../libbrasero-burn/brasero-burn-dialog.c:2145
 msgid "There are some more songs left to burn"
 msgstr "Залишилося записати декілька пісень"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2449
+#: ../libbrasero-burn/brasero-burn-dialog.c:2451
 #: ../libbrasero-burn/brasero-tool-dialog.c:411
 msgid "Do you really want to quit?"
 msgstr "Дійсно вийти?"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2453
+#: ../libbrasero-burn/brasero-burn-dialog.c:2455
 #: ../libbrasero-burn/brasero-tool-dialog.c:417
 msgid "Interrupting the process may make disc unusable."
 msgstr "Переривання процесу може призвести до псування диску."
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2456
+#: ../libbrasero-burn/brasero-burn-dialog.c:2458
 msgid "C_ontinue Burning"
 msgstr "_Продовжити запис"
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:2463
+#: ../libbrasero-burn/brasero-burn-dialog.c:2465
 msgid "_Cancel Burning"
 msgstr "_Скасувати запис"
 
@@ -2088,28 +2093,28 @@ msgstr "файл не зберігається у локальній файло�
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "Відсутній або пошкоджений каталог VIDEO_TS"
 
-#: ../libbrasero-burn/burn-plugin.c:645
+#: ../libbrasero-burn/burn-plugin.c:647
 #, c-format
 msgid "\"%s\" could not be found in the path"
 msgstr "не вдається знайти «%s» за шляхом пошуку"
 
-#: ../libbrasero-burn/burn-plugin.c:649
+#: ../libbrasero-burn/burn-plugin.c:651
 #, c-format
 msgid "\"%s\" GStreamer plugin could not be found"
 msgstr "«%s» не знайдено модуль GStreamer"
 
-#: ../libbrasero-burn/burn-plugin.c:653 ../libbrasero-burn/burn-plugin.c:665
+#: ../libbrasero-burn/burn-plugin.c:655 ../libbrasero-burn/burn-plugin.c:667
 #, c-format
 msgid "The version of \"%s\" is too old"
 msgstr "Версія «%s» надто стара"
 
-#: ../libbrasero-burn/burn-plugin.c:657
+#: ../libbrasero-burn/burn-plugin.c:659
 #, c-format
 msgid "\"%s\" is a symbolic link pointing to another program"
 msgstr "«%s» це символічним посиланням, що вказує на іншу програму"
 
 #. Translators: %s is a filename
-#: ../libbrasero-burn/burn-plugin.c:661 ../plugins/cdrdao/burn-cdrdao.c:211
+#: ../libbrasero-burn/burn-plugin.c:663 ../plugins/cdrdao/burn-cdrdao.c:211
 #: ../plugins/growisofs/burn-growisofs.c:509
 #, c-format
 msgid "\"%s\" could not be found"
@@ -3696,13 +3701,17 @@ msgstr "Не вдається імпортувати сеанс."
 msgid "The contents of the project changed since it was saved."
 msgstr "Зміст проекту змінився з моменту його збереження."
 
-#: ../src/brasero-data-disc.c:561 ../src/brasero-data-disc.c:569
-msgid "Discard the current modified project"
-msgstr "Відхилити поточні зміни у проекті"
+#: ../src/brasero-data-disc.c:561
+msgid "Discard the current modified project ?"
+msgstr "Відхилити поточні зміни у проекті ?"
 
 #: ../src/brasero-data-disc.c:567
 msgid "_Discard"
 msgstr "_Відхилити"
+
+#: ../src/brasero-data-disc.c:569
+msgid "Discard the current modified project"
+msgstr "Відхилити поточні зміни у проекті"
 
 #: ../src/brasero-data-disc.c:574
 msgid "Continue with the current modified project"
