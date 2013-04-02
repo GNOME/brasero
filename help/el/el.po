@@ -2,18 +2,20 @@
 # Fotis Tsamis <ftsamis@gmail.com>, 2008, 2009.
 # Chris Triantafillis <christriant1995@gmail.com>, 2011.
 # Efstathios Iosifidis <diamond_gr@freemail.gr>, 2011.
-#
+# Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: help\n"
-"POT-Creation-Date: 2012-08-22 02:56+0000\n"
-"PO-Revision-Date: 2012-08-22 10:47+0200\n"
-"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
-"Language-Team: Ελληνικά, Σύγχρονα <opensuse-translation-el@opensuse.org>\n"
+"POT-Creation-Date: 2013-03-24 11:32+0000\n"
+"PO-Revision-Date: 2013-04-02 17:12+0300\n"
+"Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
+"Language-Team: team@gnome.gr\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #: C/index.page:5(page/title)
 msgid "Brasero Help"
@@ -32,7 +34,6 @@ msgid "Other tools"
 msgstr "Άλλα εργαλεία"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
-#| msgid "translator-credits"
 msgctxt "_"
 msgid "translator-credits"
 msgstr ""
@@ -40,6 +41,7 @@ msgstr ""
 " Φώτης Τσάμης <ftsamis@gmail.com>, 2008, 2009\n"
 " Μάριος Ζηντίλης <m.zindilis@dmajor.org>\n"
 " Ευστάθιος Ιωσηφίδης <diamond_gr@freemail.gr>, 2011\n"
+" Δημήτρης Σπίγγος <dmtrs32@gmail.com>, 2013\n"
 "\n"
 "Για περισσότερα δείτε http://www.gnome.gr/"
 
@@ -73,10 +75,6 @@ msgid "Create a cover"
 msgstr "Δημιουργία εξωφύλλου"
 
 #: C/create-cover.page:19(page/p)
-#| msgid ""
-#| "You can use <app>Brasero</app> to create inlays for your jewel cases. "
-#| "Access the creator by clicking <guiseq><gui>Tools</gui><gui>Cover Editor</"
-#| "gui></guiseq>."
 msgid ""
 "You can use <app>Brasero</app> to create inlays for your jewel cases. Access "
 "the creator by clicking <guiseq><gui>Tools</gui> <gui>Cover Editor</gui></"
@@ -165,9 +163,6 @@ msgstr ""
 #. update your localized copy. The msgstr is not used at all. Set it to
 #. whatever you like once you have updated your copy of the file.
 #: C/introduction.page:36(media)
-#| msgid ""
-#| "@@image: 'figures/brasero-main-window.png'; "
-#| "md5=11e5cc148d7c8c8dc0c63e68b2f611f3"
 msgctxt "_"
 msgid ""
 "external ref='figures/brasero-main-window.png' "
@@ -178,7 +173,7 @@ msgstr ""
 
 #: C/introduction.page:7(info/desc)
 msgid "Introduction to the <app>Brasero</app> disc burning application."
-msgstr "Εισαγωγή στην εφαρμογή εγγραφής δίσκου του <app>Brasero</app>"
+msgstr "Εισαγωγή στην εφαρμογή εγγραφής δίσκου του <app>Brasero</app>."
 
 #: C/introduction.page:17(page/title)
 msgid "Introduction"
@@ -265,7 +260,7 @@ msgstr "Αν χρησιμοποιείτε CD-RW, αδειάστε το CD."
 
 #: C/prob-cd.page:39(item/p)
 msgid "Rewrite the CD as an audio project."
-msgstr "Επανεγγραφή ενός CD σαν έργο μουσικής"
+msgstr "Επανεγγραφή ενός CD ως έργο μουσικής."
 
 #: C/prob-dvd.page:9(info/desc)
 msgid "I cannot write to a DVD-R or a DVD-RW."
@@ -399,7 +394,7 @@ msgstr ""
 
 #: C/project-data.page:7(info/desc)
 msgid "Write data to a CD or DVD."
-msgstr "Εγγραφή δεδομένων σε ένα CD ή DVD"
+msgstr "Εγγραφή δεδομένων σε ένα CD ή DVD."
 
 #: C/project-data.page:17(page/title)
 msgid "Create a data project"
@@ -591,10 +586,6 @@ msgid "To burn a disc image to a CD or DVD, follow these steps:"
 msgstr "Για να γράψετε μια εικόνα δίσκου στο CD ή DVD, ακολουθήστε τα βήματα:"
 
 #: C/project-image-burn.page:41(item/p)
-#| msgid ""
-#| "Click <gui>Burn image</gui> on the start page or select "
-#| "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></"
-#| "guiseq>."
 msgid ""
 "Click <gui>Burn image</gui> on the start page or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui> </"
@@ -719,18 +710,25 @@ msgstr "ανοίξτε το έργο από έναν διαχειριστή αρ
 
 #: C/project-save.page:57(note/p)
 msgid ""
-"If <app>Brasero</app> is already running, opening the project from a file "
-"browser will cause a second instance of <app>Brasero</app> to start and will "
-"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
-"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
+"Only one instance of <app>Brasero</app> can be opened at any time. If you "
+"try to open a second instance, the currently open <app>Brasero</app> window "
+"will be focused."
 msgstr ""
-"Αν το <app>Brasero</app> εκτελείται ήδη, αν ανοίξετε το έργο από τον "
-"διαχειριστή αρχείων θα ανοίξει και δεύτερο παράθυρο του <app>Brasero</app> "
-"με αποτέλεσμα και τα δυο παράθυρα να κρασάρουν.. Κοιτάξτε στο <link href="
-"\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</"
-"link> για περισσότερες πληροφορίες."
+"Μόνο ένα στιγμιότυπο του <app>Brasero</app> μπορεί να ανοιχτεί οποτεδήποτε. "
+"Αν δοκιμάσετε να ανοίξετε ένα δεύτερο στιγμιότυπο, το τρέχον ανοιχτό "
+"παράθυρο του <app>Brasero</app> θα εστιαστεί."
 
-#: C/project-save.page:67(note/p)
+#: C/project-save.page:60(note/p)
+msgid ""
+"If <app>Brasero</app> is already running and you try to open some files with "
+"it from <app>Files</app>, the files will be added to the project that you "
+"are currently working on."
+msgstr ""
+"Αν το <app>Brasero</app> εκτελείται ήδη και δοκιμάσετε να ανοίξετε κάποια "
+"αρχεία με αυτό από τα <app>Αρχεία</app>, τα αρχεία θα προστεθούν στο έργο "
+"στο οποίο δουλεύετε."
+
+#: C/project-save.page:68(note/p)
 msgid ""
 "If you open a saved project, <app>Brasero</app> will treat it as a new "
 "project: if you want to save an updated version of the project, it will ask "
@@ -743,7 +741,6 @@ msgstr ""
 "να αντικαταστήσετε το παλιό ή να το αποθηκεύσετε σαν νέο έργο με άλλο όνομα."
 
 #: C/project-video.page:9(info/title)
-#| msgid "3"
 msgctxt "sort"
 msgid "3"
 msgstr "3"
@@ -821,7 +818,7 @@ msgstr ""
 
 #: C/split-track.page:34(item/p)
 msgid "Select your preferred method of splitting the tracks:"
-msgstr "Επιλέξτε την μέθοδο που προτιμάτε για τον χωρισμό των κομματιών: "
+msgstr "Επιλέξτε την μέθοδο που προτιμάτε για τον χωρισμό των κομματιών:"
 
 #: C/split-track.page:37(item/title)
 msgid "Split track manually"
@@ -986,8 +983,8 @@ msgid ""
 "You can select the option <gui>Use an MD5 file to check the disk.</gui> if "
 "you prefer it."
 msgstr ""
-"Επιλέξτε <guilabel>Χρησιμοποιήστε ένα αρχείο τύπου md5 για να ελέγξετε το "
-"δίσκο</guilabel> εάν το προτιμάτε."
+"Μπορείτε να επιλέξετε <gui>Χρήση ενός αρχείου MD5 για να ελέγξετε τον "
+"δίσκο</gui> εάν το προτιμάτε."
 
 #: C/tools-check-integrity.page:33(item/p)
 msgid ""
@@ -1018,3 +1015,16 @@ msgid ""
 msgstr ""
 "Όταν ο έλεγχος τελειώσει μπορεί είτε να επιλέξετε <gui>Έλεγχος ξανά</gui> ή "
 "απλά <gui>Κλείσιμο</gui>."
+
+#~ msgid ""
+#~ "If <app>Brasero</app> is already running, opening the project from a file "
+#~ "browser will cause a second instance of <app>Brasero</app> to start and "
+#~ "will cause both instances to crash. See <link href=\"https://bugzilla."
+#~ "gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</link> for more "
+#~ "information."
+#~ msgstr ""
+#~ "Αν το <app>Brasero</app> εκτελείται ήδη, αν ανοίξετε το έργο από τον "
+#~ "διαχειριστή αρχείων θα ανοίξει και δεύτερο παράθυρο του <app>Brasero</"
+#~ "app> με αποτέλεσμα και τα δυο παράθυρα να κρασάρουν.. Κοιτάξτε στο <link "
+#~ "href=\"https://bugzilla.gnome.org/show_bug.cgi?id=644011\">GNOME bug "
+#~ "644011</link> για περισσότερες πληροφορίες."
