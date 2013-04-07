@@ -2,14 +2,14 @@
 # Copyright (C) 2011. Free Software Foundation, Inc.
 # This file is distributed under the same license as the brasero package.
 #
-# Gabor Kelemen <kelemeng at gnome dot hu>, 2011, 2012.
+# Gabor Kelemen <kelemeng at gnome dot hu>, 2011, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero_help master\n"
-"POT-Creation-Date: 2012-08-22 02:56+0000\n"
-"PO-Revision-Date: 2012-09-13 10:02+0200\n"
+"POT-Creation-Date: 2013-03-24 11:32+0000\n"
+"PO-Revision-Date: 2013-04-07 13:59+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
-"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +34,6 @@ msgid "Other tools"
 msgstr "Egyéb eszközök"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
-#| msgid "translator-credits"
 msgctxt "_"
 msgid "translator-credits"
 msgstr "Kelemen Gábor <kelemeng at gnome dot hu>, 2011, 2012."
@@ -69,10 +68,6 @@ msgid "Create a cover"
 msgstr "Lemezborító készítése"
 
 #: C/create-cover.page:19(page/p)
-#| msgid ""
-#| "You can use <app>Brasero</app> to create inlays for your jewel cases. "
-#| "Access the creator by clicking <guiseq><gui>Tools</gui><gui>Cover Editor</"
-#| "gui></guiseq>."
 msgid ""
 "You can use <app>Brasero</app> to create inlays for your jewel cases. Access "
 "the creator by clicking <guiseq><gui>Tools</gui> <gui>Cover Editor</gui></"
@@ -163,9 +158,6 @@ msgstr ""
 #. update your localized copy. The msgstr is not used at all. Set it to
 #. whatever you like once you have updated your copy of the file.
 #: C/introduction.page:36(media)
-#| msgid ""
-#| "@@image: 'figures/brasero-main-window.png'; "
-#| "md5=11e5cc148d7c8c8dc0c63e68b2f611f3"
 msgctxt "_"
 msgid ""
 "external ref='figures/brasero-main-window.png' "
@@ -581,10 +573,6 @@ msgid "To burn a disc image to a CD or DVD, follow these steps:"
 msgstr "Lemezkép CD-re vagy DVD-re írásához tegye a következőket:"
 
 #: C/project-image-burn.page:41(item/p)
-#| msgid ""
-#| "Click <gui>Burn image</gui> on the start page or select "
-#| "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui></"
-#| "guiseq>."
 msgid ""
 "Click <gui>Burn image</gui> on the start page or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui> </"
@@ -706,17 +694,25 @@ msgstr "a projekt fájlböngészőből való megnyitásával"
 
 #: C/project-save.page:57(note/p)
 msgid ""
-"If <app>Brasero</app> is already running, opening the project from a file "
-"browser will cause a second instance of <app>Brasero</app> to start and will "
-"cause both instances to crash. See <link href=\"https://bugzilla.gnome.org/"
-"show_bug.cgi?id=644011\">GNOME bug 644011</link> for more information."
+"Only one instance of <app>Brasero</app> can be opened at any time. If you "
+"try to open a second instance, the currently open <app>Brasero</app> window "
+"will be focused."
 msgstr ""
-"Ha a <app>Brasero</app> már fut, akkor egy projekt fájlböngészőből való "
-"megnyitásakor elindul a <app>Brasero</app> egy újabb példánya, és mindkettő "
-"összeomlik. További információkért lásd a <link href=\"https://bugzilla."
-"gnome.org/show_bug.cgi?id=644011\">644011-es GNOME hibajelentést</link>."
+"Egyszerre csak egy <app>Brasero</app> példány lehet nyitva. Ha második "
+"példányt próbál megnyitni, akkor  már nyitott <app>Brasero</app> ablak kerül "
+"fókuszba."
 
-#: C/project-save.page:67(note/p)
+#: C/project-save.page:60(note/p)
+msgid ""
+"If <app>Brasero</app> is already running and you try to open some files with "
+"it from <app>Files</app>, the files will be added to the project that you "
+"are currently working on."
+msgstr ""
+"Ha a <app>Brasero</app> már fut, és néhány fájlt a <app>Fájlok</app> "
+"alkalmazásból próbál vele megnyitni, akkor a fájlok hozzáadásra kerülnek az "
+"éppen megnyitott projekthez."
+
+#: C/project-save.page:68(note/p)
 msgid ""
 "If you open a saved project, <app>Brasero</app> will treat it as a new "
 "project: if you want to save an updated version of the project, it will ask "
@@ -729,7 +725,6 @@ msgstr ""
 "vagy másik fájlnév megadásával elmentheti új projektként."
 
 #: C/project-video.page:9(info/title)
-#| msgid "3"
 msgctxt "sort"
 msgid "3"
 msgstr "3"
@@ -998,6 +993,19 @@ msgid ""
 msgstr ""
 "Az ellenőrzés befejeződésekor választhatja az <gui>Ellenőrzés újra</gui> "
 "lehetőséget, vagy a <gui>Bezárás</gui> gombbal befejezheti."
+
+#~ msgid ""
+#~ "If <app>Brasero</app> is already running, opening the project from a file "
+#~ "browser will cause a second instance of <app>Brasero</app> to start and "
+#~ "will cause both instances to crash. See <link href=\"https://bugzilla."
+#~ "gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</link> for more "
+#~ "information."
+#~ msgstr ""
+#~ "Ha a <app>Brasero</app> már fut, akkor egy projekt fájlböngészőből való "
+#~ "megnyitásakor elindul a <app>Brasero</app> egy újabb példánya, és "
+#~ "mindkettő összeomlik. További információkért lásd a <link href=\"https://"
+#~ "bugzilla.gnome.org/show_bug.cgi?id=644011\">644011-es GNOME "
+#~ "hibajelentést</link>."
 
 #~ msgid "pau.gonzalezbr@gmail.com"
 #~ msgstr "pau.gonzalezbr@gmail.com"
