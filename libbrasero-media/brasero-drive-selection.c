@@ -532,12 +532,17 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
 					"markup", NAME_COL,
 					NULL);
+}
+
+static void
+brasero_drive_selection_constructed (GObject *object)
+{
+	G_OBJECT_CLASS (brasero_drive_selection_parent_class)->constructed (object);
 
 	brasero_drive_selection_show_type (BRASERO_DRIVE_SELECTION (object),
 					   BRASERO_DRIVE_TYPE_ALL_BUT_FILE);
-						 
 }
-  
+
 static void
 brasero_drive_selection_finalize (GObject *object)
 {
@@ -619,6 +624,7 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
 	object_class->finalize = brasero_drive_selection_finalize;
 	object_class->set_property = brasero_drive_selection_set_property;
 	object_class->get_property = brasero_drive_selection_get_property;
+	object_class->constructed = brasero_drive_selection_constructed;
   
 	combo_class->changed = brasero_drive_selection_changed;
 
