@@ -371,6 +371,9 @@ brasero_setting_load (BraseroSetting *setting)
 	                                              "Player",
 	                                              "player-volume",
 	                                              NULL);
+	/* A volume of 0 isn't a very sane default */
+	if (priv->player_volume == 0)
+		priv->player_volume = 10;
 	priv->display_layout = g_key_file_get_integer (key_file,
 	                                              "Display",
 	                                              "layout",
