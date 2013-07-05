@@ -102,6 +102,7 @@ brasero_split_dialog_set_boundaries (BraseroSplitDialog *self,
 				     gint64 end)
 {
 	BraseroSplitDialogPrivate *priv;
+	guint64 length;
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
 
@@ -120,6 +121,11 @@ brasero_split_dialog_set_boundaries (BraseroSplitDialog *self,
 	brasero_song_control_set_boundaries (BRASERO_SONG_CONTROL (priv->player),
 	                                     priv->start,
 	                                     priv->end);
+
+	/* Don't allow splitting the track in sections longer than the track
+	 * length in seconds */
+	length = (gdouble) brasero_song_control_get_length  (BRASERO_SONG_CONTROL (priv->player)) / 1000000000;
+	gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->spin_sec), 1.0, length);
 }
 
 GSList *
