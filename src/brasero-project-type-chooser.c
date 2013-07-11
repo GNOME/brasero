@@ -467,6 +467,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_misc_set_padding (GTK_MISC (label), 6.0, 0.0);
 	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, TRUE, 0);
 
 	/* get the number of rows */
