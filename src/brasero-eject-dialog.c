@@ -48,6 +48,7 @@ typedef struct _BraseroEjectDialogPrivate BraseroEjectDialogPrivate;
 struct _BraseroEjectDialogPrivate {
 	GtkWidget *selector;
 	GtkWidget *eject_button;
+	gboolean cancelled;
 };
 
 #define BRASERO_EJECT_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_EJECT_DIALOG, BraseroEjectDialogPrivate))
@@ -91,19 +92,20 @@ brasero_eject_dialog_activate (GtkDialog *dialog,
 		gchar *string;
 		gchar *display_name;
 
-		display_name = brasero_drive_get_display_name (drive);
-		string = g_strdup_printf (_("The disc in \"%s\" cannot be ejected"), display_name);
-		g_free (display_name);
+		if (!priv->cancelled || error) {
+			display_name = brasero_drive_get_display_name (drive);
+			string = g_strdup_printf (_("The disc in \"%s\" cannot be ejected"), display_name);
+			g_free (display_name);
 
-		brasero_app_alert (brasero_app_get_default (),
-		                   string,
-		                   error?error->message:_("An unknown error occurred"),
-		                   GTK_MESSAGE_ERROR);
+			brasero_app_alert (brasero_app_get_default (),
+			                   string,
+			                   error?error->message:_("An unknown error occurred"),
+			                   GTK_MESSAGE_ERROR);
 
-		if (error)
-			g_error_free (error);
+			g_free (string);
+		}
 
-		g_free (string);
+		g_clear_error (&error);
 	}
 
 	g_object_unref (drive);
@@ -119,6 +121,7 @@ brasero_eject_dialog_cancel (BraseroEjectDialog *dialog)
 	drive = brasero_drive_selection_get_active (BRASERO_DRIVE_SELECTION (priv->selector));
 
 	if (drive) {
+		priv->cancelled = TRUE;
 		brasero_drive_cancel_current_operation (drive);
 		g_object_unref (drive);
 	}
@@ -154,6 +157,7 @@ brasero_eject_dialog_init (BraseroEjectDialog *obj)
 	BraseroEjectDialogPrivate *priv;
 
 	priv = BRASERO_EJECT_DIALOG_PRIVATE (obj);
+	priv->cancelled = FALSE;
 
 	box = gtk_dialog_get_content_area (GTK_DIALOG (obj));
 
