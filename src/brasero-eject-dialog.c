@@ -104,7 +104,6 @@ brasero_eject_dialog_activate (GtkDialog *dialog,
 			g_error_free (error);
 
 		g_free (string);
-		return;
 	}
 
 	g_object_unref (drive);
