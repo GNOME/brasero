@@ -380,6 +380,13 @@ brasero_gio_operation_eject_finish (GObject *source,
 	if (operation->error)
 		brasero_gio_operation_end (operation);
 	else if (!operation->result)
+		/* 
+		 * If the drive is empty when ejected the GDrive::changed signal will
+		 * never be emitted - ensure the operation is ended in this case
+		 * see https://bugzilla.gnome.org/show_bug.cgi?id=701730
+		 */
+		brasero_gio_operation_end (operation);
+	else if (G_IS_DRIVE (source) && !g_drive_has_media (G_DRIVE (source)))
 		brasero_gio_operation_end (operation);
 }
 
