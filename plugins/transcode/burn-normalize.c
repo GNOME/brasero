@@ -662,8 +662,12 @@ brasero_normalize_export_caps (BraseroPlugin *plugin)
 	brasero_plugin_process_caps (plugin, input);
 	g_slist_free (input);
 
-	/* We should run first */
-	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
+	/* We should run first... unfortunately since the gstreamer-1 port
+	 * we're unable to process more than a single track with rganalysis
+	 * and the GStreamer pipeline becomes stopped indefinitely.
+	 * Disable normalisation until this is resolved.
+	 * See https://bugzilla.gnome.org/show_bug.cgi?id=699599 */
+	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_NEVER);
 
 	brasero_plugin_set_compulsory (plugin, FALSE);
 }
