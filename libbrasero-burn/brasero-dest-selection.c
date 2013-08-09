@@ -239,6 +239,19 @@ brasero_dest_selection_medium_added (GtkTreeModel *model,
 }
 
 static void
+brasero_dest_selection_constructed (GObject *object)
+{
+	G_OBJECT_CLASS (brasero_dest_selection_parent_class)->constructed (object);
+
+	/* Only show media on which we can write and which are in a burner.
+	 * There is one exception though, when we're copying media and when the
+	 * burning device is the same as the dest device. */
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
+						  BRASERO_MEDIA_TYPE_WRITABLE|
+						  BRASERO_MEDIA_TYPE_FILE);
+}
+
+static void
 brasero_dest_selection_init (BraseroDestSelection *object)
 {
 	GtkTreeModel *model;
@@ -252,13 +265,6 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 	                  "row-deleted",
 	                  G_CALLBACK (brasero_dest_selection_medium_removed),
 	                  object);
-
-	/* Only show media on which we can write and which are in a burner.
-	 * There is one exception though, when we're copying media and when the
-	 * burning device is the same as the dest device. */
-	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
-						  BRASERO_MEDIA_TYPE_WRITABLE|
-						  BRASERO_MEDIA_TYPE_FILE);
 
 	/* This is to know when the user changed it on purpose */
 	g_signal_connect (object,
@@ -736,6 +742,7 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 	object_class->finalize = brasero_dest_selection_finalize;
 	object_class->set_property = brasero_dest_selection_set_property;
 	object_class->get_property = brasero_dest_selection_get_property;
+	object_class->constructed = brasero_dest_selection_constructed;
 
 	medium_selection_class->format_medium_string = brasero_dest_selection_format_medium_string;
 	medium_selection_class->medium_changed = brasero_dest_selection_medium_changed;
