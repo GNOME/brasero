@@ -4,7 +4,9 @@
 HELP_ID = brasero
 
 # List of figures to be included
-HELP_MEDIA = figures/brasero-main-window.png
+HELP_MEDIA = \
+	figures/brasero-main-window.png \
+	figures/logo32.png
 
 # List of pages
 HELP_FILES = \
