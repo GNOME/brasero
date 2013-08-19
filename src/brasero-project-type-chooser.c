@@ -500,7 +500,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	separator = gtk_separator_new (GTK_ORIENTATION_VERTICAL);
 	gtk_widget_show (separator);
-	gtk_box_pack_start (GTK_BOX (obj), separator, FALSE, TRUE, 8);
+	gtk_box_pack_start (GTK_BOX (obj), separator, FALSE, TRUE, 2);
 
 	/* The recent files part */
 	recent_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -514,12 +514,13 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_misc_set_padding (GTK_MISC (label), 6.0, 0.0);
 	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, TRUE, 0);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
 	obj->priv->recent_box = vbox;
 
 	recent = gtk_recent_manager_get_default ();
