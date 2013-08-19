@@ -349,6 +349,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
 	BraseroSessionError valid;
+	BraseroDrive *drive;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
@@ -358,7 +359,13 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	brasero_burn_options_setup_buttons (self);
 
 	gtk_widget_set_sensitive (priv->options, priv->is_valid);
-	gtk_widget_set_sensitive (priv->properties, priv->is_valid);
+	/* Ensure the user can always change the properties (i.e. file location)
+	 * the target is a fake drive */
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session));
+	if (drive && brasero_drive_is_fake (drive))
+		gtk_widget_set_sensitive (priv->properties, TRUE);
+	else
+		gtk_widget_set_sensitive (priv->properties, priv->is_valid);
 
 	if (priv->message_input) {
 		gtk_widget_hide (priv->message_input);
