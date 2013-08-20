@@ -167,7 +167,8 @@ brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 					      BRASERO_SESSION_CFG (priv->session));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (priv->medium_prop),
-				GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_SAVE, GTK_RESPONSE_OK,
 				NULL);
 
 	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self)));
