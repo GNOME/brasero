@@ -92,12 +92,19 @@ brasero_src_selection_new (BraseroBurnSession *session)
 }
 
 static void
-brasero_src_selection_init (BraseroSrcSelection *object)
+brasero_src_selection_constructed (GObject *object)
 {
+	G_OBJECT_CLASS (brasero_src_selection_parent_class)->constructed (object);
+
 	/* only show media with something to be read on them */
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
 						  BRASERO_MEDIA_TYPE_AUDIO|
 						  BRASERO_MEDIA_TYPE_DATA);
+}
+
+static void
+brasero_src_selection_init (BraseroSrcSelection *object)
+{
 }
 
 static void
