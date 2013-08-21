@@ -76,8 +76,7 @@ brasero_utils_set_use_debug (gboolean active)
 }
 
 void
-brasero_utils_debug_message (const gchar *domain,
-			     const gchar *location,
+brasero_utils_debug_message (const gchar *location,
 			     const gchar *format,
 			     ...)
 {
@@ -87,15 +86,12 @@ brasero_utils_debug_message (const gchar *domain,
 	if (!use_debug)
 		return;
 
-	format_real = g_strdup_printf ("At %s: %s",
+	format_real = g_strdup_printf ("BraseroUtils: (at %s) %s\n",
 				       location,
 				       format);
 
 	va_start (arg_list, format);
-	g_logv (domain,
-		G_LOG_LEVEL_DEBUG,
-		format_real,
-		arg_list);
+	vprintf (format_real, arg_list);
 	va_end (arg_list);
 
 	g_free (format_real);
