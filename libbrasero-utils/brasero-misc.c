@@ -69,10 +69,31 @@ brasero_utils_error_quark (void)
 
 static gboolean use_debug = FALSE;
 
+static const GOptionEntry options [] = {
+	{ "brasero-utils-debug", 'g', 0, G_OPTION_ARG_NONE, &use_debug,
+	  N_("Display debug statements on stdout for Brasero utilities library"),
+	  NULL },
+	{ NULL }
+};
+
 void
 brasero_utils_set_use_debug (gboolean active)
 {
 	use_debug = active;
+}
+
+GOptionGroup *
+brasero_utils_get_option_group (void)
+{
+	GOptionGroup *group;
+
+	group = g_option_group_new ("brasero-utils",
+				    N_("Brasero utilities library"),
+				    N_("Display options for Brasero-utils library"),
+				    NULL,
+				    NULL);
+	g_option_group_add_entries (group, options);
+	return group;
 }
 
 void

@@ -74,6 +74,9 @@ brasero_utils_debug_message (const gchar *location,
 void
 brasero_utils_init (void);
 
+GOptionGroup *
+brasero_utils_get_option_group (void);
+
 gchar *
 brasero_utils_get_uri_name (const gchar *uri);
 gchar*
