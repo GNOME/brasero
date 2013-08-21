@@ -43,6 +43,7 @@
 #include "eggsmclient.h"
 
 #include "brasero-burn-lib.h"
+#include "brasero-misc.h"
 
 #include "brasero-multi-dnd.h"
 #include "brasero-app.h"
@@ -92,6 +93,7 @@ main (int argc, char **argv)
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 	g_option_context_add_group (context, brasero_media_get_option_group ());
 	g_option_context_add_group (context, brasero_burn_library_get_option_group ());
+	g_option_context_add_group (context, brasero_utils_get_option_group ());
 	g_option_context_add_group (context, gst_init_get_option_group ());
 	if (g_option_context_parse (context, &argc, &argv, NULL) == FALSE) {
 		g_print (_("Please type \"%s --help\" to see all available options\n"), argv [0]);
