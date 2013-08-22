@@ -317,7 +317,7 @@ brasero_audio2cue_len_to_string (guint64 len)
 	else
 		frame = len * 75;
 
-	frame = frame / 1000000000 + ((frame % 1000000000LL) ? 1:0);
+	frame = frame / 1000000000;
 
 	len /= 1000000000LL;
 	min = len / 60;
