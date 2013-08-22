@@ -1,6 +1,6 @@
 module_flags = -avoid-version -module
 
-INCLUDES =					\
+AM_CPPFLAGS =					\
 	-I$(top_srcdir)/libbrasero-utils/	\
 	-I$(top_builddir)/libbrasero-utils/	\
 	-I$(top_srcdir)/libbrasero-media/	\

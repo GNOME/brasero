@@ -1,5 +1,5 @@
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/libbrasero-utils/				\
 	-I$(top_builddir)/libbrasero-utils/				\
