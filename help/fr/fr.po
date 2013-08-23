@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero help fr\n"
-"POT-Creation-Date: 2013-03-25 17:40+0000\n"
-"PO-Revision-Date: 2013-04-04 19:00+0200\n"
+"POT-Creation-Date: 2013-08-18 14:12+0000\n"
+"PO-Revision-Date: 2013-08-23 13:42+0200\n"
 "Last-Translator: Mickael Albertus <mickael.albertus@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: \n"
@@ -21,22 +21,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
-
-#: C/index.page:5(page/title)
-msgid "Brasero Help"
-msgstr "Manuel de Brasero"
-
-#: C/index.page:8(section/title)
-msgid "Create a new project"
-msgstr "Création d'un nouveau projet"
-
-#: C/index.page:12(section/title)
-msgid "Troubleshooting"
-msgstr "Dépannage"
-
-#: C/index.page:16(section/title)
-msgid "Other tools"
-msgstr "Autres outils"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
@@ -47,14 +31,26 @@ msgstr ""
 "Æzaerth <aezaerth@gmx.com>, 2011\n"
 "Mickael Albertus <mickael.albertus@gmail.com>"
 
-#: C/create-cover.page:7(info/desc)
-msgid "Create an inlay for a jewel case."
-msgstr "Créer une jaquette pour un boîtier."
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/index.page:15(media)
+msgctxt "_"
+msgid ""
+"external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
+msgstr ""
+"external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
 
-#: C/create-cover.page:9(credit/name) C/introduction.page:9(credit/name)
-#: C/prob-cd.page:11(credit/name) C/prob-dvd.page:11(credit/name)
-#: C/project-audio.page:9(credit/name) C/project-data.page:9(credit/name)
-#: C/project-disc-copy.page:9(credit/name)
+#: C/index.page:7(credit/name) C/create-cover.page:9(credit/name)
+#: C/introduction.page:9(credit/name) C/prob-cd.page:11(credit/name)
+#: C/prob-dvd.page:11(credit/name) C/project-audio.page:9(credit/name)
+#: C/project-data.page:9(credit/name) C/project-disc-copy.page:9(credit/name)
 #: C/project-image-burn.page:17(credit/name)
 #: C/project-save.page:12(credit/name) C/project-video.page:12(credit/name)
 #: C/split-track.page:11(credit/name) C/tools-blank.page:9(credit/name)
@@ -62,15 +58,35 @@ msgstr "Créer une jaquette pour un boîtier."
 msgid "Ekaterina Gerasimova"
 msgstr "Ekaterina Gerasimova"
 
-#: C/create-cover.page:13(license/p) C/introduction.page:13(license/p)
-#: C/prob-cd.page:15(license/p) C/prob-dvd.page:15(license/p)
-#: C/project-audio.page:13(license/p) C/project-data.page:13(license/p)
-#: C/project-disc-copy.page:13(license/p)
+#: C/index.page:11(license/p) C/create-cover.page:13(license/p)
+#: C/introduction.page:13(license/p) C/prob-cd.page:15(license/p)
+#: C/prob-dvd.page:15(license/p) C/project-audio.page:13(license/p)
+#: C/project-data.page:13(license/p) C/project-disc-copy.page:13(license/p)
 #: C/project-image-burn.page:21(license/p) C/project-save.page:16(license/p)
 #: C/project-video.page:16(license/p) C/split-track.page:15(license/p)
 #: C/tools-blank.page:13(license/p) C/tools-check-integrity.page:17(license/p)
 msgid "Creative Commons Share Alike 3.0"
 msgstr "Creative Commons Share Alike 3.0"
+
+#: C/index.page:15(page/title)
+msgid "<media type=\"image\" src=\"figures/logo32.png\"/> Brasero Help"
+msgstr "<media type=\"image\" src=\"figures/logo32.png\"/> Aide de Brasero"
+
+#: C/index.page:18(section/title)
+msgid "Create a new project"
+msgstr "Création d'un nouveau projet"
+
+#: C/index.page:22(section/title)
+msgid "Troubleshooting"
+msgstr "Dépannage"
+
+#: C/index.page:26(section/title)
+msgid "Other tools"
+msgstr "Autres outils"
+
+#: C/create-cover.page:7(info/desc)
+msgid "Create an inlay for a jewel case."
+msgstr "Créer une jaquette pour un boîtier."
 
 #: C/create-cover.page:17(page/title)
 msgid "Create a cover"
@@ -190,9 +206,9 @@ msgid ""
 "<app>Brasero</app> is an application for burning CDs and DVDs, designed to "
 "be easy to use, while providing all the tools necessary for burning."
 msgstr ""
-"<app>Brasero</app> est un logiciel de gravure de CD et de "
-"DVD conçu pour être facile à utiliser bien que fournissant tous les outils "
-"nécessaires à la gravure."
+"<app>Brasero</app> est un logiciel de gravure de CD et de DVD conçu pour "
+"être facile à utiliser bien que fournissant tous les outils nécessaires à la "
+"gravure."
 
 #: C/introduction.page:22(page/p)
 msgid "With <app>Brasero</app> you can:"
@@ -1033,6 +1049,9 @@ msgid ""
 msgstr ""
 "Lorsque la vérification est terminée, vous pouvez soit choisir de "
 "<gui>Vérifier à nouveau</gui> ou tout simplement de <gui>Fermer</gui>."
+
+#~ msgid "Brasero Help"
+#~ msgstr "Manuel de Brasero"
 
 #~ msgid ""
 #~ "If <app>Brasero</app> is already running, opening the project from a file "
