@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-03-07 03:41+0000\n"
-"PO-Revision-Date: 2013-03-07 13:13+0100\n"
+"POT-Creation-Date: 2013-08-22 22:16+0000\n"
+"PO-Revision-Date: 2013-08-23 07:35+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -93,7 +93,7 @@ msgstr "Typ kontrolního součtu použitého u souborů"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:6
 msgid "Directory to use for temporary files"
-msgstr "Adresář použitý pro dočasné soubory"
+msgstr "Složka použitá pro dočasné soubory"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:7
 msgid ""
@@ -101,8 +101,8 @@ msgid ""
 "files. If that value is empty, the default directory set for glib will be "
 "used."
 msgstr ""
-"Obsahuje cestu k adresáři, kam by měl Brasero ukládat dočasné soubory. Pokud "
-"je tato hodnota prázdná, bude použit výchozí adresář nastavený pro glib."
+"Obsahuje cestu ke složce, kam by měl Brasero ukládat dočasné soubory. Pokud "
+"je tato hodnota prázdná, bude použit výchozí složka nastavená pro glib."
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:8
 msgid "Favourite burn engine"
@@ -185,7 +185,7 @@ msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
 msgstr ""
-"Obsahuje úplnou cestu k adresáři, ve kterém byly naposledy hledány obrazy "
+"Obsahuje úplnou cestu ke složce, ve kterém byly naposledy hledány obrazy "
 "disku k vypálení"
 
 #: ../data/org.gnome.brasero.gschema.xml.in.h:22
@@ -399,7 +399,7 @@ msgstr "Na disku není dost volného místa"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1180
+#: ../libbrasero-burn/brasero-burn-options.c:1187
 #: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
@@ -407,7 +407,7 @@ msgstr "%s (aplikace)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1186
+#: ../libbrasero-burn/brasero-burn-options.c:1193
 #: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
@@ -415,7 +415,7 @@ msgstr "%s (knihovna)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1191
+#: ../libbrasero-burn/brasero-burn-options.c:1198
 #: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
@@ -631,7 +631,7 @@ msgid "Please insert a rewritable disc holding data."
 msgstr "Prosím vložte přepisovatelný disk obsahující data."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:557
-#: ../libbrasero-burn/brasero-burn-options.c:494
+#: ../libbrasero-burn/brasero-burn-options.c:501
 msgid "Please insert a disc holding data."
 msgstr "Prosím vložte disk obsahující data."
 
@@ -699,7 +699,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-dialog.c:613
 #: ../libbrasero-burn/brasero-burn-dialog.c:2171
 #: ../libbrasero-burn/brasero-burn-dialog.c:2185
-#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:995
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "Prosím vložte zapisovatelné CD nebo DVD."
 
@@ -1085,42 +1085,42 @@ msgstr "V_ypálit"
 msgid "Burn _Several Copies"
 msgstr "Vypálit _několik kopií"
 
-#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:949
+#: ../libbrasero-burn/brasero-burn-options.c:433 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "Chcete vypálit výběr souborů na několik médií?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:427
-#: ../libbrasero-burn/brasero-burn-options.c:444
+#: ../libbrasero-burn/brasero-burn-options.c:434
+#: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
 "Velikost dat přesahuje velikost disku i se zapnutou volbou přeplňování."
 
-#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:954
+#: ../libbrasero-burn/brasero-burn-options.c:439 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
 msgstr "_Vypálit několik disků"
 
-#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:956
+#: ../libbrasero-burn/brasero-burn-options.c:441 ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
 msgstr "Vypálit výběr souborů na několik médií"
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:965
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Prosím zvolte jiné CD nebo DVD nebo vložte nové."
 
-#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1010
+#: ../libbrasero-burn/brasero-burn-options.c:464 ../src/brasero-project.c:1010
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "Na disk nebudou zapsány žádné informace o stopě (umělec, název, …)."
 
-#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1011
+#: ../libbrasero-burn/brasero-burn-options.c:465 ../src/brasero-project.c:1011
 msgid "This is not supported by the current active burning backend."
 msgstr "Toto není podporováno aktuálně aktivním vypalovacím nástrojem."
 
-#: ../libbrasero-burn/brasero-burn-options.c:470
+#: ../libbrasero-burn/brasero-burn-options.c:477
 #: ../nautilus/nautilus-burn-extension.c:239
 msgid "Please add files."
 msgstr "Prosím, přidejte soubory."
 
-#: ../libbrasero-burn/brasero-burn-options.c:471
+#: ../libbrasero-burn/brasero-burn-options.c:478
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-track-stream.c:402
@@ -1129,65 +1129,65 @@ msgstr "Prosím, přidejte soubory."
 msgid "There are no files to write to disc"
 msgstr "Pro zápis na disk nejsou žádné soubory"
 
-#: ../libbrasero-burn/brasero-burn-options.c:476
+#: ../libbrasero-burn/brasero-burn-options.c:483
 msgid "Please add songs."
 msgstr "Prosím, přidejte skladby."
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1268
+#: ../libbrasero-burn/brasero-burn-options.c:484 ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
 msgstr "Pro zápis na disk nejsou žádné skladby"
 
-#: ../libbrasero-burn/brasero-burn-options.c:482
+#: ../libbrasero-burn/brasero-burn-options.c:489
 msgid "Please add videos."
 msgstr "Prosím, přidejte videa."
 
-#: ../libbrasero-burn/brasero-burn-options.c:483
+#: ../libbrasero-burn/brasero-burn-options.c:490
 msgid "There are no videos to write to disc"
 msgstr "Pro zápis na disk nejsou žádná videa"
 
-#: ../libbrasero-burn/brasero-burn-options.c:495
+#: ../libbrasero-burn/brasero-burn-options.c:502
 msgid "There is no inserted disc to copy."
 msgstr "Není vložen žádný disk ke kopírování."
 
-#: ../libbrasero-burn/brasero-burn-options.c:504
+#: ../libbrasero-burn/brasero-burn-options.c:511
 msgid "Please select a disc image."
 msgstr "Prosím vyberte obraz disku."
 
-#: ../libbrasero-burn/brasero-burn-options.c:505
+#: ../libbrasero-burn/brasero-burn-options.c:512
 msgid "There is no selected disc image."
 msgstr "Není vybrán žádný obraz disku."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
-#: ../libbrasero-burn/brasero-burn-options.c:515
+#: ../libbrasero-burn/brasero-burn-options.c:522
 #: ../libbrasero-burn/brasero-src-image.c:167
 msgctxt "disc"
 msgid "Please select another image."
 msgstr "Prosím vyberte jiný obraz."
 
-#: ../libbrasero-burn/brasero-burn-options.c:516
+#: ../libbrasero-burn/brasero-burn-options.c:523
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Zdá se, že se nejedná o platný obraz disku nebo soubor CUE."
 
-#: ../libbrasero-burn/brasero-burn-options.c:525
+#: ../libbrasero-burn/brasero-burn-options.c:532
 msgid "Please insert a disc that is not copy protected."
 msgstr "Prosím vložte disk, který není chráněn proti kopírování."
 
-#: ../libbrasero-burn/brasero-burn-options.c:526
-#: ../libbrasero-burn/brasero-burn-options.c:1228
+#: ../libbrasero-burn/brasero-burn-options.c:533
+#: ../libbrasero-burn/brasero-burn-options.c:1235
 #: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Nejsou nainstalovány všechny požadované aplikace a knihovny."
 
-#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1003
+#: ../libbrasero-burn/brasero-burn-options.c:540 ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Prosím nahraďte tento disk podporovaným CD nebo DVD."
 
-#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:976
+#: ../libbrasero-burn/brasero-burn-options.c:549 ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "Chcete provést vypalování nad uváděnou kapacitu disku?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:543
+#: ../libbrasero-burn/brasero-burn-options.c:550
 msgid ""
 "The data size is too large for the disc and you must remove files from the "
 "selection otherwise.\n"
@@ -1201,41 +1201,41 @@ msgstr ""
 "nebyla správně rozpoznána, a proto je nutná volba přeplňování.\n"
 "POZNÁMKA: Tato volba může způsobit selhání."
 
-#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:983
+#: ../libbrasero-burn/brasero-burn-options.c:557 ../src/brasero-project.c:983
 msgid "_Overburn"
 msgstr "_Použít přeplňování"
 
-#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:985
+#: ../libbrasero-burn/brasero-burn-options.c:559 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
 msgstr "Vypálit nad uváděnou kapacitu disku"
 
-#: ../libbrasero-burn/brasero-burn-options.c:562
+#: ../libbrasero-burn/brasero-burn-options.c:569
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
 msgstr ""
 "Jednotka, která obsahuje zdrojový disk, bude použita také k vypalování."
 
-#: ../libbrasero-burn/brasero-burn-options.c:563
+#: ../libbrasero-burn/brasero-burn-options.c:570
 msgid ""
 "A new writable disc will be required once the currently loaded one has been "
 "copied."
 msgstr "Až se vložený disk zkopíruje, bude potřeba nový zapisovatelný disk."
 
-#: ../libbrasero-burn/brasero-burn-options.c:650
+#: ../libbrasero-burn/brasero-burn-options.c:657
 msgid "Select a disc to write to"
 msgstr "Vyberte disk pro zápis"
 
-#: ../libbrasero-burn/brasero-burn-options.c:730
-#: ../libbrasero-burn/brasero-burn-options.c:748
-#: ../libbrasero-burn/brasero-burn-options.c:868
+#: ../libbrasero-burn/brasero-burn-options.c:737
+#: ../libbrasero-burn/brasero-burn-options.c:755
+#: ../libbrasero-burn/brasero-burn-options.c:875
 msgid "Disc Burning Setup"
 msgstr "Nastavení vypalování disku"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1544
+#: ../libbrasero-burn/brasero-burn-options.c:764 ../src/brasero-project.c:1544
 msgid "Video Options"
-msgstr "Možnosti videa"
+msgstr "Volby videa"
 
-#: ../libbrasero-burn/brasero-burn-options.c:788
+#: ../libbrasero-burn/brasero-burn-options.c:795
 #: ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
@@ -1245,7 +1245,7 @@ msgstr ""
 "obrazem?"
 
 #. Translators: %s is the name of the image
-#: ../libbrasero-burn/brasero-burn-options.c:797
+#: ../libbrasero-burn/brasero-burn-options.c:804
 #, c-format
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
@@ -1254,32 +1254,32 @@ msgstr ""
 "Je vybrán pouze jeden soubor („%s“). Tento soubor je obraz disku a jeho "
 "obsah lze vypálit."
 
-#: ../libbrasero-burn/brasero-burn-options.c:802
+#: ../libbrasero-burn/brasero-burn-options.c:809
 msgid "Burn as _File"
 msgstr "Vypálit jako _soubor"
 
-#: ../libbrasero-burn/brasero-burn-options.c:804
+#: ../libbrasero-burn/brasero-burn-options.c:811
 msgid "Burn _Contents…"
 msgstr "Vypálit _obsah…"
 
-#: ../libbrasero-burn/brasero-burn-options.c:886
+#: ../libbrasero-burn/brasero-burn-options.c:893
 msgid "Image Burning Setup"
 msgstr "Nastavení vypalování obrazu"
 
 #. pack everything
-#: ../libbrasero-burn/brasero-burn-options.c:894
+#: ../libbrasero-burn/brasero-burn-options.c:901
 msgid "Select a disc image to write"
 msgstr "Vyberte obraz disku k zápisu"
 
-#: ../libbrasero-burn/brasero-burn-options.c:914
+#: ../libbrasero-burn/brasero-burn-options.c:921
 msgid "Copy CD/DVD"
 msgstr "Kopírování CD/DVD"
 
-#: ../libbrasero-burn/brasero-burn-options.c:920
+#: ../libbrasero-burn/brasero-burn-options.c:927
 msgid "Select disc to copy"
 msgstr "Vyberte disk ke kopírování"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1222
+#: ../libbrasero-burn/brasero-burn-options.c:1229
 #: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Prosím nainstalujte následující ručně a zkuste to znovu:"
@@ -1309,24 +1309,24 @@ msgstr "od %s"
 msgid "\"%s\" cannot be read"
 msgstr "„%s“ nelze přečíst"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:599
+#: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
 msgid "SVCD image"
 msgstr "Obraz SVCD"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:601
+#: ../libbrasero-burn/brasero-dest-selection.c:607
 #: ../libbrasero-burn/brasero-image-type-chooser.c:127
 msgid "VCD image"
 msgstr "Obraz VCD"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:605
+#: ../libbrasero-burn/brasero-dest-selection.c:611
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "Video DVD image"
 msgstr "Obraz video DVD"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
-#: ../libbrasero-burn/brasero-dest-selection.c:617
+#: ../libbrasero-burn/brasero-dest-selection.c:623
 #, c-format
 msgid "%s: \"%s\""
 msgstr "%s: „%s“"
@@ -1337,20 +1337,20 @@ msgstr "%s: „%s“"
 #. * destination disc a new one (once the source has been
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
-#: ../libbrasero-burn/brasero-dest-selection.c:649
+#: ../libbrasero-burn/brasero-dest-selection.c:655
 #, c-format
 msgid "New disc in the burner holding the source disc"
 msgstr "Nový disk ve vypalovačce obsahující zdrojový disk"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-burn/brasero-dest-selection.c:690
+#: ../libbrasero-burn/brasero-dest-selection.c:696
 #, c-format
 msgid "%s: not enough free space"
 msgstr "%s: nedostatek volného místa"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../libbrasero-burn/brasero-dest-selection.c:721
+#: ../libbrasero-burn/brasero-dest-selection.c:727
 #, c-format
 msgid "%s: %s of free space"
 msgstr "%s: %s volného místa"
@@ -1457,7 +1457,7 @@ msgstr "Umožní přidat další data na disk později"
 #: ../libbrasero-burn/brasero-tool-dialog.c:284
 #: ../src/brasero-multi-song-props.c:308 ../src/brasero-song-properties.c:226
 msgid "Options"
-msgstr "Možnosti"
+msgstr "Volby"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:763
 msgid "Location for _Temporary Files"
@@ -1465,7 +1465,7 @@ msgstr "Umístění _dočasných souborů"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:783
 msgid "Set the directory where to store temporary files"
-msgstr "Nastavte adresář, do kterého se budou ukládat dočasné soubory"
+msgstr "Nastavte složku, do které se budou ukládat dočasné soubory"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:788
 msgid "Temporary files"
@@ -1540,9 +1540,9 @@ msgstr "_Ponechat stávající příponu"
 msgid "Change _Extension"
 msgstr "Změnit _příponu"
 
-#: ../libbrasero-burn/brasero-medium-properties.c:233
+#: ../libbrasero-burn/brasero-medium-properties.c:234
 msgid "Configure recording options"
-msgstr "Nastavit možnosti vypalování"
+msgstr "Nastavit volby vypalování"
 
 #. Translators: first %02i is hours, the second one is minutes and the
 #. * third one is seconds.
@@ -1637,7 +1637,7 @@ msgid ""
 "disc may not be readable on all operating systems.\n"
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
-"Potomci tohoto adresáře budou mít 7 nadřazených adresářů.\n"
+"Potomci této složky budou mít 7 nadřazených složek.\n"
 "Brasero umí vytvořit obraz takovéto hierarchie souborů a vypálit jej, ale "
 "disk nemusí být čitelný ve všech operačních systémech.\n"
 "POZNÁMKA: Takováto hierarchie souborů je známá svou funkčností v Linuxu."
@@ -1727,7 +1727,7 @@ msgid "The file integrity check could not be performed."
 msgstr "Nelze provést kontrolu integrity souborů."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
-#: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
+#: ../src/brasero-eject-dialog.c:102 ../src/brasero-playlist.c:393
 #: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "Nastala neznámá chyba"
@@ -1802,7 +1802,7 @@ msgid "The drive is empty"
 msgstr "Jednotka je prázdná"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:539
-#: ../src/brasero-eject-dialog.c:164
+#: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Vyberte disk"
 
@@ -1887,7 +1887,7 @@ msgstr "„%s“ byl odstraněn ze systému souborů."
 #: ../src/brasero-audio-disc.c:754 ../src/brasero-video-disc.c:365
 #, c-format
 msgid "Directories cannot be added to video or audio discs"
-msgstr "Adresáře nelze přidat na hudební nebo videodisky"
+msgstr "Složky nelze přidat na hudební nebo videodisky"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:142
 #, c-format
@@ -1957,7 +1957,7 @@ msgstr "Vytvořit VCD"
 #: ../libbrasero-burn/brasero-xfer.c:130 ../libbrasero-burn/brasero-xfer.c:266
 #, c-format
 msgid "Directory could not be created (%s)"
-msgstr "Nelze vytvořit adresář (%s)"
+msgstr "Nelze vytvořit složku (%s)"
 
 #: ../libbrasero-burn/burn-basics.c:77
 msgid "Getting size"
@@ -2022,7 +2022,7 @@ msgstr "Vysouvání média"
 #: ../libbrasero-burn/burn-debug.c:54
 msgid "Display debug statements on stdout for Brasero burn library"
 msgstr ""
-"Zobrazit ladicí informace na standardním výstupu pro knihovnu Brasero burn"
+"Na standardním výstupu zobrazit ladicí informace pro knihovnu Brasero-burn"
 
 #: ../libbrasero-burn/burn-debug.c:80
 msgid "Brasero media burning library"
@@ -2030,7 +2030,7 @@ msgstr "Knihovna Brasero pro vypalování médií"
 
 #: ../libbrasero-burn/burn-debug.c:81
 msgid "Display options for Brasero-burn library"
-msgstr "Zobrazit možnosti knihovny Brasero-burn"
+msgstr "Zobrazit přepínače knihovny Brasero-burn"
 
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:797
@@ -2151,7 +2151,7 @@ msgstr "Bezejmenná jednotka CD/DVD"
 #: ../libbrasero-media/brasero-media.c:54
 msgid "Display debug statements on stdout for Brasero media library"
 msgstr ""
-"Zobrazit ladicí informace na standardním výstupu pro knihovnu Brasero media"
+"Na standardním výstupu zobrazit ladicí informace pro knihovnu Brasero-media"
 
 #: ../libbrasero-media/brasero-media.c:477
 msgid "Brasero optical media library"
@@ -2159,7 +2159,7 @@ msgstr "Knihovna optických médií Brasero"
 
 #: ../libbrasero-media/brasero-media.c:478
 msgid "Display options for Brasero media library"
-msgstr "Zobrazit možnosti knihovny médií Brasero"
+msgstr "Zobrazit přepínače knihovny Brasero-media"
 
 #: ../libbrasero-media/brasero-medium.c:65
 msgid "File"
@@ -2498,55 +2498,55 @@ msgstr "Přizpůsobený"
 msgid "Background Properties"
 msgstr "Vlastnosti pozadí"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:589
+#: ../libbrasero-utils/brasero-jacket-edit.c:534
 msgid "Print"
 msgstr "Tisk"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:601
+#: ../libbrasero-utils/brasero-jacket-edit.c:546
 msgid "Bac_kground Properties"
 msgstr "Vlastnosti _pozadí"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:604
+#: ../libbrasero-utils/brasero-jacket-edit.c:549
 msgid "Background properties"
 msgstr "Vlastnosti pozadí"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:619
+#: ../libbrasero-utils/brasero-jacket-edit.c:564
 msgid "Align right"
 msgstr "Zarovnat vpravo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:629
+#: ../libbrasero-utils/brasero-jacket-edit.c:574
 msgid "Center"
 msgstr "Vystředěný"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:639
+#: ../libbrasero-utils/brasero-jacket-edit.c:584
 msgid "Align left"
 msgstr "Zarovnat vlevo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:653
+#: ../libbrasero-utils/brasero-jacket-edit.c:598
 msgid "Underline"
 msgstr "Podtržené"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:663
+#: ../libbrasero-utils/brasero-jacket-edit.c:608
 msgid "Italic"
 msgstr "Kurzíva"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:673
+#: ../libbrasero-utils/brasero-jacket-edit.c:618
 msgid "Bold"
 msgstr "Tučné"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:699
+#: ../libbrasero-utils/brasero-jacket-edit.c:644
 msgid "Font family and size"
 msgstr "Písmo a velikost"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:706
+#: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "_Text Color"
 msgstr "Barva _textu"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:707
+#: ../libbrasero-utils/brasero-jacket-edit.c:652
 msgid "Text color"
 msgstr "Barva textu"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:830
+#: ../libbrasero-utils/brasero-jacket-edit.c:775
 msgid "Cover Editor"
 msgstr "Editor přebalů"
 
@@ -2620,6 +2620,19 @@ msgstr "„%s“ nelze obsloužit pomocí GStreamer."
 #, c-format
 msgid "%s element could not be created"
 msgstr "Nelze vytvořit prvek %s"
+
+#: ../libbrasero-utils/brasero-misc.c:74
+msgid "Display debug statements on stdout for Brasero utilities library"
+msgstr ""
+"Na standardním výstupu zobrazit ladicí informace pro knihovnu Brasero-utils"
+
+#: ../libbrasero-utils/brasero-misc.c:91
+msgid "Brasero utilities library"
+msgstr "Knihovna nástrojů Brasero"
+
+#: ../libbrasero-utils/brasero-misc.c:92
+msgid "Display options for Brasero-utils library"
+msgstr "Zobrazit přepínače knihovny Brasero-utils"
 
 #: ../libbrasero-utils/brasero-tool-color-picker.c:166
 msgid "Pick a Color"
@@ -3103,37 +3116,37 @@ msgstr "Nelze vytvořit svazek"
 #: ../plugins/libburnia/burn-libisofs.c:893
 #, c-format
 msgid "libisofs could not be initialized."
-msgstr "libisofs nelze inicializovat"
+msgstr "Knihovnu libisofs nelze inicializovat"
 
 #: ../plugins/libburnia/burn-libisofs.c:485
 #, c-format
 msgid "Read options could not be created"
-msgstr "Nelze vytvořit žádné možnosti čtení"
+msgstr "Nelze vytvořit žádné volby čtení"
 
 #. Translators: %s is the path
 #: ../plugins/libburnia/burn-libisofs.c:684
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
 msgstr ""
-"Nelze nalézt žádný nadřazený adresář ve stromové struktuře na cestě „%s“"
+"Nelze nalézt žádnou nadřazenou složku ve stromové struktuře na cestě „%s“"
 
 #: ../plugins/libburnia/burn-libisofs.c:744
 #: ../plugins/libburnia/burn-libisofs.c:811
 #, c-format
 msgid "libisofs reported an error while creating directory \"%s\""
-msgstr "libisofs ohlásil chybu při vytváření adresáře „%s“"
+msgstr "Knihovna libisofs ohlásila chybu při vytváření složky „%s“"
 
 #: ../plugins/libburnia/burn-libisofs.c:759
 #, c-format
 msgid ""
 "libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr "libisofs ohlásil chybu při přidávání obsahu do adresáře „%s“ (%x)"
+msgstr "Knihovna libisofs ohlásila chybu při přidávání obsahu do složky „%s“ (%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:782
 #: ../plugins/libburnia/burn-libisofs.c:798
 #, c-format
 msgid "libisofs reported an error while adding file at path \"%s\""
-msgstr "libisofs ohlásil chybu při přidávání souboru v cestě „%s“"
+msgstr "Knihovna libisofs ohlásila chybu při přidávání souboru v cestě „%s“"
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
@@ -3461,7 +3474,7 @@ msgid "Artist"
 msgstr "Umělec"
 
 #: ../src/brasero-audio-disc.c:488 ../src/brasero-playlist.c:772
-#: ../src/brasero-split-dialog.c:1219
+#: ../src/brasero-split-dialog.c:1225
 msgid "Length"
 msgstr "Délka"
 
@@ -3499,7 +3512,7 @@ msgstr "Přid_at soubor"
 
 #: ../src/brasero-audio-disc.c:748
 msgid "Do you want to search for audio files inside the directory?"
-msgstr "Přejete si vyhledat hudební soubory uvnitř adresáře?"
+msgstr "Přejete si vyhledat hudební soubory uvnitř složky?"
 
 #: ../src/brasero-audio-disc.c:758
 msgid "Search _Directory"
@@ -3633,7 +3646,7 @@ msgstr "Otevřít dialog Kontrola disku"
 
 #: ../src/brasero-cli.c:126
 msgid "Burn the contents of the burn:// URI"
-msgstr "Vypálit obsah adresáře burn://"
+msgstr "Vypálit obsah složky burn://"
 
 #: ../src/brasero-cli.c:130
 msgid "Start burning immediately."
@@ -3877,16 +3890,16 @@ msgstr "Popis"
 msgid "Space"
 msgstr "Místo"
 
-#: ../src/brasero-eject-dialog.c:95
+#: ../src/brasero-eject-dialog.c:97
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
 msgstr "Disk v „%s“ nelze vysunout"
 
-#: ../src/brasero-eject-dialog.c:190
+#: ../src/brasero-eject-dialog.c:193
 msgid "_Eject"
 msgstr "_Vysunout"
 
-#: ../src/brasero-eject-dialog.c:205
+#: ../src/brasero-eject-dialog.c:208
 msgid "Eject Disc"
 msgstr "Vysunout disk"
 
@@ -3920,7 +3933,7 @@ msgstr[2] "Zobrazit seznam _filtrovaných souborů (%d souborů)"
 
 #: ../src/brasero-file-filtered.c:135
 msgid "Filter Options"
-msgstr "Možnosti filtrování"
+msgstr "Volby filtrování"
 
 #: ../src/brasero-file-filtered.c:218
 msgid ""
@@ -3941,11 +3954,11 @@ msgstr "Obnovit vybrané soubory"
 
 #: ../src/brasero-file-filtered.c:303
 msgid "_Options…"
-msgstr "_Možnosti…"
+msgstr "_Volby…"
 
 #: ../src/brasero-file-filtered.c:311
 msgid "Set the options for file filtering"
-msgstr "Nastavte možnosti filtrování souborů"
+msgstr "Nastavte volby filtrování souborů"
 
 #. filter hidden files
 #: ../src/brasero-filter-option.c:65
@@ -3964,7 +3977,7 @@ msgstr "Filtrovat _poškozené symbolické odkazy"
 
 #: ../src/brasero-filter-option.c:85
 msgid "Filtering options"
-msgstr "Možnosti filtrování"
+msgstr "Volby filtrování"
 
 #: ../src/brasero-layout.c:104
 msgid "P_review"
@@ -4133,7 +4146,7 @@ msgstr "_Deaktivovat vše"
 #: ../src/brasero-plugin-option.c:258
 #, c-format
 msgid "Options for plugin %s"
-msgstr "Možnosti zásuvného modulu %s"
+msgstr "Volby zásuvného modulu %s"
 
 #: ../src/brasero-pref.c:61
 msgid "Brasero Plugins"
@@ -4286,7 +4299,7 @@ msgstr "_Uložit"
 msgid "_Add"
 msgstr "Přid_at"
 
-#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1255
 msgid "_Remove"
 msgstr "Odst_ranit"
 
@@ -4609,7 +4622,7 @@ msgstr "Žádné nedávné projekty"
 msgid "Create a new project:"
 msgstr "Vytvořit nový projekt:"
 
-#: ../src/brasero-project-type-chooser.c:509
+#: ../src/brasero-project-type-chooser.c:510
 msgid "Recent projects:"
 msgstr "Nedávné projekty:"
 
@@ -4709,11 +4722,11 @@ msgstr "Délka stopy:"
 msgid "Song information for track %02i"
 msgstr "Informace o stopě %02i"
 
-#: ../src/brasero-split-dialog.c:166
+#: ../src/brasero-split-dialog.c:172
 msgid "Do you really want to split the track?"
 msgstr "Opravdu chcete rozdělit stopu?"
 
-#: ../src/brasero-split-dialog.c:169
+#: ../src/brasero-split-dialog.c:175
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
@@ -4721,131 +4734,131 @@ msgstr ""
 "Pokud stopu rozdělíte, velikost nové stopy bude kratší než 6 sekund a bude "
 "tudíž prodloužena."
 
-#: ../src/brasero-split-dialog.c:175 ../src/brasero-split-dialog.c:746
+#: ../src/brasero-split-dialog.c:181 ../src/brasero-split-dialog.c:752
 msgid "_Split"
 msgstr "_Rozdělit"
 
-#: ../src/brasero-split-dialog.c:603
+#: ../src/brasero-split-dialog.c:609
 msgid "The track wasn't split."
 msgstr "Stopa nebyla rozdělena."
 
-#: ../src/brasero-split-dialog.c:604
+#: ../src/brasero-split-dialog.c:610
 msgid "No silence could be detected"
 msgstr "Nelze zjistit žádné tiché místo"
 
-#: ../src/brasero-split-dialog.c:627
+#: ../src/brasero-split-dialog.c:633
 msgid "An error occurred while detecting silences."
 msgstr "Při zjišťování tichých míst nastala chyba."
 
-#: ../src/brasero-split-dialog.c:706
+#: ../src/brasero-split-dialog.c:712
 msgid "This will remove all previous results."
 msgstr "Toto odstraní všechny předchozí výsledky."
 
-#: ../src/brasero-split-dialog.c:744
+#: ../src/brasero-split-dialog.c:750
 msgid "Do you really want to carry on with automatic splitting?"
 msgstr "Opravdu chcete pokračovat s automatickým rozdělováním?"
 
-#: ../src/brasero-split-dialog.c:745
+#: ../src/brasero-split-dialog.c:751
 msgid "_Don't split"
 msgstr "Neroz_dělit"
 
-#: ../src/brasero-split-dialog.c:962
+#: ../src/brasero-split-dialog.c:968
 msgid "Do you really want to empty the slices preview?"
 msgstr "Opravdu chcete vyprázdnit náhledy částí?"
 
-#: ../src/brasero-split-dialog.c:964 ../src/brasero-split-dialog.c:1263
+#: ../src/brasero-split-dialog.c:970 ../src/brasero-split-dialog.c:1269
 msgid "Re_move All"
 msgstr "_Odstranit vše"
 
-#: ../src/brasero-split-dialog.c:1049
+#: ../src/brasero-split-dialog.c:1055
 msgid "Split Track"
 msgstr "Rozdělit stopu"
 
-#: ../src/brasero-split-dialog.c:1066
+#: ../src/brasero-split-dialog.c:1072
 msgid "M_ethod:"
 msgstr "M_etoda:"
 
-#: ../src/brasero-split-dialog.c:1072
+#: ../src/brasero-split-dialog.c:1078
 msgid "Method to be used to split the track"
 msgstr "Metoda použitá k rozdělení stopy"
 
-#: ../src/brasero-split-dialog.c:1075
+#: ../src/brasero-split-dialog.c:1081
 msgid "Split track manually"
 msgstr "Rozdělit stopu ručně"
 
-#: ../src/brasero-split-dialog.c:1076
+#: ../src/brasero-split-dialog.c:1082
 msgid "Split track in parts with a fixed length"
 msgstr "Rozdělit stopu na části o konstantní délce"
 
-#: ../src/brasero-split-dialog.c:1077
+#: ../src/brasero-split-dialog.c:1083
 msgid "Split track in a fixed number of parts"
 msgstr "Rozdělit stopu na stálý počet částí"
 
-#: ../src/brasero-split-dialog.c:1078
+#: ../src/brasero-split-dialog.c:1084
 msgid "Split track for each silence"
 msgstr "Rozdělit stopu v místech ticha"
 
-#: ../src/brasero-split-dialog.c:1084
+#: ../src/brasero-split-dialog.c:1090
 msgid "_Slice"
 msgstr "_Rozdělit"
 
-#: ../src/brasero-split-dialog.c:1095
+#: ../src/brasero-split-dialog.c:1101
 msgid "Add a splitting point"
 msgstr "Přidat bod rozdělení"
 
 #. Translators: this goes with the next (= "seconds")
-#: ../src/brasero-split-dialog.c:1112
+#: ../src/brasero-split-dialog.c:1118
 msgid "Split this track every"
 msgstr "Rozdělit tuto stopu každých"
 
 #. Translators: this goes with the previous (= "Split track every")
-#: ../src/brasero-split-dialog.c:1121
+#: ../src/brasero-split-dialog.c:1127
 msgid "seconds"
 msgstr "sekund"
 
 #. Translators: this goes with the next (= "parts")
-#: ../src/brasero-split-dialog.c:1130
+#: ../src/brasero-split-dialog.c:1136
 msgid "Split this track in"
 msgstr "Rozdělit tuto stopu na"
 
 #. Translators: this goes with the previous (= "Split this track in")
-#: ../src/brasero-split-dialog.c:1139
+#: ../src/brasero-split-dialog.c:1145
 msgid "parts"
 msgstr "částí"
 
-#: ../src/brasero-split-dialog.c:1147
+#: ../src/brasero-split-dialog.c:1153
 msgid "Slicing Method"
 msgstr "Metoda rozdělení"
 
-#: ../src/brasero-split-dialog.c:1205
+#: ../src/brasero-split-dialog.c:1211
 msgid "Start"
 msgstr "Začátek"
 
-#: ../src/brasero-split-dialog.c:1212
+#: ../src/brasero-split-dialog.c:1218
 msgid "End"
 msgstr "Konec"
 
-#: ../src/brasero-split-dialog.c:1235
+#: ../src/brasero-split-dialog.c:1241
 msgid "Mer_ge"
 msgstr "_Sloučit"
 
-#: ../src/brasero-split-dialog.c:1246
+#: ../src/brasero-split-dialog.c:1252
 msgid "Merge a selected slice with the next selected one"
 msgstr "Sloučit označenou část s další označenou"
 
-#: ../src/brasero-split-dialog.c:1260
+#: ../src/brasero-split-dialog.c:1266
 msgid "Remove the selected slices"
 msgstr "Odstranit označené části"
 
-#: ../src/brasero-split-dialog.c:1274
+#: ../src/brasero-split-dialog.c:1280
 msgid "Clear the slices preview"
 msgstr "Smazat náhledy částí"
 
-#: ../src/brasero-split-dialog.c:1284
+#: ../src/brasero-split-dialog.c:1290
 msgid "_List of slices that are to be created:"
 msgstr "_Seznam částí, které se vytvoří:"
 
-#: ../src/brasero-split-dialog.c:1292
+#: ../src/brasero-split-dialog.c:1298
 msgid "Slices Preview"
 msgstr "Náhled částí"
 
@@ -4887,11 +4900,11 @@ msgstr "Odstranit vybraná videa z projektu"
 
 #: ../src/brasero-video-disc.c:359
 msgid "Do you want to search for video files inside the directory?"
-msgstr "Přejete si vyhledat videosoubory uvnitř adresáře?"
+msgstr "Přejete si vyhledat videosoubory uvnitř složku?"
 
 #: ../src/brasero-video-disc.c:369
 msgid "_Search Directory"
-msgstr "_Prohledat adresář"
+msgstr "_Prohledat složku"
 
 #: ../src/brasero-video-disc.c:412
 #, c-format
@@ -4959,17 +4972,17 @@ msgstr "ID"
 
 #: ../src/eggsmclient.c:253
 msgid "Session management options:"
-msgstr "Možnosti Správy sezení:"
+msgstr "Přepínače správy sezení:"
 
 #: ../src/eggsmclient.c:254
 msgid "Show session management options"
-msgstr "Zobrazit možnosti Správy sezení"
+msgstr "Zobrazit přepínače správy sezení"
 
-#: ../src/main.c:85
+#: ../src/main.c:86
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] …"
 
-#: ../src/main.c:97
+#: ../src/main.c:99
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Pro zobrazení všech dostupných přepínačů napište „%s --help“\n"
