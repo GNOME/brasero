@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-20 23:04+0200\n"
-"PO-Revision-Date: 2013-08-20 23:05+0200\n"
+"POT-Creation-Date: 2013-08-31 22:55+0200\n"
+"PO-Revision-Date: 2013-08-31 22:58+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -1559,7 +1559,7 @@ msgstr "_Zachowaj bieżące rozszerzenie"
 msgid "Change _Extension"
 msgstr "Z_mień rozszerzenie"
 
-#: ../libbrasero-burn/brasero-medium-properties.c:233
+#: ../libbrasero-burn/brasero-medium-properties.c:234
 msgid "Configure recording options"
 msgstr "Konfiguracja opcji nagrywania"
 
@@ -2046,7 +2046,7 @@ msgstr "Wysuwanie nośnika"
 #: ../libbrasero-burn/burn-debug.c:54
 msgid "Display debug statements on stdout for Brasero burn library"
 msgstr ""
-"Wyświetlenie instrukcji debugowania na standardowe wyjście biblioteki "
+"Wyświetla instrukcje debugowania na standardowe wyjście dla biblioteki "
 "nagrywania programu Brasero"
 
 #: ../libbrasero-burn/burn-debug.c:80
@@ -2055,7 +2055,7 @@ msgstr "Biblioteka nagrywania programu Brasero"
 
 #: ../libbrasero-burn/burn-debug.c:81
 msgid "Display options for Brasero-burn library"
-msgstr "Opcje wyświetlania biblioteki Brasero-burn"
+msgstr "Wyświetla opcje biblioteki Brasero-burn"
 
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:797
@@ -2174,7 +2174,7 @@ msgstr "Napęd CD/DVD bez nazwy"
 #: ../libbrasero-media/brasero-media.c:54
 msgid "Display debug statements on stdout for Brasero media library"
 msgstr ""
-"Wyświetlenie instrukcji debugowania na standardowe wyjście biblioteki "
+"Wyświetla instrukcje debugowania na standardowe wyjście dla biblioteki "
 "nośników Brasero"
 
 #: ../libbrasero-media/brasero-media.c:477
@@ -2183,7 +2183,7 @@ msgstr "Biblioteka nośników optycznych programu Brasero"
 
 #: ../libbrasero-media/brasero-media.c:478
 msgid "Display options for Brasero media library"
-msgstr "Opcje wyświetlania biblioteki nośników programu Brasero"
+msgstr "Wyświetla opcje biblioteki nośników programu Brasero"
 
 #: ../libbrasero-media/brasero-medium.c:65
 msgid "File"
@@ -2523,55 +2523,55 @@ msgstr "Skalowanie"
 msgid "Background Properties"
 msgstr "Właściwości tła"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:589
+#: ../libbrasero-utils/brasero-jacket-edit.c:534
 msgid "Print"
 msgstr "Wydrukuj"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:601
+#: ../libbrasero-utils/brasero-jacket-edit.c:546
 msgid "Bac_kground Properties"
 msgstr "Właściwości _tła"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:604
+#: ../libbrasero-utils/brasero-jacket-edit.c:549
 msgid "Background properties"
 msgstr "Właściwości tła"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:619
+#: ../libbrasero-utils/brasero-jacket-edit.c:564
 msgid "Align right"
 msgstr "Wyrównanie w prawo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:629
+#: ../libbrasero-utils/brasero-jacket-edit.c:574
 msgid "Center"
 msgstr "Wyśrodkowanie"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:639
+#: ../libbrasero-utils/brasero-jacket-edit.c:584
 msgid "Align left"
 msgstr "Wyrównanie w lewo"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:653
+#: ../libbrasero-utils/brasero-jacket-edit.c:598
 msgid "Underline"
 msgstr "Podkreślenie"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:663
+#: ../libbrasero-utils/brasero-jacket-edit.c:608
 msgid "Italic"
 msgstr "Pochylenie"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:673
+#: ../libbrasero-utils/brasero-jacket-edit.c:618
 msgid "Bold"
 msgstr "Pogrubienie"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:699
+#: ../libbrasero-utils/brasero-jacket-edit.c:644
 msgid "Font family and size"
 msgstr "Rodzina czcionki i rozmiar"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:706
+#: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "_Text Color"
 msgstr "Ko_lor tekstu"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:707
+#: ../libbrasero-utils/brasero-jacket-edit.c:652
 msgid "Text color"
 msgstr "Kolor tekstu"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:830
+#: ../libbrasero-utils/brasero-jacket-edit.c:775
 msgid "Cover Editor"
 msgstr "Edytor okładek"
 
@@ -2644,7 +2644,21 @@ msgstr "\"%s\" nie mógł zostać obsłużony przez bibliotekę GStreamer."
 #: ../plugins/transcode/burn-vob.c:1152
 #, c-format
 msgid "%s element could not be created"
-msgstr "Nie udało się utworzyć elementu %s"
+msgstr "Nie można utworzyć elementu %s"
+
+#: ../libbrasero-utils/brasero-misc.c:74
+msgid "Display debug statements on stdout for Brasero utilities library"
+msgstr ""
+"Wyświetla instrukcje debugowania na standardowe wyjście dla biblioteki "
+"narzędziowej programu Brasero"
+
+#: ../libbrasero-utils/brasero-misc.c:91
+msgid "Brasero utilities library"
+msgstr "Biblioteka narzędziowa programu Brasero"
+
+#: ../libbrasero-utils/brasero-misc.c:92
+msgid "Display options for Brasero-utils library"
+msgstr "Wyświetla opcje biblioteki Brasero-utils"
 
 #: ../libbrasero-utils/brasero-tool-color-picker.c:166
 msgid "Pick a Color"
@@ -5013,11 +5027,11 @@ msgstr "Opcje zarządzania sesją:"
 msgid "Show session management options"
 msgstr "Wyświetla opcje zarządzania sesją"
 
-#: ../src/main.c:85
+#: ../src/main.c:86
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:97
+#: ../src/main.c:99
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Polecenie \"%s --help\" wyświetli wszystkie dostępne opcje\n"
