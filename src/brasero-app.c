@@ -2013,6 +2013,9 @@ brasero_app_run_mainwin (BraseroApp *app)
 
 	priv = BRASERO_APP_PRIVATE (app);
 
+	if (!priv->mainwin)
+		return FALSE;
+
 	if (priv->mainwin_running)
 		return TRUE;
 
@@ -2054,6 +2057,8 @@ brasero_app_init (BraseroApp *object)
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (object);
+
+	priv->mainwin = NULL;
 
 	/* Load settings */
 	priv->setting = brasero_setting_get_default ();
