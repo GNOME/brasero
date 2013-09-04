@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero-help\n"
-"POT-Creation-Date: 2013-03-24 11:32+0000\n"
-"PO-Revision-Date: 2013-07-10 22:00+0200\n"
+"POT-Creation-Date: 2013-08-18 14:12+0000\n"
+"PO-Revision-Date: 2013-09-04 18:36+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -21,22 +21,6 @@ msgstr ""
 "X-Poedit-Language: Czech\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: C/index.page:5(page/title)
-msgid "Brasero Help"
-msgstr "Nápověda Brasero"
-
-#: C/index.page:8(section/title)
-msgid "Create a new project"
-msgstr "Vytvořit nový projekt"
-
-#: C/index.page:12(section/title)
-msgid "Troubleshooting"
-msgstr "Řešení problémů"
-
-#: C/index.page:16(section/title)
-msgid "Other tools"
-msgstr "Další nástroje"
-
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
@@ -45,14 +29,30 @@ msgstr ""
 "Štěpán Šimsa <simsa.st@gmail.com>, 2011\n"
 "Marek Černocký <marek@manet.cz>, 2013"
 
-#: C/create-cover.page:7(info/desc)
-msgid "Create an inlay for a jewel case."
-msgstr "Vytvořit štítky do obalu na CD."
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/index.page:15(media)
+#| msgctxt "_"
+#| msgid ""
+#| "external ref='figures/brasero-main-window.png' "
+#| "md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
+msgctxt "_"
+msgid ""
+"external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
+msgstr ""
+"external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
 
-#: C/create-cover.page:9(credit/name) C/introduction.page:9(credit/name)
-#: C/prob-cd.page:11(credit/name) C/prob-dvd.page:11(credit/name)
-#: C/project-audio.page:9(credit/name) C/project-data.page:9(credit/name)
-#: C/project-disc-copy.page:9(credit/name)
+#: C/index.page:7(credit/name) C/create-cover.page:9(credit/name)
+#: C/introduction.page:9(credit/name) C/prob-cd.page:11(credit/name)
+#: C/prob-dvd.page:11(credit/name) C/project-audio.page:9(credit/name)
+#: C/project-data.page:9(credit/name) C/project-disc-copy.page:9(credit/name)
 #: C/project-image-burn.page:17(credit/name)
 #: C/project-save.page:12(credit/name) C/project-video.page:12(credit/name)
 #: C/split-track.page:11(credit/name) C/tools-blank.page:9(credit/name)
@@ -60,15 +60,37 @@ msgstr "Vytvořit štítky do obalu na CD."
 msgid "Ekaterina Gerasimova"
 msgstr "Ekaterina Gerasimova"
 
-#: C/create-cover.page:13(license/p) C/introduction.page:13(license/p)
-#: C/prob-cd.page:15(license/p) C/prob-dvd.page:15(license/p)
-#: C/project-audio.page:13(license/p) C/project-data.page:13(license/p)
-#: C/project-disc-copy.page:13(license/p)
+#: C/index.page:11(license/p) C/create-cover.page:13(license/p)
+#: C/introduction.page:13(license/p) C/prob-cd.page:15(license/p)
+#: C/prob-dvd.page:15(license/p) C/project-audio.page:13(license/p)
+#: C/project-data.page:13(license/p) C/project-disc-copy.page:13(license/p)
 #: C/project-image-burn.page:21(license/p) C/project-save.page:16(license/p)
 #: C/project-video.page:16(license/p) C/split-track.page:15(license/p)
 #: C/tools-blank.page:13(license/p) C/tools-check-integrity.page:17(license/p)
 msgid "Creative Commons Share Alike 3.0"
 msgstr "Creative Commons Share Alike 3.0"
+
+#: C/index.page:15(page/title)
+msgid "<media type=\"image\" src=\"figures/logo32.png\"/> Brasero Help"
+msgstr ""
+"<media type=\"image\" src=\"figures/logo32.png\"/> Nápověda k aplikaci "
+"Brasero"
+
+#: C/index.page:18(section/title)
+msgid "Create a new project"
+msgstr "Vytvořit nový projekt"
+
+#: C/index.page:22(section/title)
+msgid "Troubleshooting"
+msgstr "Řešení problémů"
+
+#: C/index.page:26(section/title)
+msgid "Other tools"
+msgstr "Další nástroje"
+
+#: C/create-cover.page:7(info/desc)
+msgid "Create an inlay for a jewel case."
+msgstr "Vytvořit štítky do obalu na CD."
 
 #: C/create-cover.page:17(page/title)
 msgid "Create a cover"
@@ -995,3 +1017,6 @@ msgid ""
 msgstr ""
 "Jakmile je kontrolova hotová, můžete buď zvolit <gui>Znovu zkontrolovat</"
 "gui> nebo prostě <gui>Zavřít</gui>."
+
+#~ msgid "Brasero Help"
+#~ msgstr "Nápověda Brasero"
