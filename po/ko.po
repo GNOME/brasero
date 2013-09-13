@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-03-07 03:41+0000\n"
-"PO-Revision-Date: 2013-03-17 20:20+0900\n"
+"POT-Creation-Date: 2013-08-22 22:16+0000\n"
+"PO-Revision-Date: 2013-09-14 06:19+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: Korean\n"
@@ -35,7 +35,9 @@ msgstr "CD나 DVD를 만들고 복사합니다"
 
 #: ../data/brasero.desktop.in.in.h:4
 msgid "disc;cdrom;dvd;burn;audio;video;"
-msgstr "disc;디스크;cdrom;씨디;dvd;burn;굽기;audio;오디오;음악;video;비디오;영상;영화;"
+msgstr ""
+"disc;디스크;cdrom;씨디;dvd;burn;굽기;audio;오디오;음악;video;비디오;영상;영"
+"화;"
 
 #: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
@@ -378,7 +380,7 @@ msgstr "디스크에 남은 충분한 공간이 없습니다"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1180
+#: ../libbrasero-burn/brasero-burn-options.c:1187
 #: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
@@ -386,7 +388,7 @@ msgstr "%s (프로그램)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1186
+#: ../libbrasero-burn/brasero-burn-options.c:1193
 #: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
@@ -394,7 +396,7 @@ msgstr "%s (라이브러리)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1191
+#: ../libbrasero-burn/brasero-burn-options.c:1198
 #: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
@@ -608,7 +610,7 @@ msgid "Please insert a rewritable disc holding data."
 msgstr "다시 기록 가능한 디스크를 넣으십시오."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:557
-#: ../libbrasero-burn/brasero-burn-options.c:494
+#: ../libbrasero-burn/brasero-burn-options.c:501
 msgid "Please insert a disc holding data."
 msgstr "데이터가 들어 있는 디스크를 넣으십시오."
 
@@ -672,7 +674,7 @@ msgstr "최소 %iMiB만큼 빈 공간이 남은 쓰기 가능한 CD나 DVD를 �
 #: ../libbrasero-burn/brasero-burn-dialog.c:613
 #: ../libbrasero-burn/brasero-burn-dialog.c:2171
 #: ../libbrasero-burn/brasero-burn-dialog.c:2185
-#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:995
+#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:995
 msgid "Please insert a writable CD or DVD."
 msgstr "쓰기 가능한 CD나 DVD를 넣으십시오."
 
@@ -1053,41 +1055,41 @@ msgstr "굽기(_B)"
 msgid "Burn _Several Copies"
 msgstr "여러 복사물 굽기(_S)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:426 ../src/brasero-project.c:949
+#: ../libbrasero-burn/brasero-burn-options.c:433 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr "선택한 파일을 여러 미디어에 걸쳐서 구우시겠습니까?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:427
-#: ../libbrasero-burn/brasero-burn-options.c:444
+#: ../libbrasero-burn/brasero-burn-options.c:434
+#: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr "데이터 크기가 디스크 용량보다(오버버닝 옵션을 사용하더라도) 큽니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:432 ../src/brasero-project.c:954
+#: ../libbrasero-burn/brasero-burn-options.c:439 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
 msgstr "여러 디스크 굽기(_B)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:434 ../src/brasero-project.c:956
+#: ../libbrasero-burn/brasero-burn-options.c:441 ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
 msgstr "선택한 파일을 여러 미디어에 걸쳐서 굽습니다"
 
-#: ../libbrasero-burn/brasero-burn-options.c:443 ../src/brasero-project.c:965
+#: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
 msgstr "다른 CD나 DVD를 선택하거나 새 CD나 DVD를 넣으십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:457 ../src/brasero-project.c:1010
+#: ../libbrasero-burn/brasero-burn-options.c:464 ../src/brasero-project.c:1010
 msgid "No track information (artist, title, ...) will be written to the disc."
 msgstr "트랙 정보를(아티스트, 제목, ...) 디스크에 쓰지 않습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:458 ../src/brasero-project.c:1011
+#: ../libbrasero-burn/brasero-burn-options.c:465 ../src/brasero-project.c:1011
 msgid "This is not supported by the current active burning backend."
 msgstr "현재 사용 중인 굽기 백엔드에서는 지원하지 않습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:470
+#: ../libbrasero-burn/brasero-burn-options.c:477
 #: ../nautilus/nautilus-burn-extension.c:239
 msgid "Please add files."
 msgstr "파일을 추가하십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:471
+#: ../libbrasero-burn/brasero-burn-options.c:478
 #: ../libbrasero-burn/brasero-track-data.c:672
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2432
 #: ../libbrasero-burn/brasero-track-stream.c:402
@@ -1096,65 +1098,65 @@ msgstr "파일을 추가하십시오."
 msgid "There are no files to write to disc"
 msgstr "디스크에 쓸 파일이 없습니다"
 
-#: ../libbrasero-burn/brasero-burn-options.c:476
+#: ../libbrasero-burn/brasero-burn-options.c:483
 msgid "Please add songs."
 msgstr "노래를 추가하십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:477 ../src/brasero-project.c:1268
+#: ../libbrasero-burn/brasero-burn-options.c:484 ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
 msgstr "디스크에 쓸 노래가 없습니다"
 
-#: ../libbrasero-burn/brasero-burn-options.c:482
+#: ../libbrasero-burn/brasero-burn-options.c:489
 msgid "Please add videos."
 msgstr "영상을 추가하십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:483
+#: ../libbrasero-burn/brasero-burn-options.c:490
 msgid "There are no videos to write to disc"
 msgstr "디스크에 쓸 영상이 없습니다"
 
-#: ../libbrasero-burn/brasero-burn-options.c:495
+#: ../libbrasero-burn/brasero-burn-options.c:502
 msgid "There is no inserted disc to copy."
 msgstr "복사할 디스크를 넣지 않았습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:504
+#: ../libbrasero-burn/brasero-burn-options.c:511
 msgid "Please select a disc image."
 msgstr "디스크 이미지를 선택하십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:505
+#: ../libbrasero-burn/brasero-burn-options.c:512
 msgid "There is no selected disc image."
 msgstr "디스크 이미지를 선택하지 않았습니다."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
-#: ../libbrasero-burn/brasero-burn-options.c:515
+#: ../libbrasero-burn/brasero-burn-options.c:522
 #: ../libbrasero-burn/brasero-src-image.c:167
 msgctxt "disc"
 msgid "Please select another image."
 msgstr "다른 이미지를 선택하십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:516
+#: ../libbrasero-burn/brasero-burn-options.c:523
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "올바른 이미지나 올바른 CUE 파일이 아닌 것 같습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:525
+#: ../libbrasero-burn/brasero-burn-options.c:532
 msgid "Please insert a disc that is not copy protected."
 msgstr "복사 방지를 하지 않은 디스크를 넣으십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:526
-#: ../libbrasero-burn/brasero-burn-options.c:1228
+#: ../libbrasero-burn/brasero-burn-options.c:533
+#: ../libbrasero-burn/brasero-burn-options.c:1235
 #: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "필요한 프로그램과 라이브러리 중 설치되지 않은 사항이 있습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:533 ../src/brasero-project.c:1003
+#: ../libbrasero-burn/brasero-burn-options.c:540 ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
 msgstr "디스크를 지원하는 CD나 DVD로 바꾸십시오."
 
-#: ../libbrasero-burn/brasero-burn-options.c:542 ../src/brasero-project.c:976
+#: ../libbrasero-burn/brasero-burn-options.c:549 ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
 msgstr "디스크 정보에 들어 있는 용량보다 더 크게 구우시겠습니까?"
 
-#: ../libbrasero-burn/brasero-burn-options.c:543
+#: ../libbrasero-burn/brasero-burn-options.c:550
 msgid ""
 "The data size is too large for the disc and you must remove files from the "
 "selection otherwise.\n"
@@ -1169,20 +1171,20 @@ msgstr ""
 "다.\n"
 "주의: 이 옵션을 사용하면 실패할 수도 있습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:550 ../src/brasero-project.c:983
+#: ../libbrasero-burn/brasero-burn-options.c:557 ../src/brasero-project.c:983
 msgid "_Overburn"
 msgstr "오버버닝(_O)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:552 ../src/brasero-project.c:985
+#: ../libbrasero-burn/brasero-burn-options.c:559 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
 msgstr "디스크 정보에 들어 있는 용량보다 크게 굽습니다"
 
-#: ../libbrasero-burn/brasero-burn-options.c:562
+#: ../libbrasero-burn/brasero-burn-options.c:569
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
 msgstr "원본 디스크가 들어 있는 드라이브가 곧 기록할 디스크입니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:563
+#: ../libbrasero-burn/brasero-burn-options.c:570
 msgid ""
 "A new writable disc will be required once the currently loaded one has been "
 "copied."
@@ -1190,21 +1192,21 @@ msgstr ""
 "현재 읽어들인 디스크를 일단 복사한 다음에는 쓰기 가능한 새 디스크가 필요합니"
 "다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:650
+#: ../libbrasero-burn/brasero-burn-options.c:657
 msgid "Select a disc to write to"
 msgstr "기록할 디스크를 선택하십시오"
 
-#: ../libbrasero-burn/brasero-burn-options.c:730
-#: ../libbrasero-burn/brasero-burn-options.c:748
-#: ../libbrasero-burn/brasero-burn-options.c:868
+#: ../libbrasero-burn/brasero-burn-options.c:737
+#: ../libbrasero-burn/brasero-burn-options.c:755
+#: ../libbrasero-burn/brasero-burn-options.c:875
 msgid "Disc Burning Setup"
 msgstr "디스크 굽기 준비"
 
-#: ../libbrasero-burn/brasero-burn-options.c:757 ../src/brasero-project.c:1544
+#: ../libbrasero-burn/brasero-burn-options.c:764 ../src/brasero-project.c:1544
 msgid "Video Options"
 msgstr "비디오 옵션"
 
-#: ../libbrasero-burn/brasero-burn-options.c:788
+#: ../libbrasero-burn/brasero-burn-options.c:795
 #: ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
@@ -1214,7 +1216,7 @@ msgstr ""
 "스크를 만드시겠습니까?"
 
 #. Translators: %s is the name of the image
-#: ../libbrasero-burn/brasero-burn-options.c:797
+#: ../libbrasero-burn/brasero-burn-options.c:804
 #, c-format
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
@@ -1223,32 +1225,32 @@ msgstr ""
 "선택한 파일이 한 개 (\"%s\") 뿐입니다. 디스크 이미지 파일이므로 그 내용을 구"
 "울 수 있습니다."
 
-#: ../libbrasero-burn/brasero-burn-options.c:802
+#: ../libbrasero-burn/brasero-burn-options.c:809
 msgid "Burn as _File"
 msgstr "파일로 굽기(_F)"
 
-#: ../libbrasero-burn/brasero-burn-options.c:804
+#: ../libbrasero-burn/brasero-burn-options.c:811
 msgid "Burn _Contents…"
 msgstr "내용 굽기(_C)…"
 
-#: ../libbrasero-burn/brasero-burn-options.c:886
+#: ../libbrasero-burn/brasero-burn-options.c:893
 msgid "Image Burning Setup"
 msgstr "이미지 굽기 준비"
 
 #. pack everything
-#: ../libbrasero-burn/brasero-burn-options.c:894
+#: ../libbrasero-burn/brasero-burn-options.c:901
 msgid "Select a disc image to write"
 msgstr "쓸 디스크 이미지를 선택하십시오"
 
-#: ../libbrasero-burn/brasero-burn-options.c:914
+#: ../libbrasero-burn/brasero-burn-options.c:921
 msgid "Copy CD/DVD"
 msgstr "CD/DVD 복사"
 
-#: ../libbrasero-burn/brasero-burn-options.c:920
+#: ../libbrasero-burn/brasero-burn-options.c:927
 msgid "Select disc to copy"
 msgstr "복사할 디스크를 선택하십시오"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1222
+#: ../libbrasero-burn/brasero-burn-options.c:1229
 #: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "다음을 수동으로 설치하고 다시 시도하십시오:"
@@ -1278,24 +1280,24 @@ msgstr "%s"
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" 파일을 읽을 수 없습니다"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:599
+#: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
 msgid "SVCD image"
 msgstr "SVCD 이미지"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:601
+#: ../libbrasero-burn/brasero-dest-selection.c:607
 #: ../libbrasero-burn/brasero-image-type-chooser.c:127
 msgid "VCD image"
 msgstr "VCD 이미지"
 
-#: ../libbrasero-burn/brasero-dest-selection.c:605
+#: ../libbrasero-burn/brasero-dest-selection.c:611
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "Video DVD image"
 msgstr "비디오 DVD 이미지"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
-#: ../libbrasero-burn/brasero-dest-selection.c:617
+#: ../libbrasero-burn/brasero-dest-selection.c:623
 #, c-format
 msgid "%s: \"%s\""
 msgstr "%s: \"%s\""
@@ -1306,20 +1308,20 @@ msgstr "%s: \"%s\""
 #. * destination disc a new one (once the source has been
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
-#: ../libbrasero-burn/brasero-dest-selection.c:649
+#: ../libbrasero-burn/brasero-dest-selection.c:655
 #, c-format
 msgid "New disc in the burner holding the source disc"
 msgstr "원본 디스크가 들어 있는 드라이브에 새로 넣을 디스크"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../libbrasero-burn/brasero-dest-selection.c:690
+#: ../libbrasero-burn/brasero-dest-selection.c:696
 #, c-format
 msgid "%s: not enough free space"
 msgstr "%s: 빈 공간이 부족합니다"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../libbrasero-burn/brasero-dest-selection.c:721
+#: ../libbrasero-burn/brasero-dest-selection.c:727
 #, c-format
 msgid "%s: %s of free space"
 msgstr "%s: 빈 공간 %s"
@@ -1507,7 +1509,7 @@ msgid "Change _Extension"
 msgstr "확장자 바꾸기(_E)"
 
 # 주의: 툴팁. 문장으로 번역.
-#: ../libbrasero-burn/brasero-medium-properties.c:233
+#: ../libbrasero-burn/brasero-medium-properties.c:234
 msgid "Configure recording options"
 msgstr "녹화 옵션을 설정합니다"
 
@@ -1643,11 +1645,8 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"파일의 크기가 2GiB를 넘어갑니다. 2GiB보다 큰 파일은 ISO9660 표준의 첫번째와 "
-"두번째 버전에서 지원하지 않습니다. 첫번째와 두번째 버전이 가장 많이 사용하는 "
-"표준 버전입니다.\n"
-"ISO9660의 버전 3을 사용하면 리눅스 및 모든 윈도우 버전을 포함해 대부분 운영체"
-"제에서 지원합니다.\n"
+"파일의 크기가 2GiB를 넘어갑니다. 2GiB보다 큰 파일은 ISO9660 표준의 첫번째와 두번째 버전에서 지원하지 않습니다. 첫번째와 두번째 버전이 가장 많이 사용하는 표준 버전입니다.\n"
+"ISO9660의 버전 3을 사용하면 리눅스 및 모든 윈도우 버전 및 대부분 운영체제에서 지원합니다.\n"
 "하지만 맥 오에스 텐은 ISO9660 버전 3으로 만든 이미지를 읽지 못합니다."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:330
@@ -1693,7 +1692,7 @@ msgid "The file integrity check could not be performed."
 msgstr "파일이 올바른지 검사할 수 없습니다."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
-#: ../src/brasero-eject-dialog.c:100 ../src/brasero-playlist.c:393
+#: ../src/brasero-eject-dialog.c:102 ../src/brasero-playlist.c:393
 #: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
 msgstr "알 수 없는 오류가 발생했습니다"
@@ -1768,7 +1767,7 @@ msgid "The drive is empty"
 msgstr "드라이브가 비어 있습니다"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:539
-#: ../src/brasero-eject-dialog.c:164
+#: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "디스크 선택"
 
@@ -2459,55 +2458,55 @@ msgstr "크기 조정"
 msgid "Background Properties"
 msgstr "배경 속성"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:589
+#: ../libbrasero-utils/brasero-jacket-edit.c:534
 msgid "Print"
 msgstr "인쇄"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:601
+#: ../libbrasero-utils/brasero-jacket-edit.c:546
 msgid "Bac_kground Properties"
 msgstr "배경 속성(_K)"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:604
+#: ../libbrasero-utils/brasero-jacket-edit.c:549
 msgid "Background properties"
 msgstr "배경 속성"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:619
+#: ../libbrasero-utils/brasero-jacket-edit.c:564
 msgid "Align right"
 msgstr "오른쪽 맞추기"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:629
+#: ../libbrasero-utils/brasero-jacket-edit.c:574
 msgid "Center"
 msgstr "가운데"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:639
+#: ../libbrasero-utils/brasero-jacket-edit.c:584
 msgid "Align left"
 msgstr "왼쪽 맞추기"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:653
+#: ../libbrasero-utils/brasero-jacket-edit.c:598
 msgid "Underline"
 msgstr "밑줄"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:663
+#: ../libbrasero-utils/brasero-jacket-edit.c:608
 msgid "Italic"
 msgstr "기울임"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:673
+#: ../libbrasero-utils/brasero-jacket-edit.c:618
 msgid "Bold"
 msgstr "굵게"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:699
+#: ../libbrasero-utils/brasero-jacket-edit.c:644
 msgid "Font family and size"
 msgstr "글꼴 종류 및 크기"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:706
+#: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "_Text Color"
 msgstr "글자 색(_T)"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:707
+#: ../libbrasero-utils/brasero-jacket-edit.c:652
 msgid "Text color"
 msgstr "글자 색"
 
-#: ../libbrasero-utils/brasero-jacket-edit.c:830
+#: ../libbrasero-utils/brasero-jacket-edit.c:775
 msgid "Cover Editor"
 msgstr "표지 편집기"
 
@@ -2581,6 +2580,18 @@ msgstr "\"%s\" 파일을 GStreamer에서 처리할 수 없습니다."
 #, c-format
 msgid "%s element could not be created"
 msgstr "%s 요소를 만들 수 없습니다"
+
+#: ../libbrasero-utils/brasero-misc.c:74
+msgid "Display debug statements on stdout for Brasero utilities library"
+msgstr "브라세로 유틸리티 라이브러리의 디버깅 출력을 표준 출력에 표시합니다"
+
+#: ../libbrasero-utils/brasero-misc.c:91
+msgid "Brasero utilities library"
+msgstr "브라세로 유틸리티 라이브러리"
+
+#: ../libbrasero-utils/brasero-misc.c:92
+msgid "Display options for Brasero-utils library"
+msgstr "브라세로 유틸리티 라이브러리의 옵션을 표시합니다"
 
 #: ../libbrasero-utils/brasero-tool-color-picker.c:166
 msgid "Pick a Color"
@@ -3415,7 +3426,7 @@ msgid "Artist"
 msgstr "아티스트"
 
 #: ../src/brasero-audio-disc.c:488 ../src/brasero-playlist.c:772
-#: ../src/brasero-split-dialog.c:1219
+#: ../src/brasero-split-dialog.c:1225
 msgid "Length"
 msgstr "길이"
 
@@ -3465,7 +3476,7 @@ msgstr "\"%s\" 파일을 열 수 없습니다."
 
 #: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
-msgstr "오디오 CD를 DTS 트랙을 포함해 만드시겠습니까?"
+msgstr "DTS 트랙이 들어 있는 오디오 CD를 만드시겠습니까?"
 
 #: ../src/brasero-audio-disc.c:858
 msgid ""
@@ -3824,16 +3835,16 @@ msgstr "설명"
 msgid "Space"
 msgstr "공간"
 
-#: ../src/brasero-eject-dialog.c:95
+#: ../src/brasero-eject-dialog.c:97
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
 msgstr "\"%s\" 안의 디스크를 뺄 수 없습니다"
 
-#: ../src/brasero-eject-dialog.c:190
+#: ../src/brasero-eject-dialog.c:193
 msgid "_Eject"
 msgstr "빼기(_E)"
 
-#: ../src/brasero-eject-dialog.c:205
+#: ../src/brasero-eject-dialog.c:208
 msgid "Eject Disc"
 msgstr "디스크를 뺍니다"
 
@@ -4227,7 +4238,7 @@ msgstr "저장(_S)"
 msgid "_Add"
 msgstr "추가(_A)"
 
-#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1249
+#: ../src/brasero-project.c:2384 ../src/brasero-split-dialog.c:1255
 msgid "_Remove"
 msgstr "제거(_R)"
 
@@ -4538,7 +4549,7 @@ msgstr "최근에 사용한 프로젝트가 없습니다"
 msgid "Create a new project:"
 msgstr "새 프로젝트 만들기:"
 
-#: ../src/brasero-project-type-chooser.c:509
+#: ../src/brasero-project-type-chooser.c:510
 msgid "Recent projects:"
 msgstr "최근 프로젝트:"
 
@@ -4638,142 +4649,142 @@ msgstr "트랙 길이:"
 msgid "Song information for track %02i"
 msgstr "트랙 %02i번의 노래 정보"
 
-#: ../src/brasero-split-dialog.c:166
+#: ../src/brasero-split-dialog.c:172
 msgid "Do you really want to split the track?"
 msgstr "정말로 트랙을 쪼개시겠습니까?"
 
-#: ../src/brasero-split-dialog.c:169
+#: ../src/brasero-split-dialog.c:175
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
 msgstr ""
 "트랙을 쪼개면, 새 트랙의 크기가 6초보다 짧게 되어 빈 값으로 채워집니다."
 
-#: ../src/brasero-split-dialog.c:175 ../src/brasero-split-dialog.c:746
+#: ../src/brasero-split-dialog.c:181 ../src/brasero-split-dialog.c:752
 msgid "_Split"
 msgstr "쪼개기(_S)"
 
-#: ../src/brasero-split-dialog.c:603
+#: ../src/brasero-split-dialog.c:609
 msgid "The track wasn't split."
 msgstr "트랙을 쪼개지 않습니다."
 
-#: ../src/brasero-split-dialog.c:604
+#: ../src/brasero-split-dialog.c:610
 msgid "No silence could be detected"
 msgstr "묵음이 발견되지 않았습니다"
 
-#: ../src/brasero-split-dialog.c:627
+#: ../src/brasero-split-dialog.c:633
 msgid "An error occurred while detecting silences."
 msgstr "묵음을 검사하는 데 오류가 발생했습니다."
 
-#: ../src/brasero-split-dialog.c:706
+#: ../src/brasero-split-dialog.c:712
 msgid "This will remove all previous results."
 msgstr "이러면 예전의 결과를 모두 지웁니다."
 
-#: ../src/brasero-split-dialog.c:744
+#: ../src/brasero-split-dialog.c:750
 msgid "Do you really want to carry on with automatic splitting?"
 msgstr "정말로 자동으로 쪼개시겠습니까?"
 
-#: ../src/brasero-split-dialog.c:745
+#: ../src/brasero-split-dialog.c:751
 msgid "_Don't split"
 msgstr "쪼개지 않기(_D)"
 
-#: ../src/brasero-split-dialog.c:962
+#: ../src/brasero-split-dialog.c:968
 msgid "Do you really want to empty the slices preview?"
 msgstr "정말로 조각 미리 보기를 비우시겠습니까"
 
-#: ../src/brasero-split-dialog.c:964 ../src/brasero-split-dialog.c:1263
+#: ../src/brasero-split-dialog.c:970 ../src/brasero-split-dialog.c:1269
 msgid "Re_move All"
 msgstr "모두 제거(_M)"
 
-#: ../src/brasero-split-dialog.c:1049
+#: ../src/brasero-split-dialog.c:1055
 msgid "Split Track"
 msgstr "트랙 쪼개기"
 
-#: ../src/brasero-split-dialog.c:1066
+#: ../src/brasero-split-dialog.c:1072
 msgid "M_ethod:"
 msgstr "방법(_E):"
 
-#: ../src/brasero-split-dialog.c:1072
+#: ../src/brasero-split-dialog.c:1078
 msgid "Method to be used to split the track"
 msgstr "트랙을 쪼개는 데 사용할 방법"
 
-#: ../src/brasero-split-dialog.c:1075
+#: ../src/brasero-split-dialog.c:1081
 msgid "Split track manually"
 msgstr "트랙을 수동으로 쪼개기"
 
-#: ../src/brasero-split-dialog.c:1076
+#: ../src/brasero-split-dialog.c:1082
 msgid "Split track in parts with a fixed length"
 msgstr "트랙을 고정된 길이로 쪼개기"
 
-#: ../src/brasero-split-dialog.c:1077
+#: ../src/brasero-split-dialog.c:1083
 msgid "Split track in a fixed number of parts"
 msgstr "트랙을 고정된 수의 일부분으로 쪼개기"
 
-#: ../src/brasero-split-dialog.c:1078
+#: ../src/brasero-split-dialog.c:1084
 msgid "Split track for each silence"
 msgstr "트랙을 묵음 기준으로 쪼개기"
 
-#: ../src/brasero-split-dialog.c:1084
+#: ../src/brasero-split-dialog.c:1090
 msgid "_Slice"
 msgstr "자르기(_S)"
 
-#: ../src/brasero-split-dialog.c:1095
+#: ../src/brasero-split-dialog.c:1101
 msgid "Add a splitting point"
 msgstr "자를 위치를 추가합니다"
 
 #. Translators: this goes with the next (= "seconds")
-#: ../src/brasero-split-dialog.c:1112
+#: ../src/brasero-split-dialog.c:1118
 msgid "Split this track every"
 msgstr "트랙을 다음 초마다 쪼개기: "
 
 #. Translators: this goes with the previous (= "Split track every")
-#: ../src/brasero-split-dialog.c:1121
+#: ../src/brasero-split-dialog.c:1127
 msgid "seconds"
 msgstr "초"
 
 #. Translators: this goes with the next (= "parts")
-#: ../src/brasero-split-dialog.c:1130
+#: ../src/brasero-split-dialog.c:1136
 msgid "Split this track in"
 msgstr "트랙을 다음 부분으로 쪼개기: "
 
 #. Translators: this goes with the previous (= "Split this track in")
-#: ../src/brasero-split-dialog.c:1139
+#: ../src/brasero-split-dialog.c:1145
 msgid "parts"
 msgstr "부분"
 
-#: ../src/brasero-split-dialog.c:1147
+#: ../src/brasero-split-dialog.c:1153
 msgid "Slicing Method"
 msgstr "자르는 방법"
 
-#: ../src/brasero-split-dialog.c:1205
+#: ../src/brasero-split-dialog.c:1211
 msgid "Start"
 msgstr "시작"
 
-#: ../src/brasero-split-dialog.c:1212
+#: ../src/brasero-split-dialog.c:1218
 msgid "End"
 msgstr "끝"
 
-#: ../src/brasero-split-dialog.c:1235
+#: ../src/brasero-split-dialog.c:1241
 msgid "Mer_ge"
 msgstr "합치기(_G)"
 
-#: ../src/brasero-split-dialog.c:1246
+#: ../src/brasero-split-dialog.c:1252
 msgid "Merge a selected slice with the next selected one"
 msgstr "선택한 조각을 다음에 선택한 조각과 합칩니다"
 
-#: ../src/brasero-split-dialog.c:1260
+#: ../src/brasero-split-dialog.c:1266
 msgid "Remove the selected slices"
 msgstr "선택한 조각을 지웁니다"
 
-#: ../src/brasero-split-dialog.c:1274
+#: ../src/brasero-split-dialog.c:1280
 msgid "Clear the slices preview"
 msgstr "조각 미리 보기를 지웁니다"
 
-#: ../src/brasero-split-dialog.c:1284
+#: ../src/brasero-split-dialog.c:1290
 msgid "_List of slices that are to be created:"
 msgstr "만들 조각 목록(_L):"
 
-#: ../src/brasero-split-dialog.c:1292
+#: ../src/brasero-split-dialog.c:1298
 msgid "Slices Preview"
 msgstr "조각 미리 보기"
 
@@ -4893,11 +4904,11 @@ msgstr "세션 관리 옵션:"
 msgid "Show session management options"
 msgstr "세션 관리 옵션을 표시합니다"
 
-#: ../src/main.c:85
+#: ../src/main.c:86
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] …"
 
-#: ../src/main.c:97
+#: ../src/main.c:99
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "옵션을 모두 보려면 \"%s --help\" 명령어를 실행하십시오\n"
