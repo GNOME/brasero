@@ -560,7 +560,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 
 AM_GLIB_GNU_GETTEXT
 
-IT_PROG_INTLTOOL([0.35.0])
+IT_PROG_INTLTOOL([0.50])
 
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Location of package locale files])
