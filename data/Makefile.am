@@ -9,13 +9,20 @@ gsettings_SCHEMAS = org.gnome.brasero.gschema.xml
 desktopdir=$(datadir)/applications
 desktop_in_files =	brasero.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-
 @INTLTOOL_DESKTOP_RULE@
 
-CLEANFILES =		$(desktop_DATA)
+appdatadir = $(datadir)/appdata
+appdata_in_files = brasero.appdata.xml.in
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+@INTLTOOL_XML_RULE@
+
+CLEANFILES =		$(appdata_DATA)	\
+			$(desktop_DATA)
 
 
-EXTRA_DIST = 		$(desktop_in_files)	\
+
+EXTRA_DIST = 		$(appdata_in_files)	\
+			$(desktop_in_files)	\
 			$(gsettings_SCHEMAS)	\
 			$(convert_DATA)
 
