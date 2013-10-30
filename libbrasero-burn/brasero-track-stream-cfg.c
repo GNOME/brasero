@@ -299,11 +299,11 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 		brasero_track_tag_add_string (BRASERO_TRACK (obj),
 					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
 					      g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER));
-	if (g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC)
-	&& !brasero_track_tag_lookup_int (BRASERO_TRACK (obj), BRASERO_TRACK_STREAM_ISRC_TAG))
-		brasero_track_tag_add_int (BRASERO_TRACK (obj),
-					   BRASERO_TRACK_STREAM_ISRC_TAG,
-					   g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC));
+	if (g_file_info_get_attribute_string (info, BRASERO_IO_ISRC)
+	&& !brasero_track_tag_lookup_string (BRASERO_TRACK (obj), BRASERO_TRACK_STREAM_ISRC_TAG))
+		brasero_track_tag_add_string (BRASERO_TRACK (obj),
+					      BRASERO_TRACK_STREAM_ISRC_TAG,
+					      g_file_info_get_attribute_string (info, BRASERO_IO_ISRC));
 
 	/* Start monitoring it */
 	file = g_file_new_for_uri (uri);

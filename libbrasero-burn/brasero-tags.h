@@ -56,6 +56,7 @@ G_BEGIN_DECLS
 #define BRASERO_TRACK_STREAM_COMPOSER_TAG		"track::stream::info::composer"
 #define BRASERO_TRACK_STREAM_ARTIST_TAG			"track::stream::info::artist"
 #define BRASERO_TRACK_STREAM_ALBUM_TAG			"track::stream::info::album"
+#define BRASERO_TRACK_STREAM_ISRC_TAG			"track::stream::info::isrc"
 #define BRASERO_TRACK_STREAM_THUMBNAIL_TAG		"track::stream::snapshot"
 #define BRASERO_TRACK_STREAM_MIME_TAG			"track::stream::mime"
 
@@ -63,7 +64,6 @@ G_BEGIN_DECLS
  * Int
  */
 
-#define BRASERO_TRACK_STREAM_ISRC_TAG			"track::stream::info::isrc"
 
 /**
  * This tag (for sessions) is used to set an estimated size, used to determine

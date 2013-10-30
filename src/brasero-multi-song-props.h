@@ -70,7 +70,7 @@ void
 brasero_multi_song_props_get_properties (BraseroMultiSongProps *props,
 					 gchar **artist,
 					 gchar **composer,
-					 gint *isrc,
+					 gchar **isrc,
 					 gint64 *gap);
 
 G_END_DECLS

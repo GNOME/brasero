@@ -1396,13 +1396,13 @@ foreach_tag (const GstTagList *list,
 		}
 	}
 	else if (!strcmp (tag, GST_TAG_ISRC)) {
-		if (!brasero_track_tag_lookup_int (track, BRASERO_TRACK_STREAM_ISRC_TAG)) {
+		if (!brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ISRC_TAG)) {
 			gchar *isrc = NULL;
 
 			gst_tag_list_get_string (list, tag, &isrc);
-			brasero_track_tag_add_int (track,
-						   BRASERO_TRACK_STREAM_ISRC_TAG,
-						   (int) g_ascii_strtoull (isrc, NULL, 10));
+			brasero_track_tag_add_string (track,
+						      BRASERO_TRACK_STREAM_ISRC_TAG,
+						      isrc);
 		}
 	}
 	else if (!strcmp (tag, GST_TAG_PERFORMER)) {

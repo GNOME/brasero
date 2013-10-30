@@ -424,7 +424,6 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 			    GError **error)
 {
 	gint fd;
-	int isrc;
         int errsv;
 	gint size;
 	gchar *path;
@@ -503,9 +502,9 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 		goto error;
 
 	/* ISRC */
-	isrc = brasero_track_tag_lookup_int (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG);
-	if (isrc > 0)
-		string = g_strdup_printf ("ISRC=\t%i\n", isrc);
+	info = brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG);
+	if (info)
+		string = g_strdup_printf ("ISRC=\t%s\n", info);
 	else
 		string = g_strdup ("ISRC=\t\n");
 	size = strlen (string);

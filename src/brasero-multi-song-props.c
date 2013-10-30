@@ -77,7 +77,7 @@ void
 brasero_multi_song_props_get_properties (BraseroMultiSongProps *self,
 					 gchar **artist,
 					 gchar **composer,
-					 gint *isrc,
+					 gchar **isrc,
 					 gint64 *gap)
 {
 	const gchar *text;
@@ -103,9 +103,9 @@ brasero_multi_song_props_get_properties (BraseroMultiSongProps *self,
 	if (isrc) {
 		text = gtk_entry_get_text (GTK_ENTRY (priv->isrc));
 		if (text && strcmp (text, _("<Keep current values>")))
-			*isrc = (gint) g_strtod (text, NULL);
+			*isrc = g_strdup (text);
 		else
-			*isrc = -1;
+			*isrc = NULL;
 	}
 
 	if (gap)

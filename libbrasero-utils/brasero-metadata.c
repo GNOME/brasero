@@ -186,6 +186,9 @@ brasero_metadata_info_clear (BraseroMetadataInfo *info)
 	if (info->musicbrainz_id)
 		g_free (info->musicbrainz_id);
 
+	if (info->isrc)
+		g_free (info->isrc);
+
 	if (info->silences) {
 		g_slist_foreach (info->silences, (GFunc) g_free, NULL);
 		g_slist_free (info->silences);
@@ -216,7 +219,6 @@ brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 	dest->has_dts = src->has_dts;
 	dest->rate = src->rate;
 	dest->channels = src->channels;
-	dest->isrc = src->isrc;
 	dest->len = src->len;
 	dest->is_seekable = src->is_seekable;
 	dest->has_audio = src->has_audio;
@@ -242,6 +244,9 @@ brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 
 	if (src->musicbrainz_id)
 		dest->musicbrainz_id = g_strdup (src->musicbrainz_id);
+
+	if (src->isrc)
+		dest->isrc = g_strdup (src->isrc);
 
 	if (src->snapshot) {
 		dest->snapshot = src->snapshot;
@@ -943,11 +948,10 @@ foreach_tag (const GstTagList *list,
 		gst_tag_list_get_string (list, tag, &(self->composer));
 	}
 */	else if (!strcmp (tag, GST_TAG_ISRC)) {
-		gchar *isrc = NULL;
-		gst_tag_list_get_string (list, tag, &isrc);
+		if (priv->info->isrc)
+			g_free (priv->info->isrc);
 
-		if (isrc)
-			priv->info->isrc = (int) g_ascii_strtoull (isrc, NULL, 10);
+		gst_tag_list_get_string (list, tag, &(priv->info->isrc));
 	}
 	else if (!strcmp (tag, GST_TAG_MUSICBRAINZ_TRACKID)) {
 		gst_tag_list_get_string (list, tag, &(priv->info->musicbrainz_id));

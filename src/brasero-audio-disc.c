@@ -1477,7 +1477,6 @@ static void
 brasero_audio_disc_edit_multi_song_properties (BraseroAudioDisc *disc,
 					       GList *list)
 {
-	gint isrc;
 	gint64 gap;
 	GList *copy;
 	GList *item;
@@ -1487,6 +1486,7 @@ brasero_audio_disc_edit_multi_song_properties (BraseroAudioDisc *disc,
 	gchar *artist = NULL;
 	GtkResponseType result;
 	gchar *composer = NULL;
+	gchar *isrc = NULL;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
@@ -1550,10 +1550,10 @@ brasero_audio_disc_edit_multi_song_properties (BraseroAudioDisc *disc,
                                                       BRASERO_TRACK_STREAM_COMPOSER_TAG,
                                                       composer);
 
-		if (isrc > 0)
-                        brasero_track_tag_add_int (BRASERO_TRACK (track),
-                                                   BRASERO_TRACK_STREAM_ISRC_TAG,
-                                                   isrc);
+		if (isrc)
+                        brasero_track_tag_add_string (BRASERO_TRACK (track),
+                                                      BRASERO_TRACK_STREAM_ISRC_TAG,
+                                                      isrc);
 
                 if (gap > -1)
                         brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
@@ -1564,6 +1564,7 @@ brasero_audio_disc_edit_multi_song_properties (BraseroAudioDisc *disc,
 	g_list_free (copy);
 	g_free (artist);
 	g_free (composer);
+	g_free (isrc);
 
 	gtk_widget_destroy (props);
 }
@@ -1573,7 +1574,6 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 						GtkTreePath *treepath)
 {
 	gint64 gap;
-	gint isrc;
 	gint64 end;
 	gint64 start;
 	guint track_num;
@@ -1586,6 +1586,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 	gchar *title;
 	gchar *artist;
 	gchar *composer;
+	gchar *isrc;
 	GtkTreeIter iter;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
@@ -1607,7 +1608,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 					   brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ARTIST_TAG),
 					   brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_TITLE_TAG),
 					   brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_COMPOSER_TAG),
-					   brasero_track_tag_lookup_int (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG),
+					   brasero_track_tag_lookup_string (BRASERO_TRACK (track), BRASERO_TRACK_STREAM_ISRC_TAG),
 					   length,
 					   brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
 					   brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)),
@@ -1657,10 +1658,10 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
 					      composer);
 
-	if (isrc > 0)
-		brasero_track_tag_add_int (BRASERO_TRACK (track),
-					   BRASERO_TRACK_STREAM_ISRC_TAG,
-					   isrc);
+	if (isrc)
+		brasero_track_tag_add_string (BRASERO_TRACK (track),
+					      BRASERO_TRACK_STREAM_ISRC_TAG,
+					      isrc);
 
 	if (end - start + BRASERO_SECTORS_TO_DURATION (gap) < BRASERO_MIN_STREAM_LENGTH)
 		brasero_audio_disc_short_track_dialog (disc);
@@ -1668,6 +1669,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 	g_free (title);
 	g_free (artist);
 	g_free (composer);
+	g_free (isrc);
 	gtk_widget_destroy (props);
 }
 

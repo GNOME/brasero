@@ -623,7 +623,6 @@ static void
 brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
 					      GList *list)
 {
-	gint isrc;
 	GList *item;
 	GList *copy;
 	GtkWidget *props;
@@ -631,6 +630,7 @@ brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
 	GtkTreeModel *model;
 	gchar *artist = NULL;
 	gchar *composer = NULL;
+	gchar *isrc = NULL;
 	GtkResponseType result;
 	BraseroVideoDiscPrivate *priv;
 
@@ -688,14 +688,15 @@ brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
 					      BRASERO_TRACK_STREAM_COMPOSER_TAG,
 					      composer);
 
-		brasero_track_tag_add_int (track,
-					   BRASERO_TRACK_STREAM_ISRC_TAG,
-					   isrc);
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_ISRC_TAG,
+					      isrc);
 	}
 
 	g_list_free (copy);
 	g_free (artist);
 	g_free (composer);
+	g_free (isrc);
 end:
 
 	gtk_widget_destroy (props);
@@ -705,12 +706,12 @@ static void
 brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 					      BraseroTrack *track)
 {
-	gint isrc;
 	gint64 end;
 	gint64 start;
 	gchar *title;
 	gchar *artist;
 	gchar *composer;
+	gchar *isrc;
 	GtkWidget *props;
 	guint64 length = 0;
 	GtkWidget *toplevel;
@@ -726,7 +727,7 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ARTIST_TAG),
 					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_TITLE_TAG),
 					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_COMPOSER_TAG),
-					   brasero_track_tag_lookup_int (track, BRASERO_TRACK_STREAM_ISRC_TAG),
+					   brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ISRC_TAG),
 					   length,
 					   brasero_track_stream_get_start (BRASERO_TRACK_STREAM (track)),
 					   brasero_track_stream_get_end (BRASERO_TRACK_STREAM (track)),
@@ -774,10 +775,12 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 		g_free (composer);
 	}
 
-	if (isrc)
-		brasero_track_tag_add_int (track,
-					   BRASERO_TRACK_STREAM_ISRC_TAG,
-					   isrc);
+	if (isrc) {
+		brasero_track_tag_add_string (track,
+					      BRASERO_TRACK_STREAM_ISRC_TAG,
+					      isrc);
+		g_free (isrc);
+	}
 
 	brasero_track_stream_set_boundaries (BRASERO_TRACK_STREAM (track),
 					     start,
