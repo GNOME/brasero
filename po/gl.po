@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero-master-po-gl-6740\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-27 02:59+0200\n"
-"PO-Revision-Date: 2013-08-27 03:00+0200\n"
+"POT-Creation-Date: 2013-11-01 13:50+0100\n"
+"PO-Revision-Date: 2013-11-01 13:53+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -25,6 +25,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.7.1\n"
+
+#: ../data/brasero.appdata.xml.in.h:1
+msgid ""
+"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is "
+"designed to be as simple as possible and has some unique features to enable "
+"users to create their discs easily and quickly."
+msgstr ""
+"Brasero é un aplicativo de gravación de CD/DVD para o escritorio GNOME. Está "
+"deseñado para ser tan simple como sexa posíbel e ten algunhas "
+"características únicas que lle permiten aos usuarios crear os seus propios "
+"discos de forma doada e rápida."
+
+#: ../data/brasero.appdata.xml.in.h:2
+msgid ""
+"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports "
+"CD-TEXT, multisession and joliet extensions. You can simply drag and drop "
+"files from other local applications or from remote shared drives to easily "
+"burn them to a disc."
+msgstr ""
+"Brasero pode crear, copiar e gravar CDs ou DVDs de datos ou son. Admite "
+"perfectamente as extensións de CD-TEXT, multisesión e joliet. Pode arrastrar "
+"e soltar ficheiros desde outros aplicativos locais ou desde unidades "
+"compartidas remotas para gravalos nun disco."
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -66,11 +89,11 @@ msgstr "Crear un proxecto de vídeo"
 msgid "Brasero project file"
 msgstr "Ficheiro de proxecto do Brasero"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+#: ../data/org.gnome.brasero.gschema.xml.h:1
 msgid "Should Nautilus extension output debug statements"
 msgstr "A extensión de Nautilus debería escribir mensaxes de depuración"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
+#: ../data/org.gnome.brasero.gschema.xml.h:2
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
@@ -78,23 +101,23 @@ msgstr ""
 "A extensión de Nautilus debería escribir mensaxes de depuración. O valor "
 "debe estar establecido a verdadeiro se o debe facer."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+#: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
 msgstr "O tipo de suma de comprobación usada para as imaxes"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+#: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
 msgstr "Estabeleza a 0 para MD5, 1 para SHA1 e 2 para SHA256"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+#: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
 msgstr "O tipo de suma de comprobación usada para os ficheiros"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+#: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
 msgstr "Cartafol a usar para os ficheiros temporais"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+#: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -104,22 +127,22 @@ msgstr ""
 "temporais. Se este valor está baleiro, usarase o cartafol predeterminado "
 "estabelecido por glib."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+#: ../data/org.gnome.brasero.gschema.xml.h:8
 msgid "Favourite burn engine"
 msgstr "Motor de gravación favorito"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+#: ../data/org.gnome.brasero.gschema.xml.h:9
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
 msgstr ""
 "Contén o nome do motor de gravación favorito instalado. Usarase se é posíbel."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+#: ../data/org.gnome.brasero.gschema.xml.h:10
 msgid "White list of additional plugins to use"
 msgstr "Lista branca de engadidos adicionais para empregar"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+#: ../data/org.gnome.brasero.gschema.xml.h:11
 msgid ""
 "Contains the list of additional plugins Brasero will use to burn discs. If "
 "set to NULL, Brasero will load them all."
@@ -127,11 +150,11 @@ msgstr ""
 "Contén a lista de engadidos adicionais que o Brasero usará para gravar os "
 "discos. Se se define como NULL, o Brasero cargaraos todos."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+#: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "Activar o parámetro \"-immed\" co cderecord"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+#: ../data/org.gnome.brasero.gschema.xml.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -140,12 +163,12 @@ msgstr ""
 "precaución (se o define como true) porque se trata só dun arranxo temporal "
 "para algunhas unidades ou configuracións."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+#: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
 "Indica se hai que usar o parámetro \"-use-the-force-luke=dao\" co growisofs"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+#: ../data/org.gnome.brasero.gschema.xml.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -154,20 +177,20 @@ msgstr ""
 "Se o establece a falso Brasero non o usará. Pode servir como un arranxo "
 "temporal para algunhas unidades ou configuracións."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+#: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
 msgstr "Úsase conxuntamente co parámetro \"-immed\" co CDRECORD"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
 msgstr "Úsase xuntamente co parámetro \"-immed\" co CDRECORD."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr ""
 "Indica se hai que usar o parámetro \"--driver generic-mmc-raw\" co CDRDAO"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+#: ../data/org.gnome.brasero.gschema.xml.h:19
 msgid ""
 "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
 "True, brasero will use it; it may be a workaround for some drives/setups."
@@ -176,11 +199,11 @@ msgstr ""
 "Se se estabelece a verdadeiro, Brasero usarao. Isto pode ser un arranxo "
 "temporal para algunhas unidades ou configuracións."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr "O último cartafol examinado ao buscar imaxes para gravar"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+#: ../data/org.gnome.brasero.gschema.xml.h:21
 msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
@@ -188,21 +211,21 @@ msgstr ""
 "Contén a ruta absoluta ao cartafol que se examinou por última vez para "
 "buscar imaxes para gravar"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+#: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
 msgstr "Activar a previsualización de ficheiros"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#: ../data/org.gnome.brasero.gschema.xml.h:23
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
 "Indica se se ten que mostrar a previsualización de ficheiro. Defínao como "
 "verdadeiro para usala."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+#: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
 msgstr "Debería filtrar o Brasero os ficheiros ocultos"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+#: ../data/org.gnome.brasero.gschema.xml.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
@@ -210,11 +233,11 @@ msgstr ""
 "Indique se o Brasero debería filtrar os ficheiros ocultos. Se se estabelece "
 "como verdadeiro, o Brasero filtrará os ficheiros ocultos."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+#: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
 msgstr "Substituír as ligazóns simbólicas polos seus destinos"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+#: ../data/org.gnome.brasero.gschema.xml.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -222,11 +245,11 @@ msgstr ""
 "Debería o Brasero substituír as ligazóns simbólicas polos seus ficheiros "
 "destino? Se o define como true, o Brasero substituirá as ligazóns simbólicas."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
 msgstr "Debería filtrar o Brasero as ligazóns simbólicas rotas"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+#: ../data/org.gnome.brasero.gschema.xml.h:29
 msgid ""
 "Should brasero filter broken symbolic links. Set to true, brasero will "
 "filter broken symbolic links."
@@ -234,11 +257,11 @@ msgstr ""
 "Indique se o Brasero debería filtrar as ligazóns simbólicas rotas. Se se "
 "estabelece como verdadeiro, o Brasero filtrará as ligazóns simbólicas rotas."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+#: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
 msgstr "O valor de prioridade do engadido"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+#: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -250,11 +273,11 @@ msgstr ""
 "prioridade nativa do engadido. Un valor positivo eleva a prioridade nativa "
 "do engadido. Un valor negativo desactiva o engadido."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+#: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
 msgstr "Bandeiras de gravación a usar"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
@@ -262,11 +285,11 @@ msgstr ""
 "Este valor representa as bandeiras de gravación que foron usadas en dito "
 "contexto a última vez."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
 msgstr "A velocidade a usar"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+#: ../data/org.gnome.brasero.gschema.xml.h:35
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
@@ -3337,7 +3360,7 @@ msgstr "Mostrar a axuda"
 msgid "About"
 msgstr "Sobre"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2065
+#: ../src/brasero-app.c:421 ../src/brasero-app.c:2070
 msgid "Disc Burner"
 msgstr "Gravador de discos"
 
