@@ -236,6 +236,7 @@ brasero_src_selection_class_init (BraseroSrcSelectionClass *klass)
 	object_class->finalize = brasero_src_selection_finalize;
 	object_class->set_property = brasero_src_selection_set_property;
 	object_class->get_property = brasero_src_selection_get_property;
+	object_class->constructed = brasero_src_selection_constructed;
 
 	medium_selection_class->medium_changed = brasero_src_selection_medium_changed;
 
