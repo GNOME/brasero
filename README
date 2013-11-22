@@ -47,7 +47,7 @@ Notes on plugins for advanced users
 
 From the UI you can only configure (choose to use or not to use mostly) non essential plugins; that is all those that don't burn, blank, or image.
 If you really want to choose which of the latters you want brasero to use, one simple solution is to remove the offending plugin from brasero plugin directory ("install_path"/lib/brasero/plugins/) if you're sure that you won't want to use it.
-You can also set priorities between plugins. They all have a hardcoded priority that can be overriden through Gconf. Each plugin has a key in "/apps/brasero/config/priority".
+You can also set priorities between plugins. They all have a hardcoded priority that can be overriden through GSettings.
 If you set this key to -1 this turns off the plugin.
 If you set this key to 0 this leaves the internal hardcoded priority - the default that basically lets brasero decide what's best.
 If you set this key to more than 0 then that priority will become the one of the plugin - the higher, the more it has chance to be picked up.
@@ -64,7 +64,7 @@ As examples, from my experience:
 Requirements:
 - gtk+ >= 3.x
 - gnome 3.x (gio)
-- gstreamer (>=0.10.0)
+- gstreamer (>=1.0.0)
 - libxml2
 - cdrtools or cdrkit
 - growisofs
