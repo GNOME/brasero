@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([brasero],[3.8.0])
+AC_INIT([brasero],[3.10.0])
 AC_CONFIG_SRCDIR(src/main.c)
 
 BRASERO_MAJOR_VERSION=3
-BRASERO_MINOR_VERSION=8
+BRASERO_MINOR_VERSION=10
 BRASERO_SUB=0
 BRASERO_VERSION=$BRASERO_MAJOR_VERSION.$BRASERO_MINOR_VERSION.$BRASERO_SUB
 
@@ -21,7 +21,7 @@ dnl   change to C+1:0:0
 dnl - If the interface is the same as the previous version, change to C:R+1:A
 
 LT_CURRENT=3
-LT_REVISION=3
+LT_REVISION=4
 LT_AGE=2
 
 AC_SUBST(LT_CURRENT)
