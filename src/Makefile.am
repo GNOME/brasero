@@ -106,14 +106,6 @@ brasero_SOURCES = \
 	brasero-project-name.h           \
 	brasero-project-parse.c           \
 	brasero-project-parse.h           \
-	brasero-xsession.c           \
-	brasero-xsession.h		\
-	eggdesktopfile.c        \
-	eggdesktopfile.h        \
-	eggsmclient.c        \
-	eggsmclient.h        \
-	eggsmclient-private.h        \
-	eggsmclient-xsmp.c        \
 	brasero-setting.h        \
 	brasero-setting.c        \
 	brasero-search-engine.h        \

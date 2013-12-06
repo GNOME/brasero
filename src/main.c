@@ -89,7 +89,6 @@ main (int argc, char **argv)
 					   GETTEXT_PACKAGE);
 	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
 
-	g_option_context_add_group (context, egg_sm_client_get_option_group ());
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 	g_option_context_add_group (context, brasero_media_get_option_group ());
 	g_option_context_add_group (context, brasero_burn_library_get_option_group ());
