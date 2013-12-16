@@ -40,8 +40,6 @@
 #include <gst/gst.h>
 
 
-#include "eggsmclient.h"
-
 #include "brasero-burn-lib.h"
 #include "brasero-misc.h"
 
