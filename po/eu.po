@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2008, 2009, 2010, 2011, 2013.
 #
+# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2008, 2009, 2010, 2011, 2013, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-18 17:44+0200\n"
-"PO-Revision-Date: 2013-09-18 17:46+0200\n"
+"POT-Creation-Date: 2014-03-22 15:15+0100\n"
+"PO-Revision-Date: 2014-03-22 15:50+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <librezale@librezale.org>\n"
 "Language: eu\n"
@@ -18,6 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 1.4\n"
+
+#: ../data/brasero.appdata.xml.in.h:1
+msgid ""
+"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is "
+"designed to be as simple as possible and has some unique features to enable "
+"users to create their discs easily and quickly."
+msgstr ""
+"Brasero CDak/DVDak grabatzeko GNOME mahaigaineko aplikazio bat da. "
+"Ahalik eta xumeena izateko diseinatua izan da, eta eginbide paregabe "
+"batzuk ditu erabiltzaileek beraien diskoak modu errazean eta azkar sortzeko."
+
+#: ../data/brasero.appdata.xml.in.h:2
+msgid ""
+"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports "
+"CD-TEXT, multisession and joliet extensions. You can simply drag and drop "
+"files from other local applications or from remote shared drives to easily "
+"burn them to a disc."
+msgstr ""
+"Braserok datuen eta audio formatuko CDak/DVDak sor ditzake. "
+"CD-TEXT, saio-anitzak eta Joliet luzapenak osotasunez onartzen "
+"ditu. Arrastatu eta jaregin fitxategiak lokaleko beste aplikazio "
+"batzuetatik, edo urruneko partekatutako unitateetatik haiek "
+"diskoan grabatzeko."
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -59,12 +82,12 @@ msgstr "Sortu bideoaren proiektua"
 msgid "Brasero project file"
 msgstr "Brasero proiektu-fitxategia"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+#: ../data/org.gnome.brasero.gschema.xml.h:1
 msgid "Should Nautilus extension output debug statements"
 msgstr ""
 "Nautilus-en hedapenak arazketako instrukzioak atera behar dituen edo ez"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
+#: ../data/org.gnome.brasero.gschema.xml.h:2
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
@@ -72,23 +95,23 @@ msgstr ""
 "Nautilus-en hedapenak arazketako instrukzioak atera behar dituen edo ez. "
 "True (egia) gisa ezarri arazketako instrukzioak ateratzeko."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+#: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
 msgstr "Kontrol-batura mota irudietan erabiltzeko"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+#: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
 msgstr "Ezarri 0 MD5entzako, 1 SHA1entzako, eta 2 SHA256rentzako"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+#: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
 msgstr "Kontrol-batura mota fitxategietan erabiltzeko"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+#: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
 msgstr "Direktorioa aldi baterako fitxategientzako erabiltzeko"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+#: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -97,11 +120,11 @@ msgstr ""
 "Braserok aldi baterako fitxategiak gordeko dituen direktorioaren bide-izena "
 "dauka. Balioa hutsik egonez gero, glib-en direktorio lehenetsia erabiliko da."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+#: ../data/org.gnome.brasero.gschema.xml.h:8
 msgid "Favourite burn engine"
 msgstr "Grabatzeko motor gogokoena"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+#: ../data/org.gnome.brasero.gschema.xml.h:9
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
@@ -109,11 +132,11 @@ msgstr ""
 "Instalatutako grabatzeko aplikazio (motor) gogokoenaren izena dauka. Hori "
 "erabiliko da ahal den neurrian."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+#: ../data/org.gnome.brasero.gschema.xml.h:10
 msgid "White list of additional plugins to use"
 msgstr "Erabiltzeko plugin gehigarrien zerrenda zuria"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+#: ../data/org.gnome.brasero.gschema.xml.h:11
 msgid ""
 "Contains the list of additional plugins Brasero will use to burn discs. If "
 "set to NULL, Brasero will load them all."
@@ -121,11 +144,11 @@ msgstr ""
 "Diskoak grabatzeko Brasero-k erabiliko dituen pluginen zerrenda dauka. NULL "
 "(HUTSA) ezartzen bada, denak kargatuko ditu Brasero-k."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+#: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "Gaitu \"-immed\" bandera cdrecord-ekin"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+#: ../data/org.gnome.brasero.gschema.xml.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -134,12 +157,12 @@ msgstr ""
 "Kontuz erabili behar da (true ezarriz), izan ere, zenbait grabagailuren eta "
 "konfigurazio jakinen arazoak konpontzeko itzulinguru bat besterik ez da."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+#: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
 "\"-use-the-force-luke=dao\" bandera growisofs-rekin erabiliko den ala ez"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+#: ../data/org.gnome.brasero.gschema.xml.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -149,19 +172,19 @@ msgstr ""
 "zenbait grabagailuren eta konfigurazio jakinen arazoak konpontzeko "
 "itzulinguru bat besterik ez da."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+#: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
 msgstr "\"-immed\" bandera eta cdrecord-ekin batera erabiltzen da."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
 msgstr "\"-immed\" bandera eta cdrecord-ekin batera erabiltzen da."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr "\"--driver generic-mmc-raw\" bandera cdrdao-rekin erabiliko den ala ez"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+#: ../data/org.gnome.brasero.gschema.xml.h:19
 msgid ""
 "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
 "True, brasero will use it; it may be a workaround for some drives/setups."
@@ -171,11 +194,11 @@ msgstr ""
 "zenbait grabagailuren eta konfigurazio jakinen arazoak konpontzeko "
 "itzulinguru bat besterik ez da."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr "Arakatutako azken karpeta grabatzeko irudiak bilatzean"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+#: ../data/org.gnome.brasero.gschema.xml.h:21
 msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
@@ -183,21 +206,21 @@ msgstr ""
 "Irudiak grabatzeko azken aldiz arakatu zen direktorioaren bide-izen "
 "absolutua dauka"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+#: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
 msgstr "Gaitu fitxategien aurrebista"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#: ../data/org.gnome.brasero.gschema.xml.h:23
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
 "Fitxategiaren aurrebista bistaratu behar den ala ez adierazten du. Jarri "
 "'egiazkoa' aurrebista erabiltzeko."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+#: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
 msgstr "Ezkutuko fitxategiak iragazi behar ditu Brasero-k"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+#: ../data/org.gnome.brasero.gschema.xml.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
@@ -205,11 +228,11 @@ msgstr ""
 "Brasero-k ezkutuko fitxategiak iragazi behar dituen adierazten du. "
 "'Egiazkoa' jarrita, ezkutuko fitxategiak iragazi egingo ditu Brasero-k."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+#: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
 msgstr "Ordeztu esteka sinbolikoak haien helburuekin"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+#: ../data/org.gnome.brasero.gschema.xml.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -218,11 +241,11 @@ msgstr ""
 "dituen proiektuan edo ez. Ezarri TRUE (egia) bezala esteka sinbolikoak "
 "ordezteko."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
 msgstr "Iragazi behar al ditu Brasero-k hautsitako esteka sinbolikoak"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+#: ../data/org.gnome.brasero.gschema.xml.h:29
 msgid ""
 "Should brasero filter broken symbolic links. Set to true, brasero will "
 "filter broken symbolic links."
@@ -230,11 +253,11 @@ msgstr ""
 "Brasero-k esteka sinboliko hautsiak iragazi behar dituen adierazten du. TRUE "
 "(egia) jarrita, esteka sinboliko hautsiak iragazi egingo ditu Brasero-k."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+#: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
 msgstr "Pluginaren lehentasunaren balioa"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+#: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -247,11 +270,11 @@ msgstr ""
 "positiboak pluginaren jatorrizko lehentasuna gainidazten du. Balio negatibo "
 "batek berriz, plugina desgaitzen du."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+#: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
 msgstr "Grabazioko banderak erabiltzeko"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
@@ -259,11 +282,11 @@ msgstr ""
 "Halako testuinguruan azkenengoz erabilitako grabazioko banderak adierazten "
 "ditu balio honek."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
 msgstr "Erabiliko den abiadura"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+#: ../data/org.gnome.brasero.gschema.xml.h:35
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
@@ -452,12 +475,12 @@ msgstr "Ezin da formaturik aurkitu aldi baterako irudiarentzat"
 #: ../nautilus/nautilus-burn-extension.c:218
 #: ../plugins/cdrkit/burn-genisoimage.c:368
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
-#: ../plugins/cdrkit/burn-wodim.c:853 ../plugins/cdrtools/burn-cdrecord.c:836
-#: ../plugins/cdrtools/burn-cdrecord.c:851
+#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
+#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrtools/burn-cdrecord.c:850
 #: ../plugins/cdrtools/burn-mkisofs.c:368
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:784
+#: ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Barneko errorea gertatu da"
@@ -944,7 +967,7 @@ msgid "An unknown error occurred."
 msgstr "Errore ezezaguna gertatu da."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1743
-#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:620
 msgid "Error while burning."
 msgstr "Errorea gertatu da grabatzean."
 
@@ -1485,7 +1508,7 @@ msgid "Broken symbolic link"
 msgstr "Esteka sinboliko hautsia"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#: ../libbrasero-utils/brasero-io.c:1190 ../libbrasero-utils/brasero-io.c:2061
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Esteka sinboliko errekurtsiboa"
@@ -1806,12 +1829,12 @@ msgstr "Diskoa ez dago onartuta"
 msgid "The drive is empty"
 msgstr "Unitatea hutsik dago"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../libbrasero-burn/brasero-tool-dialog.c:554
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Hautatu diskoa"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:581
 msgid "Progress"
 msgstr "Aurrerapena"
 
@@ -2082,7 +2105,7 @@ msgstr "Ez da irteerako irudiaren bide-izenik zehaztu"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709
 #: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:790
 #, c-format
@@ -2438,7 +2461,7 @@ msgstr "E_zkutatu aldaketak"
 msgid "_Show changes"
 msgstr "_Erakutsi aldaketak"
 
-#: ../libbrasero-utils/brasero-io.c:1416
+#: ../libbrasero-utils/brasero-io.c:1418
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Fitxategia ez dirudi erreprodukzio-zerrenda denik"
@@ -2575,7 +2598,7 @@ msgstr "AURREKO AZALA"
 msgid "The image could not be loaded."
 msgstr "Ezin izan da irudia kargatu."
 
-#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "Gstreamer-ek ezin izan du \"%s\" kudeatu."
@@ -2583,13 +2606,13 @@ msgstr "Gstreamer-ek ezin izan du \"%s\" kudeatu."
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
-#: ../libbrasero-utils/brasero-metadata.c:1194
-#: ../libbrasero-utils/brasero-metadata.c:1207
-#: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1362
-#: ../libbrasero-utils/brasero-metadata.c:1734
-#: ../libbrasero-utils/brasero-metadata.c:1749
-#: ../libbrasero-utils/brasero-metadata.c:1758
+#: ../libbrasero-utils/brasero-metadata.c:1198
+#: ../libbrasero-utils/brasero-metadata.c:1211
+#: ../libbrasero-utils/brasero-metadata.c:1224
+#: ../libbrasero-utils/brasero-metadata.c:1366
+#: ../libbrasero-utils/brasero-metadata.c:1738
+#: ../libbrasero-utils/brasero-metadata.c:1753
+#: ../libbrasero-utils/brasero-metadata.c:1762
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
@@ -2878,15 +2901,15 @@ msgstr "cue orria idazten"
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "Diskoa birkargatu egin behar da grabatu aurretik"
 
-#: ../plugins/cdrkit/burn-wodim.c:1270
+#: ../plugins/cdrkit/burn-wodim.c:1269
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "Grabatu, hustu eta formatua ematen die CD eta DVDei"
 
-#: ../plugins/cdrkit/burn-wodim.c:1414
+#: ../plugins/cdrkit/burn-wodim.c:1413
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "Gaitu \"-immed\" bandera (ikus wodim eskuliburua)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1417
+#: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "Bufferraren gutxieneko erabilera-portzentajea (ikus wodim eskuliburua):"
@@ -2905,16 +2928,16 @@ msgstr "Audio diskoa kopiatzeko prestatzen"
 msgid "Copy tracks from an audio CD with all associated information"
 msgstr "Kopiatu pistak Audio CD batetik esleitutako informazio guztiarekin"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/cdrtools/burn-cdrecord.c:1203
 #: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "Grabatu, hustu eta formatua ematen die CD, DVD eta BDei"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1417
+#: ../plugins/cdrtools/burn-cdrecord.c:1416
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Gaitu \"-immed\" bandera (ikus cdrecord eskuliburua)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr "Bufferraren gutxieneko erabilera (%%) (ikus cdrecord eskuliburua):"
@@ -3259,92 +3282,92 @@ msgstr "Edozein bideo-fitxategi Bideo DVDentzako formatu egokira bihurtzen du"
 msgid "Creates disc images suitable for SVCDs"
 msgstr "Disko-irudi egokiak sortzen ditu SVCDentzako"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:123
 msgid "_Project"
 msgstr "_Proiektua"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:124
 msgid "_View"
 msgstr "_Ikuspegia"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:125
 msgid "_Edit"
 msgstr "_Editatu"
 
-#: ../src/brasero-app.c:127
+#: ../src/brasero-app.c:126
 msgid "_Tools"
 msgstr "_Tresnak"
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:128
 msgid "_Help"
 msgstr "La_guntza"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:130
 msgid "P_lugins"
 msgstr "_Pluginak"
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:131
 msgid "Choose plugins for Brasero"
 msgstr "Aukeratu Brasero-ren pluginak"
 
-#: ../src/brasero-app.c:134
+#: ../src/brasero-app.c:133
 msgid "E_ject"
 msgstr "_Egotzi"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:134
 msgid "Eject a disc"
 msgstr "Egotzi diskoa"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:136
 msgid "_Blank…"
 msgstr "_Hustu..."
 
-#: ../src/brasero-app.c:138
+#: ../src/brasero-app.c:137
 msgid "Blank a disc"
 msgstr "Hustu diskoa"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
 msgstr "_Egiaztatu osotasuna..."
 
-#: ../src/brasero-app.c:141
+#: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
 msgstr "Diskoko datuen osotasuna egiaztatzen du"
 
-#: ../src/brasero-app.c:144
+#: ../src/brasero-app.c:143
 msgid "Quit Brasero"
 msgstr "Irten Brasero-tik"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "_Contents"
 msgstr "_Edukia"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "Display help"
 msgstr "Bistaratu laguntza"
 
-#: ../src/brasero-app.c:149
+#: ../src/brasero-app.c:148
 msgid "About"
 msgstr "Honi buruz"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2070
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2069
 msgid "Disc Burner"
 msgstr "Disko grabatzailea"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
+#: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
 msgstr "Errorea gertatu da proiektua kargatzean"
 
-#: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
+#: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "Gehitu fitxategiak proiektuari."
 
-#: ../src/brasero-app.c:830 ../src/brasero-app.c:859 ../src/brasero-app.c:919
+#: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
 msgstr "Proiektua hutsik dago"
 
-#: ../src/brasero-app.c:1174
+#: ../src/brasero-app.c:1176
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -3355,7 +3378,7 @@ msgstr ""
 "Foundation-ek argitaratutako GNU Lizentzia Publiko Orokorraren 2. bertsioan, "
 "edo (nahiago baduzu) bertsio berriago batean, jasotako baldintzak betez gero."
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1181
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -3367,7 +3390,7 @@ msgstr ""
 "PARTIKULARRETARAKO ERABILTZEKO.  Argibide gehiago nahi izanez gero, ikus GNU "
 "Lizentzia Publiko Orokorra."
 
-#: ../src/brasero-app.c:1184
+#: ../src/brasero-app.c:1186
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -3377,11 +3400,11 @@ msgstr ""
 "batera; halakorik jaso ez baduzu, idatzi hona: Free Software Foundation, "
 "Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "GNOME-n CD/DVDak grabatzeko aplikazio erabilerraza"
 
-#: ../src/brasero-app.c:1213
+#: ../src/brasero-app.c:1215
 msgid "Brasero Homepage"
 msgstr "Brasero-ren webgunea"
 
@@ -3393,22 +3416,22 @@ msgstr "Brasero-ren webgunea"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1225
+#: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
 "Hizkuntza Politikarako Sailburuordetza hizpol@ej-gv.es\n"
 "Iñaki Larrañaga Murgoitio <dooteo@zundan.com>"
 
-#: ../src/brasero-app.c:1447
+#: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "'%s' proiektua ez da existitzen"
 
-#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
+#: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
 msgstr "Proiektu _berrienak"
 
-#: ../src/brasero-app.c:1732
+#: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
 msgstr "Proiektu ireki berriak bistaratzen ditu"
 
@@ -3472,7 +3495,7 @@ msgstr "Zatitu"
 msgid "Track"
 msgstr "Pista"
 
-#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1209
 msgid "Title"
 msgstr "Titulua"
 
@@ -3883,7 +3906,7 @@ msgstr "Izena aldatzeko modua"
 msgid "Files"
 msgstr "Fitxategiak"
 
-#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1227
 msgid "Size"
 msgstr "Tamaina"
 
@@ -4567,15 +4590,15 @@ msgstr "Bideo-diskoa (%s)"
 msgid "Error while loading the project."
 msgstr "Errorea gertatu da proiektua kargatzean."
 
-#: ../src/brasero-project-parse.c:454
+#: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
 msgstr "Ezin izan da proiektua ireki"
 
-#: ../src/brasero-project-parse.c:463
+#: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
 msgstr "Fitxategia hutsik dago"
 
-#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+#: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Badirudi ez dela baliozko Brasero proiektu bat"
 
@@ -4726,7 +4749,7 @@ msgstr "Kantaren amaiera:"
 msgid "Track length:"
 msgstr "Pistaren iraupena:"
 
-#: ../src/brasero-song-properties.c:372
+#: ../src/brasero-song-properties.c:365
 #, c-format
 msgid "Song information for track %02i"
 msgstr "%02i pistari buruzko informazioa"
@@ -4924,77 +4947,57 @@ msgstr "\"%s\" ez dauka mota egokirik bideo-proiektuentzako."
 msgid "Please only add files with video content"
 msgstr "Bideo-edukia duten fitxategiak soilik gehitu"
 
-#: ../src/eggdesktopfile.c:165
-#, c-format
-msgid "File is not a valid .desktop file"
-msgstr "Fitxategia ez da baliozko '.desktop' fitxategi bat"
-
-#: ../src/eggdesktopfile.c:188
-#, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "Mahaigaineko (.desktop) fitxategiaren '%s' bertsioa ezezaguna"
-
-#: ../src/eggdesktopfile.c:968
-#, c-format
-msgid "Starting %s"
-msgstr "%s hasieratzen"
-
-#: ../src/eggdesktopfile.c:1110
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "Aplikazioak ez ditu dokumenturik onartzen komando-lerroan"
-
-#: ../src/eggdesktopfile.c:1178
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "Abiarazteko aukera ezezaguna: %d"
-
-#: ../src/eggdesktopfile.c:1383
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr "Ezin zaio dokumentuaren URIrik eman mahaigaineko 'Type=Link' sarrerari"
-
-#: ../src/eggdesktopfile.c:1404
-#, c-format
-msgid "Not a launchable item"
-msgstr "Ez da elementu abiarazgarria"
-
-#: ../src/eggsmclient.c:226
-msgid "Disable connection to session manager"
-msgstr "Desgaitu konexioa saio-kudeatzailearekin"
-
-#: ../src/eggsmclient.c:229
-msgid "Specify file containing saved configuration"
-msgstr "Zehaztu gordetako konfigurazioa duen fitxategia"
-
-#: ../src/eggsmclient.c:229
-msgid "FILE"
-msgstr "FITXATEGIA"
-
-#: ../src/eggsmclient.c:232
-msgid "Specify session management ID"
-msgstr "Zehaztu saio-kudeatzailearen IDa"
-
-#: ../src/eggsmclient.c:232
-msgid "ID"
-msgstr "IDa"
-
-#: ../src/eggsmclient.c:253
-msgid "Session management options:"
-msgstr "Saio-kudeatzailearen aukerak:"
-
-#: ../src/eggsmclient.c:254
-msgid "Show session management options"
-msgstr "Erakutsi saio-kudeatzailearen aukerak"
-
-#: ../src/main.c:86
+#: ../src/main.c:84
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:99
+#: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Idatzi \"%s --help\" aukera erabilgarri guztiak ikusteko\n"
+
+#~ msgid "File is not a valid .desktop file"
+#~ msgstr "Fitxategia ez da baliozko '.desktop' fitxategi bat"
+
+#~ msgid "Unrecognized desktop file Version '%s'"
+#~ msgstr "Mahaigaineko (.desktop) fitxategiaren '%s' bertsioa ezezaguna"
+
+#~ msgid "Starting %s"
+#~ msgstr "%s hasieratzen"
+
+#~ msgid "Application does not accept documents on command line"
+#~ msgstr "Aplikazioak ez ditu dokumenturik onartzen komando-lerroan"
+
+#~ msgid "Unrecognized launch option: %d"
+#~ msgstr "Abiarazteko aukera ezezaguna: %d"
+
+#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+#~ msgstr ""
+#~ "Ezin zaio dokumentuaren URIrik eman mahaigaineko 'Type=Link' sarrerari"
+
+#~ msgid "Not a launchable item"
+#~ msgstr "Ez da elementu abiarazgarria"
+
+#~ msgid "Disable connection to session manager"
+#~ msgstr "Desgaitu konexioa saio-kudeatzailearekin"
+
+#~ msgid "Specify file containing saved configuration"
+#~ msgstr "Zehaztu gordetako konfigurazioa duen fitxategia"
+
+#~ msgid "FILE"
+#~ msgstr "FITXATEGIA"
+
+#~ msgid "Specify session management ID"
+#~ msgstr "Zehaztu saio-kudeatzailearen IDa"
+
+#~ msgid "ID"
+#~ msgstr "IDa"
+
+#~ msgid "Session management options:"
+#~ msgstr "Saio-kudeatzailearen aukerak:"
+
+#~ msgid "Show session management options"
+#~ msgstr "Erakutsi saio-kudeatzailearen aukerak"
 
 #~ msgid "Copying `%s` locally"
 #~ msgstr "'%s' lokalki kopiatzea"
