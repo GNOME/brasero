@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero-help\n"
-"POT-Creation-Date: 2013-08-18 14:12+0000\n"
-"PO-Revision-Date: 2013-09-04 18:36+0200\n"
+"POT-Creation-Date: 2014-04-02 03:05+0000\n"
+"PO-Revision-Date: 2014-04-02 15:34+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -29,74 +29,36 @@ msgstr ""
 "Štěpán Šimsa <simsa.st@gmail.com>, 2011\n"
 "Marek Černocký <marek@manet.cz>, 2013"
 
-#. This is a reference to an external file such as an image or video. When
-#. the file changes, the md5 hash will change to let you know you need to
-#. update your localized copy. The msgstr is not used at all. Set it to
-#. whatever you like once you have updated your copy of the file.
-#.
-#. This is a reference to an external file such as an image or video. When
-#. the file changes, the md5 hash will change to let you know you need to
-#. update your localized copy. The msgstr is not used at all. Set it to
-#. whatever you like once you have updated your copy of the file.
-#: C/index.page:15(media)
-#| msgctxt "_"
-#| msgid ""
-#| "external ref='figures/brasero-main-window.png' "
-#| "md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
-msgctxt "_"
-msgid ""
-"external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
-msgstr ""
-"external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
-
-#: C/index.page:7(credit/name) C/create-cover.page:9(credit/name)
-#: C/introduction.page:9(credit/name) C/prob-cd.page:11(credit/name)
-#: C/prob-dvd.page:11(credit/name) C/project-audio.page:9(credit/name)
-#: C/project-data.page:9(credit/name) C/project-disc-copy.page:9(credit/name)
-#: C/project-image-burn.page:17(credit/name)
-#: C/project-save.page:12(credit/name) C/project-video.page:12(credit/name)
-#: C/split-track.page:11(credit/name) C/tools-blank.page:9(credit/name)
-#: C/tools-check-integrity.page:13(credit/name)
-msgid "Ekaterina Gerasimova"
-msgstr "Ekaterina Gerasimova"
-
-#: C/index.page:11(license/p) C/create-cover.page:13(license/p)
-#: C/introduction.page:13(license/p) C/prob-cd.page:15(license/p)
-#: C/prob-dvd.page:15(license/p) C/project-audio.page:13(license/p)
-#: C/project-data.page:13(license/p) C/project-disc-copy.page:13(license/p)
-#: C/project-image-burn.page:21(license/p) C/project-save.page:16(license/p)
-#: C/project-video.page:16(license/p) C/split-track.page:15(license/p)
-#: C/tools-blank.page:13(license/p) C/tools-check-integrity.page:17(license/p)
-msgid "Creative Commons Share Alike 3.0"
-msgstr "Creative Commons Share Alike 3.0"
-
-#: C/index.page:15(page/title)
-msgid "<media type=\"image\" src=\"figures/logo32.png\"/> Brasero Help"
-msgstr ""
-"<media type=\"image\" src=\"figures/logo32.png\"/> Nápověda k aplikaci "
-"Brasero"
-
-#: C/index.page:18(section/title)
-msgid "Create a new project"
-msgstr "Vytvořit nový projekt"
-
-#: C/index.page:22(section/title)
-msgid "Troubleshooting"
-msgstr "Řešení problémů"
-
-#: C/index.page:26(section/title)
-msgid "Other tools"
-msgstr "Další nástroje"
-
-#: C/create-cover.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/create-cover.page:7
 msgid "Create an inlay for a jewel case."
 msgstr "Vytvořit štítky do obalu na CD."
 
-#: C/create-cover.page:17(page/title)
+#. (itstool) path: credit/name
+#: C/create-cover.page:9 C/introduction.page:9 C/prob-cd.page:11
+#: C/prob-dvd.page:11 C/project-audio.page:9 C/project-data.page:9
+#: C/project-disc-copy.page:9 C/project-image-burn.page:17
+#: C/project-save.page:12 C/project-video.page:12 C/split-track.page:11
+#: C/tools-blank.page:9 C/tools-check-integrity.page:13
+msgid "Ekaterina Gerasimova"
+msgstr "Ekaterina Gerasimova"
+
+#. (itstool) path: license/p
+#: C/create-cover.page:13 C/introduction.page:13 C/prob-cd.page:15
+#: C/prob-dvd.page:15 C/project-audio.page:13 C/project-data.page:13
+#: C/project-disc-copy.page:13 C/project-image-burn.page:21
+#: C/project-save.page:16 C/project-video.page:16 C/split-track.page:15
+#: C/tools-blank.page:13 C/tools-check-integrity.page:17
+msgid "Creative Commons Share Alike 3.0"
+msgstr "Creative Commons Share Alike 3.0"
+
+#. (itstool) path: page/title
+#: C/create-cover.page:17
 msgid "Create a cover"
 msgstr "Vytvořit obal"
 
-#: C/create-cover.page:19(page/p)
+#. (itstool) path: page/p
+#: C/create-cover.page:19
 msgid ""
 "You can use <app>Brasero</app> to create inlays for your jewel cases. Access "
 "the creator by clicking <guiseq><gui>Tools</gui> <gui>Cover Editor</gui></"
@@ -106,7 +68,8 @@ msgstr ""
 "obalů na CD. Otevřete editor obalů kliknutím na <guiseq><gui>Nástroje</"
 "gui><gui>Editor obalů</gui></guiseq>."
 
-#: C/create-cover.page:24(note/p)
+#. (itstool) path: note/p
+#: C/create-cover.page:24
 msgid ""
 "If you are creating an audio project and finish putting together the project "
 "before creating an inlay, then when you access the <gui>Cover Editor</gui> "
@@ -117,15 +80,18 @@ msgstr ""
 "do obalů, tak potom, když otevřete prostředí <gui>Editor obalů</gui> z okna "
 "hudebního projektu, stopy budou automaticky vypsány na zadním obalu."
 
-#: C/create-cover.page:31(note/p)
+#. (itstool) path: note/p
+#: C/create-cover.page:31
 msgid "If you close the <gui>Cover Editor</gui>, your changes will be lost."
 msgstr "Když zavřete <gui>Editor obalů</gui>, vaše změny budou ztraceny."
 
-#: C/create-cover.page:36(item/p)
+#. (itstool) path: item/p
+#: C/create-cover.page:36
 msgid "Open the <gui>Cover Editor</gui>."
 msgstr "Otevřete <gui>Editor obalu</gui>."
 
-#: C/create-cover.page:39(item/p)
+#. (itstool) path: item/p
+#: C/create-cover.page:39
 msgid ""
 "Choose the formatting you wish to use for the text and type the text, "
 "scrolling down to see the side and back inlay for the jewel case."
@@ -133,7 +99,8 @@ msgstr ""
 "Vyberte formátování pro text, které chcete použít, a napište text. "
 "Skrolováním dolů uvidíte postranní a zadní štítky do obalu na CD."
 
-#: C/create-cover.page:42(note/p)
+#. (itstool) path: note/p
+#: C/create-cover.page:42
 msgid ""
 "When you first see the <gui>Cover Editor</gui> dialog, you will not be able "
 "to click on any of the text formatting options. Click on the cover you want "
@@ -143,7 +110,8 @@ msgstr ""
 "žádný nástroj k formátování textu. Klikněte na obal, se kterým chcete "
 "pracovat, abyste tyto nástroje mohli používat."
 
-#: C/create-cover.page:48(item/p)
+#. (itstool) path: item/p
+#: C/create-cover.page:48
 msgid ""
 "Click the <gui>Background properties</gui> toolbar icon to add a background "
 "for the current cover, or right click on the cover you wish to edit and "
@@ -155,7 +123,8 @@ msgstr ""
 "chcete upravit, a zvolte <gui>Nastavit vlastnosti pozadí</gui>. Můžete si "
 "vybrat barevné pozadí nebo obrázek na pozadí."
 
-#: C/create-cover.page:53(note/p)
+#. (itstool) path: note/p
+#: C/create-cover.page:53
 msgid ""
 "If you select a centered background image, <app>Brasero</app> sometimes "
 "crashes when you click the <gui>Close</gui> button."
@@ -163,7 +132,8 @@ msgstr ""
 "Pokud vyberte centrovaný obrázek na pozadí, <app>Brasero</app> občas spadne, "
 "když kliknete na tlačítko <gui>Zavřít</gui>."
 
-#: C/create-cover.page:56(item/p)
+#. (itstool) path: item/p
+#: C/create-cover.page:56
 msgid ""
 "Click the <gui>Close</gui> button to apply the changes and close the "
 "<gui>Background Properties</gui> dialog."
@@ -171,7 +141,8 @@ msgstr ""
 "Pro schválení změn klikněte na tlačítko <gui>Zavřít</gui> a zavřete dialog "
 "<gui>Vlastnosti pozadí</gui>."
 
-#: C/create-cover.page:60(item/p)
+#. (itstool) path: item/p
+#: C/create-cover.page:60
 msgid ""
 "Print the cover using the <gui>Print</gui> button, which is located in the "
 "top-right corner of the dialog."
@@ -179,11 +150,32 @@ msgstr ""
 "Vytiskněte obal pomocí tlačítka <gui>Tisk</gui>, které je umístěno v pravém "
 "horním rohu dialogu."
 
+#. (itstool) path: page/title
+#: C/index.page:6
+msgid "<_:media-1/> Brasero Help"
+msgstr "<_:media-1/> Nápověda k aplikaci Brasero"
+
+#. (itstool) path: section/title
+#: C/index.page:9
+msgid "Create a new project"
+msgstr "Vytvořit nový projekt"
+
+#. (itstool) path: section/title
+#: C/index.page:13
+msgid "Troubleshooting"
+msgstr "Řešení problémů"
+
+#. (itstool) path: section/title
+#: C/index.page:17
+msgid "Other tools"
+msgstr "Další nástroje"
+
+#. (itstool) path: media
 #. This is a reference to an external file such as an image or video. When
 #. the file changes, the md5 hash will change to let you know you need to
 #. update your localized copy. The msgstr is not used at all. Set it to
 #. whatever you like once you have updated your copy of the file.
-#: C/introduction.page:36(media)
+#: C/introduction.page:36
 msgctxt "_"
 msgid ""
 "external ref='figures/brasero-main-window.png' "
@@ -192,15 +184,18 @@ msgstr ""
 "external ref='figures/brasero-main-window.png' "
 "md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
 
-#: C/introduction.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/introduction.page:7
 msgid "Introduction to the <app>Brasero</app> disc burning application."
 msgstr "Úvod do aplikace na vypalování <app>Brasero</app>."
 
-#: C/introduction.page:17(page/title)
+#. (itstool) path: page/title
+#: C/introduction.page:17
 msgid "Introduction"
 msgstr "Úvod"
 
-#: C/introduction.page:19(page/p)
+#. (itstool) path: page/p
+#: C/introduction.page:19
 msgid ""
 "<app>Brasero</app> is an application for burning CDs and DVDs, designed to "
 "be easy to use, while providing all the tools necessary for burning."
@@ -208,53 +203,65 @@ msgstr ""
 "<app>Brasero</app> je aplikace pro vypalování disků CD a DVD, navržená pro "
 "jednoduché používání a poskytující všechny nástroje nutné k vypalování."
 
-#: C/introduction.page:22(page/p)
+#. (itstool) path: page/p
+#: C/introduction.page:22
 msgid "With <app>Brasero</app> you can:"
 msgstr "S aplikací <application>Brasero</application> můžete:"
 
-#: C/introduction.page:24(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:24
 msgid "Burn data to CDs and DVDs"
 msgstr "Vypalovat data na CD a DVD"
 
-#: C/introduction.page:25(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:25
 msgid "Burn audio CDs from digital audio files (such as OGG, FLAC and MP3)"
 msgstr ""
 "Vypalovat hudební CD z hudebních digitálních souborů (jako např. OGG, FLAC a "
 "MP3)"
 
-#: C/introduction.page:27(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:27
 msgid "Copy CDs and DVDs"
 msgstr "Kopírovat CD a DVD"
 
-#: C/introduction.page:28(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:28
 msgid "Create video DVDs or SVCDs"
 msgstr "Vytvářet videa DVD nebo SVCD"
 
-#: C/introduction.page:29(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:29
 msgid "Create image files and burn existing image files"
 msgstr "Vytvářet obrazy souborů a vypalovat je"
 
-#: C/introduction.page:30(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:30
 msgid "Erase CD-RWs and DVD-RWs"
 msgstr "Mazat CD-RW a DVD-RW"
 
-#: C/introduction.page:31(item/p)
+#. (itstool) path: item/p
+#: C/introduction.page:31
 msgid "Check the integrity of discs and disc images"
 msgstr "Kontrolovat integritu dat na discích a obrazech disků"
 
-#: C/introduction.page:35(figure/title)
+#. (itstool) path: figure/title
+#: C/introduction.page:35
 msgid "The <gui>Brasero</gui> main window"
 msgstr "Hlavní okno <gui>Brasero</gui>"
 
-#: C/prob-cd.page:9(info/desc)
+#. (itstool) path: info/desc
+#: C/prob-cd.page:9
 msgid "My MP3s will not play in a DVD or CD player."
 msgstr "Moje MP3 soubory se nepřehrávají v DVD nebo CD přehrávači."
 
-#: C/prob-cd.page:19(page/title)
+#. (itstool) path: page/title
+#: C/prob-cd.page:19
 msgid "CD will not play in a CD player"
 msgstr "CD nehraje v CD přehravači."
 
-#: C/prob-cd.page:21(page/p)
+#. (itstool) path: page/p
+#: C/prob-cd.page:21
 msgid ""
 "If your CD is not playing in your CD player or stereo, it is probably "
 "because the music was not correctly written to the disc or because you used "
@@ -265,7 +272,8 @@ msgstr ""
 "protože jste vytvořili datový projekt k zapsání hudby místo hudebního "
 "projektu."
 
-#: C/prob-cd.page:26(note/p)
+#. (itstool) path: note/p
+#: C/prob-cd.page:26
 msgid ""
 "Many new CD and DVD players will play music CDs which were created using a "
 "data project, but most older players will not."
@@ -273,27 +281,33 @@ msgstr ""
 "Hodně nových CD a DVD přehravačů přehrává disky CD, které byly vytvořeny s "
 "pomocí datového projektu, ale většina starších ne."
 
-#: C/prob-cd.page:31(note/p)
+#. (itstool) path: note/p
+#: C/prob-cd.page:31
 msgid "Older CD players might not be able to play CD-RWs."
 msgstr "Starší CD přehravače nemusí umět přehrávat disky CD-RW."
 
-#: C/prob-cd.page:36(item/p)
+#. (itstool) path: item/p
+#: C/prob-cd.page:36
 msgid "If you are using a CD-RW, blank the CD."
 msgstr "Pokud používáte CD-RW, smažte CD."
 
-#: C/prob-cd.page:39(item/p)
+#. (itstool) path: item/p
+#: C/prob-cd.page:39
 msgid "Rewrite the CD as an audio project."
 msgstr "Přepište CD jako hudební projekt."
 
-#: C/prob-dvd.page:9(info/desc)
+#. (itstool) path: info/desc
+#: C/prob-dvd.page:9
 msgid "I cannot write to a DVD-R or a DVD-RW."
 msgstr "Nemůžu zapisovat na DVD-R nebo DVD-RW."
 
-#: C/prob-dvd.page:19(page/title)
+#. (itstool) path: page/title
+#: C/prob-dvd.page:19
 msgid "Problem creating a DVD"
 msgstr "Problém při vytváření DVD"
 
-#: C/prob-dvd.page:21(page/p)
+#. (itstool) path: page/p
+#: C/prob-dvd.page:21
 msgid ""
 "Some types of DVD-Rs and DVD-RWs are not compatible with all burners. Check "
 "the following to find out if those can be used with your burner."
@@ -302,7 +316,8 @@ msgstr ""
 "vypalovačkami. Zkontrolujte následující, abyste zjistili, jestli může být "
 "váš disk použit s vaší vypalovačkou."
 
-#: C/prob-dvd.page:26(item/p)
+#. (itstool) path: item/p
+#: C/prob-dvd.page:26
 msgid ""
 "Check if your DVD drive accepts DVD+ or DVD- discs; if it is labelled with "
 "\"multi\", that usually indicates that it accepts both. Check your disc to "
@@ -312,7 +327,8 @@ msgstr ""
 "pokud je popsána \"multi\", tak to většinou znamená, že umí pracovat s "
 "obojím. Zkontrolujte jestli je váš disk stejného typu jako mechanika."
 
-#: C/prob-dvd.page:31(item/p)
+#. (itstool) path: item/p
+#: C/prob-dvd.page:31
 msgid ""
 "Check if your disc is dual layer or single layer: some DVD drives can not "
 "write to a dual layer disc."
@@ -320,7 +336,8 @@ msgstr ""
 "Zkontrolujte jestli je váš disk dvojvrstvý nebo jednovrstvý: některé DVD "
 "mechaniky neumí zapisovat na dvojvrstvé disky."
 
-#: C/prob-dvd.page:35(item/p)
+#. (itstool) path: item/p
+#: C/prob-dvd.page:35
 msgid ""
 "If you are trying to use a DVD-R, check if it has already been written to "
 "before. If you are using a DVD-RW, try blanking it before you attempt to "
@@ -330,15 +347,18 @@ msgstr ""
 "zapisovalo. Pokud používáte DVD-RW, zkuste ho nejprve vymazat a až poté "
 "zapisovat."
 
-#: C/project-audio.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/project-audio.page:7
 msgid "Create an audio project."
 msgstr "Vytvořit hudební projekt"
 
-#: C/project-audio.page:17(page/title)
+#. (itstool) path: page/title
+#: C/project-audio.page:17
 msgid "Write a music CD"
 msgstr "Zapsat hudební CD"
 
-#: C/project-audio.page:19(page/p)
+#. (itstool) path: page/p
+#: C/project-audio.page:19
 msgid ""
 "<app>Brasero</app> can write audio files to a CD, which you can then use for "
 "playing in CD players and so on. It is usually best to use a non-rewritable "
@@ -349,7 +369,8 @@ msgstr ""
 "nepřepisovatelný disk CD, protože ne všechny CD přehravače umí přehrávat "
 "přepisovatelné disky CD."
 
-#: C/project-audio.page:26(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:26
 msgid ""
 "Click <gui>Audio project</gui> on the start page, or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Audio Project</"
@@ -359,7 +380,8 @@ msgstr ""
 "<guiseq><gui>Projekt</gui><gui>Nový projekt</gui><gui>Nový hudební projekt</"
 "gui></guiseq>."
 
-#: C/project-audio.page:31(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:31
 msgid ""
 "Add audio files to the project by clicking <gui>Add</gui> in the toolbar and "
 "selecting the desired files. You can also add files by dragging and dropping "
@@ -371,23 +393,25 @@ msgstr ""
 "přetáhnutím na oblast projektu nebo kliknutím na <guiseq><gui>Upravit</"
 "gui><gui>Přidat soubory</gui></guiseq>."
 
-#: C/project-audio.page:37(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:37
 msgid ""
 "You can add a title for the CD in the text entry field below the project "
 "area."
 msgstr "Můžete přidat název pro disk CD v textovém poli pod oblastí projektu."
 
-#: C/project-audio.page:41(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:41
 msgid "Select the blank CD in the drop down list."
 msgstr "Vyberte prázdné CD v rozbalovací nabídce."
 
-#: C/project-audio.page:44(item/p) C/project-data.page:50(item/p)
-#: C/project-video.page:45(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:44 C/project-data.page:50 C/project-video.page:45
 msgid "Click <gui>Burn...</gui> to continue."
 msgstr "Klikněte na <gui>Vypálit...</gui> pro pokračování."
 
-#: C/project-audio.page:47(item/p) C/project-data.page:53(item/p)
-#: C/project-video.page:48(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:47 C/project-data.page:53 C/project-video.page:48
 msgid ""
 "Select the <gui>Burning speed</gui> from the drop down list, and any other "
 "options you may want."
@@ -395,7 +419,8 @@ msgstr ""
 "Zvolte <gui>Rychlost vypalování</gui> z rozbalovací nabídky a další "
 "možnosti, které chcete."
 
-#: C/project-audio.page:51(item/p) C/project-video.page:52(item/p)
+#. (itstool) path: item/p
+#: C/project-audio.page:51 C/project-video.page:52
 msgid ""
 "Click <gui>Burn</gui> to burn a single disc of the project or <gui>Burn "
 "Several Copies</gui> to burn your project to multiple discs."
@@ -403,7 +428,8 @@ msgstr ""
 "Klikněte na <gui>Vypálit</gui> pro vypálení jednoho disku projektu nebo "
 "<gui>Vypálit několik kopií</gui> pro vypálení projektu na více disků."
 
-#: C/project-audio.page:57(note/p)
+#. (itstool) path: note/p
+#: C/project-audio.page:57
 msgid ""
 "You can also split individual tracks into multiple tracks using the "
 "<gui>Split</gui> tool and add a two second break after a track using the "
@@ -412,15 +438,18 @@ msgstr ""
 "Můžete také rozdělit jednotlivé stopy do několika stop použitím <gui>Split</"
 "gui> a přidat dvě sekundy pauzu za stopou pomocí tlačítka <gui>Pause</gui>."
 
-#: C/project-data.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/project-data.page:7
 msgid "Write data to a CD or DVD."
 msgstr "Zapsat data na CD nebo DVD"
 
-#: C/project-data.page:17(page/title)
+#. (itstool) path: page/title
+#: C/project-data.page:17
 msgid "Create a data project"
 msgstr "Vytvořit datový projekt"
 
-#: C/project-data.page:19(page/p)
+#. (itstool) path: page/p
+#: C/project-data.page:19
 msgid ""
 "A data project is used for writing data (for example, files, photos or "
 "music) to a disc, without changing those files in any way. This can be "
@@ -430,7 +459,8 @@ msgstr ""
 "hudby) na disk, beze změn těchto souborů. To může být užitečné pro přenášení "
 "souborů mezi počítači."
 
-#: C/project-data.page:25(item/p)
+#. (itstool) path: item/p
+#: C/project-data.page:25
 msgid ""
 "Click <gui>Data project</gui> on the start page, or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Data Project</gui></"
@@ -440,7 +470,8 @@ msgstr ""
 "<guiseq><gui>Projekt</gui><gui>Nový projekt</gui><gui>Nový datový projekt</"
 "gui></guiseq>."
 
-#: C/project-data.page:30(item/p)
+#. (itstool) path: item/p
+#: C/project-data.page:30
 msgid ""
 "Add the desired files to the project by clicking <gui>Add</gui> in the "
 "toolbar and selecting the files. You can also add files by dragging and "
@@ -452,7 +483,8 @@ msgstr ""
 "přetáhnutím na oblast projektu nebo kliknutím na <guiseq><gui>Upravit</"
 "gui><gui>Přidat soubory</gui></guiseq>."
 
-#: C/project-data.page:35(note/p)
+#. (itstool) path: note/p
+#: C/project-data.page:35
 msgid ""
 "You can create folders on the CD to store your data in a more structured "
 "manner. To create a folder, click <gui>New Folder</gui> in the toolbar or "
@@ -464,17 +496,20 @@ msgstr ""
 "volbou <guiseq><gui>Upravit</gui><gui>Nová složka</gui></guiseq> v menu. "
 "Můžete také vytvářet složky uvnitř složek."
 
-#: C/project-data.page:43(item/p) C/project-video.page:38(item/p)
+#. (itstool) path: item/p
+#: C/project-data.page:43 C/project-video.page:38
 msgid ""
 "You can add a title for the disc in the text entry field below the project "
 "area."
 msgstr "Můžete přidat název disku v textovém poli pod oblastí projektu."
 
-#: C/project-data.page:47(item/p) C/project-video.page:42(item/p)
+#. (itstool) path: item/p
+#: C/project-data.page:47 C/project-video.page:42
 msgid "Select the blank disc in the drop down list."
 msgstr "Vyberte prázdný disk z rozbalovací nabídky."
 
-#: C/project-data.page:57(item/p)
+#. (itstool) path: item/p
+#: C/project-data.page:57
 msgid ""
 "Click <gui>Burn</gui> to burn a single CD of the project or <gui>Burn "
 "Several Copies</gui> to burn your project to multiple CDs"
@@ -483,7 +518,8 @@ msgstr ""
 "na <gui>Vypálit několik kopií</gui> pro vypálení svého projektu na několik "
 "diskůCD"
 
-#: C/project-data.page:60(note/p)
+#. (itstool) path: note/p
+#: C/project-data.page:60
 msgid ""
 "If you are using a rewritable disc, which already contains data, you will be "
 "asked if you want to blank it or insert a different disc."
@@ -491,7 +527,8 @@ msgstr ""
 "Pokud používáte přepisovatelný disk, který už obsahuje data, budete "
 "dotázáni, jestli chcete obsah vymazat nebo vložit jiný disky."
 
-#: C/project-data.page:66(page/p)
+#. (itstool) path: page/p
+#: C/project-data.page:66
 msgid ""
 "If you are using a rewritable disc and the data is not burned correctly onto "
 "it, you may need to do a full (non-fast) blank of the disc before trying "
@@ -501,15 +538,18 @@ msgstr ""
 "možná budete potřebovat udělat kompletní (ne rychlé) smazání disku před "
 "opětovným zápisem."
 
-#: C/project-disc-copy.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/project-disc-copy.page:7
 msgid "Create an identical copy of a disc."
 msgstr "Vytvořit identickou kopii disku."
 
-#: C/project-disc-copy.page:17(page/title)
+#. (itstool) path: page/title
+#: C/project-disc-copy.page:17
 msgid "Copy disc"
 msgstr "Kopírovat disk"
 
-#: C/project-disc-copy.page:21(item/p)
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:21
 msgid ""
 "Click <gui>Disc copy</gui> on the start page, or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Copy Disc... </gui></"
@@ -519,7 +559,8 @@ msgstr ""
 "<guiseq><gui>Projekt</gui><gui>Nový projekt</gui><gui>Kopírovat disk...</"
 "gui></guiseq>."
 
-#: C/project-disc-copy.page:26(item/p)
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:26
 msgid ""
 "Select the disc you would like to copy from the drop down list below "
 "<gui>Select disc to copy</gui>. If you have more than one disc drive, all "
@@ -529,7 +570,8 @@ msgstr ""
 "<gui>Vyberte disk ke kopírování</gui>. Pokud máte více než jednu mechaniku, "
 "všechny disky, které jsou momentálně uvnitř, by měli být v nabídce."
 
-#: C/project-disc-copy.page:31(item/p)
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:31
 msgid ""
 "Choose whether you want to make a copy to another disc or create an image "
 "for later use."
@@ -537,7 +579,8 @@ msgstr ""
 "Vyberte jestli chcete vytvořit kopii na jiný disk nebo vytvořit obraz disku "
 "pro pozdější využití."
 
-#: C/project-disc-copy.page:35(item/p) C/project-image-burn.page:57(item/p)
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:35 C/project-image-burn.page:57
 msgid ""
 "Click the <gui>Properties</gui> button to select burning speed and other "
 "custom options."
@@ -545,7 +588,8 @@ msgstr ""
 "Klikněte na tlačítko <gui>Vlastnosti</gui> pro výběr rychlosti vypalování a "
 "další možnosti."
 
-#: C/project-disc-copy.page:39(item/p)
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:39
 msgid ""
 "Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several "
 "Copies</gui>, if you plan to make more than one copy of the disc."
@@ -554,7 +598,8 @@ msgstr ""
 "<gui>Vytvořit několik kopií</gui>, pokud plánujete vytvořit více než jednu "
 "kopii disku."
 
-#: C/project-disc-copy.page:42(note/p)
+#. (itstool) path: note/p
+#: C/project-disc-copy.page:42
 msgid ""
 "If you are copying the disc and have only one disc drive, you will be asked "
 "to replace the disc you are copying with a writable one after the contents "
@@ -564,19 +609,23 @@ msgstr ""
 "disku který kopírujete za disk, na který se dá zapisovat, jakmile bude "
 "dočasně zkopírován obsah na váš pevný disk."
 
-#: C/project-image-burn.page:11(info/desc)
+#. (itstool) path: info/desc
+#: C/project-image-burn.page:11
 msgid "Burn an existing disc image to a CD or DVD."
 msgstr "Vypálit existujicí obraz disku na CD nebo DVD."
 
-#: C/project-image-burn.page:13(credit/name)
+#. (itstool) path: credit/name
+#: C/project-image-burn.page:13
 msgid "Marta Bogdanowicz"
 msgstr "Marta Bogdanowicz"
 
-#: C/project-image-burn.page:25(page/title)
+#. (itstool) path: page/title
+#: C/project-image-burn.page:25
 msgid "Burn image"
 msgstr "Vypálit obraz"
 
-#: C/project-image-burn.page:27(page/p)
+#. (itstool) path: page/p
+#: C/project-image-burn.page:27
 msgid ""
 "<app>Brasero</app> allows you to burn disc images to a CD or DVD. It "
 "supports the following extensions of optical disc images: <file>.iso</file>, "
@@ -586,7 +635,8 @@ msgstr ""
 "Podporuje následující přípony: <file>.iso</file>, <file>.toc</file> a <file>."
 "cue</file>."
 
-#: C/project-image-burn.page:32(note/p)
+#. (itstool) path: note/p
+#: C/project-image-burn.page:32
 msgid ""
 "Disc images are archive files which contain all the data that is on a CD or "
 "DVD. Only one disc image can be on a CD at a time, but each archive can "
@@ -597,12 +647,14 @@ msgstr ""
 "nebo DVD. Na disku CD může být vždy jen jeden obraz disku, ale každý archiv "
 "může obsahovat takové množství dat, jaké potřebujete, dokud se vejde na disk."
 
-#: C/project-image-burn.page:38(page/p)
+#. (itstool) path: page/p
+#: C/project-image-burn.page:38
 msgid "To burn a disc image to a CD or DVD, follow these steps:"
 msgstr ""
 "Pro vypálení obrazu disku na CD nebo DVD postupujte podle těchto kroků:"
 
-#: C/project-image-burn.page:41(item/p)
+#. (itstool) path: item/p
+#: C/project-image-burn.page:41
 msgid ""
 "Click <gui>Burn image</gui> on the start page or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui> </"
@@ -612,7 +664,8 @@ msgstr ""
 "<guiseq><gui>Projekt</gui><gui>Nový projekt</gui><gui>Vypálit obraz…</gui></"
 "guiseq>."
 
-#: C/project-image-burn.page:46(item/p)
+#. (itstool) path: item/p
+#: C/project-image-burn.page:46
 msgid ""
 "Select a disc image to write by clicking <gui>Click here to select a disc "
 "image</gui>."
@@ -620,7 +673,8 @@ msgstr ""
 "Vyberte obraz disku k zápisu kliknutím na <gui>Klikněte zde pro výběr obrazu "
 "disku</gui>."
 
-#: C/project-image-burn.page:50(item/p)
+#. (itstool) path: item/p
+#: C/project-image-burn.page:50
 msgid ""
 "Select the disc that you want to use from drop down list below <gui>Select a "
 "disc to write to</gui>. If you have more than one disc drive, all discs "
@@ -630,7 +684,8 @@ msgstr ""
 "pro zápis</gui>. Pokud máte více než jednu mechaniku, všechny disky, které "
 "jsou momentálně uvnitř, by měly být v nabídce."
 
-#: C/project-image-burn.page:53(note/p)
+#. (itstool) path: note/p
+#: C/project-image-burn.page:53
 msgid ""
 "After choosing the disc <app>Brasero</app> shows how much free space will "
 "remain on the disc after burning."
@@ -638,7 +693,8 @@ msgstr ""
 "Po výběru disku aplikace <app>Brasero</app> ukáže, kolik volného místa "
 "zůstane na disku po vypálení."
 
-#: C/project-image-burn.page:61(item/p)
+#. (itstool) path: item/p
+#: C/project-image-burn.page:61
 msgid ""
 "Click <gui>Burn</gui> to start burning the image. After this operation you "
 "can either finish burning or make the other copy of the image."
@@ -646,7 +702,8 @@ msgstr ""
 "Klikněte na <gui>Vypálit</gui> pro zahájení vypalování obrazu. Po této "
 "operaci můžete buď dokončit vypalování nebo udělat další kopii obrazu."
 
-#: C/project-image-burn.page:64(note/p)
+#. (itstool) path: note/p
+#: C/project-image-burn.page:64
 msgid ""
 "If you are using a re-writable disc, which already contains data, you will "
 "be asked if you want to blank it or insert a different disc."
@@ -654,15 +711,18 @@ msgstr ""
 "Pokud používáte přepisovatelný disk, který už obsahuje data, budete "
 "dotázáni, jestli chcete obsah vymazat nebo vložit jiný disky."
 
-#: C/project-save.page:10(info/desc)
+#. (itstool) path: info/desc
+#: C/project-save.page:10
 msgid "Save a project for editing or burning later."
 msgstr "Uložte projekt pro upravování nebo vypalování později."
 
-#: C/project-save.page:20(page/title)
+#. (itstool) path: page/title
+#: C/project-save.page:20
 msgid "Save a project"
 msgstr "Uložit projekt"
 
-#: C/project-save.page:22(page/p)
+#. (itstool) path: page/p
+#: C/project-save.page:22
 msgid ""
 "You can save an audio, a data or a video project in <app>Brasero</app> for "
 "editing or burning later."
@@ -670,19 +730,22 @@ msgstr ""
 "Můžete uložit zvuk, data nebo videoprojekt v aplikaci <app>Braser</app> pro "
 "upravování nebo vypalování později."
 
-#: C/project-save.page:27(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:27
 msgid "Create the project and add the files you wish to use to the project."
 msgstr ""
 "Vytvořte projekt a přidejte soubory, které si přejete v projektu použít."
 
-#: C/project-save.page:30(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:30
 msgid ""
 "Click <guiseq><gui>Project</gui><gui>Save</gui></guiseq> to save the project."
 msgstr ""
 "Klikněte na <guiseq><gui>Projekt</gui><gui>Uložit</gui></guiseq> pro uložení "
 "projektu."
 
-#: C/project-save.page:34(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:34
 msgid ""
 "Enter the name you wish to save the project under, then click <gui>Save</"
 "gui> to save the project."
@@ -690,25 +753,29 @@ msgstr ""
 "Vložte název, pod kterým si přejete projekt uložit, a poté klikněte na "
 "<gui>Save</gui> pro uložení projektu."
 
-#: C/project-save.page:39(page/p)
+#. (itstool) path: page/p
+#: C/project-save.page:39
 msgid ""
 "There are a number of ways which can be used for opening a saved "
 "<app>Brasero</app> project by:"
 msgstr "Je několik způsobů, jak otevřít uložený projekt <app>Brasero</app>:"
 
-#: C/project-save.page:44(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:44
 msgid ""
 "selecting it from the list on the start page, under <gui>Recent projects</"
 "gui>"
 msgstr ""
 "Vybráním projektu na úvodní stránce ze seznamu <gui>Nedávné projekty</gui>"
 
-#: C/project-save.page:48(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:48
 msgid "clicking <guiseq><gui>Project</gui><gui>Recent Projects</gui></guiseq>"
 msgstr ""
 "kliknutím na <guiseq><gui>Projekt</gui><gui>Nedávné projekty</gui></guiseq>"
 
-#: C/project-save.page:51(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:51
 msgid ""
 "clicking <guiseq><gui>Project</gui><gui>Open</gui></guiseq> and selecting "
 "the project"
@@ -716,11 +783,13 @@ msgstr ""
 "kliknutím na <guiseq><gui>Projekt</gui><gui>Otevřít</gui></guiseq> a "
 "zvolením projektu"
 
-#: C/project-save.page:55(item/p)
+#. (itstool) path: item/p
+#: C/project-save.page:55
 msgid "opening the project from a file browser"
 msgstr "otevřením projektu v prohlížeči souborů"
 
-#: C/project-save.page:57(note/p)
+#. (itstool) path: note/p
+#: C/project-save.page:57
 msgid ""
 "Only one instance of <app>Brasero</app> can be opened at any time. If you "
 "try to open a second instance, the currently open <app>Brasero</app> window "
@@ -730,7 +799,8 @@ msgstr ""
 "<app>Brasero</app>. Když se pokusíte otevřít druhou instanci, tak akorát "
 "současné otevřeno okno <app>Brasero</app> získá zaměření."
 
-#: C/project-save.page:60(note/p)
+#. (itstool) path: note/p
+#: C/project-save.page:60
 msgid ""
 "If <app>Brasero</app> is already running and you try to open some files with "
 "it from <app>Files</app>, the files will be added to the project that you "
@@ -740,7 +810,8 @@ msgstr ""
 "app> otevřít nějaké soubory, budou tyto soubory přidány do projektu, na "
 "kterém se právě pracuje."
 
-#: C/project-save.page:68(note/p)
+#. (itstool) path: note/p
+#: C/project-save.page:68
 msgid ""
 "If you open a saved project, <app>Brasero</app> will treat it as a new "
 "project: if you want to save an updated version of the project, it will ask "
@@ -752,20 +823,24 @@ msgstr ""
 "muset vyplnit jeho název. V tuto chvíli můžete buď přepsat starou verzi nebo "
 "ho uložit jako nový projekt napsáním odlišného názvu souboru."
 
-#: C/project-video.page:9(info/title)
+#. (itstool) path: info/title
+#: C/project-video.page:9
 msgctxt "sort"
 msgid "3"
 msgstr "3"
 
-#: C/project-video.page:10(info/desc)
+#. (itstool) path: info/desc
+#: C/project-video.page:10
 msgid "Write a video to a DVD or SVCD."
 msgstr "Zapište video na DVD nebo SVCD"
 
-#: C/project-video.page:20(page/title)
+#. (itstool) path: page/title
+#: C/project-video.page:20
 msgid "Create a video project"
 msgstr "Vytvořte videoprojekt"
 
-#: C/project-video.page:22(page/p)
+#. (itstool) path: page/p
+#: C/project-video.page:22
 msgid ""
 "<app>Brasero</app> can be used to create video discs for playing in a DVD "
 "player or laptop."
@@ -773,7 +848,8 @@ msgstr ""
 "<app>Brasero</app> umí vytvářet videodisky k přehrávání na DVD přehrávači "
 "nebo notebooku."
 
-#: C/project-video.page:27(item/p)
+#. (itstool) path: item/p
+#: C/project-video.page:27
 msgid ""
 "Click <gui>Video project</gui> on the start page, or select "
 "<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Video Project</"
@@ -783,7 +859,8 @@ msgstr ""
 "<guiseq><gui>Projekt</gui><gui>Nový projekt</gui><gui>Nový videoprojekt</"
 "gui></guiseq>."
 
-#: C/project-video.page:32(item/p)
+#. (itstool) path: item/p
+#: C/project-video.page:32
 msgid ""
 "Add the videos to the project by clicking <gui>Add</gui> in the toolbar and "
 "selecting the files. You can also add files by dragging and dropping them "
@@ -795,15 +872,18 @@ msgstr ""
 "projektu nebo kliknutím na <guiseq><gui>Upravit</gui><gui>Přidat soubory</"
 "gui></guiseq>."
 
-#: C/split-track.page:9(info/desc)
+#. (itstool) path: info/desc
+#: C/split-track.page:9
 msgid "Split an audio project track into multiple tracks."
 msgstr "Rozdělte stopu hudebního projektu do více stop."
 
-#: C/split-track.page:19(page/title)
+#. (itstool) path: page/title
+#: C/split-track.page:19
 msgid "Split an audio track"
 msgstr "Rozdělit hudební stopu"
 
-#: C/split-track.page:21(page/p)
+#. (itstool) path: page/p
+#: C/split-track.page:21
 msgid ""
 "You can split a single audio track into multiple tracks when you put "
 "together an audio project."
@@ -811,11 +891,13 @@ msgstr ""
 "Můžete rozdělit jednotlivé hudební stopy do více stop, když vytváříte "
 "hudební projekt."
 
-#: C/split-track.page:26(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:26
 msgid "Start an audio project and add the tracks you wish to use."
 msgstr "Vytvořte hudební projekt a přidejte stopy, které v něm chcete použít."
 
-#: C/split-track.page:29(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:29
 msgid ""
 "Select the track you wish to split by clicking on it, then click either "
 "<guiseq><gui>Edit</gui><gui>Split Track…</gui></guiseq> or right click on "
@@ -825,35 +907,42 @@ msgstr ""
 "<guiseq><gui>Upravit</gui><gui>Rozdělit stopu…</gui></guiseq> nebo klikněte "
 "pravým tlačítkem na stopu a zvolte v menu <gui>Rozdělit stopu…</gui>."
 
-#: C/split-track.page:34(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:34
 msgid "Select your preferred method of splitting the tracks:"
 msgstr "Zvolte svou preferovanou metodu rozdělování stopy:"
 
-#: C/split-track.page:37(item/title)
+#. (itstool) path: item/title
+#: C/split-track.page:37
 msgid "Split track manually"
 msgstr "Rozdělit stopu ručně"
 
-#: C/split-track.page:38(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:38
 msgid ""
 "This option allows you to select the exact length of each new section of the "
 "track manually."
 msgstr ""
 "Tato možnost vám dovoluje ručně zvolit přesnou délku každé nové sekce stopy."
 
-#: C/split-track.page:42(item/title)
+#. (itstool) path: item/title
+#: C/split-track.page:42
 msgid "Split track in parts with a fixed length"
 msgstr "Rozdělit stopu na části stejné délky."
 
-#: C/split-track.page:43(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:43
 msgid ""
 "Use this method to split the track into multiple sections of equal length."
 msgstr "Použijte tuto metodu pro rozdělení stopy do více sekcí stejné délky."
 
-#: C/split-track.page:47(item/title)
+#. (itstool) path: item/title
+#: C/split-track.page:47
 msgid "Split track in a fixed number of parts"
 msgstr "Rozdělit stopu na určený počet částí"
 
-#: C/split-track.page:48(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:48
 msgid ""
 "This method allows you to split the track into a set number of sections, all "
 "of which will be of the same length."
@@ -861,11 +950,13 @@ msgstr ""
 "Tato metoda vám dovoluje rozdělit stopu do určeného počtu sekcí, které budou "
 "všechny stejně dlouhé."
 
-#: C/split-track.page:52(item/title)
+#. (itstool) path: item/title
+#: C/split-track.page:52
 msgid "Split track for each silence"
 msgstr "Rozdělit stopu v místech ticha"
 
-#: C/split-track.page:53(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:53
 msgid ""
 "Select this method for <app>Brasero</app> to auto-detect silences in the "
 "recording and to split the track at those points."
@@ -873,11 +964,13 @@ msgstr ""
 "Zvolte tuto metodu, aby <app>Brasero</app> samo detekovalo místa ticha v "
 "nahrávce a rozdělilo stopu v těchto místech."
 
-#: C/split-track.page:59(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:59
 msgid "Proceed to split the track by clicking <gui>Slice</gui>."
 msgstr "Rozdělte stopu kliknutím na <gui>Rozdělit</gui>."
 
-#: C/split-track.page:61(note/p)
+#. (itstool) path: note/p
+#: C/split-track.page:61
 msgid ""
 "If you try to split a track into a section less than six seconds long, the "
 "new section will be padded to make it 6 seconds long."
@@ -885,13 +978,15 @@ msgstr ""
 "Pokud se pokusíte rozdělit stopu do sekcí kratších než šest sekund, nová "
 "sekce bude prodloužena na šest sekund."
 
-#: C/split-track.page:68(item/p)
+#. (itstool) path: item/p
+#: C/split-track.page:68
 msgid "Click <gui>OK</gui> to confirm your track splits and apply the changes."
 msgstr ""
 "Klikněte na <gui>OK</gui> pro potvrzení, aby se vaše stopy rozdělily a "
 "provedly se změny."
 
-#: C/split-track.page:70(note/p)
+#. (itstool) path: note/p
+#: C/split-track.page:70
 msgid ""
 "You can split and merge the same track as many times as you like while you "
 "are viewing the split track dialog. Once you confirm your track splitting by "
@@ -905,15 +1000,18 @@ msgstr ""
 "vrácení změn odstraňte rozdělené sekce stopy z projektu a poté stopu opět "
 "přidejte."
 
-#: C/tools-blank.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/tools-blank.page:7
 msgid "Erase a rewritable CD or DVD by blanking it."
 msgstr "Vymazat přepisovatelné CD nebo DVD."
 
-#: C/tools-blank.page:17(page/title)
+#. (itstool) path: page/title
+#: C/tools-blank.page:17
 msgid "Blank a disc"
 msgstr "Vymazat disk"
 
-#: C/tools-blank.page:19(page/p)
+#. (itstool) path: page/p
+#: C/tools-blank.page:19
 msgid ""
 "You can prepare a rewritable disc, with existing data on it, for writing by "
 "blanking it."
@@ -921,11 +1019,13 @@ msgstr ""
 "Můžete připravit přepisovatelný disk s existujícími daty pro zápis tak, že "
 "ho vymažete."
 
-#: C/tools-blank.page:24(item/p)
+#. (itstool) path: item/p
+#: C/tools-blank.page:24
 msgid "Select <guiseq><gui>Tools</gui><gui>Blank...</gui></guiseq>."
 msgstr "Zvolte <guiseq><gui>Nástroje</gui><gui>Smazat...</gui></guiseq>."
 
-#: C/tools-blank.page:27(item/p)
+#. (itstool) path: item/p
+#: C/tools-blank.page:27
 msgid ""
 "If you have more than one disc drive with a rewritable disc in it, you can "
 "select which disc to rewrite under <gui>Select a disc</gui>."
@@ -933,12 +1033,14 @@ msgstr ""
 "Pokud máte více než jednu mechaniku s přepisovatelným diskem uvnitř, můžete "
 "zvolit, který disk chcete přepsat ve <gui>Vyberte disk</gui>."
 
-#: C/tools-blank.page:31(item/p)
+#. (itstool) path: item/p
+#: C/tools-blank.page:31
 msgid "You can select <gui>Fast blanking</gui> to blank the CD quicker."
 msgstr ""
 "Můžete zvolit <gui>Rychlé mazání</gui> pro rychlejší vymazání disku CD."
 
-#: C/tools-blank.page:33(note/p)
+#. (itstool) path: note/p
+#: C/tools-blank.page:33
 msgid ""
 "If you have problems writing to a disc which you fast blanked, try disabling "
 "fast blanking and blank it again."
@@ -946,27 +1048,33 @@ msgstr ""
 "Pokud máte problémy se zapisováním na disk, který jste rychle vymazali, "
 "zkuste vypnout volbu rychlého mazání a vymažte disk znovu."
 
-#: C/tools-blank.page:38(item/p)
+#. (itstool) path: item/p
+#: C/tools-blank.page:38
 msgid "Click <gui>Blank</gui> to continue."
 msgstr "Klikněte na <gui>Smazat</gui> pro pokračování."
 
-#: C/tools-blank.page:41(item/p)
+#. (itstool) path: item/p
+#: C/tools-blank.page:41
 msgid "The disc may be ejected when the blanking is complete."
 msgstr "Můžete vysunout disk, jakmile bude mazání hotové."
 
-#: C/tools-check-integrity.page:7(info/desc)
+#. (itstool) path: info/desc
+#: C/tools-check-integrity.page:7
 msgid "You can test out a disc integrity after burning it."
 msgstr "Po vypálení můžete zkontrolovat integritu disku."
 
-#: C/tools-check-integrity.page:9(credit/name)
+#. (itstool) path: credit/name
+#: C/tools-check-integrity.page:9
 msgid "Paulina Gonzalez"
 msgstr "Paulina Gonzalez"
 
-#: C/tools-check-integrity.page:21(page/title)
+#. (itstool) path: page/title
+#: C/tools-check-integrity.page:21
 msgid "Check disc integrity"
 msgstr "Zkontrolujte integritu disku"
 
-#: C/tools-check-integrity.page:23(page/p)
+#. (itstool) path: page/p
+#: C/tools-check-integrity.page:23
 msgid ""
 "After burning a CD/DVD by using <app>Brasero</app>, you can check its "
 "integrity to make sure that the files in the disc are not corrupted."
@@ -974,13 +1082,15 @@ msgstr ""
 "Po vypálení disku CD/DVD pomocí <app>Brasero</app> můžete zkontrolovat jeho "
 "integritu, abyste se ujistili, že soubory na disku nejsou poškozeny."
 
-#: C/tools-check-integrity.page:27(item/p)
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:27
 msgid "Select <guiseq><gui>Tools</gui><gui>Check Integrity...</gui></guiseq>."
 msgstr ""
 "Zvolte <guiseq><gui>Nástroje</gui><gui>Zkontrolovat integritu...</gui></"
 "guiseq>."
 
-#: C/tools-check-integrity.page:30(item/p)
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:30
 msgid ""
 "You can select the option <gui>Use an MD5 file to check the disk.</gui> if "
 "you prefer it."
@@ -988,7 +1098,8 @@ msgstr ""
 "Pokud chcete, můžete zvolit možnost <guilabel>Použít soubor MD5 pro kontrolu "
 "disku</guilabel>."
 
-#: C/tools-check-integrity.page:33(item/p)
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:33
 msgid ""
 "An MD5 (Message-Digest Algorithm 5) is a cryptographic hash function widely "
 "used for checking data integrity."
@@ -996,7 +1107,8 @@ msgstr ""
 "MD5 (Message-Digest Algorithm 5) je šifrovací hešovací funkce hojně "
 "používaná pro kontrolu integrity dat."
 
-#: C/tools-check-integrity.page:34(item/p)
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:34
 msgid ""
 "If you choose this option, you will have to find the MD5 file by clicking in "
 "the folder icon placed below."
@@ -1004,19 +1116,18 @@ msgstr ""
 "Pokud zvolíte tuto možnost, budete muset najít soubor MD5 kliknutím na ikonu "
 "složky umístěnou níže."
 
-#: C/tools-check-integrity.page:39(item/p)
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:39
 msgid "Press <gui>Check</gui> to continue or <gui>Close</gui> to cancel it."
 msgstr ""
 "Stiskněte <gui>Zkontrolovat</gui> pro pokračování nebo <gui>Zavřít</gui> pro "
 "ukončení."
 
-#: C/tools-check-integrity.page:42(item/p)
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:42
 msgid ""
 "When the checking is finished you can either choose to <gui>Check Again</"
 "gui> or just <gui>Close</gui>."
 msgstr ""
 "Jakmile je kontrolova hotová, můžete buď zvolit <gui>Znovu zkontrolovat</"
 "gui> nebo prostě <gui>Zavřít</gui>."
-
-#~ msgid "Brasero Help"
-#~ msgstr "Nápověda Brasero"
