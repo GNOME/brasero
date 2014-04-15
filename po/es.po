@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: brasero.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-10-24 14:28+0000\n"
+"POT-Creation-Date: 2014-04-15 03:05+0000\n"
 "PO-Revision-Date: 2013-10-25 10:29+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -481,12 +481,12 @@ msgstr "No se pudo encontrar un formato para la imagen temporal"
 #: ../nautilus/nautilus-burn-extension.c:218
 #: ../plugins/cdrkit/burn-genisoimage.c:368
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
-#: ../plugins/cdrkit/burn-wodim.c:853 ../plugins/cdrtools/burn-cdrecord.c:836
-#: ../plugins/cdrtools/burn-cdrecord.c:851
+#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
+#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrtools/burn-cdrecord.c:850
 #: ../plugins/cdrtools/burn-mkisofs.c:368
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:784
+#: ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Ocurrió un error interno"
@@ -977,7 +977,7 @@ msgid "An unknown error occurred."
 msgstr "Ocurrió un error desconocido."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1743
-#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:620
 msgid "Error while burning."
 msgstr "Error durante la grabación."
 
@@ -1520,7 +1520,7 @@ msgid "Broken symbolic link"
 msgstr "Enlace simbólico roto"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#: ../libbrasero-utils/brasero-io.c:1190 ../libbrasero-utils/brasero-io.c:2061
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Enlace simbólico recursivo"
@@ -1840,12 +1840,12 @@ msgstr "El disco no está soportado"
 msgid "The drive is empty"
 msgstr "La unidad está vacía"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../libbrasero-burn/brasero-tool-dialog.c:554
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Seleccione un disco"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:581
 msgid "Progress"
 msgstr "Progreso"
 
@@ -2118,7 +2118,7 @@ msgstr "No se especificó ninguna ruta para la salida de la imagen"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709
 #: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:790
 #, c-format
@@ -2474,7 +2474,7 @@ msgstr "_Ocultar los cambios"
 msgid "_Show changes"
 msgstr "_Mostrar los cambios"
 
-#: ../libbrasero-utils/brasero-io.c:1416
+#: ../libbrasero-utils/brasero-io.c:1418
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "El archivo no parece ser una lista de reproducción"
@@ -2611,7 +2611,7 @@ msgstr "Carátula frontal"
 msgid "The image could not be loaded."
 msgstr "No se pudo cargar la imagen."
 
-#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "Gstreamer no pudo manejar «%s»."
@@ -2619,13 +2619,13 @@ msgstr "Gstreamer no pudo manejar «%s»."
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
-#: ../libbrasero-utils/brasero-metadata.c:1194
-#: ../libbrasero-utils/brasero-metadata.c:1207
-#: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1362
-#: ../libbrasero-utils/brasero-metadata.c:1734
-#: ../libbrasero-utils/brasero-metadata.c:1749
-#: ../libbrasero-utils/brasero-metadata.c:1758
+#: ../libbrasero-utils/brasero-metadata.c:1198
+#: ../libbrasero-utils/brasero-metadata.c:1211
+#: ../libbrasero-utils/brasero-metadata.c:1224
+#: ../libbrasero-utils/brasero-metadata.c:1366
+#: ../libbrasero-utils/brasero-metadata.c:1738
+#: ../libbrasero-utils/brasero-metadata.c:1753
+#: ../libbrasero-utils/brasero-metadata.c:1762
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
@@ -2916,15 +2916,15 @@ msgstr "Grabando hoja cue"
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "Necesita recargar el disco antes de su grabación"
 
-#: ../plugins/cdrkit/burn-wodim.c:1270
+#: ../plugins/cdrkit/burn-wodim.c:1269
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "Graba, borra y formatea CD y DVD"
 
-#: ../plugins/cdrkit/burn-wodim.c:1414
+#: ../plugins/cdrkit/burn-wodim.c:1413
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "Activar la opción «-immed» (consultar el manual de wodim)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1417
+#: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "Tasa mínima de llenado del búfer de la unidad (en %) (consulte el manual de "
@@ -2944,16 +2944,16 @@ msgstr "Preparándose para copiar el disco de sonido"
 msgid "Copy tracks from an audio CD with all associated information"
 msgstr "Copiar pistas de un CD de sonido con toda la información asociada"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/cdrtools/burn-cdrecord.c:1203
 #: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "Graba, borra y formatea CD, DVD y BD"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1417
+#: ../plugins/cdrtools/burn-cdrecord.c:1416
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Activar la opción «-immed» (consultar el manual de cdrecord)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr ""
@@ -3080,8 +3080,8 @@ msgid ""
 msgstr ""
 "Error al obtener una clave usada para cifrado. Debe resolver tal problema "
 "con uno de los siguientes métodos: en una terminal, establezca el código de "
-"región DVD apropiado para su reproductor de CD/DVD con el comando «regionset %"
-"s» o ejecute el comando «DVDCSS_METHOD=title brasero --no-existing-session»"
+"región DVD apropiado para su reproductor de CD/DVD con el comando «regionset "
+"%s» o ejecute el comando «DVDCSS_METHOD=title brasero --no-existing-session»"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3299,92 +3299,92 @@ msgstr ""
 msgid "Creates disc images suitable for SVCDs"
 msgstr "Crea imágenes de disco apropiados para SVCD"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:123
 msgid "_Project"
 msgstr "_Proyecto"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:124
 msgid "_View"
 msgstr "_Ver"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:125
 msgid "_Edit"
 msgstr "_Editar"
 
-#: ../src/brasero-app.c:127
+#: ../src/brasero-app.c:126
 msgid "_Tools"
 msgstr "_Herramientas"
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:128
 msgid "_Help"
 msgstr "Ay_uda"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:130
 msgid "P_lugins"
 msgstr "_Complementos"
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:131
 msgid "Choose plugins for Brasero"
 msgstr "Elegir complementos para Brasero"
 
-#: ../src/brasero-app.c:134
+#: ../src/brasero-app.c:133
 msgid "E_ject"
 msgstr "E_xpulsar"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:134
 msgid "Eject a disc"
 msgstr "Expulsar un disco"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:136
 msgid "_Blank…"
 msgstr "_Borrar…"
 
-#: ../src/brasero-app.c:138
+#: ../src/brasero-app.c:137
 msgid "Blank a disc"
 msgstr "Borrar un disco"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
 msgstr "_Comprobar integridad…"
 
-#: ../src/brasero-app.c:141
+#: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
 msgstr "Verifica la integridad de datos del disco"
 
-#: ../src/brasero-app.c:144
+#: ../src/brasero-app.c:143
 msgid "Quit Brasero"
 msgstr "Salir de Brasero"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "_Contents"
 msgstr "Índ_ice"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "Display help"
 msgstr "Mostrar ayuda"
 
-#: ../src/brasero-app.c:149
+#: ../src/brasero-app.c:148
 msgid "About"
 msgstr "Acerca de"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2070
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2069
 msgid "Disc Burner"
 msgstr "Grabador de discos"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
+#: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
 msgstr "Error al cargar proyecto"
 
-#: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
+#: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "Añada archivos al proyecto."
 
-#: ../src/brasero-app.c:830 ../src/brasero-app.c:859 ../src/brasero-app.c:919
+#: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
 msgstr "El proyecto está vacío"
 
-#: ../src/brasero-app.c:1174
+#: ../src/brasero-app.c:1176
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -3396,7 +3396,7 @@ msgstr ""
 "Software Foundation; ya sea en la versión 2 de la Licencia, o (a su opción) "
 "cualquier versión posterior."
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1181
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -3408,7 +3408,7 @@ msgstr ""
 "PARA UN PROPÓSITO DETERMINADO. Vea la Licencia Pública General de GNU para "
 "más detalles."
 
-#: ../src/brasero-app.c:1184
+#: ../src/brasero-app.c:1186
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -3418,11 +3418,11 @@ msgstr ""
 "con Brasero; si no es así, escriba a la Free Software Foundation, Inc, 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, EE. UU."
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Una aplicación de grabación de CD/DVD fácil de usar para GNOME"
 
-#: ../src/brasero-app.c:1213
+#: ../src/brasero-app.c:1215
 msgid "Brasero Homepage"
 msgstr "Página web de Brasero"
 
@@ -3434,7 +3434,7 @@ msgstr "Página web de Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1225
+#: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2010\n"
@@ -3442,16 +3442,16 @@ msgstr ""
 "Sergio Rivadero <sergiorivadero@argentina.com>, 2006\n"
 "Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006"
 
-#: ../src/brasero-app.c:1447
+#: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "El proyecto «%s» no existe"
 
-#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
+#: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
 msgstr "Proyectos _recientes"
 
-#: ../src/brasero-app.c:1732
+#: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
 msgstr "Mostrar los proyectos abiertos recientemente"
 
@@ -3515,7 +3515,7 @@ msgstr "Partir"
 msgid "Track"
 msgstr "Pista"
 
-#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1209
 msgid "Title"
 msgstr "Título"
 
@@ -3829,7 +3829,7 @@ msgid ""
 "overwrite its contents on the disc to be burnt."
 msgstr ""
 "Ya existe un archivo con este nombre en la carpeta. Reemplazarlo "
-"sobreescribirá su contenido en el disco que grabar."
+"sobrescribirá su contenido en el disco que grabar."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3928,7 +3928,7 @@ msgstr "Modo de renombramiento"
 msgid "Files"
 msgstr "Archivos"
 
-#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1227
 msgid "Size"
 msgstr "Tamaño"
 
@@ -4254,8 +4254,8 @@ msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Para quitar archivos selecciónelos y pulse el botón «Quitar» o pulse la tecla "
-"«Suprimir»"
+"Para quitar archivos selecciónelos y pulse el botón «Quitar» o pulse la "
+"tecla «Suprimir»"
 
 #: ../src/brasero-project.c:804
 #, c-format
@@ -4611,15 +4611,15 @@ msgstr "Disco de vídeo (%s)"
 msgid "Error while loading the project."
 msgstr "Error al cargar proyecto."
 
-#: ../src/brasero-project-parse.c:454
+#: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
 msgstr "No se pudo abrir el proyecto"
 
-#: ../src/brasero-project-parse.c:463
+#: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
 msgstr "El archivo está vacío"
 
-#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+#: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
 msgstr "No parece ser un proyecto de Brasero válido"
 
@@ -4770,7 +4770,7 @@ msgstr "Final de la canción:"
 msgid "Track length:"
 msgstr "Longitud de la pista:"
 
-#: ../src/brasero-song-properties.c:372
+#: ../src/brasero-song-properties.c:365
 #, c-format
 msgid "Song information for track %02i"
 msgstr "Información de la canción para la pista %02i"
@@ -4968,78 +4968,58 @@ msgstr "«%s» no tiene un tipo adecuado para proyectos de vídeo."
 msgid "Please only add files with video content"
 msgstr "Añada sólo archivos con un contenido de vídeo"
 
-#: ../src/eggdesktopfile.c:165
-#, c-format
-msgid "File is not a valid .desktop file"
-msgstr "El archivo no es un archivo .desktop válido"
-
-#: ../src/eggdesktopfile.c:188
-#, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "No se reconoce la versión «%s» del archivo desktop"
-
-#: ../src/eggdesktopfile.c:968
-#, c-format
-msgid "Starting %s"
-msgstr "Iniciando %s"
-
-#: ../src/eggdesktopfile.c:1110
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "La aplicación no acepta documentos en la línea de comandos"
-
-#: ../src/eggdesktopfile.c:1178
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "Opción de lanzamiento no reconocida: %d"
-
-#: ../src/eggdesktopfile.c:1383
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr ""
-"No se pueden pasar los URI de documentos a entradas de escritorio «Type=Link»"
-
-#: ../src/eggdesktopfile.c:1404
-#, c-format
-msgid "Not a launchable item"
-msgstr "No es un elemento lanzable"
-
-#: ../src/eggsmclient.c:226
-msgid "Disable connection to session manager"
-msgstr "Desactivar la conexión con el gestor de sesiones"
-
-#: ../src/eggsmclient.c:229
-msgid "Specify file containing saved configuration"
-msgstr "Especificar el archivo que contiene la configuración guardada"
-
-#: ../src/eggsmclient.c:229
-msgid "FILE"
-msgstr "ARCHIVO"
-
-#: ../src/eggsmclient.c:232
-msgid "Specify session management ID"
-msgstr "Especifique el ID de gestión de la sesión"
-
-#: ../src/eggsmclient.c:232
-msgid "ID"
-msgstr "ID"
-
-#: ../src/eggsmclient.c:253
-msgid "Session management options:"
-msgstr "Opciones de gestión de la sesión:"
-
-#: ../src/eggsmclient.c:254
-msgid "Show session management options"
-msgstr "Mostrar las opciones de gestión de la sesión"
-
-#: ../src/main.c:86
+#: ../src/main.c:84
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:99
+#: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Escriba «%s --help» para ver todas las opciones disponibles\n"
+
+#~ msgid "File is not a valid .desktop file"
+#~ msgstr "El archivo no es un archivo .desktop válido"
+
+#~ msgid "Unrecognized desktop file Version '%s'"
+#~ msgstr "No se reconoce la versión «%s» del archivo desktop"
+
+#~ msgid "Starting %s"
+#~ msgstr "Iniciando %s"
+
+#~ msgid "Application does not accept documents on command line"
+#~ msgstr "La aplicación no acepta documentos en la línea de comandos"
+
+#~ msgid "Unrecognized launch option: %d"
+#~ msgstr "Opción de lanzamiento no reconocida: %d"
+
+#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+#~ msgstr ""
+#~ "No se pueden pasar los URI de documentos a entradas de escritorio "
+#~ "«Type=Link»"
+
+#~ msgid "Not a launchable item"
+#~ msgstr "No es un elemento lanzable"
+
+#~ msgid "Disable connection to session manager"
+#~ msgstr "Desactivar la conexión con el gestor de sesiones"
+
+#~ msgid "Specify file containing saved configuration"
+#~ msgstr "Especificar el archivo que contiene la configuración guardada"
+
+#~ msgid "FILE"
+#~ msgstr "ARCHIVO"
+
+#~ msgid "Specify session management ID"
+#~ msgstr "Especifique el ID de gestión de la sesión"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Session management options:"
+#~ msgstr "Opciones de gestión de la sesión:"
+
+#~ msgid "Show session management options"
+#~ msgstr "Mostrar las opciones de gestión de la sesión"
 
 #~ msgid "Copying `%s` locally"
 #~ msgstr "Copiando  «%s» localmente"
@@ -5226,8 +5206,8 @@ msgstr "Escriba «%s --help» para ver todas las opciones disponibles\n"
 
 #~ msgid "click on the \"Remove\" button to remove selected items in this area"
 #~ msgstr ""
-#~ "pulsar en el botón «Quitar» para quitar los archivos seleccionados en este "
-#~ "área"
+#~ "pulsar en el botón «Quitar» para quitar los archivos seleccionados en "
+#~ "este área"
 
 #~ msgid "select items in this area, and choose \"Remove\" from context menu"
 #~ msgstr ""
