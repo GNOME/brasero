@@ -1,11 +1,11 @@
 # Alexander Nyakhaychyk <nyakhaychyk@gmail.com>, 2009, 2010.
-# Ihar Hrachyshka <ihar.hrachyshka@gmail.com>, 2010, 2011, 2013.
+# Ihar Hrachyshka <ihar.hrachyshka@gmail.com>, 2010, 2011, 2013, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-22 22:16+0000\n"
+"POT-Creation-Date: 2014-05-04 14:58+0000\n"
 "PO-Revision-Date: 2012-07-15 14:40+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
@@ -15,6 +15,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: ../data/brasero.appdata.xml.in.h:1
+msgid ""
+"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is "
+"designed to be as simple as possible and has some unique features to enable "
+"users to create their discs easily and quickly."
+msgstr ""
+"Brasero, праграма для асяроддзя GNOME, прызначаная для запісу CD/DVD-дыскаў. "
+"Яна адмыслова спраектаваная дзеля таго, каб быць простай у выкарыстанні, "
+"і мае колькі ўнікальных функцый для зручнага запісу дыскаў."
+
+#: ../data/brasero.appdata.xml.in.h:2
+msgid ""
+"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports "
+"CD-TEXT, multisession and joliet extensions. You can simply drag and drop "
+"files from other local applications or from remote shared drives to easily "
+"burn them to a disc."
+msgstr ""
+"Brasero дазваляе ствараць, капіраваць і запісваць аўдыядыскі і дыскі з данымі на CD/DVD. "
+"Праграма поўнасцю падтрымлівае CD-TEXT, а таксама пашырэнні для шматсесійных дыскаў і Joliet. "
+"Дарэчы, вы можаце проста перацягваць файлы з іншых праграм або з аддаленых супольных "
+"дыскаў у акно гэтай праграмы, каб запісаць іх на дыску."
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -56,33 +78,33 @@ msgstr "Стварыць відэапраект"
 msgid "Brasero project file"
 msgstr "Праектны файл Brasero"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+#: ../data/org.gnome.brasero.gschema.xml.h:1
 msgid "Should Nautilus extension output debug statements"
 msgstr "Ці мусіць пашырэнне Наўтылуса выводзіць адладачныя паведамленні"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
+#: ../data/org.gnome.brasero.gschema.xml.h:2
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
 msgstr "Ці мусіць пашырэнне Наўтылуса выводзіць адладачныя паведамленні."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+#: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
 msgstr "Тып праверачнай сумы для дыскавых вобразаў"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+#: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
 msgstr "0 = MD5, 1 = SHA1, 2 = SHA256"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+#: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
 msgstr "Тып праверачнай сумы для файлаў"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+#: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
 msgstr "Каталог часовых файлаў"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+#: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -92,11 +114,11 @@ msgstr ""
 "мае пэўнага значэння, будзе выкарыстаны прадвызначаны каталог для часовых "
 "файлаў бібліятэкі glib."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+#: ../data/org.gnome.brasero.gschema.xml.h:8
 msgid "Favourite burn engine"
 msgstr "Упадабаны рухавік для запісу дыскаў"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+#: ../data/org.gnome.brasero.gschema.xml.h:9
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
@@ -104,11 +126,11 @@ msgstr ""
 "Назва ўпадабанага рухавіка для запісу дыскаў. Па магчымасці, ён будзе ўжыты "
 "праграмай."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+#: ../data/org.gnome.brasero.gschema.xml.h:10
 msgid "White list of additional plugins to use"
 msgstr "\"Белы спіс\" дадатковых плугінаў"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+#: ../data/org.gnome.brasero.gschema.xml.h:11
 msgid ""
 "Contains the list of additional plugins Brasero will use to burn discs. If "
 "set to NULL, Brasero will load them all."
@@ -116,11 +138,11 @@ msgstr ""
 "Спіс дадатковых плугінаў Brasero, патрэбных для запісу дыскаў. Калі ключ мае "
 "значэнне NULL, Brasero загрузіць усе наяўныя плугіны."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+#: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "Уключыць сцяжок \"-immed\" для cdrecord"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+#: ../data/org.gnome.brasero.gschema.xml.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -129,12 +151,12 @@ msgstr ""
 "магчымасцю з асцярожнасцю, бо яна патрэбна толькі для некаторых праблемных "
 "прыводаў і канфігурацый."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+#: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
 "Ці трэба выкарыстоўваць сцяжок \"-use-the-force-luke=dao\" для growisofs"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+#: ../data/org.gnome.brasero.gschema.xml.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -142,19 +164,19 @@ msgstr ""
 "Ці трэба выкарыстоўваць сцяжок \"-use-the-force-luke=dao\" для growisofs. "
 "Гэта можа дапамагчы ў выпадку праблемных прыводаў ці канфігурацыі."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+#: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
 msgstr "Выкарыстоўваецца для cdrecord разам са сцяжком \"-immed\""
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
 msgstr "Выкарыстоўваецца для cdrecord разам са сцяжком \"-immed\"."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr "Ці трэба выкарыстоўваць сцяжок \"--driver generic-mmc-raw\" для cdrdao"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+#: ../data/org.gnome.brasero.gschema.xml.h:19
 msgid ""
 "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
 "True, brasero will use it; it may be a workaround for some drives/setups."
@@ -162,11 +184,11 @@ msgstr ""
 "Ці трэба выкарыстоўваць сцяжок \"--driver generic-mmc-raw\" для cdrdao. Гэта "
 "можа дапамагчы ў выпадку праблемных прыводаў ці канфігурацыі."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr "Апошняя папка, агледжаная ў часе пошуку дыскавага вобразу для запісу"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+#: ../data/org.gnome.brasero.gschema.xml.h:21
 msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
@@ -174,29 +196,29 @@ msgstr ""
 "Абсалютны адрас апошняга каталога, агледжанага ў часе пошуку дыскавага "
 "вобразу для запісу"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+#: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
 msgstr "Уключыць папярэдні агляд файлаў"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#: ../data/org.gnome.brasero.gschema.xml.h:23
 msgid "Whether to display file preview. Set to true to use it."
 msgstr "Ці патрэбны папярэдні агляд файлаў."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+#: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
 msgstr "Ці трэба адфільтроўваць схаваныя файлы"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+#: ../data/org.gnome.brasero.gschema.xml.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr "Ці трэба адфільтроўваць схаваныя файлы."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+#: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
 msgstr "Замяняць сімвальныя спасылкі файламі, на якія яны ўказваюць"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+#: ../data/org.gnome.brasero.gschema.xml.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -204,21 +226,21 @@ msgstr ""
 "Ці трэба ў праекце замяняць сімвальныя спасылкі файламі, на якія яны "
 "ўказваюць."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
 msgstr "Ці трэба адфільтроўваць зламаныя сімвальныя спасылкі"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+#: ../data/org.gnome.brasero.gschema.xml.h:29
 msgid ""
 "Should brasero filter broken symbolic links. Set to true, brasero will "
 "filter broken symbolic links."
 msgstr "Ці трэба адфільтроўваць зламаныя сімвальныя спасылкі."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+#: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
 msgstr "Прыярытэт плугіна"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+#: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -230,11 +252,11 @@ msgstr ""
 "выкарыстоўваць уласны прыярытэт плугіна. Дадатныя значэнні засланяюць яго, "
 "адмоўныя - выключаюць плугін."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+#: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
 msgstr "Сцяжкі для запісу дыска"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
@@ -242,11 +264,11 @@ msgstr ""
 "Значэнне ключа ўяўляе сцяжкі запісу дыска, ужытыя ў такім кантэксце ў апошні "
 "раз."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
 msgstr "Скорасць запісу"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+#: ../data/org.gnome.brasero.gschema.xml.h:35
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
@@ -434,12 +456,12 @@ msgstr "Не ўдалося адшукаць фармат для часоваг�
 #: ../nautilus/nautilus-burn-extension.c:218
 #: ../plugins/cdrkit/burn-genisoimage.c:368
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
-#: ../plugins/cdrkit/burn-wodim.c:853 ../plugins/cdrtools/burn-cdrecord.c:836
-#: ../plugins/cdrtools/burn-cdrecord.c:851
+#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
+#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrtools/burn-cdrecord.c:850
 #: ../plugins/cdrtools/burn-mkisofs.c:368
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:784
+#: ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Узнікла ўнутраная памылка"
@@ -928,7 +950,7 @@ msgid "An unknown error occurred."
 msgstr "Узнікла невядомая памылка."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1743
-#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:620
 msgid "Error while burning."
 msgstr "Падчас запісу дыска ўзнікла памылка."
 
@@ -1471,7 +1493,7 @@ msgid "Broken symbolic link"
 msgstr "Зламаная сімвальная спасылка"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#: ../libbrasero-utils/brasero-io.c:1190 ../libbrasero-utils/brasero-io.c:2061
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Рэкурсіўная сімвальная спасылка"
@@ -1790,12 +1812,12 @@ msgstr "Дыск не падтрымліваецца"
 msgid "The drive is empty"
 msgstr "Дыск у прыводзе адсутнічае"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../libbrasero-burn/brasero-tool-dialog.c:554
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Выберыце дыск"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:581
 msgid "Progress"
 msgstr "Прагрэс"
 
@@ -2067,7 +2089,7 @@ msgstr "Для выніковага дыскавага вобразу не вы�
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709
 #: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:790
 #, c-format
@@ -2423,7 +2445,7 @@ msgstr "_Схаваць змены"
 msgid "_Show changes"
 msgstr "_Паказаць змены"
 
-#: ../libbrasero-utils/brasero-io.c:1416
+#: ../libbrasero-utils/brasero-io.c:1418
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Гэты файл не з'яўляецца спісам прайгравання"
@@ -2560,7 +2582,7 @@ msgstr "ПЯРЭДНЯЯ ВОКЛАДКА"
 msgid "The image could not be loaded."
 msgstr "Не ўдалося загрузіць выяву."
 
-#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "Не ўдалося апрацаваць \"%s\" з дапамогай GStreamer."
@@ -2568,13 +2590,13 @@ msgstr "Не ўдалося апрацаваць \"%s\" з дапамогай GS
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
-#: ../libbrasero-utils/brasero-metadata.c:1194
-#: ../libbrasero-utils/brasero-metadata.c:1207
-#: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1362
-#: ../libbrasero-utils/brasero-metadata.c:1734
-#: ../libbrasero-utils/brasero-metadata.c:1749
-#: ../libbrasero-utils/brasero-metadata.c:1758
+#: ../libbrasero-utils/brasero-metadata.c:1198
+#: ../libbrasero-utils/brasero-metadata.c:1211
+#: ../libbrasero-utils/brasero-metadata.c:1224
+#: ../libbrasero-utils/brasero-metadata.c:1366
+#: ../libbrasero-utils/brasero-metadata.c:1738
+#: ../libbrasero-utils/brasero-metadata.c:1753
+#: ../libbrasero-utils/brasero-metadata.c:1762
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
@@ -2612,8 +2634,8 @@ msgstr "Не ўдалося стварыць элемент %s"
 #: ../libbrasero-utils/brasero-misc.c:74
 msgid "Display debug statements on stdout for Brasero utilities library"
 msgstr ""
-"Паказваць адладачныя паведамленні бібліятэкі дадатковых прылад Brasero на стандартным "
-"выхадзе"
+"Паказваць адладачныя паведамленні бібліятэкі дадатковых прылад Brasero на "
+"стандартным выхадзе"
 
 #: ../libbrasero-utils/brasero-misc.c:91
 msgid "Brasero utilities library"
@@ -2862,15 +2884,15 @@ msgstr "Запіс cue-табліцы"
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "Перад запісам трэба перазагрузіць дыск"
 
-#: ../plugins/cdrkit/burn-wodim.c:1270
+#: ../plugins/cdrkit/burn-wodim.c:1269
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "Запіс, ачыстка і фарматаванне CD- і DVD-дыскаў"
 
-#: ../plugins/cdrkit/burn-wodim.c:1414
+#: ../plugins/cdrkit/burn-wodim.c:1413
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "Уключыць сцяжок \"-immed\" (гл. даведнік wodim)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1417
+#: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "Мінімальны ўзровень запоўненасці буфера прывода, % (гл. даведнік wodim):"
@@ -2889,16 +2911,16 @@ msgstr "Падрыхтоўка да капіравання аўдыядыска"
 msgid "Copy tracks from an audio CD with all associated information"
 msgstr "Капіраванне аўдыятрэкаў разам з адпаведнай інфармацыяй"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/cdrtools/burn-cdrecord.c:1203
 #: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "Запіс, ачыстка і фарматаванне CD-, DVD- і BD-дыскаў"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1417
+#: ../plugins/cdrtools/burn-cdrecord.c:1416
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Уключыць сцяжок \"-immed\" (гл. даведнік cdrecord)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr ""
@@ -3243,92 +3265,92 @@ msgstr "Пераўтварэнне любога відэафайла ў фарм
 msgid "Creates disc images suitable for SVCDs"
 msgstr "Стварэнне дыскавых вобразаў для SVCD-дыскаў"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:123
 msgid "_Project"
 msgstr "Пра_ект"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:124
 msgid "_View"
 msgstr "_Від"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:125
 msgid "_Edit"
 msgstr "_Праўка"
 
-#: ../src/brasero-app.c:127
+#: ../src/brasero-app.c:126
 msgid "_Tools"
 msgstr "Пры_лады"
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:128
 msgid "_Help"
 msgstr "_Дапамога"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:130
 msgid "P_lugins"
 msgstr "Плу_гіны"
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:131
 msgid "Choose plugins for Brasero"
 msgstr "Выбар плугінаў Brasero"
 
-#: ../src/brasero-app.c:134
+#: ../src/brasero-app.c:133
 msgid "E_ject"
 msgstr "Вы_няць дыск"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:134
 msgid "Eject a disc"
 msgstr "Выняць дыск з прывода"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:136
 msgid "_Blank…"
 msgstr "_Ачысціць дыск..."
 
-#: ../src/brasero-app.c:138
+#: ../src/brasero-app.c:137
 msgid "Blank a disc"
 msgstr "Ачысціць дыск"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
 msgstr "Праверыць _цэласць..."
 
-#: ../src/brasero-app.c:141
+#: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
 msgstr "Праверыць цэласць даных на дыску"
 
-#: ../src/brasero-app.c:144
+#: ../src/brasero-app.c:143
 msgid "Quit Brasero"
 msgstr "Выйсці з Brasero"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "_Contents"
 msgstr "_Змест"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "Display help"
 msgstr "Паказаць даведку"
 
-#: ../src/brasero-app.c:149
+#: ../src/brasero-app.c:148
 msgid "About"
 msgstr "Аб праграме"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2065
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2069
 msgid "Disc Burner"
 msgstr "Запіс дыскаў"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
+#: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
 msgstr "Памылка падчас загрузкі праекта"
 
-#: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
+#: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "Дадайце файлы ў праект."
 
-#: ../src/brasero-app.c:830 ../src/brasero-app.c:859 ../src/brasero-app.c:919
+#: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
 msgstr "Праект пусты"
 
-#: ../src/brasero-app.c:1174
+#: ../src/brasero-app.c:1176
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -3339,7 +3361,7 @@ msgstr ""
 "згодна з умовамі Агульнай Грамадскай Ліцэнзіі GNU (GPL), апублікаванай "
 "Фондам свабоднага апраграмавання, версіі 2 ці любой пазнейшай."
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1181
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -3350,7 +3372,7 @@ msgstr ""
 "гарантый, у тым ліку камерцыйнай вартасці праграмы і наогул яе карысці. "
 "Падрабязней глядзіце ў тэксце Агульнай Грамадскай Ліцэнзіі GNU (GPL)."
 
-#: ../src/brasero-app.c:1184
+#: ../src/brasero-app.c:1186
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -3361,11 +3383,11 @@ msgstr ""
 "апраграмавання на адрас: the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Зручная праграма для запісу CD/DVD-дыскаў у асяроддзі GNOME"
 
-#: ../src/brasero-app.c:1213
+#: ../src/brasero-app.c:1215
 msgid "Brasero Homepage"
 msgstr "Хатняя старонка Brasero"
 
@@ -3377,7 +3399,7 @@ msgstr "Хатняя старонка Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1225
+#: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
 "Мікалай Цэхан <tsekhan@gmail.com>\n"
@@ -3386,16 +3408,16 @@ msgstr ""
 "  Iryna Nikanchuk https://launchpad.net/~unetriste\n"
 "  Alexander Nyakhaychyk https://launchpad.net/~nab"
 
-#: ../src/brasero-app.c:1447
+#: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "Праект \"%s\" не існуе"
 
-#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
+#: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
 msgstr "_Нядаўнія праекты"
 
-#: ../src/brasero-app.c:1732
+#: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
 msgstr "Паказаць праекты, якія былі нядаўна адкрыты"
 
@@ -3459,7 +3481,7 @@ msgstr "Падзяліць"
 msgid "Track"
 msgstr "Аўдыясцежка"
 
-#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1209
 msgid "Title"
 msgstr "Назва"
 
@@ -3872,7 +3894,7 @@ msgstr "Рэжым пераназывання"
 msgid "Files"
 msgstr "Файлы"
 
-#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1227
 msgid "Size"
 msgstr "Памер"
 
@@ -4556,15 +4578,15 @@ msgstr "Відэадыск (%s)"
 msgid "Error while loading the project."
 msgstr "Памылка падчас загрузкі праекта."
 
-#: ../src/brasero-project-parse.c:454
+#: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
 msgstr "Не ўдалося адкрыць праект"
 
-#: ../src/brasero-project-parse.c:463
+#: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
 msgstr "Файл пусты"
 
-#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+#: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Гэты файл не з'яўляецца праектам Brasero"
 
@@ -4716,7 +4738,7 @@ msgstr "Канец песні:"
 msgid "Track length:"
 msgstr "Працягласць трэка:"
 
-#: ../src/brasero-song-properties.c:372
+#: ../src/brasero-song-properties.c:365
 #, c-format
 msgid "Song information for track %02i"
 msgstr "Інфармацыя аб песні для трэка %02i"
@@ -4914,75 +4936,12 @@ msgstr "\"%s\" не падыходзіць для відэапраекта, бо
 msgid "Please only add files with video content"
 msgstr "Дадавайце толькі відэафайлы"
 
-#: ../src/eggdesktopfile.c:165
-#, c-format
-msgid "File is not a valid .desktop file"
-msgstr "Файл не з'яўляецца правільным desktop-файлам"
-
-#: ../src/eggdesktopfile.c:188
-#, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "Невядомая версія desktop-файла \"%s\""
-
-#: ../src/eggdesktopfile.c:968
-#, c-format
-msgid "Starting %s"
-msgstr "Запуск %s"
-
-#: ../src/eggdesktopfile.c:1110
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "Праграма не прымае дакументы з загаднага радка"
-
-#: ../src/eggdesktopfile.c:1178
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "Невядомая опцыя запуску: %d"
-
-#: ../src/eggdesktopfile.c:1383
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr ""
-"Немагчыма перадаць URI-адрасы дакументаў desktop-элементу з \"Type=Link\""
-
-#: ../src/eggdesktopfile.c:1404
-#, c-format
-msgid "Not a launchable item"
-msgstr "Гэта не запускальны элемент"
-
-#: ../src/eggsmclient.c:226
-msgid "Disable connection to session manager"
-msgstr "Выключыць злучэнне з кіраўніком сеансаў"
-
-#: ../src/eggsmclient.c:229
-msgid "Specify file containing saved configuration"
-msgstr "Вызначыць файл, які змяшчае захаваныя настройкі"
-
-#: ../src/eggsmclient.c:229
-msgid "FILE"
-msgstr "ФАЙЛ"
-
-#: ../src/eggsmclient.c:232
-msgid "Specify session management ID"
-msgstr "Вызначыць ідэнтыфікатар для кіравання сеансам"
-
-#: ../src/eggsmclient.c:232
-msgid "ID"
-msgstr "ID"
-
-#: ../src/eggsmclient.c:253
-msgid "Session management options:"
-msgstr "Опцыі для кіравання сеансам:"
-
-#: ../src/eggsmclient.c:254
-msgid "Show session management options"
-msgstr "Паказаць опцыі для кіравання сеансам"
-
-#: ../src/main.c:86
+#: ../src/main.c:84
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:99
+#: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Выканайце \"%s --help\", каб убачыць спіс усіх магчымых опцый\n"
+
