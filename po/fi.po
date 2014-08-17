@@ -4,25 +4,41 @@
 # Ilkka Tuohela <hile@iki.fi> 2006-2009.
 # Timo Jyrinki <timo.jyrinki@iki.fi> 2007-2010.
 #
+#
 # Tommi Vainikainen <thv@iki.fi>, 2009-2011.
 # Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2012, 2013.
-#
+# Lasse Liehu <lasse.liehu@gmail.com>, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-08-22 22:16+0000\n"
-"PO-Revision-Date: 2013-09-16 22:08+0300\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
-"Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-08-09 02:59+0000\n"
+"PO-Revision-Date: 2014-08-09 12:30+0300\n"
+"Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
+"Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2010-09-13 15:08+0000\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: ../data/brasero.appdata.xml.in.h:1
+msgid ""
+"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is "
+"designed to be as simple as possible and has some unique features to enable "
+"users to create their discs easily and quickly."
+msgstr ""
+
+#: ../data/brasero.appdata.xml.in.h:2
+msgid ""
+"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports "
+"CD-TEXT, multisession and joliet extensions. You can simply drag and drop "
+"files from other local applications or from remote shared drives to easily "
+"burn them to a disc."
+msgstr ""
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -64,11 +80,11 @@ msgstr "Luo uusi videoprojekti"
 msgid "Brasero project file"
 msgstr "Braseron projektitiedosto"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+#: ../data/org.gnome.brasero.gschema.xml.h:1
 msgid "Should Nautilus extension output debug statements"
 msgstr "Tulostaa Nautilus-laajennus virheenjäljitystietoja"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
+#: ../data/org.gnome.brasero.gschema.xml.h:2
 msgid ""
 "Should Nautilus extension output debug statements. The value should be set "
 "to true if it should."
@@ -76,23 +92,23 @@ msgstr ""
 "Tulostaa Nautilus-laajennus virheenjäljitystietoja. Tulisi asettaa todeksi, "
 "jos halutaan tulostavan."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+#: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
 msgstr "Levykuville käytettävä tarkistussummatyyppi"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+#: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
 msgstr "Aseta seuraavasti: 0 = MD5, 1 = SHA1 ja 2 = SHA256"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+#: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
 msgstr "Tiedostoille käytettävä tarkistussummatyyppi"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+#: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
 msgstr "Tilapäistiedostojen kansio"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+#: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid ""
 "Contains the path to the directory where brasero should store temporary "
 "files. If that value is empty, the default directory set for glib will be "
@@ -101,11 +117,11 @@ msgstr ""
 "Sisältää polun hakemistoon, jonne brasero tallentaa väliaikaistiedostot. Jos "
 "arvo on tyhjä, käytetään glibin oletushakemistoa."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+#: ../data/org.gnome.brasero.gschema.xml.h:8
 msgid "Favourite burn engine"
 msgstr "Ensisijainen levynkirjoitusjärjestelmä"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+#: ../data/org.gnome.brasero.gschema.xml.h:9
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
@@ -113,11 +129,11 @@ msgstr ""
 "Sisältää ensisijaisesti käytettävän kirjoitusjärjestelmän nimen. Arvoa "
 "käytetään aina kun se on mahdollista."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+#: ../data/org.gnome.brasero.gschema.xml.h:10
 msgid "White list of additional plugins to use"
 msgstr "Luettelo hyväksytyistä liitännäisistä"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+#: ../data/org.gnome.brasero.gschema.xml.h:11
 msgid ""
 "Contains the list of additional plugins Brasero will use to burn discs. If "
 "set to NULL, Brasero will load them all."
@@ -125,11 +141,11 @@ msgstr ""
 "Sisältää luettelon lisäliitännäisistä, joita Brasero käyttää levyjen "
 "kirjoitukseen. Jos arvo on NULL, Brasero lataa kaikki liitännäiset."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+#: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "Käytä ”-immed”-lippua cdrecordin kanssa"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+#: ../data/org.gnome.brasero.gschema.xml.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
@@ -137,11 +153,11 @@ msgstr ""
 "Käytetäänkö cdrecordin kanssa lippua ”-immed”. Käytä tätä varoen (asettaen "
 "se todeksi), sillä se on vain korjaus joillekin asemille ja järjestelmille."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+#: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr "Käytetäänkö growisofs:n kanssa ”-use-the-force-luke=dao”-lippua"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+#: ../data/org.gnome.brasero.gschema.xml.h:15
 msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
@@ -150,19 +166,19 @@ msgstr ""
 "asetetaan epätodeksi, Brasero ei käytä sitä – tämä voi toimia korjauksena "
 "joillekin asemille ja järjestelmille."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+#: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
 msgstr "Käytetään ”-immed”-lipun kanssa käytettäessä cdrecordia"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
 msgstr "Käytetään ”-immed”-lipun kanssa käytettäessä cdrecordia"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr "Käytetäänkö ”--driver generic-mmc-raw” -lippua cdrdaon kanssa"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+#: ../data/org.gnome.brasero.gschema.xml.h:19
 msgid ""
 "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
 "True, brasero will use it; it may be a workaround for some drives/setups."
@@ -171,11 +187,11 @@ msgstr ""
 "käyttää sitä, jos asetetaan todeksi – se voi toimia korjauksena joillekin "
 "asemille ja järjestelmille."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr "Kirjoítettavia levykuvia varten viimeksi selattu kansi"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+#: ../data/org.gnome.brasero.gschema.xml.h:21
 msgid ""
 "Contains the absolute path of the directory that was last browsed for images "
 "to burn"
@@ -183,19 +199,19 @@ msgstr ""
 "Sisältää koko polun hakemistoon, jota selattiin viimeksi kirjoitettavien "
 "levykuvien osalta"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+#: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
 msgstr "Käytä tiedoston esikatselua"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#: ../data/org.gnome.brasero.gschema.xml.h:23
 msgid "Whether to display file preview. Set to true to use it."
 msgstr "Näytetäänkö tiedoston esikatselu. Aseta arvoon TOSI nähdäksesi sen"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+#: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
 msgstr "Suodatetaanko piilotiedostot"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+#: ../data/org.gnome.brasero.gschema.xml.h:25
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
@@ -203,11 +219,11 @@ msgstr ""
 "Suodatetaanko piilotiedostot. Jos tosi, brasero suodattaa pois "
 "piilotiedostot."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+#: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
 msgstr "Korvaa symboliset linkit linkin kohteella"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+#: ../data/org.gnome.brasero.gschema.xml.h:27
 msgid ""
 "Should brasero replace symbolic links by their target files in the project. "
 "Set to true, brasero will replace symbolic links."
@@ -215,11 +231,11 @@ msgstr ""
 "Korvaako brasero symboliset linkit linkkien kohdetiedostoilla projektissa. "
 "Jos tosi, brasero korvaa symboliset linkit."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
 msgstr "Suodattaako brasero rikkinäiset symboliset linkit"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+#: ../data/org.gnome.brasero.gschema.xml.h:29
 msgid ""
 "Should brasero filter broken symbolic links. Set to true, brasero will "
 "filter broken symbolic links."
@@ -227,11 +243,11 @@ msgstr ""
 "Suodatetaanko rikkinäiset symboliset linkit. Jos tosi, brasero suodattaa "
 "pois rikkinäiset linkit."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+#: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
 msgstr "Liitännäisen tärkeysarvo"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+#: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid ""
 "When several plugins are available for the same task, this value is used to "
 "determine which plugin should be given priority. 0 means the plugin's native "
@@ -243,21 +259,21 @@ msgstr ""
 "omaan tärkeysarvoa käytetään. Positiivinen arvo ylikirjoittaa liitännäisen "
 "oman tärkeysarvon, ja negatiivinen ottaa liitännäisen pois käytöstä."
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+#: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
 msgstr "Käytettävät kirjoitusliput"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid ""
 "This value represents the burning flags that were used in such a context the "
 "last time."
 msgstr "Viimeksi asiayhteydessä käytetyt kirjoitusliput"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
 msgstr "Käytettävä nopeus"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+#: ../data/org.gnome.brasero.gschema.xml.h:35
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
@@ -389,24 +405,21 @@ msgstr "Levyllä ei ole tarpeeksi tilaa"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (sovellus)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (kirjasto)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer-liitännäinen)"
@@ -444,12 +457,12 @@ msgstr "Väliaikaisen levykuvan tyyppiä ei voitu selvittää"
 #: ../nautilus/nautilus-burn-extension.c:218
 #: ../plugins/cdrkit/burn-genisoimage.c:368
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
-#: ../plugins/cdrkit/burn-wodim.c:853 ../plugins/cdrtools/burn-cdrecord.c:836
-#: ../plugins/cdrtools/burn-cdrecord.c:851
+#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
+#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrtools/burn-cdrecord.c:850
 #: ../plugins/cdrtools/burn-mkisofs.c:368
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:784
+#: ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Tapahtui sisäinen virhe"
@@ -942,7 +955,7 @@ msgid "An unknown error occurred."
 msgstr "Tapahtui tuntematon virhe."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1743
-#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:620
 msgid "Error while burning."
 msgstr "Virhe kirjoitettaessa."
 
@@ -1170,8 +1183,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Laita asemaan levy, joka ei ole kopiosuojattu."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Kaikkia tarvittavia sovelluksia tai kirjastoja ei ole asennettu."
 
@@ -1231,8 +1243,7 @@ msgstr "Levyn kirjoituksen asetukset"
 msgid "Video Options"
 msgstr "Videovalinnat"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1275,8 +1286,7 @@ msgstr "Kopioi CD/DVD"
 msgid "Select disc to copy"
 msgstr "Valitse kopioitava levy"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Asenna seuraavat käsin ja yritä uudelleen:"
 
@@ -1376,8 +1386,8 @@ msgstr "Oikeutesi eivät riitä kirjoittamaan tähän kohteeseen"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:330
 msgid ""
-"The filesystem on this volume does not support large files (size over 2 "
-"GiB).\n"
+"The filesystem on this volume does not support large files (size over 2 GiB)."
+"\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
 "Tämän taltion tiedostojärjestelmä ei tue isoja tiedostoja (koko yli 2 GiB).\n"
@@ -1479,7 +1489,7 @@ msgid "Broken symbolic link"
 msgstr "Rikkinäinen symbolinen linkki"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#: ../libbrasero-utils/brasero-io.c:1190 ../libbrasero-utils/brasero-io.c:2061
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Rekursiivinen symbolinen linkki"
@@ -1797,12 +1807,12 @@ msgstr "Levy ei ole tuettu"
 msgid "The drive is empty"
 msgstr "Asemassa ei ole levyä"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../libbrasero-burn/brasero-tool-dialog.c:554
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Valitse levy"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:581
 msgid "Progress"
 msgstr "Edistyminen"
 
@@ -2071,7 +2081,7 @@ msgstr "Luotavalle levykuvalle ei annettu polkua"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709
 #: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:790
 #, c-format
@@ -2362,8 +2372,7 @@ msgstr "Datalevy (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Tämä ei näytä olevan kelvollinen ISO-levykuva"
@@ -2425,7 +2434,7 @@ msgstr "_Piilota muutokset"
 msgid "_Show changes"
 msgstr "_Näytä muutokset"
 
-#: ../libbrasero-utils/brasero-io.c:1416
+#: ../libbrasero-utils/brasero-io.c:1418
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Tiedosto ei näytä olevan soittolista"
@@ -2526,7 +2535,7 @@ msgstr "Lihavoi"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:644
 msgid "Font family and size"
-msgstr "Kirjasinperhe ja koko"
+msgstr "Fonttiperhe ja koko"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "_Text Color"
@@ -2562,7 +2571,7 @@ msgstr "ETUKANSI"
 msgid "The image could not be loaded."
 msgstr "Kuvaa ei voitu ladata."
 
-#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "GStreamer ei voinut käsitellä kohdetta ”%s”."
@@ -2570,13 +2579,13 @@ msgstr "GStreamer ei voinut käsitellä kohdetta ”%s”."
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
-#: ../libbrasero-utils/brasero-metadata.c:1194
-#: ../libbrasero-utils/brasero-metadata.c:1207
-#: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1362
-#: ../libbrasero-utils/brasero-metadata.c:1734
-#: ../libbrasero-utils/brasero-metadata.c:1749
-#: ../libbrasero-utils/brasero-metadata.c:1758
+#: ../libbrasero-utils/brasero-metadata.c:1198
+#: ../libbrasero-utils/brasero-metadata.c:1211
+#: ../libbrasero-utils/brasero-metadata.c:1224
+#: ../libbrasero-utils/brasero-metadata.c:1366
+#: ../libbrasero-utils/brasero-metadata.c:1738
+#: ../libbrasero-utils/brasero-metadata.c:1753
+#: ../libbrasero-utils/brasero-metadata.c:1762
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
@@ -2612,18 +2621,15 @@ msgid "%s element could not be created"
 msgstr "Elementtiä %s ei voitu luoda"
 
 #: ../libbrasero-utils/brasero-misc.c:74
-#| msgid "Display debug statements on stdout for Brasero burn library"
 msgid "Display debug statements on stdout for Brasero utilities library"
 msgstr ""
 "Näytä Braseron apuohjelmakirjaston vianjäljitysviestit oletustulosteessa"
 
 #: ../libbrasero-utils/brasero-misc.c:91
-#| msgid "Brasero optical media library"
 msgid "Brasero utilities library"
 msgstr "Braseron apuohjelmien kirjasto"
 
 #: ../libbrasero-utils/brasero-misc.c:92
-#| msgid "Display options for Brasero-burn library"
 msgid "Display options for Brasero-utils library"
 msgstr "Näytä Brasero-utils-kirjaston valinnat"
 
@@ -2867,15 +2873,15 @@ msgstr "Kirjoitetaan cue-tiedostoa"
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "Levy täytyy ladata uudelleen ennen kirjoitusta"
 
-#: ../plugins/cdrkit/burn-wodim.c:1270
+#: ../plugins/cdrkit/burn-wodim.c:1269
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "Kirjoittaa, tyhjentää ja alustaa CD- ja DVD-levyjä"
 
-#: ../plugins/cdrkit/burn-wodim.c:1414
+#: ../plugins/cdrkit/burn-wodim.c:1413
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "Ota ”-immed”-lippu käyttöön (lisätietoja wodimin ohjeesta)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1417
+#: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "Pienin mahdollinen aseman puskurin täyttöaste prosenteissa (lisätietoja "
@@ -2895,16 +2901,16 @@ msgstr "Valmistellaan äänilevyn kopioimista"
 msgid "Copy tracks from an audio CD with all associated information"
 msgstr "Kopioi raidat ääni-CD-levyltä kaikkine tietoineen"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/cdrtools/burn-cdrecord.c:1203
 #: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "Kirjoittaa, tyhjentää ja alustaa CD-, DVD- ja BD-levyjä"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1417
+#: ../plugins/cdrtools/burn-cdrecord.c:1416
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "Käytä ”-immed”-lippua (lisätietoja cdrecordin ohjeesta)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr ""
@@ -3247,92 +3253,92 @@ msgstr ""
 msgid "Creates disc images suitable for SVCDs"
 msgstr "Luo SVCD-levyille sopivia levykuvia"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:123
 msgid "_Project"
 msgstr "_Projekti"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:124
 msgid "_View"
 msgstr "_Näytä"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:125
 msgid "_Edit"
 msgstr "_Muokkaa"
 
-#: ../src/brasero-app.c:127
+#: ../src/brasero-app.c:126
 msgid "_Tools"
 msgstr "_Työkalut"
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:128
 msgid "_Help"
 msgstr "O_hje"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:130
 msgid "P_lugins"
 msgstr "_Liitännäiset"
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:131
 msgid "Choose plugins for Brasero"
 msgstr "Valitse Braseron liitännäiset"
 
-#: ../src/brasero-app.c:134
+#: ../src/brasero-app.c:133
 msgid "E_ject"
 msgstr "_Poista asemasta"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:134
 msgid "Eject a disc"
 msgstr "Poista levy asemasta"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:136
 msgid "_Blank…"
 msgstr "_Tyhjennä…"
 
-#: ../src/brasero-app.c:138
+#: ../src/brasero-app.c:137
 msgid "Blank a disc"
 msgstr "Tyhjennä levy"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
 msgstr "_Tarkista eheys…"
 
-#: ../src/brasero-app.c:141
+#: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
 msgstr "Tarkista levyn tietojen eheys"
 
-#: ../src/brasero-app.c:144
+#: ../src/brasero-app.c:143
 msgid "Quit Brasero"
 msgstr "Lopeta brasero"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "_Contents"
 msgstr "_Sisältö"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "Display help"
 msgstr "Näytä ohje"
 
-#: ../src/brasero-app.c:149
+#: ../src/brasero-app.c:148
 msgid "About"
 msgstr "Tietoja"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2065
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2069
 msgid "Disc Burner"
 msgstr "Levynkirjoittaja"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
+#: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
 msgstr "Virhe ladattaessa projektia"
 
-#: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
+#: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "Lisää tiedostoja projektiin."
 
-#: ../src/brasero-app.c:830 ../src/brasero-app.c:859 ../src/brasero-app.c:919
+#: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
 msgstr "Projekti on tyhjä"
 
-#: ../src/brasero-app.c:1174
+#: ../src/brasero-app.c:1176
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -3344,7 +3350,7 @@ msgstr ""
 "Software Foundation on ne julkaissut; joko lisenssin version 2, tai "
 "(valinnan mukaan) minkä tahansa myöhemmän version mukaisesti."
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1181
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -3356,7 +3362,7 @@ msgstr ""
 "laadusta tai soveltuvuudesta tiettyyn tarkoitukseen. Katso GPL lisenssistä "
 "lisää yksityiskohtia."
 
-#: ../src/brasero-app.c:1184
+#: ../src/brasero-app.c:1186
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -3366,11 +3372,11 @@ msgstr ""
 "kirjoita osoitteeseen Free Software Foundation Inc., 51 Franklin Street, "
 "Fifth Floor, Boston, MA  02110-1301, USA"
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Yksikertainen CD- ja DVD-kirjoitusohjelma Gnomelle"
 
-#: ../src/brasero-app.c:1213
+#: ../src/brasero-app.c:1215
 msgid "Brasero Homepage"
 msgstr "Braseron kotisivu"
 
@@ -3382,7 +3388,7 @@ msgstr "Braseron kotisivu"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1225
+#: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
 "Ilkka Tuohela, 2006-2009\n"
@@ -3400,16 +3406,16 @@ msgstr ""
 "  Tommi Vainikainen https://launchpad.net/~thv\n"
 "  papukaija https://launchpad.net/~papukaija"
 
-#: ../src/brasero-app.c:1447
+#: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "Projektia ”%s” ei löydy"
 
-#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
+#: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
 msgstr "_Viimeisimmät projektit"
 
-#: ../src/brasero-app.c:1732
+#: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
 msgstr "Näytä äskettäin avatut projektit"
 
@@ -3473,7 +3479,7 @@ msgstr "Jaa"
 msgid "Track"
 msgstr "Raita"
 
-#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1209
 msgid "Title"
 msgstr "Nimi"
 
@@ -3882,7 +3888,7 @@ msgstr "Nimeämistapa"
 msgid "Files"
 msgstr "Tiedostot"
 
-#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1227
 msgid "Size"
 msgstr "Koko"
 
@@ -4558,15 +4564,15 @@ msgstr "Videolevy (%s)"
 msgid "Error while loading the project."
 msgstr "Virhe ladattaessa projektia."
 
-#: ../src/brasero-project-parse.c:454
+#: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
 msgstr "Projektia ei voitu avata"
 
-#: ../src/brasero-project-parse.c:463
+#: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
 msgstr "Tiedosto on tyhjä"
 
-#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+#: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Tiedosto ei näytä olevan kelvollinen brasero-projekti"
 
@@ -4717,7 +4723,7 @@ msgstr "Kappaleen loppu:"
 msgid "Track length:"
 msgstr "Raidan pituus:"
 
-#: ../src/brasero-song-properties.c:372
+#: ../src/brasero-song-properties.c:365
 #, c-format
 msgid "Song information for track %02i"
 msgstr "Kappaletiedot raidalle %02i"
@@ -4915,268 +4921,11 @@ msgstr "Kohde ”%s” ei ole videoprojekteille sopivaa tyyppiä."
 msgid "Please only add files with video content"
 msgstr "Lisää vain videota sisältäviä tiedostoja"
 
-#: ../src/eggdesktopfile.c:165
-#, c-format
-msgid "File is not a valid .desktop file"
-msgstr "Tiedosto ei ole kelvollinen .desktop-tiedosto"
-
-#: ../src/eggdesktopfile.c:188
-#, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "Työpöytätiedoston versiota ”%s” ei tunnistettu."
-
-#: ../src/eggdesktopfile.c:968
-#, c-format
-msgid "Starting %s"
-msgstr "Aloitetaan %s"
-
-#: ../src/eggdesktopfile.c:1110
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "Sovellus ei hyväksy asiakirjoja komentoriviltä"
-
-#: ../src/eggdesktopfile.c:1178
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "Tuntematon käynnistysvalitsin: %d"
-
-#: ../src/eggdesktopfile.c:1383
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr "Asiakirja-URIa ei voida antaa ”Type=Link”-työpöytälinkeille"
-
-#: ../src/eggdesktopfile.c:1404
-#, c-format
-msgid "Not a launchable item"
-msgstr "Kohde ei ole käynnistettävissä"
-
-#: ../src/eggsmclient.c:226
-msgid "Disable connection to session manager"
-msgstr "Estä yhteys istunnonhallintaan"
-
-#: ../src/eggsmclient.c:229
-msgid "Specify file containing saved configuration"
-msgstr "Anna tiedosto, joka sisältää tallennetut asetukset"
-
-#: ../src/eggsmclient.c:229
-msgid "FILE"
-msgstr "TIEDOSTO"
-
-#: ../src/eggsmclient.c:232
-msgid "Specify session management ID"
-msgstr "Anna istunnonhallinnan tunniste"
-
-#: ../src/eggsmclient.c:232
-msgid "ID"
-msgstr "TUNNISTE"
-
-#: ../src/eggsmclient.c:253
-msgid "Session management options:"
-msgstr "Istunnonhallinnan valitsimet:"
-
-#: ../src/eggsmclient.c:254
-msgid "Show session management options"
-msgstr "Näytä istunnonhallinnan valitsimet"
-
-#: ../src/main.c:86
+#: ../src/main.c:84
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] …"
 
-#: ../src/main.c:99
+#: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Kirjoita ”%s --help” nähdäksesi kaikki mahdolliset valitsimet\n"
-
-#~ msgid "Results %i–%i (out of %i)"
-#~ msgstr "Tulokset %i – %i (kaikkiaan %i)"
-
-#~ msgid "No results"
-#~ msgstr "Ei tuloksia"
-
-#~ msgid "Error querying for keywords."
-#~ msgstr "Virhe haettaessa avainsanoja."
-
-#~ msgid "Previous Results"
-#~ msgstr "Edelliset tulokset"
-
-#~ msgid "Next Results"
-#~ msgstr "Seuraavat tulokset"
-
-#~ msgid "Number of results displayed"
-#~ msgstr "Näytettävien tulosten lukumäärä"
-
-#~ msgid "Cancel ongoing burning"
-#~ msgstr "Peru keskeneräinen kirjoitus"
-
-#~ msgid "Show _Dialog"
-#~ msgstr "Näytä _ikkuna"
-
-#~ msgid "Show dialog"
-#~ msgstr "Näytä ikkuna"
-
-#~ msgid "%s, %d%% done, %s remaining"
-#~ msgstr "%s, %d %% valmis, %s jäljellä"
-
-#~ msgid "%s, %d%% done"
-#~ msgstr "%s, %d %% valmis"
-
-#~ msgid "Search:"
-#~ msgstr "Etsi:"
-
-#~ msgid "In _text documents"
-#~ msgstr "_Tekstiasiakirjoista"
-
-#~ msgid "In _pictures"
-#~ msgstr "_Kuvista"
-
-#~ msgid "In _music"
-#~ msgstr "_Musiikista"
-
-#~ msgid "In _videos"
-#~ msgstr "_Videoista"
-
-#~ msgid "Type your keywords or choose 'All files' from the menu"
-#~ msgstr "Syötä avainsanat tai valitse ”Kaikki tiedostot” valikosta"
-
-#~ msgid "Select if you want to search among image files only"
-#~ msgstr "Valitse tämä, jos haluat etsiä vain kuvatiedostoja"
-
-#~ msgid "Select if you want to search among video files only"
-#~ msgstr "Valitse tämä, jos haluat etsiä vain videotiedostoja"
-
-#~ msgid "Select if you want to search among audio files only"
-#~ msgstr "Valitse tämä, jos haluat etsiä vain äänitiedostoja"
-
-#~ msgid "Select if you want to search among your text documents only"
-#~ msgstr "Valitse tämä, jos haluat etsiä vain tekstitiedostoja"
-
-#~ msgid "Click to start the search"
-#~ msgstr "Käynnistä haku napsauttamalla"
-
-#~ msgid "Search files using keywords"
-#~ msgstr "Etsi tiedostoja avainsanoilla"
-
-#~ msgid "Copying `%s` locally"
-#~ msgstr "Kopioidaan ”%s” paikallisesti"
-
-#~ msgid "Name:"
-#~ msgstr "Nimi:"
-
-#~ msgid "by"
-#~ msgstr "korvaa merkkijonolla"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">%s</span>\n"
-#~ "by <span size=\"smaller\"><i>%s</i></span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">%s</span>\n"
-#~ "- <span size=\"smaller\"><i>%s</i></span>"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">Loading information</span>\n"
-#~ "about <span size=\"smaller\"><i>%s</i></span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">Ladataan tietoja </span>\n"
-#~ "- <span size=\"smaller\"><i>%s</i></span>"
-
-#~ msgid "Preview"
-#~ msgstr "Esikatselu"
-
-#~ msgid ""
-#~ "Do you really want to create a new project and discard the changes to "
-#~ "current one?"
-#~ msgstr ""
-#~ "Haluatko varmasti luoda uuden projektin ja hylätä nykyiseen projektiin "
-#~ "tehdyt muutokset?"
-
-#~ msgid "Copying Video DVD"
-#~ msgstr "Kopioidaan DVD-videolevyä"
-
-#~ msgid "Force brasero to display the project selection page"
-#~ msgstr "Pakota braseroa näyttämään projektin valintasivu"
-
-#~ msgid "Error reading video DVD (%s)"
-#~ msgstr "virhe luettaessa DVD-videolevyä (%s)"
-
-#~ msgid "Directories cannot be added to an audio disc."
-#~ msgstr "Äänilevylle ei voi lisätä kansioita."
-
-#~ msgid "The file integrity was performed successfully."
-#~ msgstr "Tiedostojen eheystarkistus onnistui."
-
-#~ msgid "Burn the contents of burn:// URI"
-#~ msgstr "Kirjoita burn://-URI-osoitteen sisältö"
-
-#~ msgid "An error occured while writing to disc"
-#~ msgstr "Tapahtui virhe kirjoitettaessa levyä"
-
-#~ msgid "Directories cannot be added to video discs."
-#~ msgstr "Videolevyille ei voi lisätä kansioita."
-
-#~ msgid "Copy CDs and DVDs"
-#~ msgstr "Kopioi CD- ja DVD-levyjä"
-
-#~ msgid "Disc Copier"
-#~ msgstr "Levyn kopiointi"
-
-#~ msgid "Normalize"
-#~ msgstr "Normalisoi"
-
-#~ msgid "Brasero Disc Copier"
-#~ msgstr "Brasero-levynkopiointi"
-
-#~ msgid ""
-#~ "A file with this name already exists in the folder.  Replacing it will "
-#~ "overwrite its content on the disc to be burnt."
-#~ msgstr ""
-#~ "Tämän niminen tiedosto on jo olemassa kansiossa. Sen korvaaminen "
-#~ "ylikirjoittaa tiedoston sisällön (vain levyllä)."
-
-#~ msgid ""
-#~ "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
-#~ "supported by the ISO9660 standard in its first and second versions (the "
-#~ "most widespread ones).\n"
-#~ "It is recommended to use the third version of the ISO9660 standard, which "
-#~ "is supported by most operating systems, including Linux and all versions "
-#~ "of Windows ©.\n"
-#~ "However, Mac OS X cannot read images created with version 3 of the "
-#~ "ISO9660 standard."
-#~ msgstr ""
-#~ "Tiedoston koko on yli 2 GiB. ISO9660-standardin ensimmäinen ja toinen "
-#~ "versio (yleisimmin tuetut muodot) eivät tue näin suuria tiedostoja.\n"
-#~ "On suositeltavaa käyttää ISO9660-standardin kolmatta versiota, joka on "
-#~ "tuettu useimmissa käyttöjärjestelmissä, mukaanlukien Linux ja kaikki "
-#~ "Windows©-versiot.\n"
-#~ "Mac OS X ei kuitenkaan osaa lukea ISO9660 version 3 mukaisia levykuvia."
-
-#~ msgid ""
-#~ "The children of this directory will have 7 parent directories.\n"
-#~ "Brasero can create an image of such a file hierarchy and burn it; but the "
-#~ "disc may not be readable on all operating systems.\n"
-#~ "Note: Such a file hierarchy is known to work on Linux."
-#~ msgstr ""
-#~ "Tämän kansion lapsitiedostoilla on seitsemän yläkansiota.\n"
-#~ "Brasero voi luoda ja kirjoittaa tällaisen levyn, mutta sitä ei "
-#~ "välttämättä pysty lukemaan kaikissa käyttöjärjestelmissä.\n"
-#~ "Huomaa, että Linuxissa nämä levyt toimivat kyllä."
-
-#~ msgid ""
-#~ "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i × %i "
-#~ "pixels</span></i>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">Koko:</span>\t<i><span size=\"smaller\"> %i × %i "
-#~ "pikseliä</span></i>"
-
-#~ msgid "Create a video DVD or an SVCD that are readable on TV readers"
-#~ msgstr "Luo video-DVD tai SVCD, jotka ovat luettavissa TV-toistimilla"
-
-#~ msgid "Copies css encrypted Video DVDs to a disc image"
-#~ msgstr "Kopioi CSS-salatun Video-DVD-levyn levykuvaksi"
-
-#~ msgid "Creates disc images suitable for Video DVDs"
-#~ msgstr "Luo Video-DVD-levyille sopivia levykuvia"
-
-#~ msgid "Converts any video file into a format suitable for Video DVDs"
-#~ msgstr ""
-#~ "Mahdollistaa minkä tahansa videotiedoston muuntamisen video-DVD-levyille "
-#~ "sopivaksi"
