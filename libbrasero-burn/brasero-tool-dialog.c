@@ -510,6 +510,8 @@ brasero_tool_dialog_constructed (GObject *object)
 {
 	BraseroToolDialogPrivate *priv;
 
+	G_OBJECT_CLASS (brasero_tool_dialog_parent_class)->constructed (object);
+
 	priv = BRASERO_TOOL_DIALOG_PRIVATE (object);
 
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->selector),
