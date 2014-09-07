@@ -6,24 +6,25 @@
 #
 #
 # Tommi Vainikainen <thv@iki.fi>, 2009-2011.
-# Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2012, 2013.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2014.
+# Jiri Grönroos <jiri.gronroos+l10n@iki.fi>, 2012, 2013, 2014.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
-"cgi?product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-08-09 02:59+0000\n"
-"PO-Revision-Date: 2014-08-09 12:30+0300\n"
-"Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
-"Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2014-09-06 02:58+0000\n"
+"PO-Revision-Date: 2014-09-06 16:06+0300\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
+"Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2010-09-13 15:08+0000\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -31,6 +32,9 @@ msgid ""
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
 msgstr ""
+"Brasero on CD- ja DVD-levyjen polttoon tarkoitettu Gnome-sovellus. Se on "
+"suunniteltu mahdollisimman yksinkertaiseksi, mutta samalla se tarjoaa "
+"ainutlaatuisia ominaisuuksia, joiden avulla levyjen luominen käy ketterästi."
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
@@ -39,6 +43,10 @@ msgid ""
 "files from other local applications or from remote shared drives to easily "
 "burn them to a disc."
 msgstr ""
+"Braseron avulla voi luoda, kopioida ja polttaa data- ja ääni-CD- sekä -DVD-"
+"levyjä. Tuettuja ominaisuuksia ovat muun muassa CD-TEXT, moni-istunto ja "
+"joliet-laajennukset. Tiedostojen lisääminen poltettavalle levylle käy muista "
+"sovelluksista vetämällä ja pudottamalla tiedostoja."
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -405,21 +413,24 @@ msgstr "Levyllä ei ole tarpeeksi tilaa"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187
+#: ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (sovellus)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193
+#: ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (kirjasto)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198
+#: ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer-liitännäinen)"
@@ -1183,7 +1194,8 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Laita asemaan levy, joka ei ole kopiosuojattu."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235
+#: ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Kaikkia tarvittavia sovelluksia tai kirjastoja ei ole asennettu."
 
@@ -1243,7 +1255,8 @@ msgstr "Levyn kirjoituksen asetukset"
 msgid "Video Options"
 msgstr "Videovalinnat"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795
+#: ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1286,7 +1299,8 @@ msgstr "Kopioi CD/DVD"
 msgid "Select disc to copy"
 msgstr "Valitse kopioitava levy"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229
+#: ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Asenna seuraavat käsin ja yritä uudelleen:"
 
@@ -1386,8 +1400,8 @@ msgstr "Oikeutesi eivät riitä kirjoittamaan tähän kohteeseen"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:330
 msgid ""
-"The filesystem on this volume does not support large files (size over 2 GiB)."
-"\n"
+"The filesystem on this volume does not support large files (size over 2 "
+"GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
 "Tämän taltion tiedostojärjestelmä ei tue isoja tiedostoja (koko yli 2 GiB).\n"
@@ -1807,12 +1821,12 @@ msgstr "Levy ei ole tuettu"
 msgid "The drive is empty"
 msgstr "Asemassa ei ole levyä"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Valitse levy"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Edistyminen"
 
@@ -2372,7 +2386,8 @@ msgstr "Datalevy (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488
+#: ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Tämä ei näytä olevan kelvollinen ISO-levykuva"
