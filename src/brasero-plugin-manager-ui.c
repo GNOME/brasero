@@ -241,16 +241,12 @@ plugin_manager_ui_view_icon_cell_cb (GtkTreeViewColumn *tree_column,
 				     GtkTreeIter       *iter,
 				     gpointer           data)
 {
-	BraseroPlugin *plugin;
 	
 	g_return_if_fail (tree_model != NULL);
 	g_return_if_fail (tree_column != NULL);
 
-	gtk_tree_model_get (tree_model, iter, PLUGIN_COLUMN, &plugin, -1);
-
 	g_object_set (G_OBJECT (cell),
 		      "visible", FALSE,
-		      "sensitive", brasero_plugin_get_gtype (plugin) != G_TYPE_NONE && !brasero_plugin_get_compulsory (plugin),
 		      NULL);
 	return;
 /*
@@ -271,7 +267,7 @@ plugin_manager_ui_view_icon_cell_cb (GtkTreeViewColumn *tree_column,
 		      "icon-name",
 		      brasero_plugin_get_icon_name (plugin),
 		      "sensitive",
-		      brasero_plugin_get_gtype (plugin) != G_TYPE_NONE,
+		      brasero_plugin_get_gtype (plugin) != G_TYPE_NONE && !brasero_plugin_get_compulsory (plugin),
 		      NULL);
 */
 }
