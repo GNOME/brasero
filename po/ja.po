@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the brasero package.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2005-2009.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2012.
-# Hajime Taira <htaira@redhat.com>, 2010.
+# Hajime Taira <htaira@redhat.com>, 2010-2014.
 # Shushi Kurose <md81bird@hitaki.net>, 2010.
 # Takayoshi OKANO <kano@na.rim.or.jp>, 2011.
 # Jiro Matsuzawa <jmatsuzawa@src.gnome.org>, 2012, 2013.
@@ -12,15 +12,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-09-22 00:19+0000\n"
-"PO-Revision-Date: 2013-09-22 22:52+0900\n"
-"Last-Translator: Akira Tanaka <root.167d36d4acb91@gmail.com>\n"
+"POT-Creation-Date: 2014-11-22 04:01+0000\n"
+"PO-Revision-Date: 2014-11-22 14:01+0900\n"
+"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+# このストリングだけ、burn を「書き込み」と訳すると日本語が不自然に感じたので、「作成する」と訳しています
+#: ../data/brasero.appdata.xml.in.h:1
+msgid "Brasero is a application to burn CD/DVD for the GNOME Desktop. It is designed to be as simple as possible and has some unique features to enable users to create their discs easily and quickly."
+msgstr "Brasero は CD/DVD を作成する GNOME デスクトップ向けアプリケーションです。Brasero はできる限りシンプルにデザインされ、ユニークな機能も搭載しており、素早く簡単にディスクを作成できます。"
+
+#: ../data/brasero.appdata.xml.in.h:2
+msgid "Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports CD-TEXT, multisession and joliet extensions. You can simply drag and drop files from other local applications or from remote shared drives to easily burn them to a disc."
+msgstr "Brasero はデータや音楽の CD/DVD のコピーおよび書き込みができます。また、CD-TEXT や、マルチセッション、Joliet 拡張規格にも対応しています。他のアプリケーションやリモートの共有ドライブからファイルをドラッグ・アンド・ドロップするだけでて、簡単にディスクを作成できます。"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -62,143 +71,143 @@ msgstr "映像プロジェクトを作成します"
 msgid "Brasero project file"
 msgstr "Brasero プロジェクトファイル"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:1
+#: ../data/org.gnome.brasero.gschema.xml.h:1
 msgid "Should Nautilus extension output debug statements"
 msgstr "Nautilus 拡張はデバッグステートメントを出力しなければなりません"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:2
+#: ../data/org.gnome.brasero.gschema.xml.h:2
 msgid "Should Nautilus extension output debug statements. The value should be set to true if it should."
 msgstr "Nautilus 拡張はデバッグステートメントを出力しなければなりません。出力する場合は、値を TRUE に設定してください。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:3
+#: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
 msgstr "イメージに使用するチェックサムの種類"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:4
+#: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
 msgstr "0 の場合 MD5、1 の場合 SHA1、2 の場合 SHA256 に設定します"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:5
+#: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
 msgstr "ファイルに使用するチェックサムの種類"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:6
+#: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
 msgstr "作業ファイルで利用するディレクトリ"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:7
+#: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid "Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used."
 msgstr "Brasero が一時ファイルを保存するためのディレクトリのパスを指定します。値が空の場合は、glib が設定するデフォルトのディレクトリを使用します。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:8
+#: ../data/org.gnome.brasero.gschema.xml.h:8
 msgid "Favourite burn engine"
 msgstr "お気に入りの書き込みエンジン"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:9
+#: ../data/org.gnome.brasero.gschema.xml.h:9
 msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
 msgstr "インストールされているお気に入りの書き込みエンジンの名前をリスト形式で指定します。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:10
+#: ../data/org.gnome.brasero.gschema.xml.h:10
 msgid "White list of additional plugins to use"
 msgstr "使用する追加プラグインのリスト"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:11
+#: ../data/org.gnome.brasero.gschema.xml.h:11
 msgid "Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all."
 msgstr "ディスクの書き込みで使用する追加のプラグインをリスト形式で指定します。何も指定しないと、すべてのプラグインを読み込みます。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:12
+#: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "cdrecord コマンドの \"-immed\" フラグを有効にするかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:13
+#: ../data/org.gnome.brasero.gschema.xml.h:13
 msgid "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
 msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうかです。有効にする場合は、一部のドライブ/設定の問題を回避するためだけに注意して使用してください。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:14
+#: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr "growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:15
+#: ../data/org.gnome.brasero.gschema.xml.h:15
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr "growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうかです。一部のドライブ/設定の問題を回避するためだけに有効にするようにしてください。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:16
+#: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
 msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:17
+#: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
 msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:18
+#: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr "cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:19
+#: ../data/org.gnome.brasero.gschema.xml.h:19
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups."
 msgstr "cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうかです。一部のドライブ/設定の問題を回避するときのみ有効にするようにしてください。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:20
+#: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr "書き込むイメージを検索したときに最後に閲覧していたフォルダー"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:21
+#: ../data/org.gnome.brasero.gschema.xml.h:21
 msgid "Contains the absolute path of the directory that was last browsed for images to burn"
 msgstr "書き込むイメージを最後に閲覧したディレクトリの絶対パスを指定します"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:22
+#: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
 msgstr "ファイルのプレビューを有効にするかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:23
+#: ../data/org.gnome.brasero.gschema.xml.h:23
 msgid "Whether to display file preview. Set to true to use it."
 msgstr "ファイルをプレビューするかどうかです。TRUE にするとプレビューします。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:24
+#: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
 msgstr "隠しファイルをフィルターするかどうか"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:25
+#: ../data/org.gnome.brasero.gschema.xml.h:25
 msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
 msgstr "隠しファイルを Brasero でフィルターするかどうかです。TRUE にすると隠しファイルを無視します。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:26
+#: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
 msgstr "シンボリックリンクを実体に置き換える"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:27
+#: ../data/org.gnome.brasero.gschema.xml.h:27
 msgid "Should brasero replace symbolic links by their target files in the project. Set to true, brasero will replace symbolic links."
 msgstr "シンボリックリンクをリンクが指す先のファイルで置き換えるかどうか。TRUE にするとシンボリックリンクをリンクが指す先のファイルで置き換えます。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:28
+#: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
 msgstr "Brasero がリンク切れのシンボリックリンクを無視する"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:29
+#: ../data/org.gnome.brasero.gschema.xml.h:29
 msgid "Should brasero filter broken symbolic links. Set to true, brasero will filter broken symbolic links."
 msgstr "Brasero がリンク切れのシンボリックリンクを無視するかどうか。TRUE にするとリンク切れのシンボリックリンクを無視します。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:30
+#: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
 msgstr "プラグインで優先する値"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:31
+#: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid "When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native priority is used. A positive value overrides the plugin's native priority. A negative value disables the plugin."
 msgstr "複数のプラグインが同時にタスクを処理できる時に、どのプラグインが優先度を得るか決定するのにこの値を使用します。0 の場合はプラグインのネイティブな優先度を利用します。正の値の場合はプラグインのネイティブな優先度を上書きします。負の値の場合はプラグインを無効にします。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:32
+#: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
 msgstr "利用する書き込みフラグ"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:33
+#: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid "This value represents the burning flags that were used in such a context the last time."
 msgstr "この値は、最後にそういった状況で使われた書き込みフラグを表しています。"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:34
+#: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
 msgstr "利用する速度"
 
-#: ../data/org.gnome.brasero.gschema.xml.in.h:35
+#: ../data/org.gnome.brasero.gschema.xml.h:35
 msgid "This value represents the speed that was used in such a context the last time."
 msgstr "この値は、最後にそういった状況で使われた速度を表しています。"
 
@@ -379,12 +388,12 @@ msgstr "作業用に作成したイメージの形式を特定できません"
 #: ../nautilus/nautilus-burn-extension.c:218
 #: ../plugins/cdrkit/burn-genisoimage.c:368
 #: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:726 ../plugins/cdrkit/burn-wodim.c:838
-#: ../plugins/cdrkit/burn-wodim.c:853 ../plugins/cdrtools/burn-cdrecord.c:836
-#: ../plugins/cdrtools/burn-cdrecord.c:851
+#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
+#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrtools/burn-cdrecord.c:850
 #: ../plugins/cdrtools/burn-mkisofs.c:368
 #: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:784
+#: ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "内部エラーが発生しました"
@@ -840,7 +849,7 @@ msgid "An unknown error occurred."
 msgstr "原因不明のエラーが発生しました。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1743
-#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:618
+#: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:620
 msgid "Error while burning."
 msgstr "書き込み中にエラーが発生しました。"
 
@@ -1350,7 +1359,7 @@ msgid "Broken symbolic link"
 msgstr "リンク切れのファイル"
 
 #: ../libbrasero-burn/brasero-filtered-uri.c:60
-#: ../libbrasero-utils/brasero-io.c:1188 ../libbrasero-utils/brasero-io.c:2059
+#: ../libbrasero-utils/brasero-io.c:1190 ../libbrasero-utils/brasero-io.c:2061
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "再帰的シンボリックリンク"
@@ -1647,12 +1656,12 @@ msgstr "ディスクをサポートしていません"
 msgid "The drive is empty"
 msgstr "ドライブが空です"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:539
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "ディスクの選択"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:572
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "進捗状況"
 
@@ -1912,7 +1921,7 @@ msgstr "イメージを出力する先のパスが指定されていません"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:710
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709
 #: ../plugins/libburnia/burn-libburn.c:717
 #: ../plugins/transcode/burn-transcode.c:790
 #, c-format
@@ -2266,7 +2275,7 @@ msgstr "変更点を隠す(_H)"
 msgid "_Show changes"
 msgstr "変更点を表示する(_S)"
 
-#: ../libbrasero-utils/brasero-io.c:1416
+#: ../libbrasero-utils/brasero-io.c:1418
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "そのファイルはプレイリストではないようです"
@@ -2403,7 +2412,7 @@ msgstr "前面"
 msgid "The image could not be loaded."
 msgstr "画像を読み込めませんでした。"
 
-#: ../libbrasero-utils/brasero-metadata.c:1122 ../src/brasero-audio-disc.c:643
+#: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
 msgstr "\"%s\" を GStreamer で扱うことができませんでした。"
@@ -2411,13 +2420,13 @@ msgstr "\"%s\" を GStreamer で扱うことができませんでした。"
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
 #. * not be created
-#: ../libbrasero-utils/brasero-metadata.c:1194
-#: ../libbrasero-utils/brasero-metadata.c:1207
-#: ../libbrasero-utils/brasero-metadata.c:1220
-#: ../libbrasero-utils/brasero-metadata.c:1362
-#: ../libbrasero-utils/brasero-metadata.c:1734
-#: ../libbrasero-utils/brasero-metadata.c:1749
-#: ../libbrasero-utils/brasero-metadata.c:1758
+#: ../libbrasero-utils/brasero-metadata.c:1198
+#: ../libbrasero-utils/brasero-metadata.c:1211
+#: ../libbrasero-utils/brasero-metadata.c:1224
+#: ../libbrasero-utils/brasero-metadata.c:1366
+#: ../libbrasero-utils/brasero-metadata.c:1738
+#: ../libbrasero-utils/brasero-metadata.c:1753
+#: ../libbrasero-utils/brasero-metadata.c:1762
 #: ../plugins/transcode/burn-normalize.c:172
 #: ../plugins/transcode/burn-normalize.c:187
 #: ../plugins/transcode/burn-normalize.c:209
@@ -2698,15 +2707,15 @@ msgstr ".cue シートの書き込み中"
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "書き込む前にもう一度ディスクを読み込んでください"
 
-#: ../plugins/cdrkit/burn-wodim.c:1270
+#: ../plugins/cdrkit/burn-wodim.c:1269
 msgid "Burns, blanks and formats CDs and DVDs"
 msgstr "CD/DVD の書き込み/消去/フォーマット"
 
-#: ../plugins/cdrkit/burn-wodim.c:1414
+#: ../plugins/cdrkit/burn-wodim.c:1413
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr "\"-immed\" フラグを有効にする (wodim のマニュアル参照)"
 
-#: ../plugins/cdrkit/burn-wodim.c:1417
+#: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "ドライブの FIFO の Fill Ratio の最小値を百分率で指定する (wodim の man ページ参照のこと)"
 
@@ -2724,16 +2733,16 @@ msgstr "音楽用ディスクの書き込み準備中"
 msgid "Copy tracks from an audio CD with all associated information"
 msgstr "音楽 CD から関連するすべての情報とともにトラックをコピーする"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1204
+#: ../plugins/cdrtools/burn-cdrecord.c:1203
 #: ../plugins/libburnia/burn-libburn.c:975
 msgid "Burns, blanks and formats CDs, DVDs and BDs"
 msgstr "CD/DVD/BD の書き込み/消去/フォーマット"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1417
+#: ../plugins/cdrtools/burn-cdrecord.c:1416
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr "\"-immed\" フラグを有効にする (cdrecord のマニュアル参照)"
 
-#: ../plugins/cdrtools/burn-cdrecord.c:1420
+#: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
 msgstr "ドライブバッファーの Fill Ratio の最小値を %% で指定する (cdrecord のマニュアル参照):"
@@ -3059,108 +3068,108 @@ msgstr "Vob を使うと映像を含んだファイルを映像用 DVD に最適
 msgid "Creates disc images suitable for SVCDs"
 msgstr "SVCD 用のディスクイメージを作成する"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:123
 msgid "_Project"
 msgstr "プロジェクト(_P)"
 
-#: ../src/brasero-app.c:125
+#: ../src/brasero-app.c:124
 msgid "_View"
 msgstr "表示(_V)"
 
-#: ../src/brasero-app.c:126
+#: ../src/brasero-app.c:125
 msgid "_Edit"
 msgstr "編集(_E)"
 
-#: ../src/brasero-app.c:127
+#: ../src/brasero-app.c:126
 msgid "_Tools"
 msgstr "ツール(_T)"
 
-#: ../src/brasero-app.c:129
+#: ../src/brasero-app.c:128
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
-#: ../src/brasero-app.c:131
+#: ../src/brasero-app.c:130
 msgid "P_lugins"
 msgstr "プラグイン(_L)"
 
-#: ../src/brasero-app.c:132
+#: ../src/brasero-app.c:131
 msgid "Choose plugins for Brasero"
 msgstr "Brasero で利用するプラグインを選択"
 
-#: ../src/brasero-app.c:134
+#: ../src/brasero-app.c:133
 msgid "E_ject"
 msgstr "取り出す(_J)"
 
-#: ../src/brasero-app.c:135
+#: ../src/brasero-app.c:134
 msgid "Eject a disc"
 msgstr "ディスクを取り出します"
 
-#: ../src/brasero-app.c:137
+#: ../src/brasero-app.c:136
 msgid "_Blank…"
 msgstr "消去する(_B)…"
 
-#: ../src/brasero-app.c:138
+#: ../src/brasero-app.c:137
 msgid "Blank a disc"
 msgstr "ディスクを消去します"
 
-#: ../src/brasero-app.c:140
+#: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
 msgstr "整合性のチェック(_C)…"
 
-#: ../src/brasero-app.c:141
+#: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
 msgstr "ディスクのデータの整合性をチェックします"
 
-#: ../src/brasero-app.c:144
+#: ../src/brasero-app.c:143
 msgid "Quit Brasero"
 msgstr "Brasero を終了します"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "_Contents"
 msgstr "目次(_C)"
 
-#: ../src/brasero-app.c:146
+#: ../src/brasero-app.c:145
 msgid "Display help"
 msgstr "ヘルプを表示します"
 
-#: ../src/brasero-app.c:149
+#: ../src/brasero-app.c:148
 msgid "About"
 msgstr "このアプリケーションの情報を表示します"
 
-#: ../src/brasero-app.c:421 ../src/brasero-app.c:2070
+#: ../src/brasero-app.c:420 ../src/brasero-app.c:2069
 msgid "Disc Burner"
 msgstr "ディスクの書き込み"
 
-#: ../src/brasero-app.c:787 ../src/brasero-app.c:820 ../src/brasero-app.c:1449
+#: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
 msgstr "プロジェクトの読み込み中にエラー"
 
-#: ../src/brasero-app.c:829 ../src/brasero-app.c:858 ../src/brasero-app.c:918
+#: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
 msgstr "プロジェクトにファイルを追加してください。"
 
-#: ../src/brasero-app.c:830 ../src/brasero-app.c:859 ../src/brasero-app.c:919
+#: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
 msgstr "プロジェクトが空です"
 
-#: ../src/brasero-app.c:1174
+#: ../src/brasero-app.c:1176
 msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Brasero はフリーソフトウェアです。フリーソフトウェア財団が提供する GNU 一般公衆利用許諾契約書の第二版、あるいはそれ以降の版が定める条項の下で本プログラムを再頒布または変更することができます。"
 
-#: ../src/brasero-app.c:1179
+#: ../src/brasero-app.c:1181
 msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Brasero は有用であることを願って頒布されていますが、市場性または特定の目的に対する適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細は GNU 一般公衆利用許諾契約書を参照してください。"
 
-#: ../src/brasero-app.c:1184
+#: ../src/brasero-app.c:1186
 msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 msgstr "あなたは本プログラムと一緒に GNU 一般公衆利用許諾契約書の写しを受け取っているはずです。そうでない場合は、Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA まで連絡してください。"
 
-#: ../src/brasero-app.c:1196
+#: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "GNOME 向けの CD/DVD 作成アプリケーションです。"
 
-#: ../src/brasero-app.c:1213
+#: ../src/brasero-app.c:1215
 msgid "Brasero Homepage"
 msgstr "Brasero のホームページ"
 
@@ -3172,7 +3181,7 @@ msgstr "Brasero のホームページ"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:1225
+#: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
 "相花 毅 <takeshi.aihana@gmail.com>\n"
@@ -3184,16 +3193,16 @@ msgstr ""
 "Akira Tanaka <root.167d36d4acb91@gmail.com>\n"
 "日本GNOMEユーザー会 <http://www.gnome.gr.jp/>"
 
-#: ../src/brasero-app.c:1447
+#: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "\"%s\" というプロジェクトは存在しません"
 
-#: ../src/brasero-app.c:1731 ../src/brasero-app.c:1737
+#: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
 msgstr "最近開いたプロジェクト(_R)"
 
-#: ../src/brasero-app.c:1732
+#: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
 msgstr "最近開いたプロジェクトを表示します"
 
@@ -3257,7 +3266,7 @@ msgstr "分割"
 msgid "Track"
 msgstr "#"
 
-#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1206
+#: ../src/brasero-audio-disc.c:458 ../src/brasero-video-disc.c:1209
 msgid "Title"
 msgstr "タイトル"
 
@@ -3649,7 +3658,7 @@ msgstr "名前の変更"
 msgid "Files"
 msgstr "ファイル"
 
-#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1224
+#: ../src/brasero-data-disc.c:2350 ../src/brasero-video-disc.c:1227
 msgid "Size"
 msgstr "サイズ"
 
@@ -3880,25 +3889,25 @@ msgstr "有効"
 msgid "Copyright %s"
 msgstr "Copyright %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "情報(_A)"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "設定(_O)"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "有効にする(_C)"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "すべて有効にする(_T)"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "すべて無効にする(_D)"
 
@@ -4280,15 +4289,15 @@ msgstr "映像用ディスク (%s)"
 msgid "Error while loading the project."
 msgstr "プロジェクトの読み込みエラー。"
 
-#: ../src/brasero-project-parse.c:454
+#: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
 msgstr "プロジェクトを開けませんでした"
 
-#: ../src/brasero-project-parse.c:463
+#: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
 msgstr "ファイルが空です"
 
-#: ../src/brasero-project-parse.c:542 ../src/brasero-project-parse.c:607
+#: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
 msgstr "Brasero プロジェクトではないようです"
 
@@ -4439,7 +4448,7 @@ msgstr "曲の終了:"
 msgid "Track length:"
 msgstr "演奏時間:"
 
-#: ../src/brasero-song-properties.c:372
+#: ../src/brasero-song-properties.c:365
 #, c-format
 msgid "Song information for track %02i"
 msgstr "トラック %02i の楽曲情報"
@@ -4633,74 +4642,53 @@ msgstr " \"%s\" は動画プロジェクトに合ったファイルではあり�
 msgid "Please only add files with video content"
 msgstr "動画コンテンツのあるファイルだけ追加してください"
 
-#: ../src/eggdesktopfile.c:165
-#, c-format
-msgid "File is not a valid .desktop file"
-msgstr "妥当な .desktop ファイルではありません"
-
-#: ../src/eggdesktopfile.c:188
-#, c-format
-msgid "Unrecognized desktop file Version '%s'"
-msgstr "バージョン '%s' の .desktop ファイルはサポートしていません"
-
-#: ../src/eggdesktopfile.c:968
-#, c-format
-msgid "Starting %s"
-msgstr "%sの起動中です"
-
-#: ../src/eggdesktopfile.c:1110
-#, c-format
-msgid "Application does not accept documents on command line"
-msgstr "コマンドラインからドキュメントにはアクセスできません"
-
-#: ../src/eggdesktopfile.c:1178
-#, c-format
-msgid "Unrecognized launch option: %d"
-msgstr "不明な起動オプションです: %d"
-
-#: ../src/eggdesktopfile.c:1383
-#, c-format
-msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-msgstr "ドキュメントの URI を 'Type=Link' な .desktop エントリには渡せません"
-
-#: ../src/eggdesktopfile.c:1404
-#, c-format
-msgid "Not a launchable item"
-msgstr "起動可能なアイテムではありません"
-
-#: ../src/eggsmclient.c:226
-msgid "Disable connection to session manager"
-msgstr "セッション・マネージャーに接続しない"
-
-#: ../src/eggsmclient.c:229
-msgid "Specify file containing saved configuration"
-msgstr "設定を保存したファイルを指定する"
-
-#: ../src/eggsmclient.c:229
-msgid "FILE"
-msgstr "FILE"
-
-#: ../src/eggsmclient.c:232
-msgid "Specify session management ID"
-msgstr "セッション管理の ID を指定する"
-
-#: ../src/eggsmclient.c:232
-msgid "ID"
-msgstr "ID"
-
-#: ../src/eggsmclient.c:253
-msgid "Session management options:"
-msgstr "セッション管理のオプション:"
-
-#: ../src/eggsmclient.c:254
-msgid "Show session management options"
-msgstr "セッション管理のオプションを表示する"
-
-#: ../src/main.c:86
+#: ../src/main.c:84
 msgid "[URI] [URI] …"
 msgstr "[URI] [URI] …"
 
-#: ../src/main.c:99
+#: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "利用可能なオプションの一覧を表示する場合は %s --help を実行してください\n"
+
+#~ msgid "File is not a valid .desktop file"
+#~ msgstr "妥当な .desktop ファイルではありません"
+
+#~ msgid "Unrecognized desktop file Version '%s'"
+#~ msgstr "バージョン '%s' の .desktop ファイルはサポートしていません"
+
+#~ msgid "Starting %s"
+#~ msgstr "%sの起動中です"
+
+#~ msgid "Application does not accept documents on command line"
+#~ msgstr "コマンドラインからドキュメントにはアクセスできません"
+
+#~ msgid "Unrecognized launch option: %d"
+#~ msgstr "不明な起動オプションです: %d"
+
+#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+#~ msgstr "ドキュメントの URI を 'Type=Link' な .desktop エントリには渡せません"
+
+#~ msgid "Not a launchable item"
+#~ msgstr "起動可能なアイテムではありません"
+
+#~ msgid "Disable connection to session manager"
+#~ msgstr "セッション・マネージャーに接続しない"
+
+#~ msgid "Specify file containing saved configuration"
+#~ msgstr "設定を保存したファイルを指定する"
+
+#~ msgid "FILE"
+#~ msgstr "FILE"
+
+#~ msgid "Specify session management ID"
+#~ msgstr "セッション管理の ID を指定する"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Session management options:"
+#~ msgstr "セッション管理のオプション:"
+
+#~ msgid "Show session management options"
+#~ msgstr "セッション管理のオプションを表示する"
