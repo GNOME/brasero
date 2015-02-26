@@ -8,23 +8,24 @@
 # Alexander Saprykin <xelfium@gmail.com>, 2010.
 # Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011.
 # Yuri Myasoedov <omerta13@yandex.ru>, 2008, 2013.
+# Stas Solovey <whats_up@tut.by>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-03-11 16:02+0000\n"
-"PO-Revision-Date: 2014-03-11 20:57+0300\n"
-"Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
-"Language-Team: русский <gnome-cyr@gnome.org>\n"
+"POT-Creation-Date: 2015-02-26 16:02+0000\n"
+"PO-Revision-Date: 2015-02-26 23:42+0300\n"
+"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
+"Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.5.4\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -278,7 +279,7 @@ msgid ""
 "last time."
 msgstr ""
 "Это значение показывает флаги записи, которые использовались в этом "
-"контексте в последний раз."
+"контексте последний раз."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
@@ -288,7 +289,9 @@ msgstr "Используемая скорость"
 msgid ""
 "This value represents the speed that was used in such a context the last "
 "time."
-msgstr "Это значение"
+msgstr ""
+"Это значение показывает скорость, которая была использована в этом контексте "
+"последний раз."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
@@ -1033,7 +1036,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1963
 msgid "Make _More Copies"
-msgstr "Сделать _больше копий"
+msgstr "Сделать _ещё копии"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1972
 msgid "Create Co_ver"
@@ -1820,12 +1823,12 @@ msgstr "Диск не поддерживается"
 msgid "The drive is empty"
 msgstr "Диск в приводе отсутствует"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Выберите диск"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Степень выполнения"
 
@@ -2072,7 +2075,7 @@ msgid ""
 "with a size over 2 GiB"
 msgstr ""
 "Файловая система, выбранная для хранения временного образа, не может хранить "
-"файлы размером свыше 2 ГБ."
+"файлы размером более 2 ГБ"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
@@ -3056,7 +3059,7 @@ msgstr ""
 "Ошибка при получении ключа шифрования. Данную проблему можно решить одним из "
 "следующих способов: либо установите в терминале соответствующий код региона "
 "для CD/DVD проигрывателя с помощью команды «regionset %s», либо выполните "
-"команду «DVDCSS_METHOD=title brasero --no-existing-session»."
+"команду «DVDCSS_METHOD=title brasero --no-existing-session»"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3323,7 +3326,7 @@ msgstr "Проверить целостность данных диска"
 
 #: ../src/brasero-app.c:143
 msgid "Quit Brasero"
-msgstr "Выйти из Brasero"
+msgstr "Завершить Brasero"
 
 #: ../src/brasero-app.c:145
 msgid "_Contents"
@@ -3409,10 +3412,12 @@ msgstr "Домашняя страница"
 #: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
-"Aleksey Klimov <aleksey@alfey.net>\n"
-"Deshko Yury <deshko@tut.by>\n"
-"Yuri Myasoedov <omerta13@yandex.ru>\n"
-"Alexander Saprykin <xelfium@gmail.com>, 2010"
+"Aleksey Klimov <aleksey@alfey.net>, 2007.\n"
+"Leonid Kanter <leon@asplinux.ru>, 2009.\n"
+"Alexander Saprykin <xelfium@gmail.com>, 2010.\n"
+"Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011.\n"
+"Yuri Myasoedov <omerta13@yandex.ru>, 2008, 2013, 2014.\n"
+"Stas Solovey <whats_up@tut.by>, 2015."
 
 #: ../src/brasero-app.c:1449
 #, c-format
@@ -3510,7 +3515,7 @@ msgstr "Дорожка короче 6 секунд"
 
 #: ../src/brasero-audio-disc.c:646
 msgid "Make sure the appropriate codec is installed"
-msgstr "Убедитесь, что подходящий кодек установлен."
+msgstr "Убедитесь, что подходящий кодек установлен"
 
 #: ../src/brasero-audio-disc.c:662
 #, c-format
@@ -3714,7 +3719,7 @@ msgstr "Использованы несовместимые параметры �
 
 #: ../src/brasero-cli.c:298
 msgid "Only one option can be given at a time"
-msgstr "Можно указывать только один параметр за раз."
+msgstr "Можно указывать только один параметр за раз"
 
 #: ../src/brasero-data-disc.c:125
 msgid "R_ename…"
@@ -4143,25 +4148,25 @@ msgstr "Включён"
 msgid "Copyright %s"
 msgstr "Авторские права %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "_О программе"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "_Настроить"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "_Включить"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "В_ключить все"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "В_ыключить все"
 
@@ -4773,7 +4778,7 @@ msgstr "Дорожка не была разбита."
 
 #: ../src/brasero-split-dialog.c:610
 msgid "No silence could be detected"
-msgstr "Не удалось найти паузы."
+msgstr "Не удалось найти паузы"
 
 #: ../src/brasero-split-dialog.c:633
 msgid "An error occurred while detecting silences."
@@ -4952,45 +4957,3 @@ msgstr "[URI] [URI] …"
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Наберите «%s --help», чтобы увидеть все доступные параметры\n"
-
-#~ msgid "File is not a valid .desktop file"
-#~ msgstr "Файл не является корректным файлом формата .desktop"
-
-#~ msgid "Unrecognized desktop file Version '%s'"
-#~ msgstr "Версия ярлыка «%s» не распознана"
-
-#~ msgid "Starting %s"
-#~ msgstr "Начало %s"
-
-#~ msgid "Application does not accept documents on command line"
-#~ msgstr "Приложение не принимает документы в аргументах командной строки"
-
-#~ msgid "Unrecognized launch option: %d"
-#~ msgstr "Неизвестный ключ запуска: %d"
-
-#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-#~ msgstr "Невозможно передать URI документа в ярлык типа «Ссылка»"
-
-#~ msgid "Not a launchable item"
-#~ msgstr "Незапускаемый объект"
-
-#~ msgid "Disable connection to session manager"
-#~ msgstr "Выключить взаимодействие с менеджером сеанса"
-
-#~ msgid "Specify file containing saved configuration"
-#~ msgstr "Задать файл для сохранения конфигурации"
-
-#~ msgid "FILE"
-#~ msgstr "ФАЙЛ"
-
-#~ msgid "Specify session management ID"
-#~ msgstr "Задать идентификатор сеанса"
-
-#~ msgid "ID"
-#~ msgstr "ИДЕНТИФИКАТОР"
-
-#~ msgid "Session management options:"
-#~ msgstr "Параметры управления сеансом:"
-
-#~ msgid "Show session management options"
-#~ msgstr "Показать параметры управления сеансом"
