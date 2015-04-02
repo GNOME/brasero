@@ -295,8 +295,11 @@ brasero_plugin_test_app (BraseroPlugin *plugin,
 
 	for (i = 0; i < 3 && version [i] >= 0; i++);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 	if ((standard_output && sscanf (standard_output, version_format, &major, &minor, &sub) == i)
 	||  (standard_error && sscanf (standard_error, version_format, &major, &minor, &sub) == i))
+#pragma GCC diagnostic pop
 		old_app_version = is_old_app_version (major, minor, sub, version);
 	else
 		old_app_version = TRUE;

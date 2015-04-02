@@ -64,7 +64,7 @@ brasero_media_to_string (BraseroMedia media,
 void
 brasero_media_message (const gchar *location,
 		       const gchar *format,
-		       ...);
+		       ...) G_GNUC_PRINTF (2, 3);
 
 G_END_DECLS
 
