@@ -98,28 +98,28 @@ brasero_burn_debug_track_type_struct_message (BraseroTrackType *type,
 					      BraseroPluginIOFlag flags,
 					      const gchar *location,
 					      const gchar *format,
-					      ...);
+					      ...) G_GNUC_PRINTF (4, 5);
 void
 brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 				       guint subtype,
 				       BraseroPluginIOFlag flags,
 				       const gchar *location,
 				       const gchar *format,
-				       ...);
+				       ...) G_GNUC_PRINTF (5, 6);
 void
 brasero_burn_debug_flags_type_message (BraseroBurnFlag flags,
 				       const gchar *location,
 				       const gchar *format,
-				       ...);
+				       ...) G_GNUC_PRINTF (3, 4);
 void
 brasero_burn_debug_message (const gchar *location,
 			    const gchar *format,
-			    ...);
+			    ...) G_GNUC_PRINTF (2, 3);
 
 void
 brasero_burn_debug_messagev (const gchar *location,
 			     const gchar *format,
-			     va_list args);
+			     va_list args) G_GNUC_PRINTF (2, 0);
 
 G_END_DECLS
 

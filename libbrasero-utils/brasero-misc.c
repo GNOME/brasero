@@ -102,20 +102,17 @@ brasero_utils_debug_message (const gchar *location,
 			     ...)
 {
 	va_list arg_list;
-	gchar *format_real;
 
 	if (!use_debug)
 		return;
 
-	format_real = g_strdup_printf ("BraseroUtils: (at %s) %s\n",
-				       location,
-				       format);
+	g_strdup_printf ("BraseroUtils: (at %s) ", location);
 
 	va_start (arg_list, format);
-	vprintf (format_real, arg_list);
+	vprintf (format, arg_list);
 	va_end (arg_list);
 
-	g_free (format_real);
+	putchar ('\n');
 }
 
 static gboolean

@@ -502,7 +502,7 @@ brasero_normalize_bus_messages (GstBus *bus,
 
 	case GST_MESSAGE_ERROR:
 		gst_message_parse_error (msg, &error, &debug);
-		BRASERO_JOB_LOG (normalize, debug);
+		BRASERO_JOB_LOG (normalize, "%s", debug);
 		g_free (debug);
 
 	        brasero_job_error (BRASERO_JOB (normalize), error);
