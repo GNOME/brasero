@@ -55,7 +55,7 @@ brasero_utils_set_use_debug (gboolean active);
 void
 brasero_utils_debug_message (const gchar *location,
 			     const gchar *format,
-			     ...);
+			     ...) G_GNUC_PRINTF (2, 3);
 
 #define BRASERO_UTILS_LOG(format, ...)						\
 	brasero_utils_debug_message (G_STRLOC,					\

@@ -123,11 +123,11 @@ brasero_burn_session_stop (BraseroBurnSession *session);
 void
 brasero_burn_session_logv (BraseroBurnSession *session,
 			   const gchar *format,
-			   va_list arg_list);
+			   va_list arg_list) G_GNUC_PRINTF (2, 0);
 void
 brasero_burn_session_log (BraseroBurnSession *session,
 			  const gchar *format,
-			  ...);
+			  ...) G_GNUC_PRINTF (2, 3);
 
 /**
  * Allow to save a whole session settings/source and restore it later.

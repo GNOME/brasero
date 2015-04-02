@@ -311,30 +311,22 @@ void
 brasero_job_log_message (BraseroJob *job,
 			 const gchar *location,
 			 const gchar *format,
-			 ...);
+			 ...) G_GNUC_PRINTF (3, 4);
 
 #define BRASERO_JOB_LOG(job, message, ...) 			\
 {								\
-	gchar *format;						\
-	format = g_strdup_printf ("%s %s",			\
-				  G_OBJECT_TYPE_NAME (job),	\
-				  message);			\
 	brasero_job_log_message (BRASERO_JOB (job),		\
 				 G_STRLOC,			\
-				 format,		 	\
+				 "%s " message,			\
+				 G_OBJECT_TYPE_NAME (job),	\
 				 ##__VA_ARGS__);		\
-	g_free (format);					\
 }
 #define BRASERO_JOB_LOG_ARG(job, message, ...)			\
 {								\
-	gchar *format;						\
-	format = g_strdup_printf ("\t%s",			\
-				  (gchar*) message);		\
 	brasero_job_log_message (BRASERO_JOB (job),		\
 				 G_STRLOC,			\
-				 format,			\
+				 "\t" message,			\
 				 ##__VA_ARGS__);		\
-	g_free (format);					\
 }
 
 #define BRASERO_JOB_NOT_SUPPORTED(job) 					\

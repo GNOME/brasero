@@ -215,7 +215,7 @@ brasero_libburn_common_process_message (BraseroJob *self)
 	&&  strcmp ("ABORT", err_sev)) {
 		/* libburn didn't reported any FATAL message but maybe it did
 		 * report some debugging output */
-		BRASERO_JOB_LOG (self, err_txt);
+		BRASERO_JOB_LOG (self, "%s", err_txt);
 	        return TRUE;
 	}
 
