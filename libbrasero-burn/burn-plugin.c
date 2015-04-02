@@ -277,8 +277,11 @@ brasero_plugin_test_app (BraseroPlugin *plugin,
 
 	for (i = 0; i < 3 && version [i] >= 0; i++);
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
 	if ((standard_output && sscanf (standard_output, version_format, &major, &minor, &sub) == i)
 	||  (standard_error && sscanf (standard_error, version_format, &major, &minor, &sub) == i)) {
+#pragma clang diagnostic pop
 		if (major < version [0]
 		||  (version [1] >= 0 && minor < version [1])
 		||  (version [2] >= 0 && sub < version [2]))

@@ -488,20 +488,17 @@ brasero_media_message (const gchar *location,
 		       ...)
 {
 	va_list arg_list;
-	gchar *format_real;
 
 	if (!debug)
 		return;
 
-	format_real = g_strdup_printf ("BraseroMedia: (at %s) %s\n",
-				       location,
-				       format);
+	format = printf ("BraseroMedia: (at %s) ", location);
 
 	va_start (arg_list, format);
-	vprintf (format_real, arg_list);
+	vprintf (format, arg_list);
 	va_end (arg_list);
 
-	g_free (format_real);
+	putchar ('\n');
 }
 
 #include <gtk/gtk.h>
