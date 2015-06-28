@@ -597,7 +597,7 @@ brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *self,
 	if (bytes >= 0)
 		priv->size += bytes;
 
-	BRASERO_BURN_LOG ("Task output modified %lli blocks %lli bytes",
+	BRASERO_BURN_LOG ("Task output modified %" G_GOFFSET_FORMAT " blocks %" G_GOFFSET_FORMAT " bytes",
 			  priv->blocks,
 			  priv->size);
 

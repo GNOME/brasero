@@ -252,7 +252,7 @@ brasero_checksum_image_checksum_fd_input (BraseroChecksumImage *self,
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "Starting checksum generation live (size = %lli)", priv->total);
+	BRASERO_JOB_LOG (self, "Starting checksum generation live (size = %" G_GOFFSET_FORMAT ")", priv->total);
 	result = brasero_job_set_nonblocking (BRASERO_JOB (self), error);
 	if (result != BRASERO_BURN_OK)
 		return result;

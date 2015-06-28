@@ -71,11 +71,11 @@ G_BEGIN_DECLS
  **/
 
 #define BRASERO_DURATION_TO_BYTES(duration)					\
-	((gint64) (duration) * 75LL * 2352LL / 1000000000LL +				\
+	(gint64) ((gint64) (duration) * 75LL * 2352LL / 1000000000LL +		\
 	(((gint64) ((duration) * 75LL * 2352LL) % 1000000000LL) ? 1:0))
 
 #define BRASERO_DURATION_TO_SECTORS(duration)					\
-	((gint64) (duration) * 75LL / 1000000000LL +				\
+	(gint64) ((gint64) (duration) * 75LL / 1000000000LL +			\
 	(((gint64) ((duration) * 75LL) % 1000000000LL) ? 1:0))
 
 #define BRASERO_BYTES_TO_SECTORS(size, secsize)					\

@@ -140,7 +140,7 @@ brasero_process_ask_argv (BraseroJob *job,
 	for (i = 0; priv->argv->pdata [i]; i++)
 		BRASERO_JOB_LOG_ARG (process,
 				     "%s",
-				     priv->argv->pdata [i]);
+				     (char*)(priv->argv->pdata [i]));
 
 	if (result != BRASERO_BURN_OK) {
 		g_strfreev ((gchar**) priv->argv->pdata);

@@ -271,7 +271,7 @@ brasero_dvdcss_create_scrambled_sectors_map (BraseroDvdcss *self,
 					range->start = extent->block;
 					range->end = extent->block + BRASERO_BYTES_TO_SECTORS (extent->size, DVDCSS_BLOCK_SIZE);
 
-					BRASERO_JOB_LOG (self, "From 0x%llx to 0x%llx", range->start, range->end);
+					BRASERO_JOB_LOG (self, "From 0x%x to 0x%x", range->start, range->end);
 					g_queue_push_head (map, range);
 
 					if (extent->size == 0) {

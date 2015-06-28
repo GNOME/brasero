@@ -206,7 +206,7 @@ brasero_transcode_set_boundaries (BraseroTranscode *transcode)
 	priv->segment_start = BRASERO_DURATION_TO_BYTES (start);
 	priv->segment_end = BRASERO_DURATION_TO_BYTES (end);
 
-	BRASERO_JOB_LOG (transcode, "settings track boundaries time = %lli %lli / bytes = %lli %lli",
+	BRASERO_JOB_LOG (transcode, "settings track boundaries time = %" G_GINT64_FORMAT " %" G_GINT64_FORMAT " / bytes = %" G_GINT64_FORMAT " %" G_GINT64_FORMAT,
 			 start, end,
 			 priv->segment_start, priv->segment_end);
 
@@ -1149,8 +1149,8 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 		bytes2write = b_written - priv->pos;
 
 		BRASERO_JOB_LOG (transcode,
-				 "wrote %lli bytes (= %lli ns) out of %lli (= %lli ns)"
-				 "\n=> padding %lli bytes",
+				 "wrote %" G_GINT64_FORMAT " bytes (= %" G_GUINT64_FORMAT " ns) out of %" G_GINT64_FORMAT " (= %" G_GUINT64_FORMAT " ns)"
+				 "\n=> padding %" G_GINT64_FORMAT " bytes",
 				 priv->pos,
 				 BRASERO_BYTES_TO_DURATION (priv->pos),
 				 BRASERO_DURATION_TO_BYTES (length),
@@ -1164,8 +1164,8 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 		b_written = priv->pos;
 		bytes2write = (b_written % 2352) ? 2352 - (b_written % 2352):0;
 		BRASERO_JOB_LOG (transcode,
-				 "wrote %lli bytes (= %lli ns)"
-				 "\n=> padding %lli bytes",
+				 "wrote %" G_GINT64_FORMAT " bytes (= %" G_GINT64_FORMAT " ns)"
+				 "\n=> padding %" G_GINT64_FORMAT " bytes",
 				 b_written,
 				 priv->pos,
 				 bytes2write);

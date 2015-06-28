@@ -236,12 +236,12 @@ brasero_xfer_start (BraseroXferCtx *ctx,
 
 	/* Retrieve the size of all the data. */
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
-		BRASERO_BURN_LOG ("Downloading file (size = %lli)", g_file_info_get_size (info));
+		BRASERO_BURN_LOG ("Downloading file (size = %" G_GOFFSET_FORMAT ")", g_file_info_get_size (info));
 		ctx->total_size = g_file_info_get_size (info);
 	}
 	else {
 		brasero_xfer_get_download_size (ctx, src, cancel, error);
-		BRASERO_BURN_LOG ("Downloading directory (size = %lli)", ctx->total_size);
+		BRASERO_BURN_LOG ("Downloading directory (size = %" G_GOFFSET_FORMAT ")", ctx->total_size);
 	}
 
 	ctx->bytes_copied = 0;

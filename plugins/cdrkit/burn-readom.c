@@ -172,7 +172,7 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 		end = g_value_get_uint64 (value);
 
 		BRASERO_JOB_LOG (readom,
-				 "reading from sector %lli to %lli",
+				 "reading from sector %" G_GUINT64_FORMAT " to %" G_GUINT64_FORMAT,
 				 start,
 				 end);
 		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
@@ -197,7 +197,7 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 						  &start);
 
 		BRASERO_JOB_LOG (readom,
-				 "reading %i from sector %lli to %lli",
+				 "reading %i from sector %" G_GOFFSET_FORMAT " to %" G_GOFFSET_FORMAT,
 				 brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
 				 start,
 				 start + nb_blocks);
