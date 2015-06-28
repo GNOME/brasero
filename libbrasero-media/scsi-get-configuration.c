@@ -191,7 +191,7 @@ brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 
 	/* make sure the desc is the one we want */
 	if (hdr && BRASERO_GET_16 (hdr->desc->code) != type) {
-		BRASERO_MEDIA_LOG ("Wrong type returned %d", hdr->desc->code);
+		BRASERO_MEDIA_LOG ("Wrong type returned %d", BRASERO_GET_16 (hdr->desc->code));
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_TYPE_MISMATCH);
 
 		g_free (hdr);

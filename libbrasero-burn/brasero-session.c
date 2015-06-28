@@ -2278,7 +2278,7 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 		medium = brasero_drive_get_medium (priv->settings->burner);
 		BRASERO_BURN_LOG_DISC_TYPE (brasero_medium_get_status (medium), "media type\t=");
-		BRASERO_BURN_LOG ("speed\t= %i", priv->settings->rate);
+		BRASERO_BURN_LOG ("speed\t= %" G_GUINT64_FORMAT, priv->settings->rate);
 	}
 	else {
 		brasero_track_type_set_has_image (type);

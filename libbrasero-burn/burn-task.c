@@ -490,7 +490,7 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		BRASERO_BURN_LOG ("Got a default image or stream track length %lli", sectors);
+		BRASERO_BURN_LOG ("Got a default image or stream track length %" G_GOFFSET_FORMAT, sectors);
 		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
 								    sectors,
 								    bytes);
