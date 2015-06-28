@@ -783,7 +783,7 @@ brasero_session_cfg_check_volume_size (BraseroSessionCfg *self)
 		g_object_unref (info);
 	}
 
-	BRASERO_BURN_LOG ("Session size %lli/Hard drive size %lli",
+	BRASERO_BURN_LOG ("Session size %" G_GOFFSET_FORMAT "/Hard drive size %" G_GOFFSET_FORMAT,
 			  priv->session_size,
 			  priv->disc_size);
 
@@ -866,7 +866,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 			priv->disc_size = 0;
 	}
 
-	BRASERO_BURN_LOG ("Session size %lli/Disc size %lli",
+	BRASERO_BURN_LOG ("Session size %" G_GOFFSET_FORMAT "/Disc size %" G_GOFFSET_FORMAT,
 			  priv->session_blocks,
 			  priv->disc_size);
 
