@@ -634,7 +634,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
 	sectors = BRASERO_DURATION_TO_SECTORS (length);
 
-	BRASERO_JOB_LOG (cdrecord, "got track length %lli", length);
+	BRASERO_JOB_LOG (cdrecord, "got track length %" G_GUINT64_FORMAT, length);
 	string = g_strdup_printf ("Tracklength=\t%"G_GINT64_FORMAT", 0\n", sectors);
 	size = strlen (string);
 	b_written = write (fd, string, size);

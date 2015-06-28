@@ -1179,7 +1179,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 					      atip_data->desc->leadout_frame);
 	g_free (atip_data);
 
-	BRASERO_MEDIA_LOG ("Format capacity %lli %lli",
+	BRASERO_MEDIA_LOG ("Format capacity %" G_GOFFSET_FORMAT " %" G_GOFFSET_FORMAT,
 			   priv->block_num,
 			   priv->block_size);
 
@@ -1277,7 +1277,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 
 end:
 
-	BRASERO_MEDIA_LOG ("Format capacity %lli %lli",
+	BRASERO_MEDIA_LOG ("Format capacity %" G_GOFFSET_FORMAT " %" G_GOFFSET_FORMAT,
 			  priv->block_num,
 			  priv->block_size);
 
@@ -1711,7 +1711,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	     &&  (priv->info & BRASERO_MEDIUM_CD)
 	     && !(priv->info & BRASERO_MEDIUM_ROM)) {
 		BRASERO_MEDIA_LOG ("Data track belongs to first session of multisession CD. "
-				   "Checking for real size (%i sectors currently).",
+				   "Checking for real size (%" G_GOFFSET_FORMAT " sectors currently).",
 				   track->blocks_num);
 
 		/* we test the pregaps blocks for TDB: these are special blocks
@@ -1739,7 +1739,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 
 			if (brasero_medium_track_written_SAO (handle, track_num, track->start)) {
 				track->blocks_num += 2;
-				BRASERO_MEDIA_LOG ("Correcting track size (now %i)", track->blocks_num);
+				BRASERO_MEDIA_LOG ("Correcting track size (now %" G_GOFFSET_FORMAT ")", track->blocks_num);
 			}
 		}
 		else
@@ -1747,7 +1747,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	}
 
 	/* NOTE: DVD+RW, DVD-RW (restricted overwrite) never reach this function */
-	BRASERO_MEDIA_LOG ("Track %i (session %i): type = %i start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Track %i (session %i): type = %i start = %" G_GOFFSET_FORMAT " size = %" G_GOFFSET_FORMAT,
 			  track_num,
 			  track->session,
 			  track->type,
@@ -1800,7 +1800,7 @@ brasero_medium_track_set_leadout_DVDR_blank (BraseroMedium *self,
 	leadout->start = 0;
 	leadout->blocks_num = BRASERO_GET_32 (current->blocks_num);
 
-	BRASERO_MEDIA_LOG ("Leadout (through READ FORMAT CAPACITIES): start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Leadout (through READ FORMAT CAPACITIES): start = %" G_GOFFSET_FORMAT " size = %" G_GOFFSET_FORMAT,
 			  leadout->start,
 			  leadout->blocks_num);
 
@@ -1839,7 +1839,7 @@ brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 	/* of course it starts at 0 since it's empty */
 	leadout->start = 0;
 
-	BRASERO_MEDIA_LOG ("Leadout (through READ ATIP): start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Leadout (through READ ATIP): start = %" G_GOFFSET_FORMAT " size = %" G_GOFFSET_FORMAT,
 			  leadout->start,
 			  leadout->blocks_num);
 
@@ -1941,7 +1941,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 
 	if (!leadout->blocks_num) {
 		leadout->blocks_num = BRASERO_GET_32 (track_info.track_size);
-		BRASERO_MEDIA_LOG ("Using track size %d", leadout->blocks_num);
+		BRASERO_MEDIA_LOG ("Using track size %" G_GOFFSET_FORMAT, leadout->blocks_num);
 	}
 
 	if (!leadout->blocks_num
@@ -1951,7 +1951,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 								    leadout,
 								    code);
 
-	BRASERO_MEDIA_LOG ("Leadout: start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Leadout: start = %" G_GOFFSET_FORMAT " size = %" G_GOFFSET_FORMAT,
 			  leadout->start,
 			  leadout->blocks_num);
 
@@ -2002,7 +2002,7 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self)
 	 * buggy */
 	priv->next_wr_add = 0;
 
-	BRASERO_MEDIA_LOG ("Adding fabricated leadout start = %llu length = %llu",
+	BRASERO_MEDIA_LOG ("Adding fabricated leadout start = %" G_GOFFSET_FORMAT " length = %" G_GOFFSET_FORMAT,
 			  leadout->start,
 			  leadout->blocks_num);
 }
@@ -2104,7 +2104,7 @@ tryagain:
 			 * which have only one track: the first. Since it's not
 			 * possible to know the amount of data that were really
 			 * written in this session, read the filesystem. */
-			BRASERO_MEDIA_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size (start = %i)", track->start);
+			BRASERO_MEDIA_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size (start = %" G_GOFFSET_FORMAT ")", track->start);
 			track->session = 1;
 			track->start = 0;
 			result = brasero_medium_track_volume_size (self, 
@@ -2122,7 +2122,7 @@ tryagain:
 			}
 			else {
 				priv->next_wr_add = 0;
-				BRASERO_MEDIA_LOG ("Track 1 (session %i): type = %i start = %llu size = %llu",
+				BRASERO_MEDIA_LOG ("Track 1 (session %i): type = %i start = %" G_GOFFSET_FORMAT " size = %" G_GOFFSET_FORMAT,
 						  track->session,
 						  track->type,
 						  track->start,
