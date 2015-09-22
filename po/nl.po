@@ -8,11 +8,11 @@
 # device            - apparaat
 # burn              - schrijven / branden
 # disk mount point  - schijfkoppellocatie
-# disk image        - schijf-image
+# disk image        - schijf-image of schijfkopie
 # drive             - speler / station
 # eject             - uitwerpen
-# image file	    - imagebestand
-# ISO Image         - ISO-image
+# image file	    - imagebestand of schijfkopiebestand
+# ISO Image         - ISO-image of ISO-bestand
 # mount point       - koppellocatie
 # recordable        - beschrijfbare / opneembare
 # track             - track
@@ -25,16 +25,16 @@
 # Frederik Himpe <fhimpe@telenet.be>, 2008.
 # Wouter Bolsterlee <wbolster@gnome.org>, 2009, 2011.
 # Sander Pientka <cumulus0007@gmail.com>, 2009–2010.
-# Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2012, 2014.
+# Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2012, 2014, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-08-17 14:59+0000\n"
-"PO-Revision-Date: 2014-08-17 18:08+0200\n"
+"POT-Creation-Date: 2015-09-22 03:10+0000\n"
+"PO-Revision-Date: 2015-09-22 11:35+0200\n"
 "Last-Translator: Hannie Dumoleyn <hannie@ubuntu-nl.org>\n"
-"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,11 +49,10 @@ msgid ""
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
 msgstr ""
-"Brasero is een toepassing voor het branden van cd's/dvd's voor de "
-"Gnome-werkomgeving. "
-"Het is ontworpen om zo eenvoudig mogelijk te zijn en heeft een aantal unieke "
-"functies "
-"waardoor gebruikers gemakkelijk en snel schijven kunnen aanmaken."
+"Brasero is een toepassing voor het branden van cd's/dvd's voor de Gnome-"
+"werkomgeving. Het is ontworpen om zo eenvoudig mogelijk te zijn en heeft een "
+"aantal unieke functies waardoor gebruikers gemakkelijk en snel schijven "
+"kunnen aanmaken."
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
@@ -64,10 +63,8 @@ msgid ""
 msgstr ""
 "Met Brasero kunt u data- en audiocd's/dvd's aanmaken, kopiëren en branden. "
 "CD-TEXT, multisessie en jolietextensies worden volledig ondersteund. U kunt "
-"op eenvoudige "
-"wijze bestanden van andere lokale toepassingen of van externe gedeelde "
-"stations naar een "
-"schijf branden via slepen en neerzetten."
+"op eenvoudige wijze bestanden van andere lokale toepassingen of van externe "
+"gedeelde stations naar een schijf branden via slepen en neerzetten."
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -94,17 +91,14 @@ msgid "Open a New Window"
 msgstr "Een nieuw venster openen"
 
 #: ../data/brasero.desktop.in.in.h:7
-#| msgid "Burn as _Image"
 msgid "Burn an Image File"
-msgstr "Een imagebestand branden"
+msgstr "Een schijfkopiebestand branden"
 
 #: ../data/brasero.desktop.in.in.h:8
-#| msgid "Create a new project"
 msgid "Create an Audio Project"
 msgstr "Een audioproject aanmaken"
 
 #: ../data/brasero.desktop.in.in.h:9
-#| msgid "Create a new project"
 msgid "Create a Video Project"
 msgstr "Een videoproject aanmaken"
 
@@ -126,7 +120,7 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
-msgstr "Het type controlesom dat gebruikt wordt voor imagebestanden"
+msgstr "Het type controlesom dat gebruikt wordt voor schijfkopiebestanden"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
@@ -229,7 +223,7 @@ msgstr ""
 msgid "The last browsed folder while looking for images to burn"
 msgstr ""
 "De map die het laatst doorgebladerd werd op zoek naar te branden "
-"imagebestanden"
+"schijfkopiebestanden"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:21
 msgid ""
@@ -237,7 +231,7 @@ msgid ""
 "to burn"
 msgstr ""
 "Bevat het absolute pad naar de map die het laatst doorgebladerd was voor "
-"imagebestanden om te branden"
+"schijfkopiebestanden om te branden"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
@@ -450,24 +444,21 @@ msgstr "Niet genoeg ruimte beschikbaar op de schijf"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (programma)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (bibliotheek)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer plug-in)"
@@ -492,25 +483,24 @@ msgstr "Er kan slechts één track per keer gecontroleerd worden"
 
 #: ../libbrasero-burn/brasero-burn.c:2635
 msgid "No format for the temporary image could be found"
-msgstr "Geen formaat gevonden voor het tijdelijke imagebestand"
+msgstr "Geen formaat gevonden voor het tijdelijke schijfkopiebestand"
 
 #. Translators: Error message saying no graft point
 #. * is specified. A graft point is the path (on the
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Er is een interne fout opgetreden"
@@ -528,7 +518,7 @@ msgstr "%s (%i%% Klaar)"
 #: ../libbrasero-burn/brasero-burn-dialog.c:241
 #: ../libbrasero-burn/brasero-burn-dialog.c:1161
 msgid "Creating Image"
-msgstr "Imagebestand maken"
+msgstr "schijfkopiebestand maken"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:246
 #: ../libbrasero-burn/brasero-burn-dialog.c:1170
@@ -564,7 +554,7 @@ msgstr "Schijf kopiëren"
 #: ../libbrasero-burn/brasero-burn-dialog.c:300
 #: ../libbrasero-burn/burn-basics.c:78
 msgid "Creating image"
-msgstr "Imagebestand wordt aangemaakt"
+msgstr "schijfkopiebestand wordt aangemaakt"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:306
 msgid "Simulation of video DVD burning"
@@ -584,11 +574,11 @@ msgstr "Data-dvd branden"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:326
 msgid "Simulation of image to DVD burning"
-msgstr "Simulatie van branden van imagebestand op dvd"
+msgstr "Simulatie van branden van schijfkopiebestand op dvd"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:328
 msgid "Burning image to DVD"
-msgstr "Imagebestand naar dvd branden"
+msgstr "schijfkopiebestand naar dvd branden"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:336
 msgid "Simulation of data DVD copying"
@@ -630,11 +620,11 @@ msgstr "Simulatie van kopiëren van cd"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:389
 msgid "Simulation of image to CD burning"
-msgstr "Simulatie van branden van imagebestand op cd"
+msgstr "Simulatie van branden van schijfkopiebestand op cd"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:391
 msgid "Burning image to CD"
-msgstr "Imagebestand naar cd branden"
+msgstr "Schijfkopiebestand naar cd branden"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:402
 msgid "Simulation of video disc burning"
@@ -663,11 +653,11 @@ msgstr "Schijf kopiëren"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:442
 msgid "Simulation of image to disc burning"
-msgstr "Simulatie van branden van imagebestand op schijf"
+msgstr "Simulatie van branden van schijfkopiebestand op schijf"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:444
 msgid "Burning image to disc"
-msgstr "Imagebestand op schijf branden"
+msgstr "schijfkopiebestand op schijf branden"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:549
 msgid "Please replace the disc with a rewritable disc holding data."
@@ -759,7 +749,7 @@ msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a writable disc is inserted."
 msgstr ""
-"Er is een imagebestand van de schijf op uw harddisk geplaatst.\n"
+"Er is een schijfkopiebestand van de schijf op uw harddisk geplaatst.\n"
 "Het branden begint wanneer u een beschrijfbare schijf plaatst."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:645
@@ -826,7 +816,8 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:729
 msgid "The image could not be created at the specified location"
-msgstr "Het imagebestand kon niet aangemaakt worden op de opgegeven locatie"
+msgstr ""
+"Het schijfkopiebestand kon niet aangemaakt worden op de opgegeven locatie"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:730
 msgid ""
@@ -858,7 +849,7 @@ msgstr "Locatie _wijzigen"
 #: ../libbrasero-burn/brasero-burn-dialog.c:773
 #: ../libbrasero-burn/brasero-image-properties.c:459
 msgid "Location for Image File"
-msgstr "Locatie voor imagebestand"
+msgstr "Locatie voor schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:781
 #: ../libbrasero-burn/brasero-drive-properties.c:366
@@ -1024,7 +1015,7 @@ msgstr "Audio-cd succesvol gebrand"
 #: ../libbrasero-burn/brasero-burn-dialog.c:1793
 #: ../libbrasero-burn/brasero-burn-dialog.c:1824
 msgid "Image successfully created"
-msgstr "Imagebestand succesvol aangemaakt"
+msgstr "Schijfkopiebestand succesvol aangemaakt"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1798
 msgid "DVD successfully copied"
@@ -1036,19 +1027,19 @@ msgstr "Cd succesvol gekopieerd"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1804
 msgid "Image of DVD successfully created"
-msgstr "Dvd-imagebestand succesvol aangemaakt"
+msgstr "Dvd-schijfkopiebestand succesvol aangemaakt"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1806
 msgid "Image of CD successfully created"
-msgstr "Cd-imagebestand succesvol aangemaakt"
+msgstr "Cd-schijfkopiebestand succesvol aangemaakt"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1812
 msgid "Image successfully burned to DVD"
-msgstr "Imagebestand succesvol naar dvd gebrand"
+msgstr "Schijfkopiebestand succesvol naar dvd gebrand"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1814
 msgid "Image successfully burned to CD"
-msgstr "Imagebestand succesvol naar cd gebrand"
+msgstr "Schijfkopiebestand succesvol naar cd gebrand"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1820
 msgid "Data DVD successfully burned"
@@ -1076,7 +1067,6 @@ msgid "Make _More Copies"
 msgstr "_Meer kopieën maken"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1972
-#| msgid "_Create Cover"
 msgid "Create Co_ver"
 msgstr "_Hoesje maken"
 
@@ -1115,11 +1105,12 @@ msgid ""
 "Please insert a writable CD or DVD if you don't want to write to an image "
 "file."
 msgstr ""
-"Plaats een beschrijfbare cd of dvd als u geen imagebestand wilt schrijven"
+"Plaats een beschrijfbare cd of dvd als u niet naar een schijfkopiebestand "
+"wilt schrijven."
 
 #: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1595
 msgid "Create _Image"
-msgstr "_Imagebestand maken"
+msgstr "_Schijfkopiebestand maken"
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-burn-options.c:307
@@ -1207,11 +1198,11 @@ msgstr "Er is geen schijf om te kopiëren."
 
 #: ../libbrasero-burn/brasero-burn-options.c:511
 msgid "Please select a disc image."
-msgstr "Kies een imagebestand."
+msgstr "Kies een schijfkopiebestand."
 
 #: ../libbrasero-burn/brasero-burn-options.c:512
 msgid "There is no selected disc image."
-msgstr "Er is geen imagebestand geselecteerd."
+msgstr "Er is geen schijfkopiebestand geselecteerd."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
@@ -1219,19 +1210,18 @@ msgstr "Er is geen imagebestand geselecteerd."
 #: ../libbrasero-burn/brasero-src-image.c:167
 msgctxt "disc"
 msgid "Please select another image."
-msgstr "Kies een ander imagebestand."
+msgstr "Kies een ander schijfkopiebestand."
 
 #: ../libbrasero-burn/brasero-burn-options.c:523
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
-msgstr "Dit lijkt geen geldig image- of cuebestand te zijn."
+msgstr "Dit lijkt geen geldig schijfkopie- of cuebestand te zijn."
 
 #: ../libbrasero-burn/brasero-burn-options.c:532
 msgid "Please insert a disc that is not copy protected."
 msgstr "Voer een niet schijf zonder kopieerbeveiliging in."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Niet alle vereiste programma's en bibliotheken zijn geïnstalleerd"
 
@@ -1295,14 +1285,13 @@ msgstr "Instellingen voor branden"
 msgid "Video Options"
 msgstr "Video-opties"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
 msgstr ""
-"Wilt u een schijf maken met de inhoud van het imagebestand of met het "
-"imagebestand zelf?"
+"Wilt u een schijf maken met de inhoud van het schijfkopiebestand of met het "
+"schijfkopiebestand zelf?"
 
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:804
@@ -1311,8 +1300,8 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
 msgstr ""
-"Er is één bestand geselecteerd(‘%s’). Het is een image van een schijf en de "
-"inhoud kan gebrand worden."
+"Er is één bestand geselecteerd(‘%s’). Het is een kopiebestand van een schijf "
+"en de inhoud kan gebrand worden."
 
 #: ../libbrasero-burn/brasero-burn-options.c:809
 msgid "Burn as _File"
@@ -1324,12 +1313,12 @@ msgstr "_Inhoud branden..."
 
 #: ../libbrasero-burn/brasero-burn-options.c:893
 msgid "Image Burning Setup"
-msgstr "Instellingen voor het branden van imagebestanden"
+msgstr "Instellingen voor het branden van schijfkopiebestanden"
 
 #. pack everything
 #: ../libbrasero-burn/brasero-burn-options.c:901
 msgid "Select a disc image to write"
-msgstr "Selecteer een te schrijven imagebestand"
+msgstr "Een te schrijven schijfkopiebestand selecteren"
 
 #: ../libbrasero-burn/brasero-burn-options.c:921
 msgid "Copy CD/DVD"
@@ -1339,8 +1328,7 @@ msgstr "Kopieer cd/dvd"
 msgid "Select disc to copy"
 msgstr "Selecteer schijf om te kopiëren"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Installeer het volgende handmatig en probeer dan opnieuw:"
 
@@ -1372,17 +1360,17 @@ msgstr "%s kan niet gelezen worden"
 #: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
 msgid "SVCD image"
-msgstr "Svcd-imagebestand"
+msgstr "Svcd-schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:607
 #: ../libbrasero-burn/brasero-image-type-chooser.c:127
 msgid "VCD image"
-msgstr "Vcd-imagebestand"
+msgstr "Vcd-schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:611
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "Video DVD image"
-msgstr "Video-dvd-imagebestand"
+msgstr "Video-dvd-schijfkopiebestand"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
@@ -1448,7 +1436,7 @@ msgstr ""
 "Het bestandssysteem op dit volume ondersteunt geen grote bestanden (groter "
 "dan 2 GiB).\n"
 "Dit kan een probleem zijn voor het schrijven van dvd's of grote "
-"imagebestanden."
+"schijfkopiebestanden."
 
 #. Translators %s.1f is the speed used to burn
 #: ../libbrasero-burn/brasero-drive-properties.c:524
@@ -1505,7 +1493,8 @@ msgstr "Gebruik burn_proof (verkleint het risico op mislukking)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:728
 msgid "Burn the image directly _without saving it to disc"
-msgstr "Imagebestand _rechtstreeks schrijven zonder het op schijf op te slaan"
+msgstr ""
+"Schijfkopiebestand _rechtstreeks schrijven zonder het op schijf op te slaan"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:730
 msgid "Leave the disc _open to add other files later"
@@ -1553,7 +1542,7 @@ msgstr "Recursieve verwijzing"
 
 #: ../libbrasero-burn/brasero-image-properties.c:243
 msgid "Disc image type:"
-msgstr "Type imagebestand:"
+msgstr "Type schijfkopiebestand:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:97
 msgid "Autodetect"
@@ -1561,19 +1550,19 @@ msgstr "Automatisch detecteren"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "ISO9660 image"
-msgstr "ISO9660-imagebestand"
+msgstr "ISO9660-schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:115
 msgid "Readcd/Readom image"
-msgstr "Readcd/Readom-imagebestand"
+msgstr "Readcd/Readom-schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:141
 msgid "Cue image"
-msgstr "Cue-imagebestand"
+msgstr "Cue-schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:151
 msgid "Cdrdao image"
-msgstr "Cdrdao-imagebestand"
+msgstr "Cdrdao-schijfkopiebestand"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:93
 #: ../src/brasero-project.c:1503
@@ -1585,8 +1574,8 @@ msgstr "Eigenschappen van %s"
 msgid ""
 "Do you really want to keep the current extension for the disc image name?"
 msgstr ""
-"Weet u zeker dat u de huidige bestandsextensie voor het imagebestand wilt "
-"gebruiken?"
+"Weet u zeker dat u de huidige bestandsextensie voor het schijfkopiebestand "
+"wilt gebruiken?"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:139
 msgid ""
@@ -1645,7 +1634,7 @@ msgstr "‘%s’: laden"
 #: ../libbrasero-burn/brasero-src-image.c:236
 #, c-format
 msgid "\"%s\": unknown disc image type"
-msgstr "‘%s’: onbekend type imagebestand"
+msgstr "‘%s’: onbekend type schijfkopiebestand"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
@@ -1660,11 +1649,11 @@ msgstr "‘%s’: %s"
 #: ../libbrasero-burn/brasero-src-image.c:271
 #: ../libbrasero-burn/brasero-src-image.c:554
 msgid "Click here to select a disc _image"
-msgstr "Klik h_ier om een imagebestand te selecteren"
+msgstr "Klik h_ier om een schijfkopiebestand te selecteren"
 
 #: ../libbrasero-burn/brasero-src-image.c:415
 msgid "Select Disc Image"
-msgstr "Imagebestand selecteren"
+msgstr "Schijfkopiebestand selecteren"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
@@ -1676,11 +1665,11 @@ msgstr "Alle bestanden"
 #: ../libbrasero-burn/brasero-src-image.c:450
 msgctxt "disc"
 msgid "Image files"
-msgstr "Imagebestanden"
+msgstr "Schijfkopiebestanden"
 
 #: ../libbrasero-burn/brasero-src-image.c:467
 msgid "Image type:"
-msgstr "Type imagebestand:"
+msgstr "Type schijfkopiebestand:"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:147
 #, c-format
@@ -1702,7 +1691,7 @@ msgid ""
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 "De items in deze map zullen 7 oudermappen hebben.\n"
-"Brasero kan een imagebestand van zo'n bestandshiërarchie aanmaken en "
+"Brasero kan een schijfkopiebestand van zo'n bestandshiërarchie aanmaken en "
 "schrijven, maar de schijf kan mogelijk niet door alle besturingssystemen "
 "gelezen worden.\n"
 "Onder Linux wordt een dergelijke bestandshiërarchie wel ondersteund."
@@ -1741,14 +1730,14 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"Het bestand is groter dan 2 GB. Bestanden groter dan 2 GB worden niet "
-"ondersteund door de ISO9660-standaard van de eerste en tweede versie (dit "
+"Het bestand is groter dan 2 GiB. Bestanden groter dan 2 GiB worden niet "
+"ondersteund door de eerste en tweede versie van de ISO9660-standaard (dit "
 "zijn de meest voorkomende).\n"
 "Het wordt aanbevolen om de derde versie van de ISO9660-standaard te "
-"gebruiken, die door de meeste besturingssystemen wordt ondersteund, "
+"gebruiken; deze wordt ondersteund door de meeste besturingssystemen, "
 "waaronder Linux en alle versies van Windows™.\n"
-"Mac OS X kan echter geen imagebestanden lezen die aangemaakt zijn met versie "
-"3 van de ISO9660-standaard."
+"Mac OS X kan echter geen schijfkopiebestanden lezen die aangemaakt zijn met "
+"versie 3 van de ISO9660-standaard."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:330
 #: ../src/brasero-data-disc.c:729
@@ -1871,12 +1860,12 @@ msgstr "De schijf wordt niet ondersteund"
 msgid "The drive is empty"
 msgstr "Het station is leeg"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Selecteer een schijf"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Voortgang"
 
@@ -1934,12 +1923,12 @@ msgstr "‘%s’ kan niet gevonden worden."
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:451
 msgid "Retrieving image format and size"
-msgstr "Bestandsformaat en -grootte verkrijgen"
+msgstr "Schijfkopiebestandsformaat en -grootte ophalen"
 
 #. Translators: This is a disc image
 #: ../libbrasero-burn/brasero-track-image-cfg.c:471
 msgid "The format of the disc image could not be identified"
-msgstr "De grootte van het imagebestand kon niet bepaald worden"
+msgstr "De grootte van het schijfkopiebestand kon niet bepaald worden"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:472
 msgid "Please set it manually"
@@ -2123,8 +2112,8 @@ msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr ""
-"Het bestandssysteem dat u heeft gekozen om het tijdelijke imagebestand te "
-"bewaren ondersteunt geen bestanden groter dan 2 GiB"
+"Het bestandssysteem dat u heeft gekozen om het tijdelijke schijfkopiebestand "
+"te bewaren ondersteunt geen bestanden groter dan 2 GiB"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
@@ -2132,8 +2121,8 @@ msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
 msgstr ""
-"De geselecteerde locatie heeft niet genoeg vrije ruimte om het imagebestand "
-"op te slaan (%ld MiB nodig)"
+"De geselecteerde locatie heeft niet genoeg vrije ruimte om het "
+"schijfkopiebestand op te slaan (%ld MiB nodig)"
 
 #: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
 #, c-format
@@ -2143,7 +2132,7 @@ msgstr "De grootte van het volume kon niet opgehaald worden"
 #: ../libbrasero-burn/burn-job.c:627
 #, c-format
 msgid "No path was specified for the image output"
-msgstr "Er is geen pad opgegeven voor de uitvoer van het imagebestand"
+msgstr "Er is geen pad opgegeven voor de uitvoer van het schijfkopiebestand"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
@@ -2208,7 +2197,7 @@ msgstr "Proces ‘%s’ is gestopt met een foutcode (%i)"
 #: ../libbrasero-media/brasero-medium.c:206
 #: ../libbrasero-media/brasero-volume.c:382
 msgid "Image File"
-msgstr "Imagebestand"
+msgstr "Schijfkopiebestand"
 
 #: ../libbrasero-media/brasero-drive-selection.c:341
 #: ../libbrasero-media/brasero-drive-selection.c:436
@@ -2428,8 +2417,8 @@ msgstr "Audioschijf (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Dataschijf (%s)"
@@ -2438,8 +2427,7 @@ msgstr "Dataschijf (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Dit lijkt geen geldig ISO-bestand te zijn."
@@ -2509,7 +2497,7 @@ msgstr "het bestand lijkt geen afspeellijst te zijn"
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:199
 msgid "Images"
-msgstr "Images"
+msgstr "Schijfkopiebestanden"
 
 #: ../libbrasero-utils/brasero-jacket-background.c:230
 msgid "_Color"
@@ -2531,22 +2519,22 @@ msgstr "Verticaal kleurverloop"
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:280
 msgid "_Image"
-msgstr "I_mage"
+msgstr "_Schijfkopiebestand"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:308
 msgid "Image path:"
-msgstr "Pad naar imagebestand:"
+msgstr "Pad naar schijfkopiebestand:"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:320
 msgid "Choose an image"
-msgstr "Een imagebestand kiezen"
+msgstr "Een schijfkopiebestand kiezen"
 
 #. Translators: This is an image, a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-background.c:331
 msgid "Image style:"
-msgstr "Imagestijl:"
+msgstr "Schijfkopiebestandstijl:"
 
 #: ../libbrasero-utils/brasero-jacket-background.c:345
 msgid "Centered"
@@ -2636,7 +2624,7 @@ msgstr "VOORKANT"
 #. * a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-view.c:1021
 msgid "The image could not be loaded."
-msgstr "Het imagebestand kon niet geladen worden."
+msgstr "Het schijfkopiebestand kon niet geladen worden."
 
 #: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
@@ -2688,17 +2676,14 @@ msgid "%s element could not be created"
 msgstr "%s-element kon niet aangemaakt worden"
 
 #: ../libbrasero-utils/brasero-misc.c:74
-#| msgid "Display debug statements on stdout for Brasero burn library"
 msgid "Display debug statements on stdout for Brasero utilities library"
 msgstr "Debugcommando's tonen op stdout voor de Brasero-mediabibliotheek"
 
 #: ../libbrasero-utils/brasero-misc.c:91
-#| msgid "Brasero optical media library"
 msgid "Brasero utilities library"
 msgstr "Brasero's mediabibliotheek"
 
 #: ../libbrasero-utils/brasero-misc.c:92
-#| msgid "Display options for Brasero-burn library"
 msgid "Display options for Brasero-utils library"
 msgstr "Opties voor Brasero-mediabibliotheek tonen"
 
@@ -2724,7 +2709,7 @@ msgstr "Gemiddeld pictogram"
 #: ../src/brasero-project.c:2250 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
-msgstr "Imagebestanden"
+msgstr "Schijfkopiebestanden"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -2764,7 +2749,7 @@ msgstr "Naar schijf _schrijven…"
 
 #: ../nautilus/nautilus-burn-extension.c:572
 msgid "Write disc image to a CD or DVD"
-msgstr "Imagebestand op een cd of dvd branden"
+msgstr "Schijfkopiebestand op een cd of dvd branden"
 
 #: ../nautilus/nautilus-burn-extension.c:645
 msgid "_Copy Disc…"
@@ -2867,11 +2852,12 @@ msgstr "Laatste sessie-import mislukt"
 #: ../plugins/growisofs/burn-growisofs.c:210
 #: ../plugins/growisofs/burn-growisofs.c:217
 msgid "An image could not be created"
-msgstr "Er kon geen imagebestand worden aangemaakt"
+msgstr "Er kon geen schijfkopiebestand worden aangemaakt"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:138
 msgid "This version of genisoimage is not supported"
-msgstr "Deze versie van genisoimage lijkt niet te worden ondersteund"
+msgstr ""
+"Deze versie van geniso-schijfkopiebestand lijkt niet te worden ondersteund"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:180
 #: ../plugins/cdrtools/burn-mkisofs.c:180
@@ -2894,7 +2880,7 @@ msgstr "Er is geen vrije ruimte meer op de schijf"
 #: ../plugins/cdrtools/burn-mkisofs.c:531
 #: ../plugins/libburnia/burn-libisofs.c:1078
 msgid "Creates disc images from a file selection"
-msgstr "Maakt een imagebestand van een bestandsselectie"
+msgstr "Maakt een schijfkopiebestand van een bestandsselectie"
 
 #: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
 #, c-format
@@ -2902,12 +2888,12 @@ msgid ""
 "The location you chose to store the image on does not have enough free space "
 "for the disc image"
 msgstr ""
-"De geselecteerde locatie heeft niet genoeg vrije ruimte om het imagebestand "
-"op te slaan"
+"De geselecteerde locatie heeft niet genoeg vrije ruimte om het "
+"schijfkopiebestand op te slaan"
 
 #: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
 msgid "Copies any disc to a disc image"
-msgstr "Kopieert elke schijf naar een schijf-imagebestand"
+msgstr "Kopieert elke schijf naar een schijfkopiebestand"
 
 #: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
 #: ../plugins/libburnia/burn-libburn.c:856
@@ -3000,7 +2986,7 @@ msgstr "Bestand ‘%s’ kon niet geopend worden (%s)"
 
 #: ../plugins/checksum/burn-checksum-files.c:617
 msgid "Creating checksum for image files"
-msgstr "Controlesom voor imagebestanden aanmaken"
+msgstr "Controlesom voor schijfkopiebestanden aanmaken"
 
 #: ../plugins/checksum/burn-checksum-files.c:859
 #, c-format
@@ -3068,14 +3054,14 @@ msgstr "‘%s’ kon niet geopend worden (%s)"
 #: ../plugins/checksum/burn-checksum-image.c:359
 #: ../plugins/checksum/burn-checksum-image.c:456
 msgid "Creating image checksum"
-msgstr "Controlesom van het imagebestand aanmaken"
+msgstr "Controlesom van het schijfkopiebestand aanmaken"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
 #: ../plugins/checksum/burn-checksum-image.c:831
 msgid "Image Checksum"
-msgstr "Controlesom imagebestand"
+msgstr "Controlesom schijfkopiebestand"
 
 #: ../plugins/checksum/burn-checksum-image.c:832
 msgid "Checks disc integrity after it is burnt"
@@ -3088,7 +3074,7 @@ msgstr "Bestandsopmaak aanmaken"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:371
 msgid "Creates disc images suitable for video DVDs"
-msgstr "Maakt imagebestanden aan geschikt voor video-dvd's"
+msgstr "Maakt schijfkopiebestanden aan geschikt voor video-dvd's"
 
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
@@ -3129,7 +3115,7 @@ msgstr "Video-dvd kopiëren"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:695
 msgid "Copies CSS encrypted video DVDs to a disc image"
-msgstr "Kopieert CSS-versleutelde video-dvd's naar een imagebestand"
+msgstr "Kopieert CSS-versleutelde video-dvd's naar een schijfkopiebestand"
 
 #: ../plugins/growisofs/burn-dvd-rw-format.c:190
 msgid "Blanks and formats rewritable DVDs and BDs"
@@ -3320,7 +3306,7 @@ msgstr "Zet elk videobestand om naar een geschikt formaat voor video-dvd's"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:478
 msgid "Creates disc images suitable for SVCDs"
-msgstr "Maakt een imagebestand aan geschikt voor svcd's"
+msgstr "Maakt een schijfkopiebestand aan geschikt voor svcd's"
 
 #: ../src/brasero-app.c:123
 msgid "_Project"
@@ -3683,7 +3669,7 @@ msgstr "PAD NAAR APPARAAT"
 
 #: ../src/brasero-cli.c:86
 msgid "Create an image file instead of burning"
-msgstr "Maak een imagebestand in plaats van het branden"
+msgstr "Een schijfkopiebestand aanmaken in plaats van branden"
 
 #: ../src/brasero-cli.c:90
 msgid "Open an audio project adding the URIs given on the command line"
@@ -3717,11 +3703,11 @@ msgstr ""
 
 #: ../src/brasero-cli.c:110
 msgid "URI of an image file to burn (autodetected)"
-msgstr "URI van een te branden imagebestand (automatisch gedetecteerd)"
+msgstr "URI van een te branden schijfkopiebestand (automatisch gedetecteerd)"
 
 #: ../src/brasero-cli.c:111
 msgid "PATH TO IMAGE"
-msgstr "PAD NAAR IMAGEBESTAND"
+msgstr "PAD NAAR SCHIJFKOPIEBESTAND"
 
 #: ../src/brasero-cli.c:114
 msgid "Force Brasero to display the project selection page"
@@ -3811,7 +3797,6 @@ msgid "The contents of the project changed since it was saved."
 msgstr "De projectinhoud is gewijzigd sinds de laatste keer opslaan."
 
 #: ../src/brasero-data-disc.c:561
-#| msgid "Discard the current modified project"
 msgid "Discard the current modified project ?"
 msgstr "Wijzigen aan het huidige project verwerpen?"
 
@@ -3834,8 +3819,8 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
 msgstr ""
-"Er is één bestand geselecteerd(‘%s’). Het is een image van een schijf en de "
-"inhoud kan gebrand worden"
+"Er is één bestand geselecteerd(‘%s’). Het is een kopiebestand van een schijf "
+"en de inhoud kan gebrand worden"
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
@@ -3843,7 +3828,7 @@ msgstr "Als _data branden"
 
 #: ../src/brasero-data-disc.c:627
 msgid "Burn as _Image"
-msgstr "Als _imagebestand branden"
+msgstr "Als _schijfkopiebestand branden"
 
 #: ../src/brasero-data-disc.c:673 ../src/brasero-data-disc.c:691
 #: ../src/brasero-data-disc.c:709
@@ -4079,7 +4064,7 @@ msgstr "_Voorbeeldweergave"
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
-msgstr "Voorbeeld van video, audio en imagebestanden tonen"
+msgstr "Voorbeeld van video, audio en schijfkopiebestand tonen"
 
 #: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
@@ -4212,25 +4197,25 @@ msgstr "Ingeschakeld"
 msgid "Copyright %s"
 msgstr "Copyright %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "I_nfo"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "C_onfigureren"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "In_schakelen"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "_Alles inschakelen"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "Alles _uitschakelen"
 
@@ -4541,13 +4526,13 @@ msgstr ""
 
 #: ../src/brasero-project-manager.c:109
 msgid "_Burn Image…"
-msgstr "Imagebestand _branden..."
+msgstr "Schijfkopiebestand _branden..."
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:95
 #: ../src/brasero-project-type-chooser.c:96
 msgid "Burn an existing CD/DVD image to disc"
-msgstr "Een bestaande cd/dvd-image op een schijf branden"
+msgstr "Een bestaand cd/dvd-schijfkopiebestand op een schijf branden"
 
 #: ../src/brasero-project-manager.c:112
 msgid "_Open…"
@@ -4613,7 +4598,7 @@ msgstr "Brasero — Nieuw videoschijf project"
 
 #: ../src/brasero-project-manager.c:628
 msgid "Brasero — New Image File"
-msgstr "Brasero — Nieuw imagebestand"
+msgstr "Brasero — Nieuw schijfkopiebestand"
 
 #: ../src/brasero-project-manager.c:643
 msgid "Brasero — Disc Copy"
@@ -4644,7 +4629,7 @@ msgstr "Afspeellijsten en hun inhoud tonen"
 #: ../src/brasero-project-name.c:83
 msgctxt "picture"
 msgid "Please select another image."
-msgstr "Kies een ander imagebestand."
+msgstr "Kies een ander schijfkopiebestand."
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -4704,7 +4689,7 @@ msgstr "Een 1:1 kopie van een cd/dvd maken"
 
 #: ../src/brasero-project-type-chooser.c:94
 msgid "Burn _image"
-msgstr "Imagebestand _branden"
+msgstr "Schijfkopiebestand _branden"
 
 #: ../src/brasero-project-type-chooser.c:292
 msgid "Last _Unsaved Project"
