@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: Brasero HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-02-24 16:02+0000\n"
-"PO-Revision-Date: 2014-02-24 23:29+0200\n"
+"POT-Creation-Date: 2016-01-05 04:09+0000\n"
+"PO-Revision-Date: 2016-01-05 13:29+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -29,7 +29,7 @@ msgid ""
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
 msgstr ""
-"Brasero yra GNOME darbastalio programa CD/DVD kūrimui. Ji sukurta taip, kad "
+"Brasero yra GNOME darbalaukio programa CD/DVD kūrimui. Ji sukurta taip, kad "
 "būtų kuo paprastesnė, ir turi išskirtinių savybių, leidžiančių naudotojams "
 "paprastai ir greitai sukurti diskus."
 
@@ -415,24 +415,21 @@ msgstr "Diske nepakanka vietos"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (programa)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (biblioteka)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer įskiepis)"
@@ -462,18 +459,17 @@ msgstr "Nepavyko rasti laikinojo atvaizdžio formato"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Įvyko vidinė klaida"
@@ -1095,7 +1091,7 @@ msgstr "Ar norite rašyti pasirinktus duomenis per kelias laikmenas?"
 #: ../libbrasero-burn/brasero-burn-options.c:434
 #: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "The data size is too large for the disc even with the overburn option."
-msgstr "Duomenų per daug šiam diskui netgi naudojant „overburn“ nustatymą."
+msgstr "Duomenų per daug šiam diskui, netgi naudojant „overburn“ parametrą."
 
 #: ../libbrasero-burn/brasero-burn-options.c:439 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
@@ -1177,8 +1173,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Įdėkite diską, kuris nėra apsaugotas nuo kopijavimo."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Įdiegtos ne visos reikiamos programos ir bibliotekos"
 
@@ -1199,7 +1194,7 @@ msgid ""
 "NOTE: This option might cause failure."
 msgstr ""
 "Šis projektas per didelis šiam diskui, todėl turite pašalinti keletą failų.\n"
-"Galbūt norėsite pasinaudoti šia parinktimi, jei naudojate 90 ar 100 min CD-"
+"Galbūt norėsite pasinaudoti šiuo parametru, jei naudojate 90 ar 100 min CD-"
 "R(W), kuris nėra teisingai atpažįstamas ir reikalauja overburn parinkties.\n"
 "PASTABA: įjungus šią parinktį galimas nesėkmingas įrašymas."
 
@@ -1235,10 +1230,9 @@ msgstr "Disko įrašymo sąranka"
 
 #: ../libbrasero-burn/brasero-burn-options.c:764 ../src/brasero-project.c:1544
 msgid "Video Options"
-msgstr "Video parinktys"
+msgstr "Video parametrai"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1281,8 +1275,7 @@ msgstr "Kopijuoti CD ar DVD diskus"
 msgid "Select disc to copy"
 msgstr "Pasirinkite kopijuotiną diską"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Įdiekite šiuos komponentus ir bandykite vėl:"
 
@@ -1459,7 +1452,7 @@ msgstr "Leisti vėliau į diską pridėti daugiau duomenų"
 #: ../libbrasero-burn/brasero-tool-dialog.c:284
 #: ../src/brasero-multi-song-props.c:308 ../src/brasero-song-properties.c:226
 msgid "Options"
-msgstr "Parinktys"
+msgstr "Parametrai"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:763
 msgid "Location for _Temporary Files"
@@ -1544,7 +1537,7 @@ msgstr "Keisti _plėtinį"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:234
 msgid "Configure recording options"
-msgstr "Konfigūruoti įrašymo nustatymus"
+msgstr "Konfigūruoti įrašymo parametrus"
 
 #. Translators: first %02i is hours, the second one is minutes and the
 #. * third one is seconds.
@@ -1804,12 +1797,12 @@ msgstr "Diskas nepalaikomas"
 msgid "The drive is empty"
 msgstr "Įrenginys tuščias"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Pasirinkite diską"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Pažanga"
 
@@ -2033,7 +2026,7 @@ msgstr "Brasero laikmenų rašymo biblioteka"
 
 #: ../libbrasero-burn/burn-debug.c:81
 msgid "Display options for Brasero-burn library"
-msgstr "Rodymo parinktys Brasero rašymo bibliotekai"
+msgstr "Rodymo parametrai Brasero rašymo bibliotekai"
 
 #. Translators: %s is the plugin name
 #: ../libbrasero-burn/burn-job.c:322 ../libbrasero-burn/burn-job.c:797
@@ -2161,7 +2154,7 @@ msgstr "Brasero optinių laikmenų biblioteka"
 
 #: ../libbrasero-media/brasero-media.c:478
 msgid "Display options for Brasero media library"
-msgstr "Rodymo nustatymai Brasero laikmenų bibliotekai"
+msgstr "Rodymo parametrai Brasero laikmenų bibliotekai"
 
 #: ../libbrasero-media/brasero-medium.c:65
 msgid "File"
@@ -2364,8 +2357,8 @@ msgstr "Garso diskas (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Duomenų diskas (%s)"
@@ -2374,8 +2367,7 @@ msgstr "Duomenų diskas (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Failas nėra geras ISO formato atvaizdis"
@@ -2635,7 +2627,7 @@ msgstr "Brasero įrankių biblioteka"
 
 #: ../libbrasero-utils/brasero-misc.c:92
 msgid "Display options for Brasero-utils library"
-msgstr "Rodyti Brasero įrankių bibliotekos nustatymus"
+msgstr "Rodyti Brasero įrankių bibliotekos parametrus"
 
 #: ../libbrasero-utils/brasero-tool-color-picker.c:166
 msgid "Pick a Color"
@@ -3122,7 +3114,7 @@ msgstr "Nepavyko inicializuoti libisofs."
 #: ../plugins/libburnia/burn-libisofs.c:485
 #, c-format
 msgid "Read options could not be created"
-msgstr "Nepavyko sukurti skaitymo parinkčių"
+msgstr "Nepavyko sukurti skaitymo parametrų"
 
 #. Translators: %s is the path
 #: ../plugins/libburnia/burn-libisofs.c:684
@@ -3657,7 +3649,7 @@ msgid ""
 "This option is mainly useful for integration with other applications."
 msgstr ""
 "Įrašyti nurodytą projektą ir jį pašalinti.\n"
-"Ši parinktis daugiausiai yra naudinga integruojant į kitas programas."
+"Šis parametras daugiausiai yra naudingas, integruojant į kitas programas."
 
 #: ../src/brasero-cli.c:139
 msgid "PATH"
@@ -3926,7 +3918,7 @@ msgstr[2] "Rodyti _filtruotų failų sąrašą (%d failų)"
 
 #: ../src/brasero-file-filtered.c:135
 msgid "Filter Options"
-msgstr "Filtravimo parinktys"
+msgstr "Filtravimo parametrai"
 
 #: ../src/brasero-file-filtered.c:218
 msgid ""
@@ -3947,11 +3939,11 @@ msgstr "Atstatyti pasirinktus failus"
 
 #: ../src/brasero-file-filtered.c:303
 msgid "_Options…"
-msgstr "_Parinktys…"
+msgstr "_Parametrai…"
 
 #: ../src/brasero-file-filtered.c:311
 msgid "Set the options for file filtering"
-msgstr "Nurodyti failų filtravimo parinktis"
+msgstr "Nurodyti failų filtravimo parametrus"
 
 #. filter hidden files
 #: ../src/brasero-filter-option.c:65
@@ -3970,7 +3962,7 @@ msgstr "Filtruoti _sugadintas simbolines nuorodas"
 
 #: ../src/brasero-filter-option.c:85
 msgid "Filtering options"
-msgstr "Filtravimo parinktys"
+msgstr "Filtravimo parametrai"
 
 #: ../src/brasero-layout.c:104
 msgid "P_review"
@@ -4113,25 +4105,25 @@ msgstr "Įjungta"
 msgid "Copyright %s"
 msgstr "Autorinės teisės priklauso %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "_Apie"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "K_onfigūruoti"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "Įj_ungti"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "Įju_ngti visus"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "_Išjungti visus"
 
@@ -4139,7 +4131,7 @@ msgstr "_Išjungti visus"
 #: ../src/brasero-plugin-option.c:258
 #, c-format
 msgid "Options for plugin %s"
-msgstr "Įskiepio %s nustatymai"
+msgstr "Įskiepio %s parametrai"
 
 #: ../src/brasero-pref.c:61
 msgid "Brasero Plugins"
@@ -4209,7 +4201,7 @@ msgstr "Apskaičiuotas dydis: %s"
 #: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
-"Projektas per didelis šiam diskui netgi naudojant „overburn“ nustatymą."
+"Projektas per didelis šiam diskui, netgi naudojant „overburn“ parametrą."
 
 #: ../src/brasero-project.c:977
 msgid ""
@@ -4219,7 +4211,7 @@ msgid ""
 "Note: This option might cause failure."
 msgstr ""
 "Šis projektas per didelis šiam diskui, todėl turite pašalinti keletą failų.\n"
-"Galbūt norėsite pasinaudoti šia parinktimi, jei naudojate 90 ar 100 min CD-"
+"Galbūt norėsite pasinaudoti šiuo parametru, jei naudojate 90 ar 100 min CD-"
 "R(W), kuris nėra teisingai atpažįstamas ir reikalauja overburn parinkties.\n"
 "Pastaba: įjungus šią parinktį galimas nesėkmingas įrašymas."
 
@@ -4917,5 +4909,4 @@ msgstr "[URI] [URI] …"
 #: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
-msgstr "Įveskite „%s --help“ norėdami pamatyti visas galimas parinktis\n"
-
+msgstr "Įveskite „%s --help“, norėdami pamatyti visus galimus parametrus\n"
