@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero"
 "&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-10-14 15:11+0000\n"
-"PO-Revision-Date: 2016-04-11 18:01+0200\n"
+"POT-Creation-Date: 2016-04-12 03:10+0000\n"
+"PO-Revision-Date: 2016-05-08 17:18+0200\n"
 "Last-Translator: Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr>\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -29,7 +29,7 @@ msgid ""
 "users to create their discs easily and quickly."
 msgstr ""
 "Brasero es una aplicacion per l'environament GNOME que grava de CD/DVD. Es "
-"concebuda per èsser tant simple coma possible e possedís de foncionalitats "
+"concebuda per èsser tant simpla coma possible e possedís de foncionalitats "
 "unicas per permetre als utilizaires de crear lors disques aisidament e "
 "rapidament."
 
@@ -51,7 +51,6 @@ msgid "Brasero"
 msgstr "Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
-#| msgid "Disc Burner"
 msgid "Disc Burner and Copier"
 msgstr "Gravadura e còpia de disc"
 
@@ -73,17 +72,14 @@ msgstr "Dobrir una fenèstra novèla"
 
 #
 #: ../data/brasero.desktop.in.in.h:7
-#| msgid "Image File"
 msgid "Burn an Image File"
 msgstr "Gravar un fichièr imatge"
 
 #: ../data/brasero.desktop.in.in.h:8
-#| msgid "Create a new project"
 msgid "Create an Audio Project"
 msgstr "Crear un projècte àudio"
 
 #: ../data/brasero.desktop.in.in.h:9
-#| msgid "Create a new project"
 msgid "Create a Video Project"
 msgstr "Crear un projècte vidèo"
 
@@ -117,7 +113,6 @@ msgid "The type of checksum used for files"
 msgstr "Lo tipe de soma de contraròtle utilizat pels fichièrs"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:6
-#| msgid "Location for Temporary Files"
 msgid "Directory to use for temporary files"
 msgstr "Emplaçament d'utilizar pels fichièrs temporaris"
 
@@ -179,8 +174,8 @@ msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Indica se growisofs deu èsser utilizat amb l'opcion « -use-the-force-luke="
-"dao ». Se l'opcion es pas activa, Brasero l'utiliza pas ; es possibkle "
+"Indica se growisofs deu èsser utilizat amb l'opcion « -use-the-force-"
+"luke=dao ». Se l'opcion es pas activa, Brasero l'utiliza pas ; es possibkle "
 "qu'aquò siá un contornament per resòlvre de problèmas presents sus d'unes "
 "modèls de gravadors o configuracions particularas."
 
@@ -194,7 +189,8 @@ msgstr "Utilizat conjuntament amb l'opcion « -immed » de cdrecord."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
-msgstr "Indica se cal utilizar l'opcion « --driver generic-mmc-raw » amb cdrdao"
+msgstr ""
+"Indica se cal utilizar l'opcion « --driver generic-mmc-raw » amb cdrdao"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:19
 msgid ""
@@ -276,14 +272,13 @@ msgid ""
 "priority is used. A positive value overrides the plugin's native priority. A "
 "negative value disables the plugin."
 msgstr ""
-"Quand mantun empeuton son disponibles pel meteis prètzfach, aquesta valor es "
+"Quand mantun empeuton son disponibles pel meteis prètzfait, aquesta valor es "
 "utilizada per determinar quin empeuton obtendrà la prioritat. 0 significa "
 "que la prioritat nativa de l'empeuton es utilizada. Una valor positiva "
 "suplanta la valor nativa de l'empeuton. Una valor negativa desactiva "
 "l'empeuton."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:32
-#| msgid "Burning image to disc"
 msgid "Burning flags to be used"
 msgstr "Opcions de gravadura d'utilizar"
 
@@ -309,7 +304,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
-msgstr "Una error s'es producha pendent l'escafament."
+msgstr "Una error s'es produita pendent l'escafament."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:227
 #: ../libbrasero-burn/brasero-blank-dialog.c:272
@@ -394,7 +389,7 @@ msgstr "Còpia en cors"
 #: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
 #, c-format
 msgid "The drive cannot be locked (%s)"
-msgstr "Impossible de varrolhar lo lector (%s)"
+msgstr "Impossible de verrolhar lo lector (%s)"
 
 #: ../libbrasero-burn/brasero-burn.c:695
 msgid "The drive has no rewriting capabilities"
@@ -493,10 +488,9 @@ msgstr "Impossible de trobar un format per l'imatge temporari"
 #: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
-msgstr "Una error intèrna s'es producha"
+msgstr "Una error intèrna s'es produita"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:155
-#| msgid "Brasero project file"
 msgid "Brasero notification"
 msgstr "Notificacion de Brasero"
 
@@ -901,7 +895,7 @@ msgid ""
 "won't be written."
 msgstr ""
 "Los CD-RW àudio son pas totjorn legibles suls lectors CD ancians e las "
-"informacions CD-Text seràn pas inscrichas."
+"informacions CD-Text seràn pas inscritas."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:968
 #: ../libbrasero-burn/brasero-burn-dialog.c:990
@@ -943,12 +937,10 @@ msgstr ""
 "actuala pòsca contunhar."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1133
-#| msgid "You may want to free some space on the disc and retry"
 msgid "Do you want to replace the disc and continue?"
 msgstr "Volètz remplaçar lo disc e ensajar tornamai ?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1134
-#| msgid "The image could not be loaded."
 msgid "The currently inserted disc could not be blanked."
 msgstr ""
 "Lo disc que se tròba actualament dins lo lector a pas pogut èsser escafat."
@@ -968,7 +960,6 @@ msgstr ""
 
 #
 #: ../libbrasero-burn/brasero-burn-dialog.c:1145
-#| msgid "_Continue"
 msgid "C_ontinue"
 msgstr "C_ontunhar"
 
@@ -996,7 +987,7 @@ msgstr "I a agut una error desconeguda."
 #: ../libbrasero-burn/brasero-burn-dialog.c:1743
 #: ../libbrasero-burn/brasero-burn-dialog.c:1761 ../src/brasero-app.c:620
 msgid "Error while burning."
-msgstr "Una error s'es producha pendent la gravadura."
+msgstr "Una error s'es produita pendent la gravadura."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1751
 msgid "_Save Log"
@@ -1069,7 +1060,6 @@ msgid "Make _More Copies"
 msgstr "Crear de còpias _novèlas"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1972
-#| msgid "_Create Cover"
 msgid "Create Co_ver"
 msgstr "Crear una po_cheta"
 
@@ -1361,7 +1351,6 @@ msgstr "Cançon desconeguda"
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419
 #: ../src/brasero-song-control.c:270
 #, c-format
-#| msgid " by %s"
 msgid "by %s"
 msgstr "per %s"
 
@@ -1438,7 +1427,7 @@ msgstr "Sètz segur que volètz causir aqueste emplaçament ?"
 #: ../plugins/libburnia/burn-libisofs.c:246
 #, c-format
 msgid "You do not have the required permission to write at this location"
-msgstr "Avètz pas los dreches requesits per escriure a aqueste emplaçament"
+msgstr "Avètz pas los dreits requesits per escriure a aqueste emplaçament"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:330
 msgid ""
@@ -1803,7 +1792,7 @@ msgstr ""
 #: ../src/brasero-eject-dialog.c:102 ../src/brasero-playlist.c:393
 #: ../src/brasero-project.c:2625
 msgid "An unknown error occurred"
-msgstr "Una error desconeguda s'es producha"
+msgstr "Una error desconeguda s'es produita"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
 msgid "The file integrity check was performed successfully."
@@ -2149,7 +2138,7 @@ msgstr "Impossible d'obténer la talha del volum"
 #: ../libbrasero-burn/burn-job.c:627
 #, c-format
 msgid "No path was specified for the image output"
-msgstr "Cap de camin es pas estat indicat per l'imatge produch"
+msgstr "Cap de camin es pas estat indicat per l'imatge produit"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
@@ -2158,7 +2147,7 @@ msgstr "Cap de camin es pas estat indicat per l'imatge produch"
 #: ../plugins/transcode/burn-transcode.c:790
 #, c-format
 msgid "An internal error occurred (%s)"
-msgstr "Una error intèrna s'es producha (%s)"
+msgstr "Una error intèrna s'es produita (%s)"
 
 #: ../libbrasero-burn/burn-mkisofs-base.c:153
 #: ../libbrasero-burn/burn-mkisofs-base.c:494
@@ -2205,7 +2194,7 @@ msgstr "« %s » es introbable"
 #: ../libbrasero-burn/burn-process.c:259
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
-msgstr "Lo processus « %s » s'es acabat amb un còde d'error (%i)"
+msgstr "Lo processus « %s » s'es acabat amb un còdi d'error (%i)"
 
 #
 #. Translators: This is a fake drive, a file, and means that
@@ -2596,7 +2585,7 @@ msgstr "Proprietats de rèireplan"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:564
 msgid "Align right"
-msgstr "Alinhar a drecha"
+msgstr "Alinhar a dreita"
 
 #
 #: ../libbrasero-utils/brasero-jacket-edit.c:574
@@ -2707,19 +2696,16 @@ msgid "%s element could not be created"
 msgstr "L'element %s a pogut èsser creat"
 
 #: ../libbrasero-utils/brasero-misc.c:74
-#| msgid "Display debug statements on stdout for Brasero burn library"
 msgid "Display debug statements on stdout for Brasero utilities library"
 msgstr ""
 "Aficha d'informacions de desbugatge sus la sortida estandarda per la "
 "bibliotèca utilitària de Brasero"
 
 #: ../libbrasero-utils/brasero-misc.c:91
-#| msgid "Brasero media burning library"
 msgid "Brasero utilities library"
 msgstr "Bibliotèca utilitària de Brasero"
 
 #: ../libbrasero-utils/brasero-misc.c:92
-#| msgid "Display options for Brasero-burn library"
 msgid "Display options for Brasero-utils library"
 msgstr "Afichar las opcions per la bibliotèca utilitària de Brasero"
 
@@ -2756,7 +2742,6 @@ msgid "CD/DVD Creator Folder"
 msgstr "Dorsièr del creator de CD/DVD"
 
 #: ../nautilus/nautilus-burn-bar.c:368
-#| msgid "Disc name"
 msgid "Disc Name:"
 msgstr "Nom del disc :"
 
@@ -2858,7 +2843,7 @@ msgstr "Analisi de la pista %02i"
 #: ../plugins/cdrtools/burn-readcd.c:117 ../plugins/cdrtools/burn-readcd.c:123
 #, c-format
 msgid "You do not have the required permissions to use this drive"
-msgstr "Avètz pas los dreches requesits per utilizar aqueste lector"
+msgstr "Avètz pas los dreits requesits per utilizar aqueste lector"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:480
 msgid "Converting toc file"
@@ -2939,7 +2924,7 @@ msgstr "Còpia un disc quin que siá cap a un imatge de disc"
 #: ../plugins/libburnia/burn-libburn.c:887
 #, c-format
 msgid "An error occurred while writing to disc"
-msgstr "Una error s'es producha al moment de l'escritura sul disc"
+msgstr "Una error s'es produita al moment de l'escritura sul disc"
 
 #: ../plugins/cdrkit/burn-wodim.c:128 ../plugins/cdrtools/burn-cdrecord.c:128
 #, c-format
@@ -3132,9 +3117,9 @@ msgid ""
 msgstr ""
 "Error al moment de la recuperacion d'una clau pel criptatge. Es possible de "
 "resòlvre lo problèma d'un dels biaisses seguents : dins un terminal, siá "
-"definissètz lo còde corrècte de region DVD de vòstre lector de CD/DVD amb la "
-"comanda « regionset %s » o aviatz la comanda « DVDCSS_METHOD=title brasero "
-"--no-existing-session »"
+"definissètz lo còdi corrècte de region DVD de vòstre lector de CD/DVD amb la "
+"comanda « regionset %s » o aviatz la comanda « DVDCSS_METHOD=title brasero --"
+"no-existing-session »"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:339
 msgid "Retrieving DVD keys"
@@ -3152,7 +3137,6 @@ msgid "Error while reading video DVD (%s)"
 msgstr "Error al moment de la lectura del DVD vidèo (%s)"
 
 #: ../plugins/dvdcss/burn-dvdcss.c:402
-#| msgid "Copying data DVD"
 msgid "Copying video DVD"
 msgstr "Còpia del DVD vidèo"
 
@@ -3244,7 +3228,8 @@ msgstr ""
 #: ../plugins/libburnia/burn-libisofs.c:798
 #, c-format
 msgid "libisofs reported an error while adding file at path \"%s\""
-msgstr "libisofs a senhalat una error al moment de l'apondon del fichièr « %s »"
+msgstr ""
+"libisofs a senhalat una error al moment de l'apondon del fichièr « %s »"
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
@@ -3307,7 +3292,6 @@ msgid "Normalizing tracks"
 msgstr "Normalizacion de las pistas"
 
 #: ../plugins/transcode/burn-normalize.c:643
-#| msgid "Normalize"
 msgid "Normalization"
 msgstr "Normalizacion"
 
@@ -3464,10 +3448,10 @@ msgid ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 msgstr ""
-"Brasero es distribuit dins l'esper que serà utile, mas SENS CAP DE GARANTIA ;"
-" sens la quita garantia implicita de COMERCIABILITAT o DE CONFORMITAT A UNA "
-"UTILIZACION PARTICULARA. Vejatz la Licéncia Publica Generala GNU per mai de "
-"detalhs."
+"Brasero es distribuit dins l'esper que serà utile, mas SENS CAP DE "
+"GARANTIA ; sens la quita garantia implicita de COMERCIABILITAT o DE "
+"CONFORMITAT A UNA UTILIZACION PARTICULARA. Vejatz la Licéncia Publica "
+"Generala GNU per mai de detalhs."
 
 #: ../src/brasero-app.c:1186
 msgid ""
@@ -3498,8 +3482,8 @@ msgstr "Site web de Brasero"
 #: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
-"Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr> & Yannig Marchegay (Kokoyaya)"
-" <yannig@marchegay.org>"
+"Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr> & Yannig Marchegay "
+"(Kokoyaya) <yannig@marchegay.org>"
 
 #: ../src/brasero-app.c:1449
 #, c-format
@@ -3760,7 +3744,7 @@ msgstr "Grava lo contengut de l'URI burn://"
 
 #: ../src/brasero-cli.c:130
 msgid "Start burning immediately."
-msgstr "Àvia immediatament la gravadura."
+msgstr "Avia immediatament la gravadura."
 
 #: ../src/brasero-cli.c:134
 msgid "Don't connect to an already-running instance"
@@ -3813,7 +3797,7 @@ msgstr "R_enomenar..."
 
 #: ../src/brasero-data-disc.c:125
 msgid "Rename the selected file"
-msgstr "Tornar nomenar lo fichièr seleccionat"
+msgstr "Renomenar lo fichièr seleccionat"
 
 #: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:1758
 msgid "New _Folder"
@@ -3922,7 +3906,7 @@ msgstr "_Remplaçar"
 #. * Replace is a verb
 #: ../src/brasero-data-disc.c:796
 msgid "Al_ways Replace"
-msgstr "Tot_jorn remplaçar"
+msgstr "Remplaçar tot_jorn"
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -4057,8 +4041,8 @@ msgstr "Opcions del filtre"
 msgid ""
 "Select the files you want to restore and click on the \"Restore\" button"
 msgstr ""
-"Seleccionatz los fichièrs que volètz restablir e clicatz sul boton « "
-"Restablir »"
+"Seleccionatz los fichièrs que volètz restablir e clicatz sul boton "
+"« Restablir »"
 
 #: ../src/brasero-file-filtered.c:265
 msgid "Type"
@@ -4198,7 +4182,6 @@ msgstr "%i × %i pixèls"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
-#| msgid "Preview"
 msgid "No preview"
 msgstr "Pas d'apercebut"
 
@@ -4261,7 +4244,7 @@ msgstr "A_ctivar"
 
 #: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
-msgstr "_Tot activar"
+msgstr "Activar _tot"
 
 #: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
@@ -4537,7 +4520,7 @@ msgstr "Novèl projècte _àudio"
 msgid ""
 "Create a traditional audio CD that will be playable on computers and stereos"
 msgstr ""
-"Crèa un CD àudio estandard que poirez legir amb un ordenador o un lector de "
+"Crèa un CD àudio estandard que poiretz legir amb un ordenador o un lector de "
 "salon"
 
 #: ../src/brasero-project-manager.c:103
@@ -4816,7 +4799,7 @@ msgstr "amb"
 
 #: ../src/brasero-rename.c:414
 msgid "Rename to"
-msgstr "Tornar nomenar en"
+msgstr "Renomenar en"
 
 #: ../src/brasero-rename.c:423
 msgid "{number}"
@@ -4889,7 +4872,7 @@ msgstr "Cap de silenci a pas pogut èsser detectat"
 
 #: ../src/brasero-split-dialog.c:633
 msgid "An error occurred while detecting silences."
-msgstr "Una error s'es producha al moment de la deteccion dels silencis."
+msgstr "Una error s'es produita al moment de la deteccion dels silencis."
 
 #: ../src/brasero-split-dialog.c:712
 msgid "This will remove all previous results."
@@ -5253,10 +5236,8 @@ msgstr "Picatz « %s --help » per veire totas las opcions disponiblas\n"
 #~ msgid "<b>_Image</b>"
 #~ msgstr "<b>_Imatge</b>"
 
-#, c-format
 #~ msgid "%s, %d%% done, %s remaining"
 #~ msgstr "%s, %d %% realizat, temps que demòra %s"
 
-#, c-format
 #~ msgid "Brasero Disc Burner: %s"
 #~ msgstr "Gravador de Disques Brasero : %s"
