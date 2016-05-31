@@ -17,9 +17,10 @@ AM_CPPFLAGS = \
 	$(BRASERO_GLIB_CFLAGS)						\
 	$(BRASERO_GIO_CFLAGS)						\
 	$(BRASERO_GTK_CFLAGS)						\
-	$(BRASERO_LIBNOTIFY_CFLAGS) \
+	$(BRASERO_LIBNOTIFY_CFLAGS) 					\
 	$(BRASERO_GSTREAMER_CFLAGS)					\
-	$(BRASERO_CANBERRA_CFLAGS)
+	$(BRASERO_CANBERRA_CFLAGS) 					\
+	-Wno-error=format-nonliteral
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = libbrasero-marshal.h libbrasero-marshal.c
