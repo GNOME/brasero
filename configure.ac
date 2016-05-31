@@ -470,80 +470,8 @@ if test x"$enable_inotify" = "xyes"; then
 fi
 AM_CONDITIONAL(BUILD_INOTIFY, test x"$enable_inotify" = "xyes")
 
-dnl ****** GObject Introspection **********************
-dnl This is a copy of the m4 function in gobject-introspection package
-dnl but it was modified so the install path can be forced with a command
-dnl line parameter. This is to be able to use make distcheck.
-
-GOBJECT_INTROSPECTION_REQUIRED=0.6.3
-
-AC_ARG_ENABLE(introspection,
-                  AS_HELP_STRING([--enable-introspection[=@<:@no/auto/yes@:>@]], [Enable introspection for this build]),
-		  [enable_introspection=$enableval],
-		  [enable_introspection="auto"])
-
-AC_ARG_WITH(girdir,
-			AS_HELP_STRING([--with-girdir=DIR],[Installation path for .gir files @<:@auto@:>@]),
-			[ac_with_girdir=$withval],
-			[ac_with_girdir=""])
-
-AC_ARG_WITH(typelibdir,
-			AS_HELP_STRING([--with-typelibdir=DIR],[Installation path for .typelib files @<:@auto@:>@]),
-			[ac_with_typelibdir=$withval],
-			[ac_with_typelibdir=""])
-
-AC_MSG_CHECKING([for gobject-introspection])
-
-dnl presence/version checking
-AS_CASE([$enable_introspection],
-    [no], [dnl
-        found_introspection="no (disabled, use --enable-introspection to enable)"
-    ],dnl
-    [yes],[dnl
-        PKG_CHECK_EXISTS([gobject-introspection-1.0],,
-                         AC_MSG_ERROR([gobject-introspection-1.0 is not installed]))
-        PKG_CHECK_EXISTS([gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_REQUIRED],
-                         found_introspection=yes,
-                         AC_MSG_ERROR([You need to have gobject-introspection >= $1 installed to build AC_PACKAGE_NAME]))
-    ],dnl
-    [auto],[dnl
-        PKG_CHECK_EXISTS([gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_REQUIRED], found_introspection=yes, found_introspection=no)
-    ],dnl
-    [dnl	
-        AC_MSG_ERROR([invalid argument passed to --enable-introspection, should be one of @<:@no/auto/yes@:>@])
-])dnl
-
-AC_MSG_RESULT([$found_introspection])
-
-INTROSPECTION_SCANNER=
-INTROSPECTION_COMPILER=
-INTROSPECTION_GENERATE=
-INTROSPECTION_GIRDIR=
-INTROSPECTION_TYPELIBDIR=
-if test "x$found_introspection" = "xyes"; then
-	INTROSPECTION_SCANNER=`$PKG_CONFIG --variable=g_ir_scanner gobject-introspection-1.0`
-	INTROSPECTION_COMPILER=`$PKG_CONFIG --variable=g_ir_compiler gobject-introspection-1.0`
-	INTROSPECTION_GENERATE=`$PKG_CONFIG --variable=g_ir_generate gobject-introspection-1.0`
-
-	if test "${ac_with_girdir}" = ""; then
-		ac_with_girdir=`$PKG_CONFIG --variable=girdir gobject-introspection-1.0`
-	fi
-	INTROSPECTION_GIRDIR=${ac_with_girdir}
-	AC_MSG_NOTICE([installing .gir files in ${INTROSPECTION_GIRDIR}])
-
-	if test "${ac_with_typelibdir}" = ""; then
-		ac_with_typelibdir="$($PKG_CONFIG --variable=typelibdir gobject-introspection-1.0)"
-	fi
-	INTROSPECTION_TYPELIBDIR=${ac_with_typelibdir}
-	AC_MSG_NOTICE([installing .typelib files in ${INTROSPECTION_TYPELIBDIR}])
-fi
-AC_SUBST(INTROSPECTION_SCANNER)
-AC_SUBST(INTROSPECTION_COMPILER)
-AC_SUBST(INTROSPECTION_GENERATE)
-AC_SUBST(INTROSPECTION_GIRDIR)
-AC_SUBST(INTROSPECTION_TYPELIBDIR)
-
-AM_CONDITIONAL(HAVE_INTROSPECTION, test "x$found_introspection" = "xyes")
+dnl ****** Check for introspection ***************************
+GOBJECT_INTROSPECTION_CHECK([1.30.0])
 
 dnl ****** Update mime, desktop and icon caches *******
 AC_ARG_ENABLE(caches,
