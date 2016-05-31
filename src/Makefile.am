@@ -24,7 +24,8 @@ AM_CPPFLAGS = \
 	$(BRASERO_LIBXML_CFLAGS)					\
 	$(BRASERO_SEARCH_CFLAGS)					\
 	$(BRASERO_PL_PARSER_CFLAGS)					\
-	$(BRASERO_SM_CFLAGS)
+	$(BRASERO_SM_CFLAGS) 						\
+	-Wno-error=format-y2k
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = brasero-marshal.h brasero-marshal.c
