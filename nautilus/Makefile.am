@@ -22,7 +22,8 @@ AM_CPPFLAGS =					\
 	-DSHAREDIR=\""$(datadir)"\"		\
 	-DDATADIR=\""$(datadir)/brasero"\"	\
 	$(NAUTILUS_EXTENSION_CFLAGS)		\
-	$(DISABLE_DEPRECATED)
+	$(DISABLE_DEPRECATED) 			\
+	-Wno-error=format-y2k
 
 @INTLTOOL_DESKTOP_RULE@
 
