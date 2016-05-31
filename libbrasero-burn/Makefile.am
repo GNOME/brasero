@@ -239,16 +239,16 @@ introspected_source = \
 	brasero-tool-dialog.h brasero-tool-dialog.c \
 	brasero-sum-dialog.h brasero-sum-dialog.c
 
-BraseroBurn-3.0.gir: Makefile libbrasero-burn3.la
-BraseroBurn_3_0_gir_NAMESPACE = BraseroBurn
-BraseroBurn_3_0_gir_VERSION = 3.0
-BraseroBurn_3_0_gir_INCLUDES = Gtk-3.0
-BraseroBurn_3_0_gir_CFLAGS = $(AM_CPPFLAGS)
-BraseroBurn_3_0_gir_LIBS = libbrasero-burn3.la
-BraseroBurn_3_0_gir_FILES = $(introspected_source)
-BraseroBurn_3_0_gir_SCANNERFLAGS = --identifier-prefix=Brasero --symbol-prefix=brasero
+BraseroBurn-3.@TYPELIB_MIN_VERSION@.gir: Makefile libbrasero-burn3.la
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_NAMESPACE = BraseroBurn
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_VERSION = 3.@TYPELIB_MIN_VERSION@
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_INCLUDES = Gtk-3.0
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_CFLAGS = $(AM_CPPFLAGS)
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_LIBS = libbrasero-burn3.la
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_FILES = $(introspected_source)
+BraseroBurn_3_@TYPELIB_MIN_VERSION@_gir_SCANNERFLAGS = --identifier-prefix=Brasero --symbol-prefix=brasero
 
-INTROSPECTION_GIRS += BraseroBurn-3.0.gir
+INTROSPECTION_GIRS += BraseroBurn-3.@TYPELIB_MIN_VERSION@.gir
 endif # HAVE_INTROSPECTION
 
 girdir = $(datadir)/gir-1.0

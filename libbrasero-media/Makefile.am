@@ -177,16 +177,16 @@ introspected_source = \
 	brasero-drive-selection.h	\
 	brasero-drive-selection.c
 
-BraseroMedia-3.0.gir: Makefile libbrasero-media3.la
-BraseroMedia_3_0_gir_NAMESPACE = BraseroMedia
-BraseroMedia_3_0_gir_VERSION = 3.0
-BraseroMedia_3_0_gir_INCLUDES = Gtk-3.0
-BraseroMedia_3_0_gir_CFLAGS = $(AM_CPPFLAGS)
-BraseroMedia_3_0_gir_LIBS = libbrasero-media3.la
-BraseroMedia_3_0_gir_FILES = $(introspected_source)
-BraseroMedia_3_0_gir_SCANNERFLAGS = --identifier-prefix=Brasero --symbol-prefix=brasero
+BraseroMedia-3.@TYPELIB_MIN_VERSION@.gir: Makefile libbrasero-media3.la
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_NAMESPACE = BraseroMedia
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_VERSION = 3.@TYPELIB_MIN_VERSION@
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_INCLUDES = Gtk-3.0
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_CFLAGS = $(AM_CPPFLAGS)
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_LIBS = libbrasero-media3.la
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_FILES = $(introspected_source)
+BraseroMedia_3_@TYPELIB_MIN_VERSION@_gir_SCANNERFLAGS = --identifier-prefix=Brasero --symbol-prefix=brasero
 
-INTROSPECTION_GIRS += BraseroMedia-3.0.gir
+INTROSPECTION_GIRS += BraseroMedia-3.@TYPELIB_MIN_VERSION@.gir
 endif # HAVE_INTROSPECTION
 
 girdir = $(datadir)/gir-1.0
