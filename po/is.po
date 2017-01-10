@@ -1,14 +1,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016.
+# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-31 17:29+0000\n"
-"PO-Revision-Date: 2016-10-11 08:55+0000\n"
+"POT-Creation-Date: 2016-10-11 08:56+0000\n"
+"PO-Revision-Date: 2017-01-10 06:25+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -47,7 +47,7 @@ msgstr "Búa til og afrita CD geisladiska og DVD mynddiska"
 
 #: ../data/brasero.desktop.in.in.h:4
 msgid "disc;cdrom;dvd;burn;audio;video;"
-msgstr ""
+msgstr "diskur;cdrom;dvd;brennsla;skrifa;hljóð;mynd;myndmerki;myndskeið;"
 
 #: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
@@ -85,7 +85,7 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
-msgstr ""
+msgstr "Tegund gátsummu sem nota á fyrir diskmyndir"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
@@ -93,7 +93,7 @@ msgstr "Settu á 0 fyrir MD5, 1 fyrir SHA1 og 2 fyrir SHA256"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
-msgstr ""
+msgstr "Tegund gátsummu sem nota á fyrir skrár"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
@@ -178,7 +178,7 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:22
 msgid "Enable file preview"
-msgstr "Virkja skráaforsýn"
+msgstr "Virkja forskoðun skráa"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:23
 msgid "Whether to display file preview. Set to true to use it."
@@ -264,7 +264,7 @@ msgstr "Óþekkt villa."
 #: ../libbrasero-burn/brasero-blank-dialog.c:264
 #: ../libbrasero-burn/brasero-blank-dialog.c:288
 msgid "The disc was successfully blanked."
-msgstr ""
+msgstr "Það heppnaðist vel að tæma diskinn."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:270
 msgid "The disc is ready for use."
@@ -315,7 +315,7 @@ msgstr "Vertu viss um að ekkert annað forrit sé ekki að nota drifið"
 #: ../libbrasero-burn/brasero-burn.c:409
 #, c-format
 msgid "\"%s\" cannot be unlocked"
-msgstr ""
+msgstr "Ekki er hægt að aflæsa \"%s\""
 
 #: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
 #: ../libbrasero-burn/brasero-burn.c:761
@@ -324,7 +324,7 @@ msgstr "Enginn geislabrennari tiltekinn"
 
 #: ../libbrasero-burn/brasero-burn.c:586
 msgid "No source drive specified"
-msgstr ""
+msgstr "Ekkert upprunadrif var tekið fram"
 
 #: ../libbrasero-burn/brasero-burn.c:632
 msgid "Ongoing copying process"
@@ -342,16 +342,16 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn.c:731
 msgid "Ongoing blanking process"
-msgstr ""
+msgstr "Tæmingarferli í gangi"
 
 #: ../libbrasero-burn/brasero-burn.c:770
 msgid "The drive cannot burn"
-msgstr ""
+msgstr "Drifið getur ekki brennt"
 
 #: ../libbrasero-burn/brasero-burn.c:866
 #: ../libbrasero-burn/brasero-dest-selection.c:108
 msgid "Ongoing burning process"
-msgstr ""
+msgstr "Brennsluferli í gangi"
 
 #: ../libbrasero-burn/brasero-burn.c:983
 msgid "Ongoing checksumming operation"
@@ -590,19 +590,20 @@ msgstr "Brenni mynd á disk"
 #: ../libbrasero-burn/brasero-burn-dialog.c:549
 msgid "Please replace the disc with a rewritable disc holding data."
 msgstr ""
+"Skiptu diskinum í drifinu út fyrir endurskrifanlegan geisladisk með gögnum."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:551
 msgid "Please replace the disc with a disc holding data."
-msgstr ""
+msgstr "Skiptu diskinum í drifinu út fyrir geisladisk með gögnum."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:555
 msgid "Please insert a rewritable disc holding data."
-msgstr ""
+msgstr "Settu inn endurskrifanlegan geisladisk með gögnum."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:557
 #: ../libbrasero-burn/brasero-burn-options.c:501
 msgid "Please insert a disc holding data."
-msgstr ""
+msgstr "Settu inn geisladisk með gögnum."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:572
 #, c-format
@@ -678,6 +679,8 @@ msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a writable disc is inserted."
 msgstr ""
+"Mynd af diskinum var búin til á harða disknum þínum.\n"
+"Brennsla byrjar um leið og diskur hefur verið settur inn."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:645
 msgid "A data integrity test will begin as soon as the disc is inserted."
@@ -750,7 +753,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:742
 msgid "You may want to free some space on the disc and retry"
-msgstr ""
+msgstr "Þú gætir viljað losa um eitthvað af plássi á disknum og reyna aftur"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:749
 #: ../libbrasero-burn/brasero-drive-properties.c:244
@@ -830,7 +833,7 @@ msgstr "Viltu samt halda áfram?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:971
 msgid "Appending audio tracks to a CD is not advised."
-msgstr ""
+msgstr "Ekki er mælt með því að bætt sé við hljóðsporum á CD-disk."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:973
 #: ../libbrasero-burn/brasero-burn-dialog.c:995
@@ -1679,7 +1682,7 @@ msgstr "\"%s\" er ekki gild slóð"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:515
 msgid "No MD5 file was given."
-msgstr ""
+msgstr "Engin MD5-skrá var gefin upp."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:692
 msgid "Use an _MD5 file to check the disc"
@@ -1903,7 +1906,7 @@ msgstr "Skoða hljóðskrár"
 
 #: ../libbrasero-burn/burn-basics.c:85
 msgid "Transcoding song"
-msgstr ""
+msgstr "Umkóða lag"
 
 #: ../libbrasero-burn/burn-basics.c:86
 msgid "Preparing to write"
@@ -1911,11 +1914,11 @@ msgstr "Undirbý skrifun"
 
 #: ../libbrasero-burn/burn-basics.c:87
 msgid "Writing leadin"
-msgstr ""
+msgstr "Skrifa endamörk"
 
 #: ../libbrasero-burn/burn-basics.c:88
 msgid "Writing CD-Text information"
-msgstr ""
+msgstr "Skrifa upplýsingar CD-Texta"
 
 #: ../libbrasero-burn/burn-basics.c:89
 msgid "Finalizing"
@@ -1923,11 +1926,11 @@ msgstr "Geng frá"
 
 #: ../libbrasero-burn/burn-basics.c:90
 msgid "Writing leadout"
-msgstr ""
+msgstr "Skrifa endamörk"
 
 #: ../libbrasero-burn/burn-basics.c:91
 msgid "Starting to record"
-msgstr ""
+msgstr "Byrja skrifun"
 
 #: ../libbrasero-burn/burn-basics.c:92
 msgid "Success"
@@ -2898,7 +2901,7 @@ msgstr "SHA256"
 #: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
-msgstr ""
+msgstr "\"%s\" var ekki hægt að opna (%s)"
 
 #: ../plugins/checksum/burn-checksum-image.c:359
 #: ../plugins/checksum/burn-checksum-image.c:456
