@@ -1,5 +1,5 @@
 # Brazilian Portuguese translation of Brasero
-# Copyright (C) 2007-2014 Brasero's COPYRIGHT HOLDER
+# Copyright (C) 2007-2017 Brasero's COPYRIGHT HOLDER
 # This file is distributed under the same license as the Brasero package.
 # Vladimir Melo <vmelo@gnome.org>, 2007, 2009.
 # Og Maciel <ogmaciel@gnome.org>, 2007, 2009-2010.
@@ -11,24 +11,24 @@
 # Fabrício Godoy <skarllot@gmail.com>, 2009.
 # André Gondim <In Memoriam>, 2009.
 # Antonio Fernandes C. Neto <fernandes@pelivre.org>, 2010.
-# Rafael Ferreira <rafael.f.f1@gmail.com>, 2013, 2014.
 # Enrico Nicoletto <liverig@gmail.com>, 2013.
-#
+# Rafael Fontenelle <rafaelff@gnome.org>, 2013, 2014, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-01-04 05:48+0000\n"
-"PO-Revision-Date: 2014-01-05 03:10-0300\n"
-"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=braser"
+"o&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2017-06-28 15:00-0200\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Virtaal 1.0.0-beta1\n"
+"X-Project-Style: gnome\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -81,13 +81,19 @@ msgstr "Abrir uma nova janela"
 msgid "Burn an Image File"
 msgstr "Gravar um arquivo de imagem"
 
-#  Dica de ferramenta
+#  Dica de ferramenta no brasero-project-manager.c e no main.c
 #: ../data/brasero.desktop.in.in.h:8
+#| msgid "Copy a disc"
+msgid "Copy a Disc"
+msgstr "Copia um disco"
+
+#  Dica de ferramenta
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Cria um projeto de áudio"
 
 #  Dica de ferramenta
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Cria um projeto de vídeo"
 
@@ -425,24 +431,21 @@ msgstr "Não há espaço disponível no disco"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (aplicativo)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (biblioteca)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (plug-in do Gstreamer)"
@@ -474,18 +477,17 @@ msgstr "Não foi possível localizar um formato para a imagem temporária"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Ocorreu um erro interno"
@@ -1208,8 +1210,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Por favor, insira um disco que não seja protegido contra cópia."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Os programas e bibliotecas necessários não estão instalados."
 
@@ -1272,8 +1273,7 @@ msgstr "Preferências de gravação de disco"
 msgid "Video Options"
 msgstr "Opções de vídeo"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1316,8 +1316,7 @@ msgstr "Copiar CD/DVD"
 msgid "Select disc to copy"
 msgstr "Selecione o disco para copiar"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Por favor instale o componente a seguir manualmente e tente novamente:"
 
@@ -1847,12 +1846,12 @@ msgstr "Não há suporte ao disco"
 msgid "The drive is empty"
 msgstr "A unidade está vazia"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Selecione um disco"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Progresso"
 
@@ -2112,7 +2111,7 @@ msgstr ""
 "O local selecionado não tem espaço livre suficiente para armazenar a imagem "
 "de disco (%ld MiB necessários)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Não foi possível recuperar o tamanho do volume"
@@ -2408,8 +2407,8 @@ msgstr "Disco de áudio (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Disco de dados (%s)"
@@ -2419,8 +2418,7 @@ msgstr "Disco de dados (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Iste não parece ser um arquivo de imagem ISO válido"
@@ -2780,7 +2778,7 @@ msgstr "Não foi possível ler os dados (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -3080,7 +3078,7 @@ msgstr "Cria imagens de disco apropriadas para DVDs de vídeo"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3095,26 +3093,26 @@ msgstr ""
 "\"regionset %s\" ou executar o comando \"DVDCSS_METHOD=title brasero --no-"
 "existing-session\""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "Recuperando chaves de DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "Não foi possível abrir o DVD de vídeo"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Erro ao ler o DVD de vídeo (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Copiando DVD de vídeo"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Copia um vídeo DVD CSS criptografado para uma imagem de disco"
 
@@ -4195,25 +4193,25 @@ msgstr "Habilitado"
 msgid "Copyright %s"
 msgstr "Copyright %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "_Sobre"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "C_onfigurar"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "A_tivar"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "A_tivar todos"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "_Desativar todos"
 
