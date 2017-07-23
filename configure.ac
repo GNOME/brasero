@@ -388,7 +388,7 @@ AC_ARG_ENABLE(search,
 if test x"$enable_search" != "xno"; then
         # Try to figure out the tracker API version to use
         tracker_api="0.10"
-        m4_foreach([VERSION], [[0.10], [0.12], [0.14], [0.16], [0.18], [1.0]],
+        m4_foreach([VERSION], [[0.10], [0.12], [0.14], [0.16], [0.18], [1.0], [2.0]],
                               [PKG_CHECK_EXISTS([tracker-sparql-VERSION >= $TRACKER_REQUIRED],
                                                 [tracker_api="VERSION"])
                               ])
