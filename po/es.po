@@ -9,15 +9,15 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2006.
 # Miguel Angel Ruiz Manzano <mruiz@openminds.cl>, 2009.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2015, 2016.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-31 17:29+0000\n"
-"PO-Revision-Date: 2016-11-21 11:22+0100\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2017-07-24 14:55+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -78,10 +78,15 @@ msgid "Burn an Image File"
 msgstr "Grabar un archivo de imagen"
 
 #: ../data/brasero.desktop.in.in.h:8
+#| msgid "Copy a disc"
+msgid "Copy a Disc"
+msgstr "Copiar a un disco"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Crear un proyecto de sonido"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Crear un proyecto de vídeo"
 
@@ -2106,7 +2111,7 @@ msgstr ""
 "La ubicación seleccionada no tiene suficiente espacio libre para almacenar "
 "la imagen del disco (se necesitan %ld MiB)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "No se puede obtener el tamaño del volumen"
@@ -2772,7 +2777,7 @@ msgstr "No se pudieron leer los datos (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -3069,7 +3074,7 @@ msgstr "Crea imágenes de discos apropiados para DVD de vídeo"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3083,26 +3088,26 @@ msgstr ""
 "región DVD apropiado para su reproductor de CD/DVD con el comando «regionset "
 "%s» o ejecute el comando «DVDCSS_METHOD=title brasero --no-existing-session»"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "Obteniendo claves DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "No se pudo abrir el DVD de vídeo"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Error al leer el DVD de vídeo (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Copiando DVD de vídeo"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Copia DVD cifrados con CSS a una imagen de disco"
 
