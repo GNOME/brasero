@@ -25,14 +25,14 @@
 # Frederik Himpe <fhimpe@telenet.be>, 2008.
 # Wouter Bolsterlee <wbolster@gnome.org>, 2009, 2011.
 # Sander Pientka <cumulus0007@gmail.com>, 2009–2010.
-# Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2012, 2014, 2015.
+# Hannie Dumoleyn <hannie@ubuntu-nl.org>, 2012, 2014, 2015, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: Brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-09-22 03:10+0000\n"
-"PO-Revision-Date: 2015-09-22 11:35+0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=brasero"
+"&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2017-08-24 11:08+0100\n"
 "Last-Translator: Hannie Dumoleyn <hannie@ubuntu-nl.org>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
@@ -41,7 +41,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2010-09-28 15:48+0000\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -95,10 +95,15 @@ msgid "Burn an Image File"
 msgstr "Een schijfkopiebestand branden"
 
 #: ../data/brasero.desktop.in.in.h:8
+#| msgid "Copy a disc"
+msgid "Copy a Disc"
+msgstr "Een schijf kopiëren"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Een audioproject aanmaken"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Een videoproject aanmaken"
 
@@ -2124,7 +2129,7 @@ msgstr ""
 "De geselecteerde locatie heeft niet genoeg vrije ruimte om het "
 "schijfkopiebestand op te slaan (%ld MiB nodig)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "De grootte van het volume kon niet opgehaald worden"
@@ -2785,7 +2790,7 @@ msgstr "Data kon niet gelezen worden (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -3079,7 +3084,7 @@ msgstr "Maakt schijfkopiebestanden aan geschikt voor video-dvd's"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3094,26 +3099,26 @@ msgstr ""
 "de opdrachtregel ‘regionset %s’ of deze toepassing starten met "
 "‘DVDCSS_METHOD=title brasero --no-existing-session’."
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "Dvd-sleutels verkrijgen"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "Video-dvd kon niet geopend worden"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Fout bij lezen video-dvd (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Video-dvd kopiëren"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Kopieert CSS-versleutelde video-dvd's naar een schijfkopiebestand"
 
