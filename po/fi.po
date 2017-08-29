@@ -12,10 +12,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-09-06 02:58+0000\n"
-"PO-Revision-Date: 2014-09-06 16:06+0300\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2017-08-29 23:42+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <gnome-fi-laatu@lists.sourceforge.net>\n"
 "Language: fi\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Launchpad-Export-Date: 2010-09-13 15:08+0000\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -77,10 +77,14 @@ msgid "Burn an Image File"
 msgstr "Kirjoita levykuva"
 
 #: ../data/brasero.desktop.in.in.h:8
+msgid "Copy a Disc"
+msgstr "Kopioi levy"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Luo uusi ääniprojekti"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Luo uusi videoprojekti"
 
@@ -413,24 +417,21 @@ msgstr "Levyllä ei ole tarpeeksi tilaa"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (sovellus)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (kirjasto)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer-liitännäinen)"
@@ -462,18 +463,17 @@ msgstr "Väliaikaisen levykuvan tyyppiä ei voitu selvittää"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Tapahtui sisäinen virhe"
@@ -1194,8 +1194,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Laita asemaan levy, joka ei ole kopiosuojattu."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Kaikkia tarvittavia sovelluksia tai kirjastoja ei ole asennettu."
 
@@ -1255,8 +1254,7 @@ msgstr "Levyn kirjoituksen asetukset"
 msgid "Video Options"
 msgstr "Videovalinnat"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1299,8 +1297,7 @@ msgstr "Kopioi CD/DVD"
 msgid "Select disc to copy"
 msgstr "Valitse kopioitava levy"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Asenna seuraavat käsin ja yritä uudelleen:"
 
@@ -2083,7 +2080,7 @@ msgstr ""
 "Väliaikaisen levykuvan tallennukseen valitussa kohteessa ei ole tarpeeksi "
 "vapaata tilaa levykuvaa varten (vaaditaan %ld MiB)."
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Taltion kokoa ei voitu selvittää"
@@ -2376,8 +2373,8 @@ msgstr "Äänilevy (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Datalevy (%s)"
@@ -2386,8 +2383,7 @@ msgstr "Datalevy (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Tämä ei näytä olevan kelvollinen ISO-levykuva"
@@ -2747,7 +2743,7 @@ msgstr "Tietoja ei voitu lukea (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -3041,7 +3037,7 @@ msgstr "Luo video-DVD-levyille sopivia levykuvia"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3055,26 +3051,26 @@ msgstr ""
 "DVD-soittimeesi komennolla ”regionset %s” tai aja komento "
 "”DVDCSS_METHOD=title brasero --no-existing-session”"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "Haetaan DVD-levyn avaimia"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "DVD-videolevyä ei voitu avata"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Virhe luettaessa DVD-videolevyä (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Kopioidaan video-DVD-leyvä"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Kopioi CSS-salatun video-DVD-levyn levykuvaksi"
 
@@ -4142,25 +4138,25 @@ msgstr "Käytössä"
 msgid "Copyright %s"
 msgstr "Tekijänoikeudet %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "_Tietoja"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "_Asetukset"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "Ota _käyttöön"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "Ota k_aikki käyttöön"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "_Poista kaikki käytöstä"
 
