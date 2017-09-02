@@ -1,5 +1,5 @@
 # This file is distributed under the same license as the brasero package.
-# Changwoo Ryu <cwryu@debian.org>, 2009-2014.
+# Changwoo Ryu <cwryu@debian.org>, 2009-2014, 2017.
 #
 # 새로 번역하시는 분은 아래 "translator-credits"에 추가하세요.
 #
@@ -9,10 +9,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-09-05 14:58+0000\n"
-"PO-Revision-Date: 2014-09-06 05:56+0900\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2017-08-28 06:34+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -26,7 +26,10 @@ msgid ""
 "Brasero is a application to burn CD/DVD for the GNOME Desktop. It is "
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
-msgstr "브라세로는 그놈 데스크톱의 CD/DVD 굽기 프로그램입니다. 이 프로그램은 가능한 간단히 설계되었고, 쉽고 빠르고 CD/DVD를 만들 수 있는 독창적인 기능이 들어 있습니다."
+msgstr ""
+"브라세로는 그놈 데스크톱의 CD/DVD 굽기 프로그램입니다. 이 프로그램은 가능한 "
+"간단히 설계되었고, 쉽고 빠르고 CD/DVD를 만들 수 있는 독창적인 기능이 들어 있"
+"습니다."
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
@@ -70,10 +73,14 @@ msgid "Burn an Image File"
 msgstr "이미지 파일 굽기"
 
 #: ../data/brasero.desktop.in.in.h:8
+msgid "Copy a Disc"
+msgstr "디스크를 복사합니다"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "오디오 프로젝트 만들기"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "비디오 프로젝트 만들기"
 
@@ -398,24 +405,21 @@ msgstr "디스크에 남은 충분한 공간이 없습니다"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (프로그램)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (라이브러리)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer 플러그인)"
@@ -445,18 +449,17 @@ msgstr "임시 이미지에 사용할 형식이 없습니다"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "내부 오류가 발생했습니다"
@@ -1161,8 +1164,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "복사 방지를 하지 않은 디스크를 넣으십시오."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "필요한 프로그램과 라이브러리 중 설치되지 않은 사항이 있습니다."
 
@@ -1224,8 +1226,7 @@ msgstr "디스크 굽기 준비"
 msgid "Video Options"
 msgstr "비디오 옵션"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1239,7 +1240,9 @@ msgstr ""
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
-msgstr "선택한 파일이 한 개(\"%s\") 뿐입니다. 디스크 이미지 파일이므로 그 내용을 구울 수 있습니다."
+msgstr ""
+"선택한 파일이 한 개(\"%s\") 뿐입니다. 디스크 이미지 파일이므로 그 내용을 구"
+"울 수 있습니다."
 
 #: ../libbrasero-burn/brasero-burn-options.c:809
 msgid "Burn as _File"
@@ -1266,8 +1269,7 @@ msgstr "CD/DVD 복사"
 msgid "Select disc to copy"
 msgstr "복사할 디스크를 선택하십시오"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "다음을 수동으로 설치하고 다시 시도하십시오:"
 
@@ -2043,9 +2045,11 @@ msgstr ""
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
-msgstr "임시 이미지를 저장할 파일 시스템이 디스크 이미지를 저장할 만한 빈 공간이 남아 있지 않습니다(%ldMiB 필요)"
+msgstr ""
+"임시 이미지를 저장할 파일 시스템이 디스크 이미지를 저장할 만한 빈 공간이 남"
+"아 있지 않습니다(%ldMiB 필요)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "볼륨의 크기를 알아낼 수 없습니다"
@@ -2338,8 +2342,8 @@ msgstr "오디오 디스크(%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "데이터 디스크(%s)"
@@ -2348,8 +2352,7 @@ msgstr "데이터 디스크(%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "올바른 ISO 이미지 파일이 아닙니다"
@@ -2708,7 +2711,7 @@ msgstr "데이터를 읽을 수 없습니다(%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -2998,7 +3001,7 @@ msgstr "비디오 DVD에 적합한 디스크 이미지를 만듭니다"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3012,26 +3015,26 @@ msgstr ""
 "플레이어의 DVD 지역 코드를 올바르게 설정하거나, 아니면 \"DVDCSS_METHOD=title "
 "brasero --no-existing-session\" 명령을 실행합니다."
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "DVD 키를 가져오는 중입니다"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "비디오 DVD를 열 수 없습니다"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "비디오 DVD를 읽는 중 오류가 발생했습니다(%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "비디오 DVD를 복사하는 중"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "CSS 암호화된 비디오 DVD를 디스크 이미지로 복사합니다"
 
@@ -3110,7 +3113,8 @@ msgstr "\"%s\" 디렉터리를 만드는 데 libisofs에서 오류를 보고했�
 #, c-format
 msgid ""
 "libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr "\"%s\" 디렉터리에 내용물을 추가하는 데 libisofs에서 오류를 보고했습니다(%x)"
+msgstr ""
+"\"%s\" 디렉터리에 내용물을 추가하는 데 libisofs에서 오류를 보고했습니다(%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:782
 #: ../plugins/libburnia/burn-libisofs.c:798
@@ -3703,7 +3707,9 @@ msgstr "현재 수정한 프로젝트를 계속 사용합니다"
 msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
-msgstr "선택한 파일이 한 개(\"%s\") 뿐입니다. 디스크 이미지 파일이므로 그 내용을 구울 수 있습니다."
+msgstr ""
+"선택한 파일이 한 개(\"%s\") 뿐입니다. 디스크 이미지 파일이므로 그 내용을 구"
+"울 수 있습니다."
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
@@ -4073,25 +4079,25 @@ msgstr "사용"
 msgid "Copyright %s"
 msgstr "Copyright %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "정보(_A)"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "설정(_O)"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "활성화(_C)"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "모두 활성화(_T)"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "모두 비활성화(_D)"
 
@@ -4749,7 +4755,7 @@ msgstr "자를 위치를 추가합니다"
 #. Translators: this goes with the next (= "seconds")
 #: ../src/brasero-split-dialog.c:1118
 msgid "Split this track every"
-msgstr "트랙을 다음 초마다 쪼개기: "
+msgstr "트랙을 다음 초마다 쪼개기:"
 
 #. Translators: this goes with the previous (= "Split track every")
 #: ../src/brasero-split-dialog.c:1127
@@ -4759,7 +4765,7 @@ msgstr "초"
 #. Translators: this goes with the next (= "parts")
 #: ../src/brasero-split-dialog.c:1136
 msgid "Split this track in"
-msgstr "트랙을 다음 부분으로 쪼개기: "
+msgstr "트랙을 다음 부분으로 쪼개기:"
 
 #. Translators: this goes with the previous (= "Split this track in")
 #: ../src/brasero-split-dialog.c:1145
