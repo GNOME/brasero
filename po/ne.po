@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Gnome Nepali Translation Project\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=brasero&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-06-28 15:14+0000\n"
-"PO-Revision-Date: 2017-08-20 11:57+0545\n"
+"PO-Revision-Date: 2017-09-04 12:56+0545\n"
 "Last-Translator: Pawan Chitrakar <chautari@gmail.com>\n"
 "Language-Team: Nepali Translation Team <chautari@gmail.com>\n"
 "Language: ne\n"
@@ -20,14 +20,14 @@ msgstr ""
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
-"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is designed to be as simple as possible and has some unique features to enable users to "
-"create their discs easily and quickly."
+"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is designed to be as simple as possible and has some unique features to enable users to create their "
+"discs easily and quickly."
 msgstr ""
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
-"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports CD-TEXT, multisession and joliet extensions. You can simply drag and drop "
-"files from other local applications or from remote shared drives to easily burn them to a disc."
+"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports CD-TEXT, multisession and joliet extensions. You can simply drag and drop files from other "
+"local applications or from remote shared drives to easily burn them to a disc."
 msgstr ""
 
 #: ../data/brasero.desktop.in.in.h:1
@@ -104,8 +104,7 @@ msgid "Directory to use for temporary files"
 msgstr "सबै अस्थाई फाइलहरू मेट्नुहोस्"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:7
-msgid ""
-"Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used."
+msgid "Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used."
 msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:8
@@ -139,8 +138,7 @@ msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:15
-msgid ""
-"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
+msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:16
@@ -208,14 +206,14 @@ msgstr "प्राथमिकता: "
 
 #: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid ""
-"When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native "
-"priority is used. A positive value overrides the plugin's native priority. A negative value disables the plugin."
+"When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native priority is "
+"used. A positive value overrides the plugin's native priority. A negative value disables the plugin."
 msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:32
 #, fuzzy
 msgid "Burning flags to be used"
-msgstr "_रद्द"
+msgstr "डिभिडि बनाउने"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid "This value represents the burning flags that were used in such a context the last time."
@@ -274,10 +272,10 @@ msgstr "डिस्क रित्तो"
 msgid "Burning CD/DVD"
 msgstr "सिडि॒/डिभिडि बनाउने"
 
-#: ../libbrasero-burn/brasero-burn.c:331 ../libbrasero-burn/brasero-data-session.c:123 ../libbrasero-burn/brasero-tool-dialog.c:89
-#: ../libbrasero-media/scsi-error.c:47 ../plugins/cdrdao/burn-cdrdao.c:243 ../plugins/cdrkit/burn-readom.c:110 ../plugins/cdrkit/burn-wodim.c:135
-#: ../plugins/cdrkit/burn-wodim.c:144 ../plugins/cdrtools/burn-cdrecord.c:135 ../plugins/cdrtools/burn-cdrecord.c:144 ../plugins/cdrtools/burn-readcd.c:111
-#: ../plugins/growisofs/burn-dvd-rw-format.c:84 ../plugins/growisofs/burn-growisofs.c:190 ../plugins/libburnia/burn-libburn-common.c:186
+#: ../libbrasero-burn/brasero-burn.c:331 ../libbrasero-burn/brasero-data-session.c:123 ../libbrasero-burn/brasero-tool-dialog.c:89 ../libbrasero-media/scsi-error.c:47
+#: ../plugins/cdrdao/burn-cdrdao.c:243 ../plugins/cdrkit/burn-readom.c:110 ../plugins/cdrkit/burn-wodim.c:135 ../plugins/cdrkit/burn-wodim.c:144
+#: ../plugins/cdrtools/burn-cdrecord.c:135 ../plugins/cdrtools/burn-cdrecord.c:144 ../plugins/cdrtools/burn-readcd.c:111 ../plugins/growisofs/burn-dvd-rw-format.c:84
+#: ../plugins/growisofs/burn-growisofs.c:190 ../plugins/libburnia/burn-libburn-common.c:186
 #, c-format
 msgid "The drive is busy"
 msgstr "ड्राइभ व्यस्त छ"
@@ -329,7 +327,7 @@ msgstr "ड्राइभ भेटिएन %s"
 #: ../libbrasero-burn/brasero-burn.c:866 ../libbrasero-burn/brasero-dest-selection.c:108
 #, fuzzy
 msgid "Ongoing burning process"
-msgstr "_रद्द"
+msgstr "प्रक्रिया"
 
 #: ../libbrasero-burn/brasero-burn.c:983
 #, fuzzy
@@ -341,9 +339,8 @@ msgstr "कार्य"
 msgid "Merging data is impossible with this disc"
 msgstr "%s मा डेटा गाभ्दैछ"
 
-#: ../libbrasero-burn/brasero-burn.c:1624 ../libbrasero-burn/brasero-burn-dialog.c:2186 ../plugins/cdrkit/burn-genisoimage.c:206
-#: ../plugins/cdrkit/burn-wodim.c:114 ../plugins/cdrtools/burn-cdrecord.c:114 ../plugins/cdrtools/burn-mkisofs.c:206
-#: ../plugins/growisofs/burn-growisofs.c:198
+#: ../libbrasero-burn/brasero-burn.c:1624 ../libbrasero-burn/brasero-burn-dialog.c:2186 ../plugins/cdrkit/burn-genisoimage.c:206 ../plugins/cdrkit/burn-wodim.c:114
+#: ../plugins/cdrtools/burn-cdrecord.c:114 ../plugins/cdrtools/burn-mkisofs.c:206 ../plugins/growisofs/burn-growisofs.c:198
 #, fuzzy, c-format
 msgid "Not enough space available on the disc"
 msgstr "गन्तव्यमा पर्याप्त स्थान छैन"
@@ -389,10 +386,10 @@ msgstr ""
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846 ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
-#: ../libbrasero-burn/burn-mkisofs-base.c:302 ../nautilus/nautilus-burn-extension.c:218 ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835 ../plugins/cdrtools/burn-cdrecord.c:850 ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
+#: ../libbrasero-burn/burn-mkisofs-base.c:302 ../nautilus/nautilus-burn-extension.c:218 ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835 ../plugins/cdrtools/burn-cdrecord.c:850 ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, fuzzy, c-format
 msgid "An internal error occurred"
 msgstr "एक आन्तरिक त्रुटी देखापर्‍यो।"
@@ -445,17 +442,17 @@ msgstr "तह-एनिमेसन गरिएको छवि सिर्�
 #: ../libbrasero-burn/brasero-burn-dialog.c:306
 #, fuzzy
 msgid "Simulation of video DVD burning"
-msgstr "_डिभिडि भिडियो"
+msgstr "सिडि॒/डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:308
 #, fuzzy
 msgid "Burning video DVD"
-msgstr "सिडि॒/डिभिडि बनाउने"
+msgstr "डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:316
 #, fuzzy
 msgid "Simulation of data DVD burning"
-msgstr "सिडि॒/डिभिडि बनाउने"
+msgstr "डाटा डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:318
 msgid "Burning data DVD"
@@ -472,18 +469,19 @@ msgid "Burning image to DVD"
 msgstr "सिडि॒/डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:336
+#, fuzzy
 msgid "Simulation of data DVD copying"
-msgstr ""
+msgstr "डाटा डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:338
 #, fuzzy
 msgid "Copying data DVD"
-msgstr "डिभिडि॒"
+msgstr "डाटा डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:349
 #, fuzzy
 msgid "Simulation of (S)VCD burning"
-msgstr "(S)VCD प्रतिलिपि बनाउनुहोस्"
+msgstr "(S)VCD बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:351
 msgid "Burning (S)VCD"
@@ -492,7 +490,7 @@ msgstr "(S)VCD बनाउने"
 #: ../libbrasero-burn/brasero-burn-dialog.c:359 ../libbrasero-burn/brasero-burn-dialog.c:412
 #, fuzzy
 msgid "Simulation of audio CD burning"
-msgstr "सिडि _अडियो"
+msgstr "ध्वनि सिडि॒ बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:361 ../libbrasero-burn/brasero-burn-dialog.c:414
 msgid "Burning audio CD"
@@ -506,7 +504,7 @@ msgstr "सिडि॒/डिभिडि बनाउने"
 #: ../libbrasero-burn/brasero-burn-dialog.c:371
 #, fuzzy
 msgid "Burning data CD"
-msgstr "सिडि॒/डिभिडि बनाउने"
+msgstr "सिडि॒ बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:379
 #, fuzzy
@@ -526,21 +524,22 @@ msgstr "सिडि॒/डिभिडि बनाउने"
 #: ../libbrasero-burn/brasero-burn-dialog.c:402
 #, fuzzy
 msgid "Simulation of video disc burning"
-msgstr "भिडियो चक्का बनाउनुहोस्"
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:404
 #, fuzzy
 msgid "Burning video disc"
-msgstr "ब्लु-रे भिडियो चक्का"
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:422
+#, fuzzy
 msgid "Simulation of data disc burning"
-msgstr ""
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:424
 #, fuzzy
 msgid "Burning data disc"
-msgstr "डिस्क"
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:432
 #, fuzzy
@@ -552,13 +551,14 @@ msgid "Copying disc"
 msgstr "डिस्क  प्रतिलिपी गर्दै"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:442
+#, fuzzy
 msgid "Simulation of image to disc burning"
-msgstr ""
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:444
 #, fuzzy
 msgid "Burning image to disc"
-msgstr "_रद्द"
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:549
 msgid "Please replace the disc with a rewritable disc holding data."
@@ -674,14 +674,12 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-dialog.c:666
 #, fuzzy, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr "%s: रित्तो"
+msgstr "रित्तो चक्का  (%s)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:670
 #, fuzzy, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr ""
-"यो डिस्कको नाम:\n"
-"'%s'\n"
+msgstr "रित्तो चक्का  (%s)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:674
 #, fuzzy, c-format
@@ -691,9 +689,7 @@ msgstr "तपाईँ संग %s मा पर्याप्त खाल�
 #: ../libbrasero-burn/brasero-burn-dialog.c:682
 #, fuzzy, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr ""
-"यो डिस्कको नाम:\n"
-"'%s'\n"
+msgstr "--%s लाई <directory> आवश्यक पर्दछ"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:683
 #, fuzzy
@@ -726,7 +722,7 @@ msgstr "हालका सेटिङ कायम राख्नुहोस
 #: ../libbrasero-burn/brasero-drive-properties.c:335
 #, fuzzy
 msgid "_Change Location"
-msgstr "_स्थान:"
+msgstr "स्थान"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:773 ../libbrasero-burn/brasero-image-properties.c:459
 #, fuzzy
@@ -741,7 +737,7 @@ msgstr "सबै अस्थाई फाइलहरू मेट्नुह
 #: ../libbrasero-burn/brasero-burn-dialog.c:889 ../libbrasero-burn/brasero-burn-dialog.c:1135
 #, fuzzy
 msgid "_Replace Disc"
-msgstr "बदलनुहोस्"
+msgstr "प्रतिस्थापन गर्नुहोस्:"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:930
 msgid "Do you really want to blank the current disc?"
@@ -754,9 +750,8 @@ msgstr "कृपया ड्राइभमा डिस्क घुसाउ
 
 #. Translators: Blank is a verb here
 #: ../libbrasero-burn/brasero-burn-dialog.c:933
-#, fuzzy
 msgid "_Blank Disc"
-msgstr "रित्तो चक्का  (%s)"
+msgstr "रित्तो चक्का"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:947
 msgid "If you import them you will be able to see and use them once the current selection of files is burned."
@@ -784,16 +779,14 @@ msgid "CD-RW audio discs may not play correctly in older CD players and CD-Text 
 msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:968 ../libbrasero-burn/brasero-burn-dialog.c:990
-#, fuzzy
 msgid "Do you want to continue anyway?"
-msgstr "के तपाईँ निरन्तर गर्न चाहनुहुन्छ ? [Y/n/?] "
+msgstr "के तपाईँ निरन्तर गर्न चाहनुहुन्छ ?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:971
 msgid "Appending audio tracks to a CD is not advised."
 msgstr ""
 
-#: ../libbrasero-burn/brasero-burn-dialog.c:973 ../libbrasero-burn/brasero-burn-dialog.c:995 ../libbrasero-burn/brasero-tool-dialog.c:422
-#: ../src/brasero-data-disc.c:572
+#: ../libbrasero-burn/brasero-burn-dialog.c:973 ../libbrasero-burn/brasero-burn-dialog.c:995 ../libbrasero-burn/brasero-tool-dialog.c:422 ../src/brasero-data-disc.c:572
 msgid "_Continue"
 msgstr "जारी राख्नुहोस्"
 
@@ -818,7 +811,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-dialog.c:1133
 #, fuzzy
 msgid "Do you want to replace the disc and continue?"
-msgstr "के तपाईँ निरन्तर गर्न चाहनुहुन्छ ? [Y/n/?] "
+msgstr "तपाईं जारी गर्न चाहनुहुन्छ ? [ Y/ n ] "
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1134
 msgid "The currently inserted disc could not be blanked."
@@ -837,9 +830,8 @@ msgid "C_ontinue"
 msgstr "जारि राख्नुहोस्"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1365 ../libbrasero-burn/brasero-burn-dialog.c:1386
-#, fuzzy
 msgid "The simulation was successful."
-msgstr "सिमुलेसन"
+msgstr "सिमुलेसन सफल भयो"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1368
 msgid "Real disc burning will take place in 10 seconds."
@@ -851,9 +843,8 @@ msgid "Burn _Now"
 msgstr "बर्न"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1660
-#, fuzzy
 msgid "Save Current Session"
-msgstr "सत्र अन्तराल मिनेटमा बचत गर्नुहोस्"
+msgstr "सत्र बचत गर्नुहोस्"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1735
 msgid "An unknown error occurred."
@@ -919,8 +910,9 @@ msgid "Image successfully burned to CD"
 msgstr "सिडी / डिभिडी इमेज हेरफेर"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1820
+#, fuzzy
 msgid "Data DVD successfully burned"
-msgstr ""
+msgstr "डाटा डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1822
 msgid "Data CD successfully burned"
@@ -936,9 +928,8 @@ msgid "Another copy will start as soon as you insert a new writable disc. If you
 msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1963
-#, fuzzy
 msgid "Make _More Copies"
-msgstr "प्रतिलिपिहरू"
+msgstr "थप प्रतिलिपिहरू बनाउनुहोस्"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1972
 msgid "Create Co_ver"
@@ -999,7 +990,7 @@ msgstr "बर्न"
 #: ../libbrasero-burn/brasero-burn-options.c:317 ../src/brasero-project.c:1521
 #, fuzzy
 msgid "Burn _Several Copies"
-msgstr "बर्न"
+msgstr "केहि प्रतिलिपिहरू बनाउनुहोस्"
 
 #: ../libbrasero-burn/brasero-burn-options.c:433 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
@@ -1088,7 +1079,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-options.c:532
 #, fuzzy
 msgid "Please insert a disc that is not copy protected."
-msgstr "कृपया ड्राइभमा डिस्क घुसाउनुहोस् र इन्टर थिच्नुहोस्"
+msgstr "कृपया \"%s\" ड्राइभमा \"%s\" डिस्क लेबुल घुसाउनुहोस्"
 
 #: ../libbrasero-burn/brasero-burn-options.c:533 ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
@@ -1133,7 +1124,7 @@ msgstr "चक्कामा भर्नको लागी कुनैपन
 #: ../libbrasero-burn/brasero-burn-options.c:737 ../libbrasero-burn/brasero-burn-options.c:755 ../libbrasero-burn/brasero-burn-options.c:875
 #, fuzzy
 msgid "Disc Burning Setup"
-msgstr "_रद्द"
+msgstr "डिस्क बनाउने"
 
 #: ../libbrasero-burn/brasero-burn-options.c:764 ../src/brasero-project.c:1544
 msgid "Video Options"
@@ -1162,7 +1153,7 @@ msgstr "बर्न"
 #: ../libbrasero-burn/brasero-burn-options.c:893
 #, fuzzy
 msgid "Image Burning Setup"
-msgstr "_रद्द"
+msgstr "डिभिडि बनाउने"
 
 #. pack everything
 #: ../libbrasero-burn/brasero-burn-options.c:901
@@ -1199,7 +1190,7 @@ msgstr "अज्ञात गाना "
 #: ../libbrasero-burn/brasero-cover.c:146 ../src/brasero-player.c:419 ../src/brasero-song-control.c:270
 #, c-format
 msgid "by %s"
-msgstr " %s"
+msgstr "%s"
 
 #: ../libbrasero-burn/brasero-data-vfs.c:218
 #, c-format
@@ -1224,12 +1215,9 @@ msgstr "_डिभिडि भिडियो"
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
 #: ../libbrasero-burn/brasero-dest-selection.c:623
-#, fuzzy, c-format
+#, c-format
 msgid "%s: \"%s\""
-msgstr ""
-"%s, %s, %s, %s, \n"
-"%s, %s, %s, %s\n"
-"र %s द्वारा लेखिएको।\n"
+msgstr "%s: \"%s\""
 
 #. Translators: this string is only used when the user
 #. * wants to copy a disc using the same destination and
@@ -1251,9 +1239,9 @@ msgstr "स्वतन्त्र खालीस्थान:"
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
 #: ../libbrasero-burn/brasero-dest-selection.c:727
-#, fuzzy, c-format
+#, c-format
 msgid "%s: %s of free space"
-msgstr "%s मा खाली ठाऊँ निर्धारण गर्न सकिएन"
+msgstr "%s: %s खाली ठाऊँ"
 
 #. Translators: the first %s is the path of the directory where brasero
 #. * will store its temporary files; the second one is the size available
@@ -1265,11 +1253,12 @@ msgstr "%s — %s खालि"
 #: ../libbrasero-burn/brasero-drive-properties.c:233 ../libbrasero-burn/brasero-drive-properties.c:272 ../libbrasero-burn/brasero-drive-properties.c:324
 #, fuzzy
 msgid "Do you really want to choose this location?"
-msgstr "के तपाईँ साँच्चै स्थापनाकार्य रद्द गर्न चाहनुहुन्छ?"
+msgstr ""
+"यसले बाल्सालाई बन्द गर्दछ।\n"
+"के तपाईँ  साँच्चिकै यसो गर्न चाहनुहुन्छ?"
 
-#: ../libbrasero-burn/brasero-drive-properties.c:277 ../libbrasero-burn/brasero-session.c:1287 ../libbrasero-burn/brasero-session.c:1362
-#: ../libbrasero-burn/burn-job.c:490 ../plugins/cdrkit/burn-genisoimage.c:199 ../plugins/cdrtools/burn-mkisofs.c:199
-#: ../plugins/libburnia/burn-libisofs.c:246
+#: ../libbrasero-burn/brasero-drive-properties.c:277 ../libbrasero-burn/brasero-session.c:1287 ../libbrasero-burn/brasero-session.c:1362 ../libbrasero-burn/burn-job.c:490
+#: ../plugins/cdrkit/burn-genisoimage.c:199 ../plugins/cdrtools/burn-mkisofs.c:199 ../plugins/libburnia/burn-libisofs.c:246
 #, c-format
 msgid "You do not have the required permission to write at this location"
 msgstr ""
@@ -1317,7 +1306,7 @@ msgstr "अधक्तम गति"
 #: ../libbrasero-burn/brasero-drive-properties.c:710
 #, fuzzy
 msgid "Burning speed"
-msgstr "_रद्द"
+msgstr "डिभिडि बनाउने"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:723
 #, fuzzy
@@ -1385,14 +1374,12 @@ msgid "Disc image type:"
 msgstr "छवि प्रकार:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:97
-#, fuzzy
 msgid "Autodetect"
-msgstr "ढाँचा स्वत: पत्ता लगाउन असफल । फाइल SVG को रुपमा खोलिदै ।"
+msgstr "स्वत: पत्ता लगाउ"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
-#, fuzzy
 msgid "ISO9660 image"
-msgstr "छविमा"
+msgstr "ISO९६६० छवि"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:115
 #, fuzzy
@@ -1457,14 +1444,14 @@ msgid "Estimated remaining time: %02i:%02i:%02i"
 msgstr ""
 
 #: ../libbrasero-burn/brasero-progress.c:479
-#, fuzzy, c-format
+#, c-format
 msgid "%i MiB of %i MiB"
-msgstr "%1 MiB"
+msgstr "%i MiB of %i MiB"
 
 #: ../libbrasero-burn/brasero-progress.c:505
 #, fuzzy
 msgid "Estimated drive speed:"
-msgstr "गति"
+msgstr "गति:"
 
 #. Translators: %s is a path
 #: ../libbrasero-burn/brasero-src-image.c:229
@@ -1474,55 +1461,47 @@ msgstr "\"%s\": लोड गरिदै"
 
 #. Translators: %s is a path and image refers to a disc image
 #: ../libbrasero-burn/brasero-src-image.c:236
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\": unknown disc image type"
-msgstr "अज्ञात सङ्कुचन प्रकार `%s'!"
+msgstr "\"%s\": अज्ञात डिस्क छवि प्रकार"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
 #: ../libbrasero-burn/brasero-src-image.c:258
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\": %s"
-msgstr ""
-"%s, %s, %s, %s, \n"
-"%s, %s, %s, %s\n"
-"र %s द्वारा लेखिएको।\n"
+msgstr "\"%s\": %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label too small.
 #. Translators: this is a disc image
 #: ../libbrasero-burn/brasero-src-image.c:271 ../libbrasero-burn/brasero-src-image.c:554
-#, fuzzy
 msgid "Click here to select a disc _image"
-msgstr "<click here to select a folder>"
+msgstr "डिस्कछवि चयन गर्न यहाँ क्लिक गर्नुहोस्"
 
 #: ../libbrasero-burn/brasero-src-image.c:415
-#, fuzzy
 msgid "Select Disc Image"
-msgstr "डिस्क प्रतिलिपि गर्न छनोट गर्ने"
+msgstr "डिस्क छवि छनोट गर"
 
 #: ../libbrasero-burn/brasero-src-image.c:444 ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350 ../src/brasero-project.c:2225
 #: ../src/brasero-project-name.c:162
-#, fuzzy
 msgid "All files"
 msgstr "सबै फाइल"
 
 #. Translators: this a disc image here
 #: ../libbrasero-burn/brasero-src-image.c:450
-#, fuzzy
 msgctxt "disc"
 msgid "Image files"
 msgstr "छवि फाइल"
 
 #: ../libbrasero-burn/brasero-src-image.c:467
-#, fuzzy
 msgid "Image type:"
 msgstr "छवि प्रकार:"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:147
-#, fuzzy, c-format
+#, c-format
 msgid "Estimated size: %s"
-msgstr "अन्दजि समय: %s"
+msgstr "अन्दजि आकार: %s"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:209 ../src/brasero-data-disc.c:870
 #, fuzzy, c-format
@@ -1536,14 +1515,12 @@ msgid ""
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 
-#: ../libbrasero-burn/brasero-status-dialog.c:232 ../libbrasero-burn/brasero-status-dialog.c:294 ../src/brasero-data-disc.c:839
-#: ../src/brasero-data-disc.c:883
+#: ../libbrasero-burn/brasero-status-dialog.c:232 ../libbrasero-burn/brasero-status-dialog.c:294 ../src/brasero-data-disc.c:839 ../src/brasero-data-disc.c:883
 #, fuzzy
 msgid "Ne_ver Add Such File"
 msgstr "कहिलेपनि समाप्त हुँदैन"
 
-#: ../libbrasero-burn/brasero-status-dialog.c:233 ../libbrasero-burn/brasero-status-dialog.c:295 ../src/brasero-data-disc.c:840
-#: ../src/brasero-data-disc.c:884
+#: ../libbrasero-burn/brasero-status-dialog.c:233 ../libbrasero-burn/brasero-status-dialog.c:295 ../src/brasero-data-disc.c:840 ../src/brasero-data-disc.c:884
 msgid "Al_ways Add Such File"
 msgstr ""
 
@@ -1554,10 +1531,8 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-status-dialog.c:290 ../src/brasero-data-disc.c:835
 msgid ""
-"The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most "
-"widespread ones).\n"
-"It is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of "
-"Windows™.\n"
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones).\n"
+"It is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows™.\n"
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 standard."
 msgstr ""
 
@@ -1591,9 +1566,8 @@ msgid "All files need to be analysed to complete this operation."
 msgstr ""
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:134 ../libbrasero-burn/brasero-sum-dialog.c:215
-#, fuzzy
 msgid "Check _Again"
-msgstr "_फेरि जाच्नुहोस्"
+msgstr "फेरि जाच्नुहोस्"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:165 ../libbrasero-burn/brasero-sum-dialog.c:514
 #, fuzzy
@@ -1602,9 +1576,8 @@ msgstr "%s पत्र फाइल जाँच गर्न सकेन: %s"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214 ../src/brasero-eject-dialog.c:102 ../src/brasero-playlist.c:393
 #: ../src/brasero-project.c:2625
-#, fuzzy
 msgid "An unknown error occurred"
-msgstr "अज्ञात त्रुटि देखापर्या"
+msgstr "अज्ञात त्रुटि देखापर्यो"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:178
 msgid "The file integrity check was performed successfully."
@@ -1621,19 +1594,17 @@ msgid "The following files appear to be corrupted:"
 msgstr "निम्न फाइलहरू आयात गर्न सकिएन: %s"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:250
-#, fuzzy
 msgid "Corrupted Files"
-msgstr "संग्रह दूषित भयो"
+msgstr "फाइल दूषित भयो"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:342
-#, fuzzy
 msgid "Downloading MD5 file"
-msgstr "डाउनलोड हुँदैछ"
+msgstr "MD5 डाउनलोड हुँदैछ"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:397
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is not a valid URI"
-msgstr "'%s:' वैध यूआरआई योजना होइन"
+msgstr "\"%s\" वैध यूआरआई होइन"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:515
 #, fuzzy
@@ -1649,18 +1620,16 @@ msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr ""
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:706
-#, fuzzy
 msgid "Open an MD5 file"
-msgstr "MD5"
+msgstr "MD5 फाइल खोल्नुहोस्"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:721
 msgid "_Check"
 msgstr "जाँच"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:752
-#, fuzzy
 msgid "Disc Checking"
-msgstr "डिस्क"
+msgstr "डिस्क जाँच गरिँदै छ"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:78 ../libbrasero-burn/brasero-tool-dialog.c:92 ../libbrasero-burn/brasero-tool-dialog.c:102
 #, fuzzy
@@ -1676,7 +1645,7 @@ msgstr "समर्थित छैन "
 #: ../libbrasero-burn/brasero-tool-dialog.c:103
 #, fuzzy
 msgid "The drive is empty"
-msgstr "रित्याउनुहोस्"
+msgstr "(खाली गर्नुहोस्)"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:556 ../src/brasero-eject-dialog.c:167
 #, fuzzy
@@ -1688,8 +1657,7 @@ msgid "Progress"
 msgstr "प्रगतिमा"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:617 ../libbrasero-burn/brasero-track-data-cfg.c:716 ../libbrasero-burn/brasero-track-data-cfg.c:727
-#: ../libbrasero-burn/brasero-track-data-cfg.c:788 ../libbrasero-burn/brasero-track-data-cfg.c:793 ../src/brasero-playlist.c:536
-#: ../src/brasero-video-tree-model.c:342
+#: ../libbrasero-burn/brasero-track-data-cfg.c:788 ../libbrasero-burn/brasero-track-data-cfg.c:793 ../src/brasero-playlist.c:536 ../src/brasero-video-tree-model.c:342
 msgid "(loading…)"
 msgstr "लोड हुँदैछ..."
 
@@ -1787,9 +1755,8 @@ msgid "Format used mostly on the North American continent"
 msgstr "यो ढाँचा उत्तर अमेरिकी महादेशमा मुख्यत: प्रयोग गरिन्छ"
 
 #: ../libbrasero-burn/brasero-video-options.c:473
-#, fuzzy
 msgid "_PAL/SECAM"
-msgstr "PAL"
+msgstr "_PAL/SECAM"
 
 #: ../libbrasero-burn/brasero-video-options.c:475
 msgid "Format used mostly in Europe"
@@ -1837,7 +1804,7 @@ msgstr "पुस्तक दृश्य प्राप्त गर्दा
 #: ../libbrasero-burn/burn-basics.c:79
 #, fuzzy
 msgid "Writing"
-msgstr "लेख्नका लागि %s खोल्न अक्षम"
+msgstr "फाइलमा त्रुटि लेखिदैछ"
 
 #: ../libbrasero-burn/burn-basics.c:80
 #, fuzzy
@@ -1862,7 +1829,7 @@ msgstr "फाइलहरु विश्लेषण गर्दै"
 #: ../libbrasero-burn/burn-basics.c:85
 #, fuzzy
 msgid "Transcoding song"
-msgstr "पहिलेको गीत होइन"
+msgstr "गाना बारेमा"
 
 #: ../libbrasero-burn/burn-basics.c:86
 #, fuzzy
@@ -1951,8 +1918,7 @@ msgstr "खानतलासी प्रतिवेदन प्रतिफ�
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709 ../plugins/libburnia/burn-libburn.c:717
-#: ../plugins/transcode/burn-transcode.c:790
+#: ../libbrasero-burn/burn-job.c:768 ../plugins/cdrtools/burn-cdrecord.c:709 ../plugins/libburnia/burn-libburn.c:717 ../plugins/transcode/burn-transcode.c:790
 #, fuzzy, c-format
 msgid "An internal error occurred (%s)"
 msgstr "एक आन्तरिक त्रुटी देखापर्‍यो।"
@@ -2161,7 +2127,7 @@ msgstr "उपलब्ध ड्राइभरहरूको लागि ख
 #: ../libbrasero-media/brasero-medium-selection.c:460
 #, fuzzy
 msgid "No disc available"
-msgstr "डिस्क छैन"
+msgstr "उपलब्ध"
 
 #. Translators: this is hour minute second like '2 h 14 min 25'
 #: ../libbrasero-media/brasero-units.c:71
@@ -2231,7 +2197,7 @@ msgstr "अडियो चक्काको नक्कल गर्ने �
 #: ../libbrasero-media/brasero-volume.c:417 ../src/brasero-project-name.c:322
 #, fuzzy, c-format
 msgid "Audio disc (%s)"
-msgstr "अडियो डिस्क"
+msgstr "अडियो चक्का"
 
 #. NOTE for translators: the first %s is the disc type.
 #. NOTE to translators: the final string must not be over
@@ -2242,8 +2208,8 @@ msgstr "अडियो डिस्क"
 msgid "Data disc (%s)"
 msgstr "रित्तो चक्का  (%s)"
 
-#: ../libbrasero-media/burn-iso9660.c:158 ../libbrasero-media/burn-iso9660.c:167 ../libbrasero-media/burn-iso9660.c:402
-#: ../libbrasero-media/burn-iso9660.c:439 ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:158 ../libbrasero-media/burn-iso9660.c:167 ../libbrasero-media/burn-iso9660.c:402 ../libbrasero-media/burn-iso9660.c:439
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr ""
@@ -2476,10 +2442,9 @@ msgstr "\"%s\" जिस्ट्रिमर प्लगिन फेला �
 #: ../libbrasero-utils/brasero-metadata.c:1198 ../libbrasero-utils/brasero-metadata.c:1211 ../libbrasero-utils/brasero-metadata.c:1224
 #: ../libbrasero-utils/brasero-metadata.c:1366 ../libbrasero-utils/brasero-metadata.c:1738 ../libbrasero-utils/brasero-metadata.c:1753
 #: ../libbrasero-utils/brasero-metadata.c:1762 ../plugins/transcode/burn-normalize.c:172 ../plugins/transcode/burn-normalize.c:187
-#: ../plugins/transcode/burn-normalize.c:209 ../plugins/transcode/burn-normalize.c:221 ../plugins/transcode/burn-normalize.c:238
-#: ../plugins/transcode/burn-normalize.c:335 ../plugins/transcode/burn-transcode.c:292 ../plugins/transcode/burn-transcode.c:304
-#: ../plugins/transcode/burn-transcode.c:426 ../plugins/transcode/burn-transcode.c:479 ../plugins/transcode/burn-transcode.c:513
-#: ../plugins/transcode/burn-transcode.c:556 ../plugins/transcode/burn-transcode.c:577 ../plugins/transcode/burn-transcode.c:589
+#: ../plugins/transcode/burn-normalize.c:209 ../plugins/transcode/burn-normalize.c:221 ../plugins/transcode/burn-normalize.c:238 ../plugins/transcode/burn-normalize.c:335
+#: ../plugins/transcode/burn-transcode.c:292 ../plugins/transcode/burn-transcode.c:304 ../plugins/transcode/burn-transcode.c:426 ../plugins/transcode/burn-transcode.c:479
+#: ../plugins/transcode/burn-transcode.c:513 ../plugins/transcode/burn-transcode.c:556 ../plugins/transcode/burn-transcode.c:577 ../plugins/transcode/burn-transcode.c:589
 #: ../plugins/transcode/burn-transcode.c:611 ../plugins/transcode/burn-vob.c:308 ../plugins/transcode/burn-vob.c:328 ../plugins/transcode/burn-vob.c:343
 #: ../plugins/transcode/burn-vob.c:355 ../plugins/transcode/burn-vob.c:372 ../plugins/transcode/burn-vob.c:428 ../plugins/transcode/burn-vob.c:445
 #: ../plugins/transcode/burn-vob.c:457 ../plugins/transcode/burn-vob.c:469 ../plugins/transcode/burn-vob.c:481 ../plugins/transcode/burn-vob.c:498
@@ -2612,8 +2577,8 @@ msgid "Data could not be read (%s)"
 msgstr "'%s' बाट शिर्ष पढ्न सकेन"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:241 ../plugins/checksum/burn-checksum-files.c:196 ../plugins/checksum/burn-checksum-files.c:219
-#: ../plugins/checksum/burn-checksum-image.c:174 ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
-#: ../plugins/libburnia/burn-libisofs.c:160 ../plugins/libburnia/burn-libisofs.c:274
+#: ../plugins/checksum/burn-checksum-image.c:174 ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492 ../plugins/libburnia/burn-libisofs.c:160
+#: ../plugins/libburnia/burn-libisofs.c:274
 #, fuzzy, c-format
 msgid "Data could not be written (%s)"
 msgstr "%s, %s, र %s द्वारा लेखिएको।\n"
@@ -2625,7 +2590,7 @@ msgstr ""
 #: ../plugins/cdrdao/burn-cdrdao.c:55
 #, fuzzy
 msgid "cdrdao burning suite"
-msgstr "ग्रूपवेयर सुट"
+msgstr "डिभिडि बनाउने"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:103
 #, fuzzy
@@ -2664,16 +2629,15 @@ msgstr ""
 #: ../plugins/cdrkit/burn-cdrkit.h:38
 #, fuzzy
 msgid "cdrkit burning suite"
-msgstr "ग्रूपवेयर सुट"
+msgstr "डिभिडि बनाउने"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:119 ../plugins/cdrtools/burn-mkisofs.c:119 ../plugins/growisofs/burn-growisofs.c:204
-#: ../plugins/libburnia/burn-libisofs.c:518
+#: ../plugins/cdrkit/burn-genisoimage.c:119 ../plugins/cdrtools/burn-mkisofs.c:119 ../plugins/growisofs/burn-growisofs.c:204 ../plugins/libburnia/burn-libisofs.c:518
 #, fuzzy, c-format
 msgid "Last session import failed"
 msgstr "सुरुआतमा अन्तिम सत्र नखोल्नुहोस्"
 
-#: ../plugins/cdrkit/burn-genisoimage.c:125 ../plugins/cdrkit/burn-genisoimage.c:132 ../plugins/cdrtools/burn-mkisofs.c:125
-#: ../plugins/cdrtools/burn-mkisofs.c:132 ../plugins/growisofs/burn-growisofs.c:210 ../plugins/growisofs/burn-growisofs.c:217
+#: ../plugins/cdrkit/burn-genisoimage.c:125 ../plugins/cdrkit/burn-genisoimage.c:132 ../plugins/cdrtools/burn-mkisofs.c:125 ../plugins/cdrtools/burn-mkisofs.c:132
+#: ../plugins/growisofs/burn-growisofs.c:210 ../plugins/growisofs/burn-growisofs.c:217
 #, fuzzy
 msgid "An image could not be created"
 msgstr "इम्बोसिङ गरेर सिर्जित एउटा छवि नक्कल गर्नुहोस्"
@@ -2711,8 +2675,7 @@ msgstr ""
 msgid "Copies any disc to a disc image"
 msgstr "सिडी या डिस्क इमेज प्रयोग गरेर स्टार्टअप डिस्क बनाउनुहोस्"
 
-#: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122 ../plugins/libburnia/burn-libburn.c:856
-#: ../plugins/libburnia/burn-libburn.c:887
+#: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122 ../plugins/libburnia/burn-libburn.c:856 ../plugins/libburnia/burn-libburn.c:887
 #, fuzzy, c-format
 msgid "An error occurred while writing to disc"
 msgstr "PNG लेख्दा त्रुटि भयो"
@@ -2726,7 +2689,7 @@ msgstr ""
 #: ../plugins/cdrkit/burn-wodim.c:255 ../plugins/cdrtools/burn-cdrecord.c:252
 #, fuzzy, c-format
 msgid "Writing track %s"
-msgstr "XCF लेख्दा त्रुटि: %s"
+msgstr "लेख्दै गर्दा त्रुटि `%s'"
 
 #: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
 #, fuzzy
@@ -2784,7 +2747,7 @@ msgstr ""
 #: ../plugins/cdrtools/burn-cdrtools.h:38
 #, fuzzy
 msgid "cdrtools burning suite"
-msgstr "ग्रूपवेयर सुट"
+msgstr "डिभिडि बनाउने"
 
 #: ../plugins/cdrtools/burn-mkisofs.c:138
 #, fuzzy
@@ -2825,7 +2788,6 @@ msgstr ""
 #. * which will be translated only when it needs
 #. * displaying.
 #: ../plugins/checksum/burn-checksum-files.c:1465
-#, fuzzy
 msgid "File Checksum"
 msgstr "फाईल चेकसम"
 
@@ -2869,18 +2831,16 @@ msgstr "तह-एनिमेसन गरिएको छवि सिर्�
 #. * which will be translated only when it needs
 #. * displaying.
 #: ../plugins/checksum/burn-checksum-image.c:831
-#, fuzzy
 msgid "Image Checksum"
-msgstr "चेकसम"
+msgstr "छवि चेकसम"
 
 #: ../plugins/checksum/burn-checksum-image.c:832
 msgid "Checks disc integrity after it is burnt"
 msgstr ""
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:313 ../plugins/vcdimager/burn-vcdimager.c:438
-#, fuzzy
 msgid "Creating file layout"
-msgstr "मेल बाकस फाइल सिर्जना गर्दै"
+msgstr "फाइल ढाँचा सिर्जना गर्दै"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:371
 msgid "Creates disc images suitable for video DVDs"
@@ -2892,8 +2852,8 @@ msgstr ""
 #: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
-"Error while retrieving a key used for encryption. You may solve such a problem with one of the following methods: in a terminal either set the proper DVD "
-"region code for your CD/DVD player with the \"regionset %s\" command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" command"
+"Error while retrieving a key used for encryption. You may solve such a problem with one of the following methods: in a terminal either set the proper DVD region code "
+"for your CD/DVD player with the \"regionset %s\" command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" command"
 msgstr ""
 
 #: ../plugins/dvdcss/burn-dvdcss.c:336
@@ -2936,7 +2896,7 @@ msgstr "अस्थायी स्थान प्रयोग गर्ने
 #: ../plugins/growisofs/burn-growisofs-common.h:38
 #, fuzzy
 msgid "growisofs burning suite"
-msgstr "ग्रूपवेयर सुट"
+msgstr "डिभिडि बनाउने"
 
 #: ../plugins/libburnia/burn-libburn.c:242 ../plugins/libburnia/burn-libburn.c:250
 #, fuzzy, c-format
@@ -2961,7 +2921,7 @@ msgstr "%02i:%02i:%02i"
 #: ../plugins/libburnia/burn-libburnia.h:38
 #, fuzzy
 msgid "libburnia burning suite"
-msgstr "ग्रूपवेयर सुट"
+msgstr "डिभिडि बनाउने"
 
 #: ../plugins/libburnia/burn-libisofs.c:222 ../plugins/libburnia/burn-libisofs.c:291 ../plugins/libburnia/burn-libisofs.c:571
 #, fuzzy, c-format
@@ -3013,9 +2973,8 @@ msgstr "फाइल प्रतिलिपि हुदैँछ"
 #. * which will be translated only when it needs
 #. * displaying.
 #: ../plugins/local-track/burn-local-image.c:909
-#, fuzzy
 msgid "File Downloader"
-msgstr "उपशीर्षक डाउनलोड"
+msgstr "फाइल डाउनलोड"
 
 #: ../plugins/local-track/burn-local-image.c:910
 msgid "Allows files not stored locally to be burned"
@@ -3037,19 +2996,17 @@ msgstr ""
 #. * processing. This data transmission is
 #. * done through a pad. Maybe this is a bit
 #. * too technical and should be removed?
-#: ../plugins/transcode/burn-normalize.c:199 ../plugins/transcode/burn-normalize.c:260 ../plugins/transcode/burn-transcode.c:316
-#: ../plugins/transcode/burn-transcode.c:354 ../plugins/transcode/burn-transcode.c:523 ../plugins/transcode/burn-transcode.c:626
-#: ../plugins/transcode/burn-transcode.c:657 ../plugins/transcode/burn-transcode.c:679 ../plugins/transcode/burn-vob.c:189
-#: ../plugins/transcode/burn-vob.c:392 ../plugins/transcode/burn-vob.c:545 ../plugins/transcode/burn-vob.c:675 ../plugins/transcode/burn-vob.c:1039
-#: ../plugins/transcode/burn-vob.c:1115 ../plugins/transcode/burn-vob.c:1166
+#: ../plugins/transcode/burn-normalize.c:199 ../plugins/transcode/burn-normalize.c:260 ../plugins/transcode/burn-transcode.c:316 ../plugins/transcode/burn-transcode.c:354
+#: ../plugins/transcode/burn-transcode.c:523 ../plugins/transcode/burn-transcode.c:626 ../plugins/transcode/burn-transcode.c:657 ../plugins/transcode/burn-transcode.c:679
+#: ../plugins/transcode/burn-vob.c:189 ../plugins/transcode/burn-vob.c:392 ../plugins/transcode/burn-vob.c:545 ../plugins/transcode/burn-vob.c:675
+#: ../plugins/transcode/burn-vob.c:1039 ../plugins/transcode/burn-vob.c:1115 ../plugins/transcode/burn-vob.c:1166
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr ""
 
 #: ../plugins/transcode/burn-normalize.c:554
-#, fuzzy
 msgid "Normalizing tracks"
-msgstr "सामान्यकरण"
+msgstr "ट्रायाक्  सामान्यकरण"
 
 #: ../plugins/transcode/burn-normalize.c:643
 msgid "Normalization"
@@ -3078,7 +3035,7 @@ msgstr "फाइलहरु विश्लेषण गर्दै"
 #: ../plugins/transcode/burn-transcode.c:1499
 #, fuzzy, c-format
 msgid "Transcoding \"%s\""
-msgstr "%s of %s at %s/s"
+msgstr "%s, %s, %s र %s"
 
 #: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
@@ -3124,15 +3081,14 @@ msgstr "प्लगइन"
 #: ../src/brasero-app.c:131
 #, fuzzy
 msgid "Choose plugins for Brasero"
-msgstr "ब्रासेरो"
+msgstr "प्लगइनहरू…"
 
 #: ../src/brasero-app.c:133
 #, fuzzy
 msgid "E_ject"
-msgstr "A E"
+msgstr "e"
 
 #: ../src/brasero-app.c:134
-#, fuzzy
 msgid "Eject a disc"
 msgstr "सीडी निकाल्नुहोस्"
 
@@ -3141,7 +3097,6 @@ msgid "_Blank…"
 msgstr "खाली"
 
 #: ../src/brasero-app.c:137
-#, fuzzy
 msgid "Blank a disc"
 msgstr "रित्तो सिडि चक्का"
 
@@ -3156,23 +3111,20 @@ msgid "Check data integrity of disc"
 msgstr "डिक्स अहिलेसम्म पनि ड्राईभमा नै छ कि हेर्नुहोला ।"
 
 #: ../src/brasero-app.c:143
-#, fuzzy
 msgid "Quit Brasero"
-msgstr "ब्रासेरो"
+msgstr "ब्रासेरो बन्द गर्नुहोस्"
 
 #: ../src/brasero-app.c:145
 msgid "_Contents"
 msgstr "सामग्री"
 
 #: ../src/brasero-app.c:145
-#, fuzzy
 msgid "Display help"
-msgstr "छवि प्रदर्शकका लागि मद्दत प्रदर्शन गर्न सकेन"
+msgstr "मद्दत प्रदर्शन गर्नुहोस्"
 
 #: ../src/brasero-app.c:148
-#, fuzzy
 msgid "About"
-msgstr "_बारेमा"
+msgstr "बारेमा"
 
 #: ../src/brasero-app.c:420 ../src/brasero-app.c:2069
 #, fuzzy
@@ -3197,33 +3149,29 @@ msgstr "empty"
 #: ../src/brasero-app.c:1176
 #, fuzzy
 msgid ""
-"Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later version."
+"Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; "
+"either version 2 of the License, or (at your option) any later version."
 msgstr ""
-"रिदमबक्स एउटा नि: शुल्क सफ्टवेयर हो; तपाईँले यसलाई नि: शुल्क सफ्टवेयर संस्थाद्धारा प्रकाशित GNU साधारण सार्वजनिक अनुमतिपत्र\n"
-" अन्तर्गत रहेर पुन: वितरण र/वा परिमार्जन गर्न\n"
-" सक्नुहुन्छ;अनुमतिपत्रको संस्करण २, वा\n"
-"(तपाईँको विकल्पमा) कुनै पछिल्लो संस्करण।\n"
+"साउन्ड जुइसर निशुल्क सफ्टवेयर हो; तपाईँ यसलाई स्वतन्त्र सफ्टवेयर संस्थाद्वारा प्रकाशन गरिएको जीएनयू साधारण सार्वजनिक इजाजतपत्रको सर्त अन्तर्गत पुन: वितरण र/वा परिमार्जन गर्न सक्नुहुन्छ; चाहे "
+"इजाजतपत्रको संस्करण २, वा (तपाईँको विकल्पमा) पछिल्लो कुनै संस्करण ।"
 
 #: ../src/brasero-app.c:1181
 #, fuzzy
 msgid ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR "
+"PURPOSE.  See the GNU General Public License for more details."
 msgstr ""
-"रिदमबक्स उपयोगि हुने आशामा वितरण गरिएको हो,\n"
-"तर कुनै वारेन्टि विना; अझ वा कुनै व्यवहारिक\n"
-"वा कुनै विशेष उद्देश्यका लागि मिल्ने वा व्यावसायिक उद्देश्य बिना नै।  विस्तृत जानकारीका लागि\n"
-"GNU साधारण सार्वजनिक अनुमतिपत्र हेर्नुहोस्।\n"
+"इभाइन्स उपयोगि हुने आशामा तर कुनै वारेन्टि विना, यद्यपि व्यापारिकरण वा कुनै निश्चित उदेश्यसँगको कुनै सूचीत वारेन्टि विना नै वितरण गरिएको हो । अरु विस्तृत विवरणका लागि जिएनयु साधारण सार्वजनिक "
+"ईजाजतपत्र हेर्नुहोस् ।\n"
 
 #: ../src/brasero-app.c:1186
 #, fuzzy
 msgid ""
-"You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301, USA"
+"You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth "
+"Floor, Boston, MA 02110-1301, USA"
 msgstr ""
-"तपाईँले ईभीन्ससँगै एउटा GNU साधारण सार्वजनिक अनुमतिपत्रको प्रतिलिपि प्राप्त गर्नुभएको हुनुपर्दछ; यदि छैन भने, Free Software Foundation, Inc., 51 Franklin Street, Fifth "
-"Floor, Boston, MA 02110-1301  USA मा लेख्नुहोस्\n"
+"तपाईँले ईभीन्ससँगै एउटा GNU साधारण सार्वजनिक अनुमतिपत्रको प्रतिलिपि प्राप्त गर्नुभएको हुनुपर्दछ; यदि छैन भने, Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA "
+"02110-1301  USA मा लेख्नुहोस्\n"
 
 #: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
@@ -3252,9 +3200,8 @@ msgid "The project \"%s\" does not exist"
 msgstr "फाइल ‘%s’ अवस्थित छैन ।"
 
 #: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
-#, fuzzy
 msgid "_Recent Projects"
-msgstr "परियोजनाहरू"
+msgstr "हालको परियोजनाहरू"
 
 #: ../src/brasero-app.c:1734
 #, fuzzy
@@ -3285,9 +3232,8 @@ msgid "Remove the selected files from the project"
 msgstr "परियोजनाबाट हटाउनुहोस्"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129 ../src/brasero-video-disc.c:107
-#, fuzzy
 msgid "Paste files"
-msgstr "यसभित्र टाँस्नुहोस्"
+msgstr "फाइल टाँस्नुहोस्"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129 ../src/brasero-video-disc.c:107
 #, fuzzy
@@ -3360,23 +3306,20 @@ msgid "This file is a video and therefore only the audio part can be written to 
 msgstr ""
 
 #: ../src/brasero-audio-disc.c:674
-#, fuzzy
 msgid "_Discard File"
-msgstr "छोड्नुहोस्"
+msgstr "फाइल छोड्नुहोस्"
 
 #: ../src/brasero-audio-disc.c:677
-#, fuzzy
 msgid "_Add File"
-msgstr "सीभीएस (CVS): फाइल/डाइरेक्टरी थप्नुहोस्"
+msgstr "फाइल थप्नुहोस्"
 
 #: ../src/brasero-audio-disc.c:748
 msgid "Do you want to search for audio files inside the directory?"
 msgstr ""
 
 #: ../src/brasero-audio-disc.c:758
-#, fuzzy
 msgid "Search _Directory"
-msgstr "यसका लागि खोजी गर्नुहोस्"
+msgstr "निर्देशिका खोज्नुहोस्"
 
 #: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
 #, fuzzy, c-format
@@ -3607,7 +3550,7 @@ msgstr "छोड्नुहोस्"
 #: ../src/brasero-data-disc.c:574
 #, fuzzy
 msgid "Continue with the current modified project"
-msgstr "हालको परियोजना डाटावेसमा बचत गर्नुहोस्"
+msgstr "हालको परियोजना बचत गर्नुहोस्"
 
 #. Translators: %s is the name of the image
 #: ../src/brasero-data-disc.c:619
@@ -3724,12 +3667,12 @@ msgstr "लोड गर्दैछ ।  कृपया प्रतिक्�
 #: ../src/brasero-data-disc.c:1500
 #, fuzzy
 msgid "_Cancel Loading"
-msgstr "रद्द गर्नुहोस्"
+msgstr "_रद्द गर्ने"
 
 #: ../src/brasero-data-disc.c:1502
 #, fuzzy
 msgid "Cancel loading current project"
-msgstr "हालको मेल सञ्चालन रद्द गर्नुहोस्"
+msgstr "परियोजना %s लोड हुदैछ "
 
 #: ../src/brasero-data-disc.c:1903
 #, fuzzy
@@ -3836,13 +3779,13 @@ msgstr "फाइल विकल्प"
 #: ../src/brasero-filter-option.c:65
 #, fuzzy
 msgid "Filter _hidden files"
-msgstr "लुकाइएको फाइलहरू देखाउनु पर्दछ या पर्दैन"
+msgstr "लुकाइएको फाइलहरू देखाउनुहोस्"
 
 #. replace symlink
 #: ../src/brasero-filter-option.c:72
 #, fuzzy
 msgid "Re_place symbolic links"
-msgstr "सांकेतिक सम्बन्ध समर्थन गरिएन"
+msgstr "साङ्केतिक लिङ्क नपछ्याउनुहोस्"
 
 #. filter broken symlink button
 #: ../src/brasero-filter-option.c:79
@@ -3872,7 +3815,7 @@ msgstr "छेउपट्टी देखाउनुहोस्"
 #: ../src/brasero-layout.c:111
 #, fuzzy
 msgid "Show a side pane along the project"
-msgstr "नयाँ सञ्झ्यालहरूमा छेउ फलक देखाउनुहोस्"
+msgstr "सञ्झ्याल साइड फलक देखाउनुहोस्/लुकाउनुहोस् ।"
 
 #: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
@@ -3881,7 +3824,7 @@ msgstr "तेर्सो सजावट"
 #: ../src/brasero-layout.c:126
 #, fuzzy
 msgid "Set a horizontal layout"
-msgstr "तेर्सो पङ्क्तिबद्धता सेट गर्नुहोस्"
+msgstr "तेर्सो सजावट"
 
 #: ../src/brasero-layout.c:128
 msgid "_Vertical Layout"
@@ -3890,7 +3833,7 @@ msgstr "ठाडो सजावट"
 #: ../src/brasero-layout.c:129
 #, fuzzy
 msgid "Set a vertical layout"
-msgstr "ठाडो पङ्क्तिबद्धता सेट गर्नुहोस्"
+msgstr "ठाडो सजावट"
 
 #: ../src/brasero-layout.c:1193
 #, fuzzy
@@ -4050,7 +3993,7 @@ msgstr "फाइलहरू थप्नुहोस्"
 #: ../src/brasero-project.c:200
 #, fuzzy
 msgid "Add files to the project"
-msgstr "फाईल थप्नुहोस्"
+msgstr "परियोजना गुण थप्नुहोस्"
 
 #: ../src/brasero-project.c:201
 msgid "_Remove Files"
@@ -4060,7 +4003,7 @@ msgstr "हटाउनुहोस्"
 #: ../src/brasero-project.c:204 ../src/brasero-project.c:2312
 #, fuzzy
 msgid "E_mpty Project"
-msgstr "A E"
+msgstr "e"
 
 #: ../src/brasero-project.c:205
 #, fuzzy
@@ -4157,8 +4100,8 @@ msgstr "के तपाईँ साच्चिकै '%s' गुणलाई 
 
 #: ../src/brasero-project.c:2306
 msgid ""
-"Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no "
-"longer listed here."
+"Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed "
+"here."
 msgstr ""
 
 #: ../src/brasero-project.c:2368
@@ -4183,7 +4126,7 @@ msgstr "ब्रासेरो  डिस्क बर्नर"
 #: ../src/brasero-project.c:2451
 #, fuzzy, c-format
 msgid "Brasero — %s (Audio Disc)"
-msgstr "ब्रासेरो  डिस्क बर्नर"
+msgstr "अडियो चक्का"
 
 #. Translators: %s is the name of the project
 #: ../src/brasero-project.c:2454
@@ -4219,7 +4162,7 @@ msgstr "हालको परियोजना बचत गर्नुहो
 #: ../src/brasero-project.c:2753
 #, fuzzy
 msgid "Save project as a Brasero audio project"
-msgstr "ब्रासेरो परियोजना र्फाइल"
+msgstr "नयाँ ध्वनि परियोजान सिर्जना गर्ने"
 
 #: ../src/brasero-project.c:2754
 #, fuzzy
@@ -4453,7 +4396,7 @@ msgstr "परियोजना"
 #: ../src/brasero-project-type-chooser.c:75
 #, fuzzy
 msgid "Create a traditional audio CD"
-msgstr "अडियो सीडी प्लेयर"
+msgstr "सिडि _अडियो"
 
 #: ../src/brasero-project-type-chooser.c:79
 #, fuzzy
@@ -4520,7 +4463,7 @@ msgstr "पाठ घुसाउनुहोस्"
 #: ../src/brasero-rename.c:323
 #, fuzzy
 msgid "Delete text"
-msgstr "हटाउनुहोस"
+msgstr "_हटाउनुस"
 
 #: ../src/brasero-rename.c:324
 #, fuzzy
@@ -4617,7 +4560,9 @@ msgstr "गाना बारेमा"
 #: ../src/brasero-split-dialog.c:172
 #, fuzzy
 msgid "Do you really want to split the track?"
-msgstr "के तपाईँ साँच्चै स्थापनाकार्य रद्द गर्न चाहनुहुन्छ?"
+msgstr ""
+"यसले बाल्सालाई बन्द गर्दछ।\n"
+"के तपाईँ  साँच्चिकै यसो गर्न चाहनुहुन्छ?"
 
 #: ../src/brasero-split-dialog.c:175
 msgid "If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."
@@ -4756,7 +4701,7 @@ msgstr "चयन गरिएको पुस्तकचिनो हटाउ
 #: ../src/brasero-split-dialog.c:1280
 #, fuzzy
 msgid "Clear the slices preview"
-msgstr "पूर्वावलोकन छैन"
+msgstr "पूर्वावलोकन:"
 
 #: ../src/brasero-split-dialog.c:1290
 #, fuzzy
@@ -4790,7 +4735,7 @@ msgstr "सेकेन्ड"
 #: ../src/brasero-time-button.c:317
 #, fuzzy
 msgid "Frames (1 second = 75 frames)"
-msgstr "फ्रेमहरू/सेकेण्डमा फ्रेम दर "
+msgstr "प्रतिसेकेण्डमा फ्रेमहरू देखाउने "
 
 #: ../src/brasero-video-disc.c:101
 #, fuzzy
@@ -4813,7 +4758,7 @@ msgstr ""
 #: ../src/brasero-video-disc.c:369
 #, fuzzy
 msgid "_Search Directory"
-msgstr "यसका लागि खोजी गर्नुहोस्"
+msgstr "निर्देशिका होइन"
 
 #: ../src/brasero-video-disc.c:412
 #, c-format
