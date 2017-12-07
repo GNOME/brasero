@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-01-10 06:44+0000\n"
-"PO-Revision-Date: 2017-03-02 10:56+0000\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2017-12-06 16:16+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
-"Language-Team: Icelandic <translation-team-is@lists.sourceforge.org>\n"
+"Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -62,10 +62,15 @@ msgid "Burn an Image File"
 msgstr "Brenna diskmynd"
 
 #: ../data/brasero.desktop.in.in.h:8
+#| msgid "Copy a disc"
+msgid "Copy a Disc"
+msgstr "Afrita disk"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Búa til hljóðskráaverkefni"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Búa til myndskeiðsverkefni"
 
@@ -1982,7 +1987,7 @@ msgid ""
 "free space for the disc image (%ld MiB needed)"
 msgstr ""
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr ""
@@ -2643,7 +2648,7 @@ msgstr "Ekki tókst að lesa gögn (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -2802,7 +2807,7 @@ msgstr "Afrita hljóðspor %02d"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:267
 msgid "Preparing to copy audio disc"
-msgstr ""
+msgstr "Undirbý það að afrita hljómdisk"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:411
 msgid "Copy tracks from an audio CD with all associated information"
@@ -2828,17 +2833,17 @@ msgstr ""
 
 #: ../plugins/cdrtools/burn-mkisofs.c:138
 msgid "This version of mkisofs is not supported"
-msgstr ""
+msgstr "Þessi útgáfa mkisofs er ekki studd"
 
 #: ../plugins/checksum/burn-checksum-files.c:131
 #: ../plugins/checksum/burn-checksum-files.c:589
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
-msgstr ""
+msgstr "Ekki var hægt að opna skrána \"%s\" (%s)"
 
 #: ../plugins/checksum/burn-checksum-files.c:617
 msgid "Creating checksum for image files"
-msgstr ""
+msgstr "Bý til gátsummu fyrir diskmyndaskrár"
 
 #: ../plugins/checksum/burn-checksum-files.c:859
 #, c-format
@@ -2876,7 +2881,7 @@ msgstr ""
 #: ../plugins/checksum/burn-checksum-files.c:1504
 #: ../plugins/checksum/burn-checksum-image.c:856
 msgid "Hashing algorithm to be used:"
-msgstr ""
+msgstr "Reiknirit tætigildis sem á að nota:"
 
 #: ../plugins/checksum/burn-checksum-files.c:1507
 #: ../plugins/checksum/burn-checksum-image.c:859
@@ -2931,7 +2936,7 @@ msgstr ""
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -2941,26 +2946,26 @@ msgid ""
 "command"
 msgstr ""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "Sæki DVD-lykla"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr ""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr ""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Afrita DVD mynddisk"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr ""
 
@@ -2974,7 +2979,7 @@ msgstr ""
 
 #: ../plugins/growisofs/burn-growisofs.c:924
 msgid "Allow DAO use"
-msgstr ""
+msgstr "Leyfa notkun DAO"
 
 #: ../plugins/growisofs/burn-growisofs-common.h:38
 msgid "growisofs burning suite"
@@ -3103,15 +3108,15 @@ msgstr ""
 
 #: ../plugins/transcode/burn-normalize.c:554
 msgid "Normalizing tracks"
-msgstr ""
+msgstr "Hljóðstyrkstaðla spor"
 
 #: ../plugins/transcode/burn-normalize.c:643
 msgid "Normalization"
-msgstr ""
+msgstr "Hljóðstyrksstöðlun"
 
 #: ../plugins/transcode/burn-normalize.c:644
 msgid "Sets consistent sound levels between tracks"
-msgstr ""
+msgstr "Setur samræmi í hljóðstyrk laga"
 
 #. Translators: %s is the string error from errno
 #: ../plugins/transcode/burn-transcode.c:1050
