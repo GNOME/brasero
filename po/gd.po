@@ -2,14 +2,14 @@
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the brasero package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
-# GunChleoc <fios@foramnagaidhlig.net>, 2014, 2016.
+# GunChleoc <fios@foramnagaidhlig.net>, 2014, 2016, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=braser"
-"o&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-05-19 15:09+0000\n"
-"PO-Revision-Date: 2016-06-11 09:02+0100\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=brase"
+"ro&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2018-02-23 09:33+0100\n"
 "Last-Translator: GunChleoc <fios@foramnagaidhlig.net>\n"
 "Language-Team: Fòram na Gàidhlig\n"
 "Language: gd\n"
@@ -28,10 +28,10 @@ msgid ""
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
 msgstr ""
-"'S e aplacaid an deasga GNOME a th' ann am Brasero gus CD/DVD a losgadh. "
-"Chaidh a dhealbhachadh ach am biodh e cho furasta cleachdadh 's a ghabhas "
-"agus tha gleusan àraidh 'na lùib leis an urrainn dhut na diosgan agad a "
-"chruthachadh gu furasta 's gu luath."
+"’S e aplacaid an deasga GNOME a th’ ann am Brasero gus CD/DVD a losgadh. "
+"Chaidh a dhealbhachadh ach am biodh e cho furasta cleachdadh ’s a ghabhas "
+"agus tha gleusan àraidh ’na lùib leis an urrainn dhut na diosgan agad a "
+"chruthachadh gu furasta ’s gu luath."
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
@@ -41,9 +41,9 @@ msgid ""
 "burn them to a disc."
 msgstr ""
 "Tha comas aig Brasero air CD/DVDan dàta no fuaime a chruthachadh, "
-"lethbhreacan dhiubh a dhèanamh 's an losgadh. Cuiridh e làn-taic ris na "
+"lethbhreacan dhiubh a dhèanamh ’s an losgadh. Cuiridh e làn-taic ris na "
 "leudachain CD-TEXT, multisession agus joliet. Cha leig thu leas ach dàta a "
-"shlaodadh 's a leigeil às o dh'aplacaid ionadail eile no o dhraibhean cèine "
+"shlaodadh ’s a leigeil às o dh’aplacaid ionadail eile no o dhraibhean cèine "
 "co-roinnte gus an losgadh air diosga."
 
 #: ../data/brasero.desktop.in.in.h:1
@@ -75,10 +75,15 @@ msgid "Burn an Image File"
 msgstr "Loisg faidhle ìomhaighe"
 
 #: ../data/brasero.desktop.in.in.h:8
+#| msgid "Copy a disc"
+msgid "Copy a Disc"
+msgstr "Dèan lethbhreac de dhiosga"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Cruthaich pròiseact fuaime"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Cruthaich pròiseact video"
 
@@ -96,12 +101,12 @@ msgid ""
 "to true if it should."
 msgstr ""
 "Co-dhiù an dèan an leudachan Nautilus aithris dì-bhugachaidh. Cuir an luach "
-"air \"true\" ma tha thu ga h-iarraidh."
+"air “true” ma tha thu ga h-iarraidh."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
 msgstr ""
-"An seòrsa de dh'àireamh dhearbhaidh a thèid a chleachdadh airson ìomhaighean"
+"An seòrsa de dh’àireamh dhearbhaidh a thèid a chleachdadh airson ìomhaighean"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
@@ -110,7 +115,8 @@ msgstr "Suidhich seo air 0 airson MD5, 1 airson SHA1 is 2 airson SHA256"
 #: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
 msgstr ""
-"An seòrsa de dh'àireamh dhearbhaidh a thèid a chleachdadh airson faidhlichean"
+"An seòrsa de dh’àireamh dhearbhaidh a thèid a chleachdadh airson "
+"faidhlichean"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
@@ -135,7 +141,7 @@ msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
 msgstr ""
-"Seo ainm a' phrògraim losgaidh as annsa leat a chaidh a stàladh. Thèid a "
+"Seo ainm a’ phrògraim losgaidh as annsa leat a chaidh a stàladh. Thèid a "
 "chleachdadh ma ghabhas seo dèanamh."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:10
@@ -148,25 +154,25 @@ msgid ""
 "set to NULL, Brasero will load them all."
 msgstr ""
 "Seo an liosta dhe na plugain eile a chleachdas brasero gus diosgan a loisg. "
-"Mas e \"NULL\" a th' ann, luchdaichidh Brasero a h-uile gin dhiubh."
+"Mas e “NULL” a th’ ann, luchdaichidh Brasero a h-uile gin dhiubh."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
-msgstr "Cuir an comas a' bhratach \"-immed\" le cdrecord"
+msgstr "Cuir an comas a’ bhratach “-immed” le cdrecord"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:13
 msgid ""
 "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
 "true) as it's only a workaround for some drives/setups."
 msgstr ""
-"Co-dhiù an tèid a' bhratach \"-immed\" a chleachdadh le cdrecord. Cleachd gu "
-"faiceallach e ('s e air \"true\") on nach e ach oidhirp càraidh a th' ann "
+"Co-dhiù an tèid a’ bhratach “-immed” a chleachdadh le cdrecord. Cleachd gu "
+"faiceallach e (’s e air “true”) on nach e ach oidhirp càraidh a th’ ann "
 "airson cuid a dhraibhean/rèiteachaidhean."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
 msgstr ""
-"Co-dhiù an tèid a' bhratach \"-use-the-force-luke=dao\" a chleachdadh le "
+"Co-dhiù an tèid a’ bhratach “-use-the-force-luke=dao” a chleachdadh le "
 "growisofs."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:15
@@ -174,22 +180,22 @@ msgid ""
 "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
 "false, brasero won't use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Co-dhiù an tèid a' bhratach \"-use-the-force-luke=dao\" a chleachdadh le "
-"growisofs. Mas e \"false\" a th' ann cha chleachd brasero e; dh'fhaoidte gun "
-"càraich a' bhratach seo duilgheadasan le cuid a dhraibhean/rèiteachaidhean."
+"Co-dhiù an tèid a’ bhratach “-use-the-force-luke=dao” a chleachdadh le "
+"growisofs. Mas e “false” a th’ ann cha chleachd brasero e; dh’fhaoidte gun "
+"càraich a’ bhratach seo duilgheadasan le cuid a dhraibhean/rèiteachaidhean."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
-msgstr "Ga chleachdadh còmhla ris a' bhratach \"-immed\" le cdrecord"
+msgstr "Ga chleachdadh còmhla ris a’ bhratach “-immed” le cdrecord"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "Ga chleachdadh còmhla ris a' bhratach \"-immed\" le cdrecord."
+msgstr "Ga chleachdadh còmhla ris a’ bhratach “-immed” le cdrecord."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr ""
-"Co-dhiù an tèid a bhratach \"--driver generic-mmc-raw\" a chleachdadh le "
+"Co-dhiù an tèid a bhratach “--driver generic-mmc-raw” a chleachdadh le "
 "cdrdao"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:19
@@ -197,14 +203,14 @@ msgid ""
 "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
 "True, brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
-"Co-dhiù an tèid a bhratach \"--driver generic-mmc-raw\" a chleachdadh le "
-"cdrdao.  Mas e \"true\" a th' ann cleachdaidh brasero e; dh'fhaoidte gun "
-"càraich a' bhratach seo duilgheadasan le cuid a dhraibhean/rèiteachaidhean."
+"Co-dhiù an tèid a bhratach “--driver generic-mmc-raw” a chleachdadh le "
+"cdrdao. Mas e “true” a th’ ann cleachdaidh brasero e; dh’fhaoidte gun "
+"càraich a’ bhratach seo duilgheadasan le cuid a dhraibhean/rèiteachaidhean."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr ""
-"Am pasgan mu dheireadh a bhrabhsaich thu fhad 's a bha thu a' lorg airson "
+"Am pasgan mu dheireadh a bhrabhsaich thu fhad ’s a bha thu a’ lorg airson "
 "ìomhaighean ri an losgadh"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:21
@@ -223,7 +229,7 @@ msgstr "Cuir ro-shealladh fhaidhlichean an comas"
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
 "Co-dhiù an tèid ro-shealladh air na faidhlichean a shealltainn. Suidhich air "
-"\"true\" e gus a chleachdadh."
+"“true” e gus a chleachdadh."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
@@ -234,8 +240,8 @@ msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr ""
-"Co-dhiù an dèan brasero criathradh air faidhlichean falaichte. Mas e \"true"
-"\" a th' ann, thèid na faidhlichean falaichte a chriathradh air falbh."
+"Co-dhiù an dèan brasero criathradh air faidhlichean falaichte. Mas e “true” "
+"a th’ ann, thèid na faidhlichean falaichte a chriathradh air falbh."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
@@ -247,7 +253,7 @@ msgid ""
 "Set to true, brasero will replace symbolic links."
 msgstr ""
 "Co-dhiù an cuir brasero an cinn-uidhe an àite nan ceanglaichean samhlachail "
-"sa phròiseact. Mas e \"true\" a th' ann, thèid an cur 'nan àite."
+"sa phròiseact. Mas e “true” a th’ ann, thèid an cur ’nan àite."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
@@ -259,12 +265,12 @@ msgid ""
 "filter broken symbolic links."
 msgstr ""
 "Co-dhiù an criathraich brasero ceanglaichean samhlachail briste air falbh. "
-"Mas e \"true\" a th' ann, thèid na ceanglaichean samhlachail briste a "
+"Mas e “true” a th’ ann, thèid na ceanglaichean samhlachail briste a "
 "chriathradh air falbh le brasero."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
-msgstr "Luach a' phrìomhachais airson a' phlugain"
+msgstr "Luach a’ phrìomhachais airson a’ phlugain"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:31
 msgid ""
@@ -275,9 +281,9 @@ msgid ""
 msgstr ""
 "Nuair a bhios iomadh plugan ri làimh airson an aon saothair, thèid an luach "
 "seo a chleachdadh airson suidheachadh dè am plugan a gheibh prìomhachas. Is "
-"ciall dha 0 gun tèid prìomhachas tùsail a' plugain a chleachdadh. Tar-"
-"àithnidh luach dearbh sam bith prìomhachas tùsail a' plugain. Cuiridh luach "
-"àicheil am plugan à comas."
+"ciall dha 0 gun tèid prìomhachas tùsail a’ plugain a chleachdadh. "
+"Tar-àithnidh luach dearbh sam bith prìomhachas tùsail a’ plugain. Cuiridh "
+"luach àicheil am plugan à comas."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
@@ -305,7 +311,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
 msgid "Error while blanking."
-msgstr "Mearachd rè a' bhànachaidh."
+msgstr "Mearachd rè a’ bhànachaidh."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:227
 #: ../libbrasero-burn/brasero-blank-dialog.c:272
@@ -341,11 +347,11 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:433
 msgid "Disc Blanking"
-msgstr "A' bànachadh diosga"
+msgstr "A’ bànachadh diosga"
 
 #: ../libbrasero-burn/brasero-burn.c:162
 msgid "Burning CD/DVD"
-msgstr "A' losgadh CD/DVD"
+msgstr "A’ losgadh CD/DVD"
 
 #: ../libbrasero-burn/brasero-burn.c:331
 #: ../libbrasero-burn/brasero-data-session.c:123
@@ -371,7 +377,7 @@ msgstr "Dèan cinnteach nach eil aplacaid eile ga chleachdadh"
 #: ../libbrasero-burn/brasero-burn.c:409
 #, c-format
 msgid "\"%s\" cannot be unlocked"
-msgstr "Chan urrainn dhuinn a' ghlais a thoirt far \"%s\""
+msgstr "Chan urrainn dhuinn a’ ghlais a thoirt far “%s”"
 
 #: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
 #: ../libbrasero-burn/brasero-burn.c:761
@@ -384,7 +390,7 @@ msgstr "Cha deach draibh an tùis a shònrachadh"
 
 #: ../libbrasero-burn/brasero-burn.c:632
 msgid "Ongoing copying process"
-msgstr "Tha lethbhreac 'ga dhèanamh"
+msgstr "Tha lethbhreac ’ga dhèanamh"
 
 #: ../libbrasero-burn/brasero-burn.c:636 ../libbrasero-burn/brasero-burn.c:735
 #: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
@@ -398,7 +404,7 @@ msgstr "Chan eil comas ath-sgrìobhaidh aig an draibh"
 
 #: ../libbrasero-burn/brasero-burn.c:731
 msgid "Ongoing blanking process"
-msgstr "Tha bànachadh a' dol"
+msgstr "Tha bànachadh a’ dol"
 
 #: ../libbrasero-burn/brasero-burn.c:770
 msgid "The drive cannot burn"
@@ -407,11 +413,11 @@ msgstr "Chan urrainn dhan draibh a losgadh"
 #: ../libbrasero-burn/brasero-burn.c:866
 #: ../libbrasero-burn/brasero-dest-selection.c:108
 msgid "Ongoing burning process"
-msgstr "Tha losgadh a' dol"
+msgstr "Tha losgadh a’ dol"
 
 #: ../libbrasero-burn/brasero-burn.c:983
 msgid "Ongoing checksumming operation"
-msgstr "Tha àireamh dearbhaidh 'ga chruthachadh"
+msgstr "Tha àireamh dearbhaidh ’ga chruthachadh"
 
 #: ../libbrasero-burn/brasero-burn.c:1623
 #: ../libbrasero-burn/brasero-burn.c:1817
@@ -509,141 +515,141 @@ msgstr "Cruthaich ìomhaigh"
 #: ../libbrasero-burn/brasero-burn-dialog.c:246
 #: ../libbrasero-burn/brasero-burn-dialog.c:1170
 msgid "Burning DVD"
-msgstr "A' losgadh DVD"
+msgstr "A’ losgadh DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:250
 #: ../libbrasero-burn/brasero-burn-dialog.c:1166
 msgid "Copying DVD"
-msgstr "A' dèanamh lethbhreac de DVD"
+msgstr "A’ dèanamh lethbhreac de DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:256
 #: ../libbrasero-burn/brasero-burn-dialog.c:1180
 msgid "Burning CD"
-msgstr "A' losgadh CD"
+msgstr "A’ losgadh CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:260
 #: ../libbrasero-burn/brasero-burn-dialog.c:381
 #: ../libbrasero-burn/brasero-burn-dialog.c:1176
 msgid "Copying CD"
-msgstr "A' dèanamh lethbhreac de CD"
+msgstr "A’ dèanamh lethbhreac de CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:266
 #: ../libbrasero-burn/brasero-burn-dialog.c:1190
 msgid "Burning Disc"
-msgstr "A' losgadh diosga"
+msgstr "A’ losgadh diosga"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:270
 #: ../libbrasero-burn/brasero-burn-dialog.c:1186
 msgid "Copying Disc"
-msgstr "A' dèanamh lethbhreac de dhiosga"
+msgstr "A’ dèanamh lethbhreac de dhiosga"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:300
 #: ../libbrasero-burn/burn-basics.c:78
 msgid "Creating image"
-msgstr "A' cruthachadh ìomhaigh"
+msgstr "A’ cruthachadh ìomhaigh"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:306
 msgid "Simulation of video DVD burning"
-msgstr "A' losgadh DVD video mas-fhìor"
+msgstr "A’ losgadh DVD video mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:308
 msgid "Burning video DVD"
-msgstr "A' losgadh DVD video"
+msgstr "A’ losgadh DVD video"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:316
 msgid "Simulation of data DVD burning"
-msgstr "A' losgadh DVD dàta mas-fhìor"
+msgstr "A’ losgadh DVD dàta mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:318
 msgid "Burning data DVD"
-msgstr "A' losgadh DVD dàta"
+msgstr "A’ losgadh DVD dàta"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:326
 msgid "Simulation of image to DVD burning"
-msgstr "A' losgadh ìomhaigh gu DVD mas-fhìor"
+msgstr "A’ losgadh ìomhaigh gu DVD mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:328
 msgid "Burning image to DVD"
-msgstr "A' losgadh ìomhaigh gu DVD"
+msgstr "A’ losgadh ìomhaigh gu DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:336
 msgid "Simulation of data DVD copying"
-msgstr "A' dèanamh lethbhreac de DVD mas-fhìor"
+msgstr "A’ dèanamh lethbhreac de DVD mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:338
 msgid "Copying data DVD"
-msgstr "A' dèanamh lethbhreac de DVD"
+msgstr "A’ dèanamh lethbhreac de DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:349
 msgid "Simulation of (S)VCD burning"
-msgstr "A' losgadh (S)VCD mas-fhìor"
+msgstr "A’ losgadh (S)VCD mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:351
 msgid "Burning (S)VCD"
-msgstr "A' losgadh (S)VCD"
+msgstr "A’ losgadh (S)VCD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:359
 #: ../libbrasero-burn/brasero-burn-dialog.c:412
 msgid "Simulation of audio CD burning"
-msgstr "A' losgadh CD fuaime mas-fhìor"
+msgstr "A’ losgadh CD fuaime mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:361
 #: ../libbrasero-burn/brasero-burn-dialog.c:414
 msgid "Burning audio CD"
-msgstr "A' losgadh CD fuaime"
+msgstr "A’ losgadh CD fuaime"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:369
 msgid "Simulation of data CD burning"
-msgstr "A' losgadh CD dàta mas-fhìor"
+msgstr "A’ losgadh CD dàta mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:371
 msgid "Burning data CD"
-msgstr "A' losgadh CD dàta"
+msgstr "A’ losgadh CD dàta"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:379
 msgid "Simulation of CD copying"
-msgstr "A' dèanamh lethbhreac de CD mas-fhìor"
+msgstr "A’ dèanamh lethbhreac de CD mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:389
 msgid "Simulation of image to CD burning"
-msgstr "A' losgadh ìomhaigh gu CD mas-fhìor"
+msgstr "A’ losgadh ìomhaigh gu CD mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:391
 msgid "Burning image to CD"
-msgstr "A' losgadh ìomhaigh gu CD"
+msgstr "A’ losgadh ìomhaigh gu CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:402
 msgid "Simulation of video disc burning"
-msgstr "A' losgadh diosga video mas-fhìor"
+msgstr "A’ losgadh diosga video mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:404
 msgid "Burning video disc"
-msgstr "A' losgadh diosga video"
+msgstr "A’ losgadh diosga video"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:422
 msgid "Simulation of data disc burning"
-msgstr "A' losgadh diosga dàta mas-fhìor"
+msgstr "A’ losgadh diosga dàta mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:424
 msgid "Burning data disc"
-msgstr "A' losgadh diosga dàta"
+msgstr "A’ losgadh diosga dàta"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:432
 msgid "Simulation of disc copying"
-msgstr "A' dèanamh lethbhreac de dhiosga mas-fhìor"
+msgstr "A’ dèanamh lethbhreac de dhiosga mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:434
 #: ../libbrasero-burn/burn-basics.c:82
 msgid "Copying disc"
-msgstr "A' dèanamh lethbhreac de dhiosga"
+msgstr "A’ dèanamh lethbhreac de dhiosga"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:442
 msgid "Simulation of image to disc burning"
-msgstr "A' losgadh ìomhaigh gu diosga mas-fhìor"
+msgstr "A’ losgadh ìomhaigh gu diosga mas-fhìor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:444
 msgid "Burning image to disc"
-msgstr "A' losgadh ìomhaigh gu diosga"
+msgstr "A’ losgadh ìomhaigh gu diosga"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:549
 msgid "Please replace the disc with a rewritable disc holding data."
@@ -744,15 +750,15 @@ msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a writable disc is inserted."
 msgstr ""
-"Chaidh ìomhaigh dhen diosga a chruthachadh air a' chlàr-chruaidh agad.\n"
-"Tòisichidh sinn leis an losgadh cho luath 's a chuireas tu a-steach diosga a "
+"Chaidh ìomhaigh dhen diosga a chruthachadh air a’ chlàr-chruaidh agad.\n"
+"Tòisichidh sinn leis an losgadh cho luath ’s a chuireas tu a-steach diosga a "
 "ghabhas sgrìobhadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:645
 msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr ""
 "Nì sinn deuchainn air an dàta ach a bheil e mar bu chòir gus nach eil cho "
-"luath 's a chuireas tu an diosga a-steach."
+"luath ’s a chuireas tu an diosga a-steach."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:646
 msgid "Please re-insert the disc in the CD/DVD burner."
@@ -762,42 +768,42 @@ msgstr "An cuir thu an diosga a-steach dhan loisgeadair CD/DVD a-rithist?"
 #: ../libbrasero-burn/brasero-burn-dialog.c:650
 #, c-format
 msgid "\"%s\" is busy."
-msgstr "Tha \"%s\" trang."
+msgstr "Tha “%s” trang."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:654
 #, c-format
 msgid "There is no disc in \"%s\"."
-msgstr "Chan eil diosga ann an \"%s\"."
+msgstr "Chan eil diosga ann an “%s”."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:658
 #, c-format
 msgid "The disc in \"%s\" is not supported."
-msgstr "Cha chuirear taic ris an diosga ann an \"%s\"."
+msgstr "Cha chuirear taic ris an diosga ann an “%s”."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:662
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
-msgstr "Cha ghabh an diosga ann an \"%s\" ath-sgrìobhadh."
+msgstr "Cha ghabh an diosga ann an “%s” ath-sgrìobhadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:666
 #, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr "Tha an diosga ann an \"%s\" falamh."
+msgstr "Tha an diosga ann an “%s” falamh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:670
 #, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr "Cha ghabh an diosga ann an \"%s\" sgrìobhadh."
+msgstr "Cha ghabh an diosga ann an “%s” sgrìobhadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:674
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
-msgstr "Cha eil rum gu leòr ri làimh air an diosga ann an \"%s\"."
+msgstr "Cha eil rum gu leòr ri làimh air an diosga ann an “%s”."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:682
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr "Tha an diosga ann an \"%s\" feumach air ath-luchdadh."
+msgstr "Tha an diosga ann an “%s” feumach air ath-luchdadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:683
 msgid "Please eject the disc and reload it."
@@ -808,13 +814,13 @@ msgstr "Gluais an diosga a-mach is ath-luchdaich e."
 msgid ""
 "A file could not be created at the location specified for temporary files"
 msgstr ""
-"Cha b' urrainn dhuinn faidhle a chruthachadh air an ionad a chaidh a "
+"Cha b’ urrainn dhuinn faidhle a chruthachadh air an ionad a chaidh a "
 "shònrachadh airson faidhlichean sealach."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:729
 msgid "The image could not be created at the specified location"
 msgstr ""
-"Cha b' urrainn dhuinn an ìomhaigh a chruthachadh air an ionad a chaidh a "
+"Cha b’ urrainn dhuinn an ìomhaigh a chruthachadh air an ionad a chaidh a "
 "shònrachadh"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:730
@@ -822,14 +828,14 @@ msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
 msgstr ""
-"A bheil thu airson ionad eile a shònrachadh airson an t-seisein seo no am b' "
+"A bheil thu airson ionad eile a shònrachadh airson an t-seisein seo no am b’ "
 "fhearr leat feuchainn a-rithist leis an ionad làithreach?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:742
 msgid "You may want to free some space on the disc and retry"
 msgstr ""
-"Dh'fhaoidte gum bu chòir dhut rum a shaoradh air an diosga is feuchainn a-"
-"rithist"
+"Dh’fhaoidte gum bu chòir dhut rum a shaoradh air an diosga is feuchainn "
+"a-rithist"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:749
 #: ../libbrasero-burn/brasero-drive-properties.c:244
@@ -858,7 +864,7 @@ msgstr "Ionad nam faidhlichean sealach"
 #: ../libbrasero-burn/brasero-burn-dialog.c:889
 #: ../libbrasero-burn/brasero-burn-dialog.c:1135
 msgid "_Replace Disc"
-msgstr "Cui_r diosga 'na àite"
+msgstr "Cui_r diosga ’na àite"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:930
 msgid "Do you really want to blank the current disc?"
@@ -878,8 +884,8 @@ msgid ""
 "If you import them you will be able to see and use them once the current "
 "selection of files is burned."
 msgstr ""
-"Ma dh'ion-phortaicheas tu iad, 's urrainn dhut am faicinn is cleachdadh "
-"nuair a bhios an taghadh làithreach dhe dh'fhaidhlichean air a losgadh."
+"Ma dh’ion-phortaicheas tu iad, ’s urrainn dhut am faicinn is cleachdadh "
+"nuair a bhios an taghadh làithreach dhe dh’fhaidhlichean air a losgadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:948
 msgid "If you don't, they will be invisible (though still readable)."
@@ -905,7 +911,7 @@ msgid ""
 "CD-RW audio discs may not play correctly in older CD players and CD-Text "
 "won't be written."
 msgstr ""
-"Dh'fhaoidte nach tèid diosgan CD-RW fuaime a chluich mar bu chòir le seann "
+"Dh’fhaoidte nach tèid diosgan CD-RW fuaime a chluich mar bu chòir le seann "
 "chluicheadairean CD is cha tèid CD-Text a sgrìobhadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:968
@@ -926,7 +932,7 @@ msgstr "_Lean air adhart"
 #: ../libbrasero-burn/brasero-burn-dialog.c:989
 msgid "CD-RW audio discs may not play correctly in older CD players."
 msgstr ""
-"Dh'fhaoidte nach tèid diosgan CD-RW fuaime a chluich mar bu chòir le seann "
+"Dh’fhaoidte nach tèid diosgan CD-RW fuaime a chluich mar bu chòir le seann "
 "chluicheadairean CD."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:993
@@ -939,29 +945,29 @@ msgstr ""
 #: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Please eject the disc from \"%s\" manually."
-msgstr "An gluais thu an dioga a-mach à \"%s\" a làimh?"
+msgstr "An gluais thu an dioga a-mach à “%s” a làimh?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1046
 msgid ""
 "The disc could not be ejected though it needs to be removed for the current "
 "operation to continue."
 msgstr ""
-"Cha b' urrainn dhuinn an diosga a ghluasad a-mach ach feumar a thoirt air "
+"Cha b’ urrainn dhuinn an diosga a ghluasad a-mach ach feumar a thoirt air "
 "falbh mus urrainn dhan obrachadh làithreach a leantainn air adhart"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1133
 msgid "Do you want to replace the disc and continue?"
-msgstr "A bheil thu airson diosga a chur 'na àite is leantainn air adhart?"
+msgstr "A bheil thu airson diosga a chur ’na àite is leantainn air adhart?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1134
 msgid "The currently inserted disc could not be blanked."
 msgstr ""
-"Cha b' urrainn dhuinn an diosga a tha san draibh an-dràsta a bhànachadh."
+"Cha b’ urrainn dhuinn an diosga a tha san draibh an-dràsta a bhànachadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1143
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr ""
-"A bheil thu airson leantainn air adhart leis a' chò-chòrdalachd shlàn ri "
+"A bheil thu airson leantainn air adhart leis a’ chò-chòrdalachd shlàn ri "
 "Windows air a chur à comas?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1144
@@ -984,7 +990,7 @@ msgstr "Shoirbhich leis an losgadh mas-fhìor."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1368
 msgid "Real disc burning will take place in 10 seconds."
-msgstr "Tòisichidh sinn a' losgadh an diosga dha-rìribh an ceann 10 diogan."
+msgstr "Tòisichidh sinn a’ losgadh an diosga dha-rìribh an ceann 10 diogan."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1371
 msgid "Burn _Now"
@@ -1009,15 +1015,15 @@ msgstr "_Sàbhail loga"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "Video DVD successfully burned"
-msgstr "Shoirbhich le losgadh a' DVD video"
+msgstr "Shoirbhich le losgadh a’ DVD video"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1788
 msgid "(S)VCD successfully burned"
-msgstr "Shoirbhich le losgadh a' (S)VCD"
+msgstr "Shoirbhich le losgadh a’ (S)VCD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1791
 msgid "Audio CD successfully burned"
-msgstr "Shoirbhich le losgadh a' CD fuaime"
+msgstr "Shoirbhich le losgadh a’ CD fuaime"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1793
 #: ../libbrasero-burn/brasero-burn-dialog.c:1824
@@ -1034,11 +1040,11 @@ msgstr "Chaidh lethbhreac dhen CD a dhèanamh gu soirbheachail"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1804
 msgid "Image of DVD successfully created"
-msgstr "Shoirbhich le cruthachadh ìomhaigh a' DVD"
+msgstr "Shoirbhich le cruthachadh ìomhaigh a’ DVD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1806
 msgid "Image of CD successfully created"
-msgstr "Shoirbhich le cruthachadh ìomhaigh a' CD"
+msgstr "Shoirbhich le cruthachadh ìomhaigh a’ CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1812
 msgid "Image successfully burned to DVD"
@@ -1050,11 +1056,11 @@ msgstr "Shoirbhich le losgadh na h-ìomhaighe gun CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1820
 msgid "Data DVD successfully burned"
-msgstr "Shoirbhich le losgadh a' DVD dàta"
+msgstr "Shoirbhich le losgadh a’ DVD dàta"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1822
 msgid "Data CD successfully burned"
-msgstr "Shoirbhich le losgadh a' CD dàta"
+msgstr "Shoirbhich le losgadh a’ CD dàta"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1881
 #, c-format
@@ -1066,9 +1072,9 @@ msgid ""
 "Another copy will start as soon as you insert a new writable disc. If you do "
 "not want to burn another copy, press \"Cancel\"."
 msgstr ""
-"Tòisichidh sinn air lethbhreac eile a dhèanamh cho luath 's a chuireas tu "
-"diosga ùr a ghabhas sgrìobhadh a-steach. Briog air \"Sguir dheth\" mur eil "
-"thu airson lethbhreac eile a losgadh."
+"Tòisichidh sinn air lethbhreac eile a dhèanamh cho luath ’s a chuireas tu "
+"diosga ùr a ghabhas sgrìobhadh a-steach. Briog air “Sguir dheth” mur eil thu "
+"airson lethbhreac eile a losgadh."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1963
 msgid "Make _More Copies"
@@ -1099,7 +1105,7 @@ msgstr "A bheil thu cinnteach gu bheil thu airson fàgail?"
 #: ../libbrasero-burn/brasero-tool-dialog.c:417
 msgid "Interrupting the process may make disc unusable."
 msgstr ""
-"Dh'fhaoidte nach gabh an diosga cleachdadh ma sguireas tu dhen phròiseas."
+"Dh’fhaoidte nach gabh an diosga cleachdadh ma sguireas tu dhen phròiseas."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2458
 msgid "C_ontinue Burning"
@@ -1107,7 +1113,7 @@ msgstr "Lean air adhart leis an l_osgadh"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2465
 msgid "_Cancel Burning"
-msgstr "_Sguir dhen  losgadh"
+msgstr "_Sguir dhen losgadh"
 
 #: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1020
 msgid ""
@@ -1142,14 +1148,14 @@ msgstr "Loisg _iomadh lethbhreac"
 #: ../libbrasero-burn/brasero-burn-options.c:433 ../src/brasero-project.c:949
 msgid "Would you like to burn the selection of files across several media?"
 msgstr ""
-"A bheil thu airson an taghadh de dh'fhaidhlichean a losgadh thar iomadh "
+"A bheil thu airson an taghadh de dh’fhaidhlichean a losgadh thar iomadh "
 "meadhain?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:434
 #: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
-"Tha cus dàta ann airson an diosga fiù 's leis an roghainn losgaidh "
+"Tha cus dàta ann airson an diosga fiù ’s leis an roghainn losgaidh "
 "anabarraich."
 
 #: ../libbrasero-burn/brasero-burn-options.c:439 ../src/brasero-project.c:954
@@ -1158,7 +1164,7 @@ msgstr "_Loisg iomadh diosg"
 
 #: ../libbrasero-burn/brasero-burn-options.c:441 ../src/brasero-project.c:956
 msgid "Burn the selection of files across several media"
-msgstr "Loisg an taghadh dhe dh'fhaoidhlichean thar iomadh meadhain"
+msgstr "Loisg an taghadh dhe dh’fhaoidhlichean thar iomadh meadhain"
 
 #: ../libbrasero-burn/brasero-burn-options.c:450 ../src/brasero-project.c:965
 msgid "Please choose another CD or DVD or insert a new one."
@@ -1227,7 +1233,7 @@ msgstr "An tagh thu ìomhaigh diosga eile?"
 #: ../libbrasero-burn/brasero-burn-options.c:523
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr ""
-"Chan e faidhle ìomhaigh diosga no faidhle cue dligheach a th' ann a-rèir "
+"Chan e faidhle ìomhaigh diosga no faidhle cue dligheach a th’ ann a-rèir "
 "coltais."
 
 #: ../libbrasero-burn/brasero-burn-options.c:532
@@ -1259,11 +1265,11 @@ msgid ""
 msgstr ""
 "Mur tèid seo a dhèanamh, bidh cus dàta ann airson an diosga is feumaidh tu "
 "faidhlichean a thoirt far na thagh thu.\n"
-"Dh'fhaoidte gu bheil thu airson an roghainne seo a chleachdadh ma tha thu a' "
-"cleachdadh CD-R(W) le 90 no 100 mionaid nach urrainn dhuinn aithneachadh mar "
-"bu chòir 's tu feumach air an roghainn losgaidh anabarraich air an adhbhar "
-"seo.\n"
-"AN AIRE: Dh'fhaoidte gun adhbharaich an roghainn seo fàilligeadh."
+"Dh’fhaoidte gu bheil thu airson an roghainne seo a chleachdadh ma tha thu a’ "
+"cleachdadh CD-R(W) le 90 no 100 mionaid nach urrainn dhuinn aithneachadh "
+"mar bu chòir ’s tu feumach air an roghainn losgaidh anabarraich air an "
+"adhbhar seo.\n"
+"AN AIRE: Dh’fhaoidte gun adhbharaich an roghainn seo fàilligeadh."
 
 #: ../libbrasero-burn/brasero-burn-options.c:557 ../src/brasero-project.c:983
 msgid "_Overburn"
@@ -1277,7 +1283,7 @@ msgstr "Loisg barrachd na chaidh aithris de rum air an diosga"
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
 msgstr ""
-"Thèid an draibh sa bheil an diosga tùsail a chleachdadh airson a' chlàraidh "
+"Thèid an draibh sa bheil an diosga tùsail a chleachdadh airson a’ chlàraidh "
 "cuideachd."
 
 #: ../libbrasero-burn/brasero-burn-options.c:570
@@ -1308,7 +1314,7 @@ msgid ""
 "image file inside?"
 msgstr ""
 "A bheil thu airson diosga a chruthachadh o shusbaint na h-ìomhaighe no le "
-"faidhle na h-ìomhaighe 'na bhroinn?"
+"faidhle na h-ìomhaighe ’na bhroinn?"
 
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:804
@@ -1317,7 +1323,7 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
 msgstr ""
-"Cha deach ach aon fhaidhle (\"%s\") a thaghadh. Seo ìomhaigh diosga is "
+"Cha deach ach aon fhaidhle (“%s”) a thaghadh. Seo ìomhaigh diosga is "
 "gabhaidh a shusbaint a losgadh."
 
 #: ../libbrasero-burn/brasero-burn-options.c:809
@@ -1372,7 +1378,7 @@ msgstr "le %s"
 #: ../libbrasero-burn/brasero-data-vfs.c:218
 #, c-format
 msgid "\"%s\" cannot be read"
-msgstr "Cha ghabh \"%s\" a leughadh"
+msgstr "Cha ghabh “%s” a leughadh"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
@@ -1394,7 +1400,7 @@ msgstr "Ìomhaigh DVD video"
 #: ../libbrasero-burn/brasero-dest-selection.c:623
 #, c-format
 msgid "%s: \"%s\""
-msgstr "%s: \"%s\""
+msgstr "%s: “%s”"
 
 #. Translators: this string is only used when the user
 #. * wants to copy a disc using the same destination and
@@ -1451,7 +1457,7 @@ msgid ""
 msgstr ""
 "Cha chuir an siostam-fhaidhlichean air an draibh seo taic ri faidhlichean "
 "mòra (nas motha na 2 GiB).\n"
-"Faodaidh seo a bhith 'na dhuilgheadas nuair a thèid DVDan no ìomhaighean "
+"Faodaidh seo a bhith ’na dhuilgheadas nuair a thèid DVDan no ìomhaighean "
 "mòra a sgrìobhadh."
 
 #. Translators %s.1f is the speed used to burn
@@ -1509,7 +1515,7 @@ msgstr "Cleachd burn_proof (ìslich cunnart an fhàilligidh)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:728
 msgid "Burn the image directly _without saving it to disc"
-msgstr "Loisg an ìomhaigh gu _dìreach gun a bhith 'ga shàbhaladh air an diosga"
+msgstr "Loisg an ìomhaigh gu _dìreach gun a bhith ’ga shàbhaladh air an diosga"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:730
 msgid "Leave the disc _open to add other files later"
@@ -1599,7 +1605,7 @@ msgid ""
 "If you choose to keep it, programs may not be able to recognize the file "
 "type properly."
 msgstr ""
-"Ma chumas tu e, dh'fhaoidte nach aithnich prògraman seòrsa an fhaidhle mar "
+"Ma chumas tu e, dh’fhaoidte nach aithnich prògraman seòrsa an fhaidhle mar "
 "bu chòir."
 
 #: ../libbrasero-burn/brasero-medium-properties.c:142
@@ -1612,7 +1618,7 @@ msgstr "Atharraich an _leudachan"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:234
 msgid "Configure recording options"
-msgstr "Rèitich roghainnean a' chlàraidh"
+msgstr "Rèitich roghainnean a’ chlàraidh"
 
 #. Translators: first %02i is hours, the second one is minutes and the
 #. * third one is seconds.
@@ -1645,20 +1651,20 @@ msgstr "Tuairmse air luaths an draibh:"
 #: ../libbrasero-burn/brasero-src-image.c:229
 #, c-format
 msgid "\"%s\": loading"
-msgstr "\"%s\": 'ga luchdadh"
+msgstr "“%s”: ’ga luchdadh"
 
 #. Translators: %s is a path and image refers to a disc image
 #: ../libbrasero-burn/brasero-src-image.c:236
 #, c-format
 msgid "\"%s\": unknown disc image type"
-msgstr "\"%s\": seòrsa ìomhaighe diosga neo-aithnichte"
+msgstr "“%s”: seòrsa ìomhaighe diosga neo-aithnichte"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
 #: ../libbrasero-burn/brasero-src-image.c:258
 #, c-format
 msgid "\"%s\": %s"
-msgstr "\"%s\": %s"
+msgstr "“%s”: %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label too small.
@@ -1691,14 +1697,13 @@ msgstr "Seòrsa na h-ìomhaighe:"
 #: ../libbrasero-burn/brasero-status-dialog.c:147
 #, c-format
 msgid "Estimated size: %s"
-msgstr "Tuairmse air a' mheud: %s"
+msgstr "Tuairmse air a’ mheud: %s"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:209
 #: ../src/brasero-data-disc.c:870
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
-msgstr ""
-"A bheil thu cinnteach gu bheil thu airson \"%s\" a chur ris an taghadh?"
+msgstr "A bheil thu cinnteach gu bheil thu airson “%s” a chur ris an taghadh?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:228
 #: ../src/brasero-data-disc.c:879
@@ -1708,9 +1713,9 @@ msgid ""
 "disc may not be readable on all operating systems.\n"
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
-"Bidh 7 pasganan pàraint aig clann a' phasgain seo.\n"
-"'S urrainn do Brasero ìomhaigh de rangachd fhaidhlichean mar sin a "
-"chruthachadh is a losgadh ach dh'fhaoidte nach gabh an diosga a leughadh "
+"Bidh 7 pasganan pàraint aig clann a’ phasgain seo.\n"
+"’S urrainn do Brasero ìomhaigh de rangachd fhaidhlichean mar sin a "
+"chruthachadh is a losgadh ach dh’fhaoidte nach gabh an diosga a leughadh "
 "leis a h-uile siostam-obrachaidh.\n"
 "An aire: Obraichidh rangachd dhen leithid air Linux."
 
@@ -1733,8 +1738,9 @@ msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of the ISO9660 standard to support it?"
 msgstr ""
-"A bheil thu cinnteach gu bheil thu airson \"%s\" a chur ris an taghadh is an "
-"treas tionndadh dhen bhun-tomhas ISO9660 a chleachdadh gus taic a thoirt ris?"
+"A bheil thu cinnteach gu bheil thu airson “%s” a chur ris an taghadh is an "
+"treas tionndadh dhen bhun-tomhas ISO9660 a chleachdadh gus taic a thoirt "
+"ris?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:290
 #: ../src/brasero-data-disc.c:835
@@ -1748,11 +1754,11 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"Tha meud an fhaidhle nas motha na 2 GiB. Cha toir a' chiad no an dàrna "
+"Tha meud an fhaidhle nas motha na 2 GiB. Cha toir a’ chiad no an dàrna "
 "tionndadh dhen bhun-tomhas ISO9660 (seo an fheadhainn as cumanta) taic ri "
 "faidhlichean nas motha na 2 GiB.\n"
 "Mholamaid gun cleachd thu an treas tionndadh dhen bhun-tomhas ISO9660 on a "
-"bheir a' mhòrchuid dhe siostaman-obrachaidh taic ris, a' gabhail a-steach "
+"bheir a’ mhòrchuid dhe siostaman-obrachaidh taic ris, a’ gabhail a-steach "
 "Linux is a h-uile tionndadh de Windows.\n"
 "Co-dhiù, chan urrainn dha Mac OS X ìomhaighean a leughadh a chaidh a "
 "chruthachadh leis an treas tionndadh dhen bhun-tomhas ISO9660."
@@ -1761,19 +1767,19 @@ msgstr ""
 #: ../src/brasero-data-disc.c:729
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr ""
-"A bheil thu airson 's gun tèid ainmean ùra a thoirt air na faidhlichean ach "
+"A bheil thu airson ’s gun tèid ainmean ùra a thoirt air na faidhlichean ach "
 "am bi iad co-chòrdail ri Windows gu slàn?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:341
 #: ../src/brasero-data-disc.c:735
 msgid "Those names should be changed and truncated to 64 characters."
 msgstr ""
-"B' fheairrde na h-ainmean seo atharrachadh is giorrachadh gu 64 caractar."
+"B’ fheairrde na h-ainmean seo atharrachadh is giorrachadh gu 64 caractar."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:346
 #: ../src/brasero-data-disc.c:738
 msgid "_Disable Full Windows Compatibility"
-msgstr "Cuir a' cho-chòr_dalachd Windows shlàn à comas"
+msgstr "Cuir a’ cho-chòr_dalachd Windows shlàn à comas"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:349
 #: ../src/brasero-data-disc.c:737
@@ -1782,11 +1788,11 @@ msgstr "Thoi_r ainmean ùr orra airson co-chòrdalachd Windows slàin"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:566
 msgid "Size Estimation"
-msgstr "Tuairmse air a' mheud"
+msgstr "Tuairmse air a’ mheud"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:568
 msgid "Please wait until the estimation of the size is completed."
-msgstr "Fuirich ort gus am bi an tuairmse air a' mheud coileanta."
+msgstr "Fuirich ort gus am bi an tuairmse air a’ mheud coileanta."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:569
 msgid "All files need to be analysed to complete this operation."
@@ -1803,7 +1809,7 @@ msgstr "Dearbhaich _a-rithist"
 #: ../libbrasero-burn/brasero-sum-dialog.c:514
 msgid "The file integrity check could not be performed."
 msgstr ""
-"Cha b' urrainn dhuinn dearbhadh co-dhiù a bheil na faidhlichean mar bu chòir "
+"Cha b’ urrainn dhuinn dearbhadh co-dhiù a bheil na faidhlichean mar bu chòir "
 "gus nach eil."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:166 ../src/brasero-data-disc.c:214
@@ -1830,12 +1836,12 @@ msgstr "Faidhlichean coirbte"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:342
 msgid "Downloading MD5 file"
-msgstr "A' luchdadh a-nuas faidhle MD5"
+msgstr "A’ luchdadh a-nuas faidhle MD5"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:397
 #, c-format
 msgid "\"%s\" is not a valid URI"
-msgstr "Chan e URI dligheach th' ann an \"%s\""
+msgstr "Chan e URI dligheach th’ ann an “%s”"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:515
 msgid "No MD5 file was given."
@@ -1860,7 +1866,7 @@ msgstr "_Sgrùd"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:752
 msgid "Disc Checking"
-msgstr "A' sgrùdadh diosga"
+msgstr "A’ sgrùdadh diosga"
 
 #: ../libbrasero-burn/brasero-tool-dialog.c:78
 #: ../libbrasero-burn/brasero-tool-dialog.c:92
@@ -1898,7 +1904,7 @@ msgstr "Adhartas"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:793
 #: ../src/brasero-playlist.c:536 ../src/brasero-video-tree-model.c:342
 msgid "(loading…)"
-msgstr "('ga luchdadh…)"
+msgstr "(’ga luchdadh…)"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:619
 #: ../libbrasero-burn/brasero-track-data-cfg.c:799
@@ -1932,27 +1938,27 @@ msgstr "Pasgan ùr %i"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2406
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2416
 msgid "Analysing files"
-msgstr "A' sgrùdadh nam faidhlichean"
+msgstr "A’ sgrùdadh nam faidhlichean"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2552
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
-msgstr "'S e ceangal samhlachail ath-chùrsach th' ann an \"%s\"."
+msgstr "’S e ceangal samhlachail ath-chùrsach th’ ann an “%s”."
 
 #. Translators: %s is the path of a drive
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2578 ../src/brasero-cli.c:218
 #, c-format
 msgid "\"%s\" cannot be found."
-msgstr "Cha deach \"%s\" a lorg."
+msgstr "Cha deach “%s” a lorg."
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:451
 msgid "Retrieving image format and size"
-msgstr "A' faighinn fòrmat is meud na h-ìomhaighe"
+msgstr "A’ faighinn fòrmat is meud na h-ìomhaighe"
 
 #. Translators: This is a disc image
 #: ../libbrasero-burn/brasero-track-image-cfg.c:471
 msgid "The format of the disc image could not be identified"
-msgstr "Cha b' urrainn dhuinn am fòrmat aig an ìomhaigh diosga aithneachadh"
+msgstr "Cha b’ urrainn dhuinn am fòrmat aig an ìomhaigh diosga aithneachadh"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:472
 msgid "Please set it manually"
@@ -1962,7 +1968,7 @@ msgstr "An suidhich thu a làimh e?"
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:90
 #, c-format
 msgid "\"%s\" was removed from the file system."
-msgstr "Chaidh \"%s\" a thoirt air falbh on t-siostam-fhaidhlichean."
+msgstr "Chaidh “%s” a thoirt air falbh on t-siostam-fhaidhlichean."
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:129
 #: ../src/brasero-audio-disc.c:754 ../src/brasero-video-disc.c:365
@@ -1980,15 +1986,15 @@ msgstr "Cha ghabh liostaichean-cluiche a chur ri diosga video no fuaime"
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:174
 #, c-format
 msgid "\"%s\" is not suitable for audio or video media"
-msgstr "Chan eil \"%s\" freagarrach airson meadhanan fuaime no video"
+msgstr "Chan eil “%s” freagarrach airson meadhanan fuaime no video"
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
-msgstr "A' sgrùdadh nam faidhlichean video"
+msgstr "A’ sgrùdadh nam faidhlichean video"
 
 #: ../libbrasero-burn/brasero-video-options.c:447
 msgid "Video format:"
-msgstr "Fòrmat a' video:"
+msgstr "Fòrmat a’ video:"
 
 #: ../libbrasero-burn/brasero-video-options.c:458
 msgid "_NTSC"
@@ -2025,7 +2031,7 @@ msgstr "_16:9"
 #. Video options for (S)VCD
 #: ../libbrasero-burn/brasero-video-options.c:545
 msgid "VCD type:"
-msgstr "Seòrsa a' VCD:"
+msgstr "Seòrsa a’ VCD:"
 
 #: ../libbrasero-burn/brasero-video-options.c:558
 msgid "Create an SVCD"
@@ -2038,35 +2044,35 @@ msgstr "Cruthaich VCD"
 #: ../libbrasero-burn/brasero-xfer.c:130 ../libbrasero-burn/brasero-xfer.c:266
 #, c-format
 msgid "Directory could not be created (%s)"
-msgstr "Cha b' urrainn dhuinn am pasgan a chruthachadh (%s)"
+msgstr "Cha b’ urrainn dhuinn am pasgan a chruthachadh (%s)"
 
 #: ../libbrasero-burn/burn-basics.c:77
 msgid "Getting size"
-msgstr "A' faighainn am meud"
+msgstr "A’ faighainn am meud"
 
 #: ../libbrasero-burn/burn-basics.c:79
 msgid "Writing"
-msgstr "'Ga sgrìobhadh"
+msgstr "’Ga sgrìobhadh"
 
 #: ../libbrasero-burn/burn-basics.c:80
 msgid "Blanking"
-msgstr "'Ga bhànachadh"
+msgstr "’Ga bhànachadh"
 
 #: ../libbrasero-burn/burn-basics.c:81
 msgid "Creating checksum"
-msgstr "A' sgrùdadh na h-àireimh-dearbhaidh"
+msgstr "A’ sgrùdadh na h-àireimh-dearbhaidh"
 
 #: ../libbrasero-burn/burn-basics.c:83
 msgid "Copying file"
-msgstr "A' dèanamh lethbhreac dhen fhaidhle"
+msgstr "A’ dèanamh lethbhreac dhen fhaidhle"
 
 #: ../libbrasero-burn/burn-basics.c:84
 msgid "Analysing audio files"
-msgstr "A' sgrùdadh nam faidhlichean fuaime"
+msgstr "A’ sgrùdadh nam faidhlichean fuaime"
 
 #: ../libbrasero-burn/burn-basics.c:85
 msgid "Transcoding song"
-msgstr "A' tar-chòdachadh òran"
+msgstr "A’ tar-chòdachadh òran"
 
 #: ../libbrasero-burn/burn-basics.c:86
 msgid "Preparing to write"
@@ -2074,23 +2080,23 @@ msgstr "Ag ullachadh airson sgrìobhadh"
 
 #: ../libbrasero-burn/burn-basics.c:87
 msgid "Writing leadin"
-msgstr "A' sgrìobhadh an leadin"
+msgstr "A’ sgrìobhadh an leadin"
 
 #: ../libbrasero-burn/burn-basics.c:88
 msgid "Writing CD-Text information"
-msgstr "A' sgrìobhadh fiosrachadh CD-Text"
+msgstr "A’ sgrìobhadh fiosrachadh CD-Text"
 
 #: ../libbrasero-burn/burn-basics.c:89
 msgid "Finalizing"
-msgstr "'Ga chrìochnachadh"
+msgstr "’Ga chrìochnachadh"
 
 #: ../libbrasero-burn/burn-basics.c:90
 msgid "Writing leadout"
-msgstr "A' sgrìobhadh an leadout"
+msgstr "A’ sgrìobhadh an leadout"
 
 #: ../libbrasero-burn/burn-basics.c:91
 msgid "Starting to record"
-msgstr "A' tòiseachadh air a' chlàradh"
+msgstr "A’ tòiseachadh air a’ chlàradh"
 
 #: ../libbrasero-burn/burn-basics.c:92
 msgid "Success"
@@ -2098,7 +2104,7 @@ msgstr "Soirbheas"
 
 #: ../libbrasero-burn/burn-basics.c:93
 msgid "Ejecting medium"
-msgstr "A' gluasad am meadhan a-mach"
+msgstr "A’ gluasad am meadhan a-mach"
 
 #: ../libbrasero-burn/burn-debug.c:54
 msgid "Display debug statements on stdout for Brasero burn library"
@@ -2119,7 +2125,7 @@ msgstr "Seall na roghainnean airson leabhar-lann losgaidh Brasero"
 #: ../libbrasero-burn/burn-job.c:1119
 #, c-format
 msgid "\"%s\" did not behave properly"
-msgstr "Cha robh an giùlan aig \"%s\" mar bu chòir"
+msgstr "Cha robh an giùlan aig “%s” mar bu chòir"
 
 #. Translators: the first %s is the size of the free space on the medium
 #. * and the second %s is the size of the space required by the data to be
@@ -2136,7 +2142,7 @@ msgid ""
 "with a size over 2 GiB"
 msgstr ""
 "Chan chuir an siostam-fhaidhlichean taic ri faidhlichean nas motha na 2 GiB "
-"'s tu air a thaghadh gus an ìomhaigh shealach a chumail"
+"’s tu air a thaghadh gus an ìomhaigh shealach a chumail"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
@@ -2147,10 +2153,10 @@ msgstr ""
 "Chan eil rum saor gu leòr gus an ìomhaigh diosga a chur san ionad a thagh "
 "thu airson na h-ìomhaighe sealaich a chumail (feum air %ld MiB)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
-msgstr "Cha b' urrainn dhuinn meud an draibh fhaighinn"
+msgstr "Cha b’ urrainn dhuinn meud an draibh fhaighinn"
 
 #: ../libbrasero-burn/burn-job.c:627
 #, c-format
@@ -2183,35 +2189,35 @@ msgstr "Tha am pasgan VIDEO_TS a dhith no mì-dhligheach"
 #: ../libbrasero-burn/burn-plugin.c:647
 #, c-format
 msgid "\"%s\" could not be found in the path"
-msgstr "Cha deach \"%s\" a lorg san t-slighe"
+msgstr "Cha deach “%s” a lorg san t-slighe"
 
 #: ../libbrasero-burn/burn-plugin.c:651
 #, c-format
 msgid "\"%s\" GStreamer plugin could not be found"
-msgstr "Cha deach am plugan GStreamer \"%s\" a lorg"
+msgstr "Cha deach am plugan GStreamer “%s” a lorg"
 
 #: ../libbrasero-burn/burn-plugin.c:655 ../libbrasero-burn/burn-plugin.c:667
 #, c-format
 msgid "The version of \"%s\" is too old"
-msgstr "Tha an tionndadh de \"%s\" ro shean"
+msgstr "Tha an tionndadh de “%s” ro shean"
 
 #: ../libbrasero-burn/burn-plugin.c:659
 #, c-format
 msgid "\"%s\" is a symbolic link pointing to another program"
-msgstr "'S e ceangal samhlachail a th' ann an \"%s\" thomhas ri prògram eile"
+msgstr "’S e ceangal samhlachail a th’ ann an “%s” thomhas ri prògram eile"
 
 #. Translators: %s is a filename
 #: ../libbrasero-burn/burn-plugin.c:663 ../plugins/cdrdao/burn-cdrdao.c:211
 #: ../plugins/growisofs/burn-growisofs.c:509
 #, c-format
 msgid "\"%s\" could not be found"
-msgstr "Cha deach \"%s\" a lorg"
+msgstr "Cha deach “%s” a lorg"
 
 #. Translators: %s is the name of the brasero element
 #: ../libbrasero-burn/burn-process.c:259
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
-msgstr "Chrìochnaich am pròiseas \"%s\" le còd mearachd (%i)"
+msgstr "Chrìochnaich am pròiseas “%s” le còd mearachd (%i)"
 
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
@@ -2360,7 +2366,7 @@ msgstr "%s: %s"
 
 #: ../libbrasero-media/brasero-medium-selection.c:451
 msgid "Searching for available discs"
-msgstr "A' lorg airson diosgan ri làimh"
+msgstr "A’ lorg airson diosgan ri làimh"
 
 #: ../libbrasero-media/brasero-medium-selection.c:460
 msgid "No disc available"
@@ -2414,7 +2420,7 @@ msgstr "%s:%s mion"
 #: ../libbrasero-media/brasero-volume.c:186
 #, c-format
 msgid "The disc mount point could not be retrieved"
-msgstr "Cha deach a' phuing-mhunntachaidh aig an diosga fhaighinn"
+msgstr "Cha deach a’ phuing-mhunntachaidh aig an diosga fhaighinn"
 
 #. NOTE for translators: the first %s is the disc type and Blank is an adjective.
 #: ../libbrasero-media/brasero-volume.c:409
@@ -2454,7 +2460,7 @@ msgstr "Diosga dàta (%s)"
 #: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
-msgstr "Chan e ìomhaigh ISO dhligheach a th' ann a-rèir coltais"
+msgstr "Chan e ìomhaigh ISO dhligheach a th’ ann a-rèir coltais"
 
 #: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project-name.c:84
 msgid "Unknown error"
@@ -2494,7 +2500,7 @@ msgstr "Raon mì-dhligheach ann an àithne"
 
 #: ../libbrasero-media/scsi-error.c:53
 msgid "The device timed out"
-msgstr "Dh'fhalbh an ùine air an uidheam"
+msgstr "Dh’fhalbh an ùine air an uidheam"
 
 #: ../libbrasero-media/scsi-error.c:54
 msgid "Key not established"
@@ -2574,7 +2580,7 @@ msgstr "Sgèilichte"
 
 #: ../libbrasero-utils/brasero-jacket-background.c:384
 msgid "Background Properties"
-msgstr "Roghainnean a' chùlaibh"
+msgstr "Roghainnean a’ chùlaibh"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:534
 msgid "Print"
@@ -2582,11 +2588,11 @@ msgstr "Clò-bhuail"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:546
 msgid "Bac_kground Properties"
-msgstr "Roghainnean a' _chùlaibh"
+msgstr "Roghainnean a’ _chùlaibh"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:549
 msgid "Background properties"
-msgstr "Roghainnean a' chùlaibh"
+msgstr "Roghainnean a’ chùlaibh"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:564
 msgid "Align right"
@@ -2614,7 +2620,7 @@ msgstr "Clò trom"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:644
 msgid "Font family and size"
-msgstr "Teaghlach is meud a' chruth-chlò"
+msgstr "Teaghlach is meud a’ chruth-chlò"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "_Text Color"
@@ -2630,7 +2636,7 @@ msgstr "Deasaiche chòmhdaichean"
 
 #: ../libbrasero-utils/brasero-jacket-view.c:766
 msgid "Set Bac_kground Properties"
-msgstr "Suidhich roghainnean a' _chùlaibh"
+msgstr "Suidhich roghainnean a’ _chùlaibh"
 
 #: ../libbrasero-utils/brasero-jacket-view.c:807
 msgid "SIDES"
@@ -2638,7 +2644,7 @@ msgstr "TAOBHAN"
 
 #: ../libbrasero-utils/brasero-jacket-view.c:823
 msgid "BACK COVER"
-msgstr "CÒMHDACH A' CHÙIL"
+msgstr "CÒMHDACH A’ CHÙIL"
 
 #: ../libbrasero-utils/brasero-jacket-view.c:841
 msgid "FRONT COVER"
@@ -2648,12 +2654,12 @@ msgstr "CÒMHDACH NA H-AGHAIDH"
 #. * a picture, not a "Disc Image"
 #: ../libbrasero-utils/brasero-jacket-view.c:1021
 msgid "The image could not be loaded."
-msgstr "Cha b' urrainn dhuinn an dealbh a luchdadh"
+msgstr "Cha b’ urrainn dhuinn an dealbh a luchdadh"
 
 #: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
-msgstr "Cha b' urrainn do GStreamer \"%s\" a làimhseachadh."
+msgstr "Cha b’ urrainn do GStreamer “%s” a làimhseachadh."
 
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
@@ -2697,7 +2703,7 @@ msgstr "Cha b' urrainn do GStreamer \"%s\" a làimhseachadh."
 #: ../plugins/transcode/burn-vob.c:1152
 #, c-format
 msgid "%s element could not be created"
-msgstr "Cha b' urrainn dhuinn an eileamaid %s a cruthachadh"
+msgstr "Cha b’ urrainn dhuinn an eileamaid %s a cruthachadh"
 
 #: ../libbrasero-utils/brasero-misc.c:74
 msgid "Display debug statements on stdout for Brasero utilities library"
@@ -2741,7 +2747,7 @@ msgstr "Faidhlichean deilbh"
 #. * displaying.
 #: ../nautilus/nautilus-burn-bar.c:356 ../plugins/local-track/burn-uri.c:747
 msgid "CD/DVD Creator Folder"
-msgstr "Pasgan a' chruthadair CDan/DVDan"
+msgstr "Pasgan a’ chruthadair CDan/DVDan"
 
 #: ../nautilus/nautilus-burn-bar.c:368
 msgid "Disc Name:"
@@ -2801,24 +2807,24 @@ msgstr "_Sgrùd an diosga..."
 #: ../nautilus/nautilus-burn-extension.c:677
 msgid "Check the data integrity on this CD or DVD"
 msgstr ""
-"Sgrùd an dàta air a' CD/DVD seo co-dhiù a bheil e mar bu chòir gus nach eil"
+"Sgrùd an dàta air a’ CD/DVD seo co-dhiù a bheil e mar bu chòir gus nach eil"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:191
 #: ../plugins/checksum/burn-checksum-image.c:124
 #, c-format
 msgid "Data could not be read (%s)"
-msgstr "Cha b' urrainn dhuinn an dàta a leughadh (%s)"
+msgstr "Cha b’ urrainn dhuinn an dàta a leughadh (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:241
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
 msgid "Data could not be written (%s)"
-msgstr "Cha b' urrainn dhuinn an dàta a sgrìobhadh (%s)"
+msgstr "Cha b’ urrainn dhuinn an dàta a sgrìobhadh (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:723
 msgid "Generates .cue files from audio"
@@ -2830,16 +2836,16 @@ msgstr "Sreath losgaidh cdrdao"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:103
 msgid "Copying audio track"
-msgstr "A' dèanamh lethbhreac dhen traca fuaime"
+msgstr "A’ dèanamh lethbhreac dhen traca fuaime"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:109
 msgid "Copying data track"
-msgstr "A' dèanamh lethbhreac dhen traca dàta"
+msgstr "A’ dèanamh lethbhreac dhen traca dàta"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:145
 #, c-format
 msgid "Analysing track %02i"
-msgstr "A' sgrùdadh an traca %02i"
+msgstr "A’ sgrùdadh an traca %02i"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:249 ../plugins/cdrkit/burn-readom.c:116
 #: ../plugins/cdrkit/burn-readom.c:122 ../plugins/cdrkit/burn-wodim.c:106
@@ -2860,7 +2866,7 @@ msgstr "Losgaidh is bànaichidh seo CDan is nì e lethbhreac dhiubha"
 #: ../plugins/cdrdao/burn-cdrdao.c:762
 msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
 msgstr ""
-"Cuir an comas a' bhratach \"--driver generic-mmc-raw\" (seall air an leabhar-"
+"Cuir an comas a’ bhratach “--driver generic-mmc-raw” (seall air an leabhar-"
 "mhìneachaidhean cdrdao)"
 
 #: ../plugins/cdrkit/burn-cdrkit.h:38
@@ -2873,7 +2879,7 @@ msgstr "Sreath losgaidh cdrkit"
 #: ../plugins/libburnia/burn-libisofs.c:518
 #, c-format
 msgid "Last session import failed"
-msgstr "Dh'fhàillig le ion-phortachadh an t-seisein mu dheireadh"
+msgstr "Dh’fhàillig le ion-phortachadh an t-seisein mu dheireadh"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:125
 #: ../plugins/cdrkit/burn-genisoimage.c:132
@@ -2882,7 +2888,7 @@ msgstr "Dh'fhàillig le ion-phortachadh an t-seisein mu dheireadh"
 #: ../plugins/growisofs/burn-growisofs.c:210
 #: ../plugins/growisofs/burn-growisofs.c:217
 msgid "An image could not be created"
-msgstr "Dh'fhàillig le cruthachadh ìomhaighe"
+msgstr "Dh’fhàillig le cruthachadh ìomhaighe"
 
 #: ../plugins/cdrkit/burn-genisoimage.c:138
 msgid "This version of genisoimage is not supported"
@@ -2909,7 +2915,7 @@ msgstr "Chan eil rum air fhàgail air an diosga"
 #: ../plugins/cdrtools/burn-mkisofs.c:531
 #: ../plugins/libburnia/burn-libisofs.c:1078
 msgid "Creates disc images from a file selection"
-msgstr "Cruthaichidh seo ìomhaighean diosga o thaghadh de dh'fhaidhlichean"
+msgstr "Cruthaichidh seo ìomhaighean diosga o thaghadh de dh’fhaidhlichean"
 
 #: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
 #, c-format
@@ -2936,22 +2942,22 @@ msgstr "Thachair mearachd le sgrìobhadh gun diosga"
 msgid ""
 "The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr ""
-"Tha an siostam ro shlaodach gus a bhith a' sgrìobhadh gun diosg aig an "
+"Tha an siostam ro shlaodach gus a bhith a’ sgrìobhadh gun diosg aig an "
 "luaths seo. Feuch ri luaths nas maille"
 
 #. Translators: %s is the number of the track
 #: ../plugins/cdrkit/burn-wodim.c:255 ../plugins/cdrtools/burn-cdrecord.c:252
 #, c-format
 msgid "Writing track %s"
-msgstr "A' sgrìobhadh traca %s"
+msgstr "A’ sgrìobhadh traca %s"
 
 #: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
 msgid "Formatting disc"
-msgstr "A' fòrmatadh an diosga"
+msgstr "A’ fòrmatadh an diosga"
 
 #: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
 msgid "Writing cue sheet"
-msgstr "A' sgrìobhadh an siota cue"
+msgstr "A’ sgrìobhadh an siota cue"
 
 #: ../plugins/cdrkit/burn-wodim.c:394 ../plugins/cdrtools/burn-cdrecord.c:380
 #, c-format
@@ -2965,8 +2971,8 @@ msgstr "Losgaidh, bànaichidh is fòrmataidh seo CDan is DVDan"
 #: ../plugins/cdrkit/burn-wodim.c:1413
 msgid "Enable the \"-immed\" flag (see wodim manual)"
 msgstr ""
-"Cuir an comas a' bhratach \"-immed\" (seall air an leabhar-mhìneachaidhean "
-"aig wodim)"
+"Cuir an comas a’ bhratach “-immed” (seall air an leabhar-mhìneachaidhean aig "
+"wodim)"
 
 #: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
@@ -2978,7 +2984,7 @@ msgstr ""
 #: ../plugins/cdrtools/burn-cdda2wav.c:216
 #, c-format
 msgid "Copying audio track %02d"
-msgstr "A' dèanamh lethbhreac dhen traca fuaime %02d"
+msgstr "A’ dèanamh lethbhreac dhen traca fuaime %02d"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:267
 msgid "Preparing to copy audio disc"
@@ -2998,8 +3004,8 @@ msgstr "Losgaidh, bànaichidh is fòrmataidh seo CDan, DVDan is BDan"
 #: ../plugins/cdrtools/burn-cdrecord.c:1416
 msgid "Enable the \"-immed\" flag (see cdrecord manual)"
 msgstr ""
-"Cuir an comas a' bhratach \"-immed\" (seall air an leabhar-mhìneachaidhean "
-"aig cdrecord)"
+"Cuir an comas a’ bhratach “-immed” (seall air an leabhar-mhìneachaidhean aig "
+"cdrecord)"
 
 #: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
@@ -3020,11 +3026,11 @@ msgstr "Cha chuirear taic ris an tionndadh seo de mkisofs"
 #: ../plugins/checksum/burn-checksum-files.c:589
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
-msgstr "Cha b' urrainn dhuinn am faidhle \"%s\" fhosgladh (%s)"
+msgstr "Cha b’ urrainn dhuinn am faidhle “%s” fhosgladh (%s)"
 
 #: ../plugins/checksum/burn-checksum-files.c:617
 msgid "Creating checksum for image files"
-msgstr "A' cruthachadh àireamh-dearbhaidh airson nam faidhlichean ìomhaighe"
+msgstr "A’ cruthachadh àireamh-dearbhaidh airson nam faidhlichean ìomhaighe"
 
 #: ../plugins/checksum/burn-checksum-files.c:859
 #, c-format
@@ -3033,20 +3039,20 @@ msgstr "Cha do lorg sinn faidhle àireamh-dearbhaidh air an diosga"
 
 #: ../plugins/checksum/burn-checksum-files.c:893
 msgid "Checking file integrity"
-msgstr "A' sgrùdadh a bheil na faidhlichean mar bu chòir"
+msgstr "A’ sgrùdadh a bheil na faidhlichean mar bu chòir"
 
 #: ../plugins/checksum/burn-checksum-files.c:987
 #: ../plugins/checksum/burn-checksum-files.c:1012
 #, c-format
 msgid "File \"%s\" could not be opened"
-msgstr "Cha b' urrainn dhuinn am faidhle \"%s\"  fhosgladh"
+msgstr "Cha b’ urrainn dhuinn am faidhle “%s” fhosgladh"
 
 #: ../plugins/checksum/burn-checksum-files.c:1085
 #: ../plugins/checksum/burn-checksum-files.c:1206
 #: ../plugins/checksum/burn-checksum-image.c:550
 #, c-format
 msgid "Some files may be corrupted on the disc"
-msgstr "Dh'fhaoidte gu bheil cuid a dh'faidhlichean coirbte air an diosga"
+msgstr "Dh’fhaoidte gu bheil cuid a dh’faidhlichean coirbte air an diosga"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -3089,12 +3095,12 @@ msgstr "SHA256"
 #: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
-msgstr "Cha b' urrainn dhuinn \"%s\" fhosgladh  (%s)"
+msgstr "Cha b’ urrainn dhuinn “%s” fhosgladh (%s)"
 
 #: ../plugins/checksum/burn-checksum-image.c:359
 #: ../plugins/checksum/burn-checksum-image.c:456
 msgid "Creating image checksum"
-msgstr "A' cruthachadh àireamh-dearbhaidh na h-ìomhaighe"
+msgstr "A’ cruthachadh àireamh-dearbhaidh na h-ìomhaighe"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -3112,7 +3118,7 @@ msgstr ""
 #: ../plugins/dvdauthor/burn-dvdauthor.c:313
 #: ../plugins/vcdimager/burn-vcdimager.c:438
 msgid "Creating file layout"
-msgstr "A' cruthachadh co-dhealbhachd nam faidhlichean"
+msgstr "A’ cruthachadh co-dhealbhachd nam faidhlichean"
 
 #: ../plugins/dvdauthor/burn-dvdauthor.c:371
 msgid "Creates disc images suitable for video DVDs"
@@ -3121,7 +3127,7 @@ msgstr "Cruthaichidh seo ìomhaighean diosga a bhios freagarrach do DVDan video"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3130,32 +3136,32 @@ msgid ""
 "command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
 "command"
 msgstr ""
-"Thachair mearachd a' faighinn iuchair airson a' chrioptachaidh. Dh'fhaoidte "
+"Thachair mearachd a’ faighinn iuchair airson a’ chrioptachaidh. Dh’fhaoidte "
 "gum fuasgail thu an seòrsa seo de dhuilgheadas le aon dhe na dhòighean seo "
-"ann an tèirmineal: suidhich an DVD region code airson a' chluicheadair CDan/"
-"DVDan agad mar bu chòir leis an àithne \"regionset %s\" no ruith an àithne  "
-"\"DVDCSS_METHOD=title brasero --no-existing-session\""
+"ann an tèirmineal: suidhich an DVD region code airson a’ chluicheadair "
+"CDan/DVDan agad mar bu chòir leis an àithne “regionset %s” no ruith an "
+"àithne “DVDCSS_METHOD=title brasero --no-existing-session”"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
-msgstr "A' faighinn iuchraichean DVD"
+msgstr "A’ faighinn iuchraichean DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
-msgstr "Cha b' urrainn dhuinn an DVD video fhosgladh"
+msgstr "Cha b’ urrainn dhuinn an DVD video fhosgladh"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Mearachd le leughadh an DVD video (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
-msgstr "A' dèanamh lethbhreac dhen DVD video"
+msgstr "A’ dèanamh lethbhreac dhen DVD video"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr ""
 "Cuiridh seo lethbhreac de DVD video le crioptachadh CSS air gu ìomhaigh "
@@ -3181,22 +3187,22 @@ msgstr "Sreath losgaidh growisofs"
 #: ../plugins/libburnia/burn-libburn.c:250
 #, c-format
 msgid "libburn track could not be created"
-msgstr "Cha b' urrainn dhuinn an traca libburn a chruthachadh"
+msgstr "Cha b’ urrainn dhuinn an traca libburn a chruthachadh"
 
 #: ../plugins/libburnia/burn-libburn-common.c:158
 #, c-format
 msgid "libburn library could not be initialized"
-msgstr "Cha b' urrainn dhuinn an leabhar-lann libburn a thòiseachadh"
+msgstr "Cha b’ urrainn dhuinn an leabhar-lann libburn a thòiseachadh"
 
 #: ../plugins/libburnia/burn-libburn-common.c:173
 #, c-format
 msgid "The drive address could not be retrieved"
-msgstr "Cha b'urrainn dhuinn seòladh an draibh fhaighinn"
+msgstr "Cha b’urrainn dhuinn seòladh an draibh fhaighinn"
 
 #: ../plugins/libburnia/burn-libburn-common.c:418
 #, c-format
 msgid "Writing track %02i"
-msgstr "A' sgrìobhadh traca %02i"
+msgstr "A’ sgrìobhadh traca %02i"
 
 #: ../plugins/libburnia/burn-libburnia.h:38
 msgid "libburnia burning suite"
@@ -3207,52 +3213,51 @@ msgstr "Sreath losgaidh libburnia"
 #: ../plugins/libburnia/burn-libisofs.c:571
 #, c-format
 msgid "Volume could not be created"
-msgstr "Cha b' urrainn dhuinn an draibh a chruthachadh"
+msgstr "Cha b’ urrainn dhuinn an draibh a chruthachadh"
 
 #: ../plugins/libburnia/burn-libisofs.c:345
 #: ../plugins/libburnia/burn-libisofs.c:893
 #, c-format
 msgid "libisofs could not be initialized."
-msgstr "Cha b' urrainn dhuinn libisofs a thòiseachadh."
+msgstr "Cha b’ urrainn dhuinn libisofs a thòiseachadh."
 
 #: ../plugins/libburnia/burn-libisofs.c:485
 #, c-format
 msgid "Read options could not be created"
-msgstr "Cha b' urrainn dhuinn na roghainnean leughaidh a chruthachadh"
+msgstr "Cha b’ urrainn dhuinn na roghainnean leughaidh a chruthachadh"
 
 #. Translators: %s is the path
 #: ../plugins/libburnia/burn-libisofs.c:684
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
-msgstr "Cha deach pàrant a lorg sa chraobh airson na slighe \"%s\""
+msgstr "Cha deach pàrant a lorg sa chraobh airson na slighe “%s”"
 
 #: ../plugins/libburnia/burn-libisofs.c:744
 #: ../plugins/libburnia/burn-libisofs.c:811
 #, c-format
 msgid "libisofs reported an error while creating directory \"%s\""
-msgstr "Dh'aithris libisofs mearachd le cruthachadh a' phasgain \"%s\""
+msgstr "Dh’aithris libisofs mearachd le cruthachadh a’ phasgain “%s”"
 
 #: ../plugins/libburnia/burn-libisofs.c:759
 #, c-format
 msgid ""
 "libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr ""
-"Dh'aithris libisofs mearachd a' cur susbaint ris a' phasgan \"%s\" (%x)"
+msgstr "Dh’aithris libisofs mearachd a’ cur susbaint ris a’ phasgan “%s” (%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:782
 #: ../plugins/libburnia/burn-libisofs.c:798
 #, c-format
 msgid "libisofs reported an error while adding file at path \"%s\""
-msgstr "Dh'aithris libisofs mearachd a' cur faidhle ris aig an t-slighe \"%s\""
+msgstr "Dh’aithris libisofs mearachd a’ cur faidhle ris aig an t-slighe “%s”"
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
-msgstr "A' dèanamh lethbhreac de dh'fhaidhle àireimh-dearbhaidh"
+msgstr "A’ dèanamh lethbhreac de dh’fhaidhle àireimh-dearbhaidh"
 
 #: ../plugins/local-track/burn-local-image.c:527
 #: ../plugins/local-track/burn-uri.c:326
 msgid "Copying files locally"
-msgstr "A' dèanamh lethbhreach ionadail de dh'fhaidhlichean"
+msgstr "A’ dèanamh lethbhreach ionadail de dh’fhaidhlichean"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -3276,8 +3281,8 @@ msgstr "Cha ghabh slighe ionadail an fhaidhle faighinn"
 msgid ""
 "Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
 msgstr ""
-"Ceadaichidh seo gun tèid faidhlichean a losgadh a chaidh a chur gu \"Pasgan "
-"a' chruthadair CDan/DVDan\" aig Nautilus"
+"Ceadaichidh seo gun tèid faidhlichean a losgadh a chaidh a chur gu “Pasgan "
+"a’ chruthadair CDan/DVDan” aig Nautilus"
 
 #. Translators: This message is sent
 #. * when brasero could not link together
@@ -3323,22 +3328,22 @@ msgstr "Mearachd le padadh an fhaidhle (%s)"
 
 #: ../plugins/transcode/burn-transcode.c:1313
 msgid "Error while getting duration"
-msgstr "Merachd a' faighinn na faide"
+msgstr "Merachd a’ faighinn na faide"
 
 #: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
-msgstr "A' sgrùdadh \"%s\""
+msgstr "A’ sgrùdadh “%s”"
 
 #: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
-msgstr "A' tar-chòdachadh \"%s\""
+msgstr "A’ tar-chòdachadh “%s”"
 
 #: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
 msgstr ""
-"Nì seo fòrmat a bhios freagarrach airson CDan fuaime de dh'fhaidhle òrain "
+"Nì seo fòrmat a bhios freagarrach airson CDan fuaime de dh’fhaidhle òrain "
 "sam bith"
 
 #: ../plugins/transcode/burn-vob.c:1251
@@ -3348,7 +3353,7 @@ msgstr "Ag iompachadh faidhle video gu MPEG2"
 #: ../plugins/transcode/burn-vob.c:1353
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr ""
-"Nì seo fòrmat a bhios freagarrach airson DVDan video de dh'fhaidhle video "
+"Nì seo fòrmat a bhios freagarrach airson DVDan video de dh’fhaidhle video "
 "sam bith"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:478
@@ -3417,7 +3422,7 @@ msgstr "_Clàr-innse"
 
 #: ../src/brasero-app.c:145
 msgid "Display help"
-msgstr "Seall a' chobhair"
+msgstr "Seall a’ chobhair"
 
 #: ../src/brasero-app.c:148
 msgid "About"
@@ -3429,12 +3434,12 @@ msgstr "Loisgeadair diosgan"
 
 #: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
-msgstr "Mearachd le luchdadh a' phròiseict"
+msgstr "Mearachd le luchdadh a’ phròiseict"
 
 #: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
-msgstr "An cuir thu faidhle no dhà ris a' phròiseact?"
+msgstr "An cuir thu faidhle no dhà ris a’ phròiseact?"
 
 #: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
@@ -3447,7 +3452,7 @@ msgid ""
 "Foundation; either version 2 of the License, or (at your option) any later "
 "version."
 msgstr ""
-"'S e bathar-bog saor a th' anns an Brasero; faodaidh tu a sgaoileadh is/no "
+"’S e bathar-bog saor a th’ anns an Brasero; faodaidh tu a sgaoileadh is/no "
 "atharrachadh fo cheadachas GNU General Public License mar a chaidh "
 "fhoillseachadh le Free Software Foundation; tionndadh 2 dhen cheadachas no "
 "(ma thogras tu) tionndadh sam bith nas àirde."
@@ -3459,7 +3464,7 @@ msgid ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 msgstr ""
-"Tha sinn a' sgaoileadh Brasero an dòchas gum bi e feumail ach GUN BHARANTAS "
+"Tha sinn a’ sgaoileadh Brasero an dòchas gum bi e feumail ach GUN BHARANTAS "
 "SAM BITH; chan toir sinn eadhon barantas GUN GABH A REIC no gu bheil e "
 "FREAGARRACH AIRSON AMAIS SHÒNRAICHTE. Thoir sùil air GNU General Public "
 "License airson barrachd fiosrachaidh."
@@ -3494,14 +3499,14 @@ msgstr "Duilleag-dhachaigh Brasero"
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Akerbeltz https://launchpad.net/~fios\n"
-"  GunChleoc https://launchpad.net/~gunchleoc\n"
-"  alasdair caimbeul https://launchpad.net/~alexd-deactivatedaccount"
+" Akerbeltz https://launchpad.net/~fios\n"
+" GunChleoc https://launchpad.net/~gunchleoc\n"
+" alasdair caimbeul https://launchpad.net/~alexd-deactivatedaccount"
 
 #: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
-msgstr "Chan eil am pròiseact \"%s\" ann"
+msgstr "Chan eil am pròiseact “%s” ann"
 
 #: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
@@ -3531,7 +3536,7 @@ msgstr "Deasaich fiosrachadh an traca (tòiseach, crìoch, ùghdar, agus msaa.)"
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:202
 msgid "Remove the selected files from the project"
-msgstr "Thoir na faidhlichean a thagh thu far a' phròiseict"
+msgstr "Thoir na faidhlichean a thagh thu far a’ phròiseict"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
@@ -3561,7 +3566,7 @@ msgstr "Sgoilt an traca a thagh thu"
 
 #: ../src/brasero-audio-disc.c:343 ../src/brasero-video-tree-model.c:187
 msgid "Pause"
-msgstr "Cuir 'na stad"
+msgstr "Cuir ’na stad"
 
 #: ../src/brasero-audio-disc.c:349
 msgid "Split"
@@ -3599,14 +3604,14 @@ msgstr "Dèan cinnteach gu bheil an codec freagarrach stàlaichte"
 #: ../src/brasero-audio-disc.c:662
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
-msgstr "A bheil thu airson \"%s\" a chur ris a tha na fhaidhle video?"
+msgstr "A bheil thu airson “%s” a chur ris a tha na fhaidhle video?"
 
 #: ../src/brasero-audio-disc.c:671
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
 msgstr ""
-"Seo faidhle video 's mar sin cha ghabh ach an fhuaim aige a sgrìobhadh gun "
+"Seo faidhle video ’s mar sin cha ghabh ach an fhuaim aige a sgrìobhadh gun "
 "diosga."
 
 #: ../src/brasero-audio-disc.c:674
@@ -3628,7 +3633,7 @@ msgstr "_Lorg sa phasgan"
 #: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
 #, c-format
 msgid "\"%s\" could not be opened."
-msgstr "Cha b' urrainn dhuinn \"%s\" fhosgladh."
+msgstr "Cha b’ urrainn dhuinn “%s” fhosgladh."
 
 #: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
@@ -3698,18 +3703,18 @@ msgstr "SLIGHE AN UIDHEIM"
 
 #: ../src/brasero-cli.c:86
 msgid "Create an image file instead of burning"
-msgstr "Cruthaich faidhle ìomhaighe an àite a bhith 'ga losgadh"
+msgstr "Cruthaich faidhle ìomhaighe an àite a bhith ’ga losgadh"
 
 #: ../src/brasero-cli.c:90
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr ""
-"Fosgail pròiseact fuaime a' cur nan URIean ris a chaidh a thoirt seachad air "
+"Fosgail pròiseact fuaime a’ cur nan URIean ris a chaidh a thoirt seachad air "
 "an loidhne-àithne"
 
 #: ../src/brasero-cli.c:94
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
-"Fosgail pròiseact dàta a' cur nan URIean ris a chaidh a thoirt seachad air "
+"Fosgail pròiseact dàta a’ cur nan URIean ris a chaidh a thoirt seachad air "
 "an loidhne-àithne"
 
 #: ../src/brasero-cli.c:98
@@ -3731,7 +3736,7 @@ msgstr "SLIGHE DHAN CHÒMHDACH"
 #: ../src/brasero-cli.c:106
 msgid "Open a video project adding the URIs given on the command line"
 msgstr ""
-"Fosgail pròiseact video a' cur nan URIean ris a chaidh a thoirt seachad air "
+"Fosgail pròiseact video a’ cur nan URIean ris a chaidh a thoirt seachad air "
 "an loidhne-àithne"
 
 #: ../src/brasero-cli.c:110
@@ -3764,7 +3769,7 @@ msgstr "Tòisich air an losgadh sa bhad."
 
 #: ../src/brasero-cli.c:134
 msgid "Don't connect to an already-running instance"
-msgstr "Na dèan ceangal gu ionstans a tha a' ruith mar-thà"
+msgstr "Na dèan ceangal gu ionstans a tha a’ ruith mar-thà"
 
 #: ../src/brasero-cli.c:138
 msgid ""
@@ -3792,7 +3797,7 @@ msgstr "An XID aig an uinneag pàraint"
 #: ../src/brasero-cli.c:204
 #, c-format
 msgid "\"%s\" cannot write."
-msgstr "Chan urrainn do \"%s\" sgrìobhadh."
+msgstr "Chan urrainn do “%s” sgrìobhadh."
 
 #: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
 msgid "Wrong command line option."
@@ -3824,12 +3829,12 @@ msgstr "Cruthaich pasgan falamh ùr"
 
 #: ../src/brasero-data-disc.c:213
 msgid "The session could not be imported."
-msgstr "Cha b' urrainn dhuinn an seisean ion-phortadh."
+msgstr "Cha b’ urrainn dhuinn an seisean ion-phortadh."
 
 #: ../src/brasero-data-disc.c:559
 msgid "The contents of the project changed since it was saved."
 msgstr ""
-"Chaidh susbaint a' phròiseict atharrachadh on turas mu dheireadh a chaidh a "
+"Chaidh susbaint a’ phròiseict atharrachadh on turas mu dheireadh a chaidh a "
 "shàbhaladh."
 
 #: ../src/brasero-data-disc.c:561
@@ -3848,7 +3853,7 @@ msgstr "Tilg air falbh am pròiseact làithreach air atharrachadh"
 
 #: ../src/brasero-data-disc.c:574
 msgid "Continue with the current modified project"
-msgstr "Lean air adhart leis a' phròiseact làithreach air atharrachadh"
+msgstr "Lean air adhart leis a’ phròiseact làithreach air atharrachadh"
 
 #. Translators: %s is the name of the image
 #: ../src/brasero-data-disc.c:619
@@ -3857,8 +3862,8 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
 msgstr ""
-"Chan eil ach aon fhaidhle air a thaghadh ann (\"%s\"). Seo ìomhaigh diosga "
-"is gabhaidh a shusbaint losgadh"
+"Chan eil ach aon fhaidhle air a thaghadh ann (“%s”). Seo ìomhaigh diosga is "
+"gabhaidh a shusbaint losgadh"
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
@@ -3872,11 +3877,11 @@ msgstr "Loisg mar ìomha_igh"
 #: ../src/brasero-data-disc.c:709
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
-msgstr "Chan urrainn dhuinn \"%s\" a chur ris an taghadh."
+msgstr "Chan urrainn dhuinn “%s” a chur ris an taghadh."
 
 #: ../src/brasero-data-disc.c:694
 msgid "It is a recursive symlink"
-msgstr "'S e ceangal samhlachail ath-chùrsach th' ann"
+msgstr "’S e ceangal samhlachail ath-chùrsach th’ ann"
 
 #: ../src/brasero-data-disc.c:712
 msgid "It does not exist at the specified location"
@@ -3886,7 +3891,7 @@ msgstr "Chan eil e san ionad shònraichte"
 #: ../src/brasero-data-disc.c:771
 #, c-format
 msgid "Do you want to replace \"%s\"?"
-msgstr "A bheil thu airson rud a chur an àite \"%s\"?"
+msgstr "A bheil thu airson rud a chur an àite “%s”?"
 
 #: ../src/brasero-data-disc.c:779
 msgid ""
@@ -3894,7 +3899,8 @@ msgid ""
 "overwrite its contents on the disc to be burnt."
 msgstr ""
 "Tha faidhle air a bheil an t-ainm seo sa phasgan mar-thà. Ma chuireas tu rud "
-"'na àite, thèid sgrìobhadh thairis air a shusbaint air an diosga ri losgadh."
+"’na àite, thèid sgrìobhadh thairis air a shusbaint air an diosga ri "
+"losgadh."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3916,14 +3922,14 @@ msgstr "_Cum e"
 #. Translators: this is a verb
 #: ../src/brasero-data-disc.c:792 ../src/brasero-rename.c:385
 msgid "_Replace"
-msgstr "_Cuir am fear ùr 'na àite"
+msgstr "_Cuir am fear ùr ’na àite"
 
 #. Translators: Replace means we're replacing the file that already
 #. * existed in the project with a new one with the same name.
 #. * Replace is a verb
 #: ../src/brasero-data-disc.c:796
 msgid "Al_ways Replace"
-msgstr "Cuir am fear ùr 'na àite an-còmh_naidh"
+msgstr "Cuir am fear ùr ’na àite an-còmh_naidh"
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -3948,7 +3954,7 @@ msgstr "I_on-phortaich"
 #: ../src/brasero-data-disc.c:1098
 #, c-format
 msgid "Do you want to import the session from \"%s\"?"
-msgstr "A bheil thu airson an seisean ion-phortadh o \"%s\"?"
+msgstr "A bheil thu airson an seisean ion-phortadh o “%s”?"
 
 #: ../src/brasero-data-disc.c:1101
 msgid ""
@@ -3967,7 +3973,7 @@ msgstr "Briog an-seo gus a shusbaint ion-phortadh"
 
 #: ../src/brasero-data-disc.c:1490
 msgid "Please wait while the project is loading."
-msgstr "Fuirich greis fhad 's a tha am pròiseact 'ga luchdadh."
+msgstr "Fuirich greis fhad ’s a tha am pròiseact ’ga luchdadh."
 
 #: ../src/brasero-data-disc.c:1500
 msgid "_Cancel Loading"
@@ -3975,11 +3981,11 @@ msgstr "_Sguir dhen luchdadh"
 
 #: ../src/brasero-data-disc.c:1502
 msgid "Cancel loading current project"
-msgstr "Sguir dhe luchdadh a' phròiseict làithrich"
+msgstr "Sguir dhe luchdadh a’ phròiseict làithrich"
 
 #: ../src/brasero-data-disc.c:1903
 msgid "File Renaming"
-msgstr "A' toirt ainm ùr air faidhle"
+msgstr "A’ toirt ainm ùr air faidhle"
 
 #: ../src/brasero-data-disc.c:1907
 msgid "_Rename"
@@ -4008,7 +4014,7 @@ msgstr "Spàs"
 #: ../src/brasero-eject-dialog.c:97
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
-msgstr "Chan urrainn dhuinn an diosga ann an \"%s\" a ghluasad a-mach"
+msgstr "Chan urrainn dhuinn an diosga ann an “%s” a ghluasad a-mach"
 
 #: ../src/brasero-eject-dialog.c:193
 msgid "_Eject"
@@ -4056,7 +4062,7 @@ msgstr "Roghainnean na criathraig"
 msgid ""
 "Select the files you want to restore and click on the \"Restore\" button"
 msgstr ""
-"Tagh na faidhlichean a tha thu airson aiseag is briog air a' phutan \"Aisig\""
+"Tagh na faidhlichean a tha thu airson aiseag is briog air a’ phutan “Aisig”"
 
 #: ../src/brasero-file-filtered.c:265
 msgid "Type"
@@ -4108,11 +4114,11 @@ msgstr "Seall ro-shealladh air video, fuaim is dealbh"
 
 #: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
-msgstr "_Seall a' phanail-taoibh"
+msgstr "_Seall a’ phanail-taoibh"
 
 #: ../src/brasero-layout.c:111
 msgid "Show a side pane along the project"
-msgstr "Seall a' phanail-taoibh air fhad a' phròiseict"
+msgstr "Seall a’ phanail-taoibh air fhad a’ phròiseict"
 
 #: ../src/brasero-layout.c:125
 msgid "_Horizontal Layout"
@@ -4132,7 +4138,7 @@ msgstr "Suidhich co-dhealbhachd inghearach"
 
 #: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
-msgstr "Briog gus a' phanail-taoibh a dhùnadh"
+msgstr "Briog gus a’ phanail-taoibh a dhùnadh"
 
 #: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
 #: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
@@ -4198,7 +4204,7 @@ msgstr "Gun ro-shealladh"
 #: ../src/brasero-playlist.c:390
 #, c-format
 msgid "Error parsing playlist \"%s\"."
-msgstr "Mearachd a' parsadh na liosta-cluiche \"%s\"."
+msgstr "Mearachd a’ parsadh na liosta-cluiche “%s”."
 
 #. Translators: %d is the number of songs
 #: ../src/brasero-playlist.c:499
@@ -4289,7 +4295,7 @@ msgstr "Cuir f_aidhlichean ris"
 
 #: ../src/brasero-project.c:200
 msgid "Add files to the project"
-msgstr "Cuir faidhlichean ris a' phròiseact"
+msgstr "Cuir faidhlichean ris a’ phròiseact"
 
 #: ../src/brasero-project.c:201
 msgid "_Remove Files"
@@ -4317,26 +4323,26 @@ msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
 msgstr ""
-"Briog air a' phutan \"Cuir ris\" no slaod faidhlichean dhan raon seo gus "
-"faidhlichean a chur ris a' phròiseact seo"
+"Briog air a’ phutan “Cuir ris” no slaod faidhlichean dhan raon seo gus "
+"faidhlichean a chur ris a’ phròiseact seo"
 
 #: ../src/brasero-project.c:697
 msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Tagh faidhlichean is an uairsin briog air a' phutan \"Thoir air falbh\" no "
-"brùth air an iuchair \"Delete\" gus an toirt air falbh"
+"Tagh faidhlichean is an uairsin briog air a’ phutan “Thoir air falbh” no "
+"brùth air an iuchair “Delete” gus an toirt air falbh"
 
 #: ../src/brasero-project.c:804
 #, c-format
 msgid "Estimated project size: %s"
-msgstr "Tuairmse air meud a' phròiseict: %s"
+msgstr "Tuairmse air meud a’ phròiseict: %s"
 
 #: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
-"Tha am pròiseact ro mhòr airson an diosga fiù 's le losgadh anabarrach air a "
+"Tha am pròiseact ro mhòr airson an diosga fiù ’s le losgadh anabarrach air a "
 "chur air."
 
 #: ../src/brasero-project.c:977
@@ -4348,10 +4354,10 @@ msgid ""
 msgstr ""
 "Tha am pròiseact ro mhòr airson an diosga is feumaidh tu faidhle no dhà a "
 "thoirt air falbh.\n"
-"Dh'fhaoidte gu bheil thu airson an roghainn seo a chleachdadh le CD-R(W) de "
+"Dh’fhaoidte gu bheil thu airson an roghainn seo a chleachdadh le CD-R(W) de "
 "90 no 10 mionaid nach gabh aithneachadh mar bu chòir is a tha feumach air "
 "roghainn an losgaidh anabarraich.\n"
-"An aire: Dh'fhaoidte gun adhbharaich an roghainn seo fàilligeadh."
+"An aire: Dh’fhaoidte gun adhbharaich an roghainn seo fàilligeadh."
 
 #: ../src/brasero-project.c:1098
 msgid "Start to burn the contents of the selection"
@@ -4359,7 +4365,7 @@ msgstr "Tòisich air susbaint de na thagh thu a losgadh"
 
 #: ../src/brasero-project.c:1267
 msgid "Please add songs to the project."
-msgstr "An cuir thu òran no dhà ris a' phròiseact?"
+msgstr "An cuir thu òran no dhà ris a’ phròiseact?"
 
 #: ../src/brasero-project.c:1904 ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
@@ -4380,8 +4386,8 @@ msgstr "_Tilg na h-atharraichean air falbh"
 #: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
-"A bheil thu airson na thagh thu a dh'fhaidhlichean a thilgeil air falbh no a "
-"chur ris a' phròiseact ùr?"
+"A bheil thu airson na thagh thu a dh’fhaidhlichean a thilgeil air falbh no a "
+"chur ris a’ phròiseact ùr?"
 
 #: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid ""
@@ -4461,13 +4467,12 @@ msgstr "Cha deach am pròiseact agad a shàbhaladh."
 #: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
 msgstr ""
-"A bheil thu airson na h-atharraichean air a' phròiseact làithreach a "
+"A bheil thu airson na h-atharraichean air a’ phròiseact làithreach a "
 "shàbhaladh mus dùin thu e?"
 
 #: ../src/brasero-project.c:2643 ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
-msgstr ""
-"Mur an sàbhail thu e, thèid atharrachadh sam bith a rinn thu air chall."
+msgstr "Mur an sàbhail thu e, thèid atharrachadh sam bith a rinn thu air chall."
 
 #: ../src/brasero-project.c:2647 ../src/brasero-project.c:2653
 #: ../src/brasero-project.c:2935
@@ -4699,11 +4704,11 @@ msgstr "Diosga video (%s)"
 
 #: ../src/brasero-project-parse.c:62
 msgid "Error while loading the project."
-msgstr "Mearachd le luchdadh a' phròiseict"
+msgstr "Mearachd le luchdadh a’ phròiseict"
 
 #: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
-msgstr "Cha b' urrainn dhuinn am pròiseact fhosgladh"
+msgstr "Cha b’ urrainn dhuinn am pròiseact fhosgladh"
 
 #: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
@@ -4711,7 +4716,7 @@ msgstr "Tha am faidhle falamh"
 
 #: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
-msgstr "Chan e pròiseact Brasero dligheach a th' ann a-rèir coltais"
+msgstr "Chan e pròiseact Brasero dligheach a th’ ann a-rèir coltais"
 
 #: ../src/brasero-project-type-chooser.c:74
 msgid "Audi_o project"
@@ -4780,11 +4785,11 @@ msgstr "Sguab às an teacsa"
 
 #: ../src/brasero-rename.c:324
 msgid "Substitute text"
-msgstr "Cuir teacsa 'na àite"
+msgstr "Cuir teacsa ’na àite"
 
 #: ../src/brasero-rename.c:325
 msgid "Number files according to a pattern"
-msgstr "An uiread a dh'fhaidhlichean a-rèir pàtrain"
+msgstr "An uiread a dh’fhaidhlichean a-rèir pàtrain"
 
 #: ../src/brasero-rename.c:326
 msgid "Insert number sequence at beginning"
@@ -4843,7 +4848,7 @@ msgstr "Chan eil faidhle ann"
 
 #: ../src/brasero-song-control.c:562
 msgid "Start and stop playing"
-msgstr "Tòisich agus sguir a' cluich"
+msgstr "Tòisich agus sguir a’ cluich"
 
 #: ../src/brasero-song-properties.c:177
 msgid "Title:"
@@ -4888,7 +4893,7 @@ msgstr "Cha deach an traca a sgaoilteadh."
 
 #: ../src/brasero-split-dialog.c:610
 msgid "No silence could be detected"
-msgstr "Cha b' urrainn dhuinn sàmhchair a mhothachadh"
+msgstr "Cha b’ urrainn dhuinn sàmhchair a mhothachadh"
 
 #: ../src/brasero-split-dialog.c:633
 msgid "An error occurred while detecting silences."
@@ -4936,7 +4941,7 @@ msgstr "Sgoilt an traca a làimh"
 
 #: ../src/brasero-split-dialog.c:1082
 msgid "Split track in parts with a fixed length"
-msgstr "Sgaoilt an traca na phàirtean a dh'fhaide socraichte"
+msgstr "Sgaoilt an traca na phàirtean a dh’fhaide socraichte"
 
 #: ../src/brasero-split-dialog.c:1083
 msgid "Split track in a fixed number of parts"
@@ -5036,11 +5041,11 @@ msgstr "Frèaman (1 diog = 75 frèam)"
 
 #: ../src/brasero-video-disc.c:101
 msgid "Open the selected video"
-msgstr "Fosgail a' video a thagh thu"
+msgstr "Fosgail a’ video a thagh thu"
 
 #: ../src/brasero-video-disc.c:103
 msgid "Edit the video information (start, end, author, etc.)"
-msgstr "Deasaich fiosrachadh a' video (toiseach, deireadh, ùghdar, agus msaa.)"
+msgstr "Deasaich fiosrachadh a’ video (toiseach, deireadh, ùghdar, agus msaa.)"
 
 #: ../src/brasero-video-disc.c:105
 msgid "Remove the selected videos from the project"
@@ -5057,7 +5062,7 @@ msgstr "_Lorg sa phasgan"
 #: ../src/brasero-video-disc.c:412
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
-msgstr "Chan eil seòrsa freagarrach aig \"%s\" airson pròiseactan video."
+msgstr "Chan eil seòrsa freagarrach aig “%s” airson pròiseactan video."
 
 #: ../src/brasero-video-disc.c:415
 msgid "Please only add files with video content"
@@ -5070,8 +5075,7 @@ msgstr "[URI] [URI] …"
 #: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
-msgstr ""
-"Sgrìobh \"%s --help\" gus na h-uile roghainn a shealltainn a tha ri làimh\n"
+msgstr "Sgrìobh “%s --help” gus na h-uile roghainn a shealltainn a tha ri làimh\n"
 
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "Chan eil am faidhle seo na fhaidhle .desktop dligheach"
