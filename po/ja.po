@@ -11,9 +11,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-11-29 16:01+0000\n"
-"PO-Revision-Date: 2014-11-30 10:30+0900\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"PO-Revision-Date: 2018-01-19 14:33+0700\n"
 "Last-Translator: Jiro Matsuzawa <jmatsuzawa@gnome.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -21,15 +22,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.0.6\n"
 
 # このストリングだけ、burn を「書き込み」と訳すると日本語が不自然に感じたので、「作成する」と訳しています
 #: ../data/brasero.appdata.xml.in.h:1
-msgid "Brasero is a application to burn CD/DVD for the GNOME Desktop. It is designed to be as simple as possible and has some unique features to enable users to create their discs easily and quickly."
-msgstr "Brasero は CD/DVD を作成する GNOME デスクトップ向けアプリケーションです。Brasero はできる限りシンプルにデザインされ、ユニークな機能も搭載しており、素早く簡単にディスクを作成できます。"
+msgid ""
+"Brasero is a application to burn CD/DVD for the GNOME Desktop. It is "
+"designed to be as simple as possible and has some unique features to enable "
+"users to create their discs easily and quickly."
+msgstr ""
+"Brasero は CD/DVD を作成する GNOME デスクトップ向けアプリケーションです。"
+"Brasero はできる限りシンプルにデザインされ、ユニークな機能も搭載しており、素"
+"早く簡単にディスクを作成できます。"
 
 #: ../data/brasero.appdata.xml.in.h:2
-msgid "Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports CD-TEXT, multisession and joliet extensions. You can simply drag and drop files from other local applications or from remote shared drives to easily burn them to a disc."
-msgstr "Brasero はデータや音楽の CD/DVD のコピーおよび書き込みができます。また、CD-TEXT や、マルチセッション、Joliet 拡張規格にも対応しています。他のアプリケーションやリモートの共有ドライブからファイルをドラッグ・アンド・ドロップするだけでて、簡単にディスクを作成できます。"
+msgid ""
+"Brasero can create, copy and burn Data and Audio CD/DVDs. It fully supports "
+"CD-TEXT, multisession and joliet extensions. You can simply drag and drop "
+"files from other local applications or from remote shared drives to easily "
+"burn them to a disc."
+msgstr ""
+"Brasero はデータや音楽の CD/DVD のコピーおよび書き込みができます。また、CD-"
+"TEXT や、マルチセッション、Joliet 拡張規格にも対応しています。他のアプリケー"
+"ションやリモートの共有ドライブからファイルをドラッグ・アンド・ドロップするだ"
+"けでて、簡単にディスクを作成できます。"
 
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero"
@@ -45,7 +61,9 @@ msgstr "CD や DVD の作成やコピーができます"
 
 #: ../data/brasero.desktop.in.in.h:4
 msgid "disc;cdrom;dvd;burn;audio;video;"
-msgstr "disc;cdrom;dvd;burn;audio;video;ディスク;音楽;オーディオ;音声;楽曲;映像;ビデオ;動画;movie;ムービー;iso;イメージ;"
+msgstr ""
+"disc;cdrom;dvd;burn;audio;video;ディスク;音楽;オーディオ;音声;楽曲;映像;ビデ"
+"オ;動画;movie;ムービー;iso;イメージ;"
 
 #: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
@@ -60,10 +78,14 @@ msgid "Burn an Image File"
 msgstr "イメージを書き込みます"
 
 #: ../data/brasero.desktop.in.in.h:8
+msgid "Copy a Disc"
+msgstr "ディスクのコピーを作成する"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "音楽プロジェクトを作成します"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "映像プロジェクトを作成します"
 
@@ -76,8 +98,12 @@ msgid "Should Nautilus extension output debug statements"
 msgstr "Nautilus 拡張はデバッグステートメントを出力しなければなりません"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:2
-msgid "Should Nautilus extension output debug statements. The value should be set to true if it should."
-msgstr "Nautilus 拡張はデバッグステートメントを出力しなければなりません。出力する場合は、値を TRUE に設定してください。"
+msgid ""
+"Should Nautilus extension output debug statements. The value should be set "
+"to true if it should."
+msgstr ""
+"Nautilus 拡張はデバッグステートメントを出力しなければなりません。出力する場合"
+"は、値を TRUE に設定してください。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
@@ -96,40 +122,63 @@ msgid "Directory to use for temporary files"
 msgstr "作業ファイルで利用するディレクトリ"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:7
-msgid "Contains the path to the directory where brasero should store temporary files. If that value is empty, the default directory set for glib will be used."
-msgstr "Brasero が一時ファイルを保存するためのディレクトリのパスを指定します。値が空の場合は、glib が設定するデフォルトのディレクトリを使用します。"
+msgid ""
+"Contains the path to the directory where brasero should store temporary "
+"files. If that value is empty, the default directory set for glib will be "
+"used."
+msgstr ""
+"Brasero が一時ファイルを保存するためのディレクトリのパスを指定します。値が空"
+"の場合は、glib が設定するデフォルトのディレクトリを使用します。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:8
 msgid "Favourite burn engine"
 msgstr "お気に入りの書き込みエンジン"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:9
-msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
-msgstr "インストールされているお気に入りの書き込みエンジンの名前をリスト形式で指定します。"
+msgid ""
+"Contains the name of the favourite burn engine suite installed. It will be "
+"used if possible."
+msgstr ""
+"インストールされているお気に入りの書き込みエンジンの名前をリスト形式で指定し"
+"ます。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:10
 msgid "White list of additional plugins to use"
 msgstr "使用する追加プラグインのリスト"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:11
-msgid "Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all."
-msgstr "ディスクの書き込みで使用する追加のプラグインをリスト形式で指定します。何も指定しないと、すべてのプラグインを読み込みます。"
+msgid ""
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
+msgstr ""
+"ディスクの書き込みで使用する追加のプラグインをリスト形式で指定します。何も指"
+"定しないと、すべてのプラグインを読み込みます。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:12
 msgid "Enable the \"-immed\" flag with cdrecord"
 msgstr "cdrecord コマンドの \"-immed\" フラグを有効にするかどうか"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:13
-msgid "Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
-msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうかです。有効にする場合は、一部のドライブ/設定の問題を回避するためだけに注意して使用してください。"
+msgid ""
+"Whether to use the \"-immed\" flag with cdrecord. Use with caution (set to "
+"true) as it's only a workaround for some drives/setups."
+msgstr ""
+"cdrecord コマンドで \"-immed\" フラグを使用するかどうかです。有効にする場合"
+"は、一部のドライブ/設定の問題を回避するためだけに注意して使用してください。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:14
 msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs"
-msgstr "growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうか"
+msgstr ""
+"growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうか"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:15
-msgid "Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
-msgstr "growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうかです。一部のドライブ/設定の問題を回避するためだけに有効にするようにしてください。"
+msgid ""
+"Whether to use the \"-use-the-force-luke=dao\" flag with growisofs. Set to "
+"false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr ""
+"growisofs コマンドで \"-use-the-force-luke=dao\" フラグを使用するかどうかで"
+"す。一部のドライブ/設定の問題を回避するためだけに有効にするようにしてくださ"
+"い。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:16
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord"
@@ -137,22 +186,28 @@ msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか
 
 #: ../data/org.gnome.brasero.gschema.xml.h:17
 msgid "Used in conjunction with the \"-immed\" flag with cdrecord."
-msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか"
+msgstr "cdrecord コマンドで \"-immed\" フラグを使用するかどうか。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:18
 msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao"
 msgstr "cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうか"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:19
-msgid "Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups."
-msgstr "cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうかです。一部のドライブ/設定の問題を回避するときのみ有効にするようにしてください。"
+msgid ""
+"Whether to use the \"--driver generic-mmc-raw\" flag with cdrdao. Set to "
+"True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr ""
+"cdrdao で \"--driver generic-mmc-raw\" フラグを使用するかどうかです。一部のド"
+"ライブ/設定の問題を回避するときのみ有効にするようにしてください。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:20
 msgid "The last browsed folder while looking for images to burn"
 msgstr "書き込むイメージを検索したときに最後に閲覧していたフォルダー"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:21
-msgid "Contains the absolute path of the directory that was last browsed for images to burn"
+msgid ""
+"Contains the absolute path of the directory that was last browsed for images "
+"to burn"
 msgstr "書き込むイメージを最後に閲覧したディレクトリの絶対パスを指定します"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:22
@@ -168,39 +223,61 @@ msgid "Should brasero filter hidden files"
 msgstr "隠しファイルをフィルターするかどうか"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:25
-msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
-msgstr "隠しファイルを Brasero でフィルターするかどうかです。TRUE にすると隠しファイルを無視します。"
+msgid ""
+"Should brasero filter hidden files. Set to true, brasero will filter hidden "
+"files."
+msgstr ""
+"隠しファイルを Brasero でフィルターするかどうかです。TRUE にすると隠しファイ"
+"ルを無視します。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:26
 msgid "Replace symbolic links by their targets"
 msgstr "シンボリックリンクを実体に置き換える"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:27
-msgid "Should brasero replace symbolic links by their target files in the project. Set to true, brasero will replace symbolic links."
-msgstr "シンボリックリンクをリンクが指す先のファイルで置き換えるかどうか。TRUE にするとシンボリックリンクをリンクが指す先のファイルで置き換えます。"
+msgid ""
+"Should brasero replace symbolic links by their target files in the project. "
+"Set to true, brasero will replace symbolic links."
+msgstr ""
+"シンボリックリンクをリンクが指す先のファイルで置き換えるかどうか。TRUE にする"
+"とシンボリックリンクをリンクが指す先のファイルで置き換えます。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:28
 msgid "Should brasero filter broken symbolic links"
 msgstr "Brasero がリンク切れのシンボリックリンクを無視する"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:29
-msgid "Should brasero filter broken symbolic links. Set to true, brasero will filter broken symbolic links."
-msgstr "Brasero がリンク切れのシンボリックリンクを無視するかどうか。TRUE にするとリンク切れのシンボリックリンクを無視します。"
+msgid ""
+"Should brasero filter broken symbolic links. Set to true, brasero will "
+"filter broken symbolic links."
+msgstr ""
+"Brasero がリンク切れのシンボリックリンクを無視するかどうか。TRUE にするとリン"
+"ク切れのシンボリックリンクを無視します。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:30
 msgid "The priority value for the plugin"
 msgstr "プラグインで優先する値"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:31
-msgid "When several plugins are available for the same task, this value is used to determine which plugin should be given priority. 0 means the plugin's native priority is used. A positive value overrides the plugin's native priority. A negative value disables the plugin."
-msgstr "複数のプラグインが同時にタスクを処理できる時に、どのプラグインが優先度を得るか決定するのにこの値を使用します。0 の場合はプラグインのネイティブな優先度を利用します。正の値の場合はプラグインのネイティブな優先度を上書きします。負の値の場合はプラグインを無効にします。"
+msgid ""
+"When several plugins are available for the same task, this value is used to "
+"determine which plugin should be given priority. 0 means the plugin's native "
+"priority is used. A positive value overrides the plugin's native priority. A "
+"negative value disables the plugin."
+msgstr ""
+"複数のプラグインが同時にタスクを処理できる時に、どのプラグインが優先度を得る"
+"か決定するのにこの値を使用します。0 の場合はプラグインのネイティブな優先度を"
+"利用します。正の値の場合はプラグインのネイティブな優先度を上書きします。負の"
+"値の場合はプラグインを無効にします。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:32
 msgid "Burning flags to be used"
 msgstr "利用する書き込みフラグ"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:33
-msgid "This value represents the burning flags that were used in such a context the last time."
+msgid ""
+"This value represents the burning flags that were used in such a context the "
+"last time."
 msgstr "この値は、最後にそういった状況で使われた書き込みフラグを表しています。"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:34
@@ -208,7 +285,9 @@ msgid "The speed to be used"
 msgstr "利用する速度"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:35
-msgid "This value represents the speed that was used in such a context the last time."
+msgid ""
+"This value represents the speed that was used in such a context the last "
+"time."
 msgstr "この値は、最後にそういった状況で使われた速度を表しています。"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:222
@@ -337,24 +416,21 @@ msgstr "そのディスクの空き容量が足りません"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (アプリケーション)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (ライブラリ)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer プラグイン)"
@@ -364,8 +440,12 @@ msgid "There is no track to burn"
 msgstr "書き込むトラックがありません"
 
 #: ../libbrasero-burn/brasero-burn.c:1859
-msgid "Please install the following required applications and libraries manually and try again:"
-msgstr "以下の必要なアプリケーションとライブラリを手動でインストールして再試行してください:"
+msgid ""
+"Please install the following required applications and libraries manually "
+"and try again:"
+msgstr ""
+"以下の必要なアプリケーションとライブラリを手動でインストールして再試行してく"
+"ださい:"
 
 #: ../libbrasero-burn/brasero-burn.c:2576
 #: ../libbrasero-burn/brasero-caps-burn.c:868
@@ -382,18 +462,17 @@ msgstr "作業用に作成したイメージの形式を特定できません"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "内部エラーが発生しました"
@@ -572,7 +651,9 @@ msgstr "データが入っているディスクを挿入してください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:572
 #, c-format
-msgid "Please replace the disc with a writable CD with at least %i MiB of free space."
+msgid ""
+"Please replace the disc with a writable CD with at least %i MiB of free "
+"space."
 msgstr "少なくとも %i MiB の空きがある書き込み可能な CD に入れ替えてください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:575
@@ -590,8 +671,11 @@ msgstr "書き込み可能な CD を挿入してください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:588
 #, c-format
-msgid "Please replace the disc with a writable DVD with at least %i MiB of free space."
-msgstr "少なくとも %i MiB の空きがある書き込み可能な DVD に入れ替えてください。"
+msgid ""
+"Please replace the disc with a writable DVD with at least %i MiB of free "
+"space."
+msgstr ""
+"少なくとも %i MiB の空きがある書き込み可能な DVD に入れ替えてください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:591
 msgid "Please replace the disc with a writable DVD."
@@ -608,8 +692,12 @@ msgstr "書き込み可能な DVD を挿入してください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:603
 #, c-format
-msgid "Please replace the disc with a writable CD or DVD with at least %i MiB of free space."
-msgstr "少なくとも %i MiB の空きがある書き込み可能な CD または DVD に入れ替えてください。"
+msgid ""
+"Please replace the disc with a writable CD or DVD with at least %i MiB of "
+"free space."
+msgstr ""
+"少なくとも %i MiB の空きがある書き込み可能な CD または DVD に入れ替えてくださ"
+"い。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:606
 msgid "Please replace the disc with a writable CD or DVD."
@@ -618,7 +706,9 @@ msgstr "書き込み可能な CD または DVD に入れ替えてください。
 #: ../libbrasero-burn/brasero-burn-dialog.c:610
 #, c-format
 msgid "Please insert a writable CD or DVD with at least %i MiB of free space."
-msgstr "少なくとも %i MiB の空きがある書き込み可能な CD または DVD を挿入してください。"
+msgstr ""
+"少なくとも %i MiB の空きがある書き込み可能な CD または DVD を挿入してくださ"
+"い。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:613
 #: ../libbrasero-burn/brasero-burn-dialog.c:2171
@@ -691,7 +781,8 @@ msgstr "ディスクを取り出してからもう一度読み込んでくださ
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:728
 #: ../libbrasero-burn/brasero-sum-dialog.c:333
-msgid "A file could not be created at the location specified for temporary files"
+msgid ""
+"A file could not be created at the location specified for temporary files"
 msgstr "一時ファイル用に指定した場所にファイルを作成できませんでした"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:729
@@ -699,8 +790,11 @@ msgid "The image could not be created at the specified location"
 msgstr "指定した場所にイメージを作成できませんでした"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:730
-msgid "Do you want to specify another location for this session or retry with the current location?"
-msgstr "このセッションで別の場所を指定するか、または現在の場所で再度実行してみますか?"
+msgid ""
+"Do you want to specify another location for this session or retry with the "
+"current location?"
+msgstr ""
+"このセッションで別の場所を指定するか、または現在の場所で再度実行してみますか?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:742
 msgid "You may want to free some space on the disc and retry"
@@ -749,16 +843,23 @@ msgid "_Blank Disc"
 msgstr "ディスクを消去(_B)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:947
-msgid "If you import them you will be able to see and use them once the current selection of files is burned."
-msgstr "ファイルをインポートした場合は、現在選択されているファイルを書き込めば表示したり利用できるようになります。"
+msgid ""
+"If you import them you will be able to see and use them once the current "
+"selection of files is burned."
+msgstr ""
+"ファイルをインポートした場合は、現在選択されているファイルを書き込めば表示し"
+"たり利用できるようになります。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:948
 msgid "If you don't, they will be invisible (though still readable)."
 msgstr "そうしない場合はファイルが見えなくなります (読み込みは可能)。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:951
-msgid "There are files already burned on this disc. Would you like to import them?"
-msgstr "このディスクにはすでにファイルが書き込まれています。これらのファイルをインポートしますか?"
+msgid ""
+"There are files already burned on this disc. Would you like to import them?"
+msgstr ""
+"このディスクにはすでにファイルが書き込まれています。これらのファイルをイン"
+"ポートしますか?"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:953
 msgid "_Import"
@@ -769,8 +870,12 @@ msgid "Only _Append"
 msgstr "追記のみ(_A)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:967
-msgid "CD-RW audio discs may not play correctly in older CD players and CD-Text won't be written."
-msgstr "CD-RW の音楽ディスクは古い CD プレイヤーではきちんと再生できない可能性があります。また、CD-TEXT も書き込めません。"
+msgid ""
+"CD-RW audio discs may not play correctly in older CD players and CD-Text "
+"won't be written."
+msgstr ""
+"CD-RW の音楽ディスクは古い CD プレイヤーではきちんと再生できない可能性があり"
+"ます。また、CD-TEXT も書き込めません。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:968
 #: ../libbrasero-burn/brasero-burn-dialog.c:990
@@ -789,7 +894,9 @@ msgstr "続行する(_C)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:989
 msgid "CD-RW audio discs may not play correctly in older CD players."
-msgstr "CD-RWの音楽用ディスクは古い CD プレイヤーではちゃんと再生できないかもしれません。"
+msgstr ""
+"CD-RWの音楽用ディスクは古い CD プレイヤーではちゃんと再生できないかもしれませ"
+"ん。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:993
 msgid "Recording audio tracks on a rewritable disc is not advised."
@@ -802,8 +909,12 @@ msgid "Please eject the disc from \"%s\" manually."
 msgstr "\"%s\" からディスクを手動で取り出してください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1046
-msgid "The disc could not be ejected though it needs to be removed for the current operation to continue."
-msgstr "ディスクが取り出せませんでした。現在の作業を続行するにはディスクを取り出す必要があります。"
+msgid ""
+"The disc could not be ejected though it needs to be removed for the current "
+"operation to continue."
+msgstr ""
+"ディスクが取り出せませんでした。現在の作業を続行するにはディスクを取り出す必"
+"要があります。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1133
 msgid "Do you want to replace the disc and continue?"
@@ -820,7 +931,8 @@ msgstr "Windows 互換モードを無効にして続行しますか?"
 #: ../libbrasero-burn/brasero-burn-dialog.c:1144
 #: ../libbrasero-burn/brasero-status-dialog.c:340
 #: ../src/brasero-data-disc.c:734
-msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "一部のファイルは Windows 互換の CD で利用できない名前です。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1145
@@ -912,8 +1024,13 @@ msgid "Copy #%i has been burned successfully."
 msgstr "#%i のコピーは成功しました。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1889
-msgid "Another copy will start as soon as you insert a new writable disc. If you do not want to burn another copy, press \"Cancel\"."
-msgstr "もう一枚コピーを作成する場合は、新しい書き込み可能なディスクを挿入すれば自動的にコピーが始まります。これ以上ディスクの書き込みを行わない場合は、\"キャンセル\" ボタンを押してください。"
+msgid ""
+"Another copy will start as soon as you insert a new writable disc. If you do "
+"not want to burn another copy, press \"Cancel\"."
+msgstr ""
+"もう一枚コピーを作成する場合は、新しい書き込み可能なディスクを挿入すれば自動"
+"的にコピーが始まります。これ以上ディスクの書き込みを行わない場合は、\"キャン"
+"セル\" ボタンを押してください。"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1963
 msgid "Make _More Copies"
@@ -954,8 +1071,12 @@ msgid "_Cancel Burning"
 msgstr "書き込みのキャンセル(_C)"
 
 #: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1020
-msgid "Please insert a writable CD or DVD if you don't want to write to an image file."
-msgstr "イメージファイルに書き込みたくない場合は、書き込み可能な CD または DVD のメディアを挿入してください。"
+msgid ""
+"Please insert a writable CD or DVD if you don't want to write to an image "
+"file."
+msgstr ""
+"イメージファイルに書き込みたくない場合は、書き込み可能な CD または DVD のメ"
+"ディアを挿入してください。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:302 ../src/brasero-project.c:1595
 msgid "Create _Image"
@@ -986,7 +1107,9 @@ msgstr "選択したファイルを複数のメディアに分割して書き込
 #: ../libbrasero-burn/brasero-burn-options.c:434
 #: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "The data size is too large for the disc even with the overburn option."
-msgstr "オーバーバーンのオプションを指定したとしても、ディスク容量よりもデータサイズが大きすぎます。"
+msgstr ""
+"オーバーバーンのオプションを指定したとしても、ディスク容量よりもデータサイズ"
+"が大きすぎます。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:439 ../src/brasero-project.c:954
 msgid "_Burn Several Discs"
@@ -1070,10 +1193,11 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "コピー防止機能付きでないディスクを挿入してください。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
-msgstr "必要なアプリケーションやライブラリがすべてインストールされているわけでないようです。"
+msgstr ""
+"必要なアプリケーションやライブラリがすべてインストールされているわけでないよ"
+"うです。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:540 ../src/brasero-project.c:1003
 msgid "Please replace the disc with a supported CD or DVD."
@@ -1085,12 +1209,17 @@ msgstr "公称のディスク容量以上のサイズのデータを書き込み
 
 #: ../libbrasero-burn/brasero-burn-options.c:550
 msgid ""
-"The data size is too large for the disc and you must remove files from the selection otherwise.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
+"The data size is too large for the disc and you must remove files from the "
+"selection otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
+"cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"データサイズがディスクの容量を越えているので、選択リストからファイルをいくつか削除しなければなりません。\n"
-"もしシステムで正しい容量を認識できない 90 分または 100 分の CD-R(W) を使おうとしているならば、このオーバーバーンのオプションを有効にした方が良いかもしれません。\n"
+"データサイズがディスクの容量を越えているので、選択リストからファイルをいくつ"
+"か削除しなければなりません。\n"
+"もしシステムで正しい容量を認識できない 90 分または 100 分の CD-R(W) を使おう"
+"としているならば、このオーバーバーンのオプションを有効にした方が良いかもしれ"
+"ません。\n"
 "注意: このオプションが使えない場合もあります。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:557 ../src/brasero-project.c:983
@@ -1102,12 +1231,17 @@ msgid "Burn beyond the disc's reported capacity"
 msgstr "ディスクの容量を超えたデータを書き込みます"
 
 #: ../libbrasero-burn/brasero-burn-options.c:569
-msgid "The drive that holds the source disc will also be the one used to record."
+msgid ""
+"The drive that holds the source disc will also be the one used to record."
 msgstr "読み込むディスクを格納しているドライブは書き込みにも利用できます。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:570
-msgid "A new writable disc will be required once the currently loaded one has been copied."
-msgstr "現在読み込んでいるもののコピーが完了したら、新しい記録可能なメディアが必要です。"
+msgid ""
+"A new writable disc will be required once the currently loaded one has been "
+"copied."
+msgstr ""
+"現在読み込んでいるもののコピーが完了したら、新しい記録可能なメディアが必要で"
+"す。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:657
 msgid "Select a disc to write to"
@@ -1123,16 +1257,23 @@ msgstr "書き込みの設定"
 msgid "Video Options"
 msgstr "映像のオプション"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
-msgid "Do you want to create a disc from the contents of the image or with the image file inside?"
-msgstr "ディスクイメージの内容からディスクを作成しますか? それともディスクイメージそのものを中に書き込みますか?"
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
+msgid ""
+"Do you want to create a disc from the contents of the image or with the "
+"image file inside?"
+msgstr ""
+"ディスクイメージの内容からディスクを作成しますか? それともディスクイメージそ"
+"のものを中に書き込みますか?"
 
 #. Translators: %s is the name of the image
 #: ../libbrasero-burn/brasero-burn-options.c:804
 #, c-format
-msgid "There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned."
-msgstr "選択されたファイルが \"%s\" 一つしかありません。これはディスクイメージで内容をディスクに書き込むことが可能です。"
+msgid ""
+"There is only one selected file (\"%s\"). It is the image of a disc and its "
+"contents can be burned."
+msgstr ""
+"選択されたファイルが \"%s\" 一つしかありません。これはディスクイメージで内容"
+"をディスクに書き込むことが可能です。"
 
 #: ../libbrasero-burn/brasero-burn-options.c:809
 msgid "Burn as _File"
@@ -1159,8 +1300,7 @@ msgstr "CD/DVD のコピー"
 msgid "Select disc to copy"
 msgstr "コピー元のディスクの選択"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "以下を手動でインストールして再試行してください:"
 
@@ -1260,10 +1400,12 @@ msgstr "この場所への書き込み権限がありません"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:330
 msgid ""
-"The filesystem on this volume does not support large files (size over 2 GiB).\n"
+"The filesystem on this volume does not support large files (size over 2 "
+"GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
-"このボリュームにあるファイルシステムは 2GiB を越える大きなファイルをサポートしていません。\n"
+"このボリュームにあるファイルシステムは 2GiB を越える大きなファイルをサポート"
+"していません。\n"
 "これは、DVD や大きなイメージを書き込む際に問題になるかもしれません。"
 
 #. Translators %s.1f is the speed used to burn
@@ -1308,8 +1450,12 @@ msgid "_Simulate before burning"
 msgstr "テスト書き込みを行う(_S)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:724
-msgid "Brasero will simulate the burning and, if it is successful, go on with actual burning after 10 seconds"
-msgstr "まず書き込みのシミュレーションを行い、問題がなければ10秒後に実際に書き込みます"
+msgid ""
+"Brasero will simulate the burning and, if it is successful, go on with "
+"actual burning after 10 seconds"
+msgstr ""
+"まず書き込みのシミュレーションを行い、問題がなければ10秒後に実際に書き込みま"
+"す"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:726
 msgid "Use burn_proof (decrease the risk of failures)"
@@ -1395,11 +1541,15 @@ msgid "Properties of %s"
 msgstr "%s のプロパティ"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:133
-msgid "Do you really want to keep the current extension for the disc image name?"
-msgstr "本当にディスクのイメージの拡張子を変更せずに、そのままにしておきますか?"
+msgid ""
+"Do you really want to keep the current extension for the disc image name?"
+msgstr ""
+"本当にディスクのイメージの拡張子を変更せずに、そのままにしておきますか?"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:139
-msgid "If you choose to keep it, programs may not be able to recognize the file type properly."
+msgid ""
+"If you choose to keep it, programs may not be able to recognize the file "
+"type properly."
 msgstr "このままにしておくとファイルの種類を正しく認識できないかもしれません。"
 
 #: ../libbrasero-burn/brasero-medium-properties.c:142
@@ -1503,11 +1653,13 @@ msgstr "本当に \"%s\" を追加しますか?"
 #: ../src/brasero-data-disc.c:879
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
-"Brasero can create an image of such a file hierarchy and burn it but the disc may not be readable on all operating systems.\n"
+"Brasero can create an image of such a file hierarchy and burn it but the "
+"disc may not be readable on all operating systems.\n"
 "Note: Such a file hierarchy is known to work on Linux."
 msgstr ""
 "フォルダーを追加すると、このフォルダーの深さが 7 になります。\n"
-"Brasero は、このような階層を持つイメージの作成や書き込みをサポートしていますが、一部の OS では読み込めない可能性があります。\n"
+"Brasero は、このような階層を持つイメージの作成や書き込みをサポートしています"
+"が、一部の OS では読み込めない可能性があります。\n"
 "注記: Linux では問題なく動作することが報告されています。"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:232
@@ -1525,19 +1677,30 @@ msgstr "そのようなファイルでも常に追加する(_W)"
 #: ../libbrasero-burn/brasero-status-dialog.c:271
 #: ../src/brasero-data-disc.c:826
 #, c-format
-msgid "Do you really want to add \"%s\" to the selection and use the third version of the ISO9660 standard to support it?"
-msgstr "本当に \"%s\" をセレクションに追加し ISO9660 レベル3の標準を利用しますか?"
+msgid ""
+"Do you really want to add \"%s\" to the selection and use the third version "
+"of the ISO9660 standard to support it?"
+msgstr ""
+"本当に \"%s\" をセレクションに追加し ISO9660 レベル3の標準を利用しますか?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:290
 #: ../src/brasero-data-disc.c:835
 msgid ""
-"The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by the ISO9660 standard in its first and second versions (the most widespread ones).\n"
-"It is recommended to use the third version of the ISO9660 standard, which is supported by most operating systems, including Linux and all versions of Windows™.\n"
-"However, Mac OS X cannot read images created with version 3 of the ISO9660 standard."
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
+"supported by the ISO9660 standard in its first and second versions (the most "
+"widespread ones).\n"
+"It is recommended to use the third version of the ISO9660 standard, which is "
+"supported by most operating systems, including Linux and all versions of "
+"Windows™.\n"
+"However, Mac OS X cannot read images created with version 3 of the ISO9660 "
+"standard."
 msgstr ""
-"ファイルのサイズが 2 GiB を越えています。2 GiB以上のファイルは、最も広く使われている ISO9660 の標準 (レベル 1 と 2) ではサポートされていません。\n"
-"Linux やすべてのバージョンの Windows™ を含めたほとんどの OS でサポートされている ISO9660 レベル3の利用をお薦めします。\n"
-"しかしながら Mac OS X では、ISO9660 レベル3 で作成したイメージを読み込むことはできません。"
+"ファイルのサイズが 2 GiB を越えています。2 GiB以上のファイルは、最も広く使わ"
+"れている ISO9660 の標準 (レベル 1 と 2) ではサポートされていません。\n"
+"Linux やすべてのバージョンの Windows™ を含めたほとんどの OS でサポートされて"
+"いる ISO9660 レベル3の利用をお薦めします。\n"
+"しかしながら Mac OS X では、ISO9660 レベル3 で作成したイメージを読み込むこと"
+"はできません。"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:330
 #: ../src/brasero-data-disc.c:729
@@ -1901,15 +2064,23 @@ msgstr "ディスクの空き容量が足りません (%s / %s が利用可能�
 
 #: ../libbrasero-burn/burn-job.c:522
 #, c-format
-msgid "The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB"
-msgstr "作業用のイメージを格納するために選択したファイルシステムには 2GiB を越える大きさのファイルを格納できません"
+msgid ""
+"The filesystem you chose to store the temporary image on cannot hold files "
+"with a size over 2 GiB"
+msgstr ""
+"作業用のイメージを格納するために選択したファイルシステムには 2GiB を越える大"
+"きさのファイルを格納できません"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
-msgid "The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"
-msgstr "保存先として選択した場所はディスクイメージを保存するだけの十分な空きがありません (%ld MiB は必要です)"
+msgid ""
+"The location you chose to store the temporary image on does not have enough "
+"free space for the disc image (%ld MiB needed)"
+msgstr ""
+"保存先として選択した場所はディスクイメージを保存するだけの十分な空きがありま"
+"せん (%ld MiB は必要です)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "ボリュームのサイズを取得できませんでした"
@@ -2202,8 +2373,8 @@ msgstr "音楽用ディスク (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "データディスク (%s)"
@@ -2212,8 +2383,7 @@ msgstr "データディスク (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "正しい ISO イメージではないようです"
@@ -2571,7 +2741,7 @@ msgstr "データを読み込めませんでした (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -2617,7 +2787,8 @@ msgstr "CD のコピー/書き込み/消去"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:762
 msgid "Enable the \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
-msgstr "\"--driver generic-mmc-raw\" フラグを有効にする (cdrdao のマニュアル参照)"
+msgstr ""
+"\"--driver generic-mmc-raw\" フラグを有効にする (cdrdao のマニュアル参照)"
 
 #: ../plugins/cdrkit/burn-cdrkit.h:38
 msgid "cdrkit burning suite"
@@ -2669,8 +2840,12 @@ msgstr "選択したファイルからディスクイメージを作成する"
 
 #: ../plugins/cdrkit/burn-readom.c:136 ../plugins/cdrtools/burn-readcd.c:137
 #, c-format
-msgid "The location you chose to store the image on does not have enough free space for the disc image"
-msgstr "保存先として選択した場所はディスクイメージを保存するだけの十分な空きがありません"
+msgid ""
+"The location you chose to store the image on does not have enough free space "
+"for the disc image"
+msgstr ""
+"保存先として選択した場所はディスクイメージを保存するだけの十分な空きがありま"
+"せん"
 
 #: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
 msgid "Copies any disc to a disc image"
@@ -2685,8 +2860,11 @@ msgstr "ディスクに書き込む際にエラーが発生しました"
 
 #: ../plugins/cdrkit/burn-wodim.c:128 ../plugins/cdrtools/burn-cdrecord.c:128
 #, c-format
-msgid "The system is too slow to write the disc at this speed. Try a lower speed"
-msgstr "この速度で CD に書き込むにはシステムが遅すぎます (より遅い速度で試してください)"
+msgid ""
+"The system is too slow to write the disc at this speed. Try a lower speed"
+msgstr ""
+"この速度で CD に書き込むにはシステムが遅すぎます (より遅い速度で試してくださ"
+"い)"
 
 #. Translators: %s is the number of the track
 #: ../plugins/cdrkit/burn-wodim.c:255 ../plugins/cdrtools/burn-cdrecord.c:252
@@ -2717,7 +2895,9 @@ msgstr "\"-immed\" フラグを有効にする (wodim のマニュアル参照)"
 
 #: ../plugins/cdrkit/burn-wodim.c:1416
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
-msgstr "ドライブの FIFO の Fill Ratio の最小値を百分率で指定する (wodim の man ページ参照のこと)"
+msgstr ""
+"ドライブの FIFO の Fill Ratio の最小値を百分率で指定する (wodim の man ページ"
+"参照のこと)"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:206
 #: ../plugins/cdrtools/burn-cdda2wav.c:216
@@ -2745,7 +2925,9 @@ msgstr "\"-immed\" フラグを有効にする (cdrecord のマニュアル参�
 #: ../plugins/cdrtools/burn-cdrecord.c:1419
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%) (see cdrecord manual):"
-msgstr "ドライブバッファーの Fill Ratio の最小値を %% で指定する (cdrecord のマニュアル参照):"
+msgstr ""
+"ドライブバッファーの Fill Ratio の最小値を %% で指定する (cdrecord のマニュア"
+"ル参照):"
 
 #: ../plugins/cdrtools/burn-cdrtools.h:38
 msgid "cdrtools burning suite"
@@ -2856,31 +3038,40 @@ msgstr "映像用 DVD 用のディスクイメージを作成します"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
-msgid "Error while retrieving a key used for encryption. You may solve such a problem with one of the following methods: in a terminal either set the proper DVD region code for your CD/DVD player with the \"regionset %s\" command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" command"
-msgstr "暗号化のキーの取得中にエラーが発生しました。次のような方法でこの問題を解決できるかもしれません。端末で CD/DVD プレイヤーの適切な DVD リージョンコードを \"regionset %s\" コマンドで設定する。あるいは、\"DVDCSS_METHOD=title brasero --no-existing-session\" を実行する。"
+msgid ""
+"Error while retrieving a key used for encryption. You may solve such a "
+"problem with one of the following methods: in a terminal either set the "
+"proper DVD region code for your CD/DVD player with the \"regionset %s\" "
+"command or run the \"DVDCSS_METHOD=title brasero --no-existing-session\" "
+"command"
+msgstr ""
+"暗号化のキーの取得中にエラーが発生しました。次のような方法でこの問題を解決で"
+"きるかもしれません。端末で CD/DVD プレイヤーの適切な DVD リージョンコードを "
+"\"regionset %s\" コマンドで設定する。あるいは、\"DVDCSS_METHOD=title brasero "
+"--no-existing-session\" を実行する。"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "DVD キーの取得中"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "映像用 DVD を開けませんでした"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "映像用 DVD (%s) を読み込む際にエラーが発生しました"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "映像用 DVD のコピー中"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "CSS で暗号化された映像用 DVD をディスクイメージにコピーする"
 
@@ -2957,8 +3148,10 @@ msgstr "libisofs で \"%s\" フォルダーを作成する際にエラーが発�
 
 #: ../plugins/libburnia/burn-libisofs.c:759
 #, c-format
-msgid "libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr "libisofs でディレクトリ \"%s\" (%x) に内容を追加する際にエラーが発生しました"
+msgid ""
+"libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgstr ""
+"libisofs でディレクトリ \"%s\" (%x) に内容を追加する際にエラーが発生しました"
 
 #: ../plugins/libburnia/burn-libisofs.c:782
 #: ../plugins/libburnia/burn-libisofs.c:798
@@ -2993,8 +3186,11 @@ msgid "Impossible to retrieve local file path"
 msgstr "ローカルファイルのパスは取得できません"
 
 #: ../plugins/local-track/burn-uri.c:748
-msgid "Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
-msgstr "Nautilus の \"CD/DVD クリエーターフォルダー\" に追加したファイルを書き込めるようにする"
+msgid ""
+"Allows files added to the \"CD/DVD Creator Folder\" in Nautilus to be burned"
+msgstr ""
+"Nautilus の \"CD/DVD クリエーターフォルダー\" に追加したファイルを書き込める"
+"ようにする"
 
 #. Translators: This message is sent
 #. * when brasero could not link together
@@ -3062,7 +3258,8 @@ msgstr "動画ファイルを MPEG2 に変換中"
 
 #: ../plugins/transcode/burn-vob.c:1353
 msgid "Converts any video file into a format suitable for video DVDs"
-msgstr "Vob を使うと映像を含んだファイルを映像用 DVD に最適な形式に変換できます"
+msgstr ""
+"Vob を使うと映像を含んだファイルを映像用 DVD に最適な形式に変換できます"
 
 #: ../plugins/vcdimager/burn-vcdimager.c:478
 msgid "Creates disc images suitable for SVCDs"
@@ -3154,16 +3351,36 @@ msgid "The project is empty"
 msgstr "プロジェクトが空です"
 
 #: ../src/brasero-app.c:1176
-msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Brasero はフリーソフトウェアです。フリーソフトウェア財団が提供する GNU 一般公衆利用許諾契約書の第二版、あるいはそれ以降の版が定める条項の下で本プログラムを再頒布または変更することができます。"
+msgid ""
+"Brasero is free software; you can redistribute it and/or modify it under the "
+"terms of the GNU General Public License as published by the Free Software "
+"Foundation; either version 2 of the License, or (at your option) any later "
+"version."
+msgstr ""
+"Brasero はフリーソフトウェアです。フリーソフトウェア財団が提供する GNU 一般公"
+"衆利用許諾契約書の第二版、あるいはそれ以降の版が定める条項の下で本プログラム"
+"を再頒布または変更することができます。"
 
 #: ../src/brasero-app.c:1181
-msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
-msgstr "Brasero は有用であることを願って頒布されていますが、市場性または特定の目的に対する適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細は GNU 一般公衆利用許諾契約書を参照してください。"
+msgid ""
+"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
+"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+"details."
+msgstr ""
+"Brasero は有用であることを願って頒布されていますが、市場性または特定の目的に"
+"対する適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細は "
+"GNU 一般公衆利用許諾契約書を参照してください。"
 
 #: ../src/brasero-app.c:1186
-msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
-msgstr "あなたは本プログラムと一緒に GNU 一般公衆利用許諾契約書の写しを受け取っているはずです。そうでない場合は、Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA まで連絡してください。"
+msgid ""
+"You should have received a copy of the GNU General Public License along with "
+"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr ""
+"あなたは本プログラムと一緒に GNU 一般公衆利用許諾契約書の写しを受け取っている"
+"はずです。そうでない場合は、Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA まで連絡してください。"
 
 #: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
@@ -3297,7 +3514,9 @@ msgid "Do you want to add \"%s\", which is a video file?"
 msgstr "動画ファイル \"%s\" を追加しますか?"
 
 #: ../src/brasero-audio-disc.c:671
-msgid "This file is a video and therefore only the audio part can be written to the disc."
+msgid ""
+"This file is a video and therefore only the audio part can be written to the "
+"disc."
 msgstr "これは動画ファイルなので音声のみディスクに書き込むことが可能です。"
 
 #: ../src/brasero-audio-disc.c:674
@@ -3328,11 +3547,13 @@ msgstr "DTS トラック付きの音楽 CD を作成しますか?"
 #: ../src/brasero-audio-disc.c:858
 msgid ""
 "Some of the selected songs are suitable for creating DTS tracks.\n"
-"This type of audio CD track provides a higher quality of sound but can only be played by specific digital players.\n"
+"This type of audio CD track provides a higher quality of sound but can only "
+"be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
 "選択された音楽は DTS トラックの作成に適しています。\n"
-"この種の音楽CDトラックは高音質の音を提供しますが、特定のデジタルプレイヤーでしか再生できません。\n"
+"この種の音楽CDトラックは高音質の音を提供しますが、特定のデジタルプレイヤーで"
+"しか再生できません。\n"
 "注意: 同意したならば、正規化がこれらのトラックでは実行されません。"
 
 #: ../src/brasero-audio-disc.c:867
@@ -3349,7 +3570,8 @@ msgstr "DTS トラックを作成(_D)"
 
 #: ../src/brasero-audio-disc.c:874
 msgid "Click here to burn all suitable songs as DTS tracks"
-msgstr "ここをクリックすると DTS トラックとして適合するすべての楽曲を書き込みます"
+msgstr ""
+"ここをクリックすると DTS トラックとして適合するすべての楽曲を書き込みます"
 
 #: ../src/brasero-audio-disc.c:1290
 msgid "Select one song only please."
@@ -3529,8 +3751,12 @@ msgstr "このプロジェクトの編集を継続します"
 #. Translators: %s is the name of the image
 #: ../src/brasero-data-disc.c:619
 #, c-format
-msgid "There is only one selected file (\"%s\"). It is the image of a disc and its contents can be burned"
-msgstr "選択されたファイルが \"%s\" 一つしかありません。これはディスクイメージで内容をディスクに書き込むことが可能です"
+msgid ""
+"There is only one selected file (\"%s\"). It is the image of a disc and its "
+"contents can be burned"
+msgstr ""
+"選択されたファイルが \"%s\" 一つしかありません。これはディスクイメージで内容"
+"をディスクに書き込むことが可能です"
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
@@ -3561,8 +3787,12 @@ msgid "Do you want to replace \"%s\"?"
 msgstr "\"%s\" を置き換えますか?"
 
 #: ../src/brasero-data-disc.c:779
-msgid "A file with this name already exists in the folder.  Replacing it will overwrite its contents on the disc to be burnt."
-msgstr "この名前のファイルがすでにフォルダーにあります。置き換えするとディスクに書き込む内容を上書きします。"
+msgid ""
+"A file with this name already exists in the folder.  Replacing it will "
+"overwrite its contents on the disc to be burnt."
+msgstr ""
+"この名前のファイルがすでにフォルダーにあります。置き換えするとディスクに書き"
+"込む内容を上書きします。"
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * in the project.
@@ -3619,8 +3849,11 @@ msgid "Do you want to import the session from \"%s\"?"
 msgstr "\"%s\" からセッションを取り込みますか?"
 
 #: ../src/brasero-data-disc.c:1101
-msgid "That way, old files from previous sessions will be usable after burning."
-msgstr "そのようにして、以前のセッションからファイルを持ち越すとあとで書き込む際に使用できます。"
+msgid ""
+"That way, old files from previous sessions will be usable after burning."
+msgstr ""
+"そのようにして、以前のセッションからファイルを持ち越すとあとで書き込む際に使"
+"用できます。"
 
 #: ../src/brasero-data-disc.c:1109
 msgid "I_mport Session"
@@ -3712,7 +3945,8 @@ msgid "Filter Options"
 msgstr "フィルターリングのオプション"
 
 #: ../src/brasero-file-filtered.c:218
-msgid "Select the files you want to restore and click on the \"Restore\" button"
+msgid ""
+"Select the files you want to restore and click on the \"Restore\" button"
 msgstr "元に戻したいファイルを選択し \"元に戻す\" ボタンをクリックしてください"
 
 #: ../src/brasero-file-filtered.c:265
@@ -3807,8 +4041,12 @@ msgstr "無音部分の削除"
 #: ../src/brasero-multi-song-props.c:211 ../src/brasero-multi-song-props.c:252
 #: ../src/brasero-multi-song-props.c:273 ../src/brasero-song-properties.c:187
 #: ../src/brasero-song-properties.c:199 ../src/brasero-song-properties.c:211
-msgid "This information will be written to the disc using CD-Text technology. It can be read and displayed by some audio CD players."
-msgstr "この情報は CD-TEXT 技術を用いてディスクに書き込まれます (一部の CD プレイヤーで表示できます)。"
+msgid ""
+"This information will be written to the disc using CD-Text technology. It "
+"can be read and displayed by some audio CD players."
+msgstr ""
+"この情報は CD-TEXT 技術を用いてディスクに書き込まれます (一部の CD プレイヤー"
+"で表示できます)。"
 
 #: ../src/brasero-multi-song-props.c:213
 msgid "Song titles"
@@ -3963,12 +4201,20 @@ msgid "Burn the disc"
 msgstr "ディスクを書き込みます"
 
 #: ../src/brasero-project.c:695
-msgid "To add files to this project click the \"Add\" button or drag files to this area"
-msgstr "このプロジェクトにファイルを追加するには、\"追加\" ボタンをクリックするかこの領域にファイルをドラッグしてください"
+msgid ""
+"To add files to this project click the \"Add\" button or drag files to this "
+"area"
+msgstr ""
+"このプロジェクトにファイルを追加するには、\"追加\" ボタンをクリックするかこの"
+"領域にファイルをドラッグしてください"
 
 #: ../src/brasero-project.c:697
-msgid "To remove files select them then click on the \"Remove\" button or press \"Delete\" key"
-msgstr "ファイルを削除するには、ファイルを選択して \"削除\" ボタンをクリックするか \"Delete\" キーを押してください"
+msgid ""
+"To remove files select them then click on the \"Remove\" button or press "
+"\"Delete\" key"
+msgstr ""
+"ファイルを削除するには、ファイルを選択して \"削除\" ボタンをクリックするか "
+"\"Delete\" キーを押してください"
 
 #: ../src/brasero-project.c:804
 #, c-format
@@ -3977,16 +4223,22 @@ msgstr "おおよそのプロジェクトサイズ: %s"
 
 #: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
-msgstr "プロジェクトのサイズがディスクの容量よりも大きすぎます (オーバーバーンのオプション付きでも)。"
+msgstr ""
+"プロジェクトのサイズがディスクの容量よりも大きすぎます (オーバーバーンのオプ"
+"ション付きでも)。"
 
 #: ../src/brasero-project.c:977
 msgid ""
 "The project is too large for the disc and you must remove files from it.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognized and therefore needs the overburn option.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
+"cannot be properly recognized and therefore needs the overburn option.\n"
 "Note: This option might cause failure."
 msgstr ""
-"プロジェクトのサイズがディスクの容量を越えているので、プロジェクトからファイルをいくつか削除する必要があります。\n"
-"容量を正しく認識できない 90 分または 100 分の CD-R (W) を利用するためオーバーバーンのオプションが必要な場合は、このオプションを使用するのが良いでしょう。\n"
+"プロジェクトのサイズがディスクの容量を越えているので、プロジェクトからファイ"
+"ルをいくつか削除する必要があります。\n"
+"容量を正しく認識できない 90 分または 100 分の CD-R (W) を利用するためオーバー"
+"バーンのオプションが必要な場合は、このオプションを使用するのが良いでしょ"
+"う。\n"
 "注意: このオプションが使えない場合もあります。"
 
 #: ../src/brasero-project.c:1098
@@ -4014,7 +4266,9 @@ msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr "ファイル選択をクリアするか、または新しいプロジェクトに追加しますか?"
 
 #: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
-msgid "If you choose to create a new empty project, the file selection will be discarded."
+msgid ""
+"If you choose to create a new empty project, the file selection will be "
+"discarded."
 msgstr "新しくプロジェクトを作成するとファイル選択がクリアされます。"
 
 #: ../src/brasero-project.c:1927
@@ -4038,8 +4292,14 @@ msgid "Do you really want to empty the current project?"
 msgstr "本当にこのプロジェクトを空にしますか?"
 
 #: ../src/brasero-project.c:2306
-msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
-msgstr "プロジェクトを空にすると、ここで追加したファイルを削除することになり、今までの作業結果が完全に失われてしまいます (ただし、実際にファイルシステムから削除するというわけではなく、プロジェクトの一覧から無くなるということです)。"
+msgid ""
+"Emptying a project will remove all files already added. All the work will be "
+"lost. Note that files will not be deleted from their own location, just no "
+"longer listed here."
+msgstr ""
+"プロジェクトを空にすると、ここで追加したファイルを削除することになり、今まで"
+"の作業結果が完全に失われてしまいます (ただし、実際にファイルシステムから削除"
+"するというわけではなく、プロジェクトの一覧から無くなるということです)。"
 
 #: ../src/brasero-project.c:2368
 msgid "_Save"
@@ -4146,7 +4406,8 @@ msgstr "新しい音楽プロジェクト(_A)"
 
 #: ../src/brasero-project-manager.c:102
 #: ../src/brasero-project-type-chooser.c:76
-msgid "Create a traditional audio CD that will be playable on computers and stereos"
+msgid ""
+"Create a traditional audio CD that will be playable on computers and stereos"
 msgstr "コンピューターやステレオで演奏できる音楽 CD を作成します"
 
 #: ../src/brasero-project-manager.c:103
@@ -4155,7 +4416,9 @@ msgstr "新しいデータプロジェクト(_D)"
 
 #: ../src/brasero-project-manager.c:104
 #: ../src/brasero-project-type-chooser.c:81
-msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
+msgid ""
+"Create a CD/DVD containing any type of data that can only be read on a "
+"computer"
 msgstr "いろいろな種類のデータを格納した読み込み専用の CD/DVD を作成します"
 
 #: ../src/brasero-project-manager.c:105
@@ -4173,8 +4436,11 @@ msgstr "ディスクのコピー(_D)…"
 
 #: ../src/brasero-project-manager.c:108
 #: ../src/brasero-project-type-chooser.c:91
-msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"
-msgstr "音楽 CD やデータ CD/DVD のコピーをハードディスクや別の CD/DVD 上に作成します"
+msgid ""
+"Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on "
+"another CD/DVD"
+msgstr ""
+"音楽 CD やデータ CD/DVD のコピーをハードディスクや別の CD/DVD 上に作成します"
 
 #: ../src/brasero-project-manager.c:109
 msgid "_Burn Image…"
@@ -4458,8 +4724,12 @@ msgid "Do you really want to split the track?"
 msgstr "本当にトラックを分割してもよろしいですか?"
 
 #: ../src/brasero-split-dialog.c:175
-msgid "If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."
-msgstr "トラックを分割すると、新しいトラックの演奏時間が6秒未満になり、残ったパートは無音になります。"
+msgid ""
+"If you split the track, the size of the new track will be shorter than 6 "
+"seconds and will be padded."
+msgstr ""
+"トラックを分割すると、新しいトラックの演奏時間が6秒未満になり、残ったパートは"
+"無音になります。"
 
 #: ../src/brasero-split-dialog.c:181 ../src/brasero-split-dialog.c:752
 msgid "_Split"
@@ -4649,7 +4919,8 @@ msgstr "[URI] [URI] …"
 #: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
-msgstr "利用可能なオプションの一覧を表示する場合は %s --help を実行してください\n"
+msgstr ""
+"利用可能なオプションの一覧を表示する場合は %s --help を実行してください\n"
 
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "妥当な .desktop ファイルではありません"
@@ -4667,7 +4938,8 @@ msgstr "利用可能なオプションの一覧を表示する場合は %s --hel
 #~ msgstr "不明な起動オプションです: %d"
 
 #~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-#~ msgstr "ドキュメントの URI を 'Type=Link' な .desktop エントリには渡せません"
+#~ msgstr ""
+#~ "ドキュメントの URI を 'Type=Link' な .desktop エントリには渡せません"
 
 #~ msgid "Not a launchable item"
 #~ msgstr "起動可能なアイテムではありません"
