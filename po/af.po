@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero"
-"&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-04-18 15:05+0000\n"
-"PO-Revision-Date: 2014-09-23 15:57+0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=brasero&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2018-03-26 22:07+0000\n"
+"PO-Revision-Date: 2018-05-29 11:18+0200\n"
 "Last-Translator: F Wolff <friedel@translate.org.za>\n"
 "Language-Team: translate-discuss-af@lists.sourceforge.net\n"
 "Language: af\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.9.0-beta1\n"
+"X-Generator: Poedit 2.0.7\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
@@ -48,7 +48,7 @@ msgstr "Skep en kopieer CD's en DVD's"
 
 #: ../data/brasero.desktop.in.in.h:4
 msgid "disc;cdrom;dvd;burn;audio;video;"
-msgstr "skyf;skryf;oudio;klank;disc;cdrom;dvd;burn;audio;video;"
+msgstr "skyf;cdrom;dvd;brand;klank;video;"
 
 #: ../data/brasero.desktop.in.in.h:5
 msgid "Brasero Disc Burner"
@@ -63,10 +63,14 @@ msgid "Burn an Image File"
 msgstr "Skryf 'n beeldlêer"
 
 #: ../data/brasero.desktop.in.in.h:8
+msgid "Copy a Disc"
+msgstr "Kopieer 'n skyf"
+
+#: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Skep 'n oudioprojek"
 
-#: ../data/brasero.desktop.in.in.h:9
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Skep 'n videoprojek"
 
@@ -85,26 +89,20 @@ msgid ""
 msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:3
-#, fuzzy
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for images"
-msgstr "Skep tans kontrolesom vir beeldlêers"
+msgstr "Die tipe kontrolesom om te gebruik vir beelde"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
-msgstr ""
+msgstr "Stel na 0 vir MD5, 1 vir SHA1 en 2 vir SHA256"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:5
-#, fuzzy
-#| msgid "Creating checksum for image files"
 msgid "The type of checksum used for files"
-msgstr "Skep tans kontrolesom vir beeldlêers"
+msgstr "Die tipe kontrolesom om te gebruik vir lêers"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:6
-#, fuzzy
-#| msgid "Set the directory where to store temporary files"
 msgid "Directory to use for temporary files"
-msgstr "Stel in watter gids tydelike lêers gestoor word"
+msgstr "Gids waar tydelike lêers gestoor moet word"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid ""
@@ -232,10 +230,8 @@ msgid ""
 msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:32
-#, fuzzy
-#| msgid "Burning image to disc"
 msgid "Burning flags to be used"
-msgstr "Skryf tans beeldlêer na skyf"
+msgstr "Skryf tans vlae wat gebruik gaan word"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:33
 msgid ""
@@ -379,24 +375,21 @@ msgstr "Nie genoeg ruimte beskikbaar op die skyf nie"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (toepassing)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (biblioteek)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (GStreamer-inprop)"
@@ -428,18 +421,17 @@ msgstr "Geen formaat vir die tydelike beeldlêer kon gevind word nie"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "'n Interne fout het voorgekom"
@@ -868,7 +860,8 @@ msgstr "CD-RW-oudioskywe speel moontlik nie korrek in ouer CD-spelers nie."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:993
 msgid "Recording audio tracks on a rewritable disc is not advised."
-msgstr "Die skryf van oudiobane op 'n herskryfbare skyf word nie aanbeveel nie."
+msgstr ""
+"Die skryf van oudiobane op 'n herskryfbare skyf word nie aanbeveel nie."
 
 #. Translators: %s is the name of a drive
 #: ../libbrasero-burn/brasero-burn-dialog.c:1037
@@ -1158,8 +1151,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Laai asb. 'n skyf in wat nie kopiebeskerming het nie."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Nie al die nodige toepassings en biblioteke is geïnstalleer nie."
 
@@ -1219,8 +1211,7 @@ msgstr "Opstelling van skyfskrywery"
 msgid "Video Options"
 msgstr "Videokeuses"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1263,8 +1254,7 @@ msgstr "Kopieer CD/DVD"
 msgid "Select disc to copy"
 msgstr "Kies skyf om te kopieer"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Installeer asb. die volgende self en probeer weer:"
 
@@ -1368,7 +1358,7 @@ msgid ""
 "GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
-"Die lêerstelsel op dié volume ondersteun nie groot lêers (meer as 2 GiB) "
+"Die lêerstelsel op dié volume ondersteun nie groot lêers (meer as 2 GiG) "
 "nie.\n"
 "Dit kan 'n probleem wees met die skryf van DVD's of groot beeldlêers."
 
@@ -1388,14 +1378,14 @@ msgstr "%.1f× (CD)"
 #: ../libbrasero-burn/brasero-drive-properties.c:532
 #, c-format
 msgid "%.1f× (BD)"
-msgstr ""
+msgstr "%.1f× (BD)"
 
 #. Translators %s.1f is the speed used to burn for every medium
 #. * type. BD = Blu Ray
 #: ../libbrasero-burn/brasero-drive-properties.c:537
 #, c-format
 msgid "%.1f× (BD) %.1f× (DVD) %.1f× (CD)"
-msgstr ""
+msgstr "%.1f× (BD) %.1f× (DVD) %.1f× (CD)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:575
 msgid "Impossible to retrieve speeds"
@@ -1649,16 +1639,6 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-status-dialog.c:290
 #: ../src/brasero-data-disc.c:835
-#, fuzzy
-#| msgid ""
-#| "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
-#| "supported by the ISO9660 standard in its first and second versions (the "
-#| "most widespread ones).\n"
-#| "It is recommended to use the third version of the ISO9660 standard, which "
-#| "is supported by most operating systems, including Linux and all versions "
-#| "of Windows ©.\n"
-#| "However, Mac OS X cannot read images created with version 3 of the "
-#| "ISO9660 standard."
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by the ISO9660 standard in its first and second versions (the most "
@@ -1669,9 +1649,9 @@ msgid ""
 "However, Mac OS X cannot read images created with version 3 of the ISO9660 "
 "standard."
 msgstr ""
-"Die grootte van die lêer is meer as 2 GiB. Lêers groter as 2 GiB word nie "
-"ondersteun deur die eerste en tweede weergawes van die ISO9660-standaard ("
-"die algemeenstes) nie.\n"
+"Die grootte van die lêer is meer as 2 GiG. Lêers groter as 2 GiG word nie "
+"ondersteun deur die eerste en tweede weergawes van die ISO9660-standaard "
+"(die algemeenstes) nie.\n"
 "Gebruik gerus die derde weergawe van die ISO9660-standaard wat ondersteun "
 "word deur meeste bedryfstelsels, insluitend Linux en alle weergawes van "
 "Windows™.\n"
@@ -1795,12 +1775,12 @@ msgstr "Die skyf word nie ondersteun nie"
 msgid "The drive is empty"
 msgstr "Die aandrywer is leeg"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Kies 'n skyf"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Vordering"
 
@@ -2046,7 +2026,7 @@ msgid ""
 "with a size over 2 GiB"
 msgstr ""
 "Die gekose lêerstelsel vir die stoor van die tydelike beeldlêer kan nie "
-"lêers groter as 2 GiB hou nie"
+"lêers groter as 2 GiG hou nie"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
 #, c-format
@@ -2057,7 +2037,7 @@ msgstr ""
 "Die gekose ligging vir die stoor van die tydelike beeldlêer het nie genoeg "
 "beskikbare ruimte vir die skyfbeeld nie (%ld MiG is nodig)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Die grootte van die volume kon nie verkry word nie"
@@ -2134,9 +2114,8 @@ msgstr "Beeldlêer"
 
 #: ../libbrasero-media/brasero-drive-selection.c:341
 #: ../libbrasero-media/brasero-drive-selection.c:436
-#, fuzzy
 msgid "Unnamed CD/DVD Drive"
-msgstr "CD/DVD-aandrywer sonder naam"
+msgstr "Naamlose CD/DVD-aandrywer"
 
 #: ../libbrasero-media/brasero-media.c:54
 msgid "Display debug statements on stdout for Brasero media library"
@@ -2280,19 +2259,19 @@ msgstr "Geen skyf beskikbaar nie"
 #: ../libbrasero-media/brasero-units.c:71
 #, c-format
 msgid "%s h %s min %s"
-msgstr ""
+msgstr "%s h %s min %s"
 
 #. Translators: this is hour minute like '2 h 14'
 #: ../libbrasero-media/brasero-units.c:77
 #, c-format
 msgid "%s h %s"
-msgstr ""
+msgstr "%s h %s"
 
 #. Translators: this is hour like '2 h'
 #: ../libbrasero-media/brasero-units.c:82
 #, c-format
 msgid "%s h"
-msgstr ""
+msgstr "%s h"
 
 #. Translators: this is 'hour:minute:second' like '2:14:25'
 #: ../libbrasero-media/brasero-units.c:86
@@ -2311,7 +2290,7 @@ msgstr "%s:%s"
 #: ../libbrasero-media/brasero-units.c:99
 #, c-format
 msgid "%s min"
-msgstr ""
+msgstr "%s min"
 
 #. Translators: the first %s is the number of minutes
 #. * and the second one is the number of seconds.
@@ -2319,7 +2298,7 @@ msgstr ""
 #: ../libbrasero-media/brasero-units.c:104
 #, c-format
 msgid "%s:%s min"
-msgstr ""
+msgstr "%s:%s min"
 
 #: ../libbrasero-media/brasero-volume.c:186
 #, c-format
@@ -2351,8 +2330,8 @@ msgstr "Oudioskyf (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Dataskyf (%s)"
@@ -2361,8 +2340,7 @@ msgstr "Dataskyf (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
 msgstr "Dit blyk nie 'n geldige ISO-beeldlêer te wees nie"
@@ -2548,14 +2526,12 @@ msgid "SIDES"
 msgstr "KANTE"
 
 #: ../libbrasero-utils/brasero-jacket-view.c:823
-#, fuzzy
 msgid "BACK COVER"
 msgstr "AGTEROMSLAG"
 
 #: ../libbrasero-utils/brasero-jacket-view.c:841
-#, fuzzy
 msgid "FRONT COVER"
-msgstr "VOORKANT"
+msgstr "VOORBLAD"
 
 #. Translators: This is an image,
 #. * a picture, not a "Disc Image"
@@ -2613,20 +2589,16 @@ msgid "%s element could not be created"
 msgstr ""
 
 #: ../libbrasero-utils/brasero-misc.c:74
-#, fuzzy
-#| msgid "Display debug statements on stdout for Brasero burn library"
 msgid "Display debug statements on stdout for Brasero utilities library"
-msgstr "Wys ontfoutstellings op stdout vir die Brasero-skryfbiblioteek"
+msgstr "Wys ontfoutstellings op stdout vir die Brasero-nutsbiblioteek"
 
 #: ../libbrasero-utils/brasero-misc.c:91
 msgid "Brasero utilities library"
 msgstr ""
 
 #: ../libbrasero-utils/brasero-misc.c:92
-#, fuzzy
-#| msgid "Display options for Brasero media library"
 msgid "Display options for Brasero-utils library"
-msgstr "Wys keuses vir Brasero-mediabiblioteek"
+msgstr "Wys keuses vir Brasero-utils mediabiblioteek"
 
 #: ../libbrasero-utils/brasero-tool-color-picker.c:166
 msgid "Pick a Color"
@@ -2726,7 +2698,7 @@ msgstr "Data kon nie gelees word nie (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -2743,11 +2715,11 @@ msgstr ""
 
 #: ../plugins/cdrdao/burn-cdrdao.c:103
 msgid "Copying audio track"
-msgstr ""
+msgstr "Kopieer tans oudiosnit"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:109
 msgid "Copying data track"
-msgstr ""
+msgstr "Kopieer tans datasnit"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:145
 #, c-format
@@ -2856,7 +2828,7 @@ msgstr "Skryf tans snit %s"
 
 #: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
 msgid "Formatting disc"
-msgstr ""
+msgstr "Formatteer skyf"
 
 #: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
 msgid "Writing cue sheet"
@@ -3016,7 +2988,7 @@ msgstr "Skep skyfbeeldlêers geskik vir video-DVD's"
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3026,26 +2998,26 @@ msgid ""
 "command"
 msgstr ""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr ""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "Video-DVD kon nie oopgemaak word nie"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Fout tydens lees van video-DVD (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Kopieer tans video-DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Kopieer video-DVD's wat CSS-geënkripteer is na 'n skyfbeeld"
 
@@ -3214,12 +3186,12 @@ msgstr ""
 #: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
-msgstr ""
+msgstr "Analiseer tans \"%s\""
 
 #: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
-msgstr ""
+msgstr "Transkodeer tans \"%s\""
 
 #: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
@@ -3230,8 +3202,6 @@ msgid "Converting video file to MPEG2"
 msgstr "Skakel tans videolêer om na MPEG2"
 
 #: ../plugins/transcode/burn-vob.c:1353
-#, fuzzy
-#| msgid "Converts any video file into a format suitable for Video DVDs"
 msgid "Converts any video file into a format suitable for video DVDs"
 msgstr "Skakel enige videolêer oor in 'n formaat geskik vir video-DVD's"
 
@@ -3376,7 +3346,9 @@ msgstr "Brasero-tuisblad"
 #.
 #: ../src/brasero-app.c:1227
 msgid "translator-credits"
-msgstr "Friedel Wolff"
+msgstr ""
+"Friedel Wolff\n"
+"Pieter Schoeman"
 
 #: ../src/brasero-app.c:1449
 #, c-format
@@ -3441,7 +3413,7 @@ msgstr "Verdeel die gekose snit"
 
 #: ../src/brasero-audio-disc.c:343 ../src/brasero-video-tree-model.c:187
 msgid "Pause"
-msgstr ""
+msgstr "Laat wag"
 
 #: ../src/brasero-audio-disc.c:349
 msgid "Split"
@@ -3503,7 +3475,7 @@ msgstr "Wil u soek vir oudiolêers binne-in die gids?"
 
 #: ../src/brasero-audio-disc.c:758
 msgid "Search _Directory"
-msgstr ""
+msgstr "Deursoek _gids"
 
 #: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
 #, c-format
@@ -3721,7 +3693,7 @@ msgid ""
 "contents can be burned"
 msgstr ""
 "Daar is net een gekose lêer (\"%s\"). Dit is die beeldlêer van 'n skyf en sy "
-"inhoud kan geskryf word."
+"inhoud kan geskryf word"
 
 #: ../src/brasero-data-disc.c:625
 msgid "Burn as _Data"
@@ -3942,16 +3914,16 @@ msgstr "Filtreer _versteekte lêers"
 #. replace symlink
 #: ../src/brasero-filter-option.c:72
 msgid "Re_place symbolic links"
-msgstr ""
+msgstr "_Vervang simboliese skakels"
 
 #. filter broken symlink button
 #: ../src/brasero-filter-option.c:79
 msgid "Filter _broken symbolic links"
-msgstr ""
+msgstr "Filtreer _gebreekte simboliese skakels"
 
 #: ../src/brasero-filter-option.c:85
 msgid "Filtering options"
-msgstr ""
+msgstr "Filtreer opsies"
 
 #: ../src/brasero-layout.c:104
 msgid "P_review"
@@ -4039,12 +4011,12 @@ msgstr ""
 
 #: ../src/brasero-multi-song-props.c:345 ../src/brasero-song-properties.c:287
 msgid "Song Information"
-msgstr ""
+msgstr "Musiek inligting"
 
 #: ../src/brasero-player.c:540
 #, c-format
 msgid "%i × %i pixels"
-msgstr ""
+msgstr "%i x %i beeldpunte"
 
 #. No Preview view
 #: ../src/brasero-player.c:845
@@ -4074,7 +4046,7 @@ msgstr "Speellyste"
 
 #: ../src/brasero-playlist.c:762
 msgid "Number of Songs"
-msgstr ""
+msgstr "Aantal liedjies"
 
 #: ../src/brasero-playlist.c:782
 msgid "Genre"
@@ -4093,25 +4065,25 @@ msgstr "Geaktiveer"
 msgid "Copyright %s"
 msgstr "Kopiereg %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "_Aangaande"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "_Opstelling"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "A_ktiveer"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "Ak_tiveer almal"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "_Deaktiveer almal"
 
@@ -4364,7 +4336,7 @@ msgstr "L_eë projek"
 
 #: ../src/brasero-project-manager.c:100
 msgid "Let you choose your new project"
-msgstr ""
+msgstr "Laat u 'n nuwe projek kies"
 
 #: ../src/brasero-project-manager.c:101
 msgid "New _Audio Project"
@@ -4652,7 +4624,7 @@ msgstr "Hernoem na"
 
 #: ../src/brasero-rename.c:423
 msgid "{number}"
-msgstr ""
+msgstr "{nommer}"
 
 #. *
 #. * Translators: this is the position being played in a stream. The
@@ -4670,7 +4642,7 @@ msgstr "Geen lêer"
 
 #: ../src/brasero-song-control.c:562
 msgid "Start and stop playing"
-msgstr ""
+msgstr "Begin en stop speel"
 
 #: ../src/brasero-song-properties.c:177
 msgid "Title:"
@@ -4678,11 +4650,11 @@ msgstr "Titel:"
 
 #: ../src/brasero-song-properties.c:235
 msgid "Song start:"
-msgstr ""
+msgstr "Liedjie begin:"
 
 #: ../src/brasero-song-properties.c:241
 msgid "Song end:"
-msgstr ""
+msgstr "Liedjie einde:"
 
 #: ../src/brasero-song-properties.c:258
 msgid "Track length:"
@@ -4691,7 +4663,7 @@ msgstr "Snitlengte:"
 #: ../src/brasero-song-properties.c:365
 #, c-format
 msgid "Song information for track %02i"
-msgstr ""
+msgstr "Musiek inligting vir snit %02i"
 
 #: ../src/brasero-split-dialog.c:172
 msgid "Do you really want to split the track?"
@@ -4769,7 +4741,7 @@ msgstr "Verdeel snit by elke stilte"
 
 #: ../src/brasero-split-dialog.c:1090
 msgid "_Slice"
-msgstr ""
+msgstr "_Skyf"
 
 #: ../src/brasero-split-dialog.c:1101
 msgid "Add a splitting point"
@@ -4817,7 +4789,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1266
 msgid "Remove the selected slices"
-msgstr ""
+msgstr "Verwyder die gekose sfyf"
 
 #: ../src/brasero-split-dialog.c:1280
 msgid "Clear the slices preview"
@@ -4825,11 +4797,11 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1290
 msgid "_List of slices that are to be created:"
-msgstr ""
+msgstr "_Lys skywe wat geskep gaan word:"
 
 #: ../src/brasero-split-dialog.c:1298
 msgid "Slices Preview"
-msgstr ""
+msgstr "Skywe voorskou"
 
 #: ../src/brasero-time-button.c:287
 msgid "Hours"
@@ -4873,7 +4845,7 @@ msgstr "Wil u soek vir videolêers binne-in die gids?"
 
 #: ../src/brasero-video-disc.c:369
 msgid "_Search Directory"
-msgstr ""
+msgstr "_Deursoek gids"
 
 #: ../src/brasero-video-disc.c:412
 #, c-format
