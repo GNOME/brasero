@@ -714,6 +714,8 @@ nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
         items = NULL;
 
         scheme = nautilus_file_info_get_uri_scheme (current_folder);
+        if (!scheme)
+                return NULL;
 
         if (strcmp (scheme, "burn") == 0) {
                 NautilusMenuItem *item;
