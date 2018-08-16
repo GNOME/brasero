@@ -423,7 +423,7 @@ brasero_project_name_label_changed (GtkEditable *editable,
 	BraseroProjectNamePrivate *priv;
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (editable);
-	priv->label_modified = 1;
+	priv->label_modified = TRUE;
 	g_signal_emit (editable,
 		       brasero_project_name_signals [CHANGED_SIGNAL],
 		       0);
@@ -480,7 +480,10 @@ brasero_project_name_set_type (BraseroProjectName *self)
 		return;
 	}
 
-	priv->label_modified = FALSE;
+	if (priv->label_modified) {
+		return;
+	}
+
 	title_str = brasero_project_name_get_default_label (self);
 
 	g_signal_handlers_block_by_func (self, brasero_project_name_label_changed, NULL);
@@ -519,7 +522,7 @@ brasero_project_name_init (BraseroProjectName *object)
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
 
-	priv->label_modified = 0;
+	priv->label_modified = FALSE;
 	g_signal_connect (object,
 			  "icon-release",
 			  G_CALLBACK (brasero_project_name_icon_button_clicked),
