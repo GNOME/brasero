@@ -80,7 +80,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *progress,
 					    glong time,
 					    gint64 rate,
 					    BraseroMedia media,
-					    gint mb_written);
+					    gint64 written);
 
 void
 brasero_burn_progress_set_action (BraseroBurnProgress *progress,
