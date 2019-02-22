@@ -1,14 +1,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016, 2017.
+# Sveinn í Felli <sv1@fellsnet.is>, 2015, 2016, 2017, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-28 15:14+0000\n"
-"PO-Revision-Date: 2017-12-06 16:16+0000\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/brasero/issues\n"
+"POT-Creation-Date: 2018-06-01 10:14+0000\n"
+"PO-Revision-Date: 2019-02-22 08:15+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -16,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -62,7 +61,6 @@ msgid "Burn an Image File"
 msgstr "Brenna diskmynd"
 
 #: ../data/brasero.desktop.in.in.h:8
-#| msgid "Copy a disc"
 msgid "Copy a Disc"
 msgstr "Afrita disk"
 
@@ -245,7 +243,7 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:34
 msgid "The speed to be used"
-msgstr ""
+msgstr "Hraðinn sem á að nota"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:35
 msgid ""
@@ -375,7 +373,7 @@ msgstr ""
 #: ../plugins/growisofs/burn-growisofs.c:198
 #, c-format
 msgid "Not enough space available on the disc"
-msgstr ""
+msgstr "Ekki nógu mikið pláss eftir á disknum"
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
@@ -407,12 +405,13 @@ msgid ""
 "Please install the following required applications and libraries manually "
 "and try again:"
 msgstr ""
+"Settu handvirkt upp eftirfarandi forrit og aðgerðasöfn og reyndu svo aftur:"
 
 #: ../libbrasero-burn/brasero-burn.c:2576
 #: ../libbrasero-burn/brasero-caps-burn.c:868
 #, c-format
 msgid "Only one track at a time can be checked"
-msgstr ""
+msgstr "Aðeins er hægt að yfirfara eitt spor í einu."
 
 #: ../libbrasero-burn/brasero-burn.c:2635
 msgid "No format for the temporary image could be found"
@@ -1158,7 +1157,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-options.c:557 ../src/brasero-project.c:983
 msgid "_Overburn"
-msgstr ""
+msgstr "_Yfirbrennsla"
 
 #: ../libbrasero-burn/brasero-burn-options.c:559 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
@@ -2657,7 +2656,7 @@ msgstr "Ekki tókst að skrifa gögn (%s)"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:723
 msgid "Generates .cue files from audio"
-msgstr ""
+msgstr "Framkallar .cue skrár út frá hljóði"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:55
 msgid "cdrdao burning suite"
@@ -2686,7 +2685,7 @@ msgstr ""
 
 #: ../plugins/cdrdao/burn-cdrdao.c:480
 msgid "Converting toc file"
-msgstr ""
+msgstr "Umbreyti TOC-skrá"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:697
 msgid "Copies, burns and blanks CDs"
@@ -2753,14 +2752,14 @@ msgstr ""
 
 #: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
 msgid "Copies any disc to a disc image"
-msgstr ""
+msgstr "Afritar hvaða disk sem er yfir í diskmynd"
 
 #: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
 #: ../plugins/libburnia/burn-libburn.c:856
 #: ../plugins/libburnia/burn-libburn.c:887
 #, c-format
 msgid "An error occurred while writing to disc"
-msgstr ""
+msgstr "Villa kom upp við skrifun á disk"
 
 #: ../plugins/cdrkit/burn-wodim.c:128 ../plugins/cdrtools/burn-cdrecord.c:128
 #, c-format
@@ -2876,7 +2875,7 @@ msgstr "Gátsumma skrár"
 
 #: ../plugins/checksum/burn-checksum-files.c:1466
 msgid "Checks file integrities on a disc"
-msgstr ""
+msgstr "Athugar áreiðanleika skráa á diski"
 
 #: ../plugins/checksum/burn-checksum-files.c:1504
 #: ../plugins/checksum/burn-checksum-image.c:856
@@ -3054,7 +3053,7 @@ msgstr ""
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
-msgstr ""
+msgstr "Afrita gátsummuskrá"
 
 #: ../plugins/local-track/burn-local-image.c:527
 #: ../plugins/local-track/burn-uri.c:326
@@ -3066,7 +3065,7 @@ msgstr ""
 #. * displaying.
 #: ../plugins/local-track/burn-local-image.c:909
 msgid "File Downloader"
-msgstr ""
+msgstr "Niðurhalsforrit"
 
 #: ../plugins/local-track/burn-local-image.c:910
 msgid "Allows files not stored locally to be burned"
@@ -3720,16 +3719,16 @@ msgstr "Flytja i_nn"
 #: ../src/brasero-data-disc.c:1098
 #, c-format
 msgid "Do you want to import the session from \"%s\"?"
-msgstr ""
+msgstr "Viltu flytja inn setuna úr '%s'?"
 
 #: ../src/brasero-data-disc.c:1101
 msgid ""
 "That way, old files from previous sessions will be usable after burning."
-msgstr ""
+msgstr "Þannig verða eldri skrár úr fyrri setum aðgengilegar eftir brennslu."
 
 #: ../src/brasero-data-disc.c:1109
 msgid "I_mport Session"
-msgstr ""
+msgstr "Flytja _inn setu"
 
 #: ../src/brasero-data-disc.c:1111
 msgid "Click here to import its contents"
@@ -3741,11 +3740,11 @@ msgstr "Bíddu aðeins á meðan verkefnið hleðst inn."
 
 #: ../src/brasero-data-disc.c:1500
 msgid "_Cancel Loading"
-msgstr ""
+msgstr "_Hætta við hleðslu"
 
 #: ../src/brasero-data-disc.c:1502
 msgid "Cancel loading current project"
-msgstr ""
+msgstr "Hætta við að hlaða inn fyrirliggjandi verkefni"
 
 #: ../src/brasero-data-disc.c:1903
 msgid "File Renaming"
@@ -3869,7 +3868,7 @@ msgstr "Fo_rskoðun"
 #. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-layout.c:106
 msgid "Display video, audio and image preview"
-msgstr ""
+msgstr "Birta forskoðun af myndskeiðum, hljóði og ljósmyndum"
 
 #: ../src/brasero-layout.c:110
 msgid "_Show Side Panel"
@@ -4138,11 +4137,11 @@ msgstr ""
 
 #: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
-msgstr ""
+msgstr "Hen_da skráavali"
 
 #: ../src/brasero-project.c:1931
 msgid "_Keep File Selection"
-msgstr ""
+msgstr "Halda s_kráavali"
 
 #: ../src/brasero-project.c:1946
 msgid "_Discard Project"
@@ -4511,11 +4510,11 @@ msgstr "Skipta út texta"
 
 #: ../src/brasero-rename.c:325
 msgid "Number files according to a pattern"
-msgstr ""
+msgstr "Númera skrár eftir mynstri"
 
 #: ../src/brasero-rename.c:326
 msgid "Insert number sequence at beginning"
-msgstr ""
+msgstr "Setja fremst inn raðnúmer"
 
 #. Translators: This is a verb. This is completed later
 #: ../src/brasero-rename.c:341
@@ -4793,4 +4792,5 @@ msgstr "[URI] [URI] …"
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr ""
 "Skrifaðu \"%s --help\" til að sjá lista með öllum mögulegum valkostum.\n"
+
 
