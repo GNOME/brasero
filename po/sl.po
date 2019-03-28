@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the brasero package.
 #
 # Matic Žgur <mr.zgur@gmail.com>, 2006.
-# Matej Urbančič <mateju@svn.gnome.org>, 2007-2017.
+# Matej Urbančič <mateju@svn.gnome.org>, 2007-2019.
 #
 msgid ""
 msgstr ""
@@ -11,17 +11,16 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-07-06 16:34+0200\n"
-"PO-Revision-Date: 2017-07-06 16:34+0200\n"
+"PO-Revision-Date: 2019-03-24 20:27+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
-"%100==4 ? 3 : 0);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -360,7 +359,7 @@ msgstr "Prepričajte se, da pogona ne uporablja kakšen drug program."
 #: ../libbrasero-burn/brasero-burn.c:409
 #, c-format
 msgid "\"%s\" cannot be unlocked"
-msgstr "\"%s\" ni mogoče zakleniti"
+msgstr "»%s« ni mogoče zakleniti"
 
 #: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
 #: ../libbrasero-burn/brasero-burn.c:761
@@ -741,42 +740,42 @@ msgstr "Ponovno vstavite disk v CD/DVD pogon."
 #: ../libbrasero-burn/brasero-burn-dialog.c:650
 #, c-format
 msgid "\"%s\" is busy."
-msgstr "\"%s\" je zaposlen:"
+msgstr "»%s« je zaposlen:"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:654
 #, c-format
 msgid "There is no disc in \"%s\"."
-msgstr "V \"%s\" ni nobenega diska."
+msgstr "V »%s« ni nobenega diska."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:658
 #, c-format
 msgid "The disc in \"%s\" is not supported."
-msgstr "Disk v \"%s\" ni podprt."
+msgstr "Disk v »%s« ni podprt."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:662
 #, c-format
 msgid "The disc in \"%s\" is not rewritable."
-msgstr "Disk v \"%s\" ni prepisljiv."
+msgstr "Disk v »%s« ni prepisljiv."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:666
 #, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr "Disk v \"%s\" je prazen."
+msgstr "Disk v »%s« je prazen."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:670
 #, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr "Disk v \"%s\" ni zapisljiv."
+msgstr "Disk v »%s« ni zapisljiv."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:674
 #, c-format
 msgid "Not enough space available on the disc in \"%s\"."
-msgstr "Na disku \"%s\" ni dovolj prostora."
+msgstr "Na disku »%s« ni dovolj prostora."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:682
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr "Disk v \"%s\" mora biti ponovno naložen."
+msgstr "Disk v »%s« mora biti ponovno naložen."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:683
 msgid "Please eject the disc and reload it."
@@ -908,7 +907,7 @@ msgstr "Zapisovanje zvočnih sledi na prepisljiv disk ni priporočeno."
 #: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Please eject the disc from \"%s\" manually."
-msgstr "Disk je treba ročno izvreči iz naprave \"%s\"."
+msgstr "Disk je treba ročno izvreči iz naprave »%s«."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1046
 msgid ""
@@ -1268,7 +1267,7 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
 msgstr ""
-"Na voljo je le ena izbrana datoteka (\"%s\"). Ta datoteka je odtis diska, "
+"Na voljo je le ena izbrana datoteka (»%s«). Ta datoteka je odtis diska, "
 "njegovo vsebino pa je mogoče zapisati."
 
 #: ../libbrasero-burn/brasero-burn-options.c:809
@@ -1323,7 +1322,7 @@ msgstr "izvajalca %s"
 #: ../libbrasero-burn/brasero-data-vfs.c:218
 #, c-format
 msgid "\"%s\" cannot be read"
-msgstr "\"%s\" ni mogoče brati"
+msgstr "»%s« ni mogoče brati"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
@@ -1345,7 +1344,7 @@ msgstr "Odtis Video DVD"
 #: ../libbrasero-burn/brasero-dest-selection.c:623
 #, c-format
 msgid "%s: \"%s\""
-msgstr "%s: \"%s\""
+msgstr "%s: »%s«"
 
 #. Translators: this string is only used when the user
 #. * wants to copy a disc using the same destination and
@@ -1590,20 +1589,20 @@ msgstr "Ocenjena hitrost pogona:"
 #: ../libbrasero-burn/brasero-src-image.c:229
 #, c-format
 msgid "\"%s\": loading"
-msgstr "\"%s\": nalaganje"
+msgstr "»%s«: nalaganje"
 
 #. Translators: %s is a path and image refers to a disc image
 #: ../libbrasero-burn/brasero-src-image.c:236
 #, c-format
 msgid "\"%s\": unknown disc image type"
-msgstr "\"%s\": neznana vrsta odtisa"
+msgstr "»%s«: neznana vrsta odtisa"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
 #: ../libbrasero-burn/brasero-src-image.c:258
 #, c-format
 msgid "\"%s\": %s"
-msgstr "\"%s\": %s"
+msgstr "»%s«: %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label too small.
@@ -1642,7 +1641,7 @@ msgstr "Ocenjena velikost: %s"
 #: ../src/brasero-data-disc.c:870
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
-msgstr "Ali zares želite dodati \"%s\" v izboru?"
+msgstr "Ali zares želite dodati »%s« v izboru?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:228
 #: ../src/brasero-data-disc.c:879
@@ -1676,8 +1675,8 @@ msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
 "of the ISO9660 standard to support it?"
 msgstr ""
-"Ali zares želite dodati \"%s\" v izbor in uporabiti tretjo različico "
-"standarda ISO9660 za podporo?"
+"Ali zares želite dodati »%s« v izbor in uporabiti tretjo različico standarda "
+"ISO9660 za podporo?"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:290
 #: ../src/brasero-data-disc.c:835
@@ -1771,7 +1770,7 @@ msgstr "Prejemanje MD5 datoteke"
 #: ../libbrasero-burn/brasero-sum-dialog.c:397
 #, c-format
 msgid "\"%s\" is not a valid URI"
-msgstr "\"%s\" ni veljaven naslov URI"
+msgstr "»%s« ni veljaven naslov URI"
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:515
 msgid "No MD5 file was given."
@@ -1872,13 +1871,13 @@ msgstr "Razčlenjevanje datotek"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2552
 #, c-format
 msgid "\"%s\" is a recursive symbolic link."
-msgstr "\"%s\" je rekurzivna simbolna povezava."
+msgstr "»%s« je rekurzivna simbolna povezava."
 
 #. Translators: %s is the path of a drive
 #: ../libbrasero-burn/brasero-track-data-cfg.c:2578 ../src/brasero-cli.c:218
 #, c-format
 msgid "\"%s\" cannot be found."
-msgstr "\"%s\" ni mogoče najti."
+msgstr "»%s« ni mogoče najti."
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:451
 msgid "Retrieving image format and size"
@@ -1897,7 +1896,7 @@ msgstr "Določite ročno."
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:90
 #, c-format
 msgid "\"%s\" was removed from the file system."
-msgstr "\"%s\" je bila odstranjena iz datotečnega sistema."
+msgstr "»%s« je bila odstranjena iz datotečnega sistema."
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:129
 #: ../src/brasero-audio-disc.c:754 ../src/brasero-video-disc.c:365
@@ -1915,7 +1914,7 @@ msgstr "Seznamov predvajanja ni mogoče dodati na zvočne ali video diske."
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:174
 #, c-format
 msgid "\"%s\" is not suitable for audio or video media"
-msgstr "\"%s\" ni ustrezna zvočna ali slikovna datoteka za to vrsto projekta."
+msgstr "»%s« ni ustrezna zvočna ali slikovna datoteka za to vrsto projekta."
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
@@ -2054,7 +2053,7 @@ msgstr "Prikaz možnosti za knjižnico zapisovanja brasero-burn"
 #: ../libbrasero-burn/burn-job.c:1119
 #, c-format
 msgid "\"%s\" did not behave properly"
-msgstr "\"%s\" se ne odziva ustrezno"
+msgstr "»%s« se ne odziva ustrezno"
 
 #. Translators: the first %s is the size of the free space on the medium
 #. * and the second %s is the size of the space required by the data to be
@@ -2118,35 +2117,35 @@ msgstr "VIDEO_TS mapa manjka ali pa je neveljavna"
 #: ../libbrasero-burn/burn-plugin.c:647
 #, c-format
 msgid "\"%s\" could not be found in the path"
-msgstr "\"%s\" ni mogoče najti na poti"
+msgstr "»%s« ni mogoče najti na poti"
 
 #: ../libbrasero-burn/burn-plugin.c:651
 #, c-format
 msgid "\"%s\" GStreamer plugin could not be found"
-msgstr "GStreamer vstavka \"%s\" ni mogoče najti"
+msgstr "Vstavka GStreamer »%s« ni mogoče naji."
 
 #: ../libbrasero-burn/burn-plugin.c:655 ../libbrasero-burn/burn-plugin.c:667
 #, c-format
 msgid "The version of \"%s\" is too old"
-msgstr "Različica \"%s\" je prestara"
+msgstr "Različica »%s« je prestara"
 
 #: ../libbrasero-burn/burn-plugin.c:659
 #, c-format
 msgid "\"%s\" is a symbolic link pointing to another program"
-msgstr "\"%s\" je simbolna povezava z drugim programom"
+msgstr "»%s« je simbolna povezava z drugim programom"
 
 #. Translators: %s is a filename
 #: ../libbrasero-burn/burn-plugin.c:663 ../plugins/cdrdao/burn-cdrdao.c:211
 #: ../plugins/growisofs/burn-growisofs.c:509
 #, c-format
 msgid "\"%s\" could not be found"
-msgstr "\"%s\" ni mogoče najti"
+msgstr "»%s« ni mogoče najti"
 
 #. Translators: %s is the name of the brasero element
 #: ../libbrasero-burn/burn-process.c:259
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
-msgstr "Element \"%s\" se je zaključil z napako kode (%i)"
+msgstr "Opravilo »%s« se je zaključilo z napako kode (%i)"
 
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
@@ -2588,7 +2587,7 @@ msgstr "Slike ni bilo mogoče naložiti."
 #: ../libbrasero-utils/brasero-metadata.c:1126 ../src/brasero-audio-disc.c:643
 #, c-format
 msgid "\"%s\" could not be handled by GStreamer."
-msgstr "\"%s\" ni mogoče upravljati s programom GStreamer."
+msgstr "»%s« ni mogoče upravljati s programom GStreamer."
 
 #. Translators: %s is the name of the object (as in
 #. * GObject) from the Gstreamer library that could
@@ -2947,7 +2946,7 @@ msgstr "Različica mkisofs ni podprta"
 #: ../plugins/checksum/burn-checksum-files.c:589
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
-msgstr "Datoteke \"%s\" ni mogoče odpreti (%s)"
+msgstr "Datoteke »%s« ni mogoče odpreti (%s)"
 
 #: ../plugins/checksum/burn-checksum-files.c:617
 msgid "Creating checksum for image files"
@@ -2966,7 +2965,7 @@ msgstr "Preverjanje celovitosti datoteke"
 #: ../plugins/checksum/burn-checksum-files.c:1012
 #, c-format
 msgid "File \"%s\" could not be opened"
-msgstr "Datoteke \"%s\" ni mogoče odpreti"
+msgstr "Datoteke »%s« ni mogoče odpreti"
 
 #: ../plugins/checksum/burn-checksum-files.c:1085
 #: ../plugins/checksum/burn-checksum-files.c:1206
@@ -3014,7 +3013,7 @@ msgstr "SHA256"
 #: ../plugins/libburnia/burn-libburn.c:679
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
-msgstr "\"%s\" ni mogoče odpreti (%s)"
+msgstr "»%s« ni mogoče odpreti (%s)"
 
 #: ../plugins/checksum/burn-checksum-image.c:359
 #: ../plugins/checksum/burn-checksum-image.c:456
@@ -3144,27 +3143,27 @@ msgstr "Možnosti branja ni mogoče ustvariti"
 #: ../plugins/libburnia/burn-libisofs.c:684
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
-msgstr "V poti ni mogoče najti nadrejene mape \"%s\""
+msgstr "V poti ni mogoče najti nadrejene mape »%s«"
 
 #: ../plugins/libburnia/burn-libisofs.c:744
 #: ../plugins/libburnia/burn-libisofs.c:811
 #, c-format
 msgid "libisofs reported an error while creating directory \"%s\""
-msgstr "med ustvarjanjem nove mape preko libisofs je prišlo do napake \"%s\""
+msgstr "med ustvarjanjem nove mape preko libisofs je prišlo do napake »%s«"
 
 #: ../plugins/libburnia/burn-libisofs.c:759
 #, c-format
 msgid ""
 "libisofs reported an error while adding contents to directory \"%s\" (%x)"
 msgstr ""
-"med dodajanjem datoteke v mapo \"%s\" preko libisofs je prišlo do napake (%x)"
+"med dodajanjem datoteke v mapo »%s« preko libisofs je prišlo do napake (%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:782
 #: ../plugins/libburnia/burn-libisofs.c:798
 #, c-format
 msgid "libisofs reported an error while adding file at path \"%s\""
 msgstr ""
-"med dodajanjem datoteke na poti \"%s\" preko libisofs je prišlo do napake"
+"med dodajanjem datoteke na poti »%s« preko libisofs je prišlo do napake"
 
 #: ../plugins/local-track/burn-local-image.c:260
 msgid "Copying checksum file"
@@ -3247,12 +3246,12 @@ msgstr "Napaka med pridobivanjem podrobnosti trajanja"
 #: ../plugins/transcode/burn-transcode.c:1462
 #, c-format
 msgid "Analysing \"%s\""
-msgstr "Razčlenjevanje \"%s\""
+msgstr "Razčlenjevanje »%s«"
 
 #: ../plugins/transcode/burn-transcode.c:1499
 #, c-format
 msgid "Transcoding \"%s\""
-msgstr "Prekodiranje \"%s\""
+msgstr "Prekodiranje »%s«"
 
 #: ../plugins/transcode/burn-transcode.c:1736
 msgid "Converts any song file into a format suitable for audio CDs"
@@ -3415,7 +3414,7 @@ msgstr ""
 #: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
-msgstr "Projekt \"%s\" ne obstaja"
+msgstr "Projekt »%s« ne obstaja"
 
 #: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
@@ -3513,7 +3512,7 @@ msgstr "Prepričajte se, da je nameščen ustrezen kodek."
 #: ../src/brasero-audio-disc.c:662
 #, c-format
 msgid "Do you want to add \"%s\", which is a video file?"
-msgstr "Ali želite dodati \"%s\", ki je video posnetek?"
+msgstr "Ali želite dodati »%s«, ki je video posnetek?"
 
 #: ../src/brasero-audio-disc.c:671
 msgid ""
@@ -3540,7 +3539,7 @@ msgstr "_Preišči mape"
 #: ../src/brasero-audio-disc.c:812 ../src/brasero-video-disc.c:395
 #, c-format
 msgid "\"%s\" could not be opened."
-msgstr "\"%s\" ni mogoče odpreti."
+msgstr "»%s« ni mogoče odpreti."
 
 #: ../src/brasero-audio-disc.c:857
 msgid "Do you want to create an audio CD with DTS tracks?"
@@ -3696,7 +3695,7 @@ msgstr "XID nadrejenega okna"
 #: ../src/brasero-cli.c:204
 #, c-format
 msgid "\"%s\" cannot write."
-msgstr "\"%s\" ni mogoče zapisat.i"
+msgstr "»%s« ni mogoče zapisat.i"
 
 #: ../src/brasero-cli.c:206 ../src/brasero-cli.c:220
 msgid "Wrong command line option."
@@ -3757,7 +3756,7 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
 msgstr ""
-"Na voljo je le ena izbrana datoteka (\"%s\"). Ta datoteka je odtis diska, "
+"Na voljo je le ena izbrana datoteka (»%s«). Ta datoteka je odtis diska, "
 "njegovo vsebino pa je mogoče zapisati."
 
 #: ../src/brasero-data-disc.c:625
@@ -3772,7 +3771,7 @@ msgstr "Zapiši kot _odtis"
 #: ../src/brasero-data-disc.c:709
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
-msgstr "\"%s\" ni mogoče dodati k izboru."
+msgstr "»%s« ni mogoče dodati k izboru."
 
 #: ../src/brasero-data-disc.c:694
 msgid "It is a recursive symlink"
@@ -3786,7 +3785,7 @@ msgstr "Ne obstaja na izbranem mestu."
 #: ../src/brasero-data-disc.c:771
 #, c-format
 msgid "Do you want to replace \"%s\"?"
-msgstr "Ali zares želite zamenjati \"%s\"?"
+msgstr "Ali zares želite zamenjati »%s«?"
 
 #: ../src/brasero-data-disc.c:779
 msgid ""
@@ -3848,7 +3847,7 @@ msgstr "_Uvozi"
 #: ../src/brasero-data-disc.c:1098
 #, c-format
 msgid "Do you want to import the session from \"%s\"?"
-msgstr "Ali želite uvoziti sejo iz \"%s\"?"
+msgstr "Ali želite uvoziti sejo iz »%s«?"
 
 #: ../src/brasero-data-disc.c:1101
 msgid ""
@@ -3908,7 +3907,7 @@ msgstr "Prostor"
 #: ../src/brasero-eject-dialog.c:97
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
-msgstr "Diska v \"%s\" ni mogoče izvreči"
+msgstr "Diska v »%s« ni mogoče izvreči"
 
 #: ../src/brasero-eject-dialog.c:193
 msgid "_Eject"
@@ -4098,7 +4097,7 @@ msgstr "Brez _predogleda"
 #: ../src/brasero-playlist.c:390
 #, c-format
 msgid "Error parsing playlist \"%s\"."
-msgstr "Napaka med razčlenjevanjem seznama predvajanja \"%s\"."
+msgstr "Napaka med razčlenjevanjem seznama predvajanja »%s«."
 
 #. Translators: %d is the number of songs
 #: ../src/brasero-playlist.c:499
@@ -4939,7 +4938,7 @@ msgstr "_Preišči mape"
 #: ../src/brasero-video-disc.c:412
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
-msgstr "\"%s\" nima ustrezne vrste za video projekt."
+msgstr "»%s« nima ustrezne vrste za video projekt."
 
 #: ../src/brasero-video-disc.c:415
 msgid "Please only add files with video content"
