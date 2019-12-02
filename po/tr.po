@@ -1,29 +1,29 @@
 # Turkish translation of brasero.
-# Copyright (C) 2008 Gürkan Gür
+# Copyright (C) 2008-2009 Free Software Foundation, Inc.
+# Copyright (C) 2010-2020 brasero'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the brasero package.
-#
 #
 # Gürkan Gür <seqizz@gmail.com>, 2008, 2009.
 # Baris Cicek <baris@teamforce.name.tr>, 2009.
 # Ozan Çağlayan <ozancag@gmail.com>, 2013.
 # Muhammet Kara <muhammetk@gmail.com>, 2011, 2012, 2013, 2014.
 # Furkan Tokaç <developmentft@gmail.com>, 2017.
+# Sabri Ünal <libreajans@gmail.com>, 2019.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: brasero 0.5.0\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-28 15:14+0000\n"
+"Project-Id-Version: brasero master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/brasero/issues\n"
+"POT-Creation-Date: 2019-10-26 07:30+0000\n"
 "PO-Revision-Date: 2017-07-12 17:54-0400\n"
-"Last-Translator: Furkan Tokaç <developmentft@gmail.com>\n"
-"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -77,17 +77,16 @@ msgid "Burn an Image File"
 msgstr "Kalıp Dosyasını Yaz"
 
 #: ../data/brasero.desktop.in.in.h:8
-#| msgid "Copy a disc"
 msgid "Copy a Disc"
 msgstr "Disk Kopyala"
 
 #: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
-msgstr "Bir Ses Projesi Oluştur"
+msgstr "Ses Projesi Oluştur"
 
 #: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
-msgstr "Bir Video Projesi Oluştur"
+msgstr "Video Projesi Oluştur"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
@@ -305,7 +304,7 @@ msgstr "Silme işlemi sırasında hata."
 #: ../libbrasero-burn/brasero-blank-dialog.c:227
 #: ../libbrasero-burn/brasero-blank-dialog.c:272
 msgid "Blank _Again"
-msgstr "Tekr_ar Boşalt"
+msgstr "Tekr_ar Sil"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:244
 msgid "Unknown error."
@@ -323,7 +322,7 @@ msgstr "Disk kullanıma hazır."
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-blank-dialog.c:371
 msgid "_Blank"
-msgstr "_Boşalt"
+msgstr "_Sil"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:402
 msgid "_Fast blanking"
@@ -331,7 +330,7 @@ msgstr "_Hızlı silme"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:403
 msgid "Activate fast blanking, as opposed to a longer, thorough blanking"
-msgstr "Uzun bir tam silme yerine hızlı silmeyi etkinleştir"
+msgstr "Uzun tam silme yerine hızlı silmeyi etkinleştir"
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:433
 msgid "Disc Blanking"
@@ -370,7 +369,7 @@ msgstr "\"%s\" kilidi açılamıyor"
 #: ../libbrasero-burn/brasero-burn.c:546 ../libbrasero-burn/brasero-burn.c:678
 #: ../libbrasero-burn/brasero-burn.c:761
 msgid "No burner specified"
-msgstr "Belirtilmiş bir yazıcı yok"
+msgstr "Yazıcı belirtilmedi"
 
 #: ../libbrasero-burn/brasero-burn.c:586
 msgid "No source drive specified"
@@ -446,7 +445,7 @@ msgstr "%s (GStreamer eklentisi)"
 # CHECK
 #: ../libbrasero-burn/brasero-burn.c:1752
 msgid "There is no track to burn"
-msgstr "Yazılacak bir parça yok"
+msgstr "Yazılacak parça yok"
 
 #: ../libbrasero-burn/brasero-burn.c:1859
 msgid ""
@@ -485,6 +484,8 @@ msgstr "Geçici kalıp için biçim bulunamıyor"
 msgid "An internal error occurred"
 msgstr "Bir iç hata meydana geldi"
 
+# Uyumluluk sağlamak amacıyla brasero-burn-dialog çevirileri için
+# Tümce düzeni tercih edildi.
 #: ../libbrasero-burn/brasero-burn-dialog.c:155
 msgid "Brasero notification"
 msgstr "Brasero bildirimi"
@@ -493,12 +494,12 @@ msgstr "Brasero bildirimi"
 #: ../libbrasero-burn/brasero-burn-dialog.c:219
 #, c-format
 msgid "%s (%i%% Done)"
-msgstr "%s (%i%% Tamamlandı)"
+msgstr "%s (%i%% tamamlandı)"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:241
 #: ../libbrasero-burn/brasero-burn-dialog.c:1161
 msgid "Creating Image"
-msgstr "Kalıp Oluşturuluyor"
+msgstr "Kalıp oluşturuluyor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:246
 #: ../libbrasero-burn/brasero-burn-dialog.c:1170
@@ -524,12 +525,12 @@ msgstr "CD kopyalanıyor"
 #: ../libbrasero-burn/brasero-burn-dialog.c:266
 #: ../libbrasero-burn/brasero-burn-dialog.c:1190
 msgid "Burning Disc"
-msgstr "Diske Yazılıyor"
+msgstr "Disk yazılıyor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:270
 #: ../libbrasero-burn/brasero-burn-dialog.c:1186
 msgid "Copying Disc"
-msgstr "Disk Kopyalanıyor"
+msgstr "Disk kopyalanıyor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:300
 #: ../libbrasero-burn/burn-basics.c:78
@@ -546,7 +547,7 @@ msgstr "Video DVD'si yazılıyor"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:316
 msgid "Simulation of data DVD burning"
-msgstr "DVD veri yazım işlemi simülasyonu"
+msgstr "Veri DVD'si yazım işlemi simülasyonu"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:318
 msgid "Burning data DVD"
@@ -792,7 +793,7 @@ msgstr "Lütfen diski çıkartın ve tekrar takın."
 #: ../libbrasero-burn/brasero-sum-dialog.c:333
 msgid ""
 "A file could not be created at the location specified for temporary files"
-msgstr "Geçici dosyalar için kullanılacak konumda bir dosya oluşturulamadı"
+msgstr "Geçici dosyalar için kullanılacak konumda dosya oluşturulamadı"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:729
 msgid "The image could not be created at the specified location"
@@ -893,7 +894,6 @@ msgstr ""
 msgid "Do you want to continue anyway?"
 msgstr "Yine de devam etmek istiyor musunuz?"
 
-# CHECK: Übersetzung »track« in diesem Kontext?
 #: ../libbrasero-burn/brasero-burn-dialog.c:971
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "Bir CD'ye ses parçaları eklemek tavsiye edilmez."
@@ -979,7 +979,7 @@ msgstr "Yazım işlemi sırasında hata."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1751
 msgid "_Save Log"
-msgstr "_Günlüğü kaydet"
+msgstr "_Günlüğü Kaydet"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "Video DVD successfully burned"
@@ -1286,7 +1286,7 @@ msgstr "Dos_yaya Yazdır"
 
 #: ../libbrasero-burn/brasero-burn-options.c:811
 msgid "Burn _Contents…"
-msgstr "İ_çeriği Yazdır..."
+msgstr "İ_çeriği Yazdır…"
 
 #: ../libbrasero-burn/brasero-burn-options.c:893
 msgid "Image Burning Setup"
@@ -1459,7 +1459,7 @@ msgid ""
 "actual burning after 10 seconds"
 msgstr ""
 "Brasero yazma işlemini simüle edecek, eğer başarılı olursa 10 saniye sonra "
-"gerçek  yazma işlemine başlayacak"
+"gerçek yazma işlemine başlayacak"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:726
 msgid "Use burn_proof (decrease the risk of failures)"
@@ -1519,7 +1519,7 @@ msgstr "Disk kalıbı türü:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:97
 msgid "Autodetect"
-msgstr "Otomatik Saptama"
+msgstr "Otomatik sapta"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:106
 msgid "ISO9660 image"
@@ -1637,7 +1637,7 @@ msgstr "Tüm dosyalar"
 #: ../libbrasero-burn/brasero-src-image.c:450
 msgctxt "disc"
 msgid "Image files"
-msgstr "Kalıp Dosyaları"
+msgstr "Kalıp dosyaları"
 
 #: ../libbrasero-burn/brasero-src-image.c:467
 msgid "Image type:"
@@ -1716,7 +1716,7 @@ msgstr "Dosyalar windows-uyumlu hale getirilmek için yeniden adlandırılsın m
 #: ../libbrasero-burn/brasero-status-dialog.c:341
 #: ../src/brasero-data-disc.c:735
 msgid "Those names should be changed and truncated to 64 characters."
-msgstr "Bu isimler değiştirilmeli ve 64 karaktere indirilmeli"
+msgstr "Bu isimler değiştirilmeli ve 64 karaktere indirilmeli."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:346
 #: ../src/brasero-data-disc.c:738
@@ -1841,7 +1841,7 @@ msgstr "Süreç"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:793
 #: ../src/brasero-playlist.c:536 ../src/brasero-video-tree-model.c:342
 msgid "(loading…)"
-msgstr "(yükleniyor ...)"
+msgstr "(yükleniyor…)"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:619
 #: ../libbrasero-burn/brasero-track-data-cfg.c:799
@@ -2478,11 +2478,11 @@ msgstr "Sabit renk"
 
 #: ../libbrasero-utils/brasero-jacket-background.c:262
 msgid "Horizontal gradient"
-msgstr "Yatay Değişim"
+msgstr "Yatay değişim"
 
 #: ../libbrasero-utils/brasero-jacket-background.c:263
 msgid "Vertical gradient"
-msgstr "Dikey Değişim"
+msgstr "Dikey değişim"
 
 #. second part
 #. Translators: This is an image, a picture, not a "Disc Image"
@@ -2531,7 +2531,7 @@ msgstr "Ar_kaplan Özellikleri"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:549
 msgid "Background properties"
-msgstr "Arkaplan Özellikleri"
+msgstr "Arkaplan özellikleri"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:564
 msgid "Align right"
@@ -2563,11 +2563,11 @@ msgstr "Yazıtipi ailesi ve boyutu"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:651
 msgid "_Text Color"
-msgstr "_Metin Rengi:"
+msgstr "_Metin Rengi"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:652
 msgid "Text color"
-msgstr "Metin Rengi"
+msgstr "Metin rengi"
 
 #: ../libbrasero-utils/brasero-jacket-edit.c:775
 msgid "Cover Editor"
@@ -2705,7 +2705,7 @@ msgid "Write to Disc"
 msgstr "Diske Yaz"
 
 #: ../nautilus/nautilus-burn-bar.c:442
-#: ../nautilus/nautilus-burn-extension.c:723
+#: ../nautilus/nautilus-burn-extension.c:725
 msgid "Write contents to a CD or DVD"
 msgstr "İçeriği bir CD ya da DVD diske yazdır"
 
@@ -2714,9 +2714,9 @@ msgid "Copy Disc"
 msgstr "Disk Kopyala"
 
 #: ../nautilus/nautilus-burn-extension.c:571
-#: ../nautilus/nautilus-burn-extension.c:722
+#: ../nautilus/nautilus-burn-extension.c:724
 msgid "_Write to Disc…"
-msgstr "_Diske Yaz..."
+msgstr "_Diske Yaz…"
 
 #: ../nautilus/nautilus-burn-extension.c:572
 msgid "Write disc image to a CD or DVD"
@@ -2724,7 +2724,7 @@ msgstr "Disk kalıbını bir CD veya DVD diskine yazdır"
 
 #: ../nautilus/nautilus-burn-extension.c:645
 msgid "_Copy Disc…"
-msgstr "Diski _Kopyala..."
+msgstr "Diski _Kopyala…"
 
 #: ../nautilus/nautilus-burn-extension.c:646
 msgid "Create a copy of this CD or DVD"
@@ -2732,15 +2732,15 @@ msgstr "Bu CD veya DVD diskinin bir kopyasını oluştur"
 
 #: ../nautilus/nautilus-burn-extension.c:659
 msgid "_Blank Disc…"
-msgstr "Di_ski Sil..."
+msgstr "Di_ski Sil…"
 
 #: ../nautilus/nautilus-burn-extension.c:660
 msgid "Blank this CD or DVD"
-msgstr "Bu CD veya DVD diskini boşaltın"
+msgstr "Bu CD veya DVD diskini sil"
 
 #: ../nautilus/nautilus-burn-extension.c:676
 msgid "_Check Disc…"
-msgstr "Diski Kon_trol Et..."
+msgstr "Diski Kon_trol Et…"
 
 #: ../nautilus/nautilus-burn-extension.c:677
 msgid "Check the data integrity on this CD or DVD"
@@ -2794,7 +2794,7 @@ msgstr "Bu aygıtı kullanmak için gerekli izinlere sahip değilsiniz"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:480
 msgid "Converting toc file"
-msgstr "TOC dosyası çevriliyor"
+msgstr "Toc dosyası çevriliyor"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:697
 msgid "Copies, burns and blanks CDs"
@@ -2894,7 +2894,7 @@ msgstr "Disk biçimlendiriliyor"
 
 #: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
 msgid "Writing cue sheet"
-msgstr "CUE-Sayfası yazılıyor"
+msgstr "Cue sayfası yazılıyor"
 
 #: ../plugins/cdrkit/burn-wodim.c:394 ../plugins/cdrtools/burn-cdrecord.c:380
 #, c-format
@@ -3318,15 +3318,15 @@ msgstr "Diski çıkart"
 
 #: ../src/brasero-app.c:136
 msgid "_Blank…"
-msgstr "_Sil..."
+msgstr "_Sil…"
 
 #: ../src/brasero-app.c:137
 msgid "Blank a disc"
-msgstr "Bir diski sil"
+msgstr "Diski sil"
 
 #: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
-msgstr "_Bütünlük kontrolü yap..."
+msgstr "_Bütünlük Kontrolü Yap…"
 
 #: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
@@ -3445,11 +3445,11 @@ msgstr "Seçilen dosyaları aç"
 
 #: ../src/brasero-audio-disc.c:158 ../src/brasero-video-disc.c:103
 msgid "_Edit Information…"
-msgstr "Bilgil_eri Düzenle..."
+msgstr "Bilgil_eri Düzenle…"
 
 #: ../src/brasero-audio-disc.c:158
 msgid "Edit the track information (start, end, author, etc.)"
-msgstr "Parça bilgilerini düzenle (başlangıç, bitiş, yapımcı...)"
+msgstr "Parça bilgilerini düzenle (başlangıç, bitiş, yapımcı, vb.)"
 
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:202
@@ -3476,7 +3476,7 @@ msgstr "Parçanın bitiminden sonra 2 saniye duraklama ekle"
 
 #: ../src/brasero-audio-disc.c:166
 msgid "_Split Track…"
-msgstr "Par_çayı Böl..."
+msgstr "Par_çayı Böl…"
 
 #: ../src/brasero-audio-disc.c:166
 msgid "Split the selected track"
@@ -3726,7 +3726,7 @@ msgstr "Aynı anda sadece bir seçenek verilebilir"
 
 #: ../src/brasero-data-disc.c:125
 msgid "R_ename…"
-msgstr "Y_eniden adlandır..."
+msgstr "Y_eniden adlandır…"
 
 #: ../src/brasero-data-disc.c:125
 msgid "Rename the selected file"
@@ -3790,7 +3790,7 @@ msgstr "\"%s\" seçime eklenemiyor."
 
 #: ../src/brasero-data-disc.c:694
 msgid "It is a recursive symlink"
-msgstr "Özyinelemeli bir sembolik bağ."
+msgstr "Özyinelemeli bir sembolik bağ"
 
 #: ../src/brasero-data-disc.c:712
 msgid "It does not exist at the specified location"
@@ -3916,7 +3916,6 @@ msgstr "Boyut"
 msgid "Description"
 msgstr "Tanım"
 
-# Bedeutung von »Space« in diesem Zusammenhang?
 #: ../src/brasero-data-disc.c:2380
 msgid "Space"
 msgstr "Boşluk"
@@ -3982,7 +3981,7 @@ msgstr "Seçilen dosyaları geri yükle"
 
 #: ../src/brasero-file-filtered.c:303
 msgid "_Options…"
-msgstr "Se_çenekler..."
+msgstr "Se_çenekler…"
 
 #: ../src/brasero-file-filtered.c:311
 msgid "Set the options for file filtering"
@@ -4094,7 +4093,7 @@ msgstr "Parçanın ardından verilecek duraklamanın uzunluğunu verir"
 
 #: ../src/brasero-multi-song-props.c:345 ../src/brasero-song-properties.c:287
 msgid "Song Information"
-msgstr "Şarkı Bilgisi:"
+msgstr "Şarkı Bilgisi"
 
 #: ../src/brasero-player.c:540
 #, c-format
@@ -4185,7 +4184,7 @@ msgstr "Mevcut projeyi kaydet"
 
 #: ../src/brasero-project.c:197
 msgid "Save _As…"
-msgstr "_Farklı Kaydet..."
+msgstr "_Farklı Kaydet…"
 
 #: ../src/brasero-project.c:198
 msgid "Save current project to a different location"
@@ -4214,7 +4213,7 @@ msgstr "Projedeki tüm dosyaları kaldır"
 
 #: ../src/brasero-project.c:206 ../src/brasero-project.c:1086
 msgid "_Burn…"
-msgstr "_Yazdır..."
+msgstr "_Yazdır…"
 
 #: ../src/brasero-project.c:207
 msgid "Burn the disc"
@@ -4460,7 +4459,7 @@ msgstr ""
 
 #: ../src/brasero-project-manager.c:107
 msgid "Copy _Disc…"
-msgstr "_Diski Kopyala..."
+msgstr "_Disk Kopyala…"
 
 #: ../src/brasero-project-manager.c:108
 #: ../src/brasero-project-type-chooser.c:91
@@ -4473,21 +4472,21 @@ msgstr ""
 
 #: ../src/brasero-project-manager.c:109
 msgid "_Burn Image…"
-msgstr "Kalı_bı Yazdır..."
+msgstr "Kalı_p Yazdır…"
 
 #: ../src/brasero-project-manager.c:110
 #: ../src/brasero-project-type-chooser.c:95
 #: ../src/brasero-project-type-chooser.c:96
 msgid "Burn an existing CD/DVD image to disc"
-msgstr "Mevcut bir CD/DVD kalıbını diske yazdır"
+msgstr "Mevcut CD/DVD kalıbını diske yazdır"
 
 #: ../src/brasero-project-manager.c:112
 msgid "_Open…"
-msgstr "_Aç..."
+msgstr "_Aç…"
 
 #: ../src/brasero-project-manager.c:113
 msgid "Open a project"
-msgstr "Bir proje aç"
+msgstr "Proje aç"
 
 #. Translators: the %s is a string representing the total size
 #. * of the file selection
@@ -4598,11 +4597,11 @@ msgstr "Geçerli bir Brasero projesi gibi görünmüyor"
 
 #: ../src/brasero-project-type-chooser.c:74
 msgid "Audi_o project"
-msgstr "Ses Pr_ojesi"
+msgstr "Ses pr_ojesi"
 
 #: ../src/brasero-project-type-chooser.c:75
 msgid "Create a traditional audio CD"
-msgstr "Bir ses CD'si oluştur"
+msgstr "Ses CD'si oluştur"
 
 #: ../src/brasero-project-type-chooser.c:79
 msgid "D_ata project"
@@ -4610,7 +4609,7 @@ msgstr "Veri pro_jesi"
 
 #: ../src/brasero-project-type-chooser.c:80
 msgid "Create a data CD/DVD"
-msgstr "Bir veri CD/DVD'si oluştur"
+msgstr "Veri CD/DVD'si oluştur"
 
 #: ../src/brasero-project-type-chooser.c:84
 msgid "_Video project"
@@ -4618,11 +4617,11 @@ msgstr "_Video projesi"
 
 #: ../src/brasero-project-type-chooser.c:85
 msgid "Create a video DVD or an SVCD"
-msgstr "Bir video DVD'si veya SVCD oluştur"
+msgstr "Video DVD'si veya SVCD oluştur"
 
 #: ../src/brasero-project-type-chooser.c:89
 msgid "Disc _copy"
-msgstr "Diski _kopyala"
+msgstr "Disk _kopyala"
 
 #: ../src/brasero-project-type-chooser.c:90
 msgid "Create 1:1 copy of a CD/DVD"
@@ -4646,7 +4645,7 @@ msgstr "Son kullanılanlar listesi boş"
 
 #: ../src/brasero-project-type-chooser.c:463
 msgid "Create a new project:"
-msgstr "Yeni bir proje oluştur:"
+msgstr "Yeni proje oluştur:"
 
 #: ../src/brasero-project-type-chooser.c:510
 msgid "Recent projects:"
@@ -4762,7 +4761,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:181 ../src/brasero-split-dialog.c:752
 msgid "_Split"
-msgstr "_Parçala"
+msgstr "_Böl"
 
 #: ../src/brasero-split-dialog.c:609
 msgid "The track wasn't split."
@@ -4786,7 +4785,7 @@ msgstr "Otomatik bölme işlemi ile devam etmek istiyor musunuz?"
 
 #: ../src/brasero-split-dialog.c:751
 msgid "_Don't split"
-msgstr "_Parçalama "
+msgstr "_Bölme"
 
 #: ../src/brasero-split-dialog.c:968
 msgid "Do you really want to empty the slices preview?"
@@ -4802,7 +4801,7 @@ msgstr "Parçayı Böl"
 
 #: ../src/brasero-split-dialog.c:1072
 msgid "M_ethod:"
-msgstr "Yönt_em"
+msgstr "Yönt_em:"
 
 #: ../src/brasero-split-dialog.c:1078
 msgid "Method to be used to split the track"
@@ -4854,7 +4853,7 @@ msgstr "parça"
 
 #: ../src/brasero-split-dialog.c:1153
 msgid "Slicing Method"
-msgstr "Parçalama Yöntemi"
+msgstr "Dilimleme Yöntemi"
 
 #: ../src/brasero-split-dialog.c:1211
 msgid "Start"
@@ -4886,7 +4885,7 @@ msgstr "Üretilecek parçaların _listesi:"
 
 #: ../src/brasero-split-dialog.c:1298
 msgid "Slices Preview"
-msgstr "Parça Önizleme"
+msgstr "Dilim Önizleme"
 
 #: ../src/brasero-time-button.c:287
 msgid "Hours"
@@ -4910,7 +4909,7 @@ msgstr "Saniye"
 
 #: ../src/brasero-time-button.c:317
 msgid "Frames (1 second = 75 frames)"
-msgstr "Çerçeve (1 Saniye = 75 çerçeve)"
+msgstr "Kare (1 Saniye = 75 kare)"
 
 #: ../src/brasero-video-disc.c:101
 msgid "Open the selected video"
@@ -4918,7 +4917,7 @@ msgstr "Seçilen videoyu aç"
 
 #: ../src/brasero-video-disc.c:103
 msgid "Edit the video information (start, end, author, etc.)"
-msgstr "Video bilgilerini düzenle (başlangıç, bitiş, sanatçı, ...)"
+msgstr "Video bilgilerini düzenle (başlangıç, bitiş, sanatçı, vb.)"
 
 #: ../src/brasero-video-disc.c:105
 msgid "Remove the selected videos from the project"
@@ -4936,7 +4935,7 @@ msgstr "Dizin Ara_ma"
 #: ../src/brasero-video-disc.c:412
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
-msgstr "\"%s\" video projeleri için uyumlu bir tür sahibi değil"
+msgstr "\"%s\" video projeleri için uyumlu bir tür sahibi değil."
 
 #: ../src/brasero-video-disc.c:415
 msgid "Please only add files with video content"
@@ -4944,7 +4943,7 @@ msgstr "Lüften sadece video içerikli dosyalar ekleyin"
 
 #: ../src/main.c:84
 msgid "[URI] [URI] …"
-msgstr "[URI] [URI] ..."
+msgstr "[URI] [URI] …"
 
 #: ../src/main.c:96
 #, c-format
