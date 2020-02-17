@@ -1,21 +1,21 @@
-# Hungarian translation of brasero_help
-# Copyright (C) 2011. Free Software Foundation, Inc.
+# Hungarian translation for brasero_help.
+# Copyright (C) 2011, 2012, 2013, 2020 Free Software Foundation, Inc.
 # This file is distributed under the same license as the brasero help.
 #
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2011, 2012, 2013.
-# Balázs Úr <urbalazs@gmail.com>, 2014.
+# Balázs Úr <ur.balazs at fsf dot hu>, 2014, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero_help master\n"
-"POT-Creation-Date: 2014-04-01 03:05+0000\n"
-"PO-Revision-Date: 2014-04-01 14:44+0200\n"
-"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
-"Language-Team: Hungarian <openscope at googlegroups dot com>\n"
+"POT-Creation-Date: 2020-02-11 15:26+0000\n"
+"PO-Revision-Date: 2020-02-17 23:01+0100\n"
+"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
+"Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Lokalize 19.04.3\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
@@ -149,38 +149,23 @@ msgstr ""
 
 #. (itstool) path: page/title
 #: C/index.page:6
-#| msgid "Brasero Help"
 msgid "<_:media-1/> Brasero Help"
 msgstr "<_:media-1/> A Brasero súgója"
 
 #. (itstool) path: section/title
-#: C/index.page:9
+#: C/index.page:12
 msgid "Create a new project"
 msgstr "Új projekt létrehozása"
 
 #. (itstool) path: section/title
-#: C/index.page:13
+#: C/index.page:16
 msgid "Troubleshooting"
 msgstr "Hibaelhárítás"
 
 #. (itstool) path: section/title
-#: C/index.page:17
+#: C/index.page:20
 msgid "Other tools"
 msgstr "Egyéb eszközök"
-
-#. (itstool) path: media
-#. This is a reference to an external file such as an image or video. When
-#. the file changes, the md5 hash will change to let you know you need to
-#. update your localized copy. The msgstr is not used at all. Set it to
-#. whatever you like once you have updated your copy of the file.
-#: C/introduction.page:36
-msgctxt "_"
-msgid ""
-"external ref='figures/brasero-main-window.png' "
-"md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
-msgstr ""
-"external ref='figures/brasero-main-window.png' "
-"md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
 
 #. (itstool) path: info/desc
 #: C/introduction.page:7
@@ -247,6 +232,24 @@ msgstr "ellenőrizheti a lemezek és lemezképek épségét"
 #: C/introduction.page:35
 msgid "The <gui>Brasero</gui> main window"
 msgstr "A <gui>Brasero</gui> főablaka"
+
+#. (itstool) path: figure/media
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/introduction.page:36
+#| msgctxt "_"
+#| msgid ""
+#| "external ref='figures/brasero-main-window.png' "
+#| "md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
+msgctxt "_"
+msgid ""
+"external ref='figures/brasero-main-window.png' "
+"md5='cd9679619426233b5f58a69e6f34398b'"
+msgstr ""
+"external ref='figures/brasero-main-window.png' "
+"md5='cd9679619426233b5f58a69e6f34398b'"
 
 #. (itstool) path: info/desc
 #: C/prob-cd.page:9
@@ -1131,64 +1134,3 @@ msgid ""
 msgstr ""
 "Az ellenőrzés befejeződésekor választhatja az <gui>Ellenőrzés újra</gui> "
 "lehetőséget, vagy a <gui>Bezárás</gui> gombbal befejezheti."
-
-#~| msgctxt "_"
-#~| msgid ""
-#~| "external ref='figures/brasero-main-window.png' "
-#~| "md5='11e5cc148d7c8c8dc0c63e68b2f611f3'"
-#~ msgctxt "_"
-#~ msgid ""
-#~ "external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
-#~ msgstr ""
-#~ "external ref='figures/logo32.png' md5='ac8e1998759033606b201ccfe6458d17'"
-
-#~ msgid "<media type=\"image\" src=\"figures/logo32.png\"/> Brasero Help"
-#~ msgstr "<media type=\"image\" src=\"figures/logo32.png\"/> Brasero súgó"
-
-#~ msgid ""
-#~ "If <app>Brasero</app> is already running, opening the project from a file "
-#~ "browser will cause a second instance of <app>Brasero</app> to start and "
-#~ "will cause both instances to crash. See <link href=\"https://bugzilla."
-#~ "gnome.org/show_bug.cgi?id=644011\">GNOME bug 644011</link> for more "
-#~ "information."
-#~ msgstr ""
-#~ "Ha a <app>Brasero</app> már fut, akkor egy projekt fájlböngészőből való "
-#~ "megnyitásakor elindul a <app>Brasero</app> egy újabb példánya, és "
-#~ "mindkettő összeomlik. További információkért lásd a <link href=\"https://"
-#~ "bugzilla.gnome.org/show_bug.cgi?id=644011\">644011-es GNOME "
-#~ "hibajelentést</link>."
-
-#~ msgid "pau.gonzalezbr@gmail.com"
-#~ msgstr "pau.gonzalezbr@gmail.com"
-
-#~ msgid "kittykat3756@gmail.com"
-#~ msgstr "kittykat3756@gmail.com"
-
-#~ msgid "kittykat3756@googlemail.com"
-#~ msgstr "kittykat3756@googlemail.com"
-
-#~ msgid "majus85@gmail.com"
-#~ msgstr "majus85@gmail.com"
-
-#~ msgid ""
-#~ "Select your preferred method of splitting the tracks, and split at the "
-#~ "points where you want one to end and the next one to begin."
-#~ msgstr ""
-#~ "Válassza ki a szétvágás kívánt módját, és vágja szét a számokat azon "
-#~ "pontoknál, ahová az egyik végét és a következő elejét szeretné helyezni."
-
-#~ msgid ""
-#~ "If <app>Brasero</app> is already running, opening the project from a file "
-#~ "browser will make <app>Brasero</app> vanish in a puff of logic."
-#~ msgstr ""
-#~ "Ha a <app>Brasero</app> már fut, akkor a projekt fájlböngészőből való "
-#~ "megnyitása összeomlasztja a <app>Braserot</app>."
-
-#~ msgid ""
-#~ "It is not possible to save your progress once you start working with the "
-#~ "<gui>Cover Editor</gui>. If you close the dialog, your changes will be "
-#~ "lost, or you can print the inlay when you are finished."
-#~ msgstr ""
-#~ "Az előrehaladását nem tudja menteni a <gui>Borítószerkesztő</gui> "
-#~ "használatának megkezdése után. Ha bezárja az ablakot, akkor a "
-#~ "változtatások elvesznek, hacsak nem nyomtatja ki az elkészült borítót."
