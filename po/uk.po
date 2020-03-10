@@ -4,22 +4,22 @@
 # Maxim Dziumanenko <dziumanenko@gmail.com>, 2009.
 # wanderlust <wanderlust@ukr.net>, 2009.
 # Daniel Korostil <ted.korostiled@gmail.com>, 2013, 2014.
+# Yuri Chornoivan <yurchor@ukr.net>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=braser"
-"o&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-02-11 04:01+0000\n"
-"PO-Revision-Date: 2014-02-11 11:07+0300\n"
-"Last-Translator: Daniel Korostil <ted.korostiled@gmail.com>\n"
-"Language-Team: linux.org.ua\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/brasero/issues\n"
+"POT-Creation-Date: 2019-11-12 16:25+0000\n"
+"PO-Revision-Date: 2020-03-08 09:24+0200\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 20.03.70\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
@@ -73,16 +73,21 @@ msgid "Burn an Image File"
 msgstr "Записати файл _образу"
 
 #: ../data/brasero.desktop.in.in.h:8
-msgid "Create an Audio Project"
-msgstr "Створити звуковий проект"
+#| msgid "Copy a disc"
+msgid "Copy a Disc"
+msgstr "Копіювати диск"
 
 #: ../data/brasero.desktop.in.in.h:9
+msgid "Create an Audio Project"
+msgstr "Створити звуковий проєкт"
+
+#: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
-msgstr "Створити відеопроект"
+msgstr "Створити відеопроєкт"
 
 #: ../data/mime/brasero.xml.in.h:1
 msgid "Brasero project file"
-msgstr "Файл проекту"
+msgstr "Файл проєкту"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:1
 msgid "Should Nautilus extension output debug statements"
@@ -367,7 +372,7 @@ msgstr "Не вказано пристрій-джерело"
 
 #: ../libbrasero-burn/brasero-burn.c:632
 msgid "Ongoing copying process"
-msgstr "Копіювання диску"
+msgstr "Копіювання диска"
 
 #: ../libbrasero-burn/brasero-burn.c:636 ../libbrasero-burn/brasero-burn.c:735
 #: ../libbrasero-burn/brasero-burn.c:872 ../libbrasero-burn/brasero-burn.c:987
@@ -381,7 +386,7 @@ msgstr "У пристрою відсутня можливість перезап
 
 #: ../libbrasero-burn/brasero-burn.c:731
 msgid "Ongoing blanking process"
-msgstr "Очищення диску"
+msgstr "Очищення диска"
 
 #: ../libbrasero-burn/brasero-burn.c:770
 msgid "The drive cannot burn"
@@ -413,24 +418,21 @@ msgstr "Бракує вільного місця на диску."
 
 #. Translators: %s is the name of a missing application
 #: ../libbrasero-burn/brasero-burn.c:1708
-#: ../libbrasero-burn/brasero-burn-options.c:1187
-#: ../src/brasero-project.c:1385
+#: ../libbrasero-burn/brasero-burn-options.c:1187 ../src/brasero-project.c:1385
 #, c-format
 msgid "%s (application)"
 msgstr "%s (програма)"
 
 #. Translators: %s is the name of a missing library
 #: ../libbrasero-burn/brasero-burn.c:1714
-#: ../libbrasero-burn/brasero-burn-options.c:1193
-#: ../src/brasero-project.c:1391
+#: ../libbrasero-burn/brasero-burn-options.c:1193 ../src/brasero-project.c:1391
 #, c-format
 msgid "%s (library)"
 msgstr "%s (бібліотека)"
 
 #. Translators: %s is the name of a missing GStreamer plugin
 #: ../libbrasero-burn/brasero-burn.c:1719
-#: ../libbrasero-burn/brasero-burn-options.c:1198
-#: ../src/brasero-project.c:1396
+#: ../libbrasero-burn/brasero-burn-options.c:1198 ../src/brasero-project.c:1396
 #, c-format
 msgid "%s (GStreamer plugin)"
 msgstr "%s (модуль GStreamer)"
@@ -460,18 +462,17 @@ msgstr "Не вдається підібрати формат тимчасово
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../libbrasero-burn/brasero-burn.c:2846
-#: ../libbrasero-burn/brasero-caps-burn.c:66
-#: ../libbrasero-burn/burn-job.c:1219 ../libbrasero-burn/burn-job.c:1228
+#: ../libbrasero-burn/brasero-caps-burn.c:66 ../libbrasero-burn/burn-job.c:1219
+#: ../libbrasero-burn/burn-job.c:1228
 #: ../libbrasero-burn/burn-mkisofs-base.c:302
 #: ../nautilus/nautilus-burn-extension.c:218
-#: ../plugins/cdrkit/burn-genisoimage.c:368
-#: ../plugins/cdrkit/burn-readom.c:129 ../plugins/cdrkit/burn-readom.c:370
-#: ../plugins/cdrkit/burn-wodim.c:725 ../plugins/cdrkit/burn-wodim.c:837
-#: ../plugins/cdrkit/burn-wodim.c:852 ../plugins/cdrtools/burn-cdrecord.c:835
+#: ../plugins/cdrkit/burn-genisoimage.c:368 ../plugins/cdrkit/burn-readom.c:129
+#: ../plugins/cdrkit/burn-readom.c:370 ../plugins/cdrkit/burn-wodim.c:725
+#: ../plugins/cdrkit/burn-wodim.c:837 ../plugins/cdrkit/burn-wodim.c:852
+#: ../plugins/cdrtools/burn-cdrecord.c:835
 #: ../plugins/cdrtools/burn-cdrecord.c:850
-#: ../plugins/cdrtools/burn-mkisofs.c:368
-#: ../plugins/cdrtools/burn-readcd.c:130 ../plugins/cdrtools/burn-readcd.c:380
-#: ../src/brasero-app.c:786
+#: ../plugins/cdrtools/burn-mkisofs.c:368 ../plugins/cdrtools/burn-readcd.c:130
+#: ../plugins/cdrtools/burn-readcd.c:380 ../src/brasero-app.c:786
 #, c-format
 msgid "An internal error occurred"
 msgstr "Виникла внутрішня помилка"
@@ -520,7 +521,7 @@ msgstr "Записується диск"
 #: ../libbrasero-burn/brasero-burn-dialog.c:270
 #: ../libbrasero-burn/brasero-burn-dialog.c:1186
 msgid "Copying Disc"
-msgstr "Копіювання диску"
+msgstr "Копіювання диска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:300
 #: ../libbrasero-burn/burn-basics.c:78
@@ -599,7 +600,7 @@ msgstr "Запис образу CD"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:402
 msgid "Simulation of video disc burning"
-msgstr "Симуляція запису відеодиску"
+msgstr "Симуляція запису відеодиска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:404
 msgid "Burning video disc"
@@ -611,16 +612,16 @@ msgstr "Симуляція запису диска з даними"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:424
 msgid "Burning data disc"
-msgstr "Запис диску з даними"
+msgstr "Запис диска з даними"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:432
 msgid "Simulation of disc copying"
-msgstr "Симуляція копіювання диску"
+msgstr "Симуляція копіювання диска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:434
 #: ../libbrasero-burn/burn-basics.c:82
 msgid "Copying disc"
-msgstr "Копіювання диску"
+msgstr "Копіювання диска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:442
 msgid "Simulation of image to disc burning"
@@ -628,7 +629,7 @@ msgstr "Симуляція запису образу диска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:444
 msgid "Burning image to disc"
-msgstr "Запис образу диску"
+msgstr "Запис образу диска"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:549
 msgid "Please replace the disc with a rewritable disc holding data."
@@ -722,7 +723,7 @@ msgid ""
 "Burning will begin as soon as a writable disc is inserted."
 msgstr ""
 "На жорсткому диску створено образ диску.\n"
-"Запис почнеться одразу після вставки носія для запису."
+"Запис почнеться одразу після вставлення носія для запису."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:645
 msgid "A data integrity test will begin as soon as the disc is inserted."
@@ -743,7 +744,7 @@ msgstr "Пристрій «%s» зайнятий."
 #: ../libbrasero-burn/brasero-burn-dialog.c:654
 #, c-format
 msgid "There is no disc in \"%s\"."
-msgstr "У пристрої «%s» відсутній диск."
+msgstr "У пристрої «%s» немає диска."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:658
 #, c-format
@@ -787,7 +788,7 @@ msgstr "Не вдається створити файл у вказаному к
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:729
 msgid "The image could not be created at the specified location"
-msgstr "Не вдається створити образ диску у заданому каталозі"
+msgstr "Не вдається створити образ диска у заданому каталозі"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:730
 msgid ""
@@ -904,7 +905,7 @@ msgstr "Не рекомендовано записувати звукові до
 #: ../libbrasero-burn/brasero-burn-dialog.c:1037
 #, c-format
 msgid "Please eject the disc from \"%s\" manually."
-msgstr "Витягніть диск з \"%s\" вручну."
+msgstr "Витягніть диск з «%s» вручну."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1046
 msgid ""
@@ -944,7 +945,7 @@ msgstr "Симуляція завершилась успішно."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1368
 msgid "Real disc burning will take place in 10 seconds."
-msgstr "Запис диску почнеться через 10 секунд."
+msgstr "Запис диска почнеться за 10 секунд."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1371
 msgid "Burn _Now"
@@ -1057,7 +1058,7 @@ msgstr "Дійсно вийти?"
 #: ../libbrasero-burn/brasero-burn-dialog.c:2455
 #: ../libbrasero-burn/brasero-tool-dialog.c:417
 msgid "Interrupting the process may make disc unusable."
-msgstr "Переривання процесу може призвести до псування диску."
+msgstr "Переривання процесу може призвести до псування диска."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2458
 msgid "C_ontinue Burning"
@@ -1104,7 +1105,7 @@ msgstr "Бажаєте записати обрані файли на декіл�
 #: ../libbrasero-burn/brasero-burn-options.c:451
 msgid "The data size is too large for the disc even with the overburn option."
 msgstr ""
-"Розмір проекту надто великий для цього диску, навіть при використанні запису "
+"Розмір проєкту надто великий для цього диску, навіть при використанні запису "
 "у режимі overburn."
 
 #: ../libbrasero-burn/brasero-burn-options.c:439 ../src/brasero-project.c:954
@@ -1132,7 +1133,7 @@ msgstr "Ця можливість не підтримується поточно
 #: ../libbrasero-burn/brasero-burn-options.c:477
 #: ../nautilus/nautilus-burn-extension.c:239
 msgid "Please add files."
-msgstr "Додайте файли до проекту."
+msgstr "Додайте файли до проєкту."
 
 #: ../libbrasero-burn/brasero-burn-options.c:478
 #: ../libbrasero-burn/brasero-track-data.c:672
@@ -1145,7 +1146,7 @@ msgstr "Немає файлів для запису на диск"
 
 #: ../libbrasero-burn/brasero-burn-options.c:483
 msgid "Please add songs."
-msgstr "Додайте композиції до проекту."
+msgstr "Додайте композиції до проєкту."
 
 #: ../libbrasero-burn/brasero-burn-options.c:484 ../src/brasero-project.c:1268
 msgid "There are no songs to write to disc"
@@ -1153,7 +1154,7 @@ msgstr "Немає пісень для запису на диск"
 
 #: ../libbrasero-burn/brasero-burn-options.c:489
 msgid "Please add videos."
-msgstr "Додайте відео до проекту."
+msgstr "Додайте відео до проєкту."
 
 #: ../libbrasero-burn/brasero-burn-options.c:490
 msgid "There are no videos to write to disc"
@@ -1165,11 +1166,11 @@ msgstr "Носій для копіювання не вставлено."
 
 #: ../libbrasero-burn/brasero-burn-options.c:511
 msgid "Please select a disc image."
-msgstr "Виберіть образ диску."
+msgstr "Виберіть образ диска."
 
 #: ../libbrasero-burn/brasero-burn-options.c:512
 msgid "There is no selected disc image."
-msgstr "Не вибрано файл образу диску."
+msgstr "Не вибрано файл образу диска."
 
 #. Translators: this is a disc image not a picture
 #. Translators: this is a disc image, not a picture
@@ -1188,8 +1189,7 @@ msgid "Please insert a disc that is not copy protected."
 msgstr "Вставте диск не захищений від копіювання."
 
 #: ../libbrasero-burn/brasero-burn-options.c:533
-#: ../libbrasero-burn/brasero-burn-options.c:1235
-#: ../src/brasero-project.c:1445
+#: ../libbrasero-burn/brasero-burn-options.c:1235 ../src/brasero-project.c:1445
 msgid "All required applications and libraries are not installed."
 msgstr "Усі потрібні програми та бібліотеки не встановлено."
 
@@ -1199,7 +1199,7 @@ msgstr "Замініть диск на підтримуваний CD чи DVD."
 
 #: ../libbrasero-burn/brasero-burn-options.c:549 ../src/brasero-project.c:976
 msgid "Would you like to burn beyond the disc's reported capacity?"
-msgstr "Записати дані понад встановлену ємкість диску?"
+msgstr "Записати дані понад встановлену ємкість диска?"
 
 #: ../libbrasero-burn/brasero-burn-options.c:550
 msgid ""
@@ -1209,11 +1209,11 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Розмір проекту надто великий для цього диску, треба вилучити деякі файли з "
-"проекту.\n"
+"Розмір проєкту надто великий для цього диска, треба вилучити деякі файли з "
+"проєкту.\n"
 "Можливо, використовується компакт диск на 90 або 100 хвилин CD-R(W), який не "
 "вдається коректно розпізнати, і він потребує вказування параметра overburn.\n"
-"УВАГА: цей режим може призвести до пошкодження диску."
+"УВАГА: цей режим може призвести до пошкодження диска."
 
 #: ../libbrasero-burn/brasero-burn-options.c:557 ../src/brasero-project.c:983
 msgid "_Overburn"
@@ -1221,7 +1221,7 @@ msgstr "_Надлишковий запис"
 
 #: ../libbrasero-burn/brasero-burn-options.c:559 ../src/brasero-project.c:985
 msgid "Burn beyond the disc's reported capacity"
-msgstr "Записати дані понад вказану ємкість диску"
+msgstr "Записати дані понад вказану ємкість диска"
 
 #: ../libbrasero-burn/brasero-burn-options.c:569
 msgid ""
@@ -1250,8 +1250,7 @@ msgstr "Параметри запису диска"
 msgid "Video Options"
 msgstr "Параметри відео"
 
-#: ../libbrasero-burn/brasero-burn-options.c:795
-#: ../src/brasero-data-disc.c:613
+#: ../libbrasero-burn/brasero-burn-options.c:795 ../src/brasero-data-disc.c:613
 msgid ""
 "Do you want to create a disc from the contents of the image or with the "
 "image file inside?"
@@ -1266,7 +1265,7 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned."
 msgstr ""
-"Виділено лише один файл («%s»). Цей файл є образом диску та його вміст можна "
+"Позначено лише один файл («%s»). Цей файл є образом диска, і його вміст можна "
 "записати на диск."
 
 #: ../libbrasero-burn/brasero-burn-options.c:809
@@ -1284,7 +1283,7 @@ msgstr "Налаштування запису образу"
 #. pack everything
 #: ../libbrasero-burn/brasero-burn-options.c:901
 msgid "Select a disc image to write"
-msgstr "Виберіть образ диску для запису"
+msgstr "Виберіть образ диска для запису"
 
 #: ../libbrasero-burn/brasero-burn-options.c:921
 msgid "Copy CD/DVD"
@@ -1294,8 +1293,7 @@ msgstr "Копіювання CD та DVD"
 msgid "Select disc to copy"
 msgstr "Виберіть диск для копіювання"
 
-#: ../libbrasero-burn/brasero-burn-options.c:1229
-#: ../src/brasero-project.c:1439
+#: ../libbrasero-burn/brasero-burn-options.c:1229 ../src/brasero-project.c:1439
 msgid "Please install the following manually and try again:"
 msgstr "Встановіть наступні програми вручну та спробуйте ще раз:"
 
@@ -1453,7 +1451,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-drive-properties.c:726
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr "_Використовувати burnproof (зменшує риск пошкодження диску)"
+msgstr "_Використовувати burnproof (зменшує риск пошкодження диска)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:728
 msgid "Burn the image directly _without saving it to disc"
@@ -1505,7 +1503,7 @@ msgstr "Рекурсивне символьне посилання"
 
 #: ../libbrasero-burn/brasero-image-properties.c:243
 msgid "Disc image type:"
-msgstr "Тип образу диску:"
+msgstr "Тип образу диска:"
 
 #: ../libbrasero-burn/brasero-image-type-chooser.c:97
 msgid "Autodetect"
@@ -1589,13 +1587,13 @@ msgstr "Швидкість пристрою:"
 #: ../libbrasero-burn/brasero-src-image.c:229
 #, c-format
 msgid "\"%s\": loading"
-msgstr "\"%s\": завантаження"
+msgstr "«%s»: завантаження"
 
 #. Translators: %s is a path and image refers to a disc image
 #: ../libbrasero-burn/brasero-src-image.c:236
 #, c-format
 msgid "\"%s\": unknown disc image type"
-msgstr "\"%s\": невідомий тип образу диску"
+msgstr "«%s»: невідомий тип образу диска"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
@@ -1610,11 +1608,11 @@ msgstr "«%s» : %s"
 #: ../libbrasero-burn/brasero-src-image.c:271
 #: ../libbrasero-burn/brasero-src-image.c:554
 msgid "Click here to select a disc _image"
-msgstr "Натисніть, щоб обрати _образ диску"
+msgstr "Натисніть, щоб вибрати _образ диска"
 
 #: ../libbrasero-burn/brasero-src-image.c:415
 msgid "Select Disc Image"
-msgstr "Вибір образу диску"
+msgstr "Вибір образу диска"
 
 #: ../libbrasero-burn/brasero-src-image.c:444
 #: ../nautilus/nautilus-burn-bar.c:236 ../src/brasero-file-chooser.c:350
@@ -1723,12 +1721,12 @@ msgstr "Оцінка розмір"
 
 #: ../libbrasero-burn/brasero-status-dialog.c:568
 msgid "Please wait until the estimation of the size is completed."
-msgstr "Зачекайте закінчення оцінки розміру проекту."
+msgstr "Зачекайте закінчення оцінки розміру проєкту."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:569
 msgid "All files need to be analysed to complete this operation."
 msgstr ""
-"Для завершення цієї операції необхідно проаналізувати всі файли проекту."
+"Для завершення цієї операції необхідно проаналізувати всі файли проєкту."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:134
 #: ../libbrasero-burn/brasero-sum-dialog.c:215
@@ -1817,12 +1815,12 @@ msgstr "Диск не підтримується"
 msgid "The drive is empty"
 msgstr "Відсутній диск у пристрої"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:554
+#: ../libbrasero-burn/brasero-tool-dialog.c:556
 #: ../src/brasero-eject-dialog.c:167
 msgid "Select a disc"
 msgstr "Виберіть диск"
 
-#: ../libbrasero-burn/brasero-tool-dialog.c:581
+#: ../libbrasero-burn/brasero-tool-dialog.c:583
 msgid "Progress"
 msgstr "Поступ"
 
@@ -1886,7 +1884,7 @@ msgstr "Отримую формат та розмір зображення"
 #. Translators: This is a disc image
 #: ../libbrasero-burn/brasero-track-image-cfg.c:471
 msgid "The format of the disc image could not be identified"
-msgstr "Не вдається визначити формат образу диску"
+msgstr "Не вдається визначити формат образу диска"
 
 #: ../libbrasero-burn/brasero-track-image-cfg.c:472
 msgid "Please set it manually"
@@ -1914,7 +1912,7 @@ msgstr "Список прослуховування не можна додава
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:174
 #, c-format
 msgid "\"%s\" is not suitable for audio or video media"
-msgstr "Тип «%s» не підходить для проекту відео та аудіо диску."
+msgstr "Тип «%s» не підходить для проєкту відео та аудіодиска."
 
 #: ../libbrasero-burn/brasero-track-stream-cfg.c:401
 msgid "Analysing video files"
@@ -2062,7 +2060,7 @@ msgstr "модуль «%s» працює некоректно"
 #: ../libbrasero-burn/burn-job.c:430
 #, c-format
 msgid "Not enough space available on the disc (%s available for %s)"
-msgstr "Недостатньо вільного місця на диску (%si доступно для %s)"
+msgstr "Недостатньо вільного місця на диску (%s доступно для %s)"
 
 #: ../libbrasero-burn/burn-job.c:522
 #, c-format
@@ -2082,7 +2080,7 @@ msgstr ""
 "За обраним розташуванням немає достатньо вільного простору для зберігання "
 "тимчасового образу диска (потрібно %ld МБ)"
 
-#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:365
+#: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Не вдається створити розмір тому"
@@ -2349,7 +2347,7 @@ msgstr "%s: %s хв"
 #: ../libbrasero-media/brasero-volume.c:186
 #, c-format
 msgid "The disc mount point could not be retrieved"
-msgstr "Не вдається отримати точку монтування диску"
+msgstr "Не вдається отримати точку монтування диска"
 
 #. NOTE for translators: the first %s is the disc type and Blank is an adjective.
 #: ../libbrasero-media/brasero-volume.c:409
@@ -2376,8 +2374,8 @@ msgstr "Музичний диск (%s)"
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
 #. * The %s is the date
-#: ../libbrasero-media/brasero-volume.c:421
-#: ../nautilus/nautilus-burn-bar.c:115 ../src/brasero-project-name.c:255
+#: ../libbrasero-media/brasero-volume.c:421 ../nautilus/nautilus-burn-bar.c:115
+#: ../src/brasero-project-name.c:255
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Файли (%s)"
@@ -2386,11 +2384,10 @@ msgstr "Файли (%s)"
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
 #: ../libbrasero-media/burn-iso9660.c:439
-#: ../libbrasero-media/burn-iso9660.c:488
-#: ../libbrasero-media/burn-volume.c:128
+#: ../libbrasero-media/burn-iso9660.c:488 ../libbrasero-media/burn-volume.c:128
 #, c-format
 msgid "It does not appear to be a valid ISO image"
-msgstr "Файл не є припустимим образом диску у форматі ISO"
+msgstr "Файл не є припустимим образом диска у форматі ISO"
 
 #: ../libbrasero-media/scsi-error.c:43 ../src/brasero-project-name.c:84
 msgid "Unknown error"
@@ -2696,7 +2693,7 @@ msgid "Write to Disc"
 msgstr "Записати на диск"
 
 #: ../nautilus/nautilus-burn-bar.c:442
-#: ../nautilus/nautilus-burn-extension.c:723
+#: ../nautilus/nautilus-burn-extension.c:725
 msgid "Write contents to a CD or DVD"
 msgstr "Записати вміст на диск CD чи DVD"
 
@@ -2705,13 +2702,13 @@ msgid "Copy Disc"
 msgstr "Копіювати диск"
 
 #: ../nautilus/nautilus-burn-extension.c:571
-#: ../nautilus/nautilus-burn-extension.c:722
+#: ../nautilus/nautilus-burn-extension.c:724
 msgid "_Write to Disc…"
 msgstr "_Записати на диск…"
 
 #: ../nautilus/nautilus-burn-extension.c:572
 msgid "Write disc image to a CD or DVD"
-msgstr "Записати образ диску на CD чи DVD"
+msgstr "Записати образ диска на CD чи DVD"
 
 #: ../nautilus/nautilus-burn-extension.c:645
 msgid "_Copy Disc…"
@@ -2719,7 +2716,7 @@ msgstr "_Копіювати диск…"
 
 #: ../nautilus/nautilus-burn-extension.c:646
 msgid "Create a copy of this CD or DVD"
-msgstr "Створити копію цього диску на CD чи DVD"
+msgstr "Створити копію цього диска на CD чи DVD"
 
 #: ../nautilus/nautilus-burn-extension.c:659
 msgid "_Blank Disc…"
@@ -2731,11 +2728,11 @@ msgstr "Очистити цей диск CD чи DVD"
 
 #: ../nautilus/nautilus-burn-extension.c:676
 msgid "_Check Disc…"
-msgstr "_Перевірити цілісність диску…"
+msgstr "_Перевірити цілісність диска…"
 
 #: ../nautilus/nautilus-burn-extension.c:677
 msgid "Check the data integrity on this CD or DVD"
-msgstr "Перевірити цілісність даних цього диску CD чи DVD"
+msgstr "Перевірити цілісність даних цього диска CD чи DVD"
 
 #: ../plugins/audio2cue/burn-audio2cue.c:191
 #: ../plugins/checksum/burn-checksum-image.c:124
@@ -2747,7 +2744,7 @@ msgstr "неможливо прочитати дані (%s)"
 #: ../plugins/checksum/burn-checksum-files.c:196
 #: ../plugins/checksum/burn-checksum-files.c:219
 #: ../plugins/checksum/burn-checksum-image.c:174
-#: ../plugins/dvdcss/burn-dvdcss.c:216 ../plugins/dvdcss/burn-dvdcss.c:495
+#: ../plugins/dvdcss/burn-dvdcss.c:213 ../plugins/dvdcss/burn-dvdcss.c:492
 #: ../plugins/libburnia/burn-libisofs.c:160
 #: ../plugins/libburnia/burn-libisofs.c:274
 #, c-format
@@ -2856,7 +2853,7 @@ msgstr ""
 
 #: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
 msgid "Copies any disc to a disc image"
-msgstr "Копіювати будь-який диску у файл образу"
+msgstr "Копіювати будь-який диск до файла образу"
 
 #: ../plugins/cdrkit/burn-wodim.c:122 ../plugins/cdrtools/burn-cdrecord.c:122
 #: ../plugins/libburnia/burn-libburn.c:856
@@ -2870,7 +2867,7 @@ msgstr "Під час запису на диск виникла помилка"
 msgid ""
 "The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr ""
-"Система надто повільна для запису диску на цій швидкості. Спробуйте меншу "
+"Система надто повільна для запису диска на цій швидкості. Спробуйте меншу "
 "швидкість."
 
 #. Translators: %s is the number of the track
@@ -2881,7 +2878,7 @@ msgstr "Записується доріжка %s"
 
 #: ../plugins/cdrkit/burn-wodim.c:352 ../plugins/cdrtools/burn-cdrecord.c:346
 msgid "Formatting disc"
-msgstr "Розмітка диску"
+msgstr "Розмітка диска"
 
 #: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
 msgid "Writing cue sheet"
@@ -2914,7 +2911,7 @@ msgstr "Копіювання звукової доріжки %02d"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:267
 msgid "Preparing to copy audio disc"
-msgstr "Підготовка до копіювання аудіо диску"
+msgstr "Підготовка до копіювання аудіодиска"
 
 #: ../plugins/cdrtools/burn-cdda2wav.c:411
 msgid "Copy tracks from an audio CD with all associated information"
@@ -3045,7 +3042,7 @@ msgstr "Створити образ диска зручний для відео 
 #. Translators: %s is the path to a drive. "regionset %s"
 #. * should be left as is just like "DVDCSS_METHOD=title
 #. * brasero --no-existing-session"
-#: ../plugins/dvdcss/burn-dvdcss.c:294
+#: ../plugins/dvdcss/burn-dvdcss.c:291
 #, c-format
 msgid ""
 "Error while retrieving a key used for encryption. You may solve such a "
@@ -3059,26 +3056,26 @@ msgstr ""
 "CD/DVD за допомогою команди \"regionset %s\", або виконайте команду "
 "\"DVDCSS_METHOD=title brasero --no-existing-session\""
 
-#: ../plugins/dvdcss/burn-dvdcss.c:339
+#: ../plugins/dvdcss/burn-dvdcss.c:336
 msgid "Retrieving DVD keys"
 msgstr "Отримання ключів DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:374
+#: ../plugins/dvdcss/burn-dvdcss.c:371
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "Не вдається відкрити відео DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:395 ../plugins/dvdcss/burn-dvdcss.c:460
-#: ../plugins/dvdcss/burn-dvdcss.c:483
+#: ../plugins/dvdcss/burn-dvdcss.c:392 ../plugins/dvdcss/burn-dvdcss.c:457
+#: ../plugins/dvdcss/burn-dvdcss.c:480
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Помилка читання відео DVD (%s)"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:402
+#: ../plugins/dvdcss/burn-dvdcss.c:399
 msgid "Copying video DVD"
 msgstr "Копіювання відео DVD"
 
-#: ../plugins/dvdcss/burn-dvdcss.c:695
+#: ../plugins/dvdcss/burn-dvdcss.c:692
 msgid "Copies CSS encrypted video DVDs to a disc image"
 msgstr "Копіювання CSS, шифрованих DVD у образ диска"
 
@@ -3275,7 +3272,7 @@ msgstr "Запис образів дисків на CD чи DVD"
 
 #: ../src/brasero-app.c:123
 msgid "_Project"
-msgstr "_Проект"
+msgstr "_Проєкт"
 
 #: ../src/brasero-app.c:124
 msgid "_View"
@@ -3315,7 +3312,7 @@ msgstr "_Очистити…"
 
 #: ../src/brasero-app.c:137
 msgid "Blank a disc"
-msgstr "Очищення диску"
+msgstr "Очищення диска"
 
 #: ../src/brasero-app.c:139
 msgid "_Check Integrity…"
@@ -3323,7 +3320,7 @@ msgstr "Перевірити _цілісність…"
 
 #: ../src/brasero-app.c:140
 msgid "Check data integrity of disc"
-msgstr "Перевірити цілісність даних диску"
+msgstr "Перевірити цілісність даних диска"
 
 #: ../src/brasero-app.c:143
 msgid "Quit Brasero"
@@ -3347,16 +3344,16 @@ msgstr "Запис дисків"
 
 #: ../src/brasero-app.c:789 ../src/brasero-app.c:822 ../src/brasero-app.c:1451
 msgid "Error while loading the project"
-msgstr "Помилка при завантаженні проекту"
+msgstr "Помилка при завантаженні проєкту"
 
 #: ../src/brasero-app.c:831 ../src/brasero-app.c:860 ../src/brasero-app.c:920
 #: ../src/brasero-project.c:1276
 msgid "Please add files to the project."
-msgstr "Додайте файли у проект."
+msgstr "Додайте файли у проєкт."
 
 #: ../src/brasero-app.c:832 ../src/brasero-app.c:861 ../src/brasero-app.c:921
 msgid "The project is empty"
-msgstr "Проект порожній"
+msgstr "Проєкт порожній"
 
 #: ../src/brasero-app.c:1176
 msgid ""
@@ -3416,15 +3413,15 @@ msgstr ""
 #: ../src/brasero-app.c:1449
 #, c-format
 msgid "The project \"%s\" does not exist"
-msgstr "Проект «%s» не існує"
+msgstr "Проєкт «%s» не існує"
 
 #: ../src/brasero-app.c:1733 ../src/brasero-app.c:1739
 msgid "_Recent Projects"
-msgstr "_Недавні проекти"
+msgstr "_Недавні проєкти"
 
 #: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
-msgstr "Показати список нещодавно відкритих проектів"
+msgstr "Показати список нещодавно відкритих проєктів"
 
 #: ../src/brasero-audio-disc.c:155 ../src/brasero-data-disc.c:122
 #: ../src/brasero-video-disc.c:100
@@ -3446,7 +3443,7 @@ msgstr "Змінити інформацію про композицію (поч�
 #: ../src/brasero-audio-disc.c:160 ../src/brasero-data-disc.c:127
 #: ../src/brasero-project.c:202
 msgid "Remove the selected files from the project"
-msgstr "Вилучити вибрані файли з проекту"
+msgstr "Вилучити вибрані файли з проєкту"
 
 #: ../src/brasero-audio-disc.c:162 ../src/brasero-data-disc.c:129
 #: ../src/brasero-video-disc.c:107
@@ -3555,9 +3552,10 @@ msgid ""
 "be played by specific digital players.\n"
 "Note: if you agree, normalization will not be applied to these tracks."
 msgstr ""
-"Деякі з обраних пісень не підходять для створення DTS доріжок.\n"
-"Цей тип доріжок аудіо компакт-диску забезпечує кращу якість звуку, але може "
-"відтворюватись на спеціальних цифрових програвачах.\n"
+"Деякі з обраних пісень не підходять для створення DTS-доріжок.\n"
+"Цей тип доріжок звукового компакт-диска забезпечує кращу якість звуку, але"
+" може "
+"відтворюватись лише на спеціалізованих цифрових програвачах.\n"
 "Примітка: якщо ви згодні, нормалізацію не буде застосовано до цих доріжок."
 
 #: ../src/brasero-audio-disc.c:867
@@ -3586,7 +3584,7 @@ msgstr "Неможливо розбити більше однієї композ
 
 #: ../src/brasero-cli.c:70
 msgid "Open the specified project"
-msgstr "Відкрити вказаний проект"
+msgstr "Відкрити вказаний проєкт"
 
 #: ../src/brasero-cli.c:71
 msgid "PROJECT"
@@ -3594,7 +3592,7 @@ msgstr "ПРОЕКТ"
 
 #: ../src/brasero-cli.c:76
 msgid "Open the specified playlist as an audio project"
-msgstr "Відкрити список відтворення як проект музичного диску"
+msgstr "Відкрити список відтворення як проєкт музичного диска"
 
 #: ../src/brasero-cli.c:77
 msgid "PLAYLIST"
@@ -3615,12 +3613,12 @@ msgstr "Створити файл образу, а не записувати"
 #: ../src/brasero-cli.c:90
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr ""
-"відкрити проект звукового диску, додаючи URI, вказані у командному рядку"
+"Відкрити проєкт звукового диска, додаючи URI, вказані у командному рядку"
 
 #: ../src/brasero-cli.c:94
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
-"Відкрити проект диску з даними, додаючи URI, вказані у командному рядку"
+"Відкрити проєкт диска з даними, додаючи URI, вказані у командному рядку"
 
 #: ../src/brasero-cli.c:98
 msgid "Copy a disc"
@@ -3640,7 +3638,7 @@ msgstr "Шлях до обкладинки"
 
 #: ../src/brasero-cli.c:106
 msgid "Open a video project adding the URIs given on the command line"
-msgstr "Відкрити проект відеодиску, додаючи URI, вказані у командному рядку"
+msgstr "Відкрити проєкт відеодиска, додаючи URI, вказані у командному рядку"
 
 #: ../src/brasero-cli.c:110
 msgid "URI of an image file to burn (autodetected)"
@@ -3652,15 +3650,15 @@ msgstr "ШЛЯХ ДО ОБРАЗУ"
 
 #: ../src/brasero-cli.c:114
 msgid "Force Brasero to display the project selection page"
-msgstr "Примусово показати сторінку виділення проекту"
+msgstr "Примусово показати сторінку виділення проєкту"
 
 #: ../src/brasero-cli.c:118
 msgid "Open the blank disc dialog"
-msgstr "Відкрити діалог очищення диску"
+msgstr "Відкрити вікно очищення диска"
 
 #: ../src/brasero-cli.c:122
 msgid "Open the check disc dialog"
-msgstr "Відкрити діалог перевірки диску"
+msgstr "Відкрити вікно перевірки диска"
 
 #: ../src/brasero-cli.c:126
 msgid "Burn the contents of the burn:// URI"
@@ -3679,7 +3677,7 @@ msgid ""
 "Burn the specified project and remove it.\n"
 "This option is mainly useful for integration with other applications."
 msgstr ""
-"Записати заданий проект та вилучити його.\n"
+"Записати заданий проєкт та вилучити його.\n"
 "Цей параметр корисний при взаємодії з іншою програмою."
 
 #: ../src/brasero-cli.c:139
@@ -3735,11 +3733,11 @@ msgstr "Не вдається імпортувати сеанс."
 
 #: ../src/brasero-data-disc.c:559
 msgid "The contents of the project changed since it was saved."
-msgstr "Зміст проекту змінився з моменту його збереження."
+msgstr "Зміст проєкту змінився з моменту його збереження."
 
 #: ../src/brasero-data-disc.c:561
 msgid "Discard the current modified project ?"
-msgstr "Відхилити поточні зміни у проекті ?"
+msgstr "Відхилити поточні зміни у проєкті ?"
 
 #: ../src/brasero-data-disc.c:567
 msgid "_Discard"
@@ -3747,11 +3745,11 @@ msgstr "_Відхилити"
 
 #: ../src/brasero-data-disc.c:569
 msgid "Discard the current modified project"
-msgstr "Відхилити поточні зміни у проекті"
+msgstr "Відхилити поточні зміни у проєкті"
 
 #: ../src/brasero-data-disc.c:574
 msgid "Continue with the current modified project"
-msgstr "Продовжити роботу з поточним зміненим проектом"
+msgstr "Продовжити роботу з поточним зміненим проєктом"
 
 #. Translators: %s is the name of the image
 #: ../src/brasero-data-disc.c:619
@@ -3760,7 +3758,7 @@ msgid ""
 "There is only one selected file (\"%s\"). It is the image of a disc and its "
 "contents can be burned"
 msgstr ""
-"Виділено лише один файл («%s»). Цей файл є образом диску та його вміст можна "
+"Позначено лише один файл («%s»). Цей файл є образом диска, і його вміст можна "
 "записати на диск."
 
 #: ../src/brasero-data-disc.c:625
@@ -3796,7 +3794,7 @@ msgid ""
 "A file with this name already exists in the folder.  Replacing it will "
 "overwrite its contents on the disc to be burnt."
 msgstr ""
-"Файл з цією назвою вже існує у теці.  Заміна перезапише його вміст на диску, "
+"Файл з цією назвою вже існує у теці. Заміна перезапише його вміст на диску, "
 "який буде записано."
 
 #. Translators: Keep means we're keeping the files that already existed
@@ -3870,7 +3868,7 @@ msgstr "Натисніть, щоб імпортувати його зміст"
 
 #: ../src/brasero-data-disc.c:1490
 msgid "Please wait while the project is loading."
-msgstr "Завантаження проекту, зачекайте."
+msgstr "Завантаження проєкту, зачекайте."
 
 #: ../src/brasero-data-disc.c:1500
 msgid "_Cancel Loading"
@@ -3878,7 +3876,7 @@ msgstr "_Скасувати завантаження"
 
 #: ../src/brasero-data-disc.c:1502
 msgid "Cancel loading current project"
-msgstr "Скасувати завантаження поточного проекту"
+msgstr "Скасувати завантаження поточного проєкту"
 
 #: ../src/brasero-data-disc.c:1903
 msgid "File Renaming"
@@ -3911,7 +3909,7 @@ msgstr "Заповнення"
 #: ../src/brasero-eject-dialog.c:97
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
-msgstr "Не вдається витягнути носій %s"
+msgstr "Не вдається виштовхнути диск «%s»"
 
 #: ../src/brasero-eject-dialog.c:193
 msgid "_Eject"
@@ -4138,25 +4136,25 @@ msgstr "Увімкнено"
 msgid "Copyright %s"
 msgstr "Авторські права %s"
 
-#: ../src/brasero-plugin-manager-ui.c:579
-#: ../src/brasero-plugin-manager-ui.c:967
+#: ../src/brasero-plugin-manager-ui.c:575
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "_About"
 msgstr "_Про програму"
 
-#: ../src/brasero-plugin-manager-ui.c:587
-#: ../src/brasero-plugin-manager-ui.c:973
+#: ../src/brasero-plugin-manager-ui.c:583
+#: ../src/brasero-plugin-manager-ui.c:969
 msgid "C_onfigure"
 msgstr "_Налаштувати"
 
-#: ../src/brasero-plugin-manager-ui.c:597
+#: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
 msgstr "_Увімкнути"
 
-#: ../src/brasero-plugin-manager-ui.c:609
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
 msgstr "Ув_імкнути усі"
 
-#: ../src/brasero-plugin-manager-ui.c:614
+#: ../src/brasero-plugin-manager-ui.c:610
 msgid "_Deactivate All"
 msgstr "_Вимкнути усі"
 
@@ -4172,7 +4170,7 @@ msgstr "Модулі Brasero"
 
 #: ../src/brasero-project.c:196
 msgid "Save current project"
-msgstr "Зберегти поточний проект"
+msgstr "Зберегти поточний проєкт"
 
 #: ../src/brasero-project.c:197
 msgid "Save _As…"
@@ -4180,7 +4178,7 @@ msgstr "Зберегти _як…"
 
 #: ../src/brasero-project.c:198
 msgid "Save current project to a different location"
-msgstr "Зберегти поточний проект у іншому місці"
+msgstr "Зберегти поточний проєкт у іншому місці"
 
 #: ../src/brasero-project.c:199
 msgid "_Add Files"
@@ -4188,7 +4186,7 @@ msgstr "_Додати файли"
 
 #: ../src/brasero-project.c:200
 msgid "Add files to the project"
-msgstr "Додати файли до проекту"
+msgstr "Додати файли до проєкту"
 
 #: ../src/brasero-project.c:201
 msgid "_Remove Files"
@@ -4197,11 +4195,11 @@ msgstr "В_илучити файли"
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:204 ../src/brasero-project.c:2312
 msgid "E_mpty Project"
-msgstr "О_чистити проект"
+msgstr "О_чистити проєкт"
 
 #: ../src/brasero-project.c:205
 msgid "Remove all files from the project"
-msgstr "Вилучити всі файли з проекту"
+msgstr "Вилучити всі файли з проєкту"
 
 #: ../src/brasero-project.c:206 ../src/brasero-project.c:1086
 msgid "_Burn…"
@@ -4216,7 +4214,7 @@ msgid ""
 "To add files to this project click the \"Add\" button or drag files to this "
 "area"
 msgstr ""
-"Щоб додати файли до проекту натисніть «Додати» або перетягніть файли у цю "
+"Щоб додати файли до проєкту натисніть «Додати» або перетягніть файли у цю "
 "область"
 
 #: ../src/brasero-project.c:697
@@ -4230,12 +4228,12 @@ msgstr ""
 #: ../src/brasero-project.c:804
 #, c-format
 msgid "Estimated project size: %s"
-msgstr "Оцінюваний розмір проекту: %s"
+msgstr "Оцінюваний розмір проєкту: %s"
 
 #: ../src/brasero-project.c:950 ../src/brasero-project.c:966
 msgid "The project is too large for the disc even with the overburn option."
 msgstr ""
-"Розмір проекту надто великий для цього диску, навіть при записі у режимі "
+"Розмір проєкту надто великий для цього диска, навіть при записі у режимі "
 "overburn."
 
 #: ../src/brasero-project.c:977
@@ -4245,11 +4243,11 @@ msgid ""
 "cannot be properly recognized and therefore needs the overburn option.\n"
 "Note: This option might cause failure."
 msgstr ""
-"Розмір проекту надто великий для цього диску, треба вилучити деякі файли з "
-"проекту.\n"
-"Можливо, використовується компакт диск на 90 або 100 хвилин, який не "
+"Розмір проєкту надто великий для цього диска, треба вилучити деякі файли з "
+"проєкту.\n"
+"Можливо, використовується компакт-диск на 90 або 100 хвилин, який не "
 "вдається коректно розпізнати. Може знадобитися режим надлишкового запису.\n"
-"УВАГА: цей режим може призвести до пошкодження диску."
+"УВАГА: цей режим може призвести до пошкодження диска."
 
 #: ../src/brasero-project.c:1098
 msgid "Start to burn the contents of the selection"
@@ -4257,15 +4255,15 @@ msgstr "Почати процес запису обраного вмісту"
 
 #: ../src/brasero-project.c:1267
 msgid "Please add songs to the project."
-msgstr "Додайте композиції у проект."
+msgstr "Додайте композиції у проєкт."
 
 #: ../src/brasero-project.c:1904 ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
-msgstr "Дійсно створити новий проект та відхилити поточний?"
+msgstr "Дійсно створити новий проєкт та відхилити поточний?"
 
 #: ../src/brasero-project.c:1909
 msgid "If you choose to create a new empty project, all changes will be lost."
-msgstr "Якщо створити новий проект, всі зміни буде втрачено."
+msgstr "Якщо створити новий проєкт, всі зміни буде втрачено."
 
 #: ../src/brasero-project.c:1912
 msgid "_Discard Changes"
@@ -4273,13 +4271,13 @@ msgstr "_Відкинути зміни"
 
 #: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
-msgstr "Скасувати виділення файлів та додати їх до нового проекту?"
+msgstr "Скасувати виділення файлів та додати їх до нового проєкту?"
 
 #: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
 msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
-msgstr "Якщо створити новий проект, всі зміни буде втрачено."
+msgstr "Якщо створити новий проєкт, всі зміни буде втрачено."
 
 #: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
@@ -4291,7 +4289,7 @@ msgstr "З_берегти поточне виділення"
 
 #: ../src/brasero-project.c:1946
 msgid "_Discard Project"
-msgstr "_Відхилити проект"
+msgstr "_Відхилити проєкт"
 
 #: ../src/brasero-project.c:2188
 msgid "Select Files"
@@ -4299,7 +4297,7 @@ msgstr "Вибрати файли"
 
 #: ../src/brasero-project.c:2301
 msgid "Do you really want to empty the current project?"
-msgstr "Дійсно очистити поточний проект?"
+msgstr "Дійсно очистити поточний проєкт?"
 
 #: ../src/brasero-project.c:2306
 msgid ""
@@ -4307,8 +4305,8 @@ msgid ""
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
 msgstr ""
-"Якщо очистити проект, всі зміни будуть втрачені та всі додані файли буде "
-"вилучено з проекту (але вони не будуть вилучені з вашого комп'ютера."
+"Якщо очистити проєкт, всі зміни будуть втрачені та всі додані файли буде "
+"вилучено з проєкту (але вони не будуть вилучені з вашого комп'ютера."
 
 #: ../src/brasero-project.c:2368
 msgid "_Save"
@@ -4342,11 +4340,11 @@ msgstr "Brasero — %s (відеодиск)"
 
 #: ../src/brasero-project.c:2624 ../src/brasero-project.c:2927
 msgid "Your project has not been saved."
-msgstr "Не вдається зберегти проект."
+msgstr "Не вдається зберегти проєкт."
 
 #: ../src/brasero-project.c:2638
 msgid "Save the changes of current project before closing?"
-msgstr "Зберегти зміни у теперішньому проекті перед закриттям?"
+msgstr "Зберегти зміни у теперішньому проєкті перед закриттям?"
 
 #: ../src/brasero-project.c:2643 ../src/brasero-project.c:2932
 msgid "If you don't save, changes will be permanently lost."
@@ -4359,15 +4357,15 @@ msgstr "_Закрити без збереження"
 
 #: ../src/brasero-project.c:2735
 msgid "Save Current Project"
-msgstr "Зберегти поточний проект"
+msgstr "Зберегти поточний проєкт"
 
 #: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
-msgstr "Зберегти проект Brasero для звукового диску"
+msgstr "Зберегти проєкт Brasero для звукового диска"
 
 #: ../src/brasero-project.c:2754
 msgid "Save project as a plain text list"
-msgstr "Зберегти текстовий список файлів проекту"
+msgstr "Зберегти текстовий список файлів проєкту"
 
 #: ../src/brasero-project.c:2758
 msgid "Save project as a PLS playlist"
@@ -4395,19 +4393,19 @@ msgstr "Створити та надрукувати обкладинку для
 
 #: ../src/brasero-project-manager.c:97
 msgid "_New Project"
-msgstr "_Створити проект"
+msgstr "_Створити проєкт"
 
 #: ../src/brasero-project-manager.c:98
 msgid "Create a new project"
-msgstr "Створити новий проект"
+msgstr "Створити новий проєкт"
 
 #: ../src/brasero-project-manager.c:99
 msgid "_Empty Project"
-msgstr "О_чистити проект"
+msgstr "О_чистити проєкт"
 
 #: ../src/brasero-project-manager.c:100
 msgid "Let you choose your new project"
-msgstr "Дозволяє вибрати новий проект"
+msgstr "Дозволяє вибрати новий проєкт"
 
 #: ../src/brasero-project-manager.c:101
 msgid "New _Audio Project"
@@ -4472,7 +4470,7 @@ msgstr "_Відкрити…"
 
 #: ../src/brasero-project-manager.c:113
 msgid "Open a project"
-msgstr "Відкрити проект"
+msgstr "Відкрити проєкт"
 
 #. Translators: the %s is a string representing the total size
 #. * of the file selection
@@ -4522,15 +4520,15 @@ msgstr "Файли не вибрані"
 
 #: ../src/brasero-project-manager.c:590
 msgid "Brasero — New Audio Disc Project"
-msgstr "Brasero — новий проект звукового компакт-диска"
+msgstr "Brasero — новий проєкт звукового компакт-диска"
 
 #: ../src/brasero-project-manager.c:604
 msgid "Brasero — New Data Disc Project"
-msgstr "Brasero — новий проект диску з даними"
+msgstr "Brasero — новий проєкт диска з даними"
 
 #: ../src/brasero-project-manager.c:618
 msgid "Brasero — New Video Disc Project"
-msgstr "Brasero — новий проект відеодиску"
+msgstr "Brasero — новий проєкт відеодиска"
 
 #: ../src/brasero-project-manager.c:628
 msgid "Brasero — New Image File"
@@ -4542,7 +4540,7 @@ msgstr "Brasero — копіювання диска"
 
 #: ../src/brasero-project-manager.c:727
 msgid "Open Project"
-msgstr "Відкрити проект"
+msgstr "Відкрити проєкт"
 
 #: ../src/brasero-project-manager.c:830
 msgid "_New"
@@ -4577,11 +4575,11 @@ msgstr "Відеодиск (%s)"
 
 #: ../src/brasero-project-parse.c:62
 msgid "Error while loading the project."
-msgstr "Помилка при завантаженні проекту."
+msgstr "Помилка при завантаженні проєкту."
 
 #: ../src/brasero-project-parse.c:458
 msgid "The project could not be opened"
-msgstr "Не вдається відкрити проект."
+msgstr "Не вдається відкрити проєкт."
 
 #: ../src/brasero-project-parse.c:467
 msgid "The file is empty"
@@ -4589,7 +4587,7 @@ msgstr "Файл порожній"
 
 #: ../src/brasero-project-parse.c:546 ../src/brasero-project-parse.c:611
 msgid "It does not seem to be a valid Brasero project"
-msgstr "Файл не є проектом Brasero."
+msgstr "Файл не є проєктом Brasero."
 
 #: ../src/brasero-project-type-chooser.c:74
 msgid "Audi_o project"
@@ -4629,25 +4627,25 @@ msgstr "Записати _образ"
 
 #: ../src/brasero-project-type-chooser.c:292
 msgid "Last _Unsaved Project"
-msgstr "Останній _незбережений проект"
+msgstr "Останній _незбережений проєкт"
 
 #: ../src/brasero-project-type-chooser.c:308
 msgid "Load the last project that was not burned and not saved"
 msgstr ""
-"Завантажити останній проект, який не був ані записаний на диск, ані "
+"Завантажити останній проєкт, який не був ані записаний на диск, ані "
 "збережений"
 
 #: ../src/brasero-project-type-chooser.c:414
 msgid "No recently used project"
-msgstr "Немає недавно відкритих проектів"
+msgstr "Немає недавно відкритих проєктів"
 
 #: ../src/brasero-project-type-chooser.c:463
 msgid "Create a new project:"
-msgstr "Створити новий проект:"
+msgstr "Створити новий проєкт:"
 
 #: ../src/brasero-project-type-chooser.c:510
 msgid "Recent projects:"
-msgstr "Недавні проекти:"
+msgstr "Недавні проєкти:"
 
 #: ../src/brasero-rename.c:322
 msgid "Insert text"
@@ -4919,7 +4917,7 @@ msgstr "Змінити інформацію про відеофайл (поча�
 
 #: ../src/brasero-video-disc.c:105
 msgid "Remove the selected videos from the project"
-msgstr "Вилучити вибрані відеофайли з проекту"
+msgstr "Вилучити вибрані відеофайли з проєкту"
 
 #: ../src/brasero-video-disc.c:359
 msgid "Do you want to search for video files inside the directory?"
@@ -4932,7 +4930,7 @@ msgstr "_Шукати у каталозі"
 #: ../src/brasero-video-disc.c:412
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
-msgstr "Тип «%s» не підходить для проекту відеодиску."
+msgstr "Тип «%s» не підходить для проєкту відеодиска."
 
 #: ../src/brasero-video-disc.c:415
 msgid "Please only add files with video content"
@@ -4946,170 +4944,3 @@ msgstr "[URI] [URI] …"
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Наберіть «%s --help», щоб побачити всі доступні параметри\n"
-
-#~ msgid "File is not a valid .desktop file"
-#~ msgstr "Файл не є коректним файлом формату .desktop"
-
-#~ msgid "Unrecognized desktop file Version '%s'"
-#~ msgstr "Версію ярлика «%s» не розпізнано"
-
-#~ msgid "Starting %s"
-#~ msgstr "Початок %s"
-
-#~ msgid "Application does not accept documents on command line"
-#~ msgstr "Програма не приймає документи в аргументах командного рядка"
-
-#~ msgid "Unrecognized launch option: %d"
-#~ msgstr "Невідомий ключ запуску: %d"
-
-#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-#~ msgstr "Не можна передавати URI документу в ярлик типу «Посилання»"
-
-#~ msgid "Not a launchable item"
-#~ msgstr "Об'єкт не можна запускати"
-
-#~ msgid "Disable connection to session manager"
-#~ msgstr "Вимкнути взаємодію з менеджером сеансів"
-
-#~ msgid "Specify file containing saved configuration"
-#~ msgstr "Вказати файл для збереження конфігурації"
-
-#~ msgid "FILE"
-#~ msgstr "ФАЙЛ"
-
-#~ msgid "Specify session management ID"
-#~ msgstr "Вказати ідентифікатор сеансу"
-
-#~ msgid "ID"
-#~ msgstr "ІДЕНТИФІКАТОР"
-
-#~ msgid "Session management options:"
-#~ msgstr "Параметри керування сеансами:"
-
-#~ msgid "Show session management options"
-#~ msgstr "Показувати параметри керування сеансами"
-
-#~ msgid "Results %i–%i (out of %i)"
-#~ msgstr "Результати %i-%i (загалом %i)"
-
-#~ msgid "No results"
-#~ msgstr "Результатів немає."
-
-#~ msgid "Error querying for keywords."
-#~ msgstr "Помилка при запиті ключових слів."
-
-#~ msgid "Previous Results"
-#~ msgstr "Попередні результати"
-
-#~ msgid "Next Results"
-#~ msgstr "Наступні результати"
-
-#~ msgid "Number of results displayed"
-#~ msgstr "Кількість результатів, що виводиться"
-
-#~ msgid "by"
-#~ msgstr "від"
-
-#~ msgid "Cancel ongoing burning"
-#~ msgstr "Скасувати запис, що виконується"
-
-#~ msgid "Show _Dialog"
-#~ msgstr "Показати _діалог"
-
-#~ msgid "Show dialog"
-#~ msgstr "Показати діалог"
-
-#~ msgid "%s, %d%% done, %s remaining"
-#~ msgstr "%s, %d%% виконано, %s залишилось"
-
-#~ msgid "%s, %d%% done"
-#~ msgstr "%s, %d%% виконано"
-
-#~ msgid "Directories cannot be added to an audio disc."
-#~ msgstr "Неможливо додавати каталоги на звуковий диск."
-
-#~ msgid "Search:"
-#~ msgstr "Знайти:"
-
-#~ msgid "In _text documents"
-#~ msgstr "У _текстових документах"
-
-#~ msgid "In _pictures"
-#~ msgstr "У _зображеннях"
-
-#~ msgid "In _music"
-#~ msgstr "У _музиці"
-
-#~ msgid "In _videos"
-#~ msgstr "У _відео"
-
-#~ msgid "Type your keywords or choose 'All files' from the menu"
-#~ msgstr "Введіть запит або виберіть 'Усі файли' у розкривному списку"
-
-#~ msgid "Select if you want to search among image files only"
-#~ msgstr "Відмітьте, щоб шукати лише файли образів"
-
-#~ msgid "Select if you want to search among video files only"
-#~ msgstr "Відмітьте, щоб шукати лише відеофайлы"
-
-#~ msgid "Select if you want to search among audio files only"
-#~ msgstr "Відмітьте, щоб шукати лише звукові файли"
-
-#~ msgid "Select if you want to search among your text documents only"
-#~ msgstr "Відмітьте, щоб шукати лише текстові документи"
-
-#~ msgid "Click to start the search"
-#~ msgstr "Натисніть щоб розпочати пошук"
-
-#~ msgid "Name:"
-#~ msgstr "Назва:"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i × %i "
-#~ "pixels</span></i>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">Розмір:</span>\t<i><span size=\"smaller\"> %i x %i "
-#~ "точок</span></i>"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">%s</span>\n"
-#~ "by <span size=\"smaller\"><i>%s</i></span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">%s</span>\n"
-#~ "від <span size=\"smaller\"><i>%s</i></span>"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">Loading information</span>\n"
-#~ "about <span size=\"smaller\"><i>%s</i></span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">Завантаження інформації</span>\n"
-#~ "про <span size=\"smaller\"><i>%s</i></span>"
-
-#~ msgid ""
-#~ "Do you really want to create a new project and discard the changes to "
-#~ "current one?"
-#~ msgstr "Дійсно створити новий проект та відхилити всі зміни у поточному?"
-
-#~ msgid "Search files using keywords"
-#~ msgstr "Пошук файлів за ключовими словами"
-
-#~ msgid "An error occured while writing to disc"
-#~ msgstr "Під час запису на диск виникла помилка"
-
-#~ msgid "Error reading video DVD (%s)"
-#~ msgstr "Помилка читання відео DVD (%s)"
-
-#~ msgid "Copying `%s` locally"
-#~ msgstr "Копіювання «%s» на локальну систему"
-
-#~ msgid "Directories cannot be added to video discs."
-#~ msgstr "На відеодиск не можна додавати каталоги."
-
-#~ msgid "Brasero Disc Copier"
-#~ msgstr "Brasero — копіювання диска"
-
-#~ msgid "Copy CDs and DVDs"
-#~ msgstr "Копіювання дисків CD та DVD"
-
-#~ msgid "Disc Copier"
-#~ msgstr "Копіювання дисків"
