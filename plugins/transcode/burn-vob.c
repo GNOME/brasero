@@ -1398,8 +1398,8 @@ G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
 	/* Let's see if we've got the plugins we need */
-	brasero_plugin_test_gstreamer_plugin (plugin, "avenc_mpeg2video");
 	brasero_plugin_test_gstreamer_plugin (plugin, "avenc_ac3");
 	brasero_plugin_test_gstreamer_plugin (plugin, "avenc_mp2");
+	brasero_plugin_test_gstreamer_plugin (plugin, "mpeg2enc");
 	brasero_plugin_test_gstreamer_plugin (plugin, "mplex");
 }
