@@ -28,7 +28,7 @@
  * 	Boston, MA  02110-1301, USA.
  */
  
-#ifndef _BRASERO_MEDIUM_HANDLE_H
+#ifndef BRASERO_MEDIUM_HANDLE_H
 #define BRASERO_MEDIUM_HANDLE_H
 
 #include <glib.h>

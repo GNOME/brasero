@@ -527,7 +527,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	g_object_unref (info);
 
 	/* get the size of the output this job is supposed to create */
-	BRASERO_BURN_LOG ("Volume size %lli, output size %lli", vol_size, output_size);
+	BRASERO_BURN_LOG ("Volume size %" G_GUINT64_FORMAT ", output size %" G_GINT64_FORMAT, vol_size, output_size);
 
 	/* it's fine here to check size in bytes */
 	if (output_size > vol_size) {

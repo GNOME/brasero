@@ -1027,7 +1027,7 @@ brasero_metadata_process_element_messages (BraseroMetadata *self,
 			else
 				priv->silence->end = pos;
 
-			BRASERO_UTILS_LOG ("silence detected at %lli", pos);
+			BRASERO_UTILS_LOG ("silence detected at %" G_GINT64_FORMAT, pos);
 		}
 		else if (priv->silence) {
 			BRASERO_UTILS_LOG ("silence finished");
@@ -1131,7 +1131,7 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 		return brasero_metadata_completed (self);
 	}
 
-	BRASERO_UTILS_LOG ("Found duration %lli for %s", duration, priv->info->uri);
+	BRASERO_UTILS_LOG ("Found duration %" G_GINT64_FORMAT " for %s", duration, priv->info->uri);
 
 	priv->info->len = duration;
 	return brasero_metadata_success (self);

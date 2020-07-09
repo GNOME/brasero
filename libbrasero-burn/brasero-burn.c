@@ -112,16 +112,12 @@ struct _BraseroBurnPrivate {
 
 #define BRASERO_BURN_DEBUG(burn, message, ...)					\
 	{									\
-		gchar *format;							\
 		BRASERO_BURN_LOG (message, ##__VA_ARGS__);			\
-		format = g_strdup_printf ("%s (%s %s)",				\
-					  message,				\
-					  G_STRFUNC,				\
-					  G_STRLOC);				\
 		brasero_burn_log (burn,						\
-				  format,					\
-				  ##__VA_ARGS__);				\
-		g_free (format);						\
+				  message " (%s %s)",				\
+				  ##__VA_ARGS__,				\
+				  G_STRFUNC,					\
+				  G_STRLOC);					\
 	}
 
 typedef enum {
@@ -178,7 +174,7 @@ brasero_burn_new ()
 	return g_object_new (BRASERO_TYPE_BURN, NULL);
 }
 
-static void
+G_GNUC_PRINTF (2, 3) static void
 brasero_burn_log (BraseroBurn *burn,
 		  const gchar *format,
 		  ...)
@@ -2225,7 +2221,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 		priv->session_end = priv->session_start + len;
 
-		BRASERO_BURN_LOG ("Burning from %lld to %lld",
+		BRASERO_BURN_LOG ("Burning from %" G_GUINT64_FORMAT " to %" G_GUINT64_FORMAT,
 				  priv->session_start,
 				  priv->session_end);
 
@@ -2506,7 +2502,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 		value = g_new0 (GValue, 1);
 		g_value_init (value, G_TYPE_UINT64);
 
-		BRASERO_BURN_LOG ("Start of last written track address == %lli", priv->session_start);
+		BRASERO_BURN_LOG ("Start of last written track address == %" G_GUINT64_FORMAT, priv->session_start);
 		g_value_set_uint64 (value, priv->session_start);
 		brasero_track_tag_add (track,
 				       BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
@@ -2515,7 +2511,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 		value = g_new0 (GValue, 1);
 		g_value_init (value, G_TYPE_UINT64);
 
-		BRASERO_BURN_LOG ("End of last written track address == %lli", priv->session_end);
+		BRASERO_BURN_LOG ("End of last written track address == %" G_GUINT64_FORMAT, priv->session_end);
 		g_value_set_uint64 (value, priv->session_end);
 		brasero_track_tag_add (track,
 				       BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,

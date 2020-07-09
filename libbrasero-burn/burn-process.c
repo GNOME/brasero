@@ -62,10 +62,6 @@ enum {
 	BRASERO_CHANNEL_STDERR
 };
 
-static const gchar *debug_prefixes [] = {	"stdout: %s",
-						"stderr: %s",
-						NULL };
-
 typedef BraseroBurnResult	(*BraseroProcessReadFunc)	(BraseroProcess *process,
 								 const gchar *line);
 
@@ -143,7 +139,8 @@ brasero_process_ask_argv (BraseroJob *job,
 
 	for (i = 0; priv->argv->pdata [i]; i++)
 		BRASERO_JOB_LOG_ARG (process,
-				     priv->argv->pdata [i]);
+				     "%s",
+				     (char*)(priv->argv->pdata [i]));
 
 	if (result != BRASERO_BURN_OK) {
 		g_strfreev ((gchar**) priv->argv->pdata);
@@ -327,6 +324,14 @@ brasero_process_watch_child (gpointer data)
 	return FALSE;
 }
 
+#define PROCESS_READ_LOG(msg)					\
+{								\
+	if (channel_type == BRASERO_CHANNEL_STDERR)		\
+		BRASERO_JOB_LOG (process, "stderr: %s", msg)	\
+	else							\
+		BRASERO_JOB_LOG (process, "stdout: %s", msg)	\
+}
+
 static gboolean
 brasero_process_read (BraseroProcess *process,
 		      GIOChannel *channel,
@@ -377,9 +382,7 @@ brasero_process_read (BraseroProcess *process,
 				case '\r':
 				case '\xe2': /* Unicode paragraph separator */
 				case '\0':
-					BRASERO_JOB_LOG (process,
-							 debug_prefixes [channel_type],
-							 buffer->str);
+					PROCESS_READ_LOG (buffer->str);
 
 					if (readfunc && buffer->str [0] != '\0')
 						result = readfunc (process, buffer->str);
@@ -412,9 +415,7 @@ brasero_process_read (BraseroProcess *process,
 			g_string_append (buffer, line);
 			g_free (line);
 
-			BRASERO_JOB_LOG (process,
-					 debug_prefixes [channel_type],
-					 buffer->str);
+			PROCESS_READ_LOG (buffer->str);
 
 			if (readfunc && buffer->str [0] != '\0')
 				result = readfunc (process, buffer->str);
@@ -435,9 +436,7 @@ brasero_process_read (BraseroProcess *process,
 				return FALSE;
 		}
 		else if (status == G_IO_STATUS_EOF) {
-			BRASERO_JOB_LOG (process, 
-					 debug_prefixes [channel_type],
-					 "EOF");
+			PROCESS_READ_LOG ("EOF");
 			return FALSE;
 		}
 		else
@@ -445,9 +444,7 @@ brasero_process_read (BraseroProcess *process,
 	}
 	else if (condition & G_IO_HUP) {
 		/* only handle the HUP when we have read all available lines of output */
-		BRASERO_JOB_LOG (process,
-				 debug_prefixes [channel_type],
-				 "HUP");
+		PROCESS_READ_LOG ("HUP");
 		return FALSE;
 	}
 

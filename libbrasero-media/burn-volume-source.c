@@ -75,7 +75,7 @@ brasero_volume_source_seek_fd (BraseroVolSrc *src,
 	if (fseeko (src->data, (guint64) (block * ISO9660_BLOCK_SIZE), whence) == -1) {
 		int errsv = errno;
 
-		BRASERO_MEDIA_LOG ("fseeko () failed at block %i (= %lli bytes) (%s)",
+		BRASERO_MEDIA_LOG ("fseeko () failed at block %i (= %" G_GUINT64_FORMAT " bytes) (%s)",
 				   block,
 				   (guint64) (block * ISO9660_BLOCK_SIZE),
 				   g_strerror (errsv));
@@ -143,7 +143,7 @@ brasero_volume_source_readcd_device_handle (BraseroVolSrc *src,
 
 	/* Give it a last chance if the code is BRASERO_SCSI_INVALID_TRACK_MODE */
 	if (code == BRASERO_SCSI_INVALID_TRACK_MODE) {
-		BRASERO_MEDIA_LOG ("Wrong track mode autodetecting mode for block %i",
+		BRASERO_MEDIA_LOG ("Wrong track mode autodetecting mode for block %" G_GUINT64_FORMAT,
 				  src->position);
 
 		for (src->data_mode = BRASERO_SCSI_BLOCK_TYPE_CDDA;
@@ -204,7 +204,7 @@ brasero_volume_source_read10_device_handle (BraseroVolSrc *src,
 		return TRUE;
 	}
 
-	BRASERO_MEDIA_LOG ("READ10 failed %s at %i",
+	BRASERO_MEDIA_LOG ("READ10 failed %s at %" G_GUINT64_FORMAT,
 			  brasero_scsi_strerror (code),
 			  src->position);
 	g_set_error (error,
