@@ -173,7 +173,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 					    glong time,
 					    gint64 rate,
 					    BraseroMedia media,
-					    gint written)
+					    gint64 written)
 {
 	GtkWidget *label;
 	int hrs, mn, sec;
