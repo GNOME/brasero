@@ -1,15 +1,14 @@
 # Kazakh translation of brasero.
 # Copyright (C) 2010 HZ
 # This file is distributed under the same license as the brasero package.
-# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2010.
+# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2010-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-28 15:14+0000\n"
-"PO-Revision-Date: 2017-07-27 10:13+0500\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/brasero/issues\n"
+"POT-Creation-Date: 2020-07-03 08:46+0000\n"
+"PO-Revision-Date: 2020-07-16 10:40+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -17,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.12\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -25,6 +24,9 @@ msgid ""
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
 msgstr ""
+"Brasero — GNOME үстеліне арналған CD/DVD-ді жазуға арналған қолданба. Ол "
+"барынша қарапайым болуға арналған және пайдаланушыларға дискілерді оңай және "
+"жылдам жасауға мүмкіндік беретін кейбір бірегей мүмкіндіктері бар."
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
@@ -908,7 +910,7 @@ msgstr ""
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1786
 msgid "Video DVD successfully burned"
-msgstr "Видео DVD сәтті жазылды."
+msgstr "Видео DVD сәтті жазылды"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1788
 msgid "(S)VCD successfully burned"
@@ -1109,7 +1111,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-src-image.c:167
 msgctxt "disc"
 msgid "Please select another image."
-msgstr ""
+msgstr "Басқа бейнені таңдаңыз."
 
 #: ../libbrasero-burn/brasero-burn-options.c:523
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
@@ -1245,7 +1247,7 @@ msgstr ""
 #: ../libbrasero-burn/brasero-dest-selection.c:605
 #: ../libbrasero-burn/brasero-image-type-chooser.c:133
 msgid "SVCD image"
-msgstr ""
+msgstr "SVCD суреті"
 
 #: ../libbrasero-burn/brasero-dest-selection.c:607
 #: ../libbrasero-burn/brasero-image-type-chooser.c:127
@@ -1322,26 +1324,26 @@ msgstr ""
 #: ../libbrasero-burn/brasero-drive-properties.c:524
 #, c-format
 msgid "%.1f× (DVD)"
-msgstr ""
+msgstr "%.1f× (DVD)"
 
 #. Translators %s.1f is the speed used to burn
 #: ../libbrasero-burn/brasero-drive-properties.c:528
 #, c-format
 msgid "%.1f× (CD)"
-msgstr ""
+msgstr "%.1f× (CD)"
 
 #. Translators %s.1f is the speed used to burn. BD = Blu Ray
 #: ../libbrasero-burn/brasero-drive-properties.c:532
 #, c-format
 msgid "%.1f× (BD)"
-msgstr ""
+msgstr "%.1f× (BD)"
 
 #. Translators %s.1f is the speed used to burn for every medium
 #. * type. BD = Blu Ray
 #: ../libbrasero-burn/brasero-drive-properties.c:537
 #, c-format
 msgid "%.1f× (BD) %.1f× (DVD) %.1f× (CD)"
-msgstr ""
+msgstr "%.1f× (BD) %.1f× (DVD) %.1f× (CD)"
 
 #: ../libbrasero-burn/brasero-drive-properties.c:575
 msgid "Impossible to retrieve speeds"
@@ -2029,7 +2031,7 @@ msgstr ""
 #: ../plugins/growisofs/burn-growisofs.c:509
 #, c-format
 msgid "\"%s\" could not be found"
-msgstr "\"%s\" табу мүмкін емес."
+msgstr "\"%s\" табу мүмкін емес"
 
 #. Translators: %s is the name of the brasero element
 #: ../libbrasero-burn/burn-process.c:259
@@ -2581,7 +2583,7 @@ msgid "Write to Disc"
 msgstr ""
 
 #: ../nautilus/nautilus-burn-bar.c:442
-#: ../nautilus/nautilus-burn-extension.c:723
+#: ../nautilus/nautilus-burn-extension.c:725
 msgid "Write contents to a CD or DVD"
 msgstr ""
 
@@ -2590,7 +2592,7 @@ msgid "Copy Disc"
 msgstr ""
 
 #: ../nautilus/nautilus-burn-extension.c:571
-#: ../nautilus/nautilus-burn-extension.c:722
+#: ../nautilus/nautilus-burn-extension.c:724
 msgid "_Write to Disc…"
 msgstr ""
 
@@ -3231,6 +3233,9 @@ msgid ""
 "Foundation; either version 2 of the License, or (at your option) any later "
 "version."
 msgstr ""
+"Brasero еркін бағдарлама; сіз оны Free Software Foundation шығарған GNU "
+"General Public License аясында еркін тарата не/және өзгерте аласыз; лицензия "
+"нұсқасы 3 не (тандауыңызша) кез-келген кейін шыққан."
 
 #: ../src/brasero-app.c:1181
 msgid ""
@@ -3239,6 +3244,9 @@ msgid ""
 "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
 "details."
 msgstr ""
+"Brasero пайдалы болады деген сеніммен таратылады, бірақ ЕШҚАНДАЙ КЕПІЛДЕМЕ "
+"берілмейді; КОММЕРЦИЯЛЫҚ ҚҰНДЫЛЫҚ немесе белгілі бір МАҚСАТТАРҒА СӘЙКЕС "
+"КЕЛЕТІНІ үшін де.  Көбірек білу үшін GNU General Public License қараңыз."
 
 #: ../src/brasero-app.c:1186
 msgid ""
@@ -3246,6 +3254,9 @@ msgid ""
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
 msgstr ""
+"Сіз Brasero-мен бірге GNU General Public License көшірмесін алуыңыз керек "
+"еді; олай болмаса, Free Software Foundation, Inc. ұйымына хабарласыңыз, 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
 #: ../src/brasero-app.c:1198
 msgid "A simple to use CD/DVD burning application for GNOME"
@@ -3562,7 +3573,7 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:125
 msgid "R_ename…"
-msgstr ""
+msgstr "А_тын ауыстыру…"
 
 #: ../src/brasero-data-disc.c:125
 msgid "Rename the selected file"
@@ -3574,7 +3585,7 @@ msgstr "Жаңа _бума"
 
 #: ../src/brasero-data-disc.c:131
 msgid "Create a new empty folder"
-msgstr ""
+msgstr "Жаңа бос буманы жасау"
 
 #: ../src/brasero-data-disc.c:213
 msgid "The session could not be imported."
@@ -3747,7 +3758,7 @@ msgstr "Сипаттамасы"
 
 #: ../src/brasero-data-disc.c:2380
 msgid "Space"
-msgstr ""
+msgstr "Орын"
 
 #: ../src/brasero-eject-dialog.c:97
 #, c-format
@@ -3983,7 +3994,7 @@ msgstr ""
 
 #: ../src/brasero-plugin-manager-ui.c:593
 msgid "A_ctivate"
-msgstr ""
+msgstr "Бел_сендіру"
 
 #: ../src/brasero-plugin-manager-ui.c:605
 msgid "Ac_tivate All"
@@ -4372,7 +4383,7 @@ msgstr "Ойнату тізімдерін мен олардың құрамала
 #: ../src/brasero-project-name.c:83
 msgctxt "picture"
 msgid "Please select another image."
-msgstr ""
+msgstr "Басқа суретті таңдаңыз."
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_.
@@ -4380,7 +4391,7 @@ msgstr ""
 #: ../src/brasero-project-name.c:269
 #, c-format
 msgid "Video disc (%s)"
-msgstr ""
+msgstr "Видео дискі ( %s)"
 
 #: ../src/brasero-project-parse.c:62
 msgid "Error while loading the project."
@@ -4477,7 +4488,7 @@ msgstr ""
 #. Translators: This is a verb. This is completed later
 #: ../src/brasero-rename.c:341
 msgid "Insert"
-msgstr ""
+msgstr "Insert"
 
 #. Translators: This finishes previous action "Insert". It goes like
 #. * this: "Insert" [Entry] "at the beginning".
@@ -4519,7 +4530,7 @@ msgstr ""
 #: ../src/brasero-song-control.c:99
 #, c-format
 msgid "%s / %s"
-msgstr ""
+msgstr "%s / %s"
 
 #: ../src/brasero-song-control.c:527
 msgid "No file"
@@ -4658,11 +4669,11 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1211
 msgid "Start"
-msgstr ""
+msgstr "Басы"
 
 #: ../src/brasero-split-dialog.c:1218
 msgid "End"
-msgstr ""
+msgstr "Соңы"
 
 #: ../src/brasero-split-dialog.c:1241
 msgid "Mer_ge"
@@ -4690,7 +4701,7 @@ msgstr ""
 
 #: ../src/brasero-time-button.c:287
 msgid "Hours"
-msgstr ""
+msgstr "Сағат саны"
 
 #. Translators: separating hours and minutes
 #. Translators: separating minutes and seconds
