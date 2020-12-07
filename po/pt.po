@@ -6,22 +6,22 @@
 # António Lima <amrlima@gmail.com>, 2009, 2010, 2011, 2012, 2013.
 # Tiago S. <almosthumane@portugalmail.pt>, 2014, 2015.
 # Sérgio Cardeira <cardeira dot sergio at gmail dot com>, 2016.
-# Juliano Camargo <julianosc@pm.me>, 2020.
+# Juliano de Souza Camargo <julianosc@protonmail.com>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/brasero/issues\n"
-"POT-Creation-Date: 2020-05-01 15:05+0000\n"
-"PO-Revision-Date: 2020-08-24 00:19+0100\n"
-"Last-Translator: Juliano Camargo <julianosc@pm.me>\n"
-"Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
+"POT-Creation-Date: 2020-08-23 23:21+0000\n"
+"PO-Revision-Date: 2020-12-06 17:33+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
+"Language-Team: Portuguese <>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 3.36.0\n"
+"X-Generator: Gtranslator 3.38.0\n"
 "X-Project-Style: gnome\n"
 "X-Poedit-Basepath: /home/metalgod/brasero.brasero.pt.po\n"
 
@@ -31,9 +31,10 @@ msgid ""
 "designed to be as simple as possible and has some unique features to enable "
 "users to create their discs easily and quickly."
 msgstr ""
-"Brasero é uma aplicação do Ambiente GNOME para gravar CD/DVDs. Esta foi "
-"criada para ser o mais simples possível e tem algumas funcionalidades únicas "
-"que permitem aos utilizadores criar os seus discos facilmente e rapidamente."
+"O Brasero é uma aplicação do Ambiente de trabalho GNOME para gravar CD/DVDs. "
+"Esta foi criada para ser o mais simples possível e tem algumas "
+"funcionalidades únicas que permitem aos utilizadores criar os seus discos "
+"facilmente e rapidamente."
 
 #: ../data/brasero.appdata.xml.in.h:2
 msgid ""
@@ -42,7 +43,7 @@ msgid ""
 "files from other local applications or from remote shared drives to easily "
 "burn them to a disc."
 msgstr ""
-"Brasero pode criar, copiar e gravar CDs ou DVDs de dados ou áudio. Este "
+"O Brasero pode criar, copiar e gravar CDs ou DVDs de dados ou áudio. Este "
 "suporta CD-TEXT, sessão múltipla e extensões ''joliet''. Pode simplesmente "
 "arrastar e largar os ficheiros de outras aplicações locais ou de discos "
 "remotos partilhados e gravá-los num disco."
@@ -73,19 +74,16 @@ msgstr "Abrir uma Nova Janela"
 
 #: ../data/brasero.desktop.in.in.h:7
 msgid "Burn an Image File"
-msgstr "Gravar um ficheiro de imagem"
+msgstr "Gravar um Ficheiro de Imagem"
 
-#  Dica de ferramenta no brasero-project-manager.c e no main.c
 #: ../data/brasero.desktop.in.in.h:8
 msgid "Copy a Disc"
 msgstr "Copiar um Disco"
 
-#  Dica de ferramenta
 #: ../data/brasero.desktop.in.in.h:9
 msgid "Create an Audio Project"
 msgstr "Criar um Projeto de Áudio"
 
-#  Dica de ferramenta
 #: ../data/brasero.desktop.in.in.h:10
 msgid "Create a Video Project"
 msgstr "Criar um Projeto de Vídeo"
@@ -109,7 +107,7 @@ msgstr ""
 
 #: ../data/org.gnome.brasero.gschema.xml.h:3
 msgid "The type of checksum used for images"
-msgstr "O tipo de checksum usada para ficheiros"
+msgstr "O tipo de ''checksum'' utilizado para as imagens"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:4
 msgid "Set to 0 for MD5, 1 for SHA1 and 2 for SHA256"
@@ -117,11 +115,11 @@ msgstr "Definir como 0 para MD5, 1 para SHA1 e 2 para SHA256"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:5
 msgid "The type of checksum used for files"
-msgstr "O tipo de checksum usada para ficheiros"
+msgstr "O tipo de ''checksum'' utilizado para os ficheiros"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:6
 msgid "Directory to use for temporary files"
-msgstr "Pasta onde armazenar ficheiros temporários"
+msgstr "Pasta a utilizar para os ficheiros temporários"
 
 #: ../data/org.gnome.brasero.gschema.xml.h:7
 msgid ""
@@ -129,8 +127,8 @@ msgid ""
 "files. If that value is empty, the default directory set for glib will be "
 "used."
 msgstr ""
-"Contém o caminho para a pasta onde o Brasero deve armazenar ficheiros "
-"temporários. Se este valor estiver vazio, será utilizada a pasta predefinida "
+"Contém o caminho para a pasta onde o Brasero deverá guardar os ficheiros "
+"temporários. Se esse valor estiver vazio, será utilizada a pasta predefinida "
 "do glib."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:8
@@ -1204,7 +1202,6 @@ msgctxt "disc"
 msgid "Please select another image."
 msgstr "Por favor, selecione outra imagem."
 
-#  Precedido de: "This image can't be burnt:"
 #: ../libbrasero-burn/brasero-burn-options.c:523
 msgid "It doesn't appear to be a valid disc image or a valid cue file."
 msgstr "Não parece ser uma imagem de disco válida ou um ficheiro cue válido."
@@ -1867,7 +1864,7 @@ msgstr "(a carregar ...)"
 #: ../libbrasero-burn/brasero-track-data-cfg.c:799
 #: ../src/brasero-playlist.c:497
 msgid "Empty"
-msgstr "Vazio"
+msgstr "Descarregada"
 
 #: ../libbrasero-burn/brasero-track-data-cfg.c:725
 msgid "Disc file"
@@ -2143,7 +2140,6 @@ msgstr "O ficheiro não é armazenado localmente"
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "A pasta VIDEO_TS está em falta ou é inválida"
 
-#  Não é continuação de frase alguma
 #: ../libbrasero-burn/burn-plugin.c:647
 #, c-format
 msgid "\"%s\" could not be found in the path"
@@ -2412,7 +2408,6 @@ msgstr "Disco de áudio (%s)"
 msgid "Data disc (%s)"
 msgstr "Disco de dados (%s)"
 
-#  Precedido de: "This image can't be burnt:"
 #: ../libbrasero-media/burn-iso9660.c:158
 #: ../libbrasero-media/burn-iso9660.c:167
 #: ../libbrasero-media/burn-iso9660.c:402
@@ -2701,7 +2696,7 @@ msgstr "Ícone de suporte"
 #: ../src/brasero-project.c:2250 ../src/brasero-project-name.c:168
 msgctxt "picture"
 msgid "Image files"
-msgstr "Ficheiros de imagem"
+msgstr "Ficheiro de imagem"
 
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
@@ -2911,7 +2906,6 @@ msgstr "A gravar faixa %s"
 msgid "Formatting disc"
 msgstr "A formatar disco"
 
-#  http://en.wikipedia.org/wiki/Cue_sheet_%28computing%29
 #: ../plugins/cdrkit/burn-wodim.c:372 ../plugins/cdrtools/burn-cdrecord.c:358
 msgid "Writing cue sheet"
 msgstr "A gravar folha cue"
@@ -3171,7 +3165,6 @@ msgstr "não foi possível inicializar libisofs."
 msgid "Read options could not be created"
 msgstr "Não foi possível criar leitura de opções"
 
-#  Não é continuação de frase alguma
 #. Translators: %s is the path
 #: ../plugins/libburnia/burn-libisofs.c:684
 #, c-format
@@ -3190,7 +3183,7 @@ msgstr "libisofs relatou um erro ao criar a pasta \"%s\""
 msgid ""
 "libisofs reported an error while adding contents to directory \"%s\" (%x)"
 msgstr ""
-"libisofs reportou um erro enquanto adicionava os conteúdos ao diretório \"%s"
+"libisofs reportou um erro enquanto adicionava os conteúdos à diretoria \"%s"
 "\" (%x)"
 
 #: ../plugins/libburnia/burn-libisofs.c:782
@@ -3368,7 +3361,6 @@ msgstr "Sair do Brasero"
 msgid "_Contents"
 msgstr "_Conteúdos"
 
-#  Dica de ferramenta (acho!)
 #: ../src/brasero-app.c:145
 msgid "Display help"
 msgstr "Mostrar ajuda"
@@ -3450,7 +3442,9 @@ msgstr ""
 "António Lima <amrlima@gmail.com>\n"
 "Luis Medinas <lmedinas@gmail.com>\n"
 "Manuela Silva <mmsrs@sky.com>\n"
-"Pedro Albuquerque <palbuquerque73@gmail.com>"
+"Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Juliano de Souza Camargo <julianosc@pm.me>\n"
+"Hugo Carvalho <hugokarvalho@hotmail.com"
 
 #: ../src/brasero-app.c:1449
 #, c-format
@@ -3461,7 +3455,6 @@ msgstr "O projeto \"%s\" não existe"
 msgid "_Recent Projects"
 msgstr "Projetos _recentes"
 
-#  Dica de ferramenta
 #: ../src/brasero-app.c:1734
 msgid "Display the projects recently opened"
 msgstr "Mostra os projetos recentemente abertos"
@@ -3664,7 +3657,6 @@ msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
 "Abrir um projeto de dados adicionando os URIs fornecidos na linha de comandos"
 
-#  Dica de ferramenta no brasero-project-manager.c e no main.c
 #: ../src/brasero-cli.c:98
 msgid "Copy a disc"
 msgstr "Copiar um disco"
@@ -3769,7 +3761,6 @@ msgstr "Renomear o ficheiro selecionado"
 msgid "New _Folder"
 msgstr "Nova _pasta"
 
-#  Dica de ferramenta
 #: ../src/brasero-data-disc.c:131
 msgid "Create a new empty folder"
 msgstr "Criar uma nova pasta vazia"
@@ -3873,7 +3864,6 @@ msgstr "_Substituir"
 msgid "Al_ways Replace"
 msgstr "S_ubstituir sempre"
 
-#  Dica de ferramenta
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
 #: ../src/brasero-data-disc.c:979
@@ -3881,7 +3871,6 @@ msgstr "S_ubstituir sempre"
 msgid "Import %s"
 msgstr "Importar %s"
 
-#  Dica de ferramenta
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
 #: ../src/brasero-data-disc.c:986
@@ -3907,7 +3896,6 @@ msgstr ""
 "Desta forma, ficheiros antigos de sessões anteriores ficarão utilizáveis "
 "após a gravação."
 
-#  Dica de ferramenta
 #: ../src/brasero-data-disc.c:1109
 msgid "I_mport Session"
 msgstr "I_mportar sessão"
@@ -4412,7 +4400,6 @@ msgstr "Fe_char sem gravar"
 msgid "Save Current Project"
 msgstr "Gravar o projeto atual"
 
-#  Dica de ferramenta
 #: ../src/brasero-project.c:2753
 msgid "Save project as a Brasero audio project"
 msgstr "Gravar projeto como projeto de áudio do Brasero"
@@ -4449,7 +4436,6 @@ msgstr "Criar e imprimir capas para CDs"
 msgid "_New Project"
 msgstr "_Novo projeto"
 
-#  Dica de ferramenta
 #: ../src/brasero-project-manager.c:98
 msgid "Create a new project"
 msgstr "Criar um novo projeto"
@@ -4458,7 +4444,6 @@ msgstr "Criar um novo projeto"
 msgid "_Empty Project"
 msgstr "Projeto _vazio"
 
-#  Dica de ferramenta
 #: ../src/brasero-project-manager.c:100
 msgid "Let you choose your new project"
 msgstr "Permite que selecione o seu novo projeto"
@@ -4523,7 +4508,6 @@ msgstr "Gravar uma imagem existente de CD/DVD"
 msgid "_Open…"
 msgstr "_Abrir…"
 
-#  Dica de ferramente _e_ título de janela...
 #: ../src/brasero-project-manager.c:113
 msgid "Open a project"
 msgstr "Abrir um projeto"
@@ -4688,7 +4672,6 @@ msgstr "Carregar o último projeto que não foi gravado num disco ou localmente"
 msgid "No recently used project"
 msgstr "Nenhum projeto utilizado recentemente"
 
-#  Dica de ferramenta
 #: ../src/brasero-project-type-chooser.c:463
 msgid "Create a new project:"
 msgstr "Criar um novo projeto:"
@@ -4975,7 +4958,7 @@ msgstr "Deseja procurar por ficheiros de vídeo dentro da pasta?"
 
 #: ../src/brasero-video-disc.c:369
 msgid "_Search Directory"
-msgstr "_Procurar Diretório"
+msgstr "_Procurar Diretoria"
 
 #: ../src/brasero-video-disc.c:412
 #, c-format
@@ -4994,651 +4977,3 @@ msgstr "[URI] [URI] …"
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
 msgstr "Por favor, digite \"%s --help\" para ver todas as opções disponíveis\n"
-
-#~ msgid "File is not a valid .desktop file"
-#~ msgstr "Este não é um ficheiro .desktop válido"
-
-#~ msgid "Unrecognized desktop file Version '%s'"
-#~ msgstr "Versão de ficheiro desktop não reconhecida '%s'"
-
-#~ msgid "Starting %s"
-#~ msgstr "A iniciar %s"
-
-#~ msgid "Application does not accept documents on command line"
-#~ msgstr "A aplicação não aceita documentos na linha de comandos"
-
-#~ msgid "Unrecognized launch option: %d"
-#~ msgstr "Opção de inicialização não reconhecida: %d"
-
-#~ msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
-#~ msgstr ""
-#~ "Incapaz de passar URIs do documento para uma entrada de desktop "
-#~ "'Type=Link'"
-
-#~ msgid "Not a launchable item"
-#~ msgstr "Não é um item iniciável"
-
-#~ msgid "Disable connection to session manager"
-#~ msgstr "Desativar ligação ao gestor de sessão"
-
-#~ msgid "Specify file containing saved configuration"
-#~ msgstr "Especificar ficheiro contendo configurações gravadas"
-
-#~ msgid "FILE"
-#~ msgstr "FICHEIRO"
-
-#~ msgid "Specify session management ID"
-#~ msgstr "Especificar ID do gestor de sessão"
-
-#~ msgid "ID"
-#~ msgstr "ID"
-
-#~ msgid "Session management options:"
-#~ msgstr "Opções do gestor de sessão:"
-
-#~ msgid "Show session management options"
-#~ msgstr "Apresentar opções do gestor de sessão"
-
-#~ msgid "Please reinsert the disc in the CD/DVD burner."
-#~ msgstr "Por favor, insira novamente disco no gravador de CD/DVD."
-
-#~ msgid "This is not supported by the current ative burning backend."
-#~ msgstr "Isto não é suportado pelo motor de gravação atualmente ativo."
-
-#~ msgid ""
-#~ "Brasero will simulate the burning and, if it is successful, go on with "
-#~ "atual burning after 10 seconds"
-#~ msgstr ""
-#~ "O Brasero irá simular a gravação e, se esta for bem sucedida, prosseguir "
-#~ "com a gravação real após 10 segundos"
-
-#~ msgid "Results %i–%i (out of %i)"
-#~ msgstr "Resultados %i-%i (de %i)"
-
-#~ msgid "No results"
-#~ msgstr "Sem resultados"
-
-#~ msgid "Error querying for keywords."
-#~ msgstr "Erro ao consultador palavras chave."
-
-#~ msgid "Previous Results"
-#~ msgstr "Resultados Anteriores"
-
-#~ msgid "Next Results"
-#~ msgstr "Próximos Resultados"
-
-#~ msgid "Number of results displayed"
-#~ msgstr "Número de resultados apresentados"
-
-#~ msgid "Cancel ongoing burning"
-#~ msgstr "Cancelar gravação em progresso"
-
-#~ msgid "Show _Dialog"
-#~ msgstr "Apresentar _Diálogo"
-
-#~ msgid "Show dialog"
-#~ msgstr "Apresentar diálogo"
-
-#~ msgid "%s, %d%% done, %s remaining"
-#~ msgstr "%s, %d%% terminado, %s restante"
-
-#~ msgid "%s, %d%% done"
-#~ msgstr "%s, %d%% terminado"
-
-#~ msgid "Search:"
-#~ msgstr "Procurar:"
-
-#~ msgid "In _text documents"
-#~ msgstr "Documentos de _texto"
-
-#~ msgid "In _pictures"
-#~ msgstr "_Imagens"
-
-#~ msgid "In _music"
-#~ msgstr "_Música"
-
-#~ msgid "In _videos"
-#~ msgstr "_Vídeo"
-
-#~ msgid "Type your keywords or choose 'All files' from the menu"
-#~ msgstr ""
-#~ "Escreva suas palavras-chave ou selecione 'Todos os ficheiros' a partir do "
-#~ "menu"
-
-#~ msgid "Select if you want to search among image files only"
-#~ msgstr "Selecione se quiser apenas procurar por ficheiros de imagem"
-
-#~ msgid "Select if you want to search among video files only"
-#~ msgstr "Selecione se quiser apenas procurar ficheiros de vídeo"
-
-#~ msgid "Select if you want to search among audio files only"
-#~ msgstr "Selecione se quiser apenas procurar por ficheiros de áudio"
-
-#~ msgid "Select if you want to search among your text documents only"
-#~ msgstr "Selecione se quiser apenas procurar por documentos"
-
-#~ msgid "Click to start the search"
-#~ msgstr "Clique para iniciar a procura"
-
-#~ msgid "Search files using keywords"
-#~ msgstr "Procurar ficheiros utilizando palavras-chave"
-
-#~ msgid "Copying `%s` locally"
-#~ msgstr "A copiar `%s` localmente"
-
-#~ msgid "by"
-#~ msgstr "por"
-
-#~ msgid "Directories cannot be added to an audio disc."
-#~ msgstr "Diretórios não podem ser adicionados a um disco de áudio."
-
-#~ msgid "Name:"
-#~ msgstr "Nome:"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i × %i "
-#~ "pixels</span></i>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">Tamanho:</span>\t<i><span size=\"smaller\"> %i x %i "
-#~ "pixeis</span></i>"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">%s</span>\n"
-#~ "by <span size=\"smaller\"><i>%s</i></span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">%s</span>\n"
-#~ "por <span size=\"smaller\"><i>%s</i></span>"
-
-#~ msgid ""
-#~ "<span weight=\"bold\">Loading information</span>\n"
-#~ "about <span size=\"smaller\"><i>%s</i></span>"
-#~ msgstr ""
-#~ "<span weight=\"bold\">A carregar informação</span>\n"
-#~ "sobre <span size=\"smaller\"><i>%s</i></span>"
-
-#~ msgid ""
-#~ "Do you really want to create a new project and discard the changes to "
-#~ "current one?"
-#~ msgstr ""
-#~ "Deseja realmente criar um novo projeto e descartar as alterações ao "
-#~ "projeto atual?"
-
-#~ msgid "An error occured while writing to disc"
-#~ msgstr "Ocorreu um erro ao gravar para o disco"
-
-#~ msgid "Error reading video DVD (%s)"
-#~ msgstr "Erro ao ler DVD de vídeo (%s)"
-
-#~ msgid "Directories cannot be added to video discs."
-#~ msgstr "Não podem ser adicionados diretórios a discos de vídeo."
-
-#~ msgid "Brasero Disc Copier"
-#~ msgstr "Copiador de Discos Brasero"
-
-#~ msgid "Copy CDs and DVDs"
-#~ msgstr "Copiar CDs e DVDs"
-
-#~ msgid "Disc Copier"
-#~ msgstr "Copiar Discos"
-
-#~ msgid "Brasero - Creating Image"
-#~ msgstr "Brasero - A Criar imagem"
-
-#~ msgid "Brasero - Burning DVD (Simulation)"
-#~ msgstr "Brasero - A Gravar DVD (Simulação)"
-
-#~ msgid "Brasero - Burning DVD"
-#~ msgstr "Brasero - A Gravar DVD"
-
-#~ msgid "Burning DVD (Simulation)"
-#~ msgstr "A Gravar DVD (Simulação)"
-
-#~ msgid "Brasero - Copying DVD (Simulation)"
-#~ msgstr "Brasero - A Copiar DVD (Simulação)"
-
-#~ msgid "Brasero - Copying DVD"
-#~ msgstr "Brasero - A Copiar DVD"
-
-#~ msgid "Brasero - Burning CD (Simulation)"
-#~ msgstr "Brasero - A Gravar CD (Simulação)"
-
-#~ msgid "Brasero - Burning CD"
-#~ msgstr "Basero - A Gravar CD"
-
-#~ msgid "Brasero - Copying CD (Simulation)"
-#~ msgstr "Brasero - A Copiar CD (Simulação)"
-
-#~ msgid "Brasero - Copying CD"
-#~ msgstr "Brasero - A Copiar CD"
-
-#~ msgid "Brasero - Burning disc"
-#~ msgstr "Brasero - A gravar disco"
-
-#~ msgid "Brasero - Burning Disc (Simulation)"
-#~ msgstr "Brasero - A Gravar Disco (Simulação)"
-
-#~ msgid "Brasero - Burning Disc"
-#~ msgstr "Brasero - A Gravar Disco"
-
-#~ msgid "Brasero - Copying Disc (Simulation)"
-#~ msgstr "Brasero - A Copiar Disco (Simulação)"
-
-#~ msgid "Brasero - Copying Disc"
-#~ msgstr "Brasero - a Copiar Disco"
-
-#~ msgid "Appending new files to a multisession disc is not advised."
-#~ msgstr ""
-#~ "Não é recomendado acrescentar novos ficheiros a um disco multissessão"
-
-#~ msgid "Brasero - Creating Image (%i%% Done)"
-#~ msgstr "Brasero - A criar Imagem (%i%% Terminado)"
-
-#~ msgid "Brasero - Copying DVD (%i%% Done)"
-#~ msgstr "Brasero - A Copiar DVD (%i%% Terminado)"
-
-#~ msgid "Brasero - Burning DVD (%i%% Done)"
-#~ msgstr "Brasero - A Gravar DVD (%i%% Terminado)"
-
-#~ msgid "Brasero - Copying CD (%i%% Done)"
-#~ msgstr "Brasero - A Copiar CD (%i%% Terminado)"
-
-#~ msgid "Brasero - Burning CD (simulation)"
-#~ msgstr "Brasero - A Gravar CD (Simulação)"
-
-#~ msgid "Brasero - Burning CD (%i%% Done)"
-#~ msgstr "Brasero - A Gravar CD (%i%% Terminado)"
-
-#~ msgid "Brasero - Copying Disc (%i%% Done)"
-#~ msgstr "Brasero - A Copiar Disco (%i%% Terminado)"
-
-#~ msgid "Brasero - Burning Disc (%i%% Done)"
-#~ msgstr "Brasero - A Gravar Disco (%i%% Terminado)"
-
-#~ msgid "Session Log"
-#~ msgstr "Registo de Sessão"
-
-#~ msgid "The session log cannot be displayed."
-#~ msgstr "Incapaz de apresentar o registo de sessão"
-
-#~ msgid "The log file could not be found"
-#~ msgstr "Não foi possível localizar o ficheiro de registo"
-
-#~ msgid ""
-#~ "This is a excerpt from the session log (the last 10 MiB):\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Este é um trecho do registo da sessão (os últimos 10 MiB):\n"
-#~ "\n"
-
-#~ msgid "_View Log"
-#~ msgstr "_Ver Registo"
-
-#~ msgid "There is no recordable disc inserted."
-#~ msgstr "Nenhum disco gravável inserido."
-
-#~ msgid "Such a disc cannot be copied without the proper plugins."
-#~ msgstr ""
-#~ "Um disco deste tipo não pode ser copiado sem os plugins apropriados."
-
-#~ msgid "It is not possible to write with the current set of plugins."
-#~ msgstr "Não é possível gravar com o conjunto de plugins atual."
-
-#~ msgid "CD/DVD Copy Options"
-#~ msgstr "Opções de Cópia de CD/DVD"
-
-#~ msgid "The drive cannot burn or the disc cannot be burnt"
-#~ msgstr "O dispositivo não pode gravar ou o disco não pode ser gravado"
-
-#~ msgid "_Eject after burning"
-#~ msgstr "_Ejetar ao terminar a gravação"
-
-#~ msgid "_Show errors"
-#~ msgstr "_Apresentar erros"
-
-#~ msgid "Close this notification window"
-#~ msgstr "Fechar esta janela de notificação"
-
-#~ msgid "_Write to Disc..."
-#~ msgstr "_Gravar no Disco..."
-
-#~ msgid "_Blank Disc..."
-#~ msgstr "_Limpar Disco..."
-
-#~ msgid "_Blank..."
-#~ msgstr "_Limpar..."
-
-#~ msgid "Default height for image preview."
-#~ msgstr "Altura por omissão para pré-visualização de imagens."
-
-#~ msgid "Default height for video preview."
-#~ msgstr "Altura por omissão para pré-visualização de vídeo."
-
-#~ msgid "Default width for image preview."
-#~ msgstr "Largura por omissão para pré-visualização de imagens."
-
-#~ msgid "Default width for video preview."
-#~ msgstr "Largura por omissão para pré-visualização de vídeo."
-
-#~ msgid "Enable side pane"
-#~ msgstr "Ativar painel lateral"
-
-#~ msgid "Height for video preview"
-#~ msgstr "Altura para pré-visualização de vídeo"
-
-#~ msgid "Height of image preview"
-#~ msgstr "Altura de pré-visualização de imagens"
-
-#~ msgid "Layout of UI"
-#~ msgstr "Disposição da IU"
-
-#~ msgid "Pane to display audio projects"
-#~ msgstr "Painel para apresentar projetos de áudio"
-
-#~ msgid "Pane to display data projects"
-#~ msgstr "Painel para apresentar projetos de dados"
-
-#~ msgid "Pane to display video projects"
-#~ msgstr "Painel para apresentar projetos de vídeo"
-
-#~ msgid "Should brasero notify when files are filtered"
-#~ msgstr "O Brasero deve notificar quando ficheiros forem filtrados"
-
-#~ msgid ""
-#~ "Should brasero notify when files are filtered. Set to true, brasero will "
-#~ "display the notification."
-#~ msgstr ""
-#~ "O Brasero deve notificar quando ficheiros forem filtrados. Se definido "
-#~ "como verdadeiro, o brasero irá apresentar a notificação."
-
-#~ msgid ""
-#~ "The pane to display with audio projects. It should be one of the "
-#~ "following: \"Chooser\", \"Search\" or \"Playlist\"."
-#~ msgstr ""
-#~ "O painel a ser apresentado para projetos de áudio. Deverá ser um dos "
-#~ "seguintes: \"Chooser\", \"Search\" ou \"Playlist\"."
-
-#~ msgid ""
-#~ "The pane to display with data projects. It should be one of the "
-#~ "following: \"Chooser\" or \"Search\"."
-#~ msgstr ""
-#~ "O painel a ser apresentado para projetos de dados. Deverá ser um dos "
-#~ "seguintes: \"Chooser\" ou \"Search\"."
-
-#~ msgid ""
-#~ "The pane to display with video projects. It should be one of the "
-#~ "following: \"Chooser\", \"Search\" or \"Playlist\"."
-#~ msgstr ""
-#~ "O painel a ser apresentado para projetos de vídeo. Deverá ser um dos "
-#~ "seguintes: \"Chooser\", \"Search\" ou \"Playlist\"."
-
-#~ msgid ""
-#~ "This key sets where the project pane should be (0 = on the right, 1 = on "
-#~ "the left, 2 = at the top, 3 = at the bottom)"
-#~ msgstr ""
-#~ "Esta chave define onde o painel de projeto deverá estar (0 = à direita, 1 "
-#~ "= à esquerda, 2 = no topo, 3 = no fundo)"
-
-#~ msgid "Whether to display a side pane. Set to true to use it."
-#~ msgstr ""
-#~ "Apresentar ou não um painel lateral. Definir como verdadeiro para "
-#~ "utilizar."
-
-#~ msgid "Width for image preview"
-#~ msgstr "Largura para pré-visualização de imagens"
-
-#~ msgid "Width for video preview"
-#~ msgstr "Largura para pré-visualização de vídeo"
-
-#~ msgid "_Split Track..."
-#~ msgstr "_Dividir Faixa..."
-
-#~ msgid "R_ename..."
-#~ msgstr "R_enomear..."
-
-#~ msgid "_Burn..."
-#~ msgstr "_Gravar..."
-
-#~ msgid "To add files to this project you can:"
-#~ msgstr "Para adicionar ficheiros a este projeto, pode:"
-
-#~ msgid "click the \"Add\" button to show a selection dialog"
-#~ msgstr "clicar no botão \"Adicionar\" para apresentar o diálogo de seleção"
-
-#~ msgid "select files in the selection pane and click the \"Add\" button"
-#~ msgstr ""
-#~ "selecionar ficheiros no painel de seleção e clicar no botão \"Adicionar\""
-
-#~ msgid ""
-#~ "drag files in this area from the selection pane or from the file manager"
-#~ msgstr ""
-#~ "arrastar ficheiros nesta área do painel de seleção ou a partir do gestor "
-#~ "de ficheiros"
-
-#~ msgid "double click on files in the selection pane"
-#~ msgstr "fazer duplo clique em ficheiros no painel de seleção"
-
-#~ msgid "copy files (from file manager for example) and paste in this area"
-#~ msgstr ""
-#~ "copiar ficheiros (por exemplo, do gestor de ficheiros) e colar nesta área"
-
-#~ msgid "To remove files from this project you can:"
-#~ msgstr "Para remover ficheiros deste projeto, pode:"
-
-#~ msgid "click on the \"Remove\" button to remove selected items in this area"
-#~ msgstr ""
-#~ "clicar no botão \"Remover\" para remover itens selecionados nesta área"
-
-#~ msgid "select items in this area, and choose \"Remove\" from context menu"
-#~ msgstr ""
-#~ "selecionar itens nesta área, e selecionar \"Remover\" a partir do menu de "
-#~ "contexto"
-
-#~ msgid "select items in this area, and press \"Delete\" key"
-#~ msgstr "selecionar itens nesta área, e pressionar a tecla \"Delete\""
-
-#~ msgid "Project estimated size: %s"
-#~ msgstr "Tamanho estimado do projeto: %s"
-
-#~ msgid ""
-#~ "If you choose to create a new project, all files already added will be "
-#~ "discarded. Note that files will not be deleted from their own location, "
-#~ "just no longer listed here."
-#~ msgstr ""
-#~ "Se escolher criar um novo projeto, todos os ficheiros já adicionados "
-#~ "serão descartados. Note que os ficheiros não serão apagados da sua "
-#~ "localização, apenas não estarão listados aqui."
-
-#~ msgid "Save project as an IRIVER playlist"
-#~ msgstr "Gravar projeto como uma lista de reprodução IRIVER"
-
-#~ msgid "_Open..."
-#~ msgstr "_Abrir..."
-
-#~ msgid "PATH TO PLAYLIST"
-#~ msgstr "CAMINHO PARA A LISTA DE REPRODUÇÃO"
-
-#~ msgid "Your version of cdrdao does not seem to be supported by libbrasero"
-#~ msgstr "Parece não haver suporte para sua versão do cdrdao na libbrasero"
-
-#~ msgid "Use cdrdao to copy and burn CDs"
-#~ msgstr "Utilizar cdrdao para gravar CDs"
-
-#~ msgid "Toc2cue converts .toc files into .cue files"
-#~ msgstr "Toc2cue converte ficheiros .toc para .cue"
-
-#~ msgid "Use genisoimage to create images from a file selection"
-#~ msgstr ""
-#~ "Utilizar genisoimage para criar imagens a partir de uma seleção de "
-#~ "ficheiros"
-
-#~ msgid "Use readom to create disc images"
-#~ msgstr "Utilizar o readom para criar imagens de disco"
-
-#~ msgid "Use wodim to burn CDs and DVDs"
-#~ msgstr "Utilizar wodim para gravar CDs e DVDs"
-
-#~ msgid "Use cdrecord to burn CDs and DVDs"
-#~ msgstr "Utilizar cdrecord para gravar CDs e DVDs"
-
-#~ msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
-#~ msgstr "DVD encriptado: por favor, instale a libdvdcss versão 1.2.x"
-
-#~ msgid ""
-#~ "Libdvdcss version %s is not supported.\n"
-#~ "Please install libdvdcss version 1.2.x"
-#~ msgstr ""
-#~ "Libdvdcss versão %s não é suportada.\n"
-#~ "Por favor, instale a libdvdcss versão 1.2.x"
-
-#~ msgid "Libdvdcss could not be loaded properly"
-#~ msgstr "Não foi possível carregar corretamente a libdvdcss"
-
-#~ msgid "Dvdcss allows to read css encrypted video DVDs"
-#~ msgstr "Dvdcss permite ler DVDs encriptados com css"
-
-#~ msgid "Dvd+rw-format blanks and formats DVD+/-R(W)"
-#~ msgstr "Dvd+rw-format limpa e formata DVD+/-R(W)"
-
-#~ msgid "Growisofs burns DVDs"
-#~ msgstr "Growisofs grava DVDs"
-
-#~ msgid "Libburn burns CD(RW), DVD+/-(RW)"
-#~ msgstr "Libburn grava CD(RW), DVD+/-(RW)"
-
-#~ msgid "Libisofs creates disc images from files"
-#~ msgstr "Libisofs cria imagens de disco a partir de ficheiros"
-
-#~ msgid ""
-#~ "Transcode converts song files into a format proper to burn them on CDs"
-#~ msgstr ""
-#~ "Transcode converte ficheiros de áudio para um formato apropriado para "
-#~ "gravação em CD"
-
-#~ msgid "_Options..."
-#~ msgstr "_Opções..."
-
-#~ msgid "Use dvdauthor to create Video DVDs"
-#~ msgstr "Utilizar dvdauthor para criar DVDs de Vídeo"
-
-#~ msgid "Use vcdimager to create SVCDs"
-#~ msgstr "Utilizar vcdimager para criar SVCDs"
-
-#~ msgid ""
-#~ "A file with the same name is about to be added into the same directory "
-#~ "and will replace it if you accept."
-#~ msgstr ""
-#~ "Um ficheiro com o mesmo nome está prestes a ser adicionado ao mesmo "
-#~ "diretório e irá substituí-lo se aceitar."
-
-#~ msgid "Select an icon for the disc that will appear in file managers"
-#~ msgstr ""
-#~ "Selecione um ícone para o disco que irá aparecer nos gestores de ficheiros"
-
-#~ msgid "Drive"
-#~ msgstr "Dispositivo"
-
-#~ msgid "%lli:%02lli min"
-#~ msgstr "%lli:%02lli min"
-
-#~ msgid "Audio %s"
-#~ msgstr "%s de áudio"
-
-#~ msgid "Data %s"
-#~ msgstr "%s de dados"
-
-#~ msgid "Unable to launch the cd burner application"
-#~ msgstr "Incapaz de iniciar a aplicação de gravação de cd"
-
-#~ msgctxt "disc"
-#~ msgid "Image files only"
-#~ msgstr "Apenas ficheiros de imagem"
-
-#~ msgid "_Erase..."
-#~ msgstr "_Apagar..."
-
-#~ msgid "Erase a disc"
-#~ msgstr "Apagar um disco"
-
-#~ msgid "Exit the program"
-#~ msgstr "Sair do programa"
-
-#~ msgid "It will be removed from the project"
-#~ msgstr "Será removido do projeto"
-
-#~ msgid "%s only"
-#~ msgstr "%s apenas"
-
-#~ msgid "_Erase Disc"
-#~ msgstr "_Apagar Disco"
-
-#~ msgid "You might not be able to listen to it with stereos."
-#~ msgstr "Poderá não conseguir ouvi-lo em aparelhagens."
-
-#~ msgid "Please delete some files from the project."
-#~ msgstr "Por favor apague alguns ficheiros do projeto."
-
-#~ msgid ""
-#~ "This file is the image of a disc and can therefore be burnt to disc "
-#~ "without having to add it to a data project first."
-#~ msgstr ""
-#~ "Este ficheiro é a imagem de um disco e por isso pode ser gravado para um "
-#~ "disco sem ser necessário adicioná-lo previamente a um projeto de dados."
-
-#~ msgid "_Add to Project"
-#~ msgstr "_Adicionar a Projeto"
-
-#~ msgid "It already exists in the directory."
-#~ msgstr "Já existe no diretório."
-
-#~ msgid "_Keep Project File"
-#~ msgstr "_Guardar Ficheiro de Projeto"
-
-#~ msgid "_Replace Project File"
-#~ msgstr "_Substituir Ficheiro de Projeto"
-
-#~ msgid "Increase compatibility with _Windows systems"
-#~ msgstr "Aumentar compatibilidade com sistemas _Windows"
-
-#~ msgid ""
-#~ "Improve compatibility with Windows systems by allowing to display long "
-#~ "filenames (maximum 64 characters)"
-#~ msgstr ""
-#~ "Melhorar compatibilidade com sistemas Windows permitindo apresentar nomes "
-#~ "de ficheiros longos (máximo de 64 carateres)"
-
-#~ msgid "Disc options"
-#~ msgstr "Opções de disco"
-
-#~ msgid "Unknown"
-#~ msgstr "Desconhecido"
-
-#~ msgid "_Temporary directory free space:"
-#~ msgstr "Espaço livre no diretório _temporário:"
-
-#~ msgctxt "picture"
-#~ msgid "Image files only"
-#~ msgstr "Somente ficheiros de imagen"
-
-#~ msgid "Let brasero choose (safest)"
-#~ msgstr "Deixar o brasero selecionar (mais seguro)"
-
-#~ msgid "*.toc image (cdrdao)"
-#~ msgstr "Imagem *.toc (cdrdao)"
-
-#~ msgid "_Name:"
-#~ msgstr "_Nome:"
-
-#~ msgid "Project estimated size: %s/%s"
-#~ msgstr "Tamanho estimado do projeto: %s/%s"
-
-#~ msgid "\"%s\" already exists"
-#~ msgstr "\"%s\" já existe"
-
-#~ msgid "Display debug statements on stdout"
-#~ msgstr "Apresentar parâmetros de depuração na saída stdout"
-
-#~ msgid "drag and release items out from this area"
-#~ msgstr "arrastar e largar itens fora desta área"
-
-#~ msgid "A directory could not be created (%s)"
-#~ msgstr "Não possível foi criar um diretório (%s)"
