@@ -31,7 +31,7 @@ msgid ""
 "users to create their discs easily and quickly."
 msgstr ""
 "El Brasero és una aplicació per enregistrar CD/DVD per a l'escriptori GNOME. "
-"Està dissenyat per ser senzill i té característiques úniques per permetre "
+"Està dissenyat per a ser senzill i té característiques úniques per permetre "
 "als usuaris crear discos de forma ràpida i senzilla."
 
 #: ../data/brasero.appdata.xml.in.h:2
@@ -199,7 +199,7 @@ msgid ""
 "True, brasero will use it; it may be a workaround for some drives/setups."
 msgstr ""
 "Si s'ha d'utilitzar l'indicador «--driver generic-mmc-raw» amb el cdrdao. "
-"Establiu-ho a «True» (cert) per utilitzar-lo; pot ser una solució temporal "
+"Establiu-ho a «True» (cert) per a utilitzar-lo; pot ser una solució temporal "
 "per a algunes unitats/configuracions."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:20
@@ -222,7 +222,7 @@ msgstr "Habilita la previsualització del fitxer"
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
 "Si s'ha de mostrar la previsualització de fitxers. Establiu-ho a "
-"«True» (cert) per utilitzar-la."
+"«True» (cert) per a utilitzar-la."
 
 #: ../data/org.gnome.brasero.gschema.xml.h:24
 msgid "Should brasero filter hidden files"
@@ -273,7 +273,7 @@ msgid ""
 "negative value disables the plugin."
 msgstr ""
 "Quan hi hagi diversos connectors disponibles per a la mateixa tasca, aquest "
-"valor s'utilitza per determinar a quin connector s'hauria de donar "
+"valor s'utilitza per a determinar a quin connector s'hauria de donar "
 "preferència. 0 significa que s'utilitza la prioritat nativa del connector. "
 "Un valor positiu sobreescriu la prioritat nativa del connector. Un valor "
 "negatiu inhabilita el connector."
@@ -322,7 +322,7 @@ msgstr "El disc s'ha esborrat correctament."
 
 #: ../libbrasero-burn/brasero-blank-dialog.c:270
 msgid "The disc is ready for use."
-msgstr "El disc és llest per ser utilitzat."
+msgstr "El disc és llest per a ser utilitzat."
 
 #. Translators: This is a verb, an action
 #: ../libbrasero-burn/brasero-blank-dialog.c:371
@@ -493,7 +493,8 @@ msgstr "S'ha produït un error intern"
 msgid "Brasero notification"
 msgstr "Notificació del Brasero"
 
-#. Translators: This string is used in the title bar %s is the action currently performed
+#. Translators: This string is used in the title bar %s is the action currently
+#. performed
 #: ../libbrasero-burn/brasero-burn-dialog.c:219
 #, c-format
 msgid "%s (%i%% Done)"
@@ -927,7 +928,7 @@ msgid ""
 "The disc could not be ejected though it needs to be removed for the current "
 "operation to continue."
 msgstr ""
-"No s'ha pogut expulsar el disc tot i que cal treure'l per poder continuar "
+"No s'ha pogut expulsar el disc tot i que cal treure'l per a poder continuar "
 "l'actual operació."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1133
@@ -1627,7 +1628,7 @@ msgstr "«%s»: %s"
 #: ../libbrasero-burn/brasero-src-image.c:271
 #: ../libbrasero-burn/brasero-src-image.c:554
 msgid "Click here to select a disc _image"
-msgstr "Feu clic per seleccionar una _imatge de disc"
+msgstr "Feu clic per a seleccionar una _imatge de disc"
 
 #: ../libbrasero-burn/brasero-src-image.c:415
 msgid "Select Disc Image"
@@ -1748,7 +1749,7 @@ msgstr "Espereu mentre es completa l'estimació de la mida."
 
 #: ../libbrasero-burn/brasero-status-dialog.c:569
 msgid "All files need to be analysed to complete this operation."
-msgstr "S'han d'analitzar tots els fitxers per completar aquesta operació."
+msgstr "S'han d'analitzar tots els fitxers per a completar aquesta operació."
 
 #: ../libbrasero-burn/brasero-sum-dialog.c:134
 #: ../libbrasero-burn/brasero-sum-dialog.c:215
@@ -2088,7 +2089,7 @@ msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr ""
-"El sistema de fitxers que heu triat per emmagatzemar la imatge temporal no "
+"El sistema de fitxers que heu triat per a emmagatzemar la imatge temporal no "
 "pot contenir fitxers de mida superior a 2 GiB"
 
 #: ../libbrasero-burn/burn-job.c:537 ../libbrasero-burn/burn-job.c:559
@@ -2097,7 +2098,7 @@ msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
 msgstr ""
-"La ubicació que heu triat per emmagatzemar la imatge temporal no té prou "
+"La ubicació que heu triat per a emmagatzemar la imatge temporal no té prou "
 "espai lliure per a la imatge de disc (són necessaris %ld MiB)"
 
 #: ../libbrasero-burn/burn-job.c:572 ../plugins/dvdcss/burn-dvdcss.c:362
@@ -2301,7 +2302,6 @@ msgstr "%s: buit"
 
 #. NOTE for translators: the first %s is the medium name, the
 #. * second %s is the space (kio, gio) used by data on the disc.
-#.
 #. NOTE for translators: the first %s is the medium name, the
 #. * second %s is the space (time) used by data on the disc.
 #. * I really don't know if I should set this string as
@@ -2370,7 +2370,8 @@ msgstr "%s:%s min"
 msgid "The disc mount point could not be retrieved"
 msgstr "No s'ha pogut obtenir el punt de muntatge del disc"
 
-#. NOTE for translators: the first %s is the disc type and Blank is an adjective.
+#. NOTE for translators: the first %s is the disc type and Blank is an
+#. adjective.
 #: ../libbrasero-media/brasero-volume.c:409
 #, c-format
 msgid "Blank disc (%s)"
@@ -2799,7 +2800,7 @@ msgstr "S'està analitzant la pista %02i"
 #: ../plugins/cdrtools/burn-readcd.c:117 ../plugins/cdrtools/burn-readcd.c:123
 #, c-format
 msgid "You do not have the required permissions to use this drive"
-msgstr "No teniu els permisos necessaris per utilitzar aquesta unitat"
+msgstr "No teniu els permisos necessaris per a utilitzar aquesta unitat"
 
 #: ../plugins/cdrdao/burn-cdrdao.c:480
 msgid "Converting toc file"
@@ -2868,8 +2869,8 @@ msgid ""
 "The location you chose to store the image on does not have enough free space "
 "for the disc image"
 msgstr ""
-"La ubicació que heu seleccionat per emmagatzemar la imatge no té prou espai "
-"lliure per a la imatge de disc"
+"La ubicació que heu seleccionat per a emmagatzemar la imatge no té prou "
+"espai lliure per a la imatge de disc"
 
 #: ../plugins/cdrkit/burn-readom.c:450 ../plugins/cdrtools/burn-readcd.c:460
 msgid "Copies any disc to a disc image"
@@ -3428,7 +3429,6 @@ msgstr "Pàgina web del Brasero"
 #. * You should also include other translators who have contributed to
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
-#.
 #: ../src/brasero-app.c:1227
 msgid "translator-credits"
 msgstr ""
@@ -4056,7 +4056,7 @@ msgstr "Estableix una disposició vertical"
 
 #: ../src/brasero-layout.c:1193
 msgid "Click to close the side pane"
-msgstr "Feu clic per tancar la subfinestra lateral"
+msgstr "Feu clic per a tancar la subfinestra lateral"
 
 #: ../src/brasero-multi-song-props.c:89 ../src/brasero-multi-song-props.c:97
 #: ../src/brasero-multi-song-props.c:105 ../src/brasero-multi-song-props.c:123
@@ -4248,8 +4248,8 @@ msgid ""
 "To remove files select them then click on the \"Remove\" button or press "
 "\"Delete\" key"
 msgstr ""
-"Per suprimir fitxers seleccioneu-los i feu clic al botó «Suprimeix» o premeu "
-"la tecla «Suprimir»"
+"Per a suprimir fitxers seleccioneu-los i feu clic al botó «Suprimeix» o "
+"premeu la tecla «Suprimir»"
 
 #: ../src/brasero-project.c:804
 #, c-format
@@ -4964,7 +4964,7 @@ msgstr "[URI] [URI] …"
 #: ../src/main.c:96
 #, c-format
 msgid "Please type \"%s --help\" to see all available options\n"
-msgstr "Escriviu «%s --help» per mostrar totes les opcions disponibles\n"
+msgstr "Escriviu «%s --help» per a mostrar totes les opcions disponibles\n"
 
 #~ msgid "File is not a valid .desktop file"
 #~ msgstr "El fitxer no és un fitxer .desktop vàlid"
