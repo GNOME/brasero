@@ -238,7 +238,8 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 			      "WHERE {"						/* Start defining the search and its scope */
 			      "  ?file a nfo:FileDataObject . "			/* File must be a file (not a stream, ...) */
 	                      "  ?file nie:url ?url . "				/* Get the url of the file */
-	                      "  ?file nie:mimeType ?mime . ");			/* Get its mime */
+	                      "  ?file nie:mimeType ?mime . "			/* Get its mime */
+			      "  ?content nie:isStoredAs ?file . ");		/* Get the resource representing the content */
 
 	if (priv->mimes) {
 		int i;
@@ -259,7 +260,7 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 		gboolean param_added = FALSE;
 
 		g_string_append (query,
-				 "  ?file a ?type . "
+				 "  ?content a ?type . "
 				 "  FILTER ( ");
 
 		if (priv->scope & BRASERO_SEARCH_SCOPE_MUSIC) {
