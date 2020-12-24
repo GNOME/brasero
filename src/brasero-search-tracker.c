@@ -17,6 +17,8 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <stdlib.h>
 
 #include <libtracker-sparql/tracker-sparql.h>
@@ -444,7 +446,13 @@ brasero_search_tracker_init (BraseroSearchTracker *object)
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (object);
 	priv->cancellable = g_cancellable_new ();
+
+#ifdef HAVE_TRACKER3
+	priv->connection = tracker_sparql_connection_bus_new ("org.freedesktop.Tracker3.Miner.Files",
+							      NULL, NULL, &error);
+#else
 	priv->connection = tracker_sparql_connection_get (priv->cancellable, &error);
+#endif
 
 	if (error) {
 		g_warning ("Could not establish a connection to Tracker: %s", error->message);
