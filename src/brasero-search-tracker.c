@@ -56,12 +56,6 @@ brasero_search_tracker_is_available (BraseroSearchEngine *engine)
 	BraseroSearchTrackerPrivate *priv;
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (engine);
-	GError *error = NULL;
-	if (priv->connection)
-		return TRUE;
-	
-	priv->cancellable = g_cancellable_new ();
- 	priv->connection = tracker_sparql_connection_get (priv->cancellable, &error);
 	return (priv->connection != NULL);
 }
 
