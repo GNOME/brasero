@@ -234,7 +234,7 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 
 	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
 
-	query = g_string_new ("SELECT ?file ?url ?mime fts:rank(?file) "	/* Which variables should be returned */
+	query = g_string_new ("SELECT ?file ?url ?mime "			/* Which variables should be returned */
 			      "WHERE {"						/* Start defining the search and its scope */
 			      "  ?file a nfo:FileDataObject . "			/* File must be a file (not a stream, ...) */
 	                      "  ?file nie:url ?url . "				/* Get the url of the file */
@@ -293,21 +293,18 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 				 " ) ");
 	}
 
-	if (priv->keywords)
+	if (priv->keywords) {
 		g_string_append_printf (query,
 					"  ?file fts:match \"%s\" ",		/* File must match possible keywords */
 					priv->keywords);
 
-	g_string_append (query,
-			 " } "
-			 "ORDER BY ASC(fts:rank(?file)) "
-			 "OFFSET 0 "
-			 "LIMIT 10000");
-
-	g_string_append (query, ")");
-
-	g_string_append (query,
-			 "} ORDER BY DESC(?url) DESC(nfo:fileName(?file))");
+		g_string_append (query,
+				 " } "
+				 "ORDER BY ASC(fts:rank(?file))");
+	} else {
+		g_string_append (query,
+				 "} ORDER BY DESC(?url) DESC(nfo:fileName(?file))");
+	}
 
 	tracker_sparql_connection_query_async (priv->connection,
 					       query->str,
