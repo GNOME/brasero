@@ -307,7 +307,7 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 	g_string_append (query, ")");
 
 	g_string_append (query,
-			 "} ORDER BY DESC(nie:url(?urn)) DESC(nfo:fileName(?urn))");
+			 "} ORDER BY DESC(?url) DESC(nfo:fileName(?file))");
 
 	tracker_sparql_connection_query_async (priv->connection,
 					       query->str,
