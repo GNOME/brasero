@@ -2125,7 +2125,7 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
 
-	if (response != BRASERO_RESPONSE_ADD) {
+	if (response != BRASERO_RESPONSE_ADD && response != GTK_RESPONSE_ACCEPT) {
 		gtk_widget_destroy (chooser);
 		project->priv->chooser = NULL;
 		return;
