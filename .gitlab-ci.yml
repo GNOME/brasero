@@ -1,0 +1,42 @@
+stages:
+- build
+
+variables:
+  DEPENDENCIES:
+    autoconf
+    automake
+    gnome-common
+    libtool
+    gstreamer1-plugins-base-devel
+    gtk3-devel
+    libICE-devel
+    pkgconfig(libburn-1)
+    libcanberra-devel
+    pkgconfig(libisofs-1)
+    libnotify-devel
+    nautilus-devel
+    libxml2-devel
+    libSM-devel
+    totem-pl-parser-devel
+    desktop-file-utils
+    gcc
+    gettext
+    gobject-introspection-devel
+    gtk-doc
+    libxslt
+    intltool
+    itstool
+    libappstream-glib
+    make
+    yelp-tools
+
+build-fedora:
+  image: fedora:latest
+  stage: build
+  before_script:
+    - dnf install -y $DEPENDENCIES
+  script:
+    - ./autogen.sh --disable-dependency-tracking --enable-gtk-doc
+    - make
+    - make install
+
