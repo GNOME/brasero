@@ -877,6 +877,9 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin)
 	/* for DVD+RW */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
+	/* for BD-R */
+	BRASERO_PLUGIN_ADD_STANDARD_BD_R_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+
 	/* for BD-RE */
 	BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
