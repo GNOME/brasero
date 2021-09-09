@@ -18,14 +18,14 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
 # e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=../../../libbrasero-burn
+DOC_SOURCE_DIR=$(top_srcdir)/libbrasero-burn $(top_builddir)/libbrasero-burn
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED" 
-SCAN_OPTIONS=
+SCAN_OPTIONS=--rebuild-types
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -114,7 +114,7 @@ AM_CPPFLAGS=								\
 	$(BRASERO_IO_CFLAGS)						\
 	$(BRASERO_GTK_CFLAGS)
 
-GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media.la $(top_builddir)/libbrasero-burn/libbrasero-burn.la
+GTKDOC_LIBS=$(top_builddir)/libbrasero-media/libbrasero-media3.la $(top_builddir)/libbrasero-burn/libbrasero-burn3.la
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
