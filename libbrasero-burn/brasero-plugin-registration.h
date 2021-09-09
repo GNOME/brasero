@@ -494,7 +494,7 @@ brasero_plugin_register (BraseroPlugin *plugin)				\
 				  BRASERO_MEDIUM_BDR_SRM_POW|			\
 				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_BLANK,				\
-				  BRASERO_BURN_FLAG_MULTI|			\
+				  (BRASERO_BURN_FLAG_MULTI|			\
 				  BRASERO_BURN_FLAG_DUMMY|			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~(unsupported_MACRO)),				\
