@@ -118,24 +118,34 @@ brasero_check_flags_for_drive (BraseroDrive *drive,
 	media = brasero_medium_get_status (medium);
 	if (flags & BRASERO_BURN_FLAG_DUMMY) {
 		/* This is always FALSE */
-		if (media & BRASERO_MEDIUM_PLUS)
+		if (media & BRASERO_MEDIUM_PLUS) {
+			BRASERO_BURN_LOG ("Drive does not support BRASERO_MEDIUM_PLUS flag");
 			return FALSE;
+		}
 
 		if (media & BRASERO_MEDIUM_DVD) {
-			if (!brasero_medium_can_use_dummy_for_sao (medium))
+			if (!brasero_medium_can_use_dummy_for_sao (medium)) {
+				BRASERO_BURN_LOG ("Drive does not support using dummy for SAO");
 				return FALSE;
+			}
 		}
 		else if (flags & BRASERO_BURN_FLAG_DAO) {
-			if (!brasero_medium_can_use_dummy_for_sao (medium))
+			if (!brasero_medium_can_use_dummy_for_sao (medium)) {
+				BRASERO_BURN_LOG ("Drive does not support using dummy for DAO");
 				return FALSE;
+			}
 		}
-		else if (!brasero_medium_can_use_dummy_for_tao (medium))
+		else if (!brasero_medium_can_use_dummy_for_tao (medium)) {
+			BRASERO_BURN_LOG ("Drive does not support using dummy for TAO");
 			return FALSE;
+		}
 	}
 
 	if (flags & BRASERO_BURN_FLAG_BURNPROOF) {
-		if (!brasero_medium_can_use_burnfree (medium))
+		if (!brasero_medium_can_use_burnfree (medium)) {
+			BRASERO_BURN_LOG ("Drive does not support burnproof/burnfree");
 			return FALSE;
+		}
 	}
 
 	return TRUE;
