@@ -113,7 +113,7 @@ brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
 
 	/* first ask the drive how long should the data be and then ... */
 	datasize = 4;
-	memset (&hdr, 0, sizeof (info));
+	memset (&hdr, 0, sizeof (hdr));
 	BRASERO_SET_16 (cdb->alloc_len, datasize);
 	res = brasero_scsi_command_issue_sync (cdb, &hdr, datasize, error);
 	if (res)
