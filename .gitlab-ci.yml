@@ -13,6 +13,7 @@ variables:
     pkgconfig(libburn-1)
     libcanberra-devel
     pkgconfig(libisofs-1)
+    pkgconfig(tracker-sparql-3.0)
     libnotify-devel
     nautilus-devel
     libxml2-devel
@@ -36,7 +37,7 @@ build-fedora:
   before_script:
     - dnf install -y $DEPENDENCIES
   script:
-    - ./autogen.sh --disable-dependency-tracking --enable-gtk-doc
+    - ./autogen.sh --disable-dependency-tracking --enable-gtk-doc --enable-search
     - make
     - make install
 
