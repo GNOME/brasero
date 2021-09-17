@@ -1,1074 +1,2360 @@
 # translation of brasero-help.master.po to Basque
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2011.
 msgid ""
-msgstr ""
-"Project-Id-Version: brasero-help.master\n"
-"POT-Creation-Date: 2009-10-12 12:21+0000\n"
-"PO-Revision-Date: 2011-04-20 16:38+0200\n"
-"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
-"Language-Team: Basque <itzulpena@euskalgnu.org>\n"
+msgstr "Project-Id-Version: brasero-help.master\n"
+"POT-Creation-Date: 2020-07-03 08:47+0000\n"
+"PO-Revision-Date: 2021-09-09 10:00+0100\n"
+"Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
+"Language-Team: Basque <librezale@librezale.eus>\n"
+"Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. When image changes, this message will be marked fuzzy or untranslated for you.
-#. It doesn't matter what you translate it to: it's not used at all.
-#: C/brasero.xml:257(None)
-msgid "@@image: 'figures/brasero_main.png'; md5=dfc32ea3caef05364043a4529125d2e2"
-msgstr "@@irudia: 'figures/brasero_main.png'; md5=dfc32ea3caef05364043a4529125d2e2"
+#. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
+msgctxt "_"
+msgid "translator-credits"
+msgstr "translator-credits"
 
-#: C/brasero.xml:26(title)
-msgid "<application>Brasero</application> Manual V2.2"
-msgstr "<application>Brasero</application> eskuliburua, 2.2 bertsioa"
+#. (itstool) path: info/desc
+#: C/create-cover.page:7
+msgid "Create an inlay for a jewel case."
+msgstr ""
 
-#: C/brasero.xml:28(para)
-msgid "Brasero is an application for burning CDs and DVDs."
-msgstr "Brasero CDak eta DVDak grabatzeko aplikazio bat da."
+#. (itstool) path: credit/name
+#: C/create-cover.page:9 C/introduction.page:9 C/prob-cd.page:11
+#: C/prob-dvd.page:11 C/project-audio.page:9 C/project-data.page:9
+#: C/project-disc-copy.page:9 C/project-image-burn.page:17
+#: C/project-save.page:12 C/project-video.page:12 C/split-track.page:11
+#: C/tools-blank.page:9 C/tools-check-integrity.page:13
+msgid "Ekaterina Gerasimova"
+msgstr "Ekaterina Gerasimova"
 
-#: C/brasero.xml:32(year)
-msgid "2008"
-msgstr "2008"
+#. (itstool) path: license/p
+#: C/create-cover.page:13 C/introduction.page:13 C/prob-cd.page:15
+#: C/prob-dvd.page:15 C/project-audio.page:13 C/project-data.page:13
+#: C/project-disc-copy.page:13 C/project-image-burn.page:21
+#: C/project-save.page:16 C/project-video.page:16 C/split-track.page:15
+#: C/tools-blank.page:13 C/tools-check-integrity.page:17
+msgid "Creative Commons Share Alike 3.0"
+msgstr "Creative Commons Share Alike 3.0"
 
-#: C/brasero.xml:33(year)
-msgid "2009"
-msgstr "2009"
+#. (itstool) path: page/title
+#: C/create-cover.page:17
+msgid "Create a cover"
+msgstr "Sortu azal bat"
 
-#: C/brasero.xml:34(holder) C/brasero.xml:48(publishername) C/brasero.xml:61(orgname) C/brasero.xml:69(orgname) C/brasero.xml:77(orgname) C/brasero.xml:105(para) C/brasero.xml:115(para) C/brasero.xml:131(para)
-msgid "Ubuntu Documentation Project"
-msgstr "Ubunturen dokumentazio-proiektua"
+#. (itstool) path: page/p
+#: C/create-cover.page:19
+msgid ""
+"You can use <app>Brasero</app> to create inlays for your jewel cases. Access "
+"the creator by clicking <guiseq><gui>Tools</gui> <gui>Cover Editor</gui></"
+"guiseq>."
+msgstr ""
 
-#: C/brasero.xml:2(para)
-msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License (GFDL), Version 1.1 or any later version published by the Free Software Foundation with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. You can find a copy of the GFDL at this <ulink type=\"help\" url=\"ghelp:fdl\">link</ulink> or in the file COPYING-DOCS distributed with this manual."
-msgstr "Baimena ematen da dokumentu hau kopiatu, banatu eta/edo aldatzeko Free Software Foundation-ek argitaratutako GNU Dokumentazio Librearen Lizentziaren 1.1. bertsioan edo berriago batean ezarritako baldintzak betetzen badira; Atal Aldaezinik, Aurreko azaleko testurik eta Atzeko azaleko testurik gabe. GFDL lizentziaren kopia <ulink type=\"help\" url=\"ghelp:fdl\">esteka</ulink> honetan edo eskuliburu honekin batera ematen den COPYING-DOCS fitxategian aurkituko duzu."
+#. (itstool) path: note/p
+#: C/create-cover.page:24
+msgid ""
+"If you are creating an audio project and finish putting together the project "
+"before creating an inlay, then when you access the <gui>Cover Editor</gui> "
+"interface from the audio project window, the tracks will automatically be "
+"listed on the back cover."
+msgstr ""
 
-#: C/brasero.xml:12(para)
-msgid "This manual is part of a collection of GNOME manuals distributed under the GFDL. If you want to distribute this manual separately from the collection, you can do so by adding a copy of the license to the manual, as described in section 6 of the license."
-msgstr "Eskuliburu hau GFDL lizentziarekin banatzen diren GNOME eskuliburuen bildumakoa da. Eskuliburu hau bildumatik bereizita banatu nahi baduzu, bana dezakezu, baina eskuliburuari lizentziaren kopia bat gehitu beharko diozu, lizentzian bertan 6. atalean azaltzen den bezala."
+#. (itstool) path: note/p
+#: C/create-cover.page:31
+msgid "If you close the <gui>Cover Editor</gui>, your changes will be lost."
+msgstr ""
 
-#: C/brasero.xml:19(para)
-msgid "Many of the names used by companies to distinguish their products and services are claimed as trademarks. Where those names appear in any GNOME documentation, and the members of the GNOME Documentation Project are made aware of those trademarks, then the names are in capital letters or initial capital letters."
-msgstr "Enpresek euren produktu eta zerbitzuak bereizteko erabiltzen dituzten izen asko marka erregistratu moduan hartu behar dira. Izen horiek GNOMEren edozein agiritan agertzen direnean, eta GNOMEren Dokumentazio Proiektuko kideak marka komertzialak direla konturatu badira, orduan izen horiek maiuskulaz idatzita egongo dira, osorik edo hasierako letra maiuskulaz jarrita."
+#. (itstool) path: item/p
+#: C/create-cover.page:36
+msgid "Open the <gui>Cover Editor</gui>."
+msgstr ""
 
-#: C/brasero.xml:35(para)
-msgid "DOCUMENT IS PROVIDED ON AN \"AS IS\" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS FREE OF DEFECTS MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY, ACCURACY, AND PERFORMANCE OF THE DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS WITH YOU. SHOULD ANY DOCUMENT OR MODIFIED VERSION PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL WRITER, AUTHOR OR ANY CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER; AND"
-msgstr "DOKUMENTUA \"DAGOEN-DAGOENEAN\" EMATEN DA, INOLAKO BERMERIK GABE, EZ ESPRESUKI ADIERAZITAKORIK ETA EZ INPLIZITURIK ERE; BESTEAK BESTE (MUGARIK GABE), EZ DA BERMATZEN DOKUMENTUA EDO BERTSIO ALDATUA AKATSIK GABEA DENIK, MERKATURATZEKO EDO XEDE JAKIN BATERAKO EGOKIA DENIK EDO ARAURIK HAUSTEN EZ DUENIK. DOKUMENTUAREN EDO DOKUMENTUAREN BERTSIO ALDATUAREN KALITATEARI, ZEHAZTASUNARI ETA PERFORMANTZIARI BURUZKO ERANTZUKIZUN OSOA ZUREA DA. DOKUMENTUREN BATEK EDO BERTSIO ALDATUREN BATEK EDOZEIN MOTATAKO AKATSIK IZANEZ GERO, ZUK (EZ HASIERAKO IDAZLEAK, EZ EGILEAK ETA EZ INONGO KOLABORATZAILEK) ZEURE GAIN HARTU BEHARKO DUZU BERRIKUSTEKO, KONPONTZEKO EDO ZUZENTZEKO BEHARREZKO ZERBITZU GUZTIEN KOSTUA. BERME-UKATZE HAU LIZENTZIA HONEN FUNTSEZKO ZATIA DA. EZ DA BAIMENIK EMATEN EZEIN DOKUMENTU EDO BERTSIO ALDATU ERABILTZEKO, BALDIN ETA EZ BADA BERME-UKATZE HAU ONARTZEN."
+#. (itstool) path: item/p
+#: C/create-cover.page:39
+msgid ""
+"Choose the formatting you wish to use for the text and type the text, "
+"scrolling down to see the side and back inlay for the jewel case."
+msgstr ""
 
-#: C/brasero.xml:55(para)
-msgid "UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY, WHETHER IN TORT (INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL THE AUTHOR, INITIAL WRITER, ANY CONTRIBUTOR, OR ANY DISTRIBUTOR OF THE DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT, OR ANY SUPPLIER OF ANY OF SUCH PARTIES, BE LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR MALFUNCTION, OR ANY AND ALL OTHER DAMAGES OR LOSSES ARISING OUT OF OR RELATING TO USE OF THE DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT, EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGES."
-msgstr "EZINGO DA INONGO ZIRKUNSTANTZIA EDO LEGE-TEORIARIK OINARRI HARTU --EZ ERANTZUKIZUN ZIBILARI BURUZKORIK (ZABARKERIA BARNE HARTUTA) EZ KONTRATUARI BURUZKORIK, EZ BESTERIK-- DOKUMENTU HONEN EDO BERTSIO ALDATU BATEN EGILEA, HASIERAKO IDAZLEA, EDOZEIN KOLABORATZAILE EDO BANATZAILE, EDO ALDERDI HORIEN EDOZEIN HORNITZAILE BESTE PERTSONA BATEN AURREAN ERANTZULE EGITEKO, PERTSONA HORREK EDOZEIN MOTATAKO KALTE ZUZENEKO, ZEHARKAKO, BEREZI, INTZIDENTAL EDO ONDORIOZKOAK JASAN DITUELAKO, BESTEAK BESTE (MUGARIK GABE), BEZEROAK GALTZEAREN, LANA ETEN BEHARRAREN, ORDENAGAILUAK EZ IBILTZEAREN EDO GAIZKI IBILTZEAREN ONDORIOZKO KALTEAK, EDO DOKUMENTUA NAHIZ HAREN BERTSIO ALDATUAK ERABILTZETIK ONDORIOZTATZEN DIREN EDO ERABILERA HORREKIN ZERIKUSIA DUEN EDOZEIN KALTE EDO GALERA, ALDERDIARI KALTE HORIEK GERTA ZITEZKEELA ADITZERA EMAN BAZAIO ERE."
+#. (itstool) path: note/p
+#: C/create-cover.page:42
+msgid ""
+"When you first see the <gui>Cover Editor</gui> dialog, you will not be able "
+"to click on any of the text formatting options. Click on the cover you want "
+"to work on to be able to use those."
+msgstr ""
 
-#: C/brasero.xml:28(para)
-msgid "DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED UNDER THE TERMS OF THE GNU FREE DOCUMENTATION LICENSE WITH THE FURTHER UNDERSTANDING THAT: <placeholder-1/>"
-msgstr "DOKUMENTUA ETA DOKUMENTUAREN BERTSIO ALDATUAK GNU DOKUMENTAZIO LIBREAREN LIZENTZIAREN BALDINTZEN ARABERA EMATEN DIRA, ETA ONDOREN ZEHAZTEN DIRENAK ONARTZERA BEHARTZEN DUTE: <placeholder-1/>"
+#. (itstool) path: item/p
+#: C/create-cover.page:48
+msgid ""
+"Click the <gui>Background properties</gui> toolbar icon to add a background "
+"for the current cover, or right click on the cover you wish to edit and "
+"select <gui>Set Background Properties</gui>. You can choose to use a colored "
+"background or to select a background image."
+msgstr ""
 
-#: C/brasero.xml:58(firstname)
-msgid "Milo"
-msgstr "Milo"
+#. (itstool) path: note/p
+#: C/create-cover.page:53
+msgid ""
+"If you select a centered background image, <app>Brasero</app> sometimes "
+"crashes when you click the <gui>Close</gui> button."
+msgstr ""
 
-#: C/brasero.xml:59(surname)
-msgid "Casagrande"
-msgstr "Casagrande"
+#. (itstool) path: item/p
+#: C/create-cover.page:56
+msgid ""
+"Click the <gui>Close</gui> button to apply the changes and close the "
+"<gui>Background Properties</gui> dialog."
+msgstr ""
 
-#: C/brasero.xml:62(email)
-msgid "milo@ubuntu.com"
-msgstr "milo@ubuntu.com"
+#. (itstool) path: item/p
+#: C/create-cover.page:60
+msgid ""
+"Print the cover using the <gui>Print</gui> button, which is located in the "
+"top-right corner of the dialog."
+msgstr ""
 
-#: C/brasero.xml:66(firstname)
-msgid "Andrew"
-msgstr "Andrew"
+#. (itstool) path: page/title
+#: C/index.page:6
+msgid "<_:media-1/> Brasero Help"
+msgstr "<_:media-1/> Brasero laguntza"
 
-#: C/brasero.xml:67(surname)
-msgid "Stabeno"
-msgstr "Stabeno"
+#. (itstool) path: section/title
+#: C/index.page:12
+msgid "Create a new project"
+msgstr "Sortu proiektu berria"
 
-#: C/brasero.xml:70(email)
-msgid "stabeno@gmail.com"
-msgstr "stabeno@gmail.com"
+#. (itstool) path: section/title
+#: C/index.page:16
+msgid "Troubleshooting"
+msgstr "Arazoen ebazpena"
 
-#: C/brasero.xml:74(firstname)
-msgid "Phil"
-msgstr "Phil"
+#. (itstool) path: section/title
+#: C/index.page:20
+msgid "Other tools"
+msgstr "Beste tresna batzuk"
 
-#: C/brasero.xml:75(surname)
-msgid "Bull"
-msgstr "Bull"
+#. (itstool) path: info/desc
+#: C/introduction.page:7
+msgid "Introduction to the <app>Brasero</app> disc burning application."
+msgstr ""
 
-#: C/brasero.xml:78(email)
-msgid "philbull@gmail.com"
-msgstr "philbull@gmail.com"
-
-#: C/brasero.xml:99(revnumber)
-msgid "Brasero Manual V2.2"
-msgstr "Braseroren eskuliburua, 2.2 bertsioa"
-
-#: C/brasero.xml:100(date)
-msgid "January 2009"
-msgstr "2009ko urtarrila"
-
-#: C/brasero.xml:102(para) C/brasero.xml:112(para) C/brasero.xml:122(para)
-msgid "Milo Casagrande <email>milo@ubuntu.com</email>"
-msgstr "Milo Casagrande <email>milo@ubuntu.com</email>"
-
-#: C/brasero.xml:109(revnumber)
-msgid "Brasero Manual V2.1"
-msgstr "Braseroren eskuliburua, 2.1 bertsioa"
-
-#: C/brasero.xml:110(date)
-msgid "August 2008"
-msgstr "2008ko abuztua"
-
-#: C/brasero.xml:119(revnumber)
-msgid "Brasero Manual V2.0"
-msgstr "Braseroren eskuliburua, 2.0 bertsioa"
-
-#: C/brasero.xml:120(date)
-msgid "February 2008"
-msgstr "2008ko otsaila"
-
-#: C/brasero.xml:125(para)
-msgid "Andrew Stabeno <email>stabeno@gmail.com</email>"
-msgstr "Andrew Stabeno <email>stabeno@gmail.com</email>"
-
-#: C/brasero.xml:128(para)
-msgid "Phil Bull <email>philbull@gmail.com</email>"
-msgstr "Phil Bull <email>philbull@gmail.com</email>"
-
-#: C/brasero.xml:136(releaseinfo)
-msgid "This manual describes version 2.26 of Brasero."
-msgstr "Eskuliburu honetan Braseroren 2.26 bertsioa azaltzen da."
-
-#: C/brasero.xml:140(title)
-msgid "Feedback"
-msgstr "Oharra"
-
-#: C/brasero.xml:141(para)
-msgid "To report a bug or make a suggestion regarding the <application>Brasero</application> application or this manual, follow the directions in the <ulink url=\"ghelp:gnome-feedback\" type=\"help\">GNOME Feedback Page</ulink>."
-msgstr "<application>Brasero</application> aplikazioari edo eskuliburu honi buruzko akatsen berri emateko edo oharrak bidaltzeko, <ulink url=\"ghelp:gnome-feedback\" type=\"help\">GNOMEra oharrak bidaltzeko orrian</ulink> aurkituko dituzu argibideak."
-
-#: C/brasero.xml:150(primary) C/brasero.xml:0(application) C/brasero.xml:0(application) C/brasero.xml:0(application) C/brasero.xml:0(application) C/brasero.xml:0(application)
-msgid "Brasero"
-msgstr "Brasero"
-
-#: C/brasero.xml:153(primary)
-msgid "brasero"
-msgstr "brasero"
-
-#: C/brasero.xml:154(secondary)
-msgid "burn"
-msgstr "grabatu"
-
-#: C/brasero.xml:155(tertiary)
-msgid "burning CD DVD"
-msgstr "CDak/DVDak grabatzea"
-
-#: C/brasero.xml:162(title)
+#. (itstool) path: page/title
+#: C/introduction.page:17
 msgid "Introduction"
 msgstr "Sarrera"
 
-#: C/brasero.xml:163(para)
-msgid "<application>Brasero</application> is an application for burning CD-R/Ws and DVD-R/Ws, designed to be easy to use, while providing all the tools necessary for burning."
-msgstr "<application>Brasero</application> CD-R, CD-RW, DVD-R eta DVD-RWak grabatzeko aplikazio bat da. Erabiltzeko erraza izateko diseinatuta dago eta grabatzeko beharrezkoak diren tresna guztiak eskaintzen ditu."
+#. (itstool) path: page/p
+#: C/introduction.page:19
+msgid ""
+"<app>Brasero</app> is an application for burning CDs and DVDs, designed to "
+"be easy to use, while providing all the tools necessary for burning."
+msgstr ""
 
-#: C/brasero.xml:168(para)
-msgid "With <application>Brasero</application> you can:"
-msgstr "<application>Braserorekin</application> posible duzu:"
+#. (itstool) path: page/p
+#: C/introduction.page:22
+msgid "With <app>Brasero</app> you can:"
+msgstr "<app>Brasero</app> aplikazioarekin honakoak egin daitezke:"
 
-#: C/brasero.xml:171(para)
-msgid "Burn data to CD-R/Ws and DVD-R/Ws"
-msgstr "CD-R, CD-RW, DVD-R eta DVD-RWetan datuak grabatzea"
+#. (itstool) path: item/p
+#: C/introduction.page:24
+msgid "Burn data to CDs and DVDs"
+msgstr "Datuak CD eta DVDetan grabatu"
 
-#: C/brasero.xml:176(para)
-msgid "Burn audio CDs from digital audio files (such as ogg, flac and mp3)"
-msgstr "Audio-fitxategi digitaletatik (adibidez, ogg, flac eta mp3) audioko CDak grabatzea"
+#. (itstool) path: item/p
+#: C/introduction.page:25
+msgid "Burn audio CDs from digital audio files (such as OGG, FLAC and MP3)"
+msgstr ""
 
-#: C/brasero.xml:182(para)
+#. (itstool) path: item/p
+#: C/introduction.page:27
 msgid "Copy CDs and DVDs"
-msgstr "CD eta DVDak kopiatzea"
+msgstr "CD eta DVDak kopiatu"
 
-#: C/brasero.xml:187(para)
-msgid "Create video DVD or SVCD"
-msgstr "DVD edo SVCD-ko bideoak sortzea"
+#. (itstool) path: item/p
+#: C/introduction.page:28
+msgid "Create video DVDs or SVCDs"
+msgstr "Bideoko DVDak edo SVCDak sortu"
 
-#: C/brasero.xml:192(para)
+#. (itstool) path: item/p
+#: C/introduction.page:29
 msgid "Create image files and burn existing image files"
 msgstr "Irudi-fitxategiak sortzea eta dauden irudi-fitxategiak grabatzea"
 
-#: C/brasero.xml:197(para)
-msgid "Erase CD-R/Ws and DVD-R/Ws"
-msgstr "CD-R, CD-RW, DVD-R eta DVD-RWak ezabatzea"
+#. (itstool) path: item/p
+#: C/introduction.page:30
+msgid "Erase CD-RWs and DVD-RWs"
+msgstr "CD-RWs eta DVD-RWak ezabatu"
 
-#: C/brasero.xml:202(para)
+#. (itstool) path: item/p
+#: C/introduction.page:31
 msgid "Check the integrity of discs and disc images"
-msgstr "Diskoen eta disko-irudien osotasuna egiaztatzea"
+msgstr "Diskoen eta disko-irudien osotasuna egiaztatu"
 
-#: C/brasero.xml:211(title)
-msgid "Getting Started"
-msgstr "Erabiltzen hasteko"
+#. (itstool) path: figure/title
+#: C/introduction.page:35
+msgid "The <gui>Brasero</gui> main window"
+msgstr "<gui>Brasero</gui> aplikazioaren leiho nagusia"
 
-#: C/brasero.xml:213(title)
-msgid "Starting Brasero"
-msgstr "Brasero abiaraztea"
+#. (itstool) path: figure/media
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/introduction.page:36
+msgctxt "_"
+msgid ""
+"external ref='figures/brasero-main-window.png' "
+"md5='cd9679619426233b5f58a69e6f34398b'"
+msgstr "external ref='figures/brasero-main-window.png' md5='cd9679619426233b5f58a69e6f34398b'"
 
-#: C/brasero.xml:214(para)
-msgid "You can start <application>Brasero</application> in the following ways:"
-msgstr "Ondorengo modu hauetan abiaraz dezakezu <application>Brasero</application>:"
+#. (itstool) path: info/desc
+#: C/prob-cd.page:9
+msgid "My MP3s will not play in a DVD or CD player."
+msgstr "Nire MP3ak ez dira erreproduzitzen DVD edo CD erreproduzigailu batean."
 
-#: C/brasero.xml:218(term)
-msgid "<guimenu>Applications</guimenu> menu"
-msgstr "<guimenu>Aplikazioak</guimenu> menua"
+#. (itstool) path: page/title
+#: C/prob-cd.page:19
+msgid "CD will not play in a CD player"
+msgstr "CDa ez da erreproduzitzen CD erreproduzigailu batean"
 
-#: C/brasero.xml:220(para)
-msgid "Choose <menuchoice><guisubmenu>Sound &amp; Video</guisubmenu><guimenuitem>Brasero Disc Burning</guimenuitem></menuchoice>."
-msgstr "Aukeratu <menuchoice><guisubmenu>Soinua eta bideoa</guisubmenu><guimenuitem>Brasero disko grabatzailea</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:227(term)
-msgid "Command line"
-msgstr "Komando-lerroa"
-
-#: C/brasero.xml:229(para)
-msgid "Type <command>brasero</command> and then press <keycap>Return</keycap>."
-msgstr "Idatzi <command>brasero</command> eta sakatu <keycap>Sartu</keycap>."
-
-#: C/brasero.xml:238(para)
-msgid "If <application>Brasero</application> is set as your default disc burning application, it will automatically start when you insert a blank CD-R/W or DVD-R/W in your drive."
-msgstr "<application>Brasero</application> diskoak grabatzeko aplikazio lehenetsi gisa ezarria baduzu, automatikoki abiaraziko da, unitatean CD-R, CD-RW, DVD-R edo DVD-RW huts bat sartzen duzunean."
-
-#: C/brasero.xml:248(title)
-msgid "When You Start Brasero"
-msgstr "Brasero abiaraztean"
-
-#: C/brasero.xml:249(para)
-msgid "When you start <application>Brasero</application> the following window will be shown."
-msgstr "<application>Brasero</application> abiarazten duzunean, ondorengo leihoa erakutsiko da."
-
-#: C/brasero.xml:253(title)
-msgid "Brasero Main Window"
-msgstr "Brasero leiho nagusia"
-
-#: C/brasero.xml:260(phrase)
-msgid "The Brasero main window. Shows the menu bar and the five types of project to choose from."
-msgstr "Brasero leiho nagusiak menu-barra eta aukeratzeko bost proiektu motak erakusten ditu."
-
-#. ==== End of Figure ====
-#: C/brasero.xml:270(para)
-msgid "This window is the starting point for all of your projects. You can click on the project type you wish to start from here. If you have created other projects with <application>Brasero</application>, you will be able to select them from the <guilabel>Choose a recently opened project</guilabel> (see <xref linkend=\"brasero-open-recent-project\"/> for more information)."
-msgstr "Leiho hau zure proiektu guztietarako hasiera-puntua da. Nahi duzun proiektu motan klik egin dezakezu hemendik hasteko. <application>Brasero</application> erabiliz beste proiekturik sortu baduzu, horiek hautatzeko joan <guilabel>Aukeratu berriki irekitako proiektu bat</guilabel> aukerara (ikus <xref linkend=\"brasero-open-recent-project\"/> informazio gehiago izateko)."
-
-#: C/brasero.xml:284(title)
-msgid "Creating a New Project"
-msgstr "Proiektu berria sortzea"
-
-#: C/brasero.xml:285(para)
-msgid "The following section explains the five types of project that you can create with <application>Brasero</application>."
-msgstr "Ondorengo atalak <application>Braserorekin</application> sor ditzakezun bost proiektu motak azaltzen ditu."
-
-#: C/brasero.xml:292(title)
-msgid "Audio Project"
-msgstr "Audio-proiektua"
-
-#: C/brasero.xml:293(para)
-msgid "This section explains how to create an audio CD. This project takes selected audio files, converts them to a raw audio format and burns them to a CD which standard CD players can play."
-msgstr "Atal honek audioko CD bat nola sortu azaltzen du. Proiektu honek hautatu diren audioko fitxategiak hartzen ditu, raw audio-formatu batera bihurtzen ditu, eta CD erreproduzigailu estandarrek erreproduzi dezaketen CD batean grabatzen ditu."
-
-#: C/brasero.xml:302(para)
-msgid "Insert a blank CD-R into your drive."
-msgstr "Sartu CD-R huts bat unitatean."
-
-#: C/brasero.xml:307(para)
-msgid "Click on <guibutton>Audio project</guibutton> in the main window or choose <menuchoice><guimenu>Project</guimenu><guisubmenu>New Project</guisubmenu><guimenuitem>New Audio Project</guimenuitem></menuchoice>."
-msgstr "Egin klik leiho nagusiko <guibutton>Audio-proiektua</guibutton> aukeran edo aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu>Proiektu berria</guisubmenu><guimenuitem>Audio-proiektu berria</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:318(para)
-msgid "In the pane on the left of the window, select <guilabel>Browse the file system </guilabel> from the drop-down list at the top and browse to the music files you want to add to your project."
-msgstr "Leihoaren ezkerraldean dagoen panelean, hautatu <guilabel>Arakatu fitxategi-sistema</guilabel> goiko goitibeherako zerrendan, eta arakatu zure proiektuan gehitu nahi dituzun musika-fitxategietara."
-
-#: C/brasero.xml:324(para)
-msgid "You can also select the <guilabel>Search files using keywords</guilabel> option to search for music files or the <guilabel>Display playlists and their contents </guilabel> option to select music from playlists on your computer."
-msgstr "<guilabel>Bilatu fitxategiak gako-hitzak erabiliz</guilabel> aukera ere hauta dezakezu musika-fitxategiak bilatzeko, edo <guilabel>Bistaratu erreprodukzio-zerrendak eta horien edukiak </guilabel> aukera, ordenagailuan erreprodukzio-zerrendetako musika hautatzeko."
-
-#: C/brasero.xml:333(para) C/brasero.xml:603(para) C/brasero.xml:797(para)
-msgid "If you don't see the pane on the left, choose <menuchoice><guimenu>View</guimenu><guimenuitem>Show side panel</guimenuitem></menuchoice> or press <keycap>F7</keycap>."
-msgstr "Ezkerraldean panela ikusten ez baduzu, aukeratu <menuchoice><guimenu>Ikusi</guimenu><guimenuitem>Erakutsi alboko panela</guimenuitem></menuchoice> edo sakatu <keycap>F7</keycap>."
-
-#: C/brasero.xml:343(para) C/brasero.xml:613(para) C/brasero.xml:789(para)
-msgid "Select the files you want by double-clicking on them or by selecting them and clicking the <guibutton>Add</guibutton> button at the top left of the toolbar."
-msgstr "Hautatu zuk nahi dituzun fitxategiak haietan klik bikoitza eginez edo haiek hautatuz eta tresna-barran goian ezkerrean dagoen <guibutton>Gehitu</guibutton> botoia sakatuz."
-
-#: C/brasero.xml:351(para)
-msgid "It is possible now to <link linkend=\"brasero-audio-pause\">insert a pause</link> after each of the tracks or <link linkend=\"brasero-audio-split\">to split</link> the tracks."
-msgstr "Orain posible da pista bakoitzaren ondoren <link linkend=\"brasero-audio-pause\">geldialdi bat sartzea</link> edo pistak <link linkend=\"brasero-audio-split\">zatitzea</link>."
-
-#: C/brasero.xml:359(para)
-msgid "When all of the files have been added, click on <guibutton>Burn</guibutton>."
-msgstr "Fitxategi guztiak gehitu ondoren, egin klik <guibutton>Grabatu</guibutton> aukeran."
-
-#: C/brasero.xml:365(para) C/brasero.xml:807(para)
-msgid "In the text box, enter the title you want to give to the disc. This title will be shown as the name of the disc."
-msgstr "Testu-koadroan, idatzi diskoari eman nahi diozun titulua. Titulu hau diskoaren izen gisa erakutsiko da."
-
-#: C/brasero.xml:372(para)
-msgid "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make any desired modifications (see <xref linkend=\"brasero-audio-project-options\"/>)."
-msgstr "<guilabel>Diskoak grabatzeko konfigurazioa</guilabel> elkarrizketa-koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-audio-project-options\"/>)."
-
-#: C/brasero.xml:379(para) C/brasero.xml:641(para) C/brasero.xml:827(para) C/brasero.xml:1146(para)
-msgid "Click on <guibutton>Burn</guibutton> to start the burning process."
-msgstr "Egin klik <guibutton>Grabatu</guibutton> aukeran grabatze-prozesua abiarazteko."
-
-#: C/brasero.xml:298(para)
-msgid "To burn an audio CD proceed as follows: <placeholder-1/>"
-msgstr "Audioko CD bat grabatzeko jarraibideak hauek dira: <placeholder-1/>"
-
-#: C/brasero.xml:387(para) C/brasero.xml:650(para) C/brasero.xml:837(para)
-msgid "When adding files, refer to the status bar at the bottom of the window to see how much space you are using on your CD/DVD."
-msgstr "Fitxategiak gehitzean, begiratu leihoaren beheko partean dagoen egoera-barra, CDan/DVDan zenbat leku hartzen ari zaren ikusteko."
-
-#: C/brasero.xml:394(para) C/brasero.xml:657(para) C/brasero.xml:844(para)
-msgid "To save the project for later use, choose <menuchoice><guimenu>Project</guimenu><guimenuitem>Save</guimenuitem></menuchoice>."
+#. (itstool) path: page/p
+#: C/prob-cd.page:21
+msgid ""
+"If your CD is not playing in your CD player or stereo, it is probably "
+"because the music was not correctly written to the disc or because you used "
+"a data project to write the music to the CD instead of an audio project."
 msgstr ""
-"Proiektua geroago erabiltzeko gordetzeko, aukeratu <menuchoice><guimenu>Proiektua</guimenu>"
-"<guimenuitem>Gorde</guimenuitem></menuchoice>."
 
-#: C/brasero.xml:405(title)
-msgid "Inserting a Pause"
-msgstr "Geldialdi bat sartzea"
+#. (itstool) path: note/p
+#: C/prob-cd.page:26
+msgid ""
+"Many new CD and DVD players will play music CDs which were created using a "
+"data project, but most older players will not."
+msgstr ""
 
-#: C/brasero.xml:411(para)
-msgid "Select the track after which you want to add the pause."
-msgstr "Hautatu zein pistaren ondoren gehitu nahi duzun geldialdia."
+#. (itstool) path: note/p
+#: C/prob-cd.page:31
+msgid "Older CD players might not be able to play CD-RWs."
+msgstr "CD erreproduzigailu zahar batzuek ez dituzte CD-RWak erreproduzitzen."
 
-#: C/brasero.xml:417(para)
-msgid "Click on <guibutton>Pause</guibutton> on the toolbar or choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Insert a Pause</guimenuitem></menuchoice>."
-msgstr "Egin klik tresna-barrako <guibutton>Geldialdia</guibutton> aukeran edo aukeratu <menuchoice><guimenu>Editatu</guimenu><guimenuitem>Sartu geldialdia</guimenuitem></menuchoice>."
+#. (itstool) path: item/p
+#: C/prob-cd.page:36
+msgid "If you are using a CD-RW, blank the CD."
+msgstr "CD-RW bat erabiltzen ari bazara, hustu CD diskoa."
 
-#: C/brasero.xml:406(para)
-msgid "After you have added a track, you can insert a 2 seconds pause after it. To insert a pause, proceed as follows: <placeholder-1/>"
-msgstr "Pista bat gehitu duzula, 2 segundoko geldialdi bat txerta dezakezu horren atzetik. Geldialdi bat txertatzeko jarraibideak hauek dira: <placeholder-1/>"
+#. (itstool) path: item/p
+#: C/prob-cd.page:39
+msgid "Rewrite the CD as an audio project."
+msgstr "Berridatzi CDa audio-proiektu gisa."
 
-#: C/brasero.xml:430(title)
-msgid "Splitting a Track"
-msgstr "Pista bat zatitzea"
+#. (itstool) path: info/desc
+#: C/prob-dvd.page:9
+msgid "I cannot write to a DVD-R or a DVD-RW."
+msgstr "Ezin du DVD-R edo DVD-RW batean idatzi."
 
-#: C/brasero.xml:436(para)
-msgid "Select the track you want to divide and click on <guibutton>Split</guibutton> in the toolbar or choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Split Track...</guimenuitem></menuchoice>. The <guilabel>Split Track</guilabel> dialog will be shown."
-msgstr "Hautatu zatitu nahi duzun pista, eta egin klik tresna-barrako <guibutton>Zatitu</guibutton> aukeran, edo aukeratu <menuchoice><guimenu>Editatu</guimenu><guimenuitem>Zatitu pista...</guimenuitem></menuchoice>. <guilabel>Zatitu pista</guilabel> elkarrizketa-koadroa erakutsiko da."
+#. (itstool) path: page/title
+#: C/prob-dvd.page:19
+msgid "Problem creating a DVD"
+msgstr "Arazoa DVD bat sortzean"
 
-#: C/brasero.xml:451(guilabel)
+#. (itstool) path: page/p
+#: C/prob-dvd.page:21
+msgid ""
+"Some types of DVD-Rs and DVD-RWs are not compatible with all burners. Check "
+"the following to find out if those can be used with your burner."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/prob-dvd.page:26
+msgid ""
+"Check if your DVD drive accepts DVD+ or DVD- discs; if it is labelled with "
+"\"multi\", that usually indicates that it accepts both. Check your disc to "
+"see if it is the same as the DVD drive."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/prob-dvd.page:31
+msgid ""
+"Check if your disc is dual layer or single layer: some DVD drives can not "
+"write to a dual layer disc."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/prob-dvd.page:35
+msgid ""
+"If you are trying to use a DVD-R, check if it has already been written to "
+"before. If you are using a DVD-RW, try blanking it before you attempt to "
+"write to it."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/project-audio.page:7
+msgid "Create an audio project."
+msgstr "Sortu audio-proiektu bat."
+
+#. (itstool) path: page/title
+#: C/project-audio.page:17
+msgid "Write a music CD"
+msgstr "Idatzi musikako CD bat"
+
+#. (itstool) path: page/p
+#: C/project-audio.page:19
+msgid ""
+"<app>Brasero</app> can write audio files to a CD, which you can then use for "
+"playing in CD players and so on. It is usually best to use a non-rewritable "
+"CD because not all CD players will play rewritable CDs."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-audio.page:26
+msgid ""
+"Click <gui>Audio project</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Audio Project</"
+"gui></guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-audio.page:31
+msgid ""
+"Add audio files to the project by clicking <gui>Add</gui> in the toolbar and "
+"selecting the desired files. You can also add files by dragging and dropping "
+"them onto the project area or by clicking <guiseq><gui>Edit</gui><gui>Add "
+"Files</gui></guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-audio.page:37
+msgid ""
+"You can add a title for the CD in the text entry field below the project "
+"area."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-audio.page:41
+msgid "Select the blank CD in the drop down list."
+msgstr "Hautatu CD hutsa goitibeherako zerrendan."
+
+#. (itstool) path: item/p
+#: C/project-audio.page:44 C/project-data.page:50 C/project-video.page:45
+msgid "Click <gui>Burn...</gui> to continue."
+msgstr "Egin klik <gui>Grabatu...</gui> aukeran jarraitzeko."
+
+#. (itstool) path: item/p
+#: C/project-audio.page:47 C/project-data.page:53 C/project-video.page:48
+msgid ""
+"Select the <gui>Burning speed</gui> from the drop down list, and any other "
+"options you may want."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-audio.page:51 C/project-video.page:52
+msgid ""
+"Click <gui>Burn</gui> to burn a single disc of the project or <gui>Burn "
+"Several Copies</gui> to burn your project to multiple discs."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-audio.page:57
+msgid ""
+"You can also split individual tracks into multiple tracks using the "
+"<gui>Split</gui> tool and add a two second break after a track using the "
+"<gui>Pause</gui> button."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/project-data.page:7
+msgid "Write data to a CD or DVD."
+msgstr "Idatzi datuak CD edo DVD batean."
+
+#. (itstool) path: page/title
+#: C/project-data.page:17
+msgid "Create a data project"
+msgstr "Sortu datu-proiektu bat"
+
+#. (itstool) path: page/p
+#: C/project-data.page:19
+msgid ""
+"A data project is used for writing data (for example, files, photos or "
+"music) to a disc, without changing those files in any way. This can be "
+"useful for transferring files between computers."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-data.page:25
+msgid ""
+"Click <gui>Data project</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Data Project</gui></"
+"guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-data.page:30
+msgid ""
+"Add the desired files to the project by clicking <gui>Add</gui> in the "
+"toolbar and selecting the files. You can also add files by dragging and "
+"dropping them onto the project area or by clicking <guiseq><gui>Edit</"
+"gui><gui>Add Files</gui></guiseq>."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-data.page:35
+msgid ""
+"You can create folders on the CD to store your data in a more structured "
+"manner. To create a folder, click <gui>New Folder</gui> in the toolbar or "
+"select <guiseq><gui>Edit</gui><gui>New Folder</gui></guiseq> from the menu "
+"bar. You can also create folders inside other folders."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-data.page:43 C/project-video.page:38
+msgid ""
+"You can add a title for the disc in the text entry field below the project "
+"area."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-data.page:47 C/project-video.page:42
+msgid "Select the blank disc in the drop down list."
+msgstr "Hautatu disko hutsa goitibeherako zerrendan."
+
+#. (itstool) path: item/p
+#: C/project-data.page:57
+msgid ""
+"Click <gui>Burn</gui> to burn a single CD of the project or <gui>Burn "
+"Several Copies</gui> to burn your project to multiple CDs"
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-data.page:60
+msgid ""
+"If you are using a rewritable disc, which already contains data, you will be "
+"asked if you want to blank it or insert a different disc."
+msgstr ""
+
+#. (itstool) path: page/p
+#: C/project-data.page:66
+msgid ""
+"If you are using a rewritable disc and the data is not burned correctly onto "
+"it, you may need to do a full (non-fast) blank of the disc before trying "
+"again."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/project-disc-copy.page:7
+msgid "Create an identical copy of a disc."
+msgstr "Sortu disko baten kopia berdin bat."
+
+#. (itstool) path: page/title
+#: C/project-disc-copy.page:17
+msgid "Copy disc"
+msgstr "Kopiatu diskoa"
+
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:21
+msgid ""
+"Click <gui>Disc copy</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Copy Disc... </gui></"
+"guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:26
+msgid ""
+"Select the disc you would like to copy from the drop down list below "
+"<gui>Select disc to copy</gui>. If you have more than one disc drive, all "
+"discs which are currently in them should be listed."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:31
+msgid ""
+"Choose whether you want to make a copy to another disc or create an image "
+"for later use."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:35 C/project-image-burn.page:57
+msgid ""
+"Click the <gui>Properties</gui> button to select burning speed and other "
+"custom options."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-disc-copy.page:39
+msgid ""
+"Click <gui>Copy</gui> to start copying the disc, or <gui>Make Several "
+"Copies</gui>, if you plan to make more than one copy of the disc."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-disc-copy.page:42
+msgid ""
+"If you are copying the disc and have only one disc drive, you will be asked "
+"to replace the disc you are copying with a writable one after the contents "
+"are copied temporarily to your hard disk."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/project-image-burn.page:11
+msgid "Burn an existing disc image to a CD or DVD."
+msgstr ""
+
+#. (itstool) path: credit/name
+#: C/project-image-burn.page:13
+msgid "Marta Bogdanowicz"
+msgstr "Marta Bogdanowicz"
+
+#. (itstool) path: page/title
+#: C/project-image-burn.page:25
+msgid "Burn image"
+msgstr "Grabatu irudia"
+
+#. (itstool) path: page/p
+#: C/project-image-burn.page:27
+msgid ""
+"<app>Brasero</app> allows you to burn disc images to a CD or DVD. It "
+"supports the following extensions of optical disc images: <file>.iso</file>, "
+"<file>.toc</file> and <file>.cue</file>."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-image-burn.page:32
+msgid ""
+"Disc images are archive files which contain all the data that is on a CD or "
+"DVD. Only one disc image can be on a CD at a time, but each archive can "
+"contain as little or as much data as you want, as long as it fits on the "
+"disc."
+msgstr ""
+
+#. (itstool) path: page/p
+#: C/project-image-burn.page:38
+msgid "To burn a disc image to a CD or DVD, follow these steps:"
+msgstr "Disko-irudi bat CD edo DVD batean grabatzeko, jarraitu honako urratsak:"
+
+#. (itstool) path: item/p
+#: C/project-image-burn.page:41
+msgid ""
+"Click <gui>Burn image</gui> on the start page or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>Burn image…</gui> </"
+"guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-image-burn.page:46
+msgid ""
+"Select a disc image to write by clicking <gui>Click here to select a disc "
+"image</gui>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-image-burn.page:50
+msgid ""
+"Select the disc that you want to use from drop down list below <gui>Select a "
+"disc to write to</gui>. If you have more than one disc drive, all discs "
+"which are currently in them should be listed."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-image-burn.page:53
+msgid ""
+"After choosing the disc <app>Brasero</app> shows how much free space will "
+"remain on the disc after burning."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-image-burn.page:61
+msgid ""
+"Click <gui>Burn</gui> to start burning the image. After this operation you "
+"can either finish burning or make the other copy of the image."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-image-burn.page:64
+msgid ""
+"If you are using a re-writable disc, which already contains data, you will "
+"be asked if you want to blank it or insert a different disc."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/project-save.page:10
+msgid "Save a project for editing or burning later."
+msgstr "Gorde proiektu bat geroago editatzeko edo grabatzeko."
+
+#. (itstool) path: page/title
+#: C/project-save.page:20
+msgid "Save a project"
+msgstr "Gorde proiektua"
+
+#. (itstool) path: page/p
+#: C/project-save.page:22
+msgid ""
+"You can save an audio, a data or a video project in <app>Brasero</app> for "
+"editing or burning later."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-save.page:27
+msgid "Create the project and add the files you wish to use to the project."
+msgstr "Sortu proiektu bat eta gehitu erabili nahi dituzun fitxategiak."
+
+#. (itstool) path: item/p
+#: C/project-save.page:30
+msgid ""
+"Click <guiseq><gui>Project</gui><gui>Save</gui></guiseq> to save the project."
+msgstr "Egin klik <guiseq><gui>Proiektua</gui><gui>Gorde</gui></guiseq> aukerara proiektua gordetzeko."
+
+#. (itstool) path: item/p
+#: C/project-save.page:34
+msgid ""
+"Enter the name you wish to save the project under, then click <gui>Save</"
+"gui> to save the project."
+msgstr ""
+
+#. (itstool) path: page/p
+#: C/project-save.page:39
+msgid ""
+"There are a number of ways which can be used for opening a saved "
+"<app>Brasero</app> project by:"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-save.page:44
+msgid ""
+"selecting it from the list on the start page, under <gui>Recent projects</"
+"gui>"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-save.page:48
+msgid "clicking <guiseq><gui>Project</gui><gui>Recent Projects</gui></guiseq>"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-save.page:51
+msgid ""
+"clicking <guiseq><gui>Project</gui><gui>Open</gui></guiseq> and selecting "
+"the project"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-save.page:55
+msgid "opening the project from a file browser"
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-save.page:57
+msgid ""
+"Only one instance of <app>Brasero</app> can be opened at any time. If you "
+"try to open a second instance, the currently open <app>Brasero</app> window "
+"will be focused."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-save.page:60
+msgid ""
+"If <app>Brasero</app> is already running and you try to open some files with "
+"it from <app>Files</app>, the files will be added to the project that you "
+"are currently working on."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/project-save.page:68
+msgid ""
+"If you open a saved project, <app>Brasero</app> will treat it as a new "
+"project: if you want to save an updated version of the project, it will ask "
+"you to enter a name for it, at this point you can overwrite the old version "
+"or save it as a new project by entering a different file name."
+msgstr ""
+
+#. (itstool) path: info/title
+#: C/project-video.page:9
+msgctxt "sort"
+msgid "3"
+msgstr "3"
+
+#. (itstool) path: info/desc
+#: C/project-video.page:10
+msgid "Write a video to a DVD or SVCD."
+msgstr "Idatzi bideo bat DVD edo SVCD batean."
+
+#. (itstool) path: page/title
+#: C/project-video.page:20
+msgid "Create a video project"
+msgstr "Sortu bideo-proiektu bat"
+
+#. (itstool) path: page/p
+#: C/project-video.page:22
+msgid ""
+"<app>Brasero</app> can be used to create video discs for playing in a DVD "
+"player or laptop."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-video.page:27
+msgid ""
+"Click <gui>Video project</gui> on the start page, or select "
+"<guiseq><gui>Project</gui><gui>New Project</gui><gui>New Video Project</"
+"gui></guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/project-video.page:32
+msgid ""
+"Add the videos to the project by clicking <gui>Add</gui> in the toolbar and "
+"selecting the files. You can also add files by dragging and dropping them "
+"onto the project area or by clicking <guiseq><gui>Edit</gui><gui>Add Files</"
+"gui></guiseq>."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/split-track.page:9
+msgid "Split an audio project track into multiple tracks."
+msgstr "Zatitu audio proiektu baten pista pista anitzetan."
+
+#. (itstool) path: page/title
+#: C/split-track.page:19
+msgid "Split an audio track"
+msgstr "Zatitu audio-pista bat"
+
+#. (itstool) path: page/p
+#: C/split-track.page:21
+msgid ""
+"You can split a single audio track into multiple tracks when you put "
+"together an audio project."
+msgstr "Audio-pista bat zatitu eta pista anitz sortu daitezke audio-proiektu batekin lan egiten denean."
+
+#. (itstool) path: item/p
+#: C/split-track.page:26
+msgid "Start an audio project and add the tracks you wish to use."
+msgstr "Hasi audio-proiektu bat eta gehitu erabili nahi dituzun pistak."
+
+#. (itstool) path: item/p
+#: C/split-track.page:29
+msgid ""
+"Select the track you wish to split by clicking on it, then click either "
+"<guiseq><gui>Edit</gui><gui>Split Track…</gui></guiseq> or right click on "
+"the track and select <gui>Split Track…</gui> from the menu."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/split-track.page:34
+msgid "Select your preferred method of splitting the tracks:"
+msgstr "Hautatu pistak zatitzeko erabili nahi duzun metodo hobetsia:"
+
+#. (itstool) path: item/title
+#: C/split-track.page:37
 msgid "Split track manually"
 msgstr "Zatitu pista eskuz"
 
-#: C/brasero.xml:453(para)
-msgid "Select this to select the time on the track where you wish to split it. A sliding bar is provided along with an audio preview."
-msgstr "Hautatu hau pista zein unetan zatitu nahi duzun hautatzeko. Barra graduatzaile bat ematen da audio-aurrebista batekin batera."
+#. (itstool) path: item/p
+#: C/split-track.page:38
+msgid ""
+"This option allows you to select the exact length of each new section of the "
+"track manually."
+msgstr ""
 
-#: C/brasero.xml:461(guilabel)
-msgid "Split tracks in parts with a fixed length"
-msgstr "Pistak luzera finkoko partetan zatitzen ditu"
+#. (itstool) path: item/title
+#: C/split-track.page:42
+msgid "Split track in parts with a fixed length"
+msgstr "Zatitu pista luzera bereko zatietan"
 
-#: C/brasero.xml:464(para)
-msgid "Select this to split the track into fixed-length parts with a duration that you specify."
-msgstr "Hautatu hau pista zuk zehaztutako iraupen finkoko partetan zatitzeko."
+#. (itstool) path: item/p
+#: C/split-track.page:43
+msgid ""
+"Use this method to split the track into multiple sections of equal length."
+msgstr ""
 
-#: C/brasero.xml:473(guilabel)
-msgid "Split track in fixed number of parts"
-msgstr "Zatitu pista parte kopuru finko batean"
+#. (itstool) path: item/title
+#: C/split-track.page:47
+msgid "Split track in a fixed number of parts"
+msgstr "Zatitu pista zati kopuru finko bat sortuz"
 
-#: C/brasero.xml:477(para)
-msgid "Select this to decide the number of parts that you want your track to be split into. You can use the provided spin box to select the number of parts."
-msgstr "Hautatu hau zure pista zatitzea nahi duzun parte kopurua erabakitzeko. Ematen den biratze-koadroa erabil dezakezu parte kopurua hautatzeko."
+#. (itstool) path: item/p
+#: C/split-track.page:48
+msgid ""
+"This method allows you to split the track into a set number of sections, all "
+"of which will be of the same length."
+msgstr ""
 
-#: C/brasero.xml:486(guilabel)
+#. (itstool) path: item/title
+#: C/split-track.page:52
 msgid "Split track for each silence"
 msgstr "Zatitu pista isilune bakoitzean"
 
-#: C/brasero.xml:490(para)
-msgid "Select this to split the track where a silence is present."
-msgstr "Hautatu hau pista isilune bat dagoen bakoitzean zatitzeko."
-
-#: C/brasero.xml:446(para)
-msgid "From the <guilabel>Method</guilabel> drop-down list select the splitting method. The possible values are: <placeholder-1/>"
-msgstr "<guilabel>Metodoa</guilabel> goitibeherako zerrendan, hautatu zatitzeko metodoa. Hauek dira balio posibleak: <placeholder-1/>"
-
-#: C/brasero.xml:500(para)
-msgid "To split the track, click on <guibutton>Slice</guibutton>. The slices will be listed in the <guilabel>Slices Preview</guilabel> table."
-msgstr "Pista zatitzeko, egin klik <guibutton>Zatitu</guibutton> aukeran. Zatiak <guilabel>Zatien aurrebista</guilabel> taulan zerrendatuko dira."
-
-#: C/brasero.xml:431(para)
-msgid "It is possible to divide a track in multiple parts. To split a track proceed as follows: <placeholder-1/>"
-msgstr "Pista bat hainbat partetan bana daiteke. Pista bat zatitzeko jarraibideak hauek dira: <placeholder-1/>"
-
-#: C/brasero.xml:508(para)
-msgid "Once you have splitted the track, it is possible to remove or merge the slices listed in the <guilabel>Slices Preview</guilabel> table using the buttons on the right."
-msgstr "Behin pista zatitu duzunean, posible da <guilabel>Zatien aurrebista</guilabel> taulan zerrendatutako zatiak batzea edo kentzea, eskuineko botoiak erabiliz."
-
-#: C/brasero.xml:513(para)
-msgid "Once you are done with all the modifications, click <guibutton>OK</guibutton>."
-msgstr "Aldaketa guztiekin amaitu duzunean, egin klik <guibutton>Ados</guibutton> botoian."
-
-#: C/brasero.xml:520(title)
-msgid "Audio Project Options"
-msgstr "Audio-proiektuetako aukerak"
-
-#: C/brasero.xml:521(para) C/brasero.xml:669(para) C/brasero.xml:856(para)
-msgid "Before starting the burning process, it is possible to modify some of the burning options."
-msgstr "Grabatze-prozesua hasi aurretik, grabatze-aukeretako batzuk alda daitezke."
-
-#: C/brasero.xml:528(term) C/brasero.xml:676(term) C/brasero.xml:863(term) C/brasero.xml:1045(term) C/brasero.xml:1163(term) C/brasero.xml:1335(term)
-msgid "Section <guilabel>Select a disc to write to</guilabel>:"
-msgstr "Atala <guilabel>Hautatu idazteko disko bat</guilabel>:"
-
-#: C/brasero.xml:534(para) C/brasero.xml:682(para) C/brasero.xml:869(para) C/brasero.xml:1062(para) C/brasero.xml:1169(para)
-msgid "Click on <guibutton>Properties</guibutton> to open the properties dialog for the burning device. See <xref linkend=\"brasero-burning-device-properties\"/> for more information."
-msgstr "Egin klik <guibutton>Propietateak</guibutton> aukeran, grabagailurako propietateen elkarrizketa-koadroa irekitzeko. Ikus <xref linkend=\"brasero-burning-device-properties\"/> informazio gehiago izateko."
-
-#: C/brasero.xml:545(term) C/brasero.xml:693(term) C/brasero.xml:1357(term)
-msgid "Section <guilabel>Disc options</guilabel>:"
-msgstr "Atala <guilabel>Disko-aukerak</guilabel>:"
-
-#: C/brasero.xml:551(guilabel)
-msgid "Leave the disc open to add a data session later"
-msgstr "Utzi diskoa irekia, aurrerago datu-saio bat gehitzeko"
-
-#: C/brasero.xml:554(para) C/brasero.xml:722(para)
-msgid "Select this option to create a <emphasis>multisession</emphasis> disc, so that it will be possible to add files to the disc at a later date (without erasing it, if it is rewritable)."
-msgstr "Hautatu aukera hau, <emphasis>saio anitzeko </emphasis> disko bat sortzeko, eta horrela beste egun batean diskoan fitxategiak gehitu ahal izateko (hura ezabatu gabe, birgrabagarria bada)."
-
-#: C/brasero.xml:576(title)
-msgid "Data Project"
-msgstr "Datuen proiektua"
-
-#: C/brasero.xml:581(para) C/brasero.xml:1123(para)
-msgid "Insert a blank CD-R/W or DVD-R/W into your drive."
-msgstr "Sartu CD-R, CD-RW, DVD-R edo DVD-RW huts bat unitatean."
-
-#: C/brasero.xml:584(para)
-msgid "Click on <guibutton>Data project</guibutton> in the main window or choose <menuchoice><guimenu>Project</guimenu><guisubmenu>New Project</guisubmenu><guimenuitem>New Data Project</guimenuitem></menuchoice>."
-msgstr "Egin klik leiho nagusiko <guibutton>Datuen proiektua</guibutton> aukeran edo aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu>Proiektu berria</guisubmenu><guimenuitem>Datuen proiektu berria</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:594(para)
-msgid "Use the pane on the left of the window to find the files you want to add to the project. Select <guilabel>Browse the file system</guilabel> from the drop-down list at the top to browse for files or <guilabel>Search files using keywords</guilabel> to search for them."
-msgstr "Erabili leihoaren ezkerraldeko panela, proiektuan gehitu nahi dituzun fitxategiak aurkitzeko. Fitxategiak bilatzeko, hautatu <guilabel>Arakatu fitxategi-sistema</guilabel> goian dagoen goitibeherako zerrendan, edo <guilabel>Bilatu fitxategiak gako-hitzak erabiliz</guilabel>."
-
-#: C/brasero.xml:621(para)
-msgid "In the text box, enter a label to identify the disc. This label will be shown as the name of the disc."
-msgstr "Testu-koadroan, sartu etiketa bat diskoa identifikatzeko. Etiketa hau diskoaren izen gisa erakutsiko da."
-
-#: C/brasero.xml:628(para) C/brasero.xml:814(para)
-msgid "When all the files have been added, click on <guibutton>Burn</guibutton>."
-msgstr "Fitxategi guztiak gehitu ondoren, egin klik <guibutton>Grabatu</guibutton> aukeran."
-
-#: C/brasero.xml:634(para)
-msgid "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make any desired modifications (see <xref linkend=\"brasero-data-project-options\"/>)."
-msgstr "<guilabel>Diskoak grabatzeko konfigurazioa</guilabel> elkarrizketa-koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-data-project-options\"/>)."
-
-#: C/brasero.xml:577(para)
-msgid "To burn a data CD, proceed as follows: <placeholder-1/>"
-msgstr "Datu CD bat grabatzeko jarraibideak hauek dira: <placeholder-1/>"
-
-#: C/brasero.xml:668(title)
-msgid "Data Project Options"
-msgstr "Datuen proiektuetako aukerak"
-
-#: C/brasero.xml:702(guilabel) C/brasero.xml:1366(guilabel)
-msgid "Increase compatibility with Windows systems"
-msgstr "Handitu Windows sistemekiko bateragarritasuna"
-
-#: C/brasero.xml:706(para) C/brasero.xml:1370(para)
-msgid "Select this option if you intend the disc to be used on computers running Windows. Files on the disc will be checked to ensure that their filenames do not contain characters which are invalid on Windows."
+#. (itstool) path: item/p
+#: C/split-track.page:53
+msgid ""
+"Select this method for <app>Brasero</app> to auto-detect silences in the "
+"recording and to split the track at those points."
 msgstr ""
-"Hautatu aukera hau diskoa Windows exekutatzen duten ordenagailuetan erabili nahi baduzu. "
-"Diskoko fitxategiak aztertuko dira, fitxategi-izenek Windows-eko karaktere baliogaberik ez dutela bermatzeko."
 
-#: C/brasero.xml:719(guilabel)
-msgid "Leave the disc open to add other files later"
-msgstr "Utzi diskoa irekia, aurrerago beste fitxategi batzuk gehitzeko"
-
-#: C/brasero.xml:743(title)
-msgid "Video project"
-msgstr "Bideo-proiektua"
-
-#: C/brasero.xml:744(para)
-msgid "This project lets you take video files (files with extension like <filename class=\"extension\">.mpg</filename>, <filename class=\"extension\">.mpeg</filename> or <filename class=\"extension\">.avi</filename> to name a few) and burn them to disc to create video <acronym>DVD</acronym>s, <acronym>SVCD</acronym>s or <acronym>VCD</acronym>s that you can watch with normal DVD/CD players."
+#. (itstool) path: item/p
+#: C/split-track.page:59
+msgid "Proceed to split the track by clicking <gui>Slice</gui>."
 msgstr ""
-"Proiektu honekin, bideo-fitxategiak (adibidez luzapen hauetakoak: "
-"<filename class=\"extension\">.mpg</filename>, "
-"<filename class=\"extension\">.mpeg</filename> edo "
-"<filename class=\"extension\">.avi</filename>) "
-"hartu eta diskoetan grabatu ahal izango dituzu, DVD/CD erreproduzigailu normaletan ikus ditzakezun bideo "
-"<acronym>DVD</acronym>ak, "
-"<acronym>SVCD</acronym>ak edo <acronym>VCD</acronym>ak sortzeko."
-
-#: C/brasero.xml:755(para)
-msgid "In order to use all the potential of the video project, you need to install all GStreamer's plugins, <application>ffmpeg</application>, <application>vcdimager</application> and <application>dvdauthor</application>. See your operating system documentation for more information on how to install all these applications."
-msgstr "Bideo-proiektuaren potentzial guztia erabiltzeko, GStreamer-en plugin guztiak instalatu behar dituzu: <application>ffmpeg</application>, <application>vcdimager</application> eta <application>dvdauthor</application>. Ikus sistema eragilearen dokumentazioa, aplikazio hauek guztiak nola instalatzeari buruzko informazio gehiago izateko."
-
-#: C/brasero.xml:770(para)
-msgid "Insert a blank CD or DVD into your drive."
-msgstr "Sartu CD edo DVD huts bat unitatean."
-
-#: C/brasero.xml:775(para)
-msgid "Click on <guibutton>Video project</guibutton> in the main window or choose <menuchoice><guimenu>Project</guimenu><guisubmenu>New project</guisubmenu><guimenuitem>New video project</guimenuitem></menuchoice>."
-msgstr "Egin klik leiho nagusiko <guibutton>Bideo-proiektua</guibutton> aukeran edo aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu>Proiektu berria</guisubmenu><guimenuitem>Bideo-proiektu berria</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:785(para)
-msgid "From the pane on the left of the window, browse the file system searching for video files."
-msgstr "Leihoaren ezkerraldean dagoen panelean, arakatu fitxategi-sistema, bideo-fitxategiak bilatzeko."
-
-#: C/brasero.xml:820(para)
-msgid "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make any desired modifications (see <xref linkend=\"brasero-video-project-options\"/>)."
-msgstr "<guilabel>Diskoak grabatzeko konfigurazioa</guilabel> elkarrizketa-koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-video-project-options\"/>)."
-
-#: C/brasero.xml:766(para)
-msgid "To create a video project, proceed as follows: <placeholder-1/>"
-msgstr "Bideo-proiektu bat sortzeko jarraibideak hauek dira: <placeholder-1/>"
-
-#: C/brasero.xml:855(title)
-msgid "Video Project Options"
-msgstr "Bideo-proiektuetako aukerak"
-
-#: C/brasero.xml:880(term)
-msgid "Section <guilabel>Video Option</guilabel>:"
-msgstr "Atala <guilabel>Bideo-aukera</guilabel>:"
-
-#: C/brasero.xml:892(para)
-msgid "<guilabel>Native format</guilabel>: the original format of the video file."
-msgstr "<guilabel>Jatorrizko formatua</guilabel>: bideo-fitxategiaren jatorrizko formatua."
-
-#: C/brasero.xml:898(para)
-msgid "<guilabel>PAL/SECAM</guilabel>: format mainly used in European televisions."
-msgstr "<guilabel>PAL/SECAM</guilabel>: batez ere Europako telebistetan erabilitako formatua."
-
-#: C/brasero.xml:904(para)
-msgid "<guilabel>NTSC</guilabel>: format mainly used in Americans, Canadians and Japanese televisions."
-msgstr "<guilabel>NTSC</guilabel>: batez ere Estatu Batuetako, Kanadako eta Japoniako telebistetan erabilitako formatua."
-
-#: C/brasero.xml:886(para)
-msgid "From <guilabel>Video formats</guilabel> select the format of the video that will be burned. You can choose from: <placeholder-1/>"
-msgstr "<guilabel>Bideo-formatuak</guilabel> aukeran, hautatu grabatu nahi duzun bideoaren formatua. Aukeratu hemendik: <placeholder-1/>"
-
-#: C/brasero.xml:916(term)
-msgid "Section <guilabel>Audio Options</guilabel>:"
-msgstr "Atala <guilabel>Audio-aukerak</guilabel>:"
-
-#: C/brasero.xml:922(para)
-msgid "Choose <guilabel>Add MP2 audio stream</guilabel> to add a <emphasis>MPEG-1 Audio Layer 2</emphasis> stream to the disc."
-msgstr "Aukeratu <guilabel>Gehitu MP2 audio-korrontea</guilabel>, diskoari <emphasis>MPEG-1 audio-geruza 2</emphasis> korronte bat gehitzeko."
-
-#: C/brasero.xml:929(para)
-msgid "Choose <guilabel>Add AC3 audio stream</guilabel> to add an <emphasis>AC-3 Dolby Digital</emphasis> stream to the disc."
-msgstr "Aukeratu <guilabel>Gehitu AC3 audio-korrontea</guilabel>, diskoari <emphasis>AC-3 Dolby Digital</emphasis> korronte bat gehitzeko."
-
-#: C/brasero.xml:939(term)
-msgid "Section <guilabel>VCD type</guilabel>:"
-msgstr "Atala <guilabel>VCD mota</guilabel>:"
-
-#: C/brasero.xml:945(para)
-msgid "Choose <guilabel>Create a SVCD</guilabel> to create a <emphasis>Super Video CD</emphasis>."
-msgstr "Aukeratu <guilabel>Sortu SVCD bat</guilabel>, <emphasis>Super Video CD</emphasis> bat sortzeko."
-
-#: C/brasero.xml:951(para)
-msgid "Choose <guilabel>Create a VCD</guilabel> to create a <emphasis>Video CD</emphasis>."
-msgstr "Aukeratu <guilabel>Sortu VCD bat</guilabel>, <emphasis>Video CD</emphasis> bat sortzeko."
-
-#: C/brasero.xml:964(para)
-msgid "One of the main difference between a <acronym>SVCD</acronym> and a <acronym>VCD</acronym> is that the former uses the <acronym>MPEG-2</acronym> video codec while the latter <acronym>MPEG-1</acronym>. For more information, see the Wikipedia pages for <ulink type=\"http\" url=\"http://en.wikipedia.org/wiki/SVCD\">SVCD</ulink> and <ulink type=\"http\" url=\"http://en.wikipedia.org/wiki/Video_CD\">VCD</ulink>."
-msgstr "<acronym>SVCD</acronym> eta <acronym>VCD</acronym> baten arteko desberdintasun nagusietako bat  da lehenengoak <acronym>MPEG-2</acronym> bideo-kodeka erabiltzen duela eta bigarrenak, berriz, <acronym>MPEG-1</acronym>. Informazio gehiago izateko, ikus Wikipedian <ulink type=\"http\" url=\"http://en.wikipedia.org/wiki/SVCD\">SVCD</ulink> eta <ulink type=\"http\" url=\"http://en.wikipedia.org/wiki/Video_CD\">VCD</ulink> formatuei buruz dauden orriak."
-
-#: C/brasero.xml:984(title)
-msgid "Disc Copy"
-msgstr "Diskoaren kopia"
-
-#: C/brasero.xml:990(para)
-msgid "Insert the CD or DVD you wish to copy into your drive."
-msgstr "Sartu kopiatu nahi duzun CDa edo DVDa unitatean."
-
-#: C/brasero.xml:995(para)
-msgid "Click on <guibutton>Disc copy</guibutton> in the main window or choose <menuchoice><guimenu>Project</guimenu><guisubmenu>New Project</guisubmenu><guimenuitem>Copy Disc</guimenuitem></menuchoice>."
-msgstr "Egin klik leiho nagusiko <guibutton>Diskoaren kopia</guibutton> aukeran edo aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu>Proiektu berria</guisubmenu><guimenuitem>Kopiatu diskoa</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:1006(para)
-msgid "The <guilabel>CD/DVD copy options</guilabel> dialog will be shown; make the desired modifications (see <xref linkend=\"brasero-disc-copy-options\"/> for more information)."
-msgstr "<guilabel>CD/DVD kopietako aukerak</guilabel> elkarrizketa-koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-disc-copy-options\"/> informazio gehiago izateko)."
-
-#: C/brasero.xml:1013(para)
-msgid "Click on <guibutton>Copy</guibutton> to start the copying process."
-msgstr "Egin klik <guibutton>Kopiatu</guibutton> aukeran kopiatze-prozesua abiarazteko."
-
-#: C/brasero.xml:985(para)
-msgid "This project lets you take an existing disc and copy it to a blank disc or image file. To copy a disc, proceed as follows: <placeholder-1/>"
-msgstr "Proiektu honekin, aurretik dagoen disko bat hartu eta hori disko huts batera edo irudi-fitxategi batera kopia dezakezu. Disko bat kopiatzeko jarraibideak hauek dira: <placeholder-1/>"
-
-#: C/brasero.xml:1022(title)
-msgid "Disc Copy Options"
-msgstr "Diskoa kopiatzearen aukerak"
-
-#: C/brasero.xml:1023(para)
-msgid "Before starting the copying process, it is possible to modify some of the copying and burning options."
-msgstr "Kopiatze-prozesua hasi aurretik, kopiatze- eta grabatze-aukeretako batzuk alda daitezke."
-
-#: C/brasero.xml:1030(term)
-msgid "Section <guilabel>Select disc to copy</guilabel>:"
-msgstr "Atala <guilabel>Hautatu diskoa kopiatzeko</guilabel>:"
-
-#: C/brasero.xml:1036(para)
-msgid "From the drop-down list, select the disc that you want to copy."
-msgstr "Goitibeherako zerrendan, hautatu kopiatu nahi duzun diskoa."
-
-#: C/brasero.xml:1051(para)
-msgid "From the drop-down list, select the disc to write to."
-msgstr "Goitibeherako zerrendan, hautatu zein diskotan grabatu nahi duzun."
-
-#: C/brasero.xml:1055(para)
-msgid "From this drop-down list, select <guilabel>File image</guilabel> to create a disc image, such as an ISO image."
-msgstr "Goitibeherako zerrenda honetatik, hautatu <guilabel>Irudi-fitxategia</guilabel>, disko-irudi bat sortzeko, adibidez ISO irudi bat."
-
-#: C/brasero.xml:1076(para)
-msgid "If you have more that one drive on your system, you can use one drive as the source drive and the other as the destination drive. If you do not, you will be prompted to remove the CD or DVD you are copying and insert a blank media."
-msgstr "Sisteman unitate bat baino gehiago badituzu, unitate bat iturburuko unitate gisa erabil dezakezu eta bestea helburuko unitate gisa. Bestela, kopiatzen ari zaren CDa edo DVDa kentzea eta euskarri huts bat erabiltzea eskatuko zaizu."
-
-#: C/brasero.xml:1090(title)
-msgid "Burn Image"
-msgstr "Grabatu irudia"
-
-#: C/brasero.xml:1098(filename)
-msgid ".iso"
-msgstr ".iso"
-
-#: C/brasero.xml:1103(filename)
-msgid ".raw"
-msgstr ".raw"
-
-#: C/brasero.xml:1108(filename)
-msgid ".cue"
-msgstr ".cue"
-
-#: C/brasero.xml:1113(filename)
-msgid ".toc"
-msgstr ".toc"
-
-#: C/brasero.xml:1091(para)
-msgid "This project takes an existing file image and burns it to a CD-R/W or DVD-R/W. <application>Brasero</application> supports the following types of image file: <placeholder-1/>"
-msgstr "Proiektu honek aurretik dagoen irudi-fitxategi bat hartzen du eta CD-R, CD-RW, DVD-R edo DVD-RW batean grabatzen du. <application>Brasero</application> programak ondorengo irudi-fitxategi motak onartzen ditu: <placeholder-1/>"
-
-#: C/brasero.xml:1128(para)
-msgid "Click on <guibutton>Burn image</guibutton> in the main window or choose <menuchoice><guimenu>Project</guimenu><guisubmenu>New Project</guisubmenu><guimenuitem>Burn Image</guimenuitem></menuchoice>."
-msgstr "Egin klik leiho nagusiko <guibutton>Grabatu irudia</guibutton> aukeran edo aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu>Proiektu berria</guisubmenu><guimenuitem>Grabatu irudia</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:1139(para)
-msgid "The <guilabel>Image burning setup</guilabel> dialog will be shown; make the desired modifications (see <xref linkend=\"brasero-burn-image-options\"/>)."
-msgstr "<guilabel>Irudia grabatzeko konfigurazioa</guilabel> elkarrizketa-koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-burn-image-options\"/>)."
-
-#: C/brasero.xml:1119(para)
-msgid "To start this project, proceed as follows: <placeholder-1/>"
-msgstr "Proiektu hau abiarazteko jarraibideak hauek dira: <placeholder-1/>"
-
-#: C/brasero.xml:1155(title)
-msgid "Burn Image Options"
-msgstr "Irudia grabatzeko aukerak"
-
-#: C/brasero.xml:1156(para)
-msgid "Before starting the image burning process, it is possible to modify some of the burning options."
-msgstr "Irudia grabatzeko prozesua hasi aurretik, grabatze-aukeretako batzuk alda daitezke."
-
-#: C/brasero.xml:1181(term)
-msgid "Section <guilabel>Image</guilabel>:"
-msgstr "Atala <guilabel>Irudia</guilabel>:"
-
-#: C/brasero.xml:1185(para)
-msgid "Click on the button to open the <guilabel>Select Image File</guilabel> dialog and select the image file to burn. From the drop-down list at the bottom, you can select the type of the image to burn. If unsure, select <guilabel>Let brasero choose (safest)</guilabel>."
-msgstr "Egin klik <guilabel>Hautatu irudi-fitxategia</guilabel> elkarrizketa koadroa irekitzeko botoian eta hautatu grabatu nahi duzun irudi-fitxategia. Behean dagoen goitibeherako zerrendan, grabatzeko irudiaren mota hauta dezakezu. Ziur ez bazaude, hautatu <guilabel>Utzi Brasero-ri aukeratzen (seguruena)</guilabel>."
-
-#: C/brasero.xml:1204(title)
-msgid "Burning Device Properties"
-msgstr "Grabagailuaren propietateak"
-
-#: C/brasero.xml:1205(para)
-msgid "Before starting the burning process, it is possible to change some of the properties for the burning device that will be used."
-msgstr "Grabatze-prozesua hasi aurretik, posible da erabiliko den grabagailuaren propietateetako batzuk aldatzea."
-
-#: C/brasero.xml:1212(term)
-msgid "Section <guilabel>Burning speed</guilabel>:"
-msgstr "Atala <guilabel>Grabatzeko abiadura</guilabel>:"
-
-#: C/brasero.xml:1214(para)
-msgid "From the drop-down list, select the burning speed. For the best value, check the CD/DVD case."
-msgstr "Goitibeherako zerrendan, hautatu grabatzeko abiadura. Balio egokiena zein den jakiteko, begiratu CD/DVDaren kaxa."
-
-#: C/brasero.xml:1219(para)
-msgid "Burning a disc with a higher speed than supported could create an unreadable disc. Use lower burning speeds to reduce the chance of this happening."
-msgstr "Disko bat onartutakoa baino abiadura handiagoan grabatuz gero, diskoa irakurtezin bihur dezakezu. Erabili grabatzeko abiadura txikiagoak, hori gertatzeko aukera murrizteko."
-
-#: C/brasero.xml:1228(term)
-msgid "Section <guilabel>Options</guilabel>:"
-msgstr "Atala <guilabel>Aukerak</guilabel>:"
-
-#: C/brasero.xml:1235(guilabel)
-msgid "Burn the image directly without saving it to disc"
-msgstr "Grabatu irudia zuzenean, diskoan gorde gabe"
-
-#: C/brasero.xml:1239(para)
-msgid "Select this option if you want to burn the image directly onto the media, without saving it to the hard disk and without creating an image file."
-msgstr "Hautatu aukera hau irudia zuzenean euskarrian grabatu nahi baduzu, disko gogorrean gorde gabe eta irudi-fitxategirik sortu gabe."
-
-#: C/brasero.xml:1251(guilabel)
-msgid "Use burnproof (decrease the risk of failure)"
-msgstr "Erabili burnproof (hutsegite-arriskua txikiagotzen du)"
-
-#: C/brasero.xml:1254(para)
-msgid "Select this option to prevent the <emphasis>buffer underrun</emphasis> effect (or <emphasis>buffer underflow</emphasis>). This is when the computer is not fast enough delivering data to the burning device at the selected burning speed."
-msgstr "Hautatu aukera hau <emphasis>bufferra hustea</emphasis> (edo <emphasis>bufferraren gainezkatze negatiboa</emphasis>) saihesteko. Horrek esan nahi du ordenagailua ez dela behar bezain azkarra datuak grabagailura hautatutako grabatzeko abiaduran bidaltzeko."
-
-#: C/brasero.xml:1262(para)
-msgid "If a <emphasis>buffer underrun</emphasis> takes place, the burned disc could be unreadable."
-msgstr "<emphasis>Bufferra hustea</emphasis> gertatzen bada, grabatutako diskoa irakurtezin gera daiteke."
-
-#: C/brasero.xml:1275(guilabel)
-msgid "Simulate the burning"
-msgstr "Simulatu grabazioa"
-
-#: C/brasero.xml:1278(para)
-msgid "Select this option to simulate the burning process; no real burn is performed. If this operation is successful, brasero will actually burn the disc after pausing for 10 seconds. During this pause it will show a dialog in which you can cancel the actual burning. This is useful for testing, if you are having problems burning discs."
-msgstr "Hautatu aukera hau grabatze-prozesu bat simulatzeko; ez da benetan grabatuko. Eragiketak arrakasta badu, braserok diskoa benetan grabatuko du 10 segundoz pausatuta egon ondoren. Pausatuta dagoen bitartean, benetako grabazioa bertan behera uzteko erabil dezakezun elkarrizketa-koadroa erakutsiko da. Hau proba egiteko erabilgarria da, diskoak grabatzeko arazoak edukitzen ari bazara."
-
-#: C/brasero.xml:1294(guilabel)
-msgid "Eject after burning"
-msgstr "Egotzi grabatu ondoren"
-
-#: C/brasero.xml:1297(para)
-msgid "Select this option to eject the media in the burning device once the burning process has completed."
-msgstr "Hautatu aukera hau grabagailuan dagoen euskarria egozteko behin grabatze-prozesua osatu denean."
-
-#: C/brasero.xml:1310(term)
-msgid "Section <guilabel>Temporary files</guilabel>:"
-msgstr "Atala <guilabel>Aldi baterako fitxategiak</guilabel>:"
-
-#: C/brasero.xml:1312(para)
-msgid "From the drop-down list, select the directory to use for storing the temporary files created for the burning process."
-msgstr "Goitibeherako zerrendan, hautatu grabatze-prozesurako sortutako aldi baterako fitxategiak zein direktoriotan biltegiratu nahi dituzun."
-
-#: C/brasero.xml:1317(para)
-msgid "The default directory is <filename class=\"directory\">/tmp</filename>."
-msgstr "Direktorio lehenetsia <filename class=\"directory\">/tmp</filename> da."
-
-#: C/brasero.xml:1326(title)
-msgid "Burning Properties with No Disc"
-msgstr "Grabatze-propietateak diskorik gabe"
-
-#: C/brasero.xml:1327(para)
-msgid "If you start the burning process without a CD or DVD in the burning device, <application>Brasero</application> will create a image file on the hard disk that you can lately burn."
-msgstr "Grabatze-prozesu bat abiarazten baduzu grabagailuan CD edo DVDrik izan gabe, <application>Brasero</application> programak irudi-fitxategi bat sortuko du disko gogorrean, geroago grabatu ahal izango duzuna."
-
-#: C/brasero.xml:1339(para)
-msgid "From this drop-down list you can only select <guilabel>File image</guilabel>."
-msgstr "Goitibeherako zerrenda honetan, <guilabel>Irudi-fitxategia</guilabel> bakarrik hauta dezakezu."
-
-#: C/brasero.xml:1346(term)
-msgid "Section <guilabel>Label of the disc</guilabel>:"
-msgstr "Atala <guilabel>Diskoaren etiketa</guilabel>:"
-
-#: C/brasero.xml:1350(para)
-msgid "Type the name you want to give to the disc once burned."
-msgstr "Idatzi behin grabatuta diskoari eman nahi diozun izena."
-
-#: C/brasero.xml:1385(para)
-msgid "Click on <guibutton>Properties</guibutton> to open the <guilabel>Disc image file properties</guilabel> dialog. In the <guilabel>Name</guilabel> text box, type the name of the image file, from the <guilabel>Image type</guilabel> drop-down list select the type of image to use."
-msgstr "Egin klik <guibutton>Propietateak</guibutton> aukeran <guilabel>Diskoaren irudi-fitxategien propietateak</guilabel> elkarrizketa-koadroa irekitzeko. <guilabel>Izena</guilabel> testu-koadroan, idatzi irudi-fitxategiaren izena, eta <guilabel>Irudi mota</guilabel> goitibeherako zerrendatik, hautatu erabiliko duzun irudi-mota."
-
-#: C/brasero.xml:1392(para)
-msgid "Once done, click <guibutton>Apply</guibutton>."
-msgstr "Horren ondoren, egin klik <guibutton>Aplikatu</guibutton> aukeran."
-
-#: C/brasero.xml:1401(title)
-msgid "Opening a Saved Project"
-msgstr "Gordetako proiektu bat irekitzea"
-
-#: C/brasero.xml:1407(para)
-msgid "Choose <menuchoice><guimenu>Project</guimenu><guisubmenu>Recent Projects</guisubmenu></menuchoice> and select the project you want to open."
-msgstr "Aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu> Proiektu berrienak</guisubmenu></menuchoice> eta hautatu ireki nahi duzun proiektua."
-
-#: C/brasero.xml:1415(para)
-msgid "From the main window, click on the project you want to open under <guilabel>Choose a recently opened project</guilabel>."
-msgstr "Leiho nagusian, egin klik ireki nahi duzun proiektuan, <guilabel>Aukeratu berriki irekitako proiektu bat</guilabel> aukeraren barruan."
-
-#: C/brasero.xml:1402(para)
-msgid "If you have recently saved a project, you can open it again in one of the following ways: <placeholder-1/>"
-msgstr "Berriki gordetako proiekturen bat berriz ireki nahi baduzu, ondorengo bide hauek dauzkazu: <placeholder-1/>"
-
-#: C/brasero.xml:1423(para)
-msgid "To open a project which does not appear in <guilabel>Recent Projects</guilabel>, choose <menuchoice><guimenu>Project</guimenu><guimenuitem>Open</guimenuitem></menuchoice> and select the project file."
-msgstr "<guilabel>Proiektu berrienak</guilabel> atalean agertzen ez den proiektu bat irekitzeko, aukeratu <menuchoice><guimenu>Proiektua</guimenu><guimenuitem>Ireki</guimenuitem></menuchoice> eta hautatu proiektu-fitxategia."
-
-#: C/brasero.xml:1430(para)
-msgid "Once opened, you can add or remove files from the project, burn it to disc, and then save it again for later use."
-msgstr "Behin irekita, proiektuan fitxategiak gehitu edo kendu ditzakezu, hori diskoan grabatu, eta berriz gorde beranduago erabiltzeko."
-
-#: C/brasero.xml:1437(title)
-msgid "Erasing a CD or DVD"
-msgstr "CD edo DVD bat ezabatzea"
-
-#: C/brasero.xml:1444(para)
-msgid "CD-RW"
-msgstr "CD-RW"
-
-#: C/brasero.xml:1449(para)
-msgid "DVD-RW (single or dual layer)"
-msgstr "DVD-RW (geruza bakarra edo bikoitza)"
-
-#: C/brasero.xml:1454(para)
-msgid "DVD+RW (single or dual layer)"
-msgstr "DVD+RW (geruza bakarra edo bikoitza)"
-
-#: C/brasero.xml:1438(para)
-msgid "Erasing or blanking a CD or DVD means to delete all the data that the CD or the DVD contains. <application>Brasero</application> is able to erase the following CD and DVD formats: <placeholder-1/>"
-msgstr "CD edo DVD bat ezabatuz edo hustuz, CD edo DVD horretako datu guztiak ezabatzen dira. <application>Brasero</application> programa CD eta DVD formatu hauek ezabatzeko gai da: <placeholder-1/>"
-
-#: C/brasero.xml:1460(para)
-msgid "In general, <application>Brasero</application> can support all of the media formats supported by your own CD/DVD recorder."
-msgstr "Orokorrean, <application>Brasero</application> programak zeure CD/DVD grabagailuak onartutako multimedia-formatu guztiak onartzen ditu."
-
-#: C/brasero.xml:1465(para)
-msgid "Make sure that the media you want to erase is erasable. Check the media case for more information."
-msgstr "Ziurtatu ezabatu nahi duzun euskarria ezabagarria dela. Begiratu euskarriaren kaxan informazio gehiago izateko."
-
-#: C/brasero.xml:1474(para)
-msgid "Insert the erasable CD or DVD in your drive."
-msgstr "Sartu CD edo DVD ezabagarria unitatean."
-
-#: C/brasero.xml:1479(para)
-msgid "From the menu bar, choose <menuchoice><guimenu>Tools</guimenu><guimenuitem>Erase...</guimenuitem></menuchoice>. The <guilabel>Disc blanking</guilabel> dialog will be shown."
-msgstr "Menu-barran, aukeratu <menuchoice><guimenu>Tresnak</guimenu><guimenuitem>Ezabatu...</guimenuitem></menuchoice>. <guilabel>Diskoa ezabatzea</guilabel> elkarrizketa-koadroa erakutsiko da."
-
-#: C/brasero.xml:1488(para)
-msgid "From the drop-down list <guilabel>Select a disc</guilabel>, select the disc you want to erase."
-msgstr "Goitibeherako zerrendan, aukeratu <guilabel>Hautatu disko bat</guilabel> ezabatu nahi duzun diskoa hautatzeko."
-
-#: C/brasero.xml:1494(para)
-msgid "If you want to quickly erase the disc, select the <guilabel>fast blanking</guilabel> option (for more information, see <xref linkend=\"brasero-fast-blanking\"/>)."
-msgstr "Diskoa azkar ezabatu nahi baduzu, hautatu <guilabel>huste azkarra</guilabel> aukera (informazio gehiago izateko, ikus <xref linkend=\"brasero-fast-blanking\"/>)."
-
-#: C/brasero.xml:1501(para)
-msgid "Click on <guibutton>Blank</guibutton> to start erasing the CD or DVD."
-msgstr "Egin klik <guibutton>Hustu</guibutton> botoian CDa edo DVDa ezabatzen hasteko."
-
-#: C/brasero.xml:1470(para)
-msgid "To erase a CD-RW or a DVD-RW: <placeholder-1/>"
-msgstr "CD-RW edo DVD-RW bat ezabatzeko: <placeholder-1/>"
-
-#: C/brasero.xml:1509(para)
-msgid "The blanking process will permanently destroy all of the data on the disc."
-msgstr "Huste-prozesuak diskoko datu guztiak betiko suntsituko ditu."
-
-#: C/brasero.xml:1515(title)
-msgid "What is fast blanking?"
-msgstr "Zer da huste azkarra?"
-
-#: C/brasero.xml:1516(para)
-msgid "Fast blanking is a way of quickly erasing a disc. This method is much faster than fully erasing the disc and is sufficient to allow the disc to be written to again."
-msgstr "Huste azkarra disko bat azkar ezabatzeko bide bat da. Metodo hau diskoa erabat ezabatzea baino askoz azkarragoa da eta nahikoa da diskoan berriz grabatu ahal izateko."
-
-#: C/brasero.xml:1521(para)
-msgid "The full erasing procedure is slower but is more secure, as it removes all traces of previous data. Data removed from fast blanked media can still be recovered with special tools."
-msgstr "Erabateko ezabatze-prozesua motelagoa izan arren seguruagoa da, aurreko datuen aztarna guztiak ezabatzen baititu. Azkar hustutako euskarri batetik ezabatutako datuak tresna bereziak erabiliz berreskuratu daitezke."
-
-#: C/brasero.xml:1530(title)
-msgid "Checking the Integrity of a CD or DVD"
-msgstr "CD edo DVD baten osotasuna egiaztatzea"
-
-#: C/brasero.xml:1531(para)
-msgid "Checking the integrity of a CD or DVD makes sure that the files written to the disc are intact and have not been corrupted during the burning process."
-msgstr "CD edo DVD baten osotasuna egiaztatuz, ziurta zaitezke diskoan grabatutako artxiboak ukitu ez direla eta grabatze-prozesuan hondatu ez direla."
-
-#: C/brasero.xml:1536(para)
-msgid "The integrity check is done using the <quote>MD5 digest</quote> algorithm, which creates a <quote>fingerprint</quote> of the data on the media. Each time you burn a CD or DVD, and the <emphasis role=\"strong\">Image checksum</emphasis> plugin is enabled (see <xref linkend=\"brasero-plugins\"/> for more information), <application>Brasero</application> adds a MD5 file to the disc in order to perform integrity checks at a later date."
-msgstr "Osotasunaren egiaztapena <quote>MD5 digest</quote> algoritmoa erabilita egiten da, zeinak euskarriko datuen <quote>hatz-marka</quote> bat sortzen duen. CD edo DVD bat grabatzen duzun bakoitzean, <emphasis role=\"strong\">Irudiaren kontrol-batura </emphasis> plugina gaituta badago (ikus <xref linkend=\"brasero-plugins\"/> informazio gehiago izateko), <application>Brasero</application> aplikazioak MD5 fitxategi bat gehituko dio diskoari, aurrerago osotasun-egiaztapenak egiteko."
-
-#: C/brasero.xml:1545(para)
-msgid "<application>Brasero</application> performs an integrity check after each burning session, checking the automatically generated file. Usually this process is longer than using an external MD5 file."
-msgstr "<application>Brasero</application> aplikazioak osotasun-egiaztapenak egiten ditu grabatze-saio bakoitzaren ondoren, automatikoki sortutako fitxategia egiaztatuz. Normalean prozesu hori kanpoko MD5 fitxategi bat erabiltzea baino luzeagoa da."
-
-#: C/brasero.xml:1554(para)
-msgid "Insert the CD or DVD to be checked into the drive."
-msgstr "Sartu egiaztatu beharreko CDa edo DVDa unitatean."
-
-#: C/brasero.xml:1559(para)
-msgid "From the menu bar, choose <menuchoice><guimenu>Tools</guimenu><guimenuitem>Check Integrity</guimenuitem></menuchoice>, or press <keycombo><keycap>Ctrl</keycap><keycap>F</keycap></keycombo>."
-msgstr "Menu-barran, aukeratu <menuchoice><guimenu>Tresnak</guimenu><guimenuitem>Egiaztatu osotasuna</guimenuitem></menuchoice>, edo sakatu <keycombo><keycap>Ktrl</keycap><keycap>F</keycap></keycombo>."
-
-#: C/brasero.xml:1575(para)
-msgid "Select the <guilabel>Use a md5 file to check the disc</guilabel> option to use an MD5 file."
-msgstr "Hautatu <guilabel>Erabili md5 fitxategi bat diskoa egiaztatzeko</guilabel> aukera MD5 fitxategi bat erabiltzeko."
-
-#: C/brasero.xml:1581(para)
-msgid "Click on the <guilabel>None</guilabel> button under the previously mentioned option and select an MD5 file, usually ending with the <filename>.md5</filename> extension."
-msgstr "Egin klik <guilabel>Bat ere ez</guilabel> botoian, aurretik aipatutako aukeraren barruan, eta hautatu MD5 fitxategi bat, normalean <filename>.md5</filename> luzapenarekin amaitzen dena."
-
-#: C/brasero.xml:1570(para)
-msgid "You can check the integrity by using a MD5 file or by letting <application>Brasero</application> automatically perform a check on the media. <placeholder-1/>"
-msgstr "Osotasuna egiazta dezakezu MD5 fitxategi bat erabiliz edo <application>Brasero</application> aplikazioari euskarriaren egiaztapena automatikoki egiten utziz. <placeholder-1/>"
-
-#: C/brasero.xml:1592(para)
-msgid "Click on the <guibutton>Check</guibutton> button to start the integrity check."
-msgstr "Egin klik <guibutton>Egiaztatu</guibutton> botoian osotasunaren egiaztapena abiarazteko."
-
-#: C/brasero.xml:1550(para)
-msgid "To check the integrity of a disc: <placeholder-1/>"
-msgstr "Disko baten osotasuna egiaztatzea: <placeholder-1/>"
-
-#: C/brasero.xml:1599(para)
-msgid "If the integrity check is successful, <application>Brasero</application> will notify you with a <guilabel>File integrity check success</guilabel> dialog; otherwise, the <guilabel>File integrity check error</guilabel> dialog will be displayed."
-msgstr "Osotasunaren egiaztapena behar bezala egiten bada, <application>Brasero</application> aplikazioak <guilabel>Fitxategien osotasuna behar bezala egiaztatu da</guilabel> dioen elkarrizketa-koadroarekin jakinaraziko dizu; bestela, <guilabel>Errorea gertatu da fitxategien osotasuna egiaztatzean</guilabel> dioen elkarrizketa-koadroa bistaratuko da."
-
-#: C/brasero.xml:1608(title)
-msgid "Cover Editor"
-msgstr "Azal-editorea"
-
-#: C/brasero.xml:1609(para)
-msgid "<application>Brasero</application> has a cover editor for creating covers for your CDs or DVDs. To open the cover editor, choose <menuchoice><guimenu>Tools</guimenu><guimenuitem>Cover Editor</guimenuitem></menuchoice>."
-msgstr "<application>Brasero</application> aplikazioak azal-editore bat dauka zure CD eta DVDentzako azalak sortzeko. Azal-editorea irekitzeko, aukeratu <menuchoice><guimenu>Tresnak</guimenu><guimenuitem>Azal-editorea</guimenuitem></menuchoice>."
-
-#: C/brasero.xml:1616(para)
-msgid "The cover editor lets you select the font, the alignment and the colors for all the texts and the background properties of front and the back cover."
-msgstr "Azal-editoreari esker, testu guztien letra-tipoa, lerrokatzea eta koloreak eta aurreko eta atzeko azalen atzeko planoko propietateak hautatu ditzakezu."
-
-#: C/brasero.xml:1621(para)
-msgid "To set the properties of the covers, right-click on one of the covers and choose <guimenuitem>Set background properties</guimenuitem> to open the <guilabel>Background Properties</guilabel> dialog."
-msgstr "Azalen propietateak ezartzeko, egin klik eskuineko botoiarekin azaletako batean eta aukeratu<guimenuitem>Ezarri atzeko planoko propietateak</guimenuitem> <guilabel>Atzeko planoko propietateak</guilabel> elkarrizketa-koadroa irekitzeko."
-
-#: C/brasero.xml:1627(para)
-msgid "It is possible to fill the background with an image or with a color or gradient."
-msgstr "Atzeko planoa irudi batekin edo kolore edo gradiente batekin bete daiteke."
-
-#: C/brasero.xml:1635(para)
-msgid "From <guilabel>Image path</guilabel> select the image from you hard disk."
-msgstr "<guilabel>Irudiaren bide-izena</guilabel> aukeran, hautatu disko gogorrean dagoen irudi bat."
-
-#: C/brasero.xml:1641(para)
-msgid "From the <guilabel>Image style</guilabel> drop-down list select how you want the image to be positioned."
-msgstr "<guilabel>Irudiaren estiloa</guilabel> goitibeherako zerrendan, hautatu irudia nola kokatu nahi duzun."
-
-#: C/brasero.xml:1631(para)
-msgid "To set an image as the background: <placeholder-1/>"
-msgstr "Irudi bat atzeko plano gisa ezartzea: <placeholder-1/>"
-
-#: C/brasero.xml:1652(para)
-msgid "From the <guilabel>Color</guilabel> drop-down list select the kind of fill you want to use for the background."
-msgstr "<guilabel>Kolorea</guilabel> goitibeherako zerrendan, hautatu atzeko planoan erabili nahi duzun betegarri mota."
-
-#: C/brasero.xml:1658(para)
-msgid "Use the button on the right to open the <guilabel>Pick a Color</guilabel> dialog to select the color."
-msgstr "Erabili eskuineko botoia, <guilabel>Aukeratu kolorea</guilabel> elkarrizketa-koadroa irekitzeko eta kolorea hautatzeko."
-
-#: C/brasero.xml:1665(para)
-msgid "If you select a gradient, there will be two buttons for the color chooser. The one on the left is the starting point of the gradient, the one on the right the end point."
-msgstr "Gradiente bat hautatzen baduzu, bi botoi egongo dira kolore-hautatzailearentzat. Ezkerrekoa gradientearen hasiera-puntua da, eta eskuinekoa amaiera-puntua."
-
-#: C/brasero.xml:1648(para)
-msgid "To fill the background with a color or gradient: <placeholder-1/><placeholder-2/>"
-msgstr "Atzeko planoa kolore edo gradiente batekin betetzea: <placeholder-1/><placeholder-2/>"
-
-#: C/brasero.xml:1675(title) C/brasero.xml:1690(title)
-msgid "Plugins"
-msgstr "Pluginak"
-
-#: C/brasero.xml:1676(para)
-msgid "<application>Brasero</application> can use different plugins to perform different tasks. There are several plugins you can choose from."
-msgstr "<application>Brasero</application> aplikazioak hainbat motatako pluginak erabil ditzake hainbat motatako zereginak egiteko. Hainbat pluginen artean hauta dezakezu."
-
-#: C/brasero.xml:1680(para)
-msgid "To view the available plugins, choose <menuchoice><guimenu>Edit</guimenu><guimenuitem>Plugins</guimenuitem></menuchoice>. The plugins that you can use are:"
-msgstr "Erabil daitezkeen pluginak ikusteko, aukeratu <menuchoice><guimenu>Editatu</guimenu><guimenuitem>Pluginak</guimenuitem></menuchoice>. Plugin hauek erabil ditzakezu:"
-
-#: C/brasero.xml:1694(entry)
-msgid "Plugin Name"
-msgstr "Pluginaren izena"
-
-#: C/brasero.xml:1695(entry)
-msgid "Description"
-msgstr "Azalpena"
-
-#: C/brasero.xml:1700(guilabel)
-msgid "CD/DVD Creator Folder"
-msgstr "CD/DVD sortzailearen karpeta"
-
-#: C/brasero.xml:1703(filename)
-msgid "CD/DVD Creator"
-msgstr "CD/DVD sortzailea"
-
-#: C/brasero.xml:1703(application)
-msgid "Nautilus"
-msgstr "Nautilus"
-
-#: C/brasero.xml:1701(entry)
-msgid "Enalbes <placeholder-1/> to burn files stored in the <placeholder-2/> folder of <placeholder-3/>."
-msgstr "<placeholder-1/> <placeholder-3/>(e)ko <placeholder-2/> karpetan gordetako fitxategiak grabatzeko gaitzen du."
-
-#: C/brasero.xml:1707(guilabel)
-msgid "File Checksum"
-msgstr "Fitxategien kontrol-batura"
-
-#: C/brasero.xml:1708(entry)
-msgid "Enables <placeholder-1/> to check the integrity of files."
-msgstr "<placeholder-1/> fitxategien osotasuna egiaztatzeko gaitzen du."
-
-#: C/brasero.xml:1713(guilabel)
-msgid "File Downloader"
-msgstr "Fitxategien deskargatzailea"
-
-#: C/brasero.xml:1714(entry)
-msgid "Enables <placeholder-1/> to burn files which are not stored locally."
-msgstr "<placeholder-1/> lokalki gordeta ez dauden fitxategiak grabatzeko gaitzen du."
-
-#: C/brasero.xml:1719(guilabel)
-msgid "Image Checksum"
-msgstr "Irudien kontrol-batura"
-
-#: C/brasero.xml:1720(entry)
-msgid "Enables <placeholder-1/> to perform integrity checks on discs after they have been burnt. Also enables the writing of a small file which holds the MD5 sum of all the files on the disc."
-msgstr "<placeholder-1/> diskoak grabatu ondoren haien osotasuna egiaztatzeko gaitzen du. Halaber, diskoko fitxategi guztien MD5 batura barne hartzen duen fitxategi bat idazteko gaitzen du."
-
-#: C/brasero.xml:1728(guilabel)
-msgid "Normalize"
-msgstr "Normalizatu"
-
-#: C/brasero.xml:1729(entry)
-msgid "Enables <placeholder-1/> to set consistent sound levels between tracks."
-msgstr "<placeholder-1/> pisten arteko soinu-maila koherenteak ezartzeko gaitzen du."
-
-#: C/brasero.xml:1737(para)
-msgid "To enable or disable a plugin, select the check box next to its name in the <guilabel>Enabled</guilabel> column."
-msgstr "Plugin bat gaitzeko edo desgaitzeko, hautatu izenaren ondoan duen kontrol-laukia <guilabel>Gaituta</guilabel> zutabean."
-
-#: C/brasero.xml:1747(para)
-msgid "Select one of the two plugins and click on <guibutton>Configure</guibutton>."
-msgstr "Hautatu bi pluginetako bat, eta egin klik <guibutton>Konfiguratu</guibutton> botoian."
-
-#: C/brasero.xml:1759(para)
-msgid "MD5"
-msgstr "MD5"
-
-#: C/brasero.xml:1764(para)
-msgid "SHA1"
-msgstr "SHA1"
-
-#: C/brasero.xml:1769(para)
-msgid "SHA256"
-msgstr "SHA256"
-
-#: C/brasero.xml:1753(para)
-msgid "From the <guilabel>Hashing algorithm to be used</guilabel> drop-down list select the algorithm you want to use. The possible values are: <placeholder-1/>"
-msgstr "<guilabel>Erabili beharreko hash algoritmoa </guilabel> goitibeherako zerrendatik, hautatu erabili nahi duzun algoritmoa. Hauek dira balio posibleak: <placeholder-1/>"
-
-#: C/brasero.xml:1741(para)
-msgid "With the <guilabel>File Checksum</guilabel> and <guilabel>Image Checksum</guilabel> plugins you can choose which algorithm to use: <placeholder-1/>"
-msgstr "<guilabel>Fitxategien kontrol-batura</guilabel> eta <guilabel>Irudien kontrol-batura</guilabel> pluginekin, erabili nahi duzun algoritmoa aukera dezakezu: <placeholder-1/>"
-
-#: C/brasero.xml:1781(para)
-msgid "In order to use some of the plugins listed here, it may be necessary to install further applications on your system. See your operating system documentation for more information."
-msgstr "Hemen zerrendatutako pluginetako batzuk erabiltzeko, beharrezkoa izan liteke sisteman beste aplikazio batzuk instalatzea. Ikus sistema eragilearen dokumentazioa informazio gehiago izateko."
-
-#. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2
-#: C/brasero.xml:0(None)
-msgid "translator-credits"
-msgstr "Hizkuntza Politikarako Sailburuordetza <hizkpol@ej-gv.es>, 2011"
 
+#. (itstool) path: note/p
+#: C/split-track.page:61
+msgid ""
+"If you try to split a track into a section less than six seconds long, the "
+"new section will be padded to make it 6 seconds long."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/split-track.page:68
+msgid "Click <gui>OK</gui> to confirm your track splits and apply the changes."
+msgstr ""
+
+#. (itstool) path: note/p
+#: C/split-track.page:70
+msgid ""
+"You can split and merge the same track as many times as you like while you "
+"are viewing the split track dialog. Once you confirm your track splitting by "
+"clicking <gui>OK</gui>, you will no longer be able to merge the sections you "
+"have already split off. To revert the changes, remove the split sections of "
+"the track from your project and re-add the track."
+msgstr ""
+
+#. (itstool) path: info/desc
+#: C/tools-blank.page:7
+msgid "Erase a rewritable CD or DVD by blanking it."
+msgstr ""
+
+#. (itstool) path: page/title
+#: C/tools-blank.page:17
+msgid "Blank a disc"
+msgstr "Hustu diskoa"
+
+#. (itstool) path: page/p
+#: C/tools-blank.page:19
+msgid ""
+"You can prepare a rewritable disc, with existing data on it, for writing by "
+"blanking it."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-blank.page:24
+msgid "Select <guiseq><gui>Tools</gui><gui>Blank...</gui></guiseq>."
+msgstr "Hautatu <guiseq><gui>Tresnak</gui><gui>Hustu...</gui></guiseq>."
+
+#. (itstool) path: item/p
+#: C/tools-blank.page:27
+msgid ""
+"If you have more than one disc drive with a rewritable disc in it, you can "
+"select which disc to rewrite under <gui>Select a disc</gui>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-blank.page:31
+msgid "You can select <gui>Fast blanking</gui> to blank the CD quicker."
+msgstr "<gui>Huste bizkorra</gui> erabili daiteke CDa azkarrago husteko."
+
+#. (itstool) path: note/p
+#: C/tools-blank.page:33
+msgid ""
+"If you have problems writing to a disc which you fast blanked, try disabling "
+"fast blanking and blank it again."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-blank.page:38
+msgid "Click <gui>Blank</gui> to continue."
+msgstr "Egin klik <gui>Hustu</gui> aukeran jarraitzeko."
+
+#. (itstool) path: item/p
+#: C/tools-blank.page:41
+msgid "The disc may be ejected when the blanking is complete."
+msgstr "Diskoa agian kanporatu egingo da hustea amaitzen denean."
+
+#. (itstool) path: info/desc
+#: C/tools-check-integrity.page:7
+msgid "You can test out a disc integrity after burning it."
+msgstr ""
+
+#. (itstool) path: credit/name
+#: C/tools-check-integrity.page:9
+msgid "Paulina Gonzalez"
+msgstr "Paulina Gonzalez"
+
+#. (itstool) path: page/title
+#: C/tools-check-integrity.page:21
+msgid "Check disc integrity"
+msgstr "Egiaztatu diskoaren osotasuna"
+
+#. (itstool) path: page/p
+#: C/tools-check-integrity.page:23
+msgid ""
+"After burning a CD/DVD by using <app>Brasero</app>, you can check its "
+"integrity to make sure that the files in the disc are not corrupted."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:27
+msgid "Select <guiseq><gui>Tools</gui><gui>Check Integrity...</gui></guiseq>."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:30
+msgid ""
+"You can select the option <gui>Use an MD5 file to check the disk.</gui> if "
+"you prefer it."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:33
+msgid ""
+"An MD5 (Message-Digest Algorithm 5) is a cryptographic hash function widely "
+"used for checking data integrity."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:34
+msgid ""
+"If you choose this option, you will have to find the MD5 file by clicking in "
+"the folder icon placed below."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:39
+msgid "Press <gui>Check</gui> to continue or <gui>Close</gui> to cancel it."
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/tools-check-integrity.page:42
+msgid ""
+"When the checking is finished you can either choose to <gui>Check Again</"
+"gui> or just <gui>Close</gui>."
+msgstr ""
+
+#~ msgid ""
+#~ "@@image: 'figures/brasero_main.png'; md5=dfc32ea3caef05364043a4529125d2e2"
+#~ msgstr ""
+#~ "@@irudia: 'figures/brasero_main.png'; md5=dfc32ea3caef05364043a4529125d2e2"
+
+#~ msgid "<application>Brasero</application> Manual V2.2"
+#~ msgstr "<application>Brasero</application> eskuliburua, 2.2 bertsioa"
+
+#~ msgid "Brasero is an application for burning CDs and DVDs."
+#~ msgstr "Brasero CDak eta DVDak grabatzeko aplikazio bat da."
+
+#~ msgid "2008"
+#~ msgstr "2008"
+
+#~ msgid "2009"
+#~ msgstr "2009"
+
+#~ msgid "Ubuntu Documentation Project"
+#~ msgstr "Ubunturen dokumentazio-proiektua"
+
+#~ msgid ""
+#~ "Permission is granted to copy, distribute and/or modify this document "
+#~ "under the terms of the GNU Free Documentation License (GFDL), Version 1.1 "
+#~ "or any later version published by the Free Software Foundation with no "
+#~ "Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. You "
+#~ "can find a copy of the GFDL at this <ulink type=\"help\" url=\"ghelp:fdl"
+#~ "\">link</ulink> or in the file COPYING-DOCS distributed with this manual."
+#~ msgstr ""
+#~ "Baimena ematen da dokumentu hau kopiatu, banatu eta/edo aldatzeko Free "
+#~ "Software Foundation-ek argitaratutako GNU Dokumentazio Librearen "
+#~ "Lizentziaren 1.1. bertsioan edo berriago batean ezarritako baldintzak "
+#~ "betetzen badira; Atal Aldaezinik, Aurreko azaleko testurik eta Atzeko "
+#~ "azaleko testurik gabe. GFDL lizentziaren kopia <ulink type=\"help\" url="
+#~ "\"ghelp:fdl\">esteka</ulink> honetan edo eskuliburu honekin batera ematen "
+#~ "den COPYING-DOCS fitxategian aurkituko duzu."
+
+#~ msgid ""
+#~ "This manual is part of a collection of GNOME manuals distributed under "
+#~ "the GFDL. If you want to distribute this manual separately from the "
+#~ "collection, you can do so by adding a copy of the license to the manual, "
+#~ "as described in section 6 of the license."
+#~ msgstr ""
+#~ "Eskuliburu hau GFDL lizentziarekin banatzen diren GNOME eskuliburuen "
+#~ "bildumakoa da. Eskuliburu hau bildumatik bereizita banatu nahi baduzu, "
+#~ "bana dezakezu, baina eskuliburuari lizentziaren kopia bat gehitu beharko "
+#~ "diozu, lizentzian bertan 6. atalean azaltzen den bezala."
+
+#~ msgid ""
+#~ "Many of the names used by companies to distinguish their products and "
+#~ "services are claimed as trademarks. Where those names appear in any GNOME "
+#~ "documentation, and the members of the GNOME Documentation Project are "
+#~ "made aware of those trademarks, then the names are in capital letters or "
+#~ "initial capital letters."
+#~ msgstr ""
+#~ "Enpresek euren produktu eta zerbitzuak bereizteko erabiltzen dituzten "
+#~ "izen asko marka erregistratu moduan hartu behar dira. Izen horiek "
+#~ "GNOMEren edozein agiritan agertzen direnean, eta GNOMEren Dokumentazio "
+#~ "Proiektuko kideak marka komertzialak direla konturatu badira, orduan izen "
+#~ "horiek maiuskulaz idatzita egongo dira, osorik edo hasierako letra "
+#~ "maiuskulaz jarrita."
+
+#~ msgid ""
+#~ "DOCUMENT IS PROVIDED ON AN \"AS IS\" BASIS, WITHOUT WARRANTY OF ANY KIND, "
+#~ "EITHER EXPRESSED OR IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTIES "
+#~ "THAT THE DOCUMENT OR MODIFIED VERSION OF THE DOCUMENT IS FREE OF DEFECTS "
+#~ "MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE "
+#~ "RISK AS TO THE QUALITY, ACCURACY, AND PERFORMANCE OF THE DOCUMENT OR "
+#~ "MODIFIED VERSION OF THE DOCUMENT IS WITH YOU. SHOULD ANY DOCUMENT OR "
+#~ "MODIFIED VERSION PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL "
+#~ "WRITER, AUTHOR OR ANY CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY "
+#~ "SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES "
+#~ "AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY DOCUMENT OR MODIFIED "
+#~ "VERSION OF THE DOCUMENT IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS "
+#~ "DISCLAIMER; AND"
+#~ msgstr ""
+#~ "DOKUMENTUA \"DAGOEN-DAGOENEAN\" EMATEN DA, INOLAKO BERMERIK GABE, EZ "
+#~ "ESPRESUKI ADIERAZITAKORIK ETA EZ INPLIZITURIK ERE; BESTEAK BESTE (MUGARIK "
+#~ "GABE), EZ DA BERMATZEN DOKUMENTUA EDO BERTSIO ALDATUA AKATSIK GABEA "
+#~ "DENIK, MERKATURATZEKO EDO XEDE JAKIN BATERAKO EGOKIA DENIK EDO ARAURIK "
+#~ "HAUSTEN EZ DUENIK. DOKUMENTUAREN EDO DOKUMENTUAREN BERTSIO ALDATUAREN "
+#~ "KALITATEARI, ZEHAZTASUNARI ETA PERFORMANTZIARI BURUZKO ERANTZUKIZUN OSOA "
+#~ "ZUREA DA. DOKUMENTUREN BATEK EDO BERTSIO ALDATUREN BATEK EDOZEIN MOTATAKO "
+#~ "AKATSIK IZANEZ GERO, ZUK (EZ HASIERAKO IDAZLEAK, EZ EGILEAK ETA EZ INONGO "
+#~ "KOLABORATZAILEK) ZEURE GAIN HARTU BEHARKO DUZU BERRIKUSTEKO, KONPONTZEKO "
+#~ "EDO ZUZENTZEKO BEHARREZKO ZERBITZU GUZTIEN KOSTUA. BERME-UKATZE HAU "
+#~ "LIZENTZIA HONEN FUNTSEZKO ZATIA DA. EZ DA BAIMENIK EMATEN EZEIN DOKUMENTU "
+#~ "EDO BERTSIO ALDATU ERABILTZEKO, BALDIN ETA EZ BADA BERME-UKATZE HAU "
+#~ "ONARTZEN."
+
+#~ msgid ""
+#~ "UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY, WHETHER IN TORT "
+#~ "(INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL THE AUTHOR, INITIAL "
+#~ "WRITER, ANY CONTRIBUTOR, OR ANY DISTRIBUTOR OF THE DOCUMENT OR MODIFIED "
+#~ "VERSION OF THE DOCUMENT, OR ANY SUPPLIER OF ANY OF SUCH PARTIES, BE "
+#~ "LIABLE TO ANY PERSON FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR "
+#~ "CONSEQUENTIAL DAMAGES OF ANY CHARACTER INCLUDING, WITHOUT LIMITATION, "
+#~ "DAMAGES FOR LOSS OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR "
+#~ "MALFUNCTION, OR ANY AND ALL OTHER DAMAGES OR LOSSES ARISING OUT OF OR "
+#~ "RELATING TO USE OF THE DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT, "
+#~ "EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH "
+#~ "DAMAGES."
+#~ msgstr ""
+#~ "EZINGO DA INONGO ZIRKUNSTANTZIA EDO LEGE-TEORIARIK OINARRI HARTU --EZ "
+#~ "ERANTZUKIZUN ZIBILARI BURUZKORIK (ZABARKERIA BARNE HARTUTA) EZ "
+#~ "KONTRATUARI BURUZKORIK, EZ BESTERIK-- DOKUMENTU HONEN EDO BERTSIO ALDATU "
+#~ "BATEN EGILEA, HASIERAKO IDAZLEA, EDOZEIN KOLABORATZAILE EDO BANATZAILE, "
+#~ "EDO ALDERDI HORIEN EDOZEIN HORNITZAILE BESTE PERTSONA BATEN AURREAN "
+#~ "ERANTZULE EGITEKO, PERTSONA HORREK EDOZEIN MOTATAKO KALTE ZUZENEKO, "
+#~ "ZEHARKAKO, BEREZI, INTZIDENTAL EDO ONDORIOZKOAK JASAN DITUELAKO, BESTEAK "
+#~ "BESTE (MUGARIK GABE), BEZEROAK GALTZEAREN, LANA ETEN BEHARRAREN, "
+#~ "ORDENAGAILUAK EZ IBILTZEAREN EDO GAIZKI IBILTZEAREN ONDORIOZKO KALTEAK, "
+#~ "EDO DOKUMENTUA NAHIZ HAREN BERTSIO ALDATUAK ERABILTZETIK ONDORIOZTATZEN "
+#~ "DIREN EDO ERABILERA HORREKIN ZERIKUSIA DUEN EDOZEIN KALTE EDO GALERA, "
+#~ "ALDERDIARI KALTE HORIEK GERTA ZITEZKEELA ADITZERA EMAN BAZAIO ERE."
+
+#~ msgid ""
+#~ "DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED UNDER THE "
+#~ "TERMS OF THE GNU FREE DOCUMENTATION LICENSE WITH THE FURTHER "
+#~ "UNDERSTANDING THAT: <placeholder-1/>"
+#~ msgstr ""
+#~ "DOKUMENTUA ETA DOKUMENTUAREN BERTSIO ALDATUAK GNU DOKUMENTAZIO LIBREAREN "
+#~ "LIZENTZIAREN BALDINTZEN ARABERA EMATEN DIRA, ETA ONDOREN ZEHAZTEN DIRENAK "
+#~ "ONARTZERA BEHARTZEN DUTE: <placeholder-1/>"
+
+#~ msgid "Milo"
+#~ msgstr "Milo"
+
+#~ msgid "Casagrande"
+#~ msgstr "Casagrande"
+
+#~ msgid "milo@ubuntu.com"
+#~ msgstr "milo@ubuntu.com"
+
+#~ msgid "Andrew"
+#~ msgstr "Andrew"
+
+#~ msgid "Stabeno"
+#~ msgstr "Stabeno"
+
+#~ msgid "stabeno@gmail.com"
+#~ msgstr "stabeno@gmail.com"
+
+#~ msgid "Phil"
+#~ msgstr "Phil"
+
+#~ msgid "Bull"
+#~ msgstr "Bull"
+
+#~ msgid "philbull@gmail.com"
+#~ msgstr "philbull@gmail.com"
+
+#~ msgid "Brasero Manual V2.2"
+#~ msgstr "Braseroren eskuliburua, 2.2 bertsioa"
+
+#~ msgid "January 2009"
+#~ msgstr "2009ko urtarrila"
+
+#~ msgid "Milo Casagrande <email>milo@ubuntu.com</email>"
+#~ msgstr "Milo Casagrande <email>milo@ubuntu.com</email>"
+
+#~ msgid "Brasero Manual V2.1"
+#~ msgstr "Braseroren eskuliburua, 2.1 bertsioa"
+
+#~ msgid "August 2008"
+#~ msgstr "2008ko abuztua"
+
+#~ msgid "Brasero Manual V2.0"
+#~ msgstr "Braseroren eskuliburua, 2.0 bertsioa"
+
+#~ msgid "February 2008"
+#~ msgstr "2008ko otsaila"
+
+#~ msgid "Andrew Stabeno <email>stabeno@gmail.com</email>"
+#~ msgstr "Andrew Stabeno <email>stabeno@gmail.com</email>"
+
+#~ msgid "Phil Bull <email>philbull@gmail.com</email>"
+#~ msgstr "Phil Bull <email>philbull@gmail.com</email>"
+
+#~ msgid "This manual describes version 2.26 of Brasero."
+#~ msgstr "Eskuliburu honetan Braseroren 2.26 bertsioa azaltzen da."
+
+#~ msgid "Feedback"
+#~ msgstr "Oharra"
+
+#~ msgid ""
+#~ "To report a bug or make a suggestion regarding the <application>Brasero</"
+#~ "application> application or this manual, follow the directions in the "
+#~ "<ulink url=\"ghelp:gnome-feedback\" type=\"help\">GNOME Feedback Page</"
+#~ "ulink>."
+#~ msgstr ""
+#~ "<application>Brasero</application> aplikazioari edo eskuliburu honi "
+#~ "buruzko akatsen berri emateko edo oharrak bidaltzeko, <ulink url=\"ghelp:"
+#~ "gnome-feedback\" type=\"help\">GNOMEra oharrak bidaltzeko orrian</ulink> "
+#~ "aurkituko dituzu argibideak."
+
+#~ msgid "Brasero"
+#~ msgstr "Brasero"
+
+#~ msgid "brasero"
+#~ msgstr "brasero"
+
+#~ msgid "burn"
+#~ msgstr "grabatu"
+
+#~ msgid "burning CD DVD"
+#~ msgstr "CDak/DVDak grabatzea"
+
+#~ msgid "Getting Started"
+#~ msgstr "Erabiltzen hasteko"
+
+#~ msgid "Starting Brasero"
+#~ msgstr "Brasero abiaraztea"
+
+#~ msgid ""
+#~ "You can start <application>Brasero</application> in the following ways:"
+#~ msgstr ""
+#~ "Ondorengo modu hauetan abiaraz dezakezu <application>Brasero</"
+#~ "application>:"
+
+#~ msgid "<guimenu>Applications</guimenu> menu"
+#~ msgstr "<guimenu>Aplikazioak</guimenu> menua"
+
+#~ msgid ""
+#~ "Choose <menuchoice><guisubmenu>Sound &amp; Video</"
+#~ "guisubmenu><guimenuitem>Brasero Disc Burning</guimenuitem></menuchoice>."
+#~ msgstr ""
+#~ "Aukeratu <menuchoice><guisubmenu>Soinua eta bideoa</"
+#~ "guisubmenu><guimenuitem>Brasero disko grabatzailea</guimenuitem></"
+#~ "menuchoice>."
+
+#~ msgid "Command line"
+#~ msgstr "Komando-lerroa"
+
+#~ msgid ""
+#~ "Type <command>brasero</command> and then press <keycap>Return</keycap>."
+#~ msgstr ""
+#~ "Idatzi <command>brasero</command> eta sakatu <keycap>Sartu</keycap>."
+
+#~ msgid ""
+#~ "If <application>Brasero</application> is set as your default disc burning "
+#~ "application, it will automatically start when you insert a blank CD-R/W "
+#~ "or DVD-R/W in your drive."
+#~ msgstr ""
+#~ "<application>Brasero</application> diskoak grabatzeko aplikazio lehenetsi "
+#~ "gisa ezarria baduzu, automatikoki abiaraziko da, unitatean CD-R, CD-RW, "
+#~ "DVD-R edo DVD-RW huts bat sartzen duzunean."
+
+#~ msgid "When You Start Brasero"
+#~ msgstr "Brasero abiaraztean"
+
+#~ msgid ""
+#~ "When you start <application>Brasero</application> the following window "
+#~ "will be shown."
+#~ msgstr ""
+#~ "<application>Brasero</application> abiarazten duzunean, ondorengo leihoa "
+#~ "erakutsiko da."
+
+#~ msgid ""
+#~ "The Brasero main window. Shows the menu bar and the five types of project "
+#~ "to choose from."
+#~ msgstr ""
+#~ "Brasero leiho nagusiak menu-barra eta aukeratzeko bost proiektu motak "
+#~ "erakusten ditu."
+
+#~ msgid ""
+#~ "This window is the starting point for all of your projects. You can click "
+#~ "on the project type you wish to start from here. If you have created "
+#~ "other projects with <application>Brasero</application>, you will be able "
+#~ "to select them from the <guilabel>Choose a recently opened project</"
+#~ "guilabel> (see <xref linkend=\"brasero-open-recent-project\"/> for more "
+#~ "information)."
+#~ msgstr ""
+#~ "Leiho hau zure proiektu guztietarako hasiera-puntua da. Nahi duzun "
+#~ "proiektu motan klik egin dezakezu hemendik hasteko. <application>Brasero</"
+#~ "application> erabiliz beste proiekturik sortu baduzu, horiek hautatzeko "
+#~ "joan <guilabel>Aukeratu berriki irekitako proiektu bat</guilabel> "
+#~ "aukerara (ikus <xref linkend=\"brasero-open-recent-project\"/> informazio "
+#~ "gehiago izateko)."
+
+#~ msgid ""
+#~ "The following section explains the five types of project that you can "
+#~ "create with <application>Brasero</application>."
+#~ msgstr ""
+#~ "Ondorengo atalak <application>Braserorekin</application> sor ditzakezun "
+#~ "bost proiektu motak azaltzen ditu."
+
+#~ msgid "Audio Project"
+#~ msgstr "Audio-proiektua"
+
+#~ msgid ""
+#~ "This section explains how to create an audio CD. This project takes "
+#~ "selected audio files, converts them to a raw audio format and burns them "
+#~ "to a CD which standard CD players can play."
+#~ msgstr ""
+#~ "Atal honek audioko CD bat nola sortu azaltzen du. Proiektu honek hautatu "
+#~ "diren audioko fitxategiak hartzen ditu, raw audio-formatu batera "
+#~ "bihurtzen ditu, eta CD erreproduzigailu estandarrek erreproduzi dezaketen "
+#~ "CD batean grabatzen ditu."
+
+#~ msgid "Insert a blank CD-R into your drive."
+#~ msgstr "Sartu CD-R huts bat unitatean."
+
+#~ msgid ""
+#~ "In the pane on the left of the window, select <guilabel>Browse the file "
+#~ "system </guilabel> from the drop-down list at the top and browse to the "
+#~ "music files you want to add to your project."
+#~ msgstr ""
+#~ "Leihoaren ezkerraldean dagoen panelean, hautatu <guilabel>Arakatu "
+#~ "fitxategi-sistema</guilabel> goiko goitibeherako zerrendan, eta arakatu "
+#~ "zure proiektuan gehitu nahi dituzun musika-fitxategietara."
+
+#~ msgid ""
+#~ "You can also select the <guilabel>Search files using keywords</guilabel> "
+#~ "option to search for music files or the <guilabel>Display playlists and "
+#~ "their contents </guilabel> option to select music from playlists on your "
+#~ "computer."
+#~ msgstr ""
+#~ "<guilabel>Bilatu fitxategiak gako-hitzak erabiliz</guilabel> aukera ere "
+#~ "hauta dezakezu musika-fitxategiak bilatzeko, edo <guilabel>Bistaratu "
+#~ "erreprodukzio-zerrendak eta horien edukiak </guilabel> aukera, "
+#~ "ordenagailuan erreprodukzio-zerrendetako musika hautatzeko."
+
+#~ msgid ""
+#~ "If you don't see the pane on the left, choose <menuchoice><guimenu>View</"
+#~ "guimenu><guimenuitem>Show side panel</guimenuitem></menuchoice> or press "
+#~ "<keycap>F7</keycap>."
+#~ msgstr ""
+#~ "Ezkerraldean panela ikusten ez baduzu, aukeratu "
+#~ "<menuchoice><guimenu>Ikusi</guimenu><guimenuitem>Erakutsi alboko panela</"
+#~ "guimenuitem></menuchoice> edo sakatu <keycap>F7</keycap>."
+
+#~ msgid ""
+#~ "Select the files you want by double-clicking on them or by selecting them "
+#~ "and clicking the <guibutton>Add</guibutton> button at the top left of the "
+#~ "toolbar."
+#~ msgstr ""
+#~ "Hautatu zuk nahi dituzun fitxategiak haietan klik bikoitza eginez edo "
+#~ "haiek hautatuz eta tresna-barran goian ezkerrean dagoen "
+#~ "<guibutton>Gehitu</guibutton> botoia sakatuz."
+
+#~ msgid ""
+#~ "It is possible now to <link linkend=\"brasero-audio-pause\">insert a "
+#~ "pause</link> after each of the tracks or <link linkend=\"brasero-audio-"
+#~ "split\">to split</link> the tracks."
+#~ msgstr ""
+#~ "Orain posible da pista bakoitzaren ondoren <link linkend=\"brasero-audio-"
+#~ "pause\">geldialdi bat sartzea</link> edo pistak <link linkend=\"brasero-"
+#~ "audio-split\">zatitzea</link>."
+
+#~ msgid ""
+#~ "When all of the files have been added, click on <guibutton>Burn</"
+#~ "guibutton>."
+#~ msgstr ""
+#~ "Fitxategi guztiak gehitu ondoren, egin klik <guibutton>Grabatu</"
+#~ "guibutton> aukeran."
+
+#~ msgid ""
+#~ "In the text box, enter the title you want to give to the disc. This title "
+#~ "will be shown as the name of the disc."
+#~ msgstr ""
+#~ "Testu-koadroan, idatzi diskoari eman nahi diozun titulua. Titulu hau "
+#~ "diskoaren izen gisa erakutsiko da."
+
+#~ msgid ""
+#~ "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make "
+#~ "any desired modifications (see <xref linkend=\"brasero-audio-project-"
+#~ "options\"/>)."
+#~ msgstr ""
+#~ "<guilabel>Diskoak grabatzeko konfigurazioa</guilabel> elkarrizketa-"
+#~ "koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend="
+#~ "\"brasero-audio-project-options\"/>)."
+
+#~ msgid "Click on <guibutton>Burn</guibutton> to start the burning process."
+#~ msgstr ""
+#~ "Egin klik <guibutton>Grabatu</guibutton> aukeran grabatze-prozesua "
+#~ "abiarazteko."
+
+#~ msgid "To burn an audio CD proceed as follows: <placeholder-1/>"
+#~ msgstr "Audioko CD bat grabatzeko jarraibideak hauek dira: <placeholder-1/>"
+
+#~ msgid ""
+#~ "When adding files, refer to the status bar at the bottom of the window to "
+#~ "see how much space you are using on your CD/DVD."
+#~ msgstr ""
+#~ "Fitxategiak gehitzean, begiratu leihoaren beheko partean dagoen egoera-"
+#~ "barra, CDan/DVDan zenbat leku hartzen ari zaren ikusteko."
+
+#~ msgid ""
+#~ "To save the project for later use, choose <menuchoice><guimenu>Project</"
+#~ "guimenu><guimenuitem>Save</guimenuitem></menuchoice>."
+#~ msgstr ""
+#~ "Proiektua geroago erabiltzeko gordetzeko, aukeratu "
+#~ "<menuchoice><guimenu>Proiektua</guimenu><guimenuitem>Gorde</guimenuitem></"
+#~ "menuchoice>."
+
+#~ msgid "Inserting a Pause"
+#~ msgstr "Geldialdi bat sartzea"
+
+#~ msgid "Select the track after which you want to add the pause."
+#~ msgstr "Hautatu zein pistaren ondoren gehitu nahi duzun geldialdia."
+
+#~ msgid ""
+#~ "Click on <guibutton>Pause</guibutton> on the toolbar or choose "
+#~ "<menuchoice><guimenu>Edit</guimenu><guimenuitem>Insert a Pause</"
+#~ "guimenuitem></menuchoice>."
+#~ msgstr ""
+#~ "Egin klik tresna-barrako <guibutton>Geldialdia</guibutton> aukeran edo "
+#~ "aukeratu <menuchoice><guimenu>Editatu</guimenu><guimenuitem>Sartu "
+#~ "geldialdia</guimenuitem></menuchoice>."
+
+#~ msgid ""
+#~ "After you have added a track, you can insert a 2 seconds pause after it. "
+#~ "To insert a pause, proceed as follows: <placeholder-1/>"
+#~ msgstr ""
+#~ "Pista bat gehitu duzula, 2 segundoko geldialdi bat txerta dezakezu horren "
+#~ "atzetik. Geldialdi bat txertatzeko jarraibideak hauek dira: "
+#~ "<placeholder-1/>"
+
+#~ msgid ""
+#~ "Select the track you want to divide and click on <guibutton>Split</"
+#~ "guibutton> in the toolbar or choose <menuchoice><guimenu>Edit</"
+#~ "guimenu><guimenuitem>Split Track...</guimenuitem></menuchoice>. The "
+#~ "<guilabel>Split Track</guilabel> dialog will be shown."
+#~ msgstr ""
+#~ "Hautatu zatitu nahi duzun pista, eta egin klik tresna-barrako "
+#~ "<guibutton>Zatitu</guibutton> aukeran, edo aukeratu "
+#~ "<menuchoice><guimenu>Editatu</guimenu><guimenuitem>Zatitu pista...</"
+#~ "guimenuitem></menuchoice>. <guilabel>Zatitu pista</guilabel> elkarrizketa-"
+#~ "koadroa erakutsiko da."
+
+#~ msgid ""
+#~ "Select this to select the time on the track where you wish to split it. A "
+#~ "sliding bar is provided along with an audio preview."
+#~ msgstr ""
+#~ "Hautatu hau pista zein unetan zatitu nahi duzun hautatzeko. Barra "
+#~ "graduatzaile bat ematen da audio-aurrebista batekin batera."
+
+#~ msgid ""
+#~ "Select this to split the track into fixed-length parts with a duration "
+#~ "that you specify."
+#~ msgstr ""
+#~ "Hautatu hau pista zuk zehaztutako iraupen finkoko partetan zatitzeko."
+
+#~ msgid ""
+#~ "Select this to decide the number of parts that you want your track to be "
+#~ "split into. You can use the provided spin box to select the number of "
+#~ "parts."
+#~ msgstr ""
+#~ "Hautatu hau zure pista zatitzea nahi duzun parte kopurua erabakitzeko. "
+#~ "Ematen den biratze-koadroa erabil dezakezu parte kopurua hautatzeko."
+
+#~ msgid "Select this to split the track where a silence is present."
+#~ msgstr "Hautatu hau pista isilune bat dagoen bakoitzean zatitzeko."
+
+#~ msgid ""
+#~ "From the <guilabel>Method</guilabel> drop-down list select the splitting "
+#~ "method. The possible values are: <placeholder-1/>"
+#~ msgstr ""
+#~ "<guilabel>Metodoa</guilabel> goitibeherako zerrendan, hautatu zatitzeko "
+#~ "metodoa. Hauek dira balio posibleak: <placeholder-1/>"
+
+#~ msgid ""
+#~ "To split the track, click on <guibutton>Slice</guibutton>. The slices "
+#~ "will be listed in the <guilabel>Slices Preview</guilabel> table."
+#~ msgstr ""
+#~ "Pista zatitzeko, egin klik <guibutton>Zatitu</guibutton> aukeran. Zatiak "
+#~ "<guilabel>Zatien aurrebista</guilabel> taulan zerrendatuko dira."
+
+#~ msgid ""
+#~ "It is possible to divide a track in multiple parts. To split a track "
+#~ "proceed as follows: <placeholder-1/>"
+#~ msgstr ""
+#~ "Pista bat hainbat partetan bana daiteke. Pista bat zatitzeko jarraibideak "
+#~ "hauek dira: <placeholder-1/>"
+
+#~ msgid ""
+#~ "Once you have splitted the track, it is possible to remove or merge the "
+#~ "slices listed in the <guilabel>Slices Preview</guilabel> table using the "
+#~ "buttons on the right."
+#~ msgstr ""
+#~ "Behin pista zatitu duzunean, posible da <guilabel>Zatien aurrebista</"
+#~ "guilabel> taulan zerrendatutako zatiak batzea edo kentzea, eskuineko "
+#~ "botoiak erabiliz."
+
+#~ msgid ""
+#~ "Once you are done with all the modifications, click <guibutton>OK</"
+#~ "guibutton>."
+#~ msgstr ""
+#~ "Aldaketa guztiekin amaitu duzunean, egin klik <guibutton>Ados</guibutton> "
+#~ "botoian."
+
+#~ msgid "Audio Project Options"
+#~ msgstr "Audio-proiektuetako aukerak"
+
+#~ msgid ""
+#~ "Before starting the burning process, it is possible to modify some of the "
+#~ "burning options."
+#~ msgstr ""
+#~ "Grabatze-prozesua hasi aurretik, grabatze-aukeretako batzuk alda daitezke."
+
+#~ msgid "Section <guilabel>Select a disc to write to</guilabel>:"
+#~ msgstr "Atala <guilabel>Hautatu idazteko disko bat</guilabel>:"
+
+#~ msgid ""
+#~ "Click on <guibutton>Properties</guibutton> to open the properties dialog "
+#~ "for the burning device. See <xref linkend=\"brasero-burning-device-"
+#~ "properties\"/> for more information."
+#~ msgstr ""
+#~ "Egin klik <guibutton>Propietateak</guibutton> aukeran, grabagailurako "
+#~ "propietateen elkarrizketa-koadroa irekitzeko. Ikus <xref linkend="
+#~ "\"brasero-burning-device-properties\"/> informazio gehiago izateko."
+
+#~ msgid "Section <guilabel>Disc options</guilabel>:"
+#~ msgstr "Atala <guilabel>Disko-aukerak</guilabel>:"
+
+#~ msgid "Leave the disc open to add a data session later"
+#~ msgstr "Utzi diskoa irekia, aurrerago datu-saio bat gehitzeko"
+
+#~ msgid ""
+#~ "Select this option to create a <emphasis>multisession</emphasis> disc, so "
+#~ "that it will be possible to add files to the disc at a later date "
+#~ "(without erasing it, if it is rewritable)."
+#~ msgstr ""
+#~ "Hautatu aukera hau, <emphasis>saio anitzeko </emphasis> disko bat "
+#~ "sortzeko, eta horrela beste egun batean diskoan fitxategiak gehitu ahal "
+#~ "izateko (hura ezabatu gabe, birgrabagarria bada)."
+
+#~ msgid "Insert a blank CD-R/W or DVD-R/W into your drive."
+#~ msgstr "Sartu CD-R, CD-RW, DVD-R edo DVD-RW huts bat unitatean."
+
+#~ msgid ""
+#~ "Use the pane on the left of the window to find the files you want to add "
+#~ "to the project. Select <guilabel>Browse the file system</guilabel> from "
+#~ "the drop-down list at the top to browse for files or <guilabel>Search "
+#~ "files using keywords</guilabel> to search for them."
+#~ msgstr ""
+#~ "Erabili leihoaren ezkerraldeko panela, proiektuan gehitu nahi dituzun "
+#~ "fitxategiak aurkitzeko. Fitxategiak bilatzeko, hautatu <guilabel>Arakatu "
+#~ "fitxategi-sistema</guilabel> goian dagoen goitibeherako zerrendan, edo "
+#~ "<guilabel>Bilatu fitxategiak gako-hitzak erabiliz</guilabel>."
+
+#~ msgid ""
+#~ "In the text box, enter a label to identify the disc. This label will be "
+#~ "shown as the name of the disc."
+#~ msgstr ""
+#~ "Testu-koadroan, sartu etiketa bat diskoa identifikatzeko. Etiketa hau "
+#~ "diskoaren izen gisa erakutsiko da."
+
+#~ msgid ""
+#~ "When all the files have been added, click on <guibutton>Burn</guibutton>."
+#~ msgstr ""
+#~ "Fitxategi guztiak gehitu ondoren, egin klik <guibutton>Grabatu</"
+#~ "guibutton> aukeran."
+
+#~ msgid ""
+#~ "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make "
+#~ "any desired modifications (see <xref linkend=\"brasero-data-project-"
+#~ "options\"/>)."
+#~ msgstr ""
+#~ "<guilabel>Diskoak grabatzeko konfigurazioa</guilabel> elkarrizketa-"
+#~ "koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend="
+#~ "\"brasero-data-project-options\"/>)."
+
+#~ msgid "To burn a data CD, proceed as follows: <placeholder-1/>"
+#~ msgstr "Datu CD bat grabatzeko jarraibideak hauek dira: <placeholder-1/>"
+
+#~ msgid "Data Project Options"
+#~ msgstr "Datuen proiektuetako aukerak"
+
+#~ msgid "Increase compatibility with Windows systems"
+#~ msgstr "Handitu Windows sistemekiko bateragarritasuna"
+
+#~ msgid ""
+#~ "Select this option if you intend the disc to be used on computers running "
+#~ "Windows. Files on the disc will be checked to ensure that their filenames "
+#~ "do not contain characters which are invalid on Windows."
+#~ msgstr ""
+#~ "Hautatu aukera hau diskoa Windows exekutatzen duten ordenagailuetan "
+#~ "erabili nahi baduzu. Diskoko fitxategiak aztertuko dira, fitxategi-izenek "
+#~ "Windows-eko karaktere baliogaberik ez dutela bermatzeko."
+
+#~ msgid "Leave the disc open to add other files later"
+#~ msgstr "Utzi diskoa irekia, aurrerago beste fitxategi batzuk gehitzeko"
+
+#~ msgid "Video project"
+#~ msgstr "Bideo-proiektua"
+
+#~ msgid ""
+#~ "This project lets you take video files (files with extension like "
+#~ "<filename class=\"extension\">.mpg</filename>, <filename class=\"extension"
+#~ "\">.mpeg</filename> or <filename class=\"extension\">.avi</filename> to "
+#~ "name a few) and burn them to disc to create video <acronym>DVD</"
+#~ "acronym>s, <acronym>SVCD</acronym>s or <acronym>VCD</acronym>s that you "
+#~ "can watch with normal DVD/CD players."
+#~ msgstr ""
+#~ "Proiektu honekin, bideo-fitxategiak (adibidez luzapen hauetakoak: "
+#~ "<filename class=\"extension\">.mpg</filename>, <filename class=\"extension"
+#~ "\">.mpeg</filename> edo <filename class=\"extension\">.avi</filename>) "
+#~ "hartu eta diskoetan grabatu ahal izango dituzu, DVD/CD erreproduzigailu "
+#~ "normaletan ikus ditzakezun bideo <acronym>DVD</acronym>ak, <acronym>SVCD</"
+#~ "acronym>ak edo <acronym>VCD</acronym>ak sortzeko."
+
+#~ msgid ""
+#~ "In order to use all the potential of the video project, you need to "
+#~ "install all GStreamer's plugins, <application>ffmpeg</application>, "
+#~ "<application>vcdimager</application> and <application>dvdauthor</"
+#~ "application>. See your operating system documentation for more "
+#~ "information on how to install all these applications."
+#~ msgstr ""
+#~ "Bideo-proiektuaren potentzial guztia erabiltzeko, GStreamer-en plugin "
+#~ "guztiak instalatu behar dituzu: <application>ffmpeg</application>, "
+#~ "<application>vcdimager</application> eta <application>dvdauthor</"
+#~ "application>. Ikus sistema eragilearen dokumentazioa, aplikazio hauek "
+#~ "guztiak nola instalatzeari buruzko informazio gehiago izateko."
+
+#~ msgid "Insert a blank CD or DVD into your drive."
+#~ msgstr "Sartu CD edo DVD huts bat unitatean."
+
+#~ msgid ""
+#~ "From the pane on the left of the window, browse the file system searching "
+#~ "for video files."
+#~ msgstr ""
+#~ "Leihoaren ezkerraldean dagoen panelean, arakatu fitxategi-sistema, bideo-"
+#~ "fitxategiak bilatzeko."
+
+#~ msgid ""
+#~ "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make "
+#~ "any desired modifications (see <xref linkend=\"brasero-video-project-"
+#~ "options\"/>)."
+#~ msgstr ""
+#~ "<guilabel>Diskoak grabatzeko konfigurazioa</guilabel> elkarrizketa-"
+#~ "koadroa erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend="
+#~ "\"brasero-video-project-options\"/>)."
+
+#~ msgid "To create a video project, proceed as follows: <placeholder-1/>"
+#~ msgstr ""
+#~ "Bideo-proiektu bat sortzeko jarraibideak hauek dira: <placeholder-1/>"
+
+#~ msgid "Video Project Options"
+#~ msgstr "Bideo-proiektuetako aukerak"
+
+#~ msgid "Section <guilabel>Video Option</guilabel>:"
+#~ msgstr "Atala <guilabel>Bideo-aukera</guilabel>:"
+
+#~ msgid ""
+#~ "<guilabel>Native format</guilabel>: the original format of the video file."
+#~ msgstr ""
+#~ "<guilabel>Jatorrizko formatua</guilabel>: bideo-fitxategiaren jatorrizko "
+#~ "formatua."
+
+#~ msgid ""
+#~ "<guilabel>PAL/SECAM</guilabel>: format mainly used in European "
+#~ "televisions."
+#~ msgstr ""
+#~ "<guilabel>PAL/SECAM</guilabel>: batez ere Europako telebistetan "
+#~ "erabilitako formatua."
+
+#~ msgid ""
+#~ "<guilabel>NTSC</guilabel>: format mainly used in Americans, Canadians and "
+#~ "Japanese televisions."
+#~ msgstr ""
+#~ "<guilabel>NTSC</guilabel>: batez ere Estatu Batuetako, Kanadako eta "
+#~ "Japoniako telebistetan erabilitako formatua."
+
+#~ msgid ""
+#~ "From <guilabel>Video formats</guilabel> select the format of the video "
+#~ "that will be burned. You can choose from: <placeholder-1/>"
+#~ msgstr ""
+#~ "<guilabel>Bideo-formatuak</guilabel> aukeran, hautatu grabatu nahi duzun "
+#~ "bideoaren formatua. Aukeratu hemendik: <placeholder-1/>"
+
+#~ msgid "Section <guilabel>Audio Options</guilabel>:"
+#~ msgstr "Atala <guilabel>Audio-aukerak</guilabel>:"
+
+#~ msgid ""
+#~ "Choose <guilabel>Add MP2 audio stream</guilabel> to add a "
+#~ "<emphasis>MPEG-1 Audio Layer 2</emphasis> stream to the disc."
+#~ msgstr ""
+#~ "Aukeratu <guilabel>Gehitu MP2 audio-korrontea</guilabel>, diskoari "
+#~ "<emphasis>MPEG-1 audio-geruza 2</emphasis> korronte bat gehitzeko."
+
+#~ msgid ""
+#~ "Choose <guilabel>Add AC3 audio stream</guilabel> to add an <emphasis>AC-3 "
+#~ "Dolby Digital</emphasis> stream to the disc."
+#~ msgstr ""
+#~ "Aukeratu <guilabel>Gehitu AC3 audio-korrontea</guilabel>, diskoari "
+#~ "<emphasis>AC-3 Dolby Digital</emphasis> korronte bat gehitzeko."
+
+#~ msgid "Section <guilabel>VCD type</guilabel>:"
+#~ msgstr "Atala <guilabel>VCD mota</guilabel>:"
+
+#~ msgid ""
+#~ "Choose <guilabel>Create a SVCD</guilabel> to create a <emphasis>Super "
+#~ "Video CD</emphasis>."
+#~ msgstr ""
+#~ "Aukeratu <guilabel>Sortu SVCD bat</guilabel>, <emphasis>Super Video CD</"
+#~ "emphasis> bat sortzeko."
+
+#~ msgid ""
+#~ "Choose <guilabel>Create a VCD</guilabel> to create a <emphasis>Video CD</"
+#~ "emphasis>."
+#~ msgstr ""
+#~ "Aukeratu <guilabel>Sortu VCD bat</guilabel>, <emphasis>Video CD</"
+#~ "emphasis> bat sortzeko."
+
+#~ msgid ""
+#~ "One of the main difference between a <acronym>SVCD</acronym> and a "
+#~ "<acronym>VCD</acronym> is that the former uses the <acronym>MPEG-2</"
+#~ "acronym> video codec while the latter <acronym>MPEG-1</acronym>. For more "
+#~ "information, see the Wikipedia pages for <ulink type=\"http\" url="
+#~ "\"http://en.wikipedia.org/wiki/SVCD\">SVCD</ulink> and <ulink type=\"http"
+#~ "\" url=\"http://en.wikipedia.org/wiki/Video_CD\">VCD</ulink>."
+#~ msgstr ""
+#~ "<acronym>SVCD</acronym> eta <acronym>VCD</acronym> baten arteko "
+#~ "desberdintasun nagusietako bat  da lehenengoak <acronym>MPEG-2</acronym> "
+#~ "bideo-kodeka erabiltzen duela eta bigarrenak, berriz, <acronym>MPEG-1</"
+#~ "acronym>. Informazio gehiago izateko, ikus Wikipedian <ulink type=\"http"
+#~ "\" url=\"http://en.wikipedia.org/wiki/SVCD\">SVCD</ulink> eta <ulink type="
+#~ "\"http\" url=\"http://en.wikipedia.org/wiki/Video_CD\">VCD</ulink> "
+#~ "formatuei buruz dauden orriak."
+
+#~ msgid "Disc Copy"
+#~ msgstr "Diskoaren kopia"
+
+#~ msgid "Insert the CD or DVD you wish to copy into your drive."
+#~ msgstr "Sartu kopiatu nahi duzun CDa edo DVDa unitatean."
+
+#~ msgid ""
+#~ "The <guilabel>CD/DVD copy options</guilabel> dialog will be shown; make "
+#~ "the desired modifications (see <xref linkend=\"brasero-disc-copy-options"
+#~ "\"/> for more information)."
+#~ msgstr ""
+#~ "<guilabel>CD/DVD kopietako aukerak</guilabel> elkarrizketa-koadroa "
+#~ "erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-"
+#~ "disc-copy-options\"/> informazio gehiago izateko)."
+
+#~ msgid "Click on <guibutton>Copy</guibutton> to start the copying process."
+#~ msgstr ""
+#~ "Egin klik <guibutton>Kopiatu</guibutton> aukeran kopiatze-prozesua "
+#~ "abiarazteko."
+
+#~ msgid ""
+#~ "This project lets you take an existing disc and copy it to a blank disc "
+#~ "or image file. To copy a disc, proceed as follows: <placeholder-1/>"
+#~ msgstr ""
+#~ "Proiektu honekin, aurretik dagoen disko bat hartu eta hori disko huts "
+#~ "batera edo irudi-fitxategi batera kopia dezakezu. Disko bat kopiatzeko "
+#~ "jarraibideak hauek dira: <placeholder-1/>"
+
+#~ msgid "Disc Copy Options"
+#~ msgstr "Diskoa kopiatzearen aukerak"
+
+#~ msgid ""
+#~ "Before starting the copying process, it is possible to modify some of the "
+#~ "copying and burning options."
+#~ msgstr ""
+#~ "Kopiatze-prozesua hasi aurretik, kopiatze- eta grabatze-aukeretako batzuk "
+#~ "alda daitezke."
+
+#~ msgid "Section <guilabel>Select disc to copy</guilabel>:"
+#~ msgstr "Atala <guilabel>Hautatu diskoa kopiatzeko</guilabel>:"
+
+#~ msgid "From the drop-down list, select the disc that you want to copy."
+#~ msgstr "Goitibeherako zerrendan, hautatu kopiatu nahi duzun diskoa."
+
+#~ msgid "From the drop-down list, select the disc to write to."
+#~ msgstr "Goitibeherako zerrendan, hautatu zein diskotan grabatu nahi duzun."
+
+#~ msgid ""
+#~ "From this drop-down list, select <guilabel>File image</guilabel> to "
+#~ "create a disc image, such as an ISO image."
+#~ msgstr ""
+#~ "Goitibeherako zerrenda honetatik, hautatu <guilabel>Irudi-fitxategia</"
+#~ "guilabel>, disko-irudi bat sortzeko, adibidez ISO irudi bat."
+
+#~ msgid ""
+#~ "If you have more that one drive on your system, you can use one drive as "
+#~ "the source drive and the other as the destination drive. If you do not, "
+#~ "you will be prompted to remove the CD or DVD you are copying and insert a "
+#~ "blank media."
+#~ msgstr ""
+#~ "Sisteman unitate bat baino gehiago badituzu, unitate bat iturburuko "
+#~ "unitate gisa erabil dezakezu eta bestea helburuko unitate gisa. Bestela, "
+#~ "kopiatzen ari zaren CDa edo DVDa kentzea eta euskarri huts bat erabiltzea "
+#~ "eskatuko zaizu."
+
+#~ msgid ".iso"
+#~ msgstr ".iso"
+
+#~ msgid ".raw"
+#~ msgstr ".raw"
+
+#~ msgid ".cue"
+#~ msgstr ".cue"
+
+#~ msgid ".toc"
+#~ msgstr ".toc"
+
+#~ msgid ""
+#~ "This project takes an existing file image and burns it to a CD-R/W or DVD-"
+#~ "R/W. <application>Brasero</application> supports the following types of "
+#~ "image file: <placeholder-1/>"
+#~ msgstr ""
+#~ "Proiektu honek aurretik dagoen irudi-fitxategi bat hartzen du eta CD-R, "
+#~ "CD-RW, DVD-R edo DVD-RW batean grabatzen du. <application>Brasero</"
+#~ "application> programak ondorengo irudi-fitxategi motak onartzen ditu: "
+#~ "<placeholder-1/>"
+
+#~ msgid ""
+#~ "The <guilabel>Image burning setup</guilabel> dialog will be shown; make "
+#~ "the desired modifications (see <xref linkend=\"brasero-burn-image-options"
+#~ "\"/>)."
+#~ msgstr ""
+#~ "<guilabel>Irudia grabatzeko konfigurazioa</guilabel> elkarrizketa-koadroa "
+#~ "erakutsiko da; egin nahi adina aldaketa (ikus <xref linkend=\"brasero-"
+#~ "burn-image-options\"/>)."
+
+#~ msgid "To start this project, proceed as follows: <placeholder-1/>"
+#~ msgstr "Proiektu hau abiarazteko jarraibideak hauek dira: <placeholder-1/>"
+
+#~ msgid "Burn Image Options"
+#~ msgstr "Irudia grabatzeko aukerak"
+
+#~ msgid ""
+#~ "Before starting the image burning process, it is possible to modify some "
+#~ "of the burning options."
+#~ msgstr ""
+#~ "Irudia grabatzeko prozesua hasi aurretik, grabatze-aukeretako batzuk alda "
+#~ "daitezke."
+
+#~ msgid "Section <guilabel>Image</guilabel>:"
+#~ msgstr "Atala <guilabel>Irudia</guilabel>:"
+
+#~ msgid ""
+#~ "Click on the button to open the <guilabel>Select Image File</guilabel> "
+#~ "dialog and select the image file to burn. From the drop-down list at the "
+#~ "bottom, you can select the type of the image to burn. If unsure, select "
+#~ "<guilabel>Let brasero choose (safest)</guilabel>."
+#~ msgstr ""
+#~ "Egin klik <guilabel>Hautatu irudi-fitxategia</guilabel> elkarrizketa "
+#~ "koadroa irekitzeko botoian eta hautatu grabatu nahi duzun irudi-"
+#~ "fitxategia. Behean dagoen goitibeherako zerrendan, grabatzeko irudiaren "
+#~ "mota hauta dezakezu. Ziur ez bazaude, hautatu <guilabel>Utzi Brasero-ri "
+#~ "aukeratzen (seguruena)</guilabel>."
+
+#~ msgid "Burning Device Properties"
+#~ msgstr "Grabagailuaren propietateak"
+
+#~ msgid ""
+#~ "Before starting the burning process, it is possible to change some of the "
+#~ "properties for the burning device that will be used."
+#~ msgstr ""
+#~ "Grabatze-prozesua hasi aurretik, posible da erabiliko den grabagailuaren "
+#~ "propietateetako batzuk aldatzea."
+
+#~ msgid "Section <guilabel>Burning speed</guilabel>:"
+#~ msgstr "Atala <guilabel>Grabatzeko abiadura</guilabel>:"
+
+#~ msgid ""
+#~ "From the drop-down list, select the burning speed. For the best value, "
+#~ "check the CD/DVD case."
+#~ msgstr ""
+#~ "Goitibeherako zerrendan, hautatu grabatzeko abiadura. Balio egokiena zein "
+#~ "den jakiteko, begiratu CD/DVDaren kaxa."
+
+#~ msgid ""
+#~ "Burning a disc with a higher speed than supported could create an "
+#~ "unreadable disc. Use lower burning speeds to reduce the chance of this "
+#~ "happening."
+#~ msgstr ""
+#~ "Disko bat onartutakoa baino abiadura handiagoan grabatuz gero, diskoa "
+#~ "irakurtezin bihur dezakezu. Erabili grabatzeko abiadura txikiagoak, hori "
+#~ "gertatzeko aukera murrizteko."
+
+#~ msgid "Section <guilabel>Options</guilabel>:"
+#~ msgstr "Atala <guilabel>Aukerak</guilabel>:"
+
+#~ msgid "Burn the image directly without saving it to disc"
+#~ msgstr "Grabatu irudia zuzenean, diskoan gorde gabe"
+
+#~ msgid ""
+#~ "Select this option if you want to burn the image directly onto the media, "
+#~ "without saving it to the hard disk and without creating an image file."
+#~ msgstr ""
+#~ "Hautatu aukera hau irudia zuzenean euskarrian grabatu nahi baduzu, disko "
+#~ "gogorrean gorde gabe eta irudi-fitxategirik sortu gabe."
+
+#~ msgid "Use burnproof (decrease the risk of failure)"
+#~ msgstr "Erabili burnproof (hutsegite-arriskua txikiagotzen du)"
+
+#~ msgid ""
+#~ "Select this option to prevent the <emphasis>buffer underrun</emphasis> "
+#~ "effect (or <emphasis>buffer underflow</emphasis>). This is when the "
+#~ "computer is not fast enough delivering data to the burning device at the "
+#~ "selected burning speed."
+#~ msgstr ""
+#~ "Hautatu aukera hau <emphasis>bufferra hustea</emphasis> (edo "
+#~ "<emphasis>bufferraren gainezkatze negatiboa</emphasis>) saihesteko. "
+#~ "Horrek esan nahi du ordenagailua ez dela behar bezain azkarra datuak "
+#~ "grabagailura hautatutako grabatzeko abiaduran bidaltzeko."
+
+#~ msgid ""
+#~ "If a <emphasis>buffer underrun</emphasis> takes place, the burned disc "
+#~ "could be unreadable."
+#~ msgstr ""
+#~ "<emphasis>Bufferra hustea</emphasis> gertatzen bada, grabatutako diskoa "
+#~ "irakurtezin gera daiteke."
+
+#~ msgid "Simulate the burning"
+#~ msgstr "Simulatu grabazioa"
+
+#~ msgid ""
+#~ "Select this option to simulate the burning process; no real burn is "
+#~ "performed. If this operation is successful, brasero will actually burn "
+#~ "the disc after pausing for 10 seconds. During this pause it will show a "
+#~ "dialog in which you can cancel the actual burning. This is useful for "
+#~ "testing, if you are having problems burning discs."
+#~ msgstr ""
+#~ "Hautatu aukera hau grabatze-prozesu bat simulatzeko; ez da benetan "
+#~ "grabatuko. Eragiketak arrakasta badu, braserok diskoa benetan grabatuko "
+#~ "du 10 segundoz pausatuta egon ondoren. Pausatuta dagoen bitartean, "
+#~ "benetako grabazioa bertan behera uzteko erabil dezakezun elkarrizketa-"
+#~ "koadroa erakutsiko da. Hau proba egiteko erabilgarria da, diskoak "
+#~ "grabatzeko arazoak edukitzen ari bazara."
+
+#~ msgid "Eject after burning"
+#~ msgstr "Egotzi grabatu ondoren"
+
+#~ msgid ""
+#~ "Select this option to eject the media in the burning device once the "
+#~ "burning process has completed."
+#~ msgstr ""
+#~ "Hautatu aukera hau grabagailuan dagoen euskarria egozteko behin grabatze-"
+#~ "prozesua osatu denean."
+
+#~ msgid "Section <guilabel>Temporary files</guilabel>:"
+#~ msgstr "Atala <guilabel>Aldi baterako fitxategiak</guilabel>:"
+
+#~ msgid ""
+#~ "From the drop-down list, select the directory to use for storing the "
+#~ "temporary files created for the burning process."
+#~ msgstr ""
+#~ "Goitibeherako zerrendan, hautatu grabatze-prozesurako sortutako aldi "
+#~ "baterako fitxategiak zein direktoriotan biltegiratu nahi dituzun."
+
+#~ msgid ""
+#~ "The default directory is <filename class=\"directory\">/tmp</filename>."
+#~ msgstr ""
+#~ "Direktorio lehenetsia <filename class=\"directory\">/tmp</filename> da."
+
+#~ msgid "Burning Properties with No Disc"
+#~ msgstr "Grabatze-propietateak diskorik gabe"
+
+#~ msgid ""
+#~ "If you start the burning process without a CD or DVD in the burning "
+#~ "device, <application>Brasero</application> will create a image file on "
+#~ "the hard disk that you can lately burn."
+#~ msgstr ""
+#~ "Grabatze-prozesu bat abiarazten baduzu grabagailuan CD edo DVDrik izan "
+#~ "gabe, <application>Brasero</application> programak irudi-fitxategi bat "
+#~ "sortuko du disko gogorrean, geroago grabatu ahal izango duzuna."
+
+#~ msgid ""
+#~ "From this drop-down list you can only select <guilabel>File image</"
+#~ "guilabel>."
+#~ msgstr ""
+#~ "Goitibeherako zerrenda honetan, <guilabel>Irudi-fitxategia</guilabel> "
+#~ "bakarrik hauta dezakezu."
+
+#~ msgid "Section <guilabel>Label of the disc</guilabel>:"
+#~ msgstr "Atala <guilabel>Diskoaren etiketa</guilabel>:"
+
+#~ msgid "Type the name you want to give to the disc once burned."
+#~ msgstr "Idatzi behin grabatuta diskoari eman nahi diozun izena."
+
+#~ msgid ""
+#~ "Click on <guibutton>Properties</guibutton> to open the <guilabel>Disc "
+#~ "image file properties</guilabel> dialog. In the <guilabel>Name</guilabel> "
+#~ "text box, type the name of the image file, from the <guilabel>Image type</"
+#~ "guilabel> drop-down list select the type of image to use."
+#~ msgstr ""
+#~ "Egin klik <guibutton>Propietateak</guibutton> aukeran <guilabel>Diskoaren "
+#~ "irudi-fitxategien propietateak</guilabel> elkarrizketa-koadroa "
+#~ "irekitzeko. <guilabel>Izena</guilabel> testu-koadroan, idatzi irudi-"
+#~ "fitxategiaren izena, eta <guilabel>Irudi mota</guilabel> goitibeherako "
+#~ "zerrendatik, hautatu erabiliko duzun irudi-mota."
+
+#~ msgid "Once done, click <guibutton>Apply</guibutton>."
+#~ msgstr "Horren ondoren, egin klik <guibutton>Aplikatu</guibutton> aukeran."
+
+#~ msgid "Opening a Saved Project"
+#~ msgstr "Gordetako proiektu bat irekitzea"
+
+#~ msgid ""
+#~ "Choose <menuchoice><guimenu>Project</guimenu><guisubmenu>Recent Projects</"
+#~ "guisubmenu></menuchoice> and select the project you want to open."
+#~ msgstr ""
+#~ "Aukeratu <menuchoice><guimenu>Proiektua</guimenu><guisubmenu> Proiektu "
+#~ "berrienak</guisubmenu></menuchoice> eta hautatu ireki nahi duzun "
+#~ "proiektua."
+
+#~ msgid ""
+#~ "From the main window, click on the project you want to open under "
+#~ "<guilabel>Choose a recently opened project</guilabel>."
+#~ msgstr ""
+#~ "Leiho nagusian, egin klik ireki nahi duzun proiektuan, <guilabel>Aukeratu "
+#~ "berriki irekitako proiektu bat</guilabel> aukeraren barruan."
+
+#~ msgid ""
+#~ "If you have recently saved a project, you can open it again in one of the "
+#~ "following ways: <placeholder-1/>"
+#~ msgstr ""
+#~ "Berriki gordetako proiekturen bat berriz ireki nahi baduzu, ondorengo "
+#~ "bide hauek dauzkazu: <placeholder-1/>"
+
+#~ msgid ""
+#~ "To open a project which does not appear in <guilabel>Recent Projects</"
+#~ "guilabel>, choose <menuchoice><guimenu>Project</"
+#~ "guimenu><guimenuitem>Open</guimenuitem></menuchoice> and select the "
+#~ "project file."
+#~ msgstr ""
+#~ "<guilabel>Proiektu berrienak</guilabel> atalean agertzen ez den proiektu "
+#~ "bat irekitzeko, aukeratu <menuchoice><guimenu>Proiektua</"
+#~ "guimenu><guimenuitem>Ireki</guimenuitem></menuchoice> eta hautatu "
+#~ "proiektu-fitxategia."
+
+#~ msgid ""
+#~ "Once opened, you can add or remove files from the project, burn it to "
+#~ "disc, and then save it again for later use."
+#~ msgstr ""
+#~ "Behin irekita, proiektuan fitxategiak gehitu edo kendu ditzakezu, hori "
+#~ "diskoan grabatu, eta berriz gorde beranduago erabiltzeko."
+
+#~ msgid "CD-RW"
+#~ msgstr "CD-RW"
+
+#~ msgid "DVD-RW (single or dual layer)"
+#~ msgstr "DVD-RW (geruza bakarra edo bikoitza)"
+
+#~ msgid "DVD+RW (single or dual layer)"
+#~ msgstr "DVD+RW (geruza bakarra edo bikoitza)"
+
+#~ msgid ""
+#~ "Erasing or blanking a CD or DVD means to delete all the data that the CD "
+#~ "or the DVD contains. <application>Brasero</application> is able to erase "
+#~ "the following CD and DVD formats: <placeholder-1/>"
+#~ msgstr ""
+#~ "CD edo DVD bat ezabatuz edo hustuz, CD edo DVD horretako datu guztiak "
+#~ "ezabatzen dira. <application>Brasero</application> programa CD eta DVD "
+#~ "formatu hauek ezabatzeko gai da: <placeholder-1/>"
+
+#~ msgid ""
+#~ "In general, <application>Brasero</application> can support all of the "
+#~ "media formats supported by your own CD/DVD recorder."
+#~ msgstr ""
+#~ "Orokorrean, <application>Brasero</application> programak zeure CD/DVD "
+#~ "grabagailuak onartutako multimedia-formatu guztiak onartzen ditu."
+
+#~ msgid ""
+#~ "Make sure that the media you want to erase is erasable. Check the media "
+#~ "case for more information."
+#~ msgstr ""
+#~ "Ziurtatu ezabatu nahi duzun euskarria ezabagarria dela. Begiratu "
+#~ "euskarriaren kaxan informazio gehiago izateko."
+
+#~ msgid "Insert the erasable CD or DVD in your drive."
+#~ msgstr "Sartu CD edo DVD ezabagarria unitatean."
+
+#~ msgid ""
+#~ "From the menu bar, choose <menuchoice><guimenu>Tools</"
+#~ "guimenu><guimenuitem>Erase...</guimenuitem></menuchoice>. The "
+#~ "<guilabel>Disc blanking</guilabel> dialog will be shown."
+#~ msgstr ""
+#~ "Menu-barran, aukeratu <menuchoice><guimenu>Tresnak</"
+#~ "guimenu><guimenuitem>Ezabatu...</guimenuitem></menuchoice>. "
+#~ "<guilabel>Diskoa ezabatzea</guilabel> elkarrizketa-koadroa erakutsiko da."
+
+#~ msgid ""
+#~ "From the drop-down list <guilabel>Select a disc</guilabel>, select the "
+#~ "disc you want to erase."
+#~ msgstr ""
+#~ "Goitibeherako zerrendan, aukeratu <guilabel>Hautatu disko bat</guilabel> "
+#~ "ezabatu nahi duzun diskoa hautatzeko."
+
+#~ msgid ""
+#~ "If you want to quickly erase the disc, select the <guilabel>fast "
+#~ "blanking</guilabel> option (for more information, see <xref linkend="
+#~ "\"brasero-fast-blanking\"/>)."
+#~ msgstr ""
+#~ "Diskoa azkar ezabatu nahi baduzu, hautatu <guilabel>huste azkarra</"
+#~ "guilabel> aukera (informazio gehiago izateko, ikus <xref linkend="
+#~ "\"brasero-fast-blanking\"/>)."
+
+#~ msgid ""
+#~ "Click on <guibutton>Blank</guibutton> to start erasing the CD or DVD."
+#~ msgstr ""
+#~ "Egin klik <guibutton>Hustu</guibutton> botoian CDa edo DVDa ezabatzen "
+#~ "hasteko."
+
+#~ msgid "To erase a CD-RW or a DVD-RW: <placeholder-1/>"
+#~ msgstr "CD-RW edo DVD-RW bat ezabatzeko: <placeholder-1/>"
+
+#~ msgid ""
+#~ "The blanking process will permanently destroy all of the data on the disc."
+#~ msgstr "Huste-prozesuak diskoko datu guztiak betiko suntsituko ditu."
+
+#~ msgid "What is fast blanking?"
+#~ msgstr "Zer da huste azkarra?"
+
+#~ msgid ""
+#~ "Fast blanking is a way of quickly erasing a disc. This method is much "
+#~ "faster than fully erasing the disc and is sufficient to allow the disc to "
+#~ "be written to again."
+#~ msgstr ""
+#~ "Huste azkarra disko bat azkar ezabatzeko bide bat da. Metodo hau diskoa "
+#~ "erabat ezabatzea baino askoz azkarragoa da eta nahikoa da diskoan berriz "
+#~ "grabatu ahal izateko."
+
+#~ msgid ""
+#~ "The full erasing procedure is slower but is more secure, as it removes "
+#~ "all traces of previous data. Data removed from fast blanked media can "
+#~ "still be recovered with special tools."
+#~ msgstr ""
+#~ "Erabateko ezabatze-prozesua motelagoa izan arren seguruagoa da, aurreko "
+#~ "datuen aztarna guztiak ezabatzen baititu. Azkar hustutako euskarri "
+#~ "batetik ezabatutako datuak tresna bereziak erabiliz berreskuratu daitezke."
+
+#~ msgid "Checking the Integrity of a CD or DVD"
+#~ msgstr "CD edo DVD baten osotasuna egiaztatzea"
+
+#~ msgid ""
+#~ "Checking the integrity of a CD or DVD makes sure that the files written "
+#~ "to the disc are intact and have not been corrupted during the burning "
+#~ "process."
+#~ msgstr ""
+#~ "CD edo DVD baten osotasuna egiaztatuz, ziurta zaitezke diskoan "
+#~ "grabatutako artxiboak ukitu ez direla eta grabatze-prozesuan hondatu ez "
+#~ "direla."
+
+#~ msgid ""
+#~ "The integrity check is done using the <quote>MD5 digest</quote> "
+#~ "algorithm, which creates a <quote>fingerprint</quote> of the data on the "
+#~ "media. Each time you burn a CD or DVD, and the <emphasis role=\"strong"
+#~ "\">Image checksum</emphasis> plugin is enabled (see <xref linkend="
+#~ "\"brasero-plugins\"/> for more information), <application>Brasero</"
+#~ "application> adds a MD5 file to the disc in order to perform integrity "
+#~ "checks at a later date."
+#~ msgstr ""
+#~ "Osotasunaren egiaztapena <quote>MD5 digest</quote> algoritmoa erabilita "
+#~ "egiten da, zeinak euskarriko datuen <quote>hatz-marka</quote> bat sortzen "
+#~ "duen. CD edo DVD bat grabatzen duzun bakoitzean, <emphasis role=\"strong"
+#~ "\">Irudiaren kontrol-batura </emphasis> plugina gaituta badago (ikus "
+#~ "<xref linkend=\"brasero-plugins\"/> informazio gehiago izateko), "
+#~ "<application>Brasero</application> aplikazioak MD5 fitxategi bat gehituko "
+#~ "dio diskoari, aurrerago osotasun-egiaztapenak egiteko."
+
+#~ msgid ""
+#~ "<application>Brasero</application> performs an integrity check after each "
+#~ "burning session, checking the automatically generated file. Usually this "
+#~ "process is longer than using an external MD5 file."
+#~ msgstr ""
+#~ "<application>Brasero</application> aplikazioak osotasun-egiaztapenak "
+#~ "egiten ditu grabatze-saio bakoitzaren ondoren, automatikoki sortutako "
+#~ "fitxategia egiaztatuz. Normalean prozesu hori kanpoko MD5 fitxategi bat "
+#~ "erabiltzea baino luzeagoa da."
+
+#~ msgid "Insert the CD or DVD to be checked into the drive."
+#~ msgstr "Sartu egiaztatu beharreko CDa edo DVDa unitatean."
+
+#~ msgid ""
+#~ "From the menu bar, choose <menuchoice><guimenu>Tools</"
+#~ "guimenu><guimenuitem>Check Integrity</guimenuitem></menuchoice>, or press "
+#~ "<keycombo><keycap>Ctrl</keycap><keycap>F</keycap></keycombo>."
+#~ msgstr ""
+#~ "Menu-barran, aukeratu <menuchoice><guimenu>Tresnak</"
+#~ "guimenu><guimenuitem>Egiaztatu osotasuna</guimenuitem></menuchoice>, edo "
+#~ "sakatu <keycombo><keycap>Ktrl</keycap><keycap>F</keycap></keycombo>."
+
+#~ msgid ""
+#~ "Click on the <guilabel>None</guilabel> button under the previously "
+#~ "mentioned option and select an MD5 file, usually ending with the "
+#~ "<filename>.md5</filename> extension."
+#~ msgstr ""
+#~ "Egin klik <guilabel>Bat ere ez</guilabel> botoian, aurretik aipatutako "
+#~ "aukeraren barruan, eta hautatu MD5 fitxategi bat, normalean <filename>."
+#~ "md5</filename> luzapenarekin amaitzen dena."
+
+#~ msgid ""
+#~ "You can check the integrity by using a MD5 file or by letting "
+#~ "<application>Brasero</application> automatically perform a check on the "
+#~ "media. <placeholder-1/>"
+#~ msgstr ""
+#~ "Osotasuna egiazta dezakezu MD5 fitxategi bat erabiliz edo "
+#~ "<application>Brasero</application> aplikazioari euskarriaren egiaztapena "
+#~ "automatikoki egiten utziz. <placeholder-1/>"
+
+#~ msgid ""
+#~ "Click on the <guibutton>Check</guibutton> button to start the integrity "
+#~ "check."
+#~ msgstr ""
+#~ "Egin klik <guibutton>Egiaztatu</guibutton> botoian osotasunaren "
+#~ "egiaztapena abiarazteko."
+
+#~ msgid "To check the integrity of a disc: <placeholder-1/>"
+#~ msgstr "Disko baten osotasuna egiaztatzea: <placeholder-1/>"
+
+#~ msgid ""
+#~ "If the integrity check is successful, <application>Brasero</application> "
+#~ "will notify you with a <guilabel>File integrity check success</guilabel> "
+#~ "dialog; otherwise, the <guilabel>File integrity check error</guilabel> "
+#~ "dialog will be displayed."
+#~ msgstr ""
+#~ "Osotasunaren egiaztapena behar bezala egiten bada, <application>Brasero</"
+#~ "application> aplikazioak <guilabel>Fitxategien osotasuna behar bezala "
+#~ "egiaztatu da</guilabel> dioen elkarrizketa-koadroarekin jakinaraziko "
+#~ "dizu; bestela, <guilabel>Errorea gertatu da fitxategien osotasuna "
+#~ "egiaztatzean</guilabel> dioen elkarrizketa-koadroa bistaratuko da."
+
+#~ msgid "Cover Editor"
+#~ msgstr "Azal-editorea"
+
+#~ msgid ""
+#~ "<application>Brasero</application> has a cover editor for creating covers "
+#~ "for your CDs or DVDs. To open the cover editor, choose "
+#~ "<menuchoice><guimenu>Tools</guimenu><guimenuitem>Cover Editor</"
+#~ "guimenuitem></menuchoice>."
+#~ msgstr ""
+#~ "<application>Brasero</application> aplikazioak azal-editore bat dauka "
+#~ "zure CD eta DVDentzako azalak sortzeko. Azal-editorea irekitzeko, "
+#~ "aukeratu <menuchoice><guimenu>Tresnak</guimenu><guimenuitem>Azal-"
+#~ "editorea</guimenuitem></menuchoice>."
+
+#~ msgid ""
+#~ "The cover editor lets you select the font, the alignment and the colors "
+#~ "for all the texts and the background properties of front and the back "
+#~ "cover."
+#~ msgstr ""
+#~ "Azal-editoreari esker, testu guztien letra-tipoa, lerrokatzea eta "
+#~ "koloreak eta aurreko eta atzeko azalen atzeko planoko propietateak "
+#~ "hautatu ditzakezu."
+
+#~ msgid ""
+#~ "To set the properties of the covers, right-click on one of the covers and "
+#~ "choose <guimenuitem>Set background properties</guimenuitem> to open the "
+#~ "<guilabel>Background Properties</guilabel> dialog."
+#~ msgstr ""
+#~ "Azalen propietateak ezartzeko, egin klik eskuineko botoiarekin azaletako "
+#~ "batean eta aukeratu<guimenuitem>Ezarri atzeko planoko propietateak</"
+#~ "guimenuitem> <guilabel>Atzeko planoko propietateak</guilabel> "
+#~ "elkarrizketa-koadroa irekitzeko."
+
+#~ msgid ""
+#~ "It is possible to fill the background with an image or with a color or "
+#~ "gradient."
+#~ msgstr ""
+#~ "Atzeko planoa irudi batekin edo kolore edo gradiente batekin bete daiteke."
+
+#~ msgid ""
+#~ "From <guilabel>Image path</guilabel> select the image from you hard disk."
+#~ msgstr ""
+#~ "<guilabel>Irudiaren bide-izena</guilabel> aukeran, hautatu disko "
+#~ "gogorrean dagoen irudi bat."
+
+#~ msgid ""
+#~ "From the <guilabel>Image style</guilabel> drop-down list select how you "
+#~ "want the image to be positioned."
+#~ msgstr ""
+#~ "<guilabel>Irudiaren estiloa</guilabel> goitibeherako zerrendan, hautatu "
+#~ "irudia nola kokatu nahi duzun."
+
+#~ msgid "To set an image as the background: <placeholder-1/>"
+#~ msgstr "Irudi bat atzeko plano gisa ezartzea: <placeholder-1/>"
+
+#~ msgid ""
+#~ "From the <guilabel>Color</guilabel> drop-down list select the kind of "
+#~ "fill you want to use for the background."
+#~ msgstr ""
+#~ "<guilabel>Kolorea</guilabel> goitibeherako zerrendan, hautatu atzeko "
+#~ "planoan erabili nahi duzun betegarri mota."
+
+#~ msgid ""
+#~ "Use the button on the right to open the <guilabel>Pick a Color</guilabel> "
+#~ "dialog to select the color."
+#~ msgstr ""
+#~ "Erabili eskuineko botoia, <guilabel>Aukeratu kolorea</guilabel> "
+#~ "elkarrizketa-koadroa irekitzeko eta kolorea hautatzeko."
+
+#~ msgid ""
+#~ "If you select a gradient, there will be two buttons for the color "
+#~ "chooser. The one on the left is the starting point of the gradient, the "
+#~ "one on the right the end point."
+#~ msgstr ""
+#~ "Gradiente bat hautatzen baduzu, bi botoi egongo dira kolore-"
+#~ "hautatzailearentzat. Ezkerrekoa gradientearen hasiera-puntua da, eta "
+#~ "eskuinekoa amaiera-puntua."
+
+#~ msgid ""
+#~ "To fill the background with a color or gradient: <placeholder-1/"
+#~ "><placeholder-2/>"
+#~ msgstr ""
+#~ "Atzeko planoa kolore edo gradiente batekin betetzea: <placeholder-1/"
+#~ "><placeholder-2/>"
+
+#~ msgid "Plugins"
+#~ msgstr "Pluginak"
+
+#~ msgid ""
+#~ "<application>Brasero</application> can use different plugins to perform "
+#~ "different tasks. There are several plugins you can choose from."
+#~ msgstr ""
+#~ "<application>Brasero</application> aplikazioak hainbat motatako pluginak "
+#~ "erabil ditzake hainbat motatako zereginak egiteko. Hainbat pluginen "
+#~ "artean hauta dezakezu."
+
+#~ msgid ""
+#~ "To view the available plugins, choose <menuchoice><guimenu>Edit</"
+#~ "guimenu><guimenuitem>Plugins</guimenuitem></menuchoice>. The plugins that "
+#~ "you can use are:"
+#~ msgstr ""
+#~ "Erabil daitezkeen pluginak ikusteko, aukeratu "
+#~ "<menuchoice><guimenu>Editatu</guimenu><guimenuitem>Pluginak</"
+#~ "guimenuitem></menuchoice>. Plugin hauek erabil ditzakezu:"
+
+#~ msgid "Plugin Name"
+#~ msgstr "Pluginaren izena"
+
+#~ msgid "Description"
+#~ msgstr "Azalpena"
+
+#~ msgid "CD/DVD Creator Folder"
+#~ msgstr "CD/DVD sortzailearen karpeta"
+
+#~ msgid "CD/DVD Creator"
+#~ msgstr "CD/DVD sortzailea"
+
+#~ msgid "Nautilus"
+#~ msgstr "Nautilus"
+
+#~ msgid ""
+#~ "Enalbes <placeholder-1/> to burn files stored in the <placeholder-2/> "
+#~ "folder of <placeholder-3/>."
+#~ msgstr ""
+#~ "<placeholder-1/> <placeholder-3/>(e)ko <placeholder-2/> karpetan "
+#~ "gordetako fitxategiak grabatzeko gaitzen du."
+
+#~ msgid "File Checksum"
+#~ msgstr "Fitxategien kontrol-batura"
+
+#~ msgid "Enables <placeholder-1/> to check the integrity of files."
+#~ msgstr "<placeholder-1/> fitxategien osotasuna egiaztatzeko gaitzen du."
+
+#~ msgid "File Downloader"
+#~ msgstr "Fitxategien deskargatzailea"
+
+#~ msgid "Enables <placeholder-1/> to burn files which are not stored locally."
+#~ msgstr ""
+#~ "<placeholder-1/> lokalki gordeta ez dauden fitxategiak grabatzeko gaitzen "
+#~ "du."
+
+#~ msgid "Image Checksum"
+#~ msgstr "Irudien kontrol-batura"
+
+#~ msgid ""
+#~ "Enables <placeholder-1/> to perform integrity checks on discs after they "
+#~ "have been burnt. Also enables the writing of a small file which holds the "
+#~ "MD5 sum of all the files on the disc."
+#~ msgstr ""
+#~ "<placeholder-1/> diskoak grabatu ondoren haien osotasuna egiaztatzeko "
+#~ "gaitzen du. Halaber, diskoko fitxategi guztien MD5 batura barne hartzen "
+#~ "duen fitxategi bat idazteko gaitzen du."
+
+#~ msgid "Normalize"
+#~ msgstr "Normalizatu"
+
+#~ msgid ""
+#~ "Enables <placeholder-1/> to set consistent sound levels between tracks."
+#~ msgstr ""
+#~ "<placeholder-1/> pisten arteko soinu-maila koherenteak ezartzeko gaitzen "
+#~ "du."
+
+#~ msgid ""
+#~ "To enable or disable a plugin, select the check box next to its name in "
+#~ "the <guilabel>Enabled</guilabel> column."
+#~ msgstr ""
+#~ "Plugin bat gaitzeko edo desgaitzeko, hautatu izenaren ondoan duen kontrol-"
+#~ "laukia <guilabel>Gaituta</guilabel> zutabean."
+
+#~ msgid ""
+#~ "Select one of the two plugins and click on <guibutton>Configure</"
+#~ "guibutton>."
+#~ msgstr ""
+#~ "Hautatu bi pluginetako bat, eta egin klik <guibutton>Konfiguratu</"
+#~ "guibutton> botoian."
+
+#~ msgid "MD5"
+#~ msgstr "MD5"
+
+#~ msgid "SHA1"
+#~ msgstr "SHA1"
+
+#~ msgid "SHA256"
+#~ msgstr "SHA256"
+
+#~ msgid ""
+#~ "From the <guilabel>Hashing algorithm to be used</guilabel> drop-down list "
+#~ "select the algorithm you want to use. The possible values are: "
+#~ "<placeholder-1/>"
+#~ msgstr ""
+#~ "<guilabel>Erabili beharreko hash algoritmoa </guilabel> goitibeherako "
+#~ "zerrendatik, hautatu erabili nahi duzun algoritmoa. Hauek dira balio "
+#~ "posibleak: <placeholder-1/>"
+
+#~ msgid ""
+#~ "With the <guilabel>File Checksum</guilabel> and <guilabel>Image Checksum</"
+#~ "guilabel> plugins you can choose which algorithm to use: <placeholder-1/>"
+#~ msgstr ""
+#~ "<guilabel>Fitxategien kontrol-batura</guilabel> eta <guilabel>Irudien "
+#~ "kontrol-batura</guilabel> pluginekin, erabili nahi duzun algoritmoa "
+#~ "aukera dezakezu: <placeholder-1/>"
+
+#~ msgid ""
+#~ "In order to use some of the plugins listed here, it may be necessary to "
+#~ "install further applications on your system. See your operating system "
+#~ "documentation for more information."
+#~ msgstr ""
+#~ "Hemen zerrendatutako pluginetako batzuk erabiltzeko, beharrezkoa izan "
+#~ "liteke sisteman beste aplikazio batzuk instalatzea. Ikus sistema "
+#~ "eragilearen dokumentazioa informazio gehiago izateko."
