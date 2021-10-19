@@ -487,7 +487,7 @@ brasero_video_tree_model_path_to_track (BraseroVideoTreeModel *self,
 			if (index <= 0)
 				return BRASERO_TRACK (track);
 
-				index --;
+			index --;
 		}
 	}
 
