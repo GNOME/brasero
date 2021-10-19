@@ -30,8 +30,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-#include <libnautilus-extension/nautilus-menu-provider.h>
-#include <libnautilus-extension/nautilus-location-widget-provider.h>
+#include <nautilus-extension.h>
 
 #include "brasero-media.h"
 #include "brasero-medium-monitor.h"
