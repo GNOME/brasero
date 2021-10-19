@@ -665,7 +665,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 
 	context = gst_install_plugins_context_new ();
 	gst_install_plugins_context_set_xid (context, brasero_metadata_get_xid (self));
-	status = gst_install_plugins_async ((gchar **) details->pdata,
+	status = gst_install_plugins_async ((const gchar * const **) details->pdata,
 					    context,
 					    brasero_metadata_install_plugins_result,
 					    downloads);
