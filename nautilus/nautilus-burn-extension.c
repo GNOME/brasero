@@ -110,7 +110,7 @@ static GObjectClass *parent_class;
 /* do not call brasero_*_start() at nautilus startup, they are very expensive;
  * lazily initialize those instead */
 static void
-ensure_initialized ()
+ensure_initialized (void)
 {
 	static gboolean initialized = FALSE;
 
