@@ -304,7 +304,7 @@ struct _BraseroXferThreadData
 static gpointer
 brasero_xfer_thread (gpointer callback_data)
 {
-	BraseroXferThreadData *data = data;
+	BraseroXferThreadData *data = callback_data;
 	GError *error = NULL;
 
 	data->result = brasero_xfer_start (data->ctx,
