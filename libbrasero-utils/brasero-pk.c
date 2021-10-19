@@ -83,9 +83,11 @@ brasero_pk_install_missing_files_result (GObject *source_object,
 		g_error_free (error);
 	}
 
-	if (priv->values != NULL)
+	if (priv->values != NULL) {
 		g_variant_unref (priv->values);
 		priv->res = TRUE;
+	}
+
 	g_object_unref (priv->proxy);
 
 	if (priv->loop)
