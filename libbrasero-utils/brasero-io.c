@@ -150,7 +150,7 @@ G_DEFINE_TYPE (BraseroIO, brasero_io, BRASERO_TYPE_ASYNC_TASK_MANAGER);
 static BraseroIO *singleton = NULL;
 
 static BraseroIO *
-brasero_io_get_default ()
+brasero_io_get_default (void)
 {
 	if (singleton) {
 		g_object_ref (singleton);
