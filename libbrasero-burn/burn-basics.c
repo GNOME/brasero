@@ -248,10 +248,6 @@ brasero_burn_library_start (int *argc,
 	g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
 #endif
 
-	/* Initialize external libraries (threads...) */
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
-
 	/* ... and GStreamer) */
 	if (!gst_init_check (argc, argv, NULL))
 		return FALSE;
