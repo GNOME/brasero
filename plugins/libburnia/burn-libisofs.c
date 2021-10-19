@@ -388,12 +388,11 @@ brasero_libisofs_create_volume_thread_finished (gpointer data)
 
 	brasero_job_get_action (BRASERO_JOB (self), &action);
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
-		BraseroBurnResult result;
 		GError *error = NULL;
 
-		result = brasero_libisofs_create_image (self, &error);
+		brasero_libisofs_create_image (self, &error);
 		if (error)
-		brasero_job_error (BRASERO_JOB (self), error);
+			brasero_job_error (BRASERO_JOB (self), error);
 		else
 			return FALSE;
 	}
