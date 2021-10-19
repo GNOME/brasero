@@ -542,10 +542,6 @@ brasero_media_library_start (void)
 	g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
 #endif
 
-	/* Initialize external libraries (threads... */
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
-
 	/* Initialize i18n */
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
