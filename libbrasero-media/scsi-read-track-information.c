@@ -132,7 +132,7 @@ brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
 			else
 				*size = datasize;
 		}
-		else if (*size < datasize) {
+		else if (datasize < *size) {
 			BRASERO_MEDIA_LOG ("Oversized data required (%i) setting to %i", *size, datasize);
 			*size = datasize;
 		}
