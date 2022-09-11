@@ -511,12 +511,10 @@ docs/reference/libbrasero-burn/Makefile
 docs/reference/libbrasero-media/version.xml
 docs/reference/libbrasero-burn/version.xml
 data/Makefile
-data/brasero.desktop.in
 data/icons/Makefile
 data/mime/Makefile
 help/Makefile
 nautilus/Makefile
-nautilus/brasero-nautilus.desktop.in
 libbrasero-media/Makefile
 libbrasero-media/brasero-media.h
 libbrasero-utils/Makefile
