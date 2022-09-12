@@ -238,8 +238,9 @@ subdir('libbrasero-burn')
 subdir('src')
 subdir('plugins')
 subdir('docs')
-# TODO: port to newer libnautilus-extension
-# subdir('nautilus')
+if not get_option('nautilus').disabled()
+    subdir('nautilus')
+endif
 
 gnome.post_install(
     glib_compile_schemas: true,
