@@ -268,7 +268,7 @@ AC_ARG_WITH(nautilusdir,
 
 if test x"$enable_nautilus" = "xyes"; then
     	PKG_CHECK_MODULES(NAUTILUS_EXTENSION,
-			  libnautilus-extension >= $NAUTILUS_REQUIRED,
+			  libnautilus-extension-4 >= $NAUTILUS_REQUIRED,
 			  build_nautilus=yes,
 			  build_nautilus=no)
 else
@@ -280,7 +280,7 @@ if test x"$build_nautilus" = "xyes"; then
 	NAUTILUS_EXTENSION_LIBS="$BRASERO_GLIB_LIBS $BRASERO_UI_LIBS $NAUTILUS_EXTENSION_LIBS"
 
 	if test "${ac_with_nautilusdir}" = ""; then
-		ac_with_nautilusdir=`pkg-config --variable=extensiondir libnautilus-extension`
+		ac_with_nautilusdir=`pkg-config --variable=extensiondir libnautilus-extension-4`
 	fi
 
 	AC_MSG_NOTICE([installing plugin in ${ac_with_nautilusdir}])
