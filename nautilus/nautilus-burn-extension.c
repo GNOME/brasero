@@ -30,8 +30,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-#include <libnautilus-extension/nautilus-menu-provider.h>
-#include <libnautilus-extension/nautilus-location-widget-provider.h>
+#include <nautilus-extension.h>
 
 #include "brasero-media.h"
 #include "brasero-medium-monitor.h"
@@ -513,7 +512,6 @@ drive_is_cd_device (GDrive *gdrive)
 
 static GList *
 nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
-                                   GtkWidget            *window,
                                    GList                *selection)
 {
         GList            *items = NULL;
@@ -732,7 +730,7 @@ nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
 }
 
 static void
-nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
+nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderInterface *iface)
 {
         iface->get_file_items = nautilus_disc_burn_get_file_items;
         iface->get_background_items = nautilus_disc_burn_get_background_items;
