@@ -52,8 +52,6 @@
 #include "brasero-burn-options.h"
 #include "brasero-burn-dialog.h"
 
-#include "nautilus-burn-bar.h"
-
 #include "brasero-misc.h"
 
 #include "brasero-media-private.h"
@@ -85,11 +83,6 @@ struct _NautilusDiscBurnPrivate
 
         guint         start_monitor_id;
         guint         empty_update_id;
-
-        GSList       *widget_list;
-
-	gchar        *title;
-	gchar        *icon;
 };
 
 static GType nautilus_disc_burn_get_type      (void);
@@ -97,8 +90,6 @@ static void  nautilus_disc_burn_register_type (GTypeModule *module);
 
 static void
 nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface);
-static void
-nautilus_disc_burn_location_widget_provider_iface_init (NautilusLocationWidgetProviderIface *iface);
 
 //#define DEBUG_PRINT(format_MACRO,...)           g_print (format_MACRO, ##__VA_ARGS__);
 #define DEBUG_PRINT(format_MACRO,...)             
@@ -112,9 +103,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusDiscBurn,
 				0,
 				G_ADD_PRIVATE_DYNAMIC (NautilusDiscBurn)
 				G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_MENU_PROVIDER,
-							       nautilus_disc_burn_menu_provider_iface_init)
-				G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER,
-							       nautilus_disc_burn_location_widget_provider_iface_init));
+							       nautilus_disc_burn_menu_provider_iface_init));
 
 /* do not call brasero_*_start() at nautilus startup, they are very expensive;
  * lazily initialize those instead */
@@ -259,7 +248,6 @@ static void
 write_activate (NautilusDiscBurn *burn,
                 GtkWindow *toplevel)
 {
-	NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
 	BraseroTrackDataCfg	*track;
 	BraseroSessionCfg	*session;
 
@@ -271,20 +259,11 @@ write_activate (NautilusDiscBurn *burn,
 	track = brasero_track_data_cfg_new ();
 	brasero_track_data_cfg_add (track, BURN_URI, NULL);
 
-	if (priv->icon)
-		brasero_track_data_cfg_set_icon (BRASERO_TRACK_DATA_CFG (track),
-		                                 priv->icon,
-		                                 NULL);
-
 	session = brasero_session_cfg_new ();
 	brasero_burn_session_add_track (BRASERO_BURN_SESSION (session),
 					BRASERO_TRACK (track),
 					NULL);
 	g_object_unref (track);
-
-	if (priv->title)
-		brasero_burn_session_set_label (BRASERO_BURN_SESSION (session),
-		                                priv->title);
 
 	/* NOTE: set the disc we're handling */
 	launch_brasero_on_window_session (session,
@@ -758,113 +737,6 @@ nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
         iface->get_background_items = nautilus_disc_burn_get_background_items;
 }
 
-static void
-bar_activated_cb (NautilusDiscBurnBar	*bar,
-                  gpointer		 user_data)
-{
-	write_activate (NAUTILUS_DISC_BURN (user_data),
-	                GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
-}
-
-static void
-title_changed_cb (NautilusDiscBurnBar	*bar,
-                  NautilusDiscBurn	*burn)
-{
-	NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
-
-	if (priv->title)
-		g_free (priv->title);
-	priv->title = g_strdup (nautilus_disc_burn_bar_get_title (bar));
-}
-
-static void
-icon_changed_cb (NautilusDiscBurnBar	*bar,
-                 NautilusDiscBurn	*burn)
-{
-	NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
-
-	if (priv->icon)
-		g_free (priv->icon);
-	priv->icon = g_strdup (nautilus_disc_burn_bar_get_icon (bar));
-}
-
-static void
-destroyed_callback (GtkWidget    *widget,
-                    NautilusDiscBurn *burn)
-{
-	NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
-
-        priv->widget_list = g_slist_remove (priv->widget_list, widget);
-}
-
-static void
-sense_widget (NautilusDiscBurn *burn,
-              GtkWidget    *widget)
-{
-	NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
-
-        gtk_widget_set_sensitive (widget, !priv->empty);
-
-        priv->widget_list = g_slist_prepend (priv->widget_list, widget);
-
-        g_signal_connect (widget, "destroy",
-                          G_CALLBACK (destroyed_callback),
-                          burn);
-}
-
-static GtkWidget *
-nautilus_disc_burn_get_location_widget (NautilusLocationWidgetProvider *iface,
-                                        const char                     *uri,
-                                        GtkWidget                      *window)
-{
-        if (g_str_has_prefix (uri, "burn:")) {
-                GtkWidget    *bar;
-                NautilusDiscBurn *burn = NAUTILUS_DISC_BURN (iface);
-		NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
-
-                DEBUG_PRINT ("Get location widget for burn\n");
-
-                bar = nautilus_disc_burn_bar_new ();
-		nautilus_disc_burn_bar_set_title (NAUTILUS_DISC_BURN_BAR (bar),
-		                                  priv->title);
-		nautilus_disc_burn_bar_set_icon (NAUTILUS_DISC_BURN_BAR (bar),
-		                                 priv->icon);
-                sense_widget (burn, nautilus_disc_burn_bar_get_button (NAUTILUS_DISC_BURN_BAR (bar)));
-
-                g_signal_connect (bar, "activate",
-                                  G_CALLBACK (bar_activated_cb),
-                                  burn);
-		g_signal_connect (bar, "title-changed",
-		                  G_CALLBACK (title_changed_cb),
-		                  burn);
-		g_signal_connect (bar, "icon-changed",
-		                  G_CALLBACK (icon_changed_cb),
-		                  burn);
-
-                gtk_widget_show (bar);
-
-                return bar;
-        }
-
-        return NULL;
-}
-
-static void
-nautilus_disc_burn_location_widget_provider_iface_init (NautilusLocationWidgetProviderIface *iface)
-{
-
-        iface->get_widget = nautilus_disc_burn_get_location_widget;
-}
-
-static void
-update_widget_sensitivity (GtkWidget    *widget,
-                           NautilusDiscBurn *burn)
-{
-	NautilusDiscBurnPrivate *priv = nautilus_disc_burn_get_instance_private (burn);
-
-        gtk_widget_set_sensitive (widget, !priv->empty);
-}
-
 static gboolean
 update_empty_idle (NautilusDiscBurn *burn)
 {
@@ -879,8 +751,6 @@ update_empty_idle (NautilusDiscBurn *burn)
 
         if (priv->empty != is_empty) {
                 priv->empty = is_empty;
-                /* update bar */
-                g_slist_foreach (priv->widget_list, (GFunc)update_widget_sensitivity, burn);
 
                 /* Trigger update for menu items */
                 nautilus_menu_provider_emit_items_updated_signal (NAUTILUS_MENU_PROVIDER (burn));
@@ -980,16 +850,6 @@ nautilus_disc_burn_finalize (GObject *object)
 
         DEBUG_PRINT ("Finalizing burn extension\n");
 
-	if (priv->icon) {
-		g_free (priv->icon);
-		priv->icon = NULL;
-	}
-
-	if (priv->title) {
-		g_free (priv->title);
-		priv->title = NULL;
-	}
-
         if (priv->empty_update_id > 0) {
                 g_source_remove (priv->empty_update_id);
         }
@@ -1000,10 +860,6 @@ nautilus_disc_burn_finalize (GObject *object)
 
         if (priv->burn_monitor != NULL) {
                 g_file_monitor_cancel (priv->burn_monitor);
-        }
-
-        if (priv->widget_list != NULL) {
-                g_slist_free (priv->widget_list);
         }
 
         G_OBJECT_CLASS (nautilus_disc_burn_parent_class)->finalize (object);
