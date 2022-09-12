@@ -53,8 +53,6 @@
 #include "brasero-burn-options.h"
 #include "brasero-burn-dialog.h"
 
-#include "nautilus-burn-bar.h"
-
 #include "brasero-misc.h"
 
 #include "brasero-media-private.h"
@@ -89,11 +87,6 @@ struct _NautilusDiscBurnPrivate
 
         guint         start_monitor_id;
         guint         empty_update_id;
-
-        GSList       *widget_list;
-
-	gchar        *title;
-	gchar        *icon;
 };
 
 static GType nautilus_disc_burn_get_type      (void);
@@ -745,95 +738,6 @@ nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
         iface->get_background_items = nautilus_disc_burn_get_background_items;
 }
 
-static void
-bar_activated_cb (NautilusDiscBurnBar	*bar,
-                  gpointer		 user_data)
-{
-	write_activate (NAUTILUS_DISC_BURN (user_data),
-	                GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
-}
-
-static void
-title_changed_cb (NautilusDiscBurnBar	*bar,
-                  NautilusDiscBurn	*burn)
-{
-	if (burn->priv->title)
-		g_free (burn->priv->title);
-	burn->priv->title = g_strdup (nautilus_disc_burn_bar_get_title (bar));
-}
-
-static void
-icon_changed_cb (NautilusDiscBurnBar	*bar,
-                 NautilusDiscBurn	*burn)
-{
-	if (burn->priv->icon)
-		g_free (burn->priv->icon);
-	burn->priv->icon = g_strdup (nautilus_disc_burn_bar_get_icon (bar));
-}
-
-static void
-destroyed_callback (GtkWidget    *widget,
-                    NautilusDiscBurn *burn)
-{
-        burn->priv->widget_list = g_slist_remove (burn->priv->widget_list, widget);
-}
-
-static void
-sense_widget (NautilusDiscBurn *burn,
-              GtkWidget    *widget)
-{
-        gtk_widget_set_sensitive (widget, !burn->priv->empty);
-
-        burn->priv->widget_list = g_slist_prepend (burn->priv->widget_list, widget);
-
-        g_signal_connect (widget, "destroy",
-                          G_CALLBACK (destroyed_callback),
-                          burn);
-}
-
-static GtkWidget *
-nautilus_disc_burn_get_location_widget (NautilusLocationWidgetProvider *iface,
-                                        const char                     *uri,
-                                        GtkWidget                      *window)
-{
-        if (g_str_has_prefix (uri, "burn:")) {
-                GtkWidget    *bar;
-                NautilusDiscBurn *burn;
-
-                DEBUG_PRINT ("Get location widget for burn\n");
-
-                burn = NAUTILUS_DISC_BURN (iface);
-
-                bar = nautilus_disc_burn_bar_new ();
-		nautilus_disc_burn_bar_set_title (NAUTILUS_DISC_BURN_BAR (bar),
-		                                  burn->priv->title);
-		nautilus_disc_burn_bar_set_icon (NAUTILUS_DISC_BURN_BAR (bar),
-		                                 burn->priv->icon);
-                sense_widget (burn, nautilus_disc_burn_bar_get_button (NAUTILUS_DISC_BURN_BAR (bar)));
-
-                g_signal_connect (bar, "activate",
-                                  G_CALLBACK (bar_activated_cb),
-                                  burn);
-		g_signal_connect (bar, "title-changed",
-		                  G_CALLBACK (title_changed_cb),
-		                  burn);
-		g_signal_connect (bar, "icon-changed",
-		                  G_CALLBACK (icon_changed_cb),
-		                  burn);
-
-                gtk_widget_show (bar);
-
-                return bar;
-        }
-
-        return NULL;
-}
-
-static void
-nautilus_disc_burn_location_widget_provider_iface_init (NautilusLocationWidgetProviderIface *iface)
-{
-        iface->get_widget = nautilus_disc_burn_get_location_widget;
-}
 
 static void
 update_widget_sensitivity (GtkWidget    *widget,
@@ -855,8 +759,6 @@ update_empty_idle (NautilusDiscBurn *burn)
 
         if (burn->priv->empty != is_empty) {
                 burn->priv->empty = is_empty;
-                /* update bar */
-                g_slist_foreach (burn->priv->widget_list, (GFunc)update_widget_sensitivity, burn);
 
                 /* Trigger update for menu items */
                 nautilus_menu_provider_emit_items_updated_signal (NAUTILUS_MENU_PROVIDER (burn));
@@ -1025,11 +927,6 @@ nautilus_disc_burn_register_type (GTypeModule *module)
                 NULL,
                 NULL
         };
-        static const GInterfaceInfo location_widget_provider_iface_info = {
-                (GInterfaceInitFunc) nautilus_disc_burn_location_widget_provider_iface_init,
-                NULL,
-                NULL
-        };
 
         burn_type = g_type_module_register_type (module,
                                                  G_TYPE_OBJECT,
@@ -1040,10 +937,6 @@ nautilus_disc_burn_register_type (GTypeModule *module)
                                      burn_type,
                                      NAUTILUS_TYPE_MENU_PROVIDER,
                                      &menu_provider_iface_info);
-        g_type_module_add_interface (module,
-                                     burn_type,
-                                     NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER,
-                                     &location_widget_provider_iface_info);
 }
 
 void

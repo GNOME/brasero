@@ -41,8 +41,6 @@ nautilus_extensiondir = $(NAUTILUSDIR)
 nautilus_extension_LTLIBRARIES = libnautilus-brasero-extension.la
 
 libnautilus_brasero_extension_la_SOURCES = 	\
-	nautilus-burn-bar.c			\
-	nautilus-burn-bar.h			\
 	nautilus-burn-extension.c
 
 libnautilus_brasero_extension_la_LIBADD =	\
