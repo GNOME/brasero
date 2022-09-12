@@ -7,7 +7,7 @@ shared_library(
         libbrasero_burn,
         libbrasero_media,
         libbrasero_utils,
-        dependency('libnautilus-extension', disabler: true, required: false),
+        dependency('libnautilus-extension-4', disabler: true, required: false),
     ],
     include_directories: root_inc,
 )
