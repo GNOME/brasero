@@ -150,6 +150,12 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 							     BRASERO_BURN_ERROR_MEDIUM_INVALID,
 							     _("The disc is not supported")));
 	}
+	else if (strstr (line, "Unsupported sector size")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("Unsupported sector size in TOC/CUE file")));
+	}
 	/* REMINDER: these should not be necessary as we checked that already */
 	/**
 	else if (strstr (line, "cannot write medium - incompatible format") != NULL) {
