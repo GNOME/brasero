@@ -251,7 +251,7 @@ brasero_process_finished (BraseroProcess *self)
 
 	/* check if an error went undetected */
 	if (priv->return_status) {
-		if (priv->error) {
+		if (!priv->error) {
 			brasero_job_error (BRASERO_JOB (self),
 					   g_error_new (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_GENERAL,
