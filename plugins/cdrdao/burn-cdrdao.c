@@ -248,6 +248,12 @@ brasero_cdrdao_read_stderr (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_PERMISSION,
 						_("You do not have the required permissions to use this drive")));
 	}
+	else if (strstr (line, "Unsupported track mode")) {
+		brasero_job_error (BRASERO_JOB (cdrdao),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("Unsupported track mode in TOC/CUE file")));
+	}
 
 	return BRASERO_BURN_OK;
 }
