@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/brasero/issues\n"
-"POT-Creation-Date: 2023-03-04 16:12+0000\n"
-"PO-Revision-Date: 2017-07-12 17:54-0400\n"
+"POT-Creation-Date: 2023-05-26 23:08+0000\n"
+"PO-Revision-Date: 2023-10-17 00:33+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 3.4\n"
 
 #: ../data/brasero.appdata.xml.in.h:1
 msgid ""
@@ -1041,7 +1041,7 @@ msgid ""
 "not want to burn another copy, press \"Cancel\"."
 msgstr ""
 "Siz yeni bir yazılabilir disk takar takmaz başka bir kopyalama işlemi "
-"başlayacak. Eğer başka bir kopya daha yazmak istemiyorsanız, \"Vazgeç\"e "
+"başlayacak. Eğer başka bir kopya daha yazmak istemiyorsanız, \"İptal\"e "
 "basın."
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:1963
@@ -1080,7 +1080,7 @@ msgstr "Ya_zmaya Devam Et"
 
 #: ../libbrasero-burn/brasero-burn-dialog.c:2465
 msgid "_Cancel Burning"
-msgstr "Kaydı _Durdur"
+msgstr "Kaydı _İptal Et"
 
 #: ../libbrasero-burn/brasero-burn-options.c:228 ../src/brasero-project.c:1020
 msgid ""
@@ -3534,7 +3534,7 @@ msgstr ""
 
 #: ../src/brasero-audio-disc.c:674
 msgid "_Discard File"
-msgstr "_Dosyadan Vazgeç"
+msgstr "_Dosyayı Gözden Çıkar"
 
 #: ../src/brasero-audio-disc.c:677
 msgid "_Add File"
@@ -3750,15 +3750,15 @@ msgstr "Projenin içeriği son kaydedilişinden sonra değişti."
 
 #: ../src/brasero-data-disc.c:561
 msgid "Discard the current modified project ?"
-msgstr "Üzerinde değişiklik yapılmış geçerli proje silinsin mi?"
+msgstr "Geçerli değiştirilmiş proje gözden çıkarılsın mı?"
 
 #: ../src/brasero-data-disc.c:567
 msgid "_Discard"
-msgstr "Gö_rmezden Gel"
+msgstr "_Gözden Çıkar"
 
 #: ../src/brasero-data-disc.c:569
 msgid "Discard the current modified project"
-msgstr "Geçerli değiştirilmiş projeyi görmezden gel"
+msgstr "Geçerli değiştirilmiş projeyi gözden çıkar"
 
 #: ../src/brasero-data-disc.c:574
 msgid "Continue with the current modified project"
@@ -3885,7 +3885,7 @@ msgstr "Proje yüklenirken lütfen bekleyin."
 
 #: ../src/brasero-data-disc.c:1500
 msgid "_Cancel Loading"
-msgstr "_Yüklemeyi iptal et"
+msgstr "_Yüklemeyi İptal Et"
 
 #: ../src/brasero-data-disc.c:1502
 msgid "Cancel loading current project"
@@ -4269,7 +4269,7 @@ msgstr "Lüften projeye ses dosyaları ekleyin."
 
 #: ../src/brasero-project.c:1904 ../src/brasero-project.c:1939
 msgid "Do you really want to create a new project and discard the current one?"
-msgstr "Yeni bir proje başlatıp mevcut olanı silmek istiyor musunuz?"
+msgstr "Yeni proje başlatıp geçerli olanı gözden çıkarmak istiyor musunuz?"
 
 #: ../src/brasero-project.c:1909
 msgid "If you choose to create a new empty project, all changes will be lost."
@@ -4278,12 +4278,12 @@ msgstr ""
 
 #: ../src/brasero-project.c:1912
 msgid "_Discard Changes"
-msgstr "_Değişiklikleri Kaydetme"
+msgstr "Değişiklikleri _Gözden Çıkar"
 
 #: ../src/brasero-project.c:1920
 msgid "Do you want to discard the file selection or add it to the new project?"
 msgstr ""
-"Dosya seçiminden vazgeçmek mi yoksa seçimi yeni projeye aktarmak mı "
+"Dosya seçimini gözden çıkarmak mı, yoksa seçimi yeni projeye eklemek mi "
 "istiyorsunuz?"
 
 #: ../src/brasero-project.c:1925 ../src/brasero-project.c:1944
@@ -4291,11 +4291,12 @@ msgid ""
 "If you choose to create a new empty project, the file selection will be "
 "discarded."
 msgstr ""
-"Eğer yeni boş bir proje başlatmayı seçerseniz, dosya seçimleriniz kaybolacak."
+"Eğer yeni boş bir proje oluşturmayı seçerseniz, dosya seçimi gözden "
+"çıkarılacak."
 
 #: ../src/brasero-project.c:1927
 msgid "_Discard File Selection"
-msgstr "_Dosya Seçiminden Vazgeç"
+msgstr "_Dosya Seçiminini Gözden Çıkar"
 
 #: ../src/brasero-project.c:1931
 msgid "_Keep File Selection"
@@ -4303,7 +4304,7 @@ msgstr "Dosya Seçimini _Koru"
 
 #: ../src/brasero-project.c:1946
 msgid "_Discard Project"
-msgstr "_Projeden Vazgeç"
+msgstr "_Projeyi Gözden Çıkar"
 
 #: ../src/brasero-project.c:2188
 msgid "Select Files"
