@@ -198,7 +198,8 @@ brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
 			else
 				info->format = BRASERO_IMAGE_FORMAT_BIN;
 		}
-		else if (mime && !strcmp (mime, "application/x-cd-image"))
+		else if (mime && (!strcmp (mime, "application/x-cd-image") ||
+				  (!strcmp (mime, "application/vnd.efi.iso"))))
 			info->format = BRASERO_IMAGE_FORMAT_BIN;
 
 		g_object_unref (file_info);

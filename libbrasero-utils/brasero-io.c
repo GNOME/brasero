@@ -1041,6 +1041,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	&& (!strncmp (mime, "image/", 6)
 	||  !strcmp (mime, "text/plain")
 	||  !strcmp (mime, "application/x-cue") /* this one make gstreamer crash */
+	||  !strcmp (mime, "application/vnd.efi.iso")
 	||  !strcmp (mime, "application/x-cd-image")))
 		return FALSE;
 

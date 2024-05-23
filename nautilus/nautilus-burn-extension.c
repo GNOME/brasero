@@ -560,6 +560,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
         }
 
         is_iso = (strcmp (mime_type, "application/x-iso-image") == 0)
+                || (strcmp (mime_type, "application/vnd.efi.iso") == 0)
                 || (strcmp (mime_type, "application/x-cd-image") == 0)
                 || (strcmp (mime_type, "application/x-cue") == 0)
                 || (strcmp (mime_type, "application/x-toc") == 0)

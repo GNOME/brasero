@@ -1373,6 +1373,7 @@ brasero_app_open_by_mime (BraseroApp *app,
 #endif
 
 	else if (!strcmp (mime, "application/x-cd-image")
+	     ||  !strcmp (mime, "application/vnd.efi.iso")
 	     ||  !strcmp (mime, "application/x-cdrdao-toc")
 	     ||  !strcmp (mime, "application/x-toc")
 	     ||  !strcmp (mime, "application/x-cue")) {
@@ -1738,6 +1739,7 @@ brasero_app_add_recent (BraseroApp *app,
 
 	gtk_recent_filter_set_name (filter, _("_Recent Projects"));
 	gtk_recent_filter_add_mime_type (filter, "application/x-brasero");
+	gtk_recent_filter_add_mime_type (filter, "application/vnd.efi.iso");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cd-image");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");
 	gtk_recent_filter_add_mime_type (filter, "application/x-toc");

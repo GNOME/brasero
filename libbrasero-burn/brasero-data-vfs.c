@@ -608,6 +608,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 	&& (!strcmp (g_file_info_get_content_type (info), "application/x-toc")
 	||  !strcmp (g_file_info_get_content_type (info), "application/x-cdrdao-toc")
 	||  !strcmp (g_file_info_get_content_type (info), "application/x-cue")
+	||  !strcmp (g_file_info_get_content_type (info), "application/vnd.efi.iso")
 	||  !strcmp (g_file_info_get_content_type (info), "application/x-cd-image"))) {
 		BraseroBurnResult result;
 

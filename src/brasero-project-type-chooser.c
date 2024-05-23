@@ -253,6 +253,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 		/* filter those we want */
 		if (strcmp (mime, "application/x-brasero")
+		&&  strcmp (mime, "application/vnd.efi.iso")
 		&&  strcmp (mime, "application/x-cd-image")
 		&&  strcmp (mime, "application/x-cdrdao-toc")
 		&&  strcmp (mime, "application/x-toc")
