@@ -1412,7 +1412,7 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 	                  disc);
 
 	g_signal_connect (track,
-			  "2G-file",
+			  "G2-file",
 			  G_CALLBACK (brasero_data_disc_2G_file_cb),
 			  disc);
 	g_signal_connect (track,

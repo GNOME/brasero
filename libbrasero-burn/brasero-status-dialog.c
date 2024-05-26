@@ -396,7 +396,7 @@ brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 					  G_CALLBACK (brasero_status_dialog_joliet_rename_cb),
 					  dialog);
 			g_signal_connect (track,
-					  "2G-file",
+					  "G2-file",
 					  G_CALLBACK (brasero_status_dialog_2G_file_cb),
 					  dialog);
 			g_signal_connect (track,

@@ -3344,7 +3344,7 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 			  G_CALLBACK (brasero_track_data_cfg_deep_directory),
 			  object);
 	g_signal_connect (priv->tree,
-			  "2G-file",
+			  "G2-file",
 			  G_CALLBACK (brasero_track_data_cfg_2G_file),
 			  object);
 	g_signal_connect (priv->tree,
@@ -3504,7 +3504,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
 			  1,
 			  G_TYPE_STRING);
 	brasero_track_data_cfg_signals [G2_FILE] = 
-	    g_signal_new ("2G_file",
+	    g_signal_new ("G2_file",
 			  G_TYPE_FROM_CLASS (klass),
 			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
 			  0,

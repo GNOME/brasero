@@ -4427,7 +4427,7 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
 			  1,
 			  G_TYPE_STRING);
 	brasero_data_project_signals [G2_FILE_SIGNAL] = 
-	    g_signal_new ("2G_file",
+	    g_signal_new ("G2_file",
 			  G_TYPE_FROM_CLASS (klass),
 			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
 			  0,
