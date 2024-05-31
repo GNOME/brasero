@@ -89,8 +89,6 @@ brasero_SOURCES = \
 	brasero-file-filtered.c         \
 	brasero-filter-option.h         \
 	brasero-filter-option.c         \
-	baobab-cell-renderer-progress.c         \
-	baobab-cell-renderer-progress.h         \
 	brasero-multi-song-props.h         \
 	brasero-multi-song-props.c         \
 	brasero-rename.h         \

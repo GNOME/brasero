@@ -36,7 +36,6 @@
 #include "brasero-misc.h"
 
 #include "eggtreemultidnd.h"
-#include "baobab-cell-renderer-progress.h"
 
 #include "brasero-data-disc.h"
 #include "brasero-file-filtered.h"
@@ -2369,14 +2368,14 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	gtk_tree_view_column_set_sort_column_id (column, BRASERO_DATA_TREE_MODEL_MIME_DESC);
 
 	/* Space column */
-	renderer = baobab_cell_renderer_progress_new ();
+	renderer = gtk_cell_renderer_progress_new ();
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "visible", BRASERO_DATA_TREE_MODEL_SHOW_PERCENT);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "perc", BRASERO_DATA_TREE_MODEL_PERCENT);
+					    "value", BRASERO_DATA_TREE_MODEL_PERCENT);
 	gtk_tree_view_column_set_title (column, _("Space"));
 
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
