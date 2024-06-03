@@ -230,7 +230,7 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
 
 	context = gst_install_plugins_context_new ();
 	gst_install_plugins_context_set_xid (context, xid);
-	status = gst_install_plugins_async ((gchar **) gst_plugins->pdata,
+	status = gst_install_plugins_async ((const gchar* const*) gst_plugins->pdata,
 	                                    context,
 	                                    brasero_pk_install_gst_plugin_result,
 	                                    package);

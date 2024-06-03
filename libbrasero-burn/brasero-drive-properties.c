@@ -835,23 +835,19 @@ brasero_drive_properties_set_property (GObject *object,
 				       GParamSpec *pspec)
 {
 	BraseroDrivePropertiesPrivate *priv;
-	BraseroBurnSession *session;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
 
 	switch (property_id) {
 	case PROP_SESSION: /* Readable and only writable at creation time */
-		/* NOTE: no need to unref a potential previous session since
-		 * it's only set at construct time */
-		session = g_value_get_object (value);
-		priv->session = g_object_ref (session);
+		priv->session = g_object_ref (g_value_get_object (value));
 
 		brasero_drive_properties_update (BRASERO_DRIVE_PROPERTIES (object));
-		priv->valid_sig = g_signal_connect (session,
+		priv->valid_sig = g_signal_connect (priv->session,
 						    "is-valid",
 						    G_CALLBACK (brasero_drive_properties_is_valid_cb),
 						    object);
-		priv->output_sig = g_signal_connect (session,
+		priv->output_sig = g_signal_connect (priv->session,
 						     "output-changed",
 						     G_CALLBACK (brasero_drive_properties_output_changed_cb),
 						     object);
