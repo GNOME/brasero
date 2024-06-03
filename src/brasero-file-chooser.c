@@ -211,60 +211,10 @@ brasero_file_chooser_allocation_changed (GtkWidget *widget,
 	brasero_file_chooser_position_percent (G_OBJECT (widget), width, position);
 }
 
-static void
-brasero_file_chooser_notify_model (GtkTreeView *treeview,
-                                   GParamSpec *pspec,
-                                   gpointer NULL_data)
-{
-	GtkTreeModel *model;
-
-	model = gtk_tree_view_get_model (treeview);
-	if (model && !EGG_IS_TREE_MULTI_DRAG_SOURCE (model)) {
-		GType type;
-
-		type = G_OBJECT_TYPE (model);
-		brasero_enable_multi_DND_for_model_type (type);
-	}
-}
-
 void
 brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 {
-	/* we explore everything until we reach a treeview (there are two) */
-	if (GTK_IS_TREE_VIEW (widget)) {
-		GtkTargetList *list;
-		GdkAtom target;
-		gboolean found;
-		guint num;
-
-		list = gtk_drag_source_get_target_list (widget);
-		target = gdk_atom_intern ("text/uri-list", TRUE);
-		found = gtk_target_list_find (list, target, &num);
-		/* FIXME: should we unref them ? apparently not according to 
-		 * the warning messages we get if we do */
-
-		if (found
-		&&  gtk_tree_selection_get_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (widget))) == GTK_SELECTION_MULTIPLE) {
-			GtkTreeModel *model;
-
-			/* This is done because GtkFileChooser does not use a
-			 * GtkListStore or GtkTreeStore any more. */
-			egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (widget));
-			model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
-			if (model) {
-				GType type;
-
-				type = G_OBJECT_TYPE (model);
-				brasero_enable_multi_DND_for_model_type (type);
-			}
-			else
-				g_signal_connect (widget,
-				                  "notify::model",
-				                  G_CALLBACK (brasero_file_chooser_notify_model),
-				                  NULL);
-		}
-	}
-	else if (GTK_IS_BUTTON (widget)) {
+	if (GTK_IS_BUTTON (widget)) {
 		GtkWidget *image;
 		gchar *stock_id = NULL;
 

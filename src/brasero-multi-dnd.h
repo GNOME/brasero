@@ -33,9 +33,6 @@ G_BEGIN_DECLS
 void
 brasero_enable_multi_DND (void);
 
-gboolean
-brasero_enable_multi_DND_for_model_type (GType type);
-
 G_END_DECLS
 
 #endif /* _MULTI_DND_H */

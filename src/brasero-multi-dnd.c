@@ -200,15 +200,6 @@ static const GInterfaceInfo brasero_data_track_cfg_multi_DND_drag_source_info = 
 	NULL
 };
 
-gboolean
-brasero_enable_multi_DND_for_model_type (GType type)
-{
-	g_type_add_interface_static (type,
-				     EGG_TYPE_TREE_MULTI_DRAG_SOURCE,
-				     &multi_DND_drag_source_info);
-	return TRUE;
-}
-
 void
 brasero_enable_multi_DND (void)
 {
