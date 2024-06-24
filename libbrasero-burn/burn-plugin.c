@@ -188,6 +188,24 @@ brasero_plugin_test_gstreamer_plugin (BraseroPlugin *plugin,
 		gst_object_unref (element);
 }
 
+static gboolean
+is_old_app_version (guint major,
+		    guint minor,
+		    guint sub,
+		    gint version [3])
+{
+    /* Compare minor versions only when major versions are
+       equal. Compare micro versions only when major and minor
+       versions are equal. */
+    if (major < version [0] ||
+	(version [1] >= 0 && major == version [0] && minor < version [1]) ||
+	(version [2] >= 0 && major == version [0] && minor == version [1] && sub < version [2]))
+	    return TRUE;
+
+    return FALSE;
+}
+
+
 void
 brasero_plugin_test_app (BraseroPlugin *plugin,
                          const gchar *name,
@@ -200,7 +218,7 @@ brasero_plugin_test_app (BraseroPlugin *plugin,
 	guint major, minor, sub;
 	gchar *prog_path;
 	GPtrArray *argv;
-	gboolean res;
+	gboolean res, old_app_version;
 	int i;
 
 	/* First see if this plugin can be used, i.e. if cdrecord is in
@@ -278,15 +296,12 @@ brasero_plugin_test_app (BraseroPlugin *plugin,
 	for (i = 0; i < 3 && version [i] >= 0; i++);
 
 	if ((standard_output && sscanf (standard_output, version_format, &major, &minor, &sub) == i)
-	||  (standard_error && sscanf (standard_error, version_format, &major, &minor, &sub) == i)) {
-		if (major < version [0]
-		||  (version [1] >= 0 && minor < version [1])
-		||  (version [2] >= 0 && sub < version [2]))
-			brasero_plugin_add_error (plugin,
-						  BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION,
-						  name);
-	}
+	||  (standard_error && sscanf (standard_error, version_format, &major, &minor, &sub) == i))
+		old_app_version = is_old_app_version (major, minor, sub, version);
 	else
+		old_app_version = TRUE;
+
+	if (old_app_version)
 		brasero_plugin_add_error (plugin,
 		                          BRASERO_PLUGIN_ERROR_WRONG_APP_VERSION,
 		                          name);
