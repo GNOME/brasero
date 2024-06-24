@@ -1111,6 +1111,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->player, NULL);
 
 	hbox2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	gtk_widget_set_valign (hbox2, GTK_ALIGN_CENTER);
 	gtk_widget_show (hbox2);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
 
@@ -1129,6 +1130,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
 
 	hbox2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	gtk_widget_set_valign (hbox2, GTK_ALIGN_CENTER);
 	gtk_widget_show (hbox2);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
 
