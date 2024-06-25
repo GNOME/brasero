@@ -157,7 +157,7 @@ brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
 
         notification = notify_notification_new (message,
                                                 NULL,
-                                                GTK_STOCK_CDROM);
+                                                "media-optical");
 
 	if (!notification)
                 return FALSE;
