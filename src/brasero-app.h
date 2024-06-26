@@ -42,18 +42,21 @@ typedef struct _BraseroApp BraseroApp;
 
 struct _BraseroAppClass
 {
-	GtkWindowClass parent_class;
+	GtkApplicationClass parent_class;
 };
 
 struct _BraseroApp
 {
-	GtkWindow parent_instance;
+	GtkApplication parent_instance;
 };
 
 GType brasero_app_get_type (void) G_GNUC_CONST;
 
-BraseroApp *
-brasero_app_new (GApplication *gapp);
+GApplication *
+brasero_app_new (void);
+
+int
+brasero_app_run (BraseroApp *app, int argc, char **argv);
 
 BraseroApp *
 brasero_app_get_default (void);

@@ -13,7 +13,6 @@ executable(
     files(
         'brasero-app.c',
         'brasero-audio-disc.c',
-        'brasero-cli.c',
         'brasero-data-disc.c',
         'brasero-disc.c',
         'brasero-drive-settings.c',

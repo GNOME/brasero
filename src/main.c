@@ -45,25 +45,12 @@
 
 #include "brasero-multi-dnd.h"
 #include "brasero-app.h"
-#include "brasero-cli.h"
-
-static BraseroApp *current_app = NULL;
-
-/**
- * This is actually declared in brasero-app.h
- */
-
-BraseroApp *
-brasero_app_get_default (void)
-{
-	return current_app;
-}
 
 int
 main (int argc, char **argv)
 {
-	GApplication *gapp = NULL;
-	GOptionContext *context;
+	int result;
+	g_autoptr (GApplication) app = NULL;
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -76,58 +63,15 @@ main (int argc, char **argv)
 	 * specific options are parsed. Otherwise on error that crashes. */
 	gtk_init (&argc, &argv);
 
-	memset (&cmd_line_options, 0, sizeof (cmd_line_options));
-
-	context = g_option_context_new (_("[URI] [URI] …"));
-	g_option_context_add_main_entries (context,
-					   prog_options,
-					   GETTEXT_PACKAGE);
-	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
-
-	g_option_context_add_group (context, gtk_get_option_group (TRUE));
-	g_option_context_add_group (context, brasero_media_get_option_group ());
-	g_option_context_add_group (context, brasero_burn_library_get_option_group ());
-	g_option_context_add_group (context, brasero_utils_get_option_group ());
-	g_option_context_add_group (context, gst_init_get_option_group ());
-	if (g_option_context_parse (context, &argc, &argv, NULL) == FALSE) {
-		g_print (_("Please type \"%s --help\" to see all available options\n"), argv [0]);
-		g_option_context_free (context);
-		return FALSE;
-	}
-	g_option_context_free (context);
-
-	if (cmd_line_options.not_unique == FALSE) {
-		GError *error = NULL;
-		/* Create GApplication and check if there is a process running already */
-		gapp = g_application_new ("org.gnome.Brasero", G_APPLICATION_FLAGS_NONE);
-
-		if (!g_application_register (gapp, NULL, &error)) {
-			g_warning ("Failed to register application: %s", error ? error->message : "unknown error");
-			g_error_free (error);
-			return 1;
-		}
-
-		if (g_application_get_is_remote (gapp)) {
-			g_warning ("An instance of Brasero is already running, exiting");
-			return 0;
-		}
-	}
-
 	brasero_burn_library_start (&argc, &argv);
 	brasero_enable_multi_DND ();
 
-	current_app = brasero_app_new (gapp);
-	if (current_app == NULL)
-		return 1;
-
-	brasero_cli_apply_options (current_app);
-
-	g_object_unref (current_app);
-	current_app = NULL;
+	app = brasero_app_new ();
+	result = brasero_app_run (BRASERO_APP (app), argc, argv);
 
 	brasero_burn_library_stop ();
 
 	gst_deinit ();
 
-	return 0;
+	return result;
 }

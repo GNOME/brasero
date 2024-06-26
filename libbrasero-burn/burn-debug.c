@@ -82,6 +82,8 @@ brasero_burn_library_get_option_group (void)
 				    NULL,
 				    NULL);
 	g_option_group_add_entries (group, options);
+	g_option_group_set_translation_domain (group, GETTEXT_PACKAGE);
+
 	return group;
 }
 
