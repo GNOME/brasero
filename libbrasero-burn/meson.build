@@ -77,7 +77,6 @@ libbrasero_burn = library(
         libbrasero_media,
         libbrasero_utils,
         libm,
-        libnotify,
     ],
     include_directories: root_inc,
     install: true,

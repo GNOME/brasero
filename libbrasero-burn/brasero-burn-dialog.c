@@ -44,7 +44,7 @@
 #include <gdk/gdkx.h>
 
 #include <gtk/gtk.h>
-#include <libnotify/notify.h>
+
 
 #include "brasero-burn-dialog.h"
 
@@ -134,49 +134,16 @@ brasero_burn_dialog_update_media (BraseroBurnDialog *dialog)
 	priv->media = media;
 }
 
+/* This should be moved to 'libbrasero-util' as public API in future. */
 static void
-brasero_burn_dialog_notify_daemon_close (NotifyNotification *notification,
-                                         BraseroBurnDialog *dialog)
+send_notification (const char *message)
 {
-	g_object_unref (notification);
-}
+        g_autoptr (GNotification) notification = g_notification_new (message);
 
-static gboolean
-brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
-                                   const char *message)
-{
-        NotifyNotification *notification;
-	GError *error = NULL;
-        gboolean result;
-
-	if (!notify_is_initted ()) {
-		notify_init (_("Brasero notification"));
-	}
-
-        notification = notify_notification_new (message,
-                                                NULL,
-                                                "media-optical");
-
-	if (!notification)
-                return FALSE;
-
-	g_signal_connect (notification,
-                          "closed",
-                          G_CALLBACK (brasero_burn_dialog_notify_daemon_close),
-                          dialog);
-
-	notify_notification_set_timeout (notification, 10000);
-	notify_notification_set_urgency (notification, NOTIFY_URGENCY_NORMAL);
-	notify_notification_set_hint_string (notification, "desktop-entry",
-                                             "brasero");
-
-	result = notify_notification_show (notification, &error);
-	if (error) {
-		g_warning ("Error showing notification");
-		g_error_free (error);
-	}
-
-	return result;
+	g_notification_set_priority (notification, G_NOTIFICATION_PRIORITY_NORMAL);
+	g_application_send_notification (g_application_get_default (),
+					 NULL,
+					 notification);
 }
 
 static GtkWidget *
@@ -1750,7 +1717,7 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 			       GTK_STOCK_CLOSE,
 			       GTK_RESPONSE_CLOSE);
 
-	brasero_burn_dialog_notify_daemon (dialog, _("Error while burning."));
+	send_notification (_("Error while burning."));
 
 	response = gtk_dialog_run (GTK_DIALOG (message));
 	while (response == GTK_RESPONSE_OK) {
@@ -1890,7 +1857,7 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 	gtk_widget_show (GTK_WIDGET (message));
 	brasero_burn_play_sound ("complete-media-burn", main_message);
 
-	brasero_burn_dialog_notify_daemon (dialog, main_message);
+	send_notification (main_message);
 	g_free (main_message);
 
 	response = gtk_dialog_run (GTK_DIALOG (message));
@@ -1966,7 +1933,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	gtk_widget_show(GTK_WIDGET(dialog));
 	brasero_burn_play_sound ("complete-media-burn", primary);
 
-	brasero_burn_dialog_notify_daemon (dialog, primary);
+	send_notification (primary);
 	g_free (primary);
 
 	res = brasero_burn_dialog_success_run (dialog);

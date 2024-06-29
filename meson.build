@@ -46,10 +46,10 @@ cairo = dependency('cairo')
 gdk3 = dependency('gdk-3.0')
 gdk_pixbuf2 = dependency('gdk-pixbuf-2.0')
 gdk_x11_3 = dependency('gdk-x11-3.0')
-gio2 = dependency('gio-2.0', version: '>=2.28.0')
-glib2 = dependency('glib-2.0', version: '>=2.29.14')
-gmodule2 = dependency('gmodule-2.0', version: '>=2.6.0')
-gmodule_no_export2 = dependency('gmodule-no-export-2.0', version: '>=2.6.0')
+gio2 = dependency('gio-2.0', version: '>=2.44.0')
+glib2 = dependency('glib-2.0', version: '>=2.44.0')
+gmodule2 = dependency('gmodule-2.0', version: '>=2.44.0')
+gmodule_no_export2 = dependency('gmodule-no-export-2.0', version: '>=2.44.0')
 gobject2 = dependency('gobject-2.0')
 gsound = dependency('gsound', version: '>=1.0.2')
 gstreamer1 = dependency('gstreamer-1.0', version: '>=0.11.92')
@@ -61,12 +61,11 @@ gstreamer_video1 = dependency(
     required: get_option('preview'),
     version: '>=0.11.92',
 )
-gthread2 = dependency('gthread-2.0', version: '>=2.6.0')
+gthread2 = dependency('gthread-2.0', version: '>=2.44.0')
 gtk3 = dependency('gtk+-3.0')
 libburn1 = dependency('libburn-1', required: opt_libburn, version: '>=1.2.0')
 libisofs1 = dependency('libisofs-1', required: opt_libisofs, version: '>=0.6.4')
 libm = cc.find_library('m')
-libnotify = dependency('libnotify', version: '>=0.6.1')
 libxml2 = dependency('libxml-2.0', version: '>=2.6.0')
 totem_plparser = dependency(
     'totem-plparser',
