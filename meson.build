@@ -91,6 +91,7 @@ glib_compile_schemas = find_program(
 )
 
 prefix = get_option('prefix')
+bindir = get_option('bindir')
 datadir = get_option('datadir')
 libdir = get_option('libdir')
 localedir = get_option('localedir')

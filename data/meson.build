@@ -50,4 +50,15 @@ test(
     args: ['--strict', '--dry-run', meson.current_source_dir()],
 )
 
+service_conf = configuration_data()
+service_conf.set('bindir', prefix / bindir)
+
+configure_file(
+    input: 'org.gnome.Brasero.service.in',
+    output: 'org.gnome.Brasero.service',
+    configuration: service_conf,
+    install: true,
+    install_dir: datadir / 'dbus-1/services',
+)
+
 subdir('icons')
