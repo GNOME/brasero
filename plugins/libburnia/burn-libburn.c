@@ -966,6 +966,13 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 					       BRASERO_MEDIUM_APPENDABLE|
 					       BRASERO_MEDIUM_CLOSED|
 					       BRASERO_MEDIUM_HAS_DATA;
+	const BraseroMedia media_bd_r = BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_UNFORMATTED|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_HAS_DATA;
 	GSList *output;
 	GSList *input;
 
@@ -1034,6 +1041,15 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_RESTRICTED_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+
+	/* for BD-R and BD-RE */
+	output = brasero_caps_disc_new (media_bd_r);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+	g_slist_free (input);
+
+	BRASERO_PLUGIN_ADD_STANDARD_BD_R_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+	BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
 	/* add blank caps */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
