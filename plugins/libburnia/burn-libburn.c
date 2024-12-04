@@ -1037,7 +1037,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	output = brasero_caps_disc_new (media_dvd_rw_plus);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
-	g_slist_free (input);
 
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_RESTRICTED_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
