@@ -1,0 +1,41 @@
+libbrasero_utils = library(
+    'brasero-utils3',
+    files(
+        'brasero-async-task-manager.c',
+        'brasero-disc-message.c',
+        'brasero-io.c',
+        'brasero-jacket-background.c',
+        'brasero-jacket-buffer.c',
+        'brasero-jacket-edit.c',
+        'brasero-jacket-font.c',
+        'brasero-jacket-view.c',
+        'brasero-metadata.c',
+        'brasero-misc.c',
+        'brasero-notify.c',
+        'brasero-pk.c',
+        'brasero-tool-color-picker.c',
+    ),
+    dependencies: [
+        cairo,
+        gdk3,
+        gdk_pixbuf2,
+        gdk_x11_3,
+        gio2,
+        glib2,
+        gobject2,
+        gstreamer1,
+        gstreamer_base1,
+        gstreamer_pbutils1,
+        gstreamer_tag1,
+        gtk3,
+        totem_plparser.found() ? totem_plparser : [],
+    ],
+    include_directories: root_inc,
+    install: true,
+    version: library_version,
+)
+
+libbrasero_utils = declare_dependency(
+    include_directories: '.',
+    link_with: libbrasero_utils,
+)

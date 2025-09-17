@@ -1,0 +1,52 @@
+option(
+    'playlist',
+    type: 'feature',
+    description: 'Enable a playlist pane. Requires totem-plparser',
+)
+option(
+    'preview',
+    type: 'feature',
+    description: 'Enable a preview pane. Requires gstreamer-video-1.0',
+)
+option(
+    'search',
+    type: 'feature',
+    description: 'Enable a search pane. Requires tracker-sparql-3.0 and the playlist feature',
+)
+
+option('cdrdao', type: 'boolean', description: 'Build the cdrdao plugin')
+option('cdrkit', type: 'boolean', description: 'Build cdrkit-based plugins')
+option('cdrtools', type: 'boolean', description: 'Build cdrtools-based plugins')
+option('dvdauthor', type: 'boolean', description: 'Build the dvdauthor plugin')
+option('dvdcss', type: 'boolean', description: 'Build the libdvdcss plugin')
+option(
+    'growisofs',
+    type: 'boolean',
+    description: 'Build growisofs-based plugins',
+)
+option(
+    'libburn',
+    type: 'feature',
+    description: 'Required for the libburn and libisofs plugins',
+)
+option(
+    'libisofs',
+    type: 'feature',
+    description: 'Required for the libisofs plugin',
+)
+option('vcdimager', type: 'boolean', description: 'Build the vcdimager plugin')
+
+option(
+    'nautilus',
+    type: 'feature',
+    value: 'disabled',
+    description: 'Build a Nautilus extension',
+)
+
+option(
+    'gtk-doc',
+    type: 'boolean',
+    value: false,
+    description: 'Build gtk-doc API documentation',
+)
+option('yelp', type: 'boolean', description: 'Build yelp user documentation')

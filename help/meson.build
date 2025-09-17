@@ -1,0 +1,20 @@
+gnome.yelp(
+    'brasero',
+    media: ['figures/brasero-main-window.png', 'figures/logo48.png'],
+    sources: [
+        'create-cover.page',
+        'index.page',
+        'introduction.page',
+        'prob-cd.page',
+        'prob-dvd.page',
+        'project-audio.page',
+        'project-data.page',
+        'project-disc-copy.page',
+        'project-image-burn.page',
+        'project-save.page',
+        'project-video.page',
+        'split-track.page',
+        'tools-blank.page',
+        'tools-check-integrity.page',
+    ],
+)
