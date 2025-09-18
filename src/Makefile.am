@@ -12,7 +12,6 @@ AM_CPPFLAGS = \
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   			\
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    		\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
-	-DEGG_SM_CLIENT_BACKEND_XSMP					\
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_GLIB_CFLAGS)						\
@@ -24,7 +23,6 @@ AM_CPPFLAGS = \
 	$(BRASERO_LIBXML_CFLAGS)					\
 	$(BRASERO_SEARCH_CFLAGS)					\
 	$(BRASERO_PL_PARSER_CFLAGS)					\
-	$(BRASERO_SM_CFLAGS) 						\
 	-Wno-error=format-y2k
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
@@ -145,8 +143,7 @@ brasero_LDADD =						\
 	$(BRASERO_DBUS_LIBS)		\
 	$(BRASERO_LIBXML_LIBS)		\
 	$(BRASERO_SEARCH_LIBS)		\
-	$(BRASERO_PL_PARSER_LIBS)	\
-	$(BRASERO_SM_LIBS)
+	$(BRASERO_PL_PARSER_LIBS)
 
 EXTRA_DIST =			\
 	brasero-marshal.list
