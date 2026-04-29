@@ -88,6 +88,9 @@ typedef struct _BraseroLibburnPrivate BraseroLibburnPrivate;
 typedef enum {
 BRASERO_SCSI_PROF_DVD_RW_RESTRICTED	= 0x0013,
 BRASERO_SCSI_PROF_DVD_RW_PLUS		= 0x001A,
+BRASERO_SCSI_PROF_BR_R_SEQUENTIAL	= 0x0041,
+BRASERO_SCSI_PROF_BR_R_RANDOM		= 0x0042,
+BRASERO_SCSI_PROF_BD_RW		        = 0x0043,
 } BraseroScsiProfile;
 
 static GObjectClass *parent_class = NULL;
@@ -785,8 +788,21 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 			/* Bit 2 is for format max available size
 			 * Bit 4 is enforce (re)-format if needed
 			 * 0x26 is DVD+RW format is to be set from bit 8
-			 * in the latter case bit 7 needs to be set as 
+			 * in the latter case bit 7 needs to be set as
 			 * well. */
+			if (!priv->sig_handler) {
+				burn_set_signal_handling ("brasero", NULL, 0);
+				priv->sig_handler = 1;
+			}
+
+			burn_disc_format (priv->ctx->drive,
+					  (off_t) 0,
+					  (1 << 2)|(1 << 4));
+			return BRASERO_BURN_OK;
+		}
+	}
+	else if (profile == BRASERO_SCSI_PROF_BD_RW) {
+		if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
 			if (!priv->sig_handler) {
 				burn_set_signal_handling ("brasero", NULL, 0);
 				priv->sig_handler = 1;
@@ -1119,6 +1135,23 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 					       BRASERO_MEDIUM_APPENDABLE|
 					       BRASERO_MEDIUM_CLOSED|
 					       BRASERO_MEDIUM_HAS_DATA;
+	const BraseroMedia media_bd_r = BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_SRM|
+					BRASERO_MEDIUM_POW|
+					BRASERO_MEDIUM_RANDOM|
+					BRASERO_MEDIUM_DUAL_L|
+					BRASERO_MEDIUM_WRITABLE|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA;
+	const BraseroMedia media_bd_re = BRASERO_MEDIUM_BD|
+					 BRASERO_MEDIUM_DUAL_L|
+					 BRASERO_MEDIUM_REWRITABLE|
+					 BRASERO_MEDIUM_UNFORMATTED|
+					 BRASERO_MEDIUM_BLANK|
+					 BRASERO_MEDIUM_APPENDABLE|
+					 BRASERO_MEDIUM_CLOSED|
+					 BRASERO_MEDIUM_HAS_DATA;
 	GSList *output;
 	GSList *input;
 
@@ -1191,10 +1224,24 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	output = brasero_caps_disc_new (media_dvd_rw_plus);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
-	g_slist_free (input);
 
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_RESTRICTED_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+
+	/* BD-R (SRM, SRM+POW, Random, DL) */
+	output = brasero_caps_disc_new (media_bd_r);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+
+	BRASERO_PLUGIN_ADD_STANDARD_BD_R_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+
+	/* BD-RE (+DL) */
+	output = brasero_caps_disc_new (media_bd_re);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+	g_slist_free (input);
+
+	BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
 	/* add blank caps */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
@@ -1244,6 +1291,30 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_UNFORMATTED|
 				        BRASERO_MEDIUM_BLANK,
+					BRASERO_BURN_FLAG_NOGRACE|
+					BRASERO_BURN_FLAG_FAST_BLANK,
+					BRASERO_BURN_FLAG_NONE);
+
+	/* BD-RE blank/format caps */
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_DUAL_L|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_UNFORMATTED|
+					BRASERO_MEDIUM_BLANK);
+	brasero_plugin_blank_caps (plugin, output);
+	g_slist_free (output);
+
+	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_BDRE|
+					BRASERO_MEDIUM_DUAL_L|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_UNFORMATTED|
+					BRASERO_MEDIUM_BLANK,
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
