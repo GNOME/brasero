@@ -2500,7 +2500,7 @@ brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 	if (!priv->burn)
 		return TRUE;
 
-	if (brasero_burn_cancel (priv->burn, (force_cancellation == TRUE)) == BRASERO_BURN_DANGEROUS) {
+	if (brasero_burn_cancel (priv->burn, !force_cancellation) == BRASERO_BURN_DANGEROUS) {
 		if (!brasero_burn_dialog_cancel_dialog (dialog))
 			return FALSE;
 
