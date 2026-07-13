@@ -60,19 +60,6 @@ dnl **************** documentation *****************************
 YELP_HELP_INIT
 GTK_DOC_CHECK([1.12])
 
-dnl ***************** GNOME MACROS *****************************
-
-dnl This allows to set warnings
-GNOME_COMPILE_WARNINGS([maximum])
-GNOME_CXX_WARNINGS
-
-dnl This could be use one day not to compile all debugging message
-dnl GNOME_DEBUG_CHECK
-
-GNOME_MAINTAINER_MODE_DEFINES
-DISABLE_DEPRECATED="$DISABLE_DEPRECATED -DGSEAL_ENABLE"
-AC_SUBST(DISABLE_DEPRECATED)
-
 dnl ***************** GENERAL **********************************
 
 dnl ** reminder: the following set CFLAGS to -O2 -g if empty
