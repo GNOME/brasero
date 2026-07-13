@@ -131,6 +131,7 @@ static const char *description = {
 			    "<separator/>"
 			    "<menuitem action='Open'/>"
 			    "<menuitem action='RecentProjects'/>"
+			    "<menuitem action='ClearRecent'/>"
 			    "<separator/>"
 			"</placeholder>"
 
@@ -564,13 +565,24 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 
+	if (type != BRASERO_PROJECT_TYPE_INVALID) {
+		GtkWidget *status = brasero_app_get_statusbar1 (brasero_app_get_default ());
+		if (status)
+			gtk_widget_show (gtk_widget_get_parent (status));
+	}
+
 	manager->priv->type = type;
 	if (type == BRASERO_PROJECT_TYPE_INVALID) {
+		GtkWidget *status = brasero_app_get_statusbar1 (brasero_app_get_default ());
+
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);
 		brasero_project_set_none (BRASERO_PROJECT (manager->priv->project));
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 0);
 		gtk_action_set_sensitive (action, FALSE);
+
+		if (status)
+			gtk_widget_hide (gtk_widget_get_parent (status));
 
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), "Brasero");

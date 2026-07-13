@@ -104,6 +104,7 @@ static ItemDescription items [] = {
 
 struct BraseroProjectTypeChooserPrivate {
 	GtkWidget *recent_box;
+	GtkWidget *clear_btn;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -210,6 +211,13 @@ brasero_project_type_chooser_last_unsaved_clicked_cb (GtkButton *button,
 
 	g_remove (path);
 	g_free (path);
+}
+
+static void
+brasero_project_type_chooser_clear_clicked_cb (GtkButton *button,
+					       BraseroProjectTypeChooser *self)
+{
+	brasero_app_clear_recent (brasero_app_get_default ());
 }
 
 static gint
@@ -405,8 +413,6 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		}
 		g_list_free (children);
 	}
-	g_object_unref (image_group);
-	g_object_unref (group);
 
 	if (!g_list_length (list)) {
 		GtkWidget *label;
@@ -419,7 +425,17 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 		gtk_widget_show (label);
 		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 0);
+
+		if (self->priv->clear_btn)
+			gtk_widget_set_sensitive (self->priv->clear_btn, FALSE);
 	}
+	else {
+		if (self->priv->clear_btn)
+			gtk_widget_set_sensitive (self->priv->clear_btn, TRUE);
+	}
+
+	g_object_unref (image_group);
+	g_object_unref (group);
 
 	g_list_free (list);
 
@@ -448,6 +464,9 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *vbox;
+	GtkWidget *clear_btn;
+	GtkWidget *clear_img;
+	GtkWidget *action_bar;
 	int nb_rows = 1;
 	gchar *string;
 	int nb_items;
@@ -523,6 +542,43 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
 	obj->priv->recent_box = vbox;
+
+	/* Bottom action bar distinguished from the rest, packed at the end of recent_box */
+	action_bar = gtk_action_bar_new ();
+	gtk_widget_show (action_bar);
+	gtk_box_pack_end (GTK_BOX (recent_box), action_bar, FALSE, FALSE, 0);
+
+	{
+		GtkCssProvider *provider;
+		GtkStyleContext *context;
+
+		provider = gtk_css_provider_new ();
+		gtk_css_provider_load_from_data (provider,
+		                                 "actionbar, actionbar > revealer > box { padding-top: 3px; padding-bottom: 3px; min-height: 0px; }",
+		                                 -1, NULL);
+		context = gtk_widget_get_style_context (action_bar);
+		gtk_style_context_add_provider (context,
+		                                GTK_STYLE_PROVIDER (provider),
+		                                GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+		g_object_unref (provider);
+	}
+
+	clear_btn = gtk_button_new_with_mnemonic (_("_Clear History"));
+	gtk_widget_set_margin_bottom (clear_btn, 2);
+	gtk_widget_set_margin_end (clear_btn, 6);
+	gtk_widget_set_margin_top (clear_btn, 2);
+
+	clear_img = gtk_image_new_from_icon_name ("edit-clear", GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (clear_btn), clear_img);
+
+	g_signal_connect (clear_btn,
+			  "clicked",
+			  G_CALLBACK (brasero_project_type_chooser_clear_clicked_cb),
+			  obj);
+
+	gtk_widget_show_all (clear_btn);
+	gtk_action_bar_pack_end (GTK_ACTION_BAR (action_bar), clear_btn);
+	obj->priv->clear_btn = clear_btn;
 
 	recent = gtk_recent_manager_get_default ();
 	brasero_project_type_chooser_build_recent (obj, recent);

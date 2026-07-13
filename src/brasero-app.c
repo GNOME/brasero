@@ -114,6 +114,7 @@ static void on_eject_cb (GtkAction *action, BraseroApp *app);
 static void on_erase_cb (GtkAction *action, BraseroApp *app);
 static void on_integrity_check_cb (GtkAction *action, BraseroApp *app);
 
+static void on_clear_recent_cb (GtkAction *action, BraseroApp *app);
 static void on_exit_cb (GtkAction *action, BraseroApp *app);
 
 static void on_about_cb (GtkAction *action, BraseroApp *app);
@@ -138,6 +139,9 @@ static GtkActionEntry entries[] = {
 
 	{"Check", NULL, N_("_Check Integrity…"), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
+
+	{"ClearRecent", NULL, N_("Clear _Recent Projects"), NULL,
+	 N_("Clear the list of recently opened projects"), G_CALLBACK (on_clear_recent_cb)},
 
 	{"Quit", GTK_STOCK_QUIT, NULL, NULL,
 	 N_("Quit Brasero"), G_CALLBACK (on_exit_cb)},
@@ -1770,6 +1774,68 @@ brasero_app_add_recent (BraseroApp *app,
 			  app);
 }
 
+void
+brasero_app_clear_recent (BraseroApp *app)
+{
+	GtkWidget *dialog;
+	gint response;
+	GtkRecentManager *recent;
+	GList *recents;
+	GList *iter;
+
+	dialog = brasero_app_dialog (app,
+				     _("Do you want to clear the list of recently opened projects?"),
+				     GTK_BUTTONS_CANCEL,
+				     GTK_MESSAGE_QUESTION);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("This will remove all recently opened projects from the history."));
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Clear History"),
+			       GTK_RESPONSE_OK);
+
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (response != GTK_RESPONSE_OK)
+		return;
+
+	recent = gtk_recent_manager_get_default ();
+	recents = gtk_recent_manager_get_items (recent);
+	for (iter = recents; iter; iter = iter->next) {
+		GtkRecentInfo *info;
+		const gchar *mime;
+
+		info = iter->data;
+		mime = gtk_recent_info_get_mime_type (info);
+		if (!mime)
+			continue;
+
+		if (strcmp (mime, "application/x-brasero") == 0
+		||  strcmp (mime, "application/vnd.efi.iso") == 0
+		||  strcmp (mime, "application/x-cd-image") == 0
+		||  strcmp (mime, "application/x-cdrdao-toc") == 0
+		||  strcmp (mime, "application/x-toc") == 0
+		||  strcmp (mime, "application/x-cue") == 0
+		||  strcmp (mime, "audio/x-scpls") == 0
+		||  strcmp (mime, "audio/x-ms-asx") == 0
+		||  strcmp (mime, "audio/x-mp3-playlist") == 0
+		||  strcmp (mime, "audio/x-mpegurl") == 0
+		||  gtk_recent_info_has_group (info, "brasero")) {
+			const gchar *uri = gtk_recent_info_get_uri (info);
+			gtk_recent_manager_remove_item (recent, uri, NULL);
+		}
+	}
+	g_list_foreach (recents, (GFunc) gtk_recent_info_unref, NULL);
+	g_list_free (recents);
+}
+
+static void
+on_clear_recent_cb (GtkAction *action, BraseroApp *app)
+{
+	brasero_app_clear_recent (app);
+}
+
 static void
 brasero_menu_item_selected_cb (GtkMenuItem *proxy,
 			       BraseroApp *app)
@@ -1936,7 +2002,7 @@ brasero_app_create_mainwin (BraseroApp *app)
 
 	/* status bar to display the size of selected files */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_show (hbox);
+	gtk_widget_hide (hbox);
 	gtk_box_pack_end (GTK_BOX (priv->contents), hbox, FALSE, TRUE, 0);
 
 	priv->statusbar2 = gtk_statusbar_new ();

@@ -86,6 +86,9 @@ brasero_app_alert (BraseroApp *app,
 		   const gchar *secondary_message,
 		   GtkMessageType type);
 
+void
+brasero_app_clear_recent (BraseroApp *app);
+
 gboolean
 brasero_app_burn (BraseroApp *app,
 		  BraseroBurnSession *session,
