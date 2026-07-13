@@ -135,11 +135,10 @@ _read_data_track (xmlDocPtr project,
 			icon_path = xmlNodeListGetString (project,
 							  item->xmlChildrenNode,
 							  1);
-			if (!icon_path)
-				goto error;
-
-			brasero_track_data_cfg_set_icon (track, (gchar *) icon_path, NULL);
-                        g_free (icon_path);
+			if (icon_path) {
+				brasero_track_data_cfg_set_icon (track, (gchar *) icon_path, NULL);
+				g_free (icon_path);
+			}
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "restored")) {
 			xmlChar *restored;
@@ -147,11 +146,10 @@ _read_data_track (xmlDocPtr project,
 			restored = xmlNodeListGetString (project,
 							 item->xmlChildrenNode,
 							 1);
-			if (!restored)
-				goto error;
-
-                        brasero_track_data_cfg_dont_filter_uri (track, (gchar *) restored);
-                        g_free (restored);
+			if (restored) {
+				brasero_track_data_cfg_dont_filter_uri (track, (gchar *) restored);
+				g_free (restored);
+			}
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "excluded")) {
 			xmlChar *excluded_uri;
@@ -159,11 +157,10 @@ _read_data_track (xmlDocPtr project,
 			excluded_uri = xmlNodeListGetString (project,
 							     item->xmlChildrenNode,
 							     1);
-			if (!excluded_uri)
-				goto error;
-
-			excluded = g_slist_prepend (excluded, xmlURIUnescapeString ((char*) excluded_uri, 0, NULL));
-			g_free (excluded_uri);
+			if (excluded_uri) {
+				excluded = g_slist_prepend (excluded, xmlURIUnescapeString ((char*) excluded_uri, 0, NULL));
+				g_free (excluded_uri);
+			}
 		}
 		else if (item->type == XML_ELEMENT_NODE)
 			goto error;
@@ -282,16 +279,15 @@ _read_audio_track (xmlDocPtr project,
 			title = xmlNodeListGetString (project,
 						      uris->xmlChildrenNode,
 						      1);
-			if (!title)
-				goto error;
+			if (title) {
+				unescaped_title = g_uri_unescape_string ((char *) title, NULL);
+				g_free (title);
 
-                        unescaped_title = g_uri_unescape_string ((char *) title, NULL);
-                        g_free (title);
-
-                        brasero_track_tag_add_string (BRASERO_TRACK (track),
-                                                      BRASERO_TRACK_STREAM_TITLE_TAG,
-                                                      unescaped_title);
-        		g_free (unescaped_title);
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+				                              BRASERO_TRACK_STREAM_TITLE_TAG,
+				                              unescaped_title);
+				g_free (unescaped_title);
+			}
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "artist")) {
 			xmlChar *artist;
@@ -300,16 +296,15 @@ _read_audio_track (xmlDocPtr project,
 			artist = xmlNodeListGetString (project,
 						      uris->xmlChildrenNode,
 						      1);
-			if (!artist)
-				goto error;
+			if (artist) {
+				unescaped_artist = g_uri_unescape_string ((char *) artist, NULL);
+				g_free (artist);
 
-			unescaped_artist = g_uri_unescape_string ((char *) artist, NULL);
-			g_free (artist);
-
-                        brasero_track_tag_add_string (BRASERO_TRACK (track),
-                                                      BRASERO_TRACK_STREAM_ARTIST_TAG,
-                                                      unescaped_artist);
-        		g_free (unescaped_artist);
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+				                              BRASERO_TRACK_STREAM_ARTIST_TAG,
+				                              unescaped_artist);
+				g_free (unescaped_artist);
+			}
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "composer")) {
 			xmlChar *composer;
@@ -318,16 +313,15 @@ _read_audio_track (xmlDocPtr project,
 			composer = xmlNodeListGetString (project,
 							 uris->xmlChildrenNode,
 							 1);
-			if (!composer)
-				goto error;
+			if (composer) {
+				unescaped_composer = g_uri_unescape_string ((char *) composer, NULL);
+				g_free (composer);
 
-			unescaped_composer = g_uri_unescape_string ((char *) composer, NULL);
-			g_free (composer);
-
-                        brasero_track_tag_add_string (BRASERO_TRACK (track),
-                                                      BRASERO_TRACK_STREAM_COMPOSER_TAG,
-                                                      unescaped_composer);
-        		g_free (unescaped_composer);
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+				                              BRASERO_TRACK_STREAM_COMPOSER_TAG,
+				                              unescaped_composer);
+				g_free (unescaped_composer);
+			}
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "isrc")) {
 			xmlChar *isrc;
@@ -336,16 +330,15 @@ _read_audio_track (xmlDocPtr project,
 			isrc = xmlNodeListGetString (project,
 						     uris->xmlChildrenNode,
 						     1);
-			if (!isrc)
-				goto error;
+			if (isrc) {
+				unescaped_isrc = g_uri_unescape_string ((char *) isrc, NULL);
+				g_free (isrc);
 
-			unescaped_isrc = g_uri_unescape_string ((char *) isrc, NULL);
-			g_free (isrc);
-
-                        brasero_track_tag_add_string (BRASERO_TRACK (track),
-                                                      BRASERO_TRACK_STREAM_ISRC_TAG,
-                                                      unescaped_isrc);
-        		g_free (unescaped_isrc);
+				brasero_track_tag_add_string (BRASERO_TRACK (track),
+				                              BRASERO_TRACK_STREAM_ISRC_TAG,
+				                              unescaped_isrc);
+				g_free (unescaped_isrc);
+			}
 		}
 		else if (uris->type == XML_ELEMENT_NODE)
 			goto error;
@@ -483,8 +476,8 @@ brasero_project_open_project_xml (const gchar *uri,
 			label = (gchar *) xmlNodeListGetString (project,
 								item->xmlChildrenNode,
 								1);
-			if (!(label))
-				goto error;
+			if (!label)
+				label = g_strdup ("");
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "cover")) {
 			xmlChar *escaped;
@@ -492,11 +485,10 @@ brasero_project_open_project_xml (const gchar *uri,
 			escaped = xmlNodeListGetString (project,
 							item->xmlChildrenNode,
 							1);
-			if (!escaped)
-				goto error;
-
-			cover = g_uri_unescape_string ((char *) escaped, NULL);
-			g_free (escaped);
+			if (escaped) {
+				cover = g_uri_unescape_string ((char *) escaped, NULL);
+				g_free (escaped);
+			}
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "track")) {
 			if (track_node)
