@@ -7,6 +7,7 @@ shared_module(
     include_directories: root_inc,
     install: true,
     install_dir: plugindir,
+    name_prefix: 'lib',
 )
 
 shared_module(
@@ -16,6 +17,7 @@ shared_module(
     include_directories: root_inc,
     install: true,
     install_dir: plugindir,
+    name_prefix: 'lib',
 )
 
 unset_variable('common_deps')

@@ -19,6 +19,7 @@ shared_module(
     include_directories: root_inc,
     install: true,
     install_dir: plugindir,
+    name_prefix: 'lib',
 )
 
 if libisofs1.found() and conf.get('HAVE_STDINT_H')
@@ -29,6 +30,7 @@ if libisofs1.found() and conf.get('HAVE_STDINT_H')
         include_directories: root_inc,
         install: true,
         install_dir: plugindir,
+        name_prefix: 'lib',
     )
 endif
 

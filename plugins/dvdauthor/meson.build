@@ -11,4 +11,5 @@ shared_module(
     include_directories: root_inc,
     install: true,
     install_dir: plugindir,
+    name_prefix: 'lib',
 )
