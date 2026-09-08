@@ -364,6 +364,7 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	g_free (device);
 
 	g_ptr_array_add (argv, g_strdup ("-nocorr"));
+	g_ptr_array_add (argv, g_strdup ("retries=5"));
 
 	medium = brasero_drive_get_medium (drive);
 	media = brasero_medium_get_status (medium);

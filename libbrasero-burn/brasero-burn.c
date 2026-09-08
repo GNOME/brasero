@@ -2302,19 +2302,22 @@ brasero_burn_check_real (BraseroBurn *self,
 
 		/* make sure one last time it is not mounted IF and only IF the
 		 * checksum type is NOT FILE_MD5 */
-		/* it seems to work without unmounting ... */
-		/* if (medium
-		 * &&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
-		 * && !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
-		 *	g_set_error (error,
-		 *		     BRASERO_BURN_ERROR,
-		 *		     BRASERO_BURN_ERROR_DRIVE_BUSY,
-		 *		     "%s. %s",
-		 *		     _("The drive is busy"),
-		 *		     _("Make sure another application is not using it"));
-		 *	return BRASERO_BURN_ERR;
-		 * }
-		 */
+		if (track) {
+			BraseroChecksumType checksum_type;
+
+			checksum_type = brasero_track_get_checksum_type (track);
+			if (priv->dest && (checksum_type & (BRASERO_CHECKSUM_MD5|BRASERO_CHECKSUM_SHA1|BRASERO_CHECKSUM_SHA256))) {
+				BraseroMedium *medium;
+
+				medium = brasero_drive_get_medium (priv->dest);
+				if (medium && brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
+					if (!brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
+						g_warning ("Couldn't unmount volume in drive: %s",
+							   brasero_drive_get_device (priv->dest));
+					}
+				}
+			}
+		}
 
 		result = brasero_task_run (priv->task, error);
 		g_signal_emit (self,
