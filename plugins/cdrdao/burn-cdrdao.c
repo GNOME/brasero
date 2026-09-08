@@ -379,8 +379,15 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 				g_ptr_array_add (argv, g_strdup ("--swap")); */
 		}
 		else if (brasero_track_type_get_image_format (type) == BRASERO_IMAGE_FORMAT_CDRDAO) {
+			gchar *parent;
+
 			/* CDRDAO files are always BIG ENDIAN */
 			cuepath = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), FALSE);
+			if (cuepath) {
+				parent = g_path_get_dirname (cuepath);
+				brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao), parent);
+				g_free (parent);
+			}
 		}
 		else {
 			brasero_track_type_free (type);
