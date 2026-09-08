@@ -405,8 +405,21 @@ brasero_vcd_imager_set_argv (BraseroProcess *process,
 
 	g_ptr_array_add (argv, g_strdup ("-c"));
 	g_ptr_array_add (argv, toc);
-	g_ptr_array_add (argv, g_strdup ("-b"));
-	g_ptr_array_add (argv, image);
+
+	/* vcdxbuild stores -b in the CUE FILE line. Pass only the filename and
+	 * run from the image directory to have a relative path instead of the
+	 * full path. */
+	if (image) {
+		gchar *image_dir;
+
+		image_dir = g_path_get_dirname (image);
+		brasero_process_set_working_directory (process, image_dir);
+		g_free (image_dir);
+
+		g_ptr_array_add (argv, g_strdup ("-b"));
+		g_ptr_array_add (argv, g_path_get_basename (image));
+		g_free (image);
+	}
 
 	/* get temporary file to write XML */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (process),

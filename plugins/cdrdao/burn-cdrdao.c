@@ -578,8 +578,22 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 		brasero_job_start_progress (BRASERO_JOB (cdrdao), FALSE);
 	}
 
-	g_ptr_array_add (argv, g_strdup ("--datafile"));
-	g_ptr_array_add (argv, image);
+	/* cdrdao stores --datafile in the TOC (and toc2cue copies it into the
+	 * CUE). Pass only the filename and run from the image directory so the
+	 * .cue/.toc files use a relative path to the .bin file instead of the
+	 * full path. */
+	if (image) {
+		gchar *image_dir;
+
+		image_dir = g_path_get_dirname (image);
+		brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao),
+						       image_dir);
+		g_free (image_dir);
+
+		g_ptr_array_add (argv, g_strdup ("--datafile"));
+		g_ptr_array_add (argv, g_path_get_basename (image));
+		g_free (image);
+	}
 
 	g_ptr_array_add (argv, g_strdup ("-v"));
 	g_ptr_array_add (argv, g_strdup ("2"));

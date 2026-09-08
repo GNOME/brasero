@@ -334,6 +334,7 @@ brasero_audio2cue_create_thread (gpointer data)
 	guint64 total_len = 0;
 	GSList *tracks = NULL;
 	gchar *image = NULL;
+	gchar *image_filename = NULL;
 	gchar *album = NULL;
 	gchar *toc = NULL;
 	int fd_out = -1;
@@ -422,7 +423,10 @@ brasero_audio2cue_create_thread (gpointer data)
 	}
 
 	/** Most significant byte first (BINARY otherwise as far as I can tell) **/
-	line = g_strdup_printf ("FILE \"%s\" MOTOROLA\n", image);
+	/* Embed only the .bin filename so the .cue stays valid if the pair is moved. */
+	image_filename = g_path_get_basename (image);
+	line = g_strdup_printf ("FILE \"%s\" MOTOROLA\n", image_filename);
+	g_free (image_filename);
 	if (write (fd_out, line, strlen (line)) < 0) {
 		int err_saved = errno;
 		priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
