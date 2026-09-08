@@ -103,6 +103,7 @@ struct BraseroBurnDialogPrivate {
 
 	guint is_writing:1;
 	guint is_creating_image:1;
+	guint is_checking:1;
 };
 
 #define BRASERO_BURN_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogPrivate))
@@ -176,7 +177,7 @@ brasero_burn_dialog_create_dialog_title_for_action (BraseroBurnDialog *dialog,
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
-	if (priv->initial_title)
+	if (priv->initial_title && !priv->is_checking)
 		action = priv->initial_title;
 
 	if (percent >= 0 && percent <= 100) {
@@ -1172,6 +1173,35 @@ brasero_burn_dialog_update_title_writing_progress (BraseroBurnDialog *dialog,
 }
 
 static void
+brasero_burn_dialog_update_title_checking_progress (BraseroBurnDialog *dialog,
+						    guint percent)
+{
+	gchar *title;
+	gchar *icon_name;
+	guint remains;
+
+	title = brasero_burn_dialog_create_dialog_title_for_action (dialog,
+								    _("Checking file integrity"),
+								    percent);
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	g_free (title);
+
+	/* also update the icon */
+	remains = percent % 5;
+	if (remains > 3)
+		percent += 5 - remains;
+	else
+		percent -= remains;
+
+	if (percent < 0 || percent > 100)
+		return;
+
+	icon_name = g_strdup_printf ("brasero-disc-%02i", percent);
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), icon_name);
+	g_free (icon_name);
+}
+
+static void
 brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 					   gint64 written,
 					   gint64 isosize,
@@ -1193,11 +1223,16 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 	if (isosize > 0)
 		mb_isosize = (gint) (isosize / 1048576);
 
-	if (task_progress >= 0.0 && priv->is_writing)
-		brasero_burn_dialog_update_title_writing_progress (dialog,
-								   &priv->input,
-								   media,
-								   (guint) (task_progress * 100.0));
+	if (task_progress >= 0.0) {
+		if (priv->is_writing)
+			brasero_burn_dialog_update_title_writing_progress (dialog,
+									   &priv->input,
+									   media,
+									   (guint) (task_progress * 100.0));
+		else if (priv->is_checking)
+			brasero_burn_dialog_update_title_checking_progress (dialog,
+									    (guint) (task_progress * 100.0));
+	}
 
 	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (priv->progress),
 					  media,
@@ -1286,6 +1321,18 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 
 	priv->is_creating_image = (action == BRASERO_BURN_ACTION_CREATING_IMAGE);
 	priv->is_writing = is_writing;
+	priv->is_checking = (action == BRASERO_BURN_ACTION_CHECKSUM);
+
+	if (priv->is_checking) {
+		gchar *header;
+
+		header = g_strdup_printf ("<big><b>%s</b></big>", _("Checking file integrity"));
+		gtk_label_set_text (GTK_LABEL (priv->header), header);
+		gtk_label_set_use_markup (GTK_LABEL (priv->header), TRUE);
+		g_free (header);
+
+		brasero_burn_dialog_update_title_checking_progress (dialog, 0);
+	}
 
 	brasero_burn_get_action_string (priv->burn, action, &string);
 	brasero_burn_dialog_action_changed_real (dialog, action, string);
@@ -1699,6 +1746,8 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 	message = brasero_burn_dialog_create_message (dialog,
 	                                              GTK_MESSAGE_ERROR,
 	                                              GTK_BUTTONS_NONE,
+	                                              priv->is_checking ?
+	                                              _("The file integrity check could not be performed.") :
 	                                              _("Error while burning."));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
@@ -2022,7 +2071,10 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 	g_timer_stop (priv->total_time);
 
 	if (result == BRASERO_BURN_CANCEL) {
-		/* nothing to do */
+		if (priv->is_checking) {
+			retry = brasero_burn_dialog_notify_success (dialog);
+			priv->num_copies = retry * 2;
+		}
 	}
 	else if (error || result != BRASERO_BURN_OK) {
 		brasero_burn_dialog_notify_error (dialog, error);
@@ -2049,6 +2101,10 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 		retry = brasero_burn_dialog_notify_success (dialog);
 		priv->num_copies = retry * 2;
 	}
+
+	priv->is_checking = FALSE;
+	priv->is_writing = FALSE;
+	priv->is_creating_image = FALSE;
 
 	if (priv->burn) {
 		g_object_unref (priv->burn);
@@ -2161,6 +2217,10 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog)
 	BraseroBurnDialogPrivate *priv;
 
 	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+
+	priv->is_writing = FALSE;
+	priv->is_creating_image = FALSE;
+	priv->is_checking = FALSE;
 
 	/* Update info */
 	brasero_burn_dialog_update_info (dialog,

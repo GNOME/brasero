@@ -104,6 +104,9 @@ brasero_checksum_image_read (BraseroChecksumImage *self,
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
 
 	while (1) {
+		if (priv->cancel)
+			return -2;
+
 		read_bytes = read (fd, buffer + total, (bytes - total));
 
 		/* maybe that's the end of the stream ... */
@@ -356,7 +359,7 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CHECKSUM,
-					_("Creating image checksum"),
+					_("Checking file integrity"),
 					FALSE);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
