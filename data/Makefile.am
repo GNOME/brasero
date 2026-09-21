@@ -11,17 +11,17 @@ desktop_in_files =	brasero.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
-appdatadir = $(datadir)/metainfo
-appdata_in_files = brasero.appdata.xml.in
-appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+metainfodir = $(datadir)/metainfo
+metainfo_in_files = org.gnome.Brasero.metainfo.xml.in
+metainfo_DATA = $(metainfo_in_files:.xml.in=.xml)
 @INTLTOOL_XML_RULE@
 
-CLEANFILES =		$(appdata_DATA)	\
+CLEANFILES =		$(metainfo_DATA)	\
 			$(desktop_DATA)
 
 
 
-EXTRA_DIST = 		$(appdata_in_files)	\
+EXTRA_DIST = 		$(metainfo_in_files)	\
 			$(desktop_in_files)	\
 			$(gsettings_SCHEMAS)	\
 			$(convert_DATA)
