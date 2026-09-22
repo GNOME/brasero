@@ -90,7 +90,6 @@ glib_compile_schemas = find_program(
     disabler: true,
     required: false,
 )
-intltool_merge = find_program('intltool-merge')
 
 prefix = get_option('prefix')
 datadir = get_option('datadir')
@@ -124,7 +123,10 @@ conf_lib.merge_from(conf)
 
 conf.set_quoted('BRASERO_DATADIR', prefix / datadir / 'brasero')
 conf.set_quoted('BRASERO_PLUGIN_DIRECTORY', prefix / plugindir)
-conf.set('BUILD_INOTIFY', cc.has_header('sys/inotify.h'))
+
+has_inotify = cc.has_header('sys/inotify.h', required: host_machine.system() == 'linux')
+conf.set('BUILD_INOTIFY', has_inotify)
+
 if totem_plparser.found()
     conf.set10('BUILD_PLAYLIST', true)
 endif

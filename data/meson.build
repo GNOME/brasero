@@ -1,19 +1,25 @@
+desktop_file = i18n.merge_file(
+    input: 'brasero.desktop.in',
+    output: 'brasero.desktop',
+    type: 'desktop',
+    po_dir: po_dir,
+    install: true,
+    install_dir: datadir / 'applications',
+)
+
 test(
     'valid-desktop-file',
     desktop_file_validate,
-    args: custom_target(
-        command: [
-            intltool_merge,
-            '--desktop-style',
-            po_dir,
-            '@INPUT@',
-            '@OUTPUT@',
-        ],
-        input: 'brasero.desktop.in',
-        install: true,
-        install_dir: datadir / 'applications',
-        output: '@BASENAME@',
-    ),
+    args: desktop_file,
+)
+
+metainfo_file = i18n.merge_file(
+    input: 'org.gnome.Brasero.metainfo.xml.in',
+    output: 'org.gnome.Brasero.metainfo.xml',
+    type: 'xml',
+    po_dir: po_dir,
+    install: true,
+    install_dir: datadir / 'metainfo',
 )
 
 test(
@@ -21,29 +27,18 @@ test(
     appstreamcli,
     args: [
         'validate',
-        '--strict',
-        custom_target(
-            command: [
-                intltool_merge,
-                '--xml-style',
-                po_dir,
-                '@INPUT@',
-                '@OUTPUT@',
-            ],
-            input: 'brasero.appdata.xml.in',
-            install: true,
-            install_dir: datadir / 'metainfo',
-            output: '@BASENAME@',
-        ),
+        '--no-net',
+        metainfo_file,
     ],
 )
 
-custom_target(
-    command: [intltool_merge, '--xml-style', po_dir, '@INPUT@', '@OUTPUT@'],
+i18n.merge_file(
     input: 'mime/brasero.xml.in',
+    output: 'brasero.xml',
+    type: 'xml',
+    po_dir: po_dir,
     install: true,
     install_dir: datadir / 'mime/packages',
-    output: '@BASENAME@',
 )
 
 schema_file = files('org.gnome.brasero.gschema.xml')[0]
