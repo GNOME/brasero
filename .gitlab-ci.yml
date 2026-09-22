@@ -3,30 +3,24 @@ stages:
 
 variables:
   DEPENDENCIES:
-    autoconf
-    automake
-    gnome-common
-    libtool
-    gstreamer1-plugins-base-devel
-    gtk3-devel
-    pkgconfig(libburn-1)
-    libcanberra-devel
-    pkgconfig(libisofs-1)
-    pkgconfig(tracker-sparql-3.0)
-    libnotify-devel
-    nautilus-devel
-    libxml2-devel
-    totem-pl-parser-devel
     desktop-file-utils
     gcc
     gettext
-    gobject-introspection-devel
+    gstreamer1-plugins-base-devel
     gtk-doc
-    libxslt
-    intltool
+    gtk3-devel
     itstool
-    libappstream-glib
-    make
+    appstream
+    libcanberra-devel
+    libnotify-devel
+    libxml2-devel
+    libxslt
+    meson
+    ninja-build
+    pkgconfig(libburn-1)
+    pkgconfig(libisofs-1)
+    pkgconfig(tracker-sparql-3.0)
+    totem-pl-parser-devel
     yelp-tools
 
 build-fedora:
@@ -35,7 +29,8 @@ build-fedora:
   before_script:
     - dnf install -y $DEPENDENCIES
   script:
-    - ./autogen.sh --disable-dependency-tracking --enable-gtk-doc --enable-search
-    - make
-    - make install
+    - meson setup _build -Dgtk-doc=true
+    - ninja -C _build
+    - meson test -C _build --print-errorlogs
+    - ninja -C _build install
 
