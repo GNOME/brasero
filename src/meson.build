@@ -11,7 +11,6 @@ search_sources = files('brasero-search-tracker.c')
 executable(
     'brasero',
     files(
-        'baobab-cell-renderer-progress.c',
         'brasero-app.c',
         'brasero-audio-disc.c',
         'brasero-cli.c',
@@ -50,6 +49,11 @@ executable(
     gstreamer_video1.found() ? preview_sources : [],
     totem_plparser.found() ? playlist_sources : [],
     tracker_sparql3.found() ? search_sources : [],
+    gnome.genmarshal(
+        'brasero-marshal',
+        prefix: 'brasero_marshal',
+        sources: 'brasero-marshal.list',
+    ),
     dependencies: [
         cairo,
         gdk3,

@@ -52,6 +52,7 @@ libbrasero_media = library(
         'scsi-mode-select.c',
         'scsi-mode-sense.c',
         'scsi-prevent-allow-medium-removal.c',
+        'scsi-read-capacity.c',
         'scsi-read-cd.c',
         'scsi-read-disc-info.c',
         'scsi-read-disc-structure.c',
