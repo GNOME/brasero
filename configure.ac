@@ -42,7 +42,7 @@ AC_DEFINE_UNQUOTED(BRASERO_VERSION, $BRASERO_VERSION, [version])
 dnl this is what it used to be
 dnl AM_INIT_AUTOMAKE(brasero, $BRASERO_VERSION)
 
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([1.11 foreign no-dist-gzip dist-xz])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 

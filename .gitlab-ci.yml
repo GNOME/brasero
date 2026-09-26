@@ -1,16 +1,24 @@
+include:
+  - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
+    inputs:
+      job-stage: "release"
+      dist-job-name: "build-fedora"
+
 stages:
-- build
+  - build
+  - release
 
 variables:
   DEPENDENCIES:
+    appstream
     desktop-file-utils
     gcc
     gettext
+    git
     gstreamer1-plugins-base-devel
     gtk-doc
     gtk3-devel
     itstool
-    appstream
     libcanberra-devel
     libnotify-devel
     libxml2-devel
@@ -28,9 +36,17 @@ build-fedora:
   stage: build
   before_script:
     - dnf install -y $DEPENDENCIES
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
   script:
     - meson setup _build -Dgtk-doc=true
     - ninja -C _build
     - meson test -C _build --print-errorlogs
     - ninja -C _build install
-
+    - meson dist -C _build
+    - mkdir -p "${CI_PROJECT_DIR}/public-dist"
+    - cp -a _build/meson-dist/. "${CI_PROJECT_DIR}/public-dist/"
+  artifacts:
+    name: "${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}"
+    when: "always"
+    paths:
+      - "public-dist"
