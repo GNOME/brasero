@@ -527,6 +527,23 @@ def main():
         help="Extract release notes for a version (defaults to latest) in GNOME changelog format for GitLab"
     )
     parser.add_argument(
+        '--tag',
+        nargs='?',
+        const='',
+        default=None,
+        help="Create an annotated Git release tag with the full changelog from NEWS (defaults to latest release)"
+    )
+    parser.add_argument(
+        '--sign',
+        action='store_true',
+        help="Create a GPG-signed Git tag (-s) instead of an annotated tag (-a) when using --tag"
+    )
+    parser.add_argument(
+        '--force-tag',
+        action='store_true',
+        help="Force overwrite an existing tag (-f) when using --tag"
+    )
+    parser.add_argument(
         '--draft-news',
         nargs='?',
         const='',
@@ -587,6 +604,31 @@ def main():
     releases = parse_news_releases(news_text, repo_dir=SCRIPT_DIR.parent)
     if not releases:
         sys.exit("Error: No releases could be parsed from NEWS file.")
+
+    if args.tag is not None:
+        target_version = args.tag if args.tag else releases[0]['raw_version']
+        try:
+            notes = extract_release_notes(releases, target_version)
+        except Exception as e:
+            sys.exit(f"Error: {e}")
+
+        tag_cmd = ['git', 'tag']
+        if args.sign:
+            tag_cmd.append('-s')
+        else:
+            tag_cmd.append('-a')
+
+        if args.force_tag:
+            tag_cmd.append('-f')
+
+        tag_cmd.extend([target_version, '-m', notes])
+
+        res = subprocess.run(tag_cmd, cwd=SCRIPT_DIR.parent, capture_output=True, text=True)
+        if res.returncode != 0:
+            sys.exit(f"Error creating git tag: {res.stderr.strip()}")
+
+        print(f"Successfully created Git tag '{target_version}' with release notes changelog.")
+        sys.exit(0)
 
     if args.extract is not None:
         target_version = args.extract if args.extract else None
