@@ -43,7 +43,27 @@
   <project_group>GNOME</project_group>
   <translation type="gettext">brasero</translation>
   <releases>
-    <release type="stable" version="3.12.3" date="2021-09-20">
+    <release date="2026-09-28" version="3.12.4">
+      <description>
+        <p>Bugs fixed and enhancements:</p>
+        <ul>
+          <li>Remove libegg multidrag treeview support for in-built 'GtkFileChooser' (sid)</li>
+          <li>cdrkit: Add better error message for "Unsupported sector size" errors (sid)</li>
+          <li>cdrdao: Add better error message for "Unsupported track mode" errors (sid)</li>
+          <li>libbrasero-burn: Fix incorrect condition during error check (sid)</li>
+          <li>Replace 'BaobabCellRendererProgress' with native 'GtkCellRendererProgress' (sid)</li>
+          <li>Fix grammar in help (Anders Jonsson)</li>
+          <li>Update confirmation dialog logic to properly trigger cancellation dialog (John Cardullo)</li>
+          <li>burn-dialog: Use 'media-optical' for notifications (sid)</li>
+          <li>Prefer 'application/vnd.efi.iso' MIME type (sid)</li>
+          <li>src: Fix 'GtkSpinButton' filling vertical space (sid)</li>
+          <li>libbrasero-burn: Fix incorrect plugin version comparison (sid)</li>
+          <li>checksum: Default to SHA256 rather than MD5 (David King)</li>
+        </ul>
+        <p>Updated translations for: Abkhazian, Basque, Catalan, Chinese (China), Danish, French, Friulian, Georgian, German, Icelandic, Indonesian, Interlingue, Karbi, Kazakh, Nepali, Occitan, Portuguese, Russian, Slovenian, Spanish, Thai, Turkish, Ukrainian, Uzbek (Latin).</p>
+      </description>
+    </release>
+    <release date="2021-09-20" version="3.12.3">
       <description>
         <p>This release includes the following changes:</p>
         <ul>
@@ -60,7 +80,7 @@
         </ul>
       </description>
     </release>
-    <release type="stable" version="3.12.2" date="2017-07-31">
+    <release date="2017-07-31" version="3.12.2">
       <description>
         <p>This release includes the following changes:</p>
         <ul>
@@ -70,7 +90,7 @@
         </ul>
       </description>
     </release>
-    <release type="stable" version="3.12.1" date="2015-04-28">
+    <release date="2015-04-28" version="3.12.1">
       <description>
         <p>This release includes the following changes:</p>
         <ul>
@@ -79,7 +99,7 @@
         </ul>
       </description>
     </release>
-    <release type="stable" version="3.12.0" date="2014-11-13">
+    <release date="2014-11-13" version="3.12.0">
       <description>
         <p>This release includes the following changes:</p>
         <ul>
@@ -88,6 +108,67 @@
         </ul>
       </description>
     </release>
+    <release date="2014-09-10" version="3.11.4">
+      <description>
+        <p>This release includes the following changes:</p>
+        <ul>
+          <li>Make desktop file validate</li>
+          <li>Make appdata file validate</li>
+          <li>Allow building with tracker 1.0</li>
+          <li>Fix problem with constructors</li>
+          <li>Translation updates</li>
+        </ul>
+      </description>
+    </release>
+    <release date="2013-12-16" version="3.11.3">
+      <description>
+        <p>This release includes the following changes:</p>
+        <ul>
+          <li>Indonesian translation of help</li>
+          <li>Support Tracker 0.18</li>
+          <li>Translation updates</li>
+          <li>Remove X session support (make Brasero work under Wayland)</li>
+        </ul>
+      </description>
+    </release>
+    <release date="2013-11-22" version="3.11.0">
+      <description>
+        <p>This release includes the following changes:</p>
+        <ul>
+          <li>Translation updates</li>
+          <li>Include an appdata file</li>
+        </ul>
+      </description>
+    </release>
+    <release date="2026-09-28" version="3.10.0">
+      <description>
+        <p>This release includes the following changes:</p>
+        <ul>
+          <li>Translation updates</li>
+          <li>Fixed drawing issues in media selection combo boxes</li>
+          <li>Fix several crashers</li>
+          <li>Fixes for new autotools</li>
+          <li>Disable audio normalisation - it's broken since GStreamer 1.0</li>
+        </ul>
+      </description>
+    </release>
+    <release date="2013-03-25" version="3.8.0">
+      <description>
+        <p>This release includes the following changes:</p>
+        <ul>
+          <li>Documentation fixes</li>
+          <li>Translation updates</li>
+        </ul>
+      </description>
+    </release>
+    <release date="2013-03-06" version="3.7.91"/>
+    <release date="2012-09-25" version="3.6.0"/>
+    <release date="2012-09-18" version="3.5.92"/>
+    <release date="2012-03-26" version="3.4.0"/>
+    <release date="2012-03-19" version="3.3.92"/>
+    <release date="2012-03-05" version="3.3.91"/>
+    <release date="2011-09-27" version="3.2.0"/>
+    <release date="2026-09-28" version="3.1.92"/>
   </releases>
   <content_rating type="oars-1.1" />
 </component>

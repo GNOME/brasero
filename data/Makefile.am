@@ -24,7 +24,8 @@ CLEANFILES =		$(metainfo_DATA)	\
 EXTRA_DIST = 		$(metainfo_in_files)	\
 			$(desktop_in_files)	\
 			$(gsettings_SCHEMAS)	\
-			$(convert_DATA)
+			$(convert_DATA)		\
+			generate-release-notes
 
 UPDATE_DESKTOP = \
 	if [ -f $(DESTDIR)$(datadir)/applications/defaults.list ] ; then \

@@ -4,10 +4,10 @@ project(
     license: 'GPL-2.0-only',
     license_files: 'COPYING',
     meson_version: '>=1.4.0',
-    version: '3.12.3',
+    version: '3.12.4',
 )
 
-library_version = '1.2.7'
+library_version = '1.2.8'
 
 fs = import('fs')
 gnome = import('gnome')
