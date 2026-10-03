@@ -63,7 +63,7 @@ gstreamer_video1 = dependency(
 )
 gthread2 = dependency('gthread-2.0', version: '>=2.6.0')
 gtk3 = dependency('gtk+-3.0')
-libburn1 = dependency('libburn-1', required: opt_libburn, version: '>=0.4.0')
+libburn1 = dependency('libburn-1', required: opt_libburn, version: '>=1.2.0')
 libisofs1 = dependency('libisofs-1', required: opt_libisofs, version: '>=0.6.4')
 libm = cc.find_library('m')
 libnotify = dependency('libnotify', version: '>=0.6.1')

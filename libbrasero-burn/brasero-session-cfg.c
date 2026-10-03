@@ -1100,7 +1100,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 			if (result != BRASERO_BURN_OK
 			&& (brasero_track_type_get_stream_format (priv->source) & BRASERO_METADATA_INFO)) {
 				/* Another special case in case some burning backends 
-				 * don't support CD-TEXT for audio (libburn). If no
+				 * don't support CD-TEXT for audio. If no
 				 * other backend is available remove CD-TEXT option but
 				 * tell user... */
 				brasero_track_type_set_stream_format (priv->source,

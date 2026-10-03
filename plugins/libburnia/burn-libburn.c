@@ -54,6 +54,7 @@
 #include "burn-libburnia.h"
 #include "brasero-track-image.h"
 #include "brasero-track-stream.h"
+#include "brasero-tags.h"
 
 
 #define BRASERO_TYPE_LIBBURN         (brasero_libburn_get_type ())
@@ -228,6 +229,127 @@ brasero_libburn_create_fd_source (int fd,
 	return src;
 }
 
+/* CD-TEXT block 0 uses libburn's default character code, ISO-8859-1, so
+ * convert our UTF-8 strings like the wodim plugin does for its .inf files. */
+static gchar *
+brasero_libburn_cdtext_encode (const gchar *text)
+{
+	g_return_val_if_fail (text != NULL, NULL);
+
+	if (!text [0])
+		return NULL;
+
+	return g_convert_with_fallback (text,
+					-1,
+					"ISO-8859-1",
+					"UTF-8",
+					"_",	/* Fallback for non convertible characters */
+					NULL,
+					NULL,
+					NULL);
+}
+
+static void
+brasero_libburn_set_session_cdtext (BraseroLibburn *self,
+				    struct burn_session *session)
+{
+	gchar *album = NULL;
+	gchar *encoded;
+
+	brasero_job_get_audio_title (BRASERO_JOB (self), &album);
+	if (!album)
+		return;
+
+	encoded = brasero_libburn_cdtext_encode (album);
+	g_free (album);
+
+	if (!encoded)
+		return;
+
+	if (burn_session_set_cdtext (session,
+				     0,
+				     0,
+				     "TITLE",
+				     (unsigned char *) encoded,
+				     strlen (encoded) + 1,
+				     0) <= 0)
+		BRASERO_JOB_LOG (self, "Could not set CD-TEXT album title");
+
+	g_free (encoded);
+}
+
+/* libburn only writes the packs of a type for tracks when the session has an
+ * attribute of that type as well, so add an empty one if there is none yet */
+static void
+brasero_libburn_ensure_session_cdtext (struct burn_session *session,
+				       const gchar * const pack_type)
+{
+	unsigned char *payload = NULL;
+	int length = 0;
+
+	if (burn_session_get_cdtext (session, 0, 0, (gchar *) pack_type, &payload, &length, 0) > 0
+	&&  payload)
+		return;
+
+	burn_session_set_cdtext (session, 0, 0, (gchar *) pack_type, (unsigned char *) "", 1, 0);
+}
+
+static void
+brasero_libburn_set_track_cdtext (BraseroLibburn *self,
+				  struct burn_session *session,
+				  struct burn_track *burn_track,
+				  BraseroTrack *track)
+{
+	const gchar * const tags [] = { BRASERO_TRACK_STREAM_TITLE_TAG,
+				 BRASERO_TRACK_STREAM_ARTIST_TAG,
+				 BRASERO_TRACK_STREAM_COMPOSER_TAG };
+	const gchar * const pack_types [] = { "TITLE", "PERFORMER", "COMPOSER" };
+	const gchar *isrc;
+	gsize i;
+
+	for (i = 0; i < G_N_ELEMENTS (tags); i ++) {
+		const gchar *text;
+		gchar *encoded;
+
+		text = brasero_track_tag_lookup_string (track, tags [i]);
+		if (!text)
+			continue;
+
+		encoded = brasero_libburn_cdtext_encode (text);
+		if (!encoded)
+			continue;
+
+		if (burn_track_set_cdtext (burn_track,
+					   0,
+					   0,
+					   (gchar *) pack_types [i],
+					   (unsigned char *) encoded,
+					   strlen (encoded) + 1,
+					   0) <= 0) {
+			BRASERO_JOB_LOG (self, "Could not set CD-TEXT %s", pack_types [i]);
+		}
+		else
+			brasero_libburn_ensure_session_cdtext (session, pack_types [i]);
+
+		g_free (encoded);
+	}
+
+	/* libburn wants the ISRC as 12 characters without separators */
+	isrc = brasero_track_tag_lookup_string (track, BRASERO_TRACK_STREAM_ISRC_TAG);
+	if (isrc) {
+		gchar code [13] = { 0 };
+		gsize len = 0;
+
+		for (i = 0; isrc [i] && len < sizeof (code); i ++) {
+			if (isrc [i] != '-')
+				code [len ++] = isrc [i];
+		}
+
+		if (len != 12 || burn_track_set_isrc_string (burn_track, code, 0) <= 0)
+			BRASERO_JOB_LOG (self, "Ignoring invalid ISRC %s", isrc);
+	}
+}
+
 static BraseroBurnResult
 brasero_libburn_add_track (struct burn_session *session,
 			   struct burn_track *track,
@@ -255,11 +377,13 @@ brasero_libburn_add_track (struct burn_session *session,
 }
 
 static BraseroBurnResult
-brasero_libburn_add_fd_track (struct burn_session *session,
+brasero_libburn_add_fd_track (BraseroLibburn *self,
+			      struct burn_session *session,
 			      int fd,
 			      gint mode,
 			      gint64 size,
 			      unsigned char *pvd,
+			      BraseroTrack *cdtext,
 			      GError **error)
 {
 	struct burn_source *src;
@@ -268,6 +392,9 @@ brasero_libburn_add_fd_track (struct burn_session *session,
 
 	track = burn_track_create ();
 	burn_track_define_data (track, 0, 0, 0, mode);
+
+	if (cdtext)
+		brasero_libburn_set_track_cdtext (self, session, track, cdtext);
 
 	src = brasero_libburn_create_fd_source (fd, size, pvd);
 	result = brasero_libburn_add_track (session, track, src, mode, error);
@@ -279,11 +406,13 @@ brasero_libburn_add_fd_track (struct burn_session *session,
 }
 
 static BraseroBurnResult
-brasero_libburn_add_file_track (struct burn_session *session,
+brasero_libburn_add_file_track (BraseroLibburn *self,
+				struct burn_session *session,
 				const gchar *path,
 				gint mode,
 				off_t size,
 				unsigned char *pvd,
+				BraseroTrack *cdtext,
 				GError **error)
 {
 	int fd;
@@ -298,12 +427,13 @@ brasero_libburn_add_file_track (struct burn_session *session,
 		return BRASERO_BURN_ERR;
 	}
 
-	return brasero_libburn_add_fd_track (session, fd, mode, size, pvd, error);
+	return brasero_libburn_add_fd_track (self, session, fd, mode, size, pvd, cdtext, error);
 }
 
 static BraseroBurnResult
 brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			          struct burn_session *session,
+			          gboolean cdtext,
 			          GError **error)
 {
 	int fd;
@@ -335,11 +465,13 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 						     NULL,
 						     &bytes);
 
-		result = brasero_libburn_add_fd_track (session,
+		result = brasero_libburn_add_fd_track (self,
+						       session,
 						       fd,
 						       mode,
 						       bytes,
 						       priv->pvd,
+						       NULL,
 						       error);
 	}
 	else if (brasero_track_type_get_has_stream (type)) {
@@ -358,11 +490,13 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 
 			/* we dup the descriptor so the same 
 			 * will be shared by all tracks */
-			result = brasero_libburn_add_fd_track (session,
+			result = brasero_libburn_add_fd_track (self,
+							       session,
 							       dup (fd),
 							       BURN_AUDIO,
 							       bytes,
 							       NULL,
+							       cdtext ? track : NULL,
 							       error);
 			if (result != BRASERO_BURN_OK)
 				return result;
@@ -377,6 +511,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 static BraseroBurnResult
 brasero_libburn_setup_session_file (BraseroLibburn *self, 
 				    struct burn_session *session,
+				    gboolean cdtext,
 				    GError **error)
 {
 	BraseroLibburnPrivate *priv;
@@ -400,11 +535,13 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &size);
 			size = BRASERO_DURATION_TO_BYTES (size);
 
-			result = brasero_libburn_add_file_track (session,
+			result = brasero_libburn_add_file_track (self,
+								 session,
 								 audiopath,
 								 BURN_AUDIO,
 								 size,
 								 NULL,
+								 cdtext ? track : NULL,
 								 error);
 			if (result != BRASERO_BURN_OK)
 				break;
@@ -436,11 +573,13 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 			if (result != BRASERO_BURN_OK)
 				return BRASERO_BURN_ERR;
 
-			result = brasero_libburn_add_file_track (session,
+			result = brasero_libburn_add_file_track (self,
+								 session,
 								 imagepath,
 								 mode,
 								 bytes,
 								 priv->pvd,
+								 NULL,
 								 error);
 			g_free (imagepath);
 		}
@@ -457,8 +596,17 @@ brasero_libburn_create_disc (BraseroLibburn *self,
 			     GError **error)
 {
 	struct burn_disc *disc;
+	BraseroTrackType *type;
 	BraseroBurnResult result;
 	struct burn_session *session;
+	gboolean cdtext;
+
+	/* see if CD-TEXT was requested for an audio session */
+	type = brasero_track_type_new ();
+	brasero_job_get_input_type (BRASERO_JOB (self), type);
+	cdtext = brasero_track_type_get_has_stream (type)
+	      && (brasero_track_type_get_stream_format (type) & BRASERO_METADATA_INFO) != 0;
+	brasero_track_type_free (type);
 
 	/* set the source image */
 	disc = burn_disc_create ();
@@ -468,10 +616,13 @@ brasero_libburn_create_disc (BraseroLibburn *self,
 	burn_disc_add_session (disc, session, BURN_POS_END);
 	burn_session_free (session);
 
+	if (cdtext)
+		brasero_libburn_set_session_cdtext (self, session);
+
 	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
-		result = brasero_libburn_setup_session_fd (self, session, error);
+		result = brasero_libburn_setup_session_fd (self, session, cdtext, error);
 	else
-		result = brasero_libburn_setup_session_file (self, session, error);
+		result = brasero_libburn_setup_session_file (self, session, cdtext, error);
 
 	if (result != BRASERO_BURN_OK) {
 		burn_disc_free (disc);
@@ -689,11 +840,13 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	burn_disc_add_session (priv->ctx->disc, session, BURN_POS_END);
 	burn_session_free (session);
 
-	result = brasero_libburn_add_fd_track (session,
+	result = brasero_libburn_add_fd_track (self,
+					       session,
 					       fd,
 					       BURN_MODE1,
 					       65536,		/* 32 blocks */
 					       priv->pvd,
+					       NULL,
 					       error);
 	close (fd);
 
@@ -994,12 +1147,20 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	                                        BRASERO_BURN_FLAG_OVERBURN|
 	                                        BRASERO_BURN_FLAG_DUMMY);
 
-	/* audio support for CDs only */
+	/* audio support for CDs only, with or without CD-TEXT */
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN);
 	
 	output = brasero_caps_disc_new (media_cd);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (input);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
+					BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_RAW_LITTLE_ENDIAN|
+					BRASERO_METADATA_INFO);
+
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (input);
 

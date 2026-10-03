@@ -83,7 +83,7 @@ As examples:
 - `gsound` (>= 1.0.2)
 - `totem` (>= 3.0) (optional)
 - `tracker` (>= 0.10.0) (optional)
-- `libburn` (>= 0.4.0) (optional)
+- `libburn` (>= 1.2.0) (optional)
 - `libisofs` (>= 0.6.2) (optional)
 
 ## Use of Generative AI
