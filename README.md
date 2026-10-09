@@ -75,3 +75,8 @@ Requirements:
 - tracker (>= 0.10.0) (optional)
 - libburn (>=0.4.0) (optional)
 - libisofs (>=0.6.2) (optional)
+
+**Use of Generative AI**
+This project does not allow contributions generated entirely by large languages models (LLMs) and chatbots. This ban includes, but is not limited to, tools like ChatGPT, Claude, Copilot, DeepSeek, and Devin AI. We are taking these steps as precaution due to the potential negative influence of AI generated content on quality, as well as likely copyright violations.
+This ban of AI generated content applies to all parts of the projects, including, but not limited to, code, documentation, issues, and artworks. An exception applies for purely translating texts for issues and comments to English.
+AI tools can be used to answer questions and find information. However, we encourage contributors to avoid them in favor of using existing documentation and our chats and forums. Since AI generated information is frequently misleading or false, we cannot supply support on anything referencing AI output.
