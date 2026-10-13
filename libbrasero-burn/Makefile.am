@@ -15,13 +15,13 @@ AM_CPPFLAGS = \
 	-DBRASERO_PLUGIN_DIRECTORY=\"$(BRASERO_PLUGIN_DIRECTORY)\"	\
 	$(WARN_CFLAGS)							\
 	$(DISABLE_DEPRECATED)						\
-	$(BRASERO_GMODULE_CFLAGS)					\
-	$(BRASERO_GLIB_CFLAGS)						\
+	$(BRASERO_CANBERRA_CFLAGS) 					\
 	$(BRASERO_GIO_CFLAGS)						\
+	$(BRASERO_GLIB_CFLAGS)						\
+	$(BRASERO_GMODULE_CFLAGS)					\
+	$(BRASERO_GSTREAMER_CFLAGS)					\
 	$(BRASERO_GTK_CFLAGS)						\
 	$(BRASERO_LIBNOTIFY_CFLAGS) 					\
-	$(BRASERO_GSTREAMER_CFLAGS)					\
-	$(BRASERO_CANBERRA_CFLAGS) 					\
 	-Wno-error=format-nonliteral
 
 CLEANFILES =
@@ -68,14 +68,14 @@ lib_LTLIBRARIES = \
 libbrasero_burn3_la_LIBADD =					\
 	../libbrasero-media/libbrasero-media3.la			\
 	../libbrasero-utils/libbrasero-utils3.la			\
-	$(BRASERO_GLIB_LIBS)					\
-	$(BRASERO_GTHREAD_LIBS)					\
-	$(BRASERO_GMODULE_LIBS)					\
-	$(BRASERO_GIO_LIBS)					\
-	$(BRASERO_GTK_LIBS)					\
-	$(BRASERO_GSTREAMER_LIBS)				\
-	$(BRASERO_LIBNOTIFY_LIBS)					\
 	$(BRASERO_CANBERRA_LIBS)				\
+	$(BRASERO_GIO_LIBS)					\
+	$(BRASERO_GLIB_LIBS)					\
+	$(BRASERO_GMODULE_LIBS)					\
+	$(BRASERO_GSTREAMER_LIBS)				\
+	$(BRASERO_GTHREAD_LIBS)					\
+	$(BRASERO_GTK_LIBS)					\
+	$(BRASERO_LIBNOTIFY_LIBS)				\
 	$(LIBM)
 
 libbrasero_burn3_la_LDFLAGS =					\
