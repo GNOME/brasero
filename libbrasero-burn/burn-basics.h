@@ -60,6 +60,10 @@ gboolean
 brasero_check_flags_for_drive (BraseroDrive *drive,
 			       BraseroBurnFlag flags);
 
+void
+brasero_burn_play_sound (const gchar *event_id,
+                         const gchar *description);
+
 G_END_DECLS
 
 #endif /* _BURN_BASICS_H */

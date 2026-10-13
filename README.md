@@ -80,7 +80,7 @@ As examples:
 - `growisofs`
 - A fairly new kernel (>= 2.6.13 because of `inotify`) (optional)
 - `cairo`
-- `libcanberra`
+- `gsound` (>= 1.0.2)
 - `totem` (>= 3.0) (optional)
 - `tracker` (>= 0.10.0) (optional)
 - `libburn` (>= 0.4.0) (optional)

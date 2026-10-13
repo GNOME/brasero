@@ -220,17 +220,16 @@ AC_SUBST(BRASERO_LIBNOTIFY_CFLAGS)
 AC_SUBST(BRASERO_LIBNOTIFY_LIBS)
 
 #
-# Canberra
+# GSound
 #
 
-CANBERRA_REQUIRED=0.1
+GSOUND_REQUIRED=1.0.2
 
-PKG_CHECK_MODULES(BRASERO_CANBERRA,
-	      libcanberra >= $CANBERRA_REQUIRED
-	      libcanberra-gtk3 >= $CANBERRA_REQUIRED)
+PKG_CHECK_MODULES(BRASERO_GSOUND,
+	      gsound >= $GSOUND_REQUIRED)
 
-AC_SUBST(BRASERO_CANBERRA_CFLAGS)
-AC_SUBST(BRASERO_CANBERRA_LIBS)
+AC_SUBST(BRASERO_GSOUND_CFLAGS)
+AC_SUBST(BRASERO_GSOUND_LIBS)
 
 dnl ****************Nautilus**********************************
 # Note: the extension is built against gtk+-3.0 so we cannot build extension with gtk+-2.0

@@ -37,6 +37,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <gsound.h>
+
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
@@ -490,5 +492,34 @@ brasero_burn_library_get_media_capabilities (BraseroMedia media)
 
 	g_object_unref (self);
 	return retval;
+}
+
+void
+brasero_burn_play_sound (const gchar *event_id,
+                         const gchar *description)
+{
+	static GSoundContext *context = NULL;
+
+	if (!context) {
+		GError *error = NULL;
+
+		context = gsound_context_new (NULL, &error);
+		if (error) {
+			g_debug ("Failed to initialize GSoundContext: %s", error->message);
+			g_clear_error (&error);
+			return;
+		}
+	}
+
+	if (description) {
+		gsound_context_play_simple (context, NULL, NULL,
+		                            GSOUND_ATTR_EVENT_ID, event_id,
+		                            GSOUND_ATTR_EVENT_DESCRIPTION, description,
+		                            NULL);
+	} else {
+		gsound_context_play_simple (context, NULL, NULL,
+		                            GSOUND_ATTR_EVENT_ID, event_id,
+		                            NULL);
+	}
 }
 

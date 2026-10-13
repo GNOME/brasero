@@ -44,8 +44,6 @@
 #include <gdk/gdkx.h>
 
 #include <gtk/gtk.h>
-
-#include <canberra-gtk.h>
 #include <libnotify/notify.h>
 
 #include "brasero-burn-dialog.h"
@@ -517,10 +515,7 @@ brasero_burn_dialog_wait_for_insertion (BraseroBurnDialog *dialog,
 
 	if (sound_clue) {
 		gtk_widget_show (GTK_WIDGET (message));
-		ca_gtk_play_for_widget (GTK_WIDGET (message), 0,
-		                        CA_PROP_EVENT_ID, "complete-media-burn",
-		                        CA_PROP_EVENT_DESCRIPTION, main_message,
-		                        NULL);
+		brasero_burn_play_sound ("complete-media-burn", main_message);
 	}
 
 	result = gtk_dialog_run (GTK_DIALOG (message));
@@ -1381,10 +1376,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
 
 	gtk_widget_show (GTK_WIDGET (message));
-	ca_gtk_play_for_widget (GTK_WIDGET (message), 0,
-	                        CA_PROP_EVENT_ID, "complete-media-burn-test",
-	                        CA_PROP_EVENT_DESCRIPTION, _("The simulation was successful."),
-	                        NULL);
+	brasero_burn_play_sound ("complete-media-burn-test", _("The simulation was successful."));
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
@@ -1896,10 +1888,7 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 					   message);
 
 	gtk_widget_show (GTK_WIDGET (message));
-	ca_gtk_play_for_widget (GTK_WIDGET (message), 0,
-	                        CA_PROP_EVENT_ID, "complete-media-burn",
-	                        CA_PROP_EVENT_DESCRIPTION, main_message,
-	                        NULL);
+	brasero_burn_play_sound ("complete-media-burn", main_message);
 
 	brasero_burn_dialog_notify_daemon (dialog, main_message);
 	g_free (main_message);
@@ -1975,10 +1964,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 
 	primary = brasero_burn_dialog_get_success_message (dialog);
 	gtk_widget_show(GTK_WIDGET(dialog));
-	ca_gtk_play_for_widget(GTK_WIDGET(dialog), 0,
-			       CA_PROP_EVENT_ID, "complete-media-burn",
-			       CA_PROP_EVENT_DESCRIPTION, primary,
-			       NULL);
+	brasero_burn_play_sound ("complete-media-burn", primary);
 
 	brasero_burn_dialog_notify_daemon (dialog, primary);
 	g_free (primary);
