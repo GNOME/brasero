@@ -11,10 +11,8 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 braserodocdir = ${prefix}/docs/brasero
 
 EXTRA_DIST = 			\
-	AUTHORS			\
-	MAINTAINERS		\
 	NEWS			\
-	README			\
+	README.md		\
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in
