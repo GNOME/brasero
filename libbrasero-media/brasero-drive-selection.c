@@ -53,7 +53,7 @@ struct _BraseroDriveSelectionPrivate
 	gulong removed_sig;
 };
   
-#define BRASERO_DRIVE_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_SELECTION, BraseroDriveSelectionPrivate))
+#define BRASERO_DRIVE_SELECTION_PRIVATE(o)  (brasero_drive_selection_get_instance_private (o))
 
 typedef enum {
 	CHANGED_SIGNAL,
@@ -85,7 +85,9 @@ brasero_drive_selection_buildable_init (GtkBuildableIface *iface)
 	parent_buildable_iface = g_type_interface_peek_parent (iface);
 }  
 
-G_DEFINE_TYPE_WITH_CODE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_COMBO_BOX, G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_drive_selection_buildable_init));
+G_DEFINE_TYPE_WITH_CODE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_COMBO_BOX,
+			 G_ADD_PRIVATE (BraseroDriveSelection)
+			 G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_drive_selection_buildable_init));
 
 static void
 brasero_drive_selection_set_current_drive (BraseroDriveSelection *self,
@@ -546,10 +548,11 @@ brasero_drive_selection_constructed (GObject *object)
 static void
 brasero_drive_selection_finalize (GObject *object)
 {
+	BraseroDriveSelection *selection = BRASERO_DRIVE_SELECTION (object);
 	BraseroDriveSelectionPrivate *priv;
 	BraseroMediumMonitor *monitor;
   
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
   
 	monitor = brasero_medium_monitor_get_default ();
   
@@ -569,8 +572,6 @@ brasero_drive_selection_set_property (GObject *object,
 				       const GValue *value,
 				       GParamSpec *pspec)
 {
-	g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (object));
-  
 	switch (prop_id)
 	{
 	case PROP_DRIVE_TYPE:
@@ -593,11 +594,10 @@ brasero_drive_selection_get_property (GObject *object,
 				       GValue *value,
 				       GParamSpec *pspec)
 {
+	BraseroDriveSelection *selection = BRASERO_DRIVE_SELECTION (object);
 	BraseroDriveSelectionPrivate *priv;
   
-	g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (object));
-  
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
   
 	switch (prop_id)
 	{
@@ -618,8 +618,6 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	GtkComboBoxClass *combo_class = GTK_COMBO_BOX_CLASS (klass);
-  
-	g_type_class_add_private (klass, sizeof (BraseroDriveSelectionPrivate));
   
 	object_class->finalize = brasero_drive_selection_finalize;
 	object_class->set_property = brasero_drive_selection_set_property;

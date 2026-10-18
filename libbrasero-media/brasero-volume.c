@@ -49,9 +49,9 @@ struct _BraseroVolumePrivate
 	GCancellable *cancel;
 };
 
-#define BRASERO_VOLUME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VOLUME, BraseroVolumePrivate))
+#define BRASERO_VOLUME_PRIVATE(o)  (brasero_volume_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroVolume, brasero_volume, BRASERO_TYPE_MEDIUM);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroVolume, brasero_volume, BRASERO_TYPE_MEDIUM);
 
 /**
  * brasero_volume_get_gvolume:
@@ -439,9 +439,10 @@ brasero_volume_init (BraseroVolume *object)
 static void
 brasero_volume_finalize (GObject *object)
 {
+	BraseroVolume *volume = BRASERO_VOLUME (object);
 	BraseroVolumePrivate *priv;
 
-	priv = BRASERO_VOLUME_PRIVATE (object);
+	priv = BRASERO_VOLUME_PRIVATE (volume);
 
 	BRASERO_MEDIA_LOG ("Finalizing Volume object");
 	if (priv->cancel) {
@@ -457,8 +458,6 @@ static void
 brasero_volume_class_init (BraseroVolumeClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroVolumePrivate));
 
 	object_class->finalize = brasero_volume_finalize;
 }

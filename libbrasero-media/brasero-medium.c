@@ -128,7 +128,7 @@ struct _BraseroMediumPrivate
 	guint probe_cancelled:1;
 };
 
-#define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
+#define BRASERO_MEDIUM_PRIVATE(o)  (brasero_medium_get_instance_private (o))
 
 /**
  * Try to open the drive exclusively but don't block; if drive can't be opened
@@ -152,6 +152,8 @@ typedef enum {
 
 typedef struct _BraseroMediumTrack BraseroMediumTrack;
 
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroMedium, brasero_medium, G_TYPE_OBJECT);
+
 struct _BraseroMediumTrack {
 	guint session;
 	BraseroMediumTrackType type;
@@ -172,9 +174,6 @@ enum {
 static gulong medium_signals [LAST_SIGNAL] = {0, };
 
 #define BRASERO_MEDIUM_OPEN_ATTEMPTS			5
-
-static GObjectClass* parent_class = NULL;
-
 
 /**
  * brasero_medium_get_tooltip:
@@ -3142,9 +3141,10 @@ brasero_medium_init (BraseroMedium *object)
 static void
 brasero_medium_finalize (GObject *object)
 {
+	BraseroMedium *medium = BRASERO_MEDIUM (object);
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (object);
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	BRASERO_MEDIA_LOG ("Finalizing Medium object");
 
@@ -3205,17 +3205,16 @@ brasero_medium_finalize (GObject *object)
 
 	priv->drive = NULL;
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_medium_parent_class)->finalize (object);
 }
 
 static void
 brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
+	BraseroMedium *medium = BRASERO_MEDIUM (object);
 	BraseroMediumPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_MEDIUM (object));
-
-	priv = BRASERO_MEDIUM_PRIVATE (object);
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	switch (prop_id)
 	{
@@ -3241,11 +3240,10 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 static void
 brasero_medium_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
+	BraseroMedium *medium = BRASERO_MEDIUM (object);
 	BraseroMediumPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_MEDIUM (object));
-
-	priv = BRASERO_MEDIUM_PRIVATE (object);
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	switch (prop_id)
 	{
@@ -3262,9 +3260,6 @@ static void
 brasero_medium_class_init (BraseroMediumClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-
-	g_type_class_add_private (klass, sizeof (BraseroMediumPrivate));
 
 	object_class->finalize = brasero_medium_finalize;
 	object_class->set_property = brasero_medium_set_property;
@@ -3504,32 +3499,4 @@ brasero_medium_get_CD_TEXT_title (BraseroMedium *medium)
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->CD_TEXT_title;
 
-}
-
-GType
-brasero_medium_get_type (void)
-{
-	static GType our_type = 0;
-
-	if (our_type == 0)
-	{
-		static const GTypeInfo our_info =
-		{
-			sizeof (BraseroMediumClass), /* class_size */
-			(GBaseInitFunc) NULL, /* base_init */
-			(GBaseFinalizeFunc) NULL, /* base_finalize */
-			(GClassInitFunc) brasero_medium_class_init, /* class_init */
-			(GClassFinalizeFunc) NULL, /* class_finalize */
-			NULL /* class_data */,
-			sizeof (BraseroMedium), /* instance_size */
-			0, /* n_preallocs */
-			(GInstanceInitFunc) brasero_medium_init, /* instance_init */
-			NULL /* value_table */
-		};
-
-		our_type = g_type_register_static (G_TYPE_OBJECT, "BraseroMedium",
-		                                   &our_info, 0);
-	}
-
-	return our_type;
 }

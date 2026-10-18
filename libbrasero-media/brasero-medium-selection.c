@@ -55,7 +55,7 @@ struct _BraseroMediumSelectionPrivate
 	gulong removed_sig;
 };
 
-#define BRASERO_MEDIUM_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM_SELECTION, BraseroMediumSelectionPrivate))
+#define BRASERO_MEDIUM_SELECTION_PRIVATE(o)  (brasero_medium_selection_get_instance_private (o))
 
 typedef enum {
 	CHANGED_SIGNAL,
@@ -92,6 +92,7 @@ brasero_medium_selection_buildable_init (GtkBuildableIface *iface)
 G_DEFINE_TYPE_WITH_CODE (BraseroMediumSelection,
                          brasero_medium_selection,
                          GTK_TYPE_COMBO_BOX,
+                         G_ADD_PRIVATE (BraseroMediumSelection)
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, brasero_medium_selection_buildable_init));
 
 void
@@ -864,10 +865,11 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 static void
 brasero_medium_selection_finalize (GObject *object)
 {
+	BraseroMediumSelection *selection = BRASERO_MEDIUM_SELECTION (object);
 	BraseroMediumSelectionPrivate *priv;
 	BraseroMediumMonitor *monitor;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (object);
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selection);
 
 	monitor = brasero_medium_monitor_get_default ();
 
@@ -887,8 +889,6 @@ brasero_medium_selection_set_property (GObject *object,
 				       const GValue *value,
 				       GParamSpec *pspec)
 {
-	g_return_if_fail (BRASERO_IS_MEDIUM_SELECTION (object));
-
 	switch (prop_id)
 	{
 	case PROP_MEDIA_TYPE:
@@ -911,11 +911,10 @@ brasero_medium_selection_get_property (GObject *object,
 				       GValue *value,
 				       GParamSpec *pspec)
 {
+	BraseroMediumSelection *selection = BRASERO_MEDIUM_SELECTION (object);
 	BraseroMediumSelectionPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_MEDIUM_SELECTION (object));
-
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (object);
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selection);
 
 	switch (prop_id)
 	{
@@ -936,8 +935,6 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkComboBoxClass *combo_class = GTK_COMBO_BOX_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroMediumSelectionPrivate));
 
 	object_class->constructed = brasero_medium_selection_constructed;
 	object_class->finalize = brasero_medium_selection_finalize;

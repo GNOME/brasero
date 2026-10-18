@@ -99,7 +99,7 @@ struct _BraseroDrivePrivate
 	guint probe_waiting:1;
 };
 
-#define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
+#define BRASERO_DRIVE_PRIVATE(o)  (brasero_drive_get_instance_private (o))
 
 enum {
 	MEDIUM_REMOVED,
@@ -115,7 +115,7 @@ enum {
 	PROP_UDI
 };
 
-G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 
 #define BRASERO_DRIVE_OPEN_ATTEMPTS			5
 
@@ -1477,12 +1477,11 @@ brasero_drive_set_property (GObject *object,
 			    const GValue *value,
 			    GParamSpec *pspec)
 {
+	BraseroDrive *drive = BRASERO_DRIVE (object);
 	BraseroDrivePrivate *priv;
 	GDrive *gdrive = NULL;
 
-	g_return_if_fail (BRASERO_IS_DRIVE (object));
-
-	priv = BRASERO_DRIVE_PRIVATE (object);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	switch (prop_id)
 	{
@@ -1516,11 +1515,10 @@ brasero_drive_get_property (GObject *object,
 			    GValue *value,
 			    GParamSpec *pspec)
 {
+	BraseroDrive *drive = BRASERO_DRIVE (object);
 	BraseroDrivePrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_DRIVE (object));
-
-	priv = BRASERO_DRIVE_PRIVATE (object);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	switch (prop_id)
 	{
@@ -1554,9 +1552,10 @@ brasero_drive_init (BraseroDrive *object)
 static void
 brasero_drive_finalize (GObject *object)
 {
+	BraseroDrive *drive = BRASERO_DRIVE (object);
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (object);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	BRASERO_MEDIA_LOG ("Finalizing BraseroDrive");
 
@@ -1627,8 +1626,6 @@ static void
 brasero_drive_class_init (BraseroDriveClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDrivePrivate));
 
 	object_class->finalize = brasero_drive_finalize;
 	object_class->set_property = brasero_drive_set_property;

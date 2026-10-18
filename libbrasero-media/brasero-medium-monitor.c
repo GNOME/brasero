@@ -63,7 +63,7 @@ struct _BraseroMediumMonitorPrivate
 	gint probing;
 };
 
-#define BRASERO_MEDIUM_MONITOR_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM_MONITOR, BraseroMediumMonitorPrivate))
+#define BRASERO_MEDIUM_MONITOR_PRIVATE(o)  (brasero_medium_monitor_get_instance_private (o))
 
 enum
 {
@@ -78,7 +78,7 @@ enum
 
 static guint medium_monitor_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
 
 
 /**
@@ -726,9 +726,10 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 static void
 brasero_medium_monitor_finalize (GObject *object)
 {
+	BraseroMediumMonitor *monitor = BRASERO_MEDIUM_MONITOR (object);
 	BraseroMediumMonitorPrivate *priv;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
 	if (priv->waiting_removal_id) {
 		g_source_remove (priv->waiting_removal_id);
@@ -770,8 +771,6 @@ static void
 brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroMediumMonitorPrivate));
 
 	object_class->finalize = brasero_medium_monitor_finalize;
 
