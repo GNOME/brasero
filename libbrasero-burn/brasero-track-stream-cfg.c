@@ -59,9 +59,9 @@ struct _BraseroTrackStreamCfgPrivate
 	guint loading:1;
 };
 
-#define BRASERO_TRACK_STREAM_CFG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_STREAM_CFG, BraseroTrackStreamCfgPrivate))
+#define BRASERO_TRACK_STREAM_CFG_PRIVATE(o)  (brasero_track_stream_cfg_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroTrackStreamCfg, brasero_track_stream_cfg, BRASERO_TYPE_TRACK_STREAM);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackStreamCfg, brasero_track_stream_cfg, BRASERO_TYPE_TRACK_STREAM);
 
 static void
 brasero_track_stream_cfg_file_changed (GFileMonitor *monitor,
@@ -70,10 +70,11 @@ brasero_track_stream_cfg_file_changed (GFileMonitor *monitor,
 								GFileMonitorEvent event,
 								BraseroTrackStream *track)
 {
+	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (track);
 	BraseroTrackStreamCfgPrivate *priv;
 	gchar *name;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (track);
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
 
         switch (event) {
  /*               case G_FILE_MONITOR_EVENT_CHANGED:
@@ -106,12 +107,13 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 				     GFileInfo *info,
 				     gpointer user_data)
 {
+	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (obj);
 	GFile *file;
 	guint64 len;
 	GObject *snapshot;
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (obj);
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
 	priv->loading = FALSE;
 
 	/* Check the return status for this file */
@@ -362,9 +364,10 @@ static BraseroBurnResult
 brasero_track_stream_cfg_set_source (BraseroTrackStream *track,
 				     const gchar *uri)
 {
+	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (track);
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (track);
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
 	if (priv->monitor) {
 		g_object_unref (priv->monitor);
 		priv->monitor = NULL;
@@ -376,7 +379,7 @@ brasero_track_stream_cfg_set_source (BraseroTrackStream *track,
 	if (BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_source)
 		BRASERO_TRACK_STREAM_CLASS (brasero_track_stream_cfg_parent_class)->set_source (track, uri);
 
-	brasero_track_stream_cfg_get_info (BRASERO_TRACK_STREAM_CFG (track));
+	brasero_track_stream_cfg_get_info (cfg);
 	brasero_track_changed (BRASERO_TRACK (track));
 	return BRASERO_BURN_OK;
 }
@@ -385,9 +388,10 @@ static BraseroBurnResult
 brasero_track_stream_cfg_get_status (BraseroTrack *track,
 				     BraseroStatus *status)
 {
+	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (track);
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (track);
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
 
 	if (priv->error) {
 		brasero_status_set_error (status, g_error_copy (priv->error));
@@ -416,9 +420,10 @@ brasero_track_stream_cfg_init (BraseroTrackStreamCfg *object)
 static void
 brasero_track_stream_cfg_finalize (GObject *object)
 {
+	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (object);
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (object);
+	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
 
 	if (priv->load_uri) {
 		brasero_io_cancel_by_base (priv->load_uri);
@@ -449,8 +454,6 @@ brasero_track_stream_cfg_class_init (BraseroTrackStreamCfgClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroTrackClass* track_class = BRASERO_TRACK_CLASS (klass);
 	BraseroTrackStreamClass *parent_class = BRASERO_TRACK_STREAM_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTrackStreamCfgPrivate));
 
 	object_class->finalize = brasero_track_stream_cfg_finalize;
 

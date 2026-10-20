@@ -69,9 +69,9 @@ struct _BraseroSrcImagePrivate
 	GSettings *settings;
 };
 
-#define BRASERO_SRC_IMAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SRC_IMAGE, BraseroSrcImagePrivate))
+#define BRASERO_SRC_IMAGE_PRIVATE(o)  (brasero_src_image_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroSrcImage, brasero_src_image, GTK_TYPE_BUTTON);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSrcImage, brasero_src_image, GTK_TYPE_BUTTON);
 
 enum {
 	PROP_0,
@@ -401,6 +401,7 @@ brasero_src_image_get_current_uri (BraseroSrcImage *self)
 static void
 brasero_src_image_clicked (GtkButton *button)
 {
+	BraseroSrcImage *image = BRASERO_SRC_IMAGE (button);
 	BraseroSrcImagePrivate *priv;
 	GtkResponseType response;
 	GtkFileFilter *filter;
@@ -409,7 +410,7 @@ brasero_src_image_clicked (GtkButton *button)
 	GtkWidget *box;
 	gchar *uri;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (button);
+	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (button));
 	priv->file = gtk_file_chooser_dialog_new (_("Select Disc Image"),
@@ -422,7 +423,7 @@ brasero_src_image_clicked (GtkButton *button)
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
 
 	/* See if we have a URI already chosen, if so use it */
-	uri = brasero_src_image_get_current_uri (BRASERO_SRC_IMAGE (button));
+	uri = brasero_src_image_get_current_uri (image);
 	if (uri) {
 		if (!gtk_file_chooser_select_uri (GTK_FILE_CHOOSER (priv->file), uri))
 			if (!gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file), priv->folder))
@@ -475,13 +476,13 @@ brasero_src_image_clicked (GtkButton *button)
 			    TRUE,
 			    0);
 
-	brasero_src_image_set_formats (BRASERO_SRC_IMAGE (button));
+	brasero_src_image_set_formats (image);
 
 	gtk_widget_show (priv->file);
 	response = gtk_dialog_run (GTK_DIALOG (priv->file));
 
 	if (response == GTK_RESPONSE_OK)
-		brasero_src_image_changed (BRASERO_SRC_IMAGE (button));
+		brasero_src_image_changed (image);
 
 	gtk_widget_destroy (priv->file);
 	priv->file = NULL;
@@ -575,11 +576,12 @@ brasero_src_image_init (BraseroSrcImage *object)
 static void
 brasero_src_image_finalize (GObject *object)
 {
+	BraseroSrcImage *image = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (object);
+	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
 
-	brasero_src_image_save (BRASERO_SRC_IMAGE (object));
+	brasero_src_image_save (image);
 
 	if (priv->session) {
 		g_object_unref (priv->session);
@@ -639,10 +641,11 @@ brasero_src_image_set_property (GObject *object,
 				const GValue *value,
 				GParamSpec *pspec)
 {
+	BraseroSrcImage *image = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
 	BraseroBurnSession *session;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (object);
+	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
 
 	switch (property_id) {
 	case PROP_SESSION: {
@@ -728,7 +731,7 @@ brasero_src_image_set_property (GObject *object,
 
 		/* Make sure everything fits (NOTE: no need to set format yet,
 		 * since at that point no GtkFileChooser was opened.) */
-		brasero_src_image_update (BRASERO_SRC_IMAGE (object));
+		brasero_src_image_update (image);
 
 		break;
 	}
@@ -744,9 +747,10 @@ brasero_src_image_get_property (GObject *object,
 				GValue *value,
 				GParamSpec *pspec)
 {
+	BraseroSrcImage *image = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (object);
+	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -763,8 +767,6 @@ brasero_src_image_class_init (BraseroSrcImageClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	GtkButtonClass* parent_class = GTK_BUTTON_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroSrcImagePrivate));
 
 	object_class->finalize = brasero_src_image_finalize;
 	object_class->set_property = brasero_src_image_set_property;

@@ -55,8 +55,6 @@
 #include "brasero-track-stream.h"
 #include "brasero-track-image.h"
 
-G_DEFINE_TYPE (BraseroProcess, brasero_process, BRASERO_TYPE_JOB);
-
 enum {
 	BRASERO_CHANNEL_STDOUT	= 0,
 	BRASERO_CHANNEL_STDERR
@@ -91,7 +89,9 @@ struct _BraseroProcessPrivate {
 	guint process_finished:1;
 };
 
-#define BRASERO_PROCESS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROCESS, BraseroProcessPrivate))
+#define BRASERO_PROCESS_PRIVATE(o)  (brasero_process_get_instance_private (o))
+
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroProcess, brasero_process, BRASERO_TYPE_JOB);
 
 void
 brasero_process_deferred_error (BraseroProcess *self,
@@ -110,9 +110,9 @@ static BraseroBurnResult
 brasero_process_ask_argv (BraseroJob *job,
 			  GError **error)
 {
-	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (job);
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (job);
 	BraseroProcess *process = BRASERO_PROCESS (job);
+	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (process);
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
 	BraseroBurnResult result;
 	int i;
 
@@ -594,8 +594,8 @@ brasero_process_setup (gpointer data)
 static BraseroBurnResult
 brasero_process_start (BraseroJob *job, GError **error)
 {
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (job);
 	BraseroProcess *process = BRASERO_PROCESS (job);
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
 	int stdout_pipe, stderr_pipe;
 	BraseroProcessClass *klass;
 	BraseroBurnResult result;
@@ -818,7 +818,8 @@ brasero_process_set_working_directory (BraseroProcess *process,
 static void
 brasero_process_finalize (GObject *object)
 {
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (object);
+	BraseroProcess *process = BRASERO_PROCESS (object);
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
 
 	if (priv->watch) {
 		g_source_remove (priv->watch);
@@ -884,8 +885,6 @@ brasero_process_class_init (BraseroProcessClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroProcessPrivate));
 
 	object_class->finalize = brasero_process_finalize;
 

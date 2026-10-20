@@ -68,9 +68,9 @@ struct _BraseroDataSessionPrivate
 	GSList *nodes;
 };
 
-#define BRASERO_DATA_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_SESSION, BraseroDataSessionPrivate))
+#define BRASERO_DATA_SESSION_PRIVATE(o)  (brasero_data_session_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroDataSession, brasero_data_session, BRASERO_TYPE_DATA_PROJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDataSession, brasero_data_session, BRASERO_TYPE_DATA_PROJECT);
 
 enum {
 	AVAILABLE_SIGNAL,
@@ -275,12 +275,13 @@ brasero_data_session_load_dir_result (GObject *owner,
 				      GFileInfo *info,
 				      gpointer data)
 {
+	BraseroDataSession *session = BRASERO_DATA_SESSION (owner);
 	BraseroDataSessionPrivate *priv;
 	BraseroFileNode *parent;
 	BraseroFileNode *node;
 	gint reference;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (owner);
+	priv = BRASERO_DATA_SESSION_PRIVATE (session);
 
 	if (!info) {
 		g_signal_emit (owner,
@@ -577,10 +578,11 @@ brasero_data_session_reset (BraseroDataProject *project,
 static void
 brasero_data_session_finalize (GObject *object)
 {
+	BraseroDataSession *session = BRASERO_DATA_SESSION (object);
 	BraseroDataSessionPrivate *priv;
 	BraseroMediumMonitor *monitor;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (object);
+	priv = BRASERO_DATA_SESSION_PRIVATE (session);
 
 	monitor = brasero_medium_monitor_get_default ();
 	g_signal_handlers_disconnect_by_func (monitor,
@@ -624,8 +626,6 @@ brasero_data_session_class_init (BraseroDataSessionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroDataProjectClass *project_class = BRASERO_DATA_PROJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDataSessionPrivate));
 
 	object_class->finalize = brasero_data_session_finalize;
 

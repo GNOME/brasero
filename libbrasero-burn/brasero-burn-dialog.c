@@ -67,8 +67,6 @@
 #include "brasero-misc.h"
 #include "brasero-pk.h"
 
-G_DEFINE_TYPE (BraseroBurnDialog, brasero_burn_dialog, GTK_TYPE_DIALOG);
-
 static void
 brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroBurnDialog *dialog);
@@ -106,7 +104,9 @@ struct BraseroBurnDialogPrivate {
 	guint is_checking:1;
 };
 
-#define BRASERO_BURN_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_DIALOG, BraseroBurnDialogPrivate))
+#define BRASERO_BURN_DIALOG_PRIVATE(o)  (brasero_burn_dialog_get_instance_private (o))
+
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroBurnDialog, brasero_burn_dialog, GTK_TYPE_DIALOG);
 
 #define TIMEOUT	10000
 
@@ -2588,9 +2588,10 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 static void
 brasero_burn_dialog_finalize (GObject * object)
 {
+	BraseroBurnDialog *dialog = BRASERO_BURN_DIALOG (object);
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (object);
+	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
 
 	if (priv->wait_ready_state_id) {
 		g_source_remove (priv->wait_ready_state_id);
@@ -2640,8 +2641,6 @@ static void
 brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroBurnDialogPrivate));
 
 	object_class->finalize = brasero_burn_dialog_finalize;
 }

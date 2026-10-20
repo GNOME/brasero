@@ -64,8 +64,6 @@
 #include "brasero-session-helper.h"
 #include "brasero-burn.h"
 
-G_DEFINE_TYPE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
-
 typedef struct _BraseroSumDialogPrivate BraseroSumDialogPrivate;
 struct _BraseroSumDialogPrivate {
 	BraseroBurnSession *session;
@@ -77,7 +75,9 @@ struct _BraseroSumDialogPrivate {
 	GCancellable *xfer_cancel;
 };
 
-#define BRASERO_SUM_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SUM_DIALOG, BraseroSumDialogPrivate))
+#define BRASERO_SUM_DIALOG_PRIVATE(o)  (brasero_sum_dialog_get_instance_private (o))
+
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
 
 static void
 brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
@@ -622,7 +622,7 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 	BraseroSumDialogPrivate *priv;
 
 	self = BRASERO_SUM_DIALOG (dialog);
-	priv = BRASERO_SUM_DIALOG_PRIVATE (dialog);
+	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
 
 	brasero_burn_session_start (priv->session);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->md5_check)))
@@ -647,11 +647,12 @@ brasero_sum_dialog_drive_changed (BraseroToolDialog *dialog,
 static void
 brasero_sum_dialog_finalize (GObject *object)
 {
+	BraseroSumDialog *dialog = BRASERO_SUM_DIALOG (object);
 	BraseroSumDialogPrivate *priv;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (object);
+	priv = BRASERO_SUM_DIALOG_PRIVATE (dialog);
 
-	brasero_sum_dialog_stop (BRASERO_SUM_DIALOG (object));
+	brasero_sum_dialog_stop (dialog);
 
 	if (priv->session) {
 		g_object_unref (priv->session);
@@ -667,9 +668,6 @@ brasero_sum_dialog_class_init (BraseroSumDialogClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroSumDialogPrivate));
-
-	brasero_sum_dialog_parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_sum_dialog_finalize;
 
 	tool_dialog_class->activate = brasero_sum_dialog_activate;

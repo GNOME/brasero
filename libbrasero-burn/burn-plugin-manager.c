@@ -66,9 +66,9 @@ struct _BraseroPluginManagerPrivate {
 	GSettings *settings;
 };
 
-#define BRASERO_PLUGIN_MANAGER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PLUGIN_MANAGER, BraseroPluginManagerPrivate))
+#define BRASERO_PLUGIN_MANAGER_PRIVATE(o)  (brasero_plugin_manager_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroPluginManager, brasero_plugin_manager, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroPluginManager, brasero_plugin_manager, G_TYPE_OBJECT);
 
 enum
 {
@@ -79,8 +79,6 @@ static guint caps_signals [LAST_SIGNAL] = { 0 };
 
 #define BRASERO_SCHEMA_CONFIG		       "org.gnome.brasero.config"
 #define BRASERO_PROPS_PLUGINS_KEY	       "plugins"
-
-static GObjectClass* parent_class = NULL;
 
 GSList *
 brasero_plugin_manager_get_plugins_list (BraseroPluginManager *self)
@@ -444,9 +442,10 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 static void
 brasero_plugin_manager_finalize (GObject *object)
 {
+	BraseroPluginManager *mgr = BRASERO_PLUGIN_MANAGER (object);
 	BraseroPluginManagerPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (object);
+	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (mgr);
 
 	if (priv->settings) {
 		g_object_unref (priv->settings);
@@ -458,7 +457,7 @@ brasero_plugin_manager_finalize (GObject *object)
 		priv->plugins = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_plugin_manager_parent_class)->finalize (object);
 	default_manager = NULL;
 }
 
@@ -466,9 +465,6 @@ static void
 brasero_plugin_manager_class_init (BraseroPluginManagerClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-
-	g_type_class_add_private (klass, sizeof (BraseroPluginManagerPrivate));
 
 	object_class->finalize = brasero_plugin_manager_finalize;
 

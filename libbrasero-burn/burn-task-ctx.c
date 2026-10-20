@@ -98,9 +98,9 @@ struct _BraseroTaskCtxPrivate
 	guint use_average_rate:1;
 };
 
-#define BRASERO_TASK_CTX_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TASK_CTX, BraseroTaskCtxPrivate))
+#define BRASERO_TASK_CTX_PRIVATE(o)  (brasero_task_ctx_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroTaskCtx, brasero_task_ctx, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTaskCtx, brasero_task_ctx, G_TYPE_OBJECT);
 
 #define MAX_VALUE_AVERAGE	16
 
@@ -117,8 +117,6 @@ enum
 	PROP_ACTION,
 	PROP_SESSION
 };
-
-static GObjectClass* parent_class = NULL;
 
 void
 brasero_task_ctx_set_dangerous (BraseroTaskCtx *self, gboolean value)
@@ -1056,9 +1054,10 @@ brasero_task_ctx_init (BraseroTaskCtx *object)
 static void
 brasero_task_ctx_finalize (GObject *object)
 {
+	BraseroTaskCtx *ctx = BRASERO_TASK_CTX (object);
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (object);
+	priv = BRASERO_TASK_CTX_PRIVATE (ctx);
 
 	if (priv->lock) {
 		g_mutex_free (priv->lock);
@@ -1086,18 +1085,15 @@ brasero_task_ctx_finalize (GObject *object)
 		priv->session = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_task_ctx_parent_class)->finalize (object);
 }
 
 static void
 brasero_task_ctx_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-	BraseroTaskCtx *self;
+	BraseroTaskCtx *self = BRASERO_TASK_CTX (object);
 	BraseroTaskCtxPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_TASK_CTX (object));
-
-	self = BRASERO_TASK_CTX (object);
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	switch (prop_id)
@@ -1118,12 +1114,9 @@ brasero_task_ctx_set_property (GObject *object, guint prop_id, const GValue *val
 static void
 brasero_task_ctx_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
-	BraseroTaskCtx *self;
+	BraseroTaskCtx *self = BRASERO_TASK_CTX (object);
 	BraseroTaskCtxPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_TASK_CTX (object));
-
-	self = BRASERO_TASK_CTX (object);
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	switch (prop_id)
@@ -1144,9 +1137,6 @@ static void
 brasero_task_ctx_class_init (BraseroTaskCtxClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-
-	g_type_class_add_private (klass, sizeof (BraseroTaskCtxPrivate));
 
 	object_class->finalize = brasero_task_ctx_finalize;
 	object_class->set_property = brasero_task_ctx_set_property;

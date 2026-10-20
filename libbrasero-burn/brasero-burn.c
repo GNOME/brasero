@@ -67,8 +67,6 @@
 #include "brasero-track-disc.h"
 #include "brasero-session-helper.h"
 
-G_DEFINE_TYPE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
-
 typedef struct _BraseroBurnPrivate BraseroBurnPrivate;
 struct _BraseroBurnPrivate {
 	BraseroBurnCaps *caps;
@@ -139,14 +137,14 @@ typedef enum {
 
 static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
-#define BRASERO_BURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN, BraseroBurnPrivate))
+#define BRASERO_BURN_PRIVATE(o)  (brasero_burn_get_instance_private (o))
+
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
 
 #define MAX_EJECT_ATTEMPTS	5
 #define MAX_MOUNT_ATTEMPTS	40
 
 #define MOUNT_TIMEOUT		500
-
-static GObjectClass *parent_class = NULL;
 
 static void
 brasero_burn_powermanagement (BraseroBurn *self,
@@ -3036,7 +3034,8 @@ brasero_burn_cancel (BraseroBurn *burn, gboolean protect)
 static void
 brasero_burn_finalize (GObject *object)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (object);
+	BraseroBurn *burn = BRASERO_BURN (object);
+	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
@@ -3061,7 +3060,7 @@ brasero_burn_finalize (GObject *object)
 	if (priv->caps)
 		g_object_unref (priv->caps);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_burn_parent_class)->finalize (object);
 }
 
 static void
@@ -3069,9 +3068,6 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroBurnPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_burn_finalize;
 
 	brasero_burn_signals [ASK_DISABLE_JOLIET_SIGNAL] =

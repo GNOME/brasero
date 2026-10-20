@@ -45,9 +45,9 @@ struct _BraseroStatusPrivate
 	gchar * current_action;
 };
 
-#define BRASERO_STATUS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_STATUS, BraseroStatusPrivate))
+#define BRASERO_STATUS_PRIVATE(o)  (brasero_status_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroStatus, brasero_status, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroStatus, brasero_status, G_TYPE_OBJECT);
 
 
 /**
@@ -293,9 +293,10 @@ brasero_status_init (BraseroStatus *object)
 static void
 brasero_status_finalize (GObject *object)
 {
+	BraseroStatus *status = BRASERO_STATUS (object);
 	BraseroStatusPrivate *priv;
 
-	priv = BRASERO_STATUS_PRIVATE (object);
+	priv = BRASERO_STATUS_PRIVATE (status);
 	if (priv->error)
 		g_error_free (priv->error);
 
@@ -309,8 +310,6 @@ static void
 brasero_status_class_init (BraseroStatusClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroStatusPrivate));
 
 	object_class->finalize = brasero_status_finalize;
 }

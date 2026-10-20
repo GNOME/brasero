@@ -58,11 +58,9 @@ struct _BraseroImagePropertiesPrivate
 	guint is_video:1;
 };
 
-#define BRASERO_IMAGE_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_PROPERTIES, BraseroImagePropertiesPrivate))
+#define BRASERO_IMAGE_PROPERTIES_PRIVATE(o)  (brasero_image_properties_get_instance_private (o))
 
-static GtkDialogClass* parent_class = NULL;
-
-G_DEFINE_TYPE (BraseroImageProperties, brasero_image_properties, GTK_TYPE_FILE_CHOOSER_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroImageProperties, brasero_image_properties, GTK_TYPE_FILE_CHOOSER_DIALOG);
 
 enum {
 	PROP_0,
@@ -325,6 +323,7 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 				   gint response_id,
 				   gpointer NULL_data)
 {
+	BraseroImageProperties *properties = BRASERO_IMAGE_PROPERTIES (chooser);
 	BraseroImagePropertiesPrivate *priv;
 	BraseroImageFormat format;
 	gchar *path;
@@ -332,14 +331,14 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 	if (response_id != GTK_RESPONSE_OK)
 		return;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (chooser);
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (properties);
 
 	/* get and check format */
-	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (chooser));
+	format = brasero_image_properties_get_format (properties);
 
 	/* see if the user has changed the path */
-	path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (chooser));
-	brasero_image_properties_set_output_path (BRASERO_IMAGE_PROPERTIES (chooser),
+	path = brasero_image_properties_get_path (properties);
+	brasero_image_properties_set_output_path (properties,
 						  format,
 						  path);
 	g_free (path);
@@ -437,9 +436,10 @@ brasero_image_properties_get_property (GObject *object,
 				       GValue *value,
 				       GParamSpec *pspec)
 {
+	BraseroImageProperties *properties = BRASERO_IMAGE_PROPERTIES (object);
 	BraseroImagePropertiesPrivate *priv;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -469,25 +469,23 @@ brasero_image_properties_init (BraseroImageProperties *object)
 static void
 brasero_image_properties_finalize (GObject *object)
 {
+	BraseroImageProperties *properties = BRASERO_IMAGE_PROPERTIES (object);
 	BraseroImagePropertiesPrivate *priv;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (properties);
 
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_image_properties_parent_class)->finalize (object);
 }
 
 static void
 brasero_image_properties_class_init (BraseroImagePropertiesClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	parent_class = GTK_DIALOG_CLASS (g_type_class_peek_parent (klass));
-
-	g_type_class_add_private (klass, sizeof (BraseroImagePropertiesPrivate));
 
 	object_class->set_property = brasero_image_properties_set_property;
 	object_class->get_property = brasero_image_properties_get_property;

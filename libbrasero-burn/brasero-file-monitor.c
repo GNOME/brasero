@@ -61,9 +61,9 @@ struct _BraseroFileMonitorPrivate
 	GSList *moved_list;
 };
 
-#define BRASERO_FILE_MONITOR_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_FILE_MONITOR, BraseroFileMonitorPrivate))
+#define BRASERO_FILE_MONITOR_PRIVATE(o)  (brasero_file_monitor_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroFileMonitor, brasero_file_monitor, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroFileMonitor, brasero_file_monitor, G_TYPE_OBJECT);
 
 struct _BraseroInotifyMovedData {
 	gchar *name;
@@ -878,11 +878,12 @@ brasero_file_monitor_init (BraseroFileMonitor *object)
 static void
 brasero_file_monitor_finalize (GObject *object)
 {
+	BraseroFileMonitor *monitor = BRASERO_FILE_MONITOR (object);
 	BraseroFileMonitorPrivate *priv;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (object);
+	priv = BRASERO_FILE_MONITOR_PRIVATE (monitor);
 
-	brasero_file_monitor_reset (BRASERO_FILE_MONITOR (object));
+	brasero_file_monitor_reset (monitor);
 
 	if (priv->notify_id)
 		g_source_remove (priv->notify_id);
@@ -897,8 +898,6 @@ static void
 brasero_file_monitor_class_init (BraseroFileMonitorClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroFileMonitorPrivate));
 
 	object_class->finalize = brasero_file_monitor_finalize;
 }

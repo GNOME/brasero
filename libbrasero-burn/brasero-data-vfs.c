@@ -71,7 +71,7 @@ struct _BraseroDataVFSPrivate
 	guint filter_broken_sym:1;
 };
 
-#define BRASERO_DATA_VFS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_VFS, BraseroDataVFSPrivate))
+#define BRASERO_DATA_VFS_PRIVATE(o)  (brasero_data_vfs_get_instance_private (o))
 
 enum {
 	UNREADABLE_SIGNAL,
@@ -85,7 +85,7 @@ enum {
 static gulong brasero_data_vfs_signals [LAST_SIGNAL] = { 0 };
 
 
-G_DEFINE_TYPE (BraseroDataVFS, brasero_data_vfs, BRASERO_TYPE_DATA_SESSION);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDataVFS, brasero_data_vfs, BRASERO_TYPE_DATA_SESSION);
 
 BraseroFilteredUri *
 brasero_data_vfs_get_filtered_model (BraseroDataVFS *vfs)
@@ -257,8 +257,8 @@ brasero_data_vfs_directory_load_end (GObject *object,
 				     gboolean cancelled,
 				     gpointer data)
 {
-	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (object);
 	BraseroDataVFS *self = BRASERO_DATA_VFS (object);
+	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
 	gchar *uri = data;
 	GSList *nodes;
 
@@ -541,8 +541,8 @@ brasero_data_vfs_loading_node_end (GObject *object,
 				   gboolean cancelled,
 				   gpointer data)
 {
-	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (object);
 	BraseroDataVFS *self = BRASERO_DATA_VFS (object);
+	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
 	gchar *uri = data;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
@@ -1004,9 +1004,10 @@ static void
 brasero_data_vfs_uri_removed (BraseroDataProject *project,
 			      const gchar *uri)
 {
+	BraseroDataVFS *self = BRASERO_DATA_VFS (project);
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (project);
+	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
 	/* That happens when a graft is removed from the tree, that is when this
 	 * graft uri doesn't appear anywhere and when it hasn't got any more 
@@ -1069,11 +1070,12 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 static void
 brasero_data_vfs_finalize (GObject *object)
 {
+	BraseroDataVFS *vfs = BRASERO_DATA_VFS (object);
 	BraseroDataVFSPrivate *priv;
 
-	brasero_data_vfs_clear (BRASERO_DATA_VFS (object));
+	brasero_data_vfs_clear (vfs);
 
-	priv = BRASERO_DATA_VFS_PRIVATE (object);
+	priv = BRASERO_DATA_VFS_PRIVATE (vfs);
 
 	if (priv->loading) {
 		g_hash_table_destroy (priv->loading);
@@ -1103,8 +1105,6 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroDataProjectClass *data_project_class = BRASERO_DATA_PROJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDataVFSPrivate));
 
 	object_class->finalize = brasero_data_vfs_finalize;
 

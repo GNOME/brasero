@@ -48,9 +48,9 @@ struct _BraseroTrackDiscPrivate
 	glong src_added_sig;
 };
 
-#define BRASERO_TRACK_DISC_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_DISC, BraseroTrackDiscPrivate))
+#define BRASERO_TRACK_DISC_PRIVATE(o)  (brasero_track_disc_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroTrackDisc, brasero_track_disc, BRASERO_TYPE_TRACK);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackDisc, brasero_track_disc, BRASERO_TYPE_TRACK);
 
 /**
  * brasero_track_disc_set_track_num:
@@ -230,12 +230,13 @@ brasero_track_disc_get_size (BraseroTrack *track,
 			     goffset *blocks,
 			     goffset *block_size)
 {
+	BraseroTrackDisc *disk = BRASERO_TRACK_DISC (track);
 	BraseroMedium *medium;
 	goffset medium_size = 0;
 	goffset medium_blocks = 0;
 	BraseroTrackDiscPrivate *priv;
 
-	priv = BRASERO_TRACK_DISC_PRIVATE (track);
+	priv = BRASERO_TRACK_DISC_PRIVATE (disk);
 	medium = brasero_drive_get_medium (priv->drive);
 	if (!medium)
 		return BRASERO_BURN_NOT_READY;
@@ -255,10 +256,11 @@ static BraseroBurnResult
 brasero_track_disc_get_track_type (BraseroTrack *track,
 				   BraseroTrackType *type)
 {
+	BraseroTrackDisc *disk = BRASERO_TRACK_DISC (track);
 	BraseroTrackDiscPrivate *priv;
 	BraseroMedium *medium;
 
-	priv = BRASERO_TRACK_DISC_PRIVATE (track);
+	priv = BRASERO_TRACK_DISC_PRIVATE (disk);
 
 	medium = brasero_drive_get_medium (priv->drive);
 
@@ -285,8 +287,6 @@ brasero_track_disc_class_init (BraseroTrackDiscClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroTrackClass* track_class = BRASERO_TRACK_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTrackDiscPrivate));
 
 	object_class->finalize = brasero_track_disc_finalize;
 

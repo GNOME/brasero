@@ -50,8 +50,6 @@
 #include "brasero-tool-dialog-private.h"
 #include "brasero-blank-dialog.h"
 
-G_DEFINE_TYPE (BraseroBlankDialog, brasero_blank_dialog, BRASERO_TYPE_TOOL_DIALOG);
-
 struct BraseroBlankDialogPrivate {
 	BraseroBurnSession *session;
 
@@ -63,11 +61,12 @@ struct BraseroBlankDialogPrivate {
 	guint fast_saved;
 	guint dummy_saved;
 };
+
+#define BRASERO_BLANK_DIALOG_PRIVATE(o)  (brasero_blank_dialog_get_instance_private (o))
+
 typedef struct BraseroBlankDialogPrivate BraseroBlankDialogPrivate;
 
-#define BRASERO_BLANK_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BLANK_DIALOG, BraseroBlankDialogPrivate))
-
-static BraseroToolDialogClass *parent_class = NULL;
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroBlankDialog, brasero_blank_dialog, BRASERO_TYPE_TOOL_DIALOG);
 
 static guint
 brasero_blank_dialog_set_button (BraseroBurnSession *session,
@@ -171,10 +170,11 @@ static void
 brasero_blank_dialog_drive_changed (BraseroToolDialog *dialog,
 				    BraseroMedium *medium)
 {
+	BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG(dialog);
 	BraseroBlankDialogPrivate *priv;
 	BraseroDrive *drive;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (dialog);
+	priv = BRASERO_BLANK_DIALOG_PRIVATE (blank_dialog);
 
 	if (medium)
 		drive = brasero_medium_get_drive (medium);
@@ -310,9 +310,10 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 static void
 brasero_blank_dialog_finalize (GObject *object)
 {
+	BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG(object);
 	BraseroBlankDialogPrivate *priv;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (object);
+	priv = BRASERO_BLANK_DIALOG_PRIVATE (blank_dialog);
 
 	if (priv->caps_sig) {
 		BraseroPluginManager *manager;
@@ -332,7 +333,7 @@ brasero_blank_dialog_finalize (GObject *object)
 		priv->session = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_blank_dialog_parent_class)->finalize (object);
 }
 
 static void
@@ -340,10 +341,6 @@ brasero_blank_dialog_class_init (BraseroBlankDialogClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroBlankDialogPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->finalize = brasero_blank_dialog_finalize;
 

@@ -97,14 +97,14 @@ struct _BraseroBurnOptionsPrivate
 	guint has_disc:1;
 };
 
-#define BRASERO_BURN_OPTIONS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_OPTIONS, BraseroBurnOptionsPrivate))
+#define BRASERO_BURN_OPTIONS_PRIVATE(o)  (brasero_burn_options_get_instance_private (o))
 
 enum {
 	PROP_0,
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroBurnOptions, brasero_burn_options, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroBurnOptions, brasero_burn_options, GTK_TYPE_DIALOG);
 
 static void
 brasero_burn_options_add_source (BraseroBurnOptions *self,
@@ -1011,11 +1011,10 @@ brasero_burn_options_set_property (GObject *object,
 				   const GValue *value,
 				   GParamSpec *pspec)
 {
+	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (object);
 	BraseroBurnOptionsPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_BURN_OPTIONS (object));
-
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
 
 	switch (prop_id)
 	{
@@ -1052,11 +1051,10 @@ brasero_burn_options_get_property (GObject *object,
 				   GValue *value,
 				   GParamSpec *pspec)
 {
+	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (object);
 	BraseroBurnOptionsPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_BURN_OPTIONS (object));
-
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
 
 	switch (prop_id)
 	{
@@ -1073,9 +1071,10 @@ brasero_burn_options_get_property (GObject *object,
 static void
 brasero_burn_options_finalize (GObject *object)
 {
+	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (object);
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
 
 	if (priv->cancel) {
 		g_cancellable_cancel (priv->cancel);
@@ -1205,6 +1204,7 @@ static void
 brasero_burn_options_response (GtkDialog *dialog,
                                GtkResponseType response)
 {
+	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (dialog);
 	BraseroBurnOptionsPrivate *priv;
 	BraseroBurnResult result;
 	GString *string;
@@ -1212,7 +1212,7 @@ brasero_burn_options_response (GtkDialog *dialog,
 	if (response != GTK_RESPONSE_OK)
 		return;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (dialog);
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
 	gtk_widget_set_sensitive (GTK_WIDGET (dialog), FALSE);
 
 	result = brasero_session_foreach_plugin_error (BRASERO_BURN_SESSION (priv->session),
@@ -1246,8 +1246,6 @@ brasero_burn_options_class_init (BraseroBurnOptionsClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkDialogClass *gtk_dialog_class = GTK_DIALOG_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroBurnOptionsPrivate));
 
 	object_class->finalize = brasero_burn_options_finalize;
 	object_class->set_property = brasero_burn_options_set_property;

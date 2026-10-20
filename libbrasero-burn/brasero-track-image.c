@@ -52,10 +52,10 @@ struct _BraseroTrackImagePrivate
 	BraseroImageFormat format;
 };
 
-#define BRASERO_TRACK_IMAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_IMAGE, BraseroTrackImagePrivate))
+#define BRASERO_TRACK_IMAGE_PRIVATE(o)  (brasero_track_image_get_instance_private (o))
 
 
-G_DEFINE_TYPE (BraseroTrackImage, brasero_track_image, BRASERO_TYPE_TRACK);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackImage, brasero_track_image, BRASERO_TYPE_TRACK);
 
 static BraseroBurnResult
 brasero_track_image_set_source_real (BraseroTrackImage *track,
@@ -305,9 +305,10 @@ static BraseroBurnResult
 brasero_track_image_get_track_type (BraseroTrack *track,
 				    BraseroTrackType *type)
 {
+	BraseroTrackImage *image = BRASERO_TRACK_IMAGE (track);
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = BRASERO_TRACK_IMAGE_PRIVATE (image);
 
 	brasero_track_type_set_has_image (type);
 	brasero_track_type_set_image_format (type, priv->format);
@@ -320,9 +321,10 @@ brasero_track_image_get_size (BraseroTrack *track,
 			      goffset *blocks,
 			      goffset *block_size)
 {
+	BraseroTrackImage *image = BRASERO_TRACK_IMAGE (track);
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = BRASERO_TRACK_IMAGE_PRIVATE (image);
 
 	if (priv->format == BRASERO_IMAGE_FORMAT_BIN) {
 		if (block_size)
@@ -356,9 +358,10 @@ brasero_track_image_init (BraseroTrackImage *object)
 static void
 brasero_track_image_finalize (GObject *object)
 {
+	BraseroTrackImage *image = BRASERO_TRACK_IMAGE (object);
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (object);
+	priv = BRASERO_TRACK_IMAGE_PRIVATE (image);
 	if (priv->image) {
 		g_free (priv->image);
 		priv->image = NULL;
@@ -377,8 +380,6 @@ brasero_track_image_class_init (BraseroTrackImageClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTrackImagePrivate));
 
 	object_class->finalize = brasero_track_image_finalize;
 

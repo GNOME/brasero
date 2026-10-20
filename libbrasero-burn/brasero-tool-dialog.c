@@ -50,8 +50,6 @@
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 
-G_DEFINE_TYPE (BraseroToolDialog, brasero_tool_dialog, GTK_TYPE_DIALOG);
-
 typedef struct _BraseroToolDialogPrivate BraseroToolDialogPrivate;
 struct _BraseroToolDialogPrivate {
 	GtkWidget *upper_box;
@@ -67,9 +65,9 @@ struct _BraseroToolDialogPrivate {
 	gboolean running;
 };
 
-#define BRASERO_TOOL_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TOOL_DIALOG, BraseroToolDialogPrivate))
+#define BRASERO_TOOL_DIALOG_PRIVATE(o)  (brasero_tool_dialog_get_instance_private (o))
 
-static GtkDialogClass *parent_class = NULL;
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroToolDialog, brasero_tool_dialog, GTK_TYPE_DIALOG);
 
 static void
 brasero_tool_dialog_media_error (BraseroToolDialog *self)
@@ -502,17 +500,18 @@ brasero_tool_dialog_response (GtkDialog *dialog,
 static void
 brasero_tool_dialog_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_tool_dialog_parent_class)->finalize (object);
 }
 
 static void
 brasero_tool_dialog_constructed (GObject *object)
 {
+	BraseroToolDialog *dialog = BRASERO_TOOL_DIALOG (object);
 	BraseroToolDialogPrivate *priv;
 
 	G_OBJECT_CLASS (brasero_tool_dialog_parent_class)->constructed (object);
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (object);
+	priv = BRASERO_TOOL_DIALOG_PRIVATE (dialog);
 
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->selector),
 						  BRASERO_MEDIA_TYPE_REWRITABLE |
@@ -527,9 +526,6 @@ brasero_tool_dialog_class_init (BraseroToolDialogClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroToolDialogPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_tool_dialog_finalize;
 	object_class->constructed = brasero_tool_dialog_constructed;
 

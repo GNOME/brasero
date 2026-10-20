@@ -53,23 +53,24 @@ struct _BraseroSrcSelectionPrivate
 	BraseroTrackDisc *track;
 };
 
-#define BRASERO_SRC_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SRC_SELECTION, BraseroSrcSelectionPrivate))
+#define BRASERO_SRC_SELECTION_PRIVATE(o)  (brasero_src_selection_get_instance_private (o))
 
 enum {
 	PROP_0,
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroSrcSelection, brasero_src_selection, BRASERO_TYPE_MEDIUM_SELECTION);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSrcSelection, brasero_src_selection, BRASERO_TYPE_MEDIUM_SELECTION);
 
 static void
 brasero_src_selection_medium_changed (BraseroMediumSelection *selection,
 				      BraseroMedium *medium)
 {
+	BraseroSrcSelection *self = BRASERO_SRC_SELECTION (selection);
 	BraseroSrcSelectionPrivate *priv;
 	BraseroDrive *drive = NULL;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
+	priv = BRASERO_SRC_SELECTION_PRIVATE (self);
 
 	if (priv->session && priv->track) {
 		drive = brasero_medium_get_drive (medium);
@@ -110,9 +111,10 @@ brasero_src_selection_init (BraseroSrcSelection *object)
 static void
 brasero_src_selection_finalize (GObject *object)
 {
+	BraseroSrcSelection *selection = BRASERO_SRC_SELECTION (object);
 	BraseroSrcSelectionPrivate *priv;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (object);
+	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
 	if (priv->session) {
 		g_object_unref (priv->session);
@@ -153,10 +155,11 @@ brasero_src_selection_set_property (GObject *object,
 				    const GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroSrcSelection *selection = BRASERO_SRC_SELECTION (object);
 	BraseroSrcSelectionPrivate *priv;
 	BraseroBurnSession *session;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (object);
+	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -211,9 +214,10 @@ brasero_src_selection_get_property (GObject *object,
 				    GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroSrcSelection *selection = BRASERO_SRC_SELECTION (object);
 	BraseroSrcSelectionPrivate *priv;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (object);
+	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -230,8 +234,6 @@ brasero_src_selection_class_init (BraseroSrcSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroMediumSelectionClass *medium_selection_class = BRASERO_MEDIUM_SELECTION_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroSrcSelectionPrivate));
 
 	object_class->finalize = brasero_src_selection_finalize;
 	object_class->set_property = brasero_src_selection_set_property;

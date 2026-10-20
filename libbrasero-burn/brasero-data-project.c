@@ -88,17 +88,17 @@ struct _BraseroDataProjectPrivate
 	guint is_loading_contents:1;
 };
 
-#define BRASERO_DATA_PROJECT_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_PROJECT, BraseroDataProjectPrivate))
+#define BRASERO_DATA_PROJECT_PRIVATE(o)  (brasero_data_project_get_instance_private (o))
 
 #ifdef BUILD_INOTIFY
 
 #include "brasero-file-monitor.h"
 
-G_DEFINE_TYPE (BraseroDataProject, brasero_data_project, BRASERO_TYPE_FILE_MONITOR);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDataProject, brasero_data_project, BRASERO_TYPE_FILE_MONITOR);
 
 #else
 
-G_DEFINE_TYPE (BraseroDataProject, brasero_data_project, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDataProject, brasero_data_project, G_TYPE_OBJECT);
 
 #endif
 
@@ -3925,10 +3925,11 @@ brasero_data_project_reset (BraseroDataProject *self)
 static void
 brasero_data_project_finalize (GObject *object)
 {
+	BraseroDataProject *project = BRASERO_DATA_PROJECT (object);
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (object);
-	brasero_data_project_clear (BRASERO_DATA_PROJECT (object));
+	priv = BRASERO_DATA_PROJECT_PRIVATE (project);
+	brasero_data_project_clear (project);
 
 	if (priv->grafts) {
 		g_hash_table_destroy (priv->grafts);
@@ -4188,6 +4189,7 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 				 gpointer callback_dest,
 				 const gchar *name_dest)
 {
+	BraseroDataProject *project = BRASERO_DATA_PROJECT (monitor);
 	BraseroFileNode *node, *parent;
 
 	if (type == BRASERO_FILE_MONITOR_FOLDER)
@@ -4217,12 +4219,12 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 			 * parent contents a file doesn't exist witht the same
 			 * name. If so, then keep the old name. */
 			if (!brasero_file_node_check_name_existence (parent, name_dest))
-				brasero_data_project_file_update_name (BRASERO_DATA_PROJECT (monitor), node, name_dest);
+				brasero_data_project_file_update_name (project, node, name_dest);
 		}
 
 		/* update graft URI */
-		parent_uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (monitor), parent);
-		brasero_data_project_file_update_URI (BRASERO_DATA_PROJECT (monitor),
+		parent_uri = brasero_data_project_node_to_uri (project, parent);
+		brasero_data_project_file_update_URI (project,
 						      node,
 						      parent_uri,
 						      name_dest);
@@ -4237,28 +4239,28 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		BraseroDataProjectPrivate *priv;
 
 		klass = BRASERO_DATA_PROJECT_GET_CLASS (monitor);
-		priv = BRASERO_DATA_PROJECT_PRIVATE (monitor);
+		priv = BRASERO_DATA_PROJECT_PRIVATE (project);
 
 		/* make sure there isn't the same name in the directory: if so,
 		 * that's simply not possible to rename. So if node is grafted
 		 * it keeps its name; if not, it's grafted with the old name. */
 		sibling = brasero_file_node_check_name_existence (parent, name_dest);
 		if (sibling && !BRASERO_FILE_NODE_VIRTUAL (sibling)) {
-			brasero_data_project_file_graft (BRASERO_DATA_PROJECT (monitor), node, name_dest);
+			brasero_data_project_file_graft (project, node, name_dest);
 			return;
 		}
 
 		if (sibling && BRASERO_FILE_NODE_VIRTUAL (sibling)) {
 			/* Signal collision and remove virtual node but ignore result */
-			brasero_data_project_virtual_sibling (BRASERO_DATA_PROJECT (monitor), node, sibling);
+			brasero_data_project_virtual_sibling (project, node, sibling);
 		}
 
 		/* If node was in the joliet incompatible table, remove it */
-		brasero_data_project_joliet_remove_node (BRASERO_DATA_PROJECT (monitor), node);
+		brasero_data_project_joliet_remove_node (project, node);
 
 		/* see if we won't break the max path depth barrier */
-		if (!brasero_data_project_is_deep (BRASERO_DATA_PROJECT (monitor), parent,  BRASERO_FILE_NODE_NAME (node), node->is_file)) {
-			brasero_data_project_remove_node (BRASERO_DATA_PROJECT (monitor), node);
+		if (!brasero_data_project_is_deep (project, parent,  BRASERO_FILE_NODE_NAME (node), node->is_file)) {
+			brasero_data_project_remove_node (project, node);
 			return;
 		}
 
@@ -4273,7 +4275,7 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
 		brasero_file_node_move_from (node, stats);
 		if (klass->node_removed)
-			klass->node_removed (BRASERO_DATA_PROJECT (monitor),
+			klass->node_removed (project,
 					     former_parent,
 					     former_position,
 					     node);
@@ -4286,12 +4288,12 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		/* Check joliet name compatibility. This must be done after the
 		 * node information have been setup. */
 		if (strlen (name_dest) > 64)
-			brasero_data_project_joliet_add_node (BRASERO_DATA_PROJECT (monitor), node);
+			brasero_data_project_joliet_add_node (project, node);
 
 		brasero_file_node_move_to (node, parent, priv->sort_func);
 
 		if (klass->node_added)
-			klass->node_added (BRASERO_DATA_PROJECT (monitor), node, NULL);
+			klass->node_added (project, node, NULL);
 
 		if (sibling) {
 			BraseroDataProjectClass *klass;
@@ -4301,7 +4303,7 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 			/* restore the imported node that has the same name as old_name */
 			brasero_file_node_add (sibling->parent, sibling, priv->sort_func);
 			if (klass->node_added)
-				brasero_data_project_add_node_and_children (BRASERO_DATA_PROJECT (monitor), sibling, klass->node_added);
+				brasero_data_project_add_node_and_children (project, sibling, klass->node_added);
 		}
 	}
 }
@@ -4312,12 +4314,13 @@ brasero_data_project_file_removed (BraseroFileMonitor *monitor,
 				   gpointer callback_data,
 				   const gchar *name)
 {
+	BraseroDataProject *project = BRASERO_DATA_PROJECT (monitor);
 	BraseroDataProjectPrivate *priv;
 	BraseroURINode *uri_node;
 	BraseroFileNode *node;
 	gchar *uri;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (monitor);
+	priv = BRASERO_DATA_PROJECT_PRIVATE (project);
 
 	/* If name is NULL then it means the event is against callback.
 	 * Otherwise that's against one of the children of callback. */
@@ -4329,8 +4332,8 @@ brasero_data_project_file_removed (BraseroFileMonitor *monitor,
 	if (!node)
 		return;
 
-	uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (monitor), node);
-	brasero_data_project_remove_node (BRASERO_DATA_PROJECT (monitor), node);
+	uri = brasero_data_project_node_to_uri (project, node);
+	brasero_data_project_remove_node (project, node);
 
 	/* a graft must have been created or already existed. */
 	uri_node = g_hash_table_lookup (priv->grafts, uri);
@@ -4381,8 +4384,6 @@ static void
 brasero_data_project_class_init (BraseroDataProjectClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDataProjectPrivate));
 
 	object_class->finalize = brasero_data_project_finalize;
 

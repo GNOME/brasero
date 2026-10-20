@@ -61,8 +61,7 @@
 #include "brasero-track.h"
 #include "brasero-track-disc.h"
 
-G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
-#define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
+#define BRASERO_BURN_SESSION_PRIVATE(o)  (brasero_burn_session_get_instance_private (o))
 
 /**
  * SECTION:brasero-session
@@ -123,6 +122,8 @@ typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 							 brasero_drive_is_fake (priv->settings->burner))
 #define BRASERO_STR_EQUAL(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
+
 typedef enum {
 	TAG_CHANGED_SIGNAL,
 	TRACK_ADDED_SIGNAL,
@@ -140,8 +141,6 @@ enum {
 	PROP_RATE,
 	PROP_FLAGS
 };
-
-static GObjectClass *parent_class = NULL;
 
 static void
 brasero_session_settings_clean (BraseroSessionSetting *settings)
@@ -2382,12 +2381,13 @@ brasero_burn_session_clean (const gchar *path)
 static void
 brasero_burn_session_finalize (GObject *object)
 {
+	BraseroBurnSession *session = BRASERO_BURN_SESSION (object);
 	BraseroBurnSessionPrivate *priv;
 	GSList *iter;
 
 	BRASERO_BURN_LOG ("Cleaning session");
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (object);
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
 
 	if (priv->tags) {
 		g_hash_table_destroy (priv->tags);
@@ -2406,7 +2406,7 @@ brasero_burn_session_finalize (GObject *object)
 		priv->dest_removed_sig = 0;	
 	}
 
-	brasero_burn_session_stop_tracks_monitoring (BRASERO_BURN_SESSION (object));
+	brasero_burn_session_stop_tracks_monitoring (session);
 
 	if (priv->pile_tracks) {
 		g_slist_foreach (priv->pile_tracks,
@@ -2462,7 +2462,7 @@ brasero_burn_session_finalize (GObject *object)
 
 	brasero_session_settings_clean (priv->settings);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_burn_session_parent_class)->finalize (object);
 }
 
 static void
@@ -2480,20 +2480,20 @@ brasero_burn_session_set_property (GObject *object,
                                    const GValue *value,
                                    GParamSpec *pspec)
 {
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (object));
+	BraseroBurnSession *session = BRASERO_BURN_SESSION (object);
 
 	switch (prop_id)
 	{
 	case PROP_TMPDIR:
-		brasero_burn_session_set_tmpdir (BRASERO_BURN_SESSION (object),
+		brasero_burn_session_set_tmpdir (session,
 		                                 g_value_get_string (value));
 		break;
 	case PROP_RATE:
-		brasero_burn_session_set_rate (BRASERO_BURN_SESSION (object),
+		brasero_burn_session_set_rate (session,
 		                               g_value_get_int64 (value));
 		break;
 	case PROP_FLAGS:
-		brasero_burn_session_set_flags (BRASERO_BURN_SESSION (object),
+		brasero_burn_session_set_flags (session,
 		                                g_value_get_int (value));
 		break;
 	default:
@@ -2508,11 +2508,10 @@ brasero_burn_session_get_property (GObject *object,
                                    GValue *value,
                                    GParamSpec *pspec)
 {
+	BraseroBurnSession *session = BRASERO_BURN_SESSION (object);
 	BraseroBurnSessionPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (object));
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (object);
+	priv = BRASERO_BURN_SESSION_PRIVATE (session);
 
 	/* Here we do not call the accessors functions to honour the 0/NULL value
 	 * which means use system default. */
@@ -2537,10 +2536,6 @@ static void
 brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroBurnSessionPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 
 	object_class->finalize = brasero_burn_session_finalize;
 	object_class->set_property = brasero_burn_session_set_property;

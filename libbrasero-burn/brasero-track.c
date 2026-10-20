@@ -48,7 +48,7 @@ struct _BraseroTrackPrivate
 	BraseroChecksumType checksum_type;
 };
 
-#define BRASERO_TRACK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK, BraseroTrackPrivate))
+#define BRASERO_TRACK_PRIVATE(o)  (brasero_track_get_instance_private (o))
 
 enum
 {
@@ -60,7 +60,7 @@ enum
 
 static guint track_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroTrack, brasero_track, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrack, brasero_track, G_TYPE_OBJECT);
 
 /**
  * brasero_track_get_track_type:
@@ -544,9 +544,10 @@ brasero_track_init (BraseroTrack *object)
 static void
 brasero_track_finalize (GObject *object)
 {
+	BraseroTrack *track = BRASERO_TRACK (object);
 	BraseroTrackPrivate *priv;
 
-	priv = BRASERO_TRACK_PRIVATE (object);
+	priv = BRASERO_TRACK_PRIVATE (track);
 
 	if (priv->tags) {
 		g_hash_table_destroy (priv->tags);
@@ -565,8 +566,6 @@ static void
 brasero_track_class_init (BraseroTrackClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTrackPrivate));
 
 	object_class->finalize = brasero_track_finalize;
 

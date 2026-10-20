@@ -49,9 +49,9 @@ struct _BraseroSessionSpanPrivate
 	BraseroTrack * last_track;
 };
 
-#define BRASERO_SESSION_SPAN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SESSION_SPAN, BraseroSessionSpanPrivate))
+#define BRASERO_SESSION_SPAN_PRIVATE(o)  (brasero_session_span_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroSessionSpan, brasero_session_span, BRASERO_TYPE_BURN_SESSION);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSessionSpan, brasero_session_span, BRASERO_TYPE_BURN_SESSION);
 
 /**
  * brasero_session_span_get_max_space:
@@ -401,8 +401,6 @@ static void
 brasero_session_span_class_init (BraseroSessionSpanClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroSessionSpanPrivate));
 
 	object_class->finalize = brasero_session_span_finalize;
 }

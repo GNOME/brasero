@@ -69,10 +69,8 @@ struct _BraseroTaskPrivate {
 	GError *error;
 };
 
-#define BRASERO_TASK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TASK, BraseroTaskPrivate))
-G_DEFINE_TYPE (BraseroTask, brasero_task, BRASERO_TYPE_TASK_CTX);
-
-static GObjectClass *parent_class = NULL;
+#define BRASERO_TASK_PRIVATE(o)  (brasero_task_get_instance_private (o))
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTask, brasero_task, BRASERO_TYPE_TASK_CTX);
 
 #define MAX_JOB_START_ATTEMPTS			5
 #define JOB_ATTEMPTS_WAIT_TIME			1
@@ -688,9 +686,6 @@ brasero_task_class_init (BraseroTaskClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroTaskCtxClass *ctx_class = BRASERO_TASK_CTX_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroTaskPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_task_finalize;
 
 	ctx_class->finished = brasero_task_finished;
@@ -714,7 +709,7 @@ brasero_task_finalize (GObject *object)
 		priv->leader = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_task_parent_class)->finalize (object);
 }
 
 BraseroTask *

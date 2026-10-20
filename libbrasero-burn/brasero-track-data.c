@@ -53,9 +53,9 @@ struct _BraseroTrackDataPrivate
 	guint64 data_blocks;
 };
 
-#define BRASERO_TRACK_DATA_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_DATA, BraseroTrackDataPrivate))
+#define BRASERO_TRACK_DATA_PRIVATE(o)  (brasero_track_data_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroTrackData, brasero_track_data, BRASERO_TYPE_TRACK);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackData, brasero_track_data, BRASERO_TYPE_TRACK);
 
 /**
  * brasero_graft_point_free:
@@ -629,9 +629,10 @@ brasero_track_data_get_size (BraseroTrack *track,
 			     goffset *blocks,
 			     goffset *block_size)
 {
+	BraseroTrackData *data = BRASERO_TRACK_DATA (track);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = BRASERO_TRACK_DATA_PRIVATE (data);
 
 	if (*block_size)
 		*block_size = 2048;
@@ -646,9 +647,10 @@ static BraseroBurnResult
 brasero_track_data_get_track_type (BraseroTrack *track,
 				   BraseroTrackType *type)
 {
+	BraseroTrackData *data = BRASERO_TRACK_DATA (track);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = BRASERO_TRACK_DATA_PRIVATE (data);
 
 	brasero_track_type_set_has_data (type);
 	brasero_track_type_set_data_fs (type, priv->fs_type);
@@ -660,9 +662,10 @@ static BraseroBurnResult
 brasero_track_data_get_status (BraseroTrack *track,
 			       BraseroStatus *status)
 {
+	BraseroTrackData *data = BRASERO_TRACK_DATA (track);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = BRASERO_TRACK_DATA_PRIVATE (data);
 
 	if (!priv->grafts) {
 		if (status)
@@ -683,9 +686,10 @@ brasero_track_data_init (BraseroTrackData *object)
 static void
 brasero_track_data_finalize (GObject *object)
 {
+	BraseroTrackData *data = BRASERO_TRACK_DATA (object);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (object);
+	priv = BRASERO_TRACK_DATA_PRIVATE (data);
 	if (priv->grafts) {
 		g_slist_foreach (priv->grafts, (GFunc) brasero_graft_point_free, NULL);
 		g_slist_free (priv->grafts);
@@ -707,8 +711,6 @@ brasero_track_data_class_init (BraseroTrackDataClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
 	BraseroTrackDataClass *track_data_class = BRASERO_TRACK_DATA_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTrackDataPrivate));
 
 	object_class->finalize = brasero_track_data_finalize;
 

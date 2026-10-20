@@ -91,7 +91,7 @@ struct _BraseroSessionCfgPrivate
 	guint output_msdos:1;
 };
 
-#define BRASERO_SESSION_CFG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SESSION_CFG, BraseroSessionCfgPrivate))
+#define BRASERO_SESSION_CFG_PRIVATE(o)  (brasero_session_cfg_get_instance_private (o))
 
 enum
 {
@@ -103,7 +103,7 @@ enum
 
 static guint session_cfg_signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_SESSION_SPAN);
 
 /**
  * This is to handle tags (and more particularly video ones)
@@ -318,6 +318,7 @@ brasero_session_cfg_get_output_path (BraseroBurnSession *session,
 				     gchar **image,
 				     gchar **toc)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (session);
 	gchar *path = NULL;
 	BraseroBurnResult result;
 	BraseroImageFormat format;
@@ -325,7 +326,7 @@ brasero_session_cfg_get_output_path (BraseroBurnSession *session,
 	BraseroSessionCfgPrivate *priv;
 
 	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 
 	result = klass->get_output_path (session,
 					 image,
@@ -370,6 +371,7 @@ brasero_session_cfg_get_output_path (BraseroBurnSession *session,
 static BraseroImageFormat
 brasero_session_cfg_get_output_format (BraseroBurnSession *session)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (session);
 	BraseroBurnSessionClass *klass;
 	BraseroSessionCfgPrivate *priv;
 	BraseroImageFormat format;
@@ -380,7 +382,7 @@ brasero_session_cfg_get_output_format (BraseroBurnSession *session)
 	if (format != BRASERO_IMAGE_FORMAT_NONE)
 		return format;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 
 	if (priv->output_format)
 		return priv->output_format;
@@ -1263,12 +1265,13 @@ static void
 brasero_session_cfg_track_added (BraseroBurnSession *session,
 				 BraseroTrack *track)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (session);
 	BraseroSessionCfgPrivate *priv;
 
-	if (!brasero_session_cfg_can_update (BRASERO_SESSION_CFG (session)))
+	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 	priv->session_blocks = 0;
 	priv->session_size = 0;
 
@@ -1282,8 +1285,8 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 	 * - check if all flags are supported
 	 * - check available formats for path
 	 * - set one path */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
-	brasero_session_cfg_check_drive_settings (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_update (cfg);
+	brasero_session_cfg_check_drive_settings (cfg);
 }
 
 static void
@@ -1291,12 +1294,13 @@ brasero_session_cfg_track_removed (BraseroBurnSession *session,
 				   BraseroTrack *track,
 				   guint former_position)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (session);
 	BraseroSessionCfgPrivate *priv;
 
-	if (!brasero_session_cfg_can_update (BRASERO_SESSION_CFG (session)))
+	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 	priv->session_blocks = 0;
 	priv->session_size = 0;
 
@@ -1308,20 +1312,21 @@ brasero_session_cfg_track_removed (BraseroBurnSession *session,
 	/* If there were several tracks and at least one remained there is no
 	 * use checking flags since the source type has not changed anyway.
 	 * If there is no more track, there is no use checking flags anyway. */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_update (cfg);
 }
 
 static void
 brasero_session_cfg_track_changed (BraseroBurnSession *session,
 				   BraseroTrack *track)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (session);
 	BraseroSessionCfgPrivate *priv;
 	BraseroTrackType *current;
 
-	if (!brasero_session_cfg_can_update (BRASERO_SESSION_CFG (session)))
+	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 	priv->session_blocks = 0;
 	priv->session_size = 0;
 
@@ -1330,7 +1335,7 @@ brasero_session_cfg_track_changed (BraseroBurnSession *session,
 	if (brasero_track_type_equal (current, priv->source)) {
 		/* This is a shortcut if the source type has not changed */
 		brasero_track_type_free (current);
-		brasero_session_cfg_check_size (BRASERO_SESSION_CFG (session));
+		brasero_session_cfg_check_size (cfg);
 		g_signal_emit (session,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0);
@@ -1343,20 +1348,21 @@ brasero_session_cfg_track_changed (BraseroBurnSession *session,
 	 * - check if all flags are supported
 	 * - check available formats for path
 	 * - set one path if need be */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
-	brasero_session_cfg_check_drive_settings (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_update (cfg);
+	brasero_session_cfg_check_drive_settings (cfg);
 }
 
 static void
 brasero_session_cfg_output_changed (BraseroBurnSession *session,
 				    BraseroMedium *former)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (session);
 	BraseroSessionCfgPrivate *priv;
 
-	if (!brasero_session_cfg_can_update (BRASERO_SESSION_CFG (session)))
+	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 	priv->disc_size = 0;
 
 	/* Case for video project */
@@ -1392,8 +1398,8 @@ brasero_session_cfg_output_changed (BraseroBurnSession *session,
 	/* In this case need to :
 	 * - check if all flags are supported
 	 * - for images, set a path if it wasn't already set */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
-	brasero_session_cfg_check_drive_settings (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_update (cfg);
+	brasero_session_cfg_check_drive_settings (cfg);
 }
 
 static void
@@ -1533,11 +1539,12 @@ brasero_session_cfg_init (BraseroSessionCfg *object)
 static void
 brasero_session_cfg_finalize (GObject *object)
 {
+	BraseroSessionCfg *cfg = BRASERO_SESSION_CFG (object);
 	BraseroPluginManager *manager;
 	BraseroSessionCfgPrivate *priv;
 	GSList *tracks;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (object);
+	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
 
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (object));
 	for (; tracks; tracks = tracks->next) {
@@ -1572,8 +1579,6 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroBurnSessionClass *session_class = BRASERO_BURN_SESSION_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroSessionCfgPrivate));
 
 	object_class->finalize = brasero_session_cfg_finalize;
 

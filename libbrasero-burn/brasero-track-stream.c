@@ -53,9 +53,9 @@ struct _BraseroTrackStreamPrivate
 	guint64 end;
 };
 
-#define BRASERO_TRACK_STREAM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRACK_STREAM, BraseroTrackStreamPrivate))
+#define BRASERO_TRACK_STREAM_PRIVATE(o)  (brasero_track_stream_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroTrackStream, brasero_track_stream, BRASERO_TYPE_TRACK);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackStream, brasero_track_stream, BRASERO_TYPE_TRACK);
 
 static BraseroBurnResult
 brasero_track_stream_set_source_real (BraseroTrackStream *track,
@@ -391,9 +391,10 @@ static BraseroBurnResult
 brasero_track_stream_get_status (BraseroTrack *track,
 				 BraseroStatus *status)
 {
+	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = BRASERO_TRACK_STREAM_PRIVATE (stream);
 	if (!priv->uri) {
 		if (status)
 			brasero_status_set_error (status,
@@ -411,9 +412,10 @@ static BraseroBurnResult
 brasero_track_stream_get_track_type (BraseroTrack *track,
 				     BraseroTrackType *type)
 {
+	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = BRASERO_TRACK_STREAM_PRIVATE (stream);
 
 	brasero_track_type_set_has_stream (type);
 	brasero_track_type_set_stream_format (type, priv->format);
@@ -428,9 +430,10 @@ brasero_track_stream_init (BraseroTrackStream *object)
 static void
 brasero_track_stream_finalize (GObject *object)
 {
+	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (object);
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (object);
+	priv = BRASERO_TRACK_STREAM_PRIVATE (stream);
 	if (priv->uri) {
 		g_free (priv->uri);
 		priv->uri = NULL;
@@ -444,8 +447,6 @@ brasero_track_stream_class_init (BraseroTrackStreamClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTrackStreamPrivate));
 
 	object_class->finalize = brasero_track_stream_finalize;
 

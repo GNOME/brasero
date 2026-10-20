@@ -42,8 +42,6 @@
 #include "brasero-track-data-cfg.h"
 
 
-G_DEFINE_TYPE (BraseroFilteredUri, brasero_filtered_uri, GTK_TYPE_LIST_STORE);
-
 typedef struct _BraseroFilteredUriPrivate BraseroFilteredUriPrivate;
 struct _BraseroFilteredUriPrivate
 {
@@ -52,7 +50,9 @@ struct _BraseroFilteredUriPrivate
 	GHashTable *restored;
 };
 
-#define BRASERO_FILTERED_URI_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_FILTERED_URI, BraseroFilteredUriPrivate))
+#define BRASERO_FILTERED_URI_PRIVATE(o)  (brasero_filtered_uri_get_instance_private (o))
+
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroFilteredUri, brasero_filtered_uri, GTK_TYPE_LIST_STORE);
 
 static const gchar *labels [] = { N_("Hidden file"),
 				  N_("Unreadable file"),
@@ -243,9 +243,10 @@ brasero_filtered_uri_init (BraseroFilteredUri *object)
 static void
 brasero_filtered_uri_finalize (GObject *object)
 {
+	BraseroFilteredUri *uri = BRASERO_FILTERED_URI (object);
 	BraseroFilteredUriPrivate *priv;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (object);
+	priv = BRASERO_FILTERED_URI_PRIVATE (uri);
 
 	brasero_filtered_uri_clear (BRASERO_FILTERED_URI (object));
 
@@ -261,8 +262,6 @@ static void
 brasero_filtered_uri_class_init (BraseroFilteredUriClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroFilteredUriPrivate));
 
 	object_class->finalize = brasero_filtered_uri_finalize;
 }

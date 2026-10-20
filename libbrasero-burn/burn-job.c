@@ -71,9 +71,6 @@ typedef struct _BraseroJobInput {
 } BraseroJobInput;
 
 static void brasero_job_iface_init_task_item (BraseroTaskItemIFace *iface);
-G_DEFINE_TYPE_WITH_CODE (BraseroJob, brasero_job, G_TYPE_OBJECT,
-			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_TASK_ITEM,
-						brasero_job_iface_init_task_item));
 
 typedef struct BraseroJobPrivate BraseroJobPrivate;
 struct BraseroJobPrivate {
@@ -104,7 +101,12 @@ struct BraseroJobPrivate {
 				 G_STRFUNC);					\
 }
 
-#define BRASERO_JOB_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JOB, BraseroJobPrivate))
+#define BRASERO_JOB_PRIVATE(o)  (brasero_job_get_instance_private (o))
+
+G_DEFINE_TYPE_WITH_CODE (BraseroJob, brasero_job, G_TYPE_OBJECT,
+			 G_ADD_PRIVATE (BraseroJob)
+			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_TASK_ITEM,
+						brasero_job_iface_init_task_item));
 
 enum {
 	PROP_NONE,
@@ -117,8 +119,6 @@ typedef enum {
 } BraseroJobSignalType;
 
 static guint brasero_job_signals [LAST_SIGNAL] = { 0 };
-
-static GObjectClass *parent_class = NULL;
 
 
 /**
@@ -159,14 +159,16 @@ static BraseroBurnResult
 brasero_job_item_link (BraseroTaskItem *input,
 		       BraseroTaskItem *output)
 {
+	BraseroJob *input_job = BRASERO_JOB (input);
+	BraseroJob *output_job = BRASERO_JOB (output);
 	BraseroJobPrivate *priv_input;
 	BraseroJobPrivate *priv_output;
 
-	priv_input = BRASERO_JOB_PRIVATE (input);
-	priv_output = BRASERO_JOB_PRIVATE (output);
+	priv_input = BRASERO_JOB_PRIVATE (input_job);
+	priv_output = BRASERO_JOB_PRIVATE (output_job);
 
-	priv_input->next = BRASERO_JOB (output);
-	priv_output->previous = BRASERO_JOB (input);
+	priv_input->next = output_job;
+	priv_output->previous = input_job;
 
 	g_object_ref (input);
 	return BRASERO_BURN_OK;
@@ -2028,10 +2030,11 @@ brasero_job_get_property (GObject *object,
 			  GValue *value,
 			  GParamSpec *pspec)
 {
+	BraseroJob *job = BRASERO_JOB (object);
 	BraseroJobPrivate *priv;
 	BraseroTrackType *ptr;
 
-	priv = BRASERO_JOB_PRIVATE (object);
+	priv = BRASERO_JOB_PRIVATE (job);
 
 	switch (prop_id) {
 	case PROP_OUTPUT:
@@ -2050,10 +2053,11 @@ brasero_job_set_property (GObject *object,
 			  const GValue *value,
 			  GParamSpec *pspec)
 {
+	BraseroJob *job = BRASERO_JOB (object);
 	BraseroJobPrivate *priv;
 	BraseroTrackType *ptr;
 
-	priv = BRASERO_JOB_PRIVATE (object);
+	priv = BRASERO_JOB_PRIVATE (job);
 
 	switch (prop_id) {
 	case PROP_OUTPUT:
@@ -2074,9 +2078,10 @@ brasero_job_set_property (GObject *object,
 static void
 brasero_job_finalize (GObject *object)
 {
+	BraseroJob *job = BRASERO_JOB (object);
 	BraseroJobPrivate *priv;
 
-	priv = BRASERO_JOB_PRIVATE (object);
+	priv = BRASERO_JOB_PRIVATE (job);
 
 	if (priv->ctx) {
 		g_object_unref (priv->ctx);
@@ -2101,7 +2106,7 @@ brasero_job_finalize (GObject *object)
 		priv->output = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_job_parent_class)->finalize (object);
 }
 
 static void
@@ -2109,9 +2114,6 @@ brasero_job_class_init (BraseroJobClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroJobPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_job_finalize;
 	object_class->set_property = brasero_job_set_property;
 	object_class->get_property = brasero_job_get_property;

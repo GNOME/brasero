@@ -41,9 +41,7 @@
 #include "burn-basics.h"
 #include "brasero-image-type-chooser.h"
 
-#define BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_TYPE_CHOOSER, BraseroImageTypeChooserPrivate))
-
-G_DEFINE_TYPE (BraseroImageTypeChooser, brasero_image_type_chooser, GTK_TYPE_BOX);
+#define BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE(o)  (brasero_image_type_chooser_get_instance_private (o))
 
 enum {
 	FORMAT_TEXT,
@@ -58,6 +56,8 @@ enum {
 };
 static guint brasero_image_type_chooser_signals [LAST_SIGNAL] = { 0 };
 
+typedef struct _BraseroImageTypeChooserPrivate BraseroImageTypeChooserPrivate;
+
 struct _BraseroImageTypeChooserPrivate {
 	GtkWidget *combo;
 
@@ -67,7 +67,7 @@ struct _BraseroImageTypeChooserPrivate {
 	guint updating:1;
 };
 
-static GtkBoxClass *parent_class = NULL;
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroImageTypeChooser, brasero_image_type_chooser, GTK_TYPE_BOX);
 
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
@@ -342,7 +342,7 @@ brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 static void
 brasero_image_type_chooser_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_image_type_chooser_parent_class)->finalize (object);
 }
 
 static void
@@ -350,9 +350,6 @@ brasero_image_type_chooser_class_init (BraseroImageTypeChooserClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroImageTypeChooserPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_image_type_chooser_finalize;
 
 	brasero_image_type_chooser_signals [CHANGED_SIGNAL] = 

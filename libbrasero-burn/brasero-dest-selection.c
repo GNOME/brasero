@@ -67,14 +67,14 @@ struct _BraseroDestSelectionPrivate
 	guint user_changed:1;
 };
 
-#define BRASERO_DEST_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DEST_SELECTION, BraseroDestSelectionPrivate))
+#define BRASERO_DEST_SELECTION_PRIVATE(o)  (brasero_dest_selection_get_instance_private (o))
 
 enum {
 	PROP_0,
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_MEDIUM_SELECTION);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_MEDIUM_SELECTION);
 
 static void
 brasero_dest_selection_lock (BraseroDestSelection *self,
@@ -159,9 +159,10 @@ static void
 brasero_dest_selection_medium_changed (BraseroMediumSelection *selection,
 				       BraseroMedium *medium)
 {
+	BraseroDestSelection *self = BRASERO_DEST_SELECTION (selection);
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
 	if (!priv->session)
 		goto chain;
@@ -517,9 +518,10 @@ brasero_dest_selection_get_property (GObject *object,
 				     GValue *value,
 				     GParamSpec *pspec)
 {
+	BraseroDestSelection *self = BRASERO_DEST_SELECTION (object);
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -580,8 +582,9 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	goffset session_bytes = 0;
 	BraseroTrackType *input = NULL;
 	BraseroDestSelectionPrivate *priv;
+	BraseroDestSelection *self = BRASERO_DEST_SELECTION (selection);
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
 	if (!priv->session)
 		return NULL;
@@ -736,8 +739,6 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroMediumSelectionClass *medium_selection_class = BRASERO_MEDIUM_SELECTION_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDestSelectionPrivate));
 
 	object_class->finalize = brasero_dest_selection_finalize;
 	object_class->set_property = brasero_dest_selection_set_property;

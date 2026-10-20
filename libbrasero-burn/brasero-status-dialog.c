@@ -64,14 +64,14 @@ struct _BraseroStatusDialogPrivate
 	guint reject_deep_files:1;
 };
 
-#define BRASERO_STATUS_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_STATUS_DIALOG, BraseroStatusDialogPrivate))
+#define BRASERO_STATUS_DIALOG_PRIVATE(o)  (brasero_status_dialog_get_instance_private (o))
 
 enum {
 	PROP_0,
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroStatusDialog, brasero_status_dialog, GTK_TYPE_MESSAGE_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroStatusDialog, brasero_status_dialog, GTK_TYPE_MESSAGE_DIALOG);
 
 enum {
 	USER_INTERACTION,
@@ -462,18 +462,17 @@ brasero_status_dialog_set_property (GObject *object,
 				    const GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroStatusDialog *dialog = BRASERO_STATUS_DIALOG (object);
 	BraseroStatusDialogPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_STATUS_DIALOG (object));
-
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
 
 	switch (prop_id)
 	{
 	case PROP_SESSION: /* Readable and only writable at creation time */
 		priv->session = BRASERO_BURN_SESSION (g_value_get_object (value));
 		g_object_ref (priv->session);
-		brasero_status_dialog_wait_for_session (BRASERO_STATUS_DIALOG (object));
+		brasero_status_dialog_wait_for_session (dialog);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -487,11 +486,10 @@ brasero_status_dialog_get_property (GObject *object,
 				    GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroStatusDialog *dialog = BRASERO_STATUS_DIALOG (object);
 	BraseroStatusDialogPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_STATUS_DIALOG (object));
-
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
 
 	switch (prop_id)
 	{
@@ -508,9 +506,10 @@ brasero_status_dialog_get_property (GObject *object,
 static void
 brasero_status_dialog_finalize (GObject *object)
 {
+	BraseroStatusDialog *dialog = BRASERO_STATUS_DIALOG (object);
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
@@ -528,8 +527,6 @@ static void
 brasero_status_dialog_class_init (BraseroStatusDialogClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroStatusDialogPrivate));
 
 	object_class->finalize = brasero_status_dialog_finalize;
 	object_class->set_property = brasero_status_dialog_set_property;

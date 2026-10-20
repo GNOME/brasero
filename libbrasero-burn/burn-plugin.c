@@ -126,8 +126,8 @@ struct _BraseroPluginPrivate
 
 static const gchar *default_icon = "gtk-cdrom";
 
-#define BRASERO_PLUGIN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PLUGIN, BraseroPluginPrivate))
-G_DEFINE_TYPE (BraseroPlugin, brasero_plugin, G_TYPE_TYPE_MODULE);
+#define BRASERO_PLUGIN_PRIVATE(o)  (brasero_plugin_get_instance_private (o))
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroPlugin, brasero_plugin, G_TYPE_TYPE_MODULE);
 
 enum
 {
@@ -143,7 +143,6 @@ enum
 	LAST_SIGNAL
 };
 
-static GTypeModuleClass* parent_class = NULL;
 static guint plugin_signals [LAST_SIGNAL] = { 0 };
 
 static void
@@ -1137,9 +1136,10 @@ brasero_plugin_get_gtype (BraseroPlugin *self)
 static void
 brasero_plugin_unload (GTypeModule *module)
 {
+	BraseroPlugin *plugin = BRASERO_PLUGIN (module);
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (module);
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
 	if (!priv->handle)
 		return;
 
@@ -1319,9 +1319,10 @@ brasero_plugin_init_real (BraseroPlugin *object)
 static void
 brasero_plugin_finalize (GObject *object)
 {
+	BraseroPlugin *plugin = BRASERO_PLUGIN (object);
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (object);
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
 
 	if (priv->options) {
 		g_slist_foreach (priv->options, (GFunc) brasero_plugin_conf_option_free, NULL);
@@ -1361,7 +1362,7 @@ brasero_plugin_finalize (GObject *object)
 		priv->errors = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_plugin_parent_class)->finalize (object);
 }
 
 static void
@@ -1370,12 +1371,9 @@ brasero_plugin_set_property (GObject *object,
 			     const GValue *value,
 			     GParamSpec *pspec)
 {
-	BraseroPlugin *self;
+	BraseroPlugin *self = BRASERO_PLUGIN (object);
 	BraseroPluginPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_PLUGIN (object));
-
-	self = BRASERO_PLUGIN (object);
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 
 	switch (prop_id)
@@ -1399,12 +1397,9 @@ brasero_plugin_get_property (GObject *object,
 			     GValue *value,
 			     GParamSpec *pspec)
 {
-	BraseroPlugin *self;
+	BraseroPlugin *self = BRASERO_PLUGIN (object);
 	BraseroPluginPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_PLUGIN (object));
-
-	self = BRASERO_PLUGIN (object);
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 
 	switch (prop_id)
@@ -1436,8 +1431,6 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	GTypeModuleClass *module_class = G_TYPE_MODULE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroPluginPrivate));
 
 	object_class->finalize = brasero_plugin_finalize;
 	object_class->set_property = brasero_plugin_set_property;

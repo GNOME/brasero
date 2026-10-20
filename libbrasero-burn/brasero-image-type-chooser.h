@@ -46,7 +46,6 @@ G_BEGIN_DECLS
 #define BRASERO_IMAGE_TYPE_CHOOSER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_IMAGE_TYPE_CHOOSER, BraseroImageTypeChooserClass))
 
 typedef struct _BraseroImageTypeChooser BraseroImageTypeChooser;
-typedef struct _BraseroImageTypeChooserPrivate BraseroImageTypeChooserPrivate;
 typedef struct _BraseroImageTypeChooserClass BraseroImageTypeChooserClass;
 
 struct _BraseroImageTypeChooser {

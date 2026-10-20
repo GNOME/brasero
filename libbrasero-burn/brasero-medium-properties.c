@@ -60,14 +60,14 @@ struct _BraseroMediumPropertiesPrivate
 	GtkWidget *medium_prop;
 };
 
-#define BRASERO_MEDIUM_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM_PROPERTIES, BraseroMediumPropertiesPrivate))
+#define BRASERO_MEDIUM_PROPERTIES_PRIVATE(o)  (brasero_medium_properties_get_instance_private (o))
 
 enum {
 	PROP_0,
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroMediumProperties, brasero_medium_properties, GTK_TYPE_BUTTON);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroMediumProperties, brasero_medium_properties, GTK_TYPE_BUTTON);
 
 static void
 brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
@@ -189,19 +189,20 @@ brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 static void
 brasero_medium_properties_clicked (GtkButton *button)
 {
+	BraseroMediumProperties *properties = BRASERO_MEDIUM_PROPERTIES (button);
 	BraseroMediumPropertiesPrivate *priv;
 	BraseroDrive *drive;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (button);
+	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
 
 	drive = brasero_burn_session_get_burner (priv->session);
 	if (!drive)
 		return;
 
 	if (brasero_drive_is_fake (drive))
-		brasero_medium_properties_image_properties (BRASERO_MEDIUM_PROPERTIES (button));
+		brasero_medium_properties_image_properties (properties);
 	else
-		brasero_medium_properties_drive_properties (BRASERO_MEDIUM_PROPERTIES (button));
+		brasero_medium_properties_drive_properties (properties);
 }
 
 static void
@@ -237,9 +238,10 @@ brasero_medium_properties_init (BraseroMediumProperties *object)
 static void
 brasero_medium_properties_finalize (GObject *object)
 {
+	BraseroMediumProperties *properties = BRASERO_MEDIUM_PROPERTIES (object);
 	BraseroMediumPropertiesPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
 
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
@@ -261,10 +263,11 @@ brasero_medium_properties_set_property (GObject *object,
 					const GValue *value,
 					GParamSpec *pspec)
 {
+	BraseroMediumProperties *properties = BRASERO_MEDIUM_PROPERTIES (object);
 	BraseroMediumPropertiesPrivate *priv;
 	BraseroBurnSession *session;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -299,9 +302,10 @@ brasero_medium_properties_get_property (GObject *object,
 				     GValue *value,
 				     GParamSpec *pspec)
 {
+	BraseroMediumProperties *properties = BRASERO_MEDIUM_PROPERTIES (object);
 	BraseroMediumPropertiesPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -318,8 +322,6 @@ brasero_medium_properties_class_init (BraseroMediumPropertiesClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	GtkButtonClass* button_class = GTK_BUTTON_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroMediumPropertiesPrivate));
 
 	object_class->finalize = brasero_medium_properties_finalize;
 	object_class->set_property = brasero_medium_properties_set_property;

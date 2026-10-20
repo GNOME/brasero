@@ -67,7 +67,7 @@ struct _BraseroDrivePropertiesPrivate
 	GtkWidget *tmpdir;
 };
 
-#define BRASERO_DRIVE_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_PROPERTIES, BraseroDrivePropertiesPrivate))
+#define BRASERO_DRIVE_PROPERTIES_PRIVATE(o)  (brasero_drive_properties_get_instance_private (o))
 
 enum {
 	TEXT_COL,
@@ -80,7 +80,7 @@ enum {
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroDriveProperties, brasero_drive_properties, GTK_TYPE_ALIGNMENT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDriveProperties, brasero_drive_properties, GTK_TYPE_ALIGNMENT);
 
 static void
 brasero_drive_properties_no_tmp_toggled (GtkToggleButton *button,
@@ -809,9 +809,10 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 static void
 brasero_drive_properties_finalize (GObject *object)
 {
+	BraseroDriveProperties *properties = BRASERO_DRIVE_PROPERTIES (object);
 	BraseroDrivePropertiesPrivate *priv;
 	
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (properties);
 	if (priv->valid_sig) {
 		g_signal_handler_disconnect (priv->session, priv->valid_sig);
 		priv->valid_sig = 0;
@@ -834,15 +835,16 @@ brasero_drive_properties_set_property (GObject *object,
 				       const GValue *value,
 				       GParamSpec *pspec)
 {
+	BraseroDriveProperties *properties = BRASERO_DRIVE_PROPERTIES (object);
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (properties);
 
 	switch (property_id) {
 	case PROP_SESSION: /* Readable and only writable at creation time */
 		priv->session = g_object_ref (g_value_get_object (value));
 
-		brasero_drive_properties_update (BRASERO_DRIVE_PROPERTIES (object));
+		brasero_drive_properties_update (properties);
 		priv->valid_sig = g_signal_connect (priv->session,
 						    "is-valid",
 						    G_CALLBACK (brasero_drive_properties_is_valid_cb),
@@ -864,9 +866,10 @@ brasero_drive_properties_get_property (GObject *object,
 				       GValue *value,
 				       GParamSpec *pspec)
 {
+	BraseroDriveProperties *properties = BRASERO_DRIVE_PROPERTIES (object);
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -883,8 +886,6 @@ static void
 brasero_drive_properties_class_init (BraseroDrivePropertiesClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDrivePropertiesPrivate));
 
 	object_class->finalize = brasero_drive_properties_finalize;
 	object_class->set_property = brasero_drive_properties_set_property;

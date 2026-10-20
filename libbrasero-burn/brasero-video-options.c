@@ -61,14 +61,14 @@ struct _BraseroVideoOptionsPrivate
 	GtkWidget *button_16_9;
 };
 
-#define BRASERO_VIDEO_OPTIONS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VIDEO_OPTIONS, BraseroVideoOptionsPrivate))
+#define BRASERO_VIDEO_OPTIONS_PRIVATE(o)  (brasero_video_options_get_instance_private (o))
 
 enum {
 	PROP_0,
 	PROP_SESSION
 };
 
-G_DEFINE_TYPE (BraseroVideoOptions, brasero_video_options, GTK_TYPE_ALIGNMENT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroVideoOptions, brasero_video_options, GTK_TYPE_ALIGNMENT);
 
 static void
 brasero_video_options_update_from_tag (BraseroVideoOptions *options,
@@ -385,8 +385,6 @@ brasero_video_options_set_property (GObject *object,
 				    const GValue *value,
 				    GParamSpec *pspec)
 {
-	g_return_if_fail (BRASERO_IS_VIDEO_OPTIONS (object));
-
 	switch (prop_id)
 	{
 	case PROP_SESSION:
@@ -405,11 +403,10 @@ brasero_video_options_get_property (GObject *object,
 				    GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroVideoOptions *options = BRASERO_VIDEO_OPTIONS (object);
 	BraseroVideoOptionsPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_VIDEO_OPTIONS (object));
-
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (object);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 
 	switch (prop_id)
 	{
@@ -598,9 +595,10 @@ brasero_video_options_init (BraseroVideoOptions *object)
 static void
 brasero_video_options_finalize (GObject *object)
 {
+	BraseroVideoOptions *options = BRASERO_VIDEO_OPTIONS (object);
 	BraseroVideoOptionsPrivate *priv;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (object);
+	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
 		                                      brasero_video_options_output_changed_cb,
@@ -619,8 +617,6 @@ static void
 brasero_video_options_class_init (BraseroVideoOptionsClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroVideoOptionsPrivate));
 
 	object_class->finalize = brasero_video_options_finalize;
 	object_class->set_property = brasero_video_options_set_property;
