@@ -41,9 +41,9 @@ struct _BraseroFilterOptionPrivate
 	GSettings *settings;
 };
 
-#define BRASERO_FILTER_OPTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_FILTER_OPTION, BraseroFilterOptionPrivate))
+#define BRASERO_FILTER_OPTION_PRIVATE(o)  (brasero_filter_option_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_BOX);
 
 static void
 brasero_filter_option_init (BraseroFilterOption *object)
@@ -100,9 +100,10 @@ brasero_filter_option_init (BraseroFilterOption *object)
 static void
 brasero_filter_option_finalize (GObject *object)
 {
+	BraseroFilterOption *option = BRASERO_FILTER_OPTION (object);
 	BraseroFilterOptionPrivate *priv;
 
-	priv = BRASERO_FILTER_OPTION_PRIVATE (object);
+	priv = BRASERO_FILTER_OPTION_PRIVATE (option);
 
 	if (priv->settings) {
 		g_object_unref (priv->settings);
@@ -116,8 +117,6 @@ static void
 brasero_filter_option_class_init (BraseroFilterOptionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroFilterOptionPrivate));
 
 	object_class->finalize = brasero_filter_option_finalize;
 }

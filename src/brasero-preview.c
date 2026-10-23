@@ -50,9 +50,9 @@ struct _BraseroPreviewPrivate
 	guint is_enabled:1;
 };
 
-#define BRASERO_PREVIEW_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PREVIEW, BraseroPreviewPrivate))
+#define BRASERO_PREVIEW_PRIVATE(o)  (brasero_preview_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroPreview, brasero_preview, GTK_TYPE_ALIGNMENT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroPreview, brasero_preview, GTK_TYPE_ALIGNMENT);
 
 static gboolean
 brasero_preview_set_uri_delayed_cb (gpointer data)
@@ -183,9 +183,10 @@ brasero_preview_init (BraseroPreview *object)
 static void
 brasero_preview_finalize (GObject *object)
 {
+	BraseroPreview *preview = BRASERO_PREVIEW (object);
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (object);
+	priv = BRASERO_PREVIEW_PRIVATE (preview);
 
 	if (priv->set_uri_id) {
 		g_source_remove (priv->set_uri_id);
@@ -204,8 +205,6 @@ static void
 brasero_preview_class_init (BraseroPreviewClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroPreviewPrivate));
 
 	object_class->finalize = brasero_preview_finalize;
 }

@@ -55,11 +55,9 @@ struct _BraseroRenamePrivate
 	guint show_default:1;
 };
 
-#define BRASERO_RENAME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_RENAME, BraseroRenamePrivate))
+#define BRASERO_RENAME_PRIVATE(o)  (brasero_rename_get_instance_private (o))
 
-
-
-G_DEFINE_TYPE (BraseroRename, brasero_rename, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroRename, brasero_rename, GTK_TYPE_BOX);
 
 void
 brasero_rename_set_show_keep_default (BraseroRename *self,
@@ -440,8 +438,6 @@ static void
 brasero_rename_class_init (BraseroRenameClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroRenamePrivate));
 
 	object_class->finalize = brasero_rename_finalize;
 }

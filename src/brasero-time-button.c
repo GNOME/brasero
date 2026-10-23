@@ -46,7 +46,7 @@ struct _BraseroTimeButtonPrivate
 	gint max_frame;
 };
 
-#define BRASERO_TIME_BUTTON_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TIME_BUTTON, BraseroTimeButtonPrivate))
+#define BRASERO_TIME_BUTTON_PRIVATE(o)  (brasero_time_button_get_instance_private (o))
 
 enum
 {
@@ -55,7 +55,7 @@ enum
 };
 static guint time_button_signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroTimeButton, brasero_time_button, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroTimeButton, brasero_time_button, GTK_TYPE_BOX);
 
 static void
 brasero_time_button_hrs_changed (GtkSpinButton *button,
@@ -346,8 +346,6 @@ static void
 brasero_time_button_class_init (BraseroTimeButtonClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroTimeButtonPrivate));
 
 	object_class->finalize = brasero_time_button_finalize;
 

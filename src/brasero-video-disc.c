@@ -67,7 +67,7 @@ struct _BraseroVideoDiscPrivate
 	guint loading:1;
 };
 
-#define BRASERO_VIDEO_DISC_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VIDEO_DISC, BraseroVideoDiscPrivate))
+#define BRASERO_VIDEO_DISC_PRIVATE(o)  (brasero_video_disc_get_instance_private (o))
 
 static void
 brasero_video_disc_iface_disc_init (BraseroDiscIface *iface);
@@ -75,6 +75,7 @@ brasero_video_disc_iface_disc_init (BraseroDiscIface *iface);
 G_DEFINE_TYPE_WITH_CODE (BraseroVideoDisc,
 			 brasero_video_disc,
 			 GTK_TYPE_BOX,
+			 G_ADD_PRIVATE (BraseroVideoDisc)
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_video_disc_iface_disc_init));
 
@@ -260,15 +261,16 @@ brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 }
 
 static BraseroDiscResult
-brasero_video_disc_add_uri (BraseroDisc *self,
+brasero_video_disc_add_uri (BraseroDisc *disc,
 			    const gchar *uri)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (disc);
 	BraseroVideoDiscPrivate *priv;
 	GtkTreePath *treepath = NULL;
 	BraseroDiscResult result;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-	result = brasero_video_disc_add_uri_real (BRASERO_VIDEO_DISC (self),
+	result = brasero_video_disc_add_uri_real (self,
 						  uri,
 						  -1,
 						  -1,
@@ -498,8 +500,9 @@ brasero_video_disc_session_changed (BraseroSessionCfg *session,
 }
 
 static void
-brasero_video_disc_delete_selected (BraseroDisc *self)
+brasero_video_disc_delete_selected (BraseroDisc *disc)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (disc);
 	BraseroVideoDiscPrivate *priv;
 	GtkTreeSelection *selection;
 	BraseroSessionCfg *session;
@@ -534,9 +537,10 @@ brasero_video_disc_delete_selected (BraseroDisc *self)
 }
 
 static gboolean
-brasero_video_disc_get_selected_uri (BraseroDisc *self,
+brasero_video_disc_get_selected_uri (BraseroDisc *disc,
 				     gchar **uri)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (disc);
 	GList *selected;
 	GtkTreeModel *model;
 	GtkTreeSelection *selection;
@@ -1044,11 +1048,12 @@ brasero_video_disc_add_ui (BraseroDisc *disc,
 			   GtkUIManager *manager,
 			   GtkWidget *message)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (disc);
 	BraseroVideoDiscPrivate *priv;
 	GError *error = NULL;
 	guint merge_id;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
 	if (priv->message) {
 		g_object_unref (priv->message);
@@ -1270,15 +1275,16 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 static void
 brasero_video_disc_finalize (GObject *object)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (object);
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
 	if (priv->load_dir) {
 		brasero_io_cancel_by_base (priv->load_dir);
 		brasero_io_job_base_free (priv->load_dir);
 		priv->load_dir = NULL;
-	}	
+	}
 
 	G_OBJECT_CLASS (brasero_video_disc_parent_class)->finalize (object);
 }
@@ -1289,9 +1295,10 @@ brasero_video_disc_get_property (GObject * object,
 				 GValue * value,
 				 GParamSpec * pspec)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (object);
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -1309,9 +1316,10 @@ brasero_video_disc_set_property (GObject * object,
 				 const GValue * value,
 				 GParamSpec * pspec)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (object);
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -1324,9 +1332,10 @@ brasero_video_disc_set_property (GObject * object,
 }
 
 static BraseroDiscResult
-brasero_video_disc_set_session_contents (BraseroDisc *self,
+brasero_video_disc_set_session_contents (BraseroDisc *disc,
 					 BraseroBurnSession *session)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (disc);
 	BraseroVideoTreeModel *model;
 	GtkTreeModel *current_model;
 	BraseroVideoDiscPrivate *priv;
@@ -1369,10 +1378,11 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 static gboolean
 brasero_video_disc_is_empty (BraseroDisc *disc)
 {
+	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (disc);
 	BraseroVideoDiscPrivate *priv;
 	GtkTreeModel *model;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if (!model)
 		return FALSE;
@@ -1397,8 +1407,6 @@ static void
 brasero_video_disc_class_init (BraseroVideoDiscClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroVideoDiscPrivate));
 
 	object_class->finalize = brasero_video_disc_finalize;
 	object_class->set_property = brasero_video_disc_set_property;

@@ -54,7 +54,7 @@ struct _BraseroProjectNamePrivate
 	guint label_modified:1;
 };
 
-#define BRASERO_PROJECT_NAME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROJECT_NAME, BraseroProjectNamePrivate))
+#define BRASERO_PROJECT_NAME_PRIVATE(o)  (brasero_project_name_get_instance_private (o))
 
 typedef enum {
 	CHANGED_SIGNAL,
@@ -63,7 +63,7 @@ typedef enum {
 
 static guint brasero_project_name_signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroProjectName, brasero_project_name, GTK_TYPE_ENTRY);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroProjectName, brasero_project_name, GTK_TYPE_ENTRY);
 
 enum {
 	PROP_0,
@@ -420,9 +420,10 @@ static void
 brasero_project_name_label_changed (GtkEditable *editable,
 				    gpointer NULL_data)
 {
+	BraseroProjectName *self = BRASERO_PROJECT_NAME (editable);
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (editable);
+	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
 	priv->label_modified = TRUE;
 	g_signal_emit (editable,
 		       brasero_project_name_signals [CHANGED_SIGNAL],
@@ -686,9 +687,10 @@ brasero_project_name_get_property (GObject *object,
 				   GValue *value,
 				   GParamSpec *pspec)
 {
+	BraseroProjectName *self = BRASERO_PROJECT_NAME (object);
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
+	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -712,8 +714,6 @@ static void
 brasero_project_name_class_init (BraseroProjectNameClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroProjectNamePrivate));
 
 	object_class->finalize = brasero_project_name_finalize;
 	object_class->set_property = brasero_project_name_set_property;

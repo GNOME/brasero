@@ -95,10 +95,10 @@ struct _BraseroAppPrivate
 	guint mainwin_running:1;
 };
 
-#define BRASERO_APP_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_APP, BraseroAppPrivate))
+#define BRASERO_APP_PRIVATE(o)  (brasero_app_get_instance_private (o))
 
 
-G_DEFINE_TYPE (BraseroApp, brasero_app, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroApp, brasero_app, G_TYPE_OBJECT);
 
 enum {
 	PROP_NONE,
@@ -2143,9 +2143,10 @@ brasero_app_init (BraseroApp *object)
 static void
 brasero_app_finalize (GObject *object)
 {
+	BraseroApp *app = BRASERO_APP (object);
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (object);
+	priv = BRASERO_APP_PRIVATE (app);
 
 	brasero_setting_save (priv->setting);
 	g_object_unref (priv->setting);
@@ -2164,11 +2165,10 @@ brasero_app_set_property (GObject *object,
                           const GValue *value,
                           GParamSpec *pspec)
 {
+	BraseroApp *app = BRASERO_APP (object);
 	BraseroAppPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_APP (object));
-
-	priv = BRASERO_APP_PRIVATE (object);
+	priv = BRASERO_APP_PRIVATE (app);
 
 	switch (prop_id)
 	{
@@ -2187,11 +2187,10 @@ brasero_app_get_property (GObject *object,
 			  GValue *value,
 			  GParamSpec *pspec)
 {
+	BraseroApp *app = BRASERO_APP (object);
 	BraseroAppPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_APP (object));
-
-	priv = BRASERO_APP_PRIVATE (object);
+	priv = BRASERO_APP_PRIVATE (app);
 
 	switch (prop_id)
 	{
@@ -2208,8 +2207,6 @@ static void
 brasero_app_class_init (BraseroAppClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroAppPrivate));
 
 	object_class->finalize = brasero_app_finalize;
 	object_class->set_property = brasero_app_set_property;

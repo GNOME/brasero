@@ -42,31 +42,35 @@ struct _BraseroSearchTrackerPrivate
 	guint current_call_id;
 };
 
-#define BRASERO_SEARCH_TRACKER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SEARCH_TRACKER, BraseroSearchTrackerPrivate))
+#define BRASERO_SEARCH_TRACKER_PRIVATE(o)  (brasero_search_tracker_get_instance_private (o))
 
 static void brasero_search_tracker_init_engine (BraseroSearchEngineIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroSearchTracker,
 			 brasero_search_tracker,
 			 G_TYPE_OBJECT,
+			 G_ADD_PRIVATE (BraseroSearchTracker)
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_SEARCH_ENGINE,
 					        brasero_search_tracker_init_engine));
 
 static gboolean
 brasero_search_tracker_is_available (BraseroSearchEngine *engine)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (engine);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (engine);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+
 	return (priv->connection != NULL);
 }
 
 static gint
 brasero_search_tracker_num_hits (BraseroSearchEngine *engine)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (engine);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (engine);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 	if (!priv->results)
 		return 0;
 
@@ -132,9 +136,10 @@ static void
 brasero_search_tracker_cursor_next (BraseroSearchEngine *search,
 				    TrackerSparqlCursor    *cursor)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
-	
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+
 	tracker_sparql_cursor_next_async (cursor,
 					  priv->cancellable,
 					  brasero_search_tracker_cursor_callback,
@@ -230,11 +235,12 @@ static gboolean
 brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 					 gint index)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 	gboolean res = FALSE;
 	GString *query = NULL;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 
 	query = g_string_new ("SELECT ?file ?url ?mime "			/* Which variables should be returned */
 			      "WHERE {"						/* Start defining the search and its scope */
@@ -331,10 +337,11 @@ brasero_search_tracker_add_hit_to_tree (BraseroSearchEngine *search,
                                         gint range_start,
                                         gint range_end)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 	gint i;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 
 	if (!priv->results)
 		return FALSE;
@@ -356,9 +363,10 @@ static gboolean
 brasero_search_tracker_query_set_scope (BraseroSearchEngine *search,
                                         BraseroSearchScope scope)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 	priv->scope = scope;
 	return TRUE;
 }
@@ -367,9 +375,10 @@ static gboolean
 brasero_search_tracker_set_query_mime (BraseroSearchEngine *search,
 				       const gchar **mimes)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 
 	if (priv->mimes) {
 		g_strfreev (priv->mimes);
@@ -411,11 +420,12 @@ static gboolean
 brasero_search_tracker_query_new (BraseroSearchEngine *search,
 				  const gchar *keywords)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 
-	brasero_search_tracker_clean (BRASERO_SEARCH_TRACKER (search));
+	brasero_search_tracker_clean (tracker);
 	priv->keywords = g_strdup (keywords);
 
 	return TRUE;
@@ -471,11 +481,12 @@ brasero_search_tracker_init (BraseroSearchTracker *object)
 static void
 brasero_search_tracker_finalize (GObject *object)
 {
+	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (object);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (object);
+	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
 
-	brasero_search_tracker_clean (BRASERO_SEARCH_TRACKER (object));
+	brasero_search_tracker_clean (tracker);
 
 	if (priv->connection) {
 		g_object_unref (priv->connection);
@@ -489,9 +500,6 @@ static void
 brasero_search_tracker_class_init (BraseroSearchTrackerClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-
-	g_type_class_add_private (klass, sizeof (BraseroSearchTrackerPrivate));
 
 	object_class->finalize = brasero_search_tracker_finalize;
 }

@@ -51,7 +51,7 @@ struct _BraseroVideoTreeModelPrivate
 	GtkIconTheme *theme;
 };
 
-#define BRASERO_VIDEO_TREE_MODEL_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VIDEO_TREE_MODEL, BraseroVideoTreeModelPrivate))
+#define BRASERO_VIDEO_TREE_MODEL_PRIVATE(o)  (brasero_video_tree_model_get_instance_private (o))
 
 static void
 brasero_video_tree_model_multi_drag_source_iface_init (gpointer g_iface, gpointer data);
@@ -65,6 +65,7 @@ brasero_video_tree_model_iface_init (gpointer g_iface, gpointer data);
 G_DEFINE_TYPE_WITH_CODE (BraseroVideoTreeModel,
 			 brasero_video_tree_model,
 			 G_TYPE_OBJECT,
+			 G_ADD_PRIVATE (BraseroVideoTreeModel)
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL,
 					        brasero_video_tree_model_iface_init)
 			 G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_DRAG_DEST,
@@ -104,13 +105,15 @@ static gint
 brasero_video_tree_model_iter_n_children (GtkTreeModel *model,
 					  GtkTreeIter *iter)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (model);
+
 	if (!iter) {
 		guint num = 0;
 		GSList *iter;
 		GSList * tracks;
 		BraseroVideoTreeModelPrivate *priv;
 
-		priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+		priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 		/* This is a special case in which we return the number
 		 * of rows that are in the model. */
@@ -152,6 +155,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 				    gint column,
 				    GValue *value)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (model);
 	BraseroVideoTreeModelPrivate *priv;
 	BraseroBurnResult result;
 	BraseroStatus *status;
@@ -162,7 +166,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	GSList *tracks;
 	gchar *text;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	/* make sure that iter comes from us */
 	g_return_if_fail (priv->stamp == iter->stamp);
@@ -417,11 +421,12 @@ static GtkTreePath *
 brasero_video_tree_model_get_path (GtkTreeModel *model,
 				   GtkTreeIter *iter)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (model);
 	BraseroVideoTreeModelPrivate *priv;
 	GSList *tracks;
 	gint nth = 0;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, NULL);
@@ -499,13 +504,14 @@ brasero_video_tree_model_get_iter (GtkTreeModel *model,
 				   GtkTreeIter *iter,
 				   GtkTreePath *path)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (model);
 	BraseroVideoTreeModelPrivate *priv;
 	const gint *indices;
 	GSList *tracks;
 	guint depth;
 	gint index;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	depth = gtk_tree_path_get_depth (path);
 
@@ -586,12 +592,13 @@ static gboolean
 brasero_video_tree_model_iter_next (GtkTreeModel *model,
 				    GtkTreeIter *iter)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (model);
 	BraseroVideoTreeModelPrivate *priv;
 	BraseroTrackStream *track;
 	GSList *tracks;
 	GSList *node;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
@@ -834,14 +841,15 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 					     GtkTreePath *dest_path,
 					     GtkSelectionData *selection_data)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (drag_dest);
 	BraseroTrack *sibling;
 	BraseroVideoTreeModelPrivate *priv;
 	GdkAtom target;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (drag_dest);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	/* The new row(s) must be before dest_path but after our sibling */
-	sibling = brasero_video_tree_model_path_to_track (BRASERO_VIDEO_TREE_MODEL (drag_dest), dest_path);
+	sibling = brasero_video_tree_model_path_to_track (self, dest_path);
 
 	/* Received data: see where it comes from:
 	 * - from us, then that's a simple move
@@ -873,7 +881,7 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 			gtk_tree_path_free (treepath);
 
 			destination = gtk_tree_row_reference_get_path (dest);
-			brasero_video_tree_model_move_before (BRASERO_VIDEO_TREE_MODEL (drag_dest),
+			brasero_video_tree_model_move_before (self,
 							      &tree_iter,
 							      destination);
 			gtk_tree_path_free (destination);
@@ -1182,9 +1190,10 @@ brasero_video_tree_model_init (BraseroVideoTreeModel *object)
 static void
 brasero_video_tree_model_finalize (GObject *object)
 {
+	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (object);
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (object);
+	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
 
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
@@ -1282,8 +1291,6 @@ static void
 brasero_video_tree_model_class_init (BraseroVideoTreeModelClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroVideoTreeModelPrivate));
 
 	object_class->finalize = brasero_video_tree_model_finalize;
 }

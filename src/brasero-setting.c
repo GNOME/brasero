@@ -52,7 +52,7 @@ struct _BraseroSettingPrivate
 	gboolean show_sidepane;
 };
 
-#define BRASERO_SETTING_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SETTING, BraseroSettingPrivate))
+#define BRASERO_SETTING_PRIVATE(o)  (brasero_setting_get_instance_private (o))
 
 enum
 {
@@ -64,7 +64,7 @@ enum
 
 static guint setting_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroSetting, brasero_setting, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSetting, brasero_setting, G_TYPE_OBJECT);
 
 gboolean
 brasero_setting_get_value (BraseroSetting *setting,
@@ -560,9 +560,10 @@ brasero_setting_init (BraseroSetting *object)
 static void
 brasero_setting_finalize (GObject *object)
 {
+	BraseroSetting *self = BRASERO_SETTING (object);
 	BraseroSettingPrivate *priv;
 
-	priv = BRASERO_SETTING_PRIVATE (object);
+	priv = BRASERO_SETTING_PRIVATE (self);
 	if (priv->layout_video) {
 		g_free (priv->layout_video);
 		priv->layout_video = NULL;
@@ -596,8 +597,6 @@ static void
 brasero_setting_class_init (BraseroSettingClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroSettingPrivate));
 
 	object_class->finalize = brasero_setting_finalize;
 

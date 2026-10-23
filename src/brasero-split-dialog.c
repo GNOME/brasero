@@ -79,9 +79,9 @@ struct _BraseroSplitDialogPrivate
 	BraseroMetadata *metadata;
 };
 
-#define BRASERO_SPLIT_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SPLIT_DIALOG, BraseroSplitDialogPrivate))
+#define BRASERO_SPLIT_DIALOG_PRIVATE(o)  (brasero_split_dialog_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroSplitDialog, brasero_split_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroSplitDialog, brasero_split_dialog, GTK_TYPE_DIALOG);
 
 void
 brasero_split_dialog_set_uri (BraseroSplitDialog *self,
@@ -1314,9 +1314,10 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 static void
 brasero_split_dialog_finalize (GObject *object)
 {
+	BraseroSplitDialog *dialog = BRASERO_SPLIT_DIALOG (object);
 	BraseroSplitDialogPrivate *priv;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (object);
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (dialog);
 	if (priv->metadata) {
 		brasero_metadata_cancel (priv->metadata);
 		g_object_unref (priv->metadata);
@@ -1330,8 +1331,6 @@ static void
 brasero_split_dialog_class_init (BraseroSplitDialogClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroSplitDialogPrivate));
 
 	object_class->finalize = brasero_split_dialog_finalize;
 }

@@ -43,7 +43,7 @@ struct _BraseroDriveSettingsPrivate
 	BraseroBurnSession *session;
 };
 
-#define BRASERO_DRIVE_SETTINGS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_SETTINGS, BraseroDriveSettingsPrivate))
+#define BRASERO_DRIVE_SETTINGS_PRIVATE(o)  (brasero_drive_settings_get_instance_private (o))
 
 #define BRASERO_SCHEMA_DRIVES			"org.gnome.brasero.drives"
 #define BRASERO_DRIVE_PROPERTIES_PATH		"/org/gnome/brasero/drives/"
@@ -55,7 +55,7 @@ struct _BraseroDriveSettingsPrivate
 
 #define BRASERO_DEST_SAVED_FLAGS		(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
 
-G_DEFINE_TYPE (BraseroDriveSettings, brasero_drive_settings, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDriveSettings, brasero_drive_settings, G_TYPE_OBJECT);
 
 static GVariant *
 brasero_drive_settings_set_mapping_speed (const GValue *value,
@@ -378,8 +378,6 @@ static void
 brasero_drive_settings_class_init (BraseroDriveSettingsClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDriveSettingsPrivate));
 
 	object_class->finalize = brasero_drive_settings_finalize;
 }

@@ -49,9 +49,9 @@ struct _BraseroFileFilteredPrivate
 	BraseroTrackDataCfg *track;
 };
 
-#define BRASERO_FILE_FILTERED_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_FILE_FILTERED, BraseroFileFilteredPrivate))
+#define BRASERO_FILE_FILTERED_PRIVATE(o)  (brasero_file_filtered_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroFileFiltered, brasero_file_filtered, GTK_TYPE_EXPANDER);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroFileFiltered, brasero_file_filtered, GTK_TYPE_EXPANDER);
 
 enum {
 	PROP_0,
@@ -323,10 +323,11 @@ brasero_file_filtered_set_property (GObject *object,
 				    const GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroFileFiltered *self = BRASERO_FILE_FILTERED (object);
 	BraseroFileFilteredPrivate *priv;
 	GtkTreeModel *model;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (object);
+	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
 
 	switch (property_id) {
 	case PROP_TRACK: /* Readable and only writable at creation time */
@@ -357,9 +358,10 @@ brasero_file_filtered_get_property (GObject *object,
 				    GValue *value,
 				    GParamSpec *pspec)
 {
+	BraseroFileFiltered *self = BRASERO_FILE_FILTERED (object);
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (object);
+	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
 
 	switch (property_id) {
 	case PROP_TRACK:
@@ -374,9 +376,10 @@ brasero_file_filtered_get_property (GObject *object,
 static void
 brasero_file_filtered_finalize (GObject *object)
 {
+	BraseroFileFiltered *self = BRASERO_FILE_FILTERED (object);
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (object);
+	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
 	if (priv->track) {
 		GtkTreeModel *model;
 
@@ -401,8 +404,6 @@ brasero_file_filtered_class_init (BraseroFileFilteredClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkExpanderClass *expander_class = GTK_EXPANDER_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroFileFilteredPrivate));
 
 	object_class->finalize = brasero_file_filtered_finalize;
 	object_class->set_property = brasero_file_filtered_set_property;

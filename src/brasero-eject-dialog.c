@@ -51,14 +51,15 @@ struct _BraseroEjectDialogPrivate {
 	gboolean cancelled;
 };
 
-#define BRASERO_EJECT_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_EJECT_DIALOG, BraseroEjectDialogPrivate))
+#define BRASERO_EJECT_DIALOG_PRIVATE(o)  (brasero_eject_dialog_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroEjectDialog, brasero_eject_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroEjectDialog, brasero_eject_dialog, GTK_TYPE_DIALOG);
 
 static void
 brasero_eject_dialog_activate (GtkDialog *dialog,
 			       GtkResponseType answer)
 {
+	BraseroEjectDialog *self = BRASERO_EJECT_DIALOG (dialog);
 	BraseroDrive *drive;
 	GError *error = NULL;
 	BraseroEjectDialogPrivate *priv;
@@ -66,7 +67,7 @@ brasero_eject_dialog_activate (GtkDialog *dialog,
 	if (answer != GTK_RESPONSE_OK)
 		return;
 
-	priv = BRASERO_EJECT_DIALOG_PRIVATE (dialog);
+	priv = BRASERO_EJECT_DIALOG_PRIVATE (self);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->selector), FALSE);
 	gtk_widget_set_sensitive (priv->eject_button, FALSE);
@@ -140,8 +141,6 @@ static void
 brasero_eject_dialog_class_init (BraseroEjectDialogClass *klass)
 {
 	GtkDialogClass *dialog_class = GTK_DIALOG_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroEjectDialogPrivate));
 
 	dialog_class->response = brasero_eject_dialog_activate;
 }

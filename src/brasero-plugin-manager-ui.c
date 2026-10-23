@@ -62,7 +62,9 @@ enum
 #define PLUGIN_MANAGER_UI_NAME_TITLE _("Plugin")
 #define PLUGIN_MANAGER_UI_ACTIVE_TITLE _("Enabled")
 
-#define BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), BRASERO_TYPE_PLUGIN_MANAGER_UI, BraseroPluginManagerUIPrivate))
+#define BRASERO_PLUGIN_MANAGER_UI_PRIVATE(o) (brasero_plugin_manager_ui_get_instance_private (o))
+
+typedef struct _BraseroPluginManagerUIPrivate BraseroPluginManagerUIPrivate;
 
 struct _BraseroPluginManagerUIPrivate
 {
@@ -78,7 +80,7 @@ struct _BraseroPluginManagerUIPrivate
 	GSList		*plugins;
 };
 
-G_DEFINE_TYPE (BraseroPluginManagerUI, brasero_plugin_manager_ui, GTK_TYPE_BOX)
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroPluginManagerUI, brasero_plugin_manager_ui, GTK_TYPE_BOX)
 
 static void plugin_manager_ui_toggle_active (GtkTreeIter *iter, GtkTreeModel *model); 
 static void brasero_plugin_manager_ui_finalize (GObject *object);
@@ -89,8 +91,6 @@ brasero_plugin_manager_ui_class_init (BraseroPluginManagerUIClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = brasero_plugin_manager_ui_finalize;
-
-	g_type_class_add_private (object_class, sizeof (BraseroPluginManagerUIPrivate));
 }
 
 static BraseroPlugin *
@@ -102,7 +102,7 @@ plugin_manager_ui_get_selected_plugin (BraseroPluginManagerUI *pm)
 	GtkTreeSelection *selection;
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	g_return_val_if_fail (model != NULL, NULL);
@@ -128,7 +128,7 @@ about_button_cb (GtkWidget          *button,
 	BraseroPluginManagerUIPrivate *priv;
 	const gchar *authors [2] = { NULL };
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	plugin = plugin_manager_ui_get_selected_plugin (pm);
 
@@ -282,7 +282,7 @@ active_toggled_cb (GtkCellRendererToggle *cell,
 	GtkTreeModel *model;
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 	path = gtk_tree_path_new_from_string (path_str);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
@@ -302,7 +302,7 @@ cursor_changed_cb (GtkTreeView *view,
 	BraseroPluginManagerUI *pm = data;
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 	plugin = plugin_manager_ui_get_selected_plugin (pm);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->about_button),
@@ -323,7 +323,7 @@ row_activated_cb (GtkTreeView       *tree_view,
 	BraseroPluginManagerUI *pm = data;
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 
 	g_return_if_fail (model != NULL);
@@ -341,7 +341,7 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 	GtkListStore *model;
 	GtkTreeIter iter;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 	plugins = priv->plugins;
 
 	model = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
@@ -464,7 +464,7 @@ plugin_manager_ui_set_active_all (BraseroPluginManagerUI *pm,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 
 	g_return_if_fail (model != NULL);
@@ -531,7 +531,7 @@ enable_plugin_menu_cb (GtkMenu            *menu,
 	GtkTreeSelection *selection;
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	g_return_if_fail (model != NULL);
@@ -623,7 +623,7 @@ tree_popup_menu_detach (BraseroPluginManagerUI *pm,
 {
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 	priv->popup_menu = NULL;
 }
 
@@ -712,7 +712,7 @@ show_tree_popup_menu (GtkTreeView        *tree,
 {
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	if (priv->popup_menu)
 		gtk_widget_destroy (priv->popup_menu);
@@ -816,7 +816,7 @@ plugin_manager_ui_construct_tree (BraseroPluginManagerUI *pm)
 	GtkCellRenderer *cell;
 	GtkListStore *model;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	model = gtk_list_store_new (N_COLUMNS,
 				    G_TYPE_BOOLEAN,
@@ -924,7 +924,7 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	GtkWidget *vbuttonbox;
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (pm), GTK_ORIENTATION_VERTICAL);
 	gtk_box_set_spacing (GTK_BOX (pm), 6);
@@ -1003,7 +1003,7 @@ brasero_plugin_manager_ui_finalize (GObject *object)
 	BraseroPluginManagerUI *pm = BRASERO_PLUGIN_MANAGER_UI (object);
 	BraseroPluginManagerUIPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
+	priv = BRASERO_PLUGIN_MANAGER_UI_PRIVATE (pm);
 
 	if (priv->plugins) {
 		g_slist_foreach (priv->plugins, (GFunc) g_object_unref, NULL);

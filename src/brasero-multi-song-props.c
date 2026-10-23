@@ -52,10 +52,10 @@ struct _BraseroMultiSongPropsPrivate
 };
 
 
-#define BRASERO_MULTI_SONG_PROPS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MULTI_SONG_PROPS, BraseroMultiSongPropsPrivate))
+#define BRASERO_MULTI_SONG_PROPS_PRIVATE(o)  (brasero_multi_song_props_get_instance_private (o))
 
 
-G_DEFINE_TYPE (BraseroMultiSongProps, brasero_multi_song_props, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroMultiSongProps, brasero_multi_song_props, GTK_TYPE_DIALOG);
 
 void
 brasero_multi_song_props_set_rename_callback (BraseroMultiSongProps *self,
@@ -355,8 +355,6 @@ static void
 brasero_multi_song_props_class_init (BraseroMultiSongPropsClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroMultiSongPropsPrivate));
 
 	object_class->finalize = brasero_multi_song_props_finalize;
 }

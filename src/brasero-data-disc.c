@@ -98,7 +98,7 @@ struct _BraseroDataDiscPrivate
 	guint reject_deep_files:1;
 };
 
-#define BRASERO_DATA_DISC_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_DISC, BraseroDataDiscPrivate))
+#define BRASERO_DATA_DISC_PRIVATE(o)  (brasero_data_disc_get_instance_private (o))
 
 
 static void
@@ -185,6 +185,7 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface);
 G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 			 brasero_data_disc,
 			 GTK_TYPE_BOX,
+			 G_ADD_PRIVATE (BraseroDataDisc)
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_data_disc_iface_disc_init));
 
@@ -1152,9 +1153,10 @@ brasero_data_disc_session_loaded_cb (BraseroTrackDataCfg *session,
 static void
 brasero_data_disc_clear (BraseroDisc *disc)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	priv->always_replace = FALSE;
 	priv->never_replace = FALSE;
@@ -1208,6 +1210,7 @@ brasero_data_disc_convert_tree_paths_to_references (GtkTreeModel *model,
 static void
 brasero_data_disc_delete_selected (BraseroDisc *disc)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 	GtkTreeSelection *selection;
 	GtkTreePath *cursorpath;
@@ -1215,7 +1218,7 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 	GSList *iter;
 	GList *list;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	/* we must start by the end for the treepaths to point to valid rows */
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
@@ -1272,15 +1275,16 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 static BraseroDiscResult
 brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 	GtkTreePath *parent = NULL;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	if (priv->reject_files)
 		return BRASERO_DISC_LOADING;
 
-	parent = brasero_data_disc_get_parent (BRASERO_DATA_DISC (disc));
+	parent = brasero_data_disc_get_parent (self);
 	if (brasero_track_data_cfg_add (BRASERO_TRACK_DATA_CFG (priv->project), uri, parent)) {
 		gtk_tree_path_free (parent);
 		return BRASERO_DISC_OK;
@@ -1688,11 +1692,12 @@ static gboolean
 brasero_data_disc_get_selected_uri (BraseroDisc *disc,
 				    gchar **uri)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	if (!priv->selected)
 		return FALSE;
@@ -1718,12 +1723,13 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 			  GtkUIManager *manager,
 			  GtkWidget *message)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 	GError *error = NULL;
 	GtkAction *action;
 	guint merge_id;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 	if (priv->message) {
 		g_object_unref (priv->message);
 		priv->message = NULL;
@@ -2409,9 +2415,10 @@ brasero_data_disc_init (BraseroDataDisc *object)
 static void
 brasero_data_disc_finalize (GObject *object)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (object);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (object);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	if (priv->project) {
 		g_object_unref (priv->project);
@@ -2445,10 +2452,11 @@ brasero_data_disc_finalize (GObject *object)
 static gboolean
 brasero_data_disc_is_empty (BraseroDisc *disc)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 	GtkTreeModel *model;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if(!model)
 		return FALSE;
@@ -2474,9 +2482,10 @@ brasero_data_disc_get_property (GObject * object,
 				GValue * value,
 				GParamSpec * pspec)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (object);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (object);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -2494,9 +2503,10 @@ brasero_data_disc_set_property (GObject * object,
 				const GValue * value,
 				GParamSpec * pspec)
 {
+	BraseroDataDisc *self = BRASERO_DATA_DISC (object);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (object);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -2512,7 +2522,6 @@ static void
 brasero_data_disc_class_init (BraseroDataDiscClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	g_type_class_add_private (klass, sizeof (BraseroDataDiscPrivate));
 
 	object_class->finalize = brasero_data_disc_finalize;
 	object_class->set_property = brasero_data_disc_set_property;
