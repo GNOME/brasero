@@ -62,7 +62,7 @@ struct _BraseroJacketViewPrivate
 	BraseroJacketImageStyle image_style;
 };
 
-#define BRASERO_JACKET_VIEW_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_VIEW, BraseroJacketViewPrivate))
+#define BRASERO_JACKET_VIEW_PRIVATE(o)  (brasero_jacket_view_get_instance_private (o))
 
 enum
 {
@@ -75,7 +75,7 @@ enum
 static guint jacket_view_signals[LAST_SIGNAL] = { 0 };
 
 
-G_DEFINE_TYPE (BraseroJacketView, brasero_jacket_view, GTK_TYPE_CONTAINER);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroJacketView, brasero_jacket_view, GTK_TYPE_CONTAINER);
 
 #define BRASERO_JACKET_VIEW_MARGIN		20
 
@@ -1163,6 +1163,7 @@ static gboolean
 brasero_jacket_view_draw (GtkWidget *widget,
 			  cairo_t *ctx)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (widget);
 	guint x;
 	guint y;
 	gdouble resolution;
@@ -1171,7 +1172,7 @@ brasero_jacket_view_draw (GtkWidget *widget,
 	GtkAllocation allocation, sides_allocation;
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 
 	toplevel = gtk_widget_get_toplevel (widget);
 	if (!GTK_IS_WINDOW (toplevel))
@@ -1188,7 +1189,7 @@ brasero_jacket_view_draw (GtkWidget *widget,
 		x = (allocation.width - resolution * COVER_WIDTH_BACK_INCH) / 2;
 		y = (allocation.height - resolution * COVER_HEIGHT_BACK_INCH) - BRASERO_JACKET_VIEW_MARGIN;
 
-		brasero_jacket_view_render (BRASERO_JACKET_VIEW (widget),
+		brasero_jacket_view_render (view,
 					    ctx,
 					    layout,
 					    priv->scaled,
@@ -1218,7 +1219,7 @@ brasero_jacket_view_draw (GtkWidget *widget,
 		x = (allocation.width - resolution * COVER_WIDTH_FRONT_INCH) / 2;
 		y = (allocation.height - resolution * COVER_HEIGHT_FRONT_INCH) / 2;
 
-		brasero_jacket_view_render (BRASERO_JACKET_VIEW (widget),
+		brasero_jacket_view_render (view,
 					    ctx,
 					    layout,
 					    priv->scaled,
@@ -1273,12 +1274,13 @@ brasero_jacket_view_get_preferred_width (GtkWidget *widget,
                                          gint      *minimum,
                                          gint      *natural)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (widget);
 	BraseroJacketViewPrivate *priv;
 	GtkWidget *toplevel;
 	gdouble resolution;
         gint width;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 
 	if (!gtk_widget_get_parent (widget))
 		return;
@@ -1305,12 +1307,13 @@ brasero_jacket_view_get_preferred_height (GtkWidget *widget,
                                           gint      *minimum,
                                           gint      *natural)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (widget);
 	BraseroJacketViewPrivate *priv;
 	GtkWidget *toplevel;
 	gdouble resolution;
         gint height;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 
 	if (!gtk_widget_get_parent (widget))
 		return;
@@ -1337,6 +1340,7 @@ static void
 brasero_jacket_view_size_allocate (GtkWidget *widget,
 				   GtkAllocation *allocation)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (widget);
 	BraseroJacketViewPrivate *priv;
 	GtkAllocation view_alloc;
 	GtkWidget *toplevel;
@@ -1347,7 +1351,7 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 		return;
 
 	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
-	priv = BRASERO_JACKET_VIEW_PRIVATE (widget);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 
 	if (priv->image && priv->image_style == BRASERO_JACKET_IMAGE_STRETCH) {
 		if (priv->scaled) {
@@ -1356,7 +1360,7 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 		}
 
 		/* scale pixbuf */
-		brasero_jacket_view_update_image (BRASERO_JACKET_VIEW (widget));
+		brasero_jacket_view_update_image (view);
 	}
 
 	view_alloc.x = BRASERO_JACKET_VIEW_MARGIN + COVER_TEXT_MARGIN * resolution;
@@ -1390,7 +1394,7 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 		view_alloc.height = (gdouble) (COVER_HEIGHT_FRONT_INCH - COVER_TEXT_MARGIN * 2.0) * resolution;
 	}
 
-	brasero_jacket_view_set_textview_background (BRASERO_JACKET_VIEW (widget));
+	brasero_jacket_view_set_textview_background (view);
 	gtk_widget_size_allocate (priv->edit, &view_alloc);
 
 	gtk_widget_set_allocation (widget, allocation);
@@ -1409,9 +1413,10 @@ brasero_jacket_view_container_forall (GtkContainer *container,
 				      GtkCallback callback,
 				      gpointer callback_data)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (container);
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (container);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 	if (priv->edit)
 		callback (priv->edit, callback_data);
 	if (priv->sides)
@@ -1422,9 +1427,10 @@ static void
 brasero_jacket_view_container_remove (GtkContainer *container,
 				      GtkWidget *widget)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (container);
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (container);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 	if (priv->edit == widget)
 		priv->edit = NULL;
 
@@ -1494,9 +1500,10 @@ brasero_jacket_view_init (BraseroJacketView *object)
 static void
 brasero_jacket_view_finalize (GObject *object)
 {
+	BraseroJacketView *view = BRASERO_JACKET_VIEW (object);
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (object);
+	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
 	if (priv->image) {
 		g_object_unref (priv->image);
 		priv->image = NULL;
@@ -1521,8 +1528,6 @@ brasero_jacket_view_class_init (BraseroJacketViewClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	GtkWidgetClass* widget_class = GTK_WIDGET_CLASS (klass);
 	GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroJacketViewPrivate));
 
 	object_class->finalize = brasero_jacket_view_finalize;
 

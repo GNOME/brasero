@@ -55,9 +55,9 @@ struct _BraseroJacketBackgroundPrivate
 	GtkWidget *color_style;
 };
 
-#define BRASERO_JACKET_BACKGROUND_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_BACKGROUND, BraseroJacketBackgroundPrivate))
+#define BRASERO_JACKET_BACKGROUND_PRIVATE(o)  (brasero_jacket_background_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroJacketBackground, brasero_jacket_background, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroJacketBackground, brasero_jacket_background, GTK_TYPE_DIALOG);
 
 BraseroJacketColorStyle
 brasero_jacket_background_get_color_style (BraseroJacketBackground *self)
@@ -371,8 +371,6 @@ static void
 brasero_jacket_background_class_init (BraseroJacketBackgroundClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroJacketBackgroundPrivate));
 
 	object_class->finalize = brasero_jacket_background_finalize;
 }

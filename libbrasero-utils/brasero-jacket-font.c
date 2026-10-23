@@ -44,7 +44,7 @@ struct _BraseroJacketFontPrivate
 	gchar *current_family;
 };
 
-#define BRASERO_JACKET_FONT_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_FONT, BraseroJacketFontPrivate))
+#define BRASERO_JACKET_FONT_PRIVATE(o)  (brasero_jacket_font_get_instance_private (o))
 
 enum
 {
@@ -73,7 +73,7 @@ static const guint16 font_sizes[] = {
 
 static guint jacket_font_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroJacketFont, brasero_jacket_font, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroJacketFont, brasero_jacket_font, GTK_TYPE_BOX);
 
 static void
 brasero_jacket_font_family_changed_cb (GtkComboBox *combo,
@@ -341,8 +341,6 @@ static void
 brasero_jacket_font_class_init (BraseroJacketFontClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroJacketFontPrivate));
 
 	object_class->finalize = brasero_jacket_font_finalize;
 

@@ -107,7 +107,7 @@ struct _BraseroIOPrivate
 	gpointer win_user_data;
 };
 
-#define BRASERO_IO_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IO, BraseroIOPrivate))
+#define BRASERO_IO_PRIVATE(o)  (brasero_io_get_instance_private (o))
 
 /* so far 2 metadata at a time has shown to be the best for performance */
 #define MAX_CONCURENT_META 	2
@@ -145,7 +145,7 @@ struct _BraseroIOJobProgress {
 	gchar *current;
 };
 
-G_DEFINE_TYPE (BraseroIO, brasero_io, BRASERO_TYPE_ASYNC_TASK_MANAGER);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroIO, brasero_io, BRASERO_TYPE_ASYNC_TASK_MANAGER);
 
 static BraseroIO *singleton = NULL;
 
@@ -2401,10 +2401,11 @@ brasero_io_free_async_queue (BraseroAsyncTaskManager *manager,
 static void
 brasero_io_finalize (GObject *object)
 {
+	BraseroIO *io = BRASERO_IO (object);
 	BraseroIOPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_IO_PRIVATE (object);
+	priv = BRASERO_IO_PRIVATE (io);
 
 	brasero_async_task_manager_foreach_unprocessed_remove (BRASERO_ASYNC_TASK_MANAGER (object),
 							       brasero_io_free_async_queue,
@@ -2490,8 +2491,6 @@ static void
 brasero_io_class_init (BraseroIOClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroIOPrivate));
 
 	object_class->finalize = brasero_io_finalize;
 }

@@ -96,7 +96,7 @@ struct BraseroMetadataPrivate {
 	guint snapshot_started:1;
 };
 typedef struct BraseroMetadataPrivate BraseroMetadataPrivate;
-#define BRASERO_METADATA_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), BRASERO_TYPE_METADATA, BraseroMetadataPrivate))
+#define BRASERO_METADATA_PRIVATE(o) (brasero_metadata_get_instance_private (o))
 
 enum {
 	PROP_NONE,
@@ -114,7 +114,7 @@ static guint brasero_metadata_signals [LAST_SIGNAL] = { 0 };
 	(!((flags) & BRASERO_METADATA_FLAG_SILENCES) &&				\
 	((flags) & BRASERO_METADATA_FLAG_FAST))
 
-G_DEFINE_TYPE (BraseroMetadata, brasero_metadata, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroMetadata, brasero_metadata, G_TYPE_OBJECT)
 
 static GSList *downloading = NULL;
 static GSList *downloaded = NULL;
@@ -2049,12 +2049,13 @@ brasero_metadata_init (BraseroMetadata *obj)
 static void
 brasero_metadata_finalize (GObject *object)
 {
+	BraseroMetadata *metadata = BRASERO_METADATA (object);
 	BraseroMetadataPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_METADATA_PRIVATE (object);
+	priv = BRASERO_METADATA_PRIVATE (metadata);
 
-	brasero_metadata_destroy_pipeline (BRASERO_METADATA (object));
+	brasero_metadata_destroy_pipeline (metadata);
 
 	if (priv->silence) {
 		g_free (priv->silence);
@@ -2154,8 +2155,6 @@ static void
 brasero_metadata_class_init (BraseroMetadataClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroMetadataPrivate));
 
 	object_class->finalize = brasero_metadata_finalize;
 	object_class->set_property = brasero_metadata_set_property;

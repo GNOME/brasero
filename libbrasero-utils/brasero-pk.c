@@ -60,9 +60,9 @@ struct _BraseroPKPrivate
 	gboolean res;
 };
 
-#define BRASERO_PK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PK, BraseroPKPrivate))
+#define BRASERO_PK_PRIVATE(o)  (brasero_pk_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroPK, brasero_pk, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroPK, brasero_pk, G_TYPE_OBJECT);
 
 static void
 brasero_pk_install_missing_files_result (GObject *source_object,
@@ -427,10 +427,11 @@ brasero_pk_init (BraseroPK *object)
 static void
 brasero_pk_finalize (GObject *object)
 {
+	BraseroPK *pk = BRASERO_PK (object);
 	GError *error = NULL;
 	BraseroPKPrivate *priv;
 
-	priv = BRASERO_PK_PRIVATE (object);
+	priv = BRASERO_PK_PRIVATE (pk);
 
 	if (priv->proxy)
 		g_dbus_proxy_call_finish (priv->proxy, priv->result, &error);
@@ -455,8 +456,6 @@ static void
 brasero_pk_class_init (BraseroPKClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroPKPrivate));
 
 	object_class->finalize = brasero_pk_finalize;
 }

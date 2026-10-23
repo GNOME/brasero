@@ -56,9 +56,9 @@ enum {
 static guint tool_color_picker_signals[LAST_SIGNAL] = { 0 };
 
 
-#define BRASERO_TOOL_COLOR_PICKER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TOOL_COLOR_PICKER, BraseroToolColorPickerPrivate))
+#define BRASERO_TOOL_COLOR_PICKER_PRIVATE(o)  (brasero_tool_color_picker_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroToolColorPicker, brasero_tool_color_picker, GTK_TYPE_TOOL_BUTTON);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroToolColorPicker, brasero_tool_color_picker, GTK_TYPE_TOOL_BUTTON);
 
 void
 brasero_tool_color_picker_set_text (BraseroToolColorPicker *self,
@@ -224,8 +224,6 @@ static void
 brasero_tool_color_picker_class_init (BraseroToolColorPickerClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroToolColorPickerPrivate));
 
 	object_class->finalize = brasero_tool_color_picker_finalize;
 

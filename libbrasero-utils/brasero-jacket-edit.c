@@ -66,7 +66,7 @@ struct _BraseroJacketEditPrivate
 	GtkWidget *background;
 };
 
-#define BRASERO_JACKET_EDIT_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_EDIT, BraseroJacketEditPrivate))
+#define BRASERO_JACKET_EDIT_PRIVATE(o)  (brasero_jacket_edit_get_instance_private (o))
 
 enum {
 	SNAP_PIX_COL,
@@ -76,7 +76,7 @@ enum {
 	SNAP_NUM_COL
 };
 
-G_DEFINE_TYPE (BraseroJacketEdit, brasero_jacket_edit, GTK_TYPE_BOX);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroJacketEdit, brasero_jacket_edit, GTK_TYPE_BOX);
 
 static void
 brasero_jacket_edit_print_page (GtkPrintOperation *operation,
@@ -753,8 +753,6 @@ static void
 brasero_jacket_edit_class_init (BraseroJacketEditClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroJacketEditPrivate));
 
 	object_class->finalize = brasero_jacket_edit_finalize;
 }

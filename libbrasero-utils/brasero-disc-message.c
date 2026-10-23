@@ -62,9 +62,9 @@ struct _BraseroDiscMessagePrivate
 	guint prevent_destruction:1;
 };
 
-#define BRASERO_DISC_MESSAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DISC_MESSAGE, BraseroDiscMessagePrivate))
+#define BRASERO_DISC_MESSAGE_PRIVATE(o)  (brasero_disc_message_get_instance_private (o))
 
-G_DEFINE_TYPE (BraseroDiscMessage, brasero_disc_message, GTK_TYPE_INFO_BAR);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroDiscMessage, brasero_disc_message, GTK_TYPE_INFO_BAR);
 
 enum {
 	TEXT_COL,
@@ -361,9 +361,10 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 static void
 brasero_disc_message_finalize (GObject *object)
 {
+	BraseroDiscMessage *message = BRASERO_DISC_MESSAGE (object);
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (object);	
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (message);
 	if (priv->id) {
 		g_source_remove (priv->id);
 		priv->id = 0;
@@ -381,8 +382,6 @@ static void
 brasero_disc_message_class_init (BraseroDiscMessageClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDiscMessagePrivate));
 
 	object_class->finalize = brasero_disc_message_finalize;
 }

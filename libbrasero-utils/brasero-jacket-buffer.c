@@ -45,11 +45,11 @@ struct _BraseroJacketBufferPrivate
 	guint empty:1;
 };
 
-#define BRASERO_JACKET_BUFFER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_BUFFER, BraseroJacketBufferPrivate))
+#define BRASERO_JACKET_BUFFER_PRIVATE(o)  (brasero_jacket_buffer_get_instance_private (o))
 
 #define BRASERO_JACKET_BUFFER_TAG	"jacket-buffer-tag"
 
-G_DEFINE_TYPE (BraseroJacketBuffer, brasero_jacket_buffer, GTK_TYPE_TEXT_BUFFER);
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroJacketBuffer, brasero_jacket_buffer, GTK_TYPE_TEXT_BUFFER);
 
 gchar *
 brasero_jacket_buffer_get_text (BraseroJacketBuffer *self,
@@ -295,7 +295,7 @@ brasero_jacket_buffer_get_attributes (BraseroJacketBuffer *self,
 }
 
 static void
-brasero_jacket_buffer_cursor_position_changed_cb (GObject *buffer,
+brasero_jacket_buffer_cursor_position_changed_cb (BraseroJacketBuffer *buffer,
 						  GParamSpec *spec,
 						  gpointer NULL_data)
 {
@@ -328,11 +328,12 @@ brasero_jacket_buffer_cursor_position_changed_cb (GObject *buffer,
 }
 
 static void
-brasero_jacket_buffer_insert_text (GtkTextBuffer *buffer,
+brasero_jacket_buffer_insert_text (GtkTextBuffer *txt_buffer,
 				   GtkTextIter *location,
 				   const gchar *text,
 				   gint length)
 {
+	BraseroJacketBuffer *buffer = BRASERO_JACKET_BUFFER (txt_buffer);
 	GtkTextIter end;
 	GSList *tag_iter;
 	GtkTextIter start;
@@ -344,15 +345,15 @@ brasero_jacket_buffer_insert_text (GtkTextBuffer *buffer,
 	start_offset = gtk_text_iter_get_offset (location);
 	priv->inserting_text = TRUE;
 
-	brasero_jacket_buffer_show_default_text (BRASERO_JACKET_BUFFER (buffer), FALSE);
+	brasero_jacket_buffer_show_default_text (buffer, FALSE);
 
 	/* revalidate iter in case above function caused invalidation */
-	gtk_text_buffer_get_iter_at_offset (buffer, location, start_offset);
+	gtk_text_buffer_get_iter_at_offset (txt_buffer, location, start_offset);
 
-	GTK_TEXT_BUFFER_CLASS (brasero_jacket_buffer_parent_class)->insert_text (buffer, location, text, length);
+	GTK_TEXT_BUFFER_CLASS (brasero_jacket_buffer_parent_class)->insert_text (txt_buffer, location, text, length);
 
 	priv->inserting_text = FALSE;
-	gtk_text_buffer_get_iter_at_offset (buffer, &start, start_offset);
+	gtk_text_buffer_get_iter_at_offset (txt_buffer, &start, start_offset);
 	end = *location;
 
 	/* apply tags */
@@ -360,7 +361,7 @@ brasero_jacket_buffer_insert_text (GtkTextBuffer *buffer,
 		GtkTextTag *tag;
 
 		tag = tag_iter->data;
-		gtk_text_buffer_apply_tag (buffer, tag,
+		gtk_text_buffer_apply_tag (txt_buffer, tag,
 					   &start,
 					   &end);
 	}
@@ -458,9 +459,10 @@ brasero_jacket_buffer_init (BraseroJacketBuffer *object)
 static void
 brasero_jacket_buffer_finalize (GObject *object)
 {
+	BraseroJacketBuffer *buffer = BRASERO_JACKET_BUFFER (object);
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (object);
+	priv = BRASERO_JACKET_BUFFER_PRIVATE (buffer);
 
 	if (priv->default_text) {
 		g_free (priv->default_text);
@@ -480,8 +482,6 @@ brasero_jacket_buffer_class_init (BraseroJacketBufferClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	GtkTextBufferClass* parent_class = GTK_TEXT_BUFFER_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroJacketBufferPrivate));
 
 	object_class->finalize = brasero_jacket_buffer_finalize;
 
