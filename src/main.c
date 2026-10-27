@@ -102,7 +102,7 @@ main (int argc, char **argv)
 		gapp = g_application_new ("org.gnome.Brasero", G_APPLICATION_FLAGS_NONE);
 
 		if (!g_application_register (gapp, NULL, &error)) {
-			g_warning ("Brasero registered");
+			g_warning ("Failed to register application: %s", error ? error->message : "unknown error");
 			g_error_free (error);
 			return 1;
 		}
