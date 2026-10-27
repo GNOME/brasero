@@ -242,7 +242,7 @@ brasero_track_data_rm_fs (BraseroTrackData *track,
 
 	fs_before = brasero_track_data_get_fs (track);
 	klass = BRASERO_TRACK_DATA_GET_CLASS (track);
-	if (!klass->rm_fs);
+	if (!klass->rm_fs)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
 	result = klass->rm_fs (track, fstype);
