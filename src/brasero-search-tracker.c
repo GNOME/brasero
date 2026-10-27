@@ -146,7 +146,7 @@ brasero_search_tracker_cursor_callback (GObject      *object,
 					GAsyncResult *result,
 					gpointer      user_data)
 {
-	BraseroSearchEngine *search;
+	BraseroSearchEngine *search = BRASERO_SEARCH_ENGINE (user_data);
 	GError *error = NULL;
 	TrackerSparqlCursor *cursor;
 	GList *hits;
