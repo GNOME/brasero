@@ -905,7 +905,7 @@ brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 					  gint address)
 {
 	guint len;
-	gchar *end;
+	const gchar *end;
 	gint max_block;
 	gint max_record_size;
 	BraseroIsoResult result;
