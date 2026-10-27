@@ -1,0 +1,125 @@
+{
+    "app-id": "org.gnome.Brasero.Devel",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "master",
+    "sdk": "org.gnome.Sdk",
+    "command": "brasero",
+    "tags": [
+        "devel"
+    ],
+    "finish-args": [
+        "--share=ipc",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--filesystem=home",
+        "--device=all",
+        "--own-name=org.gnome.Brasero",
+        "--talk-name=org.gtk.vfs.*",
+        "--filesystem=xdg-run/gvfsd",
+        "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Software"
+    ],
+    "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/share/pkgconfig",
+        "/share/aclocal",
+        "/man",
+        "/share/man",
+        "/share/gtk-doc",
+        "/share/doc",
+        "*.la",
+        "*.a"
+    ],
+    "rename-desktop-file": "org.gnome.Brasero.desktop",
+    "rename-icon": "brasero",
+    "copy-icon": true,
+    "modules": [
+        {
+            "name": "libcanberra",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://0pointer.de/lennart/projects/libcanberra/libcanberra-0.30.tar.xz",
+                    "sha256": "c2b671e67e0c288a69fc33dc1b6f1b534d07882c2aceed37004bf48c601afa72"
+                }
+            ],
+            "config-opts": [
+                "--disable-alsa",
+                "--disable-null",
+                "--disable-oss"
+            ]
+        },
+        {
+            "name": "gsound",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.gnome.org/GNOME/gsound.git",
+                    "branch": "master"
+                }
+            ]
+        },
+        {
+            "name": "libburn",
+            "build-options": {
+                "cflags": "-std=gnu17"
+            },
+            "config-opts": [
+                "--disable-static"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://deb.debian.org/debian/pool/main/libb/libburn/libburn_1.5.8.orig.tar.gz",
+                    "mirror-urls": [
+                        "https://files.libburnia-project.org/releases/libburn-1.5.8.tar.gz"
+                    ],
+                    "sha256": "8e24dd99f5b7cafbecf0116d61b619ee89098e20263e6f47c793aaf4a98d6473"
+                }
+            ]
+        },
+        {
+            "name": "libisofs",
+            "config-opts": [
+                "--disable-static"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://deb.debian.org/debian/pool/main/libi/libisofs/libisofs_1.5.8.pl02.orig.tar.gz",
+                    "mirror-urls": [
+                        "https://files.libburnia-project.org/releases/libisofs-1.5.8.pl02.tar.gz"
+                    ],
+                    "sha256": "10bd584d8f00d8091e814902b9f0a3e209f16e938f510fc23ba05f3fa469db5a"
+                }
+            ]
+        },
+        {
+            "name": "totem-pl-parser",
+            "buildsystem": "meson",
+            "config-opts": [
+                "-Denable-uchardet=no",
+                "-Denable-gtk-doc=false"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.gnome.org/sources/totem-pl-parser/3.26/totem-pl-parser-3.26.7.tar.xz",
+                    "sha256": "60d517c1acabe54ae337f64451264fc76730696eaae26b5480fb37166689b5f3"
+                }
+            ]
+        },
+        {
+            "name": "brasero",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "."
+                }
+            ]
+        }
+    ]
+}
