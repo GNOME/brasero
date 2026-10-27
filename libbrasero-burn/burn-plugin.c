@@ -644,7 +644,6 @@ brasero_plugin_get_errors (BraseroPlugin *plugin)
 gchar *
 brasero_plugin_get_error_string (BraseroPlugin *plugin)
 {
-	gchar *error_string = NULL;
 	BraseroPluginPrivate *priv;
 	GString *string;
 	GSList *iter;
@@ -693,9 +692,7 @@ brasero_plugin_get_error_string (BraseroPlugin *plugin)
 		}
 	}
 
-	error_string = string->str;
-	g_string_free (string, FALSE);
-	return error_string;
+	return g_string_free (string, FALSE);
 }
 
 static BraseroPluginFlags *
