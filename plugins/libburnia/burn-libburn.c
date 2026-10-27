@@ -694,7 +694,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 
 			brasero_job_get_next_writable_address (BRASERO_JOB (self), &address);
 
-			BRASERO_JOB_LOG (self, "Starting to write at block = %lli and byte %lli", address, address * 2048);
+			BRASERO_JOB_LOG (self, "Starting to write at block = %" G_GOFFSET_FORMAT " and byte %" G_GOFFSET_FORMAT, address, address * 2048);
 			burn_write_opts_set_start_byte (opts, address * 2048);
 		}
 	}
