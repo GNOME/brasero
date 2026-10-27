@@ -131,7 +131,7 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 	if (res)
 		goto end;
 
-	if (!header.hdr.len) {
+	if (!BRASERO_GET_16 (header.hdr.len)) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_SIZE_MISMATCH);
 		res = BRASERO_SCSI_FAILURE;
 		goto end;
