@@ -527,7 +527,7 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
 		/* This is specific to overwrite media; the start address is the
 		 * size of all the previous data written */
-		BRASERO_JOB_LOG (self, "Growing image (start %i)", start_block);
+		BRASERO_JOB_LOG (self, "Growing image (start %" G_GOFFSET_FORMAT ")", start_block);
 	}
 
 	/* set the start block for the multisession image */
