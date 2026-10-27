@@ -107,8 +107,8 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->svcd_button)))
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->svcd_button), TRUE);
 
-				gtk_widget_set_sensitive (priv->button_4_3, TRUE);
-				gtk_widget_set_sensitive (priv->button_16_9, TRUE);
+			gtk_widget_set_sensitive (priv->button_4_3, TRUE);
+			gtk_widget_set_sensitive (priv->button_16_9, TRUE);
 		}
 		else {
 			if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->vcd_button)))
