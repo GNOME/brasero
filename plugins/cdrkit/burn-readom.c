@@ -68,7 +68,7 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 	BraseroReadom *readom;
 	gint dummy1;
 	gint dummy2;
-	gchar *pos;
+	const gchar *pos;
 
 	readom = BRASERO_READOM (process);
 

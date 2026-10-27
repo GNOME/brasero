@@ -67,7 +67,7 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 	BraseroReadcd *readcd;
 	gint dummy1;
 	gint dummy2;
-	gchar *pos;
+	const gchar *pos;
 
 	readcd = BRASERO_READCD (process);
 
