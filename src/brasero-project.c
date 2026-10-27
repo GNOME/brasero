@@ -2617,7 +2617,7 @@ brasero_project_convert_to_stream (BraseroProject *project,
 static void
 brasero_project_not_saved_dialog (BraseroProject *project)
 {
-	xmlError *error;
+	const xmlError *error;
 
 	error = xmlGetLastError ();
 	brasero_app_alert (brasero_app_get_default (),
