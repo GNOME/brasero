@@ -40,14 +40,6 @@
 #include "brasero-data-vfs.h"
 #include "brasero-file-node.h"
 
-typedef struct _BraseroDataTreeModelPrivate BraseroDataTreeModelPrivate;
-struct _BraseroDataTreeModelPrivate
-{
-	guint stamp;
-};
-
-#define BRASERO_DATA_TREE_MODEL_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_TREE_MODEL, BraseroDataTreeModelPrivate))
-
 G_DEFINE_TYPE (BraseroDataTreeModel, brasero_data_tree_model, BRASERO_TYPE_DATA_VFS);
 
 enum {
@@ -180,8 +172,6 @@ brasero_data_tree_model_class_init (BraseroDataTreeModelClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroDataProjectClass *data_project_class = BRASERO_DATA_PROJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroDataTreeModelPrivate));
 
 	object_class->finalize = brasero_data_tree_model_finalize;
 
