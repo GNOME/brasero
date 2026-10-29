@@ -56,9 +56,6 @@
 
 G_DEFINE_TYPE (BraseroBurnCaps, brasero_burn_caps, G_TYPE_OBJECT);
 
-static GObjectClass *parent_class = NULL;
-
-
 static void
 brasero_caps_link_free (BraseroCapsLink *link)
 {
@@ -297,7 +294,7 @@ brasero_burn_caps_finalize (GObject *object)
 	}
 
 	g_free (cobj->priv);
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_burn_caps_parent_class)->finalize (object);
 }
 
 static void
@@ -305,7 +302,6 @@ brasero_burn_caps_class_init (BraseroBurnCapsClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_burn_caps_finalize;
 }
 
