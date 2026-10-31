@@ -32,9 +32,8 @@
 
 static void nautilus_disc_burn_bar_finalize   (GObject *object);
 
-#define NAUTILUS_DISC_BURN_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_DISC_BURN_BAR, NautilusDiscBurnBarPrivate))
-
-struct NautilusDiscBurnBarPrivate
+typedef struct _NautilusDiscBurnBarPrivate NautilusDiscBurnBarPrivate;
+struct _NautilusDiscBurnBarPrivate
 {
         GtkWidget  *button;
         GtkWidget  *title;
@@ -50,40 +49,49 @@ enum {
 
 static guint           signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (NautilusDiscBurnBar, nautilus_disc_burn_bar, GTK_TYPE_BOX)
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusDiscBurnBar, nautilus_disc_burn_bar, GTK_TYPE_BOX)
 
 const gchar *
 nautilus_disc_burn_bar_get_icon (NautilusDiscBurnBar *bar)
 {
+        NautilusDiscBurnBarPrivate *priv;
+
         g_return_val_if_fail (bar != NULL, NULL);
-        return bar->priv->icon_path;
+
+        priv = nautilus_disc_burn_bar_get_instance_private (bar);
+
+        return priv->icon_path;
 }
 
 void
 nautilus_disc_burn_bar_set_icon (NautilusDiscBurnBar *bar,
                                  const gchar *icon_path)
 {
+        NautilusDiscBurnBarPrivate *priv;
+
         g_return_if_fail (bar != NULL);
 
-        if (bar->priv->icon_path)
-                g_free (bar->priv->icon_path);
+        priv = nautilus_disc_burn_bar_get_instance_private (bar);
 
-        bar->priv->icon_path = g_strdup (icon_path);
+        if (priv->icon_path)
+                g_free (priv->icon_path);
 
-        if (bar->priv->icon_path) {
+        priv->icon_path = g_strdup (icon_path);
+
+        if (priv->icon_path) {
                 GIcon *icon;
                 GFile *file;
 
-                file = g_file_new_for_path (bar->priv->icon_path);
+                file = g_file_new_for_path (priv->icon_path);
 		icon = g_file_icon_new (file);
                 g_object_unref (file);
-                gtk_entry_set_icon_from_gicon (GTK_ENTRY (bar->priv->title),
+                gtk_entry_set_icon_from_gicon (GTK_ENTRY (priv->title),
                                                GTK_ENTRY_ICON_PRIMARY,
                                                icon);
                 g_object_unref (icon);
         }
 	else
-                gtk_entry_set_icon_from_icon_name (GTK_ENTRY (bar->priv->title),
+                gtk_entry_set_icon_from_icon_name (GTK_ENTRY (priv->title),
 						   GTK_ENTRY_ICON_PRIMARY,
 						   "media-optical");
 }
@@ -91,15 +99,24 @@ nautilus_disc_burn_bar_set_icon (NautilusDiscBurnBar *bar,
 const gchar *
 nautilus_disc_burn_bar_get_title (NautilusDiscBurnBar *bar)
 {
+        NautilusDiscBurnBarPrivate *priv;
+
         g_return_val_if_fail (bar != NULL, NULL);
-        return gtk_entry_get_text (GTK_ENTRY (bar->priv->title));
+
+        priv = nautilus_disc_burn_bar_get_instance_private (bar);
+
+        return gtk_entry_get_text (GTK_ENTRY (priv->title));
 }
 
 void
 nautilus_disc_burn_bar_set_title (NautilusDiscBurnBar *bar,
                                   const gchar *title)
 {
+        NautilusDiscBurnBarPrivate *priv;
+
         g_return_if_fail (bar != NULL);
+
+        priv = nautilus_disc_burn_bar_get_instance_private (bar);
 
         if (!title) {
                 time_t  t;
@@ -120,22 +137,22 @@ nautilus_disc_burn_bar_set_title (NautilusDiscBurnBar *bar,
 			title_str = g_strdup_printf ("Data disc %s", buffer);
 		}
 
-                gtk_entry_set_text (GTK_ENTRY (bar->priv->title), title_str);
+                gtk_entry_set_text (GTK_ENTRY (priv->title), title_str);
         }
         else
-                gtk_entry_set_text (GTK_ENTRY (bar->priv->title), title);
+                gtk_entry_set_text (GTK_ENTRY (priv->title), title);
 }
 
 GtkWidget *
 nautilus_disc_burn_bar_get_button (NautilusDiscBurnBar *bar)
 {
-        GtkWidget *button;
+        NautilusDiscBurnBarPrivate *priv;
 
         g_return_val_if_fail (bar != NULL, NULL);
 
-        button = bar->priv->button;
+        priv = nautilus_disc_burn_bar_get_instance_private (bar);
 
-        return button;
+        return priv->button;
 }
 
 static void
@@ -172,8 +189,6 @@ nautilus_disc_burn_bar_class_init (NautilusDiscBurnBarClass *klass)
         object_class->finalize     = nautilus_disc_burn_bar_finalize;
         object_class->get_property = nautilus_disc_burn_bar_get_property;
         object_class->set_property = nautilus_disc_burn_bar_set_property;
-
-        g_type_class_add_private (klass, sizeof (NautilusDiscBurnBarPrivate));
 
         signals [TITLE_CHANGED] = g_signal_new ("title_changed",
                                                 G_TYPE_FROM_CLASS (klass),
@@ -220,6 +235,7 @@ nautilus_disc_burn_bar_icon_button_clicked (GtkEntry *entry,
                                             GdkEvent *event,
                                             NautilusDiscBurnBar *bar)
 {
+        NautilusDiscBurnBarPrivate *priv = nautilus_disc_burn_bar_get_instance_private (bar);
         GtkFileFilter *filter;
 	GtkWidget *chooser;
 	gchar *path;
@@ -245,8 +261,8 @@ nautilus_disc_burn_bar_icon_button_clicked (GtkEntry *entry,
 
 	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (chooser), filter);
 
-        if (bar->priv->icon_path)
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), bar->priv->icon_path);
+        if (priv->icon_path)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), priv->icon_path);
 
 	gtk_widget_show (chooser);
 	res = gtk_dialog_run (GTK_DIALOG (chooser));
@@ -336,14 +352,13 @@ nautilus_disc_burn_bar_title_insert_text (GtkEditable *editable,
 static void
 nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
 {
+        NautilusDiscBurnBarPrivate *priv = nautilus_disc_burn_bar_get_instance_private (bar);
         GtkWidget   *table;
         GtkWidget   *label;
         GtkWidget   *hbox;
         GtkWidget   *image;
         GtkWidget   *entry;
         gchar       *string;
-
-        bar->priv = NAUTILUS_DISC_BURN_BAR_GET_PRIVATE (bar);
 
         hbox = GTK_WIDGET (bar);
         table = gtk_table_new (3, 2, FALSE);       
@@ -378,7 +393,7 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
                           0);
 
         entry = gtk_entry_new ();
-        bar->priv->title = entry;
+        priv->title = entry;
         gtk_widget_show (entry);
         gtk_table_attach (GTK_TABLE (table),
                           entry,
@@ -420,10 +435,10 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
                           0,
                           0);
 
-        bar->priv->button = gtk_button_new_with_label (_("Write to Disc"));
-        gtk_widget_show (bar->priv->button);
+        priv->button = gtk_button_new_with_label (_("Write to Disc"));
+        gtk_widget_show (priv->button);
         gtk_table_attach (GTK_TABLE (table),
-                          bar->priv->button,
+                          priv->button,
                           2, 3,
                           1, 2,
                           GTK_FILL,
@@ -433,30 +448,30 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
 
         image = gtk_image_new_from_icon_name ("media-optical-burn", GTK_ICON_SIZE_BUTTON);
         gtk_widget_show (image);
-        gtk_button_set_image (GTK_BUTTON (bar->priv->button), image);
+        gtk_button_set_image (GTK_BUTTON (priv->button), image);
 
-        g_signal_connect (bar->priv->button, "clicked",
+        g_signal_connect (priv->button, "clicked",
                           G_CALLBACK (button_clicked_cb),
                           bar);
 
-        gtk_widget_set_tooltip_text (bar->priv->button, _("Write contents to a CD or DVD"));
+        gtk_widget_set_tooltip_text (priv->button, _("Write contents to a CD or DVD"));
 }
 
 static void
 nautilus_disc_burn_bar_finalize (GObject *object)
 {
         NautilusDiscBurnBar *bar;
+        NautilusDiscBurnBarPrivate *priv;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (NAUTILUS_IS_DISC_BURN_BAR (object));
 
         bar = NAUTILUS_DISC_BURN_BAR (object);
+        priv = nautilus_disc_burn_bar_get_instance_private (bar);
 
-        g_return_if_fail (bar->priv != NULL);
-
-        if (bar->priv->icon_path) {
-                g_free (bar->priv->icon_path);
-                bar->priv->icon_path = NULL;
+        if (priv->icon_path) {
+                g_free (priv->icon_path);
+                priv->icon_path = NULL;
         }
 
         G_OBJECT_CLASS (nautilus_disc_burn_bar_parent_class)->finalize (object);

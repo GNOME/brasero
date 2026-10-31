@@ -34,12 +34,9 @@ G_BEGIN_DECLS
 #define NAUTILUS_IS_DISC_BURN_BAR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_DISC_BURN_BAR))
 #define NAUTILUS_DISC_BURN_BAR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_DISC_BURN_BAR, NautilusDiscBurnBarClass))
 
-typedef struct NautilusDiscBurnBarPrivate NautilusDiscBurnBarPrivate;
-
 typedef struct
 {
         GtkBox                     box;
-        NautilusDiscBurnBarPrivate *priv;
 } NautilusDiscBurnBar;
 
 typedef struct
