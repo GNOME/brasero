@@ -43,8 +43,9 @@
 #include "brasero-player-bacon.h"
 #include "brasero-setting.h"
 
+typedef struct _BraseroPlayerBaconPrivate BraseroPlayerBaconPrivate;
 
-struct BraseroPlayerBaconPrivate {
+struct _BraseroPlayerBaconPrivate {
 	GstElement *pipe;
 	GstState state;
 
@@ -68,7 +69,7 @@ typedef enum {
 
 static guint brasero_player_bacon_signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (BraseroPlayerBacon, brasero_player_bacon, GTK_TYPE_WIDGET)
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroPlayerBacon, brasero_player_bacon, GTK_TYPE_WIDGET)
 
 static void
 brasero_player_bacon_set_property (GObject *obj,
@@ -76,10 +77,8 @@ brasero_player_bacon_set_property (GObject *obj,
 				   const GValue *value,
 				   GParamSpec *pspec)
 {
-	BraseroPlayerBacon *bacon;
+	BraseroPlayerBacon *bacon = BRASERO_PLAYER_BACON (obj);
 	const char *uri;
-
-	bacon = BRASERO_PLAYER_BACON (obj);
 
 	switch (prop_id) {
 	case PROP_URI:
@@ -98,12 +97,12 @@ brasero_player_bacon_get_property (GObject *obj,
 				   GValue *value,
 				   GParamSpec *pspec)
 {
-	BraseroPlayerBacon *bacon;
+	BraseroPlayerBacon *bacon = BRASERO_PLAYER_BACON (obj);
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 
-	bacon = BRASERO_PLAYER_BACON (obj);
 	switch (prop_id) {
 	case PROP_URI:
-		g_value_set_string (value, bacon->priv->uri);
+		g_value_set_string (value, priv->uri);
 		break;
 
 	default:
@@ -114,13 +113,12 @@ brasero_player_bacon_get_property (GObject *obj,
 static void
 brasero_player_bacon_unrealize (GtkWidget *widget)
 {
-	BraseroPlayerBacon *bacon;
-
-	bacon = BRASERO_PLAYER_BACON (widget);
+	BraseroPlayerBacon *bacon = BRASERO_PLAYER_BACON (widget);
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 
 	/* Stop the pipeline as otherwise it would try to write video to a destroyed window */
-	gst_element_set_state (bacon->priv->pipe, GST_STATE_READY);
-	bacon->priv->xid = 0;
+	gst_element_set_state (priv->pipe, GST_STATE_READY);
+	priv->xid = 0;
 
 	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->unrealize)
 		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->unrealize (widget);
@@ -167,20 +165,22 @@ static gboolean
 brasero_player_bacon_draw (GtkWidget *widget, cairo_t *cr)
 {
 	BraseroPlayerBacon *bacon;
+	BraseroPlayerBaconPrivate *priv;
 	GdkWindow *window;
 
 	g_return_val_if_fail (widget != NULL, FALSE);
 
 	bacon = BRASERO_PLAYER_BACON (widget);
+	priv = brasero_player_bacon_get_instance_private (bacon);
 
 	window = gtk_widget_get_window (widget);
 	if (window)
-		bacon->priv->xid = gdk_x11_window_get_xid (window);
+		priv->xid = gdk_x11_window_get_xid (window);
 
-	if (bacon->priv->xoverlay
-	&&  GST_IS_VIDEO_OVERLAY (bacon->priv->xoverlay)
-	&&  bacon->priv->state >= GST_STATE_PAUSED)
-		gst_video_overlay_expose (bacon->priv->xoverlay);
+	if (priv->xoverlay
+	&&  GST_IS_VIDEO_OVERLAY (priv->xoverlay)
+	&&  priv->state >= GST_STATE_PAUSED)
+		gst_video_overlay_expose (priv->xoverlay);
 	else if (window)
 		gtk_widget_queue_draw (GTK_WIDGET (widget));
 
@@ -217,8 +217,9 @@ static void
 brasero_player_bacon_size_allocate (GtkWidget *widget,
                                     GtkAllocation *allocation)
 {
-	int screen_x, screen_y;
 	BraseroPlayerBacon *bacon;
+	BraseroPlayerBaconPrivate *priv;
+	int screen_x, screen_y;
 	gfloat screen_width, screen_height, ratio;
 
 	g_return_if_fail (widget != NULL);
@@ -227,7 +228,9 @@ brasero_player_bacon_size_allocate (GtkWidget *widget,
 		return;
 
 	bacon = BRASERO_PLAYER_BACON (widget);
-	if (bacon->priv->xoverlay) {
+	priv = brasero_player_bacon_get_instance_private (bacon);
+
+	if (priv->xoverlay) {
 		screen_width = allocation->width;
 		screen_height = allocation->height;
 	
@@ -260,14 +263,16 @@ brasero_player_bacon_bus_messages_handler (GstBus *bus,
 					   GstMessage *message,
 					   BraseroPlayerBacon *bacon)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
+
 	if (!gst_is_video_overlay_prepare_window_handle_message (message))
 		return GST_BUS_PASS;
 
 	/* NOTE: apparently GDK does not like to be asked to retrieve the XID
 	 * in a thread so we do it in the callback of the expose event. */
-	bacon->priv->xoverlay = GST_VIDEO_OVERLAY (GST_MESSAGE_SRC (message));
-	gst_video_overlay_set_window_handle (bacon->priv->xoverlay,
-	                                     bacon->priv->xid);
+	priv->xoverlay = GST_VIDEO_OVERLAY (GST_MESSAGE_SRC (message));
+	gst_video_overlay_set_window_handle (priv->xoverlay,
+	                                     priv->xid);
 
 	return GST_BUS_DROP;
 }
@@ -276,25 +281,27 @@ brasero_player_bacon_bus_messages_handler (GstBus *bus,
 static void
 brasero_player_bacon_clear_pipe (BraseroPlayerBacon *bacon)
 {
-	bacon->priv->xoverlay = NULL;
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 
-	bacon->priv->state = GST_STATE_NULL;
+	priv->xoverlay = NULL;
 
-	if (bacon->priv->pipe) {
+	priv->state = GST_STATE_NULL;
+
+	if (priv->pipe) {
 		GstBus *bus;
 
-		bus = gst_pipeline_get_bus (GST_PIPELINE (bacon->priv->pipe));
+		bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipe));
 		gst_bus_set_flushing (bus, TRUE);
 		gst_object_unref (bus);
 
-		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
-		gst_object_unref (bacon->priv->pipe);
-		bacon->priv->pipe = NULL;
+		gst_element_set_state (priv->pipe, GST_STATE_NULL);
+		gst_object_unref (priv->pipe);
+		priv->pipe = NULL;
 	}
 
-	if (bacon->priv->uri) {
-		g_free (bacon->priv->uri);
-		bacon->priv->uri = NULL;
+	if (priv->uri) {
+		g_free (priv->uri);
+		priv->uri = NULL;
 	}
 }
 #endif
@@ -302,35 +309,39 @@ brasero_player_bacon_clear_pipe (BraseroPlayerBacon *bacon)
 void
 brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 {
-	if (bacon->priv->uri) {
-		g_free (bacon->priv->uri);
-		bacon->priv->uri = NULL;
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
+
+	if (priv->uri) {
+		g_free (priv->uri);
+		priv->uri = NULL;
 	}
 
 	if (uri) {
-		bacon->priv->uri = g_strdup (uri);
+		priv->uri = g_strdup (uri);
 
-		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
-		bacon->priv->state = GST_STATE_NULL;
+		gst_element_set_state (priv->pipe, GST_STATE_NULL);
+		priv->state = GST_STATE_NULL;
 
-		g_object_set (G_OBJECT (bacon->priv->pipe),
+		g_object_set (G_OBJECT (priv->pipe),
 			      "uri", uri,
 			      NULL);
 
-		gst_element_set_state (bacon->priv->pipe, GST_STATE_PAUSED);
+		gst_element_set_state (priv->pipe, GST_STATE_PAUSED);
 	}
-	else if (bacon->priv->pipe)
-		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
+	else if (priv->pipe)
+		gst_element_set_state (priv->pipe, GST_STATE_NULL);
 }
 
 gboolean
 brasero_player_bacon_set_boundaries (BraseroPlayerBacon *bacon, gint64 start, gint64 end)
 {
-	if (!bacon->priv->pipe)
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
+
+	if (!priv->pipe)
 		return FALSE;
 
-	bacon->priv->end = end;
-	return gst_element_seek (bacon->priv->pipe,
+	priv->end = end;
+	return gst_element_seek (priv->pipe,
 				 1.0,
 				 GST_FORMAT_TIME,
 				 GST_SEEK_FLAG_FLUSH|
@@ -345,11 +356,13 @@ void
 brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon,
                                  gdouble volume)
 {
-	if (!bacon->priv->pipe)
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
+
+	if (!priv->pipe)
 		return;
 
 	volume = CLAMP (volume, 0, 1.0);
-	g_object_set (bacon->priv->pipe,
+	g_object_set (priv->pipe,
 		      "volume", volume,
 		      NULL);
 }
@@ -357,12 +370,14 @@ brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon,
 gdouble
 brasero_player_bacon_get_volume (BraseroPlayerBacon *bacon)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
+
 	gdouble volume;
 
-	if (!bacon->priv->pipe)
+	if (!priv->pipe)
 		return -1.0;
 
-	g_object_get (bacon->priv->pipe,
+	g_object_get (priv->pipe,
 		      "volume", &volume,
 		      NULL);
 
@@ -374,6 +389,7 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 				   GstMessage *msg,
 				   BraseroPlayerBacon *bacon)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	BraseroPlayerBaconState value;
 	GstStateChangeReturn result;
 	GError *error = NULL;
@@ -398,7 +414,7 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 		break;
 
 	case GST_MESSAGE_STATE_CHANGED:
-		result = gst_element_get_state (GST_ELEMENT (bacon->priv->pipe),
+		result = gst_element_get_state (GST_ELEMENT (priv->pipe),
 						&state,
 						NULL,
 						500);
@@ -406,7 +422,7 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 		if (result != GST_STATE_CHANGE_SUCCESS)
 			break;
 
-		if (bacon->priv->state == state || state < GST_STATE_PAUSED)
+		if (priv->state == state || state < GST_STATE_PAUSED)
 			break;
 
 		if (state == GST_STATE_PLAYING)
@@ -414,10 +430,10 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 		else
 			value = BACON_STATE_PAUSED;
 				
-		if (bacon->priv->xoverlay)
+		if (priv->xoverlay)
 			gtk_widget_queue_resize (GTK_WIDGET (bacon));
 
-		bacon->priv->state = state;
+		priv->state = state;
 		g_signal_emit (bacon,
 			       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
 			       0,
@@ -434,24 +450,26 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 gboolean
 brasero_player_bacon_play (BraseroPlayerBacon *bacon)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	GstStateChangeReturn result;
 
-	if (!bacon->priv->pipe)
+	if (!priv->pipe)
 		return FALSE;
 
-	result = gst_element_set_state (bacon->priv->pipe, GST_STATE_PLAYING);
+	result = gst_element_set_state (priv->pipe, GST_STATE_PLAYING);
 	return (result != GST_STATE_CHANGE_FAILURE);
 }
 
 gboolean
 brasero_player_bacon_stop (BraseroPlayerBacon *bacon)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	GstStateChangeReturn result;
 
-	if (!bacon->priv->pipe)
+	if (!priv->pipe)
 		return FALSE;
 
-	result = gst_element_set_state (bacon->priv->pipe, GST_STATE_PAUSED);
+	result = gst_element_set_state (priv->pipe, GST_STATE_PAUSED);
 	return (result != GST_STATE_CHANGE_FAILURE);
 }
 
@@ -459,15 +477,16 @@ gboolean
 brasero_player_bacon_forward (BraseroPlayerBacon *bacon,
                               gint64 pos)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	gint64 cur;
 
-	if (!bacon->priv->pipe)
+	if (!priv->pipe)
 		return FALSE;
 
-	if (!gst_element_query_position (bacon->priv->pipe, GST_FORMAT_TIME, &cur))
+	if (!gst_element_query_position (priv->pipe, GST_FORMAT_TIME, &cur))
 		return FALSE;
 
-	return gst_element_seek_simple (bacon->priv->pipe,
+	return gst_element_seek_simple (priv->pipe,
 				 GST_FORMAT_TIME,
 				 GST_SEEK_FLAG_FLUSH,
 				 cur + pos);
@@ -477,15 +496,16 @@ gboolean
 brasero_player_bacon_backward (BraseroPlayerBacon *bacon,
                                gint64 pos)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	gint64 cur;
 
-	if (!bacon->priv->pipe)
+	if (!priv->pipe)
 		return FALSE;
 
-	if (!gst_element_query_position (bacon->priv->pipe, GST_FORMAT_TIME, &cur))
+	if (!gst_element_query_position (priv->pipe, GST_FORMAT_TIME, &cur))
 		return FALSE;
 
-	return gst_element_seek_simple (bacon->priv->pipe,
+	return gst_element_seek_simple (priv->pipe,
 				 GST_FORMAT_TIME,
 				 GST_SEEK_FLAG_FLUSH,
 				 MAX (0, cur - pos));
@@ -495,31 +515,34 @@ gboolean
 brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon,
 			      gdouble pos)
 {
-	if (!bacon->priv->pipe)
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
+
+	if (!priv->pipe)
 		return FALSE;
 
-	return gst_element_seek (bacon->priv->pipe,
+	return gst_element_seek (priv->pipe,
 				 1.0,
 				 GST_FORMAT_TIME,
 				 GST_SEEK_FLAG_FLUSH,
 				 GST_SEEK_TYPE_SET,
 				 (gint64) pos,
-				 bacon->priv->end ? GST_SEEK_TYPE_SET:GST_SEEK_TYPE_NONE,
-				 bacon->priv->end);
+				 priv->end ? GST_SEEK_TYPE_SET:GST_SEEK_TYPE_NONE,
+				 priv->end);
 }
 
 gboolean
 brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon,
 			      gint64 *pos)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	gboolean result;
 	gint64 value;
 
-	if (!bacon->priv->pipe)
+	if (!priv->pipe)
 		return FALSE;
 
 	if (pos) {
-		result = gst_element_query_position (bacon->priv->pipe,
+		result = gst_element_query_position (priv->pipe,
 						     GST_FORMAT_TIME,
 						     &value);
 		if (!result)
@@ -534,20 +557,21 @@ brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon,
 static void
 brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 {
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 	GstElement *video_sink, *audio_sink;
 	GstBus *bus = NULL;
 	gdouble volume;
 	gpointer value;
 
-	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
-	if (!bacon->priv->pipe) {
+	priv->pipe = gst_element_factory_make ("playbin", NULL);
+	if (!priv->pipe) {
 		g_warning ("Pipe creation error : can't create pipe.\n");
 		return;
 	}
 
 	audio_sink = gst_element_factory_make ("gsettingsaudiosink", NULL);
 	if (audio_sink)
-		g_object_set (G_OBJECT (bacon->priv->pipe),
+		g_object_set (G_OBJECT (priv->pipe),
 			      "audio-sink", audio_sink,
 			      NULL);
 /* FIXME: fall back on autoaudiosink for now, since gsettings plugin is
@@ -561,17 +585,17 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 	if (video_sink) {
 		GstElement *element;
 
-		g_object_set (G_OBJECT (bacon->priv->pipe),
+		g_object_set (G_OBJECT (priv->pipe),
 			      "video-sink", video_sink,
 			      NULL);
 
 		element = gst_bin_get_by_interface (GST_BIN (video_sink),
 						    GST_TYPE_VIDEO_OVERLAY);
 		if (element && GST_IS_VIDEO_OVERLAY (element))
-			bacon->priv->xoverlay = GST_VIDEO_OVERLAY (element);
+			priv->xoverlay = GST_VIDEO_OVERLAY (element);
 	}
 
-	bus = gst_pipeline_get_bus (GST_PIPELINE (bacon->priv->pipe));
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipe));
 	/* FIXME: we should just set the XID directly on playbin right after
 	 * creation, since it proxies the video overlay interface now, and get
 	 * rid of the sync message handler and the stuff above */
@@ -589,7 +613,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 	                           &value);
 	volume = GPOINTER_TO_INT (value);
 	volume = CLAMP (volume, 0, 100);
-	g_object_set (bacon->priv->pipe,
+	g_object_set (priv->pipe,
 		      "volume", (gdouble) volume / 100.0,
 		      NULL);
 
@@ -612,22 +636,20 @@ brasero_player_bacon_init (BraseroPlayerBacon *obj)
 {
 	gtk_widget_set_double_buffered (GTK_WIDGET (obj), FALSE);
 
-	obj->priv = g_new0 (BraseroPlayerBaconPrivate, 1);
 	brasero_player_bacon_setup_pipe (obj);
 }
 
 static void
 brasero_player_bacon_destroy (GtkWidget *obj)
 {
-	BraseroPlayerBacon *cobj;
-
-	cobj = BRASERO_PLAYER_BACON (obj);
+	BraseroPlayerBacon *bacon = BRASERO_PLAYER_BACON (obj);
+	BraseroPlayerBaconPrivate *priv = brasero_player_bacon_get_instance_private (bacon);
 
 	/* save volume */
-	if (cobj->priv->pipe) {
+	if (priv->pipe) {
 		gdouble volume;
 
-		g_object_get (cobj->priv->pipe,
+		g_object_get (priv->pipe,
 			      "volume", &volume,
 			      NULL);
 		brasero_setting_set_value (brasero_setting_get_default (),
@@ -635,19 +657,19 @@ brasero_player_bacon_destroy (GtkWidget *obj)
 		                           GINT_TO_POINTER ((gint)(volume * 100)));
 	}
 
-	if (cobj->priv->xoverlay
-	&&  GST_IS_VIDEO_OVERLAY (cobj->priv->xoverlay))
-		cobj->priv->xoverlay = NULL;
+	if (priv->xoverlay
+	&&  GST_IS_VIDEO_OVERLAY (priv->xoverlay))
+		priv->xoverlay = NULL;
 
-	if (cobj->priv->pipe) {
-		gst_element_set_state (cobj->priv->pipe, GST_STATE_NULL);
-		gst_object_unref (GST_OBJECT (cobj->priv->pipe));
-		cobj->priv->pipe = NULL;
+	if (priv->pipe) {
+		gst_element_set_state (priv->pipe, GST_STATE_NULL);
+		gst_object_unref (GST_OBJECT (priv->pipe));
+		priv->pipe = NULL;
 	}
 
-	if (cobj->priv->uri) {
-		g_free (cobj->priv->uri);
-		cobj->priv->uri = NULL;
+	if (priv->uri) {
+		g_free (priv->uri);
+		priv->uri = NULL;
 	}
 
 	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->destroy)
@@ -657,11 +679,6 @@ brasero_player_bacon_destroy (GtkWidget *obj)
 static void
 brasero_player_bacon_finalize (GObject *object)
 {
-	BraseroPlayerBacon *cobj;
-
-	cobj = BRASERO_PLAYER_BACON (object);
-
-	g_free (cobj->priv);
 	G_OBJECT_CLASS (brasero_player_bacon_parent_class)->finalize (object);
 }
 

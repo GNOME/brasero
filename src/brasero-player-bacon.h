@@ -44,8 +44,6 @@ G_BEGIN_DECLS
 #define	PLAYER_BACON_WIDTH 120
 #define	PLAYER_BACON_HEIGHT 90
 
-typedef struct BraseroPlayerBaconPrivate BraseroPlayerBaconPrivate;
-
 typedef enum {
 	BACON_STATE_ERROR,
 	BACON_STATE_READY,
@@ -55,7 +53,6 @@ typedef enum {
 
 typedef struct {
 	GtkWidget parent;
-	BraseroPlayerBaconPrivate *priv;
 } BraseroPlayerBacon;
 
 typedef struct {
@@ -81,6 +78,7 @@ gboolean brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon, gint64 *pos);
 gdouble  brasero_player_bacon_get_volume (BraseroPlayerBacon *bacon);
 gboolean brasero_player_bacon_forward (BraseroPlayerBacon *bacon, gint64 value);
 gboolean brasero_player_bacon_backward (BraseroPlayerBacon *bacon, gint64 value);
+
 G_END_DECLS
 
 #endif /* PLAYER_BACON_H */
