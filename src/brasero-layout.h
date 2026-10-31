@@ -45,8 +45,6 @@ G_BEGIN_DECLS
 #define BRASERO_IS_LAYOUT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_LAYOUT))
 #define BRASERO_LAYOUT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_LAYOUT, BraseroLayoutClass))
 
-typedef struct BraseroLayoutPrivate BraseroLayoutPrivate;
-
 typedef enum {
 	BRASERO_LAYOUT_NONE		= 0,
 	BRASERO_LAYOUT_AUDIO		= 1,
@@ -56,7 +54,6 @@ typedef enum {
 
 typedef struct {
 	GtkPaned parent;
-	BraseroLayoutPrivate *priv;
 } BraseroLayout;
 
 typedef struct {
