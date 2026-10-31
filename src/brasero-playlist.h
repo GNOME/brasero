@@ -44,11 +44,9 @@ G_BEGIN_DECLS
 #define BRASERO_IS_PLAY_LIST(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_PLAYLIST))
 #define BRASERO_IS_PLAY_LIST_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_PLAYLIST))
 #define BRASERO_PLAYLIST_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_PLAYLIST, BraseroPlaylistClass))
-typedef struct BraseroPlaylistPrivate BraseroPlaylistPrivate;
 
 typedef struct {
 	GtkBox parent;
-	BraseroPlaylistPrivate *priv;
 } BraseroPlaylist;
 
 typedef struct {
