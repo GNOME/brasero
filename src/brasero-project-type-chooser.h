@@ -24,8 +24,8 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef CD_TYPE_CHOOSER_H
-#define CD_TYPE_CHOOSER_H
+#ifndef PROJECT_TYPE_CHOOSER_H
+#define PROJECT_TYPE_CHOOSER_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -43,11 +43,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_PROJECT_TYPE_CHOOSER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_PROJECT_TYPE_CHOOSER))
 #define BRASERO_PROJECT_TYPE_CHOOSER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_PROJECT_TYPE_CHOOSER, BraseroProjectTypeChooserClass))
 
-typedef struct BraseroProjectTypeChooserPrivate BraseroProjectTypeChooserPrivate;
-
 typedef struct {
 	GtkBox parent;
-	BraseroProjectTypeChooserPrivate *priv;
 } BraseroProjectTypeChooser;
 
 typedef struct {
@@ -66,6 +63,4 @@ GtkWidget *brasero_project_type_chooser_new (void);
 
 G_END_DECLS
 
-G_END_DECLS
-
-#endif				/* CD_TYPE_CHOOSER_H */
+#endif				/* PROJECT_TYPE_CHOOSER_H */

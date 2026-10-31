@@ -44,8 +44,6 @@
 
 #include "brasero-project-type-chooser.h"
 
-G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_BOX);
-
 typedef enum {
 	LAST_SAVED_CLICKED_SIGNAL,
 	RECENT_CLICKED_SIGNAL,
@@ -102,12 +100,14 @@ static ItemDescription items [] = {
 #define DESCRIPTION_KEY "DESCRIPTION_KEY"
 #define LABEL_KEY "LABEL_KEY"
 
-struct BraseroProjectTypeChooserPrivate {
+typedef struct _BraseroProjectTypeChooserPrivate BraseroProjectTypeChooserPrivate;
+
+struct _BraseroProjectTypeChooserPrivate {
 	GtkWidget *recent_box;
 	GtkWidget *clear_btn;
 };
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE_WITH_PRIVATE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_BOX);
 
 static void
 brasero_project_type_chooser_button_clicked (GtkButton *button,
@@ -242,6 +242,7 @@ static void
 brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 					   GtkRecentManager *recent)
 {
+	BraseroProjectTypeChooserPrivate *priv = brasero_project_type_chooser_get_instance_private (self);
 	GtkSizeGroup *image_group;
 	GtkSizeGroup *group;
 	GList *list = NULL;
@@ -315,7 +316,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 		gtk_widget_show (link);
 		gtk_widget_set_tooltip_text (link, _("Load the last project that was not burned and not saved"));
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), link, FALSE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (priv->recent_box), link, FALSE, TRUE, 0);
 
 		gtk_size_group_add_widget (group, link);
 	}
@@ -365,7 +366,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		gtk_widget_show (link);
 
 		gtk_widget_set_tooltip_text (link, tooltip);
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), link, FALSE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (priv->recent_box), link, FALSE, TRUE, 0);
 
 		g_free (tooltip);
 
@@ -424,14 +425,14 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		g_free (string);
 
 		gtk_widget_show (label);
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (priv->recent_box), label, FALSE, FALSE, 0);
 
-		if (self->priv->clear_btn)
-			gtk_widget_set_sensitive (self->priv->clear_btn, FALSE);
+		if (priv->clear_btn)
+			gtk_widget_set_sensitive (priv->clear_btn, FALSE);
 	}
 	else {
-		if (self->priv->clear_btn)
-			gtk_widget_set_sensitive (self->priv->clear_btn, TRUE);
+		if (priv->clear_btn)
+			gtk_widget_set_sensitive (priv->clear_btn, TRUE);
 	}
 
 	g_object_unref (image_group);
@@ -447,7 +448,9 @@ static void
 brasero_project_type_chooser_recent_changed_cb (GtkRecentManager *recent,
 						BraseroProjectTypeChooser *self)
 {
-	gtk_container_foreach (GTK_CONTAINER (self->priv->recent_box),
+	BraseroProjectTypeChooserPrivate *priv = brasero_project_type_chooser_get_instance_private (self);
+
+	gtk_container_foreach (GTK_CONTAINER (priv->recent_box),
 			       (GtkCallback) gtk_widget_destroy,
 			       NULL);
 	brasero_project_type_chooser_build_recent (self, recent);
@@ -456,6 +459,7 @@ brasero_project_type_chooser_recent_changed_cb (GtkRecentManager *recent,
 static void
 brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 {
+	BraseroProjectTypeChooserPrivate *priv = brasero_project_type_chooser_get_instance_private (obj);
 	GtkRecentManager *recent;
 	GtkWidget *project_box;
 	GtkWidget *recent_box;
@@ -472,8 +476,6 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	int nb_items;
 	int rows;
 	int i;
-
-	obj->priv = g_new0 (BraseroProjectTypeChooserPrivate, 1);
 
 	/* Project box */
 	project_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
@@ -541,7 +543,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
-	obj->priv->recent_box = vbox;
+	priv->recent_box = vbox;
 
 	/* Bottom action bar distinguished from the rest, packed at the end of recent_box */
 	action_bar = gtk_action_bar_new ();
@@ -578,7 +580,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	gtk_widget_show_all (clear_btn);
 	gtk_action_bar_pack_end (GTK_ACTION_BAR (action_bar), clear_btn);
-	obj->priv->clear_btn = clear_btn;
+	priv->clear_btn = clear_btn;
 
 	recent = gtk_recent_manager_get_default ();
 	brasero_project_type_chooser_build_recent (obj, recent);
@@ -592,12 +594,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 static void
 brasero_project_type_chooser_finalize (GObject *object)
 {
-	BraseroProjectTypeChooser *cobj;
-
-	cobj = BRASERO_PROJECT_TYPE_CHOOSER (object);
-
-	g_free (cobj->priv);
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_project_type_chooser_parent_class)->finalize (object);
 }
 
 static void
@@ -605,7 +602,6 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_project_type_chooser_finalize;
 
 	brasero_project_type_chooser_signals[CHOSEN_SIGNAL] =
