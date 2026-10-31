@@ -48,11 +48,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_PROJECT_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_PROJECT_MANAGER))
 #define BRASERO_PROJECT_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_PROJECT_MANAGER, BraseroProjectManagerClass))
 
-typedef struct BraseroProjectManagerPrivate BraseroProjectManagerPrivate;
-
 typedef struct {
 	GtkNotebook parent;
-	BraseroProjectManagerPrivate *priv;
 } BraseroProjectManager;
 
 typedef struct {
