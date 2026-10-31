@@ -56,7 +56,10 @@ brasero_file_chooser_uri_activated_cb (GtkFileChooser *widget,
 static void
 brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser *widget,
 					       BraseroFileChooser *chooser);
-struct BraseroFileChooserPrivate {
+
+typedef struct _BraseroFileChooserPrivate BraseroFileChooserPrivate;
+
+struct _BraseroFileChooserPrivate {
 	GtkWidget *chooser;
 
 	GtkFileFilter *filter_any;
@@ -66,62 +69,20 @@ struct BraseroFileChooserPrivate {
 	BraseroLayoutType type;
 };
 
-static GObjectClass *parent_class = NULL;
-
-GType
-brasero_file_chooser_get_type ()
-{
-	static GType type = 0;
-
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroFileChooserClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)brasero_file_chooser_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroFileChooser),
-			0,
-			(GInstanceInitFunc)brasero_file_chooser_init,
-		};
-
-		static const GInterfaceInfo uri_container_info =
-		{
-			(GInterfaceInitFunc) brasero_file_chooser_iface_uri_container_init,
-			NULL,
-			NULL
-		};
-
-		static const GInterfaceInfo layout_object =
-		{
-			(GInterfaceInitFunc) brasero_file_chooser_iface_layout_object_init,
-			NULL,
-			NULL
-		};
-
-		type = g_type_register_static (GTK_TYPE_ALIGNMENT, 
-					       "BraseroFileChooser",
-					       &our_info,
-					       0);
-
-		g_type_add_interface_static (type,
-					     BRASERO_TYPE_URI_CONTAINER,
-					     &uri_container_info);
-		g_type_add_interface_static (type,
-					     BRASERO_TYPE_LAYOUT_OBJECT,
-					     &layout_object);
-	}
-
-	return type;
-}
+G_DEFINE_TYPE_WITH_CODE (BraseroFileChooser,
+			 brasero_file_chooser,
+			 GTK_TYPE_ALIGNMENT,
+			 G_ADD_PRIVATE (BraseroFileChooser)
+			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_URI_CONTAINER,
+					        brasero_file_chooser_iface_uri_container_init)
+			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_LAYOUT_OBJECT,
+					        brasero_file_chooser_iface_layout_object_init));
 
 static void
 brasero_file_chooser_class_init (BraseroFileChooserClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_file_chooser_finalize;
 }
 
@@ -274,60 +235,59 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 static void
 brasero_file_chooser_init (BraseroFileChooser *obj)
 {
+	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (obj);
 	GtkFileFilter *filter;
 
-	obj->priv = g_new0 (BraseroFileChooserPrivate, 1);
+	priv->chooser = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->chooser), FALSE);
 
-	obj->priv->chooser = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_OPEN);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (obj->priv->chooser), FALSE);
+	gtk_widget_show (priv->chooser);
 
-	gtk_widget_show (obj->priv->chooser);
+	gtk_container_add (GTK_CONTAINER (obj), priv->chooser);
 
-	gtk_container_add (GTK_CONTAINER (obj), obj->priv->chooser);
-
-	g_signal_connect (obj->priv->chooser,
+	g_signal_connect (priv->chooser,
 			  "file-activated",
 			  G_CALLBACK (brasero_file_chooser_uri_activated_cb),
 			  obj);
-	g_signal_connect (obj->priv->chooser,
+	g_signal_connect (priv->chooser,
 			  "selection-changed",
 			  G_CALLBACK (brasero_file_chooser_uri_selection_changed_cb),
 			  obj);
 
-	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (obj->priv->chooser), TRUE);
+	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (priv->chooser), TRUE);
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("All files"));
 	gtk_file_filter_add_pattern (filter, "*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	obj->priv->filter_any = filter;
+	priv->filter_any = filter;
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Audio files"));
 	gtk_file_filter_add_mime_type (filter, "audio/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	obj->priv->filter_audio = filter;
+	priv->filter_audio = filter;
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Movies"));
 	gtk_file_filter_add_mime_type (filter, "video/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
 	gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	obj->priv->filter_video = filter;
+	priv->filter_video = filter;
 
 	filter = gtk_file_filter_new ();
 	/* Translators: this is an image, a picture, not a "Disc Image" */
 	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
 	/* this is a hack/workaround to add support for multi DND */
-	gtk_container_foreach (GTK_CONTAINER (obj->priv->chooser),
+	gtk_container_foreach (GTK_CONTAINER (priv->chooser),
 			       brasero_file_chooser_customize,
 			       NULL);
 }
@@ -335,12 +295,7 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 static void
 brasero_file_chooser_finalize (GObject *object)
 {
-	BraseroFileChooser *cobj;
-
-	cobj = BRASERO_FILE_CHOOSER (object);
-	g_free (cobj->priv);
-
-	G_OBJECT_CLASS(parent_class)->finalize(object);
+	G_OBJECT_CLASS(brasero_file_chooser_parent_class)->finalize(object);
 }
 
 GtkWidget *
@@ -414,22 +369,22 @@ brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser *widget,
 static gchar *
 brasero_file_chooser_get_selected_uri (BraseroURIContainer *container)
 {
-	BraseroFileChooser *chooser;
+	BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (container);
+	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
 
-	chooser = BRASERO_FILE_CHOOSER (container);
-	return gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser->priv->chooser));
+	return gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->chooser));
 }
 
 static gchar **
 brasero_file_chooser_get_selected_uris (BraseroURIContainer *container)
 {
-	BraseroFileChooser *chooser;
+	BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (container);
+	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
 	GSList *list, *iter;
 	gchar **uris;
 	gint i;
 
-	chooser = BRASERO_FILE_CHOOSER (container);
-	list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser->priv->chooser));
+	list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (priv->chooser));
 
 	uris = g_new0 (gchar*, g_slist_length (list) + 1);
 	i = 0;
@@ -455,23 +410,23 @@ static void
 brasero_file_chooser_set_context (BraseroLayoutObject *object,
 				  BraseroLayoutType type)
 {
-	BraseroFileChooser *self;
+	BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (object);
+	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
 
-	self = BRASERO_FILE_CHOOSER (object);
-	if (type == self->priv->type)
+	if (type == priv->type)
 		return;
 
 	if (type == BRASERO_LAYOUT_AUDIO)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
-					     self->priv->filter_audio);
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
+					     priv->filter_audio);
 	else if (type == BRASERO_LAYOUT_VIDEO)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
-					     self->priv->filter_video);
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
+					     priv->filter_video);
 	else
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
-					     self->priv->filter_any);
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
+					     priv->filter_any);
 
-	self->priv->type = type;
+	priv->type = type;
 }
 
 static void

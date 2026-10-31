@@ -41,11 +41,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_FILE_CHOOSER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_FILE_CHOOSER))
 #define BRASERO_FILE_CHOOSER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_FILE_CHOOSER, BraseroFileChooserClass))
 
-typedef struct BraseroFileChooserPrivate BraseroFileChooserPrivate;
-
 typedef struct {
 	GtkAlignment parent;
-	BraseroFileChooserPrivate *priv;
 } BraseroFileChooser;
 
 typedef struct {
