@@ -41,11 +41,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_SONG_PROPS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_SONG_PROPS))
 #define BRASERO_SONG_PROPS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_SONG_PROPS, BraseroSongPropsClass))
 
-typedef struct BraseroSongPropsPrivate BraseroSongPropsPrivate;
-
 typedef struct {
 	GtkDialog parent;
-	BraseroSongPropsPrivate *priv;
 } BraseroSongProps;
 
 typedef struct {
