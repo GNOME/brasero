@@ -41,11 +41,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_AUDIO_DISC_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_AUDIO_DISC))
 #define BRASERO_AUDIO_DISC_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_AUDIO_DISC, BraseroAudioDiscClass))
 
-typedef struct _BraseroAudioDiscPrivate BraseroAudioDiscPrivate;
-
 typedef struct {
 	GtkBox parent;
-	BraseroAudioDiscPrivate *priv;
 } BraseroAudioDisc;
 
 typedef struct {
@@ -54,8 +51,6 @@ typedef struct {
 
 GType brasero_audio_disc_get_type (void);
 GtkWidget *brasero_audio_disc_new (void);
-
-G_END_DECLS
 
 G_END_DECLS
 
