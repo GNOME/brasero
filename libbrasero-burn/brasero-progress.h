@@ -48,11 +48,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_BURN_PROGRESS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURN_PROGRESS))
 #define BRASERO_BURN_PROGRESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN_PROGRESS, BraseroBurnProgressClass))
 
-typedef struct BraseroBurnProgressPrivate BraseroBurnProgressPrivate;
-
 typedef struct {
 	GtkBox parent;
-	BraseroBurnProgressPrivate *priv;
 } BraseroBurnProgress;
 
 typedef struct {
