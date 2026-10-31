@@ -50,11 +50,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_PROJECT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_PROJECT))
 #define BRASERO_PROJECT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_PROJECT, BraseroProjectClass))
 
-typedef struct BraseroProjectPrivate BraseroProjectPrivate;
-
 typedef struct {
 	GtkBox parent;
-	BraseroProjectPrivate *priv;
 } BraseroProject;
 
 typedef struct {
