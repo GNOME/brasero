@@ -45,13 +45,11 @@ G_BEGIN_DECLS
 #define BRASERO_IS_ASYNC_TASK_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_ASYNC_TASK_MANAGER))
 #define BRASERO_ASYNC_TASK_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_ASYNC_TASK_MANAGER, BraseroAsyncTaskManagerClass))
 
-typedef struct BraseroAsyncTaskManagerPrivate BraseroAsyncTaskManagerPrivate;
 typedef struct _BraseroAsyncTaskManagerClass BraseroAsyncTaskManagerClass;
 typedef struct _BraseroAsyncTaskManager BraseroAsyncTaskManager;
 
 struct _BraseroAsyncTaskManager {
 	GObject parent;
-	BraseroAsyncTaskManagerPrivate *priv;
 };
 
 struct _BraseroAsyncTaskManagerClass {
