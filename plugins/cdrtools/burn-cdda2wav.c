@@ -366,6 +366,20 @@ brasero_cdda2wav_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_cdda2wav_finalize (GObject *object)
+{
+	BraseroCdda2wavPrivate *priv;
+
+	priv = BRASERO_CDDA2WAV_PRIVATE (object);
+
+	if (priv->file_pattern) {
+		g_free (priv->file_pattern);
+		priv->file_pattern = NULL;
+	}
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_cdda2wav_class_init (BraseroCdda2wavClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -384,20 +398,6 @@ brasero_cdda2wav_class_init (BraseroCdda2wavClass *klass)
 static void
 brasero_cdda2wav_init (BraseroCdda2wav *obj)
 { }
-
-static void
-brasero_cdda2wav_finalize (GObject *object)
-{
-	BraseroCdda2wavPrivate *priv;
-
-	priv = BRASERO_CDDA2WAV_PRIVATE (object);
-
-	if (priv->file_pattern) {
-		g_free (priv->file_pattern);
-		priv->file_pattern = NULL;
-	}
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
 
 static void
 brasero_cdda2wav_export_caps (BraseroPlugin *plugin)

@@ -427,6 +427,12 @@ brasero_readcd_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_readcd_finalize (GObject *object)
+{
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_readcd_class_init (BraseroReadcdClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
@@ -442,12 +448,6 @@ brasero_readcd_class_init (BraseroReadcdClass *klass)
 static void
 brasero_readcd_init (BraseroReadcd *obj)
 { }
-
-static void
-brasero_readcd_finalize (GObject *object)
-{
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
 
 static void
 brasero_readcd_export_caps (BraseroPlugin *plugin)

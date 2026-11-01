@@ -683,6 +683,13 @@ brasero_audio2cue_start (BraseroJob *job,
 }
 
 static void
+brasero_audio2cue_finalize (GObject *object)
+{
+	brasero_audio2cue_stop_real (BRASERO_AUDIO2CUE (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_audio2cue_class_init (BraseroAudio2CueClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -706,13 +713,6 @@ brasero_audio2cue_init (BraseroAudio2Cue *obj)
 	priv = BRASERO_AUDIO2CUE_PRIVATE (obj);
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();
-}
-
-static void
-brasero_audio2cue_finalize (GObject *object)
-{
-	brasero_audio2cue_stop_real (BRASERO_AUDIO2CUE (object));
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

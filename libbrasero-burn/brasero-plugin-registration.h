@@ -213,7 +213,6 @@ plugin_name##_get_type (void)							\
 										\
 static void plugin_name##_class_init (PluginName##Class *klass);		\
 static void plugin_name##_init (PluginName *sp);				\
-static void plugin_name##_finalize (GObject *object);			\
 static void plugin_name##_export_caps (BraseroPlugin *plugin);	\
 G_MODULE_EXPORT GType								\
 brasero_plugin_register (BraseroPlugin *plugin);				\

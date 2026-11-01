@@ -654,6 +654,12 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_growisofs_finalize (GObject *object)
+{
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_growisofs_class_init (BraseroGrowisofsClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -728,12 +734,6 @@ brasero_growisofs_init (BraseroGrowisofs *obj)
 		priv->use_utf8 = FALSE;
 
 	g_free (standard_error);
-}
-
-static void
-brasero_growisofs_finalize (GObject *object)
-{
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

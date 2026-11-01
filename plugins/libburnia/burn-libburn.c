@@ -1064,6 +1064,23 @@ brasero_libburn_clock_tick (BraseroJob *job)
 }
 
 static void
+brasero_libburn_finalize (GObject *object)
+{
+	BraseroLibburn *cobj;
+	BraseroLibburnPrivate *priv;
+
+	cobj = BRASERO_LIBBURN (object);
+	priv = BRASERO_LIBBURN_PRIVATE (cobj);
+
+	if (priv->ctx) {
+		brasero_libburn_common_ctx_free (priv->ctx);
+		priv->ctx = NULL;
+	}
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_libburn_class_init (BraseroLibburnClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -1083,23 +1100,6 @@ static void
 brasero_libburn_init (BraseroLibburn *obj)
 {
 
-}
-
-static void
-brasero_libburn_finalize (GObject *object)
-{
-	BraseroLibburn *cobj;
-	BraseroLibburnPrivate *priv;
-
-	cobj = BRASERO_LIBBURN (object);
-	priv = BRASERO_LIBBURN_PRIVATE (cobj);
-
-	if (priv->ctx) {
-		brasero_libburn_common_ctx_free (priv->ctx);
-		priv->ctx = NULL;
-	}
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

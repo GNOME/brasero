@@ -1109,6 +1109,28 @@ brasero_cdrecord_post (BraseroJob *job)
 }
 
 static void
+brasero_cdrecord_finalize (GObject *object)
+{
+	BraseroCDRecordPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_CD_RECORD_PRIVATE (object);
+
+	for (iter = priv->infs; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		g_remove (path);
+		g_free (path);
+	}
+
+	g_slist_free (priv->infs);
+	priv->infs = NULL;
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_cdrecord_class_init (BraseroCDRecordClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -1142,28 +1164,6 @@ brasero_cdrecord_init (BraseroCDRecord *obj)
 		priv->minbuf = 30;
 
 	g_object_unref (settings);
-}
-
-static void
-brasero_cdrecord_finalize (GObject *object)
-{
-	BraseroCDRecordPrivate *priv;
-	GSList *iter;
-
-	priv = BRASERO_CD_RECORD_PRIVATE (object);
-
-	for (iter = priv->infs; iter; iter = iter->next) {
-		gchar *path;
-
-		path = iter->data;
-		g_remove (path);
-		g_free (path);
-	}
-
-	g_slist_free (priv->infs);
-	priv->infs = NULL;
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

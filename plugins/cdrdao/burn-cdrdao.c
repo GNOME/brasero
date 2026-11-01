@@ -657,6 +657,20 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_cdrdao_finalize (GObject *object)
+{
+	BraseroCdrdaoPrivate *priv;
+
+	priv = BRASERO_CDRDAO_PRIVATE (object);
+	if (priv->tmp_toc_path) {
+		g_free (priv->tmp_toc_path);
+		priv->tmp_toc_path = NULL;
+	}
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -684,20 +698,6 @@ brasero_cdrdao_init (BraseroCdrdao *obj)
 	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
 	priv->use_raw = g_settings_get_boolean (settings, BRASERO_KEY_RAW_FLAG);
 	g_object_unref (settings);
-}
-
-static void
-brasero_cdrdao_finalize (GObject *object)
-{
-	BraseroCdrdaoPrivate *priv;
-
-	priv = BRASERO_CDRDAO_PRIVATE (object);
-	if (priv->tmp_toc_path) {
-		g_free (priv->tmp_toc_path);
-		priv->tmp_toc_path = NULL;
-	}
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

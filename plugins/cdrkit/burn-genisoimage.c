@@ -470,6 +470,12 @@ brasero_genisoimage_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_genisoimage_finalize (GObject *object)
+{
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_genisoimage_class_init (BraseroGenisoimageClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -507,12 +513,6 @@ brasero_genisoimage_init (BraseroGenisoimage *obj)
 		priv->use_utf8 = FALSE;
 
 	g_free (standard_error);
-}
-
-static void
-brasero_genisoimage_finalize (GObject *object)
-{
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

@@ -1180,6 +1180,28 @@ brasero_wodim_post (BraseroJob *job)
 }
 
 static void
+brasero_wodim_finalize (GObject *object)
+{
+	BraseroWodimPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_WODIM_PRIVATE (object);
+
+	for (iter = priv->infs; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		g_remove (path);
+		g_free (path);
+	}
+
+	g_slist_free (priv->infs);
+	priv->infs = NULL;
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_wodim_class_init (BraseroWodimClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -1213,28 +1235,6 @@ brasero_wodim_init (BraseroWodim *obj)
 		priv->minbuf = 30;
 
 	g_object_unref (settings);
-}
-
-static void
-brasero_wodim_finalize (GObject *object)
-{
-	BraseroWodimPrivate *priv;
-	GSList *iter;
-
-	priv = BRASERO_WODIM_PRIVATE (object);
-
-	for (iter = priv->infs; iter; iter = iter->next) {
-		gchar *path;
-
-		path = iter->data;
-		g_remove (path);
-		g_free (path);
-	}
-
-	g_slist_free (priv->infs);
-	priv->infs = NULL;
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

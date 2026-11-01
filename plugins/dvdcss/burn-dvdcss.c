@@ -633,6 +633,28 @@ brasero_dvdcss_stop (BraseroJob *job,
 }
 
 static void
+brasero_dvdcss_finalize (GObject *object)
+{
+	BraseroDvdcssPrivate *priv;
+
+	priv = BRASERO_DVDCSS_PRIVATE (object);
+
+	brasero_dvdcss_stop_real (BRASERO_DVDCSS (object));
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
+	}
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_dvdcss_class_init (BraseroDvdcssClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -656,28 +678,6 @@ brasero_dvdcss_init (BraseroDvdcss *obj)
 
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();
-}
-
-static void
-brasero_dvdcss_finalize (GObject *object)
-{
-	BraseroDvdcssPrivate *priv;
-
-	priv = BRASERO_DVDCSS_PRIVATE (object);
-
-	brasero_dvdcss_stop_real (BRASERO_DVDCSS (object));
-
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void

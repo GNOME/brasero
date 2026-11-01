@@ -147,6 +147,12 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_dvd_rw_format_finalize (GObject *object)
+{
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_dvd_rw_format_class_init (BraseroDvdRwFormatClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -163,12 +169,6 @@ brasero_dvd_rw_format_class_init (BraseroDvdRwFormatClass *klass)
 static void
 brasero_dvd_rw_format_init (BraseroDvdRwFormat *obj)
 { }
-
-static void
-brasero_dvd_rw_format_finalize (GObject *object)
-{
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
 
 static void
 brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin)

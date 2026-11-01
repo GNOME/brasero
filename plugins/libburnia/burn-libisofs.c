@@ -1013,31 +1013,6 @@ brasero_libisofs_stop (BraseroJob *job,
 }
 
 static void
-brasero_libisofs_class_init (BraseroLibisofsClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroLibisofsPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
-	object_class->finalize = brasero_libisofs_finalize;
-
-	job_class->start = brasero_libisofs_start;
-	job_class->stop = brasero_libisofs_stop;
-}
-
-static void
-brasero_libisofs_init (BraseroLibisofs *obj)
-{
-	BraseroLibisofsPrivate *priv;
-
-	priv = BRASERO_LIBISOFS_PRIVATE (obj);
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
-}
-
-static void
 brasero_libisofs_finalize (GObject *object)
 {
 	BraseroLibisofs *cobj;
@@ -1063,6 +1038,31 @@ brasero_libisofs_finalize (GObject *object)
 	iso_finish ();
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_libisofs_class_init (BraseroLibisofsClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroLibisofsPrivate));
+
+	parent_class = g_type_class_peek_parent(klass);
+	object_class->finalize = brasero_libisofs_finalize;
+
+	job_class->start = brasero_libisofs_start;
+	job_class->stop = brasero_libisofs_stop;
+}
+
+static void
+brasero_libisofs_init (BraseroLibisofs *obj)
+{
+	BraseroLibisofsPrivate *priv;
+
+	priv = BRASERO_LIBISOFS_PRIVATE (obj);
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
 }
 
 static void

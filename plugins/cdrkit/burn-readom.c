@@ -417,6 +417,12 @@ brasero_readom_set_argv (BraseroProcess *process,
 }
 
 static void
+brasero_readom_finalize (GObject *object)
+{
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
 brasero_readom_class_init (BraseroReadomClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
@@ -432,12 +438,6 @@ brasero_readom_class_init (BraseroReadomClass *klass)
 static void
 brasero_readom_init (BraseroReadom *obj)
 { }
-
-static void
-brasero_readom_finalize (GObject *object)
-{
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
 
 static void
 brasero_readom_export_caps (BraseroPlugin *plugin)
