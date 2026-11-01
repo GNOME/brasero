@@ -31,16 +31,6 @@
 #include "brasero-pref.h"
 #include "brasero-plugin-manager-ui.h"
 
-
-typedef struct _BraseroPrefPrivate BraseroPrefPrivate;
-struct _BraseroPrefPrivate
-{
-	GtkWidget *notebook;
-};
-
-#define BRASERO_PREF_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PREF, BraseroPrefPrivate))
-
-
 G_DEFINE_TYPE (BraseroPref, brasero_pref, GTK_TYPE_DIALOG);
 
 GtkWidget *
@@ -87,8 +77,6 @@ static void
 brasero_pref_class_init (BraseroPrefClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BraseroPrefPrivate));
 
 	object_class->finalize = brasero_pref_finalize;
 }
