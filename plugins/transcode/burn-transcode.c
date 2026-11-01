@@ -59,15 +59,6 @@
 #define BRASERO_IS_TRANSCODE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_TRANSCODE))
 #define BRASERO_TRANSCODE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_TRANSCODE, BraseroTranscodeClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroTranscode, brasero_transcode, BRASERO_TYPE_JOB, BraseroJob);
-
-static gboolean brasero_transcode_bus_messages (GstBus *bus,
-						GstMessage *msg,
-						BraseroTranscode *transcode);
-static void brasero_transcode_new_decoded_pad_cb (GstElement *decode,
-						  GstPad *pad,
-						  BraseroTranscode *transcode);
-
 struct BraseroTranscodePrivate {
 	GstElement *pipeline;
 	GstElement *convert;
@@ -94,9 +85,20 @@ struct BraseroTranscodePrivate {
 };
 typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
 
-#define BRASERO_TRANSCODE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRANSCODE, BraseroTranscodePrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroTranscode, brasero_transcode, BraseroJob);
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroTranscode,
+				brasero_transcode,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroTranscode));
+
+static gboolean brasero_transcode_bus_messages (GstBus *bus,
+						GstMessage *msg,
+						BraseroTranscode *transcode);
+static void brasero_transcode_new_decoded_pad_cb (GstElement *decode,
+						  GstPad *pad,
+						  BraseroTranscode *transcode);
 
 /* FIXME: this entire function looks completely wrong, if there is or
  * was a bug in GStreamer it should be fixed there (tpm) */
@@ -111,7 +113,7 @@ brasero_transcode_buffer_handler (GstPad *pad,
 	GstPad *peer;
 	gint64 size;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (self);
+	priv = brasero_transcode_get_instance_private (self);
 
 	size = gst_buffer_get_size (buffer);
 
@@ -195,7 +197,7 @@ brasero_transcode_set_boundaries (BraseroTranscode *transcode)
 	gint64 start;
 	gint64 end;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	/* we need to reach the song start and set a possible end; this is only
 	 * needed when it is decoding a song. Otherwise*/
@@ -224,7 +226,7 @@ brasero_transcode_send_volume_event (BraseroTranscode *transcode)
 	GstEvent *event;
 	GValue *value;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 
@@ -280,7 +282,7 @@ brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
 	GstElement *parse;
 	GstElement *sink;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	BRASERO_JOB_LOG (transcode, "Creating specific pipeline for MP3s");
 
@@ -338,7 +340,7 @@ brasero_transcode_error_on_pad_linking (BraseroTranscode *self,
 	GstMessage *message;
 	GstBus *bus;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (self);
+	priv = brasero_transcode_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Error on pad linking");
 	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
@@ -380,7 +382,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	GstElement *resample = NULL;
 	BraseroTranscodePrivate *priv;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	BRASERO_JOB_LOG (transcode, "Creating new pipeline");
 
@@ -965,7 +967,7 @@ brasero_transcode_stop_pipeline (BraseroTranscode *transcode)
 	BraseroTranscodePrivate *priv;
 	GstPad *sinkpad;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 	if (!priv->pipeline)
 		return;
 
@@ -991,9 +993,8 @@ static BraseroBurnResult
 brasero_transcode_stop (BraseroJob *job,
 			GError **error)
 {
-	BraseroTranscodePrivate *priv;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (job);
+	BraseroTranscode *self = BRASERO_TRANSCODE (job);
+	BraseroTranscodePrivate *priv = brasero_transcode_get_instance_private (self);
 
 	priv->mp3_size_pipeline = 0;
 
@@ -1002,7 +1003,7 @@ brasero_transcode_stop (BraseroJob *job,
 		priv->pad_id = 0;
 	}
 
-	brasero_transcode_stop_pipeline (BRASERO_TRANSCODE (job));
+	brasero_transcode_stop_pipeline (self);
 	return BRASERO_BURN_OK;
 }
 
@@ -1094,7 +1095,7 @@ brasero_transcode_pad_idle (BraseroTranscode *transcode)
 	GError *error = NULL;
 	BraseroTranscodePrivate *priv;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 	bytes2write = brasero_transcode_pad_real (transcode,
 						  priv->pad_fd,
 						  priv->pad_size,
@@ -1129,7 +1130,7 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 	BraseroTrack *track = NULL;
 	BraseroTranscodePrivate *priv;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 	if (priv->pos < 0)
 		return TRUE;
 
@@ -1182,9 +1183,6 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 		return TRUE;
 
 	if (bytes2write) {
-		BraseroTranscodePrivate *priv;
-
-		priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 		/* when writing to a pipe it can happen that its buffer is full
 		 * because cdrecord is not fast enough. Therefore we couldn't
 		 * write/pad it and we'll have to wait for the pipe to become
@@ -1255,7 +1253,7 @@ brasero_transcode_is_mp3 (BraseroTranscode *transcode)
 	GstCaps *caps = NULL;
 	const gchar *mime;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	/* find the type of the file */
 	typefind = gst_bin_get_by_name (GST_BIN (priv->decode), "typefind");
@@ -1287,7 +1285,7 @@ brasero_transcode_get_duration (BraseroTranscode *transcode)
 	gint64 duration = -1;
 	BraseroTranscodePrivate *priv;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	/* This part is specific to MP3s */
 	if (priv->mp3_size_pipeline) {
@@ -1435,7 +1433,7 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 	BraseroJobAction action;
 	BraseroTrack *track;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	if (priv->set_active_state)
 		return TRUE;
@@ -1537,7 +1535,7 @@ brasero_transcode_bus_messages (GstBus *bus,
 	GstState state;
 	gchar *debug;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_TAG:
 		/* we use the information to write an .inf file 
@@ -1592,7 +1590,7 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 	GstStructure *structure;
 	BraseroTranscodePrivate *priv;
 
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	priv = brasero_transcode_get_instance_private (transcode);
 
 	BRASERO_JOB_LOG (transcode, "New pad");
 
@@ -1676,9 +1674,8 @@ end:
 static BraseroBurnResult
 brasero_transcode_clock_tick (BraseroJob *job)
 {
-	BraseroTranscodePrivate *priv;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (job);
+	BraseroTranscode *self = BRASERO_TRANSCODE (job);
+	BraseroTranscodePrivate *priv = brasero_transcode_get_instance_private (self);
 
 	if (!priv->pipeline)
 		return BRASERO_BURN_ERR;
@@ -1690,18 +1687,17 @@ brasero_transcode_clock_tick (BraseroJob *job)
 static void
 brasero_transcode_finalize (GObject *object)
 {
-	BraseroTranscodePrivate *priv;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (object);
+	BraseroTranscode *self = BRASERO_TRANSCODE (object);
+	BraseroTranscodePrivate *priv = brasero_transcode_get_instance_private (self);
 
 	if (priv->pad_id) {
 		g_source_remove (priv->pad_id);
 		priv->pad_id = 0;
 	}
 
-	brasero_transcode_stop_pipeline (BRASERO_TRANSCODE (object));
+	brasero_transcode_stop_pipeline (self);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_transcode_parent_class)->finalize (object);
 }
 
 static void
@@ -1710,14 +1706,16 @@ brasero_transcode_class_init (BraseroTranscodeClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroTranscodePrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_transcode_finalize;
 
 	job_class->start = brasero_transcode_start;
 	job_class->clock_tick = brasero_transcode_clock_tick;
 	job_class->stop = brasero_transcode_stop;
+}
+
+static void
+brasero_transcode_class_finalize (BraseroTranscodeClass *klass)
+{
 }
 
 static void

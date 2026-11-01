@@ -63,8 +63,6 @@
 #define BRASERO_IS_LOCAL_TRACK_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_LOCAL_TRACK))
 #define BRASERO_LOCAL_TRACK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrackClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroLocalTrack, brasero_local_track, BRASERO_TYPE_JOB, BraseroJob);
-
 struct _BraseroLocalTrackPrivate {
 	GCancellable *cancel;
 	BraseroXferCtx *xfer_ctx;
@@ -90,18 +88,21 @@ struct _BraseroLocalTrackPrivate {
 };
 typedef struct _BraseroLocalTrackPrivate BraseroLocalTrackPrivate;
 
-#define BRASERO_LOCAL_TRACK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrackPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroLocalTrack, brasero_local_track, BraseroJob);
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroLocalTrack,
+				brasero_local_track,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroLocalTrack));
 
 static BraseroBurnResult
 brasero_local_track_clock_tick (BraseroJob *job)
 {
-	BraseroLocalTrackPrivate *priv;
+	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (job);
+	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (self);
 	goffset written = 0;
 	goffset total = 0;
-
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (job);
 
 	if (!priv->xfer_ctx)
 		return BRASERO_BURN_OK;
@@ -128,7 +129,7 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 	gchar *parent;
 	BraseroLocalTrackPrivate *priv;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	if (!uri)
 		return NULL;
@@ -184,7 +185,7 @@ brasero_local_track_read_checksum (BraseroLocalTrack *self)
 	BraseroTrack *track = NULL;
 	BraseroLocalTrackPrivate *priv;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	/* get the file_checksum from the checksum file */
 	file = fopen (priv->checksum_path, "r");
@@ -243,7 +244,7 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 	GFile *tmp;
 	gchar *uri;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Copying checksum file");
 
@@ -368,7 +369,7 @@ brasero_local_track_update_track (BraseroLocalTrack *self)
 	BraseroTrack *current = NULL;
 	BraseroLocalTrackPrivate *priv;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	/* now we update all the track with the local uris in retval */
 	brasero_job_get_current_track (BRASERO_JOB (self), &current);
@@ -483,7 +484,7 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 {
 	BraseroLocalTrackPrivate *priv;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	priv->thread_id = 0;
 
@@ -521,7 +522,7 @@ brasero_local_track_thread (gpointer data)
 	BraseroLocalTrackPrivate *priv;
 	GSList *src, *dest;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_FILE_COPY,
 					_("Copying files locally"),
@@ -584,7 +585,7 @@ brasero_local_track_start_thread (BraseroLocalTrack *self,
 	BraseroLocalTrackPrivate *priv;
 	GError *thread_error = NULL;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
@@ -616,12 +617,10 @@ _foreach_non_local_cb (const gchar *uri,
 		       gpointer *data)
 {
 	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (data);
-	BraseroLocalTrackPrivate *priv;
+	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (self);
 	GFile *file, *tmpfile;
 	gchar *parent;
 	gchar *tmp;
-
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (data);
 
 	/* check that is hasn't any parent in the hash */
 	parent = g_path_get_dirname (uri);
@@ -660,7 +659,7 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 	BraseroBurnResult result;
 	gchar *localuri = NULL;
 
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	if (!uri
 	||   uri [0] == '\0'
@@ -712,7 +711,7 @@ brasero_local_track_start (BraseroJob *job,
 	gchar *uri;
 
 	self = BRASERO_LOCAL_TRACK (job);
-	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	priv = brasero_local_track_get_instance_private (self);
 
 	/* skip that part */
 	brasero_job_get_action (job, &action);
@@ -790,7 +789,8 @@ static BraseroBurnResult
 brasero_local_track_stop (BraseroJob *job,
 			  GError **error)
 {
-	BraseroLocalTrackPrivate *priv = BRASERO_LOCAL_TRACK_PRIVATE (job);
+	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (job);
+	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (self);
 
 	if (priv->cancel) {
 		/* signal that we've been cancelled */
@@ -856,7 +856,8 @@ brasero_local_track_stop (BraseroJob *job,
 static void
 brasero_local_track_finalize (GObject *object)
 {
-	BraseroLocalTrackPrivate *priv = BRASERO_LOCAL_TRACK_PRIVATE (object);
+	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (object);
+	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (self);
 
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
@@ -868,7 +869,7 @@ brasero_local_track_finalize (GObject *object)
 		priv->cond = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_local_track_parent_class)->finalize (object);
 }
 
 static void
@@ -877,9 +878,6 @@ brasero_local_track_class_init (BraseroLocalTrackClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroLocalTrackPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_local_track_finalize;
 
 	job_class->start = brasero_local_track_start;
@@ -888,9 +886,14 @@ brasero_local_track_class_init (BraseroLocalTrackClass *klass)
 }
 
 static void
+brasero_local_track_class_finalize (BraseroLocalTrackClass *klass)
+{
+}
+
+static void
 brasero_local_track_init (BraseroLocalTrack *obj)
 {
-	BraseroLocalTrackPrivate *priv = BRASERO_LOCAL_TRACK_PRIVATE (obj);
+	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (obj);
 
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();

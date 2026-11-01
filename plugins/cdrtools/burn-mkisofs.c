@@ -59,15 +59,18 @@
 #define BRASERO_IS_MKISOFS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_MKISOFS))
 #define BRASERO_MKISOFS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_MKISOFS, BraseroMkisofsClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroMkisofs, brasero_mkisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 struct _BraseroMkisofsPrivate {
 	guint use_utf8:1;
 };
 typedef struct _BraseroMkisofsPrivate BraseroMkisofsPrivate;
 
-#define BRASERO_MKISOFS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MKISOFS, BraseroMkisofsPrivate))
-static GObjectClass *parent_class = NULL;
+BRASERO_PLUGIN_BOILERPLATE (BraseroMkisofs, brasero_mkisofs, BraseroProcess);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroMkisofs,
+				brasero_mkisofs,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroMkisofs));
 
 static BraseroBurnResult
 brasero_mkisofs_read_isosize (BraseroProcess *process, const gchar *line)
@@ -442,14 +445,11 @@ brasero_mkisofs_set_argv (BraseroProcess *process,
 			  GPtrArray *argv,
 			  GError **error)
 {
+	BraseroMkisofs *mkisofs = BRASERO_MKISOFS (process);
+	BraseroMkisofsPrivate *priv = brasero_mkisofs_get_instance_private (mkisofs);
 	gchar *prog_name;
 	BraseroJobAction action;
-	BraseroMkisofs *mkisofs;
 	BraseroBurnResult result;
-	BraseroMkisofsPrivate *priv;
-
-	mkisofs = BRASERO_MKISOFS (process);
-	priv = BRASERO_MKISOFS_PRIVATE (process);
 
 	prog_name = g_find_program_in_path ("mkisofs");
 	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
@@ -476,7 +476,7 @@ brasero_mkisofs_set_argv (BraseroProcess *process,
 static void
 brasero_mkisofs_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_mkisofs_parent_class)->finalize (object);
 }
 
 static void
@@ -485,14 +485,16 @@ brasero_mkisofs_class_init (BraseroMkisofsClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroMkisofsPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_mkisofs_finalize;
 
 	process_class->stdout_func = brasero_mkisofs_read_stdout;
 	process_class->stderr_func = brasero_mkisofs_read_stderr;
 	process_class->set_argv = brasero_mkisofs_set_argv;
+}
+
+static void
+brasero_mkisofs_class_finalize (BraseroMkisofsClass *klass)
+{
 }
 
 static void
@@ -502,7 +504,7 @@ brasero_mkisofs_init (BraseroMkisofs *obj)
 	gchar *standard_error;
 	gboolean res;
 
-	priv = BRASERO_MKISOFS_PRIVATE (obj);
+	priv = brasero_mkisofs_get_instance_private (obj);
 
 	/* this code used to be ncb_mkisofs_supports_utf8 */
 	res = g_spawn_command_line_sync ("mkisofs -input-charset utf8",

@@ -57,8 +57,6 @@
 #define BRASERO_IS_BURN_URI_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURN_URI))
 #define BRASERO_BURN_URI_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN_URI, BraseroBurnURIClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroBurnURI, brasero_burn_uri, BRASERO_TYPE_JOB, BraseroJob);
-
 struct _BraseroBurnURIPrivate {
 	GCancellable *cancel;
 
@@ -73,17 +71,20 @@ struct _BraseroBurnURIPrivate {
 };
 typedef struct _BraseroBurnURIPrivate BraseroBurnURIPrivate;
 
-#define BRASERO_BURN_URI_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_URI, BraseroBurnURIPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroBurnURI, brasero_burn_uri, BraseroJob);
 
-static GObjectClass *parent_class = NULL;
-
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroBurnURI,
+				brasero_burn_uri,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroBurnURI));
 
 static gboolean
 brasero_burn_uri_thread_finished (BraseroBurnURI *self)
 {
 	BraseroBurnURIPrivate *priv;
 
-	priv = BRASERO_BURN_URI_PRIVATE (self);
+	priv = brasero_burn_uri_get_instance_private (self);
 
 	priv->thread_id = 0;
 
@@ -251,7 +252,7 @@ brasero_burn_uri_retrieve_path (BraseroBurnURI *self,
 	GFileInfo *info;
 	BraseroBurnURIPrivate *priv;
 
-	priv = BRASERO_BURN_URI_PRIVATE (self);
+	priv = brasero_burn_uri_get_instance_private (self);
 
 	if (!uri)
 		return FALSE;
@@ -320,7 +321,7 @@ brasero_burn_uri_thread (gpointer data)
 	guint64 num = 0;
 	GSList *src;
 
-	priv = BRASERO_BURN_URI_PRIVATE (self);
+	priv = brasero_burn_uri_get_instance_private (self);
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_FILE_COPY,
 					_("Copying files locally"),
@@ -549,7 +550,7 @@ brasero_burn_uri_start_thread (BraseroBurnURI *self,
 	BraseroBurnURIPrivate *priv;
 	GError *thread_error = NULL;
 
-	priv = BRASERO_BURN_URI_PRIVATE (self);
+	priv = brasero_burn_uri_get_instance_private (self);
 
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
@@ -604,7 +605,7 @@ brasero_burn_uri_start (BraseroJob *job,
 	gchar *uri;
 
 	self = BRASERO_BURN_URI (job);
-	priv = BRASERO_BURN_URI_PRIVATE (self);
+	priv = brasero_burn_uri_get_instance_private (self);
 
 	/* skip that part */
 	brasero_job_get_action (job, &action);
@@ -661,7 +662,8 @@ static BraseroBurnResult
 brasero_burn_uri_stop (BraseroJob *job,
 		       GError **error)
 {
-	BraseroBurnURIPrivate *priv = BRASERO_BURN_URI_PRIVATE (job);
+	BraseroBurnURI *self = BRASERO_BURN_URI (job);
+	BraseroBurnURIPrivate *priv = brasero_burn_uri_get_instance_private (self);
 
 	if (priv->cancel) {
 		/* signal that we've been cancelled */
@@ -695,7 +697,8 @@ brasero_burn_uri_stop (BraseroJob *job,
 static void
 brasero_burn_uri_finalize (GObject *object)
 {
-	BraseroBurnURIPrivate *priv = BRASERO_BURN_URI_PRIVATE (object);
+	BraseroBurnURI *self = BRASERO_BURN_URI (object);
+	BraseroBurnURIPrivate *priv = brasero_burn_uri_get_instance_private (self);
 
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
@@ -707,7 +710,7 @@ brasero_burn_uri_finalize (GObject *object)
 		priv->cond = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_burn_uri_parent_class)->finalize (object);
 }
 
 static void
@@ -716,9 +719,6 @@ brasero_burn_uri_class_init (BraseroBurnURIClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroBurnURIPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_burn_uri_finalize;
 
 	job_class->start = brasero_burn_uri_start;
@@ -726,9 +726,14 @@ brasero_burn_uri_class_init (BraseroBurnURIClass *klass)
 }
 
 static void
+brasero_burn_uri_class_finalize (BraseroBurnURIClass *klass)
+{
+}
+
+static void
 brasero_burn_uri_init (BraseroBurnURI *obj)
 {
-	BraseroBurnURIPrivate *priv = BRASERO_BURN_URI_PRIVATE (obj);
+	BraseroBurnURIPrivate *priv = brasero_burn_uri_get_instance_private (obj);
 
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();

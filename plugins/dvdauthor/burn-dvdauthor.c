@@ -60,28 +60,29 @@
 #define BRASERO_IS_DVD_AUTHOR_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_DVD_AUTHOR))
 #define BRASERO_DVD_AUTHOR_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_DVD_AUTHOR, BraseroDvdAuthorClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroDvdAuthor, brasero_dvd_author, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 typedef struct _BraseroDvdAuthorPrivate BraseroDvdAuthorPrivate;
 struct _BraseroDvdAuthorPrivate
 {
 	gchar *output;
 };
 
-#define BRASERO_DVD_AUTHOR_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DVD_AUTHOR, BraseroDvdAuthorPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroDvdAuthor, brasero_dvd_author, BraseroProcess);
 
-static BraseroProcessClass *parent_class = NULL;
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroDvdAuthor,
+				brasero_dvd_author,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroDvdAuthor));
 
 static BraseroBurnResult
 brasero_dvd_author_add_track (BraseroJob *job)
 {
+	BraseroDvdAuthor *self = BRASERO_DVD_AUTHOR (job);
+	BraseroDvdAuthorPrivate *priv = brasero_dvd_author_get_instance_private (self);
 	gchar *path;
 	GSList *grafts = NULL;
 	BraseroGraftPt *graft;
 	BraseroTrackData *track;
-	BraseroDvdAuthorPrivate *priv;
-
-	priv = BRASERO_DVD_AUTHOR_PRIVATE (job);
 
 	/* create the track */
 	track = brasero_track_data_new ();
@@ -154,7 +155,8 @@ brasero_dvd_author_generate_xml_file (BraseroProcess *process,
 				      const gchar *path,
 				      GError **error)
 {
-	BraseroDvdAuthorPrivate *priv;
+	BraseroDvdAuthor *self = BRASERO_DVD_AUTHOR (process);
+	BraseroDvdAuthorPrivate *priv = brasero_dvd_author_get_instance_private (self);
 	BraseroBurnResult result;
 	GSList *tracks = NULL;
 	xmlTextWriter *xml;
@@ -166,8 +168,6 @@ brasero_dvd_author_generate_xml_file (BraseroProcess *process,
 	xml = xmlNewTextWriterFilename (path, 0);
 	if (!xml)
 		return BRASERO_BURN_ERR;
-
-	priv = BRASERO_DVD_AUTHOR_PRIVATE (process);
 
 	xmlTextWriterSetIndent (xml, 1);
 	xmlTextWriterSetIndentString (xml, (xmlChar *) "\t");
@@ -318,9 +318,8 @@ brasero_dvd_author_set_argv (BraseroProcess *process,
 static BraseroBurnResult
 brasero_dvd_author_post (BraseroJob *job)
 {
-	BraseroDvdAuthorPrivate *priv;
-
-	priv = BRASERO_DVD_AUTHOR_PRIVATE (job);
+	BraseroDvdAuthor *self = BRASERO_DVD_AUTHOR (job);
+	BraseroDvdAuthorPrivate *priv = brasero_dvd_author_get_instance_private (self);
 
 	brasero_dvd_author_add_track (job);
 
@@ -339,7 +338,7 @@ brasero_dvd_author_init (BraseroDvdAuthor *object)
 static void
 brasero_dvd_author_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_dvd_author_parent_class)->finalize (object);
 }
 
 static void
@@ -348,14 +347,17 @@ brasero_dvd_author_class_init (BraseroDvdAuthorClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass* process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroDvdAuthorPrivate));
-
 	object_class->finalize = brasero_dvd_author_finalize;
 
 	process_class->stdout_func = brasero_dvd_author_read_stdout;
 	process_class->stderr_func = brasero_dvd_author_read_stderr;
 	process_class->set_argv = brasero_dvd_author_set_argv;
 	process_class->post = brasero_dvd_author_post;
+}
+
+static void
+brasero_dvd_author_class_finalize (BraseroDvdAuthorClass *klass)
+{
 }
 
 static void

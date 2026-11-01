@@ -61,19 +61,22 @@
 #define BRASERO_IS_CDRDAO_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_CDRDAO))
 #define BRASERO_CDRDAO_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdaoClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 struct _BraseroCdrdaoPrivate {
  	gchar *tmp_toc_path;
 	guint use_raw:1;
 };
 typedef struct _BraseroCdrdaoPrivate BraseroCdrdaoPrivate;
-#define BRASERO_CDRDAO_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdaoPrivate)) 
-
-static GObjectClass *parent_class = NULL;
 
 #define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
 #define BRASERO_KEY_RAW_FLAG		"raw-flag"
+
+BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BraseroProcess);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroCdrdao,
+				brasero_cdrdao,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroCdrdao));
 
 static gboolean
 brasero_cdrdao_read_stderr_image (BraseroCdrdao *cdrdao, const gchar *line)
@@ -321,7 +324,7 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 	BraseroTrackType *type = NULL;
 	BraseroCdrdaoPrivate *priv;
 
-	priv = BRASERO_CDRDAO_PRIVATE (cdrdao); 
+	priv = brasero_cdrdao_get_instance_private (cdrdao);
 
 	g_ptr_array_add (argv, g_strdup ("cdrdao"));
 
@@ -449,9 +452,9 @@ brasero_cdrdao_set_argv_blank (BraseroCdrdao *cdrdao,
 static BraseroBurnResult
 brasero_cdrdao_post (BraseroJob *job)
 {
-	BraseroCdrdaoPrivate *priv;
+	BraseroCdrdao *self = BRASERO_CDRDAO (job);
+	BraseroCdrdaoPrivate *priv = brasero_cdrdao_get_instance_private (self);
 
-	priv = BRASERO_CDRDAO_PRIVATE (job);
 	if (!priv->tmp_toc_path) {
 		brasero_job_finished_session (job);
 		return BRASERO_BURN_OK;
@@ -470,7 +473,7 @@ brasero_cdrdao_start_toc2cue (BraseroCdrdao *cdrdao,
 	BraseroBurnResult result;
 	BraseroCdrdaoPrivate *priv;
 
-	priv = BRASERO_CDRDAO_PRIVATE (cdrdao);
+	priv = brasero_cdrdao_get_instance_private (cdrdao);
 
 	g_ptr_array_add (argv, g_strdup ("toc2cue"));
 
@@ -509,7 +512,7 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 	BraseroDrive *drive;
 	BraseroTrack *track;
 
-	priv = BRASERO_CDRDAO_PRIVATE (cdrdao);
+	priv = brasero_cdrdao_get_instance_private (cdrdao);
 	if (priv->tmp_toc_path)
 		return brasero_cdrdao_start_toc2cue (cdrdao, argv, error);
 
@@ -659,15 +662,15 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 static void
 brasero_cdrdao_finalize (GObject *object)
 {
-	BraseroCdrdaoPrivate *priv;
+	BraseroCdrdao *self = BRASERO_CDRDAO (object);
+	BraseroCdrdaoPrivate *priv = brasero_cdrdao_get_instance_private (self);
 
-	priv = BRASERO_CDRDAO_PRIVATE (object);
 	if (priv->tmp_toc_path) {
 		g_free (priv->tmp_toc_path);
 		priv->tmp_toc_path = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_cdrdao_parent_class)->finalize (object);
 }
 
 static void
@@ -676,14 +679,16 @@ brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroCdrdaoPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_cdrdao_finalize;
 
 	process_class->stderr_func = brasero_cdrdao_read_stderr;
 	process_class->set_argv = brasero_cdrdao_set_argv;
 	process_class->post = brasero_cdrdao_post;
+}
+
+static void
+brasero_cdrdao_class_finalize (BraseroCdrdaoClass *klass)
+{
 }
 
 static void
@@ -693,7 +698,7 @@ brasero_cdrdao_init (BraseroCdrdao *obj)
  	BraseroCdrdaoPrivate *priv;
  	
 	/* load our "configuration" */
- 	priv = BRASERO_CDRDAO_PRIVATE (obj);
+	priv = brasero_cdrdao_get_instance_private (obj);
 
 	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
 	priv->use_raw = g_settings_get_boolean (settings, BRASERO_KEY_RAW_FLAG);

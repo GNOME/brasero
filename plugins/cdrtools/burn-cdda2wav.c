@@ -61,8 +61,6 @@
 #define BRASERO_IS_CDDA2WAV_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_CDDA2WAV))
 #define BRASERO_CDDA2WAV_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_CDDA2WAV, BraseroCdda2wavClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroCdda2wav, brasero_cdda2wav, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 struct _BraseroCdda2wavPrivate {
 	gchar *file_pattern;
 
@@ -73,22 +71,26 @@ struct _BraseroCdda2wavPrivate {
 };
 typedef struct _BraseroCdda2wavPrivate BraseroCdda2wavPrivate;
 
-#define BRASERO_CDDA2WAV_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CDDA2WAV, BraseroCdda2wavPrivate))
-static GObjectClass *parent_class = NULL;
+BRASERO_PLUGIN_BOILERPLATE (BraseroCdda2wav, brasero_cdda2wav, BraseroProcess);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroCdda2wav,
+				brasero_cdda2wav,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroCdda2wav));
 
 
 static BraseroBurnResult
 brasero_cdda2wav_post (BraseroJob *job)
 {
-	BraseroCdda2wavPrivate *priv;
+	BraseroCdda2wav *self = BRASERO_CDDA2WAV (job);
+	BraseroCdda2wavPrivate *priv = brasero_cdda2wav_get_instance_private (self);
 	BraseroMedium *medium;
 	BraseroJobAction action;
 	BraseroDrive *drive;
 	BraseroTrack *track;
 	int track_num;
 	int i;
-
-	priv = BRASERO_CDDA2WAV_PRIVATE (job);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE)
@@ -164,7 +166,7 @@ brasero_cdda2wav_get_output_filename_pattern (BraseroCdda2wav *cdda2wav,
 	gchar *file_pattern;
 	BraseroCdda2wavPrivate *priv;
 
-	priv = BRASERO_CDDA2WAV_PRIVATE (cdda2wav);
+	priv = brasero_cdda2wav_get_instance_private (cdda2wav);
 
 	if (priv->file_pattern) {
 		g_free (priv->file_pattern);
@@ -192,12 +194,9 @@ brasero_cdda2wav_get_output_filename_pattern (BraseroCdda2wav *cdda2wav,
 static BraseroBurnResult
 brasero_cdda2wav_read_stderr (BraseroProcess *process, const gchar *line)
 {
+	BraseroCdda2wav *cdda2wav = BRASERO_CDDA2WAV (process);
+	BraseroCdda2wavPrivate *priv = brasero_cdda2wav_get_instance_private (cdda2wav);
 	int num;
-	BraseroCdda2wav *cdda2wav;
-	BraseroCdda2wavPrivate *priv;
-
-	cdda2wav = BRASERO_CDDA2WAV (process);
-	priv = BRASERO_CDDA2WAV_PRIVATE (process);
 
 	if (sscanf (line, "100%%  track %d '%*s' recorded successfully", &num) == 1) {
 		gchar *string;
@@ -242,7 +241,7 @@ brasero_cdda2wav_set_argv_image (BraseroCdda2wav *cdda2wav,
 	BraseroCdda2wavPrivate *priv;
 	int fd_out;
 
-	priv = BRASERO_CDDA2WAV_PRIVATE (cdda2wav);
+	priv = brasero_cdda2wav_get_instance_private (cdda2wav);
 
 	/* We want raw output */
 	g_ptr_array_add (argv, g_strdup ("output-format=cdr"));
@@ -283,7 +282,7 @@ brasero_cdda2wav_set_argv_size (BraseroCdda2wav *cdda2wav,
 	goffset medium_len;
 	int i;
 
-	priv = BRASERO_CDDA2WAV_PRIVATE (cdda2wav);
+	priv = brasero_cdda2wav_get_instance_private (cdda2wav);
 
 	/* we add the tracks */
 	medium_len = 0;
@@ -368,15 +367,14 @@ brasero_cdda2wav_set_argv (BraseroProcess *process,
 static void
 brasero_cdda2wav_finalize (GObject *object)
 {
-	BraseroCdda2wavPrivate *priv;
-
-	priv = BRASERO_CDDA2WAV_PRIVATE (object);
+	BraseroCdda2wav *self = BRASERO_CDDA2WAV (object);
+	BraseroCdda2wavPrivate *priv = brasero_cdda2wav_get_instance_private (self);
 
 	if (priv->file_pattern) {
 		g_free (priv->file_pattern);
 		priv->file_pattern = NULL;
 	}
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_cdda2wav_parent_class)->finalize (object);
 }
 
 static void
@@ -385,15 +383,18 @@ brasero_cdda2wav_class_init (BraseroCdda2wavClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroCdda2wavPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_cdda2wav_finalize;
 
 	process_class->stderr_func = brasero_cdda2wav_read_stderr;
 	process_class->set_argv = brasero_cdda2wav_set_argv;
 	process_class->post = brasero_cdda2wav_post;
 }
+
+static void
+brasero_cdda2wav_class_finalize (BraseroCdda2wavClass *klass)
+{
+}
+
 
 static void
 brasero_cdda2wav_init (BraseroCdda2wav *obj)

@@ -62,8 +62,6 @@
 #define BRASERO_IS_DVDCSS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_DVDCSS))
 #define BRASERO_DVDCSS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_DVDCSS, BraseroDvdcssClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BRASERO_TYPE_JOB, BraseroJob);
-
 struct _BraseroDvdcssPrivate {
 	GError *error;
 	GThread *thread;
@@ -75,11 +73,15 @@ struct _BraseroDvdcssPrivate {
 };
 typedef struct _BraseroDvdcssPrivate BraseroDvdcssPrivate;
 
-#define BRASERO_DVDCSS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DVDCSS, BraseroDvdcssPrivate))
-
 #define BRASERO_DVDCSS_I_BLOCKS	16ULL
 
-static GObjectClass *parent_class = NULL;
+BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BraseroJob);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroDvdcss,
+				brasero_dvdcss,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroDvdcss));
 
 static gboolean
 brasero_dvdcss_library_init (BraseroPlugin *plugin)
@@ -146,7 +148,7 @@ brasero_dvdcss_thread_finished (gpointer data)
 	BraseroDvdcssPrivate *priv;
 	BraseroTrackImage *track = NULL;
 
-	priv = BRASERO_DVDCSS_PRIVATE (self);
+	priv = brasero_dvdcss_get_instance_private (self);
 	priv->thread_id = 0;
 
 	if (priv->error) {
@@ -190,7 +192,7 @@ brasero_dvdcss_write_sector_to_fd (BraseroDvdcss *self,
 	gint bytes_written = 0;
 	BraseroDvdcssPrivate *priv;
 
-	priv = BRASERO_DVDCSS_PRIVATE (self);
+	priv = brasero_dvdcss_get_instance_private (self);
 
 	brasero_job_get_fd_out (BRASERO_JOB (self), &fd);
 	while (bytes_remaining) {
@@ -337,7 +339,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 					FALSE);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
-	priv = BRASERO_DVDCSS_PRIVATE (self);
+	priv = brasero_dvdcss_get_instance_private (self);
 
 	/* get the contents of the DVD */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
@@ -552,7 +554,7 @@ brasero_dvdcss_start (BraseroJob *job,
 	GError *thread_error = NULL;
 
 	self = BRASERO_DVDCSS (job);
-	priv = BRASERO_DVDCSS_PRIVATE (self);
+	priv = brasero_dvdcss_get_instance_private (self);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
@@ -599,7 +601,7 @@ brasero_dvdcss_stop_real (BraseroDvdcss *self)
 {
 	BraseroDvdcssPrivate *priv;
 
-	priv = BRASERO_DVDCSS_PRIVATE (self);
+	priv = brasero_dvdcss_get_instance_private (self);
 
 	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
@@ -635,11 +637,10 @@ brasero_dvdcss_stop (BraseroJob *job,
 static void
 brasero_dvdcss_finalize (GObject *object)
 {
-	BraseroDvdcssPrivate *priv;
+	BraseroDvdcss *self = BRASERO_DVDCSS (object);
+	BraseroDvdcssPrivate *priv = brasero_dvdcss_get_instance_private (self);
 
-	priv = BRASERO_DVDCSS_PRIVATE (object);
-
-	brasero_dvdcss_stop_real (BRASERO_DVDCSS (object));
+	brasero_dvdcss_stop_real (self);
 
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
@@ -651,7 +652,7 @@ brasero_dvdcss_finalize (GObject *object)
 		priv->cond = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_dvdcss_parent_class)->finalize (object);
 }
 
 static void
@@ -660,9 +661,6 @@ brasero_dvdcss_class_init (BraseroDvdcssClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroDvdcssPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_dvdcss_finalize;
 
 	job_class->start = brasero_dvdcss_start;
@@ -670,11 +668,16 @@ brasero_dvdcss_class_init (BraseroDvdcssClass *klass)
 }
 
 static void
+brasero_dvdcss_class_finalize (BraseroDvdcssClass *klass)
+{
+}
+
+static void
 brasero_dvdcss_init (BraseroDvdcss *obj)
 {
 	BraseroDvdcssPrivate *priv;
 
-	priv = BRASERO_DVDCSS_PRIVATE (obj);
+	priv = brasero_dvdcss_get_instance_private (obj);
 
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();

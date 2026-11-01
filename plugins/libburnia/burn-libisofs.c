@@ -63,8 +63,6 @@
 #define BRASERO_IS_LIBISOFS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_LIBISOFS))
 #define BRASERO_LIBISOFS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_LIBISOFS, BraseroLibisofsClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroLibisofs, brasero_libisofs, BRASERO_TYPE_JOB, BraseroJob);
-
 struct _BraseroLibisofsPrivate {
 	struct burn_source *libburn_src;
 
@@ -81,9 +79,13 @@ struct _BraseroLibisofsPrivate {
 };
 typedef struct _BraseroLibisofsPrivate BraseroLibisofsPrivate;
 
-#define BRASERO_LIBISOFS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_LIBISOFS, BraseroLibisofsPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroLibisofs, brasero_libisofs, BraseroJob);
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroLibisofs,
+				brasero_libisofs,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroLibisofs));
 
 static gboolean
 brasero_libisofs_thread_finished (gpointer data)
@@ -91,7 +93,7 @@ brasero_libisofs_thread_finished (gpointer data)
 	BraseroLibisofs *self = data;
 	BraseroLibisofsPrivate *priv;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	priv->thread_id = 0;
 	if (priv->error) {
@@ -138,7 +140,7 @@ brasero_libisofs_write_sector_to_fd (BraseroLibisofs *self,
 	gint bytes_written = 0;
 	BraseroLibisofsPrivate *priv;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	while (bytes_remaining) {
 		gint written;
@@ -185,7 +187,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	int read_bytes;
 	int fd = -1;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	brasero_job_set_nonblocking (BRASERO_JOB (self), NULL);
 
@@ -233,7 +235,7 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 	gchar *output;
 	FILE *file;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	brasero_job_get_image_output (BRASERO_JOB (self), &output, NULL);
 	file = fopen (output, "w");
@@ -258,7 +260,6 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 					NULL,
 					FALSE);
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 	read_bytes = priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size);
@@ -301,7 +302,7 @@ brasero_libisofs_thread_started (gpointer data)
 	BraseroLibisofs *self;
 
 	self = BRASERO_LIBISOFS (data);
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Entering thread");
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
@@ -333,7 +334,7 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 	BraseroLibisofsPrivate *priv;
 	GError *thread_error = NULL;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
@@ -374,7 +375,7 @@ brasero_libisofs_create_volume_thread_finished (gpointer data)
 	BraseroLibisofsPrivate *priv;
 	BraseroJobAction action;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	priv->thread_id = 0;
 	if (priv->error) {
@@ -470,7 +471,7 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	goffset session_block;
 	BraseroLibisofsPrivate *priv;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	priv->ctx = brasero_libburn_common_ctx_new (BRASERO_JOB (self), FALSE, error);
 	if (!priv->ctx)
@@ -553,7 +554,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	GSList *excluded;
 	GSList *iter;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	if (priv->libburn_src) {
 		burn_source_free (priv->libburn_src);
@@ -881,7 +882,7 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 	BraseroLibisofsPrivate *priv;
 	GError *thread_error = NULL;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
 
@@ -917,7 +918,7 @@ brasero_libisofs_clean_output (BraseroLibisofs *self)
 {
 	BraseroLibisofsPrivate *priv;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	if (priv->libburn_src) {
 		burn_source_free (priv->libburn_src);
@@ -939,14 +940,14 @@ brasero_libisofs_start (BraseroJob *job,
 	BraseroLibisofsPrivate *priv;
 
 	self = BRASERO_LIBISOFS (job);
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		/* do this to avoid a problem when using
 		 * DUMMY flag. libisofs would not generate
 		 * a second time. */
-		brasero_libisofs_clean_output (BRASERO_LIBISOFS (job));
+		brasero_libisofs_clean_output (self);
 		brasero_job_set_current_action (BRASERO_JOB (self),
 						BRASERO_BURN_ACTION_GETTING_SIZE,
 						NULL,
@@ -971,7 +972,7 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 {
 	BraseroLibisofsPrivate *priv;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (self);
+	priv = brasero_libisofs_get_instance_private (self);
 
 	/* Check whether we properly shut down or if we were cancelled */
 	g_mutex_lock (priv->mutex);
@@ -1015,14 +1016,11 @@ brasero_libisofs_stop (BraseroJob *job,
 static void
 brasero_libisofs_finalize (GObject *object)
 {
-	BraseroLibisofs *cobj;
-	BraseroLibisofsPrivate *priv;
+	BraseroLibisofs *self = BRASERO_LIBISOFS (object);
+	BraseroLibisofsPrivate *priv = brasero_libisofs_get_instance_private (self);
 
-	cobj = BRASERO_LIBISOFS (object);
-	priv = BRASERO_LIBISOFS_PRIVATE (object);
-
-	brasero_libisofs_stop_real (cobj);
-	brasero_libisofs_clean_output (cobj);
+	brasero_libisofs_stop_real (self);
+	brasero_libisofs_clean_output (self);
 
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
@@ -1037,7 +1035,7 @@ brasero_libisofs_finalize (GObject *object)
 	/* close libisofs library */
 	iso_finish ();
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_libisofs_parent_class)->finalize (object);
 }
 
 static void
@@ -1046,9 +1044,6 @@ brasero_libisofs_class_init (BraseroLibisofsClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroLibisofsPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_libisofs_finalize;
 
 	job_class->start = brasero_libisofs_start;
@@ -1056,11 +1051,16 @@ brasero_libisofs_class_init (BraseroLibisofsClass *klass)
 }
 
 static void
+brasero_libisofs_class_finalize (BraseroLibisofsClass *klass)
+{
+}
+
+static void
 brasero_libisofs_init (BraseroLibisofs *obj)
 {
 	BraseroLibisofsPrivate *priv;
 
-	priv = BRASERO_LIBISOFS_PRIVATE (obj);
+	priv = brasero_libisofs_get_instance_private (obj);
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();
 }

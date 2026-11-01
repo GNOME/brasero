@@ -66,8 +66,6 @@
 #define BRASERO_IS_WODIM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_WODIM))
 #define BRASERO_WODIM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_WODIM, BraseroWodimClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroWodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 struct _BraseroWodimPrivate {
 	goffset current_track_end_pos;
 	goffset current_track_written;
@@ -82,13 +80,18 @@ struct _BraseroWodimPrivate {
 	guint immediate:1;
 };
 typedef struct _BraseroWodimPrivate BraseroWodimPrivate;
-#define BRASERO_WODIM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_WODIM, BraseroWodimPrivate))
-
-static GObjectClass *parent_class = NULL;
 
 #define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
 #define BRASERO_KEY_IMMEDIATE_FLAG      "immed-flag"
 #define BRASERO_KEY_MINBUF_VALUE	"minbuf-value"
+
+BRASERO_PLUGIN_BOILERPLATE (BraseroWodim, brasero_wodim, BraseroProcess);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroWodim,
+				brasero_wodim,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroWodim));
 
 static BraseroBurnResult
 brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
@@ -234,7 +237,7 @@ brasero_wodim_compute (BraseroWodim *wodim,
 	goffset bytes;
 	goffset total;
 
-	priv = BRASERO_WODIM_PRIVATE (wodim);
+	priv = brasero_wodim_get_instance_private (wodim);
 	if (mb_total <= 0)
 		return;
 
@@ -313,7 +316,7 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 	int mb_written = 0, mb_total = 0, fifo = 0, buf = 0;
 
 	wodim = BRASERO_WODIM (process);
-	priv = BRASERO_WODIM_PRIVATE (wodim);
+	priv = brasero_wodim_get_instance_private (wodim);
 
 	if (sscanf (line, "Track %2u: %d of %d MB written (fifo %d%%) [buf %d%%] %d.%dx.",
 		    &track, &mb_written, &mb_total, &fifo, &buf, &speed_1, &speed_2) == 7 ||
@@ -455,7 +458,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	const gchar *info;
 	BraseroWodimPrivate *priv;
 
-	priv = BRASERO_WODIM_PRIVATE (wodim);
+	priv = brasero_wodim_get_instance_private (wodim);
 
 	/* NOTE: about the .inf files: they should have the exact same path
 	 * but the ending suffix file is replaced by inf:
@@ -791,7 +794,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 	BraseroWodimPrivate *priv;
 	BraseroTrackType *type = NULL;
 
-	priv = BRASERO_WODIM_PRIVATE (wodim);
+	priv = brasero_wodim_get_instance_private (wodim);
 
 	if (priv->immediate) {
 		g_ptr_array_add (argv, g_strdup ("-immed"));
@@ -1068,7 +1071,7 @@ brasero_wodim_set_argv_blank (BraseroWodim *wodim, GPtrArray *argv)
 		guint speed;
 		BraseroWodimPrivate *priv;
 
-		priv = BRASERO_WODIM_PRIVATE (wodim);
+		priv = brasero_wodim_get_instance_private (wodim);
 
 		/* Since we can't reformat any already formatted DVD+RW, we 
 		 * write 0s to it to blank. */
@@ -1161,10 +1164,10 @@ brasero_wodim_set_argv (BraseroProcess *process,
 static BraseroBurnResult
 brasero_wodim_post (BraseroJob *job)
 {
-	BraseroWodimPrivate *priv;
+	BraseroWodim *self = BRASERO_WODIM (job);
+	BraseroWodimPrivate *priv = brasero_wodim_get_instance_private (self);
 	GSList *iter;
 
-	priv = BRASERO_WODIM_PRIVATE (job);
 	for (iter = priv->infs; iter; iter = iter->next) {
 		gchar *path;
 
@@ -1182,10 +1185,9 @@ brasero_wodim_post (BraseroJob *job)
 static void
 brasero_wodim_finalize (GObject *object)
 {
-	BraseroWodimPrivate *priv;
+	BraseroWodim *self = BRASERO_WODIM (object);
+	BraseroWodimPrivate *priv = brasero_wodim_get_instance_private (self);
 	GSList *iter;
-
-	priv = BRASERO_WODIM_PRIVATE (object);
 
 	for (iter = priv->infs; iter; iter = iter->next) {
 		gchar *path;
@@ -1198,7 +1200,7 @@ brasero_wodim_finalize (GObject *object)
 	g_slist_free (priv->infs);
 	priv->infs = NULL;
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_wodim_parent_class)->finalize (object);
 }
 
 static void
@@ -1207,9 +1209,6 @@ brasero_wodim_class_init (BraseroWodimClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroWodimPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_wodim_finalize;
 
 	process_class->stderr_func = brasero_wodim_stderr_read;
@@ -1219,13 +1218,18 @@ brasero_wodim_class_init (BraseroWodimClass *klass)
 }
 
 static void
+brasero_wodim_class_finalize (BraseroWodimClass *klass)
+{
+}
+
+static void
 brasero_wodim_init (BraseroWodim *obj)
 {
 	GSettings *settings;
 	BraseroWodimPrivate *priv;
 
 	/* load our "configuration" */
-	priv = BRASERO_WODIM_PRIVATE (obj);
+	priv = brasero_wodim_get_instance_private (obj);
 
 	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
 

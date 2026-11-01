@@ -64,8 +64,6 @@
 #define BRASERO_IS_LIBBURN_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_LIBBURN))
 #define BRASERO_LIBBURN_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_LIBBURN, BraseroLibburnClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BRASERO_TYPE_JOB, BraseroJob);
-
 #define BRASERO_PVD_SIZE	32ULL * 2048ULL
 
 struct _BraseroLibburnPrivate {
@@ -79,7 +77,13 @@ struct _BraseroLibburnPrivate {
 };
 typedef struct _BraseroLibburnPrivate BraseroLibburnPrivate;
 
-#define BRASERO_LIBBURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_LIBBURN, BraseroLibburnPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BraseroJob);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroLibburn,
+				brasero_libburn,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroLibburn));
 
 /**
  * taken from scsi-get-configuration.h
@@ -92,8 +96,6 @@ BRASERO_SCSI_PROF_BR_R_SEQUENTIAL	= 0x0041,
 BRASERO_SCSI_PROF_BR_R_RANDOM		= 0x0042,
 BRASERO_SCSI_PROF_BD_RW		        = 0x0043,
 } BraseroScsiProfile;
-
-static GObjectClass *parent_class = NULL;
 
 struct _BraseroLibburnSrcData {
 	int fd;
@@ -445,7 +447,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 	BraseroTrackType *type = NULL;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
-	priv = BRASERO_LIBBURN_PRIVATE (self);
+	priv = brasero_libburn_get_instance_private (self);
 
 	brasero_job_get_fd_in (BRASERO_JOB (self), &fd);
 
@@ -521,7 +523,7 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 	BraseroBurnResult result;
 	GSList *tracks = NULL;
 
-	priv = BRASERO_LIBBURN_PRIVATE (self);
+	priv = brasero_libburn_get_instance_private (self);
 
 	/* create the track(s) */
 	result = BRASERO_BURN_OK;
@@ -649,7 +651,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 	struct burn_write_opts *opts;
 	gchar reason [BURN_REASONS_LEN];
 
-	priv = BRASERO_LIBBURN_PRIVATE (self);
+	priv = brasero_libburn_get_instance_private (self);
 
 	/* if appending a DVD+-RW get PVD */
 	brasero_job_get_flags (BRASERO_JOB (self), &flags);
@@ -756,7 +758,7 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	int profile;
 	int fd;
 
-	priv = BRASERO_LIBBURN_PRIVATE (self);
+	priv = brasero_libburn_get_instance_private (self);
 	if (burn_disc_get_profile (priv->ctx->drive, &profile, prof_name) <= 0) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -909,7 +911,7 @@ brasero_libburn_start (BraseroJob *job,
 	BraseroLibburnPrivate *priv;
 
 	self = BRASERO_LIBBURN (job);
-	priv = BRASERO_LIBBURN_PRIVATE (self);
+	priv = brasero_libburn_get_instance_private (self);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_RECORD) {
@@ -980,7 +982,7 @@ brasero_libburn_stop (BraseroJob *job,
 	BraseroLibburnPrivate *priv;
 
 	self = BRASERO_LIBBURN (job);
-	priv = BRASERO_LIBBURN_PRIVATE (self);
+	priv = brasero_libburn_get_instance_private (self);
 
 	if (priv->sig_handler) {
 		priv->sig_handler = 0;
@@ -997,8 +999,8 @@ brasero_libburn_stop (BraseroJob *job,
 		priv->pvd = NULL;
 	}
 
-	if (BRASERO_JOB_CLASS (parent_class)->stop)
-		BRASERO_JOB_CLASS (parent_class)->stop (job, error);
+	if (BRASERO_JOB_CLASS (brasero_libburn_parent_class)->stop)
+		BRASERO_JOB_CLASS (brasero_libburn_parent_class)->stop (job, error);
 
 	return BRASERO_BURN_OK;
 }
@@ -1006,11 +1008,11 @@ brasero_libburn_stop (BraseroJob *job,
 static BraseroBurnResult
 brasero_libburn_clock_tick (BraseroJob *job)
 {
-	BraseroLibburnPrivate *priv;
+	BraseroLibburn *self = BRASERO_LIBBURN (job);
+	BraseroLibburnPrivate *priv = brasero_libburn_get_instance_private (self);
 	BraseroBurnResult result;
 	int ret;
 
-	priv = BRASERO_LIBBURN_PRIVATE (job);
 	result = brasero_libburn_common_status (job, priv->ctx);
 
 	if (result != BRASERO_BURN_OK)
@@ -1070,14 +1072,14 @@ brasero_libburn_finalize (GObject *object)
 	BraseroLibburnPrivate *priv;
 
 	cobj = BRASERO_LIBBURN (object);
-	priv = BRASERO_LIBBURN_PRIVATE (cobj);
+	priv = brasero_libburn_get_instance_private (cobj);
 
 	if (priv->ctx) {
 		brasero_libburn_common_ctx_free (priv->ctx);
 		priv->ctx = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_libburn_parent_class)->finalize (object);
 }
 
 static void
@@ -1086,9 +1088,6 @@ brasero_libburn_class_init (BraseroLibburnClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroLibburnPrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_libburn_finalize;
 
 	job_class->start = brasero_libburn_start;
@@ -1100,6 +1099,11 @@ static void
 brasero_libburn_init (BraseroLibburn *obj)
 {
 
+}
+
+static void
+brasero_libburn_class_finalize (BraseroLibburnClass *klass)
+{
 }
 
 static void

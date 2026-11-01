@@ -58,15 +58,19 @@
 #define BRASERO_IS_GENISOIMAGE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_GENISOIMAGE))
 #define BRASERO_GENISOIMAGE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimageClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroGenisoimage, brasero_genisoimage, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 struct _BraseroGenisoimagePrivate {
 	guint use_utf8:1;
 };
 typedef struct _BraseroGenisoimagePrivate BraseroGenisoimagePrivate;
 
-#define BRASERO_GENISOIMAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimagePrivate))
-static GObjectClass *parent_class = NULL;
+BRASERO_PLUGIN_BOILERPLATE (BraseroGenisoimage, brasero_genisoimage, BraseroProcess);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroGenisoimage,
+				brasero_genisoimage,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroGenisoimage));
+
 
 static BraseroBurnResult
 brasero_genisoimage_read_isosize (BraseroProcess *process, const gchar *line)
@@ -445,7 +449,7 @@ brasero_genisoimage_set_argv (BraseroProcess *process,
 	gchar *prog_name;
 
 	genisoimage = BRASERO_GENISOIMAGE (process);
-	priv = BRASERO_GENISOIMAGE_PRIVATE (process);
+	priv = brasero_genisoimage_get_instance_private (genisoimage);
 
 	prog_name = g_find_program_in_path ("genisoimage");
 	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
@@ -472,7 +476,7 @@ brasero_genisoimage_set_argv (BraseroProcess *process,
 static void
 brasero_genisoimage_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_genisoimage_parent_class)->finalize (object);
 }
 
 static void
@@ -481,14 +485,16 @@ brasero_genisoimage_class_init (BraseroGenisoimageClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroGenisoimagePrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_genisoimage_finalize;
 
 	process_class->stdout_func = brasero_genisoimage_read_stdout;
 	process_class->stderr_func = brasero_genisoimage_read_stderr;
 	process_class->set_argv = brasero_genisoimage_set_argv;
+}
+
+static void
+brasero_genisoimage_class_finalize (BraseroGenisoimageClass *klass)
+{
 }
 
 static void
@@ -498,7 +504,7 @@ brasero_genisoimage_init (BraseroGenisoimage *obj)
 	gchar *standard_error;
 	gboolean res;
 
-	priv = BRASERO_GENISOIMAGE_PRIVATE (obj);
+	priv = brasero_genisoimage_get_instance_private (obj);
 
 	/* this code used to be ncb_genisoimage_supports_utf8 */
 	res = g_spawn_command_line_sync ("genisoimage -input-charset utf8",

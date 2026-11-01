@@ -58,9 +58,9 @@
 #define BRASERO_IS_READOM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_READOM))
 #define BRASERO_READOM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_READOM, BraseroReadomClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroReadom, brasero_readom, BRASERO_TYPE_PROCESS, BraseroProcess);
+BRASERO_PLUGIN_BOILERPLATE (BraseroReadom, brasero_readom, BraseroProcess);
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_DYNAMIC_TYPE (BraseroReadom, brasero_readom, BRASERO_TYPE_PROCESS);
 
 static BraseroBurnResult
 brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
@@ -419,7 +419,7 @@ brasero_readom_set_argv (BraseroProcess *process,
 static void
 brasero_readom_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_readom_parent_class)->finalize (object);
 }
 
 static void
@@ -428,11 +428,15 @@ brasero_readom_class_init (BraseroReadomClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_readom_finalize;
 
 	process_class->stderr_func = brasero_readom_read_stderr;
 	process_class->set_argv = brasero_readom_set_argv;
+}
+
+static void
+brasero_readom_class_finalize (BraseroReadomClass *klass)
+{
 }
 
 static void

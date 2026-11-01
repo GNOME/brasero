@@ -54,8 +54,6 @@
 #define BRASERO_IS_NORMALIZE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_NORMALIZE))
 #define BRASERO_NORMALIZE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_NORMALIZE, BraseroNormalizeClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroNormalize, brasero_normalize, BRASERO_TYPE_JOB, BraseroJob);
-
 typedef struct _BraseroNormalizePrivate BraseroNormalizePrivate;
 struct _BraseroNormalizePrivate
 {
@@ -73,10 +71,13 @@ struct _BraseroNormalizePrivate
 	gdouble track_gain;
 };
 
-#define BRASERO_NORMALIZE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_NORMALIZE, BraseroNormalizePrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroNormalize, brasero_normalize, BraseroJob);
 
-static GObjectClass *parent_class = NULL;
-
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroNormalize,
+				brasero_normalize,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroNormalize));
 
 static gboolean
 brasero_normalize_bus_messages (GstBus *bus,
@@ -88,7 +89,7 @@ brasero_normalize_stop_pipeline (BraseroNormalize *normalize)
 {
 	BraseroNormalizePrivate *priv;
 
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+	priv = brasero_normalize_get_instance_private (normalize);
 	if (!priv->pipeline)
 		return;
 
@@ -110,7 +111,7 @@ brasero_normalize_new_decoded_pad_cb (GstElement *decode,
 	GstStructure *structure;
 	BraseroNormalizePrivate *priv;
 
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+	priv = brasero_normalize_get_instance_private (normalize);
 
 	sink = gst_element_get_static_pad (priv->resample, "sink");
 	if (GST_PAD_IS_LINKED (sink)) {
@@ -155,7 +156,7 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 	GstElement *resample = NULL;
 	BraseroNormalizePrivate *priv;
 
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+	priv = brasero_normalize_get_instance_private (normalize);
 
 	BRASERO_JOB_LOG (normalize, "Creating new pipeline");
 
@@ -286,15 +287,14 @@ static BraseroBurnResult
 brasero_normalize_set_next_track (BraseroJob *job,
                                   GError **error)
 {
+	BraseroNormalize *self = BRASERO_NORMALIZE (job);
+	BraseroNormalizePrivate *priv = brasero_normalize_get_instance_private (self);
 	gchar *uri;
 	GValue *value;
 	GstElement *analysis;
 	BraseroTrackType *type;
 	BraseroTrack *track = NULL;
 	gboolean dts_allowed = FALSE;
-	BraseroNormalizePrivate *priv;
-
-	priv = BRASERO_NORMALIZE_PRIVATE (job);
 
 	/* See if dts is allowed */
 	value = NULL;
@@ -350,7 +350,7 @@ brasero_normalize_set_next_track (BraseroJob *job,
 		 * state. */
 		gst_element_set_locked_state (analysis, TRUE);
 		gst_bin_remove (GST_BIN (priv->pipeline), analysis);
-		brasero_normalize_stop_pipeline (BRASERO_NORMALIZE (job));
+		brasero_normalize_stop_pipeline (self);
 		gst_element_set_locked_state (analysis, FALSE);
 	}
 
@@ -359,7 +359,7 @@ brasero_normalize_set_next_track (BraseroJob *job,
 	uri = brasero_track_stream_get_source (BRASERO_TRACK_STREAM (track), TRUE);
 	BRASERO_JOB_LOG (job, "Analysing track %s", uri);
 
-	if (!brasero_normalize_build_pipeline (BRASERO_NORMALIZE (job), uri, analysis, error)) {
+	if (!brasero_normalize_build_pipeline (self, uri, analysis, error)) {
 		g_free (uri);
 		return BRASERO_BURN_ERR;
 	}
@@ -372,11 +372,10 @@ static BraseroBurnResult
 brasero_normalize_stop (BraseroJob *job,
 			GError **error)
 {
-	BraseroNormalizePrivate *priv;
+	BraseroNormalize *self = BRASERO_NORMALIZE (job);
+	BraseroNormalizePrivate *priv = brasero_normalize_get_instance_private (self);
 
-	priv = BRASERO_NORMALIZE_PRIVATE (job);
-
-	brasero_normalize_stop_pipeline (BRASERO_NORMALIZE (job));
+	brasero_normalize_stop_pipeline (self);
 	if (priv->tracks) {
 		g_slist_free (priv->tracks);
 		priv->tracks = NULL;
@@ -395,7 +394,7 @@ foreach_tag (const GstTagList *list,
 	gdouble value = 0.0;
 	BraseroNormalizePrivate *priv;
 
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+	priv = brasero_normalize_get_instance_private (normalize);
 
 	/* Those next two are generated at the end only */
 	if (!strcmp (tag, GST_TAG_ALBUM_GAIN)) {
@@ -424,7 +423,7 @@ brasero_normalize_song_end_reached (BraseroNormalize *normalize)
 	BraseroBurnResult result;
 	BraseroNormalizePrivate *priv;
 
-	priv = BRASERO_NORMALIZE_PRIVATE (normalize);
+	priv = brasero_normalize_get_instance_private (normalize);
 	
 	/* finished track: set tags */
 	BRASERO_JOB_LOG (normalize,
@@ -526,10 +525,9 @@ static BraseroBurnResult
 brasero_normalize_start (BraseroJob *job,
 			 GError **error)
 {
-	BraseroNormalizePrivate *priv;
+	BraseroNormalize *self = BRASERO_NORMALIZE (job);
+	BraseroNormalizePrivate *priv = brasero_normalize_get_instance_private (self);
 	BraseroBurnResult result;
-
-	priv = BRASERO_NORMALIZE_PRIVATE (job);
 
 	priv->album_gain = -1.0;
 	priv->album_peak = -1.0;
@@ -579,11 +577,10 @@ brasero_normalize_activate (BraseroJob *job,
 static BraseroBurnResult
 brasero_normalize_clock_tick (BraseroJob *job)
 {
+	BraseroNormalize *self = BRASERO_NORMALIZE (job);
+	BraseroNormalizePrivate *priv = brasero_normalize_get_instance_private (self);
 	gint64 position = 0.0;
 	gint64 duration = 0.0;
-	BraseroNormalizePrivate *priv;
-
-	priv = BRASERO_NORMALIZE_PRIVATE (job);
 
 	gst_element_query_duration (priv->pipeline, GST_FORMAT_TIME, &duration);
 	gst_element_query_position (priv->pipeline, GST_FORMAT_TIME, &position);
@@ -614,7 +611,7 @@ brasero_normalize_init (BraseroNormalize *object)
 static void
 brasero_normalize_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_normalize_parent_class)->finalize (object);
 }
 
 static void
@@ -623,14 +620,17 @@ brasero_normalize_class_init (BraseroNormalizeClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroNormalizePrivate));
-
 	object_class->finalize = brasero_normalize_finalize;
 
 	job_class->activate = brasero_normalize_activate;
 	job_class->start = brasero_normalize_start;
 	job_class->clock_tick = brasero_normalize_clock_tick;
 	job_class->stop = brasero_normalize_stop;
+}
+
+static void
+brasero_normalize_class_finalize (BraseroNormalizeClass *klass)
+{
 }
 
 static void

@@ -60,8 +60,6 @@
 #define BRASERO_IS_VCD_IMAGER_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_VCD_IMAGER))
 #define BRASERO_VCD_IMAGER_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_VCD_IMAGER, BraseroVcdImagerClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroVcdImager, brasero_vcd_imager, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 typedef struct _BraseroVcdImagerPrivate BraseroVcdImagerPrivate;
 struct _BraseroVcdImagerPrivate
 {
@@ -70,19 +68,22 @@ struct _BraseroVcdImagerPrivate
 	guint svcd:1;
 };
 
-#define BRASERO_VCD_IMAGER_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VCD_IMAGER, BraseroVcdImagerPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroVcdImager, brasero_vcd_imager, BraseroProcess);
 
-static BraseroProcessClass *parent_class = NULL;
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroVcdImager,
+				brasero_vcd_imager,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroVcdImager));
 
 static BraseroBurnResult
 brasero_vcd_imager_read_stdout (BraseroProcess *process,
 				const gchar *line)
 {
+	BraseroVcdImager *self = BRASERO_VCD_IMAGER (process);
+	BraseroVcdImagerPrivate *priv = brasero_vcd_imager_get_instance_private (self);
 	gint percent = 0;
 	guint track_num = 0;
-	BraseroVcdImagerPrivate *priv;
-
-	priv = BRASERO_VCD_IMAGER_PRIVATE (process);
 
 	if (sscanf (line, "#scan[track-%d]: %*d/%*d (%d)", &track_num, &percent) == 2) {
 		brasero_job_start_progress (BRASERO_JOB (process), FALSE);
@@ -125,7 +126,8 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 				      const gchar *path,
 				      GError **error)
 {
-	BraseroVcdImagerPrivate *priv;
+	BraseroVcdImager *self = BRASERO_VCD_IMAGER (process);
+	BraseroVcdImagerPrivate *priv = brasero_vcd_imager_get_instance_private (self);
 	GSList *tracks = NULL;
 	xmlTextWriter *xml;
 	gchar buffer [64];
@@ -139,8 +141,6 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 	xml = xmlNewTextWriterFilename (path, 0);
 	if (!xml)
 		return BRASERO_BURN_ERR;
-
-	priv = BRASERO_VCD_IMAGER_PRIVATE (process);
 
 	xmlTextWriterSetIndent (xml, 1);
 	xmlTextWriterSetIndentString (xml, (xmlChar *) "\t");
@@ -378,15 +378,14 @@ brasero_vcd_imager_set_argv (BraseroProcess *process,
 			     GPtrArray *argv,
 			     GError **error)
 {
-	BraseroVcdImagerPrivate *priv;
+	BraseroVcdImager *self = BRASERO_VCD_IMAGER (process);
+	BraseroVcdImagerPrivate *priv = brasero_vcd_imager_get_instance_private (self);
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroMedia medium;
 	gchar *output;
 	gchar *image;
 	gchar *toc;
-
-	priv = BRASERO_VCD_IMAGER_PRIVATE (process);
 
 	brasero_job_get_action (BRASERO_JOB (process), &action);
 	if (action != BRASERO_JOB_ACTION_IMAGE)
@@ -460,7 +459,7 @@ brasero_vcd_imager_init (BraseroVcdImager *object)
 static void
 brasero_vcd_imager_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_vcd_imager_parent_class)->finalize (object);
 }
 
 static void
@@ -469,13 +468,16 @@ brasero_vcd_imager_class_init (BraseroVcdImagerClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass* process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroVcdImagerPrivate));
-
 	object_class->finalize = brasero_vcd_imager_finalize;
 	process_class->stdout_func = brasero_vcd_imager_read_stdout;
 	process_class->stderr_func = brasero_vcd_imager_read_stderr;
 	process_class->set_argv = brasero_vcd_imager_set_argv;
 	process_class->post = brasero_job_finished_session;
+}
+
+static void
+brasero_vcd_imager_class_finalize (BraseroVcdImagerClass *klass)
+{
 }
 
 static void

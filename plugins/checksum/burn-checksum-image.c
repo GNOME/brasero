@@ -63,8 +63,6 @@
 #define BRASERO_IS_CHECKSUM_IMAGE_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_CHECKSUM_IMAGE))
 #define BRASERO_CHECKSUM_GET_CLASS(o)		(G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_CHECKSUM_IMAGE, BraseroChecksumImageClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumImage, brasero_checksum_image, BRASERO_TYPE_JOB, BraseroJob);
-
 struct _BraseroChecksumImagePrivate {
 	GChecksum *checksum;
 	BraseroChecksumType checksum_type;
@@ -83,12 +81,16 @@ struct _BraseroChecksumImagePrivate {
 };
 typedef struct _BraseroChecksumImagePrivate BraseroChecksumImagePrivate;
 
-#define BRASERO_CHECKSUM_IMAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CHECKSUM_IMAGE, BraseroChecksumImagePrivate))
-
 #define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
 #define BRASERO_PROPS_CHECKSUM_IMAGE	"checksum-image"
 
-static BraseroJobClass *parent_class = NULL;
+BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumImage, brasero_checksum_image, BraseroJob);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroChecksumImage,
+				brasero_checksum_image,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroChecksumImage));
 
 static gint
 brasero_checksum_image_read (BraseroChecksumImage *self,
@@ -101,7 +103,7 @@ brasero_checksum_image_read (BraseroChecksumImage *self,
 	gint read_bytes;
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	while (1) {
 		if (priv->cancel)
@@ -153,7 +155,7 @@ brasero_checksum_image_write (BraseroChecksumImage *self,
 	gint bytes_written = 0;
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	bytes_remaining = bytes;
 	while (bytes_remaining) {
@@ -203,7 +205,7 @@ brasero_checksum_image_checksum (BraseroChecksumImage *self,
 	BraseroBurnResult result;
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	priv->checksum = g_checksum_new (checksum_type);
 	result = BRASERO_BURN_OK;
@@ -253,7 +255,7 @@ brasero_checksum_image_checksum_fd_input (BraseroChecksumImage *self,
 	BraseroBurnResult result;
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Starting checksum generation live (size = %" G_GOFFSET_FORMAT ")", priv->total);
 	result = brasero_job_set_nonblocking (BRASERO_JOB (self), error);
@@ -278,7 +280,7 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 	int fd_in = -1;
 	gchar *path;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	/* get all information */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
@@ -340,7 +342,7 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 	GChecksumType checksum_type;
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	/* get the checksum type */
 	switch (priv->checksum_type) {
@@ -439,7 +441,7 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 	GChecksumType checksum_type;
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	priv->checksum_type = brasero_checksum_get_checksum_type ();
 
@@ -501,7 +503,7 @@ brasero_checksum_image_end (gpointer data)
 
 	ctx = data;
 	self = ctx->sum;
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	/* NOTE ctx/data is destroyed in its own callback */
 	priv->end_id = 0;
@@ -582,7 +584,7 @@ brasero_checksum_image_thread (gpointer data)
 	BraseroBurnResult result = BRASERO_BURN_NOT_SUPPORTED;
 
 	self = BRASERO_CHECKSUM_IMAGE (data);
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	/* check DISC types and add checksums for DATA and IMAGE-bin types */
 	brasero_job_get_action (BRASERO_JOB (self), &action);
@@ -634,7 +636,8 @@ static BraseroBurnResult
 brasero_checksum_image_start (BraseroJob *job,
 			      GError **error)
 {
-	BraseroChecksumImagePrivate *priv;
+	BraseroChecksumImage *self = BRASERO_CHECKSUM_IMAGE (job);
+	BraseroChecksumImagePrivate *priv = brasero_checksum_image_get_instance_private (self);
 	GError *thread_error = NULL;
 	BraseroJobAction action;
 
@@ -652,10 +655,9 @@ brasero_checksum_image_start (BraseroJob *job,
 	}
 
 	/* we start a thread for the exploration of the graft points */
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
 	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_checksum_image_thread,
-					BRASERO_CHECKSUM_IMAGE (job),
+					self,
 					FALSE,
 					&thread_error);
 	g_mutex_unlock (priv->mutex);
@@ -705,9 +707,8 @@ brasero_checksum_image_activate (BraseroJob *job,
 static BraseroBurnResult
 brasero_checksum_image_clock_tick (BraseroJob *job)
 {
-	BraseroChecksumImagePrivate *priv;
-
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
+	BraseroChecksumImage *self = BRASERO_CHECKSUM_IMAGE (job);
+	BraseroChecksumImagePrivate *priv = brasero_checksum_image_get_instance_private (self);
 
 	if (!priv->checksum)
 		return BRASERO_BURN_OK;
@@ -727,9 +728,8 @@ static BraseroBurnResult
 brasero_checksum_image_stop (BraseroJob *job,
 			     GError **error)
 {
-	BraseroChecksumImagePrivate *priv;
-
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
+	BraseroChecksumImage *self = BRASERO_CHECKSUM_IMAGE (job);
+	BraseroChecksumImagePrivate *priv = brasero_checksum_image_get_instance_private (self);
 
 	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
@@ -758,7 +758,7 @@ brasero_checksum_image_init (BraseroChecksumImage *obj)
 {
 	BraseroChecksumImagePrivate *priv;
 
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (obj);
+	priv = brasero_checksum_image_get_instance_private (obj);
 
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();
@@ -767,9 +767,8 @@ brasero_checksum_image_init (BraseroChecksumImage *obj)
 static void
 brasero_checksum_image_finalize (GObject *object)
 {
-	BraseroChecksumImagePrivate *priv;
-	
-	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (object);
+	BraseroChecksumImage *self = BRASERO_CHECKSUM_IMAGE (object);
+	BraseroChecksumImagePrivate *priv = brasero_checksum_image_get_instance_private (self);
 
 	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
@@ -800,7 +799,7 @@ brasero_checksum_image_finalize (GObject *object)
 		priv->cond = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_checksum_image_parent_class)->finalize (object);
 }
 
 static void
@@ -809,15 +808,17 @@ brasero_checksum_image_class_init (BraseroChecksumImageClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroChecksumImagePrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_checksum_image_finalize;
 
 	job_class->activate = brasero_checksum_image_activate;
 	job_class->start = brasero_checksum_image_start;
 	job_class->stop = brasero_checksum_image_stop;
 	job_class->clock_tick = brasero_checksum_image_clock_tick;
+}
+
+static void
+brasero_checksum_image_class_finalize (BraseroChecksumImageClass *klass)
+{
 }
 
 static void

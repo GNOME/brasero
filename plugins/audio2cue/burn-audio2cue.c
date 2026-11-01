@@ -56,8 +56,6 @@
 #define BRASERO_IS_AUDIO2CUE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_AUDIO2CUE))
 #define BRASERO_AUDIO2CUE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_AUDIO2CUE, BraseroAudio2CueClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroAudio2Cue, brasero_audio2cue, BRASERO_TYPE_JOB, BraseroJob);
-
 struct _BraseroAudio2CuePrivate {
 	goffset total;
 	goffset bytes;
@@ -73,17 +71,20 @@ struct _BraseroAudio2CuePrivate {
 };
 typedef struct _BraseroAudio2CuePrivate BraseroAudio2CuePrivate;
 
-#define BRASERO_AUDIO2CUE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_AUDIO2CUE, BraseroAudio2CuePrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroAudio2Cue, brasero_audio2cue, BraseroJob);
 
-static BraseroAudio2CueClass *parent_class = NULL;
-
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroAudio2Cue,
+				brasero_audio2cue,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroAudio2Cue));
 
 static void
 brasero_audio2cue_stop_real (BraseroAudio2Cue *self)
 {
 	BraseroAudio2CuePrivate *priv;
 
-	priv = BRASERO_AUDIO2CUE_PRIVATE (self);
+	priv = brasero_audio2cue_get_instance_private (self);
 
 	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
@@ -115,9 +116,8 @@ brasero_audio2cue_stop (BraseroJob *self,
 static BraseroBurnResult
 brasero_audio2cue_clock_tick (BraseroJob *job)
 {
-	BraseroAudio2CuePrivate *priv;
-
-	priv = BRASERO_AUDIO2CUE_PRIVATE (job);
+	BraseroAudio2Cue *self = BRASERO_AUDIO2CUE (job);
+	BraseroAudio2CuePrivate *priv = brasero_audio2cue_get_instance_private (self);
 
 	brasero_job_start_progress (job, FALSE);
 	brasero_job_set_progress (job,
@@ -168,7 +168,7 @@ brasero_audio2cue_read (BraseroAudio2Cue *self,
 	gint read_bytes;
 	BraseroAudio2CuePrivate *priv;
 
-	priv = BRASERO_AUDIO2CUE_PRIVATE (self);
+	priv = brasero_audio2cue_get_instance_private (self);
 
 	while (1) {
 		read_bytes = read (fd, buffer + total, (bytes - total));
@@ -217,7 +217,7 @@ brasero_audio2cue_write (BraseroAudio2Cue *self,
 	gint bytes_written = 0;
 	BraseroAudio2CuePrivate *priv;
 
-	priv = BRASERO_AUDIO2CUE_PRIVATE (self);
+	priv = brasero_audio2cue_get_instance_private (self);
 
 	bytes_remaining = bytes;
 	while (bytes_remaining) {
@@ -262,7 +262,7 @@ brasero_audio2cue_write_bin (BraseroAudio2Cue *self,
 {
 	BraseroAudio2CuePrivate *priv;
 
-	priv = BRASERO_AUDIO2CUE_PRIVATE (self);
+	priv = brasero_audio2cue_get_instance_private (self);
 
 	while (1) {
 		gint read_bytes;
@@ -342,7 +342,7 @@ brasero_audio2cue_create_thread (gpointer data)
 	gchar *line;
 	int num = 1;
 
-	priv = BRASERO_AUDIO2CUE_PRIVATE (data);
+	priv = brasero_audio2cue_get_instance_private (data);
 	priv->success = FALSE;
 
 	/* Get all audio data as input and write .bin */
@@ -642,12 +642,11 @@ static BraseroBurnResult
 brasero_audio2cue_start (BraseroJob *job,
 			 GError **error)
 {
-	BraseroAudio2CuePrivate *priv;
+	BraseroAudio2Cue *self = BRASERO_AUDIO2CUE (job);
+	BraseroAudio2CuePrivate *priv = brasero_audio2cue_get_instance_private (self);
 	GError *thread_error = NULL;
 	BraseroJobAction action;
 	goffset bytes = 0;
-
-	priv = BRASERO_AUDIO2CUE_PRIVATE (job);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
@@ -686,7 +685,7 @@ static void
 brasero_audio2cue_finalize (GObject *object)
 {
 	brasero_audio2cue_stop_real (BRASERO_AUDIO2CUE (object));
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_audio2cue_parent_class)->finalize (object);
 }
 
 static void
@@ -695,9 +694,6 @@ brasero_audio2cue_class_init (BraseroAudio2CueClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroAudio2CuePrivate));
-
-	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_audio2cue_finalize;
 
 	job_class->start = brasero_audio2cue_start;
@@ -706,11 +702,16 @@ brasero_audio2cue_class_init (BraseroAudio2CueClass *klass)
 }
 
 static void
+brasero_audio2cue_class_finalize (BraseroAudio2CueClass *klass)
+{
+}
+
+static void
 brasero_audio2cue_init (BraseroAudio2Cue *obj)
 {
 	BraseroAudio2CuePrivate *priv;
 
-	priv = BRASERO_AUDIO2CUE_PRIVATE (obj);
+	priv = brasero_audio2cue_get_instance_private (obj);
 	priv->mutex = g_mutex_new ();
 	priv->cond = g_cond_new ();
 }

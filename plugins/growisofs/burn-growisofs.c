@@ -61,8 +61,6 @@
 #define BRASERO_IS_GROWISOFS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_GROWISOFS))
 #define BRASERO_GROWISOFS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_GROWISOFS, BraseroGrowisofsClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
-
 struct BraseroGrowisofsPrivate {
 	guint use_utf8:1;
 	guint use_genisoimage:1;
@@ -70,12 +68,16 @@ struct BraseroGrowisofsPrivate {
 };
 typedef struct BraseroGrowisofsPrivate BraseroGrowisofsPrivate;
 
-#define BRASERO_GROWISOFS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_GROWISOFS, BraseroGrowisofsPrivate))
-
-static GObjectClass *parent_class = NULL;
-
 #define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
 #define BRASERO_KEY_DAO_FLAG		"dao-flag"
+
+BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BraseroProcess);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroGrowisofs,
+				brasero_growisofs,
+				BRASERO_TYPE_PROCESS,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroGrowisofs));
 
 /* Process start */
 static BraseroBurnResult
@@ -258,7 +260,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	gchar *emptydir = NULL;
 	gchar *videodir = NULL;
 
-	priv = BRASERO_GROWISOFS_PRIVATE (growisofs);
+	priv = brasero_growisofs_get_instance_private (growisofs);
 
 	if (priv->use_genisoimage) {
 		BRASERO_JOB_LOG (growisofs, "Using genisoimage");
@@ -656,7 +658,7 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 static void
 brasero_growisofs_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_growisofs_parent_class)->finalize (object);
 }
 
 static void
@@ -665,15 +667,17 @@ brasero_growisofs_class_init (BraseroGrowisofsClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroGrowisofsPrivate));
-
-	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_growisofs_finalize;
 
 	process_class->stdout_func = brasero_growisofs_read_stdout;
 	process_class->stderr_func = brasero_growisofs_read_stderr;
 	process_class->set_argv = brasero_growisofs_set_argv;
 	process_class->post = brasero_job_finished_session;
+}
+
+static void
+brasero_growisofs_class_finalize (BraseroGrowisofsClass *klass)
+{
 }
 
 static void
@@ -684,7 +688,7 @@ brasero_growisofs_init (BraseroGrowisofs *obj)
 	gchar *prog_name;
 	gboolean res;
 
-	priv = BRASERO_GROWISOFS_PRIVATE (obj);
+	priv = brasero_growisofs_get_instance_private (obj);
 
 	/* this code (remotely) comes from ncb_mkisofs_supports_utf8 */
 	/* Added a way to detect whether we'll use mkisofs or genisoimage */

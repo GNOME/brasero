@@ -52,8 +52,6 @@
 #define BRASERO_IS_VOB_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), BRASERO_TYPE_VOB))
 #define BRASERO_VOB_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), BRASERO_TYPE_VOB, BraseroVobClass))
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroVob, brasero_vob, BRASERO_TYPE_JOB, BraseroJob);
-
 typedef struct _BraseroVobPrivate BraseroVobPrivate;
 struct _BraseroVobPrivate
 {
@@ -70,10 +68,13 @@ struct _BraseroVobPrivate
 	guint is_video_dvd:1;
 };
 
-#define BRASERO_VOB_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VOB, BraseroVobPrivate))
+BRASERO_PLUGIN_BOILERPLATE (BraseroVob, brasero_vob, BraseroJob);
 
-static GObjectClass *parent_class = NULL;
-
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroVob,
+				brasero_vob,
+				BRASERO_TYPE_JOB,
+				0,
+				G_ADD_PRIVATE_DYNAMIC (BraseroVob));
 
 /* This is for 3 seconds of buffering (default is 1) */
 #define MAX_SIZE_BUFFER		200		/* Use unlimited (0) if it does not work */
@@ -85,7 +86,7 @@ brasero_vob_stop_pipeline (BraseroVob *vob)
 {
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 	if (!priv->pipeline)
 		return;
 
@@ -173,7 +174,7 @@ brasero_vob_error_on_pad_linking (BraseroVob *self,
 	GstMessage *message;
 	GstBus *bus;
 
-	priv = BRASERO_VOB_PRIVATE (self);
+	priv = brasero_vob_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Error on pad linking");
 	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
@@ -204,7 +205,7 @@ brasero_vob_new_decoded_pad_cb (GstElement *decode,
 	GstStructure *structure;
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	/* make sure we only have audio */
 	caps = gst_pad_query_caps (pad, NULL);
@@ -291,7 +292,7 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	GstElement *resample;
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	/* NOTE: this can only be used for Video DVDs as PCM cannot be used for
 	 * (S)VCDs. */
@@ -417,7 +418,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	GstElement *resample;
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	/* queue */
 	queue = gst_element_factory_make ("queue", NULL);
@@ -569,7 +570,7 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 	GstElement *resample;
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	/* NOTE: This has to be a DVD since AC3 is not supported by (S)VCD */
 
@@ -694,7 +695,7 @@ brasero_vob_build_audio_bins (BraseroVob *vob,
 	GstElement *tee;
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	/* tee */
 	tee = gst_element_factory_make ("tee", NULL);
@@ -772,7 +773,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	BraseroVobPrivate *priv;
 	BraseroBurnResult result;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	queue = gst_element_factory_make ("queue", NULL);
 	if (queue == NULL) {
@@ -1069,7 +1070,7 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 	GstElement *pipeline;
 	BraseroVobPrivate *priv;
 
-	priv = BRASERO_VOB_PRIVATE (vob);
+	priv = brasero_vob_get_instance_private (vob);
 
 	BRASERO_JOB_LOG (vob, "Creating new pipeline");
 
@@ -1208,15 +1209,14 @@ static BraseroBurnResult
 brasero_vob_start (BraseroJob *job,
 		   GError **error)
 {
-	BraseroVobPrivate *priv;
+	BraseroVob *self = BRASERO_VOB (job);
+	BraseroVobPrivate *priv = brasero_vob_get_instance_private (self);
 	BraseroJobAction action;
 	BraseroTrackType *output = NULL;
 
 	brasero_job_get_action (job, &action);
 	if (action != BRASERO_JOB_ACTION_IMAGE)
 		return BRASERO_BURN_NOT_SUPPORTED;
-
-	priv = BRASERO_VOB_PRIVATE (job);
 
 	/* get destination medium type */
 	output = brasero_track_type_new ();
@@ -1242,7 +1242,7 @@ brasero_vob_start (BraseroJob *job,
 
 	brasero_track_type_free (output);
 
-	if (!brasero_vob_build_pipeline (BRASERO_VOB (job), error))
+	if (!brasero_vob_build_pipeline (self, error))
 		return BRASERO_BURN_ERR;
 
 	/* ready to go */
@@ -1289,10 +1289,8 @@ brasero_vob_get_progress_from_element (BraseroJob *job,
 static BraseroBurnResult
 brasero_vob_clock_tick (BraseroJob *job)
 {
-
-	BraseroVobPrivate *priv;
-
-	priv = BRASERO_VOB_PRIVATE (job);
+	BraseroVob *self = BRASERO_VOB (job);
+	BraseroVobPrivate *priv = brasero_vob_get_instance_private (self);
 
 	if (brasero_vob_get_progress_from_element (job, priv->pipeline))
 		return BRASERO_BURN_OK;
@@ -1314,16 +1312,15 @@ brasero_vob_init (BraseroVob *object)
 static void
 brasero_vob_finalize (GObject *object)
 {
-	BraseroVobPrivate *priv;
-
-	priv = BRASERO_VOB_PRIVATE (object);
+	BraseroVob *self = BRASERO_VOB (object);
+	BraseroVobPrivate *priv = brasero_vob_get_instance_private (self);
 
 	if (priv->pipeline) {
 		gst_object_unref (priv->pipeline);
 		priv->pipeline = NULL;
 	}
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (brasero_vob_parent_class)->finalize (object);
 }
 
 static void
@@ -1332,8 +1329,6 @@ brasero_vob_class_init (BraseroVobClass *klass)
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	BraseroJobClass* job_class = BRASERO_JOB_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroVobPrivate));
-
 	object_class->finalize = brasero_vob_finalize;
 
 	job_class->start = brasero_vob_start;
@@ -1341,6 +1336,10 @@ brasero_vob_class_init (BraseroVobClass *klass)
 	job_class->stop = brasero_vob_stop;
 }
 
+static void
+brasero_vob_class_finalize (BraseroVobClass *klass)
+{
+}
 static void
 brasero_vob_export_caps (BraseroPlugin *plugin)
 {
