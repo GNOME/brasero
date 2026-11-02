@@ -35,6 +35,7 @@
 #include <string.h>
 
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include "brasero-media.h"
 #include "brasero-media-private.h"
@@ -885,8 +886,23 @@ brasero_plugin_register_group (BraseroPlugin *plugin,
 	/* see if we have a group id now */
 	if (!self->priv->group_id
 	&&   self->priv->group_str
-	&&  !strcmp (name, self->priv->group_str))
-		self->priv->group_id = g_hash_table_size (self->priv->groups) + 1;
+	&&   self->priv->group_str[0] != '\0') {
+		gchar *name_casefold = g_utf8_casefold (name, -1);
+		gchar *group_casefold = g_utf8_casefold (self->priv->group_str, -1);
+
+		if (!strcmp (name, self->priv->group_str)
+		||  !strcmp (name_casefold, group_casefold)
+		||  !strcmp (name, dgettext (GETTEXT_PACKAGE, self->priv->group_str))
+		||  (strstr (group_casefold, "libburn") != NULL && strstr (name_casefold, "libburn") != NULL)
+		||  (strstr (group_casefold, "growisofs") != NULL && strstr (name_casefold, "growisofs") != NULL)
+		||  (strstr (group_casefold, "cdrkit") != NULL && strstr (name_casefold, "cdrkit") != NULL)
+		||  (strstr (group_casefold, "cdrtools") != NULL && strstr (name_casefold, "cdrtools") != NULL)
+		||  (strstr (group_casefold, "cdrdao") != NULL && strstr (name_casefold, "cdrdao") != NULL))
+			self->priv->group_id = g_hash_table_size (self->priv->groups) + 1;
+
+		g_free (name_casefold);
+		g_free (group_casefold);
+	}
 
 	brasero_plugin_set_group (plugin, g_hash_table_size (self->priv->groups) + 1);
 

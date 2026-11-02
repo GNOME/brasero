@@ -315,4 +315,9 @@ brasero_burn_caps_init (BraseroBurnCaps *obj)
 	settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
 	obj->priv->group_str = g_settings_get_string (settings, BRASERO_ENGINE_GROUP_KEY);
 	g_object_unref (settings);
+
+	if (!obj->priv->group_str || obj->priv->group_str[0] == '\0') {
+		g_free (obj->priv->group_str);
+		obj->priv->group_str = g_strdup ("libburnia");
+	}
 }
