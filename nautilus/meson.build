@@ -1,6 +1,6 @@
 shared_library(
     'nautilus-burn',
-    files('nautilus-burn-extension.c'),
+    files('nautilus-burn-bar.c', 'nautilus-burn-extension.c'),
     dependencies: [
         dependency('atk', disabler: true, required: false),
         gdk_x11_3,
@@ -11,3 +11,4 @@ shared_library(
     ],
     include_directories: root_inc,
 )
+
