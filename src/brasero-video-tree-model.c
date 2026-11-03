@@ -1219,13 +1219,6 @@ brasero_video_tree_model_finalize (GObject *object)
 static void
 brasero_video_tree_model_iface_init (GtkTreeModelIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->get_flags = brasero_video_tree_model_get_flags;
 	iface->get_n_columns = brasero_video_tree_model_get_n_columns;
 	iface->get_column_type = brasero_video_tree_model_get_column_type;
@@ -1243,13 +1236,6 @@ brasero_video_tree_model_iface_init (GtkTreeModelIface *iface)
 static void
 brasero_video_tree_model_multi_drag_source_iface_init (EggTreeMultiDragSourceIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->row_draggable = brasero_video_tree_model_multi_row_draggable;
 	iface->drag_data_get = brasero_video_tree_model_multi_drag_data_get;
 	iface->drag_data_delete = brasero_video_tree_model_multi_drag_data_delete;
@@ -1258,26 +1244,12 @@ brasero_video_tree_model_multi_drag_source_iface_init (EggTreeMultiDragSourceIfa
 static void
 brasero_video_tree_model_drag_source_iface_init (GtkTreeDragSourceIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->drag_data_delete = brasero_video_tree_model_drag_data_delete;
 }
 
 static void
 brasero_video_tree_model_drag_dest_iface_init (GtkTreeDragDestIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->drag_data_received = brasero_video_tree_model_drag_data_received;
 	iface->row_drop_possible = brasero_video_tree_model_row_drop_possible;
 }

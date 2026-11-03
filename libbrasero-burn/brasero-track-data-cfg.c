@@ -1771,13 +1771,6 @@ brasero_track_data_clean_autorun (BraseroTrackDataCfg *track)
 static void
 brasero_track_data_cfg_iface_init (GtkTreeModelIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->ref_node = brasero_track_data_cfg_node_shown;
 	iface->unref_node = brasero_track_data_cfg_node_hidden;
 
@@ -1798,13 +1791,6 @@ brasero_track_data_cfg_iface_init (GtkTreeModelIface *iface)
 static void
 brasero_track_data_cfg_drag_source_iface_init (GtkTreeDragSourceIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->row_draggable = brasero_track_data_cfg_row_draggable;
 	iface->drag_data_get = brasero_track_data_cfg_drag_data_get;
 	iface->drag_data_delete = brasero_track_data_cfg_drag_data_delete;
@@ -1813,13 +1799,6 @@ brasero_track_data_cfg_drag_source_iface_init (GtkTreeDragSourceIface *iface)
 static void
 brasero_track_data_cfg_drag_dest_iface_init (GtkTreeDragDestIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->drag_data_received = brasero_track_data_cfg_drag_data_received;
 	iface->row_drop_possible = brasero_track_data_cfg_row_drop_possible;
 }
@@ -1827,13 +1806,6 @@ brasero_track_data_cfg_drag_dest_iface_init (GtkTreeDragDestIface *iface)
 static void
 brasero_track_data_cfg_sortable_iface_init (GtkTreeSortableIface *iface)
 {
-	static gboolean initialized = FALSE;
-
-	if (initialized)
-		return;
-
-	initialized = TRUE;
-
 	iface->get_sort_column_id = brasero_track_data_cfg_get_sort_column_id;
 	iface->set_sort_column_id = brasero_track_data_cfg_set_sort_column_id;
 	iface->has_default_sort_func = brasero_track_data_cfg_has_default_sort_func;
