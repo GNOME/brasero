@@ -53,13 +53,13 @@ struct _BraseroVideoTreeModelPrivate
 
 
 static void
-brasero_video_tree_model_multi_drag_source_iface_init (gpointer g_iface, gpointer data);
+brasero_video_tree_model_multi_drag_source_iface_init (EggTreeMultiDragSourceIface *iface);
 static void
-brasero_video_tree_model_drag_source_iface_init (gpointer g_iface, gpointer data);
+brasero_video_tree_model_drag_source_iface_init (GtkTreeDragSourceIface *iface);
 static void
-brasero_video_tree_model_drag_dest_iface_init (gpointer g_iface, gpointer data);
+brasero_video_tree_model_drag_dest_iface_init (GtkTreeDragDestIface *iface);
 static void
-brasero_video_tree_model_iface_init (gpointer g_iface, gpointer data);
+brasero_video_tree_model_iface_init (GtkTreeModelIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroVideoTreeModel,
 			 brasero_video_tree_model,
@@ -1217,9 +1217,8 @@ brasero_video_tree_model_finalize (GObject *object)
 }
 
 static void
-brasero_video_tree_model_iface_init (gpointer g_iface, gpointer data)
+brasero_video_tree_model_iface_init (GtkTreeModelIface *iface)
 {
-	GtkTreeModelIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
@@ -1242,9 +1241,8 @@ brasero_video_tree_model_iface_init (gpointer g_iface, gpointer data)
 }
 
 static void
-brasero_video_tree_model_multi_drag_source_iface_init (gpointer g_iface, gpointer data)
+brasero_video_tree_model_multi_drag_source_iface_init (EggTreeMultiDragSourceIface *iface)
 {
-	EggTreeMultiDragSourceIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
@@ -1258,9 +1256,8 @@ brasero_video_tree_model_multi_drag_source_iface_init (gpointer g_iface, gpointe
 }
 
 static void
-brasero_video_tree_model_drag_source_iface_init (gpointer g_iface, gpointer data)
+brasero_video_tree_model_drag_source_iface_init (GtkTreeDragSourceIface *iface)
 {
-	GtkTreeDragSourceIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
@@ -1272,9 +1269,8 @@ brasero_video_tree_model_drag_source_iface_init (gpointer g_iface, gpointer data
 }
 
 static void
-brasero_video_tree_model_drag_dest_iface_init (gpointer g_iface, gpointer data)
+brasero_video_tree_model_drag_dest_iface_init (GtkTreeDragDestIface *iface)
 {
-	GtkTreeDragDestIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)

@@ -91,13 +91,13 @@ struct _BraseroTrackDataCfgPrivate
 
 
 static void
-brasero_track_data_cfg_drag_source_iface_init (gpointer g_iface, gpointer data);
+brasero_track_data_cfg_drag_source_iface_init (GtkTreeDragSourceIface *iface);
 static void
-brasero_track_data_cfg_drag_dest_iface_init (gpointer g_iface, gpointer data);
+brasero_track_data_cfg_drag_dest_iface_init (GtkTreeDragDestIface *iface);
 static void
-brasero_track_data_cfg_sortable_iface_init (gpointer g_iface, gpointer data);
+brasero_track_data_cfg_sortable_iface_init (GtkTreeSortableIface *iface);
 static void
-brasero_track_data_cfg_iface_init (gpointer g_iface, gpointer data);
+brasero_track_data_cfg_iface_init (GtkTreeModelIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (BraseroTrackDataCfg,
 			 brasero_track_data_cfg,
@@ -1769,9 +1769,8 @@ brasero_track_data_clean_autorun (BraseroTrackDataCfg *track)
 }
 
 static void
-brasero_track_data_cfg_iface_init (gpointer g_iface, gpointer data)
+brasero_track_data_cfg_iface_init (GtkTreeModelIface *iface)
 {
-	GtkTreeModelIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
@@ -1797,9 +1796,8 @@ brasero_track_data_cfg_iface_init (gpointer g_iface, gpointer data)
 }
 
 static void
-brasero_track_data_cfg_drag_source_iface_init (gpointer g_iface, gpointer data)
+brasero_track_data_cfg_drag_source_iface_init (GtkTreeDragSourceIface *iface)
 {
-	GtkTreeDragSourceIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
@@ -1813,9 +1811,8 @@ brasero_track_data_cfg_drag_source_iface_init (gpointer g_iface, gpointer data)
 }
 
 static void
-brasero_track_data_cfg_drag_dest_iface_init (gpointer g_iface, gpointer data)
+brasero_track_data_cfg_drag_dest_iface_init (GtkTreeDragDestIface *iface)
 {
-	GtkTreeDragDestIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
@@ -1828,9 +1825,8 @@ brasero_track_data_cfg_drag_dest_iface_init (gpointer g_iface, gpointer data)
 }
 
 static void
-brasero_track_data_cfg_sortable_iface_init (gpointer g_iface, gpointer data)
+brasero_track_data_cfg_sortable_iface_init (GtkTreeSortableIface *iface)
 {
-	GtkTreeSortableIface *iface = g_iface;
 	static gboolean initialized = FALSE;
 
 	if (initialized)
