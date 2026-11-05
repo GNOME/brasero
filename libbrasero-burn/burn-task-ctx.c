@@ -98,7 +98,6 @@ struct _BraseroTaskCtxPrivate
 	guint use_average_rate:1;
 };
 
-#define BRASERO_TASK_CTX_PRIVATE(o)  (brasero_task_ctx_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTaskCtx, brasero_task_ctx, G_TYPE_OBJECT);
 
@@ -123,7 +122,7 @@ brasero_task_ctx_set_dangerous (BraseroTaskCtx *self, gboolean value)
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	if (value)
 		priv->dangerous ++;
 	else
@@ -135,7 +134,7 @@ brasero_task_ctx_get_dangerous (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	return priv->dangerous;
 }
 
@@ -145,7 +144,7 @@ brasero_task_ctx_reset (BraseroTaskCtx *self)
 	BraseroTaskCtxPrivate *priv;
 	GSList *tracks;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->tracks) {
 		g_slist_foreach (priv->tracks, (GFunc) g_object_unref, NULL);
@@ -197,7 +196,7 @@ brasero_task_ctx_set_fake (BraseroTaskCtx *ctx,
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (ctx);
+	priv = brasero_task_ctx_get_instance_private (ctx);
 	priv->fake = fake;
 }
 
@@ -212,7 +211,7 @@ brasero_task_ctx_get_session (BraseroTaskCtx *self)
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), NULL);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	if (!priv->session)
 		return NULL;
 
@@ -225,7 +224,7 @@ brasero_task_ctx_get_stored_tracks (BraseroTaskCtx *self,
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	if (!priv->current_track)
 		return BRASERO_BURN_ERR;
 
@@ -248,7 +247,7 @@ brasero_task_ctx_get_current_track (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (track != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	if (!priv->current_track)
 		return BRASERO_BURN_ERR;
 
@@ -261,7 +260,7 @@ brasero_task_ctx_get_action (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->fake)
 		return BRASERO_TASK_ACTION_NONE;
@@ -279,7 +278,7 @@ brasero_task_ctx_add_track (BraseroTaskCtx *self,
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	BRASERO_BURN_LOG ("Adding track %s",
 //			  brasero_track_get_track_type (track, NULL),
@@ -298,7 +297,7 @@ brasero_task_ctx_set_next_track (BraseroTaskCtx *self)
 	GSList *tracks;
 	GSList *node;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	/* we need to set the next track if our action is NORMAL or CHECKSUM */
 	if (priv->action != BRASERO_TASK_ACTION_NORMAL
@@ -361,7 +360,7 @@ brasero_task_ctx_finished (BraseroTaskCtx *self)
 	GError *error = NULL;
 	GSList *iter;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	klass = BRASERO_TASK_CTX_GET_CLASS (self);
 	if (!klass->finished)
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -419,7 +418,7 @@ brasero_task_ctx_start_progress (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (!priv->timer) {
 		priv->timer = g_timer_new ();
@@ -478,7 +477,7 @@ brasero_task_ctx_report_progress (BraseroTaskCtx *self)
 	BraseroTaskCtxPrivate *priv;
 	gdouble progress, elapsed;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->action_changed) {
 		/* Give a last progress-changed signal
@@ -561,7 +560,7 @@ brasero_task_ctx_set_rate (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	priv->rate = rate;
 	return BRASERO_BURN_OK;
 }
@@ -584,7 +583,7 @@ brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	/* we only allow plugins to set these values during the init phase of a 
 	 * task when it's fakely running. One exception is if size or blocks are
@@ -611,7 +610,7 @@ brasero_task_ctx_set_written_track (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	priv->written_changed = 1;
 
@@ -641,7 +640,7 @@ brasero_task_ctx_set_written_session (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	priv->session_bytes = 0;
 	return brasero_task_ctx_set_written_track (self, written);
@@ -656,7 +655,7 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	priv->progress_changed = 1;
 
@@ -698,7 +697,7 @@ brasero_task_ctx_reset_progress (BraseroTaskCtx *self)
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	priv->progress_changed = 1;
 
@@ -735,7 +734,7 @@ brasero_task_ctx_set_current_action (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->current_action == action) {
 		if (!force)
@@ -775,7 +774,7 @@ brasero_task_ctx_set_use_average (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 	priv->use_average_rate = use_average;
 	return BRASERO_BURN_OK;
 }
@@ -793,7 +792,7 @@ brasero_task_ctx_get_rate (BraseroTaskCtx *self,
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (rate != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->current_action != BRASERO_BURN_ACTION_RECORDING
 	&&  priv->current_action != BRASERO_BURN_ACTION_DRIVE_COPY) {
@@ -849,7 +848,7 @@ brasero_task_ctx_get_remaining_time (BraseroTaskCtx *self,
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (remaining != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	g_mutex_lock (priv->lock);
 	len = g_slist_length (priv->times);
@@ -874,7 +873,7 @@ brasero_task_ctx_get_session_output_size (BraseroTaskCtx *self,
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (blocks != NULL || bytes != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->size <= 0 && priv->blocks <= 0)
 		return BRASERO_BURN_NOT_READY;
@@ -897,7 +896,7 @@ brasero_task_ctx_get_written (BraseroTaskCtx *self,
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (written != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (priv->track_bytes + priv->session_bytes <= 0)
 		return BRASERO_BURN_NOT_READY;
@@ -918,7 +917,7 @@ brasero_task_ctx_get_current_action_string (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (string != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	if (action != priv->current_action)
 		return BRASERO_BURN_ERR;
@@ -938,7 +937,7 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 	gdouble track_nb = 0;
 	goffset total = 0;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	/* The following can happen when we're blanking since there's no track */
 	if (priv->action == BRASERO_TASK_ACTION_ERASE) {
@@ -995,7 +994,7 @@ brasero_task_ctx_get_current_action (BraseroTaskCtx *self,
 
 	g_return_val_if_fail (action != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	g_mutex_lock (priv->lock);
 	*action = priv->current_action;
@@ -1009,7 +1008,7 @@ brasero_task_ctx_stop_progress (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	/* one last report */
 	g_signal_emit (self,
@@ -1047,7 +1046,7 @@ brasero_task_ctx_init (BraseroTaskCtx *object)
 {
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (object);
+	priv = brasero_task_ctx_get_instance_private (object);
 	priv->lock = g_mutex_new ();
 }
 
@@ -1057,7 +1056,7 @@ brasero_task_ctx_finalize (GObject *object)
 	BraseroTaskCtx *ctx = BRASERO_TASK_CTX (object);
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (ctx);
+	priv = brasero_task_ctx_get_instance_private (ctx);
 
 	if (priv->lock) {
 		g_mutex_free (priv->lock);
@@ -1094,7 +1093,7 @@ brasero_task_ctx_set_property (GObject *object, guint prop_id, const GValue *val
 	BraseroTaskCtx *self = BRASERO_TASK_CTX (object);
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	switch (prop_id)
 	{
@@ -1117,7 +1116,7 @@ brasero_task_ctx_get_property (GObject *object, guint prop_id, GValue *value, GP
 	BraseroTaskCtx *self = BRASERO_TASK_CTX (object);
 	BraseroTaskCtxPrivate *priv;
 
-	priv = BRASERO_TASK_CTX_PRIVATE (self);
+	priv = brasero_task_ctx_get_instance_private (self);
 
 	switch (prop_id)
 	{

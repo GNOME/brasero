@@ -59,7 +59,6 @@ struct _BraseroTrackStreamCfgPrivate
 	guint loading:1;
 };
 
-#define BRASERO_TRACK_STREAM_CFG_PRIVATE(o)  (brasero_track_stream_cfg_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackStreamCfg, brasero_track_stream_cfg, BRASERO_TYPE_TRACK_STREAM);
 
@@ -74,7 +73,7 @@ brasero_track_stream_cfg_file_changed (GFileMonitor *monitor,
 	BraseroTrackStreamCfgPrivate *priv;
 	gchar *name;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
+	priv = brasero_track_stream_cfg_get_instance_private (cfg);
 
         switch (event) {
  /*               case G_FILE_MONITOR_EVENT_CHANGED:
@@ -113,7 +112,7 @@ brasero_track_stream_cfg_results_cb (GObject *obj,
 	GObject *snapshot;
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
+	priv = brasero_track_stream_cfg_get_instance_private (cfg);
 	priv->loading = FALSE;
 
 	/* Check the return status for this file */
@@ -329,7 +328,7 @@ brasero_track_stream_cfg_get_info (BraseroTrackStreamCfg *track)
 	BraseroTrackStreamCfgPrivate *priv;
 	gchar *uri;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (track);
+	priv = brasero_track_stream_cfg_get_instance_private (track);
 
 	if (priv->error) {
 		g_error_free (priv->error);
@@ -367,7 +366,7 @@ brasero_track_stream_cfg_set_source (BraseroTrackStream *track,
 	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (track);
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
+	priv = brasero_track_stream_cfg_get_instance_private (cfg);
 	if (priv->monitor) {
 		g_object_unref (priv->monitor);
 		priv->monitor = NULL;
@@ -391,7 +390,7 @@ brasero_track_stream_cfg_get_status (BraseroTrack *track,
 	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (track);
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
+	priv = brasero_track_stream_cfg_get_instance_private (cfg);
 
 	if (priv->error) {
 		brasero_status_set_error (status, g_error_copy (priv->error));
@@ -423,7 +422,7 @@ brasero_track_stream_cfg_finalize (GObject *object)
 	BraseroTrackStreamCfg *cfg = BRASERO_TRACK_STREAM_CFG (object);
 	BraseroTrackStreamCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_CFG_PRIVATE (cfg);
+	priv = brasero_track_stream_cfg_get_instance_private (cfg);
 
 	if (priv->load_uri) {
 		brasero_io_cancel_by_base (priv->load_uri);

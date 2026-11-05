@@ -97,7 +97,6 @@ struct _BraseroBurnOptionsPrivate
 	guint has_disc:1;
 };
 
-#define BRASERO_BURN_OPTIONS_PRIVATE(o)  (brasero_burn_options_get_instance_private (o))
 
 enum {
 	PROP_0,
@@ -116,7 +115,7 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 	GSList *list = NULL;
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	/* create message queue for input */
 	priv->message_input = brasero_notify_new ();
@@ -162,7 +161,7 @@ brasero_burn_options_add_options (BraseroBurnOptions *self,
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 	gtk_box_pack_start (GTK_BOX (priv->options), options, FALSE, TRUE, 0);
 	gtk_widget_show (priv->options);
 }
@@ -173,7 +172,7 @@ brasero_burn_options_set_type_shown (BraseroBurnOptions *self,
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
 }
 
@@ -185,7 +184,7 @@ brasero_burn_options_message_response_cb (BraseroDiscMessage *message,
 	if (response == GTK_RESPONSE_OK) {
 		BraseroBurnOptionsPrivate *priv;
 
-		priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+		priv = brasero_burn_options_get_instance_private (self);
 		brasero_session_cfg_add_flags (priv->session, BRASERO_BURN_FLAG_OVERBURN);
 	}
 }
@@ -198,7 +197,7 @@ brasero_burn_options_message_response_span_cb (BraseroDiscMessage *message,
 	if (response == GTK_RESPONSE_OK) {
 		BraseroBurnOptionsPrivate *priv;
 
-		priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+		priv = brasero_burn_options_get_instance_private (self);
 		brasero_session_span_start (BRASERO_SESSION_SPAN (priv->session));
 		if (brasero_session_span_next (BRASERO_SESSION_SPAN (priv->session)) == BRASERO_BURN_ERR)
 			BRASERO_BURN_LOG ("Spanning failed\n");
@@ -212,7 +211,7 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	if (!priv->is_valid
 	||  !brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))
@@ -238,7 +237,7 @@ brasero_burn_options_not_ready_dialog_cancel_cb (GtkDialog *dialog,
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+	priv = brasero_burn_options_get_instance_private (data);
 
 	if (priv->not_ready_id) {
 		g_source_remove (priv->not_ready_id);
@@ -260,7 +259,7 @@ brasero_burn_options_not_ready_dialog_show_cb (gpointer data)
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+	priv = brasero_burn_options_get_instance_private (data);
 
 	/* icon should be set by now */
 	gtk_window_set_icon_name (GTK_WINDOW (priv->status_dialog),
@@ -277,7 +276,7 @@ brasero_burn_options_not_ready_dialog_shown_cb (GtkWidget *widget,
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (data);
+	priv = brasero_burn_options_get_instance_private (data);
 	if (priv->not_ready_id) {
 		g_source_remove (priv->not_ready_id);
 		priv->not_ready_id = 0;
@@ -293,7 +292,7 @@ brasero_burn_options_setup_buttons (BraseroBurnOptions *self)
 	gchar *label;
 	gchar *icon;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	/* add the new widgets */
 	type = brasero_track_type_new ();
@@ -351,7 +350,7 @@ brasero_burn_options_update_valid (BraseroBurnOptions *self)
 	BraseroSessionError valid;
 	BraseroDrive *drive;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	valid = brasero_session_cfg_get_error (priv->session);
 	priv->is_valid = BRASERO_SESSION_IS_VALID (valid);
@@ -602,7 +601,7 @@ brasero_burn_options_build_contents (BraseroBurnOptions *object)
 	GtkWidget *alignment;
 	gchar *string;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
+	priv = brasero_burn_options_get_instance_private (object);
 
 	priv->size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
@@ -694,7 +693,7 @@ brasero_burn_options_reset (BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	priv->has_image = FALSE;
 	priv->has_audio = FALSE;
@@ -729,7 +728,7 @@ brasero_burn_options_setup_audio (BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	brasero_burn_options_reset (self);
 
@@ -747,7 +746,7 @@ brasero_burn_options_setup_video (BraseroBurnOptions *self)
 	GtkWidget *options;
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	brasero_burn_options_reset (self);
 
@@ -785,7 +784,7 @@ brasero_status_dialog_uri_has_image (BraseroTrackDataCfg *track,
 	BraseroTrackImageCfg *track_img;
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 	dialog = gtk_message_dialog_new (GTK_WINDOW (self),
 					 GTK_DIALOG_MODAL |
 					 GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -858,7 +857,7 @@ brasero_burn_options_setup_data (BraseroBurnOptions *self)
 	GSList *tracks;
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	brasero_burn_options_reset (self);
 
@@ -885,7 +884,7 @@ brasero_burn_options_setup_image (BraseroBurnOptions *self)
 	GtkWidget *file;
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	brasero_burn_options_reset (self);
 
@@ -913,7 +912,7 @@ brasero_burn_options_setup_disc (BraseroBurnOptions *self)
 	GtkWidget *source;
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	brasero_burn_options_reset (self);
 
@@ -950,7 +949,7 @@ brasero_burn_options_setup (BraseroBurnOptions *self)
 	BraseroBurnOptionsPrivate *priv;
 	BraseroTrackType *type;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv = brasero_burn_options_get_instance_private (self);
 
 	/* add the new widgets */
 	type = brasero_track_type_new ();
@@ -1014,7 +1013,7 @@ brasero_burn_options_set_property (GObject *object,
 	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (object);
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
+	priv = brasero_burn_options_get_instance_private (options);
 
 	switch (prop_id)
 	{
@@ -1054,7 +1053,7 @@ brasero_burn_options_get_property (GObject *object,
 	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (object);
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
+	priv = brasero_burn_options_get_instance_private (options);
 
 	switch (prop_id)
 	{
@@ -1074,7 +1073,7 @@ brasero_burn_options_finalize (GObject *object)
 	BraseroBurnOptions *options = BRASERO_BURN_OPTIONS (object);
 	BraseroBurnOptionsPrivate *priv;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
+	priv = brasero_burn_options_get_instance_private (options);
 
 	if (priv->cancel) {
 		g_cancellable_cancel (priv->cancel);
@@ -1122,7 +1121,7 @@ brasero_burn_options_install_missing (BraseroPluginErrorType type,
                                       const gchar *detail,
                                       gpointer user_data)
 {
-	BraseroBurnOptionsPrivate *priv = BRASERO_BURN_OPTIONS_PRIVATE (user_data);
+	BraseroBurnOptionsPrivate *priv = brasero_burn_options_get_instance_private (user_data);
 	GCancellable *cancel;
 	BraseroPK *package;
 	gboolean res;
@@ -1212,7 +1211,7 @@ brasero_burn_options_response (GtkDialog *dialog,
 	if (response != GTK_RESPONSE_OK)
 		return;
 
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (options);
+	priv = brasero_burn_options_get_instance_private (options);
 	gtk_widget_set_sensitive (GTK_WIDGET (dialog), FALSE);
 
 	result = brasero_session_foreach_plugin_error (BRASERO_BURN_SESSION (priv->session),

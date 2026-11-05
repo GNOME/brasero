@@ -53,7 +53,6 @@ struct _BraseroSrcSelectionPrivate
 	BraseroTrackDisc *track;
 };
 
-#define BRASERO_SRC_SELECTION_PRIVATE(o)  (brasero_src_selection_get_instance_private (o))
 
 enum {
 	PROP_0,
@@ -70,7 +69,7 @@ brasero_src_selection_medium_changed (BraseroMediumSelection *selection,
 	BraseroSrcSelectionPrivate *priv;
 	BraseroDrive *drive = NULL;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (self);
+	priv = brasero_src_selection_get_instance_private (self);
 
 	if (priv->session && priv->track) {
 		drive = brasero_medium_get_drive (medium);
@@ -114,7 +113,7 @@ brasero_src_selection_finalize (GObject *object)
 	BraseroSrcSelection *selection = BRASERO_SRC_SELECTION (object);
 	BraseroSrcSelectionPrivate *priv;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
+	priv = brasero_src_selection_get_instance_private (selection);
 
 	if (priv->session) {
 		g_object_unref (priv->session);
@@ -159,7 +158,7 @@ brasero_src_selection_set_property (GObject *object,
 	BraseroSrcSelectionPrivate *priv;
 	BraseroBurnSession *session;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
+	priv = brasero_src_selection_get_instance_private (selection);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -217,7 +216,7 @@ brasero_src_selection_get_property (GObject *object,
 	BraseroSrcSelection *selection = BRASERO_SRC_SELECTION (object);
 	BraseroSrcSelectionPrivate *priv;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
+	priv = brasero_src_selection_get_instance_private (selection);
 
 	switch (property_id) {
 	case PROP_SESSION:

@@ -88,7 +88,6 @@ struct _BraseroTrackDataCfgPrivate
 	guint G2_files:1;
 };
 
-#define BRASERO_TRACK_DATA_CFG_PRIVATE(o)  (brasero_track_data_cfg_get_instance_private (o))
 
 
 static void
@@ -193,7 +192,7 @@ brasero_track_data_cfg_iter_parent (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == child->stamp, FALSE);
@@ -255,7 +254,7 @@ brasero_track_data_cfg_iter_nth_child (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (parent) {
 		/* make sure that iter comes from us */
@@ -309,7 +308,7 @@ brasero_track_data_cfg_iter_n_children (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (iter == NULL) {
 		/* special case */
@@ -343,7 +342,7 @@ brasero_track_data_cfg_iter_has_child (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
@@ -385,7 +384,7 @@ brasero_track_data_cfg_iter_children (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (!parent) {
 		BraseroFileNode *root;
@@ -447,7 +446,7 @@ brasero_track_data_cfg_iter_next (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
@@ -483,7 +482,7 @@ brasero_track_data_cfg_node_shown (GtkTreeModel *model,
 	BraseroFileNode *node;
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 	node = iter->user_data;
 
 	/* Check if that's a BOGUS row. In this case that means the parent was
@@ -594,7 +593,7 @@ brasero_track_data_cfg_node_hidden (GtkTreeModel *model,
 	if (node->is_imported)
 		return;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* update shown list */
 	if (!node->is_visible)
@@ -611,7 +610,7 @@ brasero_track_data_cfg_get_value (GtkTreeModel *model,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroFileNode *node;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* make sure that iter comes from us */
 	g_return_if_fail (priv->stamp == iter->stamp);
@@ -912,7 +911,7 @@ brasero_track_data_cfg_get_path (GtkTreeModel *model,
 	BraseroFileNode *node;
 	GtkTreePath *path;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, NULL);
@@ -940,7 +939,7 @@ brasero_track_data_cfg_path_to_node (BraseroTrackDataCfg *self,
 	guint depth;
 	guint i;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	indices = gtk_tree_path_get_indices (path);
 	depth = gtk_tree_path_get_depth (path);
@@ -970,7 +969,7 @@ brasero_track_data_cfg_get_iter (GtkTreeModel *model,
 	guint depth;
 	guint i;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	indices = gtk_tree_path_get_indices (path);
 	depth = gtk_tree_path_get_depth (path);
@@ -1134,7 +1133,7 @@ brasero_track_data_cfg_drag_data_received (GtkTreeDragDest *drag_dest,
 	GtkTreePath *dest_parent;
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	/* NOTE: dest_path is the path to insert before; so we may not have a 
 	 * valid path if it's in an empty directory */
@@ -1315,7 +1314,7 @@ brasero_track_data_cfg_get_sort_column_id (GtkTreeSortable *sortable,
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (sortable);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (column)
 		*column = priv->sort_column;
@@ -1334,7 +1333,7 @@ brasero_track_data_cfg_set_sort_column_id (GtkTreeSortable *sortable,
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (sortable);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 	priv->sort_column = column;
 	priv->sort_type = type;
 
@@ -1383,7 +1382,7 @@ brasero_track_data_cfg_autorun_inf_parse (BraseroTrackDataCfg *track,
 	gchar *icon_path;
 	gchar *path;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	if (!uri)
 		return FALSE;
@@ -1427,7 +1426,7 @@ brasero_track_data_cfg_clean_cache (BraseroTrackDataCfg *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	if (priv->grafts) {
 		g_slist_foreach (priv->grafts, (GFunc) brasero_graft_point_free, NULL);
@@ -1452,7 +1451,7 @@ brasero_track_data_cfg_node_added (BraseroDataProject *project,
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	if (priv->icon == node) {
 		/* Our icon node has showed up, signal that */
@@ -1582,7 +1581,7 @@ brasero_track_data_cfg_node_removed (BraseroDataProject *project,
 	GSList *iter, *next;
 	GtkTreePath *path;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 	/* NOTE: there is no special case of autorun.inf here when we created
 	 * it as a temprary file since it's hidden and BraseroDataTreeModel
 	 * won't emit a signal for removed file in this case.
@@ -1654,7 +1653,7 @@ brasero_track_data_cfg_node_changed (BraseroDataProject *project,
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	/* Get the iter for the node */
 	iter.stamp = priv->stamp;
@@ -1709,7 +1708,7 @@ brasero_track_data_cfg_node_reordered (BraseroDataProject *project,
 	GtkTreePath *treepath;
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	treepath = brasero_track_data_cfg_node_to_path (self, parent);
 	if (parent != brasero_data_project_get_root (project)) {
@@ -1740,7 +1739,7 @@ brasero_track_data_clean_autorun (BraseroTrackDataCfg *track)
 	gchar *path;
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	if (priv->image_file) {
 		g_object_unref (priv->image_file);
@@ -1871,7 +1870,7 @@ brasero_track_data_cfg_add (BraseroTrackDataCfg *track,
 	BraseroFileNode *parent_node;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	if (priv->loading)
 		return FALSE;
@@ -1912,7 +1911,7 @@ brasero_track_data_cfg_add_empty_directory (BraseroTrackDataCfg *track,
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (priv->loading)
 		return NULL;
 
@@ -1972,7 +1971,7 @@ brasero_track_data_cfg_remove (BraseroTrackDataCfg *track,
 	BraseroFileNode *node;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (priv->loading)
 		return FALSE;
 
@@ -2004,7 +2003,7 @@ brasero_track_data_cfg_rename (BraseroTrackDataCfg *track,
 	BraseroFileNode *node;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	node = brasero_track_data_cfg_path_to_node (track, treepath);
 	return brasero_data_project_rename_node (BRASERO_DATA_PROJECT (priv->tree),
 						 node,
@@ -2030,7 +2029,7 @@ brasero_track_data_cfg_reset (BraseroTrackDataCfg *track)
 	guint i;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (priv->loading)
 		return FALSE;
 
@@ -2077,7 +2076,7 @@ brasero_track_data_cfg_get_filtered_model (BraseroTrackDataCfg *track)
 	GtkTreeModel *model;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), NULL);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	model = GTK_TREE_MODEL (brasero_data_vfs_get_filtered_model (BRASERO_DATA_VFS (priv->tree)));
 	g_object_ref (model);
 	return model;
@@ -2104,7 +2103,7 @@ brasero_track_data_cfg_restore (BraseroTrackDataCfg *track,
 	gchar *uri;
 
 	g_return_if_fail (BRASERO_TRACK_DATA_CFG (track));
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	filtered = brasero_data_vfs_get_filtered_model (BRASERO_DATA_VFS (priv->tree));
 	uri = brasero_filtered_uri_restore (filtered, treepath);
@@ -2131,7 +2130,7 @@ brasero_track_data_cfg_dont_filter_uri (BraseroTrackDataCfg *track,
 	BraseroFilteredUri *filtered;
 
 	g_return_if_fail (BRASERO_TRACK_DATA_CFG (track));
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	filtered = brasero_data_vfs_get_filtered_model (BRASERO_DATA_VFS (priv->tree));
 	brasero_filtered_uri_dont_filter (filtered, uri);
@@ -2154,7 +2153,7 @@ brasero_track_data_cfg_get_restored_list (BraseroTrackDataCfg *track)
 	BraseroFilteredUri *filtered;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), NULL);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	filtered = brasero_data_vfs_get_filtered_model (BRASERO_DATA_VFS (priv->tree));
 	return brasero_filtered_uri_get_restored_list (filtered);
@@ -2181,7 +2180,7 @@ brasero_track_data_cfg_load_medium (BraseroTrackDataCfg *track,
 	BraseroTrackDataCfgPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), FALSE);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	return brasero_data_session_add_last (BRASERO_DATA_SESSION (priv->tree),
 					      medium,
 					      error);
@@ -2202,7 +2201,7 @@ brasero_track_data_cfg_unload_current_medium (BraseroTrackDataCfg *track)
 	BraseroTrackDataCfgPrivate *priv;
 
 	g_return_if_fail (BRASERO_TRACK_DATA_CFG (track));
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->tree));
 }
 
@@ -2222,7 +2221,7 @@ brasero_track_data_cfg_get_current_medium (BraseroTrackDataCfg *track)
 	BraseroTrackDataCfgPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), NULL);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	return brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree));
 }
 
@@ -2241,7 +2240,7 @@ brasero_track_data_cfg_get_available_media (BraseroTrackDataCfg *track)
 	BraseroTrackDataCfgPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_TRACK_DATA_CFG (track), NULL);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	return brasero_data_session_get_available_media (BRASERO_DATA_SESSION (priv->tree));
 }
 
@@ -2253,7 +2252,7 @@ brasero_track_data_cfg_set_source (BraseroTrackData *track,
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (track);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 	if (!grafts)
 		return BRASERO_BURN_ERR;
 
@@ -2282,7 +2281,7 @@ brasero_track_data_cfg_add_fs (BraseroTrackData *track,
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (track);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 	priv->forced_fs |= fstype;
 	priv->banned_fs &= ~(fstype);
 	return BRASERO_BURN_OK;
@@ -2295,7 +2294,7 @@ brasero_track_data_cfg_rm_fs (BraseroTrackData *track,
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (track);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 	priv->banned_fs |= fstype;
 	priv->forced_fs &= ~(fstype);
 	return BRASERO_BURN_OK;
@@ -2310,7 +2309,7 @@ brasero_track_data_cfg_get_fs (BraseroTrackData *track)
 	BraseroImageFS fs_type;
 	BraseroFileNode *root;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 	stats = BRASERO_FILE_NODE_STATS (root);
@@ -2349,7 +2348,7 @@ brasero_track_data_cfg_get_grafts (BraseroTrackData *track)
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroImageFS fs_type;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (priv->grafts)
 		return priv->grafts;
@@ -2372,7 +2371,7 @@ brasero_track_data_cfg_get_excluded (BraseroTrackData *track)
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroImageFS fs_type;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (priv->excluded)
 		return priv->excluded;
@@ -2396,7 +2395,7 @@ brasero_track_data_cfg_get_file_num (BraseroTrackData *track)
 	BraseroFileTreeStats *stats;
 	BraseroFileNode *root;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 	stats = BRASERO_FILE_NODE_STATS (root);
@@ -2421,7 +2420,7 @@ brasero_track_data_cfg_get_status (BraseroTrack *track,
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (track);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	if (priv->loading) {
 		brasero_status_set_not_ready (status,
@@ -2468,7 +2467,7 @@ brasero_track_data_cfg_get_size (BraseroTrack *track,
 	BraseroTrackDataCfgPrivate *priv;
 	goffset sectors = 0;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	sectors = brasero_data_project_get_sectors (BRASERO_DATA_PROJECT (priv->tree));
 	if (blocks) {
@@ -2504,7 +2503,7 @@ brasero_track_data_cfg_image_uri_cb (BraseroDataVFS *vfs,
 	GValue return_value;
 	GValue *params;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 	if (priv->loading)
 		return BRASERO_BURN_OK;
 
@@ -2543,7 +2542,7 @@ brasero_track_data_cfg_unreadable_uri_cb (BraseroDataVFS *vfs,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	if (priv->loading) {
 		priv->load_errors = g_slist_prepend (priv->load_errors,
@@ -2566,7 +2565,7 @@ brasero_track_data_cfg_recursive_uri_cb (BraseroDataVFS *vfs,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	if (priv->loading) {
 		gchar *message;
@@ -2592,7 +2591,7 @@ brasero_track_data_cfg_unknown_uri_cb (BraseroDataVFS *vfs,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	if (priv->loading) {
 		gchar *message;
@@ -2623,7 +2622,7 @@ brasero_track_data_cfg_autorun_inf_update (BraseroTrackDataCfg *self)
 	gchar *uri;
 	int fd;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (priv->tree), priv->autorun);
 	path = g_filename_from_uri (uri, NULL, NULL);
@@ -2664,7 +2663,7 @@ brasero_track_data_cfg_find_icon_name (BraseroTrackDataCfg *track)
 	gchar *name = NULL;
 	int i = 0;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (priv->tree));
 	do {
@@ -2681,7 +2680,7 @@ brasero_track_data_cfg_joliet_rename_cb (BraseroDataProject *project,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	/* Signal this once */
 	if (priv->joliet_rename)
@@ -2702,7 +2701,7 @@ brasero_track_data_cfg_virtual_sibling_cb (BraseroDataProject *project,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 	if (sibling == priv->icon) {
 		/* This is a warning that the icon has been added. Update our 
 		 * icon node and wait for it to appear in the callback for the
@@ -2720,7 +2719,7 @@ brasero_track_data_cfg_name_collision_cb (BraseroDataProject *project,
 	BraseroTrackDataCfgPrivate *priv;
 	gboolean result;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	/* some names are interesting for us */
 	if (node == priv->autorun) {
@@ -2789,7 +2788,7 @@ brasero_track_data_cfg_deep_directory (BraseroDataProject *project,
 	BraseroTrackDataCfgPrivate *priv;
 	gboolean result;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	if (priv->deep_directory)
 		return FALSE;
@@ -2818,7 +2817,7 @@ brasero_track_data_cfg_2G_file (BraseroDataProject *project,
 	BraseroTrackDataCfgPrivate *priv;
 	gboolean result;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	/* This is to make sure we asked once */
 	if (priv->G2_files)
@@ -2846,7 +2845,7 @@ brasero_track_data_cfg_project_loaded (BraseroDataProject *project,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	priv->loading_remaining = loading;
 	if (loading > 0) {
@@ -2879,7 +2878,7 @@ brasero_track_data_cfg_activity_changed (BraseroDataVFS *vfs,
 	if (brasero_data_vfs_is_active (vfs))
 		goto emit_signal;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (self);
+	priv = brasero_track_data_cfg_get_instance_private (self);
 
 	/* This is used when we finished exploring so we can update BRASERO_DATA_TREE_MODEL_PERCENT */
 	iter.stamp = priv->stamp;
@@ -2962,7 +2961,7 @@ brasero_track_data_cfg_span (BraseroTrackDataCfg *track,
 	BraseroTrackDataCfgPrivate *priv;
 	BraseroBurnResult result;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (priv->loading
 	||  brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))
 	||  brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree)) != NULL)
@@ -2996,7 +2995,7 @@ brasero_track_data_cfg_span_again (BraseroTrackDataCfg *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	return brasero_data_project_span_again (BRASERO_DATA_PROJECT (priv->tree));
 }
 
@@ -3019,7 +3018,7 @@ brasero_track_data_cfg_span_possible (BraseroTrackDataCfg *track,
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (priv->loading
 	||  brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->tree))
 	||  brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree)) != NULL)
@@ -3041,7 +3040,7 @@ brasero_track_data_cfg_span_stop (BraseroTrackDataCfg *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	brasero_data_project_span_stop (BRASERO_DATA_PROJECT (priv->tree));
 }
 
@@ -3064,7 +3063,7 @@ brasero_track_data_cfg_span_max_space (BraseroTrackDataCfg *track)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	return brasero_data_project_get_max_space (BRASERO_DATA_PROJECT (priv->tree));
 }
 
@@ -3088,7 +3087,7 @@ brasero_track_data_cfg_get_icon_path (BraseroTrackDataCfg *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (!priv->image_file)
 		return NULL;
 
@@ -3114,7 +3113,7 @@ brasero_track_data_cfg_get_icon (BraseroTrackDataCfg *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (priv->image_file)
 		icon = g_file_icon_new (priv->image_file);
 	else if ((medium = brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->tree))))
@@ -3133,7 +3132,7 @@ brasero_track_data_cfg_get_scaled_icon_path (BraseroTrackDataCfg *track)
 	gchar *uri;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), NULL);
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 	if (!priv->icon || BRASERO_FILE_NODE_VIRTUAL (priv->icon))
 		return NULL;
 
@@ -3167,7 +3166,7 @@ brasero_track_data_cfg_set_icon (BraseroTrackDataCfg *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA_CFG (track), FALSE);
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (track);
+	priv = brasero_track_data_cfg_get_instance_private (track);
 
 	/* Check whether we don't have an added (by the user) autorun.inf as it
 	 * won't be possible to edit it. */
@@ -3314,7 +3313,7 @@ brasero_track_data_cfg_init (BraseroTrackDataCfg *object)
 {
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (object);
+	priv = brasero_track_data_cfg_get_instance_private (object);
 
 	priv->sort_column = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
 	do {
@@ -3407,7 +3406,7 @@ brasero_track_data_cfg_finalize (GObject *object)
 	BraseroTrackDataCfg *cfg = BRASERO_TRACK_DATA_CFG (object);
 	BraseroTrackDataCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_CFG_PRIVATE (cfg);
+	priv = brasero_track_data_cfg_get_instance_private (cfg);
 
 	brasero_track_data_clean_autorun (cfg);
 	brasero_track_data_cfg_clean_cache (cfg);

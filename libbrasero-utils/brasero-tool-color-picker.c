@@ -56,7 +56,6 @@ enum {
 static guint tool_color_picker_signals[LAST_SIGNAL] = { 0 };
 
 
-#define BRASERO_TOOL_COLOR_PICKER_PRIVATE(o)  (brasero_tool_color_picker_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroToolColorPicker, brasero_tool_color_picker, GTK_TYPE_TOOL_BUTTON);
 
@@ -66,7 +65,7 @@ brasero_tool_color_picker_set_text (BraseroToolColorPicker *self,
 {
 	BraseroToolColorPickerPrivate *priv;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 	gtk_label_set_text_with_mnemonic (GTK_LABEL (priv->label), text);
 }
 
@@ -76,7 +75,7 @@ brasero_tool_color_picker_get_color (BraseroToolColorPicker *self,
 {
 	BraseroToolColorPickerPrivate *priv;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 	color->red = priv->color.red;
 	color->green = priv->color.green;
 	color->blue = priv->color.blue;
@@ -88,7 +87,7 @@ brasero_tool_color_picker_set_color (BraseroToolColorPicker *self,
 {
 	BraseroToolColorPickerPrivate *priv;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 	priv->color.red = color->red;
 	priv->color.green = color->green;
 	priv->color.blue = color->blue;
@@ -104,7 +103,7 @@ brasero_tool_color_picker_draw (GtkWidget *widget,
 	BraseroToolColorPickerPrivate *priv;
 	GtkAllocation allocation;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 
 	gdk_cairo_set_source_color (ctx, &priv->color);
 	gtk_widget_get_allocation (widget, &allocation);
@@ -125,7 +124,7 @@ brasero_tool_color_picker_destroy (GtkWidget *widget,
 {
 	BraseroToolColorPickerPrivate *priv;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 	priv->dialog = NULL;
 }
 
@@ -137,7 +136,7 @@ brasero_tool_color_picker_response (GtkWidget *widget,
 	BraseroToolColorPickerPrivate *priv;
 	GtkColorSelection *selection;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 
 	if (response == GTK_RESPONSE_OK) {
 		selection = GTK_COLOR_SELECTION (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (priv->dialog)));
@@ -161,7 +160,7 @@ brasero_tool_color_picker_clicked (BraseroToolColorPicker *self,
 	GtkColorSelection *selection;
 	BraseroToolColorPickerPrivate *priv;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (self);
+	priv = brasero_tool_color_picker_get_instance_private (self);
 
 	dialog = gtk_color_selection_dialog_new (_("Pick a Color"));
 	selection = GTK_COLOR_SELECTION (gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG (dialog)));
@@ -192,7 +191,7 @@ brasero_tool_color_picker_init (BraseroToolColorPicker *object)
 {
 	BraseroToolColorPickerPrivate *priv;
 
-	priv = BRASERO_TOOL_COLOR_PICKER_PRIVATE (object);
+	priv = brasero_tool_color_picker_get_instance_private (object);
 
 	g_signal_connect (object,
 			  "clicked",

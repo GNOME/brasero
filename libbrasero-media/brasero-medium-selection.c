@@ -55,7 +55,6 @@ struct _BraseroMediumSelectionPrivate
 	gulong removed_sig;
 };
 
-#define BRASERO_MEDIUM_SELECTION_PRIVATE(o)  (brasero_medium_selection_get_instance_private (o))
 
 typedef enum {
 	CHANGED_SIGNAL,
@@ -301,7 +300,7 @@ brasero_medium_selection_set_current_medium (BraseroMediumSelection *self,
 	BraseroMedium *medium = NULL;
 	GtkTreeModel *model;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
+	priv = brasero_medium_selection_get_instance_private (self);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 	gtk_tree_model_get (model, iter,
@@ -382,7 +381,7 @@ brasero_medium_selection_set_active (BraseroMediumSelection *selector,
 	g_return_val_if_fail (selector != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_SELECTION (selector), FALSE);
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
+	priv = brasero_medium_selection_get_instance_private (selector);
 	if (priv->active == medium)
 		return TRUE;
 
@@ -430,7 +429,7 @@ brasero_medium_selection_get_active (BraseroMediumSelection *selector)
 	g_return_val_if_fail (selector != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_SELECTION (selector), NULL);
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
+	priv = brasero_medium_selection_get_instance_private (selector);
 	if (!priv->active)
 		return NULL;
 
@@ -507,7 +506,7 @@ brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
 	g_return_if_fail (selector != NULL);
 	g_return_if_fail (BRASERO_IS_MEDIUM_SELECTION (selector));
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
+	priv = brasero_medium_selection_get_instance_private (selector);
 
 	priv->type = type;
 
@@ -643,7 +642,7 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 	GIcon *medium_icon;
 	GtkTreeIter iter;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
+	priv = brasero_medium_selection_get_instance_private (self);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 
@@ -836,7 +835,7 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 	BraseroMediumMonitor *monitor;
 	BraseroMediumSelectionPrivate *priv;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (object);
+	priv = brasero_medium_selection_get_instance_private (object);
 
 	monitor = brasero_medium_monitor_get_default ();
 	priv->added_sig = g_signal_connect (monitor,
@@ -869,7 +868,7 @@ brasero_medium_selection_finalize (GObject *object)
 	BraseroMediumSelectionPrivate *priv;
 	BraseroMediumMonitor *monitor;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selection);
+	priv = brasero_medium_selection_get_instance_private (selection);
 
 	monitor = brasero_medium_monitor_get_default ();
 
@@ -914,7 +913,7 @@ brasero_medium_selection_get_property (GObject *object,
 	BraseroMediumSelection *selection = BRASERO_MEDIUM_SELECTION (object);
 	BraseroMediumSelectionPrivate *priv;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selection);
+	priv = brasero_medium_selection_get_instance_private (selection);
 
 	switch (prop_id)
 	{

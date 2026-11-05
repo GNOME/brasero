@@ -66,7 +66,6 @@ struct _BraseroJacketEditPrivate
 	GtkWidget *background;
 };
 
-#define BRASERO_JACKET_EDIT_PRIVATE(o)  (brasero_jacket_edit_get_instance_private (o))
 
 enum {
 	SNAP_PIX_COL,
@@ -87,7 +86,7 @@ brasero_jacket_edit_print_page (GtkPrintOperation *operation,
 	BraseroJacketEditPrivate *priv;
 	guint y;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	y = brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->front), context, 0., 0.);
 	brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->back), context, 0., y + 20.);
@@ -158,7 +157,7 @@ brasero_jacket_edit_underline_pressed_cb (GtkToggleToolButton *button,
 	GtkTextIter end;
 	GtkTextTag *tag;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	if (!priv->current_view)
 		return;
@@ -186,7 +185,7 @@ brasero_jacket_edit_italic_pressed_cb (GtkToggleToolButton *button,
 	GtkTextIter end;
 	GtkTextTag *tag;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	if (!priv->current_view)
 		return;
@@ -214,7 +213,7 @@ brasero_jacket_edit_bold_pressed_cb (GtkToggleToolButton *button,
 	GtkTextIter end;
 	GtkTextTag *tag;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	if (!priv->current_view)
 		return;
@@ -243,7 +242,7 @@ brasero_jacket_edit_justify (GtkToggleToolButton *button,
 	GtkTextIter end;
 	GtkTextTag *tag;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	if (!gtk_toggle_tool_button_get_active (button))
 		return;
@@ -304,7 +303,7 @@ brasero_jacket_edit_colours_changed_cb (GtkColorButton *button,
 	GdkColor color;
 	GtkTextTag *tag;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 	if (!priv->current_view)
 		return;
 
@@ -335,7 +334,7 @@ brasero_jacket_edit_font_changed_cb (BraseroJacketFont *button,
 	GtkTextIter start;
 	GtkTextIter end;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	if (!priv->current_view)
 		return;
@@ -373,7 +372,7 @@ brasero_jacket_edit_configure_background_pressed_cb (GtkToolButton *button,
 {
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 	if (priv->current_view)
 		brasero_jacket_view_configure_background (BRASERO_JACKET_VIEW (priv->current_view));
 }
@@ -388,7 +387,7 @@ brasero_jacket_edit_update_button_state (BraseroJacketEdit *self)
 	GtkTextAttributes *attributes;
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	if (priv->current_view)
 		buffer = brasero_jacket_view_get_active_buffer (BRASERO_JACKET_VIEW (priv->current_view));
@@ -502,7 +501,7 @@ brasero_jacket_edit_tags_changed_cb (BraseroJacketView *view,
 {
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 	priv->current_view = GTK_WIDGET (view);
 	brasero_jacket_edit_update_button_state (self);
 }
@@ -518,7 +517,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	GtkWidget *item;
 	GtkWidget *view;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (object);
+	priv = brasero_jacket_edit_get_instance_private (object);
 
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (object), GTK_ORIENTATION_VERTICAL);
 
@@ -706,7 +705,7 @@ brasero_jacket_edit_freeze (BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	g_signal_handlers_block_by_func (priv->front, brasero_jacket_edit_tags_changed_cb, self);
 	g_signal_handlers_block_by_func (priv->back, brasero_jacket_edit_tags_changed_cb, self);
@@ -717,7 +716,7 @@ brasero_jacket_edit_thaw (BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	g_signal_handlers_unblock_by_func (priv->front, brasero_jacket_edit_tags_changed_cb, self);
 	g_signal_handlers_unblock_by_func (priv->back, brasero_jacket_edit_tags_changed_cb, self);
@@ -728,7 +727,7 @@ brasero_jacket_edit_get_front (BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	return BRASERO_JACKET_VIEW (priv->front);
 }
@@ -738,7 +737,7 @@ brasero_jacket_edit_get_back (BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
 
-	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	priv = brasero_jacket_edit_get_instance_private (self);
 
 	return BRASERO_JACKET_VIEW (priv->back);
 }

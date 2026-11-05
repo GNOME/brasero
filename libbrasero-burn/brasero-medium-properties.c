@@ -60,7 +60,6 @@ struct _BraseroMediumPropertiesPrivate
 	GtkWidget *medium_prop;
 };
 
-#define BRASERO_MEDIUM_PROPERTIES_PRIVATE(o)  (brasero_medium_properties_get_instance_private (o))
 
 enum {
 	PROP_0,
@@ -81,7 +80,7 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 	GtkWidget *box;
 	gchar *header;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
+	priv = brasero_medium_properties_get_instance_private (self);
 
 	/* Build dialog */
 	medium_prop = brasero_drive_properties_new (BRASERO_SESSION_CFG (priv->session));
@@ -160,7 +159,7 @@ brasero_medium_properties_image_properties (BraseroMediumProperties *self)
 	BraseroMediumPropertiesPrivate *priv;
 	GtkWindow *toplevel;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
+	priv = brasero_medium_properties_get_instance_private (self);
 
 	priv->medium_prop = brasero_image_properties_new ();
 	brasero_image_properties_set_session (BRASERO_IMAGE_PROPERTIES (priv->medium_prop),
@@ -193,7 +192,7 @@ brasero_medium_properties_clicked (GtkButton *button)
 	BraseroMediumPropertiesPrivate *priv;
 	BraseroDrive *drive;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
+	priv = brasero_medium_properties_get_instance_private (properties);
 
 	drive = brasero_burn_session_get_burner (priv->session);
 	if (!drive)
@@ -213,7 +212,7 @@ brasero_medium_properties_output_changed (BraseroBurnSession *session,
 	BraseroMediumPropertiesPrivate *priv;
 	BraseroDrive *burner;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (self);
+	priv = brasero_medium_properties_get_instance_private (self);
 
 	/* make sure that's an actual change of medium
 	 * as it could also be a change of path for image */
@@ -241,7 +240,7 @@ brasero_medium_properties_finalize (GObject *object)
 	BraseroMediumProperties *properties = BRASERO_MEDIUM_PROPERTIES (object);
 	BraseroMediumPropertiesPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
+	priv = brasero_medium_properties_get_instance_private (properties);
 
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
@@ -267,7 +266,7 @@ brasero_medium_properties_set_property (GObject *object,
 	BraseroMediumPropertiesPrivate *priv;
 	BraseroBurnSession *session;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
+	priv = brasero_medium_properties_get_instance_private (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -305,7 +304,7 @@ brasero_medium_properties_get_property (GObject *object,
 	BraseroMediumProperties *properties = BRASERO_MEDIUM_PROPERTIES (object);
 	BraseroMediumPropertiesPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PROPERTIES_PRIVATE (properties);
+	priv = brasero_medium_properties_get_instance_private (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:

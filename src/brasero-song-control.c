@@ -52,7 +52,6 @@ struct _BraseroSongControlPrivate
 	gsize end;
 };
 
-#define BRASERO_SONG_CONTROL_PRIVATE(o)  (brasero_song_control_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroSongControl, brasero_song_control, GTK_TYPE_ALIGNMENT);
 
@@ -61,7 +60,7 @@ brasero_song_control_get_length (BraseroSongControl *self)
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (self);
+	priv = brasero_song_control_get_instance_private (self);
 	if (!priv->uri)
 		return -1;
 
@@ -73,7 +72,7 @@ brasero_song_control_get_pos (BraseroSongControl *self)
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (self);
+	priv = brasero_song_control_get_instance_private (self);
 	return gtk_range_get_value (GTK_RANGE (priv->progress));
 }
 
@@ -84,7 +83,7 @@ brasero_song_control_update_position (BraseroSongControl *player)
 	BraseroSongControlPrivate *priv;
 	gchar *pos_string, *len_string, *result;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	len_string = brasero_units_get_time_string (priv->end - priv->start, FALSE, FALSE);
 
@@ -110,7 +109,7 @@ brasero_song_control_set_pos (BraseroSongControl *player,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 	return gst_element_seek (priv->pipe,
 				 1.0,
 				 GST_FORMAT_TIME,
@@ -127,7 +126,7 @@ brasero_song_control_range_value_changed (GtkRange *range,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	if (priv->state >= GST_STATE_PAUSED && !priv->update_scale_id) {
 		gdouble pos;
@@ -145,7 +144,7 @@ brasero_song_control_set_length (BraseroSongControl *player)
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 	if (priv->end - priv->start != 0)
 		gtk_range_set_range (GTK_RANGE (priv->progress),
 				     0.0,
@@ -160,7 +159,7 @@ brasero_song_control_update_progress_cb (BraseroSongControl *player)
 	gint64 pos;
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 	gst_element_query_position (priv->pipe,
 	                            GST_FORMAT_TIME,
 	                            &pos);
@@ -180,7 +179,7 @@ brasero_song_control_range_button_pressed_cb (GtkWidget *widget,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	/* stop the automatic update of progress bar position */
 	if (priv->update_scale_id) {
@@ -198,7 +197,7 @@ brasero_song_control_range_button_released_cb (GtkWidget *widget,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	/* restart the automatic update of progress bar */
 	if (priv->state == GST_STATE_PLAYING && !priv->update_scale_id)
@@ -215,7 +214,7 @@ brasero_song_control_button_clicked_cb (GtkButton *button,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	if (priv->state == GST_STATE_READY)
 		gst_element_set_state (priv->pipe, GST_STATE_PLAYING);
@@ -232,7 +231,7 @@ brasero_song_control_volume_changed_cb (GtkScaleButton *button,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 	g_object_set (priv->pipe,
 		      "volume", volume,
 		      NULL);
@@ -243,7 +242,7 @@ brasero_song_control_get_uri (BraseroSongControl *player)
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 	return priv->uri;
 }
 
@@ -255,7 +254,7 @@ brasero_song_control_set_info (BraseroSongControl *player,
 	gchar *header = NULL;
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	brasero_song_control_set_length (player);
 
@@ -306,7 +305,7 @@ brasero_song_control_set_boundaries (BraseroSongControl *player,
 {
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	priv->start = start;
 	priv->end = end;
@@ -325,7 +324,7 @@ brasero_song_control_set_uri (BraseroSongControl *player,
 
 	g_return_if_fail (uri != NULL);
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	/* avoid reloading everything if it's the same uri */
 	if (!g_strcmp0 (uri, priv->uri))
@@ -359,7 +358,7 @@ brasero_song_control_bus_messages (GstBus *bus,
 	GError *error = NULL;
 	GstState state;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (player);
+	priv = brasero_song_control_get_instance_private (player);
 
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_EOS:
@@ -445,7 +444,7 @@ brasero_song_control_destroy (GtkWidget *object)
 	BraseroSongControl *self = BRASERO_SONG_CONTROL (object);
 	BraseroSongControlPrivate *priv;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (self);
+	priv = brasero_song_control_get_instance_private (self);
 
 	if (priv->update_scale_id) {
 		g_source_remove (priv->update_scale_id);
@@ -488,7 +487,7 @@ brasero_song_control_init (BraseroSongControl *object)
 	gpointer value;
 	GstBus *bus;
 
-	priv = BRASERO_SONG_CONTROL_PRIVATE (object);
+	priv = brasero_song_control_get_instance_private (object);
 
 	/* Pipeline */
 	priv->pipe = gst_element_factory_make ("playbin", NULL);

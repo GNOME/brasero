@@ -88,7 +88,6 @@ struct _BraseroDataProjectPrivate
 	guint is_loading_contents:1;
 };
 
-#define BRASERO_DATA_PROJECT_PRIVATE(o)  (brasero_data_project_get_instance_private (o))
 
 #ifdef BUILD_INOTIFY
 
@@ -139,7 +138,7 @@ brasero_data_project_virtual_sibling (BraseroDataProject *self,
 	if (sibling == node)
 		return;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	g_signal_emit (self,
 		       brasero_data_project_signals [VIRTUAL_SIBLING_SIGNAL],
@@ -257,7 +256,7 @@ brasero_data_project_reference_new (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	guint retval;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	retval = priv->ref_count;
 	while (g_hash_table_lookup (priv->reference, GINT_TO_POINTER (retval))) {
@@ -287,7 +286,7 @@ brasero_data_project_reference_free (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	g_hash_table_remove (priv->reference, GINT_TO_POINTER (reference));
 }
 
@@ -298,7 +297,7 @@ brasero_data_project_reference_get (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	/* if it was invalidated then the node returned is NULL */
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	return g_hash_table_lookup (priv->reference, GINT_TO_POINTER (reference));
 }
 
@@ -323,7 +322,7 @@ brasero_data_project_reference_invalidate (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	/* used internally to invalidate reference whose node was removed */
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	g_hash_table_foreach_remove (priv->reference,
 				     (GHRFunc) brasero_data_project_reference_remove_children_cb,
 				     node);
@@ -407,7 +406,7 @@ brasero_data_project_joliet_add_node (BraseroDataProject *self,
 	if (!node->parent)
 		return;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (!priv->joliet)
 		priv->joliet = g_hash_table_new (brasero_data_project_joliet_hash,
@@ -451,7 +450,7 @@ brasero_data_project_joliet_remove_node (BraseroDataProject *self,
 	if (!node->parent)
 		return FALSE;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	brasero_data_project_joliet_set_key (&key, node);
 	success = g_hash_table_lookup_extended (priv->joliet,
@@ -503,7 +502,7 @@ brasero_data_project_joliet_remove_children_node (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (!parent)
 		parent = priv->root;
@@ -528,7 +527,7 @@ brasero_data_project_node_to_uri (BraseroDataProject *self,
 	gchar *ptr;
 	guint len;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (node->is_fake || node->is_imported)
 		return NULL;
@@ -637,7 +636,7 @@ brasero_data_project_uri_to_nodes (BraseroDataProject *self,
 	GSList *iter;
 	gchar *path;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* see if it grafted. If so, return the list */
 	graft = g_hash_table_lookup (priv->grafts, uri);
@@ -695,7 +694,7 @@ brasero_data_project_node_changed (BraseroDataProject *self,
 	BraseroDataProjectClass *klass;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 
 	if (klass->node_changed)
@@ -718,7 +717,7 @@ brasero_data_project_reorder_children (BraseroDataProject *self,
 	BraseroDataProjectClass *klass;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	array = brasero_file_node_sort_children (parent, priv->sort_func);
 
@@ -785,7 +784,7 @@ brasero_data_project_set_sort_function (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (priv->sort_func != sort_func) {
 		priv->sort_func = sort_func;
@@ -813,7 +812,7 @@ brasero_data_project_uri_has_parent (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	gchar *parent;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	parent = g_path_get_dirname (uri);
 
@@ -843,7 +842,7 @@ brasero_data_project_uri_is_graft_needed (BraseroDataProject *self,
 	GSList *iter;
 	gchar *name;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	graft = g_hash_table_lookup (priv->grafts, uri);
 
@@ -920,7 +919,7 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 	GSList *iter;
 	GSList *next;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	g_hash_table_lookup_extended (priv->grafts,
 				      uri,
@@ -980,7 +979,7 @@ brasero_data_project_uri_add_graft (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroURINode *graft;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	graft = g_new0 (BraseroURINode, 1);
 	if (uri != NEW_FOLDER)
@@ -1002,7 +1001,7 @@ brasero_data_project_uri_ensure_graft (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroURINode *graft;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	graft = g_hash_table_lookup (priv->grafts, uri);
 	if (graft)
@@ -1100,7 +1099,7 @@ brasero_data_project_remove_node_children_graft (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroRemoveChildrenGraftData callback_data;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	callback_data.project = self;
 	callback_data.node = node;
@@ -1132,7 +1131,7 @@ brasero_data_project_node_removed (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 #ifdef BUILD_INOTIFY
 
@@ -1212,7 +1211,7 @@ brasero_data_project_remove_real (BraseroDataProject *self,
 	BraseroFileTreeStats *stats;
 	guint former_position;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	brasero_data_project_node_removed (self, node);
 
@@ -1248,7 +1247,7 @@ brasero_data_project_convert_to_fake (BraseroDataProject *self,
 	BraseroURINode *graft;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* make it a fake directory not to break order */
 	node->is_fake = TRUE;
@@ -1276,7 +1275,7 @@ brasero_data_project_remove_node (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroDataProjectClass *klass;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (node->is_tmp_parent) {
 		/* This node was created as a temporary parent, it doesn't exist
@@ -1319,7 +1318,7 @@ brasero_data_project_destroy_node (BraseroDataProject *self,
 	BraseroFileTreeStats *stats;
 	guint former_position;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	brasero_data_project_node_removed (self, node);
 
@@ -1355,7 +1354,7 @@ brasero_data_project_is_deep (BraseroDataProject *self,
 	BraseroFileTreeStats *stats;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* if there are already deep files accepts new ones (includes the 
 	 * possible imported ones. */
@@ -1393,7 +1392,7 @@ brasero_data_project_remove_sibling (BraseroDataProject *self,
 	if (sibling != replacement)
 		return;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (BRASERO_FILE_NODE_VIRTUAL (sibling)) {
 		BraseroFileTreeStats *stats;
@@ -1444,7 +1443,7 @@ brasero_data_project_move_node (BraseroDataProject *self,
 	guint former_position;
 	gboolean check_graft;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (!parent)
 		parent = priv->root;
@@ -1573,7 +1572,7 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroFileNode *sibling;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* Don't allow rename to succeed if name is the empty string */
 	if (strlen (name) < 1) {
@@ -1660,7 +1659,7 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* See if we should create a graft for the node.
 	 * NOTE: if we create a graft we create a graft for all nodes
@@ -1752,7 +1751,7 @@ brasero_data_project_restore_uri (BraseroDataProject *self,
 	GSList *iter;
 	gchar *name;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	name = brasero_utils_get_uri_name (uri);
 
@@ -1790,7 +1789,7 @@ brasero_data_project_exclude_uri (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* NOTE: we don't remove the existing nodes in case one was
 	 * previously restored. In any case remove all loading nodes.
@@ -1816,7 +1815,7 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (!parent)
 		parent = priv->root;
@@ -1901,7 +1900,7 @@ brasero_data_project_add_empty_directory (BraseroDataProject *self,
 	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (!parent)
 		parent = priv->root;
@@ -2002,7 +2001,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	BraseroFileTreeStats *stats;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	type = g_file_info_get_file_type (info);
 	if (node->is_tmp_parent) {
@@ -2128,7 +2127,7 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 	const gchar *name;
 	guint64 size;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	node->is_reloading = FALSE;
 
@@ -2181,7 +2180,7 @@ brasero_data_project_add_loading_node_real (BraseroDataProject *self,
 	BraseroFileNode *sibling;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	graft = g_hash_table_lookup (priv->grafts, uri);
 	if (!parent)
@@ -2257,7 +2256,7 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (parent->is_exploring) {
 		BraseroDataProjectClass *klass;
@@ -2312,7 +2311,7 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* Only useful at project load time. In this case if the URI has already
 	 * a graft we ignore it since if it existed it has been added through a
@@ -2627,7 +2626,7 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 	MakeTrackData callback_data;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (!g_hash_table_size (priv->grafts))
 		return FALSE;
@@ -2740,7 +2739,7 @@ brasero_data_project_span_generate (BraseroDataProject *self,
 	GSList *excluded = NULL;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	for (iter = data->grafts; iter; iter = iter->next) {
 		BraseroFileNode *node;
@@ -2863,7 +2862,7 @@ brasero_data_project_get_max_space (BraseroDataProject *self)
 	BraseroFileNode *children;
 	goffset max_sectors = 0;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* When empty this is an error */
 	if (!g_hash_table_size (priv->grafts))
@@ -2902,7 +2901,7 @@ brasero_data_project_span (BraseroDataProject *self,
 	BraseroFileNode *children;
 	goffset total_sectors = 0;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* When empty this is an error */
 	if (!g_hash_table_size (priv->grafts))
@@ -3026,7 +3025,7 @@ brasero_data_project_span_possible (BraseroDataProject *self,
 	gboolean has_data_left = FALSE;
 	BraseroFileNode *children;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* When empty this is an error */
 	if (!g_hash_table_size (priv->grafts))
@@ -3067,7 +3066,7 @@ brasero_data_project_span_again (BraseroDataProject *self)
 	BraseroDataProjectPrivate *priv;
 	BraseroFileNode *children;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* When empty this is an error */
 	if (!g_hash_table_size (priv->grafts))
@@ -3089,7 +3088,7 @@ brasero_data_project_span_stop (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	g_slist_free (priv->spanned);
 	priv->spanned = NULL;
 }
@@ -3100,7 +3099,7 @@ brasero_data_project_has_symlinks (BraseroDataProject *self)
 	BraseroDataProjectPrivate *priv;
 	BraseroFileTreeStats *stats;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
 	if (stats->num_sym)
@@ -3115,7 +3114,7 @@ brasero_data_project_is_joliet_compliant (BraseroDataProject *self)
 	BraseroDataProjectPrivate *priv;
 	BraseroFileTreeStats *stats;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
 	if (stats->num_sym)
@@ -3134,7 +3133,7 @@ brasero_data_project_is_video_project (BraseroDataProject *self)
 	gboolean has_video, has_audio;
 	BraseroFileNode *iter;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* here we check that the selection can be burnt as a video DVD.
 	 * It must have :
@@ -3190,7 +3189,7 @@ brasero_data_project_is_empty (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	if (g_hash_table_size (priv->grafts))
 		return FALSE;
 
@@ -3211,7 +3210,7 @@ brasero_data_project_create_path (BraseroDataProject *self,
 	const gchar *path;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	path = *buffer;
 	if (path [0] == G_DIR_SEPARATOR)
@@ -3317,7 +3316,7 @@ brasero_data_project_add_path (BraseroDataProject *self,
 	BraseroFileNode *node;
 	BraseroURINode *graft;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* we don't create the last part (after the last separator) of
 	 * the node since we're only interested in the existence of the
@@ -3412,7 +3411,7 @@ brasero_data_project_add_excluded_uri (BraseroDataProject *self,
 	GSList *parents;
 	GSList *iter;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* First exclude this URI, that is make sure a graft was created if need
 	 * be without node.
@@ -3558,7 +3557,7 @@ brasero_data_project_load_contents_notify (BraseroDataProject *self)
 	if (!klass->node_added)
 		return 0;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* we'll notify for every single node in the tree starting from the top.
 	 * NOTE: at this point there are only grafted nodes (fake or not) in the
@@ -3578,7 +3577,7 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 	GSList *folders = NULL;
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	priv->is_loading_contents = 1;
 
 	for (iter = grafts; iter; iter = iter->next) {
@@ -3702,7 +3701,7 @@ brasero_data_project_get_sectors (BraseroDataProject *self)
 	BraseroDataProjectPrivate *priv;
 	guint retval = 0;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* make the sum of all graft sizes provided they have nodes */
 	g_hash_table_foreach (priv->grafts,
@@ -3748,7 +3747,7 @@ brasero_data_project_get_folder_sectors (BraseroDataProject *self,
 	if (node->is_file)
 		return 0;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	size.node = node;
 	size.sum = BRASERO_FILE_NODE_SECTORS (node);
@@ -3764,7 +3763,7 @@ brasero_data_project_init (BraseroDataProject *object)
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (object);
+	priv = brasero_data_project_get_instance_private (object);
 
 	/* create the root */
 	priv->root = brasero_file_node_root_new ();
@@ -3786,7 +3785,7 @@ brasero_data_project_get_root (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 	return priv->root;
 }
 
@@ -3805,7 +3804,7 @@ brasero_data_project_watch_path (BraseroDataProject *project,
 	gchar **array;
 	gchar **iter;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (project);
+	priv = brasero_data_project_get_instance_private (project);
 	parent = brasero_data_project_skip_existing (project, priv->root, &path);
 
 	if (!path || path [0] == '\0')
@@ -3870,7 +3869,7 @@ brasero_data_project_clear (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	if (priv->spanned) {
 		g_slist_free (priv->spanned);
@@ -3908,7 +3907,7 @@ brasero_data_project_reset (BraseroDataProject *self)
 	BraseroDataProjectClass *klass;
 	guint num_nodes;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+	priv = brasero_data_project_get_instance_private (self);
 
 	/* Do it now */
 	num_nodes = brasero_file_node_get_n_children (priv->root);
@@ -3928,7 +3927,7 @@ brasero_data_project_finalize (GObject *object)
 	BraseroDataProject *project = BRASERO_DATA_PROJECT (object);
 	BraseroDataProjectPrivate *priv;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (project);
+	priv = brasero_data_project_get_instance_private (project);
 	brasero_data_project_clear (project);
 
 	if (priv->grafts) {
@@ -4080,7 +4079,7 @@ brasero_data_project_file_update_name (BraseroDataProject *self,
 		BraseroDataProjectPrivate *priv;
 
 		klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
-		priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+		priv = brasero_data_project_get_instance_private (self);
 
 		/* restore the imported node that has the same name as old_name */
 		brasero_file_node_add (sibling->parent, sibling, priv->sort_func);
@@ -4239,7 +4238,7 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		BraseroDataProjectPrivate *priv;
 
 		klass = BRASERO_DATA_PROJECT_GET_CLASS (monitor);
-		priv = BRASERO_DATA_PROJECT_PRIVATE (project);
+		priv = brasero_data_project_get_instance_private (project);
 
 		/* make sure there isn't the same name in the directory: if so,
 		 * that's simply not possible to rename. So if node is grafted
@@ -4320,7 +4319,7 @@ brasero_data_project_file_removed (BraseroFileMonitor *monitor,
 	BraseroFileNode *node;
 	gchar *uri;
 
-	priv = BRASERO_DATA_PROJECT_PRIVATE (project);
+	priv = brasero_data_project_get_instance_private (project);
 
 	/* If name is NULL then it means the event is against callback.
 	 * Otherwise that's against one of the children of callback. */

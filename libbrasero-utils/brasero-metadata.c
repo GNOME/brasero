@@ -96,7 +96,6 @@ struct BraseroMetadataPrivate {
 	guint snapshot_started:1;
 };
 typedef struct BraseroMetadataPrivate BraseroMetadataPrivate;
-#define BRASERO_METADATA_PRIVATE(o) (brasero_metadata_get_instance_private (o))
 
 enum {
 	PROP_NONE,
@@ -127,7 +126,7 @@ brasero_metadata_get_xid (BraseroMetadata *metadata)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (metadata);
+	priv = brasero_metadata_get_instance_private (metadata);
 	if (!priv->xid_callback)
 		return 0;
 
@@ -141,7 +140,7 @@ brasero_metadata_set_get_xid_callback (BraseroMetadata *metadata,
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (metadata);
+	priv = brasero_metadata_get_instance_private (metadata);
 	priv->xid_callback = callback;
 	priv->xid_user_data = user_data;
 }
@@ -302,7 +301,7 @@ brasero_metadata_destroy_pipeline (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	priv->started = 0;
 
@@ -358,7 +357,7 @@ brasero_metadata_stop (BraseroMetadata *self)
 	BraseroMetadataPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Retrieval ended for %s %p",
   			   priv->info ? priv->info->uri:"Unknown",
@@ -417,7 +416,7 @@ brasero_metadata_cancel (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Metadata retrieval cancelled for %s %p",
 			   priv->info ? priv->info->uri:"Unknown",
@@ -459,7 +458,7 @@ brasero_metadata_install_plugins_free_data (GSList *downloads)
 		for (meta = download->objects; meta; meta = meta->next) {
 			BraseroMetadataPrivate *priv;
 
-			priv = BRASERO_METADATA_PRIVATE (meta->data);
+			priv = brasero_metadata_get_instance_private (meta->data);
 			priv->downloads = g_slist_remove (priv->downloads, download);
 		}
 		g_slist_free (download->objects);
@@ -479,7 +478,7 @@ brasero_metadata_install_plugins_success (BraseroMetadataGstDownload *download)
 	for (iter = download->objects; iter; iter = iter->next) {
 		BraseroMetadataPrivate *priv;
 
-		priv = BRASERO_METADATA_PRIVATE (iter->data);
+		priv = brasero_metadata_get_instance_private (iter->data);
 
 		if (priv->error) {
 			/* free previously saved error message */
@@ -503,7 +502,7 @@ brasero_metadata_install_plugins_abort (BraseroMetadataGstDownload *download)
 
 		next = iter->next;
 
-		priv = BRASERO_METADATA_PRIVATE (iter->data);
+		priv = brasero_metadata_get_instance_private (iter->data);
 
 		if (priv->error) {
 			g_error_free (priv->error);
@@ -608,7 +607,7 @@ brasero_metadata_install_missing_plugins (BraseroMetadata *self)
 	GPtrArray *details;
 	GSList *iter;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Starting to download missing plugins");
 
@@ -688,7 +687,7 @@ brasero_metadata_completed (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	if (priv->error) {
 		BRASERO_UTILS_LOG ("Operation completed with an error %s", priv->error->message);
@@ -723,7 +722,7 @@ brasero_metadata_thumbnail (BraseroMetadata *self)
 	gint64 position;
 	gboolean res;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	/* find the right position and move forward */
 	position = 15 * GST_SECOND;
@@ -763,7 +762,7 @@ brasero_metadata_is_seekable (BraseroMetadata *self)
 	gboolean seekable;
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	priv->info->is_seekable = FALSE;
 
@@ -797,7 +796,7 @@ brasero_metadata_get_mime_type (BraseroMetadata *self)
 	GstCaps *caps = NULL;
 	const gchar *mime;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	if (priv->info->type) {
 		g_free (priv->info->type);
@@ -897,7 +896,7 @@ brasero_metadata_is_mp3 (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	if (!priv->info->type
 	&&  !brasero_metadata_get_mime_type (self))
@@ -915,7 +914,7 @@ foreach_tag (const GstTagList *list,
 	     BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	if (!strcmp (tag, GST_TAG_TITLE)) {
 		if (priv->info->title)
@@ -965,7 +964,7 @@ brasero_metadata_process_element_messages (BraseroMetadata *self,
 	BraseroMetadataPrivate *priv;
 	const GstStructure *s;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	s = gst_message_get_structure (msg);
 
@@ -1049,7 +1048,7 @@ brasero_metadata_process_pending_messages (BraseroMetadata *self)
 	GstMessage *msg;
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
 	while ((msg = gst_bus_pop (bus))) {
@@ -1074,7 +1073,7 @@ brasero_metadata_success (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Metadata retrieval completed for %s", priv->info->uri);
 
@@ -1105,7 +1104,7 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 	BraseroMetadataPrivate *priv;
 	gint64 duration = -1;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	if (!use_duration)
 		gst_element_query_position (GST_ELEMENT (pipeline),
@@ -1150,7 +1149,7 @@ brasero_metadata_mp3_bus_messages (GstBus *bus,
 	gchar *debug_string = NULL;
 	GError *error = NULL;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_ERROR:
@@ -1185,7 +1184,7 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 	GstElement *sink;
 	GstBus *bus;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	priv->pipeline_mp3 = gst_pipeline_new (NULL);
 
@@ -1253,7 +1252,7 @@ brasero_metadata_success_main (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Metadata retrieval successfully completed for %s", priv->info->uri);
 
@@ -1289,7 +1288,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 	GError *error = NULL;
 	GstState newstate;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_ELEMENT:
@@ -1346,7 +1345,7 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 	BraseroMetadataPrivate *priv;
 	GstPad *audio_pad;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	priv->audio = gst_bin_new (NULL);
 
@@ -1457,7 +1456,7 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 	GstPad *video_pad;
 	GstElement *queue;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 	priv->video = gst_bin_new (NULL);
 
 	priv->snapshot = gst_element_factory_make ("gdkpixbufsink", NULL);
@@ -1518,7 +1517,7 @@ brasero_metadata_error_on_pad_linking (BraseroMetadata *self)
 	GstMessage *message;
 	GstBus *bus;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
 					 priv->error,
@@ -1538,7 +1537,7 @@ brasero_metadata_link_dummy_pad (BraseroMetadata *self,
 	GstPadLinkReturn res;
 	GstPad *sink;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Linking to a fake sink");
 
@@ -1574,7 +1573,7 @@ brasero_metadata_audio_caps (BraseroMetadata *self,
 	int num_caps;
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	num_caps = gst_caps_get_size (caps);
 	for (i = 0; i < num_caps; i++) {
@@ -1644,7 +1643,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	GstStructure *structure;
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	res = GST_PAD_LINK_REFUSED;
 
@@ -1727,7 +1726,7 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	priv->pipeline = gst_pipeline_new (NULL);
 
@@ -1774,7 +1773,7 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 	BraseroMetadataPrivate *priv;
 	GstBus *bus;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("New retrieval for %s %p", uri, self);
 
@@ -1858,7 +1857,7 @@ brasero_metadata_set_uri (BraseroMetadata *self,
 	GstStateChangeReturn state_change;
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	g_mutex_lock (priv->mutex);
 
@@ -1897,7 +1896,7 @@ brasero_metadata_get_info_async (BraseroMetadata *self,
 	BraseroMetadataPrivate *priv;
 	GstStateChangeReturn state_change;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	priv->flags = flags;
 
@@ -1940,7 +1939,7 @@ brasero_metadata_wait (BraseroMetadata *self,
 	GCond *condition;
 	gulong sig;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Metadata lock and wait %p", self);
 
@@ -1978,7 +1977,7 @@ brasero_metadata_increase_listener_number (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 	g_atomic_int_inc (&priv->listeners);
 }
 
@@ -1987,7 +1986,7 @@ brasero_metadata_decrease_listener_number (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 	return g_atomic_int_dec_and_test (&priv->listeners);
 }
 
@@ -1996,7 +1995,7 @@ brasero_metadata_get_uri (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 	return priv->info?priv->info->uri:NULL;
 }
 
@@ -2005,7 +2004,7 @@ brasero_metadata_get_flags (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 	return priv->flags;
 }
 
@@ -2016,7 +2015,7 @@ brasero_metadata_get_result (BraseroMetadata *self,
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	if (priv->error) {
 		if (error)
@@ -2041,7 +2040,7 @@ brasero_metadata_init (BraseroMetadata *obj)
 {
 	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (obj);
+	priv = brasero_metadata_get_instance_private (obj);
 
 	priv->mutex = g_mutex_new ();
 }
@@ -2053,7 +2052,7 @@ brasero_metadata_finalize (GObject *object)
 	BraseroMetadataPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_METADATA_PRIVATE (metadata);
+	priv = brasero_metadata_get_instance_private (metadata);
 
 	brasero_metadata_destroy_pipeline (metadata);
 
@@ -2106,7 +2105,7 @@ brasero_metadata_get_property (GObject *obj,
 	BraseroMetadataPrivate *priv;
 
 	self = BRASERO_METADATA (obj);
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	switch (prop_id) {
 	case PROP_URI:
@@ -2132,7 +2131,7 @@ brasero_metadata_set_property (GObject *obj,
 	BraseroMetadataPrivate *priv;
 
 	self = BRASERO_METADATA (obj);
-	priv = BRASERO_METADATA_PRIVATE (self);
+	priv = brasero_metadata_get_instance_private (self);
 
 	switch (prop_id) {
 	case PROP_URI:

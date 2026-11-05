@@ -89,7 +89,6 @@ struct _BraseroProcessPrivate {
 	guint process_finished:1;
 };
 
-#define BRASERO_PROCESS_PRIVATE(o)  (brasero_process_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroProcess, brasero_process, BRASERO_TYPE_JOB);
 
@@ -99,7 +98,7 @@ brasero_process_deferred_error (BraseroProcess *self,
 {
 	BraseroProcessPrivate *priv;
 
-	priv = BRASERO_PROCESS_PRIVATE (self);
+	priv = brasero_process_get_instance_private (self);
 	if (priv->error)
 		g_error_free (priv->error);
 
@@ -112,7 +111,7 @@ brasero_process_ask_argv (BraseroJob *job,
 {
 	BraseroProcess *process = BRASERO_PROCESS (job);
 	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (process);
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 	BraseroBurnResult result;
 	int i;
 
@@ -159,7 +158,7 @@ brasero_process_add_automatic_track (BraseroProcess *self)
 	BraseroTrack *track = NULL;
 	BraseroTrackType *type = NULL;
 	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (self);
 
 	/* On error, don't automatically add a track */
 	if (priv->return_status)
@@ -241,7 +240,7 @@ brasero_process_add_automatic_track (BraseroProcess *self)
 static BraseroBurnResult
 brasero_process_finished (BraseroProcess *self)
 {
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (self);
 	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (self);
 
 	priv->process_finished = TRUE;
@@ -282,7 +281,7 @@ brasero_process_watch_child (gpointer data)
 {
 	int status;
 	BraseroBurnResult result;
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (data);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (data);
 
 	if (waitpid (priv->pid, &status, WNOHANG) <= 0)
 		return TRUE;
@@ -342,7 +341,7 @@ brasero_process_read (BraseroProcess *process,
 	GString *buffer;
 	GIOStatus status;
 	BraseroBurnResult result = BRASERO_BURN_OK;
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 
 	if (!channel)
 		return FALSE;
@@ -458,7 +457,7 @@ brasero_process_read_stderr (GIOChannel *source,
 {
 	gboolean result;
 	BraseroProcessClass *klass;
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 
 	if (!priv->err_buffer)
 		priv->err_buffer = g_string_new (NULL);
@@ -503,7 +502,7 @@ brasero_process_read_stdout (GIOChannel *source,
 {
 	gboolean result;
 	BraseroProcessClass *klass;
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 
 	if (!priv->out_buffer)
 		priv->out_buffer = g_string_new (NULL);
@@ -595,7 +594,7 @@ static BraseroBurnResult
 brasero_process_start (BraseroJob *job, GError **error)
 {
 	BraseroProcess *process = BRASERO_PROCESS (job);
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 	int stdout_pipe, stderr_pipe;
 	BraseroProcessClass *klass;
 	BraseroBurnResult result;
@@ -669,7 +668,7 @@ brasero_process_stop (BraseroJob *job,
 	BraseroProcess *process;
 
 	process = BRASERO_PROCESS (job);
-	priv = BRASERO_PROCESS_PRIVATE (process);
+	priv = brasero_process_get_instance_private (process);
 
 	if (priv->watch) {
 		/* if the child is still running at this stage 
@@ -805,7 +804,7 @@ void
 brasero_process_set_working_directory (BraseroProcess *process,
 				       const gchar *directory)
 {
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 
 	if (priv->working_directory) {
 		g_free (priv->working_directory);
@@ -819,7 +818,7 @@ static void
 brasero_process_finalize (GObject *object)
 {
 	BraseroProcess *process = BRASERO_PROCESS (object);
-	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+	BraseroProcessPrivate *priv = brasero_process_get_instance_private (process);
 
 	if (priv->watch) {
 		g_source_remove (priv->watch);

@@ -50,7 +50,6 @@ struct _BraseroFilteredUriPrivate
 	GHashTable *restored;
 };
 
-#define BRASERO_FILTERED_URI_PRIVATE(o)  (brasero_filtered_uri_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroFilteredUri, brasero_filtered_uri, GTK_TYPE_LIST_STORE);
 
@@ -68,7 +67,7 @@ brasero_filtered_uri_get_restored_list (BraseroFilteredUri *filtered)
 	GHashTableIter iter;
 	gpointer key;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
+	priv = brasero_filtered_uri_get_instance_private (filtered);
 
 	g_hash_table_iter_init (&iter, priv->restored);
 	while (g_hash_table_iter_next (&iter, &key, NULL))
@@ -83,7 +82,7 @@ brasero_filtered_uri_lookup_restored (BraseroFilteredUri *filtered,
 {
 	BraseroFilteredUriPrivate *priv;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
+	priv = brasero_filtered_uri_get_instance_private (filtered);
 	/* See if this file is already in filtered */
 	return GPOINTER_TO_INT (g_hash_table_lookup (priv->restored, uri));
 }
@@ -94,7 +93,7 @@ brasero_filtered_uri_dont_filter (BraseroFilteredUri *filtered,
 {
 	BraseroFilteredUriPrivate *priv;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
+	priv = brasero_filtered_uri_get_instance_private (filtered);
 	uri = brasero_utils_register_string (uri);
 	g_hash_table_insert (priv->restored,
 			     (gchar *) uri,
@@ -130,7 +129,7 @@ brasero_filtered_uri_remove_with_children (BraseroFilteredUri *filtered,
 	gpointer value;
 	gpointer key;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
+	priv = brasero_filtered_uri_get_instance_private (filtered);
 
 	g_hash_table_iter_init (&iter, priv->restored);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -184,7 +183,7 @@ brasero_filtered_uri_restore (BraseroFilteredUri *filtered,
 	guint value;
 	gchar *uri;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
+	priv = brasero_filtered_uri_get_instance_private (filtered);
 
 	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (filtered), &iter, treepath))
 		return NULL;
@@ -210,7 +209,7 @@ brasero_filtered_uri_clear (BraseroFilteredUri *filtered)
 	GHashTableIter iter;
 	gpointer key;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (filtered);
+	priv = brasero_filtered_uri_get_instance_private (filtered);
 
 	g_hash_table_iter_init (&iter, priv->restored);
 	while (g_hash_table_iter_next (&iter, &key, NULL)) {
@@ -227,7 +226,7 @@ brasero_filtered_uri_init (BraseroFilteredUri *object)
 	BraseroFilteredUriPrivate *priv;
 	GType types [BRASERO_FILTERED_NB_COL] = { 0, };
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (object);
+	priv = brasero_filtered_uri_get_instance_private (object);
 
 	priv->restored = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -246,7 +245,7 @@ brasero_filtered_uri_finalize (GObject *object)
 	BraseroFilteredUri *uri = BRASERO_FILTERED_URI (object);
 	BraseroFilteredUriPrivate *priv;
 
-	priv = BRASERO_FILTERED_URI_PRIVATE (uri);
+	priv = brasero_filtered_uri_get_instance_private (uri);
 
 	brasero_filtered_uri_clear (BRASERO_FILTERED_URI (object));
 

@@ -66,7 +66,6 @@ struct _BraseroPluginManagerPrivate {
 	GSettings *settings;
 };
 
-#define BRASERO_PLUGIN_MANAGER_PRIVATE(o)  (brasero_plugin_manager_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroPluginManager, brasero_plugin_manager, G_TYPE_OBJECT);
 
@@ -87,7 +86,7 @@ brasero_plugin_manager_get_plugins_list (BraseroPluginManager *self)
 	GSList *retval = NULL;
 	GSList *iter;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+	priv = brasero_plugin_manager_get_instance_private (self);
 
 	for (iter = priv->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
@@ -109,7 +108,7 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 	GPtrArray *array;
 	GSList *iter;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+	priv = brasero_plugin_manager_get_instance_private (self);
 
 	/* build a list of all active plugins */
 	array = g_ptr_array_new ();
@@ -166,7 +165,7 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 	gchar **names = NULL;
 	BraseroPluginManagerPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+	priv = brasero_plugin_manager_get_instance_private (self);
 
 	/* get the list of user requested plugins. while at it we add a watch
 	 * on the key so as to be warned whenever the user changes prefs. */
@@ -290,7 +289,7 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 				NULL};
 	BraseroPluginManagerPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+	priv = brasero_plugin_manager_get_instance_private (self);
 
 	/* open the plugin directory */
 	BRASERO_BURN_LOG ("opening plugin directory %s", BRASERO_PLUGIN_DIRECTORY);
@@ -360,7 +359,7 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 	GError *error = NULL;
 	BraseroPluginManagerPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+	priv = brasero_plugin_manager_get_instance_private (self);
 
 	priv->settings = g_settings_new (BRASERO_SCHEMA_CONFIG);
 	g_signal_connect (priv->settings,
@@ -445,7 +444,7 @@ brasero_plugin_manager_finalize (GObject *object)
 	BraseroPluginManager *mgr = BRASERO_PLUGIN_MANAGER (object);
 	BraseroPluginManagerPrivate *priv;
 
-	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (mgr);
+	priv = brasero_plugin_manager_get_instance_private (mgr);
 
 	if (priv->settings) {
 		g_object_unref (priv->settings);

@@ -61,7 +61,6 @@
 #include "brasero-track.h"
 #include "brasero-track-disc.h"
 
-#define BRASERO_BURN_SESSION_PRIVATE(o)  (brasero_burn_session_get_instance_private (o))
 
 /**
  * SECTION:brasero-session
@@ -207,7 +206,7 @@ brasero_burn_session_stop_tracks_monitoring (BraseroBurnSession *self)
 	BraseroBurnSessionPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroTrack *track;
@@ -228,7 +227,7 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	brasero_burn_session_stop_tracks_monitoring (self);
 
@@ -269,7 +268,7 @@ brasero_burn_session_set_strict_support (BraseroBurnSession *session,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (session));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 	priv->strict_checks = strict_checks;
 }
 
@@ -295,7 +294,7 @@ brasero_burn_session_get_strict_support (BraseroBurnSession *session)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), FALSE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 	return priv->strict_checks;
 }
 
@@ -322,7 +321,7 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* Prevent adding the same tracks several times */
 	if (g_slist_find (priv->tracks, new_track)) {
@@ -401,7 +400,7 @@ brasero_burn_session_move_track (BraseroBurnSession *session,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 
 	/* Find the track, remove it */
 	former_position = g_slist_index (priv->tracks, track);
@@ -451,7 +450,7 @@ brasero_burn_session_remove_track (BraseroBurnSession *session,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 
 	/* Find the track, remove it */
 	former_position = g_slist_index (priv->tracks, track);
@@ -487,7 +486,7 @@ brasero_burn_session_get_tracks (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	return priv->tracks;
 }
@@ -518,7 +517,7 @@ brasero_burn_session_get_status (BraseroBurnSession *session,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_TRACK_TYPE_NONE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 	if (!priv->tracks)
 		return BRASERO_BURN_ERR;
 
@@ -594,7 +593,7 @@ brasero_burn_session_get_size (BraseroBurnSession *session,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_TRACK_TYPE_NONE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 	if (!priv->tracks)
 		return BRASERO_BURN_ERR;
 
@@ -648,7 +647,7 @@ brasero_burn_session_get_input_type (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* there can be many tracks (in case of audio) but they must be
 	 * all of the same kind for the moment. Yet their subtypes may
@@ -710,7 +709,7 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (drive == priv->settings->burner)
 		return;
@@ -775,7 +774,7 @@ brasero_burn_session_get_burner (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return priv->settings->burner;
 }
 
@@ -800,7 +799,7 @@ brasero_burn_session_set_rate (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
 		return BRASERO_BURN_ERR;
@@ -830,7 +829,7 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), 0);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
 		return 0;
@@ -864,7 +863,7 @@ brasero_burn_session_get_output_type (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (!priv->settings->burner)
 		return BRASERO_BURN_NOT_READY;
 
@@ -909,7 +908,7 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_IMAGE_FORMAT_NONE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
 		BRASERO_BURN_LOG ("no file disc");
 		return BRASERO_BURN_ERR;
@@ -929,7 +928,7 @@ brasero_burn_session_get_output_path_real (BraseroBurnSession *self,
 	gchar *image = NULL;
 	BraseroBurnSessionPrivate *priv;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	image = g_strdup (priv->settings->image);
 	toc = g_strdup (priv->settings->toc);
@@ -993,7 +992,7 @@ brasero_burn_session_get_output_format (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_IMAGE_FORMAT_NONE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
 		return BRASERO_IMAGE_FORMAT_NONE;
 
@@ -1006,7 +1005,7 @@ brasero_burn_session_get_output_format_real (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return priv->settings->format;
 }
 
@@ -1023,7 +1022,7 @@ brasero_burn_session_set_image_output_real (BraseroBurnSession *self,
 {
 	BraseroBurnSessionPrivate *priv;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (priv->settings->image)
 		g_free (priv->settings->image);
@@ -1069,7 +1068,7 @@ brasero_burn_session_set_output_image_real (BraseroBurnSession *self,
 {
 	BraseroBurnSessionPrivate *priv;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (priv->settings->format == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
@@ -1122,7 +1121,7 @@ brasero_burn_session_set_image_output_format (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	klass = BRASERO_BURN_SESSION_GET_CLASS (self);
 
 	image = g_strdup (priv->settings->image);
@@ -1187,7 +1186,7 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (!g_strcmp0 (priv->tmpdir, path))
 		return BRASERO_BURN_OK;
@@ -1225,7 +1224,7 @@ brasero_burn_session_get_tmpdir (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return priv->tmpdir? priv->tmpdir:g_get_tmp_dir ();
 }
 
@@ -1255,7 +1254,7 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* create a working directory in tmp */
 	tmpdir = priv->tmpdir ?
@@ -1324,7 +1323,7 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (!path)
 		return BRASERO_BURN_OK;
@@ -1421,7 +1420,7 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* Image tmp file */
 	result = brasero_burn_session_get_tmp_file (self,
@@ -1481,7 +1480,7 @@ brasero_burn_session_set_flags (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (priv->settings->flags == flags)
 		return;
 
@@ -1506,7 +1505,7 @@ brasero_burn_session_add_flag (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if ((priv->settings->flags & flag) == flag)
 		return;
 
@@ -1531,7 +1530,7 @@ brasero_burn_session_remove_flag (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if ((priv->settings->flags & flag) == 0)
 		return;
 
@@ -1555,7 +1554,7 @@ brasero_burn_session_get_flags (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return priv->settings->flags;
 }
 
@@ -1580,7 +1579,7 @@ brasero_burn_session_set_label (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (priv->settings->label)
 		g_free (priv->settings->label);
 
@@ -1625,7 +1624,7 @@ brasero_burn_session_get_label (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return priv->settings->label;
 }
 
@@ -1660,7 +1659,7 @@ brasero_burn_session_tag_remove (BraseroBurnSession *self,
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (!priv->tags)
 		return BRASERO_BURN_ERR;
 
@@ -1700,7 +1699,7 @@ brasero_burn_session_tag_add (BraseroBurnSession *self,
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (!priv->tags)
 		priv->tags = g_hash_table_new_full (g_str_hash,
 						    g_str_equal,
@@ -1776,7 +1775,7 @@ brasero_burn_session_tag_lookup (BraseroBurnSession *self,
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (tag != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (!value)
 		return BRASERO_BURN_ERR;
 
@@ -1832,7 +1831,7 @@ brasero_burn_session_push_settings (BraseroBurnSession *self)
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* NOTE: don't clean the settings so no need to issue a signal */
 	settings = g_new0 (BraseroSessionSetting, 1);
@@ -1849,7 +1848,7 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (!priv->pile_settings)
 		return;
@@ -1905,7 +1904,7 @@ brasero_burn_session_push_tracks (BraseroBurnSession *self)
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	brasero_burn_session_stop_tracks_monitoring (self);
 
@@ -1933,7 +1932,7 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* Don't go further if there is no list of tracks on the pile */
 	if (!priv->pile_tracks)
@@ -1967,7 +1966,7 @@ brasero_burn_session_is_dest_file (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return BRASERO_BURN_SESSION_WRITE_TO_FILE (priv);
 }
 
@@ -1979,7 +1978,7 @@ brasero_burn_session_get_dest_media (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_MEDIUM_NONE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
 		return BRASERO_MEDIUM_FILE;
@@ -2039,7 +2038,7 @@ brasero_burn_session_get_src_medium (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* to be able to burn to a DVD we must:
 	 * - have only one track
@@ -2067,7 +2066,7 @@ brasero_burn_session_get_src_drive (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* to be able to burn to a DVD we must:
 	 * - have only one track
@@ -2095,7 +2094,7 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* to be able to burn to a DVD we must:
 	 * - have only one track
@@ -2134,7 +2133,7 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	if (!format)
 		return;
@@ -2185,7 +2184,7 @@ brasero_burn_session_get_log_path (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	return priv->session_path;
 }
 
@@ -2197,7 +2196,7 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 
 	/* This must obey the path of the temporary directory if possible */
 	priv->session_path = g_build_path (G_DIR_SEPARATOR_S,
@@ -2297,7 +2296,7 @@ brasero_burn_session_stop (BraseroBurnSession *self)
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	priv = brasero_burn_session_get_instance_private (self);
 	if (priv->session > 0) {
 		close (priv->session);
 		priv->session = -1;
@@ -2387,7 +2386,7 @@ brasero_burn_session_finalize (GObject *object)
 
 	BRASERO_BURN_LOG ("Cleaning session");
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 
 	if (priv->tags) {
 		g_hash_table_destroy (priv->tags);
@@ -2470,7 +2469,7 @@ brasero_burn_session_init (BraseroBurnSession *obj)
 {
 	BraseroBurnSessionPrivate *priv;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (obj);
+	priv = brasero_burn_session_get_instance_private (obj);
 	priv->session = -1;
 }
 
@@ -2511,7 +2510,7 @@ brasero_burn_session_get_property (GObject *object,
 	BraseroBurnSession *session = BRASERO_BURN_SESSION (object);
 	BraseroBurnSessionPrivate *priv;
 
-	priv = BRASERO_BURN_SESSION_PRIVATE (session);
+	priv = brasero_burn_session_get_instance_private (session);
 
 	/* Here we do not call the accessors functions to honour the 0/NULL value
 	 * which means use system default. */

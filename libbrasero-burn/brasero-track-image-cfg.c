@@ -62,7 +62,6 @@ struct _BraseroTrackImageCfgPrivate
 	BraseroImageFormat format;
 };
 
-#define BRASERO_TRACK_IMAGE_CFG_PRIVATE(o)  (brasero_track_image_cfg_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackImageCfg, brasero_track_image_cfg, BRASERO_TYPE_TRACK_IMAGE);
 
@@ -103,7 +102,7 @@ brasero_track_image_cfg_get_info_cb (GObject *object,
 	BraseroTrackImageInfo *info;
 	BraseroTrackImageCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (cfg);
+	priv = brasero_track_image_cfg_get_instance_private (cfg);
 
 	info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
 	if (priv->cancel == info->cancel) {
@@ -247,7 +246,7 @@ brasero_track_image_cfg_get_info (BraseroTrackImageCfg *track,
 	BraseroTrackImageInfo *info;
 	GSimpleAsyncResult *res;
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
+	priv = brasero_track_image_cfg_get_instance_private (track);
 
 	/* Cancel a possible ongoing thread */
 	if (priv->cancel) {
@@ -303,7 +302,7 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
 	g_return_val_if_fail (uri != NULL, BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
+	priv = brasero_track_image_cfg_get_instance_private (track);
 
 	/* See if it has changed */
 	file = g_file_new_for_commandline_arg (uri);
@@ -352,7 +351,7 @@ brasero_track_image_cfg_get_forced_format (BraseroTrackImageCfg *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_IMAGE_FORMAT_NONE);
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
+	priv = brasero_track_image_cfg_get_instance_private (track);
 	return priv->format;
 }
 
@@ -379,7 +378,7 @@ brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (track);
+	priv = brasero_track_image_cfg_get_instance_private (track);
 
 	current_format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
 	if (format != BRASERO_IMAGE_FORMAT_NONE) {
@@ -427,7 +426,7 @@ brasero_track_image_cfg_get_size (BraseroTrack *track,
 	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (track);
 	BraseroTrackImageCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (cfg);
+	priv = brasero_track_image_cfg_get_instance_private (cfg);
 
 	if (priv->cancel)
 		return BRASERO_BURN_NOT_READY;
@@ -448,7 +447,7 @@ brasero_track_image_cfg_get_status (BraseroTrack *track,
 	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (track);
 	BraseroTrackImageCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (cfg);
+	priv = brasero_track_image_cfg_get_instance_private (cfg);
 
 	if (priv->cancel) {
 		if (status)
@@ -494,7 +493,7 @@ brasero_track_image_cfg_finalize (GObject *object)
 	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (object);
 	BraseroTrackImageCfgPrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_CFG_PRIVATE (cfg);
+	priv = brasero_track_image_cfg_get_instance_private (cfg);
 
 	if (priv->cancel) {
 		g_cancellable_cancel (priv->cancel);

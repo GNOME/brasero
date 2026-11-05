@@ -49,7 +49,6 @@ struct _BraseroSessionSpanPrivate
 	BraseroTrack * last_track;
 };
 
-#define BRASERO_SESSION_SPAN_PRIVATE(o)  (brasero_session_span_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroSessionSpan, brasero_session_span, BRASERO_TYPE_BURN_SESSION);
 
@@ -76,7 +75,7 @@ brasero_session_span_get_max_space (BraseroSessionSpan *session)
 
 	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), 0);
 
-	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+	priv = brasero_session_span_get_instance_private (session);
 
 	if (priv->last_track) {
 		tracks = g_slist_find (priv->track_list, priv->last_track);
@@ -131,7 +130,7 @@ brasero_session_span_again (BraseroSessionSpan *session)
 
 	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+	priv = brasero_session_span_get_instance_private (session);
 
 	/* This is not an error */
 	if (!priv->track_list)
@@ -180,7 +179,7 @@ brasero_session_span_possible (BraseroSessionSpan *session)
 
 	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+	priv = brasero_session_span_get_instance_private (session);
 
 	max_sectors = brasero_burn_session_get_available_medium_space (BRASERO_BURN_SESSION (session));
 	if (max_sectors <= 0)
@@ -235,7 +234,7 @@ brasero_session_span_start (BraseroSessionSpan *session)
 
 	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+	priv = brasero_session_span_get_instance_private (session);
 
 	priv->track_list = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (session));
 	if (priv->last_track) {
@@ -268,7 +267,7 @@ brasero_session_span_next (BraseroSessionSpan *session)
 
 	g_return_val_if_fail (BRASERO_IS_SESSION_SPAN (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+	priv = brasero_session_span_get_instance_private (session);
 
 	g_return_val_if_fail (priv->track_list != NULL, BRASERO_BURN_ERR);
 
@@ -369,7 +368,7 @@ brasero_session_span_stop (BraseroSessionSpan *session)
 
 	g_return_if_fail (BRASERO_IS_SESSION_SPAN (session));
 
-	priv = BRASERO_SESSION_SPAN_PRIVATE (session);
+	priv = brasero_session_span_get_instance_private (session);
 
 	if (priv->last_track) {
 		g_object_unref (priv->last_track);

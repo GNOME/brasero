@@ -91,7 +91,6 @@ struct _BraseroSessionCfgPrivate
 	guint output_msdos:1;
 };
 
-#define BRASERO_SESSION_CFG_PRIVATE(o)  (brasero_session_cfg_get_instance_private (o))
 
 enum
 {
@@ -326,7 +325,7 @@ brasero_session_cfg_get_output_path (BraseroBurnSession *session,
 	BraseroSessionCfgPrivate *priv;
 
 	klass = BRASERO_BURN_SESSION_CLASS (brasero_session_cfg_parent_class);
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 
 	result = klass->get_output_path (session,
 					 image,
@@ -382,7 +381,7 @@ brasero_session_cfg_get_output_format (BraseroBurnSession *session)
 	if (format != BRASERO_IMAGE_FORMAT_NONE)
 		return format;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 
 	if (priv->output_format)
 		return priv->output_format;
@@ -407,7 +406,7 @@ brasero_session_cfg_get_error (BraseroSessionCfg *session)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 
 	if (priv->is_valid == BRASERO_SESSION_VALID
 	&&  priv->CD_TEXT_modified)
@@ -429,7 +428,7 @@ brasero_session_cfg_disable (BraseroSessionCfg *session)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 	priv->disabled = TRUE;
 }
 
@@ -446,7 +445,7 @@ brasero_session_cfg_enable (BraseroSessionCfg *session)
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 	priv->disabled = FALSE;
 }
 
@@ -456,7 +455,7 @@ brasero_session_cfg_set_drive_properties_default_flags (BraseroSessionCfg *self)
 	BraseroMedia media;
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 
 	media = brasero_burn_session_get_dest_media (BRASERO_BURN_SESSION (self));
 
@@ -558,7 +557,7 @@ brasero_session_cfg_set_drive_properties_flags (BraseroSessionCfg *self,
 	BraseroBurnFlag original_flags;
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 
 	original_flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
 
@@ -709,7 +708,7 @@ brasero_session_cfg_check_volume_size (BraseroSessionCfg *self)
 	struct rlimit limit;
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 	if (!priv->disc_size) {
 		GFileInfo *info;
 		gchar *directory;
@@ -823,7 +822,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	/* in sectors */
 	goffset max_sectors;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 
 	/* Get the session size if need be */
 	if (!priv->session_blocks) {
@@ -898,7 +897,7 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)) {
 		BraseroSessionCfgPrivate *priv;
 
-		priv = BRASERO_SESSION_CFG_PRIVATE (self);
+		priv = brasero_session_cfg_get_instance_private (self);
 
 		if (!(priv->supported & BRASERO_BURN_FLAG_OVERBURN)) {
 			priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
@@ -939,7 +938,7 @@ brasero_session_cfg_can_update (BraseroSessionCfg *self)
 	BraseroBurnResult result;
 	BraseroStatus *status;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 
 	if (priv->disabled)
 		return FALSE;
@@ -990,7 +989,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	BraseroBurnResult result;
 	BraseroDrive *burner;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 
 	/* Make sure there is a source */
 	if (priv->source) {
@@ -1241,7 +1240,7 @@ brasero_session_cfg_session_loaded (BraseroTrackDataCfg *track,
 	BraseroBurnFlag session_flags;
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 	if (priv->disabled)
 		return;
 	
@@ -1271,7 +1270,7 @@ brasero_session_cfg_track_added (BraseroBurnSession *session,
 	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 	priv->session_blocks = 0;
 	priv->session_size = 0;
 
@@ -1300,7 +1299,7 @@ brasero_session_cfg_track_removed (BraseroBurnSession *session,
 	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 	priv->session_blocks = 0;
 	priv->session_size = 0;
 
@@ -1326,7 +1325,7 @@ brasero_session_cfg_track_changed (BraseroBurnSession *session,
 	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 	priv->session_blocks = 0;
 	priv->session_size = 0;
 
@@ -1362,7 +1361,7 @@ brasero_session_cfg_output_changed (BraseroBurnSession *session,
 	if (!brasero_session_cfg_can_update (cfg))
 		return;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 	priv->disc_size = 0;
 
 	/* Case for video project */
@@ -1411,7 +1410,7 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 	if (!brasero_session_cfg_can_update (self))
 		return;
  
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv = brasero_session_cfg_get_instance_private (self);
 	priv->disc_size = 0;
 	priv->session_blocks = 0;
 	priv->session_size = 0;
@@ -1439,7 +1438,7 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *session,
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 
 	if ((priv->supported & flags) != flags)
 		return;
@@ -1495,7 +1494,7 @@ brasero_session_cfg_is_supported (BraseroSessionCfg *session,
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 	return (priv->supported & flag) == flag;
 }
 
@@ -1516,7 +1515,7 @@ brasero_session_cfg_is_compulsory (BraseroSessionCfg *session,
 {
 	BraseroSessionCfgPrivate *priv;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	priv = brasero_session_cfg_get_instance_private (session);
 	return (priv->compulsory & flag) == flag;
 }
 
@@ -1526,7 +1525,7 @@ brasero_session_cfg_init (BraseroSessionCfg *object)
 	BraseroSessionCfgPrivate *priv;
 	BraseroPluginManager *manager;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (object);
+	priv = brasero_session_cfg_get_instance_private (object);
 
 	priv->is_valid = BRASERO_SESSION_EMPTY;
 	manager = brasero_plugin_manager_get_default ();
@@ -1544,7 +1543,7 @@ brasero_session_cfg_finalize (GObject *object)
 	BraseroSessionCfgPrivate *priv;
 	GSList *tracks;
 
-	priv = BRASERO_SESSION_CFG_PRIVATE (cfg);
+	priv = brasero_session_cfg_get_instance_private (cfg);
 
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (object));
 	for (; tracks; tracks = tracks->next) {

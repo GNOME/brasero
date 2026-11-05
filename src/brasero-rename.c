@@ -55,7 +55,6 @@ struct _BraseroRenamePrivate
 	guint show_default:1;
 };
 
-#define BRASERO_RENAME_PRIVATE(o)  (brasero_rename_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroRename, brasero_rename, GTK_TYPE_BOX);
 
@@ -65,7 +64,7 @@ brasero_rename_set_show_keep_default (BraseroRename *self,
 {
 	BraseroRenamePrivate *priv;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	if (!show) {
 		if (!priv->show_default)
@@ -99,7 +98,7 @@ brasero_rename_insert_string (BraseroRename *self,
 	gboolean is_at_end;
 	const gchar *text;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	text = gtk_entry_get_text (GTK_ENTRY (priv->insert_entry));
 	is_at_end = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->insert_combo));
@@ -118,7 +117,7 @@ brasero_rename_delete_string (BraseroRename *self,
 	const gchar *text;
 	gchar *occurrence;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	text = gtk_entry_get_text (GTK_ENTRY (priv->delete_entry));
 	occurrence = g_strstr_len (name, -1, text);
@@ -138,7 +137,7 @@ brasero_rename_substitute_string (BraseroRename *self,
 	const gchar *text;
 	gchar *occurrence;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	text = gtk_entry_get_text (GTK_ENTRY (priv->substitute_entry));
 	occurrence = g_strstr_len (name, -1, text);
@@ -158,7 +157,7 @@ brasero_rename_number_string (BraseroRename *self,
 	const gchar *right;
 	const gchar *left;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	left = gtk_entry_get_text (GTK_ENTRY (priv->number_left_entry));
 	right = gtk_entry_get_text (GTK_ENTRY (priv->number_right_entry));
@@ -173,7 +172,7 @@ brasero_rename_sequence_string (BraseroRename *self,
 {
 	BraseroRenamePrivate *priv;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	if (!gtk_combo_box_get_active (GTK_COMBO_BOX (priv->insert_combo)))
 		return NULL;
@@ -203,7 +202,7 @@ brasero_rename_do (BraseroRename *self,
 	GList *item;
 	gint mode;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 	mode = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo));
 
 	mode -= priv->show_default;
@@ -279,7 +278,7 @@ brasero_rename_type_changed (GtkComboBox *combo,
 {
 	BraseroRenamePrivate *priv;
 
-	priv = BRASERO_RENAME_PRIVATE (self);
+	priv = brasero_rename_get_instance_private (self);
 
 	if (gtk_combo_box_get_active (combo) - priv->show_default < 0
 	||  gtk_combo_box_get_active (combo) - priv->show_default == 4) {
@@ -301,7 +300,7 @@ brasero_rename_init (BraseroRename *object)
 	GtkWidget *label;
 	GtkWidget *hbox;
 
-	priv = BRASERO_RENAME_PRIVATE (object);
+	priv = brasero_rename_get_instance_private (object);
 
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (object), GTK_ORIENTATION_VERTICAL);
 

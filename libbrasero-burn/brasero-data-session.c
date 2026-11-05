@@ -68,7 +68,6 @@ struct _BraseroDataSessionPrivate
 	GSList *nodes;
 };
 
-#define BRASERO_DATA_SESSION_PRIVATE(o)  (brasero_data_session_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroDataSession, brasero_data_session, BRASERO_TYPE_DATA_PROJECT);
 
@@ -220,7 +219,7 @@ brasero_data_session_remove_last (BraseroDataSession *self)
 	BraseroDataSessionPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	if (!priv->nodes)
 		return;
@@ -281,7 +280,7 @@ brasero_data_session_load_dir_result (GObject *owner,
 	BraseroFileNode *node;
 	gint reference;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (session);
+	priv = brasero_data_session_get_instance_private (session);
 
 	if (!info) {
 		g_signal_emit (owner,
@@ -345,7 +344,7 @@ brasero_data_session_load_directory_contents_real (BraseroDataSession *self,
 	if (node && !node->is_fake)
 		return TRUE;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 	device = brasero_drive_get_device (brasero_medium_get_drive (priv->loaded));
 	brasero_medium_get_last_data_track_address (priv->loaded,
 						    NULL,
@@ -394,7 +393,7 @@ brasero_data_session_add_last (BraseroDataSession *self,
 {
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	if (priv->nodes)
 		return FALSE;
@@ -410,7 +409,7 @@ brasero_data_session_has_available_media (BraseroDataSession *self)
 {
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	return priv->media != NULL;
 }
@@ -421,7 +420,7 @@ brasero_data_session_get_available_media (BraseroDataSession *self)
 	GSList *retval;
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	retval = g_slist_copy (priv->media);
 	g_slist_foreach (retval, (GFunc) g_object_ref, NULL);
@@ -434,7 +433,7 @@ brasero_data_session_get_loaded_medium (BraseroDataSession *self)
 {
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 	if (!priv->media || !priv->nodes)
 		return NULL;
 
@@ -462,7 +461,7 @@ brasero_data_session_disc_added_cb (BraseroMediumMonitor *monitor,
 {
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	if (!brasero_data_session_is_valid_multi (medium))
 		return;
@@ -486,7 +485,7 @@ brasero_data_session_disc_removed_cb (BraseroMediumMonitor *monitor,
 	GSList *next;
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	/* see if that's the current loaded one */
 	if (priv->loaded && priv->loaded == medium)
@@ -519,7 +518,7 @@ brasero_data_session_init (BraseroDataSession *object)
 	BraseroMediumMonitor *monitor;
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (object);
+	priv = brasero_data_session_get_instance_private (object);
 
 	monitor = brasero_medium_monitor_get_default ();
 	g_signal_connect (monitor,
@@ -555,7 +554,7 @@ brasero_data_session_stop_io (BraseroDataSession *self)
 {
 	BraseroDataSessionPrivate *priv;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	priv = brasero_data_session_get_instance_private (self);
 
 	if (priv->load_dir) {
 		brasero_io_cancel_by_base (priv->load_dir);
@@ -582,7 +581,7 @@ brasero_data_session_finalize (GObject *object)
 	BraseroDataSessionPrivate *priv;
 	BraseroMediumMonitor *monitor;
 
-	priv = BRASERO_DATA_SESSION_PRIVATE (session);
+	priv = brasero_data_session_get_instance_private (session);
 
 	monitor = brasero_medium_monitor_get_default ();
 	g_signal_handlers_disconnect_by_func (monitor,

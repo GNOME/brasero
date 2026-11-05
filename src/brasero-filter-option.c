@@ -41,7 +41,6 @@ struct _BraseroFilterOptionPrivate
 	GSettings *settings;
 };
 
-#define BRASERO_FILTER_OPTION_PRIVATE(o)  (brasero_filter_option_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroFilterOption, brasero_filter_option, GTK_TYPE_BOX);
 
@@ -55,7 +54,7 @@ brasero_filter_option_init (BraseroFilterOption *object)
 	GtkWidget *button_hidden;
 	BraseroFilterOptionPrivate *priv;
 
-	priv = BRASERO_FILTER_OPTION_PRIVATE (object);
+	priv = brasero_filter_option_get_instance_private (object);
 
 	priv->settings = g_settings_new (BRASERO_SCHEMA_FILTER);
 
@@ -103,7 +102,7 @@ brasero_filter_option_finalize (GObject *object)
 	BraseroFilterOption *option = BRASERO_FILTER_OPTION (object);
 	BraseroFilterOptionPrivate *priv;
 
-	priv = BRASERO_FILTER_OPTION_PRIVATE (option);
+	priv = brasero_filter_option_get_instance_private (option);
 
 	if (priv->settings) {
 		g_object_unref (priv->settings);

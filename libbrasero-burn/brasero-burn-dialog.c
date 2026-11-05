@@ -104,7 +104,6 @@ struct BraseroBurnDialogPrivate {
 	guint is_checking:1;
 };
 
-#define BRASERO_BURN_DIALOG_PRIVATE(o)  (brasero_burn_dialog_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroBurnDialog, brasero_burn_dialog, GTK_TYPE_DIALOG);
 
@@ -116,7 +115,7 @@ brasero_burn_dialog_update_media (BraseroBurnDialog *dialog)
 	BraseroBurnDialogPrivate *priv;
 	BraseroMedia media;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (brasero_burn_session_is_dest_file (priv->session))
 		media = BRASERO_MEDIUM_FILE;
@@ -175,7 +174,7 @@ brasero_burn_dialog_create_dialog_title_for_action (BraseroBurnDialog *dialog,
 	gchar *tmp;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (priv->initial_title && !priv->is_checking)
 		action = priv->initial_title;
@@ -200,7 +199,7 @@ brasero_burn_dialog_update_title (BraseroBurnDialog *dialog,
 	gchar *title = NULL;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (priv->media == BRASERO_MEDIUM_FILE)
 		title = brasero_burn_dialog_create_dialog_title_for_action (dialog,
@@ -255,7 +254,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	gchar *header = NULL;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (priv->media == BRASERO_MEDIUM_FILE) {
 		/* we are creating an image to the hard drive */
@@ -443,7 +442,7 @@ brasero_burn_dialog_wait_for_insertion (BraseroBurnDialog *dialog,
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -592,7 +591,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	BraseroBurnDialogPrivate *priv;
 	gchar *main_message = NULL, *secondary_message = NULL;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (drive)
 		drive_name = brasero_drive_get_display_name (drive);
@@ -677,7 +676,7 @@ brasero_burn_dialog_image_error (BraseroBurn *burn,
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -820,7 +819,7 @@ brasero_burn_dialog_loss_warnings_cb (BraseroBurnDialog *dialog,
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -986,7 +985,7 @@ brasero_burn_dialog_eject_failure_cb (BraseroBurn *burn,
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 	
 	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -1045,7 +1044,7 @@ brasero_burn_dialog_continue_question (BraseroBurnDialog *dialog,
 	gboolean hide = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (!gtk_widget_get_visible (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -1215,7 +1214,7 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 	gint mb_written = -1;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (written >= 0)
 		mb_written = (gint) (written / 1048576);
@@ -1260,7 +1259,7 @@ brasero_burn_dialog_progress_changed_cb (BraseroBurn *burn,
 	goffset written = -1;
 	guint64 rate = -1;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	brasero_burn_status (priv->burn,
 			     &media,
@@ -1287,7 +1286,7 @@ brasero_burn_dialog_action_changed_real (BraseroBurnDialog *dialog,
 {
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (priv->progress),
 					  action,
@@ -1303,7 +1302,7 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 	gchar *string = NULL;
 	gboolean is_writing;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	is_writing = (action == BRASERO_BURN_ACTION_RECORDING ||
 		      action == BRASERO_BURN_ACTION_DRIVE_COPY ||
@@ -1358,7 +1357,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	gboolean hide;
 	gint id;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (!gtk_widget_get_mapped (GTK_WIDGET (dialog))) {
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -1432,7 +1431,7 @@ brasero_burn_dialog_activity_start (BraseroBurnDialog *dialog)
 	GdkWindow *window;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	window = gtk_widget_get_window (GTK_WIDGET (dialog));
 	if (window) {
@@ -1471,7 +1470,7 @@ brasero_burn_dialog_activity_stop (BraseroBurnDialog *dialog,
 	gchar *markup;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog)), NULL);
 
@@ -1515,7 +1514,7 @@ brasero_burn_dialog_install_missing_cb (BraseroBurn *burn,
 					const gchar *detail,
 					gpointer user_data)
 {
-	BraseroBurnDialogPrivate *priv = BRASERO_BURN_DIALOG_PRIVATE (user_data);
+	BraseroBurnDialogPrivate *priv = brasero_burn_dialog_get_instance_private (user_data);
 	GCancellable *cancel;
 	BraseroPK *package;
 	GdkWindow *window;
@@ -1575,7 +1574,7 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 {
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	brasero_burn_session_start (priv->session);
 
@@ -1661,7 +1660,7 @@ brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 	GtkResponseType answer;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	chooser = gtk_file_chooser_dialog_new (_("Save Current Session"),
 					       GTK_WINDOW (dialog),
@@ -1723,7 +1722,7 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 	GtkResponseType response;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	/* Restore title */
 	if (priv->initial_title)
@@ -1783,7 +1782,7 @@ brasero_burn_dialog_get_success_message (BraseroBurnDialog *dialog)
 	BraseroBurnDialogPrivate *priv;
 	BraseroDrive *drive;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	drive = brasero_burn_session_get_burner (priv->session);
 
@@ -1842,7 +1841,7 @@ brasero_burn_dialog_update_session_info (BraseroBurnDialog *dialog)
 	gchar *primary = NULL;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	primary = brasero_burn_dialog_get_success_message (dialog);
 	brasero_burn_dialog_activity_stop (dialog, primary);
@@ -1879,7 +1878,7 @@ brasero_burn_dialog_notify_copy_finished (BraseroBurnDialog *dialog,
 	GtkResponseType response;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	brasero_burn_dialog_update_session_info (dialog);
 
@@ -1923,7 +1922,7 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 	gint answer;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (answer == GTK_RESPONSE_CLOSE) {
@@ -1952,7 +1951,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	GtkWidget *create_cover = NULL;
 	GtkWidget *make_another = NULL;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	brasero_burn_dialog_update_session_info (dialog);
 
@@ -2066,7 +2065,7 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 	gboolean retry = FALSE;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	g_timer_stop (priv->total_time);
 
@@ -2130,7 +2129,7 @@ brasero_burn_dialog_record_spanned_session (BraseroBurnDialog *dialog,
 	BraseroBurnDialogPrivate *priv;
 	gchar *secondary_message = NULL;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 	burner = brasero_burn_session_get_burner (priv->session);
 
 	/* Get the messages now as they can change */
@@ -2216,7 +2215,7 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog)
 	BraseroBurnResult result;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	priv->is_writing = FALSE;
 	priv->is_creating_image = FALSE;
@@ -2259,7 +2258,7 @@ brasero_burn_dialog_wait_for_ready_state_cb (BraseroBurnDialog *dialog)
 	BraseroBurnDialogPrivate *priv;
 	BraseroStatus *status;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	status = brasero_status_new ();
 	brasero_burn_session_get_status (priv->session, status);
@@ -2306,7 +2305,7 @@ brasero_burn_dialog_wait_for_ready_state (BraseroBurnDialog *dialog)
 	BraseroBurnResult result;
 	BraseroStatus *status;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (priv->session, status);
@@ -2346,7 +2345,7 @@ brasero_burn_dialog_run_real (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	g_object_ref (session);
 	priv->session = session;
@@ -2420,7 +2419,7 @@ brasero_burn_dialog_run_multi (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 	priv->num_copies = 1;
 
 	result = brasero_burn_dialog_run_real (dialog, session);
@@ -2444,7 +2443,7 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 	priv->num_copies = 0;
 
 	result = brasero_burn_dialog_run_real (dialog, session);
@@ -2503,7 +2502,7 @@ brasero_burn_dialog_cancel (BraseroBurnDialog *dialog,
 {
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (priv->loop) {
 		g_main_loop_quit (priv->loop);
@@ -2539,7 +2538,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 	GtkWidget *alignment;
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (obj);
+	priv = brasero_burn_dialog_get_instance_private (obj);
 
 	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 0);
 
@@ -2591,7 +2590,7 @@ brasero_burn_dialog_finalize (GObject * object)
 	BraseroBurnDialog *dialog = BRASERO_BURN_DIALOG (object);
 	BraseroBurnDialogPrivate *priv;
 
-	priv = BRASERO_BURN_DIALOG_PRIVATE (dialog);
+	priv = brasero_burn_dialog_get_instance_private (dialog);
 
 	if (priv->wait_ready_state_id) {
 		g_source_remove (priv->wait_ready_state_id);

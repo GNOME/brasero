@@ -46,7 +46,6 @@ struct _BraseroTimeButtonPrivate
 	gint max_frame;
 };
 
-#define BRASERO_TIME_BUTTON_PRIVATE(o)  (brasero_time_button_get_instance_private (o))
 
 enum
 {
@@ -64,7 +63,7 @@ brasero_time_button_hrs_changed (GtkSpinButton *button,
 	BraseroTimeButtonPrivate *priv;
 	gint hrs, min;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	hrs = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (button));
 	if (hrs == priv->max_hrs) {
@@ -93,7 +92,7 @@ brasero_time_button_min_changed (GtkSpinButton *button,
 	BraseroTimeButtonPrivate *priv;
 	gint hrs, min, sec;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	hrs = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->hrs));
 	min = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->min));
@@ -123,7 +122,7 @@ brasero_time_button_sec_changed (GtkSpinButton *button,
 	BraseroTimeButtonPrivate *priv;
 	gint hrs, min, sec, frame;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	hrs = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->hrs));
 	min = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->min));
@@ -162,7 +161,7 @@ brasero_time_button_set_show_frames (BraseroTimeButton *self,
 {
 	BraseroTimeButtonPrivate *priv;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	if (show)
 		gtk_widget_show (priv->frame);
@@ -177,7 +176,7 @@ brasero_time_button_set_max (BraseroTimeButton *self,
 	BraseroTimeButtonPrivate *priv;
 	gint64 frames;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	if (max >= 1000000000)
 		frames = (max % 1000000000) * 75;
@@ -241,7 +240,7 @@ brasero_time_button_set_value (BraseroTimeButton *self,
 	BraseroTimeButtonPrivate *priv;
 	gint64 frames;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	frames = (value % 1000000000) * 75;
 	frames = frames / 1000000000 + ((frames % 1000000000) ? 1:0);
@@ -261,7 +260,7 @@ brasero_time_button_get_value (BraseroTimeButton *self)
 	BraseroTimeButtonPrivate *priv;
 	gint64 value;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+	priv = brasero_time_button_get_instance_private (self);
 
 	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON (priv->hrs)) * 3600;
 	value += gtk_spin_button_get_value (GTK_SPIN_BUTTON (priv->min)) * 60;
@@ -279,7 +278,7 @@ brasero_time_button_init (BraseroTimeButton *object)
 	BraseroTimeButtonPrivate *priv;
 	GtkWidget *label;
 
-	priv = BRASERO_TIME_BUTTON_PRIVATE (object);
+	priv = brasero_time_button_get_instance_private (object);
 
 	gtk_box_set_spacing (GTK_BOX (object), 6);
 

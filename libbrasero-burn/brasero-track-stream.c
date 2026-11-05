@@ -53,7 +53,6 @@ struct _BraseroTrackStreamPrivate
 	guint64 end;
 };
 
-#define BRASERO_TRACK_STREAM_PRIVATE(o)  (brasero_track_stream_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackStream, brasero_track_stream, BRASERO_TYPE_TRACK);
 
@@ -63,7 +62,7 @@ brasero_track_stream_set_source_real (BraseroTrackStream *track,
 {
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 
 	if (priv->uri)
 		g_free (priv->uri);
@@ -126,7 +125,7 @@ brasero_track_stream_get_format (BraseroTrackStream *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_AUDIO_FORMAT_NONE);
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 
 	return priv->format;
 }
@@ -137,7 +136,7 @@ brasero_track_stream_set_format_real (BraseroTrackStream *track,
 {
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 
 	if (format == BRASERO_AUDIO_FORMAT_NONE)
 		BRASERO_BURN_LOG ("Setting a NONE audio format with a valid uri");
@@ -185,7 +184,7 @@ brasero_track_stream_set_boundaries_real (BraseroTrackStream *track,
 {
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 
 	if (gap >= 0)
 		priv->gap = gap;
@@ -255,7 +254,7 @@ brasero_track_stream_get_source (BraseroTrackStream *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), NULL);
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 	if (uri)
 		return brasero_string_get_uri (priv->uri);
 	else
@@ -278,7 +277,7 @@ brasero_track_stream_get_gap (BraseroTrackStream *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 	return priv->gap;
 }
 
@@ -298,7 +297,7 @@ brasero_track_stream_get_start (BraseroTrackStream *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 	return priv->start;
 }
 
@@ -318,7 +317,7 @@ brasero_track_stream_get_end (BraseroTrackStream *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 	return priv->end;
 }
 
@@ -342,7 +341,7 @@ brasero_track_stream_get_length (BraseroTrackStream *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (track);
+	priv = brasero_track_stream_get_instance_private (track);
 
 	if (priv->start < 0 || priv->end <= 0)
 		return BRASERO_BURN_ERR;
@@ -394,7 +393,7 @@ brasero_track_stream_get_status (BraseroTrack *track,
 	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (stream);
+	priv = brasero_track_stream_get_instance_private (stream);
 	if (!priv->uri) {
 		if (status)
 			brasero_status_set_error (status,
@@ -415,7 +414,7 @@ brasero_track_stream_get_track_type (BraseroTrack *track,
 	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (stream);
+	priv = brasero_track_stream_get_instance_private (stream);
 
 	brasero_track_type_set_has_stream (type);
 	brasero_track_type_set_stream_format (type, priv->format);
@@ -433,7 +432,7 @@ brasero_track_stream_finalize (GObject *object)
 	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (object);
 	BraseroTrackStreamPrivate *priv;
 
-	priv = BRASERO_TRACK_STREAM_PRIVATE (stream);
+	priv = brasero_track_stream_get_instance_private (stream);
 	if (priv->uri) {
 		g_free (priv->uri);
 		priv->uri = NULL;
