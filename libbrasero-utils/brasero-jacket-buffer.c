@@ -45,7 +45,6 @@ struct _BraseroJacketBufferPrivate
 	guint empty:1;
 };
 
-#define BRASERO_JACKET_BUFFER_PRIVATE(o)  (brasero_jacket_buffer_get_instance_private (o))
 
 #define BRASERO_JACKET_BUFFER_TAG	"jacket-buffer-tag"
 
@@ -60,7 +59,7 @@ brasero_jacket_buffer_get_text (BraseroJacketBuffer *self,
 {
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
+	priv = brasero_jacket_buffer_get_instance_private (self);
 	if (priv->empty && !get_default_text)
 		return NULL;
 
@@ -273,7 +272,7 @@ brasero_jacket_buffer_add_default_tag (BraseroJacketBuffer *self,
 {
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
+	priv = brasero_jacket_buffer_get_instance_private (self);
 
 	g_object_ref (tag);
 	priv->tags = g_slist_append (priv->tags, tag);
@@ -285,7 +284,7 @@ brasero_jacket_buffer_get_attributes (BraseroJacketBuffer *self,
 {
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
+	priv = brasero_jacket_buffer_get_instance_private (self);
 
 	/* Now also merge changes that are 'on hold', that is non applied tags */
 	if (!priv->tags)
@@ -303,7 +302,7 @@ brasero_jacket_buffer_cursor_position_changed_cb (BraseroJacketBuffer *buffer,
 	GtkTextIter iter;
 	guint pos;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (buffer);
+	priv = brasero_jacket_buffer_get_instance_private (buffer);
 
 	if (priv->inserting_text)
 		return;
@@ -340,7 +339,7 @@ brasero_jacket_buffer_insert_text (GtkTextBuffer *txt_buffer,
 	guint start_offset;
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (buffer);
+	priv = brasero_jacket_buffer_get_instance_private (buffer);
 
 	start_offset = gtk_text_iter_get_offset (location);
 	priv->inserting_text = TRUE;
@@ -374,7 +373,7 @@ brasero_jacket_buffer_show_default_text (BraseroJacketBuffer *self,
 	BraseroJacketBufferPrivate *priv;
 	GtkTextIter start, end;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
+	priv = brasero_jacket_buffer_get_instance_private (self);
 
 	if (show) {
 		if (gtk_text_buffer_get_char_count (GTK_TEXT_BUFFER (self)))
@@ -408,7 +407,7 @@ brasero_jacket_buffer_set_default_text (BraseroJacketBuffer *self,
 	GtkTextIter start, end;
 	GtkTextTagTable *table;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
+	priv = brasero_jacket_buffer_get_instance_private (self);
 
 	table = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self));
 	if (!gtk_text_tag_table_lookup (table, BRASERO_JACKET_BUFFER_TAG))
@@ -447,7 +446,7 @@ brasero_jacket_buffer_init (BraseroJacketBuffer *object)
 {
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (object);
+	priv = brasero_jacket_buffer_get_instance_private (object);
 
 	priv->empty = 1;
 	g_signal_connect (object,
@@ -462,7 +461,7 @@ brasero_jacket_buffer_finalize (GObject *object)
 	BraseroJacketBuffer *buffer = BRASERO_JACKET_BUFFER (object);
 	BraseroJacketBufferPrivate *priv;
 
-	priv = BRASERO_JACKET_BUFFER_PRIVATE (buffer);
+	priv = brasero_jacket_buffer_get_instance_private (buffer);
 
 	if (priv->default_text) {
 		g_free (priv->default_text);

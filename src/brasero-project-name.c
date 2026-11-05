@@ -54,7 +54,6 @@ struct _BraseroProjectNamePrivate
 	guint label_modified:1;
 };
 
-#define BRASERO_PROJECT_NAME_PRIVATE(o)  (brasero_project_name_get_instance_private (o))
 
 typedef enum {
 	CHANGED_SIGNAL,
@@ -119,7 +118,7 @@ brasero_project_name_get_track_data_cfg (BraseroProjectName *self)
 	BraseroProjectNamePrivate *priv;
 	GSList *tracks;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 
 	tracks = brasero_burn_session_get_tracks (priv->session);
 	for (; tracks; tracks = tracks->next) {
@@ -225,7 +224,7 @@ brasero_project_name_get_default_label (BraseroProjectName *self)
 	gchar *title_str = NULL;
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 
 	if (priv->type == BRASERO_PROJECT_TYPE_INVALID)
 		return g_strdup ("");
@@ -423,7 +422,7 @@ brasero_project_name_label_changed (GtkEditable *editable,
 	BraseroProjectName *self = BRASERO_PROJECT_NAME (editable);
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 	priv->label_modified = TRUE;
 	g_signal_emit (editable,
 		       brasero_project_name_signals [CHANGED_SIGNAL],
@@ -439,7 +438,7 @@ brasero_project_name_set_type (BraseroProjectName *self)
 	gchar *title_str = NULL;
 	BraseroStatus *status;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 
 	status = brasero_status_new ();
 	brasero_burn_session_get_status (priv->session, status);
@@ -502,7 +501,7 @@ brasero_project_name_flags_changed (BraseroBurnSession *session,
 	BraseroProjectNamePrivate *priv;
 	gchar *title_str;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 
 	if (priv->label_modified)
 		return;
@@ -521,7 +520,7 @@ brasero_project_name_init (BraseroProjectName *object)
 {
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (object);
+	priv = brasero_project_name_get_instance_private (object);
 
 	priv->label_modified = FALSE;
 	g_signal_connect (object,
@@ -545,7 +544,7 @@ brasero_project_name_session_changed (BraseroProjectName *self)
 	BraseroTrackType *type;
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 
 	type = brasero_track_type_new ();
 	brasero_burn_session_get_input_type (priv->session, type);
@@ -608,7 +607,7 @@ brasero_project_name_unset_session (BraseroProjectName *project)
 {
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
+	priv = brasero_project_name_get_instance_private (project);
 
 	if (!priv->session)
 		return;
@@ -636,7 +635,7 @@ brasero_project_name_set_session (BraseroProjectName *project,
 {
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (project);
+	priv = brasero_project_name_get_instance_private (project);
 
 	brasero_project_name_unset_session (project);
 	if (!session)
@@ -690,7 +689,7 @@ brasero_project_name_get_property (GObject *object,
 	BraseroProjectName *self = BRASERO_PROJECT_NAME (object);
 	BraseroProjectNamePrivate *priv;
 
-	priv = BRASERO_PROJECT_NAME_PRIVATE (self);
+	priv = brasero_project_name_get_instance_private (self);
 
 	switch (property_id) {
 	case PROP_SESSION:

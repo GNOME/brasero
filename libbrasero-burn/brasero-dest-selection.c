@@ -67,7 +67,6 @@ struct _BraseroDestSelectionPrivate
 	guint user_changed:1;
 };
 
-#define BRASERO_DEST_SELECTION_PRIVATE(o)  (brasero_dest_selection_get_instance_private (o))
 
 enum {
 	PROP_0,
@@ -82,7 +81,7 @@ brasero_dest_selection_lock (BraseroDestSelection *self,
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	if (locked == (priv->locked_drive != NULL))
 		return;
@@ -130,7 +129,7 @@ brasero_dest_selection_output_changed (BraseroSessionCfg *session,
 	BraseroMedium *medium;
 	BraseroDrive *burner;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	/* make sure the current displayed drive reflects that */
 	burner = brasero_burn_session_get_burner (priv->session);
@@ -150,7 +149,7 @@ brasero_dest_selection_flags_changed (BraseroBurnSession *session,
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	brasero_dest_selection_lock (self, (brasero_burn_session_get_flags (BRASERO_BURN_SESSION (priv->session)) & BRASERO_BURN_FLAG_MERGE) != 0);
 }
@@ -162,7 +161,7 @@ brasero_dest_selection_medium_changed (BraseroMediumSelection *selection,
 	BraseroDestSelection *self = BRASERO_DEST_SELECTION (selection);
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	if (!priv->session)
 		goto chain;
@@ -205,7 +204,7 @@ brasero_dest_selection_user_change (BraseroDestSelection *selection,
 	if (!shown)
 		return;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+	priv = brasero_dest_selection_get_instance_private (selection);
 	priv->user_changed = TRUE;
 }
 
@@ -216,7 +215,7 @@ brasero_dest_selection_medium_removed (GtkTreeModel *model,
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (user_data);
+	priv = brasero_dest_selection_get_instance_private (user_data);
 	if (priv->user_changed)
 		return;
 
@@ -232,7 +231,7 @@ brasero_dest_selection_medium_added (GtkTreeModel *model,
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (user_data);
+	priv = brasero_dest_selection_get_instance_private (user_data);
 	if (priv->user_changed)
 		return;
 
@@ -279,7 +278,7 @@ brasero_dest_selection_clean (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
@@ -411,7 +410,7 @@ brasero_dest_selection_choose_best (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	priv->user_changed = FALSE;
 	if (!priv->session)
@@ -438,7 +437,7 @@ brasero_dest_selection_set_session (BraseroDestSelection *selection,
 {
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+	priv = brasero_dest_selection_get_instance_private (selection);
 
 	if (priv->session)
 		brasero_dest_selection_clean (selection);
@@ -521,7 +520,7 @@ brasero_dest_selection_get_property (GObject *object,
 	BraseroDestSelection *self = BRASERO_DEST_SELECTION (object);
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -541,7 +540,7 @@ brasero_dest_selection_get_output_path (BraseroDestSelection *self)
 	BraseroImageFormat format;
 	BraseroDestSelectionPrivate *priv;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	format = brasero_burn_session_get_output_format (priv->session);
 	switch (format) {
@@ -584,7 +583,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	BraseroDestSelectionPrivate *priv;
 	BraseroDestSelection *self = BRASERO_DEST_SELECTION (selection);
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	priv = brasero_dest_selection_get_instance_private (self);
 
 	if (!priv->session)
 		return NULL;

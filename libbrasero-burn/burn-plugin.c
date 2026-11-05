@@ -126,7 +126,6 @@ struct _BraseroPluginPrivate
 
 static const gchar *default_icon = "gtk-cdrom";
 
-#define BRASERO_PLUGIN_PRIVATE(o)  (brasero_plugin_get_instance_private (o))
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroPlugin, brasero_plugin, G_TYPE_TYPE_MODULE);
 
 enum
@@ -162,7 +161,7 @@ brasero_plugin_add_error (BraseroPlugin *plugin,
 
 	g_return_if_fail (BRASERO_IS_PLUGIN (plugin));
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 
 	error = g_new0 (BraseroPluginError, 1);
 	error->detail = g_strdup (detail);
@@ -318,7 +317,7 @@ brasero_plugin_set_compulsory (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	priv->compulsory = compulsory;
 }
 
@@ -327,7 +326,7 @@ brasero_plugin_get_compulsory (BraseroPlugin *self)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	return priv->compulsory;
 }
 
@@ -338,7 +337,7 @@ brasero_plugin_set_active (BraseroPlugin *self, gboolean active)
 	gboolean was_active;
 	gboolean now_active;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	was_active = brasero_plugin_get_active (self, FALSE);
 	priv->active = active;
@@ -363,7 +362,7 @@ brasero_plugin_get_active (BraseroPlugin *plugin,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 
 	if (priv->type == G_TYPE_NONE)
 		return FALSE;
@@ -384,7 +383,7 @@ brasero_plugin_cleanup_definition (BraseroPlugin *self)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	g_free (priv->name);
 	priv->name = NULL;
@@ -433,7 +432,7 @@ brasero_plugin_get_next_conf_option (BraseroPlugin *self,
 	BraseroPluginPrivate *priv;
 	GSList *node;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	if (!priv->options)
 		return NULL;
 
@@ -495,7 +494,7 @@ brasero_plugin_add_conf_option (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	priv->options = g_slist_append (priv->options, option);
 
 	return BRASERO_BURN_OK;
@@ -590,7 +589,7 @@ brasero_plugin_define (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	brasero_plugin_cleanup_definition (self);
 
@@ -607,7 +606,7 @@ brasero_plugin_set_group (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	priv->group = group_id;
 }
 
@@ -616,7 +615,7 @@ brasero_plugin_get_group (BraseroPlugin *self)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	return priv->group;
 }
 
@@ -637,7 +636,7 @@ brasero_plugin_get_errors (BraseroPlugin *plugin)
 	BraseroPluginPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_PLUGIN (plugin), NULL);
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->errors;
 }
 
@@ -650,7 +649,7 @@ brasero_plugin_get_error_string (BraseroPlugin *plugin)
 
 	g_return_val_if_fail (BRASERO_IS_PLUGIN (plugin), NULL);
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 
 	string = g_string_new (NULL);
 	for (iter = priv->errors; iter; iter = iter->next) {
@@ -756,7 +755,7 @@ brasero_plugin_set_flags (BraseroPlugin *self,
 	GSList *list;
 	GSList *iter;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	list = brasero_media_get_all_list (media);
 	for (iter = list; iter; iter = iter->next) {
@@ -836,7 +835,7 @@ brasero_plugin_check_record_flags (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	current &= BRASERO_PLUGIN_BURN_FLAG_MASK;
 
 	return brasero_plugin_get_all_flags (priv->flags,
@@ -855,7 +854,7 @@ brasero_plugin_check_image_flags (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	current &= BRASERO_PLUGIN_IMAGE_FLAG_MASK;
 
@@ -880,7 +879,7 @@ brasero_plugin_check_media_restrictions (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	/* no restrictions */
 	if (!priv->flags)
@@ -899,7 +898,7 @@ brasero_plugin_get_record_flags (BraseroPlugin *self,
 	BraseroPluginPrivate *priv;
 	gboolean result;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	current &= BRASERO_PLUGIN_BURN_FLAG_MASK;
 
 	result = brasero_plugin_get_all_flags (priv->flags,
@@ -930,7 +929,7 @@ brasero_plugin_get_image_flags (BraseroPlugin *self,
 	BraseroPluginPrivate *priv;
 	gboolean result;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	current &= BRASERO_PLUGIN_IMAGE_FLAG_MASK;
 
 	result = brasero_plugin_get_all_flags (priv->flags,
@@ -959,7 +958,7 @@ brasero_plugin_set_blank_flags (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	priv->blank_flags = brasero_plugin_set_flags_real (priv->blank_flags,
 							   media,
 							   supported,
@@ -973,7 +972,7 @@ brasero_plugin_check_blank_flags (BraseroPlugin *self,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	current &= BRASERO_PLUGIN_BLANK_FLAG_MASK;
 
 	return brasero_plugin_get_all_flags (priv->blank_flags,
@@ -995,7 +994,7 @@ brasero_plugin_get_blank_flags (BraseroPlugin *self,
 	BraseroPluginPrivate *priv;
 	gboolean result;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 	current &= BRASERO_PLUGIN_BLANK_FLAG_MASK;
 
 	result = brasero_plugin_get_all_flags (priv->blank_flags,
@@ -1022,7 +1021,7 @@ brasero_plugin_set_process_flags (BraseroPlugin *plugin,
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	priv->process_flags = flags;
 }
 
@@ -1034,7 +1033,7 @@ brasero_plugin_get_process_flags (BraseroPlugin *plugin,
 
 	g_return_val_if_fail (flags != NULL, FALSE);
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	*flags = priv->process_flags;
 	return TRUE;
 }
@@ -1044,7 +1043,7 @@ brasero_plugin_get_name (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->name;
 }
 
@@ -1053,7 +1052,7 @@ brasero_plugin_get_display_name (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->display_name ? priv->display_name:priv->name;
 
 }
@@ -1063,7 +1062,7 @@ brasero_plugin_get_author (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->author;
 }
 
@@ -1072,7 +1071,7 @@ brasero_plugin_get_copyright (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->copyright;
 }
 
@@ -1081,7 +1080,7 @@ brasero_plugin_get_website (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->website;
 }
 
@@ -1090,7 +1089,7 @@ brasero_plugin_get_description (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	return priv->description;
 }
 
@@ -1105,7 +1104,7 @@ brasero_plugin_get_priority (BraseroPlugin *self)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	if (priv->priority > 0)
 		return priv->priority;
@@ -1118,7 +1117,7 @@ brasero_plugin_get_gtype (BraseroPlugin *self)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	if (priv->errors)
 		return G_TYPE_NONE;
@@ -1136,7 +1135,7 @@ brasero_plugin_unload (GTypeModule *module)
 	BraseroPlugin *plugin = BRASERO_PLUGIN (module);
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 	if (!priv->handle)
 		return;
 
@@ -1150,7 +1149,7 @@ brasero_plugin_load_real (BraseroPlugin *plugin)
 	BraseroPluginPrivate *priv;
 	BraseroPluginRegisterType register_func;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 
 	if (!priv->path)
 		return FALSE;
@@ -1196,7 +1195,7 @@ brasero_plugin_priority_changed (GSettings *settings,
 	BraseroPluginPrivate *priv;
 	gboolean is_active;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	/* At the moment it can only be the priority key */
 	priv->priority = g_settings_get_int (settings, BRASERO_PROPS_PRIORITY_KEY);
@@ -1230,7 +1229,7 @@ brasero_plugin_check_plugin_ready (BraseroPlugin *plugin)
 	BraseroPluginCheckConfig function = NULL;
 
 	g_return_if_fail (BRASERO_IS_PLUGIN (plugin));
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 
 	if (priv->errors) {
 		g_slist_foreach (priv->errors, (GFunc) brasero_plugin_error_free, NULL);
@@ -1263,7 +1262,7 @@ brasero_plugin_init_real (BraseroPlugin *object)
 	BraseroPluginPrivate *priv;
 	BraseroPluginRegisterType function = NULL;
 
-	priv = BRASERO_PLUGIN_PRIVATE (object);
+	priv = brasero_plugin_get_instance_private (object);
 
 	g_type_module_set_name (G_TYPE_MODULE (object), priv->name);
 
@@ -1319,7 +1318,7 @@ brasero_plugin_finalize (GObject *object)
 	BraseroPlugin *plugin = BRASERO_PLUGIN (object);
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	priv = brasero_plugin_get_instance_private (plugin);
 
 	if (priv->options) {
 		g_slist_foreach (priv->options, (GFunc) brasero_plugin_conf_option_free, NULL);
@@ -1371,7 +1370,7 @@ brasero_plugin_set_property (GObject *object,
 	BraseroPlugin *self = BRASERO_PLUGIN (object);
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	switch (prop_id)
 	{
@@ -1397,7 +1396,7 @@ brasero_plugin_get_property (GObject *object,
 	BraseroPlugin *self = BRASERO_PLUGIN (object);
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = brasero_plugin_get_instance_private (self);
 
 	switch (prop_id)
 	{
@@ -1418,7 +1417,7 @@ brasero_plugin_init (BraseroPlugin *object)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (object);
+	priv = brasero_plugin_get_instance_private (object);
 	priv->type = G_TYPE_NONE;
 	priv->compulsory = TRUE;
 }

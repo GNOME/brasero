@@ -62,7 +62,6 @@ struct _BraseroJacketViewPrivate
 	BraseroJacketImageStyle image_style;
 };
 
-#define BRASERO_JACKET_VIEW_PRIVATE(o)  (brasero_jacket_view_get_instance_private (o))
 
 enum
 {
@@ -215,7 +214,7 @@ brasero_jacket_view_render_side_text (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	cairo_font_options_t *font_options;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	cairo_set_source_rgb (ctx, 0.0, 0.0, 0.0);
 
@@ -303,7 +302,7 @@ brasero_jacket_view_render_body (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	cairo_font_options_t *font_options;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	/* This is vital to get the exact same layout when printing. By default
 	 * this is off for printing and on for screen display */
@@ -373,7 +372,7 @@ brasero_jacket_view_render_background (BraseroJacketView *self,
 {
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	/* draw background when it is a pattern */
 	if (scaled) {
@@ -454,7 +453,7 @@ brasero_jacket_view_render (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	int height, width;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (priv->side == BRASERO_JACKET_BACK) {
 		width = COVER_WIDTH_BACK_INCH * resolution_x;
@@ -528,7 +527,7 @@ brasero_jacket_view_scale_image (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	guint width, height;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (priv->side == BRASERO_JACKET_BACK) {
 		height = resolution_y * COVER_HEIGHT_BACK_INCH;
@@ -559,7 +558,7 @@ brasero_jacket_view_print (BraseroJacketView *self,
 	GdkPixbuf *scaled = NULL;
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	ctx = gtk_print_context_get_cairo_context (context);
 
@@ -712,7 +711,7 @@ brasero_jacket_view_configure_background (BraseroJacketView *self)
 	GdkColor color;
 	gchar *path;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	dialog = brasero_jacket_background_new ();
 
@@ -780,7 +779,7 @@ brasero_jacket_view_set_side (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	GtkTextBuffer *buffer;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	priv->side = side;
 
@@ -855,7 +854,7 @@ brasero_jacket_view_set_textview_background (BraseroJacketView *self)
 	BraseroJacketViewPrivate *priv;
 	cairo_pattern_t *pattern = NULL;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (priv->image_style == BRASERO_JACKET_IMAGE_NONE
 	&&  priv->color_style == BRASERO_JACKET_COLOR_NONE)
@@ -917,7 +916,7 @@ brasero_jacket_view_crop_image (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	gint x, y;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (gdk_pixbuf_get_width (priv->image) > width) {
 		x = 0;
@@ -945,7 +944,7 @@ brasero_jacket_view_update_image (BraseroJacketView *self)
 {
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (priv->scaled) {
 		g_object_unref (priv->scaled);
@@ -991,7 +990,7 @@ brasero_jacket_view_get_image (BraseroJacketView *self)
 {
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 	return priv->image_path;
 }
 
@@ -1003,7 +1002,7 @@ brasero_jacket_view_set_image (BraseroJacketView *self,
 	BraseroJacketViewPrivate *priv;
 	GError *error = NULL;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (!path)
 		return priv->image_path;
@@ -1051,7 +1050,7 @@ brasero_jacket_view_set_color (BraseroJacketView *self,
 {
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	priv->b_color = *color;
 	priv->b_color2 = *color2;
@@ -1085,7 +1084,7 @@ brasero_jacket_view_get_attributes (BraseroJacketView *self,
 	GtkTextAttributes *attributes;
 	GtkTextBuffer *buffer;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	attributes = gtk_text_view_get_default_attributes (GTK_TEXT_VIEW (priv->edit));
 
@@ -1107,7 +1106,7 @@ brasero_jacket_view_get_active_buffer (BraseroJacketView *self)
 	BraseroJacketViewPrivate *priv;
 	GtkWidget *current;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (priv->sides && gtk_widget_is_focus (priv->sides))
 		current = priv->sides;
@@ -1124,7 +1123,7 @@ brasero_jacket_view_get_body_buffer (BraseroJacketView *self)
 {
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	return gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->edit));	
 }
@@ -1134,7 +1133,7 @@ brasero_jacket_view_get_side_buffer (BraseroJacketView *self)
 {
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+	priv = brasero_jacket_view_get_instance_private (self);
 
 	if (!priv->sides)
 		return NULL;
@@ -1172,7 +1171,7 @@ brasero_jacket_view_draw (GtkWidget *widget,
 	GtkAllocation allocation, sides_allocation;
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 
 	toplevel = gtk_widget_get_toplevel (widget);
 	if (!GTK_IS_WINDOW (toplevel))
@@ -1280,7 +1279,7 @@ brasero_jacket_view_get_preferred_width (GtkWidget *widget,
 	gdouble resolution;
         gint width;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 
 	if (!gtk_widget_get_parent (widget))
 		return;
@@ -1313,7 +1312,7 @@ brasero_jacket_view_get_preferred_height (GtkWidget *widget,
 	gdouble resolution;
         gint height;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 
 	if (!gtk_widget_get_parent (widget))
 		return;
@@ -1351,7 +1350,7 @@ brasero_jacket_view_size_allocate (GtkWidget *widget,
 		return;
 
 	resolution = gdk_screen_get_resolution (gtk_window_get_screen (GTK_WINDOW (toplevel)));
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 
 	if (priv->image && priv->image_style == BRASERO_JACKET_IMAGE_STRETCH) {
 		if (priv->scaled) {
@@ -1416,7 +1415,7 @@ brasero_jacket_view_container_forall (GtkContainer *container,
 	BraseroJacketView *view = BRASERO_JACKET_VIEW (container);
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 	if (priv->edit)
 		callback (priv->edit, callback_data);
 	if (priv->sides)
@@ -1430,7 +1429,7 @@ brasero_jacket_view_container_remove (GtkContainer *container,
 	BraseroJacketView *view = BRASERO_JACKET_VIEW (container);
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 	if (priv->edit == widget)
 		priv->edit = NULL;
 
@@ -1446,7 +1445,7 @@ brasero_jacket_view_init (BraseroJacketView *object)
 	GtkAdjustment *vadj;
 	GtkAdjustment *hadj;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (object);
+	priv = brasero_jacket_view_get_instance_private (object);
 
 	buffer = GTK_TEXT_BUFFER (brasero_jacket_buffer_new ());
 	g_signal_connect (buffer,
@@ -1503,7 +1502,7 @@ brasero_jacket_view_finalize (GObject *object)
 	BraseroJacketView *view = BRASERO_JACKET_VIEW (object);
 	BraseroJacketViewPrivate *priv;
 
-	priv = BRASERO_JACKET_VIEW_PRIVATE (view);
+	priv = brasero_jacket_view_get_instance_private (view);
 	if (priv->image) {
 		g_object_unref (priv->image);
 		priv->image = NULL;

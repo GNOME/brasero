@@ -101,7 +101,6 @@ struct BraseroJobPrivate {
 				 G_STRFUNC);					\
 }
 
-#define BRASERO_JOB_PRIVATE(o)  (brasero_job_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_CODE (BraseroJob, brasero_job, G_TYPE_OBJECT,
 			 G_ADD_PRIVATE (BraseroJob)
@@ -132,7 +131,7 @@ brasero_job_item_next (BraseroTaskItem *item)
 	BraseroJobPrivate *priv;
 
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->next)
 		return NULL;
@@ -147,7 +146,7 @@ brasero_job_item_previous (BraseroTaskItem *item)
 	BraseroJobPrivate *priv;
 
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->previous)
 		return NULL;
@@ -164,8 +163,8 @@ brasero_job_item_link (BraseroTaskItem *input,
 	BraseroJobPrivate *priv_input;
 	BraseroJobPrivate *priv_output;
 
-	priv_input = BRASERO_JOB_PRIVATE (input_job);
-	priv_output = BRASERO_JOB_PRIVATE (output_job);
+	priv_input = brasero_job_get_instance_private (input_job);
+	priv_output = brasero_job_get_instance_private (output_job);
 
 	priv_input->next = output_job;
 	priv_output->previous = input_job;
@@ -180,13 +179,13 @@ brasero_job_is_last_active (BraseroJob *self)
 	BraseroJobPrivate *priv;
 	BraseroJob *next;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!priv->ctx)
 		return FALSE;
 
 	next = priv->next;
 	while (next) {
-		priv = BRASERO_JOB_PRIVATE (next);
+		priv = brasero_job_get_instance_private (next);
 		if (priv->ctx)
 			return FALSE;
 		next = priv->next;
@@ -201,13 +200,13 @@ brasero_job_is_first_active (BraseroJob *self)
 	BraseroJobPrivate *priv;
 	BraseroJob *prev;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!priv->ctx)
 		return FALSE;
 
 	prev = priv->previous;
 	while (prev) {
-		priv = BRASERO_JOB_PRIVATE (prev);
+		priv = brasero_job_get_instance_private (prev);
 		if (priv->ctx)
 			return FALSE;
 		prev = priv->previous;
@@ -255,7 +254,7 @@ brasero_job_deactivate (BraseroJob *self)
 {
 	BraseroJobPrivate *priv;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "deactivating");
 
@@ -287,7 +286,7 @@ brasero_job_allow_deactivation (BraseroJob *self,
 	BraseroJobPrivate *priv;
 	BraseroTrackType input;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	/* This job refused to work. This is allowed in three cases:
 	 * - the job is the only one in the task (no other job linked) and the
@@ -304,7 +303,7 @@ brasero_job_allow_deactivation (BraseroJob *self,
 
 	if (priv->previous) {
 		BraseroJobPrivate *previous;
-		previous = BRASERO_JOB_PRIVATE (priv->previous);
+		previous = brasero_job_get_instance_private (priv->previous);
 		memcpy (&input, &previous->type, sizeof (BraseroTrackType));
 	}
 	else
@@ -338,7 +337,7 @@ brasero_job_item_activate (BraseroTaskItem *item,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (ctx);
 
 	g_object_ref (ctx);
@@ -373,7 +372,7 @@ brasero_job_item_is_active (BraseroTaskItem *item)
 	BraseroJobPrivate *priv;
 
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	return (priv->ctx != NULL);
 }
@@ -390,7 +389,7 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 	BraseroMedium *medium;
 	BraseroDrive *drive;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	brasero_task_ctx_get_session_output_size (priv->ctx,
 						  &output_blocks,
@@ -457,7 +456,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	/* now that the job has a known output we must check that the volume the
 	 * job is writing to has enough space for all output */
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	/* Get the size and filesystem type for the volume first.
 	 * NOTE: since any plugin must output anything LOCALLY, we can then use
@@ -592,7 +591,7 @@ brasero_job_set_output_file (BraseroJob *self,
 	gchar *toc = NULL;
 	gboolean is_last;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	/* no next job so we need a file pad */
 	session = brasero_task_ctx_get_session (priv->ctx);
@@ -691,13 +690,13 @@ brasero_job_get_next_active (BraseroJob *self)
 	BraseroJob *next;
 
 	/* since some jobs can return NOT_RUNNING after ::init, skip them */
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!priv->next)
 		return NULL;
 
 	next = priv->next;
 	while (next) {
-		priv = BRASERO_JOB_PRIVATE (next);
+		priv = brasero_job_get_instance_private (next);
 
 		if (priv->ctx)
 			return next;
@@ -720,7 +719,7 @@ brasero_job_item_start (BraseroTaskItem *item,
 
 	/* This function is compulsory */
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	/* skip jobs that are not active */
 	if (!priv->ctx)
@@ -832,7 +831,7 @@ brasero_job_item_clock_tick (BraseroTaskItem *item,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!priv->ctx)
 		return BRASERO_BURN_OK;
 
@@ -850,7 +849,7 @@ brasero_job_disconnect (BraseroJob *self,
 	BraseroJobPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	/* NOTE: this function is only called when there are no more track to 
 	 * process */
@@ -863,7 +862,7 @@ brasero_job_disconnect (BraseroJob *self,
 				 G_OBJECT_TYPE_NAME (self),
 				 G_OBJECT_TYPE_NAME (priv->linked));
 
-		priv_link = BRASERO_JOB_PRIVATE (priv->linked);
+		priv_link = brasero_job_get_instance_private (priv->linked);
 
 		/* only close the input to tell the other end that we're
 		 * finished with writing to the pipe */
@@ -900,7 +899,7 @@ brasero_job_item_stop (BraseroTaskItem *item,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	
 	self = BRASERO_JOB (item);
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->ctx)
 		return BRASERO_BURN_OK;
@@ -945,7 +944,7 @@ brasero_job_tag_lookup (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	session = brasero_task_ctx_get_session (priv->ctx);
 	return brasero_burn_session_tag_lookup (session,
@@ -963,7 +962,7 @@ brasero_job_tag_add (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!brasero_job_is_last_active (self))
 		return BRASERO_BURN_ERR;
@@ -990,7 +989,7 @@ brasero_job_add_track (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	/* to add a track to the session, a job :
 	 * - must be the last running in the chain
@@ -1015,7 +1014,7 @@ brasero_job_finished_session (BraseroJob *self)
 	BraseroJobPrivate *priv;
 	BraseroBurnResult result;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Finished successfully session");
 
@@ -1068,7 +1067,7 @@ brasero_job_finished_track (BraseroJob *self)
 	BraseroJobPrivate *priv;
 	BraseroBurnResult result;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self, "Finished track successfully");
 
@@ -1141,7 +1140,7 @@ brasero_job_error (BraseroJob *self, GError *error)
 
 	BRASERO_JOB_LOG (self, "finished with an error");
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	instance_and_params [0].g_type = 0;
 	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (self));
@@ -1191,7 +1190,7 @@ brasero_job_get_fd_in (BraseroJob *self, int *fd_in)
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->input)
 		return BRASERO_BURN_ERR;
@@ -1268,7 +1267,7 @@ brasero_job_get_current_track (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!track)
 		return BRASERO_BURN_OK;
 
@@ -1283,7 +1282,7 @@ brasero_job_get_done_tracks (BraseroJob *self, GSList **tracks)
 	BRASERO_JOB_DEBUG (self);
 
 	/* tracks already done are those that are in session */
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	return brasero_task_ctx_get_stored_tracks (priv->ctx, tracks);
 }
 
@@ -1297,7 +1296,7 @@ brasero_job_get_tracks (BraseroJob *self, GSList **tracks)
 
 	g_return_val_if_fail (tracks != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	*tracks = brasero_burn_session_get_tracks (session);
 	return BRASERO_BURN_OK;
@@ -1310,7 +1309,7 @@ brasero_job_get_fd_out (BraseroJob *self, int *fd_out)
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->linked)
 		return BRASERO_BURN_ERR;
@@ -1318,7 +1317,7 @@ brasero_job_get_fd_out (BraseroJob *self, int *fd_out)
 	if (!fd_out)
 		return BRASERO_BURN_OK;
 
-	priv = BRASERO_JOB_PRIVATE (priv->linked);
+	priv = brasero_job_get_instance_private (priv->linked);
 	if (!priv->input)
 		return BRASERO_BURN_ERR;
 
@@ -1335,7 +1334,7 @@ brasero_job_get_image_output (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->output)
 		return BRASERO_BURN_ERR;
@@ -1357,7 +1356,7 @@ brasero_job_get_audio_output (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!priv->output)
 		return BRASERO_BURN_ERR;
 
@@ -1377,7 +1376,7 @@ brasero_job_get_flags (BraseroJob *self, BraseroBurnFlag *flags)
 
 	g_return_val_if_fail (flags != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	*flags = brasero_burn_session_get_flags (session);
 
@@ -1392,7 +1391,7 @@ brasero_job_get_input_type (BraseroJob *self, BraseroTrackType *type)
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!priv->previous) {
 		BraseroBurnSession *session;
 
@@ -1402,7 +1401,7 @@ brasero_job_get_input_type (BraseroJob *self, BraseroTrackType *type)
 	else {
 		BraseroJobPrivate *prev_priv;
 
-		prev_priv = BRASERO_JOB_PRIVATE (priv->previous);
+		prev_priv = brasero_job_get_instance_private (priv->previous);
 		memcpy (type, &prev_priv->type, sizeof (BraseroTrackType));
 		result = BRASERO_BURN_OK;
 	}
@@ -1417,7 +1416,7 @@ brasero_job_get_output_type (BraseroJob *self, BraseroTrackType *type)
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	memcpy (type, &priv->type, sizeof (BraseroTrackType));
 	return BRASERO_BURN_OK;
@@ -1433,7 +1432,7 @@ brasero_job_get_action (BraseroJob *self, BraseroJobAction *action)
 
 	g_return_val_if_fail (action != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!brasero_job_is_last_active (self)) {
 		*action = BRASERO_JOB_ACTION_IMAGE;
@@ -1480,7 +1479,7 @@ brasero_job_get_bus_target_lun (BraseroJob *self, gchar **BTL)
 
 	g_return_val_if_fail (BTL != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
@@ -1501,7 +1500,7 @@ brasero_job_get_device (BraseroJob *self, gchar **device)
 
 	g_return_val_if_fail (device != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
@@ -1521,7 +1520,7 @@ brasero_job_get_media (BraseroJob *self, BraseroMedia *media)
 
 	g_return_val_if_fail (media != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	*media = brasero_burn_session_get_dest_media (session);
 
@@ -1539,7 +1538,7 @@ brasero_job_get_medium (BraseroJob *job, BraseroMedium **medium)
 
 	g_return_val_if_fail (medium != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (job);
+	priv = brasero_job_get_instance_private (job);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
 	*medium = brasero_drive_get_medium (drive);
@@ -1563,7 +1562,7 @@ brasero_job_get_last_session_address (BraseroJob *self, goffset *address)
 
 	g_return_val_if_fail (address != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
 	medium = brasero_drive_get_medium (drive);
@@ -1585,7 +1584,7 @@ brasero_job_get_next_writable_address (BraseroJob *self, goffset *address)
 
 	g_return_val_if_fail (address != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
 	medium = brasero_drive_get_medium (drive);
@@ -1602,7 +1601,7 @@ brasero_job_get_rate (BraseroJob *self, guint64 *rate)
 
 	g_return_val_if_fail (rate != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	*rate = brasero_burn_session_get_rate (session);
 
@@ -1634,7 +1633,7 @@ brasero_job_get_speed (BraseroJob *self, guint *speed)
 
 	g_return_val_if_fail (speed != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	rate = brasero_burn_session_get_rate (session);
 
@@ -1661,7 +1660,7 @@ brasero_job_get_max_rate (BraseroJob *self, guint64 *rate)
 
 	g_return_val_if_fail (rate != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
@@ -1689,7 +1688,7 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 
 	g_return_val_if_fail (speed != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
@@ -1718,7 +1717,7 @@ brasero_job_get_tmp_file (BraseroJob *self,
 	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	return brasero_burn_session_get_tmp_file (session,
 						  suffix,
@@ -1736,7 +1735,7 @@ brasero_job_get_tmp_dir (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	brasero_burn_session_get_tmp_dir (session,
 					  output,
@@ -1755,7 +1754,7 @@ brasero_job_get_audio_title (BraseroJob *self, gchar **album)
 
 	g_return_val_if_fail (album != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	*album = g_strdup (brasero_burn_session_get_label (session));
@@ -1772,7 +1771,7 @@ brasero_job_get_data_label (BraseroJob *self, gchar **label)
 
 	g_return_val_if_fail (label != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	*label = g_strdup (brasero_burn_session_get_label (session));
@@ -1788,7 +1787,7 @@ brasero_job_get_session_output_size (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	return brasero_task_ctx_get_session_output_size (priv->ctx, blocks, bytes);
 }
 
@@ -1805,7 +1804,7 @@ brasero_job_start_progress (BraseroJob *self,
 	/* Turn this off as otherwise it floods bug reports */
 	// BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_NOT_RUNNING;
 
@@ -1817,7 +1816,7 @@ brasero_job_reset_progress (BraseroJob *self)
 {
 	BraseroJobPrivate *priv;
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_ERR;
 
@@ -1837,7 +1836,7 @@ brasero_job_set_progress (BraseroJob *self,
 	/* Turn this off as it floods bug reports */
 	//BRASERO_JOB_LOG (self, "Called brasero_job_set_progress (%lf)", progress);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_ERR;
 
@@ -1859,7 +1858,7 @@ brasero_job_set_current_action (BraseroJob *self,
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (!brasero_job_is_last_active (self))
 		return BRASERO_BURN_NOT_RUNNING;
 
@@ -1879,7 +1878,7 @@ brasero_job_get_current_action (BraseroJob *self,
 
 	g_return_val_if_fail (action != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!priv->ctx) {
 		BRASERO_JOB_LOG (self,
@@ -1900,7 +1899,7 @@ brasero_job_set_rate (BraseroJob *self,
 	/* Turn this off as otherwise it floods bug reports */
 	// BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_NOT_RUNNING;
 
@@ -1923,7 +1922,7 @@ brasero_job_set_output_size_for_current_track (BraseroJob *self,
 	 * to other when there are multiple tracks. */
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 
 	if (!brasero_job_is_last_active (self))
 		return BRASERO_BURN_ERR;
@@ -1942,7 +1941,7 @@ brasero_job_set_written_track (BraseroJob *self,
 	/* Turn this off as otherwise it floods bug reports */
 	// BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_NOT_RUNNING;
 
@@ -1958,7 +1957,7 @@ brasero_job_set_written_session (BraseroJob *self,
 	/* Turn this off as otherwise it floods bug reports */
 	// BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_NOT_RUNNING;
 
@@ -1972,7 +1971,7 @@ brasero_job_set_use_average_rate (BraseroJob *self, gboolean value)
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->next)
 		return BRASERO_BURN_NOT_RUNNING;
 
@@ -1986,7 +1985,7 @@ brasero_job_set_dangerous (BraseroJob *self, gboolean value)
 
 	BRASERO_JOB_DEBUG (self);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	if (priv->ctx)
 		brasero_task_ctx_set_dangerous (priv->ctx, value);
 }
@@ -2008,7 +2007,7 @@ brasero_job_log_message (BraseroJob *self,
 	g_return_if_fail (BRASERO_IS_JOB (self));
 	g_return_if_fail (format != NULL);
 
-	priv = BRASERO_JOB_PRIVATE (self);
+	priv = brasero_job_get_instance_private (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	va_start (arg_list, format);
@@ -2034,7 +2033,7 @@ brasero_job_get_property (GObject *object,
 	BraseroJobPrivate *priv;
 	BraseroTrackType *ptr;
 
-	priv = BRASERO_JOB_PRIVATE (job);
+	priv = brasero_job_get_instance_private (job);
 
 	switch (prop_id) {
 	case PROP_OUTPUT:
@@ -2057,7 +2056,7 @@ brasero_job_set_property (GObject *object,
 	BraseroJobPrivate *priv;
 	BraseroTrackType *ptr;
 
-	priv = BRASERO_JOB_PRIVATE (job);
+	priv = brasero_job_get_instance_private (job);
 
 	switch (prop_id) {
 	case PROP_OUTPUT:
@@ -2081,7 +2080,7 @@ brasero_job_finalize (GObject *object)
 	BraseroJob *job = BRASERO_JOB (object);
 	BraseroJobPrivate *priv;
 
-	priv = BRASERO_JOB_PRIVATE (job);
+	priv = brasero_job_get_instance_private (job);
 
 	if (priv->ctx) {
 		g_object_unref (priv->ctx);

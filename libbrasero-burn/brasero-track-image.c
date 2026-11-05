@@ -52,7 +52,6 @@ struct _BraseroTrackImagePrivate
 	BraseroImageFormat format;
 };
 
-#define BRASERO_TRACK_IMAGE_PRIVATE(o)  (brasero_track_image_get_instance_private (o))
 
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackImage, brasero_track_image, BRASERO_TYPE_TRACK);
@@ -65,7 +64,7 @@ brasero_track_image_set_source_real (BraseroTrackImage *track,
 {
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 
 	priv->format = format;
 
@@ -124,7 +123,7 @@ brasero_track_image_set_block_num_real (BraseroTrackImage *track,
 {
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 	priv->blocks = blocks;
 	return BRASERO_BURN_OK;
 }
@@ -149,7 +148,7 @@ brasero_track_image_set_block_num (BraseroTrackImage *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 	if (priv->blocks == blocks)
 		return BRASERO_BURN_OK;
 
@@ -184,7 +183,7 @@ brasero_track_image_get_source (BraseroTrackImage *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), NULL);
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 
 	if (!priv->image) {
 		gchar *complement;
@@ -240,7 +239,7 @@ brasero_track_image_get_toc_source (BraseroTrackImage *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), NULL);
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 
 	/* Don't use file complement retrieval here as it's not possible */
 	if (uri)
@@ -266,7 +265,7 @@ brasero_track_image_get_format (BraseroTrackImage *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), BRASERO_IMAGE_FORMAT_NONE);
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 	return priv->format;
 }
 
@@ -290,7 +289,7 @@ brasero_track_image_need_byte_swap (BraseroTrackImage *track)
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE (track), BRASERO_IMAGE_FORMAT_NONE);
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (track);
+	priv = brasero_track_image_get_instance_private (track);
 	if (priv->format != BRASERO_IMAGE_FORMAT_CUE)
 		return FALSE;
 
@@ -308,7 +307,7 @@ brasero_track_image_get_track_type (BraseroTrack *track,
 	BraseroTrackImage *image = BRASERO_TRACK_IMAGE (track);
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (image);
+	priv = brasero_track_image_get_instance_private (image);
 
 	brasero_track_type_set_has_image (type);
 	brasero_track_type_set_image_format (type, priv->format);
@@ -324,7 +323,7 @@ brasero_track_image_get_size (BraseroTrack *track,
 	BraseroTrackImage *image = BRASERO_TRACK_IMAGE (track);
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (image);
+	priv = brasero_track_image_get_instance_private (image);
 
 	if (priv->format == BRASERO_IMAGE_FORMAT_BIN) {
 		if (block_size)
@@ -361,7 +360,7 @@ brasero_track_image_finalize (GObject *object)
 	BraseroTrackImage *image = BRASERO_TRACK_IMAGE (object);
 	BraseroTrackImagePrivate *priv;
 
-	priv = BRASERO_TRACK_IMAGE_PRIVATE (image);
+	priv = brasero_track_image_get_instance_private (image);
 	if (priv->image) {
 		g_free (priv->image);
 		priv->image = NULL;

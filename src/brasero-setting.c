@@ -52,7 +52,6 @@ struct _BraseroSettingPrivate
 	gboolean show_sidepane;
 };
 
-#define BRASERO_SETTING_PRIVATE(o)  (brasero_setting_get_instance_private (o))
 
 enum
 {
@@ -76,7 +75,7 @@ brasero_setting_get_value (BraseroSetting *setting,
 	g_return_val_if_fail (BRASERO_IS_SETTING (setting), FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	priv = BRASERO_SETTING_PRIVATE (setting);
+	priv = brasero_setting_get_instance_private (setting);
 
 	switch (setting_value) {
 		/** gint **/
@@ -179,7 +178,7 @@ brasero_setting_set_value (BraseroSetting *setting,
 
 	g_return_val_if_fail (BRASERO_IS_SETTING (setting), FALSE);
 
-	priv = BRASERO_SETTING_PRIVATE (setting);
+	priv = brasero_setting_get_instance_private (setting);
 
 	switch (setting_value) {
 		/** gint **/
@@ -305,7 +304,7 @@ brasero_setting_load (BraseroSetting *setting)
 	gboolean res;
 	gchar *path;
 
-	priv = BRASERO_SETTING_PRIVATE (setting);
+	priv = brasero_setting_get_instance_private (setting);
 
 	path = g_build_path (G_DIR_SEPARATOR_S,
 	                     g_get_user_config_dir (),
@@ -419,7 +418,7 @@ brasero_setting_save (BraseroSetting *setting)
 	GKeyFile *key_file;
 	gchar *path;
 
-	priv = BRASERO_SETTING_PRIVATE (setting);
+	priv = brasero_setting_get_instance_private (setting);
 
 	path = g_build_path (G_DIR_SEPARATOR_S,
 	                     g_get_user_config_dir (),
@@ -541,7 +540,7 @@ brasero_setting_init (BraseroSetting *object)
 {
 	BraseroSettingPrivate *priv;
 
-	priv = BRASERO_SETTING_PRIVATE (object);
+	priv = brasero_setting_get_instance_private (object);
 	priv->win_width = -1;
 	priv->win_height = -1;
 	priv->stock_file_chooser_percent = -1;
@@ -563,7 +562,7 @@ brasero_setting_finalize (GObject *object)
 	BraseroSetting *self = BRASERO_SETTING (object);
 	BraseroSettingPrivate *priv;
 
-	priv = BRASERO_SETTING_PRIVATE (self);
+	priv = brasero_setting_get_instance_private (self);
 	if (priv->layout_video) {
 		g_free (priv->layout_video);
 		priv->layout_video = NULL;

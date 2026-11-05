@@ -44,7 +44,6 @@ struct _BraseroJacketFontPrivate
 	gchar *current_family;
 };
 
-#define BRASERO_JACKET_FONT_PRIVATE(o)  (brasero_jacket_font_get_instance_private (o))
 
 enum
 {
@@ -107,7 +106,7 @@ brasero_jacket_font_set_name (BraseroJacketFont *self,
 	guint font_size;
 	guint size;
 
-	priv = BRASERO_JACKET_FONT_PRIVATE (self);
+	priv = brasero_jacket_font_get_instance_private (self);
 
 	desc = pango_font_description_from_string (string);
 	family_name = pango_font_description_get_family (desc);
@@ -196,7 +195,7 @@ brasero_jacket_font_get_family (BraseroJacketFont *self)
 	gchar *family = NULL;
 	BraseroJacketFontPrivate *priv;
 
-	priv = BRASERO_JACKET_FONT_PRIVATE (self);
+	priv = brasero_jacket_font_get_instance_private (self);
 
 	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->family), &iter))
 		return NULL;
@@ -216,7 +215,7 @@ brasero_jacket_font_get_size (BraseroJacketFont *self)
 	GtkTreeModel *model;
 	BraseroJacketFontPrivate *priv;
 
-	priv = BRASERO_JACKET_FONT_PRIVATE (self);
+	priv = brasero_jacket_font_get_instance_private (self);
 
 	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->size), &iter))
 		return 0;
@@ -280,7 +279,7 @@ brasero_jacket_font_init (BraseroJacketFont *object)
 	GtkCellRenderer *renderer;
 	BraseroJacketFontPrivate *priv;
 
-	priv = BRASERO_JACKET_FONT_PRIVATE (object);
+	priv = brasero_jacket_font_get_instance_private (object);
 
 	gtk_box_set_homogeneous (GTK_BOX (object), FALSE);
 

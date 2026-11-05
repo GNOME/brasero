@@ -43,7 +43,6 @@ struct _BraseroDriveSettingsPrivate
 	BraseroBurnSession *session;
 };
 
-#define BRASERO_DRIVE_SETTINGS_PRIVATE(o)  (brasero_drive_settings_get_instance_private (o))
 
 #define BRASERO_SCHEMA_DRIVES			"org.gnome.brasero.drives"
 #define BRASERO_DRIVE_PROPERTIES_PATH		"/org/gnome/brasero/drives/"
@@ -75,7 +74,7 @@ brasero_drive_settings_get_mapping_speed (GValue *value,
 		BraseroMedium *medium;
 		BraseroDrive *drive;
 
-		priv = BRASERO_DRIVE_SETTINGS_PRIVATE (user_data);
+		priv = brasero_drive_settings_get_instance_private (user_data);
 		drive = brasero_burn_session_get_burner (priv->session);
 		medium = brasero_drive_get_medium (drive);
 
@@ -107,7 +106,7 @@ brasero_drive_settings_get_mapping_flags (GValue *value,
 	BraseroBurnFlag current_flags;
 	BraseroDriveSettingsPrivate *priv;
 
-	priv = BRASERO_DRIVE_SETTINGS_PRIVATE (user_data);
+	priv = brasero_drive_settings_get_instance_private (user_data);
 
 	flags = g_variant_get_int32 (variant);
 	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
@@ -155,7 +154,7 @@ brasero_drive_settings_bind_session (BraseroDriveSettings *self)
 	gchar *path;
 	gchar *tmp;
 
-	priv = BRASERO_DRIVE_SETTINGS_PRIVATE (self);
+	priv = brasero_drive_settings_get_instance_private (self);
 
 	/* Get the drive name: it's done this way to avoid escaping */
 	tmp = brasero_drive_get_display_name (priv->dest_drive);
@@ -211,7 +210,7 @@ brasero_drive_settings_unbind_session (BraseroDriveSettings *self)
 {
 	BraseroDriveSettingsPrivate *priv;
 
-	priv = BRASERO_DRIVE_SETTINGS_PRIVATE (self);
+	priv = brasero_drive_settings_get_instance_private (self);
 
 	if (priv->settings) {
 		brasero_track_type_free (priv->src_type);
@@ -239,7 +238,7 @@ brasero_drive_settings_rebind_session (BraseroDriveSettings *self)
 	BraseroMedium *medium;
 	BraseroDrive *drive;
 
-	priv = BRASERO_DRIVE_SETTINGS_PRIVATE (self);
+	priv = brasero_drive_settings_get_instance_private (self);
 
 	/* See if we really need to do that:
 	 * - check the source type has changed 
@@ -309,7 +308,7 @@ brasero_drive_settings_unset_session (BraseroDriveSettings *self)
 {
 	BraseroDriveSettingsPrivate *priv;
 
-	priv = BRASERO_DRIVE_SETTINGS_PRIVATE (self);
+	priv = brasero_drive_settings_get_instance_private (self);
 
 	brasero_drive_settings_unbind_session (self);
 
@@ -338,7 +337,7 @@ brasero_drive_settings_set_session (BraseroDriveSettings *self,
 {
 	BraseroDriveSettingsPrivate *priv;
 
-	priv = BRASERO_DRIVE_SETTINGS_PRIVATE (self);
+	priv = brasero_drive_settings_get_instance_private (self);
 
 	brasero_drive_settings_unset_session (self);
 

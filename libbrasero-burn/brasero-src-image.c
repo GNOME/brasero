@@ -69,7 +69,6 @@ struct _BraseroSrcImagePrivate
 	GSettings *settings;
 };
 
-#define BRASERO_SRC_IMAGE_PRIVATE(o)  (brasero_src_image_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroSrcImage, brasero_src_image, GTK_TYPE_BUTTON);
 
@@ -103,7 +102,7 @@ brasero_src_image_save (BraseroSrcImage *self)
 				      FALSE };
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
+	priv = brasero_src_image_get_instance_private (self);
 
 	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (priv->track));
 	if (format == BRASERO_IMAGE_FORMAT_NONE)
@@ -153,7 +152,7 @@ brasero_src_image_error (BraseroSrcImage *self,
 	BraseroSrcImagePrivate *priv;
 	GtkWidget *toplevel;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
+	priv = brasero_src_image_get_instance_private (self);
 	if (priv->file)
 		toplevel = priv->file;
 	else
@@ -184,7 +183,7 @@ brasero_src_image_update (BraseroSrcImage *self)
 	gchar *size_string = NULL;
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
+	priv = brasero_src_image_get_instance_private (self);
 
 	if (!priv->track)
 		return;
@@ -294,7 +293,7 @@ brasero_src_image_check_parent_directory_cb (GObject *object,
 	GError *error = NULL;
 	GFileInfo *info;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (data);
+	priv = brasero_src_image_get_instance_private (data);
 
 	info = g_file_query_info_finish (G_FILE (object), result, &error);
 	if (!info) {
@@ -325,7 +324,7 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 	BraseroImageFormat format;
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
+	priv = brasero_src_image_get_instance_private (dialog);
 
 	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), &format);
 	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->file));
@@ -356,7 +355,7 @@ brasero_src_image_set_formats (BraseroSrcImage *dialog)
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
+	priv = brasero_src_image_get_instance_private (dialog);
 
 	/* Show all formats here even if we miss a
 	 * plugin to burn or use it */
@@ -377,7 +376,7 @@ brasero_src_image_get_current_uri (BraseroSrcImage *self)
 	BraseroImageFormat format;
 	gchar *uri = NULL;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
+	priv = brasero_src_image_get_instance_private (self);
 
 	format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (priv->track));
 	switch (format) {
@@ -410,7 +409,7 @@ brasero_src_image_clicked (GtkButton *button)
 	GtkWidget *box;
 	gchar *uri;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
+	priv = brasero_src_image_get_instance_private (image);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (button));
 	priv->file = gtk_file_chooser_dialog_new (_("Select Disc Image"),
@@ -497,7 +496,7 @@ brasero_src_image_set_parent_directory (GObject *object,
 	BraseroSrcImagePrivate *priv;
 	GFileInfo *info;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (data);
+	priv = brasero_src_image_get_instance_private (data);
 
 	info = g_file_query_info_finish (G_FILE (object), result, NULL);
 	if (info) {
@@ -524,7 +523,7 @@ brasero_src_image_init (BraseroSrcImage *object)
 	gchar *string;
 	gchar *uri;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (object);
+	priv = brasero_src_image_get_instance_private (object);
 
 	priv->cancel = g_cancellable_new ();
 
@@ -579,7 +578,7 @@ brasero_src_image_finalize (GObject *object)
 	BraseroSrcImage *image = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
+	priv = brasero_src_image_get_instance_private (image);
 
 	brasero_src_image_save (image);
 
@@ -645,7 +644,7 @@ brasero_src_image_set_property (GObject *object,
 	BraseroSrcImagePrivate *priv;
 	BraseroBurnSession *session;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
+	priv = brasero_src_image_get_instance_private (image);
 
 	switch (property_id) {
 	case PROP_SESSION: {
@@ -750,7 +749,7 @@ brasero_src_image_get_property (GObject *object,
 	BraseroSrcImage *image = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
 
-	priv = BRASERO_SRC_IMAGE_PRIVATE (image);
+	priv = brasero_src_image_get_instance_private (image);
 
 	switch (property_id) {
 	case PROP_SESSION:

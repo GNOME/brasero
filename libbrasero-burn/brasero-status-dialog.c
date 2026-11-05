@@ -64,7 +64,6 @@ struct _BraseroStatusDialogPrivate
 	guint reject_deep_files:1;
 };
 
-#define BRASERO_STATUS_DIALOG_PRIVATE(o)  (brasero_status_dialog_get_instance_private (o))
 
 enum {
 	PROP_0,
@@ -91,7 +90,7 @@ brasero_status_dialog_update (BraseroStatusDialog *self,
 	BraseroTrackType *type;
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (self);
+	priv = brasero_status_dialog_get_instance_private (self);
 
 	current_action = brasero_status_get_current_action (status);
 	if (current_action) {
@@ -164,7 +163,7 @@ brasero_status_dialog_wait_for_ready_state (BraseroStatusDialog *dialog)
 	BraseroBurnResult result;
 	BraseroStatus *status;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 
 	status = brasero_status_new ();
 	result = brasero_burn_session_get_status (priv->session, status);
@@ -192,7 +191,7 @@ brasero_status_dialog_deep_directory_cb (BraseroTrackDataCfg *project,
 	GtkWindow *transient_win;
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 
 	if (priv->accept_deep_files)
 		return TRUE;
@@ -254,7 +253,7 @@ brasero_status_dialog_2G_file_cb (BraseroTrackDataCfg *track,
 	GtkWindow *transient_win;
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 
 	if (priv->accept_2G_files)
 		return TRUE;
@@ -368,7 +367,7 @@ brasero_status_dialog_wait_for_session (BraseroStatusDialog *dialog)
 	BraseroTrackType *track_type;
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 
 	/* Make sure we really need to run this dialog */
 	status = brasero_status_new ();
@@ -421,7 +420,7 @@ brasero_status_dialog_init (BraseroStatusDialog *object)
 	GtkWidget *main_box;
 	GtkWidget *box;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (object);
+	priv = brasero_status_dialog_get_instance_private (object);
 
 	gtk_dialog_add_button (GTK_DIALOG (object),
 			       GTK_STOCK_CANCEL,
@@ -465,7 +464,7 @@ brasero_status_dialog_set_property (GObject *object,
 	BraseroStatusDialog *dialog = BRASERO_STATUS_DIALOG (object);
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 
 	switch (prop_id)
 	{
@@ -489,7 +488,7 @@ brasero_status_dialog_get_property (GObject *object,
 	BraseroStatusDialog *dialog = BRASERO_STATUS_DIALOG (object);
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 
 	switch (prop_id)
 	{
@@ -509,7 +508,7 @@ brasero_status_dialog_finalize (GObject *object)
 	BraseroStatusDialog *dialog = BRASERO_STATUS_DIALOG (object);
 	BraseroStatusDialogPrivate *priv;
 
-	priv = BRASERO_STATUS_DIALOG_PRIVATE (dialog);
+	priv = brasero_status_dialog_get_instance_private (dialog);
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;

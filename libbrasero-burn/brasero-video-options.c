@@ -61,7 +61,6 @@ struct _BraseroVideoOptionsPrivate
 	GtkWidget *button_16_9;
 };
 
-#define BRASERO_VIDEO_OPTIONS_PRIVATE(o)  (brasero_video_options_get_instance_private (o))
 
 enum {
 	PROP_0,
@@ -79,7 +78,7 @@ brasero_video_options_update_from_tag (BraseroVideoOptions *options,
 	if (!tag)
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	
 	if (!strcmp (tag, BRASERO_VCD_TYPE)) {
 		BraseroMedia media;
@@ -157,7 +156,7 @@ brasero_video_options_update (BraseroVideoOptions *options)
 	BraseroVideoOptionsPrivate *priv;
 	BraseroMedia media;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 
 	/* means we haven't initialized yet */
 	if (!priv->vcd_label)
@@ -224,7 +223,7 @@ brasero_video_options_SVCD (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_add_int (priv->session,
 	                                  BRASERO_VCD_TYPE,
 	                                  BRASERO_SVCD);
@@ -245,7 +244,7 @@ brasero_video_options_VCD (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_add_int (priv->session,
 	                                  BRASERO_VCD_TYPE,
 	                                  BRASERO_VCD_V2);
@@ -267,7 +266,7 @@ brasero_video_options_NTSC (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_add_int (priv->session,
 	                                  BRASERO_VIDEO_OUTPUT_FRAMERATE,
 	                                  BRASERO_VIDEO_FRAMERATE_NTSC);
@@ -282,7 +281,7 @@ brasero_video_options_PAL_SECAM (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_add_int (priv->session,
 	                                  BRASERO_VIDEO_OUTPUT_FRAMERATE,
 	                                  BRASERO_VIDEO_FRAMERATE_PAL_SECAM);
@@ -297,7 +296,7 @@ brasero_video_options_native_framerate (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_remove (priv->session, BRASERO_VIDEO_OUTPUT_FRAMERATE);
 }
 
@@ -310,7 +309,7 @@ brasero_video_options_16_9 (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_add_int (priv->session,
 	                                  BRASERO_VIDEO_OUTPUT_ASPECT,
 	                                  BRASERO_VIDEO_ASPECT_16_9);
@@ -325,7 +324,7 @@ brasero_video_options_4_3 (GtkToggleButton *button,
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	brasero_burn_session_tag_add_int (priv->session,
 	                                  BRASERO_VIDEO_OUTPUT_ASPECT,
 	                                  BRASERO_VIDEO_ASPECT_4_3);
@@ -337,7 +336,7 @@ brasero_video_options_set_session (BraseroVideoOptions *options,
 {
 	BraseroVideoOptionsPrivate *priv;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
 		                                      brasero_video_options_output_changed_cb,
@@ -406,7 +405,7 @@ brasero_video_options_get_property (GObject *object,
 	BraseroVideoOptions *options = BRASERO_VIDEO_OPTIONS (object);
 	BraseroVideoOptionsPrivate *priv;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 
 	switch (prop_id)
 	{
@@ -431,7 +430,7 @@ brasero_video_options_init (BraseroVideoOptions *object)
 	GtkWidget *button3;
 	BraseroVideoOptionsPrivate *priv;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (object);
+	priv = brasero_video_options_get_instance_private (object);
 
 	gtk_container_set_border_width (GTK_CONTAINER (object), 6);
 	widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -598,7 +597,7 @@ brasero_video_options_finalize (GObject *object)
 	BraseroVideoOptions *options = BRASERO_VIDEO_OPTIONS (object);
 	BraseroVideoOptionsPrivate *priv;
 
-	priv = BRASERO_VIDEO_OPTIONS_PRIVATE (options);
+	priv = brasero_video_options_get_instance_private (options);
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
 		                                      brasero_video_options_output_changed_cb,

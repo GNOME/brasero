@@ -79,7 +79,6 @@ struct _BraseroSplitDialogPrivate
 	BraseroMetadata *metadata;
 };
 
-#define BRASERO_SPLIT_DIALOG_PRIVATE(o)  (brasero_split_dialog_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroSplitDialog, brasero_split_dialog, GTK_TYPE_DIALOG);
 
@@ -91,7 +90,7 @@ brasero_split_dialog_set_uri (BraseroSplitDialog *self,
 {
 	BraseroSplitDialogPrivate *priv;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 	brasero_song_control_set_uri (BRASERO_SONG_CONTROL (priv->player), uri);
 	brasero_song_control_set_info (BRASERO_SONG_CONTROL (priv->player), title, artist);
 }
@@ -104,7 +103,7 @@ brasero_split_dialog_set_boundaries (BraseroSplitDialog *self,
 	BraseroSplitDialogPrivate *priv;
 	guint64 length;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	if (BRASERO_DURATION_TO_BYTES (start) % 2352)
 		start += BRASERO_BYTES_TO_DURATION (2352 - (BRASERO_DURATION_TO_BYTES (start) % 2352));
@@ -136,7 +135,7 @@ brasero_split_dialog_get_slices (BraseroSplitDialog *self)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
@@ -207,7 +206,7 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 	if (!pos)
 		return FALSE;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	/* since pos is in nanosecond we have a small lattitude. Make sure that
 	 * is up to the size of a sector */
@@ -397,7 +396,7 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 	gchar *start_str;
 	gchar *end_str;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	/* align on 2352 byte boundary */
 	if (BRASERO_DURATION_TO_BYTES (start) % 2352)
@@ -621,7 +620,7 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 	gboolean added_silence;
 	GSList *iter;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	gtk_widget_set_sensitive (priv->cut, TRUE);
 
@@ -694,7 +693,7 @@ brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self,
 	GtkTreeModel *model;
 	GtkWidget *message;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if (!gtk_tree_model_iter_n_children (model, NULL))
@@ -734,7 +733,7 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 	BraseroSplitDialogPrivate *priv;
 	guint page;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	page = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo));
 	if (page == 0) {
@@ -821,7 +820,7 @@ brasero_split_dialog_merge_clicked_cb (GtkButton *button,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
@@ -911,7 +910,7 @@ brasero_split_dialog_remove_clicked_cb (GtkButton *button,
 	GList *selected;
 	GList *iter;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	selected = gtk_tree_selection_get_selected_rows (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)), &model);
 
@@ -963,7 +962,7 @@ brasero_split_dialog_reset_clicked_cb (GtkButton *button,
 {
 	BraseroSplitDialogPrivate *priv;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 	if (!brasero_split_dialog_clear_confirm_dialog (self,
 							_("Do you really want to empty the slices preview?"),
 							GTK_STOCK_CANCEL,
@@ -980,7 +979,7 @@ brasero_split_dialog_combo_changed_cb (GtkComboBox *combo,
 	BraseroSplitDialogPrivate *priv;
 	guint page;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 	page = gtk_combo_box_get_active (combo);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), page);
 }
@@ -992,7 +991,7 @@ brasero_split_dialog_selection_changed_cb (GtkTreeSelection *selection,
 	BraseroSplitDialogPrivate *priv;
 	GList *selected;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 
 	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
 	if (selected) {
@@ -1016,7 +1015,7 @@ brasero_split_dialog_row_inserted_cb (GtkTreeModel *model,
 {
 	BraseroSplitDialogPrivate *priv;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 	gtk_widget_set_sensitive (priv->reset_button, TRUE);
 }
 
@@ -1028,7 +1027,7 @@ brasero_split_dialog_row_deleted_cb (GtkTreeModel *model,
 	BraseroSplitDialogPrivate *priv;
 	GtkTreeIter iter;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	priv = brasero_split_dialog_get_instance_private (self);
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		gtk_widget_set_sensitive (priv->reset_button, FALSE);
 }
@@ -1050,7 +1049,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	GtkTreeViewColumn *column;
 	BraseroSplitDialogPrivate *priv;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (object);
+	priv = brasero_split_dialog_get_instance_private (object);
 
 	gtk_window_set_title (GTK_WINDOW (object), _("Split Track"));
 	gtk_window_set_default_size (GTK_WINDOW (object), 500, 600);
@@ -1317,7 +1316,7 @@ brasero_split_dialog_finalize (GObject *object)
 	BraseroSplitDialog *dialog = BRASERO_SPLIT_DIALOG (object);
 	BraseroSplitDialogPrivate *priv;
 
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (dialog);
+	priv = brasero_split_dialog_get_instance_private (dialog);
 	if (priv->metadata) {
 		brasero_metadata_cancel (priv->metadata);
 		g_object_unref (priv->metadata);

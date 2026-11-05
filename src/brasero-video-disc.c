@@ -67,7 +67,6 @@ struct _BraseroVideoDiscPrivate
 	guint loading:1;
 };
 
-#define BRASERO_VIDEO_DISC_PRIVATE(o)  (brasero_video_disc_get_instance_private (o))
 
 static void
 brasero_video_disc_iface_disc_init (BraseroDiscIface *iface);
@@ -169,7 +168,7 @@ brasero_video_disc_name_editing_started_cb (GtkCellRenderer *renderer,
 {
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
+	priv = brasero_video_disc_get_instance_private (disc);
 	priv->editing = 1;
 }
 
@@ -179,7 +178,7 @@ brasero_video_disc_name_editing_canceled_cb (GtkCellRenderer *renderer,
 {
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
+	priv = brasero_video_disc_get_instance_private (disc);
 	priv->editing = 0;
 }
 
@@ -195,7 +194,7 @@ brasero_video_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 	GtkTreePath *path;
 	GtkTreeIter row;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	priv->editing = 0;
 
@@ -232,7 +231,7 @@ brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 	BraseroTrackStreamCfg *track;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 	if (priv->reject_files)
 		return BRASERO_DISC_NOT_READY;
 
@@ -269,7 +268,7 @@ brasero_video_disc_add_uri (BraseroDisc *disc,
 	GtkTreePath *treepath = NULL;
 	BraseroDiscResult result;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 	result = brasero_video_disc_add_uri_real (self,
 						  uri,
 						  -1,
@@ -328,7 +327,7 @@ brasero_video_disc_add_directory_contents (BraseroVideoDisc *self,
 	GtkTreeModel *model;
 	GSList *tracks;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	if (!priv->load_dir)
 		priv->load_dir = brasero_io_register (G_OBJECT (self),
@@ -510,7 +509,7 @@ brasero_video_disc_delete_selected (BraseroDisc *disc)
 	GList *selected;
 	GList *iter;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 
@@ -546,7 +545,7 @@ brasero_video_disc_get_selected_uri (BraseroDisc *disc,
 	GtkTreeSelection *selection;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -638,7 +637,7 @@ brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
 	GtkResponseType result;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	if (!g_list_length (list))
 		return;
@@ -807,7 +806,7 @@ brasero_video_disc_edit_information_cb (GtkAction *action,
 	GtkTreeSelection *selection;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -842,7 +841,7 @@ brasero_video_disc_open_file (BraseroVideoDisc *self)
 	GtkTreeSelection *selection;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -950,7 +949,7 @@ brasero_video_disc_button_pressed_cb (GtkTreeView *tree,
 	GtkWidgetClass *widget_class;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	/* Avoid minding signals that happen out of the tree area (like in the 
 	 * headers for example) */
@@ -1053,7 +1052,7 @@ brasero_video_disc_add_ui (BraseroDisc *disc,
 	GError *error = NULL;
 	guint merge_id;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	if (priv->message) {
 		g_object_unref (priv->message);
@@ -1103,7 +1102,7 @@ brasero_video_disc_rename_activated (BraseroVideoDisc *self)
 	GtkTreeModel *model;
 	GList *list;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -1135,7 +1134,7 @@ brasero_video_disc_key_released_cb (GtkTreeView *tree,
 {
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 	if (priv->editing)
 		return FALSE;
 
@@ -1158,7 +1157,7 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 	GtkWidget *mainbox;
 	GtkWidget *scroll;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (object);
+	priv = brasero_video_disc_get_instance_private (object);
 
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (object), GTK_ORIENTATION_VERTICAL);
 
@@ -1278,7 +1277,7 @@ brasero_video_disc_finalize (GObject *object)
 	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (object);
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	if (priv->load_dir) {
 		brasero_io_cancel_by_base (priv->load_dir);
@@ -1298,7 +1297,7 @@ brasero_video_disc_get_property (GObject * object,
 	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (object);
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -1319,7 +1318,7 @@ brasero_video_disc_set_property (GObject * object,
 	BraseroVideoDisc *self = BRASERO_VIDEO_DISC (object);
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -1340,7 +1339,7 @@ brasero_video_disc_set_session_contents (BraseroDisc *disc,
 	GtkTreeModel *current_model;
 	BraseroVideoDiscPrivate *priv;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 
 	if (priv->load_dir)
 		brasero_io_cancel_by_base (priv->load_dir);
@@ -1382,7 +1381,7 @@ brasero_video_disc_is_empty (BraseroDisc *disc)
 	BraseroVideoDiscPrivate *priv;
 	GtkTreeModel *model;
 
-	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	priv = brasero_video_disc_get_instance_private (self);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if (!model)
 		return FALSE;

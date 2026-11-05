@@ -58,7 +58,6 @@ struct _BraseroImagePropertiesPrivate
 	guint is_video:1;
 };
 
-#define BRASERO_IMAGE_PROPERTIES_PRIVATE(o)  (brasero_image_properties_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroImageProperties, brasero_image_properties, GTK_TYPE_FILE_CHOOSER_DIALOG);
 
@@ -73,7 +72,7 @@ brasero_image_properties_get_format (BraseroImageProperties *self)
 	BraseroImagePropertiesPrivate *priv;
 	BraseroImageFormat format;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = brasero_image_properties_get_instance_private (self);
 
 	if (priv->format == NULL)
 		return BRASERO_IMAGE_FORMAT_NONE;
@@ -117,7 +116,7 @@ brasero_image_properties_get_output_path (BraseroImageProperties *self)
 	BraseroImageFormat format;
 	BraseroImagePropertiesPrivate *priv;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = brasero_image_properties_get_instance_private (self);
 
 	format = brasero_burn_session_get_output_format (BRASERO_BURN_SESSION (priv->session));
 	switch (format) {
@@ -150,7 +149,7 @@ brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
 	BraseroImageFormat format;
 	gchar *image_path;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = brasero_image_properties_get_instance_private (self);
 
 	/* make sure the extension is still valid */
 	image_path = brasero_image_properties_get_path (self);
@@ -211,7 +210,7 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 	BraseroImagePropertiesPrivate *priv;
 	guint num;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = brasero_image_properties_get_instance_private (self);
 
 	/* have a look at the formats and see if it is worth to display a widget */
 	if (formats == BRASERO_IMAGE_FORMAT_NONE) {
@@ -288,7 +287,7 @@ brasero_image_properties_set_output_path (BraseroImageProperties *self,
 	BraseroImagePropertiesPrivate *priv;
 	BraseroImageFormat real_format;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = brasero_image_properties_get_instance_private (self);
 
 	if (format == BRASERO_IMAGE_FORMAT_ANY
 	||  format == BRASERO_IMAGE_FORMAT_NONE)
@@ -331,7 +330,7 @@ brasero_image_properties_response (GtkFileChooser *chooser,
 	if (response_id != GTK_RESPONSE_OK)
 		return;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (properties);
+	priv = brasero_image_properties_get_instance_private (properties);
 
 	/* get and check format */
 	format = brasero_image_properties_get_format (properties);
@@ -373,7 +372,7 @@ brasero_image_properties_update (BraseroImageProperties *self)
 	gchar *path;
 	guint num;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+	priv = brasero_image_properties_get_instance_private (self);
 
 	priv->edited = brasero_session_cfg_has_default_output_path (priv->session);
 
@@ -407,7 +406,7 @@ brasero_image_properties_set_session (BraseroImageProperties *props,
 {
 	BraseroImagePropertiesPrivate *priv;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (props);
+	priv = brasero_image_properties_get_instance_private (props);
 
 	priv->session = g_object_ref (session);
 	brasero_image_properties_update (BRASERO_IMAGE_PROPERTIES (props));
@@ -439,7 +438,7 @@ brasero_image_properties_get_property (GObject *object,
 	BraseroImageProperties *properties = BRASERO_IMAGE_PROPERTIES (object);
 	BraseroImagePropertiesPrivate *priv;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (properties);
+	priv = brasero_image_properties_get_instance_private (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:
@@ -472,7 +471,7 @@ brasero_image_properties_finalize (GObject *object)
 	BraseroImageProperties *properties = BRASERO_IMAGE_PROPERTIES (object);
 	BraseroImagePropertiesPrivate *priv;
 
-	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (properties);
+	priv = brasero_image_properties_get_instance_private (properties);
 
 	if (priv->session) {
 		g_object_unref (priv->session);

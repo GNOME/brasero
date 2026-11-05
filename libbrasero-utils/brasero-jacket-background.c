@@ -55,7 +55,6 @@ struct _BraseroJacketBackgroundPrivate
 	GtkWidget *color_style;
 };
 
-#define BRASERO_JACKET_BACKGROUND_PRIVATE(o)  (brasero_jacket_background_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroJacketBackground, brasero_jacket_background, GTK_TYPE_DIALOG);
 
@@ -64,7 +63,7 @@ brasero_jacket_background_get_color_style (BraseroJacketBackground *self)
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->color_radio)))
 		return BRASERO_JACKET_COLOR_NONE;
 
@@ -78,7 +77,7 @@ brasero_jacket_background_get_color (BraseroJacketBackground *self,
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->color_radio)))
 		return;
 
@@ -91,7 +90,7 @@ brasero_jacket_background_get_image_style (BraseroJacketBackground *self)
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->image_radio)))
 		return BRASERO_JACKET_IMAGE_NONE;
 
@@ -103,7 +102,7 @@ brasero_jacket_background_get_image_path (BraseroJacketBackground *self)
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->image_radio)))
 		return NULL;
 
@@ -116,7 +115,7 @@ brasero_jacket_background_set_color_style (BraseroJacketBackground *self,
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (style == BRASERO_JACKET_COLOR_NONE)
 		return;
 		
@@ -130,7 +129,7 @@ brasero_jacket_background_set_image_style (BraseroJacketBackground *self,
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (style == BRASERO_JACKET_IMAGE_NONE)
 		return;
 
@@ -143,7 +142,7 @@ brasero_jacket_background_set_image_path (BraseroJacketBackground *self,
 					  const gchar *path)
 {
 	BraseroJacketBackgroundPrivate *priv;
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->image_radio)))
 		return;
 
@@ -160,7 +159,7 @@ brasero_jacket_background_set_color (BraseroJacketBackground *self,
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->color_radio)))
 		return;
 		
@@ -174,7 +173,7 @@ brasero_jacket_background_color_type_changed_cb (GtkComboBox *combo,
 {
 	BraseroJacketBackgroundPrivate *priv;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 
 	if (gtk_combo_box_get_active (combo) + 1 == BRASERO_JACKET_COLOR_SOLID) {
 		gtk_widget_hide (priv->color2);
@@ -190,7 +189,7 @@ brasero_jacket_background_add_filters (BraseroJacketBackground *self)
 	BraseroJacketBackgroundPrivate *priv;
 	GtkFileFilter *filter;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (self);
+	priv = brasero_jacket_background_get_instance_private (self);
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_add_pixbuf_formats (filter);
@@ -220,7 +219,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 
-	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (object);
+	priv = brasero_jacket_background_get_instance_private (object);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);

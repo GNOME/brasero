@@ -75,7 +75,6 @@ struct _BraseroSumDialogPrivate {
 	GCancellable *xfer_cancel;
 };
 
-#define BRASERO_SUM_DIALOG_PRIVATE(o)  (brasero_sum_dialog_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
 
@@ -85,7 +84,7 @@ brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
 {
 	BraseroSumDialogPrivate *priv;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 	gtk_widget_set_sensitive (priv->md5_chooser,
 				  gtk_toggle_button_get_active (button));  
 }
@@ -95,7 +94,7 @@ brasero_sum_dialog_stop (BraseroSumDialog *self)
 {
 	BraseroSumDialogPrivate *priv;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 	if (priv->xfer_cancel)
 		g_cancellable_cancel (priv->xfer_cancel);
 }
@@ -284,7 +283,7 @@ brasero_sum_dialog_progress_poll (gpointer user_data)
 
 	self = BRASERO_SUM_DIALOG (user_data);
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 
 	if (!priv->xfer_ctx)
 		return TRUE;
@@ -316,7 +315,7 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 	gint id;
 	int fd;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 
 	/* create the temp destination */
 	tmppath = g_strdup_printf ("%s/"BRASERO_BURN_TMP_FILE_NAME,
@@ -477,7 +476,7 @@ brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
 	BraseroBurnResult result;
 	BraseroBurn *burn;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 
 	track = brasero_track_disc_new ();
 	brasero_track_disc_set_drive (track, drive);
@@ -505,7 +504,7 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	gboolean retval;
 	gchar *uri;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 
 	/* get the sum from the file */
     	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->md5_chooser));
@@ -567,7 +566,7 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 	BraseroBurn *burn;
 	gboolean retval;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 
 	/* make track */
 	track = brasero_track_disc_new ();
@@ -622,7 +621,7 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 	BraseroSumDialogPrivate *priv;
 
 	self = BRASERO_SUM_DIALOG (dialog);
-	priv = BRASERO_SUM_DIALOG_PRIVATE (self);
+	priv = brasero_sum_dialog_get_instance_private (self);
 
 	brasero_burn_session_start (priv->session);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->md5_check)))
@@ -650,7 +649,7 @@ brasero_sum_dialog_finalize (GObject *object)
 	BraseroSumDialog *dialog = BRASERO_SUM_DIALOG (object);
 	BraseroSumDialogPrivate *priv;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (dialog);
+	priv = brasero_sum_dialog_get_instance_private (dialog);
 
 	brasero_sum_dialog_stop (dialog);
 
@@ -681,7 +680,7 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 	BraseroMedium *medium;
 	BraseroSumDialogPrivate *priv;
 
-	priv = BRASERO_SUM_DIALOG_PRIVATE (obj);
+	priv = brasero_sum_dialog_get_instance_private (obj);
 
 	priv->session = brasero_burn_session_new ();
 

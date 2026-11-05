@@ -50,7 +50,6 @@ struct _BraseroPluginOptionPrivate
 	GSettings *settings;
 };
 
-#define BRASERO_PLUGIN_OPTION_PRIVATE(o)  (brasero_plugin_option_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroPluginOption, brasero_plugin_option, GTK_TYPE_DIALOG);
 #define BRASERO_SCHEMA_CONFIG		"org.gnome.brasero.config"
@@ -73,7 +72,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 	GtkWidget *box;
 	gchar *key;
 
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
+	priv = brasero_plugin_option_get_instance_private (self);
 
 	brasero_plugin_conf_option_get_info (option,
 					     &key,
@@ -252,7 +251,7 @@ brasero_plugin_option_set_plugin (BraseroPluginOption *self,
 	gchar *string;
 	gchar *tmp;
 
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
+	priv = brasero_plugin_option_get_instance_private (self);
 
 	/* Use the translated name for the plugin. */
 	tmp = g_strdup_printf (_("Options for plugin %s"), _(brasero_plugin_get_display_name (plugin)));
@@ -275,7 +274,7 @@ brasero_plugin_option_init (BraseroPluginOption *object)
 	BraseroPluginOptionPrivate *priv;
 	GtkWidget *frame;
 
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (object);
+	priv = brasero_plugin_option_get_instance_private (object);
 
 	frame = gtk_frame_new ("");
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
@@ -308,7 +307,7 @@ brasero_plugin_option_finalize (GObject *object)
 	BraseroPluginOption *option = BRASERO_PLUGIN_OPTION (object);
 	BraseroPluginOptionPrivate *priv;
 
-	priv = BRASERO_PLUGIN_OPTION_PRIVATE (option);
+	priv = brasero_plugin_option_get_instance_private (option);
 
 	if (priv->settings) {
 		g_object_unref (priv->settings);

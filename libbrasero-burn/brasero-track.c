@@ -48,7 +48,6 @@ struct _BraseroTrackPrivate
 	BraseroChecksumType checksum_type;
 };
 
-#define BRASERO_TRACK_PRIVATE(o)  (brasero_track_get_instance_private (o))
 
 enum
 {
@@ -190,7 +189,7 @@ brasero_track_set_checksum (BraseroTrack *track,
 	BraseroTrackPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_CHECKSUM_NONE);
-	priv = BRASERO_TRACK_PRIVATE (track);
+	priv = brasero_track_get_instance_private (track);
 
 	if (type == priv->checksum_type
 	&& (type == BRASERO_CHECKSUM_MD5 || type == BRASERO_CHECKSUM_SHA1 || type == BRASERO_CHECKSUM_SHA256)
@@ -224,7 +223,7 @@ brasero_track_get_checksum (BraseroTrack *track)
 	BraseroTrackPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), NULL);
-	priv = BRASERO_TRACK_PRIVATE (track);
+	priv = brasero_track_get_instance_private (track);
 
 	return priv->checksum ? priv->checksum : NULL;
 }
@@ -244,7 +243,7 @@ brasero_track_get_checksum_type (BraseroTrack *track)
 	BraseroTrackPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_CHECKSUM_NONE);
-	priv = BRASERO_TRACK_PRIVATE (track);
+	priv = brasero_track_get_instance_private (track);
 
 	return priv->checksum_type;
 }
@@ -287,7 +286,7 @@ brasero_track_tag_add (BraseroTrack *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TRACK_PRIVATE (track);
+	priv = brasero_track_get_instance_private (track);
 
 	if (!priv->tags)
 		priv->tags = g_hash_table_new_full (g_str_hash,
@@ -384,7 +383,7 @@ brasero_track_tag_lookup (BraseroTrack *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK (track), BRASERO_BURN_ERR);
 
-	priv = BRASERO_TRACK_PRIVATE (track);
+	priv = brasero_track_get_instance_private (track);
 
 	if (!priv->tags)
 		return BRASERO_BURN_ERR;
@@ -486,14 +485,14 @@ brasero_track_tag_copy_missing (BraseroTrack *dest,
 	g_return_if_fail (BRASERO_IS_TRACK (dest));
 	g_return_if_fail (BRASERO_IS_TRACK (src));
 
-	priv = BRASERO_TRACK_PRIVATE (src);
+	priv = brasero_track_get_instance_private (src);
 
 	if (!priv->tags)
 		return;
 
 	g_hash_table_iter_init (&iter, priv->tags);
 
-	priv = BRASERO_TRACK_PRIVATE (dest);
+	priv = brasero_track_get_instance_private (dest);
 	if (!priv->tags)
 		priv->tags = g_hash_table_new_full (g_str_hash,
 						    g_str_equal,
@@ -547,7 +546,7 @@ brasero_track_finalize (GObject *object)
 	BraseroTrack *track = BRASERO_TRACK (object);
 	BraseroTrackPrivate *priv;
 
-	priv = BRASERO_TRACK_PRIVATE (track);
+	priv = brasero_track_get_instance_private (track);
 
 	if (priv->tags) {
 		g_hash_table_destroy (priv->tags);

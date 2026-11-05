@@ -51,7 +51,6 @@ struct _BraseroVideoTreeModelPrivate
 	GtkIconTheme *theme;
 };
 
-#define BRASERO_VIDEO_TREE_MODEL_PRIVATE(o)  (brasero_video_tree_model_get_instance_private (o))
 
 static void
 brasero_video_tree_model_multi_drag_source_iface_init (gpointer g_iface, gpointer data);
@@ -113,7 +112,7 @@ brasero_video_tree_model_iter_n_children (GtkTreeModel *model,
 		GSList * tracks;
 		BraseroVideoTreeModelPrivate *priv;
 
-		priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+		priv = brasero_video_tree_model_get_instance_private (self);
 
 		/* This is a special case in which we return the number
 		 * of rows that are in the model. */
@@ -166,7 +165,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	GSList *tracks;
 	gchar *text;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	/* make sure that iter comes from us */
 	g_return_if_fail (priv->stamp == iter->stamp);
@@ -397,7 +396,7 @@ brasero_video_tree_model_track_to_path (BraseroVideoTreeModel *self,
 	if (!BRASERO_IS_TRACK_STREAM (track_arg))
 		return NULL;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
 	for (; tracks; tracks = tracks->next) {
@@ -426,7 +425,7 @@ brasero_video_tree_model_get_path (GtkTreeModel *model,
 	GSList *tracks;
 	gint nth = 0;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, NULL);
@@ -466,7 +465,7 @@ brasero_video_tree_model_path_to_track (BraseroVideoTreeModel *self,
 	guint depth;
 	gint index;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	indices = gtk_tree_path_get_indices (path);
 	depth = gtk_tree_path_get_depth (path);
@@ -511,7 +510,7 @@ brasero_video_tree_model_get_iter (GtkTreeModel *model,
 	guint depth;
 	gint index;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	depth = gtk_tree_path_get_depth (path);
 
@@ -558,7 +557,7 @@ brasero_video_tree_model_track_next (BraseroVideoTreeModel *model,
 	GSList *tracks;
 	GSList *node;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
 	node = g_slist_find (tracks, track);
@@ -575,7 +574,7 @@ brasero_video_tree_model_track_previous (BraseroVideoTreeModel *model,
 	BraseroVideoTreeModelPrivate *priv;
 	GSList *tracks;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 
 	tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (priv->session));
 	while (tracks && tracks->next) {
@@ -598,7 +597,7 @@ brasero_video_tree_model_iter_next (GtkTreeModel *model,
 	GSList *tracks;
 	GSList *node;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
@@ -736,7 +735,7 @@ brasero_video_tree_model_move_before (BraseroVideoTreeModel *self,
 	BraseroTrack *track_sibling;
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	track = BRASERO_TRACK (iter->user_data);
 	if (!dest_before || !brasero_video_tree_model_get_iter (GTK_TREE_MODEL (self), &sibling, dest_before)) {
@@ -846,7 +845,7 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 	BraseroVideoTreeModelPrivate *priv;
 	GdkAtom target;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	/* The new row(s) must be before dest_path but after our sibling */
 	sibling = brasero_video_tree_model_path_to_track (self, dest_path);
@@ -953,7 +952,7 @@ brasero_video_tree_model_reindex (BraseroVideoTreeModel *model,
 	GSList *tracks;
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 
 	/* tracks (including) after sibling need to be reindexed */
 	tracks = brasero_burn_session_get_tracks (session);
@@ -994,7 +993,7 @@ brasero_video_tree_model_track_added (BraseroBurnSession *session,
 	if (!BRASERO_IS_TRACK_STREAM (track))
 		return;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 
 	iter.stamp = priv->stamp;
 	iter.user_data = track;
@@ -1037,7 +1036,7 @@ brasero_video_tree_model_track_removed (BraseroBurnSession *session,
 	if (!BRASERO_IS_TRACK_STREAM (track))
 		return;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 
 	/* remove the file. */
 	path = gtk_tree_path_new_from_indices (former_location, -1);
@@ -1066,7 +1065,7 @@ brasero_video_tree_model_track_changed (BraseroBurnSession *session,
 	if (!BRASERO_IS_TRACK_STREAM (track))
 		return;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 
 	/* scale the thumbnail */
 	brasero_track_tag_lookup (BRASERO_TRACK (track),
@@ -1131,7 +1130,7 @@ brasero_video_tree_model_set_session (BraseroVideoTreeModel *model,
 {
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,
 						      brasero_video_tree_model_track_added,
@@ -1169,7 +1168,7 @@ brasero_video_tree_model_get_session (BraseroVideoTreeModel *model)
 {
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (model);
+	priv = brasero_video_tree_model_get_instance_private (model);
 	return priv->session;
 }
 
@@ -1178,7 +1177,7 @@ brasero_video_tree_model_init (BraseroVideoTreeModel *object)
 {
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (object);
+	priv = brasero_video_tree_model_get_instance_private (object);
 
 	priv->theme = gtk_icon_theme_get_default ();
 
@@ -1193,7 +1192,7 @@ brasero_video_tree_model_finalize (GObject *object)
 	BraseroVideoTreeModel *self = BRASERO_VIDEO_TREE_MODEL (object);
 	BraseroVideoTreeModelPrivate *priv;
 
-	priv = BRASERO_VIDEO_TREE_MODEL_PRIVATE (self);
+	priv = brasero_video_tree_model_get_instance_private (self);
 
 	if (priv->session) {
 		g_signal_handlers_disconnect_by_func (priv->session,

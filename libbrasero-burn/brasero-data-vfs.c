@@ -71,7 +71,6 @@ struct _BraseroDataVFSPrivate
 	guint filter_broken_sym:1;
 };
 
-#define BRASERO_DATA_VFS_PRIVATE(o)  (brasero_data_vfs_get_instance_private (o))
 
 enum {
 	UNREADABLE_SIGNAL,
@@ -92,7 +91,7 @@ brasero_data_vfs_get_filtered_model (BraseroDataVFS *vfs)
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (vfs);
+	priv = brasero_data_vfs_get_instance_private (vfs);
 
 	return priv->filtered;
 }
@@ -102,7 +101,7 @@ brasero_data_vfs_is_active (BraseroDataVFS *self)
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 	return (g_hash_table_size (priv->loading) != 0 || g_hash_table_size (priv->directories) != 0);
 }
 
@@ -111,7 +110,7 @@ brasero_data_vfs_is_loading_uri (BraseroDataVFS *self)
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 	return (g_hash_table_size (priv->loading) != 0);
 }
 
@@ -158,7 +157,7 @@ brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	/* Only signal errors if the node was specifically added by the user
 	 * that is if it is loading. So check the loading GHashTable to know 
@@ -258,11 +257,11 @@ brasero_data_vfs_directory_load_end (GObject *object,
 				     gpointer data)
 {
 	BraseroDataVFS *self = BRASERO_DATA_VFS (object);
-	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
+	BraseroDataVFSPrivate *priv = brasero_data_vfs_get_instance_private (self);
 	gchar *uri = data;
 	GSList *nodes;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	nodes = g_hash_table_lookup (priv->directories, uri);
 	for (; nodes; nodes = nodes->next) {
@@ -396,7 +395,7 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 	GSList *nodes;
 	GSList *iter;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	/* check the status of the operation.
 	 * NOTE: no need to remove the nodes. */
@@ -490,7 +489,7 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 	guint reference;
 	GSList *nodes;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	/* Start exploration of directory*/
 	reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
@@ -542,10 +541,10 @@ brasero_data_vfs_loading_node_end (GObject *object,
 				   gpointer data)
 {
 	BraseroDataVFS *self = BRASERO_DATA_VFS (object);
-	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
+	BraseroDataVFSPrivate *priv = brasero_data_vfs_get_instance_private (self);
 	gchar *uri = data;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 	brasero_data_vfs_remove_from_hash (self, priv->loading, uri);
 	brasero_utils_unregister_string (uri);
 
@@ -574,7 +573,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 	BraseroFileTreeStats *stats;
 	gchar *registered = callback_data;
 	BraseroDataVFS *self = BRASERO_DATA_VFS (owner);
-	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
+	BraseroDataVFSPrivate *priv = brasero_data_vfs_get_instance_private (self);
 
 	nodes = g_hash_table_lookup (priv->loading, registered);
 
@@ -705,7 +704,7 @@ brasero_data_vfs_load_node (BraseroDataVFS *self,
 	BraseroDataVFSPrivate *priv;
 	gchar *registered;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	registered = brasero_utils_register_string (uri);
 	g_hash_table_insert (priv->loading,
@@ -748,7 +747,7 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 	/* NOTE: this function receives URIs only from utf8 origins (not from
 	 * GIO for example) so we can assume that this is safe */
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	if (!node->is_reloading
 	&&   BRASERO_FILE_NODE_NAME (node)
@@ -820,7 +819,7 @@ brasero_data_vfs_require_directory_contents (BraseroDataVFS *self,
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 	return brasero_data_vfs_require_higher_priority (self,
 							 node,
 							 priv->load_contents);
@@ -832,7 +831,7 @@ brasero_data_vfs_require_node_load (BraseroDataVFS *self,
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 	return brasero_data_vfs_require_higher_priority (self,
 							 node,
 							 priv->load_uri);
@@ -848,7 +847,7 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 	GSList *nodes;
 	gchar *uri;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	if (node->is_loading || node->is_reloading) {
 		brasero_data_vfs_require_node_load (self, node);
@@ -974,7 +973,7 @@ brasero_data_vfs_clear (BraseroDataVFS *self)
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	/* Stop all VFS operations */
 	if (priv->load_uri) {
@@ -1007,7 +1006,7 @@ brasero_data_vfs_uri_removed (BraseroDataProject *project,
 	BraseroDataVFS *self = BRASERO_DATA_VFS (project);
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	/* That happens when a graft is removed from the tree, that is when this
 	 * graft uri doesn't appear anywhere and when it hasn't got any more 
@@ -1033,7 +1032,7 @@ brasero_data_vfs_settings_changed (GSettings *settings,
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (self);
+	priv = brasero_data_vfs_get_instance_private (self);
 
 	if (g_strcmp0 (key, BRASERO_PROPS_FILTER_REPLACE_SYMLINK))
 		priv->replace_sym = g_settings_get_boolean (settings, BRASERO_PROPS_FILTER_REPLACE_SYMLINK);
@@ -1048,7 +1047,7 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 {
 	BraseroDataVFSPrivate *priv;
 
-	priv = BRASERO_DATA_VFS_PRIVATE (object);
+	priv = brasero_data_vfs_get_instance_private (object);
 
 	priv->filtered = brasero_filtered_uri_new ();
 
@@ -1075,7 +1074,7 @@ brasero_data_vfs_finalize (GObject *object)
 
 	brasero_data_vfs_clear (vfs);
 
-	priv = BRASERO_DATA_VFS_PRIVATE (vfs);
+	priv = brasero_data_vfs_get_instance_private (vfs);
 
 	if (priv->loading) {
 		g_hash_table_destroy (priv->loading);

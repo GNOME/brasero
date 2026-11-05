@@ -45,7 +45,6 @@ struct _BraseroStatusPrivate
 	gchar * current_action;
 };
 
-#define BRASERO_STATUS_PRIVATE(o)  (brasero_status_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroStatus, brasero_status, G_TYPE_OBJECT);
 
@@ -85,7 +84,7 @@ brasero_status_get_result (BraseroStatus *status)
 	g_return_val_if_fail (status != NULL, BRASERO_BURN_ERR);
 	g_return_val_if_fail (BRASERO_IS_STATUS (status), BRASERO_BURN_ERR);
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 	return priv->res;
 }
 
@@ -107,7 +106,7 @@ brasero_status_get_progress (BraseroStatus *status)
 	g_return_val_if_fail (status != NULL, -1.0);
 	g_return_val_if_fail (BRASERO_IS_STATUS (status), -1.0);
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 	if (priv->res == BRASERO_BURN_OK)
 		return 1.0;
 
@@ -135,7 +134,7 @@ brasero_status_get_error (BraseroStatus *status)
 	g_return_val_if_fail (status != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_STATUS (status), NULL);
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 	if (priv->res != BRASERO_BURN_ERR)
 		return NULL;
 
@@ -162,7 +161,7 @@ brasero_status_get_current_action (BraseroStatus *status)
 	g_return_val_if_fail (status != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_STATUS (status), NULL);
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 
 	if (priv->res != BRASERO_BURN_NOT_READY)
 		return NULL;
@@ -188,7 +187,7 @@ brasero_status_set_completed (BraseroStatus *status)
 	g_return_if_fail (status != NULL);
 	g_return_if_fail (BRASERO_IS_STATUS (status));
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 
 	priv->res = BRASERO_BURN_OK;
 	priv->progress = 1.0;
@@ -216,7 +215,7 @@ brasero_status_set_not_ready (BraseroStatus *status,
 	g_return_if_fail (status != NULL);
 	g_return_if_fail (BRASERO_IS_STATUS (status));
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 
 	priv->res = BRASERO_BURN_NOT_READY;
 	priv->progress = progress;
@@ -248,7 +247,7 @@ brasero_status_set_running (BraseroStatus *status,
 	g_return_if_fail (status != NULL);
 	g_return_if_fail (BRASERO_IS_STATUS (status));
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 
 	priv->res = BRASERO_BURN_RUNNING;
 	priv->progress = progress;
@@ -276,7 +275,7 @@ brasero_status_set_error (BraseroStatus *status,
 	g_return_if_fail (status != NULL);
 	g_return_if_fail (BRASERO_IS_STATUS (status));
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 
 	priv->res = BRASERO_BURN_ERR;
 	priv->progress = -1.0;
@@ -296,7 +295,7 @@ brasero_status_finalize (GObject *object)
 	BraseroStatus *status = BRASERO_STATUS (object);
 	BraseroStatusPrivate *priv;
 
-	priv = BRASERO_STATUS_PRIVATE (status);
+	priv = brasero_status_get_instance_private (status);
 	if (priv->error)
 		g_error_free (priv->error);
 
