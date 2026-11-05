@@ -42,7 +42,6 @@ struct _BraseroSearchTrackerPrivate
 	guint current_call_id;
 };
 
-#define BRASERO_SEARCH_TRACKER_PRIVATE(o)  (brasero_search_tracker_get_instance_private (o))
 
 static void brasero_search_tracker_init_engine (BraseroSearchEngineIface *iface);
 
@@ -59,7 +58,7 @@ brasero_search_tracker_is_available (BraseroSearchEngine *engine)
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (engine);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	return (priv->connection != NULL);
 }
@@ -70,7 +69,7 @@ brasero_search_tracker_num_hits (BraseroSearchEngine *engine)
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (engine);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 	if (!priv->results)
 		return 0;
 
@@ -138,7 +137,7 @@ brasero_search_tracker_cursor_next (BraseroSearchEngine *search,
 {
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	tracker_sparql_cursor_next_async (cursor,
 					  priv->cancellable,
@@ -240,7 +239,7 @@ brasero_search_tracker_query_start_real (BraseroSearchEngine *search,
 	gboolean res = FALSE;
 	GString *query = NULL;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	query = g_string_new ("SELECT ?file ?url ?mime "			/* Which variables should be returned */
 			      "WHERE {"						/* Start defining the search and its scope */
@@ -341,7 +340,7 @@ brasero_search_tracker_add_hit_to_tree (BraseroSearchEngine *search,
 	BraseroSearchTrackerPrivate *priv;
 	gint i;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	if (!priv->results)
 		return FALSE;
@@ -366,7 +365,7 @@ brasero_search_tracker_query_set_scope (BraseroSearchEngine *search,
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 	priv->scope = scope;
 	return TRUE;
 }
@@ -378,7 +377,7 @@ brasero_search_tracker_set_query_mime (BraseroSearchEngine *search,
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	if (priv->mimes) {
 		g_strfreev (priv->mimes);
@@ -394,7 +393,7 @@ brasero_search_tracker_clean (BraseroSearchTracker *search)
 {
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (search);
+	priv = brasero_search_tracker_get_instance_private (search);
 
 	if (priv->current_call_id)
 		g_cancellable_cancel (priv->cancellable);
@@ -423,7 +422,7 @@ brasero_search_tracker_query_new (BraseroSearchEngine *search,
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (search);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	brasero_search_tracker_clean (tracker);
 	priv->keywords = g_strdup (keywords);
@@ -454,7 +453,7 @@ brasero_search_tracker_init (BraseroSearchTracker *object)
 	BraseroSearchTrackerPrivate *priv;
 	GError *error = NULL;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (object);
+	priv = brasero_search_tracker_get_instance_private (object);
 	priv->cancellable = g_cancellable_new ();
 
 #ifdef HAVE_TRACKER3
@@ -484,7 +483,7 @@ brasero_search_tracker_finalize (GObject *object)
 	BraseroSearchTracker *tracker = BRASERO_SEARCH_TRACKER (object);
 	BraseroSearchTrackerPrivate *priv;
 
-	priv = BRASERO_SEARCH_TRACKER_PRIVATE (tracker);
+	priv = brasero_search_tracker_get_instance_private (tracker);
 
 	brasero_search_tracker_clean (tracker);
 

@@ -62,7 +62,6 @@ struct _BraseroDiscMessagePrivate
 	guint prevent_destruction:1;
 };
 
-#define BRASERO_DISC_MESSAGE_PRIVATE(o)  (brasero_disc_message_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroDiscMessage, brasero_disc_message, GTK_TYPE_INFO_BAR);
 
@@ -76,7 +75,7 @@ brasero_disc_message_timeout (gpointer data)
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (data);
+	priv = brasero_disc_message_get_instance_private (data);
 	priv->timeout = 0;
 
 	priv->prevent_destruction = TRUE;
@@ -93,7 +92,7 @@ brasero_disc_message_set_timeout (BraseroDiscMessage *self,
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	if (priv->timeout) {
 		g_source_remove (priv->timeout);
@@ -112,7 +111,7 @@ brasero_disc_message_set_context (BraseroDiscMessage *self,
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 	priv->context = context_id;
 }
 
@@ -121,7 +120,7 @@ brasero_disc_message_get_context (BraseroDiscMessage *self)
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 	return priv->context;
 }
 
@@ -146,7 +145,7 @@ brasero_disc_message_add_errors (BraseroDiscMessage *self,
 	GtkWidget *scroll;
 	GtkWidget *tree;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	if (priv->expander)
 		gtk_widget_destroy (priv->expander);
@@ -204,7 +203,7 @@ brasero_disc_message_remove_errors (BraseroDiscMessage *self)
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	gtk_widget_destroy (priv->expander);
 	priv->expander = NULL;
@@ -215,7 +214,7 @@ brasero_disc_message_destroy (BraseroDiscMessage *self)
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	if (priv->prevent_destruction)
 		return;
@@ -236,7 +235,7 @@ brasero_disc_message_update_progress (gpointer data)
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (data);
+	priv = brasero_disc_message_get_instance_private (data);
 	gtk_progress_bar_pulse (GTK_PROGRESS_BAR (priv->progress));
 	return TRUE;
 }
@@ -247,7 +246,7 @@ brasero_disc_message_set_progress_active (BraseroDiscMessage *self,
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	if (!priv->progress) {
 		priv->progress = gtk_progress_bar_new ();
@@ -277,7 +276,7 @@ brasero_disc_message_set_progress (BraseroDiscMessage *self,
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	if (!priv->progress) {
 		priv->progress = gtk_progress_bar_new ();
@@ -300,7 +299,7 @@ brasero_disc_message_set_primary (BraseroDiscMessage *self,
 	BraseroDiscMessagePrivate *priv;
 	gchar *markup;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	markup = g_strdup_printf ("<b>%s</b>", message);
 	gtk_label_set_markup (GTK_LABEL (priv->primary), markup);
@@ -314,7 +313,7 @@ brasero_disc_message_set_secondary (BraseroDiscMessage *self,
 {
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv = brasero_disc_message_get_instance_private (self);
 
 	if (!message) {
 		if (priv->secondary) {
@@ -342,7 +341,7 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	BraseroDiscMessagePrivate *priv;
 	GtkWidget *main_box;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (object);
+	priv = brasero_disc_message_get_instance_private (object);
 
 	main_box = gtk_info_bar_get_content_area (GTK_INFO_BAR (object));
 
@@ -364,7 +363,7 @@ brasero_disc_message_finalize (GObject *object)
 	BraseroDiscMessage *message = BRASERO_DISC_MESSAGE (object);
 	BraseroDiscMessagePrivate *priv;
 
-	priv = BRASERO_DISC_MESSAGE_PRIVATE (message);
+	priv = brasero_disc_message_get_instance_private (message);
 	if (priv->id) {
 		g_source_remove (priv->id);
 		priv->id = 0;

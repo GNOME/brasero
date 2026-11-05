@@ -95,7 +95,6 @@ struct _BraseroAppPrivate
 	guint mainwin_running:1;
 };
 
-#define BRASERO_APP_PRIVATE(o)  (brasero_app_get_instance_private (o))
 
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroApp, brasero_app, G_TYPE_OBJECT);
@@ -216,7 +215,7 @@ brasero_app_load_window_state (BraseroApp *app)
 
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	/* Make sure that on first run the window has a default size of at least
 	 * 85% of the screen (hardware not GTK+) */
@@ -267,7 +266,7 @@ brasero_app_save_contents (BraseroApp *app,
 	gchar *project_path;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (priv->burn_dialog) {
 		if (cancellable)
@@ -313,7 +312,7 @@ brasero_app_get_saved_contents (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	return priv->saved_contents;
 }
 
@@ -329,7 +328,7 @@ brasero_app_toplevel_destroyed_cb (GtkWidget *object,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	priv->toplevel = NULL;
 }
 
@@ -344,7 +343,7 @@ brasero_app_dialog (BraseroApp *app,
 	GtkWindow *toplevel;
 	GtkWidget *dialog;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (priv->mainwin) {
 		toplevel = GTK_WINDOW (priv->mainwin);
@@ -396,7 +395,7 @@ brasero_app_alert (BraseroApp *app,
 	BraseroAppPrivate *priv;
 	GtkWidget *alert;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	/* Whatever happens, they need a parent or must be in the taskbar */
 	if (priv->mainwin) {
@@ -435,7 +434,7 @@ brasero_app_get_statusbar1 (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	/* FIXME: change with future changes */
 	return priv->statusbar1;
@@ -446,7 +445,7 @@ brasero_app_get_statusbar2 (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	return priv->statusbar2;
 }
 
@@ -455,7 +454,7 @@ brasero_app_get_project_manager (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	return priv->projects;
 }
 
@@ -464,7 +463,7 @@ on_destroy_cb (GtkWidget *window, BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	if (priv->mainwin)
 		gtk_main_quit ();
 
@@ -476,7 +475,7 @@ on_delete_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	if (!priv->mainwin)
 		return FALSE;
 
@@ -491,7 +490,7 @@ on_exit_cb (GtkAction *action, BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (brasero_app_save_contents (app, TRUE))
 		return;
@@ -505,7 +504,7 @@ brasero_app_is_running (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	return priv->mainwin_running;
 }
 
@@ -515,7 +514,7 @@ brasero_app_set_parent (BraseroApp *app,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 #ifdef GDK_WINDOWING_X11
 	if (GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
 		priv->parent = gdk_x11_window_foreign_new_for_display (gdk_display_get_default (), parent_xid);
@@ -531,7 +530,7 @@ brasero_app_burn (BraseroApp *app,
 	GtkWidget *dialog;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	/* now setup the burn dialog */
 	dialog = brasero_burn_dialog_new ();
@@ -742,7 +741,7 @@ brasero_app_process_session (BraseroApp *app,
 		GtkWidget *manager;
 		BraseroAppPrivate *priv;
 
-		priv = BRASERO_APP_PRIVATE (app);
+		priv = brasero_app_get_instance_private (app);
 		if (!priv->mainwin)
 			brasero_app_create_mainwin (app);
 
@@ -854,7 +853,7 @@ brasero_app_data (BraseroApp *app,
 	BraseroAppPrivate *priv;
 	int i, num;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (!uris) {
 		GtkWidget *manager;
@@ -912,7 +911,7 @@ brasero_app_stream (BraseroApp *app,
 	BraseroAppPrivate *priv;
 	int i, num;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	session = brasero_session_cfg_new ();
 
@@ -972,7 +971,7 @@ brasero_app_blank (BraseroApp *app,
 	BraseroBlankDialog *dialog;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	dialog = brasero_blank_dialog_new ();
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
 
@@ -1021,7 +1020,7 @@ on_eject_cb (GtkAction *action, BraseroApp *app)
 	GtkWidget *toplevel;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	dialog = brasero_eject_dialog_new ();
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
@@ -1048,7 +1047,7 @@ brasero_app_check (BraseroApp *app,
 	BraseroSumDialog *dialog;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	dialog = brasero_sum_dialog_new ();
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
@@ -1098,7 +1097,7 @@ brasero_app_current_toplevel_destroyed (GtkWidget *widget,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 	if (priv->mainwin_running)
 		gtk_widget_show (GTK_WIDGET (priv->mainwin));
 }
@@ -1108,7 +1107,7 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (!priv->mainwin_running) {
 		if (priv->parent) {
@@ -1144,7 +1143,7 @@ on_prefs_cb (GtkAction *action, BraseroApp *app)
 	GtkWidget *toplevel;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	dialog = brasero_pref_new ();
 
@@ -1197,7 +1196,7 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 	gchar  *license, *comments;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	comments = g_strdup (_("A simple to use CD/DVD burning application for GNOME"));
 
@@ -1241,7 +1240,7 @@ on_help_cb (GtkAction *action, BraseroApp *app)
 	GError *error = NULL;
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	gtk_show_uri (NULL, "help:brasero", gtk_get_current_event_time (), &error);
    	if (error) {
@@ -1265,7 +1264,7 @@ on_window_state_changed_cb (GtkWidget *widget,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) {
 		priv->is_maximized = 1;
@@ -1290,7 +1289,7 @@ on_configure_event_cb (GtkWidget *widget,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (!priv->is_maximized) {
 		brasero_setting_set_value (brasero_setting_get_default (),
@@ -1844,7 +1843,7 @@ brasero_menu_item_selected_cb (GtkMenuItem *proxy,
 	GtkAction *action;
 	gchar *message;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	action = gtk_activatable_get_related_action (GTK_ACTIVATABLE (proxy));
 	g_return_if_fail (action != NULL);
@@ -1868,7 +1867,7 @@ brasero_menu_item_deselected_cb (GtkMenuItem *proxy,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (priv->statusbar2),
 			   priv->tooltip_ctx);
@@ -1919,7 +1918,7 @@ brasero_caps_changed_cb (BraseroPluginManager *manager,
 	BraseroAppPrivate *priv;
 	GtkWidget *widget;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	widget = gtk_ui_manager_get_widget (priv->manager, "/menubar/ToolMenu/Check");
 
@@ -1940,7 +1939,7 @@ brasero_app_create_mainwin (BraseroApp *app)
 	GtkActionGroup *action_group;
 	BraseroPluginManager *plugin_manager;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (priv->mainwin)
 		return;
@@ -2067,7 +2066,7 @@ brasero_app_activate (GApplication *gapp,
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	/* Except if we are supposed to quit, show the window */
 	if (priv->mainwin_running) {
@@ -2081,7 +2080,7 @@ brasero_app_run_mainwin (BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	if (!priv->mainwin)
 		return FALSE;
@@ -2106,7 +2105,7 @@ brasero_app_get_io_parent_window (gpointer user_data)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (user_data);
+	priv = brasero_app_get_instance_private (user_data);
 	if (!priv->mainwin) {
 		if (priv->parent)
 			return GTK_WINDOW (priv->parent);
@@ -2126,7 +2125,7 @@ brasero_app_init (BraseroApp *object)
 {
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (object);
+	priv = brasero_app_get_instance_private (object);
 
 	priv->mainwin = NULL;
 
@@ -2146,7 +2145,7 @@ brasero_app_finalize (GObject *object)
 	BraseroApp *app = BRASERO_APP (object);
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	brasero_setting_save (priv->setting);
 	g_object_unref (priv->setting);
@@ -2168,7 +2167,7 @@ brasero_app_set_property (GObject *object,
 	BraseroApp *app = BRASERO_APP (object);
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	switch (prop_id)
 	{
@@ -2190,7 +2189,7 @@ brasero_app_get_property (GObject *object,
 	BraseroApp *app = BRASERO_APP (object);
 	BraseroAppPrivate *priv;
 
-	priv = BRASERO_APP_PRIVATE (app);
+	priv = brasero_app_get_instance_private (app);
 
 	switch (prop_id)
 	{

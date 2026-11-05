@@ -65,7 +65,6 @@ struct _BraseroToolDialogPrivate {
 	gboolean running;
 };
 
-#define BRASERO_TOOL_DIALOG_PRIVATE(o)  (brasero_tool_dialog_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroToolDialog, brasero_tool_dialog, GTK_TYPE_DIALOG);
 
@@ -112,7 +111,7 @@ brasero_tool_dialog_set_progress (BraseroToolDialog *self,
 {
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (priv->progress),
 					  FALSE, /* no need for the media here since speed is not specified */
 					  overall_progress,
@@ -130,7 +129,7 @@ brasero_tool_dialog_set_action (BraseroToolDialog *self,
 {
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (priv->progress),
 					  action,
 					  string);
@@ -170,7 +169,7 @@ brasero_tool_dialog_get_burn (BraseroToolDialog *self)
 {
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 
 	if (priv->burn) {
 		brasero_burn_cancel (priv->burn, FALSE);
@@ -201,7 +200,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	GdkCursor *cursor;
 	GdkWindow *window;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selector));
 
 	/* set up */
@@ -272,7 +271,7 @@ brasero_tool_dialog_pack_options (BraseroToolDialog *self,
 	GSList *list = NULL;
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 
 	va_start (vlist, self);
 	while ((child = va_arg (vlist, GtkWidget *)))
@@ -302,7 +301,7 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 	GtkWidget *button;
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 
 	if (priv->button)
 		g_object_unref (priv->button);
@@ -325,7 +324,7 @@ brasero_tool_dialog_set_valid (BraseroToolDialog *self,
 {
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	gtk_widget_set_sensitive (priv->button, valid);
 }
 
@@ -335,7 +334,7 @@ brasero_tool_dialog_set_medium_type_shown (BraseroToolDialog *self,
 {
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->selector),
 						  media_type);
 }
@@ -354,7 +353,7 @@ brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 {
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	return brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selector));
 }
 
@@ -377,7 +376,7 @@ brasero_tool_dialog_set_medium (BraseroToolDialog *self,
 	if (!medium)
 		return FALSE;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 
 	return brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->selector), medium);
 }
@@ -458,7 +457,7 @@ brasero_tool_dialog_cancel (BraseroToolDialog *self)
 			return FALSE;
 	}
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (self);
+	priv = brasero_tool_dialog_get_instance_private (self);
 	if (!priv->burn)
 		return TRUE;
 
@@ -511,7 +510,7 @@ brasero_tool_dialog_constructed (GObject *object)
 
 	G_OBJECT_CLASS (brasero_tool_dialog_parent_class)->constructed (object);
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (dialog);
+	priv = brasero_tool_dialog_get_instance_private (dialog);
 
 	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->selector),
 						  BRASERO_MEDIA_TYPE_REWRITABLE |
@@ -540,7 +539,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	gchar *title_str;
 	BraseroToolDialogPrivate *priv;
 
-	priv = BRASERO_TOOL_DIALOG_PRIVATE (obj);
+	priv = brasero_tool_dialog_get_instance_private (obj);
 
 	/* upper part */
 	priv->upper_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);

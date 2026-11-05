@@ -99,7 +99,6 @@ struct _BraseroDrivePrivate
 	guint probe_waiting:1;
 };
 
-#define BRASERO_DRIVE_PRIVATE(o)  (brasero_drive_get_instance_private (o))
 
 enum {
 	MEDIUM_REMOVED,
@@ -141,7 +140,7 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 	if (brasero_drive_is_fake (drive))
 		return NULL;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	if (!priv->gdrive)
 		return NULL;
@@ -168,7 +167,7 @@ brasero_drive_can_eject (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	if (!priv->gdrive) {
 		BRASERO_MEDIA_LOG ("No GDrive");
@@ -203,7 +202,7 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	priv->probe_waiting = FALSE;
 
@@ -233,7 +232,7 @@ brasero_drive_wait_probing_thread (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	g_mutex_lock (priv->mutex);
 	if (priv->probe) {
@@ -269,7 +268,7 @@ brasero_drive_eject (BraseroDrive *drive,
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	/* reset if needed */
 	if (g_cancellable_is_cancelled (priv->cancel)) {
@@ -351,7 +350,7 @@ brasero_drive_cancel_current_operation (BraseroDrive *drive)
 	g_return_if_fail (drive != NULL);
 	g_return_if_fail (BRASERO_IS_DRIVE (drive));
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	BRASERO_MEDIA_LOG ("Cancelling GIO operation");
 	g_cancellable_cancel (priv->cancel);
@@ -398,7 +397,7 @@ brasero_drive_is_fake (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	return (priv->device == NULL);
 }
 
@@ -421,7 +420,7 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (!priv->device)
 		return FALSE;
 
@@ -486,7 +485,7 @@ brasero_drive_is_locked (BraseroDrive *drive,
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	return priv->locked;
 }
 
@@ -513,7 +512,7 @@ brasero_drive_lock (BraseroDrive *drive,
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (!priv->device)
 		return FALSE;
 
@@ -553,7 +552,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (!priv->device)
 		return FALSE;
 
@@ -599,7 +598,7 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (!priv->device) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
@@ -627,7 +626,7 @@ brasero_drive_get_device (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	return priv->device;
 }
 
@@ -655,7 +654,7 @@ brasero_drive_get_block_device (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	return priv->block_device? priv->block_device:priv->device;
 }
 
@@ -678,7 +677,7 @@ brasero_drive_get_udi (BraseroDrive *drive)
 
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (!priv->device || !priv->gdrive)
 		return NULL;
 
@@ -708,7 +707,7 @@ brasero_drive_get_medium (BraseroDrive *drive)
 
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (brasero_drive_probing (drive))
 		return NULL;
 
@@ -731,7 +730,7 @@ brasero_drive_get_caps (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, BRASERO_DRIVE_CAPS_NONE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), BRASERO_DRIVE_CAPS_NONE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	return priv->caps;
 }
 
@@ -755,7 +754,7 @@ brasero_drive_can_write_media (BraseroDrive *drive,
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	if (!(media & BRASERO_MEDIUM_REWRITABLE)
 	&&   (media & BRASERO_MEDIUM_CLOSED))
@@ -820,7 +819,7 @@ brasero_drive_can_write (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	return (priv->caps & (BRASERO_DRIVE_CAPS_CDR|
 			      BRASERO_DRIVE_CAPS_DVDR|
 			      BRASERO_DRIVE_CAPS_DVDR_PLUS|
@@ -837,7 +836,7 @@ brasero_drive_medium_probed (BraseroMedium *medium,
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = brasero_drive_get_instance_private (self);
 
 	/* only when it is probed */
 	/* NOTE: BraseroMedium calls GDK_THREADS_ENTER/LEAVE() around g_signal_emit () */
@@ -864,7 +863,7 @@ brasero_drive_probing (BraseroDrive *drive)
 	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (priv->probe != NULL)
 		return TRUE;
 
@@ -879,7 +878,7 @@ brasero_drive_update_medium (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	if (priv->has_medium) {
 		if (priv->medium) {
@@ -921,7 +920,7 @@ brasero_drive_probed_inside (gpointer data)
 	BraseroDrivePrivate *priv;
 
 	self = BRASERO_DRIVE (data);
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = brasero_drive_get_instance_private (self);
 
 	if (!g_mutex_trylock (priv->mutex))
 		return TRUE;
@@ -944,7 +943,7 @@ brasero_drive_probe_inside_thread (gpointer data)
 	BraseroDeviceHandle *handle = NULL;
 	BraseroDrive *drive = BRASERO_DRIVE (data);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
@@ -1036,7 +1035,7 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	if (priv->initial_probe) {
 		BRASERO_MEDIA_LOG ("Still initializing the drive properties");
@@ -1070,7 +1069,7 @@ brasero_drive_medium_gdrive_changed_cb (BraseroDrive *gdrive,
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (priv->locked || priv->ejecting) {
 		BRASERO_MEDIA_LOG ("Waiting for next unlocking of the drive to probe");
 
@@ -1095,7 +1094,7 @@ brasero_drive_update_gdrive (BraseroDrive *drive,
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	if (priv->gdrive) {
 		g_signal_handlers_disconnect_by_func (priv->gdrive,
 						      brasero_drive_medium_gdrive_changed_cb,
@@ -1158,7 +1157,7 @@ brasero_drive_reprobe (BraseroDrive *drive)
 	g_return_if_fail (drive != NULL);
 	g_return_if_fail (BRASERO_IS_DRIVE (drive));
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 	
 	if (priv->gdrive) {
 		/* reprobe the contents of the drive system wide */
@@ -1196,7 +1195,7 @@ brasero_drive_get_caps_profiles (BraseroDrive *self,
 	int profiles_num;
 	int size;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = brasero_drive_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Checking supported profiles");
 	result = brasero_mmc2_get_configuration_feature (handle,
@@ -1280,7 +1279,7 @@ brasero_drive_get_caps_2A (BraseroDrive *self,
 	BraseroScsiResult result;
 	int size = 0;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = brasero_drive_get_instance_private (self);
 
 	result = brasero_spc1_mode_sense_get_page (handle,
 						   BRASERO_SPC_PAGE_STATUS,
@@ -1319,7 +1318,7 @@ brasero_drive_probe_thread (gpointer data)
 	BraseroDeviceHandle *handle;
 	BraseroDrive *drive = BRASERO_DRIVE (data);
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
@@ -1441,7 +1440,7 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 	/* On Solaris path points to raw device, block_path points to the block device. */
@@ -1481,7 +1480,7 @@ brasero_drive_set_property (GObject *object,
 	BraseroDrivePrivate *priv;
 	GDrive *gdrive = NULL;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	switch (prop_id)
 	{
@@ -1518,7 +1517,7 @@ brasero_drive_get_property (GObject *object,
 	BraseroDrive *drive = BRASERO_DRIVE (object);
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	switch (prop_id)
 	{
@@ -1541,7 +1540,7 @@ brasero_drive_init (BraseroDrive *object)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (object);
+	priv = brasero_drive_get_instance_private (object);
 	priv->cancel = g_cancellable_new ();
 
 	priv->mutex = g_mutex_new ();
@@ -1555,7 +1554,7 @@ brasero_drive_finalize (GObject *object)
 	BraseroDrive *drive = BRASERO_DRIVE (object);
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	priv = brasero_drive_get_instance_private (drive);
 
 	BRASERO_MEDIA_LOG ("Finalizing BraseroDrive");
 

@@ -67,7 +67,6 @@ struct _BraseroDrivePropertiesPrivate
 	GtkWidget *tmpdir;
 };
 
-#define BRASERO_DRIVE_PROPERTIES_PRIVATE(o)  (brasero_drive_properties_get_instance_private (o))
 
 enum {
 	TEXT_COL,
@@ -88,7 +87,7 @@ brasero_drive_properties_no_tmp_toggled (GtkToggleButton *button,
 {
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* retrieve the flags */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->notmp)))
@@ -105,7 +104,7 @@ brasero_drive_properties_dummy_toggled (GtkToggleButton *button,
 {
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* retrieve the flags */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->dummy)))
@@ -122,7 +121,7 @@ brasero_drive_properties_burnproof_toggled (GtkToggleButton *button,
 {
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* retrieve the flags */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->burnproof)))
@@ -139,7 +138,7 @@ brasero_drive_properties_multi_toggled (GtkToggleButton *button,
 {
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* retrieve the flags */
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi)))
@@ -161,7 +160,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	guint64 vol_size = 0;
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* get the volume free space */
 	file = g_file_new_for_commandline_arg (path);
@@ -360,7 +359,7 @@ brasero_drive_properties_tmpdir_clicked (GtkButton *button,
 	const gchar *new_path;
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	parent = gtk_widget_get_toplevel (GTK_WIDGET (button));
 	chooser = gtk_file_chooser_dialog_new (_("Location for Temporary Files"),
@@ -443,7 +442,7 @@ brasero_drive_properties_set_flags (BraseroDriveProperties *self,
 {
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	flags &= BRASERO_DRIVE_PROPERTIES_FLAGS;
 	supported &= BRASERO_DRIVE_PROPERTIES_FLAGS;
@@ -484,7 +483,7 @@ brasero_drive_properties_get_rate (BraseroDriveProperties *self)
 	GtkTreeIter iter;
 	gint64 rate;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->speed));
 	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->speed), &iter)
@@ -504,7 +503,7 @@ brasero_drive_properties_rate_changed_cb (GtkComboBox *combo,
 	BraseroDrivePropertiesPrivate *priv;
 	guint64 rate;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	rate = brasero_drive_properties_get_rate (self);
 	if (!rate)
@@ -556,7 +555,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	gchar *text;
 	guint i;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* Speed combo */
 	medium = brasero_drive_get_medium (drive);
@@ -629,7 +628,7 @@ brasero_drive_properties_update (BraseroDriveProperties *self)
 	BraseroDrivePropertiesPrivate *priv;
 	BraseroBurnFlag flags;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 	brasero_drive_properties_set_drive (self,
 					    brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session)),
 					    brasero_burn_session_get_rate (BRASERO_BURN_SESSION (priv->session)));
@@ -654,7 +653,7 @@ brasero_drive_properties_is_valid_cb (BraseroSessionCfg *session,
 	BraseroBurnFlag supported;
 	BraseroBurnFlag flags;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (priv->session));
 	brasero_burn_session_get_burn_flags (BRASERO_BURN_SESSION (priv->session),
@@ -673,7 +672,7 @@ brasero_drive_properties_output_changed_cb (BraseroSessionCfg *session,
 {
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	priv = brasero_drive_properties_get_instance_private (self);
 
 	/* if the drive changed update rate but only if the drive changed that's
 	 * why we don't do it when the is-valid signal is emitted. */
@@ -695,7 +694,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	GtkWidget *box;
 	gchar *string;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
+	priv = brasero_drive_properties_get_instance_private (object);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox);
@@ -812,7 +811,7 @@ brasero_drive_properties_finalize (GObject *object)
 	BraseroDriveProperties *properties = BRASERO_DRIVE_PROPERTIES (object);
 	BraseroDrivePropertiesPrivate *priv;
 	
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (properties);
+	priv = brasero_drive_properties_get_instance_private (properties);
 	if (priv->valid_sig) {
 		g_signal_handler_disconnect (priv->session, priv->valid_sig);
 		priv->valid_sig = 0;
@@ -838,7 +837,7 @@ brasero_drive_properties_set_property (GObject *object,
 	BraseroDriveProperties *properties = BRASERO_DRIVE_PROPERTIES (object);
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (properties);
+	priv = brasero_drive_properties_get_instance_private (properties);
 
 	switch (property_id) {
 	case PROP_SESSION: /* Readable and only writable at creation time */
@@ -869,7 +868,7 @@ brasero_drive_properties_get_property (GObject *object,
 	BraseroDriveProperties *properties = BRASERO_DRIVE_PROPERTIES (object);
 	BraseroDrivePropertiesPrivate *priv;
 
-	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (properties);
+	priv = brasero_drive_properties_get_instance_private (properties);
 
 	switch (property_id) {
 	case PROP_SESSION:

@@ -62,7 +62,6 @@ struct BraseroBlankDialogPrivate {
 	guint dummy_saved;
 };
 
-#define BRASERO_BLANK_DIALOG_PRIVATE(o)  (brasero_blank_dialog_get_instance_private (o))
 
 typedef struct BraseroBlankDialogPrivate BraseroBlankDialogPrivate;
 
@@ -119,7 +118,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 	BraseroBurnFlag compulsory;
 	BraseroBlankDialogPrivate *priv;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
+	priv = brasero_blank_dialog_get_instance_private (self);
 
 	/* set the options */
 	brasero_burn_session_get_blank_flags (priv->session,
@@ -159,7 +158,7 @@ brasero_blank_dialog_fast_toggled (GtkToggleButton *toggle,
 {
 	BraseroBlankDialogPrivate *priv;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
+	priv = brasero_blank_dialog_get_instance_private (self);
 	if (gtk_toggle_button_get_active (toggle))
 		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
 	else
@@ -174,7 +173,7 @@ brasero_blank_dialog_drive_changed (BraseroToolDialog *dialog,
 	BraseroBlankDialogPrivate *priv;
 	BraseroDrive *drive;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (blank_dialog);
+	priv = brasero_blank_dialog_get_instance_private (blank_dialog);
 
 	if (medium)
 		drive = brasero_medium_get_drive (medium);
@@ -198,7 +197,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 	BraseroBurn *burn;
 
 	self = BRASERO_BLANK_DIALOG (dialog);
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
+	priv = brasero_blank_dialog_get_instance_private (self);
 
 	burn = brasero_tool_dialog_get_burn (dialog);
 	brasero_burn_session_start (priv->session);
@@ -313,7 +312,7 @@ brasero_blank_dialog_finalize (GObject *object)
 	BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG(object);
 	BraseroBlankDialogPrivate *priv;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (blank_dialog);
+	priv = brasero_blank_dialog_get_instance_private (blank_dialog);
 
 	if (priv->caps_sig) {
 		BraseroPluginManager *manager;
@@ -356,7 +355,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 	BraseroMedium *medium;
 	BraseroDrive *drive;
 
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (obj);
+	priv = brasero_blank_dialog_get_instance_private (obj);
 
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
 					/* Translators: This is a verb, an action */

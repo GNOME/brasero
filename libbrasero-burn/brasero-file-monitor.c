@@ -61,7 +61,6 @@ struct _BraseroFileMonitorPrivate
 	GSList *moved_list;
 };
 
-#define BRASERO_FILE_MONITOR_PRIVATE(o)  (brasero_file_monitor_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroFileMonitor, brasero_file_monitor, G_TYPE_OBJECT);
 
@@ -114,7 +113,7 @@ brasero_file_monitor_moved_to_event (BraseroFileMonitor *self,
 	BraseroFileMonitorClass *klass;
 	GSList *iter;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 	klass = BRASERO_FILE_MONITOR_GET_CLASS (self);
 
 	BRASERO_BURN_LOG ("File Monitoring (move to for %s)", name);
@@ -184,7 +183,7 @@ brasero_file_monitor_move_timeout_cb (BraseroFileMonitor *self)
 	BraseroFileMonitorPrivate *priv;
 	BraseroFileMonitorClass *klass;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 	klass = BRASERO_FILE_MONITOR_GET_CLASS (self);
 
 	/* an IN_MOVED_FROM timed out. It is the first in the queue. */
@@ -215,7 +214,7 @@ brasero_file_monitor_moved_from_event (BraseroFileMonitor *self,
 	BraseroInotifyMovedData *data = NULL;
 	BraseroFileMonitorPrivate *priv;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 
 	BRASERO_BURN_LOG ("File Monitoring (moved from event for %s)", name);
 
@@ -308,7 +307,7 @@ brasero_file_monitor_inotify_file_event (BraseroFileMonitor *self,
 	GSList *iter;
 
 	klass = BRASERO_FILE_MONITOR_GET_CLASS (self);
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 
 	/* this is a dummy directory used to watch top files so we check
 	 * that the file for which that event happened is indeed in 
@@ -484,7 +483,7 @@ brasero_file_monitor_inotify_monitor_cb (GIOChannel *channel,
 	gchar *name;
 	gsize size;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 	while (condition & G_IO_IN) {
 		callback_data = NULL;
 
@@ -591,7 +590,7 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 	uint32_t mask;
 	uint32_t wd;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 
 	unescaped_uri = g_uri_unescape_string (uri, NULL);
 	path = g_filename_from_uri (unescaped_uri, NULL, NULL);
@@ -637,7 +636,7 @@ brasero_file_monitor_single_file (BraseroFileMonitor *self,
 	GFile *file;
 	guint32 wd;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 
 	/* we want local URIs */
 	if (!priv->notify || strncmp (uri, "file://", 7))
@@ -679,7 +678,7 @@ brasero_file_monitor_directory_contents (BraseroFileMonitor *self,
 	BraseroFileMonitorPrivate *priv;
 	guint32 wd;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 
 	/* we want local URIs */
 	if (!priv->notify || strncmp (uri, "file://", 7))
@@ -754,7 +753,7 @@ brasero_file_monitor_foreach_cancel (BraseroFileMonitor *self,
 	BraseroFileMonitorPrivate *priv;
 	BraseroFileMonitorCancelForeach data;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 
 	data.func = func;
 	data.results = NULL;
@@ -838,7 +837,7 @@ brasero_file_monitor_reset (BraseroFileMonitor *self)
 {
 	BraseroFileMonitorPrivate *priv;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+	priv = brasero_file_monitor_get_instance_private (self);
 	g_hash_table_foreach_remove (priv->files,
 				     brasero_file_monitor_foreach_file_reset_cb,
 				     GINT_TO_POINTER (g_io_channel_unix_get_fd (priv->notify)));
@@ -854,7 +853,7 @@ brasero_file_monitor_init (BraseroFileMonitor *object)
 	BraseroFileMonitorPrivate *priv;
 	int fd;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (object);
+	priv = brasero_file_monitor_get_instance_private (object);
 
 	priv->files = g_hash_table_new (g_direct_hash, g_direct_equal);
 	priv->directories = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -881,7 +880,7 @@ brasero_file_monitor_finalize (GObject *object)
 	BraseroFileMonitor *monitor = BRASERO_FILE_MONITOR (object);
 	BraseroFileMonitorPrivate *priv;
 
-	priv = BRASERO_FILE_MONITOR_PRIVATE (monitor);
+	priv = brasero_file_monitor_get_instance_private (monitor);
 
 	brasero_file_monitor_reset (monitor);
 

@@ -53,7 +53,6 @@ struct _BraseroDriveSelectionPrivate
 	gulong removed_sig;
 };
   
-#define BRASERO_DRIVE_SELECTION_PRIVATE(o)  (brasero_drive_selection_get_instance_private (o))
 
 typedef enum {
 	CHANGED_SIGNAL,
@@ -97,7 +96,7 @@ brasero_drive_selection_set_current_drive (BraseroDriveSelection *self,
 	BraseroDrive *drive;
 	GtkTreeModel *model;
 
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+	priv = brasero_drive_selection_get_instance_private (self);
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 	gtk_tree_model_get (model, iter,
@@ -158,7 +157,7 @@ brasero_drive_selection_set_active (BraseroDriveSelection *selector,
 	g_return_val_if_fail (selector != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE_SELECTION (selector), FALSE);
 
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selector);
+	priv = brasero_drive_selection_get_instance_private (selector);
   
 	if (priv->active == drive)
 		return TRUE;
@@ -206,7 +205,7 @@ brasero_drive_selection_get_active (BraseroDriveSelection *selector)
 	g_return_val_if_fail (selector != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE_SELECTION (selector), NULL);
 
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selector);
+	priv = brasero_drive_selection_get_instance_private (selector);
 	if (!priv->active)
 		return NULL;
 
@@ -270,7 +269,7 @@ brasero_drive_selection_show_type (BraseroDriveSelection *selector,
 	g_return_if_fail (selector != NULL);
 	g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (selector));
 
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selector);
+	priv = brasero_drive_selection_get_instance_private (selector);
 
 	priv->type = type;
 
@@ -374,7 +373,7 @@ brasero_drive_selection_drive_added_cb (BraseroMediumMonitor *monitor,
 	GIcon *drive_icon;
 	GtkTreeIter iter;
 
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+	priv = brasero_drive_selection_get_instance_private (self);
 
 	if ((priv->type & BRASERO_DRIVE_TYPE_WRITER)
 	&&  (brasero_drive_can_write (drive)))
@@ -498,7 +497,7 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 	BraseroMediumMonitor *monitor;
 	BraseroDriveSelectionPrivate *priv;
 
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+	priv = brasero_drive_selection_get_instance_private (object);
 
 	monitor = brasero_medium_monitor_get_default ();
 	priv->added_sig = g_signal_connect (monitor,
@@ -552,7 +551,7 @@ brasero_drive_selection_finalize (GObject *object)
 	BraseroDriveSelectionPrivate *priv;
 	BraseroMediumMonitor *monitor;
   
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
+	priv = brasero_drive_selection_get_instance_private (selection);
   
 	monitor = brasero_medium_monitor_get_default ();
   
@@ -597,7 +596,7 @@ brasero_drive_selection_get_property (GObject *object,
 	BraseroDriveSelection *selection = BRASERO_DRIVE_SELECTION (object);
 	BraseroDriveSelectionPrivate *priv;
   
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
+	priv = brasero_drive_selection_get_instance_private (selection);
   
 	switch (prop_id)
 	{

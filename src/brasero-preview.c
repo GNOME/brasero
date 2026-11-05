@@ -50,7 +50,6 @@ struct _BraseroPreviewPrivate
 	guint is_enabled:1;
 };
 
-#define BRASERO_PREVIEW_PRIVATE(o)  (brasero_preview_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroPreview, brasero_preview, GTK_TYPE_ALIGNMENT);
 
@@ -60,7 +59,7 @@ brasero_preview_set_uri_delayed_cb (gpointer data)
 	BraseroPreview *self = BRASERO_PREVIEW (data);
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv = brasero_preview_get_instance_private (self);
 
 	brasero_player_set_uri (BRASERO_PLAYER (priv->player), priv->uri);
 	if (priv->end >= 0 && priv->start >= 0)
@@ -79,7 +78,7 @@ brasero_preview_source_selection_changed_cb (BraseroURIContainer *source,
 	BraseroPreviewPrivate *priv;
 	gchar *uri;
 
-	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv = brasero_preview_get_instance_private (self);
 
 	/* make sure that we're supposed to activate preview */
 	if (!priv->is_enabled)
@@ -125,7 +124,7 @@ brasero_preview_hide (BraseroPreview *self)
 {
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv = brasero_preview_get_instance_private (self);
 	gtk_widget_hide (priv->player);
 }
 
@@ -135,7 +134,7 @@ brasero_preview_set_enabled (BraseroPreview *self,
 {
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv = brasero_preview_get_instance_private (self);
 	priv->is_enabled = preview;
 }
 
@@ -145,7 +144,7 @@ brasero_preview_player_error_cb (BraseroPlayer *player,
 {
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv = brasero_preview_get_instance_private (self);
 	gtk_widget_hide (priv->player);
 }
 
@@ -155,7 +154,7 @@ brasero_preview_player_ready_cb (BraseroPlayer *player,
 {
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv = brasero_preview_get_instance_private (self);
 	gtk_widget_show (priv->player);
 }
 
@@ -164,7 +163,7 @@ brasero_preview_init (BraseroPreview *object)
 {
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (object);
+	priv = brasero_preview_get_instance_private (object);
 
 	priv->player = brasero_player_new ();
 	gtk_container_set_border_width (GTK_CONTAINER (priv->player), 4);
@@ -186,7 +185,7 @@ brasero_preview_finalize (GObject *object)
 	BraseroPreview *preview = BRASERO_PREVIEW (object);
 	BraseroPreviewPrivate *priv;
 
-	priv = BRASERO_PREVIEW_PRIVATE (preview);
+	priv = brasero_preview_get_instance_private (preview);
 
 	if (priv->set_uri_id) {
 		g_source_remove (priv->set_uri_id);

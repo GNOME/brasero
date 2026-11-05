@@ -98,7 +98,6 @@ struct _BraseroDataDiscPrivate
 	guint reject_deep_files:1;
 };
 
-#define BRASERO_DATA_DISC_PRIVATE(o)  (brasero_data_disc_get_instance_private (o))
 
 
 static void
@@ -197,7 +196,7 @@ BraseroMedium *
 brasero_data_disc_get_loaded_medium (BraseroDataDisc *self)
 {
 	BraseroDataDiscPrivate *priv;
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	return brasero_track_data_cfg_get_current_medium (priv->project);
 }
 
@@ -222,7 +221,7 @@ brasero_data_disc_import_session (BraseroDataDisc *disc,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	if (import) {
 		GError *error = NULL;
@@ -247,7 +246,7 @@ brasero_data_disc_import_session_cb (GtkToggleAction *action,
 	BraseroMedium *medium;
 	gboolean res;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	medium = g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MEDIUM);
 	if (!medium)
@@ -277,7 +276,7 @@ brasero_data_disc_get_parent (BraseroDataDisc *self)
 	GtkTreeIter iter;
 	GList *list;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, NULL);
@@ -323,7 +322,7 @@ brasero_data_disc_new_folder_clicked_cb (GtkAction *action,
 	GtkTreePath *treepath;
 	GtkTreePath *parent;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 	if (priv->reject_files)
 		return;
 
@@ -363,7 +362,7 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	if (!text)
 		goto end;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (data->disc);
+	priv = brasero_data_disc_get_instance_private (data->disc);
 
 	if (data->reference)
 		parent = gtk_tree_row_reference_get_path (data->reference);
@@ -430,7 +429,7 @@ brasero_data_disc_paste_activated_cb (GtkAction *action,
 	BraseroClipData *data;
 	GtkTreePath *parent;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	data = g_new0 (BraseroClipData, 1);
 	data->disc = disc;
@@ -457,7 +456,7 @@ brasero_data_disc_name_editing_started_cb (GtkCellRenderer *renderer,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 	priv->editing = 1;
 }
 
@@ -467,7 +466,7 @@ brasero_data_disc_name_editing_canceled_cb (GtkCellRenderer *renderer,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 	priv->editing = 0;
 }
 
@@ -482,7 +481,7 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 	GtkTreeIter row;
 	gchar *name;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	priv->editing = 0;
 
@@ -526,7 +525,7 @@ brasero_data_disc_project_loading_cb (BraseroTrackDataCfg *project,
 	BraseroDataDiscPrivate *priv;
 	GtkWidget *message;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	priv->loading = TRUE;
 
 	message = brasero_notify_get_message_by_context_id (priv->message, BRASERO_NOTIFY_CONTEXT_LOADING);
@@ -545,7 +544,7 @@ brasero_data_disc_project_loaded_cb (BraseroTrackDataCfg *project,
 	BraseroDataDiscPrivate *priv;
 	GtkWidget *message;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	priv->loading = FALSE;
 
 	message = brasero_notify_get_message_by_context_id (priv->message, BRASERO_NOTIFY_CONTEXT_LOADING);
@@ -723,7 +722,7 @@ brasero_data_disc_joliet_rename_cb (BraseroTrackDataCfg *project,
 	GtkWidget *dialog;
 	gint answer;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     _("Should files be renamed to be fully Windows-compatible?"),
@@ -759,7 +758,7 @@ brasero_data_disc_name_collision_cb (BraseroTrackDataCfg *project,
 	GtkWidget *dialog;
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (priv->always_replace)
 		return FALSE;
@@ -815,7 +814,7 @@ brasero_data_disc_2G_file_cb (BraseroTrackDataCfg *project,
 	GtkWidget *dialog;
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (priv->accept_deep_files)
 		return TRUE;
@@ -859,7 +858,7 @@ brasero_data_disc_deep_directory_cb (BraseroTrackDataCfg *project,
 	GtkWidget *dialog;
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (priv->accept_2G_files)
 		return TRUE;
@@ -901,7 +900,7 @@ brasero_data_disc_size_changed (gpointer user_data)
 	BraseroDataDiscPrivate *priv;
 
 	self = BRASERO_DATA_DISC (user_data);
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	brasero_track_get_size (BRASERO_TRACK (priv->project),
 				&sectors,
@@ -916,7 +915,7 @@ brasero_data_disc_size_changed_cb (BraseroTrackDataCfg *project,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (!priv->size_changed_id)
 		priv->size_changed_id = g_timeout_add (500,
@@ -938,7 +937,7 @@ brasero_disc_disc_session_import_response_cb (GtkButton *button,
 	if (response != GTK_RESPONSE_OK)
 		return;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	medium = g_object_get_data (G_OBJECT (button), BRASERO_DATA_DISC_MEDIUM);
 	res = brasero_data_disc_import_session (self, medium, TRUE);
@@ -966,7 +965,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 	BraseroDataDiscPrivate *priv;
 	GtkToggleActionEntry toggle_entry = { 0, };
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (!priv->manager)
 		return NULL;
@@ -1055,7 +1054,7 @@ brasero_data_disc_remove_available_medium (BraseroDataDisc *self,
 	gchar *action_name;
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 	action = gtk_action_group_get_action (priv->import_group, action_name);
@@ -1079,7 +1078,7 @@ brasero_data_disc_session_available_cb (BraseroTrackDataCfg *session,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (!priv->manager)
 		return;
@@ -1135,7 +1134,7 @@ brasero_data_disc_session_loaded_cb (BraseroTrackDataCfg *session,
 	gchar *action_name;
 	GtkAction *action;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 	action = gtk_action_group_get_action (priv->import_group, action_name);
@@ -1156,7 +1155,7 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	BraseroDataDisc *self = BRASERO_DATA_DISC (disc);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	priv->always_replace = FALSE;
 	priv->never_replace = FALSE;
@@ -1218,7 +1217,7 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 	GSList *iter;
 	GList *list;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	/* we must start by the end for the treepaths to point to valid rows */
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
@@ -1279,7 +1278,7 @@ brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri)
 	BraseroDataDiscPrivate *priv;
 	GtkTreePath *parent = NULL;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (priv->reject_files)
 		return BRASERO_DISC_LOADING;
@@ -1301,7 +1300,7 @@ brasero_data_disc_message_response_cb (BraseroDiscMessage *message,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->filter), TRUE);
@@ -1342,7 +1341,7 @@ brasero_data_disc_set_track (BraseroDataDisc *disc,
 	gpointer value;
 	gint sort_order;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	priv->project = g_object_ref (track);
 
@@ -1521,7 +1520,7 @@ brasero_data_disc_unset_track (BraseroDataDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	if (!priv->project)
 		return;
@@ -1697,7 +1696,7 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc,
 	GtkTreePath *path;
 	GtkTreeIter iter;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (!priv->selected)
 		return FALSE;
@@ -1729,7 +1728,7 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 	GtkAction *action;
 	guint merge_id;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	if (priv->message) {
 		g_object_unref (priv->message);
 		priv->message = NULL;
@@ -1783,7 +1782,7 @@ brasero_data_disc_open_file (BraseroDataDisc *disc, GList *list)
 	GSList *uris;
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	uris = NULL;
 	for (item = list; item; item = item->next) {
@@ -1829,7 +1828,7 @@ brasero_data_disc_open_activated_cb (GtkAction *action,
 	GtkTreeSelection *selection;
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, NULL);
@@ -1860,7 +1859,7 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 	GtkTreePath *treepath;
 	GList *list;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = brasero_data_disc_get_instance_private (disc);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 
@@ -1965,7 +1964,7 @@ brasero_data_disc_selection_changed_cb (GtkTreeSelection *selection,
 	GtkTreeModel *model;
 	GList *selected;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	priv->selected = NULL;
 
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -2100,7 +2099,7 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 	BraseroDataDiscPrivate *priv;
 	gboolean keep_selection = FALSE;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	/* Avoid minding signals that happen out of the tree area (like in the 
 	 * headers for example) */
@@ -2223,7 +2222,7 @@ brasero_data_disc_key_released_cb (GtkTreeView *tree,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	
 	if (priv->loading)
 		return FALSE;
@@ -2249,7 +2248,7 @@ brasero_data_disc_set_right_button_group (BraseroDataDisc *self,
 {
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	priv->button_size = g_object_ref (size_group);
 }
 
@@ -2266,7 +2265,7 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	GtkWidget *mainbox;
 	GtkWidget *scroll;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (object);
+	priv = brasero_data_disc_get_instance_private (object);
 
 	gtk_box_set_spacing (GTK_BOX (object), 8);
 	gtk_orientable_set_orientation (GTK_ORIENTABLE (object), GTK_ORIENTATION_VERTICAL);
@@ -2418,7 +2417,7 @@ brasero_data_disc_finalize (GObject *object)
 	BraseroDataDisc *self = BRASERO_DATA_DISC (object);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	if (priv->project) {
 		g_object_unref (priv->project);
@@ -2456,7 +2455,7 @@ brasero_data_disc_is_empty (BraseroDisc *disc)
 	BraseroDataDiscPrivate *priv;
 	GtkTreeModel *model;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	if(!model)
 		return FALSE;
@@ -2485,7 +2484,7 @@ brasero_data_disc_get_property (GObject * object,
 	BraseroDataDisc *self = BRASERO_DATA_DISC (object);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:
@@ -2506,7 +2505,7 @@ brasero_data_disc_set_property (GObject * object,
 	BraseroDataDisc *self = BRASERO_DATA_DISC (object);
 	BraseroDataDiscPrivate *priv;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	priv = brasero_data_disc_get_instance_private (self);
 
 	switch (prop_id) {
 	case PROP_REJECT_FILE:

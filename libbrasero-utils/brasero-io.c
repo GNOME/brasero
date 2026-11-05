@@ -107,7 +107,6 @@ struct _BraseroIOPrivate
 	gpointer win_user_data;
 };
 
-#define BRASERO_IO_PRIVATE(o)  (brasero_io_get_instance_private (o))
 
 /* so far 2 metadata at a time has shown to be the best for performance */
 #define MAX_CONCURENT_META 	2
@@ -172,7 +171,7 @@ brasero_io_job_progress_report_cb (gpointer callback_data)
 	BraseroIOPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_IO_PRIVATE (callback_data);
+	priv = brasero_io_get_instance_private (callback_data);
 
 	g_mutex_lock (priv->lock);
 	for (iter = priv->progress; iter; iter = iter->next) {
@@ -204,7 +203,7 @@ brasero_io_job_progress_report_start (BraseroIO *self,
 	BraseroIOJobProgress *progress;
 	BraseroIOPrivate *priv;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	if (!job->base->methods->progress)
 		return;
@@ -227,7 +226,7 @@ brasero_io_job_progress_report_stop (BraseroIO *self,
 	BraseroIOPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 	g_mutex_lock (priv->lock);
 	for (iter = priv->progress; iter; iter = iter->next) {
 		BraseroIOJobProgress *progress;
@@ -328,7 +327,7 @@ brasero_io_return_result_idle (gpointer callback_data)
 	guint results_id;
 	int i;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	g_mutex_lock (priv->lock);
 
@@ -417,7 +416,7 @@ brasero_io_queue_result (BraseroIO *self,
 {
 	BraseroIOPrivate *priv;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	/* insert the task in the results queue */
 	g_mutex_lock (priv->lock);
@@ -605,7 +604,7 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 	BraseroIOMount mount = { NULL, };
 	GMountOperation *operation = NULL;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	if (priv->win_callback) {
 		parent = priv->win_callback (priv->win_user_data);
@@ -631,7 +630,7 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 	if (mounted) {
 		BraseroIOPrivate *priv;
 
-		priv = BRASERO_IO_PRIVATE (self);
+		priv = brasero_io_get_instance_private (self);
 
 		/* Keep these for later to unmount them */
 		if (mount.result) {
@@ -890,7 +889,7 @@ brasero_io_find_metadata (BraseroIO *self,
 	BraseroIOPrivate *priv;
 	BraseroMetadata *metadata;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	BRASERO_UTILS_LOG ("Retrieving available metadata %s", uri);
 
@@ -964,7 +963,7 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 	gboolean is_last;
 	BraseroIOPrivate *priv;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	brasero_metadata_wait (metadata, cancel);
 	g_mutex_lock (priv->lock_metadata);
@@ -1032,7 +1031,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	if (g_cancellable_is_cancelled (cancel))
 		return FALSE;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	mime = g_file_info_get_content_type (info);
 	BRASERO_UTILS_LOG ("Found file with type %s", mime);
@@ -2188,7 +2187,7 @@ brasero_io_cancel_result (BraseroIO *self,
 	BraseroIOResultCallbackData *data;
 	BraseroIOPrivate *priv;
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	g_mutex_lock (priv->lock);
 	priv->results = g_slist_remove (priv->results, result);
@@ -2224,7 +2223,7 @@ brasero_io_cancel_by_base (BraseroIOJobBase *base)
 	BraseroIOPrivate *priv;
 	BraseroIO *self = brasero_io_get_default ();
 
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 
 	brasero_async_task_manager_foreach_unprocessed_remove (BRASERO_ASYNC_TASK_MANAGER (self),
 							       brasero_io_cancel_tasks_by_base_cb,
@@ -2352,7 +2351,7 @@ static int
 {
 	BraseroIOPrivate *priv;
 
-	priv = BRASERO_IO_PRIVATE (user_data);
+	priv = brasero_io_get_instance_private (user_data);
 	if (priv->win_callback) {
 		int xid;
 		GtkWindow *parent;
@@ -2370,7 +2369,7 @@ brasero_io_init (BraseroIO *object)
 {
 	BraseroIOPrivate *priv;
 	BraseroMetadata *metadata;
-	priv = BRASERO_IO_PRIVATE (object);
+	priv = brasero_io_get_instance_private (object);
 
 	priv->lock = g_mutex_new ();
 	priv->lock_metadata = g_mutex_new ();
@@ -2405,7 +2404,7 @@ brasero_io_finalize (GObject *object)
 	BraseroIOPrivate *priv;
 	GSList *iter;
 
-	priv = BRASERO_IO_PRIVATE (io);
+	priv = brasero_io_get_instance_private (io);
 
 	brasero_async_task_manager_foreach_unprocessed_remove (BRASERO_ASYNC_TASK_MANAGER (object),
 							       brasero_io_free_async_queue,
@@ -2509,7 +2508,7 @@ brasero_io_shutdown (void)
 	GSList *iter, *next;
 	BraseroIOPrivate *priv;
 
-	priv = BRASERO_IO_PRIVATE (singleton);
+	priv = brasero_io_get_instance_private (singleton);
 
 	brasero_async_task_manager_foreach_unprocessed_remove (BRASERO_ASYNC_TASK_MANAGER (singleton),
 							       brasero_io_cancel,
@@ -2542,7 +2541,7 @@ brasero_io_set_parent_window_callback (BraseroIOGetParentWinCb callback,
 	BraseroIO *self;
 
 	self = brasero_io_get_default ();
-	priv = BRASERO_IO_PRIVATE (self);
+	priv = brasero_io_get_instance_private (self);
 	priv->win_callback = callback;
 	priv->win_user_data = user_data;
 	g_object_unref (self);

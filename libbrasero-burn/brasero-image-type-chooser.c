@@ -41,7 +41,6 @@
 #include "burn-basics.h"
 #include "brasero-image-type-chooser.h"
 
-#define BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE(o)  (brasero_image_type_chooser_get_instance_private (o))
 
 enum {
 	FORMAT_TEXT,
@@ -80,7 +79,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	GtkTreeModel *store;
 	BraseroImageTypeChooserPrivate *priv;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
+	priv = brasero_image_type_chooser_get_instance_private (self);
 
 	priv->updating = TRUE;
 
@@ -172,7 +171,7 @@ brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
 	GtkTreeModel *store;
 	BraseroImageTypeChooserPrivate *priv;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
+	priv = brasero_image_type_chooser_get_instance_private (self);
 
 	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 	
@@ -213,7 +212,7 @@ brasero_image_type_chooser_set_VCD_type (BraseroImageTypeChooser *chooser,
 	GtkTreeModel *store;
 	BraseroImageTypeChooserPrivate *priv;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (chooser);
+	priv = brasero_image_type_chooser_get_instance_private (chooser);
 
 	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 	
@@ -249,7 +248,7 @@ brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 {
 	BraseroImageTypeChooserPrivate *priv;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
+	priv = brasero_image_type_chooser_get_instance_private (self);
 	*format = priv->format;
 }
 
@@ -261,7 +260,7 @@ brasero_image_type_chooser_get_VCD_type (BraseroImageTypeChooser *chooser)
 	gboolean value;
 	GtkTreeIter iter;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (chooser);
+	priv = brasero_image_type_chooser_get_instance_private (chooser);
 	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
 		return FALSE;
 
@@ -283,7 +282,7 @@ brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
 	BraseroImageFormat current;
 	BraseroImageTypeChooserPrivate *priv;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
+	priv = brasero_image_type_chooser_get_instance_private (self);
 
 	if (priv->updating)
 		return;
@@ -316,7 +315,7 @@ brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 	GtkCellRenderer *renderer;
 	BraseroImageTypeChooserPrivate *priv;
 
-	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (obj);
+	priv = brasero_image_type_chooser_get_instance_private (obj);
 
 	store = gtk_list_store_new (FORMAT_LAST,
 				    G_TYPE_STRING,

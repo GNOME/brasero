@@ -49,7 +49,6 @@ struct _BraseroFileFilteredPrivate
 	BraseroTrackDataCfg *track;
 };
 
-#define BRASERO_FILE_FILTERED_PRIVATE(o)  (brasero_file_filtered_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroFileFiltered, brasero_file_filtered, GTK_TYPE_EXPANDER);
 
@@ -66,7 +65,7 @@ brasero_file_filtered_get_label_text (BraseroFileFiltered *self)
 	GtkTreeModel *model;
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	num = gtk_tree_model_iter_n_children (model, NULL);
 
@@ -157,7 +156,7 @@ brasero_file_filtered_restore_pressed_cb (GtkButton *button,
 	GList *selected;
 	GList *iter;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -182,7 +181,7 @@ brasero_file_filtered_selection_changed_cb (GtkTreeSelection *selection,
 {
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 
 	if (gtk_tree_selection_count_selected_rows (selection))
 		gtk_widget_set_sensitive (priv->restore, TRUE);
@@ -196,7 +195,7 @@ brasero_file_filtered_set_right_button_group (BraseroFileFiltered *self,
 {
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 	gtk_size_group_add_widget (group, priv->restore);
 	gtk_size_group_add_widget (group, priv->options);
 }
@@ -213,7 +212,7 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 	GtkCellRenderer *renderer;
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (object);
+	priv = brasero_file_filtered_get_instance_private (object);
 
 	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Select the files you want to restore and click on the \"Restore\" button"));
 
@@ -327,7 +326,7 @@ brasero_file_filtered_set_property (GObject *object,
 	BraseroFileFilteredPrivate *priv;
 	GtkTreeModel *model;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 
 	switch (property_id) {
 	case PROP_TRACK: /* Readable and only writable at creation time */
@@ -361,7 +360,7 @@ brasero_file_filtered_get_property (GObject *object,
 	BraseroFileFiltered *self = BRASERO_FILE_FILTERED (object);
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 
 	switch (property_id) {
 	case PROP_TRACK:
@@ -379,7 +378,7 @@ brasero_file_filtered_finalize (GObject *object)
 	BraseroFileFiltered *self = BRASERO_FILE_FILTERED (object);
 	BraseroFileFilteredPrivate *priv;
 
-	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+	priv = brasero_file_filtered_get_instance_private (self);
 	if (priv->track) {
 		GtkTreeModel *model;
 

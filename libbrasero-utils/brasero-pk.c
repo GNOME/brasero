@@ -60,7 +60,6 @@ struct _BraseroPKPrivate
 	gboolean res;
 };
 
-#define BRASERO_PK_PRIVATE(o)  (brasero_pk_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroPK, brasero_pk, G_TYPE_OBJECT);
 
@@ -70,7 +69,7 @@ brasero_pk_install_missing_files_result (GObject *source_object,
                                          gpointer user_data)
 {
 	GError *error = NULL;
-	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (user_data);
+	BraseroPKPrivate *priv = brasero_pk_get_instance_private (user_data);
 
 	priv->proxy = G_DBUS_PROXY (source_object);
 
@@ -99,7 +98,7 @@ brasero_pk_cancelled (GCancellable *cancel,
                       BraseroPK *package)
 {
 	GError *error = NULL;
-	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (package);
+	BraseroPKPrivate *priv = brasero_pk_get_instance_private (package);
 
 	priv->res = FALSE;
 
@@ -120,7 +119,7 @@ brasero_pk_wait_for_call_end (BraseroPK *package,
 	GMainLoop *loop;
 	gulong sig_int;
 
-	priv = BRASERO_PK_PRIVATE (package);
+	priv = brasero_pk_get_instance_private (package);
 
 	loop = g_main_loop_new (NULL, FALSE);
 	priv->loop = loop;
@@ -148,7 +147,7 @@ brasero_pk_connect (BraseroPK *package)
 	BraseroPKPrivate *priv;
 	GError *error = NULL;
 
-	priv = BRASERO_PK_PRIVATE (package);
+	priv = brasero_pk_get_instance_private (package);
 
 	/* check dbus connections, exit if not valid */
 	priv->connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
@@ -190,7 +189,7 @@ static void
 brasero_pk_install_gst_plugin_result (GstInstallPluginsReturn res,
                                       gpointer user_data)
 {
-	BraseroPKPrivate *priv = BRASERO_PK_PRIVATE (user_data);
+	BraseroPKPrivate *priv = brasero_pk_get_instance_private (user_data);
 
 	switch (res) {
 	case GST_INSTALL_PLUGINS_SUCCESS:
@@ -257,7 +256,7 @@ brasero_pk_install_file_requirement (BraseroPK *package,
 {
 	BraseroPKPrivate *priv;
 
-	priv = BRASERO_PK_PRIVATE (package);
+	priv = brasero_pk_get_instance_private (package);
 
 	if (!brasero_pk_connect (package))
 		return FALSE;
@@ -381,7 +380,7 @@ brasero_pk_install_gstreamer_plugin (BraseroPK *package,
 	BraseroPKPrivate *priv;
 	GPtrArray *missing_files;
 
-	priv = BRASERO_PK_PRIVATE (package);
+	priv = brasero_pk_get_instance_private (package);
 
 	/* The whole function is gross but it works:
 	 * - on fedora */
@@ -431,7 +430,7 @@ brasero_pk_finalize (GObject *object)
 	GError *error = NULL;
 	BraseroPKPrivate *priv;
 
-	priv = BRASERO_PK_PRIVATE (pk);
+	priv = brasero_pk_get_instance_private (pk);
 
 	if (priv->proxy)
 		g_dbus_proxy_call_finish (priv->proxy, priv->result, &error);

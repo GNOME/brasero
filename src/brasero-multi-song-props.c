@@ -52,7 +52,6 @@ struct _BraseroMultiSongPropsPrivate
 };
 
 
-#define BRASERO_MULTI_SONG_PROPS_PRIVATE(o)  (brasero_multi_song_props_get_instance_private (o))
 
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroMultiSongProps, brasero_multi_song_props, GTK_TYPE_DIALOG);
@@ -65,7 +64,7 @@ brasero_multi_song_props_set_rename_callback (BraseroMultiSongProps *self,
 {
 	BraseroMultiSongPropsPrivate *priv;
 
-	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (self);
+	priv = brasero_multi_song_props_get_instance_private (self);
 
 	brasero_rename_do (BRASERO_RENAME (priv->title),
 			   selection,
@@ -83,7 +82,7 @@ brasero_multi_song_props_get_properties (BraseroMultiSongProps *self,
 	const gchar *text;
 	BraseroMultiSongPropsPrivate *priv;
 
-	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (self);
+	priv = brasero_multi_song_props_get_instance_private (self);
 	if (artist) {
 		text = gtk_entry_get_text (GTK_ENTRY (priv->artist));
 		if (text && strcmp (text, _("<Keep current values>")))
@@ -181,7 +180,7 @@ brasero_multi_song_props_set_show_gap (BraseroMultiSongProps *self,
 {
 	BraseroMultiSongPropsPrivate *priv;
 
-	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (self);
+	priv = brasero_multi_song_props_get_instance_private (self);
 	if (show)
 		gtk_widget_show (priv->gap_box);
 	else
@@ -199,7 +198,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	GtkWidget *content_area;
 	BraseroMultiSongPropsPrivate *priv;
 
-	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (object);
+	priv = brasero_multi_song_props_get_instance_private (object);
 
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (object));
 	gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), 0);

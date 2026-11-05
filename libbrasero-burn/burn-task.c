@@ -69,7 +69,6 @@ struct _BraseroTaskPrivate {
 	GError *error;
 };
 
-#define BRASERO_TASK_PRIVATE(o)  (brasero_task_get_instance_private (o))
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTask, brasero_task, BRASERO_TYPE_TASK_CTX);
 
 #define MAX_JOB_START_ATTEMPTS			5
@@ -83,7 +82,7 @@ brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item)
 	g_return_if_fail (BRASERO_IS_TASK (task));
 	g_return_if_fail (BRASERO_IS_TASK_ITEM (item));
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 
 	if (priv->leader) {
 		brasero_task_item_link (priv->leader, item);
@@ -102,7 +101,7 @@ brasero_task_reset_real (BraseroTask *task)
 {
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 
 	if (priv->loop)
 		g_main_loop_unref (priv->loop);
@@ -124,7 +123,7 @@ brasero_task_reset (BraseroTask *task)
 {
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 
 	if (brasero_task_is_running (task))
 		brasero_task_cancel (task, TRUE);
@@ -140,7 +139,7 @@ brasero_task_clock_tick (gpointer data)
 	BraseroTaskPrivate *priv;
 	BraseroTaskItem *item;
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 
 	/* some jobs need to be called periodically to update their status
 	 * because the main process run in a thread. We do it before calling
@@ -199,7 +198,7 @@ brasero_task_send_stop_signal (BraseroTask *task,
 	GError *local_error = NULL;
 	BraseroBurnResult result = retval;
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 
 	item = priv->leader;
 	while (brasero_task_item_previous (item))
@@ -235,7 +234,7 @@ brasero_task_wakeup (gpointer user_data)
 {
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (user_data);
+	priv = brasero_task_get_instance_private (user_data);
 
 	if (priv->loop)
 		g_main_loop_quit (priv->loop);
@@ -250,7 +249,7 @@ brasero_task_sleep (BraseroTask *self, guint sec)
 {
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (self);
+	priv = brasero_task_get_instance_private (self);
 
 	BRASERO_BURN_LOG ("wait loop");
 
@@ -345,7 +344,7 @@ brasero_task_stop (BraseroTask *task,
 	BraseroBurnResult result;
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 
 	/* brasero_job_error/brasero_job_finished ()
 	 * should not be called during ::init and ::start.
@@ -378,7 +377,7 @@ brasero_task_is_running (BraseroTask *task)
 {
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (task);
+	priv = brasero_task_get_instance_private (task);
 	return (priv->loop && g_main_loop_is_running (priv->loop));
 }
 
@@ -391,7 +390,7 @@ brasero_task_finished (BraseroTaskCtx *ctx,
 	BraseroTaskPrivate *priv;
 
 	self = BRASERO_TASK (ctx);
-	priv = BRASERO_TASK_PRIVATE (self);
+	priv = brasero_task_get_instance_private (self);
 
 	/* see if we have really started a loop */
 	/* FIXME: shouldn't it be an error if it is called
@@ -424,7 +423,7 @@ brasero_task_run_loop (BraseroTask *self,
 {
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (self);
+	priv = brasero_task_get_instance_private (self);
 
 	brasero_task_ctx_report_progress (BRASERO_TASK_CTX (self));
 
@@ -505,7 +504,7 @@ brasero_task_activate_items (BraseroTask *self,
 	BraseroBurnResult retval;
 	BraseroTaskItem *item;
 
-	priv = BRASERO_TASK_PRIVATE (self);
+	priv = brasero_task_get_instance_private (self);
 
 	retval = BRASERO_BURN_NOT_RUNNING;
 	for (item = priv->first; item; item = brasero_task_item_next (item)) {
@@ -535,7 +534,7 @@ brasero_task_start_items (BraseroTask *self,
 	BraseroTaskPrivate *priv;
 	BraseroTaskItem *item;
 
-	priv = BRASERO_TASK_PRIVATE (self);
+	priv = brasero_task_get_instance_private (self);
 
 	/* start from the master down to the slave */
 	retval = BRASERO_BURN_NOT_SUPPORTED;
@@ -588,7 +587,7 @@ brasero_task_start (BraseroTask *self,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroTaskPrivate *priv;
 
-	priv = BRASERO_TASK_PRIVATE (self);
+	priv = brasero_task_get_instance_private (self);
 
 	BRASERO_BURN_LOG ("Starting %s task (%i)",
 			  fake ? "fake":"normal",
@@ -702,7 +701,7 @@ brasero_task_finalize (GObject *object)
 	BraseroTaskPrivate *priv;
 
 	cobj = BRASERO_TASK (object);
-	priv = BRASERO_TASK_PRIVATE (cobj);
+	priv = brasero_task_get_instance_private (cobj);
 
 	if (priv->leader) {
 		g_object_unref (priv->leader);

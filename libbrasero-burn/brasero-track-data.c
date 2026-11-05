@@ -53,7 +53,6 @@ struct _BraseroTrackDataPrivate
 	guint64 data_blocks;
 };
 
-#define BRASERO_TRACK_DATA_PRIVATE(o)  (brasero_track_data_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackData, brasero_track_data, BRASERO_TYPE_TRACK);
 
@@ -108,7 +107,7 @@ brasero_track_data_set_source_real (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 
 	if (priv->grafts) {
 		g_slist_foreach (priv->grafts, (GFunc) brasero_graft_point_free, NULL);
@@ -163,7 +162,7 @@ brasero_track_data_add_fs_real (BraseroTrackData *track,
 {
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	priv->fs_type |= fstype;
 	return BRASERO_BURN_OK;
 }
@@ -212,7 +211,7 @@ brasero_track_data_rm_fs_real (BraseroTrackData *track,
 {
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	priv->fs_type &= ~(fstype);
 	return BRASERO_BURN_OK;
 }
@@ -275,7 +274,7 @@ brasero_track_data_set_data_blocks (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	priv->data_blocks = blocks;
 
 	return BRASERO_BURN_OK;
@@ -301,7 +300,7 @@ brasero_track_data_set_file_num (BraseroTrackData *track,
 
 	g_return_val_if_fail (BRASERO_IS_TRACK_DATA (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 
 	priv->file_num = number;
 	return BRASERO_BURN_OK;
@@ -333,7 +332,7 @@ brasero_track_data_get_fs_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	return priv->fs_type;
 }
 
@@ -499,7 +498,7 @@ brasero_track_data_get_grafts_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	return priv->grafts;
 }
 
@@ -532,7 +531,7 @@ brasero_track_data_get_excluded_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	return priv->excluded;
 }
 
@@ -620,7 +619,7 @@ brasero_track_data_get_file_num_real (BraseroTrackData *track)
 {
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (track);
+	priv = brasero_track_data_get_instance_private (track);
 	return priv->file_num;
 }
 
@@ -632,7 +631,7 @@ brasero_track_data_get_size (BraseroTrack *track,
 	BraseroTrackData *data = BRASERO_TRACK_DATA (track);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (data);
+	priv = brasero_track_data_get_instance_private (data);
 
 	if (*block_size)
 		*block_size = 2048;
@@ -650,7 +649,7 @@ brasero_track_data_get_track_type (BraseroTrack *track,
 	BraseroTrackData *data = BRASERO_TRACK_DATA (track);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (data);
+	priv = brasero_track_data_get_instance_private (data);
 
 	brasero_track_type_set_has_data (type);
 	brasero_track_type_set_data_fs (type, priv->fs_type);
@@ -665,7 +664,7 @@ brasero_track_data_get_status (BraseroTrack *track,
 	BraseroTrackData *data = BRASERO_TRACK_DATA (track);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (data);
+	priv = brasero_track_data_get_instance_private (data);
 
 	if (!priv->grafts) {
 		if (status)
@@ -689,7 +688,7 @@ brasero_track_data_finalize (GObject *object)
 	BraseroTrackData *data = BRASERO_TRACK_DATA (object);
 	BraseroTrackDataPrivate *priv;
 
-	priv = BRASERO_TRACK_DATA_PRIVATE (data);
+	priv = brasero_track_data_get_instance_private (data);
 	if (priv->grafts) {
 		g_slist_foreach (priv->grafts, (GFunc) brasero_graft_point_free, NULL);
 		g_slist_free (priv->grafts);

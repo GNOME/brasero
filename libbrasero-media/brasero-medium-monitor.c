@@ -63,7 +63,6 @@ struct _BraseroMediumMonitorPrivate
 	gint probing;
 };
 
-#define BRASERO_MEDIUM_MONITOR_PRIVATE(o)  (brasero_medium_monitor_get_instance_private (o))
 
 enum
 {
@@ -101,7 +100,7 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
 	g_return_val_if_fail (device != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+	priv = brasero_medium_monitor_get_instance_private (monitor);
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
 		const gchar *drive_device;
@@ -134,7 +133,7 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
 	g_return_val_if_fail (monitor != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), FALSE);
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+	priv = brasero_medium_monitor_get_instance_private (monitor);
 
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
@@ -170,7 +169,7 @@ brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
 	g_return_val_if_fail (monitor != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+	priv = brasero_medium_monitor_get_instance_private (monitor);
 
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
@@ -219,7 +218,7 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 	g_return_val_if_fail (monitor != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+	priv = brasero_medium_monitor_get_instance_private (monitor);
 
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroMedium *medium;
@@ -397,7 +396,7 @@ brasero_medium_monitor_drive_new (BraseroMediumMonitor *self,
 	if (!brasero_medium_monitor_is_drive (self, device))
 		return NULL;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = brasero_medium_monitor_get_instance_private (self);
 	drive = g_object_new (BRASERO_TYPE_DRIVE,
 	                      "device", device,
 			      "gdrive", gdrive,
@@ -425,7 +424,7 @@ brasero_medium_monitor_device_added (BraseroMediumMonitor *self,
 	BraseroMediumMonitorPrivate *priv;
 	BraseroDrive *drive = NULL;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = brasero_medium_monitor_get_instance_private (self);
 
 	/* See if the drive is waiting removal.
 	 * This is necessary as GIO behaves strangely sometimes
@@ -515,7 +514,7 @@ brasero_medium_monitor_disconnected_real (gpointer data)
 	BraseroMedium *medium;
 	BraseroDrive *drive;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = brasero_medium_monitor_get_instance_private (self);
 
 	if (!priv->waiting_removal) {
 		priv->waiting_removal_id = 0;
@@ -562,7 +561,7 @@ brasero_medium_monitor_device_removed (BraseroMediumMonitor *self,
 	GDrive *associated_gdrive;
 	BraseroDrive *drive;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = brasero_medium_monitor_get_instance_private (self);
 
 	/* Make sure it's one already detected */
 	/* GIO behaves strangely: every time a medium 
@@ -649,7 +648,7 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 	BraseroDrive *drive;
 	BraseroMediumMonitorPrivate *priv;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
+	priv = brasero_medium_monitor_get_instance_private (object);
 
 	BRASERO_MEDIA_LOG ("Probing drives and media");
 
@@ -729,7 +728,7 @@ brasero_medium_monitor_finalize (GObject *object)
 	BraseroMediumMonitor *monitor = BRASERO_MEDIUM_MONITOR (object);
 	BraseroMediumMonitorPrivate *priv;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+	priv = brasero_medium_monitor_get_instance_private (monitor);
 
 	if (priv->waiting_removal_id) {
 		g_source_remove (priv->waiting_removal_id);

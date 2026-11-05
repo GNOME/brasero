@@ -137,7 +137,6 @@ typedef enum {
 
 static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
-#define BRASERO_BURN_PRIVATE(o)  (brasero_burn_get_instance_private (o))
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
 
@@ -150,7 +149,7 @@ static void
 brasero_burn_powermanagement (BraseroBurn *self,
 			      gboolean wake)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (self);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (self);
 
 	if (wake)
 	  	priv->appcookie = brasero_inhibit_suspend (_("Burning CD/DVD"));
@@ -182,7 +181,7 @@ brasero_burn_log (BraseroBurn *burn,
 		  const gchar *format,
 		  ...)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	va_list arg_list;
 
 	va_start (arg_list, format);
@@ -244,7 +243,7 @@ brasero_burn_action_changed_real (BraseroBurn *burn,
 static gboolean
 brasero_burn_wakeup (BraseroBurn *burn)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	if (priv->sleep_loop)
 		g_main_loop_quit (priv->sleep_loop);
@@ -256,7 +255,7 @@ brasero_burn_wakeup (BraseroBurn *burn)
 static BraseroBurnResult
 brasero_burn_sleep (BraseroBurn *burn, gint msec)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	GMainLoop *loop;
 
 	priv->sleep_loop = g_main_loop_new (NULL, FALSE);
@@ -289,7 +288,7 @@ brasero_burn_reprobe (BraseroBurn *burn)
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	BRASERO_BURN_LOG ("Reprobing for medium");
 
@@ -504,7 +503,7 @@ brasero_burn_ask_for_src_media (BraseroBurn *burn,
 				GError **error)
 {
 	BraseroMedium *medium;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	medium = brasero_drive_get_medium (priv->src);
 	if (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE
@@ -530,7 +529,7 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 {
 	BraseroDrive *drive;
 	BraseroMedium *medium;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	/* Since in some cases (like when we reload
 	 * a medium after a copy), the destination
@@ -575,7 +574,7 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroBurnError error_type;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	priv->src = brasero_burn_session_get_src_drive (priv->session);
 	if (!priv->src) {
@@ -667,7 +666,7 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroBurnError error_type;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	priv->dest = brasero_burn_session_get_burner (priv->session);
 	if (!priv->dest) {
@@ -750,7 +749,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroTrackType *input = NULL;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	priv->dest = brasero_burn_session_get_burner (priv->session);
 	if (!priv->dest) {
@@ -892,7 +891,7 @@ brasero_burn_reload_dest_media (BraseroBurn *burn,
 				BraseroBurnError error_code,
 				GError **error)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	BraseroMedia required_media;
 	BraseroBurnResult result;
 
@@ -932,7 +931,7 @@ brasero_burn_lock_checksum_media (BraseroBurn *burn,
 	BraseroMedium *medium;
 	BraseroBurnResult result;
 	BraseroBurnError error_type;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	priv->dest = brasero_burn_session_get_src_drive (priv->session);
 
@@ -1002,7 +1001,7 @@ static BraseroBurnResult
 brasero_burn_unlock_src_media (BraseroBurn *burn,
 			       GError **error)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	BraseroMedium *medium;
 
 	if (!priv->src)
@@ -1032,7 +1031,7 @@ static BraseroBurnResult
 brasero_burn_unlock_dest_media (BraseroBurn *burn,
 				GError **error)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	if (!priv->dest)
 		return BRASERO_BURN_OK;
@@ -1063,7 +1062,7 @@ static void
 brasero_burn_progress_changed (BraseroTaskCtx *task,
 			       BraseroBurn *burn)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	gdouble overall_progress = -1.0;
 	gdouble task_progress = -1.0;
 	glong time_remaining = -1;
@@ -1118,7 +1117,7 @@ brasero_burn_get_action_string (BraseroBurn *burn,
 	g_return_if_fail (BRASERO_BURN (burn));
 	g_return_if_fail (string != NULL);
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 	if (action == BRASERO_BURN_ACTION_FINISHED || !priv->task)
 		(*string) = g_strdup (brasero_burn_action_to_string (action));
 	else
@@ -1157,7 +1156,7 @@ brasero_burn_status (BraseroBurn *burn,
 
 	g_return_val_if_fail (BRASERO_BURN (burn), BRASERO_BURN_ERR);
 	
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	if (!priv->task)
 		return BRASERO_BURN_NOT_READY;
@@ -1221,7 +1220,7 @@ brasero_burn_status (BraseroBurn *burn,
 static BraseroBurnResult
 brasero_burn_ask_for_joliet (BraseroBurn *burn)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	BraseroBurnResult result;
 	GSList *tracks;
 	GSList *iter;
@@ -1285,7 +1284,7 @@ brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	drive = brasero_burn_session_get_burner (priv->session);
 	medium = brasero_drive_get_medium (drive);
@@ -1314,7 +1313,7 @@ brasero_burn_run_imager (BraseroBurn *burn,
 			 gboolean fake,
 			 GError **error)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 	BraseroBurnError error_code;
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
@@ -1478,7 +1477,7 @@ brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 	BraseroBurnResult result;
 	BraseroMedium *src_medium;
 	BraseroMedium *burnt_medium;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	src = brasero_burn_session_get_src_drive (priv->session);
 	src_medium = brasero_drive_get_medium (src);
@@ -1733,7 +1732,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	BraseroTrackType *input = NULL;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	BRASERO_BURN_DEBUG (burn, "Checking session consistency");
 
@@ -1882,7 +1881,7 @@ brasero_burn_check_data_loss (BraseroBurn *burn,
 	BraseroBurnFlag flags;
 	BraseroTrackType *input;
 	BraseroBurnResult result;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	if (!temp_output) {
 		BraseroTrackType *output;
@@ -2046,7 +2045,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 {
 	BraseroBurnResult result;
 	GSList *tasks, *next, *iter;
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	/* push the session settings to keep the original session untainted */
 	brasero_burn_session_push_settings (priv->session);
@@ -2277,7 +2276,7 @@ brasero_burn_check_real (BraseroBurn *self,
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
 
-	priv = BRASERO_BURN_PRIVATE (self);
+	priv = brasero_burn_get_instance_private (self);
 	
 	BRASERO_BURN_LOG ("Starting to check track integrity");
 
@@ -2343,7 +2342,7 @@ brasero_burn_unset_checksums (BraseroBurn *self)
 	BraseroTrackType *type;
 	BraseroBurnPrivate *priv;
 
-	priv = BRASERO_BURN_PRIVATE (self);
+	priv = brasero_burn_get_instance_private (self);
 
 	tracks = brasero_burn_session_get_tracks (priv->session);
 	type = brasero_track_type_new ();
@@ -2377,7 +2376,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 	GError *ret_error = NULL;
 	GSList *tracks;
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	/* unset checksum since no image has the exact
 	 * same even if it is created from the same files */
@@ -2563,7 +2562,7 @@ brasero_burn_check (BraseroBurn *self,
 	g_return_val_if_fail (BRASERO_IS_BURN (self), BRASERO_BURN_ERR);
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_PRIVATE (self);
+	priv = brasero_burn_get_instance_private (self);
 
 	g_object_ref (session);
 	priv->session = session;
@@ -2624,7 +2623,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	/* we can't create a proper list of tasks here since we don't know the
 	 * dest media type yet. So we try to find an intermediate image type and
 	 * add it to the session as output */
-	priv = BRASERO_BURN_PRIVATE (self);
+	priv = brasero_burn_get_instance_private (self);
 
 	/* get the first possible format */
 	output = brasero_track_type_new ();
@@ -2683,7 +2682,7 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 	BraseroBurnResult result;
 	BraseroMedia required_media;
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	BRASERO_BURN_LOG ("Reloading medium after copy");
 
@@ -2764,7 +2763,7 @@ brasero_burn_record (BraseroBurn *burn,
 	g_return_val_if_fail (BRASERO_IS_BURN (burn), BRASERO_BURN_ERR);
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	/* make sure we're ready */
 	if (brasero_burn_session_get_status (session, NULL) != BRASERO_BURN_OK)
@@ -2881,7 +2880,7 @@ brasero_burn_blank_real (BraseroBurn *burn, GError **error)
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	priv->task = brasero_burn_caps_new_blanking_task (priv->caps,
 							  priv->session,
@@ -2931,7 +2930,7 @@ brasero_burn_blank (BraseroBurn *burn,
 	g_return_val_if_fail (burn != NULL, BRASERO_BURN_ERR);
 	g_return_val_if_fail (session != NULL, BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	g_object_ref (session);
 	priv->session = session;
@@ -3007,7 +3006,7 @@ brasero_burn_cancel (BraseroBurn *burn, gboolean protect)
 
 	g_return_val_if_fail (BRASERO_BURN (burn), BRASERO_BURN_ERR);
 
-	priv = BRASERO_BURN_PRIVATE (burn);
+	priv = brasero_burn_get_instance_private (burn);
 
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
@@ -3035,7 +3034,7 @@ static void
 brasero_burn_finalize (GObject *object)
 {
 	BraseroBurn *burn = BRASERO_BURN (object);
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (burn);
 
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
@@ -3209,7 +3208,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 static void
 brasero_burn_init (BraseroBurn *obj)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (obj);
+	BraseroBurnPrivate *priv = brasero_burn_get_instance_private (obj);
 
 	priv->caps = brasero_burn_caps_get_default ();
 }

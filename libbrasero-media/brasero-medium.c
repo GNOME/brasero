@@ -128,7 +128,6 @@ struct _BraseroMediumPrivate
 	guint probe_cancelled:1;
 };
 
-#define BRASERO_MEDIUM_PRIVATE(o)  (brasero_medium_get_instance_private (o))
 
 /**
  * Try to open the drive exclusively but don't block; if drive can't be opened
@@ -266,7 +265,7 @@ brasero_medium_get_type_string (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->type;
 }
 
@@ -289,7 +288,7 @@ brasero_medium_get_status (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), BRASERO_MEDIUM_NONE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->info;
 }
 
@@ -318,7 +317,7 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroMediumTrack *current;
@@ -364,7 +363,7 @@ brasero_medium_get_last_data_track_space (BraseroMedium *medium,
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroMediumTrack *current;
@@ -409,7 +408,7 @@ brasero_medium_get_track_num (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, 0);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), 0);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroMediumTrack *current;
 
@@ -431,7 +430,7 @@ brasero_medium_get_track (BraseroMedium *medium,
 	GSList *iter;
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroMediumTrack *current;
@@ -475,7 +474,7 @@ brasero_medium_get_track_space (BraseroMedium *medium,
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	track = brasero_medium_get_track (medium, num);
 	if (!track) {
@@ -520,7 +519,7 @@ brasero_medium_get_track_address (BraseroMedium *medium,
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	track = brasero_medium_get_track (medium, num);
 	if (!track) {
@@ -556,7 +555,7 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, 0);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), 0);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	/* There is one exception to this with closed DVD+RW/DVD-RW restricted */
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
@@ -596,7 +595,7 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, 0);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), 0);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->max_wrt * 1000;
 }
 
@@ -621,7 +620,7 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	if (!priv->wr_speeds)
 		return NULL;
@@ -683,7 +682,7 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 	g_return_if_fail (medium != NULL);
 	g_return_if_fail (BRASERO_IS_MEDIUM (medium));
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	if (!priv->tracks) {
 		/* that's probably because it wasn't possible to retrieve info */
@@ -735,7 +734,7 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 	g_return_if_fail (medium != NULL);
 	g_return_if_fail (BRASERO_IS_MEDIUM (medium));
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	if (!priv->tracks) {
 		/* that's probably because it wasn't possible to retrieve info.
@@ -816,7 +815,7 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 	g_return_if_fail (medium != NULL);
 	g_return_if_fail (BRASERO_IS_MEDIUM (medium));
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	if (priv->info & BRASERO_MEDIUM_REWRITABLE) {
 		if (bytes)
@@ -848,7 +847,7 @@ brasero_medium_set_write_mode_page_tao (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Setting write mode page");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* NOTE: this works for CDR, DVDR+-, BDR-SRM */
 	/* make sure the current write mode is TAO. Otherwise the drive will
@@ -919,7 +918,7 @@ brasero_medium_test_CD_TAO_simulate (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* Try TAO and then SAO if it isn't persistent */
 	BRASERO_MEDIA_LOG ("Checking simulate (CD TAO)");
@@ -962,7 +961,7 @@ brasero_medium_test_CD_SAO_simulate (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Checking simulate (CD SAO)");
 	result = brasero_mmc2_get_configuration_feature (handle,
@@ -999,7 +998,7 @@ brasero_medium_test_DVDRW_incremental_simulate (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* Try incremental feature */
 	BRASERO_MEDIA_LOG ("Checking incremental and simulate feature");
@@ -1067,7 +1066,7 @@ brasero_medium_test_2A_simulate (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size = 0;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* FIXME: we need to get a way to get the write types */
 	result = brasero_spc1_mode_sense_get_page (handle,
@@ -1103,7 +1102,7 @@ brasero_medium_init_caps (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult res;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* These special media don't support/need burnfree, simulation, tao/sao */
 	if (priv->info & (BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_BD))
@@ -1150,7 +1149,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size = 0;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Retrieving capacity from atip");
 
@@ -1200,7 +1199,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Retrieving format capacity");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 	result = brasero_mmc2_read_format_capacities (handle,
 						      &hdr,
 						      &size,
@@ -1291,7 +1290,7 @@ brasero_medium_get_capacity_by_type (BraseroMedium *self,
 {
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* For DVDs/BDs that's always that block size */
 	priv->block_size = 2048;
@@ -1328,7 +1327,7 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 
 	/* NOTE: this only work if there is RT streaming feature with
 	 * wspd bit set to 1. At least an MMC3 drive. */
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 	result = brasero_mmc3_get_performance_wrt_spd_desc (handle,
 							    &wrt_perf,
 							    &size,
@@ -1418,7 +1417,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Retrieving speed (2A speeds)");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 	result = brasero_spc1_mode_sense_get_page (handle,
 						   BRASERO_SPC_PAGE_STATUS,
 						   &data,
@@ -1643,7 +1642,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Retrieving track information for %i", track_num);
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* at this point we know the type of the disc that's why we set the 
 	 * size according to this type. That may help to avoid outrange address
@@ -1768,7 +1767,7 @@ brasero_medium_track_set_leadout_DVDR_blank (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Using fallback method for blank CDR to retrieve NWA and leadout information");
 
@@ -1818,7 +1817,7 @@ brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size = 0;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Using fallback method for blank CDR to retrieve NWA and leadout information");
 
@@ -1861,7 +1860,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Retrieving NWA and leadout information");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
 		BRASERO_MEDIA_LOG ("Overwritable medium  => skipping");
@@ -1972,7 +1971,7 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self)
 	gint64 blocks_num;
 	gint32 start;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* determine the start */
 	if (priv->tracks) {
@@ -2020,7 +2019,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Reading Toc");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 tryagain:
 
@@ -2186,7 +2185,7 @@ brasero_medium_get_DVD_id (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiReadDiscStructureHdr *hdr = NULL;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* This should be only possible for DVD-R(W) and not with all drives */
 	result = brasero_mmc2_read_generic_structure (handle,
@@ -2213,7 +2212,7 @@ brasero_medium_set_blank (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Empty media");
 
@@ -2253,7 +2252,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Retrieving media status");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	result = brasero_mmc1_read_disc_information_std (handle,
 							 &info,
@@ -2335,7 +2334,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 	BRASERO_MEDIA_LOG ("Retrieving media profile");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 	result = brasero_mmc2_get_profile (handle, &profile, code);
 
 	if (result != BRASERO_SCSI_OK) {
@@ -2575,7 +2574,7 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	BRASERO_MEDIA_LOG ("Testing for Css encrypted media");
 	result = brasero_mmc2_get_configuration_feature (handle,
@@ -2615,7 +2614,7 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	BraseroMediumPrivate *priv;
 	const gchar *charset = NULL;
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	/* For the moment we're only interested in medium title but that could
 	 * be extented to all tracks information. */
@@ -2889,7 +2888,7 @@ brasero_medium_init_real (BraseroMedium *object,
 	BraseroScsiErrCode code = 0;
 	gchar buffer [256] = { 0, };
 
-	priv = BRASERO_MEDIUM_PRIVATE (object);
+	priv = brasero_medium_get_instance_private (object);
 
 	name = brasero_drive_get_display_name (priv->drive);
 	BRASERO_MEDIA_LOG ("Initializing information for medium in %s", name);
@@ -2970,7 +2969,7 @@ brasero_medium_probing (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->probe != NULL;
 }
 
@@ -2981,7 +2980,7 @@ brasero_medium_probed (gpointer data)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (data), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (data);
+	priv = brasero_medium_get_instance_private (data);
 
 	priv->probe_id = 0;
 
@@ -3005,7 +3004,7 @@ brasero_medium_probe_thread (gpointer self)
 	BraseroMediumPrivate *priv;
 	BraseroDeviceHandle *handle;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	priv->info = BRASERO_MEDIUM_BUSY;
 
@@ -3097,7 +3096,7 @@ brasero_medium_probe (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	/* NOTE: why a thread? Because in case of a damaged medium, brasero can
 	 * block on some functions until timeout and if we do this in the main
@@ -3117,7 +3116,7 @@ brasero_medium_init_file (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = brasero_medium_get_instance_private (self);
 
 	priv->info = BRASERO_MEDIUM_FILE;
 	priv->type = types [0];
@@ -3128,7 +3127,7 @@ brasero_medium_init (BraseroMedium *object)
 {
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (object);
+	priv = brasero_medium_get_instance_private (object);
 	priv->next_wr_add = -1;
 
 	priv->mutex = g_mutex_new ();
@@ -3144,7 +3143,7 @@ brasero_medium_finalize (GObject *object)
 	BraseroMedium *medium = BRASERO_MEDIUM (object);
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	BRASERO_MEDIA_LOG ("Finalizing Medium object");
 
@@ -3214,7 +3213,7 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 	BraseroMedium *medium = BRASERO_MEDIUM (object);
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	switch (prop_id)
 	{
@@ -3243,7 +3242,7 @@ brasero_medium_get_property (GObject *object, guint prop_id, GValue *value, GPar
 	BraseroMedium *medium = BRASERO_MEDIUM (object);
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	switch (prop_id)
 	{
@@ -3310,7 +3309,7 @@ brasero_medium_can_be_written (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	return brasero_drive_can_write_media (priv->drive, priv->info);
 }
@@ -3333,7 +3332,7 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 
 	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE)
 	||   (priv->info & BRASERO_MEDIUM_FILE))
@@ -3370,7 +3369,7 @@ brasero_medium_can_use_sao (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->sao;
 }
 
@@ -3392,7 +3391,7 @@ brasero_medium_can_use_tao (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->tao;
 }
 
@@ -3412,7 +3411,7 @@ brasero_medium_can_use_dummy_for_sao (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->dummy_sao;
 }
 
@@ -3432,7 +3431,7 @@ brasero_medium_can_use_dummy_for_tao (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->dummy_tao;
 }
 
@@ -3452,7 +3451,7 @@ brasero_medium_can_use_burnfree (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->burnfree;
 }
 
@@ -3475,7 +3474,7 @@ brasero_medium_get_drive (BraseroMedium *medium)
 
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->drive;
 }
 
@@ -3496,7 +3495,7 @@ brasero_medium_get_CD_TEXT_title (BraseroMedium *medium)
 	g_return_val_if_fail (medium != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
 
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	priv = brasero_medium_get_instance_private (medium);
 	return priv->CD_TEXT_title;
 
 }
