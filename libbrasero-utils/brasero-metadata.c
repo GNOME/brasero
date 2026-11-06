@@ -749,7 +749,7 @@ brasero_metadata_thumbnail (BraseroMetadata *self)
 		return brasero_metadata_completed (self);
 
 	g_object_set (priv->snapshot,
-		      "send-messages", TRUE,
+		      "post-messages", TRUE,
 		      NULL);
 
 	return TRUE;
@@ -1107,14 +1107,22 @@ brasero_metadata_get_duration (BraseroMetadata *self,
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	if (!use_duration)
+	if (!pipeline || !GST_IS_ELEMENT (pipeline))
+		return brasero_metadata_completed (self);
+
+	if (!use_duration) {
 		gst_element_query_position (GST_ELEMENT (pipeline),
 					    GST_FORMAT_TIME,
 					    &duration);
-	else
-		gst_element_query_duration (GST_ELEMENT (pipeline),
-					    GST_FORMAT_TIME,
-					    &duration);
+	} else {
+		if (!gst_element_query_duration (GST_ELEMENT (pipeline),
+						 GST_FORMAT_TIME,
+						 &duration) || duration == -1) {
+			gst_element_query_position (GST_ELEMENT (pipeline),
+						    GST_FORMAT_TIME,
+						    &duration);
+		}
+	}
 
 	if (duration == -1) {
 		if (!priv->error) {
@@ -1316,6 +1324,9 @@ brasero_metadata_bus_messages (GstBus *bus,
 		break;
 
 	case GST_MESSAGE_STATE_CHANGED:
+		if (GST_MESSAGE_SRC (msg) != GST_OBJECT (priv->pipeline))
+			break;
+
 		/* when stopping the pipeline we are only interested in TAGS */
 		result = gst_element_get_state (GST_ELEMENT (priv->pipeline),
 						&newstate,
@@ -1472,7 +1483,7 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 
 	g_object_set (priv->snapshot,
 		      "qos", FALSE,
-		      "send-messages", FALSE,
+		      "post-messages", FALSE,
 		      "max-lateness", (gint64) - 1,
 		      NULL);
 
