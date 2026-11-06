@@ -36,7 +36,10 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
+#include <gdk/gdk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
@@ -1129,7 +1132,13 @@ brasero_burn_options_install_missing (BraseroPluginErrorType type,
 	int xid = 0;
 
 	/* Get the xid */
-	xid = gdk_x11_window_get_xid (gtk_widget_get_window (GTK_WIDGET (user_data)));
+	if (GTK_IS_WIDGET (user_data)) {
+		GdkWindow *window = gtk_widget_get_window (GTK_WIDGET (user_data));
+#ifdef GDK_WINDOWING_X11
+		if (window && GDK_IS_X11_WINDOW (window))
+			xid = gdk_x11_window_get_xid (window);
+#endif
+	}
 
 	package = brasero_pk_new ();
 	cancel = g_cancellable_new ();

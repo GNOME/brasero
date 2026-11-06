@@ -33,7 +33,13 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include <gdk/gdk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/gdkwayland.h>
+#endif
 
 #include <gtk/gtk.h>
 
@@ -50,7 +56,7 @@ struct _BraseroPlayerBaconPrivate {
 	GstState state;
 
 	GstVideoOverlay *xoverlay;
-	XID xid;
+	guintptr window_handle;
 
 	gchar *uri;
 	gint64 end;
@@ -118,7 +124,7 @@ brasero_player_bacon_unrealize (GtkWidget *widget)
 
 	/* Stop the pipeline as otherwise it would try to write video to a destroyed window */
 	gst_element_set_state (priv->pipe, GST_STATE_READY);
-	priv->xid = 0;
+	priv->window_handle = 0;
 
 	if (GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->unrealize)
 		GTK_WIDGET_CLASS (brasero_player_bacon_parent_class)->unrealize (widget);
@@ -127,6 +133,8 @@ brasero_player_bacon_unrealize (GtkWidget *widget)
 static void
 brasero_player_bacon_realize (GtkWidget *widget)
 {
+	BraseroPlayerBacon *bacon;
+	BraseroPlayerBaconPrivate *priv;
 	GdkWindow *window;
 	gint attributes_mask;
 	GtkAllocation allocation;
@@ -159,6 +167,17 @@ brasero_player_bacon_realize (GtkWidget *widget)
 	gdk_window_set_user_data (window, widget);
 	gdk_window_show (gtk_widget_get_window (widget));
 	gtk_widget_set_realized (widget, TRUE);
+
+	bacon = BRASERO_PLAYER_BACON (widget);
+	priv = brasero_player_bacon_get_instance_private (bacon);
+#ifdef GDK_WINDOWING_X11
+	if (GDK_IS_X11_WINDOW (window))
+		priv->window_handle = (guintptr) gdk_x11_window_get_xid (window);
+#endif
+#ifdef GDK_WINDOWING_WAYLAND
+	if (GDK_IS_WAYLAND_WINDOW (window))
+		priv->window_handle = (guintptr) gdk_wayland_window_get_wl_surface (window);
+#endif
 }
 
 static gboolean
@@ -174,8 +193,17 @@ brasero_player_bacon_draw (GtkWidget *widget, cairo_t *cr)
 	priv = brasero_player_bacon_get_instance_private (bacon);
 
 	window = gtk_widget_get_window (widget);
-	if (window)
-		priv->xid = gdk_x11_window_get_xid (window);
+
+	if (window) {
+#ifdef GDK_WINDOWING_X11
+		if (GDK_IS_X11_WINDOW (window))
+			priv->window_handle = (guintptr) gdk_x11_window_get_xid (window);
+#endif
+#ifdef GDK_WINDOWING_WAYLAND
+		if (GDK_IS_WAYLAND_WINDOW (window))
+			priv->window_handle = (guintptr) gdk_wayland_window_get_wl_surface (window);
+#endif
+	}
 
 	if (priv->xoverlay
 	&&  GST_IS_VIDEO_OVERLAY (priv->xoverlay)
@@ -268,11 +296,12 @@ brasero_player_bacon_bus_messages_handler (GstBus *bus,
 	if (!gst_is_video_overlay_prepare_window_handle_message (message))
 		return GST_BUS_PASS;
 
-	/* NOTE: apparently GDK does not like to be asked to retrieve the XID
-	 * in a thread so we do it in the callback of the expose event. */
+	/* NOTE: GDK window handles should be retrieved on the main thread
+	 * (e.g. in realize or draw) rather than in the streaming thread. */
 	priv->xoverlay = GST_VIDEO_OVERLAY (GST_MESSAGE_SRC (message));
-	gst_video_overlay_set_window_handle (priv->xoverlay,
-	                                     priv->xid);
+	if (priv->window_handle)
+		gst_video_overlay_set_window_handle (priv->xoverlay,
+		                                     priv->window_handle);
 
 	return GST_BUS_DROP;
 }

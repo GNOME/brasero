@@ -39,7 +39,9 @@
 #include <gio/gio.h>
 
 #include <gtk/gtk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 
 #include <gst/gst.h>
 
@@ -1308,7 +1310,13 @@ brasero_project_install_missing (BraseroPluginErrorType type,
 
 	/* Get the xid */
 	parent = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	xid = gdk_x11_window_get_xid (gtk_widget_get_window (parent));
+	if (parent) {
+		GdkWindow *window = gtk_widget_get_window (parent);
+#ifdef GDK_WINDOWING_X11
+		if (window && GDK_IS_X11_WINDOW (window))
+			xid = gdk_x11_window_get_xid (window);
+#endif
+	}
 
 	package = brasero_pk_new ();
 	cancel = g_cancellable_new ();

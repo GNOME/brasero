@@ -41,7 +41,9 @@
 #include <glib/gstdio.h>
 
 #include <gdk/gdk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 
 #include <gtk/gtk.h>
 
@@ -1526,7 +1528,10 @@ brasero_burn_dialog_install_missing_cb (BraseroBurn *burn,
 
 	/* Get the xid */
 	window = gtk_widget_get_window (user_data);
-	xid = gdk_x11_window_get_xid (window);
+#ifdef GDK_WINDOWING_X11
+	if (window && GDK_IS_X11_WINDOW (window))
+		xid = gdk_x11_window_get_xid (window);
+#endif
 
 	package = brasero_pk_new ();
 	cancel = g_cancellable_new ();

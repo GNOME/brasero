@@ -42,7 +42,10 @@
 
 #include <gio/gio.h>
 
+#include <gdk/gdk.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 
 #include <gtk/gtk.h>
 
@@ -2354,11 +2357,17 @@ static int
 
 	priv = BRASERO_IO_PRIVATE (user_data);
 	if (priv->win_callback) {
-		int xid;
+		int xid = 0;
 		GtkWindow *parent;
 
 		parent = priv->win_callback (priv->win_user_data);
-		xid = gdk_x11_window_get_xid (gtk_widget_get_window(GTK_WIDGET (parent)));
+		if (parent) {
+			GdkWindow *window = gtk_widget_get_window (GTK_WIDGET (parent));
+#ifdef GDK_WINDOWING_X11
+			if (window && GDK_IS_X11_WINDOW (window))
+				xid = gdk_x11_window_get_xid (window);
+#endif
+		}
 		return xid;
 	}
 
