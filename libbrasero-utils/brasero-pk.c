@@ -54,7 +54,6 @@ struct _BraseroPKPrivate {
   GDBusProxy *proxy;
 
   GVariant *values;
-  GAsyncResult *result;
   GMainLoop *loop;
   gboolean res;
 };
@@ -77,16 +76,17 @@ brasero_pk_install_missing_files_result (GObject      *source_object,
                                            &error);
 
   if (priv->values == NULL) {
-    BRASERO_UTILS_LOG ("%s", error->message);
-    g_error_free (error);
-  }
-
-  if (priv->values != NULL) {
+    if (error) {
+      BRASERO_UTILS_LOG ("%s", error->message);
+      g_error_free (error);
+    }
+  } else {
     g_variant_unref (priv->values);
+    priv->values = NULL;
     priv->res = TRUE;
   }
 
-  g_object_unref (priv->proxy);
+  g_clear_object (&priv->proxy);
 
   if (priv->loop)
     g_main_loop_quit (priv->loop);
@@ -96,15 +96,9 @@ static void
 brasero_pk_cancelled (GCancellable *cancel,
                       BraseroPK    *package)
 {
-  GError *error = NULL;
   BraseroPKPrivate *priv = brasero_pk_get_instance_private (package);
 
   priv->res = FALSE;
-
-  if (priv->proxy)
-    g_dbus_proxy_call_finish (priv->proxy,
-                              priv->result,
-                              &error);
 
   if (priv->loop)
     g_main_loop_quit (priv->loop);
@@ -268,7 +262,7 @@ brasero_pk_install_file_requirement (BraseroPK    *package,
                                     "hide-confirm-search,hide-finished,hide-warning"),
                      G_DBUS_CALL_FLAGS_NONE,
                      -1,
-                     NULL,
+                     cancel,
                      brasero_pk_install_missing_files_result,
                      package);
 
@@ -426,26 +420,15 @@ static void
 brasero_pk_finalize (GObject *object)
 {
   BraseroPK *pk = BRASERO_PK (object);
-  GError *error = NULL;
   BraseroPKPrivate *priv;
 
   priv = brasero_pk_get_instance_private (pk);
 
-  if (priv->proxy)
-    g_dbus_proxy_call_finish (priv->proxy, priv->result, &error);
-
   if (priv->loop)
     g_main_loop_quit (priv->loop);
 
-  if (priv->proxy) {
-    g_object_unref (priv->proxy);
-    priv->proxy = NULL;
-  }
-
-  if (priv->connection) {
-    g_object_unref (priv->connection);
-    priv->connection = NULL;
-  }
+  g_clear_object (&priv->proxy);
+  g_clear_object (&priv->connection);
 
   G_OBJECT_CLASS (brasero_pk_parent_class)->finalize (object);
 }
