@@ -684,7 +684,14 @@ brasero_audio2cue_start (BraseroJob *job,
 static void
 brasero_audio2cue_finalize (GObject *object)
 {
-	brasero_audio2cue_stop_real (BRASERO_AUDIO2CUE (object));
+	BraseroAudio2Cue *self = BRASERO_AUDIO2CUE (object);
+	BraseroAudio2CuePrivate *priv = brasero_audio2cue_get_instance_private (self);
+
+	brasero_audio2cue_stop_real (self);
+
+	g_mutex_clear (&priv->mutex);
+	g_cond_clear (&priv->cond);
+
 	G_OBJECT_CLASS (brasero_audio2cue_parent_class)->finalize (object);
 }
 
