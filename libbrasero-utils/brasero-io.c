@@ -80,7 +80,7 @@ GType brasero_io_get_type (void) G_GNUC_CONST;
 typedef struct _BraseroIOPrivate BraseroIOPrivate;
 struct _BraseroIOPrivate
 {
-	GMutex *lock;
+	GMutex lock;
 
 	GSList *mounted;
 
@@ -89,7 +89,7 @@ struct _BraseroIOPrivate
 	gint results_id;
 
 	/* used for metadata */
-	GMutex *lock_metadata;
+	GMutex lock_metadata;
 
 	GSList *metadatas;
 	GSList *metadata_running;
@@ -173,7 +173,7 @@ brasero_io_job_progress_report_cb (gpointer callback_data)
 
 	priv = brasero_io_get_instance_private (callback_data);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	for (iter = priv->progress; iter; iter = iter->next) {
 		BraseroIOJobProgress *progress;
 		gpointer callback_data;
@@ -190,7 +190,7 @@ brasero_io_job_progress_report_cb (gpointer callback_data)
 		                                        progress,
 		                                        callback_data);
 	}
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return TRUE;
 }
@@ -212,11 +212,11 @@ brasero_io_job_progress_report_start (BraseroIO *self,
 	progress->job = job;
 	progress->progress = callback;
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	priv->progress = g_slist_prepend (priv->progress, progress);
 	if (!priv->progress_id)
 		priv->progress_id = g_timeout_add (500, brasero_io_job_progress_report_cb, self);
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 }
 
 static void
@@ -227,7 +227,7 @@ brasero_io_job_progress_report_stop (BraseroIO *self,
 	GSList *iter;
 
 	priv = brasero_io_get_instance_private (self);
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	for (iter = priv->progress; iter; iter = iter->next) {
 		BraseroIOJobProgress *progress;
 
@@ -249,7 +249,7 @@ brasero_io_job_progress_report_stop (BraseroIO *self,
 		}
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 }
 
 guint
@@ -329,7 +329,7 @@ brasero_io_return_result_idle (gpointer callback_data)
 
 	priv = brasero_io_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 
 	/* Put that to 0 for now so that a new idle call will be scheduled while
 	 * we are in the loop. That way if we block the other one will be able 
@@ -371,7 +371,7 @@ brasero_io_return_result_idle (gpointer callback_data)
 		 *  lives as long as we need it. */
 		g_object_ref (base->object);
 
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (&priv->lock);
 
 		data = result->callback_data;
 
@@ -390,7 +390,7 @@ brasero_io_return_result_idle (gpointer callback_data)
 
 		brasero_io_job_result_free (result);
 
-		g_mutex_lock (priv->lock);
+		g_mutex_lock (&priv->lock);
 
 		i ++;
 
@@ -402,11 +402,11 @@ brasero_io_return_result_idle (gpointer callback_data)
 		/* There are still results and no idle call is scheduled so we
 		 * have to restart ourselves to make sure we empty the queue */
 		priv->results_id = results_id;
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (&priv->lock);
 		return TRUE;
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 	return FALSE;
 }
 
@@ -419,11 +419,11 @@ brasero_io_queue_result (BraseroIO *self,
 	priv = brasero_io_get_instance_private (self);
 
 	/* insert the task in the results queue */
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	priv->results = g_slist_append (priv->results, result);
 	if (!priv->results_id)
 		priv->results_id = g_idle_add ((GSourceFunc) brasero_io_return_result_idle, self);
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 }
 
 void
@@ -634,9 +634,9 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 
 		/* Keep these for later to unmount them */
 		if (mount.result) {
-			g_mutex_lock (priv->lock);
+			g_mutex_lock (&priv->lock);
 			priv->mounted = g_slist_prepend (priv->mounted, mounted);
-			g_mutex_unlock (priv->lock);
+			g_mutex_unlock (&priv->lock);
 		}
 		else
 			g_object_unref (mounted);
@@ -931,9 +931,9 @@ brasero_io_find_metadata (BraseroIO *self,
 		if (g_cancellable_is_cancelled (cancel))
 			return NULL;
 
-		g_mutex_unlock (priv->lock_metadata);
+		g_mutex_unlock (&priv->lock_metadata);
 		g_usleep (250);
-		g_mutex_lock (priv->lock_metadata);
+		g_mutex_lock (&priv->lock_metadata);
 	}
 
 	/* One metadata is finally available */
@@ -966,7 +966,7 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 	priv = brasero_io_get_instance_private (self);
 
 	brasero_metadata_wait (metadata, cancel);
-	g_mutex_lock (priv->lock_metadata);
+	g_mutex_lock (&priv->lock_metadata);
 
 	is_last = brasero_metadata_decrease_listener_number (metadata);
 
@@ -978,7 +978,7 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 	/* Only the last thread waiting for the result will put metadata back
 	 * into the available queue and cache the results. */
 	if (!is_last) {
-		g_mutex_unlock (priv->lock_metadata);
+		g_mutex_unlock (&priv->lock_metadata);
 		return result;
 	}
 
@@ -1010,7 +1010,7 @@ brasero_io_wait_for_metadata (BraseroIO *self,
 	priv->metadata_running = g_slist_remove (priv->metadata_running, metadata);
 	priv->metadatas = g_slist_append (priv->metadatas, metadata);
 
-	g_mutex_unlock (priv->lock_metadata);
+	g_mutex_unlock (&priv->lock_metadata);
 
 	return result;
 }
@@ -1045,7 +1045,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		return FALSE;
 
 	BRASERO_UTILS_LOG ("Retrieving metadata info");
-	g_mutex_lock (priv->lock_metadata);
+	g_mutex_lock (&priv->lock_metadata);
 
 	/* Seek in the buffer if we have already explored these metadata. Check 
 	 * the info last modified time in case a result should be updated. */
@@ -1078,7 +1078,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 
 			if (!refresh_cache) {
 				brasero_metadata_info_copy (meta_info, cached->info);
-				g_mutex_unlock (priv->lock_metadata);
+				g_mutex_unlock (&priv->lock_metadata);
 				return TRUE;
 			}
 		}
@@ -1094,7 +1094,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 
 	/* Find a metadata */
 	metadata = brasero_io_find_metadata (self, cancel, uri, flags, NULL);
-	g_mutex_unlock (priv->lock_metadata);
+	g_mutex_unlock (&priv->lock_metadata);
 
 	if (!metadata)
 		return FALSE;
@@ -2189,9 +2189,9 @@ brasero_io_cancel_result (BraseroIO *self,
 
 	priv = brasero_io_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	priv->results = g_slist_remove (priv->results, result);
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	data = result->callback_data;
 	brasero_io_unref_result_callback_data (data,
@@ -2371,8 +2371,8 @@ brasero_io_init (BraseroIO *object)
 	BraseroMetadata *metadata;
 	priv = brasero_io_get_instance_private (object);
 
-	priv->lock = g_mutex_new ();
-	priv->lock_metadata = g_mutex_new ();
+	g_mutex_init (&priv->lock);
+	g_mutex_init (&priv->lock_metadata);
 
 	priv->meta_buffer = g_queue_new ();
 
@@ -2453,15 +2453,8 @@ brasero_io_finalize (GObject *object)
 		priv->progress = NULL;
 	}
 
-	if (priv->lock) {
-		g_mutex_free (priv->lock);
-		priv->lock = NULL;
-	}
-
-	if (priv->lock_metadata) {
-		g_mutex_free (priv->lock_metadata);
-		priv->lock_metadata = NULL;
-	}
+	g_mutex_clear (&priv->lock);
+	g_mutex_clear (&priv->lock_metadata);
 
 	if (priv->mounted) {
 		GSList *iter;

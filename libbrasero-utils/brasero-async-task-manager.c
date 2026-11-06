@@ -44,10 +44,10 @@ static void brasero_async_task_manager_finalize (GObject *object);
 
 typedef struct _BraseroAsyncTaskManagerPrivate BraseroAsyncTaskManagerPrivate;
 struct _BraseroAsyncTaskManagerPrivate {
-	GCond *thread_finished;
-	GCond *task_finished;
-	GCond *new_task;
-	GMutex *lock;
+	GCond thread_finished;
+	GCond task_finished;
+	GCond new_task;
+	GMutex lock;
 
 	GSList *waiting_tasks;
 	GSList *active_tasks;
@@ -83,11 +83,11 @@ brasero_async_task_manager_init (BraseroAsyncTaskManager *obj)
 {
 	BraseroAsyncTaskManagerPrivate *priv = brasero_async_task_manager_get_instance_private (obj);
 
-	priv->thread_finished = g_cond_new ();
-	priv->task_finished = g_cond_new ();
-	priv->new_task = g_cond_new ();
+	g_cond_init (&priv->thread_finished);
+	g_cond_init (&priv->task_finished);
+	g_cond_init (&priv->new_task);
 
-	priv->lock = g_mutex_new ();
+	g_mutex_init (&priv->lock);
 }
 
 static void
@@ -101,7 +101,7 @@ brasero_async_task_manager_finalize (GObject *object)
 	 * ESPECIALLY DATA ASSOCIATED WITH THE CONTEXTS */
 
 	/* stop the threads first */
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	priv->cancelled = TRUE;
 
 	/* remove all the waiting tasks */
@@ -112,33 +112,19 @@ brasero_async_task_manager_finalize (GObject *object)
 	priv->waiting_tasks = NULL;
 
 	/* terminate all sleeping threads */
-	g_cond_broadcast (priv->new_task);
+	g_cond_broadcast (&priv->new_task);
 
 	/* Now we wait for the active thread queue to return */
 	while (priv->num_threads)
-		g_cond_wait (priv->thread_finished, priv->lock);
+		g_cond_wait (&priv->thread_finished, &priv->lock);
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
-	if (priv->task_finished) {
-		g_cond_free (priv->task_finished);
-		priv->task_finished = NULL;
-	}
+	g_cond_clear (&priv->task_finished);
+	g_cond_clear (&priv->thread_finished);
+	g_cond_clear (&priv->new_task);
 
-	if (priv->thread_finished) {
-		g_cond_free (priv->thread_finished);
-		priv->thread_finished = NULL;
-	}
-
-	if (priv->new_task) {
-		g_cond_free (priv->new_task);
-		priv->new_task = NULL;
-	}
-
-	if (priv->lock) {
-		g_mutex_free (priv->lock);
-		priv->lock = NULL;
-	}
+	g_mutex_clear (&priv->lock);
 
 	G_OBJECT_CLASS (brasero_async_task_manager_parent_class)->finalize (object);
 }
@@ -191,7 +177,7 @@ brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 
 	cancel = g_cancellable_new ();
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 
 	while (1) {
 		BraseroAsyncTaskResult res;
@@ -211,16 +197,16 @@ brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 				/* wait to be woken up for 10 sec otherwise quit */
 				g_get_current_time (&timeout);
 				g_time_val_add (&timeout, 5000000);
-				result = g_cond_timed_wait (priv->new_task,
-							    priv->lock,
+				result = g_cond_timed_wait (&priv->new_task,
+							    &priv->lock,
 							    &timeout);
 
 				if (!result)
 					goto end;
 			}
 			else
-				g_cond_wait (priv->new_task,
-					     priv->lock);
+				g_cond_wait (&priv->new_task,
+					     &priv->lock);
 		}
 	
 		/* say that we are active again */
@@ -234,13 +220,13 @@ brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 		priv->waiting_tasks = g_slist_remove (priv->waiting_tasks, ctx);
 		priv->active_tasks = g_slist_prepend (priv->active_tasks, ctx);
 	
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (&priv->lock);
 		res = ctx->type->thread (self, cancel, ctx->data);
-		g_mutex_lock (priv->lock);
+		g_mutex_lock (&priv->lock);
 
 		/* we remove the task from the list and signal it is finished */
 		priv->active_tasks = g_slist_remove (priv->active_tasks, ctx);
-		g_cond_signal (priv->task_finished);
+		g_cond_signal (&priv->task_finished);
 
 		/* NOTE: when threads are cancelled then they are destroyed in
 		 * the function that cancelled them to destroy callback_data in
@@ -275,8 +261,8 @@ end:
 	priv->num_threads --;
 
 	/* maybe finalize is waiting for us to terminate */
-	g_cond_signal (priv->thread_finished);
-	g_mutex_unlock (priv->lock);
+	g_cond_signal (&priv->thread_finished);
+	g_mutex_unlock (&priv->lock);
 
 	g_object_unref (cancel);
 
@@ -303,7 +289,7 @@ brasero_async_task_manager_queue (BraseroAsyncTaskManager *self,
 	ctx->type = type;
 	ctx->data = data;
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	if (priority == BRASERO_ASYNC_IDLE)
 		priv->waiting_tasks = g_slist_append (priv->waiting_tasks, ctx);
 	else if (priority == BRASERO_ASYNC_NORMAL)
@@ -313,7 +299,7 @@ brasero_async_task_manager_queue (BraseroAsyncTaskManager *self,
 
 	if (priv->unused_threads) {
 		/* wake up one thread in the list */
-		g_cond_signal (priv->new_task);
+		g_cond_signal (&priv->new_task);
 	}
 	else if (priv->num_threads < MANAGER_MAX_THREAD) {
 		GError *error = NULL;
@@ -329,7 +315,7 @@ brasero_async_task_manager_queue (BraseroAsyncTaskManager *self,
 			g_error_free (error);
 
 			priv->waiting_tasks = g_slist_remove (priv->waiting_tasks, ctx);
-			g_mutex_unlock (priv->lock);
+			g_mutex_unlock (&priv->lock);
 
 			g_free (ctx);
 			return FALSE;
@@ -338,7 +324,7 @@ brasero_async_task_manager_queue (BraseroAsyncTaskManager *self,
 		priv->num_threads++;
 	}
 	/* else we wait for a currently active thread to be available */
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return TRUE;
 }
@@ -358,13 +344,13 @@ brasero_async_task_manager_foreach_active (BraseroAsyncTaskManager *self,
 
 	priv = brasero_async_task_manager_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	for (iter = priv->active_tasks; iter; iter = iter->next) {
 		ctx = iter->data;
 		if (func (self, ctx->data, user_data))
 			result = TRUE;
 	}
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return result;
 }
@@ -383,7 +369,7 @@ brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
 
 	priv = brasero_async_task_manager_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 
 	for (iter = priv->active_tasks; iter; iter = iter->next) {
 		ctx = iter->data;
@@ -397,7 +383,7 @@ brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
 		GSList *next;
 
 		/* Now we wait for all these active tasks to be finished */
-		g_cond_wait (priv->task_finished, priv->lock);
+		g_cond_wait (&priv->task_finished, &priv->lock);
 
 		for (iter = tasks; iter; iter = next) {
 			ctx = iter->data;
@@ -416,7 +402,7 @@ brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
 		}
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return TRUE;
 }
@@ -435,7 +421,7 @@ brasero_async_task_manager_foreach_unprocessed_remove (BraseroAsyncTaskManager *
 
 	priv = brasero_async_task_manager_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 
 	for (iter = priv->waiting_tasks; iter; iter = next) {
 		ctx = iter->data;
@@ -451,7 +437,7 @@ brasero_async_task_manager_foreach_unprocessed_remove (BraseroAsyncTaskManager *
 			g_free (ctx);
 		}
 	}
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return TRUE;
 }
@@ -470,7 +456,7 @@ brasero_async_task_manager_find_urgent_task (BraseroAsyncTaskManager *self,
 
 	priv = brasero_async_task_manager_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	for (iter = priv->waiting_tasks; iter; iter = iter->next) {
 		ctx = iter->data;
 
@@ -479,11 +465,11 @@ brasero_async_task_manager_find_urgent_task (BraseroAsyncTaskManager *self,
 
 			priv->waiting_tasks = g_slist_remove (priv->waiting_tasks, ctx);
 			priv->waiting_tasks = g_slist_prepend (priv->waiting_tasks, ctx);
-			g_mutex_unlock (priv->lock);
+			g_mutex_unlock (&priv->lock);
 			return TRUE;
 		}
 	}
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return FALSE;
 }

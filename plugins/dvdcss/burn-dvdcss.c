@@ -65,8 +65,8 @@
 struct _BraseroDvdcssPrivate {
 	GError *error;
 	GThread *thread;
-	GMutex *mutex;
-	GCond *cond;
+	GMutex mutex;
+	GCond cond;
 	guint thread_id;
 
 	guint cancel:1;
@@ -534,10 +534,10 @@ end:
 		priv->thread_id = g_idle_add (brasero_dvdcss_thread_finished, self);
 
 	/* End thread */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = NULL;
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_signal (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (NULL);
 
@@ -579,12 +579,12 @@ brasero_dvdcss_start (BraseroJob *job,
 	if (!brasero_dvdcss_library_init (NULL))
 		return BRASERO_BURN_ERR;
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = g_thread_create (brasero_dvdcss_write_image_thread,
 					self,
 					FALSE,
 					&thread_error);
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	/* Reminder: this is not necessarily an error as the thread may have finished */
 	//if (!priv->thread)
@@ -604,13 +604,13 @@ brasero_dvdcss_stop_real (BraseroDvdcss *self)
 
 	priv = brasero_dvdcss_get_instance_private (self);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->thread) {
 		priv->cancel = 1;
-		g_cond_wait (priv->cond, priv->mutex);
+		g_cond_wait (&priv->cond, &priv->mutex);
 		priv->cancel = 0;
 	}
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	if (priv->thread_id) {
 		g_source_remove (priv->thread_id);
@@ -643,15 +643,8 @@ brasero_dvdcss_finalize (GObject *object)
 
 	brasero_dvdcss_stop_real (self);
 
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
+	g_mutex_clear (&priv->mutex);
+	g_cond_clear (&priv->cond);
 
 	G_OBJECT_CLASS (brasero_dvdcss_parent_class)->finalize (object);
 }
@@ -680,8 +673,8 @@ brasero_dvdcss_init (BraseroDvdcss *obj)
 
 	priv = brasero_dvdcss_get_instance_private (obj);
 
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
+	g_mutex_init (&priv->mutex);
+	g_cond_init (&priv->cond);
 }
 
 static void

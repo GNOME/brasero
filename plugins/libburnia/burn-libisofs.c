@@ -71,8 +71,8 @@ struct _BraseroLibisofsPrivate {
 
 	GError *error;
 	GThread *thread;
-	GMutex *mutex;
-	GCond *cond;
+	GMutex mutex;
+	GCond cond;
 	guint thread_id;
 
 	guint cancel:1;
@@ -313,14 +313,14 @@ brasero_libisofs_thread_started (gpointer data)
 	BRASERO_JOB_LOG (self, "Getting out thread");
 
 	/* End thread */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
 
 	priv->thread = NULL;
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_signal (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (NULL);
 
@@ -349,12 +349,12 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 
 	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = g_thread_create (brasero_libisofs_thread_started,
 					self,
 					FALSE,
 					&thread_error);
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	/* Reminder: this is not necessarily an error as the thread may have finished */
 	//if (!priv->thread)
@@ -855,7 +855,7 @@ end:
 		iso_image_unref (image);
 
 	/* End thread */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	/* It is important that the following is done inside the lock; indeed,
 	 * if the main loop is idle then that brasero_libisofs_stop_real () can
@@ -868,8 +868,8 @@ end:
 		priv->thread_id = g_idle_add (brasero_libisofs_create_volume_thread_finished, self);
 
 	priv->thread = NULL;
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_signal (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (NULL);
 
@@ -895,12 +895,12 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 	}
 
 	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = g_thread_create (brasero_libisofs_create_volume_thread,
 					self,
 					FALSE,
 					&thread_error);
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	/* Reminder: this is not necessarily an error as the thread may have finished */
 	//if (!priv->thread)
@@ -975,7 +975,7 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 	priv = brasero_libisofs_get_instance_private (self);
 
 	/* Check whether we properly shut down or if we were cancelled */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->thread) {
 		/* NOTE: this can only happen when we're preparing the volumes
 		 * for a multi session disc. At this point we're only running
@@ -991,10 +991,10 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 			priv->libburn_src->cancel (priv->libburn_src);
 
 		priv->cancel = 1;
-		g_cond_wait (priv->cond, priv->mutex);
+		g_cond_wait (&priv->cond, &priv->mutex);
 		priv->cancel = 0;
 	}
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	if (priv->thread_id) {
 		g_source_remove (priv->thread_id);
@@ -1022,15 +1022,8 @@ brasero_libisofs_finalize (GObject *object)
 	brasero_libisofs_stop_real (self);
 	brasero_libisofs_clean_output (self);
 
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
+	g_mutex_clear (&priv->mutex);
+	g_cond_clear (&priv->cond);
 
 	/* close libisofs library */
 	iso_finish ();
@@ -1061,8 +1054,9 @@ brasero_libisofs_init (BraseroLibisofs *obj)
 	BraseroLibisofsPrivate *priv;
 
 	priv = brasero_libisofs_get_instance_private (obj);
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
+
+	g_mutex_init (&priv->mutex);
+	g_cond_init (&priv->cond);
 }
 
 static void

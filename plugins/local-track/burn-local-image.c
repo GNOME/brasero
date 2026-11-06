@@ -76,8 +76,8 @@ struct _BraseroLocalTrackPrivate {
 
 	guint thread_id;
 	GThread *thread;
-	GMutex *mutex;
-	GCond *cond;
+	GMutex mutex;
+	GCond cond;
 
 	GSList *src_list;
 	GSList *dest_list;
@@ -568,10 +568,10 @@ end:
 		priv->thread_id = g_idle_add ((GSourceFunc) brasero_local_track_thread_finished, self);
 
 	/* End thread */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = NULL;
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_signal (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (NULL);
 
@@ -593,12 +593,12 @@ brasero_local_track_start_thread (BraseroLocalTrack *self,
 	priv->cancel = g_cancellable_new ();
 	priv->xfer_ctx = brasero_xfer_new ();
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = g_thread_create (brasero_local_track_thread,
 					self,
 					FALSE,
 					&thread_error);
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	/* Reminder: this is not necessarily an error as the thread may have finished */
 	//if (!priv->thread)
@@ -797,10 +797,10 @@ brasero_local_track_stop (BraseroJob *job,
 		g_cancellable_cancel (priv->cancel);
 	}
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->thread)
-		g_cond_wait (priv->cond, priv->mutex);
-	g_mutex_unlock (priv->mutex);
+		g_cond_wait (&priv->cond, &priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	if (priv->xfer_ctx) {
 		brasero_xfer_free (priv->xfer_ctx);
@@ -859,15 +859,8 @@ brasero_local_track_finalize (GObject *object)
 	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (object);
 	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (self);
 
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
+	g_mutex_clear (&priv->mutex);
+	g_cond_clear (&priv->cond);
 
 	G_OBJECT_CLASS (brasero_local_track_parent_class)->finalize (object);
 }
@@ -895,8 +888,8 @@ brasero_local_track_init (BraseroLocalTrack *obj)
 {
 	BraseroLocalTrackPrivate *priv = brasero_local_track_get_instance_private (obj);
 
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
+	g_mutex_init (&priv->mutex);
+	g_cond_init (&priv->cond);
 }
 
 static void

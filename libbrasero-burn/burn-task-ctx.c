@@ -51,7 +51,7 @@ struct _BraseroTaskCtxPrivate
 	BraseroTaskAction action;
 	BraseroBurnSession *session;
 
-	GMutex *lock;
+	GMutex lock;
 
 	BraseroTrack *current_track;
 	GSList *tracks;
@@ -531,10 +531,10 @@ brasero_task_ctx_report_progress (BraseroTaskCtx *self)
 
 			total_time = (gdouble) elapsed / (gdouble) progress;
 
-			g_mutex_lock (priv->lock);
+			g_mutex_lock (&priv->lock);
 			priv->total_time = brasero_task_ctx_get_average (&priv->times,
 									 total_time);
-			g_mutex_unlock (priv->lock);
+			g_mutex_unlock (&priv->lock);
 		}
 	}
 
@@ -740,12 +740,12 @@ brasero_task_ctx_set_current_action (BraseroTaskCtx *self,
 		if (!force)
 			return BRASERO_BURN_OK;
 
-		g_mutex_lock (priv->lock);
+		g_mutex_lock (&priv->lock);
 
 		priv->update_action_string = 1;
 	}
 	else {
-		g_mutex_lock (priv->lock);
+		g_mutex_lock (&priv->lock);
 
 		priv->current_action = action;
 		priv->action_changed = 1;
@@ -761,7 +761,7 @@ brasero_task_ctx_set_current_action (BraseroTaskCtx *self,
 		priv->times = NULL;
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return BRASERO_BURN_OK;
 }
@@ -850,9 +850,9 @@ brasero_task_ctx_get_remaining_time (BraseroTaskCtx *self,
 
 	priv = brasero_task_ctx_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	len = g_slist_length (priv->times);
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	if (len < MAX_VALUE_AVERAGE)
 		return BRASERO_BURN_NOT_READY;
@@ -996,9 +996,9 @@ brasero_task_ctx_get_current_action (BraseroTaskCtx *self,
 
 	priv = brasero_task_ctx_get_instance_private (self);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 	*action = priv->current_action;
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 
 	return BRASERO_BURN_OK;
 }
@@ -1026,7 +1026,7 @@ brasero_task_ctx_stop_progress (BraseroTaskCtx *self)
 	priv->first_written = 0;
 	priv->first_progress = 0.0;
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (&priv->lock);
 
 	if (priv->action_string) {
 		g_free (priv->action_string);
@@ -1038,7 +1038,7 @@ brasero_task_ctx_stop_progress (BraseroTaskCtx *self)
 		priv->times = NULL;
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (&priv->lock);
 }
 
 static void
@@ -1047,7 +1047,8 @@ brasero_task_ctx_init (BraseroTaskCtx *object)
 	BraseroTaskCtxPrivate *priv;
 
 	priv = brasero_task_ctx_get_instance_private (object);
-	priv->lock = g_mutex_new ();
+
+	g_mutex_init (&priv->lock);
 }
 
 static void
@@ -1058,10 +1059,7 @@ brasero_task_ctx_finalize (GObject *object)
 
 	priv = brasero_task_ctx_get_instance_private (ctx);
 
-	if (priv->lock) {
-		g_mutex_free (priv->lock);
-		priv->lock = NULL;
-	}
+	g_mutex_clear (&priv->lock);
 
 	if (priv->timer) {
 		g_timer_destroy (priv->timer);

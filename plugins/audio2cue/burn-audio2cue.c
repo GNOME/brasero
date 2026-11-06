@@ -61,8 +61,8 @@ struct _BraseroAudio2CuePrivate {
 	goffset bytes;
 
 	GThread *thread;
-	GMutex *mutex;
-	GCond *cond;
+	GMutex mutex;
+	GCond cond;
 	GError *error;
 	gint thread_id;
 
@@ -86,13 +86,13 @@ brasero_audio2cue_stop_real (BraseroAudio2Cue *self)
 
 	priv = brasero_audio2cue_get_instance_private (self);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->thread) {
 		priv->cancel = 1;
-		g_cond_wait (priv->cond, priv->mutex);
+		g_cond_wait (&priv->cond, &priv->mutex);
 		priv->cancel = 0;
 	}
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	if (priv->thread_id) {
 		g_source_remove (priv->thread_id);
@@ -628,10 +628,10 @@ end:
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_audio2cue_create_finished, data);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = NULL;
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_signal (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (NULL);
 
@@ -663,12 +663,12 @@ brasero_audio2cue_start (BraseroJob *job,
 	brasero_job_get_session_output_size (job, NULL, &bytes);
 	priv->total = bytes;
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = g_thread_create (brasero_audio2cue_create_thread,
 					job,
 					FALSE,
 					&thread_error);
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	/* Reminder: this is not necessarily an error as the thread may have finished */
 	//if (!priv->thread)
@@ -712,8 +712,9 @@ brasero_audio2cue_init (BraseroAudio2Cue *obj)
 	BraseroAudio2CuePrivate *priv;
 
 	priv = brasero_audio2cue_get_instance_private (obj);
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
+
+	g_mutex_init (&priv->mutex);
+	g_cond_init (&priv->cond);
 }
 
 static void

@@ -64,8 +64,8 @@ struct _BraseroBurnURIPrivate {
 
 	guint thread_id;
 	GThread *thread;
-	GMutex *mutex;
-	GCond *cond;
+	GMutex mutex;
+	GCond cond;
 
 	GError *error;
 };
@@ -532,10 +532,10 @@ end:
 		priv->thread_id = g_idle_add ((GSourceFunc) brasero_burn_uri_thread_finished, self);
 
 	/* End thread */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	g_atomic_pointer_set (&priv->thread, NULL);
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_signal (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (NULL);
 
@@ -556,12 +556,12 @@ brasero_burn_uri_start_thread (BraseroBurnURI *self,
 
 	priv->cancel = g_cancellable_new ();
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	priv->thread = g_thread_create (brasero_burn_uri_thread,
 					self,
 					FALSE,
 					&thread_error);
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	/* Reminder: this is not necessarily an error as the thread may have finished */
 	//if (!priv->thread)
@@ -669,10 +669,10 @@ brasero_burn_uri_stop (BraseroJob *job,
 		g_cancellable_cancel (priv->cancel);
 	}
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->thread)
-		g_cond_wait (priv->cond, priv->mutex);
-	g_mutex_unlock (priv->mutex);
+		g_cond_wait (&priv->cond, &priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	if (priv->cancel) {
 		/* unref it after the thread has stopped */
@@ -699,15 +699,8 @@ brasero_burn_uri_finalize (GObject *object)
 	BraseroBurnURI *self = BRASERO_BURN_URI (object);
 	BraseroBurnURIPrivate *priv = brasero_burn_uri_get_instance_private (self);
 
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
+	g_mutex_clear (&priv->mutex);
+	g_cond_clear (&priv->cond);
 
 	G_OBJECT_CLASS (brasero_burn_uri_parent_class)->finalize (object);
 }
@@ -734,8 +727,8 @@ brasero_burn_uri_init (BraseroBurnURI *obj)
 {
 	BraseroBurnURIPrivate *priv = brasero_burn_uri_get_instance_private (obj);
 
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
+	g_mutex_init (&priv->mutex);
+	g_cond_init (&priv->cond);
 }
 
 static void

@@ -71,9 +71,9 @@ struct _BraseroDrivePrivate
 	GDrive *gdrive;
 
 	GThread *probe;
-	GMutex *mutex;
-	GCond *cond;
-	GCond *cond_probe;
+	GMutex mutex;
+	GCond cond;
+	GCond cond_probe;
 	gint probe_id;
 
 	BraseroMedium *medium;
@@ -206,7 +206,7 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 
 	priv->probe_waiting = FALSE;
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->probe) {
 		/* This to signal that we are cancelling */
 		priv->probe_cancelled = TRUE;
@@ -215,11 +215,11 @@ brasero_drive_cancel_probing (BraseroDrive *drive)
 		/* This is to wake up the thread if it
 		 * was asleep waiting to retry to get
 		 * hold of a handle to probe the drive */
-		g_cond_signal (priv->cond_probe);
+		g_cond_signal (&priv->cond_probe);
 
-		g_cond_wait (priv->cond, priv->mutex);
+		g_cond_wait (&priv->cond, &priv->mutex);
 	}
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	if (priv->probe_id) {
 		g_source_remove (priv->probe_id);
@@ -234,15 +234,15 @@ brasero_drive_wait_probing_thread (BraseroDrive *drive)
 
 	priv = brasero_drive_get_instance_private (drive);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 	if (priv->probe) {
 		/* This is to wake up the thread if it
 		 * was asleep waiting to retry to get
 		 * hold of a handle to probe the drive */
-		g_cond_signal (priv->cond_probe);
-		g_cond_wait (priv->cond, priv->mutex);
+		g_cond_signal (&priv->cond_probe);
+		g_cond_wait (&priv->cond, &priv->mutex);
 	}
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 }
 
 /**
@@ -922,11 +922,11 @@ brasero_drive_probed_inside (gpointer data)
 	self = BRASERO_DRIVE (data);
 	priv = brasero_drive_get_instance_private (self);
 
-	if (!g_mutex_trylock (priv->mutex))
+	if (!g_mutex_trylock (&priv->mutex))
 		return TRUE;
 
 	priv->probe_id = 0;
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	brasero_drive_update_medium (self);
 	return FALSE;
@@ -995,11 +995,11 @@ brasero_drive_probe_inside_thread (gpointer data)
 		g_get_current_time (&wait_time);
 		g_time_val_add (&wait_time, 2000000);
 
-		g_mutex_lock (priv->mutex);
-		g_cond_timed_wait (priv->cond_probe,
-		                   priv->mutex,
+		g_mutex_lock (&priv->mutex);
+		g_cond_timed_wait (&priv->cond_probe,
+		                   &priv->mutex,
 		                   &wait_time);
-		g_mutex_unlock (priv->mutex);
+		g_mutex_unlock (&priv->mutex);
 
 		if (priv->probe_cancelled) {
 			BRASERO_MEDIA_LOG ("Device probing cancelled");
@@ -1016,14 +1016,14 @@ brasero_drive_probe_inside_thread (gpointer data)
 
 end:
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	if (!priv->probe_cancelled)
 		priv->probe_id = g_idle_add (brasero_drive_probed_inside, drive);
 
 	priv->probe = NULL;
-	g_cond_broadcast (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_broadcast (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (0);
 
@@ -1050,7 +1050,7 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 
 	BRASERO_MEDIA_LOG ("Setting new probe");
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	priv->probe_waiting = FALSE;
 	priv->probe_cancelled = FALSE;
@@ -1060,7 +1060,7 @@ brasero_drive_probe_inside (BraseroDrive *drive)
 				       FALSE,
 				       NULL);
 
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 }
 
 static void
@@ -1363,11 +1363,11 @@ brasero_drive_probe_thread (gpointer data)
 		g_get_current_time (&wait_time);
 		g_time_val_add (&wait_time, 2000000);
 
-		g_mutex_lock (priv->mutex);
-		g_cond_timed_wait (priv->cond_probe,
-		                   priv->mutex,
+		g_mutex_lock (&priv->mutex);
+		g_cond_timed_wait (&priv->cond_probe,
+		                   &priv->mutex,
 		                   &wait_time);
-		g_mutex_unlock (priv->mutex);
+		g_mutex_unlock (&priv->mutex);
 
 		if (priv->initial_probe_cancelled) {
 			brasero_device_handle_close (handle);
@@ -1419,15 +1419,15 @@ capabilities:
 
 end:
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	brasero_drive_update_medium (drive);
 
 	priv->probe = NULL;
 	priv->initial_probe = FALSE;
 
-	g_cond_broadcast (priv->cond);
-	g_mutex_unlock (priv->mutex);
+	g_cond_broadcast (&priv->cond);
+	g_mutex_unlock (&priv->mutex);
 
 	g_thread_exit (0);
 
@@ -1459,7 +1459,7 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 	 * thread then our whole UI blocks. This medium won't be exported by the
 	 * BraseroDrive that exported until it returns PROBED signal.
 	 * One (good) side effect is that it also improves start time. */
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	priv->initial_probe = TRUE;
 	priv->probe = g_thread_create (brasero_drive_probe_thread,
@@ -1467,7 +1467,7 @@ brasero_drive_init_real_device (BraseroDrive *drive,
 				       FALSE,
 				       NULL);
 
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 }
 
 static void
@@ -1543,9 +1543,9 @@ brasero_drive_init (BraseroDrive *object)
 	priv = brasero_drive_get_instance_private (object);
 	priv->cancel = g_cancellable_new ();
 
-	priv->mutex = g_mutex_new ();
-	priv->cond = g_cond_new ();
-	priv->cond_probe = g_cond_new ();
+	g_mutex_init (&priv->mutex);
+	g_cond_init (&priv->cond);
+	g_cond_init (&priv->cond_probe);
 }
 
 static void
@@ -1560,20 +1560,9 @@ brasero_drive_finalize (GObject *object)
 
 	brasero_drive_cancel_probing (BRASERO_DRIVE (object));
 
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
-
-	if (priv->cond_probe) {
-		g_cond_free (priv->cond_probe);
-		priv->cond_probe = NULL;
-	}
+	g_mutex_clear (&priv->mutex);
+	g_cond_clear (&priv->cond);
+	g_cond_clear (&priv->cond_probe);
 
 	if (priv->medium) {
 		g_signal_emit (object,
