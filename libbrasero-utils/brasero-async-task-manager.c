@@ -192,14 +192,13 @@ brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 
 			/* we always keep one thread ready */
 			if (priv->num_threads - priv->unused_threads > 0) {
-				GTimeVal timeout;
+				gint64 timeout;
 
 				/* wait to be woken up for 10 sec otherwise quit */
-				g_get_current_time (&timeout);
-				g_time_val_add (&timeout, 5000000);
-				result = g_cond_timed_wait (&priv->new_task,
+				timeout = g_get_monotonic_time () + 5 * G_TIME_SPAN_SECOND;
+				result = g_cond_wait_until (&priv->new_task,
 							    &priv->lock,
-							    &timeout);
+							    timeout);
 
 				if (!result)
 					goto end;

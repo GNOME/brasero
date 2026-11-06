@@ -936,7 +936,7 @@ static gpointer
 brasero_drive_probe_inside_thread (gpointer data)
 {
 	gint counter = 0;
-	GTimeVal wait_time;
+	gint64 wait_time;
 	const gchar *device;
 	BraseroScsiErrCode code;
 	BraseroDrivePrivate *priv;
@@ -992,13 +992,12 @@ brasero_drive_probe_inside_thread (gpointer data)
 			goto end;
 		}
 
-		g_get_current_time (&wait_time);
-		g_time_val_add (&wait_time, 2000000);
+		wait_time = g_get_monotonic_time () + 2 * G_TIME_SPAN_SECOND;
 
 		g_mutex_lock (&priv->mutex);
-		g_cond_timed_wait (&priv->cond_probe,
+		g_cond_wait_until (&priv->cond_probe,
 		                   &priv->mutex,
-		                   &wait_time);
+				   wait_time);
 		g_mutex_unlock (&priv->mutex);
 
 		if (priv->probe_cancelled) {
@@ -1309,7 +1308,7 @@ static gpointer
 brasero_drive_probe_thread (gpointer data)
 {
 	gint counter = 0;
-	GTimeVal wait_time;
+	gint64 wait_time;
 	const gchar *device;
 	BraseroScsiResult res;
 	BraseroScsiInquiry hdr;
@@ -1360,13 +1359,12 @@ brasero_drive_probe_thread (gpointer data)
 			goto end;
 		}
 
-		g_get_current_time (&wait_time);
-		g_time_val_add (&wait_time, 2000000);
+		wait_time = g_get_monotonic_time () + 2 * G_TIME_SPAN_SECOND;
 
 		g_mutex_lock (&priv->mutex);
-		g_cond_timed_wait (&priv->cond_probe,
+		g_cond_wait_until (&priv->cond_probe,
 		                   &priv->mutex,
-		                   &wait_time);
+		                   wait_time);
 		g_mutex_unlock (&priv->mutex);
 
 		if (priv->initial_probe_cancelled) {

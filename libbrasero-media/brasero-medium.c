@@ -2998,7 +2998,7 @@ static gpointer
 brasero_medium_probe_thread (gpointer self)
 {
 	gint counter = 0;
-	GTimeVal wait_time;
+	gint64 wait_time;
 	const gchar *device;
 	BraseroScsiErrCode code;
 	BraseroMediumPrivate *priv;
@@ -3053,13 +3053,12 @@ brasero_medium_probe_thread (gpointer self)
 			goto end;
 		}
 
-		g_get_current_time (&wait_time);
-		g_time_val_add (&wait_time, 2000000);
+		wait_time = g_get_monotonic_time () + 2 * G_TIME_SPAN_SECOND;
 
 		g_mutex_lock (&priv->mutex);
-		g_cond_timed_wait (&priv->cond_probe,
+		g_cond_wait_until (&priv->cond_probe,
 		                   &priv->mutex,
-		                   &wait_time);
+		                   wait_time);
 		g_mutex_unlock (&priv->mutex);
 
 		if (priv->probe_cancelled) {
