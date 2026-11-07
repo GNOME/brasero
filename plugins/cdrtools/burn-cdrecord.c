@@ -233,11 +233,11 @@ brasero_cdrecord_compute (BraseroCDRecord *cdrecord,
 	goffset bytes;
 	goffset total;
 
-	priv = brasero_cdrecord_get_instance_private (cdrecord);
 	if (mb_total <= 0)
 		return;
 
 	total = mb_total * (goffset) 1048576LL;
+	priv = brasero_cdrecord_get_instance_private (cdrecord);
 
 	if (track_num > priv->current_track_num) {
 		track_num_changed = TRUE;

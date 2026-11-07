@@ -127,7 +127,7 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 				      GError **error)
 {
 	BraseroVcdImager *self = BRASERO_VCD_IMAGER (process);
-	BraseroVcdImagerPrivate *priv = brasero_vcd_imager_get_instance_private (self);
+	BraseroVcdImagerPrivate *priv;
 	GSList *tracks = NULL;
 	xmlTextWriter *xml;
 	gchar buffer [64];
@@ -171,6 +171,7 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 	if (success < 0)
 		goto error;
 
+	priv = brasero_vcd_imager_get_instance_private (self);
 	if (priv->svcd)
 		success = xmlTextWriterWriteAttribute (xml,
 						       (xmlChar *) "class",

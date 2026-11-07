@@ -280,8 +280,6 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 	int fd_in = -1;
 	gchar *path;
 
-	priv = brasero_checksum_image_get_instance_private (self);
-
 	/* get all information */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	path = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), FALSE);
@@ -292,6 +290,8 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 			     _("The file is not stored locally"));
 		return BRASERO_BURN_ERR;
 	}
+
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	BRASERO_JOB_LOG (self,
 			 "Starting checksuming file %s (size = %"G_GOFFSET_FORMAT")",
@@ -637,7 +637,7 @@ brasero_checksum_image_start (BraseroJob *job,
 			      GError **error)
 {
 	BraseroChecksumImage *self = BRASERO_CHECKSUM_IMAGE (job);
-	BraseroChecksumImagePrivate *priv = brasero_checksum_image_get_instance_private (self);
+	BraseroChecksumImagePrivate *priv;
 	GError *thread_error = NULL;
 	BraseroJobAction action;
 
@@ -653,6 +653,8 @@ brasero_checksum_image_start (BraseroJob *job,
 		brasero_job_set_output_size_for_current_track (job, 0, 0);
 		return BRASERO_BURN_NOT_RUNNING;
 	}
+
+	priv = brasero_checksum_image_get_instance_private (self);
 
 	/* we start a thread for the exploration of the graft points */
 	g_mutex_lock (priv->mutex);

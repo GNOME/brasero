@@ -205,13 +205,12 @@ brasero_vob_new_decoded_pad_cb (GstElement *decode,
 	GstStructure *structure;
 	BraseroVobPrivate *priv;
 
-	priv = brasero_vob_get_instance_private (vob);
-
 	/* make sure we only have audio */
 	caps = gst_pad_query_caps (pad, NULL);
 	if (!caps)
 		return;
 
+	priv = brasero_vob_get_instance_private (vob);
 	structure = gst_caps_get_structure (caps, 0);
 	if (structure) {
 		if (g_strrstr (gst_structure_get_name (structure), "video")) {
@@ -1210,7 +1209,7 @@ brasero_vob_start (BraseroJob *job,
 		   GError **error)
 {
 	BraseroVob *self = BRASERO_VOB (job);
-	BraseroVobPrivate *priv = brasero_vob_get_instance_private (self);
+	BraseroVobPrivate *priv;
 	BraseroJobAction action;
 	BraseroTrackType *output = NULL;
 
@@ -1221,6 +1220,7 @@ brasero_vob_start (BraseroJob *job,
 	/* get destination medium type */
 	output = brasero_track_type_new ();
 	brasero_job_get_output_type (job, output);
+	priv = brasero_vob_get_instance_private (self);
 
 	if (brasero_track_type_get_stream_format (output) & BRASERO_VIDEO_FORMAT_VCD) {
 		GValue *value = NULL;

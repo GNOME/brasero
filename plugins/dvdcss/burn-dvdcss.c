@@ -554,7 +554,6 @@ brasero_dvdcss_start (BraseroJob *job,
 	GError *thread_error = NULL;
 
 	self = BRASERO_DVDCSS (job);
-	priv = brasero_dvdcss_get_instance_private (self);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
@@ -571,6 +570,8 @@ brasero_dvdcss_start (BraseroJob *job,
 
 	if (action != BRASERO_JOB_ACTION_IMAGE)
 		return BRASERO_BURN_NOT_SUPPORTED;
+
+	priv = brasero_dvdcss_get_instance_private (self);
 
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;

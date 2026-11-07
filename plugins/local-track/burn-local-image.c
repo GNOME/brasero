@@ -129,14 +129,14 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 	gchar *parent;
 	BraseroLocalTrackPrivate *priv;
 
-	priv = brasero_local_track_get_instance_private (self);
-
 	if (!uri)
 		return NULL;
 
 	/* see if it is a local file */
 	if (g_str_has_prefix (uri, "file://"))
 		return g_strdup (uri);
+
+	priv = brasero_local_track_get_instance_private (self);
 
 	/* see if it was downloaded itself */
 	newuri = g_hash_table_lookup (priv->nonlocals, uri);
@@ -659,14 +659,14 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 	BraseroBurnResult result;
 	gchar *localuri = NULL;
 
-	priv = brasero_local_track_get_instance_private (self);
-
 	if (!uri
 	||   uri [0] == '\0'
 	||   uri [0] == '/'
 	||   g_str_has_prefix (uri, "file://")
 	||   g_str_has_prefix (uri, "burn://"))
 		return BRASERO_BURN_OK;
+
+	priv = brasero_local_track_get_instance_private (self);
 
 	/* add it to the list or uris to download */
 	if (!priv->nonlocals)
@@ -711,7 +711,6 @@ brasero_local_track_start (BraseroJob *job,
 	gchar *uri;
 
 	self = BRASERO_LOCAL_TRACK (job);
-	priv = brasero_local_track_get_instance_private (self);
 
 	/* skip that part */
 	brasero_job_get_action (job, &action);
@@ -728,6 +727,7 @@ brasero_local_track_start (BraseroJob *job,
 	brasero_job_get_current_track (job, &track);
 
 	result = BRASERO_BURN_OK;
+	priv = brasero_local_track_get_instance_private (self);
 
 	/* make a list of all non local uris to be downloaded and put them in a
 	 * list to avoid to download the same file twice. */

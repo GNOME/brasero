@@ -173,8 +173,6 @@ brasero_checksum_files_add_file_checksum (BraseroChecksumFiles *self,
 	gchar *checksum_string = NULL;
 	gint written;
 
-	priv = brasero_checksum_files_get_instance_private (self);
-
 	/* write to the file */
 	result = brasero_checksum_files_get_file_checksum (self,
 							   checksum_type,
@@ -184,6 +182,7 @@ brasero_checksum_files_add_file_checksum (BraseroChecksumFiles *self,
 	if (result != BRASERO_BURN_OK)
 		return BRASERO_BURN_ERR;
 
+	priv = brasero_checksum_files_get_instance_private (self);
 	written = fwrite (checksum_string,
 			  strlen (checksum_string),
 			  1,
@@ -246,11 +245,11 @@ brasero_checksum_files_explore_directory (BraseroChecksumFiles *self,
 	const gchar *name;
 	GDir *dir;
 
-	priv = brasero_checksum_files_get_instance_private (self);
-
 	dir = g_dir_open (directory, 0, error);
 	if (!dir || *error)
 		return BRASERO_BURN_ERR;
+
+	priv = brasero_checksum_files_get_instance_private (self);
 
 	while ((name = g_dir_read_name (dir))) {
 		gchar *path;
@@ -329,8 +328,6 @@ brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
 	guint written_bytes;
 	BraseroChecksumFilesPrivate *priv;
 
-	priv = brasero_checksum_files_get_instance_private (self);
-
 	/* first skip the checksum string */
 	i = 0;
 	while (!isspace (line [i])) i ++;
@@ -362,6 +359,7 @@ brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
 	}
 
 	g_free (path);
+	priv = brasero_checksum_files_get_instance_private (self);
 
 	/* write the whole line in the new file */
 	written_bytes = fwrite (line, 1, strlen (line), priv->file);
@@ -404,8 +402,6 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	goffset start_block;
 	const gchar *device;
 
-	priv = brasero_checksum_files_get_instance_private (self);
-
 	/* Now we need to know if we're merging. If so, we need to merge the
 	 * former checksum file with the new ones. */
 	brasero_job_get_flags (BRASERO_JOB (self), &flags);
@@ -426,6 +422,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	if (!dev_handle)
 		return BRASERO_BURN_ERR;
 
+	priv = brasero_checksum_files_get_instance_private (self);
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 	file = brasero_volume_get_file (vol,
 					"/"BRASERO_MD5_FILE,
@@ -707,8 +704,6 @@ brasero_checksum_files_sum_on_disc_file (BraseroChecksumFiles *self,
 	GChecksum *checksum;
 	gint read_bytes;
 
-	priv = brasero_checksum_files_get_instance_private (self);
-
 	handle = brasero_volume_file_open_direct (src, file);
 	if (!handle)
 		return BRASERO_BURN_ERR;
@@ -719,6 +714,7 @@ brasero_checksum_files_sum_on_disc_file (BraseroChecksumFiles *self,
 						      buffer,
 						      64);
 	g_checksum_update (checksum, buffer, read_bytes);
+	priv = brasero_checksum_files_get_instance_private (self);
 
 	while (read_bytes == sizeof (buffer)) {
 		if (priv->cancel) {
@@ -830,8 +826,6 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	BraseroVolFileHandle *handle = NULL;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
-	priv = brasero_checksum_files_get_instance_private (self);
-
 	/* get medium */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
@@ -893,6 +887,7 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 					_("Checking file integrity"),
 					TRUE);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
+	priv = brasero_checksum_files_get_instance_private (self);
 
 	/* Get the checksum type */
 	switch (priv->checksum_type) {
@@ -1280,7 +1275,7 @@ brasero_checksum_files_start (BraseroJob *job,
 			      GError **error)
 {
 	BraseroChecksumFiles *self = BRASERO_CHECKSUM_FILES (job);
-	BraseroChecksumFilesPrivate *priv = brasero_checksum_files_get_instance_private (self);
+	BraseroChecksumFilesPrivate *priv;
 	GError *thread_error = NULL;
 	BraseroJobAction action;
 
@@ -1290,6 +1285,8 @@ brasero_checksum_files_start (BraseroJob *job,
 		brasero_job_set_output_size_for_current_track (job, 0, 0);
 		return BRASERO_BURN_NOT_RUNNING;
 	}
+
+	priv = brasero_checksum_files_get_instance_private (self);
 
 	/* we start a thread for the exploration of the graft points */
 	g_mutex_lock (priv->mutex);

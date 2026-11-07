@@ -252,11 +252,10 @@ brasero_burn_uri_retrieve_path (BraseroBurnURI *self,
 	GFileInfo *info;
 	BraseroBurnURIPrivate *priv;
 
-	priv = brasero_burn_uri_get_instance_private (self);
-
 	if (!uri)
 		return FALSE;
 
+	priv = brasero_burn_uri_get_instance_private (self);
 	file = g_file_new_for_uri (uri);
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_STANDARD_NAME ","
@@ -605,7 +604,6 @@ brasero_burn_uri_start (BraseroJob *job,
 	gchar *uri;
 
 	self = BRASERO_BURN_URI (job);
-	priv = brasero_burn_uri_get_instance_private (self);
 
 	/* skip that part */
 	brasero_job_get_action (job, &action);
@@ -622,6 +620,7 @@ brasero_burn_uri_start (BraseroJob *job,
 	brasero_job_get_current_track (job, &track);
 
 	result = BRASERO_BURN_NOT_RUNNING;
+	priv = brasero_burn_uri_get_instance_private (self);
 
 	/* make a list of all non local uris to be downloaded and put them in a
 	 * list to avoid to download the same file twice. */

@@ -282,8 +282,6 @@ brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
 	GstElement *parse;
 	GstElement *sink;
 
-	priv = brasero_transcode_get_instance_private (transcode);
-
 	BRASERO_JOB_LOG (transcode, "Creating specific pipeline for MP3s");
 
 	parse = gst_element_factory_make ("mpegaudioparse", NULL);
@@ -321,6 +319,7 @@ brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
 		return FALSE;
 	}
 
+	priv = brasero_transcode_get_instance_private (transcode);
 	priv->convert = NULL;
 
 	priv->sink = sink;
@@ -1590,8 +1589,6 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 	GstStructure *structure;
 	BraseroTranscodePrivate *priv;
 
-	priv = brasero_transcode_get_instance_private (transcode);
-
 	BRASERO_JOB_LOG (transcode, "New pad");
 
 	/* make sure we only have audio */
@@ -1600,6 +1597,7 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 	if (!caps)
 		return;
 
+	priv = brasero_transcode_get_instance_private (transcode);
 	structure = gst_caps_get_structure (caps, 0);
 	if (structure) {
 		if (g_strrstr (gst_structure_get_name (structure), "audio")) {

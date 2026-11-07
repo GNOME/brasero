@@ -156,7 +156,7 @@ brasero_dvd_author_generate_xml_file (BraseroProcess *process,
 				      GError **error)
 {
 	BraseroDvdAuthor *self = BRASERO_DVD_AUTHOR (process);
-	BraseroDvdAuthorPrivate *priv = brasero_dvd_author_get_instance_private (self);
+	BraseroDvdAuthorPrivate *priv;
 	BraseroBurnResult result;
 	GSList *tracks = NULL;
 	xmlTextWriter *xml;
@@ -179,6 +179,7 @@ brasero_dvd_author_generate_xml_file (BraseroProcess *process,
 	if (success < 0)
 		goto error;
 
+	priv = brasero_dvd_author_get_instance_private (self);
 	result = brasero_job_get_tmp_dir (BRASERO_JOB (process),
 					  &priv->output,
 					  error);

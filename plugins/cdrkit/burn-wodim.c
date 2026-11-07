@@ -237,11 +237,11 @@ brasero_wodim_compute (BraseroWodim *wodim,
 	goffset bytes;
 	goffset total;
 
-	priv = brasero_wodim_get_instance_private (wodim);
 	if (mb_total <= 0)
 		return;
 
 	total = mb_total * (goffset) 1048576LL;
+	priv = brasero_wodim_get_instance_private (wodim);
 
 	if (track_num > priv->current_track_num) {
 		track_num_changed = TRUE;

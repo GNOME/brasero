@@ -940,7 +940,6 @@ brasero_libisofs_start (BraseroJob *job,
 	BraseroLibisofsPrivate *priv;
 
 	self = BRASERO_LIBISOFS (job);
-	priv = brasero_libisofs_get_instance_private (self);
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
@@ -955,6 +954,7 @@ brasero_libisofs_start (BraseroJob *job,
 		return brasero_libisofs_create_volume (self, error);
 	}
 
+	priv = brasero_libisofs_get_instance_private (self);
 	if (priv->error) {
 		g_error_free (priv->error);
 		priv->error = NULL;

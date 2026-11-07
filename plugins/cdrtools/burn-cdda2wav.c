@@ -84,7 +84,7 @@ static BraseroBurnResult
 brasero_cdda2wav_post (BraseroJob *job)
 {
 	BraseroCdda2wav *self = BRASERO_CDDA2WAV (job);
-	BraseroCdda2wavPrivate *priv = brasero_cdda2wav_get_instance_private (self);
+	BraseroCdda2wavPrivate *priv;
 	BraseroMedium *medium;
 	BraseroJobAction action;
 	BraseroDrive *drive;
@@ -99,6 +99,7 @@ brasero_cdda2wav_post (BraseroJob *job)
 	/* we add the tracks */
 	track = NULL;
 	brasero_job_get_current_track (job, &track);
+	priv = brasero_cdda2wav_get_instance_private (self);
 
 	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 	medium = brasero_drive_get_medium (drive);
@@ -374,6 +375,7 @@ brasero_cdda2wav_finalize (GObject *object)
 		g_free (priv->file_pattern);
 		priv->file_pattern = NULL;
 	}
+
 	G_OBJECT_CLASS (brasero_cdda2wav_parent_class)->finalize (object);
 }
 
