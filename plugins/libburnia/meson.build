@@ -22,6 +22,16 @@ shared_module(
     name_prefix: 'lib',
 )
 
+shared_module(
+    'brasero-libburn-read',
+    'burn-libburn-read.c',
+    dependencies: common_deps,
+    include_directories: root_inc,
+    install: true,
+    install_dir: plugindir,
+    name_prefix: 'lib',
+)
+
 if libisofs1.found() and conf.get('HAVE_STDINT_H')
     shared_module(
         'brasero-libisofs',
