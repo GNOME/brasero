@@ -525,7 +525,9 @@ brasero_libisofs_import_last_session (BraseroLibisofs *self,
 	brasero_job_get_media (BRASERO_JOB (self), &media);
 	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
 	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_RAM)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BDRE)) {
 		/* This is specific to overwrite media; the start address is the
 		 * size of all the previous data written */
 		BRASERO_JOB_LOG (self, "Growing image (start %" G_GOFFSET_FORMAT ")", start_block);
@@ -1083,6 +1085,7 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin)
 				  BRASERO_MEDIUM_CDRW|
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_DVDRW|
+				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_DUAL_L|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_AUDIO|
@@ -1094,6 +1097,28 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_DUAL_L|
+				  BRASERO_MEDIUM_RAM|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_BDR_SRM|
+				  BRASERO_MEDIUM_BDR_SRM_POW|
+				  BRASERO_MEDIUM_BDR_RANDOM|
+				  BRASERO_MEDIUM_DUAL_L|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_BDRE|
 				  BRASERO_MEDIUM_DUAL_L|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_CLOSED|
