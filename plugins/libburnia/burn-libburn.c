@@ -90,6 +90,7 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (BraseroLibburn,
  */
 
 typedef enum {
+BRASERO_SCSI_PROF_DVD_RAM	        = 0x0012,
 BRASERO_SCSI_PROF_DVD_RW_RESTRICTED	= 0x0013,
 BRASERO_SCSI_PROF_DVD_RW_PLUS		= 0x001A,
 BRASERO_SCSI_PROF_BR_R_SEQUENTIAL	= 0x0041,
@@ -785,7 +786,8 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 			return BRASERO_BURN_OK;
 		}
 	}
-	else if (profile == BRASERO_SCSI_PROF_DVD_RW_PLUS) {
+	else if (profile == BRASERO_SCSI_PROF_DVD_RW_PLUS
+	||       profile == BRASERO_SCSI_PROF_DVD_RAM) {
 		if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
 			/* Bit 2 is for format max available size
 			 * Bit 4 is enforce (re)-format if needed
@@ -1119,6 +1121,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	const BraseroMedia media_dvd_w = BRASERO_MEDIUM_DVD|
 					 BRASERO_MEDIUM_PLUS|
 					 BRASERO_MEDIUM_SEQUENTIAL|
+					 BRASERO_MEDIUM_DUAL_L|
 					 BRASERO_MEDIUM_WRITABLE|
 					 BRASERO_MEDIUM_APPENDABLE|
 					 BRASERO_MEDIUM_HAS_DATA|
@@ -1132,6 +1135,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	const BraseroMedia media_dvd_rw_plus = BRASERO_MEDIUM_DVD|
 					       BRASERO_MEDIUM_DUAL_L|
 					       BRASERO_MEDIUM_PLUS|
+					       BRASERO_MEDIUM_RAM|
 					       BRASERO_MEDIUM_RESTRICTED|
 					       BRASERO_MEDIUM_REWRITABLE|
 					       BRASERO_MEDIUM_UNFORMATTED|
@@ -1201,6 +1205,21 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (input);
 
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
+					BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_RAW);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (input);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
+					BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_RAW|
+					BRASERO_METADATA_INFO);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (input);
+
 	/* Image support for CDs ... */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
@@ -1262,6 +1281,8 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_SEQUENTIAL|
 					BRASERO_MEDIUM_RESTRICTED|
+					BRASERO_MEDIUM_RAM|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_REWRITABLE|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_CLOSED|
@@ -1276,6 +1297,8 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 					BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_SEQUENTIAL|
 					BRASERO_MEDIUM_RESTRICTED|
+					BRASERO_MEDIUM_RAM|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_REWRITABLE|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_CLOSED|
@@ -1290,6 +1313,8 @@ brasero_libburn_export_caps (BraseroPlugin *plugin)
 	/* no dummy mode for DVD+RW */
 	brasero_plugin_set_blank_flags (plugin,
 					BRASERO_MEDIUM_DVDRW_PLUS|
+					BRASERO_MEDIUM_RAM|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA|
