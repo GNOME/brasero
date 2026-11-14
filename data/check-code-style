@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -eu
+
+SOURCE_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+UNCRUSTIFY=$(command -v uncrustify || true)
+if [ -z "$UNCRUSTIFY" ]; then
+    echo "Uncrustify is not installed on your system."
+    exit 1
+fi
+
+LINEUP_PARAMETERS="$SOURCE_ROOT/data/lineup-parameters"
+if [ ! -x "$LINEUP_PARAMETERS" ]; then
+    echo "lineup-parameters script is missing"
+    exit 1
+fi
+
+# create a filename to store our generated patch
+prefix="brasero-ccs"
+suffix="$(date +%C%y-%m-%d_%Hh%Mm%Ss)"
+patch="/tmp/$prefix-$suffix.patch"
+
+# clean up old patches
+rm -f /tmp/$prefix*.patch
+
+pushd "$SOURCE_ROOT" > /dev/null
+
+if [ "$#" -gt 0 ]; then
+    FILES=("$@")
+else
+    BASE_REF="${CI_MERGE_REQUEST_DIFF_BASE_SHA:-origin/master}"
+    if ! git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
+        BASE_REF="HEAD~1"
+    fi
+    mapfile -t FILES < <(git diff --name-only --diff-filter=ACMR "$BASE_REF"...HEAD -- '*.c')
+fi
+
+for FILE in "${FILES[@]}"; do
+    [ -f "$FILE" ] || continue
+    "$UNCRUSTIFY" -q -c "data/uncrustify.cfg" -f "$FILE" -o "$FILE".uncrustify
+    "$LINEUP_PARAMETERS" "$FILE".uncrustify > "$FILE.temp" && mv "$FILE".temp "$FILE".uncrustify
+    diff -urN "$FILE" "$FILE".uncrustify | \
+        sed -e "1s|--- |--- a/|" -e "2s|+++ |+++ b/|" >> "$patch" || true
+    rm "$FILE".uncrustify
+done
+
+popd > /dev/null
+
+if [ ! -s "$patch" ]; then
+    printf "** Commit is valid. \\o/\n"
+    rm -f "$patch"
+    exit 0
+fi
+
+printf "** Commit does not comply to the correct style :(\n\n"
+
+if hash colordiff 2> /dev/null; then
+    colordiff < "$patch"
+else
+    cat "$patch"
+fi
+
+printf "\n"
+printf "You can apply these changes with: git apply %s\n" "$patch"
+printf "\n"
+
+exit 1

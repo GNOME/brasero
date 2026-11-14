@@ -5,6 +5,7 @@ include:
       dist-job-name: "build-fedora"
 
 stages:
+  - lint
   - build
   - release
 
@@ -49,3 +50,12 @@ build-fedora:
     when: "always"
     paths:
       - "public-dist"
+
+check-code-style:
+  image: fedora:latest
+  stage: lint
+  before_script:
+    - dnf install -y diffutils git python3 uncrustify
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+  script:
+    - bash data/check-code-style
