@@ -353,6 +353,7 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 {
   GDir *directory;
   const gchar *name;
+  const gchar *plugin_dir;
   GError *error = NULL;
   BraseroPluginManagerPrivate *priv;
 
@@ -364,9 +365,13 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
                     G_CALLBACK (brasero_plugin_manager_plugin_list_changed_cb),
                     self);
 
+  plugin_dir = g_getenv ("BRASERO_PLUGIN_DIRECTORY");
+  if (!plugin_dir || !*plugin_dir)
+    plugin_dir = BRASERO_PLUGIN_DIRECTORY;
+
   /* open the plugin directory */
-  BRASERO_BURN_LOG ("opening plugin directory %s", BRASERO_PLUGIN_DIRECTORY);
-  directory = g_dir_open (BRASERO_PLUGIN_DIRECTORY, 0, &error);
+  BRASERO_BURN_LOG ("opening plugin directory %s", plugin_dir);
+  directory = g_dir_open (plugin_dir, 0, &error);
   if (!directory) {
     if (error) {
       BRASERO_BURN_LOG ("Error opening plugin directory %s", error->message);
@@ -386,7 +391,7 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
     if (!g_str_has_suffix (name, G_MODULE_SUFFIX))
       continue;
 
-    path = g_module_build_path (BRASERO_PLUGIN_DIRECTORY, name);
+    path = g_module_build_path (plugin_dir, name);
     BRASERO_BURN_LOG ("loading %s", path);
 
     handle = g_module_open (path, 0);

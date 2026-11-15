@@ -303,6 +303,7 @@ main (int   argc,
 
   g_test_init (&argc, &argv, NULL);
   g_assert_true (gtk_init_check (&argc, &argv));
+  g_setenv ("BRASERO_PLUGIN_DIRECTORY", TEST_PLUGIN_DIR, TRUE);
   brasero_burn_library_start (&argc, &argv);
 
   g_test_add_func ("/libburnia/default-engine-group", test_default_engine_group);

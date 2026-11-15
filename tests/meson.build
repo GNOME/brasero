@@ -22,6 +22,7 @@ xvfb_run = find_program('xvfb-run', required: false)
 test_env = [
     'GSETTINGS_BACKEND=memory',
     'GSETTINGS_SCHEMA_DIR=' + meson.project_build_root() / 'data',
+    'BRASERO_PLUGIN_DIRECTORY=' + meson.project_build_root() / 'plugins' / 'libburnia',
     'LD_LIBRARY_PATH=' + meson.project_build_root() / 'libbrasero-burn:' + meson.project_build_root() / 'libbrasero-media:' + meson.project_build_root() / 'libbrasero-utils',
 ]
 
