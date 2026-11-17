@@ -10,7 +10,7 @@ project(
 library_version = '1.2.8'
 
 # dependencies
-glib_req_version       = '2.44.0'
+glib_req_version       = '2.56.0'
 
 fs = import('fs')
 gnome = import('gnome')
