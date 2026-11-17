@@ -11,6 +11,7 @@ library_version = '1.2.8'
 
 # dependencies
 glib_req_version       = '2.56.0'
+gtk_req_version        = '3.12.0'
 
 fs = import('fs')
 gnome = import('gnome')
@@ -58,10 +59,12 @@ gobject2 = dependency('gobject-2.0', version: glib_req)
 gthread2 = dependency('gthread-2.0', version: glib_req)
 
 # ui libs
+gtk_req = '>= @0@'.format(gtk_req_version)
+gtk3 = dependency('gtk+-3.0', version: gtk_req)
+
 gdk3 = dependency('gdk-3.0')
 gdk_pixbuf2 = dependency('gdk-pixbuf-2.0')
 gdk_x11_3 = dependency('gdk-x11-3.0')
-gtk3 = dependency('gtk+-3.0')
 cairo = dependency('cairo')
 
 # audio
@@ -184,6 +187,17 @@ glib_version_macro = 'GLIB_VERSION_@0@_@1@'.format(glib_major, glib_minor)
 project_args = [
   '-DGLIB_VERSION_MIN_REQUIRED=' + glib_version_macro,
   '-DGLIB_VERSION_MAX_ALLOWED=' + glib_version_macro,
+]
+
+# enforce minimum gtk version
+version_split = gtk_req_version.split('.')
+gtk_major = version_split[0].to_int()
+gtk_minor = version_split[1].to_int()
+gtk_version_macro = 'GDK_VERSION_@0@_@1@'.format(gtk_major, gtk_minor)
+
+project_args += [
+  '-DGDK_VERSION_MIN_REQUIRED=' + gtk_version_macro,
+  '-DGDK_VERSION_MAX_ALLOWED=' + gtk_version_macro,
 ]
 
 add_project_arguments (project_args, language: 'c')
