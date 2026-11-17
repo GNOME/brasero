@@ -14,6 +14,14 @@ glib_req_version       = '2.56.0'
 gtk_req_version        = '3.12.0'
 gdk_pixbuf_req_version = '2.6.0'
 
+gsound_req             = '>= 1.0.2'
+gstreamer_req          = '>= 0.11.92'
+libburn_req            = '>= 1.2.0'
+libisofs_req           = '>= 0.6.4'
+libxml_req             = '>= 2.6.0'
+totem_plparser_req     = '>= 2.29.1'
+tracker_sparql3_req    = '>= 0.10.0'
+
 fs = import('fs')
 gnome = import('gnome')
 i18n = import('i18n')
@@ -71,34 +79,34 @@ gdk_pixbuf_req = '>= @0@'.format(gdk_pixbuf_req_version)
 gdk_pixbuf2 = dependency('gdk-pixbuf-2.0', version: gdk_pixbuf_req)
 
 # audio
-gsound = dependency('gsound', version: '>=1.0.2')
+gsound = dependency('gsound', version: gsound_req)
 
 # gstreamer
-gstreamer1 = dependency('gstreamer-1.0', version: '>=0.11.92')
-gstreamer_base1 = dependency('gstreamer-base-1.0', version: '>=0.11.92')
-gstreamer_pbutils1 = dependency('gstreamer-pbutils-1.0', version: '>=0.11.92')
-gstreamer_tag1 = dependency('gstreamer-tag-1.0', version: '>=0.11.92')
+gstreamer1 = dependency('gstreamer-1.0', version: gstreamer_req)
+gstreamer_base1 = dependency('gstreamer-base-1.0', version: gstreamer_req)
+gstreamer_pbutils1 = dependency('gstreamer-pbutils-1.0', version: gstreamer_req)
+gstreamer_tag1 = dependency('gstreamer-tag-1.0', version: gstreamer_req)
 gstreamer_video1 = dependency(
     'gstreamer-video-1.0',
     required: get_option('preview'),
-    version: '>=0.11.92',
+    version: gstreamer_req,
 )
 
 # libburnia
-libburn1 = dependency('libburn-1', required: opt_libburn, version: '>=1.2.0')
-libisofs1 = dependency('libisofs-1', required: opt_libisofs, version: '>=0.6.4')
+libburn1 = dependency('libburn-1', required: opt_libburn, version: libburn_req)
+libisofs1 = dependency('libisofs-1', required: opt_libisofs, version: libisofs_req)
 
 # misc libraries
-libxml2 = dependency('libxml-2.0', version: '>=2.6.0')
+libxml2 = dependency('libxml-2.0', version: libxml_req)
 totem_plparser = dependency(
     'totem-plparser',
     required: opt_playlist,
-    version: '>=2.29.1',
+    version: totem_plparser_req,
 )
 tracker_sparql3 = dependency(
     'tracker-sparql-3.0',
     required: opt_search,
-    version: '>=0.10.0',
+    version: tracker_sparql3_req,
 )
 
 appstreamcli = find_program('appstreamcli', disabler: true, required: false)
