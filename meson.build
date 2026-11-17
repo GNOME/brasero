@@ -9,6 +9,9 @@ project(
 
 library_version = '1.2.8'
 
+# dependencies
+glib_req_version       = '2.44.0'
+
 fs = import('fs')
 gnome = import('gnome')
 i18n = import('i18n')
@@ -46,12 +49,13 @@ cc = meson.get_compiler('c')
 libm = cc.find_library('m')
 
 # glib
-glib2 = dependency('glib-2.0', version: '>=2.44.0')
-gio2 = dependency('gio-2.0', version: '>=2.44.0')
-gmodule2 = dependency('gmodule-2.0', version: '>=2.44.0')
-gmodule_no_export2 = dependency('gmodule-no-export-2.0', version: '>=2.44.0')
-gobject2 = dependency('gobject-2.0')
-gthread2 = dependency('gthread-2.0', version: '>=2.44.0')
+glib_req = '>= @0@'.format(glib_req_version)
+glib2 = dependency('glib-2.0', version: glib_req)
+gio2 = dependency('gio-2.0', version: glib_req)
+gmodule2 = dependency('gmodule-2.0', version: glib_req)
+gmodule_no_export2 = dependency('gmodule-no-export-2.0', version: glib_req)
+gobject2 = dependency('gobject-2.0', version: glib_req)
+gthread2 = dependency('gthread-2.0', version: glib_req)
 
 # ui libs
 gdk3 = dependency('gdk-3.0')
