@@ -175,6 +175,19 @@ conf.set_quoted('PACKAGE_LOCALE_DIR', prefix / localedir)
 conf.set_quoted('VERSION', version)
 configure_file(configuration: conf, output: 'config.h')
 
+# enforce minimum glib version
+version_split = glib_req_version.split('.')
+glib_major = version_split[0].to_int()
+glib_minor = version_split[1].to_int()
+glib_version_macro = 'GLIB_VERSION_@0@_@1@'.format(glib_major, glib_minor)
+
+project_args = [
+  '-DGLIB_VERSION_MIN_REQUIRED=' + glib_version_macro,
+  '-DGLIB_VERSION_MAX_ALLOWED=' + glib_version_macro,
+]
+
+add_project_arguments (project_args, language: 'c')
+
 add_project_arguments('-DHAVE_CONFIG_H', language: 'c')
 root_inc = include_directories('.')
 
