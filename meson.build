@@ -12,6 +12,7 @@ library_version = '1.2.8'
 # dependencies
 glib_req_version       = '2.56.0'
 gtk_req_version        = '3.12.0'
+gdk_pixbuf_req_version = '2.6.0'
 
 fs = import('fs')
 gnome = import('gnome')
@@ -63,9 +64,11 @@ gtk_req = '>= @0@'.format(gtk_req_version)
 gtk3 = dependency('gtk+-3.0', version: gtk_req)
 
 gdk3 = dependency('gdk-3.0')
-gdk_pixbuf2 = dependency('gdk-pixbuf-2.0')
 gdk_x11_3 = dependency('gdk-x11-3.0')
 cairo = dependency('cairo')
+
+gdk_pixbuf_req = '>= @0@'.format(gdk_pixbuf_req_version)
+gdk_pixbuf2 = dependency('gdk-pixbuf-2.0', version: gdk_pixbuf_req)
 
 # audio
 gsound = dependency('gsound', version: '>=1.0.2')
@@ -198,6 +201,17 @@ gtk_version_macro = 'GDK_VERSION_@0@_@1@'.format(gtk_major, gtk_minor)
 project_args += [
   '-DGDK_VERSION_MIN_REQUIRED=' + gtk_version_macro,
   '-DGDK_VERSION_MAX_ALLOWED=' + gtk_version_macro,
+]
+
+# enforce minimum gdk-pixbuf version
+version_split = gdk_pixbuf_req_version.split('.')
+gdk_pixbuf_major = version_split[0].to_int()
+gdk_pixbuf_minor = version_split[1].to_int()
+gdk_pixbuf_version_macro = 'GDK_PIXBUF_VERSION_@0@_@1@'.format(gdk_pixbuf_major, gdk_pixbuf_minor)
+
+project_args += [
+  '-DGDK_PIXBUF_VERSION_MIN_REQUIRED=' + gdk_pixbuf_version_macro,
+  '-DGDK_PIXBUF_VERSION_MAX_ALLOWED=' + gdk_pixbuf_version_macro,
 ]
 
 add_project_arguments (project_args, language: 'c')
