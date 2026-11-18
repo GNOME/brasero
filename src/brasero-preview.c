@@ -2,22 +2,22 @@
 /*
  * brasero
  * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
- * 
+ *
  *  Brasero is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- * 
+ *
  * brasero is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with brasero.  If not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -37,17 +37,16 @@
 #include "brasero-preview.h"
 
 typedef struct _BraseroPreviewPrivate BraseroPreviewPrivate;
-struct _BraseroPreviewPrivate
-{
-	GtkWidget *player;
+struct _BraseroPreviewPrivate {
+  GtkWidget *player;
 
-	guint set_uri_id;
+  guint set_uri_id;
 
-	gchar *uri;
-	gint64 start;
-	gint64 end;
+  gchar *uri;
+  gint64 start;
+  gint64 end;
 
-	guint is_enabled:1;
+  guint is_enabled:1;
 };
 
 
@@ -56,64 +55,65 @@ G_DEFINE_TYPE_WITH_PRIVATE (BraseroPreview, brasero_preview, GTK_TYPE_ALIGNMENT)
 static gboolean
 brasero_preview_set_uri_delayed_cb (gpointer data)
 {
-	BraseroPreview *self = BRASERO_PREVIEW (data);
-	BraseroPreviewPrivate *priv;
+  BraseroPreview *self = BRASERO_PREVIEW (data);
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (self);
+  priv = brasero_preview_get_instance_private (self);
 
-	brasero_player_set_uri (BRASERO_PLAYER (priv->player), priv->uri);
-	if (priv->end >= 0 && priv->start >= 0)
-		brasero_player_set_boundaries (BRASERO_PLAYER (priv->player),
-					       priv->start,
-					       priv->end);
+  brasero_player_set_uri (BRASERO_PLAYER (priv->player), priv->uri);
+  if (priv->end >= 0 && priv->start >= 0)
+    brasero_player_set_boundaries (BRASERO_PLAYER (priv->player),
+                                   priv->start,
+                                   priv->end);
 
-	priv->set_uri_id = 0;
-	return FALSE;
+  priv->set_uri_id = 0;
+  return FALSE;
 }
 
 static void
 brasero_preview_source_selection_changed_cb (BraseroURIContainer *source,
-					     BraseroPreview *self)
+                                             BraseroPreview      *self)
 {
-	BraseroPreviewPrivate *priv;
-	gchar *uri;
+  BraseroPreviewPrivate *priv;
+  gchar *uri;
 
-	priv = brasero_preview_get_instance_private (self);
+  priv = brasero_preview_get_instance_private (self);
 
-	/* make sure that we're supposed to activate preview */
-	if (!priv->is_enabled)
-		return;
+  /* make sure that we're supposed to activate preview */
+  if (!priv->is_enabled)
+    return;
 
-	/* Should we always hide ? */
-	uri = brasero_uri_container_get_selected_uri (source);
-	if (!uri)
-		gtk_widget_hide (priv->player);
+  /* Should we always hide ? */
+  uri = brasero_uri_container_get_selected_uri (source);
+  if (!uri)
+    gtk_widget_hide (priv->player);
 
-	/* clean the potentially previous uri information */
-	priv->end = -1;
-	priv->start = -1;
-	if (priv->uri)
-		g_free (priv->uri);
+  /* clean the potentially previous uri information */
+  priv->end = -1;
+  priv->start = -1;
+  if (priv->uri)
+    g_free (priv->uri);
 
-	/* set the new one */
-	priv->uri = uri;
-	brasero_uri_container_get_boundaries (source, &priv->start, &priv->end);
+  /* set the new one */
+  priv->uri = uri;
+  brasero_uri_container_get_boundaries (source, &priv->start, &priv->end);
 
-	/* This delay is used in case the user searches the file he wants to display
-	 * and goes through very quickly lots of other files before with arrows */
-	if (!priv->set_uri_id)
-		priv->set_uri_id = g_timeout_add (400,
-						  brasero_preview_set_uri_delayed_cb,
-						  self);
+  /* This delay is used in case the user searches the file he wants to display
+   * and goes through very quickly lots of other files before with arrows */
+  if (!priv->set_uri_id)
+    priv->set_uri_id = g_timeout_add (400,
+                                      brasero_preview_set_uri_delayed_cb,
+                                      self);
 }
 
 void
-brasero_preview_add_source (BraseroPreview *self, BraseroURIContainer *source)
+brasero_preview_add_source (BraseroPreview      *self,
+                            BraseroURIContainer *source)
 {
-	g_signal_connect (source,
-			  "uri-selected",
-			  G_CALLBACK (brasero_preview_source_selection_changed_cb),
-			  self);
+  g_signal_connect (source,
+                    "uri-selected",
+                    G_CALLBACK (brasero_preview_source_selection_changed_cb),
+                    self);
 }
 
 /**
@@ -122,96 +122,96 @@ brasero_preview_add_source (BraseroPreview *self, BraseroURIContainer *source)
 void
 brasero_preview_hide (BraseroPreview *self)
 {
-	BraseroPreviewPrivate *priv;
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (self);
-	gtk_widget_hide (priv->player);
+  priv = brasero_preview_get_instance_private (self);
+  gtk_widget_hide (priv->player);
 }
 
 void
 brasero_preview_set_enabled (BraseroPreview *self,
-			     gboolean preview)
+                             gboolean        preview)
 {
-	BraseroPreviewPrivate *priv;
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (self);
-	priv->is_enabled = preview;
+  priv = brasero_preview_get_instance_private (self);
+  priv->is_enabled = preview;
 }
 
 static void
-brasero_preview_player_error_cb (BraseroPlayer *player,
-				 BraseroPreview *self)
+brasero_preview_player_error_cb (BraseroPlayer  *player,
+                                 BraseroPreview *self)
 {
-	BraseroPreviewPrivate *priv;
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (self);
-	gtk_widget_hide (priv->player);
+  priv = brasero_preview_get_instance_private (self);
+  gtk_widget_hide (priv->player);
 }
 
 static void
-brasero_preview_player_ready_cb (BraseroPlayer *player,
-				 BraseroPreview *self)
+brasero_preview_player_ready_cb (BraseroPlayer  *player,
+                                 BraseroPreview *self)
 {
-	BraseroPreviewPrivate *priv;
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (self);
-	gtk_widget_show (priv->player);
+  priv = brasero_preview_get_instance_private (self);
+  gtk_widget_show (priv->player);
 }
 
 static void
 brasero_preview_init (BraseroPreview *object)
 {
-	BraseroPreviewPrivate *priv;
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (object);
+  priv = brasero_preview_get_instance_private (object);
 
-	priv->player = brasero_player_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (priv->player), 4);
+  priv->player = brasero_player_new ();
+  gtk_container_set_border_width (GTK_CONTAINER (priv->player), 4);
 
-	gtk_container_add (GTK_CONTAINER (object), priv->player);
-	g_signal_connect (priv->player,
-			  "error",
-			  G_CALLBACK (brasero_preview_player_error_cb),
-			  object);
-	g_signal_connect (priv->player,
-			  "ready",
-			  G_CALLBACK (brasero_preview_player_ready_cb),
-			  object);
+  gtk_container_add (GTK_CONTAINER (object), priv->player);
+  g_signal_connect (priv->player,
+                    "error",
+                    G_CALLBACK (brasero_preview_player_error_cb),
+                    object);
+  g_signal_connect (priv->player,
+                    "ready",
+                    G_CALLBACK (brasero_preview_player_ready_cb),
+                    object);
 }
 
 static void
 brasero_preview_finalize (GObject *object)
 {
-	BraseroPreview *preview = BRASERO_PREVIEW (object);
-	BraseroPreviewPrivate *priv;
+  BraseroPreview *preview = BRASERO_PREVIEW (object);
+  BraseroPreviewPrivate *priv;
 
-	priv = brasero_preview_get_instance_private (preview);
+  priv = brasero_preview_get_instance_private (preview);
 
-	if (priv->set_uri_id) {
-		g_source_remove (priv->set_uri_id);
-		priv->set_uri_id = 0;
-	}
+  if (priv->set_uri_id) {
+    g_source_remove (priv->set_uri_id);
+    priv->set_uri_id = 0;
+  }
 
-	if (priv->uri) {
-		g_free (priv->uri);
-		priv->uri = NULL;
-	}
+  if (priv->uri) {
+    g_free (priv->uri);
+    priv->uri = NULL;
+  }
 
-	G_OBJECT_CLASS (brasero_preview_parent_class)->finalize (object);
+  G_OBJECT_CLASS (brasero_preview_parent_class)->finalize (object);
 }
 
 static void
 brasero_preview_class_init (BraseroPreviewClass *klass)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->finalize = brasero_preview_finalize;
+  object_class->finalize = brasero_preview_finalize;
 }
 
 GtkWidget *
 brasero_preview_new (void)
 {
-	return g_object_new (BRASERO_TYPE_PREVIEW, NULL);
+  return g_object_new (BRASERO_TYPE_PREVIEW, NULL);
 }
 
 #endif /* BUILD_PREVIEW */

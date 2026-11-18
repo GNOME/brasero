@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -51,7 +51,7 @@
 BraseroTrackType *
 brasero_track_type_new (void)
 {
-	return g_new0 (BraseroTrackType, 1);
+  return g_new0 (BraseroTrackType, 1);
 }
 
 /**
@@ -65,10 +65,10 @@ brasero_track_type_new (void)
 void
 brasero_track_type_free (BraseroTrackType *type)
 {
-	if (!type)
-		return;
+  if (!type)
+    return;
 
-	g_free (type);
+  g_free (type);
 }
 
 /**
@@ -83,14 +83,14 @@ brasero_track_type_free (BraseroTrackType *type)
  **/
 
 BraseroImageFormat
-brasero_track_type_get_image_format (const BraseroTrackType *type) 
+brasero_track_type_get_image_format (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, BRASERO_IMAGE_FORMAT_NONE);
+  g_return_val_if_fail (type != NULL, BRASERO_IMAGE_FORMAT_NONE);
 
-	if (type->type != BRASERO_TRACK_TYPE_IMAGE)
-		return BRASERO_IMAGE_FORMAT_NONE;
+  if (type->type != BRASERO_TRACK_TYPE_IMAGE)
+    return BRASERO_IMAGE_FORMAT_NONE;
 
-	return type->subtype.img_format;
+  return type->subtype.img_format;
 }
 
 /**
@@ -105,14 +105,14 @@ brasero_track_type_get_image_format (const BraseroTrackType *type)
  **/
 
 BraseroImageFS
-brasero_track_type_get_data_fs (const BraseroTrackType *type) 
+brasero_track_type_get_data_fs (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, BRASERO_IMAGE_FS_NONE);
+  g_return_val_if_fail (type != NULL, BRASERO_IMAGE_FS_NONE);
 
-	if (type->type != BRASERO_TRACK_TYPE_DATA)
-		return BRASERO_IMAGE_FS_NONE;
+  if (type->type != BRASERO_TRACK_TYPE_DATA)
+    return BRASERO_IMAGE_FS_NONE;
 
-	return type->subtype.fs_type;
+  return type->subtype.fs_type;
 }
 
 /**
@@ -127,14 +127,14 @@ brasero_track_type_get_data_fs (const BraseroTrackType *type)
  **/
 
 BraseroStreamFormat
-brasero_track_type_get_stream_format (const BraseroTrackType *type) 
+brasero_track_type_get_stream_format (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, BRASERO_AUDIO_FORMAT_NONE);
+  g_return_val_if_fail (type != NULL, BRASERO_AUDIO_FORMAT_NONE);
 
-	if (type->type != BRASERO_TRACK_TYPE_STREAM)
-		return BRASERO_AUDIO_FORMAT_NONE;
+  if (type->type != BRASERO_TRACK_TYPE_STREAM)
+    return BRASERO_AUDIO_FORMAT_NONE;
 
-	return type->subtype.stream_format;
+  return type->subtype.stream_format;
 }
 
 /**
@@ -149,14 +149,14 @@ brasero_track_type_get_stream_format (const BraseroTrackType *type)
  **/
 
 BraseroMedia
-brasero_track_type_get_medium_type (const BraseroTrackType *type) 
+brasero_track_type_get_medium_type (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, BRASERO_MEDIUM_NONE);
+  g_return_val_if_fail (type != NULL, BRASERO_MEDIUM_NONE);
 
-	if (type->type != BRASERO_TRACK_TYPE_DISC)
-		return BRASERO_MEDIUM_NONE;
+  if (type->type != BRASERO_TRACK_TYPE_DISC)
+    return BRASERO_MEDIUM_NONE;
 
-	return type->subtype.media;
+  return type->subtype.media;
 }
 
 /**
@@ -170,15 +170,15 @@ brasero_track_type_get_medium_type (const BraseroTrackType *type)
  **/
 
 void
-brasero_track_type_set_image_format (BraseroTrackType *type,
-				     BraseroImageFormat format) 
+brasero_track_type_set_image_format (BraseroTrackType   *type,
+                                     BraseroImageFormat  format)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	if (type->type != BRASERO_TRACK_TYPE_IMAGE)
-		return;
+  if (type->type != BRASERO_TRACK_TYPE_IMAGE)
+    return;
 
-	type->subtype.img_format = format;
+  type->subtype.img_format = format;
 }
 
 /**
@@ -193,14 +193,14 @@ brasero_track_type_set_image_format (BraseroTrackType *type,
 
 void
 brasero_track_type_set_data_fs (BraseroTrackType *type,
-				BraseroImageFS fs_type) 
+                                BraseroImageFS    fs_type)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	if (type->type != BRASERO_TRACK_TYPE_DATA)
-		return;
+  if (type->type != BRASERO_TRACK_TYPE_DATA)
+    return;
 
-	type->subtype.fs_type = fs_type;
+  type->subtype.fs_type = fs_type;
 }
 
 /**
@@ -214,15 +214,15 @@ brasero_track_type_set_data_fs (BraseroTrackType *type,
  **/
 
 void
-brasero_track_type_set_stream_format (BraseroTrackType *type,
-				      BraseroStreamFormat format) 
+brasero_track_type_set_stream_format (BraseroTrackType    *type,
+                                      BraseroStreamFormat  format)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	if (type->type != BRASERO_TRACK_TYPE_STREAM)
-		return;
+  if (type->type != BRASERO_TRACK_TYPE_STREAM)
+    return;
 
-	type->subtype.stream_format = format;
+  type->subtype.stream_format = format;
 }
 
 /**
@@ -237,14 +237,14 @@ brasero_track_type_set_stream_format (BraseroTrackType *type,
 
 void
 brasero_track_type_set_medium_type (BraseroTrackType *type,
-				    BraseroMedia media) 
+                                    BraseroMedia      media)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	if (type->type != BRASERO_TRACK_TYPE_DISC)
-		return;
+  if (type->type != BRASERO_TRACK_TYPE_DISC)
+    return;
 
-	type->subtype.media = media;
+  type->subtype.media = media;
 }
 
 /**
@@ -259,9 +259,9 @@ brasero_track_type_set_medium_type (BraseroTrackType *type,
 gboolean
 brasero_track_type_is_empty (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, FALSE);
+  g_return_val_if_fail (type != NULL, FALSE);
 
-	return (type->type == BRASERO_TRACK_TYPE_NONE);
+  return (type->type == BRASERO_TRACK_TYPE_NONE);
 }
 
 /**
@@ -276,9 +276,9 @@ brasero_track_type_is_empty (const BraseroTrackType *type)
 gboolean
 brasero_track_type_get_has_data (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, FALSE);
+  g_return_val_if_fail (type != NULL, FALSE);
 
-	return type->type == BRASERO_TRACK_TYPE_DATA;
+  return type->type == BRASERO_TRACK_TYPE_DATA;
 }
 
 /**
@@ -293,9 +293,9 @@ brasero_track_type_get_has_data (const BraseroTrackType *type)
 gboolean
 brasero_track_type_get_has_image (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, FALSE);
+  g_return_val_if_fail (type != NULL, FALSE);
 
-	return type->type == BRASERO_TRACK_TYPE_IMAGE;
+  return type->type == BRASERO_TRACK_TYPE_IMAGE;
 }
 
 /**
@@ -310,9 +310,9 @@ brasero_track_type_get_has_image (const BraseroTrackType *type)
 gboolean
 brasero_track_type_get_has_stream (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, FALSE);
+  g_return_val_if_fail (type != NULL, FALSE);
 
-	return type->type == BRASERO_TRACK_TYPE_STREAM;
+  return type->type == BRASERO_TRACK_TYPE_STREAM;
 }
 
 /**
@@ -327,9 +327,9 @@ brasero_track_type_get_has_stream (const BraseroTrackType *type)
 gboolean
 brasero_track_type_get_has_medium (const BraseroTrackType *type)
 {
-	g_return_val_if_fail (type != NULL, FALSE);
+  g_return_val_if_fail (type != NULL, FALSE);
 
-	return type->type == BRASERO_TRACK_TYPE_DISC;
+  return type->type == BRASERO_TRACK_TYPE_DISC;
 }
 
 /**
@@ -343,9 +343,9 @@ brasero_track_type_get_has_medium (const BraseroTrackType *type)
 void
 brasero_track_type_set_has_data (BraseroTrackType *type)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	type->type = BRASERO_TRACK_TYPE_DATA;
+  type->type = BRASERO_TRACK_TYPE_DATA;
 }
 
 /**
@@ -359,9 +359,9 @@ brasero_track_type_set_has_data (BraseroTrackType *type)
 void
 brasero_track_type_set_has_image (BraseroTrackType *type)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	type->type = BRASERO_TRACK_TYPE_IMAGE;
+  type->type = BRASERO_TRACK_TYPE_IMAGE;
 }
 
 /**
@@ -375,9 +375,9 @@ brasero_track_type_set_has_image (BraseroTrackType *type)
 void
 brasero_track_type_set_has_stream (BraseroTrackType *type)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	type->type = BRASERO_TRACK_TYPE_STREAM;
+  type->type = BRASERO_TRACK_TYPE_STREAM;
 }
 
 /**
@@ -391,9 +391,9 @@ brasero_track_type_set_has_stream (BraseroTrackType *type)
 void
 brasero_track_type_set_has_medium (BraseroTrackType *type)
 {
-	g_return_if_fail (type != NULL);
+  g_return_if_fail (type != NULL);
 
-	type->type = BRASERO_TRACK_TYPE_DISC;
+  type->type = BRASERO_TRACK_TYPE_DISC;
 }
 
 /**
@@ -409,40 +409,40 @@ brasero_track_type_set_has_medium (BraseroTrackType *type)
 
 gboolean
 brasero_track_type_equal (const BraseroTrackType *type_A,
-			  const BraseroTrackType *type_B)
+                          const BraseroTrackType *type_B)
 {
-	g_return_val_if_fail (type_A != NULL, FALSE);
-	g_return_val_if_fail (type_B != NULL, FALSE);
+  g_return_val_if_fail (type_A != NULL, FALSE);
+  g_return_val_if_fail (type_B != NULL, FALSE);
 
-	if (type_A->type != type_B->type)
-		return FALSE;
+  if (type_A->type != type_B->type)
+    return FALSE;
 
-	switch (type_A->type) {
-	case BRASERO_TRACK_TYPE_DATA:
-		if (type_A->subtype.fs_type != type_B->subtype.fs_type)
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_DISC:
-		if (type_B->subtype.media != type_A->subtype.media)
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_IMAGE:
-		if (type_A->subtype.img_format != type_B->subtype.img_format)
-			return FALSE;
-		break;
+  switch (type_A->type) {
+    case BRASERO_TRACK_TYPE_DATA:
+      if (type_A->subtype.fs_type != type_B->subtype.fs_type)
+        return FALSE;
+      break;
 
-	case BRASERO_TRACK_TYPE_STREAM:
-		if (type_A->subtype.stream_format != type_B->subtype.stream_format)
-			return FALSE;
-		break;
+    case BRASERO_TRACK_TYPE_DISC:
+      if (type_B->subtype.media != type_A->subtype.media)
+        return FALSE;
+      break;
 
-	default:
-		break;
-	}
+    case BRASERO_TRACK_TYPE_IMAGE:
+      if (type_A->subtype.img_format != type_B->subtype.img_format)
+        return FALSE;
+      break;
 
-	return TRUE;
+    case BRASERO_TRACK_TYPE_STREAM:
+      if (type_A->subtype.stream_format != type_B->subtype.stream_format)
+        return FALSE;
+      break;
+
+    default:
+      break;
+  }
+
+  return TRUE;
 }
 
 #if 0
@@ -460,40 +460,40 @@ brasero_track_type_equal (const BraseroTrackType *type_A,
 
 gboolean
 brasero_track_type_match (const BraseroTrackType *type_A,
-			  const BraseroTrackType *type_B)
+                          const BraseroTrackType *type_B)
 {
-	g_return_val_if_fail (type_A != NULL, FALSE);
-	g_return_val_if_fail (type_B != NULL, FALSE);
+  g_return_val_if_fail (type_A != NULL, FALSE);
+  g_return_val_if_fail (type_B != NULL, FALSE);
 
-	if (type_A->type != type_B->type)
-		return FALSE;
+  if (type_A->type != type_B->type)
+    return FALSE;
 
-	switch (type_A->type) {
-	case BRASERO_TRACK_TYPE_DATA:
-		if (!(type_A->subtype.fs_type & type_B->subtype.fs_type))
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_DISC:
-		if (!(type_A->subtype.media & type_B->subtype.media))
-			return FALSE;
-		break;
-	
-	case BRASERO_TRACK_TYPE_IMAGE:
-		if (!(type_A->subtype.img_format & type_B->subtype.img_format))
-			return FALSE;
-		break;
+  switch (type_A->type) {
+    case BRASERO_TRACK_TYPE_DATA:
+      if (!(type_A->subtype.fs_type & type_B->subtype.fs_type))
+        return FALSE;
+      break;
 
-	case BRASERO_TRACK_TYPE_STREAM:
-		if (!(type_A->subtype.stream_format & type_B->subtype.stream_format))
-			return FALSE;
-		break;
+    case BRASERO_TRACK_TYPE_DISC:
+      if (!(type_A->subtype.media & type_B->subtype.media))
+        return FALSE;
+      break;
 
-	default:
-		break;
-	}
+    case BRASERO_TRACK_TYPE_IMAGE:
+      if (!(type_A->subtype.img_format & type_B->subtype.img_format))
+        return FALSE;
+      break;
 
-	return TRUE;
+    case BRASERO_TRACK_TYPE_STREAM:
+      if (!(type_A->subtype.stream_format & type_B->subtype.stream_format))
+        return FALSE;
+      break;
+
+    default:
+      break;
+  }
+
+  return TRUE;
 }
 
 #endif

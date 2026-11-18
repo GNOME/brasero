@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -43,332 +43,329 @@
 
 
 enum {
-	FORMAT_TEXT,
-	FORMAT_TYPE,
-	FORMAT_SVCD,
-	FORMAT_LAST
+  FORMAT_TEXT,
+  FORMAT_TYPE,
+  FORMAT_SVCD,
+  FORMAT_LAST
 };
 
 enum {
-	CHANGED_SIGNAL,
-	LAST_SIGNAL
+  CHANGED_SIGNAL,
+  LAST_SIGNAL
 };
-static guint brasero_image_type_chooser_signals [LAST_SIGNAL] = { 0 };
+static guint brasero_image_type_chooser_signals[LAST_SIGNAL] = { 0 };
 
 typedef struct _BraseroImageTypeChooserPrivate BraseroImageTypeChooserPrivate;
 
 struct _BraseroImageTypeChooserPrivate {
-	GtkWidget *combo;
+  GtkWidget *combo;
 
-	BraseroImageFormat format;
-	gboolean is_svcd;
+  BraseroImageFormat format;
+  gboolean is_svcd;
 
-	guint updating:1;
+  guint updating:1;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (BraseroImageTypeChooser, brasero_image_type_chooser, GTK_TYPE_BOX);
 
 guint
 brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
-				        BraseroImageFormat formats,
-                                        gboolean show_autodetect,
-                                        gboolean is_video)
+                                        BraseroImageFormat       formats,
+                                        gboolean                 show_autodetect,
+                                        gboolean                 is_video)
 {
-	guint format_num;
-	GtkTreeIter iter;
-	GtkTreeModel *store;
-	BraseroImageTypeChooserPrivate *priv;
+  guint format_num;
+  GtkTreeIter iter;
+  GtkTreeModel *store;
+  BraseroImageTypeChooserPrivate *priv;
 
-	priv = brasero_image_type_chooser_get_instance_private (self);
+  priv = brasero_image_type_chooser_get_instance_private (self);
 
-	priv->updating = TRUE;
+  priv->updating = TRUE;
 
-	format_num = 0;
+  format_num = 0;
 
-	/* clean */
-	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
-	gtk_list_store_clear (GTK_LIST_STORE (store));
+  /* clean */
+  store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
+  gtk_list_store_clear (GTK_LIST_STORE (store));
 
-	/* now we get the targets available and display them */
-	if (show_autodetect) {
-		gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("Autodetect"),
-				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_NONE,
-				    -1);
-	}
+  /* now we get the targets available and display them */
+  if (show_autodetect) {
+    gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
+    gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                        FORMAT_TEXT, _("Autodetect"),
+                        FORMAT_TYPE, BRASERO_IMAGE_FORMAT_NONE,
+                        -1);
+  }
 
-	if (formats & BRASERO_IMAGE_FORMAT_BIN) {
-		format_num ++;
-		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, is_video? _("Video DVD image"):_("ISO9660 image"),
-				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_BIN,
-				    -1);
-	}
+  if (formats & BRASERO_IMAGE_FORMAT_BIN) {
+    format_num++;
+    gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+    gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                        FORMAT_TEXT, is_video? _("Video DVD image"):_("ISO9660 image"),
+                        FORMAT_TYPE, BRASERO_IMAGE_FORMAT_BIN,
+                        -1);
+  }
 
-	if (formats & BRASERO_IMAGE_FORMAT_CLONE) {
-		format_num ++;
-		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("Readcd/Readom image"),
-				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CLONE,
-				    -1);
-	}
+  if (formats & BRASERO_IMAGE_FORMAT_CLONE) {
+    format_num++;
+    gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+    gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                        FORMAT_TEXT, _("Readcd/Readom image"),
+                        FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CLONE,
+                        -1);
+  }
 
-	if (formats & BRASERO_IMAGE_FORMAT_CUE) {
-		format_num ++;
-		if (is_video) {
-			format_num ++;
-	
-			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-					    FORMAT_TEXT, _("VCD image"),
-					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
-					    -1);
+  if (formats & BRASERO_IMAGE_FORMAT_CUE) {
+    format_num++;
+    if (is_video) {
+      format_num++;
 
-			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-					    FORMAT_TEXT, _("SVCD image"),
-					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
-			                    FORMAT_SVCD, TRUE,
-					    -1);
-		}
-		else {
-			gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-			gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-					    FORMAT_TEXT, _("Cue image"),
-					    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
-					    -1);
-		}
-	}
+      gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+      gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                          FORMAT_TEXT, _("VCD image"),
+                          FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
+                          -1);
 
-	if (formats & BRASERO_IMAGE_FORMAT_CDRDAO) {
-		format_num ++;
-		gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    FORMAT_TEXT, _("Cdrdao image"),
-				    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CDRDAO,
-				    -1);
-	}
+      gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+      gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                          FORMAT_TEXT, _("SVCD image"),
+                          FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
+                          FORMAT_SVCD, TRUE,
+                          -1);
+    } else {
+      gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+      gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                          FORMAT_TEXT, _("Cue image"),
+                          FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CUE,
+                          -1);
+    }
+  }
 
-	priv->updating = FALSE;
+  if (formats & BRASERO_IMAGE_FORMAT_CDRDAO) {
+    format_num++;
+    gtk_list_store_append (GTK_LIST_STORE (store), &iter);
+    gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+                        FORMAT_TEXT, _("Cdrdao image"),
+                        FORMAT_TYPE, BRASERO_IMAGE_FORMAT_CDRDAO,
+                        -1);
+  }
 
-	/* Make sure the selected format is still supported */
-	if (priv->format & formats)
-		brasero_image_type_chooser_set_format (self, priv->format);
-	else
-		brasero_image_type_chooser_set_format (self, BRASERO_IMAGE_FORMAT_NONE);
+  priv->updating = FALSE;
 
-	return format_num;
+  /* Make sure the selected format is still supported */
+  if (priv->format & formats)
+    brasero_image_type_chooser_set_format (self, priv->format);
+  else
+    brasero_image_type_chooser_set_format (self, BRASERO_IMAGE_FORMAT_NONE);
+
+  return format_num;
 }
 
 void
 brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
-				       BraseroImageFormat format)
+                                       BraseroImageFormat       format)
 {
-	GtkTreeIter iter;
-	GtkTreeModel *store;
-	BraseroImageTypeChooserPrivate *priv;
+  GtkTreeIter iter;
+  GtkTreeModel *store;
+  BraseroImageTypeChooserPrivate *priv;
 
-	priv = brasero_image_type_chooser_get_instance_private (self);
+  priv = brasero_image_type_chooser_get_instance_private (self);
 
-	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
-	
-	if (format == BRASERO_IMAGE_FORMAT_NONE) {
-		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
-		return;
-	}
+  store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 
-	if (!gtk_tree_model_get_iter_first (store, &iter))
-		return;
+  if (format == BRASERO_IMAGE_FORMAT_NONE) {
+    gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
+    return;
+  }
 
-	do {
-		BraseroImageFormat iter_format;
+  if (!gtk_tree_model_get_iter_first (store, &iter))
+    return;
 
-		gtk_tree_model_get (store, &iter,
-				    FORMAT_TYPE, &iter_format,
-				    -1);
+  do {
+    BraseroImageFormat iter_format;
 
-		if (iter_format == format) {
-			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->combo), &iter);
-			return;
-		}
+    gtk_tree_model_get (store, &iter,
+                        FORMAT_TYPE, &iter_format,
+                        -1);
 
-	} while (gtk_tree_model_iter_next (store, &iter));
+    if (iter_format == format) {
+      gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->combo), &iter);
+      return;
+    }
+  } while (gtk_tree_model_iter_next (store, &iter));
 
-	/* just to make sure we see if there is a line which is active. It can 
-	 * happens that the last time it was a CD and the user chose RAW. If it
-	 * is now a DVD it can't be raw any more */
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1)
-		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
+  /* just to make sure we see if there is a line which is active. It can
+   * happens that the last time it was a CD and the user chose RAW. If it
+   * is now a DVD it can't be raw any more */
+  if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1)
+    gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
 }
 
 void
 brasero_image_type_chooser_set_VCD_type (BraseroImageTypeChooser *chooser,
-                                         gboolean is_SVCD)
+                                         gboolean                 is_SVCD)
 {
-	GtkTreeIter iter;
-	GtkTreeModel *store;
-	BraseroImageTypeChooserPrivate *priv;
+  GtkTreeIter iter;
+  GtkTreeModel *store;
+  BraseroImageTypeChooserPrivate *priv;
 
-	priv = brasero_image_type_chooser_get_instance_private (chooser);
+  priv = brasero_image_type_chooser_get_instance_private (chooser);
 
-	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
-	
-	if (!gtk_tree_model_get_iter_first (store, &iter))
-		return;
+  store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 
-	do {
-		BraseroImageFormat iter_format;
-		gboolean is_svcd;
+  if (!gtk_tree_model_get_iter_first (store, &iter))
+    return;
 
-		gtk_tree_model_get (store, &iter,
-				    FORMAT_TYPE, &iter_format,
-		                    FORMAT_SVCD, &is_svcd,
-				    -1);
+  do {
+    BraseroImageFormat iter_format;
+    gboolean is_svcd;
 
-		if (iter_format == BRASERO_IMAGE_FORMAT_CUE && is_SVCD == is_svcd) {
-			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->combo), &iter);
-			return;
-		}
+    gtk_tree_model_get (store, &iter,
+                        FORMAT_TYPE, &iter_format,
+                        FORMAT_SVCD, &is_svcd,
+                        -1);
 
-	} while (gtk_tree_model_iter_next (store, &iter));
+    if (iter_format == BRASERO_IMAGE_FORMAT_CUE && is_SVCD == is_svcd) {
+      gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->combo), &iter);
+      return;
+    }
+  } while (gtk_tree_model_iter_next (store, &iter));
 
-	/* just to make sure we see if there is a line which is active. It can 
-	 * happens that the last time it was a CD and the user chose RAW. If it
-	 * is now a DVD it can't be raw any more */
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1)
-		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
+  /* just to make sure we see if there is a line which is active. It can
+   * happens that the last time it was a CD and the user chose RAW. If it
+   * is now a DVD it can't be raw any more */
+  if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1)
+    gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
 }
 
 void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
-				       BraseroImageFormat *format)
+                                       BraseroImageFormat      *format)
 {
-	BraseroImageTypeChooserPrivate *priv;
+  BraseroImageTypeChooserPrivate *priv;
 
-	priv = brasero_image_type_chooser_get_instance_private (self);
-	*format = priv->format;
+  priv = brasero_image_type_chooser_get_instance_private (self);
+  *format = priv->format;
 }
 
 gboolean
 brasero_image_type_chooser_get_VCD_type (BraseroImageTypeChooser *chooser)
 {
-	BraseroImageTypeChooserPrivate *priv;
-	GtkTreeModel *model;
-	gboolean value;
-	GtkTreeIter iter;
+  BraseroImageTypeChooserPrivate *priv;
+  GtkTreeModel *model;
+  gboolean value;
+  GtkTreeIter iter;
 
-	priv = brasero_image_type_chooser_get_instance_private (chooser);
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
-		return FALSE;
+  priv = brasero_image_type_chooser_get_instance_private (chooser);
+  if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
+    return FALSE;
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
-	gtk_tree_model_get (model, &iter,
-	                    FORMAT_SVCD, &value,
-	                    -1);
+  model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
+  gtk_tree_model_get (model, &iter,
+                      FORMAT_SVCD, &value,
+                      -1);
 
-	return value;
+  return value;
 }
 
 static void
-brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
-				       BraseroImageTypeChooser *self)
+brasero_image_type_chooser_changed_cb (GtkComboBox             *combo,
+                                       BraseroImageTypeChooser *self)
 {
-	GtkTreeIter iter;
-	gboolean is_svcd;
-	GtkTreeModel *store;
-	BraseroImageFormat current;
-	BraseroImageTypeChooserPrivate *priv;
+  GtkTreeIter iter;
+  gboolean is_svcd;
+  GtkTreeModel *store;
+  BraseroImageFormat current;
+  BraseroImageTypeChooserPrivate *priv;
 
-	priv = brasero_image_type_chooser_get_instance_private (self);
+  priv = brasero_image_type_chooser_get_instance_private (self);
 
-	if (priv->updating)
-		return;
+  if (priv->updating)
+    return;
 
-	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
-	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
-		gtk_tree_model_get (store, &iter,
-				    FORMAT_TYPE, &current,
-		                    FORMAT_SVCD, &is_svcd,
-				    -1);
-	else
-		current = BRASERO_IMAGE_FORMAT_NONE;
+  store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
+  if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
+    gtk_tree_model_get (store, &iter,
+                        FORMAT_TYPE, &current,
+                        FORMAT_SVCD, &is_svcd,
+                        -1);
+  else
+    current = BRASERO_IMAGE_FORMAT_NONE;
 
-	if (current == priv->format
-	&& is_svcd == priv->is_svcd)
-		return;
+  if (current == priv->format
+      && is_svcd == priv->is_svcd)
+    return;
 
-	priv->format = current;
-	priv->is_svcd = is_svcd;
+  priv->format = current;
+  priv->is_svcd = is_svcd;
 
-	g_signal_emit (self,
-		       brasero_image_type_chooser_signals [CHANGED_SIGNAL],
-		       0);
+  g_signal_emit (self,
+                 brasero_image_type_chooser_signals [CHANGED_SIGNAL],
+                 0);
 }
 
 static void
 brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 {
-	GtkListStore *store;
-	GtkCellRenderer *renderer;
-	BraseroImageTypeChooserPrivate *priv;
+  GtkListStore *store;
+  GtkCellRenderer *renderer;
+  BraseroImageTypeChooserPrivate *priv;
 
-	priv = brasero_image_type_chooser_get_instance_private (obj);
+  priv = brasero_image_type_chooser_get_instance_private (obj);
 
-	store = gtk_list_store_new (FORMAT_LAST,
-				    G_TYPE_STRING,
-				    G_TYPE_INT,
-	                            G_TYPE_BOOLEAN);
+  store = gtk_list_store_new (FORMAT_LAST,
+                              G_TYPE_STRING,
+                              G_TYPE_INT,
+                              G_TYPE_BOOLEAN);
 
-	priv->combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (store));
-	g_signal_connect (priv->combo,
-			  "changed",
-			  G_CALLBACK (brasero_image_type_chooser_changed_cb),
-			  obj);
+  priv->combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (store));
+  g_signal_connect (priv->combo,
+                    "changed",
+                    G_CALLBACK (brasero_image_type_chooser_changed_cb),
+                    obj);
 
-	renderer = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (priv->combo), renderer, TRUE);
-	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (priv->combo), renderer,
-					"text", FORMAT_TEXT,
-					NULL);
+  renderer = gtk_cell_renderer_text_new ();
+  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (priv->combo), renderer, TRUE);
+  gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (priv->combo), renderer,
+                                  "text", FORMAT_TEXT,
+                                  NULL);
 
-	gtk_widget_show (priv->combo);
-	gtk_box_pack_end (GTK_BOX (obj), priv->combo, TRUE, TRUE, 0);
+  gtk_widget_show (priv->combo);
+  gtk_box_pack_end (GTK_BOX (obj), priv->combo, TRUE, TRUE, 0);
 }
 
 static void
 brasero_image_type_chooser_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (brasero_image_type_chooser_parent_class)->finalize (object);
+  G_OBJECT_CLASS (brasero_image_type_chooser_parent_class)->finalize (object);
 }
 
 static void
 brasero_image_type_chooser_class_init (BraseroImageTypeChooserClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->finalize = brasero_image_type_chooser_finalize;
+  object_class->finalize = brasero_image_type_chooser_finalize;
 
-	brasero_image_type_chooser_signals [CHANGED_SIGNAL] = 
-	    g_signal_new ("changed",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_FIRST,
-			  0,
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__VOID,
-			  G_TYPE_NONE,
-			  0);
+  brasero_image_type_chooser_signals [CHANGED_SIGNAL] =
+    g_signal_new ("changed",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_FIRST,
+                  0,
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE,
+                  0);
 }
 
 
 GtkWidget *
 brasero_image_type_chooser_new ()
 {
-	BraseroImageTypeChooser *obj;
+  BraseroImageTypeChooser *obj;
 
-	obj = BRASERO_IMAGE_TYPE_CHOOSER (g_object_new (BRASERO_TYPE_IMAGE_TYPE_CHOOSER, NULL));
-	
-	return GTK_WIDGET (obj);
+  obj = BRASERO_IMAGE_TYPE_CHOOSER (g_object_new (BRASERO_TYPE_IMAGE_TYPE_CHOOSER, NULL));
+
+  return GTK_WIDGET (obj);
 }

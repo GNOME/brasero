@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -51,15 +51,15 @@
 #include "brasero-blank-dialog.h"
 
 struct BraseroBlankDialogPrivate {
-	BraseroBurnSession *session;
+  BraseroBurnSession *session;
 
-	GtkWidget *fast;
+  GtkWidget *fast;
 
-	guint caps_sig;
-	guint output_sig;
+  guint caps_sig;
+  guint output_sig;
 
-	guint fast_saved;
-	guint dummy_saved;
+  guint fast_saved;
+  guint dummy_saved;
 };
 
 
@@ -69,343 +69,335 @@ G_DEFINE_TYPE_WITH_PRIVATE (BraseroBlankDialog, brasero_blank_dialog, BRASERO_TY
 
 static guint
 brasero_blank_dialog_set_button (BraseroBurnSession *session,
-				 guint saved,
-				 GtkWidget *button,
-				 BraseroBurnFlag flag,
-				 BraseroBurnFlag supported,
-				 BraseroBurnFlag compulsory)
+                                 guint               saved,
+                                 GtkWidget          *button,
+                                 BraseroBurnFlag     flag,
+                                 BraseroBurnFlag     supported,
+                                 BraseroBurnFlag     compulsory)
 {
-	if (flag & supported) {
-		if (compulsory & flag) {
-			if (gtk_widget_get_sensitive (button))
-				saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+  if (flag & supported) {
+    if (compulsory & flag) {
+      if (gtk_widget_get_sensitive (button))
+        saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
-			gtk_widget_set_sensitive (button, FALSE);
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+      gtk_widget_set_sensitive (button, FALSE);
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 
-			brasero_burn_session_add_flag (session, flag);
-		}
-		else {
-			if (!gtk_widget_get_sensitive (button)) {
-				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), saved);
+      brasero_burn_session_add_flag (session, flag);
+    } else {
+      if (!gtk_widget_get_sensitive (button)) {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), saved);
 
-				if (saved)
-					brasero_burn_session_add_flag (session, flag);
-				else
-					brasero_burn_session_remove_flag (session, flag);
-			}
+        if (saved)
+          brasero_burn_session_add_flag (session, flag);
+        else
+          brasero_burn_session_remove_flag (session, flag);
+      }
 
-			gtk_widget_set_sensitive (button, TRUE);
-		}
-	}
-	else {
-		if (gtk_widget_get_sensitive (button))
-			saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+      gtk_widget_set_sensitive (button, TRUE);
+    }
+  } else {
+    if (gtk_widget_get_sensitive (button))
+      saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
 
-		gtk_widget_set_sensitive (button, FALSE);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), FALSE);
+    gtk_widget_set_sensitive (button, FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), FALSE);
 
-		brasero_burn_session_remove_flag (session, flag);
-	}
+    brasero_burn_session_remove_flag (session, flag);
+  }
 
-	return saved;
+  return saved;
 }
 
 static void
 brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 {
-	BraseroBurnFlag supported;
-	BraseroBurnFlag compulsory;
-	BraseroBlankDialogPrivate *priv;
+  BraseroBurnFlag supported;
+  BraseroBurnFlag compulsory;
+  BraseroBlankDialogPrivate *priv;
 
-	priv = brasero_blank_dialog_get_instance_private (self);
+  priv = brasero_blank_dialog_get_instance_private (self);
 
-	/* set the options */
-	brasero_burn_session_get_blank_flags (priv->session,
-					      &supported,
-					      &compulsory);
+  /* set the options */
+  brasero_burn_session_get_blank_flags (priv->session,
+                                        &supported,
+                                        &compulsory);
 
-	priv->fast_saved = brasero_blank_dialog_set_button (priv->session,
-							    priv->fast_saved,
-							    priv->fast,
-							    BRASERO_BURN_FLAG_FAST_BLANK,
-							    supported,
-							    compulsory);
+  priv->fast_saved = brasero_blank_dialog_set_button (priv->session,
+                                                      priv->fast_saved,
+                                                      priv->fast,
+                                                      BRASERO_BURN_FLAG_FAST_BLANK,
+                                                      supported,
+                                                      compulsory);
 
-	/* This must be done afterwards, once the session flags were updated */
-	brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (self),
-				       (brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK));
+  /* This must be done afterwards, once the session flags were updated */
+  brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (self),
+                                 (brasero_burn_session_can_blank (priv->session) == BRASERO_BURN_OK));
 }
 
 static void
 brasero_blank_dialog_caps_changed (BraseroPluginManager *manager,
-				   BraseroBlankDialog *dialog)
+                                   BraseroBlankDialog   *dialog)
 {
-	brasero_blank_dialog_device_opts_setup (dialog);
+  brasero_blank_dialog_device_opts_setup (dialog);
 }
 
 static void
 brasero_blank_dialog_output_changed (BraseroBurnSession *session,
-				     BraseroMedium *former,
-				     BraseroBlankDialog *dialog)
+                                     BraseroMedium      *former,
+                                     BraseroBlankDialog *dialog)
 {
-	brasero_blank_dialog_device_opts_setup (dialog);
+  brasero_blank_dialog_device_opts_setup (dialog);
 }
 
 static void
-brasero_blank_dialog_fast_toggled (GtkToggleButton *toggle,
-				   BraseroBlankDialog *self)
+brasero_blank_dialog_fast_toggled (GtkToggleButton    *toggle,
+                                   BraseroBlankDialog *self)
 {
-	BraseroBlankDialogPrivate *priv;
+  BraseroBlankDialogPrivate *priv;
 
-	priv = brasero_blank_dialog_get_instance_private (self);
-	if (gtk_toggle_button_get_active (toggle))
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
-	else
-		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
+  priv = brasero_blank_dialog_get_instance_private (self);
+  if (gtk_toggle_button_get_active (toggle))
+    brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
+  else
+    brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
 }
 
 static void
 brasero_blank_dialog_drive_changed (BraseroToolDialog *dialog,
-				    BraseroMedium *medium)
+                                    BraseroMedium     *medium)
 {
-	BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG(dialog);
-	BraseroBlankDialogPrivate *priv;
-	BraseroDrive *drive;
+  BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG (dialog);
+  BraseroBlankDialogPrivate *priv;
+  BraseroDrive *drive;
 
-	priv = brasero_blank_dialog_get_instance_private (blank_dialog);
+  priv = brasero_blank_dialog_get_instance_private (blank_dialog);
 
-	if (medium)
-		drive = brasero_medium_get_drive (medium);
-	else
-		drive = NULL;
+  if (medium)
+    drive = brasero_medium_get_drive (medium);
+  else
+    drive = NULL;
 
-	/* it can happen that the drive changed while initializing and that
-	 * session hasn't been created yet. */
-	if (priv->session)
-		brasero_burn_session_set_burner (priv->session, drive);
+  /* it can happen that the drive changed while initializing and that
+   * session hasn't been created yet. */
+  if (priv->session)
+    brasero_burn_session_set_burner (priv->session, drive);
 }
 
 static gboolean
 brasero_blank_dialog_activate (BraseroToolDialog *dialog,
-			       BraseroMedium *medium)
+                               BraseroMedium     *medium)
 {
-	BraseroBlankDialogPrivate *priv;
-	BraseroBlankDialog *self;
-	BraseroBurnResult result;
-	GError *error = NULL;
-	BraseroBurn *burn;
+  BraseroBlankDialogPrivate *priv;
+  BraseroBlankDialog *self;
+  BraseroBurnResult result;
+  GError *error = NULL;
+  BraseroBurn *burn;
 
-	self = BRASERO_BLANK_DIALOG (dialog);
-	priv = brasero_blank_dialog_get_instance_private (self);
+  self = BRASERO_BLANK_DIALOG (dialog);
+  priv = brasero_blank_dialog_get_instance_private (self);
 
-	burn = brasero_tool_dialog_get_burn (dialog);
-	brasero_burn_session_start (priv->session);
-	result = brasero_burn_blank (burn,
-				     priv->session,
-				     &error);
+  burn = brasero_tool_dialog_get_burn (dialog);
+  brasero_burn_session_start (priv->session);
+  result = brasero_burn_blank (burn,
+                               priv->session,
+                               &error);
 
-	/* Tell the user the result of the operation */
-	if (result == BRASERO_BURN_ERR || error) {
-		GtkResponseType answer;
-		GtkWidget *message;
-		GtkWidget *button;
+  /* Tell the user the result of the operation */
+  if (result == BRASERO_BURN_ERR || error) {
+    GtkResponseType answer;
+    GtkWidget *message;
+    GtkWidget *button;
 
-		message =  gtk_message_dialog_new (GTK_WINDOW (self),
-						   GTK_DIALOG_DESTROY_WITH_PARENT|
-						   GTK_DIALOG_MODAL,
-						   GTK_MESSAGE_ERROR,
-						   GTK_BUTTONS_CLOSE,
-						   _("Error while blanking."));
+    message = gtk_message_dialog_new (GTK_WINDOW (self),
+                                      GTK_DIALOG_DESTROY_WITH_PARENT |
+                                      GTK_DIALOG_MODAL,
+                                      GTK_MESSAGE_ERROR,
+                                      GTK_BUTTONS_CLOSE,
+                                      _("Error while blanking."));
 
-		gtk_window_set_icon_name (GTK_WINDOW (message),
-					  gtk_window_get_icon_name (GTK_WINDOW (self)));
+    gtk_window_set_icon_name (GTK_WINDOW (message),
+                              gtk_window_get_icon_name (GTK_WINDOW (self)));
 
-		button = brasero_utils_make_button (_("Blank _Again"),
-						    NULL,
-						    "media-optical-blank",
-						    GTK_ICON_SIZE_BUTTON);
-		gtk_widget_show (button);
-		gtk_dialog_add_action_widget (GTK_DIALOG (message),
-					      button,
-					      GTK_RESPONSE_OK);
+    button = brasero_utils_make_button (_("Blank _Again"),
+                                        NULL,
+                                        "media-optical-blank",
+                                        GTK_ICON_SIZE_BUTTON);
+    gtk_widget_show (button);
+    gtk_dialog_add_action_widget (GTK_DIALOG (message),
+                                  button,
+                                  GTK_RESPONSE_OK);
 
-		if (error) {
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  "%s.",
-								  error->message);
-			g_error_free (error);
-		}
-		else
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  _("Unknown error."));
+    if (error) {
+      gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+                                                "%s.",
+                                                error->message);
+      g_error_free (error);
+    } else
+      gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+                                                _("Unknown error."));
 
-		answer = gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
+    answer = gtk_dialog_run (GTK_DIALOG (message));
+    gtk_widget_destroy (message);
 
-		if (answer == GTK_RESPONSE_OK) {
-			brasero_blank_dialog_device_opts_setup (self);
-			return FALSE;
-		}
-	}
-	else if (result == BRASERO_BURN_OK) {
-		GtkResponseType answer;
-		GtkWidget *message;
-		GtkWidget *button;
+    if (answer == GTK_RESPONSE_OK) {
+      brasero_blank_dialog_device_opts_setup (self);
+      return FALSE;
+    }
+  } else if (result == BRASERO_BURN_OK) {
+    GtkResponseType answer;
+    GtkWidget *message;
+    GtkWidget *button;
 
-		message = gtk_message_dialog_new (GTK_WINDOW (self),
-						  GTK_DIALOG_DESTROY_WITH_PARENT|
-						  GTK_DIALOG_MODAL,
-						  GTK_MESSAGE_INFO,
-						  GTK_BUTTONS_NONE,
-						  _("The disc was successfully blanked."));
+    message = gtk_message_dialog_new (GTK_WINDOW (self),
+                                      GTK_DIALOG_DESTROY_WITH_PARENT |
+                                      GTK_DIALOG_MODAL,
+                                      GTK_MESSAGE_INFO,
+                                      GTK_BUTTONS_NONE,
+                                      _("The disc was successfully blanked."));
 
-		gtk_window_set_icon_name (GTK_WINDOW (message),
-					  gtk_window_get_icon_name (GTK_WINDOW (self)));
+    gtk_window_set_icon_name (GTK_WINDOW (message),
+                              gtk_window_get_icon_name (GTK_WINDOW (self)));
 
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  _("The disc is ready for use."));
+    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+                                              _("The disc is ready for use."));
 
-		button = brasero_utils_make_button (_("Blank _Again"),
-						    NULL,
-						    "media-optical-blank",
-						    GTK_ICON_SIZE_BUTTON);
-		gtk_widget_show (button);
-		gtk_dialog_add_action_widget (GTK_DIALOG (message),
-					      button,
-					      GTK_RESPONSE_OK);
+    button = brasero_utils_make_button (_("Blank _Again"),
+                                        NULL,
+                                        "media-optical-blank",
+                                        GTK_ICON_SIZE_BUTTON);
+    gtk_widget_show (button);
+    gtk_dialog_add_action_widget (GTK_DIALOG (message),
+                                  button,
+                                  GTK_RESPONSE_OK);
 
-		gtk_dialog_add_button (GTK_DIALOG (message),
-				       GTK_STOCK_CLOSE,
-				       GTK_RESPONSE_CLOSE);
+    gtk_dialog_add_button (GTK_DIALOG (message),
+                           GTK_STOCK_CLOSE,
+                           GTK_RESPONSE_CLOSE);
 
-		gtk_widget_show (GTK_WIDGET (message));
-		brasero_burn_play_sound ("complete-media-format", _("The disc was successfully blanked."));
+    gtk_widget_show (GTK_WIDGET (message));
+    brasero_burn_play_sound ("complete-media-format", _("The disc was successfully blanked."));
 
-		answer = gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
+    answer = gtk_dialog_run (GTK_DIALOG (message));
+    gtk_widget_destroy (message);
 
-		if (answer == GTK_RESPONSE_OK) {
-			brasero_blank_dialog_device_opts_setup (self);
-			return FALSE;
-		}
-	}
-	else if (result == BRASERO_BURN_NOT_SUPPORTED) {
-		g_warning ("operation not supported");
-	}
-	else if (result == BRASERO_BURN_NOT_READY) {
-		g_warning ("operation not ready");
-	}
-	else if (result == BRASERO_BURN_NOT_RUNNING) {
-		g_warning ("job not running");
-	}
-	else if (result == BRASERO_BURN_RUNNING) {
-		g_warning ("job running");
-	}
+    if (answer == GTK_RESPONSE_OK) {
+      brasero_blank_dialog_device_opts_setup (self);
+      return FALSE;
+    }
+  } else if (result == BRASERO_BURN_NOT_SUPPORTED) {
+    g_warning ("operation not supported");
+  } else if (result == BRASERO_BURN_NOT_READY) {
+    g_warning ("operation not ready");
+  } else if (result == BRASERO_BURN_NOT_RUNNING) {
+    g_warning ("job not running");
+  } else if (result == BRASERO_BURN_RUNNING) {
+    g_warning ("job running");
+  }
 
-	return TRUE;
+  return TRUE;
 }
 
 static void
 brasero_blank_dialog_finalize (GObject *object)
 {
-	BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG(object);
-	BraseroBlankDialogPrivate *priv;
+  BraseroBlankDialog *blank_dialog = BRASERO_BLANK_DIALOG (object);
+  BraseroBlankDialogPrivate *priv;
 
-	priv = brasero_blank_dialog_get_instance_private (blank_dialog);
+  priv = brasero_blank_dialog_get_instance_private (blank_dialog);
 
-	if (priv->caps_sig) {
-		BraseroPluginManager *manager;
+  if (priv->caps_sig) {
+    BraseroPluginManager *manager;
 
-		manager = brasero_plugin_manager_get_default ();
-		g_signal_handler_disconnect (manager, priv->caps_sig);
-		priv->caps_sig = 0;
-	}
+    manager = brasero_plugin_manager_get_default ();
+    g_signal_handler_disconnect (manager, priv->caps_sig);
+    priv->caps_sig = 0;
+  }
 
-	if (priv->output_sig) {
-		g_signal_handler_disconnect (priv->session, priv->output_sig);
-		priv->output_sig = 0;
-	}
+  if (priv->output_sig) {
+    g_signal_handler_disconnect (priv->session, priv->output_sig);
+    priv->output_sig = 0;
+  }
 
-	if (priv->session) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
+  if (priv->session) {
+    g_object_unref (priv->session);
+    priv->session = NULL;
+  }
 
-	G_OBJECT_CLASS (brasero_blank_dialog_parent_class)->finalize (object);
+  G_OBJECT_CLASS (brasero_blank_dialog_parent_class)->finalize (object);
 }
 
 static void
 brasero_blank_dialog_class_init (BraseroBlankDialogClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
 
-	object_class->finalize = brasero_blank_dialog_finalize;
+  object_class->finalize = brasero_blank_dialog_finalize;
 
-	tool_dialog_class->activate = brasero_blank_dialog_activate;
-	tool_dialog_class->medium_changed = brasero_blank_dialog_drive_changed;
+  tool_dialog_class->activate = brasero_blank_dialog_activate;
+  tool_dialog_class->medium_changed = brasero_blank_dialog_drive_changed;
 }
 
 static void
 brasero_blank_dialog_init (BraseroBlankDialog *obj)
 {
-	BraseroBlankDialogPrivate *priv;
-	BraseroPluginManager *manager;
-	BraseroMedium *medium;
-	BraseroDrive *drive;
+  BraseroBlankDialogPrivate *priv;
+  BraseroPluginManager *manager;
+  BraseroMedium *medium;
+  BraseroDrive *drive;
 
-	priv = brasero_blank_dialog_get_instance_private (obj);
+  priv = brasero_blank_dialog_get_instance_private (obj);
 
-	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
-					/* Translators: This is a verb, an action */
-					_("_Blank"),
-					NULL,
-					"media-optical-blank");
+  brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
+                                  /* Translators: This is a verb, an action */
+                                  _("_Blank"),
+                                  NULL,
+                                  "media-optical-blank");
 
-	/* only media that can be rewritten with or without data */
-	brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
-						   BRASERO_MEDIA_TYPE_REWRITABLE);
+  /* only media that can be rewritten with or without data */
+  brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
+                                             BRASERO_MEDIA_TYPE_REWRITABLE);
 
-	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
-	drive = brasero_medium_get_drive (medium);
+  medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
+  drive = brasero_medium_get_drive (medium);
 
-	priv->session = brasero_burn_session_new ();
-	brasero_burn_session_set_flags (priv->session,
-				        BRASERO_BURN_FLAG_EJECT|
-				        BRASERO_BURN_FLAG_NOGRACE);
-	brasero_burn_session_set_burner (priv->session, drive);
+  priv->session = brasero_burn_session_new ();
+  brasero_burn_session_set_flags (priv->session,
+                                  BRASERO_BURN_FLAG_EJECT |
+                                  BRASERO_BURN_FLAG_NOGRACE);
+  brasero_burn_session_set_burner (priv->session, drive);
 
-	if (medium)
-		g_object_unref (medium);
+  if (medium)
+    g_object_unref (medium);
 
-	priv->output_sig = g_signal_connect (priv->session,
-					     "output-changed",
-					     G_CALLBACK (brasero_blank_dialog_output_changed),
-					     obj);
+  priv->output_sig = g_signal_connect (priv->session,
+                                       "output-changed",
+                                       G_CALLBACK (brasero_blank_dialog_output_changed),
+                                       obj);
 
-	manager = brasero_plugin_manager_get_default ();
-	priv->caps_sig = g_signal_connect (manager,
-					   "caps-changed",
-					   G_CALLBACK (brasero_blank_dialog_caps_changed),
-					   obj);
+  manager = brasero_plugin_manager_get_default ();
+  priv->caps_sig = g_signal_connect (manager,
+                                     "caps-changed",
+                                     G_CALLBACK (brasero_blank_dialog_caps_changed),
+                                     obj);
 
-	priv->fast = gtk_check_button_new_with_mnemonic (_("_Fast blanking"));
-	gtk_widget_set_tooltip_text (priv->fast, _("Activate fast blanking, as opposed to a longer, thorough blanking"));
-	g_signal_connect (priv->fast,
-			  "clicked",
-			  G_CALLBACK (brasero_blank_dialog_fast_toggled),
-			  obj);
+  priv->fast = gtk_check_button_new_with_mnemonic (_("_Fast blanking"));
+  gtk_widget_set_tooltip_text (priv->fast, _("Activate fast blanking, as opposed to a longer, thorough blanking"));
+  g_signal_connect (priv->fast,
+                    "clicked",
+                    G_CALLBACK (brasero_blank_dialog_fast_toggled),
+                    obj);
 
-	brasero_tool_dialog_pack_options (BRASERO_TOOL_DIALOG (obj),
-					  priv->fast,
-					  NULL);
+  brasero_tool_dialog_pack_options (BRASERO_TOOL_DIALOG (obj),
+                                    priv->fast,
+                                    NULL);
 
-	brasero_blank_dialog_device_opts_setup (obj);
+  brasero_blank_dialog_device_opts_setup (obj);
 
-	/* if fast blank is supported check it by default */
-	if (gtk_widget_is_sensitive (priv->fast))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
+  /* if fast blank is supported check it by default */
+  if (gtk_widget_is_sensitive (priv->fast))
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
 }
 
 /**
@@ -418,10 +410,10 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 BraseroBlankDialog *
 brasero_blank_dialog_new ()
 {
-	BraseroBlankDialog *obj;
+  BraseroBlankDialog *obj;
 
-	obj = BRASERO_BLANK_DIALOG (g_object_new (BRASERO_TYPE_BLANK_DIALOG,
-						  "title", _("Disc Blanking"),
-						  NULL));
-	return obj;
+  obj = BRASERO_BLANK_DIALOG (g_object_new (BRASERO_TYPE_BLANK_DIALOG,
+                                            "title", _("Disc Blanking"),
+                                            NULL));
+  return obj;
 }

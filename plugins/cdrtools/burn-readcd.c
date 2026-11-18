@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -53,7 +53,7 @@
 
 #define BRASERO_TYPE_READCD         (brasero_readcd_get_type ())
 #define BRASERO_READCD(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_READCD, BraseroReadcd))
-#define BRASERO_READCD_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_READCD, BraseroReadcdClass))
+#define BRASERO_READCD_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k), BRASERO_TYPE_READCD, BraseroReadcdClass))
 #define BRASERO_IS_READCD(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_READCD))
 #define BRASERO_IS_READCD_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_READCD))
 #define BRASERO_READCD_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_READCD, BraseroReadcdClass))
@@ -63,386 +63,372 @@ BRASERO_PLUGIN_BOILERPLATE (BraseroReadcd, brasero_readcd, BraseroProcess);
 G_DEFINE_DYNAMIC_TYPE (BraseroReadcd, brasero_readcd, BRASERO_TYPE_PROCESS);
 
 static BraseroBurnResult
-brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
+brasero_readcd_read_stderr (BraseroProcess *process,
+                            const gchar    *line)
 {
-	BraseroReadcd *readcd;
-	gint dummy1;
-	gint dummy2;
-	const gchar *pos;
+  BraseroReadcd *readcd;
+  gint dummy1;
+  gint dummy2;
+  const gchar *pos;
 
-	readcd = BRASERO_READCD (process);
+  readcd = BRASERO_READCD (process);
 
-	if ((pos = strstr (line, "addr:"))) {
-		gint sector;
-		gint64 written;
-		BraseroImageFormat format;
-		BraseroTrackType *output = NULL;
+  if ((pos = strstr (line, "addr:"))) {
+    gint sector;
+    gint64 written;
+    BraseroImageFormat format;
+    BraseroTrackType *output = NULL;
 
-		pos += strlen ("addr:");
-		sector = strtoll (pos, NULL, 10);
+    pos += strlen ("addr:");
+    sector = strtoll (pos, NULL, 10);
 
-		output = brasero_track_type_new ();
-		brasero_job_get_output_type (BRASERO_JOB (readcd), output);
+    output = brasero_track_type_new ();
+    brasero_job_get_output_type (BRASERO_JOB (readcd), output);
 
-		format = brasero_track_type_get_image_format (output);
-		if (format == BRASERO_IMAGE_FORMAT_BIN)
-			written = (gint64) ((gint64) sector * 2048ULL);
-		else if (format == BRASERO_IMAGE_FORMAT_CLONE)
-			written = (gint64) ((gint64) sector * 2448ULL);
-		else
-			written = (gint64) ((gint64) sector * 2048ULL);
+    format = brasero_track_type_get_image_format (output);
+    if (format == BRASERO_IMAGE_FORMAT_BIN)
+      written = (gint64)((gint64)sector * 2048ULL);
+    else if (format == BRASERO_IMAGE_FORMAT_CLONE)
+      written = (gint64)((gint64)sector * 2448ULL);
+    else
+      written = (gint64)((gint64)sector * 2048ULL);
 
-		brasero_track_type_free (output);
+    brasero_track_type_free (output);
 
-		brasero_job_set_written_track (BRASERO_JOB (readcd), written);
+    brasero_job_set_written_track (BRASERO_JOB (readcd), written);
 
-		if (sector > 10)
-			brasero_job_start_progress (BRASERO_JOB (readcd), FALSE);
-	}
-	else if ((pos = strstr (line, "Capacity:"))) {
-		brasero_job_set_current_action (BRASERO_JOB (readcd),
-							BRASERO_BURN_ACTION_DRIVE_COPY,
-							NULL,
-							FALSE);
-	}
-	else if (strstr (line, "Device not ready.")) {
-		brasero_job_error (BRASERO_JOB (readcd),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_DRIVE_BUSY,
-						_("The drive is busy")));
-	}
-	else if (strstr (line, "Cannot open SCSI driver.")) {
-		brasero_job_error (BRASERO_JOB (readcd),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_PERMISSION,
-						_("You do not have the required permissions to use this drive")));		
-	}
-	else if (strstr (line, "Cannot send SCSI cmd via ioctl")) {
-		brasero_job_error (BRASERO_JOB (readcd),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_PERMISSION,
-						_("You do not have the required permissions to use this drive")));
-	}
-	/* we scan for this error as in this case readcd returns success */
-	else if (sscanf (line, "Input/output error. Error on sector %d not corrected. Total of %d error", &dummy1, &dummy2) == 2) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("An internal error occurred")));
-	}
-	else if (strstr (line, "No space left on device")) {
-		/* This is necessary as readcd won't return an error code on exit */
-		brasero_job_error (BRASERO_JOB (readcd),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_DISK_SPACE,
-						_("The location you chose to store the image on does not have enough free space for the disc image")));
-	}
+    if (sector > 10)
+      brasero_job_start_progress (BRASERO_JOB (readcd), FALSE);
+  } else if ((pos = strstr (line, "Capacity:"))) {
+    brasero_job_set_current_action (BRASERO_JOB (readcd),
+                                    BRASERO_BURN_ACTION_DRIVE_COPY,
+                                    NULL,
+                                    FALSE);
+  } else if (strstr (line, "Device not ready.")) {
+    brasero_job_error (BRASERO_JOB (readcd),
+                       g_error_new (BRASERO_BURN_ERROR,
+                                    BRASERO_BURN_ERROR_DRIVE_BUSY,
+                                    _("The drive is busy")));
+  } else if (strstr (line, "Cannot open SCSI driver.")) {
+    brasero_job_error (BRASERO_JOB (readcd),
+                       g_error_new (BRASERO_BURN_ERROR,
+                                    BRASERO_BURN_ERROR_PERMISSION,
+                                    _("You do not have the required permissions to use this drive")));
+  } else if (strstr (line, "Cannot send SCSI cmd via ioctl")) {
+    brasero_job_error (BRASERO_JOB (readcd),
+                       g_error_new (BRASERO_BURN_ERROR,
+                                    BRASERO_BURN_ERROR_PERMISSION,
+                                    _("You do not have the required permissions to use this drive")));
+  }
+  /* we scan for this error as in this case readcd returns success */
+  else if (sscanf (line, "Input/output error. Error on sector %d not corrected. Total of %d error", &dummy1, &dummy2) == 2) {
+    brasero_job_error (BRASERO_JOB (process),
+                       g_error_new (BRASERO_BURN_ERROR,
+                                    BRASERO_BURN_ERROR_GENERAL,
+                                    _("An internal error occurred")));
+  } else if (strstr (line, "No space left on device")) {
+    /* This is necessary as readcd won't return an error code on exit */
+    brasero_job_error (BRASERO_JOB (readcd),
+                       g_error_new (BRASERO_BURN_ERROR,
+                                    BRASERO_BURN_ERROR_DISK_SPACE,
+                                    _("The location you chose to store the image on does not have enough free space for the disc image")));
+  }
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
-				      GPtrArray *argv,
-				      GError **error)
+brasero_readcd_argv_set_iso_boundary (BraseroReadcd  *readcd,
+                                      GPtrArray      *argv,
+                                      GError        **error)
 {
-	goffset nb_blocks;
-	BraseroTrack *track;
-	GValue *value = NULL;
-	BraseroTrackType *output = NULL;
+  goffset nb_blocks;
+  BraseroTrack *track;
+  GValue *value = NULL;
+  BraseroTrackType *output = NULL;
 
-	brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
+  brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
 
-	output = brasero_track_type_new ();
-	brasero_job_get_output_type (BRASERO_JOB (readcd), output);
+  output = brasero_track_type_new ();
+  brasero_job_get_output_type (BRASERO_JOB (readcd), output);
 
-	brasero_track_tag_lookup (track,
-				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
-				  &value);
-	if (value) {
-		guint64 start, end;
+  brasero_track_tag_lookup (track,
+                            BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+                            &value);
+  if (value) {
+    guint64 start, end;
 
-		/* we were given an address to start */
-		start = g_value_get_uint64 (value);
+    /* we were given an address to start */
+    start = g_value_get_uint64 (value);
 
-		/* get the length now */
-		value = NULL;
-		brasero_track_tag_lookup (track,
-					  BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
-					  &value);
+    /* get the length now */
+    value = NULL;
+    brasero_track_tag_lookup (track,
+                              BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+                              &value);
 
-		end = g_value_get_uint64 (value);
+    end = g_value_get_uint64 (value);
 
-		BRASERO_JOB_LOG (readcd,
-				 "reading from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
-				 start,
-				 end);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
-							start,
-							end));
-	}
-	/* 0 means all disc, -1 problem */
-	else if (brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)) > 0) {
-		goffset start;
-		BraseroDrive *drive;
-		BraseroMedium *medium;
+    BRASERO_JOB_LOG (readcd,
+                     "reading from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
+                     start,
+                     end);
+    g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
+                                            start,
+                                            end));
+  }
+  /* 0 means all disc, -1 problem */
+  else if (brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)) > 0) {
+    goffset start;
+    BraseroDrive *drive;
+    BraseroMedium *medium;
 
-		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
-		medium = brasero_drive_get_medium (drive);
-		brasero_medium_get_track_space (medium,
-						brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
-						NULL,
-						&nb_blocks);
-		brasero_medium_get_track_address (medium,
-						  brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
-						  NULL,
-						  &start);
+    drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+    medium = brasero_drive_get_medium (drive);
+    brasero_medium_get_track_space (medium,
+                                    brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
+                                    NULL,
+                                    &nb_blocks);
+    brasero_medium_get_track_address (medium,
+                                      brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
+                                      NULL,
+                                      &start);
 
-		BRASERO_JOB_LOG (readcd,
-				 "reading %i from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
-				 brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
-				 start,
-				 start + nb_blocks);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
-							start,
-							start + nb_blocks));
-	}
-	/* if it's BIN output just read the last track */
-	else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN) {
-		goffset start;
-		BraseroDrive *drive;
-		BraseroMedium *medium;
+    BRASERO_JOB_LOG (readcd,
+                     "reading %i from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
+                     brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
+                     start,
+                     start + nb_blocks);
+    g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
+                                            start,
+                                            start + nb_blocks));
+  }
+  /* if it's BIN output just read the last track */
+  else if (brasero_track_type_get_image_format (output) == BRASERO_IMAGE_FORMAT_BIN) {
+    goffset start;
+    BraseroDrive *drive;
+    BraseroMedium *medium;
 
-		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
-		medium = brasero_drive_get_medium (drive);
-		brasero_medium_get_last_data_track_space (medium,
-							  NULL,
-							  &nb_blocks);
-		brasero_medium_get_last_data_track_address (medium,
-							    NULL,
-							    &start);
-		BRASERO_JOB_LOG (readcd,
-				 "reading last track from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
-				 start,
-				 start + nb_blocks);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
-							start,
-							start + nb_blocks));
-	}
-	else {
-		brasero_track_get_size (track, &nb_blocks, NULL);
-		g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%"G_GINT64_FORMAT, nb_blocks));
-	}
+    drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+    medium = brasero_drive_get_medium (drive);
+    brasero_medium_get_last_data_track_space (medium,
+                                              NULL,
+                                              &nb_blocks);
+    brasero_medium_get_last_data_track_address (medium,
+                                                NULL,
+                                                &start);
+    BRASERO_JOB_LOG (readcd,
+                     "reading last track from sector %"G_GINT64_FORMAT" to %"G_GINT64_FORMAT,
+                     start,
+                     start + nb_blocks);
+    g_ptr_array_add (argv, g_strdup_printf ("-sectors=%"G_GINT64_FORMAT"-%"G_GINT64_FORMAT,
+                                            start,
+                                            start + nb_blocks));
+  } else {
+    brasero_track_get_size (track, &nb_blocks, NULL);
+    g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%"G_GINT64_FORMAT, nb_blocks));
+  }
 
-	brasero_track_type_free (output);
+  brasero_track_type_free (output);
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_readcd_get_size (BraseroReadcd *self,
-			 GError **error)
+brasero_readcd_get_size (BraseroReadcd  *self,
+                         GError        **error)
 {
-	goffset blocks;
-	GValue *value = NULL;
-	BraseroImageFormat format;
-	BraseroTrack *track = NULL;
-	BraseroTrackType *output = NULL;
+  goffset blocks;
+  GValue *value = NULL;
+  BraseroImageFormat format;
+  BraseroTrack *track = NULL;
+  BraseroTrackType *output = NULL;
 
-	output = brasero_track_type_new ();
-	brasero_job_get_output_type (BRASERO_JOB (self), output);
+  output = brasero_track_type_new ();
+  brasero_job_get_output_type (BRASERO_JOB (self), output);
 
-	if (!brasero_track_type_get_has_image (output)) {
-		brasero_track_type_free (output);
-		return BRASERO_BURN_ERR;
-	}
+  if (!brasero_track_type_get_has_image (output)) {
+    brasero_track_type_free (output);
+    return BRASERO_BURN_ERR;
+  }
 
-	format = brasero_track_type_get_image_format (output);
-	brasero_track_type_free (output);
+  format = brasero_track_type_get_image_format (output);
+  brasero_track_type_free (output);
 
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	brasero_track_tag_lookup (track,
-				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
-				  &value);
+  brasero_job_get_current_track (BRASERO_JOB (self), &track);
+  brasero_track_tag_lookup (track,
+                            BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+                            &value);
 
-	if (value) {
-		guint64 start, end;
+  if (value) {
+    guint64 start, end;
 
-		/* we were given an address to start */
-		start = g_value_get_uint64 (value);
+    /* we were given an address to start */
+    start = g_value_get_uint64 (value);
 
-		/* get the length now */
-		value = NULL;
-		brasero_track_tag_lookup (track,
-					  BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
-					  &value);
+    /* get the length now */
+    value = NULL;
+    brasero_track_tag_lookup (track,
+                              BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+                              &value);
 
-		end = g_value_get_uint64 (value);
-		blocks = end - start;
-	}
-	else if (brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)) > 0) {
-		BraseroDrive *drive;
-		BraseroMedium *medium;
+    end = g_value_get_uint64 (value);
+    blocks = end - start;
+  } else if (brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)) > 0) {
+    BraseroDrive *drive;
+    BraseroMedium *medium;
 
-		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
-		medium = brasero_drive_get_medium (drive);
-		brasero_medium_get_track_space (medium,
-						brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
-						NULL,
-						&blocks);
-	}
-	else if (format == BRASERO_IMAGE_FORMAT_BIN) {
-		BraseroDrive *drive;
-		BraseroMedium *medium;
+    drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+    medium = brasero_drive_get_medium (drive);
+    brasero_medium_get_track_space (medium,
+                                    brasero_track_disc_get_track_num (BRASERO_TRACK_DISC (track)),
+                                    NULL,
+                                    &blocks);
+  } else if (format == BRASERO_IMAGE_FORMAT_BIN) {
+    BraseroDrive *drive;
+    BraseroMedium *medium;
 
-		drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
-		medium = brasero_drive_get_medium (drive);
-		brasero_medium_get_last_data_track_space (medium,
-							  NULL,
-							  &blocks);
-	}
-	else
-		brasero_track_get_size (track, &blocks, NULL);
+    drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+    medium = brasero_drive_get_medium (drive);
+    brasero_medium_get_last_data_track_space (medium,
+                                              NULL,
+                                              &blocks);
+  } else
+    brasero_track_get_size (track, &blocks, NULL);
 
-	if (format == BRASERO_IMAGE_FORMAT_BIN) {
-		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
-							       blocks,
-							       blocks * 2048ULL);
-	}
-	else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
-		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
-							       blocks,
-							       blocks * 2448ULL);
-	}
-	else
-		return BRASERO_BURN_NOT_SUPPORTED;
+  if (format == BRASERO_IMAGE_FORMAT_BIN) {
+    brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+                                                   blocks,
+                                                   blocks * 2048ULL);
+  } else if (format == BRASERO_IMAGE_FORMAT_CLONE) {
+    brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+                                                   blocks,
+                                                   blocks * 2448ULL);
+  } else
+    return BRASERO_BURN_NOT_SUPPORTED;
 
-	/* no need to go any further */
-	return BRASERO_BURN_NOT_RUNNING;
+  /* no need to go any further */
+  return BRASERO_BURN_NOT_RUNNING;
 }
 
 static BraseroBurnResult
-brasero_readcd_set_argv (BraseroProcess *process,
-			 GPtrArray *argv,
-			 GError **error)
+brasero_readcd_set_argv (BraseroProcess  *process,
+                         GPtrArray       *argv,
+                         GError         **error)
 {
-	BraseroBurnResult result = FALSE;
-	BraseroTrackType *output = NULL;
-	BraseroImageFormat format;
-	BraseroJobAction action;
-	BraseroReadcd *readcd;
-	BraseroMedium *medium;
-	BraseroTrack *track;
-	BraseroDrive *drive;
-	BraseroMedia media;
-	gchar *outfile_arg;
-	gchar *dev_str;
-	gchar *device;
+  BraseroBurnResult result = FALSE;
+  BraseroTrackType *output = NULL;
+  BraseroImageFormat format;
+  BraseroJobAction action;
+  BraseroReadcd *readcd;
+  BraseroMedium *medium;
+  BraseroTrack *track;
+  BraseroDrive *drive;
+  BraseroMedia media;
+  gchar *outfile_arg;
+  gchar *dev_str;
+  gchar *device;
 
-	readcd = BRASERO_READCD (process);
+  readcd = BRASERO_READCD (process);
 
-	/* This is a kind of shortcut */
-	brasero_job_get_action (BRASERO_JOB (process), &action);
-	if (action == BRASERO_JOB_ACTION_SIZE)
-		return brasero_readcd_get_size (readcd, error);
+  /* This is a kind of shortcut */
+  brasero_job_get_action (BRASERO_JOB (process), &action);
+  if (action == BRASERO_JOB_ACTION_SIZE)
+    return brasero_readcd_get_size (readcd, error);
 
-	g_ptr_array_add (argv, g_strdup ("readcd"));
+  g_ptr_array_add (argv, g_strdup ("readcd"));
 
-	brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
-	drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
+  brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
+  drive = brasero_track_disc_get_drive (BRASERO_TRACK_DISC (track));
 
-	/* NOTE: that function returns either bus_target_lun or the device path
-	 * according to OSes. Basically it returns bus/target/lun only for FreeBSD
-	 * which is the only OS in need for that. For all others it returns the device
-	 * path. */
-	device = brasero_drive_get_bus_target_lun_string (drive);
+  /* NOTE: that function returns either bus_target_lun or the device path
+   * according to OSes. Basically it returns bus/target/lun only for FreeBSD
+   * which is the only OS in need for that. For all others it returns the device
+   * path. */
+  device = brasero_drive_get_bus_target_lun_string (drive);
 
-	if (!device)
-		return BRASERO_BURN_ERR;
+  if (!device)
+    return BRASERO_BURN_ERR;
 
-	dev_str = g_strdup_printf ("dev=%s", device);
-	g_ptr_array_add (argv, dev_str);
-	g_free (device);
+  dev_str = g_strdup_printf ("dev=%s", device);
+  g_ptr_array_add (argv, dev_str);
+  g_free (device);
 
-	g_ptr_array_add (argv, g_strdup ("-nocorr"));
-	g_ptr_array_add (argv, g_strdup ("retries=5"));
+  g_ptr_array_add (argv, g_strdup ("-nocorr"));
+  g_ptr_array_add (argv, g_strdup ("retries=5"));
 
-	medium = brasero_drive_get_medium (drive);
-	media = brasero_medium_get_status (medium);
+  medium = brasero_drive_get_medium (drive);
+  media = brasero_medium_get_status (medium);
 
-	output = brasero_track_type_new ();
-	brasero_job_get_output_type (BRASERO_JOB (readcd), output);
-	format = brasero_track_type_get_image_format (output);
-	brasero_track_type_free (output);
+  output = brasero_track_type_new ();
+  brasero_job_get_output_type (BRASERO_JOB (readcd), output);
+  format = brasero_track_type_get_image_format (output);
+  brasero_track_type_free (output);
 
-	if ((media & BRASERO_MEDIUM_DVD) && format != BRASERO_IMAGE_FORMAT_BIN) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("An internal error occurred"));
-		return BRASERO_BURN_ERR;
-	}
+  if ((media & BRASERO_MEDIUM_DVD) && format != BRASERO_IMAGE_FORMAT_BIN) {
+    g_set_error (error,
+                 BRASERO_BURN_ERROR,
+                 BRASERO_BURN_ERROR_GENERAL,
+                 _("An internal error occurred"));
+    return BRASERO_BURN_ERR;
+  }
 
-	if (format == BRASERO_IMAGE_FORMAT_CLONE) {
-		/* NOTE: with this option the sector size is 2448 
-		 * because it is raw96 (2352+96) otherwise it is 2048  */
-		g_ptr_array_add (argv, g_strdup ("-clone"));
-	}
-	else if (format == BRASERO_IMAGE_FORMAT_BIN) {
-		g_ptr_array_add (argv, g_strdup ("-noerror"));
+  if (format == BRASERO_IMAGE_FORMAT_CLONE) {
+    /* NOTE: with this option the sector size is 2448
+     * because it is raw96 (2352+96) otherwise it is 2048  */
+    g_ptr_array_add (argv, g_strdup ("-clone"));
+  } else if (format == BRASERO_IMAGE_FORMAT_BIN) {
+    g_ptr_array_add (argv, g_strdup ("-noerror"));
 
-		/* don't do it for clone since we need the entire disc */
-		result = brasero_readcd_argv_set_iso_boundary (readcd, argv, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
-	else
-		BRASERO_JOB_NOT_SUPPORTED (readcd);
+    /* don't do it for clone since we need the entire disc */
+    result = brasero_readcd_argv_set_iso_boundary (readcd, argv, error);
+    if (result != BRASERO_BURN_OK)
+      return result;
+  } else
+    BRASERO_JOB_NOT_SUPPORTED (readcd);
 
-	if (brasero_job_get_fd_out (BRASERO_JOB (readcd), NULL) != BRASERO_BURN_OK) {
-		gchar *image;
+  if (brasero_job_get_fd_out (BRASERO_JOB (readcd), NULL) != BRASERO_BURN_OK) {
+    gchar *image;
 
-		if (format != BRASERO_IMAGE_FORMAT_CLONE
-		&&  format != BRASERO_IMAGE_FORMAT_BIN)
-			BRASERO_JOB_NOT_SUPPORTED (readcd);
+    if (format != BRASERO_IMAGE_FORMAT_CLONE
+        && format != BRASERO_IMAGE_FORMAT_BIN)
+      BRASERO_JOB_NOT_SUPPORTED (readcd);
 
-		result = brasero_job_get_image_output (BRASERO_JOB (readcd),
-						       &image,
-						       NULL);
-		if (result != BRASERO_BURN_OK)
-			return result;
+    result = brasero_job_get_image_output (BRASERO_JOB (readcd),
+                                           &image,
+                                           NULL);
+    if (result != BRASERO_BURN_OK)
+      return result;
 
-		outfile_arg = g_strdup_printf ("-f=%s", image);
-		g_ptr_array_add (argv, outfile_arg);
-		g_free (image);
-	}
-	else if (format == BRASERO_IMAGE_FORMAT_BIN) {
-		outfile_arg = g_strdup ("-f=-");
-		g_ptr_array_add (argv, outfile_arg);
-	}
-	else 	/* unfortunately raw images can't be piped out */
-		BRASERO_JOB_NOT_SUPPORTED (readcd);
+    outfile_arg = g_strdup_printf ("-f=%s", image);
+    g_ptr_array_add (argv, outfile_arg);
+    g_free (image);
+  } else if (format == BRASERO_IMAGE_FORMAT_BIN) {
+    outfile_arg = g_strdup ("-f=-");
+    g_ptr_array_add (argv, outfile_arg);
+  } else        /* unfortunately raw images can't be piped out */
+    BRASERO_JOB_NOT_SUPPORTED (readcd);
 
-	brasero_job_set_use_average_rate (BRASERO_JOB (process), TRUE);
-	return BRASERO_BURN_OK;
+  brasero_job_set_use_average_rate (BRASERO_JOB (process), TRUE);
+  return BRASERO_BURN_OK;
 }
 
 static void
 brasero_readcd_finalize (GObject *object)
 {
-	G_OBJECT_CLASS (brasero_readcd_parent_class)->finalize (object);
+  G_OBJECT_CLASS (brasero_readcd_parent_class)->finalize (object);
 }
 
 static void
 brasero_readcd_class_init (BraseroReadcdClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
-	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	object_class->finalize = brasero_readcd_finalize;
+  object_class->finalize = brasero_readcd_finalize;
 
-	process_class->stderr_func = brasero_readcd_read_stderr;
-	process_class->set_argv = brasero_readcd_set_argv;
+  process_class->stderr_func = brasero_readcd_read_stderr;
+  process_class->set_argv = brasero_readcd_set_argv;
 }
 
 static void
@@ -457,66 +443,66 @@ brasero_readcd_init (BraseroReadcd *obj)
 static void
 brasero_readcd_export_caps (BraseroPlugin *plugin)
 {
-	GSList *output;
-	GSList *input;
+  GSList *output;
+  GSList *input;
 
-	brasero_plugin_define (plugin,
-			       "readcd",
-	                       NULL,
-			       _("Copies any disc to a disc image"),
-			       "Philippe Rouquier",
-			       0);
+  brasero_plugin_define (plugin,
+                         "readcd",
+                         NULL,
+                         _("Copies any disc to a disc image"),
+                         "Philippe Rouquier",
+                         0);
 
-	/* that's for clone mode only The only one to copy audio */
-	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
-					 BRASERO_IMAGE_FORMAT_CLONE);
+  /* that's for clone mode only The only one to copy audio */
+  output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+                                   BRASERO_IMAGE_FORMAT_CLONE);
 
-	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
-				       BRASERO_MEDIUM_ROM|
-				       BRASERO_MEDIUM_WRITABLE|
-				       BRASERO_MEDIUM_REWRITABLE|
-				       BRASERO_MEDIUM_APPENDABLE|
-				       BRASERO_MEDIUM_CLOSED|
-				       BRASERO_MEDIUM_HAS_AUDIO|
-				       BRASERO_MEDIUM_HAS_DATA);
+  input = brasero_caps_disc_new (BRASERO_MEDIUM_CD |
+                                 BRASERO_MEDIUM_ROM |
+                                 BRASERO_MEDIUM_WRITABLE |
+                                 BRASERO_MEDIUM_REWRITABLE |
+                                 BRASERO_MEDIUM_APPENDABLE |
+                                 BRASERO_MEDIUM_CLOSED |
+                                 BRASERO_MEDIUM_HAS_AUDIO |
+                                 BRASERO_MEDIUM_HAS_DATA);
 
-	brasero_plugin_link_caps (plugin, output, input);
-	g_slist_free (output);
-	g_slist_free (input);
+  brasero_plugin_link_caps (plugin, output, input);
+  g_slist_free (output);
+  g_slist_free (input);
 
-	/* that's for regular mode: it accepts the previous type of discs 
-	 * plus the DVDs types as well */
-	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
-					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
-					 BRASERO_IMAGE_FORMAT_BIN);
+  /* that's for regular mode: it accepts the previous type of discs
+   * plus the DVDs types as well */
+  output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE |
+                                   BRASERO_PLUGIN_IO_ACCEPT_PIPE,
+                                   BRASERO_IMAGE_FORMAT_BIN);
 
-	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
-				       BRASERO_MEDIUM_DVD|
-				       BRASERO_MEDIUM_DUAL_L|
-				       BRASERO_MEDIUM_PLUS|
-				       BRASERO_MEDIUM_SEQUENTIAL|
-				       BRASERO_MEDIUM_RESTRICTED|
-				       BRASERO_MEDIUM_ROM|
-				       BRASERO_MEDIUM_WRITABLE|
-				       BRASERO_MEDIUM_REWRITABLE|
-				       BRASERO_MEDIUM_CLOSED|
-				       BRASERO_MEDIUM_APPENDABLE|
-				       BRASERO_MEDIUM_HAS_DATA);
+  input = brasero_caps_disc_new (BRASERO_MEDIUM_CD |
+                                 BRASERO_MEDIUM_DVD |
+                                 BRASERO_MEDIUM_DUAL_L |
+                                 BRASERO_MEDIUM_PLUS |
+                                 BRASERO_MEDIUM_SEQUENTIAL |
+                                 BRASERO_MEDIUM_RESTRICTED |
+                                 BRASERO_MEDIUM_ROM |
+                                 BRASERO_MEDIUM_WRITABLE |
+                                 BRASERO_MEDIUM_REWRITABLE |
+                                 BRASERO_MEDIUM_CLOSED |
+                                 BRASERO_MEDIUM_APPENDABLE |
+                                 BRASERO_MEDIUM_HAS_DATA);
 
-	brasero_plugin_link_caps (plugin, output, input);
-	g_slist_free (output);
-	g_slist_free (input);
+  brasero_plugin_link_caps (plugin, output, input);
+  g_slist_free (output);
+  g_slist_free (input);
 
-	brasero_plugin_register_group (plugin, _(CDRTOOLS_DESCRIPTION));
+  brasero_plugin_register_group (plugin, _(CDRTOOLS_DESCRIPTION));
 }
 
 G_MODULE_EXPORT void
 brasero_plugin_check_config (BraseroPlugin *plugin)
 {
-	gint version [3] = { 2, 0, -1};
-	brasero_plugin_test_app (plugin,
-	                         "readcd",
-	                         "--version",
-	                         "readcd %d.%d",
-	                         version);
+  gint version[3] = { 2, 0, -1};
+  brasero_plugin_test_app (plugin,
+                           "readcd",
+                           "--version",
+                           "readcd %d.%d",
+                           version);
 }

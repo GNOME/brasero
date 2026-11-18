@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-misc is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -42,86 +42,86 @@
 
 GtkWidget *
 brasero_notify_get_message_by_context_id (GtkWidget *self,
-					  guint context_id)
+                                          guint      context_id)
 {
-	GtkWidget *retval = NULL;
-	GList *children;
-	GList *iter;
+  GtkWidget *retval = NULL;
+  GList *children;
+  GList *iter;
 
-	GDK_THREADS_ENTER ();
+  GDK_THREADS_ENTER ();
 
-	children = gtk_container_get_children (GTK_CONTAINER (self));
-	for (iter = children; iter; iter = iter->next) {
-		GtkWidget *widget;
+  children = gtk_container_get_children (GTK_CONTAINER (self));
+  for (iter = children; iter; iter = iter->next) {
+    GtkWidget *widget;
 
-		widget = iter->data;
-		if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
-			retval = widget;
-			break;
-		}
-	}
-	g_list_free (children);
+    widget = iter->data;
+    if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
+      retval = widget;
+      break;
+    }
+  }
+  g_list_free (children);
 
-	GDK_THREADS_LEAVE ();
+  GDK_THREADS_LEAVE ();
 
-	return retval;
+  return retval;
 }
 
 void
 brasero_notify_message_remove (GtkWidget *self,
-			       guint context_id)
+                               guint      context_id)
 {
-	GList *children;
-	GList *iter;
+  GList *children;
+  GList *iter;
 
-	GDK_THREADS_ENTER ();
+  GDK_THREADS_ENTER ();
 
-	children = gtk_container_get_children (GTK_CONTAINER (self));
-	for (iter = children; iter; iter = iter->next) {
-		GtkWidget *widget;
+  children = gtk_container_get_children (GTK_CONTAINER (self));
+  for (iter = children; iter; iter = iter->next) {
+    GtkWidget *widget;
 
-		widget = iter->data;
-		if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
-			brasero_disc_message_destroy (BRASERO_DISC_MESSAGE (widget));
-		}
-	}
-	g_list_free (children);
+    widget = iter->data;
+    if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
+      brasero_disc_message_destroy (BRASERO_DISC_MESSAGE (widget));
+    }
+  }
+  g_list_free (children);
 
-	GDK_THREADS_LEAVE ();
+  GDK_THREADS_LEAVE ();
 }
 
 GtkWidget *
-brasero_notify_message_add (GtkWidget *self,
-			    const gchar *primary,
-			    const gchar *secondary,
-			    gint timeout,
-			    guint context_id)
+brasero_notify_message_add (GtkWidget   *self,
+                            const gchar *primary,
+                            const gchar *secondary,
+                            gint         timeout,
+                            guint        context_id)
 {
-	GtkWidget *message;
+  GtkWidget *message;
 
-	GDK_THREADS_ENTER ();
+  GDK_THREADS_ENTER ();
 
-	brasero_notify_message_remove (self, context_id);
-	
-	message = brasero_disc_message_new ();
+  brasero_notify_message_remove (self, context_id);
 
-	brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message), primary);
-	brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message), secondary);
-	brasero_disc_message_set_context (BRASERO_DISC_MESSAGE (message), context_id);
+  message = brasero_disc_message_new ();
 
-	if (timeout > 0)
-		brasero_disc_message_set_timeout (BRASERO_DISC_MESSAGE (message), timeout);
+  brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message), primary);
+  brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message), secondary);
+  brasero_disc_message_set_context (BRASERO_DISC_MESSAGE (message), context_id);
 
-	gtk_container_add (GTK_CONTAINER (self), message);
-	gtk_widget_show (message);
-		
-	GDK_THREADS_LEAVE ();
+  if (timeout > 0)
+    brasero_disc_message_set_timeout (BRASERO_DISC_MESSAGE (message), timeout);
 
-	return message;
+  gtk_container_add (GTK_CONTAINER (self), message);
+  gtk_widget_show (message);
+
+  GDK_THREADS_LEAVE ();
+
+  return message;
 }
 
 GtkWidget *
 brasero_notify_new (void)
 {
-	return gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  return gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 }

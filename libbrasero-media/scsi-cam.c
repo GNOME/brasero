@@ -21,17 +21,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -61,99 +61,99 @@
 #include <cam/scsi/scsi_message.h>
 
 struct _BraseroDeviceHandle {
-	struct cam_device *cam;
-	int fd;
+  struct cam_device *cam;
+  int fd;
 };
 
 struct _BraseroScsiCmd {
-	uchar cmd [BRASERO_SCSI_CMD_MAX_LEN];
-	BraseroDeviceHandle *handle;
+  uchar cmd[BRASERO_SCSI_CMD_MAX_LEN];
+  BraseroDeviceHandle *handle;
 
-	const BraseroScsiCmdInfo *info;
+  const BraseroScsiCmdInfo *info;
 };
 typedef struct _BraseroScsiCmd BraseroScsiCmd;
 
-#define BRASERO_SCSI_CMD_OPCODE_OFF			0
-#define BRASERO_SCSI_CMD_SET_OPCODE(command)		(command->cmd [BRASERO_SCSI_CMD_OPCODE_OFF] = command->info->opcode)
+#define BRASERO_SCSI_CMD_OPCODE_OFF                     0
+#define BRASERO_SCSI_CMD_SET_OPCODE(command)            (command->cmd [BRASERO_SCSI_CMD_OPCODE_OFF] = command->info->opcode)
 
-#define OPEN_FLAGS			O_RDONLY /*|O_EXCL */|O_NONBLOCK
+#define OPEN_FLAGS                      O_RDONLY /*|O_EXCL */ | O_NONBLOCK
 
 BraseroScsiResult
-brasero_scsi_command_issue_sync (gpointer command,
-				 gpointer buffer,
-				 int size,
-				 BraseroScsiErrCode *error)
+brasero_scsi_command_issue_sync (gpointer            command,
+                                 gpointer            buffer,
+                                 int                 size,
+                                 BraseroScsiErrCode *error)
 {
-	int timeout;
-	BraseroScsiCmd *cmd;
-	union ccb cam_ccb;
-	int direction = -1;
+  int timeout;
+  BraseroScsiCmd *cmd;
+  union ccb cam_ccb;
+  int direction = -1;
 
-	timeout = 10;
+  timeout = 10;
 
-	memset (&cam_ccb, 0, sizeof(cam_ccb));
-	cmd = command;
+  memset (&cam_ccb, 0, sizeof (cam_ccb));
+  cmd = command;
 
-	cam_ccb.ccb_h.path_id = cmd->handle->cam->path_id;
-	cam_ccb.ccb_h.target_id = cmd->handle->cam->target_id;
-	cam_ccb.ccb_h.target_lun = cmd->handle->cam->target_lun;
+  cam_ccb.ccb_h.path_id = cmd->handle->cam->path_id;
+  cam_ccb.ccb_h.target_id = cmd->handle->cam->target_id;
+  cam_ccb.ccb_h.target_lun = cmd->handle->cam->target_lun;
 
-	if (cmd->info->direction & BRASERO_SCSI_READ)
-		direction = CAM_DIR_IN;
-	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
-		direction = CAM_DIR_OUT;
+  if (cmd->info->direction & BRASERO_SCSI_READ)
+    direction = CAM_DIR_IN;
+  else if (cmd->info->direction & BRASERO_SCSI_WRITE)
+    direction = CAM_DIR_OUT;
 
-	g_assert (direction > -1);
+  g_assert (direction > -1);
 
-	cam_fill_csio(&cam_ccb.csio,
-		      1,
-		      NULL,
-		      direction,
-		      MSG_SIMPLE_Q_TAG,
-		      buffer,
-		      size,
-		      sizeof(cam_ccb.csio.sense_data),
-		      cmd->info->size,
-		      timeout * 1000);
+  cam_fill_csio (&cam_ccb.csio,
+                 1,
+                 NULL,
+                 direction,
+                 MSG_SIMPLE_Q_TAG,
+                 buffer,
+                 size,
+                 sizeof (cam_ccb.csio.sense_data),
+                 cmd->info->size,
+                 timeout * 1000);
 
-	memcpy (cam_ccb.csio.cdb_io.cdb_bytes, cmd->cmd,
-		BRASERO_SCSI_CMD_MAX_LEN);
+  memcpy (cam_ccb.csio.cdb_io.cdb_bytes, cmd->cmd,
+          BRASERO_SCSI_CMD_MAX_LEN);
 
-	if (cam_send_ccb (cmd->handle->cam, &cam_ccb) == -1) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
-		return BRASERO_SCSI_FAILURE;
-	}
+  if (cam_send_ccb (cmd->handle->cam, &cam_ccb) == -1) {
+    BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
+    return BRASERO_SCSI_FAILURE;
+  }
 
-	if ((cam_ccb.ccb_h.status & CAM_STATUS_MASK) != CAM_REQ_CMP) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
-		return BRASERO_SCSI_FAILURE;
-	}
+  if ((cam_ccb.ccb_h.status & CAM_STATUS_MASK) != CAM_REQ_CMP) {
+    BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
+    return BRASERO_SCSI_FAILURE;
+  }
 
-	return BRASERO_SCSI_OK;
+  return BRASERO_SCSI_OK;
 }
 
 gpointer
 brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
-			  BraseroDeviceHandle *handle)
+                          BraseroDeviceHandle      *handle)
 {
-	BraseroScsiCmd *cmd;
+  BraseroScsiCmd *cmd;
 
-	/* make sure we can set the flags of the descriptor */
+  /* make sure we can set the flags of the descriptor */
 
-	/* allocate the command */
-	cmd = g_new0 (BraseroScsiCmd, 1);
-	cmd->info = info;
-	cmd->handle = handle;
+  /* allocate the command */
+  cmd = g_new0 (BraseroScsiCmd, 1);
+  cmd->info = info;
+  cmd->handle = handle;
 
-	BRASERO_SCSI_CMD_SET_OPCODE (cmd);
-	return cmd;
+  BRASERO_SCSI_CMD_SET_OPCODE (cmd);
+  return cmd;
 }
 
 BraseroScsiResult
 brasero_scsi_command_free (gpointer cmd)
 {
-	g_free (cmd);
-	return BRASERO_SCSI_OK;
+  g_free (cmd);
+  return BRASERO_SCSI_OK;
 }
 
 /**
@@ -161,83 +161,82 @@ brasero_scsi_command_free (gpointer cmd)
  */
 
 BraseroDeviceHandle *
-brasero_device_handle_open (const gchar *path,
-			    gboolean exclusive,
-			    BraseroScsiErrCode *code)
+brasero_device_handle_open (const gchar        *path,
+                            gboolean            exclusive,
+                            BraseroScsiErrCode *code)
 {
-	int fd;
-	int flags = OPEN_FLAGS;
-	BraseroDeviceHandle *handle;
-	struct cam_device *cam;
+  int fd;
+  int flags = OPEN_FLAGS;
+  BraseroDeviceHandle *handle;
+  struct cam_device *cam;
 
-	g_assert (path != NULL);
+  g_assert (path != NULL);
 
-/*	if (exclusive)
-		flags |= O_EXCL;*/
+/*  if (exclusive)
+                flags |= O_EXCL;*/
 
-	/* cam_open_device() fails unless we use O_RDWR */
-	cam = cam_open_device (path, O_RDWR);
-	fd = open (path, flags);
-	if (cam && fd > -1) {
-		handle = g_new0 (BraseroDeviceHandle, 1);
-		handle->cam = cam;
-		handle->fd = fd;
-	}
-	else {
-		int serrno;
+  /* cam_open_device() fails unless we use O_RDWR */
+  cam = cam_open_device (path, O_RDWR);
+  fd = open (path, flags);
+  if (cam && fd > -1) {
+    handle = g_new0 (BraseroDeviceHandle, 1);
+    handle->cam = cam;
+    handle->fd = fd;
+  } else {
+    int serrno;
 
-		if (code) {
-			if (errno == EAGAIN
-			||  errno == EWOULDBLOCK
-			||  errno == EBUSY)
-				*code = BRASERO_SCSI_NOT_READY;
-			else
-				*code = BRASERO_SCSI_ERRNO;
-		}
+    if (code) {
+      if (errno == EAGAIN
+          || errno == EWOULDBLOCK
+          || errno == EBUSY)
+        *code = BRASERO_SCSI_NOT_READY;
+      else
+        *code = BRASERO_SCSI_ERRNO;
+    }
 
-		serrno = errno;
+    serrno = errno;
 
-		if (fd > -1)
-			close (fd);
-		if (cam)
-			cam_close_device (cam);
+    if (fd > -1)
+      close (fd);
+    if (cam)
+      cam_close_device (cam);
 
-		errno = serrno;
+    errno = serrno;
 
-		return NULL;
-	}
+    return NULL;
+  }
 
-	return handle;
+  return handle;
 }
 
 void
 brasero_device_handle_close (BraseroDeviceHandle *handle)
 {
-	g_assert (handle != NULL);
+  g_assert (handle != NULL);
 
-	if (handle->cam)
-		cam_close_device (handle->cam);
+  if (handle->cam)
+    cam_close_device (handle->cam);
 
-	close (handle->fd);
+  close (handle->fd);
 
-	g_free (handle);
+  g_free (handle);
 }
 
 char *
 brasero_device_get_bus_target_lun (const gchar *device)
 {
-	struct cam_device *cam_dev;
-	char *addr;
+  struct cam_device *cam_dev;
+  char *addr;
 
-	cam_dev = cam_open_device (device, O_RDWR);
+  cam_dev = cam_open_device (device, O_RDWR);
 
-	if (cam_dev == NULL) {
-		BRASERO_MEDIA_LOG ("CAM: Failed to open %s: %s", device, g_strerror (errno));
-		return NULL;
-	}
+  if (cam_dev == NULL) {
+    BRASERO_MEDIA_LOG ("CAM: Failed to open %s: %s", device, g_strerror (errno));
+    return NULL;
+  }
 
-	addr = g_strdup_printf ("%i,%i,%i", cam_dev->path_id, cam_dev->target_id, cam_dev->target_lun);
+  addr = g_strdup_printf ("%i,%i,%i", cam_dev->path_id, cam_dev->target_id, cam_dev->target_lun);
 
-	cam_close_device (cam_dev);
-	return addr;
+  cam_close_device (cam_dev);
+  return addr;
 }

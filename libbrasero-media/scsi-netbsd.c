@@ -17,17 +17,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -53,103 +53,103 @@
 #include "scsi-sense-data.h"
 
 struct _BraseroDeviceHandle {
-	int fd;
+  int fd;
 };
 
 struct _BraseroScsiCmd {
-	uchar cmd [BRASERO_SCSI_CMD_MAX_LEN];
-	BraseroDeviceHandle *handle;
+  uchar cmd[BRASERO_SCSI_CMD_MAX_LEN];
+  BraseroDeviceHandle *handle;
 
-	const BraseroScsiCmdInfo *info;
+  const BraseroScsiCmdInfo *info;
 };
 typedef struct _BraseroScsiCmd BraseroScsiCmd;
 
-#define BRASERO_SCSI_CMD_OPCODE_OFF			0
-#define BRASERO_SCSI_CMD_SET_OPCODE(command)		(command->cmd [BRASERO_SCSI_CMD_OPCODE_OFF] = command->info->opcode)
+#define BRASERO_SCSI_CMD_OPCODE_OFF                     0
+#define BRASERO_SCSI_CMD_SET_OPCODE(command)            (command->cmd [BRASERO_SCSI_CMD_OPCODE_OFF] = command->info->opcode)
 
-#define OPEN_FLAGS			(O_RDWR|O_NONBLOCK)
-#define SCSIREQ_TIMEOUT			(30 * 1000)
+#define OPEN_FLAGS                      (O_RDWR | O_NONBLOCK)
+#define SCSIREQ_TIMEOUT                 (30 * 1000)
 
 /**
  * This is to send a command
  */
 
 static void
-brasero_sg_command_setup (scsireq_t *req,
-			  BraseroScsiCmd *cmd,
-			  uchar *buffer,
-			  int size)
+brasero_sg_command_setup (scsireq_t      *req,
+                          BraseroScsiCmd *cmd,
+                          uchar          *buffer,
+                          int             size)
 {
-	memset (req, 0, sizeof (scsireq_t));
+  memset (req, 0, sizeof (scsireq_t));
 
-	req->cmdlen = cmd->info->size;
-	memcpy(req->cmd, cmd->cmd, req->cmdlen);
-	req->databuf = buffer;
-	req->datalen = size;
-	req->timeout = SCSIREQ_TIMEOUT;
+  req->cmdlen = cmd->info->size;
+  memcpy (req->cmd, cmd->cmd, req->cmdlen);
+  req->databuf = buffer;
+  req->datalen = size;
+  req->timeout = SCSIREQ_TIMEOUT;
 
-	/* where to output the scsi sense buffer */
-	req->senselen = BRASERO_SENSE_DATA_SIZE;
+  /* where to output the scsi sense buffer */
+  req->senselen = BRASERO_SENSE_DATA_SIZE;
 
-	if (cmd->info->direction & BRASERO_SCSI_READ)
-		req->flags = SCCMD_READ;
-	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
-		req->flags = SCCMD_WRITE;
+  if (cmd->info->direction & BRASERO_SCSI_READ)
+    req->flags = SCCMD_READ;
+  else if (cmd->info->direction & BRASERO_SCSI_WRITE)
+    req->flags = SCCMD_WRITE;
 }
 
 BraseroScsiResult
-brasero_scsi_command_issue_sync (gpointer command,
-				 gpointer buffer,
-				 int size,
-				 BraseroScsiErrCode *error)
+brasero_scsi_command_issue_sync (gpointer            command,
+                                 gpointer            buffer,
+                                 int                 size,
+                                 BraseroScsiErrCode *error)
 {
-	scsireq_t req;
-	BraseroScsiResult res;
-	BraseroScsiCmd *cmd;
+  scsireq_t req;
+  BraseroScsiResult res;
+  BraseroScsiCmd *cmd;
 
-	cmd = command;
-	brasero_sg_command_setup (&req,
-				  cmd,
-				  buffer,
-				  size);
+  cmd = command;
+  brasero_sg_command_setup (&req,
+                            cmd,
+                            buffer,
+                            size);
 
-	res = ioctl (cmd->handle->fd, SCIOCCOMMAND, &req);
-	if (res == -1) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
-		return BRASERO_SCSI_FAILURE;
-	}
+  res = ioctl (cmd->handle->fd, SCIOCCOMMAND, &req);
+  if (res == -1) {
+    BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
+    return BRASERO_SCSI_FAILURE;
+  }
 
-	if (req.retsts == SCCMD_OK)
-		return BRASERO_SCSI_OK;
+  if (req.retsts == SCCMD_OK)
+    return BRASERO_SCSI_OK;
 
-	if (req.retsts == SCCMD_SENSE)
-		return brasero_sense_data_process (req.sense, error);
+  if (req.retsts == SCCMD_SENSE)
+    return brasero_sense_data_process (req.sense, error);
 
-	return BRASERO_SCSI_FAILURE;
+  return BRASERO_SCSI_FAILURE;
 }
 
 gpointer
 brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
-			  BraseroDeviceHandle *handle) 
+                          BraseroDeviceHandle      *handle)
 {
-	BraseroScsiCmd *cmd;
+  BraseroScsiCmd *cmd;
 
-	/* make sure we can set the flags of the descriptor */
+  /* make sure we can set the flags of the descriptor */
 
-	/* allocate the command */
-	cmd = g_new0 (BraseroScsiCmd, 1);
-	cmd->info = info;
-	cmd->handle = handle;
+  /* allocate the command */
+  cmd = g_new0 (BraseroScsiCmd, 1);
+  cmd->info = info;
+  cmd->handle = handle;
 
-	BRASERO_SCSI_CMD_SET_OPCODE (cmd);
-	return cmd;
+  BRASERO_SCSI_CMD_SET_OPCODE (cmd);
+  return cmd;
 }
 
 BraseroScsiResult
 brasero_scsi_command_free (gpointer cmd)
 {
-	g_free (cmd);
-	return BRASERO_SCSI_OK;
+  g_free (cmd);
+  return BRASERO_SCSI_OK;
 }
 
 /**
@@ -157,49 +157,49 @@ brasero_scsi_command_free (gpointer cmd)
  */
 
 BraseroDeviceHandle *
-brasero_device_handle_open (const gchar *path,
-			    gboolean exclusive,
-			    BraseroScsiErrCode *code)
+brasero_device_handle_open (const gchar        *path,
+                            gboolean            exclusive,
+                            BraseroScsiErrCode *code)
 {
-	int fd;
-	int flags = OPEN_FLAGS;
-	BraseroDeviceHandle *handle;
-	gchar *rdevnode;
+  int fd;
+  int flags = OPEN_FLAGS;
+  BraseroDeviceHandle *handle;
+  gchar *rdevnode;
 
-	if (exclusive)
-		flags |= O_EXCL;
+  if (exclusive)
+    flags |= O_EXCL;
 
-	rdevnode = g_strdup_printf ("/dev/r%s", path + strlen ("/dev/"));
-	fd = open (rdevnode, flags);
-	g_free (rdevnode);
-	if (fd < 0) {
-		if (code) {
-			if (errno == EAGAIN
-			||  errno == EWOULDBLOCK
-			||  errno == EBUSY)
-				*code = BRASERO_SCSI_NOT_READY;
-			else
-				*code = BRASERO_SCSI_ERRNO;
-		}
+  rdevnode = g_strdup_printf ("/dev/r%s", path + strlen ("/dev/"));
+  fd = open (rdevnode, flags);
+  g_free (rdevnode);
+  if (fd < 0) {
+    if (code) {
+      if (errno == EAGAIN
+          || errno == EWOULDBLOCK
+          || errno == EBUSY)
+        *code = BRASERO_SCSI_NOT_READY;
+      else
+        *code = BRASERO_SCSI_ERRNO;
+    }
 
-		return NULL;
-	}
+    return NULL;
+  }
 
-	handle = g_new (BraseroDeviceHandle, 1);
-	handle->fd = fd;
+  handle = g_new (BraseroDeviceHandle, 1);
+  handle->fd = fd;
 
-	return handle;
+  return handle;
 }
 
 void
 brasero_device_handle_close (BraseroDeviceHandle *handle)
 {
-	close (handle->fd);
-	g_free (handle);
+  close (handle->fd);
+  g_free (handle);
 }
 
 char *
 brasero_device_get_bus_target_lun (const gchar *device)
 {
-	return strdup (device);
+  return strdup (device);
 }

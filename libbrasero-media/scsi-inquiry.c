@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -44,37 +44,37 @@
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
 struct _BraseroInquiryCDB {
-	uchar opcode;
+  uchar opcode;
 
-	uchar evpd			:1;
-	uchar cmd_dt			:1;
-	uchar reserved0		:6;
+  uchar evpd                      :1;
+  uchar cmd_dt                    :1;
+  uchar reserved0         :6;
 
-	uchar op_code;
+  uchar op_code;
 
-	uchar reserved1;
+  uchar reserved1;
 
-	uchar alloc_len;
+  uchar alloc_len;
 
-	uchar ctl;
+  uchar ctl;
 };
 
 #else
 
 struct _BraseroInquiryCDB {
-	uchar opcode;
+  uchar opcode;
 
-	uchar reserved0		:6;
-	uchar cmd_dt			:1;
-	uchar evpd			:1;
+  uchar reserved0         :6;
+  uchar cmd_dt                    :1;
+  uchar evpd                      :1;
 
-	uchar op_code;
+  uchar op_code;
 
-	uchar reserved1;
+  uchar reserved1;
 
-	uchar alloc_len;
+  uchar alloc_len;
 
-	uchar ctl;
+  uchar ctl;
 };
 
 #endif
@@ -82,56 +82,54 @@ struct _BraseroInquiryCDB {
 typedef struct _BraseroInquiryCDB BraseroInquiryCDB;
 
 BRASERO_SCSI_COMMAND_DEFINE (BraseroInquiryCDB,
-			     INQUIRY,
-			     BRASERO_SCSI_READ);
+                             INQUIRY,
+                             BRASERO_SCSI_READ);
 
 BraseroScsiResult
 brasero_spc1_inquiry (BraseroDeviceHandle *handle,
-                      BraseroScsiInquiry *hdr,
-                      BraseroScsiErrCode *error)
+                      BraseroScsiInquiry  *hdr,
+                      BraseroScsiErrCode  *error)
 {
-	BraseroInquiryCDB *cdb;
-	BraseroScsiResult res;
+  BraseroInquiryCDB *cdb;
+  BraseroScsiResult res;
 
-	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+  g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
 
-	cdb = brasero_scsi_command_new (&info, handle);
-	cdb->alloc_len = sizeof (BraseroScsiInquiry);
+  cdb = brasero_scsi_command_new (&info, handle);
+  cdb->alloc_len = sizeof (BraseroScsiInquiry);
 
-	memset (hdr, 0, sizeof (BraseroScsiInquiry));
-	res = brasero_scsi_command_issue_sync (cdb,
-					       hdr,
-					       sizeof (BraseroScsiInquiry),
-					       error);
-	brasero_scsi_command_free (cdb);
-	return res;
+  memset (hdr, 0, sizeof (BraseroScsiInquiry));
+  res = brasero_scsi_command_issue_sync (cdb,
+                                         hdr,
+                                         sizeof (BraseroScsiInquiry),
+                                         error);
+  brasero_scsi_command_free (cdb);
+  return res;
 }
 
 BraseroScsiResult
 brasero_spc1_inquiry_is_optical_drive (BraseroDeviceHandle *handle,
-                                       BraseroScsiErrCode *error)
+                                       BraseroScsiErrCode  *error)
 {
-	BraseroInquiryCDB *cdb;
-	BraseroScsiInquiry hdr;
-	BraseroScsiResult res;
+  BraseroInquiryCDB *cdb;
+  BraseroScsiInquiry hdr;
+  BraseroScsiResult res;
 
-	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+  g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
 
-	cdb = brasero_scsi_command_new (&info, handle);
-	cdb->alloc_len = sizeof (hdr);
+  cdb = brasero_scsi_command_new (&info, handle);
+  cdb->alloc_len = sizeof (hdr);
 
-	memset (&hdr, 0, sizeof (hdr));
-	res = brasero_scsi_command_issue_sync (cdb,
-					       &hdr,
-					       sizeof (hdr),
-					       error);
-	brasero_scsi_command_free (cdb);
+  memset (&hdr, 0, sizeof (hdr));
+  res = brasero_scsi_command_issue_sync (cdb,
+                                         &hdr,
+                                         sizeof (hdr),
+                                         error);
+  brasero_scsi_command_free (cdb);
 
-	if (res != BRASERO_SCSI_OK)
-		return res;
+  if (res != BRASERO_SCSI_OK)
+    return res;
 
-	/* NOTE: 0x05 is for CD/DVD players */
-	return hdr.type == 0x05? BRASERO_SCSI_OK:BRASERO_SCSI_RECOVERABLE;
+  /* NOTE: 0x05 is for CD/DVD players */
+  return hdr.type == 0x05? BRASERO_SCSI_OK:BRASERO_SCSI_RECOVERABLE;
 }
-
- 

@@ -19,9 +19,9 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -51,398 +51,394 @@ static void brasero_file_chooser_iface_layout_object_init (BraseroLayoutObjectIF
 static void brasero_file_chooser_finalize (GObject *object);
 
 static void
-brasero_file_chooser_uri_activated_cb (GtkFileChooser *widget,
-				       BraseroFileChooser *chooser);
+brasero_file_chooser_uri_activated_cb (GtkFileChooser     *widget,
+                                       BraseroFileChooser *chooser);
 static void
-brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser *widget,
-					       BraseroFileChooser *chooser);
+brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser     *widget,
+                                               BraseroFileChooser *chooser);
 
 typedef struct _BraseroFileChooserPrivate BraseroFileChooserPrivate;
 
 struct _BraseroFileChooserPrivate {
-	GtkWidget *chooser;
+  GtkWidget *chooser;
 
-	GtkFileFilter *filter_any;
-	GtkFileFilter *filter_audio;
-	GtkFileFilter *filter_video;
+  GtkFileFilter *filter_any;
+  GtkFileFilter *filter_audio;
+  GtkFileFilter *filter_video;
 
-	BraseroLayoutType type;
+  BraseroLayoutType type;
 };
 
 G_DEFINE_TYPE_WITH_CODE (BraseroFileChooser,
-			 brasero_file_chooser,
-			 GTK_TYPE_ALIGNMENT,
-			 G_ADD_PRIVATE (BraseroFileChooser)
-			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_URI_CONTAINER,
-					        brasero_file_chooser_iface_uri_container_init)
-			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_LAYOUT_OBJECT,
-					        brasero_file_chooser_iface_layout_object_init));
+                         brasero_file_chooser,
+                         GTK_TYPE_ALIGNMENT,
+                         G_ADD_PRIVATE (BraseroFileChooser)
+                         G_IMPLEMENT_INTERFACE (BRASERO_TYPE_URI_CONTAINER,
+                                                brasero_file_chooser_iface_uri_container_init)
+                         G_IMPLEMENT_INTERFACE (BRASERO_TYPE_LAYOUT_OBJECT,
+                                                brasero_file_chooser_iface_layout_object_init));
 
 static void
 brasero_file_chooser_class_init (BraseroFileChooserClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	object_class->finalize = brasero_file_chooser_finalize;
+  object_class->finalize = brasero_file_chooser_finalize;
 }
 
 static void
 brasero_file_chooser_position_percent (GObject *object,
-                                       gint width,
-                                       gint position)
+                                       gint     width,
+                                       gint     position)
 {
-	gint percent;
+  gint percent;
 
-	percent = position * 10000;
-	if (percent % width) {
-		percent /= width;
-		percent ++;
-	}
-	else
-		percent /= width;
+  percent = position * 10000;
+  if (percent % width) {
+    percent /= width;
+    percent++;
+  } else
+    percent /= width;
 
-	if (GPOINTER_TO_INT (g_object_get_data (object, "is-stock-file-chooser")))
-		brasero_setting_set_value (brasero_setting_get_default (),
-		                           BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
-		                           GINT_TO_POINTER (percent));
-	else
-		brasero_setting_set_value (brasero_setting_get_default (),
-		                           BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
-		                           GINT_TO_POINTER (percent));
+  if (GPOINTER_TO_INT (g_object_get_data (object, "is-stock-file-chooser")))
+    brasero_setting_set_value (brasero_setting_get_default (),
+                               BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
+                               GINT_TO_POINTER (percent));
+  else
+    brasero_setting_set_value (brasero_setting_get_default (),
+                               BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
+                               GINT_TO_POINTER (percent));
 }
 
 static void
-brasero_file_chooser_position_changed (GObject *object,
+brasero_file_chooser_position_changed (GObject    *object,
                                        GParamSpec *param_spec,
-                                       gpointer NULL_data)
+                                       gpointer    NULL_data)
 {
-	GtkAllocation allocation = {0, 0};
-	gint position;
+  GtkAllocation allocation = {0, 0};
+  gint position;
 
-	gtk_widget_get_allocation (GTK_WIDGET (object), &allocation);
-	position = gtk_paned_get_position (GTK_PANED (object));
-	brasero_file_chooser_position_percent (object, allocation.width, position);
+  gtk_widget_get_allocation (GTK_WIDGET (object), &allocation);
+  position = gtk_paned_get_position (GTK_PANED (object));
+  brasero_file_chooser_position_percent (object, allocation.width, position);
 }
 
 static void
-brasero_file_chooser_allocation_changed (GtkWidget *widget,
+brasero_file_chooser_allocation_changed (GtkWidget     *widget,
                                          GtkAllocation *allocation,
-                                         gpointer NULL_data)
+                                         gpointer       NULL_data)
 {
-	gint position;
-	gint width;
+  gint position;
+  gint width;
 
-	/* See if it's the first allocation. If so set the position and don't
-	 * save it */
-	if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "position_set")) == FALSE) {
-		gpointer percent;
-		GtkWidget *toplevel;
+  /* See if it's the first allocation. If so set the position and don't
+   * save it */
+  if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget), "position_set")) == FALSE) {
+    gpointer percent;
+    GtkWidget *toplevel;
 
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
-		if (G_TYPE_FROM_INSTANCE (toplevel) == GTK_TYPE_FILE_CHOOSER_DIALOG) {
-			g_object_set_data (G_OBJECT (widget), "is-stock-file-chooser", GINT_TO_POINTER (1));
-			brasero_setting_get_value (brasero_setting_get_default (),
-				                   BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
-				                   &percent);
-		}
-		else
-			brasero_setting_get_value (brasero_setting_get_default (),
-				                   BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
-				                   &percent);
+    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
+    if (G_TYPE_FROM_INSTANCE (toplevel) == GTK_TYPE_FILE_CHOOSER_DIALOG) {
+      g_object_set_data (G_OBJECT (widget), "is-stock-file-chooser", GINT_TO_POINTER (1));
+      brasero_setting_get_value (brasero_setting_get_default (),
+                                 BRASERO_SETTING_STOCK_FILE_CHOOSER_PERCENT,
+                                 &percent);
+    } else
+      brasero_setting_get_value (brasero_setting_get_default (),
+                                 BRASERO_SETTING_BRASERO_FILE_CHOOSER_PERCENT,
+                                 &percent);
 
-		if (GPOINTER_TO_INT (percent) >= 0) {
-			position = allocation->width * GPOINTER_TO_INT (percent) / 10000;
-			gtk_paned_set_position (GTK_PANED (widget), position);
-		}
-		else
-			gtk_paned_set_position (GTK_PANED (widget), 30 * allocation->width / 100);
+    if (GPOINTER_TO_INT (percent) >= 0) {
+      position = allocation->width * GPOINTER_TO_INT (percent) / 10000;
+      gtk_paned_set_position (GTK_PANED (widget), position);
+    } else
+      gtk_paned_set_position (GTK_PANED (widget), 30 * allocation->width / 100);
 
-		/* Don't connect to position signal until it was first allocated */
-		g_object_set_data (G_OBJECT (widget), "position_set", GINT_TO_POINTER (TRUE));
-		g_signal_connect (widget,
-		                  "notify::position",
-		                  G_CALLBACK (brasero_file_chooser_position_changed),
-		                  NULL);
-		return;
-	}
+    /* Don't connect to position signal until it was first allocated */
+    g_object_set_data (G_OBJECT (widget), "position_set", GINT_TO_POINTER (TRUE));
+    g_signal_connect (widget,
+                      "notify::position",
+                      G_CALLBACK (brasero_file_chooser_position_changed),
+                      NULL);
+    return;
+  }
 
-	position = gtk_paned_get_position (GTK_PANED (widget));
-	width = allocation->width;
+  position = gtk_paned_get_position (GTK_PANED (widget));
+  width = allocation->width;
 
-	brasero_file_chooser_position_percent (G_OBJECT (widget), width, position);
+  brasero_file_chooser_position_percent (G_OBJECT (widget), width, position);
 }
 
 void
-brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
+brasero_file_chooser_customize (GtkWidget *widget,
+                                gpointer   null_data)
 {
-	if (GTK_IS_BUTTON (widget)) {
-		GtkWidget *image;
-		gchar *stock_id = NULL;
+  if (GTK_IS_BUTTON (widget)) {
+    GtkWidget *image;
+    gchar *stock_id = NULL;
 
-		image = gtk_button_get_image (GTK_BUTTON (widget));
-		if (!GTK_IS_IMAGE (image))
-			return;
+    image = gtk_button_get_image (GTK_BUTTON (widget));
+    if (!GTK_IS_IMAGE (image))
+      return;
 
-		gtk_image_get_stock (GTK_IMAGE (image), &stock_id, NULL);
-		if (stock_id
-		&& (!strcmp (stock_id,GTK_STOCK_ADD)
-		||  !strcmp (stock_id, GTK_STOCK_REMOVE))) {
-			GtkRequisition request;
-			gint width;
-			GtkWidget *parent;
+    gtk_image_get_stock (GTK_IMAGE (image), &stock_id, NULL);
+    if (stock_id
+        && (!strcmp (stock_id, GTK_STOCK_ADD)
+            || !strcmp (stock_id, GTK_STOCK_REMOVE))) {
+      GtkRequisition request;
+      gint width;
+      GtkWidget *parent;
 
-			/* This is to avoid having the left part too small */
-			parent = gtk_widget_get_parent (widget);
-			gtk_widget_get_requisition (parent, &request);
-			width = request.width;
-			gtk_widget_get_preferred_size (parent, &request, NULL);
-			if (request.width >= width)
-				gtk_widget_set_size_request (parent,
-							     request.width,
-							     request.height);
-			
-			gtk_widget_hide (widget);
-		}
-	}
-	else if (GTK_IS_CONTAINER (widget)) {
-		if (GTK_IS_PANED (widget)) {
-			GtkWidget *left;
+      /* This is to avoid having the left part too small */
+      parent = gtk_widget_get_parent (widget);
+      gtk_widget_get_requisition (parent, &request);
+      width = request.width;
+      gtk_widget_get_preferred_size (parent, &request, NULL);
+      if (request.width >= width)
+        gtk_widget_set_size_request (parent,
+                                     request.width,
+                                     request.height);
 
-			/* This is to allow the left part to be shrunk as much 
-			 * as the user want. */
-			left = gtk_paned_get_child1 (GTK_PANED (widget));
+      gtk_widget_hide (widget);
+    }
+  } else if (GTK_IS_CONTAINER (widget)) {
+    if (GTK_IS_PANED (widget)) {
+      GtkWidget *left;
 
-			g_object_ref (left);
-			gtk_container_remove (GTK_CONTAINER (widget), left);
-			gtk_paned_pack1 (GTK_PANED (widget),
-					 left,
-					 TRUE,
-					 TRUE);
-			g_object_unref (left);
+      /* This is to allow the left part to be shrunk as much
+       * as the user want. */
+      left = gtk_paned_get_child1 (GTK_PANED (widget));
 
-			g_signal_connect (widget,
-			                  "size-allocate",
-			                  G_CALLBACK (brasero_file_chooser_allocation_changed),
-			                  NULL);
-		}
+      g_object_ref (left);
+      gtk_container_remove (GTK_CONTAINER (widget), left);
+      gtk_paned_pack1 (GTK_PANED (widget),
+                       left,
+                       TRUE,
+                       TRUE);
+      g_object_unref (left);
 
-		gtk_container_foreach (GTK_CONTAINER (widget),
-				       brasero_file_chooser_customize,
-				       NULL);
-	}
+      g_signal_connect (widget,
+                        "size-allocate",
+                        G_CALLBACK (brasero_file_chooser_allocation_changed),
+                        NULL);
+    }
+
+    gtk_container_foreach (GTK_CONTAINER (widget),
+                           brasero_file_chooser_customize,
+                           NULL);
+  }
 }
 
 static void
 brasero_file_chooser_init (BraseroFileChooser *obj)
 {
-	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (obj);
-	GtkFileFilter *filter;
+  BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (obj);
+  GtkFileFilter *filter;
 
-	priv->chooser = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_OPEN);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->chooser), FALSE);
+  priv->chooser = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_OPEN);
+  gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->chooser), FALSE);
 
-	gtk_widget_show (priv->chooser);
+  gtk_widget_show (priv->chooser);
 
-	gtk_container_add (GTK_CONTAINER (obj), priv->chooser);
+  gtk_container_add (GTK_CONTAINER (obj), priv->chooser);
 
-	g_signal_connect (priv->chooser,
-			  "file-activated",
-			  G_CALLBACK (brasero_file_chooser_uri_activated_cb),
-			  obj);
-	g_signal_connect (priv->chooser,
-			  "selection-changed",
-			  G_CALLBACK (brasero_file_chooser_uri_selection_changed_cb),
-			  obj);
+  g_signal_connect (priv->chooser,
+                    "file-activated",
+                    G_CALLBACK (brasero_file_chooser_uri_activated_cb),
+                    obj);
+  g_signal_connect (priv->chooser,
+                    "selection-changed",
+                    G_CALLBACK (brasero_file_chooser_uri_selection_changed_cb),
+                    obj);
 
-	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (priv->chooser), TRUE);
+  gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (priv->chooser), TRUE);
 
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("All files"));
-	gtk_file_filter_add_pattern (filter, "*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
+  filter = gtk_file_filter_new ();
+  gtk_file_filter_set_name (filter, _("All files"));
+  gtk_file_filter_add_pattern (filter, "*");
+  gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	priv->filter_any = filter;
+  priv->filter_any = filter;
 
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("Audio files"));
-	gtk_file_filter_add_mime_type (filter, "audio/*");
-	gtk_file_filter_add_mime_type (filter, "application/ogg");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
+  filter = gtk_file_filter_new ();
+  gtk_file_filter_set_name (filter, _("Audio files"));
+  gtk_file_filter_add_mime_type (filter, "audio/*");
+  gtk_file_filter_add_mime_type (filter, "application/ogg");
+  gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	priv->filter_audio = filter;
+  priv->filter_audio = filter;
 
-	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, _("Movies"));
-	gtk_file_filter_add_mime_type (filter, "video/*");
-	gtk_file_filter_add_mime_type (filter, "application/ogg");
-	gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
+  filter = gtk_file_filter_new ();
+  gtk_file_filter_set_name (filter, _("Movies"));
+  gtk_file_filter_add_mime_type (filter, "video/*");
+  gtk_file_filter_add_mime_type (filter, "application/ogg");
+  gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
+  gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	priv->filter_video = filter;
+  priv->filter_video = filter;
 
-	filter = gtk_file_filter_new ();
-	/* Translators: this is an image, a picture, not a "Disc Image" */
-	gtk_file_filter_set_name (filter, C_("picture", "Image files"));
-	gtk_file_filter_add_mime_type (filter, "image/*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
+  filter = gtk_file_filter_new ();
+  /* Translators: this is an image, a picture, not a "Disc Image" */
+  gtk_file_filter_set_name (filter, C_("picture", "Image files"));
+  gtk_file_filter_add_mime_type (filter, "image/*");
+  gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->chooser), filter);
 
-	/* this is a hack/workaround to add support for multi DND */
-	gtk_container_foreach (GTK_CONTAINER (priv->chooser),
-			       brasero_file_chooser_customize,
-			       NULL);
+  /* this is a hack/workaround to add support for multi DND */
+  gtk_container_foreach (GTK_CONTAINER (priv->chooser),
+                         brasero_file_chooser_customize,
+                         NULL);
 }
 
 static void
 brasero_file_chooser_finalize (GObject *object)
 {
-	G_OBJECT_CLASS(brasero_file_chooser_parent_class)->finalize(object);
+  G_OBJECT_CLASS (brasero_file_chooser_parent_class)->finalize (object);
 }
 
 GtkWidget *
 brasero_file_chooser_new ()
 {
-	gpointer *obj;
-	
-	obj = g_object_new (BRASERO_TYPE_FILE_CHOOSER, NULL);
-	
-	return GTK_WIDGET (obj);
+  gpointer *obj;
+
+  obj = g_object_new (BRASERO_TYPE_FILE_CHOOSER, NULL);
+
+  return GTK_WIDGET (obj);
 }
 
 static void
 brasero_file_chooser_find_pane (GtkWidget *child,
-				gpointer footer)
+                                gpointer   footer)
 {
-	if (GTK_IS_PANED (child)) {
-		GList *children_vbox;
-		GList *iter_vbox;
-		GtkWidget *vbox;
+  if (GTK_IS_PANED (child)) {
+    GList *children_vbox;
+    GList *iter_vbox;
+    GtkWidget *vbox;
 
-		vbox = gtk_paned_get_child2 (GTK_PANED (child));
-		children_vbox = gtk_container_get_children (GTK_CONTAINER (vbox));
-		for (iter_vbox = children_vbox; iter_vbox; iter_vbox = iter_vbox->next) {
-			if (GTK_IS_BOX (iter_vbox->data) &&
-                            gtk_orientable_get_orientation (GTK_ORIENTABLE (iter_vbox->data)) == GTK_ORIENTATION_HORIZONTAL) {
-				GtkPackType packing;
+    vbox = gtk_paned_get_child2 (GTK_PANED (child));
+    children_vbox = gtk_container_get_children (GTK_CONTAINER (vbox));
+    for (iter_vbox = children_vbox; iter_vbox; iter_vbox = iter_vbox->next) {
+      if (GTK_IS_BOX (iter_vbox->data) &&
+          gtk_orientable_get_orientation (GTK_ORIENTABLE (iter_vbox->data)) == GTK_ORIENTATION_HORIZONTAL) {
+        GtkPackType packing;
 
-				gtk_box_query_child_packing (GTK_BOX (vbox),
-							     GTK_WIDGET (iter_vbox->data),
-							     NULL,
-							     NULL,
-							     NULL,
-							     &packing);
+        gtk_box_query_child_packing (GTK_BOX (vbox),
+                                     GTK_WIDGET (iter_vbox->data),
+                                     NULL,
+                                     NULL,
+                                     NULL,
+                                     &packing);
 
-				if (packing == GTK_PACK_START) {
-					GtkRequisition total_request, footer_request;
+        if (packing == GTK_PACK_START) {
+          GtkRequisition total_request, footer_request;
 
-					gtk_widget_get_preferred_size (GTK_WIDGET (vbox),
-								 &total_request, NULL);
-					gtk_widget_get_preferred_size (GTK_WIDGET (iter_vbox->data),
-								 &footer_request, NULL);
-					*((gint *) footer) = total_request.height - footer_request.height;
-					break;
-				}
-			}
-		}
-		g_list_free (children_vbox);
-	}
-	else if (GTK_IS_CONTAINER (child)) {
-		gtk_container_foreach (GTK_CONTAINER (child),
-				       brasero_file_chooser_find_pane,
-				       footer);
-	}
+          gtk_widget_get_preferred_size (GTK_WIDGET (vbox),
+                                         &total_request, NULL);
+          gtk_widget_get_preferred_size (GTK_WIDGET (iter_vbox->data),
+                                         &footer_request, NULL);
+          *((gint *)footer) = total_request.height - footer_request.height;
+          break;
+        }
+      }
+    }
+    g_list_free (children_vbox);
+  } else if (GTK_IS_CONTAINER (child)) {
+    gtk_container_foreach (GTK_CONTAINER (child),
+                           brasero_file_chooser_find_pane,
+                           footer);
+  }
 }
 
 static void
-brasero_file_chooser_uri_activated_cb (GtkFileChooser *widget,
-				       BraseroFileChooser *chooser)
+brasero_file_chooser_uri_activated_cb (GtkFileChooser     *widget,
+                                       BraseroFileChooser *chooser)
 {
-	brasero_uri_container_uri_activated (BRASERO_URI_CONTAINER (chooser));
+  brasero_uri_container_uri_activated (BRASERO_URI_CONTAINER (chooser));
 }
 
 static void
-brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser *widget,
-					       BraseroFileChooser *chooser)
+brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser     *widget,
+                                               BraseroFileChooser *chooser)
 {
-	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (chooser));
+  brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (chooser));
 }
 
 static gchar *
 brasero_file_chooser_get_selected_uri (BraseroURIContainer *container)
 {
-	BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (container);
-	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
+  BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (container);
+  BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
 
-	return gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->chooser));
+  return gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->chooser));
 }
 
 static gchar **
 brasero_file_chooser_get_selected_uris (BraseroURIContainer *container)
 {
-	BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (container);
-	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
-	GSList *list, *iter;
-	gchar **uris;
-	gint i;
+  BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (container);
+  BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
+  GSList *list, *iter;
+  gchar **uris;
+  gint i;
 
-	list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (priv->chooser));
+  list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (priv->chooser));
 
-	uris = g_new0 (gchar*, g_slist_length (list) + 1);
-	i = 0;
+  uris = g_new0 (gchar *, g_slist_length (list) + 1);
+  i = 0;
 
-	for (iter = list; iter; iter = iter->next) {
-		uris [i] = iter->data;
-		i++;
-	}
+  for (iter = list; iter; iter = iter->next) {
+    uris [i] = iter->data;
+    i++;
+  }
 
-	g_slist_free (list);
+  g_slist_free (list);
 
-	return uris;
+  return uris;
 }
 
 static void
 brasero_file_chooser_iface_uri_container_init (BraseroURIContainerIFace *iface)
 {
-	iface->get_selected_uri = brasero_file_chooser_get_selected_uri;
-	iface->get_selected_uris = brasero_file_chooser_get_selected_uris;
+  iface->get_selected_uri = brasero_file_chooser_get_selected_uri;
+  iface->get_selected_uris = brasero_file_chooser_get_selected_uris;
 }
 
 static void
 brasero_file_chooser_set_context (BraseroLayoutObject *object,
-				  BraseroLayoutType type)
+                                  BraseroLayoutType    type)
 {
-	BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (object);
-	BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
+  BraseroFileChooser *chooser = BRASERO_FILE_CHOOSER (object);
+  BraseroFileChooserPrivate *priv = brasero_file_chooser_get_instance_private (chooser);
 
-	if (type == priv->type)
-		return;
+  if (type == priv->type)
+    return;
 
-	if (type == BRASERO_LAYOUT_AUDIO)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
-					     priv->filter_audio);
-	else if (type == BRASERO_LAYOUT_VIDEO)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
-					     priv->filter_video);
-	else
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
-					     priv->filter_any);
+  if (type == BRASERO_LAYOUT_AUDIO)
+    gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
+                                 priv->filter_audio);
+  else if (type == BRASERO_LAYOUT_VIDEO)
+    gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
+                                 priv->filter_video);
+  else
+    gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->chooser),
+                                 priv->filter_any);
 
-	priv->type = type;
+  priv->type = type;
 }
 
 static void
 brasero_file_chooser_get_proportion (BraseroLayoutObject *object,
-				     gint *header,
-				     gint *center,
-				     gint *footer)
+                                     gint                *header,
+                                     gint                *center,
+                                     gint                *footer)
 {
-	gtk_container_foreach (GTK_CONTAINER (object),
-			       brasero_file_chooser_find_pane,
-			       footer);
+  gtk_container_foreach (GTK_CONTAINER (object),
+                         brasero_file_chooser_find_pane,
+                         footer);
 }
 
 static void
 brasero_file_chooser_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
 {
-	iface->get_proportion = brasero_file_chooser_get_proportion;
-	iface->set_context = brasero_file_chooser_set_context;
+  iface->get_proportion = brasero_file_chooser_get_proportion;
+  iface->set_context = brasero_file_chooser_set_context;
 }

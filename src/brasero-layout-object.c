@@ -19,83 +19,83 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #include "brasero-layout-object.h"
- 
+
 static void brasero_layout_object_base_init (gpointer g_class);
 
 GType
-brasero_layout_object_get_type()
+brasero_layout_object_get_type ()
 {
-	static GType type = 0;
+  static GType type = 0;
 
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroLayoutObjectIFace),
-			brasero_layout_object_base_init,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			0,
-			0,
-			NULL,
-		};
+  if(type == 0) {
+    static const GTypeInfo our_info = {
+      sizeof (BraseroLayoutObjectIFace),
+      brasero_layout_object_base_init,
+      NULL,
+      NULL,
+      NULL,
+      NULL,
+      0,
+      0,
+      NULL,
+    };
 
-		type = g_type_register_static (G_TYPE_INTERFACE,
-					       "BraseroLayoutObject",
-					       &our_info,
-					       0);
+    type = g_type_register_static (G_TYPE_INTERFACE,
+                                   "BraseroLayoutObject",
+                                   &our_info,
+                                   0);
 
-		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-	}
+    g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
+  }
 
-	return type;
+  return type;
 }
 
 static void
 brasero_layout_object_base_init (gpointer g_class)
 {
-	static gboolean initialized = FALSE;
+  static gboolean initialized = FALSE;
 
-	if (initialized)
-		return;
+  if (initialized)
+    return;
 
-	initialized = TRUE;
+  initialized = TRUE;
 }
 
 void
 brasero_layout_object_get_proportion (BraseroLayoutObject *self,
-				      gint *header,
-				      gint *center,
-				      gint *footer)
+                                      gint                *header,
+                                      gint                *center,
+                                      gint                *footer)
 {
-	BraseroLayoutObjectIFace *iface;
+  BraseroLayoutObjectIFace *iface;
 
-	g_return_if_fail (BRASERO_IS_LAYOUT_OBJECT (self));
-	g_return_if_fail (header != NULL && center != NULL && footer != NULL);
-	
-	iface = BRASERO_LAYOUT_OBJECT_GET_IFACE (self);
-	if (iface->get_proportion)
-		(* iface->get_proportion) (self,
-					   header,
-					   center,
-					   footer);
+  g_return_if_fail (BRASERO_IS_LAYOUT_OBJECT (self));
+  g_return_if_fail (header != NULL && center != NULL && footer != NULL);
+
+  iface = BRASERO_LAYOUT_OBJECT_GET_IFACE (self);
+  if (iface->get_proportion)
+    (*iface->get_proportion) (self,
+                              header,
+                              center,
+                              footer);
 }
 
 void
 brasero_layout_object_set_context (BraseroLayoutObject *self,
-				   BraseroLayoutType type)
+                                   BraseroLayoutType    type)
 {
-	BraseroLayoutObjectIFace *iface;
+  BraseroLayoutObjectIFace *iface;
 
-	g_return_if_fail (BRASERO_IS_LAYOUT_OBJECT (self));
-	
-	iface = BRASERO_LAYOUT_OBJECT_GET_IFACE (self);
-	if (iface->set_context)
-		(* iface->set_context) (self, type);
+  g_return_if_fail (BRASERO_IS_LAYOUT_OBJECT (self));
+
+  iface = BRASERO_LAYOUT_OBJECT_GET_IFACE (self);
+  if (iface->set_context)
+    (*iface->set_context) (self, type);
 }

@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -47,19 +47,18 @@
 
 typedef struct _BraseroTrackImageInfo BraseroTrackImageInfo;
 struct _BraseroTrackImageInfo {
-	gchar *uri;
-	guint64 blocks;
-	GCancellable *cancel;
-	BraseroImageFormat format;
+  gchar *uri;
+  guint64 blocks;
+  GCancellable *cancel;
+  BraseroImageFormat format;
 };
 
 typedef struct _BraseroTrackImageCfgPrivate BraseroTrackImageCfgPrivate;
-struct _BraseroTrackImageCfgPrivate
-{
-	GCancellable *cancel;
-	GError *error;
+struct _BraseroTrackImageCfgPrivate {
+  GCancellable *cancel;
+  GError *error;
 
-	BraseroImageFormat format;
+  BraseroImageFormat format;
 };
 
 
@@ -68,216 +67,213 @@ G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackImageCfg, brasero_track_image_cfg, BRASE
 
 static void
 brasero_track_image_cfg_set_uri (BraseroTrackImageCfg *track,
-				 const gchar *uri,
-				 BraseroImageFormat format)
+                                 const gchar          *uri,
+                                 BraseroImageFormat    format)
 {
-	switch (format) {
-	case BRASERO_IMAGE_FORMAT_NONE:
-	case BRASERO_IMAGE_FORMAT_BIN:
-		BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_source (BRASERO_TRACK_IMAGE (track),
-											      uri,
-											      NULL,
-											      format);
-		break;
-	case BRASERO_IMAGE_FORMAT_CLONE:
-	case BRASERO_IMAGE_FORMAT_CUE:
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_source (BRASERO_TRACK_IMAGE (track),
-											      NULL,
-											      uri,
-											      format);
-		break;
+  switch (format) {
+    case BRASERO_IMAGE_FORMAT_NONE:
+    case BRASERO_IMAGE_FORMAT_BIN:
+      BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_source (BRASERO_TRACK_IMAGE (track),
+                                                                                    uri,
+                                                                                    NULL,
+                                                                                    format);
+      break;
+    case BRASERO_IMAGE_FORMAT_CLONE:
+    case BRASERO_IMAGE_FORMAT_CUE:
+    case BRASERO_IMAGE_FORMAT_CDRDAO:
+      BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_source (BRASERO_TRACK_IMAGE (track),
+                                                                                    NULL,
+                                                                                    uri,
+                                                                                    format);
+      break;
 
-	default:
-		break;
-	}
+    default:
+      break;
+  }
 }
 
 static void
-brasero_track_image_cfg_get_info_cb (GObject *object,
-				     GAsyncResult *result,
-				     gpointer user_data)
+brasero_track_image_cfg_get_info_cb (GObject      *object,
+                                     GAsyncResult *result,
+                                     gpointer      user_data)
 {
-	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (object);
-	BraseroTrackImageInfo *info;
-	BraseroTrackImageCfgPrivate *priv;
+  BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (object);
+  BraseroTrackImageInfo *info;
+  BraseroTrackImageCfgPrivate *priv;
 
-	priv = brasero_track_image_cfg_get_instance_private (cfg);
+  priv = brasero_track_image_cfg_get_instance_private (cfg);
 
-	info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-	if (priv->cancel == info->cancel) {
-		g_object_unref (priv->cancel);
-		priv->cancel = NULL;
-	}
+  info = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+  if (priv->cancel == info->cancel) {
+    g_object_unref (priv->cancel);
+    priv->cancel = NULL;
+  }
 
-	if (g_cancellable_is_cancelled (info->cancel)) {
-		brasero_track_changed (BRASERO_TRACK (object));
-		return;
-	}
+  if (g_cancellable_is_cancelled (info->cancel)) {
+    brasero_track_changed (BRASERO_TRACK (object));
+    return;
+  }
 
-	if (info->format == BRASERO_IMAGE_FORMAT_NONE
-	||  info->blocks == 0) {
-		GError *error = NULL;
+  if (info->format == BRASERO_IMAGE_FORMAT_NONE
+      || info->blocks == 0) {
+    GError *error = NULL;
 
-		g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), &error);
-		priv->error = error;
+    g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), &error);
+    priv->error = error;
 
-		brasero_track_changed (BRASERO_TRACK (object));
-		return;
-	}
+    brasero_track_changed (BRASERO_TRACK (object));
+    return;
+  }
 
-	brasero_track_image_cfg_set_uri (cfg,
-	                                 info->uri,
-	                                 priv->format != BRASERO_IMAGE_FORMAT_NONE? priv->format:info->format);
+  brasero_track_image_cfg_set_uri (cfg,
+                                   info->uri,
+                                   priv->format != BRASERO_IMAGE_FORMAT_NONE? priv->format:info->format);
 
-	BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (object), info->blocks);
-	brasero_track_changed (BRASERO_TRACK (object));
+  BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (object), info->blocks);
+  brasero_track_changed (BRASERO_TRACK (object));
 }
 
 static void
 brasero_track_image_cfg_get_info_thread (GSimpleAsyncResult *result,
-					 GObject *object,
-					 GCancellable *cancel)
+                                         GObject            *object,
+                                         GCancellable       *cancel)
 {
-	BraseroTrackImageInfo *info;
-	GError *error = NULL;
+  BraseroTrackImageInfo *info;
+  GError *error = NULL;
 
-	info = g_simple_async_result_get_op_res_gpointer (result);
-	if (info->format == BRASERO_IMAGE_FORMAT_NONE) {
-		GFile *file;
-		const gchar *mime;
-		GFileInfo *file_info;
+  info = g_simple_async_result_get_op_res_gpointer (result);
+  if (info->format == BRASERO_IMAGE_FORMAT_NONE) {
+    GFile *file;
+    const gchar *mime;
+    GFileInfo *file_info;
 
-		/* check if we do have a URI */
-		file = g_file_new_for_commandline_arg (info->uri);
-		file_info = g_file_query_info (file,
-					       G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-					       G_FILE_QUERY_INFO_NONE,
-					       cancel,
-					       &error);
-		g_object_unref (file);
+    /* check if we do have a URI */
+    file = g_file_new_for_commandline_arg (info->uri);
+    file_info = g_file_query_info (file,
+                                   G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+                                   G_FILE_QUERY_INFO_NONE,
+                                   cancel,
+                                   &error);
+    g_object_unref (file);
 
-		if (!file_info) {
-			if (error && !g_cancellable_is_cancelled (cancel))
-				g_simple_async_result_set_from_error (result, error);
+    if (!file_info) {
+      if (error && !g_cancellable_is_cancelled (cancel))
+        g_simple_async_result_set_from_error (result, error);
 
-			if (error)
-				g_error_free (error);
+      if (error)
+        g_error_free (error);
 
-			return;
-		}
+      return;
+    }
 
-		mime = g_file_info_get_content_type (file_info);
-		if (mime
-		&& (!strcmp (mime, "application/x-toc")
-		||  !strcmp (mime, "application/x-cdrdao-toc")
-		||  !strcmp (mime, "application/x-cue"))) {
-			info->format = brasero_image_format_identify_cuesheet (info->uri, cancel, &error);
+    mime = g_file_info_get_content_type (file_info);
+    if (mime
+        && (!strcmp (mime, "application/x-toc")
+            || !strcmp (mime, "application/x-cdrdao-toc")
+            || !strcmp (mime, "application/x-cue"))) {
+      info->format = brasero_image_format_identify_cuesheet (info->uri, cancel, &error);
 
-			if (error) {
-				if (!g_cancellable_is_cancelled (cancel))
-					g_simple_async_result_set_from_error (result, error);
+      if (error) {
+        if (!g_cancellable_is_cancelled (cancel))
+          g_simple_async_result_set_from_error (result, error);
 
-				g_error_free (error);
-				g_object_unref (file_info);
-				return;
-			}
+        g_error_free (error);
+        g_object_unref (file_info);
+        return;
+      }
 
-			if (info->format == BRASERO_IMAGE_FORMAT_NONE
-			&&  g_str_has_suffix (info->uri, ".toc"))
-				info->format = BRASERO_IMAGE_FORMAT_CLONE;
-		}
-		else if (mime && !strcmp (mime, "application/octet-stream")) {
-			/* that could be an image, so here is the deal:
-			 * if we can find the type through the extension, fine.
-			 * if not default to BIN */
-			if (g_str_has_suffix (info->uri, ".bin"))
-				info->format = BRASERO_IMAGE_FORMAT_CDRDAO;
-			else if (g_str_has_suffix (info->uri, ".raw"))
-				info->format = BRASERO_IMAGE_FORMAT_CLONE;
-			else
-				info->format = BRASERO_IMAGE_FORMAT_BIN;
-		}
-		else if (mime && (!strcmp (mime, "application/x-cd-image") ||
-				  (!strcmp (mime, "application/vnd.efi.iso"))))
-			info->format = BRASERO_IMAGE_FORMAT_BIN;
+      if (info->format == BRASERO_IMAGE_FORMAT_NONE
+          && g_str_has_suffix (info->uri, ".toc"))
+        info->format = BRASERO_IMAGE_FORMAT_CLONE;
+    } else if (mime && !strcmp (mime, "application/octet-stream")) {
+      /* that could be an image, so here is the deal:
+       * if we can find the type through the extension, fine.
+       * if not default to BIN */
+      if (g_str_has_suffix (info->uri, ".bin"))
+        info->format = BRASERO_IMAGE_FORMAT_CDRDAO;
+      else if (g_str_has_suffix (info->uri, ".raw"))
+        info->format = BRASERO_IMAGE_FORMAT_CLONE;
+      else
+        info->format = BRASERO_IMAGE_FORMAT_BIN;
+    } else if (mime && (!strcmp (mime, "application/x-cd-image") ||
+                        (!strcmp (mime, "application/vnd.efi.iso"))))
+      info->format = BRASERO_IMAGE_FORMAT_BIN;
 
-		g_object_unref (file_info);
-	}
+    g_object_unref (file_info);
+  }
 
-	if (info->format == BRASERO_IMAGE_FORMAT_NONE)
-		return;
+  if (info->format == BRASERO_IMAGE_FORMAT_NONE)
+    return;
 
-	if (info->format == BRASERO_IMAGE_FORMAT_BIN)
-		brasero_image_format_get_iso_size (info->uri, &info->blocks, NULL, cancel, &error);
-	else if (info->format == BRASERO_IMAGE_FORMAT_CLONE) {
-		gchar *complement;
+  if (info->format == BRASERO_IMAGE_FORMAT_BIN)
+    brasero_image_format_get_iso_size (info->uri, &info->blocks, NULL, cancel, &error);
+  else if (info->format == BRASERO_IMAGE_FORMAT_CLONE) {
+    gchar *complement;
 
-		complement = brasero_image_format_get_complement (BRASERO_IMAGE_FORMAT_CLONE, info->uri);
-		brasero_image_format_get_clone_size (complement, &info->blocks, NULL, cancel, &error);
-	}
-	else if (info->format == BRASERO_IMAGE_FORMAT_CDRDAO)
-		brasero_image_format_get_cdrdao_size (info->uri, &info->blocks, NULL, cancel, &error);
-	else if (info->format == BRASERO_IMAGE_FORMAT_CUE)
-		brasero_image_format_get_cue_size (info->uri, &info->blocks, NULL, cancel, &error);
+    complement = brasero_image_format_get_complement (BRASERO_IMAGE_FORMAT_CLONE, info->uri);
+    brasero_image_format_get_clone_size (complement, &info->blocks, NULL, cancel, &error);
+  } else if (info->format == BRASERO_IMAGE_FORMAT_CDRDAO)
+    brasero_image_format_get_cdrdao_size (info->uri, &info->blocks, NULL, cancel, &error);
+  else if (info->format == BRASERO_IMAGE_FORMAT_CUE)
+    brasero_image_format_get_cue_size (info->uri, &info->blocks, NULL, cancel, &error);
 
-	if (error && !g_cancellable_is_cancelled (cancel))
-		g_simple_async_result_set_from_error (result, error);
+  if (error && !g_cancellable_is_cancelled (cancel))
+    g_simple_async_result_set_from_error (result, error);
 
-	if (error)
-		g_error_free (error);
+  if (error)
+    g_error_free (error);
 }
 
 static void
 brasero_track_image_info_free (gpointer data)
 {
-	BraseroTrackImageInfo *info = data;
+  BraseroTrackImageInfo *info = data;
 
-	g_object_unref (info->cancel);
-	g_free (info->uri);
-	g_free (info);
+  g_object_unref (info->cancel);
+  g_free (info->uri);
+  g_free (info);
 }
 
 static void
 brasero_track_image_cfg_get_info (BraseroTrackImageCfg *track,
-				  const gchar *uri)
+                                  const gchar          *uri)
 {
-	BraseroTrackImageCfgPrivate *priv;
-	BraseroTrackImageInfo *info;
-	GSimpleAsyncResult *res;
+  BraseroTrackImageCfgPrivate *priv;
+  BraseroTrackImageInfo *info;
+  GSimpleAsyncResult *res;
 
-	priv = brasero_track_image_cfg_get_instance_private (track);
+  priv = brasero_track_image_cfg_get_instance_private (track);
 
-	/* Cancel a possible ongoing thread */
-	if (priv->cancel) {
-		g_cancellable_cancel (priv->cancel);
-		g_object_unref (priv->cancel);
-		priv->cancel = NULL;
-	}
+  /* Cancel a possible ongoing thread */
+  if (priv->cancel) {
+    g_cancellable_cancel (priv->cancel);
+    g_object_unref (priv->cancel);
+    priv->cancel = NULL;
+  }
 
-	if (priv->error) {
-		g_error_free (priv->error);
-		priv->error = NULL;
-	}
+  if (priv->error) {
+    g_error_free (priv->error);
+    priv->error = NULL;
+  }
 
-	res = g_simple_async_result_new (G_OBJECT (track),
-					 brasero_track_image_cfg_get_info_cb,
-					 NULL,
-					 brasero_track_image_cfg_get_info);
+  res = g_simple_async_result_new (G_OBJECT (track),
+                                   brasero_track_image_cfg_get_info_cb,
+                                   NULL,
+                                   brasero_track_image_cfg_get_info);
 
-	priv->cancel = g_cancellable_new ();
+  priv->cancel = g_cancellable_new ();
 
-	info = g_new0 (BraseroTrackImageInfo, 1);
-	info->uri = g_strdup (uri);
-	info->format = priv->format;
-	info->cancel = g_object_ref (priv->cancel);
+  info = g_new0 (BraseroTrackImageInfo, 1);
+  info->uri = g_strdup (uri);
+  info->format = priv->format;
+  info->cancel = g_object_ref (priv->cancel);
 
-	g_simple_async_result_set_op_res_gpointer (res, info, brasero_track_image_info_free);
-	g_simple_async_result_run_in_thread (res,
-					     brasero_track_image_cfg_get_info_thread,
-					     G_PRIORITY_LOW,
-					     priv->cancel);
-	g_object_unref (res);
+  g_simple_async_result_set_op_res_gpointer (res, info, brasero_track_image_info_free);
+  g_simple_async_result_run_in_thread (res,
+                                       brasero_track_image_cfg_get_info_thread,
+                                       G_PRIORITY_LOW,
+                                       priv->cancel);
+  g_object_unref (res);
 }
 
 /**
@@ -292,46 +288,46 @@ brasero_track_image_cfg_get_info (BraseroTrackImageCfg *track,
 
 BraseroBurnResult
 brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
-				    const gchar *uri)
+                                    const gchar          *uri)
 {
-	GFile *file;
-	gchar *uri_arg;
-	gchar *current_uri;
-	BraseroTrackImageCfgPrivate *priv;
+  GFile *file;
+  gchar *uri_arg;
+  gchar *current_uri;
+  BraseroTrackImageCfgPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
-	g_return_val_if_fail (uri != NULL, BRASERO_BURN_NOT_SUPPORTED);
+  g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
+  g_return_val_if_fail (uri != NULL, BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = brasero_track_image_cfg_get_instance_private (track);
+  priv = brasero_track_image_cfg_get_instance_private (track);
 
-	/* See if it has changed */
-	file = g_file_new_for_commandline_arg (uri);
-	uri_arg = g_file_get_uri (file);
-	g_object_unref (file);
+  /* See if it has changed */
+  file = g_file_new_for_commandline_arg (uri);
+  uri_arg = g_file_get_uri (file);
+  g_object_unref (file);
 
-	if (!uri_arg)
-		return BRASERO_BURN_ERR;
+  if (!uri_arg)
+    return BRASERO_BURN_ERR;
 
-	current_uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
-	if (current_uri && !strcmp (current_uri, uri_arg)) {
-		g_free (current_uri);
-		g_free (uri_arg);
-		return BRASERO_BURN_OK;
-	}
-	g_free (current_uri);
+  current_uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
+  if (current_uri && !strcmp (current_uri, uri_arg)) {
+    g_free (current_uri);
+    g_free (uri_arg);
+    return BRASERO_BURN_OK;
+  }
+  g_free (current_uri);
 
-	/* Do it before to update our status first then update track info */
-	brasero_track_image_cfg_get_info (track, uri_arg);
+  /* Do it before to update our status first then update track info */
+  brasero_track_image_cfg_get_info (track, uri_arg);
 
-	/* Update the image info container values. If it was invalid then */
-	/* NOTE: this resets the size as well */
-	BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (track), 0);
-	brasero_track_image_cfg_set_uri (track, uri_arg, priv->format);
-	brasero_track_changed (BRASERO_TRACK (track));
+  /* Update the image info container values. If it was invalid then */
+  /* NOTE: this resets the size as well */
+  BRASERO_TRACK_IMAGE_CLASS (brasero_track_image_cfg_parent_class)->set_block_num (BRASERO_TRACK_IMAGE (track), 0);
+  brasero_track_image_cfg_set_uri (track, uri_arg, priv->format);
+  brasero_track_changed (BRASERO_TRACK (track));
 
-	g_free (uri_arg);
+  g_free (uri_arg);
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 /**
@@ -347,12 +343,12 @@ brasero_track_image_cfg_set_source (BraseroTrackImageCfg *track,
 BraseroImageFormat
 brasero_track_image_cfg_get_forced_format (BraseroTrackImageCfg *track)
 {
-	BraseroTrackImageCfgPrivate *priv;
+  BraseroTrackImageCfgPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_IMAGE_FORMAT_NONE);
+  g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_IMAGE_FORMAT_NONE);
 
-	priv = brasero_track_image_cfg_get_instance_private (track);
-	return priv->format;
+  priv = brasero_track_image_cfg_get_instance_private (track);
+  return priv->format;
 }
 
 /**
@@ -370,117 +366,116 @@ brasero_track_image_cfg_get_forced_format (BraseroTrackImageCfg *track)
 
 BraseroBurnResult
 brasero_track_image_cfg_force_format (BraseroTrackImageCfg *track,
-				      BraseroImageFormat format)
+                                      BraseroImageFormat    format)
 {
-	BraseroTrackImageCfgPrivate *priv;
-	BraseroImageFormat current_format;
-	gchar *uri = NULL;
+  BraseroTrackImageCfgPrivate *priv;
+  BraseroImageFormat current_format;
+  gchar *uri = NULL;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
+  g_return_val_if_fail (BRASERO_IS_TRACK_IMAGE_CFG (track), BRASERO_BURN_NOT_SUPPORTED);
 
-	priv = brasero_track_image_cfg_get_instance_private (track);
+  priv = brasero_track_image_cfg_get_instance_private (track);
 
-	current_format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
-	if (format != BRASERO_IMAGE_FORMAT_NONE) {
-		if (current_format == format)
-			return BRASERO_BURN_OK;
-	}
-	else if (format == priv->format)
-		return BRASERO_BURN_OK;
+  current_format = brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track));
+  if (format != BRASERO_IMAGE_FORMAT_NONE) {
+    if (current_format == format)
+      return BRASERO_BURN_OK;
+  } else if (format == priv->format)
+    return BRASERO_BURN_OK;
 
-	priv->format = format;
+  priv->format = format;
 
-	switch (current_format) {
-	case BRASERO_IMAGE_FORMAT_NONE:
-	case BRASERO_IMAGE_FORMAT_BIN:
-		uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
-		break;
-	case BRASERO_IMAGE_FORMAT_CLONE:
-	case BRASERO_IMAGE_FORMAT_CUE:
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
-		break;
+  switch (current_format) {
+    case BRASERO_IMAGE_FORMAT_NONE:
+    case BRASERO_IMAGE_FORMAT_BIN:
+      uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
+      break;
+    case BRASERO_IMAGE_FORMAT_CLONE:
+    case BRASERO_IMAGE_FORMAT_CUE:
+    case BRASERO_IMAGE_FORMAT_CDRDAO:
+      uri = brasero_track_image_get_toc_source (BRASERO_TRACK_IMAGE (track), TRUE);
+      break;
 
-	default:
-		break;
-	}
+    default:
+      break;
+  }
 
-	if (!uri)
-		return BRASERO_BURN_NOT_READY;
+  if (!uri)
+    return BRASERO_BURN_NOT_READY;
 
-	/* Do it before to update our status first then update track info */
-	brasero_track_image_cfg_get_info (track, uri);
+  /* Do it before to update our status first then update track info */
+  brasero_track_image_cfg_get_info (track, uri);
 
-	uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
-	brasero_track_image_cfg_set_uri (track, uri, priv->format);
-	g_free (uri);
+  uri = brasero_track_image_get_source (BRASERO_TRACK_IMAGE (track), TRUE);
+  brasero_track_image_cfg_set_uri (track, uri, priv->format);
+  g_free (uri);
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
 brasero_track_image_cfg_get_size (BraseroTrack *track,
-                                  goffset *blocks,
-                                  goffset *block_size)
+                                  goffset      *blocks,
+                                  goffset      *block_size)
 {
-	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (track);
-	BraseroTrackImageCfgPrivate *priv;
+  BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (track);
+  BraseroTrackImageCfgPrivate *priv;
 
-	priv = brasero_track_image_cfg_get_instance_private (cfg);
+  priv = brasero_track_image_cfg_get_instance_private (cfg);
 
-	if (priv->cancel)
-		return BRASERO_BURN_NOT_READY;
+  if (priv->cancel)
+    return BRASERO_BURN_NOT_READY;
 
-	if (priv->error)
-		return BRASERO_BURN_ERR;
+  if (priv->error)
+    return BRASERO_BURN_ERR;
 
-	if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE)
-		return BRASERO_BURN_ERR;
+  if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE)
+    return BRASERO_BURN_ERR;
 
-	return BRASERO_TRACK_CLASS (brasero_track_image_cfg_parent_class)->get_size (track, blocks, block_size);
+  return BRASERO_TRACK_CLASS (brasero_track_image_cfg_parent_class)->get_size (track, blocks, block_size);
 }
 
 static BraseroBurnResult
-brasero_track_image_cfg_get_status (BraseroTrack *track,
-				    BraseroStatus *status)
+brasero_track_image_cfg_get_status (BraseroTrack  *track,
+                                    BraseroStatus *status)
 {
-	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (track);
-	BraseroTrackImageCfgPrivate *priv;
+  BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (track);
+  BraseroTrackImageCfgPrivate *priv;
 
-	priv = brasero_track_image_cfg_get_instance_private (cfg);
+  priv = brasero_track_image_cfg_get_instance_private (cfg);
 
-	if (priv->cancel) {
-		if (status)
-			brasero_status_set_not_ready (status, -1.0, _("Retrieving image format and size"));
+  if (priv->cancel) {
+    if (status)
+      brasero_status_set_not_ready (status, -1.0, _("Retrieving image format and size"));
 
-		return BRASERO_BURN_NOT_READY;
-	}
+    return BRASERO_BURN_NOT_READY;
+  }
 
-	if (priv->error) {
-		if (status)
-			brasero_status_set_error (status, g_error_copy (priv->error));
+  if (priv->error) {
+    if (status)
+      brasero_status_set_error (status, g_error_copy (priv->error));
 
-		return BRASERO_BURN_ERR;
-	}
+    return BRASERO_BURN_ERR;
+  }
 
-	/* See if we managed to set a format (all went well then) */
-	if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE) {
-		if (status)
-			brasero_status_set_error (status,
-						  g_error_new (BRASERO_BURN_ERROR,
-							       BRASERO_BURN_ERROR_GENERAL,
-							       "%s.\n%s",
-							       /* Translators: This is a disc image */
-							       _("The format of the disc image could not be identified"),
-							       _("Please set it manually")));
+  /* See if we managed to set a format (all went well then) */
+  if (brasero_track_image_get_format (BRASERO_TRACK_IMAGE (track)) == BRASERO_IMAGE_FORMAT_NONE) {
+    if (status)
+      brasero_status_set_error (status,
+                                g_error_new (BRASERO_BURN_ERROR,
+                                             BRASERO_BURN_ERROR_GENERAL,
+                                             "%s.\n%s",
+                                             /* Translators: This is a disc image */
+                                             _("The format of the disc image could not be identified"),
+                                             _("Please set it manually")));
 
-		return BRASERO_BURN_ERR;
-	}
+    return BRASERO_BURN_ERR;
+  }
 
-	if (status)
-		brasero_status_set_completed (status);
+  if (status)
+    brasero_status_set_completed (status);
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static void
@@ -490,35 +485,35 @@ brasero_track_image_cfg_init (BraseroTrackImageCfg *object)
 static void
 brasero_track_image_cfg_finalize (GObject *object)
 {
-	BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (object);
-	BraseroTrackImageCfgPrivate *priv;
+  BraseroTrackImageCfg *cfg = BRASERO_TRACK_IMAGE_CFG (object);
+  BraseroTrackImageCfgPrivate *priv;
 
-	priv = brasero_track_image_cfg_get_instance_private (cfg);
+  priv = brasero_track_image_cfg_get_instance_private (cfg);
 
-	if (priv->cancel) {
-		g_cancellable_cancel (priv->cancel);
-		g_object_unref (priv->cancel);
-		priv->cancel = NULL;
-	}
+  if (priv->cancel) {
+    g_cancellable_cancel (priv->cancel);
+    g_object_unref (priv->cancel);
+    priv->cancel = NULL;
+  }
 
-	if (priv->error) {
-		g_error_free (priv->error);
-		priv->error = NULL;
-	}
+  if (priv->error) {
+    g_error_free (priv->error);
+    priv->error = NULL;
+  }
 
-	G_OBJECT_CLASS (brasero_track_image_cfg_parent_class)->finalize (object);
+  G_OBJECT_CLASS (brasero_track_image_cfg_parent_class)->finalize (object);
 }
 
 static void
 brasero_track_image_cfg_class_init (BraseroTrackImageCfgClass *klass)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
 
-	object_class->finalize = brasero_track_image_cfg_finalize;
+  object_class->finalize = brasero_track_image_cfg_finalize;
 
-	track_class->get_status = brasero_track_image_cfg_get_status;
-	track_class->get_size = brasero_track_image_cfg_get_size;
+  track_class->get_status = brasero_track_image_cfg_get_status;
+  track_class->get_size = brasero_track_image_cfg_get_size;
 }
 
 /**
@@ -532,5 +527,5 @@ brasero_track_image_cfg_class_init (BraseroTrackImageCfgClass *klass)
 BraseroTrackImageCfg *
 brasero_track_image_cfg_new (void)
 {
-	return g_object_new (BRASERO_TYPE_TRACK_IMAGE_CFG, NULL);
+  return g_object_new (BRASERO_TYPE_TRACK_IMAGE_CFG, NULL);
 }

@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -41,16 +41,15 @@
 #include "brasero-track-stream.h"
 
 typedef struct _BraseroTrackStreamPrivate BraseroTrackStreamPrivate;
-struct _BraseroTrackStreamPrivate
-{
-        GFileMonitor *monitor;
-	gchar *uri;
+struct _BraseroTrackStreamPrivate {
+  GFileMonitor *monitor;
+  gchar *uri;
 
-	BraseroStreamFormat format;
+  BraseroStreamFormat format;
 
-	guint64 gap;
-	guint64 start;
-	guint64 end;
+  guint64 gap;
+  guint64 start;
+  guint64 end;
 };
 
 
@@ -58,21 +57,21 @@ G_DEFINE_TYPE_WITH_PRIVATE (BraseroTrackStream, brasero_track_stream, BRASERO_TY
 
 static BraseroBurnResult
 brasero_track_stream_set_source_real (BraseroTrackStream *track,
-				      const gchar *uri)
+                                      const gchar        *uri)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	priv = brasero_track_stream_get_instance_private (track);
+  priv = brasero_track_stream_get_instance_private (track);
 
-	if (priv->uri)
-		g_free (priv->uri);
+  if (priv->uri)
+    g_free (priv->uri);
 
-	priv->uri = g_strdup (uri);
+  priv->uri = g_strdup (uri);
 
-	/* Since that's a new URI chances are, the end point is different */
-	priv->end = 0;
+  /* Since that's a new URI chances are, the end point is different */
+  priv->end = 0;
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 /**
@@ -90,23 +89,23 @@ brasero_track_stream_set_source_real (BraseroTrackStream *track,
 
 BraseroBurnResult
 brasero_track_stream_set_source (BraseroTrackStream *track,
-				 const gchar *uri)
+                                 const gchar        *uri)
 {
-	BraseroTrackStreamClass *klass;
-	BraseroBurnResult res;
+  BraseroTrackStreamClass *klass;
+  BraseroBurnResult res;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
 
-	klass = BRASERO_TRACK_STREAM_GET_CLASS (track);
-	if (!klass->set_source)
-		return BRASERO_BURN_ERR;
+  klass = BRASERO_TRACK_STREAM_GET_CLASS (track);
+  if (!klass->set_source)
+    return BRASERO_BURN_ERR;
 
-	res = klass->set_source (track, uri);
-	if (res != BRASERO_BURN_OK)
-		return res;
+  res = klass->set_source (track, uri);
+  if (res != BRASERO_BURN_OK)
+    return res;
 
-	brasero_track_changed (BRASERO_TRACK (track));
-	return BRASERO_BURN_OK;
+  brasero_track_changed (BRASERO_TRACK (track));
+  return BRASERO_BURN_OK;
 }
 
 /**
@@ -121,28 +120,28 @@ brasero_track_stream_set_source (BraseroTrackStream *track,
 BraseroStreamFormat
 brasero_track_stream_get_format (BraseroTrackStream *track)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_AUDIO_FORMAT_NONE);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_AUDIO_FORMAT_NONE);
 
-	priv = brasero_track_stream_get_instance_private (track);
+  priv = brasero_track_stream_get_instance_private (track);
 
-	return priv->format;
+  return priv->format;
 }
 
 static BraseroBurnResult
-brasero_track_stream_set_format_real (BraseroTrackStream *track,
-				      BraseroStreamFormat format)
+brasero_track_stream_set_format_real (BraseroTrackStream  *track,
+                                      BraseroStreamFormat  format)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	priv = brasero_track_stream_get_instance_private (track);
+  priv = brasero_track_stream_get_instance_private (track);
 
-	if (format == BRASERO_AUDIO_FORMAT_NONE)
-		BRASERO_BURN_LOG ("Setting a NONE audio format with a valid uri");
+  if (format == BRASERO_AUDIO_FORMAT_NONE)
+    BRASERO_BURN_LOG ("Setting a NONE audio format with a valid uri");
 
-	priv->format = format;
-	return BRASERO_BURN_OK;
+  priv->format = format;
+  return BRASERO_BURN_OK;
 }
 
 /**
@@ -156,46 +155,46 @@ brasero_track_stream_set_format_real (BraseroTrackStream *track,
  **/
 
 BraseroBurnResult
-brasero_track_stream_set_format (BraseroTrackStream *track,
-				 BraseroStreamFormat format)
+brasero_track_stream_set_format (BraseroTrackStream  *track,
+                                 BraseroStreamFormat  format)
 {
-	BraseroTrackStreamClass *klass;
-	BraseroBurnResult res;
+  BraseroTrackStreamClass *klass;
+  BraseroBurnResult res;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
 
-	klass = BRASERO_TRACK_STREAM_GET_CLASS (track);
-	if (!klass->set_format)
-		return BRASERO_BURN_ERR;
+  klass = BRASERO_TRACK_STREAM_GET_CLASS (track);
+  if (!klass->set_format)
+    return BRASERO_BURN_ERR;
 
-	res = klass->set_format (track, format);
-	if (res != BRASERO_BURN_OK)
-		return res;
+  res = klass->set_format (track, format);
+  if (res != BRASERO_BURN_OK)
+    return res;
 
-	brasero_track_changed (BRASERO_TRACK (track));
-	return BRASERO_BURN_OK;
+  brasero_track_changed (BRASERO_TRACK (track));
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
 brasero_track_stream_set_boundaries_real (BraseroTrackStream *track,
-					  gint64 start,
-					  gint64 end,
-					  gint64 gap)
+                                          gint64              start,
+                                          gint64              end,
+                                          gint64              gap)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	priv = brasero_track_stream_get_instance_private (track);
+  priv = brasero_track_stream_get_instance_private (track);
 
-	if (gap >= 0)
-		priv->gap = gap;
+  if (gap >= 0)
+    priv->gap = gap;
 
-	if (end > 0)
-		priv->end = end;
+  if (end > 0)
+    priv->end = end;
 
-	if (start >= 0)
-		priv->start = start;
+  if (start >= 0)
+    priv->start = start;
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 /**
@@ -213,25 +212,25 @@ brasero_track_stream_set_boundaries_real (BraseroTrackStream *track,
 
 BraseroBurnResult
 brasero_track_stream_set_boundaries (BraseroTrackStream *track,
-				     gint64 start,
-				     gint64 end,
-				     gint64 gap)
+                                     gint64              start,
+                                     gint64              end,
+                                     gint64              gap)
 {
-	BraseroTrackStreamClass *klass;
-	BraseroBurnResult res;
+  BraseroTrackStreamClass *klass;
+  BraseroBurnResult res;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
 
-	klass = BRASERO_TRACK_STREAM_GET_CLASS (track);
-	if (!klass->set_boundaries)
-		return BRASERO_BURN_ERR;
+  klass = BRASERO_TRACK_STREAM_GET_CLASS (track);
+  if (!klass->set_boundaries)
+    return BRASERO_BURN_ERR;
 
-	res = klass->set_boundaries (track, start, end, gap);
-	if (res != BRASERO_BURN_OK)
-		return res;
+  res = klass->set_boundaries (track, start, end, gap);
+  if (res != BRASERO_BURN_OK)
+    return res;
 
-	brasero_track_changed (BRASERO_TRACK (track));
-	return BRASERO_BURN_OK;
+  brasero_track_changed (BRASERO_TRACK (track));
+  return BRASERO_BURN_OK;
 }
 
 /**
@@ -248,17 +247,17 @@ brasero_track_stream_set_boundaries (BraseroTrackStream *track,
 
 gchar *
 brasero_track_stream_get_source (BraseroTrackStream *track,
-				 gboolean uri)
+                                 gboolean            uri)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), NULL);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), NULL);
 
-	priv = brasero_track_stream_get_instance_private (track);
-	if (uri)
-		return brasero_string_get_uri (priv->uri);
-	else
-		return brasero_string_get_localpath (priv->uri);
+  priv = brasero_track_stream_get_instance_private (track);
+  if (uri)
+    return brasero_string_get_uri (priv->uri);
+  else
+    return brasero_string_get_localpath (priv->uri);
 }
 
 /**
@@ -273,12 +272,12 @@ brasero_track_stream_get_source (BraseroTrackStream *track,
 guint64
 brasero_track_stream_get_gap (BraseroTrackStream *track)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
 
-	priv = brasero_track_stream_get_instance_private (track);
-	return priv->gap;
+  priv = brasero_track_stream_get_instance_private (track);
+  return priv->gap;
 }
 
 /**
@@ -293,12 +292,12 @@ brasero_track_stream_get_gap (BraseroTrackStream *track)
 guint64
 brasero_track_stream_get_start (BraseroTrackStream *track)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
 
-	priv = brasero_track_stream_get_instance_private (track);
-	return priv->start;
+  priv = brasero_track_stream_get_instance_private (track);
+  return priv->start;
 }
 
 /**
@@ -313,12 +312,12 @@ brasero_track_stream_get_start (BraseroTrackStream *track)
 guint64
 brasero_track_stream_get_end (BraseroTrackStream *track)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), 0);
 
-	priv = brasero_track_stream_get_instance_private (track);
-	return priv->end;
+  priv = brasero_track_stream_get_instance_private (track);
+  return priv->end;
 }
 
 /**
@@ -335,91 +334,90 @@ brasero_track_stream_get_end (BraseroTrackStream *track)
 
 BraseroBurnResult
 brasero_track_stream_get_length (BraseroTrackStream *track,
-				 guint64 *length)
+                                 guint64            *length)
 {
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStreamPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
+  g_return_val_if_fail (BRASERO_IS_TRACK_STREAM (track), BRASERO_BURN_ERR);
 
-	priv = brasero_track_stream_get_instance_private (track);
+  priv = brasero_track_stream_get_instance_private (track);
 
-	if (priv->start < 0 || priv->end <= 0)
-		return BRASERO_BURN_ERR;
+  if (priv->start < 0 || priv->end <= 0)
+    return BRASERO_BURN_ERR;
 
-	*length = BRASERO_STREAM_LENGTH (priv->start, priv->end + priv->gap);
-	return BRASERO_BURN_OK;
+  *length = BRASERO_STREAM_LENGTH (priv->start, priv->end + priv->gap);
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
 brasero_track_stream_get_size (BraseroTrack *track,
-			       goffset *blocks,
-			       goffset *block_size)
+                               goffset      *blocks,
+                               goffset      *block_size)
 {
-	BraseroStreamFormat format;
+  BraseroStreamFormat format;
 
-	format = brasero_track_stream_get_format (BRASERO_TRACK_STREAM (track));
-	if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (format)) {
-		if (blocks) {
-			guint64 length = 0;
+  format = brasero_track_stream_get_format (BRASERO_TRACK_STREAM (track));
+  if (!BRASERO_STREAM_FORMAT_HAS_VIDEO (format)) {
+    if (blocks) {
+      guint64 length = 0;
 
-			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
-			*blocks = length * 75LL / 1000000000LL;
-		}
+      brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
+      *blocks = length * 75LL / 1000000000LL;
+    }
 
-		if (block_size)
-			*block_size = 2352;
-	}
-	else {
-		if (blocks) {
-			guint64 length = 0;
+    if (block_size)
+      *block_size = 2352;
+  } else {
+    if (blocks) {
+      guint64 length = 0;
 
-			/* This is based on a simple formula:
-			 * 4700000000 bytes means 2 hours */
-			brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
-			*blocks = length * 47LL / 72000LL / 2048LL;
-		}
+      /* This is based on a simple formula:
+       * 4700000000 bytes means 2 hours */
+      brasero_track_stream_get_length (BRASERO_TRACK_STREAM (track), &length);
+      *blocks = length * 47LL / 72000LL / 2048LL;
+    }
 
-		if (block_size)
-			*block_size = 2048;
-	}
+    if (block_size)
+      *block_size = 2048;
+  }
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_track_stream_get_status (BraseroTrack *track,
-				 BraseroStatus *status)
+brasero_track_stream_get_status (BraseroTrack  *track,
+                                 BraseroStatus *status)
 {
-	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
+  BraseroTrackStreamPrivate *priv;
 
-	priv = brasero_track_stream_get_instance_private (stream);
-	if (!priv->uri) {
-		if (status)
-			brasero_status_set_error (status,
-						  g_error_new (BRASERO_BURN_ERROR,
-							       BRASERO_BURN_ERROR_EMPTY,
-							       _("There are no files to write to disc")));
+  priv = brasero_track_stream_get_instance_private (stream);
+  if (!priv->uri) {
+    if (status)
+      brasero_status_set_error (status,
+                                g_error_new (BRASERO_BURN_ERROR,
+                                             BRASERO_BURN_ERROR_EMPTY,
+                                             _("There are no files to write to disc")));
 
-		return BRASERO_BURN_ERR;
-	}
+    return BRASERO_BURN_ERR;
+  }
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_track_stream_get_track_type (BraseroTrack *track,
-				     BraseroTrackType *type)
+brasero_track_stream_get_track_type (BraseroTrack     *track,
+                                     BraseroTrackType *type)
 {
-	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStream *stream = BRASERO_TRACK_STREAM (track);
+  BraseroTrackStreamPrivate *priv;
 
-	priv = brasero_track_stream_get_instance_private (stream);
+  priv = brasero_track_stream_get_instance_private (stream);
 
-	brasero_track_type_set_has_stream (type);
-	brasero_track_type_set_stream_format (type, priv->format);
+  brasero_track_type_set_has_stream (type);
+  brasero_track_type_set_stream_format (type, priv->format);
 
-	return BRASERO_BURN_OK;
+  return BRASERO_BURN_OK;
 }
 
 static void
@@ -429,33 +427,33 @@ brasero_track_stream_init (BraseroTrackStream *object)
 static void
 brasero_track_stream_finalize (GObject *object)
 {
-	BraseroTrackStream *stream = BRASERO_TRACK_STREAM (object);
-	BraseroTrackStreamPrivate *priv;
+  BraseroTrackStream *stream = BRASERO_TRACK_STREAM (object);
+  BraseroTrackStreamPrivate *priv;
 
-	priv = brasero_track_stream_get_instance_private (stream);
-	if (priv->uri) {
-		g_free (priv->uri);
-		priv->uri = NULL;
-	}
+  priv = brasero_track_stream_get_instance_private (stream);
+  if (priv->uri) {
+    g_free (priv->uri);
+    priv->uri = NULL;
+  }
 
-	G_OBJECT_CLASS (brasero_track_stream_parent_class)->finalize (object);
+  G_OBJECT_CLASS (brasero_track_stream_parent_class)->finalize (object);
 }
 
 static void
 brasero_track_stream_class_init (BraseroTrackStreamClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  BraseroTrackClass *track_class = BRASERO_TRACK_CLASS (klass);
 
-	object_class->finalize = brasero_track_stream_finalize;
+  object_class->finalize = brasero_track_stream_finalize;
 
-	track_class->get_size = brasero_track_stream_get_size;
-	track_class->get_status = brasero_track_stream_get_status;
-	track_class->get_type = brasero_track_stream_get_track_type;
+  track_class->get_size = brasero_track_stream_get_size;
+  track_class->get_status = brasero_track_stream_get_status;
+  track_class->get_type = brasero_track_stream_get_track_type;
 
-	klass->set_source = brasero_track_stream_set_source_real;
-	klass->set_format = brasero_track_stream_set_format_real;
-	klass->set_boundaries = brasero_track_stream_set_boundaries_real;
+  klass->set_source = brasero_track_stream_set_source_real;
+  klass->set_format = brasero_track_stream_set_format_real;
+  klass->set_boundaries = brasero_track_stream_set_boundaries_real;
 }
 
 /**
@@ -472,5 +470,5 @@ brasero_track_stream_class_init (BraseroTrackStreamClass *klass)
 BraseroTrackStream *
 brasero_track_stream_new (void)
 {
-	return g_object_new (BRASERO_TYPE_TRACK_STREAM, NULL);
+  return g_object_new (BRASERO_TYPE_TRACK_STREAM, NULL);
 }

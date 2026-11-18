@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -45,27 +45,27 @@
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
 struct _BraseroScsiPreventAllowMediumRemovalUnitCDB {
-	uchar opcode;
+  uchar opcode;
 
-	uchar res1			[3];
+  uchar res1[3];
 
-	uchar prevent			:2;
-	uchar res4			:6;
+  uchar prevent                   :2;
+  uchar res4                      :6;
 
-	uchar ctl;
+  uchar ctl;
 };
 
 #else
 
 struct _BraseroScsiPreventAllowMediumRemovalUnitCDB {
-	uchar opcode;
+  uchar opcode;
 
-	uchar res1			[3];
+  uchar res1[3];
 
-	uchar res4			:6;
-	uchar prevent			:2;
+  uchar res4                      :6;
+  uchar prevent                   :2;
 
-	uchar ctl;
+  uchar ctl;
 };
 
 #endif
@@ -73,25 +73,25 @@ struct _BraseroScsiPreventAllowMediumRemovalUnitCDB {
 typedef struct _BraseroScsiPreventAllowMediumRemovalUnitCDB BraseroScsiPreventAllowMediumRemovalUnitCDB;
 
 BRASERO_SCSI_COMMAND_DEFINE (BraseroScsiPreventAllowMediumRemovalUnitCDB,
-			     PREVENT_ALLOW_MEDIUM_REMOVAL,
-			     BRASERO_SCSI_READ);
+                             PREVENT_ALLOW_MEDIUM_REMOVAL,
+                             BRASERO_SCSI_READ);
 
 BraseroScsiResult
 brasero_sbc_medium_removal (BraseroDeviceHandle *handle,
-                            int prevent_removal,
-                            BraseroScsiErrCode *error)
+                            int                  prevent_removal,
+                            BraseroScsiErrCode  *error)
 {
-	BraseroScsiPreventAllowMediumRemovalUnitCDB *cdb;
-	BraseroScsiResult res;
+  BraseroScsiPreventAllowMediumRemovalUnitCDB *cdb;
+  BraseroScsiResult res;
 
-	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+  g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
 
-	cdb = brasero_scsi_command_new (&info, handle);
-	cdb->prevent = prevent_removal;
-	res = brasero_scsi_command_issue_sync (cdb,
-					       NULL,
-					       0,
-					       error);
-	brasero_scsi_command_free (cdb);
-	return res;
+  cdb = brasero_scsi_command_new (&info, handle);
+  cdb->prevent = prevent_removal;
+  res = brasero_scsi_command_issue_sync (cdb,
+                                         NULL,
+                                         0,
+                                         error);
+  brasero_scsi_command_free (cdb);
+  return res;
 }

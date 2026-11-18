@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -41,33 +41,31 @@
 #include "scsi-opcodes.h"
 
 struct _BraseroTestUnitReadyCDB {
-	uchar opcode;
-	uchar reserved		[4];
-	uchar ctl;
+  uchar opcode;
+  uchar reserved[4];
+  uchar ctl;
 };
 
 typedef struct _BraseroTestUnitReadyCDB BraseroTestUnitReadyCDB;
 
 BRASERO_SCSI_COMMAND_DEFINE (BraseroTestUnitReadyCDB,
-			     TEST_UNIT_READY,
-			     BRASERO_SCSI_READ);
+                             TEST_UNIT_READY,
+                             BRASERO_SCSI_READ);
 
 BraseroScsiResult
 brasero_spc1_test_unit_ready (BraseroDeviceHandle *handle,
-			      BraseroScsiErrCode *error)
+                              BraseroScsiErrCode  *error)
 {
-	BraseroTestUnitReadyCDB *cdb;
-	BraseroScsiResult res;
+  BraseroTestUnitReadyCDB *cdb;
+  BraseroScsiResult res;
 
-	g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
+  g_return_val_if_fail (handle != NULL, BRASERO_SCSI_FAILURE);
 
-	cdb = brasero_scsi_command_new (&info, handle);
-	res = brasero_scsi_command_issue_sync (cdb,
-					       NULL,
-					       0,
-					       error);
-	brasero_scsi_command_free (cdb);
-	return res;
+  cdb = brasero_scsi_command_new (&info, handle);
+  res = brasero_scsi_command_issue_sync (cdb,
+                                         NULL,
+                                         0,
+                                         error);
+  brasero_scsi_command_free (cdb);
+  return res;
 }
-
- 

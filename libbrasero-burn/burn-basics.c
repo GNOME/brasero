@@ -15,17 +15,17 @@
  * you may extend this exception to your version of the code, but you are not
  * obligated to do so. If you do not wish to do so, delete this exception
  * statement from your version.
- * 
+ *
  * Libbrasero-burn is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to:
- * 	The Free Software Foundation, Inc.,
- * 	51 Franklin Street, Fifth Floor
- * 	Boston, MA  02110-1301, USA.
+ *  The Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor
+ *  Boston, MA  02110-1301, USA.
  */
 #include <string.h>
 
@@ -64,36 +64,38 @@ static BraseroBurnCaps *default_caps = NULL;
 GQuark
 brasero_burn_quark (void)
 {
-	static GQuark quark = 0;
+  static GQuark quark = 0;
 
-	if (!quark)
-		quark = g_quark_from_static_string ("BraseroBurnError");
+  if (!quark)
+    quark = g_quark_from_static_string ("BraseroBurnError");
 
-	return quark;
+  return quark;
 }
- 
+
 const gchar *
 brasero_burn_action_to_string (BraseroBurnAction action)
 {
-	gchar *strings [BRASERO_BURN_ACTION_LAST] = { 	"",
-							N_("Getting size"),
-							N_("Creating image"),
-							N_("Writing"),
-							N_("Blanking"),
-							N_("Creating checksum"),
-							N_("Copying disc"),
-							N_("Copying file"),
-							N_("Analysing audio files"),
-							N_("Transcoding song"),
-							N_("Preparing to write"),
-							N_("Writing leadin"),
-							N_("Writing CD-Text information"),
-							N_("Finalizing"),
-							N_("Writing leadout"),
-						        N_("Starting to record"),
-							N_("Success"),
-							N_("Ejecting medium")};
-	return _(strings [action]);
+  gchar *strings[BRASERO_BURN_ACTION_LAST] = {
+    "",
+    N_("Getting size"),
+    N_("Creating image"),
+    N_("Writing"),
+    N_("Blanking"),
+    N_("Creating checksum"),
+    N_("Copying disc"),
+    N_("Copying file"),
+    N_("Analysing audio files"),
+    N_("Transcoding song"),
+    N_("Preparing to write"),
+    N_("Writing leadin"),
+    N_("Writing CD-Text information"),
+    N_("Finalizing"),
+    N_("Writing leadout"),
+    N_("Starting to record"),
+    N_("Success"),
+    N_("Ejecting medium")
+  };
+  return _(strings [action]);
 }
 
 /**
@@ -101,121 +103,119 @@ brasero_burn_action_to_string (BraseroBurnAction action)
  */
 
 gboolean
-brasero_check_flags_for_drive (BraseroDrive *drive,
-			       BraseroBurnFlag flags)
+brasero_check_flags_for_drive (BraseroDrive    *drive,
+                               BraseroBurnFlag  flags)
 {
-	BraseroMedia media;
-	BraseroMedium *medium;
+  BraseroMedia media;
+  BraseroMedium *medium;
 
-	if (!drive)
-		return TRUE;
+  if (!drive)
+    return TRUE;
 
-	if (brasero_drive_is_fake (drive))
-		return TRUE;
+  if (brasero_drive_is_fake (drive))
+    return TRUE;
 
-	medium = brasero_drive_get_medium (drive);
-	if (!medium)
-		return TRUE;
+  medium = brasero_drive_get_medium (drive);
+  if (!medium)
+    return TRUE;
 
-	media = brasero_medium_get_status (medium);
-	if (flags & BRASERO_BURN_FLAG_DUMMY) {
-		/* This is always FALSE */
-		if (media & BRASERO_MEDIUM_PLUS) {
-			BRASERO_BURN_LOG ("Drive does not support BRASERO_MEDIUM_PLUS flag");
-			return FALSE;
-		}
+  media = brasero_medium_get_status (medium);
+  if (flags & BRASERO_BURN_FLAG_DUMMY) {
+    /* This is always FALSE */
+    if (media & BRASERO_MEDIUM_PLUS) {
+      BRASERO_BURN_LOG ("Drive does not support BRASERO_MEDIUM_PLUS flag");
+      return FALSE;
+    }
 
-		if (media & BRASERO_MEDIUM_DVD) {
-			if (!brasero_medium_can_use_dummy_for_sao (medium)) {
-				BRASERO_BURN_LOG ("Drive does not support using dummy for SAO");
-				return FALSE;
-			}
-		}
-		else if (flags & BRASERO_BURN_FLAG_DAO) {
-			if (!brasero_medium_can_use_dummy_for_sao (medium)) {
-				BRASERO_BURN_LOG ("Drive does not support using dummy for DAO");
-				return FALSE;
-			}
-		}
-		else if (!brasero_medium_can_use_dummy_for_tao (medium)) {
-			BRASERO_BURN_LOG ("Drive does not support using dummy for TAO");
-			return FALSE;
-		}
-	}
+    if (media & BRASERO_MEDIUM_DVD) {
+      if (!brasero_medium_can_use_dummy_for_sao (medium)) {
+        BRASERO_BURN_LOG ("Drive does not support using dummy for SAO");
+        return FALSE;
+      }
+    } else if (flags & BRASERO_BURN_FLAG_DAO) {
+      if (!brasero_medium_can_use_dummy_for_sao (medium)) {
+        BRASERO_BURN_LOG ("Drive does not support using dummy for DAO");
+        return FALSE;
+      }
+    } else if (!brasero_medium_can_use_dummy_for_tao (medium)) {
+      BRASERO_BURN_LOG ("Drive does not support using dummy for TAO");
+      return FALSE;
+    }
+  }
 
-	if (flags & BRASERO_BURN_FLAG_BURNPROOF) {
-		if (!brasero_medium_can_use_burnfree (medium)) {
-			BRASERO_BURN_LOG ("Drive does not support burnproof/burnfree");
-			return FALSE;
-		}
-	}
+  if (flags & BRASERO_BURN_FLAG_BURNPROOF) {
+    if (!brasero_medium_can_use_burnfree (medium)) {
+      BRASERO_BURN_LOG ("Drive does not support burnproof/burnfree");
+      return FALSE;
+    }
+  }
 
-	return TRUE;
+  return TRUE;
 }
 
 gchar *
 brasero_string_get_localpath (const gchar *uri)
 {
-	gchar *localpath;
-	gchar *realuri;
-	GFile *file;
+  gchar *localpath;
+  gchar *realuri;
+  GFile *file;
 
-	if (!uri)
-		return NULL;
+  if (!uri)
+    return NULL;
 
-	if (uri [0] == '/')
-		return g_strdup (uri);
+  if (uri [0] == '/')
+    return g_strdup (uri);
 
-	if (strncmp (uri, "file://", 7))
-		return NULL;
+  if (strncmp (uri, "file://", 7))
+    return NULL;
 
-	file = g_file_new_for_commandline_arg (uri);
-	realuri = g_file_get_uri (file);
-	g_object_unref (file);
+  file = g_file_new_for_commandline_arg (uri);
+  realuri = g_file_get_uri (file);
+  g_object_unref (file);
 
-	localpath = g_filename_from_uri (realuri, NULL, NULL);
-	g_free (realuri);
+  localpath = g_filename_from_uri (realuri, NULL, NULL);
+  g_free (realuri);
 
-	return localpath;
+  return localpath;
 }
 
 gchar *
 brasero_string_get_uri (const gchar *uri)
 {
-	gchar *uri_return;
-	GFile *file;
+  gchar *uri_return;
+  GFile *file;
 
-	if (!uri)
-		return NULL;
+  if (!uri)
+    return NULL;
 
-	if (uri [0] != '/')
-		return g_strdup (uri);
+  if (uri [0] != '/')
+    return g_strdup (uri);
 
-	file = g_file_new_for_commandline_arg (uri);
-	uri_return = g_file_get_uri (file);
-	g_object_unref (file);
+  file = g_file_new_for_commandline_arg (uri);
+  uri_return = g_file_get_uri (file);
+  g_object_unref (file);
 
-	return uri_return;
+  return uri_return;
 }
 
 static void
 brasero_caps_list_dump (void)
 {
-	GSList *iter;
-	BraseroBurnCaps *self;
+  GSList *iter;
+  BraseroBurnCaps *self;
 
-	self = brasero_burn_caps_get_default ();
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *caps;
+  self = brasero_burn_caps_get_default ();
+  for (iter = self->priv->caps_list; iter; iter = iter->next) {
+    BraseroCaps *caps;
 
-		caps = iter->data;
-		BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
-					    caps->flags,
-					    "Created %i links pointing to",
-					    g_slist_length (caps->links));
-	}
+    caps = iter->data;
+    BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
+                                caps->flags,
+                                "Created %i links pointing to",
+                                g_slist_length (caps->links));
+  }
 
-	g_object_unref (self);
+  g_object_unref (self);
 }
 
 /**
@@ -232,63 +232,63 @@ brasero_caps_list_dump (void)
  **/
 
 gboolean
-brasero_burn_library_start (int *argc,
+brasero_burn_library_start (int   *argc,
                             char **argv [])
 {
-	BRASERO_BURN_LOG ("Initializing Brasero-burn %i.%i.%i",
-			  BRASERO_MAJOR_VERSION,
-			  BRASERO_MINOR_VERSION,
-			  BRASERO_SUB);
+  BRASERO_BURN_LOG ("Initializing Brasero-burn %i.%i.%i",
+                    BRASERO_MAJOR_VERSION,
+                    BRASERO_MINOR_VERSION,
+                    BRASERO_SUB);
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
-	/* Work around: because on OpenSolaris brasero possibly be run
-	 * as root for a user with 'Primary Administrator' profile,
-	 * a root dbus session will be autospawned at that time.
-	 * This fix is to work around
-	 * http://bugzilla.gnome.org/show_bug.cgi?id=526454
-	 */
-	g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
+  /* Work around: because on OpenSolaris brasero possibly be run
+   * as root for a user with 'Primary Administrator' profile,
+   * a root dbus session will be autospawned at that time.
+   * This fix is to work around
+   * http://bugzilla.gnome.org/show_bug.cgi?id=526454
+   */
+  g_setenv ("DBUS_SESSION_BUS_ADDRESS", "autolaunch:", TRUE);
 #endif
 
-	/* ... and GStreamer) */
-	if (!gst_init_check (argc, argv, NULL))
-		return FALSE;
+  /* ... and GStreamer) */
+  if (!gst_init_check (argc, argv, NULL))
+    return FALSE;
 
-	/* This is for missing codec automatic install */
-	gst_pb_utils_init ();
+  /* This is for missing codec automatic install */
+  gst_pb_utils_init ();
 
-	/* initialize the media library */
-	brasero_media_library_start ();
+  /* initialize the media library */
+  brasero_media_library_start ();
 
-	/* initialize all device list */
-	if (!medium_manager)
-		medium_manager = brasero_medium_monitor_get_default ();
+  /* initialize all device list */
+  if (!medium_manager)
+    medium_manager = brasero_medium_monitor_get_default ();
 
-	/* initialize plugins */
-	if (!default_caps)
-		default_caps = BRASERO_BURNCAPS (g_object_new (BRASERO_TYPE_BURNCAPS, NULL));
+  /* initialize plugins */
+  if (!default_caps)
+    default_caps = BRASERO_BURNCAPS (g_object_new (BRASERO_TYPE_BURNCAPS, NULL));
 
-	if (!plugin_manager)
-		plugin_manager = brasero_plugin_manager_get_default ();
+  if (!plugin_manager)
+    plugin_manager = brasero_plugin_manager_get_default ();
 
-	brasero_caps_list_dump ();
-	return TRUE;
+  brasero_caps_list_dump ();
+  return TRUE;
 }
 
 BraseroBurnCaps *
 brasero_burn_caps_get_default ()
 {
-	if (!default_caps)
-		g_error ("You must call brasero_burn_library_start () before using API from libbrasero-burn");
+  if (!default_caps)
+    g_error ("You must call brasero_burn_library_start () before using API from libbrasero-burn");
 
-	g_object_ref (default_caps);
-	return default_caps;
+  g_object_ref (default_caps);
+  return default_caps;
 }
 
 /**
  * brasero_burn_library_get_plugins_list:
- * 
- * This function returns the list of plugins that 
+ *
+ * This function returns the list of plugins that
  * are available to libbrasero-burn.
  *
  * Returns: (element-type GObject.Object) (transfer full):a #GSList that must be destroyed when not needed and each object unreffed.
@@ -297,8 +297,8 @@ brasero_burn_caps_get_default ()
 GSList *
 brasero_burn_library_get_plugins_list (void)
 {
-	plugin_manager = brasero_plugin_manager_get_default ();
-	return brasero_plugin_manager_get_plugins_list (plugin_manager);
+  plugin_manager = brasero_plugin_manager_get_default ();
+  return brasero_plugin_manager_get_plugins_list (plugin_manager);
 }
 
 /**
@@ -313,23 +313,23 @@ brasero_burn_library_get_plugins_list (void)
 void
 brasero_burn_library_stop (void)
 {
-	if (plugin_manager) {
-		g_object_unref (plugin_manager);
-		plugin_manager = NULL;
-	}
+  if (plugin_manager) {
+    g_object_unref (plugin_manager);
+    plugin_manager = NULL;
+  }
 
-	if (medium_manager) {
-		g_object_unref (medium_manager);
-		medium_manager = NULL;
-	}
+  if (medium_manager) {
+    g_object_unref (medium_manager);
+    medium_manager = NULL;
+  }
 
-	if (default_caps) {
-		g_object_unref (default_caps);
-		default_caps = NULL;
-	}
+  if (default_caps) {
+    g_object_unref (default_caps);
+    default_caps = NULL;
+  }
 
-	/* Cleanup the io thing */
-	brasero_io_shutdown ();
+  /* Cleanup the io thing */
+  brasero_io_shutdown ();
 }
 
 /**
@@ -344,34 +344,34 @@ brasero_burn_library_stop (void)
 gboolean
 brasero_burn_library_can_checksum (void)
 {
-	GSList *iter;
-	BraseroBurnCaps *self;
+  GSList *iter;
+  BraseroBurnCaps *self;
 
-	self = brasero_burn_caps_get_default ();
+  self = brasero_burn_caps_get_default ();
 
-	if (self->priv->tests == NULL) {
-		g_object_unref (self);
-		return FALSE;
-	}
+  if (self->priv->tests == NULL) {
+    g_object_unref (self);
+    return FALSE;
+  }
 
-	for (iter = self->priv->tests; iter; iter = iter->next) {
-		BraseroCapsTest *tmp;
-		GSList *links;
+  for (iter = self->priv->tests; iter; iter = iter->next) {
+    BraseroCapsTest *tmp;
+    GSList *links;
 
-		tmp = iter->data;
-		for (links = tmp->links; links; links = links->next) {
-			BraseroCapsLink *link;
+    tmp = iter->data;
+    for (links = tmp->links; links; links = links->next) {
+      BraseroCapsLink *link;
 
-			link = links->data;
-			if (brasero_caps_link_active (link, 0)) {
-				g_object_unref (self);
-				return TRUE;
-			}
-		}
-	}
+      link = links->data;
+      if (brasero_caps_link_active (link, 0)) {
+        g_object_unref (self);
+        return TRUE;
+      }
+    }
+  }
 
-	g_object_unref (self);
-	return FALSE;
+  g_object_unref (self);
+  return FALSE;
 }
 
 /**
@@ -386,27 +386,27 @@ brasero_burn_library_can_checksum (void)
 BraseroBurnResult
 brasero_burn_library_input_supported (BraseroTrackType *type)
 {
-	GSList *iter;
-	BraseroBurnCaps *self;
+  GSList *iter;
+  BraseroBurnCaps *self;
 
-	g_return_val_if_fail (type != NULL, BRASERO_BURN_ERR);
+  g_return_val_if_fail (type != NULL, BRASERO_BURN_ERR);
 
-	self = brasero_burn_caps_get_default ();
+  self = brasero_burn_caps_get_default ();
 
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *caps;
+  for (iter = self->priv->caps_list; iter; iter = iter->next) {
+    BraseroCaps *caps;
 
-		caps = iter->data;
+    caps = iter->data;
 
-		if (brasero_caps_is_compatible_type (caps, type)
-		&&  brasero_burn_caps_is_input (self, caps)) {
-			g_object_unref (self);
-			return BRASERO_BURN_OK;
-		}
-	}
+    if (brasero_caps_is_compatible_type (caps, type)
+        && brasero_burn_caps_is_input (self, caps)) {
+      g_object_unref (self);
+      return BRASERO_BURN_OK;
+    }
+  }
 
-	g_object_unref (self);
-	return BRASERO_BURN_ERR;
+  g_object_unref (self);
+  return BRASERO_BURN_ERR;
 }
 
 /**
@@ -423,103 +423,102 @@ brasero_burn_library_input_supported (BraseroTrackType *type)
 BraseroMedia
 brasero_burn_library_get_media_capabilities (BraseroMedia media)
 {
-	GSList *iter;
-	GSList *links;
-	BraseroMedia retval;
-	BraseroBurnCaps *self;
-	BraseroCaps *caps = NULL;
+  GSList *iter;
+  GSList *links;
+  BraseroMedia retval;
+  BraseroBurnCaps *self;
+  BraseroCaps *caps = NULL;
 
-	self = brasero_burn_caps_get_default ();
+  self = brasero_burn_caps_get_default ();
 
-	retval = BRASERO_MEDIUM_NONE;
-	BRASERO_BURN_LOG_DISC_TYPE (media, "checking media caps for");
+  retval = BRASERO_MEDIUM_NONE;
+  BRASERO_BURN_LOG_DISC_TYPE (media, "checking media caps for");
 
-	/* we're only interested in DISC caps. There should be only one caps fitting */
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		caps = iter->data;
-		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
-			continue;
+  /* we're only interested in DISC caps. There should be only one caps fitting */
+  for (iter = self->priv->caps_list; iter; iter = iter->next) {
+    caps = iter->data;
+    if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+      continue;
 
-		if ((media & caps->type.subtype.media) == media)
-			break;
+    if ((media & caps->type.subtype.media) == media)
+      break;
 
-		caps = NULL;
-	}
+    caps = NULL;
+  }
 
-	if (!caps) {
-		g_object_unref (self);
-		return BRASERO_MEDIUM_NONE;
-	}
+  if (!caps) {
+    g_object_unref (self);
+    return BRASERO_MEDIUM_NONE;
+  }
 
-	/* check the links */
-	for (links = caps->links; links; links = links->next) {
-		GSList *plugins;
-		gboolean active;
-		BraseroCapsLink *link;
+  /* check the links */
+  for (links = caps->links; links; links = links->next) {
+    GSList *plugins;
+    gboolean active;
+    BraseroCapsLink *link;
 
-		link = links->data;
+    link = links->data;
 
-		/* this link must have at least one active plugin to be valid
-		 * plugins are not sorted but in this case we don't need them
-		 * to be. we just need one active if another is with a better
-		 * priority all the better. */
-		active = FALSE;
-		for (plugins = link->plugins; plugins; plugins = plugins->next) {
-			BraseroPlugin *plugin;
+    /* this link must have at least one active plugin to be valid
+     * plugins are not sorted but in this case we don't need them
+     * to be. we just need one active if another is with a better
+     * priority all the better. */
+    active = FALSE;
+    for (plugins = link->plugins; plugins; plugins = plugins->next) {
+      BraseroPlugin *plugin;
 
-			plugin = plugins->data;
-			/* Ignore plugin errors */
-			if (brasero_plugin_get_active (plugin, TRUE)) {
-				/* this link is valid */
-				active = TRUE;
-				break;
-			}
-		}
+      plugin = plugins->data;
+      /* Ignore plugin errors */
+      if (brasero_plugin_get_active (plugin, TRUE)) {
+        /* this link is valid */
+        active = TRUE;
+        break;
+      }
+    }
 
-		if (!active)
-			continue;
+    if (!active)
+      continue;
 
-		if (!link->caps) {
-			/* means that it can be blanked */
-			retval |= BRASERO_MEDIUM_REWRITABLE;
-			continue;
-		}
+    if (!link->caps) {
+      /* means that it can be blanked */
+      retval |= BRASERO_MEDIUM_REWRITABLE;
+      continue;
+    }
 
-		/* means it can be written. NOTE: if this disc has already some
-		 * data on it, it even means it can be appended */
-		retval |= BRASERO_MEDIUM_WRITABLE;
-	}
+    /* means it can be written. NOTE: if this disc has already some
+     * data on it, it even means it can be appended */
+    retval |= BRASERO_MEDIUM_WRITABLE;
+  }
 
-	g_object_unref (self);
-	return retval;
+  g_object_unref (self);
+  return retval;
 }
 
 void
 brasero_burn_play_sound (const gchar *event_id,
                          const gchar *description)
 {
-	static GSoundContext *context = NULL;
+  static GSoundContext *context = NULL;
 
-	if (!context) {
-		GError *error = NULL;
+  if (!context) {
+    GError *error = NULL;
 
-		context = gsound_context_new (NULL, &error);
-		if (error) {
-			g_debug ("Failed to initialize GSoundContext: %s", error->message);
-			g_clear_error (&error);
-			return;
-		}
-	}
+    context = gsound_context_new (NULL, &error);
+    if (error) {
+      g_debug ("Failed to initialize GSoundContext: %s", error->message);
+      g_clear_error (&error);
+      return;
+    }
+  }
 
-	if (description) {
-		gsound_context_play_simple (context, NULL, NULL,
-		                            GSOUND_ATTR_EVENT_ID, event_id,
-		                            GSOUND_ATTR_EVENT_DESCRIPTION, description,
-		                            NULL);
-	} else {
-		gsound_context_play_simple (context, NULL, NULL,
-		                            GSOUND_ATTR_EVENT_ID, event_id,
-		                            NULL);
-	}
+  if (description) {
+    gsound_context_play_simple (context, NULL, NULL,
+                                GSOUND_ATTR_EVENT_ID, event_id,
+                                GSOUND_ATTR_EVENT_DESCRIPTION, description,
+                                NULL);
+  } else {
+    gsound_context_play_simple (context, NULL, NULL,
+                                GSOUND_ATTR_EVENT_ID, event_id,
+                                NULL);
+  }
 }
-
