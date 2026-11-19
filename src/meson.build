@@ -48,11 +48,6 @@ executable(
     gstreamer_video1.found() ? preview_sources : [],
     totem_plparser.found() ? playlist_sources : [],
     tracker_sparql3.found() ? search_sources : [],
-    gnome.genmarshal(
-        'brasero-marshal',
-        prefix: 'brasero_marshal',
-        sources: 'brasero-marshal.list',
-    ),
     dependencies: [
         cairo,
         gdk3,

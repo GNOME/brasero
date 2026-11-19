@@ -13,7 +13,6 @@ ignore_headers = [
     'burn-susp.h',
     'burn-volume-source.h',
     'burn-volume.h',
-    'libbrasero-marshal.h',
     'scsi-base.h',
     'scsi-command.h',
     'scsi-device.h',

@@ -56,7 +56,6 @@
 #include "burn-job.h"
 #include "burn-task-ctx.h"
 #include "burn-task-item.h"
-#include "libbrasero-marshal.h"
 
 #include "brasero-track-type-private.h"
 
@@ -2136,7 +2135,7 @@ brasero_job_class_init (BraseroJobClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroJobClass, error),
                   NULL, NULL,
-                  brasero_marshal_INT__INT,
+                  NULL,
                   G_TYPE_INT, 1, G_TYPE_INT);
 
   g_object_class_install_property (object_class,

@@ -45,8 +45,6 @@
 #include "brasero-io.h"
 #include "brasero-filtered-uri.h"
 
-#include "libbrasero-marshal.h"
-
 #include "burn-debug.h"
 
 typedef struct _BraseroDataVFSPrivate BraseroDataVFSPrivate;
@@ -1131,7 +1129,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_INT__STRING,
+                  NULL,
                   G_TYPE_INT,
                   1,
                   G_TYPE_STRING);
@@ -1142,7 +1140,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__POINTER_STRING,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_POINTER,

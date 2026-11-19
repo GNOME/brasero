@@ -51,8 +51,6 @@
 #include "brasero-file-node.h"
 #include "brasero-io.h"
 
-#include "libbrasero-marshal.h"
-
 typedef struct _BraseroDataSessionPrivate BraseroDataSessionPrivate;
 struct _BraseroDataSessionPrivate {
   BraseroIOJobBase *load_dir;
@@ -634,7 +632,7 @@ brasero_data_session_class_init (BraseroDataSessionClass *klass)
                   G_SIGNAL_RUN_LAST,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__OBJECT_BOOLEAN,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_OBJECT,
@@ -645,7 +643,7 @@ brasero_data_session_class_init (BraseroDataSessionClass *klass)
                   G_SIGNAL_RUN_LAST,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__OBJECT_BOOLEAN,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_OBJECT,

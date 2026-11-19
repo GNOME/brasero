@@ -47,7 +47,6 @@
 
 #include "brasero-burn.h"
 
-#include "libbrasero-marshal.h"
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-dbus.h"
@@ -3056,7 +3055,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    ask_disable_joliet),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0);
   brasero_burn_signals [WARN_DATA_LOSS_SIGNAL] =
     g_signal_new ("warn_data_loss",
@@ -3065,7 +3064,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    warn_data_loss),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0);
   brasero_burn_signals [WARN_PREVIOUS_SESSION_LOSS_SIGNAL] =
     g_signal_new ("warn_previous_session_loss",
@@ -3074,7 +3073,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    warn_previous_session_loss),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0);
   brasero_burn_signals [WARN_AUDIO_TO_APPENDABLE_SIGNAL] =
     g_signal_new ("warn_audio_to_appendable",
@@ -3083,7 +3082,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    warn_audio_to_appendable),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0);
   brasero_burn_signals [WARN_REWRITABLE_SIGNAL] =
     g_signal_new ("warn_rewritable",
@@ -3092,7 +3091,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    warn_rewritable),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0);
   brasero_burn_signals [INSERT_MEDIA_REQUEST_SIGNAL] =
     g_signal_new ("insert_media",
@@ -3101,7 +3100,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    insert_media_request),
                   NULL, NULL,
-                  brasero_marshal_INT__OBJECT_INT_INT,
+                  NULL,
                   G_TYPE_INT,
                   3,
                   BRASERO_TYPE_DRIVE,
@@ -3114,7 +3113,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    location_request),
                   NULL, NULL,
-                  brasero_marshal_INT__POINTER_BOOLEAN,
+                  NULL,
                   G_TYPE_INT,
                   2,
                   G_TYPE_POINTER,
@@ -3126,7 +3125,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    progress_changed),
                   NULL, NULL,
-                  brasero_marshal_VOID__DOUBLE_DOUBLE_LONG,
+                  NULL,
                   G_TYPE_NONE,
                   3,
                   G_TYPE_DOUBLE,
@@ -3150,7 +3149,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    dummy_success),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0);
   brasero_burn_signals [EJECT_FAILURE_SIGNAL] =
     g_signal_new ("eject_failure",
@@ -3159,7 +3158,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    eject_failure),
                   NULL, NULL,
-                  brasero_marshal_INT__OBJECT,
+                  NULL,
                   G_TYPE_INT, 1,
                   BRASERO_TYPE_DRIVE);
   brasero_burn_signals [BLANK_FAILURE_SIGNAL] =
@@ -3169,7 +3168,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    blank_failure),
                   NULL, NULL,
-                  brasero_marshal_INT__VOID,
+                  NULL,
                   G_TYPE_INT, 0,
                   G_TYPE_NONE);
   brasero_burn_signals [INSTALL_MISSING_SIGNAL] =
@@ -3179,7 +3178,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    install_missing),
                   NULL, NULL,
-                  brasero_marshal_INT__INT_STRING,
+                  NULL,
                   G_TYPE_INT, 2,
                   G_TYPE_INT,
                   G_TYPE_STRING);

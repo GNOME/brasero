@@ -45,8 +45,6 @@
 
 #include "brasero-track-data-cfg.h"
 
-#include "libbrasero-marshal.h"
-
 #include "brasero-filtered-uri.h"
 
 #include "brasero-misc.h"
@@ -3410,7 +3408,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__OBJECT_BOOLEAN,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_OBJECT,
@@ -3421,7 +3419,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__OBJECT_BOOLEAN,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_OBJECT,
@@ -3433,7 +3431,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_INT__STRING,
+                  NULL,
                   G_TYPE_INT,
                   1,
                   G_TYPE_STRING);
@@ -3444,7 +3442,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__POINTER_STRING,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_POINTER,
@@ -3477,7 +3475,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__STRING,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   1,
                   G_TYPE_STRING);
@@ -3487,7 +3485,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__STRING,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   1,
                   G_TYPE_STRING);
@@ -3507,7 +3505,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__STRING,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   1,
                   G_TYPE_STRING);

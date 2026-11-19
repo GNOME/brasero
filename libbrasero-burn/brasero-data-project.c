@@ -45,7 +45,6 @@
 #include "brasero-units.h"
 
 #include "brasero-data-project.h"
-#include "libbrasero-marshal.h"
 
 #include "brasero-misc.h"
 #include "brasero-io.h"
@@ -4347,7 +4346,7 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__POINTER,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   1,
                   G_TYPE_POINTER);
@@ -4367,7 +4366,7 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__STRING,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   1,
                   G_TYPE_STRING);
@@ -4377,7 +4376,7 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__STRING,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   1,
                   G_TYPE_STRING);
@@ -4398,7 +4397,7 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__POINTER_POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_POINTER,

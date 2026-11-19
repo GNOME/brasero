@@ -47,7 +47,6 @@
 #include "brasero-session.h"
 #include "burn-plugin-manager.h"
 #include "burn-image-format.h"
-#include "libbrasero-marshal.h"
 
 #include "brasero-tags.h"
 #include "brasero-track-image.h"
@@ -1578,7 +1577,7 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
                   0,
                   NULL, NULL,
-                  brasero_marshal_BOOLEAN__VOID,
+                  NULL,
                   G_TYPE_BOOLEAN,
                   0,
                   G_TYPE_NONE);

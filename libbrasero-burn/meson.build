@@ -58,11 +58,6 @@ libbrasero_burn = library(
         'burn-task.c',
     ),
     conf.get('BUILD_INOTIFY') ? inotify_sources : [],
-    gnome.genmarshal(
-        'libbrasero-marshal',
-        prefix: 'brasero_marshal',
-        sources: 'libbrasero-marshal.list',
-    ),
     dependencies: [
         gdk3,
         gdk_x11_3,

@@ -34,7 +34,6 @@
 
 #include <glib.h>
 
-#include "libbrasero-marshal.h"
 #include "brasero-data-tree-model.h"
 #include "brasero-data-project.h"
 #include "brasero-data-vfs.h"
@@ -196,7 +195,7 @@ brasero_data_tree_model_class_init (BraseroDataTreeModelClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__POINTER_UINT_POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   3,
                   G_TYPE_POINTER,
@@ -218,7 +217,7 @@ brasero_data_tree_model_class_init (BraseroDataTreeModelClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  brasero_marshal_VOID__POINTER_POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   G_TYPE_POINTER,

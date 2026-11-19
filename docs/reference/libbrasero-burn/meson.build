@@ -44,7 +44,6 @@ ignore_headers = [
     'burn-task-ctx.h',
     'burn-task-item.h',
     'burn-task.h',
-    'libbrasero-marshal.h',
 ]
 
 gnome.gtkdoc(

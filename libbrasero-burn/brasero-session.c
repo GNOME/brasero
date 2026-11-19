@@ -48,7 +48,6 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "libbrasero-marshal.h"
 #include "burn-image-format.h"
 #include "brasero-track-type-private.h"
 
@@ -2589,7 +2588,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnSessionClass, track_removed),
                   NULL,
                   NULL,
-                  brasero_marshal_VOID__OBJECT_UINT,
+                  NULL,
                   G_TYPE_NONE,
                   2,
                   BRASERO_TYPE_TRACK,
