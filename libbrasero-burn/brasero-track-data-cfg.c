@@ -3456,7 +3456,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);
@@ -3467,7 +3467,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);
@@ -3497,7 +3497,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0,
                   G_TYPE_NONE);
@@ -3518,7 +3518,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__DOUBLE,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_DOUBLE);
@@ -3528,7 +3528,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);
@@ -3539,7 +3539,7 @@ brasero_track_data_cfg_class_init (BraseroTrackDataCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0,
                   G_TYPE_NONE);

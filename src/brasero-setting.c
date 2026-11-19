@@ -606,7 +606,7 @@ brasero_setting_class_init (BraseroSettingClass *klass)
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (BraseroSettingClass, value_changed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__INT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   G_TYPE_INT);
 }

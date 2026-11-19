@@ -470,7 +470,7 @@ brasero_plugin_manager_class_init (BraseroPluginManagerClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0);
 }
 

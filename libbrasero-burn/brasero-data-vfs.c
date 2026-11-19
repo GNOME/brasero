@@ -1120,7 +1120,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
                   G_STRUCT_OFFSET (BraseroDataVFSClass,
                                    activity_changed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__BOOLEAN,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_BOOLEAN);
@@ -1154,7 +1154,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);
@@ -1165,7 +1165,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);

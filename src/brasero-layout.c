@@ -1046,7 +1046,7 @@ brasero_layout_class_init (BraseroLayoutClass *klass)
                   G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__BOOLEAN,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_BOOLEAN);

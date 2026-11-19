@@ -955,7 +955,7 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
                   G_STRUCT_OFFSET (BraseroMediumSelectionClass, medium_changed),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   BRASERO_TYPE_MEDIUM);

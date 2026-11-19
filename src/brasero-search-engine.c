@@ -281,7 +281,7 @@ brasero_search_engine_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroSearchEngineIface, search_error),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);
@@ -292,7 +292,7 @@ brasero_search_engine_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroSearchEngineIface, search_finished),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
   brasero_search_engine_signals [HIT_REMOVED] =
@@ -302,7 +302,7 @@ brasero_search_engine_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroSearchEngineIface, hit_removed),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);
@@ -313,7 +313,7 @@ brasero_search_engine_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroSearchEngineIface, hit_added),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);

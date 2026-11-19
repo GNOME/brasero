@@ -2548,7 +2548,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnSessionClass, output_changed),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   BRASERO_TYPE_MEDIUM);
@@ -2568,7 +2568,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnSessionClass, track_added),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   BRASERO_TYPE_TRACK);
@@ -2610,7 +2610,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnSessionClass, track_changed),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   BRASERO_TYPE_TRACK);
@@ -2630,7 +2630,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
                   0,
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);

@@ -645,7 +645,7 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
                   G_STRUCT_OFFSET (BraseroDriveSelectionClass, drive_changed),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   BRASERO_TYPE_DRIVE);

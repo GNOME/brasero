@@ -354,7 +354,7 @@ brasero_image_type_chooser_class_init (BraseroImageTypeChooserClass *klass)
                   G_SIGNAL_RUN_FIRST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
 }

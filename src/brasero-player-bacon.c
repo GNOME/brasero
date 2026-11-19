@@ -708,7 +708,7 @@ brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (BraseroPlayerBaconClass, state_changed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__INT,
+                  NULL,
                   G_TYPE_NONE, 1, G_TYPE_INT);
 
   brasero_player_bacon_signals [EOF_SIGNAL] =
@@ -717,7 +717,7 @@ brasero_player_bacon_class_init (BraseroPlayerBaconClass *klass)
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (BraseroPlayerBaconClass, eof),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0);
 
   g_object_class_install_property (object_class,

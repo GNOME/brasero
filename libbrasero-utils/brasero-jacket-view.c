@@ -1525,7 +1525,7 @@ brasero_jacket_view_class_init (BraseroJacketViewClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION | G_SIGNAL_NO_HOOKS,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0,
                   G_TYPE_NONE);
   jacket_view_signals[TAGS_CHANGED] =
@@ -1534,7 +1534,7 @@ brasero_jacket_view_class_init (BraseroJacketViewClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION | G_SIGNAL_NO_HOOKS,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0,
                   G_TYPE_NONE);
 }

@@ -779,7 +779,7 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroMediumMonitorClass, medium_added),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   BRASERO_TYPE_MEDIUM);
 
@@ -796,7 +796,7 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroMediumMonitorClass, medium_removed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   BRASERO_TYPE_MEDIUM);
 
@@ -813,7 +813,7 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroMediumMonitorClass, drive_added),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   BRASERO_TYPE_DRIVE);
 
@@ -830,7 +830,7 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroMediumMonitorClass, drive_removed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   BRASERO_TYPE_DRIVE);
 }

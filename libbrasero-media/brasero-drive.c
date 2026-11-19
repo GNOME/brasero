@@ -1624,7 +1624,7 @@ brasero_drive_class_init (BraseroDriveClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroDriveClass, medium_added),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   BRASERO_TYPE_MEDIUM);
 
@@ -1642,7 +1642,7 @@ brasero_drive_class_init (BraseroDriveClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroDriveClass, medium_removed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL,
                   G_TYPE_NONE, 1,
                   BRASERO_TYPE_MEDIUM);
 

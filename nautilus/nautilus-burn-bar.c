@@ -192,21 +192,21 @@ nautilus_disc_burn_bar_class_init (NautilusDiscBurnBarClass *klass)
                                           G_SIGNAL_RUN_LAST,
                                           G_STRUCT_OFFSET (NautilusDiscBurnBarClass, title_changed),
                                           NULL, NULL,
-                                          g_cclosure_marshal_VOID__VOID,
+                                          NULL,
                                           G_TYPE_NONE, 0);
   signals [ICON_CHANGED] = g_signal_new ("icon_changed",
                                          G_TYPE_FROM_CLASS (klass),
                                          G_SIGNAL_RUN_LAST,
                                          G_STRUCT_OFFSET (NautilusDiscBurnBarClass, icon_changed),
                                          NULL, NULL,
-                                         g_cclosure_marshal_VOID__VOID,
+                                         NULL,
                                          G_TYPE_NONE, 0);
   signals [ACTIVATE] = g_signal_new ("activate",
                                      G_TYPE_FROM_CLASS (klass),
                                      G_SIGNAL_RUN_LAST,
                                      G_STRUCT_OFFSET (NautilusDiscBurnBarClass, activate),
                                      NULL, NULL,
-                                     g_cclosure_marshal_VOID__VOID,
+                                     NULL,
                                      G_TYPE_NONE, 0);
 }
 

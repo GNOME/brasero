@@ -541,7 +541,7 @@ brasero_status_dialog_class_init (BraseroStatusDialogClass *klass)
                   0,
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
 }

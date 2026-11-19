@@ -186,7 +186,7 @@ brasero_data_tree_model_class_init (BraseroDataTreeModelClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);
@@ -208,7 +208,7 @@ brasero_data_tree_model_class_init (BraseroDataTreeModelClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);

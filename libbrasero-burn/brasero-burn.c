@@ -3139,7 +3139,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
                   G_STRUCT_OFFSET (BraseroBurnClass,
                                    action_changed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__INT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_INT);

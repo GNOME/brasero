@@ -572,7 +572,7 @@ brasero_track_class_init (BraseroTrackClass *klass)
                   G_SIGNAL_RUN_FIRST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroTrackClass, changed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0,
                   G_TYPE_NONE);
 }

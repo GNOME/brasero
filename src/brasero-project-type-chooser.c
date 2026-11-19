@@ -619,7 +619,7 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
                   G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                   G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, chosen),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__UINT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_UINT);
@@ -628,7 +628,7 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
                   G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                   G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, recent_clicked),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);
@@ -637,7 +637,7 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
                   G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
                   G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, last_saved_clicked),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__STRING,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_STRING);

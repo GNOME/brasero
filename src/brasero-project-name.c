@@ -718,7 +718,7 @@ brasero_project_name_class_init (BraseroProjectNameClass *klass)
                   0,
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
 

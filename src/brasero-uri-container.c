@@ -83,7 +83,7 @@ brasero_uri_container_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroURIContainerIFace, uri_selected),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
   brasero_uri_container_signals [URI_ACTIVATED_SIGNAL] =
@@ -93,7 +93,7 @@ brasero_uri_container_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroURIContainerIFace, uri_activated),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
   initialized = TRUE;

@@ -1140,7 +1140,7 @@ brasero_task_ctx_class_init (BraseroTaskCtxClass *klass)
                   G_SIGNAL_RUN_LAST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
 
@@ -1150,7 +1150,7 @@ brasero_task_ctx_class_init (BraseroTaskCtxClass *klass)
                   G_SIGNAL_RUN_LAST,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__INT,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_INT);

@@ -90,7 +90,7 @@ brasero_disc_base_init (gpointer g_class)
                   G_STRUCT_OFFSET (BraseroDiscIface, selection_changed),
                   NULL,
                   NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0);
   initialized = TRUE;

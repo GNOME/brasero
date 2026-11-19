@@ -1588,7 +1588,7 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
                   0,
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE,
                   0,
                   G_TYPE_NONE);

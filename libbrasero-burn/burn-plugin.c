@@ -1452,7 +1452,7 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroPluginClass, loaded),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0);
 
   plugin_signals [ACTIVATED_SIGNAL] =
@@ -1461,7 +1461,7 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
                   G_STRUCT_OFFSET (BraseroPluginClass, activated),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__BOOLEAN,
+                  NULL,
                   G_TYPE_NONE, 1,
                   G_TYPE_BOOLEAN);
 }

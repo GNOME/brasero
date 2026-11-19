@@ -2144,7 +2144,7 @@ brasero_metadata_class_init (BraseroMetadataClass *klass)
                   G_STRUCT_OFFSET (BraseroMetadataClass,
                                    completed),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__POINTER,
+                  NULL,
                   G_TYPE_NONE,
                   1,
                   G_TYPE_POINTER);

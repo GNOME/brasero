@@ -761,7 +761,7 @@ brasero_player_class_init (BraseroPlayerClass *klass)
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (BraseroPlayerClass, error),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0);
   brasero_player_signals [READY_SIGNAL] =
     g_signal_new ("ready",
@@ -769,7 +769,7 @@ brasero_player_class_init (BraseroPlayerClass *klass)
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (BraseroPlayerClass, ready),
                   NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
+                  NULL,
                   G_TYPE_NONE, 0);
 }
 
