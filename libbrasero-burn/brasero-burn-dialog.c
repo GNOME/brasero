@@ -2344,12 +2344,12 @@ brasero_burn_dialog_run_real (BraseroBurnDialog  *dialog,
   g_timer_destroy (priv->total_time);
   priv->total_time = NULL;
 
-  priv->session = NULL;
-  g_object_unref (session);
-
   /* re-enable autoconfiguration */
   if (BRASERO_IS_SESSION_CFG (priv->session))
     brasero_session_cfg_enable (BRASERO_SESSION_CFG (priv->session));
+
+  priv->session = NULL;
+  g_object_unref (session);
 
   return (result == BRASERO_BURN_OK);
 }
