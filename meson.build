@@ -99,12 +99,23 @@ plugindir = libdir / 'brasero3/plugins'
 
 version = meson.project_version()
 version_split = version.split('.')
+version_major = version_split[0]
+if (
+    version_split[1].startswith('alpha')
+    or version_split[1].startswith('beta')
+    or version_split[1].startswith('rc')
+)
+    version_minor = '0'
+else
+    version_minor = version_split[1]
+endif
+version_sub = version_split.length() > 2 ? version_split[2] : '0'
 
 conf = configuration_data(
     {
-        'BRASERO_MAJOR_VERSION': version_split[0],
-        'BRASERO_MINOR_VERSION': version_split[1],
-        'BRASERO_SUB': version_split[2],
+        'BRASERO_MAJOR_VERSION': version_major,
+        'BRASERO_MINOR_VERSION': version_minor,
+        'BRASERO_SUB': version_sub,
     },
 )
 
