@@ -30,19 +30,6 @@
 
 #include <nautilus-extension.h>
 
-#include "brasero-media.h"
-#include "brasero-medium-monitor.h"
-#include "brasero-drive.h"
-#include "brasero-medium.h"
-
-#include "brasero-burn-lib.h"
-#include "brasero-track.h"
-#include "brasero-track-image-cfg.h"
-#include "brasero-track-disc.h"
-
-#include "brasero-media-private.h"
-#include "burn-debug.h"
-
 #define BURN_URI        "burn:///"
 
 #define NAUTILUS_TYPE_DISC_BURN  (nautilus_disc_burn_get_type ())
@@ -76,9 +63,6 @@ nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderInterface *ifac
 /*#define DEBUG_PRINT(format_MACRO,...)           g_print (format_MACRO, ##__VA_ARGS__); */
 #define DEBUG_PRINT(format_MACRO, ...)
 
-#define BRASERO_SCHEMA                          "org.gnome.brasero"
-#define BRASERO_PROPS_NAUTILUS_EXT_DEBUG        "nautilus-extension-debug"
-
 G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusDiscBurn,
                                 nautilus_disc_burn,
                                 G_TYPE_OBJECT,
@@ -87,29 +71,107 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusDiscBurn,
                                 G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_MENU_PROVIDER,
                                                                nautilus_disc_burn_menu_provider_iface_init));
 
-/* do not call brasero_*_start() at nautilus startup, they are very expensive;
- * lazily initialize those instead */
-static void
-ensure_initialized (void)
+typedef struct {
+  gboolean is_optical;
+  gboolean is_blank;
+  gboolean is_rewritable;
+  gboolean has_data;
+} OpticalDriveInfo;
+
+static gboolean
+get_optical_drive_info (const gchar      *device_path,
+                        OpticalDriveInfo *info)
 {
-  static gboolean initialized = FALSE;
+  g_autoptr (GDBusConnection) bus = NULL;
+  g_autofree gchar *device_name = NULL;
+  g_autofree gchar *block_path = NULL;
+  g_autoptr (GVariant) block_result = NULL;
+  g_autoptr (GVariant) drive_var = NULL;
+  g_autoptr (GVariant) drive_result = NULL;
+  g_autoptr (GVariant) props = NULL;
+  const gchar *drive_path = NULL;
+  GVariantDict dict;
+  gboolean optical = FALSE;
+  gboolean optical_blank = FALSE;
+  guint32 num_data_tracks = 0;
+  const gchar *media = NULL;
 
-  if (!initialized) {
-    GSettings *settings;
-
-    settings = g_settings_new (BRASERO_SCHEMA);
-    if (g_settings_get_boolean (settings, BRASERO_PROPS_NAUTILUS_EXT_DEBUG)) {
-      brasero_media_library_set_debug (TRUE);
-      brasero_burn_library_set_debug (TRUE);
-    }
-    g_object_unref (settings);
-
-    brasero_media_library_start ();
-    brasero_burn_library_start (NULL, NULL);
-
-    DEBUG_PRINT ("Libbrasero-media started\n");
-    initialized = TRUE;
+  bus = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, NULL);
+  if (bus == NULL) {
+    return FALSE;
   }
+
+  device_name = g_path_get_basename (device_path);
+  block_path = g_strconcat ("/org/freedesktop/UDisks2/block_devices/", device_name, NULL);
+  if (!g_variant_is_object_path (block_path)) {
+    return FALSE;
+  }
+
+  block_result = g_dbus_connection_call_sync (bus,
+                                              "org.freedesktop.UDisks2",
+                                              block_path,
+                                              "org.freedesktop.DBus.Properties",
+                                              "Get",
+                                              g_variant_new ("(ss)",
+                                                             "org.freedesktop.UDisks2.Block",
+                                                             "Drive"),
+                                              G_VARIANT_TYPE ("(v)"),
+                                              G_DBUS_CALL_FLAGS_NONE,
+                                              -1,
+                                              NULL,
+                                              NULL);
+  if (block_result == NULL) {
+    return FALSE;
+  }
+
+  g_variant_get (block_result, "(v)", &drive_var);
+  if (!g_variant_is_of_type (drive_var, G_VARIANT_TYPE_OBJECT_PATH)) {
+    return FALSE;
+  }
+
+  drive_path = g_variant_get_string (drive_var, NULL);
+  if (drive_path == NULL || g_strcmp0 (drive_path, "/") == 0) {
+    return FALSE;
+  }
+
+  drive_result = g_dbus_connection_call_sync (bus,
+                                              "org.freedesktop.UDisks2",
+                                              drive_path,
+                                              "org.freedesktop.DBus.Properties",
+                                              "GetAll",
+                                              g_variant_new ("(s)",
+                                                             "org.freedesktop.UDisks2.Drive"),
+                                              G_VARIANT_TYPE ("(a{sv})"),
+                                              G_DBUS_CALL_FLAGS_NONE,
+                                              -1,
+                                              NULL,
+                                              NULL);
+  if (drive_result == NULL) {
+    return FALSE;
+  }
+
+  props = g_variant_get_child_value (drive_result, 0);
+  g_variant_dict_init (&dict, props);
+  g_variant_dict_lookup (&dict, "Optical", "b", &optical);
+  g_variant_dict_lookup (&dict, "OpticalBlank", "b", &optical_blank);
+  g_variant_dict_lookup (&dict, "OpticalNumDataTracks", "u", &num_data_tracks);
+  g_variant_dict_lookup (&dict, "Media", "&s", &media);
+
+  info->is_optical = optical;
+  info->is_blank = optical_blank;
+  info->has_data = (num_data_tracks > 0);
+  info->is_rewritable = (media != NULL)
+                        && (g_strcmp0 (media, "optical_cd_rw") == 0
+                            || g_strcmp0 (media, "optical_dvd_rw") == 0
+                            || g_strcmp0 (media, "optical_dvd_ram") == 0
+                            || g_strcmp0 (media, "optical_dvd_plus_rw") == 0
+                            || g_strcmp0 (media, "optical_dvd_plus_rw_dl") == 0
+                            || g_strcmp0 (media, "optical_bd_re") == 0
+                            || g_strcmp0 (media, "optical_hddvd_rw") == 0);
+
+  g_variant_dict_clear (&dict);
+
+  return TRUE;
 }
 
 static gboolean
@@ -180,7 +242,7 @@ static void
 copy_disc_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
-  g_autofree gchar *device_path = NULL;
+  const gchar *device_path;
   g_autoptr (GAppInfo) app_info = NULL;
   g_autofree gchar *cmd_line = NULL;
 
@@ -197,7 +259,7 @@ blank_disc_activate_cb (NautilusMenuItem *item,
 {
   g_autoptr (GAppInfo) app_info = NULL;
   g_autofree gchar *cmd_line = NULL;
-  g_autofree gchar *device_path = NULL;
+  const gchar *device_path;
 
   device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
 
@@ -212,45 +274,13 @@ check_disc_activate_cb (NautilusMenuItem *item,
 {
   g_autoptr (GAppInfo) app_info = NULL;
   g_autofree gchar *cmd_line = NULL;
-  g_autofree gchar *device_path = NULL;
+  const gchar *device_path;
 
   device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
 
   cmd_line = g_strconcat ("brasero --check=", device_path, NULL);
   app_info = g_app_info_create_from_commandline (cmd_line, NULL, 0, NULL);
   g_app_info_launch (app_info, NULL, NULL, NULL);
-}
-
-static gboolean
-volume_is_blank (GVolume *volume)
-{
-  BraseroMediumMonitor *monitor;
-  BraseroMedium *medium;
-  BraseroDrive *drive;
-  gchar *device;
-  gboolean is_blank;
-
-  is_blank = FALSE;
-
-  device = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-  if (!device)
-    return FALSE;
-
-  DEBUG_PRINT ("Got device: %s\n", device);
-
-  monitor = brasero_medium_monitor_get_default ();
-  drive = brasero_medium_monitor_get_drive (monitor, device);
-  g_object_unref (monitor);
-  g_free (device);
-
-  if (drive == NULL)
-    return FALSE;
-
-  medium = brasero_drive_get_medium (drive);
-  is_blank = (brasero_medium_get_status (medium) & BRASERO_MEDIUM_BLANK);
-  g_object_unref (drive);
-
-  return is_blank;
 }
 
 static GVolume *
@@ -271,36 +301,6 @@ drive_get_first_volume (GDrive *drive)
   g_list_free (volumes);
 
   return volume;
-}
-
-static gboolean
-drive_is_cd_device (GDrive *gdrive)
-{
-  BraseroMediumMonitor *monitor;
-  BraseroDrive *drive;
-  gchar *device;
-
-  device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-  if (!device)
-    return FALSE;
-
-  DEBUG_PRINT ("Got device: %s\n", device);
-
-  /* FIXME: since we call the monitor, the library should be initialized.
-   * To avoid all the initializing we'll be able to use the new GIO API
-   * (#594649 -  Have a way to detect optical drives) */
-  ensure_initialized ();
-
-  monitor = brasero_medium_monitor_get_default ();
-  drive = brasero_medium_monitor_get_drive (monitor, device);
-  g_object_unref (monitor);
-  g_free (device);
-
-  if (drive == NULL)
-    return FALSE;
-
-  g_object_unref (drive);
-  return TRUE;
 }
 
 static GList *
@@ -395,35 +395,14 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
     }
   }
 
-  if (drive != NULL
-      && volume != NULL
-      && drive_is_cd_device (drive)
-      && !volume_is_blank (volume)) {
-    char *device_path;
-    BraseroMediumMonitor *monitor;
-    BraseroDrive *bdrive;
-    BraseroMedium *medium;
-    BraseroMedia media;
-    BraseroTrackType *type;
+  if (drive != NULL && volume != NULL) {
+    g_autofree gchar *device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+    OpticalDriveInfo info = { 0 };
 
-    /* Reminder: the following is not needed since it is already
-     * called in drive_is_cd_device ().
-     * ensure_initialized();
-     */
-
-    device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    monitor = brasero_medium_monitor_get_default ();
-    bdrive = brasero_medium_monitor_get_drive (monitor, device_path);
-    g_object_unref (monitor);
-
-    medium = brasero_drive_get_medium (bdrive);
-    media = brasero_medium_get_status (medium);
-    g_object_unref (bdrive);
-
-    type = brasero_track_type_new ();
-    brasero_track_type_set_has_medium (type);
-    brasero_track_type_set_medium_type (type, media);
-    if (brasero_burn_library_input_supported (type) == BRASERO_BURN_OK) {
+    if (device_path != NULL
+        && get_optical_drive_info (device_path, &info)
+        && info.is_optical
+        && !info.is_blank) {
       /* user may want to copy it ... */
       item = nautilus_menu_item_new ("NautilusDiscBurn::copy_disc",
                                      _("_Copy Disc…"),
@@ -433,43 +412,41 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
       g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
       g_signal_connect (item, "activate", G_CALLBACK (copy_disc_activate_cb), NULL);
       items = g_list_append (items, item);
-    }
-    brasero_track_type_free (type);
 
-    if (brasero_burn_library_get_media_capabilities (media) & BRASERO_MEDIUM_REWRITABLE) {
-      /* ... or if it's a rewritable medium to blank it ... */
-      item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
-                                     _("_Blank Disc…"),
-                                     _("Blank this CD or DVD"),
-                                     "media-optical-blank");
-      g_object_set_data (G_OBJECT (item), "file_info", file_info);
-      g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
-      g_signal_connect (item, "activate",
-                        G_CALLBACK (blank_disc_activate_cb), NULL);
-      items = g_list_append (items, item);
-    }
+      if (info.is_rewritable) {
+        /* ... or if it's a rewritable medium to blank it ... */
+        item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
+                                       _("_Blank Disc…"),
+                                       _("Blank this CD or DVD"),
+                                       "media-optical-blank");
+        g_object_set_data (G_OBJECT (item), "file_info", file_info);
+        g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (blank_disc_activate_cb), NULL);
+        items = g_list_append (items, item);
+      }
 
-    /* - library should be able to checksum
-     * - disc must have a data session */
-    if (brasero_burn_library_can_checksum ()
-        && (media & BRASERO_MEDIUM_HAS_DATA)) {
-      /* ... or verify medium. */
-      item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
-                                     _("_Check Disc…"),
-                                     _("Check the data integrity on this CD or DVD"),
-                                     NULL);
-      g_object_set_data (G_OBJECT (item), "file_info", file_info);
-      g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
-      g_signal_connect (item, "activate",
-                        G_CALLBACK (check_disc_activate_cb),
-                        NULL);
-      items = g_list_append (items, item);
+      if (info.has_data) {
+        /* ... or verify medium. */
+        item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
+                                       _("_Check Disc…"),
+                                       _("Check the data integrity on this CD or DVD"),
+                                       NULL);
+        g_object_set_data (G_OBJECT (item), "file_info", file_info);
+        g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (check_disc_activate_cb),
+                          NULL);
+        items = g_list_append (items, item);
+      }
     }
-
-    g_free (device_path);
   }
 
   g_object_unref (file);
+
+  if (mount != NULL) {
+    g_object_unref (mount);
+  }
 
   if (drive != NULL) {
     g_object_unref (drive);

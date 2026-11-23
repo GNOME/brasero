@@ -10,8 +10,7 @@ if nautilus_dep.found()
         'nautilus-brasero-extension',
         files('nautilus-burn-extension.c'),
         dependencies: [
-            libbrasero_burn,
-            libbrasero_media,
+            gio2,
             nautilus_dep,
         ],
         include_directories: root_inc,
